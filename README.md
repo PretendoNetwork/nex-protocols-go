@@ -33,43 +33,9 @@ func main() {
 	// Handle Login RMC method
 	authenticationServer.Login(func(client *nex.Client, callID uint32, username string) {
 		userPID, _ := strconv.Atoi(username)
-		nexPassword := "PASSWORD" // TODO: Get this from database
+		serverPID := 2 // Quazal Rendez-Vous
 
-		sessionKey := make([]byte, nexServer.GetKerberosKeySize())
-		rand.Read(sessionKey)
-		serverPID := uint32(2) // Quazal Rendez-Vous
-
-		// Create ticket body info
-		kerberosTicketInfoKey := make([]byte, 16)
-		//rand.Read(kerberosTicketInfoKey) // TODO: enable random keys and make them shared with secure server
-
-		ticketInfoEncryption := nex.NewKerberosEncryption(kerberosTicketInfoKey)
-		ticketInfoStream := nex.NewStream()
-		ticketInfoStream.Grow(28)
-
-		expiration := nex.NewDateTime(0)
-
-		ticketInfoStream.WriteU64LENext([]uint64{expiration.Now()})
-		ticketInfoStream.WriteU32LENext([]uint32{uint32(userPID)})
-		ticketInfoStream.WriteBytesNext(sessionKey)
-
-		encryptedTicketInfo := ticketInfoEncryption.Encrypt(ticketInfoStream.Bytes())
-
-		// Create ticket
-		kerberosTicketKey := []byte(nexPassword)
-		for i := 0; i < 65000+int(userPID)%1024; i++ {
-			kerberosTicketKey = nex.MD5Hash(kerberosTicketKey)
-		}
-
-		ticketEncryption := nex.NewKerberosEncryption(kerberosTicketKey)
-		ticketStream := nex.NewStream()
-		ticketStream.Grow(int64(nexServer.GetKerberosKeySize() + 4 + 4 + len(encryptedTicketInfo)))
-
-		ticketStream.WriteBytesNext(sessionKey)
-		ticketStream.WriteU32LENext([]uint32{serverPID})
-		ticketStream.WriteNEXBufferNext(encryptedTicketInfo)
-
-		encryptedTicket := ticketEncryption.Encrypt(ticketStream.Bytes())
+		encryptedTicket := generateKerberosTicket(uint32(userPID), uint32(serverPID), nexServer.GetKerberosKeySize())
 
 		// Build the response body
 		stationURL := "prudps:/address=192.168.0.28;port=60001;CID=1;PID=2;sid=1;stream=10;type=2"
@@ -111,45 +77,9 @@ func main() {
 
 	// Handle RequestTicket RMC method
 	authenticationServer.RequestTicket(func(client *nex.Client, callID uint32, userPID uint32, serverPID uint32) {
-		nexPassword := "PASSWORD" // TODO: Get this from database
-
-		sessionKey := make([]byte, nexServer.GetKerberosKeySize())
-		rand.Read(sessionKey)
-
-		// Create ticket body info
-		kerberosTicketInfoKey := make([]byte, 16)
-		//rand.Read(kerberosTicketInfoKey) // TODO: enable random keys and make them shared with secure server
-
-		ticketInfoEncryption := nex.NewKerberosEncryption(kerberosTicketInfoKey)
-		ticketInfoStream := nex.NewStream()
-		ticketInfoStream.Grow(28)
-
-		expiration := nex.NewDateTime(0)
-
-		ticketInfoStream.WriteU64LENext([]uint64{expiration.Now()})
-		ticketInfoStream.WriteU32LENext([]uint32{uint32(userPID)})
-		ticketInfoStream.WriteBytesNext(sessionKey)
-
-		encryptedTicketInfo := ticketInfoEncryption.Encrypt(ticketInfoStream.Bytes())
-
-		// Create ticket
-		kerberosTicketKey := []byte(nexPassword)
-		for i := 0; i < 65000+int(userPID)%1024; i++ {
-			kerberosTicketKey = nex.MD5Hash(kerberosTicketKey)
-		}
-
-		ticketEncryption := nex.NewKerberosEncryption(kerberosTicketKey)
-		ticketStream := nex.NewStream()
-		ticketStream.Grow(int64(nexServer.GetKerberosKeySize() + 4 + 4 + len(encryptedTicketInfo)))
-
-		ticketStream.WriteBytesNext(sessionKey)
-		ticketStream.WriteU32LENext([]uint32{serverPID})
-		ticketStream.WriteNEXBufferNext(encryptedTicketInfo)
-
-		encryptedTicket := ticketEncryption.Encrypt(ticketStream.Bytes())
+		encryptedTicket := generateKerberosTicket(userPID, serverPID, nexServer.GetKerberosKeySize())
 
 		// Build the response body
-
 		rmcResponseStream := nex.NewStream()
 		rmcResponseStream.Grow(int64(4 + 4 + len(encryptedTicket)))
 
@@ -180,18 +110,50 @@ func main() {
 
 	nexServer.Listen("192.168.0.28:60000")
 }
+
+func generateKerberosTicket(userPID uint32, serverPID uint32, keySize int) []byte {
+	nexPassword := "PASSWORD" // TODO: Get this from database
+
+	sessionKey := make([]byte, keySize)
+	rand.Read(sessionKey)
+
+	// Create ticket body info
+	kerberosTicketInfoKey := make([]byte, 16)
+	//rand.Read(kerberosTicketInfoKey) // TODO: enable random keys and make them shared with secure server
+
+	ticketInfoEncryption := nex.NewKerberosEncryption(kerberosTicketInfoKey)
+	ticketInfoStream := nex.NewStream()
+	ticketInfoStream.Grow(28)
+
+	expiration := nex.NewDateTime(0)
+
+	ticketInfoStream.WriteU64LENext([]uint64{expiration.Now()})
+	ticketInfoStream.WriteU32LENext([]uint32{userPID})
+	ticketInfoStream.WriteBytesNext(sessionKey)
+
+	encryptedTicketInfo := ticketInfoEncryption.Encrypt(ticketInfoStream.Bytes())
+
+	// Create ticket
+	kerberosTicketKey := []byte(nexPassword)
+	for i := 0; i < 65000+int(userPID)%1024; i++ {
+		kerberosTicketKey = nex.MD5Hash(kerberosTicketKey)
+	}
+
+	ticketEncryption := nex.NewKerberosEncryption(kerberosTicketKey)
+	ticketStream := nex.NewStream()
+	ticketStream.Grow(int64(keySize + 4 + 4 + len(encryptedTicketInfo)))
+
+	ticketStream.WriteBytesNext(sessionKey)
+	ticketStream.WriteU32LENext([]uint32{serverPID})
+	ticketStream.WriteNEXBufferNext(encryptedTicketInfo)
+
+	return ticketEncryption.Encrypt(ticketStream.Bytes())
+}
 ```
 
 ### Secure server (game server)
 
 ```Golang
-package main
-
-import (
-	"github.com/PretendoNetwork/nex-go"
-	"github.com/PretendoNetwork/nex-protocols-go"
-)
-
 func main() {
 	nexServer := nex.NewServer()
 	nexServer.SetPrudpVersion(0)
@@ -226,7 +188,7 @@ func main() {
 		requestDataStream := nex.NewStream(decryptedRequestData)
 
 		_ = requestDataStream.ReadU32LENext(1)[0] // User PID
-		_ = requestDataStream.ReadU32LENext(1)[0] // CID of secure server station url
+		_ = requestDataStream.ReadU32LENext(1)[0] //CID of secure server station url
 		responseCheck := requestDataStream.ReadU32LENext(1)[0]
 
 		responseValueStream := nex.NewStream(make([]byte, 4))
@@ -243,8 +205,8 @@ func main() {
 
 	// Secure protocol handles
 
-	// Handle RegisterEx RMC method
-	secureServer.RegisterEx(func(client *nex.Client, callID uint32, stationUrls []*nex.StationURL, loginData nexproto.NintendoLoginData) {
+	// Handle Register RMC method
+	secureServer.Register(func(client *nex.Client, callID uint32, stationUrls []*nex.StationURL) {
 		localStation := stationUrls[0]
 
 		address := client.GetAddress().IP.String()
@@ -282,6 +244,12 @@ func main() {
 		responsePacket.AddFlag(nex.FlagReliable)
 
 		nexServer.Send(responsePacket)
+	})
+
+	// Handle RegisterEx RMC method
+	secureServer.RegisterEx(func(client *nex.Client, callID uint32, stationUrls []*nex.StationURL, loginData nexproto.NintendoLoginData) {
+		// TODO: Validate loginData
+		secureServer.RegisterHandler(client, callID, stationUrls)
 	})
 
 	// Friends (WiiU) protocol handles

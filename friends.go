@@ -124,7 +124,7 @@ func (presence *NintendoPresenceV2) ExtractFromStreamNext(stream *nex.Stream) {
 
 type FriendsProtocol struct {
 	server *nex.Server
-	updateAndGetAllInformationHandler func(client *nex.Client, callID uint32, nnaInfo *NNAInfo, presence *NintendoPresenceV2, birthday *nex.DateTime)
+	UpdateAndGetAllInformationHandler func(client *nex.Client, callID uint32, nnaInfo *NNAInfo, presence *NintendoPresenceV2, birthday *nex.DateTime)
 }
 
 func (friendsProtocol *FriendsProtocol) Setup() {
@@ -145,11 +145,11 @@ func (friendsProtocol *FriendsProtocol) Setup() {
 }
 
 func (friendsProtocol *FriendsProtocol) UpdateAndGetAllInformation(handler func(client *nex.Client, callID uint32, nnaInfo *NNAInfo, presence *NintendoPresenceV2, birthday *nex.DateTime)) {
-	friendsProtocol.updateAndGetAllInformationHandler = handler
+	friendsProtocol.UpdateAndGetAllInformationHandler = handler
 }
 
 func (friendsProtocol *FriendsProtocol) handleUpdateAndGetAllInformation(packet nex.PacketInterface) {
-	if friendsProtocol.updateAndGetAllInformationHandler == nil {
+	if friendsProtocol.UpdateAndGetAllInformationHandler == nil {
 		return
 	}
 
@@ -168,7 +168,7 @@ func (friendsProtocol *FriendsProtocol) handleUpdateAndGetAllInformation(packet 
 	nnaInfo.ExtractFromStreamNext(parametersStream)
 	presence.ExtractFromStreamNext(parametersStream)
 
-	friendsProtocol.updateAndGetAllInformationHandler(client, callID, nnaInfo, presence, dateTime)
+	friendsProtocol.UpdateAndGetAllInformationHandler(client, callID, nnaInfo, presence, dateTime)
 }
 
 func NewFriendsProtocol(server *nex.Server) *FriendsProtocol {

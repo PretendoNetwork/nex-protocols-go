@@ -21,7 +21,8 @@ const (
 type SecureProtocol struct {
 	server *nex.Server
 	ConnectionIDCounter *nex.Counter
-	registerExHandler func(client *nex.Client, callID uint32, stationUrls []*nex.StationURL, loginData NintendoLoginData)
+	RegisterHandler func(client *nex.Client, callID uint32, stationUrls []*nex.StationURL)
+	RegisterExHandler func(client *nex.Client, callID uint32, stationUrls []*nex.StationURL, loginData NintendoLoginData)
 }
 
 func (secureProtocol *SecureProtocol) Setup() {
@@ -32,6 +33,8 @@ func (secureProtocol *SecureProtocol) Setup() {
 
 		if SecureProtocolID == request.GetProtocolID() {
 			switch request.GetMethodID() {
+			case SecureMethodRegister:
+				secureProtocol.handleRegister(packet)
 			case SecureMethodRegisterEx:
 				secureProtocol.handleRegisterEx(packet)
 			default:
@@ -41,12 +44,40 @@ func (secureProtocol *SecureProtocol) Setup() {
 	})
 }
 
+func (secureProtocol *SecureProtocol) Register(handler func(client *nex.Client, callID uint32, stationUrls []*nex.StationURL)) {
+	secureProtocol.RegisterHandler = handler
+}
+
+func (secureProtocol *SecureProtocol) handleRegister(packet nex.PacketInterface) {
+	if secureProtocol.RegisterHandler == nil {
+		return
+	}
+
+	client := packet.GetSender()
+	request := packet.GetRMCRequest()
+
+	callID := request.GetCallID()
+	parameters := request.GetParameters()
+
+	parametersStream := nex.NewStream(parameters)
+
+	stationURLCount := parametersStream.ReadU32LENext(1)[0]
+	stationUrls := make([]*nex.StationURL, 0)
+
+	for i := 0; i < int(stationURLCount); i++ {
+		station := nex.NewStationURL(parametersStream.ReadNEXStringNext())
+		stationUrls = append(stationUrls, station)
+	}
+
+	secureProtocol.RegisterHandler(client, callID, stationUrls)
+}
+
 func (secureProtocol *SecureProtocol) RegisterEx(handler func(client *nex.Client, callID uint32, stationUrls []*nex.StationURL, loginData NintendoLoginData)) {
-	secureProtocol.registerExHandler = handler
+	secureProtocol.RegisterExHandler = handler
 }
 
 func (secureProtocol *SecureProtocol) handleRegisterEx(packet nex.PacketInterface) {
-	if secureProtocol.registerExHandler == nil {
+	if secureProtocol.RegisterExHandler == nil {
 		return
 	}
 
@@ -79,7 +110,7 @@ func (secureProtocol *SecureProtocol) handleRegisterEx(packet nex.PacketInterfac
 
 	loginData := NintendoLoginData{token: dataHolderStream.ReadNEXStringNext()}
 
-	secureProtocol.registerExHandler(client, callID, stationUrls, loginData)
+	secureProtocol.RegisterExHandler(client, callID, stationUrls, loginData)
 }
 
 func NewSecureProtocol(server *nex.Server) *SecureProtocol {

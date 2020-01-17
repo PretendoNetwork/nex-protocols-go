@@ -23,8 +23,8 @@ type NintendoLoginData struct {
 
 type AuthenticationProtocol struct {
 	server *nex.Server
-	loginHandler func(client *nex.Client, callID uint32, username string)
-	requestTicketHandler func(client *nex.Client, callID uint32, userPID uint32, serverPID uint32)
+	LoginHandler func(client *nex.Client, callID uint32, username string)
+	RequestTicketHandler func(client *nex.Client, callID uint32, userPID uint32, serverPID uint32)
 }
 
 func (authenticationProtocol *AuthenticationProtocol) Setup() {
@@ -47,15 +47,15 @@ func (authenticationProtocol *AuthenticationProtocol) Setup() {
 }
 
 func (authenticationProtocol *AuthenticationProtocol) Login(handler func(client *nex.Client, callID uint32, username string)) {
-	authenticationProtocol.loginHandler = handler
+	authenticationProtocol.LoginHandler = handler
 }
 
 func (authenticationProtocol *AuthenticationProtocol) RequestTicket(handler func(client *nex.Client, callID uint32, userPID uint32, serverPID uint32)) {
-	authenticationProtocol.requestTicketHandler = handler
+	authenticationProtocol.RequestTicketHandler = handler
 }
 
 func (authenticationProtocol *AuthenticationProtocol) handleLogin(packet nex.PacketInterface) {
-	if authenticationProtocol.loginHandler == nil {
+	if authenticationProtocol.LoginHandler == nil {
 		return
 	}
 
@@ -69,11 +69,11 @@ func (authenticationProtocol *AuthenticationProtocol) handleLogin(packet nex.Pac
 
 	username := parametersStream.ReadNEXStringNext()
 
-	authenticationProtocol.loginHandler(client, callID, username)
+	authenticationProtocol.LoginHandler(client, callID, username)
 }
 
 func (authenticationProtocol *AuthenticationProtocol) handleRequestTicket(packet nex.PacketInterface) {
-	if authenticationProtocol.requestTicketHandler == nil {
+	if authenticationProtocol.RequestTicketHandler == nil {
 		return
 	}
 
@@ -88,7 +88,7 @@ func (authenticationProtocol *AuthenticationProtocol) handleRequestTicket(packet
 	userPID := parametersStream.ReadU32LENext(1)[0]
 	serverPID := parametersStream.ReadU32LENext(1)[0]
 
-	authenticationProtocol.requestTicketHandler(client, callID, userPID, serverPID)
+	authenticationProtocol.RequestTicketHandler(client, callID, userPID, serverPID)
 }
 
 func NewAuthenticationProtocol(server *nex.Server) *AuthenticationProtocol {

@@ -151,6 +151,10 @@ func (friendsProtocol *FriendsProtocol) UpdateAndGetAllInformation(handler func(
 	friendsProtocol.UpdateAndGetAllInformationHandler = handler
 }
 
+func (friendsProtocol *FriendsProtocol) CheckSettingStatus(handler func(client *nex.Client, callID uint32)) {
+	friendsProtocol.CheckSettingStatusHandler = handler
+}
+
 func (friendsProtocol *FriendsProtocol) handleUpdateAndGetAllInformation(packet nex.PacketInterface) {
 	if friendsProtocol.UpdateAndGetAllInformationHandler == nil {
 		return

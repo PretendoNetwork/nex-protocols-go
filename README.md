@@ -254,6 +254,34 @@ func main() {
 
 	// Friends (WiiU) protocol handles
 
+	friendsServer.CheckSettingStatus(func(client *nex.Client, callID uint32) {
+		rmcResponseStream := nex.NewStream()
+		rmcResponseStream.Grow(1)
+
+		rmcResponseStream.WriteByteNext(0xFF)
+
+		rmcResponseBody := rmcResponseStream.Bytes()
+
+		// Build response packet
+		rmcResponse := nex.NewRMCResponse(nexproto.FriendsProtocolID, callID)
+		rmcResponse.SetSuccess(nexproto.FriendsMethodCheckSettingStatus, rmcResponseBody)
+
+		rmcResponseBytes := rmcResponse.Bytes()
+
+		responsePacket := nex.NewPacketV0(client, nil)
+
+		responsePacket.SetVersion(0)
+		responsePacket.SetSource(0xA1)
+		responsePacket.SetDestination(0xAF)
+		responsePacket.SetType(nex.DataPacket)
+		responsePacket.SetPayload(rmcResponseBytes)
+
+		responsePacket.AddFlag(nex.FlagNeedsAck)
+		responsePacket.AddFlag(nex.FlagReliable)
+
+		nexServer.Send(responsePacket)
+	})
+
 	friendsServer.UpdateAndGetAllInformation(func(client *nex.Client, callID uint32, nnaInfo *nexproto.NNAInfo, presence *nexproto.NintendoPresenceV2, birthday *nex.DateTime) {
 		comment := "Pretendo Online"
 		datetime := nex.NewDateTime(0)

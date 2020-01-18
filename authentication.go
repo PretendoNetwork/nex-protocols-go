@@ -21,9 +21,17 @@ type NintendoLoginData struct {
 	token string
 }
 
+type AuthenticationInfo struct {
+	token string
+	tokenType uint32
+	ngsVersion uint8
+	serverVersion uint32
+}
+
 type AuthenticationProtocol struct {
 	server *nex.Server
 	LoginHandler func(client *nex.Client, callID uint32, username string)
+	LoginExHandler func(client *nex.Client, callID uint32, username string, authenticationInfo AuthenticationInfo)
 	RequestTicketHandler func(client *nex.Client, callID uint32, userPID uint32, serverPID uint32)
 }
 
@@ -37,6 +45,8 @@ func (authenticationProtocol *AuthenticationProtocol) Setup() {
 			switch request.GetMethodID() {
 			case AuthenticationMethodLogin:
 				authenticationProtocol.handleLogin(packet)
+			case AuthenticationMethodLoginEx:
+				authenticationProtocol.handleLoginEx(packet)
 			case AuthenticationMethodRequestTicket:
 				authenticationProtocol.handleRequestTicket(packet)
 			default:
@@ -48,6 +58,10 @@ func (authenticationProtocol *AuthenticationProtocol) Setup() {
 
 func (authenticationProtocol *AuthenticationProtocol) Login(handler func(client *nex.Client, callID uint32, username string)) {
 	authenticationProtocol.LoginHandler = handler
+}
+
+func (authenticationProtocol *AuthenticationProtocol) LoginEx(handler func(client *nex.Client, callID uint32, username string, authenticationInfo AuthenticationInfo)) {
+	authenticationProtocol.LoginExHandler = handler
 }
 
 func (authenticationProtocol *AuthenticationProtocol) RequestTicket(handler func(client *nex.Client, callID uint32, userPID uint32, serverPID uint32)) {
@@ -70,6 +84,25 @@ func (authenticationProtocol *AuthenticationProtocol) handleLogin(packet nex.Pac
 	username := parametersStream.ReadNEXStringNext()
 
 	authenticationProtocol.LoginHandler(client, callID, username)
+}
+
+func (authenticationProtocol *AuthenticationProtocol) handleLoginEx(packet nex.PacketInterface) {
+	if authenticationProtocol.LoginExHandler == nil {
+		return
+	}
+
+	client := packet.GetSender()
+	request := packet.GetRMCRequest()
+
+	callID := request.GetCallID()
+	parameters := request.GetParameters()
+
+	parametersStream := nex.NewStream(parameters)
+
+	username := parametersStream.ReadNEXStringNext()
+	authenticationInfo := AuthenticationInfo{}
+
+	authenticationProtocol.LoginExHandler(client, callID, username, authenticationInfo)
 }
 
 func (authenticationProtocol *AuthenticationProtocol) handleRequestTicket(packet nex.PacketInterface) {

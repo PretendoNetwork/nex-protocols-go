@@ -255,9 +255,8 @@ func main() {
 	// Friends (WiiU) protocol handles
 
 	friendsServer.CheckSettingStatus(func(client *nex.Client, callID uint32) {
-
 		rmcResponseStream := nex.NewStream()
-		rmcResponseStream.Grow(int64(1)) // Unknown
+		rmcResponseStream.Grow(1)
 
 		rmcResponseStream.WriteByteNext(0xFF)
 

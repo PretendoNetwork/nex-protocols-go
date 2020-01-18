@@ -48,6 +48,10 @@ func (secureProtocol *SecureProtocol) Register(handler func(client *nex.Client, 
 	secureProtocol.RegisterHandler = handler
 }
 
+func (secureProtocol *SecureProtocol) RegisterEx(handler func(client *nex.Client, callID uint32, stationUrls []*nex.StationURL, loginData NintendoLoginData)) {
+	secureProtocol.RegisterExHandler = handler
+}
+
 func (secureProtocol *SecureProtocol) handleRegister(packet nex.PacketInterface) {
 	if secureProtocol.RegisterHandler == nil {
 		return
@@ -70,10 +74,6 @@ func (secureProtocol *SecureProtocol) handleRegister(packet nex.PacketInterface)
 	}
 
 	secureProtocol.RegisterHandler(client, callID, stationUrls)
-}
-
-func (secureProtocol *SecureProtocol) RegisterEx(handler func(client *nex.Client, callID uint32, stationUrls []*nex.StationURL, loginData NintendoLoginData)) {
-	secureProtocol.RegisterExHandler = handler
 }
 
 func (secureProtocol *SecureProtocol) handleRegisterEx(packet nex.PacketInterface) {

@@ -125,6 +125,7 @@ func (presence *NintendoPresenceV2) ExtractFromStreamNext(stream *nex.Stream) {
 type FriendsProtocol struct {
 	server *nex.Server
 	UpdateAndGetAllInformationHandler func(client *nex.Client, callID uint32, nnaInfo *NNAInfo, presence *NintendoPresenceV2, birthday *nex.DateTime)
+	CheckSettingStatusHandler func(client *nex.Client, callID uint32)
 }
 
 func (friendsProtocol *FriendsProtocol) Setup() {
@@ -137,6 +138,8 @@ func (friendsProtocol *FriendsProtocol) Setup() {
 			switch request.GetMethodID() {
 			case FriendsMethodUpdateAndGetAllInformation:
 				friendsProtocol.handleUpdateAndGetAllInformation(packet)
+			case FriendsMethodCheckSettingStatus:
+				friendsProtocol.handleCheckSettingStatus(packet)
 			default:
 				fmt.Printf("Unsupported Friends (WiiU) method ID: %#v\n", request.GetMethodID())
 			}
@@ -146,6 +149,10 @@ func (friendsProtocol *FriendsProtocol) Setup() {
 
 func (friendsProtocol *FriendsProtocol) UpdateAndGetAllInformation(handler func(client *nex.Client, callID uint32, nnaInfo *NNAInfo, presence *NintendoPresenceV2, birthday *nex.DateTime)) {
 	friendsProtocol.UpdateAndGetAllInformationHandler = handler
+}
+
+func (friendsProtocol *FriendsProtocol) CheckSettingStatus(handler func(client *nex.Client, callID uint32)) {
+	friendsProtocol.CheckSettingStatusHandler = handler
 }
 
 func (friendsProtocol *FriendsProtocol) handleUpdateAndGetAllInformation(packet nex.PacketInterface) {
@@ -169,6 +176,19 @@ func (friendsProtocol *FriendsProtocol) handleUpdateAndGetAllInformation(packet 
 	presence.ExtractFromStreamNext(parametersStream)
 
 	friendsProtocol.UpdateAndGetAllInformationHandler(client, callID, nnaInfo, presence, dateTime)
+}
+
+func (friendsProtocol *FriendsProtocol) handleCheckSettingStatus(packet nex.PacketInterface) {
+	if friendsProtocol.CheckSettingStatusHandler == nil {
+		return
+	}
+
+	client := packet.GetSender()
+	request := packet.GetRMCRequest()
+
+	callID := request.GetCallID()
+
+	friendsProtocol.CheckSettingStatusHandler(client, callID)
 }
 
 func NewFriendsProtocol(server *nex.Server) *FriendsProtocol {

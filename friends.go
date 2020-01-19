@@ -169,7 +169,7 @@ func (principalInfo *PrincipalBasicInfo) ExtractFromStreamNext(stream *nex.Strea
 	principalInfo.unknown = stream.ReadByteNext()
 }
 
-type PrincipalPreference {
+type PrincipalPreference struct {
 	unknown1 bool
 	unknown2 bool
 	unknown3 bool

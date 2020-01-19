@@ -33,6 +33,9 @@ type AuthenticationProtocol struct {
 	LoginHandler func(client *nex.Client, callID uint32, username string)
 	LoginExHandler func(client *nex.Client, callID uint32, username string, authenticationInfo AuthenticationInfo)
 	RequestTicketHandler func(client *nex.Client, callID uint32, userPID uint32, serverPID uint32)
+	GetPIDHandler func(client *nex.Client, callID uint32, username string)
+	GetNameHandler func(client *nex.Client, callID uint32, userPID uint32)
+	LoginWithParamHandler func(client *nex.Client, callID uint32)
 }
 
 func (authenticationProtocol *AuthenticationProtocol) Setup() {
@@ -49,11 +52,45 @@ func (authenticationProtocol *AuthenticationProtocol) Setup() {
 				go authenticationProtocol.handleLoginEx(packet)
 			case AuthenticationMethodRequestTicket:
 				go authenticationProtocol.handleRequestTicket(packet)
+			case AuthenticationMethodGetPID:
+				go authenticationProtocol.handleGetPID(packet)
+			case AuthenticationMethodGetName:
+				go authenticationProtocol.handleGetName(packet)
+			case AuthenticationMethodLoginWithParam:
+				go authenticationProtocol.handleLoginWithParam(packet)
 			default:
 				fmt.Printf("Unsupported Authentication method ID: %#v\n", request.GetMethodID())
 			}
 		}
 	})
+}
+
+func (authenticationProtocol *AuthenticationProtocol) respondNotImplemented(packet nex.PacketInterface) {
+	client := packet.GetSender()
+	request := packet.GetRMCRequest()
+
+	rmcResponse := nex.NewRMCResponse(AuthenticationProtocolID, request.GetCallID())
+	rmcResponse.SetError(0x80010002)
+
+	rmcResponseBytes := rmcResponse.Bytes()
+
+	var responsePacket nex.PacketInterface
+	if packet.GetVersion() == 1 {
+		responsePacket = nex.NewPacketV0(client, nil)
+	} else {
+		responsePacket = nex.NewPacketV1(client, nil)
+	}
+
+	responsePacket.SetVersion(packet.GetVersion())
+	responsePacket.SetSource(packet.GetDestination())
+	responsePacket.SetDestination(packet.GetSource())
+	responsePacket.SetType(nex.DataPacket)
+	responsePacket.SetPayload(rmcResponseBytes)
+
+	responsePacket.AddFlag(nex.FlagNeedsAck)
+	responsePacket.AddFlag(nex.FlagReliable)
+
+	authenticationProtocol.server.Send(responsePacket)
 }
 
 func (authenticationProtocol *AuthenticationProtocol) Login(handler func(client *nex.Client, callID uint32, username string)) {
@@ -68,8 +105,22 @@ func (authenticationProtocol *AuthenticationProtocol) RequestTicket(handler func
 	authenticationProtocol.RequestTicketHandler = handler
 }
 
+func (authenticationProtocol *AuthenticationProtocol) GetPID(handler func(client *nex.Client, callID uint32, username string)) {
+	authenticationProtocol.GetPIDHandler = handler
+}
+
+func (authenticationProtocol *AuthenticationProtocol) GetName(handler func(client *nex.Client, callID uint32, userPID uint32)) {
+	authenticationProtocol.GetNameHandler = handler
+}
+
+func (authenticationProtocol *AuthenticationProtocol) LoginWithParam(handler func(client *nex.Client, callID uint32)) {
+	authenticationProtocol.LoginWithParamHandler = handler
+}
+
 func (authenticationProtocol *AuthenticationProtocol) handleLogin(packet nex.PacketInterface) {
 	if authenticationProtocol.LoginHandler == nil {
+		fmt.Println("[Warning] AuthenticationProtocol::Login not implemented")
+		go authenticationProtocol.respondNotImplemented(packet)
 		return
 	}
 
@@ -88,6 +139,8 @@ func (authenticationProtocol *AuthenticationProtocol) handleLogin(packet nex.Pac
 
 func (authenticationProtocol *AuthenticationProtocol) handleLoginEx(packet nex.PacketInterface) {
 	if authenticationProtocol.LoginExHandler == nil {
+		fmt.Println("[Warning] AuthenticationProtocol::LoginEx not implemented")
+		go authenticationProtocol.respondNotImplemented(packet)
 		return
 	}
 
@@ -107,6 +160,8 @@ func (authenticationProtocol *AuthenticationProtocol) handleLoginEx(packet nex.P
 
 func (authenticationProtocol *AuthenticationProtocol) handleRequestTicket(packet nex.PacketInterface) {
 	if authenticationProtocol.RequestTicketHandler == nil {
+		fmt.Println("[Warning] AuthenticationProtocol::RequestTicket not implemented")
+		go authenticationProtocol.respondNotImplemented(packet)
 		return
 	}
 
@@ -122,6 +177,56 @@ func (authenticationProtocol *AuthenticationProtocol) handleRequestTicket(packet
 	serverPID := parametersStream.ReadU32LENext(1)[0]
 
 	go authenticationProtocol.RequestTicketHandler(client, callID, userPID, serverPID)
+}
+
+func (authenticationProtocol *AuthenticationProtocol) handleGetPID(packet nex.PacketInterface) {
+	if authenticationProtocol.GetPIDHandler == nil {
+		fmt.Println("[Warning] AuthenticationProtocol::GetPID not implemented")
+		go authenticationProtocol.respondNotImplemented(packet)
+		return
+	}
+
+	client := packet.GetSender()
+	request := packet.GetRMCRequest()
+
+	callID := request.GetCallID()
+	parameters := request.GetParameters()
+
+	parametersStream := nex.NewStream(parameters)
+
+	username := parametersStream.ReadNEXStringNext()
+
+	go authenticationProtocol.GetPIDHandler(client, callID, username)
+}
+
+func (authenticationProtocol *AuthenticationProtocol) handleGetName(packet nex.PacketInterface) {
+	if authenticationProtocol.GetNameHandler == nil {
+		fmt.Println("[Warning] AuthenticationProtocol::GetName not implemented")
+		go authenticationProtocol.respondNotImplemented(packet)
+		return
+	}
+
+	client := packet.GetSender()
+	request := packet.GetRMCRequest()
+
+	callID := request.GetCallID()
+	parameters := request.GetParameters()
+
+	parametersStream := nex.NewStream(parameters)
+
+	userPID := parametersStream.ReadU32LENext(1)[0]
+
+	go authenticationProtocol.GetNameHandler(client, callID, userPID)
+}
+
+func (authenticationProtocol *AuthenticationProtocol) handleLoginWithParam(packet nex.PacketInterface) {
+	if authenticationProtocol.LoginWithParamHandler == nil {
+		fmt.Println("[Warning] AuthenticationProtocol::LoginWithParam not implemented")
+		go authenticationProtocol.respondNotImplemented(packet)
+		return
+	}
+
+	// Unsure what data is sent here, or how to trigger the console to send it
 }
 
 func NewAuthenticationProtocol(server *nex.Server) *AuthenticationProtocol {

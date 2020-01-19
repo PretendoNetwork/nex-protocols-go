@@ -37,10 +37,24 @@ type BlacklistedPrincipal struct {
 	blackListedSince *nex.DateTime
 }
 
+func (blacklistedPrincipal *BlacklistedPrincipal) ExtractFromStreamNext(stream *nex.Stream) {
+	blacklistedPrincipal.principalInfo = &PrincipalBasicInfo{}
+	blacklistedPrincipal.principalInfo.ExtractFromStreamNext(stream)
+	blacklistedPrincipal.gameKey = &GameKey{}
+	blacklistedPrincipal.gameKey.ExtractFromStreamNext(stream)
+	blacklistedPrincipal.blackListedSince = nex.NewDateTime(stream.ReadU64LENext(1)[0])
+}
+
 type Comment struct {
 	unknown uint8
 	contents string
 	lastChanged *nex.DateTime
+}
+
+func (comment *Comment) ExtractFromStreamNext(stream *nex.Stream) {
+	comment.unknown = stream.ReadByteNext()
+	comment.contents = stream.ReadNEXStringNext()
+	comment.lastChanged = nex.NewDateTime(stream.ReadU64LENext(1)[0])
 }
 
 type FriendInfo struct {
@@ -154,6 +168,14 @@ type PersistentNotification struct {
 	unknown5 string
 }
 
+func (notification *PersistentNotification) ExtractFromStreamNext(stream *nex.Stream) {
+	notification.unknown1 = stream.ReadU64LENext(1)[0]
+	notification.unknown2 = stream.ReadU32LENext(1)[0]
+	notification.unknown3 = stream.ReadU32LENext(1)[0]
+	notification.unknown4 = stream.ReadU32LENext(1)[0]
+	notification.unknown5 = stream.ReadNEXStringNext()
+}
+
 type PrincipalBasicInfo struct {
 	pid uint32
 	nnid string
@@ -175,6 +197,12 @@ type PrincipalPreference struct {
 	unknown3 bool
 }
 
+func (preference *PrincipalPreference) ExtractFromStreamNext(stream *nex.Stream) {
+	preference.unknown1 = (stream.ReadByteNext() == 1)
+	preference.unknown2 = (stream.ReadByteNext() == 1)
+	preference.unknown3 = (stream.ReadByteNext() == 1)
+}
+
 type PrincipalRequestBlockSetting struct {
 	unknown1 uint32
 	unknown2 bool
@@ -183,25 +211,25 @@ type PrincipalRequestBlockSetting struct {
 type FriendsProtocol struct {
 	server *nex.Server
 	UpdateAndGetAllInformationHandler func(client *nex.Client, callID uint32, nnaInfo *NNAInfo, presence *NintendoPresenceV2, birthday *nex.DateTime)
-	AddFriendHandler func(client *nex.Client, callID uint32)
-	AddFriendByNameHandler func(client *nex.Client, callID uint32)
-	RemoveFriendHandler func(client *nex.Client, callID uint32)
-	AddFriendRequestHandler func(client *nex.Client, callID uint32)
-	CancelFriendRequestHandler func(client *nex.Client, callID uint32)
-	AcceptFriendRequestHandler func(client *nex.Client, callID uint32)
-	DeleteFriendRequestHandler func(client *nex.Client, callID uint32)
-	DenyFriendRequestHandler func(client *nex.Client, callID uint32)
-	MarkFriendRequestsAsReceivedHandler func(client *nex.Client, callID uint32)
-	AddBlackListHandler func(client *nex.Client, callID uint32)
-	RemoveBlackListHandler func(client *nex.Client, callID uint32)
-	UpdatePresenceHandler func(client *nex.Client, callID uint32)
-	UpdateMiiHandler func(client *nex.Client, callID uint32)
-	UpdateCommentHandler func(client *nex.Client, callID uint32)
-	UpdatePreferenceHandler func(client *nex.Client, callID uint32)
-	GetBasicInfoHandler func(client *nex.Client, callID uint32)
-	DeleteFriendFlagsHandler func(client *nex.Client, callID uint32)
+	AddFriendHandler func(client *nex.Client, callID uint32, pid uint32)
+	AddFriendByNameHandler func(client *nex.Client, callID uint32, username string)
+	RemoveFriendHandler func(client *nex.Client, callID uint32, pid uint32)
+	AddFriendRequestHandler func(client *nex.Client, callID uint32, unknown1 uint32, unknown2 uint8, unknown3 string, unknown4 uint8, unknown5 string, gameKey *GameKey, unknown6 *nex.DateTime)
+	CancelFriendRequestHandler func(client *nex.Client, callID uint32, id uint64)
+	AcceptFriendRequestHandler func(client *nex.Client, callID uint32, id uint64)
+	DeleteFriendRequestHandler func(client *nex.Client, callID uint32, id uint64)
+	DenyFriendRequestHandler func(client *nex.Client, callID uint32, id uint64)
+	MarkFriendRequestsAsReceivedHandler func(client *nex.Client, callID uint32, ids []uint64)
+	AddBlackListHandler func(client *nex.Client, callID uint32, blacklistedPrincipal *BlacklistedPrincipal)
+	RemoveBlackListHandler func(client *nex.Client, callID uint32, pid uint32)
+	UpdatePresenceHandler func(client *nex.Client, callID uint32, presence *NintendoPresenceV2)
+	UpdateMiiHandler func(client *nex.Client, callID uint32, mii *MiiV2)
+	UpdateCommentHandler func(client *nex.Client, callID uint32, comment *Comment)
+	UpdatePreferenceHandler func(client *nex.Client, callID uint32, preference *PrincipalPreference)
+	GetBasicInfoHandler func(client *nex.Client, callID uint32, pids []uint32)
+	DeleteFriendFlagsHandler func(client *nex.Client, callID uint32, notifications []*PersistentNotification)
 	CheckSettingStatusHandler func(client *nex.Client, callID uint32)
-	GetRequestBlockSettingsHandler func(client *nex.Client, callID uint32)
+	GetRequestBlockSettingsHandler func(client *nex.Client, callID uint32, unknowns []uint32)
 }
 
 func (friendsProtocol *FriendsProtocol) Setup() {
@@ -291,14 +319,86 @@ func (friendsProtocol *FriendsProtocol) UpdateAndGetAllInformation(handler func(
 	friendsProtocol.UpdateAndGetAllInformationHandler = handler
 }
 
+func (friendsProtocol *FriendsProtocol) AddFriend(handler func(client *nex.Client, callID uint32, pid uint32)) {
+	friendsProtocol.AddFriendHandler = handler
+}
+
+func (friendsProtocol *FriendsProtocol) AddFriendByName(handler func(client *nex.Client, callID uint32, username string)) {
+	friendsProtocol.AddFriendByNameHandler = handler
+}
+
+func (friendsProtocol *FriendsProtocol) RemoveFriend(handler func(client *nex.Client, callID uint32, pid uint32)) {
+	friendsProtocol.RemoveFriendHandler = handler
+}
+
+func (friendsProtocol *FriendsProtocol) AddFriendRequest(handler func(client *nex.Client, callID uint32, unknown1 uint32, unknown2 uint8, unknown3 string, unknown4 uint8, unknown5 string, gameKey *GameKey, unknown6 *nex.DateTime)) {
+	friendsProtocol.AddFriendRequestHandler = handler
+}
+
+func (friendsProtocol *FriendsProtocol) CancelFriendRequest(handler func(client *nex.Client, callID uint32, id uint64)) {
+	friendsProtocol.CancelFriendRequestHandler = handler
+}
+
+func (friendsProtocol *FriendsProtocol) AcceptFriendRequest(handler func(client *nex.Client, callID uint32, id uint64)) {
+	friendsProtocol.AcceptFriendRequestHandler = handler
+}
+
+func (friendsProtocol *FriendsProtocol) DeleteFriendRequest(handler func(client *nex.Client, callID uint32, id uint64)) {
+	friendsProtocol.DeleteFriendRequestHandler = handler
+}
+
+func (friendsProtocol *FriendsProtocol) DenyFriendRequest(handler func(client *nex.Client, callID uint32, id uint64)) {
+	friendsProtocol.DenyFriendRequestHandler = handler
+}
+
+func (friendsProtocol *FriendsProtocol) MarkFriendRequestsAsReceived(handler func(client *nex.Client, callID uint32, ids []uint64)) {
+	friendsProtocol.MarkFriendRequestsAsReceivedHandler = handler
+}
+
+func (friendsProtocol *FriendsProtocol) AddBlackList(handler func(client *nex.Client, callID uint32, blacklistedPrincipal *BlacklistedPrincipal)) {
+	friendsProtocol.AddBlackListHandler = handler
+}
+
+func (friendsProtocol *FriendsProtocol) RemoveBlackList(handler func(client *nex.Client, callID uint32, pid uint32)) {
+	friendsProtocol.RemoveBlackListHandler = handler
+}
+
+func (friendsProtocol *FriendsProtocol) UpdatePresence(handler func(client *nex.Client, callID uint32, presence *NintendoPresenceV2)) {
+	friendsProtocol.UpdatePresenceHandler = handler
+}
+
+func (friendsProtocol *FriendsProtocol) UpdateMii(handler func(client *nex.Client, callID uint32, mii *MiiV2)) {
+	friendsProtocol.UpdateMiiHandler = handler
+}
+
+func (friendsProtocol *FriendsProtocol) UpdateComment(handler func(client *nex.Client, callID uint32, comment *Comment)) {
+	friendsProtocol.UpdateCommentHandler = handler
+}
+
+func (friendsProtocol *FriendsProtocol) UpdatePreference(handler func(client *nex.Client, callID uint32, preference *PrincipalPreference)) {
+	friendsProtocol.UpdatePreferenceHandler = handler
+}
+
+func (friendsProtocol *FriendsProtocol) GetBasicInfo(handler func(client *nex.Client, callID uint32, pids []uint32)) {
+	friendsProtocol.GetBasicInfoHandler = handler
+}
+
+func (friendsProtocol *FriendsProtocol) DeleteFriendFlags(handler func(client *nex.Client, callID uint32, notifications []*PersistentNotification)) {
+	friendsProtocol.DeleteFriendFlagsHandler = handler
+}
+
 func (friendsProtocol *FriendsProtocol) CheckSettingStatus(handler func(client *nex.Client, callID uint32)) {
 	friendsProtocol.CheckSettingStatusHandler = handler
+}
+
+func (friendsProtocol *FriendsProtocol) GetRequestBlockSettings(handler func(client *nex.Client, callID uint32, unknowns []uint32)) {
+	friendsProtocol.GetRequestBlockSettingsHandler = handler
 }
 
 func (friendsProtocol *FriendsProtocol) handleUpdateAndGetAllInformation(packet nex.PacketInterface) {
 	if friendsProtocol.UpdateAndGetAllInformationHandler == nil {
 		fmt.Println("[Warning] FriendsProtocol::UpdateAndGetAllInformation not implemented")
-		friendsProtocol.respondNotImplemented(packet)
+		go friendsProtocol.respondNotImplemented(packet)
 		return
 	}
 
@@ -324,143 +424,378 @@ func (friendsProtocol *FriendsProtocol) handleUpdateAndGetAllInformation(packet 
 func (friendsProtocol *FriendsProtocol) handleAddFriend(packet nex.PacketInterface) {
 	if friendsProtocol.AddFriendHandler == nil {
 		fmt.Println("[Warning] FriendsProtocol::AddFriend not implemented")
-		friendsProtocol.respondNotImplemented(packet)
+		go friendsProtocol.respondNotImplemented(packet)
 		return
 	}
+
+	client := packet.GetSender()
+	request := packet.GetRMCRequest()
+
+	callID := request.GetCallID()
+	parameters := request.GetParameters()
+
+	parametersStream := nex.NewStream(parameters)
+
+	pid := parametersStream.ReadU32LENext(1)[0]
+
+	go friendsProtocol.AddFriendHandler(client, callID, pid)
 }
 
 func (friendsProtocol *FriendsProtocol) handleAddFriendByName(packet nex.PacketInterface) {
 	if friendsProtocol.AddFriendByNameHandler == nil {
 		fmt.Println("[Warning] FriendsProtocol::AddFriendByName not implemented")
-		friendsProtocol.respondNotImplemented(packet)
+		go friendsProtocol.respondNotImplemented(packet)
 		return
 	}
+
+	client := packet.GetSender()
+	request := packet.GetRMCRequest()
+
+	callID := request.GetCallID()
+	parameters := request.GetParameters()
+
+	parametersStream := nex.NewStream(parameters)
+
+	username := parametersStream.ReadNEXStringNext()
+
+	go friendsProtocol.AddFriendByNameHandler(client, callID, username)
 }
 
 func (friendsProtocol *FriendsProtocol) handleRemoveFriend(packet nex.PacketInterface) {
 	if friendsProtocol.RemoveFriendHandler == nil {
 		fmt.Println("[Warning] FriendsProtocol::RemoveFriend not implemented")
-		friendsProtocol.respondNotImplemented(packet)
+		go friendsProtocol.respondNotImplemented(packet)
 		return
 	}
+
+	client := packet.GetSender()
+	request := packet.GetRMCRequest()
+
+	callID := request.GetCallID()
+	parameters := request.GetParameters()
+
+	parametersStream := nex.NewStream(parameters)
+
+	pid := parametersStream.ReadU32LENext(1)[0]
+
+	go friendsProtocol.RemoveFriendHandler(client, callID, pid)
 }
 
 func (friendsProtocol *FriendsProtocol) handleAddFriendRequest(packet nex.PacketInterface) {
 	if friendsProtocol.AddFriendRequestHandler == nil {
 		fmt.Println("[Warning] FriendsProtocol::AddFriendRequest not implemented")
-		friendsProtocol.respondNotImplemented(packet)
+		go friendsProtocol.respondNotImplemented(packet)
 		return
 	}
+
+	client := packet.GetSender()
+	request := packet.GetRMCRequest()
+
+	callID := request.GetCallID()
+	parameters := request.GetParameters()
+
+	parametersStream := nex.NewStream(parameters)
+
+	unknown1 := parametersStream.ReadU32LENext(1)[0]
+	unknown2 := parametersStream.ReadByteNext()
+	unknown3 := parametersStream.ReadNEXStringNext()
+	unknown4 := parametersStream.ReadByteNext()
+	unknown5 := parametersStream.ReadNEXStringNext()
+	gameKey := &GameKey{}
+	gameKey.ExtractFromStreamNext(parametersStream)
+	unknown6 := nex.NewDateTime(parametersStream.ReadU64LENext(1)[0])
+
+	go friendsProtocol.AddFriendRequestHandler(client, callID, unknown1, unknown2, unknown3, unknown4, unknown5, gameKey, unknown6)
 }
 
 func (friendsProtocol *FriendsProtocol) handleCancelFriendRequest(packet nex.PacketInterface) {
 	if friendsProtocol.CancelFriendRequestHandler == nil {
 		fmt.Println("[Warning] FriendsProtocol::CancelFriendRequest not implemented")
-		friendsProtocol.respondNotImplemented(packet)
+		go friendsProtocol.respondNotImplemented(packet)
 		return
 	}
+
+	client := packet.GetSender()
+	request := packet.GetRMCRequest()
+
+	callID := request.GetCallID()
+	parameters := request.GetParameters()
+
+	parametersStream := nex.NewStream(parameters)
+
+	id := parametersStream.ReadU64LENext(1)[0]
+
+	go friendsProtocol.CancelFriendRequestHandler(client, callID, id)
 }
 
 func (friendsProtocol *FriendsProtocol) handleAcceptFriendRequest(packet nex.PacketInterface) {
 	if friendsProtocol.AcceptFriendRequestHandler == nil {
 		fmt.Println("[Warning] FriendsProtocol::AcceptFriendRequest not implemented")
-		friendsProtocol.respondNotImplemented(packet)
+		go friendsProtocol.respondNotImplemented(packet)
 		return
 	}
+
+	client := packet.GetSender()
+	request := packet.GetRMCRequest()
+
+	callID := request.GetCallID()
+	parameters := request.GetParameters()
+
+	parametersStream := nex.NewStream(parameters)
+
+	id := parametersStream.ReadU64LENext(1)[0]
+
+	go friendsProtocol.AcceptFriendRequestHandler(client, callID, id)
 }
 
 func (friendsProtocol *FriendsProtocol) handleDeleteFriendRequest(packet nex.PacketInterface) {
 	if friendsProtocol.DeleteFriendRequestHandler == nil {
 		fmt.Println("[Warning] FriendsProtocol::DeleteFriendRequest not implemented")
-		friendsProtocol.respondNotImplemented(packet)
+		go friendsProtocol.respondNotImplemented(packet)
 		return
 	}
+
+	client := packet.GetSender()
+	request := packet.GetRMCRequest()
+
+	callID := request.GetCallID()
+	parameters := request.GetParameters()
+
+	parametersStream := nex.NewStream(parameters)
+
+	id := parametersStream.ReadU64LENext(1)[0]
+
+	go friendsProtocol.DeleteFriendRequestHandler(client, callID, id)
 }
 
 func (friendsProtocol *FriendsProtocol) handleDenyFriendRequest(packet nex.PacketInterface) {
 	if friendsProtocol.DenyFriendRequestHandler == nil {
 		fmt.Println("[Warning] FriendsProtocol::DenyFriendRequest not implemented")
-		friendsProtocol.respondNotImplemented(packet)
+		go friendsProtocol.respondNotImplemented(packet)
 		return
 	}
+
+	client := packet.GetSender()
+	request := packet.GetRMCRequest()
+
+	callID := request.GetCallID()
+	parameters := request.GetParameters()
+
+	parametersStream := nex.NewStream(parameters)
+
+	id := parametersStream.ReadU64LENext(1)[0]
+
+	go friendsProtocol.DenyFriendRequestHandler(client, callID, id)
 }
 
 func (friendsProtocol *FriendsProtocol) handleMarkFriendRequestsAsReceived(packet nex.PacketInterface) {
 	if friendsProtocol.MarkFriendRequestsAsReceivedHandler == nil {
 		fmt.Println("[Warning] FriendsProtocol::MarkFriendRequestsAsReceived not implemented")
-		friendsProtocol.respondNotImplemented(packet)
+		go friendsProtocol.respondNotImplemented(packet)
 		return
 	}
+
+	client := packet.GetSender()
+	request := packet.GetRMCRequest()
+
+	callID := request.GetCallID()
+	parameters := request.GetParameters()
+
+	parametersStream := nex.NewStream(parameters)
+
+	idCount := parametersStream.ReadU32LENext(1)[0]
+	ids := make([]uint64, 0)
+
+	for i := 0; i < int(idCount); i++ {
+		id := parametersStream.ReadU64LENext(1)[0]
+		ids = append(ids, id)
+	}
+
+	go friendsProtocol.MarkFriendRequestsAsReceivedHandler(client, callID, ids)
 }
 
 func (friendsProtocol *FriendsProtocol) handleAddBlackList(packet nex.PacketInterface) {
 	if friendsProtocol.AddBlackListHandler == nil {
 		fmt.Println("[Warning] FriendsProtocol::AddBlackList not implemented")
-		friendsProtocol.respondNotImplemented(packet)
+		go friendsProtocol.respondNotImplemented(packet)
 		return
 	}
+
+	client := packet.GetSender()
+	request := packet.GetRMCRequest()
+
+	callID := request.GetCallID()
+	parameters := request.GetParameters()
+
+	parametersStream := nex.NewStream(parameters)
+
+	blacklistedPrincipal := &BlacklistedPrincipal{}
+	blacklistedPrincipal.ExtractFromStreamNext(parametersStream)
+
+	go friendsProtocol.AddBlackListHandler(client, callID, blacklistedPrincipal)
 }
 
 func (friendsProtocol *FriendsProtocol) handleRemoveBlackList(packet nex.PacketInterface) {
 	if friendsProtocol.RemoveBlackListHandler == nil {
 		fmt.Println("[Warning] FriendsProtocol::RemoveBlackList not implemented")
-		friendsProtocol.respondNotImplemented(packet)
+		go friendsProtocol.respondNotImplemented(packet)
 		return
 	}
+
+	client := packet.GetSender()
+	request := packet.GetRMCRequest()
+
+	callID := request.GetCallID()
+	parameters := request.GetParameters()
+
+	parametersStream := nex.NewStream(parameters)
+
+	pid := parametersStream.ReadU32LENext(1)[0]
+
+	go friendsProtocol.RemoveBlackListHandler(client, callID, pid)
 }
 
 func (friendsProtocol *FriendsProtocol) handleUpdatePresence(packet nex.PacketInterface) {
 	if friendsProtocol.UpdatePresenceHandler == nil {
 		fmt.Println("[Warning] FriendsProtocol::UpdatePresence not implemented")
-		friendsProtocol.respondNotImplemented(packet)
+		go friendsProtocol.respondNotImplemented(packet)
 		return
 	}
+
+	client := packet.GetSender()
+	request := packet.GetRMCRequest()
+
+	callID := request.GetCallID()
+	parameters := request.GetParameters()
+
+	parametersStream := nex.NewStream(parameters)
+
+	presence := &NintendoPresenceV2{}
+	presence.ExtractFromStreamNext(parametersStream)
+
+	go friendsProtocol.UpdatePresenceHandler(client, callID, presence)
 }
 
 func (friendsProtocol *FriendsProtocol) handleUpdateMii(packet nex.PacketInterface) {
 	if friendsProtocol.UpdateMiiHandler == nil {
 		fmt.Println("[Warning] FriendsProtocol::UpdateMii not implemented")
-		friendsProtocol.respondNotImplemented(packet)
+		go friendsProtocol.respondNotImplemented(packet)
 		return
 	}
+
+	client := packet.GetSender()
+	request := packet.GetRMCRequest()
+
+	callID := request.GetCallID()
+	parameters := request.GetParameters()
+
+	parametersStream := nex.NewStream(parameters)
+
+	mii := &MiiV2{}
+	mii.ExtractFromStreamNext(parametersStream)
+
+	go friendsProtocol.UpdateMiiHandler(client, callID, mii)
 }
 
 func (friendsProtocol *FriendsProtocol) handleUpdateComment(packet nex.PacketInterface) {
 	if friendsProtocol.UpdateCommentHandler == nil {
 		fmt.Println("[Warning] FriendsProtocol::UpdateComment not implemented")
-		friendsProtocol.respondNotImplemented(packet)
+		go friendsProtocol.respondNotImplemented(packet)
 		return
 	}
+
+	client := packet.GetSender()
+	request := packet.GetRMCRequest()
+
+	callID := request.GetCallID()
+	parameters := request.GetParameters()
+
+	parametersStream := nex.NewStream(parameters)
+
+	comment := &Comment{}
+	comment.ExtractFromStreamNext(parametersStream)
+
+	go friendsProtocol.UpdateCommentHandler(client, callID, comment)
 }
 
 func (friendsProtocol *FriendsProtocol) handleUpdatePreference(packet nex.PacketInterface) {
 	if friendsProtocol.UpdatePreferenceHandler == nil {
 		fmt.Println("[Warning] FriendsProtocol::UpdatePreference not implemented")
-		friendsProtocol.respondNotImplemented(packet)
+		go friendsProtocol.respondNotImplemented(packet)
 		return
 	}
+
+	client := packet.GetSender()
+	request := packet.GetRMCRequest()
+
+	callID := request.GetCallID()
+	parameters := request.GetParameters()
+
+	parametersStream := nex.NewStream(parameters)
+
+	preference := &PrincipalPreference{}
+	preference.ExtractFromStreamNext(parametersStream)
+
+	go friendsProtocol.UpdatePreferenceHandler(client, callID, preference)
 }
 
 func (friendsProtocol *FriendsProtocol) handleGetBasicInfo(packet nex.PacketInterface) {
 	if friendsProtocol.GetBasicInfoHandler == nil {
 		fmt.Println("[Warning] FriendsProtocol::GetBasicInfo not implemented")
-		friendsProtocol.respondNotImplemented(packet)
+		go friendsProtocol.respondNotImplemented(packet)
 		return
 	}
+
+	client := packet.GetSender()
+	request := packet.GetRMCRequest()
+
+	callID := request.GetCallID()
+	parameters := request.GetParameters()
+
+	parametersStream := nex.NewStream(parameters)
+
+	pidCount := parametersStream.ReadU32LENext(1)[0]
+	pids := make([]uint32, 0)
+
+	for i := 0; i < int(pidCount); i++ {
+		pid := parametersStream.ReadU32LENext(1)[0]
+		pids = append(pids, pid)
+	}
+
+	go friendsProtocol.GetBasicInfoHandler(client, callID, pids)
 }
 
 func (friendsProtocol *FriendsProtocol) handleDeleteFriendFlags(packet nex.PacketInterface) {
 	if friendsProtocol.DeleteFriendFlagsHandler == nil {
 		fmt.Println("[Warning] FriendsProtocol::DeleteFriendFlags not implemented")
-		friendsProtocol.respondNotImplemented(packet)
+		go friendsProtocol.respondNotImplemented(packet)
 		return
 	}
+
+	client := packet.GetSender()
+	request := packet.GetRMCRequest()
+
+	callID := request.GetCallID()
+	parameters := request.GetParameters()
+
+	parametersStream := nex.NewStream(parameters)
+
+	notificationCount := parametersStream.ReadU32LENext(1)[0]
+	notifications := make([]*PersistentNotification, 0)
+
+	for i := 0; i < int(notificationCount); i++ {
+		notification := &PersistentNotification{}
+		notification.ExtractFromStreamNext(parametersStream)
+		notifications = append(notifications, notification)
+	}
+
+	go friendsProtocol.DeleteFriendFlagsHandler(client, callID, notifications)
 }
 
 func (friendsProtocol *FriendsProtocol) handleCheckSettingStatus(packet nex.PacketInterface) {
 	if friendsProtocol.CheckSettingStatusHandler == nil {
 		fmt.Println("[Warning] FriendsProtocol::CheckSettingStatus not implemented")
-		friendsProtocol.respondNotImplemented(packet)
+		go friendsProtocol.respondNotImplemented(packet)
 		return
 	}
 
@@ -475,9 +810,27 @@ func (friendsProtocol *FriendsProtocol) handleCheckSettingStatus(packet nex.Pack
 func (friendsProtocol *FriendsProtocol) handleGetRequestBlockSettings(packet nex.PacketInterface) {
 	if friendsProtocol.GetRequestBlockSettingsHandler == nil {
 		fmt.Println("[Warning] FriendsProtocol::GetRequestBlockSettings not implemented")
-		friendsProtocol.respondNotImplemented(packet)
+		go friendsProtocol.respondNotImplemented(packet)
 		return
 	}
+
+	client := packet.GetSender()
+	request := packet.GetRMCRequest()
+
+	callID := request.GetCallID()
+	parameters := request.GetParameters()
+
+	parametersStream := nex.NewStream(parameters)
+
+	unknownCount := parametersStream.ReadU32LENext(1)[0]
+	unknowns := make([]uint32, 0)
+
+	for i := 0; i < int(unknownCount); i++ {
+		unknown := parametersStream.ReadU32LENext(1)[0]
+		unknowns = append(unknowns, unknown)
+	}
+
+	go friendsProtocol.GetRequestBlockSettingsHandler(client, callID, unknowns)
 }
 
 func NewFriendsProtocol(server *nex.Server) *FriendsProtocol {

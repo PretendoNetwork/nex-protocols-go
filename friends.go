@@ -31,6 +31,55 @@ const (
 	FriendsMethodGetRequestBlockSettings = 0x14
 )
 
+type BlacklistedPrincipal struct {
+	principalInfo *PrincipalBasicInfo
+	gameKey *GameKey
+	blackListedSince *nex.DateTime
+}
+
+type Comment struct {
+	unknown uint8
+	contents string
+	lastChanged *nex.DateTime
+}
+
+type FriendInfo struct {
+	nnaInfo *NNAInfo
+	presence *NintendoPresenceV2
+	status *Comment
+	becameFriend *nex.DateTime
+	lastOnline *nex.DateTime
+	unknown uint64
+}
+
+type FriendRequest struct {
+	principalInfo *PrincipalBasicInfo
+	message *FriendRequestMessage
+	sentOn *nex.DateTime
+}
+
+type FriendRequestMessage struct {
+	unknown1 uint64
+	unknown2 uint8
+	unknown3 uint8
+	message string
+	unknown4 uint8
+	unknown5 string
+	gameKey *GameKey
+	unknown6 *nex.DateTime
+	expiresOn *nex.DateTime
+}
+
+type GameKey struct {
+	titleID uint64
+	titleVersion uint16
+}
+
+func (gameKey *GameKey) ExtractFromStreamNext(stream *nex.Stream) {
+	gameKey.titleID = stream.ReadU64LENext(1)[0]
+	gameKey.titleVersion = stream.ReadU16LENext(1)[0]
+}
+
 type MiiV2 struct {
 	name string
 	unknown1 uint8
@@ -45,44 +94,6 @@ func (mii *MiiV2) ExtractFromStreamNext(stream *nex.Stream) {
 	mii.unknown2 = stream.ReadByteNext()
 	mii.data = stream.ReadNEXBufferNext()
 	mii.datetime = nex.NewDateTime(stream.ReadU64LENext(1)[0])
-}
-
-type PrincipalBasicInfo struct {
-	pid uint32
-	nnid string
-	mii *MiiV2
-	unknown uint8
-}
-
-func (principalInfo *PrincipalBasicInfo) ExtractFromStreamNext(stream *nex.Stream) {
-	principalInfo.pid = stream.ReadU32LENext(1)[0]
-	principalInfo.nnid = stream.ReadNEXStringNext()
-	principalInfo.mii = &MiiV2{}
-	principalInfo.mii.ExtractFromStreamNext(stream)
-	principalInfo.unknown = stream.ReadByteNext()
-}
-
-type NNAInfo struct {
-	principalInfo *PrincipalBasicInfo
-	unknown1 uint8 
-	unknown2 uint8 
-}
-
-func (nnaInfo *NNAInfo) ExtractFromStreamNext(stream *nex.Stream) {
-	nnaInfo.principalInfo = &PrincipalBasicInfo{}
-	nnaInfo.principalInfo.ExtractFromStreamNext(stream)
-	nnaInfo.unknown1 = stream.ReadByteNext()
-	nnaInfo.unknown2 = stream.ReadByteNext()
-}
-
-type GameKey struct {
-	titleID uint64
-	titleVersion uint16
-}
-
-func (gameKey *GameKey) ExtractFromStreamNext(stream *nex.Stream) {
-	gameKey.titleID = stream.ReadU64LENext(1)[0]
-	gameKey.titleVersion = stream.ReadU16LENext(1)[0]
 }
 
 type NintendoPresenceV2 struct {
@@ -120,6 +131,53 @@ func (presence *NintendoPresenceV2) ExtractFromStreamNext(stream *nex.Stream) {
 	presence.unknown5 = stream.ReadByteNext()
 	presence.unknown6 = stream.ReadByteNext()
 	presence.unknown7 = stream.ReadByteNext()
+}
+
+type NNAInfo struct {
+	principalInfo *PrincipalBasicInfo
+	unknown1 uint8 
+	unknown2 uint8 
+}
+
+func (nnaInfo *NNAInfo) ExtractFromStreamNext(stream *nex.Stream) {
+	nnaInfo.principalInfo = &PrincipalBasicInfo{}
+	nnaInfo.principalInfo.ExtractFromStreamNext(stream)
+	nnaInfo.unknown1 = stream.ReadByteNext()
+	nnaInfo.unknown2 = stream.ReadByteNext()
+}
+
+type PersistentNotification struct {
+	unknown1 uint64
+	unknown2 uint32
+	unknown3 uint32
+	unknown4 uint32
+	unknown5 string
+}
+
+type PrincipalBasicInfo struct {
+	pid uint32
+	nnid string
+	mii *MiiV2
+	unknown uint8
+}
+
+func (principalInfo *PrincipalBasicInfo) ExtractFromStreamNext(stream *nex.Stream) {
+	principalInfo.pid = stream.ReadU32LENext(1)[0]
+	principalInfo.nnid = stream.ReadNEXStringNext()
+	principalInfo.mii = &MiiV2{}
+	principalInfo.mii.ExtractFromStreamNext(stream)
+	principalInfo.unknown = stream.ReadByteNext()
+}
+
+type PrincipalPreference {
+	unknown1 bool
+	unknown2 bool
+	unknown3 bool
+}
+
+type PrincipalRequestBlockSetting struct {
+	unknown1 uint32
+	unknown2 bool
 }
 
 type FriendsProtocol struct {

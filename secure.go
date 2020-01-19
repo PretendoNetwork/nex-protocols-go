@@ -34,9 +34,9 @@ func (secureProtocol *SecureProtocol) Setup() {
 		if SecureProtocolID == request.GetProtocolID() {
 			switch request.GetMethodID() {
 			case SecureMethodRegister:
-				secureProtocol.handleRegister(packet)
+				go secureProtocol.handleRegister(packet)
 			case SecureMethodRegisterEx:
-				secureProtocol.handleRegisterEx(packet)
+				go secureProtocol.handleRegisterEx(packet)
 			default:
 				fmt.Printf("Unsupported Secure method ID: %#v\n", request.GetMethodID())
 			}
@@ -73,7 +73,7 @@ func (secureProtocol *SecureProtocol) handleRegister(packet nex.PacketInterface)
 		stationUrls = append(stationUrls, station)
 	}
 
-	secureProtocol.RegisterHandler(client, callID, stationUrls)
+	go secureProtocol.RegisterHandler(client, callID, stationUrls)
 }
 
 func (secureProtocol *SecureProtocol) handleRegisterEx(packet nex.PacketInterface) {
@@ -110,7 +110,7 @@ func (secureProtocol *SecureProtocol) handleRegisterEx(packet nex.PacketInterfac
 
 	loginData := NintendoLoginData{token: dataHolderStream.ReadNEXStringNext()}
 
-	secureProtocol.RegisterExHandler(client, callID, stationUrls, loginData)
+	go secureProtocol.RegisterExHandler(client, callID, stationUrls, loginData)
 }
 
 func NewSecureProtocol(server *nex.Server) *SecureProtocol {

@@ -44,11 +44,11 @@ func (authenticationProtocol *AuthenticationProtocol) Setup() {
 		if AuthenticationProtocolID == request.GetProtocolID() {
 			switch request.GetMethodID() {
 			case AuthenticationMethodLogin:
-				authenticationProtocol.handleLogin(packet)
+				go authenticationProtocol.handleLogin(packet)
 			case AuthenticationMethodLoginEx:
-				authenticationProtocol.handleLoginEx(packet)
+				go authenticationProtocol.handleLoginEx(packet)
 			case AuthenticationMethodRequestTicket:
-				authenticationProtocol.handleRequestTicket(packet)
+				go authenticationProtocol.handleRequestTicket(packet)
 			default:
 				fmt.Printf("Unsupported Authentication method ID: %#v\n", request.GetMethodID())
 			}
@@ -83,7 +83,7 @@ func (authenticationProtocol *AuthenticationProtocol) handleLogin(packet nex.Pac
 
 	username := parametersStream.ReadNEXStringNext()
 
-	authenticationProtocol.LoginHandler(client, callID, username)
+	go authenticationProtocol.LoginHandler(client, callID, username)
 }
 
 func (authenticationProtocol *AuthenticationProtocol) handleLoginEx(packet nex.PacketInterface) {
@@ -102,7 +102,7 @@ func (authenticationProtocol *AuthenticationProtocol) handleLoginEx(packet nex.P
 	username := parametersStream.ReadNEXStringNext()
 	authenticationInfo := AuthenticationInfo{}
 
-	authenticationProtocol.LoginExHandler(client, callID, username, authenticationInfo)
+	go authenticationProtocol.LoginExHandler(client, callID, username, authenticationInfo)
 }
 
 func (authenticationProtocol *AuthenticationProtocol) handleRequestTicket(packet nex.PacketInterface) {
@@ -121,7 +121,7 @@ func (authenticationProtocol *AuthenticationProtocol) handleRequestTicket(packet
 	userPID := parametersStream.ReadU32LENext(1)[0]
 	serverPID := parametersStream.ReadU32LENext(1)[0]
 
-	authenticationProtocol.RequestTicketHandler(client, callID, userPID, serverPID)
+	go authenticationProtocol.RequestTicketHandler(client, callID, userPID, serverPID)
 }
 
 func NewAuthenticationProtocol(server *nex.Server) *AuthenticationProtocol {

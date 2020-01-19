@@ -137,9 +137,9 @@ func (friendsProtocol *FriendsProtocol) Setup() {
 		if FriendsProtocolID == request.GetProtocolID() {
 			switch request.GetMethodID() {
 			case FriendsMethodUpdateAndGetAllInformation:
-				friendsProtocol.handleUpdateAndGetAllInformation(packet)
+				go friendsProtocol.handleUpdateAndGetAllInformation(packet)
 			case FriendsMethodCheckSettingStatus:
-				friendsProtocol.handleCheckSettingStatus(packet)
+				go friendsProtocol.handleCheckSettingStatus(packet)
 			default:
 				fmt.Printf("Unsupported Friends (WiiU) method ID: %#v\n", request.GetMethodID())
 			}
@@ -175,7 +175,7 @@ func (friendsProtocol *FriendsProtocol) handleUpdateAndGetAllInformation(packet 
 	nnaInfo.ExtractFromStreamNext(parametersStream)
 	presence.ExtractFromStreamNext(parametersStream)
 
-	friendsProtocol.UpdateAndGetAllInformationHandler(client, callID, nnaInfo, presence, dateTime)
+	go friendsProtocol.UpdateAndGetAllInformationHandler(client, callID, nnaInfo, presence, dateTime)
 }
 
 func (friendsProtocol *FriendsProtocol) handleCheckSettingStatus(packet nex.PacketInterface) {
@@ -188,7 +188,7 @@ func (friendsProtocol *FriendsProtocol) handleCheckSettingStatus(packet nex.Pack
 
 	callID := request.GetCallID()
 
-	friendsProtocol.CheckSettingStatusHandler(client, callID)
+	go friendsProtocol.CheckSettingStatusHandler(client, callID)
 }
 
 func NewFriendsProtocol(server *nex.Server) *FriendsProtocol {

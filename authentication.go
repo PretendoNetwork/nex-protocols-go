@@ -3,17 +3,17 @@ package nexproto
 import (
 	"fmt"
 
-	"github.com/PretendoNetwork/nex-go"
+	nex "github.com/PretendoNetwork/nex-go"
 )
 
 const (
 	AuthenticationProtocolID = 0xA
 
-	AuthenticationMethodLogin = 0x1
-	AuthenticationMethodLoginEx = 0x2
-	AuthenticationMethodRequestTicket = 0x3
-	AuthenticationMethodGetPID = 0x4
-	AuthenticationMethodGetName = 0x5
+	AuthenticationMethodLogin          = 0x1
+	AuthenticationMethodLoginEx        = 0x2
+	AuthenticationMethodRequestTicket  = 0x3
+	AuthenticationMethodGetPID         = 0x4
+	AuthenticationMethodGetName        = 0x5
 	AuthenticationMethodLoginWithParam = 0x6
 )
 
@@ -22,19 +22,19 @@ type NintendoLoginData struct {
 }
 
 type AuthenticationInfo struct {
-	token string
-	tokenType uint32
-	ngsVersion uint8
+	token         string
+	tokenType     uint32
+	ngsVersion    uint8
 	serverVersion uint32
 }
 
 type AuthenticationProtocol struct {
-	server *nex.Server
-	LoginHandler func(client *nex.Client, callID uint32, username string)
-	LoginExHandler func(client *nex.Client, callID uint32, username string, authenticationInfo AuthenticationInfo)
-	RequestTicketHandler func(client *nex.Client, callID uint32, userPID uint32, serverPID uint32)
-	GetPIDHandler func(client *nex.Client, callID uint32, username string)
-	GetNameHandler func(client *nex.Client, callID uint32, userPID uint32)
+	server                *nex.Server
+	LoginHandler          func(client *nex.Client, callID uint32, username string)
+	LoginExHandler        func(client *nex.Client, callID uint32, username string, authenticationInfo AuthenticationInfo)
+	RequestTicketHandler  func(client *nex.Client, callID uint32, userPID uint32, serverPID uint32)
+	GetPIDHandler         func(client *nex.Client, callID uint32, username string)
+	GetNameHandler        func(client *nex.Client, callID uint32, userPID uint32)
 	LoginWithParamHandler func(client *nex.Client, callID uint32)
 }
 

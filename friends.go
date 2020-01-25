@@ -3,37 +3,37 @@ package nexproto
 import (
 	"fmt"
 
-	"github.com/PretendoNetwork/nex-go"
+	nex "github.com/PretendoNetwork/nex-go"
 )
 
 const (
 	FriendsProtocolID = 0x66
 
-	FriendsMethodUpdateAndGetAllInformation = 0x1
-	FriendsMethodAddFriend = 0x2
-	FriendsMethodAddFriendByName = 0x3
-	FriendsMethodRemoveFriend = 0x4
-	FriendsMethodAddFriendRequest = 0x5
-	FriendsMethodCancelFriendRequest = 0x6
-	FriendsMethodAcceptFriendRequest = 0x7
-	FriendsMethodDeleteFriendRequest = 0x8
-	FriendsMethodDenyFriendRequest = 0x9
+	FriendsMethodUpdateAndGetAllInformation   = 0x1
+	FriendsMethodAddFriend                    = 0x2
+	FriendsMethodAddFriendByName              = 0x3
+	FriendsMethodRemoveFriend                 = 0x4
+	FriendsMethodAddFriendRequest             = 0x5
+	FriendsMethodCancelFriendRequest          = 0x6
+	FriendsMethodAcceptFriendRequest          = 0x7
+	FriendsMethodDeleteFriendRequest          = 0x8
+	FriendsMethodDenyFriendRequest            = 0x9
 	FriendsMethodMarkFriendRequestsAsReceived = 0xA
-	FriendsMethodAddBlackList = 0xB
-	FriendsMethodRemoveBlackList = 0xC
-	FriendsMethodUpdatePresence = 0xD
-	FriendsMethodUpdateMii = 0xE
-	FriendsMethodUpdateComment = 0xF
-	FriendsMethodUpdatePreference = 0x10
-	FriendsMethodGetBasicInfo = 0x11
-	FriendsMethodDeleteFriendFlags = 0x12
-	FriendsMethodCheckSettingStatus = 0x13
-	FriendsMethodGetRequestBlockSettings = 0x14
+	FriendsMethodAddBlackList                 = 0xB
+	FriendsMethodRemoveBlackList              = 0xC
+	FriendsMethodUpdatePresence               = 0xD
+	FriendsMethodUpdateMii                    = 0xE
+	FriendsMethodUpdateComment                = 0xF
+	FriendsMethodUpdatePreference             = 0x10
+	FriendsMethodGetBasicInfo                 = 0x11
+	FriendsMethodDeleteFriendFlags            = 0x12
+	FriendsMethodCheckSettingStatus           = 0x13
+	FriendsMethodGetRequestBlockSettings      = 0x14
 )
 
 type BlacklistedPrincipal struct {
-	principalInfo *PrincipalBasicInfo
-	gameKey *GameKey
+	principalInfo    *PrincipalBasicInfo
+	gameKey          *GameKey
 	blackListedSince *nex.DateTime
 }
 
@@ -46,8 +46,8 @@ func (blacklistedPrincipal *BlacklistedPrincipal) ExtractFromStreamNext(stream *
 }
 
 type Comment struct {
-	unknown uint8
-	contents string
+	unknown     uint8
+	contents    string
 	lastChanged *nex.DateTime
 }
 
@@ -58,34 +58,34 @@ func (comment *Comment) ExtractFromStreamNext(stream *nex.Stream) {
 }
 
 type FriendInfo struct {
-	nnaInfo *NNAInfo
-	presence *NintendoPresenceV2
-	status *Comment
+	nnaInfo      *NNAInfo
+	presence     *NintendoPresenceV2
+	status       *Comment
 	becameFriend *nex.DateTime
-	lastOnline *nex.DateTime
-	unknown uint64
+	lastOnline   *nex.DateTime
+	unknown      uint64
 }
 
 type FriendRequest struct {
 	principalInfo *PrincipalBasicInfo
-	message *FriendRequestMessage
-	sentOn *nex.DateTime
+	message       *FriendRequestMessage
+	sentOn        *nex.DateTime
 }
 
 type FriendRequestMessage struct {
-	unknown1 uint64
-	unknown2 uint8
-	unknown3 uint8
-	message string
-	unknown4 uint8
-	unknown5 string
-	gameKey *GameKey
-	unknown6 *nex.DateTime
+	unknown1  uint64
+	unknown2  uint8
+	unknown3  uint8
+	message   string
+	unknown4  uint8
+	unknown5  string
+	gameKey   *GameKey
+	unknown6  *nex.DateTime
 	expiresOn *nex.DateTime
 }
 
 type GameKey struct {
-	titleID uint64
+	titleID      uint64
 	titleVersion uint16
 }
 
@@ -95,10 +95,10 @@ func (gameKey *GameKey) ExtractFromStreamNext(stream *nex.Stream) {
 }
 
 type MiiV2 struct {
-	name string
+	name     string
 	unknown1 uint8
 	unknown2 uint8
-	data []byte
+	data     []byte
 	datetime *nex.DateTime
 }
 
@@ -111,21 +111,21 @@ func (mii *MiiV2) ExtractFromStreamNext(stream *nex.Stream) {
 }
 
 type NintendoPresenceV2 struct {
-	changedFlags uint32
-	isOnline bool
-	gameKey *GameKey
-	unknown1 uint8
-	message string
-	unknown2 uint32
-	unknown3 uint8
-	gameServerID uint32
-	unknown4 uint32
-	pid uint32
-	gatheringID uint32
+	changedFlags    uint32
+	isOnline        bool
+	gameKey         *GameKey
+	unknown1        uint8
+	message         string
+	unknown2        uint32
+	unknown3        uint8
+	gameServerID    uint32
+	unknown4        uint32
+	pid             uint32
+	gatheringID     uint32
 	applicationData []byte
-	unknown5 uint8
-	unknown6 uint8
-	unknown7 uint8
+	unknown5        uint8
+	unknown6        uint8
+	unknown7        uint8
 }
 
 func (presence *NintendoPresenceV2) ExtractFromStreamNext(stream *nex.Stream) {
@@ -149,8 +149,8 @@ func (presence *NintendoPresenceV2) ExtractFromStreamNext(stream *nex.Stream) {
 
 type NNAInfo struct {
 	principalInfo *PrincipalBasicInfo
-	unknown1 uint8 
-	unknown2 uint8 
+	unknown1      uint8
+	unknown2      uint8
 }
 
 func (nnaInfo *NNAInfo) ExtractFromStreamNext(stream *nex.Stream) {
@@ -177,9 +177,9 @@ func (notification *PersistentNotification) ExtractFromStreamNext(stream *nex.St
 }
 
 type PrincipalBasicInfo struct {
-	pid uint32
-	nnid string
-	mii *MiiV2
+	pid     uint32
+	nnid    string
+	mii     *MiiV2
 	unknown uint8
 }
 
@@ -209,27 +209,27 @@ type PrincipalRequestBlockSetting struct {
 }
 
 type FriendsProtocol struct {
-	server *nex.Server
-	UpdateAndGetAllInformationHandler func(client *nex.Client, callID uint32, nnaInfo *NNAInfo, presence *NintendoPresenceV2, birthday *nex.DateTime)
-	AddFriendHandler func(client *nex.Client, callID uint32, pid uint32)
-	AddFriendByNameHandler func(client *nex.Client, callID uint32, username string)
-	RemoveFriendHandler func(client *nex.Client, callID uint32, pid uint32)
-	AddFriendRequestHandler func(client *nex.Client, callID uint32, unknown1 uint32, unknown2 uint8, unknown3 string, unknown4 uint8, unknown5 string, gameKey *GameKey, unknown6 *nex.DateTime)
-	CancelFriendRequestHandler func(client *nex.Client, callID uint32, id uint64)
-	AcceptFriendRequestHandler func(client *nex.Client, callID uint32, id uint64)
-	DeleteFriendRequestHandler func(client *nex.Client, callID uint32, id uint64)
-	DenyFriendRequestHandler func(client *nex.Client, callID uint32, id uint64)
+	server                              *nex.Server
+	UpdateAndGetAllInformationHandler   func(client *nex.Client, callID uint32, nnaInfo *NNAInfo, presence *NintendoPresenceV2, birthday *nex.DateTime)
+	AddFriendHandler                    func(client *nex.Client, callID uint32, pid uint32)
+	AddFriendByNameHandler              func(client *nex.Client, callID uint32, username string)
+	RemoveFriendHandler                 func(client *nex.Client, callID uint32, pid uint32)
+	AddFriendRequestHandler             func(client *nex.Client, callID uint32, unknown1 uint32, unknown2 uint8, unknown3 string, unknown4 uint8, unknown5 string, gameKey *GameKey, unknown6 *nex.DateTime)
+	CancelFriendRequestHandler          func(client *nex.Client, callID uint32, id uint64)
+	AcceptFriendRequestHandler          func(client *nex.Client, callID uint32, id uint64)
+	DeleteFriendRequestHandler          func(client *nex.Client, callID uint32, id uint64)
+	DenyFriendRequestHandler            func(client *nex.Client, callID uint32, id uint64)
 	MarkFriendRequestsAsReceivedHandler func(client *nex.Client, callID uint32, ids []uint64)
-	AddBlackListHandler func(client *nex.Client, callID uint32, blacklistedPrincipal *BlacklistedPrincipal)
-	RemoveBlackListHandler func(client *nex.Client, callID uint32, pid uint32)
-	UpdatePresenceHandler func(client *nex.Client, callID uint32, presence *NintendoPresenceV2)
-	UpdateMiiHandler func(client *nex.Client, callID uint32, mii *MiiV2)
-	UpdateCommentHandler func(client *nex.Client, callID uint32, comment *Comment)
-	UpdatePreferenceHandler func(client *nex.Client, callID uint32, preference *PrincipalPreference)
-	GetBasicInfoHandler func(client *nex.Client, callID uint32, pids []uint32)
-	DeleteFriendFlagsHandler func(client *nex.Client, callID uint32, notifications []*PersistentNotification)
-	CheckSettingStatusHandler func(client *nex.Client, callID uint32)
-	GetRequestBlockSettingsHandler func(client *nex.Client, callID uint32, unknowns []uint32)
+	AddBlackListHandler                 func(client *nex.Client, callID uint32, blacklistedPrincipal *BlacklistedPrincipal)
+	RemoveBlackListHandler              func(client *nex.Client, callID uint32, pid uint32)
+	UpdatePresenceHandler               func(client *nex.Client, callID uint32, presence *NintendoPresenceV2)
+	UpdateMiiHandler                    func(client *nex.Client, callID uint32, mii *MiiV2)
+	UpdateCommentHandler                func(client *nex.Client, callID uint32, comment *Comment)
+	UpdatePreferenceHandler             func(client *nex.Client, callID uint32, preference *PrincipalPreference)
+	GetBasicInfoHandler                 func(client *nex.Client, callID uint32, pids []uint32)
+	DeleteFriendFlagsHandler            func(client *nex.Client, callID uint32, notifications []*PersistentNotification)
+	CheckSettingStatusHandler           func(client *nex.Client, callID uint32)
+	GetRequestBlockSettingsHandler      func(client *nex.Client, callID uint32, unknowns []uint32)
 }
 
 func (friendsProtocol *FriendsProtocol) Setup() {
@@ -419,7 +419,6 @@ func (friendsProtocol *FriendsProtocol) handleUpdateAndGetAllInformation(packet 
 
 	go friendsProtocol.UpdateAndGetAllInformationHandler(client, callID, nnaInfo, presence, dateTime)
 }
-
 
 func (friendsProtocol *FriendsProtocol) handleAddFriend(packet nex.PacketInterface) {
 	if friendsProtocol.AddFriendHandler == nil {

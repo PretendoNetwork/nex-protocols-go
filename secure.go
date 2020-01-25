@@ -3,33 +3,33 @@ package nexproto
 import (
 	"fmt"
 
-	"github.com/PretendoNetwork/nex-go"
+	nex "github.com/PretendoNetwork/nex-go"
 )
 
 const (
 	SecureProtocolID = 0xB
 
-	SecureMethodRegister = 0x1
+	SecureMethodRegister              = 0x1
 	SecureMethodRequestConnectionData = 0x2
-	SecureMethodRequestURLs = 0x3
-	SecureMethodRegisterEx = 0x4
-	SecureMethodTestConnectivity = 0x5
-	SecureMethodUpdateURLs = 0x6
-	SecureMethodReplaceURL = 0x7
-	SecureMethodSendReport = 0x8
+	SecureMethodRequestURLs           = 0x3
+	SecureMethodRegisterEx            = 0x4
+	SecureMethodTestConnectivity      = 0x5
+	SecureMethodUpdateURLs            = 0x6
+	SecureMethodReplaceURL            = 0x7
+	SecureMethodSendReport            = 0x8
 )
 
 type SecureProtocol struct {
-	server *nex.Server
-	ConnectionIDCounter *nex.Counter
-	RegisterHandler func(client *nex.Client, callID uint32, stationUrls []*nex.StationURL)
-	RequestConnectionDataHandler func (client *nex.Client, callID uint32, stationCID uint32, stationPID uint32)
-	RequestURLsHandler func(client *nex.Client, callID uint32, stationCID uint32, stationPID uint32)
-	RegisterExHandler func(client *nex.Client, callID uint32, stationUrls []*nex.StationURL, loginData NintendoLoginData)
-	TestConnectivityHandler func(client *nex.Client, callID uint32)
-	UpdateURLsHandler func(client *nex.Client, callID uint32, stationUrls []*nex.StationURL)
-	ReplaceURLHandler func(client *nex.Client, callID uint32, oldStation *nex.StationURL, newStation *nex.StationURL)
-	SendReportHandler func(client *nex.Client, callID uint32, reportID uint32, report []byte)
+	server                       *nex.Server
+	ConnectionIDCounter          *nex.Counter
+	RegisterHandler              func(client *nex.Client, callID uint32, stationUrls []*nex.StationURL)
+	RequestConnectionDataHandler func(client *nex.Client, callID uint32, stationCID uint32, stationPID uint32)
+	RequestURLsHandler           func(client *nex.Client, callID uint32, stationCID uint32, stationPID uint32)
+	RegisterExHandler            func(client *nex.Client, callID uint32, stationUrls []*nex.StationURL, loginData NintendoLoginData)
+	TestConnectivityHandler      func(client *nex.Client, callID uint32)
+	UpdateURLsHandler            func(client *nex.Client, callID uint32, stationUrls []*nex.StationURL)
+	ReplaceURLHandler            func(client *nex.Client, callID uint32, oldStation *nex.StationURL, newStation *nex.StationURL)
+	SendReportHandler            func(client *nex.Client, callID uint32, reportID uint32, report []byte)
 }
 
 func (secureProtocol *SecureProtocol) Setup() {
@@ -316,7 +316,7 @@ func (secureProtocol *SecureProtocol) handleSendReport(packet nex.PacketInterfac
 
 func NewSecureProtocol(server *nex.Server) *SecureProtocol {
 	secureProtocol := &SecureProtocol{
-		server: server,
+		server:              server,
 		ConnectionIDCounter: nex.NewCounter(10),
 	}
 

@@ -17,6 +17,16 @@ const (
 	AuthenticationMethodLoginWithParam = 0x6
 )
 
+type AuthenticationProtocol struct {
+	server                *nex.Server
+	LoginHandler          func(client *nex.Client, callID uint32, username string)
+	LoginExHandler        func(client *nex.Client, callID uint32, username string, authenticationInfo *AuthenticationInfo)
+	RequestTicketHandler  func(client *nex.Client, callID uint32, userPID uint32, serverPID uint32)
+	GetPIDHandler         func(client *nex.Client, callID uint32, username string)
+	GetNameHandler        func(client *nex.Client, callID uint32, userPID uint32)
+	LoginWithParamHandler func(client *nex.Client, callID uint32)
+}
+
 type NintendoLoginData struct {
 	token string
 }
@@ -26,16 +36,34 @@ type AuthenticationInfo struct {
 	tokenType     uint32
 	ngsVersion    uint8
 	serverVersion uint32
+
+	hierarchy []nex.StructureInterface
+	*nex.NullData
 }
 
-type AuthenticationProtocol struct {
-	server                *nex.Server
-	LoginHandler          func(client *nex.Client, callID uint32, username string)
-	LoginExHandler        func(client *nex.Client, callID uint32, username string, authenticationInfo AuthenticationInfo)
-	RequestTicketHandler  func(client *nex.Client, callID uint32, userPID uint32, serverPID uint32)
-	GetPIDHandler         func(client *nex.Client, callID uint32, username string)
-	GetNameHandler        func(client *nex.Client, callID uint32, userPID uint32)
-	LoginWithParamHandler func(client *nex.Client, callID uint32)
+func (authenticationInfo *AuthenticationInfo) GetHierarchy() []nex.StructureInterface {
+	return authenticationInfo.hierarchy
+}
+
+func (authenticationInfo *AuthenticationInfo) ExtractFromStream(stream *nex.StreamIn) {
+	authenticationInfo.token = stream.ReadStringNext()
+	authenticationInfo.tokenType = stream.ReadU32LENext(1)[0]
+	authenticationInfo.ngsVersion = uint8(stream.ReadByteNext())
+	authenticationInfo.serverVersion = stream.ReadU32LENext(1)[0]
+}
+
+func NewAuthenticationInfo() *AuthenticationInfo {
+	authenticationInfo := &AuthenticationInfo{}
+
+	nullData := nex.NewNullData()
+
+	authenticationInfo.NullData = nullData
+
+	authenticationInfo.hierarchy = []nex.StructureInterface{
+		nullData,
+	}
+
+	return authenticationInfo
 }
 
 func (authenticationProtocol *AuthenticationProtocol) Setup() {
@@ -97,7 +125,7 @@ func (authenticationProtocol *AuthenticationProtocol) Login(handler func(client 
 	authenticationProtocol.LoginHandler = handler
 }
 
-func (authenticationProtocol *AuthenticationProtocol) LoginEx(handler func(client *nex.Client, callID uint32, username string, authenticationInfo AuthenticationInfo)) {
+func (authenticationProtocol *AuthenticationProtocol) LoginEx(handler func(client *nex.Client, callID uint32, username string, authenticationInfo *AuthenticationInfo)) {
 	authenticationProtocol.LoginExHandler = handler
 }
 
@@ -130,9 +158,9 @@ func (authenticationProtocol *AuthenticationProtocol) handleLogin(packet nex.Pac
 	callID := request.GetCallID()
 	parameters := request.GetParameters()
 
-	parametersStream := nex.NewStream(parameters)
+	parametersStream := nex.NewStreamIn(parameters, authenticationProtocol.server)
 
-	username := parametersStream.ReadNEXStringNext()
+	username := parametersStream.ReadStringNext()
 
 	go authenticationProtocol.LoginHandler(client, callID, username)
 }
@@ -150,12 +178,23 @@ func (authenticationProtocol *AuthenticationProtocol) handleLoginEx(packet nex.P
 	callID := request.GetCallID()
 	parameters := request.GetParameters()
 
-	parametersStream := nex.NewStream(parameters)
+	parametersStream := nex.NewStreamIn(parameters, authenticationProtocol.server)
 
-	username := parametersStream.ReadNEXStringNext()
-	authenticationInfo := AuthenticationInfo{}
+	username := parametersStream.ReadStringNext()
+	dataHolderName := parametersStream.ReadStringNext()
 
-	go authenticationProtocol.LoginExHandler(client, callID, username, authenticationInfo)
+	if dataHolderName != "AuthenticationInfo" {
+		// handle error?
+	}
+
+	_ = parametersStream.ReadU32LENext(1) // length including this field
+	dataHolderContent := parametersStream.ReadBufferNext()
+
+	dataHolderContentStream := nex.NewStreamIn(dataHolderContent, authenticationProtocol.server)
+
+	authenticationInfo := dataHolderContentStream.ReadStructureNext(NewAuthenticationInfo())
+
+	go authenticationProtocol.LoginExHandler(client, callID, username, authenticationInfo.(*AuthenticationInfo))
 }
 
 func (authenticationProtocol *AuthenticationProtocol) handleRequestTicket(packet nex.PacketInterface) {
@@ -171,7 +210,7 @@ func (authenticationProtocol *AuthenticationProtocol) handleRequestTicket(packet
 	callID := request.GetCallID()
 	parameters := request.GetParameters()
 
-	parametersStream := nex.NewStream(parameters)
+	parametersStream := nex.NewStreamIn(parameters, authenticationProtocol.server)
 
 	userPID := parametersStream.ReadU32LENext(1)[0]
 	serverPID := parametersStream.ReadU32LENext(1)[0]
@@ -192,9 +231,9 @@ func (authenticationProtocol *AuthenticationProtocol) handleGetPID(packet nex.Pa
 	callID := request.GetCallID()
 	parameters := request.GetParameters()
 
-	parametersStream := nex.NewStream(parameters)
+	parametersStream := nex.NewStreamIn(parameters, authenticationProtocol.server)
 
-	username := parametersStream.ReadNEXStringNext()
+	username := parametersStream.ReadStringNext()
 
 	go authenticationProtocol.GetPIDHandler(client, callID, username)
 }
@@ -212,7 +251,7 @@ func (authenticationProtocol *AuthenticationProtocol) handleGetName(packet nex.P
 	callID := request.GetCallID()
 	parameters := request.GetParameters()
 
-	parametersStream := nex.NewStream(parameters)
+	parametersStream := nex.NewStreamIn(parameters, authenticationProtocol.server)
 
 	userPID := parametersStream.ReadU32LENext(1)[0]
 

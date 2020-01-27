@@ -31,17 +31,41 @@ const (
 	FriendsMethodGetRequestBlockSettings      = 0x14
 )
 
+type FriendsProtocol struct {
+	server                              *nex.Server
+	UpdateAndGetAllInformationHandler   func(client *nex.Client, callID uint32, nnaInfo *NNAInfo, presence *NintendoPresenceV2, birthday *nex.DateTime)
+	AddFriendHandler                    func(client *nex.Client, callID uint32, pid uint32)
+	AddFriendByNameHandler              func(client *nex.Client, callID uint32, username string)
+	RemoveFriendHandler                 func(client *nex.Client, callID uint32, pid uint32)
+	AddFriendRequestHandler             func(client *nex.Client, callID uint32, unknown1 uint32, unknown2 uint8, unknown3 string, unknown4 uint8, unknown5 string, gameKey *GameKey, unknown6 *nex.DateTime)
+	CancelFriendRequestHandler          func(client *nex.Client, callID uint32, id uint64)
+	AcceptFriendRequestHandler          func(client *nex.Client, callID uint32, id uint64)
+	DeleteFriendRequestHandler          func(client *nex.Client, callID uint32, id uint64)
+	DenyFriendRequestHandler            func(client *nex.Client, callID uint32, id uint64)
+	MarkFriendRequestsAsReceivedHandler func(client *nex.Client, callID uint32, ids []uint64)
+	AddBlackListHandler                 func(client *nex.Client, callID uint32, blacklistedPrincipal *BlacklistedPrincipal)
+	RemoveBlackListHandler              func(client *nex.Client, callID uint32, pid uint32)
+	UpdatePresenceHandler               func(client *nex.Client, callID uint32, presence *NintendoPresenceV2)
+	UpdateMiiHandler                    func(client *nex.Client, callID uint32, mii *MiiV2)
+	UpdateCommentHandler                func(client *nex.Client, callID uint32, comment *Comment)
+	UpdatePreferenceHandler             func(client *nex.Client, callID uint32, preference *PrincipalPreference)
+	GetBasicInfoHandler                 func(client *nex.Client, callID uint32, pids []uint32)
+	DeleteFriendFlagsHandler            func(client *nex.Client, callID uint32, notifications []*PersistentNotification)
+	CheckSettingStatusHandler           func(client *nex.Client, callID uint32)
+	GetRequestBlockSettingsHandler      func(client *nex.Client, callID uint32, unknowns []uint32)
+}
+
 type BlacklistedPrincipal struct {
 	principalInfo    *PrincipalBasicInfo
 	gameKey          *GameKey
 	blackListedSince *nex.DateTime
 }
 
-func (blacklistedPrincipal *BlacklistedPrincipal) ExtractFromStreamNext(stream *nex.Stream) {
+func (blacklistedPrincipal *BlacklistedPrincipal) ExtractFromStream(stream *nex.StreamIn) {
 	blacklistedPrincipal.principalInfo = &PrincipalBasicInfo{}
-	blacklistedPrincipal.principalInfo.ExtractFromStreamNext(stream)
+	blacklistedPrincipal.principalInfo.ExtractFromStream(stream)
 	blacklistedPrincipal.gameKey = &GameKey{}
-	blacklistedPrincipal.gameKey.ExtractFromStreamNext(stream)
+	blacklistedPrincipal.gameKey.ExtractFromStream(stream)
 	blacklistedPrincipal.blackListedSince = nex.NewDateTime(stream.ReadU64LENext(1)[0])
 }
 
@@ -51,9 +75,9 @@ type Comment struct {
 	lastChanged *nex.DateTime
 }
 
-func (comment *Comment) ExtractFromStreamNext(stream *nex.Stream) {
+func (comment *Comment) ExtractFromStream(stream *nex.StreamIn) {
 	comment.unknown = stream.ReadByteNext()
-	comment.contents = stream.ReadNEXStringNext()
+	comment.contents = stream.ReadStringNext()
 	comment.lastChanged = nex.NewDateTime(stream.ReadU64LENext(1)[0])
 }
 
@@ -89,7 +113,7 @@ type GameKey struct {
 	titleVersion uint16
 }
 
-func (gameKey *GameKey) ExtractFromStreamNext(stream *nex.Stream) {
+func (gameKey *GameKey) ExtractFromStream(stream *nex.StreamIn) {
 	gameKey.titleID = stream.ReadU64LENext(1)[0]
 	gameKey.titleVersion = stream.ReadU16LENext(1)[0]
 }
@@ -102,11 +126,11 @@ type MiiV2 struct {
 	datetime *nex.DateTime
 }
 
-func (mii *MiiV2) ExtractFromStreamNext(stream *nex.Stream) {
-	mii.name = stream.ReadNEXStringNext()
+func (mii *MiiV2) ExtractFromStream(stream *nex.StreamIn) {
+	mii.name = stream.ReadStringNext()
 	mii.unknown1 = stream.ReadByteNext()
 	mii.unknown2 = stream.ReadByteNext()
-	mii.data = stream.ReadNEXBufferNext()
+	mii.data = stream.ReadBufferNext()
 	mii.datetime = nex.NewDateTime(stream.ReadU64LENext(1)[0])
 }
 
@@ -128,20 +152,20 @@ type NintendoPresenceV2 struct {
 	unknown7        uint8
 }
 
-func (presence *NintendoPresenceV2) ExtractFromStreamNext(stream *nex.Stream) {
+func (presence *NintendoPresenceV2) ExtractFromStream(stream *nex.StreamIn) {
 	presence.changedFlags = stream.ReadU32LENext(1)[0]
 	presence.isOnline = (stream.ReadByteNext() == 1)
 	presence.gameKey = &GameKey{}
-	presence.gameKey.ExtractFromStreamNext(stream)
+	presence.gameKey.ExtractFromStream(stream)
 	presence.unknown1 = stream.ReadByteNext()
-	presence.message = stream.ReadNEXStringNext()
+	presence.message = stream.ReadStringNext()
 	presence.unknown2 = stream.ReadU32LENext(1)[0]
 	presence.unknown3 = stream.ReadByteNext()
 	presence.gameServerID = stream.ReadU32LENext(1)[0]
 	presence.unknown4 = stream.ReadU32LENext(1)[0]
 	presence.pid = stream.ReadU32LENext(1)[0]
 	presence.gatheringID = stream.ReadU32LENext(1)[0]
-	presence.applicationData = stream.ReadNEXBufferNext()
+	presence.applicationData = stream.ReadBufferNext()
 	presence.unknown5 = stream.ReadByteNext()
 	presence.unknown6 = stream.ReadByteNext()
 	presence.unknown7 = stream.ReadByteNext()
@@ -153,9 +177,9 @@ type NNAInfo struct {
 	unknown2      uint8
 }
 
-func (nnaInfo *NNAInfo) ExtractFromStreamNext(stream *nex.Stream) {
+func (nnaInfo *NNAInfo) ExtractFromStream(stream *nex.StreamIn) {
 	nnaInfo.principalInfo = &PrincipalBasicInfo{}
-	nnaInfo.principalInfo.ExtractFromStreamNext(stream)
+	nnaInfo.principalInfo.ExtractFromStream(stream)
 	nnaInfo.unknown1 = stream.ReadByteNext()
 	nnaInfo.unknown2 = stream.ReadByteNext()
 }
@@ -168,12 +192,12 @@ type PersistentNotification struct {
 	unknown5 string
 }
 
-func (notification *PersistentNotification) ExtractFromStreamNext(stream *nex.Stream) {
+func (notification *PersistentNotification) ExtractFromStream(stream *nex.StreamIn) {
 	notification.unknown1 = stream.ReadU64LENext(1)[0]
 	notification.unknown2 = stream.ReadU32LENext(1)[0]
 	notification.unknown3 = stream.ReadU32LENext(1)[0]
 	notification.unknown4 = stream.ReadU32LENext(1)[0]
-	notification.unknown5 = stream.ReadNEXStringNext()
+	notification.unknown5 = stream.ReadStringNext()
 }
 
 type PrincipalBasicInfo struct {
@@ -183,11 +207,11 @@ type PrincipalBasicInfo struct {
 	unknown uint8
 }
 
-func (principalInfo *PrincipalBasicInfo) ExtractFromStreamNext(stream *nex.Stream) {
+func (principalInfo *PrincipalBasicInfo) ExtractFromStream(stream *nex.StreamIn) {
 	principalInfo.pid = stream.ReadU32LENext(1)[0]
-	principalInfo.nnid = stream.ReadNEXStringNext()
+	principalInfo.nnid = stream.ReadStringNext()
 	principalInfo.mii = &MiiV2{}
-	principalInfo.mii.ExtractFromStreamNext(stream)
+	principalInfo.mii.ExtractFromStream(stream)
 	principalInfo.unknown = stream.ReadByteNext()
 }
 
@@ -197,7 +221,7 @@ type PrincipalPreference struct {
 	unknown3 bool
 }
 
-func (preference *PrincipalPreference) ExtractFromStreamNext(stream *nex.Stream) {
+func (preference *PrincipalPreference) ExtractFromStream(stream *nex.StreamIn) {
 	preference.unknown1 = (stream.ReadByteNext() == 1)
 	preference.unknown2 = (stream.ReadByteNext() == 1)
 	preference.unknown3 = (stream.ReadByteNext() == 1)
@@ -206,30 +230,6 @@ func (preference *PrincipalPreference) ExtractFromStreamNext(stream *nex.Stream)
 type PrincipalRequestBlockSetting struct {
 	unknown1 uint32
 	unknown2 bool
-}
-
-type FriendsProtocol struct {
-	server                              *nex.Server
-	UpdateAndGetAllInformationHandler   func(client *nex.Client, callID uint32, nnaInfo *NNAInfo, presence *NintendoPresenceV2, birthday *nex.DateTime)
-	AddFriendHandler                    func(client *nex.Client, callID uint32, pid uint32)
-	AddFriendByNameHandler              func(client *nex.Client, callID uint32, username string)
-	RemoveFriendHandler                 func(client *nex.Client, callID uint32, pid uint32)
-	AddFriendRequestHandler             func(client *nex.Client, callID uint32, unknown1 uint32, unknown2 uint8, unknown3 string, unknown4 uint8, unknown5 string, gameKey *GameKey, unknown6 *nex.DateTime)
-	CancelFriendRequestHandler          func(client *nex.Client, callID uint32, id uint64)
-	AcceptFriendRequestHandler          func(client *nex.Client, callID uint32, id uint64)
-	DeleteFriendRequestHandler          func(client *nex.Client, callID uint32, id uint64)
-	DenyFriendRequestHandler            func(client *nex.Client, callID uint32, id uint64)
-	MarkFriendRequestsAsReceivedHandler func(client *nex.Client, callID uint32, ids []uint64)
-	AddBlackListHandler                 func(client *nex.Client, callID uint32, blacklistedPrincipal *BlacklistedPrincipal)
-	RemoveBlackListHandler              func(client *nex.Client, callID uint32, pid uint32)
-	UpdatePresenceHandler               func(client *nex.Client, callID uint32, presence *NintendoPresenceV2)
-	UpdateMiiHandler                    func(client *nex.Client, callID uint32, mii *MiiV2)
-	UpdateCommentHandler                func(client *nex.Client, callID uint32, comment *Comment)
-	UpdatePreferenceHandler             func(client *nex.Client, callID uint32, preference *PrincipalPreference)
-	GetBasicInfoHandler                 func(client *nex.Client, callID uint32, pids []uint32)
-	DeleteFriendFlagsHandler            func(client *nex.Client, callID uint32, notifications []*PersistentNotification)
-	CheckSettingStatusHandler           func(client *nex.Client, callID uint32)
-	GetRequestBlockSettingsHandler      func(client *nex.Client, callID uint32, unknowns []uint32)
 }
 
 func (friendsProtocol *FriendsProtocol) Setup() {
@@ -408,14 +408,14 @@ func (friendsProtocol *FriendsProtocol) handleUpdateAndGetAllInformation(packet 
 	callID := request.GetCallID()
 	parameters := request.GetParameters()
 
-	parametersStream := nex.NewStream(parameters)
+	parametersStream := nex.NewStreamIn(parameters, friendsProtocol.server)
 
 	nnaInfo := &NNAInfo{}
 	presence := &NintendoPresenceV2{}
 	dateTime := nex.NewDateTime(0)
 
-	nnaInfo.ExtractFromStreamNext(parametersStream)
-	presence.ExtractFromStreamNext(parametersStream)
+	nnaInfo.ExtractFromStream(parametersStream)
+	presence.ExtractFromStream(parametersStream)
 
 	go friendsProtocol.UpdateAndGetAllInformationHandler(client, callID, nnaInfo, presence, dateTime)
 }
@@ -433,7 +433,7 @@ func (friendsProtocol *FriendsProtocol) handleAddFriend(packet nex.PacketInterfa
 	callID := request.GetCallID()
 	parameters := request.GetParameters()
 
-	parametersStream := nex.NewStream(parameters)
+	parametersStream := nex.NewStreamIn(parameters, friendsProtocol.server)
 
 	pid := parametersStream.ReadU32LENext(1)[0]
 
@@ -453,9 +453,9 @@ func (friendsProtocol *FriendsProtocol) handleAddFriendByName(packet nex.PacketI
 	callID := request.GetCallID()
 	parameters := request.GetParameters()
 
-	parametersStream := nex.NewStream(parameters)
+	parametersStream := nex.NewStreamIn(parameters, friendsProtocol.server)
 
-	username := parametersStream.ReadNEXStringNext()
+	username := parametersStream.ReadStringNext()
 
 	go friendsProtocol.AddFriendByNameHandler(client, callID, username)
 }
@@ -473,7 +473,7 @@ func (friendsProtocol *FriendsProtocol) handleRemoveFriend(packet nex.PacketInte
 	callID := request.GetCallID()
 	parameters := request.GetParameters()
 
-	parametersStream := nex.NewStream(parameters)
+	parametersStream := nex.NewStreamIn(parameters, friendsProtocol.server)
 
 	pid := parametersStream.ReadU32LENext(1)[0]
 
@@ -493,15 +493,15 @@ func (friendsProtocol *FriendsProtocol) handleAddFriendRequest(packet nex.Packet
 	callID := request.GetCallID()
 	parameters := request.GetParameters()
 
-	parametersStream := nex.NewStream(parameters)
+	parametersStream := nex.NewStreamIn(parameters, friendsProtocol.server)
 
 	unknown1 := parametersStream.ReadU32LENext(1)[0]
 	unknown2 := parametersStream.ReadByteNext()
-	unknown3 := parametersStream.ReadNEXStringNext()
+	unknown3 := parametersStream.ReadStringNext()
 	unknown4 := parametersStream.ReadByteNext()
-	unknown5 := parametersStream.ReadNEXStringNext()
+	unknown5 := parametersStream.ReadStringNext()
 	gameKey := &GameKey{}
-	gameKey.ExtractFromStreamNext(parametersStream)
+	gameKey.ExtractFromStream(parametersStream)
 	unknown6 := nex.NewDateTime(parametersStream.ReadU64LENext(1)[0])
 
 	go friendsProtocol.AddFriendRequestHandler(client, callID, unknown1, unknown2, unknown3, unknown4, unknown5, gameKey, unknown6)
@@ -520,7 +520,7 @@ func (friendsProtocol *FriendsProtocol) handleCancelFriendRequest(packet nex.Pac
 	callID := request.GetCallID()
 	parameters := request.GetParameters()
 
-	parametersStream := nex.NewStream(parameters)
+	parametersStream := nex.NewStreamIn(parameters, friendsProtocol.server)
 
 	id := parametersStream.ReadU64LENext(1)[0]
 
@@ -540,7 +540,7 @@ func (friendsProtocol *FriendsProtocol) handleAcceptFriendRequest(packet nex.Pac
 	callID := request.GetCallID()
 	parameters := request.GetParameters()
 
-	parametersStream := nex.NewStream(parameters)
+	parametersStream := nex.NewStreamIn(parameters, friendsProtocol.server)
 
 	id := parametersStream.ReadU64LENext(1)[0]
 
@@ -560,7 +560,7 @@ func (friendsProtocol *FriendsProtocol) handleDeleteFriendRequest(packet nex.Pac
 	callID := request.GetCallID()
 	parameters := request.GetParameters()
 
-	parametersStream := nex.NewStream(parameters)
+	parametersStream := nex.NewStreamIn(parameters, friendsProtocol.server)
 
 	id := parametersStream.ReadU64LENext(1)[0]
 
@@ -580,7 +580,7 @@ func (friendsProtocol *FriendsProtocol) handleDenyFriendRequest(packet nex.Packe
 	callID := request.GetCallID()
 	parameters := request.GetParameters()
 
-	parametersStream := nex.NewStream(parameters)
+	parametersStream := nex.NewStreamIn(parameters, friendsProtocol.server)
 
 	id := parametersStream.ReadU64LENext(1)[0]
 
@@ -600,7 +600,7 @@ func (friendsProtocol *FriendsProtocol) handleMarkFriendRequestsAsReceived(packe
 	callID := request.GetCallID()
 	parameters := request.GetParameters()
 
-	parametersStream := nex.NewStream(parameters)
+	parametersStream := nex.NewStreamIn(parameters, friendsProtocol.server)
 
 	idCount := parametersStream.ReadU32LENext(1)[0]
 	ids := make([]uint64, 0)
@@ -626,10 +626,10 @@ func (friendsProtocol *FriendsProtocol) handleAddBlackList(packet nex.PacketInte
 	callID := request.GetCallID()
 	parameters := request.GetParameters()
 
-	parametersStream := nex.NewStream(parameters)
+	parametersStream := nex.NewStreamIn(parameters, friendsProtocol.server)
 
 	blacklistedPrincipal := &BlacklistedPrincipal{}
-	blacklistedPrincipal.ExtractFromStreamNext(parametersStream)
+	blacklistedPrincipal.ExtractFromStream(parametersStream)
 
 	go friendsProtocol.AddBlackListHandler(client, callID, blacklistedPrincipal)
 }
@@ -647,7 +647,7 @@ func (friendsProtocol *FriendsProtocol) handleRemoveBlackList(packet nex.PacketI
 	callID := request.GetCallID()
 	parameters := request.GetParameters()
 
-	parametersStream := nex.NewStream(parameters)
+	parametersStream := nex.NewStreamIn(parameters, friendsProtocol.server)
 
 	pid := parametersStream.ReadU32LENext(1)[0]
 
@@ -667,10 +667,10 @@ func (friendsProtocol *FriendsProtocol) handleUpdatePresence(packet nex.PacketIn
 	callID := request.GetCallID()
 	parameters := request.GetParameters()
 
-	parametersStream := nex.NewStream(parameters)
+	parametersStream := nex.NewStreamIn(parameters, friendsProtocol.server)
 
 	presence := &NintendoPresenceV2{}
-	presence.ExtractFromStreamNext(parametersStream)
+	presence.ExtractFromStream(parametersStream)
 
 	go friendsProtocol.UpdatePresenceHandler(client, callID, presence)
 }
@@ -688,10 +688,10 @@ func (friendsProtocol *FriendsProtocol) handleUpdateMii(packet nex.PacketInterfa
 	callID := request.GetCallID()
 	parameters := request.GetParameters()
 
-	parametersStream := nex.NewStream(parameters)
+	parametersStream := nex.NewStreamIn(parameters, friendsProtocol.server)
 
 	mii := &MiiV2{}
-	mii.ExtractFromStreamNext(parametersStream)
+	mii.ExtractFromStream(parametersStream)
 
 	go friendsProtocol.UpdateMiiHandler(client, callID, mii)
 }
@@ -709,10 +709,10 @@ func (friendsProtocol *FriendsProtocol) handleUpdateComment(packet nex.PacketInt
 	callID := request.GetCallID()
 	parameters := request.GetParameters()
 
-	parametersStream := nex.NewStream(parameters)
+	parametersStream := nex.NewStreamIn(parameters, friendsProtocol.server)
 
 	comment := &Comment{}
-	comment.ExtractFromStreamNext(parametersStream)
+	comment.ExtractFromStream(parametersStream)
 
 	go friendsProtocol.UpdateCommentHandler(client, callID, comment)
 }
@@ -730,10 +730,10 @@ func (friendsProtocol *FriendsProtocol) handleUpdatePreference(packet nex.Packet
 	callID := request.GetCallID()
 	parameters := request.GetParameters()
 
-	parametersStream := nex.NewStream(parameters)
+	parametersStream := nex.NewStreamIn(parameters, friendsProtocol.server)
 
 	preference := &PrincipalPreference{}
-	preference.ExtractFromStreamNext(parametersStream)
+	preference.ExtractFromStream(parametersStream)
 
 	go friendsProtocol.UpdatePreferenceHandler(client, callID, preference)
 }
@@ -751,7 +751,7 @@ func (friendsProtocol *FriendsProtocol) handleGetBasicInfo(packet nex.PacketInte
 	callID := request.GetCallID()
 	parameters := request.GetParameters()
 
-	parametersStream := nex.NewStream(parameters)
+	parametersStream := nex.NewStreamIn(parameters, friendsProtocol.server)
 
 	pidCount := parametersStream.ReadU32LENext(1)[0]
 	pids := make([]uint32, 0)
@@ -777,14 +777,14 @@ func (friendsProtocol *FriendsProtocol) handleDeleteFriendFlags(packet nex.Packe
 	callID := request.GetCallID()
 	parameters := request.GetParameters()
 
-	parametersStream := nex.NewStream(parameters)
+	parametersStream := nex.NewStreamIn(parameters, friendsProtocol.server)
 
 	notificationCount := parametersStream.ReadU32LENext(1)[0]
 	notifications := make([]*PersistentNotification, 0)
 
 	for i := 0; i < int(notificationCount); i++ {
 		notification := &PersistentNotification{}
-		notification.ExtractFromStreamNext(parametersStream)
+		notification.ExtractFromStream(parametersStream)
 		notifications = append(notifications, notification)
 	}
 
@@ -819,7 +819,7 @@ func (friendsProtocol *FriendsProtocol) handleGetRequestBlockSettings(packet nex
 	callID := request.GetCallID()
 	parameters := request.GetParameters()
 
-	parametersStream := nex.NewStream(parameters)
+	parametersStream := nex.NewStreamIn(parameters, friendsProtocol.server)
 
 	unknownCount := parametersStream.ReadU32LENext(1)[0]
 	unknowns := make([]uint32, 0)

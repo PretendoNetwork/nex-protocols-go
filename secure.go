@@ -136,13 +136,13 @@ func (secureProtocol *SecureProtocol) handleRegister(packet nex.PacketInterface)
 	callID := request.GetCallID()
 	parameters := request.GetParameters()
 
-	parametersStream := nex.NewStream(parameters)
+	parametersStream := nex.NewStreamIn(parameters, secureProtocol.server)
 
 	stationURLCount := parametersStream.ReadU32LENext(1)[0]
 	stationUrls := make([]*nex.StationURL, 0)
 
 	for i := 0; i < int(stationURLCount); i++ {
-		station := nex.NewStationURL(parametersStream.ReadNEXStringNext())
+		station := nex.NewStationURL(parametersStream.ReadStringNext())
 		stationUrls = append(stationUrls, station)
 	}
 
@@ -162,7 +162,7 @@ func (secureProtocol *SecureProtocol) handleRequestConnectionData(packet nex.Pac
 	callID := request.GetCallID()
 	parameters := request.GetParameters()
 
-	parametersStream := nex.NewStream(parameters)
+	parametersStream := nex.NewStreamIn(parameters, secureProtocol.server)
 
 	stationCID := parametersStream.ReadU32LENext(1)[0]
 	stationPID := parametersStream.ReadU32LENext(1)[0]
@@ -183,7 +183,7 @@ func (secureProtocol *SecureProtocol) handleRequestURLs(packet nex.PacketInterfa
 	callID := request.GetCallID()
 	parameters := request.GetParameters()
 
-	parametersStream := nex.NewStream(parameters)
+	parametersStream := nex.NewStreamIn(parameters, secureProtocol.server)
 
 	stationCID := parametersStream.ReadU32LENext(1)[0]
 	stationPID := parametersStream.ReadU32LENext(1)[0]
@@ -205,17 +205,17 @@ func (secureProtocol *SecureProtocol) handleRegisterEx(packet nex.PacketInterfac
 	callID := request.GetCallID()
 	parameters := request.GetParameters()
 
-	parametersStream := nex.NewStream(parameters)
+	parametersStream := nex.NewStreamIn(parameters, secureProtocol.server)
 
 	stationURLCount := parametersStream.ReadU32LENext(1)[0]
 	stationUrls := make([]*nex.StationURL, 0)
 
 	for i := 0; i < int(stationURLCount); i++ {
-		station := nex.NewStationURL(parametersStream.ReadNEXStringNext())
+		station := nex.NewStationURL(parametersStream.ReadStringNext())
 		stationUrls = append(stationUrls, station)
 	}
 
-	dataHolderType := parametersStream.ReadNEXStringNext()
+	dataHolderType := parametersStream.ReadStringNext()
 
 	if dataHolderType != "NintendoLoginData" {
 		// Error log?
@@ -223,10 +223,10 @@ func (secureProtocol *SecureProtocol) handleRegisterEx(packet nex.PacketInterfac
 	}
 
 	_ = parametersStream.ReadU32LENext(1)[0] // Length including next buffer length field
-	dataHolderInner := parametersStream.ReadNEXBufferNext()
-	dataHolderStream := nex.NewStream(dataHolderInner)
+	dataHolderInner := parametersStream.ReadBufferNext()
+	dataHolderStream := nex.NewStreamIn(dataHolderInner, secureProtocol.server)
 
-	loginData := NintendoLoginData{token: dataHolderStream.ReadNEXStringNext()}
+	loginData := NintendoLoginData{token: dataHolderStream.ReadStringNext()}
 
 	go secureProtocol.RegisterExHandler(client, callID, stationUrls, loginData)
 }
@@ -259,13 +259,13 @@ func (secureProtocol *SecureProtocol) handleUpdateURLs(packet nex.PacketInterfac
 	callID := request.GetCallID()
 	parameters := request.GetParameters()
 
-	parametersStream := nex.NewStream(parameters)
+	parametersStream := nex.NewStreamIn(parameters, secureProtocol.server)
 
 	stationURLCount := parametersStream.ReadU32LENext(1)[0]
 	stationUrls := make([]*nex.StationURL, 0)
 
 	for i := 0; i < int(stationURLCount); i++ {
-		station := nex.NewStationURL(parametersStream.ReadNEXStringNext())
+		station := nex.NewStationURL(parametersStream.ReadStringNext())
 		stationUrls = append(stationUrls, station)
 	}
 
@@ -285,10 +285,10 @@ func (secureProtocol *SecureProtocol) handleReplaceURL(packet nex.PacketInterfac
 	callID := request.GetCallID()
 	parameters := request.GetParameters()
 
-	parametersStream := nex.NewStream(parameters)
+	parametersStream := nex.NewStreamIn(parameters, secureProtocol.server)
 
-	oldStation := nex.NewStationURL(parametersStream.ReadNEXStringNext())
-	newStation := nex.NewStationURL(parametersStream.ReadNEXStringNext())
+	oldStation := nex.NewStationURL(parametersStream.ReadStringNext())
+	newStation := nex.NewStationURL(parametersStream.ReadStringNext())
 
 	go secureProtocol.ReplaceURLHandler(client, callID, oldStation, newStation)
 }
@@ -306,10 +306,10 @@ func (secureProtocol *SecureProtocol) handleSendReport(packet nex.PacketInterfac
 	callID := request.GetCallID()
 	parameters := request.GetParameters()
 
-	parametersStream := nex.NewStream(parameters)
+	parametersStream := nex.NewStreamIn(parameters, secureProtocol.server)
 
 	reportID := parametersStream.ReadU32LENext(1)[0]
-	report := parametersStream.ReadNEXQBufferNext()
+	report := parametersStream.ReadQBufferNext()
 
 	go secureProtocol.SendReportHandler(client, callID, reportID, report)
 }

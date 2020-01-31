@@ -3,7 +3,7 @@ package nexproto
 import (
 	"fmt"
 
-	nex "github.com/PretendoNetwork/nex-go"
+	nex "../nex-go"
 )
 
 const (
@@ -43,9 +43,9 @@ func (dataStoreSMMProtocol *DataStoreSMMProtocol) respondNotImplemented(packet n
 
 	var responsePacket nex.PacketInterface
 	if packet.GetVersion() == 1 {
-		responsePacket = nex.NewPacketV0(client, nil)
+		responsePacket, _ = nex.NewPacketV0(client, nil)
 	} else {
-		responsePacket = nex.NewPacketV1(client, nil)
+		responsePacket, _ = nex.NewPacketV1(client, nil)
 	}
 
 	responsePacket.SetVersion(packet.GetVersion())

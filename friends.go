@@ -2,8 +2,8 @@ package nexproto
 
 import (
 	"fmt"
-
-	nex "github.com/PretendoNetwork/nex-go"
+	"errors"
+	nex "../nex-go"
 )
 
 const (
@@ -33,26 +33,26 @@ const (
 
 type FriendsProtocol struct {
 	server                              *nex.Server
-	UpdateAndGetAllInformationHandler   func(client *nex.Client, callID uint32, nnaInfo *NNAInfo, presence *NintendoPresenceV2, birthday *nex.DateTime)
-	AddFriendHandler                    func(client *nex.Client, callID uint32, pid uint32)
-	AddFriendByNameHandler              func(client *nex.Client, callID uint32, username string)
-	RemoveFriendHandler                 func(client *nex.Client, callID uint32, pid uint32)
-	AddFriendRequestHandler             func(client *nex.Client, callID uint32, unknown1 uint32, unknown2 uint8, unknown3 string, unknown4 uint8, unknown5 string, gameKey *GameKey, unknown6 *nex.DateTime)
-	CancelFriendRequestHandler          func(client *nex.Client, callID uint32, id uint64)
-	AcceptFriendRequestHandler          func(client *nex.Client, callID uint32, id uint64)
-	DeleteFriendRequestHandler          func(client *nex.Client, callID uint32, id uint64)
-	DenyFriendRequestHandler            func(client *nex.Client, callID uint32, id uint64)
-	MarkFriendRequestsAsReceivedHandler func(client *nex.Client, callID uint32, ids []uint64)
-	AddBlackListHandler                 func(client *nex.Client, callID uint32, blacklistedPrincipal *BlacklistedPrincipal)
-	RemoveBlackListHandler              func(client *nex.Client, callID uint32, pid uint32)
-	UpdatePresenceHandler               func(client *nex.Client, callID uint32, presence *NintendoPresenceV2)
-	UpdateMiiHandler                    func(client *nex.Client, callID uint32, mii *MiiV2)
-	UpdateCommentHandler                func(client *nex.Client, callID uint32, comment *Comment)
-	UpdatePreferenceHandler             func(client *nex.Client, callID uint32, preference *PrincipalPreference)
-	GetBasicInfoHandler                 func(client *nex.Client, callID uint32, pids []uint32)
-	DeleteFriendFlagsHandler            func(client *nex.Client, callID uint32, notifications []*PersistentNotification)
-	CheckSettingStatusHandler           func(client *nex.Client, callID uint32)
-	GetRequestBlockSettingsHandler      func(client *nex.Client, callID uint32, unknowns []uint32)
+	UpdateAndGetAllInformationHandler   func(err error, client *nex.Client, callID uint32, nnaInfo *NNAInfo, presence *NintendoPresenceV2, birthday *nex.DateTime)
+	AddFriendHandler                    func(err error, client *nex.Client, callID uint32, pid uint32)
+	AddFriendByNameHandler              func(err error, client *nex.Client, callID uint32, username string)
+	RemoveFriendHandler                 func(err error, client *nex.Client, callID uint32, pid uint32)
+	AddFriendRequestHandler             func(err error, client *nex.Client, callID uint32, unknown1 uint32, unknown2 uint8, unknown3 string, unknown4 uint8, unknown5 string, gameKey *GameKey, unknown6 *nex.DateTime)
+	CancelFriendRequestHandler          func(err error, client *nex.Client, callID uint32, id uint64)
+	AcceptFriendRequestHandler          func(err error, client *nex.Client, callID uint32, id uint64)
+	DeleteFriendRequestHandler          func(err error, client *nex.Client, callID uint32, id uint64)
+	DenyFriendRequestHandler            func(err error, client *nex.Client, callID uint32, id uint64)
+	MarkFriendRequestsAsReceivedHandler func(err error, client *nex.Client, callID uint32, ids []uint64)
+	AddBlackListHandler                 func(err error, client *nex.Client, callID uint32, blacklistedPrincipal *BlacklistedPrincipal)
+	RemoveBlackListHandler              func(err error, client *nex.Client, callID uint32, pid uint32)
+	UpdatePresenceHandler               func(err error, client *nex.Client, callID uint32, presence *NintendoPresenceV2)
+	UpdateMiiHandler                    func(err error, client *nex.Client, callID uint32, mii *MiiV2)
+	UpdateCommentHandler                func(err error, client *nex.Client, callID uint32, comment *Comment)
+	UpdatePreferenceHandler             func(err error, client *nex.Client, callID uint32, preference *PrincipalPreference)
+	GetBasicInfoHandler                 func(err error, client *nex.Client, callID uint32, pids []uint32)
+	DeleteFriendFlagsHandler            func(err error, client *nex.Client, callID uint32, notifications []*PersistentNotification)
+	CheckSettingStatusHandler           func(err error, client *nex.Client, callID uint32)
+	GetRequestBlockSettingsHandler      func(err error, client *nex.Client, callID uint32, unknowns []uint32)
 }
 
 type BlacklistedPrincipal struct {
@@ -61,12 +61,30 @@ type BlacklistedPrincipal struct {
 	blackListedSince *nex.DateTime
 }
 
-func (blacklistedPrincipal *BlacklistedPrincipal) ExtractFromStream(stream *nex.StreamIn) {
-	blacklistedPrincipal.principalInfo = &PrincipalBasicInfo{}
-	blacklistedPrincipal.principalInfo.ExtractFromStream(stream)
-	blacklistedPrincipal.gameKey = &GameKey{}
-	blacklistedPrincipal.gameKey.ExtractFromStream(stream)
+func (blacklistedPrincipal *BlacklistedPrincipal) ExtractFromStream(stream *nex.StreamIn) error {
+	principalInfo := &PrincipalBasicInfo{}
+	err := principalInfo.ExtractFromStream(stream)
+
+	if err != nil {
+		return err
+	}
+
+	gameKey := &GameKey{}
+	err = principalInfo.ExtractFromStream(stream)
+
+	if err != nil {
+		return err
+	}
+
+	if len(stream.Bytes()[stream.ByteOffset():]) < 8 {
+		return errors.New("[DataStorePersistenceTarget::ExtractFromStream] Data size too small")
+	}
+
+	blacklistedPrincipal.principalInfo = principalInfo
+	blacklistedPrincipal.gameKey = gameKey
 	blacklistedPrincipal.blackListedSince = nex.NewDateTime(stream.ReadU64LENext(1)[0])
+
+	return nil
 }
 
 type Comment struct {
@@ -75,10 +93,26 @@ type Comment struct {
 	lastChanged *nex.DateTime
 }
 
-func (comment *Comment) ExtractFromStream(stream *nex.StreamIn) {
-	comment.unknown = stream.ReadByteNext()
-	comment.contents = stream.ReadStringNext()
-	comment.lastChanged = nex.NewDateTime(stream.ReadU64LENext(1)[0])
+func (comment *Comment) ExtractFromStream(stream *nex.StreamIn) error {
+	if len(stream.Bytes()[stream.ByteOffset():]) < 9 { // unknown byte + datetime uint64
+		return errors.New("[Comment::ExtractFromStream] Data size too small")
+	}
+
+	unknown := stream.ReadByteNext()
+
+	contents, err := stream.ReadStringNext()
+
+	if err != nil {
+		return err
+	}
+
+	lastChanged := nex.NewDateTime(stream.ReadU64LENext(1)[0])
+
+	comment.unknown = unknown
+	comment.contents = contents
+	comment.lastChanged = lastChanged
+
+	return nil
 }
 
 type FriendInfo struct {
@@ -113,9 +147,15 @@ type GameKey struct {
 	titleVersion uint16
 }
 
-func (gameKey *GameKey) ExtractFromStream(stream *nex.StreamIn) {
+func (gameKey *GameKey) ExtractFromStream(stream *nex.StreamIn) error {
+	if len(stream.Bytes()[stream.ByteOffset():]) < 10 {
+		return errors.New("[GameKey::ExtractFromStream] Data size too small")
+	}
+
 	gameKey.titleID = stream.ReadU64LENext(1)[0]
 	gameKey.titleVersion = stream.ReadU16LENext(1)[0]
+
+	return nil
 }
 
 type MiiV2 struct {
@@ -126,12 +166,34 @@ type MiiV2 struct {
 	datetime *nex.DateTime
 }
 
-func (mii *MiiV2) ExtractFromStream(stream *nex.StreamIn) {
-	mii.name = stream.ReadStringNext()
-	mii.unknown1 = stream.ReadByteNext()
-	mii.unknown2 = stream.ReadByteNext()
-	mii.data = stream.ReadBufferNext()
-	mii.datetime = nex.NewDateTime(stream.ReadU64LENext(1)[0])
+func (mii *MiiV2) ExtractFromStream(stream *nex.StreamIn) error {
+	if len(stream.Bytes()[stream.ByteOffset():]) < 10 { // 2 unknown bytes + datetime uint64
+		return errors.New("[MiiV2::ExtractFromStream] Data size too small")
+	}
+
+	name, err := stream.ReadStringNext()
+
+	if err != nil {
+		return err
+	}
+
+	unknown1 := stream.ReadByteNext()
+	unknown2 := stream.ReadByteNext()
+	data, err := stream.ReadBufferNext()
+
+	if err != nil {
+		return err
+	}
+
+	datetime := nex.NewDateTime(stream.ReadU64LENext(1)[0])
+
+	mii.name = name
+	mii.unknown1 = unknown1
+	mii.unknown2 = unknown2
+	mii.data = data
+	mii.datetime = datetime
+
+	return nil
 }
 
 type NintendoPresenceV2 struct {
@@ -152,23 +214,74 @@ type NintendoPresenceV2 struct {
 	unknown7        uint8
 }
 
-func (presence *NintendoPresenceV2) ExtractFromStream(stream *nex.StreamIn) {
-	presence.changedFlags = stream.ReadU32LENext(1)[0]
-	presence.isOnline = (stream.ReadByteNext() == 1)
-	presence.gameKey = &GameKey{}
-	presence.gameKey.ExtractFromStream(stream)
-	presence.unknown1 = stream.ReadByteNext()
-	presence.message = stream.ReadStringNext()
-	presence.unknown2 = stream.ReadU32LENext(1)[0]
-	presence.unknown3 = stream.ReadByteNext()
-	presence.gameServerID = stream.ReadU32LENext(1)[0]
-	presence.unknown4 = stream.ReadU32LENext(1)[0]
-	presence.pid = stream.ReadU32LENext(1)[0]
-	presence.gatheringID = stream.ReadU32LENext(1)[0]
-	presence.applicationData = stream.ReadBufferNext()
-	presence.unknown5 = stream.ReadByteNext()
-	presence.unknown6 = stream.ReadByteNext()
-	presence.unknown7 = stream.ReadByteNext()
+func (presence *NintendoPresenceV2) ExtractFromStream(stream *nex.StreamIn) error {
+	if len(stream.Bytes()[stream.ByteOffset():]) < 40 {
+		// length check for the following fixed-size data
+		// changedFlags + isOnline + gameKey + gameKey + unknown1 + unknown2 + unknown3 + gameServerID + unknown4 + pid + gatheringID + unknown5 + unknown6 + unknown7
+		return errors.New("[NintendoPresenceV2::ExtractFromStream] Data size too small")
+	}
+
+	changedFlags := stream.ReadU32LENext(1)[0]
+
+	isOnline := (stream.ReadByteNext() == 1)
+
+	gameKey := &GameKey{}
+	err := gameKey.ExtractFromStream(stream)
+
+	if err != nil {
+		return err
+	}
+
+	unknown1 := stream.ReadByteNext()
+
+	message, err := stream.ReadStringNext()
+
+	if err != nil {
+		return err
+	}
+
+	unknown2 := stream.ReadU32LENext(1)[0]
+
+	unknown3 := stream.ReadByteNext()
+
+	gameServerID := stream.ReadU32LENext(1)[0]
+
+	unknown4 := stream.ReadU32LENext(1)[0]
+
+	pid := stream.ReadU32LENext(1)[0]
+
+	gatheringID := stream.ReadU32LENext(1)[0]
+
+	applicationData, err := stream.ReadBufferNext()
+
+	if err != nil {
+		return err
+	}
+
+	unknown5 := stream.ReadByteNext()
+
+	unknown6 := stream.ReadByteNext()
+
+	unknown7 := stream.ReadByteNext()
+
+
+	presence.changedFlags = changedFlags
+	presence.isOnline = isOnline
+	presence.gameKey = gameKey
+	presence.unknown1 = unknown1
+	presence.message = message
+	presence.unknown2 = unknown2
+	presence.unknown3 = unknown3
+	presence.gameServerID = gameServerID
+	presence.unknown4 = unknown4
+	presence.pid = pid
+	presence.gatheringID = gatheringID
+	presence.applicationData = applicationData
+	presence.unknown5 = unknown5
+	presence.unknown6 = unknown6
+	presence.unknown7 = unknown7
+
+	return nil
 }
 
 type NNAInfo struct {
@@ -177,11 +290,28 @@ type NNAInfo struct {
 	unknown2      uint8
 }
 
-func (nnaInfo *NNAInfo) ExtractFromStream(stream *nex.StreamIn) {
-	nnaInfo.principalInfo = &PrincipalBasicInfo{}
-	nnaInfo.principalInfo.ExtractFromStream(stream)
-	nnaInfo.unknown1 = stream.ReadByteNext()
-	nnaInfo.unknown2 = stream.ReadByteNext()
+func (nnaInfo *NNAInfo) ExtractFromStream(stream *nex.StreamIn) error {
+	if len(stream.Bytes()[stream.ByteOffset():]) < 2 {
+		// length check for the following fixed-size data
+		// unknown1 + unknown2
+		return errors.New("[NNAInfo::ExtractFromStream] Data size too small")
+	}
+
+	principalInfo := &PrincipalBasicInfo{}
+	err := principalInfo.ExtractFromStream(stream)
+
+	if err != nil {
+		return err
+	}
+
+	unknown1 := stream.ReadByteNext()
+	unknown2 := stream.ReadByteNext()
+
+	nnaInfo.principalInfo = principalInfo
+	nnaInfo.unknown1 = unknown1
+	nnaInfo.unknown2 = unknown2
+
+	return nil
 }
 
 type PersistentNotification struct {
@@ -192,12 +322,30 @@ type PersistentNotification struct {
 	unknown5 string
 }
 
-func (notification *PersistentNotification) ExtractFromStream(stream *nex.StreamIn) {
-	notification.unknown1 = stream.ReadU64LENext(1)[0]
-	notification.unknown2 = stream.ReadU32LENext(1)[0]
-	notification.unknown3 = stream.ReadU32LENext(1)[0]
-	notification.unknown4 = stream.ReadU32LENext(1)[0]
-	notification.unknown5 = stream.ReadStringNext()
+func (notification *PersistentNotification) ExtractFromStream(stream *nex.StreamIn) error {
+	if len(stream.Bytes()[stream.ByteOffset():]) < 20 {
+		// length check for the following fixed-size data
+		// unknown1 + unknown2 + unknown3 + unknown4
+		return errors.New("[PersistentNotification::ExtractFromStream] Data size too small")
+	}
+
+	unknown1 := stream.ReadU64LENext(1)[0]
+	unknown2 := stream.ReadU32LENext(1)[0]
+	unknown3 := stream.ReadU32LENext(1)[0]
+	unknown4 := stream.ReadU32LENext(1)[0]
+	unknown5, err := stream.ReadStringNext()
+
+	if err != nil {
+		return err
+	}
+
+	notification.unknown1 = unknown1
+	notification.unknown2 = unknown2
+	notification.unknown3 = unknown3
+	notification.unknown4 = unknown4
+	notification.unknown5 = unknown5
+
+	return nil
 }
 
 type PrincipalBasicInfo struct {
@@ -207,12 +355,39 @@ type PrincipalBasicInfo struct {
 	unknown uint8
 }
 
-func (principalInfo *PrincipalBasicInfo) ExtractFromStream(stream *nex.StreamIn) {
-	principalInfo.pid = stream.ReadU32LENext(1)[0]
-	principalInfo.nnid = stream.ReadStringNext()
-	principalInfo.mii = &MiiV2{}
-	principalInfo.mii.ExtractFromStream(stream)
-	principalInfo.unknown = stream.ReadByteNext()
+func (principalInfo *PrincipalBasicInfo) ExtractFromStream(stream *nex.StreamIn) error {
+
+	if len(stream.Bytes()[stream.ByteOffset():]) < 4 {
+		return errors.New("[PrincipalBasicInfo::ExtractFromStream] Data size too small")
+	}
+
+	pid := stream.ReadU32LENext(1)[0]
+
+	nnid, err := stream.ReadStringNext()
+
+	if err != nil {
+		return err
+	}
+
+	mii := &MiiV2{}
+	err = mii.ExtractFromStream(stream)
+
+	if err != nil {
+		return err
+	}
+
+	if len(stream.Bytes()[stream.ByteOffset():]) < 1 {
+		return errors.New("[PrincipalBasicInfo::ExtractFromStream] Data size too small")
+	}
+
+	unknown := stream.ReadByteNext()
+
+	principalInfo.pid = pid
+	principalInfo.nnid = nnid
+	principalInfo.mii = mii
+	principalInfo.unknown = unknown
+
+	return nil
 }
 
 type PrincipalPreference struct {
@@ -221,10 +396,18 @@ type PrincipalPreference struct {
 	unknown3 bool
 }
 
-func (preference *PrincipalPreference) ExtractFromStream(stream *nex.StreamIn) {
+func (preference *PrincipalPreference) ExtractFromStream(stream *nex.StreamIn) error {
+	if len(stream.Bytes()[stream.ByteOffset():]) < 1 {
+		// length check for the following fixed-size data
+		// unknown1 + unknown2 + unknown3
+		return errors.New("[PrincipalPreference::ExtractFromStream] Data size too small")
+	}
+
 	preference.unknown1 = (stream.ReadByteNext() == 1)
 	preference.unknown2 = (stream.ReadByteNext() == 1)
 	preference.unknown3 = (stream.ReadByteNext() == 1)
+
+	return nil
 }
 
 type PrincipalRequestBlockSetting struct {
@@ -298,9 +481,9 @@ func (friendsProtocol *FriendsProtocol) respondNotImplemented(packet nex.PacketI
 
 	var responsePacket nex.PacketInterface
 	if packet.GetVersion() == 1 {
-		responsePacket = nex.NewPacketV0(client, nil)
+		responsePacket, _ = nex.NewPacketV0(client, nil)
 	} else {
-		responsePacket = nex.NewPacketV1(client, nil)
+		responsePacket, _ = nex.NewPacketV1(client, nil)
 	}
 
 	responsePacket.SetVersion(packet.GetVersion())
@@ -315,83 +498,83 @@ func (friendsProtocol *FriendsProtocol) respondNotImplemented(packet nex.PacketI
 	friendsProtocol.server.Send(responsePacket)
 }
 
-func (friendsProtocol *FriendsProtocol) UpdateAndGetAllInformation(handler func(client *nex.Client, callID uint32, nnaInfo *NNAInfo, presence *NintendoPresenceV2, birthday *nex.DateTime)) {
+func (friendsProtocol *FriendsProtocol) UpdateAndGetAllInformation(handler func(err error, client *nex.Client, callID uint32, nnaInfo *NNAInfo, presence *NintendoPresenceV2, birthday *nex.DateTime)) {
 	friendsProtocol.UpdateAndGetAllInformationHandler = handler
 }
 
-func (friendsProtocol *FriendsProtocol) AddFriend(handler func(client *nex.Client, callID uint32, pid uint32)) {
+func (friendsProtocol *FriendsProtocol) AddFriend(handler func(err error, client *nex.Client, callID uint32, pid uint32)) {
 	friendsProtocol.AddFriendHandler = handler
 }
 
-func (friendsProtocol *FriendsProtocol) AddFriendByName(handler func(client *nex.Client, callID uint32, username string)) {
+func (friendsProtocol *FriendsProtocol) AddFriendByName(handler func(err error, client *nex.Client, callID uint32, username string)) {
 	friendsProtocol.AddFriendByNameHandler = handler
 }
 
-func (friendsProtocol *FriendsProtocol) RemoveFriend(handler func(client *nex.Client, callID uint32, pid uint32)) {
+func (friendsProtocol *FriendsProtocol) RemoveFriend(handler func(err error, client *nex.Client, callID uint32, pid uint32)) {
 	friendsProtocol.RemoveFriendHandler = handler
 }
 
-func (friendsProtocol *FriendsProtocol) AddFriendRequest(handler func(client *nex.Client, callID uint32, unknown1 uint32, unknown2 uint8, unknown3 string, unknown4 uint8, unknown5 string, gameKey *GameKey, unknown6 *nex.DateTime)) {
+func (friendsProtocol *FriendsProtocol) AddFriendRequest(handler func(err error, client *nex.Client, callID uint32, unknown1 uint32, unknown2 uint8, unknown3 string, unknown4 uint8, unknown5 string, gameKey *GameKey, unknown6 *nex.DateTime)) {
 	friendsProtocol.AddFriendRequestHandler = handler
 }
 
-func (friendsProtocol *FriendsProtocol) CancelFriendRequest(handler func(client *nex.Client, callID uint32, id uint64)) {
+func (friendsProtocol *FriendsProtocol) CancelFriendRequest(handler func(err error, client *nex.Client, callID uint32, id uint64)) {
 	friendsProtocol.CancelFriendRequestHandler = handler
 }
 
-func (friendsProtocol *FriendsProtocol) AcceptFriendRequest(handler func(client *nex.Client, callID uint32, id uint64)) {
+func (friendsProtocol *FriendsProtocol) AcceptFriendRequest(handler func(err error, client *nex.Client, callID uint32, id uint64)) {
 	friendsProtocol.AcceptFriendRequestHandler = handler
 }
 
-func (friendsProtocol *FriendsProtocol) DeleteFriendRequest(handler func(client *nex.Client, callID uint32, id uint64)) {
+func (friendsProtocol *FriendsProtocol) DeleteFriendRequest(handler func(err error, client *nex.Client, callID uint32, id uint64)) {
 	friendsProtocol.DeleteFriendRequestHandler = handler
 }
 
-func (friendsProtocol *FriendsProtocol) DenyFriendRequest(handler func(client *nex.Client, callID uint32, id uint64)) {
+func (friendsProtocol *FriendsProtocol) DenyFriendRequest(handler func(err error, client *nex.Client, callID uint32, id uint64)) {
 	friendsProtocol.DenyFriendRequestHandler = handler
 }
 
-func (friendsProtocol *FriendsProtocol) MarkFriendRequestsAsReceived(handler func(client *nex.Client, callID uint32, ids []uint64)) {
+func (friendsProtocol *FriendsProtocol) MarkFriendRequestsAsReceived(handler func(err error, client *nex.Client, callID uint32, ids []uint64)) {
 	friendsProtocol.MarkFriendRequestsAsReceivedHandler = handler
 }
 
-func (friendsProtocol *FriendsProtocol) AddBlackList(handler func(client *nex.Client, callID uint32, blacklistedPrincipal *BlacklistedPrincipal)) {
+func (friendsProtocol *FriendsProtocol) AddBlackList(handler func(err error, client *nex.Client, callID uint32, blacklistedPrincipal *BlacklistedPrincipal)) {
 	friendsProtocol.AddBlackListHandler = handler
 }
 
-func (friendsProtocol *FriendsProtocol) RemoveBlackList(handler func(client *nex.Client, callID uint32, pid uint32)) {
+func (friendsProtocol *FriendsProtocol) RemoveBlackList(handler func(err error, client *nex.Client, callID uint32, pid uint32)) {
 	friendsProtocol.RemoveBlackListHandler = handler
 }
 
-func (friendsProtocol *FriendsProtocol) UpdatePresence(handler func(client *nex.Client, callID uint32, presence *NintendoPresenceV2)) {
+func (friendsProtocol *FriendsProtocol) UpdatePresence(handler func(err error, client *nex.Client, callID uint32, presence *NintendoPresenceV2)) {
 	friendsProtocol.UpdatePresenceHandler = handler
 }
 
-func (friendsProtocol *FriendsProtocol) UpdateMii(handler func(client *nex.Client, callID uint32, mii *MiiV2)) {
+func (friendsProtocol *FriendsProtocol) UpdateMii(handler func(err error, client *nex.Client, callID uint32, mii *MiiV2)) {
 	friendsProtocol.UpdateMiiHandler = handler
 }
 
-func (friendsProtocol *FriendsProtocol) UpdateComment(handler func(client *nex.Client, callID uint32, comment *Comment)) {
+func (friendsProtocol *FriendsProtocol) UpdateComment(handler func(err error, client *nex.Client, callID uint32, comment *Comment)) {
 	friendsProtocol.UpdateCommentHandler = handler
 }
 
-func (friendsProtocol *FriendsProtocol) UpdatePreference(handler func(client *nex.Client, callID uint32, preference *PrincipalPreference)) {
+func (friendsProtocol *FriendsProtocol) UpdatePreference(handler func(err error, client *nex.Client, callID uint32, preference *PrincipalPreference)) {
 	friendsProtocol.UpdatePreferenceHandler = handler
 }
 
-func (friendsProtocol *FriendsProtocol) GetBasicInfo(handler func(client *nex.Client, callID uint32, pids []uint32)) {
+func (friendsProtocol *FriendsProtocol) GetBasicInfo(handler func(err error, client *nex.Client, callID uint32, pids []uint32)) {
 	friendsProtocol.GetBasicInfoHandler = handler
 }
 
-func (friendsProtocol *FriendsProtocol) DeleteFriendFlags(handler func(client *nex.Client, callID uint32, notifications []*PersistentNotification)) {
+func (friendsProtocol *FriendsProtocol) DeleteFriendFlags(handler func(err error, client *nex.Client, callID uint32, notifications []*PersistentNotification)) {
 	friendsProtocol.DeleteFriendFlagsHandler = handler
 }
 
-func (friendsProtocol *FriendsProtocol) CheckSettingStatus(handler func(client *nex.Client, callID uint32)) {
+func (friendsProtocol *FriendsProtocol) CheckSettingStatus(handler func(err error, client *nex.Client, callID uint32)) {
 	friendsProtocol.CheckSettingStatusHandler = handler
 }
 
-func (friendsProtocol *FriendsProtocol) GetRequestBlockSettings(handler func(client *nex.Client, callID uint32, unknowns []uint32)) {
+func (friendsProtocol *FriendsProtocol) GetRequestBlockSettings(handler func(err error, client *nex.Client, callID uint32, unknowns []uint32)) {
 	friendsProtocol.GetRequestBlockSettingsHandler = handler
 }
 
@@ -412,12 +595,25 @@ func (friendsProtocol *FriendsProtocol) handleUpdateAndGetAllInformation(packet 
 
 	nnaInfo := &NNAInfo{}
 	presence := &NintendoPresenceV2{}
-	dateTime := nex.NewDateTime(0)
 
-	nnaInfo.ExtractFromStream(parametersStream)
-	presence.ExtractFromStream(parametersStream)
+	err := nnaInfo.ExtractFromStream(parametersStream)
 
-	go friendsProtocol.UpdateAndGetAllInformationHandler(client, callID, nnaInfo, presence, dateTime)
+	if err != nil {
+		go friendsProtocol.UpdateAndGetAllInformationHandler(err, client, callID, nnaInfo, presence, nex.NewDateTime(0))
+		return
+	}
+
+	err = presence.ExtractFromStream(parametersStream)
+
+	if err != nil {
+		go friendsProtocol.UpdateAndGetAllInformationHandler(err, client, callID, nnaInfo, presence, nex.NewDateTime(0))
+		return
+	}
+
+
+	birthday := nex.NewDateTime(parametersStream.ReadU64LENext(1)[0])
+
+	go friendsProtocol.UpdateAndGetAllInformationHandler(nil, client, callID, nnaInfo, presence, birthday)
 }
 
 func (friendsProtocol *FriendsProtocol) handleAddFriend(packet nex.PacketInterface) {
@@ -435,9 +631,14 @@ func (friendsProtocol *FriendsProtocol) handleAddFriend(packet nex.PacketInterfa
 
 	parametersStream := nex.NewStreamIn(parameters, friendsProtocol.server)
 
+	if len(parametersStream.Bytes()[parametersStream.ByteOffset():]) < 4 {
+		go friendsProtocol.AddFriendHandler(errors.New("[FriendsProtocol::AddFriend] Data holder not long enough for PID"), client, callID, 0)
+		return
+	}
+
 	pid := parametersStream.ReadU32LENext(1)[0]
 
-	go friendsProtocol.AddFriendHandler(client, callID, pid)
+	go friendsProtocol.AddFriendHandler(nil, client, callID, pid)
 }
 
 func (friendsProtocol *FriendsProtocol) handleAddFriendByName(packet nex.PacketInterface) {
@@ -455,9 +656,14 @@ func (friendsProtocol *FriendsProtocol) handleAddFriendByName(packet nex.PacketI
 
 	parametersStream := nex.NewStreamIn(parameters, friendsProtocol.server)
 
-	username := parametersStream.ReadStringNext()
+	username, err := parametersStream.ReadStringNext()
 
-	go friendsProtocol.AddFriendByNameHandler(client, callID, username)
+	if err != nil {
+		go friendsProtocol.AddFriendByNameHandler(err, client, callID, "")
+		return
+	}
+
+	go friendsProtocol.AddFriendByNameHandler(nil, client, callID, username)
 }
 
 func (friendsProtocol *FriendsProtocol) handleRemoveFriend(packet nex.PacketInterface) {
@@ -475,9 +681,14 @@ func (friendsProtocol *FriendsProtocol) handleRemoveFriend(packet nex.PacketInte
 
 	parametersStream := nex.NewStreamIn(parameters, friendsProtocol.server)
 
+	if len(parametersStream.Bytes()[parametersStream.ByteOffset():]) < 4 {
+		go friendsProtocol.RemoveFriendHandler(errors.New("[FriendsProtocol::RemoveFriend] Data holder not long enough for PID"), client, callID, 0)
+		return
+	}
+
 	pid := parametersStream.ReadU32LENext(1)[0]
 
-	go friendsProtocol.RemoveFriendHandler(client, callID, pid)
+	go friendsProtocol.RemoveFriendHandler(nil, client, callID, pid)
 }
 
 func (friendsProtocol *FriendsProtocol) handleAddFriendRequest(packet nex.PacketInterface) {
@@ -495,16 +706,42 @@ func (friendsProtocol *FriendsProtocol) handleAddFriendRequest(packet nex.Packet
 
 	parametersStream := nex.NewStreamIn(parameters, friendsProtocol.server)
 
+	if len(parametersStream.Bytes()[parametersStream.ByteOffset():]) < 4 + 1 +1 + 8 {
+		// length check for the following fixed-size data
+		// unknown1 + unknown2 + unknown4 + gameKey + unknown6
+		err := errors.New("[FriendsProtocol::AddFriendRequest] Data holder not long enough for PID")
+		go friendsProtocol.AddFriendRequestHandler(err, client, callID, 0, 0, "", 0, "", &GameKey{}, nex.NewDateTime(0))
+		return
+	}
+
 	unknown1 := parametersStream.ReadU32LENext(1)[0]
 	unknown2 := parametersStream.ReadByteNext()
-	unknown3 := parametersStream.ReadStringNext()
+	unknown3, err := parametersStream.ReadStringNext()
+
+	if err != nil {
+		go friendsProtocol.AddFriendRequestHandler(err, client, callID, 0, 0, "", 0, "", &GameKey{}, nex.NewDateTime(0))
+		return
+	}
+
 	unknown4 := parametersStream.ReadByteNext()
-	unknown5 := parametersStream.ReadStringNext()
+	unknown5, err := parametersStream.ReadStringNext()
+
+	if err != nil {
+		go friendsProtocol.AddFriendRequestHandler(err, client, callID, 0, 0, "", 0, "", &GameKey{}, nex.NewDateTime(0))
+		return
+	}
+
 	gameKey := &GameKey{}
-	gameKey.ExtractFromStream(parametersStream)
+	err = gameKey.ExtractFromStream(parametersStream)
+
+	if err != nil {
+		go friendsProtocol.AddFriendRequestHandler(err, client, callID, 0, 0, "", 0, "", &GameKey{}, nex.NewDateTime(0))
+		return
+	}
+
 	unknown6 := nex.NewDateTime(parametersStream.ReadU64LENext(1)[0])
 
-	go friendsProtocol.AddFriendRequestHandler(client, callID, unknown1, unknown2, unknown3, unknown4, unknown5, gameKey, unknown6)
+	go friendsProtocol.AddFriendRequestHandler(nil, client, callID, unknown1, unknown2, unknown3, unknown4, unknown5, gameKey, unknown6)
 }
 
 func (friendsProtocol *FriendsProtocol) handleCancelFriendRequest(packet nex.PacketInterface) {
@@ -522,9 +759,15 @@ func (friendsProtocol *FriendsProtocol) handleCancelFriendRequest(packet nex.Pac
 
 	parametersStream := nex.NewStreamIn(parameters, friendsProtocol.server)
 
+	if len(parametersStream.Bytes()[parametersStream.ByteOffset():]) < 8 {
+		err := errors.New("[FriendsProtocol::CancelFriendRequest] Data missing list length")
+		go friendsProtocol.CancelFriendRequestHandler(err, client, callID, 0)
+		return
+	}
+
 	id := parametersStream.ReadU64LENext(1)[0]
 
-	go friendsProtocol.CancelFriendRequestHandler(client, callID, id)
+	go friendsProtocol.CancelFriendRequestHandler(nil, client, callID, id)
 }
 
 func (friendsProtocol *FriendsProtocol) handleAcceptFriendRequest(packet nex.PacketInterface) {
@@ -542,9 +785,15 @@ func (friendsProtocol *FriendsProtocol) handleAcceptFriendRequest(packet nex.Pac
 
 	parametersStream := nex.NewStreamIn(parameters, friendsProtocol.server)
 
+	if len(parametersStream.Bytes()[parametersStream.ByteOffset():]) < 8 {
+		err := errors.New("[FriendsProtocol::AcceptFriendRequest] Data missing list length")
+		go friendsProtocol.AcceptFriendRequestHandler(err, client, callID, 0)
+		return
+	}
+
 	id := parametersStream.ReadU64LENext(1)[0]
 
-	go friendsProtocol.AcceptFriendRequestHandler(client, callID, id)
+	go friendsProtocol.AcceptFriendRequestHandler(nil, client, callID, id)
 }
 
 func (friendsProtocol *FriendsProtocol) handleDeleteFriendRequest(packet nex.PacketInterface) {
@@ -562,9 +811,15 @@ func (friendsProtocol *FriendsProtocol) handleDeleteFriendRequest(packet nex.Pac
 
 	parametersStream := nex.NewStreamIn(parameters, friendsProtocol.server)
 
+	if len(parametersStream.Bytes()[parametersStream.ByteOffset():]) < 8 {
+		err := errors.New("[FriendsProtocol::DeleteFriendRequest] Data missing list length")
+		go friendsProtocol.DeleteFriendRequestHandler(err, client, callID, 0)
+		return
+	}
+
 	id := parametersStream.ReadU64LENext(1)[0]
 
-	go friendsProtocol.DeleteFriendRequestHandler(client, callID, id)
+	go friendsProtocol.DeleteFriendRequestHandler(nil, client, callID, id)
 }
 
 func (friendsProtocol *FriendsProtocol) handleDenyFriendRequest(packet nex.PacketInterface) {
@@ -582,9 +837,15 @@ func (friendsProtocol *FriendsProtocol) handleDenyFriendRequest(packet nex.Packe
 
 	parametersStream := nex.NewStreamIn(parameters, friendsProtocol.server)
 
+	if len(parametersStream.Bytes()[parametersStream.ByteOffset():]) < 8 {
+		err := errors.New("[FriendsProtocol::DenyFriendRequest] Data missing list length")
+		go friendsProtocol.DenyFriendRequestHandler(err, client, callID, 0)
+		return
+	}
+
 	id := parametersStream.ReadU64LENext(1)[0]
 
-	go friendsProtocol.DenyFriendRequestHandler(client, callID, id)
+	go friendsProtocol.DenyFriendRequestHandler(nil, client, callID, id)
 }
 
 func (friendsProtocol *FriendsProtocol) handleMarkFriendRequestsAsReceived(packet nex.PacketInterface) {
@@ -602,15 +863,27 @@ func (friendsProtocol *FriendsProtocol) handleMarkFriendRequestsAsReceived(packe
 
 	parametersStream := nex.NewStreamIn(parameters, friendsProtocol.server)
 
+	if len(parametersStream.Bytes()[parametersStream.ByteOffset():]) < 4 {
+		err := errors.New("[FriendsProtocol::MarkFriendRequestsAsReceived] Data missing list length")
+		go friendsProtocol.MarkFriendRequestsAsReceivedHandler(err, client, callID, make([]uint64, 0))
+		return
+	}
+
 	idCount := parametersStream.ReadU32LENext(1)[0]
 	ids := make([]uint64, 0)
+
+	if len(parametersStream.Bytes()[parametersStream.ByteOffset():]) < (8 * int(idCount)) {
+		err := errors.New("[FriendsProtocol::MarkFriendRequestsAsReceived] Data length less than content length")
+		go friendsProtocol.MarkFriendRequestsAsReceivedHandler(err, client, callID, ids)
+		return
+	}
 
 	for i := 0; i < int(idCount); i++ {
 		id := parametersStream.ReadU64LENext(1)[0]
 		ids = append(ids, id)
 	}
 
-	go friendsProtocol.MarkFriendRequestsAsReceivedHandler(client, callID, ids)
+	go friendsProtocol.MarkFriendRequestsAsReceivedHandler(nil, client, callID, ids)
 }
 
 func (friendsProtocol *FriendsProtocol) handleAddBlackList(packet nex.PacketInterface) {
@@ -629,9 +902,14 @@ func (friendsProtocol *FriendsProtocol) handleAddBlackList(packet nex.PacketInte
 	parametersStream := nex.NewStreamIn(parameters, friendsProtocol.server)
 
 	blacklistedPrincipal := &BlacklistedPrincipal{}
-	blacklistedPrincipal.ExtractFromStream(parametersStream)
+	err := blacklistedPrincipal.ExtractFromStream(parametersStream)
 
-	go friendsProtocol.AddBlackListHandler(client, callID, blacklistedPrincipal)
+	if err != nil {
+		go friendsProtocol.AddBlackListHandler(err, client, callID, &BlacklistedPrincipal{})
+		return
+	}
+
+	go friendsProtocol.AddBlackListHandler(nil, client, callID, blacklistedPrincipal)
 }
 
 func (friendsProtocol *FriendsProtocol) handleRemoveBlackList(packet nex.PacketInterface) {
@@ -649,9 +927,15 @@ func (friendsProtocol *FriendsProtocol) handleRemoveBlackList(packet nex.PacketI
 
 	parametersStream := nex.NewStreamIn(parameters, friendsProtocol.server)
 
+	if len(parametersStream.Bytes()[parametersStream.ByteOffset():]) < 4 {
+		err := errors.New("[FriendsProtocol::RemoveBlackList] Data missing list length")
+		go friendsProtocol.RemoveBlackListHandler(err, client, callID, 0)
+		return
+	}
+
 	pid := parametersStream.ReadU32LENext(1)[0]
 
-	go friendsProtocol.RemoveBlackListHandler(client, callID, pid)
+	go friendsProtocol.RemoveBlackListHandler(nil, client, callID, pid)
 }
 
 func (friendsProtocol *FriendsProtocol) handleUpdatePresence(packet nex.PacketInterface) {
@@ -670,9 +954,14 @@ func (friendsProtocol *FriendsProtocol) handleUpdatePresence(packet nex.PacketIn
 	parametersStream := nex.NewStreamIn(parameters, friendsProtocol.server)
 
 	presence := &NintendoPresenceV2{}
-	presence.ExtractFromStream(parametersStream)
+	err := presence.ExtractFromStream(parametersStream)
 
-	go friendsProtocol.UpdatePresenceHandler(client, callID, presence)
+	if err != nil {
+		go friendsProtocol.UpdatePresenceHandler(err, client, callID, &NintendoPresenceV2{})
+		return
+	}
+
+	go friendsProtocol.UpdatePresenceHandler(nil, client, callID, presence)
 }
 
 func (friendsProtocol *FriendsProtocol) handleUpdateMii(packet nex.PacketInterface) {
@@ -691,9 +980,14 @@ func (friendsProtocol *FriendsProtocol) handleUpdateMii(packet nex.PacketInterfa
 	parametersStream := nex.NewStreamIn(parameters, friendsProtocol.server)
 
 	mii := &MiiV2{}
-	mii.ExtractFromStream(parametersStream)
+	err := mii.ExtractFromStream(parametersStream)
 
-	go friendsProtocol.UpdateMiiHandler(client, callID, mii)
+	if err != nil {
+		go friendsProtocol.UpdateMiiHandler(err, client, callID, &MiiV2{})
+		return
+	}
+
+	go friendsProtocol.UpdateMiiHandler(nil, client, callID, mii)
 }
 
 func (friendsProtocol *FriendsProtocol) handleUpdateComment(packet nex.PacketInterface) {
@@ -712,9 +1006,14 @@ func (friendsProtocol *FriendsProtocol) handleUpdateComment(packet nex.PacketInt
 	parametersStream := nex.NewStreamIn(parameters, friendsProtocol.server)
 
 	comment := &Comment{}
-	comment.ExtractFromStream(parametersStream)
+	err := comment.ExtractFromStream(parametersStream)
 
-	go friendsProtocol.UpdateCommentHandler(client, callID, comment)
+	if err != nil {
+		go friendsProtocol.UpdateCommentHandler(err, client, callID, &Comment{})
+		return
+	}
+
+	go friendsProtocol.UpdateCommentHandler(nil, client, callID, comment)
 }
 
 func (friendsProtocol *FriendsProtocol) handleUpdatePreference(packet nex.PacketInterface) {
@@ -733,9 +1032,14 @@ func (friendsProtocol *FriendsProtocol) handleUpdatePreference(packet nex.Packet
 	parametersStream := nex.NewStreamIn(parameters, friendsProtocol.server)
 
 	preference := &PrincipalPreference{}
-	preference.ExtractFromStream(parametersStream)
+	err := preference.ExtractFromStream(parametersStream)
 
-	go friendsProtocol.UpdatePreferenceHandler(client, callID, preference)
+	if err != nil {
+		go friendsProtocol.UpdatePreferenceHandler(err, client, callID, &PrincipalPreference{})
+		return
+	}
+
+	go friendsProtocol.UpdatePreferenceHandler(nil, client, callID, preference)
 }
 
 func (friendsProtocol *FriendsProtocol) handleGetBasicInfo(packet nex.PacketInterface) {
@@ -753,15 +1057,27 @@ func (friendsProtocol *FriendsProtocol) handleGetBasicInfo(packet nex.PacketInte
 
 	parametersStream := nex.NewStreamIn(parameters, friendsProtocol.server)
 
+	if len(parametersStream.Bytes()[parametersStream.ByteOffset():]) < 4 {
+		err := errors.New("[FriendsProtocol::GetBasicInfo] Data missing list length")
+		go friendsProtocol.GetBasicInfoHandler(err, client, callID, make([]uint32, 0))
+		return
+	}
+
 	pidCount := parametersStream.ReadU32LENext(1)[0]
 	pids := make([]uint32, 0)
+
+	if len(parametersStream.Bytes()[parametersStream.ByteOffset():]) < (4 * int(pidCount)) {
+		err := errors.New("[FriendsProtocol::GetBasicInfo] Data length less than content length")
+		go friendsProtocol.GetBasicInfoHandler(err, client, callID, pids)
+		return
+	}
 
 	for i := 0; i < int(pidCount); i++ {
 		pid := parametersStream.ReadU32LENext(1)[0]
 		pids = append(pids, pid)
 	}
 
-	go friendsProtocol.GetBasicInfoHandler(client, callID, pids)
+	go friendsProtocol.GetBasicInfoHandler(nil, client, callID, pids)
 }
 
 func (friendsProtocol *FriendsProtocol) handleDeleteFriendFlags(packet nex.PacketInterface) {
@@ -788,7 +1104,7 @@ func (friendsProtocol *FriendsProtocol) handleDeleteFriendFlags(packet nex.Packe
 		notifications = append(notifications, notification)
 	}
 
-	go friendsProtocol.DeleteFriendFlagsHandler(client, callID, notifications)
+	go friendsProtocol.DeleteFriendFlagsHandler(nil, client, callID, notifications)
 }
 
 func (friendsProtocol *FriendsProtocol) handleCheckSettingStatus(packet nex.PacketInterface) {
@@ -803,7 +1119,7 @@ func (friendsProtocol *FriendsProtocol) handleCheckSettingStatus(packet nex.Pack
 
 	callID := request.GetCallID()
 
-	go friendsProtocol.CheckSettingStatusHandler(client, callID)
+	go friendsProtocol.CheckSettingStatusHandler(nil, client, callID)
 }
 
 func (friendsProtocol *FriendsProtocol) handleGetRequestBlockSettings(packet nex.PacketInterface) {
@@ -821,15 +1137,27 @@ func (friendsProtocol *FriendsProtocol) handleGetRequestBlockSettings(packet nex
 
 	parametersStream := nex.NewStreamIn(parameters, friendsProtocol.server)
 
+	if len(parametersStream.Bytes()[parametersStream.ByteOffset():]) < 4 {
+		err := errors.New("[FriendsProtocol::GetRequestBlockSettings] Data missing list length")
+		go friendsProtocol.GetRequestBlockSettingsHandler(err, client, callID, make([]uint32, 0))
+		return
+	}
+
 	unknownCount := parametersStream.ReadU32LENext(1)[0]
 	unknowns := make([]uint32, 0)
+
+	if len(parametersStream.Bytes()[parametersStream.ByteOffset():]) < (4 * int(unknownCount)) {
+		err := errors.New("[FriendsProtocol::GetRequestBlockSettings] Data length less than content length")
+		go friendsProtocol.GetRequestBlockSettingsHandler(err, client, callID, unknowns)
+		return
+	}
 
 	for i := 0; i < int(unknownCount); i++ {
 		unknown := parametersStream.ReadU32LENext(1)[0]
 		unknowns = append(unknowns, unknown)
 	}
 
-	go friendsProtocol.GetRequestBlockSettingsHandler(client, callID, unknowns)
+	go friendsProtocol.GetRequestBlockSettingsHandler(nil, client, callID, unknowns)
 }
 
 func NewFriendsProtocol(server *nex.Server) *FriendsProtocol {

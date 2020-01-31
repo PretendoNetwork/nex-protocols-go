@@ -1,9 +1,10 @@
 package nexproto
 
 import (
+	"errors"
 	"fmt"
 
-	nex "github.com/PretendoNetwork/nex-go"
+	nex "../nex-go"
 )
 
 const (
@@ -22,14 +23,14 @@ const (
 type SecureProtocol struct {
 	server                       *nex.Server
 	ConnectionIDCounter          *nex.Counter
-	RegisterHandler              func(client *nex.Client, callID uint32, stationUrls []*nex.StationURL)
-	RequestConnectionDataHandler func(client *nex.Client, callID uint32, stationCID uint32, stationPID uint32)
-	RequestURLsHandler           func(client *nex.Client, callID uint32, stationCID uint32, stationPID uint32)
-	RegisterExHandler            func(client *nex.Client, callID uint32, stationUrls []*nex.StationURL, loginData NintendoLoginData)
-	TestConnectivityHandler      func(client *nex.Client, callID uint32)
-	UpdateURLsHandler            func(client *nex.Client, callID uint32, stationUrls []*nex.StationURL)
-	ReplaceURLHandler            func(client *nex.Client, callID uint32, oldStation *nex.StationURL, newStation *nex.StationURL)
-	SendReportHandler            func(client *nex.Client, callID uint32, reportID uint32, report []byte)
+	RegisterHandler              func(err error, client *nex.Client, callID uint32, stationUrls []*nex.StationURL)
+	RequestConnectionDataHandler func(err error, client *nex.Client, callID uint32, stationCID uint32, stationPID uint32)
+	RequestURLsHandler           func(err error, client *nex.Client, callID uint32, stationCID uint32, stationPID uint32)
+	RegisterExHandler            func(err error, client *nex.Client, callID uint32, stationUrls []*nex.StationURL, loginData NintendoLoginData)
+	TestConnectivityHandler      func(err error, client *nex.Client, callID uint32)
+	UpdateURLsHandler            func(err error, client *nex.Client, callID uint32, stationUrls []*nex.StationURL)
+	ReplaceURLHandler            func(err error, client *nex.Client, callID uint32, oldStation *nex.StationURL, newStation *nex.StationURL)
+	SendReportHandler            func(err error, client *nex.Client, callID uint32, reportID uint32, report []byte)
 }
 
 func (secureProtocol *SecureProtocol) Setup() {
@@ -74,9 +75,9 @@ func (secureProtocol *SecureProtocol) respondNotImplemented(packet nex.PacketInt
 
 	var responsePacket nex.PacketInterface
 	if packet.GetVersion() == 1 {
-		responsePacket = nex.NewPacketV0(client, nil)
+		responsePacket, _ = nex.NewPacketV0(client, nil)
 	} else {
-		responsePacket = nex.NewPacketV1(client, nil)
+		responsePacket, _ = nex.NewPacketV1(client, nil)
 	}
 
 	responsePacket.SetVersion(packet.GetVersion())
@@ -91,35 +92,35 @@ func (secureProtocol *SecureProtocol) respondNotImplemented(packet nex.PacketInt
 	secureProtocol.server.Send(responsePacket)
 }
 
-func (secureProtocol *SecureProtocol) Register(handler func(client *nex.Client, callID uint32, stationUrls []*nex.StationURL)) {
+func (secureProtocol *SecureProtocol) Register(handler func(err error, client *nex.Client, callID uint32, stationUrls []*nex.StationURL)) {
 	secureProtocol.RegisterHandler = handler
 }
 
-func (secureProtocol *SecureProtocol) RequestConnectionData(handler func(client *nex.Client, callID uint32, stationCID uint32, stationPID uint32)) {
+func (secureProtocol *SecureProtocol) RequestConnectionData(handler func(err error, client *nex.Client, callID uint32, stationCID uint32, stationPID uint32)) {
 	secureProtocol.RequestConnectionDataHandler = handler
 }
 
-func (secureProtocol *SecureProtocol) RequestURLs(handler func(client *nex.Client, callID uint32, stationCID uint32, stationPID uint32)) {
+func (secureProtocol *SecureProtocol) RequestURLs(handler func(err error, client *nex.Client, callID uint32, stationCID uint32, stationPID uint32)) {
 	secureProtocol.RequestURLsHandler = handler
 }
 
-func (secureProtocol *SecureProtocol) RegisterEx(handler func(client *nex.Client, callID uint32, stationUrls []*nex.StationURL, loginData NintendoLoginData)) {
+func (secureProtocol *SecureProtocol) RegisterEx(handler func(err error, client *nex.Client, callID uint32, stationUrls []*nex.StationURL, loginData NintendoLoginData)) {
 	secureProtocol.RegisterExHandler = handler
 }
 
-func (secureProtocol *SecureProtocol) TestConnectivity(handler func(client *nex.Client, callID uint32)) {
+func (secureProtocol *SecureProtocol) TestConnectivity(handler func(err error, client *nex.Client, callID uint32)) {
 	secureProtocol.TestConnectivityHandler = handler
 }
 
-func (secureProtocol *SecureProtocol) UpdateURLs(handler func(client *nex.Client, callID uint32, stationUrls []*nex.StationURL)) {
+func (secureProtocol *SecureProtocol) UpdateURLs(handler func(err error, client *nex.Client, callID uint32, stationUrls []*nex.StationURL)) {
 	secureProtocol.UpdateURLsHandler = handler
 }
 
-func (secureProtocol *SecureProtocol) ReplaceURL(handler func(client *nex.Client, callID uint32, oldStation *nex.StationURL, newStation *nex.StationURL)) {
+func (secureProtocol *SecureProtocol) ReplaceURL(handler func(err error, client *nex.Client, callID uint32, oldStation *nex.StationURL, newStation *nex.StationURL)) {
 	secureProtocol.ReplaceURLHandler = handler
 }
 
-func (secureProtocol *SecureProtocol) SendReport(handler func(client *nex.Client, callID uint32, reportID uint32, report []byte)) {
+func (secureProtocol *SecureProtocol) SendReport(handler func(err error, client *nex.Client, callID uint32, reportID uint32, report []byte)) {
 	secureProtocol.SendReportHandler = handler
 }
 
@@ -138,15 +139,28 @@ func (secureProtocol *SecureProtocol) handleRegister(packet nex.PacketInterface)
 
 	parametersStream := nex.NewStreamIn(parameters, secureProtocol.server)
 
+	if len(parametersStream.Bytes()[parametersStream.ByteOffset():]) < 4 {
+		err := errors.New("[SecureProtocol::Register] Data missing list length")
+		go secureProtocol.RegisterHandler(err, client, callID, make([]*nex.StationURL, 0))
+		return
+	}
+
 	stationURLCount := parametersStream.ReadU32LENext(1)[0]
 	stationUrls := make([]*nex.StationURL, 0)
 
 	for i := 0; i < int(stationURLCount); i++ {
-		station := nex.NewStationURL(parametersStream.ReadStringNext())
+		stationString, err := parametersStream.ReadStringNext()
+
+		if err != nil {
+			go secureProtocol.RegisterHandler(err, client, callID, stationUrls)
+			return
+		}
+
+		station := nex.NewStationURL(stationString)
 		stationUrls = append(stationUrls, station)
 	}
 
-	go secureProtocol.RegisterHandler(client, callID, stationUrls)
+	go secureProtocol.RegisterHandler(nil, client, callID, stationUrls)
 }
 
 func (secureProtocol *SecureProtocol) handleRequestConnectionData(packet nex.PacketInterface) {
@@ -164,10 +178,16 @@ func (secureProtocol *SecureProtocol) handleRequestConnectionData(packet nex.Pac
 
 	parametersStream := nex.NewStreamIn(parameters, secureProtocol.server)
 
+	if len(parametersStream.Bytes()[parametersStream.ByteOffset():]) < 8 {
+		err := errors.New("[SecureProtocol::RequestConnectionData] Data length too small")
+		go secureProtocol.RequestConnectionDataHandler(err, client, callID, 0, 0)
+		return
+	}
+
 	stationCID := parametersStream.ReadU32LENext(1)[0]
 	stationPID := parametersStream.ReadU32LENext(1)[0]
 
-	go secureProtocol.RequestConnectionDataHandler(client, callID, stationCID, stationPID)
+	go secureProtocol.RequestConnectionDataHandler(nil, client, callID, stationCID, stationPID)
 }
 
 func (secureProtocol *SecureProtocol) handleRequestURLs(packet nex.PacketInterface) {
@@ -185,10 +205,16 @@ func (secureProtocol *SecureProtocol) handleRequestURLs(packet nex.PacketInterfa
 
 	parametersStream := nex.NewStreamIn(parameters, secureProtocol.server)
 
+	if len(parametersStream.Bytes()[parametersStream.ByteOffset():]) < 8 {
+		err := errors.New("[SecureProtocol::RequestURLs] Data length too small")
+		go secureProtocol.RequestURLsHandler(err, client, callID, 0, 0)
+		return
+	}
+
 	stationCID := parametersStream.ReadU32LENext(1)[0]
 	stationPID := parametersStream.ReadU32LENext(1)[0]
 
-	go secureProtocol.RequestURLsHandler(client, callID, stationCID, stationPID)
+	go secureProtocol.RequestURLsHandler(nil, client, callID, stationCID, stationPID)
 }
 
 func (secureProtocol *SecureProtocol) handleRegisterEx(packet nex.PacketInterface) {
@@ -207,28 +233,66 @@ func (secureProtocol *SecureProtocol) handleRegisterEx(packet nex.PacketInterfac
 
 	parametersStream := nex.NewStreamIn(parameters, secureProtocol.server)
 
+	if len(parametersStream.Bytes()[parametersStream.ByteOffset():]) < 4 {
+		err := errors.New("[SecureProtocol::RegisterEx] Data missing list length")
+		go secureProtocol.RegisterExHandler(err, client, callID, make([]*nex.StationURL, 0), NintendoLoginData{})
+		return
+	}
+
 	stationURLCount := parametersStream.ReadU32LENext(1)[0]
 	stationUrls := make([]*nex.StationURL, 0)
 
 	for i := 0; i < int(stationURLCount); i++ {
-		station := nex.NewStationURL(parametersStream.ReadStringNext())
+		stationString, err := parametersStream.ReadStringNext()
+
+		if err != nil {
+			go secureProtocol.RegisterExHandler(err, client, callID, stationUrls, NintendoLoginData{})
+			return
+		}
+
+		station := nex.NewStationURL(stationString)
 		stationUrls = append(stationUrls, station)
 	}
 
-	dataHolderType := parametersStream.ReadStringNext()
+	dataHolderType, err := parametersStream.ReadStringNext()
+
+	if err != nil {
+		go secureProtocol.RegisterExHandler(err, client, callID, stationUrls, NintendoLoginData{})
+		return
+	}
 
 	if dataHolderType != "NintendoLoginData" {
-		// Error log?
+		err := errors.New("[SecureProtocol::RegisterEx] Data holder name does not match")
+		go secureProtocol.RegisterExHandler(err, client, callID, make([]*nex.StationURL, 0), NintendoLoginData{})
+		return
+	}
+
+	if len(parametersStream.Bytes()[parametersStream.ByteOffset():]) < 8 {
+		err := errors.New("[SecureProtocol::RegisterEx] Data holder missing lengths")
+		go secureProtocol.RegisterExHandler(err, client, callID, make([]*nex.StationURL, 0), NintendoLoginData{})
 		return
 	}
 
 	_ = parametersStream.ReadU32LENext(1)[0] // Length including next buffer length field
-	dataHolderInner := parametersStream.ReadBufferNext()
+	dataHolderInner, err := parametersStream.ReadBufferNext()
+
+	if err != nil {
+		go secureProtocol.RegisterExHandler(err, client, callID, stationUrls, NintendoLoginData{})
+		return
+	}
+
 	dataHolderStream := nex.NewStreamIn(dataHolderInner, secureProtocol.server)
 
-	loginData := NintendoLoginData{token: dataHolderStream.ReadStringNext()}
+	token, err := dataHolderStream.ReadStringNext()
 
-	go secureProtocol.RegisterExHandler(client, callID, stationUrls, loginData)
+	if err != nil {
+		go secureProtocol.RegisterExHandler(err, client, callID, stationUrls, NintendoLoginData{})
+		return
+	}
+
+	loginData := NintendoLoginData{token: token}
+
+	go secureProtocol.RegisterExHandler(nil, client, callID, stationUrls, loginData)
 }
 
 func (secureProtocol *SecureProtocol) handleTestConnectivity(packet nex.PacketInterface) {
@@ -243,7 +307,7 @@ func (secureProtocol *SecureProtocol) handleTestConnectivity(packet nex.PacketIn
 
 	callID := request.GetCallID()
 
-	go secureProtocol.TestConnectivityHandler(client, callID)
+	go secureProtocol.TestConnectivityHandler(nil, client, callID)
 }
 
 func (secureProtocol *SecureProtocol) handleUpdateURLs(packet nex.PacketInterface) {
@@ -261,15 +325,28 @@ func (secureProtocol *SecureProtocol) handleUpdateURLs(packet nex.PacketInterfac
 
 	parametersStream := nex.NewStreamIn(parameters, secureProtocol.server)
 
+	if len(parametersStream.Bytes()[parametersStream.ByteOffset():]) < 4 {
+		err := errors.New("[SecureProtocol::UpdateURLs] Data missing list length")
+		go secureProtocol.UpdateURLsHandler(err, client, callID, make([]*nex.StationURL, 0))
+		return
+	}
+
 	stationURLCount := parametersStream.ReadU32LENext(1)[0]
 	stationUrls := make([]*nex.StationURL, 0)
 
 	for i := 0; i < int(stationURLCount); i++ {
-		station := nex.NewStationURL(parametersStream.ReadStringNext())
+		stationString, err := parametersStream.ReadStringNext()
+
+		if err != nil {
+			go secureProtocol.UpdateURLsHandler(err, client, callID, stationUrls)
+			return
+		}
+
+		station := nex.NewStationURL(stationString)
 		stationUrls = append(stationUrls, station)
 	}
 
-	go secureProtocol.UpdateURLsHandler(client, callID, stationUrls)
+	go secureProtocol.UpdateURLsHandler(nil, client, callID, stationUrls)
 }
 
 func (secureProtocol *SecureProtocol) handleReplaceURL(packet nex.PacketInterface) {
@@ -287,10 +364,24 @@ func (secureProtocol *SecureProtocol) handleReplaceURL(packet nex.PacketInterfac
 
 	parametersStream := nex.NewStreamIn(parameters, secureProtocol.server)
 
-	oldStation := nex.NewStationURL(parametersStream.ReadStringNext())
-	newStation := nex.NewStationURL(parametersStream.ReadStringNext())
+	oldStationString, err := parametersStream.ReadStringNext()
 
-	go secureProtocol.ReplaceURLHandler(client, callID, oldStation, newStation)
+	if err != nil {
+		go secureProtocol.ReplaceURLHandler(err, client, callID, nex.NewStationURL(""), nex.NewStationURL(""))
+		return
+	}
+
+	newStationString, err := parametersStream.ReadStringNext()
+
+	if err != nil {
+		go secureProtocol.ReplaceURLHandler(err, client, callID, nex.NewStationURL(""), nex.NewStationURL(""))
+		return
+	}
+
+	oldStation := nex.NewStationURL(oldStationString)
+	newStation := nex.NewStationURL(newStationString)
+
+	go secureProtocol.ReplaceURLHandler(nil, client, callID, oldStation, newStation)
 }
 
 func (secureProtocol *SecureProtocol) handleSendReport(packet nex.PacketInterface) {
@@ -308,10 +399,21 @@ func (secureProtocol *SecureProtocol) handleSendReport(packet nex.PacketInterfac
 
 	parametersStream := nex.NewStreamIn(parameters, secureProtocol.server)
 
-	reportID := parametersStream.ReadU32LENext(1)[0]
-	report := parametersStream.ReadQBufferNext()
+	if len(parametersStream.Bytes()[parametersStream.ByteOffset():]) < 4 {
+		err := errors.New("[SecureProtocol::SendReport] Data missing report ID")
+		go secureProtocol.SendReportHandler(err, client, callID, 0, []byte{})
+		return
+	}
 
-	go secureProtocol.SendReportHandler(client, callID, reportID, report)
+	reportID := parametersStream.ReadU32LENext(1)[0]
+	report, err := parametersStream.ReadQBufferNext()
+
+	if err != nil {
+		go secureProtocol.SendReportHandler(err, client, callID, 0, []byte{})
+		return
+	}
+
+	go secureProtocol.SendReportHandler(nil, client, callID, reportID, report)
 }
 
 func NewSecureProtocol(server *nex.Server) *SecureProtocol {

@@ -1,9 +1,10 @@
 package nexproto
 
 import (
+	"errors"
 	"fmt"
 
-	nex "github.com/PretendoNetwork/nex-go"
+	nex "../nex-go"
 )
 
 const (
@@ -59,7 +60,7 @@ const (
 
 type DataStoreProtocol struct {
 	server         *nex.Server
-	GetMetaHandler func(client *nex.Client, callID uint32, dataStoreGetMetaParam *DataStoreGetMetaParam)
+	GetMetaHandler func(err error, client *nex.Client, callID uint32, dataStoreGetMetaParam *DataStoreGetMetaParam)
 }
 
 type DataStoreGetMetaParam struct {
@@ -76,11 +77,26 @@ func (dataStoreGetMetaParam *DataStoreGetMetaParam) GetDataID() uint64 {
 	return dataStoreGetMetaParam.dataID
 }
 
-func (dataStoreGetMetaParam *DataStoreGetMetaParam) ExtractFromStream(stream *nex.StreamIn) {
-	dataStoreGetMetaParam.dataID = stream.ReadU64LENext(1)[0]
-	dataStoreGetMetaParam.persistenceTarget = stream.ReadStructureNext(NewDataStorePersistenceTarget()).(*DataStorePersistenceTarget)
+func (dataStoreGetMetaParam *DataStoreGetMetaParam) ExtractFromStream(stream *nex.StreamIn) error {
+	expectedDataSize := 23 // base size not including Structure header
+
+	if len(stream.Bytes()[stream.ByteOffset():]) < expectedDataSize {
+		return errors.New("[DataStoreGetMetaParam::ExtractFromStream] Data size too small")
+	}
+
+	dataID := stream.ReadU64LENext(1)[0]
+	persistenceTarget, err := stream.ReadStructureNext(NewDataStorePersistenceTarget())
+
+	if err != nil {
+		return err
+	}
+
+	dataStoreGetMetaParam.dataID = dataID
+	dataStoreGetMetaParam.persistenceTarget = persistenceTarget.(*DataStorePersistenceTarget)
 	dataStoreGetMetaParam.resultOption = uint8(stream.ReadByteNext())
 	dataStoreGetMetaParam.accessPassword = stream.ReadU64LENext(1)[0]
+
+	return nil
 }
 
 func NewDataStoreGetMetaParam() *DataStoreGetMetaParam {
@@ -105,9 +121,17 @@ func (dataStorePersistenceTarget *DataStorePersistenceTarget) GetPersistenceSlot
 	return dataStorePersistenceTarget.persistenceSlotID
 }
 
-func (dataStorePersistenceTarget *DataStorePersistenceTarget) ExtractFromStream(stream *nex.StreamIn) {
+func (dataStorePersistenceTarget *DataStorePersistenceTarget) ExtractFromStream(stream *nex.StreamIn) error {
+	expectedDataSize := 9 // base size not including Structure header
+
+	if len(stream.Bytes()[stream.ByteOffset():]) < expectedDataSize {
+		return errors.New("[DataStorePersistenceTarget::ExtractFromStream] Data size too small")
+	}
+
 	dataStorePersistenceTarget.ownerID = stream.ReadU32LENext(1)[0]
 	dataStorePersistenceTarget.persistenceSlotID = stream.ReadU16LENext(1)[0]
+
+	return nil
 }
 
 func NewDataStorePersistenceTarget() *DataStorePersistenceTarget {
@@ -151,9 +175,9 @@ func (dataStoreProtocol *DataStoreProtocol) respondNotImplemented(packet nex.Pac
 
 	var responsePacket nex.PacketInterface
 	if packet.GetVersion() == 1 {
-		responsePacket = nex.NewPacketV0(client, nil)
+		responsePacket, _ = nex.NewPacketV0(client, nil)
 	} else {
-		responsePacket = nex.NewPacketV1(client, nil)
+		responsePacket, _ = nex.NewPacketV1(client, nil)
 	}
 
 	responsePacket.SetVersion(packet.GetVersion())
@@ -168,7 +192,7 @@ func (dataStoreProtocol *DataStoreProtocol) respondNotImplemented(packet nex.Pac
 	dataStoreProtocol.server.Send(responsePacket)
 }
 
-func (dataStoreProtocol *DataStoreProtocol) GetMeta(handler func(client *nex.Client, callID uint32, dataStoreGetMetaParam *DataStoreGetMetaParam)) {
+func (dataStoreProtocol *DataStoreProtocol) GetMeta(handler func(err error, client *nex.Client, callID uint32, dataStoreGetMetaParam *DataStoreGetMetaParam)) {
 	dataStoreProtocol.GetMetaHandler = handler
 }
 
@@ -187,16 +211,14 @@ func (dataStoreProtocol *DataStoreProtocol) handleGetMeta(packet nex.PacketInter
 
 	parametersStream := nex.NewStreamIn(parameters, dataStoreProtocol.server)
 
-	if dataStoreProtocol.server.GetNexMinorVersion() >= 3 {
-		// skip the new struct header as we don't really need the data there
-		_ = parametersStream.ReadByteNext()   // structure header version
-		_ = parametersStream.ReadU32LENext(1) // structure content length
+	dataStoreGetMetaParam, err := parametersStream.ReadStructureNext(NewDataStoreGetMetaParam())
+
+	if err != nil {
+		go dataStoreProtocol.GetMetaHandler(err, client, callID, &DataStoreGetMetaParam{})
+		return
 	}
 
-	dataStoreGetMetaParam := &DataStoreGetMetaParam{}
-	dataStoreGetMetaParam.ExtractFromStream(parametersStream)
-
-	go dataStoreProtocol.GetMetaHandler(client, callID, dataStoreGetMetaParam)
+	go dataStoreProtocol.GetMetaHandler(nil, client, callID, dataStoreGetMetaParam.(*DataStoreGetMetaParam))
 }
 
 func NewDataStoreProtocol(server *nex.Server) *DataStoreProtocol {

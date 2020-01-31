@@ -4,7 +4,7 @@ import (
 	"errors"
 	"fmt"
 
-	nex "../nex-go"
+	nex "github.com/PretendoNetwork/nex-go"
 )
 
 const (

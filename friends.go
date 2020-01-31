@@ -3,7 +3,8 @@ package nexproto
 import (
 	"fmt"
 	"errors"
-	nex "../nex-go"
+	
+	nex "github.com/PretendoNetwork/nex-go"
 )
 
 const (

@@ -50,7 +50,7 @@ func (authenticationInfo *AuthenticationInfo) ExtractFromStream(stream *nex.Stre
 	var err error
 	var token string
 
-	token, err = stream.ReadStringNext()
+	token, err = stream.ReadString()
 
 	if err != nil {
 		return err
@@ -61,9 +61,11 @@ func (authenticationInfo *AuthenticationInfo) ExtractFromStream(stream *nex.Stre
 	}
 
 	authenticationInfo.token = token
-	authenticationInfo.tokenType = stream.ReadU32LENext(1)[0]
-	authenticationInfo.ngsVersion = uint8(stream.ReadByteNext())
-	authenticationInfo.serverVersion = stream.ReadU32LENext(1)[0]
+	authenticationInfo.tokenType = stream.ReadUInt32LE()
+	authenticationInfo.ngsVersion = stream.ReadUInt8()
+	authenticationInfo.serverVersion = stream.ReadUInt32LE()
+
+	fmt.Printf("%+v\n", authenticationInfo)
 
 	return nil
 }
@@ -177,7 +179,7 @@ func (authenticationProtocol *AuthenticationProtocol) handleLogin(packet nex.Pac
 
 	parametersStream := nex.NewStreamIn(parameters, authenticationProtocol.server)
 
-	username, err := parametersStream.ReadStringNext()
+	username, err := parametersStream.ReadString()
 
 	if err != nil {
 		go authenticationProtocol.LoginHandler(err, client, callID, "")
@@ -202,14 +204,14 @@ func (authenticationProtocol *AuthenticationProtocol) handleLoginEx(packet nex.P
 
 	parametersStream := nex.NewStreamIn(parameters, authenticationProtocol.server)
 
-	username, err := parametersStream.ReadStringNext()
+	username, err := parametersStream.ReadString()
 
 	if err != nil {
 		go authenticationProtocol.LoginExHandler(err, client, callID, "", &AuthenticationInfo{})
 		return
 	}
 
-	dataHolderName, err := parametersStream.ReadStringNext()
+	dataHolderName, err := parametersStream.ReadString()
 
 	if err != nil {
 		go authenticationProtocol.LoginExHandler(err, client, callID, "", &AuthenticationInfo{})
@@ -221,9 +223,9 @@ func (authenticationProtocol *AuthenticationProtocol) handleLoginEx(packet nex.P
 		return
 	}
 
-	_ = parametersStream.ReadU32LENext(1) // length including this field
+	_ = parametersStream.ReadUInt32LE() // length including this field
 
-	dataHolderContent, err := parametersStream.ReadBufferNext()
+	dataHolderContent, err := parametersStream.ReadBuffer()
 
 	if err != nil {
 		go authenticationProtocol.LoginExHandler(err, client, callID, "", &AuthenticationInfo{})
@@ -232,7 +234,7 @@ func (authenticationProtocol *AuthenticationProtocol) handleLoginEx(packet nex.P
 
 	dataHolderContentStream := nex.NewStreamIn(dataHolderContent, authenticationProtocol.server)
 
-	authenticationInfo, err := dataHolderContentStream.ReadStructureNext(NewAuthenticationInfo())
+	authenticationInfo, err := dataHolderContentStream.ReadStructure(NewAuthenticationInfo())
 
 	if err != nil {
 		go authenticationProtocol.LoginExHandler(err, client, callID, "", &AuthenticationInfo{})
@@ -261,8 +263,8 @@ func (authenticationProtocol *AuthenticationProtocol) handleRequestTicket(packet
 
 	parametersStream := nex.NewStreamIn(parameters, authenticationProtocol.server)
 
-	userPID := parametersStream.ReadU32LENext(1)[0]
-	serverPID := parametersStream.ReadU32LENext(1)[0]
+	userPID := parametersStream.ReadUInt32LE()
+	serverPID := parametersStream.ReadUInt32LE()
 
 	go authenticationProtocol.RequestTicketHandler(nil, client, callID, userPID, serverPID)
 }
@@ -282,7 +284,7 @@ func (authenticationProtocol *AuthenticationProtocol) handleGetPID(packet nex.Pa
 
 	parametersStream := nex.NewStreamIn(parameters, authenticationProtocol.server)
 
-	username, err := parametersStream.ReadStringNext()
+	username, err := parametersStream.ReadString()
 
 	if err != nil {
 		go authenticationProtocol.GetPIDHandler(err, client, callID, "")
@@ -311,7 +313,7 @@ func (authenticationProtocol *AuthenticationProtocol) handleGetName(packet nex.P
 		go authenticationProtocol.RequestTicketHandler(errors.New("[AuthenticationProtocol::GetName] Parameters length not 4"), client, callID, 0, 0)
 	}
 
-	userPID := parametersStream.ReadU32LENext(1)[0]
+	userPID := parametersStream.ReadUInt32LE()
 
 	go authenticationProtocol.GetNameHandler(nil, client, callID, userPID)
 }

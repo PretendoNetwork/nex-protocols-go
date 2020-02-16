@@ -84,8 +84,8 @@ func (dataStoreGetMetaParam *DataStoreGetMetaParam) ExtractFromStream(stream *ne
 		return errors.New("[DataStoreGetMetaParam::ExtractFromStream] Data size too small")
 	}
 
-	dataID := stream.ReadU64LENext(1)[0]
-	persistenceTarget, err := stream.ReadStructureNext(NewDataStorePersistenceTarget())
+	dataID := stream.ReadUInt64LE()
+	persistenceTarget, err := stream.ReadStructure(NewDataStorePersistenceTarget())
 
 	if err != nil {
 		return err
@@ -93,8 +93,8 @@ func (dataStoreGetMetaParam *DataStoreGetMetaParam) ExtractFromStream(stream *ne
 
 	dataStoreGetMetaParam.dataID = dataID
 	dataStoreGetMetaParam.persistenceTarget = persistenceTarget.(*DataStorePersistenceTarget)
-	dataStoreGetMetaParam.resultOption = uint8(stream.ReadByteNext())
-	dataStoreGetMetaParam.accessPassword = stream.ReadU64LENext(1)[0]
+	dataStoreGetMetaParam.resultOption = stream.ReadUInt8()
+	dataStoreGetMetaParam.accessPassword = stream.ReadUInt64LE()
 
 	return nil
 }
@@ -128,8 +128,8 @@ func (dataStorePersistenceTarget *DataStorePersistenceTarget) ExtractFromStream(
 		return errors.New("[DataStorePersistenceTarget::ExtractFromStream] Data size too small")
 	}
 
-	dataStorePersistenceTarget.ownerID = stream.ReadU32LENext(1)[0]
-	dataStorePersistenceTarget.persistenceSlotID = stream.ReadU16LENext(1)[0]
+	dataStorePersistenceTarget.ownerID = stream.ReadUInt32LE()
+	dataStorePersistenceTarget.persistenceSlotID = stream.ReadUInt16LE()
 
 	return nil
 }
@@ -211,7 +211,7 @@ func (dataStoreProtocol *DataStoreProtocol) handleGetMeta(packet nex.PacketInter
 
 	parametersStream := nex.NewStreamIn(parameters, dataStoreProtocol.server)
 
-	dataStoreGetMetaParam, err := parametersStream.ReadStructureNext(NewDataStoreGetMetaParam())
+	dataStoreGetMetaParam, err := parametersStream.ReadStructure(NewDataStoreGetMetaParam())
 
 	if err != nil {
 		go dataStoreProtocol.GetMetaHandler(err, client, callID, &DataStoreGetMetaParam{})

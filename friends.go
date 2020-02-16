@@ -1,9 +1,9 @@
 package nexproto
 
 import (
-	"fmt"
 	"errors"
-	
+	"fmt"
+
 	nex "github.com/PretendoNetwork/nex-go"
 )
 
@@ -83,7 +83,7 @@ func (blacklistedPrincipal *BlacklistedPrincipal) ExtractFromStream(stream *nex.
 
 	blacklistedPrincipal.principalInfo = principalInfo
 	blacklistedPrincipal.gameKey = gameKey
-	blacklistedPrincipal.blackListedSince = nex.NewDateTime(stream.ReadU64LENext(1)[0])
+	blacklistedPrincipal.blackListedSince = nex.NewDateTime(stream.ReadUInt64LE())
 
 	return nil
 }
@@ -99,15 +99,14 @@ func (comment *Comment) ExtractFromStream(stream *nex.StreamIn) error {
 		return errors.New("[Comment::ExtractFromStream] Data size too small")
 	}
 
-	unknown := stream.ReadByteNext()
-
-	contents, err := stream.ReadStringNext()
+	unknown := stream.ReadUInt8()
+	contents, err := stream.ReadString()
 
 	if err != nil {
 		return err
 	}
 
-	lastChanged := nex.NewDateTime(stream.ReadU64LENext(1)[0])
+	lastChanged := nex.NewDateTime(stream.ReadUInt64LE())
 
 	comment.unknown = unknown
 	comment.contents = contents
@@ -153,8 +152,8 @@ func (gameKey *GameKey) ExtractFromStream(stream *nex.StreamIn) error {
 		return errors.New("[GameKey::ExtractFromStream] Data size too small")
 	}
 
-	gameKey.titleID = stream.ReadU64LENext(1)[0]
-	gameKey.titleVersion = stream.ReadU16LENext(1)[0]
+	gameKey.titleID = stream.ReadUInt64LE()
+	gameKey.titleVersion = stream.ReadUInt16LE()
 
 	return nil
 }
@@ -172,21 +171,21 @@ func (mii *MiiV2) ExtractFromStream(stream *nex.StreamIn) error {
 		return errors.New("[MiiV2::ExtractFromStream] Data size too small")
 	}
 
-	name, err := stream.ReadStringNext()
+	name, err := stream.ReadString()
 
 	if err != nil {
 		return err
 	}
 
-	unknown1 := stream.ReadByteNext()
-	unknown2 := stream.ReadByteNext()
-	data, err := stream.ReadBufferNext()
+	unknown1 := stream.ReadUInt8()
+	unknown2 := stream.ReadUInt8()
+	data, err := stream.ReadBuffer()
 
 	if err != nil {
 		return err
 	}
 
-	datetime := nex.NewDateTime(stream.ReadU64LENext(1)[0])
+	datetime := nex.NewDateTime(stream.ReadUInt64LE())
 
 	mii.name = name
 	mii.unknown1 = unknown1
@@ -222,10 +221,8 @@ func (presence *NintendoPresenceV2) ExtractFromStream(stream *nex.StreamIn) erro
 		return errors.New("[NintendoPresenceV2::ExtractFromStream] Data size too small")
 	}
 
-	changedFlags := stream.ReadU32LENext(1)[0]
-
-	isOnline := (stream.ReadByteNext() == 1)
-
+	changedFlags := stream.ReadUInt32LE()
+	isOnline := (stream.ReadUInt8() == 1)
 	gameKey := &GameKey{}
 	err := gameKey.ExtractFromStream(stream)
 
@@ -233,38 +230,28 @@ func (presence *NintendoPresenceV2) ExtractFromStream(stream *nex.StreamIn) erro
 		return err
 	}
 
-	unknown1 := stream.ReadByteNext()
-
-	message, err := stream.ReadStringNext()
-
-	if err != nil {
-		return err
-	}
-
-	unknown2 := stream.ReadU32LENext(1)[0]
-
-	unknown3 := stream.ReadByteNext()
-
-	gameServerID := stream.ReadU32LENext(1)[0]
-
-	unknown4 := stream.ReadU32LENext(1)[0]
-
-	pid := stream.ReadU32LENext(1)[0]
-
-	gatheringID := stream.ReadU32LENext(1)[0]
-
-	applicationData, err := stream.ReadBufferNext()
+	unknown1 := stream.ReadUInt8()
+	message, err := stream.ReadString()
 
 	if err != nil {
 		return err
 	}
 
-	unknown5 := stream.ReadByteNext()
+	unknown2 := stream.ReadUInt32LE()
+	unknown3 := stream.ReadUInt8()
+	gameServerID := stream.ReadUInt32LE()
+	unknown4 := stream.ReadUInt32LE()
+	pid := stream.ReadUInt32LE()
+	gatheringID := stream.ReadUInt32LE()
+	applicationData, err := stream.ReadBuffer()
 
-	unknown6 := stream.ReadByteNext()
+	if err != nil {
+		return err
+	}
 
-	unknown7 := stream.ReadByteNext()
-
+	unknown5 := stream.ReadUInt8()
+	unknown6 := stream.ReadUInt8()
+	unknown7 := stream.ReadUInt8()
 
 	presence.changedFlags = changedFlags
 	presence.isOnline = isOnline
@@ -305,8 +292,8 @@ func (nnaInfo *NNAInfo) ExtractFromStream(stream *nex.StreamIn) error {
 		return err
 	}
 
-	unknown1 := stream.ReadByteNext()
-	unknown2 := stream.ReadByteNext()
+	unknown1 := stream.ReadUInt8()
+	unknown2 := stream.ReadUInt8()
 
 	nnaInfo.principalInfo = principalInfo
 	nnaInfo.unknown1 = unknown1
@@ -330,11 +317,11 @@ func (notification *PersistentNotification) ExtractFromStream(stream *nex.Stream
 		return errors.New("[PersistentNotification::ExtractFromStream] Data size too small")
 	}
 
-	unknown1 := stream.ReadU64LENext(1)[0]
-	unknown2 := stream.ReadU32LENext(1)[0]
-	unknown3 := stream.ReadU32LENext(1)[0]
-	unknown4 := stream.ReadU32LENext(1)[0]
-	unknown5, err := stream.ReadStringNext()
+	unknown1 := stream.ReadUInt64LE()
+	unknown2 := stream.ReadUInt32LE()
+	unknown3 := stream.ReadUInt32LE()
+	unknown4 := stream.ReadUInt32LE()
+	unknown5, err := stream.ReadString()
 
 	if err != nil {
 		return err
@@ -362,9 +349,8 @@ func (principalInfo *PrincipalBasicInfo) ExtractFromStream(stream *nex.StreamIn)
 		return errors.New("[PrincipalBasicInfo::ExtractFromStream] Data size too small")
 	}
 
-	pid := stream.ReadU32LENext(1)[0]
-
-	nnid, err := stream.ReadStringNext()
+	pid := stream.ReadUInt32LE()
+	nnid, err := stream.ReadString()
 
 	if err != nil {
 		return err
@@ -381,7 +367,7 @@ func (principalInfo *PrincipalBasicInfo) ExtractFromStream(stream *nex.StreamIn)
 		return errors.New("[PrincipalBasicInfo::ExtractFromStream] Data size too small")
 	}
 
-	unknown := stream.ReadByteNext()
+	unknown := stream.ReadUInt8()
 
 	principalInfo.pid = pid
 	principalInfo.nnid = nnid
@@ -404,9 +390,9 @@ func (preference *PrincipalPreference) ExtractFromStream(stream *nex.StreamIn) e
 		return errors.New("[PrincipalPreference::ExtractFromStream] Data size too small")
 	}
 
-	preference.unknown1 = (stream.ReadByteNext() == 1)
-	preference.unknown2 = (stream.ReadByteNext() == 1)
-	preference.unknown3 = (stream.ReadByteNext() == 1)
+	preference.unknown1 = (stream.ReadUInt8() == 1)
+	preference.unknown2 = (stream.ReadUInt8() == 1)
+	preference.unknown3 = (stream.ReadUInt8() == 1)
 
 	return nil
 }
@@ -611,8 +597,7 @@ func (friendsProtocol *FriendsProtocol) handleUpdateAndGetAllInformation(packet 
 		return
 	}
 
-
-	birthday := nex.NewDateTime(parametersStream.ReadU64LENext(1)[0])
+	birthday := nex.NewDateTime(parametersStream.ReadUInt64LE())
 
 	go friendsProtocol.UpdateAndGetAllInformationHandler(nil, client, callID, nnaInfo, presence, birthday)
 }
@@ -637,7 +622,7 @@ func (friendsProtocol *FriendsProtocol) handleAddFriend(packet nex.PacketInterfa
 		return
 	}
 
-	pid := parametersStream.ReadU32LENext(1)[0]
+	pid := parametersStream.ReadUInt32LE()
 
 	go friendsProtocol.AddFriendHandler(nil, client, callID, pid)
 }
@@ -657,7 +642,7 @@ func (friendsProtocol *FriendsProtocol) handleAddFriendByName(packet nex.PacketI
 
 	parametersStream := nex.NewStreamIn(parameters, friendsProtocol.server)
 
-	username, err := parametersStream.ReadStringNext()
+	username, err := parametersStream.ReadString()
 
 	if err != nil {
 		go friendsProtocol.AddFriendByNameHandler(err, client, callID, "")
@@ -687,7 +672,7 @@ func (friendsProtocol *FriendsProtocol) handleRemoveFriend(packet nex.PacketInte
 		return
 	}
 
-	pid := parametersStream.ReadU32LENext(1)[0]
+	pid := parametersStream.ReadUInt32LE()
 
 	go friendsProtocol.RemoveFriendHandler(nil, client, callID, pid)
 }
@@ -707,7 +692,7 @@ func (friendsProtocol *FriendsProtocol) handleAddFriendRequest(packet nex.Packet
 
 	parametersStream := nex.NewStreamIn(parameters, friendsProtocol.server)
 
-	if len(parametersStream.Bytes()[parametersStream.ByteOffset():]) < 4 + 1 +1 + 8 {
+	if len(parametersStream.Bytes()[parametersStream.ByteOffset():]) < 4+1+1+8 {
 		// length check for the following fixed-size data
 		// unknown1 + unknown2 + unknown4 + gameKey + unknown6
 		err := errors.New("[FriendsProtocol::AddFriendRequest] Data holder not long enough for PID")
@@ -715,17 +700,17 @@ func (friendsProtocol *FriendsProtocol) handleAddFriendRequest(packet nex.Packet
 		return
 	}
 
-	unknown1 := parametersStream.ReadU32LENext(1)[0]
-	unknown2 := parametersStream.ReadByteNext()
-	unknown3, err := parametersStream.ReadStringNext()
+	unknown1 := parametersStream.ReadUInt32LE()
+	unknown2 := parametersStream.ReadUInt8()
+	unknown3, err := parametersStream.ReadString()
 
 	if err != nil {
 		go friendsProtocol.AddFriendRequestHandler(err, client, callID, 0, 0, "", 0, "", &GameKey{}, nex.NewDateTime(0))
 		return
 	}
 
-	unknown4 := parametersStream.ReadByteNext()
-	unknown5, err := parametersStream.ReadStringNext()
+	unknown4 := parametersStream.ReadUInt8()
+	unknown5, err := parametersStream.ReadString()
 
 	if err != nil {
 		go friendsProtocol.AddFriendRequestHandler(err, client, callID, 0, 0, "", 0, "", &GameKey{}, nex.NewDateTime(0))
@@ -740,7 +725,7 @@ func (friendsProtocol *FriendsProtocol) handleAddFriendRequest(packet nex.Packet
 		return
 	}
 
-	unknown6 := nex.NewDateTime(parametersStream.ReadU64LENext(1)[0])
+	unknown6 := nex.NewDateTime(parametersStream.ReadUInt64LE())
 
 	go friendsProtocol.AddFriendRequestHandler(nil, client, callID, unknown1, unknown2, unknown3, unknown4, unknown5, gameKey, unknown6)
 }
@@ -766,7 +751,7 @@ func (friendsProtocol *FriendsProtocol) handleCancelFriendRequest(packet nex.Pac
 		return
 	}
 
-	id := parametersStream.ReadU64LENext(1)[0]
+	id := parametersStream.ReadUInt64LE()
 
 	go friendsProtocol.CancelFriendRequestHandler(nil, client, callID, id)
 }
@@ -792,7 +777,7 @@ func (friendsProtocol *FriendsProtocol) handleAcceptFriendRequest(packet nex.Pac
 		return
 	}
 
-	id := parametersStream.ReadU64LENext(1)[0]
+	id := parametersStream.ReadUInt64LE()
 
 	go friendsProtocol.AcceptFriendRequestHandler(nil, client, callID, id)
 }
@@ -818,7 +803,7 @@ func (friendsProtocol *FriendsProtocol) handleDeleteFriendRequest(packet nex.Pac
 		return
 	}
 
-	id := parametersStream.ReadU64LENext(1)[0]
+	id := parametersStream.ReadUInt64LE()
 
 	go friendsProtocol.DeleteFriendRequestHandler(nil, client, callID, id)
 }
@@ -844,7 +829,7 @@ func (friendsProtocol *FriendsProtocol) handleDenyFriendRequest(packet nex.Packe
 		return
 	}
 
-	id := parametersStream.ReadU64LENext(1)[0]
+	id := parametersStream.ReadUInt64LE()
 
 	go friendsProtocol.DenyFriendRequestHandler(nil, client, callID, id)
 }
@@ -870,7 +855,7 @@ func (friendsProtocol *FriendsProtocol) handleMarkFriendRequestsAsReceived(packe
 		return
 	}
 
-	idCount := parametersStream.ReadU32LENext(1)[0]
+	idCount := parametersStream.ReadUInt32LE()
 	ids := make([]uint64, 0)
 
 	if len(parametersStream.Bytes()[parametersStream.ByteOffset():]) < (8 * int(idCount)) {
@@ -880,7 +865,7 @@ func (friendsProtocol *FriendsProtocol) handleMarkFriendRequestsAsReceived(packe
 	}
 
 	for i := 0; i < int(idCount); i++ {
-		id := parametersStream.ReadU64LENext(1)[0]
+		id := parametersStream.ReadUInt64LE()
 		ids = append(ids, id)
 	}
 
@@ -934,7 +919,7 @@ func (friendsProtocol *FriendsProtocol) handleRemoveBlackList(packet nex.PacketI
 		return
 	}
 
-	pid := parametersStream.ReadU32LENext(1)[0]
+	pid := parametersStream.ReadUInt32LE()
 
 	go friendsProtocol.RemoveBlackListHandler(nil, client, callID, pid)
 }
@@ -1064,7 +1049,7 @@ func (friendsProtocol *FriendsProtocol) handleGetBasicInfo(packet nex.PacketInte
 		return
 	}
 
-	pidCount := parametersStream.ReadU32LENext(1)[0]
+	pidCount := parametersStream.ReadUInt32LE()
 	pids := make([]uint32, 0)
 
 	if len(parametersStream.Bytes()[parametersStream.ByteOffset():]) < (4 * int(pidCount)) {
@@ -1074,7 +1059,7 @@ func (friendsProtocol *FriendsProtocol) handleGetBasicInfo(packet nex.PacketInte
 	}
 
 	for i := 0; i < int(pidCount); i++ {
-		pid := parametersStream.ReadU32LENext(1)[0]
+		pid := parametersStream.ReadUInt32LE()
 		pids = append(pids, pid)
 	}
 
@@ -1096,7 +1081,7 @@ func (friendsProtocol *FriendsProtocol) handleDeleteFriendFlags(packet nex.Packe
 
 	parametersStream := nex.NewStreamIn(parameters, friendsProtocol.server)
 
-	notificationCount := parametersStream.ReadU32LENext(1)[0]
+	notificationCount := parametersStream.ReadUInt32LE()
 	notifications := make([]*PersistentNotification, 0)
 
 	for i := 0; i < int(notificationCount); i++ {
@@ -1144,7 +1129,7 @@ func (friendsProtocol *FriendsProtocol) handleGetRequestBlockSettings(packet nex
 		return
 	}
 
-	unknownCount := parametersStream.ReadU32LENext(1)[0]
+	unknownCount := parametersStream.ReadUInt32LE()
 	unknowns := make([]uint32, 0)
 
 	if len(parametersStream.Bytes()[parametersStream.ByteOffset():]) < (4 * int(unknownCount)) {
@@ -1154,7 +1139,7 @@ func (friendsProtocol *FriendsProtocol) handleGetRequestBlockSettings(packet nex
 	}
 
 	for i := 0; i < int(unknownCount); i++ {
-		unknown := parametersStream.ReadU32LENext(1)[0]
+		unknown := parametersStream.ReadUInt32LE()
 		unknowns = append(unknowns, unknown)
 	}
 

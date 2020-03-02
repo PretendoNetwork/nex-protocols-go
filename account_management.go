@@ -94,9 +94,9 @@ func (accountManagementProtocol *AccountManagementProtocol) respondNotImplemente
 
 	var responsePacket nex.PacketInterface
 	if packet.GetVersion() == 1 {
-		responsePacket, _ = nex.NewPacketV0(client, nil)
-	} else {
 		responsePacket, _ = nex.NewPacketV1(client, nil)
+	} else {
+		responsePacket, _ = nex.NewPacketV0(client, nil)
 	}
 
 	responsePacket.SetVersion(packet.GetVersion())

@@ -222,7 +222,6 @@ func (secureProtocol *SecureProtocol) handleRegisterEx(packet nex.PacketInterfac
 		fmt.Println("[Warning] SecureProtocol::RegisterEx not implemented")
 		go secureProtocol.respondNotImplemented(packet)
 		return
-		return
 	}
 
 	client := packet.GetSender()

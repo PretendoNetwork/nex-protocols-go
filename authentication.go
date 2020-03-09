@@ -259,7 +259,8 @@ func (authenticationProtocol *AuthenticationProtocol) handleRequestTicket(packet
 	parameters := request.GetParameters()
 
 	if len(parameters) != 8 {
-		go authenticationProtocol.RequestTicketHandler(errors.New("[AuthenticationProtocol::RequestTicket] Parameters length not 8"), client, callID, 0, 0)
+		err := errors.New("[AuthenticationProtocol::RequestTicket] Parameters length not 8")
+		go authenticationProtocol.RequestTicketHandler(err, client, callID, 0, 0)
 	}
 
 	parametersStream := nex.NewStreamIn(parameters, authenticationProtocol.server)
@@ -311,7 +312,8 @@ func (authenticationProtocol *AuthenticationProtocol) handleGetName(packet nex.P
 	parametersStream := nex.NewStreamIn(parameters, authenticationProtocol.server)
 
 	if len(parameters) != 4 {
-		go authenticationProtocol.RequestTicketHandler(errors.New("[AuthenticationProtocol::GetName] Parameters length not 4"), client, callID, 0, 0)
+		err := errors.New("[AuthenticationProtocol::GetName] Parameters length not 4")
+		go authenticationProtocol.RequestTicketHandler(err, client, callID, 0, 0)
 	}
 
 	userPID := parametersStream.ReadUInt32LE()

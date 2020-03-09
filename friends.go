@@ -682,7 +682,8 @@ func (friendsProtocol *FriendsProtocol) handleAddFriend(packet nex.PacketInterfa
 	parametersStream := nex.NewStreamIn(parameters, friendsProtocol.server)
 
 	if len(parametersStream.Bytes()[parametersStream.ByteOffset():]) < 4 {
-		go friendsProtocol.AddFriendHandler(errors.New("[FriendsProtocol::AddFriend] Data holder not long enough for PID"), client, callID, 0)
+		err := errors.New("[FriendsProtocol::AddFriend] Data holder not long enough for PID")
+		go friendsProtocol.AddFriendHandler(err, client, callID, 0)
 		return
 	}
 
@@ -732,7 +733,8 @@ func (friendsProtocol *FriendsProtocol) handleRemoveFriend(packet nex.PacketInte
 	parametersStream := nex.NewStreamIn(parameters, friendsProtocol.server)
 
 	if len(parametersStream.Bytes()[parametersStream.ByteOffset():]) < 4 {
-		go friendsProtocol.RemoveFriendHandler(errors.New("[FriendsProtocol::RemoveFriend] Data holder not long enough for PID"), client, callID, 0)
+		err := errors.New("[FriendsProtocol::RemoveFriend] Data holder not long enough for PID")
+		go friendsProtocol.RemoveFriendHandler(err, client, callID, 0)
 		return
 	}
 

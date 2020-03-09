@@ -207,19 +207,20 @@ func (authenticationProtocol *AuthenticationProtocol) handleLoginEx(packet nex.P
 	username, err := parametersStream.ReadString()
 
 	if err != nil {
-		go authenticationProtocol.LoginExHandler(err, client, callID, "", &AuthenticationInfo{})
+		go authenticationProtocol.LoginExHandler(err, client, callID, "", nil)
 		return
 	}
 
 	dataHolderName, err := parametersStream.ReadString()
 
 	if err != nil {
-		go authenticationProtocol.LoginExHandler(err, client, callID, "", &AuthenticationInfo{})
+		go authenticationProtocol.LoginExHandler(err, client, callID, "", nil)
 		return
 	}
 
 	if dataHolderName != "AuthenticationInfo" {
-		go authenticationProtocol.LoginExHandler(errors.New("[AuthenticationProtocol::LoginEx] Data holder name does not match"), client, callID, "", &AuthenticationInfo{})
+		err := errors.New("[AuthenticationProtocol::LoginEx] Data holder name does not match")
+		go authenticationProtocol.LoginExHandler(err, client, callID, "", nil)
 		return
 	}
 
@@ -228,7 +229,7 @@ func (authenticationProtocol *AuthenticationProtocol) handleLoginEx(packet nex.P
 	dataHolderContent, err := parametersStream.ReadBuffer()
 
 	if err != nil {
-		go authenticationProtocol.LoginExHandler(err, client, callID, "", &AuthenticationInfo{})
+		go authenticationProtocol.LoginExHandler(err, client, callID, "", nil)
 		return
 	}
 
@@ -237,7 +238,7 @@ func (authenticationProtocol *AuthenticationProtocol) handleLoginEx(packet nex.P
 	authenticationInfo, err := dataHolderContentStream.ReadStructure(NewAuthenticationInfo())
 
 	if err != nil {
-		go authenticationProtocol.LoginExHandler(err, client, callID, "", &AuthenticationInfo{})
+		go authenticationProtocol.LoginExHandler(err, client, callID, "", nil)
 		return
 	}
 

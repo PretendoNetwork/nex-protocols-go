@@ -100,9 +100,7 @@ func (dataStoreGetMetaParam *DataStoreGetMetaParam) ExtractFromStream(stream *ne
 }
 
 func NewDataStoreGetMetaParam() *DataStoreGetMetaParam {
-	dataStoreGetMetaParam := &DataStoreGetMetaParam{}
-
-	return dataStoreGetMetaParam
+	return &DataStoreGetMetaParam{}
 }
 
 type DataStorePersistenceTarget struct {
@@ -135,9 +133,7 @@ func (dataStorePersistenceTarget *DataStorePersistenceTarget) ExtractFromStream(
 }
 
 func NewDataStorePersistenceTarget() *DataStorePersistenceTarget {
-	dataStorePersistenceTarget := &DataStorePersistenceTarget{}
-
-	return dataStorePersistenceTarget
+	return &DataStorePersistenceTarget{}
 }
 
 type DataStoreMetaInfo struct {
@@ -214,7 +210,7 @@ func (dataStoreProtocol *DataStoreProtocol) handleGetMeta(packet nex.PacketInter
 	dataStoreGetMetaParam, err := parametersStream.ReadStructure(NewDataStoreGetMetaParam())
 
 	if err != nil {
-		go dataStoreProtocol.GetMetaHandler(err, client, callID, &DataStoreGetMetaParam{})
+		go dataStoreProtocol.GetMetaHandler(err, client, callID, nil)
 		return
 	}
 

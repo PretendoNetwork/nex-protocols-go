@@ -918,7 +918,7 @@ func (friendsProtocol *FriendsProtocol) handleMarkFriendRequestsAsReceived(packe
 	callID := request.GetCallID()
 	parameters := request.GetParameters()
 
-	parametersStream := nex.NewStreamIn(parameters, friendsProtocol.server)
+	parametersStream := NewStreamIn(parameters, friendsProtocol.server)
 
 	if len(parametersStream.Bytes()[parametersStream.ByteOffset():]) < 4 {
 		err := errors.New("[FriendsProtocol::MarkFriendRequestsAsReceived] Data missing list length")
@@ -926,19 +926,7 @@ func (friendsProtocol *FriendsProtocol) handleMarkFriendRequestsAsReceived(packe
 		return
 	}
 
-	idCount := parametersStream.ReadUInt32LE()
-	ids := make([]uint64, 0)
-
-	if len(parametersStream.Bytes()[parametersStream.ByteOffset():]) < (8 * int(idCount)) {
-		err := errors.New("[FriendsProtocol::MarkFriendRequestsAsReceived] Data length less than content length")
-		go friendsProtocol.MarkFriendRequestsAsReceivedHandler(err, client, callID, ids)
-		return
-	}
-
-	for i := 0; i < int(idCount); i++ {
-		id := parametersStream.ReadUInt64LE()
-		ids = append(ids, id)
-	}
+	ids := parametersStream.ReadListUInt64LE()
 
 	go friendsProtocol.MarkFriendRequestsAsReceivedHandler(nil, client, callID, ids)
 }
@@ -1112,7 +1100,7 @@ func (friendsProtocol *FriendsProtocol) handleGetBasicInfo(packet nex.PacketInte
 	callID := request.GetCallID()
 	parameters := request.GetParameters()
 
-	parametersStream := nex.NewStreamIn(parameters, friendsProtocol.server)
+	parametersStream := NewStreamIn(parameters, friendsProtocol.server)
 
 	if len(parametersStream.Bytes()[parametersStream.ByteOffset():]) < 4 {
 		err := errors.New("[FriendsProtocol::GetBasicInfo] Data missing list length")
@@ -1120,19 +1108,7 @@ func (friendsProtocol *FriendsProtocol) handleGetBasicInfo(packet nex.PacketInte
 		return
 	}
 
-	pidCount := parametersStream.ReadUInt32LE()
-	pids := make([]uint32, 0)
-
-	if len(parametersStream.Bytes()[parametersStream.ByteOffset():]) < (4 * int(pidCount)) {
-		err := errors.New("[FriendsProtocol::GetBasicInfo] Data length less than content length")
-		go friendsProtocol.GetBasicInfoHandler(err, client, callID, pids)
-		return
-	}
-
-	for i := 0; i < int(pidCount); i++ {
-		pid := parametersStream.ReadUInt32LE()
-		pids = append(pids, pid)
-	}
+	pids := parametersStream.ReadListUInt32LE()
 
 	go friendsProtocol.GetBasicInfoHandler(nil, client, callID, pids)
 }
@@ -1150,20 +1126,13 @@ func (friendsProtocol *FriendsProtocol) handleDeleteFriendFlags(packet nex.Packe
 	callID := request.GetCallID()
 	parameters := request.GetParameters()
 
-	parametersStream := nex.NewStreamIn(parameters, friendsProtocol.server)
+	parametersStream := NewStreamIn(parameters, friendsProtocol.server)
 
-	notificationCount := parametersStream.ReadUInt32LE()
-	persistentNotifications := make([]*PersistentNotification, 0)
+	persistentNotifications, err := parametersStream.ReadListPersistentNotification()
 
-	for i := 0; i < int(notificationCount); i++ {
-		persistentNotificationStructureInterface, err := parametersStream.ReadStructure(NewPersistentNotification())
-		if err != nil {
-			go friendsProtocol.DeleteFriendFlagsHandler(nil, client, callID, persistentNotifications)
-			return
-		}
-
-		persistentNotification := persistentNotificationStructureInterface.(*PersistentNotification)
-		persistentNotifications = append(persistentNotifications, persistentNotification)
+	if err != nil {
+		go friendsProtocol.DeleteFriendFlagsHandler(err, client, callID, nil)
+		return
 	}
 
 	go friendsProtocol.DeleteFriendFlagsHandler(nil, client, callID, persistentNotifications)
@@ -1197,7 +1166,7 @@ func (friendsProtocol *FriendsProtocol) handleGetRequestBlockSettings(packet nex
 	callID := request.GetCallID()
 	parameters := request.GetParameters()
 
-	parametersStream := nex.NewStreamIn(parameters, friendsProtocol.server)
+	parametersStream := NewStreamIn(parameters, friendsProtocol.server)
 
 	if len(parametersStream.Bytes()[parametersStream.ByteOffset():]) < 4 {
 		err := errors.New("[FriendsProtocol::GetRequestBlockSettings] Data missing list length")
@@ -1205,19 +1174,7 @@ func (friendsProtocol *FriendsProtocol) handleGetRequestBlockSettings(packet nex
 		return
 	}
 
-	unknownCount := parametersStream.ReadUInt32LE()
-	unknowns := make([]uint32, 0)
-
-	if len(parametersStream.Bytes()[parametersStream.ByteOffset():]) < (4 * int(unknownCount)) {
-		err := errors.New("[FriendsProtocol::GetRequestBlockSettings] Data length less than content length")
-		go friendsProtocol.GetRequestBlockSettingsHandler(err, client, callID, unknowns)
-		return
-	}
-
-	for i := 0; i < int(unknownCount); i++ {
-		unknown := parametersStream.ReadUInt32LE()
-		unknowns = append(unknowns, unknown)
-	}
+	unknowns := parametersStream.ReadListUInt32LE()
 
 	go friendsProtocol.GetRequestBlockSettingsHandler(nil, client, callID, unknowns)
 }

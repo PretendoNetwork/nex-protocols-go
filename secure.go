@@ -137,7 +137,7 @@ func (secureProtocol *SecureProtocol) handleRegister(packet nex.PacketInterface)
 	callID := request.GetCallID()
 	parameters := request.GetParameters()
 
-	parametersStream := nex.NewStreamIn(parameters, secureProtocol.server)
+	parametersStream := NewStreamIn(parameters, secureProtocol.server)
 
 	if len(parametersStream.Bytes()[parametersStream.ByteOffset():]) < 4 {
 		err := errors.New("[SecureProtocol::Register] Data missing list length")
@@ -145,19 +145,11 @@ func (secureProtocol *SecureProtocol) handleRegister(packet nex.PacketInterface)
 		return
 	}
 
-	stationURLCount := parametersStream.ReadUInt32LE()
-	stationUrls := make([]*nex.StationURL, 0)
+	stationUrls, err := parametersStream.ReadListStationURL()
 
-	for i := 0; i < int(stationURLCount); i++ {
-		stationString, err := parametersStream.ReadString()
-
-		if err != nil {
-			go secureProtocol.RegisterHandler(err, client, callID, stationUrls)
-			return
-		}
-
-		station := nex.NewStationURL(stationString)
-		stationUrls = append(stationUrls, station)
+	if err != nil {
+		go secureProtocol.RegisterHandler(err, client, callID, nil)
+		return
 	}
 
 	go secureProtocol.RegisterHandler(nil, client, callID, stationUrls)

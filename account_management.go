@@ -8,16 +8,20 @@ import (
 )
 
 const (
+	// AccountManagementProtocolID is the protocol ID for the Account Management protocol
 	AccountManagementProtocolID = 0x19
 
+	// AccountManagementMethodNintendoCreateAccount is the method ID for the method NintendoCreateAccount
 	AccountManagementMethodNintendoCreateAccount = 0x1B
 )
 
+// AccountManagementProtocol handles the Account Management nex protocol
 type AccountManagementProtocol struct {
 	server                       *nex.Server
 	NintendoCreateAccountHandler func(err error, client *nex.Client, callID uint32, username string, key string, groups uint32, email string, nintendoCreateAccountData *NintendoCreateAccountData)
 }
 
+// NintendoCreateAccountData contains data for creating a new NNID on the network
 type NintendoCreateAccountData struct {
 	NNAInfo  *NNAInfo
 	Token    string
@@ -28,6 +32,7 @@ type NintendoCreateAccountData struct {
 	nex.Structure
 }
 
+// ExtractFromStream extracts a NintendoCreateAccountData structure from a stream
 func (nintendoCreateAccountData *NintendoCreateAccountData) ExtractFromStream(stream *nex.StreamIn) error {
 	nnaInfoStructureInterface, err := stream.ReadStructure(NewNNAInfo())
 	if err != nil {
@@ -52,10 +57,12 @@ func (nintendoCreateAccountData *NintendoCreateAccountData) ExtractFromStream(st
 	return nil
 }
 
+// NewNintendoCreateAccountData returns a new NintendoCreateAccountData
 func NewNintendoCreateAccountData() *NintendoCreateAccountData {
 	return &NintendoCreateAccountData{}
 }
 
+// Setup initializes the protocol
 func (accountManagementProtocol *AccountManagementProtocol) Setup() {
 	nexServer := accountManagementProtocol.server
 
@@ -101,6 +108,7 @@ func (accountManagementProtocol *AccountManagementProtocol) respondNotImplemente
 	accountManagementProtocol.server.Send(responsePacket)
 }
 
+// NintendoCreateAccount sets the NintendoCreateAccount handler function
 func (accountManagementProtocol *AccountManagementProtocol) NintendoCreateAccount(handler func(err error, client *nex.Client, callID uint32, username string, key string, groups uint32, email string, nintendoCreateAccountData *NintendoCreateAccountData)) {
 	accountManagementProtocol.NintendoCreateAccountHandler = handler
 }
@@ -172,6 +180,7 @@ func (accountManagementProtocol *AccountManagementProtocol) handleNintendoCreate
 	go accountManagementProtocol.NintendoCreateAccountHandler(nil, client, callID, username, key, groups, email, nintendoCreateAccountData)
 }
 
+// NewAccountManagementProtocol returns a new AccountManagementProtocol
 func NewAccountManagementProtocol(server *nex.Server) *AccountManagementProtocol {
 	accountManagementProtocol := &AccountManagementProtocol{server: server}
 

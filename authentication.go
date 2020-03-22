@@ -8,16 +8,29 @@ import (
 )
 
 const (
+	// AuthenticationProtocolID is the protocol ID for the Authentication protocol
 	AuthenticationProtocolID = 0xA
 
-	AuthenticationMethodLogin          = 0x1
-	AuthenticationMethodLoginEx        = 0x2
-	AuthenticationMethodRequestTicket  = 0x3
-	AuthenticationMethodGetPID         = 0x4
-	AuthenticationMethodGetName        = 0x5
+	// AuthenticationMethodLogin is the method ID for the method Login
+	AuthenticationMethodLogin = 0x1
+
+	// AuthenticationMethodLoginEx is the method ID for the method LoginEx
+	AuthenticationMethodLoginEx = 0x2
+
+	// AuthenticationMethodRequestTicket is the method ID for the method RequestTicket
+	AuthenticationMethodRequestTicket = 0x3
+
+	// AuthenticationMethodGetPID is the method ID for the method GetPID
+	AuthenticationMethodGetPID = 0x4
+
+	// AuthenticationMethodGetName is the method ID for the method GetName
+	AuthenticationMethodGetName = 0x5
+
+	// AuthenticationMethodLoginWithParam is the method ID for the method LoginWithParam
 	AuthenticationMethodLoginWithParam = 0x6
 )
 
+// AuthenticationProtocol handles the Authentication nex protocol
 type AuthenticationProtocol struct {
 	server                *nex.Server
 	LoginHandler          func(err error, client *nex.Client, callID uint32, username string)
@@ -28,10 +41,12 @@ type AuthenticationProtocol struct {
 	LoginWithParamHandler func(err error, client *nex.Client, callID uint32)
 }
 
+// NintendoLoginData holds a nex auth token
 type NintendoLoginData struct {
 	Token string
 }
 
+// AuthenticationInfo holds information about an authentication request
 type AuthenticationInfo struct {
 	Token         string
 	NGSVersion    uint32
@@ -42,10 +57,12 @@ type AuthenticationInfo struct {
 	*nex.NullData
 }
 
+// GetHierarchy returns the Structure hierarchy
 func (authenticationInfo *AuthenticationInfo) GetHierarchy() []nex.StructureInterface {
 	return authenticationInfo.hierarchy
 }
 
+// ExtractFromStream extracts a AuthenticationInfo structure from a stream
 func (authenticationInfo *AuthenticationInfo) ExtractFromStream(stream *nex.StreamIn) error {
 	var err error
 	var token string
@@ -70,6 +87,7 @@ func (authenticationInfo *AuthenticationInfo) ExtractFromStream(stream *nex.Stre
 	return nil
 }
 
+// NewAuthenticationInfo returns a new AuthenticationInfo
 func NewAuthenticationInfo() *AuthenticationInfo {
 	authenticationInfo := &AuthenticationInfo{}
 
@@ -84,6 +102,7 @@ func NewAuthenticationInfo() *AuthenticationInfo {
 	return authenticationInfo
 }
 
+// Setup initializes the protocol
 func (authenticationProtocol *AuthenticationProtocol) Setup() {
 	nexServer := authenticationProtocol.server
 
@@ -140,26 +159,32 @@ func (authenticationProtocol *AuthenticationProtocol) respondNotImplemented(pack
 	authenticationProtocol.server.Send(responsePacket)
 }
 
+// Login sets the Login handler function
 func (authenticationProtocol *AuthenticationProtocol) Login(handler func(err error, client *nex.Client, callID uint32, username string)) {
 	authenticationProtocol.LoginHandler = handler
 }
 
+// LoginEx sets the LoginEx handler function
 func (authenticationProtocol *AuthenticationProtocol) LoginEx(handler func(err error, client *nex.Client, callID uint32, username string, authenticationInfo *AuthenticationInfo)) {
 	authenticationProtocol.LoginExHandler = handler
 }
 
+// RequestTicket sets the RequestTicket handler function
 func (authenticationProtocol *AuthenticationProtocol) RequestTicket(handler func(err error, client *nex.Client, callID uint32, userPID uint32, serverPID uint32)) {
 	authenticationProtocol.RequestTicketHandler = handler
 }
 
+// GetPID sets the GetPID handler function
 func (authenticationProtocol *AuthenticationProtocol) GetPID(handler func(err error, client *nex.Client, callID uint32, username string)) {
 	authenticationProtocol.GetPIDHandler = handler
 }
 
+// GetName sets the GetName handler function
 func (authenticationProtocol *AuthenticationProtocol) GetName(handler func(err error, client *nex.Client, callID uint32, userPID uint32)) {
 	authenticationProtocol.GetNameHandler = handler
 }
 
+// LoginWithParam sets the LoginWithParam handler function
 func (authenticationProtocol *AuthenticationProtocol) LoginWithParam(handler func(err error, client *nex.Client, callID uint32)) {
 	authenticationProtocol.LoginWithParamHandler = handler
 }
@@ -331,6 +356,7 @@ func (authenticationProtocol *AuthenticationProtocol) handleLoginWithParam(packe
 	// Unsure what data is sent here, or how to trigger the console to send it
 }
 
+// NewAuthenticationProtocol returns a new AuthenticationProtocol
 func NewAuthenticationProtocol(server *nex.Server) *AuthenticationProtocol {
 	authenticationProtocol := &AuthenticationProtocol{server: server}
 

@@ -8,18 +8,35 @@ import (
 )
 
 const (
+	// SecureProtocolID is the protocol ID for the Secure Connection protocol
 	SecureProtocolID = 0xB
 
-	SecureMethodRegister              = 0x1
+	// SecureMethodRegister is the method ID for the method Register
+	SecureMethodRegister = 0x1
+
+	// SecureMethodRequestConnectionData is the method ID for the method RequestConnectionData
 	SecureMethodRequestConnectionData = 0x2
-	SecureMethodRequestURLs           = 0x3
-	SecureMethodRegisterEx            = 0x4
-	SecureMethodTestConnectivity      = 0x5
-	SecureMethodUpdateURLs            = 0x6
-	SecureMethodReplaceURL            = 0x7
-	SecureMethodSendReport            = 0x8
+
+	// SecureMethodRequestURLs is the method ID for the method RequestURLs
+	SecureMethodRequestURLs = 0x3
+
+	// SecureMethodRegisterEx is the method ID for the method RegisterEx
+	SecureMethodRegisterEx = 0x4
+
+	// SecureMethodTestConnectivity is the method ID for the method TestConnectivity
+	SecureMethodTestConnectivity = 0x5
+
+	// SecureMethodUpdateURLs is the method ID for the method UpdateURLs
+	SecureMethodUpdateURLs = 0x6
+
+	// SecureMethodReplaceURL is the method ID for the method ReplaceURL
+	SecureMethodReplaceURL = 0x7
+
+	// SecureMethodSendReport is the method ID for the method SendReport
+	SecureMethodSendReport = 0x8
 )
 
+// SecureProtocol handles the Secure Connection nex protocol
 type SecureProtocol struct {
 	server                       *nex.Server
 	ConnectionIDCounter          *nex.Counter
@@ -33,6 +50,7 @@ type SecureProtocol struct {
 	SendReportHandler            func(err error, client *nex.Client, callID uint32, reportID uint32, report []byte)
 }
 
+// Setup initializes the protocol
 func (secureProtocol *SecureProtocol) Setup() {
 	nexServer := secureProtocol.server
 
@@ -92,34 +110,42 @@ func (secureProtocol *SecureProtocol) respondNotImplemented(packet nex.PacketInt
 	secureProtocol.server.Send(responsePacket)
 }
 
+// Register sets the Register handler function
 func (secureProtocol *SecureProtocol) Register(handler func(err error, client *nex.Client, callID uint32, stationUrls []*nex.StationURL)) {
 	secureProtocol.RegisterHandler = handler
 }
 
+// RequestConnectionData sets the RequestConnectionData handler function
 func (secureProtocol *SecureProtocol) RequestConnectionData(handler func(err error, client *nex.Client, callID uint32, stationCID uint32, stationPID uint32)) {
 	secureProtocol.RequestConnectionDataHandler = handler
 }
 
+// RequestURLs sets the RequestURLs handler function
 func (secureProtocol *SecureProtocol) RequestURLs(handler func(err error, client *nex.Client, callID uint32, stationCID uint32, stationPID uint32)) {
 	secureProtocol.RequestURLsHandler = handler
 }
 
+// RegisterEx sets the RegisterEx handler function
 func (secureProtocol *SecureProtocol) RegisterEx(handler func(err error, client *nex.Client, callID uint32, stationUrls []*nex.StationURL, loginData NintendoLoginData)) {
 	secureProtocol.RegisterExHandler = handler
 }
 
+// TestConnectivity sets the TestConnectivity handler function
 func (secureProtocol *SecureProtocol) TestConnectivity(handler func(err error, client *nex.Client, callID uint32)) {
 	secureProtocol.TestConnectivityHandler = handler
 }
 
+// UpdateURLs sets the UpdateURLs handler function
 func (secureProtocol *SecureProtocol) UpdateURLs(handler func(err error, client *nex.Client, callID uint32, stationUrls []*nex.StationURL)) {
 	secureProtocol.UpdateURLsHandler = handler
 }
 
+// ReplaceURL sets the ReplaceURL handler function
 func (secureProtocol *SecureProtocol) ReplaceURL(handler func(err error, client *nex.Client, callID uint32, oldStation *nex.StationURL, newStation *nex.StationURL)) {
 	secureProtocol.ReplaceURLHandler = handler
 }
 
+// SendReport sets the SendReport handler function
 func (secureProtocol *SecureProtocol) SendReport(handler func(err error, client *nex.Client, callID uint32, reportID uint32, report []byte)) {
 	secureProtocol.SendReportHandler = handler
 }
@@ -407,6 +433,7 @@ func (secureProtocol *SecureProtocol) handleSendReport(packet nex.PacketInterfac
 	go secureProtocol.SendReportHandler(nil, client, callID, reportID, report)
 }
 
+// NewSecureProtocol returns a new SecureProtocol
 func NewSecureProtocol(server *nex.Server) *SecureProtocol {
 	secureProtocol := &SecureProtocol{
 		server:              server,

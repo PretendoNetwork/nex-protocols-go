@@ -8,30 +8,71 @@ import (
 )
 
 const (
+	// FriendsProtocolID is the protocol ID for the Friends (WiiU) protocol
 	FriendsProtocolID = 0x66
 
-	FriendsMethodUpdateAndGetAllInformation   = 0x1
-	FriendsMethodAddFriend                    = 0x2
-	FriendsMethodAddFriendByName              = 0x3
-	FriendsMethodRemoveFriend                 = 0x4
-	FriendsMethodAddFriendRequest             = 0x5
-	FriendsMethodCancelFriendRequest          = 0x6
-	FriendsMethodAcceptFriendRequest          = 0x7
-	FriendsMethodDeleteFriendRequest          = 0x8
-	FriendsMethodDenyFriendRequest            = 0x9
+	// FriendsMethodUpdateAndGetAllInformation is the method ID for method UpdateAndGetAllInformation
+	FriendsMethodUpdateAndGetAllInformation = 0x1
+
+	// FriendsMethodAddFriend is the method ID for method AddFriend
+	FriendsMethodAddFriend = 0x2
+
+	// FriendsMethodAddFriendByName is the method ID for method AddFriendByName
+	FriendsMethodAddFriendByName = 0x3
+
+	// FriendsMethodRemoveFriend is the method ID for method RemoveFriend
+	FriendsMethodRemoveFriend = 0x4
+
+	// FriendsMethodAddFriendRequest is the method ID for method AddFriendRequest
+	FriendsMethodAddFriendRequest = 0x5
+
+	// FriendsMethodCancelFriendRequest is the method ID for method CancelFriendRequest
+	FriendsMethodCancelFriendRequest = 0x6
+
+	// FriendsMethodAcceptFriendRequest is the method ID for method AcceptFriendRequest
+	FriendsMethodAcceptFriendRequest = 0x7
+
+	// FriendsMethodDeleteFriendRequest is the method ID for method DeleteFriendRequest
+	FriendsMethodDeleteFriendRequest = 0x8
+
+	// FriendsMethodDenyFriendRequest is the method ID for method DenyFriendRequest
+	FriendsMethodDenyFriendRequest = 0x9
+
+	// FriendsMethodMarkFriendRequestsAsReceived is the method ID for method MarkFriendRequestsAsReceived
 	FriendsMethodMarkFriendRequestsAsReceived = 0xA
-	FriendsMethodAddBlackList                 = 0xB
-	FriendsMethodRemoveBlackList              = 0xC
-	FriendsMethodUpdatePresence               = 0xD
-	FriendsMethodUpdateMii                    = 0xE
-	FriendsMethodUpdateComment                = 0xF
-	FriendsMethodUpdatePreference             = 0x10
-	FriendsMethodGetBasicInfo                 = 0x11
-	FriendsMethodDeleteFriendFlags            = 0x12
-	FriendsMethodCheckSettingStatus           = 0x13
-	FriendsMethodGetRequestBlockSettings      = 0x14
+
+	// FriendsMethodAddBlackList is the method ID for method AddBlackList
+	FriendsMethodAddBlackList = 0xB
+
+	// FriendsMethodRemoveBlackList is the method ID for method RemoveBlackList
+	FriendsMethodRemoveBlackList = 0xC
+
+	// FriendsMethodUpdatePresence is the method ID for method UpdatePresence
+	FriendsMethodUpdatePresence = 0xD
+
+	// FriendsMethodUpdateMii is the method ID for method UpdateMii
+	FriendsMethodUpdateMii = 0xE
+
+	// FriendsMethodUpdateComment is the method ID for method UpdateComment
+	FriendsMethodUpdateComment = 0xF
+
+	// FriendsMethodUpdatePreference is the method ID for method UpdatePreference
+	FriendsMethodUpdatePreference = 0x10
+
+	// FriendsMethodGetBasicInfo is the method ID for method GetBasicInfo
+	FriendsMethodGetBasicInfo = 0x11
+
+	// FriendsMethodDeleteFriendFlags is the method ID for method DeleteFriendFlags
+	FriendsMethodDeleteFriendFlags = 0x12
+
+	// FriendsMethodCheckSettingStatus is the method ID for method CheckSettingStatus
+	FriendsMethodCheckSettingStatus = 0x13
+
+	// FriendsMethodGetRequestBlockSettings is the method ID for method GetRequestBlockSettings
+	FriendsMethodGetRequestBlockSettings = 0x14
 )
 
+// FriendsProtocol handles the Friends (WiiU) nex protocol
 type FriendsProtocol struct {
 	server                              *nex.Server
 	UpdateAndGetAllInformationHandler   func(err error, client *nex.Client, callID uint32, nnaInfo *NNAInfo, presence *NintendoPresenceV2, birthday *nex.DateTime)
@@ -56,6 +97,7 @@ type FriendsProtocol struct {
 	GetRequestBlockSettingsHandler      func(err error, client *nex.Client, callID uint32, unknowns []uint32)
 }
 
+// BlacklistedPrincipal contains information about a blocked user
 type BlacklistedPrincipal struct {
 	PrincipalBasicInfo *PrincipalBasicInfo
 	GameKey            *GameKey
@@ -64,6 +106,7 @@ type BlacklistedPrincipal struct {
 	nex.Structure
 }
 
+// ExtractFromStream extracts a BlacklistedPrincipal structure from a stream
 func (blacklistedPrincipal *BlacklistedPrincipal) ExtractFromStream(stream *nex.StreamIn) error {
 	principalBasicInfoStructureInterface, err := stream.ReadStructure(NewPrincipalBasicInfo())
 	if err != nil {
@@ -90,10 +133,12 @@ func (blacklistedPrincipal *BlacklistedPrincipal) ExtractFromStream(stream *nex.
 	return nil
 }
 
+// NewBlacklistedPrincipal returns a new BlacklistedPrincipal
 func NewBlacklistedPrincipal() *BlacklistedPrincipal {
 	return &BlacklistedPrincipal{}
 }
 
+// Comment contains data about a text comment
 type Comment struct {
 	Unknown     uint8
 	Contents    string
@@ -102,6 +147,7 @@ type Comment struct {
 	nex.Structure
 }
 
+// Bytes encodes the Comment and returns a byte array
 func (comment *Comment) Bytes(stream *nex.StreamOut) []byte {
 	stream.WriteUInt8(comment.Unknown)
 	stream.WriteString(comment.Contents)
@@ -110,6 +156,7 @@ func (comment *Comment) Bytes(stream *nex.StreamOut) []byte {
 	return stream.Bytes()
 }
 
+// ExtractFromStream extracts a Comment structure from a stream
 func (comment *Comment) ExtractFromStream(stream *nex.StreamIn) error {
 	if len(stream.Bytes()[stream.ByteOffset():]) < 9 { // unknown byte + datetime uint64
 		return errors.New("[Comment::ExtractFromStream] Data size too small")
@@ -131,10 +178,12 @@ func (comment *Comment) ExtractFromStream(stream *nex.StreamIn) error {
 	return nil
 }
 
+// NewComment returns a new Comment
 func NewComment() *Comment {
 	return &Comment{}
 }
 
+// FriendInfo contains information about a friend
 type FriendInfo struct {
 	NNAInfo      *NNAInfo
 	Presence     *NintendoPresenceV2
@@ -158,10 +207,12 @@ func (friendInfo *FriendInfo) Bytes(stream *nex.StreamOut) []byte {
 	return stream.Bytes()
 }
 
+// NewFriendInfo returns a new FriendInfo
 func NewFriendInfo() *FriendInfo {
 	return &FriendInfo{}
 }
 
+// FriendRequest contains information about a friend request
 type FriendRequest struct {
 	PrincipalInfo *PrincipalBasicInfo
 	Message       *FriendRequestMessage
@@ -170,10 +221,12 @@ type FriendRequest struct {
 	nex.Structure
 }
 
+// NewFriendRequest returns a new FriendRequest
 func NewFriendRequest() *FriendRequest {
 	return &FriendRequest{}
 }
 
+// FriendRequestMessage contains message data for a FriendRequest
 type FriendRequestMessage struct {
 	Unknown1  uint64
 	Unknown2  uint8
@@ -188,10 +241,12 @@ type FriendRequestMessage struct {
 	nex.Structure
 }
 
+// NewFriendRequestMessage returns a new FriendRequestMessage
 func NewFriendRequestMessage() *FriendRequestMessage {
 	return &FriendRequestMessage{}
 }
 
+// GameKey contains the title ID and version for a title
 type GameKey struct {
 	TitleID      uint64
 	TitleVersion uint16
@@ -199,6 +254,7 @@ type GameKey struct {
 	nex.Structure
 }
 
+// Bytes encodes the GameKey and returns a byte array
 func (gameKey *GameKey) Bytes(stream *nex.StreamOut) []byte {
 	stream.WriteUInt64LE(gameKey.TitleID)
 	stream.WriteUInt16LE(gameKey.TitleVersion)
@@ -206,6 +262,7 @@ func (gameKey *GameKey) Bytes(stream *nex.StreamOut) []byte {
 	return stream.Bytes()
 }
 
+// ExtractFromStream extracts a GameKey structure from a stream
 func (gameKey *GameKey) ExtractFromStream(stream *nex.StreamIn) error {
 	if len(stream.Bytes()[stream.ByteOffset():]) < 10 {
 		return errors.New("[GameKey::ExtractFromStream] Data size too small")
@@ -217,10 +274,12 @@ func (gameKey *GameKey) ExtractFromStream(stream *nex.StreamIn) error {
 	return nil
 }
 
+// NewGameKey returns a new GameKey
 func NewGameKey() *GameKey {
 	return &GameKey{}
 }
 
+// MiiV2 contains data about a Mii
 type MiiV2 struct {
 	Name     string
 	Unknown1 uint8
@@ -231,6 +290,7 @@ type MiiV2 struct {
 	nex.Structure
 }
 
+// Bytes encodes the MiiV2 and returns a byte array
 func (mii *MiiV2) Bytes(stream *nex.StreamOut) []byte {
 	stream.WriteString(mii.Name)
 	stream.WriteUInt8(mii.Unknown1)
@@ -241,6 +301,7 @@ func (mii *MiiV2) Bytes(stream *nex.StreamOut) []byte {
 	return stream.Bytes()
 }
 
+// ExtractFromStream extracts a MiiV2 structure from a stream
 func (mii *MiiV2) ExtractFromStream(stream *nex.StreamIn) error {
 	if len(stream.Bytes()[stream.ByteOffset():]) < 10 { // 2 unknown bytes + datetime uint64
 		return errors.New("[MiiV2::ExtractFromStream] Data size too small")
@@ -271,10 +332,12 @@ func (mii *MiiV2) ExtractFromStream(stream *nex.StreamIn) error {
 	return nil
 }
 
+// NewMiiV2 returns a new MiiV2
 func NewMiiV2() *MiiV2 {
 	return &MiiV2{}
 }
 
+// NintendoPresenceV2 contains information about a users online presence
 type NintendoPresenceV2 struct {
 	ChangedFlags    uint32
 	Online          bool
@@ -295,6 +358,7 @@ type NintendoPresenceV2 struct {
 	nex.Structure
 }
 
+// Bytes encodes the NintendoPresenceV2 and returns a byte array
 func (presence *NintendoPresenceV2) Bytes(stream *nex.StreamOut) []byte {
 	stream.WriteUInt32LE(presence.ChangedFlags)
 	if presence.Online {
@@ -319,6 +383,7 @@ func (presence *NintendoPresenceV2) Bytes(stream *nex.StreamOut) []byte {
 	return stream.Bytes()
 }
 
+// ExtractFromStream extracts a NintendoPresenceV2 structure from a stream
 func (presence *NintendoPresenceV2) ExtractFromStream(stream *nex.StreamIn) error {
 	if len(stream.Bytes()[stream.ByteOffset():]) < 40 {
 		// length check for the following fixed-size data
@@ -371,10 +436,12 @@ func (presence *NintendoPresenceV2) ExtractFromStream(stream *nex.StreamIn) erro
 	return nil
 }
 
+// NewNintendoPresenceV2 returns a new NintendoPresenceV2
 func NewNintendoPresenceV2() *NintendoPresenceV2 {
 	return &NintendoPresenceV2{}
 }
 
+// NNAInfo contains information about a Nintendo Network Account
 type NNAInfo struct {
 	PrincipalBasicInfo *PrincipalBasicInfo
 	Unknown1           uint8
@@ -392,6 +459,7 @@ func (nnaInfo *NNAInfo) Bytes(stream *nex.StreamOut) []byte {
 	return stream.Bytes()
 }
 
+// ExtractFromStream extracts a NNAInfo structure from a stream
 func (nnaInfo *NNAInfo) ExtractFromStream(stream *nex.StreamIn) error {
 	if len(stream.Bytes()[stream.ByteOffset():]) < 2 {
 		// length check for the following fixed-size data
@@ -415,10 +483,12 @@ func (nnaInfo *NNAInfo) ExtractFromStream(stream *nex.StreamIn) error {
 	return nil
 }
 
+// NewNNAInfo returns a new NNAInfo
 func NewNNAInfo() *NNAInfo {
 	return &NNAInfo{}
 }
 
+// PersistentNotification contains unknown data
 type PersistentNotification struct {
 	Unknown1 uint64
 	Unknown2 uint32
@@ -429,6 +499,7 @@ type PersistentNotification struct {
 	nex.Structure
 }
 
+// ExtractFromStream extracts a PersistentNotification structure from a stream
 func (notification *PersistentNotification) ExtractFromStream(stream *nex.StreamIn) error {
 	if len(stream.Bytes()[stream.ByteOffset():]) < 20 {
 		// length check for the following fixed-size data
@@ -454,10 +525,12 @@ func (notification *PersistentNotification) ExtractFromStream(stream *nex.Stream
 	return nil
 }
 
+// NewPersistentNotification returns a new PersistentNotification
 func NewPersistentNotification() *PersistentNotification {
 	return &PersistentNotification{}
 }
 
+// PrincipalBasicInfo contains user account and Mii data
 type PrincipalBasicInfo struct {
 	PID     uint32
 	NNID    string
@@ -477,6 +550,7 @@ func (principalInfo *PrincipalBasicInfo) Bytes(stream *nex.StreamOut) []byte {
 	return stream.Bytes()
 }
 
+// ExtractFromStream extracts a PrincipalBasicInfo structure from a stream
 func (principalInfo *PrincipalBasicInfo) ExtractFromStream(stream *nex.StreamIn) error {
 
 	if len(stream.Bytes()[stream.ByteOffset():]) < 4 {
@@ -510,10 +584,12 @@ func (principalInfo *PrincipalBasicInfo) ExtractFromStream(stream *nex.StreamIn)
 	return nil
 }
 
+// NewPrincipalBasicInfo returns a new PrincipalBasicInfo
 func NewPrincipalBasicInfo() *PrincipalBasicInfo {
 	return &PrincipalBasicInfo{}
 }
 
+// PrincipalPreference contains unknown data
 type PrincipalPreference struct {
 	Unknown1 bool
 	Unknown2 bool
@@ -522,6 +598,7 @@ type PrincipalPreference struct {
 	nex.Structure
 }
 
+// ExtractFromStream extracts a PrincipalPreference structure from a stream
 func (preference *PrincipalPreference) ExtractFromStream(stream *nex.StreamIn) error {
 	if len(stream.Bytes()[stream.ByteOffset():]) < 1 {
 		// length check for the following fixed-size data
@@ -536,19 +613,23 @@ func (preference *PrincipalPreference) ExtractFromStream(stream *nex.StreamIn) e
 	return nil
 }
 
+// NewPrincipalPreference returns a new PrincipalPreference
 func NewPrincipalPreference() *PrincipalPreference {
 	return &PrincipalPreference{}
 }
 
+// PrincipalRequestBlockSetting contains unknow data
 type PrincipalRequestBlockSetting struct {
 	Unknown1 uint32
 	Unknown2 bool
 }
 
+// NewPrincipalRequestBlockSetting returns a new PrincipalRequestBlockSetting
 func NewPrincipalRequestBlockSetting() *PrincipalRequestBlockSetting {
 	return &PrincipalRequestBlockSetting{}
 }
 
+// Setup initializes the protocol
 func (friendsProtocol *FriendsProtocol) Setup() {
 	nexServer := friendsProtocol.server
 
@@ -632,82 +713,102 @@ func (friendsProtocol *FriendsProtocol) respondNotImplemented(packet nex.PacketI
 	friendsProtocol.server.Send(responsePacket)
 }
 
+// UpdateAndGetAllInformation sets the UpdateAndGetAllInformation handler function
 func (friendsProtocol *FriendsProtocol) UpdateAndGetAllInformation(handler func(err error, client *nex.Client, callID uint32, nnaInfo *NNAInfo, presence *NintendoPresenceV2, birthday *nex.DateTime)) {
 	friendsProtocol.UpdateAndGetAllInformationHandler = handler
 }
 
+// AddFriend sets the AddFriend handler function
 func (friendsProtocol *FriendsProtocol) AddFriend(handler func(err error, client *nex.Client, callID uint32, pid uint32)) {
 	friendsProtocol.AddFriendHandler = handler
 }
 
+// AddFriendByName sets the AddFriendByName handler function
 func (friendsProtocol *FriendsProtocol) AddFriendByName(handler func(err error, client *nex.Client, callID uint32, username string)) {
 	friendsProtocol.AddFriendByNameHandler = handler
 }
 
+// RemoveFriend sets the RemoveFriend handler function
 func (friendsProtocol *FriendsProtocol) RemoveFriend(handler func(err error, client *nex.Client, callID uint32, pid uint32)) {
 	friendsProtocol.RemoveFriendHandler = handler
 }
 
+// AddFriendRequest sets the AddFriendRequest handler function
 func (friendsProtocol *FriendsProtocol) AddFriendRequest(handler func(err error, client *nex.Client, callID uint32, unknown1 uint32, unknown2 uint8, unknown3 string, unknown4 uint8, unknown5 string, gameKey *GameKey, unknown6 *nex.DateTime)) {
 	friendsProtocol.AddFriendRequestHandler = handler
 }
 
+// CancelFriendRequest sets the CancelFriendRequest handler function
 func (friendsProtocol *FriendsProtocol) CancelFriendRequest(handler func(err error, client *nex.Client, callID uint32, id uint64)) {
 	friendsProtocol.CancelFriendRequestHandler = handler
 }
 
+// AcceptFriendRequest sets the AcceptFriendRequest handler function
 func (friendsProtocol *FriendsProtocol) AcceptFriendRequest(handler func(err error, client *nex.Client, callID uint32, id uint64)) {
 	friendsProtocol.AcceptFriendRequestHandler = handler
 }
 
+// DeleteFriendRequest sets the DeleteFriendRequest handler function
 func (friendsProtocol *FriendsProtocol) DeleteFriendRequest(handler func(err error, client *nex.Client, callID uint32, id uint64)) {
 	friendsProtocol.DeleteFriendRequestHandler = handler
 }
 
+// DenyFriendRequest sets the DenyFriendRequest handler function
 func (friendsProtocol *FriendsProtocol) DenyFriendRequest(handler func(err error, client *nex.Client, callID uint32, id uint64)) {
 	friendsProtocol.DenyFriendRequestHandler = handler
 }
 
+// MarkFriendRequestsAsReceived sets the MarkFriendRequestsAsReceived handler function
 func (friendsProtocol *FriendsProtocol) MarkFriendRequestsAsReceived(handler func(err error, client *nex.Client, callID uint32, ids []uint64)) {
 	friendsProtocol.MarkFriendRequestsAsReceivedHandler = handler
 }
 
+// AddBlackList sets the AddBlackList handler function
 func (friendsProtocol *FriendsProtocol) AddBlackList(handler func(err error, client *nex.Client, callID uint32, blacklistedPrincipal *BlacklistedPrincipal)) {
 	friendsProtocol.AddBlackListHandler = handler
 }
 
+// RemoveBlackList sets the RemoveBlackList handler function
 func (friendsProtocol *FriendsProtocol) RemoveBlackList(handler func(err error, client *nex.Client, callID uint32, pid uint32)) {
 	friendsProtocol.RemoveBlackListHandler = handler
 }
 
+// UpdatePresence sets the UpdatePresence handler function
 func (friendsProtocol *FriendsProtocol) UpdatePresence(handler func(err error, client *nex.Client, callID uint32, presence *NintendoPresenceV2)) {
 	friendsProtocol.UpdatePresenceHandler = handler
 }
 
+// UpdateMii sets the UpdateMii handler function
 func (friendsProtocol *FriendsProtocol) UpdateMii(handler func(err error, client *nex.Client, callID uint32, mii *MiiV2)) {
 	friendsProtocol.UpdateMiiHandler = handler
 }
 
+// UpdateComment sets the UpdateComment handler function
 func (friendsProtocol *FriendsProtocol) UpdateComment(handler func(err error, client *nex.Client, callID uint32, comment *Comment)) {
 	friendsProtocol.UpdateCommentHandler = handler
 }
 
+// UpdatePreference sets the UpdatePreference handler function
 func (friendsProtocol *FriendsProtocol) UpdatePreference(handler func(err error, client *nex.Client, callID uint32, preference *PrincipalPreference)) {
 	friendsProtocol.UpdatePreferenceHandler = handler
 }
 
+// GetBasicInfo sets the GetBasicInfo handler function
 func (friendsProtocol *FriendsProtocol) GetBasicInfo(handler func(err error, client *nex.Client, callID uint32, pids []uint32)) {
 	friendsProtocol.GetBasicInfoHandler = handler
 }
 
+// DeleteFriendFlags sets the DeleteFriendFlags handler function
 func (friendsProtocol *FriendsProtocol) DeleteFriendFlags(handler func(err error, client *nex.Client, callID uint32, notifications []*PersistentNotification)) {
 	friendsProtocol.DeleteFriendFlagsHandler = handler
 }
 
+// CheckSettingStatus sets the CheckSettingStatus handler function
 func (friendsProtocol *FriendsProtocol) CheckSettingStatus(handler func(err error, client *nex.Client, callID uint32)) {
 	friendsProtocol.CheckSettingStatusHandler = handler
 }
 
+// GetRequestBlockSettings sets the GetRequestBlockSettings handler function
 func (friendsProtocol *FriendsProtocol) GetRequestBlockSettings(handler func(err error, client *nex.Client, callID uint32, unknowns []uint32)) {
 	friendsProtocol.GetRequestBlockSettingsHandler = handler
 }
@@ -1259,6 +1360,7 @@ func (friendsProtocol *FriendsProtocol) handleGetRequestBlockSettings(packet nex
 	go friendsProtocol.GetRequestBlockSettingsHandler(nil, client, callID, unknowns)
 }
 
+// NewFriendsProtocol returns a new FriendsProtocol
 func NewFriendsProtocol(server *nex.Server) *FriendsProtocol {
 	friendsProtocol := &FriendsProtocol{server: server}
 

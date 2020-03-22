@@ -7,14 +7,17 @@ import (
 )
 
 const (
+	// DataStoreSMMProtocolID is the protocol ID for the DataStore (SMM) protocol. ID is the same as the DataStore protocol
 	DataStoreSMMProtocolID = 0x73
 )
 
+// DataStoreSMMProtocol handles the DataStore (SMM) nex protocol. Embeds DataStoreProtocol
 type DataStoreSMMProtocol struct {
 	server *nex.Server
 	DataStoreProtocol
 }
 
+// Setup initializes the protocol
 func (dataStoreSMMProtocol *DataStoreSMMProtocol) Setup() {
 	nexServer := dataStoreSMMProtocol.server
 
@@ -60,6 +63,7 @@ func (dataStoreSMMProtocol *DataStoreSMMProtocol) respondNotImplemented(packet n
 	dataStoreSMMProtocol.server.Send(responsePacket)
 }
 
+// NewDataStoreSMMProtocol returns a new DataStoreSMMProtocol
 func NewDataStoreSMMProtocol(server *nex.Server) *DataStoreSMMProtocol {
 	dataStoreSMMProtocol := &DataStoreSMMProtocol{server: server}
 	dataStoreSMMProtocol.DataStoreProtocol.server = server

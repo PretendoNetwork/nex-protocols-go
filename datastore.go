@@ -64,17 +64,13 @@ type DataStoreProtocol struct {
 }
 
 type DataStoreGetMetaParam struct {
-	dataID            uint64
-	persistenceTarget *DataStorePersistenceTarget
-	resultOption      uint8
-	accessPassword    uint64
+	DataID            uint64
+	PersistenceTarget *DataStorePersistenceTarget
+	ResultOption      uint8
+	AccessPassword    uint64
 
 	hierarchy []nex.StructureInterface
 	nex.Structure
-}
-
-func (dataStoreGetMetaParam *DataStoreGetMetaParam) GetDataID() uint64 {
-	return dataStoreGetMetaParam.dataID
 }
 
 func (dataStoreGetMetaParam *DataStoreGetMetaParam) ExtractFromStream(stream *nex.StreamIn) error {
@@ -91,10 +87,10 @@ func (dataStoreGetMetaParam *DataStoreGetMetaParam) ExtractFromStream(stream *ne
 		return err
 	}
 
-	dataStoreGetMetaParam.dataID = dataID
-	dataStoreGetMetaParam.persistenceTarget = persistenceTarget.(*DataStorePersistenceTarget)
-	dataStoreGetMetaParam.resultOption = stream.ReadUInt8()
-	dataStoreGetMetaParam.accessPassword = stream.ReadUInt64LE()
+	dataStoreGetMetaParam.DataID = dataID
+	dataStoreGetMetaParam.PersistenceTarget = persistenceTarget.(*DataStorePersistenceTarget)
+	dataStoreGetMetaParam.ResultOption = stream.ReadUInt8()
+	dataStoreGetMetaParam.AccessPassword = stream.ReadUInt64LE()
 
 	return nil
 }
@@ -104,19 +100,11 @@ func NewDataStoreGetMetaParam() *DataStoreGetMetaParam {
 }
 
 type DataStorePersistenceTarget struct {
-	ownerID           uint32
-	persistenceSlotID uint16
+	OwnerID           uint32
+	PersistenceSlotID uint16
 
 	hierarchy []nex.StructureInterface
 	nex.Structure
-}
-
-func (dataStorePersistenceTarget *DataStorePersistenceTarget) GetOwnerID() uint32 {
-	return dataStorePersistenceTarget.ownerID
-}
-
-func (dataStorePersistenceTarget *DataStorePersistenceTarget) GetPersistenceSlotID() uint16 {
-	return dataStorePersistenceTarget.persistenceSlotID
 }
 
 func (dataStorePersistenceTarget *DataStorePersistenceTarget) ExtractFromStream(stream *nex.StreamIn) error {
@@ -126,8 +114,8 @@ func (dataStorePersistenceTarget *DataStorePersistenceTarget) ExtractFromStream(
 		return errors.New("[DataStorePersistenceTarget::ExtractFromStream] Data size too small")
 	}
 
-	dataStorePersistenceTarget.ownerID = stream.ReadUInt32LE()
-	dataStorePersistenceTarget.persistenceSlotID = stream.ReadUInt16LE()
+	dataStorePersistenceTarget.OwnerID = stream.ReadUInt32LE()
+	dataStorePersistenceTarget.PersistenceSlotID = stream.ReadUInt16LE()
 
 	return nil
 }

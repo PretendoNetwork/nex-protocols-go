@@ -29,14 +29,14 @@ type AuthenticationProtocol struct {
 }
 
 type NintendoLoginData struct {
-	token string
+	Token string
 }
 
 type AuthenticationInfo struct {
-	token         string
-	tokenType     uint32
-	ngsVersion    uint8
-	serverVersion uint32
+	Token         string
+	NGSVersion    uint32
+	TokenType     uint8
+	ServerVersion uint32
 
 	hierarchy []nex.StructureInterface
 	*nex.NullData
@@ -60,10 +60,10 @@ func (authenticationInfo *AuthenticationInfo) ExtractFromStream(stream *nex.Stre
 		return errors.New("[AuthenticationInfo::ExtractFromStream] Data size too small")
 	}
 
-	authenticationInfo.token = token
-	authenticationInfo.tokenType = stream.ReadUInt32LE()
-	authenticationInfo.ngsVersion = stream.ReadUInt8()
-	authenticationInfo.serverVersion = stream.ReadUInt32LE()
+	authenticationInfo.Token = token
+	authenticationInfo.TokenType = stream.ReadUInt8()
+	authenticationInfo.NGSVersion = stream.ReadUInt32LE()
+	authenticationInfo.ServerVersion = stream.ReadUInt32LE()
 
 	fmt.Printf("%+v\n", authenticationInfo)
 

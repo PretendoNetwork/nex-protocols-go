@@ -281,7 +281,7 @@ func (secureProtocol *SecureProtocol) handleRegisterEx(packet nex.PacketInterfac
 		return
 	}
 
-	loginData := NintendoLoginData{token: token}
+	loginData := NintendoLoginData{Token: token}
 
 	go secureProtocol.RegisterExHandler(nil, client, callID, stationUrls, loginData)
 }

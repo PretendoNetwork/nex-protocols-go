@@ -19,21 +19,13 @@ type AccountManagementProtocol struct {
 }
 
 type NintendoCreateAccountData struct {
-	nnaInfo  *NNAInfo
-	token    string
-	birthday *nex.DateTime
-	unknown  uint64
+	NNAInfo  *NNAInfo
+	Token    string
+	Birthday *nex.DateTime
+	Unknown  uint64
 
 	hierarchy []nex.StructureInterface
 	nex.Structure
-}
-
-func (nintendoCreateAccountData *NintendoCreateAccountData) GetNNAInfo() *NNAInfo {
-	return nintendoCreateAccountData.nnaInfo
-}
-
-func (nintendoCreateAccountData *NintendoCreateAccountData) GetToken() string {
-	return nintendoCreateAccountData.token
 }
 
 func (nintendoCreateAccountData *NintendoCreateAccountData) ExtractFromStream(stream *nex.StreamIn) error {
@@ -52,10 +44,10 @@ func (nintendoCreateAccountData *NintendoCreateAccountData) ExtractFromStream(st
 	birthday := nex.NewDateTime(stream.ReadUInt64LE())
 	unknown := stream.ReadUInt64LE()
 
-	nintendoCreateAccountData.nnaInfo = nnaInfo
-	nintendoCreateAccountData.token = token
-	nintendoCreateAccountData.birthday = birthday
-	nintendoCreateAccountData.unknown = unknown
+	nintendoCreateAccountData.NNAInfo = nnaInfo
+	nintendoCreateAccountData.Token = token
+	nintendoCreateAccountData.Birthday = birthday
+	nintendoCreateAccountData.Unknown = unknown
 
 	return nil
 }

@@ -57,9 +57,9 @@ type FriendsProtocol struct {
 }
 
 type BlacklistedPrincipal struct {
-	principalBasicInfo *PrincipalBasicInfo
-	gameKey            *GameKey
-	blackListedSince   *nex.DateTime
+	PrincipalBasicInfo *PrincipalBasicInfo
+	GameKey            *GameKey
+	BlackListedSince   *nex.DateTime
 
 	nex.Structure
 }
@@ -83,9 +83,9 @@ func (blacklistedPrincipal *BlacklistedPrincipal) ExtractFromStream(stream *nex.
 	gameKey := gameKeyStructureInterface.(*GameKey)
 	blackListedSince := nex.NewDateTime(stream.ReadUInt64LE())
 
-	blacklistedPrincipal.principalBasicInfo = principalBasicInfo
-	blacklistedPrincipal.gameKey = gameKey
-	blacklistedPrincipal.blackListedSince = blackListedSince
+	blacklistedPrincipal.PrincipalBasicInfo = principalBasicInfo
+	blacklistedPrincipal.GameKey = gameKey
+	blacklistedPrincipal.BlackListedSince = blackListedSince
 
 	return nil
 }
@@ -95,17 +95,17 @@ func NewBlacklistedPrincipal() *BlacklistedPrincipal {
 }
 
 type Comment struct {
-	unknown     uint8
-	contents    string
-	lastChanged *nex.DateTime
+	Unknown     uint8
+	Contents    string
+	LastChanged *nex.DateTime
 
 	nex.Structure
 }
 
 func (comment *Comment) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt8(comment.unknown)
-	stream.WriteString(comment.contents)
-	stream.WriteUInt64LE(comment.lastChanged.Value())
+	stream.WriteUInt8(comment.Unknown)
+	stream.WriteString(comment.Contents)
+	stream.WriteUInt64LE(comment.LastChanged.Value())
 
 	return stream.Bytes()
 }
@@ -124,9 +124,9 @@ func (comment *Comment) ExtractFromStream(stream *nex.StreamIn) error {
 
 	lastChanged := nex.NewDateTime(stream.ReadUInt64LE())
 
-	comment.unknown = unknown
-	comment.contents = contents
-	comment.lastChanged = lastChanged
+	comment.Unknown = unknown
+	comment.Contents = contents
+	comment.LastChanged = lastChanged
 
 	return nil
 }
@@ -136,24 +136,24 @@ func NewComment() *Comment {
 }
 
 type FriendInfo struct {
-	nnaInfo      *NNAInfo
-	presence     *NintendoPresenceV2
-	status       *Comment
-	becameFriend *nex.DateTime
-	lastOnline   *nex.DateTime
-	unknown      uint64
+	NNAInfo      *NNAInfo
+	Presence     *NintendoPresenceV2
+	Status       *Comment
+	BecameFriend *nex.DateTime
+	LastOnline   *nex.DateTime
+	Unknown      uint64
 
 	nex.Structure
 }
 
 // Bytes encodes the FriendInfo and returns a byte array
 func (friendInfo *FriendInfo) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteStructure(friendInfo.nnaInfo)
-	stream.WriteStructure(friendInfo.presence)
-	stream.WriteStructure(friendInfo.status)
-	stream.WriteUInt64LE(friendInfo.becameFriend.Value())
-	stream.WriteUInt64LE(friendInfo.lastOnline.Value())
-	stream.WriteUInt64LE(friendInfo.unknown)
+	stream.WriteStructure(friendInfo.NNAInfo)
+	stream.WriteStructure(friendInfo.Presence)
+	stream.WriteStructure(friendInfo.Status)
+	stream.WriteUInt64LE(friendInfo.BecameFriend.Value())
+	stream.WriteUInt64LE(friendInfo.LastOnline.Value())
+	stream.WriteUInt64LE(friendInfo.Unknown)
 
 	return stream.Bytes()
 }
@@ -163,9 +163,9 @@ func NewFriendInfo() *FriendInfo {
 }
 
 type FriendRequest struct {
-	principalInfo *PrincipalBasicInfo
-	message       *FriendRequestMessage
-	sentOn        *nex.DateTime
+	PrincipalInfo *PrincipalBasicInfo
+	Message       *FriendRequestMessage
+	SentOn        *nex.DateTime
 
 	nex.Structure
 }
@@ -175,15 +175,15 @@ func NewFriendRequest() *FriendRequest {
 }
 
 type FriendRequestMessage struct {
-	unknown1  uint64
-	unknown2  uint8
-	unknown3  uint8
-	message   string
-	unknown4  uint8
-	unknown5  string
-	gameKey   *GameKey
-	unknown6  *nex.DateTime
-	expiresOn *nex.DateTime
+	Unknown1  uint64
+	Unknown2  uint8
+	Unknown3  uint8
+	Message   string
+	Unknown4  uint8
+	Unknown5  string
+	GameKey   *GameKey
+	Unknown6  *nex.DateTime
+	ExpiresOn *nex.DateTime
 
 	nex.Structure
 }
@@ -193,15 +193,15 @@ func NewFriendRequestMessage() *FriendRequestMessage {
 }
 
 type GameKey struct {
-	titleID      uint64
-	titleVersion uint16
+	TitleID      uint64
+	TitleVersion uint16
 
 	nex.Structure
 }
 
 func (gameKey *GameKey) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt64LE(gameKey.titleID)
-	stream.WriteUInt16LE(gameKey.titleVersion)
+	stream.WriteUInt64LE(gameKey.TitleID)
+	stream.WriteUInt16LE(gameKey.TitleVersion)
 
 	return stream.Bytes()
 }
@@ -211,8 +211,8 @@ func (gameKey *GameKey) ExtractFromStream(stream *nex.StreamIn) error {
 		return errors.New("[GameKey::ExtractFromStream] Data size too small")
 	}
 
-	gameKey.titleID = stream.ReadUInt64LE()
-	gameKey.titleVersion = stream.ReadUInt16LE()
+	gameKey.TitleID = stream.ReadUInt64LE()
+	gameKey.TitleVersion = stream.ReadUInt16LE()
 
 	return nil
 }
@@ -222,21 +222,21 @@ func NewGameKey() *GameKey {
 }
 
 type MiiV2 struct {
-	name     string
-	unknown1 uint8
-	unknown2 uint8
-	data     []byte
-	datetime *nex.DateTime
+	Name     string
+	Unknown1 uint8
+	Unknown2 uint8
+	Data     []byte
+	Datetime *nex.DateTime
 
 	nex.Structure
 }
 
 func (mii *MiiV2) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteString(mii.name)
-	stream.WriteUInt8(mii.unknown1)
-	stream.WriteUInt8(mii.unknown2)
-	stream.WriteBuffer(mii.data)
-	stream.WriteUInt64LE(mii.datetime.Value())
+	stream.WriteString(mii.Name)
+	stream.WriteUInt8(mii.Unknown1)
+	stream.WriteUInt8(mii.Unknown2)
+	stream.WriteBuffer(mii.Data)
+	stream.WriteUInt64LE(mii.Datetime.Value())
 
 	return stream.Bytes()
 }
@@ -262,11 +262,11 @@ func (mii *MiiV2) ExtractFromStream(stream *nex.StreamIn) error {
 
 	datetime := nex.NewDateTime(stream.ReadUInt64LE())
 
-	mii.name = name
-	mii.unknown1 = unknown1
-	mii.unknown2 = unknown2
-	mii.data = data
-	mii.datetime = datetime
+	mii.Name = name
+	mii.Unknown1 = unknown1
+	mii.Unknown2 = unknown2
+	mii.Data = data
+	mii.Datetime = datetime
 
 	return nil
 }
@@ -276,45 +276,45 @@ func NewMiiV2() *MiiV2 {
 }
 
 type NintendoPresenceV2 struct {
-	changedFlags    uint32
-	isOnline        bool
-	gameKey         *GameKey
-	unknown1        uint8
-	message         string
-	unknown2        uint32
-	unknown3        uint8
-	gameServerID    uint32
-	unknown4        uint32
-	pid             uint32
-	gatheringID     uint32
-	applicationData []byte
-	unknown5        uint8
-	unknown6        uint8
-	unknown7        uint8
+	ChangedFlags    uint32
+	Online          bool
+	GameKey         *GameKey
+	Unknown1        uint8
+	Message         string
+	Unknown2        uint32
+	Unknown3        uint8
+	GameServerID    uint32
+	Unknown4        uint32
+	PID             uint32
+	GatheringID     uint32
+	ApplicationData []byte
+	Unknown5        uint8
+	Unknown6        uint8
+	Unknown7        uint8
 
 	nex.Structure
 }
 
 func (presence *NintendoPresenceV2) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt32LE(presence.changedFlags)
-	if presence.isOnline {
+	stream.WriteUInt32LE(presence.ChangedFlags)
+	if presence.Online {
 		stream.WriteUInt8(1)
 	} else {
 		stream.WriteUInt8(0)
 	}
-	stream.WriteStructure(presence.gameKey)
-	stream.WriteUInt8(presence.unknown1)
-	stream.WriteString(presence.message)
-	stream.WriteUInt32LE(presence.unknown2)
-	stream.WriteUInt8(presence.unknown3)
-	stream.WriteUInt32LE(presence.gameServerID)
-	stream.WriteUInt32LE(presence.unknown4)
-	stream.WriteUInt32LE(presence.pid)
-	stream.WriteUInt32LE(presence.gatheringID)
-	stream.WriteBuffer(presence.applicationData)
-	stream.WriteUInt8(presence.unknown5)
-	stream.WriteUInt8(presence.unknown6)
-	stream.WriteUInt8(presence.unknown7)
+	stream.WriteStructure(presence.GameKey)
+	stream.WriteUInt8(presence.Unknown1)
+	stream.WriteString(presence.Message)
+	stream.WriteUInt32LE(presence.Unknown2)
+	stream.WriteUInt8(presence.Unknown3)
+	stream.WriteUInt32LE(presence.GameServerID)
+	stream.WriteUInt32LE(presence.Unknown4)
+	stream.WriteUInt32LE(presence.PID)
+	stream.WriteUInt32LE(presence.GatheringID)
+	stream.WriteBuffer(presence.ApplicationData)
+	stream.WriteUInt8(presence.Unknown5)
+	stream.WriteUInt8(presence.Unknown6)
+	stream.WriteUInt8(presence.Unknown7)
 
 	return stream.Bytes()
 }
@@ -327,7 +327,7 @@ func (presence *NintendoPresenceV2) ExtractFromStream(stream *nex.StreamIn) erro
 	}
 
 	changedFlags := stream.ReadUInt32LE()
-	isOnline := (stream.ReadUInt8() == 1)
+	Online := (stream.ReadUInt8() == 1)
 	gameKeyStructureInterface, err := stream.ReadStructure(NewGameKey())
 	if err != nil {
 		return err
@@ -352,21 +352,21 @@ func (presence *NintendoPresenceV2) ExtractFromStream(stream *nex.StreamIn) erro
 	unknown6 := stream.ReadUInt8()
 	unknown7 := stream.ReadUInt8()
 
-	presence.changedFlags = changedFlags
-	presence.isOnline = isOnline
-	presence.gameKey = gameKey
-	presence.unknown1 = unknown1
-	presence.message = message
-	presence.unknown2 = unknown2
-	presence.unknown3 = unknown3
-	presence.gameServerID = gameServerID
-	presence.unknown4 = unknown4
-	presence.pid = pid
-	presence.gatheringID = gatheringID
-	presence.applicationData = applicationData
-	presence.unknown5 = unknown5
-	presence.unknown6 = unknown6
-	presence.unknown7 = unknown7
+	presence.ChangedFlags = changedFlags
+	presence.Online = Online
+	presence.GameKey = gameKey
+	presence.Unknown1 = unknown1
+	presence.Message = message
+	presence.Unknown2 = unknown2
+	presence.Unknown3 = unknown3
+	presence.GameServerID = gameServerID
+	presence.Unknown4 = unknown4
+	presence.PID = pid
+	presence.GatheringID = gatheringID
+	presence.ApplicationData = applicationData
+	presence.Unknown5 = unknown5
+	presence.Unknown6 = unknown6
+	presence.Unknown7 = unknown7
 
 	return nil
 }
@@ -376,18 +376,18 @@ func NewNintendoPresenceV2() *NintendoPresenceV2 {
 }
 
 type NNAInfo struct {
-	principalBasicInfo *PrincipalBasicInfo
-	unknown1           uint8
-	unknown2           uint8
+	PrincipalBasicInfo *PrincipalBasicInfo
+	Unknown1           uint8
+	Unknown2           uint8
 
 	nex.Structure
 }
 
 // Bytes encodes the NNAInfo and returns a byte array
 func (nnaInfo *NNAInfo) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteStructure(nnaInfo.principalBasicInfo)
-	stream.WriteUInt8(nnaInfo.unknown1)
-	stream.WriteUInt8(nnaInfo.unknown2)
+	stream.WriteStructure(nnaInfo.PrincipalBasicInfo)
+	stream.WriteUInt8(nnaInfo.Unknown1)
+	stream.WriteUInt8(nnaInfo.Unknown2)
 
 	return stream.Bytes()
 }
@@ -408,9 +408,9 @@ func (nnaInfo *NNAInfo) ExtractFromStream(stream *nex.StreamIn) error {
 	unknown1 := stream.ReadUInt8()
 	unknown2 := stream.ReadUInt8()
 
-	nnaInfo.principalBasicInfo = principalBasicInfo
-	nnaInfo.unknown1 = unknown1
-	nnaInfo.unknown2 = unknown2
+	nnaInfo.PrincipalBasicInfo = principalBasicInfo
+	nnaInfo.Unknown1 = unknown1
+	nnaInfo.Unknown2 = unknown2
 
 	return nil
 }
@@ -420,11 +420,11 @@ func NewNNAInfo() *NNAInfo {
 }
 
 type PersistentNotification struct {
-	unknown1 uint64
-	unknown2 uint32
-	unknown3 uint32
-	unknown4 uint32
-	unknown5 string
+	Unknown1 uint64
+	Unknown2 uint32
+	Unknown3 uint32
+	Unknown4 uint32
+	Unknown5 string
 
 	nex.Structure
 }
@@ -445,11 +445,11 @@ func (notification *PersistentNotification) ExtractFromStream(stream *nex.Stream
 		return err
 	}
 
-	notification.unknown1 = unknown1
-	notification.unknown2 = unknown2
-	notification.unknown3 = unknown3
-	notification.unknown4 = unknown4
-	notification.unknown5 = unknown5
+	notification.Unknown1 = unknown1
+	notification.Unknown2 = unknown2
+	notification.Unknown3 = unknown3
+	notification.Unknown4 = unknown4
+	notification.Unknown5 = unknown5
 
 	return nil
 }
@@ -459,20 +459,20 @@ func NewPersistentNotification() *PersistentNotification {
 }
 
 type PrincipalBasicInfo struct {
-	pid     uint32
-	nnid    string
-	mii     *MiiV2
-	unknown uint8
+	PID     uint32
+	NNID    string
+	Mii     *MiiV2
+	Unknown uint8
 
 	nex.Structure
 }
 
 // Bytes encodes the PrincipalBasicInfo and returns a byte array
 func (principalInfo *PrincipalBasicInfo) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt32LE(principalInfo.pid)
-	stream.WriteString(principalInfo.nnid)
-	stream.WriteStructure(principalInfo.mii)
-	stream.WriteUInt8(principalInfo.unknown)
+	stream.WriteUInt32LE(principalInfo.PID)
+	stream.WriteString(principalInfo.NNID)
+	stream.WriteStructure(principalInfo.Mii)
+	stream.WriteUInt8(principalInfo.Unknown)
 
 	return stream.Bytes()
 }
@@ -502,10 +502,10 @@ func (principalInfo *PrincipalBasicInfo) ExtractFromStream(stream *nex.StreamIn)
 
 	unknown := stream.ReadUInt8()
 
-	principalInfo.pid = pid
-	principalInfo.nnid = nnid
-	principalInfo.mii = miiV2
-	principalInfo.unknown = unknown
+	principalInfo.PID = pid
+	principalInfo.NNID = nnid
+	principalInfo.Mii = miiV2
+	principalInfo.Unknown = unknown
 
 	return nil
 }
@@ -515,9 +515,9 @@ func NewPrincipalBasicInfo() *PrincipalBasicInfo {
 }
 
 type PrincipalPreference struct {
-	unknown1 bool
-	unknown2 bool
-	unknown3 bool
+	Unknown1 bool
+	Unknown2 bool
+	Unknown3 bool
 
 	nex.Structure
 }
@@ -529,9 +529,9 @@ func (preference *PrincipalPreference) ExtractFromStream(stream *nex.StreamIn) e
 		return errors.New("[PrincipalPreference::ExtractFromStream] Data size too small")
 	}
 
-	preference.unknown1 = (stream.ReadUInt8() == 1)
-	preference.unknown2 = (stream.ReadUInt8() == 1)
-	preference.unknown3 = (stream.ReadUInt8() == 1)
+	preference.Unknown1 = (stream.ReadUInt8() == 1)
+	preference.Unknown2 = (stream.ReadUInt8() == 1)
+	preference.Unknown3 = (stream.ReadUInt8() == 1)
 
 	return nil
 }
@@ -541,8 +541,8 @@ func NewPrincipalPreference() *PrincipalPreference {
 }
 
 type PrincipalRequestBlockSetting struct {
-	unknown1 uint32
-	unknown2 bool
+	Unknown1 uint32
+	Unknown2 bool
 }
 
 func NewPrincipalRequestBlockSetting() *PrincipalRequestBlockSetting {

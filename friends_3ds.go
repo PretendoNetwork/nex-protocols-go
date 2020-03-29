@@ -57,8 +57,6 @@ type NintendoPresence struct {
 	nex.Structure
 }
 
-
-
 // Bytes encodes the NintendoPresence and returns a byte array
 func (presence *NintendoPresence) Bytes(stream *nex.StreamOut) []byte {
 	stream.WriteUInt32LE(presence.ChangedFlags)
@@ -120,6 +118,67 @@ func (presence *NintendoPresence) ExtractFromStream(stream *nex.StreamIn) error 
 
 func NewNintendoPresence() *NintendoPresence {
 	return &NintendoPresence{}
+}
+
+// FriendRelationship contains information about a users relationship with another PID
+type FriendRelationship struct {
+	PrincipalID   uint32
+	Unknown1      uint64
+	RelationType  uint8 // guess
+
+	nex.Structure
+}
+
+// Bytes encodes the FriendRelationship and returns a byte array
+func (relationship *FriendRelationship) Bytes(stream *nex.StreamOut) []byte {
+	stream.WriteUInt32LE(relationship.PrincipalID)
+	stream.WriteUInt64LE(relationship.Unknown1)
+	stream.WriteUInt8(relationship.RelationType)
+
+	return stream.Bytes()
+}
+
+func NewFriendRelationship() *FriendRelationship {
+	return &FriendRelationship{}
+}
+
+// FriendPersistentInfo contains user settings
+type FriendPersistentInfo struct {
+	PrincipalID   uint32
+	Region        uint8
+	Country       uint8
+	Area          uint8
+	Language      uint8
+	Platform      uint8
+	GameKey       *GameKey
+	Message       string
+	MsgUpdatedAt  uint64 //appears to be correct, but not 100% sure.
+	DateTime2     uint64
+	DateTime3     uint64
+	
+
+	nex.Structure
+}
+
+// Bytes encodes the FriendPersistentInfo and returns a byte array
+func (friendPersistentInfo *FriendPersistentInfo) Bytes(stream *nex.StreamOut) []byte {
+	stream.WriteUInt32LE(friendPersistentInfo.PrincipalID)
+	stream.WriteUInt8(friendPersistentInfo.Region)
+	stream.WriteUInt8(friendPersistentInfo.Country)
+	stream.WriteUInt8(friendPersistentInfo.Area)
+	stream.WriteUInt8(friendPersistentInfo.Language)
+	stream.WriteUInt8(friendPersistentInfo.Platform)
+	stream.WriteStructure(friendPersistentInfo.GameKey)
+	stream.WriteString(friendPersistentInfo.Message)
+	stream.WriteUInt64LE(friendPersistentInfo.MsgUpdatedAt)
+	stream.WriteUInt64LE(friendPersistentInfo.DateTime2)
+	stream.WriteUInt64LE(friendPersistentInfo.DateTime3)
+
+	return stream.Bytes()
+}
+
+func NewFriendPersistentInfo() *FriendPersistentInfo {
+	return &FriendPersistentInfo{}
 }
 
 // Setup initializes the protocol

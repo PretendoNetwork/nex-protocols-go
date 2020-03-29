@@ -153,7 +153,7 @@ type FriendPersistentInfo struct {
 	GameKey       *GameKey
 	Message       string
 	MsgUpdatedAt  uint64 //appears to be correct, but not 100% sure.
-	DateTime2     uint64
+	FriendedAt    uint64
 	DateTime3     uint64
 	
 
@@ -171,7 +171,7 @@ func (friendPersistentInfo *FriendPersistentInfo) Bytes(stream *nex.StreamOut) [
 	stream.WriteStructure(friendPersistentInfo.GameKey)
 	stream.WriteString(friendPersistentInfo.Message)
 	stream.WriteUInt64LE(friendPersistentInfo.MsgUpdatedAt)
-	stream.WriteUInt64LE(friendPersistentInfo.DateTime2)
+	stream.WriteUInt64LE(friendPersistentInfo.FriendedAt)
 	stream.WriteUInt64LE(friendPersistentInfo.DateTime3)
 
 	return stream.Bytes()

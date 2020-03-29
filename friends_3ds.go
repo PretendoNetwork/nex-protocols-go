@@ -41,6 +41,87 @@ type Friends3DSProtocol struct {
 	GetFriendPresenceHandler             func(err error, client *nex.Client, callID uint32, pidList []uint32)
 }
 
+// NintendoPresence contains information about a users online presence
+type NintendoPresence struct {
+	ChangedFlags        uint32
+	GameKey             *GameKey
+	Message             string
+	JoinAvailableFlag   uint32
+	MatchmakeType       uint8
+	JoinGameID          uint32
+	JoinGameMode        uint32
+	OwnerPrincipalID    uint32
+	JoinGroupID         uint32
+	ApplicationArg      []byte
+
+	nex.Structure
+}
+
+
+
+// Bytes encodes the NintendoPresence and returns a byte array
+func (presence *NintendoPresence) Bytes(stream *nex.StreamOut) []byte {
+	stream.WriteUInt32LE(presence.ChangedFlags)
+	stream.WriteStructure(presence.GameKey)
+	stream.WriteString(presence.Message)
+	stream.WriteUInt32LE(presence.JoinAvailableFlag)
+	stream.WriteUInt8(presence.MatchmakeType)
+	stream.WriteUInt32LE(presence.JoinGameID)
+	stream.WriteUInt32LE(presence.JoinGameMode)
+	stream.WriteUInt32LE(presence.OwnerPrincipalID)
+	stream.WriteUInt32LE(presence.JoinGroupID)
+	stream.WriteBuffer(presence.ApplicationArg)
+
+	return stream.Bytes()
+}
+
+// ExtractFromStream extracts a NintendoPresence structure from a stream
+func (presence *NintendoPresence) ExtractFromStream(stream *nex.StreamIn) error {
+	if len(stream.Bytes()[stream.ByteOffset():]) < 25 {
+		// length check for the following fixed-size data
+		// changedFlags + JoinAvailableFlag + MatchmakeType + JoinGameID + JoinGameMode + OwnerPrincipalID + JoinGroupID
+		return errors.New("[NintendoPresence::ExtractFromStream] Data size too small")
+	}
+
+	changedFlags := stream.ReadUInt32LE()
+	gameKeyStructureInterface, err := stream.ReadStructure(NewGameKey())
+	if err != nil {
+		return err
+	}
+	gameKey := gameKeyStructureInterface.(*GameKey)
+	message, err := stream.ReadString()
+	if err != nil {
+		return err
+	}
+	JoinAvailableFlag := stream.ReadUInt32LE()
+	MatchmakeType := stream.ReadUInt8()
+	JoinGameID := stream.ReadUInt32LE()
+	JoinGameMode := stream.ReadUInt32LE()
+	OwnerPrincipalID := stream.ReadUInt32LE()
+	JoinGroupID := stream.ReadUInt32LE()
+	ApplicationArg, err := stream.ReadBuffer()
+	if err != nil {
+		return err
+	}
+
+	presence.ChangedFlags = changedFlags
+	presence.GameKey = gameKey
+	presence.Message = message
+	presence.JoinAvailableFlag = JoinAvailableFlag
+	presence.MatchmakeType = MatchmakeType
+	presence.JoinGameID = JoinGameID
+	presence.JoinGameMode = JoinGameMode
+	presence.OwnerPrincipalID = OwnerPrincipalID
+	presence.JoinGroupID = JoinGroupID
+	presence.ApplicationArg = ApplicationArg
+
+	return nil
+}
+
+func NewNintendoPresence() *NintendoPresence {
+	return &NintendoPresence{}
+}
+
 // Setup initializes the protocol
 func (friends3DSProtocol *Friends3DSProtocol) Setup() {
 	nexServer := friends3DSProtocol.server

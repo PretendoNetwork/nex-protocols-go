@@ -280,13 +280,13 @@ func (secureProtocol *SecureProtocol) handleRegisterEx(packet nex.PacketInterfac
 
 	if dataHolderType != "NintendoLoginData" {
 		err := errors.New("[SecureProtocol::RegisterEx] Data holder name does not match")
-		go secureProtocol.RegisterExHandler(err, client, callID, make([]*nex.StationURL, 0), NintendoLoginData{})
+		go secureProtocol.RegisterExHandler(err, client, callID, stationUrls, NintendoLoginData{})
 		return
 	}
 
 	if len(parametersStream.Bytes()[parametersStream.ByteOffset():]) < 8 {
 		err := errors.New("[SecureProtocol::RegisterEx] Data holder missing lengths")
-		go secureProtocol.RegisterExHandler(err, client, callID, make([]*nex.StationURL, 0), NintendoLoginData{})
+		go secureProtocol.RegisterExHandler(err, client, callID, stationUrls, NintendoLoginData{})
 		return
 	}
 

@@ -250,34 +250,6 @@ func (dataStoreProtocol *DataStoreProtocol) Setup() {
 	})
 }
 
-func (dataStoreProtocol *DataStoreProtocol) respondNotImplemented(packet nex.PacketInterface) {
-	client := packet.GetSender()
-	request := packet.GetRMCRequest()
-
-	rmcResponse := nex.NewRMCResponse(DataStoreProtocolID, request.GetCallID())
-	rmcResponse.SetError(0x80010002)
-
-	rmcResponseBytes := rmcResponse.Bytes()
-
-	var responsePacket nex.PacketInterface
-	if packet.GetVersion() == 1 {
-		responsePacket, _ = nex.NewPacketV1(client, nil)
-	} else {
-		responsePacket, _ = nex.NewPacketV0(client, nil)
-	}
-
-	responsePacket.SetVersion(packet.GetVersion())
-	responsePacket.SetSource(packet.GetDestination())
-	responsePacket.SetDestination(packet.GetSource())
-	responsePacket.SetType(nex.DataPacket)
-	responsePacket.SetPayload(rmcResponseBytes)
-
-	responsePacket.AddFlag(nex.FlagNeedsAck)
-	responsePacket.AddFlag(nex.FlagReliable)
-
-	dataStoreProtocol.server.Send(responsePacket)
-}
-
 // GetMeta sets the GetMeta handler function
 func (dataStoreProtocol *DataStoreProtocol) GetMeta(handler func(err error, client *nex.Client, callID uint32, dataStoreGetMetaParam *DataStoreGetMetaParam)) {
 	dataStoreProtocol.GetMetaHandler = handler
@@ -286,7 +258,7 @@ func (dataStoreProtocol *DataStoreProtocol) GetMeta(handler func(err error, clie
 func (dataStoreProtocol *DataStoreProtocol) handleGetMeta(packet nex.PacketInterface) {
 	if dataStoreProtocol.GetMetaHandler == nil {
 		fmt.Println("[Warning] DataStoreProtocol::GetMeta not implemented")
-		go dataStoreProtocol.respondNotImplemented(packet)
+		go respondNotImplemented(packet, DataStoreProtocolID)
 		return
 	}
 

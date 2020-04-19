@@ -80,34 +80,6 @@ func (accountManagementProtocol *AccountManagementProtocol) Setup() {
 	})
 }
 
-func (accountManagementProtocol *AccountManagementProtocol) respondNotImplemented(packet nex.PacketInterface) {
-	client := packet.GetSender()
-	request := packet.GetRMCRequest()
-
-	rmcResponse := nex.NewRMCResponse(AccountManagementProtocolID, request.GetCallID())
-	rmcResponse.SetError(0x80010002)
-
-	rmcResponseBytes := rmcResponse.Bytes()
-
-	var responsePacket nex.PacketInterface
-	if packet.GetVersion() == 1 {
-		responsePacket, _ = nex.NewPacketV1(client, nil)
-	} else {
-		responsePacket, _ = nex.NewPacketV0(client, nil)
-	}
-
-	responsePacket.SetVersion(packet.GetVersion())
-	responsePacket.SetSource(packet.GetDestination())
-	responsePacket.SetDestination(packet.GetSource())
-	responsePacket.SetType(nex.DataPacket)
-	responsePacket.SetPayload(rmcResponseBytes)
-
-	responsePacket.AddFlag(nex.FlagNeedsAck)
-	responsePacket.AddFlag(nex.FlagReliable)
-
-	accountManagementProtocol.server.Send(responsePacket)
-}
-
 // NintendoCreateAccount sets the NintendoCreateAccount handler function
 func (accountManagementProtocol *AccountManagementProtocol) NintendoCreateAccount(handler func(err error, client *nex.Client, callID uint32, username string, key string, groups uint32, email string, nintendoCreateAccountData *NintendoCreateAccountData)) {
 	accountManagementProtocol.NintendoCreateAccountHandler = handler
@@ -116,7 +88,7 @@ func (accountManagementProtocol *AccountManagementProtocol) NintendoCreateAccoun
 func (accountManagementProtocol *AccountManagementProtocol) handleNintendoCreateAccountHandler(packet nex.PacketInterface) {
 	if accountManagementProtocol.NintendoCreateAccountHandler == nil {
 		fmt.Println("[Warning] AccountManagementProtocol::NintendoCreateAccount not implemented")
-		go accountManagementProtocol.respondNotImplemented(packet)
+		go respondNotImplemented(packet, AccountManagementProtocolID)
 		return
 	}
 

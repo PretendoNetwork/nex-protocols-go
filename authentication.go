@@ -130,35 +130,6 @@ func (authenticationProtocol *AuthenticationProtocol) Setup() {
 	})
 }
 
-func (authenticationProtocol *AuthenticationProtocol) respondNotImplemented(packet nex.PacketInterface) {
-	client := packet.GetSender()
-	request := packet.GetRMCRequest()
-
-	rmcResponse := nex.NewRMCResponse(AuthenticationProtocolID, request.GetCallID())
-	rmcResponse.SetError(0x80010002)
-
-	rmcResponseBytes := rmcResponse.Bytes()
-
-	var responsePacket nex.PacketInterface
-
-	if packet.GetVersion() == 1 {
-		responsePacket, _ = nex.NewPacketV1(client, nil)
-	} else {
-		responsePacket, _ = nex.NewPacketV0(client, nil)
-	}
-
-	responsePacket.SetVersion(packet.GetVersion())
-	responsePacket.SetSource(packet.GetDestination())
-	responsePacket.SetDestination(packet.GetSource())
-	responsePacket.SetType(nex.DataPacket)
-	responsePacket.SetPayload(rmcResponseBytes)
-
-	responsePacket.AddFlag(nex.FlagNeedsAck)
-	responsePacket.AddFlag(nex.FlagReliable)
-
-	authenticationProtocol.server.Send(responsePacket)
-}
-
 // Login sets the Login handler function
 func (authenticationProtocol *AuthenticationProtocol) Login(handler func(err error, client *nex.Client, callID uint32, username string)) {
 	authenticationProtocol.LoginHandler = handler
@@ -192,7 +163,7 @@ func (authenticationProtocol *AuthenticationProtocol) LoginWithParam(handler fun
 func (authenticationProtocol *AuthenticationProtocol) handleLogin(packet nex.PacketInterface) {
 	if authenticationProtocol.LoginHandler == nil {
 		fmt.Println("[Warning] AuthenticationProtocol::Login not implemented")
-		go authenticationProtocol.respondNotImplemented(packet)
+		go respondNotImplemented(packet, AuthenticationProtocolID)
 		return
 	}
 
@@ -217,7 +188,7 @@ func (authenticationProtocol *AuthenticationProtocol) handleLogin(packet nex.Pac
 func (authenticationProtocol *AuthenticationProtocol) handleLoginEx(packet nex.PacketInterface) {
 	if authenticationProtocol.LoginExHandler == nil {
 		fmt.Println("[Warning] AuthenticationProtocol::LoginEx not implemented")
-		go authenticationProtocol.respondNotImplemented(packet)
+		go respondNotImplemented(packet, AuthenticationProtocolID)
 		return
 	}
 
@@ -273,7 +244,7 @@ func (authenticationProtocol *AuthenticationProtocol) handleLoginEx(packet nex.P
 func (authenticationProtocol *AuthenticationProtocol) handleRequestTicket(packet nex.PacketInterface) {
 	if authenticationProtocol.RequestTicketHandler == nil {
 		fmt.Println("[Warning] AuthenticationProtocol::RequestTicket not implemented")
-		go authenticationProtocol.respondNotImplemented(packet)
+		go respondNotImplemented(packet, AuthenticationProtocolID)
 		return
 	}
 
@@ -299,7 +270,7 @@ func (authenticationProtocol *AuthenticationProtocol) handleRequestTicket(packet
 func (authenticationProtocol *AuthenticationProtocol) handleGetPID(packet nex.PacketInterface) {
 	if authenticationProtocol.GetPIDHandler == nil {
 		fmt.Println("[Warning] AuthenticationProtocol::GetPID not implemented")
-		go authenticationProtocol.respondNotImplemented(packet)
+		go respondNotImplemented(packet, AuthenticationProtocolID)
 		return
 	}
 
@@ -324,7 +295,7 @@ func (authenticationProtocol *AuthenticationProtocol) handleGetPID(packet nex.Pa
 func (authenticationProtocol *AuthenticationProtocol) handleGetName(packet nex.PacketInterface) {
 	if authenticationProtocol.GetNameHandler == nil {
 		fmt.Println("[Warning] AuthenticationProtocol::GetName not implemented")
-		go authenticationProtocol.respondNotImplemented(packet)
+		go respondNotImplemented(packet, AuthenticationProtocolID)
 		return
 	}
 
@@ -349,7 +320,7 @@ func (authenticationProtocol *AuthenticationProtocol) handleGetName(packet nex.P
 func (authenticationProtocol *AuthenticationProtocol) handleLoginWithParam(packet nex.PacketInterface) {
 	if authenticationProtocol.LoginWithParamHandler == nil {
 		fmt.Println("[Warning] AuthenticationProtocol::LoginWithParam not implemented")
-		go authenticationProtocol.respondNotImplemented(packet)
+		go respondNotImplemented(packet, AuthenticationProtocolID)
 		return
 	}
 

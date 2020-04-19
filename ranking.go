@@ -113,9 +113,9 @@ func (rankingProtocol *RankingProtocol) handleUploadCommonData(packet nex.Packet
 
 // NewRankingProtocol returns a new RankingProtocol
 func NewRankingProtocol(server *nex.Server) *RankingProtocol {
-	RankingProtocol := &RankingProtocol{server: server}
+	rankingProtocol := &RankingProtocol{server: server}
 
-	RankingProtocol.Setup()
+	rankingProtocol.Setup()
 
-	return RankingProtocol
+	return rankingProtocol
 }

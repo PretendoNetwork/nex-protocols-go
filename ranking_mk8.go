@@ -33,34 +33,6 @@ func (rankingMK8Protocol *RankingMK8Protocol) Setup() {
 	})
 }
 
-func (rankingMK8Protocol *RankingMK8Protocol) respondNotImplemented(packet nex.PacketInterface) {
-	client := packet.GetSender()
-	request := packet.GetRMCRequest()
-
-	rmcResponse := nex.NewRMCResponse(RankingMK8ProtocolID, request.GetCallID())
-	rmcResponse.SetError(0x80010002)
-
-	rmcResponseBytes := rmcResponse.Bytes()
-
-	var responsePacket nex.PacketInterface
-	if packet.GetVersion() == 1 {
-		responsePacket, _ = nex.NewPacketV1(client, nil)
-	} else {
-		responsePacket, _ = nex.NewPacketV0(client, nil)
-	}
-
-	responsePacket.SetVersion(packet.GetVersion())
-	responsePacket.SetSource(packet.GetDestination())
-	responsePacket.SetDestination(packet.GetSource())
-	responsePacket.SetType(nex.DataPacket)
-	responsePacket.SetPayload(rmcResponseBytes)
-
-	responsePacket.AddFlag(nex.FlagNeedsAck)
-	responsePacket.AddFlag(nex.FlagReliable)
-
-	rankingMK8Protocol.server.Send(responsePacket)
-}
-
 // NewRankingMK8Protocol returns a new RankingMK8Protocol
 func NewRankingMK8Protocol(server *nex.Server) *RankingMK8Protocol {
 	rankingMK8Protocol := &RankingMK8Protocol{server: server}

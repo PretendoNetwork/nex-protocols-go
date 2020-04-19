@@ -116,6 +116,7 @@ func (presence *NintendoPresence) ExtractFromStream(stream *nex.StreamIn) error 
 	return nil
 }
 
+// NewNintendoPresence returns a new NintendoPresence
 func NewNintendoPresence() *NintendoPresence {
 	return &NintendoPresence{}
 }
@@ -138,6 +139,7 @@ func (relationship *FriendRelationship) Bytes(stream *nex.StreamOut) []byte {
 	return stream.Bytes()
 }
 
+// NewFriendRelationship returns a new FriendRelationship
 func NewFriendRelationship() *FriendRelationship {
 	return &FriendRelationship{}
 }
@@ -176,6 +178,7 @@ func (friendPersistentInfo *FriendPersistentInfo) Bytes(stream *nex.StreamOut) [
 	return stream.Bytes()
 }
 
+// NewFriendPersistentInfo returns a new FriendPersistentInfo
 func NewFriendPersistentInfo() *FriendPersistentInfo {
 	return &FriendPersistentInfo{}
 }

@@ -67,14 +67,14 @@ func (accountManagementProtocol *AccountManagementProtocol) Setup() {
 	nexServer := accountManagementProtocol.server
 
 	nexServer.On("Data", func(packet nex.PacketInterface) {
-		request := packet.GetRMCRequest()
+		request := packet.RMCRequest()
 
-		if AccountManagementProtocolID == request.GetProtocolID() {
-			switch request.GetMethodID() {
+		if AccountManagementProtocolID == request.ProtocolID() {
+			switch request.MethodID() {
 			case AccountManagementMethodNintendoCreateAccount:
 				go accountManagementProtocol.handleNintendoCreateAccountHandler(packet)
 			default:
-				fmt.Printf("Unsupported AccountManagement method ID: %#v\n", request.GetMethodID())
+				fmt.Printf("Unsupported AccountManagement method ID: %#v\n", request.MethodID())
 			}
 		}
 	})
@@ -92,11 +92,11 @@ func (accountManagementProtocol *AccountManagementProtocol) handleNintendoCreate
 		return
 	}
 
-	client := packet.GetSender()
-	request := packet.GetRMCRequest()
+	client := packet.Sender()
+	request := packet.RMCRequest()
 
-	callID := request.GetCallID()
-	parameters := request.GetParameters()
+	callID := request.CallID()
+	parameters := request.Parameters()
 
 	parametersStream := nex.NewStreamIn(parameters, accountManagementProtocol.server)
 

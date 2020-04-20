@@ -22,14 +22,14 @@ func (dataStoreSMMProtocol *DataStoreSMMProtocol) Setup() {
 	nexServer := dataStoreSMMProtocol.server
 
 	nexServer.On("Data", func(packet nex.PacketInterface) {
-		request := packet.GetRMCRequest()
+		request := packet.RMCRequest()
 
-		if DataStoreSMMProtocolID == request.GetProtocolID() {
-			switch request.GetMethodID() {
+		if DataStoreSMMProtocolID == request.ProtocolID() {
+			switch request.MethodID() {
 			case DataStoreMethodGetMeta:
 				go dataStoreSMMProtocol.handleGetMeta(packet)
 			default:
-				fmt.Printf("Unsupported DataStoreSMM method ID: %#v\n", request.GetMethodID())
+				fmt.Printf("Unsupported DataStoreSMM method ID: %#v\n", request.MethodID())
 			}
 		}
 	})

@@ -55,10 +55,10 @@ func (secureProtocol *SecureProtocol) Setup() {
 	nexServer := secureProtocol.server
 
 	nexServer.On("Data", func(packet nex.PacketInterface) {
-		request := packet.GetRMCRequest()
+		request := packet.RMCRequest()
 
-		if SecureProtocolID == request.GetProtocolID() {
-			switch request.GetMethodID() {
+		if SecureProtocolID == request.ProtocolID() {
+			switch request.MethodID() {
 			case SecureMethodRegister:
 				go secureProtocol.handleRegister(packet)
 			case SecureMethodRequestConnectionData:
@@ -76,7 +76,7 @@ func (secureProtocol *SecureProtocol) Setup() {
 			case SecureMethodSendReport:
 				go secureProtocol.handleSendReport(packet)
 			default:
-				fmt.Printf("Unsupported Secure method ID: %#v\n", request.GetMethodID())
+				fmt.Printf("Unsupported Secure method ID: %#v\n", request.MethodID())
 			}
 		}
 	})
@@ -129,11 +129,11 @@ func (secureProtocol *SecureProtocol) handleRegister(packet nex.PacketInterface)
 		return
 	}
 
-	client := packet.GetSender()
-	request := packet.GetRMCRequest()
+	client := packet.Sender()
+	request := packet.RMCRequest()
 
-	callID := request.GetCallID()
-	parameters := request.GetParameters()
+	callID := request.CallID()
+	parameters := request.Parameters()
 
 	parametersStream := NewStreamIn(parameters, secureProtocol.server)
 
@@ -160,11 +160,11 @@ func (secureProtocol *SecureProtocol) handleRequestConnectionData(packet nex.Pac
 		return
 	}
 
-	client := packet.GetSender()
-	request := packet.GetRMCRequest()
+	client := packet.Sender()
+	request := packet.RMCRequest()
 
-	callID := request.GetCallID()
-	parameters := request.GetParameters()
+	callID := request.CallID()
+	parameters := request.Parameters()
 
 	parametersStream := nex.NewStreamIn(parameters, secureProtocol.server)
 
@@ -187,11 +187,11 @@ func (secureProtocol *SecureProtocol) handleRequestURLs(packet nex.PacketInterfa
 		return
 	}
 
-	client := packet.GetSender()
-	request := packet.GetRMCRequest()
+	client := packet.Sender()
+	request := packet.RMCRequest()
 
-	callID := request.GetCallID()
-	parameters := request.GetParameters()
+	callID := request.CallID()
+	parameters := request.Parameters()
 
 	parametersStream := nex.NewStreamIn(parameters, secureProtocol.server)
 
@@ -214,11 +214,11 @@ func (secureProtocol *SecureProtocol) handleRegisterEx(packet nex.PacketInterfac
 		return
 	}
 
-	client := packet.GetSender()
-	request := packet.GetRMCRequest()
+	client := packet.Sender()
+	request := packet.RMCRequest()
 
-	callID := request.GetCallID()
-	parameters := request.GetParameters()
+	callID := request.CallID()
+	parameters := request.Parameters()
 
 	parametersStream := nex.NewStreamIn(parameters, secureProtocol.server)
 
@@ -291,10 +291,10 @@ func (secureProtocol *SecureProtocol) handleTestConnectivity(packet nex.PacketIn
 		return
 	}
 
-	client := packet.GetSender()
-	request := packet.GetRMCRequest()
+	client := packet.Sender()
+	request := packet.RMCRequest()
 
-	callID := request.GetCallID()
+	callID := request.CallID()
 
 	go secureProtocol.TestConnectivityHandler(nil, client, callID)
 }
@@ -306,11 +306,11 @@ func (secureProtocol *SecureProtocol) handleUpdateURLs(packet nex.PacketInterfac
 		return
 	}
 
-	client := packet.GetSender()
-	request := packet.GetRMCRequest()
+	client := packet.Sender()
+	request := packet.RMCRequest()
 
-	callID := request.GetCallID()
-	parameters := request.GetParameters()
+	callID := request.CallID()
+	parameters := request.Parameters()
 
 	parametersStream := nex.NewStreamIn(parameters, secureProtocol.server)
 
@@ -345,11 +345,11 @@ func (secureProtocol *SecureProtocol) handleReplaceURL(packet nex.PacketInterfac
 		return
 	}
 
-	client := packet.GetSender()
-	request := packet.GetRMCRequest()
+	client := packet.Sender()
+	request := packet.RMCRequest()
 
-	callID := request.GetCallID()
-	parameters := request.GetParameters()
+	callID := request.CallID()
+	parameters := request.Parameters()
 
 	parametersStream := nex.NewStreamIn(parameters, secureProtocol.server)
 
@@ -380,11 +380,11 @@ func (secureProtocol *SecureProtocol) handleSendReport(packet nex.PacketInterfac
 		return
 	}
 
-	client := packet.GetSender()
-	request := packet.GetRMCRequest()
+	client := packet.Sender()
+	request := packet.RMCRequest()
 
-	callID := request.GetCallID()
-	parameters := request.GetParameters()
+	callID := request.CallID()
+	parameters := request.Parameters()
 
 	parametersStream := nex.NewStreamIn(parameters, secureProtocol.server)
 

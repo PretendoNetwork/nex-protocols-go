@@ -188,10 +188,10 @@ func (friends3DSProtocol *Friends3DSProtocol) Setup() {
 	nexServer := friends3DSProtocol.server
 
 	nexServer.On("Data", func(packet nex.PacketInterface) {
-		request := packet.GetRMCRequest()
+		request := packet.RMCRequest()
 
-		if Friends3DSProtocolID == request.GetProtocolID() {
-			switch request.GetMethodID() {
+		if Friends3DSProtocolID == request.ProtocolID() {
+			switch request.MethodID() {
 			case Friends3DSMethodSyncFriend:
 				go friends3DSProtocol.handleSyncFriend(packet)
 			case Friends3DSMethodUpdatePresence:
@@ -205,7 +205,7 @@ func (friends3DSProtocol *Friends3DSProtocol) Setup() {
 			case Friends3DSMethodGetFriendPresence:
 				go friends3DSProtocol.handleGetFriendPresence(packet)
 			default:
-				fmt.Printf("Unsupported Friends (3DS) method ID: %#v\n", request.GetMethodID())
+				fmt.Printf("Unsupported Friends (3DS) method ID: %#v\n", request.MethodID())
 			}
 		}
 	})
@@ -218,11 +218,11 @@ func (friends3DSProtocol *Friends3DSProtocol) handleSyncFriend(packet nex.Packet
 		return
 	}
 
-	client := packet.GetSender()
-	request := packet.GetRMCRequest()
+	client := packet.Sender()
+	request := packet.RMCRequest()
 
-	callID := request.GetCallID()
-	parameters := request.GetParameters()
+	callID := request.CallID()
+	parameters := request.Parameters()
 
 	parametersStream := nex.NewStreamIn(parameters, friends3DSProtocol.server)
 
@@ -240,11 +240,11 @@ func (friends3DSProtocol *Friends3DSProtocol) handleGetFriendPersistentInfo(pack
 		return
 	}
 
-	client := packet.GetSender()
-	request := packet.GetRMCRequest()
+	client := packet.Sender()
+	request := packet.RMCRequest()
 
-	callID := request.GetCallID()
-	parameters := request.GetParameters()
+	callID := request.CallID()
+	parameters := request.Parameters()
 
 	parametersStream := nex.NewStreamIn(parameters, friends3DSProtocol.server)
 
@@ -260,11 +260,11 @@ func (friends3DSProtocol *Friends3DSProtocol) handleUpdatePresence(packet nex.Pa
 		return
 	}
 
-	client := packet.GetSender()
-	request := packet.GetRMCRequest()
+	client := packet.Sender()
+	request := packet.RMCRequest()
 
-	callID := request.GetCallID()
-	parameters := request.GetParameters()
+	callID := request.CallID()
+	parameters := request.Parameters()
 
 	parametersStream := nex.NewStreamIn(parameters, friends3DSProtocol.server)
 
@@ -286,11 +286,11 @@ func (friends3DSProtocol *Friends3DSProtocol) handleAddFriendByPrincipalID(packe
 		return
 	}
 
-	client := packet.GetSender()
-	request := packet.GetRMCRequest()
+	client := packet.Sender()
+	request := packet.RMCRequest()
 
-	callID := request.GetCallID()
-	parameters := request.GetParameters()
+	callID := request.CallID()
+	parameters := request.Parameters()
 
 	parametersStream := nex.NewStreamIn(parameters, friends3DSProtocol.server)
 
@@ -307,11 +307,11 @@ func (friends3DSProtocol *Friends3DSProtocol) handleGetFriendMii(packet nex.Pack
 		return
 	}
 
-	client := packet.GetSender()
-	request := packet.GetRMCRequest()
+	client := packet.Sender()
+	request := packet.RMCRequest()
 
-	callID := request.GetCallID()
-	parameters := request.GetParameters()
+	callID := request.CallID()
+	parameters := request.Parameters()
 
 	parametersStream := nex.NewStreamIn(parameters, friends3DSProtocol.server)
 
@@ -327,11 +327,11 @@ func (friends3DSProtocol *Friends3DSProtocol) handleGetFriendPresence(packet nex
 		return
 	}
 
-	client := packet.GetSender()
-	request := packet.GetRMCRequest()
+	client := packet.Sender()
+	request := packet.RMCRequest()
 
-	callID := request.GetCallID()
-	parameters := request.GetParameters()
+	callID := request.CallID()
+	parameters := request.Parameters()
 
 	parametersStream := nex.NewStreamIn(parameters, friends3DSProtocol.server)
 

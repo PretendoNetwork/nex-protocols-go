@@ -634,10 +634,10 @@ func (friendsProtocol *FriendsProtocol) Setup() {
 	nexServer := friendsProtocol.server
 
 	nexServer.On("Data", func(packet nex.PacketInterface) {
-		request := packet.GetRMCRequest()
+		request := packet.RMCRequest()
 
-		if FriendsProtocolID == request.GetProtocolID() {
-			switch request.GetMethodID() {
+		if FriendsProtocolID == request.ProtocolID() {
+			switch request.MethodID() {
 			case FriendsMethodUpdateAndGetAllInformation:
 				go friendsProtocol.handleUpdateAndGetAllInformation(packet)
 			case FriendsMethodAddFriend:
@@ -679,7 +679,7 @@ func (friendsProtocol *FriendsProtocol) Setup() {
 			case FriendsMethodGetRequestBlockSettings:
 				go friendsProtocol.handleGetRequestBlockSettings(packet)
 			default:
-				fmt.Printf("Unsupported Friends (WiiU) method ID: %#v\n", request.GetMethodID())
+				fmt.Printf("Unsupported Friends (WiiU) method ID: %#v\n", request.MethodID())
 			}
 		}
 	})
@@ -792,11 +792,11 @@ func (friendsProtocol *FriendsProtocol) handleUpdateAndGetAllInformation(packet 
 		return
 	}
 
-	client := packet.GetSender()
-	request := packet.GetRMCRequest()
+	client := packet.Sender()
+	request := packet.RMCRequest()
 
-	callID := request.GetCallID()
-	parameters := request.GetParameters()
+	callID := request.CallID()
+	parameters := request.Parameters()
 
 	parametersStream := nex.NewStreamIn(parameters, friendsProtocol.server)
 
@@ -826,11 +826,11 @@ func (friendsProtocol *FriendsProtocol) handleAddFriend(packet nex.PacketInterfa
 		return
 	}
 
-	client := packet.GetSender()
-	request := packet.GetRMCRequest()
+	client := packet.Sender()
+	request := packet.RMCRequest()
 
-	callID := request.GetCallID()
-	parameters := request.GetParameters()
+	callID := request.CallID()
+	parameters := request.Parameters()
 
 	parametersStream := nex.NewStreamIn(parameters, friendsProtocol.server)
 
@@ -852,11 +852,11 @@ func (friendsProtocol *FriendsProtocol) handleAddFriendByName(packet nex.PacketI
 		return
 	}
 
-	client := packet.GetSender()
-	request := packet.GetRMCRequest()
+	client := packet.Sender()
+	request := packet.RMCRequest()
 
-	callID := request.GetCallID()
-	parameters := request.GetParameters()
+	callID := request.CallID()
+	parameters := request.Parameters()
 
 	parametersStream := nex.NewStreamIn(parameters, friendsProtocol.server)
 
@@ -877,11 +877,11 @@ func (friendsProtocol *FriendsProtocol) handleRemoveFriend(packet nex.PacketInte
 		return
 	}
 
-	client := packet.GetSender()
-	request := packet.GetRMCRequest()
+	client := packet.Sender()
+	request := packet.RMCRequest()
 
-	callID := request.GetCallID()
-	parameters := request.GetParameters()
+	callID := request.CallID()
+	parameters := request.Parameters()
 
 	parametersStream := nex.NewStreamIn(parameters, friendsProtocol.server)
 
@@ -903,11 +903,11 @@ func (friendsProtocol *FriendsProtocol) handleAddFriendRequest(packet nex.Packet
 		return
 	}
 
-	client := packet.GetSender()
-	request := packet.GetRMCRequest()
+	client := packet.Sender()
+	request := packet.RMCRequest()
 
-	callID := request.GetCallID()
-	parameters := request.GetParameters()
+	callID := request.CallID()
+	parameters := request.Parameters()
 
 	parametersStream := nex.NewStreamIn(parameters, friendsProtocol.server)
 
@@ -961,11 +961,11 @@ func (friendsProtocol *FriendsProtocol) handleCancelFriendRequest(packet nex.Pac
 		return
 	}
 
-	client := packet.GetSender()
-	request := packet.GetRMCRequest()
+	client := packet.Sender()
+	request := packet.RMCRequest()
 
-	callID := request.GetCallID()
-	parameters := request.GetParameters()
+	callID := request.CallID()
+	parameters := request.Parameters()
 
 	parametersStream := nex.NewStreamIn(parameters, friendsProtocol.server)
 
@@ -987,11 +987,11 @@ func (friendsProtocol *FriendsProtocol) handleAcceptFriendRequest(packet nex.Pac
 		return
 	}
 
-	client := packet.GetSender()
-	request := packet.GetRMCRequest()
+	client := packet.Sender()
+	request := packet.RMCRequest()
 
-	callID := request.GetCallID()
-	parameters := request.GetParameters()
+	callID := request.CallID()
+	parameters := request.Parameters()
 
 	parametersStream := nex.NewStreamIn(parameters, friendsProtocol.server)
 
@@ -1013,11 +1013,11 @@ func (friendsProtocol *FriendsProtocol) handleDeleteFriendRequest(packet nex.Pac
 		return
 	}
 
-	client := packet.GetSender()
-	request := packet.GetRMCRequest()
+	client := packet.Sender()
+	request := packet.RMCRequest()
 
-	callID := request.GetCallID()
-	parameters := request.GetParameters()
+	callID := request.CallID()
+	parameters := request.Parameters()
 
 	parametersStream := nex.NewStreamIn(parameters, friendsProtocol.server)
 
@@ -1039,11 +1039,11 @@ func (friendsProtocol *FriendsProtocol) handleDenyFriendRequest(packet nex.Packe
 		return
 	}
 
-	client := packet.GetSender()
-	request := packet.GetRMCRequest()
+	client := packet.Sender()
+	request := packet.RMCRequest()
 
-	callID := request.GetCallID()
-	parameters := request.GetParameters()
+	callID := request.CallID()
+	parameters := request.Parameters()
 
 	parametersStream := nex.NewStreamIn(parameters, friendsProtocol.server)
 
@@ -1065,11 +1065,11 @@ func (friendsProtocol *FriendsProtocol) handleMarkFriendRequestsAsReceived(packe
 		return
 	}
 
-	client := packet.GetSender()
-	request := packet.GetRMCRequest()
+	client := packet.Sender()
+	request := packet.RMCRequest()
 
-	callID := request.GetCallID()
-	parameters := request.GetParameters()
+	callID := request.CallID()
+	parameters := request.Parameters()
 
 	parametersStream := NewStreamIn(parameters, friendsProtocol.server)
 
@@ -1091,11 +1091,11 @@ func (friendsProtocol *FriendsProtocol) handleAddBlackList(packet nex.PacketInte
 		return
 	}
 
-	client := packet.GetSender()
-	request := packet.GetRMCRequest()
+	client := packet.Sender()
+	request := packet.RMCRequest()
 
-	callID := request.GetCallID()
-	parameters := request.GetParameters()
+	callID := request.CallID()
+	parameters := request.Parameters()
 
 	parametersStream := nex.NewStreamIn(parameters, friendsProtocol.server)
 
@@ -1117,11 +1117,11 @@ func (friendsProtocol *FriendsProtocol) handleRemoveBlackList(packet nex.PacketI
 		return
 	}
 
-	client := packet.GetSender()
-	request := packet.GetRMCRequest()
+	client := packet.Sender()
+	request := packet.RMCRequest()
 
-	callID := request.GetCallID()
-	parameters := request.GetParameters()
+	callID := request.CallID()
+	parameters := request.Parameters()
 
 	parametersStream := nex.NewStreamIn(parameters, friendsProtocol.server)
 
@@ -1143,11 +1143,11 @@ func (friendsProtocol *FriendsProtocol) handleUpdatePresence(packet nex.PacketIn
 		return
 	}
 
-	client := packet.GetSender()
-	request := packet.GetRMCRequest()
+	client := packet.Sender()
+	request := packet.RMCRequest()
 
-	callID := request.GetCallID()
-	parameters := request.GetParameters()
+	callID := request.CallID()
+	parameters := request.Parameters()
 
 	parametersStream := nex.NewStreamIn(parameters, friendsProtocol.server)
 
@@ -1169,11 +1169,11 @@ func (friendsProtocol *FriendsProtocol) handleUpdateMii(packet nex.PacketInterfa
 		return
 	}
 
-	client := packet.GetSender()
-	request := packet.GetRMCRequest()
+	client := packet.Sender()
+	request := packet.RMCRequest()
 
-	callID := request.GetCallID()
-	parameters := request.GetParameters()
+	callID := request.CallID()
+	parameters := request.Parameters()
 
 	parametersStream := nex.NewStreamIn(parameters, friendsProtocol.server)
 
@@ -1195,11 +1195,11 @@ func (friendsProtocol *FriendsProtocol) handleUpdateComment(packet nex.PacketInt
 		return
 	}
 
-	client := packet.GetSender()
-	request := packet.GetRMCRequest()
+	client := packet.Sender()
+	request := packet.RMCRequest()
 
-	callID := request.GetCallID()
-	parameters := request.GetParameters()
+	callID := request.CallID()
+	parameters := request.Parameters()
 
 	parametersStream := nex.NewStreamIn(parameters, friendsProtocol.server)
 
@@ -1221,11 +1221,11 @@ func (friendsProtocol *FriendsProtocol) handleUpdatePreference(packet nex.Packet
 		return
 	}
 
-	client := packet.GetSender()
-	request := packet.GetRMCRequest()
+	client := packet.Sender()
+	request := packet.RMCRequest()
 
-	callID := request.GetCallID()
-	parameters := request.GetParameters()
+	callID := request.CallID()
+	parameters := request.Parameters()
 
 	parametersStream := nex.NewStreamIn(parameters, friendsProtocol.server)
 
@@ -1247,11 +1247,11 @@ func (friendsProtocol *FriendsProtocol) handleGetBasicInfo(packet nex.PacketInte
 		return
 	}
 
-	client := packet.GetSender()
-	request := packet.GetRMCRequest()
+	client := packet.Sender()
+	request := packet.RMCRequest()
 
-	callID := request.GetCallID()
-	parameters := request.GetParameters()
+	callID := request.CallID()
+	parameters := request.Parameters()
 
 	parametersStream := NewStreamIn(parameters, friendsProtocol.server)
 
@@ -1273,11 +1273,11 @@ func (friendsProtocol *FriendsProtocol) handleDeleteFriendFlags(packet nex.Packe
 		return
 	}
 
-	client := packet.GetSender()
-	request := packet.GetRMCRequest()
+	client := packet.Sender()
+	request := packet.RMCRequest()
 
-	callID := request.GetCallID()
-	parameters := request.GetParameters()
+	callID := request.CallID()
+	parameters := request.Parameters()
 
 	parametersStream := NewStreamIn(parameters, friendsProtocol.server)
 
@@ -1298,10 +1298,10 @@ func (friendsProtocol *FriendsProtocol) handleCheckSettingStatus(packet nex.Pack
 		return
 	}
 
-	client := packet.GetSender()
-	request := packet.GetRMCRequest()
+	client := packet.Sender()
+	request := packet.RMCRequest()
 
-	callID := request.GetCallID()
+	callID := request.CallID()
 
 	go friendsProtocol.CheckSettingStatusHandler(nil, client, callID)
 }
@@ -1313,11 +1313,11 @@ func (friendsProtocol *FriendsProtocol) handleGetRequestBlockSettings(packet nex
 		return
 	}
 
-	client := packet.GetSender()
-	request := packet.GetRMCRequest()
+	client := packet.Sender()
+	request := packet.RMCRequest()
 
-	callID := request.GetCallID()
-	parameters := request.GetParameters()
+	callID := request.CallID()
+	parameters := request.Parameters()
 
 	parametersStream := NewStreamIn(parameters, friendsProtocol.server)
 

@@ -107,10 +107,10 @@ func (authenticationProtocol *AuthenticationProtocol) Setup() {
 	nexServer := authenticationProtocol.server
 
 	nexServer.On("Data", func(packet nex.PacketInterface) {
-		request := packet.GetRMCRequest()
+		request := packet.RMCRequest()
 
-		if AuthenticationProtocolID == request.GetProtocolID() {
-			switch request.GetMethodID() {
+		if AuthenticationProtocolID == request.ProtocolID() {
+			switch request.MethodID() {
 			case AuthenticationMethodLogin:
 				go authenticationProtocol.handleLogin(packet)
 			case AuthenticationMethodLoginEx:
@@ -124,7 +124,7 @@ func (authenticationProtocol *AuthenticationProtocol) Setup() {
 			case AuthenticationMethodLoginWithParam:
 				go authenticationProtocol.handleLoginWithParam(packet)
 			default:
-				fmt.Printf("Unsupported Authentication method ID: %#v\n", request.GetMethodID())
+				fmt.Printf("Unsupported Authentication method ID: %#v\n", request.MethodID())
 			}
 		}
 	})
@@ -167,11 +167,11 @@ func (authenticationProtocol *AuthenticationProtocol) handleLogin(packet nex.Pac
 		return
 	}
 
-	client := packet.GetSender()
-	request := packet.GetRMCRequest()
+	client := packet.Sender()
+	request := packet.RMCRequest()
 
-	callID := request.GetCallID()
-	parameters := request.GetParameters()
+	callID := request.CallID()
+	parameters := request.Parameters()
 
 	parametersStream := nex.NewStreamIn(parameters, authenticationProtocol.server)
 
@@ -192,11 +192,11 @@ func (authenticationProtocol *AuthenticationProtocol) handleLoginEx(packet nex.P
 		return
 	}
 
-	client := packet.GetSender()
-	request := packet.GetRMCRequest()
+	client := packet.Sender()
+	request := packet.RMCRequest()
 
-	callID := request.GetCallID()
-	parameters := request.GetParameters()
+	callID := request.CallID()
+	parameters := request.Parameters()
 
 	parametersStream := nex.NewStreamIn(parameters, authenticationProtocol.server)
 
@@ -248,11 +248,11 @@ func (authenticationProtocol *AuthenticationProtocol) handleRequestTicket(packet
 		return
 	}
 
-	client := packet.GetSender()
-	request := packet.GetRMCRequest()
+	client := packet.Sender()
+	request := packet.RMCRequest()
 
-	callID := request.GetCallID()
-	parameters := request.GetParameters()
+	callID := request.CallID()
+	parameters := request.Parameters()
 
 	if len(parameters) != 8 {
 		err := errors.New("[AuthenticationProtocol::RequestTicket] Parameters length not 8")
@@ -274,11 +274,11 @@ func (authenticationProtocol *AuthenticationProtocol) handleGetPID(packet nex.Pa
 		return
 	}
 
-	client := packet.GetSender()
-	request := packet.GetRMCRequest()
+	client := packet.Sender()
+	request := packet.RMCRequest()
 
-	callID := request.GetCallID()
-	parameters := request.GetParameters()
+	callID := request.CallID()
+	parameters := request.Parameters()
 
 	parametersStream := nex.NewStreamIn(parameters, authenticationProtocol.server)
 
@@ -299,11 +299,11 @@ func (authenticationProtocol *AuthenticationProtocol) handleGetName(packet nex.P
 		return
 	}
 
-	client := packet.GetSender()
-	request := packet.GetRMCRequest()
+	client := packet.Sender()
+	request := packet.RMCRequest()
 
-	callID := request.GetCallID()
-	parameters := request.GetParameters()
+	callID := request.CallID()
+	parameters := request.Parameters()
 
 	parametersStream := nex.NewStreamIn(parameters, authenticationProtocol.server)
 

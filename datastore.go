@@ -237,14 +237,14 @@ func (dataStoreProtocol *DataStoreProtocol) Setup() {
 	nexServer := dataStoreProtocol.server
 
 	nexServer.On("Data", func(packet nex.PacketInterface) {
-		request := packet.GetRMCRequest()
+		request := packet.RMCRequest()
 
-		if DataStoreProtocolID == request.GetProtocolID() {
-			switch request.GetMethodID() {
+		if DataStoreProtocolID == request.ProtocolID() {
+			switch request.MethodID() {
 			case DataStoreMethodGetMeta:
 				go dataStoreProtocol.handleGetMeta(packet)
 			default:
-				fmt.Printf("Unsupported DataStore method ID: %#v\n", request.GetMethodID())
+				fmt.Printf("Unsupported DataStore method ID: %#v\n", request.MethodID())
 			}
 		}
 	})
@@ -262,11 +262,11 @@ func (dataStoreProtocol *DataStoreProtocol) handleGetMeta(packet nex.PacketInter
 		return
 	}
 
-	client := packet.GetSender()
-	request := packet.GetRMCRequest()
+	client := packet.Sender()
+	request := packet.RMCRequest()
 
-	callID := request.GetCallID()
-	parameters := request.GetParameters()
+	callID := request.CallID()
+	parameters := request.Parameters()
 
 	parametersStream := nex.NewStreamIn(parameters, dataStoreProtocol.server)
 

@@ -22,12 +22,12 @@ func (rankingMK8Protocol *RankingMK8Protocol) Setup() {
 	nexServer := rankingMK8Protocol.server
 
 	nexServer.On("Data", func(packet nex.PacketInterface) {
-		request := packet.GetRMCRequest()
+		request := packet.RMCRequest()
 
-		if RankingProtocolID == request.GetProtocolID() {
-			switch request.GetMethodID() {
+		if RankingProtocolID == request.ProtocolID() {
+			switch request.MethodID() {
 			default:
-				fmt.Printf("Unsupported Ranking method ID: %#v\n", request.GetMethodID())
+				fmt.Printf("Unsupported Ranking method ID: %#v\n", request.MethodID())
 			}
 		}
 	})

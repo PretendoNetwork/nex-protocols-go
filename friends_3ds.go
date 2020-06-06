@@ -46,7 +46,7 @@ const (
 type Friends3DSProtocol struct {
 	server                           *nex.Server
 	UpdatePresenceHandler            func(err error, client *nex.Client, callID uint32, presence *NintendoPresence)
-	SyncFriendHandler                func(err error, client *nex.Client, callID uint32, unknown1 uint64, unknown2 []uint32, unknown3 []uint64)
+	SyncFriendHandler                func(err error, client *nex.Client, callID uint32, accountID uint64, pidList []uint32, unknown3 []uint64)
 	AddFriendByPrincipalIDHandler    func(err error, client *nex.Client, callID uint32, unknown1 uint64, principalID uint32)
 	GetFriendPersistentInfoHandler   func(err error, client *nex.Client, callID uint32, pidList []uint32)
 	GetFriendMiiHandler              func(err error, client *nex.Client, callID uint32, pidList []uint32)
@@ -140,7 +140,7 @@ func NewNintendoPresence() *NintendoPresence {
 // FriendRelationship contains information about a users relationship with another PID
 type FriendRelationship struct {
 	PrincipalID  uint32
-	Unknown1     uint64
+	AccountID    uint64
 	RelationType uint8 // guess
 
 	nex.Structure
@@ -149,7 +149,7 @@ type FriendRelationship struct {
 // Bytes encodes the FriendRelationship and returns a byte array
 func (relationship *FriendRelationship) Bytes(stream *nex.StreamOut) []byte {
 	stream.WriteUInt32LE(relationship.PrincipalID)
-	stream.WriteUInt64LE(relationship.Unknown1)
+	stream.WriteUInt64LE(relationship.AccountID)
 	stream.WriteUInt8(relationship.RelationType)
 
 	return stream.Bytes()
@@ -250,11 +250,11 @@ func (friends3DSProtocol *Friends3DSProtocol) handleSyncFriend(packet nex.Packet
 
 	parametersStream := nex.NewStreamIn(parameters, friends3DSProtocol.server)
 
-	Unknown1 := parametersStream.ReadUInt64LE()
-	Unknown2 := parametersStream.ReadListUInt32LE()
+	accountID := parametersStream.ReadUInt64LE()
+	pidList := parametersStream.ReadListUInt32LE()
 	Unknown3 := parametersStream.ReadListUInt64LE()
 
-	go friends3DSProtocol.SyncFriendHandler(nil, client, callID, Unknown1, Unknown2, Unknown3)
+	go friends3DSProtocol.SyncFriendHandler(nil, client, callID, accountID, pidList, Unknown3)
 }
 
 func (friends3DSProtocol *Friends3DSProtocol) handleGetFriendPersistentInfo(packet nex.PacketInterface) {
@@ -458,7 +458,7 @@ func (friends3DSProtocol *Friends3DSProtocol) AddFriendByPrincipalID(handler fun
 }
 
 // SyncFriend sets the SyncFriend handler function
-func (friends3DSProtocol *Friends3DSProtocol) SyncFriend(handler func(err error, client *nex.Client, callID uint32, unknown1 uint64, unknown2 []uint32, unknown3 []uint64)) {
+func (friends3DSProtocol *Friends3DSProtocol) SyncFriend(handler func(err error, client *nex.Client, callID uint32, accountID uint64, pidList []uint32, unknown3 []uint64)) {
 	friends3DSProtocol.SyncFriendHandler = handler
 }
 

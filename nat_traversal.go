@@ -1,6 +1,7 @@
 package nexproto
 
 import (
+	//"errors"
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"

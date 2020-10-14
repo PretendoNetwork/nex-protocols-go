@@ -77,44 +77,16 @@ func (natTraversalProtocol *NatTraversalProtocol) Setup() {
 				break
 			default:
 				fmt.Printf("Unsupported NatTraversal method ID: %#v\n", request.MethodID())
-				go natTraversalProtocol.respondNotImplemented(packet)
 				break
 			}
 		}
 	})
 }
 
-func (natTraversalProtocol *NatTraversalProtocol) respondNotImplemented(packet nex.PacketInterface) {
-	client := packet.Sender()
-	request := packet.RMCRequest()
-
-	rmcResponse := nex.NewRMCResponse(NatTraversalProtocolID, request.CallID())
-	rmcResponse.SetError(0x80010002)
-
-	rmcResponseBytes := rmcResponse.Bytes()
-
-	var responsePacket nex.PacketInterface
-	if packet.Version() == 1 {
-		responsePacket, _ = nex.NewPacketV1(client, nil)
-	} else {
-		responsePacket, _ = nex.NewPacketV0(client, nil)
-	}
-
-	responsePacket.SetVersion(packet.Version())
-	responsePacket.SetSource(packet.Destination())
-	responsePacket.SetDestination(packet.Source())
-	responsePacket.SetType(nex.DataPacket)
-	responsePacket.SetPayload(rmcResponseBytes)
-
-	responsePacket.AddFlag(nex.FlagNeedsAck)
-	responsePacket.AddFlag(nex.FlagReliable)
-	natTraversalProtocol.server.Send(responsePacket)
-}
-
 func (natTraversalProtocol *NatTraversalProtocol) handleRequestProbeInitiation(packet nex.PacketInterface) {
 	if natTraversalProtocol.RequestProbeInitiationHandler == nil {
 		fmt.Println("[Warning] NatTraversalProtocol::RequestProbeInitiation not implemented")
-		go natTraversalProtocol.respondNotImplemented(packet)
+		go respondNotImplemented(packet, NatTraversalProtocolID)
 		return
 	}
 
@@ -142,7 +114,7 @@ func (natTraversalProtocol *NatTraversalProtocol) handleRequestProbeInitiation(p
 func (natTraversalProtocol *NatTraversalProtocol) handleInitiateProbe(packet nex.PacketInterface) {
 	if natTraversalProtocol.InitiateProbeHandler == nil {
 		fmt.Println("[Warning] NatTraversalProtocol::InitiateProbe not implemented")
-		go natTraversalProtocol.respondNotImplemented(packet)
+		go respondNotImplemented(packet, NatTraversalProtocolID)
 		return
 	}
 
@@ -166,7 +138,7 @@ func (natTraversalProtocol *NatTraversalProtocol) handleInitiateProbe(packet nex
 func (natTraversalProtocol *NatTraversalProtocol) handleRequestProbeInitiationExt(packet nex.PacketInterface) {
 	if natTraversalProtocol.RequestProbeInitiationExtHandler == nil {
 		fmt.Println("[Warning] NatTraversalProtocol::RequestProbeInitiationExt not implemented")
-		go natTraversalProtocol.respondNotImplemented(packet)
+		go respondNotImplemented(packet, NatTraversalProtocolID)
 		return
 	}
 
@@ -199,7 +171,7 @@ func (natTraversalProtocol *NatTraversalProtocol) handleRequestProbeInitiationEx
 func (natTraversalProtocol *NatTraversalProtocol) handleReportNATTraversalResult(packet nex.PacketInterface) {
 	if natTraversalProtocol.ReportNATTraversalResultHandler == nil {
 		fmt.Println("[Warning] NatTraversalProtocol::ReportNATTraversalResult not implemented")
-		go natTraversalProtocol.respondNotImplemented(packet)
+		go respondNotImplemented(packet, NatTraversalProtocolID)
 		return
 	}
 
@@ -224,7 +196,7 @@ func (natTraversalProtocol *NatTraversalProtocol) handleReportNATTraversalResult
 func (natTraversalProtocol *NatTraversalProtocol) handleReportNATProperties(packet nex.PacketInterface) {
 	if natTraversalProtocol.ReportNATPropertiesHandler == nil {
 		fmt.Println("[Warning] NatTraversalProtocol::ReportNATProperties not implemented")
-		go natTraversalProtocol.respondNotImplemented(packet)
+		go respondNotImplemented(packet, NatTraversalProtocolID)
 		return
 	}
 
@@ -246,7 +218,7 @@ func (natTraversalProtocol *NatTraversalProtocol) handleReportNATProperties(pack
 func (natTraversalProtocol *NatTraversalProtocol) handleGetRelaySignatureKey(packet nex.PacketInterface) {
 	if natTraversalProtocol.GetRelaySignatureKeyHandler == nil {
 		fmt.Println("[Warning] NatTraversalProtocol::GetRelaySignatureKey not implemented")
-		go natTraversalProtocol.respondNotImplemented(packet)
+		go respondNotImplemented(packet, NatTraversalProtocolID)
 		return
 	}
 
@@ -261,7 +233,7 @@ func (natTraversalProtocol *NatTraversalProtocol) handleGetRelaySignatureKey(pac
 func (natTraversalProtocol *NatTraversalProtocol) handleReportNATTraversalResultDetail(packet nex.PacketInterface) {
 	if natTraversalProtocol.ReportNATTraversalResultDetailHandler == nil {
 		fmt.Println("[Warning] NatTraversalProtocol::ReportNATTraversalResultDetail not implemented")
-		go natTraversalProtocol.respondNotImplemented(packet)
+		go respondNotImplemented(packet, NatTraversalProtocolID)
 		return
 	}
 

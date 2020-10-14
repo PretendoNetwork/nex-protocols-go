@@ -91,44 +91,16 @@ func (notificationsProtocol *NotificationsProtocol) Setup() {
 				break
 			default:
 				fmt.Printf("Unsupported Notifications method ID: %#v\n", request.MethodID())
-				go notificationsProtocol.respondNotImplemented(packet)
 				break
 			}
 		}
 	})
 }
 
-func (notificationsProtocol *NotificationsProtocol) respondNotImplemented(packet nex.PacketInterface) {
-	client := packet.Sender()
-	request := packet.RMCRequest()
-
-	rmcResponse := nex.NewRMCResponse(NotificationsProtocolID, request.CallID())
-	rmcResponse.SetError(0x80010002)
-
-	rmcResponseBytes := rmcResponse.Bytes()
-
-	var responsePacket nex.PacketInterface
-	if packet.Version() == 1 {
-		responsePacket, _ = nex.NewPacketV1(client, nil)
-	} else {
-		responsePacket, _ = nex.NewPacketV0(client, nil)
-	}
-
-	responsePacket.SetVersion(packet.Version())
-	responsePacket.SetSource(packet.Destination())
-	responsePacket.SetDestination(packet.Source())
-	responsePacket.SetType(nex.DataPacket)
-	responsePacket.SetPayload(rmcResponseBytes)
-
-	responsePacket.AddFlag(nex.FlagNeedsAck)
-	responsePacket.AddFlag(nex.FlagReliable)
-	notificationsProtocol.server.Send(responsePacket)
-}
-
 func (notificationsProtocol *NotificationsProtocol) handleProcessNotificationEvent(packet nex.PacketInterface) {
 	if notificationsProtocol.ProcessNotificationEventHandler == nil {
 		fmt.Println("[Warning] NotificationsProtocol::ProcessNotificationEvent not implemented")
-		go notificationsProtocol.respondNotImplemented(packet)
+		go respondNotImplemented(packet, NotificationsProtocolID)
 		return
 	}
 

@@ -23,13 +23,11 @@ type AccountManagementProtocol struct {
 
 // NintendoCreateAccountData contains data for creating a new NNID on the network
 type NintendoCreateAccountData struct {
+	nex.Structure
 	NNAInfo  *NNAInfo
 	Token    string
 	Birthday *nex.DateTime
 	Unknown  uint64
-
-	hierarchy []nex.StructureInterface
-	nex.Structure
 }
 
 // ExtractFromStream extracts a NintendoCreateAccountData structure from a stream

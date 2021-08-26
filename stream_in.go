@@ -119,6 +119,24 @@ func (stream *StreamIn) ReaListDataStoreGetMetaParam() ([]*DataStoreGetMetaParam
 	return dataStoreGetMetaParams, nil
 }
 
+// ReadListDataStoreRatingInitParamWithSlot reads a list of DataStoreRatingInitParamWithSlot structures
+func (stream *StreamIn) ReadListDataStoreRatingInitParamWithSlot() ([]*DataStoreRatingInitParamWithSlot, error) {
+	length := stream.ReadUInt32LE()
+	dataStoreRatingInitParamWithSlots := make([]*DataStoreRatingInitParamWithSlot, 0)
+
+	for i := 0; i < int(length); i++ {
+		dataStoreRatingInitParamWithSlot, err := stream.ReadStructure(NewDataStoreRatingInitParamWithSlot())
+
+		if err != nil {
+			return nil, err
+		}
+
+		dataStoreRatingInitParamWithSlots = append(dataStoreRatingInitParamWithSlots, dataStoreRatingInitParamWithSlot.(*DataStoreRatingInitParamWithSlot))
+	}
+
+	return dataStoreRatingInitParamWithSlots, nil
+}
+
 // NewStreamIn returns a new nexproto output stream
 func NewStreamIn(data []byte, server *nex.Server) *StreamIn {
 	return &StreamIn{

@@ -187,6 +187,8 @@ func (dataStoreSMMProtocol *DataStoreSMMProtocol) Setup() {
 				go dataStoreSMMProtocol.handleGetMeta(packet)
 			case DataStoreMethodGetMetasMultipleParam:
 				go dataStoreSMMProtocol.handleGetMetasMultipleParam(packet)
+			case DataStoreMethodPreparePostObject:
+				go dataStoreSMMProtocol.handlePreparePostObject(packet)
 			case DataStoreMethodPrepareGetObject:
 				go dataStoreSMMProtocol.handlePrepareGetObject(packet)
 			case DataStoreMethodChangeMeta:

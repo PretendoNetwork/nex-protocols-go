@@ -154,9 +154,195 @@ const (
 type DataStoreProtocol struct {
 	server                       *nex.Server
 	GetMetaHandler               func(err error, client *nex.Client, callID uint32, dataStoreGetMetaParam *DataStoreGetMetaParam)
+	PreparePostObjectHandler     func(err error, client *nex.Client, callID uint32, dataStorePrepareGetParam *DataStorePreparePostParam)
 	PrepareGetObjectHandler      func(err error, client *nex.Client, callID uint32, dataStorePrepareGetParam *DataStorePrepareGetParam)
 	GetMetasMultipleParamHandler func(err error, client *nex.Client, callID uint32, dataStoreGetMetaParams []*DataStoreGetMetaParam)
 	ChangeMetaHandler            func(err error, client *nex.Client, callID uint32, dataStoreChangeMetaParam *DataStoreChangeMetaParam)
+}
+
+// DataStoreReqPostInfo is sent in the PreparePostObject method
+type DataStoreReqPostInfo struct {
+	nex.Structure
+	DataID         uint64
+	URL            string
+	RequestHeaders []*DataStoreKeyValue
+	FormFields     []*DataStoreKeyValue
+	RootCACert     []byte
+}
+
+// Bytes encodes the DataStoreReqPostInfo and returns a byte array
+func (dataStoreReqPostInfo *DataStoreReqPostInfo) Bytes(stream *nex.StreamOut) []byte {
+	stream.WriteUInt64LE(dataStoreReqPostInfo.DataID)
+	stream.WriteString(dataStoreReqPostInfo.URL)
+	stream.WriteListStructure(dataStoreReqPostInfo.RequestHeaders)
+	stream.WriteListStructure(dataStoreReqPostInfo.FormFields)
+	stream.WriteBuffer(dataStoreReqPostInfo.RootCACert)
+
+	return stream.Bytes()
+}
+
+// NewDataStoreReqPostInfo returns a new DataStoreReqPostInfo
+func NewDataStoreReqPostInfo() *DataStoreReqPostInfo {
+	return &DataStoreReqPostInfo{}
+}
+
+// DataStorePersistenceInitParam is sent in the PreparePostObject method
+type DataStorePersistenceInitParam struct {
+	nex.Structure
+	PersistenceSlotId uint16
+	DeleteLastObject  bool
+}
+
+// ExtractFromStream extracts a DataStorePersistenceInitParam structure from a stream
+func (dataStorePersistenceInitParam *DataStorePersistenceInitParam) ExtractFromStream(stream *nex.StreamIn) error {
+	dataStorePersistenceInitParam.PersistenceSlotId = stream.ReadUInt16LE()
+	dataStorePersistenceInitParam.DeleteLastObject = (stream.ReadUInt8() == 1)
+
+	return nil
+}
+
+// NewDataStorePersistenceInitParam returns a new DataStorePersistenceInitParam
+func NewDataStorePersistenceInitParam() *DataStorePersistenceInitParam {
+	return &DataStorePersistenceInitParam{}
+}
+
+// DataStoreRatingInitParam is sent in the PreparePostObject method
+type DataStoreRatingInitParam struct {
+	nex.Structure
+	Flag           uint8
+	InternalFlag   uint8
+	LockType       uint8
+	initialValue   int64
+	rangeMin       int32
+	rangeMax       int32
+	periodHour     int8
+	periodDuration int16
+}
+
+// ExtractFromStream extracts a DataStoreRatingInitParam structure from a stream
+func (dataStoreRatingInitParam *DataStoreRatingInitParam) ExtractFromStream(stream *nex.StreamIn) error {
+	dataStoreRatingInitParam.Flag = stream.ReadUInt8()
+	dataStoreRatingInitParam.InternalFlag = stream.ReadUInt8()
+	dataStoreRatingInitParam.LockType = stream.ReadUInt8()
+	dataStoreRatingInitParam.initialValue = int64(stream.ReadUInt64LE())
+	dataStoreRatingInitParam.rangeMin = int32(stream.ReadUInt32LE())
+	dataStoreRatingInitParam.rangeMax = int32(stream.ReadUInt32LE())
+	dataStoreRatingInitParam.periodHour = int8(stream.ReadUInt8())
+	dataStoreRatingInitParam.periodDuration = int16(stream.ReadUInt16LE())
+
+	return nil
+}
+
+// NewDataStoreRatingInitParam returns a new DataStoreRatingInitParam
+func NewDataStoreRatingInitParam() *DataStoreRatingInitParam {
+	return &DataStoreRatingInitParam{}
+}
+
+// DataStoreRatingInitParamWithSlot is sent in the PreparePostObject method
+type DataStoreRatingInitParamWithSlot struct {
+	nex.Structure
+	Slot  int8
+	Param *DataStoreRatingInitParam
+}
+
+// ExtractFromStream extracts a DataStoreRatingInitParamWithSlot structure from a stream
+func (dataStoreRatingInitParamWithSlot *DataStoreRatingInitParamWithSlot) ExtractFromStream(stream *nex.StreamIn) error {
+	dataStoreRatingInitParamWithSlot.Slot = int8(stream.ReadUInt8())
+
+	param, err := stream.ReadStructure(NewDataStoreRatingInitParam())
+	if err != nil {
+		return err
+	}
+
+	dataStoreRatingInitParamWithSlot.Param = param.(*DataStoreRatingInitParam)
+
+	return nil
+}
+
+// NewDataStoreRatingInitParamWithSlot returns a new DataStoreRatingInitParamWithSlot
+func NewDataStoreRatingInitParamWithSlot() *DataStoreRatingInitParamWithSlot {
+	return &DataStoreRatingInitParamWithSlot{}
+}
+
+// DataStoreSearchParam is sent in the PreparePostObject method
+type DataStorePreparePostParam struct {
+	nex.Structure
+	Size                 uint32
+	Name                 string
+	DataType             uint16
+	MetaBinary           []byte
+	Permission           *DataStorePermission
+	DelPermission        *DataStorePermission
+	Flag                 uint32
+	Period               uint16
+	ReferDataId          uint32
+	Tags                 []string
+	RatingInitParams     []*DataStoreRatingInitParamWithSlot
+	PersistenceInitParam *DataStorePersistenceInitParam
+	ExtraData            []string
+}
+
+// ExtractFromStream extracts a DataStorePreparePostParam structure from a stream
+func (dataStorePreparePostParam *DataStorePreparePostParam) ExtractFromStream(stream *nex.StreamIn) error {
+	dataStorePreparePostParam.Size = stream.ReadUInt32LE()
+
+	name, err := stream.ReadString()
+	if err != nil {
+		return err
+	}
+
+	dataStorePreparePostParam.Name = name
+	dataStorePreparePostParam.DataType = stream.ReadUInt16LE()
+
+	metaBinary, err := stream.ReadQBuffer()
+	if err != nil {
+		return err
+	}
+
+	dataStorePreparePostParam.MetaBinary = metaBinary
+
+	permission, err := stream.ReadStructure(NewDataStorePermission())
+	if err != nil {
+		return err
+	}
+
+	dataStorePreparePostParam.Permission = permission.(*DataStorePermission)
+
+	delPermission, err := stream.ReadStructure(NewDataStorePermission())
+	if err != nil {
+		return err
+	}
+
+	dataStorePreparePostParam.DelPermission = delPermission.(*DataStorePermission)
+	dataStorePreparePostParam.Flag = stream.ReadUInt32LE()
+	dataStorePreparePostParam.Period = stream.ReadUInt16LE()
+	dataStorePreparePostParam.ReferDataId = stream.ReadUInt32LE()
+	dataStorePreparePostParam.Tags = stream.ReadListString()
+
+	// TODO: Refactor this, it's disgusting
+	nexProtoStream := NewStreamIn(stream.Bytes()[stream.ByteOffset():], stream.Server)
+
+	ratingInitParams, err := nexProtoStream.ReadListDataStoreRatingInitParamWithSlot()
+	if err != nil {
+		return err
+	}
+
+	dataStorePreparePostParam.RatingInitParams = ratingInitParams
+
+	persistenceInitParam, err := nexProtoStream.ReadStructure(NewDataStorePersistenceInitParam())
+	if err != nil {
+		return err
+	}
+
+	dataStorePreparePostParam.PersistenceInitParam = persistenceInitParam.(*DataStorePersistenceInitParam)
+	dataStorePreparePostParam.ExtraData = stream.ReadListString()
+
+	return nil
+}
+
+// NewDataStorePreparePostParam returns a new DataStorePreparePostParam
+func NewDataStorePreparePostParam() *DataStorePreparePostParam {
+	return &DataStorePreparePostParam{}
 }
 
 // DataStoreSearchParam is sent in DataStore search methods
@@ -682,6 +868,8 @@ func (dataStoreProtocol *DataStoreProtocol) Setup() {
 			switch request.MethodID() {
 			case DataStoreMethodGetMeta:
 				go dataStoreProtocol.handleGetMeta(packet)
+			case DataStoreMethodPreparePostObject:
+				go dataStoreProtocol.handlePreparePostObject(packet)
 			case DataStoreMethodPrepareGetObject:
 				go dataStoreProtocol.handlePrepareGetObject(packet)
 			case DataStoreMethodGetMetasMultipleParam:
@@ -698,6 +886,11 @@ func (dataStoreProtocol *DataStoreProtocol) Setup() {
 // GetMeta sets the GetMeta handler function
 func (dataStoreProtocol *DataStoreProtocol) GetMeta(handler func(err error, client *nex.Client, callID uint32, dataStoreGetMetaParam *DataStoreGetMetaParam)) {
 	dataStoreProtocol.GetMetaHandler = handler
+}
+
+// GetMeta sets the GetMeta handler function
+func (dataStoreProtocol *DataStoreProtocol) PreparePostObject(handler func(err error, client *nex.Client, callID uint32, dataStorePreparePostParam *DataStorePreparePostParam)) {
+	dataStoreProtocol.PreparePostObjectHandler = handler
 }
 
 // GetMeta sets the GetMeta handler function
@@ -738,6 +931,30 @@ func (dataStoreProtocol *DataStoreProtocol) handleGetMeta(packet nex.PacketInter
 	}
 
 	go dataStoreProtocol.GetMetaHandler(nil, client, callID, dataStoreGetMetaParam.(*DataStoreGetMetaParam))
+}
+
+func (dataStoreProtocol *DataStoreProtocol) handlePreparePostObject(packet nex.PacketInterface) {
+	if dataStoreProtocol.PreparePostObjectHandler == nil {
+		fmt.Println("[Warning] DataStoreProtocol::PreparePostObject not implemented")
+		go respondNotImplemented(packet, DataStoreProtocolID)
+		return
+	}
+
+	client := packet.Sender()
+	request := packet.RMCRequest()
+
+	callID := request.CallID()
+	parameters := request.Parameters()
+
+	parametersStream := nex.NewStreamIn(parameters, dataStoreProtocol.server)
+
+	dataStorePreparePostParam, err := parametersStream.ReadStructure(NewDataStorePreparePostParam())
+	if err != nil {
+		go dataStoreProtocol.PreparePostObjectHandler(err, client, callID, nil)
+		return
+	}
+
+	go dataStoreProtocol.PreparePostObjectHandler(nil, client, callID, dataStorePreparePostParam.(*DataStorePreparePostParam))
 }
 
 func (dataStoreProtocol *DataStoreProtocol) handlePrepareGetObject(packet nex.PacketInterface) {

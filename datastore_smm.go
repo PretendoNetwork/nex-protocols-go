@@ -191,6 +191,8 @@ func (dataStoreSMMProtocol *DataStoreSMMProtocol) Setup() {
 				go dataStoreSMMProtocol.handlePreparePostObject(packet)
 			case DataStoreMethodPrepareGetObject:
 				go dataStoreSMMProtocol.handlePrepareGetObject(packet)
+			case DataStoreMethodCompletePostObject:
+				go dataStoreSMMProtocol.handleCompletePostObject(packet)
 			case DataStoreMethodChangeMeta:
 				go dataStoreSMMProtocol.handleChangeMeta(packet)
 			case DataStoreSMMMethodRateCustomRanking:

@@ -19,6 +19,9 @@ const (
 	// DataStoreSMMMethodGetBufferQueue is the method ID for the method GetBufferQueue
 	DataStoreSMMMethodGetBufferQueue = 0x36
 
+	// DataStoreSMMMethodPrepareAttachFile is the method ID for the method PrepareAttachFile
+	DataStoreSMMMethodPrepareAttachFile = 0x3B
+
 	// DataStoreSMMMethodGetApplicationConfig is the method ID for the method GetApplicationConfig
 	DataStoreSMMMethodGetApplicationConfig = 0x3D
 
@@ -42,11 +45,47 @@ type DataStoreSMMProtocol struct {
 	RateCustomRankingHandler                  func(err error, client *nex.Client, callID uint32, dataStoreRateCustomRankingParams []*DataStoreRateCustomRankingParam)
 	GetCustomRankingByDataIdHandler           func(err error, client *nex.Client, callID uint32, dataStoreGetCustomRankingByDataIdParam *DataStoreGetCustomRankingByDataIdParam)
 	GetBufferQueueHandler                     func(err error, client *nex.Client, callID uint32, bufferQueueParam *BufferQueueParam)
+	PrepareAttachFileHandler                  func(err error, client *nex.Client, callID uint32, dataStoreAttachFileParam *DataStoreAttachFileParam)
 	GetApplicationConfigHandler               func(err error, client *nex.Client, callID uint32, applicationID uint32)
 	FollowingsLatestCourseSearchObjectHandler func(err error, client *nex.Client, callID uint32, dataStoreSearchParam *DataStoreSearchParam, extraData []string)
 	RecommendedCourseSearchObjectHandler      func(err error, client *nex.Client, callID uint32, dataStoreSearchParam *DataStoreSearchParam, extraData []string)
 	GetApplicationConfigStringHandler         func(err error, client *nex.Client, callID uint32, applicationID uint32)
 	GetMetasWithCourseRecordHandler           func(err error, client *nex.Client, callID uint32, dataStoreGetCourseRecordParams []*DataStoreGetCourseRecordParam, dataStoreGetMetaParam *DataStoreGetMetaParam)
+}
+
+// DataStoreAttachFileParam is sent in the PrepareAttachFile method
+type DataStoreAttachFileParam struct {
+	nex.Structure
+	PostParam   *DataStorePreparePostParam
+	ReferDataID uint64
+	ContentType string
+}
+
+// ExtractFromStream extracts a DataStoreAttachFileParam structure from a stream
+func (dataStoreAttachFileParam *DataStoreAttachFileParam) ExtractFromStream(stream *nex.StreamIn) error {
+	// TODO check size
+
+	postParam, err := stream.ReadStructure(NewDataStorePreparePostParam())
+	if err != nil {
+		return err
+	}
+
+	dataStoreAttachFileParam.PostParam = postParam.(*DataStorePreparePostParam)
+	dataStoreAttachFileParam.ReferDataID = stream.ReadUInt64LE()
+
+	contentType, err := stream.ReadString()
+	if err != nil {
+		return err
+	}
+
+	dataStoreAttachFileParam.ContentType = contentType
+
+	return nil
+}
+
+// NewDataStoreAttachFileParam returns a new DataStoreAttachFileParam
+func NewDataStoreAttachFileParam() *DataStoreAttachFileParam {
+	return &DataStoreAttachFileParam{}
 }
 
 // DataStoreGetCourseRecordParam is sent in the GetMetasWithCourseRecord method
@@ -201,6 +240,8 @@ func (dataStoreSMMProtocol *DataStoreSMMProtocol) Setup() {
 				go dataStoreSMMProtocol.handleGetCustomRankingByDataId(packet)
 			case DataStoreSMMMethodGetBufferQueue:
 				go dataStoreSMMProtocol.handleGetBufferQueue(packet)
+			case DataStoreSMMMethodPrepareAttachFile:
+				go dataStoreSMMProtocol.handlePrepareAttachFile(packet)
 			case DataStoreSMMMethodGetApplicationConfig:
 				go dataStoreSMMProtocol.handleGetApplicationConfig(packet)
 			case DataStoreSMMMethodFollowingsLatestCourseSearchObject:
@@ -231,6 +272,11 @@ func (dataStoreSMMProtocol *DataStoreSMMProtocol) GetCustomRankingByDataId(handl
 // GetBufferQueue sets the GetBufferQueue handler function
 func (dataStoreSMMProtocol *DataStoreSMMProtocol) GetBufferQueue(handler func(err error, client *nex.Client, callID uint32, bufferQueueParam *BufferQueueParam)) {
 	dataStoreSMMProtocol.GetBufferQueueHandler = handler
+}
+
+// PrepareAttachFile sets the PrepareAttachFile handler function
+func (dataStoreSMMProtocol *DataStoreSMMProtocol) PrepareAttachFile(handler func(err error, client *nex.Client, callID uint32, dataStoreAttachFileParam *DataStoreAttachFileParam)) {
+	dataStoreSMMProtocol.PrepareAttachFileHandler = handler
 }
 
 // GetApplicationConfig sets the GetApplicationConfig handler function
@@ -331,6 +377,31 @@ func (dataStoreSMMProtocol *DataStoreSMMProtocol) handleGetBufferQueue(packet ne
 	}
 
 	go dataStoreSMMProtocol.GetBufferQueueHandler(nil, client, callID, bufferQueueParam.(*BufferQueueParam))
+}
+
+func (dataStoreSMMProtocol *DataStoreSMMProtocol) handlePrepareAttachFile(packet nex.PacketInterface) {
+	if dataStoreSMMProtocol.PrepareAttachFileHandler == nil {
+		fmt.Println("[Warning] DataStoreSMMProtocol::PrepareAttachFile not implemented")
+		go respondNotImplemented(packet, DataStoreSMMProtocolID)
+		return
+	}
+
+	client := packet.Sender()
+	request := packet.RMCRequest()
+
+	callID := request.CallID()
+	parameters := request.Parameters()
+
+	parametersStream := nex.NewStreamIn(parameters, dataStoreSMMProtocol.server)
+
+	dataStoreAttachFileParam, err := parametersStream.ReadStructure(NewDataStoreAttachFileParam())
+
+	if err != nil {
+		go dataStoreSMMProtocol.PrepareAttachFileHandler(err, client, callID, nil)
+		return
+	}
+
+	go dataStoreSMMProtocol.PrepareAttachFileHandler(nil, client, callID, dataStoreAttachFileParam.(*DataStoreAttachFileParam))
 }
 
 func (dataStoreSMMProtocol *DataStoreSMMProtocol) handleGetApplicationConfig(packet nex.PacketInterface) {

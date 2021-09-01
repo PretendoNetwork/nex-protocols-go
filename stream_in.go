@@ -137,6 +137,40 @@ func (stream *StreamIn) ReadListDataStoreRatingInitParamWithSlot() ([]*DataStore
 	return dataStoreRatingInitParamWithSlots, nil
 }
 
+// ReadListDataStoreRatingTarget reads a list of DataStoreRatingTarget structures
+func (stream *StreamIn) ReadListDataStoreRatingTarget() ([]*DataStoreRatingTarget, error) {
+	length := stream.ReadUInt32LE()
+	dataStoreRatingTargets := make([]*DataStoreRatingTarget, 0)
+
+	for i := 0; i < int(length); i++ {
+		dataStoreRatingTarget, err := stream.ReadStructure(NewDataStoreRatingTarget())
+		if err != nil {
+			return nil, err
+		}
+
+		dataStoreRatingTargets = append(dataStoreRatingTargets, dataStoreRatingTarget.(*DataStoreRatingTarget))
+	}
+
+	return dataStoreRatingTargets, nil
+}
+
+// ReadListDataStoreRateObjectParam reads a list of DataStoreRateObjectParam structures
+func (stream *StreamIn) ReadListDataStoreRateObjectParam() ([]*DataStoreRateObjectParam, error) {
+	length := stream.ReadUInt32LE()
+	dataStoreRateObjectParams := make([]*DataStoreRateObjectParam, 0)
+
+	for i := 0; i < int(length); i++ {
+		dataStoreRateObjectParam, err := stream.ReadStructure(NewDataStoreRateObjectParam())
+		if err != nil {
+			return nil, err
+		}
+
+		dataStoreRateObjectParams = append(dataStoreRateObjectParams, dataStoreRateObjectParam.(*DataStoreRateObjectParam))
+	}
+
+	return dataStoreRateObjectParams, nil
+}
+
 // NewStreamIn returns a new nexproto output stream
 func NewStreamIn(data []byte, server *nex.Server) *StreamIn {
 	return &StreamIn{

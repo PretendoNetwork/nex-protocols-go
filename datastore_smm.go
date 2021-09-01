@@ -19,6 +19,9 @@ const (
 	// DataStoreSMMMethodGetBufferQueue is the method ID for the method GetBufferQueue
 	DataStoreSMMMethodGetBufferQueue = 0x36
 
+	// DataStoreSMMMethodCompleteAttachFile is the method ID for the method CompleteAttachFile
+	DataStoreSMMMethodCompleteAttachFile = 0x39
+
 	// DataStoreSMMMethodPrepareAttachFile is the method ID for the method PrepareAttachFile
 	DataStoreSMMMethodPrepareAttachFile = 0x3B
 
@@ -45,6 +48,7 @@ type DataStoreSMMProtocol struct {
 	RateCustomRankingHandler                  func(err error, client *nex.Client, callID uint32, dataStoreRateCustomRankingParams []*DataStoreRateCustomRankingParam)
 	GetCustomRankingByDataIdHandler           func(err error, client *nex.Client, callID uint32, dataStoreGetCustomRankingByDataIdParam *DataStoreGetCustomRankingByDataIdParam)
 	GetBufferQueueHandler                     func(err error, client *nex.Client, callID uint32, bufferQueueParam *BufferQueueParam)
+	CompleteAttachFileHandler                 func(err error, client *nex.Client, callID uint32, dataStoreCompletePostParam *DataStoreCompletePostParam)
 	PrepareAttachFileHandler                  func(err error, client *nex.Client, callID uint32, dataStoreAttachFileParam *DataStoreAttachFileParam)
 	GetApplicationConfigHandler               func(err error, client *nex.Client, callID uint32, applicationID uint32)
 	FollowingsLatestCourseSearchObjectHandler func(err error, client *nex.Client, callID uint32, dataStoreSearchParam *DataStoreSearchParam, extraData []string)
@@ -234,12 +238,16 @@ func (dataStoreSMMProtocol *DataStoreSMMProtocol) Setup() {
 				go dataStoreSMMProtocol.handleCompletePostObject(packet)
 			case DataStoreMethodChangeMeta:
 				go dataStoreSMMProtocol.handleChangeMeta(packet)
+			case DataStoreMethodRateObjects:
+				go dataStoreSMMProtocol.handleRateObjects(packet)
 			case DataStoreSMMMethodRateCustomRanking:
 				go dataStoreSMMProtocol.handleRateCustomRanking(packet)
 			case DataStoreSMMMethodGetCustomRankingByDataId:
 				go dataStoreSMMProtocol.handleGetCustomRankingByDataId(packet)
 			case DataStoreSMMMethodGetBufferQueue:
 				go dataStoreSMMProtocol.handleGetBufferQueue(packet)
+			case DataStoreSMMMethodCompleteAttachFile:
+				go dataStoreSMMProtocol.handleCompleteAttachFile(packet)
 			case DataStoreSMMMethodPrepareAttachFile:
 				go dataStoreSMMProtocol.handlePrepareAttachFile(packet)
 			case DataStoreSMMMethodGetApplicationConfig:
@@ -272,6 +280,11 @@ func (dataStoreSMMProtocol *DataStoreSMMProtocol) GetCustomRankingByDataId(handl
 // GetBufferQueue sets the GetBufferQueue handler function
 func (dataStoreSMMProtocol *DataStoreSMMProtocol) GetBufferQueue(handler func(err error, client *nex.Client, callID uint32, bufferQueueParam *BufferQueueParam)) {
 	dataStoreSMMProtocol.GetBufferQueueHandler = handler
+}
+
+// CompleteAttachFile sets the CompleteAttachFile handler function
+func (dataStoreSMMProtocol *DataStoreSMMProtocol) CompleteAttachFile(handler func(err error, client *nex.Client, callID uint32, dataStoreCompletePostParam *DataStoreCompletePostParam)) {
+	dataStoreSMMProtocol.CompleteAttachFileHandler = handler
 }
 
 // PrepareAttachFile sets the PrepareAttachFile handler function
@@ -377,6 +390,30 @@ func (dataStoreSMMProtocol *DataStoreSMMProtocol) handleGetBufferQueue(packet ne
 	}
 
 	go dataStoreSMMProtocol.GetBufferQueueHandler(nil, client, callID, bufferQueueParam.(*BufferQueueParam))
+}
+
+func (dataStoreSMMProtocol *DataStoreSMMProtocol) handleCompleteAttachFile(packet nex.PacketInterface) {
+	if dataStoreSMMProtocol.CompleteAttachFileHandler == nil {
+		fmt.Println("[Warning] DataStoreSMMProtocol::CompleteAttachFile not implemented")
+		go respondNotImplemented(packet, DataStoreSMMProtocolID)
+		return
+	}
+
+	client := packet.Sender()
+	request := packet.RMCRequest()
+
+	callID := request.CallID()
+	parameters := request.Parameters()
+
+	parametersStream := nex.NewStreamIn(parameters, dataStoreSMMProtocol.server)
+
+	dataStoreCompletePostParam, err := parametersStream.ReadStructure(NewDataStoreCompletePostParam())
+	if err != nil {
+		go dataStoreSMMProtocol.CompleteAttachFileHandler(err, client, callID, nil)
+		return
+	}
+
+	go dataStoreSMMProtocol.CompleteAttachFileHandler(nil, client, callID, dataStoreCompletePostParam.(*DataStoreCompletePostParam))
 }
 
 func (dataStoreSMMProtocol *DataStoreSMMProtocol) handlePrepareAttachFile(packet nex.PacketInterface) {

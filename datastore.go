@@ -159,6 +159,47 @@ type DataStoreProtocol struct {
 	CompletePostObjectHandler    func(err error, client *nex.Client, callID uint32, dataStoreCompletePostParam *DataStoreCompletePostParam)
 	GetMetasMultipleParamHandler func(err error, client *nex.Client, callID uint32, dataStoreGetMetaParams []*DataStoreGetMetaParam)
 	ChangeMetaHandler            func(err error, client *nex.Client, callID uint32, dataStoreChangeMetaParam *DataStoreChangeMetaParam)
+	RateObjectsHandler           func(err error, client *nex.Client, callID uint32, targets []*DataStoreRatingTarget, params []*DataStoreRateObjectParam, transactional bool, fetchRatings bool)
+}
+
+// DataStoreRateObjectParam is sent in the RateObjects method
+type DataStoreRateObjectParam struct {
+	nex.Structure
+	RatingValue    int32
+	AccessPassword uint64
+}
+
+// ExtractFromStream extracts a DataStoreRateObjectParam structure from a stream
+func (dataStoreRateObjectParam *DataStoreRateObjectParam) ExtractFromStream(stream *nex.StreamIn) error {
+	dataStoreRateObjectParam.RatingValue = int32(stream.ReadUInt32LE())
+	dataStoreRateObjectParam.AccessPassword = stream.ReadUInt64LE()
+
+	return nil
+}
+
+// NewDataStoreRateObjectParam returns a new DataStoreRateObjectParam
+func NewDataStoreRateObjectParam() *DataStoreRateObjectParam {
+	return &DataStoreRateObjectParam{}
+}
+
+// DataStoreRatingTarget is sent in the RateObjects method
+type DataStoreRatingTarget struct {
+	nex.Structure
+	DataID uint64
+	Slot   uint8
+}
+
+// ExtractFromStream extracts a DataStoreRatingTarget structure from a stream
+func (dataStoreRatingTarget *DataStoreRatingTarget) ExtractFromStream(stream *nex.StreamIn) error {
+	dataStoreRatingTarget.DataID = stream.ReadUInt64LE()
+	dataStoreRatingTarget.Slot = stream.ReadUInt8()
+
+	return nil
+}
+
+// NewDataStoreRatingTarget returns a new DataStoreRatingTarget
+func NewDataStoreRatingTarget() *DataStoreRatingTarget {
+	return &DataStoreRatingTarget{}
 }
 
 // DataStoreCompletePostParam is sent in the CompletePostObject method
@@ -899,6 +940,8 @@ func (dataStoreProtocol *DataStoreProtocol) Setup() {
 				go dataStoreProtocol.handleGetMetasMultipleParam(packet)
 			case DataStoreMethodChangeMeta:
 				go dataStoreProtocol.handleChangeMeta(packet)
+			case DataStoreMethodRateObjects:
+				go dataStoreProtocol.handleRateObjects(packet)
 			default:
 				fmt.Printf("Unsupported DataStore method ID: %#v\n", request.MethodID())
 			}
@@ -934,6 +977,11 @@ func (dataStoreProtocol *DataStoreProtocol) GetMetasMultipleParam(handler func(e
 // ChangeMeta sets the ChangeMeta handler function
 func (dataStoreProtocol *DataStoreProtocol) ChangeMeta(handler func(err error, client *nex.Client, callID uint32, dataStoreChangeMetaParam *DataStoreChangeMetaParam)) {
 	dataStoreProtocol.ChangeMetaHandler = handler
+}
+
+// RateObjects sets the RateObjects handler function
+func (dataStoreProtocol *DataStoreProtocol) RateObjects(handler func(err error, client *nex.Client, callID uint32, targets []*DataStoreRatingTarget, params []*DataStoreRateObjectParam, transactional bool, fetchRatings bool)) {
+	dataStoreProtocol.RateObjectsHandler = handler
 }
 
 func (dataStoreProtocol *DataStoreProtocol) handleGetMeta(packet nex.PacketInterface) {
@@ -1082,6 +1130,39 @@ func (dataStoreProtocol *DataStoreProtocol) handleChangeMeta(packet nex.PacketIn
 	}
 
 	go dataStoreProtocol.ChangeMetaHandler(nil, client, callID, dataStoreChangeMetaParam.(*DataStoreChangeMetaParam))
+}
+
+func (dataStoreProtocol *DataStoreProtocol) handleRateObjects(packet nex.PacketInterface) {
+	if dataStoreProtocol.RateObjectsHandler == nil {
+		fmt.Println("[Warning] DataStoreProtocol::RateObjects not implemented")
+		go respondNotImplemented(packet, DataStoreProtocolID)
+		return
+	}
+
+	client := packet.Sender()
+	request := packet.RMCRequest()
+
+	callID := request.CallID()
+	parameters := request.Parameters()
+
+	parametersStream := NewStreamIn(parameters, dataStoreProtocol.server)
+
+	targets, err := parametersStream.ReadListDataStoreRatingTarget()
+	if err != nil {
+		go dataStoreProtocol.RateObjectsHandler(err, client, callID, nil, nil, false, false)
+		return
+	}
+
+	params, err := parametersStream.ReadListDataStoreRateObjectParam()
+	if err != nil {
+		go dataStoreProtocol.RateObjectsHandler(err, client, callID, nil, nil, false, false)
+		return
+	}
+
+	transactional := (parametersStream.ReadUInt8() == 1)
+	fetchRatings := (parametersStream.ReadUInt8() == 1)
+
+	go dataStoreProtocol.RateObjectsHandler(nil, client, callID, targets, params, transactional, fetchRatings)
 }
 
 // NewDataStoreProtocol returns a new DataStoreProtocol

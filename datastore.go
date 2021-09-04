@@ -762,6 +762,7 @@ type DataStoreMetaInfo struct {
 	DataID        uint64
 	OwnerID       uint32
 	Size          uint32
+	DataType      uint16
 	Name          string
 	MetaBinary    []byte
 	Permission    *DataStorePermission
@@ -791,6 +792,7 @@ func (dataStoreMetaInfo *DataStoreMetaInfo) ExtractFromStream(stream *nex.Stream
 	}
 
 	dataStoreMetaInfo.Name = name
+	dataStoreMetaInfo.DataType = stream.ReadUInt16LE()
 
 	metaBinary, err := stream.ReadQBuffer()
 	if err != nil {
@@ -834,6 +836,31 @@ func (dataStoreMetaInfo *DataStoreMetaInfo) ExtractFromStream(stream *nex.Stream
 	dataStoreMetaInfo.Ratings = ratings
 
 	return nil
+}
+
+// Bytes extracts a DataStoreMetaInfo structure from a stream
+func (dataStoreMetaInfo *DataStoreMetaInfo) Bytes(stream *nex.StreamOut) []byte {
+	stream.WriteUInt64LE(dataStoreMetaInfo.DataID)
+	stream.WriteUInt32LE(dataStoreMetaInfo.OwnerID)
+	stream.WriteUInt32LE(dataStoreMetaInfo.Size)
+	stream.WriteString(dataStoreMetaInfo.Name)
+	stream.WriteUInt16LE(dataStoreMetaInfo.DataType)
+	stream.WriteQBuffer(dataStoreMetaInfo.MetaBinary)
+	stream.WriteStructure(dataStoreMetaInfo.Permission)
+	stream.WriteStructure(dataStoreMetaInfo.DelPermission)
+	stream.WriteUInt64LE(dataStoreMetaInfo.CreatedTime.Value())
+	stream.WriteUInt64LE(dataStoreMetaInfo.UpdatedTime.Value())
+	stream.WriteUInt16LE(dataStoreMetaInfo.Period)
+	stream.WriteUInt8(dataStoreMetaInfo.Status)
+	stream.WriteUInt32LE(dataStoreMetaInfo.ReferredCnt)
+	stream.WriteUInt32LE(dataStoreMetaInfo.ReferDataID)
+	stream.WriteUInt32LE(dataStoreMetaInfo.Flag)
+	stream.WriteUInt64LE(dataStoreMetaInfo.ReferredTime.Value())
+	stream.WriteUInt64LE(dataStoreMetaInfo.ExpireTime.Value())
+	stream.WriteListString(dataStoreMetaInfo.Tags)
+	stream.WriteListStructure(dataStoreMetaInfo.Ratings)
+
+	return stream.Bytes()
 }
 
 // NewDataStoreMetaInfo returns a new DataStoreMetaInfo

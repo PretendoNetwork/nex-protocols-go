@@ -212,6 +212,15 @@ func (dataStoreCustomRankingResult *DataStoreCustomRankingResult) ExtractFromStr
 	return nil
 }
 
+// Bytes encodes the DataStoreCustomRankingResult and returns a byte array
+func (dataStoreCustomRankingResult *DataStoreCustomRankingResult) Bytes(stream *nex.StreamOut) []byte {
+	stream.WriteUInt32LE(dataStoreCustomRankingResult.Order)
+	stream.WriteUInt32LE(dataStoreCustomRankingResult.Score)
+	stream.WriteStructure(dataStoreCustomRankingResult.MetaInfo)
+
+	return stream.Bytes()
+}
+
 // NewDataStoreCustomRankingResult returns a new DataStoreCustomRankingResult
 func NewDataStoreCustomRankingResult() *DataStoreCustomRankingResult {
 	return &DataStoreCustomRankingResult{}

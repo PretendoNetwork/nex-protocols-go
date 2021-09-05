@@ -678,6 +678,14 @@ func (dataStorePermission *DataStorePermission) ExtractFromStream(stream *nex.St
 	return nil
 }
 
+// Bytes extracts a DataStorePermission structure from a stream
+func (dataStorePermission *DataStorePermission) Bytes(stream *nex.StreamOut) []byte {
+	stream.WriteUInt8(dataStorePermission.Permission)
+	stream.WriteListUInt32LE(dataStorePermission.RecipientIds)
+
+	return stream.Bytes()
+}
+
 // NewDataStorePermission returns a new DataStorePermission
 func NewDataStorePermission() *DataStorePermission {
 	return &DataStorePermission{}

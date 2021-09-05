@@ -678,7 +678,7 @@ func (dataStorePermission *DataStorePermission) ExtractFromStream(stream *nex.St
 	return nil
 }
 
-// Bytes extracts a DataStorePermission structure from a stream
+// Bytes encodes the DataStorePermission and returns a byte array
 func (dataStorePermission *DataStorePermission) Bytes(stream *nex.StreamOut) []byte {
 	stream.WriteUInt8(dataStorePermission.Permission)
 	stream.WriteListUInt32LE(dataStorePermission.RecipientIds)
@@ -846,7 +846,7 @@ func (dataStoreMetaInfo *DataStoreMetaInfo) ExtractFromStream(stream *nex.Stream
 	return nil
 }
 
-// Bytes extracts a DataStoreMetaInfo structure from a stream
+// Bytes encodes the DataStoreMetaInfo and returns a byte array
 func (dataStoreMetaInfo *DataStoreMetaInfo) Bytes(stream *nex.StreamOut) []byte {
 	stream.WriteUInt64LE(dataStoreMetaInfo.DataID)
 	stream.WriteUInt32LE(dataStoreMetaInfo.OwnerID)

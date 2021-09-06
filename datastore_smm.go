@@ -10,6 +10,9 @@ const (
 	// DataStoreSMMProtocolID is the protocol ID for the DataStore (SMM) protocol. ID is the same as the DataStore protocol
 	DataStoreSMMProtocolID = 0x73
 
+	// DataStoreSMMMethodGetObjectInfos is the method ID for the method GetObjectInfos
+	DataStoreSMMMethodGetObjectInfos = 0x2D
+
 	// DataStoreSMMMethodRateCustomRanking is the method ID for the method RateCustomRanking
 	DataStoreSMMMethodRateCustomRanking = 0x30
 
@@ -45,6 +48,7 @@ const (
 type DataStoreSMMProtocol struct {
 	server *nex.Server
 	DataStoreProtocol
+	GetObjectInfosHandler                     func(err error, client *nex.Client, callID uint32, dataIDs []uint64)
 	RateCustomRankingHandler                  func(err error, client *nex.Client, callID uint32, dataStoreRateCustomRankingParams []*DataStoreRateCustomRankingParam)
 	GetCustomRankingByDataIdHandler           func(err error, client *nex.Client, callID uint32, dataStoreGetCustomRankingByDataIdParam *DataStoreGetCustomRankingByDataIdParam)
 	GetBufferQueueHandler                     func(err error, client *nex.Client, callID uint32, bufferQueueParam *BufferQueueParam)
@@ -55,6 +59,26 @@ type DataStoreSMMProtocol struct {
 	RecommendedCourseSearchObjectHandler      func(err error, client *nex.Client, callID uint32, dataStoreSearchParam *DataStoreSearchParam, extraData []string)
 	GetApplicationConfigStringHandler         func(err error, client *nex.Client, callID uint32, applicationID uint32)
 	GetMetasWithCourseRecordHandler           func(err error, client *nex.Client, callID uint32, dataStoreGetCourseRecordParams []*DataStoreGetCourseRecordParam, dataStoreGetMetaParam *DataStoreGetMetaParam)
+}
+
+// DataStoreFileServerObjectInfo is sent in the GetObjectInfos method
+type DataStoreFileServerObjectInfo struct {
+	nex.Structure
+	DataID  uint64
+	GetInfo *DataStoreReqGetInfo
+}
+
+// Bytes encodes the DataStoreFileServerObjectInfo and returns a byte array
+func (dataStoreFileServerObjectInfo *DataStoreFileServerObjectInfo) Bytes(stream *nex.StreamOut) []byte {
+	stream.WriteUInt64LE(dataStoreFileServerObjectInfo.DataID)
+	stream.WriteStructure(dataStoreFileServerObjectInfo.GetInfo)
+
+	return stream.Bytes()
+}
+
+// NewDataStoreFileServerObjectInfo returns a new DataStoreFileServerObjectInfo
+func NewDataStoreFileServerObjectInfo() *DataStoreFileServerObjectInfo {
+	return &DataStoreFileServerObjectInfo{}
 }
 
 // DataStoreAttachFileParam is sent in the PrepareAttachFile method
@@ -146,13 +170,13 @@ type DataStoreRateCustomRankingParam struct {
 }
 
 // ExtractFromStream extracts a DataStoreRateCustomRankingParam structure from a stream
-func (dataStoreGetCustomRankingByDataIdParam *DataStoreRateCustomRankingParam) ExtractFromStream(stream *nex.StreamIn) error {
+func (dataStoreRateCustomRankingParam *DataStoreRateCustomRankingParam) ExtractFromStream(stream *nex.StreamIn) error {
 	// TODO check size
 
-	dataStoreGetCustomRankingByDataIdParam.DataID = stream.ReadUInt64LE()
-	dataStoreGetCustomRankingByDataIdParam.ApplicationId = stream.ReadUInt32LE()
-	dataStoreGetCustomRankingByDataIdParam.Score = stream.ReadUInt32LE()
-	dataStoreGetCustomRankingByDataIdParam.Period = stream.ReadUInt16LE()
+	dataStoreRateCustomRankingParam.DataID = stream.ReadUInt64LE()
+	dataStoreRateCustomRankingParam.ApplicationId = stream.ReadUInt32LE()
+	dataStoreRateCustomRankingParam.Score = stream.ReadUInt32LE()
+	dataStoreRateCustomRankingParam.Period = stream.ReadUInt16LE()
 
 	return nil
 }
@@ -249,6 +273,8 @@ func (dataStoreSMMProtocol *DataStoreSMMProtocol) Setup() {
 				go dataStoreSMMProtocol.handleChangeMeta(packet)
 			case DataStoreMethodRateObjects:
 				go dataStoreSMMProtocol.handleRateObjects(packet)
+			case DataStoreSMMMethodGetObjectInfos:
+				go dataStoreSMMProtocol.handleGetObjectInfos(packet)
 			case DataStoreSMMMethodRateCustomRanking:
 				go dataStoreSMMProtocol.handleRateCustomRanking(packet)
 			case DataStoreSMMMethodGetCustomRankingByDataId:
@@ -274,6 +300,11 @@ func (dataStoreSMMProtocol *DataStoreSMMProtocol) Setup() {
 			}
 		}
 	})
+}
+
+// GetObjectInfos sets the GetObjectInfos handler function
+func (dataStoreSMMProtocol *DataStoreSMMProtocol) GetObjectInfos(handler func(err error, client *nex.Client, callID uint32, dataIDs []uint64)) {
+	dataStoreSMMProtocol.GetObjectInfosHandler = handler
 }
 
 // RateCustomRanking sets the RateCustomRanking handler function
@@ -324,6 +355,26 @@ func (dataStoreSMMProtocol *DataStoreSMMProtocol) GetApplicationConfigString(han
 // GetMetasWithCourseRecord sets the GetMetasWithCourseRecord handler function
 func (dataStoreSMMProtocol *DataStoreSMMProtocol) GetMetasWithCourseRecord(handler func(err error, client *nex.Client, callID uint32, dataStoreGetCourseRecordParams []*DataStoreGetCourseRecordParam, dataStoreGetMetaParam *DataStoreGetMetaParam)) {
 	dataStoreSMMProtocol.GetMetasWithCourseRecordHandler = handler
+}
+
+func (dataStoreSMMProtocol *DataStoreSMMProtocol) handleGetObjectInfos(packet nex.PacketInterface) {
+	if dataStoreSMMProtocol.GetObjectInfosHandler == nil {
+		fmt.Println("[Warning] DataStoreSMMProtocol::GetObjectInfos not implemented")
+		go respondNotImplemented(packet, DataStoreSMMProtocolID)
+		return
+	}
+
+	client := packet.Sender()
+	request := packet.RMCRequest()
+
+	callID := request.CallID()
+	parameters := request.Parameters()
+
+	parametersStream := nex.NewStreamIn(parameters, dataStoreSMMProtocol.server)
+
+	dataIDs := parametersStream.ReadListUInt64LE()
+
+	go dataStoreSMMProtocol.GetObjectInfosHandler(nil, client, callID, dataIDs)
 }
 
 func (dataStoreSMMProtocol *DataStoreSMMProtocol) handleRateCustomRanking(packet nex.PacketInterface) {

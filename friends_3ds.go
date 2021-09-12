@@ -11,6 +11,15 @@ const (
 	// Friends3DSProtocolID is the protocol ID for the Friends (3DS) protocol
 	Friends3DSProtocolID = 0x65
 
+	// Friends3DSMethodUpdateProfile is the method ID for method UpdateProfile
+	Friends3DSMethodUpdateProfile = 0x1
+
+	// Friends3DSMethodUpdateMii is the method ID for method UpdateMii
+	Friends3DSMethodUpdateMii = 0x2
+
+	// Friends3DSMethodUpdatePreference is the method ID for method UpdatePreference
+	Friends3DSMethodUpdatePreference = 0x5
+
 	// Friends3DSMethodGetFriendMii is the method ID for method GetFriendMii
 	Friends3DSMethodGetFriendMii = 0x6
 
@@ -23,6 +32,12 @@ const (
 	// Friends3DSMethodUpdatePresence is the method ID for method UpdatePresence
 	Friends3DSMethodUpdatePresence = 0x12
 
+	// Friends3DSMethodUpdateFavoriteGameKey is the method ID for method UpdateFavoriteGameKey
+	Friends3DSMethodUpdateFavoriteGameKey = 0x13
+
+	// Friends3DSMethodUpdateComment is the method ID for method UpdateComment
+	Friends3DSMethodUpdateComment = 0x14
+
 	// Friends3DSMethodGetFriendPresence is the method ID for method GetFriendPresence
 	Friends3DSMethodGetFriendPresence = 0x16
 
@@ -33,12 +48,69 @@ const (
 // Friends3DSProtocol handles the Friends (3DS) nex protocol
 type Friends3DSProtocol struct {
 	server                         *nex.Server
-	UpdatePresenceHandler          func(err error, client *nex.Client, callID uint32, presence *NintendoPresence)
+	UpdateProfileHandler           func(err error, client *nex.Client, callID uint32, profileData *MyProfile)
+	UpdateMiiHandler               func(err error, client *nex.Client, callID uint32, mii *Mii)
+	UpdatePreferenceHandler        func(err error, client *nex.Client, callID uint32, unknown1 bool, unknown2 bool, unknown3 bool)
+	UpdatePresenceHandler          func(err error, client *nex.Client, callID uint32, presence *NintendoPresence, unknown bool)
+	UpdateFavoriteGameKeyHandler   func(err error, client *nex.Client, callID uint32, gameKey *GameKey)
+	UpdateCommentHandler           func(err error, client *nex.Client, callID uint32, comment string)
 	SyncFriendHandler              func(err error, client *nex.Client, callID uint32, unknown1 uint64, unknown2 []uint32, unknown3 []uint64)
 	AddFriendByPrincipalIDHandler  func(err error, client *nex.Client, callID uint32, unknown1 uint64, principalID uint32)
 	GetFriendPersistentInfoHandler func(err error, client *nex.Client, callID uint32, pidList []uint32)
 	GetFriendMiiHandler            func(err error, client *nex.Client, callID uint32, pidList []uint32)
 	GetFriendPresenceHandler       func(err error, client *nex.Client, callID uint32, pidList []uint32)
+}
+
+type Mii struct {
+	Unknown1 string
+	Unknown2 bool
+	Unknown3 uint8
+	miiData  []byte
+}
+
+// ExtractFromStream extracts a Mii from a stream
+func (mii *Mii) ExtractFromStream(stream *nex.StreamIn) error {
+	mii.Unknown1, _ = stream.ReadString()
+	mii.Unknown2 = (stream.ReadUInt8() == 1)
+	mii.Unknown3 = stream.ReadUInt8()
+	mii.miiData, _ = stream.ReadBuffer()
+
+	return nil
+}
+
+// NewMii returns a new Mii
+func NewMii() *Mii {
+	return &Mii{}
+}
+
+type MyProfile struct {
+	Region   uint8
+	Country  uint8
+	Area     uint8
+	Language uint8
+	Platform uint8
+	Unknown1 uint64
+	Unknown2 string
+	Unknown3 string
+}
+
+// ExtractFromStream extracts a MyProfile from a stream
+func (myProfile *MyProfile) ExtractFromStream(stream *nex.StreamIn) error {
+	myProfile.Region = stream.ReadUInt8()
+	myProfile.Country = stream.ReadUInt8()
+	myProfile.Area = stream.ReadUInt8()
+	myProfile.Language = stream.ReadUInt8()
+	myProfile.Platform = stream.ReadUInt8()
+	myProfile.Unknown1 = stream.ReadUInt64LE()
+	myProfile.Unknown2, _ = stream.ReadString()
+	myProfile.Unknown3, _ = stream.ReadString()
+
+	return nil
+}
+
+// NewMyProfile returns a new MyProfile
+func NewMyProfile() *MyProfile {
+	return &MyProfile{}
 }
 
 // NintendoPresence contains information about a users online presence
@@ -192,10 +264,20 @@ func (friends3DSProtocol *Friends3DSProtocol) Setup() {
 
 		if Friends3DSProtocolID == request.ProtocolID() {
 			switch request.MethodID() {
+			case Friends3DSMethodUpdateProfile:
+				go friends3DSProtocol.handleUpdateProfile(packet)
+			case Friends3DSMethodUpdateMii:
+				go friends3DSProtocol.handleUpdateMii(packet)
+			case Friends3DSMethodUpdatePreference:
+				go friends3DSProtocol.handleUpdatePreference(packet)
 			case Friends3DSMethodSyncFriend:
 				go friends3DSProtocol.handleSyncFriend(packet)
 			case Friends3DSMethodUpdatePresence:
 				go friends3DSProtocol.handleUpdatePresence(packet)
+			case Friends3DSMethodUpdateFavoriteGameKey:
+				go friends3DSProtocol.handleUpdateFavoriteGameKey(packet)
+			case Friends3DSMethodUpdateComment:
+				go friends3DSProtocol.handleUpdateComment(packet)
 			case Friends3DSMethodAddFriendByPrincipalID:
 				go friends3DSProtocol.handleAddFriendByPrincipalID(packet)
 			case Friends3DSMethodGetFriendPersistentInfo:
@@ -209,6 +291,70 @@ func (friends3DSProtocol *Friends3DSProtocol) Setup() {
 			}
 		}
 	})
+}
+
+func (friends3DSProtocol *Friends3DSProtocol) handleUpdateMii(packet nex.PacketInterface) {
+	if friends3DSProtocol.UpdateMiiHandler == nil {
+		fmt.Println("[Warning] Friends3DSProtocol::UpdateMii not implemented")
+		go respondNotImplemented(packet, Friends3DSProtocolID)
+		return
+	}
+
+	client := packet.Sender()
+	request := packet.RMCRequest()
+
+	callID := request.CallID()
+	parameters := request.Parameters()
+
+	parametersStream := nex.NewStreamIn(parameters, friends3DSProtocol.server)
+
+	mii := NewMii()
+	mii.ExtractFromStream(parametersStream)
+
+	go friends3DSProtocol.UpdateMiiHandler(nil, client, callID, mii)
+}
+
+func (friends3DSProtocol *Friends3DSProtocol) handleUpdateProfile(packet nex.PacketInterface) {
+	if friends3DSProtocol.UpdateProfileHandler == nil {
+		fmt.Println("[Warning] Friends3DSProtocol::UpdateProfile not implemented")
+		go respondNotImplemented(packet, Friends3DSProtocolID)
+		return
+	}
+
+	client := packet.Sender()
+	request := packet.RMCRequest()
+
+	callID := request.CallID()
+	parameters := request.Parameters()
+
+	parametersStream := nex.NewStreamIn(parameters, friends3DSProtocol.server)
+
+	profileData := NewMyProfile()
+	profileData.ExtractFromStream(parametersStream)
+
+	go friends3DSProtocol.UpdateProfileHandler(nil, client, callID, profileData)
+}
+
+func (friends3DSProtocol *Friends3DSProtocol) handleUpdatePreference(packet nex.PacketInterface) {
+	if friends3DSProtocol.UpdatePreferenceHandler == nil {
+		fmt.Println("[Warning] Friends3DSProtocol::UpdatePreference not implemented")
+		go respondNotImplemented(packet, Friends3DSProtocolID)
+		return
+	}
+
+	client := packet.Sender()
+	request := packet.RMCRequest()
+
+	callID := request.CallID()
+	parameters := request.Parameters()
+
+	parametersStream := nex.NewStreamIn(parameters, friends3DSProtocol.server)
+
+	unknown1 := (parametersStream.ReadUInt8() == 1)
+	unknown2 := (parametersStream.ReadUInt8() == 1)
+	unknown3 := (parametersStream.ReadUInt8() == 1)
+
+	go friends3DSProtocol.UpdatePreferenceHandler(nil, client, callID, unknown1, unknown2, unknown3)
 }
 
 func (friends3DSProtocol *Friends3DSProtocol) handleSyncFriend(packet nex.PacketInterface) {
@@ -226,11 +372,11 @@ func (friends3DSProtocol *Friends3DSProtocol) handleSyncFriend(packet nex.Packet
 
 	parametersStream := nex.NewStreamIn(parameters, friends3DSProtocol.server)
 
-	Unknown1 := parametersStream.ReadUInt64LE()
-	Unknown2 := parametersStream.ReadListUInt32LE()
-	Unknown3 := parametersStream.ReadListUInt64LE()
+	unknown1 := parametersStream.ReadUInt64LE()
+	pids := parametersStream.ReadListUInt32LE()
+	unknown3 := parametersStream.ReadListUInt64LE()
 
-	go friends3DSProtocol.SyncFriendHandler(nil, client, callID, Unknown1, Unknown2, Unknown3)
+	go friends3DSProtocol.SyncFriendHandler(nil, client, callID, unknown1, pids, unknown3)
 }
 
 func (friends3DSProtocol *Friends3DSProtocol) handleGetFriendPersistentInfo(packet nex.PacketInterface) {
@@ -268,15 +414,53 @@ func (friends3DSProtocol *Friends3DSProtocol) handleUpdatePresence(packet nex.Pa
 
 	parametersStream := nex.NewStreamIn(parameters, friends3DSProtocol.server)
 
-	nintendoPresenceStructureInterface, err := parametersStream.ReadStructure(NewNintendoPresence())
-	if err != nil {
-		go friends3DSProtocol.UpdatePresenceHandler(err, client, callID, nil)
+	nintendoPresence := NewNintendoPresence()
+	nintendoPresence.ExtractFromStream(parametersStream)
+
+	unknown := (parametersStream.ReadUInt8() == 1)
+
+	go friends3DSProtocol.UpdatePresenceHandler(nil, client, callID, nintendoPresence, unknown)
+}
+
+func (friends3DSProtocol *Friends3DSProtocol) handleUpdateFavoriteGameKey(packet nex.PacketInterface) {
+	if friends3DSProtocol.UpdateFavoriteGameKeyHandler == nil {
+		fmt.Println("[Warning] Friends3DSProtocol::UpdateFavoriteGameKey not implemented")
+		go respondNotImplemented(packet, AuthenticationProtocolID)
 		return
 	}
 
-	nintendoPresence := nintendoPresenceStructureInterface.(*NintendoPresence)
+	client := packet.Sender()
+	request := packet.RMCRequest()
 
-	go friends3DSProtocol.UpdatePresenceHandler(nil, client, callID, nintendoPresence)
+	callID := request.CallID()
+	parameters := request.Parameters()
+
+	parametersStream := nex.NewStreamIn(parameters, friends3DSProtocol.server)
+
+	gameKey := NewGameKey()
+	gameKey.ExtractFromStream(parametersStream)
+
+	go friends3DSProtocol.UpdateFavoriteGameKeyHandler(nil, client, callID, gameKey)
+}
+
+func (friends3DSProtocol *Friends3DSProtocol) handleUpdateComment(packet nex.PacketInterface) {
+	if friends3DSProtocol.UpdateCommentHandler == nil {
+		fmt.Println("[Warning] Friends3DSProtocol::UpdateComment not implemented")
+		go respondNotImplemented(packet, AuthenticationProtocolID)
+		return
+	}
+
+	client := packet.Sender()
+	request := packet.RMCRequest()
+
+	callID := request.CallID()
+	parameters := request.Parameters()
+
+	parametersStream := nex.NewStreamIn(parameters, friends3DSProtocol.server)
+
+	comment, _ := parametersStream.ReadString()
+
+	go friends3DSProtocol.UpdateCommentHandler(nil, client, callID, comment)
 }
 
 func (friends3DSProtocol *Friends3DSProtocol) handleAddFriendByPrincipalID(packet nex.PacketInterface) {
@@ -340,19 +524,44 @@ func (friends3DSProtocol *Friends3DSProtocol) handleGetFriendPresence(packet nex
 	go friends3DSProtocol.GetFriendPresenceHandler(nil, client, callID, PidList)
 }
 
+// UpdateProfile sets the UpdateProfile handler function
+func (friends3DSProtocol *Friends3DSProtocol) UpdateProfile(handler func(err error, client *nex.Client, callID uint32, profileData *MyProfile)) {
+	friends3DSProtocol.UpdateProfileHandler = handler
+}
+
+// UpdateMii sets the UpdateMii handler function
+func (friends3DSProtocol *Friends3DSProtocol) UpdateMii(handler func(err error, client *nex.Client, callID uint32, mii *Mii)) {
+	friends3DSProtocol.UpdateMiiHandler = handler
+}
+
+// UpdatePreference sets the UpdatePreference handler function
+func (friends3DSProtocol *Friends3DSProtocol) UpdatePreference(handler func(err error, client *nex.Client, callID uint32, unknown1 bool, unknown2 bool, unknown3 bool)) {
+	friends3DSProtocol.UpdatePreferenceHandler = handler
+}
+
 // AddFriendByPrincipalID sets the AddFriendByPrincipalID handler function
 func (friends3DSProtocol *Friends3DSProtocol) AddFriendByPrincipalID(handler func(err error, client *nex.Client, callID uint32, unknown1 uint64, principalID uint32)) {
 	friends3DSProtocol.AddFriendByPrincipalIDHandler = handler
 }
 
 // SyncFriend sets the SyncFriend handler function
-func (friends3DSProtocol *Friends3DSProtocol) SyncFriend(handler func(err error, client *nex.Client, callID uint32, unknown1 uint64, unknown2 []uint32, unknown3 []uint64)) {
+func (friends3DSProtocol *Friends3DSProtocol) SyncFriend(handler func(err error, client *nex.Client, callID uint32, unknown1 uint64, pids []uint32, unknown3 []uint64)) {
 	friends3DSProtocol.SyncFriendHandler = handler
 }
 
 // UpdatePresence sets the UpdatePresence handler function
-func (friends3DSProtocol *Friends3DSProtocol) UpdatePresence(handler func(err error, client *nex.Client, callID uint32, presence *NintendoPresence)) {
+func (friends3DSProtocol *Friends3DSProtocol) UpdatePresence(handler func(err error, client *nex.Client, callID uint32, presence *NintendoPresence, unknown bool)) {
 	friends3DSProtocol.UpdatePresenceHandler = handler
+}
+
+// UpdateFavoriteGameKey sets the UpdateFavoriteGameKey handler function
+func (friends3DSProtocol *Friends3DSProtocol) UpdateFavoriteGameKey(handler func(err error, client *nex.Client, callID uint32, gameKey *GameKey)) {
+	friends3DSProtocol.UpdateFavoriteGameKeyHandler = handler
+}
+
+// UpdateComment sets the UpdateComment handler function
+func (friends3DSProtocol *Friends3DSProtocol) UpdateComment(handler func(err error, client *nex.Client, callID uint32, comment string)) {
+	friends3DSProtocol.UpdateCommentHandler = handler
 }
 
 // GetFriendPersistentInfo sets the GetFriendPersistentInfo handler function

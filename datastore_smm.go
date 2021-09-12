@@ -42,6 +42,9 @@ const (
 
 	// DataStoreSMMMethodGetMetasWithCourseRecord is the method ID for the method GetMetasWithCourseRecord
 	DataStoreSMMMethodGetMetasWithCourseRecord = 0x4E
+
+	// DataStoreSMMMethodCTRPickUpCourseSearchObject is the method ID for the method CTRPickUpCourseSearchObject
+	DataStoreSMMMethodCTRPickUpCourseSearchObject = 0x52
 )
 
 // DataStoreSMMProtocol handles the DataStore (SMM) nex protocol. Embeds DataStoreProtocol
@@ -59,6 +62,7 @@ type DataStoreSMMProtocol struct {
 	RecommendedCourseSearchObjectHandler      func(err error, client *nex.Client, callID uint32, dataStoreSearchParam *DataStoreSearchParam, extraData []string)
 	GetApplicationConfigStringHandler         func(err error, client *nex.Client, callID uint32, applicationID uint32)
 	GetMetasWithCourseRecordHandler           func(err error, client *nex.Client, callID uint32, dataStoreGetCourseRecordParams []*DataStoreGetCourseRecordParam, dataStoreGetMetaParam *DataStoreGetMetaParam)
+	CTRPickUpCourseSearchObjectHandler        func(err error, client *nex.Client, callID uint32, dataStoreSearchParam *DataStoreSearchParam, extraData []string)
 }
 
 // DataStoreFileServerObjectInfo is sent in the GetObjectInfos method
@@ -295,6 +299,8 @@ func (dataStoreSMMProtocol *DataStoreSMMProtocol) Setup() {
 				go dataStoreSMMProtocol.handleGetApplicationConfigString(packet)
 			case DataStoreSMMMethodGetMetasWithCourseRecord:
 				go dataStoreSMMProtocol.handleGetMetasWithCourseRecord(packet)
+			case DataStoreSMMMethodCTRPickUpCourseSearchObject:
+				go dataStoreSMMProtocol.handleCTRPickUpCourseSearchObject(packet)
 			default:
 				fmt.Printf("Unsupported DataStoreSMM method ID: %#v\n", request.MethodID())
 			}
@@ -355,6 +361,11 @@ func (dataStoreSMMProtocol *DataStoreSMMProtocol) GetApplicationConfigString(han
 // GetMetasWithCourseRecord sets the GetMetasWithCourseRecord handler function
 func (dataStoreSMMProtocol *DataStoreSMMProtocol) GetMetasWithCourseRecord(handler func(err error, client *nex.Client, callID uint32, dataStoreGetCourseRecordParams []*DataStoreGetCourseRecordParam, dataStoreGetMetaParam *DataStoreGetMetaParam)) {
 	dataStoreSMMProtocol.GetMetasWithCourseRecordHandler = handler
+}
+
+// CTRPickUpCourseSearchObject sets the CTRPickUpCourseSearchObject handler function
+func (dataStoreSMMProtocol *DataStoreSMMProtocol) CTRPickUpCourseSearchObject(handler func(err error, client *nex.Client, callID uint32, dataStoreSearchParam *DataStoreSearchParam, extraData []string)) {
+	dataStoreSMMProtocol.CTRPickUpCourseSearchObjectHandler = handler
 }
 
 func (dataStoreSMMProtocol *DataStoreSMMProtocol) handleGetObjectInfos(packet nex.PacketInterface) {
@@ -623,6 +634,33 @@ func (dataStoreSMMProtocol *DataStoreSMMProtocol) handleGetMetasWithCourseRecord
 	}
 
 	go dataStoreSMMProtocol.GetMetasWithCourseRecordHandler(nil, client, callID, dataStoreGetCourseRecordParams, dataStoreGetMetaParam.(*DataStoreGetMetaParam))
+}
+
+func (dataStoreSMMProtocol *DataStoreSMMProtocol) handleCTRPickUpCourseSearchObject(packet nex.PacketInterface) {
+	if dataStoreSMMProtocol.CTRPickUpCourseSearchObjectHandler == nil {
+		fmt.Println("[Warning] DataStoreSMMProtocol::CTRPickUpCourseSearchObject not implemented")
+		go respondNotImplemented(packet, DataStoreSMMProtocolID)
+		return
+	}
+
+	client := packet.Sender()
+	request := packet.RMCRequest()
+
+	callID := request.CallID()
+	parameters := request.Parameters()
+
+	parametersStream := nex.NewStreamIn(parameters, dataStoreSMMProtocol.server)
+
+	dataStoreSearchParam, err := parametersStream.ReadStructure(NewDataStoreSearchParam())
+
+	if err != nil {
+		go dataStoreSMMProtocol.CTRPickUpCourseSearchObjectHandler(err, client, callID, nil, []string{})
+		return
+	}
+
+	extraData := parametersStream.ReadListString()
+
+	go dataStoreSMMProtocol.CTRPickUpCourseSearchObjectHandler(nil, client, callID, dataStoreSearchParam.(*DataStoreSearchParam), extraData)
 }
 
 // NewDataStoreSMMProtocol returns a new DataStoreSMMProtocol

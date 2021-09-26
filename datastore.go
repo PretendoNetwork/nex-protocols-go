@@ -733,6 +733,15 @@ func (dataStoreRatingInfo *DataStoreRatingInfo) ExtractFromStream(stream *nex.St
 	return nil
 }
 
+// Bytes encodes the DataStoreRatingInfo and returns a byte array
+func (dataStoreRatingInfo *DataStoreRatingInfo) Bytes(stream *nex.StreamOut) []byte {
+	stream.WriteUInt64LE(uint64(dataStoreRatingInfo.TotalValue))
+	stream.WriteUInt32LE(dataStoreRatingInfo.Count)
+	stream.WriteUInt64LE(uint64(dataStoreRatingInfo.InitialValue))
+
+	return stream.Bytes()
+}
+
 // NewDataStoreRatingInfo returns a new DataStoreRatingInfo
 func NewDataStoreRatingInfo() *DataStoreRatingInfo {
 	return &DataStoreRatingInfo{}
@@ -757,6 +766,14 @@ func (dataStoreRatingInfoWithSlot *DataStoreRatingInfoWithSlot) ExtractFromStrea
 	dataStoreRatingInfoWithSlot.Rating = rating.(*DataStoreRatingInfo)
 
 	return nil
+}
+
+// Bytes encodes the DataStoreRatingInfoWithSlot and returns a byte array
+func (dataStoreRatingInfoWithSlot *DataStoreRatingInfoWithSlot) Bytes(stream *nex.StreamOut) []byte {
+	stream.WriteUInt8(uint8(dataStoreRatingInfoWithSlot.Slot))
+	stream.WriteStructure(dataStoreRatingInfoWithSlot.Rating)
+
+	return stream.Bytes()
 }
 
 // NewDataStoreRatingInfoWithSlot returns a new DataStoreRatingInfoWithSlot

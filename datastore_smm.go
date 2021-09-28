@@ -37,6 +37,9 @@ const (
 	// DataStoreSMMMethodRecommendedCourseSearchObject is the method ID for the method RecommendedCourseSearchObject
 	DataStoreSMMMethodRecommendedCourseSearchObject = 0x42
 
+	// DataStoreSMMMethodSuggestedCourseSearchObjectis the method ID for the method SuggestedCourseSearchObject
+	DataStoreSMMMethodSuggestedCourseSearchObject = 0x44
+
 	// DataStoreSMMMethodGetCourseRecord is the method ID for the method GetCourseRecord
 	DataStoreSMMMethodGetCourseRecord = 0x48
 
@@ -63,6 +66,7 @@ type DataStoreSMMProtocol struct {
 	GetApplicationConfigHandler               func(err error, client *nex.Client, callID uint32, applicationID uint32)
 	FollowingsLatestCourseSearchObjectHandler func(err error, client *nex.Client, callID uint32, dataStoreSearchParam *DataStoreSearchParam, extraData []string)
 	RecommendedCourseSearchObjectHandler      func(err error, client *nex.Client, callID uint32, dataStoreSearchParam *DataStoreSearchParam, extraData []string)
+	SuggestedCourseSearchObjectHandler        func(err error, client *nex.Client, callID uint32, param *DataStoreSearchParam, extraData []string)
 	GetCourseRecordHandler                    func(err error, client *nex.Client, callID uint32, param *DataStoreGetCourseRecordParam)
 	GetApplicationConfigStringHandler         func(err error, client *nex.Client, callID uint32, applicationID uint32)
 	GetMetasWithCourseRecordHandler           func(err error, client *nex.Client, callID uint32, dataStoreGetCourseRecordParams []*DataStoreGetCourseRecordParam, dataStoreGetMetaParam *DataStoreGetMetaParam)
@@ -329,6 +333,8 @@ func (dataStoreSMMProtocol *DataStoreSMMProtocol) Setup() {
 				go dataStoreSMMProtocol.handleFollowingsLatestCourseSearchObject(packet)
 			case DataStoreSMMMethodRecommendedCourseSearchObject:
 				go dataStoreSMMProtocol.handleRecommendedCourseSearchObject(packet)
+			case DataStoreSMMMethodSuggestedCourseSearchObject:
+				go dataStoreSMMProtocol.handleSuggestedCourseSearchObject(packet)
 			case DataStoreSMMMethodGetCourseRecord:
 				go dataStoreSMMProtocol.handleGetCourseRecord(packet)
 			case DataStoreSMMMethodGetApplicationConfigString:
@@ -387,6 +393,11 @@ func (dataStoreSMMProtocol *DataStoreSMMProtocol) FollowingsLatestCourseSearchOb
 // RecommendedCourseSearchObject sets the RecommendedCourseSearchObject handler function
 func (dataStoreSMMProtocol *DataStoreSMMProtocol) RecommendedCourseSearchObject(handler func(err error, client *nex.Client, callID uint32, dataStoreSearchParam *DataStoreSearchParam, extraData []string)) {
 	dataStoreSMMProtocol.RecommendedCourseSearchObjectHandler = handler
+}
+
+// SuggestedCourseSearchObject sets the SuggestedCourseSearchObject handler function
+func (dataStoreSMMProtocol *DataStoreSMMProtocol) SuggestedCourseSearchObject(handler func(err error, client *nex.Client, callID uint32, param *DataStoreSearchParam, extraData []string)) {
+	dataStoreSMMProtocol.SuggestedCourseSearchObjectHandler = handler
 }
 
 // GetCourseRecord sets the GetCourseRecord handler function
@@ -625,6 +636,33 @@ func (dataStoreSMMProtocol *DataStoreSMMProtocol) handleRecommendedCourseSearchO
 	extraData := parametersStream.ReadListString()
 
 	go dataStoreSMMProtocol.RecommendedCourseSearchObjectHandler(nil, client, callID, dataStoreSearchParam.(*DataStoreSearchParam), extraData)
+}
+
+func (dataStoreSMMProtocol *DataStoreSMMProtocol) handleSuggestedCourseSearchObject(packet nex.PacketInterface) {
+	if dataStoreSMMProtocol.SuggestedCourseSearchObjectHandler == nil {
+		fmt.Println("[Warning] DataStoreSMMProtocol::SuggestedCourseSearchObject not implemented")
+		go respondNotImplemented(packet, DataStoreSMMProtocolID)
+		return
+	}
+
+	client := packet.Sender()
+	request := packet.RMCRequest()
+
+	callID := request.CallID()
+	parameters := request.Parameters()
+
+	parametersStream := nex.NewStreamIn(parameters, dataStoreSMMProtocol.server)
+
+	param, err := parametersStream.ReadStructure(NewDataStoreSearchParam())
+
+	if err != nil {
+		go dataStoreSMMProtocol.SuggestedCourseSearchObjectHandler(err, client, callID, nil, []string{})
+		return
+	}
+
+	extraData := parametersStream.ReadListString()
+
+	go dataStoreSMMProtocol.SuggestedCourseSearchObjectHandler(nil, client, callID, param.(*DataStoreSearchParam), extraData)
 }
 
 func (dataStoreSMMProtocol *DataStoreSMMProtocol) handleGetCourseRecord(packet nex.PacketInterface) {

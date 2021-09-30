@@ -43,6 +43,9 @@ const (
 	// DataStoreSMMMethodSuggestedCourseSearchObjectis the method ID for the method SuggestedCourseSearchObject
 	DataStoreSMMMethodSuggestedCourseSearchObject = 0x44
 
+	// DataStoreSMMMethodUploadCourseRecord is the method ID for the method UploadCourseRecord
+	DataStoreSMMMethodUploadCourseRecord = 0x47
+
 	// DataStoreSMMMethodGetCourseRecord is the method ID for the method GetCourseRecord
 	DataStoreSMMMethodGetCourseRecord = 0x48
 
@@ -71,10 +74,33 @@ type DataStoreSMMProtocol struct {
 	FollowingsLatestCourseSearchObjectHandler func(err error, client *nex.Client, callID uint32, dataStoreSearchParam *DataStoreSearchParam, extraData []string)
 	RecommendedCourseSearchObjectHandler      func(err error, client *nex.Client, callID uint32, dataStoreSearchParam *DataStoreSearchParam, extraData []string)
 	SuggestedCourseSearchObjectHandler        func(err error, client *nex.Client, callID uint32, param *DataStoreSearchParam, extraData []string)
+	UploadCourseRecordHandler                 func(err error, client *nex.Client, callID uint32, param *DataStoreUploadCourseRecordParam)
 	GetCourseRecordHandler                    func(err error, client *nex.Client, callID uint32, param *DataStoreGetCourseRecordParam)
 	GetApplicationConfigStringHandler         func(err error, client *nex.Client, callID uint32, applicationID uint32)
 	GetMetasWithCourseRecordHandler           func(err error, client *nex.Client, callID uint32, dataStoreGetCourseRecordParams []*DataStoreGetCourseRecordParam, dataStoreGetMetaParam *DataStoreGetMetaParam)
 	CTRPickUpCourseSearchObjectHandler        func(err error, client *nex.Client, callID uint32, dataStoreSearchParam *DataStoreSearchParam, extraData []string)
+}
+
+type DataStoreUploadCourseRecordParam struct {
+	nex.Structure
+	DataID uint64
+	Slot   uint8
+	Score  int32
+}
+
+// ExtractFromStream extracts a DataStoreUploadCourseRecordParam structure from a stream
+func (dataStoreUploadCourseRecordParam *DataStoreUploadCourseRecordParam) ExtractFromStream(stream *nex.StreamIn) error {
+	// TODO check size
+	dataStoreUploadCourseRecordParam.DataID = stream.ReadUInt64LE()
+	dataStoreUploadCourseRecordParam.Slot = stream.ReadUInt8()
+	dataStoreUploadCourseRecordParam.Score = int32(stream.ReadUInt32LE())
+
+	return nil
+}
+
+// NewDataStoreUploadCourseRecordParam returns a new DataStoreUploadCourseRecordParam
+func NewDataStoreUploadCourseRecordParam() *DataStoreUploadCourseRecordParam {
+	return &DataStoreUploadCourseRecordParam{}
 }
 
 // DataStoreGetCourseRecordResult is used to send data about a courses world record
@@ -341,6 +367,8 @@ func (dataStoreSMMProtocol *DataStoreSMMProtocol) Setup() {
 				go dataStoreSMMProtocol.handleRecommendedCourseSearchObject(packet)
 			case DataStoreSMMMethodSuggestedCourseSearchObject:
 				go dataStoreSMMProtocol.handleSuggestedCourseSearchObject(packet)
+			case DataStoreSMMMethodUploadCourseRecord:
+				go dataStoreSMMProtocol.handleUploadCourseRecord(packet)
 			case DataStoreSMMMethodGetCourseRecord:
 				go dataStoreSMMProtocol.handleGetCourseRecord(packet)
 			case DataStoreSMMMethodGetApplicationConfigString:
@@ -409,6 +437,11 @@ func (dataStoreSMMProtocol *DataStoreSMMProtocol) RecommendedCourseSearchObject(
 // SuggestedCourseSearchObject sets the SuggestedCourseSearchObject handler function
 func (dataStoreSMMProtocol *DataStoreSMMProtocol) SuggestedCourseSearchObject(handler func(err error, client *nex.Client, callID uint32, param *DataStoreSearchParam, extraData []string)) {
 	dataStoreSMMProtocol.SuggestedCourseSearchObjectHandler = handler
+}
+
+// UploadCourseRecord sets the UploadCourseRecord handler function
+func (dataStoreSMMProtocol *DataStoreSMMProtocol) UploadCourseRecord(handler func(err error, client *nex.Client, callID uint32, param *DataStoreUploadCourseRecordParam)) {
+	dataStoreSMMProtocol.UploadCourseRecordHandler = handler
 }
 
 // GetCourseRecord sets the GetCourseRecord handler function
@@ -701,6 +734,31 @@ func (dataStoreSMMProtocol *DataStoreSMMProtocol) handleSuggestedCourseSearchObj
 	extraData := parametersStream.ReadListString()
 
 	go dataStoreSMMProtocol.SuggestedCourseSearchObjectHandler(nil, client, callID, param.(*DataStoreSearchParam), extraData)
+}
+
+func (dataStoreSMMProtocol *DataStoreSMMProtocol) handleUploadCourseRecord(packet nex.PacketInterface) {
+	if dataStoreSMMProtocol.UploadCourseRecordHandler == nil {
+		fmt.Println("[Warning] DataStoreSMMProtocol::UploadCourseRecord not implemented")
+		go respondNotImplemented(packet, DataStoreSMMProtocolID)
+		return
+	}
+
+	client := packet.Sender()
+	request := packet.RMCRequest()
+
+	callID := request.CallID()
+	parameters := request.Parameters()
+
+	parametersStream := nex.NewStreamIn(parameters, dataStoreSMMProtocol.server)
+
+	param, err := parametersStream.ReadStructure(NewDataStoreUploadCourseRecordParam())
+
+	if err != nil {
+		go dataStoreSMMProtocol.UploadCourseRecordHandler(err, client, callID, nil)
+		return
+	}
+
+	go dataStoreSMMProtocol.UploadCourseRecordHandler(nil, client, callID, param.(*DataStoreUploadCourseRecordParam))
 }
 
 func (dataStoreSMMProtocol *DataStoreSMMProtocol) handleGetCourseRecord(packet nex.PacketInterface) {

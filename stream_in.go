@@ -171,6 +171,23 @@ func (stream *StreamIn) ReadListDataStoreRateObjectParam() ([]*DataStoreRateObje
 	return dataStoreRateObjectParams, nil
 }
 
+// ReadListBufferQueueParam reads a list of BufferQueueParam structures
+func (stream *StreamIn) ReadListBufferQueueParam() ([]*BufferQueueParam, error) {
+	length := stream.ReadUInt32LE()
+	bufferQueueParams := make([]*BufferQueueParam, 0)
+
+	for i := 0; i < int(length); i++ {
+		bufferQueueParam, err := stream.ReadStructure(NewBufferQueueParam())
+		if err != nil {
+			return nil, err
+		}
+
+		bufferQueueParams = append(bufferQueueParams, bufferQueueParam.(*BufferQueueParam))
+	}
+
+	return bufferQueueParams, nil
+}
+
 // NewStreamIn returns a new nexproto output stream
 func NewStreamIn(data []byte, server *nex.Server) *StreamIn {
 	return &StreamIn{

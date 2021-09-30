@@ -19,6 +19,9 @@ const (
 	// DataStoreSMMMethodGetCustomRankingByDataId is the method ID for the method GetCustomRankingByDataId
 	DataStoreSMMMethodGetCustomRankingByDataId = 0x32
 
+	// DataStoreSMMMethodAddToBufferQueues is the method ID for the method AddToBufferQueues
+	DataStoreSMMMethodAddToBufferQueues = 0x35
+
 	// DataStoreSMMMethodGetBufferQueue is the method ID for the method GetBufferQueue
 	DataStoreSMMMethodGetBufferQueue = 0x36
 
@@ -60,6 +63,7 @@ type DataStoreSMMProtocol struct {
 	GetObjectInfosHandler                     func(err error, client *nex.Client, callID uint32, dataIDs []uint64)
 	RateCustomRankingHandler                  func(err error, client *nex.Client, callID uint32, dataStoreRateCustomRankingParams []*DataStoreRateCustomRankingParam)
 	GetCustomRankingByDataIdHandler           func(err error, client *nex.Client, callID uint32, dataStoreGetCustomRankingByDataIdParam *DataStoreGetCustomRankingByDataIdParam)
+	AddToBufferQueuesHandler                  func(err error, client *nex.Client, callID uint32, params []*BufferQueueParam, buffers [][]byte)
 	GetBufferQueueHandler                     func(err error, client *nex.Client, callID uint32, bufferQueueParam *BufferQueueParam)
 	CompleteAttachFileHandler                 func(err error, client *nex.Client, callID uint32, dataStoreCompletePostParam *DataStoreCompletePostParam)
 	PrepareAttachFileHandler                  func(err error, client *nex.Client, callID uint32, dataStoreAttachFileParam *DataStoreAttachFileParam)
@@ -321,6 +325,8 @@ func (dataStoreSMMProtocol *DataStoreSMMProtocol) Setup() {
 				go dataStoreSMMProtocol.handleRateCustomRanking(packet)
 			case DataStoreSMMMethodGetCustomRankingByDataId:
 				go dataStoreSMMProtocol.handleGetCustomRankingByDataId(packet)
+			case DataStoreSMMMethodAddToBufferQueues:
+				go dataStoreSMMProtocol.handleAddToBufferQueues(packet)
 			case DataStoreSMMMethodGetBufferQueue:
 				go dataStoreSMMProtocol.handleGetBufferQueue(packet)
 			case DataStoreSMMMethodCompleteAttachFile:
@@ -363,6 +369,11 @@ func (dataStoreSMMProtocol *DataStoreSMMProtocol) RateCustomRanking(handler func
 // GetCustomRankingByDataId sets the GetCustomRankingByDataId handler function
 func (dataStoreSMMProtocol *DataStoreSMMProtocol) GetCustomRankingByDataId(handler func(err error, client *nex.Client, callID uint32, dataStoreGetCustomRankingByDataIdParam *DataStoreGetCustomRankingByDataIdParam)) {
 	dataStoreSMMProtocol.GetCustomRankingByDataIdHandler = handler
+}
+
+// AddToBufferQueues sets the AddToBufferQueues handler function
+func (dataStoreSMMProtocol *DataStoreSMMProtocol) AddToBufferQueues(handler func(err error, client *nex.Client, callID uint32, params []*BufferQueueParam, buffers [][]byte)) {
+	dataStoreSMMProtocol.AddToBufferQueuesHandler = handler
 }
 
 // GetBufferQueue sets the GetBufferQueue handler function
@@ -488,6 +499,33 @@ func (dataStoreSMMProtocol *DataStoreSMMProtocol) handleGetCustomRankingByDataId
 	}
 
 	go dataStoreSMMProtocol.GetCustomRankingByDataIdHandler(nil, client, callID, dataStoreGetCustomRankingByDataIdParam.(*DataStoreGetCustomRankingByDataIdParam))
+}
+
+func (dataStoreSMMProtocol *DataStoreSMMProtocol) handleAddToBufferQueues(packet nex.PacketInterface) {
+	if dataStoreSMMProtocol.AddToBufferQueuesHandler == nil {
+		fmt.Println("[Warning] DataStoreSMMProtocol::AddToBufferQueues not implemented")
+		go respondNotImplemented(packet, DataStoreSMMProtocolID)
+		return
+	}
+
+	client := packet.Sender()
+	request := packet.RMCRequest()
+
+	callID := request.CallID()
+	parameters := request.Parameters()
+
+	parametersStream := NewStreamIn(parameters, dataStoreSMMProtocol.server)
+
+	params, err := parametersStream.ReadListBufferQueueParam()
+
+	if err != nil {
+		go dataStoreSMMProtocol.AddToBufferQueuesHandler(err, client, callID, nil, nil)
+		return
+	}
+
+	buffers := parametersStream.ReadListQBuffer()
+
+	go dataStoreSMMProtocol.AddToBufferQueuesHandler(nil, client, callID, params, buffers)
 }
 
 func (dataStoreSMMProtocol *DataStoreSMMProtocol) handleGetBufferQueue(packet nex.PacketInterface) {

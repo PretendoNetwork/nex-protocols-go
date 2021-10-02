@@ -55,6 +55,9 @@ const (
 	// DataStoreSMMMethodGetMetasWithCourseRecord is the method ID for the method GetMetasWithCourseRecord
 	DataStoreSMMMethodGetMetasWithCourseRecord = 0x4E
 
+	// DataStoreSMMMethodCheckRateCustomRankingCounter is the method ID for the method CheckRateCustomRankingCounter
+	DataStoreSMMMethodCheckRateCustomRankingCounter = 0x4F
+
 	// DataStoreSMMMethodCTRPickUpCourseSearchObject is the method ID for the method CTRPickUpCourseSearchObject
 	DataStoreSMMMethodCTRPickUpCourseSearchObject = 0x52
 )
@@ -78,6 +81,7 @@ type DataStoreSMMProtocol struct {
 	GetCourseRecordHandler                    func(err error, client *nex.Client, callID uint32, param *DataStoreGetCourseRecordParam)
 	GetApplicationConfigStringHandler         func(err error, client *nex.Client, callID uint32, applicationID uint32)
 	GetMetasWithCourseRecordHandler           func(err error, client *nex.Client, callID uint32, dataStoreGetCourseRecordParams []*DataStoreGetCourseRecordParam, dataStoreGetMetaParam *DataStoreGetMetaParam)
+	CheckRateCustomRankingCounterHandler      func(err error, client *nex.Client, callID uint32, applicationID uint32)
 	CTRPickUpCourseSearchObjectHandler        func(err error, client *nex.Client, callID uint32, dataStoreSearchParam *DataStoreSearchParam, extraData []string)
 }
 
@@ -375,6 +379,8 @@ func (dataStoreSMMProtocol *DataStoreSMMProtocol) Setup() {
 				go dataStoreSMMProtocol.handleGetApplicationConfigString(packet)
 			case DataStoreSMMMethodGetMetasWithCourseRecord:
 				go dataStoreSMMProtocol.handleGetMetasWithCourseRecord(packet)
+			case DataStoreSMMMethodCheckRateCustomRankingCounter:
+				go dataStoreSMMProtocol.handleCheckRateCustomRankingCounter(packet)
 			case DataStoreSMMMethodCTRPickUpCourseSearchObject:
 				go dataStoreSMMProtocol.handleCTRPickUpCourseSearchObject(packet)
 			default:
@@ -458,6 +464,11 @@ func (dataStoreSMMProtocol *DataStoreSMMProtocol) GetApplicationConfigString(han
 // GetMetasWithCourseRecord sets the GetMetasWithCourseRecord handler function
 func (dataStoreSMMProtocol *DataStoreSMMProtocol) GetMetasWithCourseRecord(handler func(err error, client *nex.Client, callID uint32, dataStoreGetCourseRecordParams []*DataStoreGetCourseRecordParam, dataStoreGetMetaParam *DataStoreGetMetaParam)) {
 	dataStoreSMMProtocol.GetMetasWithCourseRecordHandler = handler
+}
+
+// CheckRateCustomRankingCounter sets the CheckRateCustomRankingCounter handler function
+func (dataStoreSMMProtocol *DataStoreSMMProtocol) CheckRateCustomRankingCounter(handler func(err error, client *nex.Client, callID uint32, applicationID uint32)) {
+	dataStoreSMMProtocol.CheckRateCustomRankingCounterHandler = handler
 }
 
 // CTRPickUpCourseSearchObject sets the CTRPickUpCourseSearchObject handler function
@@ -835,6 +846,26 @@ func (dataStoreSMMProtocol *DataStoreSMMProtocol) handleGetMetasWithCourseRecord
 	}
 
 	go dataStoreSMMProtocol.GetMetasWithCourseRecordHandler(nil, client, callID, dataStoreGetCourseRecordParams, dataStoreGetMetaParam.(*DataStoreGetMetaParam))
+}
+
+func (dataStoreSMMProtocol *DataStoreSMMProtocol) handleCheckRateCustomRankingCounter(packet nex.PacketInterface) {
+	if dataStoreSMMProtocol.CheckRateCustomRankingCounterHandler == nil {
+		fmt.Println("[Warning] DataStoreSMMProtocol::CheckRateCustomRankingCounter not implemented")
+		go respondNotImplemented(packet, DataStoreSMMProtocolID)
+		return
+	}
+
+	client := packet.Sender()
+	request := packet.RMCRequest()
+
+	callID := request.CallID()
+	parameters := request.Parameters()
+
+	parametersStream := nex.NewStreamIn(parameters, dataStoreSMMProtocol.server)
+
+	applicationID := parametersStream.ReadUInt32LE()
+
+	go dataStoreSMMProtocol.CheckRateCustomRankingCounterHandler(nil, client, callID, applicationID)
 }
 
 func (dataStoreSMMProtocol *DataStoreSMMProtocol) handleCTRPickUpCourseSearchObject(packet nex.PacketInterface) {

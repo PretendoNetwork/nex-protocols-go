@@ -287,6 +287,7 @@ func (friends3DSProtocol *Friends3DSProtocol) Setup() {
 			case Friends3DSMethodGetFriendPresence:
 				go friends3DSProtocol.handleGetFriendPresence(packet)
 			default:
+				go respondNotImplemented(packet, Friends3DSProtocolID)
 				fmt.Printf("Unsupported Friends (3DS) method ID: %#v\n", request.MethodID())
 			}
 		}

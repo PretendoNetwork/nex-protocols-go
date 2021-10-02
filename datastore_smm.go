@@ -378,6 +378,7 @@ func (dataStoreSMMProtocol *DataStoreSMMProtocol) Setup() {
 			case DataStoreSMMMethodCTRPickUpCourseSearchObject:
 				go dataStoreSMMProtocol.handleCTRPickUpCourseSearchObject(packet)
 			default:
+				go respondNotImplemented(packet, DataStoreSMMProtocolID)
 				fmt.Printf("Unsupported DataStoreSMM method ID: %#v\n", request.MethodID())
 			}
 		}

@@ -995,6 +995,7 @@ func (dataStoreProtocol *DataStoreProtocol) Setup() {
 			case DataStoreMethodRateObjects:
 				go dataStoreProtocol.handleRateObjects(packet)
 			default:
+				go respondNotImplemented(packet, DataStoreProtocolID)
 				fmt.Printf("Unsupported DataStore method ID: %#v\n", request.MethodID())
 			}
 		}

@@ -98,6 +98,7 @@ func (accountManagementProtocol *AccountManagementProtocol) Setup() {
 			case AccountManagementMethodNintendoCreateAccount:
 				go accountManagementProtocol.handleNintendoCreateAccountHandler(packet)
 			default:
+				go respondNotImplemented(packet, AccountManagementProtocolID)
 				fmt.Printf("Unsupported AccountManagement method ID: %#v\n", request.MethodID())
 			}
 		}

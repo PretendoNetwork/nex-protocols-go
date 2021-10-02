@@ -27,6 +27,7 @@ func (rankingMK8Protocol *RankingMK8Protocol) Setup() {
 		if RankingProtocolID == request.ProtocolID() {
 			switch request.MethodID() {
 			default:
+				go respondNotImplemented(packet, RankingProtocolID)
 				fmt.Printf("Unsupported Ranking method ID: %#v\n", request.MethodID())
 			}
 		}

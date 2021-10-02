@@ -121,6 +121,7 @@ func (authenticationProtocol *AuthenticationProtocol) Setup() {
 			case AuthenticationMethodLoginWithParam:
 				go authenticationProtocol.handleLoginWithParam(packet)
 			default:
+				go respondNotImplemented(packet, AuthenticationProtocolID)
 				fmt.Printf("Unsupported Authentication method ID: %#v\n", request.MethodID())
 			}
 		}

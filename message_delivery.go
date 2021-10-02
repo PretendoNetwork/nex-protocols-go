@@ -132,8 +132,8 @@ func (messageDeliveryProtocol *MessageDeliveryProtocol) Setup() {
 			case MessageDeliveryMethodDeliverMessage:
 				go messageDeliveryProtocol.handleDeliverMessage(packet)
 			default:
-				fmt.Printf("Unsupported MessageDelivery method ID: %#v\n", request.MethodID())
 				go respondNotImplemented(packet, MessageDeliveryProtocolID)
+				fmt.Printf("Unsupported MessageDelivery method ID: %#v\n", request.MethodID())
 			}
 		}
 	})

@@ -73,6 +73,7 @@ func (authenticationInfo *AuthenticationInfo) ExtractFromStream(stream *nex.Stre
 	}
 
 	if len(stream.Bytes()[stream.ByteOffset():]) < 9 {
+		return nil //technically not needed (for now) and was causing some strangeness with MK7
 		return errors.New("[AuthenticationInfo::ExtractFromStream] Data size too small")
 	}
 

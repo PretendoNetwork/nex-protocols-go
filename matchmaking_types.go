@@ -46,6 +46,22 @@ func (gathering *Gathering) ExtractFromStream(stream *nex.StreamIn) error {
 	return nil
 }
 
+// Bytes encodes the Gathering and returns a byte array
+func (gathering *Gathering) Bytes(stream *nex.StreamOut) []byte {
+	stream.WriteUInt32LE(gathering.ID)
+	stream.WriteUInt32LE(gathering.OwnerPID)
+	stream.WriteUInt32LE(gathering.HostPID)
+	stream.WriteUInt16LE(gathering.MinimumParticipants)
+	stream.WriteUInt16LE(gathering.MaximumParticipants)
+	stream.WriteUInt32LE(gathering.ParticipationPolicy)
+	stream.WriteUInt32LE(gathering.PolicyArgument)
+	stream.WriteUInt32LE(gathering.Flags)
+	stream.WriteUInt32LE(gathering.State)
+	stream.WriteString(gathering.Description)
+
+	return stream.Bytes()
+}
+
 // NewGathering returns a new Gathering
 func NewGathering() *Gathering {
 	return &Gathering{}
@@ -84,6 +100,10 @@ func (matchmakeSession *MatchmakeSession) ExtractFromStream(stream *nex.StreamIn
 	var err error
 	server := stream.Server
 
+	gatheringStructureInterface, err := stream.ReadStructure(NewGathering())
+	gathering := gatheringStructureInterface.(*Gathering)
+	
+	matchmakeSession.Gathering = gathering
 	matchmakeSession.GameMode = stream.ReadUInt32LE()
 	matchmakeSession.Attributes = stream.ReadListUInt32LE()
 	matchmakeSession.OpenParticipation = stream.ReadUInt8() == 1
@@ -138,6 +158,60 @@ func (matchmakeSession *MatchmakeSession) ExtractFromStream(stream *nex.StreamIn
 	}
 
 	return nil
+}
+
+// Bytes extracts a MatchmakeSession structure from a stream
+func (matchmakeSession *MatchmakeSession) Bytes(stream *nex.StreamOut) []byte {
+	server := stream.Server
+	stream.WriteStructure(matchmakeSession.Gathering)
+
+	stream.WriteUInt32LE(matchmakeSession.GameMode)
+	stream.WriteListUInt32LE(matchmakeSession.Attributes)
+	stream.WriteBool(matchmakeSession.OpenParticipation)
+	stream.WriteUInt32LE(matchmakeSession.MatchmakeSystemType)
+	stream.WriteBuffer(matchmakeSession.ApplicationData)
+
+	stream.WriteUInt32LE(matchmakeSession.ParticipationCount)
+
+	if server.NexVersion() >= 30500 {
+		stream.WriteUInt8(matchmakeSession.ProgressScore)
+	}
+
+	if server.NexVersion() >= 30000 {
+		stream.WriteBuffer(matchmakeSession.SessionKey)
+	}
+
+	if server.NexVersion() >= 30500 {
+		stream.WriteUInt32LE(matchmakeSession.Option)
+	}
+	
+	//unimplemented for now since MK7 didn't need it
+	/*if server.NexVersion() >= 40000 {
+		matchmakeParam, err := stream.ReadStructure(NewMatchmakeParam())
+
+		if err != nil {
+			return err
+		}
+
+		matchmakeSession.MatchmakeParam = matchmakeParam.(*MatchmakeParam)
+		matchmakeSession.StartedTime = nex.NewDateTime(stream.ReadUInt64LE())
+		matchmakeSession.UserPassword, err = stream.ReadString()
+
+		if err != nil {
+			return err
+		}
+
+		matchmakeSession.ReferGID = stream.ReadUInt32LE()
+		matchmakeSession.UserPasswordEnabled = stream.ReadUInt8() == 1
+		matchmakeSession.SystemPasswordEnabled = stream.ReadUInt8() == 1
+		matchmakeSession.CodeWord, err = stream.ReadString()
+
+		if err != nil {
+			return err
+		}
+	}*/
+
+	return stream.Bytes()
 }
 
 // NewMatchmakeSession returns a new MatchmakeSession

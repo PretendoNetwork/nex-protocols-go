@@ -67,6 +67,71 @@ func NewGathering() *Gathering {
 	return &Gathering{}
 }
 
+// MatchmakeSessionSearchCriteria holds information about a matchmaking search
+type MatchmakeSessionSearchCriteria struct {
+	Attribs             []string
+	GameMode            string
+	MinParticipants     string
+	MaxParticipants     string
+	MatchmakeSystemType string
+	VacantOnly          bool
+	ExcludeLocked       bool
+	ExcludeNonHostPid   bool
+	SelectionMethod     uint32
+	//VacantParticipants  uint16
+
+	*nex.Structure
+}
+
+// ExtractFromStream extracts a Gathering structure from a stream
+func (matchmakeSessionSearchCriteria *MatchmakeSessionSearchCriteria) ExtractFromStream(stream *nex.StreamIn) error {
+	var err error
+
+	matchmakeSessionSearchCriteria.Attribs = stream.ReadListString()
+	matchmakeSessionSearchCriteria.GameMode, err = stream.ReadString()
+	if err != nil {
+		return err
+	}
+	matchmakeSessionSearchCriteria.MinParticipants, err = stream.ReadString()
+	if err != nil {
+		return err
+	}
+	matchmakeSessionSearchCriteria.MaxParticipants, err = stream.ReadString()
+	if err != nil {
+		return err
+	}
+	matchmakeSessionSearchCriteria.MatchmakeSystemType, err = stream.ReadString()
+	if err != nil {
+		return err
+	}
+	matchmakeSessionSearchCriteria.VacantOnly = stream.ReadBool()
+	matchmakeSessionSearchCriteria.ExcludeLocked = stream.ReadBool()
+	matchmakeSessionSearchCriteria.ExcludeNonHostPid = stream.ReadBool()
+	matchmakeSessionSearchCriteria.SelectionMethod = stream.ReadUInt32LE()
+
+	return nil
+}
+
+// Bytes encodes the Gathering and returns a byte array
+func (matchmakeSessionSearchCriteria *MatchmakeSessionSearchCriteria) Bytes(stream *nex.StreamOut) []byte {
+	stream.WriteListString(matchmakeSessionSearchCriteria.Attribs)
+	stream.WriteString(matchmakeSessionSearchCriteria.GameMode)
+	stream.WriteString(matchmakeSessionSearchCriteria.MinParticipants)
+	stream.WriteString(matchmakeSessionSearchCriteria.MaxParticipants)
+	stream.WriteString(matchmakeSessionSearchCriteria.MatchmakeSystemType)
+	stream.WriteBool(matchmakeSessionSearchCriteria.VacantOnly)
+	stream.WriteBool(matchmakeSessionSearchCriteria.ExcludeLocked)
+	stream.WriteBool(matchmakeSessionSearchCriteria.ExcludeNonHostPid)
+	stream.WriteUInt32LE(matchmakeSessionSearchCriteria.SelectionMethod)
+
+	return stream.Bytes()
+}
+
+// NewGathering returns a new Gathering
+func NewMatchmakeSessionSearchCriteria() *MatchmakeSessionSearchCriteria {
+	return &MatchmakeSessionSearchCriteria{}
+}
+
 // MatchmakeSession holds information about a matchmake session
 type MatchmakeSession struct {
 	GameMode              uint32
@@ -99,11 +164,8 @@ func (matchmakeSession *MatchmakeSession) GetHierarchy() []nex.StructureInterfac
 func (matchmakeSession *MatchmakeSession) ExtractFromStream(stream *nex.StreamIn) error {
 	var err error
 	server := stream.Server
-
-	gatheringStructureInterface, err := stream.ReadStructure(NewGathering())
-	gathering := gatheringStructureInterface.(*Gathering)
 	
-	matchmakeSession.Gathering = gathering
+	//matchmakeSession.Gathering = gathering
 	matchmakeSession.GameMode = stream.ReadUInt32LE()
 	matchmakeSession.Attributes = stream.ReadListUInt32LE()
 	matchmakeSession.OpenParticipation = stream.ReadUInt8() == 1
@@ -163,7 +225,7 @@ func (matchmakeSession *MatchmakeSession) ExtractFromStream(stream *nex.StreamIn
 // Bytes extracts a MatchmakeSession structure from a stream
 func (matchmakeSession *MatchmakeSession) Bytes(stream *nex.StreamOut) []byte {
 	server := stream.Server
-	stream.WriteStructure(matchmakeSession.Gathering)
+	//stream.WriteStructure(matchmakeSession.Gathering)
 
 	stream.WriteUInt32LE(matchmakeSession.GameMode)
 	stream.WriteListUInt32LE(matchmakeSession.Attributes)

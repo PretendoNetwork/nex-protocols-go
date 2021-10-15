@@ -3,6 +3,7 @@ package nexproto
 import (
 	"errors"
 	"fmt"
+	"encoding/hex"
 
 	nex "github.com/PretendoNetwork/nex-go"
 )
@@ -17,16 +18,20 @@ const (
 	// MatchmakeExtensionMethodCreateMatchmakeSession is the method ID for method CreateMatchmakeSession
 	MatchmakeExtensionMethodCreateMatchmakeSession = 0x6
 
+	// MatchmakeExtensionMethodCreateMatchmakeSession is the method ID for method CreateMatchmakeSession
+	MatchmakeExtensionMethodAutoMatchmakeWithSearchCriteria_Postpone = 0xF
+
 	// MatchmakeExtensionMethodGetSimplePlayingSession is the method ID for method GetSimplePlayingSession
 	MatchmakeExtensionMethodGetSimplePlayingSession = 0x1F
 )
 
 // MatchmakeExtensionProtocol handles the Matchmake Extension nex protocol
 type MatchmakeExtensionProtocol struct {
-	server                         *nex.Server
-	AutoMatchmake_PostponeHandler  func(err error, client *nex.Client, callID uint32, matchmakeSession  *MatchmakeSession, message string)
-	CreateMatchmakeSessionHandler  func(err error, client *nex.Client, callID uint32, matchmakeSession *MatchmakeSession, message string, participationCount uint16)
-	GetSimplePlayingSessionHandler func(err error, client *nex.Client, callID uint32, listPID []uint32, includeLoginUser bool)
+	server                                          *nex.Server
+	AutoMatchmake_PostponeHandler                   func(err error, client *nex.Client, callID uint32, matchmakeSession  *MatchmakeSession, message string)
+	CreateMatchmakeSessionHandler                   func(err error, client *nex.Client, callID uint32, matchmakeSession *MatchmakeSession, message string, participationCount uint16)
+	AutoMatchmakeWithSearchCriteria_PostponeHandler func(err error, client *nex.Client, callID uint32, matchmakeSession  *MatchmakeSession, message string)
+	GetSimplePlayingSessionHandler                  func(err error, client *nex.Client, callID uint32, listPID []uint32, includeLoginUser bool)
 }
 
 // Setup initializes the protocol
@@ -42,6 +47,8 @@ func (matchmakeExtensionProtocol *MatchmakeExtensionProtocol) Setup() {
 				go matchmakeExtensionProtocol.handleAutoMatchmake_Postpone(packet)
 			case MatchmakeExtensionMethodCreateMatchmakeSession:
 				go matchmakeExtensionProtocol.handleCreateMatchmakeSession(packet)
+			case MatchmakeExtensionMethodAutoMatchmakeWithSearchCriteria_Postpone:
+				go matchmakeExtensionProtocol.handleAutoMatchmakeWithSearchCriteria_Postpone(packet)
 			case MatchmakeExtensionMethodGetSimplePlayingSession:
 				go matchmakeExtensionProtocol.handleGetSimplePlayingSession(packet)
 			default:
@@ -60,6 +67,11 @@ func (matchmakeExtensionProtocol *MatchmakeExtensionProtocol) AutoMatchmake_Post
 // CreateMatchmakeSession sets the CreateMatchmakeSession handler function
 func (matchmakeExtensionProtocol *MatchmakeExtensionProtocol) CreateMatchmakeSession(handler func(err error, client *nex.Client, callID uint32, matchmakeSession *MatchmakeSession, message string, participationCount uint16)) {
 	matchmakeExtensionProtocol.CreateMatchmakeSessionHandler = handler
+}
+
+// AutoMatchmakeWithSearchCriteria_Postpone sets the AutoMatchmakeWithSearchCriteria_Postpone handler function
+func (matchmakeExtensionProtocol *MatchmakeExtensionProtocol) AutoMatchmakeWithSearchCriteria_Postpone(handler func(err error, client *nex.Client, callID uint32, matchmakeSession *MatchmakeSession, message string)) {
+	matchmakeExtensionProtocol.AutoMatchmakeWithSearchCriteria_PostponeHandler = handler
 }
 
 // GetSimplePlayingSession sets the GetSimplePlayingSession handler function
@@ -193,6 +205,82 @@ func (matchmakeExtensionProtocol *MatchmakeExtensionProtocol) handleCreateMatchm
 	}
 
 	go matchmakeExtensionProtocol.CreateMatchmakeSessionHandler(nil, client, callID, matchmakeSession.(*MatchmakeSession), message, participationCount)
+}
+
+func (matchmakeExtensionProtocol *MatchmakeExtensionProtocol) handleAutoMatchmakeWithSearchCriteria_Postpone(packet nex.PacketInterface) {
+	if matchmakeExtensionProtocol.AutoMatchmakeWithSearchCriteria_PostponeHandler == nil {
+		fmt.Println("[Warning] MatchmakeExtensionProtocol::AutoMatchmakeWithSearchCriteria_PostponeHandler not implemented")
+		go respondNotImplemented(packet, MatchmakeExtensionProtocolID)
+		return
+	}
+
+	client := packet.Sender()
+	request := packet.RMCRequest()
+
+	callID := request.CallID()
+	parameters := request.Parameters()
+	fmt.Println(hex.EncodeToString(parameters))
+
+	parametersStream := nex.NewStreamIn(parameters, matchmakeExtensionProtocol.server)
+
+	criteriaCount := int(parametersStream.ReadUInt32LE())
+	for i := 0; i < criteriaCount; i++ {
+		_, _ = parametersStream.ReadStructure(NewMatchmakeSessionSearchCriteria())
+	}
+	dataHolderType, err := parametersStream.ReadString()
+	
+	if err != nil {
+		go matchmakeExtensionProtocol.AutoMatchmakeWithSearchCriteria_PostponeHandler(err, client, callID, nil, "")
+		return
+	}
+	
+	fmt.Println(dataHolderType)
+
+	if dataHolderType != "MatchmakeSession" {
+		err := errors.New("[MatchmakeExtensionProtocol::AutoMatchmakeWithSearchCriteria_Postpone] Data holder name does not match")
+		go matchmakeExtensionProtocol.AutoMatchmakeWithSearchCriteria_PostponeHandler(err, client, callID, nil, "")
+		return
+	}
+
+	if (parametersStream.ByteCapacity() - parametersStream.ByteOffset()) < 8 {
+		err := errors.New("[MatchmakeExtensionProtocol::AutoMatchmakeWithSearchCriteria_Postpone] Data holder missing lengths")
+		go matchmakeExtensionProtocol.AutoMatchmakeWithSearchCriteria_PostponeHandler(err, client, callID, nil, "")
+		return
+	}
+
+	parametersStream.SeekByte(4, true) // Skip length including next buffer length field
+	dataHolderContent, err := parametersStream.ReadBuffer()
+
+	if err != nil {
+		go matchmakeExtensionProtocol.AutoMatchmakeWithSearchCriteria_PostponeHandler(err, client, callID, nil, "")
+		return
+	}
+
+	dataHolderContentStream := nex.NewStreamIn(dataHolderContent, matchmakeExtensionProtocol.server)
+
+	gatheringStructureInterface, err := dataHolderContentStream.ReadStructure(NewGathering())
+	if err != nil {
+		fmt.Println(err)
+		go matchmakeExtensionProtocol.AutoMatchmakeWithSearchCriteria_PostponeHandler(err, client, callID, nil, "")
+		return
+	}
+
+	matchmakeSessionStructureInterface, err := dataHolderContentStream.ReadStructure(NewMatchmakeSession())
+	if err != nil {
+		fmt.Println(err)
+		go matchmakeExtensionProtocol.AutoMatchmakeWithSearchCriteria_PostponeHandler(err, client, callID, nil, "")
+		return
+	}
+	matchmakeSession := matchmakeSessionStructureInterface.(*MatchmakeSession)
+	matchmakeSession.Gathering = gatheringStructureInterface.(*Gathering)
+
+	message, err := parametersStream.ReadString()
+	if err != nil {
+		go matchmakeExtensionProtocol.AutoMatchmakeWithSearchCriteria_PostponeHandler(err, client, callID, nil, "")
+		return
+	}
+
+	go matchmakeExtensionProtocol.AutoMatchmakeWithSearchCriteria_PostponeHandler(nil, client, callID, matchmakeSession, message)
 }
 
 func (matchmakeExtensionProtocol *MatchmakeExtensionProtocol) handleGetSimplePlayingSession(packet nex.PacketInterface) {

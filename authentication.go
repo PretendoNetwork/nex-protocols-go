@@ -48,17 +48,16 @@ type NintendoLoginData struct {
 
 // AuthenticationInfo holds information about an authentication request
 type AuthenticationInfo struct {
+	*nex.NullData
+	hierarchy     []nex.StructureInterface
 	Token         string
 	NGSVersion    uint32
 	TokenType     uint8
 	ServerVersion uint32
-
-	hierarchy []nex.StructureInterface
-	*nex.NullData
 }
 
-// GetHierarchy returns the Structure hierarchy
-func (authenticationInfo *AuthenticationInfo) GetHierarchy() []nex.StructureInterface {
+// Hierarchy returns the Structure hierarchy
+func (authenticationInfo *AuthenticationInfo) Hierarchy() []nex.StructureInterface {
 	return authenticationInfo.hierarchy
 }
 
@@ -81,8 +80,6 @@ func (authenticationInfo *AuthenticationInfo) ExtractFromStream(stream *nex.Stre
 	authenticationInfo.TokenType = stream.ReadUInt8()
 	authenticationInfo.NGSVersion = stream.ReadUInt32LE()
 	authenticationInfo.ServerVersion = stream.ReadUInt32LE()
-
-	fmt.Printf("%+v\n", authenticationInfo)
 
 	return nil
 }
@@ -124,6 +121,7 @@ func (authenticationProtocol *AuthenticationProtocol) Setup() {
 			case AuthenticationMethodLoginWithParam:
 				go authenticationProtocol.handleLoginWithParam(packet)
 			default:
+				go respondNotImplemented(packet, AuthenticationProtocolID)
 				fmt.Printf("Unsupported Authentication method ID: %#v\n", request.MethodID())
 			}
 		}

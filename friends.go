@@ -679,6 +679,7 @@ func (friendsProtocol *FriendsProtocol) Setup() {
 			case FriendsMethodGetRequestBlockSettings:
 				go friendsProtocol.handleGetRequestBlockSettings(packet)
 			default:
+				go respondNotImplemented(packet, FriendsProtocolID)
 				fmt.Printf("Unsupported Friends (WiiU) method ID: %#v\n", request.MethodID())
 			}
 		}

@@ -39,6 +39,7 @@ func (matchmakeExtensionProtocol *MatchmakeExtensionProtocol) Setup() {
 			case MatchmakeExtensionMethodGetSimplePlayingSession:
 				go matchmakeExtensionProtocol.handleGetSimplePlayingSession(packet)
 			default:
+				go respondNotImplemented(packet, MatchmakeExtensionProtocolID)
 				fmt.Printf("Unsupported Matchmake Extension method ID: %#v\n", request.MethodID())
 			}
 		}

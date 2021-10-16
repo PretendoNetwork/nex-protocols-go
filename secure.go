@@ -76,6 +76,7 @@ func (secureProtocol *SecureProtocol) Setup() {
 			case SecureMethodSendReport:
 				go secureProtocol.handleSendReport(packet)
 			default:
+				go respondNotImplemented(packet, SecureProtocolID)
 				fmt.Printf("Unsupported Secure method ID: %#v\n", request.MethodID())
 			}
 		}

@@ -171,7 +171,7 @@ func (natTraversalProtocol *NatTraversalProtocol) handleInitiateProbe(packet nex
 }
 
 func (natTraversalProtocol *NatTraversalProtocol) handleRequestProbeInitiationExt(packet nex.PacketInterface) {
-	if natTraversalProtocol.ReportNatPropertiesHandler == nil {
+	if natTraversalProtocol.RequestProbeInitiationExtHandler == nil {
 		fmt.Println("[Warning] NatTraversalProtocol::RequestProbeInitiationExt not implemented")
 		go respondNotImplemented(packet, NatTraversalProtocolID)
 		return

@@ -7,73 +7,73 @@ import (
 )
 
 const (
-	// NatTraversalProtocolID is the protocol ID for the Message Delivery protocol
-	NatTraversalProtocolID = 0x3
+	// NATTraversalProtocolID is the protocol ID for the Message Delivery protocol
+	NATTraversalProtocolID = 0x3
 
-	// NatTraversalInitiateProbe is the method ID for the method InitiateProbe
-	NatTraversalInitiateProbe = 0x2
+	// NATTraversalMethodInitiateProbe is the method ID for the method InitiateProbe
+	NATTraversalMethodInitiateProbe = 0x2
 
-	// NatTraversalRequestProbeInitiationExt is the method ID for the method RequestProbeInitiationExt
-	NatTraversalRequestProbeInitiationExt = 0x3
+	// NATTraversalMethodRequestProbeInitiationExt is the method ID for the method RequestProbeInitiationExt
+	NATTraversalMethodRequestProbeInitiationExt = 0x3
 
-	// NatTraversalReportNatProperties is the method ID for the method ReportNatProperties
-	NatTraversalReportNatProperties = 0x5
+	// NATTraversalMethodReportNATProperties is the method ID for the method ReportNATProperties
+	NATTraversalMethodReportNATProperties = 0x5
 
-	// NatTraversalGetRelaySignatureKey is the method ID for the method GetRelaySignatureKey
-	NatTraversalGetRelaySignatureKey = 0x6
+	// NATTraversalMethodGetRelaySignatureKey is the method ID for the method GetRelaySignatureKey
+	NATTraversalMethodGetRelaySignatureKey = 0x6
 )
 
 // AuthenticationProtocol handles the Authentication nex protocol
-type NatTraversalProtocol struct {
-	server                              *nex.Server
-	InitiateProbeHandler                func(err error, client *nex.Client, callID uint32)
-	RequestProbeInitiationExtHandler    func(err error, client *nex.Client, callID uint32, targetList []string, stationToProbe string)
-	ReportNatPropertiesHandler          func(err error, client *nex.Client, callID uint32)
-	GetRelaySignatureKeyHandler         func(err error, client *nex.Client, callID uint32)
+type NATTraversalProtocol struct {
+	server                           *nex.Server
+	InitiateProbeHandler             func(err error, client *nex.Client, callID uint32)
+	RequestProbeInitiationExtHandler func(err error, client *nex.Client, callID uint32, targetList []string, stationToProbe string)
+	ReportNATPropertiesHandler       func(err error, client *nex.Client, callID uint32, natmapping uint32, natfiltering uint32, rtt uint32)
+	GetRelaySignatureKeyHandler      func(err error, client *nex.Client, callID uint32)
 }
 
 // Setup initializes the protocol
-func (natTraversalProtocol *NatTraversalProtocol) Setup() {
+func (natTraversalProtocol *NATTraversalProtocol) Setup() {
 	nexServer := natTraversalProtocol.server
 
 	nexServer.On("Data", func(packet nex.PacketInterface) {
 		request := packet.RMCRequest()
 
-		if NatTraversalProtocolID == request.ProtocolID() {
+		if NATTraversalProtocolID == request.ProtocolID() {
 			switch request.MethodID() {
-			case NatTraversalRequestProbeInitiationExt:
+			case NATTraversalMethodRequestProbeInitiationExt:
 				go natTraversalProtocol.handleRequestProbeInitiationExt(packet)
-			case NatTraversalReportNatProperties:
-				go natTraversalProtocol.handleReportNatProperties(packet)
-			case NatTraversalGetRelaySignatureKey:
+			case NATTraversalMethodReportNATProperties:
+				go natTraversalProtocol.handleReportNATProperties(packet)
+			case NATTraversalMethodGetRelaySignatureKey:
 				go natTraversalProtocol.handleGetRelaySignatureKey(packet)
 			default:
-				go respondNotImplemented(packet, NatTraversalProtocolID)
-				fmt.Printf("Unsupported NatTraversal method ID: %#v\n", request.MethodID())
+				go respondNotImplemented(packet, NATTraversalProtocolID)
+				fmt.Printf("Unsupported NATTraversal method ID: %#v\n", request.MethodID())
 			}
 		}
 	})
 }
 
 // RequestProbeInitiationExt sets the RequestProbeInitiationExt handler function
-func (natTraversalProtocol *NatTraversalProtocol) RequestProbeInitiationExt(handler func(err error, client *nex.Client, callID uint32, targetList []string, stationToProbe string)) {
+func (natTraversalProtocol *NATTraversalProtocol) RequestProbeInitiationExt(handler func(err error, client *nex.Client, callID uint32, targetList []string, stationToProbe string)) {
 	natTraversalProtocol.RequestProbeInitiationExtHandler = handler
 }
 
-// ReportNatProperties sets the ReportNatProperties handler function
-func (natTraversalProtocol *NatTraversalProtocol) ReportNatProperties(handler func(err error, client *nex.Client, callID uint32)) {
-	natTraversalProtocol.ReportNatPropertiesHandler = handler
+// ReportNATProperties sets the ReportNATProperties handler function
+func (natTraversalProtocol *NATTraversalProtocol) ReportNATProperties(handler func(err error, client *nex.Client, callID uint32, natmapping uint32, natfiltering uint32, rtt uint32)) {
+	natTraversalProtocol.ReportNATPropertiesHandler = handler
 }
 
 // GetRelaySignatureKey sets the GetRelaySignatureKey handler function
-func (natTraversalProtocol *NatTraversalProtocol) GetRelaySignatureKey(handler func(err error, client *nex.Client, callID uint32)) {
+func (natTraversalProtocol *NATTraversalProtocol) GetRelaySignatureKey(handler func(err error, client *nex.Client, callID uint32)) {
 	natTraversalProtocol.GetRelaySignatureKeyHandler = handler
 }
 
-func (natTraversalProtocol *NatTraversalProtocol) handleRequestProbeInitiationExt(packet nex.PacketInterface) {
-	if natTraversalProtocol.ReportNatPropertiesHandler == nil {
-		fmt.Println("[Warning] NatTraversalProtocol::RequestProbeInitiationExt not implemented")
-		go respondNotImplemented(packet, NatTraversalProtocolID)
+func (natTraversalProtocol *NATTraversalProtocol) handleRequestProbeInitiationExt(packet nex.PacketInterface) {
+	if natTraversalProtocol.ReportNATPropertiesHandler == nil {
+		fmt.Println("[Warning] NATTraversalProtocol::RequestProbeInitiationExt not implemented")
+		go respondNotImplemented(packet, NATTraversalProtocolID)
 		return
 	}
 
@@ -95,10 +95,10 @@ func (natTraversalProtocol *NatTraversalProtocol) handleRequestProbeInitiationEx
 	go natTraversalProtocol.RequestProbeInitiationExtHandler(nil, client, callID, targetList, stationToProbe)
 }
 
-func (natTraversalProtocol *NatTraversalProtocol) handleReportNatProperties(packet nex.PacketInterface) {
-	if natTraversalProtocol.ReportNatPropertiesHandler == nil {
-		fmt.Println("[Warning] NatTraversalProtocol::ReportNatProperties not implemented")
-		go respondNotImplemented(packet, NatTraversalProtocolID)
+func (natTraversalProtocol *NATTraversalProtocol) handleReportNATProperties(packet nex.PacketInterface) {
+	if natTraversalProtocol.ReportNATPropertiesHandler == nil {
+		fmt.Println("[Warning] NATTraversalProtocol::ReportNATProperties not implemented")
+		go respondNotImplemented(packet, NATTraversalProtocolID)
 		return
 	}
 
@@ -106,15 +106,21 @@ func (natTraversalProtocol *NatTraversalProtocol) handleReportNatProperties(pack
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
-	//parameters := request.Parameters()
+	parameters := request.Parameters()
 
-	go natTraversalProtocol.ReportNatPropertiesHandler(nil, client, callID)
+	parametersStream := nex.NewStreamIn(parameters, natTraversalProtocol.server)
+
+	natmapping := parametersStream.ReadUInt32LE()
+	natfiltering := parametersStream.ReadUInt32LE()
+	rtt := parametersStream.ReadUInt32LE()
+
+	go natTraversalProtocol.ReportNATPropertiesHandler(nil, client, callID, natmapping, natfiltering, rtt)
 }
 
-func (natTraversalProtocol *NatTraversalProtocol) handleGetRelaySignatureKey(packet nex.PacketInterface) {
+func (natTraversalProtocol *NATTraversalProtocol) handleGetRelaySignatureKey(packet nex.PacketInterface) {
 	if natTraversalProtocol.GetRelaySignatureKeyHandler == nil {
-		fmt.Println("[Warning] NatTraversalProtocol::GetRelaySignatureKey not implemented")
-		go respondNotImplemented(packet, NatTraversalProtocolID)
+		fmt.Println("[Warning] NATTraversalProtocol::GetRelaySignatureKey not implemented")
+		go respondNotImplemented(packet, NATTraversalProtocolID)
 		return
 	}
 
@@ -127,9 +133,9 @@ func (natTraversalProtocol *NatTraversalProtocol) handleGetRelaySignatureKey(pac
 	go natTraversalProtocol.GetRelaySignatureKeyHandler(nil, client, callID)
 }
 
-// NewNatTraversalProtocol returns a new NatTraversalProtocol
-func NewNatTraversalProtocol(server *nex.Server) *NatTraversalProtocol {
-	natTraversalProtocol := &NatTraversalProtocol{server: server}
+// NewNATTraversalProtocol returns a new NATTraversalProtocol
+func NewNATTraversalProtocol(server *nex.Server) *NATTraversalProtocol {
+	natTraversalProtocol := &NATTraversalProtocol{server: server}
 
 	natTraversalProtocol.Setup()
 

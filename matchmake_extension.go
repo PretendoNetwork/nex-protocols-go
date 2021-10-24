@@ -1,9 +1,9 @@
 package nexproto
 
 import (
+	"encoding/hex"
 	"errors"
 	"fmt"
-	"encoding/hex"
 
 	nex "github.com/PretendoNetwork/nex-go"
 )
@@ -11,6 +11,9 @@ import (
 const (
 	// MatchmakeExtensionProtocolID is the protocol ID for the Matchmake Extension protocol
 	MatchmakeExtensionProtocolID = 0x6D
+
+	// MatchmakeExtensionMethodOpenParticipation is the method ID for method OpenParticipation
+	MatchmakeExtensionMethodOpenParticipation = 0x2
 
 	// MatchmakeExtensionMethodAutoMatchmake_Postpone is the method ID for method AutoMatchmake_Postpone
 	MatchmakeExtensionMethodAutoMatchmake_Postpone = 0x3
@@ -28,9 +31,10 @@ const (
 // MatchmakeExtensionProtocol handles the Matchmake Extension nex protocol
 type MatchmakeExtensionProtocol struct {
 	server                                          *nex.Server
-	AutoMatchmake_PostponeHandler                   func(err error, client *nex.Client, callID uint32, matchmakeSession  *MatchmakeSession, message string)
+	OpenParticipationHandler                        func(err error, client *nex.Client, callID uint32, gid uint32)
+	AutoMatchmake_PostponeHandler                   func(err error, client *nex.Client, callID uint32, matchmakeSession *MatchmakeSession, message string)
 	CreateMatchmakeSessionHandler                   func(err error, client *nex.Client, callID uint32, matchmakeSession *MatchmakeSession, message string, participationCount uint16)
-	AutoMatchmakeWithSearchCriteria_PostponeHandler func(err error, client *nex.Client, callID uint32, matchmakeSession  *MatchmakeSession, message string)
+	AutoMatchmakeWithSearchCriteria_PostponeHandler func(err error, client *nex.Client, callID uint32, matchmakeSession *MatchmakeSession, message string)
 	GetSimplePlayingSessionHandler                  func(err error, client *nex.Client, callID uint32, listPID []uint32, includeLoginUser bool)
 }
 
@@ -43,6 +47,8 @@ func (matchmakeExtensionProtocol *MatchmakeExtensionProtocol) Setup() {
 
 		if MatchmakeExtensionProtocolID == request.ProtocolID() {
 			switch request.MethodID() {
+			case MatchmakeExtensionMethodOpenParticipation:
+				go matchmakeExtensionProtocol.handleOpenParticipation(packet)
 			case MatchmakeExtensionMethodAutoMatchmake_Postpone:
 				go matchmakeExtensionProtocol.handleAutoMatchmake_Postpone(packet)
 			case MatchmakeExtensionMethodCreateMatchmakeSession:
@@ -57,6 +63,11 @@ func (matchmakeExtensionProtocol *MatchmakeExtensionProtocol) Setup() {
 			}
 		}
 	})
+}
+
+// OpenParticipation sets the OpenParticipation handler function
+func (matchmakeExtensionProtocol *MatchmakeExtensionProtocol) OpenParticipation(handler func(err error, client *nex.Client, callID uint32, gid uint32)) {
+	matchmakeExtensionProtocol.OpenParticipationHandler = handler
 }
 
 // AutoMatchmake_Postpone sets the AutoMatchmake_Postpone handler function
@@ -77,6 +88,25 @@ func (matchmakeExtensionProtocol *MatchmakeExtensionProtocol) AutoMatchmakeWithS
 // GetSimplePlayingSession sets the GetSimplePlayingSession handler function
 func (matchmakeExtensionProtocol *MatchmakeExtensionProtocol) GetSimplePlayingSession(handler func(err error, client *nex.Client, callID uint32, listPID []uint32, includeLoginUser bool)) {
 	matchmakeExtensionProtocol.GetSimplePlayingSessionHandler = handler
+}
+
+func (matchmakeExtensionProtocol *MatchmakeExtensionProtocol) handleOpenParticipation(packet nex.PacketInterface) {
+	if matchmakeExtensionProtocol.OpenParticipationHandler == nil {
+		fmt.Println("[Warning] MatchmakeExtensionProtocol::OpenParticipation not implemented")
+		go respondNotImplemented(packet, MatchmakeExtensionProtocolID)
+		return
+	}
+
+	client := packet.Sender()
+	request := packet.RMCRequest()
+
+	callID := request.CallID()
+	parameters := request.Parameters()
+
+	parametersStream := nex.NewStreamIn(parameters, matchmakeExtensionProtocol.server)
+	gid := parametersStream.ReadUInt32LE()
+
+	go matchmakeExtensionProtocol.OpenParticipationHandler(nil, client, callID, gid)
 }
 
 func (matchmakeExtensionProtocol *MatchmakeExtensionProtocol) handleAutoMatchmake_Postpone(packet nex.PacketInterface) {
@@ -228,12 +258,12 @@ func (matchmakeExtensionProtocol *MatchmakeExtensionProtocol) handleAutoMatchmak
 		_, _ = parametersStream.ReadStructure(NewMatchmakeSessionSearchCriteria())
 	}
 	dataHolderType, err := parametersStream.ReadString()
-	
+
 	if err != nil {
 		go matchmakeExtensionProtocol.AutoMatchmakeWithSearchCriteria_PostponeHandler(err, client, callID, nil, "")
 		return
 	}
-	
+
 	fmt.Println(dataHolderType)
 
 	if dataHolderType != "MatchmakeSession" {

@@ -24,6 +24,9 @@ const (
 	// MatchmakeExtensionMethodUpdateNotificationData is the method ID for method UpdateNotificationData
 	MatchmakeExtensionMethodUpdateNotificationData = 0x9
 
+	// MatchmakeExtensionMethodGetFriendNotificationData is the method ID for method GetFriendNotificationData
+	MatchmakeExtensionMethodGetFriendNotificationData = 0xA
+
 	// MatchmakeExtensionMethodCreateMatchmakeSession is the method ID for method CreateMatchmakeSession
 	MatchmakeExtensionMethodAutoMatchmakeWithSearchCriteria_Postpone = 0xF
 
@@ -38,6 +41,7 @@ type MatchmakeExtensionProtocol struct {
 	AutoMatchmake_PostponeHandler                   func(err error, client *nex.Client, callID uint32, matchmakeSession *MatchmakeSession, message string)
 	CreateMatchmakeSessionHandler                   func(err error, client *nex.Client, callID uint32, matchmakeSession *MatchmakeSession, message string, participationCount uint16)
 	UpdateNotificationDataHandler                   func(err error, client *nex.Client, callID uint32, uiType uint32, uiParam1 uint32, uiParam2 uint32, strParam string)
+	GetFriendNotificationDataHandler                func(err error, client *nex.Client, callID uint32, uiType int32)
 	AutoMatchmakeWithSearchCriteria_PostponeHandler func(err error, client *nex.Client, callID uint32, matchmakeSession *MatchmakeSession, message string)
 	GetSimplePlayingSessionHandler                  func(err error, client *nex.Client, callID uint32, listPID []uint32, includeLoginUser bool)
 }
@@ -59,6 +63,8 @@ func (matchmakeExtensionProtocol *MatchmakeExtensionProtocol) Setup() {
 				go matchmakeExtensionProtocol.handleCreateMatchmakeSession(packet)
 			case MatchmakeExtensionMethodUpdateNotificationData:
 				go matchmakeExtensionProtocol.handleUpdateNotificationData(packet)
+			case MatchmakeExtensionMethodGetFriendNotificationData:
+				go matchmakeExtensionProtocol.handleGetFriendNotificationData(packet)
 			case MatchmakeExtensionMethodAutoMatchmakeWithSearchCriteria_Postpone:
 				go matchmakeExtensionProtocol.handleAutoMatchmakeWithSearchCriteria_Postpone(packet)
 			case MatchmakeExtensionMethodGetSimplePlayingSession:
@@ -89,6 +95,11 @@ func (matchmakeExtensionProtocol *MatchmakeExtensionProtocol) CreateMatchmakeSes
 // UpdateNotificationData sets the UpdateNotificationData handler function
 func (matchmakeExtensionProtocol *MatchmakeExtensionProtocol) UpdateNotificationData(handler func(err error, client *nex.Client, callID uint32, uiType uint32, uiParam1 uint32, uiParam2 uint32, strParam string)) {
 	matchmakeExtensionProtocol.UpdateNotificationDataHandler = handler
+}
+
+// GetFriendNotificationData sets the GetFriendNotificationData handler function
+func (matchmakeExtensionProtocol *MatchmakeExtensionProtocol) GetFriendNotificationData(handler func(err error, client *nex.Client, callID uint32, uiType int32)) {
+	matchmakeExtensionProtocol.GetFriendNotificationDataHandler = handler
 }
 
 // AutoMatchmakeWithSearchCriteria_Postpone sets the AutoMatchmakeWithSearchCriteria_Postpone handler function
@@ -273,6 +284,26 @@ func (matchmakeExtensionProtocol *MatchmakeExtensionProtocol) handleUpdateNotifi
 	}
 
 	go matchmakeExtensionProtocol.UpdateNotificationDataHandler(nil, client, callID, uiType, uiParam1, uiParam2, strParam)
+}
+
+func (matchmakeExtensionProtocol *MatchmakeExtensionProtocol) handleGetFriendNotificationData(packet nex.PacketInterface) {
+	if matchmakeExtensionProtocol.GetFriendNotificationDataHandler == nil {
+		fmt.Println("[Warning] MatchmakeExtensionProtocol::GetFriendNotificationData not implemented")
+		go respondNotImplemented(packet, MatchmakeExtensionProtocolID)
+		return
+	}
+
+	client := packet.Sender()
+	request := packet.RMCRequest()
+
+	callID := request.CallID()
+	parameters := request.Parameters()
+
+	parametersStream := nex.NewStreamIn(parameters, matchmakeExtensionProtocol.server)
+
+	uiType := int32(parametersStream.ReadUInt32LE())
+
+	go matchmakeExtensionProtocol.GetFriendNotificationDataHandler(nil, client, callID, uiType)
 }
 
 func (matchmakeExtensionProtocol *MatchmakeExtensionProtocol) handleAutoMatchmakeWithSearchCriteria_Postpone(packet nex.PacketInterface) {

@@ -94,7 +94,7 @@ type FriendsProtocol struct {
 	GetBasicInfoHandler                 func(err error, client *nex.Client, callID uint32, pids []uint32)
 	DeleteFriendFlagsHandler            func(err error, client *nex.Client, callID uint32, notifications []*PersistentNotification)
 	CheckSettingStatusHandler           func(err error, client *nex.Client, callID uint32)
-	GetRequestBlockSettingsHandler      func(err error, client *nex.Client, callID uint32, unknowns []uint32)
+	GetRequestBlockSettingsHandler      func(err error, client *nex.Client, callID uint32, pids []uint32)
 }
 
 // BlacklistedPrincipal contains information about a blocked user
@@ -591,24 +591,33 @@ func NewPrincipalBasicInfo() *PrincipalBasicInfo {
 
 // PrincipalPreference contains unknown data
 type PrincipalPreference struct {
+	nex.Structure
+
 	Unknown1 bool
 	Unknown2 bool
 	Unknown3 bool
+}
 
-	nex.Structure
+// Bytes encodes the PrincipalPreference and returns a byte array
+func (principalPreference *PrincipalPreference) Bytes(stream *nex.StreamOut) []byte {
+	stream.WriteBool(principalPreference.Unknown1)
+	stream.WriteBool(principalPreference.Unknown2)
+	stream.WriteBool(principalPreference.Unknown3)
+
+	return stream.Bytes()
 }
 
 // ExtractFromStream extracts a PrincipalPreference structure from a stream
-func (preference *PrincipalPreference) ExtractFromStream(stream *nex.StreamIn) error {
+func (principalPreference *PrincipalPreference) ExtractFromStream(stream *nex.StreamIn) error {
 	if len(stream.Bytes()[stream.ByteOffset():]) < 1 {
 		// length check for the following fixed-size data
 		// unknown1 + unknown2 + unknown3
 		return errors.New("[PrincipalPreference::ExtractFromStream] Data size too small")
 	}
 
-	preference.Unknown1 = (stream.ReadUInt8() == 1)
-	preference.Unknown2 = (stream.ReadUInt8() == 1)
-	preference.Unknown3 = (stream.ReadUInt8() == 1)
+	principalPreference.Unknown1 = (stream.ReadUInt8() == 1)
+	principalPreference.Unknown2 = (stream.ReadUInt8() == 1)
+	principalPreference.Unknown3 = (stream.ReadUInt8() == 1)
 
 	return nil
 }
@@ -620,8 +629,17 @@ func NewPrincipalPreference() *PrincipalPreference {
 
 // PrincipalRequestBlockSetting contains unknow data
 type PrincipalRequestBlockSetting struct {
-	Unknown1 uint32
-	Unknown2 bool
+	nex.Structure
+	PID       uint32
+	IsBlocked bool
+}
+
+// Bytes encodes the PrincipalRequestBlockSetting and returns a byte array
+func (principalRequestBlockSetting *PrincipalRequestBlockSetting) Bytes(stream *nex.StreamOut) []byte {
+	stream.WriteUInt32LE(principalRequestBlockSetting.PID)
+	stream.WriteBool(principalRequestBlockSetting.IsBlocked)
+
+	return stream.Bytes()
 }
 
 // NewPrincipalRequestBlockSetting returns a new PrincipalRequestBlockSetting
@@ -1328,9 +1346,9 @@ func (friendsProtocol *FriendsProtocol) handleGetRequestBlockSettings(packet nex
 		return
 	}
 
-	unknowns := parametersStream.ReadListUInt32LE()
+	pids := parametersStream.ReadListUInt32LE()
 
-	go friendsProtocol.GetRequestBlockSettingsHandler(nil, client, callID, unknowns)
+	go friendsProtocol.GetRequestBlockSettingsHandler(nil, client, callID, pids)
 }
 
 // NewFriendsProtocol returns a new FriendsProtocol

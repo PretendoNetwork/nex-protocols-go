@@ -79,7 +79,7 @@ type FriendsProtocol struct {
 	AddFriendHandler                    func(err error, client *nex.Client, callID uint32, pid uint32)
 	AddFriendByNameHandler              func(err error, client *nex.Client, callID uint32, username string)
 	RemoveFriendHandler                 func(err error, client *nex.Client, callID uint32, pid uint32)
-	AddFriendRequestHandler             func(err error, client *nex.Client, callID uint32, unknown1 uint32, unknown2 uint8, unknown3 string, unknown4 uint8, unknown5 string, gameKey *GameKey, unknown6 *nex.DateTime)
+	AddFriendRequestHandler             func(err error, client *nex.Client, callID uint32, pid uint32, unknown2 uint8, message string, unknown4 uint8, unknown5 string, gameKey *GameKey, unknown6 *nex.DateTime)
 	CancelFriendRequestHandler          func(err error, client *nex.Client, callID uint32, id uint64)
 	AcceptFriendRequestHandler          func(err error, client *nex.Client, callID uint32, id uint64)
 	DeleteFriendRequestHandler          func(err error, client *nex.Client, callID uint32, id uint64)

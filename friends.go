@@ -593,16 +593,16 @@ func NewPrincipalBasicInfo() *PrincipalBasicInfo {
 type PrincipalPreference struct {
 	nex.Structure
 
-	Unknown1 bool
-	Unknown2 bool
-	Unknown3 bool
+	ShowOnlinePresence  bool
+	ShowCurrentTitle    bool
+	BlockFriendRequests bool
 }
 
 // Bytes encodes the PrincipalPreference and returns a byte array
 func (principalPreference *PrincipalPreference) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteBool(principalPreference.Unknown1)
-	stream.WriteBool(principalPreference.Unknown2)
-	stream.WriteBool(principalPreference.Unknown3)
+	stream.WriteBool(principalPreference.ShowOnlinePresence)
+	stream.WriteBool(principalPreference.ShowCurrentTitle)
+	stream.WriteBool(principalPreference.BlockFriendRequests)
 
 	return stream.Bytes()
 }
@@ -615,9 +615,9 @@ func (principalPreference *PrincipalPreference) ExtractFromStream(stream *nex.St
 		return errors.New("[PrincipalPreference::ExtractFromStream] Data size too small")
 	}
 
-	principalPreference.Unknown1 = (stream.ReadUInt8() == 1)
-	principalPreference.Unknown2 = (stream.ReadUInt8() == 1)
-	principalPreference.Unknown3 = (stream.ReadUInt8() == 1)
+	principalPreference.ShowOnlinePresence = (stream.ReadUInt8() == 1)
+	principalPreference.ShowCurrentTitle = (stream.ReadUInt8() == 1)
+	principalPreference.BlockFriendRequests = (stream.ReadUInt8() == 1)
 
 	return nil
 }
@@ -725,7 +725,7 @@ func (friendsProtocol *FriendsProtocol) RemoveFriend(handler func(err error, cli
 }
 
 // AddFriendRequest sets the AddFriendRequest handler function
-func (friendsProtocol *FriendsProtocol) AddFriendRequest(handler func(err error, client *nex.Client, callID uint32, unknown1 uint32, unknown2 uint8, unknown3 string, unknown4 uint8, unknown5 string, gameKey *GameKey, unknown6 *nex.DateTime)) {
+func (friendsProtocol *FriendsProtocol) AddFriendRequest(handler func(err error, client *nex.Client, callID uint32, pid uint32, unknown2 uint8, message string, unknown4 uint8, unknown5 string, gameKey *GameKey, unknown6 *nex.DateTime)) {
 	friendsProtocol.AddFriendRequestHandler = handler
 }
 
@@ -938,9 +938,9 @@ func (friendsProtocol *FriendsProtocol) handleAddFriendRequest(packet nex.Packet
 		return
 	}
 
-	unknown1 := parametersStream.ReadUInt32LE()
+	pid := parametersStream.ReadUInt32LE()
 	unknown2 := parametersStream.ReadUInt8()
-	unknown3, err := parametersStream.ReadString()
+	message, err := parametersStream.ReadString()
 
 	if err != nil {
 		go friendsProtocol.AddFriendRequestHandler(err, client, callID, 0, 0, "", 0, "", nil, nil)
@@ -970,7 +970,7 @@ func (friendsProtocol *FriendsProtocol) handleAddFriendRequest(packet nex.Packet
 
 	unknown6 := nex.NewDateTime(parametersStream.ReadUInt64LE())
 
-	go friendsProtocol.AddFriendRequestHandler(nil, client, callID, unknown1, unknown2, unknown3, unknown4, unknown5, gameKey, unknown6)
+	go friendsProtocol.AddFriendRequestHandler(nil, client, callID, pid, unknown2, message, unknown4, unknown5, gameKey, unknown6)
 }
 
 func (friendsProtocol *FriendsProtocol) handleCancelFriendRequest(packet nex.PacketInterface) {

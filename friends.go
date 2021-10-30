@@ -62,8 +62,8 @@ const (
 	// FriendsMethodGetBasicInfo is the method ID for method GetBasicInfo
 	FriendsMethodGetBasicInfo = 0x11
 
-	// FriendsMethodDeleteFriendFlags is the method ID for method DeleteFriendFlags
-	FriendsMethodDeleteFriendFlags = 0x12
+	// FriendsMethodDeletePersistentNotification is the method ID for method DeletePersistentNotification
+	FriendsMethodDeletePersistentNotification = 0x12
 
 	// FriendsMethodCheckSettingStatus is the method ID for method CheckSettingStatus
 	FriendsMethodCheckSettingStatus = 0x13
@@ -92,7 +92,7 @@ type FriendsProtocol struct {
 	UpdateCommentHandler                func(err error, client *nex.Client, callID uint32, comment *Comment)
 	UpdatePreferenceHandler             func(err error, client *nex.Client, callID uint32, preference *PrincipalPreference)
 	GetBasicInfoHandler                 func(err error, client *nex.Client, callID uint32, pids []uint32)
-	DeleteFriendFlagsHandler            func(err error, client *nex.Client, callID uint32, notifications []*PersistentNotification)
+	DeletePersistentNotificationHandler func(err error, client *nex.Client, callID uint32, notifications []*PersistentNotification)
 	CheckSettingStatusHandler           func(err error, client *nex.Client, callID uint32)
 	GetRequestBlockSettingsHandler      func(err error, client *nex.Client, callID uint32, pids []uint32)
 }
@@ -714,8 +714,8 @@ func (friendsProtocol *FriendsProtocol) Setup() {
 				go friendsProtocol.handleUpdatePreference(packet)
 			case FriendsMethodGetBasicInfo:
 				go friendsProtocol.handleGetBasicInfo(packet)
-			case FriendsMethodDeleteFriendFlags:
-				go friendsProtocol.handleDeleteFriendFlags(packet)
+			case FriendsMethodDeletePersistentNotification:
+				go friendsProtocol.handleDeletePersistentNotification(packet)
 			case FriendsMethodCheckSettingStatus:
 				go friendsProtocol.handleCheckSettingStatus(packet)
 			case FriendsMethodGetRequestBlockSettings:
@@ -813,9 +813,9 @@ func (friendsProtocol *FriendsProtocol) GetBasicInfo(handler func(err error, cli
 	friendsProtocol.GetBasicInfoHandler = handler
 }
 
-// DeleteFriendFlags sets the DeleteFriendFlags handler function
-func (friendsProtocol *FriendsProtocol) DeleteFriendFlags(handler func(err error, client *nex.Client, callID uint32, notifications []*PersistentNotification)) {
-	friendsProtocol.DeleteFriendFlagsHandler = handler
+// DeletePersistentNotification sets the DeletePersistentNotification handler function
+func (friendsProtocol *FriendsProtocol) DeletePersistentNotification(handler func(err error, client *nex.Client, callID uint32, notifications []*PersistentNotification)) {
+	friendsProtocol.DeletePersistentNotificationHandler = handler
 }
 
 // CheckSettingStatus sets the CheckSettingStatus handler function
@@ -1309,9 +1309,9 @@ func (friendsProtocol *FriendsProtocol) handleGetBasicInfo(packet nex.PacketInte
 	go friendsProtocol.GetBasicInfoHandler(nil, client, callID, pids)
 }
 
-func (friendsProtocol *FriendsProtocol) handleDeleteFriendFlags(packet nex.PacketInterface) {
-	if friendsProtocol.DeleteFriendFlagsHandler == nil {
-		fmt.Println("[Warning] FriendsProtocol::DeleteFriendFlags not implemented")
+func (friendsProtocol *FriendsProtocol) handleDeletePersistentNotification(packet nex.PacketInterface) {
+	if friendsProtocol.DeletePersistentNotificationHandler == nil {
+		fmt.Println("[Warning] FriendsProtocol::DeletePersistentNotification not implemented")
 		go respondNotImplemented(packet, FriendsProtocolID)
 		return
 	}
@@ -1327,11 +1327,11 @@ func (friendsProtocol *FriendsProtocol) handleDeleteFriendFlags(packet nex.Packe
 	persistentNotifications, err := parametersStream.ReadListPersistentNotification()
 
 	if err != nil {
-		go friendsProtocol.DeleteFriendFlagsHandler(err, client, callID, nil)
+		go friendsProtocol.DeletePersistentNotificationHandler(err, client, callID, nil)
 		return
 	}
 
-	go friendsProtocol.DeleteFriendFlagsHandler(nil, client, callID, persistentNotifications)
+	go friendsProtocol.DeletePersistentNotificationHandler(nil, client, callID, persistentNotifications)
 }
 
 func (friendsProtocol *FriendsProtocol) handleCheckSettingStatus(packet nex.PacketInterface) {

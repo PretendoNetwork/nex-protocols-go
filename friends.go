@@ -238,7 +238,7 @@ func NewFriendRequest() *FriendRequest {
 // FriendRequestMessage contains message data for a FriendRequest
 type FriendRequestMessage struct {
 	FriendRequestID uint64
-	Unknown1        uint8
+	Received        bool
 	Unknown2        uint8
 	Message         string
 	Unknown3        uint8
@@ -253,7 +253,7 @@ type FriendRequestMessage struct {
 // Bytes encodes the FriendRequestMessage and returns a byte array
 func (friendRequestMessage *FriendRequestMessage) Bytes(stream *nex.StreamOut) []byte {
 	stream.WriteUInt64LE(friendRequestMessage.FriendRequestID)
-	stream.WriteUInt8(friendRequestMessage.Unknown1)
+	stream.WriteBool(friendRequestMessage.Received)
 	stream.WriteUInt8(friendRequestMessage.Unknown2)
 	stream.WriteString(friendRequestMessage.Message)
 	stream.WriteUInt8(friendRequestMessage.Unknown3)

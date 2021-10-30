@@ -228,15 +228,15 @@ func NewFriendRequest() *FriendRequest {
 
 // FriendRequestMessage contains message data for a FriendRequest
 type FriendRequestMessage struct {
-	Unknown1  uint64
-	Unknown2  uint8
-	Unknown3  uint8
-	Message   string
-	Unknown4  uint8
-	Unknown5  string
-	GameKey   *GameKey
-	Unknown6  *nex.DateTime
-	ExpiresOn *nex.DateTime
+	FriendRequestID uint64
+	Unknown1        uint8
+	Unknown2        uint8
+	Message         string
+	Unknown3        uint8
+	Unknown4        string
+	GameKey         *GameKey
+	Unknown5        *nex.DateTime
+	ExpiresOn       *nex.DateTime
 
 	nex.Structure
 }

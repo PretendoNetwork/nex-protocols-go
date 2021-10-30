@@ -221,6 +221,15 @@ type FriendRequest struct {
 	nex.Structure
 }
 
+// Bytes encodes the FriendRequest and returns a byte array
+func (friendRequest *FriendRequest) Bytes(stream *nex.StreamOut) []byte {
+	stream.WriteStructure(friendRequest.PrincipalInfo)
+	stream.WriteStructure(friendRequest.Message)
+	stream.WriteUInt64LE(friendRequest.SentOn.Value())
+
+	return stream.Bytes()
+}
+
 // NewFriendRequest returns a new FriendRequest
 func NewFriendRequest() *FriendRequest {
 	return &FriendRequest{}
@@ -239,6 +248,21 @@ type FriendRequestMessage struct {
 	ExpiresOn       *nex.DateTime
 
 	nex.Structure
+}
+
+// Bytes encodes the FriendRequestMessage and returns a byte array
+func (friendRequestMessage *FriendRequestMessage) Bytes(stream *nex.StreamOut) []byte {
+	stream.WriteUInt64LE(friendRequestMessage.FriendRequestID)
+	stream.WriteUInt8(friendRequestMessage.Unknown1)
+	stream.WriteUInt8(friendRequestMessage.Unknown2)
+	stream.WriteString(friendRequestMessage.Message)
+	stream.WriteUInt8(friendRequestMessage.Unknown3)
+	stream.WriteString(friendRequestMessage.Unknown4)
+	stream.WriteStructure(friendRequestMessage.GameKey)
+	stream.WriteUInt64LE(friendRequestMessage.Unknown5.Value())
+	stream.WriteUInt64LE(friendRequestMessage.ExpiresOn.Value())
+
+	return stream.Bytes()
 }
 
 // NewFriendRequestMessage returns a new FriendRequestMessage

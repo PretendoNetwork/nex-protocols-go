@@ -4,14 +4,10 @@ import (
 	nex "github.com/PretendoNetwork/nex-go"
 )
 
-// StreamIn is an abstraction of StreamIn from github.com/PretendoNetwork/nex-go
-// Adds protocol-specific Structure list support
-type StreamIn struct {
-	*nex.StreamIn
-}
+// Adds protocol-specific Structure list methods
 
 // ReadListPersistentNotification reads a list of PersistentNotification structures
-func (stream *StreamIn) ReadListPersistentNotification() ([]*PersistentNotification, error) {
+func ReadListPersistentNotification(stream *nex.StreamIn) ([]*PersistentNotification, error) {
 	length := stream.ReadUInt32LE()
 	persistentNotifications := make([]*PersistentNotification, 0)
 
@@ -29,7 +25,7 @@ func (stream *StreamIn) ReadListPersistentNotification() ([]*PersistentNotificat
 }
 
 // ReadListStationURL reads a list of StationURL structures
-func (stream *StreamIn) ReadListStationURL() ([]*nex.StationURL, error) {
+func ReadListStationURL(stream *nex.StreamIn) ([]*nex.StationURL, error) {
 	length := stream.ReadUInt32LE()
 	stationUrls := make([]*nex.StationURL, 0)
 
@@ -48,7 +44,7 @@ func (stream *StreamIn) ReadListStationURL() ([]*nex.StationURL, error) {
 }
 
 // ReadListDataStoreRateCustomRankingParam reads a list of DataStoreRateCustomRankingParam structures
-func (stream *StreamIn) ReadListDataStoreRateCustomRankingParam() ([]*DataStoreRateCustomRankingParam, error) {
+func ReadListDataStoreRateCustomRankingParam(stream *nex.StreamIn) ([]*DataStoreRateCustomRankingParam, error) {
 	length := stream.ReadUInt32LE()
 	dataStoreRateCustomRankingParams := make([]*DataStoreRateCustomRankingParam, 0)
 
@@ -66,7 +62,7 @@ func (stream *StreamIn) ReadListDataStoreRateCustomRankingParam() ([]*DataStoreR
 }
 
 // ReadListDataStoreRatingInfoWithSlot reads a list of DataStoreRatingInfoWithSlot structures
-func (stream *StreamIn) ReadListDataStoreRatingInfoWithSlot() ([]*DataStoreRatingInfoWithSlot, error) {
+func ReadListDataStoreRatingInfoWithSlot(stream *nex.StreamIn) ([]*DataStoreRatingInfoWithSlot, error) {
 	length := stream.ReadUInt32LE()
 	dataStoreRatingInfoWithSlots := make([]*DataStoreRatingInfoWithSlot, 0)
 
@@ -84,7 +80,7 @@ func (stream *StreamIn) ReadListDataStoreRatingInfoWithSlot() ([]*DataStoreRatin
 }
 
 // ReadListDataStoreGetCourseRecordParam reads a list of DataStoreGetCourseRecordParam structures
-func (stream *StreamIn) ReadListDataStoreGetCourseRecordParam() ([]*DataStoreGetCourseRecordParam, error) {
+func ReadListDataStoreGetCourseRecordParam(stream *nex.StreamIn) ([]*DataStoreGetCourseRecordParam, error) {
 	length := stream.ReadUInt32LE()
 	dataStoreGetCourseRecordParams := make([]*DataStoreGetCourseRecordParam, 0)
 
@@ -102,7 +98,7 @@ func (stream *StreamIn) ReadListDataStoreGetCourseRecordParam() ([]*DataStoreGet
 }
 
 // ReaListDataStoreGetMetaParam reads a list of DataStoreGetMetaParam structures
-func (stream *StreamIn) ReaListDataStoreGetMetaParam() ([]*DataStoreGetMetaParam, error) {
+func ReaListDataStoreGetMetaParam(stream *nex.StreamIn) ([]*DataStoreGetMetaParam, error) {
 	length := stream.ReadUInt32LE()
 	dataStoreGetMetaParams := make([]*DataStoreGetMetaParam, 0)
 
@@ -120,7 +116,7 @@ func (stream *StreamIn) ReaListDataStoreGetMetaParam() ([]*DataStoreGetMetaParam
 }
 
 // ReadListDataStoreRatingInitParamWithSlot reads a list of DataStoreRatingInitParamWithSlot structures
-func (stream *StreamIn) ReadListDataStoreRatingInitParamWithSlot() ([]*DataStoreRatingInitParamWithSlot, error) {
+func ReadListDataStoreRatingInitParamWithSlot(stream *nex.StreamIn) ([]*DataStoreRatingInitParamWithSlot, error) {
 	length := stream.ReadUInt32LE()
 	dataStoreRatingInitParamWithSlots := make([]*DataStoreRatingInitParamWithSlot, 0)
 
@@ -138,7 +134,7 @@ func (stream *StreamIn) ReadListDataStoreRatingInitParamWithSlot() ([]*DataStore
 }
 
 // ReadListDataStoreRatingTarget reads a list of DataStoreRatingTarget structures
-func (stream *StreamIn) ReadListDataStoreRatingTarget() ([]*DataStoreRatingTarget, error) {
+func ReadListDataStoreRatingTarget(stream *nex.StreamIn) ([]*DataStoreRatingTarget, error) {
 	length := stream.ReadUInt32LE()
 	dataStoreRatingTargets := make([]*DataStoreRatingTarget, 0)
 
@@ -155,7 +151,7 @@ func (stream *StreamIn) ReadListDataStoreRatingTarget() ([]*DataStoreRatingTarge
 }
 
 // ReadListDataStoreRateObjectParam reads a list of DataStoreRateObjectParam structures
-func (stream *StreamIn) ReadListDataStoreRateObjectParam() ([]*DataStoreRateObjectParam, error) {
+func ReadListDataStoreRateObjectParam(stream *nex.StreamIn) ([]*DataStoreRateObjectParam, error) {
 	length := stream.ReadUInt32LE()
 	dataStoreRateObjectParams := make([]*DataStoreRateObjectParam, 0)
 
@@ -172,7 +168,7 @@ func (stream *StreamIn) ReadListDataStoreRateObjectParam() ([]*DataStoreRateObje
 }
 
 // ReadListBufferQueueParam reads a list of BufferQueueParam structures
-func (stream *StreamIn) ReadListBufferQueueParam() ([]*BufferQueueParam, error) {
+func ReadListBufferQueueParam(stream *nex.StreamIn) ([]*BufferQueueParam, error) {
 	length := stream.ReadUInt32LE()
 	bufferQueueParams := make([]*BufferQueueParam, 0)
 
@@ -186,11 +182,4 @@ func (stream *StreamIn) ReadListBufferQueueParam() ([]*BufferQueueParam, error) 
 	}
 
 	return bufferQueueParams, nil
-}
-
-// NewStreamIn returns a new nexproto output stream
-func NewStreamIn(data []byte, server *nex.Server) *StreamIn {
-	return &StreamIn{
-		StreamIn: nex.NewStreamIn(data, server),
-	}
 }

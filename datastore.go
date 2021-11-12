@@ -381,17 +381,14 @@ func (dataStorePreparePostParam *DataStorePreparePostParam) ExtractFromStream(st
 	dataStorePreparePostParam.ReferDataId = stream.ReadUInt32LE()
 	dataStorePreparePostParam.Tags = stream.ReadListString()
 
-	// TODO: Refactor this, it's disgusting
-	nexProtoStream := NewStreamIn(stream.Bytes()[stream.ByteOffset():], stream.Server)
-
-	ratingInitParams, err := nexProtoStream.ReadListDataStoreRatingInitParamWithSlot()
+	ratingInitParams, err := ReadListDataStoreRatingInitParamWithSlot(stream)
 	if err != nil {
 		return err
 	}
 
 	dataStorePreparePostParam.RatingInitParams = ratingInitParams
 
-	persistenceInitParam, err := nexProtoStream.ReadStructure(NewDataStorePersistenceInitParam())
+	persistenceInitParam, err := stream.ReadStructure(NewDataStorePersistenceInitParam())
 	if err != nil {
 		return err
 	}
@@ -850,10 +847,7 @@ func (dataStoreMetaInfo *DataStoreMetaInfo) ExtractFromStream(stream *nex.Stream
 	dataStoreMetaInfo.ExpireTime = nex.NewDateTime(stream.ReadUInt64LE())
 	dataStoreMetaInfo.Tags = stream.ReadListString()
 
-	// TODO: Refactor this, it's disgusting
-	nexProtoStream := NewStreamIn(stream.Bytes()[stream.ByteOffset():], stream.Server)
-
-	ratings, err := nexProtoStream.ReadListDataStoreRatingInfoWithSlot()
+	ratings, err := ReadListDataStoreRatingInfoWithSlot(stream)
 	if err != nil {
 		return err
 	}
@@ -1148,9 +1142,9 @@ func (dataStoreProtocol *DataStoreProtocol) handleGetMetasMultipleParam(packet n
 	callID := request.CallID()
 	parameters := request.Parameters()
 
-	parametersStream := NewStreamIn(parameters, dataStoreProtocol.server)
+	parametersStream := nex.NewStreamIn(parameters, dataStoreProtocol.server)
 
-	dataStoreGetMetaParams, err := parametersStream.ReaListDataStoreGetMetaParam()
+	dataStoreGetMetaParams, err := ReaListDataStoreGetMetaParam(parametersStream)
 
 	if err != nil {
 		go dataStoreProtocol.GetMetasMultipleParamHandler(err, client, callID, nil)
@@ -1198,15 +1192,15 @@ func (dataStoreProtocol *DataStoreProtocol) handleRateObjects(packet nex.PacketI
 	callID := request.CallID()
 	parameters := request.Parameters()
 
-	parametersStream := NewStreamIn(parameters, dataStoreProtocol.server)
+	parametersStream := nex.NewStreamIn(parameters, dataStoreProtocol.server)
 
-	targets, err := parametersStream.ReadListDataStoreRatingTarget()
+	targets, err := ReadListDataStoreRatingTarget(parametersStream)
 	if err != nil {
 		go dataStoreProtocol.RateObjectsHandler(err, client, callID, nil, nil, false, false)
 		return
 	}
 
-	params, err := parametersStream.ReadListDataStoreRateObjectParam()
+	params, err := ReadListDataStoreRateObjectParam(parametersStream)
 	if err != nil {
 		go dataStoreProtocol.RateObjectsHandler(err, client, callID, nil, nil, false, false)
 		return

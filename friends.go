@@ -1114,7 +1114,7 @@ func (friendsProtocol *FriendsProtocol) handleMarkFriendRequestsAsReceived(packe
 	callID := request.CallID()
 	parameters := request.Parameters()
 
-	parametersStream := NewStreamIn(parameters, friendsProtocol.server)
+	parametersStream := nex.NewStreamIn(parameters, friendsProtocol.server)
 
 	if len(parametersStream.Bytes()[parametersStream.ByteOffset():]) < 4 {
 		err := errors.New("[FriendsProtocol::MarkFriendRequestsAsReceived] Data missing list length")
@@ -1296,7 +1296,7 @@ func (friendsProtocol *FriendsProtocol) handleGetBasicInfo(packet nex.PacketInte
 	callID := request.CallID()
 	parameters := request.Parameters()
 
-	parametersStream := NewStreamIn(parameters, friendsProtocol.server)
+	parametersStream := nex.NewStreamIn(parameters, friendsProtocol.server)
 
 	if len(parametersStream.Bytes()[parametersStream.ByteOffset():]) < 4 {
 		err := errors.New("[FriendsProtocol::GetBasicInfo] Data missing list length")
@@ -1322,9 +1322,9 @@ func (friendsProtocol *FriendsProtocol) handleDeletePersistentNotification(packe
 	callID := request.CallID()
 	parameters := request.Parameters()
 
-	parametersStream := NewStreamIn(parameters, friendsProtocol.server)
+	parametersStream := nex.NewStreamIn(parameters, friendsProtocol.server)
 
-	persistentNotifications, err := parametersStream.ReadListPersistentNotification()
+	persistentNotifications, err := ReadListPersistentNotification(parametersStream)
 
 	if err != nil {
 		go friendsProtocol.DeletePersistentNotificationHandler(err, client, callID, nil)
@@ -1362,7 +1362,7 @@ func (friendsProtocol *FriendsProtocol) handleGetRequestBlockSettings(packet nex
 	callID := request.CallID()
 	parameters := request.Parameters()
 
-	parametersStream := NewStreamIn(parameters, friendsProtocol.server)
+	parametersStream := nex.NewStreamIn(parameters, friendsProtocol.server)
 
 	if len(parametersStream.Bytes()[parametersStream.ByteOffset():]) < 4 {
 		err := errors.New("[FriendsProtocol::GetRequestBlockSettings] Data missing list length")

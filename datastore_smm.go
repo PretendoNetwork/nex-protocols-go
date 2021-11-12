@@ -509,9 +509,9 @@ func (dataStoreSMMProtocol *DataStoreSMMProtocol) handleRateCustomRanking(packet
 	callID := request.CallID()
 	parameters := request.Parameters()
 
-	parametersStream := NewStreamIn(parameters, dataStoreSMMProtocol.server)
+	parametersStream := nex.NewStreamIn(parameters, dataStoreSMMProtocol.server)
 
-	dataStoreRateCustomRankingParams, err := parametersStream.ReadListDataStoreRateCustomRankingParam()
+	dataStoreRateCustomRankingParams, err := ReadListDataStoreRateCustomRankingParam(parametersStream)
 
 	if err != nil {
 		go dataStoreSMMProtocol.RateCustomRankingHandler(err, client, callID, nil)
@@ -559,9 +559,9 @@ func (dataStoreSMMProtocol *DataStoreSMMProtocol) handleAddToBufferQueues(packet
 	callID := request.CallID()
 	parameters := request.Parameters()
 
-	parametersStream := NewStreamIn(parameters, dataStoreSMMProtocol.server)
+	parametersStream := nex.NewStreamIn(parameters, dataStoreSMMProtocol.server)
 
-	params, err := parametersStream.ReadListBufferQueueParam()
+	params, err := ReadListBufferQueueParam(parametersStream)
 
 	if err != nil {
 		go dataStoreSMMProtocol.AddToBufferQueuesHandler(err, client, callID, nil, nil)
@@ -831,9 +831,9 @@ func (dataStoreSMMProtocol *DataStoreSMMProtocol) handleGetMetasWithCourseRecord
 	callID := request.CallID()
 	parameters := request.Parameters()
 
-	parametersStream := NewStreamIn(parameters, dataStoreSMMProtocol.server)
+	parametersStream := nex.NewStreamIn(parameters, dataStoreSMMProtocol.server)
 
-	dataStoreGetCourseRecordParams, err := parametersStream.ReadListDataStoreGetCourseRecordParam()
+	dataStoreGetCourseRecordParams, err := ReadListDataStoreGetCourseRecordParam(parametersStream)
 	if err != nil {
 		go dataStoreSMMProtocol.GetMetasWithCourseRecordHandler(err, client, callID, nil, nil)
 		return

@@ -183,3 +183,88 @@ func ReadListBufferQueueParam(stream *nex.StreamIn) ([]*BufferQueueParam, error)
 
 	return bufferQueueParams, nil
 }
+
+// ReadListDataStoreKeyValue reads a list of DataStoreKeyValue structures
+func ReadListDataStoreKeyValue(stream *nex.StreamIn) ([]*DataStoreKeyValue, error) {
+	length := stream.ReadUInt32LE()
+	dataStoreKeyValues := make([]*DataStoreKeyValue, 0)
+
+	for i := 0; i < int(length); i++ {
+		dataStoreKeyValue, err := stream.ReadStructure(NewDataStoreKeyValue())
+		if err != nil {
+			return nil, err
+		}
+
+		dataStoreKeyValues = append(dataStoreKeyValues, dataStoreKeyValue.(*DataStoreKeyValue))
+	}
+
+	return dataStoreKeyValues, nil
+}
+
+// ReadListDataStoreMetaInfo reads a list of DataStoreMetaInfo structures
+func ReadListDataStoreMetaInfo(stream *nex.StreamIn) ([]*DataStoreMetaInfo, error) {
+	length := stream.ReadUInt32LE()
+	dataStoreMetaInfos := make([]*DataStoreMetaInfo, 0)
+
+	for i := 0; i < int(length); i++ {
+		dataStoreMetaInfo, err := stream.ReadStructure(NewDataStoreMetaInfo())
+		if err != nil {
+			return nil, err
+		}
+
+		dataStoreMetaInfos = append(dataStoreMetaInfos, dataStoreMetaInfo.(*DataStoreMetaInfo))
+	}
+
+	return dataStoreMetaInfos, nil
+}
+
+// ReadListDataStoreReplayPlayer reads a list of DataStoreReplayPlayer structures
+func ReadListDataStoreReplayPlayer(stream *nex.StreamIn) ([]*DataStoreReplayPlayer, error) {
+	length := stream.ReadUInt32LE()
+	dataStoreReplayPlayers := make([]*DataStoreReplayPlayer, 0)
+
+	for i := 0; i < int(length); i++ {
+		dataStoreReplayPlayer, err := stream.ReadStructure(NewDataStoreReplayPlayer())
+		if err != nil {
+			return nil, err
+		}
+
+		dataStoreReplayPlayers = append(dataStoreReplayPlayers, dataStoreReplayPlayer.(*DataStoreReplayPlayer))
+	}
+
+	return dataStoreReplayPlayers, nil
+}
+
+// ReadListDataStoreFightingPowerScore reads a list of DataStoreFightingPowerScore structures
+func ReadListDataStoreFightingPowerScore(stream *nex.StreamIn) ([]*DataStoreFightingPowerScore, error) {
+	length := stream.ReadUInt32LE()
+	dataStoreFightingPowerScores := make([]*DataStoreFightingPowerScore, 0)
+
+	for i := 0; i < int(length); i++ {
+		dataStoreFightingPowerScore, err := stream.ReadStructure(NewDataStoreFightingPowerScore())
+		if err != nil {
+			return nil, err
+		}
+
+		dataStoreFightingPowerScores = append(dataStoreFightingPowerScores, dataStoreFightingPowerScore.(*DataStoreFightingPowerScore))
+	}
+
+	return dataStoreFightingPowerScores, nil
+}
+
+// ReadListDataStorePostFightingPowerScoreParam reads a list of DataStorePostFightingPowerScoreParam structures
+func ReadListDataStorePostFightingPowerScoreParam(stream *nex.StreamIn) ([]*DataStorePostFightingPowerScoreParam, error) {
+	length := stream.ReadUInt32LE()
+	dataStorePostFightingPowerScoreParams := make([]*DataStorePostFightingPowerScoreParam, 0)
+
+	for i := 0; i < int(length); i++ {
+		dataStorePostFightingPowerScoreParam, err := stream.ReadStructure(NewDataStorePostFightingPowerScoreParam())
+		if err != nil {
+			return nil, err
+		}
+
+		dataStorePostFightingPowerScoreParams = append(dataStorePostFightingPowerScoreParams, dataStorePostFightingPowerScoreParam.(*DataStorePostFightingPowerScoreParam))
+	}
+
+	return dataStorePostFightingPowerScoreParams, nil
+}

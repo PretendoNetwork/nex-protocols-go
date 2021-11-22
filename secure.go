@@ -39,7 +39,6 @@ const (
 // SecureProtocol handles the Secure Connection nex protocol
 type SecureProtocol struct {
 	server                       *nex.Server
-	ConnectionIDCounter          *nex.Counter
 	RegisterHandler              func(err error, client *nex.Client, callID uint32, stationUrls []*nex.StationURL)
 	RequestConnectionDataHandler func(err error, client *nex.Client, callID uint32, stationCID uint32, stationPID uint32)
 	RequestURLsHandler           func(err error, client *nex.Client, callID uint32, stationCID uint32, stationPID uint32)
@@ -408,10 +407,7 @@ func (secureProtocol *SecureProtocol) handleSendReport(packet nex.PacketInterfac
 
 // NewSecureProtocol returns a new SecureProtocol
 func NewSecureProtocol(server *nex.Server) *SecureProtocol {
-	secureProtocol := &SecureProtocol{
-		server:              server,
-		ConnectionIDCounter: nex.NewCounter(10),
-	}
+	secureProtocol := &SecureProtocol{server: server}
 
 	secureProtocol.Setup()
 

@@ -45,23 +45,23 @@ const (
 	// UtilityProtocolID is the protocol ID for the Utility protocol
 	UtilityProtocolID = 0x6e
 
-	// UtilityMethodAcquireNexUniqueId is the method ID for the method AcquireNexUniqueId
-	UtilityMethodAcquireNexUniqueId = 0x1
+	// UtilityMethodAcquireNexUniqueID is the method ID for the method AcquireNexUniqueID
+	UtilityMethodAcquireNexUniqueID = 0x1
 
-	// UtilityMethodAcquireNexUniqueIdWithPassword is the method ID for the method AcquireNexUniqueIdWithPassword
-	UtilityMethodAcquireNexUniqueIdWithPassword = 0x2
+	// UtilityMethodAcquireNexUniqueIDWithPassword is the method ID for the method AcquireNexUniqueIDWithPassword
+	UtilityMethodAcquireNexUniqueIDWithPassword = 0x2
 
-	// UtilityMethodAssociateNexUniqueIdWithMyPrincipalId is the method ID for the method AssociateNexUniqueIdWithMyPrincipalId
-	UtilityMethodAssociateNexUniqueIdWithMyPrincipalId = 0x3
+	// UtilityMethodAssociateNexUniqueIDWithMyPrincipalID is the method ID for the method AssociateNexUniqueIDWithMyPrincipalID
+	UtilityMethodAssociateNexUniqueIDWithMyPrincipalID = 0x3
 
-	// UtilityMethodAssociateNexUniqueIdsWithMyPrincipalId is the method ID for the method AssociateNexUniqueIdsWithMyPrincipalId
-	UtilityMethodAssociateNexUniqueIdsWithMyPrincipalId = 0x4
+	// UtilityMethodAssociateNexUniqueIDsWithMyPrincipalID is the method ID for the method AssociateNexUniqueIDsWithMyPrincipalID
+	UtilityMethodAssociateNexUniqueIDsWithMyPrincipalID = 0x4
 
-	// UtilityMethodGetAssociatedNexUniqueIdWithMyPrincipalId is the method ID for the method GetAssociatedNexUniqueIdWithMyPrincipalId
-	UtilityMethodGetAssociatedNexUniqueIdWithMyPrincipalId = 0x5
+	// UtilityMethodGetAssociatedNexUniqueIDWithMyPrincipalID is the method ID for the method GetAssociatedNexUniqueIDWithMyPrincipalID
+	UtilityMethodGetAssociatedNexUniqueIDWithMyPrincipalID = 0x5
 
-	// UtilityMethodGetAssociatedNexUniqueIdsWithMyPrincipalId is the method ID for the method GetAssociatedNexUniqueIdsWithMyPrincipalId
-	UtilityMethodGetAssociatedNexUniqueIdsWithMyPrincipalId = 0x6
+	// UtilityMethodGetAssociatedNexUniqueIDsWithMyPrincipalID is the method ID for the method GetAssociatedNexUniqueIDsWithMyPrincipalID
+	UtilityMethodGetAssociatedNexUniqueIDsWithMyPrincipalID = 0x6
 
 	// UtilityMethodGetIntegerSettings is the method ID for the method GetIntegerSettings
 	UtilityMethodGetIntegerSettings = 0x7
@@ -73,12 +73,12 @@ const (
 // UtilityProtocol handles the Utility nex protocol
 type UtilityProtocol struct {
 	server                                            *nex.Server
-	AcquireNexUniqueIdHandler                         func(err error, client *nex.Client, callID uint32)
-	AcquireNexUniqueIdWithPasswordHandler             func(err error, client *nex.Client, callID uint32)
-	AssociateNexUniqueIdWithMyPrincipalIdHandler      func(err error, client *nex.Client, callID uint32, uniqueIDInfo *UniqueIDInfo)
-	AssociateNexUniqueIdsWithMyPrincipalIdHandler     func(err error, client *nex.Client, callID uint32, uniqueIDInfo []*UniqueIDInfo)
-	GetAssociatedNexUniqueIdWithMyPrincipalIdHandler  func(err error, client *nex.Client, callID uint32)
-	GetAssociatedNexUniqueIdsWithMyPrincipalIdHandler func(err error, client *nex.Client, callID uint32)
+	AcquireNexUniqueIDHandler                         func(err error, client *nex.Client, callID uint32)
+	AcquireNexUniqueIDWithPasswordHandler             func(err error, client *nex.Client, callID uint32)
+	AssociateNexUniqueIDWithMyPrincipalIDHandler      func(err error, client *nex.Client, callID uint32, uniqueIDInfo *UniqueIDInfo)
+	AssociateNexUniqueIDsWithMyPrincipalIDHandler     func(err error, client *nex.Client, callID uint32, uniqueIDInfo []*UniqueIDInfo)
+	GetAssociatedNexUniqueIDWithMyPrincipalIDHandler  func(err error, client *nex.Client, callID uint32)
+	GetAssociatedNexUniqueIDsWithMyPrincipalIDHandler func(err error, client *nex.Client, callID uint32)
 	GetIntegerSettingsHandler                         func(err error, client *nex.Client, callID uint32, integerSettingIndex uint32)
 	GetStringSettingsHandler                          func(err error, client *nex.Client, callID uint32, stringSettingIndex uint32)
 }
@@ -92,16 +92,16 @@ func (utilityProtocol *UtilityProtocol) Setup() {
 
 		if UtilityProtocolID == request.ProtocolID() {
 			switch request.MethodID() {
-			case UtilityMethodAcquireNexUniqueId:
-				go utilityProtocol.handleAcquireNexUniqueId(packet)
-			case UtilityMethodAcquireNexUniqueIdWithPassword:
-				go utilityProtocol.handleAcquireNexUniqueIdWithPassword(packet)
-			case UtilityMethodAssociateNexUniqueIdWithMyPrincipalId:
-				go utilityProtocol.handleAssociateNexUniqueIdWithMyPrincipalId(packet)
-			case UtilityMethodAssociateNexUniqueIdsWithMyPrincipalId:
-				go utilityProtocol.handleAssociateNexUniqueIdsWithMyPrincipalId(packet)
-			case UtilityMethodGetAssociatedNexUniqueIdWithMyPrincipalId:
-				go utilityProtocol.handleGetAssociatedNexUniqueIdWithMyPrincipalId(packet)
+			case UtilityMethodAcquireNexUniqueID:
+				go utilityProtocol.handleAcquireNexUniqueID(packet)
+			case UtilityMethodAcquireNexUniqueIDWithPassword:
+				go utilityProtocol.handleAcquireNexUniqueIDWithPassword(packet)
+			case UtilityMethodAssociateNexUniqueIDWithMyPrincipalID:
+				go utilityProtocol.handleAssociateNexUniqueIDWithMyPrincipalID(packet)
+			case UtilityMethodAssociateNexUniqueIDsWithMyPrincipalID:
+				go utilityProtocol.handleAssociateNexUniqueIDsWithMyPrincipalID(packet)
+			case UtilityMethodGetAssociatedNexUniqueIDWithMyPrincipalID:
+				go utilityProtocol.handleGetAssociatedNexUniqueIDWithMyPrincipalID(packet)
 			case UtilityMethodGetIntegerSettings:
 				go utilityProtocol.handleGetIntegerSettings(packet)
 			case UtilityMethodGetStringSettings:
@@ -114,34 +114,34 @@ func (utilityProtocol *UtilityProtocol) Setup() {
 	})
 }
 
-// AcquireNexUniqueId sets the AcquireNexUniqueId handler function
-func (utilityProtocol *UtilityProtocol) AcquireNexUniqueId(handler func(err error, client *nex.Client, callID uint32)) {
-	utilityProtocol.AcquireNexUniqueIdHandler = handler
+// AcquireNexUniqueID sets the AcquireNexUniqueID handler function
+func (utilityProtocol *UtilityProtocol) AcquireNexUniqueID(handler func(err error, client *nex.Client, callID uint32)) {
+	utilityProtocol.AcquireNexUniqueIDHandler = handler
 }
 
-// AcquireNexUniqueIdWithPassword sets the AcquireNexUniqueIdWithPassword handler function
-func (utilityProtocol *UtilityProtocol) AcquireNexUniqueIdWithPassword(handler func(err error, client *nex.Client, callID uint32)) {
-	utilityProtocol.AcquireNexUniqueIdWithPasswordHandler = handler
+// AcquireNexUniqueIDWithPassword sets the AcquireNexUniqueIDWithPassword handler function
+func (utilityProtocol *UtilityProtocol) AcquireNexUniqueIDWithPassword(handler func(err error, client *nex.Client, callID uint32)) {
+	utilityProtocol.AcquireNexUniqueIDWithPasswordHandler = handler
 }
 
-// AssociateNexUniqueIdWithMyPrincipalId sets the AssociateNexUniqueIdWithMyPrincipalId handler function
-func (utilityProtocol *UtilityProtocol) AssociateNexUniqueIdWithMyPrincipalId(handler func(err error, client *nex.Client, callID uint32, uniqueIDInfo *UniqueIDInfo)) {
-	utilityProtocol.AssociateNexUniqueIdWithMyPrincipalIdHandler = handler
+// AssociateNexUniqueIDWithMyPrincipalID sets the AssociateNexUniqueIDWithMyPrincipalID handler function
+func (utilityProtocol *UtilityProtocol) AssociateNexUniqueIDWithMyPrincipalID(handler func(err error, client *nex.Client, callID uint32, uniqueIDInfo *UniqueIDInfo)) {
+	utilityProtocol.AssociateNexUniqueIDWithMyPrincipalIDHandler = handler
 }
 
-// AssociateNexUniqueIdsWithMyPrincipalId sets the AssociateNexUniqueIdsWithMyPrincipalId handler function
-func (utilityProtocol *UtilityProtocol) AssociateNexUniqueIdsWithMyPrincipalId(handler func(err error, client *nex.Client, callID uint32, uniqueIDInfo []*UniqueIDInfo)) {
-	utilityProtocol.AssociateNexUniqueIdsWithMyPrincipalIdHandler = handler
+// AssociateNexUniqueIDsWithMyPrincipalID sets the AssociateNexUniqueIDsWithMyPrincipalID handler function
+func (utilityProtocol *UtilityProtocol) AssociateNexUniqueIDsWithMyPrincipalID(handler func(err error, client *nex.Client, callID uint32, uniqueIDInfo []*UniqueIDInfo)) {
+	utilityProtocol.AssociateNexUniqueIDsWithMyPrincipalIDHandler = handler
 }
 
-// GetAssociatedNexUniqueIdWithMyPrincipalId sets the GetAssociatedNexUniqueIdWithMyPrincipalId handler function
-func (utilityProtocol *UtilityProtocol) GetAssociatedNexUniqueIdWithMyPrincipalId(handler func(err error, client *nex.Client, callID uint32)) {
-	utilityProtocol.GetAssociatedNexUniqueIdWithMyPrincipalIdHandler = handler
+// GetAssociatedNexUniqueIDWithMyPrincipalID sets the GetAssociatedNexUniqueIDWithMyPrincipalID handler function
+func (utilityProtocol *UtilityProtocol) GetAssociatedNexUniqueIDWithMyPrincipalID(handler func(err error, client *nex.Client, callID uint32)) {
+	utilityProtocol.GetAssociatedNexUniqueIDWithMyPrincipalIDHandler = handler
 }
 
-// GetAssociatedNexUniqueIdsWithMyPrincipalId sets the GetAssociatedNexUniqueIdsWithMyPrincipalId handler function
-func (utilityProtocol *UtilityProtocol) GetAssociatedNexUniqueIdsWithMyPrincipalId(handler func(err error, client *nex.Client, callID uint32)) {
-	utilityProtocol.GetAssociatedNexUniqueIdsWithMyPrincipalIdHandler = handler
+// GetAssociatedNexUniqueIDsWithMyPrincipalID sets the GetAssociatedNexUniqueIDsWithMyPrincipalID handler function
+func (utilityProtocol *UtilityProtocol) GetAssociatedNexUniqueIDsWithMyPrincipalID(handler func(err error, client *nex.Client, callID uint32)) {
+	utilityProtocol.GetAssociatedNexUniqueIDsWithMyPrincipalIDHandler = handler
 }
 
 // GetIntegerSettings sets the GetIntegerSettings handler function
@@ -154,9 +154,9 @@ func (utilityProtocol *UtilityProtocol) GetStringSettings(handler func(err error
 	utilityProtocol.GetStringSettingsHandler = handler
 }
 
-func (utilityProtocol *UtilityProtocol) handleAcquireNexUniqueId(packet nex.PacketInterface) {
-	if utilityProtocol.AcquireNexUniqueIdHandler == nil {
-		fmt.Println("[Warning] UtilityProtocol::AcquireNexUniqueId not implemented")
+func (utilityProtocol *UtilityProtocol) handleAcquireNexUniqueID(packet nex.PacketInterface) {
+	if utilityProtocol.AcquireNexUniqueIDHandler == nil {
+		fmt.Println("[Warning] UtilityProtocol::AcquireNexUniqueID not implemented")
 		go respondNotImplemented(packet, UtilityProtocolID)
 		return
 	}
@@ -166,12 +166,12 @@ func (utilityProtocol *UtilityProtocol) handleAcquireNexUniqueId(packet nex.Pack
 
 	callID := request.CallID()
 
-	go utilityProtocol.AcquireNexUniqueIdHandler(nil, client, callID)
+	go utilityProtocol.AcquireNexUniqueIDHandler(nil, client, callID)
 }
 
-func (utilityProtocol *UtilityProtocol) handleAcquireNexUniqueIdWithPassword(packet nex.PacketInterface) {
-	if utilityProtocol.AcquireNexUniqueIdWithPasswordHandler == nil {
-		fmt.Println("[Warning] UtilityProtocol::AcquireNexUniqueIdWithPassword not implemented")
+func (utilityProtocol *UtilityProtocol) handleAcquireNexUniqueIDWithPassword(packet nex.PacketInterface) {
+	if utilityProtocol.AcquireNexUniqueIDWithPasswordHandler == nil {
+		fmt.Println("[Warning] UtilityProtocol::AcquireNexUniqueIDWithPassword not implemented")
 		go respondNotImplemented(packet, UtilityProtocolID)
 		return
 	}
@@ -181,12 +181,12 @@ func (utilityProtocol *UtilityProtocol) handleAcquireNexUniqueIdWithPassword(pac
 
 	callID := request.CallID()
 
-	go utilityProtocol.AcquireNexUniqueIdWithPasswordHandler(nil, client, callID)
+	go utilityProtocol.AcquireNexUniqueIDWithPasswordHandler(nil, client, callID)
 }
 
-func (utilityProtocol *UtilityProtocol) handleAssociateNexUniqueIdWithMyPrincipalId(packet nex.PacketInterface) {
-	if utilityProtocol.AssociateNexUniqueIdWithMyPrincipalIdHandler == nil {
-		fmt.Println("[Warning] UtilityProtocol::AssociateNexUniqueIdWithMyPrincipalId not implemented")
+func (utilityProtocol *UtilityProtocol) handleAssociateNexUniqueIDWithMyPrincipalID(packet nex.PacketInterface) {
+	if utilityProtocol.AssociateNexUniqueIDWithMyPrincipalIDHandler == nil {
+		fmt.Println("[Warning] UtilityProtocol::AssociateNexUniqueIDWithMyPrincipalID not implemented")
 		go respondNotImplemented(packet, UtilityProtocolID)
 		return
 	}
@@ -202,17 +202,17 @@ func (utilityProtocol *UtilityProtocol) handleAssociateNexUniqueIdWithMyPrincipa
 
 	uniqueIDInfoStructureInterface, err := parametersStream.ReadStructure(NewUniqueIDInfo())
 	if err != nil {
-		go utilityProtocol.AssociateNexUniqueIdWithMyPrincipalIdHandler(nil, client, callID, nil)
+		go utilityProtocol.AssociateNexUniqueIDWithMyPrincipalIDHandler(nil, client, callID, nil)
 		return
 	}
 	uniqueIDInfo := uniqueIDInfoStructureInterface.(*UniqueIDInfo)
 
-	go utilityProtocol.AssociateNexUniqueIdWithMyPrincipalIdHandler(nil, client, callID, uniqueIDInfo)
+	go utilityProtocol.AssociateNexUniqueIDWithMyPrincipalIDHandler(nil, client, callID, uniqueIDInfo)
 }
 
-func (utilityProtocol *UtilityProtocol) handleAssociateNexUniqueIdsWithMyPrincipalId(packet nex.PacketInterface) {
-	if utilityProtocol.GetAssociatedNexUniqueIdWithMyPrincipalIdHandler == nil {
-		fmt.Println("[Warning] UtilityProtocol::AssociateNexUniqueIdsWithMyPrincipalId not implemented")
+func (utilityProtocol *UtilityProtocol) handleAssociateNexUniqueIDsWithMyPrincipalID(packet nex.PacketInterface) {
+	if utilityProtocol.GetAssociatedNexUniqueIDWithMyPrincipalIDHandler == nil {
+		fmt.Println("[Warning] UtilityProtocol::AssociateNexUniqueIDsWithMyPrincipalID not implemented")
 		go respondNotImplemented(packet, UtilityProtocolID)
 		return
 	}
@@ -231,18 +231,18 @@ func (utilityProtocol *UtilityProtocol) handleAssociateNexUniqueIdsWithMyPrincip
 	for i := 0; i < structureCount; i++ {
 		uniqueIDInfoStructureInterface, err := parametersStream.ReadStructure(NewUniqueIDInfo())
 		if err != nil {
-			go utilityProtocol.AssociateNexUniqueIdsWithMyPrincipalIdHandler(nil, client, callID, nil)
+			go utilityProtocol.AssociateNexUniqueIDsWithMyPrincipalIDHandler(nil, client, callID, nil)
 			return
 		}
 		uniqueIDInfo[i] = uniqueIDInfoStructureInterface.(*UniqueIDInfo)
 	}
 
-	go utilityProtocol.AssociateNexUniqueIdsWithMyPrincipalIdHandler(nil, client, callID, uniqueIDInfo)
+	go utilityProtocol.AssociateNexUniqueIDsWithMyPrincipalIDHandler(nil, client, callID, uniqueIDInfo)
 }
 
-func (utilityProtocol *UtilityProtocol) handleGetAssociatedNexUniqueIdWithMyPrincipalId(packet nex.PacketInterface) {
-	if utilityProtocol.GetAssociatedNexUniqueIdWithMyPrincipalIdHandler == nil {
-		fmt.Println("[Warning] UtilityProtocol::GetAssociatedNexUniqueIdWithMyPrincipalId not implemented")
+func (utilityProtocol *UtilityProtocol) handleGetAssociatedNexUniqueIDWithMyPrincipalID(packet nex.PacketInterface) {
+	if utilityProtocol.GetAssociatedNexUniqueIDWithMyPrincipalIDHandler == nil {
+		fmt.Println("[Warning] UtilityProtocol::GetAssociatedNexUniqueIDWithMyPrincipalID not implemented")
 		go respondNotImplemented(packet, UtilityProtocolID)
 		return
 	}
@@ -252,12 +252,12 @@ func (utilityProtocol *UtilityProtocol) handleGetAssociatedNexUniqueIdWithMyPrin
 
 	callID := request.CallID()
 
-	go utilityProtocol.GetAssociatedNexUniqueIdWithMyPrincipalIdHandler(nil, client, callID)
+	go utilityProtocol.GetAssociatedNexUniqueIDWithMyPrincipalIDHandler(nil, client, callID)
 }
 
-func (utilityProtocol *UtilityProtocol) handleGetAssociatedNexUniqueIdsWithMyPrincipalId(packet nex.PacketInterface) {
-	if utilityProtocol.GetAssociatedNexUniqueIdsWithMyPrincipalIdHandler == nil {
-		fmt.Println("[Warning] UtilityProtocol::GetAssociatedNexUniqueIdsWithMyPrincipalId not implemented")
+func (utilityProtocol *UtilityProtocol) handleGetAssociatedNexUniqueIDsWithMyPrincipalID(packet nex.PacketInterface) {
+	if utilityProtocol.GetAssociatedNexUniqueIDsWithMyPrincipalIDHandler == nil {
+		fmt.Println("[Warning] UtilityProtocol::GetAssociatedNexUniqueIDsWithMyPrincipalID not implemented")
 		go respondNotImplemented(packet, UtilityProtocolID)
 		return
 	}
@@ -267,7 +267,7 @@ func (utilityProtocol *UtilityProtocol) handleGetAssociatedNexUniqueIdsWithMyPri
 
 	callID := request.CallID()
 
-	go utilityProtocol.GetAssociatedNexUniqueIdsWithMyPrincipalIdHandler(nil, client, callID)
+	go utilityProtocol.GetAssociatedNexUniqueIDsWithMyPrincipalIDHandler(nil, client, callID)
 }
 
 func (utilityProtocol *UtilityProtocol) handleGetIntegerSettings(packet nex.PacketInterface) {

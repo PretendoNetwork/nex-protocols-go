@@ -8,16 +8,16 @@ import (
 
 // UniqueIDInfo holds parameters for a matchmake session
 type UniqueIDInfo struct {
-	NexUniqueId         uint64
-	NexUniqueIdPassword uint64
+	NexUniqueID         uint64
+	NexUniqueIDPassword uint64
 
 	*nex.Structure
 }
 
 // Bytes encodes the UniqueIDInfo and returns a byte array
 func (uniqueIDInfo *UniqueIDInfo) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt64LE(uniqueIDInfo.NexUniqueId)
-	stream.WriteUInt64LE(uniqueIDInfo.NexUniqueIdPassword)
+	stream.WriteUInt64LE(uniqueIDInfo.NexUniqueID)
+	stream.WriteUInt64LE(uniqueIDInfo.NexUniqueIDPassword)
 
 	return stream.Bytes()
 }
@@ -26,8 +26,8 @@ func (uniqueIDInfo *UniqueIDInfo) Bytes(stream *nex.StreamOut) []byte {
 func (uniqueIDInfo *UniqueIDInfo) ExtractFromStream(stream *nex.StreamIn) error {
 	var err error
 
-	uniqueIDInfo.NexUniqueId = stream.ReadUInt64LE();
-	uniqueIDInfo.NexUniqueIdPassword = stream.ReadUInt64LE();
+	uniqueIDInfo.NexUniqueID = stream.ReadUInt64LE();
+	uniqueIDInfo.NexUniqueIDPassword = stream.ReadUInt64LE();
 
 	if err != nil {
 		return err

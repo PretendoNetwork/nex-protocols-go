@@ -52,6 +52,9 @@ const (
 	// DataStoreSMMMethodGetApplicationConfigString is the method ID for the method GetApplicationConfigString
 	DataStoreSMMMethodGetApplicationConfigString = 0x4A
 
+	// DataStoreSMMMethodGetDeletionReason is the method ID for the method GetDeletionReason
+	DataStoreSMMMethodGetDeletionReason = 0x4C
+
 	// DataStoreSMMMethodGetMetasWithCourseRecord is the method ID for the method GetMetasWithCourseRecord
 	DataStoreSMMMethodGetMetasWithCourseRecord = 0x4E
 
@@ -80,6 +83,7 @@ type DataStoreSMMProtocol struct {
 	UploadCourseRecordHandler                 func(err error, client *nex.Client, callID uint32, param *DataStoreUploadCourseRecordParam)
 	GetCourseRecordHandler                    func(err error, client *nex.Client, callID uint32, param *DataStoreGetCourseRecordParam)
 	GetApplicationConfigStringHandler         func(err error, client *nex.Client, callID uint32, applicationID uint32)
+	GetDeletionReasonHandler                  func(err error, client *nex.Client, callID uint32, dataIdLst []uint64)
 	GetMetasWithCourseRecordHandler           func(err error, client *nex.Client, callID uint32, dataStoreGetCourseRecordParams []*DataStoreGetCourseRecordParam, dataStoreGetMetaParam *DataStoreGetMetaParam)
 	CheckRateCustomRankingCounterHandler      func(err error, client *nex.Client, callID uint32, applicationID uint32)
 	CTRPickUpCourseSearchObjectHandler        func(err error, client *nex.Client, callID uint32, dataStoreSearchParam *DataStoreSearchParam, extraData []string)
@@ -377,6 +381,8 @@ func (dataStoreSMMProtocol *DataStoreSMMProtocol) Setup() {
 				go dataStoreSMMProtocol.handleGetCourseRecord(packet)
 			case DataStoreSMMMethodGetApplicationConfigString:
 				go dataStoreSMMProtocol.handleGetApplicationConfigString(packet)
+			case DataStoreSMMMethodGetDeletionReason:
+				go dataStoreSMMProtocol.handleGetDeletionReason(packet)
 			case DataStoreSMMMethodGetMetasWithCourseRecord:
 				go dataStoreSMMProtocol.handleGetMetasWithCourseRecord(packet)
 			case DataStoreSMMMethodCheckRateCustomRankingCounter:
@@ -459,6 +465,11 @@ func (dataStoreSMMProtocol *DataStoreSMMProtocol) GetCourseRecord(handler func(e
 // GetApplicationConfigString sets the GetApplicationConfigString handler function
 func (dataStoreSMMProtocol *DataStoreSMMProtocol) GetApplicationConfigString(handler func(err error, client *nex.Client, callID uint32, applicationID uint32)) {
 	dataStoreSMMProtocol.GetApplicationConfigStringHandler = handler
+}
+
+// GetDeletionReason sets the GetDeletionReason handler function
+func (dataStoreSMMProtocol *DataStoreSMMProtocol) GetDeletionReason(handler func(err error, client *nex.Client, callID uint32, dataIdLst []uint64)) {
+	dataStoreSMMProtocol.GetDeletionReasonHandler = handler
 }
 
 // GetMetasWithCourseRecord sets the GetMetasWithCourseRecord handler function
@@ -816,6 +827,26 @@ func (dataStoreSMMProtocol *DataStoreSMMProtocol) handleGetApplicationConfigStri
 	applicationID := parametersStream.ReadUInt32LE()
 
 	go dataStoreSMMProtocol.GetApplicationConfigStringHandler(nil, client, callID, applicationID)
+}
+
+func (dataStoreSMMProtocol *DataStoreSMMProtocol) handleGetDeletionReason(packet nex.PacketInterface) {
+	if dataStoreSMMProtocol.GetDeletionReasonHandler == nil {
+		fmt.Println("[Warning] DataStoreSMMProtocol::GetDeletionReason not implemented")
+		go respondNotImplemented(packet, DataStoreSMMProtocolID)
+		return
+	}
+
+	client := packet.Sender()
+	request := packet.RMCRequest()
+
+	callID := request.CallID()
+	parameters := request.Parameters()
+
+	parametersStream := nex.NewStreamIn(parameters, dataStoreSMMProtocol.server)
+
+	dataIdLst := parametersStream.ReadListUInt64LE()
+
+	go dataStoreSMMProtocol.GetDeletionReasonHandler(nil, client, callID, dataIdLst)
 }
 
 func (dataStoreSMMProtocol *DataStoreSMMProtocol) handleGetMetasWithCourseRecord(packet nex.PacketInterface) {

@@ -26,8 +26,8 @@ func (uniqueIDInfo *UniqueIDInfo) Bytes(stream *nex.StreamOut) []byte {
 func (uniqueIDInfo *UniqueIDInfo) ExtractFromStream(stream *nex.StreamIn) error {
 	var err error
 
-	uniqueIDInfo.NexUniqueID = stream.ReadUInt64LE();
-	uniqueIDInfo.NexUniqueIDPassword = stream.ReadUInt64LE();
+	uniqueIDInfo.NexUniqueID = stream.ReadUInt64LE()
+	uniqueIDInfo.NexUniqueIDPassword = stream.ReadUInt64LE()
 
 	if err != nil {
 		return err
@@ -195,7 +195,7 @@ func (utilityProtocol *UtilityProtocol) handleAssociateNexUniqueIDWithMyPrincipa
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
-	
+
 	parameters := request.Parameters()
 
 	parametersStream := nex.NewStreamIn(parameters, utilityProtocol.server)
@@ -221,13 +221,13 @@ func (utilityProtocol *UtilityProtocol) handleAssociateNexUniqueIDsWithMyPrincip
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
-	
+
 	parameters := request.Parameters()
 
 	parametersStream := nex.NewStreamIn(parameters, utilityProtocol.server)
-	structureCount := (int)(parametersStream.ReadUInt32LE());
+	structureCount := (int)(parametersStream.ReadUInt32LE())
 	uniqueIDInfo := make([]*UniqueIDInfo, structureCount)
-	
+
 	for i := 0; i < structureCount; i++ {
 		uniqueIDInfoStructureInterface, err := parametersStream.ReadStructure(NewUniqueIDInfo())
 		if err != nil {
@@ -281,11 +281,11 @@ func (utilityProtocol *UtilityProtocol) handleGetIntegerSettings(packet nex.Pack
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
-	
+
 	parameters := request.Parameters()
 
 	parametersStream := nex.NewStreamIn(parameters, utilityProtocol.server)
-	integerSettingIndex := parametersStream.ReadUInt32LE();
+	integerSettingIndex := parametersStream.ReadUInt32LE()
 
 	go utilityProtocol.GetIntegerSettingsHandler(nil, client, callID, integerSettingIndex)
 }
@@ -301,11 +301,11 @@ func (utilityProtocol *UtilityProtocol) handleGetStringSettings(packet nex.Packe
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
-	
+
 	parameters := request.Parameters()
 
 	parametersStream := nex.NewStreamIn(parameters, utilityProtocol.server)
-	stringSettingIndex := parametersStream.ReadUInt32LE();
+	stringSettingIndex := parametersStream.ReadUInt32LE()
 
 	go utilityProtocol.GetStringSettingsHandler(nil, client, callID, stringSettingIndex)
 }

@@ -164,7 +164,7 @@ func (matchmakeSession *MatchmakeSession) GetHierarchy() []nex.StructureInterfac
 func (matchmakeSession *MatchmakeSession) ExtractFromStream(stream *nex.StreamIn) error {
 	var err error
 	server := stream.Server
-	
+
 	//matchmakeSession.Gathering = gathering
 	matchmakeSession.GameMode = stream.ReadUInt32LE()
 	matchmakeSession.Attributes = stream.ReadListUInt32LE()
@@ -246,7 +246,7 @@ func (matchmakeSession *MatchmakeSession) Bytes(stream *nex.StreamOut) []byte {
 	if server.NexVersion() >= 30500 {
 		stream.WriteUInt32LE(matchmakeSession.Option)
 	}
-	
+
 	//unimplemented for now since MK7 didn't need it
 	/*if server.NexVersion() >= 40000 {
 		matchmakeParam, err := stream.ReadStructure(NewMatchmakeParam())

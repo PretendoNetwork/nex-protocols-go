@@ -923,9 +923,9 @@ func (dataStoreSmash4Protocol *DataStoreSmash4Protocol) Setup() {
 			case DataStoreMethodRateObjects:
 				go dataStoreSmash4Protocol.handleRateObjects(packet)
 			case DataStoreMethodPostMetaBinaryWithDataID:
-				//go dataStoreSmash4Protocol.handlePostMetaBinaryWithDataId(packet)
+				//go dataStoreSmash4Protocol.handlePostMetaBinaryWithDataID(packet)
 			case DataStoreMethodPostMetaBinariesWithDataID:
-				//go dataStoreSmash4Protocol.handlePostMetaBinariesWithDataId(packet)
+				//go dataStoreSmash4Protocol.handlePostMetaBinariesWithDataID(packet)
 			case DataStoreMethodRateObjectWithPosting:
 				//go dataStoreSmash4Protocol.handleRateObjectWithPosting(packet)
 			case DataStoreMethodRateObjectsWithPosting:

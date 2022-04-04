@@ -17,3 +17,5 @@ test
 ./test
 *_
 \.idea/
+
+go.work

@@ -73,8 +73,8 @@ func (authenticationInfo *AuthenticationInfo) ExtractFromStream(stream *nex.Stre
 	}
 
 	if len(stream.Bytes()[stream.ByteOffset():]) < 9 {
+		logger.Error("Data size too small")
 		return nil //technically not needed (for now) and was causing some strangeness with MK7
-		return errors.New("[AuthenticationInfo::ExtractFromStream] Data size too small")
 	}
 
 	authenticationInfo.Token = token
@@ -161,7 +161,7 @@ func (authenticationProtocol *AuthenticationProtocol) LoginWithParam(handler fun
 
 func (authenticationProtocol *AuthenticationProtocol) handleLogin(packet nex.PacketInterface) {
 	if authenticationProtocol.LoginHandler == nil {
-		fmt.Println("[Warning] AuthenticationProtocol::Login not implemented")
+		logger.Warning("AuthenticationProtocol::Login not implemented")
 		go respondNotImplemented(packet, AuthenticationProtocolID)
 		return
 	}
@@ -186,7 +186,7 @@ func (authenticationProtocol *AuthenticationProtocol) handleLogin(packet nex.Pac
 
 func (authenticationProtocol *AuthenticationProtocol) handleLoginEx(packet nex.PacketInterface) {
 	if authenticationProtocol.LoginExHandler == nil {
-		fmt.Println("[Warning] AuthenticationProtocol::LoginEx not implemented")
+		logger.Warning("AuthenticationProtocol::LoginEx not implemented")
 		go respondNotImplemented(packet, AuthenticationProtocolID)
 		return
 	}
@@ -242,7 +242,7 @@ func (authenticationProtocol *AuthenticationProtocol) handleLoginEx(packet nex.P
 
 func (authenticationProtocol *AuthenticationProtocol) handleRequestTicket(packet nex.PacketInterface) {
 	if authenticationProtocol.RequestTicketHandler == nil {
-		fmt.Println("[Warning] AuthenticationProtocol::RequestTicket not implemented")
+		logger.Warning("AuthenticationProtocol::RequestTicket not implemented")
 		go respondNotImplemented(packet, AuthenticationProtocolID)
 		return
 	}
@@ -268,7 +268,7 @@ func (authenticationProtocol *AuthenticationProtocol) handleRequestTicket(packet
 
 func (authenticationProtocol *AuthenticationProtocol) handleGetPID(packet nex.PacketInterface) {
 	if authenticationProtocol.GetPIDHandler == nil {
-		fmt.Println("[Warning] AuthenticationProtocol::GetPID not implemented")
+		logger.Warning("AuthenticationProtocol::GetPID not implemented")
 		go respondNotImplemented(packet, AuthenticationProtocolID)
 		return
 	}
@@ -293,7 +293,7 @@ func (authenticationProtocol *AuthenticationProtocol) handleGetPID(packet nex.Pa
 
 func (authenticationProtocol *AuthenticationProtocol) handleGetName(packet nex.PacketInterface) {
 	if authenticationProtocol.GetNameHandler == nil {
-		fmt.Println("[Warning] AuthenticationProtocol::GetName not implemented")
+		logger.Warning("AuthenticationProtocol::GetName not implemented")
 		go respondNotImplemented(packet, AuthenticationProtocolID)
 		return
 	}
@@ -318,7 +318,7 @@ func (authenticationProtocol *AuthenticationProtocol) handleGetName(packet nex.P
 
 func (authenticationProtocol *AuthenticationProtocol) handleLoginWithParam(packet nex.PacketInterface) {
 	if authenticationProtocol.LoginWithParamHandler == nil {
-		fmt.Println("[Warning] AuthenticationProtocol::LoginWithParam not implemented")
+		logger.Warning("AuthenticationProtocol::LoginWithParam not implemented")
 		go respondNotImplemented(packet, AuthenticationProtocolID)
 		return
 	}

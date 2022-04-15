@@ -156,7 +156,7 @@ func (utilityProtocol *UtilityProtocol) GetStringSettings(handler func(err error
 
 func (utilityProtocol *UtilityProtocol) handleAcquireNexUniqueID(packet nex.PacketInterface) {
 	if utilityProtocol.AcquireNexUniqueIDHandler == nil {
-		fmt.Println("[Warning] UtilityProtocol::AcquireNexUniqueID not implemented")
+		logger.Warning("UtilityProtocol::AcquireNexUniqueID not implemented")
 		go respondNotImplemented(packet, UtilityProtocolID)
 		return
 	}
@@ -171,7 +171,7 @@ func (utilityProtocol *UtilityProtocol) handleAcquireNexUniqueID(packet nex.Pack
 
 func (utilityProtocol *UtilityProtocol) handleAcquireNexUniqueIDWithPassword(packet nex.PacketInterface) {
 	if utilityProtocol.AcquireNexUniqueIDWithPasswordHandler == nil {
-		fmt.Println("[Warning] UtilityProtocol::AcquireNexUniqueIDWithPassword not implemented")
+		logger.Warning("UtilityProtocol::AcquireNexUniqueIDWithPassword not implemented")
 		go respondNotImplemented(packet, UtilityProtocolID)
 		return
 	}
@@ -186,7 +186,7 @@ func (utilityProtocol *UtilityProtocol) handleAcquireNexUniqueIDWithPassword(pac
 
 func (utilityProtocol *UtilityProtocol) handleAssociateNexUniqueIDWithMyPrincipalID(packet nex.PacketInterface) {
 	if utilityProtocol.AssociateNexUniqueIDWithMyPrincipalIDHandler == nil {
-		fmt.Println("[Warning] UtilityProtocol::AssociateNexUniqueIDWithMyPrincipalID not implemented")
+		logger.Warning("UtilityProtocol::AssociateNexUniqueIDWithMyPrincipalID not implemented")
 		go respondNotImplemented(packet, UtilityProtocolID)
 		return
 	}
@@ -212,7 +212,7 @@ func (utilityProtocol *UtilityProtocol) handleAssociateNexUniqueIDWithMyPrincipa
 
 func (utilityProtocol *UtilityProtocol) handleAssociateNexUniqueIDsWithMyPrincipalID(packet nex.PacketInterface) {
 	if utilityProtocol.GetAssociatedNexUniqueIDWithMyPrincipalIDHandler == nil {
-		fmt.Println("[Warning] UtilityProtocol::AssociateNexUniqueIDsWithMyPrincipalID not implemented")
+		logger.Warning("UtilityProtocol::AssociateNexUniqueIDsWithMyPrincipalID not implemented")
 		go respondNotImplemented(packet, UtilityProtocolID)
 		return
 	}
@@ -242,7 +242,7 @@ func (utilityProtocol *UtilityProtocol) handleAssociateNexUniqueIDsWithMyPrincip
 
 func (utilityProtocol *UtilityProtocol) handleGetAssociatedNexUniqueIDWithMyPrincipalID(packet nex.PacketInterface) {
 	if utilityProtocol.GetAssociatedNexUniqueIDWithMyPrincipalIDHandler == nil {
-		fmt.Println("[Warning] UtilityProtocol::GetAssociatedNexUniqueIDWithMyPrincipalID not implemented")
+		logger.Warning("UtilityProtocol::GetAssociatedNexUniqueIDWithMyPrincipalID not implemented")
 		go respondNotImplemented(packet, UtilityProtocolID)
 		return
 	}
@@ -257,7 +257,7 @@ func (utilityProtocol *UtilityProtocol) handleGetAssociatedNexUniqueIDWithMyPrin
 
 func (utilityProtocol *UtilityProtocol) handleGetAssociatedNexUniqueIDsWithMyPrincipalID(packet nex.PacketInterface) {
 	if utilityProtocol.GetAssociatedNexUniqueIDsWithMyPrincipalIDHandler == nil {
-		fmt.Println("[Warning] UtilityProtocol::GetAssociatedNexUniqueIDsWithMyPrincipalID not implemented")
+		logger.Warning("UtilityProtocol::GetAssociatedNexUniqueIDsWithMyPrincipalID not implemented")
 		go respondNotImplemented(packet, UtilityProtocolID)
 		return
 	}
@@ -272,7 +272,7 @@ func (utilityProtocol *UtilityProtocol) handleGetAssociatedNexUniqueIDsWithMyPri
 
 func (utilityProtocol *UtilityProtocol) handleGetIntegerSettings(packet nex.PacketInterface) {
 	if utilityProtocol.GetIntegerSettingsHandler == nil {
-		fmt.Println("[Warning] UtilityProtocol::GetIntegerSettings not implemented")
+		logger.Warning("UtilityProtocol::GetIntegerSettings not implemented")
 		go respondNotImplemented(packet, UtilityProtocolID)
 		return
 	}
@@ -292,7 +292,7 @@ func (utilityProtocol *UtilityProtocol) handleGetIntegerSettings(packet nex.Pack
 
 func (utilityProtocol *UtilityProtocol) handleGetStringSettings(packet nex.PacketInterface) {
 	if utilityProtocol.GetStringSettingsHandler == nil {
-		fmt.Println("[Warning] UtilityProtocol::GetStringSettings not implemented")
+		logger.Warning("UtilityProtocol::GetStringSettings not implemented")
 		go respondNotImplemented(packet, UtilityProtocolID)
 		return
 	}

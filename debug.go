@@ -84,7 +84,7 @@ func (debugProtocol *DebugProtocol) Setup() {
 
 func (debugProtocol *DebugProtocol) handleEnableApiRecorder(packet nex.PacketInterface) {
 	if debugProtocol.EnableApiRecorderHandler == nil {
-		fmt.Println("[Warning] DebugProtocol::EnableApiRecorder not implemented")
+		logger.Warning("DebugProtocol::EnableApiRecorder not implemented")
 		go respondNotImplemented(packet, DebugProtocolID)
 		return
 	}
@@ -99,7 +99,7 @@ func (debugProtocol *DebugProtocol) handleEnableApiRecorder(packet nex.PacketInt
 
 func (debugProtocol *DebugProtocol) handleDisableApiRecorder(packet nex.PacketInterface) {
 	if debugProtocol.DisableApiRecorderHandler == nil {
-		fmt.Println("[Warning] DebugProtocol::DisableApiRecorder not implemented")
+		logger.Warning("DebugProtocol::DisableApiRecorder not implemented")
 		go respondNotImplemented(packet, DebugProtocolID)
 		return
 	}
@@ -114,7 +114,7 @@ func (debugProtocol *DebugProtocol) handleDisableApiRecorder(packet nex.PacketIn
 
 func (debugProtocol *DebugProtocol) handleIsApiRecorderEnabled(packet nex.PacketInterface) {
 	if debugProtocol.IsApiRecorderEnabledHandler == nil {
-		fmt.Println("[Warning] DebugProtocol::IsApiRecorderEnabled not implemented")
+		logger.Warning("DebugProtocol::IsApiRecorderEnabled not implemented")
 		go respondNotImplemented(packet, DebugProtocolID)
 		return
 	}
@@ -129,7 +129,7 @@ func (debugProtocol *DebugProtocol) handleIsApiRecorderEnabled(packet nex.Packet
 
 func (debugProtocol *DebugProtocol) handleGetApiCalls(packet nex.PacketInterface) {
 	if debugProtocol.GetApiCallsHandler == nil {
-		fmt.Println("[Warning] DebugProtocol::GetApiCalls not implemented")
+		logger.Warning("DebugProtocol::GetApiCalls not implemented")
 		go respondNotImplemented(packet, DebugProtocolID)
 		return
 	}
@@ -156,10 +156,10 @@ func (debugProtocol *DebugProtocol) handleGetApiCalls(packet nex.PacketInterface
 }
 
 func (debugProtocol *DebugProtocol) handleSetExcludeJoinedMatchmakeSession(packet nex.PacketInterface) {
-	fmt.Println("[Warning] DebugProtocol::SetExcludeJoinedMatchmakeSession STUBBED")
+	logger.Warning("DebugProtocol::SetExcludeJoinedMatchmakeSession STUBBED")
 
 	if debugProtocol.SetExcludeJoinedMatchmakeSessionHandler == nil {
-		fmt.Println("[Warning] DebugProtocol::SetExcludeJoinedMatchmakeSession not implemented")
+		logger.Warning("DebugProtocol::SetExcludeJoinedMatchmakeSession not implemented")
 		go respondNotImplemented(packet, DebugProtocolID)
 		return
 	}
@@ -167,10 +167,10 @@ func (debugProtocol *DebugProtocol) handleSetExcludeJoinedMatchmakeSession(packe
 }
 
 func (debugProtocol *DebugProtocol) handleGetExcludeJoinedMatchmakeSession(packet nex.PacketInterface) {
-	fmt.Println("[Warning] DebugProtocol::GetExcludeJoinedMatchmakeSession STUBBED")
+	logger.Warning("DebugProtocol::GetExcludeJoinedMatchmakeSession STUBBED")
 
 	if debugProtocol.GetExcludeJoinedMatchmakeSessionHandler == nil {
-		fmt.Println("[Warning] DebugProtocol::GetExcludeJoinedMatchmakeSession not implemented")
+		logger.Warning("DebugProtocol::GetExcludeJoinedMatchmakeSession not implemented")
 		go respondNotImplemented(packet, DebugProtocolID)
 		return
 	}
@@ -178,10 +178,10 @@ func (debugProtocol *DebugProtocol) handleGetExcludeJoinedMatchmakeSession(packe
 }
 
 func (debugProtocol *DebugProtocol) handleGetApiCallSummary(packet nex.PacketInterface) {
-	fmt.Println("[Warning] DebugProtocol::GetApiCallSummary STUBBED")
+	logger.Warning("DebugProtocol::GetApiCallSummary STUBBED")
 
 	if debugProtocol.GetApiCallSummaryHandler == nil {
-		fmt.Println("[Warning] DebugProtocol::GetApiCallSummary not implemented")
+		logger.Warning("DebugProtocol::GetApiCallSummary not implemented")
 		go respondNotImplemented(packet, DebugProtocolID)
 		return
 	}

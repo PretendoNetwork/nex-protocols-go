@@ -1975,7 +1975,7 @@ func (dataStoreProtocol *DataStoreProtocol) RateObjects(handler func(err error, 
 
 func (dataStoreProtocol *DataStoreProtocol) handleGetMeta(packet nex.PacketInterface) {
 	if dataStoreProtocol.GetMetaHandler == nil {
-		fmt.Println("[Warning] DataStoreProtocol::GetMeta not implemented")
+		logger.Warning("DataStoreProtocol::GetMeta not implemented")
 		go respondNotImplemented(packet, DataStoreProtocolID)
 		return
 	}
@@ -2000,7 +2000,7 @@ func (dataStoreProtocol *DataStoreProtocol) handleGetMeta(packet nex.PacketInter
 
 func (dataStoreProtocol *DataStoreProtocol) handlePreparePostObject(packet nex.PacketInterface) {
 	if dataStoreProtocol.PreparePostObjectHandler == nil {
-		fmt.Println("[Warning] DataStoreProtocol::PreparePostObject not implemented")
+		logger.Warning("DataStoreProtocol::PreparePostObject not implemented")
 		go respondNotImplemented(packet, DataStoreProtocolID)
 		return
 	}
@@ -2024,7 +2024,7 @@ func (dataStoreProtocol *DataStoreProtocol) handlePreparePostObject(packet nex.P
 
 func (dataStoreProtocol *DataStoreProtocol) handlePrepareGetObject(packet nex.PacketInterface) {
 	if dataStoreProtocol.PrepareGetObjectHandler == nil {
-		fmt.Println("[Warning] DataStoreProtocol::PrepareGetObject not implemented")
+		logger.Warning("DataStoreProtocol::PrepareGetObject not implemented")
 		go respondNotImplemented(packet, DataStoreProtocolID)
 		return
 	}
@@ -2049,7 +2049,7 @@ func (dataStoreProtocol *DataStoreProtocol) handlePrepareGetObject(packet nex.Pa
 
 func (dataStoreProtocol *DataStoreProtocol) handleCompletePostObject(packet nex.PacketInterface) {
 	if dataStoreProtocol.CompletePostObjectHandler == nil {
-		fmt.Println("[Warning] DataStoreProtocol::CompletePostObject not implemented")
+		logger.Warning("DataStoreProtocol::CompletePostObject not implemented")
 		go respondNotImplemented(packet, DataStoreProtocolID)
 		return
 	}
@@ -2073,7 +2073,7 @@ func (dataStoreProtocol *DataStoreProtocol) handleCompletePostObject(packet nex.
 
 func (dataStoreProtocol *DataStoreProtocol) handleGetMetasMultipleParam(packet nex.PacketInterface) {
 	if dataStoreProtocol.GetMetasMultipleParamHandler == nil {
-		fmt.Println("[Warning] DataStoreProtocol::GetMetasMultipleParam not implemented")
+		logger.Warning("DataStoreProtocol::GetMetasMultipleParam not implemented")
 		go respondNotImplemented(packet, DataStoreProtocolID)
 		return
 	}
@@ -2098,7 +2098,7 @@ func (dataStoreProtocol *DataStoreProtocol) handleGetMetasMultipleParam(packet n
 
 func (dataStoreProtocol *DataStoreProtocol) handleChangeMeta(packet nex.PacketInterface) {
 	if dataStoreProtocol.ChangeMetaHandler == nil {
-		fmt.Println("[Warning] DataStoreProtocol::ChangeMeta not implemented")
+		logger.Warning("DataStoreProtocol::ChangeMeta not implemented")
 		go respondNotImplemented(packet, DataStoreProtocolID)
 		return
 	}
@@ -2123,7 +2123,7 @@ func (dataStoreProtocol *DataStoreProtocol) handleChangeMeta(packet nex.PacketIn
 
 func (dataStoreProtocol *DataStoreProtocol) handleRateObjects(packet nex.PacketInterface) {
 	if dataStoreProtocol.RateObjectsHandler == nil {
-		fmt.Println("[Warning] DataStoreProtocol::RateObjects not implemented")
+		logger.Warning("DataStoreProtocol::RateObjects not implemented")
 		go respondNotImplemented(packet, DataStoreProtocolID)
 		return
 	}

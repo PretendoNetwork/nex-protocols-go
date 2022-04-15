@@ -124,7 +124,7 @@ func (secureProtocol *SecureProtocol) SendReport(handler func(err error, client 
 
 func (secureProtocol *SecureProtocol) handleRegister(packet nex.PacketInterface) {
 	if secureProtocol.RegisterHandler == nil {
-		fmt.Println("[Warning] SecureProtocol::Register not implemented")
+		logger.Warning("SecureProtocol::Register not implemented")
 		go respondNotImplemented(packet, SecureProtocolID)
 		return
 	}
@@ -155,7 +155,7 @@ func (secureProtocol *SecureProtocol) handleRegister(packet nex.PacketInterface)
 
 func (secureProtocol *SecureProtocol) handleRequestConnectionData(packet nex.PacketInterface) {
 	if secureProtocol.RequestConnectionDataHandler == nil {
-		fmt.Println("[Warning] SecureProtocol::RequestConnectionData not implemented")
+		logger.Warning("SecureProtocol::RequestConnectionData not implemented")
 		go respondNotImplemented(packet, SecureProtocolID)
 		return
 	}
@@ -182,7 +182,7 @@ func (secureProtocol *SecureProtocol) handleRequestConnectionData(packet nex.Pac
 
 func (secureProtocol *SecureProtocol) handleRequestURLs(packet nex.PacketInterface) {
 	if secureProtocol.RequestURLsHandler == nil {
-		fmt.Println("[Warning] SecureProtocol::RequestURLs not implemented")
+		logger.Warning("SecureProtocol::RequestURLs not implemented")
 		go respondNotImplemented(packet, SecureProtocolID)
 		return
 	}
@@ -209,7 +209,7 @@ func (secureProtocol *SecureProtocol) handleRequestURLs(packet nex.PacketInterfa
 
 func (secureProtocol *SecureProtocol) handleRegisterEx(packet nex.PacketInterface) {
 	if secureProtocol.RegisterExHandler == nil {
-		fmt.Println("[Warning] SecureProtocol::RegisterEx not implemented")
+		logger.Warning("SecureProtocol::RegisterEx not implemented")
 		go respondNotImplemented(packet, SecureProtocolID)
 		return
 	}
@@ -286,7 +286,7 @@ func (secureProtocol *SecureProtocol) handleRegisterEx(packet nex.PacketInterfac
 
 func (secureProtocol *SecureProtocol) handleTestConnectivity(packet nex.PacketInterface) {
 	if secureProtocol.TestConnectivityHandler == nil {
-		fmt.Println("[Warning] SecureProtocol::TestConnectivity not implemented")
+		logger.Warning("SecureProtocol::TestConnectivity not implemented")
 		go respondNotImplemented(packet, SecureProtocolID)
 		return
 	}
@@ -301,7 +301,7 @@ func (secureProtocol *SecureProtocol) handleTestConnectivity(packet nex.PacketIn
 
 func (secureProtocol *SecureProtocol) handleUpdateURLs(packet nex.PacketInterface) {
 	if secureProtocol.UpdateURLsHandler == nil {
-		fmt.Println("[Warning] SecureProtocol::UpdateURLs not implemented")
+		logger.Warning("SecureProtocol::UpdateURLs not implemented")
 		go respondNotImplemented(packet, SecureProtocolID)
 		return
 	}
@@ -340,7 +340,7 @@ func (secureProtocol *SecureProtocol) handleUpdateURLs(packet nex.PacketInterfac
 
 func (secureProtocol *SecureProtocol) handleReplaceURL(packet nex.PacketInterface) {
 	if secureProtocol.ReplaceURLHandler == nil {
-		fmt.Println("[Warning] SecureProtocol::ReplaceURL not implemented")
+		logger.Warning("SecureProtocol::ReplaceURL not implemented")
 		go respondNotImplemented(packet, SecureProtocolID)
 		return
 	}
@@ -375,7 +375,7 @@ func (secureProtocol *SecureProtocol) handleReplaceURL(packet nex.PacketInterfac
 
 func (secureProtocol *SecureProtocol) handleSendReport(packet nex.PacketInterface) {
 	if secureProtocol.SendReportHandler == nil {
-		fmt.Println("[Warning] SecureProtocol::SendReport not implemented")
+		logger.Warning("SecureProtocol::SendReport not implemented")
 		go respondNotImplemented(packet, SecureProtocolID)
 		return
 	}

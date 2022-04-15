@@ -489,7 +489,7 @@ func (dataStoreSMMProtocol *DataStoreSMMProtocol) CTRPickUpCourseSearchObject(ha
 
 func (dataStoreSMMProtocol *DataStoreSMMProtocol) handleGetObjectInfos(packet nex.PacketInterface) {
 	if dataStoreSMMProtocol.GetObjectInfosHandler == nil {
-		fmt.Println("[Warning] DataStoreSMMProtocol::GetObjectInfos not implemented")
+		logger.Warning("DataStoreSMMProtocol::GetObjectInfos not implemented")
 		go respondNotImplemented(packet, DataStoreSMMProtocolID)
 		return
 	}
@@ -509,7 +509,7 @@ func (dataStoreSMMProtocol *DataStoreSMMProtocol) handleGetObjectInfos(packet ne
 
 func (dataStoreSMMProtocol *DataStoreSMMProtocol) handleRateCustomRanking(packet nex.PacketInterface) {
 	if dataStoreSMMProtocol.RateCustomRankingHandler == nil {
-		fmt.Println("[Warning] DataStoreSMMProtocol::RateCustomRanking not implemented")
+		logger.Warning("DataStoreSMMProtocol::RateCustomRanking not implemented")
 		go respondNotImplemented(packet, DataStoreSMMProtocolID)
 		return
 	}
@@ -534,7 +534,7 @@ func (dataStoreSMMProtocol *DataStoreSMMProtocol) handleRateCustomRanking(packet
 
 func (dataStoreSMMProtocol *DataStoreSMMProtocol) handleGetCustomRankingByDataId(packet nex.PacketInterface) {
 	if dataStoreSMMProtocol.GetCustomRankingByDataIdHandler == nil {
-		fmt.Println("[Warning] DataStoreSMMProtocol::GetCustomRankingByDataId not implemented")
+		logger.Warning("DataStoreSMMProtocol::GetCustomRankingByDataId not implemented")
 		go respondNotImplemented(packet, DataStoreSMMProtocolID)
 		return
 	}
@@ -559,7 +559,7 @@ func (dataStoreSMMProtocol *DataStoreSMMProtocol) handleGetCustomRankingByDataId
 
 func (dataStoreSMMProtocol *DataStoreSMMProtocol) handleAddToBufferQueues(packet nex.PacketInterface) {
 	if dataStoreSMMProtocol.AddToBufferQueuesHandler == nil {
-		fmt.Println("[Warning] DataStoreSMMProtocol::AddToBufferQueues not implemented")
+		logger.Warning("DataStoreSMMProtocol::AddToBufferQueues not implemented")
 		go respondNotImplemented(packet, DataStoreSMMProtocolID)
 		return
 	}
@@ -586,7 +586,7 @@ func (dataStoreSMMProtocol *DataStoreSMMProtocol) handleAddToBufferQueues(packet
 
 func (dataStoreSMMProtocol *DataStoreSMMProtocol) handleGetBufferQueue(packet nex.PacketInterface) {
 	if dataStoreSMMProtocol.GetBufferQueueHandler == nil {
-		fmt.Println("[Warning] DataStoreSMMProtocol::GetBufferQueue not implemented")
+		logger.Warning("DataStoreSMMProtocol::GetBufferQueue not implemented")
 		go respondNotImplemented(packet, DataStoreSMMProtocolID)
 		return
 	}
@@ -611,7 +611,7 @@ func (dataStoreSMMProtocol *DataStoreSMMProtocol) handleGetBufferQueue(packet ne
 
 func (dataStoreSMMProtocol *DataStoreSMMProtocol) handleCompleteAttachFile(packet nex.PacketInterface) {
 	if dataStoreSMMProtocol.CompleteAttachFileHandler == nil {
-		fmt.Println("[Warning] DataStoreSMMProtocol::CompleteAttachFile not implemented")
+		logger.Warning("DataStoreSMMProtocol::CompleteAttachFile not implemented")
 		go respondNotImplemented(packet, DataStoreSMMProtocolID)
 		return
 	}
@@ -635,7 +635,7 @@ func (dataStoreSMMProtocol *DataStoreSMMProtocol) handleCompleteAttachFile(packe
 
 func (dataStoreSMMProtocol *DataStoreSMMProtocol) handlePrepareAttachFile(packet nex.PacketInterface) {
 	if dataStoreSMMProtocol.PrepareAttachFileHandler == nil {
-		fmt.Println("[Warning] DataStoreSMMProtocol::PrepareAttachFile not implemented")
+		logger.Warning("DataStoreSMMProtocol::PrepareAttachFile not implemented")
 		go respondNotImplemented(packet, DataStoreSMMProtocolID)
 		return
 	}
@@ -660,7 +660,7 @@ func (dataStoreSMMProtocol *DataStoreSMMProtocol) handlePrepareAttachFile(packet
 
 func (dataStoreSMMProtocol *DataStoreSMMProtocol) handleGetApplicationConfig(packet nex.PacketInterface) {
 	if dataStoreSMMProtocol.GetApplicationConfigHandler == nil {
-		fmt.Println("[Warning] DataStoreSMMProtocol::GetApplicationConfig not implemented")
+		logger.Warning("DataStoreSMMProtocol::GetApplicationConfig not implemented")
 		go respondNotImplemented(packet, DataStoreSMMProtocolID)
 		return
 	}
@@ -680,7 +680,7 @@ func (dataStoreSMMProtocol *DataStoreSMMProtocol) handleGetApplicationConfig(pac
 
 func (dataStoreSMMProtocol *DataStoreSMMProtocol) handleFollowingsLatestCourseSearchObject(packet nex.PacketInterface) {
 	if dataStoreSMMProtocol.FollowingsLatestCourseSearchObjectHandler == nil {
-		fmt.Println("[Warning] DataStoreSMMProtocol::FollowingsLatestCourseSearchObject not implemented")
+		logger.Warning("DataStoreSMMProtocol::FollowingsLatestCourseSearchObject not implemented")
 		go respondNotImplemented(packet, DataStoreSMMProtocolID)
 		return
 	}
@@ -707,7 +707,7 @@ func (dataStoreSMMProtocol *DataStoreSMMProtocol) handleFollowingsLatestCourseSe
 
 func (dataStoreSMMProtocol *DataStoreSMMProtocol) handleRecommendedCourseSearchObject(packet nex.PacketInterface) {
 	if dataStoreSMMProtocol.RecommendedCourseSearchObjectHandler == nil {
-		fmt.Println("[Warning] DataStoreSMMProtocol::RecommendedCourseSearchObject not implemented")
+		logger.Warning("DataStoreSMMProtocol::RecommendedCourseSearchObject not implemented")
 		go respondNotImplemented(packet, DataStoreSMMProtocolID)
 		return
 	}
@@ -734,7 +734,7 @@ func (dataStoreSMMProtocol *DataStoreSMMProtocol) handleRecommendedCourseSearchO
 
 func (dataStoreSMMProtocol *DataStoreSMMProtocol) handleSuggestedCourseSearchObject(packet nex.PacketInterface) {
 	if dataStoreSMMProtocol.SuggestedCourseSearchObjectHandler == nil {
-		fmt.Println("[Warning] DataStoreSMMProtocol::SuggestedCourseSearchObject not implemented")
+		logger.Warning("DataStoreSMMProtocol::SuggestedCourseSearchObject not implemented")
 		go respondNotImplemented(packet, DataStoreSMMProtocolID)
 		return
 	}
@@ -761,7 +761,7 @@ func (dataStoreSMMProtocol *DataStoreSMMProtocol) handleSuggestedCourseSearchObj
 
 func (dataStoreSMMProtocol *DataStoreSMMProtocol) handleUploadCourseRecord(packet nex.PacketInterface) {
 	if dataStoreSMMProtocol.UploadCourseRecordHandler == nil {
-		fmt.Println("[Warning] DataStoreSMMProtocol::UploadCourseRecord not implemented")
+		logger.Warning("DataStoreSMMProtocol::UploadCourseRecord not implemented")
 		go respondNotImplemented(packet, DataStoreSMMProtocolID)
 		return
 	}
@@ -786,7 +786,7 @@ func (dataStoreSMMProtocol *DataStoreSMMProtocol) handleUploadCourseRecord(packe
 
 func (dataStoreSMMProtocol *DataStoreSMMProtocol) handleGetCourseRecord(packet nex.PacketInterface) {
 	if dataStoreSMMProtocol.GetCourseRecordHandler == nil {
-		fmt.Println("[Warning] DataStoreSMMProtocol::GetCourseRecord not implemented")
+		logger.Warning("DataStoreSMMProtocol::GetCourseRecord not implemented")
 		go respondNotImplemented(packet, DataStoreSMMProtocolID)
 		return
 	}
@@ -811,7 +811,7 @@ func (dataStoreSMMProtocol *DataStoreSMMProtocol) handleGetCourseRecord(packet n
 
 func (dataStoreSMMProtocol *DataStoreSMMProtocol) handleGetApplicationConfigString(packet nex.PacketInterface) {
 	if dataStoreSMMProtocol.GetApplicationConfigStringHandler == nil {
-		fmt.Println("[Warning] DataStoreSMMProtocol::GetApplicationConfigString not implemented")
+		logger.Warning("DataStoreSMMProtocol::GetApplicationConfigString not implemented")
 		go respondNotImplemented(packet, DataStoreSMMProtocolID)
 		return
 	}
@@ -831,7 +831,7 @@ func (dataStoreSMMProtocol *DataStoreSMMProtocol) handleGetApplicationConfigStri
 
 func (dataStoreSMMProtocol *DataStoreSMMProtocol) handleGetDeletionReason(packet nex.PacketInterface) {
 	if dataStoreSMMProtocol.GetDeletionReasonHandler == nil {
-		fmt.Println("[Warning] DataStoreSMMProtocol::GetDeletionReason not implemented")
+		logger.Warning("DataStoreSMMProtocol::GetDeletionReason not implemented")
 		go respondNotImplemented(packet, DataStoreSMMProtocolID)
 		return
 	}
@@ -851,7 +851,7 @@ func (dataStoreSMMProtocol *DataStoreSMMProtocol) handleGetDeletionReason(packet
 
 func (dataStoreSMMProtocol *DataStoreSMMProtocol) handleGetMetasWithCourseRecord(packet nex.PacketInterface) {
 	if dataStoreSMMProtocol.GetMetasWithCourseRecordHandler == nil {
-		fmt.Println("[Warning] DataStoreSMMProtocol::GetMetasWithCourseRecord not implemented")
+		logger.Warning("DataStoreSMMProtocol::GetMetasWithCourseRecord not implemented")
 		go respondNotImplemented(packet, DataStoreSMMProtocolID)
 		return
 	}
@@ -881,7 +881,7 @@ func (dataStoreSMMProtocol *DataStoreSMMProtocol) handleGetMetasWithCourseRecord
 
 func (dataStoreSMMProtocol *DataStoreSMMProtocol) handleCheckRateCustomRankingCounter(packet nex.PacketInterface) {
 	if dataStoreSMMProtocol.CheckRateCustomRankingCounterHandler == nil {
-		fmt.Println("[Warning] DataStoreSMMProtocol::CheckRateCustomRankingCounter not implemented")
+		logger.Warning("DataStoreSMMProtocol::CheckRateCustomRankingCounter not implemented")
 		go respondNotImplemented(packet, DataStoreSMMProtocolID)
 		return
 	}
@@ -901,7 +901,7 @@ func (dataStoreSMMProtocol *DataStoreSMMProtocol) handleCheckRateCustomRankingCo
 
 func (dataStoreSMMProtocol *DataStoreSMMProtocol) handleCTRPickUpCourseSearchObject(packet nex.PacketInterface) {
 	if dataStoreSMMProtocol.CTRPickUpCourseSearchObjectHandler == nil {
-		fmt.Println("[Warning] DataStoreSMMProtocol::CTRPickUpCourseSearchObject not implemented")
+		logger.Warning("DataStoreSMMProtocol::CTRPickUpCourseSearchObject not implemented")
 		go respondNotImplemented(packet, DataStoreSMMProtocolID)
 		return
 	}

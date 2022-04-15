@@ -46,7 +46,7 @@ func (matchMakingProtocol *MatchMakingProtocol) GetSessionURLs(handler func(err 
 
 func (matchMakingProtocol *MatchMakingProtocol) handleGetSessionURLs(packet nex.PacketInterface) {
 	if matchMakingProtocol.GetSessionURLsHandler == nil {
-		fmt.Println("[Warning] MatchMakingProtocol::GetSessionURLs not implemented")
+		logger.Warning("MatchMakingProtocol::GetSessionURLs not implemented")
 		go respondNotImplemented(packet, MatchMakingProtocolID)
 		return
 	}

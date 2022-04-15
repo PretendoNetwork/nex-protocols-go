@@ -48,10 +48,10 @@ func (screeningProtocol *ScreeningProtocol) Setup() {
 }
 
 func (screeningProtocol *ScreeningProtocol) handleReportDataStoreContent(packet nex.PacketInterface) {
-	fmt.Println("[Warning] ScreeningProtocol::ReportDataStoreContent STUBBED")
+	logger.Warning("ScreeningProtocol::ReportDataStoreContent STUBBED")
 
 	if screeningProtocol.ReportDataStoreContentHandler == nil {
-		fmt.Println("[Warning] ScreeningProtocol::ReportDataStoreContent not implemented")
+		logger.Warning("ScreeningProtocol::ReportDataStoreContent not implemented")
 		go respondNotImplemented(packet, ScreeningProtocolID)
 		return
 	}
@@ -59,10 +59,10 @@ func (screeningProtocol *ScreeningProtocol) handleReportDataStoreContent(packet 
 }
 
 func (screeningProtocol *ScreeningProtocol) handleReportUser(packet nex.PacketInterface) {
-	fmt.Println("[Warning] ScreeningProtocol::ReportUser STUBBED")
+	logger.Warning("ScreeningProtocol::ReportUser STUBBED")
 
 	if screeningProtocol.ReportUserHandler == nil {
-		fmt.Println("[Warning] ScreeningProtocol::ReportUser not implemented")
+		logger.Warning("ScreeningProtocol::ReportUser not implemented")
 		go respondNotImplemented(packet, ScreeningProtocolID)
 		return
 	}

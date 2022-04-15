@@ -72,7 +72,7 @@ func (natTraversalProtocol *NATTraversalProtocol) GetRelaySignatureKey(handler f
 
 func (natTraversalProtocol *NATTraversalProtocol) handleRequestProbeInitiationExt(packet nex.PacketInterface) {
 	if natTraversalProtocol.ReportNATPropertiesHandler == nil {
-		fmt.Println("[Warning] NATTraversalProtocol::RequestProbeInitiationExt not implemented")
+		logger.Warning("NATTraversalProtocol::RequestProbeInitiationExt not implemented")
 		go respondNotImplemented(packet, NATTraversalProtocolID)
 		return
 	}
@@ -97,7 +97,7 @@ func (natTraversalProtocol *NATTraversalProtocol) handleRequestProbeInitiationEx
 
 func (natTraversalProtocol *NATTraversalProtocol) handleReportNATProperties(packet nex.PacketInterface) {
 	if natTraversalProtocol.ReportNATPropertiesHandler == nil {
-		fmt.Println("[Warning] NATTraversalProtocol::ReportNATProperties not implemented")
+		logger.Warning("NATTraversalProtocol::ReportNATProperties not implemented")
 		go respondNotImplemented(packet, NATTraversalProtocolID)
 		return
 	}
@@ -119,7 +119,7 @@ func (natTraversalProtocol *NATTraversalProtocol) handleReportNATProperties(pack
 
 func (natTraversalProtocol *NATTraversalProtocol) handleGetRelaySignatureKey(packet nex.PacketInterface) {
 	if natTraversalProtocol.GetRelaySignatureKeyHandler == nil {
-		fmt.Println("[Warning] NATTraversalProtocol::GetRelaySignatureKey not implemented")
+		logger.Warning("NATTraversalProtocol::GetRelaySignatureKey not implemented")
 		go respondNotImplemented(packet, NATTraversalProtocolID)
 		return
 	}

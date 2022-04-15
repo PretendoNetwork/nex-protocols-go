@@ -49,7 +49,7 @@ func (monitoringProtocol *MonitoringProtocol) Setup() {
 
 func (monitoringProtocol *MonitoringProtocol) handlePingDaemon(packet nex.PacketInterface) {
 	if monitoringProtocol.PingDaemonHandler == nil {
-		fmt.Println("[Warning] MonitoringProtocol::PingDaemon not implemented")
+		logger.Warning("MonitoringProtocol::PingDaemon not implemented")
 		go respondNotImplemented(packet, MonitoringProtocolID)
 		return
 	}
@@ -64,7 +64,7 @@ func (monitoringProtocol *MonitoringProtocol) handlePingDaemon(packet nex.Packet
 
 func (monitoringProtocol *MonitoringProtocol) handleGetClusterMembers(packet nex.PacketInterface) {
 	if monitoringProtocol.GetClusterMembersHandler == nil {
-		fmt.Println("[Warning] MonitoringProtocol::GetClusterMembers not implemented")
+		logger.Warning("MonitoringProtocol::GetClusterMembers not implemented")
 		go respondNotImplemented(packet, MonitoringProtocolID)
 		return
 	}

@@ -146,7 +146,7 @@ func (messageDeliveryProtocol *MessageDeliveryProtocol) DeliverMessage(handler f
 
 func (messageDeliveryProtocol *MessageDeliveryProtocol) handleDeliverMessage(packet nex.PacketInterface) {
 	if messageDeliveryProtocol.DeliverMessageHandler == nil {
-		fmt.Println("[Warning] MessageDeliveryProtocol::DeliverMessage not implemented")
+		logger.Warning("MessageDeliveryProtocol::DeliverMessage not implemented")
 		go respondNotImplemented(packet, MessageDeliveryProtocolID)
 		return
 	}

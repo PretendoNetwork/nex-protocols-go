@@ -117,7 +117,7 @@ func (accountManagementProtocol *AccountManagementProtocol) NintendoCreateAccoun
 
 func (accountManagementProtocol *AccountManagementProtocol) handleNintendoCreateAccountHandler(packet nex.PacketInterface) {
 	if accountManagementProtocol.NintendoCreateAccountHandler == nil {
-		fmt.Println("[Warning] AccountManagementProtocol::NintendoCreateAccount not implemented")
+		logger.Warning("AccountManagementProtocol::NintendoCreateAccount not implemented")
 		go respondNotImplemented(packet, AccountManagementProtocolID)
 		return
 	}

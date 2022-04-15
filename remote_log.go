@@ -42,7 +42,7 @@ func (remoteLogDeviceProtocol *RemoteLogDeviceProtocol) Setup() {
 
 func (remoteLogDeviceProtocol *RemoteLogDeviceProtocol) handleLog(packet nex.PacketInterface) {
 	if remoteLogDeviceProtocol.LogHandler == nil {
-		fmt.Println("[Warning] RemoteLogDeviceProtocol::Log not implemented")
+		logger.Warning("RemoteLogDeviceProtocol::Log not implemented")
 		go respondNotImplemented(packet, RemoteLogDeviceProtocolID)
 		return
 	}

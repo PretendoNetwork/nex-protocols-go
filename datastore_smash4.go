@@ -1073,7 +1073,7 @@ func (dataStoreSmash4Protocol *DataStoreSmash4Protocol) ReportSharedData(handler
 
 func (dataStoreSmash4Protocol *DataStoreSmash4Protocol) handlePostProfile(packet nex.PacketInterface) {
 	if dataStoreSmash4Protocol.PostProfileHandler == nil {
-		fmt.Println("[Warning] DataStoreSmash4Protocol::PostProfile not implemented")
+		logger.Warning("DataStoreSmash4Protocol::PostProfile not implemented")
 		go respondNotImplemented(packet, DataStoreSmash4ProtocolID)
 		return
 	}
@@ -1097,7 +1097,7 @@ func (dataStoreSmash4Protocol *DataStoreSmash4Protocol) handlePostProfile(packet
 
 func (dataStoreSmash4Protocol *DataStoreSmash4Protocol) handleGetProfiles(packet nex.PacketInterface) {
 	if dataStoreSmash4Protocol.GetProfilesHandler == nil {
-		fmt.Println("[Warning] DataStoreSmash4Protocol::GetProfiles not implemented")
+		logger.Warning("DataStoreSmash4Protocol::GetProfiles not implemented")
 		go respondNotImplemented(packet, DataStoreSmash4ProtocolID)
 		return
 	}
@@ -1117,7 +1117,7 @@ func (dataStoreSmash4Protocol *DataStoreSmash4Protocol) handleGetProfiles(packet
 
 func (dataStoreSmash4Protocol *DataStoreSmash4Protocol) handleSendPlayReport(packet nex.PacketInterface) {
 	if dataStoreSmash4Protocol.SendPlayReportHandler == nil {
-		fmt.Println("[Warning] DataStoreSmash4Protocol::SendPlayReport not implemented")
+		logger.Warning("DataStoreSmash4Protocol::SendPlayReport not implemented")
 		go respondNotImplemented(packet, DataStoreSmash4ProtocolID)
 		return
 	}
@@ -1137,7 +1137,7 @@ func (dataStoreSmash4Protocol *DataStoreSmash4Protocol) handleSendPlayReport(pac
 
 func (dataStoreSmash4Protocol *DataStoreSmash4Protocol) handleGetWorldPlayReport(packet nex.PacketInterface) {
 	if dataStoreSmash4Protocol.GetWorldPlayReportHandler == nil {
-		fmt.Println("[Warning] DataStoreSmash4Protocol::GetWorldPlayReport not implemented")
+		logger.Warning("DataStoreSmash4Protocol::GetWorldPlayReport not implemented")
 		go respondNotImplemented(packet, DataStoreSmash4ProtocolID)
 		return
 	}
@@ -1152,7 +1152,7 @@ func (dataStoreSmash4Protocol *DataStoreSmash4Protocol) handleGetWorldPlayReport
 
 func (dataStoreSmash4Protocol *DataStoreSmash4Protocol) handleGetReplayMeta(packet nex.PacketInterface) {
 	if dataStoreSmash4Protocol.GetReplayMetaHandler == nil {
-		fmt.Println("[Warning] DataStoreSmash4Protocol::GetReplayMeta not implemented")
+		logger.Warning("DataStoreSmash4Protocol::GetReplayMeta not implemented")
 		go respondNotImplemented(packet, DataStoreSmash4ProtocolID)
 		return
 	}
@@ -1176,7 +1176,7 @@ func (dataStoreSmash4Protocol *DataStoreSmash4Protocol) handleGetReplayMeta(pack
 
 func (dataStoreSmash4Protocol *DataStoreSmash4Protocol) handlePrepareGetReplay(packet nex.PacketInterface) {
 	if dataStoreSmash4Protocol.PrepareGetReplayHandler == nil {
-		fmt.Println("[Warning] DataStoreSmash4Protocol::PrepareGetReplay not implemented")
+		logger.Warning("DataStoreSmash4Protocol::PrepareGetReplay not implemented")
 		go respondNotImplemented(packet, DataStoreSmash4ProtocolID)
 		return
 	}
@@ -1200,7 +1200,7 @@ func (dataStoreSmash4Protocol *DataStoreSmash4Protocol) handlePrepareGetReplay(p
 
 func (dataStoreSmash4Protocol *DataStoreSmash4Protocol) handlePreparePostReplay(packet nex.PacketInterface) {
 	if dataStoreSmash4Protocol.PreparePostReplayHandler == nil {
-		fmt.Println("[Warning] DataStoreSmash4Protocol::PreparePostReplay not implemented")
+		logger.Warning("DataStoreSmash4Protocol::PreparePostReplay not implemented")
 		go respondNotImplemented(packet, DataStoreSmash4ProtocolID)
 		return
 	}
@@ -1224,7 +1224,7 @@ func (dataStoreSmash4Protocol *DataStoreSmash4Protocol) handlePreparePostReplay(
 
 func (dataStoreSmash4Protocol *DataStoreSmash4Protocol) handleCompletePostReplay(packet nex.PacketInterface) {
 	if dataStoreSmash4Protocol.CompletePostReplayHandler == nil {
-		fmt.Println("[Warning] DataStoreSmash4Protocol::CompletePostReplay not implemented")
+		logger.Warning("DataStoreSmash4Protocol::CompletePostReplay not implemented")
 		go respondNotImplemented(packet, DataStoreSmash4ProtocolID)
 		return
 	}
@@ -1248,7 +1248,7 @@ func (dataStoreSmash4Protocol *DataStoreSmash4Protocol) handleCompletePostReplay
 
 func (dataStoreSmash4Protocol *DataStoreSmash4Protocol) handleCheckPostReplay(packet nex.PacketInterface) {
 	if dataStoreSmash4Protocol.CheckPostReplayHandler == nil {
-		fmt.Println("[Warning] DataStoreSmash4Protocol::CheckPostReplay not implemented")
+		logger.Warning("DataStoreSmash4Protocol::CheckPostReplay not implemented")
 		go respondNotImplemented(packet, DataStoreSmash4ProtocolID)
 		return
 	}
@@ -1272,7 +1272,7 @@ func (dataStoreSmash4Protocol *DataStoreSmash4Protocol) handleCheckPostReplay(pa
 
 func (dataStoreSmash4Protocol *DataStoreSmash4Protocol) handleGetNextReplay(packet nex.PacketInterface) {
 	if dataStoreSmash4Protocol.GetNextReplayHandler == nil {
-		fmt.Println("[Warning] DataStoreSmash4Protocol::GetNextReplay not implemented")
+		logger.Warning("DataStoreSmash4Protocol::GetNextReplay not implemented")
 		go respondNotImplemented(packet, DataStoreSmash4ProtocolID)
 		return
 	}
@@ -1287,7 +1287,7 @@ func (dataStoreSmash4Protocol *DataStoreSmash4Protocol) handleGetNextReplay(pack
 
 func (dataStoreSmash4Protocol *DataStoreSmash4Protocol) handlePreparePostSharedData(packet nex.PacketInterface) {
 	if dataStoreSmash4Protocol.PreparePostSharedDataHandler == nil {
-		fmt.Println("[Warning] DataStoreSmash4Protocol::PreparePostSharedData not implemented")
+		logger.Warning("DataStoreSmash4Protocol::PreparePostSharedData not implemented")
 		go respondNotImplemented(packet, DataStoreSmash4ProtocolID)
 		return
 	}
@@ -1311,7 +1311,7 @@ func (dataStoreSmash4Protocol *DataStoreSmash4Protocol) handlePreparePostSharedD
 
 func (dataStoreSmash4Protocol *DataStoreSmash4Protocol) handleCompletePostSharedData(packet nex.PacketInterface) {
 	if dataStoreSmash4Protocol.CompletePostSharedDataHandler == nil {
-		fmt.Println("[Warning] DataStoreSmash4Protocol::CompletePostSharedData not implemented")
+		logger.Warning("DataStoreSmash4Protocol::CompletePostSharedData not implemented")
 		go respondNotImplemented(packet, DataStoreSmash4ProtocolID)
 		return
 	}
@@ -1335,7 +1335,7 @@ func (dataStoreSmash4Protocol *DataStoreSmash4Protocol) handleCompletePostShared
 
 func (dataStoreSmash4Protocol *DataStoreSmash4Protocol) handleSearchSharedData(packet nex.PacketInterface) {
 	if dataStoreSmash4Protocol.SearchSharedDataHandler == nil {
-		fmt.Println("[Warning] DataStoreSmash4Protocol::SearchSharedData not implemented")
+		logger.Warning("DataStoreSmash4Protocol::SearchSharedData not implemented")
 		go respondNotImplemented(packet, DataStoreSmash4ProtocolID)
 		return
 	}
@@ -1359,7 +1359,7 @@ func (dataStoreSmash4Protocol *DataStoreSmash4Protocol) handleSearchSharedData(p
 
 func (dataStoreSmash4Protocol *DataStoreSmash4Protocol) handleGetApplicationConfig(packet nex.PacketInterface) {
 	if dataStoreSmash4Protocol.GetApplicationConfigHandler == nil {
-		fmt.Println("[Warning] DataStoreSmash4Protocol::GetApplicationConfig not implemented")
+		logger.Warning("DataStoreSmash4Protocol::GetApplicationConfig not implemented")
 		go respondNotImplemented(packet, DataStoreSmash4ProtocolID)
 		return
 	}
@@ -1379,7 +1379,7 @@ func (dataStoreSmash4Protocol *DataStoreSmash4Protocol) handleGetApplicationConf
 
 func (dataStoreSmash4Protocol *DataStoreSmash4Protocol) handleSearchReplay(packet nex.PacketInterface) {
 	if dataStoreSmash4Protocol.SearchReplayHandler == nil {
-		fmt.Println("[Warning] DataStoreSmash4Protocol::SearchReplay not implemented")
+		logger.Warning("DataStoreSmash4Protocol::SearchReplay not implemented")
 		go respondNotImplemented(packet, DataStoreSmash4ProtocolID)
 		return
 	}
@@ -1403,7 +1403,7 @@ func (dataStoreSmash4Protocol *DataStoreSmash4Protocol) handleSearchReplay(packe
 
 func (dataStoreSmash4Protocol *DataStoreSmash4Protocol) handlePostFightingPowerScore(packet nex.PacketInterface) {
 	if dataStoreSmash4Protocol.PostFightingPowerScoreHandler == nil {
-		fmt.Println("[Warning] DataStoreSmash4Protocol::PostFightingPowerScore not implemented")
+		logger.Warning("DataStoreSmash4Protocol::PostFightingPowerScore not implemented")
 		go respondNotImplemented(packet, DataStoreSmash4ProtocolID)
 		return
 	}
@@ -1427,7 +1427,7 @@ func (dataStoreSmash4Protocol *DataStoreSmash4Protocol) handlePostFightingPowerS
 
 func (dataStoreSmash4Protocol *DataStoreSmash4Protocol) handleGetFightingPowerChart(packet nex.PacketInterface) {
 	if dataStoreSmash4Protocol.GetFightingPowerChartHandler == nil {
-		fmt.Println("[Warning] DataStoreSmash4Protocol::GetFightingPowerChart not implemented")
+		logger.Warning("DataStoreSmash4Protocol::GetFightingPowerChart not implemented")
 		go respondNotImplemented(packet, DataStoreSmash4ProtocolID)
 		return
 	}
@@ -1447,7 +1447,7 @@ func (dataStoreSmash4Protocol *DataStoreSmash4Protocol) handleGetFightingPowerCh
 
 func (dataStoreSmash4Protocol *DataStoreSmash4Protocol) handleGetFightingPowerChartAll(packet nex.PacketInterface) {
 	if dataStoreSmash4Protocol.GetFightingPowerChartAllHandler == nil {
-		fmt.Println("[Warning] DataStoreSmash4Protocol::GetFightingPowerChartAll not implemented")
+		logger.Warning("DataStoreSmash4Protocol::GetFightingPowerChartAll not implemented")
 		go respondNotImplemented(packet, DataStoreSmash4ProtocolID)
 		return
 	}
@@ -1462,7 +1462,7 @@ func (dataStoreSmash4Protocol *DataStoreSmash4Protocol) handleGetFightingPowerCh
 
 func (dataStoreSmash4Protocol *DataStoreSmash4Protocol) handleReportSharedData(packet nex.PacketInterface) {
 	if dataStoreSmash4Protocol.ReportSharedDataHandler == nil {
-		fmt.Println("[Warning] DataStoreSmash4Protocol::ReportSharedData not implemented")
+		logger.Warning("DataStoreSmash4Protocol::ReportSharedData not implemented")
 		go respondNotImplemented(packet, DataStoreSmash4ProtocolID)
 		return
 	}

@@ -63,7 +63,7 @@ func (healthProtocol *HealthProtocol) Setup() {
 
 func (healthProtocol *HealthProtocol) handlePingDaemon(packet nex.PacketInterface) {
 	if healthProtocol.PingDaemonHandler == nil {
-		fmt.Println("[Warning] HealthProtocol::PingDaemon not implemented")
+		logger.Warning("HealthProtocol::PingDaemon not implemented")
 		go respondNotImplemented(packet, HealthProtocolID)
 		return
 	}
@@ -78,7 +78,7 @@ func (healthProtocol *HealthProtocol) handlePingDaemon(packet nex.PacketInterfac
 
 func (healthProtocol *HealthProtocol) handlePingDatabase(packet nex.PacketInterface) {
 	if healthProtocol.PingDatabaseHandler == nil {
-		fmt.Println("[Warning] HealthProtocol::PingDatabase not implemented")
+		logger.Warning("HealthProtocol::PingDatabase not implemented")
 		go respondNotImplemented(packet, HealthProtocolID)
 		return
 	}
@@ -93,7 +93,7 @@ func (healthProtocol *HealthProtocol) handlePingDatabase(packet nex.PacketInterf
 
 func (healthProtocol *HealthProtocol) handleRunSanityCheck(packet nex.PacketInterface) {
 	if healthProtocol.RunSanityCheckHandler == nil {
-		fmt.Println("[Warning] HealthProtocol::RunSanityCheck not implemented")
+		logger.Warning("HealthProtocol::RunSanityCheck not implemented")
 		go respondNotImplemented(packet, HealthProtocolID)
 		return
 	}
@@ -108,7 +108,7 @@ func (healthProtocol *HealthProtocol) handleRunSanityCheck(packet nex.PacketInte
 
 func (healthProtocol *HealthProtocol) handleFixSanityErrors(packet nex.PacketInterface) {
 	if healthProtocol.FixSanityErrorsHandler == nil {
-		fmt.Println("[Warning] HealthProtocol::FixSanityErrors not implemented")
+		logger.Warning("HealthProtocol::FixSanityErrors not implemented")
 		go respondNotImplemented(packet, HealthProtocolID)
 		return
 	}

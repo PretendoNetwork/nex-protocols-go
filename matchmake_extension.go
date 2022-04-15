@@ -114,7 +114,7 @@ func (matchmakeExtensionProtocol *MatchmakeExtensionProtocol) GetSimplePlayingSe
 
 func (matchmakeExtensionProtocol *MatchmakeExtensionProtocol) handleOpenParticipation(packet nex.PacketInterface) {
 	if matchmakeExtensionProtocol.OpenParticipationHandler == nil {
-		fmt.Println("[Warning] MatchmakeExtensionProtocol::OpenParticipation not implemented")
+		logger.Warning("MatchmakeExtensionProtocol::OpenParticipation not implemented")
 		go respondNotImplemented(packet, MatchmakeExtensionProtocolID)
 		return
 	}
@@ -133,7 +133,7 @@ func (matchmakeExtensionProtocol *MatchmakeExtensionProtocol) handleOpenParticip
 
 func (matchmakeExtensionProtocol *MatchmakeExtensionProtocol) handleAutoMatchmake_Postpone(packet nex.PacketInterface) {
 	if matchmakeExtensionProtocol.AutoMatchmake_PostponeHandler == nil {
-		fmt.Println("[Warning] MatchmakeExtensionProtocol::AutoMatchmake_PostponeHandler not implemented")
+		logger.Warning("MatchmakeExtensionProtocol::AutoMatchmake_PostponeHandler not implemented")
 		go respondNotImplemented(packet, MatchmakeExtensionProtocolID)
 		return
 	}
@@ -177,7 +177,7 @@ func (matchmakeExtensionProtocol *MatchmakeExtensionProtocol) handleAutoMatchmak
 
 	matchmakeSessionStructureInterface, err := dataHolderContentStream.ReadStructure(NewMatchmakeSession())
 	if err != nil {
-		fmt.Println(err)
+		logger.Error(err.Error())
 		go matchmakeExtensionProtocol.AutoMatchmake_PostponeHandler(err, client, callID, nil, "")
 		return
 	}
@@ -194,7 +194,7 @@ func (matchmakeExtensionProtocol *MatchmakeExtensionProtocol) handleAutoMatchmak
 
 func (matchmakeExtensionProtocol *MatchmakeExtensionProtocol) handleCreateMatchmakeSession(packet nex.PacketInterface) {
 	if matchmakeExtensionProtocol.CreateMatchmakeSessionHandler == nil {
-		fmt.Println("[Warning] MatchmakeExtensionProtocol::CreateMatchmakeSession not implemented")
+		logger.Warning("MatchmakeExtensionProtocol::CreateMatchmakeSession not implemented")
 		go respondNotImplemented(packet, MatchmakeExtensionProtocolID)
 		return
 	}
@@ -261,7 +261,7 @@ func (matchmakeExtensionProtocol *MatchmakeExtensionProtocol) handleCreateMatchm
 
 func (matchmakeExtensionProtocol *MatchmakeExtensionProtocol) handleUpdateNotificationData(packet nex.PacketInterface) {
 	if matchmakeExtensionProtocol.UpdateNotificationDataHandler == nil {
-		fmt.Println("[Warning] MatchmakeExtensionProtocol::UpdateNotificationData not implemented")
+		logger.Warning("MatchmakeExtensionProtocol::UpdateNotificationData not implemented")
 		go respondNotImplemented(packet, MatchmakeExtensionProtocolID)
 		return
 	}
@@ -288,7 +288,7 @@ func (matchmakeExtensionProtocol *MatchmakeExtensionProtocol) handleUpdateNotifi
 
 func (matchmakeExtensionProtocol *MatchmakeExtensionProtocol) handleGetFriendNotificationData(packet nex.PacketInterface) {
 	if matchmakeExtensionProtocol.GetFriendNotificationDataHandler == nil {
-		fmt.Println("[Warning] MatchmakeExtensionProtocol::GetFriendNotificationData not implemented")
+		logger.Warning("MatchmakeExtensionProtocol::GetFriendNotificationData not implemented")
 		go respondNotImplemented(packet, MatchmakeExtensionProtocolID)
 		return
 	}
@@ -308,7 +308,7 @@ func (matchmakeExtensionProtocol *MatchmakeExtensionProtocol) handleGetFriendNot
 
 func (matchmakeExtensionProtocol *MatchmakeExtensionProtocol) handleAutoMatchmakeWithSearchCriteria_Postpone(packet nex.PacketInterface) {
 	if matchmakeExtensionProtocol.AutoMatchmakeWithSearchCriteria_PostponeHandler == nil {
-		fmt.Println("[Warning] MatchmakeExtensionProtocol::AutoMatchmakeWithSearchCriteria_PostponeHandler not implemented")
+		logger.Warning("MatchmakeExtensionProtocol::AutoMatchmakeWithSearchCriteria_PostponeHandler not implemented")
 		go respondNotImplemented(packet, MatchmakeExtensionProtocolID)
 		return
 	}
@@ -318,7 +318,7 @@ func (matchmakeExtensionProtocol *MatchmakeExtensionProtocol) handleAutoMatchmak
 
 	callID := request.CallID()
 	parameters := request.Parameters()
-	fmt.Println(hex.EncodeToString(parameters))
+	logger.Info(hex.EncodeToString(parameters))
 
 	parametersStream := nex.NewStreamIn(parameters, matchmakeExtensionProtocol.server)
 
@@ -333,7 +333,7 @@ func (matchmakeExtensionProtocol *MatchmakeExtensionProtocol) handleAutoMatchmak
 		return
 	}
 
-	fmt.Println(dataHolderType)
+	logger.Info(dataHolderType)
 
 	if dataHolderType != "MatchmakeSession" {
 		err := errors.New("[MatchmakeExtensionProtocol::AutoMatchmakeWithSearchCriteria_Postpone] Data holder name does not match")
@@ -359,14 +359,14 @@ func (matchmakeExtensionProtocol *MatchmakeExtensionProtocol) handleAutoMatchmak
 
 	gatheringStructureInterface, err := dataHolderContentStream.ReadStructure(NewGathering())
 	if err != nil {
-		fmt.Println(err)
+		logger.Error(err.Error())
 		go matchmakeExtensionProtocol.AutoMatchmakeWithSearchCriteria_PostponeHandler(err, client, callID, nil, "")
 		return
 	}
 
 	matchmakeSessionStructureInterface, err := dataHolderContentStream.ReadStructure(NewMatchmakeSession())
 	if err != nil {
-		fmt.Println(err)
+		logger.Error(err.Error())
 		go matchmakeExtensionProtocol.AutoMatchmakeWithSearchCriteria_PostponeHandler(err, client, callID, nil, "")
 		return
 	}
@@ -384,7 +384,7 @@ func (matchmakeExtensionProtocol *MatchmakeExtensionProtocol) handleAutoMatchmak
 
 func (matchmakeExtensionProtocol *MatchmakeExtensionProtocol) handleGetSimplePlayingSession(packet nex.PacketInterface) {
 	if matchmakeExtensionProtocol.GetSimplePlayingSessionHandler == nil {
-		fmt.Println("[Warning] MatchmakeExtensionProtocol::GetSimplePlayingSession not implemented")
+		logger.Warning("MatchmakeExtensionProtocol::GetSimplePlayingSession not implemented")
 		go respondNotImplemented(packet, MatchmakeExtensionProtocolID)
 		return
 	}

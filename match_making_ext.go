@@ -77,7 +77,7 @@ func (matchMakingExtProtocol *MatchMakingExtProtocol) Setup() {
 
 func (matchMakingExtProtocol *MatchMakingExtProtocol) handleEndParticipation(packet nex.PacketInterface) {
 	if matchMakingExtProtocol.EndParticipationHandler == nil {
-		fmt.Println("[Warning] MatchMakingExtProtocol::EndParticipation not implemented")
+		logger.Warning("MatchMakingExtProtocol::EndParticipation not implemented")
 		go respondNotImplemented(packet, MatchMakingExtProtocolID)
 		return
 	}
@@ -104,7 +104,7 @@ func (matchMakingExtProtocol *MatchMakingExtProtocol) handleEndParticipation(pac
 
 func (matchMakingExtProtocol *MatchMakingExtProtocol) handleGetParticipants(packet nex.PacketInterface) {
 	if matchMakingExtProtocol.GetParticipantsHandler == nil {
-		fmt.Println("[Warning] MatchMakingExtProtocol::GetParticipants not implemented")
+		logger.Warning("MatchMakingExtProtocol::GetParticipants not implemented")
 		go respondNotImplemented(packet, MatchMakingExtProtocolID)
 		return
 	}
@@ -126,7 +126,7 @@ func (matchMakingExtProtocol *MatchMakingExtProtocol) handleGetParticipants(pack
 
 func (matchMakingExtProtocol *MatchMakingExtProtocol) handleGetDetailedParticipants(packet nex.PacketInterface) {
 	if matchMakingExtProtocol.GetDetailedParticipantsHandler == nil {
-		fmt.Println("[Warning] MatchMakingExtProtocol::GetDetailedParticipants not implemented")
+		logger.Warning("MatchMakingExtProtocol::GetDetailedParticipants not implemented")
 		go respondNotImplemented(packet, MatchMakingExtProtocolID)
 		return
 	}
@@ -148,7 +148,7 @@ func (matchMakingExtProtocol *MatchMakingExtProtocol) handleGetDetailedParticipa
 
 func (matchMakingExtProtocol *MatchMakingExtProtocol) handleGetParticipantsURLs(packet nex.PacketInterface) {
 	if matchMakingExtProtocol.GetParticipantsURLsHandler == nil {
-		fmt.Println("[Warning] MatchMakingExtProtocol::GetParticipantsURLs not implemented")
+		logger.Warning("MatchMakingExtProtocol::GetParticipantsURLs not implemented")
 		go respondNotImplemented(packet, MatchMakingExtProtocolID)
 		return
 	}
@@ -172,7 +172,7 @@ func (matchMakingExtProtocol *MatchMakingExtProtocol) handleGetParticipantsURLs(
 
 func (matchMakingExtProtocol *MatchMakingExtProtocol) handleGetGatheringRelations(packet nex.PacketInterface) {
 	if matchMakingExtProtocol.GetGatheringRelationsHandler == nil {
-		fmt.Println("[Warning] MatchMakingExtProtocol::GetGatheringRelations not implemented")
+		logger.Warning("MatchMakingExtProtocol::GetGatheringRelations not implemented")
 		go respondNotImplemented(packet, MatchMakingExtProtocolID)
 		return
 	}
@@ -199,7 +199,7 @@ func (matchMakingExtProtocol *MatchMakingExtProtocol) handleGetGatheringRelation
 
 func (matchMakingExtProtocol *MatchMakingExtProtocol) handleDeleteFromDeletions(packet nex.PacketInterface) {
 	if matchMakingExtProtocol.DeleteFromDeletionsHandler == nil {
-		fmt.Println("[Warning] MatchMakingExtProtocol::DeleteFromDeletions not implemented")
+		logger.Warning("MatchMakingExtProtocol::DeleteFromDeletions not implemented")
 		go respondNotImplemented(packet, MatchMakingExtProtocolID)
 		return
 	}

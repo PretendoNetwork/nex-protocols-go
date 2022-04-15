@@ -7,7 +7,7 @@ func respondNotImplemented(packet nex.PacketInterface, protocolID uint8) {
 	request := packet.RMCRequest()
 
 	rmcResponse := nex.NewRMCResponse(protocolID, request.CallID())
-	rmcResponse.SetError(0x80010002)
+	rmcResponse.SetError(nex.Errors.Core.NotImplemented)
 
 	rmcResponseBytes := rmcResponse.Bytes()
 

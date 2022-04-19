@@ -43,7 +43,7 @@ func NewMessageRecipient() *MessageRecipient {
 
 type UserMessage struct {
 	nex.Structure
-	*nex.NullData
+	*nex.Data
 	hierarchy          []nex.StructureInterface
 	m_uiID             uint32
 	m_uiParentID       uint32
@@ -74,15 +74,11 @@ func (userMessage *UserMessage) ExtractFromStream(stream *nex.StreamIn) error {
 
 // NewUserMessage returns a new UserMessage
 func NewUserMessage() *UserMessage {
+	data := nex.NewData()
+
 	userMessage := &UserMessage{}
-
-	nullData := nex.NewNullData()
-
-	userMessage.NullData = nullData
-
-	userMessage.hierarchy = []nex.StructureInterface{
-		nullData,
-	}
+	userMessage.Data = data
+	userMessage.hierarchy = []nex.StructureInterface{data}
 
 	return userMessage
 }

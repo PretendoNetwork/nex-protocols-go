@@ -48,7 +48,7 @@ type NintendoLoginData struct {
 
 // AuthenticationInfo holds information about an authentication request
 type AuthenticationInfo struct {
-	*nex.NullData
+	*nex.Data
 	hierarchy     []nex.StructureInterface
 	Token         string
 	NGSVersion    uint32
@@ -87,15 +87,11 @@ func (authenticationInfo *AuthenticationInfo) ExtractFromStream(stream *nex.Stre
 
 // NewAuthenticationInfo returns a new AuthenticationInfo
 func NewAuthenticationInfo() *AuthenticationInfo {
+	data := nex.NewData()
+
 	authenticationInfo := &AuthenticationInfo{}
-
-	nullData := nex.NewNullData()
-
-	authenticationInfo.NullData = nullData
-
-	authenticationInfo.hierarchy = []nex.StructureInterface{
-		nullData,
-	}
+	authenticationInfo.Data = data
+	authenticationInfo.hierarchy = []nex.StructureInterface{data}
 
 	return authenticationInfo
 }

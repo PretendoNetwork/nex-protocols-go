@@ -1,7 +1,6 @@
 package nexproto
 
 import (
-	"errors"
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
@@ -18,7 +17,7 @@ const (
 // AccountManagementProtocol handles the Account Management nex protocol
 type AccountManagementProtocol struct {
 	server                          *nex.Server
-	NintendoCreateAccountHandler    func(err error, client *nex.Client, callID uint32, username string, key string, groups uint32, email string, nintendoCreateAccountData *NintendoCreateAccountData)
+	NintendoCreateAccountHandler    func(err error, client *nex.Client, callID uint32, strPrincipalName string, strKey string, uiGroups uint32, strEmail string, oAuthData *nex.DataHolder)
 	NintendoCreateAccount3DSHandler func(err error, client *nex.Client, callID uint32, strPrincipalName string, strKey string, uiGroups uint32, strEmail string, oAuthData *AccountExtraInfo)
 }
 
@@ -106,7 +105,7 @@ func (accountManagementProtocol *AccountManagementProtocol) Setup() {
 }
 
 // NintendoCreateAccount sets the NintendoCreateAccount handler function
-func (accountManagementProtocol *AccountManagementProtocol) NintendoCreateAccount(handler func(err error, client *nex.Client, callID uint32, username string, key string, groups uint32, email string, nintendoCreateAccountData *NintendoCreateAccountData)) {
+func (accountManagementProtocol *AccountManagementProtocol) NintendoCreateAccount(handler func(err error, client *nex.Client, callID uint32, strPrincipalName string, strKey string, uiGroups uint32, strEmail string, oAuthData *nex.DataHolder)) {
 	accountManagementProtocol.NintendoCreateAccountHandler = handler
 }
 
@@ -130,68 +129,28 @@ func (accountManagementProtocol *AccountManagementProtocol) handleNintendoCreate
 
 	parametersStream := nex.NewStreamIn(parameters, accountManagementProtocol.server)
 
-	username, err := parametersStream.ReadString()
+	strPrincipalName, err := parametersStream.ReadString()
 	if err != nil {
 		go accountManagementProtocol.NintendoCreateAccountHandler(err, client, callID, "", "", 0, "", nil)
 		return
 	}
 
-	key, err := parametersStream.ReadString()
+	strKey, err := parametersStream.ReadString()
 	if err != nil {
 		go accountManagementProtocol.NintendoCreateAccountHandler(err, client, callID, "", "", 0, "", nil)
 		return
 	}
 
-	groups := parametersStream.ReadUInt32LE()
-	email, err := parametersStream.ReadString()
+	uiGroups := parametersStream.ReadUInt32LE()
+	strEmail, err := parametersStream.ReadString()
 	if err != nil {
 		go accountManagementProtocol.NintendoCreateAccountHandler(err, client, callID, "", "", 0, "", nil)
 		return
 	}
 
-	dataHolderName, err := parametersStream.ReadString()
-	if err != nil {
-		go accountManagementProtocol.NintendoCreateAccountHandler(err, client, callID, "", "", 0, "", nil)
-		return
-	}
+	oAuthData := parametersStream.ReadDataHolder()
 
-	if dataHolderName != "NintendoCreateAccountData" && dataHolderName != "AccountExtraInfo" {
-		err := errors.New("[AccountManagementProtocol::NintendoCreateAccount] Data holder name does not match")
-		go accountManagementProtocol.NintendoCreateAccountHandler(err, client, callID, "", "", 0, "", nil)
-		return
-	}
-
-	_ = parametersStream.ReadUInt32LE() // length including this field
-
-	dataHolderContent, err := parametersStream.ReadBuffer()
-	if err != nil {
-		go accountManagementProtocol.NintendoCreateAccountHandler(err, client, callID, "", "", 0, "", nil)
-		return
-	}
-
-	dataHolderContentStream := nex.NewStreamIn(dataHolderContent, accountManagementProtocol.server)
-
-	if dataHolderName == "NintendoCreateAccountData" {
-		nintendoCreateAccountDataStructureInterface, err := dataHolderContentStream.ReadStructure(NewNintendoCreateAccountData())
-		if err != nil {
-			go accountManagementProtocol.NintendoCreateAccountHandler(err, client, callID, "", "", 0, "", nil)
-			return
-		}
-
-		nintendoCreateAccountData := nintendoCreateAccountDataStructureInterface.(*NintendoCreateAccountData)
-
-		go accountManagementProtocol.NintendoCreateAccountHandler(nil, client, callID, username, key, groups, email, nintendoCreateAccountData)
-	}
-
-	if dataHolderName == "AccountExtraInfo" {
-		accountExtraInfo, err := dataHolderContentStream.ReadStructure(NewAccountExtraInfo())
-		if err != nil {
-			go accountManagementProtocol.NintendoCreateAccount3DSHandler(err, client, callID, "", "", 0, "", nil)
-			return
-		}
-
-		go accountManagementProtocol.NintendoCreateAccount3DSHandler(nil, client, callID, username, key, groups, email, accountExtraInfo.(*AccountExtraInfo))
-	}
+	go accountManagementProtocol.NintendoCreateAccountHandler(nil, client, callID, strPrincipalName, strKey, uiGroups, strEmail, oAuthData)
 }
 
 // NewAccountManagementProtocol returns a new AccountManagementProtocol

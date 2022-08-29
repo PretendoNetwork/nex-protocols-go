@@ -2,7 +2,7 @@ package nexproto
 
 import (
 	"github.com/PretendoNetwork/nex-go"
-	"github.com/PretendoNetwork/plogger"
+	"github.com/PretendoNetwork/plogger-go"
 )
 
 var logger = plogger.NewLogger()

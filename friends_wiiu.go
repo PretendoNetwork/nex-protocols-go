@@ -8,72 +8,72 @@ import (
 )
 
 const (
-	// FriendsProtocolID is the protocol ID for the Friends (WiiU) protocol
-	FriendsProtocolID = 0x66
+	// FriendsWiiUProtocolID is the protocol ID for the Friends (WiiU) protocol
+	FriendsWiiUProtocolID = 0x66
 
-	// FriendsMethodUpdateAndGetAllInformation is the method ID for method UpdateAndGetAllInformation
-	FriendsMethodUpdateAndGetAllInformation = 0x1
+	// FriendsWiiUMethodUpdateAndGetAllInformation is the method ID for method UpdateAndGetAllInformation
+	FriendsWiiUMethodUpdateAndGetAllInformation = 0x1
 
-	// FriendsMethodAddFriend is the method ID for method AddFriend
-	FriendsMethodAddFriend = 0x2
+	// FriendsWiiUMethodAddFriend is the method ID for method AddFriend
+	FriendsWiiUMethodAddFriend = 0x2
 
-	// FriendsMethodAddFriendByName is the method ID for method AddFriendByName
-	FriendsMethodAddFriendByName = 0x3
+	// FriendsWiiUMethodAddFriendByName is the method ID for method AddFriendByName
+	FriendsWiiUMethodAddFriendByName = 0x3
 
-	// FriendsMethodRemoveFriend is the method ID for method RemoveFriend
-	FriendsMethodRemoveFriend = 0x4
+	// FriendsWiiUMethodRemoveFriend is the method ID for method RemoveFriend
+	FriendsWiiUMethodRemoveFriend = 0x4
 
-	// FriendsMethodAddFriendRequest is the method ID for method AddFriendRequest
-	FriendsMethodAddFriendRequest = 0x5
+	// FriendsWiiUMethodAddFriendRequest is the method ID for method AddFriendRequest
+	FriendsWiiUMethodAddFriendRequest = 0x5
 
-	// FriendsMethodCancelFriendRequest is the method ID for method CancelFriendRequest
-	FriendsMethodCancelFriendRequest = 0x6
+	// FriendsWiiUMethodCancelFriendRequest is the method ID for method CancelFriendRequest
+	FriendsWiiUMethodCancelFriendRequest = 0x6
 
-	// FriendsMethodAcceptFriendRequest is the method ID for method AcceptFriendRequest
-	FriendsMethodAcceptFriendRequest = 0x7
+	// FriendsWiiUMethodAcceptFriendRequest is the method ID for method AcceptFriendRequest
+	FriendsWiiUMethodAcceptFriendRequest = 0x7
 
-	// FriendsMethodDeleteFriendRequest is the method ID for method DeleteFriendRequest
-	FriendsMethodDeleteFriendRequest = 0x8
+	// FriendsWiiUMethodDeleteFriendRequest is the method ID for method DeleteFriendRequest
+	FriendsWiiUMethodDeleteFriendRequest = 0x8
 
-	// FriendsMethodDenyFriendRequest is the method ID for method DenyFriendRequest
-	FriendsMethodDenyFriendRequest = 0x9
+	// FriendsWiiUMethodDenyFriendRequest is the method ID for method DenyFriendRequest
+	FriendsWiiUMethodDenyFriendRequest = 0x9
 
-	// FriendsMethodMarkFriendRequestsAsReceived is the method ID for method MarkFriendRequestsAsReceived
-	FriendsMethodMarkFriendRequestsAsReceived = 0xA
+	// FriendsWiiUMethodMarkFriendRequestsAsReceived is the method ID for method MarkFriendRequestsAsReceived
+	FriendsWiiUMethodMarkFriendRequestsAsReceived = 0xA
 
-	// FriendsMethodAddBlackList is the method ID for method AddBlackList
-	FriendsMethodAddBlackList = 0xB
+	// FriendsWiiUMethodAddBlackList is the method ID for method AddBlackList
+	FriendsWiiUMethodAddBlackList = 0xB
 
-	// FriendsMethodRemoveBlackList is the method ID for method RemoveBlackList
-	FriendsMethodRemoveBlackList = 0xC
+	// FriendsWiiUMethodRemoveBlackList is the method ID for method RemoveBlackList
+	FriendsWiiUMethodRemoveBlackList = 0xC
 
-	// FriendsMethodUpdatePresence is the method ID for method UpdatePresence
-	FriendsMethodUpdatePresence = 0xD
+	// FriendsWiiUMethodUpdatePresence is the method ID for method UpdatePresence
+	FriendsWiiUMethodUpdatePresence = 0xD
 
-	// FriendsMethodUpdateMii is the method ID for method UpdateMii
-	FriendsMethodUpdateMii = 0xE
+	// FriendsWiiUMethodUpdateMii is the method ID for method UpdateMii
+	FriendsWiiUMethodUpdateMii = 0xE
 
-	// FriendsMethodUpdateComment is the method ID for method UpdateComment
-	FriendsMethodUpdateComment = 0xF
+	// FriendsWiiUMethodUpdateComment is the method ID for method UpdateComment
+	FriendsWiiUMethodUpdateComment = 0xF
 
-	// FriendsMethodUpdatePreference is the method ID for method UpdatePreference
-	FriendsMethodUpdatePreference = 0x10
+	// FriendsWiiUMethodUpdatePreference is the method ID for method UpdatePreference
+	FriendsWiiUMethodUpdatePreference = 0x10
 
-	// FriendsMethodGetBasicInfo is the method ID for method GetBasicInfo
-	FriendsMethodGetBasicInfo = 0x11
+	// FriendsWiiUMethodGetBasicInfo is the method ID for method GetBasicInfo
+	FriendsWiiUMethodGetBasicInfo = 0x11
 
-	// FriendsMethodDeletePersistentNotification is the method ID for method DeletePersistentNotification
-	FriendsMethodDeletePersistentNotification = 0x12
+	// FriendsWiiUMethodDeletePersistentNotification is the method ID for method DeletePersistentNotification
+	FriendsWiiUMethodDeletePersistentNotification = 0x12
 
-	// FriendsMethodCheckSettingStatus is the method ID for method CheckSettingStatus
-	FriendsMethodCheckSettingStatus = 0x13
+	// FriendsWiiUMethodCheckSettingStatus is the method ID for method CheckSettingStatus
+	FriendsWiiUMethodCheckSettingStatus = 0x13
 
-	// FriendsMethodGetRequestBlockSettings is the method ID for method GetRequestBlockSettings
-	FriendsMethodGetRequestBlockSettings = 0x14
+	// FriendsWiiUMethodGetRequestBlockSettings is the method ID for method GetRequestBlockSettings
+	FriendsWiiUMethodGetRequestBlockSettings = 0x14
 )
 
-// FriendsProtocol handles the Friends (WiiU) nex protocol
-type FriendsProtocol struct {
+// FriendsWiiUProtocol handles the Friends (WiiU) nex protocol
+type FriendsWiiUProtocol struct {
 	server                              *nex.Server
 	UpdateAndGetAllInformationHandler   func(err error, client *nex.Client, callID uint32, nnaInfo *NNAInfo, presence *NintendoPresenceV2, birthday *nex.DateTime)
 	AddFriendHandler                    func(err error, client *nex.Client, callID uint32, pid uint32)
@@ -672,56 +672,56 @@ func NewPrincipalRequestBlockSetting() *PrincipalRequestBlockSetting {
 }
 
 // Setup initializes the protocol
-func (friendsProtocol *FriendsProtocol) Setup() {
-	nexServer := friendsProtocol.server
+func (friendsWiiUProtocol *FriendsWiiUProtocol) Setup() {
+	nexServer := friendsWiiUProtocol.server
 
 	nexServer.On("Data", func(packet nex.PacketInterface) {
 		request := packet.RMCRequest()
 
-		if FriendsProtocolID == request.ProtocolID() {
+		if FriendsWiiUProtocolID == request.ProtocolID() {
 			switch request.MethodID() {
-			case FriendsMethodUpdateAndGetAllInformation:
-				go friendsProtocol.handleUpdateAndGetAllInformation(packet)
-			case FriendsMethodAddFriend:
-				go friendsProtocol.handleAddFriend(packet)
-			case FriendsMethodAddFriendByName:
-				go friendsProtocol.handleAddFriendByName(packet)
-			case FriendsMethodRemoveFriend:
-				go friendsProtocol.handleRemoveFriend(packet)
-			case FriendsMethodAddFriendRequest:
-				go friendsProtocol.handleAddFriendRequest(packet)
-			case FriendsMethodCancelFriendRequest:
-				go friendsProtocol.handleCancelFriendRequest(packet)
-			case FriendsMethodAcceptFriendRequest:
-				go friendsProtocol.handleAcceptFriendRequest(packet)
-			case FriendsMethodDeleteFriendRequest:
-				go friendsProtocol.handleDeleteFriendRequest(packet)
-			case FriendsMethodDenyFriendRequest:
-				go friendsProtocol.handleDenyFriendRequest(packet)
-			case FriendsMethodMarkFriendRequestsAsReceived:
-				go friendsProtocol.handleMarkFriendRequestsAsReceived(packet)
-			case FriendsMethodAddBlackList:
-				go friendsProtocol.handleAddBlackList(packet)
-			case FriendsMethodRemoveBlackList:
-				go friendsProtocol.handleRemoveBlackList(packet)
-			case FriendsMethodUpdatePresence:
-				go friendsProtocol.handleUpdatePresence(packet)
-			case FriendsMethodUpdateMii:
-				go friendsProtocol.handleUpdateMii(packet)
-			case FriendsMethodUpdateComment:
-				go friendsProtocol.handleUpdateComment(packet)
-			case FriendsMethodUpdatePreference:
-				go friendsProtocol.handleUpdatePreference(packet)
-			case FriendsMethodGetBasicInfo:
-				go friendsProtocol.handleGetBasicInfo(packet)
-			case FriendsMethodDeletePersistentNotification:
-				go friendsProtocol.handleDeletePersistentNotification(packet)
-			case FriendsMethodCheckSettingStatus:
-				go friendsProtocol.handleCheckSettingStatus(packet)
-			case FriendsMethodGetRequestBlockSettings:
-				go friendsProtocol.handleGetRequestBlockSettings(packet)
+			case FriendsWiiUMethodUpdateAndGetAllInformation:
+				go friendsWiiUProtocol.handleUpdateAndGetAllInformation(packet)
+			case FriendsWiiUMethodAddFriend:
+				go friendsWiiUProtocol.handleAddFriend(packet)
+			case FriendsWiiUMethodAddFriendByName:
+				go friendsWiiUProtocol.handleAddFriendByName(packet)
+			case FriendsWiiUMethodRemoveFriend:
+				go friendsWiiUProtocol.handleRemoveFriend(packet)
+			case FriendsWiiUMethodAddFriendRequest:
+				go friendsWiiUProtocol.handleAddFriendRequest(packet)
+			case FriendsWiiUMethodCancelFriendRequest:
+				go friendsWiiUProtocol.handleCancelFriendRequest(packet)
+			case FriendsWiiUMethodAcceptFriendRequest:
+				go friendsWiiUProtocol.handleAcceptFriendRequest(packet)
+			case FriendsWiiUMethodDeleteFriendRequest:
+				go friendsWiiUProtocol.handleDeleteFriendRequest(packet)
+			case FriendsWiiUMethodDenyFriendRequest:
+				go friendsWiiUProtocol.handleDenyFriendRequest(packet)
+			case FriendsWiiUMethodMarkFriendRequestsAsReceived:
+				go friendsWiiUProtocol.handleMarkFriendRequestsAsReceived(packet)
+			case FriendsWiiUMethodAddBlackList:
+				go friendsWiiUProtocol.handleAddBlackList(packet)
+			case FriendsWiiUMethodRemoveBlackList:
+				go friendsWiiUProtocol.handleRemoveBlackList(packet)
+			case FriendsWiiUMethodUpdatePresence:
+				go friendsWiiUProtocol.handleUpdatePresence(packet)
+			case FriendsWiiUMethodUpdateMii:
+				go friendsWiiUProtocol.handleUpdateMii(packet)
+			case FriendsWiiUMethodUpdateComment:
+				go friendsWiiUProtocol.handleUpdateComment(packet)
+			case FriendsWiiUMethodUpdatePreference:
+				go friendsWiiUProtocol.handleUpdatePreference(packet)
+			case FriendsWiiUMethodGetBasicInfo:
+				go friendsWiiUProtocol.handleGetBasicInfo(packet)
+			case FriendsWiiUMethodDeletePersistentNotification:
+				go friendsWiiUProtocol.handleDeletePersistentNotification(packet)
+			case FriendsWiiUMethodCheckSettingStatus:
+				go friendsWiiUProtocol.handleCheckSettingStatus(packet)
+			case FriendsWiiUMethodGetRequestBlockSettings:
+				go friendsWiiUProtocol.handleGetRequestBlockSettings(packet)
 			default:
-				go respondNotImplemented(packet, FriendsProtocolID)
+				go respondNotImplemented(packet, FriendsWiiUProtocolID)
 				fmt.Printf("Unsupported Friends (WiiU) method ID: %#v\n", request.MethodID())
 			}
 		}
@@ -729,109 +729,109 @@ func (friendsProtocol *FriendsProtocol) Setup() {
 }
 
 // UpdateAndGetAllInformation sets the UpdateAndGetAllInformation handler function
-func (friendsProtocol *FriendsProtocol) UpdateAndGetAllInformation(handler func(err error, client *nex.Client, callID uint32, nnaInfo *NNAInfo, presence *NintendoPresenceV2, birthday *nex.DateTime)) {
-	friendsProtocol.UpdateAndGetAllInformationHandler = handler
+func (friendsWiiUProtocol *FriendsWiiUProtocol) UpdateAndGetAllInformation(handler func(err error, client *nex.Client, callID uint32, nnaInfo *NNAInfo, presence *NintendoPresenceV2, birthday *nex.DateTime)) {
+	friendsWiiUProtocol.UpdateAndGetAllInformationHandler = handler
 }
 
 // AddFriend sets the AddFriend handler function
-func (friendsProtocol *FriendsProtocol) AddFriend(handler func(err error, client *nex.Client, callID uint32, pid uint32)) {
-	friendsProtocol.AddFriendHandler = handler
+func (friendsWiiUProtocol *FriendsWiiUProtocol) AddFriend(handler func(err error, client *nex.Client, callID uint32, pid uint32)) {
+	friendsWiiUProtocol.AddFriendHandler = handler
 }
 
 // AddFriendByName sets the AddFriendByName handler function
-func (friendsProtocol *FriendsProtocol) AddFriendByName(handler func(err error, client *nex.Client, callID uint32, username string)) {
-	friendsProtocol.AddFriendByNameHandler = handler
+func (friendsWiiUProtocol *FriendsWiiUProtocol) AddFriendByName(handler func(err error, client *nex.Client, callID uint32, username string)) {
+	friendsWiiUProtocol.AddFriendByNameHandler = handler
 }
 
 // RemoveFriend sets the RemoveFriend handler function
-func (friendsProtocol *FriendsProtocol) RemoveFriend(handler func(err error, client *nex.Client, callID uint32, pid uint32)) {
-	friendsProtocol.RemoveFriendHandler = handler
+func (friendsWiiUProtocol *FriendsWiiUProtocol) RemoveFriend(handler func(err error, client *nex.Client, callID uint32, pid uint32)) {
+	friendsWiiUProtocol.RemoveFriendHandler = handler
 }
 
 // AddFriendRequest sets the AddFriendRequest handler function
-func (friendsProtocol *FriendsProtocol) AddFriendRequest(handler func(err error, client *nex.Client, callID uint32, pid uint32, unknown2 uint8, message string, unknown4 uint8, unknown5 string, gameKey *GameKey, unknown6 *nex.DateTime)) {
-	friendsProtocol.AddFriendRequestHandler = handler
+func (friendsWiiUProtocol *FriendsWiiUProtocol) AddFriendRequest(handler func(err error, client *nex.Client, callID uint32, pid uint32, unknown2 uint8, message string, unknown4 uint8, unknown5 string, gameKey *GameKey, unknown6 *nex.DateTime)) {
+	friendsWiiUProtocol.AddFriendRequestHandler = handler
 }
 
 // CancelFriendRequest sets the CancelFriendRequest handler function
-func (friendsProtocol *FriendsProtocol) CancelFriendRequest(handler func(err error, client *nex.Client, callID uint32, id uint64)) {
-	friendsProtocol.CancelFriendRequestHandler = handler
+func (friendsWiiUProtocol *FriendsWiiUProtocol) CancelFriendRequest(handler func(err error, client *nex.Client, callID uint32, id uint64)) {
+	friendsWiiUProtocol.CancelFriendRequestHandler = handler
 }
 
 // AcceptFriendRequest sets the AcceptFriendRequest handler function
-func (friendsProtocol *FriendsProtocol) AcceptFriendRequest(handler func(err error, client *nex.Client, callID uint32, id uint64)) {
-	friendsProtocol.AcceptFriendRequestHandler = handler
+func (friendsWiiUProtocol *FriendsWiiUProtocol) AcceptFriendRequest(handler func(err error, client *nex.Client, callID uint32, id uint64)) {
+	friendsWiiUProtocol.AcceptFriendRequestHandler = handler
 }
 
 // DeleteFriendRequest sets the DeleteFriendRequest handler function
-func (friendsProtocol *FriendsProtocol) DeleteFriendRequest(handler func(err error, client *nex.Client, callID uint32, id uint64)) {
-	friendsProtocol.DeleteFriendRequestHandler = handler
+func (friendsWiiUProtocol *FriendsWiiUProtocol) DeleteFriendRequest(handler func(err error, client *nex.Client, callID uint32, id uint64)) {
+	friendsWiiUProtocol.DeleteFriendRequestHandler = handler
 }
 
 // DenyFriendRequest sets the DenyFriendRequest handler function
-func (friendsProtocol *FriendsProtocol) DenyFriendRequest(handler func(err error, client *nex.Client, callID uint32, id uint64)) {
-	friendsProtocol.DenyFriendRequestHandler = handler
+func (friendsWiiUProtocol *FriendsWiiUProtocol) DenyFriendRequest(handler func(err error, client *nex.Client, callID uint32, id uint64)) {
+	friendsWiiUProtocol.DenyFriendRequestHandler = handler
 }
 
 // MarkFriendRequestsAsReceived sets the MarkFriendRequestsAsReceived handler function
-func (friendsProtocol *FriendsProtocol) MarkFriendRequestsAsReceived(handler func(err error, client *nex.Client, callID uint32, ids []uint64)) {
-	friendsProtocol.MarkFriendRequestsAsReceivedHandler = handler
+func (friendsWiiUProtocol *FriendsWiiUProtocol) MarkFriendRequestsAsReceived(handler func(err error, client *nex.Client, callID uint32, ids []uint64)) {
+	friendsWiiUProtocol.MarkFriendRequestsAsReceivedHandler = handler
 }
 
 // AddBlackList sets the AddBlackList handler function
-func (friendsProtocol *FriendsProtocol) AddBlackList(handler func(err error, client *nex.Client, callID uint32, blacklistedPrincipal *BlacklistedPrincipal)) {
-	friendsProtocol.AddBlackListHandler = handler
+func (friendsWiiUProtocol *FriendsWiiUProtocol) AddBlackList(handler func(err error, client *nex.Client, callID uint32, blacklistedPrincipal *BlacklistedPrincipal)) {
+	friendsWiiUProtocol.AddBlackListHandler = handler
 }
 
 // RemoveBlackList sets the RemoveBlackList handler function
-func (friendsProtocol *FriendsProtocol) RemoveBlackList(handler func(err error, client *nex.Client, callID uint32, pid uint32)) {
-	friendsProtocol.RemoveBlackListHandler = handler
+func (friendsWiiUProtocol *FriendsWiiUProtocol) RemoveBlackList(handler func(err error, client *nex.Client, callID uint32, pid uint32)) {
+	friendsWiiUProtocol.RemoveBlackListHandler = handler
 }
 
 // UpdatePresence sets the UpdatePresence handler function
-func (friendsProtocol *FriendsProtocol) UpdatePresence(handler func(err error, client *nex.Client, callID uint32, presence *NintendoPresenceV2)) {
-	friendsProtocol.UpdatePresenceHandler = handler
+func (friendsWiiUProtocol *FriendsWiiUProtocol) UpdatePresence(handler func(err error, client *nex.Client, callID uint32, presence *NintendoPresenceV2)) {
+	friendsWiiUProtocol.UpdatePresenceHandler = handler
 }
 
 // UpdateMii sets the UpdateMii handler function
-func (friendsProtocol *FriendsProtocol) UpdateMii(handler func(err error, client *nex.Client, callID uint32, mii *MiiV2)) {
-	friendsProtocol.UpdateMiiHandler = handler
+func (friendsWiiUProtocol *FriendsWiiUProtocol) UpdateMii(handler func(err error, client *nex.Client, callID uint32, mii *MiiV2)) {
+	friendsWiiUProtocol.UpdateMiiHandler = handler
 }
 
 // UpdateComment sets the UpdateComment handler function
-func (friendsProtocol *FriendsProtocol) UpdateComment(handler func(err error, client *nex.Client, callID uint32, comment *Comment)) {
-	friendsProtocol.UpdateCommentHandler = handler
+func (friendsWiiUProtocol *FriendsWiiUProtocol) UpdateComment(handler func(err error, client *nex.Client, callID uint32, comment *Comment)) {
+	friendsWiiUProtocol.UpdateCommentHandler = handler
 }
 
 // UpdatePreference sets the UpdatePreference handler function
-func (friendsProtocol *FriendsProtocol) UpdatePreference(handler func(err error, client *nex.Client, callID uint32, preference *PrincipalPreference)) {
-	friendsProtocol.UpdatePreferenceHandler = handler
+func (friendsWiiUProtocol *FriendsWiiUProtocol) UpdatePreference(handler func(err error, client *nex.Client, callID uint32, preference *PrincipalPreference)) {
+	friendsWiiUProtocol.UpdatePreferenceHandler = handler
 }
 
 // GetBasicInfo sets the GetBasicInfo handler function
-func (friendsProtocol *FriendsProtocol) GetBasicInfo(handler func(err error, client *nex.Client, callID uint32, pids []uint32)) {
-	friendsProtocol.GetBasicInfoHandler = handler
+func (friendsWiiUProtocol *FriendsWiiUProtocol) GetBasicInfo(handler func(err error, client *nex.Client, callID uint32, pids []uint32)) {
+	friendsWiiUProtocol.GetBasicInfoHandler = handler
 }
 
 // DeletePersistentNotification sets the DeletePersistentNotification handler function
-func (friendsProtocol *FriendsProtocol) DeletePersistentNotification(handler func(err error, client *nex.Client, callID uint32, notifications []*PersistentNotification)) {
-	friendsProtocol.DeletePersistentNotificationHandler = handler
+func (friendsWiiUProtocol *FriendsWiiUProtocol) DeletePersistentNotification(handler func(err error, client *nex.Client, callID uint32, notifications []*PersistentNotification)) {
+	friendsWiiUProtocol.DeletePersistentNotificationHandler = handler
 }
 
 // CheckSettingStatus sets the CheckSettingStatus handler function
-func (friendsProtocol *FriendsProtocol) CheckSettingStatus(handler func(err error, client *nex.Client, callID uint32)) {
-	friendsProtocol.CheckSettingStatusHandler = handler
+func (friendsWiiUProtocol *FriendsWiiUProtocol) CheckSettingStatus(handler func(err error, client *nex.Client, callID uint32)) {
+	friendsWiiUProtocol.CheckSettingStatusHandler = handler
 }
 
 // GetRequestBlockSettings sets the GetRequestBlockSettings handler function
-func (friendsProtocol *FriendsProtocol) GetRequestBlockSettings(handler func(err error, client *nex.Client, callID uint32, unknowns []uint32)) {
-	friendsProtocol.GetRequestBlockSettingsHandler = handler
+func (friendsWiiUProtocol *FriendsWiiUProtocol) GetRequestBlockSettings(handler func(err error, client *nex.Client, callID uint32, unknowns []uint32)) {
+	friendsWiiUProtocol.GetRequestBlockSettingsHandler = handler
 }
 
-func (friendsProtocol *FriendsProtocol) handleUpdateAndGetAllInformation(packet nex.PacketInterface) {
-	if friendsProtocol.UpdateAndGetAllInformationHandler == nil {
-		logger.Warning("FriendsProtocol::UpdateAndGetAllInformation not implemented")
-		go respondNotImplemented(packet, FriendsProtocolID)
+func (friendsWiiUProtocol *FriendsWiiUProtocol) handleUpdateAndGetAllInformation(packet nex.PacketInterface) {
+	if friendsWiiUProtocol.UpdateAndGetAllInformationHandler == nil {
+		logger.Warning("FriendsWiiUProtocol::UpdateAndGetAllInformation not implemented")
+		go respondNotImplemented(packet, FriendsWiiUProtocolID)
 		return
 	}
 
@@ -841,17 +841,17 @@ func (friendsProtocol *FriendsProtocol) handleUpdateAndGetAllInformation(packet 
 	callID := request.CallID()
 	parameters := request.Parameters()
 
-	parametersStream := nex.NewStreamIn(parameters, friendsProtocol.server)
+	parametersStream := nex.NewStreamIn(parameters, friendsWiiUProtocol.server)
 
 	nnaInfoStructureInterface, err := parametersStream.ReadStructure(NewNNAInfo())
 	if err != nil {
-		go friendsProtocol.UpdateAndGetAllInformationHandler(err, client, callID, nil, nil, nil)
+		go friendsWiiUProtocol.UpdateAndGetAllInformationHandler(err, client, callID, nil, nil, nil)
 		return
 	}
 
 	presenceStructureInterface, err := parametersStream.ReadStructure(NewNintendoPresenceV2())
 	if err != nil {
-		go friendsProtocol.UpdateAndGetAllInformationHandler(err, client, callID, nil, nil, nil)
+		go friendsWiiUProtocol.UpdateAndGetAllInformationHandler(err, client, callID, nil, nil, nil)
 		return
 	}
 
@@ -859,13 +859,13 @@ func (friendsProtocol *FriendsProtocol) handleUpdateAndGetAllInformation(packet 
 	presence := presenceStructureInterface.(*NintendoPresenceV2)
 	birthday := nex.NewDateTime(parametersStream.ReadUInt64LE())
 
-	go friendsProtocol.UpdateAndGetAllInformationHandler(nil, client, callID, nnaInfo, presence, birthday)
+	go friendsWiiUProtocol.UpdateAndGetAllInformationHandler(nil, client, callID, nnaInfo, presence, birthday)
 }
 
-func (friendsProtocol *FriendsProtocol) handleAddFriend(packet nex.PacketInterface) {
-	if friendsProtocol.AddFriendHandler == nil {
-		logger.Warning("FriendsProtocol::AddFriend not implemented")
-		go respondNotImplemented(packet, FriendsProtocolID)
+func (friendsWiiUProtocol *FriendsWiiUProtocol) handleAddFriend(packet nex.PacketInterface) {
+	if friendsWiiUProtocol.AddFriendHandler == nil {
+		logger.Warning("FriendsWiiUProtocol::AddFriend not implemented")
+		go respondNotImplemented(packet, FriendsWiiUProtocolID)
 		return
 	}
 
@@ -875,23 +875,23 @@ func (friendsProtocol *FriendsProtocol) handleAddFriend(packet nex.PacketInterfa
 	callID := request.CallID()
 	parameters := request.Parameters()
 
-	parametersStream := nex.NewStreamIn(parameters, friendsProtocol.server)
+	parametersStream := nex.NewStreamIn(parameters, friendsWiiUProtocol.server)
 
 	if len(parametersStream.Bytes()[parametersStream.ByteOffset():]) < 4 {
-		err := errors.New("[FriendsProtocol::AddFriend] Data holder not long enough for PID")
-		go friendsProtocol.AddFriendHandler(err, client, callID, 0)
+		err := errors.New("[FriendsWiiUProtocol::AddFriend] Data holder not long enough for PID")
+		go friendsWiiUProtocol.AddFriendHandler(err, client, callID, 0)
 		return
 	}
 
 	pid := parametersStream.ReadUInt32LE()
 
-	go friendsProtocol.AddFriendHandler(nil, client, callID, pid)
+	go friendsWiiUProtocol.AddFriendHandler(nil, client, callID, pid)
 }
 
-func (friendsProtocol *FriendsProtocol) handleAddFriendByName(packet nex.PacketInterface) {
-	if friendsProtocol.AddFriendByNameHandler == nil {
-		logger.Warning("FriendsProtocol::AddFriendByName not implemented")
-		go respondNotImplemented(packet, FriendsProtocolID)
+func (friendsWiiUProtocol *FriendsWiiUProtocol) handleAddFriendByName(packet nex.PacketInterface) {
+	if friendsWiiUProtocol.AddFriendByNameHandler == nil {
+		logger.Warning("FriendsWiiUProtocol::AddFriendByName not implemented")
+		go respondNotImplemented(packet, FriendsWiiUProtocolID)
 		return
 	}
 
@@ -901,22 +901,22 @@ func (friendsProtocol *FriendsProtocol) handleAddFriendByName(packet nex.PacketI
 	callID := request.CallID()
 	parameters := request.Parameters()
 
-	parametersStream := nex.NewStreamIn(parameters, friendsProtocol.server)
+	parametersStream := nex.NewStreamIn(parameters, friendsWiiUProtocol.server)
 
 	username, err := parametersStream.ReadString()
 
 	if err != nil {
-		go friendsProtocol.AddFriendByNameHandler(err, client, callID, "")
+		go friendsWiiUProtocol.AddFriendByNameHandler(err, client, callID, "")
 		return
 	}
 
-	go friendsProtocol.AddFriendByNameHandler(nil, client, callID, username)
+	go friendsWiiUProtocol.AddFriendByNameHandler(nil, client, callID, username)
 }
 
-func (friendsProtocol *FriendsProtocol) handleRemoveFriend(packet nex.PacketInterface) {
-	if friendsProtocol.RemoveFriendHandler == nil {
-		logger.Warning("FriendsProtocol::RemoveFriend not implemented")
-		go respondNotImplemented(packet, FriendsProtocolID)
+func (friendsWiiUProtocol *FriendsWiiUProtocol) handleRemoveFriend(packet nex.PacketInterface) {
+	if friendsWiiUProtocol.RemoveFriendHandler == nil {
+		logger.Warning("FriendsWiiUProtocol::RemoveFriend not implemented")
+		go respondNotImplemented(packet, FriendsWiiUProtocolID)
 		return
 	}
 
@@ -926,23 +926,23 @@ func (friendsProtocol *FriendsProtocol) handleRemoveFriend(packet nex.PacketInte
 	callID := request.CallID()
 	parameters := request.Parameters()
 
-	parametersStream := nex.NewStreamIn(parameters, friendsProtocol.server)
+	parametersStream := nex.NewStreamIn(parameters, friendsWiiUProtocol.server)
 
 	if len(parametersStream.Bytes()[parametersStream.ByteOffset():]) < 4 {
-		err := errors.New("[FriendsProtocol::RemoveFriend] Data holder not long enough for PID")
-		go friendsProtocol.RemoveFriendHandler(err, client, callID, 0)
+		err := errors.New("[FriendsWiiUProtocol::RemoveFriend] Data holder not long enough for PID")
+		go friendsWiiUProtocol.RemoveFriendHandler(err, client, callID, 0)
 		return
 	}
 
 	pid := parametersStream.ReadUInt32LE()
 
-	go friendsProtocol.RemoveFriendHandler(nil, client, callID, pid)
+	go friendsWiiUProtocol.RemoveFriendHandler(nil, client, callID, pid)
 }
 
-func (friendsProtocol *FriendsProtocol) handleAddFriendRequest(packet nex.PacketInterface) {
-	if friendsProtocol.AddFriendRequestHandler == nil {
-		logger.Warning("FriendsProtocol::AddFriendRequest not implemented")
-		go respondNotImplemented(packet, FriendsProtocolID)
+func (friendsWiiUProtocol *FriendsWiiUProtocol) handleAddFriendRequest(packet nex.PacketInterface) {
+	if friendsWiiUProtocol.AddFriendRequestHandler == nil {
+		logger.Warning("FriendsWiiUProtocol::AddFriendRequest not implemented")
+		go respondNotImplemented(packet, FriendsWiiUProtocolID)
 		return
 	}
 
@@ -952,13 +952,13 @@ func (friendsProtocol *FriendsProtocol) handleAddFriendRequest(packet nex.Packet
 	callID := request.CallID()
 	parameters := request.Parameters()
 
-	parametersStream := nex.NewStreamIn(parameters, friendsProtocol.server)
+	parametersStream := nex.NewStreamIn(parameters, friendsWiiUProtocol.server)
 
 	if len(parametersStream.Bytes()[parametersStream.ByteOffset():]) < 4+1+1+8 {
 		// length check for the following fixed-size data
 		// unknown1 + unknown2 + unknown4 + gameKey + unknown6
-		err := errors.New("[FriendsProtocol::AddFriendRequest] Data holder not long enough for PID")
-		go friendsProtocol.AddFriendRequestHandler(err, client, callID, 0, 0, "", 0, "", nil, nil)
+		err := errors.New("[FriendsWiiUProtocol::AddFriendRequest] Data holder not long enough for PID")
+		go friendsWiiUProtocol.AddFriendRequestHandler(err, client, callID, 0, 0, "", 0, "", nil, nil)
 		return
 	}
 
@@ -967,7 +967,7 @@ func (friendsProtocol *FriendsProtocol) handleAddFriendRequest(packet nex.Packet
 	message, err := parametersStream.ReadString()
 
 	if err != nil {
-		go friendsProtocol.AddFriendRequestHandler(err, client, callID, 0, 0, "", 0, "", nil, nil)
+		go friendsWiiUProtocol.AddFriendRequestHandler(err, client, callID, 0, 0, "", 0, "", nil, nil)
 		return
 	}
 
@@ -975,32 +975,32 @@ func (friendsProtocol *FriendsProtocol) handleAddFriendRequest(packet nex.Packet
 	unknown5, err := parametersStream.ReadString()
 
 	if err != nil {
-		go friendsProtocol.AddFriendRequestHandler(err, client, callID, 0, 0, "", 0, "", nil, nil)
+		go friendsWiiUProtocol.AddFriendRequestHandler(err, client, callID, 0, 0, "", 0, "", nil, nil)
 		return
 	}
 
 	gameKeyStructureInterface, err := parametersStream.ReadStructure(NewGameKey())
 	if err != nil {
-		go friendsProtocol.AddFriendRequestHandler(err, client, callID, 0, 0, "", 0, "", nil, nil)
+		go friendsWiiUProtocol.AddFriendRequestHandler(err, client, callID, 0, 0, "", 0, "", nil, nil)
 		return
 	}
 
 	gameKey := gameKeyStructureInterface.(*GameKey)
 
 	if err != nil {
-		go friendsProtocol.AddFriendRequestHandler(err, client, callID, 0, 0, "", 0, "", nil, nil)
+		go friendsWiiUProtocol.AddFriendRequestHandler(err, client, callID, 0, 0, "", 0, "", nil, nil)
 		return
 	}
 
 	unknown6 := nex.NewDateTime(parametersStream.ReadUInt64LE())
 
-	go friendsProtocol.AddFriendRequestHandler(nil, client, callID, pid, unknown2, message, unknown4, unknown5, gameKey, unknown6)
+	go friendsWiiUProtocol.AddFriendRequestHandler(nil, client, callID, pid, unknown2, message, unknown4, unknown5, gameKey, unknown6)
 }
 
-func (friendsProtocol *FriendsProtocol) handleCancelFriendRequest(packet nex.PacketInterface) {
-	if friendsProtocol.CancelFriendRequestHandler == nil {
-		logger.Warning("FriendsProtocol::CancelFriendRequest not implemented")
-		go respondNotImplemented(packet, FriendsProtocolID)
+func (friendsWiiUProtocol *FriendsWiiUProtocol) handleCancelFriendRequest(packet nex.PacketInterface) {
+	if friendsWiiUProtocol.CancelFriendRequestHandler == nil {
+		logger.Warning("FriendsWiiUProtocol::CancelFriendRequest not implemented")
+		go respondNotImplemented(packet, FriendsWiiUProtocolID)
 		return
 	}
 
@@ -1010,23 +1010,23 @@ func (friendsProtocol *FriendsProtocol) handleCancelFriendRequest(packet nex.Pac
 	callID := request.CallID()
 	parameters := request.Parameters()
 
-	parametersStream := nex.NewStreamIn(parameters, friendsProtocol.server)
+	parametersStream := nex.NewStreamIn(parameters, friendsWiiUProtocol.server)
 
 	if len(parametersStream.Bytes()[parametersStream.ByteOffset():]) < 8 {
-		err := errors.New("[FriendsProtocol::CancelFriendRequest] Data missing list length")
-		go friendsProtocol.CancelFriendRequestHandler(err, client, callID, 0)
+		err := errors.New("[FriendsWiiUProtocol::CancelFriendRequest] Data missing list length")
+		go friendsWiiUProtocol.CancelFriendRequestHandler(err, client, callID, 0)
 		return
 	}
 
 	id := parametersStream.ReadUInt64LE()
 
-	go friendsProtocol.CancelFriendRequestHandler(nil, client, callID, id)
+	go friendsWiiUProtocol.CancelFriendRequestHandler(nil, client, callID, id)
 }
 
-func (friendsProtocol *FriendsProtocol) handleAcceptFriendRequest(packet nex.PacketInterface) {
-	if friendsProtocol.AcceptFriendRequestHandler == nil {
-		logger.Warning("FriendsProtocol::AcceptFriendRequest not implemented")
-		go respondNotImplemented(packet, FriendsProtocolID)
+func (friendsWiiUProtocol *FriendsWiiUProtocol) handleAcceptFriendRequest(packet nex.PacketInterface) {
+	if friendsWiiUProtocol.AcceptFriendRequestHandler == nil {
+		logger.Warning("FriendsWiiUProtocol::AcceptFriendRequest not implemented")
+		go respondNotImplemented(packet, FriendsWiiUProtocolID)
 		return
 	}
 
@@ -1036,23 +1036,23 @@ func (friendsProtocol *FriendsProtocol) handleAcceptFriendRequest(packet nex.Pac
 	callID := request.CallID()
 	parameters := request.Parameters()
 
-	parametersStream := nex.NewStreamIn(parameters, friendsProtocol.server)
+	parametersStream := nex.NewStreamIn(parameters, friendsWiiUProtocol.server)
 
 	if len(parametersStream.Bytes()[parametersStream.ByteOffset():]) < 8 {
-		err := errors.New("[FriendsProtocol::AcceptFriendRequest] Data missing list length")
-		go friendsProtocol.AcceptFriendRequestHandler(err, client, callID, 0)
+		err := errors.New("[FriendsWiiUProtocol::AcceptFriendRequest] Data missing list length")
+		go friendsWiiUProtocol.AcceptFriendRequestHandler(err, client, callID, 0)
 		return
 	}
 
 	id := parametersStream.ReadUInt64LE()
 
-	go friendsProtocol.AcceptFriendRequestHandler(nil, client, callID, id)
+	go friendsWiiUProtocol.AcceptFriendRequestHandler(nil, client, callID, id)
 }
 
-func (friendsProtocol *FriendsProtocol) handleDeleteFriendRequest(packet nex.PacketInterface) {
-	if friendsProtocol.DeleteFriendRequestHandler == nil {
-		logger.Warning("FriendsProtocol::DeleteFriendRequest not implemented")
-		go respondNotImplemented(packet, FriendsProtocolID)
+func (friendsWiiUProtocol *FriendsWiiUProtocol) handleDeleteFriendRequest(packet nex.PacketInterface) {
+	if friendsWiiUProtocol.DeleteFriendRequestHandler == nil {
+		logger.Warning("FriendsWiiUProtocol::DeleteFriendRequest not implemented")
+		go respondNotImplemented(packet, FriendsWiiUProtocolID)
 		return
 	}
 
@@ -1062,23 +1062,23 @@ func (friendsProtocol *FriendsProtocol) handleDeleteFriendRequest(packet nex.Pac
 	callID := request.CallID()
 	parameters := request.Parameters()
 
-	parametersStream := nex.NewStreamIn(parameters, friendsProtocol.server)
+	parametersStream := nex.NewStreamIn(parameters, friendsWiiUProtocol.server)
 
 	if len(parametersStream.Bytes()[parametersStream.ByteOffset():]) < 8 {
-		err := errors.New("[FriendsProtocol::DeleteFriendRequest] Data missing list length")
-		go friendsProtocol.DeleteFriendRequestHandler(err, client, callID, 0)
+		err := errors.New("[FriendsWiiUProtocol::DeleteFriendRequest] Data missing list length")
+		go friendsWiiUProtocol.DeleteFriendRequestHandler(err, client, callID, 0)
 		return
 	}
 
 	id := parametersStream.ReadUInt64LE()
 
-	go friendsProtocol.DeleteFriendRequestHandler(nil, client, callID, id)
+	go friendsWiiUProtocol.DeleteFriendRequestHandler(nil, client, callID, id)
 }
 
-func (friendsProtocol *FriendsProtocol) handleDenyFriendRequest(packet nex.PacketInterface) {
-	if friendsProtocol.DenyFriendRequestHandler == nil {
-		logger.Warning("FriendsProtocol::DenyFriendRequest not implemented")
-		go respondNotImplemented(packet, FriendsProtocolID)
+func (friendsWiiUProtocol *FriendsWiiUProtocol) handleDenyFriendRequest(packet nex.PacketInterface) {
+	if friendsWiiUProtocol.DenyFriendRequestHandler == nil {
+		logger.Warning("FriendsWiiUProtocol::DenyFriendRequest not implemented")
+		go respondNotImplemented(packet, FriendsWiiUProtocolID)
 		return
 	}
 
@@ -1088,23 +1088,23 @@ func (friendsProtocol *FriendsProtocol) handleDenyFriendRequest(packet nex.Packe
 	callID := request.CallID()
 	parameters := request.Parameters()
 
-	parametersStream := nex.NewStreamIn(parameters, friendsProtocol.server)
+	parametersStream := nex.NewStreamIn(parameters, friendsWiiUProtocol.server)
 
 	if len(parametersStream.Bytes()[parametersStream.ByteOffset():]) < 8 {
-		err := errors.New("[FriendsProtocol::DenyFriendRequest] Data missing list length")
-		go friendsProtocol.DenyFriendRequestHandler(err, client, callID, 0)
+		err := errors.New("[FriendsWiiUProtocol::DenyFriendRequest] Data missing list length")
+		go friendsWiiUProtocol.DenyFriendRequestHandler(err, client, callID, 0)
 		return
 	}
 
 	id := parametersStream.ReadUInt64LE()
 
-	go friendsProtocol.DenyFriendRequestHandler(nil, client, callID, id)
+	go friendsWiiUProtocol.DenyFriendRequestHandler(nil, client, callID, id)
 }
 
-func (friendsProtocol *FriendsProtocol) handleMarkFriendRequestsAsReceived(packet nex.PacketInterface) {
-	if friendsProtocol.MarkFriendRequestsAsReceivedHandler == nil {
-		logger.Warning("FriendsProtocol::MarkFriendRequestsAsReceived not implemented")
-		go respondNotImplemented(packet, FriendsProtocolID)
+func (friendsWiiUProtocol *FriendsWiiUProtocol) handleMarkFriendRequestsAsReceived(packet nex.PacketInterface) {
+	if friendsWiiUProtocol.MarkFriendRequestsAsReceivedHandler == nil {
+		logger.Warning("FriendsWiiUProtocol::MarkFriendRequestsAsReceived not implemented")
+		go respondNotImplemented(packet, FriendsWiiUProtocolID)
 		return
 	}
 
@@ -1114,23 +1114,23 @@ func (friendsProtocol *FriendsProtocol) handleMarkFriendRequestsAsReceived(packe
 	callID := request.CallID()
 	parameters := request.Parameters()
 
-	parametersStream := nex.NewStreamIn(parameters, friendsProtocol.server)
+	parametersStream := nex.NewStreamIn(parameters, friendsWiiUProtocol.server)
 
 	if len(parametersStream.Bytes()[parametersStream.ByteOffset():]) < 4 {
-		err := errors.New("[FriendsProtocol::MarkFriendRequestsAsReceived] Data missing list length")
-		go friendsProtocol.MarkFriendRequestsAsReceivedHandler(err, client, callID, make([]uint64, 0))
+		err := errors.New("[FriendsWiiUProtocol::MarkFriendRequestsAsReceived] Data missing list length")
+		go friendsWiiUProtocol.MarkFriendRequestsAsReceivedHandler(err, client, callID, make([]uint64, 0))
 		return
 	}
 
 	ids := parametersStream.ReadListUInt64LE()
 
-	go friendsProtocol.MarkFriendRequestsAsReceivedHandler(nil, client, callID, ids)
+	go friendsWiiUProtocol.MarkFriendRequestsAsReceivedHandler(nil, client, callID, ids)
 }
 
-func (friendsProtocol *FriendsProtocol) handleAddBlackList(packet nex.PacketInterface) {
-	if friendsProtocol.AddBlackListHandler == nil {
-		logger.Warning("FriendsProtocol::AddBlackList not implemented")
-		go respondNotImplemented(packet, FriendsProtocolID)
+func (friendsWiiUProtocol *FriendsWiiUProtocol) handleAddBlackList(packet nex.PacketInterface) {
+	if friendsWiiUProtocol.AddBlackListHandler == nil {
+		logger.Warning("FriendsWiiUProtocol::AddBlackList not implemented")
+		go respondNotImplemented(packet, FriendsWiiUProtocolID)
 		return
 	}
 
@@ -1140,23 +1140,23 @@ func (friendsProtocol *FriendsProtocol) handleAddBlackList(packet nex.PacketInte
 	callID := request.CallID()
 	parameters := request.Parameters()
 
-	parametersStream := nex.NewStreamIn(parameters, friendsProtocol.server)
+	parametersStream := nex.NewStreamIn(parameters, friendsWiiUProtocol.server)
 
 	blacklistedPrincipalStructureInterface, err := parametersStream.ReadStructure(NewBlacklistedPrincipal())
 	if err != nil {
-		go friendsProtocol.AddBlackListHandler(err, client, callID, nil)
+		go friendsWiiUProtocol.AddBlackListHandler(err, client, callID, nil)
 		return
 	}
 
 	blacklistedPrincipal := blacklistedPrincipalStructureInterface.(*BlacklistedPrincipal)
 
-	go friendsProtocol.AddBlackListHandler(nil, client, callID, blacklistedPrincipal)
+	go friendsWiiUProtocol.AddBlackListHandler(nil, client, callID, blacklistedPrincipal)
 }
 
-func (friendsProtocol *FriendsProtocol) handleRemoveBlackList(packet nex.PacketInterface) {
-	if friendsProtocol.RemoveBlackListHandler == nil {
-		logger.Warning("FriendsProtocol::RemoveBlackList not implemented")
-		go respondNotImplemented(packet, FriendsProtocolID)
+func (friendsWiiUProtocol *FriendsWiiUProtocol) handleRemoveBlackList(packet nex.PacketInterface) {
+	if friendsWiiUProtocol.RemoveBlackListHandler == nil {
+		logger.Warning("FriendsWiiUProtocol::RemoveBlackList not implemented")
+		go respondNotImplemented(packet, FriendsWiiUProtocolID)
 		return
 	}
 
@@ -1166,23 +1166,23 @@ func (friendsProtocol *FriendsProtocol) handleRemoveBlackList(packet nex.PacketI
 	callID := request.CallID()
 	parameters := request.Parameters()
 
-	parametersStream := nex.NewStreamIn(parameters, friendsProtocol.server)
+	parametersStream := nex.NewStreamIn(parameters, friendsWiiUProtocol.server)
 
 	if len(parametersStream.Bytes()[parametersStream.ByteOffset():]) < 4 {
-		err := errors.New("[FriendsProtocol::RemoveBlackList] Data missing list length")
-		go friendsProtocol.RemoveBlackListHandler(err, client, callID, 0)
+		err := errors.New("[FriendsWiiUProtocol::RemoveBlackList] Data missing list length")
+		go friendsWiiUProtocol.RemoveBlackListHandler(err, client, callID, 0)
 		return
 	}
 
 	pid := parametersStream.ReadUInt32LE()
 
-	go friendsProtocol.RemoveBlackListHandler(nil, client, callID, pid)
+	go friendsWiiUProtocol.RemoveBlackListHandler(nil, client, callID, pid)
 }
 
-func (friendsProtocol *FriendsProtocol) handleUpdatePresence(packet nex.PacketInterface) {
-	if friendsProtocol.UpdatePresenceHandler == nil {
-		logger.Warning("FriendsProtocol::UpdatePresence not implemented")
-		go respondNotImplemented(packet, FriendsProtocolID)
+func (friendsWiiUProtocol *FriendsWiiUProtocol) handleUpdatePresence(packet nex.PacketInterface) {
+	if friendsWiiUProtocol.UpdatePresenceHandler == nil {
+		logger.Warning("FriendsWiiUProtocol::UpdatePresence not implemented")
+		go respondNotImplemented(packet, FriendsWiiUProtocolID)
 		return
 	}
 
@@ -1192,23 +1192,23 @@ func (friendsProtocol *FriendsProtocol) handleUpdatePresence(packet nex.PacketIn
 	callID := request.CallID()
 	parameters := request.Parameters()
 
-	parametersStream := nex.NewStreamIn(parameters, friendsProtocol.server)
+	parametersStream := nex.NewStreamIn(parameters, friendsWiiUProtocol.server)
 
 	nintendoPresenceV2StructureInterface, err := parametersStream.ReadStructure(NewNintendoPresenceV2())
 	if err != nil {
-		go friendsProtocol.UpdatePresenceHandler(err, client, callID, nil)
+		go friendsWiiUProtocol.UpdatePresenceHandler(err, client, callID, nil)
 		return
 	}
 
 	nintendoPresenceV2 := nintendoPresenceV2StructureInterface.(*NintendoPresenceV2)
 
-	go friendsProtocol.UpdatePresenceHandler(nil, client, callID, nintendoPresenceV2)
+	go friendsWiiUProtocol.UpdatePresenceHandler(nil, client, callID, nintendoPresenceV2)
 }
 
-func (friendsProtocol *FriendsProtocol) handleUpdateMii(packet nex.PacketInterface) {
-	if friendsProtocol.UpdateMiiHandler == nil {
-		logger.Warning("FriendsProtocol::UpdateMii not implemented")
-		go respondNotImplemented(packet, FriendsProtocolID)
+func (friendsWiiUProtocol *FriendsWiiUProtocol) handleUpdateMii(packet nex.PacketInterface) {
+	if friendsWiiUProtocol.UpdateMiiHandler == nil {
+		logger.Warning("FriendsWiiUProtocol::UpdateMii not implemented")
+		go respondNotImplemented(packet, FriendsWiiUProtocolID)
 		return
 	}
 
@@ -1218,23 +1218,23 @@ func (friendsProtocol *FriendsProtocol) handleUpdateMii(packet nex.PacketInterfa
 	callID := request.CallID()
 	parameters := request.Parameters()
 
-	parametersStream := nex.NewStreamIn(parameters, friendsProtocol.server)
+	parametersStream := nex.NewStreamIn(parameters, friendsWiiUProtocol.server)
 
 	miiV2StructureInterface, err := parametersStream.ReadStructure(NewMiiV2())
 	if err != nil {
-		go friendsProtocol.UpdateMiiHandler(err, client, callID, nil)
+		go friendsWiiUProtocol.UpdateMiiHandler(err, client, callID, nil)
 		return
 	}
 
 	miiV2 := miiV2StructureInterface.(*MiiV2)
 
-	go friendsProtocol.UpdateMiiHandler(nil, client, callID, miiV2)
+	go friendsWiiUProtocol.UpdateMiiHandler(nil, client, callID, miiV2)
 }
 
-func (friendsProtocol *FriendsProtocol) handleUpdateComment(packet nex.PacketInterface) {
-	if friendsProtocol.UpdateCommentHandler == nil {
-		logger.Warning("FriendsProtocol::UpdateComment not implemented")
-		go respondNotImplemented(packet, FriendsProtocolID)
+func (friendsWiiUProtocol *FriendsWiiUProtocol) handleUpdateComment(packet nex.PacketInterface) {
+	if friendsWiiUProtocol.UpdateCommentHandler == nil {
+		logger.Warning("FriendsWiiUProtocol::UpdateComment not implemented")
+		go respondNotImplemented(packet, FriendsWiiUProtocolID)
 		return
 	}
 
@@ -1244,23 +1244,23 @@ func (friendsProtocol *FriendsProtocol) handleUpdateComment(packet nex.PacketInt
 	callID := request.CallID()
 	parameters := request.Parameters()
 
-	parametersStream := nex.NewStreamIn(parameters, friendsProtocol.server)
+	parametersStream := nex.NewStreamIn(parameters, friendsWiiUProtocol.server)
 
 	commentStructureInterface, err := parametersStream.ReadStructure(NewComment())
 	if err != nil {
-		go friendsProtocol.UpdateCommentHandler(err, client, callID, nil)
+		go friendsWiiUProtocol.UpdateCommentHandler(err, client, callID, nil)
 		return
 	}
 
 	comment := commentStructureInterface.(*Comment)
 
-	go friendsProtocol.UpdateCommentHandler(nil, client, callID, comment)
+	go friendsWiiUProtocol.UpdateCommentHandler(nil, client, callID, comment)
 }
 
-func (friendsProtocol *FriendsProtocol) handleUpdatePreference(packet nex.PacketInterface) {
-	if friendsProtocol.UpdatePreferenceHandler == nil {
-		logger.Warning("FriendsProtocol::UpdatePreference not implemented")
-		go respondNotImplemented(packet, FriendsProtocolID)
+func (friendsWiiUProtocol *FriendsWiiUProtocol) handleUpdatePreference(packet nex.PacketInterface) {
+	if friendsWiiUProtocol.UpdatePreferenceHandler == nil {
+		logger.Warning("FriendsWiiUProtocol::UpdatePreference not implemented")
+		go respondNotImplemented(packet, FriendsWiiUProtocolID)
 		return
 	}
 
@@ -1270,23 +1270,23 @@ func (friendsProtocol *FriendsProtocol) handleUpdatePreference(packet nex.Packet
 	callID := request.CallID()
 	parameters := request.Parameters()
 
-	parametersStream := nex.NewStreamIn(parameters, friendsProtocol.server)
+	parametersStream := nex.NewStreamIn(parameters, friendsWiiUProtocol.server)
 
 	principalPreferenceStructureInterface, err := parametersStream.ReadStructure(NewPrincipalPreference())
 	if err != nil {
-		go friendsProtocol.UpdatePreferenceHandler(err, client, callID, nil)
+		go friendsWiiUProtocol.UpdatePreferenceHandler(err, client, callID, nil)
 		return
 	}
 
 	principalPreference := principalPreferenceStructureInterface.(*PrincipalPreference)
 
-	go friendsProtocol.UpdatePreferenceHandler(nil, client, callID, principalPreference)
+	go friendsWiiUProtocol.UpdatePreferenceHandler(nil, client, callID, principalPreference)
 }
 
-func (friendsProtocol *FriendsProtocol) handleGetBasicInfo(packet nex.PacketInterface) {
-	if friendsProtocol.GetBasicInfoHandler == nil {
-		logger.Warning("FriendsProtocol::GetBasicInfo not implemented")
-		go respondNotImplemented(packet, FriendsProtocolID)
+func (friendsWiiUProtocol *FriendsWiiUProtocol) handleGetBasicInfo(packet nex.PacketInterface) {
+	if friendsWiiUProtocol.GetBasicInfoHandler == nil {
+		logger.Warning("FriendsWiiUProtocol::GetBasicInfo not implemented")
+		go respondNotImplemented(packet, FriendsWiiUProtocolID)
 		return
 	}
 
@@ -1296,23 +1296,23 @@ func (friendsProtocol *FriendsProtocol) handleGetBasicInfo(packet nex.PacketInte
 	callID := request.CallID()
 	parameters := request.Parameters()
 
-	parametersStream := nex.NewStreamIn(parameters, friendsProtocol.server)
+	parametersStream := nex.NewStreamIn(parameters, friendsWiiUProtocol.server)
 
 	if len(parametersStream.Bytes()[parametersStream.ByteOffset():]) < 4 {
-		err := errors.New("[FriendsProtocol::GetBasicInfo] Data missing list length")
-		go friendsProtocol.GetBasicInfoHandler(err, client, callID, make([]uint32, 0))
+		err := errors.New("[FriendsWiiUProtocol::GetBasicInfo] Data missing list length")
+		go friendsWiiUProtocol.GetBasicInfoHandler(err, client, callID, make([]uint32, 0))
 		return
 	}
 
 	pids := parametersStream.ReadListUInt32LE()
 
-	go friendsProtocol.GetBasicInfoHandler(nil, client, callID, pids)
+	go friendsWiiUProtocol.GetBasicInfoHandler(nil, client, callID, pids)
 }
 
-func (friendsProtocol *FriendsProtocol) handleDeletePersistentNotification(packet nex.PacketInterface) {
-	if friendsProtocol.DeletePersistentNotificationHandler == nil {
-		logger.Warning("FriendsProtocol::DeletePersistentNotification not implemented")
-		go respondNotImplemented(packet, FriendsProtocolID)
+func (friendsWiiUProtocol *FriendsWiiUProtocol) handleDeletePersistentNotification(packet nex.PacketInterface) {
+	if friendsWiiUProtocol.DeletePersistentNotificationHandler == nil {
+		logger.Warning("FriendsWiiUProtocol::DeletePersistentNotification not implemented")
+		go respondNotImplemented(packet, FriendsWiiUProtocolID)
 		return
 	}
 
@@ -1322,22 +1322,22 @@ func (friendsProtocol *FriendsProtocol) handleDeletePersistentNotification(packe
 	callID := request.CallID()
 	parameters := request.Parameters()
 
-	parametersStream := nex.NewStreamIn(parameters, friendsProtocol.server)
+	parametersStream := nex.NewStreamIn(parameters, friendsWiiUProtocol.server)
 
 	persistentNotifications, err := ReadListPersistentNotification(parametersStream)
 
 	if err != nil {
-		go friendsProtocol.DeletePersistentNotificationHandler(err, client, callID, nil)
+		go friendsWiiUProtocol.DeletePersistentNotificationHandler(err, client, callID, nil)
 		return
 	}
 
-	go friendsProtocol.DeletePersistentNotificationHandler(nil, client, callID, persistentNotifications)
+	go friendsWiiUProtocol.DeletePersistentNotificationHandler(nil, client, callID, persistentNotifications)
 }
 
-func (friendsProtocol *FriendsProtocol) handleCheckSettingStatus(packet nex.PacketInterface) {
-	if friendsProtocol.CheckSettingStatusHandler == nil {
-		logger.Warning("FriendsProtocol::CheckSettingStatus not implemented")
-		go respondNotImplemented(packet, FriendsProtocolID)
+func (friendsWiiUProtocol *FriendsWiiUProtocol) handleCheckSettingStatus(packet nex.PacketInterface) {
+	if friendsWiiUProtocol.CheckSettingStatusHandler == nil {
+		logger.Warning("FriendsWiiUProtocol::CheckSettingStatus not implemented")
+		go respondNotImplemented(packet, FriendsWiiUProtocolID)
 		return
 	}
 
@@ -1346,13 +1346,13 @@ func (friendsProtocol *FriendsProtocol) handleCheckSettingStatus(packet nex.Pack
 
 	callID := request.CallID()
 
-	go friendsProtocol.CheckSettingStatusHandler(nil, client, callID)
+	go friendsWiiUProtocol.CheckSettingStatusHandler(nil, client, callID)
 }
 
-func (friendsProtocol *FriendsProtocol) handleGetRequestBlockSettings(packet nex.PacketInterface) {
-	if friendsProtocol.GetRequestBlockSettingsHandler == nil {
-		logger.Warning("FriendsProtocol::GetRequestBlockSettings not implemented")
-		go respondNotImplemented(packet, FriendsProtocolID)
+func (friendsWiiUProtocol *FriendsWiiUProtocol) handleGetRequestBlockSettings(packet nex.PacketInterface) {
+	if friendsWiiUProtocol.GetRequestBlockSettingsHandler == nil {
+		logger.Warning("FriendsWiiUProtocol::GetRequestBlockSettings not implemented")
+		go respondNotImplemented(packet, FriendsWiiUProtocolID)
 		return
 	}
 
@@ -1362,24 +1362,24 @@ func (friendsProtocol *FriendsProtocol) handleGetRequestBlockSettings(packet nex
 	callID := request.CallID()
 	parameters := request.Parameters()
 
-	parametersStream := nex.NewStreamIn(parameters, friendsProtocol.server)
+	parametersStream := nex.NewStreamIn(parameters, friendsWiiUProtocol.server)
 
 	if len(parametersStream.Bytes()[parametersStream.ByteOffset():]) < 4 {
-		err := errors.New("[FriendsProtocol::GetRequestBlockSettings] Data missing list length")
-		go friendsProtocol.GetRequestBlockSettingsHandler(err, client, callID, make([]uint32, 0))
+		err := errors.New("[FriendsWiiUProtocol::GetRequestBlockSettings] Data missing list length")
+		go friendsWiiUProtocol.GetRequestBlockSettingsHandler(err, client, callID, make([]uint32, 0))
 		return
 	}
 
 	pids := parametersStream.ReadListUInt32LE()
 
-	go friendsProtocol.GetRequestBlockSettingsHandler(nil, client, callID, pids)
+	go friendsWiiUProtocol.GetRequestBlockSettingsHandler(nil, client, callID, pids)
 }
 
-// NewFriendsProtocol returns a new FriendsProtocol
-func NewFriendsProtocol(server *nex.Server) *FriendsProtocol {
-	friendsProtocol := &FriendsProtocol{server: server}
+// NewFriendsWiiUProtocol returns a new FriendsWiiUProtocol
+func NewFriendsWiiUProtocol(server *nex.Server) *FriendsWiiUProtocol {
+	friendsWiiUProtocol := &FriendsWiiUProtocol{server: server}
 
-	friendsProtocol.Setup()
+	friendsWiiUProtocol.Setup()
 
-	return friendsProtocol
+	return friendsWiiUProtocol
 }

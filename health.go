@@ -43,19 +43,14 @@ func (healthProtocol *HealthProtocol) Setup() {
 			switch request.MethodID() {
 			case HealthMethodPingDaemon:
 				go healthProtocol.handlePingDaemon(packet)
-				break
 			case HealthMethodPingDatabase:
 				go healthProtocol.handlePingDatabase(packet)
-				break
 			case HealthMethodRunSanityCheck:
 				go healthProtocol.handleRunSanityCheck(packet)
-				break
 			case HealthMethodFixSanityErrors:
 				go healthProtocol.handleFixSanityErrors(packet)
-				break
 			default:
 				fmt.Printf("Unsupported Health method ID: %#v\n", request.MethodID())
-				break
 			}
 		}
 	})

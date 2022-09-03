@@ -31,10 +31,8 @@ func (remoteLogDeviceProtocol *RemoteLogDeviceProtocol) Setup() {
 			switch request.MethodID() {
 			case RemoteLogDeviceMethodLog:
 				go remoteLogDeviceProtocol.handleLog(packet)
-				break
 			default:
 				fmt.Printf("Unsupported RemoteLogDevice method ID: %#v\n", request.MethodID())
-				break
 			}
 		}
 	})

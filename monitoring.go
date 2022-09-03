@@ -35,13 +35,10 @@ func (monitoringProtocol *MonitoringProtocol) Setup() {
 			switch request.MethodID() {
 			case MonitoringMethodPingDaemon:
 				go monitoringProtocol.handlePingDaemon(packet)
-				break
 			case MonitoringMethodGetClusterMembers:
 				go monitoringProtocol.handleGetClusterMembers(packet)
-				break
 			default:
 				fmt.Printf("Unsupported Monitoring method ID: %#v\n", request.MethodID())
-				break
 			}
 		}
 	})

@@ -35,13 +35,10 @@ func (screeningProtocol *ScreeningProtocol) Setup() {
 			switch request.MethodID() {
 			case ScreeningMethodReportDataStoreContent:
 				go screeningProtocol.handleReportDataStoreContent(packet)
-				break
 			case ScreeningMethodReportUser:
 				go screeningProtocol.handleReportUser(packet)
-				break
 			default:
 				fmt.Printf("Unsupported Screening method ID: %#v\n", request.MethodID())
-				break
 			}
 		}
 	})

@@ -51,25 +51,18 @@ func (matchMakingExtProtocol *MatchMakingExtProtocol) Setup() {
 			switch request.MethodID() {
 			case MatchMakingExtMethodEndParticipation:
 				go matchMakingExtProtocol.handleEndParticipation(packet)
-				break
 			case MatchMakingExtMethodGetParticipants:
 				go matchMakingExtProtocol.handleGetParticipants(packet)
-				break
 			case MatchMakingExtMethodGetDetailedParticipants:
 				go matchMakingExtProtocol.handleGetDetailedParticipants(packet)
-				break
 			case MatchMakingExtMethodGetParticipantsURLs:
 				go matchMakingExtProtocol.handleGetParticipantsURLs(packet)
-				break
 			case MatchMakingExtMethodGetGatheringRelations:
 				go matchMakingExtProtocol.handleGetGatheringRelations(packet)
-				break
 			case MatchMakingExtMethodDeleteFromDeletions:
 				go matchMakingExtProtocol.handleDeleteFromDeletions(packet)
-				break
 			default:
 				fmt.Printf("Unsupported MatchMakingExt method ID: %#v\n", request.MethodID())
-				break
 			}
 		}
 	})

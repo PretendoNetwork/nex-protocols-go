@@ -102,6 +102,8 @@ func (utilityProtocol *UtilityProtocol) Setup() {
 				go utilityProtocol.handleAssociateNexUniqueIDsWithMyPrincipalID(packet)
 			case UtilityMethodGetAssociatedNexUniqueIDWithMyPrincipalID:
 				go utilityProtocol.handleGetAssociatedNexUniqueIDWithMyPrincipalID(packet)
+			case UtilityMethodGetAssociatedNexUniqueIDsWithMyPrincipalID:
+				go utilityProtocol.handleGetAssociatedNexUniqueIDsWithMyPrincipalID(packet)
 			case UtilityMethodGetIntegerSettings:
 				go utilityProtocol.handleGetIntegerSettings(packet)
 			case UtilityMethodGetStringSettings:

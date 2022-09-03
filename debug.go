@@ -55,28 +55,20 @@ func (debugProtocol *DebugProtocol) Setup() {
 			switch request.MethodID() {
 			case DebugMethodEnableApiRecorder:
 				go debugProtocol.handleEnableApiRecorder(packet)
-				break
 			case DebugMethodDisableApiRecorder:
 				go debugProtocol.handleDisableApiRecorder(packet)
-				break
 			case DebugMethodIsApiRecorderEnabled:
 				go debugProtocol.handleIsApiRecorderEnabled(packet)
-				break
 			case DebugMethodGetApiCalls:
 				go debugProtocol.handleGetApiCalls(packet)
-				break
 			case DebugMethodSetExcludeJoinedMatchmakeSession:
 				go debugProtocol.handleSetExcludeJoinedMatchmakeSession(packet)
-				break
 			case DebugMethodGetExcludeJoinedMatchmakeSession:
 				go debugProtocol.handleGetExcludeJoinedMatchmakeSession(packet)
-				break
 			case DebugMethodGetApiCallSummary:
 				go debugProtocol.handleGetApiCallSummary(packet)
-				break
 			default:
 				fmt.Printf("Unsupported Debug method ID: %#v\n", request.MethodID())
-				break
 			}
 		}
 	})

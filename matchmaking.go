@@ -16,6 +16,9 @@ const (
 	// MatchMakingMethodUnregisterGatherings is the method ID for the method UnregisterGatherings
 	MatchMakingMethodUnregisterGatherings = 0x3
 
+	// MatchMakingMethodFindBySingleID is the method ID for the method FindBySingleID
+	MatchMakingMethodFindBySingleID = 0x15
+
 	// MatchMakingMethodGetSessionURLs is the method ID for the method GetSessionURLs
 	MatchMakingMethodGetSessionURLs = 0x29
 )
@@ -25,6 +28,7 @@ type MatchMakingProtocol struct {
 	server                      *nex.Server
 	UnregisterGatheringHandler  func(err error, client *nex.Client, callID uint32, idGathering uint32)
 	UnregisterGatheringsHandler func(err error, client *nex.Client, callID uint32, lstGatherings []uint32)
+	FindBySingleIDHandler       func(err error, client *nex.Client, callID uint32, id uint32)
 	GetSessionURLsHandler       func(err error, client *nex.Client, callID uint32, gatheringId uint32)
 }
 
@@ -41,6 +45,8 @@ func (matchMakingProtocol *MatchMakingProtocol) Setup() {
 				go matchMakingProtocol.handleMatchMakingMethodUnregisterGathering(packet)
 			case MatchMakingMethodUnregisterGatherings:
 				go matchMakingProtocol.handleMatchMakingMethodUnregisterGatherings(packet)
+			case MatchMakingMethodFindBySingleID:
+				go matchMakingProtocol.handleFindBySingleID(packet)
 			case MatchMakingMethodGetSessionURLs:
 				go matchMakingProtocol.handleGetSessionURLs(packet)
 			default:
@@ -59,6 +65,11 @@ func (matchMakingProtocol *MatchMakingProtocol) UnregisterGathering(handler func
 // UnregisterGatherings sets the UnregisterGatherings handler function
 func (matchMakingProtocol *MatchMakingProtocol) UnregisterGatherings(handler func(err error, client *nex.Client, callID uint32, lstGatherings []uint32)) {
 	matchMakingProtocol.UnregisterGatheringsHandler = handler
+}
+
+// FindBySingleID sets the FindBySingleID handler function
+func (matchMakingProtocol *MatchMakingProtocol) FindBySingleID(handler func(err error, client *nex.Client, callID uint32, id uint32)) {
+	matchMakingProtocol.FindBySingleIDHandler = handler
 }
 
 // GetSessionURLs sets the GetSessionURLs handler function
@@ -104,6 +115,26 @@ func (matchMakingProtocol *MatchMakingProtocol) handleMatchMakingMethodUnregiste
 	lstGatherings := parametersStream.ReadListUInt32LE()
 
 	go matchMakingProtocol.UnregisterGatheringsHandler(nil, client, callID, lstGatherings)
+}
+
+func (matchMakingProtocol *MatchMakingProtocol) handleFindBySingleID(packet nex.PacketInterface) {
+	if matchMakingProtocol.FindBySingleIDHandler == nil {
+		logger.Warning("MatchMakingProtocol::FindBySingleID not implemented")
+		go respondNotImplemented(packet, MatchMakingProtocolID)
+		return
+	}
+
+	client := packet.Sender()
+	request := packet.RMCRequest()
+
+	callID := request.CallID()
+	parameters := request.Parameters()
+
+	parametersStream := nex.NewStreamIn(parameters, matchMakingProtocol.server)
+
+	id := parametersStream.ReadUInt32LE()
+
+	go matchMakingProtocol.FindBySingleIDHandler(nil, client, callID, id)
 }
 
 func (matchMakingProtocol *MatchMakingProtocol) handleGetSessionURLs(packet nex.PacketInterface) {

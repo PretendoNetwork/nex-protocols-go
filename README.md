@@ -1,6 +1,12 @@
-# NEX servers with protocol support in Go
+# NEX Protocols Go
+## NEX servers with protocol support in Go
 
 [![GoDoc](https://godoc.org/github.com/PretendoNetwork/nex-protocols-go?status.svg)](https://godoc.org/github.com/PretendoNetwork/nex-protocols-go)
+
+### Other NEX libraries
+[nex-go](https://github.com/PretendoNetwork/nex-go) - Barebones NEX/PRUDP server implementation
+
+[nex-protocols-common-go](https://github.com/PretendoNetwork/nex-protocols-common-go) - NEX protocols used by many games with premade handlers and a high level API
 
 ### Install
 
@@ -14,8 +20,6 @@
 ### For a complete example, see the complete [Friends Authentication Server](https://github.com/PretendoNetwork/friends-authentication), and other game servers
 
 ```go
-// main.go
-
 package main
 
 import (

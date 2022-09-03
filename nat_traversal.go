@@ -16,6 +16,9 @@ const (
 	// NATTraversalMethodRequestProbeInitiationExt is the method ID for the method RequestProbeInitiationExt
 	NATTraversalMethodRequestProbeInitiationExt = 0x3
 
+	// NATTraversalMethodReportNATTraversalResult is the method ID for the method ReportNATTraversalResult
+	NATTraversalMethodReportNATTraversalResult = 0x4
+
 	// NATTraversalMethodReportNATProperties is the method ID for the method ReportNATProperties
 	NATTraversalMethodReportNATProperties = 0x5
 
@@ -28,6 +31,7 @@ type NATTraversalProtocol struct {
 	server                           *nex.Server
 	InitiateProbeHandler             func(err error, client *nex.Client, callID uint32)
 	RequestProbeInitiationExtHandler func(err error, client *nex.Client, callID uint32, targetList []string, stationToProbe string)
+	ReportNATTraversalResultHandler  func(err error, client *nex.Client, callID uint32, cid uint32, result bool, rtt uint32)
 	ReportNATPropertiesHandler       func(err error, client *nex.Client, callID uint32, natmapping uint32, natfiltering uint32, rtt uint32)
 	GetRelaySignatureKeyHandler      func(err error, client *nex.Client, callID uint32)
 }
@@ -43,6 +47,8 @@ func (natTraversalProtocol *NATTraversalProtocol) Setup() {
 			switch request.MethodID() {
 			case NATTraversalMethodRequestProbeInitiationExt:
 				go natTraversalProtocol.handleRequestProbeInitiationExt(packet)
+			case NATTraversalMethodReportNATTraversalResult:
+				go natTraversalProtocol.handleReportNATTraversalResult(packet)
 			case NATTraversalMethodReportNATProperties:
 				go natTraversalProtocol.handleReportNATProperties(packet)
 			case NATTraversalMethodGetRelaySignatureKey:
@@ -58,6 +64,11 @@ func (natTraversalProtocol *NATTraversalProtocol) Setup() {
 // RequestProbeInitiationExt sets the RequestProbeInitiationExt handler function
 func (natTraversalProtocol *NATTraversalProtocol) RequestProbeInitiationExt(handler func(err error, client *nex.Client, callID uint32, targetList []string, stationToProbe string)) {
 	natTraversalProtocol.RequestProbeInitiationExtHandler = handler
+}
+
+// ReportNATTraversalResult sets the ReportNATTraversalResult handler function
+func (natTraversalProtocol *NATTraversalProtocol) ReportNATTraversalResult(handler func(err error, client *nex.Client, callID uint32, cid uint32, result bool, rtt uint32)) {
+	natTraversalProtocol.ReportNATTraversalResultHandler = handler
 }
 
 // ReportNATProperties sets the ReportNATProperties handler function
@@ -93,6 +104,28 @@ func (natTraversalProtocol *NATTraversalProtocol) handleRequestProbeInitiationEx
 	}
 
 	go natTraversalProtocol.RequestProbeInitiationExtHandler(nil, client, callID, targetList, stationToProbe)
+}
+
+func (natTraversalProtocol *NATTraversalProtocol) handleReportNATTraversalResult(packet nex.PacketInterface) {
+	if natTraversalProtocol.ReportNATTraversalResultHandler == nil {
+		logger.Warning("NATTraversalProtocol::ReportNATTraversalResult not implemented")
+		go respondNotImplemented(packet, NATTraversalProtocolID)
+		return
+	}
+
+	client := packet.Sender()
+	request := packet.RMCRequest()
+
+	callID := request.CallID()
+	parameters := request.Parameters()
+
+	parametersStream := nex.NewStreamIn(parameters, natTraversalProtocol.server)
+
+	cid := parametersStream.ReadUInt32LE()
+	result := parametersStream.ReadBool()
+	rtt := parametersStream.ReadUInt32LE()
+
+	go natTraversalProtocol.ReportNATTraversalResultHandler(nil, client, callID, cid, result, rtt)
 }
 
 func (natTraversalProtocol *NATTraversalProtocol) handleReportNATProperties(packet nex.PacketInterface) {

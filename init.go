@@ -10,4 +10,5 @@ var logger = plogger.NewLogger()
 func init() {
 	nex.RegisterDataHolderType(NewNintendoCreateAccountData())
 	nex.RegisterDataHolderType(NewAccountExtraInfo())
+	nex.RegisterDataHolderType(NewGathering())
 }

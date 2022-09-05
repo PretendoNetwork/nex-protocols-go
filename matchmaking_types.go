@@ -78,7 +78,7 @@ type MatchmakeSessionSearchCriteria struct {
 	ExcludeLocked       bool
 	ExcludeNonHostPid   bool
 	SelectionMethod     uint32
-	//VacantParticipants  uint16
+	VacantParticipants  uint16 // NEX v3.5.0+
 
 	*nex.Structure
 }
@@ -109,6 +109,10 @@ func (matchmakeSessionSearchCriteria *MatchmakeSessionSearchCriteria) ExtractFro
 	matchmakeSessionSearchCriteria.ExcludeNonHostPid = stream.ReadBool()
 	matchmakeSessionSearchCriteria.SelectionMethod = stream.ReadUInt32LE()
 
+	if stream.Server.NexVersion() >= 30500 {
+		matchmakeSessionSearchCriteria.VacantParticipants = stream.ReadUInt16LE()
+	}
+
 	return nil
 }
 
@@ -123,6 +127,10 @@ func (matchmakeSessionSearchCriteria *MatchmakeSessionSearchCriteria) Bytes(stre
 	stream.WriteBool(matchmakeSessionSearchCriteria.ExcludeLocked)
 	stream.WriteBool(matchmakeSessionSearchCriteria.ExcludeNonHostPid)
 	stream.WriteUInt32LE(matchmakeSessionSearchCriteria.SelectionMethod)
+
+	if stream.Server.NexVersion() >= 30500 {
+		stream.WriteUInt16LE(matchmakeSessionSearchCriteria.VacantParticipants)
+	}
 
 	return stream.Bytes()
 }

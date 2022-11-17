@@ -2,6 +2,7 @@ package nexproto
 
 import (
 	"fmt"
+	"encoding/hex"
 
 	nex "github.com/PretendoNetwork/nex-go"
 )
@@ -16,14 +17,14 @@ const (
 	// NATTraversalMethodRequestProbeInitiationExt is the method ID for the method RequestProbeInitiationExt
 	NATTraversalMethodRequestProbeInitiationExt = 0x3
 
-	// NATTraversalMethodReportNATTraversalResult is the method ID for the method ReportNATTraversalResult
-	NATTraversalMethodReportNATTraversalResult = 0x4
-
 	// NATTraversalMethodReportNATProperties is the method ID for the method ReportNATProperties
 	NATTraversalMethodReportNATProperties = 0x5
 
 	// NATTraversalMethodGetRelaySignatureKey is the method ID for the method GetRelaySignatureKey
 	NATTraversalMethodGetRelaySignatureKey = 0x6
+
+	// NATTraversalMethodGetRelaySignatureKey is the method ID for the method GetRelaySignatureKey
+	NATTraversalMethod7 = 0x7
 )
 
 // AuthenticationProtocol handles the Authentication nex protocol
@@ -31,9 +32,9 @@ type NATTraversalProtocol struct {
 	server                           *nex.Server
 	InitiateProbeHandler             func(err error, client *nex.Client, callID uint32)
 	RequestProbeInitiationExtHandler func(err error, client *nex.Client, callID uint32, targetList []string, stationToProbe string)
-	ReportNATTraversalResultHandler  func(err error, client *nex.Client, callID uint32, cid uint32, result bool, rtt uint32)
 	ReportNATPropertiesHandler       func(err error, client *nex.Client, callID uint32, natmapping uint32, natfiltering uint32, rtt uint32)
 	GetRelaySignatureKeyHandler      func(err error, client *nex.Client, callID uint32)
+	Method7Handler      func(err error, client *nex.Client, callID uint32)
 }
 
 // Setup initializes the protocol
@@ -47,12 +48,12 @@ func (natTraversalProtocol *NATTraversalProtocol) Setup() {
 			switch request.MethodID() {
 			case NATTraversalMethodRequestProbeInitiationExt:
 				go natTraversalProtocol.handleRequestProbeInitiationExt(packet)
-			case NATTraversalMethodReportNATTraversalResult:
-				go natTraversalProtocol.handleReportNATTraversalResult(packet)
 			case NATTraversalMethodReportNATProperties:
 				go natTraversalProtocol.handleReportNATProperties(packet)
 			case NATTraversalMethodGetRelaySignatureKey:
 				go natTraversalProtocol.handleGetRelaySignatureKey(packet)
+			case NATTraversalMethod7:
+				go natTraversalProtocol.handleMethod7(packet)
 			default:
 				go respondNotImplemented(packet, NATTraversalProtocolID)
 				fmt.Printf("Unsupported NATTraversal method ID: %#v\n", request.MethodID())
@@ -66,11 +67,6 @@ func (natTraversalProtocol *NATTraversalProtocol) RequestProbeInitiationExt(hand
 	natTraversalProtocol.RequestProbeInitiationExtHandler = handler
 }
 
-// ReportNATTraversalResult sets the ReportNATTraversalResult handler function
-func (natTraversalProtocol *NATTraversalProtocol) ReportNATTraversalResult(handler func(err error, client *nex.Client, callID uint32, cid uint32, result bool, rtt uint32)) {
-	natTraversalProtocol.ReportNATTraversalResultHandler = handler
-}
-
 // ReportNATProperties sets the ReportNATProperties handler function
 func (natTraversalProtocol *NATTraversalProtocol) ReportNATProperties(handler func(err error, client *nex.Client, callID uint32, natmapping uint32, natfiltering uint32, rtt uint32)) {
 	natTraversalProtocol.ReportNATPropertiesHandler = handler
@@ -79,6 +75,11 @@ func (natTraversalProtocol *NATTraversalProtocol) ReportNATProperties(handler fu
 // GetRelaySignatureKey sets the GetRelaySignatureKey handler function
 func (natTraversalProtocol *NATTraversalProtocol) GetRelaySignatureKey(handler func(err error, client *nex.Client, callID uint32)) {
 	natTraversalProtocol.GetRelaySignatureKeyHandler = handler
+}
+
+// GetRelaySignatureKey sets the GetRelaySignatureKey handler function
+func (natTraversalProtocol *NATTraversalProtocol) Method7(handler func(err error, client *nex.Client, callID uint32)) {
+	natTraversalProtocol.Method7Handler = handler
 }
 
 func (natTraversalProtocol *NATTraversalProtocol) handleRequestProbeInitiationExt(packet nex.PacketInterface) {
@@ -104,28 +105,6 @@ func (natTraversalProtocol *NATTraversalProtocol) handleRequestProbeInitiationEx
 	}
 
 	go natTraversalProtocol.RequestProbeInitiationExtHandler(nil, client, callID, targetList, stationToProbe)
-}
-
-func (natTraversalProtocol *NATTraversalProtocol) handleReportNATTraversalResult(packet nex.PacketInterface) {
-	if natTraversalProtocol.ReportNATTraversalResultHandler == nil {
-		logger.Warning("NATTraversalProtocol::ReportNATTraversalResult not implemented")
-		go respondNotImplemented(packet, NATTraversalProtocolID)
-		return
-	}
-
-	client := packet.Sender()
-	request := packet.RMCRequest()
-
-	callID := request.CallID()
-	parameters := request.Parameters()
-
-	parametersStream := nex.NewStreamIn(parameters, natTraversalProtocol.server)
-
-	cid := parametersStream.ReadUInt32LE()
-	result := parametersStream.ReadBool()
-	rtt := parametersStream.ReadUInt32LE()
-
-	go natTraversalProtocol.ReportNATTraversalResultHandler(nil, client, callID, cid, result, rtt)
 }
 
 func (natTraversalProtocol *NATTraversalProtocol) handleReportNATProperties(packet nex.PacketInterface) {
@@ -164,6 +143,23 @@ func (natTraversalProtocol *NATTraversalProtocol) handleGetRelaySignatureKey(pac
 	//parameters := request.Parameters()
 
 	go natTraversalProtocol.GetRelaySignatureKeyHandler(nil, client, callID)
+}
+
+func (natTraversalProtocol *NATTraversalProtocol) handleMethod7(packet nex.PacketInterface) {
+	if natTraversalProtocol.Method7Handler == nil {
+		logger.Warning("NATTraversalProtocol::Method7 not implemented")
+		go respondNotImplemented(packet, NATTraversalProtocolID)
+		return
+	}
+
+	client := packet.Sender()
+	request := packet.RMCRequest()
+
+	callID := request.CallID()
+	parameters := request.Parameters()
+	fmt.Println(hex.EncodeToString(parameters))
+
+	go natTraversalProtocol.Method7Handler(nil, client, callID)
 }
 
 // NewNATTraversalProtocol returns a new NATTraversalProtocol

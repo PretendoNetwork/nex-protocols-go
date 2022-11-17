@@ -2,6 +2,7 @@ package nexproto
 
 import (
 	"fmt"
+	"encoding/hex"
 
 	nex "github.com/PretendoNetwork/nex-go"
 )
@@ -22,16 +23,16 @@ type MessageDeliveryProtocol struct {
 
 type MessageRecipient struct {
 	nex.Structure
-	m_uiRecipientType uint32
-	m_principalID     uint32
-	m_gatheringID     uint32
+	M_uiRecipientType uint32
+	M_principalID     uint32
+	M_gatheringID     uint32
 }
 
 // ExtractFromStream extracts a MessageRecipient structure from a stream
 func (messageRecipient *MessageRecipient) ExtractFromStream(stream *nex.StreamIn) error {
-	messageRecipient.m_uiRecipientType = stream.ReadUInt32LE()
-	messageRecipient.m_principalID = stream.ReadUInt32LE()
-	messageRecipient.m_gatheringID = stream.ReadUInt32LE()
+	messageRecipient.M_uiRecipientType = stream.ReadUInt32LE()
+	messageRecipient.M_principalID = stream.ReadUInt32LE()
+	messageRecipient.M_gatheringID = stream.ReadUInt32LE()
 
 	return nil
 }
@@ -45,31 +46,49 @@ type UserMessage struct {
 	nex.Structure
 	*nex.Data
 	hierarchy          []nex.StructureInterface
-	m_uiID             uint32
-	m_uiParentID       uint32
-	m_pidSender        uint32
-	m_receptiontime    *nex.DateTime
-	m_uiLifeTime       uint32
-	m_uiFlags          uint32
-	m_strSubject       string
-	m_strSender        string
-	m_messageRecipient *MessageRecipient
+	M_uiID             uint32
+	M_uiParentID       uint32
+	M_pidSender        uint32
+	M_receptiontime    *nex.DateTime
+	M_uiLifeTime       uint32
+	M_uiFlags          uint32
+	M_strSubject       string
+	M_strSender        string
+	M_messageRecipient *MessageRecipient
 }
 
 // ExtractFromStream extracts a UserMessage structure from a stream
 func (userMessage *UserMessage) ExtractFromStream(stream *nex.StreamIn) error {
-	userMessage.m_uiID = stream.ReadUInt32LE()
-	userMessage.m_uiParentID = stream.ReadUInt32LE()
-	userMessage.m_pidSender = stream.ReadUInt32LE()
-	userMessage.m_receptiontime = nex.NewDateTime(stream.ReadUInt64LE())
-	userMessage.m_uiLifeTime = stream.ReadUInt32LE()
-	userMessage.m_uiFlags = stream.ReadUInt32LE()
-	userMessage.m_strSubject, _ = stream.ReadString()
-	userMessage.m_strSender, _ = stream.ReadString()
-	messageRecipient, _ := stream.ReadStructure(NewMessageRecipient())
-	userMessage.m_messageRecipient, _ = messageRecipient.(*MessageRecipient)
+	fmt.Println("test")
+	fmt.Println(stream.ReadUInt32LE())
+	userMessage.M_uiID = stream.ReadUInt32LE()
+	userMessage.M_uiParentID = stream.ReadUInt32LE()
+	fmt.Println(stream.ReadUInt32LE())
+	userMessage.M_pidSender = stream.ReadUInt32LE()
+	userMessage.M_receptiontime = nex.NewDateTime(stream.ReadUInt64LE())
+	//userMessage.M_uiLifeTime = stream.ReadUInt32LE()
+	userMessage.M_uiFlags = stream.ReadUInt32LE()
+	fmt.Println(stream.ReadUInt32LE())
+	userMessage.M_strSubject, _ = stream.ReadString()
+	userMessage.M_strSender, _ = stream.ReadString()
 
 	return nil
+}
+
+func (userMessage *UserMessage) Bytes(stream *nex.StreamOut) []byte {
+	stream.WriteUInt32LE(0)
+	stream.WriteUInt32LE(userMessage.M_uiID)
+	stream.WriteUInt32LE(userMessage.M_uiParentID)
+	stream.WriteUInt32LE(0)
+	stream.WriteUInt32LE(userMessage.M_pidSender)
+	stream.WriteUInt64LE(userMessage.M_receptiontime.Value())
+	//stream.WriteUInt32LE(userMessage.M_uiLifeTime)
+	stream.WriteUInt32LE(userMessage.M_uiFlags)
+	stream.WriteUInt32LE(1)
+	stream.WriteString(userMessage.M_strSubject)
+	stream.WriteString(userMessage.M_strSender)
+	
+	return stream.Bytes()
 }
 
 // NewUserMessage returns a new UserMessage
@@ -116,6 +135,51 @@ func NewBinaryMessage() *BinaryMessage {
 	return binaryMessage
 }
 
+type TextMessage struct {
+	nex.Structure
+	*UserMessage
+	hierarchy     []nex.StructureInterface
+	M_StrTextBody string
+}
+
+func (textMessage *TextMessage) Bytes(stream *nex.StreamOut) []byte {
+	lengthStream := nex.NewStreamOut(stream.Server)
+	lengthStream.WriteStructure(textMessage.UserMessage)
+	lengthStream.WriteString(textMessage.M_StrTextBody)
+	length := len(lengthStream.Bytes())
+	stream.WriteString("TextMessage")
+	stream.WriteUInt32LE(uint32(length+4))
+	stream.WriteUInt32LE(uint32(length))
+	stream.WriteStructure(textMessage.UserMessage)
+	stream.WriteString(textMessage.M_StrTextBody)
+	
+	return stream.Bytes()
+}
+
+// ExtractFromStream extracts a TextMessage structure from a stream
+func (textMessage *TextMessage) ExtractFromStream(stream *nex.StreamIn) error {
+	//messageRecipient, _ := stream.ReadStructure(NewMessageRecipient())
+	textMessage.UserMessage.ExtractFromStream(stream)
+	textMessage.M_StrTextBody, _ = stream.ReadString()
+
+	return nil
+}
+
+// NewTextMessage returns a new TextMessage
+func NewTextMessage() *TextMessage {
+	textMessage := &TextMessage{}
+
+	userMessage := NewUserMessage()
+
+	textMessage.UserMessage = userMessage
+
+	textMessage.hierarchy = []nex.StructureInterface{
+		userMessage,
+	}
+
+	return textMessage
+}
+
 // Setup initializes the protocol
 func (messageDeliveryProtocol *MessageDeliveryProtocol) Setup() {
 	nexServer := messageDeliveryProtocol.server
@@ -152,6 +216,7 @@ func (messageDeliveryProtocol *MessageDeliveryProtocol) handleDeliverMessage(pac
 
 	callID := request.CallID()
 	parameters := request.Parameters()
+	fmt.Println(hex.EncodeToString(parameters))
 
 	parametersStream := nex.NewStreamIn(parameters, messageDeliveryProtocol.server)
 
@@ -177,6 +242,10 @@ func (messageDeliveryProtocol *MessageDeliveryProtocol) handleDeliverMessage(pac
 
 	if dataHolderName == "BinaryMessage" {
 		oUserMessage, _ = dataHolderContentStream.ReadStructure(NewBinaryMessage())
+	}
+	if dataHolderName == "TextMessage" {
+		oUserMessage, _ = dataHolderContentStream.ReadStructure(NewTextMessage())
+		fmt.Println(oUserMessage.(*TextMessage).M_StrTextBody)
 	}
 
 	go messageDeliveryProtocol.DeliverMessageHandler(nil, client, callID, oUserMessage)

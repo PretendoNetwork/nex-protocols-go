@@ -1,6 +1,7 @@
 package nexproto
 
 import nex "github.com/PretendoNetwork/nex-go"
+import "fmt"
 
 /*
 	NEX and Rendez-Vous have multiple protocols for match making
@@ -78,7 +79,7 @@ type MatchmakeSessionSearchCriteria struct {
 	ExcludeLocked       bool
 	ExcludeNonHostPid   bool
 	SelectionMethod     uint32
-	VacantParticipants  uint16 // NEX v3.5.0+
+	VacantParticipants  uint16
 
 	*nex.Structure
 }
@@ -86,6 +87,7 @@ type MatchmakeSessionSearchCriteria struct {
 // ExtractFromStream extracts a Gathering structure from a stream
 func (matchmakeSessionSearchCriteria *MatchmakeSessionSearchCriteria) ExtractFromStream(stream *nex.StreamIn) error {
 	var err error
+	server := stream.Server
 
 	matchmakeSessionSearchCriteria.Attribs = stream.ReadListString()
 	matchmakeSessionSearchCriteria.GameMode, err = stream.ReadString()
@@ -108,15 +110,14 @@ func (matchmakeSessionSearchCriteria *MatchmakeSessionSearchCriteria) ExtractFro
 	matchmakeSessionSearchCriteria.ExcludeLocked = stream.ReadBool()
 	matchmakeSessionSearchCriteria.ExcludeNonHostPid = stream.ReadBool()
 	matchmakeSessionSearchCriteria.SelectionMethod = stream.ReadUInt32LE()
-
-	if stream.Server.NexVersion() >= 30500 {
+	if server.NexVersion() > 2 {
 		matchmakeSessionSearchCriteria.VacantParticipants = stream.ReadUInt16LE()
 	}
 
 	return nil
 }
 
-// Bytes encodes the Gathering and returns a byte array
+// Bytes encodes the MatchmakeSessionSearchCriteria and returns a byte array
 func (matchmakeSessionSearchCriteria *MatchmakeSessionSearchCriteria) Bytes(stream *nex.StreamOut) []byte {
 	stream.WriteListString(matchmakeSessionSearchCriteria.Attribs)
 	stream.WriteString(matchmakeSessionSearchCriteria.GameMode)
@@ -127,10 +128,7 @@ func (matchmakeSessionSearchCriteria *MatchmakeSessionSearchCriteria) Bytes(stre
 	stream.WriteBool(matchmakeSessionSearchCriteria.ExcludeLocked)
 	stream.WriteBool(matchmakeSessionSearchCriteria.ExcludeNonHostPid)
 	stream.WriteUInt32LE(matchmakeSessionSearchCriteria.SelectionMethod)
-
-	if stream.Server.NexVersion() >= 30500 {
-		stream.WriteUInt16LE(matchmakeSessionSearchCriteria.VacantParticipants)
-	}
+	stream.WriteUInt16LE(matchmakeSessionSearchCriteria.VacantParticipants)
 
 	return stream.Bytes()
 }
@@ -172,12 +170,17 @@ func (matchmakeSession *MatchmakeSession) GetHierarchy() []nex.StructureInterfac
 func (matchmakeSession *MatchmakeSession) ExtractFromStream(stream *nex.StreamIn) error {
 	var err error
 	server := stream.Server
-
+	
 	//matchmakeSession.Gathering = gathering
+	if server.NexVersion() <= 2 {
+		_, _ = stream.ReadStructure(NewGathering())
+	}
 	matchmakeSession.GameMode = stream.ReadUInt32LE()
 	matchmakeSession.Attributes = stream.ReadListUInt32LE()
 	matchmakeSession.OpenParticipation = stream.ReadUInt8() == 1
+	fmt.Println(matchmakeSession.OpenParticipation)
 	matchmakeSession.MatchmakeSystemType = stream.ReadUInt32LE()
+	fmt.Println(matchmakeSession.MatchmakeSystemType)
 	matchmakeSession.ApplicationData, err = stream.ReadBuffer()
 
 	if err != nil {
@@ -190,7 +193,7 @@ func (matchmakeSession *MatchmakeSession) ExtractFromStream(stream *nex.StreamIn
 		matchmakeSession.ProgressScore = stream.ReadUInt8()
 	}
 
-	if server.NexVersion() >= 30000 {
+	if server.NexVersion() >= 2 {
 		matchmakeSession.SessionKey, err = stream.ReadBuffer()
 
 		if err != nil {
@@ -203,13 +206,8 @@ func (matchmakeSession *MatchmakeSession) ExtractFromStream(stream *nex.StreamIn
 	}
 
 	if server.NexVersion() >= 40000 {
-		matchmakeParam, err := stream.ReadStructure(NewMatchmakeParam())
-
-		if err != nil {
-			return err
-		}
-
-		matchmakeSession.MatchmakeParam = matchmakeParam.(*MatchmakeParam)
+		matchmakeParamStructureInterface, err := stream.ReadStructure(NewMatchmakeParam())
+		matchmakeSession.MatchmakeParam = matchmakeParamStructureInterface.(*MatchmakeParam)
 		matchmakeSession.StartedTime = nex.NewDateTime(stream.ReadUInt64LE())
 		matchmakeSession.UserPassword, err = stream.ReadString()
 
@@ -230,7 +228,7 @@ func (matchmakeSession *MatchmakeSession) ExtractFromStream(stream *nex.StreamIn
 	return nil
 }
 
-// Bytes extracts a MatchmakeSession structure from a stream
+// Bytes encodes the MatchmakeSession and returns a byte array
 func (matchmakeSession *MatchmakeSession) Bytes(stream *nex.StreamOut) []byte {
 	server := stream.Server
 	//stream.WriteStructure(matchmakeSession.Gathering)
@@ -247,39 +245,23 @@ func (matchmakeSession *MatchmakeSession) Bytes(stream *nex.StreamOut) []byte {
 		stream.WriteUInt8(matchmakeSession.ProgressScore)
 	}
 
-	if server.NexVersion() >= 30000 {
+	if server.NexVersion() >= 2 {
 		stream.WriteBuffer(matchmakeSession.SessionKey)
 	}
 
 	if server.NexVersion() >= 30500 {
 		stream.WriteUInt32LE(matchmakeSession.Option)
 	}
-
-	//unimplemented for now since MK7 didn't need it
-	/*if server.NexVersion() >= 40000 {
-		matchmakeParam, err := stream.ReadStructure(NewMatchmakeParam())
-
-		if err != nil {
-			return err
-		}
-
-		matchmakeSession.MatchmakeParam = matchmakeParam.(*MatchmakeParam)
-		matchmakeSession.StartedTime = nex.NewDateTime(stream.ReadUInt64LE())
-		matchmakeSession.UserPassword, err = stream.ReadString()
-
-		if err != nil {
-			return err
-		}
-
-		matchmakeSession.ReferGID = stream.ReadUInt32LE()
-		matchmakeSession.UserPasswordEnabled = stream.ReadUInt8() == 1
-		matchmakeSession.SystemPasswordEnabled = stream.ReadUInt8() == 1
-		matchmakeSession.CodeWord, err = stream.ReadString()
-
-		if err != nil {
-			return err
-		}
-	}*/
+	
+	if server.NexVersion() >= 40000 {
+		stream.WriteStructure(matchmakeSession.MatchmakeParam)
+		stream.WriteUInt64LE(0)
+		stream.WriteString(matchmakeSession.UserPassword)
+		stream.WriteUInt32LE(matchmakeSession.ReferGID)
+		stream.WriteBool(matchmakeSession.UserPasswordEnabled)
+		stream.WriteBool(matchmakeSession.SystemPasswordEnabled)
+		stream.WriteString(matchmakeSession.CodeWord)
+	}
 
 	return stream.Bytes()
 }
@@ -319,7 +301,122 @@ func (matchmakeParam *MatchmakeParam) ExtractFromStream(stream *nex.StreamIn) er
 	return nil
 }
 
+// Bytes encodes the MatchmakeParam and returns a byte array
+func (matchmakeParam *MatchmakeParam) Bytes(stream *nex.StreamOut) []byte {
+	stream.WriteUInt32LE(0)
+
+	return stream.Bytes()
+}
+
 // NewMatchmakeParam returns a new MatchmakeParam
 func NewMatchmakeParam() *MatchmakeParam {
 	return &MatchmakeParam{}
+}
+
+// PersistentGathering holds information about a persistent gathering
+type PersistentGathering struct {
+	CommunityType          uint32
+	Password               string
+	Attribs                []uint32
+	ApplicationBuffer      []byte
+	ParticipationStartDate *nex.DateTime
+	ParticipationEndDate   *nex.DateTime
+	MatchmakeSessionCount  uint32
+	ParticipationCount     uint32
+
+	hierarchy []nex.StructureInterface
+	*Gathering
+}
+
+// ExtractFromStream extracts a PersistentGathering structure from a stream
+func (persistentGathering *PersistentGathering) ExtractFromStream(stream *nex.StreamIn) error {
+	var err error
+	server := stream.Server
+	
+	//persistentGathering.Gathering = gathering
+	if server.NexVersion() <= 2 {
+		gatheringStructureInterface, _ := stream.ReadStructure(NewGathering())
+		persistentGathering.Gathering = gatheringStructureInterface.(*Gathering)
+	}
+	persistentGathering.CommunityType = stream.ReadUInt32LE()
+	persistentGathering.Password, err = stream.ReadString()
+	if err != nil {
+		return err
+	}
+	persistentGathering.Attribs = stream.ReadListUInt32LE()
+	persistentGathering.ApplicationBuffer, err = stream.ReadBuffer()
+	if err != nil {
+		return err
+	}
+	persistentGathering.ParticipationStartDate = nex.NewDateTime(stream.ReadUInt64LE())
+	persistentGathering.ParticipationEndDate = nex.NewDateTime(stream.ReadUInt64LE())
+	persistentGathering.MatchmakeSessionCount = stream.ReadUInt32LE()
+	persistentGathering.ParticipationCount = stream.ReadUInt32LE()
+
+	return nil
+}
+
+// Bytes encodes the PersistentGathering and returns a byte array
+func (persistentGathering *PersistentGathering) Bytes(stream *nex.StreamOut) []byte {
+	server := stream.Server
+	if server.NexVersion() <= 2 {
+		stream.WriteStructure(persistentGathering.Gathering)
+	}
+	stream.WriteUInt32LE(persistentGathering.CommunityType)
+	stream.WriteString(persistentGathering.Password)
+	stream.WriteListUInt32LE(persistentGathering.Attribs)
+	stream.WriteBuffer(persistentGathering.ApplicationBuffer)
+	stream.WriteUInt64LE(persistentGathering.ParticipationStartDate.Value())
+	stream.WriteUInt64LE(persistentGathering.ParticipationEndDate.Value())
+	stream.WriteUInt32LE(persistentGathering.MatchmakeSessionCount)
+	stream.WriteUInt32LE(persistentGathering.ParticipationCount)
+
+	return stream.Bytes()
+}
+
+// NewPersistentGathering returns a new PersistentGathering
+func NewPersistentGathering() *PersistentGathering {
+	persistentGathering := &PersistentGathering{}
+
+	gathering := NewGathering()
+
+	persistentGathering.Gathering = gathering
+
+	persistentGathering.hierarchy = []nex.StructureInterface{
+		gathering,
+	}
+
+	return persistentGathering
+}
+
+// SimpleCommunity holds information about a persistent gathering
+type SimpleCommunity struct {
+	GatheringID            uint32
+	MatchmakeSessionCount  uint32
+
+	hierarchy []nex.StructureInterface
+	*nex.Structure
+}
+
+// ExtractFromStream extracts a SimpleCommunity structure from a stream
+func (simpleCommunity *SimpleCommunity) ExtractFromStream(stream *nex.StreamIn) error {
+	simpleCommunity.GatheringID = stream.ReadUInt32LE()
+	simpleCommunity.MatchmakeSessionCount = stream.ReadUInt32LE()
+
+	return nil
+}
+
+// Bytes encodes the PersistentGathering and returns a byte array
+func (simpleCommunity *SimpleCommunity) Bytes(stream *nex.StreamOut) []byte {
+	stream.WriteUInt32LE(simpleCommunity.GatheringID)
+	stream.WriteUInt32LE(simpleCommunity.MatchmakeSessionCount)
+
+	return stream.Bytes()
+}
+
+// NewSimpleCommunity returns a new SimpleCommunity
+func NewSimpleCommunity() *SimpleCommunity {
+	simpleCommunity := &SimpleCommunity{}
+
+	return simpleCommunity
 }

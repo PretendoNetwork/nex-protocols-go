@@ -60,6 +60,7 @@ const (
 type RankingProtocol struct {
 	server                  *nex.Server
 	UploadCommonDataHandler func(err error, client *nex.Client, callID uint32, commonData []byte, uniqueId uint64)
+	GetCommonDataHandler func(err error, client *nex.Client, callID uint32, uniqueId uint64)
 }
 
 // Setup initializes the protocol
@@ -73,6 +74,8 @@ func (rankingProtocol *RankingProtocol) Setup() {
 			switch request.MethodID() {
 			case RankingMethodUploadCommonData:
 				go rankingProtocol.handleUploadCommonData(packet)
+			case RankingMethodGetCommonData:
+				go rankingProtocol.handleGetCommonData(packet)
 			default:
 				go respondNotImplemented(packet, RankingProtocolID)
 				fmt.Printf("Unsupported Ranking method ID: %#v\n", request.MethodID())
@@ -84,6 +87,10 @@ func (rankingProtocol *RankingProtocol) Setup() {
 // UploadCommonData sets the UploadCommonData handler function
 func (rankingProtocol *RankingProtocol) UploadCommonData(handler func(err error, client *nex.Client, callID uint32, commonData []byte, uniqueID uint64)) {
 	rankingProtocol.UploadCommonDataHandler = handler
+}
+// UploadCommonData sets the GetCommonData handler function
+func (rankingProtocol *RankingProtocol) GetCommonData(handler func(err error, client *nex.Client, callID uint32, uniqueID uint64)) {
+	rankingProtocol.GetCommonDataHandler = handler
 }
 
 func (rankingProtocol *RankingProtocol) handleUploadCommonData(packet nex.PacketInterface) {
@@ -110,6 +117,26 @@ func (rankingProtocol *RankingProtocol) handleUploadCommonData(packet nex.Packet
 	uniqueID := parametersStream.ReadUInt64LE()
 
 	go rankingProtocol.UploadCommonDataHandler(nil, client, callID, commonData, uniqueID)
+}
+
+func (rankingProtocol *RankingProtocol) handleGetCommonData(packet nex.PacketInterface) {
+	if rankingProtocol.GetCommonDataHandler == nil {
+		logger.Warning("RankingProtocol::GetCommonData not implemented")
+		go respondNotImplemented(packet, RankingProtocolID)
+		return
+	}
+
+	client := packet.Sender()
+	request := packet.RMCRequest()
+
+	callID := request.CallID()
+	parameters := request.Parameters()
+
+	parametersStream := nex.NewStreamIn(parameters, rankingProtocol.server)
+
+	uniqueID := parametersStream.ReadUInt64LE()
+
+	go rankingProtocol.GetCommonDataHandler(nil, client, callID, uniqueID)
 }
 
 // NewRankingProtocol returns a new RankingProtocol

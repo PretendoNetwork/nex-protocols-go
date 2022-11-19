@@ -34,6 +34,9 @@ const (
 
 	// SecureMethodSendReport is the method ID for the method SendReport
 	SecureMethodSendReport = 0x8
+
+	// SecureMethodGetMaintenanceStatus is the method ID for the method GetMaintenenceStatus
+	SecureMethodGetMaintenanceStatus = 0x9
 )
 
 // SecureProtocol handles the Secure Connection nex protocol
@@ -47,6 +50,7 @@ type SecureProtocol struct {
 	UpdateURLsHandler            func(err error, client *nex.Client, callID uint32, stationUrls []*nex.StationURL)
 	ReplaceURLHandler            func(err error, client *nex.Client, callID uint32, oldStation *nex.StationURL, newStation *nex.StationURL)
 	SendReportHandler            func(err error, client *nex.Client, callID uint32, reportID uint32, report []byte)
+	GetMaintenanceStatusHandler  func(err error, client *nex.Client, callID uint32)
 }
 
 // Setup initializes the protocol
@@ -74,6 +78,8 @@ func (secureProtocol *SecureProtocol) Setup() {
 				go secureProtocol.handleReplaceURL(packet)
 			case SecureMethodSendReport:
 				go secureProtocol.handleSendReport(packet)
+			case SecureMethodGetMaintenanceStatus:
+				go secureProtocol.handleGetMaintenanceStatus(packet)
 			default:
 				go respondNotImplemented(packet, SecureProtocolID)
 				fmt.Printf("Unsupported Secure method ID: %#v\n", request.MethodID())
@@ -120,6 +126,11 @@ func (secureProtocol *SecureProtocol) ReplaceURL(handler func(err error, client 
 // SendReport sets the SendReport handler function
 func (secureProtocol *SecureProtocol) SendReport(handler func(err error, client *nex.Client, callID uint32, reportID uint32, report []byte)) {
 	secureProtocol.SendReportHandler = handler
+}
+
+// GetMaintenanceStatus sets the GetMaintenanceStatus function
+func (secureProtocol *SecureProtocol) GetMaintenanceStatus(handler func(err error, client *nex.Client, callID uint32)) {
+	secureProtocol.GetMaintenanceStatusHandler = handler
 }
 
 func (secureProtocol *SecureProtocol) handleRegister(packet nex.PacketInterface) {
@@ -403,6 +414,21 @@ func (secureProtocol *SecureProtocol) handleSendReport(packet nex.PacketInterfac
 	}
 
 	go secureProtocol.SendReportHandler(nil, client, callID, reportID, report)
+}
+
+func (secureProtocol *SecureProtocol) handleGetMaintenanceStatus(packet nex.PacketInterface) {
+	if secureProtocol.GetMaintenanceStatus == nil {
+		logger.Warning("SecureProtocol::GetMaintenanceStatus not implemented")
+		go respondNotImplemented(packet, SecureProtocolID)
+		return
+	}
+
+	client := packet.Sender()
+	request := packet.RMCRequest()
+
+	callID := request.CallID()
+
+	go secureProtocol.GetMaintenanceStatusHandler(nil, client, callID)
 }
 
 // NewSecureProtocol returns a new SecureProtocol

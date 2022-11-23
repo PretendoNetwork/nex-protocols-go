@@ -157,6 +157,7 @@ type DataStoreProtocol struct {
 	PreparePostObjectHandler     func(err error, client *nex.Client, callID uint32, dataStorePrepareGetParam *DataStorePreparePostParam)
 	PrepareGetObjectHandler      func(err error, client *nex.Client, callID uint32, dataStorePrepareGetParam *DataStorePrepareGetParam)
 	CompletePostObjectHandler    func(err error, client *nex.Client, callID uint32, dataStoreCompletePostParam *DataStoreCompletePostParam)
+	GetPersistenceInfoHandler    func(err error, client *nex.Client, callID uint32, ownerID uint32, persistenceSlotID uint16)
 	GetMetasMultipleParamHandler func(err error, client *nex.Client, callID uint32, dataStoreGetMetaParams []*DataStoreGetMetaParam)
 	ChangeMetaHandler            func(err error, client *nex.Client, callID uint32, dataStoreChangeMetaParam *DataStoreChangeMetaParam)
 	RateObjectsHandler           func(err error, client *nex.Client, callID uint32, targets []*DataStoreRatingTarget, params []*DataStoreRateObjectParam, transactional bool, fetchRatings bool)
@@ -1924,6 +1925,8 @@ func (dataStoreProtocol *DataStoreProtocol) Setup() {
 				go dataStoreProtocol.handlePrepareGetObject(packet)
 			case DataStoreMethodCompletePostObject:
 				go dataStoreProtocol.handleCompletePostObject(packet)
+			case DataStoreMethodGetPersistenceInfo:
+				go dataStoreProtocol.handleGetPersistenceInfo(packet)
 			case DataStoreMethodGetMetasMultipleParam:
 				go dataStoreProtocol.handleGetMetasMultipleParam(packet)
 			case DataStoreMethodChangeMeta:
@@ -1956,6 +1959,11 @@ func (dataStoreProtocol *DataStoreProtocol) PrepareGetObject(handler func(err er
 // CompletePostObject sets the CompletePostObject handler function
 func (dataStoreProtocol *DataStoreProtocol) CompletePostObject(handler func(err error, client *nex.Client, callID uint32, dataStoreCompletePostParam *DataStoreCompletePostParam)) {
 	dataStoreProtocol.CompletePostObjectHandler = handler
+}
+
+// GetPersistenceInfo sets the GetPersistenceInfo handler function
+func (dataStoreProtocol *DataStoreProtocol) GetPersistenceInfo(handler func(err error, client *nex.Client, callID uint32, ownerID uint32, persistenceSlotID uint16)) {
+	dataStoreProtocol.GetPersistenceInfoHandler = handler
 }
 
 // GetMetasMultipleParam sets the GetMetasMultipleParam handler function
@@ -2070,6 +2078,34 @@ func (dataStoreProtocol *DataStoreProtocol) handleCompletePostObject(packet nex.
 
 	go dataStoreProtocol.CompletePostObjectHandler(nil, client, callID, dataStoreCompletePostParam.(*DataStoreCompletePostParam))
 }
+
+func (dataStoreProtocol *DataStoreProtocol) handleGetPersistenceInfo(packet nex.PacketInterface) {
+	if dataStoreProtocol.GetPersistenceInfoHandler == nil {
+		logger.Warning("DataStorePotocol::GetPersistenceInfo not implemented")
+		go respondNotImplemented(packet, DataStoreProtocolID)
+		return
+	}
+
+	client := packet.Sender()
+	request := packet.RMCRequest()
+
+	callID := request.CallID()
+	parameters := request.Parameters()
+
+	parametersStream := nex.NewStreamIn(parameters, dataStoreProtocol.server)
+
+	if len(parametersStream.Bytes()[parametersStream.ByteOffset():]) < 6 {
+		err := errors.New("[DataStoreProtocol::GetPersistenceInfo] Data length too small")
+		go dataStoreProtocol.GetPersistenceInfoHandler(err, client, callID, 0, 0)
+		return
+	}
+
+	ownerID := parametersStream.ReadUInt32LE()
+	persistenceSlotID := parametersStream.ReadUInt16LE()
+
+	go dataStoreProtocol.GetPersistenceInfoHandler(nil, client, callID, ownerID, persistenceSlotID)
+}
+
 
 func (dataStoreProtocol *DataStoreProtocol) handleGetMetasMultipleParam(packet nex.PacketInterface) {
 	if dataStoreProtocol.GetMetasMultipleParamHandler == nil {

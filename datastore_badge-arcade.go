@@ -73,6 +73,8 @@ func (dataStoreBadgeArcadeProtocol *DataStoreBadgeArcadeProtocol) Setup() {
 				go dataStoreBadgeArcadeProtocol.handlePrepareGetObject(packet)
 			case DataStoreMethodGetPersistenceInfo:
 				go dataStoreBadgeArcadeProtocol.handleGetPersistenceInfo(packet)
+			case DataStoreMethodChangeMeta:
+				go dataStoreBadgeArcadeProtocol.handleChangeMeta(packet)
 			case DataStoreBadgeArcadeMethodGetMetaByOwnerId:
 				go dataStoreBadgeArcadeProtocol.handleGetMetaByOwnerId(packet)
 			default:

@@ -154,6 +154,8 @@ const (
 type DataStoreProtocol struct {
 	server                       *nex.Server
 	GetMetaHandler               func(err error, client *nex.Client, callID uint32, dataStoreGetMetaParam *DataStoreGetMetaParam)
+	PrepareUpdateObjectHandler   func(err error, client *nex.Client, callID uint32, dataStorePrepareUpdateParam *DataStorePrepareUpdateParam)
+	CompleteUpdateObjectHandler  func(err error, client *nex.Client, callID uint32, dataStoreCompleteUpdateParam *DataStoreCompleteUpdateParam)
 	PreparePostObjectHandler     func(err error, client *nex.Client, callID uint32, dataStorePrepareGetParam *DataStorePreparePostParam)
 	PrepareGetObjectHandler      func(err error, client *nex.Client, callID uint32, dataStorePrepareGetParam *DataStorePrepareGetParam)
 	CompletePostObjectHandler    func(err error, client *nex.Client, callID uint32, dataStoreCompletePostParam *DataStoreCompletePostParam)
@@ -1919,6 +1921,10 @@ func (dataStoreProtocol *DataStoreProtocol) Setup() {
 			switch request.MethodID() {
 			case DataStoreMethodGetMeta:
 				go dataStoreProtocol.handleGetMeta(packet)
+			case DataStoreMethodPrepareUpdateObject:
+				go dataStoreProtocol.handlePrepareUpdateObject(packet)
+			case DataStoreMethodCompleteUpdateObject:
+				go dataStoreProtocol.handleCompleteUpdateObject(packet)
 			case DataStoreMethodPreparePostObject:
 				go dataStoreProtocol.handlePreparePostObject(packet)
 			case DataStoreMethodPrepareGetObject:
@@ -1944,6 +1950,16 @@ func (dataStoreProtocol *DataStoreProtocol) Setup() {
 // GetMeta sets the GetMeta handler function
 func (dataStoreProtocol *DataStoreProtocol) GetMeta(handler func(err error, client *nex.Client, callID uint32, dataStoreGetMetaParam *DataStoreGetMetaParam)) {
 	dataStoreProtocol.GetMetaHandler = handler
+}
+
+// PrepareUpdateObject sets the PrepareUpdateObject handler function
+func (dataStoreProtocol *DataStoreProtocol) PrepareUpdateObject(handler func(err error, client *nex.Client, callID uint32, dataStorePrepareUpdateParam *DataStorePrepareUpdateParam)) {
+	dataStoreProtocol.PrepareUpdateObjectHandler = handler
+}
+
+// CompleteUpdateObject sets the CompleteUpdateObject handler function
+func (dataStoreProtocol *DataStoreProtocol) CompleteUpdateObject(handler func(err error, client *nex.Client, callID uint32, dataStoreCompleteUpdateParam *DataStoreCompleteUpdateParam)) {
+	dataStoreProtocol.CompleteUpdateObjectHandler = handler
 }
 
 // PreparePostObject sets the PreparePostObject handler function
@@ -2004,6 +2020,54 @@ func (dataStoreProtocol *DataStoreProtocol) handleGetMeta(packet nex.PacketInter
 	}
 
 	go dataStoreProtocol.GetMetaHandler(nil, client, callID, dataStoreGetMetaParam.(*DataStoreGetMetaParam))
+}
+
+func (dataStoreProtocol *DataStoreProtocol) handlePrepareUpdateObject(packet nex.PacketInterface) {
+	if dataStoreProtocol.PrepareUpdateObjectHandler == nil {
+		logger.Warning("DataStoreProtocol::PrepareUpdateObject not implemented")
+		go respondNotImplemented(packet, DataStoreProtocolID)
+		return
+	}
+
+	client := packet.Sender()
+	request := packet.RMCRequest()
+
+	callID := request.CallID()
+	parameters := request.Parameters()
+
+	parametersStream := nex.NewStreamIn(parameters, dataStoreProtocol.server)
+
+	dataStorePrepareUpdateParam, err := parametersStream.ReadStructure(NewDataStorePrepareUpdateParam())
+	if err != nil {
+		go dataStoreProtocol.PrepareUpdateObjectHandler(err, client, callID, nil)
+		return
+	}
+
+	go dataStoreProtocol.PrepareUpdateObjectHandler(nil, client, callID, dataStorePrepareUpdateParam.(*DataStorePrepareUpdateParam))
+}
+
+func (dataStoreProtocol *DataStoreProtocol) handleCompleteUpdateObject(packet nex.PacketInterface) {
+	if dataStoreProtocol.CompleteUpdateObjectHandler == nil {
+		logger.Warning("DataStoreProtocol::CompleteUpdateObject not implemented")
+		go respondNotImplemented(packet, DataStoreProtocolID)
+		return
+	}
+
+	client := packet.Sender()
+	request := packet.RMCRequest()
+
+	callID := request.CallID()
+	parameters := request.Parameters()
+
+	parametersStream := nex.NewStreamIn(parameters, dataStoreProtocol.server)
+
+	dataStoreCompleteUpdateParam, err := parametersStream.ReadStructure(NewDataStoreCompleteUpdateParam())
+	if err != nil {
+		go dataStoreProtocol.CompleteUpdateObjectHandler(err, client, callID, nil)
+		return
+	}
+
+	go dataStoreProtocol.CompleteUpdateObjectHandler(nil, client, callID, dataStoreCompleteUpdateParam.(*DataStoreCompleteUpdateParam))
 }
 
 func (dataStoreProtocol *DataStoreProtocol) handlePreparePostObject(packet nex.PacketInterface) {

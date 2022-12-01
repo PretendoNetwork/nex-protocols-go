@@ -77,6 +77,10 @@ func (dataStoreBadgeArcadeProtocol *DataStoreBadgeArcadeProtocol) Setup() {
 				go dataStoreBadgeArcadeProtocol.handleChangeMeta(packet)
 			case DataStoreBadgeArcadeMethodGetMetaByOwnerId:
 				go dataStoreBadgeArcadeProtocol.handleGetMetaByOwnerId(packet)
+			case DataStoreMethodPrepareUpdateObject:
+				go dataStoreBadgeArcadeProtocol.handlePrepareUpdateObject(packet)
+			case DataStoreMethodCompleteUpdateObject:
+				go dataStoreBadgeArcadeProtocol.handleCompleteUpdateObject(packet)
 			default:
 				go respondNotImplemented(packet, DataStoreBadgeArcadeProtocolID)
 				fmt.Printf("Unsupported DataStoreBadgeArcade method ID: %#v\n", request.MethodID())

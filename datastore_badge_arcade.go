@@ -91,7 +91,7 @@ func (dataStoreBadgeArcadeProtocol *DataStoreBadgeArcadeProtocol) GetMetaByOwner
 }
 
 func (dataStoreBadgeArcadeProtocol *DataStoreBadgeArcadeProtocol) handleGetMetaByOwnerId(packet nex.PacketInterface) {
-	if dataStoreBadgeArcadeProtocol.GetMetaByOwnerId == nil {
+	if dataStoreBadgeArcadeProtocol.GetMetaByOwnerIdHandler == nil {
 		logger.Warning("DataStoreBadgeArcadeProtocol::GetMetaByOwnerId not implemented")
 		go respondNotImplemented(packet, DataStoreBadgeArcadeProtocolID)
 		return

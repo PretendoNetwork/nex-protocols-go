@@ -417,7 +417,7 @@ func (secureProtocol *SecureProtocol) handleSendReport(packet nex.PacketInterfac
 }
 
 func (secureProtocol *SecureProtocol) handleGetMaintenanceStatus(packet nex.PacketInterface) {
-	if secureProtocol.GetMaintenanceStatus == nil {
+	if secureProtocol.GetMaintenanceStatusHandler == nil {
 		logger.Warning("SecureProtocol::GetMaintenanceStatus not implemented")
 		go respondNotImplemented(packet, SecureProtocolID)
 		return

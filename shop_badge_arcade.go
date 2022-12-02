@@ -105,3 +105,12 @@ func (shopBadgeArcadeProtocol *ShopBadgeArcadeProtocol) handlePostPlayLog(packet
 
 	go shopBadgeArcadeProtocol.PostPlayLogHandler(nil, client, callID, param.(*ShopPostPlayLogParam))
 }
+
+// NewShopBadgeArcadeProtocol returns a new ShopBadgeArcadeProtocol
+func NewShopBadgeArcadeProtocol(server *nex.Server) *ShopBadgeArcadeProtocol {
+	shopBadgeArcadeProtocol := &ShopBadgeArcadeProtocol{server: server}
+
+	shopBadgeArcadeProtocol.Setup()
+
+	return shopBadgeArcadeProtocol
+}

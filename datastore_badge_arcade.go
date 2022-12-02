@@ -117,3 +117,13 @@ func (dataStoreBadgeArcadeProtocol *DataStoreBadgeArcadeProtocol) handleGetMetaB
 
 	go dataStoreBadgeArcadeProtocol.GetMetaByOwnerIdHandler(nil, client, callID, param.(*DataStoreGetMetaByOwnerIdParam))
 }
+
+// NewDataStoreBadgeArcadeProtocol returns a new DataStoreBadgeArcadeProtocol
+func NewDataStoreBadgeArcadeProtocol(server *nex.Server) *DataStoreBadgeArcadeProtocol {
+	dataStoreBadgeArcadeProtocol := &DataStoreBadgeArcadeProtocol{server: server}
+	dataStoreBadgeArcadeProtocol.DataStoreProtocol.server = server
+
+	dataStoreBadgeArcadeProtocol.Setup()
+
+	return dataStoreBadgeArcadeProtocol
+}

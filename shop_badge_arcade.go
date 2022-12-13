@@ -28,25 +28,25 @@ type ShopBadgeArcadeProtocol struct {
 
 type ShopPostPlayLogParam struct {
 	nex.Structure
-	ContentLengthRange []uint32 // Not sure about this, since the NEX values doesn't match exactly with the AWS values
-	Timestamp          *nex.DateTime
-	Unknown            string
+	Unknown1  []uint32
+	Timestamp *nex.DateTime
+	Unknown2  string
 }
 
 // ExtractFromStream extracts a ShopPostPlayLogParam structure from a stream
 func (shopPostPlayLogParam *ShopPostPlayLogParam) ExtractFromStream(stream *nex.StreamIn) error {
-	shopPostPlayLogParam.ContentLengthRange = stream.ReadListUInt32LE()
+	shopPostPlayLogParam.Unknown1 = stream.ReadListUInt32LE()
 	shopPostPlayLogParam.Timestamp = stream.ReadDateTime()
-	shopPostPlayLogParam.Unknown, _ = stream.ReadString()
+	shopPostPlayLogParam.Unknown2, _ = stream.ReadString()
 	
 	return nil
 }
 
 // Bytes encodes the ShopPostPlayLogParam and returns a byte array
 func (shopPostPlayLogParam *ShopPostPlayLogParam) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteListUInt32LE(shopPostPlayLogParam.ContentLengthRange)
+	stream.WriteListUInt32LE(shopPostPlayLogParam.Unknown1)
 	stream.WriteUInt64LE(shopPostPlayLogParam.Timestamp.Value())
-	stream.WriteString(shopPostPlayLogParam.Unknown)
+	stream.WriteString(shopPostPlayLogParam.Unknown2)
 
 	return stream.Bytes()
 }
@@ -68,8 +68,7 @@ func (shopBadgeArcadeProtocol *ShopBadgeArcadeProtocol) Setup() {
 			case ShopBadgeArcadeMethodPostPlayLog:
 				go shopBadgeArcadeProtocol.handlePostPlayLog(packet)
 			default:
-				// FIXME: Add Custom ID support for RMCResponse
-				go respondNotImplemented(packet, ShopBadgeArcadeProtocolID)
+				go respondNotImplementedCustom(packet, ShopBadgeArcadeCustomID)
 				fmt.Printf("Unsupported ShopBadgeArcade method ID: %#v\n", request.MethodID())
 			}
 		}
@@ -84,8 +83,7 @@ func (shopBadgeArcadeProtocol *ShopBadgeArcadeProtocol) PostPlayLog(handler func
 func (shopBadgeArcadeProtocol *ShopBadgeArcadeProtocol) handlePostPlayLog(packet nex.PacketInterface) {
 	if shopBadgeArcadeProtocol.PostPlayLogHandler == nil {
 		logger.Warning("ShopBadgeArcadeProtocol::PostPlayLog not implemented")
-		// FIXME: Add Custom ID support for RMCResponse
-		go respondNotImplemented(packet, ShopBadgeArcadeProtocolID)
+		go respondNotImplementedCustom(packet, ShopBadgeArcadeCustomID)
 		return
 	}
 

@@ -156,6 +156,7 @@ type DataStoreProtocol struct {
 	GetMetaHandler               func(err error, client *nex.Client, callID uint32, dataStoreGetMetaParam *DataStoreGetMetaParam)
 	PrepareUpdateObjectHandler   func(err error, client *nex.Client, callID uint32, dataStorePrepareUpdateParam *DataStorePrepareUpdateParam)
 	CompleteUpdateObjectHandler  func(err error, client *nex.Client, callID uint32, dataStoreCompleteUpdateParam *DataStoreCompleteUpdateParam)
+	PostMetaBinaryHandler        func(err error, client *nex.Client, callID uint32, dataStorePreparePostParam *DataStorePreparePostParam)
 	PreparePostObjectHandler     func(err error, client *nex.Client, callID uint32, dataStorePrepareGetParam *DataStorePreparePostParam)
 	PrepareGetObjectHandler      func(err error, client *nex.Client, callID uint32, dataStorePrepareGetParam *DataStorePrepareGetParam)
 	CompletePostObjectHandler    func(err error, client *nex.Client, callID uint32, dataStoreCompletePostParam *DataStoreCompletePostParam)
@@ -1925,6 +1926,8 @@ func (dataStoreProtocol *DataStoreProtocol) Setup() {
 				go dataStoreProtocol.handlePrepareUpdateObject(packet)
 			case DataStoreMethodCompleteUpdateObject:
 				go dataStoreProtocol.handleCompleteUpdateObject(packet)
+			case DataStoreMethodPostMetaBinary:
+				go dataStoreProtocol.handlePostMetaBinary(packet)
 			case DataStoreMethodPreparePostObject:
 				go dataStoreProtocol.handlePreparePostObject(packet)
 			case DataStoreMethodPrepareGetObject:
@@ -1960,6 +1963,11 @@ func (dataStoreProtocol *DataStoreProtocol) PrepareUpdateObject(handler func(err
 // CompleteUpdateObject sets the CompleteUpdateObject handler function
 func (dataStoreProtocol *DataStoreProtocol) CompleteUpdateObject(handler func(err error, client *nex.Client, callID uint32, dataStoreCompleteUpdateParam *DataStoreCompleteUpdateParam)) {
 	dataStoreProtocol.CompleteUpdateObjectHandler = handler
+}
+
+// PostMetaBinary sets the PostMetaBinary handler function
+func (dataStoreProtocol *DataStoreProtocol) PostMetaBinary(handler func(err error, client *nex.Client, callID uint32, dataStorePreparePostParam *DataStorePreparePostParam)) {
+	dataStoreProtocol.PostMetaBinaryHandler = handler
 }
 
 // PreparePostObject sets the PreparePostObject handler function
@@ -2068,6 +2076,30 @@ func (dataStoreProtocol *DataStoreProtocol) handleCompleteUpdateObject(packet ne
 	}
 
 	go dataStoreProtocol.CompleteUpdateObjectHandler(nil, client, callID, dataStoreCompleteUpdateParam.(*DataStoreCompleteUpdateParam))
+}
+
+func (dataStoreProtocol *DataStoreProtocol) handlePostMetaBinary(packet nex.PacketInterface) {
+	if dataStoreProtocol.PostMetaBinaryHandler == nil {
+		logger.Warning("DataStoreProtocol::PostMetaBinary not implemented")
+		go respondNotImplemented(packet, DataStoreProtocolID)
+		return
+	}
+
+	client := packet.Sender()
+	request := packet.RMCRequest()
+
+	callID := request.CallID()
+	parameters := request.Parameters()
+
+	parametersStream := nex.NewStreamIn(parameters, dataStoreProtocol.server)
+
+	dataStorePreparePostParam, err := parametersStream.ReadStructure(NewDataStorePreparePostParam())
+	if err != nil {
+		go dataStoreProtocol.PostMetaBinaryHandler(err, client, callID, nil)
+		return
+	}
+
+	go dataStoreProtocol.PostMetaBinaryHandler(nil, client, callID, dataStorePreparePostParam.(*DataStorePreparePostParam))
 }
 
 func (dataStoreProtocol *DataStoreProtocol) handlePreparePostObject(packet nex.PacketInterface) {

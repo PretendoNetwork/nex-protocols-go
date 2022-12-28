@@ -23,7 +23,7 @@ const (
 // ShopBadgeArcadeProtocol handles the Shop (Badge Arcade) nex protocol
 type ShopBadgeArcadeProtocol struct {
 	server *nex.Server
-	PostPlayLogHandler func(err error, client *nex.Client, callID uint32, param *ShopPostPlayLogParam)
+	PostPlayLogHandler func(err error, client *nex.Client, callID uint32, unknown1 uint16, param *ShopPostPlayLogParam)
 }
 
 type ShopPostPlayLogParam struct {
@@ -76,7 +76,7 @@ func (shopBadgeArcadeProtocol *ShopBadgeArcadeProtocol) Setup() {
 }
 
 // PostPlayLog sets the PostPlayLog function
-func (shopBadgeArcadeProtocol *ShopBadgeArcadeProtocol) PostPlayLog(handler func(err error, client *nex.Client, callID uint32, param *ShopPostPlayLogParam)) {
+func (shopBadgeArcadeProtocol *ShopBadgeArcadeProtocol) PostPlayLog(handler func(err error, client *nex.Client, callID uint32, unknown1 uint16, param *ShopPostPlayLogParam)) {
 	shopBadgeArcadeProtocol.PostPlayLogHandler = handler
 }
 
@@ -95,13 +95,15 @@ func (shopBadgeArcadeProtocol *ShopBadgeArcadeProtocol) handlePostPlayLog(packet
 
 	parametersStream := nex.NewStreamIn(parameters, shopBadgeArcadeProtocol.server)
 
+	unknown1 := parametersStream.ReadUInt16LE()
+
 	param, err := parametersStream.ReadStructure(NewShopPostPlayLogParam())
 	if err != nil {
-		go shopBadgeArcadeProtocol.PostPlayLogHandler(err, client, callID, nil)
+		go shopBadgeArcadeProtocol.PostPlayLogHandler(err, client, callID, 0, nil)
 		return
 	}
 
-	go shopBadgeArcadeProtocol.PostPlayLogHandler(nil, client, callID, param.(*ShopPostPlayLogParam))
+	go shopBadgeArcadeProtocol.PostPlayLogHandler(nil, client, callID, unknown1, param.(*ShopPostPlayLogParam))
 }
 
 // NewShopBadgeArcadeProtocol returns a new ShopBadgeArcadeProtocol

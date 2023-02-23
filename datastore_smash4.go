@@ -207,7 +207,7 @@ type DataStoreReplayPlayer struct {
 	WinningRate uint16
 	Color       uint8
 	Color2      uint8
-	PrincipalID uint32
+	PID         uint32
 	Country     uint32
 	Region      uint8
 	Number      uint8
@@ -220,7 +220,7 @@ func (dataStoreReplayPlayer *DataStoreReplayPlayer) ExtractFromStream(stream *ne
 	dataStoreReplayPlayer.WinningRate = stream.ReadUInt16LE()
 	dataStoreReplayPlayer.Color = stream.ReadUInt8()
 	dataStoreReplayPlayer.Color2 = stream.ReadUInt8()
-	dataStoreReplayPlayer.PrincipalID = stream.ReadUInt32LE()
+	dataStoreReplayPlayer.PID = stream.ReadUInt32LE()
 	dataStoreReplayPlayer.Country = stream.ReadUInt32LE()
 	dataStoreReplayPlayer.Region = stream.ReadUInt8()
 	dataStoreReplayPlayer.Number = stream.ReadUInt8()
@@ -235,7 +235,7 @@ func (dataStoreReplayPlayer *DataStoreReplayPlayer) Bytes(stream *nex.StreamOut)
 	stream.WriteUInt16LE(dataStoreReplayPlayer.WinningRate)
 	stream.WriteUInt8(dataStoreReplayPlayer.Color)
 	stream.WriteUInt8(dataStoreReplayPlayer.Color2)
-	stream.WriteUInt32LE(dataStoreReplayPlayer.PrincipalID)
+	stream.WriteUInt32LE(dataStoreReplayPlayer.PID)
 	stream.WriteUInt32LE(dataStoreReplayPlayer.Country)
 	stream.WriteUInt8(dataStoreReplayPlayer.Region)
 	stream.WriteUInt8(dataStoreReplayPlayer.Number)

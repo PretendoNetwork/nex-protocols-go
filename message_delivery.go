@@ -23,14 +23,14 @@ type MessageDeliveryProtocol struct {
 type MessageRecipient struct {
 	nex.Structure
 	m_uiRecipientType uint32
-	m_principalID     uint32
+	m_pid             uint32
 	m_gatheringID     uint32
 }
 
 // ExtractFromStream extracts a MessageRecipient structure from a stream
 func (messageRecipient *MessageRecipient) ExtractFromStream(stream *nex.StreamIn) error {
 	messageRecipient.m_uiRecipientType = stream.ReadUInt32LE()
-	messageRecipient.m_principalID = stream.ReadUInt32LE()
+	messageRecipient.m_pid = stream.ReadUInt32LE()
 	messageRecipient.m_gatheringID = stream.ReadUInt32LE()
 
 	return nil

@@ -289,17 +289,17 @@ func NewFriendRelationship() *FriendRelationship {
 
 // FriendPersistentInfo contains user settings
 type FriendPersistentInfo struct {
-	PID          uint32
-	Region       uint8
-	Country      uint8
-	Area         uint8
-	Language     uint8
-	Platform     uint8
-	GameKey      *GameKey
-	Message      string
-	MsgUpdatedAt *nex.DateTime //appears to be correct, but not 100% sure.
-	FriendedAt   *nex.DateTime
-	LastOnline   *nex.DateTime
+	PID              uint32
+	Region           uint8
+	Country          uint8
+	Area             uint8
+	Language         uint8
+	Platform         uint8
+	GameKey          *GameKey
+	Message          string
+	MessageUpdatedAt *nex.DateTime //appears to be correct, but not 100% sure.
+	FriendedAt       *nex.DateTime
+	LastOnline       *nex.DateTime
 
 	nex.Structure
 }
@@ -314,7 +314,7 @@ func (friendPersistentInfo *FriendPersistentInfo) Bytes(stream *nex.StreamOut) [
 	stream.WriteUInt8(friendPersistentInfo.Platform)
 	stream.WriteStructure(friendPersistentInfo.GameKey)
 	stream.WriteString(friendPersistentInfo.Message)
-	stream.WriteUInt64LE(friendPersistentInfo.MsgUpdatedAt.Value())
+	stream.WriteUInt64LE(friendPersistentInfo.MessageUpdatedAt.Value())
 	stream.WriteUInt64LE(friendPersistentInfo.FriendedAt.Value())
 	stream.WriteUInt64LE(friendPersistentInfo.LastOnline.Value())
 

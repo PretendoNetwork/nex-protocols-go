@@ -245,6 +245,12 @@ func (secureProtocol *SecureProtocol) handleRegisterEx(packet nex.PacketInterfac
 
 	dataHolder := parametersStream.ReadDataHolder()
 
+	if dataHolder.TypeName() != "NintendoLoginData" && dataHolder.TypeName() != "AccountExtraInfo" {
+		err := errors.New("[SecureProtocol::RegisterEx] Data holder name does not match")
+		go secureProtocol.RegisterExHandler(err, client, callID, stationUrls, nex.NewDataHolder())
+		return
+	}
+
 	go secureProtocol.RegisterExHandler(nil, client, callID, stationUrls, dataHolder)
 }
 

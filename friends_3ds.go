@@ -23,19 +23,19 @@ const (
 	// Friends3DSMethodGetFriendMii is the method ID for method GetFriendMii
 	Friends3DSMethodGetFriendMii = 0x6
 
-	// Friends3DSMethodAddFriendByPID is the method ID for method AddFriendByPID
-	Friends3DSMethodAddFriendByPID = 0xb
+	// Friends3DSMethodAddFriendByPrincipalID is the method ID for method AddFriendByPrincipalID
+	Friends3DSMethodAddFriendByPrincipalID = 0xb
 
-	// Friends3DSMethodGetPIDByLocalFriendCode is the method ID for method GetPIDByLocalFriendCode
-	Friends3DSMethodGetPIDByLocalFriendCode = 0x9
+	// Friends3DSMethodGetPrincipalIDByLocalFriendCode is the method ID for method GetPrincipalIDByLocalFriendCode
+	Friends3DSMethodGetPrincipalIDByLocalFriendCode = 0x9
 
 	// Friends3DSMethodRemoveFriendByLocalFriendCode is the method ID for method RemoveFriendByLocalFriendCode
 	Friends3DSMethodRemoveFriendByLocalFriendCode = 0xd
 
-	// Friends3DSMethodRemoveFriendByPID is the method ID for method RemoveFriendByPID
-	Friends3DSMethodRemoveFriendByPID = 0xe
+	// Friends3DSMethodRemoveFriendByPrincipalID is the method ID for method RemoveFriendByPrincipalID
+	Friends3DSMethodRemoveFriendByPrincipalID = 0xe
 
-	// Friends3DSMethodRemoveFriendByPID is the method ID for method RemoveFriendByPID
+	// Friends3DSMethodRemoveFriendByPrincipalID is the method ID for method RemoveFriendByPrincipalID
 	Friends3DSMethodGetAllFriends = 0xf
 
 	// Friends3DSMethodSyncFriend is the method ID for method SyncFriend
@@ -59,22 +59,22 @@ const (
 
 // Friends3DSProtocol handles the Friends (3DS) nex protocol
 type Friends3DSProtocol struct {
-	server                               *nex.Server
-	UpdateProfileHandler                 func(err error, client *nex.Client, callID uint32, profileData *MyProfile)
-	UpdateMiiHandler                     func(err error, client *nex.Client, callID uint32, mii *Mii)
-	UpdatePreferenceHandler              func(err error, client *nex.Client, callID uint32, publicMode bool, showGame bool, showPlayedGame bool)
-	UpdatePresenceHandler                func(err error, client *nex.Client, callID uint32, presence *NintendoPresence, showGame bool)
-	UpdateFavoriteGameKeyHandler         func(err error, client *nex.Client, callID uint32, gameKey *GameKey)
-	UpdateCommentHandler                 func(err error, client *nex.Client, callID uint32, comment string)
-	SyncFriendHandler                    func(err error, client *nex.Client, callID uint32, lfc uint64, pids []uint32, lfcList []uint64)
-	GetPIDByLocalFriendCodeHandler       func(err error, client *nex.Client, callID uint32, lfc uint64, lfcList []uint64)
-	AddFriendByPIDHandler                func(err error, client *nex.Client, callID uint32, lfc uint64, pid uint32)
-	RemoveFriendByLocalFriendCodeHandler func(err error, client *nex.Client, callID uint32, lfc uint64)
-	RemoveFriendByPIDHandler             func(err error, client *nex.Client, callID uint32, pid uint32)
-	GetAllFriendsHandler                 func(err error, client *nex.Client, callID uint32)
-	GetFriendPersistentInfoHandler       func(err error, client *nex.Client, callID uint32, pidList []uint32)
-	GetFriendMiiHandler                  func(err error, client *nex.Client, callID uint32, pidList []uint32)
-	GetFriendPresenceHandler             func(err error, client *nex.Client, callID uint32, pidList []uint32)
+	server                                 *nex.Server
+	UpdateProfileHandler                   func(err error, client *nex.Client, callID uint32, profileData *MyProfile)
+	UpdateMiiHandler                       func(err error, client *nex.Client, callID uint32, mii *Mii)
+	UpdatePreferenceHandler                func(err error, client *nex.Client, callID uint32, publicMode bool, showGame bool, showPlayedGame bool)
+	UpdatePresenceHandler                  func(err error, client *nex.Client, callID uint32, presence *NintendoPresence, showGame bool)
+	UpdateFavoriteGameKeyHandler           func(err error, client *nex.Client, callID uint32, gameKey *GameKey)
+	UpdateCommentHandler                   func(err error, client *nex.Client, callID uint32, comment string)
+	SyncFriendHandler                      func(err error, client *nex.Client, callID uint32, lfc uint64, pids []uint32, lfcList []uint64)
+	GetPrincipalIDByLocalFriendCodeHandler func(err error, client *nex.Client, callID uint32, lfc uint64, lfcList []uint64)
+	AddFriendByPrincipalIDHandler          func(err error, client *nex.Client, callID uint32, lfc uint64, pid uint32)
+	RemoveFriendByLocalFriendCodeHandler   func(err error, client *nex.Client, callID uint32, lfc uint64)
+	RemoveFriendByPrincipalIDHandler       func(err error, client *nex.Client, callID uint32, pid uint32)
+	GetAllFriendsHandler                   func(err error, client *nex.Client, callID uint32)
+	GetFriendPersistentInfoHandler         func(err error, client *nex.Client, callID uint32, pidList []uint32)
+	GetFriendMiiHandler                    func(err error, client *nex.Client, callID uint32, pidList []uint32)
+	GetFriendPresenceHandler               func(err error, client *nex.Client, callID uint32, pidList []uint32)
 }
 
 type Mii struct {
@@ -173,7 +173,7 @@ type NintendoPresence struct {
 	JoinGameID        uint32
 	JoinGameMode      uint32
 	OwnerPID          uint32
-	JoinGroupid       uint32
+	JoinGroupID       uint32
 	ApplicationArg    []byte
 
 	nex.Structure
@@ -189,7 +189,7 @@ func (presence *NintendoPresence) Bytes(stream *nex.StreamOut) []byte {
 	stream.WriteUInt32LE(presence.JoinGameID)
 	stream.WriteUInt32LE(presence.JoinGameMode)
 	stream.WriteUInt32LE(presence.OwnerPID)
-	stream.WriteUInt32LE(presence.JoinGroupid)
+	stream.WriteUInt32LE(presence.JoinGroupID)
 	stream.WriteBuffer(presence.ApplicationArg)
 
 	return stream.Bytes()
@@ -199,7 +199,7 @@ func (presence *NintendoPresence) Bytes(stream *nex.StreamOut) []byte {
 func (presence *NintendoPresence) ExtractFromStream(stream *nex.StreamIn) error {
 	if len(stream.Bytes()[stream.ByteOffset():]) < 25 {
 		// length check for the following fixed-size data
-		// changedFlags + JoinAvailableFlag + MatchmakeType + JoinGameID + JoinGameMode + OwnerPID + JoinGroupid
+		// changedFlags + JoinAvailableFlag + MatchmakeType + JoinGameID + JoinGameMode + OwnerPID + JoinGroupID
 		return errors.New("[NintendoPresence::ExtractFromStream] Data size too small")
 	}
 
@@ -218,7 +218,7 @@ func (presence *NintendoPresence) ExtractFromStream(stream *nex.StreamIn) error 
 	JoinGameID := stream.ReadUInt32LE()
 	JoinGameMode := stream.ReadUInt32LE()
 	OwnerPID := stream.ReadUInt32LE()
-	JoinGroupid := stream.ReadUInt32LE()
+	JoinGroupID := stream.ReadUInt32LE()
 	ApplicationArg, err := stream.ReadBuffer()
 	if err != nil {
 		return err
@@ -232,7 +232,7 @@ func (presence *NintendoPresence) ExtractFromStream(stream *nex.StreamIn) error 
 	presence.JoinGameID = JoinGameID
 	presence.JoinGameMode = JoinGameMode
 	presence.OwnerPID = OwnerPID
-	presence.JoinGroupid = JoinGroupid
+	presence.JoinGroupID = JoinGroupID
 	presence.ApplicationArg = ApplicationArg
 
 	return nil
@@ -349,14 +349,14 @@ func (friends3DSProtocol *Friends3DSProtocol) Setup() {
 				go friends3DSProtocol.handleUpdateFavoriteGameKey(packet)
 			case Friends3DSMethodUpdateComment:
 				go friends3DSProtocol.handleUpdateComment(packet)
-			case Friends3DSMethodGetPIDByLocalFriendCode:
-				go friends3DSProtocol.handleGetPIDByLocalFriendCode(packet)
-			case Friends3DSMethodAddFriendByPID:
-				go friends3DSProtocol.handleAddFriendByPID(packet)
+			case Friends3DSMethodGetPrincipalIDByLocalFriendCode:
+				go friends3DSProtocol.handleGetPrincipalIDByLocalFriendCode(packet)
+			case Friends3DSMethodAddFriendByPrincipalID:
+				go friends3DSProtocol.handleAddFriendByPrincipalID(packet)
 			case Friends3DSMethodRemoveFriendByLocalFriendCode:
 				go friends3DSProtocol.handleRemoveFriendByLocalFriendCode(packet)
-			case Friends3DSMethodRemoveFriendByPID:
-				go friends3DSProtocol.handleRemoveFriendByPID(packet)
+			case Friends3DSMethodRemoveFriendByPrincipalID:
+				go friends3DSProtocol.handleRemoveFriendByPrincipalID(packet)
 			case Friends3DSMethodGetAllFriends:
 				go friends3DSProtocol.handleGetAllFriends(packet)
 			case Friends3DSMethodGetFriendPersistentInfo:
@@ -543,9 +543,9 @@ func (friends3DSProtocol *Friends3DSProtocol) handleUpdateComment(packet nex.Pac
 	go friends3DSProtocol.UpdateCommentHandler(nil, client, callID, comment)
 }
 
-func (friends3DSProtocol *Friends3DSProtocol) handleGetPIDByLocalFriendCode(packet nex.PacketInterface) {
-	if friends3DSProtocol.GetPIDByLocalFriendCodeHandler == nil {
-		logger.Warning("Friends3DSProtocol::GetPIDByLocalFriendCode not implemented")
+func (friends3DSProtocol *Friends3DSProtocol) handleGetPrincipalIDByLocalFriendCode(packet nex.PacketInterface) {
+	if friends3DSProtocol.GetPrincipalIDByLocalFriendCodeHandler == nil {
+		logger.Warning("Friends3DSProtocol::GetPrincipalIDByLocalFriendCode not implemented")
 		go respondNotImplemented(packet, AuthenticationProtocolID)
 		return
 	}
@@ -561,12 +561,12 @@ func (friends3DSProtocol *Friends3DSProtocol) handleGetPIDByLocalFriendCode(pack
 	lfc := parametersStream.ReadUInt64LE()
 	lfcList := parametersStream.ReadListUInt64LE()
 
-	go friends3DSProtocol.GetPIDByLocalFriendCodeHandler(nil, client, callID, lfc, lfcList)
+	go friends3DSProtocol.GetPrincipalIDByLocalFriendCodeHandler(nil, client, callID, lfc, lfcList)
 }
 
-func (friends3DSProtocol *Friends3DSProtocol) handleAddFriendByPID(packet nex.PacketInterface) {
-	if friends3DSProtocol.AddFriendByPIDHandler == nil {
-		logger.Warning("Friends3DSProtocol::AddFriendByPID not implemented")
+func (friends3DSProtocol *Friends3DSProtocol) handleAddFriendByPrincipalID(packet nex.PacketInterface) {
+	if friends3DSProtocol.AddFriendByPrincipalIDHandler == nil {
+		logger.Warning("Friends3DSProtocol::AddFriendByPrincipalID not implemented")
 		go respondNotImplemented(packet, AuthenticationProtocolID)
 		return
 	}
@@ -580,9 +580,9 @@ func (friends3DSProtocol *Friends3DSProtocol) handleAddFriendByPID(packet nex.Pa
 	parametersStream := nex.NewStreamIn(parameters, friends3DSProtocol.server)
 
 	lfc := parametersStream.ReadUInt64LE()
-	PID := parametersStream.ReadUInt32LE()
+	pid := parametersStream.ReadUInt32LE()
 
-	go friends3DSProtocol.AddFriendByPIDHandler(nil, client, callID, lfc, PID)
+	go friends3DSProtocol.AddFriendByPrincipalIDHandler(nil, client, callID, lfc, pid)
 }
 
 func (friends3DSProtocol *Friends3DSProtocol) handleRemoveFriendByLocalFriendCode(packet nex.PacketInterface) {
@@ -605,9 +605,9 @@ func (friends3DSProtocol *Friends3DSProtocol) handleRemoveFriendByLocalFriendCod
 	go friends3DSProtocol.RemoveFriendByLocalFriendCodeHandler(nil, client, callID, lfc)
 }
 
-func (friends3DSProtocol *Friends3DSProtocol) handleRemoveFriendByPID(packet nex.PacketInterface) {
-	if friends3DSProtocol.RemoveFriendByPIDHandler == nil {
-		logger.Warning("Friends3DSProtocol::RemoveFriendByPID not implemented")
+func (friends3DSProtocol *Friends3DSProtocol) handleRemoveFriendByPrincipalID(packet nex.PacketInterface) {
+	if friends3DSProtocol.RemoveFriendByPrincipalIDHandler == nil {
+		logger.Warning("Friends3DSProtocol::RemoveFriendByPrincipalID not implemented")
 		go respondNotImplemented(packet, AuthenticationProtocolID)
 		return
 	}
@@ -620,9 +620,9 @@ func (friends3DSProtocol *Friends3DSProtocol) handleRemoveFriendByPID(packet nex
 
 	parametersStream := nex.NewStreamIn(parameters, friends3DSProtocol.server)
 
-	PID := parametersStream.ReadUInt32LE()
+	pid := parametersStream.ReadUInt32LE()
 
-	go friends3DSProtocol.RemoveFriendByPIDHandler(nil, client, callID, PID)
+	go friends3DSProtocol.RemoveFriendByPrincipalIDHandler(nil, client, callID, pid)
 }
 
 func (friends3DSProtocol *Friends3DSProtocol) handleGetAllFriends(packet nex.PacketInterface) {
@@ -695,14 +695,14 @@ func (friends3DSProtocol *Friends3DSProtocol) UpdatePreference(handler func(err 
 	friends3DSProtocol.UpdatePreferenceHandler = handler
 }
 
-// GetPIDByLocalFriendCode sets the GetPIDByLocalFriendCode handler function
-func (friends3DSProtocol *Friends3DSProtocol) GetPIDByLocalFriendCode(handler func(err error, client *nex.Client, callID uint32, lfc uint64, lfcList []uint64)) {
-	friends3DSProtocol.GetPIDByLocalFriendCodeHandler = handler
+// GetPrincipalIDByLocalFriendCode sets the GetPrincipalIDByLocalFriendCode handler function
+func (friends3DSProtocol *Friends3DSProtocol) GetPrincipalIDByLocalFriendCode(handler func(err error, client *nex.Client, callID uint32, lfc uint64, lfcList []uint64)) {
+	friends3DSProtocol.GetPrincipalIDByLocalFriendCodeHandler = handler
 }
 
-// AddFriendByPID sets the AddFriendByPID handler function
-func (friends3DSProtocol *Friends3DSProtocol) AddFriendByPID(handler func(err error, client *nex.Client, callID uint32, lfc uint64, pid uint32)) {
-	friends3DSProtocol.AddFriendByPIDHandler = handler
+// AddFriendByPrincipalID sets the AddFriendByPrincipalID handler function
+func (friends3DSProtocol *Friends3DSProtocol) AddFriendByPrincipalID(handler func(err error, client *nex.Client, callID uint32, lfc uint64, pid uint32)) {
+	friends3DSProtocol.AddFriendByPrincipalIDHandler = handler
 }
 
 // RemoveFriendByLocalFriendCode sets the RemoveFriendByLocalFriendCode handler function
@@ -710,9 +710,9 @@ func (friends3DSProtocol *Friends3DSProtocol) RemoveFriendByLocalFriendCode(hand
 	friends3DSProtocol.RemoveFriendByLocalFriendCodeHandler = handler
 }
 
-// RemoveFriendByPID sets the RemoveFriendByPID handler function
-func (friends3DSProtocol *Friends3DSProtocol) RemoveFriendByPID(handler func(err error, client *nex.Client, callID uint32, pid uint32)) {
-	friends3DSProtocol.RemoveFriendByPIDHandler = handler
+// RemoveFriendByPrincipalID sets the RemoveFriendByPrincipalID handler function
+func (friends3DSProtocol *Friends3DSProtocol) RemoveFriendByPrincipalID(handler func(err error, client *nex.Client, callID uint32, pid uint32)) {
+	friends3DSProtocol.RemoveFriendByPrincipalIDHandler = handler
 }
 
 // GetAllFriends sets the GetAllFriends handler function

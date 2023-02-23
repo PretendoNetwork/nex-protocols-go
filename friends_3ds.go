@@ -62,11 +62,11 @@ type Friends3DSProtocol struct {
 	server                                 *nex.Server
 	UpdateProfileHandler                   func(err error, client *nex.Client, callID uint32, profileData *MyProfile)
 	UpdateMiiHandler                       func(err error, client *nex.Client, callID uint32, mii *Mii)
-	UpdatePreferenceHandler                func(err error, client *nex.Client, callID uint32, unknown1 bool, unknown2 bool, unknown3 bool)
+	UpdatePreferenceHandler                func(err error, client *nex.Client, callID uint32, publicMode bool, showGame bool, showPlayedGame bool)
 	UpdatePresenceHandler                  func(err error, client *nex.Client, callID uint32, presence *NintendoPresence, showGame bool)
 	UpdateFavoriteGameKeyHandler           func(err error, client *nex.Client, callID uint32, gameKey *GameKey)
 	UpdateCommentHandler                   func(err error, client *nex.Client, callID uint32, comment string)
-	SyncFriendHandler                      func(err error, client *nex.Client, callID uint32, lfc uint64, pids []uint32, unknown3 []uint64)
+	SyncFriendHandler                      func(err error, client *nex.Client, callID uint32, lfc uint64, pids []uint32, lfcList []uint64)
 	GetPrincipalIDByLocalFriendCodeHandler func(err error, client *nex.Client, callID uint32, lfc uint64, lfcList []uint64)
 	AddFriendByPrincipalIDHandler          func(err error, client *nex.Client, callID uint32, lfc uint64, principalID uint32)
 	RemoveFriendByLocalFriendCodeHandler   func(err error, client *nex.Client, callID uint32, lfc uint64)
@@ -114,7 +114,7 @@ func NewMii() *Mii {
 type FriendMii struct {
 	PrincipalID uint32
 	Mii         *Mii
-	Unknown1    *nex.DateTime
+	ModifiedAt  *nex.DateTime
 
 	nex.Structure
 }
@@ -123,7 +123,7 @@ type FriendMii struct {
 func (friendMii *FriendMii) Bytes(stream *nex.StreamOut) []byte {
 	stream.WriteUInt32LE(friendMii.PrincipalID)
 	stream.WriteStructure(friendMii.Mii)
-	stream.WriteUInt64LE(friendMii.Unknown1.Value())
+	stream.WriteUInt64LE(friendMii.ModifiedAt.Value())
 
 	return stream.Bytes()
 }
@@ -237,8 +237,6 @@ func (presence *NintendoPresence) ExtractFromStream(stream *nex.StreamIn) error 
 
 	return nil
 }
-
-///
 
 // NewNintendoPresence returns a new NintendoPresence
 func NewNintendoPresence() *NintendoPresence {
@@ -432,11 +430,11 @@ func (friends3DSProtocol *Friends3DSProtocol) handleUpdatePreference(packet nex.
 
 	parametersStream := nex.NewStreamIn(parameters, friends3DSProtocol.server)
 
-	unknown1 := (parametersStream.ReadUInt8() == 1)
-	unknown2 := (parametersStream.ReadUInt8() == 1)
-	unknown3 := (parametersStream.ReadUInt8() == 1)
+	publicMode := (parametersStream.ReadUInt8() == 1)
+	showGame := (parametersStream.ReadUInt8() == 1)
+	showPlayedGame := (parametersStream.ReadUInt8() == 1)
 
-	go friends3DSProtocol.UpdatePreferenceHandler(nil, client, callID, unknown1, unknown2, unknown3)
+	go friends3DSProtocol.UpdatePreferenceHandler(nil, client, callID, publicMode, showGame, showPlayedGame)
 }
 
 func (friends3DSProtocol *Friends3DSProtocol) handleSyncFriend(packet nex.PacketInterface) {
@@ -456,9 +454,9 @@ func (friends3DSProtocol *Friends3DSProtocol) handleSyncFriend(packet nex.Packet
 
 	lfc := parametersStream.ReadUInt64LE()
 	pids := parametersStream.ReadListUInt32LE()
-	unknown3 := parametersStream.ReadListUInt64LE()
+	lfcList := parametersStream.ReadListUInt64LE()
 
-	go friends3DSProtocol.SyncFriendHandler(nil, client, callID, lfc, pids, unknown3)
+	go friends3DSProtocol.SyncFriendHandler(nil, client, callID, lfc, pids, lfcList)
 }
 
 func (friends3DSProtocol *Friends3DSProtocol) handleGetFriendPersistentInfo(packet nex.PacketInterface) {
@@ -693,7 +691,7 @@ func (friends3DSProtocol *Friends3DSProtocol) UpdateMii(handler func(err error, 
 }
 
 // UpdatePreference sets the UpdatePreference handler function
-func (friends3DSProtocol *Friends3DSProtocol) UpdatePreference(handler func(err error, client *nex.Client, callID uint32, unknown1 bool, unknown2 bool, unknown3 bool)) {
+func (friends3DSProtocol *Friends3DSProtocol) UpdatePreference(handler func(err error, client *nex.Client, callID uint32, publicMode bool, showGame bool, showPlayedGame bool)) {
 	friends3DSProtocol.UpdatePreferenceHandler = handler
 }
 
@@ -723,7 +721,7 @@ func (friends3DSProtocol *Friends3DSProtocol) GetAllFriends(handler func(err err
 }
 
 // SyncFriend sets the SyncFriend handler function
-func (friends3DSProtocol *Friends3DSProtocol) SyncFriend(handler func(err error, client *nex.Client, callID uint32, lfc uint64, pids []uint32, unknown3 []uint64)) {
+func (friends3DSProtocol *Friends3DSProtocol) SyncFriend(handler func(err error, client *nex.Client, callID uint32, lfc uint64, pids []uint32, lfcList []uint64)) {
 	friends3DSProtocol.SyncFriendHandler = handler
 }
 

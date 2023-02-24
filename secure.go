@@ -42,7 +42,7 @@ type SecureProtocol struct {
 	RegisterHandler              func(err error, client *nex.Client, callID uint32, stationUrls []*nex.StationURL)
 	RequestConnectionDataHandler func(err error, client *nex.Client, callID uint32, stationCID uint32, stationPID uint32)
 	RequestURLsHandler           func(err error, client *nex.Client, callID uint32, stationCID uint32, stationPID uint32)
-	RegisterExHandler            func(err error, client *nex.Client, callID uint32, stationUrls []*nex.StationURL, loginData NintendoLoginData)
+	RegisterExHandler            func(err error, client *nex.Client, callID uint32, stationUrls []*nex.StationURL, loginData *nex.DataHolder)
 	TestConnectivityHandler      func(err error, client *nex.Client, callID uint32)
 	UpdateURLsHandler            func(err error, client *nex.Client, callID uint32, stationUrls []*nex.StationURL)
 	ReplaceURLHandler            func(err error, client *nex.Client, callID uint32, oldStation *nex.StationURL, newStation *nex.StationURL)
@@ -98,7 +98,7 @@ func (secureProtocol *SecureProtocol) RequestURLs(handler func(err error, client
 }
 
 // RegisterEx sets the RegisterEx handler function
-func (secureProtocol *SecureProtocol) RegisterEx(handler func(err error, client *nex.Client, callID uint32, stationUrls []*nex.StationURL, loginData NintendoLoginData)) {
+func (secureProtocol *SecureProtocol) RegisterEx(handler func(err error, client *nex.Client, callID uint32, stationUrls []*nex.StationURL, loginData *nex.DataHolder)) {
 	secureProtocol.RegisterExHandler = handler
 }
 
@@ -224,7 +224,7 @@ func (secureProtocol *SecureProtocol) handleRegisterEx(packet nex.PacketInterfac
 
 	if len(parametersStream.Bytes()[parametersStream.ByteOffset():]) < 4 {
 		err := errors.New("[SecureProtocol::RegisterEx] Data missing list length")
-		go secureProtocol.RegisterExHandler(err, client, callID, make([]*nex.StationURL, 0), NintendoLoginData{})
+		go secureProtocol.RegisterExHandler(err, client, callID, make([]*nex.StationURL, 0), nex.NewDataHolder())
 		return
 	}
 
@@ -235,7 +235,7 @@ func (secureProtocol *SecureProtocol) handleRegisterEx(packet nex.PacketInterfac
 		stationString, err := parametersStream.ReadString()
 
 		if err != nil {
-			go secureProtocol.RegisterExHandler(err, client, callID, stationUrls, NintendoLoginData{})
+			go secureProtocol.RegisterExHandler(err, client, callID, stationUrls, nex.NewDataHolder())
 			return
 		}
 
@@ -243,45 +243,15 @@ func (secureProtocol *SecureProtocol) handleRegisterEx(packet nex.PacketInterfac
 		stationUrls = append(stationUrls, station)
 	}
 
-	dataHolderType, err := parametersStream.ReadString()
+	dataHolder := parametersStream.ReadDataHolder()
 
-	if err != nil {
-		go secureProtocol.RegisterExHandler(err, client, callID, stationUrls, NintendoLoginData{})
-		return
-	}
-
-	if dataHolderType != "NintendoLoginData" {
+	if dataHolder.TypeName() != "NintendoLoginData" && dataHolder.TypeName() != "AccountExtraInfo" {
 		err := errors.New("[SecureProtocol::RegisterEx] Data holder name does not match")
-		go secureProtocol.RegisterExHandler(err, client, callID, stationUrls, NintendoLoginData{})
+		go secureProtocol.RegisterExHandler(err, client, callID, stationUrls, nex.NewDataHolder())
 		return
 	}
 
-	if len(parametersStream.Bytes()[parametersStream.ByteOffset():]) < 8 {
-		err := errors.New("[SecureProtocol::RegisterEx] Data holder missing lengths")
-		go secureProtocol.RegisterExHandler(err, client, callID, stationUrls, NintendoLoginData{})
-		return
-	}
-
-	_ = parametersStream.ReadUInt32LE() // Length including next buffer length field
-	dataHolderInner, err := parametersStream.ReadBuffer()
-
-	if err != nil {
-		go secureProtocol.RegisterExHandler(err, client, callID, stationUrls, NintendoLoginData{})
-		return
-	}
-
-	dataHolderStream := nex.NewStreamIn(dataHolderInner, secureProtocol.server)
-
-	token, err := dataHolderStream.ReadString()
-
-	if err != nil {
-		go secureProtocol.RegisterExHandler(err, client, callID, stationUrls, NintendoLoginData{})
-		return
-	}
-
-	loginData := NintendoLoginData{Token: token}
-
-	go secureProtocol.RegisterExHandler(nil, client, callID, stationUrls, loginData)
+	go secureProtocol.RegisterExHandler(nil, client, callID, stationUrls, dataHolder)
 }
 
 func (secureProtocol *SecureProtocol) handleTestConnectivity(packet nex.PacketInterface) {

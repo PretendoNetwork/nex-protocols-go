@@ -43,7 +43,29 @@ type AuthenticationProtocol struct {
 
 // NintendoLoginData holds a nex auth token
 type NintendoLoginData struct {
+	nex.Structure
 	Token string
+}
+
+// ExtractFromStream extracts a AuthenticationInfo structure from a stream
+func (nintendoLoginData *NintendoLoginData) ExtractFromStream(stream *nex.StreamIn) error {
+	var err error
+	var token string
+
+	token, err = stream.ReadString()
+
+	if err != nil {
+		return err
+	}
+
+	nintendoLoginData.Token = token
+
+	return nil
+}
+
+// NewAuthenticationInfo returns a new NintendoLoginData
+func NewNintendoLoginData() *NintendoLoginData {
+	return &NintendoLoginData{}
 }
 
 // AuthenticationInfo holds information about an authentication request

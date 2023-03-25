@@ -23,7 +23,8 @@ const (
 // ShopBadgeArcadeProtocol handles the Shop (Badge Arcade) nex protocol
 type ShopBadgeArcadeProtocol struct {
 	server *nex.Server
-	PostPlayLogHandler func(err error, client *nex.Client, callID uint32, unknown1 uint16, param *ShopPostPlayLogParam)
+	GetRivTokenHandler func(err error, client *nex.Client, callID uint32, itemCode string, referenceID []byte)
+	PostPlayLogHandler func(err error, client *nex.Client, callID uint32, param *ShopPostPlayLogParam)
 }
 
 type ShopPostPlayLogParam struct {
@@ -37,7 +38,13 @@ type ShopPostPlayLogParam struct {
 func (shopPostPlayLogParam *ShopPostPlayLogParam) ExtractFromStream(stream *nex.StreamIn) error {
 	shopPostPlayLogParam.Unknown1 = stream.ReadListUInt32LE()
 	shopPostPlayLogParam.Timestamp = stream.ReadDateTime()
-	shopPostPlayLogParam.Unknown2, _ = stream.ReadString()
+
+	unknown2, err := stream.ReadString()
+	if err != nil {
+		return err
+	}
+
+	shopPostPlayLogParam.Unknown2 = unknown2
 	
 	return nil
 }
@@ -75,9 +82,44 @@ func (shopBadgeArcadeProtocol *ShopBadgeArcadeProtocol) Setup() {
 	})
 }
 
+// GetRivToken sets the GetRivToken function
+func (shopBadgeArcadeProtocol *ShopBadgeArcadeProtocol) GetRivToken(handler func(err error, client *nex.Client, callID uint32, itemCode string, referenceID []byte)) {
+	shopBadgeArcadeProtocol.GetRivTokenHandler = handler
+}
+
 // PostPlayLog sets the PostPlayLog function
-func (shopBadgeArcadeProtocol *ShopBadgeArcadeProtocol) PostPlayLog(handler func(err error, client *nex.Client, callID uint32, unknown1 uint16, param *ShopPostPlayLogParam)) {
+func (shopBadgeArcadeProtocol *ShopBadgeArcadeProtocol) PostPlayLog(handler func(err error, client *nex.Client, callID uint32, param *ShopPostPlayLogParam)) {
 	shopBadgeArcadeProtocol.PostPlayLogHandler = handler
+}
+
+func (shopBadgeArcadeProtocol *ShopBadgeArcadeProtocol) handleGetRivToken(packet nex.PacketInterface) {
+	if shopBadgeArcadeProtocol.GetRivTokenHandler == nil {
+		logger.Warning("ShopBadgeArcadeProtocol::GetRivToken not implemented")
+		go respondNotImplementedCustom(packet, ShopBadgeArcadeCustomID)
+		return
+	}
+
+	client := packet.Sender()
+	request := packet.RMCRequest()
+
+	callID := request.CallID()
+	parameters := request.Parameters()
+
+	parametersStream := nex.NewStreamIn(parameters, shopBadgeArcadeProtocol.server)
+
+	itemCode, err := parametersStream.ReadString()
+	if err != nil {
+		go shopBadgeArcadeProtocol.GetRivTokenHandler(err, client, callID, "", []byte{})
+		return
+	}
+
+	referenceID, err := parametersStream.ReadQBuffer()
+	if err != nil {
+		go shopBadgeArcadeProtocol.GetRivTokenHandler(err, client, callID, "", []byte{})
+		return
+	}
+
+	go shopBadgeArcadeProtocol.GetRivTokenHandler(nil, client, callID, itemCode, referenceID)
 }
 
 func (shopBadgeArcadeProtocol *ShopBadgeArcadeProtocol) handlePostPlayLog(packet nex.PacketInterface) {
@@ -95,15 +137,13 @@ func (shopBadgeArcadeProtocol *ShopBadgeArcadeProtocol) handlePostPlayLog(packet
 
 	parametersStream := nex.NewStreamIn(parameters, shopBadgeArcadeProtocol.server)
 
-	unknown1 := parametersStream.ReadUInt16LE()
-
 	param, err := parametersStream.ReadStructure(NewShopPostPlayLogParam())
 	if err != nil {
-		go shopBadgeArcadeProtocol.PostPlayLogHandler(err, client, callID, 0, nil)
+		go shopBadgeArcadeProtocol.PostPlayLogHandler(err, client, callID, nil)
 		return
 	}
 
-	go shopBadgeArcadeProtocol.PostPlayLogHandler(nil, client, callID, unknown1, param.(*ShopPostPlayLogParam))
+	go shopBadgeArcadeProtocol.PostPlayLogHandler(nil, client, callID, param.(*ShopPostPlayLogParam))
 }
 
 // NewShopBadgeArcadeProtocol returns a new ShopBadgeArcadeProtocol

@@ -155,6 +155,7 @@ type DataStoreProtocol struct {
 	server                       *nex.Server
 	DeleteObjectHandler          func(err error, client *nex.Client, callID uint32, param *DataStoreDeleteParam)
 	GetMetaHandler               func(err error, client *nex.Client, callID uint32, dataStoreGetMetaParam *DataStoreGetMetaParam)
+	GetMetasHandler              func(err error, client *nex.Client, callID uint32, dataIDs []uint64, param *DataStoreGetMetaParam)
 	PrepareUpdateObjectHandler   func(err error, client *nex.Client, callID uint32, dataStorePrepareUpdateParam *DataStorePrepareUpdateParam)
 	CompleteUpdateObjectHandler  func(err error, client *nex.Client, callID uint32, dataStoreCompleteUpdateParam *DataStoreCompleteUpdateParam)
 	PostMetaBinaryHandler        func(err error, client *nex.Client, callID uint32, dataStorePreparePostParam *DataStorePreparePostParam)
@@ -1926,6 +1927,8 @@ func (dataStoreProtocol *DataStoreProtocol) Setup() {
 				go dataStoreProtocol.handleDeleteObject(packet)
 			case DataStoreMethodGetMeta:
 				go dataStoreProtocol.handleGetMeta(packet)
+			case DataStoreMethodGetMetas:
+				go dataStoreProtocol.handleGetMetas(packet)
 			case DataStoreMethodPrepareUpdateObject:
 				go dataStoreProtocol.handlePrepareUpdateObject(packet)
 			case DataStoreMethodCompleteUpdateObject:
@@ -1964,6 +1967,11 @@ func (dataStoreProtocol *DataStoreProtocol) DeleteObject(handler func(err error,
 // GetMeta sets the GetMeta handler function
 func (dataStoreProtocol *DataStoreProtocol) GetMeta(handler func(err error, client *nex.Client, callID uint32, dataStoreGetMetaParam *DataStoreGetMetaParam)) {
 	dataStoreProtocol.GetMetaHandler = handler
+}
+
+// GetMetas sets the GetMetas handler function
+func (dataStoreProtocol *DataStoreProtocol) GetMetas(handler func(err error, client *nex.Client, callID uint32, dataIDs []uint64, param *DataStoreGetMetaParam)) {
+	dataStoreProtocol.GetMetasHandler = handler
 }
 
 // PrepareUpdateObject sets the PrepareUpdateObject handler function
@@ -2069,6 +2077,33 @@ func (dataStoreProtocol *DataStoreProtocol) handleGetMeta(packet nex.PacketInter
 	}
 
 	go dataStoreProtocol.GetMetaHandler(nil, client, callID, dataStoreGetMetaParam.(*DataStoreGetMetaParam))
+}
+
+func (dataStoreProtocol *DataStoreProtocol) handleGetMetas(packet nex.PacketInterface) {
+	if dataStoreProtocol.GetMetasHandler == nil {
+		logger.Warning("DataStoreProtocol::GetMetas not implemented")
+		go respondNotImplemented(packet, DataStoreProtocolID)
+		return
+	}
+
+	client := packet.Sender()
+	request := packet.RMCRequest()
+
+	callID := request.CallID()
+	parameters := request.Parameters()
+
+	parametersStream := nex.NewStreamIn(parameters, dataStoreProtocol.server)
+
+	dataIDs := parametersStream.ReadListUInt64LE()
+
+	param, err := parametersStream.ReadStructure(NewDataStoreGetMetaParam())
+
+	if err != nil {
+		go dataStoreProtocol.GetMetasHandler(err, client, callID, nil, nil)
+		return
+	}
+
+	go dataStoreProtocol.GetMetasHandler(nil, client, callID, dataIDs, param.(*DataStoreGetMetaParam))
 }
 
 func (dataStoreProtocol *DataStoreProtocol) handlePrepareUpdateObject(packet nex.PacketInterface) {

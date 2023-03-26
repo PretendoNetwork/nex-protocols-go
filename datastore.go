@@ -162,6 +162,7 @@ type DataStoreProtocol struct {
 	CompletePostObjectHandler    func(err error, client *nex.Client, callID uint32, dataStoreCompletePostParam *DataStoreCompletePostParam)
 	GetPersistenceInfoHandler    func(err error, client *nex.Client, callID uint32, ownerID uint32, persistenceSlotID uint16)
 	GetMetasMultipleParamHandler func(err error, client *nex.Client, callID uint32, dataStoreGetMetaParams []*DataStoreGetMetaParam)
+	CompletePostObjectsHandler   func(err error, client *nex.Client, callID uint32, dataIDs []uint64)
 	ChangeMetaHandler            func(err error, client *nex.Client, callID uint32, dataStoreChangeMetaParam *DataStoreChangeMetaParam)
 	RateObjectsHandler           func(err error, client *nex.Client, callID uint32, targets []*DataStoreRatingTarget, params []*DataStoreRateObjectParam, transactional bool, fetchRatings bool)
 }
@@ -1938,6 +1939,8 @@ func (dataStoreProtocol *DataStoreProtocol) Setup() {
 				go dataStoreProtocol.handleGetPersistenceInfo(packet)
 			case DataStoreMethodGetMetasMultipleParam:
 				go dataStoreProtocol.handleGetMetasMultipleParam(packet)
+			case DataStoreMethodCompletePostObjects:
+				go dataStoreProtocol.handleCompletePostObjects(packet)
 			case DataStoreMethodChangeMeta:
 				go dataStoreProtocol.handleChangeMeta(packet)
 			case DataStoreMethodRateObjects:
@@ -1993,6 +1996,11 @@ func (dataStoreProtocol *DataStoreProtocol) GetPersistenceInfo(handler func(err 
 // GetMetasMultipleParam sets the GetMetasMultipleParam handler function
 func (dataStoreProtocol *DataStoreProtocol) GetMetasMultipleParam(handler func(err error, client *nex.Client, callID uint32, dataStorePrepareGetParams []*DataStoreGetMetaParam)) {
 	dataStoreProtocol.GetMetasMultipleParamHandler = handler
+}
+
+// ChangeMeta sets the ChangeMeta handler function
+func (dataStoreProtocol *DataStoreProtocol) CompletePostObjects(handler func(err error, client *nex.Client, callID uint32, dataIDs []uint64)) {
+	dataStoreProtocol.CompletePostObjectsHandler = handler
 }
 
 // ChangeMeta sets the ChangeMeta handler function
@@ -2202,7 +2210,6 @@ func (dataStoreProtocol *DataStoreProtocol) handleGetPersistenceInfo(packet nex.
 	go dataStoreProtocol.GetPersistenceInfoHandler(nil, client, callID, ownerID, persistenceSlotID)
 }
 
-
 func (dataStoreProtocol *DataStoreProtocol) handleGetMetasMultipleParam(packet nex.PacketInterface) {
 	if dataStoreProtocol.GetMetasMultipleParamHandler == nil {
 		logger.Warning("DataStoreProtocol::GetMetasMultipleParam not implemented")
@@ -2226,6 +2233,26 @@ func (dataStoreProtocol *DataStoreProtocol) handleGetMetasMultipleParam(packet n
 	}
 
 	go dataStoreProtocol.GetMetasMultipleParamHandler(nil, client, callID, dataStoreGetMetaParams)
+}
+
+func (dataStoreProtocol *DataStoreProtocol) handleCompletePostObjects(packet nex.PacketInterface) {
+	if dataStoreProtocol.CompletePostObjectsHandler == nil {
+		logger.Warning("DataStoreProtocol::CompletePostObjects not implemented")
+		go respondNotImplemented(packet, DataStoreProtocolID)
+		return
+	}
+
+	client := packet.Sender()
+	request := packet.RMCRequest()
+
+	callID := request.CallID()
+	parameters := request.Parameters()
+
+	parametersStream := nex.NewStreamIn(parameters, dataStoreProtocol.server)
+
+	dataIDs := parametersStream.ReadListUInt64LE()
+
+	go dataStoreProtocol.CompletePostObjectsHandler(nil, client, callID, dataIDs)
 }
 
 func (dataStoreProtocol *DataStoreProtocol) handleChangeMeta(packet nex.PacketInterface) {

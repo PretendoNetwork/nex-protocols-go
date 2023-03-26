@@ -153,6 +153,7 @@ const (
 // DataStoreProtocol handles the DataStore nex protocol
 type DataStoreProtocol struct {
 	server                       *nex.Server
+	DeleteObjectHandler          func(err error, client *nex.Client, callID uint32, param *DataStoreDeleteParam)
 	GetMetaHandler               func(err error, client *nex.Client, callID uint32, dataStoreGetMetaParam *DataStoreGetMetaParam)
 	PrepareUpdateObjectHandler   func(err error, client *nex.Client, callID uint32, dataStorePrepareUpdateParam *DataStorePrepareUpdateParam)
 	CompleteUpdateObjectHandler  func(err error, client *nex.Client, callID uint32, dataStoreCompleteUpdateParam *DataStoreCompleteUpdateParam)
@@ -1921,6 +1922,8 @@ func (dataStoreProtocol *DataStoreProtocol) Setup() {
 
 		if DataStoreProtocolID == request.ProtocolID() {
 			switch request.MethodID() {
+			case DataStoreMethodDeleteObject:
+				go dataStoreProtocol.handleDeleteObject(packet)
 			case DataStoreMethodGetMeta:
 				go dataStoreProtocol.handleGetMeta(packet)
 			case DataStoreMethodPrepareUpdateObject:
@@ -1951,6 +1954,11 @@ func (dataStoreProtocol *DataStoreProtocol) Setup() {
 			}
 		}
 	})
+}
+
+// DeleteObject sets the DeleteObject handler function
+func (dataStoreProtocol *DataStoreProtocol) DeleteObject(handler func(err error, client *nex.Client, callID uint32, param *DataStoreDeleteParam)) {
+	dataStoreProtocol.DeleteObjectHandler = handler
 }
 
 // GetMeta sets the GetMeta handler function
@@ -1998,7 +2006,7 @@ func (dataStoreProtocol *DataStoreProtocol) GetMetasMultipleParam(handler func(e
 	dataStoreProtocol.GetMetasMultipleParamHandler = handler
 }
 
-// ChangeMeta sets the ChangeMeta handler function
+// CompletePostObjects sets the CompletePostObjects handler function
 func (dataStoreProtocol *DataStoreProtocol) CompletePostObjects(handler func(err error, client *nex.Client, callID uint32, dataIDs []uint64)) {
 	dataStoreProtocol.CompletePostObjectsHandler = handler
 }
@@ -2011,6 +2019,31 @@ func (dataStoreProtocol *DataStoreProtocol) ChangeMeta(handler func(err error, c
 // RateObjects sets the RateObjects handler function
 func (dataStoreProtocol *DataStoreProtocol) RateObjects(handler func(err error, client *nex.Client, callID uint32, targets []*DataStoreRatingTarget, params []*DataStoreRateObjectParam, transactional bool, fetchRatings bool)) {
 	dataStoreProtocol.RateObjectsHandler = handler
+}
+
+func (dataStoreProtocol *DataStoreProtocol) handleDeleteObject(packet nex.PacketInterface) {
+	if dataStoreProtocol.DeleteObjectHandler == nil {
+		logger.Warning("DataStoreProtocol::DeleteObject not implemented")
+		go respondNotImplemented(packet, DataStoreProtocolID)
+		return
+	}
+
+	client := packet.Sender()
+	request := packet.RMCRequest()
+
+	callID := request.CallID()
+	parameters := request.Parameters()
+
+	parametersStream := nex.NewStreamIn(parameters, dataStoreProtocol.server)
+
+	param, err := parametersStream.ReadStructure(NewDataStoreDeleteParam())
+
+	if err != nil {
+		go dataStoreProtocol.DeleteObjectHandler(err, client, callID, nil)
+		return
+	}
+
+	go dataStoreProtocol.DeleteObjectHandler(nil, client, callID, param.(*DataStoreDeleteParam))
 }
 
 func (dataStoreProtocol *DataStoreProtocol) handleGetMeta(packet nex.PacketInterface) {

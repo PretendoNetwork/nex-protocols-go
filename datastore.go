@@ -1223,11 +1223,11 @@ type DataStoreRatingInitParam struct {
 	Flag           uint8
 	InternalFlag   uint8
 	LockType       uint8
-	initialValue   int64
-	rangeMin       int32
-	rangeMax       int32
-	periodHour     int8
-	periodDuration int16
+	InitialValue   int64
+	RangeMin       int32
+	RangeMax       int32
+	PeriodHour     int8
+	PeriodDuration int16
 }
 
 // ExtractFromStream extracts a DataStoreRatingInitParam structure from a stream
@@ -1235,11 +1235,11 @@ func (dataStoreRatingInitParam *DataStoreRatingInitParam) ExtractFromStream(stre
 	dataStoreRatingInitParam.Flag = stream.ReadUInt8()
 	dataStoreRatingInitParam.InternalFlag = stream.ReadUInt8()
 	dataStoreRatingInitParam.LockType = stream.ReadUInt8()
-	dataStoreRatingInitParam.initialValue = int64(stream.ReadUInt64LE())
-	dataStoreRatingInitParam.rangeMin = int32(stream.ReadUInt32LE())
-	dataStoreRatingInitParam.rangeMax = int32(stream.ReadUInt32LE())
-	dataStoreRatingInitParam.periodHour = int8(stream.ReadUInt8())
-	dataStoreRatingInitParam.periodDuration = int16(stream.ReadUInt16LE())
+	dataStoreRatingInitParam.InitialValue = int64(stream.ReadUInt64LE())
+	dataStoreRatingInitParam.RangeMin = int32(stream.ReadUInt32LE())
+	dataStoreRatingInitParam.RangeMax = int32(stream.ReadUInt32LE())
+	dataStoreRatingInitParam.PeriodHour = int8(stream.ReadUInt8())
+	dataStoreRatingInitParam.PeriodDuration = int16(stream.ReadUInt16LE())
 
 	return nil
 }

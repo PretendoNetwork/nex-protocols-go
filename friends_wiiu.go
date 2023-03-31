@@ -106,6 +106,15 @@ type BlacklistedPrincipal struct {
 	nex.Structure
 }
 
+// Bytes encodes the BlacklistedPrincipal and returns a byte array
+func (blacklistedPrincipal *BlacklistedPrincipal) Bytes(stream *nex.StreamOut) []byte {
+	stream.WriteStructure(blacklistedPrincipal.PrincipalBasicInfo)
+	stream.WriteStructure(blacklistedPrincipal.GameKey)
+	stream.WriteUInt64LE(blacklistedPrincipal.BlackListedSince.Value())
+
+	return stream.Bytes()
+}
+
 // ExtractFromStream extracts a BlacklistedPrincipal structure from a stream
 func (blacklistedPrincipal *BlacklistedPrincipal) ExtractFromStream(stream *nex.StreamIn) error {
 	principalBasicInfoStructureInterface, err := stream.ReadStructure(NewPrincipalBasicInfo())

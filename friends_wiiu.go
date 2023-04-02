@@ -110,7 +110,7 @@ type BlacklistedPrincipal struct {
 func (blacklistedPrincipal *BlacklistedPrincipal) Bytes(stream *nex.StreamOut) []byte {
 	stream.WriteStructure(blacklistedPrincipal.PrincipalBasicInfo)
 	stream.WriteStructure(blacklistedPrincipal.GameKey)
-	stream.WriteUInt64LE(blacklistedPrincipal.BlackListedSince.Value())
+	stream.WriteDateTime(blacklistedPrincipal.BlackListedSince)
 
 	return stream.Bytes()
 }
@@ -160,7 +160,7 @@ type Comment struct {
 func (comment *Comment) Bytes(stream *nex.StreamOut) []byte {
 	stream.WriteUInt8(comment.Unknown)
 	stream.WriteString(comment.Contents)
-	stream.WriteUInt64LE(comment.LastChanged.Value())
+	stream.WriteDateTime(comment.LastChanged)
 
 	return stream.Bytes()
 }
@@ -209,8 +209,8 @@ func (friendInfo *FriendInfo) Bytes(stream *nex.StreamOut) []byte {
 	stream.WriteStructure(friendInfo.NNAInfo)
 	stream.WriteStructure(friendInfo.Presence)
 	stream.WriteStructure(friendInfo.Status)
-	stream.WriteUInt64LE(friendInfo.BecameFriend.Value())
-	stream.WriteUInt64LE(friendInfo.LastOnline.Value())
+	stream.WriteDateTime(friendInfo.BecameFriend)
+	stream.WriteDateTime(friendInfo.LastOnline)
 	stream.WriteUInt64LE(friendInfo.Unknown)
 
 	return stream.Bytes()
@@ -234,7 +234,7 @@ type FriendRequest struct {
 func (friendRequest *FriendRequest) Bytes(stream *nex.StreamOut) []byte {
 	stream.WriteStructure(friendRequest.PrincipalInfo)
 	stream.WriteStructure(friendRequest.Message)
-	stream.WriteUInt64LE(friendRequest.SentOn.Value())
+	stream.WriteDateTime(friendRequest.SentOn)
 
 	return stream.Bytes()
 }
@@ -268,8 +268,8 @@ func (friendRequestMessage *FriendRequestMessage) Bytes(stream *nex.StreamOut) [
 	stream.WriteUInt8(friendRequestMessage.Unknown3)
 	stream.WriteString(friendRequestMessage.Unknown4)
 	stream.WriteStructure(friendRequestMessage.GameKey)
-	stream.WriteUInt64LE(friendRequestMessage.Unknown5.Value())
-	stream.WriteUInt64LE(friendRequestMessage.ExpiresOn.Value())
+	stream.WriteDateTime(friendRequestMessage.Unknown5)
+	stream.WriteDateTime(friendRequestMessage.ExpiresOn)
 
 	return stream.Bytes()
 }
@@ -329,7 +329,7 @@ func (mii *MiiV2) Bytes(stream *nex.StreamOut) []byte {
 	stream.WriteUInt8(mii.Unknown1)
 	stream.WriteUInt8(mii.Unknown2)
 	stream.WriteBuffer(mii.Data)
-	stream.WriteUInt64LE(mii.Datetime.Value())
+	stream.WriteDateTime(mii.Datetime)
 
 	return stream.Bytes()
 }

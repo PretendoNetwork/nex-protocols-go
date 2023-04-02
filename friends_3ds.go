@@ -123,7 +123,7 @@ type FriendMii struct {
 func (friendMii *FriendMii) Bytes(stream *nex.StreamOut) []byte {
 	stream.WriteUInt32LE(friendMii.PID)
 	stream.WriteStructure(friendMii.Mii)
-	stream.WriteUInt64LE(friendMii.ModifiedAt.Value())
+	stream.WriteDateTime(friendMii.ModifiedAt)
 
 	return stream.Bytes()
 }
@@ -314,9 +314,9 @@ func (friendPersistentInfo *FriendPersistentInfo) Bytes(stream *nex.StreamOut) [
 	stream.WriteUInt8(friendPersistentInfo.Platform)
 	stream.WriteStructure(friendPersistentInfo.GameKey)
 	stream.WriteString(friendPersistentInfo.Message)
-	stream.WriteUInt64LE(friendPersistentInfo.MessageUpdatedAt.Value())
-	stream.WriteUInt64LE(friendPersistentInfo.FriendedAt.Value())
-	stream.WriteUInt64LE(friendPersistentInfo.LastOnline.Value())
+	stream.WriteDateTime(friendPersistentInfo.MessageUpdatedAt)
+	stream.WriteDateTime(friendPersistentInfo.FriendedAt)
+	stream.WriteDateTime(friendPersistentInfo.LastOnline)
 
 	return stream.Bytes()
 }

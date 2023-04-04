@@ -158,6 +158,7 @@ type DataStoreProtocol struct {
 	GetMetasHandler              func(err error, client *nex.Client, callID uint32, dataIDs []uint64, param *DataStoreGetMetaParam)
 	PrepareUpdateObjectHandler   func(err error, client *nex.Client, callID uint32, dataStorePrepareUpdateParam *DataStorePrepareUpdateParam)
 	CompleteUpdateObjectHandler  func(err error, client *nex.Client, callID uint32, dataStoreCompleteUpdateParam *DataStoreCompleteUpdateParam)
+	SearchObjectHandler          func(err error, client *nex.Client, callID uint32, param *DataStoreSearchParam)
 	RateObjectHandler            func(err error, client *nex.Client, callID uint32, target *DataStoreRatingTarget, param *DataStoreRateObjectParam, fetchRatings bool)
 	PostMetaBinaryHandler        func(err error, client *nex.Client, callID uint32, dataStorePreparePostParam *DataStorePreparePostParam)
 	PreparePostObjectHandler     func(err error, client *nex.Client, callID uint32, dataStorePrepareGetParam *DataStorePreparePostParam)
@@ -1404,7 +1405,10 @@ func (dataStoreSearchParam *DataStoreSearchParam) ExtractFromStream(stream *nex.
 	dataStoreSearchParam.ResultRange = resultRange.(*nex.ResultRange)
 	dataStoreSearchParam.ResultOption = stream.ReadUInt8()
 	dataStoreSearchParam.MinimalRatingFrequency = stream.ReadUInt32LE()
-	dataStoreSearchParam.UseCache = (stream.ReadUInt8() == 1)
+
+	if stream.Server.NexVersion() >= 30500 {
+		dataStoreSearchParam.UseCache = (stream.ReadUInt8() == 1)
+	}
 
 	return nil
 }
@@ -1937,6 +1941,8 @@ func (dataStoreProtocol *DataStoreProtocol) Setup() {
 				go dataStoreProtocol.handlePrepareUpdateObject(packet)
 			case DataStoreMethodCompleteUpdateObject:
 				go dataStoreProtocol.handleCompleteUpdateObject(packet)
+			case DataStoreMethodSearchObject:
+				go dataStoreProtocol.handleSearchObject(packet)
 			case DataStoreMethodRateObject:
 				go dataStoreProtocol.handleRateObject(packet)
 			case DataStoreMethodPostMetaBinary:
@@ -1983,6 +1989,11 @@ func (dataStoreProtocol *DataStoreProtocol) GetMetas(handler func(err error, cli
 // PrepareUpdateObject sets the PrepareUpdateObject handler function
 func (dataStoreProtocol *DataStoreProtocol) PrepareUpdateObject(handler func(err error, client *nex.Client, callID uint32, dataStorePrepareUpdateParam *DataStorePrepareUpdateParam)) {
 	dataStoreProtocol.PrepareUpdateObjectHandler = handler
+}
+
+// SearchObject sets the SearchObject handler function
+func (dataStoreProtocol *DataStoreProtocol) SearchObject(handler func(err error, client *nex.Client, callID uint32, param *DataStoreSearchParam)) {
+	dataStoreProtocol.SearchObjectHandler = handler
 }
 
 // CompleteUpdateObject sets the CompleteUpdateObject handler function
@@ -2163,6 +2174,30 @@ func (dataStoreProtocol *DataStoreProtocol) handleCompleteUpdateObject(packet ne
 	}
 
 	go dataStoreProtocol.CompleteUpdateObjectHandler(nil, client, callID, dataStoreCompleteUpdateParam.(*DataStoreCompleteUpdateParam))
+}
+
+func (dataStoreProtocol *DataStoreProtocol) handleSearchObject(packet nex.PacketInterface) {
+	if dataStoreProtocol.SearchObjectHandler == nil {
+		logger.Warning("DataStoreProtocol::SearchObject not implemented")
+		go respondNotImplemented(packet, DataStoreProtocolID)
+		return
+	}
+
+	client := packet.Sender()
+	request := packet.RMCRequest()
+
+	callID := request.CallID()
+	parameters := request.Parameters()
+
+	parametersStream := nex.NewStreamIn(parameters, dataStoreProtocol.server)
+
+	param, err := parametersStream.ReadStructure(NewDataStoreSearchParam())
+	if err != nil {
+		go dataStoreProtocol.SearchObjectHandler(err, client, callID, nil)
+		return
+	}
+
+	go dataStoreProtocol.SearchObjectHandler(nil, client, callID, param.(*DataStoreSearchParam))
 }
 
 func (dataStoreProtocol *DataStoreProtocol) handleRateObject(packet nex.PacketInterface) {

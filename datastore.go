@@ -405,7 +405,7 @@ func (dataStoreRatingLog *DataStoreRatingLog) Bytes(stream *nex.StreamOut) []byt
 	stream.WriteBool(dataStoreRatingLog.IsRated)
 	stream.WriteUInt32LE(dataStoreRatingLog.Pid)
 	stream.WriteInt32LE(dataStoreRatingLog.RatingValue)
-	stream.WriteUInt64LE(dataStoreRatingLog.LockExpirationTime.Value())
+	stream.WriteDateTime(dataStoreRatingLog.LockExpirationTime)
 
 	return stream.Bytes()
 }
@@ -1817,15 +1817,15 @@ func (dataStoreMetaInfo *DataStoreMetaInfo) Bytes(stream *nex.StreamOut) []byte 
 	stream.WriteQBuffer(dataStoreMetaInfo.MetaBinary)
 	stream.WriteStructure(dataStoreMetaInfo.Permission)
 	stream.WriteStructure(dataStoreMetaInfo.DelPermission)
-	stream.WriteUInt64LE(dataStoreMetaInfo.CreatedTime.Value())
-	stream.WriteUInt64LE(dataStoreMetaInfo.UpdatedTime.Value())
+	stream.WriteDateTime(dataStoreMetaInfo.CreatedTime)
+	stream.WriteDateTime(dataStoreMetaInfo.UpdatedTime)
 	stream.WriteUInt16LE(dataStoreMetaInfo.Period)
 	stream.WriteUInt8(dataStoreMetaInfo.Status)
 	stream.WriteUInt32LE(dataStoreMetaInfo.ReferredCnt)
 	stream.WriteUInt32LE(dataStoreMetaInfo.ReferDataID)
 	stream.WriteUInt32LE(dataStoreMetaInfo.Flag)
-	stream.WriteUInt64LE(dataStoreMetaInfo.ReferredTime.Value())
-	stream.WriteUInt64LE(dataStoreMetaInfo.ExpireTime.Value())
+	stream.WriteDateTime(dataStoreMetaInfo.ReferredTime)
+	stream.WriteDateTime(dataStoreMetaInfo.ExpireTime)
 	stream.WriteListString(dataStoreMetaInfo.Tags)
 	stream.WriteListStructure(dataStoreMetaInfo.Ratings)
 

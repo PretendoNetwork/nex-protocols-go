@@ -22,7 +22,7 @@ const (
 
 // ShopBadgeArcadeProtocol handles the Shop (Badge Arcade) nex protocol
 type ShopBadgeArcadeProtocol struct {
-	server *nex.Server
+	server             *nex.Server
 	GetRivTokenHandler func(err error, client *nex.Client, callID uint32, itemCode string, referenceID []byte)
 	PostPlayLogHandler func(err error, client *nex.Client, callID uint32, param *ShopPostPlayLogParam)
 }
@@ -45,14 +45,14 @@ func (shopPostPlayLogParam *ShopPostPlayLogParam) ExtractFromStream(stream *nex.
 	}
 
 	shopPostPlayLogParam.Unknown2 = unknown2
-	
+
 	return nil
 }
 
 // Bytes encodes the ShopPostPlayLogParam and returns a byte array
 func (shopPostPlayLogParam *ShopPostPlayLogParam) Bytes(stream *nex.StreamOut) []byte {
 	stream.WriteListUInt32LE(shopPostPlayLogParam.Unknown1)
-	stream.WriteUInt64LE(shopPostPlayLogParam.Timestamp.Value())
+	stream.WriteDateTime(shopPostPlayLogParam.Timestamp)
 	stream.WriteString(shopPostPlayLogParam.Unknown2)
 
 	return stream.Bytes()

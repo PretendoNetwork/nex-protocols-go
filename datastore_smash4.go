@@ -688,7 +688,7 @@ func (dataStoreSharedDataInfo *DataStoreSharedDataInfo) Bytes(stream *nex.Stream
 	stream.WriteQBuffer(dataStoreSharedDataInfo.MetaBinary)
 	stream.WriteQBuffer(dataStoreSharedDataInfo.Profile)
 	stream.WriteInt64LE(dataStoreSharedDataInfo.Rating)
-	stream.WriteUInt64LE(dataStoreSharedDataInfo.CreatedTime.Value())
+	stream.WriteDateTime(dataStoreSharedDataInfo.CreatedTime)
 	stream.WriteStructure(dataStoreSharedDataInfo.Info)
 
 	return stream.Bytes()

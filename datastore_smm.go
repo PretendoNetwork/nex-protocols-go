@@ -130,8 +130,8 @@ func (dataStoreGetCourseRecordResult *DataStoreGetCourseRecordResult) Bytes(stre
 	stream.WriteUInt32LE(dataStoreGetCourseRecordResult.FirstPID)
 	stream.WriteUInt32LE(dataStoreGetCourseRecordResult.BestPID)
 	stream.WriteUInt32LE(uint32(dataStoreGetCourseRecordResult.BestScore))
-	stream.WriteUInt64LE(dataStoreGetCourseRecordResult.CreatedTime.Value())
-	stream.WriteUInt64LE(dataStoreGetCourseRecordResult.UpdatedTime.Value())
+	stream.WriteDateTime(dataStoreGetCourseRecordResult.CreatedTime)
+	stream.WriteDateTime(dataStoreGetCourseRecordResult.UpdatedTime)
 
 	return stream.Bytes()
 }

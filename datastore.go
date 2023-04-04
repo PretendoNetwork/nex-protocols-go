@@ -1344,7 +1344,10 @@ func (dataStorePreparePostParam *DataStorePreparePostParam) ExtractFromStream(st
 	}
 
 	dataStorePreparePostParam.PersistenceInitParam = persistenceInitParam.(*DataStorePersistenceInitParam)
-	dataStorePreparePostParam.ExtraData = stream.ReadListString()
+
+	if stream.Server.NexVersion() >= 30500 {
+		dataStorePreparePostParam.ExtraData = stream.ReadListString()
+	}
 
 	return nil
 }

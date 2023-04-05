@@ -85,6 +85,8 @@ type MatchmakeSessionSearchCriteria struct {
 
 // ExtractFromStream extracts a Gathering structure from a stream
 func (matchmakeSessionSearchCriteria *MatchmakeSessionSearchCriteria) ExtractFromStream(stream *nex.StreamIn) error {
+	matchmakingVersion := stream.Server.MatchMakingProtocolVersion()
+
 	var err error
 
 	matchmakeSessionSearchCriteria.Attribs = stream.ReadListString()
@@ -109,7 +111,7 @@ func (matchmakeSessionSearchCriteria *MatchmakeSessionSearchCriteria) ExtractFro
 	matchmakeSessionSearchCriteria.ExcludeNonHostPid = stream.ReadBool()
 	matchmakeSessionSearchCriteria.SelectionMethod = stream.ReadUInt32LE()
 
-	if stream.Server.NexVersion() >= 30500 {
+	if matchmakingVersion.Major >= 3 && matchmakingVersion.Minor >= 5 {
 		matchmakeSessionSearchCriteria.VacantParticipants = stream.ReadUInt16LE()
 	}
 
@@ -118,6 +120,8 @@ func (matchmakeSessionSearchCriteria *MatchmakeSessionSearchCriteria) ExtractFro
 
 // Bytes encodes the Gathering and returns a byte array
 func (matchmakeSessionSearchCriteria *MatchmakeSessionSearchCriteria) Bytes(stream *nex.StreamOut) []byte {
+	matchmakingVersion := stream.Server.MatchMakingProtocolVersion()
+
 	stream.WriteListString(matchmakeSessionSearchCriteria.Attribs)
 	stream.WriteString(matchmakeSessionSearchCriteria.GameMode)
 	stream.WriteString(matchmakeSessionSearchCriteria.MinParticipants)
@@ -128,7 +132,7 @@ func (matchmakeSessionSearchCriteria *MatchmakeSessionSearchCriteria) Bytes(stre
 	stream.WriteBool(matchmakeSessionSearchCriteria.ExcludeNonHostPid)
 	stream.WriteUInt32LE(matchmakeSessionSearchCriteria.SelectionMethod)
 
-	if stream.Server.NexVersion() >= 30500 {
+	if matchmakingVersion.Major >= 3 && matchmakingVersion.Minor >= 5 {
 		stream.WriteUInt16LE(matchmakeSessionSearchCriteria.VacantParticipants)
 	}
 
@@ -170,8 +174,9 @@ func (matchmakeSession *MatchmakeSession) GetHierarchy() []nex.StructureInterfac
 
 // ExtractFromStream extracts a MatchmakeSession structure from a stream
 func (matchmakeSession *MatchmakeSession) ExtractFromStream(stream *nex.StreamIn) error {
+	matchmakingVersion := stream.Server.MatchMakingProtocolVersion()
+
 	var err error
-	server := stream.Server
 
 	//matchmakeSession.Gathering = gathering
 	matchmakeSession.GameMode = stream.ReadUInt32LE()
@@ -186,11 +191,11 @@ func (matchmakeSession *MatchmakeSession) ExtractFromStream(stream *nex.StreamIn
 
 	matchmakeSession.ParticipationCount = stream.ReadUInt32LE()
 
-	if server.NexVersion() >= 30500 {
+	if matchmakingVersion.Major >= 3 && matchmakingVersion.Minor >= 5 {
 		matchmakeSession.ProgressScore = stream.ReadUInt8()
 	}
 
-	if server.NexVersion() >= 30000 {
+	if matchmakingVersion.Major >= 3 {
 		matchmakeSession.SessionKey, err = stream.ReadBuffer()
 
 		if err != nil {
@@ -198,11 +203,11 @@ func (matchmakeSession *MatchmakeSession) ExtractFromStream(stream *nex.StreamIn
 		}
 	}
 
-	if server.NexVersion() >= 30500 {
+	if matchmakingVersion.Major >= 3 && matchmakingVersion.Minor >= 5 {
 		matchmakeSession.Option = stream.ReadUInt32LE()
 	}
 
-	if server.NexVersion() >= 40000 {
+	if matchmakingVersion.Major >= 4 {
 		matchmakeParam, err := stream.ReadStructure(NewMatchmakeParam())
 
 		if err != nil {
@@ -232,7 +237,7 @@ func (matchmakeSession *MatchmakeSession) ExtractFromStream(stream *nex.StreamIn
 
 // Bytes extracts a MatchmakeSession structure from a stream
 func (matchmakeSession *MatchmakeSession) Bytes(stream *nex.StreamOut) []byte {
-	server := stream.Server
+	matchmakingVersion := stream.Server.MatchMakingProtocolVersion()
 	//stream.WriteStructure(matchmakeSession.Gathering)
 
 	stream.WriteUInt32LE(matchmakeSession.GameMode)
@@ -243,15 +248,15 @@ func (matchmakeSession *MatchmakeSession) Bytes(stream *nex.StreamOut) []byte {
 
 	stream.WriteUInt32LE(matchmakeSession.ParticipationCount)
 
-	if server.NexVersion() >= 30500 {
+	if matchmakingVersion.Major >= 3 && matchmakingVersion.Minor >= 5 {
 		stream.WriteUInt8(matchmakeSession.ProgressScore)
 	}
 
-	if server.NexVersion() >= 30000 {
+	if matchmakingVersion.Major >= 3 {
 		stream.WriteBuffer(matchmakeSession.SessionKey)
 	}
 
-	if server.NexVersion() >= 30500 {
+	if matchmakingVersion.Major >= 3 && matchmakingVersion.Minor >= 5 {
 		stream.WriteUInt32LE(matchmakeSession.Option)
 	}
 

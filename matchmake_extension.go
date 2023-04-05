@@ -204,6 +204,8 @@ func (matchmakeExtensionProtocol *MatchmakeExtensionProtocol) handleAutoMatchmak
 }
 
 func (matchmakeExtensionProtocol *MatchmakeExtensionProtocol) handleCreateMatchmakeSession(packet nex.PacketInterface) {
+	matchmakingVersion := matchmakeExtensionProtocol.server.MatchMakingProtocolVersion()
+
 	if matchmakeExtensionProtocol.CreateMatchmakeSessionHandler == nil {
 		logger.Warning("MatchmakeExtensionProtocol::CreateMatchmakeSession not implemented")
 		go respondNotImplemented(packet, MatchmakeExtensionProtocolID)
@@ -263,7 +265,7 @@ func (matchmakeExtensionProtocol *MatchmakeExtensionProtocol) handleCreateMatchm
 
 	var participationCount uint16 = 0
 
-	if matchmakeExtensionProtocol.server.NexVersion() >= 30500 {
+	if matchmakingVersion.Major >= 3 && matchmakingVersion.Minor >= 5 {
 		participationCount = dataHolderContentStream.ReadUInt16LE()
 	}
 

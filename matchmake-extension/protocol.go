@@ -30,8 +30,11 @@ const (
 	// MethodGetFriendNotificationData is the method ID for method GetFriendNotificationData
 	MethodGetFriendNotificationData = 0xA
 
-	// MethodCreateMatchmakeSession is the method ID for method CreateMatchmakeSession
+	// MethodAutoMatchmakeWithSearchCriteria_Postpone is the method ID for method AutoMatchmakeWithSearchCriteria_Postpone
 	MethodAutoMatchmakeWithSearchCriteria_Postpone = 0xF
+
+	// MethodGetPlayingSession is the method ID for method GetPlayingSession
+	MethodGetPlayingSession = 0x10
 
 	// MethodJoinMatchmakeSessionEx is the method ID for method JoinMatchmakeSessionEx
 	MethodJoinMatchmakeSessionEx = 0x1E
@@ -50,6 +53,7 @@ type MatchmakeExtensionProtocol struct {
 	UpdateNotificationDataHandler                   func(err error, client *nex.Client, callID uint32, uiType uint32, uiParam1 uint32, uiParam2 uint32, strParam string)
 	GetFriendNotificationDataHandler                func(err error, client *nex.Client, callID uint32, uiType int32)
 	AutoMatchmakeWithSearchCriteria_PostponeHandler func(err error, client *nex.Client, callID uint32, matchmakeSession *match_making.MatchmakeSession, message string)
+	GetPlayingSessionHandler                        func(err error, client *nex.Client, callID uint32, lstPID []uint32)
 	JoinMatchmakeSessionExHandler                   func(err error, client *nex.Client, callID uint32, gid uint32, strMessage string, dontCareMyBlockList bool, participationCount uint16)
 	GetSimplePlayingSessionHandler                  func(err error, client *nex.Client, callID uint32, listPID []uint32, includeLoginUser bool)
 }
@@ -83,6 +87,8 @@ func (protocol *MatchmakeExtensionProtocol) HandlePacket(packet nex.PacketInterf
 		go protocol.HandleGetFriendNotificationData(packet)
 	case MethodAutoMatchmakeWithSearchCriteria_Postpone:
 		go protocol.HandleAutoMatchmakeWithSearchCriteria_Postpone(packet)
+	case MethodGetPlayingSession:
+		go protocol.HandleGetPlayingSession(packet)
 	case MethodJoinMatchmakeSessionEx:
 		go protocol.HandleJoinMatchmakeSessionEx(packet)
 	case MethodGetSimplePlayingSession:

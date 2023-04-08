@@ -12,6 +12,9 @@ const (
 	// ProtocolID is the protocol ID for the Matchmake Extension protocol
 	ProtocolID = 0x6D
 
+	// MethodCloseParticipation is the method ID for method CloseParticipation
+	MethodCloseParticipation = 0x1
+
 	// MethodOpenParticipation is the method ID for method OpenParticipation
 	MethodOpenParticipation = 0x2
 
@@ -40,6 +43,7 @@ const (
 // MatchmakeExtensionProtocol handles the Matchmake Extension nex protocol
 type MatchmakeExtensionProtocol struct {
 	Server                                          *nex.Server
+	CloseParticipationHandler                       func(err error, client *nex.Client, callID uint32, gid uint32)
 	OpenParticipationHandler                        func(err error, client *nex.Client, callID uint32, gid uint32)
 	AutoMatchmake_PostponeHandler                   func(err error, client *nex.Client, callID uint32, matchmakeSession *match_making.MatchmakeSession, message string)
 	CreateMatchmakeSessionHandler                   func(err error, client *nex.Client, callID uint32, matchmakeSession *match_making.MatchmakeSession, message string, participationCount uint16)
@@ -65,6 +69,8 @@ func (protocol *MatchmakeExtensionProtocol) HandlePacket(packet nex.PacketInterf
 	request := packet.RMCRequest()
 
 	switch request.MethodID() {
+	case MethodCloseParticipation:
+		go protocol.HandleCloseParticipation(packet)
 	case MethodOpenParticipation:
 		go protocol.HandleOpenParticipation(packet)
 	case MethodAutoMatchmake_Postpone:

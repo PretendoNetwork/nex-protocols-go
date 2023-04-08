@@ -12,7 +12,7 @@ func (protocol *Friends3DSProtocol) GetFriendMii(handler func(err error, client 
 
 func (protocol *Friends3DSProtocol) HandleGetFriendMii(packet nex.PacketInterface) {
 	if protocol.GetFriendMiiHandler == nil {
-		globals.Logger.Warning("Friends3DS::GetFriendMiiHandler not implemented")
+		globals.Logger.Warning("Friends3DS::GetFriendMii not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
 	}

@@ -41,6 +41,18 @@ const (
 
 	// MethodGetSimplePlayingSession is the method ID for method GetSimplePlayingSession
 	MethodGetSimplePlayingSession = 0x1F
+
+	// MethodUpdateProgressScore is the method ID for method UpdateProgressScore
+	MethodUpdateProgressScore = 0x22
+
+	// MethodCreateMatchmakeSessionWithParam is the method ID for method CreateMatchmakeSessionWithParam
+	MethodCreateMatchmakeSessionWithParam = 0x26
+
+	// MethodJoinMatchmakeSessionWithParam is the method ID for method JoinMatchmakeSessionWithParam
+	MethodJoinMatchmakeSessionWithParam = 0x27
+
+	// MethodAutoMatchmakeWithParam_Postpone is the method ID for method AutoMatchmakeWithParam_Postpone
+	MethodAutoMatchmakeWithParam_Postpone = 0x28
 )
 
 // MatchmakeExtensionProtocol handles the Matchmake Extension nex protocol
@@ -56,6 +68,7 @@ type MatchmakeExtensionProtocol struct {
 	GetPlayingSessionHandler                        func(err error, client *nex.Client, callID uint32, lstPID []uint32)
 	JoinMatchmakeSessionExHandler                   func(err error, client *nex.Client, callID uint32, gid uint32, strMessage string, dontCareMyBlockList bool, participationCount uint16)
 	GetSimplePlayingSessionHandler                  func(err error, client *nex.Client, callID uint32, listPID []uint32, includeLoginUser bool)
+	UpdateProgressScoreHandler                      func(err error, client *nex.Client, callID uint32, GID uint32, progressScore uint8)
 }
 
 // Setup initializes the protocol
@@ -93,6 +106,8 @@ func (protocol *MatchmakeExtensionProtocol) HandlePacket(packet nex.PacketInterf
 		go protocol.HandleJoinMatchmakeSessionEx(packet)
 	case MethodGetSimplePlayingSession:
 		go protocol.HandleGetSimplePlayingSession(packet)
+	case MethodUpdateProgressScore:
+		go protocol.HandleUpdateProgressScore(packet)
 	default:
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		fmt.Printf("Unsupported Matchmake Extension method ID: %#v\n", request.MethodID())

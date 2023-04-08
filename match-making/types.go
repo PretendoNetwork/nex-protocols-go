@@ -329,7 +329,7 @@ func NewMatchmakeParam() *MatchmakeParam {
 	return &MatchmakeParam{}
 }
 
-// MatchmakeParam holds parameters for a matchmake session
+// CreateMatchmakeSessionParam holds parameters for a matchmake session
 type CreateMatchmakeSessionParam struct {
 	SourceMatchmakeSession       *MatchmakeSession
 	AdditionalParticipants       []uint32
@@ -361,4 +361,70 @@ func (createMatchmakeSessionParam *CreateMatchmakeSessionParam) ExtractFromStrea
 // NewCreateMatchmakeSessionParam returns a new CreateMatchmakeSessionParam
 func NewCreateMatchmakeSessionParam() *CreateMatchmakeSessionParam {
 	return &CreateMatchmakeSessionParam{}
+}
+
+// JoinMatchmakeSessionParam holds parameters for a matchmake session
+type JoinMatchmakeSessionParam struct {
+	GID                          uint32
+	AdditionalParticipants       []uint32
+	GIDForParticipationCheck     uint32
+	JoinMatchmakeSessionOption   uint32
+	JoinMatchmakeSessionBehavior uint8
+	StrUserPassword              string
+	StrSystemPassword            string
+	JoinMessage                  string
+	ParticipationCount           uint16
+	ExtraParticipants            uint16
+	BlockListParam               *MatchmakeBlockListParam
+
+	*nex.Structure
+}
+
+// ExtractFromStream extracts a JoinMatchmakeSessionParam structure from a stream
+func (joinMatchmakeSessionParam *JoinMatchmakeSessionParam) ExtractFromStream(stream *nex.StreamIn) error {
+	// TODO - Check errors
+
+	joinMatchmakeSessionParam.GID = stream.ReadUInt32LE()
+	joinMatchmakeSessionParam.AdditionalParticipants = stream.ReadListUInt32LE()
+	joinMatchmakeSessionParam.GIDForParticipationCheck = stream.ReadUInt32LE()
+	joinMatchmakeSessionParam.JoinMatchmakeSessionOption = stream.ReadUInt32LE()
+	joinMatchmakeSessionParam.JoinMatchmakeSessionBehavior = stream.ReadUInt8()
+	joinMatchmakeSessionParam.StrUserPassword, _ = stream.ReadString()
+	joinMatchmakeSessionParam.StrSystemPassword, _ = stream.ReadString()
+	joinMatchmakeSessionParam.JoinMessage, _ = stream.ReadString()
+	joinMatchmakeSessionParam.ParticipationCount = stream.ReadUInt16LE()
+	joinMatchmakeSessionParam.ExtraParticipants = stream.ReadUInt16LE()
+
+	blockListParam, err := stream.ReadStructure(NewMatchmakeBlockListParam())
+	if err != nil {
+		return err
+	}
+
+	joinMatchmakeSessionParam.BlockListParam = blockListParam.(*MatchmakeBlockListParam)
+
+	return nil
+}
+
+// NewJoinMatchmakeSessionParam returns a new JoinMatchmakeSessionParam
+func NewJoinMatchmakeSessionParam() *JoinMatchmakeSessionParam {
+	return &JoinMatchmakeSessionParam{}
+}
+
+// MatchmakeBlockListParam holds parameters for a matchmake session
+type MatchmakeBlockListParam struct {
+	OptionFlag uint32
+
+	*nex.Structure
+}
+
+// ExtractFromStream extracts a MatchmakeBlockListParam structure from a stream
+func (matchmakeBlockListParam *MatchmakeBlockListParam) ExtractFromStream(stream *nex.StreamIn) error {
+	matchmakeBlockListParam.OptionFlag = stream.ReadUInt32LE()
+
+	return nil
+}
+
+// NewMatchmakeBlockListParam returns a new MatchmakeBlockListParam
+func NewMatchmakeBlockListParam() *MatchmakeBlockListParam {
+	return &MatchmakeBlockListParam{}
 }

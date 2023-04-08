@@ -70,6 +70,7 @@ type MatchmakeExtensionProtocol struct {
 	GetSimplePlayingSessionHandler                  func(err error, client *nex.Client, callID uint32, listPID []uint32, includeLoginUser bool)
 	UpdateProgressScoreHandler                      func(err error, client *nex.Client, callID uint32, GID uint32, progressScore uint8)
 	CreateMatchmakeSessionWithParamHandler          func(err error, client *nex.Client, callID uint32, createMatchmakeSessionParam *match_making.CreateMatchmakeSessionParam)
+	JoinMatchmakeSessionWithParamHandler            func(err error, client *nex.Client, callID uint32, joinMatchmakeSessionParam *match_making.JoinMatchmakeSessionParam)
 }
 
 // Setup initializes the protocol
@@ -111,6 +112,8 @@ func (protocol *MatchmakeExtensionProtocol) HandlePacket(packet nex.PacketInterf
 		go protocol.HandleUpdateProgressScore(packet)
 	case MethodCreateMatchmakeSessionWithParam:
 		go protocol.HandleCreateMatchmakeSessionWithParam(packet)
+	case MethodJoinMatchmakeSessionWithParam:
+		go protocol.HandleJoinMatchmakeSessionWithParam(packet)
 	default:
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		fmt.Printf("Unsupported Matchmake Extension method ID: %#v\n", request.MethodID())

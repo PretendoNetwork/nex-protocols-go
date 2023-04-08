@@ -328,3 +328,37 @@ func (matchmakeParam *MatchmakeParam) ExtractFromStream(stream *nex.StreamIn) er
 func NewMatchmakeParam() *MatchmakeParam {
 	return &MatchmakeParam{}
 }
+
+// MatchmakeParam holds parameters for a matchmake session
+type CreateMatchmakeSessionParam struct {
+	SourceMatchmakeSession       *MatchmakeSession
+	AdditionalParticipants       []uint32
+	GIDForParticipationCheck     uint32
+	CreateMatchmakeSessionOption uint32
+	JoinMessage                  string
+	ParticipationCount           uint16
+
+	*nex.Structure
+}
+
+// ExtractFromStream extracts a CreateMatchmakeSessionParam structure from a stream
+func (createMatchmakeSessionParam *CreateMatchmakeSessionParam) ExtractFromStream(stream *nex.StreamIn) error {
+	sourceMatchmakeSession, err := stream.ReadStructure(NewMatchmakeSession())
+	if err != nil {
+		return err
+	}
+
+	createMatchmakeSessionParam.SourceMatchmakeSession = sourceMatchmakeSession.(*MatchmakeSession)
+	createMatchmakeSessionParam.AdditionalParticipants = stream.ReadListUInt32LE()
+	createMatchmakeSessionParam.GIDForParticipationCheck = stream.ReadUInt32LE()
+	createMatchmakeSessionParam.CreateMatchmakeSessionOption = stream.ReadUInt32LE()
+	createMatchmakeSessionParam.JoinMessage, _ = stream.ReadString()
+	createMatchmakeSessionParam.ParticipationCount = stream.ReadUInt16LE()
+
+	return nil
+}
+
+// NewCreateMatchmakeSessionParam returns a new CreateMatchmakeSessionParam
+func NewCreateMatchmakeSessionParam() *CreateMatchmakeSessionParam {
+	return &CreateMatchmakeSessionParam{}
+}

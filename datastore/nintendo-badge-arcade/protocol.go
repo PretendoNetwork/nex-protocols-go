@@ -13,19 +13,19 @@ const (
 	// ProtocolID is the Protocol ID for the DataStore (Badge Arcade) protocol. ID is the same as the DataStore protocol
 	ProtocolID = 0x73
 
-	// MethodGetMetaByOwnerId is the method ID for GetMetaByOwnerId
-	MethodGetMetaByOwnerId = 0x2D
+	// MethodGetMetaByOwnerID is the method ID for GetMetaByOwnerID
+	MethodGetMetaByOwnerID = 0x2D
 )
 
 var patchedMethods = []uint32{
-	MethodGetMetaByOwnerId,
+	MethodGetMetaByOwnerID,
 }
 
 // DataStoreNintendoBadgeArcadeProtocol handles the DataStore (Badge Arcade) nex protocol. Embeds DataStoreProtocol
 type DataStoreNintendoBadgeArcadeProtocol struct {
 	Server *nex.Server
 	datastore.DataStoreProtocol
-	GetMetaByOwnerIdHandler func(err error, client *nex.Client, callID uint32, param *DataStoreGetMetaByOwnerIdParam)
+	GetMetaByOwnerIDHandler func(err error, client *nex.Client, callID uint32, param *DataStoreGetMetaByOwnerIDParam)
 }
 
 // Setup initializes the protocol
@@ -48,8 +48,8 @@ func (protocol *DataStoreNintendoBadgeArcadeProtocol) HandlePacket(packet nex.Pa
 	request := packet.RMCRequest()
 
 	switch request.MethodID() {
-	case MethodGetMetaByOwnerId:
-		go protocol.HandleGetMetaByOwnerId(packet)
+	case MethodGetMetaByOwnerID:
+		go protocol.HandleGetMetaByOwnerID(packet)
 	default:
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		fmt.Printf("Unsupported DataStoreBadgeArcade method ID: %#v\n", request.MethodID())

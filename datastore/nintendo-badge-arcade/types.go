@@ -2,7 +2,7 @@ package datastore_nintendo_badge_arcade
 
 import nex "github.com/PretendoNetwork/nex-go"
 
-type DataStoreGetMetaByOwnerIdParam struct {
+type DataStoreGetMetaByOwnerIDParam struct {
 	nex.Structure
 	OwnerIDs     []uint32
 	DataTypes    []uint16
@@ -10,33 +10,33 @@ type DataStoreGetMetaByOwnerIdParam struct {
 	ResultRange  *nex.ResultRange
 }
 
-// ExtractFromStream extracts a DataStoreGetMetaByOwnerIdParam structure from a stream
-func (dataStoreGetMetaByOwnerIdParam *DataStoreGetMetaByOwnerIdParam) ExtractFromStream(stream *nex.StreamIn) error {
-	dataStoreGetMetaByOwnerIdParam.OwnerIDs = stream.ReadListUInt32LE()
-	dataStoreGetMetaByOwnerIdParam.DataTypes = stream.ReadListUInt16LE()
-	dataStoreGetMetaByOwnerIdParam.ResultOption = stream.ReadUInt8()
+// ExtractFromStream extracts a DataStoreGetMetaByOwnerIDParam structure from a stream
+func (dataStoreGetMetaByOwnerIDParam *DataStoreGetMetaByOwnerIDParam) ExtractFromStream(stream *nex.StreamIn) error {
+	dataStoreGetMetaByOwnerIDParam.OwnerIDs = stream.ReadListUInt32LE()
+	dataStoreGetMetaByOwnerIDParam.DataTypes = stream.ReadListUInt16LE()
+	dataStoreGetMetaByOwnerIDParam.ResultOption = stream.ReadUInt8()
 
 	resultRange, err := stream.ReadStructure(nex.NewResultRange())
 	if err != nil {
 		return err
 	}
 
-	dataStoreGetMetaByOwnerIdParam.ResultRange = resultRange.(*nex.ResultRange)
+	dataStoreGetMetaByOwnerIDParam.ResultRange = resultRange.(*nex.ResultRange)
 
 	return nil
 }
 
-// Bytes encodes the DataStoreGetMetaByOwnerIdParam and returns a byte array
-func (dataStoreGetMetaByOwnerIdParam *DataStoreGetMetaByOwnerIdParam) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteListUInt32LE(dataStoreGetMetaByOwnerIdParam.OwnerIDs)
-	stream.WriteListUInt16LE(dataStoreGetMetaByOwnerIdParam.DataTypes)
-	stream.WriteUInt8(dataStoreGetMetaByOwnerIdParam.ResultOption)
-	stream.WriteStructure(dataStoreGetMetaByOwnerIdParam.ResultRange)
+// Bytes encodes the DataStoreGetMetaByOwnerIDParam and returns a byte array
+func (dataStoreGetMetaByOwnerIDParam *DataStoreGetMetaByOwnerIDParam) Bytes(stream *nex.StreamOut) []byte {
+	stream.WriteListUInt32LE(dataStoreGetMetaByOwnerIDParam.OwnerIDs)
+	stream.WriteListUInt16LE(dataStoreGetMetaByOwnerIDParam.DataTypes)
+	stream.WriteUInt8(dataStoreGetMetaByOwnerIDParam.ResultOption)
+	stream.WriteStructure(dataStoreGetMetaByOwnerIDParam.ResultRange)
 
 	return stream.Bytes()
 }
 
-// NewDataStoreGetMetaByOwnerIdParam returns a new DataStoreGetMetaByOwnerIdParam
-func NewDataStoreGetMetaByOwnerIdParam() *DataStoreGetMetaByOwnerIdParam {
-	return &DataStoreGetMetaByOwnerIdParam{}
+// NewDataStoreGetMetaByOwnerIDParam returns a new DataStoreGetMetaByOwnerIDParam
+func NewDataStoreGetMetaByOwnerIDParam() *DataStoreGetMetaByOwnerIDParam {
+	return &DataStoreGetMetaByOwnerIDParam{}
 }

@@ -5,14 +5,14 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// GetMetaByOwnerId sets the GetMetaByOwnerId function
-func (protocol *DataStoreNintendoBadgeArcadeProtocol) GetMetaByOwnerId(handler func(err error, client *nex.Client, callID uint32, param *DataStoreGetMetaByOwnerIdParam)) {
-	protocol.GetMetaByOwnerIdHandler = handler
+// GetMetaByOwnerID sets the GetMetaByOwnerID function
+func (protocol *DataStoreNintendoBadgeArcadeProtocol) GetMetaByOwnerID(handler func(err error, client *nex.Client, callID uint32, param *DataStoreGetMetaByOwnerIDParam)) {
+	protocol.GetMetaByOwnerIDHandler = handler
 }
 
-func (protocol *DataStoreNintendoBadgeArcadeProtocol) HandleGetMetaByOwnerId(packet nex.PacketInterface) {
-	if protocol.GetMetaByOwnerIdHandler == nil {
-		globals.Logger.Warning("DataStoreBadgeArcade::GetMetaByOwnerId not implemented")
+func (protocol *DataStoreNintendoBadgeArcadeProtocol) HandleGetMetaByOwnerID(packet nex.PacketInterface) {
+	if protocol.GetMetaByOwnerIDHandler == nil {
+		globals.Logger.Warning("DataStoreBadgeArcade::GetMetaByOwnerID not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
 	}
@@ -25,11 +25,11 @@ func (protocol *DataStoreNintendoBadgeArcadeProtocol) HandleGetMetaByOwnerId(pac
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	param, err := parametersStream.ReadStructure(NewDataStoreGetMetaByOwnerIdParam())
+	param, err := parametersStream.ReadStructure(NewDataStoreGetMetaByOwnerIDParam())
 	if err != nil {
-		go protocol.GetMetaByOwnerIdHandler(err, client, callID, nil)
+		go protocol.GetMetaByOwnerIDHandler(err, client, callID, nil)
 		return
 	}
 
-	go protocol.GetMetaByOwnerIdHandler(nil, client, callID, param.(*DataStoreGetMetaByOwnerIdParam))
+	go protocol.GetMetaByOwnerIDHandler(nil, client, callID, param.(*DataStoreGetMetaByOwnerIDParam))
 }

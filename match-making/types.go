@@ -472,3 +472,52 @@ func (autoMatchmakeParam *AutoMatchmakeParam) ExtractFromStream(stream *nex.Stre
 func NewAutoMatchmakeParam() *AutoMatchmakeParam {
 	return &AutoMatchmakeParam{}
 }
+
+// PersistentGathering holds parameters for a matchmake session
+type PersistentGathering struct {
+	M_CommunityType          uint32
+	M_Password               string
+	M_Attribs                []uint32
+	M_ApplicationBuffer      []byte
+	M_ParticipationStartDate *nex.DateTime
+	M_ParticipationEndDate   *nex.DateTime
+	M_MatchmakeSessionCount  uint32
+	M_ParticipationCount     uint32
+
+	hierarchy []nex.StructureInterface
+	*Gathering
+}
+
+// GetHierarchy returns the Structure hierarchy
+func (persistentGathering *PersistentGathering) GetHierarchy() []nex.StructureInterface {
+	return persistentGathering.hierarchy
+}
+
+// ExtractFromStream extracts a PersistentGathering structure from a stream
+func (persistentGathering *PersistentGathering) ExtractFromStream(stream *nex.StreamIn) error {
+	persistentGathering.M_CommunityType = stream.ReadUInt32LE()
+	persistentGathering.M_Password, _ = stream.ReadString()
+	persistentGathering.M_Attribs = stream.ReadListUInt32LE()
+	persistentGathering.M_ApplicationBuffer, _ = stream.ReadBuffer()
+	persistentGathering.M_ParticipationStartDate = stream.ReadDateTime()
+	persistentGathering.M_ParticipationEndDate = stream.ReadDateTime()
+	persistentGathering.M_MatchmakeSessionCount = stream.ReadUInt32LE()
+	persistentGathering.M_ParticipationCount = stream.ReadUInt32LE()
+
+	return nil
+}
+
+// NewPersistentGathering returns a new PersistentGathering
+func NewPersistentGathering() *PersistentGathering {
+	persistentGathering := &PersistentGathering{}
+
+	gathering := NewGathering()
+
+	persistentGathering.Gathering = gathering
+
+	persistentGathering.hierarchy = []nex.StructureInterface{
+		gathering,
+	}
+
+	return persistentGathering
+}

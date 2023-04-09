@@ -36,6 +36,9 @@ const (
 	// MethodGetPlayingSession is the method ID for method GetPlayingSession
 	MethodGetPlayingSession = 0x10
 
+	// MethodCreateCommunity is the method ID for method CreateCommunity
+	MethodCreateCommunity = 0x11
+
 	// MethodJoinMatchmakeSessionEx is the method ID for method JoinMatchmakeSessionEx
 	MethodJoinMatchmakeSessionEx = 0x1E
 
@@ -66,6 +69,7 @@ type MatchmakeExtensionProtocol struct {
 	GetFriendNotificationDataHandler                func(err error, client *nex.Client, callID uint32, uiType int32)
 	AutoMatchmakeWithSearchCriteria_PostponeHandler func(err error, client *nex.Client, callID uint32, matchmakeSession *match_making.MatchmakeSession, message string)
 	GetPlayingSessionHandler                        func(err error, client *nex.Client, callID uint32, lstPID []uint32)
+	CreateCommunityHandler                          func(err error, client *nex.Client, callID uint32, community *match_making.PersistentGathering, strMessage string)
 	JoinMatchmakeSessionExHandler                   func(err error, client *nex.Client, callID uint32, gid uint32, strMessage string, dontCareMyBlockList bool, participationCount uint16)
 	GetSimplePlayingSessionHandler                  func(err error, client *nex.Client, callID uint32, listPID []uint32, includeLoginUser bool)
 	UpdateProgressScoreHandler                      func(err error, client *nex.Client, callID uint32, GID uint32, progressScore uint8)
@@ -105,6 +109,8 @@ func (protocol *MatchmakeExtensionProtocol) HandlePacket(packet nex.PacketInterf
 		go protocol.HandleAutoMatchmakeWithSearchCriteria_Postpone(packet)
 	case MethodGetPlayingSession:
 		go protocol.HandleGetPlayingSession(packet)
+	case MethodCreateCommunity:
+		go protocol.HandleCreateCommunity(packet)
 	case MethodJoinMatchmakeSessionEx:
 		go protocol.HandleJoinMatchmakeSessionEx(packet)
 	case MethodGetSimplePlayingSession:

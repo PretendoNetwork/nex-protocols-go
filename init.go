@@ -15,4 +15,5 @@ func init() {
 	nex.RegisterDataHolderType(authentication.NewNintendoLoginData())
 	nex.RegisterDataHolderType(account_management.NewAccountExtraInfo())
 	nex.RegisterDataHolderType(match_making.NewGathering())
+	nex.RegisterDataHolderType(match_making.NewMatchmakeSession())
 }

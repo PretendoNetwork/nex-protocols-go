@@ -45,6 +45,9 @@ const (
 	// MethodFindOfficialCommunity is the method ID for method FindOfficialCommunity
 	MethodFindOfficialCommunity = 0x15
 
+	// MethodFindCommunityByParticipant is the method ID for method FindCommunityByParticipant
+	MethodFindCommunityByParticipant = 0x16
+
 	// MethodJoinMatchmakeSessionEx is the method ID for method JoinMatchmakeSessionEx
 	MethodJoinMatchmakeSessionEx = 0x1E
 
@@ -78,6 +81,7 @@ type MatchmakeExtensionProtocol struct {
 	CreateCommunityHandler                          func(err error, client *nex.Client, callID uint32, community *match_making.PersistentGathering, strMessage string)
 	FindCommunityByGatheringIDHandler               func(err error, client *nex.Client, callID uint32, lstGID []uint32)
 	FindOfficialCommunityHandler                    func(err error, client *nex.Client, callID uint32, isAvailableOnly bool, resultRange *nex.ResultRange)
+	FindCommunityByParticipantHandler               func(err error, client *nex.Client, callID uint32, pid uint32, resultRange *nex.ResultRange)
 	JoinMatchmakeSessionExHandler                   func(err error, client *nex.Client, callID uint32, gid uint32, strMessage string, dontCareMyBlockList bool, participationCount uint16)
 	GetSimplePlayingSessionHandler                  func(err error, client *nex.Client, callID uint32, listPID []uint32, includeLoginUser bool)
 	UpdateProgressScoreHandler                      func(err error, client *nex.Client, callID uint32, GID uint32, progressScore uint8)
@@ -123,6 +127,8 @@ func (protocol *MatchmakeExtensionProtocol) HandlePacket(packet nex.PacketInterf
 		go protocol.HandleFindCommunityByGatheringID(packet)
 	case MethodFindOfficialCommunity:
 		go protocol.HandleFindOfficialCommunity(packet)
+	case MethodFindCommunityByParticipant:
+		go protocol.HandleFindCommunityByParticipant(packet)
 	case MethodJoinMatchmakeSessionEx:
 		go protocol.HandleJoinMatchmakeSessionEx(packet)
 	case MethodGetSimplePlayingSession:

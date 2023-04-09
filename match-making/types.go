@@ -155,12 +155,12 @@ type MatchmakeSession struct {
 	ProgressScore         uint8           // NEX v3.5.0+
 	SessionKey            []byte          // NEX v3.0.0+
 	Option                uint32          // NEX v3.5.0+
-	MatchmakeParam        *MatchmakeParam // NEX v4.0.0+
-	StartedTime           *nex.DateTime   // NEX v4.0.0+
-	UserPassword          string          // NEX v4.0.0+
-	ReferGID              uint32          // NEX v4.0.0+
-	UserPasswordEnabled   bool            // NEX v4.0.0+
-	SystemPasswordEnabled bool            // NEX v4.0.0+
+	MatchmakeParam        *MatchmakeParam // NEX v3.6.0+
+	StartedTime           *nex.DateTime   // NEX v3.6.0+
+	UserPassword          string          // NEX v3.7.0+
+	ReferGID              uint32          // NEX v3.8.0+
+	UserPasswordEnabled   bool            // NEX v3.8.0+
+	SystemPasswordEnabled bool            // NEX v3.8.0+
 	CodeWord              string          // NEX v4.0.0+
 
 	hierarchy []nex.StructureInterface
@@ -207,7 +207,7 @@ func (matchmakeSession *MatchmakeSession) ExtractFromStream(stream *nex.StreamIn
 		matchmakeSession.Option = stream.ReadUInt32LE()
 	}
 
-	if matchmakingVersion.Major >= 4 {
+	if matchmakingVersion.Major >= 3 && matchmakingVersion.Minor >= 6 {
 		matchmakeParam, err := stream.ReadStructure(NewMatchmakeParam())
 
 		if err != nil {
@@ -215,16 +215,24 @@ func (matchmakeSession *MatchmakeSession) ExtractFromStream(stream *nex.StreamIn
 		}
 
 		matchmakeSession.MatchmakeParam = matchmakeParam.(*MatchmakeParam)
-		matchmakeSession.StartedTime = nex.NewDateTime(stream.ReadUInt64LE())
+		matchmakeSession.StartedTime = stream.ReadDateTime()
+	}
+
+	if matchmakingVersion.Major >= 3 && matchmakingVersion.Minor >= 7 {
 		matchmakeSession.UserPassword, err = stream.ReadString()
 
 		if err != nil {
 			return err
 		}
+	}
 
+	if matchmakingVersion.Major >= 3 && matchmakingVersion.Minor >= 8 {
 		matchmakeSession.ReferGID = stream.ReadUInt32LE()
-		matchmakeSession.UserPasswordEnabled = stream.ReadUInt8() == 1
-		matchmakeSession.SystemPasswordEnabled = stream.ReadUInt8() == 1
+		matchmakeSession.UserPasswordEnabled = stream.ReadBool()
+		matchmakeSession.SystemPasswordEnabled = stream.ReadBool()
+	}
+
+	if matchmakingVersion.Major >= 4 {
 		matchmakeSession.CodeWord, err = stream.ReadString()
 
 		if err != nil {
@@ -260,31 +268,24 @@ func (matchmakeSession *MatchmakeSession) Bytes(stream *nex.StreamOut) []byte {
 		stream.WriteUInt32LE(matchmakeSession.Option)
 	}
 
-	//unimplemented for now since MK7 didn't need it
-	/*if server.NexVersion() >= 40000 {
-		matchmakeParam, err := stream.ReadStructure(NewMatchmakeParam())
+	if matchmakingVersion.Major >= 3 && matchmakingVersion.Minor >= 6 {
+		stream.WriteStructure(matchmakeSession.MatchmakeParam)
+		stream.WriteDateTime(matchmakeSession.StartedTime)
+	}
 
-		if err != nil {
-			return err
-		}
+	if matchmakingVersion.Major >= 3 && matchmakingVersion.Minor >= 7 {
+		stream.WriteString(matchmakeSession.UserPassword)
+	}
 
-		matchmakeSession.MatchmakeParam = matchmakeParam.(*MatchmakeParam)
-		matchmakeSession.StartedTime = nex.NewDateTime(stream.ReadUInt64LE())
-		matchmakeSession.UserPassword, err = stream.ReadString()
+	if matchmakingVersion.Major >= 3 && matchmakingVersion.Minor >= 8 {
+		stream.WriteUInt32LE(matchmakeSession.ReferGID)
+		stream.WriteBool(matchmakeSession.UserPasswordEnabled)
+		stream.WriteBool(matchmakeSession.SystemPasswordEnabled)
+	}
 
-		if err != nil {
-			return err
-		}
-
-		matchmakeSession.ReferGID = stream.ReadUInt32LE()
-		matchmakeSession.UserPasswordEnabled = stream.ReadUInt8() == 1
-		matchmakeSession.SystemPasswordEnabled = stream.ReadUInt8() == 1
-		matchmakeSession.CodeWord, err = stream.ReadString()
-
-		if err != nil {
-			return err
-		}
-	}*/
+	if matchmakingVersion.Major >= 4 {
+		stream.WriteString(matchmakeSession.CodeWord)
+	}
 
 	return stream.Bytes()
 }

@@ -521,3 +521,24 @@ func NewPersistentGathering() *PersistentGathering {
 
 	return persistentGathering
 }
+
+// AutoMatchmakeParam holds parameters for a matchmake session
+type SimpleCommunity struct {
+	M_GatheringID           uint32
+	M_MatchmakeSessionCount uint32
+
+	*nex.Structure
+}
+
+// ExtractFromStream extracts a SimpleCommunity structure from a stream
+func (simpleCommunity *SimpleCommunity) ExtractFromStream(stream *nex.StreamIn) error {
+	simpleCommunity.M_GatheringID = stream.ReadUInt32LE()
+	simpleCommunity.M_MatchmakeSessionCount = stream.ReadUInt32LE()
+
+	return nil
+}
+
+// NewSimpleCommunity returns a new SimpleCommunity
+func NewSimpleCommunity() *SimpleCommunity {
+	return &SimpleCommunity{}
+}

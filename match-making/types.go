@@ -428,3 +428,47 @@ func (matchmakeBlockListParam *MatchmakeBlockListParam) ExtractFromStream(stream
 func NewMatchmakeBlockListParam() *MatchmakeBlockListParam {
 	return &MatchmakeBlockListParam{}
 }
+
+// AutoMatchmakeParam holds parameters for a matchmake session
+type AutoMatchmakeParam struct {
+	SourceMatchmakeSession   *MatchmakeSession
+	AdditionalParticipants   []uint32
+	GIDForParticipationCheck uint32
+	AutoMatchmakeOption      uint32
+	JoinMessage              string
+	ParticipationCount       uint16
+	LstSearchCriteria        []*MatchmakeSessionSearchCriteria
+	TargetGIDs               []uint32
+
+	*nex.Structure
+}
+
+// ExtractFromStream extracts a AutoMatchmakeParam structure from a stream
+func (autoMatchmakeParam *AutoMatchmakeParam) ExtractFromStream(stream *nex.StreamIn) error {
+	sourceMatchmakeSession, err := stream.ReadStructure(NewMatchmakeSession())
+	if err != nil {
+		return err
+	}
+
+	autoMatchmakeParam.SourceMatchmakeSession = sourceMatchmakeSession.(*MatchmakeSession)
+	autoMatchmakeParam.AdditionalParticipants = stream.ReadListUInt32LE()
+	autoMatchmakeParam.GIDForParticipationCheck = stream.ReadUInt32LE()
+	autoMatchmakeParam.AutoMatchmakeOption = stream.ReadUInt32LE()
+	autoMatchmakeParam.JoinMessage, _ = stream.ReadString()
+	autoMatchmakeParam.ParticipationCount = stream.ReadUInt16LE()
+
+	lstSearchCriteria, err := stream.ReadListStructure(NewMatchmakeSessionSearchCriteria())
+	if err != nil {
+		return err
+	}
+
+	autoMatchmakeParam.LstSearchCriteria = lstSearchCriteria.([]*MatchmakeSessionSearchCriteria)
+	autoMatchmakeParam.TargetGIDs = stream.ReadListUInt32LE()
+
+	return nil
+}
+
+// NewAutoMatchmakeParam returns a new AutoMatchmakeParam
+func NewAutoMatchmakeParam() *AutoMatchmakeParam {
+	return &AutoMatchmakeParam{}
+}

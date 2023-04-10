@@ -2,7 +2,6 @@ package matchmake_extension
 
 import (
 	"encoding/hex"
-	"errors"
 
 	nex "github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
@@ -10,7 +9,7 @@ import (
 )
 
 // AutoMatchmakeWithSearchCriteria_Postpone sets the AutoMatchmakeWithSearchCriteria_Postpone handler function
-func (protocol *MatchmakeExtensionProtocol) AutoMatchmakeWithSearchCriteria_Postpone(handler func(err error, client *nex.Client, callID uint32, matchmakeSession *match_making.MatchmakeSession, message string)) {
+func (protocol *MatchmakeExtensionProtocol) AutoMatchmakeWithSearchCriteria_Postpone(handler func(err error, client *nex.Client, callID uint32, lstSearchCriteria []*match_making.MatchmakeSessionSearchCriteria, anyGathering *nex.DataHolder, strMessage string)) {
 	protocol.AutoMatchmakeWithSearchCriteria_PostponeHandler = handler
 }
 
@@ -30,62 +29,16 @@ func (protocol *MatchmakeExtensionProtocol) HandleAutoMatchmakeWithSearchCriteri
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	criteriaCount := int(parametersStream.ReadUInt32LE())
-	for i := 0; i < criteriaCount; i++ {
-		_, _ = parametersStream.ReadStructure(match_making.NewMatchmakeSessionSearchCriteria())
-	}
-	dataHolderType, err := parametersStream.ReadString()
-
+	lstSearchCriteria, err := parametersStream.ReadListStructure(match_making.NewMatchmakeSessionSearchCriteria())
 	if err != nil {
-		go protocol.AutoMatchmakeWithSearchCriteria_PostponeHandler(err, client, callID, nil, "")
-		return
+		go protocol.AutoMatchmakeWithSearchCriteria_PostponeHandler(nil, client, callID, nil, nil, "")
 	}
 
-	globals.Logger.Info(dataHolderType)
-
-	if dataHolderType != "MatchmakeSession" {
-		err := errors.New("[MatchmakeExtension::AutoMatchmakeWithSearchCriteria_Postpone] Data holder name does not match")
-		go protocol.AutoMatchmakeWithSearchCriteria_PostponeHandler(err, client, callID, nil, "")
-		return
-	}
-
-	if (parametersStream.ByteCapacity() - parametersStream.ByteOffset()) < 8 {
-		err := errors.New("[MatchmakeExtension::AutoMatchmakeWithSearchCriteria_Postpone] Data holder missing lengths")
-		go protocol.AutoMatchmakeWithSearchCriteria_PostponeHandler(err, client, callID, nil, "")
-		return
-	}
-
-	parametersStream.SeekByte(4, true) // Skip length including next buffer length field
-	dataHolderContent, err := parametersStream.ReadBuffer()
-
+	anyGathering := parametersStream.ReadDataHolder()
+	strMessage, err := parametersStream.ReadString()
 	if err != nil {
-		go protocol.AutoMatchmakeWithSearchCriteria_PostponeHandler(err, client, callID, nil, "")
-		return
+		go protocol.AutoMatchmakeWithSearchCriteria_PostponeHandler(nil, client, callID, nil, nil, "")
 	}
 
-	dataHolderContentStream := nex.NewStreamIn(dataHolderContent, protocol.Server)
-
-	gatheringStructureInterface, err := dataHolderContentStream.ReadStructure(match_making.NewGathering())
-	if err != nil {
-		globals.Logger.Error(err.Error())
-		go protocol.AutoMatchmakeWithSearchCriteria_PostponeHandler(err, client, callID, nil, "")
-		return
-	}
-
-	matchmakeSessionStructureInterface, err := dataHolderContentStream.ReadStructure(match_making.NewMatchmakeSession())
-	if err != nil {
-		globals.Logger.Error(err.Error())
-		go protocol.AutoMatchmakeWithSearchCriteria_PostponeHandler(err, client, callID, nil, "")
-		return
-	}
-	matchmakeSession := matchmakeSessionStructureInterface.(*match_making.MatchmakeSession)
-	matchmakeSession.Gathering = gatheringStructureInterface.(*match_making.Gathering)
-
-	message, err := parametersStream.ReadString()
-	if err != nil {
-		go protocol.AutoMatchmakeWithSearchCriteria_PostponeHandler(err, client, callID, nil, "")
-		return
-	}
-
-	go protocol.AutoMatchmakeWithSearchCriteria_PostponeHandler(nil, client, callID, matchmakeSession, message)
+	go protocol.AutoMatchmakeWithSearchCriteria_PostponeHandler(nil, client, callID, lstSearchCriteria.([]*match_making.MatchmakeSessionSearchCriteria), anyGathering, strMessage)
 }

@@ -79,7 +79,7 @@ type MatchmakeExtensionProtocol struct {
 	CreateMatchmakeSessionHandler                   func(err error, client *nex.Client, callID uint32, matchmakeSession *match_making.MatchmakeSession, message string, participationCount uint16)
 	UpdateNotificationDataHandler                   func(err error, client *nex.Client, callID uint32, uiType uint32, uiParam1 uint32, uiParam2 uint32, strParam string)
 	GetFriendNotificationDataHandler                func(err error, client *nex.Client, callID uint32, uiType int32)
-	AutoMatchmakeWithSearchCriteria_PostponeHandler func(err error, client *nex.Client, callID uint32, matchmakeSession *match_making.MatchmakeSession, message string)
+	AutoMatchmakeWithSearchCriteria_PostponeHandler func(err error, client *nex.Client, callID uint32, lstSearchCriteria []*match_making.MatchmakeSessionSearchCriteria, anyGathering *nex.DataHolder, strMessage string)
 	GetPlayingSessionHandler                        func(err error, client *nex.Client, callID uint32, lstPID []uint32)
 	CreateCommunityHandler                          func(err error, client *nex.Client, callID uint32, community *match_making.PersistentGathering, strMessage string)
 	FindCommunityByGatheringIDHandler               func(err error, client *nex.Client, callID uint32, lstGID []uint32)

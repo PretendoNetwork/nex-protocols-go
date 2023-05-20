@@ -167,8 +167,8 @@ type MatchmakeSession struct {
 	*Gathering
 }
 
-// GetHierarchy returns the Structure hierarchy
-func (matchmakeSession *MatchmakeSession) GetHierarchy() []nex.StructureInterface {
+// Hierarchy returns the Structure hierarchy
+func (matchmakeSession *MatchmakeSession) Hierarchy() []nex.StructureInterface {
 	return matchmakeSession.hierarchy
 }
 
@@ -178,7 +178,6 @@ func (matchmakeSession *MatchmakeSession) ExtractFromStream(stream *nex.StreamIn
 
 	var err error
 
-	//matchmakeSession.Gathering = gathering
 	matchmakeSession.GameMode = stream.ReadUInt32LE()
 	matchmakeSession.Attributes = stream.ReadListUInt32LE()
 	matchmakeSession.OpenParticipation = stream.ReadUInt8() == 1
@@ -246,7 +245,6 @@ func (matchmakeSession *MatchmakeSession) ExtractFromStream(stream *nex.StreamIn
 // Bytes extracts a MatchmakeSession structure from a stream
 func (matchmakeSession *MatchmakeSession) Bytes(stream *nex.StreamOut) []byte {
 	matchmakingVersion := stream.Server.MatchMakingProtocolVersion()
-	//stream.WriteStructure(matchmakeSession.Gathering)
 
 	stream.WriteUInt32LE(matchmakeSession.GameMode)
 	stream.WriteListUInt32LE(matchmakeSession.Attributes)
@@ -489,8 +487,8 @@ type PersistentGathering struct {
 	*Gathering
 }
 
-// GetHierarchy returns the Structure hierarchy
-func (persistentGathering *PersistentGathering) GetHierarchy() []nex.StructureInterface {
+// Hierarchy returns the Structure hierarchy
+func (persistentGathering *PersistentGathering) Hierarchy() []nex.StructureInterface {
 	return persistentGathering.hierarchy
 }
 

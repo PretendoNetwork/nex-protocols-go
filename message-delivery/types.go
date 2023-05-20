@@ -38,6 +38,11 @@ type UserMessage struct {
 	m_messageRecipient *MessageRecipient
 }
 
+// Hierarchy returns the Structure hierarchy
+func (userMessage *UserMessage) Hierarchy() []nex.StructureInterface {
+	return userMessage.hierarchy
+}
+
 // ExtractFromStream extracts a UserMessage structure from a stream
 func (userMessage *UserMessage) ExtractFromStream(stream *nex.StreamIn) error {
 	userMessage.m_uiID = stream.ReadUInt32LE()
@@ -72,6 +77,12 @@ type BinaryMessage struct {
 	m_binaryBody []byte
 }
 
+// Hierarchy returns the Structure hierarchy
+func (binaryMessage *BinaryMessage) Hierarchy() []nex.StructureInterface {
+	return binaryMessage.hierarchy
+}
+
+// Bytes encodes the BinaryMessage and returns a byte array
 func (binaryMessage *BinaryMessage) Bytes(stream *nex.StreamOut) []byte {
 	return []byte{}
 }

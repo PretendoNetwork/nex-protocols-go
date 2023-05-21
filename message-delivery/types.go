@@ -26,7 +26,6 @@ func NewMessageRecipient() *MessageRecipient {
 type UserMessage struct {
 	nex.Structure
 	*nex.Data
-	hierarchy          []nex.StructureInterface
 	m_uiID             uint32
 	m_uiParentID       uint32
 	m_pidSender        uint32
@@ -36,11 +35,6 @@ type UserMessage struct {
 	m_strSubject       string
 	m_strSender        string
 	m_messageRecipient *MessageRecipient
-}
-
-// Hierarchy returns the Structure hierarchy
-func (userMessage *UserMessage) Hierarchy() []nex.StructureInterface {
-	return userMessage.hierarchy
 }
 
 // ExtractFromStream extracts a UserMessage structure from a stream
@@ -61,11 +55,9 @@ func (userMessage *UserMessage) ExtractFromStream(stream *nex.StreamIn) error {
 
 // NewUserMessage returns a new UserMessage
 func NewUserMessage() *UserMessage {
-	data := nex.NewData()
-
 	userMessage := &UserMessage{}
-	userMessage.Data = data
-	userMessage.hierarchy = []nex.StructureInterface{data}
+	userMessage.Data = nex.NewData()
+	userMessage.SetParentType(userMessage.Data)
 
 	return userMessage
 }
@@ -73,13 +65,7 @@ func NewUserMessage() *UserMessage {
 type BinaryMessage struct {
 	nex.Structure
 	*UserMessage
-	hierarchy    []nex.StructureInterface
 	m_binaryBody []byte
-}
-
-// Hierarchy returns the Structure hierarchy
-func (binaryMessage *BinaryMessage) Hierarchy() []nex.StructureInterface {
-	return binaryMessage.hierarchy
 }
 
 // Bytes encodes the BinaryMessage and returns a byte array
@@ -97,14 +83,8 @@ func (binaryMessage *BinaryMessage) ExtractFromStream(stream *nex.StreamIn) erro
 // NewBinaryMessage returns a new BinaryMessage
 func NewBinaryMessage() *BinaryMessage {
 	binaryMessage := &BinaryMessage{}
-
-	userMessage := NewUserMessage()
-
-	binaryMessage.UserMessage = userMessage
-
-	binaryMessage.hierarchy = []nex.StructureInterface{
-		userMessage,
-	}
+	binaryMessage.UserMessage = NewUserMessage()
+	binaryMessage.SetParentType(binaryMessage.UserMessage)
 
 	return binaryMessage
 }

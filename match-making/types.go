@@ -1,6 +1,8 @@
 package match_making
 
-import nex "github.com/PretendoNetwork/nex-go"
+import (
+	nex "github.com/PretendoNetwork/nex-go"
+)
 
 /*
 	NEX and Rendez-Vous have multiple protocols for match making
@@ -10,6 +12,7 @@ import nex "github.com/PretendoNetwork/nex-go"
 
 // Gathering holds information about a matchmake gathering
 type Gathering struct {
+	nex.Structure
 	ID                  uint32
 	OwnerPID            uint32
 	HostPID             uint32
@@ -20,8 +23,6 @@ type Gathering struct {
 	Flags               uint32
 	State               uint32
 	Description         string
-
-	*nex.Structure
 }
 
 // ExtractFromStream extracts a Gathering structure from a stream
@@ -146,6 +147,7 @@ func NewMatchmakeSessionSearchCriteria() *MatchmakeSessionSearchCriteria {
 
 // MatchmakeSession holds information about a matchmake session
 type MatchmakeSession struct {
+	*Gathering
 	GameMode              uint32
 	Attributes            []uint32
 	OpenParticipation     bool
@@ -162,14 +164,6 @@ type MatchmakeSession struct {
 	UserPasswordEnabled   bool            // NEX v3.8.0+
 	SystemPasswordEnabled bool            // NEX v3.8.0+
 	CodeWord              string          // NEX v4.0.0+
-
-	hierarchy []nex.StructureInterface
-	*Gathering
-}
-
-// Hierarchy returns the Structure hierarchy
-func (matchmakeSession *MatchmakeSession) Hierarchy() []nex.StructureInterface {
-	return matchmakeSession.hierarchy
 }
 
 // ExtractFromStream extracts a MatchmakeSession structure from a stream
@@ -291,14 +285,8 @@ func (matchmakeSession *MatchmakeSession) Bytes(stream *nex.StreamOut) []byte {
 // NewMatchmakeSession returns a new MatchmakeSession
 func NewMatchmakeSession() *MatchmakeSession {
 	matchmakeSession := &MatchmakeSession{}
-
-	gathering := NewGathering()
-
-	matchmakeSession.Gathering = gathering
-
-	matchmakeSession.hierarchy = []nex.StructureInterface{
-		gathering,
-	}
+	matchmakeSession.Gathering = NewGathering()
+	matchmakeSession.SetParentType(matchmakeSession.Gathering)
 
 	return matchmakeSession
 }
@@ -474,6 +462,7 @@ func NewAutoMatchmakeParam() *AutoMatchmakeParam {
 
 // PersistentGathering holds parameters for a matchmake session
 type PersistentGathering struct {
+	*Gathering
 	M_CommunityType          uint32
 	M_Password               string
 	M_Attribs                []uint32
@@ -482,14 +471,6 @@ type PersistentGathering struct {
 	M_ParticipationEndDate   *nex.DateTime
 	M_MatchmakeSessionCount  uint32
 	M_ParticipationCount     uint32
-
-	hierarchy []nex.StructureInterface
-	*Gathering
-}
-
-// Hierarchy returns the Structure hierarchy
-func (persistentGathering *PersistentGathering) Hierarchy() []nex.StructureInterface {
-	return persistentGathering.hierarchy
 }
 
 // ExtractFromStream extracts a PersistentGathering structure from a stream
@@ -509,14 +490,8 @@ func (persistentGathering *PersistentGathering) ExtractFromStream(stream *nex.St
 // NewPersistentGathering returns a new PersistentGathering
 func NewPersistentGathering() *PersistentGathering {
 	persistentGathering := &PersistentGathering{}
-
-	gathering := NewGathering()
-
-	persistentGathering.Gathering = gathering
-
-	persistentGathering.hierarchy = []nex.StructureInterface{
-		gathering,
-	}
+	persistentGathering.Gathering = NewGathering()
+	persistentGathering.SetParentType(persistentGathering.Gathering)
 
 	return persistentGathering
 }

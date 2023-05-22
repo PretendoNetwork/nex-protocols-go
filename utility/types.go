@@ -1,13 +1,14 @@
 package utility
 
-import nex "github.com/PretendoNetwork/nex-go"
+import (
+	nex "github.com/PretendoNetwork/nex-go"
+)
 
 // UniqueIDInfo holds parameters for a matchmake session
 type UniqueIDInfo struct {
+	nex.Structure
 	NexUniqueID         uint64
 	NexUniqueIDPassword uint64
-
-	*nex.Structure
 }
 
 // Bytes encodes the UniqueIDInfo and returns a byte array
@@ -30,6 +31,31 @@ func (uniqueIDInfo *UniqueIDInfo) ExtractFromStream(stream *nex.StreamIn) error 
 	}
 
 	return nil
+}
+
+// Copy returns a new copied instance of UniqueIDInfo
+func (uniqueIDInfo *UniqueIDInfo) Copy() nex.StructureInterface {
+	copied := NewUniqueIDInfo()
+
+	copied.NexUniqueID = uniqueIDInfo.NexUniqueID
+	copied.NexUniqueIDPassword = uniqueIDInfo.NexUniqueIDPassword
+
+	return copied
+}
+
+// Equals checks if the passed Structure contains the same data as the current instance
+func (uniqueIDInfo *UniqueIDInfo) Equals(structure nex.StructureInterface) bool {
+	other := structure.(*UniqueIDInfo)
+
+	if uniqueIDInfo.NexUniqueID != other.NexUniqueID {
+		return false
+	}
+
+	if uniqueIDInfo.NexUniqueIDPassword != other.NexUniqueIDPassword {
+		return false
+	}
+
+	return true
 }
 
 // NewUniqueIDInfo returns a new UniqueIDInfo

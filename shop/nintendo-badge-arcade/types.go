@@ -1,6 +1,8 @@
 package shop_nintendo_badge_arcade
 
-import nex "github.com/PretendoNetwork/nex-go"
+import (
+	nex "github.com/PretendoNetwork/nex-go"
+)
 
 type ShopPostPlayLogParam struct {
 	nex.Structure
@@ -31,6 +33,45 @@ func (shopPostPlayLogParam *ShopPostPlayLogParam) Bytes(stream *nex.StreamOut) [
 	stream.WriteString(shopPostPlayLogParam.Unknown2)
 
 	return stream.Bytes()
+}
+
+// Copy returns a new copied instance of ShopPostPlayLogParam
+func (shopPostPlayLogParam *ShopPostPlayLogParam) Copy() nex.StructureInterface {
+	copied := NewShopPostPlayLogParam()
+
+	copied.Unknown1 = make([]uint32, len(shopPostPlayLogParam.Unknown1))
+
+	copy(copied.Unknown1, shopPostPlayLogParam.Unknown1)
+
+	copied.Timestamp = shopPostPlayLogParam.Timestamp.Copy()
+	copied.Unknown2 = shopPostPlayLogParam.Unknown2
+
+	return copied
+}
+
+// Equals checks if the passed Structure contains the same data as the current instance
+func (shopPostPlayLogParam *ShopPostPlayLogParam) Equals(structure nex.StructureInterface) bool {
+	other := structure.(*ShopPostPlayLogParam)
+
+	if len(shopPostPlayLogParam.Unknown1) != len(other.Unknown1) {
+		return false
+	}
+
+	for i := 0; i < len(shopPostPlayLogParam.Unknown1); i++ {
+		if shopPostPlayLogParam.Unknown1[i] != other.Unknown1[i] {
+			return false
+		}
+	}
+
+	if !shopPostPlayLogParam.Timestamp.Equals(other.Timestamp) {
+		return false
+	}
+
+	if shopPostPlayLogParam.Unknown2 != other.Unknown2 {
+		return false
+	}
+
+	return true
 }
 
 // NewShopPostPlayLogParam returns a new ShopPostPlayLogParam

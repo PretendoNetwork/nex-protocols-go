@@ -1,6 +1,8 @@
 package match_making
 
 import (
+	"bytes"
+
 	nex "github.com/PretendoNetwork/nex-go"
 )
 
@@ -63,6 +65,71 @@ func (gathering *Gathering) Bytes(stream *nex.StreamOut) []byte {
 	return stream.Bytes()
 }
 
+// Copy returns a new copied instance of Gathering
+func (gathering *Gathering) Copy() nex.StructureInterface {
+	copied := NewGathering()
+
+	copied.ID = gathering.ID
+	copied.OwnerPID = gathering.OwnerPID
+	copied.HostPID = gathering.HostPID
+	copied.MinimumParticipants = gathering.MinimumParticipants
+	copied.MaximumParticipants = gathering.MaximumParticipants
+	copied.ParticipationPolicy = gathering.ParticipationPolicy
+	copied.PolicyArgument = gathering.PolicyArgument
+	copied.Flags = gathering.Flags
+	copied.State = gathering.State
+	copied.Description = gathering.Description
+
+	return copied
+}
+
+// Equals checks if the passed Structure contains the same data as the current instance
+func (gathering *Gathering) Equals(structure nex.StructureInterface) bool {
+	other := structure.(*Gathering)
+
+	if gathering.ID != other.ID {
+		return false
+	}
+
+	if gathering.OwnerPID != other.OwnerPID {
+		return false
+	}
+
+	if gathering.HostPID != other.HostPID {
+		return false
+	}
+
+	if gathering.MinimumParticipants != other.MinimumParticipants {
+		return false
+	}
+
+	if gathering.MaximumParticipants != other.MaximumParticipants {
+		return false
+	}
+
+	if gathering.ParticipationPolicy != other.ParticipationPolicy {
+		return false
+	}
+
+	if gathering.PolicyArgument != other.PolicyArgument {
+		return false
+	}
+
+	if gathering.Flags != other.Flags {
+		return false
+	}
+
+	if gathering.State != other.State {
+		return false
+	}
+
+	if gathering.Description != other.Description {
+		return false
+	}
+
+	return true
+}
+
 // NewGathering returns a new Gathering
 func NewGathering() *Gathering {
 	return &Gathering{}
@@ -70,6 +137,7 @@ func NewGathering() *Gathering {
 
 // MatchmakeSessionSearchCriteria holds information about a matchmaking search
 type MatchmakeSessionSearchCriteria struct {
+	nex.Structure
 	Attribs             []string
 	GameMode            string
 	MinParticipants     string
@@ -80,8 +148,6 @@ type MatchmakeSessionSearchCriteria struct {
 	ExcludeNonHostPid   bool
 	SelectionMethod     uint32
 	VacantParticipants  uint16 // NEX v3.5.0+
-
-	*nex.Structure
 }
 
 // ExtractFromStream extracts a Gathering structure from a stream
@@ -138,6 +204,80 @@ func (matchmakeSessionSearchCriteria *MatchmakeSessionSearchCriteria) Bytes(stre
 	}
 
 	return stream.Bytes()
+}
+
+// Copy returns a new copied instance of Gathering
+func (matchmakeSessionSearchCriteria *MatchmakeSessionSearchCriteria) Copy() nex.StructureInterface {
+	copied := NewMatchmakeSessionSearchCriteria()
+
+	copied.Attribs = make([]string, len(matchmakeSessionSearchCriteria.Attribs))
+
+	copy(copied.Attribs, matchmakeSessionSearchCriteria.Attribs)
+
+	copied.GameMode = matchmakeSessionSearchCriteria.GameMode
+	copied.MinParticipants = matchmakeSessionSearchCriteria.MinParticipants
+	copied.MaxParticipants = matchmakeSessionSearchCriteria.MaxParticipants
+	copied.MatchmakeSystemType = matchmakeSessionSearchCriteria.MatchmakeSystemType
+	copied.VacantOnly = matchmakeSessionSearchCriteria.VacantOnly
+	copied.ExcludeLocked = matchmakeSessionSearchCriteria.ExcludeLocked
+	copied.ExcludeNonHostPid = matchmakeSessionSearchCriteria.ExcludeNonHostPid
+	copied.SelectionMethod = matchmakeSessionSearchCriteria.SelectionMethod
+	copied.VacantParticipants = matchmakeSessionSearchCriteria.VacantParticipants
+
+	return copied
+}
+
+// Equals checks if the passed Structure contains the same data as the current instance
+func (matchmakeSessionSearchCriteria *MatchmakeSessionSearchCriteria) Equals(structure nex.StructureInterface) bool {
+	other := structure.(*MatchmakeSessionSearchCriteria)
+
+	if len(matchmakeSessionSearchCriteria.Attribs) != len(other.Attribs) {
+		return false
+	}
+
+	for i := 0; i < len(matchmakeSessionSearchCriteria.Attribs); i++ {
+		if matchmakeSessionSearchCriteria.Attribs[i] != other.Attribs[i] {
+			return false
+		}
+	}
+
+	if matchmakeSessionSearchCriteria.GameMode != other.GameMode {
+		return false
+	}
+
+	if matchmakeSessionSearchCriteria.MinParticipants != other.MinParticipants {
+		return false
+	}
+
+	if matchmakeSessionSearchCriteria.MaxParticipants != other.MaxParticipants {
+		return false
+	}
+
+	if matchmakeSessionSearchCriteria.MatchmakeSystemType != other.MatchmakeSystemType {
+		return false
+	}
+
+	if matchmakeSessionSearchCriteria.VacantOnly != other.VacantOnly {
+		return false
+	}
+
+	if matchmakeSessionSearchCriteria.ExcludeLocked != other.ExcludeLocked {
+		return false
+	}
+
+	if matchmakeSessionSearchCriteria.ExcludeNonHostPid != other.ExcludeNonHostPid {
+		return false
+	}
+
+	if matchmakeSessionSearchCriteria.SelectionMethod != other.SelectionMethod {
+		return false
+	}
+
+	if matchmakeSessionSearchCriteria.VacantParticipants != other.VacantParticipants {
+		return false
+	}
+
+	return true
 }
 
 // NewGathering returns a new Gathering
@@ -282,6 +422,148 @@ func (matchmakeSession *MatchmakeSession) Bytes(stream *nex.StreamOut) []byte {
 	return stream.Bytes()
 }
 
+// Copy returns a new copied instance of MatchmakeSession
+func (matchmakeSession *MatchmakeSession) Copy() nex.StructureInterface {
+	copied := NewMatchmakeSession()
+
+	copied.SetParentType(matchmakeSession.ParentType().Copy())
+	copied.GameMode = matchmakeSession.GameMode
+	copied.Attributes = make([]uint32, len(matchmakeSession.Attributes))
+
+	copy(copied.Attributes, matchmakeSession.Attributes)
+
+	copied.OpenParticipation = matchmakeSession.OpenParticipation
+	copied.MatchmakeSystemType = matchmakeSession.MatchmakeSystemType
+	copied.ApplicationData = make([]byte, len(matchmakeSession.ApplicationData))
+
+	copy(copied.ApplicationData, matchmakeSession.ApplicationData)
+
+	copied.ParticipationCount = matchmakeSession.ParticipationCount
+	copied.ProgressScore = matchmakeSession.ProgressScore
+	copied.SessionKey = make([]byte, len(matchmakeSession.SessionKey))
+
+	copy(copied.SessionKey, matchmakeSession.SessionKey)
+
+	copied.Option = matchmakeSession.Option
+
+	if matchmakeSession.MatchmakeParam != nil {
+		copied.MatchmakeParam = matchmakeSession.MatchmakeParam.Copy().(*MatchmakeParam)
+	}
+
+	if matchmakeSession.StartedTime != nil {
+		copied.StartedTime = matchmakeSession.StartedTime.Copy()
+	}
+
+	copied.UserPassword = matchmakeSession.UserPassword
+	copied.ReferGID = matchmakeSession.ReferGID
+	copied.UserPasswordEnabled = matchmakeSession.UserPasswordEnabled
+	copied.SystemPasswordEnabled = matchmakeSession.SystemPasswordEnabled
+	copied.CodeWord = matchmakeSession.CodeWord
+
+	return copied
+}
+
+// Equals checks if the passed Structure contains the same data as the current instance
+func (matchmakeSession *MatchmakeSession) Equals(structure nex.StructureInterface) bool {
+	other := structure.(*MatchmakeSession)
+
+	if !matchmakeSession.ParentType().Equals(other.ParentType()) {
+		return false
+	}
+
+	if matchmakeSession.GameMode != other.GameMode {
+		return false
+	}
+
+	if len(matchmakeSession.Attributes) != len(other.Attributes) {
+		return false
+	}
+
+	for i := 0; i < len(matchmakeSession.Attributes); i++ {
+		if matchmakeSession.Attributes[i] != other.Attributes[i] {
+			return false
+		}
+	}
+
+	if matchmakeSession.OpenParticipation != other.OpenParticipation {
+		return false
+	}
+
+	if matchmakeSession.MatchmakeSystemType != other.MatchmakeSystemType {
+		return false
+	}
+
+	if !bytes.Equal(matchmakeSession.ApplicationData, other.ApplicationData) {
+		return false
+	}
+
+	if matchmakeSession.ParticipationCount != other.ParticipationCount {
+		return false
+	}
+
+	if matchmakeSession.ProgressScore != other.ProgressScore {
+		return false
+	}
+
+	if !bytes.Equal(matchmakeSession.SessionKey, other.SessionKey) {
+		return false
+	}
+
+	if matchmakeSession.Option != other.Option {
+		return false
+	}
+
+	if matchmakeSession.MatchmakeParam != nil && other.MatchmakeParam == nil {
+		return false
+	}
+
+	if matchmakeSession.MatchmakeParam == nil && other.MatchmakeParam != nil {
+		return false
+	}
+
+	if matchmakeSession.MatchmakeParam != nil && other.MatchmakeParam != nil {
+		if !matchmakeSession.MatchmakeParam.Equals(other.MatchmakeParam) {
+			return false
+		}
+	}
+
+	if matchmakeSession.StartedTime != nil && other.StartedTime == nil {
+		return false
+	}
+
+	if matchmakeSession.StartedTime == nil && other.StartedTime != nil {
+		return false
+	}
+
+	if matchmakeSession.StartedTime != nil && other.StartedTime != nil {
+		if !matchmakeSession.StartedTime.Equals(other.StartedTime) {
+			return false
+		}
+	}
+
+	if matchmakeSession.UserPassword != other.UserPassword {
+		return false
+	}
+
+	if matchmakeSession.ReferGID != other.ReferGID {
+		return false
+	}
+
+	if matchmakeSession.UserPasswordEnabled != other.UserPasswordEnabled {
+		return false
+	}
+
+	if matchmakeSession.SystemPasswordEnabled != other.SystemPasswordEnabled {
+		return false
+	}
+
+	if matchmakeSession.CodeWord != other.CodeWord {
+		return false
+	}
+
+	return true
+}
+
 // NewMatchmakeSession returns a new MatchmakeSession
 func NewMatchmakeSession() *MatchmakeSession {
 	matchmakeSession := &MatchmakeSession{}
@@ -293,22 +575,55 @@ func NewMatchmakeSession() *MatchmakeSession {
 
 // MatchmakeParam holds parameters for a matchmake session
 type MatchmakeParam struct {
-	parameters map[interface{}]interface{}
-
-	*nex.Structure
+	nex.Structure
+	parameters map[string]*nex.Variant
 }
 
 // ExtractFromStream extracts a MatchmakeParam structure from a stream
 func (matchmakeParam *MatchmakeParam) ExtractFromStream(stream *nex.StreamIn) error {
-	var err error
-
-	matchmakeParam.parameters, err = stream.ReadMap(stream.ReadString, stream.ReadVariant)
+	parameters, err := stream.ReadMap(stream.ReadString, stream.ReadVariant)
 
 	if err != nil {
 		return err
 	}
 
+	matchmakeParam.parameters = make(map[string]*nex.Variant, len(parameters))
+
+	for key, value := range parameters {
+		matchmakeParam.parameters[key.(string)] = value.(*nex.Variant)
+	}
+
 	return nil
+}
+
+// Copy returns a new copied instance of MatchmakeParam
+func (matchmakeParam *MatchmakeParam) Copy() nex.StructureInterface {
+	copied := NewMatchmakeParam()
+
+	copied.parameters = make(map[string]*nex.Variant, len(matchmakeParam.parameters))
+
+	for key, value := range matchmakeParam.parameters {
+		copied.parameters[key] = value.Copy()
+	}
+
+	return copied
+}
+
+// Equals checks if the passed Structure contains the same data as the current instance
+func (matchmakeParam *MatchmakeParam) Equals(structure nex.StructureInterface) bool {
+	other := structure.(*MatchmakeParam)
+
+	if len(matchmakeParam.parameters) != len(other.parameters) {
+		return false
+	}
+
+	for key, value := range matchmakeParam.parameters {
+		if !value.Equals(other.parameters[key]) {
+			return false
+		}
+	}
+
+	return true
 }
 
 // NewMatchmakeParam returns a new MatchmakeParam
@@ -318,14 +633,13 @@ func NewMatchmakeParam() *MatchmakeParam {
 
 // CreateMatchmakeSessionParam holds parameters for a matchmake session
 type CreateMatchmakeSessionParam struct {
+	nex.Structure
 	SourceMatchmakeSession       *MatchmakeSession
 	AdditionalParticipants       []uint32
 	GIDForParticipationCheck     uint32
 	CreateMatchmakeSessionOption uint32
 	JoinMessage                  string
 	ParticipationCount           uint16
-
-	*nex.Structure
 }
 
 // ExtractFromStream extracts a CreateMatchmakeSessionParam structure from a stream
@@ -345,6 +659,73 @@ func (createMatchmakeSessionParam *CreateMatchmakeSessionParam) ExtractFromStrea
 	return nil
 }
 
+// Copy returns a new copied instance of CreateMatchmakeSessionParam
+func (createMatchmakeSessionParam *CreateMatchmakeSessionParam) Copy() nex.StructureInterface {
+	copied := NewCreateMatchmakeSessionParam()
+
+	if createMatchmakeSessionParam.SourceMatchmakeSession != nil {
+		copied.SourceMatchmakeSession = createMatchmakeSessionParam.SourceMatchmakeSession.Copy().(*MatchmakeSession)
+	}
+
+	copied.AdditionalParticipants = make([]uint32, len(createMatchmakeSessionParam.AdditionalParticipants))
+
+	copy(copied.AdditionalParticipants, createMatchmakeSessionParam.AdditionalParticipants)
+
+	copied.GIDForParticipationCheck = createMatchmakeSessionParam.GIDForParticipationCheck
+	copied.CreateMatchmakeSessionOption = createMatchmakeSessionParam.CreateMatchmakeSessionOption
+	copied.JoinMessage = createMatchmakeSessionParam.JoinMessage
+	copied.ParticipationCount = createMatchmakeSessionParam.ParticipationCount
+
+	return copied
+}
+
+// Equals checks if the passed Structure contains the same data as the current instance
+func (createMatchmakeSessionParam *CreateMatchmakeSessionParam) Equals(structure nex.StructureInterface) bool {
+	other := structure.(*CreateMatchmakeSessionParam)
+
+	if createMatchmakeSessionParam.SourceMatchmakeSession != nil && other.SourceMatchmakeSession == nil {
+		return false
+	}
+
+	if createMatchmakeSessionParam.SourceMatchmakeSession == nil && other.SourceMatchmakeSession != nil {
+		return false
+	}
+
+	if createMatchmakeSessionParam.SourceMatchmakeSession != nil && other.SourceMatchmakeSession != nil {
+		if !createMatchmakeSessionParam.SourceMatchmakeSession.Equals(other.SourceMatchmakeSession) {
+			return false
+		}
+	}
+
+	if len(createMatchmakeSessionParam.AdditionalParticipants) != len(other.AdditionalParticipants) {
+		return false
+	}
+
+	for i := 0; i < len(createMatchmakeSessionParam.AdditionalParticipants); i++ {
+		if createMatchmakeSessionParam.AdditionalParticipants[i] != other.AdditionalParticipants[i] {
+			return false
+		}
+	}
+
+	if createMatchmakeSessionParam.GIDForParticipationCheck != other.GIDForParticipationCheck {
+		return false
+	}
+
+	if createMatchmakeSessionParam.CreateMatchmakeSessionOption != other.CreateMatchmakeSessionOption {
+		return false
+	}
+
+	if createMatchmakeSessionParam.JoinMessage != other.JoinMessage {
+		return false
+	}
+
+	if createMatchmakeSessionParam.ParticipationCount != other.ParticipationCount {
+		return false
+	}
+
+	return true
+}
+
 // NewCreateMatchmakeSessionParam returns a new CreateMatchmakeSessionParam
 func NewCreateMatchmakeSessionParam() *CreateMatchmakeSessionParam {
 	return &CreateMatchmakeSessionParam{}
@@ -352,6 +733,7 @@ func NewCreateMatchmakeSessionParam() *CreateMatchmakeSessionParam {
 
 // JoinMatchmakeSessionParam holds parameters for a matchmake session
 type JoinMatchmakeSessionParam struct {
+	nex.Structure
 	GID                          uint32
 	AdditionalParticipants       []uint32
 	GIDForParticipationCheck     uint32
@@ -363,8 +745,6 @@ type JoinMatchmakeSessionParam struct {
 	ParticipationCount           uint16
 	ExtraParticipants            uint16
 	BlockListParam               *MatchmakeBlockListParam
-
-	*nex.Structure
 }
 
 // ExtractFromStream extracts a JoinMatchmakeSessionParam structure from a stream
@@ -392,6 +772,88 @@ func (joinMatchmakeSessionParam *JoinMatchmakeSessionParam) ExtractFromStream(st
 	return nil
 }
 
+// Copy returns a new copied instance of JoinMatchmakeSessionParam
+func (joinMatchmakeSessionParam *JoinMatchmakeSessionParam) Copy() nex.StructureInterface {
+	copied := NewJoinMatchmakeSessionParam()
+
+	copied.GID = joinMatchmakeSessionParam.GID
+	copied.AdditionalParticipants = make([]uint32, len(joinMatchmakeSessionParam.AdditionalParticipants))
+
+	copy(copied.AdditionalParticipants, joinMatchmakeSessionParam.AdditionalParticipants)
+
+	copied.GIDForParticipationCheck = joinMatchmakeSessionParam.GIDForParticipationCheck
+	copied.JoinMatchmakeSessionOption = joinMatchmakeSessionParam.JoinMatchmakeSessionOption
+	copied.JoinMatchmakeSessionBehavior = joinMatchmakeSessionParam.JoinMatchmakeSessionBehavior
+	copied.StrUserPassword = joinMatchmakeSessionParam.StrUserPassword
+	copied.StrSystemPassword = joinMatchmakeSessionParam.StrSystemPassword
+	copied.JoinMessage = joinMatchmakeSessionParam.JoinMessage
+	copied.ParticipationCount = joinMatchmakeSessionParam.ParticipationCount
+	copied.ExtraParticipants = joinMatchmakeSessionParam.ExtraParticipants
+
+	if joinMatchmakeSessionParam.BlockListParam != nil {
+		copied.BlockListParam = joinMatchmakeSessionParam.BlockListParam.Copy().(*MatchmakeBlockListParam)
+	}
+
+	return copied
+}
+
+// Equals checks if the passed Structure contains the same data as the current instance
+func (joinMatchmakeSessionParam *JoinMatchmakeSessionParam) Equals(structure nex.StructureInterface) bool {
+	other := structure.(*JoinMatchmakeSessionParam)
+
+	if joinMatchmakeSessionParam.GID != other.GID {
+		return false
+	}
+
+	if len(joinMatchmakeSessionParam.AdditionalParticipants) != len(other.AdditionalParticipants) {
+		return false
+	}
+
+	for i := 0; i < len(joinMatchmakeSessionParam.AdditionalParticipants); i++ {
+		if joinMatchmakeSessionParam.AdditionalParticipants[i] != other.AdditionalParticipants[i] {
+			return false
+		}
+	}
+
+	if joinMatchmakeSessionParam.GIDForParticipationCheck != other.GIDForParticipationCheck {
+		return false
+	}
+
+	if joinMatchmakeSessionParam.JoinMatchmakeSessionOption != other.JoinMatchmakeSessionOption {
+		return false
+	}
+
+	if joinMatchmakeSessionParam.JoinMatchmakeSessionBehavior != other.JoinMatchmakeSessionBehavior {
+		return false
+	}
+
+	if joinMatchmakeSessionParam.StrUserPassword != other.StrUserPassword {
+		return false
+	}
+
+	if joinMatchmakeSessionParam.StrSystemPassword != other.StrSystemPassword {
+		return false
+	}
+
+	if joinMatchmakeSessionParam.JoinMessage != other.JoinMessage {
+		return false
+	}
+
+	if joinMatchmakeSessionParam.ParticipationCount != other.ParticipationCount {
+		return false
+	}
+
+	if joinMatchmakeSessionParam.ExtraParticipants != other.ExtraParticipants {
+		return false
+	}
+
+	if joinMatchmakeSessionParam.BlockListParam != nil {
+		return joinMatchmakeSessionParam.BlockListParam.Equals(other.BlockListParam)
+	}
+
+	return true
+}
+
 // NewJoinMatchmakeSessionParam returns a new JoinMatchmakeSessionParam
 func NewJoinMatchmakeSessionParam() *JoinMatchmakeSessionParam {
 	return &JoinMatchmakeSessionParam{}
@@ -399,9 +861,8 @@ func NewJoinMatchmakeSessionParam() *JoinMatchmakeSessionParam {
 
 // MatchmakeBlockListParam holds parameters for a matchmake session
 type MatchmakeBlockListParam struct {
+	nex.Structure
 	OptionFlag uint32
-
-	*nex.Structure
 }
 
 // ExtractFromStream extracts a MatchmakeBlockListParam structure from a stream
@@ -411,6 +872,22 @@ func (matchmakeBlockListParam *MatchmakeBlockListParam) ExtractFromStream(stream
 	return nil
 }
 
+// Copy returns a new copied instance of MatchmakeBlockListParam
+func (matchmakeBlockListParam *MatchmakeBlockListParam) Copy() nex.StructureInterface {
+	copied := NewMatchmakeBlockListParam()
+
+	copied.OptionFlag = matchmakeBlockListParam.OptionFlag
+
+	return copied
+}
+
+// Equals checks if the passed Structure contains the same data as the current instance
+func (matchmakeBlockListParam *MatchmakeBlockListParam) Equals(structure nex.StructureInterface) bool {
+	other := structure.(*MatchmakeBlockListParam)
+
+	return matchmakeBlockListParam.OptionFlag == other.OptionFlag
+}
+
 // NewMatchmakeBlockListParam returns a new MatchmakeBlockListParam
 func NewMatchmakeBlockListParam() *MatchmakeBlockListParam {
 	return &MatchmakeBlockListParam{}
@@ -418,6 +895,7 @@ func NewMatchmakeBlockListParam() *MatchmakeBlockListParam {
 
 // AutoMatchmakeParam holds parameters for a matchmake session
 type AutoMatchmakeParam struct {
+	nex.Structure
 	SourceMatchmakeSession   *MatchmakeSession
 	AdditionalParticipants   []uint32
 	GIDForParticipationCheck uint32
@@ -426,8 +904,6 @@ type AutoMatchmakeParam struct {
 	ParticipationCount       uint16
 	LstSearchCriteria        []*MatchmakeSessionSearchCriteria
 	TargetGIDs               []uint32
-
-	*nex.Structure
 }
 
 // ExtractFromStream extracts a AutoMatchmakeParam structure from a stream
@@ -453,6 +929,102 @@ func (autoMatchmakeParam *AutoMatchmakeParam) ExtractFromStream(stream *nex.Stre
 	autoMatchmakeParam.TargetGIDs = stream.ReadListUInt32LE()
 
 	return nil
+}
+
+// Copy returns a new copied instance of AutoMatchmakeParam
+func (autoMatchmakeParam *AutoMatchmakeParam) Copy() nex.StructureInterface {
+	copied := NewAutoMatchmakeParam()
+
+	if autoMatchmakeParam.SourceMatchmakeSession != nil {
+		copied.SourceMatchmakeSession = autoMatchmakeParam.SourceMatchmakeSession.Copy().(*MatchmakeSession)
+	}
+
+	copied.AdditionalParticipants = make([]uint32, len(autoMatchmakeParam.AdditionalParticipants))
+
+	copy(copied.AdditionalParticipants, autoMatchmakeParam.AdditionalParticipants)
+
+	copied.GIDForParticipationCheck = autoMatchmakeParam.GIDForParticipationCheck
+	copied.AutoMatchmakeOption = autoMatchmakeParam.AutoMatchmakeOption
+	copied.JoinMessage = autoMatchmakeParam.JoinMessage
+	copied.ParticipationCount = autoMatchmakeParam.ParticipationCount
+	copied.LstSearchCriteria = make([]*MatchmakeSessionSearchCriteria, len(autoMatchmakeParam.LstSearchCriteria))
+
+	for i := 0; i < len(autoMatchmakeParam.LstSearchCriteria); i++ {
+		copied.LstSearchCriteria[i] = autoMatchmakeParam.LstSearchCriteria[i].Copy().(*MatchmakeSessionSearchCriteria)
+	}
+
+	copied.TargetGIDs = make([]uint32, len(autoMatchmakeParam.TargetGIDs))
+
+	copy(copied.TargetGIDs, autoMatchmakeParam.TargetGIDs)
+
+	return copied
+}
+
+// Equals checks if the passed Structure contains the same data as the current instance
+func (autoMatchmakeParam *AutoMatchmakeParam) Equals(structure nex.StructureInterface) bool {
+	other := structure.(*AutoMatchmakeParam)
+
+	if autoMatchmakeParam.SourceMatchmakeSession != nil && other.SourceMatchmakeSession == nil {
+		return false
+	}
+
+	if autoMatchmakeParam.SourceMatchmakeSession == nil && other.SourceMatchmakeSession != nil {
+		return false
+	}
+
+	if autoMatchmakeParam.SourceMatchmakeSession != nil && other.SourceMatchmakeSession != nil {
+		if autoMatchmakeParam.SourceMatchmakeSession.Equals(other.SourceMatchmakeSession) {
+			return false
+		}
+	}
+
+	if len(autoMatchmakeParam.AdditionalParticipants) != len(other.AdditionalParticipants) {
+		return false
+	}
+
+	for i := 0; i < len(autoMatchmakeParam.AdditionalParticipants); i++ {
+		if autoMatchmakeParam.AdditionalParticipants[i] != other.AdditionalParticipants[i] {
+			return false
+		}
+	}
+
+	if autoMatchmakeParam.GIDForParticipationCheck != other.GIDForParticipationCheck {
+		return false
+	}
+
+	if autoMatchmakeParam.AutoMatchmakeOption != other.AutoMatchmakeOption {
+		return false
+	}
+
+	if autoMatchmakeParam.JoinMessage != other.JoinMessage {
+		return false
+	}
+
+	if autoMatchmakeParam.ParticipationCount != other.ParticipationCount {
+		return false
+	}
+
+	if len(autoMatchmakeParam.LstSearchCriteria) != len(other.LstSearchCriteria) {
+		return false
+	}
+
+	for i := 0; i < len(autoMatchmakeParam.LstSearchCriteria); i++ {
+		if !autoMatchmakeParam.LstSearchCriteria[i].Equals(other.LstSearchCriteria[i]) {
+			return false
+		}
+	}
+
+	if len(autoMatchmakeParam.TargetGIDs) != len(other.TargetGIDs) {
+		return false
+	}
+
+	for i := 0; i < len(autoMatchmakeParam.TargetGIDs); i++ {
+		if autoMatchmakeParam.TargetGIDs[i] != other.TargetGIDs[i] {
+			return false
+		}
+	}
+
+	return true
 }
 
 // NewAutoMatchmakeParam returns a new AutoMatchmakeParam
@@ -487,6 +1059,104 @@ func (persistentGathering *PersistentGathering) ExtractFromStream(stream *nex.St
 	return nil
 }
 
+// Copy returns a new copied instance of PersistentGathering
+func (persistentGathering *PersistentGathering) Copy() nex.StructureInterface {
+	copied := NewPersistentGathering()
+
+	copied.SetParentType(persistentGathering.ParentType().Copy())
+	copied.M_CommunityType = persistentGathering.M_CommunityType
+	copied.M_Password = persistentGathering.M_Password
+	copied.M_Attribs = make([]uint32, len(persistentGathering.M_Attribs))
+
+	copy(copied.M_Attribs, persistentGathering.M_Attribs)
+
+	copied.M_ApplicationBuffer = make([]byte, len(persistentGathering.M_ApplicationBuffer))
+
+	copy(copied.M_ApplicationBuffer, persistentGathering.M_ApplicationBuffer)
+
+	if persistentGathering.M_ParticipationStartDate != nil {
+		copied.M_ParticipationStartDate = persistentGathering.M_ParticipationStartDate.Copy()
+	}
+
+	if persistentGathering.M_ParticipationEndDate != nil {
+		copied.M_ParticipationEndDate = persistentGathering.M_ParticipationEndDate.Copy()
+	}
+
+	copied.M_MatchmakeSessionCount = persistentGathering.M_MatchmakeSessionCount
+	copied.M_ParticipationCount = persistentGathering.M_ParticipationCount
+
+	return copied
+}
+
+// Equals checks if the passed Structure contains the same data as the current instance
+func (persistentGathering *PersistentGathering) Equals(structure nex.StructureInterface) bool {
+	other := structure.(*PersistentGathering)
+
+	if !persistentGathering.ParentType().Equals(other.ParentType()) {
+		return false
+	}
+
+	if persistentGathering.M_CommunityType != other.M_CommunityType {
+		return false
+	}
+
+	if persistentGathering.M_Password != other.M_Password {
+		return false
+	}
+
+	if len(persistentGathering.M_Attribs) != len(other.M_Attribs) {
+		return false
+	}
+
+	for i := 0; i < len(persistentGathering.M_Attribs); i++ {
+		if persistentGathering.M_Attribs[i] != other.M_Attribs[i] {
+			return false
+		}
+	}
+
+	if !bytes.Equal(persistentGathering.M_ApplicationBuffer, other.M_ApplicationBuffer) {
+		return false
+	}
+
+	if persistentGathering.M_ParticipationStartDate != nil && other.M_ParticipationStartDate == nil {
+		return false
+	}
+
+	if persistentGathering.M_ParticipationStartDate == nil && other.M_ParticipationStartDate != nil {
+		return false
+	}
+
+	if persistentGathering.M_ParticipationStartDate != nil && other.M_ParticipationStartDate != nil {
+		if persistentGathering.M_ParticipationStartDate.Equals(other.M_ParticipationStartDate) {
+			return false
+		}
+	}
+
+	if persistentGathering.M_ParticipationEndDate != nil && other.M_ParticipationEndDate == nil {
+		return false
+	}
+
+	if persistentGathering.M_ParticipationEndDate == nil && other.M_ParticipationEndDate != nil {
+		return false
+	}
+
+	if persistentGathering.M_ParticipationEndDate != nil && other.M_ParticipationEndDate != nil {
+		if persistentGathering.M_ParticipationEndDate.Equals(other.M_ParticipationEndDate) {
+			return false
+		}
+	}
+
+	if persistentGathering.M_MatchmakeSessionCount != other.M_MatchmakeSessionCount {
+		return false
+	}
+
+	if persistentGathering.M_ParticipationCount != other.M_ParticipationCount {
+		return false
+	}
+
+	return true
+}
+
 // NewPersistentGathering returns a new PersistentGathering
 func NewPersistentGathering() *PersistentGathering {
 	persistentGathering := &PersistentGathering{}
@@ -498,10 +1168,9 @@ func NewPersistentGathering() *PersistentGathering {
 
 // AutoMatchmakeParam holds parameters for a matchmake session
 type SimpleCommunity struct {
+	nex.Structure
 	M_GatheringID           uint32
 	M_MatchmakeSessionCount uint32
-
-	*nex.Structure
 }
 
 // ExtractFromStream extracts a SimpleCommunity structure from a stream
@@ -510,6 +1179,31 @@ func (simpleCommunity *SimpleCommunity) ExtractFromStream(stream *nex.StreamIn) 
 	simpleCommunity.M_MatchmakeSessionCount = stream.ReadUInt32LE()
 
 	return nil
+}
+
+// Copy returns a new copied instance of SimpleCommunity
+func (simpleCommunity *SimpleCommunity) Copy() nex.StructureInterface {
+	copied := NewSimpleCommunity()
+
+	copied.M_GatheringID = simpleCommunity.M_GatheringID
+	copied.M_MatchmakeSessionCount = simpleCommunity.M_MatchmakeSessionCount
+
+	return copied
+}
+
+// Equals checks if the passed Structure contains the same data as the current instance
+func (simpleCommunity *SimpleCommunity) Equals(structure nex.StructureInterface) bool {
+	other := structure.(*SimpleCommunity)
+
+	if simpleCommunity.M_GatheringID != other.M_GatheringID {
+		return false
+	}
+
+	if simpleCommunity.M_MatchmakeSessionCount != other.M_MatchmakeSessionCount {
+		return false
+	}
+
+	return true
 }
 
 // NewSimpleCommunity returns a new SimpleCommunity

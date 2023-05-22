@@ -1,6 +1,10 @@
 package shop
 
-import "github.com/PretendoNetwork/nex-go"
+import (
+	"bytes"
+
+	"github.com/PretendoNetwork/nex-go"
+)
 
 type ShopItem struct {
 	nex.Structure
@@ -48,6 +52,44 @@ func (shopItem *ShopItem) Bytes(stream *nex.StreamOut) []byte {
 	return stream.Bytes()
 }
 
+// Copy returns a new copied instance of ShopItem
+func (shopItem *ShopItem) Copy() nex.StructureInterface {
+	copied := NewShopItem()
+
+	copied.ItemID = shopItem.ItemID
+	copied.ReferenceID = make([]byte, len(shopItem.ReferenceID))
+
+	copy(copied.ReferenceID, shopItem.ReferenceID)
+
+	copied.ServiceName = shopItem.ServiceName
+	copied.ItemCode = shopItem.ItemCode
+
+	return copied
+}
+
+// Equals checks if the passed Structure contains the same data as the current instance
+func (shopItem *ShopItem) Equals(structure nex.StructureInterface) bool {
+	other := structure.(*ShopItem)
+
+	if shopItem.ItemID != other.ItemID {
+		return false
+	}
+
+	if !bytes.Equal(shopItem.ReferenceID, other.ReferenceID) {
+		return false
+	}
+
+	if shopItem.ServiceName != other.ServiceName {
+		return false
+	}
+
+	if shopItem.ItemCode != other.ItemCode {
+		return false
+	}
+
+	return true
+}
+
 // NewShopItem returns a new ShopItem
 func NewShopItem() *ShopItem {
 	return &ShopItem{}
@@ -81,6 +123,39 @@ func (shopItemRights *ShopItemRights) Bytes(stream *nex.StreamOut) []byte {
 	stream.WriteUInt32LE(shopItemRights.Attribute)
 
 	return stream.Bytes()
+}
+
+// Copy returns a new copied instance of ShopItemRights
+func (shopItemRights *ShopItemRights) Copy() nex.StructureInterface {
+	copied := NewShopItemRights()
+
+	copied.ReferenceID = make([]byte, len(shopItemRights.ReferenceID))
+
+	copy(copied.ReferenceID, shopItemRights.ReferenceID)
+
+	copied.ItemType = shopItemRights.ItemType
+	copied.Attribute = shopItemRights.Attribute
+
+	return copied
+}
+
+// Equals checks if the passed Structure contains the same data as the current instance
+func (shopItemRights *ShopItemRights) Equals(structure nex.StructureInterface) bool {
+	other := structure.(*ShopItemRights)
+
+	if !bytes.Equal(shopItemRights.ReferenceID, other.ReferenceID) {
+		return false
+	}
+
+	if shopItemRights.ItemType != other.ItemType {
+		return false
+	}
+
+	if shopItemRights.Attribute != other.Attribute {
+		return false
+	}
+
+	return true
 }
 
 // NewShopItemRights returns a new ShopItemRights

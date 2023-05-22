@@ -27,6 +27,22 @@ func (nintendoLoginData *NintendoLoginData) ExtractFromStream(stream *nex.Stream
 	return nil
 }
 
+// Copy returns a new copied instance of NintendoLoginData
+func (nintendoLoginData *NintendoLoginData) Copy() nex.StructureInterface {
+	copied := NewNintendoLoginData()
+
+	copied.Token = nintendoLoginData.Token
+
+	return copied
+}
+
+// Equals checks if the passed Structure contains the same data as the current instance
+func (nintendoLoginData *NintendoLoginData) Equals(structure nex.StructureInterface) bool {
+	other := structure.(*NintendoLoginData)
+
+	return nintendoLoginData.Token == other.Token
+}
+
 // NewAuthenticationInfo returns a new NintendoLoginData
 func NewNintendoLoginData() *NintendoLoginData {
 	return &NintendoLoginData{}
@@ -63,6 +79,46 @@ func (authenticationInfo *AuthenticationInfo) ExtractFromStream(stream *nex.Stre
 	authenticationInfo.ServerVersion = stream.ReadUInt32LE()
 
 	return nil
+}
+
+// Copy returns a new copied instance of AuthenticationInfo
+func (authenticationInfo *AuthenticationInfo) Copy() nex.StructureInterface {
+	copied := NewAuthenticationInfo()
+
+	copied.SetParentType(authenticationInfo.ParentType().Copy())
+	copied.Token = authenticationInfo.Token
+	copied.TokenType = authenticationInfo.TokenType
+	copied.NGSVersion = authenticationInfo.NGSVersion
+	copied.ServerVersion = authenticationInfo.ServerVersion
+
+	return copied
+}
+
+// Equals checks if the passed Structure contains the same data as the current instance
+func (authenticationInfo *AuthenticationInfo) Equals(structure nex.StructureInterface) bool {
+	other := structure.(*AuthenticationInfo)
+
+	if !authenticationInfo.ParentType().Equals(other.ParentType()) {
+		return false
+	}
+
+	if authenticationInfo.Token != other.Token {
+		return false
+	}
+
+	if authenticationInfo.TokenType != other.TokenType {
+		return false
+	}
+
+	if authenticationInfo.NGSVersion != other.NGSVersion {
+		return false
+	}
+
+	if authenticationInfo.ServerVersion != other.ServerVersion {
+		return false
+	}
+
+	return true
 }
 
 // NewAuthenticationInfo returns a new AuthenticationInfo

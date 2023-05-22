@@ -25,6 +25,41 @@ func (accountExtraInfo *AccountExtraInfo) ExtractFromStream(stream *nex.StreamIn
 	return nil
 }
 
+// Copy returns a new copied instance of AccountExtraInfo
+func (accountExtraInfo *AccountExtraInfo) Copy() nex.StructureInterface {
+	copied := NewAccountExtraInfo()
+
+	copied.Unknown = accountExtraInfo.Unknown
+	copied.Unknown2 = accountExtraInfo.Unknown2
+	copied.Unknown3 = accountExtraInfo.Unknown3
+	copied.NEXToken = accountExtraInfo.NEXToken
+
+	return copied
+}
+
+// Equals checks if the passed Structure contains the same data as the current instance
+func (accountExtraInfo *AccountExtraInfo) Equals(structure nex.StructureInterface) bool {
+	other := structure.(*AccountExtraInfo)
+
+	if accountExtraInfo.Unknown != other.Unknown {
+		return false
+	}
+
+	if accountExtraInfo.Unknown2 != other.Unknown2 {
+		return false
+	}
+
+	if accountExtraInfo.Unknown3 != other.Unknown3 {
+		return false
+	}
+
+	if accountExtraInfo.NEXToken != other.NEXToken {
+		return false
+	}
+
+	return true
+}
+
 // NewAccountExtraInfo returns a new AccountExtraInfo
 func NewAccountExtraInfo() *AccountExtraInfo {
 	return &AccountExtraInfo{}
@@ -62,6 +97,41 @@ func (nintendoCreateAccountData *NintendoCreateAccountData) ExtractFromStream(st
 	nintendoCreateAccountData.Unknown = unknown
 
 	return nil
+}
+
+// Copy returns a new copied instance of NintendoCreateAccountData
+func (nintendoCreateAccountData *NintendoCreateAccountData) Copy() nex.StructureInterface {
+	copied := NewNintendoCreateAccountData()
+
+	copied.NNAInfo = nintendoCreateAccountData.NNAInfo.Copy().(*friends_wiiu.NNAInfo)
+	copied.Token = nintendoCreateAccountData.Token
+	copied.Birthday = nintendoCreateAccountData.Birthday.Copy()
+	copied.Unknown = nintendoCreateAccountData.Unknown
+
+	return copied
+}
+
+// Equals checks if the passed Structure contains the same data as the current instance
+func (nintendoCreateAccountData *NintendoCreateAccountData) Equals(structure nex.StructureInterface) bool {
+	other := structure.(*NintendoCreateAccountData)
+
+	if !nintendoCreateAccountData.NNAInfo.Equals(other.NNAInfo) {
+		return false
+	}
+
+	if nintendoCreateAccountData.Token != other.Token {
+		return false
+	}
+
+	if !nintendoCreateAccountData.Birthday.Equals(other.Birthday) {
+		return false
+	}
+
+	if nintendoCreateAccountData.Unknown != other.Unknown {
+		return false
+	}
+
+	return true
 }
 
 // NewNintendoCreateAccountData returns a new NintendoCreateAccountData

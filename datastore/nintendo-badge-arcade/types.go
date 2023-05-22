@@ -36,6 +36,59 @@ func (dataStoreGetMetaByOwnerIDParam *DataStoreGetMetaByOwnerIDParam) Bytes(stre
 	return stream.Bytes()
 }
 
+// Copy returns a new copied instance of DataStoreGetMetaByOwnerIDParam
+func (dataStoreGetMetaByOwnerIDParam *DataStoreGetMetaByOwnerIDParam) Copy() nex.StructureInterface {
+	copied := NewDataStoreGetMetaByOwnerIDParam()
+
+	copied.OwnerIDs = make([]uint32, len(dataStoreGetMetaByOwnerIDParam.OwnerIDs))
+
+	copy(copied.OwnerIDs, dataStoreGetMetaByOwnerIDParam.OwnerIDs)
+
+	copied.DataTypes = make([]uint16, len(dataStoreGetMetaByOwnerIDParam.DataTypes))
+
+	copy(copied.DataTypes, dataStoreGetMetaByOwnerIDParam.DataTypes)
+
+	copied.ResultOption = dataStoreGetMetaByOwnerIDParam.ResultOption
+	copied.ResultRange = dataStoreGetMetaByOwnerIDParam.ResultRange.Copy().(*nex.ResultRange)
+
+	return copied
+}
+
+// Equals checks if the passed Structure contains the same data as the current instance
+func (dataStoreGetMetaByOwnerIDParam *DataStoreGetMetaByOwnerIDParam) Equals(structure nex.StructureInterface) bool {
+	other := structure.(*DataStoreGetMetaByOwnerIDParam)
+
+	if len(dataStoreGetMetaByOwnerIDParam.OwnerIDs) != len(other.OwnerIDs) {
+		return false
+	}
+
+	for i := 0; i < len(dataStoreGetMetaByOwnerIDParam.OwnerIDs); i++ {
+		if dataStoreGetMetaByOwnerIDParam.OwnerIDs[i] != other.OwnerIDs[i] {
+			return false
+		}
+	}
+
+	if len(dataStoreGetMetaByOwnerIDParam.DataTypes) != len(other.DataTypes) {
+		return false
+	}
+
+	for i := 0; i < len(dataStoreGetMetaByOwnerIDParam.DataTypes); i++ {
+		if dataStoreGetMetaByOwnerIDParam.DataTypes[i] != other.DataTypes[i] {
+			return false
+		}
+	}
+
+	if dataStoreGetMetaByOwnerIDParam.ResultOption != other.ResultOption {
+		return false
+	}
+
+	if !dataStoreGetMetaByOwnerIDParam.ResultRange.Equals(other.ResultRange) {
+		return false
+	}
+
+	return true
+}
+
 // NewDataStoreGetMetaByOwnerIDParam returns a new DataStoreGetMetaByOwnerIDParam
 func NewDataStoreGetMetaByOwnerIDParam() *DataStoreGetMetaByOwnerIDParam {
 	return &DataStoreGetMetaByOwnerIDParam{}

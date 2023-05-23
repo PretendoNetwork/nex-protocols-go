@@ -22,6 +22,36 @@ func (dataStoreUploadCourseRecordParam *DataStoreUploadCourseRecordParam) Extrac
 	return nil
 }
 
+// Copy returns a new copied instance of DataStoreUploadCourseRecordParam
+func (dataStoreUploadCourseRecordParam *DataStoreUploadCourseRecordParam) Copy() nex.StructureInterface {
+	copied := NewDataStoreUploadCourseRecordParam()
+
+	copied.DataID = dataStoreUploadCourseRecordParam.DataID
+	copied.Slot = dataStoreUploadCourseRecordParam.Slot
+	copied.Score = dataStoreUploadCourseRecordParam.Score
+
+	return copied
+}
+
+// Equals checks if the passed Structure contains the same data as the current instance
+func (dataStoreUploadCourseRecordParam *DataStoreUploadCourseRecordParam) Equals(structure nex.StructureInterface) bool {
+	other := structure.(*DataStoreUploadCourseRecordParam)
+
+	if dataStoreUploadCourseRecordParam.DataID != other.DataID {
+		return false
+	}
+
+	if dataStoreUploadCourseRecordParam.Slot != other.Slot {
+		return false
+	}
+
+	if dataStoreUploadCourseRecordParam.Score != other.Score {
+		return false
+	}
+
+	return true
+}
+
 // NewDataStoreUploadCourseRecordParam returns a new DataStoreUploadCourseRecordParam
 func NewDataStoreUploadCourseRecordParam() *DataStoreUploadCourseRecordParam {
 	return &DataStoreUploadCourseRecordParam{}
@@ -52,6 +82,56 @@ func (dataStoreGetCourseRecordResult *DataStoreGetCourseRecordResult) Bytes(stre
 	return stream.Bytes()
 }
 
+// Copy returns a new copied instance of DataStoreGetCourseRecordResult
+func (dataStoreGetCourseRecordResult *DataStoreGetCourseRecordResult) Copy() nex.StructureInterface {
+	copied := NewDataStoreGetCourseRecordResult()
+
+	copied.DataID = dataStoreGetCourseRecordResult.DataID
+	copied.Slot = dataStoreGetCourseRecordResult.Slot
+	copied.FirstPID = dataStoreGetCourseRecordResult.FirstPID
+	copied.BestPID = dataStoreGetCourseRecordResult.BestPID
+	copied.BestScore = dataStoreGetCourseRecordResult.BestScore
+	copied.CreatedTime = dataStoreGetCourseRecordResult.CreatedTime.Copy()
+	copied.UpdatedTime = dataStoreGetCourseRecordResult.UpdatedTime.Copy()
+
+	return copied
+}
+
+// Equals checks if the passed Structure contains the same data as the current instance
+func (dataStoreGetCourseRecordResult *DataStoreGetCourseRecordResult) Equals(structure nex.StructureInterface) bool {
+	other := structure.(*DataStoreGetCourseRecordResult)
+
+	if dataStoreGetCourseRecordResult.DataID != other.DataID {
+		return false
+	}
+
+	if dataStoreGetCourseRecordResult.Slot != other.Slot {
+		return false
+	}
+
+	if dataStoreGetCourseRecordResult.FirstPID != other.FirstPID {
+		return false
+	}
+
+	if dataStoreGetCourseRecordResult.BestPID != other.BestPID {
+		return false
+	}
+
+	if dataStoreGetCourseRecordResult.BestScore != other.BestScore {
+		return false
+	}
+
+	if !dataStoreGetCourseRecordResult.CreatedTime.Equals(other.CreatedTime) {
+		return false
+	}
+
+	if !dataStoreGetCourseRecordResult.UpdatedTime.Equals(other.UpdatedTime) {
+		return false
+	}
+
+	return true
+}
+
 // NewDataStoreGetCourseRecordResult returns a new DataStoreGetCourseRecordResult
 func NewDataStoreGetCourseRecordResult() *DataStoreGetCourseRecordResult {
 	return &DataStoreGetCourseRecordResult{}
@@ -70,6 +150,31 @@ func (dataStoreFileServerObjectInfo *DataStoreFileServerObjectInfo) Bytes(stream
 	stream.WriteStructure(dataStoreFileServerObjectInfo.GetInfo)
 
 	return stream.Bytes()
+}
+
+// Copy returns a new copied instance of DataStoreFileServerObjectInfo
+func (dataStoreFileServerObjectInfo *DataStoreFileServerObjectInfo) Copy() nex.StructureInterface {
+	copied := NewDataStoreFileServerObjectInfo()
+
+	copied.DataID = dataStoreFileServerObjectInfo.DataID
+	copied.GetInfo = dataStoreFileServerObjectInfo.GetInfo.Copy().(*datastore.DataStoreReqGetInfo)
+
+	return copied
+}
+
+// Equals checks if the passed Structure contains the same data as the current instance
+func (dataStoreFileServerObjectInfo *DataStoreFileServerObjectInfo) Equals(structure nex.StructureInterface) bool {
+	other := structure.(*DataStoreFileServerObjectInfo)
+
+	if dataStoreFileServerObjectInfo.DataID != other.DataID {
+		return false
+	}
+
+	if !dataStoreFileServerObjectInfo.GetInfo.Equals(other.GetInfo) {
+		return false
+	}
+
+	return true
 }
 
 // NewDataStoreFileServerObjectInfo returns a new DataStoreFileServerObjectInfo
@@ -107,6 +212,36 @@ func (dataStoreAttachFileParam *DataStoreAttachFileParam) ExtractFromStream(stre
 	return nil
 }
 
+// Copy returns a new copied instance of DataStoreAttachFileParam
+func (dataStoreAttachFileParam *DataStoreAttachFileParam) Copy() nex.StructureInterface {
+	copied := NewDataStoreAttachFileParam()
+
+	copied.PostParam = dataStoreAttachFileParam.PostParam.Copy().(*datastore.DataStorePreparePostParam)
+	copied.ReferDataID = dataStoreAttachFileParam.ReferDataID
+	copied.ContentType = dataStoreAttachFileParam.ContentType
+
+	return copied
+}
+
+// Equals checks if the passed Structure contains the same data as the current instance
+func (dataStoreAttachFileParam *DataStoreAttachFileParam) Equals(structure nex.StructureInterface) bool {
+	other := structure.(*DataStoreAttachFileParam)
+
+	if !dataStoreAttachFileParam.PostParam.Equals(other.PostParam) {
+		return false
+	}
+
+	if dataStoreAttachFileParam.ReferDataID != other.ReferDataID {
+		return false
+	}
+
+	if dataStoreAttachFileParam.ContentType != other.ContentType {
+		return false
+	}
+
+	return true
+}
+
 // NewDataStoreAttachFileParam returns a new DataStoreAttachFileParam
 func NewDataStoreAttachFileParam() *DataStoreAttachFileParam {
 	return &DataStoreAttachFileParam{}
@@ -129,6 +264,31 @@ func (dataStoreGetCourseRecordParam *DataStoreGetCourseRecordParam) ExtractFromS
 	return nil
 }
 
+// Copy returns a new copied instance of DataStoreGetCourseRecordParam
+func (dataStoreGetCourseRecordParam *DataStoreGetCourseRecordParam) Copy() nex.StructureInterface {
+	copied := NewDataStoreGetCourseRecordParam()
+
+	copied.DataID = dataStoreGetCourseRecordParam.DataID
+	copied.Slot = dataStoreGetCourseRecordParam.Slot
+
+	return copied
+}
+
+// Equals checks if the passed Structure contains the same data as the current instance
+func (dataStoreGetCourseRecordParam *DataStoreGetCourseRecordParam) Equals(structure nex.StructureInterface) bool {
+	other := structure.(*DataStoreGetCourseRecordParam)
+
+	if dataStoreGetCourseRecordParam.DataID != other.DataID {
+		return false
+	}
+
+	if dataStoreGetCourseRecordParam.Slot != other.Slot {
+		return false
+	}
+
+	return true
+}
+
 // NewDataStoreGetCourseRecordParamreturns a new DataStoreGetCourseRecordParam
 func NewDataStoreGetCourseRecordParam() *DataStoreGetCourseRecordParam {
 	return &DataStoreGetCourseRecordParam{}
@@ -149,6 +309,31 @@ func (bufferQueueParam *BufferQueueParam) ExtractFromStream(stream *nex.StreamIn
 	bufferQueueParam.Slot = stream.ReadUInt32LE()
 
 	return nil
+}
+
+// Copy returns a new copied instance of BufferQueueParam
+func (bufferQueueParam *BufferQueueParam) Copy() nex.StructureInterface {
+	copied := NewBufferQueueParam()
+
+	copied.DataID = bufferQueueParam.DataID
+	copied.Slot = bufferQueueParam.Slot
+
+	return copied
+}
+
+// Equals checks if the passed Structure contains the same data as the current instance
+func (bufferQueueParam *BufferQueueParam) Equals(structure nex.StructureInterface) bool {
+	other := structure.(*BufferQueueParam)
+
+	if bufferQueueParam.DataID != other.DataID {
+		return false
+	}
+
+	if bufferQueueParam.Slot != other.Slot {
+		return false
+	}
+
+	return true
 }
 
 // NewBufferQueueParam returns a new BufferQueueParam
@@ -177,6 +362,41 @@ func (dataStoreRateCustomRankingParam *DataStoreRateCustomRankingParam) ExtractF
 	return nil
 }
 
+// Copy returns a new copied instance of DataStoreRateCustomRankingParam
+func (dataStoreRateCustomRankingParam *DataStoreRateCustomRankingParam) Copy() nex.StructureInterface {
+	copied := NewDataStoreRateCustomRankingParam()
+
+	copied.DataID = dataStoreRateCustomRankingParam.DataID
+	copied.ApplicationId = dataStoreRateCustomRankingParam.ApplicationId
+	copied.Score = dataStoreRateCustomRankingParam.Score
+	copied.Period = dataStoreRateCustomRankingParam.Period
+
+	return copied
+}
+
+// Equals checks if the passed Structure contains the same data as the current instance
+func (dataStoreRateCustomRankingParam *DataStoreRateCustomRankingParam) Equals(structure nex.StructureInterface) bool {
+	other := structure.(*DataStoreRateCustomRankingParam)
+
+	if dataStoreRateCustomRankingParam.DataID != other.DataID {
+		return false
+	}
+
+	if dataStoreRateCustomRankingParam.ApplicationId != other.ApplicationId {
+		return false
+	}
+
+	if dataStoreRateCustomRankingParam.Score != other.Score {
+		return false
+	}
+
+	if dataStoreRateCustomRankingParam.Period != other.Period {
+		return false
+	}
+
+	return true
+}
+
 // NewDataStoreRateCustomRankingParam returns a new DataStoreRateCustomRankingParam
 func NewDataStoreRateCustomRankingParam() *DataStoreRateCustomRankingParam {
 	return &DataStoreRateCustomRankingParam{}
@@ -201,6 +421,45 @@ func (dataStoreGetCustomRankingByDataIdParam *DataStoreGetCustomRankingByDataIdP
 	return nil
 }
 
+// Copy returns a new copied instance of DataStoreGetCustomRankingByDataIdParam
+func (dataStoreGetCustomRankingByDataIdParam *DataStoreGetCustomRankingByDataIdParam) Copy() nex.StructureInterface {
+	copied := NewDataStoreGetCustomRankingByDataIdParam()
+
+	copied.ApplicationId = dataStoreGetCustomRankingByDataIdParam.ApplicationId
+	copied.DataIdList = make([]uint64, len(dataStoreGetCustomRankingByDataIdParam.DataIdList))
+
+	copy(copied.DataIdList, dataStoreGetCustomRankingByDataIdParam.DataIdList)
+
+	copied.ResultOption = dataStoreGetCustomRankingByDataIdParam.ResultOption
+
+	return copied
+}
+
+// Equals checks if the passed Structure contains the same data as the current instance
+func (dataStoreGetCustomRankingByDataIdParam *DataStoreGetCustomRankingByDataIdParam) Equals(structure nex.StructureInterface) bool {
+	other := structure.(*DataStoreGetCustomRankingByDataIdParam)
+
+	if dataStoreGetCustomRankingByDataIdParam.ApplicationId != other.ApplicationId {
+		return false
+	}
+
+	if len(dataStoreGetCustomRankingByDataIdParam.DataIdList) != len(other.DataIdList) {
+		return false
+	}
+
+	for i := 0; i < len(dataStoreGetCustomRankingByDataIdParam.DataIdList); i++ {
+		if dataStoreGetCustomRankingByDataIdParam.DataIdList[i] != other.DataIdList[i] {
+			return false
+		}
+	}
+
+	if dataStoreGetCustomRankingByDataIdParam.ResultOption != other.ResultOption {
+		return false
+	}
+
+	return true
+}
+
 // NewDataStoreGetCustomRankingByDataIdParam returns a new DataStoreGetCustomRankingByDataIdParam
 func NewDataStoreGetCustomRankingByDataIdParam() *DataStoreGetCustomRankingByDataIdParam {
 	return &DataStoreGetCustomRankingByDataIdParam{}
@@ -208,11 +467,10 @@ func NewDataStoreGetCustomRankingByDataIdParam() *DataStoreGetCustomRankingByDat
 
 // DataStoreCustomRankingResult is sent in the FollowingsLatestCourseSearchObject method
 type DataStoreCustomRankingResult struct {
+	nex.Structure
 	Order    uint32
 	Score    uint32
 	MetaInfo *datastore.DataStoreMetaInfo
-
-	nex.Structure
 }
 
 // ExtractFromStream extracts a DataStoreCustomRankingResult structure from a stream
@@ -239,6 +497,36 @@ func (dataStoreCustomRankingResult *DataStoreCustomRankingResult) Bytes(stream *
 	stream.WriteStructure(dataStoreCustomRankingResult.MetaInfo)
 
 	return stream.Bytes()
+}
+
+// Copy returns a new copied instance of DataStoreCustomRankingResult
+func (dataStoreCustomRankingResult *DataStoreCustomRankingResult) Copy() nex.StructureInterface {
+	copied := NewDataStoreCustomRankingResult()
+
+	copied.Order = dataStoreCustomRankingResult.Order
+	copied.Score = dataStoreCustomRankingResult.Score
+	copied.MetaInfo = dataStoreCustomRankingResult.MetaInfo.Copy().(*datastore.DataStoreMetaInfo)
+
+	return copied
+}
+
+// Equals checks if the passed Structure contains the same data as the current instance
+func (dataStoreCustomRankingResult *DataStoreCustomRankingResult) Equals(structure nex.StructureInterface) bool {
+	other := structure.(*DataStoreCustomRankingResult)
+
+	if dataStoreCustomRankingResult.Order != other.Order {
+		return false
+	}
+
+	if dataStoreCustomRankingResult.Score != other.Score {
+		return false
+	}
+
+	if !dataStoreCustomRankingResult.MetaInfo.Equals(other.MetaInfo) {
+		return false
+	}
+
+	return true
 }
 
 // NewDataStoreCustomRankingResult returns a new DataStoreCustomRankingResult

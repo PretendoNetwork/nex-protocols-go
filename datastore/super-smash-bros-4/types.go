@@ -1,13 +1,14 @@
 package datastore_super_smash_bros_4
 
 import (
+	"bytes"
+
 	nex "github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-protocols-go/datastore"
 )
 
 type DataStoreReqGetAdditionalMeta struct {
 	nex.Structure
-
 	OwnerID    uint32
 	DataType   uint16
 	Version    uint16
@@ -40,6 +41,43 @@ func (dataStoreReqGetAdditionalMeta *DataStoreReqGetAdditionalMeta) Bytes(stream
 	return stream.Bytes()
 }
 
+// Copy returns a new copied instance of DataStoreReqGetAdditionalMeta
+func (dataStoreReqGetAdditionalMeta *DataStoreReqGetAdditionalMeta) Copy() nex.StructureInterface {
+	copied := NewDataStoreReqGetAdditionalMeta()
+
+	copied.OwnerID = dataStoreReqGetAdditionalMeta.OwnerID
+	copied.DataType = dataStoreReqGetAdditionalMeta.DataType
+	copied.Version = dataStoreReqGetAdditionalMeta.Version
+	copied.MetaBinary = make([]byte, len(dataStoreReqGetAdditionalMeta.MetaBinary))
+
+	copy(copied.MetaBinary, dataStoreReqGetAdditionalMeta.MetaBinary)
+
+	return copied
+}
+
+// Equals checks if the passed Structure contains the same data as the current instance
+func (dataStoreReqGetAdditionalMeta *DataStoreReqGetAdditionalMeta) Equals(structure nex.StructureInterface) bool {
+	other := structure.(*DataStoreReqGetAdditionalMeta)
+
+	if dataStoreReqGetAdditionalMeta.OwnerID != other.OwnerID {
+		return false
+	}
+
+	if dataStoreReqGetAdditionalMeta.DataType != other.DataType {
+		return false
+	}
+
+	if dataStoreReqGetAdditionalMeta.Version != other.Version {
+		return false
+	}
+
+	if !bytes.Equal(dataStoreReqGetAdditionalMeta.MetaBinary, other.MetaBinary) {
+		return false
+	}
+
+	return true
+}
+
 // NewDataStoreReqGetAdditionalMeta returns a new DataStoreReqGetAdditionalMeta
 func NewDataStoreReqGetAdditionalMeta() *DataStoreReqGetAdditionalMeta {
 	return &DataStoreReqGetAdditionalMeta{}
@@ -47,7 +85,6 @@ func NewDataStoreReqGetAdditionalMeta() *DataStoreReqGetAdditionalMeta {
 
 type DataStorePostProfileParam struct {
 	nex.Structure
-
 	Profile []byte
 }
 
@@ -71,6 +108,28 @@ func (dataStorePostProfileParam *DataStorePostProfileParam) Bytes(stream *nex.St
 	return stream.Bytes()
 }
 
+// Copy returns a new copied instance of DataStorePostProfileParam
+func (dataStorePostProfileParam *DataStorePostProfileParam) Copy() nex.StructureInterface {
+	copied := NewDataStorePostProfileParam()
+
+	copied.Profile = make([]byte, len(dataStorePostProfileParam.Profile))
+
+	copy(copied.Profile, dataStorePostProfileParam.Profile)
+
+	return copied
+}
+
+// Equals checks if the passed Structure contains the same data as the current instance
+func (dataStorePostProfileParam *DataStorePostProfileParam) Equals(structure nex.StructureInterface) bool {
+	other := structure.(*DataStorePostProfileParam)
+
+	if !bytes.Equal(dataStorePostProfileParam.Profile, other.Profile) {
+		return false
+	}
+
+	return true
+}
+
 // NewDataStorePostProfileParam returns a new DataStorePostProfileParam
 func NewDataStorePostProfileParam() *DataStorePostProfileParam {
 	return &DataStorePostProfileParam{}
@@ -78,7 +137,6 @@ func NewDataStorePostProfileParam() *DataStorePostProfileParam {
 
 type DataStoreProfileInfo struct {
 	nex.Structure
-
 	Pid     uint32
 	Profile []byte
 }
@@ -105,6 +163,33 @@ func (dataStoreProfileInfo *DataStoreProfileInfo) Bytes(stream *nex.StreamOut) [
 	return stream.Bytes()
 }
 
+// Copy returns a new copied instance of DataStoreProfileInfo
+func (dataStoreProfileInfo *DataStoreProfileInfo) Copy() nex.StructureInterface {
+	copied := NewDataStoreProfileInfo()
+
+	copied.Pid = dataStoreProfileInfo.Pid
+	copied.Profile = make([]byte, len(dataStoreProfileInfo.Profile))
+
+	copy(copied.Profile, dataStoreProfileInfo.Profile)
+
+	return copied
+}
+
+// Equals checks if the passed Structure contains the same data as the current instance
+func (dataStoreProfileInfo *DataStoreProfileInfo) Equals(structure nex.StructureInterface) bool {
+	other := structure.(*DataStoreProfileInfo)
+
+	if dataStoreProfileInfo.Pid != other.Pid {
+		return false
+	}
+
+	if !bytes.Equal(dataStoreProfileInfo.Profile, other.Profile) {
+		return false
+	}
+
+	return true
+}
+
 // NewDataStoreProfileInfo returns a new DataStoreProfileInfo
 func NewDataStoreProfileInfo() *DataStoreProfileInfo {
 	return &DataStoreProfileInfo{}
@@ -112,7 +197,6 @@ func NewDataStoreProfileInfo() *DataStoreProfileInfo {
 
 type DataStoreReplayPlayer struct {
 	nex.Structure
-
 	Fighter     uint8
 	Health      uint8
 	WinningRate uint16
@@ -154,6 +238,66 @@ func (dataStoreReplayPlayer *DataStoreReplayPlayer) Bytes(stream *nex.StreamOut)
 	return stream.Bytes()
 }
 
+// Copy returns a new copied instance of DataStoreReplayPlayer
+func (dataStoreReplayPlayer *DataStoreReplayPlayer) Copy() nex.StructureInterface {
+	copied := NewDataStoreReplayPlayer()
+
+	copied.Fighter = dataStoreReplayPlayer.Fighter
+	copied.Health = dataStoreReplayPlayer.Health
+	copied.WinningRate = dataStoreReplayPlayer.WinningRate
+	copied.Color = dataStoreReplayPlayer.Color
+	copied.Color2 = dataStoreReplayPlayer.Color2
+	copied.PrincipalID = dataStoreReplayPlayer.PrincipalID
+	copied.Country = dataStoreReplayPlayer.Country
+	copied.Region = dataStoreReplayPlayer.Region
+	copied.Number = dataStoreReplayPlayer.Number
+
+	return copied
+}
+
+// Equals checks if the passed Structure contains the same data as the current instance
+func (dataStoreReplayPlayer *DataStoreReplayPlayer) Equals(structure nex.StructureInterface) bool {
+	other := structure.(*DataStoreReplayPlayer)
+
+	if dataStoreReplayPlayer.Fighter != other.Fighter {
+		return false
+	}
+
+	if dataStoreReplayPlayer.Health != other.Health {
+		return false
+	}
+
+	if dataStoreReplayPlayer.WinningRate != other.WinningRate {
+		return false
+	}
+
+	if dataStoreReplayPlayer.Color != other.Color {
+		return false
+	}
+
+	if dataStoreReplayPlayer.Color2 != other.Color2 {
+		return false
+	}
+
+	if dataStoreReplayPlayer.PrincipalID != other.PrincipalID {
+		return false
+	}
+
+	if dataStoreReplayPlayer.Country != other.Country {
+		return false
+	}
+
+	if dataStoreReplayPlayer.Region != other.Region {
+		return false
+	}
+
+	if dataStoreReplayPlayer.Number != other.Number {
+		return false
+	}
+
+	return true
+}
+
 // NewDataStoreReplayPlayer returns a new DataStoreReplayPlayer
 func NewDataStoreReplayPlayer() *DataStoreReplayPlayer {
 	return &DataStoreReplayPlayer{}
@@ -161,7 +305,6 @@ func NewDataStoreReplayPlayer() *DataStoreReplayPlayer {
 
 type DataStoreReplayMetaInfo struct {
 	nex.Structure
-
 	ReplayID   uint64
 	Size       uint32
 	Mode       uint8
@@ -209,6 +352,85 @@ func (dataStoreReplayMetaInfo *DataStoreReplayMetaInfo) Bytes(stream *nex.Stream
 	return stream.Bytes()
 }
 
+// Copy returns a new copied instance of DataStoreReplayMetaInfo
+func (dataStoreReplayMetaInfo *DataStoreReplayMetaInfo) Copy() nex.StructureInterface {
+	copied := NewDataStoreReplayMetaInfo()
+
+	copied.ReplayID = dataStoreReplayMetaInfo.ReplayID
+	copied.Size = dataStoreReplayMetaInfo.Size
+	copied.Mode = dataStoreReplayMetaInfo.Mode
+	copied.Style = dataStoreReplayMetaInfo.Style
+	copied.Rule = dataStoreReplayMetaInfo.Rule
+	copied.Stage = dataStoreReplayMetaInfo.Stage
+	copied.ReplayType = dataStoreReplayMetaInfo.ReplayType
+	copied.Players = make([]*DataStoreReplayPlayer, len(dataStoreReplayMetaInfo.Players))
+
+	for i := 0; i < len(dataStoreReplayMetaInfo.Players); i++ {
+		copied.Players[i] = dataStoreReplayMetaInfo.Players[i].Copy().(*DataStoreReplayPlayer)
+	}
+
+	copied.Winners = make([]uint32, len(dataStoreReplayMetaInfo.Winners))
+
+	copy(copied.Winners, dataStoreReplayMetaInfo.Winners)
+
+	return copied
+}
+
+// Equals checks if the passed Structure contains the same data as the current instance
+func (dataStoreReplayMetaInfo *DataStoreReplayMetaInfo) Equals(structure nex.StructureInterface) bool {
+	other := structure.(*DataStoreReplayMetaInfo)
+
+	if dataStoreReplayMetaInfo.ReplayID != other.ReplayID {
+		return false
+	}
+
+	if dataStoreReplayMetaInfo.Size != other.Size {
+		return false
+	}
+
+	if dataStoreReplayMetaInfo.Mode != other.Mode {
+		return false
+	}
+
+	if dataStoreReplayMetaInfo.Style != other.Style {
+		return false
+	}
+
+	if dataStoreReplayMetaInfo.Rule != other.Rule {
+		return false
+	}
+
+	if dataStoreReplayMetaInfo.Stage != other.Stage {
+		return false
+	}
+
+	if dataStoreReplayMetaInfo.ReplayType != other.ReplayType {
+		return false
+	}
+
+	if len(dataStoreReplayMetaInfo.Players) != len(other.Players) {
+		return false
+	}
+
+	for i := 0; i < len(dataStoreReplayMetaInfo.Players); i++ {
+		if !dataStoreReplayMetaInfo.Players[i].Equals(other.Players[i]) {
+			return false
+		}
+	}
+
+	if len(dataStoreReplayMetaInfo.Winners) != len(other.Winners) {
+		return false
+	}
+
+	for i := 0; i < len(dataStoreReplayMetaInfo.Winners); i++ {
+		if dataStoreReplayMetaInfo.Players[i] != other.Players[i] {
+			return false
+		}
+	}
+
+	return true
+}
+
 // NewDataStoreReplayMetaInfo returns a new DataStoreReplayMetaInfo
 func NewDataStoreReplayMetaInfo() *DataStoreReplayMetaInfo {
 	return &DataStoreReplayMetaInfo{}
@@ -216,7 +438,6 @@ func NewDataStoreReplayMetaInfo() *DataStoreReplayMetaInfo {
 
 type DataStoreGetReplayMetaParam struct {
 	nex.Structure
-
 	ReplayID uint64
 	MetaType uint8
 }
@@ -237,6 +458,31 @@ func (dataStoreGetReplayMetaParam *DataStoreGetReplayMetaParam) Bytes(stream *ne
 	return stream.Bytes()
 }
 
+// Copy returns a new copied instance of DataStoreGetReplayMetaParam
+func (dataStoreGetReplayMetaParam *DataStoreGetReplayMetaParam) Copy() nex.StructureInterface {
+	copied := NewDataStoreGetReplayMetaParam()
+
+	copied.ReplayID = dataStoreGetReplayMetaParam.ReplayID
+	copied.MetaType = dataStoreGetReplayMetaParam.MetaType
+
+	return copied
+}
+
+// Equals checks if the passed Structure contains the same data as the current instance
+func (dataStoreGetReplayMetaParam *DataStoreGetReplayMetaParam) Equals(structure nex.StructureInterface) bool {
+	other := structure.(*DataStoreGetReplayMetaParam)
+
+	if dataStoreGetReplayMetaParam.ReplayID != other.ReplayID {
+		return false
+	}
+
+	if dataStoreGetReplayMetaParam.MetaType != other.MetaType {
+		return false
+	}
+
+	return true
+}
+
 // NewDataStoreGetReplayMetaParam returns a new DataStoreGetReplayMetaParam
 func NewDataStoreGetReplayMetaParam() *DataStoreGetReplayMetaParam {
 	return &DataStoreGetReplayMetaParam{}
@@ -244,7 +490,6 @@ func NewDataStoreGetReplayMetaParam() *DataStoreGetReplayMetaParam {
 
 type DataStorePrepareGetReplayParam struct {
 	nex.Structure
-
 	ReplayID  uint64
 	ExtraData []string
 }
@@ -265,6 +510,39 @@ func (dataStorePrepareGetReplayParam *DataStorePrepareGetReplayParam) Bytes(stre
 	return stream.Bytes()
 }
 
+// Copy returns a new copied instance of DataStorePrepareGetReplayParam
+func (dataStorePrepareGetReplayParam *DataStorePrepareGetReplayParam) Copy() nex.StructureInterface {
+	copied := NewDataStorePrepareGetReplayParam()
+
+	copied.ReplayID = dataStorePrepareGetReplayParam.ReplayID
+	copied.ExtraData = make([]string, len(dataStorePrepareGetReplayParam.ExtraData))
+
+	copy(copied.ExtraData, dataStorePrepareGetReplayParam.ExtraData)
+
+	return copied
+}
+
+// Equals checks if the passed Structure contains the same data as the current instance
+func (dataStorePrepareGetReplayParam *DataStorePrepareGetReplayParam) Equals(structure nex.StructureInterface) bool {
+	other := structure.(*DataStorePrepareGetReplayParam)
+
+	if dataStorePrepareGetReplayParam.ReplayID != other.ReplayID {
+		return false
+	}
+
+	if len(dataStorePrepareGetReplayParam.ExtraData) != len(other.ExtraData) {
+		return false
+	}
+
+	for i := 0; i < len(dataStorePrepareGetReplayParam.ExtraData); i++ {
+		if dataStorePrepareGetReplayParam.ExtraData[i] != other.ExtraData[i] {
+			return false
+		}
+	}
+
+	return true
+}
+
 // NewDataStorePrepareGetReplayParam returns a new DataStorePrepareGetReplayParam
 func NewDataStorePrepareGetReplayParam() *DataStorePrepareGetReplayParam {
 	return &DataStorePrepareGetReplayParam{}
@@ -272,7 +550,6 @@ func NewDataStorePrepareGetReplayParam() *DataStorePrepareGetReplayParam {
 
 type DataStorePreparePostReplayParam struct {
 	nex.Structure
-
 	Size          uint32
 	Mode          uint8
 	Style         uint8
@@ -330,6 +607,109 @@ func (dataStorePreparePostReplayParam *DataStorePreparePostReplayParam) Bytes(st
 	return stream.Bytes()
 }
 
+// Copy returns a new copied instance of DataStorePreparePostReplayParam
+func (dataStorePreparePostReplayParam *DataStorePreparePostReplayParam) Copy() nex.StructureInterface {
+	copied := NewDataStorePreparePostReplayParam()
+
+	copied.Size = dataStorePreparePostReplayParam.Size
+	copied.Mode = dataStorePreparePostReplayParam.Mode
+	copied.Style = dataStorePreparePostReplayParam.Style
+	copied.Rule = dataStorePreparePostReplayParam.Rule
+	copied.Stage = dataStorePreparePostReplayParam.Stage
+	copied.ReplayType = dataStorePreparePostReplayParam.ReplayType
+	copied.CompetitionID = dataStorePreparePostReplayParam.CompetitionID
+	copied.Score = dataStorePreparePostReplayParam.Score
+	copied.Players = make([]*DataStoreReplayPlayer, len(dataStorePreparePostReplayParam.Players))
+
+	for i := 0; i < len(dataStorePreparePostReplayParam.Players); i++ {
+		copied.Players[i] = dataStorePreparePostReplayParam.Players[i].Copy().(*DataStoreReplayPlayer)
+	}
+
+	copied.Winners = make([]uint32, len(dataStorePreparePostReplayParam.Winners))
+
+	copy(copied.Winners, dataStorePreparePostReplayParam.Winners)
+
+	copied.KeyVersion = dataStorePreparePostReplayParam.KeyVersion
+	copied.ExtraData = make([]string, len(dataStorePreparePostReplayParam.ExtraData))
+
+	copy(copied.ExtraData, dataStorePreparePostReplayParam.ExtraData)
+
+	return copied
+}
+
+// Equals checks if the passed Structure contains the same data as the current instance
+func (dataStorePreparePostReplayParam *DataStorePreparePostReplayParam) Equals(structure nex.StructureInterface) bool {
+	other := structure.(*DataStorePreparePostReplayParam)
+
+	if dataStorePreparePostReplayParam.Size != other.Size {
+		return false
+	}
+
+	if dataStorePreparePostReplayParam.Mode != other.Mode {
+		return false
+	}
+
+	if dataStorePreparePostReplayParam.Style != other.Style {
+		return false
+	}
+
+	if dataStorePreparePostReplayParam.Rule != other.Rule {
+		return false
+	}
+
+	if dataStorePreparePostReplayParam.Stage != other.Stage {
+		return false
+	}
+
+	if dataStorePreparePostReplayParam.ReplayType != other.ReplayType {
+		return false
+	}
+
+	if dataStorePreparePostReplayParam.CompetitionID != other.CompetitionID {
+		return false
+	}
+
+	if dataStorePreparePostReplayParam.Score != other.Score {
+		return false
+	}
+
+	if len(dataStorePreparePostReplayParam.Players) != len(other.Players) {
+		return false
+	}
+
+	for i := 0; i < len(dataStorePreparePostReplayParam.Players); i++ {
+		if !dataStorePreparePostReplayParam.Players[i].Equals(other.Players[i]) {
+			return false
+		}
+	}
+
+	if len(dataStorePreparePostReplayParam.Winners) != len(other.Winners) {
+		return false
+	}
+
+	for i := 0; i < len(dataStorePreparePostReplayParam.Winners); i++ {
+		if dataStorePreparePostReplayParam.Winners[i] != other.Winners[i] {
+			return false
+		}
+	}
+
+	if dataStorePreparePostReplayParam.KeyVersion != other.KeyVersion {
+		return false
+	}
+
+	if len(dataStorePreparePostReplayParam.ExtraData) != len(other.ExtraData) {
+		return false
+	}
+
+	for i := 0; i < len(dataStorePreparePostReplayParam.ExtraData); i++ {
+		if dataStorePreparePostReplayParam.ExtraData[i] != other.ExtraData[i] {
+			return false
+		}
+	}
+
+	return true
+}
+
 // NewDataStorePreparePostReplayParam returns a new DataStorePreparePostReplayParam
 func NewDataStorePreparePostReplayParam() *DataStorePreparePostReplayParam {
 	return &DataStorePreparePostReplayParam{}
@@ -337,7 +717,6 @@ func NewDataStorePreparePostReplayParam() *DataStorePreparePostReplayParam {
 
 type DataStoreCompletePostReplayParam struct {
 	nex.Structure
-
 	ReplayID      uint64
 	CompleteParam *datastore.DataStoreCompletePostParam
 	PrepareParam  *DataStorePreparePostReplayParam
@@ -373,6 +752,36 @@ func (dataStoreCompletePostReplayParam *DataStoreCompletePostReplayParam) Bytes(
 	return stream.Bytes()
 }
 
+// Copy returns a new copied instance of DataStoreCompletePostReplayParam
+func (dataStoreCompletePostReplayParam *DataStoreCompletePostReplayParam) Copy() nex.StructureInterface {
+	copied := NewDataStoreCompletePostReplayParam()
+
+	copied.ReplayID = dataStoreCompletePostReplayParam.ReplayID
+	copied.CompleteParam = dataStoreCompletePostReplayParam.CompleteParam.Copy().(*datastore.DataStoreCompletePostParam)
+	copied.PrepareParam = dataStoreCompletePostReplayParam.PrepareParam.Copy().(*DataStorePreparePostReplayParam)
+
+	return copied
+}
+
+// Equals checks if the passed Structure contains the same data as the current instance
+func (dataStoreCompletePostReplayParam *DataStoreCompletePostReplayParam) Equals(structure nex.StructureInterface) bool {
+	other := structure.(*DataStoreCompletePostReplayParam)
+
+	if dataStoreCompletePostReplayParam.ReplayID != other.ReplayID {
+		return false
+	}
+
+	if !dataStoreCompletePostReplayParam.CompleteParam.Equals(other.CompleteParam) {
+		return false
+	}
+
+	if !dataStoreCompletePostReplayParam.PrepareParam.Equals(other.PrepareParam) {
+		return false
+	}
+
+	return true
+}
+
 // NewDataStoreCompletePostReplayParam returns a new DataStoreCompletePostReplayParam
 func NewDataStoreCompletePostReplayParam() *DataStoreCompletePostReplayParam {
 	return &DataStoreCompletePostReplayParam{}
@@ -380,7 +789,6 @@ func NewDataStoreCompletePostReplayParam() *DataStoreCompletePostReplayParam {
 
 type DataStorePreparePostSharedDataParam struct {
 	nex.Structure
-
 	DataType   uint8
 	Region     uint8
 	Attribute1 uint8
@@ -440,6 +848,80 @@ func (dataStorePreparePostSharedDataParam *DataStorePreparePostSharedDataParam) 
 	return stream.Bytes()
 }
 
+// Copy returns a new copied instance of DataStorePreparePostSharedDataParam
+func (dataStorePreparePostSharedDataParam *DataStorePreparePostSharedDataParam) Copy() nex.StructureInterface {
+	copied := NewDataStorePreparePostSharedDataParam()
+
+	copied.DataType = dataStorePreparePostSharedDataParam.DataType
+	copied.Region = dataStorePreparePostSharedDataParam.Region
+	copied.Attribute1 = dataStorePreparePostSharedDataParam.Attribute1
+	copied.Attribute2 = dataStorePreparePostSharedDataParam.Attribute2
+	copied.Fighter = make([]byte, len(dataStorePreparePostSharedDataParam.Fighter))
+
+	copy(copied.Fighter, dataStorePreparePostSharedDataParam.Fighter)
+
+	copied.Size = dataStorePreparePostSharedDataParam.Size
+	copied.Comment = dataStorePreparePostSharedDataParam.Comment
+	copied.MetaBinary = make([]byte, len(dataStorePreparePostSharedDataParam.MetaBinary))
+
+	copy(copied.MetaBinary, dataStorePreparePostSharedDataParam.MetaBinary)
+
+	copied.ExtraData = make([]string, len(dataStorePreparePostSharedDataParam.ExtraData))
+
+	copy(copied.ExtraData, dataStorePreparePostSharedDataParam.ExtraData)
+
+	return copied
+}
+
+// Equals checks if the passed Structure contains the same data as the current instance
+func (dataStorePreparePostSharedDataParam *DataStorePreparePostSharedDataParam) Equals(structure nex.StructureInterface) bool {
+	other := structure.(*DataStorePreparePostSharedDataParam)
+
+	if dataStorePreparePostSharedDataParam.DataType != other.DataType {
+		return false
+	}
+
+	if dataStorePreparePostSharedDataParam.Region != other.Region {
+		return false
+	}
+
+	if dataStorePreparePostSharedDataParam.Attribute1 != other.Attribute1 {
+		return false
+	}
+
+	if dataStorePreparePostSharedDataParam.Attribute2 != other.Attribute2 {
+		return false
+	}
+
+	if !bytes.Equal(dataStorePreparePostSharedDataParam.Fighter, other.Fighter) {
+		return false
+	}
+
+	if dataStorePreparePostSharedDataParam.Size != other.Size {
+		return false
+	}
+
+	if dataStorePreparePostSharedDataParam.Comment != other.Comment {
+		return false
+	}
+
+	if !bytes.Equal(dataStorePreparePostSharedDataParam.MetaBinary, other.MetaBinary) {
+		return false
+	}
+
+	if len(dataStorePreparePostSharedDataParam.ExtraData) != len(other.ExtraData) {
+		return false
+	}
+
+	for i := 0; i < len(dataStorePreparePostSharedDataParam.ExtraData); i++ {
+		if dataStorePreparePostSharedDataParam.ExtraData[i] != other.ExtraData[i] {
+			return false
+		}
+	}
+
+	return true
+}
+
 // NewDataStorePreparePostSharedDataParam returns a new DataStorePreparePostSharedDataParam
 func NewDataStorePreparePostSharedDataParam() *DataStorePreparePostSharedDataParam {
 	return &DataStorePreparePostSharedDataParam{}
@@ -447,7 +929,6 @@ func NewDataStorePreparePostSharedDataParam() *DataStorePreparePostSharedDataPar
 
 type DataStoreCompletePostSharedDataParam struct {
 	nex.Structure
-
 	DataID        uint64
 	CompleteParam *datastore.DataStoreCompletePostParam
 	PrepareParam  *DataStorePreparePostSharedDataParam
@@ -483,6 +964,36 @@ func (dataStoreCompletePostSharedDataParam *DataStoreCompletePostSharedDataParam
 	return stream.Bytes()
 }
 
+// Copy returns a new copied instance of DataStoreCompletePostSharedDataParam
+func (dataStoreCompletePostSharedDataParam *DataStoreCompletePostSharedDataParam) Copy() nex.StructureInterface {
+	copied := NewDataStoreCompletePostSharedDataParam()
+
+	copied.DataID = dataStoreCompletePostSharedDataParam.DataID
+	copied.CompleteParam = dataStoreCompletePostSharedDataParam.CompleteParam.Copy().(*datastore.DataStoreCompletePostParam)
+	copied.PrepareParam = dataStoreCompletePostSharedDataParam.PrepareParam.Copy().(*DataStorePreparePostSharedDataParam)
+
+	return copied
+}
+
+// Equals checks if the passed Structure contains the same data as the current instance
+func (dataStoreCompletePostSharedDataParam *DataStoreCompletePostSharedDataParam) Equals(structure nex.StructureInterface) bool {
+	other := structure.(*DataStoreCompletePostSharedDataParam)
+
+	if dataStoreCompletePostSharedDataParam.DataID != other.DataID {
+		return false
+	}
+
+	if !dataStoreCompletePostSharedDataParam.CompleteParam.Equals(other.CompleteParam) {
+		return false
+	}
+
+	if !dataStoreCompletePostSharedDataParam.PrepareParam.Equals(other.PrepareParam) {
+		return false
+	}
+
+	return true
+}
+
 // NewDataStoreCompletePostSharedDataParam returns a new DataStoreCompletePostSharedDataParam
 func NewDataStoreCompletePostSharedDataParam() *DataStoreCompletePostSharedDataParam {
 	return &DataStoreCompletePostSharedDataParam{}
@@ -490,7 +1001,6 @@ func NewDataStoreCompletePostSharedDataParam() *DataStoreCompletePostSharedDataP
 
 type DataStoreSearchSharedDataParam struct {
 	nex.Structure
-
 	DataType    uint8
 	Owner       uint32
 	Region      uint8
@@ -532,6 +1042,56 @@ func (dataStoreSearchSharedDataParam *DataStoreSearchSharedDataParam) Bytes(stre
 	return stream.Bytes()
 }
 
+// Copy returns a new copied instance of DataStoreSearchSharedDataParam
+func (dataStoreSearchSharedDataParam *DataStoreSearchSharedDataParam) Copy() nex.StructureInterface {
+	copied := NewDataStoreSearchSharedDataParam()
+
+	copied.DataType = dataStoreSearchSharedDataParam.DataType
+	copied.Owner = dataStoreSearchSharedDataParam.Owner
+	copied.Region = dataStoreSearchSharedDataParam.Region
+	copied.Attribute1 = dataStoreSearchSharedDataParam.Attribute1
+	copied.Attribute2 = dataStoreSearchSharedDataParam.Attribute2
+	copied.Fighter = dataStoreSearchSharedDataParam.Fighter
+	copied.ResultRange = dataStoreSearchSharedDataParam.ResultRange.Copy().(*nex.ResultRange)
+
+	return copied
+}
+
+// Equals checks if the passed Structure contains the same data as the current instance
+func (dataStoreSearchSharedDataParam *DataStoreSearchSharedDataParam) Equals(structure nex.StructureInterface) bool {
+	other := structure.(*DataStoreSearchSharedDataParam)
+
+	if dataStoreSearchSharedDataParam.DataType != other.DataType {
+		return false
+	}
+
+	if dataStoreSearchSharedDataParam.Owner != other.Owner {
+		return false
+	}
+
+	if dataStoreSearchSharedDataParam.Region != other.Region {
+		return false
+	}
+
+	if dataStoreSearchSharedDataParam.Attribute1 != other.Attribute1 {
+		return false
+	}
+
+	if dataStoreSearchSharedDataParam.Attribute2 != other.Attribute2 {
+		return false
+	}
+
+	if dataStoreSearchSharedDataParam.Fighter != other.Fighter {
+		return false
+	}
+
+	if !dataStoreSearchSharedDataParam.ResultRange.Equals(other.ResultRange) {
+		return false
+	}
+
+	return true
+}
+
 // NewDataStoreSearchSharedDataParam returns a new DataStoreSearchSharedDataParam
 func NewDataStoreSearchSharedDataParam() *DataStoreSearchSharedDataParam {
 	return &DataStoreSearchSharedDataParam{}
@@ -539,7 +1099,6 @@ func NewDataStoreSearchSharedDataParam() *DataStoreSearchSharedDataParam {
 
 type DataStoreSharedDataInfo struct {
 	nex.Structure
-
 	DataID      uint64
 	OwnerID     uint32
 	DataType    uint8
@@ -605,6 +1164,76 @@ func (dataStoreSharedDataInfo *DataStoreSharedDataInfo) Bytes(stream *nex.Stream
 	return stream.Bytes()
 }
 
+// Copy returns a new copied instance of DataStoreSharedDataInfo
+func (dataStoreSharedDataInfo *DataStoreSharedDataInfo) Copy() nex.StructureInterface {
+	copied := NewDataStoreSharedDataInfo()
+
+	copied.DataID = dataStoreSharedDataInfo.DataID
+	copied.OwnerID = dataStoreSharedDataInfo.OwnerID
+	copied.DataType = dataStoreSharedDataInfo.DataType
+	copied.Comment = dataStoreSharedDataInfo.Comment
+	copied.MetaBinary = make([]byte, len(dataStoreSharedDataInfo.MetaBinary))
+
+	copy(copied.MetaBinary, dataStoreSharedDataInfo.MetaBinary)
+
+	copied.Profile = make([]byte, len(dataStoreSharedDataInfo.Profile))
+
+	copy(copied.Profile, dataStoreSharedDataInfo.Profile)
+
+	copied.Rating = dataStoreSharedDataInfo.Rating
+	copied.CreatedTime = dataStoreSharedDataInfo.CreatedTime.Copy()
+	copied.Info = dataStoreSharedDataInfo.Info.Copy().(*DataStoreFileServerObjectInfo)
+
+	return copied
+}
+
+// Equals checks if the passed Structure contains the same data as the current instance
+func (dataStoreSharedDataInfo *DataStoreSharedDataInfo) Equals(structure nex.StructureInterface) bool {
+	other := structure.(*DataStoreSharedDataInfo)
+
+	if dataStoreSharedDataInfo.DataType != other.DataType {
+		return false
+	}
+
+	if dataStoreSharedDataInfo.DataID != other.DataID {
+		return false
+	}
+
+	if dataStoreSharedDataInfo.OwnerID != other.OwnerID {
+		return false
+	}
+
+	if dataStoreSharedDataInfo.DataType != other.DataType {
+		return false
+	}
+
+	if dataStoreSharedDataInfo.Comment != other.Comment {
+		return false
+	}
+
+	if !bytes.Equal(dataStoreSharedDataInfo.MetaBinary, other.MetaBinary) {
+		return false
+	}
+
+	if !bytes.Equal(dataStoreSharedDataInfo.Profile, other.Profile) {
+		return false
+	}
+
+	if dataStoreSharedDataInfo.Rating != other.Rating {
+		return false
+	}
+
+	if !dataStoreSharedDataInfo.CreatedTime.Equals(other.CreatedTime) {
+		return false
+	}
+
+	if !dataStoreSharedDataInfo.Info.Equals(other.Info) {
+		return false
+	}
+
+	return true
+}
+
 // NewDataStoreSharedDataInfo returns a new DataStoreSharedDataInfo
 func NewDataStoreSharedDataInfo() *DataStoreSharedDataInfo {
 	return &DataStoreSharedDataInfo{}
@@ -612,7 +1241,6 @@ func NewDataStoreSharedDataInfo() *DataStoreSharedDataInfo {
 
 type DataStoreSearchReplayParam struct {
 	nex.Structure
-
 	Mode        uint8
 	Style       uint8
 	Fighter     uint8
@@ -645,6 +1273,41 @@ func (dataStoreSearchReplayParam *DataStoreSearchReplayParam) Bytes(stream *nex.
 	return stream.Bytes()
 }
 
+// Copy returns a new copied instance of DataStoreSearchReplayParam
+func (dataStoreSearchReplayParam *DataStoreSearchReplayParam) Copy() nex.StructureInterface {
+	copied := NewDataStoreSearchReplayParam()
+
+	copied.Mode = dataStoreSearchReplayParam.Mode
+	copied.Style = dataStoreSearchReplayParam.Style
+	copied.Fighter = dataStoreSearchReplayParam.Fighter
+	copied.ResultRange = dataStoreSearchReplayParam.ResultRange.Copy().(*nex.ResultRange)
+
+	return copied
+}
+
+// Equals checks if the passed Structure contains the same data as the current instance
+func (dataStoreSearchReplayParam *DataStoreSearchReplayParam) Equals(structure nex.StructureInterface) bool {
+	other := structure.(*DataStoreSearchReplayParam)
+
+	if dataStoreSearchReplayParam.Mode != other.Mode {
+		return false
+	}
+
+	if dataStoreSearchReplayParam.Style != other.Style {
+		return false
+	}
+
+	if dataStoreSearchReplayParam.Fighter != other.Fighter {
+		return false
+	}
+
+	if !dataStoreSearchReplayParam.ResultRange.Equals(other.ResultRange) {
+		return false
+	}
+
+	return true
+}
+
 // NewDataStoreSearchReplayParam returns a new DataStoreSearchReplayParam
 func NewDataStoreSearchReplayParam() *DataStoreSearchReplayParam {
 	return &DataStoreSearchReplayParam{}
@@ -652,7 +1315,6 @@ func NewDataStoreSearchReplayParam() *DataStoreSearchReplayParam {
 
 type DataStorePostFightingPowerScoreParam struct {
 	nex.Structure
-
 	Mode             uint8
 	Score            uint32
 	IsWorldHighScore bool
@@ -676,6 +1338,36 @@ func (dataStorePostFightingPowerScoreParam *DataStorePostFightingPowerScoreParam
 	return stream.Bytes()
 }
 
+// Copy returns a new copied instance of DataStorePostFightingPowerScoreParam
+func (dataStorePostFightingPowerScoreParam *DataStorePostFightingPowerScoreParam) Copy() nex.StructureInterface {
+	copied := NewDataStorePostFightingPowerScoreParam()
+
+	copied.Mode = dataStorePostFightingPowerScoreParam.Mode
+	copied.Score = dataStorePostFightingPowerScoreParam.Score
+	copied.IsWorldHighScore = dataStorePostFightingPowerScoreParam.IsWorldHighScore
+
+	return copied
+}
+
+// Equals checks if the passed Structure contains the same data as the current instance
+func (dataStorePostFightingPowerScoreParam *DataStorePostFightingPowerScoreParam) Equals(structure nex.StructureInterface) bool {
+	other := structure.(*DataStorePostFightingPowerScoreParam)
+
+	if dataStorePostFightingPowerScoreParam.Mode != other.Mode {
+		return false
+	}
+
+	if dataStorePostFightingPowerScoreParam.Score != other.Score {
+		return false
+	}
+
+	if dataStorePostFightingPowerScoreParam.IsWorldHighScore != other.IsWorldHighScore {
+		return false
+	}
+
+	return true
+}
+
 // NewDataStorePostFightingPowerScoreParam returns a new DataStorePostFightingPowerScoreParam
 func NewDataStorePostFightingPowerScoreParam() *DataStorePostFightingPowerScoreParam {
 	return &DataStorePostFightingPowerScoreParam{}
@@ -683,7 +1375,6 @@ func NewDataStorePostFightingPowerScoreParam() *DataStorePostFightingPowerScoreP
 
 type DataStoreFightingPowerScore struct {
 	nex.Structure
-
 	Score uint32
 	Rank  uint32
 }
@@ -704,6 +1395,31 @@ func (dataStoreFightingPowerScore *DataStoreFightingPowerScore) Bytes(stream *ne
 	return stream.Bytes()
 }
 
+// Copy returns a new copied instance of DataStoreFightingPowerScore
+func (dataStoreFightingPowerScore *DataStoreFightingPowerScore) Copy() nex.StructureInterface {
+	copied := NewDataStoreFightingPowerScore()
+
+	copied.Score = dataStoreFightingPowerScore.Score
+	copied.Rank = dataStoreFightingPowerScore.Rank
+
+	return copied
+}
+
+// Equals checks if the passed Structure contains the same data as the current instance
+func (dataStoreFightingPowerScore *DataStoreFightingPowerScore) Equals(structure nex.StructureInterface) bool {
+	other := structure.(*DataStoreFightingPowerScore)
+
+	if dataStoreFightingPowerScore.Score != other.Score {
+		return false
+	}
+
+	if dataStoreFightingPowerScore.Rank != other.Rank {
+		return false
+	}
+
+	return true
+}
+
 // NewDataStoreFightingPowerScore returns a new DataStoreFightingPowerScore
 func NewDataStoreFightingPowerScore() *DataStoreFightingPowerScore {
 	return &DataStoreFightingPowerScore{}
@@ -711,7 +1427,6 @@ func NewDataStoreFightingPowerScore() *DataStoreFightingPowerScore {
 
 type DataStoreFightingPowerChart struct {
 	nex.Structure
-
 	UserNum uint32
 	Chart   []*DataStoreFightingPowerScore
 }
@@ -736,6 +1451,41 @@ func (dataStoreFightingPowerChart *DataStoreFightingPowerChart) Bytes(stream *ne
 	stream.WriteListStructure(dataStoreFightingPowerChart.Chart)
 
 	return stream.Bytes()
+}
+
+// Copy returns a new copied instance of DataStoreFightingPowerChart
+func (dataStoreFightingPowerChart *DataStoreFightingPowerChart) Copy() nex.StructureInterface {
+	copied := NewDataStoreFightingPowerChart()
+
+	copied.UserNum = dataStoreFightingPowerChart.UserNum
+	copied.Chart = make([]*DataStoreFightingPowerScore, len(dataStoreFightingPowerChart.Chart))
+
+	for i := 0; i < len(dataStoreFightingPowerChart.Chart); i++ {
+		copied.Chart[i] = dataStoreFightingPowerChart.Chart[i].Copy().(*DataStoreFightingPowerScore)
+	}
+
+	return copied
+}
+
+// Equals checks if the passed Structure contains the same data as the current instance
+func (dataStoreFightingPowerChart *DataStoreFightingPowerChart) Equals(structure nex.StructureInterface) bool {
+	other := structure.(*DataStoreFightingPowerChart)
+
+	if dataStoreFightingPowerChart.UserNum != other.UserNum {
+		return false
+	}
+
+	if len(dataStoreFightingPowerChart.Chart) != len(other.Chart) {
+		return false
+	}
+
+	for i := 0; i < len(dataStoreFightingPowerChart.Chart); i++ {
+		if !dataStoreFightingPowerChart.Chart[i].Equals(other.Chart[i]) {
+			return false
+		}
+	}
+
+	return true
 }
 
 // NewDataStoreFightingPowerChart returns a new DataStoreFightingPowerChart
@@ -771,6 +1521,31 @@ func (dataStoreFileServerObjectInfo *DataStoreFileServerObjectInfo) Bytes(stream
 	stream.WriteStructure(dataStoreFileServerObjectInfo.GetInfo)
 
 	return stream.Bytes()
+}
+
+// Copy returns a new copied instance of DataStoreFileServerObjectInfo
+func (dataStoreFileServerObjectInfo *DataStoreFileServerObjectInfo) Copy() nex.StructureInterface {
+	copied := NewDataStoreFileServerObjectInfo()
+
+	copied.DataID = dataStoreFileServerObjectInfo.DataID
+	copied.GetInfo = dataStoreFileServerObjectInfo.GetInfo.Copy().(*datastore.DataStoreReqGetInfo)
+
+	return copied
+}
+
+// Equals checks if the passed Structure contains the same data as the current instance
+func (dataStoreFileServerObjectInfo *DataStoreFileServerObjectInfo) Equals(structure nex.StructureInterface) bool {
+	other := structure.(*DataStoreFileServerObjectInfo)
+
+	if dataStoreFileServerObjectInfo.DataID != other.DataID {
+		return false
+	}
+
+	if !dataStoreFileServerObjectInfo.GetInfo.Equals(other.GetInfo) {
+		return false
+	}
+
+	return true
 }
 
 // NewDataStoreFileServerObjectInfo returns a new DataStoreFileServerObjectInfo

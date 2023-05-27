@@ -50,6 +50,7 @@ func NewNintendoLoginData() *NintendoLoginData {
 
 // AuthenticationInfo holds information about an authentication request
 type AuthenticationInfo struct {
+	nex.Structure
 	*nex.Data
 	Token         string
 	NGSVersion    uint32

@@ -287,6 +287,7 @@ func NewMatchmakeSessionSearchCriteria() *MatchmakeSessionSearchCriteria {
 
 // MatchmakeSession holds information about a matchmake session
 type MatchmakeSession struct {
+	nex.Structure
 	*Gathering
 	GameMode              uint32
 	Attributes            []uint32
@@ -1034,6 +1035,7 @@ func NewAutoMatchmakeParam() *AutoMatchmakeParam {
 
 // PersistentGathering holds parameters for a matchmake session
 type PersistentGathering struct {
+	nex.Structure
 	*Gathering
 	M_CommunityType          uint32
 	M_Password               string

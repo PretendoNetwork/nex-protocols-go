@@ -147,7 +147,7 @@ type MatchmakeSessionSearchCriteria struct {
 	ExcludeLocked       bool
 	ExcludeNonHostPid   bool
 	SelectionMethod     uint32
-	VacantParticipants  uint16 // NEX v3.5.0+
+	VacantParticipants  uint16 // NEX v3.4.0+
 }
 
 // ExtractFromStream extracts a Gathering structure from a stream
@@ -178,7 +178,7 @@ func (matchmakeSessionSearchCriteria *MatchmakeSessionSearchCriteria) ExtractFro
 	matchmakeSessionSearchCriteria.ExcludeNonHostPid = stream.ReadBool()
 	matchmakeSessionSearchCriteria.SelectionMethod = stream.ReadUInt32LE()
 
-	if matchmakingVersion.Major >= 3 && matchmakingVersion.Minor >= 5 {
+	if matchmakingVersion.Major >= 3 && matchmakingVersion.Minor >= 4 {
 		matchmakeSessionSearchCriteria.VacantParticipants = stream.ReadUInt16LE()
 	}
 
@@ -199,7 +199,7 @@ func (matchmakeSessionSearchCriteria *MatchmakeSessionSearchCriteria) Bytes(stre
 	stream.WriteBool(matchmakeSessionSearchCriteria.ExcludeNonHostPid)
 	stream.WriteUInt32LE(matchmakeSessionSearchCriteria.SelectionMethod)
 
-	if matchmakingVersion.Major >= 3 && matchmakingVersion.Minor >= 5 {
+	if matchmakingVersion.Major >= 3 && matchmakingVersion.Minor >= 4 {
 		stream.WriteUInt16LE(matchmakeSessionSearchCriteria.VacantParticipants)
 	}
 
@@ -295,7 +295,7 @@ type MatchmakeSession struct {
 	MatchmakeSystemType   uint32
 	ApplicationData       []byte
 	ParticipationCount    uint32
-	ProgressScore         uint8           // NEX v3.5.0+
+	ProgressScore         uint8           // NEX v3.4.0+
 	SessionKey            []byte          // NEX v3.0.0+
 	Option                uint32          // NEX v3.5.0+
 	MatchmakeParam        *MatchmakeParam // NEX v3.6.0+
@@ -325,7 +325,7 @@ func (matchmakeSession *MatchmakeSession) ExtractFromStream(stream *nex.StreamIn
 
 	matchmakeSession.ParticipationCount = stream.ReadUInt32LE()
 
-	if matchmakingVersion.Major >= 3 && matchmakingVersion.Minor >= 5 {
+	if matchmakingVersion.Major >= 3 && matchmakingVersion.Minor >= 4 {
 		matchmakeSession.ProgressScore = stream.ReadUInt8()
 	}
 
@@ -389,7 +389,7 @@ func (matchmakeSession *MatchmakeSession) Bytes(stream *nex.StreamOut) []byte {
 
 	stream.WriteUInt32LE(matchmakeSession.ParticipationCount)
 
-	if matchmakingVersion.Major >= 3 && matchmakingVersion.Minor >= 5 {
+	if matchmakingVersion.Major >= 3 && matchmakingVersion.Minor >= 4 {
 		stream.WriteUInt8(matchmakeSession.ProgressScore)
 	}
 

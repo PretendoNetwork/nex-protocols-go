@@ -1076,13 +1076,13 @@ type DataStorePrepareUpdateParam struct {
 
 // ExtractFromStream extracts a DataStorePrepareUpdateParam structure from a stream
 func (dataStorePrepareUpdateParam *DataStorePrepareUpdateParam) ExtractFromStream(stream *nex.StreamIn) error {
-	dataStoreVersion := stream.Server.DataStoreProtocolVersion()
+	datastoreVersion := stream.Server.DataStoreProtocolVersion()
 
 	dataStorePrepareUpdateParam.DataID = stream.ReadUInt64LE()
 	dataStorePrepareUpdateParam.Size = stream.ReadUInt32LE()
 	dataStorePrepareUpdateParam.UpdatePassword = stream.ReadUInt64LE()
 
-	if dataStoreVersion.Major >= 3 && dataStoreVersion.Minor >= 5 {
+	if datastoreVersion.Major >= 3 && datastoreVersion.Minor >= 5 {
 		dataStorePrepareUpdateParam.ExtraData = stream.ReadListString()
 	}
 
@@ -1091,13 +1091,13 @@ func (dataStorePrepareUpdateParam *DataStorePrepareUpdateParam) ExtractFromStrea
 
 // Bytes encodes the DataStorePrepareUpdateParam and returns a byte array
 func (dataStorePrepareUpdateParam *DataStorePrepareUpdateParam) Bytes(stream *nex.StreamOut) []byte {
-	dataStoreVersion := stream.Server.DataStoreProtocolVersion()
+	datastoreVersion := stream.Server.DataStoreProtocolVersion()
 
 	stream.WriteUInt64LE(dataStorePrepareUpdateParam.DataID)
 	stream.WriteUInt32LE(dataStorePrepareUpdateParam.Size)
 	stream.WriteUInt64LE(dataStorePrepareUpdateParam.UpdatePassword)
 
-	if dataStoreVersion.Major >= 3 && dataStoreVersion.Minor >= 5 {
+	if datastoreVersion.Major >= 3 && datastoreVersion.Minor >= 5 {
 		stream.WriteListString(dataStorePrepareUpdateParam.ExtraData)
 	}
 
@@ -2280,7 +2280,7 @@ type DataStorePreparePostParam struct {
 
 // ExtractFromStream extracts a DataStorePreparePostParam structure from a stream
 func (dataStorePreparePostParam *DataStorePreparePostParam) ExtractFromStream(stream *nex.StreamIn) error {
-	dataStoreVersion := stream.Server.DataStoreProtocolVersion()
+	datastoreVersion := stream.Server.DataStoreProtocolVersion()
 
 	dataStorePreparePostParam.Size = stream.ReadUInt32LE()
 
@@ -2331,7 +2331,7 @@ func (dataStorePreparePostParam *DataStorePreparePostParam) ExtractFromStream(st
 
 	dataStorePreparePostParam.PersistenceInitParam = persistenceInitParam.(*DataStorePersistenceInitParam)
 
-	if dataStoreVersion.Major >= 3 && dataStoreVersion.Minor >= 5 {
+	if datastoreVersion.Major >= 3 && datastoreVersion.Minor >= 5 {
 		dataStorePreparePostParam.ExtraData = stream.ReadListString()
 	}
 
@@ -2478,7 +2478,7 @@ type DataStoreSearchParam struct {
 
 // ExtractFromStream extracts a DataStoreSearchParam structure from a stream
 func (dataStoreSearchParam *DataStoreSearchParam) ExtractFromStream(stream *nex.StreamIn) error {
-	dataStoreVersion := stream.Server.DataStoreProtocolVersion()
+	datastoreVersion := stream.Server.DataStoreProtocolVersion()
 
 	dataStoreSearchParam.SearchTarget = stream.ReadUInt8()
 	dataStoreSearchParam.OwnerIds = stream.ReadListUInt32LE()
@@ -2504,7 +2504,7 @@ func (dataStoreSearchParam *DataStoreSearchParam) ExtractFromStream(stream *nex.
 	dataStoreSearchParam.ResultOption = stream.ReadUInt8()
 	dataStoreSearchParam.MinimalRatingFrequency = stream.ReadUInt32LE()
 
-	if dataStoreVersion.Major >= 3 && dataStoreVersion.Minor >= 5 {
+	if datastoreVersion.Major >= 3 && datastoreVersion.Minor >= 5 {
 		dataStoreSearchParam.UseCache = stream.ReadBool()
 	}
 
@@ -3514,7 +3514,7 @@ type DataStorePrepareGetParam struct {
 
 // ExtractFromStream extracts a DataStorePrepareGetParam structure from a stream
 func (dataStorePrepareGetParam *DataStorePrepareGetParam) ExtractFromStream(stream *nex.StreamIn) error {
-	dataStoreVersion := stream.Server.DataStoreProtocolVersion()
+	datastoreVersion := stream.Server.DataStoreProtocolVersion()
 
 	dataStorePrepareGetParam.DataID = stream.ReadUInt64LE()
 	dataStorePrepareGetParam.LockID = stream.ReadUInt32LE()
@@ -3527,7 +3527,7 @@ func (dataStorePrepareGetParam *DataStorePrepareGetParam) ExtractFromStream(stre
 	dataStorePrepareGetParam.PersistenceTarget = persistenceTarget.(*DataStorePersistenceTarget)
 	dataStorePrepareGetParam.AccessPassword = stream.ReadUInt64LE()
 
-	if dataStoreVersion.Major >= 3 && dataStoreVersion.Minor >= 5 {
+	if datastoreVersion.Major >= 3 && datastoreVersion.Minor >= 5 {
 		dataStorePrepareGetParam.ExtraData = stream.ReadListString()
 	}
 
@@ -3644,14 +3644,14 @@ type DataStoreReqGetInfo struct {
 
 // Bytes encodes the DataStoreReqGetInfo and returns a byte array
 func (dataStoreReqGetInfo *DataStoreReqGetInfo) Bytes(stream *nex.StreamOut) []byte {
-	dataStoreVersion := stream.Server.DataStoreProtocolVersion()
+	datastoreVersion := stream.Server.DataStoreProtocolVersion()
 
 	stream.WriteString(dataStoreReqGetInfo.URL)
 	stream.WriteListStructure(dataStoreReqGetInfo.RequestHeaders)
 	stream.WriteUInt32LE(dataStoreReqGetInfo.Size)
 	stream.WriteBuffer(dataStoreReqGetInfo.RootCA)
 
-	if dataStoreVersion.Major >= 3 && dataStoreVersion.Minor >= 5 {
+	if datastoreVersion.Major >= 3 && datastoreVersion.Minor >= 5 {
 		stream.WriteUInt64LE(dataStoreReqGetInfo.DataID)
 	}
 

@@ -8,6 +8,7 @@ type notificationTypes struct {
 	OwnershipChanged             uint32
 	GatheringUnregistered        uint32
 	HostChanged                  uint32
+	ServiceItemRequestCompleted  uint32
 	MatchmakeRefereeRoundStarted uint32
 	SystemPasswordChanged        uint32
 	SystemPasswordCleared        uint32
@@ -22,6 +23,7 @@ var NotificationTypes = notificationTypes{
 	OwnershipChanged:             4000,
 	GatheringUnregistered:        109000,
 	HostChanged:                  110000,
+	ServiceItemRequestCompleted:  115000,
 	MatchmakeRefereeRoundStarted: 116000,
 	SystemPasswordChanged:        120000,
 	SystemPasswordCleared:        121000,

@@ -1,8 +1,13 @@
 package nintendo_notifications
 
 type notificationTypes struct {
+	FriendPresenceUpdated3DS               uint32
+	FriendFavoriteGameUpdated3DS           uint32
+	FriendCommentUpdated3DS                uint32
+	FriendMiiChanged3DS                    uint32
+	FriendshipCompleted3DS                 uint32
 	FriendOffline                          uint32
-	FriendMiiChange                        uint32
+	FriendMiiChanged                       uint32
 	Unknown1MiiRelated                     uint32
 	FriendPreferencesChanged               uint32
 	FriendStartedTitle                     uint32
@@ -22,8 +27,13 @@ type notificationTypes struct {
 }
 
 var NotificationTypes = notificationTypes{
+	FriendPresenceUpdated3DS:                1,
+	FriendFavoriteGameUpdated3DS:            2,
+	FriendCommentUpdated3DS:                 3,
+	FriendMiiChanged3DS:                     5,
+	FriendshipCompleted3DS:                  7,
 	FriendOffline:                          10,
-	FriendMiiChange:                        21,
+	FriendMiiChanged:                       21,
 	Unknown1MiiRelated:                     22,
 	FriendPreferencesChanged:               23,
 	FriendStartedTitle:                     24,

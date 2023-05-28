@@ -1071,25 +1071,35 @@ type DataStorePrepareUpdateParam struct {
 	DataID         uint64
 	Size           uint32
 	UpdatePassword uint64
-	ExtraData      []string
+	ExtraData      []string // NEX 3.5.0+
 }
 
 // ExtractFromStream extracts a DataStorePrepareUpdateParam structure from a stream
 func (dataStorePrepareUpdateParam *DataStorePrepareUpdateParam) ExtractFromStream(stream *nex.StreamIn) error {
+	datastoreVersion := stream.Server.DataStoreProtocolVersion()
+
 	dataStorePrepareUpdateParam.DataID = stream.ReadUInt64LE()
 	dataStorePrepareUpdateParam.Size = stream.ReadUInt32LE()
 	dataStorePrepareUpdateParam.UpdatePassword = stream.ReadUInt64LE()
-	dataStorePrepareUpdateParam.ExtraData = stream.ReadListString()
+
+	if datastoreVersion.Major >= 3 && datastoreVersion.Minor >= 5 {
+		dataStorePrepareUpdateParam.ExtraData = stream.ReadListString()
+	}
 
 	return nil
 }
 
 // Bytes encodes the DataStorePrepareUpdateParam and returns a byte array
 func (dataStorePrepareUpdateParam *DataStorePrepareUpdateParam) Bytes(stream *nex.StreamOut) []byte {
+	datastoreVersion := stream.Server.DataStoreProtocolVersion()
+
 	stream.WriteUInt64LE(dataStorePrepareUpdateParam.DataID)
 	stream.WriteUInt32LE(dataStorePrepareUpdateParam.Size)
 	stream.WriteUInt64LE(dataStorePrepareUpdateParam.UpdatePassword)
-	stream.WriteListString(dataStorePrepareUpdateParam.ExtraData)
+
+	if datastoreVersion.Major >= 3 && datastoreVersion.Minor >= 5 {
+		stream.WriteListString(dataStorePrepareUpdateParam.ExtraData)
+	}
 
 	return stream.Bytes()
 }
@@ -2250,7 +2260,7 @@ func NewDataStoreRatingInitParamWithSlot() *DataStoreRatingInitParamWithSlot {
 	return &DataStoreRatingInitParamWithSlot{}
 }
 
-// DataStoreSearchParam is sent in the PreparePostObject method
+// DataStorePreparePostParam is sent in the PreparePostObject method
 type DataStorePreparePostParam struct {
 	nex.Structure
 	Size                 uint32
@@ -2265,7 +2275,7 @@ type DataStorePreparePostParam struct {
 	Tags                 []string
 	RatingInitParams     []*DataStoreRatingInitParamWithSlot
 	PersistenceInitParam *DataStorePersistenceInitParam
-	ExtraData            []string
+	ExtraData            []string // NEX 3.5.0+
 }
 
 // ExtractFromStream extracts a DataStorePreparePostParam structure from a stream
@@ -2463,7 +2473,7 @@ type DataStoreSearchParam struct {
 	ResultRange            *nex.ResultRange
 	ResultOption           uint8
 	MinimalRatingFrequency uint32
-	UseCache               bool
+	UseCache               bool // NEX 3.5.0+
 }
 
 // ExtractFromStream extracts a DataStoreSearchParam structure from a stream
@@ -2495,7 +2505,7 @@ func (dataStoreSearchParam *DataStoreSearchParam) ExtractFromStream(stream *nex.
 	dataStoreSearchParam.MinimalRatingFrequency = stream.ReadUInt32LE()
 
 	if datastoreVersion.Major >= 3 && datastoreVersion.Minor >= 5 {
-		dataStoreSearchParam.UseCache = (stream.ReadUInt8() == 1)
+		dataStoreSearchParam.UseCache = stream.ReadBool()
 	}
 
 	return nil
@@ -3499,7 +3509,7 @@ type DataStorePrepareGetParam struct {
 	LockID            uint32
 	PersistenceTarget *DataStorePersistenceTarget
 	AccessPassword    uint64
-	ExtraData         []string
+	ExtraData         []string // NEX 3.5.0+
 }
 
 // ExtractFromStream extracts a DataStorePrepareGetParam structure from a stream
@@ -3629,16 +3639,21 @@ type DataStoreReqGetInfo struct {
 	RequestHeaders []*DataStoreKeyValue
 	Size           uint32
 	RootCA         []byte
-	DataID         uint64
+	DataID         uint64 // NEX 3.5.0+
 }
 
 // Bytes encodes the DataStoreReqGetInfo and returns a byte array
 func (dataStoreReqGetInfo *DataStoreReqGetInfo) Bytes(stream *nex.StreamOut) []byte {
+	datastoreVersion := stream.Server.DataStoreProtocolVersion()
+
 	stream.WriteString(dataStoreReqGetInfo.URL)
 	stream.WriteListStructure(dataStoreReqGetInfo.RequestHeaders)
 	stream.WriteUInt32LE(dataStoreReqGetInfo.Size)
 	stream.WriteBuffer(dataStoreReqGetInfo.RootCA)
-	stream.WriteUInt64LE(dataStoreReqGetInfo.DataID)
+
+	if datastoreVersion.Major >= 3 && datastoreVersion.Minor >= 5 {
+		stream.WriteUInt64LE(dataStoreReqGetInfo.DataID)
+	}
 
 	return stream.Bytes()
 }

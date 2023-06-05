@@ -577,7 +577,7 @@ func NewMatchmakeSession() *MatchmakeSession {
 // MatchmakeParam holds parameters for a matchmake session
 type MatchmakeParam struct {
 	nex.Structure
-	parameters map[string]*nex.Variant
+	Parameters map[string]*nex.Variant
 }
 
 // ExtractFromStream extracts a MatchmakeParam structure from a stream
@@ -588,23 +588,30 @@ func (matchmakeParam *MatchmakeParam) ExtractFromStream(stream *nex.StreamIn) er
 		return err
 	}
 
-	matchmakeParam.parameters = make(map[string]*nex.Variant, len(parameters))
+	matchmakeParam.Parameters = make(map[string]*nex.Variant, len(parameters))
 
 	for key, value := range parameters {
-		matchmakeParam.parameters[key.(string)] = value.(*nex.Variant)
+		matchmakeParam.Parameters[key.(string)] = value.(*nex.Variant)
 	}
 
 	return nil
+}
+
+// // Bytes extracts a MatchmakeParam structure from a stream
+func (matchmakeParam *MatchmakeParam) Bytes(stream *nex.StreamOut) []byte {
+	stream.WriteMap(matchmakeParam.Parameters, stream.WriteString, stream.WriteVariant)
+
+	return stream.Bytes()
 }
 
 // Copy returns a new copied instance of MatchmakeParam
 func (matchmakeParam *MatchmakeParam) Copy() nex.StructureInterface {
 	copied := NewMatchmakeParam()
 
-	copied.parameters = make(map[string]*nex.Variant, len(matchmakeParam.parameters))
+	copied.Parameters = make(map[string]*nex.Variant, len(matchmakeParam.Parameters))
 
-	for key, value := range matchmakeParam.parameters {
-		copied.parameters[key] = value.Copy()
+	for key, value := range matchmakeParam.Parameters {
+		copied.Parameters[key] = value.Copy()
 	}
 
 	return copied
@@ -614,12 +621,12 @@ func (matchmakeParam *MatchmakeParam) Copy() nex.StructureInterface {
 func (matchmakeParam *MatchmakeParam) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*MatchmakeParam)
 
-	if len(matchmakeParam.parameters) != len(other.parameters) {
+	if len(matchmakeParam.Parameters) != len(other.Parameters) {
 		return false
 	}
 
-	for key, value := range matchmakeParam.parameters {
-		if !value.Equals(other.parameters[key]) {
+	for key, value := range matchmakeParam.Parameters {
+		if !value.Equals(other.Parameters[key]) {
 			return false
 		}
 	}

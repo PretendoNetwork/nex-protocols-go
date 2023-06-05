@@ -31,13 +31,13 @@ func (protocol *MatchmakeExtensionProtocol) HandleAutoMatchmakeWithSearchCriteri
 
 	lstSearchCriteria, err := parametersStream.ReadListStructure(match_making.NewMatchmakeSessionSearchCriteria())
 	if err != nil {
-		go protocol.AutoMatchmakeWithSearchCriteria_PostponeHandler(nil, client, callID, nil, nil, "")
+		go protocol.AutoMatchmakeWithSearchCriteria_PostponeHandler(err, client, callID, nil, nil, "")
 	}
 
 	anyGathering := parametersStream.ReadDataHolder()
 	strMessage, err := parametersStream.ReadString()
 	if err != nil {
-		go protocol.AutoMatchmakeWithSearchCriteria_PostponeHandler(nil, client, callID, nil, nil, "")
+		go protocol.AutoMatchmakeWithSearchCriteria_PostponeHandler(err, client, callID, nil, nil, "")
 	}
 
 	go protocol.AutoMatchmakeWithSearchCriteria_PostponeHandler(nil, client, callID, lstSearchCriteria.([]*match_making.MatchmakeSessionSearchCriteria), anyGathering, strMessage)

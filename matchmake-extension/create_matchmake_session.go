@@ -75,7 +75,7 @@ func (protocol *MatchmakeExtensionProtocol) HandleCreateMatchmakeSession(packet 
 
 	var participationCount uint16 = 0
 
-	if matchmakingVersion.Major >= 3 && matchmakingVersion.Minor >= 5 {
+	if matchmakingVersion.Major >= 3 && matchmakingVersion.Minor >= 4 {
 		participationCount = dataHolderContentStream.ReadUInt16LE()
 	}
 

@@ -88,7 +88,7 @@ type MatchmakeExtensionProtocol struct {
 	JoinMatchmakeSessionExHandler                   func(err error, client *nex.Client, callID uint32, gid uint32, strMessage string, dontCareMyBlockList bool, participationCount uint16)
 	GetSimplePlayingSessionHandler                  func(err error, client *nex.Client, callID uint32, listPID []uint32, includeLoginUser bool)
 	GetSimpleCommunityHandler                       func(err error, client *nex.Client, callID uint32, gatheringIDList []uint32)
-	UpdateProgressScoreHandler                      func(err error, client *nex.Client, callID uint32, GID uint32, progressScore uint8)
+	UpdateProgressScoreHandler                      func(err error, client *nex.Client, callID uint32, gid uint32, progressScore uint8)
 	CreateMatchmakeSessionWithParamHandler          func(err error, client *nex.Client, callID uint32, createMatchmakeSessionParam *match_making.CreateMatchmakeSessionParam)
 	JoinMatchmakeSessionWithParamHandler            func(err error, client *nex.Client, callID uint32, joinMatchmakeSessionParam *match_making.JoinMatchmakeSessionParam)
 	AutoMatchmakeWithParam_PostponeHandler          func(err error, client *nex.Client, callID uint32, autoMatchmakeParam *match_making.AutoMatchmakeParam)

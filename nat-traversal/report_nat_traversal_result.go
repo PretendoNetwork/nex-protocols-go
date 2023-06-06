@@ -11,6 +11,8 @@ func (protocol *NATTraversalProtocol) ReportNATTraversalResult(handler func(err 
 }
 
 func (protocol *NATTraversalProtocol) HandleReportNATTraversalResult(packet nex.PacketInterface) {
+	matchmakingVersion := protocol.Server.MatchMakingProtocolVersion()
+
 	if protocol.ReportNATTraversalResultHandler == nil {
 		globals.Logger.Warning("NATTraversal::ReportNATTraversalResult not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
@@ -27,7 +29,13 @@ func (protocol *NATTraversalProtocol) HandleReportNATTraversalResult(packet nex.
 
 	cid := parametersStream.ReadUInt32LE()
 	result := parametersStream.ReadBool()
-	rtt := parametersStream.ReadUInt32LE()
+
+	var rtt uint32 = 0
+
+	// TODO - Is this the right version?
+	if matchmakingVersion.Major >= 3 && matchmakingVersion.Minor >= 0 {
+		rtt = parametersStream.ReadUInt32LE()
+	}
 
 	go protocol.ReportNATTraversalResultHandler(nil, client, callID, cid, result, rtt)
 }

@@ -8,7 +8,7 @@ import (
 )
 
 // GetSessionURLs sets the GetSessionURLs handler function
-func (protocol *MatchMakingProtocol) UpdateSessionHost(handler func(err error, client *nex.Client, callID uint32, gatheringId uint32)) {
+func (protocol *MatchMakingProtocol) UpdateSessionHost(handler func(err error, client *nex.Client, callID uint32, gid uint32, isMigrateOwner bool)) {
 	protocol.UpdateSessionHostHandler = handler
 }
 
@@ -27,7 +27,9 @@ func (protocol *MatchMakingProtocol) HandleUpdateSessionHost(packet nex.PacketIn
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	gatheringId := parametersStream.ReadUInt32LE()
+	gid := parametersStream.ReadUInt32LE()
 
-	go protocol.UpdateSessionHostHandler(nil, client, callID, gatheringId)
+	isMigrateOwner := parametersStream.ReadBool()
+
+	go protocol.UpdateSessionHostHandler(nil, client, callID, gid, isMigrateOwner)
 }

@@ -36,9 +36,9 @@ type MatchMakingProtocol struct {
 	UnregisterGatheringHandler  func(err error, client *nex.Client, callID uint32, idGathering uint32)
 	UnregisterGatheringsHandler func(err error, client *nex.Client, callID uint32, lstGatherings []uint32)
 	FindBySingleIDHandler       func(err error, client *nex.Client, callID uint32, id uint32)
-	UpdateSessionHostV1Handler  func(err error, client *nex.Client, callID uint32, gatheringId uint32)
-	GetSessionURLsHandler       func(err error, client *nex.Client, callID uint32, gatheringId uint32)
-	UpdateSessionHostHandler    func(err error, client *nex.Client, callID uint32, gatheringId uint32)
+	UpdateSessionHostV1Handler  func(err error, client *nex.Client, callID uint32, gid uint32)
+	GetSessionURLsHandler       func(err error, client *nex.Client, callID uint32, gid uint32)
+	UpdateSessionHostHandler    func(err error, client *nex.Client, callID uint32, gid uint32, isMigrateOwner bool)
 }
 
 // Setup initializes the protocol

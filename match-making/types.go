@@ -315,7 +315,7 @@ func (matchmakeSession *MatchmakeSession) ExtractFromStream(stream *nex.StreamIn
 
 	matchmakeSession.GameMode = stream.ReadUInt32LE()
 	matchmakeSession.Attributes = stream.ReadListUInt32LE()
-	matchmakeSession.OpenParticipation = stream.ReadUInt8() == 1
+	matchmakeSession.OpenParticipation = stream.ReadBool()
 	matchmakeSession.MatchmakeSystemType = stream.ReadUInt32LE()
 	matchmakeSession.ApplicationData, err = stream.ReadBuffer()
 
@@ -599,7 +599,7 @@ func (matchmakeParam *MatchmakeParam) ExtractFromStream(stream *nex.StreamIn) er
 
 // // Bytes extracts a MatchmakeParam structure from a stream
 func (matchmakeParam *MatchmakeParam) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteMap(matchmakeParam.Parameters, stream.WriteString, stream.WriteVariant)
+	stream.WriteMap(matchmakeParam.Parameters)
 
 	return stream.Bytes()
 }

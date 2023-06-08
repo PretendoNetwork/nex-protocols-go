@@ -145,7 +145,7 @@ func (userMessage *UserMessage) Equals(structure nex.StructureInterface) bool {
 		return false
 	}
 
-	if userMessage.m_messageRecipient != other.m_messageRecipient {
+	if !userMessage.m_messageRecipient.Equals(other.m_messageRecipient) {
 		return false
 	}
 

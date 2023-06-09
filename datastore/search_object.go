@@ -1,6 +1,8 @@
 package datastore
 
 import (
+	"fmt"
+
 	nex "github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
@@ -27,7 +29,7 @@ func (protocol *DataStoreProtocol) HandleSearchObject(packet nex.PacketInterface
 
 	param, err := parametersStream.ReadStructure(NewDataStoreSearchParam())
 	if err != nil {
-		go protocol.SearchObjectHandler(err, client, callID, nil)
+		go protocol.SearchObjectHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
 		return
 	}
 

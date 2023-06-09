@@ -1,6 +1,8 @@
 package friends_3ds
 
 import (
+	"fmt"
+
 	nex "github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
@@ -25,7 +27,11 @@ func (protocol *Friends3DSProtocol) HandleUpdateComment(packet nex.PacketInterfa
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	comment, _ := parametersStream.ReadString()
+	comment, err := parametersStream.ReadString()
+	if err != nil {
+		go protocol.UpdateCommentHandler(fmt.Errorf("Failed to read comment from parameters. %s", err.Error()), client, callID, "")
+		return
+	}
 
 	go protocol.UpdateCommentHandler(nil, client, callID, comment)
 }

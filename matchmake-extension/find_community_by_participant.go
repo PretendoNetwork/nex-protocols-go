@@ -1,6 +1,8 @@
 package matchmake_extension
 
 import (
+	"fmt"
+
 	nex "github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
@@ -25,10 +27,15 @@ func (protocol *MatchmakeExtensionProtocol) HandleFindCommunityByParticipant(pac
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	pid := parametersStream.ReadUInt32LE()
+	pid, err := parametersStream.ReadUInt32LE()
+	if err != nil {
+		go protocol.FindCommunityByParticipantHandler(fmt.Errorf("Failed to read pid from parameters. %s", err.Error()), client, callID, 0, nil)
+		return
+	}
+
 	resultRange, err := parametersStream.ReadStructure(nex.NewResultRange())
 	if err != nil {
-		go protocol.FindCommunityByParticipantHandler(nil, client, callID, 0, nil)
+		go protocol.FindCommunityByParticipantHandler(fmt.Errorf("Failed to read resultRange from parameters. %s", err.Error()), client, callID, 0, nil)
 		return
 	}
 

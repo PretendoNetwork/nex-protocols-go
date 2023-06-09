@@ -1,6 +1,8 @@
 package matchmake_extension
 
 import (
+	"fmt"
+
 	nex "github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 	match_making "github.com/PretendoNetwork/nex-protocols-go/match-making"
@@ -28,13 +30,13 @@ func (protocol *MatchmakeExtensionProtocol) HandleCreateCommunity(packet nex.Pac
 
 	community, err := parametersStream.ReadStructure(match_making.NewPersistentGathering())
 	if err != nil {
-		go protocol.CreateCommunityHandler(nil, client, callID, nil, "")
+		go protocol.CreateCommunityHandler(fmt.Errorf("Failed to read community from parameters. %s", err.Error()), client, callID, nil, "")
 		return
 	}
 
 	strMessage, err := parametersStream.ReadString()
 	if err != nil {
-		go protocol.CreateCommunityHandler(nil, client, callID, nil, "")
+		go protocol.CreateCommunityHandler(fmt.Errorf("Failed to read strMessage from parameters. %s", err.Error()), client, callID, nil, "")
 		return
 	}
 

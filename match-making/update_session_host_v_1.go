@@ -27,7 +27,10 @@ func (protocol *MatchMakingProtocol) HandleUpdateSessionHostV1(packet nex.Packet
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	gatheringId := parametersStream.ReadUInt32LE()
+	gatheringId, err := parametersStream.ReadUInt32LE()
+	if err != nil {
+		go protocol.UpdateSessionHostV1Handler(fmt.Errorf("Failed to read gatheringId from parameters. %s", err.Error()), client, callID, 0)
+	}
 
 	go protocol.UpdateSessionHostV1Handler(nil, client, callID, gatheringId)
 }

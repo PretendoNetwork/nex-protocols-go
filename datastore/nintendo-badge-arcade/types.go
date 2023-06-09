@@ -1,6 +1,10 @@
 package datastore_nintendo_badge_arcade
 
-import nex "github.com/PretendoNetwork/nex-go"
+import (
+	"fmt"
+
+	nex "github.com/PretendoNetwork/nex-go"
+)
 
 type DataStoreGetMetaByOwnerIDParam struct {
 	nex.Structure
@@ -12,13 +16,26 @@ type DataStoreGetMetaByOwnerIDParam struct {
 
 // ExtractFromStream extracts a DataStoreGetMetaByOwnerIDParam structure from a stream
 func (dataStoreGetMetaByOwnerIDParam *DataStoreGetMetaByOwnerIDParam) ExtractFromStream(stream *nex.StreamIn) error {
-	dataStoreGetMetaByOwnerIDParam.OwnerIDs = stream.ReadListUInt32LE()
-	dataStoreGetMetaByOwnerIDParam.DataTypes = stream.ReadListUInt16LE()
-	dataStoreGetMetaByOwnerIDParam.ResultOption = stream.ReadUInt8()
+	var err error
+
+	dataStoreGetMetaByOwnerIDParam.OwnerIDs, err = stream.ReadListUInt32LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreGetMetaByOwnerIDParam.OwnerIDs. %s", err.Error())
+	}
+
+	dataStoreGetMetaByOwnerIDParam.DataTypes, err = stream.ReadListUInt16LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreGetMetaByOwnerIDParam.DataTypes. %s", err.Error())
+	}
+
+	dataStoreGetMetaByOwnerIDParam.ResultOption, err = stream.ReadUInt8()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreGetMetaByOwnerIDParam.ResultOption. %s", err.Error())
+	}
 
 	resultRange, err := stream.ReadStructure(nex.NewResultRange())
 	if err != nil {
-		return err
+		return fmt.Errorf("Failed to extract DataStoreGetMetaByOwnerIDParam.ResultRange. %s", err.Error())
 	}
 
 	dataStoreGetMetaByOwnerIDParam.ResultRange = resultRange.(*nex.ResultRange)

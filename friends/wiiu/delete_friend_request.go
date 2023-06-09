@@ -1,7 +1,7 @@
 package friends_wiiu
 
 import (
-	"errors"
+	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
@@ -27,13 +27,11 @@ func (protocol *FriendsWiiUProtocol) HandleDeleteFriendRequest(packet nex.Packet
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	if len(parametersStream.Bytes()[parametersStream.ByteOffset():]) < 8 {
-		err := errors.New("[FriendsWiiU::DeleteFriendRequest] Data missing list length")
-		go protocol.DeleteFriendRequestHandler(err, client, callID, 0)
+	id, err := parametersStream.ReadUInt64LE()
+	if err != nil {
+		go protocol.DeleteFriendRequestHandler(fmt.Errorf("Failed to read id from parameters. %s", err.Error()), client, callID, 0)
 		return
 	}
-
-	id := parametersStream.ReadUInt64LE()
 
 	go protocol.DeleteFriendRequestHandler(nil, client, callID, id)
 }

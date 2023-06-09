@@ -1,12 +1,14 @@
 package remote_log_device
 
 import (
+	"fmt"
+
 	nex "github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
 // Log sets the Log handler function
-func (protocol *RemoteLogDeviceProtocol) Log(handler func(err error, client *nex.Client, callID uint32, strMessage string)) {
+func (protocol *RemoteLogDeviceProtocol) Log(handler func(err error, client *nex.Client, callID uint32, strLine string)) {
 	protocol.LogHandler = handler
 }
 
@@ -25,12 +27,10 @@ func (protocol *RemoteLogDeviceProtocol) HandleLog(packet nex.PacketInterface) {
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	var err error
-	var strMessage string
-	strMessage, err = parametersStream.ReadString()
+	strLine, err := parametersStream.ReadString()
 	if err != nil {
-		go protocol.LogHandler(err, client, callID, "")
+		go protocol.LogHandler(fmt.Errorf("Failed to read strLine from parameters. %s", err.Error()), client, callID, "")
 	}
 
-	go protocol.LogHandler(nil, client, callID, strMessage)
+	go protocol.LogHandler(nil, client, callID, strLine)
 }

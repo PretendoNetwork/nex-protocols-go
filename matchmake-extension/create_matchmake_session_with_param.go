@@ -1,6 +1,8 @@
 package matchmake_extension
 
 import (
+	"fmt"
+
 	nex "github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 	match_making "github.com/PretendoNetwork/nex-protocols-go/match-making"
@@ -28,7 +30,7 @@ func (protocol *MatchmakeExtensionProtocol) HandleCreateMatchmakeSessionWithPara
 
 	createMatchmakeSessionParam, err := parametersStream.ReadStructure(match_making.NewCreateMatchmakeSessionParam())
 	if err != nil {
-		go protocol.CreateMatchmakeSessionWithParamHandler(err, client, callID, nil)
+		go protocol.CreateMatchmakeSessionWithParamHandler(fmt.Errorf("Failed to read createMatchmakeSessionParam from parameters. %s", err.Error()), client, callID, nil)
 		return
 	}
 

@@ -1,6 +1,8 @@
 package datastore_super_smash_bros_4
 
 import (
+	"fmt"
+
 	nex "github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
@@ -25,7 +27,11 @@ func (protocol *DataStoreSuperSmashBros4Protocol) HandleSendPlayReport(packet ne
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	playReport := parametersStream.ReadListInt32LE()
+	playReport, err := parametersStream.ReadListInt32LE()
+	if err != nil {
+		go protocol.SendPlayReportHandler(fmt.Errorf("Failed to read playReport from parameters. %s", err.Error()), client, callID, nil)
+		return
+	}
 
 	go protocol.SendPlayReportHandler(nil, client, callID, playReport)
 }

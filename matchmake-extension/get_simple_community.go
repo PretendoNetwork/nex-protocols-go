@@ -1,6 +1,8 @@
 package matchmake_extension
 
 import (
+	"fmt"
+
 	nex "github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
@@ -25,7 +27,11 @@ func (protocol *MatchmakeExtensionProtocol) HandleGetSimpleCommunity(packet nex.
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	gatheringIDList := parametersStream.ReadListUInt32LE()
+	gatheringIDList, err := parametersStream.ReadListUInt32LE()
+	if err != nil {
+		go protocol.GetSimpleCommunityHandler(fmt.Errorf("Failed to read gatheringIDList from parameters. %s", err.Error()), client, callID, nil)
+		return
+	}
 
 	go protocol.GetSimpleCommunityHandler(nil, client, callID, gatheringIDList)
 }

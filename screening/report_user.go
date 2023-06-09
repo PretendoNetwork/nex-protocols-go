@@ -18,5 +18,4 @@ func (protocol *ScreeningProtocol) HandleReportUser(packet nex.PacketInterface) 
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
 	}
-
 }

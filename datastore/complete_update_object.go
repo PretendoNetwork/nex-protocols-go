@@ -1,6 +1,8 @@
 package datastore
 
 import (
+	"fmt"
+
 	nex "github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
@@ -27,7 +29,7 @@ func (protocol *DataStoreProtocol) HandleCompleteUpdateObject(packet nex.PacketI
 
 	dataStoreCompleteUpdateParam, err := parametersStream.ReadStructure(NewDataStoreCompleteUpdateParam())
 	if err != nil {
-		go protocol.CompleteUpdateObjectHandler(err, client, callID, nil)
+		go protocol.CompleteUpdateObjectHandler(fmt.Errorf("Failed to read dataStoreCompleteUpdateParam from parameters. %s", err.Error()), client, callID, nil)
 		return
 	}
 

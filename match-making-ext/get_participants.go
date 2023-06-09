@@ -1,6 +1,8 @@
 package match_making_ext
 
 import (
+	"fmt"
+
 	nex "github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
@@ -25,9 +27,15 @@ func (protocol *MatchMakingExtProtocol) HandleGetParticipants(packet nex.PacketI
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	idGathering := parametersStream.ReadUInt32LE()
+	idGathering, err := parametersStream.ReadUInt32LE()
+	if err != nil {
+		go protocol.GetParticipantsHandler(fmt.Errorf("Failed to read idGathering from parameters. %s", err.Error()), client, callID, 0, false)
+	}
 
-	bOnlyActive := parametersStream.ReadUInt8() == 1
+	bOnlyActive, err := parametersStream.ReadBool()
+	if err != nil {
+		go protocol.GetParticipantsHandler(fmt.Errorf("Failed to read bOnlyActive from parameters. %s", err.Error()), client, callID, 0, false)
+	}
 
 	go protocol.GetParticipantsHandler(nil, client, callID, idGathering, bOnlyActive)
 }

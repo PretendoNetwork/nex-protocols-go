@@ -1,6 +1,8 @@
 package match_making
 
 import (
+	"fmt"
+
 	nex "github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
@@ -25,7 +27,10 @@ func (protocol *MatchMakingProtocol) HandleFindBySingleID(packet nex.PacketInter
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	id := parametersStream.ReadUInt32LE()
+	id, err := parametersStream.ReadUInt32LE()
+	if err != nil {
+		go protocol.FindBySingleIDHandler(fmt.Errorf("Failed to read id from parameters. %s", err.Error()), client, callID, 0)
+	}
 
 	go protocol.FindBySingleIDHandler(nil, client, callID, id)
 }

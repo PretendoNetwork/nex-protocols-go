@@ -1,6 +1,8 @@
 package shop_nintendo_badge_arcade
 
 import (
+	"fmt"
+
 	nex "github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
@@ -27,13 +29,13 @@ func (protocol *ShopNintendoBadgeArcadeProtocol) HandleGetRivToken(packet nex.Pa
 
 	itemCode, err := parametersStream.ReadString()
 	if err != nil {
-		go protocol.GetRivTokenHandler(err, client, callID, "", []byte{})
+		go protocol.GetRivTokenHandler(fmt.Errorf("Failed to read itemCode from parameters. %s", err.Error()), client, callID, "", nil)
 		return
 	}
 
 	referenceID, err := parametersStream.ReadQBuffer()
 	if err != nil {
-		go protocol.GetRivTokenHandler(err, client, callID, "", []byte{})
+		go protocol.GetRivTokenHandler(fmt.Errorf("Failed to read referenceID from parameters. %s", err.Error()), client, callID, "", nil)
 		return
 	}
 

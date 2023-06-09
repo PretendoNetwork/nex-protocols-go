@@ -1,6 +1,8 @@
 package friends_wiiu
 
 import (
+	"fmt"
+
 	nex "github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
@@ -25,13 +27,11 @@ func (protocol *FriendsWiiUProtocol) HandleUpdateComment(packet nex.PacketInterf
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	commentStructureInterface, err := parametersStream.ReadStructure(NewComment())
+	comment, err := parametersStream.ReadStructure(NewComment())
 	if err != nil {
-		go protocol.UpdateCommentHandler(err, client, callID, nil)
+		go protocol.UpdateCommentHandler(fmt.Errorf("Failed to read comment from parameters. %s", err.Error()), client, callID, nil)
 		return
 	}
 
-	comment := commentStructureInterface.(*Comment)
-
-	go protocol.UpdateCommentHandler(nil, client, callID, comment)
+	go protocol.UpdateCommentHandler(nil, client, callID, comment.(*Comment))
 }

@@ -2,6 +2,7 @@ package shop
 
 import (
 	"bytes"
+	"fmt"
 
 	"github.com/PretendoNetwork/nex-go"
 )
@@ -16,27 +17,29 @@ type ShopItem struct {
 
 // ExtractFromStream extracts a ShopItem structure from a stream
 func (shopItem *ShopItem) ExtractFromStream(stream *nex.StreamIn) error {
-	shopItem.ItemID = stream.ReadUInt32LE()
+	itemID, err := stream.ReadUInt32LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract ShopItem.ItemID from stream. %s", err.Error())
+	}
 
 	referenceID, err := stream.ReadQBuffer()
 	if err != nil {
-		return err
+		return fmt.Errorf("Failed to extract ShopItem.ReferenceID from stream. %s", err.Error())
 	}
-
-	shopItem.ReferenceID = referenceID
 
 	serviceName, err := stream.ReadString()
 	if err != nil {
-		return err
+		return fmt.Errorf("Failed to extract ShopItem.ServiceName from stream. %s", err.Error())
 	}
-
-	shopItem.ServiceName = serviceName
 
 	itemCode, err := stream.ReadString()
 	if err != nil {
-		return err
+		return fmt.Errorf("Failed to extract ShopItem.ItemCode from stream. %s", err.Error())
 	}
 
+	shopItem.ItemID = itemID
+	shopItem.ReferenceID = referenceID
+	shopItem.ServiceName = serviceName
 	shopItem.ItemCode = itemCode
 
 	return nil
@@ -106,12 +109,22 @@ type ShopItemRights struct {
 func (shopItemRights *ShopItemRights) ExtractFromStream(stream *nex.StreamIn) error {
 	referenceID, err := stream.ReadQBuffer()
 	if err != nil {
-		return err
+		return fmt.Errorf("Failed to extract ShopItemRights.ReferenceID from stream. %s", err.Error())
+	}
+
+	itemType, err := stream.ReadInt8()
+	if err != nil {
+		return fmt.Errorf("Failed to extract ShopItemRights.ItemType from stream. %s", err.Error())
+	}
+
+	attribute, err := stream.ReadUInt32LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract ShopItemRights.Attribute from stream. %s", err.Error())
 	}
 
 	shopItemRights.ReferenceID = referenceID
-	shopItemRights.ItemType = int8(stream.ReadUInt8())
-	shopItemRights.Attribute = stream.ReadUInt32LE()
+	shopItemRights.ItemType = itemType
+	shopItemRights.Attribute = attribute
 
 	return nil
 }

@@ -1,14 +1,14 @@
 package secure_connection
 
 import (
-	"errors"
+	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
 // RequestConnectionData sets the RequestConnectionData handler function
-func (protocol *SecureConnectionProtocol) RequestConnectionData(handler func(err error, client *nex.Client, callID uint32, stationCID uint32, stationPID uint32)) {
+func (protocol *SecureConnectionProtocol) RequestConnectionData(handler func(err error, client *nex.Client, callID uint32, cidTarget uint32, pidTarget uint32)) {
 	protocol.RequestConnectionDataHandler = handler
 }
 
@@ -27,14 +27,17 @@ func (protocol *SecureConnectionProtocol) HandleRequestConnectionData(packet nex
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	if len(parametersStream.Bytes()[parametersStream.ByteOffset():]) < 8 {
-		err := errors.New("[SecureConnection::RequestConnectionData] Data length too small")
-		go protocol.RequestConnectionDataHandler(err, client, callID, 0, 0)
+	cidTarget, err := parametersStream.ReadUInt32LE()
+	if err != nil {
+		go protocol.RequestConnectionDataHandler(fmt.Errorf("Failed to read cidTarget from parameters. %s", err.Error()), client, callID, 0, 0)
 		return
 	}
 
-	stationCID := parametersStream.ReadUInt32LE()
-	stationPID := parametersStream.ReadUInt32LE()
+	pidTarget, err := parametersStream.ReadUInt32LE()
+	if err != nil {
+		go protocol.RequestConnectionDataHandler(fmt.Errorf("Failed to read pidTarget from parameters. %s", err.Error()), client, callID, 0, 0)
+		return
+	}
 
-	go protocol.RequestConnectionDataHandler(nil, client, callID, stationCID, stationPID)
+	go protocol.RequestConnectionDataHandler(nil, client, callID, cidTarget, pidTarget)
 }

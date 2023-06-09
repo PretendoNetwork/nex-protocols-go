@@ -1,6 +1,8 @@
 package matchmake_extension
 
 import (
+	"fmt"
+
 	nex "github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
@@ -25,8 +27,17 @@ func (protocol *MatchmakeExtensionProtocol) HandleUpdateProgressScore(packet nex
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	GID := parametersStream.ReadUInt32LE()
-	progressScore := parametersStream.ReadUInt8()
+	GID, err := parametersStream.ReadUInt32LE()
+	if err != nil {
+		go protocol.UpdateProgressScoreHandler(fmt.Errorf("Failed to read GID from parameters. %s", err.Error()), client, callID, 0, 0)
+		return
+	}
+
+	progressScore, err := parametersStream.ReadUInt8()
+	if err != nil {
+		go protocol.UpdateProgressScoreHandler(fmt.Errorf("Failed to read progressScore from parameters. %s", err.Error()), client, callID, 0, 0)
+		return
+	}
 
 	go protocol.UpdateProgressScoreHandler(nil, client, callID, GID, progressScore)
 }

@@ -60,7 +60,7 @@ const (
 // RankingProtocol handles the Ranking nex protocol
 type RankingProtocol struct {
 	Server                  *nex.Server
-	UploadCommonDataHandler func(err error, client *nex.Client, callID uint32, commonData []byte, uniqueId uint64)
+	UploadCommonDataHandler func(err error, client *nex.Client, callID uint32, commonData []byte, uniqueID uint64)
 }
 
 // Setup initializes the protocol

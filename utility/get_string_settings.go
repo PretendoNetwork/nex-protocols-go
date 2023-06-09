@@ -1,6 +1,8 @@
 package utility
 
 import (
+	"fmt"
+
 	nex "github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
@@ -25,7 +27,12 @@ func (protocol *UtilityProtocol) HandleGetStringSettings(packet nex.PacketInterf
 	parameters := request.Parameters()
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
-	stringSettingIndex := parametersStream.ReadUInt32LE()
+
+	stringSettingIndex, err := parametersStream.ReadUInt32LE()
+	if err != nil {
+		go protocol.GetStringSettingsHandler(fmt.Errorf("Failed to read stringSettingIndex from parameters. %s", err.Error()), client, callID, 0)
+		return
+	}
 
 	go protocol.GetStringSettingsHandler(nil, client, callID, stringSettingIndex)
 }

@@ -1,7 +1,7 @@
 package friends_wiiu
 
 import (
-	"errors"
+	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
@@ -27,13 +27,11 @@ func (protocol *FriendsWiiUProtocol) HandleRemoveFriend(packet nex.PacketInterfa
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	if len(parametersStream.Bytes()[parametersStream.ByteOffset():]) < 4 {
-		err := errors.New("[FriendsWiiU::RemoveFriend] Data holder not long enough for PID")
-		go protocol.RemoveFriendHandler(err, client, callID, 0)
+	pid, err := parametersStream.ReadUInt32LE()
+	if err != nil {
+		go protocol.RemoveFriendHandler(fmt.Errorf("Failed to read pid from parameters. %s", err.Error()), client, callID, 0)
 		return
 	}
-
-	pid := parametersStream.ReadUInt32LE()
 
 	go protocol.RemoveFriendHandler(nil, client, callID, pid)
 }

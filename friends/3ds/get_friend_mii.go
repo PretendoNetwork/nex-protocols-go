@@ -1,6 +1,8 @@
 package friends_3ds
 
 import (
+	"fmt"
+
 	nex "github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
@@ -25,7 +27,11 @@ func (protocol *Friends3DSProtocol) HandleGetFriendMii(packet nex.PacketInterfac
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	PidList := parametersStream.ReadListUInt32LE()
+	PidList, err := parametersStream.ReadListUInt32LE()
+	if err != nil {
+		go protocol.GetFriendMiiHandler(fmt.Errorf("Failed to read pid from parameters. %s", err.Error()), client, callID, nil)
+		return
+	}
 
 	go protocol.GetFriendMiiHandler(nil, client, callID, PidList)
 }

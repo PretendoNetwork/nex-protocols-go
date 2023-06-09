@@ -39,14 +39,14 @@ const (
 // SecureConnectionProtocol handles the Secure Connection nex protocol
 type SecureConnectionProtocol struct {
 	Server                       *nex.Server
-	RegisterHandler              func(err error, client *nex.Client, callID uint32, stationUrls []*nex.StationURL)
-	RequestConnectionDataHandler func(err error, client *nex.Client, callID uint32, stationCID uint32, stationPID uint32)
-	RequestURLsHandler           func(err error, client *nex.Client, callID uint32, stationCID uint32, stationPID uint32)
-	RegisterExHandler            func(err error, client *nex.Client, callID uint32, stationUrls []*nex.StationURL, loginData *nex.DataHolder)
+	RegisterHandler              func(err error, client *nex.Client, callID uint32, vecMyURLs []*nex.StationURL)
+	RequestConnectionDataHandler func(err error, client *nex.Client, callID uint32, cidTarget uint32, pidTarget uint32)
+	RequestURLsHandler           func(err error, client *nex.Client, callID uint32, cidTarget uint32, pidTarget uint32)
+	RegisterExHandler            func(err error, client *nex.Client, callID uint32, vecMyURLs []*nex.StationURL, hCustomData *nex.DataHolder)
 	TestConnectivityHandler      func(err error, client *nex.Client, callID uint32)
-	UpdateURLsHandler            func(err error, client *nex.Client, callID uint32, stationUrls []*nex.StationURL)
-	ReplaceURLHandler            func(err error, client *nex.Client, callID uint32, oldStation *nex.StationURL, newStation *nex.StationURL)
-	SendReportHandler            func(err error, client *nex.Client, callID uint32, reportID uint32, report []byte)
+	UpdateURLsHandler            func(err error, client *nex.Client, callID uint32, vecMyURLs []*nex.StationURL)
+	ReplaceURLHandler            func(err error, client *nex.Client, callID uint32, target *nex.StationURL, url *nex.StationURL)
+	SendReportHandler            func(err error, client *nex.Client, callID uint32, reportID uint32, reportData []byte)
 }
 
 // Setup initializes the protocol

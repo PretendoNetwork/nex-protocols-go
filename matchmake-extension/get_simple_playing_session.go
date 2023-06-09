@@ -1,6 +1,8 @@
 package matchmake_extension
 
 import (
+	"fmt"
+
 	nex "github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
@@ -25,8 +27,17 @@ func (protocol *MatchmakeExtensionProtocol) HandleGetSimplePlayingSession(packet
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	listPID := parametersStream.ReadListUInt32LE()
-	includeLoginUser := parametersStream.ReadUInt8() == 1
+	listPID, err := parametersStream.ReadListUInt32LE()
+	if err != nil {
+		go protocol.GetSimplePlayingSessionHandler(fmt.Errorf("Failed to read listPID from parameters. %s", err.Error()), client, callID, nil, false)
+		return
+	}
+
+	includeLoginUser, err := parametersStream.ReadBool()
+	if err != nil {
+		go protocol.GetSimplePlayingSessionHandler(fmt.Errorf("Failed to read includeLoginUser from parameters. %s", err.Error()), client, callID, nil, false)
+		return
+	}
 
 	go protocol.GetSimplePlayingSessionHandler(nil, client, callID, listPID, includeLoginUser)
 }

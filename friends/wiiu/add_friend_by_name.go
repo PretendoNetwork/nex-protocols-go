@@ -1,6 +1,8 @@
 package friends_wiiu
 
 import (
+	"fmt"
+
 	nex "github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
@@ -26,9 +28,8 @@ func (protocol *FriendsWiiUProtocol) HandleAddFriendByName(packet nex.PacketInte
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
 	username, err := parametersStream.ReadString()
-
 	if err != nil {
-		go protocol.AddFriendByNameHandler(err, client, callID, "")
+		go protocol.AddFriendByNameHandler(fmt.Errorf("Failed to read username from parameters. %s", err.Error()), client, callID, "")
 		return
 	}
 

@@ -2,7 +2,7 @@ package friends_3ds
 
 import (
 	"bytes"
-	"errors"
+	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
 )
@@ -27,10 +27,27 @@ func (mii *Mii) Bytes(stream *nex.StreamOut) []byte {
 
 // ExtractFromStream extracts a Mii from a stream
 func (mii *Mii) ExtractFromStream(stream *nex.StreamIn) error {
-	mii.Name, _ = stream.ReadString()
-	mii.Unknown2 = (stream.ReadUInt8() == 1)
-	mii.Unknown3 = stream.ReadUInt8()
-	mii.MiiData, _ = stream.ReadBuffer()
+	var err error
+
+	mii.Name, err = stream.ReadString()
+	if err != nil {
+		return fmt.Errorf("Failed to extract Mii.Name. %s", err.Error())
+	}
+
+	mii.Unknown2, err = stream.ReadBool()
+	if err != nil {
+		return fmt.Errorf("Failed to extract Mii.Unknown2. %s", err.Error())
+	}
+
+	mii.Unknown3, err = stream.ReadUInt8()
+	if err != nil {
+		return fmt.Errorf("Failed to extract Mii.Unknown3. %s", err.Error())
+	}
+
+	mii.MiiData, err = stream.ReadBuffer()
+	if err != nil {
+		return fmt.Errorf("Failed to extract Mii.MiiData. %s", err.Error())
+	}
 
 	return nil
 }
@@ -142,14 +159,47 @@ type MyProfile struct {
 
 // ExtractFromStream extracts a MyProfile from a stream
 func (myProfile *MyProfile) ExtractFromStream(stream *nex.StreamIn) error {
-	myProfile.Region = stream.ReadUInt8()
-	myProfile.Country = stream.ReadUInt8()
-	myProfile.Area = stream.ReadUInt8()
-	myProfile.Language = stream.ReadUInt8()
-	myProfile.Platform = stream.ReadUInt8()
-	myProfile.Unknown1 = stream.ReadUInt64LE()
-	myProfile.Unknown2, _ = stream.ReadString()
-	myProfile.Unknown3, _ = stream.ReadString()
+	var err error
+
+	myProfile.Region, err = stream.ReadUInt8()
+	if err != nil {
+		return fmt.Errorf("Failed to extract MyProfile.Region. %s", err.Error())
+	}
+
+	myProfile.Country, err = stream.ReadUInt8()
+	if err != nil {
+		return fmt.Errorf("Failed to extract MyProfile.Country. %s", err.Error())
+	}
+
+	myProfile.Area, err = stream.ReadUInt8()
+	if err != nil {
+		return fmt.Errorf("Failed to extract MyProfile.Area. %s", err.Error())
+	}
+
+	myProfile.Language, err = stream.ReadUInt8()
+	if err != nil {
+		return fmt.Errorf("Failed to extract MyProfile.Language. %s", err.Error())
+	}
+
+	myProfile.Platform, err = stream.ReadUInt8()
+	if err != nil {
+		return fmt.Errorf("Failed to extract MyProfile.Platform. %s", err.Error())
+	}
+
+	myProfile.Unknown1, err = stream.ReadUInt64LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract MyProfile.Unknown1. %s", err.Error())
+	}
+
+	myProfile.Unknown2, err = stream.ReadString()
+	if err != nil {
+		return fmt.Errorf("Failed to extract MyProfile.Unknown2. %s", err.Error())
+	}
+
+	myProfile.Unknown3, err = stream.ReadString()
+	if err != nil {
+		return fmt.Errorf("Failed to extract MyProfile.Unknown3. %s", err.Error())
+	}
 
 	return nil
 }
@@ -247,43 +297,58 @@ func (presence *NintendoPresence) Bytes(stream *nex.StreamOut) []byte {
 
 // ExtractFromStream extracts a NintendoPresence structure from a stream
 func (presence *NintendoPresence) ExtractFromStream(stream *nex.StreamIn) error {
-	if len(stream.Bytes()[stream.ByteOffset():]) < 25 {
-		// length check for the following fixed-size data
-		// changedFlags + JoinAvailableFlag + MatchmakeType + JoinGameID + JoinGameMode + OwnerPID + JoinGroupID
-		return errors.New("[NintendoPresence::ExtractFromStream] Data size too small")
+	var err error
+
+	presence.ChangedFlags, err = stream.ReadUInt32LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract NintendoPresence.ChangedFlags. %s", err.Error())
 	}
 
-	changedFlags := stream.ReadUInt32LE()
-	gameKeyStructureInterface, err := stream.ReadStructure(NewGameKey())
+	gameKey, err := stream.ReadStructure(NewGameKey())
 	if err != nil {
-		return err
-	}
-	gameKey := gameKeyStructureInterface.(*GameKey)
-	message, err := stream.ReadString()
-	if err != nil {
-		return err
-	}
-	JoinAvailableFlag := stream.ReadUInt32LE()
-	MatchmakeType := stream.ReadUInt8()
-	JoinGameID := stream.ReadUInt32LE()
-	JoinGameMode := stream.ReadUInt32LE()
-	OwnerPID := stream.ReadUInt32LE()
-	JoinGroupID := stream.ReadUInt32LE()
-	ApplicationArg, err := stream.ReadBuffer()
-	if err != nil {
-		return err
+		return fmt.Errorf("Failed to extract NintendoPresence.GameKey. %s", err.Error())
 	}
 
-	presence.ChangedFlags = changedFlags
-	presence.GameKey = gameKey
-	presence.Message = message
-	presence.JoinAvailableFlag = JoinAvailableFlag
-	presence.MatchmakeType = MatchmakeType
-	presence.JoinGameID = JoinGameID
-	presence.JoinGameMode = JoinGameMode
-	presence.OwnerPID = OwnerPID
-	presence.JoinGroupID = JoinGroupID
-	presence.ApplicationArg = ApplicationArg
+	presence.GameKey = gameKey.(*GameKey)
+	presence.Message, err = stream.ReadString()
+	if err != nil {
+		return fmt.Errorf("Failed to extract NintendoPresence.Message. %s", err.Error())
+	}
+
+	presence.JoinAvailableFlag, err = stream.ReadUInt32LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract NintendoPresence.JoinAvailableFlag. %s", err.Error())
+	}
+
+	presence.MatchmakeType, err = stream.ReadUInt8()
+	if err != nil {
+		return fmt.Errorf("Failed to extract NintendoPresence.MatchmakeType. %s", err.Error())
+	}
+
+	presence.JoinGameID, err = stream.ReadUInt32LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract NintendoPresence.JoinGameID. %s", err.Error())
+	}
+
+	presence.JoinGameMode, err = stream.ReadUInt32LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract NintendoPresence.JoinGameMode. %s", err.Error())
+	}
+
+	presence.OwnerPID, err = stream.ReadUInt32LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract NintendoPresence.OwnerPID. %s", err.Error())
+	}
+
+	presence.JoinGroupID, err = stream.ReadUInt32LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract NintendoPresence.JoinGroupID. %s", err.Error())
+	}
+
+	presence.ApplicationArg, err = stream.ReadBuffer()
+	if err != nil {
+		return fmt.Errorf("Failed to extract NintendoPresence.ApplicationArg. %s", err.Error())
+	}
 
 	return nil
 }
@@ -582,12 +647,17 @@ func (gameKey *GameKey) Bytes(stream *nex.StreamOut) []byte {
 
 // ExtractFromStream extracts a GameKey structure from a stream
 func (gameKey *GameKey) ExtractFromStream(stream *nex.StreamIn) error {
-	if len(stream.Bytes()[stream.ByteOffset():]) < 10 {
-		return errors.New("[GameKey::ExtractFromStream] Data size too small")
+	var err error
+
+	gameKey.TitleID, err = stream.ReadUInt64LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract GameKey.TitleID. %s", err.Error())
 	}
 
-	gameKey.TitleID = stream.ReadUInt64LE()
-	gameKey.TitleVersion = stream.ReadUInt16LE()
+	gameKey.TitleVersion, err = stream.ReadUInt16LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract GameKey.TitleVersion. %s", err.Error())
+	}
 
 	return nil
 }

@@ -1,6 +1,8 @@
 package datastore
 
 import (
+	"fmt"
+
 	nex "github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
@@ -27,17 +29,21 @@ func (protocol *DataStoreProtocol) HandleRateObject(packet nex.PacketInterface) 
 
 	target, err := parametersStream.ReadStructure(NewDataStoreRatingTarget())
 	if err != nil {
-		go protocol.RateObjectHandler(err, client, callID, nil, nil, false)
+		go protocol.RateObjectHandler(fmt.Errorf("Failed to read target from parameters. %s", err.Error()), client, callID, nil, nil, false)
 		return
 	}
 
 	param, err := parametersStream.ReadStructure(NewDataStoreRateObjectParam())
 	if err != nil {
-		go protocol.RateObjectHandler(err, client, callID, nil, nil, false)
+		go protocol.RateObjectHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil, nil, false)
 		return
 	}
 
-	fetchRatings := parametersStream.ReadBool()
+	fetchRatings, err := parametersStream.ReadBool()
+	if err != nil {
+		go protocol.RateObjectHandler(fmt.Errorf("Failed to read fetchRatings from parameters. %s", err.Error()), client, callID, nil, nil, false)
+		return
+	}
 
 	go protocol.RateObjectHandler(nil, client, callID, target.(*DataStoreRatingTarget), param.(*DataStoreRateObjectParam), fetchRatings)
 }

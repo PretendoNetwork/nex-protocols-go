@@ -1,7 +1,7 @@
 package friends_wiiu
 
 import (
-	"errors"
+	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
@@ -27,13 +27,11 @@ func (protocol *FriendsWiiUProtocol) HandleMarkFriendRequestsAsReceived(packet n
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	if len(parametersStream.Bytes()[parametersStream.ByteOffset():]) < 4 {
-		err := errors.New("[FriendsWiiU::MarkFriendRequestsAsReceived] Data missing list length")
-		go protocol.MarkFriendRequestsAsReceivedHandler(err, client, callID, make([]uint64, 0))
+	ids, err := parametersStream.ReadListUInt64LE()
+	if err != nil {
+		go protocol.GetRequestBlockSettingsHandler(fmt.Errorf("Failed to read ids from parameters. %s", err.Error()), client, callID, nil)
 		return
 	}
-
-	ids := parametersStream.ReadListUInt64LE()
 
 	go protocol.MarkFriendRequestsAsReceivedHandler(nil, client, callID, ids)
 }

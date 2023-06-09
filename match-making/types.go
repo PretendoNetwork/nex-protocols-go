@@ -2,6 +2,7 @@ package match_making
 
 import (
 	"bytes"
+	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
 )
@@ -31,19 +32,54 @@ type Gathering struct {
 func (gathering *Gathering) ExtractFromStream(stream *nex.StreamIn) error {
 	var err error
 
-	gathering.ID = stream.ReadUInt32LE()
-	gathering.OwnerPID = stream.ReadUInt32LE()
-	gathering.HostPID = stream.ReadUInt32LE()
-	gathering.MinimumParticipants = stream.ReadUInt16LE()
-	gathering.MaximumParticipants = stream.ReadUInt16LE()
-	gathering.ParticipationPolicy = stream.ReadUInt32LE()
-	gathering.PolicyArgument = stream.ReadUInt32LE()
-	gathering.Flags = stream.ReadUInt32LE()
-	gathering.State = stream.ReadUInt32LE()
-	gathering.Description, err = stream.ReadString()
-
+	gathering.ID, err = stream.ReadUInt32LE()
 	if err != nil {
-		return err
+		return fmt.Errorf("Failed to extract Gathering.ID. %s", err.Error())
+	}
+
+	gathering.OwnerPID, err = stream.ReadUInt32LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract Gathering.OwnerPID. %s", err.Error())
+	}
+
+	gathering.HostPID, err = stream.ReadUInt32LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract Gathering.HostPID. %s", err.Error())
+	}
+
+	gathering.MinimumParticipants, err = stream.ReadUInt16LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract Gathering.MinimumParticipants. %s", err.Error())
+	}
+
+	gathering.MaximumParticipants, err = stream.ReadUInt16LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract Gathering.MaximumParticipants. %s", err.Error())
+	}
+
+	gathering.ParticipationPolicy, err = stream.ReadUInt32LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract Gathering.ParticipationPolicy. %s", err.Error())
+	}
+
+	gathering.PolicyArgument, err = stream.ReadUInt32LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract Gathering.PolicyArgument. %s", err.Error())
+	}
+
+	gathering.Flags, err = stream.ReadUInt32LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract Gathering.Flags. %s", err.Error())
+	}
+
+	gathering.State, err = stream.ReadUInt32LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract Gathering.State. %s", err.Error())
+	}
+
+	gathering.Description, err = stream.ReadString()
+	if err != nil {
+		return fmt.Errorf("Failed to extract Gathering.Description. %s", err.Error())
 	}
 
 	return nil
@@ -156,30 +192,56 @@ func (matchmakeSessionSearchCriteria *MatchmakeSessionSearchCriteria) ExtractFro
 
 	var err error
 
-	matchmakeSessionSearchCriteria.Attribs = stream.ReadListString()
+	matchmakeSessionSearchCriteria.Attribs, err = stream.ReadListString()
+	if err != nil {
+		return fmt.Errorf("Failed to extract MatchmakeSessionSearchCriteria.Attribs. %s", err.Error())
+	}
+
 	matchmakeSessionSearchCriteria.GameMode, err = stream.ReadString()
 	if err != nil {
-		return err
+		return fmt.Errorf("Failed to extract MatchmakeSessionSearchCriteria.GameMode. %s", err.Error())
 	}
+
 	matchmakeSessionSearchCriteria.MinParticipants, err = stream.ReadString()
 	if err != nil {
-		return err
+		return fmt.Errorf("Failed to extract MatchmakeSessionSearchCriteria.MinParticipants. %s", err.Error())
 	}
+
 	matchmakeSessionSearchCriteria.MaxParticipants, err = stream.ReadString()
 	if err != nil {
-		return err
+		return fmt.Errorf("Failed to extract MatchmakeSessionSearchCriteria.MaxParticipants. %s", err.Error())
 	}
+
 	matchmakeSessionSearchCriteria.MatchmakeSystemType, err = stream.ReadString()
 	if err != nil {
-		return err
+		return fmt.Errorf("Failed to extract MatchmakeSessionSearchCriteria.MatchmakeSystemType. %s", err.Error())
 	}
-	matchmakeSessionSearchCriteria.VacantOnly = stream.ReadBool()
-	matchmakeSessionSearchCriteria.ExcludeLocked = stream.ReadBool()
-	matchmakeSessionSearchCriteria.ExcludeNonHostPid = stream.ReadBool()
-	matchmakeSessionSearchCriteria.SelectionMethod = stream.ReadUInt32LE()
+
+	matchmakeSessionSearchCriteria.VacantOnly, err = stream.ReadBool()
+	if err != nil {
+		return fmt.Errorf("Failed to extract MatchmakeSessionSearchCriteria.VacantOnly. %s", err.Error())
+	}
+
+	matchmakeSessionSearchCriteria.ExcludeLocked, err = stream.ReadBool()
+	if err != nil {
+		return fmt.Errorf("Failed to extract MatchmakeSessionSearchCriteria.ExcludeLocked. %s", err.Error())
+	}
+
+	matchmakeSessionSearchCriteria.ExcludeNonHostPid, err = stream.ReadBool()
+	if err != nil {
+		return fmt.Errorf("Failed to extract MatchmakeSessionSearchCriteria.ExcludeNonHostPid. %s", err.Error())
+	}
+
+	matchmakeSessionSearchCriteria.SelectionMethod, err = stream.ReadUInt32LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract MatchmakeSessionSearchCriteria.SelectionMethod. %s", err.Error())
+	}
 
 	if matchmakingVersion.Major >= 3 && matchmakingVersion.Minor >= 4 {
-		matchmakeSessionSearchCriteria.VacantParticipants = stream.ReadUInt16LE()
+		matchmakeSessionSearchCriteria.VacantParticipants, err = stream.ReadUInt16LE()
+		if err != nil {
+			return fmt.Errorf("Failed to extract MatchmakeSessionSearchCriteria.VacantParticipants. %s", err.Error())
+		}
 	}
 
 	return nil
@@ -313,64 +375,98 @@ func (matchmakeSession *MatchmakeSession) ExtractFromStream(stream *nex.StreamIn
 
 	var err error
 
-	matchmakeSession.GameMode = stream.ReadUInt32LE()
-	matchmakeSession.Attributes = stream.ReadListUInt32LE()
-	matchmakeSession.OpenParticipation = stream.ReadUInt8() == 1
-	matchmakeSession.MatchmakeSystemType = stream.ReadUInt32LE()
-	matchmakeSession.ApplicationData, err = stream.ReadBuffer()
-
+	matchmakeSession.GameMode, err = stream.ReadUInt32LE()
 	if err != nil {
-		return err
+		return fmt.Errorf("Failed to extract MatchmakeSession.GameMode. %s", err.Error())
 	}
 
-	matchmakeSession.ParticipationCount = stream.ReadUInt32LE()
+	matchmakeSession.Attributes, err = stream.ReadListUInt32LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract MatchmakeSession.Attributes. %s", err.Error())
+	}
+
+	matchmakeSession.OpenParticipation, err = stream.ReadBool()
+	if err != nil {
+		return fmt.Errorf("Failed to extract MatchmakeSession.OpenParticipation. %s", err.Error())
+	}
+
+	matchmakeSession.MatchmakeSystemType, err = stream.ReadUInt32LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract MatchmakeSession.MatchmakeSystemType. %s", err.Error())
+	}
+
+	matchmakeSession.ApplicationData, err = stream.ReadBuffer()
+	if err != nil {
+		return fmt.Errorf("Failed to extract MatchmakeSession.ApplicationData. %s", err.Error())
+	}
+
+	matchmakeSession.ParticipationCount, err = stream.ReadUInt32LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract MatchmakeSession.ParticipationCount. %s", err.Error())
+	}
 
 	if matchmakingVersion.Major >= 3 && matchmakingVersion.Minor >= 4 {
-		matchmakeSession.ProgressScore = stream.ReadUInt8()
+		matchmakeSession.ProgressScore, err = stream.ReadUInt8()
+		if err != nil {
+			return fmt.Errorf("Failed to extract MatchmakeSession.ProgressScore. %s", err.Error())
+		}
 	}
 
 	if matchmakingVersion.Major >= 3 {
 		matchmakeSession.SessionKey, err = stream.ReadBuffer()
-
 		if err != nil {
-			return err
+			return fmt.Errorf("Failed to extract MatchmakeSession.SessionKey. %s", err.Error())
 		}
 	}
 
 	if matchmakingVersion.Major >= 3 && matchmakingVersion.Minor >= 5 {
-		matchmakeSession.Option = stream.ReadUInt32LE()
+		matchmakeSession.Option, err = stream.ReadUInt32LE()
+		if err != nil {
+			return fmt.Errorf("Failed to extract MatchmakeSession.Option. %s", err.Error())
+		}
 	}
 
 	if matchmakingVersion.Major >= 3 && matchmakingVersion.Minor >= 6 {
 		matchmakeParam, err := stream.ReadStructure(NewMatchmakeParam())
-
 		if err != nil {
-			return err
+			return fmt.Errorf("Failed to extract MatchmakeSession.MatchmakeParam. %s", err.Error())
 		}
 
 		matchmakeSession.MatchmakeParam = matchmakeParam.(*MatchmakeParam)
-		matchmakeSession.StartedTime = stream.ReadDateTime()
+		matchmakeSession.StartedTime, err = stream.ReadDateTime()
+		if err != nil {
+			return fmt.Errorf("Failed to extract MatchmakeSession.StartedTime. %s", err.Error())
+		}
 	}
 
 	if matchmakingVersion.Major >= 3 && matchmakingVersion.Minor >= 7 {
 		matchmakeSession.UserPassword, err = stream.ReadString()
-
 		if err != nil {
-			return err
+			return fmt.Errorf("Failed to extract MatchmakeSession.UserPassword. %s", err.Error())
 		}
 	}
 
 	if matchmakingVersion.Major >= 3 && matchmakingVersion.Minor >= 8 {
-		matchmakeSession.ReferGID = stream.ReadUInt32LE()
-		matchmakeSession.UserPasswordEnabled = stream.ReadBool()
-		matchmakeSession.SystemPasswordEnabled = stream.ReadBool()
+		matchmakeSession.ReferGID, err = stream.ReadUInt32LE()
+		if err != nil {
+			return fmt.Errorf("Failed to extract MatchmakeSession.ReferGID. %s", err.Error())
+		}
+
+		matchmakeSession.UserPasswordEnabled, err = stream.ReadBool()
+		if err != nil {
+			return fmt.Errorf("Failed to extract MatchmakeSession.UserPasswordEnabled. %s", err.Error())
+		}
+
+		matchmakeSession.SystemPasswordEnabled, err = stream.ReadBool()
+		if err != nil {
+			return fmt.Errorf("Failed to extract MatchmakeSession.SystemPasswordEnabled. %s", err.Error())
+		}
 	}
 
 	if matchmakingVersion.Major >= 4 {
 		matchmakeSession.CodeWord, err = stream.ReadString()
-
 		if err != nil {
-			return err
+			return fmt.Errorf("Failed to extract MatchmakeSession.CodeWord. %s", err.Error())
 		}
 	}
 
@@ -645,17 +741,38 @@ type CreateMatchmakeSessionParam struct {
 
 // ExtractFromStream extracts a CreateMatchmakeSessionParam structure from a stream
 func (createMatchmakeSessionParam *CreateMatchmakeSessionParam) ExtractFromStream(stream *nex.StreamIn) error {
+	var err error
+
 	sourceMatchmakeSession, err := stream.ReadStructure(NewMatchmakeSession())
 	if err != nil {
-		return err
+		return fmt.Errorf("Failed to extract CreateMatchmakeSessionParam.SourceMatchmakeSession. %s", err.Error())
 	}
 
 	createMatchmakeSessionParam.SourceMatchmakeSession = sourceMatchmakeSession.(*MatchmakeSession)
-	createMatchmakeSessionParam.AdditionalParticipants = stream.ReadListUInt32LE()
-	createMatchmakeSessionParam.GIDForParticipationCheck = stream.ReadUInt32LE()
-	createMatchmakeSessionParam.CreateMatchmakeSessionOption = stream.ReadUInt32LE()
-	createMatchmakeSessionParam.JoinMessage, _ = stream.ReadString()
-	createMatchmakeSessionParam.ParticipationCount = stream.ReadUInt16LE()
+	createMatchmakeSessionParam.AdditionalParticipants, err = stream.ReadListUInt32LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract CreateMatchmakeSessionParam.AdditionalParticipants. %s", err.Error())
+	}
+
+	createMatchmakeSessionParam.GIDForParticipationCheck, err = stream.ReadUInt32LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract CreateMatchmakeSessionParam.GIDForParticipationCheck. %s", err.Error())
+	}
+
+	createMatchmakeSessionParam.CreateMatchmakeSessionOption, err = stream.ReadUInt32LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract CreateMatchmakeSessionParam.CreateMatchmakeSessionOption. %s", err.Error())
+	}
+
+	createMatchmakeSessionParam.JoinMessage, err = stream.ReadString()
+	if err != nil {
+		return fmt.Errorf("Failed to extract CreateMatchmakeSessionParam.JoinMessage. %s", err.Error())
+	}
+
+	createMatchmakeSessionParam.ParticipationCount, err = stream.ReadUInt16LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract CreateMatchmakeSessionParam.ParticipationCount. %s", err.Error())
+	}
 
 	return nil
 }
@@ -750,22 +867,61 @@ type JoinMatchmakeSessionParam struct {
 
 // ExtractFromStream extracts a JoinMatchmakeSessionParam structure from a stream
 func (joinMatchmakeSessionParam *JoinMatchmakeSessionParam) ExtractFromStream(stream *nex.StreamIn) error {
-	// TODO - Check errors
+	var err error
 
-	joinMatchmakeSessionParam.GID = stream.ReadUInt32LE()
-	joinMatchmakeSessionParam.AdditionalParticipants = stream.ReadListUInt32LE()
-	joinMatchmakeSessionParam.GIDForParticipationCheck = stream.ReadUInt32LE()
-	joinMatchmakeSessionParam.JoinMatchmakeSessionOption = stream.ReadUInt32LE()
-	joinMatchmakeSessionParam.JoinMatchmakeSessionBehavior = stream.ReadUInt8()
-	joinMatchmakeSessionParam.StrUserPassword, _ = stream.ReadString()
-	joinMatchmakeSessionParam.StrSystemPassword, _ = stream.ReadString()
-	joinMatchmakeSessionParam.JoinMessage, _ = stream.ReadString()
-	joinMatchmakeSessionParam.ParticipationCount = stream.ReadUInt16LE()
-	joinMatchmakeSessionParam.ExtraParticipants = stream.ReadUInt16LE()
+	joinMatchmakeSessionParam.GID, err = stream.ReadUInt32LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract JoinMatchmakeSessionParam.GID. %s", err.Error())
+	}
+
+	joinMatchmakeSessionParam.AdditionalParticipants, err = stream.ReadListUInt32LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract JoinMatchmakeSessionParam.AdditionalParticipants. %s", err.Error())
+	}
+
+	joinMatchmakeSessionParam.GIDForParticipationCheck, err = stream.ReadUInt32LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract JoinMatchmakeSessionParam.GIDForParticipationCheck. %s", err.Error())
+	}
+
+	joinMatchmakeSessionParam.JoinMatchmakeSessionOption, err = stream.ReadUInt32LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract JoinMatchmakeSessionParam.JoinMatchmakeSessionOption. %s", err.Error())
+	}
+
+	joinMatchmakeSessionParam.JoinMatchmakeSessionBehavior, err = stream.ReadUInt8()
+	if err != nil {
+		return fmt.Errorf("Failed to extract JoinMatchmakeSessionParam.JoinMatchmakeSessionBehavior. %s", err.Error())
+	}
+
+	joinMatchmakeSessionParam.StrUserPassword, err = stream.ReadString()
+	if err != nil {
+		return fmt.Errorf("Failed to extract JoinMatchmakeSessionParam.StrUserPassword. %s", err.Error())
+	}
+
+	joinMatchmakeSessionParam.StrSystemPassword, err = stream.ReadString()
+	if err != nil {
+		return fmt.Errorf("Failed to extract JoinMatchmakeSessionParam.StrSystemPassword. %s", err.Error())
+	}
+
+	joinMatchmakeSessionParam.JoinMessage, err = stream.ReadString()
+	if err != nil {
+		return fmt.Errorf("Failed to extract JoinMatchmakeSessionParam.JoinMessage. %s", err.Error())
+	}
+
+	joinMatchmakeSessionParam.ParticipationCount, err = stream.ReadUInt16LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract JoinMatchmakeSessionParam.ParticipationCount. %s", err.Error())
+	}
+
+	joinMatchmakeSessionParam.ExtraParticipants, err = stream.ReadUInt16LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract JoinMatchmakeSessionParam.ExtraParticipants. %s", err.Error())
+	}
 
 	blockListParam, err := stream.ReadStructure(NewMatchmakeBlockListParam())
 	if err != nil {
-		return err
+		return fmt.Errorf("Failed to extract JoinMatchmakeSessionParam.BlockListParam. %s", err.Error())
 	}
 
 	joinMatchmakeSessionParam.BlockListParam = blockListParam.(*MatchmakeBlockListParam)
@@ -868,7 +1024,12 @@ type MatchmakeBlockListParam struct {
 
 // ExtractFromStream extracts a MatchmakeBlockListParam structure from a stream
 func (matchmakeBlockListParam *MatchmakeBlockListParam) ExtractFromStream(stream *nex.StreamIn) error {
-	matchmakeBlockListParam.OptionFlag = stream.ReadUInt32LE()
+	var err error
+
+	matchmakeBlockListParam.OptionFlag, err = stream.ReadUInt32LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract MatchmakeBlockListParam.OptionFlag. %s", err.Error())
+	}
 
 	return nil
 }
@@ -909,25 +1070,49 @@ type AutoMatchmakeParam struct {
 
 // ExtractFromStream extracts a AutoMatchmakeParam structure from a stream
 func (autoMatchmakeParam *AutoMatchmakeParam) ExtractFromStream(stream *nex.StreamIn) error {
+	var err error
+
 	sourceMatchmakeSession, err := stream.ReadStructure(NewMatchmakeSession())
 	if err != nil {
-		return err
+		return fmt.Errorf("Failed to extract AutoMatchmakeParam.SourceMatchmakeSession. %s", err.Error())
 	}
 
 	autoMatchmakeParam.SourceMatchmakeSession = sourceMatchmakeSession.(*MatchmakeSession)
-	autoMatchmakeParam.AdditionalParticipants = stream.ReadListUInt32LE()
-	autoMatchmakeParam.GIDForParticipationCheck = stream.ReadUInt32LE()
-	autoMatchmakeParam.AutoMatchmakeOption = stream.ReadUInt32LE()
-	autoMatchmakeParam.JoinMessage, _ = stream.ReadString()
-	autoMatchmakeParam.ParticipationCount = stream.ReadUInt16LE()
+	autoMatchmakeParam.AdditionalParticipants, err = stream.ReadListUInt32LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract AutoMatchmakeParam.AdditionalParticipants. %s", err.Error())
+	}
+
+	autoMatchmakeParam.GIDForParticipationCheck, err = stream.ReadUInt32LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract AutoMatchmakeParam.GIDForParticipationCheck. %s", err.Error())
+	}
+
+	autoMatchmakeParam.AutoMatchmakeOption, err = stream.ReadUInt32LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract AutoMatchmakeParam.AutoMatchmakeOption. %s", err.Error())
+	}
+
+	autoMatchmakeParam.JoinMessage, err = stream.ReadString()
+	if err != nil {
+		return fmt.Errorf("Failed to extract AutoMatchmakeParam.JoinMessage. %s", err.Error())
+	}
+
+	autoMatchmakeParam.ParticipationCount, err = stream.ReadUInt16LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract AutoMatchmakeParam.ParticipationCount. %s", err.Error())
+	}
 
 	lstSearchCriteria, err := stream.ReadListStructure(NewMatchmakeSessionSearchCriteria())
 	if err != nil {
-		return err
+		return fmt.Errorf("Failed to extract AutoMatchmakeParam.LstSearchCriteria. %s", err.Error())
 	}
 
 	autoMatchmakeParam.LstSearchCriteria = lstSearchCriteria.([]*MatchmakeSessionSearchCriteria)
-	autoMatchmakeParam.TargetGIDs = stream.ReadListUInt32LE()
+	autoMatchmakeParam.TargetGIDs, err = stream.ReadListUInt32LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract AutoMatchmakeParam.TargetGIDs. %s", err.Error())
+	}
 
 	return nil
 }
@@ -1049,14 +1234,47 @@ type PersistentGathering struct {
 
 // ExtractFromStream extracts a PersistentGathering structure from a stream
 func (persistentGathering *PersistentGathering) ExtractFromStream(stream *nex.StreamIn) error {
-	persistentGathering.M_CommunityType = stream.ReadUInt32LE()
-	persistentGathering.M_Password, _ = stream.ReadString()
-	persistentGathering.M_Attribs = stream.ReadListUInt32LE()
-	persistentGathering.M_ApplicationBuffer, _ = stream.ReadBuffer()
-	persistentGathering.M_ParticipationStartDate = stream.ReadDateTime()
-	persistentGathering.M_ParticipationEndDate = stream.ReadDateTime()
-	persistentGathering.M_MatchmakeSessionCount = stream.ReadUInt32LE()
-	persistentGathering.M_ParticipationCount = stream.ReadUInt32LE()
+	var err error
+
+	persistentGathering.M_CommunityType, err = stream.ReadUInt32LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract PersistentGathering.M_CommunityType. %s", err.Error())
+	}
+
+	persistentGathering.M_Password, err = stream.ReadString()
+	if err != nil {
+		return fmt.Errorf("Failed to extract PersistentGathering.M_Password. %s", err.Error())
+	}
+
+	persistentGathering.M_Attribs, err = stream.ReadListUInt32LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract PersistentGathering.M_Attribs. %s", err.Error())
+	}
+
+	persistentGathering.M_ApplicationBuffer, err = stream.ReadBuffer()
+	if err != nil {
+		return fmt.Errorf("Failed to extract PersistentGathering.M_ApplicationBuffer. %s", err.Error())
+	}
+
+	persistentGathering.M_ParticipationStartDate, err = stream.ReadDateTime()
+	if err != nil {
+		return fmt.Errorf("Failed to extract PersistentGathering.M_ParticipationStartDate. %s", err.Error())
+	}
+
+	persistentGathering.M_ParticipationEndDate, err = stream.ReadDateTime()
+	if err != nil {
+		return fmt.Errorf("Failed to extract PersistentGathering.M_ParticipationEndDate. %s", err.Error())
+	}
+
+	persistentGathering.M_MatchmakeSessionCount, err = stream.ReadUInt32LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract PersistentGathering.M_MatchmakeSessionCount. %s", err.Error())
+	}
+
+	persistentGathering.M_ParticipationCount, err = stream.ReadUInt32LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract PersistentGathering.M_ParticipationCount. %s", err.Error())
+	}
 
 	return nil
 }
@@ -1177,8 +1395,17 @@ type SimpleCommunity struct {
 
 // ExtractFromStream extracts a SimpleCommunity structure from a stream
 func (simpleCommunity *SimpleCommunity) ExtractFromStream(stream *nex.StreamIn) error {
-	simpleCommunity.M_GatheringID = stream.ReadUInt32LE()
-	simpleCommunity.M_MatchmakeSessionCount = stream.ReadUInt32LE()
+	var err error
+
+	simpleCommunity.M_GatheringID, err = stream.ReadUInt32LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract SimpleCommunity.M_GatheringID. %s", err.Error())
+	}
+
+	simpleCommunity.M_MatchmakeSessionCount, err = stream.ReadUInt32LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract SimpleCommunity.M_MatchmakeSessionCount. %s", err.Error())
+	}
 
 	return nil
 }

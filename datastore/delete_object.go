@@ -1,6 +1,8 @@
 package datastore
 
 import (
+	"fmt"
+
 	nex "github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
@@ -26,9 +28,8 @@ func (protocol *DataStoreProtocol) HandleDeleteObject(packet nex.PacketInterface
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
 	param, err := parametersStream.ReadStructure(NewDataStoreDeleteParam())
-
 	if err != nil {
-		go protocol.DeleteObjectHandler(err, client, callID, nil)
+		go protocol.DeleteObjectHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
 		return
 	}
 

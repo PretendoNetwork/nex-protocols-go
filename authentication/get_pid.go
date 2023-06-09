@@ -1,12 +1,14 @@
 package authentication
 
 import (
+	"fmt"
+
 	nex "github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
 // GetPID sets the GetPID handler function
-func (protocol *AuthenticationProtocol) GetPID(handler func(err error, client *nex.Client, callID uint32, username string)) {
+func (protocol *AuthenticationProtocol) GetPID(handler func(err error, client *nex.Client, callID uint32, strUserName string)) {
 	protocol.GetPIDHandler = handler
 }
 
@@ -25,12 +27,11 @@ func (protocol *AuthenticationProtocol) HandleGetPID(packet nex.PacketInterface)
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	username, err := parametersStream.ReadString()
-
+	strUserName, err := parametersStream.ReadString()
 	if err != nil {
-		go protocol.GetPIDHandler(err, client, callID, "")
+		go protocol.GetPIDHandler(fmt.Errorf("Failed to read strUserName from parameters. %s", err.Error()), client, callID, "")
 		return
 	}
 
-	go protocol.GetPIDHandler(nil, client, callID, username)
+	go protocol.GetPIDHandler(nil, client, callID, strUserName)
 }

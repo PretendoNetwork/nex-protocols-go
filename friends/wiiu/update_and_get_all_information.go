@@ -1,6 +1,8 @@
 package friends_wiiu
 
 import (
+	"fmt"
+
 	nex "github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
@@ -25,21 +27,23 @@ func (protocol *FriendsWiiUProtocol) HandleUpdateAndGetAllInformation(packet nex
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	nnaInfoStructureInterface, err := parametersStream.ReadStructure(NewNNAInfo())
+	nnaInfo, err := parametersStream.ReadStructure(NewNNAInfo())
 	if err != nil {
-		go protocol.UpdateAndGetAllInformationHandler(err, client, callID, nil, nil, nil)
+		go protocol.UpdateAndGetAllInformationHandler(fmt.Errorf("Failed to read nnaInfo from parameters. %s", err.Error()), client, callID, nil, nil, nil)
 		return
 	}
 
-	presenceStructureInterface, err := parametersStream.ReadStructure(NewNintendoPresenceV2())
+	presence, err := parametersStream.ReadStructure(NewNintendoPresenceV2())
 	if err != nil {
-		go protocol.UpdateAndGetAllInformationHandler(err, client, callID, nil, nil, nil)
+		go protocol.UpdateAndGetAllInformationHandler(fmt.Errorf("Failed to read presence from parameters. %s", err.Error()), client, callID, nil, nil, nil)
 		return
 	}
 
-	nnaInfo := nnaInfoStructureInterface.(*NNAInfo)
-	presence := presenceStructureInterface.(*NintendoPresenceV2)
-	birthday := nex.NewDateTime(parametersStream.ReadUInt64LE())
+	birthday, err := parametersStream.ReadDateTime()
+	if err != nil {
+		go protocol.UpdateAndGetAllInformationHandler(fmt.Errorf("Failed to read birthday from parameters. %s", err.Error()), client, callID, nil, nil, nil)
+		return
+	}
 
-	go protocol.UpdateAndGetAllInformationHandler(nil, client, callID, nnaInfo, presence, birthday)
+	go protocol.UpdateAndGetAllInformationHandler(nil, client, callID, nnaInfo.(*NNAInfo), presence.(*NintendoPresenceV2), birthday)
 }

@@ -1,6 +1,8 @@
 package matchmake_extension
 
 import (
+	"fmt"
+
 	nex "github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 	match_making "github.com/PretendoNetwork/nex-protocols-go/match-making"
@@ -28,7 +30,7 @@ func (protocol *MatchmakeExtensionProtocol) HandleAutoMatchmakeWithParam_Postpon
 
 	autoMatchmakeParam, err := parametersStream.ReadStructure(match_making.NewAutoMatchmakeParam())
 	if err != nil {
-		go protocol.AutoMatchmakeWithParam_PostponeHandler(err, client, callID, nil)
+		go protocol.AutoMatchmakeWithParam_PostponeHandler(fmt.Errorf("Failed to read autoMatchmakeParam from parameters. %s", err.Error()), client, callID, nil)
 		return
 	}
 

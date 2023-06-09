@@ -18,5 +18,4 @@ func (protocol *ScreeningProtocol) HandleReportDataStoreContent(packet nex.Packe
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
 	}
-
 }

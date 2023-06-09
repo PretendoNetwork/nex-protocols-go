@@ -1,6 +1,8 @@
 package friends_3ds
 
 import (
+	"fmt"
+
 	nex "github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
@@ -25,9 +27,23 @@ func (protocol *Friends3DSProtocol) HandleSyncFriend(packet nex.PacketInterface)
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	lfc := parametersStream.ReadUInt64LE()
-	pids := parametersStream.ReadListUInt32LE()
-	lfcList := parametersStream.ReadListUInt64LE()
+	lfc, err := parametersStream.ReadUInt64LE()
+	if err != nil {
+		go protocol.SyncFriendHandler(fmt.Errorf("Failed to read lfc from parameters. %s", err.Error()), client, callID, 0, nil, nil)
+		return
+	}
+
+	pids, err := parametersStream.ReadListUInt32LE()
+	if err != nil {
+		go protocol.SyncFriendHandler(fmt.Errorf("Failed to read pids from parameters. %s", err.Error()), client, callID, 0, nil, nil)
+		return
+	}
+
+	lfcList, err := parametersStream.ReadListUInt64LE()
+	if err != nil {
+		go protocol.SyncFriendHandler(fmt.Errorf("Failed to read lfcList from parameters. %s", err.Error()), client, callID, 0, nil, nil)
+		return
+	}
 
 	go protocol.SyncFriendHandler(nil, client, callID, lfc, pids, lfcList)
 }

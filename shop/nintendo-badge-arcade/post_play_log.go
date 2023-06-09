@@ -1,6 +1,8 @@
 package shop_nintendo_badge_arcade
 
 import (
+	"fmt"
+
 	nex "github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
@@ -27,7 +29,7 @@ func (protocol *ShopNintendoBadgeArcadeProtocol) HandlePostPlayLog(packet nex.Pa
 
 	param, err := parametersStream.ReadStructure(NewShopPostPlayLogParam())
 	if err != nil {
-		go protocol.PostPlayLogHandler(err, client, callID, nil)
+		go protocol.PostPlayLogHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
 		return
 	}
 

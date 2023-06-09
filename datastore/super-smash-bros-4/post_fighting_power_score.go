@@ -1,6 +1,8 @@
 package datastore_super_smash_bros_4
 
 import (
+	"fmt"
+
 	nex "github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
@@ -27,7 +29,7 @@ func (protocol *DataStoreSuperSmashBros4Protocol) HandlePostFightingPowerScore(p
 
 	params, err := parametersStream.ReadListStructure(NewDataStorePostFightingPowerScoreParam())
 	if err != nil {
-		go protocol.PostFightingPowerScoreHandler(err, client, callID, nil)
+		go protocol.PostFightingPowerScoreHandler(fmt.Errorf("Failed to read params from parameters. %s", err.Error()), client, callID, nil)
 		return
 	}
 

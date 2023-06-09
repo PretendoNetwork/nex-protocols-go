@@ -18,5 +18,4 @@ func (protocol *DebugProtocol) HandleGetApiCallSummary(packet nex.PacketInterfac
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
 	}
-
 }

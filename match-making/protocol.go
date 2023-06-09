@@ -38,7 +38,7 @@ type MatchMakingProtocol struct {
 	FindBySingleIDHandler       func(err error, client *nex.Client, callID uint32, id uint32)
 	UpdateSessionHostV1Handler  func(err error, client *nex.Client, callID uint32, gatheringId uint32)
 	GetSessionURLsHandler       func(err error, client *nex.Client, callID uint32, gatheringId uint32)
-	UpdateSessionHostHandler    func(err error, client *nex.Client, callID uint32, gatheringId uint32)
+	UpdateSessionHostHandler    func(err error, client *nex.Client, callID uint32, gatheringId uint32, isMigrateOwner bool)
 }
 
 // Setup initializes the protocol

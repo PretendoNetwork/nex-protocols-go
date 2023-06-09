@@ -1,6 +1,8 @@
 package nat_traversal
 
 import (
+	"fmt"
+
 	nex "github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
@@ -24,11 +26,16 @@ func (protocol *NATTraversalProtocol) HandleRequestProbeInitiationExt(packet nex
 	parameters := request.Parameters()
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
-	targetList := parametersStream.ReadListString()
-	stationToProbe, err := parametersStream.ReadString()
 
+	targetList, err := parametersStream.ReadListString()
 	if err != nil {
-		go protocol.RequestProbeInitiationExtHandler(err, client, callID, nil, "")
+		go protocol.RequestProbeInitiationExtHandler(fmt.Errorf("Failed to read targetList from parameters. %s", err.Error()), client, callID, nil, "")
+		return
+	}
+
+	stationToProbe, err := parametersStream.ReadString()
+	if err != nil {
+		go protocol.RequestProbeInitiationExtHandler(fmt.Errorf("Failed to read stationToProbe from parameters. %s", err.Error()), client, callID, nil, "")
 		return
 	}
 

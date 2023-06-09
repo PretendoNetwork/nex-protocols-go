@@ -1,6 +1,8 @@
 package utility
 
 import (
+	"fmt"
+
 	nex "github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
@@ -26,12 +28,11 @@ func (protocol *UtilityProtocol) HandleAssociateNexUniqueIDWithMyPrincipalID(pac
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	uniqueIDInfoStructureInterface, err := parametersStream.ReadStructure(NewUniqueIDInfo())
+	uniqueIDInfo, err := parametersStream.ReadStructure(NewUniqueIDInfo())
 	if err != nil {
-		go protocol.AssociateNexUniqueIDWithMyPrincipalIDHandler(nil, client, callID, nil)
+		go protocol.AssociateNexUniqueIDWithMyPrincipalIDHandler(fmt.Errorf("Failed to read uniqueIDInfo from parameters. %s", err.Error()), client, callID, nil)
 		return
 	}
-	uniqueIDInfo := uniqueIDInfoStructureInterface.(*UniqueIDInfo)
 
-	go protocol.AssociateNexUniqueIDWithMyPrincipalIDHandler(nil, client, callID, uniqueIDInfo)
+	go protocol.AssociateNexUniqueIDWithMyPrincipalIDHandler(nil, client, callID, uniqueIDInfo.(*UniqueIDInfo))
 }

@@ -1,6 +1,8 @@
 package datastore_super_smash_bros_4
 
 import (
+	"fmt"
+
 	nex "github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
@@ -25,7 +27,11 @@ func (protocol *DataStoreSuperSmashBros4Protocol) HandleGetProfiles(packet nex.P
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	pidList := parametersStream.ReadListUInt32LE()
+	pidList, err := parametersStream.ReadListUInt32LE()
+	if err != nil {
+		go protocol.GetProfilesHandler(fmt.Errorf("Failed to read pidList from parameters. %s", err.Error()), client, callID, nil)
+		return
+	}
 
 	go protocol.GetProfilesHandler(nil, client, callID, pidList)
 }

@@ -1,7 +1,7 @@
 package datastore
 
 import (
-	"errors"
+	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
@@ -27,14 +27,17 @@ func (protocol *DataStoreProtocol) HandleGetPersistenceInfo(packet nex.PacketInt
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	if len(parametersStream.Bytes()[parametersStream.ByteOffset():]) < 6 {
-		err := errors.New("[DataStore::GetPersistenceInfo] Data length too small")
-		go protocol.GetPersistenceInfoHandler(err, client, callID, 0, 0)
+	ownerID, err := parametersStream.ReadUInt32LE()
+	if err != nil {
+		go protocol.GetPersistenceInfoHandler(fmt.Errorf("Failed to read ownerID from parameters. %s", err.Error()), client, callID, 0, 0)
 		return
 	}
 
-	ownerID := parametersStream.ReadUInt32LE()
-	persistenceSlotID := parametersStream.ReadUInt16LE()
+	persistenceSlotID, err := parametersStream.ReadUInt16LE()
+	if err != nil {
+		go protocol.GetPersistenceInfoHandler(fmt.Errorf("Failed to read persistenceSlotID from parameters. %s", err.Error()), client, callID, 0, 0)
+		return
+	}
 
 	go protocol.GetPersistenceInfoHandler(nil, client, callID, ownerID, persistenceSlotID)
 }

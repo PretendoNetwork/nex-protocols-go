@@ -1,6 +1,8 @@
 package matchmake_extension
 
 import (
+	"fmt"
+
 	nex "github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
@@ -25,12 +27,27 @@ func (protocol *MatchmakeExtensionProtocol) HandleUpdateNotificationData(packet 
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	uiType := parametersStream.ReadUInt32LE()
-	uiParam1 := parametersStream.ReadUInt32LE()
-	uiParam2 := parametersStream.ReadUInt32LE()
+	uiType, err := parametersStream.ReadUInt32LE()
+	if err != nil {
+		go protocol.UpdateNotificationDataHandler(fmt.Errorf("Failed to read uiType from parameters. %s", err.Error()), client, callID, 0, 0, 0, "")
+		return
+	}
+
+	uiParam1, err := parametersStream.ReadUInt32LE()
+	if err != nil {
+		go protocol.UpdateNotificationDataHandler(fmt.Errorf("Failed to read uiParam1 from parameters. %s", err.Error()), client, callID, 0, 0, 0, "")
+		return
+	}
+
+	uiParam2, err := parametersStream.ReadUInt32LE()
+	if err != nil {
+		go protocol.UpdateNotificationDataHandler(fmt.Errorf("Failed to read uiParam2 from parameters. %s", err.Error()), client, callID, 0, 0, 0, "")
+		return
+	}
+
 	strParam, err := parametersStream.ReadString()
 	if err != nil {
-		go protocol.UpdateNotificationDataHandler(err, client, callID, 0, 0, 0, "")
+		go protocol.UpdateNotificationDataHandler(fmt.Errorf("Failed to read strParam from parameters. %s", err.Error()), client, callID, 0, 0, 0, "")
 		return
 	}
 

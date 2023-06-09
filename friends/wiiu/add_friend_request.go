@@ -1,7 +1,7 @@
 package friends_wiiu
 
 import (
-	"errors"
+	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
@@ -27,45 +27,46 @@ func (protocol *FriendsWiiUProtocol) HandleAddFriendRequest(packet nex.PacketInt
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	if len(parametersStream.Bytes()[parametersStream.ByteOffset():]) < 4+1+1+8 {
-		// length check for the following fixed-size data
-		// unknown1 + unknown2 + unknown4 + gameKey + unknown6
-		err := errors.New("[FriendsWiiU::AddFriendRequest] Data holder not long enough for PID")
-		go protocol.AddFriendRequestHandler(err, client, callID, 0, 0, "", 0, "", nil, nil)
+	pid, err := parametersStream.ReadUInt32LE()
+	if err != nil {
+		go protocol.AddFriendRequestHandler(fmt.Errorf("Failed to read pid from parameters. %s", err.Error()), client, callID, 0, 0, "", 0, "", nil, nil)
+		return
+	}
+	unknown2, err := parametersStream.ReadUInt8()
+	if err != nil {
+		go protocol.AddFriendRequestHandler(fmt.Errorf("Failed to read unknown2 from parameters. %s", err.Error()), client, callID, 0, 0, "", 0, "", nil, nil)
 		return
 	}
 
-	pid := parametersStream.ReadUInt32LE()
-	unknown2 := parametersStream.ReadUInt8()
 	message, err := parametersStream.ReadString()
-
 	if err != nil {
-		go protocol.AddFriendRequestHandler(err, client, callID, 0, 0, "", 0, "", nil, nil)
+		go protocol.AddFriendRequestHandler(fmt.Errorf("Failed to read message from parameters. %s", err.Error()), client, callID, 0, 0, "", 0, "", nil, nil)
 		return
 	}
 
-	unknown4 := parametersStream.ReadUInt8()
+	unknown4, err := parametersStream.ReadUInt8()
+	if err != nil {
+		go protocol.AddFriendRequestHandler(fmt.Errorf("Failed to read unknown4 from parameters. %s", err.Error()), client, callID, 0, 0, "", 0, "", nil, nil)
+		return
+	}
+
 	unknown5, err := parametersStream.ReadString()
-
 	if err != nil {
-		go protocol.AddFriendRequestHandler(err, client, callID, 0, 0, "", 0, "", nil, nil)
+		go protocol.AddFriendRequestHandler(fmt.Errorf("Failed to read unknown5 from parameters. %s", err.Error()), client, callID, 0, 0, "", 0, "", nil, nil)
 		return
 	}
 
-	gameKeyStructureInterface, err := parametersStream.ReadStructure(NewGameKey())
+	gameKey, err := parametersStream.ReadStructure(NewGameKey())
 	if err != nil {
-		go protocol.AddFriendRequestHandler(err, client, callID, 0, 0, "", 0, "", nil, nil)
+		go protocol.AddFriendRequestHandler(fmt.Errorf("Failed to read gameKey from parameters. %s", err.Error()), client, callID, 0, 0, "", 0, "", nil, nil)
 		return
 	}
 
-	gameKey := gameKeyStructureInterface.(*GameKey)
-
+	unknown6, err := parametersStream.ReadDateTime()
 	if err != nil {
-		go protocol.AddFriendRequestHandler(err, client, callID, 0, 0, "", 0, "", nil, nil)
+		go protocol.AddFriendRequestHandler(fmt.Errorf("Failed to read unknown6 from parameters. %s", err.Error()), client, callID, 0, 0, "", 0, "", nil, nil)
 		return
 	}
 
-	unknown6 := nex.NewDateTime(parametersStream.ReadUInt64LE())
-
-	go protocol.AddFriendRequestHandler(nil, client, callID, pid, unknown2, message, unknown4, unknown5, gameKey, unknown6)
+	go protocol.AddFriendRequestHandler(nil, client, callID, pid, unknown2, message, unknown4, unknown5, gameKey.(*GameKey), unknown6)
 }

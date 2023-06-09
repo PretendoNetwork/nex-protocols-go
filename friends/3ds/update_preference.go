@@ -1,6 +1,8 @@
 package friends_3ds
 
 import (
+	"fmt"
+
 	nex "github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
@@ -25,9 +27,23 @@ func (protocol *Friends3DSProtocol) HandleUpdatePreference(packet nex.PacketInte
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	publicMode := (parametersStream.ReadUInt8() == 1)
-	showGame := (parametersStream.ReadUInt8() == 1)
-	showPlayedGame := (parametersStream.ReadUInt8() == 1)
+	publicMode, err := parametersStream.ReadBool()
+	if err != nil {
+		go protocol.UpdatePreferenceHandler(fmt.Errorf("Failed to read publicMode from parameters. %s", err.Error()), client, callID, false, false, false)
+		return
+	}
+
+	showGame, err := parametersStream.ReadBool()
+	if err != nil {
+		go protocol.UpdatePreferenceHandler(fmt.Errorf("Failed to read showGame from parameters. %s", err.Error()), client, callID, false, false, false)
+		return
+	}
+
+	showPlayedGame, err := parametersStream.ReadBool()
+	if err != nil {
+		go protocol.UpdatePreferenceHandler(fmt.Errorf("Failed to read showPlayedGame from parameters. %s", err.Error()), client, callID, false, false, false)
+		return
+	}
 
 	go protocol.UpdatePreferenceHandler(nil, client, callID, publicMode, showGame, showPlayedGame)
 }

@@ -2,7 +2,7 @@ package datastore
 
 import (
 	"bytes"
-	"errors"
+	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
 )
@@ -15,8 +15,17 @@ type DataStoreNotificationV1 struct {
 
 // ExtractFromStream extracts a DataStoreNotificationV1 structure from a stream
 func (dataStoreNotificationV1 *DataStoreNotificationV1) ExtractFromStream(stream *nex.StreamIn) error {
-	dataStoreNotificationV1.NotificationID = stream.ReadUInt64LE()
-	dataStoreNotificationV1.DataID = stream.ReadUInt32LE()
+	var err error
+
+	dataStoreNotificationV1.NotificationID, err = stream.ReadUInt64LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreNotificationV1.NotificationID. %s", err.Error())
+	}
+
+	dataStoreNotificationV1.DataID, err = stream.ReadUInt32LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreNotificationV1.DataID. %s", err.Error())
+	}
 
 	return nil
 }
@@ -67,8 +76,17 @@ type DataStoreNotification struct {
 
 // ExtractFromStream extracts a DataStoreNotification structure from a stream
 func (dataStoreNotification *DataStoreNotification) ExtractFromStream(stream *nex.StreamIn) error {
-	dataStoreNotification.NotificationID = stream.ReadUInt64LE()
-	dataStoreNotification.DataID = stream.ReadUInt64LE()
+	var err error
+
+	dataStoreNotification.NotificationID, err = stream.ReadUInt64LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreNotification.NotificationID. %s", err.Error())
+	}
+
+	dataStoreNotification.DataID, err = stream.ReadUInt64LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreNotification.DataID. %s", err.Error())
+	}
 
 	return nil
 }
@@ -118,7 +136,12 @@ type DataStoreGetSpecificMetaParamV1 struct {
 
 // ExtractFromStream extracts a DataStoreGetSpecificMetaParamV1 structure from a stream
 func (dataStoreGetSpecificMetaParamV1 *DataStoreGetSpecificMetaParamV1) ExtractFromStream(stream *nex.StreamIn) error {
-	dataStoreGetSpecificMetaParamV1.DataIDs = stream.ReadListUInt32LE()
+	var err error
+
+	dataStoreGetSpecificMetaParamV1.DataIDs, err = stream.ReadListUInt32LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreGetSpecificMetaParamV1.DataIDs. %s", err.Error())
+	}
 
 	return nil
 }
@@ -170,7 +193,12 @@ type DataStoreGetSpecificMetaParam struct {
 
 // ExtractFromStream extracts a DataStoreGetSpecificMetaParam structure from a stream
 func (dataStoreGetSpecificMetaParam *DataStoreGetSpecificMetaParam) ExtractFromStream(stream *nex.StreamIn) error {
-	dataStoreGetSpecificMetaParam.DataIDs = stream.ReadListUInt64LE()
+	var err error
+
+	dataStoreGetSpecificMetaParam.DataIDs, err = stream.ReadListUInt64LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreGetSpecificMetaParam.DataIDs. %s", err.Error())
+	}
 
 	return nil
 }
@@ -226,11 +254,32 @@ type DataStoreSpecificMetaInfoV1 struct {
 
 // ExtractFromStream extracts a DataStoreSpecificMetaInfoV1 structure from a stream
 func (dataStoreSpecificMetaInfoV1 *DataStoreSpecificMetaInfoV1) ExtractFromStream(stream *nex.StreamIn) error {
-	dataStoreSpecificMetaInfoV1.DataID = stream.ReadUInt32LE()
-	dataStoreSpecificMetaInfoV1.OwnerID = stream.ReadUInt32LE()
-	dataStoreSpecificMetaInfoV1.Size = stream.ReadUInt32LE()
-	dataStoreSpecificMetaInfoV1.DataType = stream.ReadUInt16LE()
-	dataStoreSpecificMetaInfoV1.Version = stream.ReadUInt16LE()
+	var err error
+
+	dataStoreSpecificMetaInfoV1.DataID, err = stream.ReadUInt32LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreSpecificMetaInfoV1.DataID. %s", err.Error())
+	}
+
+	dataStoreSpecificMetaInfoV1.OwnerID, err = stream.ReadUInt32LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreSpecificMetaInfoV1.OwnerID. %s", err.Error())
+	}
+
+	dataStoreSpecificMetaInfoV1.Size, err = stream.ReadUInt32LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreSpecificMetaInfoV1.Size. %s", err.Error())
+	}
+
+	dataStoreSpecificMetaInfoV1.DataType, err = stream.ReadUInt16LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreSpecificMetaInfoV1.DataType. %s", err.Error())
+	}
+
+	dataStoreSpecificMetaInfoV1.Version, err = stream.ReadUInt16LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreSpecificMetaInfoV1.Version. %s", err.Error())
+	}
 
 	return nil
 }
@@ -302,11 +351,32 @@ type DataStoreSpecificMetaInfo struct {
 
 // ExtractFromStream extracts a DataStoreSpecificMetaInfo structure from a stream
 func (dataStoreSpecificMetaInfo *DataStoreSpecificMetaInfo) ExtractFromStream(stream *nex.StreamIn) error {
-	dataStoreSpecificMetaInfo.DataID = stream.ReadUInt64LE()
-	dataStoreSpecificMetaInfo.OwnerID = stream.ReadUInt32LE()
-	dataStoreSpecificMetaInfo.Size = stream.ReadUInt32LE()
-	dataStoreSpecificMetaInfo.DataType = stream.ReadUInt16LE()
-	dataStoreSpecificMetaInfo.Version = stream.ReadUInt32LE()
+	var err error
+
+	dataStoreSpecificMetaInfo.DataID, err = stream.ReadUInt64LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreSpecificMetaInfo.DataID. %s", err.Error())
+	}
+
+	dataStoreSpecificMetaInfo.OwnerID, err = stream.ReadUInt32LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreSpecificMetaInfo.OwnerID. %s", err.Error())
+	}
+
+	dataStoreSpecificMetaInfo.Size, err = stream.ReadUInt32LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreSpecificMetaInfo.Size. %s", err.Error())
+	}
+
+	dataStoreSpecificMetaInfo.DataType, err = stream.ReadUInt16LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreSpecificMetaInfo.DataType. %s", err.Error())
+	}
+
+	dataStoreSpecificMetaInfo.Version, err = stream.ReadUInt32LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreSpecificMetaInfo.Version. %s", err.Error())
+	}
 
 	return nil
 }
@@ -376,9 +446,22 @@ type DataStoreTouchObjectParam struct {
 
 // ExtractFromStream extracts a DataStoreTouchObjectParam structure from a stream
 func (dataStoreTouchObjectParam *DataStoreTouchObjectParam) ExtractFromStream(stream *nex.StreamIn) error {
-	dataStoreTouchObjectParam.DataID = stream.ReadUInt64LE()
-	dataStoreTouchObjectParam.LockID = stream.ReadUInt32LE()
-	dataStoreTouchObjectParam.AccessPassword = stream.ReadUInt64LE()
+	var err error
+
+	dataStoreTouchObjectParam.DataID, err = stream.ReadUInt64LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreTouchObjectParam.DataID. %s", err.Error())
+	}
+
+	dataStoreTouchObjectParam.LockID, err = stream.ReadUInt32LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreTouchObjectParam.LockID. %s", err.Error())
+	}
+
+	dataStoreTouchObjectParam.AccessPassword, err = stream.ReadUInt64LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreTouchObjectParam.AccessPassword. %s", err.Error())
+	}
 
 	return nil
 }
@@ -437,10 +520,27 @@ type DataStoreRatingLog struct {
 
 // ExtractFromStream extracts a DataStoreRatingLog structure from a stream
 func (dataStoreRatingLog *DataStoreRatingLog) ExtractFromStream(stream *nex.StreamIn) error {
-	dataStoreRatingLog.IsRated = stream.ReadUInt8() == 1
-	dataStoreRatingLog.Pid = stream.ReadUInt32LE()
-	dataStoreRatingLog.RatingValue = int32(stream.ReadUInt32LE())
-	dataStoreRatingLog.LockExpirationTime = nex.NewDateTime(stream.ReadUInt64LE())
+	var err error
+
+	dataStoreRatingLog.IsRated, err = stream.ReadBool()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreRatingLog.IsRated. %s", err.Error())
+	}
+
+	dataStoreRatingLog.Pid, err = stream.ReadUInt32LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreRatingLog.Pid. %s", err.Error())
+	}
+
+	dataStoreRatingLog.RatingValue, err = stream.ReadInt32LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreRatingLog.RatingValue. %s", err.Error())
+	}
+
+	dataStoreRatingLog.LockExpirationTime, err = stream.ReadDateTime()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreRatingLog.LockExpirationTime. %s", err.Error())
+	}
 
 	return nil
 }
@@ -504,9 +604,22 @@ type DataStorePersistenceInfo struct {
 
 // ExtractFromStream extracts a DataStorePersistenceInfo structure from a stream
 func (dataStorePersistenceInfo *DataStorePersistenceInfo) ExtractFromStream(stream *nex.StreamIn) error {
-	dataStorePersistenceInfo.OwnerID = stream.ReadUInt32LE()
-	dataStorePersistenceInfo.PersistenceSlotID = stream.ReadUInt16LE()
-	dataStorePersistenceInfo.DataID = stream.ReadUInt64LE()
+	var err error
+
+	dataStorePersistenceInfo.OwnerID, err = stream.ReadUInt32LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStorePersistenceInfo.OwnerID. %s", err.Error())
+	}
+
+	dataStorePersistenceInfo.PersistenceSlotID, err = stream.ReadUInt16LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStorePersistenceInfo.PersistenceSlotID. %s", err.Error())
+	}
+
+	dataStorePersistenceInfo.DataID, err = stream.ReadUInt64LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStorePersistenceInfo.DataID. %s", err.Error())
+	}
 
 	return nil
 }
@@ -564,9 +677,22 @@ type DataStorePasswordInfo struct {
 
 // ExtractFromStream extracts a DataStorePasswordInfo structure from a stream
 func (dataStorePasswordInfo *DataStorePasswordInfo) ExtractFromStream(stream *nex.StreamIn) error {
-	dataStorePasswordInfo.DataID = stream.ReadUInt64LE()
-	dataStorePasswordInfo.AccessPassword = stream.ReadUInt64LE()
-	dataStorePasswordInfo.UpdatePassword = stream.ReadUInt64LE()
+	var err error
+
+	dataStorePasswordInfo.DataID, err = stream.ReadUInt64LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStorePasswordInfo.DataID. %s", err.Error())
+	}
+
+	dataStorePasswordInfo.AccessPassword, err = stream.ReadUInt64LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStorePasswordInfo.AccessPassword. %s", err.Error())
+	}
+
+	dataStorePasswordInfo.UpdatePassword, err = stream.ReadUInt64LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStorePasswordInfo.UpdatePassword. %s", err.Error())
+	}
 
 	return nil
 }
@@ -623,8 +749,17 @@ type DataStoreGetNewArrivedNotificationsParam struct {
 
 // ExtractFromStream extracts a DataStoreGetNewArrivedNotificationsParam structure from a stream
 func (dataStoreGetNewArrivedNotificationsParam *DataStoreGetNewArrivedNotificationsParam) ExtractFromStream(stream *nex.StreamIn) error {
-	dataStoreGetNewArrivedNotificationsParam.LastNotificationID = stream.ReadUInt64LE()
-	dataStoreGetNewArrivedNotificationsParam.Limit = stream.ReadUInt16LE()
+	var err error
+
+	dataStoreGetNewArrivedNotificationsParam.LastNotificationID, err = stream.ReadUInt64LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreGetNewArrivedNotificationsParam.LastNotificationID. %s", err.Error())
+	}
+
+	dataStoreGetNewArrivedNotificationsParam.Limit, err = stream.ReadUInt16LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreGetNewArrivedNotificationsParam.Limit. %s", err.Error())
+	}
 
 	return nil
 }
@@ -677,33 +812,27 @@ type DataStoreReqGetNotificationUrlInfo struct {
 
 // ExtractFromStream extracts a DataStoreReqGetNotificationUrlInfo structure from a stream
 func (dataStoreReqGetNotificationUrlInfo *DataStoreReqGetNotificationUrlInfo) ExtractFromStream(stream *nex.StreamIn) error {
-	url, err := stream.ReadString()
+	var err error
+
+	dataStoreReqGetNotificationUrlInfo.Url, err = stream.ReadString()
 	if err != nil {
-		return err
+		return fmt.Errorf("Failed to extract DataStoreReqGetNotificationUrlInfo.Url. %s", err.Error())
 	}
 
-	dataStoreReqGetNotificationUrlInfo.Url = url
-
-	key, err := stream.ReadString()
+	dataStoreReqGetNotificationUrlInfo.Key, err = stream.ReadString()
 	if err != nil {
-		return err
+		return fmt.Errorf("Failed to extract DataStoreReqGetNotificationUrlInfo.Key. %s", err.Error())
 	}
 
-	dataStoreReqGetNotificationUrlInfo.Key = key
-
-	query, err := stream.ReadString()
+	dataStoreReqGetNotificationUrlInfo.Query, err = stream.ReadString()
 	if err != nil {
-		return err
+		return fmt.Errorf("Failed to extract DataStoreReqGetNotificationUrlInfo.Query. %s", err.Error())
 	}
 
-	dataStoreReqGetNotificationUrlInfo.Query = query
-
-	rootCaCert, err := stream.ReadBuffer()
+	dataStoreReqGetNotificationUrlInfo.RootCaCert, err = stream.ReadBuffer()
 	if err != nil {
-		return err
+		return fmt.Errorf("Failed to extract DataStoreReqGetNotificationUrlInfo.RootCaCert. %s", err.Error())
 	}
-
-	dataStoreReqGetNotificationUrlInfo.RootCaCert = rootCaCert
 
 	return nil
 }
@@ -767,12 +896,12 @@ type DataStoreGetNotificationUrlParam struct {
 
 // ExtractFromStream extracts a DataStoreGetNotificationUrlParam structure from a stream
 func (dataStoreGetNotificationUrlParam *DataStoreGetNotificationUrlParam) ExtractFromStream(stream *nex.StreamIn) error {
-	previousUrl, err := stream.ReadString()
-	if err != nil {
-		return err
-	}
+	var err error
 
-	dataStoreGetNotificationUrlParam.PreviousUrl = previousUrl
+	dataStoreGetNotificationUrlParam.PreviousUrl, err = stream.ReadString()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreGetNotificationUrlParam.PreviousUrl. %s", err.Error())
+	}
 
 	return nil
 }
@@ -814,15 +943,23 @@ type DataStoreSearchResult struct {
 
 // ExtractFromStream extracts a DataStoreSearchResult structure from a stream
 func (dataStoreSearchResult *DataStoreSearchResult) ExtractFromStream(stream *nex.StreamIn) error {
-	dataStoreSearchResult.TotalCount = stream.ReadUInt32LE()
+	var err error
+
+	dataStoreSearchResult.TotalCount, err = stream.ReadUInt32LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreSearchResult.TotalCount. %s", err.Error())
+	}
 
 	result, err := stream.ReadListStructure(NewDataStoreMetaInfo())
 	if err != nil {
-		return err
+		return fmt.Errorf("Failed to extract DataStoreSearchResult.Result. %s", err.Error())
 	}
 
 	dataStoreSearchResult.Result = result.([]*DataStoreMetaInfo)
-	dataStoreSearchResult.TotalCountType = stream.ReadUInt8()
+	dataStoreSearchResult.TotalCountType, err = stream.ReadUInt8()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreSearchResult.TotalCountType. %s", err.Error())
+	}
 
 	return nil
 }
@@ -891,9 +1028,22 @@ type DataStoreCompleteUpdateParam struct {
 
 // ExtractFromStream extracts a DataStoreCompleteUpdateParam structure from a stream
 func (dataStoreCompleteUpdateParam *DataStoreCompleteUpdateParam) ExtractFromStream(stream *nex.StreamIn) error {
-	dataStoreCompleteUpdateParam.DataID = stream.ReadUInt64LE()
-	dataStoreCompleteUpdateParam.Version = stream.ReadUInt32LE()
-	dataStoreCompleteUpdateParam.IsSuccess = stream.ReadUInt8() == 1
+	var err error
+
+	dataStoreCompleteUpdateParam.DataID, err = stream.ReadUInt64LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreCompleteUpdateParam.DataID. %s", err.Error())
+	}
+
+	dataStoreCompleteUpdateParam.Version, err = stream.ReadUInt32LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreCompleteUpdateParam.Version. %s", err.Error())
+	}
+
+	dataStoreCompleteUpdateParam.IsSuccess, err = stream.ReadBool()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreCompleteUpdateParam.IsSuccess. %s", err.Error())
+	}
 
 	return nil
 }
@@ -953,35 +1103,36 @@ type DataStoreReqUpdateInfo struct {
 
 // ExtractFromStream extracts a DataStoreReqUpdateInfo structure from a stream
 func (dataStoreReqUpdateInfo *DataStoreReqUpdateInfo) ExtractFromStream(stream *nex.StreamIn) error {
-	dataStoreReqUpdateInfo.Version = stream.ReadUInt32LE()
+	var err error
 
-	url, err := stream.ReadString()
+	dataStoreReqUpdateInfo.Version, err = stream.ReadUInt32LE()
 	if err != nil {
-		return err
+		return fmt.Errorf("Failed to extract DataStoreReqUpdateInfo.Version. %s", err.Error())
 	}
 
-	dataStoreReqUpdateInfo.Url = url
+	dataStoreReqUpdateInfo.Url, err = stream.ReadString()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreReqUpdateInfo.Url. %s", err.Error())
+	}
 
 	requestHeaders, err := stream.ReadListStructure(NewDataStoreKeyValue())
 	if err != nil {
-		return err
+		return fmt.Errorf("Failed to extract DataStoreReqUpdateInfo.RequestHeaders. %s", err.Error())
 	}
 
 	dataStoreReqUpdateInfo.RequestHeaders = requestHeaders.([]*DataStoreKeyValue)
 
 	formFields, err := stream.ReadListStructure(NewDataStoreKeyValue())
 	if err != nil {
-		return err
+		return fmt.Errorf("Failed to extract DataStoreReqUpdateInfo.FormFields. %s", err.Error())
 	}
 
 	dataStoreReqUpdateInfo.FormFields = formFields.([]*DataStoreKeyValue)
 
-	rootCaCert, err := stream.ReadBuffer()
+	dataStoreReqUpdateInfo.RootCaCert, err = stream.ReadBuffer()
 	if err != nil {
-		return err
+		return fmt.Errorf("Failed to extract DataStoreReqUpdateInfo.RootCaCert. %s", err.Error())
 	}
-
-	dataStoreReqUpdateInfo.RootCaCert = rootCaCert
 
 	return nil
 }
@@ -1078,12 +1229,28 @@ type DataStorePrepareUpdateParam struct {
 func (dataStorePrepareUpdateParam *DataStorePrepareUpdateParam) ExtractFromStream(stream *nex.StreamIn) error {
 	datastoreVersion := stream.Server.DataStoreProtocolVersion()
 
-	dataStorePrepareUpdateParam.DataID = stream.ReadUInt64LE()
-	dataStorePrepareUpdateParam.Size = stream.ReadUInt32LE()
-	dataStorePrepareUpdateParam.UpdatePassword = stream.ReadUInt64LE()
+	var err error
+
+	dataStorePrepareUpdateParam.DataID, err = stream.ReadUInt64LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStorePrepareUpdateParam.DataID. %s", err.Error())
+	}
+
+	dataStorePrepareUpdateParam.Size, err = stream.ReadUInt32LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStorePrepareUpdateParam.Size. %s", err.Error())
+	}
+
+	dataStorePrepareUpdateParam.UpdatePassword, err = stream.ReadUInt64LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStorePrepareUpdateParam.UpdatePassword. %s", err.Error())
+	}
 
 	if datastoreVersion.Major >= 3 && datastoreVersion.Minor >= 5 {
-		dataStorePrepareUpdateParam.ExtraData = stream.ReadListString()
+		dataStorePrepareUpdateParam.ExtraData, err = stream.ReadListString()
+		if err != nil {
+			return fmt.Errorf("Failed to extract DataStorePrepareUpdateParam.ExtraData. %s", err.Error())
+		}
 	}
 
 	return nil
@@ -1167,39 +1334,55 @@ type DataStoreChangeMetaParamV1 struct {
 
 // ExtractFromStream extracts a DataStoreChangeMetaParamV1 structure from a stream
 func (dataStoreChangeMetaParamV1 *DataStoreChangeMetaParamV1) ExtractFromStream(stream *nex.StreamIn) error {
-	dataStoreChangeMetaParamV1.DataID = stream.ReadUInt64LE()
-	dataStoreChangeMetaParamV1.ModifiesFlag = stream.ReadUInt32LE()
+	var err error
 
-	name, err := stream.ReadString()
+	dataStoreChangeMetaParamV1.DataID, err = stream.ReadUInt64LE()
 	if err != nil {
-		return err
+		return fmt.Errorf("Failed to extract DataStoreChangeMetaParamV1.DataID. %s", err.Error())
 	}
 
-	dataStoreChangeMetaParamV1.Name = name
+	dataStoreChangeMetaParamV1.ModifiesFlag, err = stream.ReadUInt32LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreChangeMetaParamV1.ModifiesFlag. %s", err.Error())
+	}
+
+	dataStoreChangeMetaParamV1.Name, err = stream.ReadString()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreChangeMetaParamV1.Name. %s", err.Error())
+	}
 
 	permission, err := stream.ReadStructure(NewDataStorePermission())
 	if err != nil {
-		return err
+		return fmt.Errorf("Failed to extract DataStoreChangeMetaParamV1.Permission. %s", err.Error())
 	}
 
 	dataStoreChangeMetaParamV1.Permission = permission.(*DataStorePermission)
 
 	delPermission, err := stream.ReadStructure(NewDataStorePermission())
 	if err != nil {
-		return err
+		return fmt.Errorf("Failed to extract DataStoreChangeMetaParamV1.DelPermission. %s", err.Error())
 	}
 
 	dataStoreChangeMetaParamV1.DelPermission = delPermission.(*DataStorePermission)
-	dataStoreChangeMetaParamV1.Period = stream.ReadUInt16LE()
-
-	metaBinary, err := stream.ReadQBuffer()
+	dataStoreChangeMetaParamV1.Period, err = stream.ReadUInt16LE()
 	if err != nil {
-		return err
+		return fmt.Errorf("Failed to extract DataStoreChangeMetaParamV1.Period. %s", err.Error())
 	}
 
-	dataStoreChangeMetaParamV1.MetaBinary = metaBinary
-	dataStoreChangeMetaParamV1.Tags = stream.ReadListString()
-	dataStoreChangeMetaParamV1.UpdatePassword = stream.ReadUInt64LE()
+	dataStoreChangeMetaParamV1.MetaBinary, err = stream.ReadQBuffer()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreChangeMetaParamV1.MetaBinary. %s", err.Error())
+	}
+
+	dataStoreChangeMetaParamV1.Tags, err = stream.ReadListString()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreChangeMetaParamV1.Tags. %s", err.Error())
+	}
+
+	dataStoreChangeMetaParamV1.UpdatePassword, err = stream.ReadUInt64LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreChangeMetaParamV1.UpdatePassword. %s", err.Error())
+	}
 
 	return nil
 }
@@ -1304,8 +1487,17 @@ type DataStoreDeleteParam struct {
 
 // ExtractFromStream extracts a DataStoreDeleteParam structure from a stream
 func (dataStoreDeleteParam *DataStoreDeleteParam) ExtractFromStream(stream *nex.StreamIn) error {
-	dataStoreDeleteParam.DataID = stream.ReadUInt64LE()
-	dataStoreDeleteParam.UpdatePassword = stream.ReadUInt64LE()
+	var err error
+
+	dataStoreDeleteParam.DataID, err = stream.ReadUInt64LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreDeleteParam.DataID. %s", err.Error())
+	}
+
+	dataStoreDeleteParam.UpdatePassword, err = stream.ReadUInt64LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreDeleteParam.UpdatePassword. %s", err.Error())
+	}
 
 	return nil
 }
@@ -1356,8 +1548,17 @@ type DataStoreCompletePostParamV1 struct {
 
 // ExtractFromStream extracts a DataStoreCompletePostParamV1 structure from a stream
 func (dataStoreCompletePostParamV1 *DataStoreCompletePostParamV1) ExtractFromStream(stream *nex.StreamIn) error {
-	dataStoreCompletePostParamV1.DataID = stream.ReadUInt32LE()
-	dataStoreCompletePostParamV1.IsSuccess = stream.ReadUInt8() == 1
+	var err error
+
+	dataStoreCompletePostParamV1.DataID, err = stream.ReadUInt32LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreCompletePostParamV1.DataID. %s", err.Error())
+	}
+
+	dataStoreCompletePostParamV1.IsSuccess, err = stream.ReadBool()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreCompletePostParamV1.IsSuccess. %s", err.Error())
+	}
 
 	return nil
 }
@@ -1411,35 +1612,36 @@ type DataStoreReqPostInfoV1 struct {
 
 // ExtractFromStream extracts a DataStoreReqPostInfoV1 structure from a stream
 func (dataStoreReqPostInfoV1 *DataStoreReqPostInfoV1) ExtractFromStream(stream *nex.StreamIn) error {
-	dataStoreReqPostInfoV1.DataID = stream.ReadUInt32LE()
+	var err error
 
-	url, err := stream.ReadString()
+	dataStoreReqPostInfoV1.DataID, err = stream.ReadUInt32LE()
 	if err != nil {
-		return err
+		return fmt.Errorf("Failed to extract DataStoreReqPostInfoV1.DataID. %s", err.Error())
 	}
 
-	dataStoreReqPostInfoV1.Url = url
+	dataStoreReqPostInfoV1.Url, err = stream.ReadString()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreReqPostInfoV1.Url. %s", err.Error())
+	}
 
 	requestHeaders, err := stream.ReadListStructure(NewDataStoreKeyValue())
 	if err != nil {
-		return err
+		return fmt.Errorf("Failed to extract DataStoreReqPostInfoV1.RequestHeaders. %s", err.Error())
 	}
 
 	dataStoreReqPostInfoV1.RequestHeaders = requestHeaders.([]*DataStoreKeyValue)
 
 	formFields, err := stream.ReadListStructure(NewDataStoreKeyValue())
 	if err != nil {
-		return err
+		return fmt.Errorf("Failed to extract DataStoreReqPostInfoV1.FormFields. %s", err.Error())
 	}
 
 	dataStoreReqPostInfoV1.FormFields = formFields.([]*DataStoreKeyValue)
 
-	rootCaCert, err := stream.ReadBuffer()
+	dataStoreReqPostInfoV1.RootCaCert, err = stream.ReadBuffer()
 	if err != nil {
-		return err
+		return fmt.Errorf("Failed to extract DataStoreReqPostInfoV1.RootCaCert. %s", err.Error())
 	}
-
-	dataStoreReqPostInfoV1.RootCaCert = rootCaCert
 
 	return nil
 }
@@ -1542,44 +1744,64 @@ type DataStorePreparePostParamV1 struct {
 
 // ExtractFromStream extracts a DataStorePreparePostParamV1 structure from a stream
 func (dataStorePreparePostParamV1 *DataStorePreparePostParamV1) ExtractFromStream(stream *nex.StreamIn) error {
-	dataStorePreparePostParamV1.Size = stream.ReadUInt32LE()
+	var err error
 
-	name, err := stream.ReadString()
+	dataStorePreparePostParamV1.Size, err = stream.ReadUInt32LE()
 	if err != nil {
-		return err
+		return fmt.Errorf("Failed to extract DataStorePreparePostParamV1.Size. %s", err.Error())
 	}
 
-	dataStorePreparePostParamV1.Name = name
-	dataStorePreparePostParamV1.DataType = stream.ReadUInt16LE()
-
-	metaBinary, err := stream.ReadQBuffer()
+	dataStorePreparePostParamV1.Name, err = stream.ReadString()
 	if err != nil {
-		return err
+		return fmt.Errorf("Failed to extract DataStorePreparePostParamV1.Name. %s", err.Error())
 	}
 
-	dataStorePreparePostParamV1.MetaBinary = metaBinary
+	dataStorePreparePostParamV1.DataType, err = stream.ReadUInt16LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStorePreparePostParamV1.DataType. %s", err.Error())
+	}
+
+	dataStorePreparePostParamV1.MetaBinary, err = stream.ReadQBuffer()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStorePreparePostParamV1.MetaBinary. %s", err.Error())
+	}
 
 	permission, err := stream.ReadStructure(NewDataStorePermission())
 	if err != nil {
-		return err
+		return fmt.Errorf("Failed to extract DataStorePreparePostParamV1.Permission. %s", err.Error())
 	}
 
 	dataStorePreparePostParamV1.Permission = permission.(*DataStorePermission)
 
 	delPermission, err := stream.ReadStructure(NewDataStorePermission())
 	if err != nil {
-		return err
+		return fmt.Errorf("Failed to extract DataStorePreparePostParamV1.DelPermission. %s", err.Error())
 	}
 
 	dataStorePreparePostParamV1.DelPermission = delPermission.(*DataStorePermission)
-	dataStorePreparePostParamV1.Flag = stream.ReadUInt32LE()
-	dataStorePreparePostParamV1.Period = stream.ReadUInt16LE()
-	dataStorePreparePostParamV1.ReferDataID = stream.ReadUInt32LE()
-	dataStorePreparePostParamV1.Tags = stream.ReadListString()
+	dataStorePreparePostParamV1.Flag, err = stream.ReadUInt32LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStorePreparePostParamV1.Flag. %s", err.Error())
+	}
+
+	dataStorePreparePostParamV1.Period, err = stream.ReadUInt16LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStorePreparePostParamV1.Period. %s", err.Error())
+	}
+
+	dataStorePreparePostParamV1.ReferDataID, err = stream.ReadUInt32LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStorePreparePostParamV1.ReferDataID. %s", err.Error())
+	}
+
+	dataStorePreparePostParamV1.Tags, err = stream.ReadListString()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStorePreparePostParamV1.Tags. %s", err.Error())
+	}
 
 	ratingInitParams, err := stream.ReadListStructure(NewDataStoreRatingInitParamWithSlot())
 	if err != nil {
-		return err
+		return fmt.Errorf("Failed to extract DataStorePreparePostParamV1.RatingInitParams. %s", err.Error())
 	}
 
 	dataStorePreparePostParamV1.RatingInitParams = ratingInitParams.([]*DataStoreRatingInitParamWithSlot)
@@ -1711,27 +1933,28 @@ type DataStoreReqGetInfoV1 struct {
 
 // ExtractFromStream extracts a DataStoreReqGetInfoV1 structure from a stream
 func (dataStoreReqGetInfoV1 *DataStoreReqGetInfoV1) ExtractFromStream(stream *nex.StreamIn) error {
-	url, err := stream.ReadString()
-	if err != nil {
-		return err
-	}
+	var err error
 
-	dataStoreReqGetInfoV1.Url = url
+	dataStoreReqGetInfoV1.Url, err = stream.ReadString()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreReqGetInfoV1.Url. %s", err.Error())
+	}
 
 	requestHeaders, err := stream.ReadListStructure(NewDataStoreKeyValue())
 	if err != nil {
-		return err
+		return fmt.Errorf("Failed to extract DataStoreReqGetInfoV1.RequestHeaders. %s", err.Error())
 	}
 
 	dataStoreReqGetInfoV1.RequestHeaders = requestHeaders.([]*DataStoreKeyValue)
-	dataStoreReqGetInfoV1.Size = stream.ReadUInt32LE()
-
-	rootCaCert, err := stream.ReadBuffer()
+	dataStoreReqGetInfoV1.Size, err = stream.ReadUInt32LE()
 	if err != nil {
-		return err
+		return fmt.Errorf("Failed to extract DataStoreReqGetInfoV1.Size. %s", err.Error())
 	}
 
-	dataStoreReqGetInfoV1.RootCaCert = rootCaCert
+	dataStoreReqGetInfoV1.RootCaCert, err = stream.ReadBuffer()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreReqGetInfoV1.RootCaCert. %s", err.Error())
+	}
 
 	return nil
 }
@@ -1808,8 +2031,17 @@ type DataStorePrepareGetParamV1 struct {
 
 // ExtractFromStream extracts a DataStorePrepareGetParamV1 structure from a stream
 func (dataStorePrepareGetParamV1 *DataStorePrepareGetParamV1) ExtractFromStream(stream *nex.StreamIn) error {
-	dataStorePrepareGetParamV1.DataID = stream.ReadUInt32LE()
-	dataStorePrepareGetParamV1.LockID = stream.ReadUInt32LE()
+	var err error
+
+	dataStorePrepareGetParamV1.DataID, err = stream.ReadUInt32LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStorePrepareGetParamV1.DataID. %s", err.Error())
+	}
+
+	dataStorePrepareGetParamV1.LockID, err = stream.ReadUInt32LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStorePrepareGetParamV1.LockID. %s", err.Error())
+	}
 
 	return nil
 }
@@ -1861,8 +2093,17 @@ type DataStoreRateObjectParam struct {
 
 // ExtractFromStream extracts a DataStoreRateObjectParam structure from a stream
 func (dataStoreRateObjectParam *DataStoreRateObjectParam) ExtractFromStream(stream *nex.StreamIn) error {
-	dataStoreRateObjectParam.RatingValue = int32(stream.ReadUInt32LE())
-	dataStoreRateObjectParam.AccessPassword = stream.ReadUInt64LE()
+	var err error
+
+	dataStoreRateObjectParam.RatingValue, err = stream.ReadInt32LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreRateObjectParam.RatingValue. %s", err.Error())
+	}
+
+	dataStoreRateObjectParam.AccessPassword, err = stream.ReadUInt64LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreRateObjectParam.AccessPassword. %s", err.Error())
+	}
 
 	return nil
 }
@@ -1906,8 +2147,17 @@ type DataStoreRatingTarget struct {
 
 // ExtractFromStream extracts a DataStoreRatingTarget structure from a stream
 func (dataStoreRatingTarget *DataStoreRatingTarget) ExtractFromStream(stream *nex.StreamIn) error {
-	dataStoreRatingTarget.DataID = stream.ReadUInt64LE()
-	dataStoreRatingTarget.Slot = stream.ReadUInt8()
+	var err error
+
+	dataStoreRatingTarget.DataID, err = stream.ReadUInt64LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreRatingTarget.DataID. %s", err.Error())
+	}
+
+	dataStoreRatingTarget.Slot, err = stream.ReadUInt8()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreRatingTarget.Slot. %s", err.Error())
+	}
 
 	return nil
 }
@@ -1951,8 +2201,17 @@ type DataStoreCompletePostParam struct {
 
 // ExtractFromStream extracts a DataStoreCompletePostParam structure from a stream
 func (dataStoreCompletePostParam *DataStoreCompletePostParam) ExtractFromStream(stream *nex.StreamIn) error {
-	dataStoreCompletePostParam.DataID = stream.ReadUInt64LE()
-	dataStoreCompletePostParam.IsSuccess = (stream.ReadUInt8() == 1)
+	var err error
+
+	dataStoreCompletePostParam.DataID, err = stream.ReadUInt64LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreCompletePostParam.DataID. %s", err.Error())
+	}
+
+	dataStoreCompletePostParam.IsSuccess, err = stream.ReadBool()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreCompletePostParam.IsSuccess. %s", err.Error())
+	}
 
 	return nil
 }
@@ -2086,8 +2345,17 @@ type DataStorePersistenceInitParam struct {
 
 // ExtractFromStream extracts a DataStorePersistenceInitParam structure from a stream
 func (dataStorePersistenceInitParam *DataStorePersistenceInitParam) ExtractFromStream(stream *nex.StreamIn) error {
-	dataStorePersistenceInitParam.PersistenceSlotId = stream.ReadUInt16LE()
-	dataStorePersistenceInitParam.DeleteLastObject = (stream.ReadUInt8() == 1)
+	var err error
+
+	dataStorePersistenceInitParam.PersistenceSlotId, err = stream.ReadUInt16LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStorePersistenceInitParam.PersistenceSlotId. %s", err.Error())
+	}
+
+	dataStorePersistenceInitParam.DeleteLastObject, err = stream.ReadBool()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStorePersistenceInitParam.DeleteLastObject. %s", err.Error())
+	}
 
 	return nil
 }
@@ -2137,14 +2405,47 @@ type DataStoreRatingInitParam struct {
 
 // ExtractFromStream extracts a DataStoreRatingInitParam structure from a stream
 func (dataStoreRatingInitParam *DataStoreRatingInitParam) ExtractFromStream(stream *nex.StreamIn) error {
-	dataStoreRatingInitParam.Flag = stream.ReadUInt8()
-	dataStoreRatingInitParam.InternalFlag = stream.ReadUInt8()
-	dataStoreRatingInitParam.LockType = stream.ReadUInt8()
-	dataStoreRatingInitParam.InitialValue = int64(stream.ReadUInt64LE())
-	dataStoreRatingInitParam.RangeMin = int32(stream.ReadUInt32LE())
-	dataStoreRatingInitParam.RangeMax = int32(stream.ReadUInt32LE())
-	dataStoreRatingInitParam.PeriodHour = int8(stream.ReadUInt8())
-	dataStoreRatingInitParam.PeriodDuration = int16(stream.ReadUInt16LE())
+	var err error
+
+	dataStoreRatingInitParam.Flag, err = stream.ReadUInt8()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreRatingInitParam.Flag. %s", err.Error())
+	}
+
+	dataStoreRatingInitParam.InternalFlag, err = stream.ReadUInt8()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreRatingInitParam.InternalFlag. %s", err.Error())
+	}
+
+	dataStoreRatingInitParam.LockType, err = stream.ReadUInt8()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreRatingInitParam.LockType. %s", err.Error())
+	}
+
+	dataStoreRatingInitParam.InitialValue, err = stream.ReadInt64LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreRatingInitParam.InitialValue. %s", err.Error())
+	}
+
+	dataStoreRatingInitParam.RangeMin, err = stream.ReadInt32LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreRatingInitParam.RangeMin. %s", err.Error())
+	}
+
+	dataStoreRatingInitParam.RangeMax, err = stream.ReadInt32LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreRatingInitParam.RangeMax. %s", err.Error())
+	}
+
+	dataStoreRatingInitParam.PeriodHour, err = stream.ReadInt8()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreRatingInitParam.PeriodHour. %s", err.Error())
+	}
+
+	dataStoreRatingInitParam.PeriodDuration, err = stream.ReadInt16LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreRatingInitParam.PeriodDuration. %s", err.Error())
+	}
 
 	return nil
 }
@@ -2218,11 +2519,16 @@ type DataStoreRatingInitParamWithSlot struct {
 
 // ExtractFromStream extracts a DataStoreRatingInitParamWithSlot structure from a stream
 func (dataStoreRatingInitParamWithSlot *DataStoreRatingInitParamWithSlot) ExtractFromStream(stream *nex.StreamIn) error {
-	dataStoreRatingInitParamWithSlot.Slot = int8(stream.ReadUInt8())
+	var err error
+
+	dataStoreRatingInitParamWithSlot.Slot, err = stream.ReadInt8()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreRatingInitParamWithSlot.Slot. %s", err.Error())
+	}
 
 	param, err := stream.ReadStructure(NewDataStoreRatingInitParam())
 	if err != nil {
-		return err
+		return fmt.Errorf("Failed to extract DataStoreRatingInitParamWithSlot.Param. %s", err.Error())
 	}
 
 	dataStoreRatingInitParamWithSlot.Param = param.(*DataStoreRatingInitParam)
@@ -2282,57 +2588,80 @@ type DataStorePreparePostParam struct {
 func (dataStorePreparePostParam *DataStorePreparePostParam) ExtractFromStream(stream *nex.StreamIn) error {
 	datastoreVersion := stream.Server.DataStoreProtocolVersion()
 
-	dataStorePreparePostParam.Size = stream.ReadUInt32LE()
+	var err error
 
-	name, err := stream.ReadString()
+	dataStorePreparePostParam.Size, err = stream.ReadUInt32LE()
 	if err != nil {
-		return err
+		return fmt.Errorf("Failed to extract DataStorePreparePostParam.Size. %s", err.Error())
 	}
 
-	dataStorePreparePostParam.Name = name
-	dataStorePreparePostParam.DataType = stream.ReadUInt16LE()
-
-	metaBinary, err := stream.ReadQBuffer()
+	dataStorePreparePostParam.Name, err = stream.ReadString()
 	if err != nil {
-		return err
+		return fmt.Errorf("Failed to extract DataStorePreparePostParam.Name. %s", err.Error())
 	}
 
-	dataStorePreparePostParam.MetaBinary = metaBinary
+	dataStorePreparePostParam.DataType, err = stream.ReadUInt16LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStorePreparePostParam.DataType. %s", err.Error())
+	}
+
+	dataStorePreparePostParam.MetaBinary, err = stream.ReadQBuffer()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStorePreparePostParam.MetaBinary. %s", err.Error())
+	}
 
 	permission, err := stream.ReadStructure(NewDataStorePermission())
 	if err != nil {
-		return err
+		return fmt.Errorf("Failed to extract DataStorePreparePostParam.Permission. %s", err.Error())
 	}
 
 	dataStorePreparePostParam.Permission = permission.(*DataStorePermission)
 
 	delPermission, err := stream.ReadStructure(NewDataStorePermission())
 	if err != nil {
-		return err
+		return fmt.Errorf("Failed to extract DataStorePreparePostParam.DelPermission. %s", err.Error())
 	}
 
 	dataStorePreparePostParam.DelPermission = delPermission.(*DataStorePermission)
-	dataStorePreparePostParam.Flag = stream.ReadUInt32LE()
-	dataStorePreparePostParam.Period = stream.ReadUInt16LE()
-	dataStorePreparePostParam.ReferDataId = stream.ReadUInt32LE()
-	dataStorePreparePostParam.Tags = stream.ReadListString()
+	dataStorePreparePostParam.Flag, err = stream.ReadUInt32LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStorePreparePostParam.Flag. %s", err.Error())
+	}
+
+	dataStorePreparePostParam.Period, err = stream.ReadUInt16LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStorePreparePostParam.Period. %s", err.Error())
+	}
+
+	dataStorePreparePostParam.ReferDataId, err = stream.ReadUInt32LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStorePreparePostParam.ReferDataId. %s", err.Error())
+	}
+
+	dataStorePreparePostParam.Tags, err = stream.ReadListString()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStorePreparePostParam.Tags. %s", err.Error())
+	}
 
 	ratingInitParams, err := stream.ReadListStructure(NewDataStoreRatingInitParamWithSlot())
 	if err != nil {
-		return err
+		return fmt.Errorf("Failed to extract DataStorePreparePostParam.RatingInitParams. %s", err.Error())
 	}
 
 	dataStorePreparePostParam.RatingInitParams = ratingInitParams.([]*DataStoreRatingInitParamWithSlot)
 
 	persistenceInitParam, err := stream.ReadStructure(NewDataStorePersistenceInitParam())
 	if err != nil {
-		return err
+		return fmt.Errorf("Failed to extract DataStorePreparePostParam.PersistenceInitParam. %s", err.Error())
 	}
 
 	dataStorePreparePostParam.PersistenceInitParam = persistenceInitParam.(*DataStorePersistenceInitParam)
 
 	if datastoreVersion.Major >= 3 && datastoreVersion.Minor >= 5 {
-		dataStorePreparePostParam.ExtraData = stream.ReadListString()
+		dataStorePreparePostParam.ExtraData, err = stream.ReadListString()
+		if err != nil {
+			return fmt.Errorf("Failed to extract DataStorePreparePostParam.ExtraData. %s", err.Error())
+		}
 	}
 
 	return nil
@@ -2480,32 +2809,94 @@ type DataStoreSearchParam struct {
 func (dataStoreSearchParam *DataStoreSearchParam) ExtractFromStream(stream *nex.StreamIn) error {
 	datastoreVersion := stream.Server.DataStoreProtocolVersion()
 
-	dataStoreSearchParam.SearchTarget = stream.ReadUInt8()
-	dataStoreSearchParam.OwnerIds = stream.ReadListUInt32LE()
-	dataStoreSearchParam.OwnerType = stream.ReadUInt8()
-	dataStoreSearchParam.DestinationIds = stream.ReadListUInt64LE()
-	dataStoreSearchParam.DataType = stream.ReadUInt16LE()
-	dataStoreSearchParam.CreatedAfter = nex.NewDateTime(stream.ReadUInt64LE())
-	dataStoreSearchParam.CreatedBefore = nex.NewDateTime(stream.ReadUInt64LE())
-	dataStoreSearchParam.UpdatedAfter = nex.NewDateTime(stream.ReadUInt64LE())
-	dataStoreSearchParam.UpdatedBefore = nex.NewDateTime(stream.ReadUInt64LE())
-	dataStoreSearchParam.ReferDataId = stream.ReadUInt32LE()
-	dataStoreSearchParam.Tags = stream.ReadListString()
-	dataStoreSearchParam.ResultOrderColumn = stream.ReadUInt8()
-	dataStoreSearchParam.ResultOrder = stream.ReadUInt8()
+	var err error
+
+	dataStoreSearchParam.SearchTarget, err = stream.ReadUInt8()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreSearchParam.SearchTarget. %s", err.Error())
+	}
+
+	dataStoreSearchParam.OwnerIds, err = stream.ReadListUInt32LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreSearchParam.OwnerIds. %s", err.Error())
+	}
+
+	dataStoreSearchParam.OwnerType, err = stream.ReadUInt8()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreSearchParam.OwnerType. %s", err.Error())
+	}
+
+	dataStoreSearchParam.DestinationIds, err = stream.ReadListUInt64LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreSearchParam.DestinationIds. %s", err.Error())
+	}
+
+	dataStoreSearchParam.DataType, err = stream.ReadUInt16LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreSearchParam.DataType. %s", err.Error())
+	}
+
+	dataStoreSearchParam.CreatedAfter, err = stream.ReadDateTime()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreSearchParam.CreatedAfter. %s", err.Error())
+	}
+
+	dataStoreSearchParam.CreatedBefore, err = stream.ReadDateTime()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreSearchParam.CreatedBefore. %s", err.Error())
+	}
+
+	dataStoreSearchParam.UpdatedAfter, err = stream.ReadDateTime()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreSearchParam.UpdatedAfter. %s", err.Error())
+	}
+
+	dataStoreSearchParam.UpdatedBefore, err = stream.ReadDateTime()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreSearchParam.UpdatedBefore. %s", err.Error())
+	}
+
+	dataStoreSearchParam.ReferDataId, err = stream.ReadUInt32LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreSearchParam.ReferDataId. %s", err.Error())
+	}
+
+	dataStoreSearchParam.Tags, err = stream.ReadListString()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreSearchParam.Tags. %s", err.Error())
+	}
+
+	dataStoreSearchParam.ResultOrderColumn, err = stream.ReadUInt8()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreSearchParam.ResultOrderColumn. %s", err.Error())
+	}
+
+	dataStoreSearchParam.ResultOrder, err = stream.ReadUInt8()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreSearchParam.ResultOrder. %s", err.Error())
+	}
 
 	resultRange, err := stream.ReadStructure(nex.NewResultRange())
-
 	if err != nil {
-		return err
+		return fmt.Errorf("Failed to extract DataStoreSearchParam.ResultRange. %s", err.Error())
 	}
 
 	dataStoreSearchParam.ResultRange = resultRange.(*nex.ResultRange)
-	dataStoreSearchParam.ResultOption = stream.ReadUInt8()
-	dataStoreSearchParam.MinimalRatingFrequency = stream.ReadUInt32LE()
+	dataStoreSearchParam.ResultOption, err = stream.ReadUInt8()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreSearchParam.ResultOption. %s", err.Error())
+	}
+
+	dataStoreSearchParam.MinimalRatingFrequency, err = stream.ReadUInt32LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreSearchParam.MinimalRatingFrequency. %s", err.Error())
+	}
 
 	if datastoreVersion.Major >= 3 && datastoreVersion.Minor >= 5 {
-		dataStoreSearchParam.UseCache = stream.ReadBool()
+		dataStoreSearchParam.UseCache, err = stream.ReadBool()
+		if err != nil {
+			return fmt.Errorf("Failed to extract DataStoreSearchParam.UseCache. %s", err.Error())
+		}
 	}
 
 	return nil
@@ -2654,23 +3045,28 @@ type DataStoreGetMetaParam struct {
 
 // ExtractFromStream extracts a DataStoreGetMetaParam structure from a stream
 func (dataStoreGetMetaParam *DataStoreGetMetaParam) ExtractFromStream(stream *nex.StreamIn) error {
-	expectedDataSize := 23 // base size not including Structure header
+	var err error
 
-	if len(stream.Bytes()[stream.ByteOffset():]) < expectedDataSize {
-		return errors.New("[DataStoreGetMetaParam::ExtractFromStream] Data size too small")
-	}
-
-	dataID := stream.ReadUInt64LE()
-	persistenceTarget, err := stream.ReadStructure(NewDataStorePersistenceTarget())
-
+	dataStoreGetMetaParam.DataID, err = stream.ReadUInt64LE()
 	if err != nil {
-		return err
+		return fmt.Errorf("Failed to extract DataStoreGetMetaParam.DataID. %s", err.Error())
 	}
 
-	dataStoreGetMetaParam.DataID = dataID
+	persistenceTarget, err := stream.ReadStructure(NewDataStorePersistenceTarget())
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreGetMetaParam.PersistenceTarget. %s", err.Error())
+	}
+
 	dataStoreGetMetaParam.PersistenceTarget = persistenceTarget.(*DataStorePersistenceTarget)
-	dataStoreGetMetaParam.ResultOption = stream.ReadUInt8()
-	dataStoreGetMetaParam.AccessPassword = stream.ReadUInt64LE()
+	dataStoreGetMetaParam.ResultOption, err = stream.ReadUInt8()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreGetMetaParam.ResultOption. %s", err.Error())
+	}
+
+	dataStoreGetMetaParam.AccessPassword, err = stream.ReadUInt64LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreGetMetaParam.AccessPassword. %s", err.Error())
+	}
 
 	return nil
 }
@@ -2736,62 +3132,81 @@ type DataStoreChangeMetaParam struct {
 
 // ExtractFromStream extracts a DataStoreChangeMetaParam structure from a stream
 func (dataStoreChangeMetaParam *DataStoreChangeMetaParam) ExtractFromStream(stream *nex.StreamIn) error {
-	// TODO: Check size
+	var err error
 
-	dataStoreChangeMetaParam.DataID = stream.ReadUInt64LE()
-	dataStoreChangeMetaParam.ModifiesFlag = stream.ReadUInt32LE()
-
-	name, err := stream.ReadString()
-
+	dataStoreChangeMetaParam.DataID, err = stream.ReadUInt64LE()
 	if err != nil {
-		return err
+		return fmt.Errorf("Failed to extract DataStoreChangeMetaParam.DataID. %s", err.Error())
 	}
 
-	dataStoreChangeMetaParam.Name = name
+	dataStoreChangeMetaParam.ModifiesFlag, err = stream.ReadUInt32LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreChangeMetaParam.ModifiesFlag. %s", err.Error())
+	}
+
+	dataStoreChangeMetaParam.Name, err = stream.ReadString()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreChangeMetaParam.Name. %s", err.Error())
+	}
 
 	permission, err := stream.ReadStructure(NewDataStorePermission())
-
 	if err != nil {
-		return err
+		return fmt.Errorf("Failed to extract DataStoreChangeMetaParam.Permission. %s", err.Error())
 	}
 
 	dataStoreChangeMetaParam.Permission = permission.(*DataStorePermission)
-
 	delPermission, err := stream.ReadStructure(NewDataStorePermission())
-
 	if err != nil {
-		return err
+		return fmt.Errorf("Failed to extract DataStoreChangeMetaParam.DelPermission. %s", err.Error())
 	}
 
 	dataStoreChangeMetaParam.DelPermission = delPermission.(*DataStorePermission)
-	dataStoreChangeMetaParam.Period = stream.ReadUInt16LE()
-
-	metaBinary, err := stream.ReadQBuffer()
-
+	dataStoreChangeMetaParam.Period, err = stream.ReadUInt16LE()
 	if err != nil {
-		return err
+		return fmt.Errorf("Failed to extract DataStoreChangeMetaParam.Period. %s", err.Error())
 	}
 
-	dataStoreChangeMetaParam.MetaBinary = metaBinary
-	dataStoreChangeMetaParam.Tags = stream.ReadListString()
-	dataStoreChangeMetaParam.UpdatePassword = stream.ReadUInt64LE()
-	dataStoreChangeMetaParam.ReferredCnt = stream.ReadUInt32LE()
-	dataStoreChangeMetaParam.DataType = stream.ReadUInt16LE()
-	dataStoreChangeMetaParam.Status = stream.ReadUInt8()
+	dataStoreChangeMetaParam.MetaBinary, err = stream.ReadQBuffer()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreChangeMetaParam.MetaBinary. %s", err.Error())
+	}
+
+	dataStoreChangeMetaParam.Tags, err = stream.ReadListString()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreChangeMetaParam.Tags. %s", err.Error())
+	}
+
+	dataStoreChangeMetaParam.UpdatePassword, err = stream.ReadUInt64LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreChangeMetaParam.UpdatePassword. %s", err.Error())
+	}
+
+	dataStoreChangeMetaParam.ReferredCnt, err = stream.ReadUInt32LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreChangeMetaParam.ReferredCnt. %s", err.Error())
+	}
+
+	dataStoreChangeMetaParam.DataType, err = stream.ReadUInt16LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreChangeMetaParam.DataType. %s", err.Error())
+	}
+
+	dataStoreChangeMetaParam.Status, err = stream.ReadUInt8()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreChangeMetaParam.Status. %s", err.Error())
+	}
 
 	compareParam, err := stream.ReadStructure(NewDataStoreChangeMetaCompareParam())
-
 	if err != nil {
-		return err
+		return fmt.Errorf("Failed to extract DataStoreChangeMetaParam.CompareParam. %s", err.Error())
 	}
 
 	dataStoreChangeMetaParam.CompareParam = compareParam.(*DataStoreChangeMetaCompareParam)
 
 	/*
 		persistenceTarget, err := stream.ReadStructure(NewDataStorePersistenceTarget())
-
 		if err != nil {
-			return err
+			return fmt.Errorf("Failed to extract DataStoreChangeMetaParam.PersistenceTarget. %s", err.Error())
 		}
 
 		dataStoreChangeMetaParam.PersistenceTarget = persistenceTarget.(*DataStorePersistenceTarget)
@@ -2923,46 +3338,59 @@ type DataStoreChangeMetaCompareParam struct {
 
 // ExtractFromStream extracts a DataStoreChangeMetaCompareParam structure from a stream
 func (dataStoreChangeMetaCompareParam *DataStoreChangeMetaCompareParam) ExtractFromStream(stream *nex.StreamIn) error {
-	// TODO: Check size
+	var err error
 
-	dataStoreChangeMetaCompareParam.ComparisonFlag = stream.ReadUInt32LE()
-
-	name, err := stream.ReadString()
-
+	dataStoreChangeMetaCompareParam.ComparisonFlag, err = stream.ReadUInt32LE()
 	if err != nil {
-		return err
+		return fmt.Errorf("Failed to extract DataStoreChangeMetaCompareParam.ComparisonFlag. %s", err.Error())
 	}
 
-	dataStoreChangeMetaCompareParam.Name = name
+	dataStoreChangeMetaCompareParam.Name, err = stream.ReadString()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreChangeMetaCompareParam.Name. %s", err.Error())
+	}
 
 	permission, err := stream.ReadStructure(NewDataStorePermission())
-
 	if err != nil {
-		return err
+		return fmt.Errorf("Failed to extract DataStoreChangeMetaCompareParam.Permission. %s", err.Error())
 	}
 
 	dataStoreChangeMetaCompareParam.Permission = permission.(*DataStorePermission)
-
 	delPermission, err := stream.ReadStructure(NewDataStorePermission())
-
 	if err != nil {
-		return err
+		return fmt.Errorf("Failed to extract DataStoreChangeMetaCompareParam.DelPermission. %s", err.Error())
 	}
 
 	dataStoreChangeMetaCompareParam.DelPermission = delPermission.(*DataStorePermission)
-	dataStoreChangeMetaCompareParam.Period = stream.ReadUInt16LE()
-
-	metaBinary, err := stream.ReadQBuffer()
-
+	dataStoreChangeMetaCompareParam.Period, err = stream.ReadUInt16LE()
 	if err != nil {
-		return err
+		return fmt.Errorf("Failed to extract DataStoreChangeMetaCompareParam.Period. %s", err.Error())
 	}
 
-	dataStoreChangeMetaCompareParam.MetaBinary = metaBinary
-	dataStoreChangeMetaCompareParam.Tags = stream.ReadListString()
-	dataStoreChangeMetaCompareParam.ReferredCnt = stream.ReadUInt32LE()
-	dataStoreChangeMetaCompareParam.DataType = stream.ReadUInt16LE()
-	dataStoreChangeMetaCompareParam.Status = stream.ReadUInt8()
+	dataStoreChangeMetaCompareParam.MetaBinary, err = stream.ReadQBuffer()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreChangeMetaCompareParam.MetaBinary. %s", err.Error())
+	}
+
+	dataStoreChangeMetaCompareParam.Tags, err = stream.ReadListString()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreChangeMetaCompareParam.Tags. %s", err.Error())
+	}
+
+	dataStoreChangeMetaCompareParam.ReferredCnt, err = stream.ReadUInt32LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreChangeMetaCompareParam.ReferredCnt. %s", err.Error())
+	}
+
+	dataStoreChangeMetaCompareParam.DataType, err = stream.ReadUInt16LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreChangeMetaCompareParam.DataType. %s", err.Error())
+	}
+
+	dataStoreChangeMetaCompareParam.Status, err = stream.ReadUInt8()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreChangeMetaCompareParam.Status. %s", err.Error())
+	}
 
 	return nil
 }
@@ -3058,14 +3486,17 @@ type DataStorePermission struct {
 
 // ExtractFromStream extracts a DataStorePermission structure from a stream
 func (dataStorePermission *DataStorePermission) ExtractFromStream(stream *nex.StreamIn) error {
-	expectedDataSize := 9 // base size not including Structure header
+	var err error
 
-	if len(stream.Bytes()[stream.ByteOffset():]) < expectedDataSize {
-		return errors.New("[DataStorePermission::ExtractFromStream] Data size too small")
+	dataStorePermission.Permission, err = stream.ReadUInt8()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStorePermission.Permission. %s", err.Error())
 	}
 
-	dataStorePermission.Permission = stream.ReadUInt8()
-	dataStorePermission.RecipientIds = stream.ReadListUInt32LE()
+	dataStorePermission.RecipientIds, err = stream.ReadListUInt32LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStorePermission.RecipientIds. %s", err.Error())
+	}
 
 	return nil
 }
@@ -3125,14 +3556,17 @@ type DataStorePersistenceTarget struct {
 
 // ExtractFromStream extracts a DataStorePersistenceTarget structure from a stream
 func (dataStorePersistenceTarget *DataStorePersistenceTarget) ExtractFromStream(stream *nex.StreamIn) error {
-	expectedDataSize := 9 // base size not including Structure header
+	var err error
 
-	if len(stream.Bytes()[stream.ByteOffset():]) < expectedDataSize {
-		return errors.New("[DataStorePersistenceTarget::ExtractFromStream] Data size too small")
+	dataStorePersistenceTarget.OwnerID, err = stream.ReadUInt32LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStorePersistenceTarget.OwnerID. %s", err.Error())
 	}
 
-	dataStorePersistenceTarget.OwnerID = stream.ReadUInt32LE()
-	dataStorePersistenceTarget.PersistenceSlotID = stream.ReadUInt16LE()
+	dataStorePersistenceTarget.PersistenceSlotID, err = stream.ReadUInt16LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStorePersistenceTarget.PersistenceSlotID. %s", err.Error())
+	}
 
 	return nil
 }
@@ -3151,9 +3585,22 @@ type DataStoreRatingInfo struct {
 
 // ExtractFromStream extracts a DataStoreRatingInfo structure from a stream
 func (dataStoreRatingInfo *DataStoreRatingInfo) ExtractFromStream(stream *nex.StreamIn) error {
-	dataStoreRatingInfo.TotalValue = int64(stream.ReadUInt64LE())
-	dataStoreRatingInfo.Count = stream.ReadUInt32LE()
-	dataStoreRatingInfo.InitialValue = int64(stream.ReadUInt64LE())
+	var err error
+
+	dataStoreRatingInfo.TotalValue, err = stream.ReadInt64LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreRatingInfo.TotalValue. %s", err.Error())
+	}
+
+	dataStoreRatingInfo.Count, err = stream.ReadUInt32LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreRatingInfo.Count. %s", err.Error())
+	}
+
+	dataStoreRatingInfo.InitialValue, err = stream.ReadInt64LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreRatingInfo.InitialValue. %s", err.Error())
+	}
 
 	return nil
 }
@@ -3210,12 +3657,16 @@ type DataStoreRatingInfoWithSlot struct {
 
 // ExtractFromStream extracts a DataStoreRatingInfoWithSlot structure from a stream
 func (dataStoreRatingInfoWithSlot *DataStoreRatingInfoWithSlot) ExtractFromStream(stream *nex.StreamIn) error {
-	dataStoreRatingInfoWithSlot.Slot = int8(stream.ReadUInt8())
+	var err error
+
+	dataStoreRatingInfoWithSlot.Slot, err = stream.ReadInt8()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreRatingInfoWithSlot.Slot. %s", err.Error())
+	}
 
 	rating, err := stream.ReadStructure(NewDataStoreRatingInfo())
-
 	if err != nil {
-		return err
+		return fmt.Errorf("Failed to extract DataStoreRatingInfoWithSlot.Rating. %s", err.Error())
 	}
 
 	dataStoreRatingInfoWithSlot.Rating = rating.(*DataStoreRatingInfo)
@@ -3287,52 +3738,103 @@ type DataStoreMetaInfo struct {
 
 // ExtractFromStream extracts a DataStoreMetaInfo structure from a stream
 func (dataStoreMetaInfo *DataStoreMetaInfo) ExtractFromStream(stream *nex.StreamIn) error {
-	dataStoreMetaInfo.DataID = stream.ReadUInt64LE()
-	dataStoreMetaInfo.OwnerID = stream.ReadUInt32LE()
-	dataStoreMetaInfo.Size = stream.ReadUInt32LE()
+	var err error
 
-	name, err := stream.ReadString()
+	dataStoreMetaInfo.DataID, err = stream.ReadUInt64LE()
 	if err != nil {
-		return err
+		return fmt.Errorf("Failed to extract DataStoreMetaInfo.DataID. %s", err.Error())
 	}
 
-	dataStoreMetaInfo.Name = name
-	dataStoreMetaInfo.DataType = stream.ReadUInt16LE()
-
-	metaBinary, err := stream.ReadQBuffer()
+	dataStoreMetaInfo.OwnerID, err = stream.ReadUInt32LE()
 	if err != nil {
-		return err
+		return fmt.Errorf("Failed to extract DataStoreMetaInfo.OwnerID. %s", err.Error())
 	}
 
-	dataStoreMetaInfo.MetaBinary = metaBinary
+	dataStoreMetaInfo.Size, err = stream.ReadUInt32LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreMetaInfo.Size. %s", err.Error())
+	}
+
+	dataStoreMetaInfo.Name, err = stream.ReadString()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreMetaInfo.Name. %s", err.Error())
+	}
+
+	dataStoreMetaInfo.DataType, err = stream.ReadUInt16LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreMetaInfo.DataType. %s", err.Error())
+	}
+
+	dataStoreMetaInfo.MetaBinary, err = stream.ReadQBuffer()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreMetaInfo.MetaBinary. %s", err.Error())
+	}
 
 	permission, err := stream.ReadStructure(NewDataStorePermission())
 	if err != nil {
-		return err
+		return fmt.Errorf("Failed to extract DataStoreMetaInfo.Permission. %s", err.Error())
 	}
 
 	dataStoreMetaInfo.Permission = permission.(*DataStorePermission)
-
 	delPermission, err := stream.ReadStructure(NewDataStorePermission())
 	if err != nil {
-		return err
+		return fmt.Errorf("Failed to extract DataStoreMetaInfo.DelPermission. %s", err.Error())
 	}
 
 	dataStoreMetaInfo.DelPermission = delPermission.(*DataStorePermission)
-	dataStoreMetaInfo.CreatedTime = nex.NewDateTime(stream.ReadUInt64LE())
-	dataStoreMetaInfo.UpdatedTime = nex.NewDateTime(stream.ReadUInt64LE())
-	dataStoreMetaInfo.Period = stream.ReadUInt16LE()
-	dataStoreMetaInfo.Status = stream.ReadUInt8()
-	dataStoreMetaInfo.ReferredCnt = stream.ReadUInt32LE()
-	dataStoreMetaInfo.ReferDataID = stream.ReadUInt32LE()
-	dataStoreMetaInfo.Flag = stream.ReadUInt32LE()
-	dataStoreMetaInfo.ReferredTime = nex.NewDateTime(stream.ReadUInt64LE())
-	dataStoreMetaInfo.ExpireTime = nex.NewDateTime(stream.ReadUInt64LE())
-	dataStoreMetaInfo.Tags = stream.ReadListString()
+	dataStoreMetaInfo.CreatedTime, err = stream.ReadDateTime()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreMetaInfo.CreatedTime. %s", err.Error())
+	}
+
+	dataStoreMetaInfo.UpdatedTime, err = stream.ReadDateTime()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreMetaInfo.UpdatedTime. %s", err.Error())
+	}
+
+	dataStoreMetaInfo.Period, err = stream.ReadUInt16LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreMetaInfo.Period. %s", err.Error())
+	}
+
+	dataStoreMetaInfo.Status, err = stream.ReadUInt8()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreMetaInfo.Status. %s", err.Error())
+	}
+
+	dataStoreMetaInfo.ReferredCnt, err = stream.ReadUInt32LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreMetaInfo.ReferredCnt. %s", err.Error())
+	}
+
+	dataStoreMetaInfo.ReferDataID, err = stream.ReadUInt32LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreMetaInfo.ReferDataID. %s", err.Error())
+	}
+
+	dataStoreMetaInfo.Flag, err = stream.ReadUInt32LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreMetaInfo.Flag. %s", err.Error())
+	}
+
+	dataStoreMetaInfo.ReferredTime, err = stream.ReadDateTime()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreMetaInfo.ReferredTime. %s", err.Error())
+	}
+
+	dataStoreMetaInfo.ExpireTime, err = stream.ReadDateTime()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreMetaInfo.ExpireTime. %s", err.Error())
+	}
+
+	dataStoreMetaInfo.Tags, err = stream.ReadListString()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreMetaInfo.Tags. %s", err.Error())
+	}
 
 	ratings, err := stream.ReadListStructure(NewDataStoreRatingInfoWithSlot())
 	if err != nil {
-		return err
+		return fmt.Errorf("Failed to extract DataStoreMetaInfo.Ratings. %s", err.Error())
 	}
 
 	dataStoreMetaInfo.Ratings = ratings.([]*DataStoreRatingInfoWithSlot)
@@ -3516,19 +4018,34 @@ type DataStorePrepareGetParam struct {
 func (dataStorePrepareGetParam *DataStorePrepareGetParam) ExtractFromStream(stream *nex.StreamIn) error {
 	datastoreVersion := stream.Server.DataStoreProtocolVersion()
 
-	dataStorePrepareGetParam.DataID = stream.ReadUInt64LE()
-	dataStorePrepareGetParam.LockID = stream.ReadUInt32LE()
+	var err error
+
+	dataStorePrepareGetParam.DataID, err = stream.ReadUInt64LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStorePrepareGetParam.DataID. %s", err.Error())
+	}
+
+	dataStorePrepareGetParam.LockID, err = stream.ReadUInt32LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStorePrepareGetParam.LockID. %s", err.Error())
+	}
 
 	persistenceTarget, err := stream.ReadStructure(NewDataStorePersistenceTarget())
 	if err != nil {
-		return err
+		return fmt.Errorf("Failed to extract DataStorePrepareGetParam.PersistenceTarget. %s", err.Error())
 	}
 
 	dataStorePrepareGetParam.PersistenceTarget = persistenceTarget.(*DataStorePersistenceTarget)
-	dataStorePrepareGetParam.AccessPassword = stream.ReadUInt64LE()
+	dataStorePrepareGetParam.AccessPassword, err = stream.ReadUInt64LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStorePrepareGetParam.AccessPassword. %s", err.Error())
+	}
 
 	if datastoreVersion.Major >= 3 && datastoreVersion.Minor >= 5 {
-		dataStorePrepareGetParam.ExtraData = stream.ReadListString()
+		dataStorePrepareGetParam.ExtraData, err = stream.ReadListString()
+		if err != nil {
+			return fmt.Errorf("Failed to extract DataStorePrepareGetParam.ExtraData. %s", err.Error())
+		}
 	}
 
 	return nil

@@ -1,6 +1,8 @@
 package account_management
 
 import (
+	"fmt"
+
 	nex "github.com/PretendoNetwork/nex-go"
 	friends_wiiu "github.com/PretendoNetwork/nex-protocols-go/friends/wiiu"
 )
@@ -16,11 +18,27 @@ type AccountExtraInfo struct {
 
 // ExtractFromStream extracts a AccountExtraInfo structure from a stream
 func (accountExtraInfo *AccountExtraInfo) ExtractFromStream(stream *nex.StreamIn) error {
+	var err error
 
-	accountExtraInfo.Unknown = stream.ReadUInt32LE()
-	accountExtraInfo.Unknown2 = stream.ReadUInt32LE()
-	accountExtraInfo.Unknown3 = stream.ReadUInt32LE()
-	accountExtraInfo.NEXToken, _ = stream.ReadString()
+	accountExtraInfo.Unknown, err = stream.ReadUInt32LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract AccountExtraInfo.Unknown. %s", err.Error())
+	}
+
+	accountExtraInfo.Unknown2, err = stream.ReadUInt32LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract AccountExtraInfo.Unknown2. %s", err.Error())
+	}
+
+	accountExtraInfo.Unknown3, err = stream.ReadUInt32LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract AccountExtraInfo.Unknown3. %s", err.Error())
+	}
+
+	accountExtraInfo.NEXToken, err = stream.ReadString()
+	if err != nil {
+		return fmt.Errorf("Failed to extract AccountExtraInfo.NEXToken. %s", err.Error())
+	}
 
 	return nil
 }
@@ -76,25 +94,28 @@ type NintendoCreateAccountData struct {
 
 // ExtractFromStream extracts a NintendoCreateAccountData structure from a stream
 func (nintendoCreateAccountData *NintendoCreateAccountData) ExtractFromStream(stream *nex.StreamIn) error {
-	nnaInfoStructureInterface, err := stream.ReadStructure(friends_wiiu.NewNNAInfo())
+	var err error
+
+	nnaInfo, err := stream.ReadStructure(friends_wiiu.NewNNAInfo())
 	if err != nil {
-		return err
+		return fmt.Errorf("Failed to extract NintendoCreateAccountData.NNAInfo from stream. %s", err.Error())
 	}
 
-	nnaInfo := nnaInfoStructureInterface.(*friends_wiiu.NNAInfo)
-
-	token, err := stream.ReadString()
+	nintendoCreateAccountData.NNAInfo = nnaInfo.(*friends_wiiu.NNAInfo)
+	nintendoCreateAccountData.Token, err = stream.ReadString()
 	if err != nil {
-		return err
+		return fmt.Errorf("Failed to extract NintendoCreateAccountData.Token from stream. %s", err.Error())
 	}
 
-	birthday := nex.NewDateTime(stream.ReadUInt64LE())
-	unknown := stream.ReadUInt64LE()
+	nintendoCreateAccountData.Birthday, err = stream.ReadDateTime()
+	if err != nil {
+		return fmt.Errorf("Failed to extract NintendoCreateAccountData.Birthday from stream. %s", err.Error())
+	}
 
-	nintendoCreateAccountData.NNAInfo = nnaInfo
-	nintendoCreateAccountData.Token = token
-	nintendoCreateAccountData.Birthday = birthday
-	nintendoCreateAccountData.Unknown = unknown
+	nintendoCreateAccountData.Unknown, err = stream.ReadUInt64LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract NintendoCreateAccountData.Unknown from stream. %s", err.Error())
+	}
 
 	return nil
 }

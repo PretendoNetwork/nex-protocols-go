@@ -1,6 +1,8 @@
 package matchmake_extension
 
 import (
+	"fmt"
+
 	nex "github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
@@ -25,7 +27,11 @@ func (protocol *MatchmakeExtensionProtocol) HandleGetFriendNotificationData(pack
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	uiType := int32(parametersStream.ReadUInt32LE())
+	uiType, err := parametersStream.ReadInt32LE()
+	if err != nil {
+		go protocol.GetFriendNotificationDataHandler(fmt.Errorf("Failed to read uiType from parameters. %s", err.Error()), client, callID, 0)
+		return
+	}
 
 	go protocol.GetFriendNotificationDataHandler(nil, client, callID, uiType)
 }

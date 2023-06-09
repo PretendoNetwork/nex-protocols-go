@@ -1,6 +1,8 @@
 package datastore_super_mario_maker
 
 import (
+	"fmt"
+
 	nex "github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
@@ -25,7 +27,11 @@ func (protocol *DataStoreSuperMarioMakerProtocol) HandleGetDeletionReason(packet
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	dataIdLst := parametersStream.ReadListUInt64LE()
+	dataIdLst, err := parametersStream.ReadListUInt64LE()
+	if err != nil {
+		go protocol.GetDeletionReasonHandler(fmt.Errorf("Failed to read dataIdLst from parameters. %s", err.Error()), client, callID, nil)
+		return
+	}
 
 	go protocol.GetDeletionReasonHandler(nil, client, callID, dataIdLst)
 }

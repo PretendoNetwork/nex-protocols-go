@@ -1,12 +1,14 @@
 package message_delivery
 
 import (
+	"fmt"
+
 	nex "github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
 // DeliverMessage sets the DeliverMessage handler function
-func (protocol *MessageDeliveryProtocol) DeliverMessage(handler func(err error, client *nex.Client, callID uint32, oUserMessage nex.StructureInterface)) {
+func (protocol *MessageDeliveryProtocol) DeliverMessage(handler func(err error, client *nex.Client, callID uint32, oUserMessage *nex.DataHolder)) {
 	protocol.DeliverMessageHandler = handler
 }
 
@@ -25,28 +27,10 @@ func (protocol *MessageDeliveryProtocol) HandleDeliverMessage(packet nex.PacketI
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	dataHolderName, err := parametersStream.ReadString()
-
+	oUserMessage, err := parametersStream.ReadDataHolder()
 	if err != nil {
-		go protocol.DeliverMessageHandler(err, client, callID, nil)
+		go protocol.DeliverMessageHandler(fmt.Errorf("Failed to read oUserMessage from parameters. %s", err.Error()), client, callID, nil)
 		return
-	}
-
-	_ = parametersStream.ReadUInt32LE() // length including this field
-
-	dataHolderContent, err := parametersStream.ReadBuffer()
-
-	if err != nil {
-		go protocol.DeliverMessageHandler(err, client, callID, nil)
-		return
-	}
-
-	dataHolderContentStream := nex.NewStreamIn(dataHolderContent, protocol.Server)
-
-	var oUserMessage nex.StructureInterface
-
-	if dataHolderName == "BinaryMessage" {
-		oUserMessage, _ = dataHolderContentStream.ReadStructure(NewBinaryMessage())
 	}
 
 	go protocol.DeliverMessageHandler(nil, client, callID, oUserMessage)

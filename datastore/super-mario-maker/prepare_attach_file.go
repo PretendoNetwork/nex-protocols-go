@@ -1,6 +1,8 @@
 package datastore_super_mario_maker
 
 import (
+	"fmt"
+
 	nex "github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
@@ -26,9 +28,8 @@ func (protocol *DataStoreSuperMarioMakerProtocol) HandlePrepareAttachFile(packet
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
 	dataStoreAttachFileParam, err := parametersStream.ReadStructure(NewDataStoreAttachFileParam())
-
 	if err != nil {
-		go protocol.PrepareAttachFileHandler(err, client, callID, nil)
+		go protocol.PrepareAttachFileHandler(fmt.Errorf("Failed to read dataStoreAttachFileParam from parameters. %s", err.Error()), client, callID, nil)
 		return
 	}
 

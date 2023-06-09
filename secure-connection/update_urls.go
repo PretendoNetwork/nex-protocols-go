@@ -1,14 +1,14 @@
 package secure_connection
 
 import (
-	"errors"
+	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
 // UpdateURLs sets the UpdateURLs handler function
-func (protocol *SecureConnectionProtocol) UpdateURLs(handler func(err error, client *nex.Client, callID uint32, stationUrls []*nex.StationURL)) {
+func (protocol *SecureConnectionProtocol) UpdateURLs(handler func(err error, client *nex.Client, callID uint32, vecMyURLs []*nex.StationURL)) {
 	protocol.UpdateURLsHandler = handler
 }
 
@@ -27,26 +27,11 @@ func (protocol *SecureConnectionProtocol) HandleUpdateURLs(packet nex.PacketInte
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	if len(parametersStream.Bytes()[parametersStream.ByteOffset():]) < 4 {
-		err := errors.New("[SecureConnection::UpdateURLs] Data missing list length")
-		go protocol.UpdateURLsHandler(err, client, callID, make([]*nex.StationURL, 0))
+	vecMyURLs, err := parametersStream.ReadListStationURL()
+	if err != nil {
+		go protocol.UpdateURLsHandler(fmt.Errorf("Failed to read vecMyURLs from parameters. %s", err.Error()), client, callID, nil)
 		return
 	}
 
-	stationURLCount := parametersStream.ReadUInt32LE()
-	stationUrls := make([]*nex.StationURL, 0)
-
-	for i := 0; i < int(stationURLCount); i++ {
-		stationString, err := parametersStream.ReadString()
-
-		if err != nil {
-			go protocol.UpdateURLsHandler(err, client, callID, stationUrls)
-			return
-		}
-
-		station := nex.NewStationURL(stationString)
-		stationUrls = append(stationUrls, station)
-	}
-
-	go protocol.UpdateURLsHandler(nil, client, callID, stationUrls)
+	go protocol.UpdateURLsHandler(nil, client, callID, vecMyURLs)
 }

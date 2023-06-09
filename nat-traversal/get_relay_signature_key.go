@@ -21,7 +21,6 @@ func (protocol *NATTraversalProtocol) HandleGetRelaySignatureKey(packet nex.Pack
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
-	//parameters := request.Parameters()
 
 	go protocol.GetRelaySignatureKeyHandler(nil, client, callID)
 }

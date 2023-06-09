@@ -1,6 +1,8 @@
 package datastore
 
 import (
+	"fmt"
+
 	nex "github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
@@ -27,18 +29,27 @@ func (protocol *DataStoreProtocol) HandleRateObjects(packet nex.PacketInterface)
 
 	targets, err := parametersStream.ReadListStructure(NewDataStoreRatingTarget())
 	if err != nil {
-		go protocol.RateObjectsHandler(err, client, callID, nil, nil, false, false)
+		go protocol.RateObjectsHandler(fmt.Errorf("Failed to read targets from parameters. %s", err.Error()), client, callID, nil, nil, false, false)
 		return
 	}
 
 	params, err := parametersStream.ReadListStructure(NewDataStoreRateObjectParam())
 	if err != nil {
-		go protocol.RateObjectsHandler(err, client, callID, nil, nil, false, false)
+		go protocol.RateObjectsHandler(fmt.Errorf("Failed to read params from parameters. %s", err.Error()), client, callID, nil, nil, false, false)
 		return
 	}
 
-	transactional := (parametersStream.ReadUInt8() == 1)
-	fetchRatings := (parametersStream.ReadUInt8() == 1)
+	transactional, err := parametersStream.ReadBool()
+	if err != nil {
+		go protocol.RateObjectsHandler(fmt.Errorf("Failed to read transactional from parameters. %s", err.Error()), client, callID, nil, nil, false, false)
+		return
+	}
+
+	fetchRatings, err := parametersStream.ReadBool()
+	if err != nil {
+		go protocol.RateObjectsHandler(fmt.Errorf("Failed to read fetchRatings from parameters. %s", err.Error()), client, callID, nil, nil, false, false)
+		return
+	}
 
 	go protocol.RateObjectsHandler(nil, client, callID, targets.([]*DataStoreRatingTarget), params.([]*DataStoreRateObjectParam), transactional, fetchRatings)
 }

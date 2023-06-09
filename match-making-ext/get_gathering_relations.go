@@ -1,6 +1,8 @@
 package match_making_ext
 
 import (
+	"fmt"
+
 	nex "github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
@@ -25,13 +27,14 @@ func (protocol *MatchMakingExtProtocol) HandleGetGatheringRelations(packet nex.P
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	id := parametersStream.ReadUInt32LE()
-
-	var err error
-	var descr string
-	descr, err = parametersStream.ReadString()
+	id, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		go protocol.GetGatheringRelationsHandler(err, client, callID, 0, "")
+		go protocol.GetGatheringRelationsHandler(fmt.Errorf("Failed to read id from parameters. %s", err.Error()), client, callID, 0, "")
+	}
+
+	descr, err := parametersStream.ReadString()
+	if err != nil {
+		go protocol.GetGatheringRelationsHandler(fmt.Errorf("Failed to read descr from parameters. %s", err.Error()), client, callID, 0, "")
 	}
 
 	go protocol.GetGatheringRelationsHandler(nil, client, callID, id, descr)

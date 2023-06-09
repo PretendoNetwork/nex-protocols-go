@@ -1,14 +1,14 @@
 package secure_connection
 
 import (
-	"errors"
+	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
 // SendReport sets the SendReport handler function
-func (protocol *SecureConnectionProtocol) SendReport(handler func(err error, client *nex.Client, callID uint32, reportID uint32, report []byte)) {
+func (protocol *SecureConnectionProtocol) SendReport(handler func(err error, client *nex.Client, callID uint32, reportID uint32, reportData []byte)) {
 	protocol.SendReportHandler = handler
 }
 
@@ -27,19 +27,17 @@ func (protocol *SecureConnectionProtocol) HandleSendReport(packet nex.PacketInte
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	if len(parametersStream.Bytes()[parametersStream.ByteOffset():]) < 4 {
-		err := errors.New("[SecureConnection::SendReport] Data missing report ID")
-		go protocol.SendReportHandler(err, client, callID, 0, []byte{})
-		return
-	}
-
-	reportID := parametersStream.ReadUInt32LE()
-	report, err := parametersStream.ReadQBuffer()
-
+	reportID, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		go protocol.SendReportHandler(err, client, callID, 0, []byte{})
+		go protocol.SendReportHandler(fmt.Errorf("Failed to read reportID from parameters. %s", err.Error()), client, callID, 0, nil)
 		return
 	}
 
-	go protocol.SendReportHandler(nil, client, callID, reportID, report)
+	reportData, err := parametersStream.ReadQBuffer()
+	if err != nil {
+		go protocol.SendReportHandler(fmt.Errorf("Failed to read reportData from parameters. %s", err.Error()), client, callID, 0, nil)
+		return
+	}
+
+	go protocol.SendReportHandler(nil, client, callID, reportID, reportData)
 }

@@ -1,14 +1,14 @@
 package secure_connection
 
 import (
-	"errors"
+	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
 // RegisterEx sets the RegisterEx handler function
-func (protocol *SecureConnectionProtocol) RegisterEx(handler func(err error, client *nex.Client, callID uint32, stationUrls []*nex.StationURL, loginData *nex.DataHolder)) {
+func (protocol *SecureConnectionProtocol) RegisterEx(handler func(err error, client *nex.Client, callID uint32, vecMyURLs []*nex.StationURL, hCustomData *nex.DataHolder)) {
 	protocol.RegisterExHandler = handler
 }
 
@@ -27,34 +27,17 @@ func (protocol *SecureConnectionProtocol) HandleRegisterEx(packet nex.PacketInte
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	if len(parametersStream.Bytes()[parametersStream.ByteOffset():]) < 4 {
-		err := errors.New("[SecureConnection::RegisterEx] Data missing list length")
-		go protocol.RegisterExHandler(err, client, callID, make([]*nex.StationURL, 0), nex.NewDataHolder())
+	vecMyURLs, err := parametersStream.ReadListStationURL()
+	if err != nil {
+		go protocol.RegisterExHandler(fmt.Errorf("Failed to read vecMyURLs from parameters. %s", err.Error()), client, callID, nil, nil)
 		return
 	}
 
-	stationURLCount := parametersStream.ReadUInt32LE()
-	stationUrls := make([]*nex.StationURL, 0)
-
-	for i := 0; i < int(stationURLCount); i++ {
-		stationString, err := parametersStream.ReadString()
-
-		if err != nil {
-			go protocol.RegisterExHandler(err, client, callID, stationUrls, nex.NewDataHolder())
-			return
-		}
-
-		station := nex.NewStationURL(stationString)
-		stationUrls = append(stationUrls, station)
-	}
-
-	dataHolder := parametersStream.ReadDataHolder()
-
-	if dataHolder.TypeName() != "NintendoLoginData" && dataHolder.TypeName() != "AccountExtraInfo" {
-		err := errors.New("[SecureConnection::RegisterEx] Data holder name does not match")
-		go protocol.RegisterExHandler(err, client, callID, stationUrls, nex.NewDataHolder())
+	hCustomData, err := parametersStream.ReadDataHolder()
+	if err != nil {
+		go protocol.RegisterExHandler(fmt.Errorf("Failed to read hCustomData from parameters. %s", err.Error()), client, callID, nil, nil)
 		return
 	}
 
-	go protocol.RegisterExHandler(nil, client, callID, stationUrls, dataHolder)
+	go protocol.RegisterExHandler(nil, client, callID, vecMyURLs, hCustomData)
 }

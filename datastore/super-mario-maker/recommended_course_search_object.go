@@ -1,6 +1,8 @@
 package datastore_super_mario_maker
 
 import (
+	"fmt"
+
 	nex "github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-protocols-go/datastore"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
@@ -28,11 +30,15 @@ func (protocol *DataStoreSuperMarioMakerProtocol) HandleRecommendedCourseSearchO
 
 	param, err := parametersStream.ReadStructure(datastore.NewDataStoreSearchParam())
 	if err != nil {
-		go protocol.RecommendedCourseSearchObjectHandler(err, client, callID, nil, []string{})
+		go protocol.RecommendedCourseSearchObjectHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil, nil)
 		return
 	}
 
-	extraData := parametersStream.ReadListString()
+	extraData, err := parametersStream.ReadListString()
+	if err != nil {
+		go protocol.RecommendedCourseSearchObjectHandler(fmt.Errorf("Failed to read extraData from parameters. %s", err.Error()), client, callID, nil, nil)
+		return
+	}
 
 	go protocol.RecommendedCourseSearchObjectHandler(nil, client, callID, param.(*datastore.DataStoreSearchParam), extraData)
 }

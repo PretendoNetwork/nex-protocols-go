@@ -1,14 +1,14 @@
 package authentication
 
 import (
-	"errors"
+	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
 // LoginEx sets the LoginEx handler function
-func (protocol *AuthenticationProtocol) LoginEx(handler func(err error, client *nex.Client, callID uint32, username string, authenticationInfo *AuthenticationInfo)) {
+func (protocol *AuthenticationProtocol) LoginEx(handler func(err error, client *nex.Client, callID uint32, strUserName string, oExtraData *nex.DataHolder)) {
 	protocol.LoginExHandler = handler
 }
 
@@ -27,43 +27,17 @@ func (protocol *AuthenticationProtocol) HandleLoginEx(packet nex.PacketInterface
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	username, err := parametersStream.ReadString()
-
+	strUserName, err := parametersStream.ReadString()
 	if err != nil {
-		go protocol.LoginExHandler(err, client, callID, "", nil)
+		go protocol.LoginExHandler(fmt.Errorf("Failed to read strUserName from parameters. %s", err.Error()), client, callID, "", nil)
 		return
 	}
 
-	dataHolderName, err := parametersStream.ReadString()
-
+	oExtraData, err := parametersStream.ReadDataHolder()
 	if err != nil {
-		go protocol.LoginExHandler(err, client, callID, "", nil)
+		go protocol.LoginExHandler(fmt.Errorf("Failed to read oExtraData from parameters. %s", err.Error()), client, callID, "", nil)
 		return
 	}
 
-	if dataHolderName != "AuthenticationInfo" {
-		err := errors.New("[Authentication::LoginEx] Data holder name does not match")
-		go protocol.LoginExHandler(err, client, callID, "", nil)
-		return
-	}
-
-	_ = parametersStream.ReadUInt32LE() // length including this field
-
-	dataHolderContent, err := parametersStream.ReadBuffer()
-
-	if err != nil {
-		go protocol.LoginExHandler(err, client, callID, "", nil)
-		return
-	}
-
-	dataHolderContentStream := nex.NewStreamIn(dataHolderContent, protocol.Server)
-
-	authenticationInfo, err := dataHolderContentStream.ReadStructure(NewAuthenticationInfo())
-
-	if err != nil {
-		go protocol.LoginExHandler(err, client, callID, "", nil)
-		return
-	}
-
-	go protocol.LoginExHandler(nil, client, callID, username, authenticationInfo.(*AuthenticationInfo))
+	go protocol.LoginExHandler(nil, client, callID, strUserName, oExtraData)
 }

@@ -1,7 +1,7 @@
 package friends_wiiu
 
 import (
-	"errors"
+	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
@@ -27,13 +27,11 @@ func (protocol *FriendsWiiUProtocol) HandleGetBasicInfo(packet nex.PacketInterfa
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	if len(parametersStream.Bytes()[parametersStream.ByteOffset():]) < 4 {
-		err := errors.New("[FriendsWiiU::GetBasicInfo] Data missing list length")
-		go protocol.GetBasicInfoHandler(err, client, callID, make([]uint32, 0))
+	pids, err := parametersStream.ReadListUInt32LE()
+	if err != nil {
+		go protocol.GetBasicInfoHandler(fmt.Errorf("Failed to read pids from parameters. %s", err.Error()), client, callID, nil)
 		return
 	}
-
-	pids := parametersStream.ReadListUInt32LE()
 
 	go protocol.GetBasicInfoHandler(nil, client, callID, pids)
 }

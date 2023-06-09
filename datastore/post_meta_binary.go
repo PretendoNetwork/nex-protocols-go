@@ -1,6 +1,8 @@
 package datastore
 
 import (
+	"fmt"
+
 	nex "github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
@@ -27,7 +29,7 @@ func (protocol *DataStoreProtocol) HandlePostMetaBinary(packet nex.PacketInterfa
 
 	dataStorePreparePostParam, err := parametersStream.ReadStructure(NewDataStorePreparePostParam())
 	if err != nil {
-		go protocol.PostMetaBinaryHandler(err, client, callID, nil)
+		go protocol.PostMetaBinaryHandler(fmt.Errorf("Failed to read dataStorePreparePostParam from parameters. %s", err.Error()), client, callID, nil)
 		return
 	}
 

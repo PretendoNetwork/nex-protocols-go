@@ -1,6 +1,8 @@
 package matchmake_extension
 
 import (
+	"fmt"
+
 	nex "github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
@@ -25,10 +27,15 @@ func (protocol *MatchmakeExtensionProtocol) HandleFindOfficialCommunity(packet n
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	isAvailableOnly := parametersStream.ReadBool()
+	isAvailableOnly, err := parametersStream.ReadBool()
+	if err != nil {
+		go protocol.FindOfficialCommunityHandler(fmt.Errorf("Failed to read isAvailableOnly from parameters. %s", err.Error()), client, callID, false, nil)
+		return
+	}
+
 	resultRange, err := parametersStream.ReadStructure(nex.NewResultRange())
 	if err != nil {
-		go protocol.FindOfficialCommunityHandler(nil, client, callID, false, nil)
+		go protocol.FindOfficialCommunityHandler(fmt.Errorf("Failed to read resultRange from parameters. %s", err.Error()), client, callID, false, nil)
 		return
 	}
 

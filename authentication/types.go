@@ -1,8 +1,9 @@
 package authentication
 
 import (
+	"fmt"
+
 	nex "github.com/PretendoNetwork/nex-go"
-	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
 // NintendoLoginData holds a nex auth token
@@ -14,15 +15,11 @@ type NintendoLoginData struct {
 // ExtractFromStream extracts a AuthenticationInfo structure from a stream
 func (nintendoLoginData *NintendoLoginData) ExtractFromStream(stream *nex.StreamIn) error {
 	var err error
-	var token string
 
-	token, err = stream.ReadString()
-
+	nintendoLoginData.Token, err = stream.ReadString()
 	if err != nil {
-		return err
+		return fmt.Errorf("Failed to extract NintendoLoginData.Token. %s", err.Error())
 	}
-
-	nintendoLoginData.Token = token
 
 	return nil
 }
@@ -61,23 +58,26 @@ type AuthenticationInfo struct {
 // ExtractFromStream extracts a AuthenticationInfo structure from a stream
 func (authenticationInfo *AuthenticationInfo) ExtractFromStream(stream *nex.StreamIn) error {
 	var err error
-	var token string
 
-	token, err = stream.ReadString()
-
+	authenticationInfo.Token, err = stream.ReadString()
 	if err != nil {
-		return err
+		return fmt.Errorf("Failed to extract AccountExtraInfo.Token. %s", err.Error())
 	}
 
-	if len(stream.Bytes()[stream.ByteOffset():]) < 9 {
-		globals.Logger.Error("Data size too small")
-		return nil //technically not needed (for now) and was causing some strangeness with MK7
+	authenticationInfo.NGSVersion, err = stream.ReadUInt32LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract AccountExtraInfo.NGSVersion. %s", err.Error())
 	}
 
-	authenticationInfo.Token = token
-	authenticationInfo.TokenType = stream.ReadUInt8()
-	authenticationInfo.NGSVersion = stream.ReadUInt32LE()
-	authenticationInfo.ServerVersion = stream.ReadUInt32LE()
+	authenticationInfo.TokenType, err = stream.ReadUInt8()
+	if err != nil {
+		return fmt.Errorf("Failed to extract AccountExtraInfo.TokenType. %s", err.Error())
+	}
+
+	authenticationInfo.ServerVersion, err = stream.ReadUInt32LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract AccountExtraInfo.ServerVersion. %s", err.Error())
+	}
 
 	return nil
 }

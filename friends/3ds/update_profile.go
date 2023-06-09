@@ -1,6 +1,8 @@
 package friends_3ds
 
 import (
+	"fmt"
+
 	nex "github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
@@ -27,7 +29,7 @@ func (protocol *Friends3DSProtocol) HandleUpdateProfile(packet nex.PacketInterfa
 
 	profileData, err := parametersStream.ReadStructure(NewMyProfile())
 	if err != nil {
-		go protocol.UpdateProfileHandler(err, client, callID, nil)
+		go protocol.UpdateProfileHandler(fmt.Errorf("Failed to read showGame from profileData. %s", err.Error()), client, callID, nil)
 		return
 	}
 

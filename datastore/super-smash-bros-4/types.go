@@ -2,6 +2,7 @@ package datastore_super_smash_bros_4
 
 import (
 	"bytes"
+	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-protocols-go/datastore"
@@ -17,16 +18,27 @@ type DataStoreReqGetAdditionalMeta struct {
 
 // ExtractFromStream extracts a DataStoreReqGetAdditionalMeta structure from a stream
 func (dataStoreReqGetAdditionalMeta *DataStoreReqGetAdditionalMeta) ExtractFromStream(stream *nex.StreamIn) error {
-	dataStoreReqGetAdditionalMeta.OwnerID = stream.ReadUInt32LE()
-	dataStoreReqGetAdditionalMeta.DataType = stream.ReadUInt16LE()
-	dataStoreReqGetAdditionalMeta.Version = stream.ReadUInt16LE()
+	var err error
 
-	metaBinary, err := stream.ReadQBuffer()
+	dataStoreReqGetAdditionalMeta.OwnerID, err = stream.ReadUInt32LE()
 	if err != nil {
-		return err
+		return fmt.Errorf("Failed to extract DataStoreReqGetAdditionalMeta.OwnerID. %s", err.Error())
 	}
 
-	dataStoreReqGetAdditionalMeta.MetaBinary = metaBinary
+	dataStoreReqGetAdditionalMeta.DataType, err = stream.ReadUInt16LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreReqGetAdditionalMeta.DataType. %s", err.Error())
+	}
+
+	dataStoreReqGetAdditionalMeta.Version, err = stream.ReadUInt16LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreReqGetAdditionalMeta.Version. %s", err.Error())
+	}
+
+	dataStoreReqGetAdditionalMeta.MetaBinary, err = stream.ReadQBuffer()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreReqGetAdditionalMeta.MetaBinary. %s", err.Error())
+	}
 
 	return nil
 }
@@ -90,13 +102,12 @@ type DataStorePostProfileParam struct {
 
 // ExtractFromStream extracts a DataStorePostProfileParam structure from a stream
 func (dataStorePostProfileParam *DataStorePostProfileParam) ExtractFromStream(stream *nex.StreamIn) error {
+	var err error
 
-	profile, err := stream.ReadQBuffer()
+	dataStorePostProfileParam.Profile, err = stream.ReadQBuffer()
 	if err != nil {
-		return err
+		return fmt.Errorf("Failed to extract DataStorePostProfileParam.Profile. %s", err.Error())
 	}
-
-	dataStorePostProfileParam.Profile = profile
 
 	return nil
 }
@@ -143,14 +154,17 @@ type DataStoreProfileInfo struct {
 
 // ExtractFromStream extracts a DataStoreProfileInfo structure from a stream
 func (dataStoreProfileInfo *DataStoreProfileInfo) ExtractFromStream(stream *nex.StreamIn) error {
-	dataStoreProfileInfo.Pid = stream.ReadUInt32LE()
+	var err error
 
-	profile, err := stream.ReadQBuffer()
+	dataStoreProfileInfo.Pid, err = stream.ReadUInt32LE()
 	if err != nil {
-		return err
+		return fmt.Errorf("Failed to extract DataStoreProfileInfo.Pid. %s", err.Error())
 	}
 
-	dataStoreProfileInfo.Profile = profile
+	dataStoreProfileInfo.Profile, err = stream.ReadQBuffer()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreProfileInfo.Profile. %s", err.Error())
+	}
 
 	return nil
 }
@@ -210,15 +224,52 @@ type DataStoreReplayPlayer struct {
 
 // ExtractFromStream extracts a DataStoreReplayPlayer structure from a stream
 func (dataStoreReplayPlayer *DataStoreReplayPlayer) ExtractFromStream(stream *nex.StreamIn) error {
-	dataStoreReplayPlayer.Fighter = stream.ReadUInt8()
-	dataStoreReplayPlayer.Health = stream.ReadUInt8()
-	dataStoreReplayPlayer.WinningRate = stream.ReadUInt16LE()
-	dataStoreReplayPlayer.Color = stream.ReadUInt8()
-	dataStoreReplayPlayer.Color2 = stream.ReadUInt8()
-	dataStoreReplayPlayer.PrincipalID = stream.ReadUInt32LE()
-	dataStoreReplayPlayer.Country = stream.ReadUInt32LE()
-	dataStoreReplayPlayer.Region = stream.ReadUInt8()
-	dataStoreReplayPlayer.Number = stream.ReadUInt8()
+	var err error
+
+	dataStoreReplayPlayer.Fighter, err = stream.ReadUInt8()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreReplayPlayer.Fighter. %s", err.Error())
+	}
+
+	dataStoreReplayPlayer.Health, err = stream.ReadUInt8()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreReplayPlayer.Health. %s", err.Error())
+	}
+
+	dataStoreReplayPlayer.WinningRate, err = stream.ReadUInt16LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreReplayPlayer.WinningRate. %s", err.Error())
+	}
+
+	dataStoreReplayPlayer.Color, err = stream.ReadUInt8()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreReplayPlayer.Color. %s", err.Error())
+	}
+
+	dataStoreReplayPlayer.Color2, err = stream.ReadUInt8()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreReplayPlayer.Color2. %s", err.Error())
+	}
+
+	dataStoreReplayPlayer.PrincipalID, err = stream.ReadUInt32LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreReplayPlayer.PrincipalID. %s", err.Error())
+	}
+
+	dataStoreReplayPlayer.Country, err = stream.ReadUInt32LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreReplayPlayer.Country. %s", err.Error())
+	}
+
+	dataStoreReplayPlayer.Region, err = stream.ReadUInt8()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreReplayPlayer.Region. %s", err.Error())
+	}
+
+	dataStoreReplayPlayer.Number, err = stream.ReadUInt8()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreReplayPlayer.Number. %s", err.Error())
+	}
 
 	return nil
 }
@@ -318,21 +369,53 @@ type DataStoreReplayMetaInfo struct {
 
 // ExtractFromStream extracts a DataStoreReplayMetaInfo structure from a stream
 func (dataStoreReplayMetaInfo *DataStoreReplayMetaInfo) ExtractFromStream(stream *nex.StreamIn) error {
-	dataStoreReplayMetaInfo.ReplayID = stream.ReadUInt64LE()
-	dataStoreReplayMetaInfo.Size = stream.ReadUInt32LE()
-	dataStoreReplayMetaInfo.Mode = stream.ReadUInt8()
-	dataStoreReplayMetaInfo.Style = stream.ReadUInt8()
-	dataStoreReplayMetaInfo.Rule = stream.ReadUInt8()
-	dataStoreReplayMetaInfo.Stage = stream.ReadUInt8()
-	dataStoreReplayMetaInfo.ReplayType = stream.ReadUInt8()
+	var err error
+
+	dataStoreReplayMetaInfo.ReplayID, err = stream.ReadUInt64LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreReplayMetaInfo.ReplayID. %s", err.Error())
+	}
+
+	dataStoreReplayMetaInfo.Size, err = stream.ReadUInt32LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreReplayMetaInfo.Size. %s", err.Error())
+	}
+
+	dataStoreReplayMetaInfo.Mode, err = stream.ReadUInt8()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreReplayMetaInfo.Mode. %s", err.Error())
+	}
+
+	dataStoreReplayMetaInfo.Style, err = stream.ReadUInt8()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreReplayMetaInfo.Style. %s", err.Error())
+	}
+
+	dataStoreReplayMetaInfo.Rule, err = stream.ReadUInt8()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreReplayMetaInfo.Rule. %s", err.Error())
+	}
+
+	dataStoreReplayMetaInfo.Stage, err = stream.ReadUInt8()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreReplayMetaInfo.Stage. %s", err.Error())
+	}
+
+	dataStoreReplayMetaInfo.ReplayType, err = stream.ReadUInt8()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreReplayMetaInfo.ReplayType. %s", err.Error())
+	}
 
 	players, err := stream.ReadListStructure(NewDataStoreReplayPlayer())
 	if err != nil {
-		return err
+		return fmt.Errorf("Failed to extract DataStoreReplayMetaInfo.Players. %s", err.Error())
 	}
 
 	dataStoreReplayMetaInfo.Players = players.([]*DataStoreReplayPlayer)
-	dataStoreReplayMetaInfo.Winners = stream.ReadListUInt32LE()
+	dataStoreReplayMetaInfo.Winners, err = stream.ReadListUInt32LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreReplayMetaInfo.Winners. %s", err.Error())
+	}
 
 	return nil
 }
@@ -444,8 +527,17 @@ type DataStoreGetReplayMetaParam struct {
 
 // ExtractFromStream extracts a DataStoreGetReplayMetaParam structure from a stream
 func (dataStoreGetReplayMetaParam *DataStoreGetReplayMetaParam) ExtractFromStream(stream *nex.StreamIn) error {
-	dataStoreGetReplayMetaParam.ReplayID = stream.ReadUInt64LE()
-	dataStoreGetReplayMetaParam.MetaType = stream.ReadUInt8()
+	var err error
+
+	dataStoreGetReplayMetaParam.ReplayID, err = stream.ReadUInt64LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreGetReplayMetaParam.ReplayID. %s", err.Error())
+	}
+
+	dataStoreGetReplayMetaParam.MetaType, err = stream.ReadUInt8()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreGetReplayMetaParam.MetaType. %s", err.Error())
+	}
 
 	return nil
 }
@@ -496,8 +588,17 @@ type DataStorePrepareGetReplayParam struct {
 
 // ExtractFromStream extracts a DataStorePrepareGetReplayParam structure from a stream
 func (dataStorePrepareGetReplayParam *DataStorePrepareGetReplayParam) ExtractFromStream(stream *nex.StreamIn) error {
-	dataStorePrepareGetReplayParam.ReplayID = stream.ReadUInt64LE()
-	dataStorePrepareGetReplayParam.ExtraData = stream.ReadListString()
+	var err error
+
+	dataStorePrepareGetReplayParam.ReplayID, err = stream.ReadUInt64LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStorePrepareGetReplayParam.ReplayID. %s", err.Error())
+	}
+
+	dataStorePrepareGetReplayParam.ExtraData, err = stream.ReadListString()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStorePrepareGetReplayParam.ExtraData. %s", err.Error())
+	}
 
 	return nil
 }
@@ -566,25 +667,69 @@ type DataStorePreparePostReplayParam struct {
 
 // ExtractFromStream extracts a DataStorePreparePostReplayParam structure from a stream
 func (dataStorePreparePostReplayParam *DataStorePreparePostReplayParam) ExtractFromStream(stream *nex.StreamIn) error {
-	dataStorePreparePostReplayParam.Size = stream.ReadUInt32LE()
-	dataStorePreparePostReplayParam.Mode = stream.ReadUInt8()
-	dataStorePreparePostReplayParam.Style = stream.ReadUInt8()
-	dataStorePreparePostReplayParam.Rule = stream.ReadUInt8()
-	dataStorePreparePostReplayParam.Stage = stream.ReadUInt8()
-	dataStorePreparePostReplayParam.ReplayType = stream.ReadUInt8()
-	dataStorePreparePostReplayParam.CompetitionID = stream.ReadUInt64LE()
-	dataStorePreparePostReplayParam.Score = int32(stream.ReadUInt32LE())
+	var err error
+
+	dataStorePreparePostReplayParam.Size, err = stream.ReadUInt32LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStorePreparePostReplayParam.Size. %s", err.Error())
+	}
+
+	dataStorePreparePostReplayParam.Mode, err = stream.ReadUInt8()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStorePreparePostReplayParam.Mode. %s", err.Error())
+	}
+
+	dataStorePreparePostReplayParam.Style, err = stream.ReadUInt8()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStorePreparePostReplayParam.Style. %s", err.Error())
+	}
+
+	dataStorePreparePostReplayParam.Rule, err = stream.ReadUInt8()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStorePreparePostReplayParam.Rule. %s", err.Error())
+	}
+
+	dataStorePreparePostReplayParam.Stage, err = stream.ReadUInt8()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStorePreparePostReplayParam.Stage. %s", err.Error())
+	}
+
+	dataStorePreparePostReplayParam.ReplayType, err = stream.ReadUInt8()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStorePreparePostReplayParam.ReplayType. %s", err.Error())
+	}
+
+	dataStorePreparePostReplayParam.CompetitionID, err = stream.ReadUInt64LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStorePreparePostReplayParam.CompetitionID. %s", err.Error())
+	}
+
+	dataStorePreparePostReplayParam.Score, err = stream.ReadInt32LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStorePreparePostReplayParam.Score. %s", err.Error())
+	}
 
 	players, err := stream.ReadListStructure(NewDataStoreReplayPlayer())
 	if err != nil {
-		return err
+		return fmt.Errorf("Failed to extract DataStorePreparePostReplayParam.Players. %s", err.Error())
 	}
 
 	dataStorePreparePostReplayParam.Players = players.([]*DataStoreReplayPlayer)
 
-	dataStorePreparePostReplayParam.Winners = stream.ReadListUInt32LE()
-	dataStorePreparePostReplayParam.KeyVersion = stream.ReadUInt16LE()
-	dataStorePreparePostReplayParam.ExtraData = stream.ReadListString()
+	dataStorePreparePostReplayParam.Winners, err = stream.ReadListUInt32LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStorePreparePostReplayParam.Winners. %s", err.Error())
+	}
+
+	dataStorePreparePostReplayParam.KeyVersion, err = stream.ReadUInt16LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStorePreparePostReplayParam.KeyVersion. %s", err.Error())
+	}
+
+	dataStorePreparePostReplayParam.ExtraData, err = stream.ReadListString()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStorePreparePostReplayParam.ExtraData. %s", err.Error())
+	}
 
 	return nil
 }
@@ -724,18 +869,23 @@ type DataStoreCompletePostReplayParam struct {
 
 // ExtractFromStream extracts a DataStoreCompletePostReplayParam structure from a stream
 func (dataStoreCompletePostReplayParam *DataStoreCompletePostReplayParam) ExtractFromStream(stream *nex.StreamIn) error {
-	dataStoreCompletePostReplayParam.ReplayID = stream.ReadUInt64LE()
+	var err error
+
+	dataStoreCompletePostReplayParam.ReplayID, err = stream.ReadUInt64LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreCompletePostReplayParam.ReplayID. %s", err.Error())
+	}
 
 	completeParam, err := stream.ReadStructure(datastore.NewDataStoreCompletePostParam())
 	if err != nil {
-		return err
+		return fmt.Errorf("Failed to extract DataStoreCompletePostReplayParam.CompleteParam. %s", err.Error())
 	}
 
 	dataStoreCompletePostReplayParam.CompleteParam = completeParam.(*datastore.DataStoreCompletePostParam)
 
 	prepareParam, err := stream.ReadStructure(NewDataStorePreparePostReplayParam())
 	if err != nil {
-		return err
+		return fmt.Errorf("Failed to extract DataStoreCompletePostReplayParam.PrepareParam. %s", err.Error())
 	}
 
 	dataStoreCompletePostReplayParam.PrepareParam = prepareParam.(*DataStorePreparePostReplayParam)
@@ -802,33 +952,52 @@ type DataStorePreparePostSharedDataParam struct {
 
 // ExtractFromStream extracts a DataStorePreparePostSharedDataParam structure from a stream
 func (dataStorePreparePostSharedDataParam *DataStorePreparePostSharedDataParam) ExtractFromStream(stream *nex.StreamIn) error {
-	dataStorePreparePostSharedDataParam.DataType = stream.ReadUInt8()
-	dataStorePreparePostSharedDataParam.Region = stream.ReadUInt8()
-	dataStorePreparePostSharedDataParam.Attribute1 = stream.ReadUInt8()
-	dataStorePreparePostSharedDataParam.Attribute2 = stream.ReadUInt8()
+	var err error
 
-	fighter, err := stream.ReadBuffer()
+	dataStorePreparePostSharedDataParam.DataType, err = stream.ReadUInt8()
 	if err != nil {
-		return err
+		return fmt.Errorf("Failed to extract DataStorePreparePostSharedDataParam.DataType. %s", err.Error())
 	}
 
-	dataStorePreparePostSharedDataParam.Fighter = fighter
-	dataStorePreparePostSharedDataParam.Size = stream.ReadUInt32LE()
-
-	comment, err := stream.ReadString()
+	dataStorePreparePostSharedDataParam.Region, err = stream.ReadUInt8()
 	if err != nil {
-		return err
+		return fmt.Errorf("Failed to extract DataStorePreparePostSharedDataParam.Region. %s", err.Error())
 	}
 
-	dataStorePreparePostSharedDataParam.Comment = comment
-
-	metaBinary, err := stream.ReadQBuffer()
+	dataStorePreparePostSharedDataParam.Attribute1, err = stream.ReadUInt8()
 	if err != nil {
-		return err
+		return fmt.Errorf("Failed to extract DataStorePreparePostSharedDataParam.Attribute1. %s", err.Error())
 	}
 
-	dataStorePreparePostSharedDataParam.MetaBinary = metaBinary
-	dataStorePreparePostSharedDataParam.ExtraData = stream.ReadListString()
+	dataStorePreparePostSharedDataParam.Attribute2, err = stream.ReadUInt8()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStorePreparePostSharedDataParam.Attribute2. %s", err.Error())
+	}
+
+	dataStorePreparePostSharedDataParam.Fighter, err = stream.ReadBuffer()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStorePreparePostSharedDataParam.Fighter. %s", err.Error())
+	}
+
+	dataStorePreparePostSharedDataParam.Size, err = stream.ReadUInt32LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStorePreparePostSharedDataParam.Size. %s", err.Error())
+	}
+
+	dataStorePreparePostSharedDataParam.Comment, err = stream.ReadString()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStorePreparePostSharedDataParam.Comment. %s", err.Error())
+	}
+
+	dataStorePreparePostSharedDataParam.MetaBinary, err = stream.ReadQBuffer()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStorePreparePostSharedDataParam.MetaBinary. %s", err.Error())
+	}
+
+	dataStorePreparePostSharedDataParam.ExtraData, err = stream.ReadListString()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStorePreparePostSharedDataParam.ExtraData. %s", err.Error())
+	}
 
 	return nil
 }
@@ -936,18 +1105,23 @@ type DataStoreCompletePostSharedDataParam struct {
 
 // ExtractFromStream extracts a DataStoreCompletePostSharedDataParam structure from a stream
 func (dataStoreCompletePostSharedDataParam *DataStoreCompletePostSharedDataParam) ExtractFromStream(stream *nex.StreamIn) error {
-	dataStoreCompletePostSharedDataParam.DataID = stream.ReadUInt64LE()
+	var err error
+
+	dataStoreCompletePostSharedDataParam.DataID, err = stream.ReadUInt64LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreCompletePostSharedDataParam.DataID. %s", err.Error())
+	}
 
 	completeParam, err := stream.ReadStructure(datastore.NewDataStoreCompletePostParam())
 	if err != nil {
-		return err
+		return fmt.Errorf("Failed to extract DataStoreCompletePostSharedDataParam.CompleteParam. %s", err.Error())
 	}
 
 	dataStoreCompletePostSharedDataParam.CompleteParam = completeParam.(*datastore.DataStoreCompletePostParam)
 
 	prepareParam, err := stream.ReadStructure(NewDataStorePreparePostSharedDataParam())
 	if err != nil {
-		return err
+		return fmt.Errorf("Failed to extract DataStoreCompletePostSharedDataParam.PrepareParam. %s", err.Error())
 	}
 
 	dataStoreCompletePostSharedDataParam.PrepareParam = prepareParam.(*DataStorePreparePostSharedDataParam)
@@ -1012,16 +1186,41 @@ type DataStoreSearchSharedDataParam struct {
 
 // ExtractFromStream extracts a DataStoreSearchSharedDataParam structure from a stream
 func (dataStoreSearchSharedDataParam *DataStoreSearchSharedDataParam) ExtractFromStream(stream *nex.StreamIn) error {
-	dataStoreSearchSharedDataParam.DataType = stream.ReadUInt8()
-	dataStoreSearchSharedDataParam.Owner = stream.ReadUInt32LE()
-	dataStoreSearchSharedDataParam.Region = stream.ReadUInt8()
-	dataStoreSearchSharedDataParam.Attribute1 = stream.ReadUInt8()
-	dataStoreSearchSharedDataParam.Attribute2 = stream.ReadUInt8()
-	dataStoreSearchSharedDataParam.Fighter = stream.ReadUInt8()
+	var err error
+
+	dataStoreSearchSharedDataParam.DataType, err = stream.ReadUInt8()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreSearchSharedDataParam.DataType. %s", err.Error())
+	}
+
+	dataStoreSearchSharedDataParam.Owner, err = stream.ReadUInt32LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreSearchSharedDataParam.Owner. %s", err.Error())
+	}
+
+	dataStoreSearchSharedDataParam.Region, err = stream.ReadUInt8()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreSearchSharedDataParam.Region. %s", err.Error())
+	}
+
+	dataStoreSearchSharedDataParam.Attribute1, err = stream.ReadUInt8()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreSearchSharedDataParam.Attribute1. %s", err.Error())
+	}
+
+	dataStoreSearchSharedDataParam.Attribute2, err = stream.ReadUInt8()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreSearchSharedDataParam.Attribute2. %s", err.Error())
+	}
+
+	dataStoreSearchSharedDataParam.Fighter, err = stream.ReadUInt8()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreSearchSharedDataParam.Fighter. %s", err.Error())
+	}
 
 	resultRange, err := stream.ReadStructure(nex.NewResultRange())
 	if err != nil {
-		return err
+		return fmt.Errorf("Failed to extract DataStoreSearchSharedDataParam.ResultRange. %s", err.Error())
 	}
 
 	dataStoreSearchSharedDataParam.ResultRange = resultRange.(*nex.ResultRange)
@@ -1112,36 +1311,51 @@ type DataStoreSharedDataInfo struct {
 
 // ExtractFromStream extracts a DataStoreSharedDataInfo structure from a stream
 func (dataStoreSharedDataInfo *DataStoreSharedDataInfo) ExtractFromStream(stream *nex.StreamIn) error {
-	dataStoreSharedDataInfo.DataID = stream.ReadUInt64LE()
-	dataStoreSharedDataInfo.OwnerID = stream.ReadUInt32LE()
-	dataStoreSharedDataInfo.DataType = stream.ReadUInt8()
+	var err error
 
-	comment, err := stream.ReadString()
+	dataStoreSharedDataInfo.DataID, err = stream.ReadUInt64LE()
 	if err != nil {
-		return err
+		return fmt.Errorf("Failed to extract DataStoreSharedDataInfo.DataID. %s", err.Error())
 	}
 
-	dataStoreSharedDataInfo.Comment = comment
-
-	metaBinary, err := stream.ReadQBuffer()
+	dataStoreSharedDataInfo.OwnerID, err = stream.ReadUInt32LE()
 	if err != nil {
-		return err
+		return fmt.Errorf("Failed to extract DataStoreSharedDataInfo.OwnerID. %s", err.Error())
 	}
 
-	dataStoreSharedDataInfo.MetaBinary = metaBinary
-
-	profile, err := stream.ReadQBuffer()
+	dataStoreSharedDataInfo.DataType, err = stream.ReadUInt8()
 	if err != nil {
-		return err
+		return fmt.Errorf("Failed to extract DataStoreSharedDataInfo.DataType. %s", err.Error())
 	}
 
-	dataStoreSharedDataInfo.Profile = profile
-	dataStoreSharedDataInfo.Rating = int64(stream.ReadUInt64LE())
-	dataStoreSharedDataInfo.CreatedTime = nex.NewDateTime(stream.ReadUInt64LE())
+	dataStoreSharedDataInfo.Comment, err = stream.ReadString()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreSharedDataInfo.Comment. %s", err.Error())
+	}
+
+	dataStoreSharedDataInfo.MetaBinary, err = stream.ReadQBuffer()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreSharedDataInfo.MetaBinary. %s", err.Error())
+	}
+
+	dataStoreSharedDataInfo.Profile, err = stream.ReadQBuffer()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreSharedDataInfo.MetaBinary. %s", err.Error())
+	}
+
+	dataStoreSharedDataInfo.Rating, err = stream.ReadInt64LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreSharedDataInfo.Rating. %s", err.Error())
+	}
+
+	dataStoreSharedDataInfo.CreatedTime, err = stream.ReadDateTime()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreSharedDataInfo.CreatedTime. %s", err.Error())
+	}
 
 	info, err := stream.ReadStructure(NewDataStoreFileServerObjectInfo())
 	if err != nil {
-		return err
+		return fmt.Errorf("Failed to extract DataStoreSharedDataInfo.Info. %s", err.Error())
 	}
 
 	dataStoreSharedDataInfo.Info = info.(*DataStoreFileServerObjectInfo)
@@ -1249,13 +1463,24 @@ type DataStoreSearchReplayParam struct {
 
 // ExtractFromStream extracts a DataStoreSearchReplayParam structure from a stream
 func (dataStoreSearchReplayParam *DataStoreSearchReplayParam) ExtractFromStream(stream *nex.StreamIn) error {
-	dataStoreSearchReplayParam.Mode = stream.ReadUInt8()
-	dataStoreSearchReplayParam.Style = stream.ReadUInt8()
-	dataStoreSearchReplayParam.Fighter = stream.ReadUInt8()
+	var err error
+
+	dataStoreSearchReplayParam.Mode, err = stream.ReadUInt8()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreSearchReplayParam.Mode. %s", err.Error())
+	}
+	dataStoreSearchReplayParam.Style, err = stream.ReadUInt8()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreSearchReplayParam.Style. %s", err.Error())
+	}
+	dataStoreSearchReplayParam.Fighter, err = stream.ReadUInt8()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreSearchReplayParam.Fighter. %s", err.Error())
+	}
 
 	resultRange, err := stream.ReadStructure(nex.NewResultRange())
 	if err != nil {
-		return err
+		return fmt.Errorf("Failed to extract DataStoreSearchReplayParam.ResultRange. %s", err.Error())
 	}
 
 	dataStoreSearchReplayParam.ResultRange = resultRange.(*nex.ResultRange)
@@ -1322,9 +1547,22 @@ type DataStorePostFightingPowerScoreParam struct {
 
 // ExtractFromStream extracts a DataStorePostFightingPowerScoreParam structure from a stream
 func (dataStorePostFightingPowerScoreParam *DataStorePostFightingPowerScoreParam) ExtractFromStream(stream *nex.StreamIn) error {
-	dataStorePostFightingPowerScoreParam.Mode = stream.ReadUInt8()
-	dataStorePostFightingPowerScoreParam.Score = stream.ReadUInt32LE()
-	dataStorePostFightingPowerScoreParam.IsWorldHighScore = stream.ReadUInt8() == 1
+	var err error
+
+	dataStorePostFightingPowerScoreParam.Mode, err = stream.ReadUInt8()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStorePostFightingPowerScoreParam.Mode. %s", err.Error())
+	}
+
+	dataStorePostFightingPowerScoreParam.Score, err = stream.ReadUInt32LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStorePostFightingPowerScoreParam.Score. %s", err.Error())
+	}
+
+	dataStorePostFightingPowerScoreParam.IsWorldHighScore, err = stream.ReadBool()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStorePostFightingPowerScoreParam.IsWorldHighScore. %s", err.Error())
+	}
 
 	return nil
 }
@@ -1381,8 +1619,17 @@ type DataStoreFightingPowerScore struct {
 
 // ExtractFromStream extracts a DataStoreFightingPowerScore structure from a stream
 func (dataStoreFightingPowerScore *DataStoreFightingPowerScore) ExtractFromStream(stream *nex.StreamIn) error {
-	dataStoreFightingPowerScore.Score = stream.ReadUInt32LE()
-	dataStoreFightingPowerScore.Rank = stream.ReadUInt32LE()
+	var err error
+
+	dataStoreFightingPowerScore.Score, err = stream.ReadUInt32LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreFightingPowerScore.Score. %s", err.Error())
+	}
+
+	dataStoreFightingPowerScore.Rank, err = stream.ReadUInt32LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreFightingPowerScore.Rank. %s", err.Error())
+	}
 
 	return nil
 }
@@ -1433,11 +1680,16 @@ type DataStoreFightingPowerChart struct {
 
 // ExtractFromStream extracts a DataStoreFightingPowerChart structure from a stream
 func (dataStoreFightingPowerChart *DataStoreFightingPowerChart) ExtractFromStream(stream *nex.StreamIn) error {
-	dataStoreFightingPowerChart.UserNum = stream.ReadUInt32LE()
+	var err error
+
+	dataStoreFightingPowerChart.UserNum, err = stream.ReadUInt32LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreFightingPowerChart.UserNum. %s", err.Error())
+	}
 
 	chart, err := stream.ReadListStructure(NewDataStoreFightingPowerScore())
 	if err != nil {
-		return err
+		return fmt.Errorf("Failed to extract DataStoreFightingPowerChart.Chart. %s", err.Error())
 	}
 
 	dataStoreFightingPowerChart.Chart = chart.([]*DataStoreFightingPowerScore)
@@ -1502,12 +1754,16 @@ type DataStoreFileServerObjectInfo struct {
 
 // ExtractFromStream extracts a DataStoreFileServerObjectInfo structure from a stream
 func (dataStoreFileServerObjectInfo *DataStoreFileServerObjectInfo) ExtractFromStream(stream *nex.StreamIn) error {
-	// TODO check size
-	dataStoreFileServerObjectInfo.DataID = stream.ReadUInt64LE()
+	var err error
+
+	dataStoreFileServerObjectInfo.DataID, err = stream.ReadUInt64LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreFileServerObjectInfo.DataID. %s", err.Error())
+	}
 
 	getInfo, err := stream.ReadStructure(datastore.NewDataStoreReqGetInfo())
 	if err != nil {
-		return err
+		return fmt.Errorf("Failed to extract DataStoreFileServerObjectInfo.GetInfo. %s", err.Error())
 	}
 
 	dataStoreFileServerObjectInfo.GetInfo = getInfo.(*datastore.DataStoreReqGetInfo)

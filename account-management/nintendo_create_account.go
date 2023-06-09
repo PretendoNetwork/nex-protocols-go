@@ -1,6 +1,8 @@
 package account_management
 
 import (
+	"fmt"
+
 	nex "github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
@@ -27,24 +29,33 @@ func (protocol *AccountManagementProtocol) HandleNintendoCreateAccount(packet ne
 
 	strPrincipalName, err := parametersStream.ReadString()
 	if err != nil {
-		go protocol.NintendoCreateAccountHandler(err, client, callID, "", "", 0, "", nil)
+		go protocol.NintendoCreateAccountHandler(fmt.Errorf("Failed to read strPrincipalName from parameters. %s", err.Error()), client, callID, "", "", 0, "", nil)
 		return
 	}
 
 	strKey, err := parametersStream.ReadString()
 	if err != nil {
-		go protocol.NintendoCreateAccountHandler(err, client, callID, "", "", 0, "", nil)
+		go protocol.NintendoCreateAccountHandler(fmt.Errorf("Failed to read strKey from parameters. %s", err.Error()), client, callID, "", "", 0, "", nil)
 		return
 	}
 
-	uiGroups := parametersStream.ReadUInt32LE()
+	uiGroups, err := parametersStream.ReadUInt32LE()
+	if err != nil {
+		go protocol.NintendoCreateAccountHandler(fmt.Errorf("Failed to read uiGroups from parameters. %s", err.Error()), client, callID, "", "", 0, "", nil)
+		return
+	}
+
 	strEmail, err := parametersStream.ReadString()
 	if err != nil {
-		go protocol.NintendoCreateAccountHandler(err, client, callID, "", "", 0, "", nil)
+		go protocol.NintendoCreateAccountHandler(fmt.Errorf("Failed to read strEmail from parameters. %s", err.Error()), client, callID, "", "", 0, "", nil)
 		return
 	}
 
-	oAuthData := parametersStream.ReadDataHolder()
+	oAuthData, err := parametersStream.ReadDataHolder()
+	if err != nil {
+		go protocol.NintendoCreateAccountHandler(fmt.Errorf("Failed to read oAuthData from parameters. %s", err.Error()), client, callID, "", "", 0, "", nil)
+		return
+	}
 
 	go protocol.NintendoCreateAccountHandler(nil, client, callID, strPrincipalName, strKey, uiGroups, strEmail, oAuthData)
 }

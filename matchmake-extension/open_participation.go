@@ -1,6 +1,8 @@
 package matchmake_extension
 
 import (
+	"fmt"
+
 	nex "github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
@@ -24,7 +26,12 @@ func (protocol *MatchmakeExtensionProtocol) HandleOpenParticipation(packet nex.P
 	parameters := request.Parameters()
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
-	gid := parametersStream.ReadUInt32LE()
+
+	gid, err := parametersStream.ReadUInt32LE()
+	if err != nil {
+		go protocol.OpenParticipationHandler(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), client, callID, 0)
+		return
+	}
 
 	go protocol.OpenParticipationHandler(nil, client, callID, gid)
 }

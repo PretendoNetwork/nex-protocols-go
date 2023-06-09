@@ -2,6 +2,7 @@ package matchmake_extension
 
 import (
 	"encoding/hex"
+	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
@@ -31,13 +32,20 @@ func (protocol *MatchmakeExtensionProtocol) HandleAutoMatchmakeWithSearchCriteri
 
 	lstSearchCriteria, err := parametersStream.ReadListStructure(match_making.NewMatchmakeSessionSearchCriteria())
 	if err != nil {
-		go protocol.AutoMatchmakeWithSearchCriteria_PostponeHandler(nil, client, callID, nil, nil, "")
+		go protocol.AutoMatchmakeWithSearchCriteria_PostponeHandler(fmt.Errorf("Failed to read lstSearchCriteria from parameters. %s", err.Error()), client, callID, nil, nil, "")
+		return
 	}
 
-	anyGathering := parametersStream.ReadDataHolder()
+	anyGathering, err := parametersStream.ReadDataHolder()
+	if err != nil {
+		go protocol.AutoMatchmakeWithSearchCriteria_PostponeHandler(fmt.Errorf("Failed to read anyGathering from parameters. %s", err.Error()), client, callID, nil, nil, "")
+		return
+	}
+
 	strMessage, err := parametersStream.ReadString()
 	if err != nil {
-		go protocol.AutoMatchmakeWithSearchCriteria_PostponeHandler(nil, client, callID, nil, nil, "")
+		go protocol.AutoMatchmakeWithSearchCriteria_PostponeHandler(fmt.Errorf("Failed to read strMessage from parameters. %s", err.Error()), client, callID, nil, nil, "")
+		return
 	}
 
 	go protocol.AutoMatchmakeWithSearchCriteria_PostponeHandler(nil, client, callID, lstSearchCriteria.([]*match_making.MatchmakeSessionSearchCriteria), anyGathering, strMessage)

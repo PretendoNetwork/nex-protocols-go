@@ -1,6 +1,8 @@
 package datastore_super_mario_maker
 
 import (
+	"fmt"
+
 	nex "github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
@@ -25,7 +27,11 @@ func (protocol *DataStoreSuperMarioMakerProtocol) HandleGetApplicationConfigStri
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	applicationID := parametersStream.ReadUInt32LE()
+	applicationID, err := parametersStream.ReadUInt32LE()
+	if err != nil {
+		go protocol.GetApplicationConfigStringHandler(fmt.Errorf("Failed to read applicationID from parameters. %s", err.Error()), client, callID, 0)
+		return
+	}
 
 	go protocol.GetApplicationConfigStringHandler(nil, client, callID, applicationID)
 }

@@ -2,7 +2,7 @@ package friends_wiiu
 
 import (
 	"bytes"
-	"errors"
+	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
 )
@@ -26,27 +26,24 @@ func (blacklistedPrincipal *BlacklistedPrincipal) Bytes(stream *nex.StreamOut) [
 
 // ExtractFromStream extracts a BlacklistedPrincipal structure from a stream
 func (blacklistedPrincipal *BlacklistedPrincipal) ExtractFromStream(stream *nex.StreamIn) error {
-	principalBasicInfoStructureInterface, err := stream.ReadStructure(NewPrincipalBasicInfo())
+	var err error
+
+	principalBasicInfo, err := stream.ReadStructure(NewPrincipalBasicInfo())
 	if err != nil {
-		return err
+		return fmt.Errorf("Failed to extract BlacklistedPrincipal.PrincipalBasicInfo. %s", err.Error())
 	}
 
-	gameKeyStructureInterface, err := stream.ReadStructure(NewGameKey())
+	blacklistedPrincipal.PrincipalBasicInfo = principalBasicInfo.(*PrincipalBasicInfo)
+	gameKey, err := stream.ReadStructure(NewGameKey())
 	if err != nil {
-		return err
+		return fmt.Errorf("Failed to extract BlacklistedPrincipal.GameKey. %s", err.Error())
 	}
 
-	if len(stream.Bytes()[stream.ByteOffset():]) < 8 {
-		return errors.New("[DataStorePersistenceTarget::ExtractFromStream] Data size too small")
+	blacklistedPrincipal.GameKey = gameKey.(*GameKey)
+	blacklistedPrincipal.BlackListedSince, err = stream.ReadDateTime()
+	if err != nil {
+		return fmt.Errorf("Failed to extract BlacklistedPrincipal.BlackListedSince. %s", err.Error())
 	}
-
-	principalBasicInfo := principalBasicInfoStructureInterface.(*PrincipalBasicInfo)
-	gameKey := gameKeyStructureInterface.(*GameKey)
-	blackListedSince := nex.NewDateTime(stream.ReadUInt64LE())
-
-	blacklistedPrincipal.PrincipalBasicInfo = principalBasicInfo
-	blacklistedPrincipal.GameKey = gameKey
-	blacklistedPrincipal.BlackListedSince = blackListedSince
 
 	return nil
 }
@@ -105,22 +102,22 @@ func (comment *Comment) Bytes(stream *nex.StreamOut) []byte {
 
 // ExtractFromStream extracts a Comment structure from a stream
 func (comment *Comment) ExtractFromStream(stream *nex.StreamIn) error {
-	if len(stream.Bytes()[stream.ByteOffset():]) < 9 { // unknown byte + datetime uint64
-		return errors.New("[Comment::ExtractFromStream] Data size too small")
-	}
+	var err error
 
-	unknown := stream.ReadUInt8()
-	contents, err := stream.ReadString()
-
+	comment.Unknown, err = stream.ReadUInt8()
 	if err != nil {
-		return err
+		return fmt.Errorf("Failed to extract Comment.Unknown. %s", err.Error())
 	}
 
-	lastChanged := nex.NewDateTime(stream.ReadUInt64LE())
+	comment.Contents, err = stream.ReadString()
+	if err != nil {
+		return fmt.Errorf("Failed to extract Comment.Contents. %s", err.Error())
+	}
 
-	comment.Unknown = unknown
-	comment.Contents = contents
-	comment.LastChanged = lastChanged
+	comment.LastChanged, err = stream.ReadDateTime()
+	if err != nil {
+		return fmt.Errorf("Failed to extract Comment.LastChanged. %s", err.Error())
+	}
 
 	return nil
 }
@@ -396,12 +393,17 @@ func (gameKey *GameKey) Bytes(stream *nex.StreamOut) []byte {
 
 // ExtractFromStream extracts a GameKey structure from a stream
 func (gameKey *GameKey) ExtractFromStream(stream *nex.StreamIn) error {
-	if len(stream.Bytes()[stream.ByteOffset():]) < 10 {
-		return errors.New("[GameKey::ExtractFromStream] Data size too small")
+	var err error
+
+	gameKey.TitleID, err = stream.ReadUInt64LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract GameKey.TitleID. %s", err.Error())
 	}
 
-	gameKey.TitleID = stream.ReadUInt64LE()
-	gameKey.TitleVersion = stream.ReadUInt16LE()
+	gameKey.TitleVersion, err = stream.ReadUInt16LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract GameKey.TitleVersion. %s", err.Error())
+	}
 
 	return nil
 }
@@ -459,31 +461,32 @@ func (mii *MiiV2) Bytes(stream *nex.StreamOut) []byte {
 
 // ExtractFromStream extracts a MiiV2 structure from a stream
 func (mii *MiiV2) ExtractFromStream(stream *nex.StreamIn) error {
-	if len(stream.Bytes()[stream.ByteOffset():]) < 10 { // 2 unknown bytes + datetime uint64
-		return errors.New("[MiiV2::ExtractFromStream] Data size too small")
-	}
+	var err error
 
-	name, err := stream.ReadString()
-
+	mii.Name, err = stream.ReadString()
 	if err != nil {
-		return err
+		return fmt.Errorf("Failed to extract MiiV2.Name. %s", err.Error())
 	}
 
-	unknown1 := stream.ReadUInt8()
-	unknown2 := stream.ReadUInt8()
-	data, err := stream.ReadBuffer()
-
+	mii.Unknown1, err = stream.ReadUInt8()
 	if err != nil {
-		return err
+		return fmt.Errorf("Failed to extract MiiV2.Unknown1. %s", err.Error())
 	}
 
-	datetime := nex.NewDateTime(stream.ReadUInt64LE())
+	mii.Unknown2, err = stream.ReadUInt8()
+	if err != nil {
+		return fmt.Errorf("Failed to extract MiiV2.Unknown2. %s", err.Error())
+	}
 
-	mii.Name = name
-	mii.Unknown1 = unknown1
-	mii.Unknown2 = unknown2
-	mii.Data = data
-	mii.Datetime = datetime
+	mii.Data, err = stream.ReadBuffer()
+	if err != nil {
+		return fmt.Errorf("Failed to extract MiiV2.Data. %s", err.Error())
+	}
+
+	mii.Datetime, err = stream.ReadDateTime()
+	if err != nil {
+		return fmt.Errorf("Failed to extract MiiV2.Datetime. %s", err.Error())
+	}
 
 	return nil
 }
@@ -583,53 +586,83 @@ func (presence *NintendoPresenceV2) Bytes(stream *nex.StreamOut) []byte {
 
 // ExtractFromStream extracts a NintendoPresenceV2 structure from a stream
 func (presence *NintendoPresenceV2) ExtractFromStream(stream *nex.StreamIn) error {
-	if len(stream.Bytes()[stream.ByteOffset():]) < 40 {
-		// length check for the following fixed-size data
-		// changedFlags + isOnline + gameKey + gameKey + unknown1 + unknown2 + unknown3 + gameServerID + unknown4 + pid + gatheringID + unknown5 + unknown6 + unknown7
-		return errors.New("[NintendoPresenceV2::ExtractFromStream] Data size too small")
+	var err error
+
+	presence.ChangedFlags, err = stream.ReadUInt32LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract NintendoPresenceV2.ChangedFlags. %s", err.Error())
 	}
 
-	changedFlags := stream.ReadUInt32LE()
-	Online := (stream.ReadUInt8() == 1)
-	gameKeyStructureInterface, err := stream.ReadStructure(NewGameKey())
+	presence.Online, err = stream.ReadBool()
 	if err != nil {
-		return err
+		return fmt.Errorf("Failed to extract NintendoPresenceV2.Online. %s", err.Error())
 	}
-	gameKey := gameKeyStructureInterface.(*GameKey)
-	unknown1 := stream.ReadUInt8()
-	message, err := stream.ReadString()
-	if err != nil {
-		return err
-	}
-	unknown2 := stream.ReadUInt32LE()
-	unknown3 := stream.ReadUInt8()
-	gameServerID := stream.ReadUInt32LE()
-	unknown4 := stream.ReadUInt32LE()
-	pid := stream.ReadUInt32LE()
-	gatheringID := stream.ReadUInt32LE()
-	applicationData, err := stream.ReadBuffer()
-	if err != nil {
-		return err
-	}
-	unknown5 := stream.ReadUInt8()
-	unknown6 := stream.ReadUInt8()
-	unknown7 := stream.ReadUInt8()
 
-	presence.ChangedFlags = changedFlags
-	presence.Online = Online
-	presence.GameKey = gameKey
-	presence.Unknown1 = unknown1
-	presence.Message = message
-	presence.Unknown2 = unknown2
-	presence.Unknown3 = unknown3
-	presence.GameServerID = gameServerID
-	presence.Unknown4 = unknown4
-	presence.PID = pid
-	presence.GatheringID = gatheringID
-	presence.ApplicationData = applicationData
-	presence.Unknown5 = unknown5
-	presence.Unknown6 = unknown6
-	presence.Unknown7 = unknown7
+	gameKey, err := stream.ReadStructure(NewGameKey())
+	if err != nil {
+		return fmt.Errorf("Failed to extract NintendoPresenceV2.GameKey. %s", err.Error())
+	}
+
+	presence.GameKey = gameKey.(*GameKey)
+	presence.Unknown1, err = stream.ReadUInt8()
+	if err != nil {
+		return fmt.Errorf("Failed to extract NintendoPresenceV2.Unknown1. %s", err.Error())
+	}
+
+	presence.Message, err = stream.ReadString()
+	if err != nil {
+		return fmt.Errorf("Failed to extract NintendoPresenceV2.Message. %s", err.Error())
+	}
+
+	presence.Unknown2, err = stream.ReadUInt32LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract NintendoPresenceV2.Unknown2. %s", err.Error())
+	}
+
+	presence.Unknown3, err = stream.ReadUInt8()
+	if err != nil {
+		return fmt.Errorf("Failed to extract NintendoPresenceV2.Unknown3. %s", err.Error())
+	}
+
+	presence.GameServerID, err = stream.ReadUInt32LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract NintendoPresenceV2.GameServerID. %s", err.Error())
+	}
+
+	presence.Unknown4, err = stream.ReadUInt32LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract NintendoPresenceV2.Unknown4. %s", err.Error())
+	}
+
+	presence.PID, err = stream.ReadUInt32LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract NintendoPresenceV2.PID. %s", err.Error())
+	}
+
+	presence.GatheringID, err = stream.ReadUInt32LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract NintendoPresenceV2.GatheringID. %s", err.Error())
+	}
+
+	presence.ApplicationData, err = stream.ReadBuffer()
+	if err != nil {
+		return fmt.Errorf("Failed to extract NintendoPresenceV2.ApplicationData. %s", err.Error())
+	}
+
+	presence.Unknown5, err = stream.ReadUInt8()
+	if err != nil {
+		return fmt.Errorf("Failed to extract NintendoPresenceV2.Unknown5. %s", err.Error())
+	}
+
+	presence.Unknown6, err = stream.ReadUInt8()
+	if err != nil {
+		return fmt.Errorf("Failed to extract NintendoPresenceV2.Unknown6. %s", err.Error())
+	}
+
+	presence.Unknown7, err = stream.ReadUInt8()
+	if err != nil {
+		return fmt.Errorf("Failed to extract NintendoPresenceV2.Unknown7. %s", err.Error())
+	}
 
 	return nil
 }
@@ -751,24 +784,23 @@ func (nnaInfo *NNAInfo) Bytes(stream *nex.StreamOut) []byte {
 
 // ExtractFromStream extracts a NNAInfo structure from a stream
 func (nnaInfo *NNAInfo) ExtractFromStream(stream *nex.StreamIn) error {
-	if len(stream.Bytes()[stream.ByteOffset():]) < 2 {
-		// length check for the following fixed-size data
-		// unknown1 + unknown2
-		return errors.New("[NNAInfo::ExtractFromStream] Data size too small")
-	}
+	var err error
 
-	principalBasicInfoStructureInterface, err := stream.ReadStructure(NewPrincipalBasicInfo())
+	principalBasicInfo, err := stream.ReadStructure(NewPrincipalBasicInfo())
 	if err != nil {
-		return err
+		return fmt.Errorf("Failed to extract NNAInfo.PrincipalBasicInfo. %s", err.Error())
 	}
 
-	principalBasicInfo := principalBasicInfoStructureInterface.(*PrincipalBasicInfo)
-	unknown1 := stream.ReadUInt8()
-	unknown2 := stream.ReadUInt8()
+	nnaInfo.PrincipalBasicInfo = principalBasicInfo.(*PrincipalBasicInfo)
+	nnaInfo.Unknown1, err = stream.ReadUInt8()
+	if err != nil {
+		return fmt.Errorf("Failed to extract NNAInfo.Unknown1. %s", err.Error())
+	}
 
-	nnaInfo.PrincipalBasicInfo = principalBasicInfo
-	nnaInfo.Unknown1 = unknown1
-	nnaInfo.Unknown2 = unknown2
+	nnaInfo.Unknown2, err = stream.ReadUInt8()
+	if err != nil {
+		return fmt.Errorf("Failed to extract NNAInfo.Unknown2. %s", err.Error())
+	}
 
 	return nil
 }
@@ -820,26 +852,32 @@ type PersistentNotification struct {
 
 // ExtractFromStream extracts a PersistentNotification structure from a stream
 func (notification *PersistentNotification) ExtractFromStream(stream *nex.StreamIn) error {
-	if len(stream.Bytes()[stream.ByteOffset():]) < 20 {
-		// length check for the following fixed-size data
-		// unknown1 + unknown2 + unknown3 + unknown4
-		return errors.New("[PersistentNotification::ExtractFromStream] Data size too small")
-	}
+	var err error
 
-	unknown1 := stream.ReadUInt64LE()
-	unknown2 := stream.ReadUInt32LE()
-	unknown3 := stream.ReadUInt32LE()
-	unknown4 := stream.ReadUInt32LE()
-	unknown5, err := stream.ReadString()
+	notification.Unknown1, err = stream.ReadUInt64LE()
 	if err != nil {
-		return err
+		return fmt.Errorf("Failed to extract PersistentNotification.Unknown1. %s", err.Error())
 	}
 
-	notification.Unknown1 = unknown1
-	notification.Unknown2 = unknown2
-	notification.Unknown3 = unknown3
-	notification.Unknown4 = unknown4
-	notification.Unknown5 = unknown5
+	notification.Unknown2, err = stream.ReadUInt32LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract PersistentNotification.Unknown2. %s", err.Error())
+	}
+
+	notification.Unknown3, err = stream.ReadUInt32LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract PersistentNotification.Unknown3. %s", err.Error())
+	}
+
+	notification.Unknown4, err = stream.ReadUInt32LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract PersistentNotification.Unknown4. %s", err.Error())
+	}
+
+	notification.Unknown5, err = stream.ReadString()
+	if err != nil {
+		return fmt.Errorf("Failed to extract PersistentNotification.Unknown5. %s", err.Error())
+	}
 
 	return nil
 }
@@ -910,34 +948,28 @@ func (principalInfo *PrincipalBasicInfo) Bytes(stream *nex.StreamOut) []byte {
 
 // ExtractFromStream extracts a PrincipalBasicInfo structure from a stream
 func (principalInfo *PrincipalBasicInfo) ExtractFromStream(stream *nex.StreamIn) error {
+	var err error
 
-	if len(stream.Bytes()[stream.ByteOffset():]) < 4 {
-		return errors.New("[PrincipalBasicInfo::ExtractFromStream] Data size too small")
-	}
-
-	pid := stream.ReadUInt32LE()
-	nnid, err := stream.ReadString()
-
+	principalInfo.PID, err = stream.ReadUInt32LE()
 	if err != nil {
-		return err
+		return fmt.Errorf("Failed to extract PrincipalBasicInfo.PID. %s", err.Error())
 	}
 
-	miiV2StructureInterface, err := stream.ReadStructure(NewMiiV2())
+	principalInfo.NNID, err = stream.ReadString()
 	if err != nil {
-		return err
-	}
-	miiV2 := miiV2StructureInterface.(*MiiV2)
-
-	if len(stream.Bytes()[stream.ByteOffset():]) < 1 {
-		return errors.New("[PrincipalBasicInfo::ExtractFromStream] Data size too small")
+		return fmt.Errorf("Failed to extract PrincipalBasicInfo.NNID. %s", err.Error())
 	}
 
-	unknown := stream.ReadUInt8()
+	miiV2, err := stream.ReadStructure(NewMiiV2())
+	if err != nil {
+		return fmt.Errorf("Failed to extract PrincipalBasicInfo.Mii. %s", err.Error())
+	}
 
-	principalInfo.PID = pid
-	principalInfo.NNID = nnid
-	principalInfo.Mii = miiV2
-	principalInfo.Unknown = unknown
+	principalInfo.Mii = miiV2.(*MiiV2)
+	principalInfo.Unknown, err = stream.ReadUInt8()
+	if err != nil {
+		return fmt.Errorf("Failed to extract PrincipalBasicInfo.Unknown. %s", err.Error())
+	}
 
 	return nil
 }
@@ -1001,15 +1033,22 @@ func (principalPreference *PrincipalPreference) Bytes(stream *nex.StreamOut) []b
 
 // ExtractFromStream extracts a PrincipalPreference structure from a stream
 func (principalPreference *PrincipalPreference) ExtractFromStream(stream *nex.StreamIn) error {
-	if len(stream.Bytes()[stream.ByteOffset():]) < 1 {
-		// length check for the following fixed-size data
-		// unknown1 + unknown2 + unknown3
-		return errors.New("[PrincipalPreference::ExtractFromStream] Data size too small")
+	var err error
+
+	principalPreference.ShowOnlinePresence, err = stream.ReadBool()
+	if err != nil {
+		return fmt.Errorf("Failed to extract PrincipalPreference.ShowOnlinePresence. %s", err.Error())
 	}
 
-	principalPreference.ShowOnlinePresence = (stream.ReadUInt8() == 1)
-	principalPreference.ShowCurrentTitle = (stream.ReadUInt8() == 1)
-	principalPreference.BlockFriendRequests = (stream.ReadUInt8() == 1)
+	principalPreference.ShowCurrentTitle, err = stream.ReadBool()
+	if err != nil {
+		return fmt.Errorf("Failed to extract PrincipalPreference.ShowCurrentTitle. %s", err.Error())
+	}
+
+	principalPreference.BlockFriendRequests, err = stream.ReadBool()
+	if err != nil {
+		return fmt.Errorf("Failed to extract PrincipalPreference.BlockFriendRequests. %s", err.Error())
+	}
 
 	return nil
 }

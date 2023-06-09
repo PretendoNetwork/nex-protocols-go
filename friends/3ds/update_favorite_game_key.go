@@ -1,6 +1,8 @@
 package friends_3ds
 
 import (
+	"fmt"
+
 	nex "github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
@@ -27,7 +29,7 @@ func (protocol *Friends3DSProtocol) HandleUpdateFavoriteGameKey(packet nex.Packe
 
 	gameKey, err := parametersStream.ReadStructure(NewGameKey())
 	if err != nil {
-		go protocol.UpdateFavoriteGameKeyHandler(err, client, callID, nil)
+		go protocol.UpdateFavoriteGameKeyHandler(fmt.Errorf("Failed to read gameKey from parameters. %s", err.Error()), client, callID, nil)
 		return
 	}
 

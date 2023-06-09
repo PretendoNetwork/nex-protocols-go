@@ -1,6 +1,8 @@
 package friends_3ds
 
 import (
+	"fmt"
+
 	nex "github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
@@ -25,7 +27,11 @@ func (protocol *Friends3DSProtocol) HandleRemoveFriendByLocalFriendCode(packet n
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	lfc := parametersStream.ReadUInt64LE()
+	lfc, err := parametersStream.ReadUInt64LE()
+	if err != nil {
+		go protocol.RemoveFriendByLocalFriendCodeHandler(fmt.Errorf("Failed to read lfc from parameters. %s", err.Error()), client, callID, 0)
+		return
+	}
 
 	go protocol.RemoveFriendByLocalFriendCodeHandler(nil, client, callID, lfc)
 }

@@ -1,6 +1,8 @@
 package friends_3ds
 
 import (
+	"fmt"
+
 	nex "github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
@@ -27,7 +29,7 @@ func (protocol *Friends3DSProtocol) HandleUpdateMii(packet nex.PacketInterface) 
 
 	mii, err := parametersStream.ReadStructure(NewMii())
 	if err != nil {
-		go protocol.UpdateMiiHandler(err, client, callID, nil)
+		go protocol.UpdateMiiHandler(fmt.Errorf("Failed to read mii from parameters. %s", err.Error()), client, callID, nil)
 		return
 	}
 

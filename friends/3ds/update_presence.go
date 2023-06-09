@@ -1,6 +1,8 @@
 package friends_3ds
 
 import (
+	"fmt"
+
 	nex "github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
@@ -27,11 +29,15 @@ func (protocol *Friends3DSProtocol) HandleUpdatePresence(packet nex.PacketInterf
 
 	nintendoPresence, err := parametersStream.ReadStructure(NewNintendoPresence())
 	if err != nil {
-		go protocol.UpdatePresenceHandler(err, client, callID, nil, false)
+		go protocol.UpdatePresenceHandler(fmt.Errorf("Failed to read nintendoPresence from parameters. %s", err.Error()), client, callID, nil, false)
 		return
 	}
 
-	showGame := (parametersStream.ReadUInt8() == 1)
+	showGame, err := parametersStream.ReadBool()
+	if err != nil {
+		go protocol.UpdatePresenceHandler(fmt.Errorf("Failed to read showGame from parameters. %s", err.Error()), client, callID, nil, false)
+		return
+	}
 
 	go protocol.UpdatePresenceHandler(nil, client, callID, nintendoPresence.(*NintendoPresence), showGame)
 }

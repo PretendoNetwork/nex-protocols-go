@@ -1,6 +1,8 @@
 package shop_nintendo_badge_arcade
 
 import (
+	"fmt"
+
 	nex "github.com/PretendoNetwork/nex-go"
 )
 
@@ -13,15 +15,22 @@ type ShopPostPlayLogParam struct {
 
 // ExtractFromStream extracts a ShopPostPlayLogParam structure from a stream
 func (shopPostPlayLogParam *ShopPostPlayLogParam) ExtractFromStream(stream *nex.StreamIn) error {
-	shopPostPlayLogParam.Unknown1 = stream.ReadListUInt32LE()
-	shopPostPlayLogParam.Timestamp = stream.ReadDateTime()
+	var err error
 
-	unknown2, err := stream.ReadString()
+	shopPostPlayLogParam.Unknown1, err = stream.ReadListUInt32LE()
 	if err != nil {
-		return err
+		return fmt.Errorf("Failed to extract ShopPostPlayLogParam.Unknown1 from stream. %s", err.Error())
 	}
 
-	shopPostPlayLogParam.Unknown2 = unknown2
+	shopPostPlayLogParam.Timestamp, err = stream.ReadDateTime()
+	if err != nil {
+		return fmt.Errorf("Failed to extract ShopPostPlayLogParam.Timestamp from stream. %s", err.Error())
+	}
+
+	shopPostPlayLogParam.Unknown2, err = stream.ReadString()
+	if err != nil {
+		return fmt.Errorf("Failed to extract ShopPostPlayLogParam.Unknown2 from stream. %s", err.Error())
+	}
 
 	return nil
 }

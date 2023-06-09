@@ -1,6 +1,8 @@
 package friends_wiiu
 
 import (
+	"fmt"
+
 	nex "github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
@@ -25,13 +27,11 @@ func (protocol *FriendsWiiUProtocol) HandleAddBlackList(packet nex.PacketInterfa
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	blacklistedPrincipalStructureInterface, err := parametersStream.ReadStructure(NewBlacklistedPrincipal())
+	blacklistedPrincipal, err := parametersStream.ReadStructure(NewBlacklistedPrincipal())
 	if err != nil {
-		go protocol.AddBlackListHandler(err, client, callID, nil)
+		go protocol.AddBlackListHandler(fmt.Errorf("Failed to read blacklistedPrincipal from parameters. %s", err.Error()), client, callID, nil)
 		return
 	}
 
-	blacklistedPrincipal := blacklistedPrincipalStructureInterface.(*BlacklistedPrincipal)
-
-	go protocol.AddBlackListHandler(nil, client, callID, blacklistedPrincipal)
+	go protocol.AddBlackListHandler(nil, client, callID, blacklistedPrincipal.(*BlacklistedPrincipal))
 }

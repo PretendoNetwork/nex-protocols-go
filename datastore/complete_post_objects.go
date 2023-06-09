@@ -1,6 +1,8 @@
 package datastore
 
 import (
+	"fmt"
+
 	nex "github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
@@ -25,7 +27,11 @@ func (protocol *DataStoreProtocol) HandleCompletePostObjects(packet nex.PacketIn
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	dataIDs := parametersStream.ReadListUInt64LE()
+	dataIDs, err := parametersStream.ReadListUInt64LE()
+	if err != nil {
+		go protocol.CompletePostObjectsHandler(fmt.Errorf("Failed to read dataIDs from parameters. %s", err.Error()), client, callID, nil)
+		return
+	}
 
 	go protocol.CompletePostObjectsHandler(nil, client, callID, dataIDs)
 }

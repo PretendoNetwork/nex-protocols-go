@@ -1,7 +1,7 @@
 package authentication
 
 import (
-	"errors"
+	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
@@ -27,12 +27,11 @@ func (protocol *AuthenticationProtocol) HandleGetName(packet nex.PacketInterface
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	if len(parameters) != 4 {
-		err := errors.New("[Authentication::GetName] Parameters length not 4")
-		go protocol.RequestTicketHandler(err, client, callID, 0, 0)
+	id, err := parametersStream.ReadUInt32LE()
+	if err != nil {
+		go protocol.GetNameHandler(fmt.Errorf("Failed to read id from parameters. %s", err.Error()), client, callID, 0)
+		return
 	}
 
-	userPID := parametersStream.ReadUInt32LE()
-
-	go protocol.GetNameHandler(nil, client, callID, userPID)
+	go protocol.GetNameHandler(nil, client, callID, id)
 }

@@ -1,6 +1,8 @@
 package datastore_super_mario_maker
 
 import (
+	"fmt"
+
 	nex "github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
@@ -27,11 +29,15 @@ func (protocol *DataStoreSuperMarioMakerProtocol) HandleAddToBufferQueues(packet
 
 	params, err := parametersStream.ReadListStructure(NewBufferQueueParam())
 	if err != nil {
-		go protocol.AddToBufferQueuesHandler(err, client, callID, nil, nil)
+		go protocol.AddToBufferQueuesHandler(fmt.Errorf("Failed to read params from parameters. %s", err.Error()), client, callID, nil, nil)
 		return
 	}
 
-	buffers := parametersStream.ReadListQBuffer()
+	buffers, err := parametersStream.ReadListQBuffer()
+	if err != nil {
+		go protocol.AddToBufferQueuesHandler(fmt.Errorf("Failed to read buffers from parameters. %s", err.Error()), client, callID, nil, nil)
+		return
+	}
 
 	go protocol.AddToBufferQueuesHandler(nil, client, callID, params.([]*BufferQueueParam), buffers)
 }

@@ -75,8 +75,8 @@ type MatchmakeExtensionProtocol struct {
 	Server                                          *nex.Server
 	CloseParticipationHandler                       func(err error, client *nex.Client, callID uint32, gid uint32)
 	OpenParticipationHandler                        func(err error, client *nex.Client, callID uint32, gid uint32)
-	AutoMatchmake_PostponeHandler                   func(err error, client *nex.Client, callID uint32, matchmakeSession *match_making.MatchmakeSession, message string)
-	CreateMatchmakeSessionHandler                   func(err error, client *nex.Client, callID uint32, matchmakeSession *match_making.MatchmakeSession, message string, participationCount uint16)
+	AutoMatchmake_PostponeHandler                   func(err error, client *nex.Client, callID uint32, anyGathering *nex.DataHolder, message string)
+	CreateMatchmakeSessionHandler                   func(err error, client *nex.Client, callID uint32, anyGathering *nex.DataHolder, message string, participationCount uint16)
 	UpdateNotificationDataHandler                   func(err error, client *nex.Client, callID uint32, uiType uint32, uiParam1 uint32, uiParam2 uint32, strParam string)
 	GetFriendNotificationDataHandler                func(err error, client *nex.Client, callID uint32, uiType int32)
 	AutoMatchmakeWithSearchCriteria_PostponeHandler func(err error, client *nex.Client, callID uint32, lstSearchCriteria []*match_making.MatchmakeSessionSearchCriteria, anyGathering *nex.DataHolder, strMessage string)

@@ -1,6 +1,8 @@
 package ranking
 
 import (
+	"fmt"
+
 	nex "github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
@@ -27,11 +29,15 @@ func (protocol *RankingProtocol) HandleUploadCommonData(packet nex.PacketInterfa
 
 	commonData, err := parametersStream.ReadBuffer()
 	if err != nil {
-		go protocol.UploadCommonDataHandler(err, client, callID, nil, 0)
+		go protocol.UploadCommonDataHandler(fmt.Errorf("Failed to read commonData from parameters. %s", err.Error()), client, callID, nil, 0)
 		return
 	}
 
-	uniqueID := parametersStream.ReadUInt64LE()
+	uniqueID, err := parametersStream.ReadUInt64LE()
+	if err != nil {
+		go protocol.UploadCommonDataHandler(fmt.Errorf("Failed to read uniqueID from parameters. %s", err.Error()), client, callID, nil, 0)
+		return
+	}
 
 	go protocol.UploadCommonDataHandler(nil, client, callID, commonData, uniqueID)
 }

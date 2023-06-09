@@ -1,6 +1,8 @@
 package datastore_super_smash_bros_4
 
 import (
+	"fmt"
+
 	nex "github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
@@ -27,7 +29,7 @@ func (protocol *DataStoreSuperSmashBros4Protocol) HandleCompletePostSharedData(p
 
 	param, err := parametersStream.ReadStructure(NewDataStoreCompletePostSharedDataParam())
 	if err != nil {
-		go protocol.CompletePostSharedDataHandler(err, client, callID, nil)
+		go protocol.CompletePostSharedDataHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
 		return
 	}
 

@@ -1,6 +1,8 @@
 package match_making_ext
 
 import (
+	"fmt"
+
 	nex "github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
@@ -25,13 +27,17 @@ func (protocol *MatchMakingExtProtocol) HandleDeleteFromDeletions(packet nex.Pac
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	lstDeletionsCount := parametersStream.ReadUInt32LE()
-	lstDeletions := make([]uint32, lstDeletionsCount)
-	for i := 0; uint32(i) < lstDeletionsCount; i++ {
-		lstDeletions[i] = parametersStream.ReadUInt32LE()
+	lstDeletions, err := parametersStream.ReadListUInt32LE()
+	if err != nil {
+		go protocol.DeleteFromDeletionsHandler(fmt.Errorf("Failed to read lstDeletionsCount from parameters. %s", err.Error()), client, callID, nil, 0)
+		return
 	}
 
-	pid := parametersStream.ReadUInt32LE()
+	pid, err := parametersStream.ReadUInt32LE()
+	if err != nil {
+		go protocol.DeleteFromDeletionsHandler(fmt.Errorf("Failed to read pid from parameters. %s", err.Error()), client, callID, nil, 0)
+		return
+	}
 
 	go protocol.DeleteFromDeletionsHandler(nil, client, callID, lstDeletions, pid)
 }

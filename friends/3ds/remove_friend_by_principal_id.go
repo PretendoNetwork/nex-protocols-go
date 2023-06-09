@@ -1,6 +1,8 @@
 package friends_3ds
 
 import (
+	"fmt"
+
 	nex "github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
@@ -25,7 +27,11 @@ func (protocol *Friends3DSProtocol) HandleRemoveFriendByPrincipalID(packet nex.P
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	pid := parametersStream.ReadUInt32LE()
+	pid, err := parametersStream.ReadUInt32LE()
+	if err != nil {
+		go protocol.RemoveFriendByPrincipalIDHandler(fmt.Errorf("Failed to read pid from parameters. %s", err.Error()), client, callID, 0)
+		return
+	}
 
 	go protocol.RemoveFriendByPrincipalIDHandler(nil, client, callID, pid)
 }

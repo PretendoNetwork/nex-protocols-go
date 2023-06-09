@@ -1,6 +1,8 @@
 package match_making
 
 import (
+	"fmt"
+
 	nex "github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
@@ -25,7 +27,10 @@ func (protocol *MatchMakingProtocol) HandleGetSessionURLs(packet nex.PacketInter
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	gatheringId := parametersStream.ReadUInt32LE()
+	gatheringId, err := parametersStream.ReadUInt32LE()
+	if err != nil {
+		go protocol.GetSessionURLsHandler(fmt.Errorf("Failed to read gatheringId from parameters. %s", err.Error()), client, callID, 0)
+	}
 
 	go protocol.GetSessionURLsHandler(nil, client, callID, gatheringId)
 }

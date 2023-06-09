@@ -1,6 +1,8 @@
 package datastore_super_mario_maker
 
 import (
+	"fmt"
+
 	nex "github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
@@ -26,9 +28,8 @@ func (protocol *DataStoreSuperMarioMakerProtocol) HandleGetCourseRecord(packet n
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
 	param, err := parametersStream.ReadStructure(NewDataStoreGetCourseRecordParam())
-
 	if err != nil {
-		go protocol.GetCourseRecordHandler(err, client, callID, nil)
+		go protocol.GetCourseRecordHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
 		return
 	}
 

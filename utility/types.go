@@ -1,6 +1,8 @@
 package utility
 
 import (
+	"fmt"
+
 	nex "github.com/PretendoNetwork/nex-go"
 )
 
@@ -21,14 +23,18 @@ func (uniqueIDInfo *UniqueIDInfo) Bytes(stream *nex.StreamOut) []byte {
 
 // ExtractFromStream extracts a UniqueIDInfo structure from a stream
 func (uniqueIDInfo *UniqueIDInfo) ExtractFromStream(stream *nex.StreamIn) error {
-	var err error
-
-	uniqueIDInfo.NexUniqueID = stream.ReadUInt64LE()
-	uniqueIDInfo.NexUniqueIDPassword = stream.ReadUInt64LE()
-
+	nexUniqueID, err := stream.ReadUInt64LE()
 	if err != nil {
-		return err
+		return fmt.Errorf("Failed to extract UniqueIDInfo.NexUniqueID from stream. %s", err.Error())
 	}
+
+	nexUniqueIDPassword, err := stream.ReadUInt64LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract UniqueIDInfo.NexUniqueIDPassword from stream. %s", err.Error())
+	}
+
+	uniqueIDInfo.NexUniqueID = nexUniqueID
+	uniqueIDInfo.NexUniqueIDPassword = nexUniqueIDPassword
 
 	return nil
 }

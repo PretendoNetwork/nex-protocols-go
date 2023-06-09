@@ -2,6 +2,7 @@ package friends_wiiu
 
 import (
 	"errors"
+	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
@@ -33,7 +34,11 @@ func (protocol *FriendsWiiUProtocol) HandleDenyFriendRequest(packet nex.PacketIn
 		return
 	}
 
-	id := parametersStream.ReadUInt64LE()
+	id, err := parametersStream.ReadUInt64LE()
+	if err != nil {
+		go protocol.DenyFriendRequestHandler(fmt.Errorf("Failed to read id from parameters. %s", err.Error()), client, callID, 0)
+		return
+	}
 
 	go protocol.DenyFriendRequestHandler(nil, client, callID, id)
 }

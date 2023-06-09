@@ -1,6 +1,8 @@
 package utility
 
 import (
+	"fmt"
+
 	nex "github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
@@ -25,7 +27,12 @@ func (protocol *UtilityProtocol) HandleGetIntegerSettings(packet nex.PacketInter
 	parameters := request.Parameters()
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
-	integerSettingIndex := parametersStream.ReadUInt32LE()
+
+	integerSettingIndex, err := parametersStream.ReadUInt32LE()
+	if err != nil {
+		go protocol.GetIntegerSettingsHandler(fmt.Errorf("Failed to read integerSettingIndex from parameters. %s", err.Error()), client, callID, 0)
+		return
+	}
 
 	go protocol.GetIntegerSettingsHandler(nil, client, callID, integerSettingIndex)
 }

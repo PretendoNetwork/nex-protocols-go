@@ -1,6 +1,8 @@
 package friends_wiiu
 
 import (
+	"fmt"
+
 	nex "github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
@@ -25,13 +27,11 @@ func (protocol *FriendsWiiUProtocol) HandleUpdatePreference(packet nex.PacketInt
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	principalPreferenceStructureInterface, err := parametersStream.ReadStructure(NewPrincipalPreference())
+	principalPreference, err := parametersStream.ReadStructure(NewPrincipalPreference())
 	if err != nil {
-		go protocol.UpdatePreferenceHandler(err, client, callID, nil)
+		go protocol.UpdatePreferenceHandler(fmt.Errorf("Failed to read principalPreference from parameters. %s", err.Error()), client, callID, nil)
 		return
 	}
 
-	principalPreference := principalPreferenceStructureInterface.(*PrincipalPreference)
-
-	go protocol.UpdatePreferenceHandler(nil, client, callID, principalPreference)
+	go protocol.UpdatePreferenceHandler(nil, client, callID, principalPreference.(*PrincipalPreference))
 }

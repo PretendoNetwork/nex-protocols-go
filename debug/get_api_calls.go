@@ -1,12 +1,14 @@
 package debug
 
 import (
+	"fmt"
+
 	nex "github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
 // GetApiCalls sets the GetApiCalls handler function
-func (protocol *DebugProtocol) GetApiCalls(handler func(err error, client *nex.Client, callID uint32, pids []uint32, dateUnk1 uint64, dateUnk2 uint64)) {
+func (protocol *DebugProtocol) GetApiCalls(handler func(err error, client *nex.Client, callID uint32, pids []uint32, unknown *nex.DateTime, unknown2 *nex.DateTime)) {
 	protocol.GetApiCallsHandler = handler
 }
 
@@ -25,15 +27,23 @@ func (protocol *DebugProtocol) HandleGetApiCalls(packet nex.PacketInterface) {
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	pidsCount := parametersStream.ReadUInt32LE()
-	pids := make([]uint32, pidsCount)
-	for i := 0; uint32(i) < pidsCount; i++ {
-		pids[i] = parametersStream.ReadUInt32LE()
+	pids, err := parametersStream.ReadListUInt32LE()
+	if err != nil {
+		go protocol.GetApiCallsHandler(fmt.Errorf("Failed to read pids from parameters. %s", err.Error()), client, callID, nil, nil, nil)
+		return
 	}
 
-	dateUnk1 := parametersStream.ReadUInt64LE()
+	unknown, err := parametersStream.ReadDateTime()
+	if err != nil {
+		go protocol.GetApiCallsHandler(fmt.Errorf("Failed to read unknown from parameters. %s", err.Error()), client, callID, nil, nil, nil)
+		return
+	}
 
-	dateUnk2 := parametersStream.ReadUInt64LE()
+	unknown2, err := parametersStream.ReadDateTime()
+	if err != nil {
+		go protocol.GetApiCallsHandler(fmt.Errorf("Failed to read unknown2 from parameters. %s", err.Error()), client, callID, nil, nil, nil)
+		return
+	}
 
-	go protocol.GetApiCallsHandler(nil, client, callID, pids, dateUnk1, dateUnk2)
+	go protocol.GetApiCallsHandler(nil, client, callID, pids, unknown, unknown2)
 }

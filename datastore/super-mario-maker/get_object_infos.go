@@ -1,6 +1,8 @@
 package datastore_super_mario_maker
 
 import (
+	"fmt"
+
 	nex "github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
@@ -25,7 +27,11 @@ func (protocol *DataStoreSuperMarioMakerProtocol) HandleGetObjectInfos(packet ne
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	dataIDs := parametersStream.ReadListUInt64LE()
+	dataIDs, err := parametersStream.ReadListUInt64LE()
+	if err != nil {
+		go protocol.GetObjectInfosHandler(fmt.Errorf("Failed to read dataIDs from parameters. %s", err.Error()), client, callID, nil)
+		return
+	}
 
 	go protocol.GetObjectInfosHandler(nil, client, callID, dataIDs)
 }

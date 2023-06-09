@@ -1,14 +1,14 @@
 package secure_connection
 
 import (
-	"errors"
+	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
 // Register sets the Register handler function
-func (protocol *SecureConnectionProtocol) Register(handler func(err error, client *nex.Client, callID uint32, stationUrls []*nex.StationURL)) {
+func (protocol *SecureConnectionProtocol) Register(handler func(err error, client *nex.Client, callID uint32, vecMyURLs []*nex.StationURL)) {
 	protocol.RegisterHandler = handler
 }
 
@@ -27,13 +27,11 @@ func (protocol *SecureConnectionProtocol) HandleRegister(packet nex.PacketInterf
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	if len(parametersStream.Bytes()[parametersStream.ByteOffset():]) < 4 {
-		err := errors.New("[SecureConnection::Register] Data missing list length")
-		go protocol.RegisterHandler(err, client, callID, make([]*nex.StationURL, 0))
+	vecMyURLs, err := parametersStream.ReadListStationURL()
+	if err != nil {
+		go protocol.RegisterHandler(fmt.Errorf("Failed to read hCustomData from parameters. %s", err.Error()), client, callID, nil)
 		return
 	}
 
-	stationUrls := parametersStream.ReadListStationURL()
-
-	go protocol.RegisterHandler(nil, client, callID, stationUrls)
+	go protocol.RegisterHandler(nil, client, callID, vecMyURLs)
 }

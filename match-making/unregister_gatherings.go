@@ -1,6 +1,8 @@
 package match_making
 
 import (
+	"fmt"
+
 	nex "github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
@@ -25,7 +27,10 @@ func (protocol *MatchMakingProtocol) HandleUnregisterGatherings(packet nex.Packe
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	lstGatherings := parametersStream.ReadListUInt32LE()
+	lstGatherings, err := parametersStream.ReadListUInt32LE()
+	if err != nil {
+		go protocol.UnregisterGatheringsHandler(fmt.Errorf("Failed to read lstGatherings from parameters. %s", err.Error()), client, callID, nil)
+	}
 
 	go protocol.UnregisterGatheringsHandler(nil, client, callID, lstGatherings)
 }

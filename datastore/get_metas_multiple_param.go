@@ -1,6 +1,8 @@
 package datastore
 
 import (
+	"fmt"
+
 	nex "github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
@@ -27,7 +29,7 @@ func (protocol *DataStoreProtocol) HandleGetMetasMultipleParam(packet nex.Packet
 
 	params, err := parametersStream.ReadListStructure(NewDataStoreGetMetaParam())
 	if err != nil {
-		go protocol.GetMetasMultipleParamHandler(err, client, callID, nil)
+		go protocol.GetMetasMultipleParamHandler(fmt.Errorf("Failed to read params from parameters. %s", err.Error()), client, callID, nil)
 		return
 	}
 

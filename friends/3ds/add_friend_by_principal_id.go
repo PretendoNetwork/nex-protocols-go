@@ -1,6 +1,8 @@
 package friends_3ds
 
 import (
+	"fmt"
+
 	nex "github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
@@ -25,8 +27,17 @@ func (protocol *Friends3DSProtocol) HandleAddFriendByPrincipalID(packet nex.Pack
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	lfc := parametersStream.ReadUInt64LE()
-	pid := parametersStream.ReadUInt32LE()
+	lfc, err := parametersStream.ReadUInt64LE()
+	if err != nil {
+		go protocol.AddFriendByPrincipalIDHandler(fmt.Errorf("Failed to read lfc from parameters. %s", err.Error()), client, callID, 0, 0)
+		return
+	}
+
+	pid, err := parametersStream.ReadUInt32LE()
+	if err != nil {
+		go protocol.AddFriendByPrincipalIDHandler(fmt.Errorf("Failed to read pid from parameters. %s", err.Error()), client, callID, 0, 0)
+		return
+	}
 
 	go protocol.AddFriendByPrincipalIDHandler(nil, client, callID, lfc, pid)
 }

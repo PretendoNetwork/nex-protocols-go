@@ -1,6 +1,8 @@
 package nat_traversal
 
 import (
+	"fmt"
+
 	nex "github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
@@ -25,9 +27,23 @@ func (protocol *NATTraversalProtocol) HandleReportNATTraversalResult(packet nex.
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	cid := parametersStream.ReadUInt32LE()
-	result := parametersStream.ReadBool()
-	rtt := parametersStream.ReadUInt32LE()
+	cid, err := parametersStream.ReadUInt32LE()
+	if err != nil {
+		go protocol.ReportNATTraversalResultHandler(fmt.Errorf("Failed to read cid from parameters. %s", err.Error()), client, callID, 0, false, 0)
+		return
+	}
+
+	result, err := parametersStream.ReadBool()
+	if err != nil {
+		go protocol.ReportNATTraversalResultHandler(fmt.Errorf("Failed to read result from parameters. %s", err.Error()), client, callID, 0, false, 0)
+		return
+	}
+
+	rtt, err := parametersStream.ReadUInt32LE()
+	if err != nil {
+		go protocol.ReportNATTraversalResultHandler(fmt.Errorf("Failed to read rtt from parameters. %s", err.Error()), client, callID, 0, false, 0)
+		return
+	}
 
 	go protocol.ReportNATTraversalResultHandler(nil, client, callID, cid, result, rtt)
 }

@@ -1,6 +1,8 @@
 package datastore_super_smash_bros_4
 
 import (
+	"fmt"
+
 	nex "github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
@@ -25,7 +27,11 @@ func (protocol *DataStoreSuperSmashBros4Protocol) HandleReportSharedData(packet 
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	dataID := parametersStream.ReadUInt64LE()
+	dataID, err := parametersStream.ReadUInt64LE()
+	if err != nil {
+		go protocol.ReportSharedDataHandler(fmt.Errorf("Failed to read dataID from parameters. %s", err.Error()), client, callID, 0)
+		return
+	}
 
 	go protocol.ReportSharedDataHandler(nil, client, callID, dataID)
 }

@@ -1,6 +1,8 @@
 package datastore_super_smash_bros_4
 
 import (
+	"fmt"
+
 	nex "github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
@@ -25,7 +27,11 @@ func (protocol *DataStoreSuperSmashBros4Protocol) HandleGetFightingPowerChart(pa
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	mode := parametersStream.ReadUInt8()
+	mode, err := parametersStream.ReadUInt8()
+	if err != nil {
+		go protocol.GetFightingPowerChartHandler(fmt.Errorf("Failed to read mode from parameters. %s", err.Error()), client, callID, 0)
+		return
+	}
 
 	go protocol.GetFightingPowerChartHandler(nil, client, callID, mode)
 }

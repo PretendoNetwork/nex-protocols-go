@@ -38,7 +38,7 @@ type DebugProtocol struct {
 	EnableApiRecorderHandler                func(err error, client *nex.Client, callID uint32)
 	DisableApiRecorderHandler               func(err error, client *nex.Client, callID uint32)
 	IsApiRecorderEnabledHandler             func(err error, client *nex.Client, callID uint32)
-	GetApiCallsHandler                      func(err error, client *nex.Client, callID uint32, pids []uint32, dateUnk1 uint64, dateUnk2 uint64)
+	GetApiCallsHandler                      func(err error, client *nex.Client, callID uint32, pids []uint32, unknown *nex.DateTime, unknown2 *nex.DateTime)
 	SetExcludeJoinedMatchmakeSessionHandler func(err error, client *nex.Client, callID uint32)
 	GetExcludeJoinedMatchmakeSessionHandler func(err error, client *nex.Client, callID uint32)
 	GetApiCallSummaryHandler                func(err error, client *nex.Client, callID uint32)

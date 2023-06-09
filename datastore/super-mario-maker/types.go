@@ -1,6 +1,8 @@
 package datastore_super_mario_maker
 
 import (
+	"fmt"
+
 	nex "github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-protocols-go/datastore"
 )
@@ -14,10 +16,22 @@ type DataStoreUploadCourseRecordParam struct {
 
 // ExtractFromStream extracts a DataStoreUploadCourseRecordParam structure from a stream
 func (dataStoreUploadCourseRecordParam *DataStoreUploadCourseRecordParam) ExtractFromStream(stream *nex.StreamIn) error {
-	// TODO check size
-	dataStoreUploadCourseRecordParam.DataID = stream.ReadUInt64LE()
-	dataStoreUploadCourseRecordParam.Slot = stream.ReadUInt8()
-	dataStoreUploadCourseRecordParam.Score = int32(stream.ReadUInt32LE())
+	var err error
+
+	dataStoreUploadCourseRecordParam.DataID, err = stream.ReadUInt64LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreUploadCourseRecordParam.DataID. %s", err.Error())
+	}
+
+	dataStoreUploadCourseRecordParam.Slot, err = stream.ReadUInt8()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreUploadCourseRecordParam.Slot. %s", err.Error())
+	}
+
+	dataStoreUploadCourseRecordParam.Score, err = stream.ReadInt32LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreUploadCourseRecordParam.Score. %s", err.Error())
+	}
 
 	return nil
 }
@@ -75,7 +89,7 @@ func (dataStoreGetCourseRecordResult *DataStoreGetCourseRecordResult) Bytes(stre
 	stream.WriteUInt8(dataStoreGetCourseRecordResult.Slot)
 	stream.WriteUInt32LE(dataStoreGetCourseRecordResult.FirstPID)
 	stream.WriteUInt32LE(dataStoreGetCourseRecordResult.BestPID)
-	stream.WriteUInt32LE(uint32(dataStoreGetCourseRecordResult.BestScore))
+	stream.WriteInt32LE(dataStoreGetCourseRecordResult.BestScore)
 	stream.WriteDateTime(dataStoreGetCourseRecordResult.CreatedTime)
 	stream.WriteDateTime(dataStoreGetCourseRecordResult.UpdatedTime)
 
@@ -192,22 +206,23 @@ type DataStoreAttachFileParam struct {
 
 // ExtractFromStream extracts a DataStoreAttachFileParam structure from a stream
 func (dataStoreAttachFileParam *DataStoreAttachFileParam) ExtractFromStream(stream *nex.StreamIn) error {
-	// TODO check size
+	var err error
 
 	postParam, err := stream.ReadStructure(datastore.NewDataStorePreparePostParam())
 	if err != nil {
-		return err
+		return fmt.Errorf("Failed to extract DataStoreAttachFileParam.PostParam. %s", err.Error())
 	}
 
 	dataStoreAttachFileParam.PostParam = postParam.(*datastore.DataStorePreparePostParam)
-	dataStoreAttachFileParam.ReferDataID = stream.ReadUInt64LE()
-
-	contentType, err := stream.ReadString()
+	dataStoreAttachFileParam.ReferDataID, err = stream.ReadUInt64LE()
 	if err != nil {
-		return err
+		return fmt.Errorf("Failed to extract DataStoreAttachFileParam.ReferDataID. %s", err.Error())
 	}
 
-	dataStoreAttachFileParam.ContentType = contentType
+	dataStoreAttachFileParam.ContentType, err = stream.ReadString()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreAttachFileParam.ContentType. %s", err.Error())
+	}
 
 	return nil
 }
@@ -256,10 +271,17 @@ type DataStoreGetCourseRecordParam struct {
 
 // ExtractFromStream extracts a DataStoreGetCourseRecordParam structure from a stream
 func (dataStoreGetCourseRecordParam *DataStoreGetCourseRecordParam) ExtractFromStream(stream *nex.StreamIn) error {
-	// TODO check size
+	var err error
 
-	dataStoreGetCourseRecordParam.DataID = stream.ReadUInt64LE()
-	dataStoreGetCourseRecordParam.Slot = stream.ReadUInt8()
+	dataStoreGetCourseRecordParam.DataID, err = stream.ReadUInt64LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreGetCourseRecordParam.DataID. %s", err.Error())
+	}
+
+	dataStoreGetCourseRecordParam.Slot, err = stream.ReadUInt8()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreGetCourseRecordParam.Slot. %s", err.Error())
+	}
 
 	return nil
 }
@@ -303,10 +325,17 @@ type BufferQueueParam struct {
 
 // ExtractFromStream extracts a BufferQueueParam structure from a stream
 func (bufferQueueParam *BufferQueueParam) ExtractFromStream(stream *nex.StreamIn) error {
-	// TODO check size
+	var err error
 
-	bufferQueueParam.DataID = stream.ReadUInt64LE()
-	bufferQueueParam.Slot = stream.ReadUInt32LE()
+	bufferQueueParam.DataID, err = stream.ReadUInt64LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract BufferQueueParam.DataID. %s", err.Error())
+	}
+
+	bufferQueueParam.Slot, err = stream.ReadUInt32LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract BufferQueueParam.Slot. %s", err.Error())
+	}
 
 	return nil
 }
@@ -352,12 +381,27 @@ type DataStoreRateCustomRankingParam struct {
 
 // ExtractFromStream extracts a DataStoreRateCustomRankingParam structure from a stream
 func (dataStoreRateCustomRankingParam *DataStoreRateCustomRankingParam) ExtractFromStream(stream *nex.StreamIn) error {
-	// TODO check size
+	var err error
 
-	dataStoreRateCustomRankingParam.DataID = stream.ReadUInt64LE()
-	dataStoreRateCustomRankingParam.ApplicationId = stream.ReadUInt32LE()
-	dataStoreRateCustomRankingParam.Score = stream.ReadUInt32LE()
-	dataStoreRateCustomRankingParam.Period = stream.ReadUInt16LE()
+	dataStoreRateCustomRankingParam.DataID, err = stream.ReadUInt64LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreRateCustomRankingParam.DataID. %s", err.Error())
+	}
+
+	dataStoreRateCustomRankingParam.ApplicationId, err = stream.ReadUInt32LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreRateCustomRankingParam.ApplicationId. %s", err.Error())
+	}
+
+	dataStoreRateCustomRankingParam.Score, err = stream.ReadUInt32LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreRateCustomRankingParam.Score. %s", err.Error())
+	}
+
+	dataStoreRateCustomRankingParam.Period, err = stream.ReadUInt16LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreRateCustomRankingParam.Period. %s", err.Error())
+	}
 
 	return nil
 }
@@ -412,11 +456,22 @@ type DataStoreGetCustomRankingByDataIdParam struct {
 
 // ExtractFromStream extracts a DataStoreGetCustomRankingByDataIdParam structure from a stream
 func (dataStoreGetCustomRankingByDataIdParam *DataStoreGetCustomRankingByDataIdParam) ExtractFromStream(stream *nex.StreamIn) error {
-	// TODO check size
+	var err error
 
-	dataStoreGetCustomRankingByDataIdParam.ApplicationId = stream.ReadUInt32LE()
-	dataStoreGetCustomRankingByDataIdParam.DataIdList = stream.ReadListUInt64LE()
-	dataStoreGetCustomRankingByDataIdParam.ResultOption = stream.ReadUInt8()
+	dataStoreGetCustomRankingByDataIdParam.ApplicationId, err = stream.ReadUInt32LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreGetCustomRankingByDataIdParam.ApplicationId. %s", err.Error())
+	}
+
+	dataStoreGetCustomRankingByDataIdParam.DataIdList, err = stream.ReadListUInt64LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreGetCustomRankingByDataIdParam.DataIdList. %s", err.Error())
+	}
+
+	dataStoreGetCustomRankingByDataIdParam.ResultOption, err = stream.ReadUInt8()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreGetCustomRankingByDataIdParam.ResultOption. %s", err.Error())
+	}
 
 	return nil
 }
@@ -475,14 +530,21 @@ type DataStoreCustomRankingResult struct {
 
 // ExtractFromStream extracts a DataStoreCustomRankingResult structure from a stream
 func (dataStoreCustomRankingResult *DataStoreCustomRankingResult) ExtractFromStream(stream *nex.StreamIn) error {
-	// TODO check size
+	var err error
 
-	dataStoreCustomRankingResult.Order = stream.ReadUInt32LE()
-	dataStoreCustomRankingResult.Score = stream.ReadUInt32LE()
+	dataStoreCustomRankingResult.Order, err = stream.ReadUInt32LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreCustomRankingResult.Order. %s", err.Error())
+	}
+
+	dataStoreCustomRankingResult.Score, err = stream.ReadUInt32LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreCustomRankingResult.Score. %s", err.Error())
+	}
 
 	metaInfo, err := stream.ReadStructure(datastore.NewDataStoreMetaInfo())
 	if err != nil {
-		return err
+		return fmt.Errorf("Failed to extract DataStoreCustomRankingResult.MetaInfo. %s", err.Error())
 	}
 
 	dataStoreCustomRankingResult.MetaInfo = metaInfo.(*datastore.DataStoreMetaInfo)

@@ -18,5 +18,4 @@ func (protocol *DebugProtocol) HandleGetExcludeJoinedMatchmakeSession(packet nex
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
 	}
-
 }

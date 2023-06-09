@@ -1,6 +1,8 @@
 package datastore_nintendo_badge_arcade
 
 import (
+	"fmt"
+
 	nex "github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
@@ -27,7 +29,7 @@ func (protocol *DataStoreNintendoBadgeArcadeProtocol) HandleGetMetaByOwnerID(pac
 
 	param, err := parametersStream.ReadStructure(NewDataStoreGetMetaByOwnerIDParam())
 	if err != nil {
-		go protocol.GetMetaByOwnerIDHandler(err, client, callID, nil)
+		go protocol.GetMetaByOwnerIDHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
 		return
 	}
 

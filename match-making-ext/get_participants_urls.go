@@ -1,6 +1,8 @@
 package match_making_ext
 
 import (
+	"fmt"
+
 	nex "github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
@@ -25,10 +27,9 @@ func (protocol *MatchMakingExtProtocol) HandleGetParticipantsURLs(packet nex.Pac
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	lstGatheringsCount := parametersStream.ReadUInt32LE()
-	lstGatherings := make([]uint32, lstGatheringsCount)
-	for i := 0; uint32(i) < lstGatheringsCount; i++ {
-		lstGatherings[i] = parametersStream.ReadUInt32LE()
+	lstGatherings, err := parametersStream.ReadListUInt32LE()
+	if err != nil {
+		go protocol.GetParticipantsURLsHandler(fmt.Errorf("Failed to read lstGatherings from parameters. %s", err.Error()), client, callID, nil)
 	}
 
 	go protocol.GetParticipantsURLsHandler(nil, client, callID, lstGatherings)

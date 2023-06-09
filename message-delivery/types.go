@@ -2,6 +2,7 @@ package message_delivery
 
 import (
 	"bytes"
+	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
 )
@@ -15,9 +16,22 @@ type MessageRecipient struct {
 
 // ExtractFromStream extracts a MessageRecipient structure from a stream
 func (messageRecipient *MessageRecipient) ExtractFromStream(stream *nex.StreamIn) error {
-	messageRecipient.m_uiRecipientType = stream.ReadUInt32LE()
-	messageRecipient.m_principalID = stream.ReadUInt32LE()
-	messageRecipient.m_gatheringID = stream.ReadUInt32LE()
+	var err error
+
+	messageRecipient.m_uiRecipientType, err = stream.ReadUInt32LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract MessageRecipient.m_uiRecipientType from stream. %s", err.Error())
+	}
+
+	messageRecipient.m_principalID, err = stream.ReadUInt32LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract MessageRecipient.m_principalID from stream. %s", err.Error())
+	}
+
+	messageRecipient.m_gatheringID, err = stream.ReadUInt32LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract MessageRecipient.m_gatheringID from stream. %s", err.Error())
+	}
 
 	return nil
 }
@@ -73,16 +87,54 @@ type UserMessage struct {
 
 // ExtractFromStream extracts a UserMessage structure from a stream
 func (userMessage *UserMessage) ExtractFromStream(stream *nex.StreamIn) error {
-	userMessage.m_uiID = stream.ReadUInt32LE()
-	userMessage.m_uiParentID = stream.ReadUInt32LE()
-	userMessage.m_pidSender = stream.ReadUInt32LE()
-	userMessage.m_receptiontime = nex.NewDateTime(stream.ReadUInt64LE())
-	userMessage.m_uiLifeTime = stream.ReadUInt32LE()
-	userMessage.m_uiFlags = stream.ReadUInt32LE()
-	userMessage.m_strSubject, _ = stream.ReadString()
-	userMessage.m_strSender, _ = stream.ReadString()
-	messageRecipient, _ := stream.ReadStructure(NewMessageRecipient())
-	userMessage.m_messageRecipient, _ = messageRecipient.(*MessageRecipient)
+	var err error
+
+	userMessage.m_uiID, err = stream.ReadUInt32LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract UserMessage.m_uiID from stream. %s", err.Error())
+	}
+
+	userMessage.m_uiParentID, err = stream.ReadUInt32LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract UserMessage.m_uiParentID from stream. %s", err.Error())
+	}
+
+	userMessage.m_pidSender, err = stream.ReadUInt32LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract UserMessage.m_pidSender from stream. %s", err.Error())
+	}
+
+	userMessage.m_receptiontime, err = stream.ReadDateTime()
+	if err != nil {
+		return fmt.Errorf("Failed to extract UserMessage.m_receptiontime from stream. %s", err.Error())
+	}
+
+	userMessage.m_uiLifeTime, err = stream.ReadUInt32LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract UserMessage.m_uiLifeTime from stream. %s", err.Error())
+	}
+
+	userMessage.m_uiFlags, err = stream.ReadUInt32LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract UserMessage.m_uiFlags from stream. %s", err.Error())
+	}
+
+	userMessage.m_strSubject, err = stream.ReadString()
+	if err != nil {
+		return fmt.Errorf("Failed to extract UserMessage.m_strSubject from stream. %s", err.Error())
+	}
+
+	userMessage.m_strSender, err = stream.ReadString()
+	if err != nil {
+		return fmt.Errorf("Failed to extract UserMessage.m_strSender from stream. %s", err.Error())
+	}
+
+	messageRecipient, err := stream.ReadStructure(NewMessageRecipient())
+	if err != nil {
+		return fmt.Errorf("Failed to extract UserMessage.m_messageRecipient from stream. %s", err.Error())
+	}
+
+	userMessage.m_messageRecipient = messageRecipient.(*MessageRecipient)
 
 	return nil
 }
@@ -174,7 +226,12 @@ func (binaryMessage *BinaryMessage) Bytes(stream *nex.StreamOut) []byte {
 
 // ExtractFromStream extracts a BinaryMessage structure from a stream
 func (binaryMessage *BinaryMessage) ExtractFromStream(stream *nex.StreamIn) error {
-	binaryMessage.m_binaryBody, _ = stream.ReadQBuffer()
+	var err error
+
+	binaryMessage.m_binaryBody, err = stream.ReadQBuffer()
+	if err != nil {
+		return fmt.Errorf("Failed to extract BinaryMessage.m_binaryBody from stream. %s", err.Error())
+	}
 
 	return nil
 }

@@ -1,6 +1,8 @@
 package friends_wiiu
 
 import (
+	"fmt"
+
 	nex "github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
@@ -25,13 +27,11 @@ func (protocol *FriendsWiiUProtocol) HandleUpdateMii(packet nex.PacketInterface)
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	miiV2StructureInterface, err := parametersStream.ReadStructure(NewMiiV2())
+	miiV2, err := parametersStream.ReadStructure(NewMiiV2())
 	if err != nil {
-		go protocol.UpdateMiiHandler(err, client, callID, nil)
+		go protocol.UpdateMiiHandler(fmt.Errorf("Failed to read miiV2 from parameters. %s", err.Error()), client, callID, nil)
 		return
 	}
 
-	miiV2 := miiV2StructureInterface.(*MiiV2)
-
-	go protocol.UpdateMiiHandler(nil, client, callID, miiV2)
+	go protocol.UpdateMiiHandler(nil, client, callID, miiV2.(*MiiV2))
 }

@@ -1,6 +1,8 @@
 package matchmake_extension
 
 import (
+	"fmt"
+
 	nex "github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
@@ -25,15 +27,29 @@ func (protocol *MatchmakeExtensionProtocol) HandleJoinMatchmakeSessionEx(packet 
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	gid := parametersStream.ReadUInt32LE()
-	strMessage, err := parametersStream.ReadString()
+	gid, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		go protocol.JoinMatchmakeSessionExHandler(err, client, callID, 0, "", false, 0)
+		go protocol.JoinMatchmakeSessionExHandler(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), client, callID, 0, "", false, 0)
 		return
 	}
 
-	dontCareMyBlockList := parametersStream.ReadBool()
-	participationCount := parametersStream.ReadUInt16LE()
+	strMessage, err := parametersStream.ReadString()
+	if err != nil {
+		go protocol.JoinMatchmakeSessionExHandler(fmt.Errorf("Failed to read strMessage from parameters. %s", err.Error()), client, callID, 0, "", false, 0)
+		return
+	}
+
+	dontCareMyBlockList, err := parametersStream.ReadBool()
+	if err != nil {
+		go protocol.JoinMatchmakeSessionExHandler(fmt.Errorf("Failed to read dontCareMyBlockList from parameters. %s", err.Error()), client, callID, 0, "", false, 0)
+		return
+	}
+
+	participationCount, err := parametersStream.ReadUInt16LE()
+	if err != nil {
+		go protocol.JoinMatchmakeSessionExHandler(fmt.Errorf("Failed to read participationCount from parameters. %s", err.Error()), client, callID, 0, "", false, 0)
+		return
+	}
 
 	go protocol.JoinMatchmakeSessionExHandler(nil, client, callID, gid, strMessage, dontCareMyBlockList, participationCount)
 }

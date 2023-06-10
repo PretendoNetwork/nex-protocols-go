@@ -43,7 +43,7 @@ func (protocol *MatchmakeExtensionProtocol) HandleCreateMatchmakeSession(packet 
 
 	var participationCount uint16 = 0
 
-	if matchmakingVersion.Major >= 3 && matchmakingVersion.Minor >= 5 {
+	if matchmakingVersion.Major >= 3 && matchmakingVersion.Minor >= 4 {
 		participationCount, err = parametersStream.ReadUInt16LE()
 		if err != nil {
 			go protocol.CreateMatchmakeSessionHandler(fmt.Errorf("Failed to read message from participationCount. %s", err.Error()), client, callID, nil, "", 0)

@@ -8,7 +8,7 @@ import (
 )
 
 // UpdateProgressScore sets the UpdateProgressScore handler function
-func (protocol *MatchmakeExtensionProtocol) UpdateProgressScore(handler func(err error, client *nex.Client, callID uint32, GID uint32, progressScore uint8)) {
+func (protocol *MatchmakeExtensionProtocol) UpdateProgressScore(handler func(err error, client *nex.Client, callID uint32, gid uint32, progressScore uint8)) {
 	protocol.UpdateProgressScoreHandler = handler
 }
 
@@ -27,9 +27,9 @@ func (protocol *MatchmakeExtensionProtocol) HandleUpdateProgressScore(packet nex
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	GID, err := parametersStream.ReadUInt32LE()
+	gid, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		go protocol.UpdateProgressScoreHandler(fmt.Errorf("Failed to read GID from parameters. %s", err.Error()), client, callID, 0, 0)
+		go protocol.UpdateProgressScoreHandler(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), client, callID, 0, 0)
 		return
 	}
 
@@ -39,5 +39,5 @@ func (protocol *MatchmakeExtensionProtocol) HandleUpdateProgressScore(packet nex
 		return
 	}
 
-	go protocol.UpdateProgressScoreHandler(nil, client, callID, GID, progressScore)
+	go protocol.UpdateProgressScoreHandler(nil, client, callID, gid, progressScore)
 }

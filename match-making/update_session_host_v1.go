@@ -8,7 +8,7 @@ import (
 )
 
 // GetSessionURLs sets the GetSessionURLs handler function
-func (protocol *MatchMakingProtocol) UpdateSessionHostV1(handler func(err error, client *nex.Client, callID uint32, gatheringId uint32)) {
+func (protocol *MatchMakingProtocol) UpdateSessionHostV1(handler func(err error, client *nex.Client, callID uint32, gid uint32)) {
 	protocol.UpdateSessionHostV1Handler = handler
 }
 
@@ -27,10 +27,10 @@ func (protocol *MatchMakingProtocol) HandleUpdateSessionHostV1(packet nex.Packet
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	gatheringId, err := parametersStream.ReadUInt32LE()
+	gid, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		go protocol.UpdateSessionHostV1Handler(fmt.Errorf("Failed to read gatheringId from parameters. %s", err.Error()), client, callID, 0)
+		go protocol.UpdateSessionHostV1Handler(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), client, callID, 0)
 	}
 
-	go protocol.UpdateSessionHostV1Handler(nil, client, callID, gatheringId)
+	go protocol.UpdateSessionHostV1Handler(nil, client, callID, gid)
 }

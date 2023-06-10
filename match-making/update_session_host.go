@@ -8,7 +8,7 @@ import (
 )
 
 // GetSessionURLs sets the GetSessionURLs handler function
-func (protocol *MatchMakingProtocol) UpdateSessionHost(handler func(err error, client *nex.Client, callID uint32, gatheringId uint32, isMigrateOwner bool)) {
+func (protocol *MatchMakingProtocol) UpdateSessionHost(handler func(err error, client *nex.Client, callID uint32, gid uint32, isMigrateOwner bool)) {
 	protocol.UpdateSessionHostHandler = handler
 }
 
@@ -27,9 +27,9 @@ func (protocol *MatchMakingProtocol) HandleUpdateSessionHost(packet nex.PacketIn
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	gatheringId, err := parametersStream.ReadUInt32LE()
+	gid, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		go protocol.UpdateSessionHostHandler(fmt.Errorf("Failed to read gatheringId from parameters. %s", err.Error()), client, callID, 0, false)
+		go protocol.UpdateSessionHostHandler(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), client, callID, 0, false)
 	}
 
 	isMigrateOwner, err := parametersStream.ReadBool()
@@ -37,5 +37,5 @@ func (protocol *MatchMakingProtocol) HandleUpdateSessionHost(packet nex.PacketIn
 		go protocol.UpdateSessionHostHandler(fmt.Errorf("Failed to read isMigrateOwner from parameters. %s", err.Error()), client, callID, 0, false)
 	}
 
-	go protocol.UpdateSessionHostHandler(nil, client, callID, gatheringId, isMigrateOwner)
+	go protocol.UpdateSessionHostHandler(nil, client, callID, gid, isMigrateOwner)
 }

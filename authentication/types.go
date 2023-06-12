@@ -72,7 +72,7 @@ func (authenticationInfo *AuthenticationInfo) ExtractFromStream(stream *nex.Stre
 	}
 
 	// TODO - Is this the right version?
-	if nexVersion.Major >= 3 {
+	if nexVersion.Major >= 3 && nexVersion.Minor >= 2 {
 		authenticationInfo.TokenType, err = stream.ReadUInt8()
 		if err != nil {
 			return fmt.Errorf("Failed to extract AccountExtraInfo.TokenType. %s", err.Error())

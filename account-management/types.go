@@ -124,9 +124,16 @@ func (nintendoCreateAccountData *NintendoCreateAccountData) ExtractFromStream(st
 func (nintendoCreateAccountData *NintendoCreateAccountData) Copy() nex.StructureInterface {
 	copied := NewNintendoCreateAccountData()
 
-	copied.NNAInfo = nintendoCreateAccountData.NNAInfo.Copy().(*friends_wiiu.NNAInfo)
+	if nintendoCreateAccountData.NNAInfo != nil {
+		copied.NNAInfo = nintendoCreateAccountData.NNAInfo.Copy().(*friends_wiiu.NNAInfo)
+	}
+
 	copied.Token = nintendoCreateAccountData.Token
-	copied.Birthday = nintendoCreateAccountData.Birthday.Copy()
+
+	if nintendoCreateAccountData.Birthday != nil {
+		copied.Birthday = nintendoCreateAccountData.Birthday.Copy()
+	}
+
 	copied.Unknown = nintendoCreateAccountData.Unknown
 
 	return copied
@@ -136,11 +143,27 @@ func (nintendoCreateAccountData *NintendoCreateAccountData) Copy() nex.Structure
 func (nintendoCreateAccountData *NintendoCreateAccountData) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*NintendoCreateAccountData)
 
+	if nintendoCreateAccountData.NNAInfo == nil && other.NNAInfo != nil {
+		return false
+	}
+
+	if nintendoCreateAccountData.NNAInfo != nil && other.NNAInfo == nil {
+		return false
+	}
+
 	if !nintendoCreateAccountData.NNAInfo.Equals(other.NNAInfo) {
 		return false
 	}
 
 	if nintendoCreateAccountData.Token != other.Token {
+		return false
+	}
+
+	if nintendoCreateAccountData.Birthday == nil && other.Birthday != nil {
+		return false
+	}
+
+	if nintendoCreateAccountData.Birthday != nil && other.Birthday == nil {
 		return false
 	}
 

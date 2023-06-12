@@ -57,6 +57,8 @@ type AuthenticationInfo struct {
 
 // ExtractFromStream extracts a AuthenticationInfo structure from a stream
 func (authenticationInfo *AuthenticationInfo) ExtractFromStream(stream *nex.StreamIn) error {
+	nexVersion := stream.Server.NEXVersion()
+
 	var err error
 
 	authenticationInfo.Token, err = stream.ReadString()
@@ -69,14 +71,17 @@ func (authenticationInfo *AuthenticationInfo) ExtractFromStream(stream *nex.Stre
 		return fmt.Errorf("Failed to extract AccountExtraInfo.NGSVersion. %s", err.Error())
 	}
 
-	authenticationInfo.TokenType, err = stream.ReadUInt8()
-	if err != nil {
-		return fmt.Errorf("Failed to extract AccountExtraInfo.TokenType. %s", err.Error())
-	}
+	// TODO - Is this the right version?
+	if nexVersion.Major >= 3 {
+		authenticationInfo.TokenType, err = stream.ReadUInt8()
+		if err != nil {
+			return fmt.Errorf("Failed to extract AccountExtraInfo.TokenType. %s", err.Error())
+		}
 
-	authenticationInfo.ServerVersion, err = stream.ReadUInt32LE()
-	if err != nil {
-		return fmt.Errorf("Failed to extract AccountExtraInfo.ServerVersion. %s", err.Error())
+		authenticationInfo.ServerVersion, err = stream.ReadUInt32LE()
+		if err != nil {
+			return fmt.Errorf("Failed to extract AccountExtraInfo.ServerVersion. %s", err.Error())
+		}
 	}
 
 	return nil

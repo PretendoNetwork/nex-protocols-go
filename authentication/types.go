@@ -86,7 +86,8 @@ func (authenticationInfo *AuthenticationInfo) ExtractFromStream(stream *nex.Stre
 func (authenticationInfo *AuthenticationInfo) Copy() nex.StructureInterface {
 	copied := NewAuthenticationInfo()
 
-	copied.SetParentType(authenticationInfo.ParentType().Copy())
+	copied.Data = authenticationInfo.Data.Copy().(*nex.Data)
+	copied.SetParentType(copied.Data)
 	copied.Token = authenticationInfo.Token
 	copied.TokenType = authenticationInfo.TokenType
 	copied.NGSVersion = authenticationInfo.NGSVersion

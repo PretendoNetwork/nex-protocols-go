@@ -523,7 +523,8 @@ func (matchmakeSession *MatchmakeSession) Bytes(stream *nex.StreamOut) []byte {
 func (matchmakeSession *MatchmakeSession) Copy() nex.StructureInterface {
 	copied := NewMatchmakeSession()
 
-	copied.SetParentType(matchmakeSession.ParentType().Copy())
+	copied.Gathering = matchmakeSession.Gathering.Copy().(*Gathering)
+	copied.SetParentType(copied.Gathering)
 	copied.GameMode = matchmakeSession.GameMode
 	copied.Attributes = make([]uint32, len(matchmakeSession.Attributes))
 
@@ -1290,7 +1291,8 @@ func (persistentGathering *PersistentGathering) ExtractFromStream(stream *nex.St
 func (persistentGathering *PersistentGathering) Copy() nex.StructureInterface {
 	copied := NewPersistentGathering()
 
-	copied.SetParentType(persistentGathering.ParentType().Copy())
+	copied.Gathering = persistentGathering.Gathering.Copy().(*Gathering)
+	copied.SetParentType(copied.Gathering)
 	copied.M_CommunityType = persistentGathering.M_CommunityType
 	copied.M_Password = persistentGathering.M_Password
 	copied.M_Attribs = make([]uint32, len(persistentGathering.M_Attribs))

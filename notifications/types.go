@@ -23,7 +23,7 @@ func (notificationEvent *NotificationEvent) Bytes(stream *nex.StreamOut) []byte 
 	stream.WriteUInt32LE(notificationEvent.Param2)
 	stream.WriteString(notificationEvent.StrParam)
 
-	if nexVersion.Major >= 3 && nexVersion.Minor >= 5 {
+	if nexVersion.Major >= 3 && nexVersion.Minor >= 4 {
 		stream.WriteUInt32LE(notificationEvent.Param3)
 	}
 

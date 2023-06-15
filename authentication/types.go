@@ -69,14 +69,16 @@ func (authenticationInfo *AuthenticationInfo) ExtractFromStream(stream *nex.Stre
 		return fmt.Errorf("Failed to extract AccountExtraInfo.NGSVersion. %s", err.Error())
 	}
 
-	authenticationInfo.TokenType, err = stream.ReadUInt8()
-	if err != nil {
-		return fmt.Errorf("Failed to extract AccountExtraInfo.TokenType. %s", err.Error())
-	}
+	if authenticationInfo.NGSVersion > 2 {
+		authenticationInfo.TokenType, err = stream.ReadUInt8()
+		if err != nil {
+			return fmt.Errorf("Failed to extract AccountExtraInfo.TokenType. %s", err.Error())
+		}
 
-	authenticationInfo.ServerVersion, err = stream.ReadUInt32LE()
-	if err != nil {
-		return fmt.Errorf("Failed to extract AccountExtraInfo.ServerVersion. %s", err.Error())
+		authenticationInfo.ServerVersion, err = stream.ReadUInt32LE()
+		if err != nil {
+			return fmt.Errorf("Failed to extract AccountExtraInfo.ServerVersion. %s", err.Error())
+		}
 	}
 
 	return nil
@@ -86,7 +88,8 @@ func (authenticationInfo *AuthenticationInfo) ExtractFromStream(stream *nex.Stre
 func (authenticationInfo *AuthenticationInfo) Copy() nex.StructureInterface {
 	copied := NewAuthenticationInfo()
 
-	copied.SetParentType(authenticationInfo.ParentType().Copy())
+	copied.Data = authenticationInfo.Data.Copy().(*nex.Data)
+	copied.SetParentType(copied.Data)
 	copied.Token = authenticationInfo.Token
 	copied.TokenType = authenticationInfo.TokenType
 	copied.NGSVersion = authenticationInfo.NGSVersion

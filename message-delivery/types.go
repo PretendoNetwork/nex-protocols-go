@@ -143,7 +143,8 @@ func (userMessage *UserMessage) ExtractFromStream(stream *nex.StreamIn) error {
 func (userMessage *UserMessage) Copy() nex.StructureInterface {
 	copied := NewUserMessage()
 
-	copied.SetParentType(userMessage.ParentType().Copy())
+	copied.Data = userMessage.Data.Copy().(*nex.Data)
+	copied.SetParentType(copied.Data)
 	copied.m_uiID = userMessage.m_uiID
 	copied.m_uiParentID = userMessage.m_uiParentID
 	copied.m_pidSender = userMessage.m_pidSender
@@ -240,7 +241,8 @@ func (binaryMessage *BinaryMessage) ExtractFromStream(stream *nex.StreamIn) erro
 func (binaryMessage *BinaryMessage) Copy() nex.StructureInterface {
 	copied := NewBinaryMessage()
 
-	copied.SetParentType(binaryMessage.ParentType().Copy())
+	copied.UserMessage = binaryMessage.UserMessage.Copy().(*UserMessage)
+	copied.SetParentType(copied.UserMessage)
 	copied.m_binaryBody = make([]byte, len(binaryMessage.m_binaryBody))
 
 	copy(copied.m_binaryBody, binaryMessage.m_binaryBody)

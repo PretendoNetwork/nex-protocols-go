@@ -2802,13 +2802,13 @@ type DataStoreSearchParam struct {
 	ResultRange            *nex.ResultRange
 	ResultOption           uint8
 	MinimalRatingFrequency uint32
-	UseCache               bool // NEX 3.5.0+
+	UseCache               bool
+	TotalCountEnabled      bool
+	DataTypes              []uint16
 }
 
 // ExtractFromStream extracts a DataStoreSearchParam structure from a stream
 func (dataStoreSearchParam *DataStoreSearchParam) ExtractFromStream(stream *nex.StreamIn) error {
-	datastoreVersion := stream.Server.DataStoreProtocolVersion()
-
 	var err error
 
 	dataStoreSearchParam.SearchTarget, err = stream.ReadUInt8()
@@ -2892,10 +2892,24 @@ func (dataStoreSearchParam *DataStoreSearchParam) ExtractFromStream(stream *nex.
 		return fmt.Errorf("Failed to extract DataStoreSearchParam.MinimalRatingFrequency. %s", err.Error())
 	}
 
-	if datastoreVersion.Major >= 3 && datastoreVersion.Minor >= 5 {
+	if dataStoreSearchParam.StructureVersion() >= 1 {
 		dataStoreSearchParam.UseCache, err = stream.ReadBool()
 		if err != nil {
 			return fmt.Errorf("Failed to extract DataStoreSearchParam.UseCache. %s", err.Error())
+		}
+	}
+
+	if dataStoreSearchParam.StructureVersion() >= 3 {
+		dataStoreSearchParam.TotalCountEnabled, err = stream.ReadBool()
+		if err != nil {
+			return fmt.Errorf("Failed to extract DataStoreSearchParam.TotalCountEnabled. %s", err.Error())
+		}
+	}
+
+	if dataStoreSearchParam.StructureVersion() >= 2 {
+		dataStoreSearchParam.DataTypes, err = stream.ReadListUInt16LE()
+		if err != nil {
+			return fmt.Errorf("Failed to extract DataStoreSearchParam.DataTypes. %s", err.Error())
 		}
 	}
 
@@ -3114,20 +3128,20 @@ func NewDataStoreGetMetaParam() *DataStoreGetMetaParam {
 // DataStoreChangeMetaParam is sent in the ChangeMeta method
 type DataStoreChangeMetaParam struct {
 	nex.Structure
-	DataID         uint64
-	ModifiesFlag   uint32
-	Name           string
-	Permission     *DataStorePermission
-	DelPermission  *DataStorePermission
-	Period         uint16
-	MetaBinary     []byte
-	Tags           []string
-	UpdatePassword uint64
-	ReferredCnt    uint32
-	DataType       uint16
-	Status         uint8
-	CompareParam   *DataStoreChangeMetaCompareParam
-	//PersistenceTarget *DataStorePersistenceTarget (not seen in SMM1??)
+	DataID            uint64
+	ModifiesFlag      uint32
+	Name              string
+	Permission        *DataStorePermission
+	DelPermission     *DataStorePermission
+	Period            uint16
+	MetaBinary        []byte
+	Tags              []string
+	UpdatePassword    uint64
+	ReferredCnt       uint32
+	DataType          uint16
+	Status            uint8
+	CompareParam      *DataStoreChangeMetaCompareParam
+	PersistenceTarget *DataStorePersistenceTarget
 }
 
 // ExtractFromStream extracts a DataStoreChangeMetaParam structure from a stream
@@ -3203,14 +3217,14 @@ func (dataStoreChangeMetaParam *DataStoreChangeMetaParam) ExtractFromStream(stre
 
 	dataStoreChangeMetaParam.CompareParam = compareParam.(*DataStoreChangeMetaCompareParam)
 
-	/*
+	if dataStoreChangeMetaParam.StructureVersion() >= 1 {
 		persistenceTarget, err := stream.ReadStructure(NewDataStorePersistenceTarget())
 		if err != nil {
 			return fmt.Errorf("Failed to extract DataStoreChangeMetaParam.PersistenceTarget. %s", err.Error())
 		}
 
 		dataStoreChangeMetaParam.PersistenceTarget = persistenceTarget.(*DataStorePersistenceTarget)
-	*/
+	}
 
 	return nil
 }
@@ -3238,8 +3252,10 @@ func (dataStoreChangeMetaParam *DataStoreChangeMetaParam) Copy() nex.StructureIn
 	copied.DataType = dataStoreChangeMetaParam.DataType
 	copied.Status = dataStoreChangeMetaParam.Status
 	copied.CompareParam = dataStoreChangeMetaParam.CompareParam.Copy().(*DataStoreChangeMetaCompareParam)
-	// * Uncomment when this is added back
-	//copied.PersistenceTarget = dataStoreChangeMetaParam.PersistenceTarget.Copy().(*DataStorePersistenceTarget)
+
+	if dataStoreChangeMetaParam.PersistenceTarget != nil {
+		copied.PersistenceTarget = dataStoreChangeMetaParam.PersistenceTarget.Copy().(*DataStorePersistenceTarget)
+	}
 
 	return copied
 }
@@ -3306,12 +3322,19 @@ func (dataStoreChangeMetaParam *DataStoreChangeMetaParam) Equals(structure nex.S
 		return false
 	}
 
-	// * Uncomment when this is added back
-	/*
-		if dataStoreChangeMetaParam.PersistenceTarget.Equals(other.PersistenceTarget) {
+	if dataStoreChangeMetaParam.PersistenceTarget != nil && other.PersistenceTarget == nil {
+		return false
+	}
+
+	if dataStoreChangeMetaParam.PersistenceTarget == nil && other.PersistenceTarget != nil {
+		return false
+	}
+
+	if dataStoreChangeMetaParam.PersistenceTarget != nil && other.PersistenceTarget != nil {
+		if !dataStoreChangeMetaParam.PersistenceTarget.Equals(other.PersistenceTarget) {
 			return false
 		}
-	*/
+	}
 
 	return true
 }

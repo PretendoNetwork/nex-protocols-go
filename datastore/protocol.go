@@ -47,8 +47,8 @@ const (
 	// MethodSearchObject is the method ID for the method SearchObject
 	MethodSearchObject = 0xC
 
-	// MethodGetNotificationUrl is the method ID for the method GetNotificationUrl
-	MethodGetNotificationUrl = 0xD
+	// MethodGetNotificationURL is the method ID for the method GetNotificationURL
+	MethodGetNotificationURL = 0xD
 
 	// MethodGetNewArrivedNotificationsV1 is the method ID for the method GetNewArrivedNotificationsV1
 	MethodGetNewArrivedNotificationsV1 = 0xE
@@ -156,7 +156,7 @@ type DataStoreProtocol struct {
 	PrepareGetObjectV1Handler           func(err error, client *nex.Client, callID uint32, dataStorePrepareGetParamV1 *DataStorePrepareGetParamV1)
 	PreparePostObjectV1Handler          func(err error, client *nex.Client, callID uint32, dataStorePreparePostParamV1 *DataStorePreparePostParamV1)
 	CompletePostObjectV1Handler         func(err error, client *nex.Client, callID uint32, dataStoreCompletePostParamV1 *DataStoreCompletePostParamV1)
-	GetNotificationUrlHandler           func(err error, client *nex.Client, callID uint32, param *DataStoreGetNotificationUrlParam)
+	GetNotificationURLHandler           func(err error, client *nex.Client, callID uint32, param *DataStoreGetNotificationURLParam)
 	GetNewArrivedNotificationsV1Handler func(err error, client *nex.Client, callID uint32, param *DataStoreGetNewArrivedNotificationsParam)
 	DeleteObjectHandler                 func(err error, client *nex.Client, callID uint32, param *DataStoreDeleteParam)
 	GetMetaHandler                      func(err error, client *nex.Client, callID uint32, dataStoreGetMetaParam *DataStoreGetMetaParam)
@@ -211,8 +211,8 @@ func (protocol *DataStoreProtocol) HandlePacket(packet nex.PacketInterface) {
 		go protocol.HandleCompleteUpdateObject(packet)
 	case MethodSearchObject:
 		go protocol.HandleSearchObject(packet)
-	case MethodGetNotificationUrl:
-		go protocol.HandleGetNotificationUrl(packet)
+	case MethodGetNotificationURL:
+		go protocol.HandleGetNotificationURL(packet)
 	case MethodGetNewArrivedNotificationsV1:
 		go protocol.HandleGetNewArrivedNotificationsV1(packet)
 	case MethodRateObject:

@@ -802,7 +802,7 @@ func NewDataStoreGetNewArrivedNotificationsParam() *DataStoreGetNewArrivedNotifi
 	return &DataStoreGetNewArrivedNotificationsParam{}
 }
 
-type DataStoreReqGetNotificationUrlInfo struct {
+type DataStoreReqGetNotificationURLInfo struct {
 	nex.Structure
 	Url        string
 	Key        string
@@ -810,128 +810,128 @@ type DataStoreReqGetNotificationUrlInfo struct {
 	RootCaCert []byte
 }
 
-// ExtractFromStream extracts a DataStoreReqGetNotificationUrlInfo structure from a stream
-func (dataStoreReqGetNotificationUrlInfo *DataStoreReqGetNotificationUrlInfo) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFromStream extracts a DataStoreReqGetNotificationURLInfo structure from a stream
+func (dataStoreReqGetNotificationURLInfo *DataStoreReqGetNotificationURLInfo) ExtractFromStream(stream *nex.StreamIn) error {
 	var err error
 
-	dataStoreReqGetNotificationUrlInfo.Url, err = stream.ReadString()
+	dataStoreReqGetNotificationURLInfo.Url, err = stream.ReadString()
 	if err != nil {
-		return fmt.Errorf("Failed to extract DataStoreReqGetNotificationUrlInfo.Url. %s", err.Error())
+		return fmt.Errorf("Failed to extract DataStoreReqGetNotificationURLInfo.Url. %s", err.Error())
 	}
 
-	dataStoreReqGetNotificationUrlInfo.Key, err = stream.ReadString()
+	dataStoreReqGetNotificationURLInfo.Key, err = stream.ReadString()
 	if err != nil {
-		return fmt.Errorf("Failed to extract DataStoreReqGetNotificationUrlInfo.Key. %s", err.Error())
+		return fmt.Errorf("Failed to extract DataStoreReqGetNotificationURLInfo.Key. %s", err.Error())
 	}
 
-	dataStoreReqGetNotificationUrlInfo.Query, err = stream.ReadString()
+	dataStoreReqGetNotificationURLInfo.Query, err = stream.ReadString()
 	if err != nil {
-		return fmt.Errorf("Failed to extract DataStoreReqGetNotificationUrlInfo.Query. %s", err.Error())
+		return fmt.Errorf("Failed to extract DataStoreReqGetNotificationURLInfo.Query. %s", err.Error())
 	}
 
-	dataStoreReqGetNotificationUrlInfo.RootCaCert, err = stream.ReadBuffer()
+	dataStoreReqGetNotificationURLInfo.RootCaCert, err = stream.ReadBuffer()
 	if err != nil {
-		return fmt.Errorf("Failed to extract DataStoreReqGetNotificationUrlInfo.RootCaCert. %s", err.Error())
+		return fmt.Errorf("Failed to extract DataStoreReqGetNotificationURLInfo.RootCaCert. %s", err.Error())
 	}
 
 	return nil
 }
 
-// Bytes encodes the DataStoreReqGetNotificationUrlInfo and returns a byte array
-func (dataStoreReqGetNotificationUrlInfo *DataStoreReqGetNotificationUrlInfo) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteString(dataStoreReqGetNotificationUrlInfo.Url)
-	stream.WriteString(dataStoreReqGetNotificationUrlInfo.Key)
-	stream.WriteString(dataStoreReqGetNotificationUrlInfo.Query)
-	stream.WriteBuffer(dataStoreReqGetNotificationUrlInfo.RootCaCert)
+// Bytes encodes the DataStoreReqGetNotificationURLInfo and returns a byte array
+func (dataStoreReqGetNotificationURLInfo *DataStoreReqGetNotificationURLInfo) Bytes(stream *nex.StreamOut) []byte {
+	stream.WriteString(dataStoreReqGetNotificationURLInfo.Url)
+	stream.WriteString(dataStoreReqGetNotificationURLInfo.Key)
+	stream.WriteString(dataStoreReqGetNotificationURLInfo.Query)
+	stream.WriteBuffer(dataStoreReqGetNotificationURLInfo.RootCaCert)
 
 	return stream.Bytes()
 }
 
-// Copy returns a new copied instance of DataStoreReqGetNotificationUrlInfo
-func (dataStoreReqGetNotificationUrlInfo *DataStoreReqGetNotificationUrlInfo) Copy() nex.StructureInterface {
-	copied := NewDataStoreReqGetNotificationUrlInfo()
+// Copy returns a new copied instance of DataStoreReqGetNotificationURLInfo
+func (dataStoreReqGetNotificationURLInfo *DataStoreReqGetNotificationURLInfo) Copy() nex.StructureInterface {
+	copied := NewDataStoreReqGetNotificationURLInfo()
 
-	copied.Url = dataStoreReqGetNotificationUrlInfo.Url
-	copied.Key = dataStoreReqGetNotificationUrlInfo.Key
-	copied.Query = dataStoreReqGetNotificationUrlInfo.Query
-	copied.RootCaCert = make([]byte, len(dataStoreReqGetNotificationUrlInfo.RootCaCert))
+	copied.Url = dataStoreReqGetNotificationURLInfo.Url
+	copied.Key = dataStoreReqGetNotificationURLInfo.Key
+	copied.Query = dataStoreReqGetNotificationURLInfo.Query
+	copied.RootCaCert = make([]byte, len(dataStoreReqGetNotificationURLInfo.RootCaCert))
 
-	copy(copied.RootCaCert, dataStoreReqGetNotificationUrlInfo.RootCaCert)
+	copy(copied.RootCaCert, dataStoreReqGetNotificationURLInfo.RootCaCert)
 
 	return copied
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (dataStoreReqGetNotificationUrlInfo *DataStoreReqGetNotificationUrlInfo) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*DataStoreReqGetNotificationUrlInfo)
+func (dataStoreReqGetNotificationURLInfo *DataStoreReqGetNotificationURLInfo) Equals(structure nex.StructureInterface) bool {
+	other := structure.(*DataStoreReqGetNotificationURLInfo)
 
-	if dataStoreReqGetNotificationUrlInfo.Url != other.Url {
+	if dataStoreReqGetNotificationURLInfo.Url != other.Url {
 		return false
 	}
 
-	if dataStoreReqGetNotificationUrlInfo.Key != other.Key {
+	if dataStoreReqGetNotificationURLInfo.Key != other.Key {
 		return false
 	}
 
-	if dataStoreReqGetNotificationUrlInfo.Query != other.Query {
+	if dataStoreReqGetNotificationURLInfo.Query != other.Query {
 		return false
 	}
 
-	if !bytes.Equal(dataStoreReqGetNotificationUrlInfo.RootCaCert, other.RootCaCert) {
+	if !bytes.Equal(dataStoreReqGetNotificationURLInfo.RootCaCert, other.RootCaCert) {
 		return false
 	}
 
 	return true
 }
 
-// NewDataStoreReqGetNotificationUrlInfo returns a new DataStoreReqGetNotificationUrlInfo
-func NewDataStoreReqGetNotificationUrlInfo() *DataStoreReqGetNotificationUrlInfo {
-	return &DataStoreReqGetNotificationUrlInfo{}
+// NewDataStoreReqGetNotificationURLInfo returns a new DataStoreReqGetNotificationURLInfo
+func NewDataStoreReqGetNotificationURLInfo() *DataStoreReqGetNotificationURLInfo {
+	return &DataStoreReqGetNotificationURLInfo{}
 }
 
-type DataStoreGetNotificationUrlParam struct {
+type DataStoreGetNotificationURLParam struct {
 	nex.Structure
 	PreviousUrl string
 }
 
-// ExtractFromStream extracts a DataStoreGetNotificationUrlParam structure from a stream
-func (dataStoreGetNotificationUrlParam *DataStoreGetNotificationUrlParam) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFromStream extracts a DataStoreGetNotificationURLParam structure from a stream
+func (dataStoreGetNotificationURLParam *DataStoreGetNotificationURLParam) ExtractFromStream(stream *nex.StreamIn) error {
 	var err error
 
-	dataStoreGetNotificationUrlParam.PreviousUrl, err = stream.ReadString()
+	dataStoreGetNotificationURLParam.PreviousUrl, err = stream.ReadString()
 	if err != nil {
-		return fmt.Errorf("Failed to extract DataStoreGetNotificationUrlParam.PreviousUrl. %s", err.Error())
+		return fmt.Errorf("Failed to extract DataStoreGetNotificationURLParam.PreviousUrl. %s", err.Error())
 	}
 
 	return nil
 }
 
-// Bytes encodes the DataStoreGetNotificationUrlParam and returns a byte array
-func (dataStoreGetNotificationUrlParam *DataStoreGetNotificationUrlParam) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteString(dataStoreGetNotificationUrlParam.PreviousUrl)
+// Bytes encodes the DataStoreGetNotificationURLParam and returns a byte array
+func (dataStoreGetNotificationURLParam *DataStoreGetNotificationURLParam) Bytes(stream *nex.StreamOut) []byte {
+	stream.WriteString(dataStoreGetNotificationURLParam.PreviousUrl)
 
 	return stream.Bytes()
 }
 
-// Copy returns a new copied instance of DataStoreGetNotificationUrlParam
-func (dataStoreGetNotificationUrlParam *DataStoreGetNotificationUrlParam) Copy() nex.StructureInterface {
-	copied := NewDataStoreGetNotificationUrlParam()
+// Copy returns a new copied instance of DataStoreGetNotificationURLParam
+func (dataStoreGetNotificationURLParam *DataStoreGetNotificationURLParam) Copy() nex.StructureInterface {
+	copied := NewDataStoreGetNotificationURLParam()
 
-	copied.PreviousUrl = dataStoreGetNotificationUrlParam.PreviousUrl
+	copied.PreviousUrl = dataStoreGetNotificationURLParam.PreviousUrl
 
 	return copied
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (dataStoreGetNotificationUrlParam *DataStoreGetNotificationUrlParam) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*DataStoreGetNotificationUrlParam)
+func (dataStoreGetNotificationURLParam *DataStoreGetNotificationURLParam) Equals(structure nex.StructureInterface) bool {
+	other := structure.(*DataStoreGetNotificationURLParam)
 
-	return dataStoreGetNotificationUrlParam.PreviousUrl != other.PreviousUrl
+	return dataStoreGetNotificationURLParam.PreviousUrl != other.PreviousUrl
 }
 
-// NewDataStoreGetNotificationUrlParam returns a new DataStoreGetNotificationUrlParam
-func NewDataStoreGetNotificationUrlParam() *DataStoreGetNotificationUrlParam {
-	return &DataStoreGetNotificationUrlParam{}
+// NewDataStoreGetNotificationURLParam returns a new DataStoreGetNotificationURLParam
+func NewDataStoreGetNotificationURLParam() *DataStoreGetNotificationURLParam {
+	return &DataStoreGetNotificationURLParam{}
 }
 
 type DataStoreSearchResult struct {

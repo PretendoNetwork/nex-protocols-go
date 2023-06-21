@@ -1,6 +1,8 @@
 package datastore
 
 import (
+	"fmt"
+
 	nex "github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
@@ -27,7 +29,7 @@ func (protocol *DataStoreProtocol) HandleGetNewArrivedNotifications(packet nex.P
 
 	param, err := parametersStream.ReadStructure(NewDataStoreGetNewArrivedNotificationsParam())
 	if err != nil {
-		go protocol.GetNewArrivedNotificationsHandler(err, client, callID, nil)
+		go protocol.GetNewArrivedNotificationsHandler(fmt.Errorf("Failed to read dataStoreGetNewArrivedNotificationsParam from parameters. %s", err.Error()), client, callID, nil)
 		return
 	}
 

@@ -1,17 +1,19 @@
 package datastore
 
 import (
+	"fmt"
+
 	nex "github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
 // GetNotificationUrl sets the GetNotificationUrl handler function
-func (protocol *DataStoreProtocol) GetNotificationUrl(handler func(err error, client *nex.Client, callID uint32, param *DataStoreGetNotificationUrlParam)) {
-	protocol.GetNotificationUrlHandler = handler
+func (protocol *DataStoreProtocol) GetNotificationURL(handler func(err error, client *nex.Client, callID uint32, param *DataStoreGetNotificationURLParam)) {
+	protocol.GetNotificationURLHandler = handler
 }
 
-func (protocol *DataStoreProtocol) HandleGetNotificationUrl(packet nex.PacketInterface) {
-	if protocol.GetNotificationUrlHandler == nil {
+func (protocol *DataStoreProtocol) HandleGetNotificationURL(packet nex.PacketInterface) {
+	if protocol.GetNotificationURLHandler == nil {
 		globals.Logger.Warning("DataStore::GetNotificationUrl not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -25,11 +27,11 @@ func (protocol *DataStoreProtocol) HandleGetNotificationUrl(packet nex.PacketInt
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	param, err := parametersStream.ReadStructure(NewDataStoreGetNotificationUrlParam())
+	param, err := parametersStream.ReadStructure(NewDataStoreGetNotificationURLParam())
 	if err != nil {
-		go protocol.GetNotificationUrlHandler(err, client, callID, nil)
+		go protocol.GetNotificationURLHandler(fmt.Errorf("Failed to read dataStoreGetNotificationURLParam from parameters. %s", err.Error()), client, callID, nil)
 		return
 	}
 
-	go protocol.GetNotificationUrlHandler(nil, client, callID, param.(*DataStoreGetNotificationUrlParam))
+	go protocol.GetNotificationURLHandler(nil, client, callID, param.(*DataStoreGetNotificationURLParam))
 }

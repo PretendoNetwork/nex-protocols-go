@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
-	friends_wiiu_types "github.com/PretendoNetwork/nex-protocols-go/friends/wiiu/types"
+	friends_wiiu_types "github.com/PretendoNetwork/nex-protocols-go/friends-wiiu/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 

@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	friends_3ds_types "github.com/PretendoNetwork/nex-protocols-go/friends/3ds/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
@@ -60,11 +61,11 @@ const (
 // Friends3DSProtocol handles the Friends (3DS) nex protocol
 type Friends3DSProtocol struct {
 	Server                                 *nex.Server
-	UpdateProfileHandler                   func(err error, client *nex.Client, callID uint32, profileData *MyProfile)
-	UpdateMiiHandler                       func(err error, client *nex.Client, callID uint32, mii *Mii)
+	UpdateProfileHandler                   func(err error, client *nex.Client, callID uint32, profileData *friends_3ds_types.MyProfile)
+	UpdateMiiHandler                       func(err error, client *nex.Client, callID uint32, mii *friends_3ds_types.Mii)
 	UpdatePreferenceHandler                func(err error, client *nex.Client, callID uint32, publicMode bool, showGame bool, showPlayedGame bool)
-	UpdatePresenceHandler                  func(err error, client *nex.Client, callID uint32, presence *NintendoPresence, showGame bool)
-	UpdateFavoriteGameKeyHandler           func(err error, client *nex.Client, callID uint32, gameKey *GameKey)
+	UpdatePresenceHandler                  func(err error, client *nex.Client, callID uint32, presence *friends_3ds_types.NintendoPresence, showGame bool)
+	UpdateFavoriteGameKeyHandler           func(err error, client *nex.Client, callID uint32, gameKey *friends_3ds_types.GameKey)
 	UpdateCommentHandler                   func(err error, client *nex.Client, callID uint32, comment string)
 	SyncFriendHandler                      func(err error, client *nex.Client, callID uint32, lfc uint64, pids []uint32, lfcList []uint64)
 	GetPrincipalIDByLocalFriendCodeHandler func(err error, client *nex.Client, callID uint32, lfc uint64, lfcList []uint64)

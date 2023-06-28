@@ -5,6 +5,7 @@ import (
 
 	nex "github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-protocols-go/datastore"
+	datastore_super_smash_bros_4_types "github.com/PretendoNetwork/nex-protocols-go/datastore/super-smash-bros-4/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 	"golang.org/x/exp/slices"
 )
@@ -98,22 +99,22 @@ type DataStoreSuperSmashBros4Protocol struct {
 	Server *nex.Server
 	datastore.DataStoreProtocol
 
-	PostProfileHandler              func(err error, client *nex.Client, callID uint32, param *DataStorePostProfileParam)
+	PostProfileHandler              func(err error, client *nex.Client, callID uint32, param *datastore_super_smash_bros_4_types.DataStorePostProfileParam)
 	GetProfilesHandler              func(err error, client *nex.Client, callID uint32, pidList []uint32)
 	SendPlayReportHandler           func(err error, client *nex.Client, callID uint32, playReport []int32)
 	GetWorldPlayReportHandler       func(err error, client *nex.Client, callID uint32)
-	GetReplayMetaHandler            func(err error, client *nex.Client, callID uint32, param *DataStoreGetReplayMetaParam)
-	PrepareGetReplayHandler         func(err error, client *nex.Client, callID uint32, param *DataStorePrepareGetReplayParam)
-	PreparePostReplayHandler        func(err error, client *nex.Client, callID uint32, param *DataStorePreparePostReplayParam)
-	CompletePostReplayHandler       func(err error, client *nex.Client, callID uint32, param *DataStoreCompletePostReplayParam)
-	CheckPostReplayHandler          func(err error, client *nex.Client, callID uint32, param *DataStorePreparePostReplayParam)
+	GetReplayMetaHandler            func(err error, client *nex.Client, callID uint32, param *datastore_super_smash_bros_4_types.DataStoreGetReplayMetaParam)
+	PrepareGetReplayHandler         func(err error, client *nex.Client, callID uint32, param *datastore_super_smash_bros_4_types.DataStorePrepareGetReplayParam)
+	PreparePostReplayHandler        func(err error, client *nex.Client, callID uint32, param *datastore_super_smash_bros_4_types.DataStorePreparePostReplayParam)
+	CompletePostReplayHandler       func(err error, client *nex.Client, callID uint32, param *datastore_super_smash_bros_4_types.DataStoreCompletePostReplayParam)
+	CheckPostReplayHandler          func(err error, client *nex.Client, callID uint32, param *datastore_super_smash_bros_4_types.DataStorePreparePostReplayParam)
 	GetNextReplayHandler            func(err error, client *nex.Client, callID uint32)
-	PreparePostSharedDataHandler    func(err error, client *nex.Client, callID uint32, param *DataStorePreparePostSharedDataParam)
-	CompletePostSharedDataHandler   func(err error, client *nex.Client, callID uint32, param *DataStoreCompletePostSharedDataParam)
-	SearchSharedDataHandler         func(err error, client *nex.Client, callID uint32, param *DataStoreSearchSharedDataParam)
+	PreparePostSharedDataHandler    func(err error, client *nex.Client, callID uint32, param *datastore_super_smash_bros_4_types.DataStorePreparePostSharedDataParam)
+	CompletePostSharedDataHandler   func(err error, client *nex.Client, callID uint32, param *datastore_super_smash_bros_4_types.DataStoreCompletePostSharedDataParam)
+	SearchSharedDataHandler         func(err error, client *nex.Client, callID uint32, param *datastore_super_smash_bros_4_types.DataStoreSearchSharedDataParam)
 	GetApplicationConfigHandler     func(err error, client *nex.Client, callID uint32, applicationID uint32)
-	SearchReplayHandler             func(err error, client *nex.Client, callID uint32, param *DataStoreSearchReplayParam)
-	PostFightingPowerScoreHandler   func(err error, client *nex.Client, callID uint32, params []*DataStorePostFightingPowerScoreParam)
+	SearchReplayHandler             func(err error, client *nex.Client, callID uint32, param *datastore_super_smash_bros_4_types.DataStoreSearchReplayParam)
+	PostFightingPowerScoreHandler   func(err error, client *nex.Client, callID uint32, params []*datastore_super_smash_bros_4_types.DataStorePostFightingPowerScoreParam)
 	GetFightingPowerChartHandler    func(err error, client *nex.Client, callID uint32, mode uint8)
 	GetFightingPowerChartAllHandler func(err error, client *nex.Client, callID uint32)
 	ReportSharedDataHandler         func(err error, client *nex.Client, callID uint32, dataID uint64)

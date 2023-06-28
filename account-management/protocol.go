@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	account_management_types "github.com/PretendoNetwork/nex-protocols-go/account-management/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
@@ -23,8 +24,8 @@ type AccountManagementProtocol struct {
 
 // Setup initializes the protocol
 func (protocol *AccountManagementProtocol) Setup() {
-	nex.RegisterDataHolderType(NewNintendoCreateAccountData())
-	nex.RegisterDataHolderType(NewAccountExtraInfo())
+	nex.RegisterDataHolderType(account_management_types.NewNintendoCreateAccountData())
+	nex.RegisterDataHolderType(account_management_types.NewAccountExtraInfo())
 
 	protocol.Server.On("Data", func(packet nex.PacketInterface) {
 		request := packet.RMCRequest()

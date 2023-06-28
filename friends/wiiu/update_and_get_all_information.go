@@ -4,11 +4,12 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	friends_wiiu_types "github.com/PretendoNetwork/nex-protocols-go/friends/wiiu/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
 // UpdateAndGetAllInformation sets the UpdateAndGetAllInformation handler function
-func (protocol *FriendsWiiUProtocol) UpdateAndGetAllInformation(handler func(err error, client *nex.Client, callID uint32, nnaInfo *NNAInfo, presence *NintendoPresenceV2, birthday *nex.DateTime)) {
+func (protocol *FriendsWiiUProtocol) UpdateAndGetAllInformation(handler func(err error, client *nex.Client, callID uint32, nnaInfo *friends_wiiu_types.NNAInfo, presence *friends_wiiu_types.NintendoPresenceV2, birthday *nex.DateTime)) {
 	protocol.UpdateAndGetAllInformationHandler = handler
 }
 
@@ -27,13 +28,13 @@ func (protocol *FriendsWiiUProtocol) HandleUpdateAndGetAllInformation(packet nex
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	nnaInfo, err := parametersStream.ReadStructure(NewNNAInfo())
+	nnaInfo, err := parametersStream.ReadStructure(friends_wiiu_types.NewNNAInfo())
 	if err != nil {
 		go protocol.UpdateAndGetAllInformationHandler(fmt.Errorf("Failed to read nnaInfo from parameters. %s", err.Error()), client, callID, nil, nil, nil)
 		return
 	}
 
-	presence, err := parametersStream.ReadStructure(NewNintendoPresenceV2())
+	presence, err := parametersStream.ReadStructure(friends_wiiu_types.NewNintendoPresenceV2())
 	if err != nil {
 		go protocol.UpdateAndGetAllInformationHandler(fmt.Errorf("Failed to read presence from parameters. %s", err.Error()), client, callID, nil, nil, nil)
 		return
@@ -45,5 +46,5 @@ func (protocol *FriendsWiiUProtocol) HandleUpdateAndGetAllInformation(packet nex
 		return
 	}
 
-	go protocol.UpdateAndGetAllInformationHandler(nil, client, callID, nnaInfo.(*NNAInfo), presence.(*NintendoPresenceV2), birthday)
+	go protocol.UpdateAndGetAllInformationHandler(nil, client, callID, nnaInfo.(*friends_wiiu_types.NNAInfo), presence.(*friends_wiiu_types.NintendoPresenceV2), birthday)
 }

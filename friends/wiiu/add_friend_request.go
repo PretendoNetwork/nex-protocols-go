@@ -4,11 +4,12 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	friends_wiiu_types "github.com/PretendoNetwork/nex-protocols-go/friends/wiiu/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
 // AddFriendRequest sets the AddFriendRequest handler function
-func (protocol *FriendsWiiUProtocol) AddFriendRequest(handler func(err error, client *nex.Client, callID uint32, pid uint32, unknown2 uint8, message string, unknown4 uint8, unknown5 string, gameKey *GameKey, unknown6 *nex.DateTime)) {
+func (protocol *FriendsWiiUProtocol) AddFriendRequest(handler func(err error, client *nex.Client, callID uint32, pid uint32, unknown2 uint8, message string, unknown4 uint8, unknown5 string, gameKey *friends_wiiu_types.GameKey, unknown6 *nex.DateTime)) {
 	protocol.AddFriendRequestHandler = handler
 }
 
@@ -56,7 +57,7 @@ func (protocol *FriendsWiiUProtocol) HandleAddFriendRequest(packet nex.PacketInt
 		return
 	}
 
-	gameKey, err := parametersStream.ReadStructure(NewGameKey())
+	gameKey, err := parametersStream.ReadStructure(friends_wiiu_types.NewGameKey())
 	if err != nil {
 		go protocol.AddFriendRequestHandler(fmt.Errorf("Failed to read gameKey from parameters. %s", err.Error()), client, callID, 0, 0, "", 0, "", nil, nil)
 		return
@@ -68,5 +69,5 @@ func (protocol *FriendsWiiUProtocol) HandleAddFriendRequest(packet nex.PacketInt
 		return
 	}
 
-	go protocol.AddFriendRequestHandler(nil, client, callID, pid, unknown2, message, unknown4, unknown5, gameKey.(*GameKey), unknown6)
+	go protocol.AddFriendRequestHandler(nil, client, callID, pid, unknown2, message, unknown4, unknown5, gameKey.(*friends_wiiu_types.GameKey), unknown6)
 }

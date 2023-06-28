@@ -4,11 +4,12 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	datastore_super_smash_bros_4_types "github.com/PretendoNetwork/nex-protocols-go/datastore/super-smash-bros-4/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
 // CompletePostReplay sets the CompletePostReplay handler function
-func (protocol *DataStoreSuperSmashBros4Protocol) CompletePostReplay(handler func(err error, client *nex.Client, callID uint32, param *DataStoreCompletePostReplayParam)) {
+func (protocol *DataStoreSuperSmashBros4Protocol) CompletePostReplay(handler func(err error, client *nex.Client, callID uint32, param *datastore_super_smash_bros_4_types.DataStoreCompletePostReplayParam)) {
 	protocol.CompletePostReplayHandler = handler
 }
 
@@ -27,11 +28,11 @@ func (protocol *DataStoreSuperSmashBros4Protocol) HandleCompletePostReplay(packe
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	param, err := parametersStream.ReadStructure(NewDataStoreCompletePostReplayParam())
+	param, err := parametersStream.ReadStructure(datastore_super_smash_bros_4_types.NewDataStoreCompletePostReplayParam())
 	if err != nil {
 		go protocol.CompletePostReplayHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
 		return
 	}
 
-	go protocol.CompletePostReplayHandler(nil, client, callID, param.(*DataStoreCompletePostReplayParam))
+	go protocol.CompletePostReplayHandler(nil, client, callID, param.(*datastore_super_smash_bros_4_types.DataStoreCompletePostReplayParam))
 }

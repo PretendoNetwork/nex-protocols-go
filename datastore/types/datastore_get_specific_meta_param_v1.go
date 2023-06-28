@@ -1,0 +1,64 @@
+package datastore_types
+
+import (
+	"fmt"
+
+	"github.com/PretendoNetwork/nex-go"
+)
+
+type DataStoreGetSpecificMetaParamV1 struct {
+	nex.Structure
+	DataIDs []uint32
+}
+
+// ExtractFromStream extracts a DataStoreGetSpecificMetaParamV1 structure from a stream
+func (dataStoreGetSpecificMetaParamV1 *DataStoreGetSpecificMetaParamV1) ExtractFromStream(stream *nex.StreamIn) error {
+	var err error
+
+	dataStoreGetSpecificMetaParamV1.DataIDs, err = stream.ReadListUInt32LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreGetSpecificMetaParamV1.DataIDs. %s", err.Error())
+	}
+
+	return nil
+}
+
+// Bytes encodes the DataStoreGetSpecificMetaParamV1 and returns a byte array
+func (dataStoreGetSpecificMetaParamV1 *DataStoreGetSpecificMetaParamV1) Bytes(stream *nex.StreamOut) []byte {
+	stream.WriteListUInt32LE(dataStoreGetSpecificMetaParamV1.DataIDs)
+
+	return stream.Bytes()
+}
+
+// Copy returns a new copied instance of DataStoreGetSpecificMetaParamV1
+func (dataStoreGetSpecificMetaParamV1 *DataStoreGetSpecificMetaParamV1) Copy() nex.StructureInterface {
+	copied := NewDataStoreGetSpecificMetaParamV1()
+
+	copied.DataIDs = make([]uint32, len(dataStoreGetSpecificMetaParamV1.DataIDs))
+
+	copy(copied.DataIDs, dataStoreGetSpecificMetaParamV1.DataIDs)
+
+	return copied
+}
+
+// Equals checks if the passed Structure contains the same data as the current instance
+func (dataStoreGetSpecificMetaParamV1 *DataStoreGetSpecificMetaParamV1) Equals(structure nex.StructureInterface) bool {
+	other := structure.(*DataStoreGetSpecificMetaParamV1)
+
+	if len(dataStoreGetSpecificMetaParamV1.DataIDs) != len(other.DataIDs) {
+		return false
+	}
+
+	for i := 0; i < len(dataStoreGetSpecificMetaParamV1.DataIDs); i++ {
+		if dataStoreGetSpecificMetaParamV1.DataIDs[i] != other.DataIDs[i] {
+			return false
+		}
+	}
+
+	return true
+}
+
+// NewDataStoreGetSpecificMetaParamV1 returns a new DataStoreGetSpecificMetaParamV1
+func NewDataStoreGetSpecificMetaParamV1() *DataStoreGetSpecificMetaParamV1 {
+	return &DataStoreGetSpecificMetaParamV1{}
+}

@@ -4,11 +4,12 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	datastore_types "github.com/PretendoNetwork/nex-protocols-go/datastore/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
 // CompletePostObject sets the CompletePostObject handler function
-func (protocol *DataStoreProtocol) CompletePostObject(handler func(err error, client *nex.Client, callID uint32, dataStoreCompletePostParam *DataStoreCompletePostParam)) {
+func (protocol *DataStoreProtocol) CompletePostObject(handler func(err error, client *nex.Client, callID uint32, dataStoreCompletePostParam *datastore_types.DataStoreCompletePostParam)) {
 	protocol.CompletePostObjectHandler = handler
 }
 
@@ -27,11 +28,11 @@ func (protocol *DataStoreProtocol) HandleCompletePostObject(packet nex.PacketInt
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	dataStoreCompletePostParam, err := parametersStream.ReadStructure(NewDataStoreCompletePostParam())
+	dataStoreCompletePostParam, err := parametersStream.ReadStructure(datastore_types.NewDataStoreCompletePostParam())
 	if err != nil {
 		go protocol.CompletePostObjectHandler(fmt.Errorf("Failed to read dataStoreCompletePostParam from parameters. %s", err.Error()), client, callID, nil)
 		return
 	}
 
-	go protocol.CompletePostObjectHandler(nil, client, callID, dataStoreCompletePostParam.(*DataStoreCompletePostParam))
+	go protocol.CompletePostObjectHandler(nil, client, callID, dataStoreCompletePostParam.(*datastore_types.DataStoreCompletePostParam))
 }

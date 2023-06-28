@@ -6,11 +6,11 @@ import (
 
 	nex "github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
-	match_making "github.com/PretendoNetwork/nex-protocols-go/match-making"
+	match_making_types "github.com/PretendoNetwork/nex-protocols-go/match-making/types"
 )
 
 // AutoMatchmakeWithSearchCriteria_Postpone sets the AutoMatchmakeWithSearchCriteria_Postpone handler function
-func (protocol *MatchmakeExtensionProtocol) AutoMatchmakeWithSearchCriteria_Postpone(handler func(err error, client *nex.Client, callID uint32, lstSearchCriteria []*match_making.MatchmakeSessionSearchCriteria, anyGathering *nex.DataHolder, strMessage string)) {
+func (protocol *MatchmakeExtensionProtocol) AutoMatchmakeWithSearchCriteria_Postpone(handler func(err error, client *nex.Client, callID uint32, lstSearchCriteria []*match_making_types.MatchmakeSessionSearchCriteria, anyGathering *nex.DataHolder, strMessage string)) {
 	protocol.AutoMatchmakeWithSearchCriteria_PostponeHandler = handler
 }
 
@@ -30,7 +30,7 @@ func (protocol *MatchmakeExtensionProtocol) HandleAutoMatchmakeWithSearchCriteri
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	lstSearchCriteria, err := parametersStream.ReadListStructure(match_making.NewMatchmakeSessionSearchCriteria())
+	lstSearchCriteria, err := parametersStream.ReadListStructure(match_making_types.NewMatchmakeSessionSearchCriteria())
 	if err != nil {
 		go protocol.AutoMatchmakeWithSearchCriteria_PostponeHandler(fmt.Errorf("Failed to read lstSearchCriteria from parameters. %s", err.Error()), client, callID, nil, nil, "")
 		return
@@ -48,5 +48,5 @@ func (protocol *MatchmakeExtensionProtocol) HandleAutoMatchmakeWithSearchCriteri
 		return
 	}
 
-	go protocol.AutoMatchmakeWithSearchCriteria_PostponeHandler(nil, client, callID, lstSearchCriteria.([]*match_making.MatchmakeSessionSearchCriteria), anyGathering, strMessage)
+	go protocol.AutoMatchmakeWithSearchCriteria_PostponeHandler(nil, client, callID, lstSearchCriteria.([]*match_making_types.MatchmakeSessionSearchCriteria), anyGathering, strMessage)
 }

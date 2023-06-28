@@ -5,6 +5,7 @@ import (
 
 	nex "github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
+	utility_types "github.com/PretendoNetwork/nex-protocols-go/utility/types"
 )
 
 const (
@@ -41,8 +42,8 @@ type UtilityProtocol struct {
 	Server                                            *nex.Server
 	AcquireNexUniqueIDHandler                         func(err error, client *nex.Client, callID uint32)
 	AcquireNexUniqueIDWithPasswordHandler             func(err error, client *nex.Client, callID uint32)
-	AssociateNexUniqueIDWithMyPrincipalIDHandler      func(err error, client *nex.Client, callID uint32, uniqueIDInfo *UniqueIDInfo)
-	AssociateNexUniqueIDsWithMyPrincipalIDHandler     func(err error, client *nex.Client, callID uint32, uniqueIDInfo []*UniqueIDInfo)
+	AssociateNexUniqueIDWithMyPrincipalIDHandler      func(err error, client *nex.Client, callID uint32, uniqueIDInfo *utility_types.UniqueIDInfo)
+	AssociateNexUniqueIDsWithMyPrincipalIDHandler     func(err error, client *nex.Client, callID uint32, uniqueIDInfo []*utility_types.UniqueIDInfo)
 	GetAssociatedNexUniqueIDWithMyPrincipalIDHandler  func(err error, client *nex.Client, callID uint32)
 	GetAssociatedNexUniqueIDsWithMyPrincipalIDHandler func(err error, client *nex.Client, callID uint32)
 	GetIntegerSettingsHandler                         func(err error, client *nex.Client, callID uint32, integerSettingIndex uint32)

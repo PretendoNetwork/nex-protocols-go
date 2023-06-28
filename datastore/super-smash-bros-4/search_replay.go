@@ -4,11 +4,12 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	datastore_super_smash_bros_4_types "github.com/PretendoNetwork/nex-protocols-go/datastore/super-smash-bros-4/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
 // SearchReplay sets the SearchReplay handler function
-func (protocol *DataStoreSuperSmashBros4Protocol) SearchReplay(handler func(err error, client *nex.Client, callID uint32, param *DataStoreSearchReplayParam)) {
+func (protocol *DataStoreSuperSmashBros4Protocol) SearchReplay(handler func(err error, client *nex.Client, callID uint32, param *datastore_super_smash_bros_4_types.DataStoreSearchReplayParam)) {
 	protocol.SearchReplayHandler = handler
 }
 
@@ -27,11 +28,11 @@ func (protocol *DataStoreSuperSmashBros4Protocol) HandleSearchReplay(packet nex.
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	param, err := parametersStream.ReadStructure(NewDataStoreSearchReplayParam())
+	param, err := parametersStream.ReadStructure(datastore_super_smash_bros_4_types.NewDataStoreSearchReplayParam())
 	if err != nil {
 		go protocol.SearchReplayHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
 		return
 	}
 
-	go protocol.SearchReplayHandler(nil, client, callID, param.(*DataStoreSearchReplayParam))
+	go protocol.SearchReplayHandler(nil, client, callID, param.(*datastore_super_smash_bros_4_types.DataStoreSearchReplayParam))
 }

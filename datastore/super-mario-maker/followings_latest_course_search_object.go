@@ -4,12 +4,12 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
-	"github.com/PretendoNetwork/nex-protocols-go/datastore"
+	datastore_types "github.com/PretendoNetwork/nex-protocols-go/datastore/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
 // FollowingsLatestCourseSearchObject sets the FollowingsLatestCourseSearchObject handler function
-func (protocol *DataStoreSuperMarioMakerProtocol) FollowingsLatestCourseSearchObject(handler func(err error, client *nex.Client, callID uint32, dataStoreSearchParam *datastore.DataStoreSearchParam, extraData []string)) {
+func (protocol *DataStoreSuperMarioMakerProtocol) FollowingsLatestCourseSearchObject(handler func(err error, client *nex.Client, callID uint32, dataStoreSearchParam *datastore_types.DataStoreSearchParam, extraData []string)) {
 	protocol.FollowingsLatestCourseSearchObjectHandler = handler
 }
 
@@ -28,7 +28,7 @@ func (protocol *DataStoreSuperMarioMakerProtocol) HandleFollowingsLatestCourseSe
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	param, err := parametersStream.ReadStructure(datastore.NewDataStoreSearchParam())
+	param, err := parametersStream.ReadStructure(datastore_types.NewDataStoreSearchParam())
 	if err != nil {
 		go protocol.FollowingsLatestCourseSearchObjectHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil, nil)
 		return
@@ -40,5 +40,5 @@ func (protocol *DataStoreSuperMarioMakerProtocol) HandleFollowingsLatestCourseSe
 		return
 	}
 
-	go protocol.FollowingsLatestCourseSearchObjectHandler(nil, client, callID, param.(*datastore.DataStoreSearchParam), extraData)
+	go protocol.FollowingsLatestCourseSearchObjectHandler(nil, client, callID, param.(*datastore_types.DataStoreSearchParam), extraData)
 }

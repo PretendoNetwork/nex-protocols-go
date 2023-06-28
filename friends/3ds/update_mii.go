@@ -4,11 +4,12 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	friends_3ds_types "github.com/PretendoNetwork/nex-protocols-go/friends/3ds/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
 // UpdateMii sets the UpdateMii handler function
-func (protocol *Friends3DSProtocol) UpdateMii(handler func(err error, client *nex.Client, callID uint32, mii *Mii)) {
+func (protocol *Friends3DSProtocol) UpdateMii(handler func(err error, client *nex.Client, callID uint32, mii *friends_3ds_types.Mii)) {
 	protocol.UpdateMiiHandler = handler
 }
 
@@ -27,11 +28,11 @@ func (protocol *Friends3DSProtocol) HandleUpdateMii(packet nex.PacketInterface) 
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	mii, err := parametersStream.ReadStructure(NewMii())
+	mii, err := parametersStream.ReadStructure(friends_3ds_types.NewMii())
 	if err != nil {
 		go protocol.UpdateMiiHandler(fmt.Errorf("Failed to read mii from parameters. %s", err.Error()), client, callID, nil)
 		return
 	}
 
-	go protocol.UpdateMiiHandler(nil, client, callID, mii.(*Mii))
+	go protocol.UpdateMiiHandler(nil, client, callID, mii.(*friends_3ds_types.Mii))
 }

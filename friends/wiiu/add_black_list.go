@@ -4,11 +4,12 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	friends_wiiu_types "github.com/PretendoNetwork/nex-protocols-go/friends/wiiu/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
 // AddBlackList sets the AddBlackList handler function
-func (protocol *FriendsWiiUProtocol) AddBlackList(handler func(err error, client *nex.Client, callID uint32, blacklistedPrincipal *BlacklistedPrincipal)) {
+func (protocol *FriendsWiiUProtocol) AddBlackList(handler func(err error, client *nex.Client, callID uint32, blacklistedPrincipal *friends_wiiu_types.BlacklistedPrincipal)) {
 	protocol.AddBlackListHandler = handler
 }
 
@@ -27,11 +28,11 @@ func (protocol *FriendsWiiUProtocol) HandleAddBlackList(packet nex.PacketInterfa
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	blacklistedPrincipal, err := parametersStream.ReadStructure(NewBlacklistedPrincipal())
+	blacklistedPrincipal, err := parametersStream.ReadStructure(friends_wiiu_types.NewBlacklistedPrincipal())
 	if err != nil {
 		go protocol.AddBlackListHandler(fmt.Errorf("Failed to read blacklistedPrincipal from parameters. %s", err.Error()), client, callID, nil)
 		return
 	}
 
-	go protocol.AddBlackListHandler(nil, client, callID, blacklistedPrincipal.(*BlacklistedPrincipal))
+	go protocol.AddBlackListHandler(nil, client, callID, blacklistedPrincipal.(*friends_wiiu_types.BlacklistedPrincipal))
 }

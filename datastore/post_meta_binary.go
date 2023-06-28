@@ -4,11 +4,12 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	datastore_types "github.com/PretendoNetwork/nex-protocols-go/datastore/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
 // PostMetaBinary sets the PostMetaBinary handler function
-func (protocol *DataStoreProtocol) PostMetaBinary(handler func(err error, client *nex.Client, callID uint32, dataStorePreparePostParam *DataStorePreparePostParam)) {
+func (protocol *DataStoreProtocol) PostMetaBinary(handler func(err error, client *nex.Client, callID uint32, dataStorePreparePostParam *datastore_types.DataStorePreparePostParam)) {
 	protocol.PostMetaBinaryHandler = handler
 }
 
@@ -27,11 +28,11 @@ func (protocol *DataStoreProtocol) HandlePostMetaBinary(packet nex.PacketInterfa
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	dataStorePreparePostParam, err := parametersStream.ReadStructure(NewDataStorePreparePostParam())
+	dataStorePreparePostParam, err := parametersStream.ReadStructure(datastore_types.NewDataStorePreparePostParam())
 	if err != nil {
 		go protocol.PostMetaBinaryHandler(fmt.Errorf("Failed to read dataStorePreparePostParam from parameters. %s", err.Error()), client, callID, nil)
 		return
 	}
 
-	go protocol.PostMetaBinaryHandler(nil, client, callID, dataStorePreparePostParam.(*DataStorePreparePostParam))
+	go protocol.PostMetaBinaryHandler(nil, client, callID, dataStorePreparePostParam.(*datastore_types.DataStorePreparePostParam))
 }

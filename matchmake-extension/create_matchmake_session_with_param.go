@@ -5,11 +5,11 @@ import (
 
 	nex "github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
-	match_making "github.com/PretendoNetwork/nex-protocols-go/match-making"
+	match_making_types "github.com/PretendoNetwork/nex-protocols-go/match-making/types"
 )
 
 // CreateMatchmakeSessionWithParam sets the CreateMatchmakeSessionWithParam handler function
-func (protocol *MatchmakeExtensionProtocol) CreateMatchmakeSessionWithParam(handler func(err error, client *nex.Client, callID uint32, createMatchmakeSessionParam *match_making.CreateMatchmakeSessionParam)) {
+func (protocol *MatchmakeExtensionProtocol) CreateMatchmakeSessionWithParam(handler func(err error, client *nex.Client, callID uint32, createMatchmakeSessionParam *match_making_types.CreateMatchmakeSessionParam)) {
 	protocol.CreateMatchmakeSessionWithParamHandler = handler
 }
 
@@ -28,11 +28,11 @@ func (protocol *MatchmakeExtensionProtocol) HandleCreateMatchmakeSessionWithPara
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	createMatchmakeSessionParam, err := parametersStream.ReadStructure(match_making.NewCreateMatchmakeSessionParam())
+	createMatchmakeSessionParam, err := parametersStream.ReadStructure(match_making_types.NewCreateMatchmakeSessionParam())
 	if err != nil {
 		go protocol.CreateMatchmakeSessionWithParamHandler(fmt.Errorf("Failed to read createMatchmakeSessionParam from parameters. %s", err.Error()), client, callID, nil)
 		return
 	}
 
-	go protocol.CreateMatchmakeSessionWithParamHandler(nil, client, callID, createMatchmakeSessionParam.(*match_making.CreateMatchmakeSessionParam))
+	go protocol.CreateMatchmakeSessionWithParamHandler(nil, client, callID, createMatchmakeSessionParam.(*match_making_types.CreateMatchmakeSessionParam))
 }

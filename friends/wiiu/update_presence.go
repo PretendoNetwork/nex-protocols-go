@@ -4,11 +4,12 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	friends_wiiu_types "github.com/PretendoNetwork/nex-protocols-go/friends/wiiu/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
 // UpdatePresence sets the UpdatePresence handler function
-func (protocol *FriendsWiiUProtocol) UpdatePresence(handler func(err error, client *nex.Client, callID uint32, presence *NintendoPresenceV2)) {
+func (protocol *FriendsWiiUProtocol) UpdatePresence(handler func(err error, client *nex.Client, callID uint32, presence *friends_wiiu_types.NintendoPresenceV2)) {
 	protocol.UpdatePresenceHandler = handler
 }
 
@@ -27,11 +28,11 @@ func (protocol *FriendsWiiUProtocol) HandleUpdatePresence(packet nex.PacketInter
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	nintendoPresenceV2, err := parametersStream.ReadStructure(NewNintendoPresenceV2())
+	nintendoPresenceV2, err := parametersStream.ReadStructure(friends_wiiu_types.NewNintendoPresenceV2())
 	if err != nil {
 		go protocol.UpdatePresenceHandler(fmt.Errorf("Failed to read nintendoPresenceV2 from parameters. %s", err.Error()), client, callID, nil)
 		return
 	}
 
-	go protocol.UpdatePresenceHandler(nil, client, callID, nintendoPresenceV2.(*NintendoPresenceV2))
+	go protocol.UpdatePresenceHandler(nil, client, callID, nintendoPresenceV2.(*friends_wiiu_types.NintendoPresenceV2))
 }

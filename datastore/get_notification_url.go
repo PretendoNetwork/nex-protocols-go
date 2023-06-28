@@ -4,11 +4,12 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	datastore_types "github.com/PretendoNetwork/nex-protocols-go/datastore/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
 // GetNotificationUrl sets the GetNotificationUrl handler function
-func (protocol *DataStoreProtocol) GetNotificationURL(handler func(err error, client *nex.Client, callID uint32, param *DataStoreGetNotificationURLParam)) {
+func (protocol *DataStoreProtocol) GetNotificationURL(handler func(err error, client *nex.Client, callID uint32, param *datastore_types.DataStoreGetNotificationURLParam)) {
 	protocol.GetNotificationURLHandler = handler
 }
 
@@ -27,11 +28,11 @@ func (protocol *DataStoreProtocol) HandleGetNotificationURL(packet nex.PacketInt
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	param, err := parametersStream.ReadStructure(NewDataStoreGetNotificationURLParam())
+	param, err := parametersStream.ReadStructure(datastore_types.NewDataStoreGetNotificationURLParam())
 	if err != nil {
 		go protocol.GetNotificationURLHandler(fmt.Errorf("Failed to read dataStoreGetNotificationURLParam from parameters. %s", err.Error()), client, callID, nil)
 		return
 	}
 
-	go protocol.GetNotificationURLHandler(nil, client, callID, param.(*DataStoreGetNotificationURLParam))
+	go protocol.GetNotificationURLHandler(nil, client, callID, param.(*datastore_types.DataStoreGetNotificationURLParam))
 }

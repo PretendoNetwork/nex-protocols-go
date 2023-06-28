@@ -4,11 +4,12 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	datastore_types "github.com/PretendoNetwork/nex-protocols-go/datastore/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
 // RateObjects sets the RateObjects handler function
-func (protocol *DataStoreProtocol) RateObjects(handler func(err error, client *nex.Client, callID uint32, targets []*DataStoreRatingTarget, params []*DataStoreRateObjectParam, transactional bool, fetchRatings bool)) {
+func (protocol *DataStoreProtocol) RateObjects(handler func(err error, client *nex.Client, callID uint32, targets []*datastore_types.DataStoreRatingTarget, params []*datastore_types.DataStoreRateObjectParam, transactional bool, fetchRatings bool)) {
 	protocol.RateObjectsHandler = handler
 }
 
@@ -27,13 +28,13 @@ func (protocol *DataStoreProtocol) HandleRateObjects(packet nex.PacketInterface)
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	targets, err := parametersStream.ReadListStructure(NewDataStoreRatingTarget())
+	targets, err := parametersStream.ReadListStructure(datastore_types.NewDataStoreRatingTarget())
 	if err != nil {
 		go protocol.RateObjectsHandler(fmt.Errorf("Failed to read targets from parameters. %s", err.Error()), client, callID, nil, nil, false, false)
 		return
 	}
 
-	params, err := parametersStream.ReadListStructure(NewDataStoreRateObjectParam())
+	params, err := parametersStream.ReadListStructure(datastore_types.NewDataStoreRateObjectParam())
 	if err != nil {
 		go protocol.RateObjectsHandler(fmt.Errorf("Failed to read params from parameters. %s", err.Error()), client, callID, nil, nil, false, false)
 		return
@@ -51,5 +52,5 @@ func (protocol *DataStoreProtocol) HandleRateObjects(packet nex.PacketInterface)
 		return
 	}
 
-	go protocol.RateObjectsHandler(nil, client, callID, targets.([]*DataStoreRatingTarget), params.([]*DataStoreRateObjectParam), transactional, fetchRatings)
+	go protocol.RateObjectsHandler(nil, client, callID, targets.([]*datastore_types.DataStoreRatingTarget), params.([]*datastore_types.DataStoreRateObjectParam), transactional, fetchRatings)
 }

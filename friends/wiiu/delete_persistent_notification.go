@@ -4,11 +4,12 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	friends_wiiu_types "github.com/PretendoNetwork/nex-protocols-go/friends/wiiu/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
 // DeletePersistentNotification sets the DeletePersistentNotification handler function
-func (protocol *FriendsWiiUProtocol) DeletePersistentNotification(handler func(err error, client *nex.Client, callID uint32, notifications []*PersistentNotification)) {
+func (protocol *FriendsWiiUProtocol) DeletePersistentNotification(handler func(err error, client *nex.Client, callID uint32, notifications []*friends_wiiu_types.PersistentNotification)) {
 	protocol.DeletePersistentNotificationHandler = handler
 }
 
@@ -27,11 +28,11 @@ func (protocol *FriendsWiiUProtocol) HandleDeletePersistentNotification(packet n
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	persistentNotifications, err := parametersStream.ReadListStructure(NewPersistentNotification())
+	persistentNotifications, err := parametersStream.ReadListStructure(friends_wiiu_types.NewPersistentNotification())
 	if err != nil {
 		go protocol.DeletePersistentNotificationHandler(fmt.Errorf("Failed to read persistentNotifications from parameters. %s", err.Error()), client, callID, nil)
 		return
 	}
 
-	go protocol.DeletePersistentNotificationHandler(nil, client, callID, persistentNotifications.([]*PersistentNotification))
+	go protocol.DeletePersistentNotificationHandler(nil, client, callID, persistentNotifications.([]*friends_wiiu_types.PersistentNotification))
 }

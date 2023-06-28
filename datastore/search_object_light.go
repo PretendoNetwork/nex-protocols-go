@@ -4,11 +4,12 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	datastore_types "github.com/PretendoNetwork/nex-protocols-go/datastore/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
 // SearchObject sets the SearchObject handler function
-func (protocol *DataStoreProtocol) SearchObjectLight(handler func(err error, client *nex.Client, callID uint32, param *DataStoreSearchParam)) {
+func (protocol *DataStoreProtocol) SearchObjectLight(handler func(err error, client *nex.Client, callID uint32, param *datastore_types.DataStoreSearchParam)) {
 	protocol.SearchObjectLightHandler = handler
 }
 
@@ -27,11 +28,11 @@ func (protocol *DataStoreProtocol) HandleSearchObjectLight(packet nex.PacketInte
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	param, err := parametersStream.ReadStructure(NewDataStoreSearchParam())
+	param, err := parametersStream.ReadStructure(datastore_types.NewDataStoreSearchParam())
 	if err != nil {
 		go protocol.SearchObjectLightHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
 		return
 	}
 
-	go protocol.SearchObjectLightHandler(nil, client, callID, param.(*DataStoreSearchParam))
+	go protocol.SearchObjectLightHandler(nil, client, callID, param.(*datastore_types.DataStoreSearchParam))
 }

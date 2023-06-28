@@ -4,11 +4,12 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	datastore_types "github.com/PretendoNetwork/nex-protocols-go/datastore/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
 // GetMetas sets the GetMetas handler function
-func (protocol *DataStoreProtocol) GetMetas(handler func(err error, client *nex.Client, callID uint32, dataIDs []uint64, param *DataStoreGetMetaParam)) {
+func (protocol *DataStoreProtocol) GetMetas(handler func(err error, client *nex.Client, callID uint32, dataIDs []uint64, param *datastore_types.DataStoreGetMetaParam)) {
 	protocol.GetMetasHandler = handler
 }
 
@@ -33,11 +34,11 @@ func (protocol *DataStoreProtocol) HandleGetMetas(packet nex.PacketInterface) {
 		return
 	}
 
-	param, err := parametersStream.ReadStructure(NewDataStoreGetMetaParam())
+	param, err := parametersStream.ReadStructure(datastore_types.NewDataStoreGetMetaParam())
 	if err != nil {
 		go protocol.GetMetasHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil, nil)
 		return
 	}
 
-	go protocol.GetMetasHandler(nil, client, callID, dataIDs, param.(*DataStoreGetMetaParam))
+	go protocol.GetMetasHandler(nil, client, callID, dataIDs, param.(*datastore_types.DataStoreGetMetaParam))
 }

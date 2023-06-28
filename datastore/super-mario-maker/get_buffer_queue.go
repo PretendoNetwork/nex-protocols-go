@@ -4,11 +4,12 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	datastore_super_mario_maker_types "github.com/PretendoNetwork/nex-protocols-go/datastore/super-mario-maker/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
 // GetBufferQueue sets the GetBufferQueue handler function
-func (protocol *DataStoreSuperMarioMakerProtocol) GetBufferQueue(handler func(err error, client *nex.Client, callID uint32, bufferQueueParam *BufferQueueParam)) {
+func (protocol *DataStoreSuperMarioMakerProtocol) GetBufferQueue(handler func(err error, client *nex.Client, callID uint32, bufferQueueParam *datastore_super_mario_maker_types.BufferQueueParam)) {
 	protocol.GetBufferQueueHandler = handler
 }
 
@@ -27,11 +28,11 @@ func (protocol *DataStoreSuperMarioMakerProtocol) HandleGetBufferQueue(packet ne
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	bufferQueueParam, err := parametersStream.ReadStructure(NewBufferQueueParam())
+	bufferQueueParam, err := parametersStream.ReadStructure(datastore_super_mario_maker_types.NewBufferQueueParam())
 	if err != nil {
 		go protocol.GetBufferQueueHandler(fmt.Errorf("Failed to read bufferQueueParam from parameters. %s", err.Error()), client, callID, nil)
 		return
 	}
 
-	go protocol.GetBufferQueueHandler(nil, client, callID, bufferQueueParam.(*BufferQueueParam))
+	go protocol.GetBufferQueueHandler(nil, client, callID, bufferQueueParam.(*datastore_super_mario_maker_types.BufferQueueParam))
 }

@@ -5,10 +5,11 @@ import (
 
 	nex "github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
+	utility_types "github.com/PretendoNetwork/nex-protocols-go/utility/types"
 )
 
 // AssociateNexUniqueIDsWithMyPrincipalID sets the AssociateNexUniqueIDsWithMyPrincipalID handler function
-func (protocol *UtilityProtocol) AssociateNexUniqueIDsWithMyPrincipalID(handler func(err error, client *nex.Client, callID uint32, uniqueIDInfo []*UniqueIDInfo)) {
+func (protocol *UtilityProtocol) AssociateNexUniqueIDsWithMyPrincipalID(handler func(err error, client *nex.Client, callID uint32, uniqueIDInfo []*utility_types.UniqueIDInfo)) {
 	protocol.AssociateNexUniqueIDsWithMyPrincipalIDHandler = handler
 }
 
@@ -27,11 +28,11 @@ func (protocol *UtilityProtocol) HandleAssociateNexUniqueIDsWithMyPrincipalID(pa
 	parameters := request.Parameters()
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
-	uniqueIDInfo, err := parametersStream.ReadListStructure(NewUniqueIDInfo())
+	uniqueIDInfo, err := parametersStream.ReadListStructure(utility_types.NewUniqueIDInfo())
 	if err != nil {
 		go protocol.AssociateNexUniqueIDsWithMyPrincipalIDHandler(fmt.Errorf("Failed to read uniqueIDInfo from parameters. %s", err.Error()), client, callID, nil)
 		return
 	}
 
-	go protocol.AssociateNexUniqueIDsWithMyPrincipalIDHandler(nil, client, callID, uniqueIDInfo.([]*UniqueIDInfo))
+	go protocol.AssociateNexUniqueIDsWithMyPrincipalIDHandler(nil, client, callID, uniqueIDInfo.([]*utility_types.UniqueIDInfo))
 }

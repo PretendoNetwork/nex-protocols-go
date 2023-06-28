@@ -4,11 +4,12 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	datastore_types "github.com/PretendoNetwork/nex-protocols-go/datastore/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
 // PrepareGetObject sets the PrepareGetObject handler function
-func (protocol *DataStoreProtocol) PrepareGetObject(handler func(err error, client *nex.Client, callID uint32, dataStorePrepareGetParam *DataStorePrepareGetParam)) {
+func (protocol *DataStoreProtocol) PrepareGetObject(handler func(err error, client *nex.Client, callID uint32, dataStorePrepareGetParam *datastore_types.DataStorePrepareGetParam)) {
 	protocol.PrepareGetObjectHandler = handler
 }
 
@@ -27,11 +28,11 @@ func (protocol *DataStoreProtocol) HandlePrepareGetObject(packet nex.PacketInter
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	dataStorePrepareGetParam, err := parametersStream.ReadStructure(NewDataStorePrepareGetParam())
+	dataStorePrepareGetParam, err := parametersStream.ReadStructure(datastore_types.NewDataStorePrepareGetParam())
 	if err != nil {
 		go protocol.PrepareGetObjectHandler(fmt.Errorf("Failed to read dataStorePrepareGetParam from parameters. %s", err.Error()), client, callID, nil)
 		return
 	}
 
-	go protocol.PrepareGetObjectHandler(nil, client, callID, dataStorePrepareGetParam.(*DataStorePrepareGetParam))
+	go protocol.PrepareGetObjectHandler(nil, client, callID, dataStorePrepareGetParam.(*datastore_types.DataStorePrepareGetParam))
 }

@@ -6,6 +6,7 @@ import (
 	nex "github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 	"github.com/PretendoNetwork/nex-protocols-go/shop"
+	shop_nintendo_badge_arcade_types "github.com/PretendoNetwork/nex-protocols-go/shop/nintendo-badge-arcade/types"
 	"golang.org/x/exp/slices"
 )
 
@@ -33,7 +34,7 @@ type ShopNintendoBadgeArcadeProtocol struct {
 	Server *nex.Server
 	shop.ShopProtocol
 	GetRivTokenHandler func(err error, client *nex.Client, callID uint32, itemCode string, referenceID []byte)
-	PostPlayLogHandler func(err error, client *nex.Client, callID uint32, param *ShopPostPlayLogParam)
+	PostPlayLogHandler func(err error, client *nex.Client, callID uint32, param *shop_nintendo_badge_arcade_types.ShopPostPlayLogParam)
 }
 
 // Setup initializes the protocol

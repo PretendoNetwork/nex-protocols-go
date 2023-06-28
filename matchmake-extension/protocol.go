@@ -5,7 +5,7 @@ import (
 
 	nex "github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
-	match_making "github.com/PretendoNetwork/nex-protocols-go/match-making"
+	match_making_types "github.com/PretendoNetwork/nex-protocols-go/match-making/types"
 )
 
 const (
@@ -79,9 +79,9 @@ type MatchmakeExtensionProtocol struct {
 	CreateMatchmakeSessionHandler                   func(err error, client *nex.Client, callID uint32, anyGathering *nex.DataHolder, message string, participationCount uint16)
 	UpdateNotificationDataHandler                   func(err error, client *nex.Client, callID uint32, uiType uint32, uiParam1 uint32, uiParam2 uint32, strParam string)
 	GetFriendNotificationDataHandler                func(err error, client *nex.Client, callID uint32, uiType int32)
-	AutoMatchmakeWithSearchCriteria_PostponeHandler func(err error, client *nex.Client, callID uint32, lstSearchCriteria []*match_making.MatchmakeSessionSearchCriteria, anyGathering *nex.DataHolder, strMessage string)
+	AutoMatchmakeWithSearchCriteria_PostponeHandler func(err error, client *nex.Client, callID uint32, lstSearchCriteria []*match_making_types.MatchmakeSessionSearchCriteria, anyGathering *nex.DataHolder, strMessage string)
 	GetPlayingSessionHandler                        func(err error, client *nex.Client, callID uint32, lstPID []uint32)
-	CreateCommunityHandler                          func(err error, client *nex.Client, callID uint32, community *match_making.PersistentGathering, strMessage string)
+	CreateCommunityHandler                          func(err error, client *nex.Client, callID uint32, community *match_making_types.PersistentGathering, strMessage string)
 	FindCommunityByGatheringIDHandler               func(err error, client *nex.Client, callID uint32, lstGID []uint32)
 	FindOfficialCommunityHandler                    func(err error, client *nex.Client, callID uint32, isAvailableOnly bool, resultRange *nex.ResultRange)
 	FindCommunityByParticipantHandler               func(err error, client *nex.Client, callID uint32, pid uint32, resultRange *nex.ResultRange)
@@ -89,9 +89,9 @@ type MatchmakeExtensionProtocol struct {
 	GetSimplePlayingSessionHandler                  func(err error, client *nex.Client, callID uint32, listPID []uint32, includeLoginUser bool)
 	GetSimpleCommunityHandler                       func(err error, client *nex.Client, callID uint32, gatheringIDList []uint32)
 	UpdateProgressScoreHandler                      func(err error, client *nex.Client, callID uint32, gid uint32, progressScore uint8)
-	CreateMatchmakeSessionWithParamHandler          func(err error, client *nex.Client, callID uint32, createMatchmakeSessionParam *match_making.CreateMatchmakeSessionParam)
-	JoinMatchmakeSessionWithParamHandler            func(err error, client *nex.Client, callID uint32, joinMatchmakeSessionParam *match_making.JoinMatchmakeSessionParam)
-	AutoMatchmakeWithParam_PostponeHandler          func(err error, client *nex.Client, callID uint32, autoMatchmakeParam *match_making.AutoMatchmakeParam)
+	CreateMatchmakeSessionWithParamHandler          func(err error, client *nex.Client, callID uint32, createMatchmakeSessionParam *match_making_types.CreateMatchmakeSessionParam)
+	JoinMatchmakeSessionWithParamHandler            func(err error, client *nex.Client, callID uint32, joinMatchmakeSessionParam *match_making_types.JoinMatchmakeSessionParam)
+	AutoMatchmakeWithParam_PostponeHandler          func(err error, client *nex.Client, callID uint32, autoMatchmakeParam *match_making_types.AutoMatchmakeParam)
 }
 
 // Setup initializes the protocol

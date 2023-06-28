@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	friends_wiiu_types "github.com/PretendoNetwork/nex-protocols-go/friends/wiiu/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
@@ -75,24 +76,24 @@ const (
 // FriendsWiiUProtocol handles the Friends (WiiU) nex protocol
 type FriendsWiiUProtocol struct {
 	Server                              *nex.Server
-	UpdateAndGetAllInformationHandler   func(err error, client *nex.Client, callID uint32, nnaInfo *NNAInfo, presence *NintendoPresenceV2, birthday *nex.DateTime)
+	UpdateAndGetAllInformationHandler   func(err error, client *nex.Client, callID uint32, nnaInfo *friends_wiiu_types.NNAInfo, presence *friends_wiiu_types.NintendoPresenceV2, birthday *nex.DateTime)
 	AddFriendHandler                    func(err error, client *nex.Client, callID uint32, pid uint32)
 	AddFriendByNameHandler              func(err error, client *nex.Client, callID uint32, username string)
 	RemoveFriendHandler                 func(err error, client *nex.Client, callID uint32, pid uint32)
-	AddFriendRequestHandler             func(err error, client *nex.Client, callID uint32, pid uint32, unknown2 uint8, message string, unknown4 uint8, unknown5 string, gameKey *GameKey, unknown6 *nex.DateTime)
+	AddFriendRequestHandler             func(err error, client *nex.Client, callID uint32, pid uint32, unknown2 uint8, message string, unknown4 uint8, unknown5 string, gameKey *friends_wiiu_types.GameKey, unknown6 *nex.DateTime)
 	CancelFriendRequestHandler          func(err error, client *nex.Client, callID uint32, id uint64)
 	AcceptFriendRequestHandler          func(err error, client *nex.Client, callID uint32, id uint64)
 	DeleteFriendRequestHandler          func(err error, client *nex.Client, callID uint32, id uint64)
 	DenyFriendRequestHandler            func(err error, client *nex.Client, callID uint32, id uint64)
 	MarkFriendRequestsAsReceivedHandler func(err error, client *nex.Client, callID uint32, ids []uint64)
-	AddBlackListHandler                 func(err error, client *nex.Client, callID uint32, blacklistedPrincipal *BlacklistedPrincipal)
+	AddBlackListHandler                 func(err error, client *nex.Client, callID uint32, blacklistedPrincipal *friends_wiiu_types.BlacklistedPrincipal)
 	RemoveBlackListHandler              func(err error, client *nex.Client, callID uint32, pid uint32)
-	UpdatePresenceHandler               func(err error, client *nex.Client, callID uint32, presence *NintendoPresenceV2)
-	UpdateMiiHandler                    func(err error, client *nex.Client, callID uint32, mii *MiiV2)
-	UpdateCommentHandler                func(err error, client *nex.Client, callID uint32, comment *Comment)
-	UpdatePreferenceHandler             func(err error, client *nex.Client, callID uint32, preference *PrincipalPreference)
+	UpdatePresenceHandler               func(err error, client *nex.Client, callID uint32, presence *friends_wiiu_types.NintendoPresenceV2)
+	UpdateMiiHandler                    func(err error, client *nex.Client, callID uint32, mii *friends_wiiu_types.MiiV2)
+	UpdateCommentHandler                func(err error, client *nex.Client, callID uint32, comment *friends_wiiu_types.Comment)
+	UpdatePreferenceHandler             func(err error, client *nex.Client, callID uint32, preference *friends_wiiu_types.PrincipalPreference)
 	GetBasicInfoHandler                 func(err error, client *nex.Client, callID uint32, pids []uint32)
-	DeletePersistentNotificationHandler func(err error, client *nex.Client, callID uint32, notifications []*PersistentNotification)
+	DeletePersistentNotificationHandler func(err error, client *nex.Client, callID uint32, notifications []*friends_wiiu_types.PersistentNotification)
 	CheckSettingStatusHandler           func(err error, client *nex.Client, callID uint32)
 	GetRequestBlockSettingsHandler      func(err error, client *nex.Client, callID uint32, pids []uint32)
 }

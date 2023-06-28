@@ -5,6 +5,7 @@ import (
 
 	nex "github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-protocols-go/datastore"
+	datastore_nintendo_badge_arcade_types "github.com/PretendoNetwork/nex-protocols-go/datastore/nintendo-badge-arcade/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 	"golang.org/x/exp/slices"
 )
@@ -25,7 +26,7 @@ var patchedMethods = []uint32{
 type DataStoreNintendoBadgeArcadeProtocol struct {
 	Server *nex.Server
 	datastore.DataStoreProtocol
-	GetMetaByOwnerIDHandler func(err error, client *nex.Client, callID uint32, param *DataStoreGetMetaByOwnerIDParam)
+	GetMetaByOwnerIDHandler func(err error, client *nex.Client, callID uint32, param *datastore_nintendo_badge_arcade_types.DataStoreGetMetaByOwnerIDParam)
 }
 
 // Setup initializes the protocol

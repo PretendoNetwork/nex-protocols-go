@@ -1,0 +1,225 @@
+package datastore_types
+
+import (
+	"bytes"
+	"fmt"
+
+	"github.com/PretendoNetwork/nex-go"
+)
+
+// DataStorePreparePostParam is sent in the PreparePostObject method
+type DataStorePreparePostParam struct {
+	nex.Structure
+	Size                 uint32
+	Name                 string
+	DataType             uint16
+	MetaBinary           []byte
+	Permission           *DataStorePermission
+	DelPermission        *DataStorePermission
+	Flag                 uint32
+	Period               uint16
+	ReferDataId          uint32
+	Tags                 []string
+	RatingInitParams     []*DataStoreRatingInitParamWithSlot
+	PersistenceInitParam *DataStorePersistenceInitParam
+	ExtraData            []string // NEX 3.5.0+
+}
+
+// ExtractFromStream extracts a DataStorePreparePostParam structure from a stream
+func (dataStorePreparePostParam *DataStorePreparePostParam) ExtractFromStream(stream *nex.StreamIn) error {
+	datastoreVersion := stream.Server.DataStoreProtocolVersion()
+
+	var err error
+
+	dataStorePreparePostParam.Size, err = stream.ReadUInt32LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStorePreparePostParam.Size. %s", err.Error())
+	}
+
+	dataStorePreparePostParam.Name, err = stream.ReadString()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStorePreparePostParam.Name. %s", err.Error())
+	}
+
+	dataStorePreparePostParam.DataType, err = stream.ReadUInt16LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStorePreparePostParam.DataType. %s", err.Error())
+	}
+
+	dataStorePreparePostParam.MetaBinary, err = stream.ReadQBuffer()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStorePreparePostParam.MetaBinary. %s", err.Error())
+	}
+
+	permission, err := stream.ReadStructure(NewDataStorePermission())
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStorePreparePostParam.Permission. %s", err.Error())
+	}
+
+	dataStorePreparePostParam.Permission = permission.(*DataStorePermission)
+
+	delPermission, err := stream.ReadStructure(NewDataStorePermission())
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStorePreparePostParam.DelPermission. %s", err.Error())
+	}
+
+	dataStorePreparePostParam.DelPermission = delPermission.(*DataStorePermission)
+	dataStorePreparePostParam.Flag, err = stream.ReadUInt32LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStorePreparePostParam.Flag. %s", err.Error())
+	}
+
+	dataStorePreparePostParam.Period, err = stream.ReadUInt16LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStorePreparePostParam.Period. %s", err.Error())
+	}
+
+	dataStorePreparePostParam.ReferDataId, err = stream.ReadUInt32LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStorePreparePostParam.ReferDataId. %s", err.Error())
+	}
+
+	dataStorePreparePostParam.Tags, err = stream.ReadListString()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStorePreparePostParam.Tags. %s", err.Error())
+	}
+
+	ratingInitParams, err := stream.ReadListStructure(NewDataStoreRatingInitParamWithSlot())
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStorePreparePostParam.RatingInitParams. %s", err.Error())
+	}
+
+	dataStorePreparePostParam.RatingInitParams = ratingInitParams.([]*DataStoreRatingInitParamWithSlot)
+
+	persistenceInitParam, err := stream.ReadStructure(NewDataStorePersistenceInitParam())
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStorePreparePostParam.PersistenceInitParam. %s", err.Error())
+	}
+
+	dataStorePreparePostParam.PersistenceInitParam = persistenceInitParam.(*DataStorePersistenceInitParam)
+
+	if datastoreVersion.Major >= 3 && datastoreVersion.Minor >= 5 {
+		dataStorePreparePostParam.ExtraData, err = stream.ReadListString()
+		if err != nil {
+			return fmt.Errorf("Failed to extract DataStorePreparePostParam.ExtraData. %s", err.Error())
+		}
+	}
+
+	return nil
+}
+
+// Copy returns a new copied instance of DataStorePreparePostParam
+func (dataStorePreparePostParam *DataStorePreparePostParam) Copy() nex.StructureInterface {
+	copied := NewDataStorePreparePostParam()
+
+	copied.Size = dataStorePreparePostParam.Size
+	copied.Name = dataStorePreparePostParam.Name
+	copied.DataType = dataStorePreparePostParam.DataType
+	copied.MetaBinary = make([]byte, len(dataStorePreparePostParam.MetaBinary))
+
+	copy(copied.MetaBinary, dataStorePreparePostParam.MetaBinary)
+
+	copied.Permission = dataStorePreparePostParam.Permission.Copy().(*DataStorePermission)
+	copied.DelPermission = dataStorePreparePostParam.DelPermission.Copy().(*DataStorePermission)
+	copied.Flag = dataStorePreparePostParam.Flag
+	copied.Period = dataStorePreparePostParam.Period
+	copied.ReferDataId = dataStorePreparePostParam.ReferDataId
+	copied.Tags = make([]string, len(dataStorePreparePostParam.Tags))
+
+	copy(copied.Tags, dataStorePreparePostParam.Tags)
+
+	copied.RatingInitParams = make([]*DataStoreRatingInitParamWithSlot, len(dataStorePreparePostParam.RatingInitParams))
+
+	for i := 0; i < len(dataStorePreparePostParam.RatingInitParams); i++ {
+		copied.RatingInitParams[i] = dataStorePreparePostParam.RatingInitParams[i].Copy().(*DataStoreRatingInitParamWithSlot)
+	}
+
+	copied.PersistenceInitParam = dataStorePreparePostParam.PersistenceInitParam.Copy().(*DataStorePersistenceInitParam)
+	copied.ExtraData = make([]string, len(dataStorePreparePostParam.ExtraData))
+
+	copy(copied.ExtraData, dataStorePreparePostParam.ExtraData)
+
+	return copied
+}
+
+// Equals checks if the passed Structure contains the same data as the current instance
+func (dataStorePreparePostParam *DataStorePreparePostParam) Equals(structure nex.StructureInterface) bool {
+	other := structure.(*DataStorePreparePostParam)
+
+	if dataStorePreparePostParam.Size != other.Size {
+		return false
+	}
+
+	if dataStorePreparePostParam.Name != other.Name {
+		return false
+	}
+
+	if dataStorePreparePostParam.DataType != other.DataType {
+		return false
+	}
+
+	if !bytes.Equal(dataStorePreparePostParam.MetaBinary, other.MetaBinary) {
+		return false
+	}
+
+	if !dataStorePreparePostParam.Permission.Equals(other.Permission) {
+		return false
+	}
+
+	if !dataStorePreparePostParam.DelPermission.Equals(other.DelPermission) {
+		return false
+	}
+
+	if dataStorePreparePostParam.Flag != other.Flag {
+		return false
+	}
+
+	if dataStorePreparePostParam.Period != other.Period {
+		return false
+	}
+
+	if dataStorePreparePostParam.ReferDataId != other.ReferDataId {
+		return false
+	}
+
+	if len(dataStorePreparePostParam.Tags) != len(other.Tags) {
+		return false
+	}
+
+	for i := 0; i < len(dataStorePreparePostParam.Tags); i++ {
+		if dataStorePreparePostParam.Tags[i] != other.Tags[i] {
+			return false
+		}
+	}
+
+	if len(dataStorePreparePostParam.RatingInitParams) != len(other.RatingInitParams) {
+		return false
+	}
+
+	for i := 0; i < len(dataStorePreparePostParam.RatingInitParams); i++ {
+		if !dataStorePreparePostParam.RatingInitParams[i].Equals(other.RatingInitParams[i]) {
+			return false
+		}
+	}
+
+	if !dataStorePreparePostParam.PersistenceInitParam.Equals(other.PersistenceInitParam) {
+		return false
+	}
+
+	if len(dataStorePreparePostParam.ExtraData) != len(other.ExtraData) {
+		return false
+	}
+
+	for i := 0; i < len(dataStorePreparePostParam.ExtraData); i++ {
+		if dataStorePreparePostParam.ExtraData[i] != other.ExtraData[i] {
+			return false
+		}
+	}
+
+	return true
+}
+
+// NewDataStorePreparePostParam returns a new DataStorePreparePostParam
+func NewDataStorePreparePostParam() *DataStorePreparePostParam {
+	return &DataStorePreparePostParam{}
+}

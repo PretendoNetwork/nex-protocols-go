@@ -1,0 +1,80 @@
+package datastore_super_smash_bros_4_types
+
+import (
+	"fmt"
+
+	"github.com/PretendoNetwork/nex-go"
+)
+
+type DataStorePostFightingPowerScoreParam struct {
+	nex.Structure
+	Mode             uint8
+	Score            uint32
+	IsWorldHighScore bool
+}
+
+// ExtractFromStream extracts a DataStorePostFightingPowerScoreParam structure from a stream
+func (dataStorePostFightingPowerScoreParam *DataStorePostFightingPowerScoreParam) ExtractFromStream(stream *nex.StreamIn) error {
+	var err error
+
+	dataStorePostFightingPowerScoreParam.Mode, err = stream.ReadUInt8()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStorePostFightingPowerScoreParam.Mode. %s", err.Error())
+	}
+
+	dataStorePostFightingPowerScoreParam.Score, err = stream.ReadUInt32LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStorePostFightingPowerScoreParam.Score. %s", err.Error())
+	}
+
+	dataStorePostFightingPowerScoreParam.IsWorldHighScore, err = stream.ReadBool()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStorePostFightingPowerScoreParam.IsWorldHighScore. %s", err.Error())
+	}
+
+	return nil
+}
+
+// Bytes encodes the DataStorePostFightingPowerScoreParam and returns a byte array
+func (dataStorePostFightingPowerScoreParam *DataStorePostFightingPowerScoreParam) Bytes(stream *nex.StreamOut) []byte {
+	stream.WriteUInt8(dataStorePostFightingPowerScoreParam.Mode)
+	stream.WriteUInt32LE(dataStorePostFightingPowerScoreParam.Score)
+	stream.WriteBool(dataStorePostFightingPowerScoreParam.IsWorldHighScore)
+
+	return stream.Bytes()
+}
+
+// Copy returns a new copied instance of DataStorePostFightingPowerScoreParam
+func (dataStorePostFightingPowerScoreParam *DataStorePostFightingPowerScoreParam) Copy() nex.StructureInterface {
+	copied := NewDataStorePostFightingPowerScoreParam()
+
+	copied.Mode = dataStorePostFightingPowerScoreParam.Mode
+	copied.Score = dataStorePostFightingPowerScoreParam.Score
+	copied.IsWorldHighScore = dataStorePostFightingPowerScoreParam.IsWorldHighScore
+
+	return copied
+}
+
+// Equals checks if the passed Structure contains the same data as the current instance
+func (dataStorePostFightingPowerScoreParam *DataStorePostFightingPowerScoreParam) Equals(structure nex.StructureInterface) bool {
+	other := structure.(*DataStorePostFightingPowerScoreParam)
+
+	if dataStorePostFightingPowerScoreParam.Mode != other.Mode {
+		return false
+	}
+
+	if dataStorePostFightingPowerScoreParam.Score != other.Score {
+		return false
+	}
+
+	if dataStorePostFightingPowerScoreParam.IsWorldHighScore != other.IsWorldHighScore {
+		return false
+	}
+
+	return true
+}
+
+// NewDataStorePostFightingPowerScoreParam returns a new DataStorePostFightingPowerScoreParam
+func NewDataStorePostFightingPowerScoreParam() *DataStorePostFightingPowerScoreParam {
+	return &DataStorePostFightingPowerScoreParam{}
+}

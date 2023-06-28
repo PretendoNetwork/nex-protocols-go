@@ -4,11 +4,12 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	datastore_types "github.com/PretendoNetwork/nex-protocols-go/datastore/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
 // ChangeMeta sets the ChangeMeta handler function
-func (protocol *DataStoreProtocol) ChangeMeta(handler func(err error, client *nex.Client, callID uint32, dataStoreChangeMetaParam *DataStoreChangeMetaParam)) {
+func (protocol *DataStoreProtocol) ChangeMeta(handler func(err error, client *nex.Client, callID uint32, dataStoreChangeMetaParam *datastore_types.DataStoreChangeMetaParam)) {
 	protocol.ChangeMetaHandler = handler
 }
 
@@ -27,11 +28,11 @@ func (protocol *DataStoreProtocol) HandleChangeMeta(packet nex.PacketInterface) 
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	param, err := parametersStream.ReadStructure(NewDataStoreChangeMetaParam())
+	param, err := parametersStream.ReadStructure(datastore_types.NewDataStoreChangeMetaParam())
 	if err != nil {
 		go protocol.ChangeMetaHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
 		return
 	}
 
-	go protocol.ChangeMetaHandler(nil, client, callID, param.(*DataStoreChangeMetaParam))
+	go protocol.ChangeMetaHandler(nil, client, callID, param.(*datastore_types.DataStoreChangeMetaParam))
 }

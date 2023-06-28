@@ -4,11 +4,12 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	datastore_types "github.com/PretendoNetwork/nex-protocols-go/datastore/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
 // GetNewArrivedNotifications sets the GetNewArrivedNotifications handler function
-func (protocol *DataStoreProtocol) GetNewArrivedNotifications(handler func(err error, client *nex.Client, callID uint32, param *DataStoreGetNewArrivedNotificationsParam)) {
+func (protocol *DataStoreProtocol) GetNewArrivedNotifications(handler func(err error, client *nex.Client, callID uint32, param *datastore_types.DataStoreGetNewArrivedNotificationsParam)) {
 	protocol.GetNewArrivedNotificationsHandler = handler
 }
 
@@ -27,11 +28,11 @@ func (protocol *DataStoreProtocol) HandleGetNewArrivedNotifications(packet nex.P
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	param, err := parametersStream.ReadStructure(NewDataStoreGetNewArrivedNotificationsParam())
+	param, err := parametersStream.ReadStructure(datastore_types.NewDataStoreGetNewArrivedNotificationsParam())
 	if err != nil {
 		go protocol.GetNewArrivedNotificationsHandler(fmt.Errorf("Failed to read dataStoreGetNewArrivedNotificationsParam from parameters. %s", err.Error()), client, callID, nil)
 		return
 	}
 
-	go protocol.GetNewArrivedNotificationsHandler(nil, client, callID, param.(*DataStoreGetNewArrivedNotificationsParam))
+	go protocol.GetNewArrivedNotificationsHandler(nil, client, callID, param.(*datastore_types.DataStoreGetNewArrivedNotificationsParam))
 }

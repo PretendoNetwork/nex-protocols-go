@@ -4,11 +4,12 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	datastore_super_smash_bros_4_types "github.com/PretendoNetwork/nex-protocols-go/datastore/super-smash-bros-4/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
 // PrepareGetReplay sets the PrepareGetReplay handler function
-func (protocol *DataStoreSuperSmashBros4Protocol) PrepareGetReplay(handler func(err error, client *nex.Client, callID uint32, param *DataStorePrepareGetReplayParam)) {
+func (protocol *DataStoreSuperSmashBros4Protocol) PrepareGetReplay(handler func(err error, client *nex.Client, callID uint32, param *datastore_super_smash_bros_4_types.DataStorePrepareGetReplayParam)) {
 	protocol.PrepareGetReplayHandler = handler
 }
 
@@ -27,11 +28,11 @@ func (protocol *DataStoreSuperSmashBros4Protocol) HandlePrepareGetReplay(packet 
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	param, err := parametersStream.ReadStructure(NewDataStorePrepareGetReplayParam())
+	param, err := parametersStream.ReadStructure(datastore_super_smash_bros_4_types.NewDataStorePrepareGetReplayParam())
 	if err != nil {
 		go protocol.PrepareGetReplayHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
 		return
 	}
 
-	go protocol.PrepareGetReplayHandler(nil, client, callID, param.(*DataStorePrepareGetReplayParam))
+	go protocol.PrepareGetReplayHandler(nil, client, callID, param.(*datastore_super_smash_bros_4_types.DataStorePrepareGetReplayParam))
 }

@@ -4,12 +4,12 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
-	"github.com/PretendoNetwork/nex-protocols-go/datastore"
+	datastore_types "github.com/PretendoNetwork/nex-protocols-go/datastore/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
 // SuggestedCourseSearchObject sets the SuggestedCourseSearchObject handler function
-func (protocol *DataStoreSuperMarioMakerProtocol) SuggestedCourseSearchObject(handler func(err error, client *nex.Client, callID uint32, param *datastore.DataStoreSearchParam, extraData []string)) {
+func (protocol *DataStoreSuperMarioMakerProtocol) SuggestedCourseSearchObject(handler func(err error, client *nex.Client, callID uint32, param *datastore_types.DataStoreSearchParam, extraData []string)) {
 	protocol.SuggestedCourseSearchObjectHandler = handler
 }
 
@@ -28,7 +28,7 @@ func (protocol *DataStoreSuperMarioMakerProtocol) HandleSuggestedCourseSearchObj
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	param, err := parametersStream.ReadStructure(datastore.NewDataStoreSearchParam())
+	param, err := parametersStream.ReadStructure(datastore_types.NewDataStoreSearchParam())
 	if err != nil {
 		go protocol.SuggestedCourseSearchObjectHandler(err, client, callID, nil, []string{})
 		return
@@ -40,5 +40,5 @@ func (protocol *DataStoreSuperMarioMakerProtocol) HandleSuggestedCourseSearchObj
 		return
 	}
 
-	go protocol.SuggestedCourseSearchObjectHandler(nil, client, callID, param.(*datastore.DataStoreSearchParam), extraData)
+	go protocol.SuggestedCourseSearchObjectHandler(nil, client, callID, param.(*datastore_types.DataStoreSearchParam), extraData)
 }

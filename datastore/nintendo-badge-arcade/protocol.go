@@ -45,6 +45,7 @@ func (protocol *DataStoreNintendoBadgeArcadeProtocol) Setup() {
 	})
 }
 
+// HandlePacket sends the packet to the correct RMC method handler
 func (protocol *DataStoreNintendoBadgeArcadeProtocol) HandlePacket(packet nex.PacketInterface) {
 	request := packet.RMCRequest()
 

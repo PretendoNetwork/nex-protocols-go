@@ -7,6 +7,7 @@ import (
 	"github.com/PretendoNetwork/nex-go"
 )
 
+// DataStoreGetMetaByOwnerIDParam is a data structure used by the DataStore Nintendo Badge Arcade protocol
 type DataStoreGetMetaByOwnerIDParam struct {
 	nex.Structure
 	OwnerIDs     []uint32

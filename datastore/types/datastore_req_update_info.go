@@ -8,6 +8,7 @@ import (
 	"github.com/PretendoNetwork/nex-go"
 )
 
+// DataStoreReqUpdateInfo is a data structure used by the DataStore protocol
 type DataStoreReqUpdateInfo struct {
 	nex.Structure
 	Version        uint32

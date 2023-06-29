@@ -7,6 +7,7 @@ import (
 	"github.com/PretendoNetwork/nex-go"
 )
 
+// DataStoreSpecificMetaInfoV1 is a data structure used by the DataStore protocol
 type DataStoreSpecificMetaInfoV1 struct {
 	nex.Structure
 	DataID   uint32

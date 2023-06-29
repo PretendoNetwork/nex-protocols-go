@@ -8,6 +8,7 @@ import (
 	"github.com/PretendoNetwork/nex-go"
 )
 
+// DataStoreReqGetInfoV1 is a data structure used by the DataStore protocol
 type DataStoreReqGetInfoV1 struct {
 	nex.Structure
 	URL            string

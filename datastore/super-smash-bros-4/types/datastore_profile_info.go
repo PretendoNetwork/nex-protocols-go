@@ -8,6 +8,7 @@ import (
 	"github.com/PretendoNetwork/nex-go"
 )
 
+// DataStoreProfileInfo is a data structure used by the DataStore Super Smash Bros. 4 protocol
 type DataStoreProfileInfo struct {
 	nex.Structure
 	PID     uint32

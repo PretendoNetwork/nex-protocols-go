@@ -52,7 +52,7 @@ func (protocol *AuthenticationProtocol) Setup() {
 	})
 }
 
-// HandlePacket handles in incoming PRUDP packet
+// HandlePacket sends the packet to the correct RMC method handler
 func (protocol *AuthenticationProtocol) HandlePacket(packet nex.PacketInterface) {
 	request := packet.RMCRequest()
 

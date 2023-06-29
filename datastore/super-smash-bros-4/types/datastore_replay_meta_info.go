@@ -7,6 +7,7 @@ import (
 	"github.com/PretendoNetwork/nex-go"
 )
 
+// DataStoreReplayMetaInfo is a data structure used by the DataStore Super Smash Bros. 4 protocol
 type DataStoreReplayMetaInfo struct {
 	nex.Structure
 	ReplayID   uint64

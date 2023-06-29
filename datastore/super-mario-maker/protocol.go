@@ -130,6 +130,7 @@ func (protocol *DataStoreSuperMarioMakerProtocol) Setup() {
 	})
 }
 
+// HandlePacket sends the packet to the correct RMC method handler
 func (protocol *DataStoreSuperMarioMakerProtocol) HandlePacket(packet nex.PacketInterface) {
 	request := packet.RMCRequest()
 

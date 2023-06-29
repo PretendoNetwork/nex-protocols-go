@@ -60,6 +60,7 @@ func (protocol *SecureConnectionProtocol) Setup() {
 	})
 }
 
+// HandlePacket sends the packet to the correct RMC method handler
 func (protocol *SecureConnectionProtocol) HandlePacket(packet nex.PacketInterface) {
 	request := packet.RMCRequest()
 

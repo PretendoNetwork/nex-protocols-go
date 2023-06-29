@@ -7,6 +7,7 @@ import (
 	"github.com/PretendoNetwork/nex-go"
 )
 
+// ShopPostPlayLogParam is a data structure used by the Nintendo Badge Arcade Shop protocol
 type ShopPostPlayLogParam struct {
 	nex.Structure
 	Unknown1  []uint32

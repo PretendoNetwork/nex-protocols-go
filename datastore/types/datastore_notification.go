@@ -7,6 +7,7 @@ import (
 	"github.com/PretendoNetwork/nex-go"
 )
 
+// DataStoreNotification is a data structure used by the DataStore protocol
 type DataStoreNotification struct {
 	nex.Structure
 	NotificationID uint64

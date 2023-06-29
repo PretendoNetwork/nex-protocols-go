@@ -89,6 +89,7 @@ func (protocol *Friends3DSProtocol) Setup() {
 	})
 }
 
+// HandlePacket sends the packet to the correct RMC method handler
 func (protocol *Friends3DSProtocol) HandlePacket(packet nex.PacketInterface) {
 	request := packet.RMCRequest()
 

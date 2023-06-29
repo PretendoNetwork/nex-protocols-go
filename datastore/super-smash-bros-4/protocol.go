@@ -135,6 +135,7 @@ func (protocol *DataStoreSuperSmashBros4Protocol) Setup() {
 	})
 }
 
+// HandlePacket sends the packet to the correct RMC method handler
 func (protocol *DataStoreSuperSmashBros4Protocol) HandlePacket(packet nex.PacketInterface) {
 	request := packet.RMCRequest()
 

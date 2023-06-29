@@ -8,6 +8,7 @@ import (
 	"github.com/PretendoNetwork/nex-go"
 )
 
+// DataStorePostProfileParam is a data structure used by the DataStore Super Smash Bros. 4 protocol
 type DataStorePostProfileParam struct {
 	nex.Structure
 	Profile []byte

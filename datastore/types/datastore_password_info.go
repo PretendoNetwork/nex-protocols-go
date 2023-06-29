@@ -7,6 +7,7 @@ import (
 	"github.com/PretendoNetwork/nex-go"
 )
 
+// DataStorePasswordInfo is a data structure used by the DataStore protocol
 type DataStorePasswordInfo struct {
 	nex.Structure
 	DataID         uint64

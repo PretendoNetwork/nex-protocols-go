@@ -8,6 +8,7 @@ import (
 	"github.com/PretendoNetwork/nex-go"
 )
 
+// DataStoreReqGetAdditionalMeta is a data structure used by the DataStore Super Smash Bros. 4 protocol
 type DataStoreReqGetAdditionalMeta struct {
 	nex.Structure
 	OwnerID    uint32

@@ -7,6 +7,7 @@ import (
 	"github.com/PretendoNetwork/nex-go"
 )
 
+// DataStoreDeleteParam is a data structure used by the DataStore protocol
 type DataStoreDeleteParam struct {
 	nex.Structure
 	DataID         uint64

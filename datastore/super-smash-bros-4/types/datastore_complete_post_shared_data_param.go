@@ -8,6 +8,7 @@ import (
 	datastore_types "github.com/PretendoNetwork/nex-protocols-go/datastore/types"
 )
 
+// DataStoreCompletePostSharedDataParam is a data structure used by the DataStore Super Smash Bros. 4 protocol
 type DataStoreCompletePostSharedDataParam struct {
 	nex.Structure
 	DataID        uint64

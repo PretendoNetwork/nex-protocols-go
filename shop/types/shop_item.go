@@ -8,6 +8,7 @@ import (
 	"github.com/PretendoNetwork/nex-go"
 )
 
+// ShopItem is a data structure used by the Shop protocol
 type ShopItem struct {
 	nex.Structure
 	ItemID      uint32

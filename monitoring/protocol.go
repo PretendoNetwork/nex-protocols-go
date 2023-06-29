@@ -35,6 +35,7 @@ func (protocol *MonitoringProtocol) Setup() {
 	})
 }
 
+// HandlePacket sends the packet to the correct RMC method handler
 func (protocol *MonitoringProtocol) HandlePacket(packet nex.PacketInterface) {
 	request := packet.RMCRequest()
 

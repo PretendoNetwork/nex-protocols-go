@@ -7,6 +7,7 @@ import (
 	"github.com/PretendoNetwork/nex-go"
 )
 
+// DataStoreGetNotificationURLParam is a data structure used by the DataStore protocol
 type DataStoreGetNotificationURLParam struct {
 	nex.Structure
 	PreviousURL string

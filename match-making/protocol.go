@@ -52,6 +52,7 @@ func (protocol *MatchMakingProtocol) Setup() {
 	})
 }
 
+// HandlePacket sends the packet to the correct RMC method handler
 func (protocol *MatchMakingProtocol) HandlePacket(packet nex.PacketInterface) {
 	request := packet.RMCRequest()
 

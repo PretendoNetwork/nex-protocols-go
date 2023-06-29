@@ -8,6 +8,7 @@ import (
 	"github.com/PretendoNetwork/nex-go"
 )
 
+// DataStoreReqPostInfoV1 is a data structure used by the DataStore protocol
 type DataStoreReqPostInfoV1 struct {
 	nex.Structure
 	DataID         uint32

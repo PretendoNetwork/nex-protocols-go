@@ -7,6 +7,7 @@ import (
 	"github.com/PretendoNetwork/nex-go"
 )
 
+// DataStoreReplayPlayer is a data structure used by the DataStore Super Smash Bros. 4 protocol
 type DataStoreReplayPlayer struct {
 	nex.Structure
 	Fighter     uint8

@@ -7,6 +7,7 @@ import (
 	"github.com/PretendoNetwork/nex-go"
 )
 
+// DataStoreGetNewArrivedNotificationsParam is a data structure used by the DataStore protocol
 type DataStoreGetNewArrivedNotificationsParam struct {
 	nex.Structure
 	LastNotificationID uint64

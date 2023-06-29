@@ -8,6 +8,7 @@ import (
 	"github.com/PretendoNetwork/nex-go"
 )
 
+// BinaryMessage is a data structure used by the Message Delivery protocol
 type BinaryMessage struct {
 	nex.Structure
 	*UserMessage

@@ -7,6 +7,7 @@ import (
 	"github.com/PretendoNetwork/nex-go"
 )
 
+// DataStorePrepareGetParamV1 is a data structure used by the DataStore protocol
 type DataStorePrepareGetParamV1 struct {
 	nex.Structure
 	DataID uint32

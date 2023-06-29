@@ -8,6 +8,7 @@ import (
 	"github.com/PretendoNetwork/nex-go"
 )
 
+// Mii is a data structure used by the Friends 3DS protocol to hold information about a Mii
 type Mii struct {
 	nex.Structure
 	Name     string

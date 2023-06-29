@@ -8,6 +8,7 @@ import (
 	"github.com/PretendoNetwork/nex-go"
 )
 
+// ShopItemRights is a data structure used by the Shop protocol
 type ShopItemRights struct {
 	nex.Structure
 	ReferenceID []byte

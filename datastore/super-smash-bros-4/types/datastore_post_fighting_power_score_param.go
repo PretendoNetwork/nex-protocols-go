@@ -7,6 +7,7 @@ import (
 	"github.com/PretendoNetwork/nex-go"
 )
 
+// DataStorePostFightingPowerScoreParam is a data structure used by the DataStore Super Smash Bros. 4 protocol
 type DataStorePostFightingPowerScoreParam struct {
 	nex.Structure
 	Mode             uint8

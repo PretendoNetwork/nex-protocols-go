@@ -7,6 +7,7 @@ import (
 	"github.com/PretendoNetwork/nex-go"
 )
 
+// DataStoreRatingInfoWithSlot is a data structure used by the DataStore protocol
 type DataStoreRatingInfoWithSlot struct {
 	nex.Structure
 	Slot   int8

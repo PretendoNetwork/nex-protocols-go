@@ -8,6 +8,7 @@ import (
 	"github.com/PretendoNetwork/nex-go"
 )
 
+// DataStoreChangeMetaParamV1 is a data structure used by the DataStore protocol
 type DataStoreChangeMetaParamV1 struct {
 	nex.Structure
 	DataID         uint64

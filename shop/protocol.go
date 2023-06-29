@@ -31,6 +31,7 @@ func (protocol *ShopProtocol) Setup() {
 	})
 }
 
+// HandlePacket sends the packet to the correct RMC method handler
 func (protocol *ShopProtocol) HandlePacket(packet nex.PacketInterface) {
 	request := packet.RMCRequest()
 

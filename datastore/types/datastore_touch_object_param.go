@@ -7,6 +7,7 @@ import (
 	"github.com/PretendoNetwork/nex-go"
 )
 
+// DataStoreTouchObjectParam is a data structure used by the DataStore protocol
 type DataStoreTouchObjectParam struct {
 	nex.Structure
 	DataID         uint64

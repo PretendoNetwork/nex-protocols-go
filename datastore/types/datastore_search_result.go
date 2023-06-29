@@ -7,6 +7,7 @@ import (
 	"github.com/PretendoNetwork/nex-go"
 )
 
+// DataStoreSearchResult is a data structure used by the DataStore protocol
 type DataStoreSearchResult struct {
 	nex.Structure
 	TotalCount     uint32

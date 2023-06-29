@@ -7,6 +7,7 @@ import (
 	"github.com/PretendoNetwork/nex-go"
 )
 
+// MyProfile is a data structure used by the Friends 3DS protocol to hold user profile information
 type MyProfile struct {
 	nex.Structure
 	Region   uint8

@@ -8,6 +8,7 @@ import (
 	"github.com/PretendoNetwork/nex-go"
 )
 
+// DataStoreSharedDataInfo is a data structure used by the DataStore Super Smash Bros. 4 protocol
 type DataStoreSharedDataInfo struct {
 	nex.Structure
 	DataID      uint64

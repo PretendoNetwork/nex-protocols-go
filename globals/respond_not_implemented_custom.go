@@ -2,6 +2,7 @@ package globals
 
 import "github.com/PretendoNetwork/nex-go"
 
+// RespondNotImplementedCustom sends the client the Core::NotImplemented error for custom protocols
 func RespondNotImplementedCustom(packet nex.PacketInterface, customID uint16) {
 	client := packet.Sender()
 	request := packet.RMCRequest()

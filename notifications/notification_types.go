@@ -15,6 +15,7 @@ type notificationTypes struct {
 	SwitchGathering              uint32
 }
 
+// NotificationTypes is an enum of all the types a notification can be in the Notifications protocol
 var NotificationTypes = notificationTypes{
 	NewParticipant:               3001,
 	ParticipationCancelled:       3002,

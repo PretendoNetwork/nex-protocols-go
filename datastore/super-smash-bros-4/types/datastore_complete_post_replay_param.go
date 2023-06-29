@@ -8,6 +8,7 @@ import (
 	datastore_types "github.com/PretendoNetwork/nex-protocols-go/datastore/types"
 )
 
+// DataStoreCompletePostReplayParam is a data structure used by the DataStore Super Mario Maker protocol
 type DataStoreCompletePostReplayParam struct {
 	nex.Structure
 	ReplayID      uint64

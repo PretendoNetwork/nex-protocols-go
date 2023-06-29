@@ -7,6 +7,7 @@ import (
 	"github.com/PretendoNetwork/nex-go"
 )
 
+// DataStoreUploadCourseRecordParam is a data structure used by the DataStore Super Mario Maker protocol
 type DataStoreUploadCourseRecordParam struct {
 	nex.Structure
 	DataID uint64

@@ -26,12 +26,13 @@ type notificationTypes struct {
 	Unknown9PersistentNotificationsRelated uint32
 }
 
+// NotificationTypes is an enum of all the types a notification can be in the NintendoNotifications protocol
 var NotificationTypes = notificationTypes{
-	FriendPresenceUpdated3DS:                1,
-	FriendFavoriteGameUpdated3DS:            2,
-	FriendCommentUpdated3DS:                 3,
-	FriendMiiChanged3DS:                     5,
-	FriendshipCompleted3DS:                  7,
+	FriendPresenceUpdated3DS:               1,
+	FriendFavoriteGameUpdated3DS:           2,
+	FriendCommentUpdated3DS:                3,
+	FriendMiiChanged3DS:                    5,
+	FriendshipCompleted3DS:                 7,
 	FriendOffline:                          10,
 	FriendMiiChanged:                       21,
 	Unknown1MiiRelated:                     22,

@@ -8,6 +8,7 @@ import (
 	"github.com/PretendoNetwork/nex-go"
 )
 
+// DataStoreReqGetNotificationURLInfo is a data structure used by the DataStore protocol
 type DataStoreReqGetNotificationURLInfo struct {
 	nex.Structure
 	URL        string

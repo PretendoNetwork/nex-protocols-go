@@ -7,6 +7,7 @@ import (
 	"github.com/PretendoNetwork/nex-go"
 )
 
+// DataStorePreparePostReplayParam is a data structure used by the DataStore Super Smash Bros. 4 protocol
 type DataStorePreparePostReplayParam struct {
 	nex.Structure
 	Size          uint32

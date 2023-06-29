@@ -7,6 +7,7 @@ import (
 	"github.com/PretendoNetwork/nex-go"
 )
 
+// DataStoreRatingLog is a data structure used by the DataStore protocol
 type DataStoreRatingLog struct {
 	nex.Structure
 	IsRated            bool

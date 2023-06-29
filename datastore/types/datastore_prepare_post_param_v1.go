@@ -8,6 +8,7 @@ import (
 	"github.com/PretendoNetwork/nex-go"
 )
 
+// DataStorePreparePostParamV1 is a data structure used by the DataStore protocol
 type DataStorePreparePostParamV1 struct {
 	nex.Structure
 	Size             uint32

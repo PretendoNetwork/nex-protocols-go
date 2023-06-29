@@ -7,6 +7,7 @@ import (
 	"github.com/PretendoNetwork/nex-go"
 )
 
+// FriendMii is a data structure used by the Friends 3DS protocol to hold information about a friends Mii
 type FriendMii struct {
 	nex.Structure
 	PID        uint32

@@ -7,6 +7,7 @@ import (
 	"github.com/PretendoNetwork/nex-go"
 )
 
+// DataStoreGetSpecificMetaParam is a data structure used by the DataStore protocol
 type DataStoreGetSpecificMetaParam struct {
 	nex.Structure
 	DataIDs []uint64

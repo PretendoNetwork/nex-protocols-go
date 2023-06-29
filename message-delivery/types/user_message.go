@@ -7,6 +7,7 @@ import (
 	"github.com/PretendoNetwork/nex-go"
 )
 
+// UserMessage is a data structure used by the Message Delivery protocol
 type UserMessage struct {
 	nex.Structure
 	*nex.Data

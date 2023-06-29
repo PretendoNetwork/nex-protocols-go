@@ -69,7 +69,11 @@ func (dataStoreGetCustomRankingByDataIDParam *DataStoreGetCustomRankingByDataIDP
 		}
 	}
 
-	return dataStoreGetCustomRankingByDataIDParam.ResultOption == other.ResultOption
+	if dataStoreGetCustomRankingByDataIDParam.ResultOption != other.ResultOption {
+		return false
+	}
+
+	return true
 }
 
 // String returns a string representation of the struct

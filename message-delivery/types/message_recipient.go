@@ -7,6 +7,7 @@ import (
 	"github.com/PretendoNetwork/nex-go"
 )
 
+// MessageRecipient is a data structure used by the Message Delivery protocol
 type MessageRecipient struct {
 	nex.Structure
 	m_uiRecipientType uint32

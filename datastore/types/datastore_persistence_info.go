@@ -7,6 +7,7 @@ import (
 	"github.com/PretendoNetwork/nex-go"
 )
 
+// DataStorePersistenceInfo is a data structure used by the DataStore protocol
 type DataStorePersistenceInfo struct {
 	nex.Structure
 	OwnerID           uint32

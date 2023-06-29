@@ -7,6 +7,7 @@ import (
 	"github.com/PretendoNetwork/nex-go"
 )
 
+// DataStoreRatingInfo is a data structure used by the DataStore protocol
 type DataStoreRatingInfo struct {
 	nex.Structure
 	TotalValue   int64

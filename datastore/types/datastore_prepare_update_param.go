@@ -7,6 +7,7 @@ import (
 	"github.com/PretendoNetwork/nex-go"
 )
 
+// DataStorePrepareUpdateParam is a data structure used by the DataStore protocol
 type DataStorePrepareUpdateParam struct {
 	nex.Structure
 	DataID         uint64

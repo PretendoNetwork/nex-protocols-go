@@ -13,7 +13,7 @@ func (protocol *DataStoreProtocol) GetMetasMultipleParam(handler func(err error,
 	protocol.GetMetasMultipleParamHandler = handler
 }
 
-func (protocol *DataStoreProtocol) HandleGetMetasMultipleParam(packet nex.PacketInterface) {
+func (protocol *DataStoreProtocol) handleGetMetasMultipleParam(packet nex.PacketInterface) {
 	if protocol.GetMetasMultipleParamHandler == nil {
 		globals.Logger.Warning("DataStore::GetMetasMultipleParam not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

@@ -12,7 +12,7 @@ func (protocol *MatchmakeExtensionProtocol) CloseParticipation(handler func(err 
 	protocol.CloseParticipationHandler = handler
 }
 
-func (protocol *MatchmakeExtensionProtocol) HandleCloseParticipation(packet nex.PacketInterface) {
+func (protocol *MatchmakeExtensionProtocol) handleCloseParticipation(packet nex.PacketInterface) {
 	if protocol.CloseParticipationHandler == nil {
 		globals.Logger.Warning("MatchmakeExtension::CloseParticipation not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

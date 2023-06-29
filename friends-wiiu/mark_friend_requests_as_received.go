@@ -12,7 +12,7 @@ func (protocol *FriendsWiiUProtocol) MarkFriendRequestsAsReceived(handler func(e
 	protocol.MarkFriendRequestsAsReceivedHandler = handler
 }
 
-func (protocol *FriendsWiiUProtocol) HandleMarkFriendRequestsAsReceived(packet nex.PacketInterface) {
+func (protocol *FriendsWiiUProtocol) handleMarkFriendRequestsAsReceived(packet nex.PacketInterface) {
 	if protocol.MarkFriendRequestsAsReceivedHandler == nil {
 		globals.Logger.Warning("FriendsWiiU::MarkFriendRequestsAsReceived not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

@@ -12,7 +12,7 @@ func (protocol *MatchMakingExtProtocol) EndParticipation(handler func(err error,
 	protocol.EndParticipationHandler = handler
 }
 
-func (protocol *MatchMakingExtProtocol) HandleEndParticipation(packet nex.PacketInterface) {
+func (protocol *MatchMakingExtProtocol) handleEndParticipation(packet nex.PacketInterface) {
 	if protocol.EndParticipationHandler == nil {
 		globals.Logger.Warning("MatchMakingExt::EndParticipation not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

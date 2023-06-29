@@ -12,7 +12,7 @@ func (protocol *UtilityProtocol) GetIntegerSettings(handler func(err error, clie
 	protocol.GetIntegerSettingsHandler = handler
 }
 
-func (protocol *UtilityProtocol) HandleGetIntegerSettings(packet nex.PacketInterface) {
+func (protocol *UtilityProtocol) handleGetIntegerSettings(packet nex.PacketInterface) {
 	if protocol.GetIntegerSettingsHandler == nil {
 		globals.Logger.Warning("Utility::GetIntegerSettings not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

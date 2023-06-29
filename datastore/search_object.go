@@ -13,7 +13,7 @@ func (protocol *DataStoreProtocol) SearchObject(handler func(err error, client *
 	protocol.SearchObjectHandler = handler
 }
 
-func (protocol *DataStoreProtocol) HandleSearchObject(packet nex.PacketInterface) {
+func (protocol *DataStoreProtocol) handleSearchObject(packet nex.PacketInterface) {
 	if protocol.SearchObjectHandler == nil {
 		globals.Logger.Warning("DataStore::SearchObject not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

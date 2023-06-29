@@ -12,7 +12,7 @@ func (protocol *Friends3DSProtocol) AddFriendByPrincipalID(handler func(err erro
 	protocol.AddFriendByPrincipalIDHandler = handler
 }
 
-func (protocol *Friends3DSProtocol) HandleAddFriendByPrincipalID(packet nex.PacketInterface) {
+func (protocol *Friends3DSProtocol) handleAddFriendByPrincipalID(packet nex.PacketInterface) {
 	if protocol.AddFriendByPrincipalIDHandler == nil {
 		globals.Logger.Warning("Friends3DS::AddFriendByPrincipalID not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

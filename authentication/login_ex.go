@@ -12,7 +12,7 @@ func (protocol *AuthenticationProtocol) LoginEx(handler func(err error, client *
 	protocol.LoginExHandler = handler
 }
 
-func (protocol *AuthenticationProtocol) HandleLoginEx(packet nex.PacketInterface) {
+func (protocol *AuthenticationProtocol) handleLoginEx(packet nex.PacketInterface) {
 	if protocol.LoginExHandler == nil {
 		globals.Logger.Warning("Authentication::LoginEx not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

@@ -13,7 +13,7 @@ func (protocol *FriendsWiiUProtocol) UpdateAndGetAllInformation(handler func(err
 	protocol.UpdateAndGetAllInformationHandler = handler
 }
 
-func (protocol *FriendsWiiUProtocol) HandleUpdateAndGetAllInformation(packet nex.PacketInterface) {
+func (protocol *FriendsWiiUProtocol) handleUpdateAndGetAllInformation(packet nex.PacketInterface) {
 	if protocol.UpdateAndGetAllInformationHandler == nil {
 		globals.Logger.Warning("FriendsWiiU::UpdateAndGetAllInformation not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

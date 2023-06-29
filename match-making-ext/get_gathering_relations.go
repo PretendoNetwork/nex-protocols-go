@@ -12,7 +12,7 @@ func (protocol *MatchMakingExtProtocol) GetGatheringRelations(handler func(err e
 	protocol.GetGatheringRelationsHandler = handler
 }
 
-func (protocol *MatchMakingExtProtocol) HandleGetGatheringRelations(packet nex.PacketInterface) {
+func (protocol *MatchMakingExtProtocol) handleGetGatheringRelations(packet nex.PacketInterface) {
 	if protocol.GetGatheringRelationsHandler == nil {
 		globals.Logger.Warning("MatchMakingExt::GetGatheringRelations not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

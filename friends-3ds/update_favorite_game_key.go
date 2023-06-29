@@ -13,7 +13,7 @@ func (protocol *Friends3DSProtocol) UpdateFavoriteGameKey(handler func(err error
 	protocol.UpdateFavoriteGameKeyHandler = handler
 }
 
-func (protocol *Friends3DSProtocol) HandleUpdateFavoriteGameKey(packet nex.PacketInterface) {
+func (protocol *Friends3DSProtocol) handleUpdateFavoriteGameKey(packet nex.PacketInterface) {
 	if protocol.UpdateFavoriteGameKeyHandler == nil {
 		globals.Logger.Warning("Friends3DS::UpdateFavoriteGameKey not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

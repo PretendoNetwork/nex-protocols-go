@@ -12,7 +12,7 @@ func (protocol *NATTraversalProtocol) ReportNATTraversalResult(handler func(err 
 	protocol.ReportNATTraversalResultHandler = handler
 }
 
-func (protocol *NATTraversalProtocol) HandleReportNATTraversalResult(packet nex.PacketInterface) {
+func (protocol *NATTraversalProtocol) handleReportNATTraversalResult(packet nex.PacketInterface) {
 	if protocol.ReportNATTraversalResultHandler == nil {
 		globals.Logger.Warning("NATTraversal::ReportNATTraversalResult not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

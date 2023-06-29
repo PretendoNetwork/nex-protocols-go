@@ -13,7 +13,7 @@ func (protocol *DataStoreSuperMarioMakerProtocol) UploadCourseRecord(handler fun
 	protocol.UploadCourseRecordHandler = handler
 }
 
-func (protocol *DataStoreSuperMarioMakerProtocol) HandleUploadCourseRecord(packet nex.PacketInterface) {
+func (protocol *DataStoreSuperMarioMakerProtocol) handleUploadCourseRecord(packet nex.PacketInterface) {
 	if protocol.UploadCourseRecordHandler == nil {
 		globals.Logger.Warning("DataStoreSMM::UploadCourseRecord not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

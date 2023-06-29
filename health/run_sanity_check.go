@@ -10,7 +10,7 @@ func (protocol *HealthProtocol) RunSanityCheck(handler func(err error, client *n
 	protocol.RunSanityCheckHandler = handler
 }
 
-func (protocol *HealthProtocol) HandleRunSanityCheck(packet nex.PacketInterface) {
+func (protocol *HealthProtocol) handleRunSanityCheck(packet nex.PacketInterface) {
 	if protocol.RunSanityCheckHandler == nil {
 		globals.Logger.Warning("Health::RunSanityCheck not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

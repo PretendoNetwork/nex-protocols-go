@@ -12,7 +12,7 @@ func (protocol *AuthenticationProtocol) GetPID(handler func(err error, client *n
 	protocol.GetPIDHandler = handler
 }
 
-func (protocol *AuthenticationProtocol) HandleGetPID(packet nex.PacketInterface) {
+func (protocol *AuthenticationProtocol) handleGetPID(packet nex.PacketInterface) {
 	if protocol.GetPIDHandler == nil {
 		globals.Logger.Warning("Authentication::GetPID not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

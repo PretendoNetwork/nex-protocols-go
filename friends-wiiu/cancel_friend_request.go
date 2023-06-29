@@ -12,7 +12,7 @@ func (protocol *FriendsWiiUProtocol) CancelFriendRequest(handler func(err error,
 	protocol.CancelFriendRequestHandler = handler
 }
 
-func (protocol *FriendsWiiUProtocol) HandleCancelFriendRequest(packet nex.PacketInterface) {
+func (protocol *FriendsWiiUProtocol) handleCancelFriendRequest(packet nex.PacketInterface) {
 	if protocol.CancelFriendRequestHandler == nil {
 		globals.Logger.Warning("FriendsWiiU::CancelFriendRequest not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

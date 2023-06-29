@@ -12,7 +12,7 @@ func (protocol *MatchmakeExtensionProtocol) FindOfficialCommunity(handler func(e
 	protocol.FindOfficialCommunityHandler = handler
 }
 
-func (protocol *MatchmakeExtensionProtocol) HandleFindOfficialCommunity(packet nex.PacketInterface) {
+func (protocol *MatchmakeExtensionProtocol) handleFindOfficialCommunity(packet nex.PacketInterface) {
 	if protocol.FindOfficialCommunityHandler == nil {
 		globals.Logger.Warning("MatchmakeExtension::FindOfficialCommunity not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

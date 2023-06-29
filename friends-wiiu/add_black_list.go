@@ -13,7 +13,7 @@ func (protocol *FriendsWiiUProtocol) AddBlackList(handler func(err error, client
 	protocol.AddBlackListHandler = handler
 }
 
-func (protocol *FriendsWiiUProtocol) HandleAddBlackList(packet nex.PacketInterface) {
+func (protocol *FriendsWiiUProtocol) handleAddBlackList(packet nex.PacketInterface) {
 	if protocol.AddBlackListHandler == nil {
 		globals.Logger.Warning("FriendsWiiU::AddBlackList not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

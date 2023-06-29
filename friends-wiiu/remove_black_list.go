@@ -12,7 +12,7 @@ func (protocol *FriendsWiiUProtocol) RemoveBlackList(handler func(err error, cli
 	protocol.RemoveBlackListHandler = handler
 }
 
-func (protocol *FriendsWiiUProtocol) HandleRemoveBlackList(packet nex.PacketInterface) {
+func (protocol *FriendsWiiUProtocol) handleRemoveBlackList(packet nex.PacketInterface) {
 	if protocol.RemoveBlackListHandler == nil {
 		globals.Logger.Warning("FriendsWiiU::RemoveBlackList not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

@@ -13,7 +13,7 @@ func (protocol *DataStoreSuperSmashBros4Protocol) CompletePostSharedData(handler
 	protocol.CompletePostSharedDataHandler = handler
 }
 
-func (protocol *DataStoreSuperSmashBros4Protocol) HandleCompletePostSharedData(packet nex.PacketInterface) {
+func (protocol *DataStoreSuperSmashBros4Protocol) handleCompletePostSharedData(packet nex.PacketInterface) {
 	if protocol.CompletePostSharedDataHandler == nil {
 		globals.Logger.Warning("DataStoreSmash4::CompletePostSharedData not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

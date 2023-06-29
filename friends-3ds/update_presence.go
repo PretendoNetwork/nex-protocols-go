@@ -13,7 +13,7 @@ func (protocol *Friends3DSProtocol) UpdatePresence(handler func(err error, clien
 	protocol.UpdatePresenceHandler = handler
 }
 
-func (protocol *Friends3DSProtocol) HandleUpdatePresence(packet nex.PacketInterface) {
+func (protocol *Friends3DSProtocol) handleUpdatePresence(packet nex.PacketInterface) {
 	if protocol.UpdatePresenceHandler == nil {
 		globals.Logger.Warning("Friends3DS::UpdatePresence not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

@@ -10,7 +10,7 @@ func (protocol *ScreeningProtocol) ReportDataStoreContent(handler func(err error
 	protocol.ReportDataStoreContentHandler = handler
 }
 
-func (protocol *ScreeningProtocol) HandleReportDataStoreContent(packet nex.PacketInterface) {
+func (protocol *ScreeningProtocol) handleReportDataStoreContent(packet nex.PacketInterface) {
 	globals.Logger.Warning("Screening::ReportDataStoreContent STUBBED")
 
 	if protocol.ReportDataStoreContentHandler == nil {

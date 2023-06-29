@@ -12,7 +12,7 @@ func (protocol *UtilityProtocol) GetStringSettings(handler func(err error, clien
 	protocol.GetStringSettingsHandler = handler
 }
 
-func (protocol *UtilityProtocol) HandleGetStringSettings(packet nex.PacketInterface) {
+func (protocol *UtilityProtocol) handleGetStringSettings(packet nex.PacketInterface) {
 	if protocol.GetStringSettingsHandler == nil {
 		globals.Logger.Warning("Utility::GetStringSettings not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

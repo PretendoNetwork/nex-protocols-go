@@ -12,7 +12,7 @@ func (protocol *SecureConnectionProtocol) ReplaceURL(handler func(err error, cli
 	protocol.ReplaceURLHandler = handler
 }
 
-func (protocol *SecureConnectionProtocol) HandleReplaceURL(packet nex.PacketInterface) {
+func (protocol *SecureConnectionProtocol) handleReplaceURL(packet nex.PacketInterface) {
 	if protocol.ReplaceURLHandler == nil {
 		globals.Logger.Warning("SecureConnection::ReplaceURL not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

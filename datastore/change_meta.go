@@ -13,7 +13,7 @@ func (protocol *DataStoreProtocol) ChangeMeta(handler func(err error, client *ne
 	protocol.ChangeMetaHandler = handler
 }
 
-func (protocol *DataStoreProtocol) HandleChangeMeta(packet nex.PacketInterface) {
+func (protocol *DataStoreProtocol) handleChangeMeta(packet nex.PacketInterface) {
 	if protocol.ChangeMetaHandler == nil {
 		globals.Logger.Warning("DataStore::ChangeMeta not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

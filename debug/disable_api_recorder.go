@@ -10,7 +10,7 @@ func (protocol *DebugProtocol) DisableApiRecorder(handler func(err error, client
 	protocol.DisableApiRecorderHandler = handler
 }
 
-func (protocol *DebugProtocol) HandleDisableApiRecorder(packet nex.PacketInterface) {
+func (protocol *DebugProtocol) handleDisableApiRecorder(packet nex.PacketInterface) {
 	if protocol.DisableApiRecorderHandler == nil {
 		globals.Logger.Warning("Debug::DisableApiRecorder not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

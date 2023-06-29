@@ -13,7 +13,7 @@ func (protocol *DataStoreProtocol) RateObject(handler func(err error, client *ne
 	protocol.RateObjectHandler = handler
 }
 
-func (protocol *DataStoreProtocol) HandleRateObject(packet nex.PacketInterface) {
+func (protocol *DataStoreProtocol) handleRateObject(packet nex.PacketInterface) {
 	if protocol.RateObjectHandler == nil {
 		globals.Logger.Warning("DataStore::RateObject not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

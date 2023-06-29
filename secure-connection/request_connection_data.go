@@ -12,7 +12,7 @@ func (protocol *SecureConnectionProtocol) RequestConnectionData(handler func(err
 	protocol.RequestConnectionDataHandler = handler
 }
 
-func (protocol *SecureConnectionProtocol) HandleRequestConnectionData(packet nex.PacketInterface) {
+func (protocol *SecureConnectionProtocol) handleRequestConnectionData(packet nex.PacketInterface) {
 	if protocol.RequestConnectionDataHandler == nil {
 		globals.Logger.Warning("SecureConnection::RequestConnectionData not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

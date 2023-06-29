@@ -13,7 +13,7 @@ func (protocol *FriendsWiiUProtocol) DeletePersistentNotification(handler func(e
 	protocol.DeletePersistentNotificationHandler = handler
 }
 
-func (protocol *FriendsWiiUProtocol) HandleDeletePersistentNotification(packet nex.PacketInterface) {
+func (protocol *FriendsWiiUProtocol) handleDeletePersistentNotification(packet nex.PacketInterface) {
 	if protocol.DeletePersistentNotificationHandler == nil {
 		globals.Logger.Warning("FriendsWiiU::DeletePersistentNotification not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

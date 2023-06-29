@@ -12,7 +12,7 @@ func (protocol *AuthenticationProtocol) RequestTicket(handler func(err error, cl
 	protocol.RequestTicketHandler = handler
 }
 
-func (protocol *AuthenticationProtocol) HandleRequestTicket(packet nex.PacketInterface) {
+func (protocol *AuthenticationProtocol) handleRequestTicket(packet nex.PacketInterface) {
 	if protocol.RequestTicketHandler == nil {
 		globals.Logger.Warning("Authentication::RequestTicket not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

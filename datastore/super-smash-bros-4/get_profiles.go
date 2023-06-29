@@ -12,7 +12,7 @@ func (protocol *DataStoreSuperSmashBros4Protocol) GetProfiles(handler func(err e
 	protocol.GetProfilesHandler = handler
 }
 
-func (protocol *DataStoreSuperSmashBros4Protocol) HandleGetProfiles(packet nex.PacketInterface) {
+func (protocol *DataStoreSuperSmashBros4Protocol) handleGetProfiles(packet nex.PacketInterface) {
 	if protocol.GetProfilesHandler == nil {
 		globals.Logger.Warning("DataStoreSmash4::GetProfiles not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

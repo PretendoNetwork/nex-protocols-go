@@ -57,7 +57,7 @@ func (protocol *ShopNintendoBadgeArcadeProtocol) HandlePacket(packet nex.PacketI
 
 	switch request.MethodID() {
 	case MethodPostPlayLog:
-		go protocol.HandlePostPlayLog(packet)
+		go protocol.handlePostPlayLog(packet)
 	default:
 		go globals.RespondNotImplementedCustom(packet, CustomProtocolID)
 		fmt.Printf("Unsupported ShopNintendoBadgeArcade method ID: %#v\n", request.MethodID())

@@ -12,7 +12,7 @@ func (protocol *FriendsWiiUProtocol) GetRequestBlockSettings(handler func(err er
 	protocol.GetRequestBlockSettingsHandler = handler
 }
 
-func (protocol *FriendsWiiUProtocol) HandleGetRequestBlockSettings(packet nex.PacketInterface) {
+func (protocol *FriendsWiiUProtocol) handleGetRequestBlockSettings(packet nex.PacketInterface) {
 	if protocol.GetRequestBlockSettingsHandler == nil {
 		globals.Logger.Warning("FriendsWiiU::GetRequestBlockSettings not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

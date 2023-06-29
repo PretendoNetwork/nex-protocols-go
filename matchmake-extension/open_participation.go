@@ -12,7 +12,7 @@ func (protocol *MatchmakeExtensionProtocol) OpenParticipation(handler func(err e
 	protocol.OpenParticipationHandler = handler
 }
 
-func (protocol *MatchmakeExtensionProtocol) HandleOpenParticipation(packet nex.PacketInterface) {
+func (protocol *MatchmakeExtensionProtocol) handleOpenParticipation(packet nex.PacketInterface) {
 	if protocol.OpenParticipationHandler == nil {
 		globals.Logger.Warning("MatchmakeExtension::OpenParticipation not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

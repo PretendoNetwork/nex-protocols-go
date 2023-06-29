@@ -12,7 +12,7 @@ func (protocol *NATTraversalProtocol) RequestProbeInitiationExt(handler func(err
 	protocol.RequestProbeInitiationExtHandler = handler
 }
 
-func (protocol *NATTraversalProtocol) HandleRequestProbeInitiationExt(packet nex.PacketInterface) {
+func (protocol *NATTraversalProtocol) handleRequestProbeInitiationExt(packet nex.PacketInterface) {
 	if protocol.ReportNATPropertiesHandler == nil {
 		globals.Logger.Warning("NATTraversal::RequestProbeInitiationExt not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

@@ -13,7 +13,7 @@ func (protocol *MatchmakeExtensionProtocol) JoinMatchmakeSessionWithParam(handle
 	protocol.JoinMatchmakeSessionWithParamHandler = handler
 }
 
-func (protocol *MatchmakeExtensionProtocol) HandleJoinMatchmakeSessionWithParam(packet nex.PacketInterface) {
+func (protocol *MatchmakeExtensionProtocol) handleJoinMatchmakeSessionWithParam(packet nex.PacketInterface) {
 	if protocol.JoinMatchmakeSessionWithParamHandler == nil {
 		globals.Logger.Warning("MatchmakeExtension::JoinMatchmakeSessionWithParam not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

@@ -57,17 +57,17 @@ func (protocol *MatchMakingProtocol) HandlePacket(packet nex.PacketInterface) {
 
 	switch request.MethodID() {
 	case MethodUnregisterGathering:
-		go protocol.HandleUnregisterGathering(packet)
+		go protocol.handleUnregisterGathering(packet)
 	case MethodUnregisterGatherings:
-		go protocol.HandleUnregisterGatherings(packet)
+		go protocol.handleUnregisterGatherings(packet)
 	case MethodFindBySingleID:
-		go protocol.HandleFindBySingleID(packet)
+		go protocol.handleFindBySingleID(packet)
 	case MethodUpdateSessionHostV1:
-		go protocol.HandleUpdateSessionHostV1(packet)
+		go protocol.handleUpdateSessionHostV1(packet)
 	case MethodGetSessionURLs:
-		go protocol.HandleGetSessionURLs(packet)
+		go protocol.handleGetSessionURLs(packet)
 	case MethodUpdateSessionHost:
-		go protocol.HandleUpdateSessionHost(packet)
+		go protocol.handleUpdateSessionHost(packet)
 	default:
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		fmt.Printf("Unsupported MatchMaking method ID: %#v\n", request.MethodID())

@@ -13,7 +13,7 @@ func (protocol *DataStoreSuperSmashBros4Protocol) PreparePostSharedData(handler 
 	protocol.PreparePostSharedDataHandler = handler
 }
 
-func (protocol *DataStoreSuperSmashBros4Protocol) HandlePreparePostSharedData(packet nex.PacketInterface) {
+func (protocol *DataStoreSuperSmashBros4Protocol) handlePreparePostSharedData(packet nex.PacketInterface) {
 	if protocol.PreparePostSharedDataHandler == nil {
 		globals.Logger.Warning("DataStoreSmash4::PreparePostSharedData not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

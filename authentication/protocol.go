@@ -58,17 +58,17 @@ func (protocol *AuthenticationProtocol) HandlePacket(packet nex.PacketInterface)
 
 	switch request.MethodID() {
 	case MethodLogin:
-		go protocol.HandleLogin(packet)
+		go protocol.handleLogin(packet)
 	case MethodLoginEx:
-		go protocol.HandleLoginEx(packet)
+		go protocol.handleLoginEx(packet)
 	case MethodRequestTicket:
-		go protocol.HandleRequestTicket(packet)
+		go protocol.handleRequestTicket(packet)
 	case MethodGetPID:
-		go protocol.HandleGetPID(packet)
+		go protocol.handleGetPID(packet)
 	case MethodGetName:
-		go protocol.HandleGetName(packet)
+		go protocol.handleGetName(packet)
 	case MethodLoginWithParam:
-		go protocol.HandleLoginWithParam(packet)
+		go protocol.handleLoginWithParam(packet)
 	default:
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		fmt.Printf("Unsupported Authentication method ID: %#v\n", request.MethodID())

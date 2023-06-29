@@ -10,7 +10,7 @@ func (protocol *AuthenticationProtocol) LoginWithParam(handler func(err error, c
 	protocol.LoginWithParamHandler = handler
 }
 
-func (protocol *AuthenticationProtocol) HandleLoginWithParam(packet nex.PacketInterface) {
+func (protocol *AuthenticationProtocol) handleLoginWithParam(packet nex.PacketInterface) {
 	if protocol.LoginWithParamHandler == nil {
 		globals.Logger.Warning("Authentication::LoginWithParam not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

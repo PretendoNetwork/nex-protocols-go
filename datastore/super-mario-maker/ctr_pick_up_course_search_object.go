@@ -13,7 +13,7 @@ func (protocol *DataStoreSuperMarioMakerProtocol) CTRPickUpCourseSearchObject(ha
 	protocol.CTRPickUpCourseSearchObjectHandler = handler
 }
 
-func (protocol *DataStoreSuperMarioMakerProtocol) HandleCTRPickUpCourseSearchObject(packet nex.PacketInterface) {
+func (protocol *DataStoreSuperMarioMakerProtocol) handleCTRPickUpCourseSearchObject(packet nex.PacketInterface) {
 	if protocol.CTRPickUpCourseSearchObjectHandler == nil {
 		globals.Logger.Warning("DataStoreSMM::CTRPickUpCourseSearchObject not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

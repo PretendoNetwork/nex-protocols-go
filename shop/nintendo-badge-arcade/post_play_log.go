@@ -13,7 +13,7 @@ func (protocol *ShopNintendoBadgeArcadeProtocol) PostPlayLog(handler func(err er
 	protocol.PostPlayLogHandler = handler
 }
 
-func (protocol *ShopNintendoBadgeArcadeProtocol) HandlePostPlayLog(packet nex.PacketInterface) {
+func (protocol *ShopNintendoBadgeArcadeProtocol) handlePostPlayLog(packet nex.PacketInterface) {
 	if protocol.PostPlayLogHandler == nil {
 		globals.Logger.Warning("ShopNintendoBadgeArcade::PostPlayLog not implemented")
 		go globals.RespondNotImplementedCustom(packet, CustomProtocolID)

@@ -14,7 +14,7 @@ func (protocol *DataStoreSuperMarioMakerProtocol) GetMetasWithCourseRecord(handl
 	protocol.GetMetasWithCourseRecordHandler = handler
 }
 
-func (protocol *DataStoreSuperMarioMakerProtocol) HandleGetMetasWithCourseRecord(packet nex.PacketInterface) {
+func (protocol *DataStoreSuperMarioMakerProtocol) handleGetMetasWithCourseRecord(packet nex.PacketInterface) {
 	if protocol.GetMetasWithCourseRecordHandler == nil {
 		globals.Logger.Warning("DataStoreSMM::GetMetasWithCourseRecord not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

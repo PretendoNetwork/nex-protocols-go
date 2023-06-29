@@ -13,7 +13,7 @@ func (protocol *DataStoreSuperSmashBros4Protocol) SearchSharedData(handler func(
 	protocol.SearchSharedDataHandler = handler
 }
 
-func (protocol *DataStoreSuperSmashBros4Protocol) HandleSearchSharedData(packet nex.PacketInterface) {
+func (protocol *DataStoreSuperSmashBros4Protocol) handleSearchSharedData(packet nex.PacketInterface) {
 	if protocol.SearchSharedDataHandler == nil {
 		globals.Logger.Warning("DataStoreSmash4::SearchSharedData not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

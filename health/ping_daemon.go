@@ -10,7 +10,7 @@ func (protocol *HealthProtocol) PingDaemon(handler func(err error, client *nex.C
 	protocol.PingDaemonHandler = handler
 }
 
-func (protocol *HealthProtocol) HandlePingDaemon(packet nex.PacketInterface) {
+func (protocol *HealthProtocol) handlePingDaemon(packet nex.PacketInterface) {
 	if protocol.PingDaemonHandler == nil {
 		globals.Logger.Warning("Health::PingDaemon not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

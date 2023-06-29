@@ -12,7 +12,7 @@ func (protocol *DataStoreSuperMarioMakerProtocol) GetObjectInfos(handler func(er
 	protocol.GetObjectInfosHandler = handler
 }
 
-func (protocol *DataStoreSuperMarioMakerProtocol) HandleGetObjectInfos(packet nex.PacketInterface) {
+func (protocol *DataStoreSuperMarioMakerProtocol) handleGetObjectInfos(packet nex.PacketInterface) {
 	if protocol.GetObjectInfosHandler == nil {
 		globals.Logger.Warning("DataStoreSMM::GetObjectInfos not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

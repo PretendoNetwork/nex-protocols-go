@@ -12,7 +12,7 @@ func (protocol *DataStoreSuperSmashBros4Protocol) SendPlayReport(handler func(er
 	protocol.SendPlayReportHandler = handler
 }
 
-func (protocol *DataStoreSuperSmashBros4Protocol) HandleSendPlayReport(packet nex.PacketInterface) {
+func (protocol *DataStoreSuperSmashBros4Protocol) handleSendPlayReport(packet nex.PacketInterface) {
 	if protocol.SendPlayReportHandler == nil {
 		globals.Logger.Warning("DataStoreSmash4::SendPlayReport not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

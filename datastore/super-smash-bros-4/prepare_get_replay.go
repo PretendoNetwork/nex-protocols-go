@@ -13,7 +13,7 @@ func (protocol *DataStoreSuperSmashBros4Protocol) PrepareGetReplay(handler func(
 	protocol.PrepareGetReplayHandler = handler
 }
 
-func (protocol *DataStoreSuperSmashBros4Protocol) HandlePrepareGetReplay(packet nex.PacketInterface) {
+func (protocol *DataStoreSuperSmashBros4Protocol) handlePrepareGetReplay(packet nex.PacketInterface) {
 	if protocol.PrepareGetReplayHandler == nil {
 		globals.Logger.Warning("DataStoreSmash4::PrepareGetReplay not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

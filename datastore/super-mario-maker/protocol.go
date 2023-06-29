@@ -135,41 +135,41 @@ func (protocol *DataStoreSuperMarioMakerProtocol) HandlePacket(packet nex.Packet
 
 	switch request.MethodID() {
 	case MethodGetObjectInfos:
-		go protocol.HandleGetObjectInfos(packet)
+		go protocol.handleGetObjectInfos(packet)
 	case MethodRateCustomRanking:
-		go protocol.HandleRateCustomRanking(packet)
+		go protocol.handleRateCustomRanking(packet)
 	case MethodGetCustomRankingByDataID:
-		go protocol.HandleGetCustomRankingByDataID(packet)
+		go protocol.handleGetCustomRankingByDataID(packet)
 	case MethodAddToBufferQueues:
-		go protocol.HandleAddToBufferQueues(packet)
+		go protocol.handleAddToBufferQueues(packet)
 	case MethodGetBufferQueue:
-		go protocol.HandleGetBufferQueue(packet)
+		go protocol.handleGetBufferQueue(packet)
 	case MethodCompleteAttachFile:
-		go protocol.HandleCompleteAttachFile(packet)
+		go protocol.handleCompleteAttachFile(packet)
 	case MethodPrepareAttachFile:
-		go protocol.HandlePrepareAttachFile(packet)
+		go protocol.handlePrepareAttachFile(packet)
 	case MethodGetApplicationConfig:
-		go protocol.HandleGetApplicationConfig(packet)
+		go protocol.handleGetApplicationConfig(packet)
 	case MethodFollowingsLatestCourseSearchObject:
-		go protocol.HandleFollowingsLatestCourseSearchObject(packet)
+		go protocol.handleFollowingsLatestCourseSearchObject(packet)
 	case MethodRecommendedCourseSearchObject:
-		go protocol.HandleRecommendedCourseSearchObject(packet)
+		go protocol.handleRecommendedCourseSearchObject(packet)
 	case MethodSuggestedCourseSearchObject:
-		go protocol.HandleSuggestedCourseSearchObject(packet)
+		go protocol.handleSuggestedCourseSearchObject(packet)
 	case MethodUploadCourseRecord:
-		go protocol.HandleUploadCourseRecord(packet)
+		go protocol.handleUploadCourseRecord(packet)
 	case MethodGetCourseRecord:
-		go protocol.HandleGetCourseRecord(packet)
+		go protocol.handleGetCourseRecord(packet)
 	case MethodGetApplicationConfigString:
-		go protocol.HandleGetApplicationConfigString(packet)
+		go protocol.handleGetApplicationConfigString(packet)
 	case MethodGetDeletionReason:
-		go protocol.HandleGetDeletionReason(packet)
+		go protocol.handleGetDeletionReason(packet)
 	case MethodGetMetasWithCourseRecord:
-		go protocol.HandleGetMetasWithCourseRecord(packet)
+		go protocol.handleGetMetasWithCourseRecord(packet)
 	case MethodCheckRateCustomRankingCounter:
-		go protocol.HandleCheckRateCustomRankingCounter(packet)
+		go protocol.handleCheckRateCustomRankingCounter(packet)
 	case MethodCTRPickUpCourseSearchObject:
-		go protocol.HandleCTRPickUpCourseSearchObject(packet)
+		go protocol.handleCTRPickUpCourseSearchObject(packet)
 	default:
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		fmt.Printf("Unsupported DataStoreSMM method ID: %#v\n", request.MethodID())

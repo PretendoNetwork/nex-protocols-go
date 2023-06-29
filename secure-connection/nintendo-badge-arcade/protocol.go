@@ -48,7 +48,7 @@ func (protocol *SecureConnectionNintendoBadgeArcadeProtocol) HandlePacket(packet
 
 	switch request.MethodID() {
 	case MethodGetMaintenanceStatus:
-		go protocol.HandleGetMaintenanceStatus(packet)
+		go protocol.handleGetMaintenanceStatus(packet)
 	default:
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		fmt.Printf("Unsupported SecureBadgeArcade method ID: %#v\n", request.MethodID())

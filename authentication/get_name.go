@@ -12,7 +12,7 @@ func (protocol *AuthenticationProtocol) GetName(handler func(err error, client *
 	protocol.GetNameHandler = handler
 }
 
-func (protocol *AuthenticationProtocol) HandleGetName(packet nex.PacketInterface) {
+func (protocol *AuthenticationProtocol) handleGetName(packet nex.PacketInterface) {
 	if protocol.GetNameHandler == nil {
 		globals.Logger.Warning("Authentication::GetName not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

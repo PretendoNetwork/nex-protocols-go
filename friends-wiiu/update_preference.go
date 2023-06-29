@@ -13,7 +13,7 @@ func (protocol *FriendsWiiUProtocol) UpdatePreference(handler func(err error, cl
 	protocol.UpdatePreferenceHandler = handler
 }
 
-func (protocol *FriendsWiiUProtocol) HandleUpdatePreference(packet nex.PacketInterface) {
+func (protocol *FriendsWiiUProtocol) handleUpdatePreference(packet nex.PacketInterface) {
 	if protocol.UpdatePreferenceHandler == nil {
 		globals.Logger.Warning("FriendsWiiU::UpdatePreference not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

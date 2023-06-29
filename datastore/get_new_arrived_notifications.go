@@ -13,7 +13,7 @@ func (protocol *DataStoreProtocol) GetNewArrivedNotifications(handler func(err e
 	protocol.GetNewArrivedNotificationsHandler = handler
 }
 
-func (protocol *DataStoreProtocol) HandleGetNewArrivedNotifications(packet nex.PacketInterface) {
+func (protocol *DataStoreProtocol) handleGetNewArrivedNotifications(packet nex.PacketInterface) {
 	if protocol.GetNewArrivedNotificationsHandler == nil {
 		globals.Logger.Warning("DataStore::GetNewArrivedNotifications not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

@@ -13,7 +13,7 @@ func (protocol *DataStoreProtocol) GetMeta(handler func(err error, client *nex.C
 	protocol.GetMetaHandler = handler
 }
 
-func (protocol *DataStoreProtocol) HandleGetMeta(packet nex.PacketInterface) {
+func (protocol *DataStoreProtocol) handleGetMeta(packet nex.PacketInterface) {
 	if protocol.GetMetaHandler == nil {
 		globals.Logger.Warning("DataStore::GetMeta not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

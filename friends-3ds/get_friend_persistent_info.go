@@ -12,7 +12,7 @@ func (protocol *Friends3DSProtocol) GetFriendPersistentInfo(handler func(err err
 	protocol.GetFriendPersistentInfoHandler = handler
 }
 
-func (protocol *Friends3DSProtocol) HandleGetFriendPersistentInfo(packet nex.PacketInterface) {
+func (protocol *Friends3DSProtocol) handleGetFriendPersistentInfo(packet nex.PacketInterface) {
 	if protocol.GetFriendPersistentInfoHandler == nil {
 		globals.Logger.Warning("Friends3DS::GetFriendPersistentInfo not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

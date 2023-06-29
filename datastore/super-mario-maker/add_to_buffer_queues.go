@@ -13,7 +13,7 @@ func (protocol *DataStoreSuperMarioMakerProtocol) AddToBufferQueues(handler func
 	protocol.AddToBufferQueuesHandler = handler
 }
 
-func (protocol *DataStoreSuperMarioMakerProtocol) HandleAddToBufferQueues(packet nex.PacketInterface) {
+func (protocol *DataStoreSuperMarioMakerProtocol) handleAddToBufferQueues(packet nex.PacketInterface) {
 	if protocol.AddToBufferQueuesHandler == nil {
 		globals.Logger.Warning("DataStoreSMM::AddToBufferQueues not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

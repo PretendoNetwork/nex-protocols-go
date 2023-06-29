@@ -13,7 +13,7 @@ func (protocol *MatchmakeExtensionProtocol) CreateCommunity(handler func(err err
 	protocol.CreateCommunityHandler = handler
 }
 
-func (protocol *MatchmakeExtensionProtocol) HandleCreateCommunity(packet nex.PacketInterface) {
+func (protocol *MatchmakeExtensionProtocol) handleCreateCommunity(packet nex.PacketInterface) {
 	if protocol.CreateCommunityHandler == nil {
 		globals.Logger.Warning("MatchmakeExtension::CreateCommunity not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

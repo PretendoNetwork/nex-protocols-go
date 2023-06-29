@@ -71,7 +71,7 @@ func (protocol *RankingProtocol) Setup() {
 		if request.ProtocolID() == ProtocolID {
 			switch request.MethodID() {
 			case MethodUploadCommonData:
-				go protocol.HandleUploadCommonData(packet)
+				go protocol.handleUploadCommonData(packet)
 			default:
 				go globals.RespondNotImplemented(packet, ProtocolID)
 				fmt.Printf("Unsupported Ranking method ID: %#v\n", request.MethodID())

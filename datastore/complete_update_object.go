@@ -13,7 +13,7 @@ func (protocol *DataStoreProtocol) CompleteUpdateObject(handler func(err error, 
 	protocol.CompleteUpdateObjectHandler = handler
 }
 
-func (protocol *DataStoreProtocol) HandleCompleteUpdateObject(packet nex.PacketInterface) {
+func (protocol *DataStoreProtocol) handleCompleteUpdateObject(packet nex.PacketInterface) {
 	if protocol.CompleteUpdateObjectHandler == nil {
 		globals.Logger.Warning("DataStore::CompleteUpdateObject not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

@@ -12,7 +12,7 @@ func (protocol *DataStoreProtocol) GetPersistenceInfo(handler func(err error, cl
 	protocol.GetPersistenceInfoHandler = handler
 }
 
-func (protocol *DataStoreProtocol) HandleGetPersistenceInfo(packet nex.PacketInterface) {
+func (protocol *DataStoreProtocol) handleGetPersistenceInfo(packet nex.PacketInterface) {
 	if protocol.GetPersistenceInfoHandler == nil {
 		globals.Logger.Warning("DataStorePotocol::GetPersistenceInfo not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

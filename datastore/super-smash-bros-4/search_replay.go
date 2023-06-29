@@ -13,7 +13,7 @@ func (protocol *DataStoreSuperSmashBros4Protocol) SearchReplay(handler func(err 
 	protocol.SearchReplayHandler = handler
 }
 
-func (protocol *DataStoreSuperSmashBros4Protocol) HandleSearchReplay(packet nex.PacketInterface) {
+func (protocol *DataStoreSuperSmashBros4Protocol) handleSearchReplay(packet nex.PacketInterface) {
 	if protocol.SearchReplayHandler == nil {
 		globals.Logger.Warning("DataStoreSmash4::SearchReplay not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

@@ -110,43 +110,43 @@ func (protocol *MatchmakeExtensionProtocol) HandlePacket(packet nex.PacketInterf
 
 	switch request.MethodID() {
 	case MethodCloseParticipation:
-		go protocol.HandleCloseParticipation(packet)
+		go protocol.handleCloseParticipation(packet)
 	case MethodOpenParticipation:
-		go protocol.HandleOpenParticipation(packet)
+		go protocol.handleOpenParticipation(packet)
 	case MethodAutoMatchmake_Postpone:
-		go protocol.HandleAutoMatchmake_Postpone(packet)
+		go protocol.handleAutoMatchmake_Postpone(packet)
 	case MethodCreateMatchmakeSession:
-		go protocol.HandleCreateMatchmakeSession(packet)
+		go protocol.handleCreateMatchmakeSession(packet)
 	case MethodUpdateNotificationData:
-		go protocol.HandleUpdateNotificationData(packet)
+		go protocol.handleUpdateNotificationData(packet)
 	case MethodGetFriendNotificationData:
-		go protocol.HandleGetFriendNotificationData(packet)
+		go protocol.handleGetFriendNotificationData(packet)
 	case MethodAutoMatchmakeWithSearchCriteria_Postpone:
-		go protocol.HandleAutoMatchmakeWithSearchCriteria_Postpone(packet)
+		go protocol.handleAutoMatchmakeWithSearchCriteria_Postpone(packet)
 	case MethodGetPlayingSession:
-		go protocol.HandleGetPlayingSession(packet)
+		go protocol.handleGetPlayingSession(packet)
 	case MethodCreateCommunity:
-		go protocol.HandleCreateCommunity(packet)
+		go protocol.handleCreateCommunity(packet)
 	case MethodFindCommunityByGatheringID:
-		go protocol.HandleFindCommunityByGatheringID(packet)
+		go protocol.handleFindCommunityByGatheringID(packet)
 	case MethodFindOfficialCommunity:
-		go protocol.HandleFindOfficialCommunity(packet)
+		go protocol.handleFindOfficialCommunity(packet)
 	case MethodFindCommunityByParticipant:
-		go protocol.HandleFindCommunityByParticipant(packet)
+		go protocol.handleFindCommunityByParticipant(packet)
 	case MethodJoinMatchmakeSessionEx:
-		go protocol.HandleJoinMatchmakeSessionEx(packet)
+		go protocol.handleJoinMatchmakeSessionEx(packet)
 	case MethodGetSimplePlayingSession:
-		go protocol.HandleGetSimplePlayingSession(packet)
+		go protocol.handleGetSimplePlayingSession(packet)
 	case MethodGetSimpleCommunity:
-		go protocol.HandleGetSimpleCommunity(packet)
+		go protocol.handleGetSimpleCommunity(packet)
 	case MethodUpdateProgressScore:
-		go protocol.HandleUpdateProgressScore(packet)
+		go protocol.handleUpdateProgressScore(packet)
 	case MethodCreateMatchmakeSessionWithParam:
-		go protocol.HandleCreateMatchmakeSessionWithParam(packet)
+		go protocol.handleCreateMatchmakeSessionWithParam(packet)
 	case MethodJoinMatchmakeSessionWithParam:
-		go protocol.HandleJoinMatchmakeSessionWithParam(packet)
+		go protocol.handleJoinMatchmakeSessionWithParam(packet)
 	case MethodAutoMatchmakeWithParam_Postpone:
-		go protocol.HandleAutoMatchmakeWithParam_Postpone(packet)
+		go protocol.handleAutoMatchmakeWithParam_Postpone(packet)
 	default:
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		fmt.Printf("Unsupported Matchmake Extension method ID: %#v\n", request.MethodID())

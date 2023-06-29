@@ -12,7 +12,7 @@ func (protocol *MessageDeliveryProtocol) DeliverMessage(handler func(err error, 
 	protocol.DeliverMessageHandler = handler
 }
 
-func (protocol *MessageDeliveryProtocol) HandleDeliverMessage(packet nex.PacketInterface) {
+func (protocol *MessageDeliveryProtocol) handleDeliverMessage(packet nex.PacketInterface) {
 	if protocol.DeliverMessageHandler == nil {
 		globals.Logger.Warning("MessageDelivery::DeliverMessage not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

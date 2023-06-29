@@ -13,7 +13,7 @@ func (protocol *Friends3DSProtocol) UpdateProfile(handler func(err error, client
 	protocol.UpdateProfileHandler = handler
 }
 
-func (protocol *Friends3DSProtocol) HandleUpdateProfile(packet nex.PacketInterface) {
+func (protocol *Friends3DSProtocol) handleUpdateProfile(packet nex.PacketInterface) {
 	if protocol.UpdateProfileHandler == nil {
 		globals.Logger.Warning("Friends3DS::UpdateProfile not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

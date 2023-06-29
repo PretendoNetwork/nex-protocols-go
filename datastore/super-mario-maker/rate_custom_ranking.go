@@ -13,7 +13,7 @@ func (protocol *DataStoreSuperMarioMakerProtocol) RateCustomRanking(handler func
 	protocol.RateCustomRankingHandler = handler
 }
 
-func (protocol *DataStoreSuperMarioMakerProtocol) HandleRateCustomRanking(packet nex.PacketInterface) {
+func (protocol *DataStoreSuperMarioMakerProtocol) handleRateCustomRanking(packet nex.PacketInterface) {
 	if protocol.RateCustomRankingHandler == nil {
 		globals.Logger.Warning("DataStoreSMM::RateCustomRanking not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

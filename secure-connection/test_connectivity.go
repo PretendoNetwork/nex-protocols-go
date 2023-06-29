@@ -10,7 +10,7 @@ func (protocol *SecureConnectionProtocol) TestConnectivity(handler func(err erro
 	protocol.TestConnectivityHandler = handler
 }
 
-func (protocol *SecureConnectionProtocol) HandleTestConnectivity(packet nex.PacketInterface) {
+func (protocol *SecureConnectionProtocol) handleTestConnectivity(packet nex.PacketInterface) {
 	if protocol.TestConnectivityHandler == nil {
 		globals.Logger.Warning("SecureConnection::TestConnectivity not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

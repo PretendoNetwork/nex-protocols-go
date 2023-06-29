@@ -12,7 +12,7 @@ func (protocol *Friends3DSProtocol) GetPrincipalIDByLocalFriendCode(handler func
 	protocol.GetPrincipalIDByLocalFriendCodeHandler = handler
 }
 
-func (protocol *Friends3DSProtocol) HandleGetPrincipalIDByLocalFriendCode(packet nex.PacketInterface) {
+func (protocol *Friends3DSProtocol) handleGetPrincipalIDByLocalFriendCode(packet nex.PacketInterface) {
 	if protocol.GetPrincipalIDByLocalFriendCodeHandler == nil {
 		globals.Logger.Warning("Friends3DS::GetPrincipalIDByLocalFriendCode not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

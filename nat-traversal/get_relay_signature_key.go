@@ -10,7 +10,7 @@ func (protocol *NATTraversalProtocol) GetRelaySignatureKey(handler func(err erro
 	protocol.GetRelaySignatureKeyHandler = handler
 }
 
-func (protocol *NATTraversalProtocol) HandleGetRelaySignatureKey(packet nex.PacketInterface) {
+func (protocol *NATTraversalProtocol) handleGetRelaySignatureKey(packet nex.PacketInterface) {
 	if protocol.GetRelaySignatureKeyHandler == nil {
 		globals.Logger.Warning("NATTraversal::GetRelaySignatureKey not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

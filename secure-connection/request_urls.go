@@ -12,7 +12,7 @@ func (protocol *SecureConnectionProtocol) RequestURLs(handler func(err error, cl
 	protocol.RequestURLsHandler = handler
 }
 
-func (protocol *SecureConnectionProtocol) HandleRequestURLs(packet nex.PacketInterface) {
+func (protocol *SecureConnectionProtocol) handleRequestURLs(packet nex.PacketInterface) {
 	if protocol.RequestURLsHandler == nil {
 		globals.Logger.Warning("SecureConnection::RequestURLs not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

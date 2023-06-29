@@ -14,7 +14,7 @@ func (protocol *MatchmakeExtensionProtocol) AutoMatchmakeWithSearchCriteria_Post
 	protocol.AutoMatchmakeWithSearchCriteria_PostponeHandler = handler
 }
 
-func (protocol *MatchmakeExtensionProtocol) HandleAutoMatchmakeWithSearchCriteria_Postpone(packet nex.PacketInterface) {
+func (protocol *MatchmakeExtensionProtocol) handleAutoMatchmakeWithSearchCriteria_Postpone(packet nex.PacketInterface) {
 	if protocol.AutoMatchmakeWithSearchCriteria_PostponeHandler == nil {
 		globals.Logger.Warning("MatchmakeExtension::AutoMatchmakeWithSearchCriteria_Postpone not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

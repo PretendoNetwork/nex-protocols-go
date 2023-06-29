@@ -12,7 +12,7 @@ func (protocol *ShopNintendoBadgeArcadeProtocol) GetRivToken(handler func(err er
 	protocol.GetRivTokenHandler = handler
 }
 
-func (protocol *ShopNintendoBadgeArcadeProtocol) HandleGetRivToken(packet nex.PacketInterface) {
+func (protocol *ShopNintendoBadgeArcadeProtocol) handleGetRivToken(packet nex.PacketInterface) {
 	if protocol.GetRivTokenHandler == nil {
 		globals.Logger.Warning("ShopNintendoBadgeArcade::GetRivToken not implemented")
 		go globals.RespondNotImplementedCustom(packet, CustomProtocolID)

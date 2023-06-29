@@ -195,51 +195,51 @@ func (protocol *DataStoreProtocol) HandlePacket(packet nex.PacketInterface) {
 
 	switch request.MethodID() {
 	case MethodPrepareGetObjectV1:
-		go protocol.HandlePrepareGetObjectV1(packet)
+		go protocol.handlePrepareGetObjectV1(packet)
 	case MethodPreparePostObjectV1:
-		go protocol.HandlePreparePostObjectV1(packet)
+		go protocol.handlePreparePostObjectV1(packet)
 	case MethodCompletePostObjectV1:
-		go protocol.HandleCompletePostObjectV1(packet)
+		go protocol.handleCompletePostObjectV1(packet)
 	case MethodDeleteObject:
-		go protocol.HandleDeleteObject(packet)
+		go protocol.handleDeleteObject(packet)
 	case MethodGetMeta:
-		go protocol.HandleGetMeta(packet)
+		go protocol.handleGetMeta(packet)
 	case MethodGetMetas:
-		go protocol.HandleGetMetas(packet)
+		go protocol.handleGetMetas(packet)
 	case MethodPrepareUpdateObject:
-		go protocol.HandlePrepareUpdateObject(packet)
+		go protocol.handlePrepareUpdateObject(packet)
 	case MethodCompleteUpdateObject:
-		go protocol.HandleCompleteUpdateObject(packet)
+		go protocol.handleCompleteUpdateObject(packet)
 	case MethodSearchObject:
-		go protocol.HandleSearchObject(packet)
+		go protocol.handleSearchObject(packet)
 	case MethodGetNotificationURL:
-		go protocol.HandleGetNotificationURL(packet)
+		go protocol.handleGetNotificationURL(packet)
 	case MethodGetNewArrivedNotificationsV1:
-		go protocol.HandleGetNewArrivedNotificationsV1(packet)
+		go protocol.handleGetNewArrivedNotificationsV1(packet)
 	case MethodRateObject:
-		go protocol.HandleRateObject(packet)
+		go protocol.handleRateObject(packet)
 	case MethodPostMetaBinary:
-		go protocol.HandlePostMetaBinary(packet)
+		go protocol.handlePostMetaBinary(packet)
 	case MethodPreparePostObject:
-		go protocol.HandlePreparePostObject(packet)
+		go protocol.handlePreparePostObject(packet)
 	case MethodPrepareGetObject:
-		go protocol.HandlePrepareGetObject(packet)
+		go protocol.handlePrepareGetObject(packet)
 	case MethodCompletePostObject:
-		go protocol.HandleCompletePostObject(packet)
+		go protocol.handleCompletePostObject(packet)
 	case MethodGetNewArrivedNotifications:
-		go protocol.HandleGetNewArrivedNotifications(packet)
+		go protocol.handleGetNewArrivedNotifications(packet)
 	case MethodGetPersistenceInfo:
-		go protocol.HandleGetPersistenceInfo(packet)
+		go protocol.handleGetPersistenceInfo(packet)
 	case MethodGetMetasMultipleParam:
-		go protocol.HandleGetMetasMultipleParam(packet)
+		go protocol.handleGetMetasMultipleParam(packet)
 	case MethodCompletePostObjects:
-		go protocol.HandleCompletePostObjects(packet)
+		go protocol.handleCompletePostObjects(packet)
 	case MethodChangeMeta:
-		go protocol.HandleChangeMeta(packet)
+		go protocol.handleChangeMeta(packet)
 	case MethodRateObjects:
-		go protocol.HandleRateObjects(packet)
+		go protocol.handleRateObjects(packet)
 	case MethodSearchObjectLight:
-		go protocol.HandleSearchObjectLight(packet)
+		go protocol.handleSearchObjectLight(packet)
 	default:
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		fmt.Printf("Unsupported DataStore method ID: %#v\n", request.MethodID())

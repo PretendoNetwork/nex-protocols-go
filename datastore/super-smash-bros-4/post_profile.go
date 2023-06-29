@@ -13,7 +13,7 @@ func (protocol *DataStoreSuperSmashBros4Protocol) PostProfile(handler func(err e
 	protocol.PostProfileHandler = handler
 }
 
-func (protocol *DataStoreSuperSmashBros4Protocol) HandlePostProfile(packet nex.PacketInterface) {
+func (protocol *DataStoreSuperSmashBros4Protocol) handlePostProfile(packet nex.PacketInterface) {
 	if protocol.PostProfileHandler == nil {
 		globals.Logger.Warning("DataStoreSmash4::PostProfile not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

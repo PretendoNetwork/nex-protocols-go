@@ -12,7 +12,7 @@ func (protocol *AccountManagementProtocol) NintendoCreateAccount(handler func(er
 	protocol.NintendoCreateAccountHandler = handler
 }
 
-func (protocol *AccountManagementProtocol) HandleNintendoCreateAccount(packet nex.PacketInterface) {
+func (protocol *AccountManagementProtocol) handleNintendoCreateAccount(packet nex.PacketInterface) {
 	if protocol.NintendoCreateAccountHandler == nil {
 		globals.Logger.Warning("AccountManagement::NintendoCreateAccount not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

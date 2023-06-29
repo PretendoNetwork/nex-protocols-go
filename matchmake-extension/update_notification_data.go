@@ -12,7 +12,7 @@ func (protocol *MatchmakeExtensionProtocol) UpdateNotificationData(handler func(
 	protocol.UpdateNotificationDataHandler = handler
 }
 
-func (protocol *MatchmakeExtensionProtocol) HandleUpdateNotificationData(packet nex.PacketInterface) {
+func (protocol *MatchmakeExtensionProtocol) handleUpdateNotificationData(packet nex.PacketInterface) {
 	if protocol.UpdateNotificationDataHandler == nil {
 		globals.Logger.Warning("MatchmakeExtension::UpdateNotificationData not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

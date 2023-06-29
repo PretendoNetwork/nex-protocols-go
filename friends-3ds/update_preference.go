@@ -12,7 +12,7 @@ func (protocol *Friends3DSProtocol) UpdatePreference(handler func(err error, cli
 	protocol.UpdatePreferenceHandler = handler
 }
 
-func (protocol *Friends3DSProtocol) HandleUpdatePreference(packet nex.PacketInterface) {
+func (protocol *Friends3DSProtocol) handleUpdatePreference(packet nex.PacketInterface) {
 	if protocol.UpdatePreferenceHandler == nil {
 		globals.Logger.Warning("Friends3DS::UpdatePreference not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

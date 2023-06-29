@@ -12,7 +12,7 @@ func (protocol *MatchmakeExtensionProtocol) CreateMatchmakeSession(handler func(
 	protocol.CreateMatchmakeSessionHandler = handler
 }
 
-func (protocol *MatchmakeExtensionProtocol) HandleCreateMatchmakeSession(packet nex.PacketInterface) {
+func (protocol *MatchmakeExtensionProtocol) handleCreateMatchmakeSession(packet nex.PacketInterface) {
 	matchmakingVersion := protocol.Server.MatchMakingProtocolVersion()
 
 	if protocol.CreateMatchmakeSessionHandler == nil {

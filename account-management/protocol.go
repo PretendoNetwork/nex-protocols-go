@@ -42,7 +42,7 @@ func (protocol *AccountManagementProtocol) HandlePacket(packet nex.PacketInterfa
 
 	switch request.MethodID() {
 	case MethodNintendoCreateAccount:
-		go protocol.HandleNintendoCreateAccount(packet)
+		go protocol.handleNintendoCreateAccount(packet)
 	default:
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		fmt.Printf("Unsupported AccountManagement method ID: %#v\n", request.MethodID())

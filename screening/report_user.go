@@ -10,7 +10,7 @@ func (protocol *ScreeningProtocol) ReportUser(handler func(err error, client *ne
 	protocol.ReportUserHandler = handler
 }
 
-func (protocol *ScreeningProtocol) HandleReportUser(packet nex.PacketInterface) {
+func (protocol *ScreeningProtocol) handleReportUser(packet nex.PacketInterface) {
 	globals.Logger.Warning("Screening::ReportUser STUBBED")
 
 	if protocol.ReportUserHandler == nil {

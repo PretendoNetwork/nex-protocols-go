@@ -13,7 +13,7 @@ func (protocol *DataStoreSuperSmashBros4Protocol) PostFightingPowerScore(handler
 	protocol.PostFightingPowerScoreHandler = handler
 }
 
-func (protocol *DataStoreSuperSmashBros4Protocol) HandlePostFightingPowerScore(packet nex.PacketInterface) {
+func (protocol *DataStoreSuperSmashBros4Protocol) handlePostFightingPowerScore(packet nex.PacketInterface) {
 	if protocol.PostFightingPowerScoreHandler == nil {
 		globals.Logger.Warning("DataStoreSmash4::PostFightingPowerScore not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

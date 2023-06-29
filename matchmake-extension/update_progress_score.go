@@ -12,7 +12,7 @@ func (protocol *MatchmakeExtensionProtocol) UpdateProgressScore(handler func(err
 	protocol.UpdateProgressScoreHandler = handler
 }
 
-func (protocol *MatchmakeExtensionProtocol) HandleUpdateProgressScore(packet nex.PacketInterface) {
+func (protocol *MatchmakeExtensionProtocol) handleUpdateProgressScore(packet nex.PacketInterface) {
 	if protocol.UpdateProgressScoreHandler == nil {
 		globals.Logger.Warning("MatchmakeExtension::UpdateProgressScore not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

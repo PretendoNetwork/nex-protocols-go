@@ -12,7 +12,7 @@ func (protocol *MatchmakeExtensionProtocol) FindCommunityByParticipant(handler f
 	protocol.FindCommunityByParticipantHandler = handler
 }
 
-func (protocol *MatchmakeExtensionProtocol) HandleFindCommunityByParticipant(packet nex.PacketInterface) {
+func (protocol *MatchmakeExtensionProtocol) handleFindCommunityByParticipant(packet nex.PacketInterface) {
 	if protocol.FindCommunityByParticipantHandler == nil {
 		globals.Logger.Warning("MatchmakeExtension::FindCommunityByParticipant not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

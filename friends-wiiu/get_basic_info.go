@@ -12,7 +12,7 @@ func (protocol *FriendsWiiUProtocol) GetBasicInfo(handler func(err error, client
 	protocol.GetBasicInfoHandler = handler
 }
 
-func (protocol *FriendsWiiUProtocol) HandleGetBasicInfo(packet nex.PacketInterface) {
+func (protocol *FriendsWiiUProtocol) handleGetBasicInfo(packet nex.PacketInterface) {
 	if protocol.GetBasicInfoHandler == nil {
 		globals.Logger.Warning("FriendsWiiU::GetBasicInfo not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

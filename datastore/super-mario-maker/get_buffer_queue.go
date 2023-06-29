@@ -13,7 +13,7 @@ func (protocol *DataStoreSuperMarioMakerProtocol) GetBufferQueue(handler func(er
 	protocol.GetBufferQueueHandler = handler
 }
 
-func (protocol *DataStoreSuperMarioMakerProtocol) HandleGetBufferQueue(packet nex.PacketInterface) {
+func (protocol *DataStoreSuperMarioMakerProtocol) handleGetBufferQueue(packet nex.PacketInterface) {
 	if protocol.GetBufferQueueHandler == nil {
 		globals.Logger.Warning("DataStoreSMM::GetBufferQueue not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

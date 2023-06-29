@@ -12,7 +12,7 @@ func (protocol *MatchMakingExtProtocol) GetDetailedParticipants(handler func(err
 	protocol.GetDetailedParticipantsHandler = handler
 }
 
-func (protocol *MatchMakingExtProtocol) HandleGetDetailedParticipants(packet nex.PacketInterface) {
+func (protocol *MatchMakingExtProtocol) handleGetDetailedParticipants(packet nex.PacketInterface) {
 	if protocol.GetDetailedParticipantsHandler == nil {
 		globals.Logger.Warning("MatchMakingExt::GetDetailedParticipants not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

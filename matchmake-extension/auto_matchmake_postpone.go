@@ -12,7 +12,7 @@ func (protocol *MatchmakeExtensionProtocol) AutoMatchmake_Postpone(handler func(
 	protocol.AutoMatchmake_PostponeHandler = handler
 }
 
-func (protocol *MatchmakeExtensionProtocol) HandleAutoMatchmake_Postpone(packet nex.PacketInterface) {
+func (protocol *MatchmakeExtensionProtocol) handleAutoMatchmake_Postpone(packet nex.PacketInterface) {
 	if protocol.AutoMatchmake_PostponeHandler == nil {
 		globals.Logger.Warning("MatchmakeExtension::AutoMatchmake_Postpone not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

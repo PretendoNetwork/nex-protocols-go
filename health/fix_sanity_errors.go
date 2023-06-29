@@ -10,7 +10,7 @@ func (protocol *HealthProtocol) FixSanityErrors(handler func(err error, client *
 	protocol.FixSanityErrorsHandler = handler
 }
 
-func (protocol *HealthProtocol) HandleFixSanityErrors(packet nex.PacketInterface) {
+func (protocol *HealthProtocol) handleFixSanityErrors(packet nex.PacketInterface) {
 	if protocol.FixSanityErrorsHandler == nil {
 		globals.Logger.Warning("Health::FixSanityErrors not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

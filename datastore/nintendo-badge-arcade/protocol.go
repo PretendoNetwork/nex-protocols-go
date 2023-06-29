@@ -50,7 +50,7 @@ func (protocol *DataStoreNintendoBadgeArcadeProtocol) HandlePacket(packet nex.Pa
 
 	switch request.MethodID() {
 	case MethodGetMetaByOwnerID:
-		go protocol.HandleGetMetaByOwnerID(packet)
+		go protocol.handleGetMetaByOwnerID(packet)
 	default:
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		fmt.Printf("Unsupported DataStoreBadgeArcade method ID: %#v\n", request.MethodID())

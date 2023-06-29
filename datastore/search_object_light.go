@@ -13,7 +13,7 @@ func (protocol *DataStoreProtocol) SearchObjectLight(handler func(err error, cli
 	protocol.SearchObjectLightHandler = handler
 }
 
-func (protocol *DataStoreProtocol) HandleSearchObjectLight(packet nex.PacketInterface) {
+func (protocol *DataStoreProtocol) handleSearchObjectLight(packet nex.PacketInterface) {
 	if protocol.SearchObjectLightHandler == nil {
 		globals.Logger.Warning("DataStore::SearchObjectLight not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

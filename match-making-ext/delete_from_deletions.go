@@ -12,7 +12,7 @@ func (protocol *MatchMakingExtProtocol) DeleteFromDeletions(handler func(err err
 	protocol.DeleteFromDeletionsHandler = handler
 }
 
-func (protocol *MatchMakingExtProtocol) HandleDeleteFromDeletions(packet nex.PacketInterface) {
+func (protocol *MatchMakingExtProtocol) handleDeleteFromDeletions(packet nex.PacketInterface) {
 	if protocol.DeleteFromDeletionsHandler == nil {
 		globals.Logger.Warning("MatchMakingExt::DeleteFromDeletions not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

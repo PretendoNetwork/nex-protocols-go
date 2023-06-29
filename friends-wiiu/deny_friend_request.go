@@ -13,7 +13,7 @@ func (protocol *FriendsWiiUProtocol) DenyFriendRequest(handler func(err error, c
 	protocol.DenyFriendRequestHandler = handler
 }
 
-func (protocol *FriendsWiiUProtocol) HandleDenyFriendRequest(packet nex.PacketInterface) {
+func (protocol *FriendsWiiUProtocol) handleDenyFriendRequest(packet nex.PacketInterface) {
 	if protocol.DenyFriendRequestHandler == nil {
 		globals.Logger.Warning("FriendsWiiU::DenyFriendRequest not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

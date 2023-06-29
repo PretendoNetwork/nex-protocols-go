@@ -13,7 +13,7 @@ func (protocol *Friends3DSProtocol) UpdateMii(handler func(err error, client *ne
 	protocol.UpdateMiiHandler = handler
 }
 
-func (protocol *Friends3DSProtocol) HandleUpdateMii(packet nex.PacketInterface) {
+func (protocol *Friends3DSProtocol) handleUpdateMii(packet nex.PacketInterface) {
 	if protocol.UpdateMiiHandler == nil {
 		globals.Logger.Warning("Friends3DS::UpdateMii not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

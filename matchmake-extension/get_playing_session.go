@@ -12,7 +12,7 @@ func (protocol *MatchmakeExtensionProtocol) GetPlayingSession(handler func(err e
 	protocol.GetPlayingSessionHandler = handler
 }
 
-func (protocol *MatchmakeExtensionProtocol) HandleGetPlayingSession(packet nex.PacketInterface) {
+func (protocol *MatchmakeExtensionProtocol) handleGetPlayingSession(packet nex.PacketInterface) {
 	if protocol.GetPlayingSessionHandler == nil {
 		globals.Logger.Warning("MatchmakeExtension::GetPlayingSession not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

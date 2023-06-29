@@ -13,7 +13,7 @@ func (protocol *DataStoreProtocol) PostMetaBinary(handler func(err error, client
 	protocol.PostMetaBinaryHandler = handler
 }
 
-func (protocol *DataStoreProtocol) HandlePostMetaBinary(packet nex.PacketInterface) {
+func (protocol *DataStoreProtocol) handlePostMetaBinary(packet nex.PacketInterface) {
 	if protocol.PostMetaBinaryHandler == nil {
 		globals.Logger.Warning("DataStore::PostMetaBinary not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

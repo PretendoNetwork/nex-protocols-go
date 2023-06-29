@@ -13,7 +13,7 @@ func (protocol *DataStoreSuperSmashBros4Protocol) CompletePostReplay(handler fun
 	protocol.CompletePostReplayHandler = handler
 }
 
-func (protocol *DataStoreSuperSmashBros4Protocol) HandleCompletePostReplay(packet nex.PacketInterface) {
+func (protocol *DataStoreSuperSmashBros4Protocol) handleCompletePostReplay(packet nex.PacketInterface) {
 	if protocol.CompletePostReplayHandler == nil {
 		globals.Logger.Warning("DataStoreSmash4::CompletePostReplay not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

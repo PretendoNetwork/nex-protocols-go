@@ -12,7 +12,7 @@ func (protocol *RankingProtocol) UploadCommonData(handler func(err error, client
 	protocol.UploadCommonDataHandler = handler
 }
 
-func (protocol *RankingProtocol) HandleUploadCommonData(packet nex.PacketInterface) {
+func (protocol *RankingProtocol) handleUploadCommonData(packet nex.PacketInterface) {
 	if protocol.UploadCommonDataHandler == nil {
 		globals.Logger.Warning("Ranking::UploadCommonData not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

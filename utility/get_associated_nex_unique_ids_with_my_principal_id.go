@@ -10,7 +10,7 @@ func (protocol *UtilityProtocol) GetAssociatedNexUniqueIDsWithMyPrincipalID(hand
 	protocol.GetAssociatedNexUniqueIDsWithMyPrincipalIDHandler = handler
 }
 
-func (protocol *UtilityProtocol) HandleGetAssociatedNexUniqueIDsWithMyPrincipalID(packet nex.PacketInterface) {
+func (protocol *UtilityProtocol) handleGetAssociatedNexUniqueIDsWithMyPrincipalID(packet nex.PacketInterface) {
 	if protocol.GetAssociatedNexUniqueIDsWithMyPrincipalIDHandler == nil {
 		globals.Logger.Warning("Utility::GetAssociatedNexUniqueIDsWithMyPrincipalID not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

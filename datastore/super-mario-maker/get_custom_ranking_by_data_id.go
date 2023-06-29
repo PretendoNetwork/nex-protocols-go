@@ -13,7 +13,7 @@ func (protocol *DataStoreSuperMarioMakerProtocol) GetCustomRankingByDataID(handl
 	protocol.GetCustomRankingByDataIDHandler = handler
 }
 
-func (protocol *DataStoreSuperMarioMakerProtocol) HandleGetCustomRankingByDataID(packet nex.PacketInterface) {
+func (protocol *DataStoreSuperMarioMakerProtocol) handleGetCustomRankingByDataID(packet nex.PacketInterface) {
 	if protocol.GetCustomRankingByDataIDHandler == nil {
 		globals.Logger.Warning("DataStoreSMM::GetCustomRankingByDataID not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

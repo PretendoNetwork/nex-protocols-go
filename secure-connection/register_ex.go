@@ -12,7 +12,7 @@ func (protocol *SecureConnectionProtocol) RegisterEx(handler func(err error, cli
 	protocol.RegisterExHandler = handler
 }
 
-func (protocol *SecureConnectionProtocol) HandleRegisterEx(packet nex.PacketInterface) {
+func (protocol *SecureConnectionProtocol) handleRegisterEx(packet nex.PacketInterface) {
 	if protocol.RegisterExHandler == nil {
 		globals.Logger.Warning("SecureConnection::RegisterEx not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

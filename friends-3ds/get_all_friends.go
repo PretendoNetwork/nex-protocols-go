@@ -10,7 +10,7 @@ func (protocol *Friends3DSProtocol) GetAllFriends(handler func(err error, client
 	protocol.GetAllFriendsHandler = handler
 }
 
-func (protocol *Friends3DSProtocol) HandleGetAllFriends(packet nex.PacketInterface) {
+func (protocol *Friends3DSProtocol) handleGetAllFriends(packet nex.PacketInterface) {
 	if protocol.GetAllFriendsHandler == nil {
 		globals.Logger.Warning("Friends3DS::GetAllFriends not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

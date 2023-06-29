@@ -13,7 +13,7 @@ func (protocol *DataStoreSuperSmashBros4Protocol) GetReplayMeta(handler func(err
 	protocol.GetReplayMetaHandler = handler
 }
 
-func (protocol *DataStoreSuperSmashBros4Protocol) HandleGetReplayMeta(packet nex.PacketInterface) {
+func (protocol *DataStoreSuperSmashBros4Protocol) handleGetReplayMeta(packet nex.PacketInterface) {
 	if protocol.GetReplayMetaHandler == nil {
 		globals.Logger.Warning("DataStoreSmash4::GetReplayMeta not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

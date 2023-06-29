@@ -40,9 +40,9 @@ func (protocol *MonitoringProtocol) HandlePacket(packet nex.PacketInterface) {
 
 	switch request.MethodID() {
 	case MethodPingDaemon:
-		go protocol.HandlePingDaemon(packet)
+		go protocol.handlePingDaemon(packet)
 	case MethodGetClusterMembers:
-		go protocol.HandleGetClusterMembers(packet)
+		go protocol.handleGetClusterMembers(packet)
 	default:
 		fmt.Printf("Unsupported Monitoring method ID: %#v\n", request.MethodID())
 	}

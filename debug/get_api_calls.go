@@ -12,7 +12,7 @@ func (protocol *DebugProtocol) GetApiCalls(handler func(err error, client *nex.C
 	protocol.GetApiCallsHandler = handler
 }
 
-func (protocol *DebugProtocol) HandleGetApiCalls(packet nex.PacketInterface) {
+func (protocol *DebugProtocol) handleGetApiCalls(packet nex.PacketInterface) {
 	if protocol.GetApiCallsHandler == nil {
 		globals.Logger.Warning("Debug::GetApiCalls not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

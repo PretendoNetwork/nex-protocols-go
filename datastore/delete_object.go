@@ -13,7 +13,7 @@ func (protocol *DataStoreProtocol) DeleteObject(handler func(err error, client *
 	protocol.DeleteObjectHandler = handler
 }
 
-func (protocol *DataStoreProtocol) HandleDeleteObject(packet nex.PacketInterface) {
+func (protocol *DataStoreProtocol) handleDeleteObject(packet nex.PacketInterface) {
 	if protocol.DeleteObjectHandler == nil {
 		globals.Logger.Warning("DataStore::DeleteObject not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

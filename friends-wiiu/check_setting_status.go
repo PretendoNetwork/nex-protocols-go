@@ -10,7 +10,7 @@ func (protocol *FriendsWiiUProtocol) CheckSettingStatus(handler func(err error, 
 	protocol.CheckSettingStatusHandler = handler
 }
 
-func (protocol *FriendsWiiUProtocol) HandleCheckSettingStatus(packet nex.PacketInterface) {
+func (protocol *FriendsWiiUProtocol) handleCheckSettingStatus(packet nex.PacketInterface) {
 	if protocol.CheckSettingStatusHandler == nil {
 		globals.Logger.Warning("FriendsWiiU::CheckSettingStatus not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

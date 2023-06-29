@@ -12,7 +12,7 @@ func (protocol *DataStoreSuperMarioMakerProtocol) GetDeletionReason(handler func
 	protocol.GetDeletionReasonHandler = handler
 }
 
-func (protocol *DataStoreSuperMarioMakerProtocol) HandleGetDeletionReason(packet nex.PacketInterface) {
+func (protocol *DataStoreSuperMarioMakerProtocol) handleGetDeletionReason(packet nex.PacketInterface) {
 	if protocol.GetDeletionReasonHandler == nil {
 		globals.Logger.Warning("DataStoreSMM::GetDeletionReason not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

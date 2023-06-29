@@ -12,7 +12,7 @@ func (protocol *FriendsWiiUProtocol) RemoveFriend(handler func(err error, client
 	protocol.RemoveFriendHandler = handler
 }
 
-func (protocol *FriendsWiiUProtocol) HandleRemoveFriend(packet nex.PacketInterface) {
+func (protocol *FriendsWiiUProtocol) handleRemoveFriend(packet nex.PacketInterface) {
 	if protocol.RemoveFriendHandler == nil {
 		globals.Logger.Warning("FriendsWiiU::RemoveFriend not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

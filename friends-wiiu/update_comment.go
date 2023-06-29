@@ -13,7 +13,7 @@ func (protocol *FriendsWiiUProtocol) UpdateComment(handler func(err error, clien
 	protocol.UpdateCommentHandler = handler
 }
 
-func (protocol *FriendsWiiUProtocol) HandleUpdateComment(packet nex.PacketInterface) {
+func (protocol *FriendsWiiUProtocol) handleUpdateComment(packet nex.PacketInterface) {
 	if protocol.UpdateCommentHandler == nil {
 		globals.Logger.Warning("FriendsWiiU::UpdateComment not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

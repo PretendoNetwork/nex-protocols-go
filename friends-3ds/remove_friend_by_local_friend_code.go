@@ -12,7 +12,7 @@ func (protocol *Friends3DSProtocol) RemoveFriendByLocalFriendCode(handler func(e
 	protocol.RemoveFriendByLocalFriendCodeHandler = handler
 }
 
-func (protocol *Friends3DSProtocol) HandleRemoveFriendByLocalFriendCode(packet nex.PacketInterface) {
+func (protocol *Friends3DSProtocol) handleRemoveFriendByLocalFriendCode(packet nex.PacketInterface) {
 	if protocol.RemoveFriendByLocalFriendCodeHandler == nil {
 		globals.Logger.Warning("Friends3DS::RemoveFriendByLocalFriendCode not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

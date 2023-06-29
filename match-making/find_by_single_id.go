@@ -12,7 +12,7 @@ func (protocol *MatchMakingProtocol) FindBySingleID(handler func(err error, clie
 	protocol.FindBySingleIDHandler = handler
 }
 
-func (protocol *MatchMakingProtocol) HandleFindBySingleID(packet nex.PacketInterface) {
+func (protocol *MatchMakingProtocol) handleFindBySingleID(packet nex.PacketInterface) {
 	if protocol.FindBySingleIDHandler == nil {
 		globals.Logger.Warning("MatchMaking::FindBySingleID not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

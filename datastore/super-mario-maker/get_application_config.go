@@ -12,7 +12,7 @@ func (protocol *DataStoreSuperMarioMakerProtocol) GetApplicationConfig(handler f
 	protocol.GetApplicationConfigHandler = handler
 }
 
-func (protocol *DataStoreSuperMarioMakerProtocol) HandleGetApplicationConfig(packet nex.PacketInterface) {
+func (protocol *DataStoreSuperMarioMakerProtocol) handleGetApplicationConfig(packet nex.PacketInterface) {
 	if protocol.GetApplicationConfigHandler == nil {
 		globals.Logger.Warning("DataStoreSMM::GetApplicationConfig not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

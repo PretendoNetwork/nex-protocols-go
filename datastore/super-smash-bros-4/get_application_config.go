@@ -12,7 +12,7 @@ func (protocol *DataStoreSuperSmashBros4Protocol) GetApplicationConfig(handler f
 	protocol.GetApplicationConfigHandler = handler
 }
 
-func (protocol *DataStoreSuperSmashBros4Protocol) HandleGetApplicationConfig(packet nex.PacketInterface) {
+func (protocol *DataStoreSuperSmashBros4Protocol) handleGetApplicationConfig(packet nex.PacketInterface) {
 	if protocol.GetApplicationConfigHandler == nil {
 		globals.Logger.Warning("DataStoreSmash4::GetApplicationConfig not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

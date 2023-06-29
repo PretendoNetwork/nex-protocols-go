@@ -13,7 +13,7 @@ func (protocol *DataStoreSuperMarioMakerProtocol) RecommendedCourseSearchObject(
 	protocol.RecommendedCourseSearchObjectHandler = handler
 }
 
-func (protocol *DataStoreSuperMarioMakerProtocol) HandleRecommendedCourseSearchObject(packet nex.PacketInterface) {
+func (protocol *DataStoreSuperMarioMakerProtocol) handleRecommendedCourseSearchObject(packet nex.PacketInterface) {
 	if protocol.RecommendedCourseSearchObjectHandler == nil {
 		globals.Logger.Warning("DataStoreSMM::RecommendedCourseSearchObject not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

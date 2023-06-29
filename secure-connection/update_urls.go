@@ -12,7 +12,7 @@ func (protocol *SecureConnectionProtocol) UpdateURLs(handler func(err error, cli
 	protocol.UpdateURLsHandler = handler
 }
 
-func (protocol *SecureConnectionProtocol) HandleUpdateURLs(packet nex.PacketInterface) {
+func (protocol *SecureConnectionProtocol) handleUpdateURLs(packet nex.PacketInterface) {
 	if protocol.UpdateURLsHandler == nil {
 		globals.Logger.Warning("SecureConnection::UpdateURLs not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

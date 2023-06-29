@@ -13,7 +13,7 @@ func (protocol *DataStoreProtocol) GetNotificationURL(handler func(err error, cl
 	protocol.GetNotificationURLHandler = handler
 }
 
-func (protocol *DataStoreProtocol) HandleGetNotificationURL(packet nex.PacketInterface) {
+func (protocol *DataStoreProtocol) handleGetNotificationURL(packet nex.PacketInterface) {
 	if protocol.GetNotificationURLHandler == nil {
 		globals.Logger.Warning("DataStore::GetNotificationURL not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

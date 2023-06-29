@@ -13,7 +13,7 @@ func (protocol *DataStoreSuperMarioMakerProtocol) GetCourseRecord(handler func(e
 	protocol.GetCourseRecordHandler = handler
 }
 
-func (protocol *DataStoreSuperMarioMakerProtocol) HandleGetCourseRecord(packet nex.PacketInterface) {
+func (protocol *DataStoreSuperMarioMakerProtocol) handleGetCourseRecord(packet nex.PacketInterface) {
 	if protocol.GetCourseRecordHandler == nil {
 		globals.Logger.Warning("DataStoreSMM::GetCourseRecord not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

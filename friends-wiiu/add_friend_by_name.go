@@ -12,7 +12,7 @@ func (protocol *FriendsWiiUProtocol) AddFriendByName(handler func(err error, cli
 	protocol.AddFriendByNameHandler = handler
 }
 
-func (protocol *FriendsWiiUProtocol) HandleAddFriendByName(packet nex.PacketInterface) {
+func (protocol *FriendsWiiUProtocol) handleAddFriendByName(packet nex.PacketInterface) {
 	if protocol.AddFriendByNameHandler == nil {
 		globals.Logger.Warning("FriendsWiiU::AddFriendByName not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

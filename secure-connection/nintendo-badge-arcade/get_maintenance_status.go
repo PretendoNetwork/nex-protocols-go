@@ -10,7 +10,7 @@ func (protocol *SecureConnectionNintendoBadgeArcadeProtocol) GetMaintenanceStatu
 	protocol.GetMaintenanceStatusHandler = handler
 }
 
-func (protocol *SecureConnectionNintendoBadgeArcadeProtocol) HandleGetMaintenanceStatus(packet nex.PacketInterface) {
+func (protocol *SecureConnectionNintendoBadgeArcadeProtocol) handleGetMaintenanceStatus(packet nex.PacketInterface) {
 	if protocol.GetMaintenanceStatusHandler == nil {
 		globals.Logger.Warning("SecureConnectionBadgeArcade::GetMaintenanceStatus not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

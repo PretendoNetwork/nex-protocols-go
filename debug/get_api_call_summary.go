@@ -10,7 +10,7 @@ func (protocol *DebugProtocol) GetApiCallSummary(handler func(err error, client 
 	protocol.GetApiCallSummaryHandler = handler
 }
 
-func (protocol *DebugProtocol) HandleGetApiCallSummary(packet nex.PacketInterface) {
+func (protocol *DebugProtocol) handleGetApiCallSummary(packet nex.PacketInterface) {
 	globals.Logger.Warning("Debug::GetApiCallSummary STUBBED")
 
 	if protocol.GetApiCallSummaryHandler == nil {

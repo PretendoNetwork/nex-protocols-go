@@ -94,35 +94,35 @@ func (protocol *Friends3DSProtocol) HandlePacket(packet nex.PacketInterface) {
 
 	switch request.MethodID() {
 	case MethodUpdateProfile:
-		go protocol.HandleUpdateProfile(packet)
+		go protocol.handleUpdateProfile(packet)
 	case MethodUpdateMii:
-		go protocol.HandleUpdateMii(packet)
+		go protocol.handleUpdateMii(packet)
 	case MethodUpdatePreference:
-		go protocol.HandleUpdatePreference(packet)
+		go protocol.handleUpdatePreference(packet)
 	case MethodSyncFriend:
-		go protocol.HandleSyncFriend(packet)
+		go protocol.handleSyncFriend(packet)
 	case MethodUpdatePresence:
-		go protocol.HandleUpdatePresence(packet)
+		go protocol.handleUpdatePresence(packet)
 	case MethodUpdateFavoriteGameKey:
-		go protocol.HandleUpdateFavoriteGameKey(packet)
+		go protocol.handleUpdateFavoriteGameKey(packet)
 	case MethodUpdateComment:
-		go protocol.HandleUpdateComment(packet)
+		go protocol.handleUpdateComment(packet)
 	case MethodGetPrincipalIDByLocalFriendCode:
-		go protocol.HandleGetPrincipalIDByLocalFriendCode(packet)
+		go protocol.handleGetPrincipalIDByLocalFriendCode(packet)
 	case MethodAddFriendByPrincipalID:
-		go protocol.HandleAddFriendByPrincipalID(packet)
+		go protocol.handleAddFriendByPrincipalID(packet)
 	case MethodRemoveFriendByLocalFriendCode:
-		go protocol.HandleRemoveFriendByLocalFriendCode(packet)
+		go protocol.handleRemoveFriendByLocalFriendCode(packet)
 	case MethodRemoveFriendByPrincipalID:
-		go protocol.HandleRemoveFriendByPrincipalID(packet)
+		go protocol.handleRemoveFriendByPrincipalID(packet)
 	case MethodGetAllFriends:
-		go protocol.HandleGetAllFriends(packet)
+		go protocol.handleGetAllFriends(packet)
 	case MethodGetFriendPersistentInfo:
-		go protocol.HandleGetFriendPersistentInfo(packet)
+		go protocol.handleGetFriendPersistentInfo(packet)
 	case MethodGetFriendMii:
-		go protocol.HandleGetFriendMii(packet)
+		go protocol.handleGetFriendMii(packet)
 	case MethodGetFriendPresence:
-		go protocol.HandleGetFriendPresence(packet)
+		go protocol.handleGetFriendPresence(packet)
 	default:
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		fmt.Printf("Unsupported Friends (3DS) method ID: %#v\n", request.MethodID())

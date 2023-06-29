@@ -13,7 +13,7 @@ func (protocol *DataStoreProtocol) PrepareGetObjectV1(handler func(err error, cl
 	protocol.PrepareGetObjectV1Handler = handler
 }
 
-func (protocol *DataStoreProtocol) HandlePrepareGetObjectV1(packet nex.PacketInterface) {
+func (protocol *DataStoreProtocol) handlePrepareGetObjectV1(packet nex.PacketInterface) {
 	if protocol.PrepareGetObjectV1Handler == nil {
 		globals.Logger.Warning("DataStore::PrepareGetObjectV1 not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

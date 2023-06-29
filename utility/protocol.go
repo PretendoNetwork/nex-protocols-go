@@ -58,21 +58,21 @@ func (protocol *UtilityProtocol) Setup() {
 		if request.ProtocolID() == ProtocolID {
 			switch request.MethodID() {
 			case MethodAcquireNexUniqueID:
-				go protocol.HandleAcquireNexUniqueID(packet)
+				go protocol.handleAcquireNexUniqueID(packet)
 			case MethodAcquireNexUniqueIDWithPassword:
-				go protocol.HandleAcquireNexUniqueIDWithPassword(packet)
+				go protocol.handleAcquireNexUniqueIDWithPassword(packet)
 			case MethodAssociateNexUniqueIDWithMyPrincipalID:
-				go protocol.HandleAssociateNexUniqueIDWithMyPrincipalID(packet)
+				go protocol.handleAssociateNexUniqueIDWithMyPrincipalID(packet)
 			case MethodAssociateNexUniqueIDsWithMyPrincipalID:
-				go protocol.HandleAssociateNexUniqueIDsWithMyPrincipalID(packet)
+				go protocol.handleAssociateNexUniqueIDsWithMyPrincipalID(packet)
 			case MethodGetAssociatedNexUniqueIDWithMyPrincipalID:
-				go protocol.HandleGetAssociatedNexUniqueIDWithMyPrincipalID(packet)
+				go protocol.handleGetAssociatedNexUniqueIDWithMyPrincipalID(packet)
 			case MethodGetAssociatedNexUniqueIDsWithMyPrincipalID:
-				go protocol.HandleGetAssociatedNexUniqueIDsWithMyPrincipalID(packet)
+				go protocol.handleGetAssociatedNexUniqueIDsWithMyPrincipalID(packet)
 			case MethodGetIntegerSettings:
-				go protocol.HandleGetIntegerSettings(packet)
+				go protocol.handleGetIntegerSettings(packet)
 			case MethodGetStringSettings:
-				go protocol.HandleGetStringSettings(packet)
+				go protocol.handleGetStringSettings(packet)
 			default:
 				go globals.RespondNotImplemented(packet, ProtocolID)
 				fmt.Printf("Unsupported Utility method ID: %#v\n", request.MethodID())

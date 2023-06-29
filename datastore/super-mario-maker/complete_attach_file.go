@@ -13,7 +13,7 @@ func (protocol *DataStoreSuperMarioMakerProtocol) CompleteAttachFile(handler fun
 	protocol.CompleteAttachFileHandler = handler
 }
 
-func (protocol *DataStoreSuperMarioMakerProtocol) HandleCompleteAttachFile(packet nex.PacketInterface) {
+func (protocol *DataStoreSuperMarioMakerProtocol) handleCompleteAttachFile(packet nex.PacketInterface) {
 	if protocol.CompleteAttachFileHandler == nil {
 		globals.Logger.Warning("DataStoreSMM::CompleteAttachFile not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

@@ -12,7 +12,7 @@ func (protocol *MatchMakingExtProtocol) GetParticipantsURLs(handler func(err err
 	protocol.GetParticipantsURLsHandler = handler
 }
 
-func (protocol *MatchMakingExtProtocol) HandleGetParticipantsURLs(packet nex.PacketInterface) {
+func (protocol *MatchMakingExtProtocol) handleGetParticipantsURLs(packet nex.PacketInterface) {
 	if protocol.GetParticipantsURLsHandler == nil {
 		globals.Logger.Warning("MatchMakingExt::GetParticipantsURLs not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

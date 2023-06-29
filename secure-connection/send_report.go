@@ -12,7 +12,7 @@ func (protocol *SecureConnectionProtocol) SendReport(handler func(err error, cli
 	protocol.SendReportHandler = handler
 }
 
-func (protocol *SecureConnectionProtocol) HandleSendReport(packet nex.PacketInterface) {
+func (protocol *SecureConnectionProtocol) handleSendReport(packet nex.PacketInterface) {
 	if protocol.SendReportHandler == nil {
 		globals.Logger.Warning("SecureConnection::SendReport not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

@@ -13,7 +13,7 @@ func (protocol *DataStoreSuperMarioMakerProtocol) FollowingsLatestCourseSearchOb
 	protocol.FollowingsLatestCourseSearchObjectHandler = handler
 }
 
-func (protocol *DataStoreSuperMarioMakerProtocol) HandleFollowingsLatestCourseSearchObject(packet nex.PacketInterface) {
+func (protocol *DataStoreSuperMarioMakerProtocol) handleFollowingsLatestCourseSearchObject(packet nex.PacketInterface) {
 	if protocol.FollowingsLatestCourseSearchObjectHandler == nil {
 		globals.Logger.Warning("DataStoreSMM::FollowingsLatestCourseSearchObject not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

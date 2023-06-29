@@ -10,7 +10,7 @@ func (protocol *DataStoreSuperSmashBros4Protocol) GetNextReplay(handler func(err
 	protocol.GetNextReplayHandler = handler
 }
 
-func (protocol *DataStoreSuperSmashBros4Protocol) HandleGetNextReplay(packet nex.PacketInterface) {
+func (protocol *DataStoreSuperSmashBros4Protocol) handleGetNextReplay(packet nex.PacketInterface) {
 	if protocol.GetNextReplayHandler == nil {
 		globals.Logger.Warning("DataStoreSmash4::GetNextReplay not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

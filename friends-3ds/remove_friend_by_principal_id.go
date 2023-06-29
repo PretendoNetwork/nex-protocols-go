@@ -12,7 +12,7 @@ func (protocol *Friends3DSProtocol) RemoveFriendByPrincipalID(handler func(err e
 	protocol.RemoveFriendByPrincipalIDHandler = handler
 }
 
-func (protocol *Friends3DSProtocol) HandleRemoveFriendByPrincipalID(packet nex.PacketInterface) {
+func (protocol *Friends3DSProtocol) handleRemoveFriendByPrincipalID(packet nex.PacketInterface) {
 	if protocol.RemoveFriendByPrincipalIDHandler == nil {
 		globals.Logger.Warning("Friends3DS::RemoveFriendByPrincipalID not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

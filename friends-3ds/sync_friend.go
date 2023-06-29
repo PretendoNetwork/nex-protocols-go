@@ -12,7 +12,7 @@ func (protocol *Friends3DSProtocol) SyncFriend(handler func(err error, client *n
 	protocol.SyncFriendHandler = handler
 }
 
-func (protocol *Friends3DSProtocol) HandleSyncFriend(packet nex.PacketInterface) {
+func (protocol *Friends3DSProtocol) handleSyncFriend(packet nex.PacketInterface) {
 	if protocol.SyncFriendHandler == nil {
 		globals.Logger.Warning("Friends3DS::SyncFriend not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

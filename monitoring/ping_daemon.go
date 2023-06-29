@@ -10,7 +10,7 @@ func (protocol *MonitoringProtocol) PingDaemon(handler func(err error, client *n
 	protocol.PingDaemonHandler = handler
 }
 
-func (protocol *MonitoringProtocol) HandlePingDaemon(packet nex.PacketInterface) {
+func (protocol *MonitoringProtocol) handlePingDaemon(packet nex.PacketInterface) {
 	if protocol.PingDaemonHandler == nil {
 		globals.Logger.Warning("Monitoring::PingDaemon not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

@@ -12,7 +12,7 @@ func (protocol *MatchmakeExtensionProtocol) GetSimpleCommunity(handler func(err 
 	protocol.GetSimpleCommunityHandler = handler
 }
 
-func (protocol *MatchmakeExtensionProtocol) HandleGetSimpleCommunity(packet nex.PacketInterface) {
+func (protocol *MatchmakeExtensionProtocol) handleGetSimpleCommunity(packet nex.PacketInterface) {
 	if protocol.GetSimpleCommunityHandler == nil {
 		globals.Logger.Warning("MatchmakeExtension::GetSimpleCommunity not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

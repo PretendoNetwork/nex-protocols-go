@@ -12,7 +12,7 @@ func (protocol *MatchMakingProtocol) GetSessionURLs(handler func(err error, clie
 	protocol.GetSessionURLsHandler = handler
 }
 
-func (protocol *MatchMakingProtocol) HandleGetSessionURLs(packet nex.PacketInterface) {
+func (protocol *MatchMakingProtocol) handleGetSessionURLs(packet nex.PacketInterface) {
 	if protocol.GetSessionURLsHandler == nil {
 		globals.Logger.Warning("MatchMaking::GetSessionURLs not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

@@ -13,7 +13,7 @@ func (protocol *FriendsWiiUProtocol) UpdatePresence(handler func(err error, clie
 	protocol.UpdatePresenceHandler = handler
 }
 
-func (protocol *FriendsWiiUProtocol) HandleUpdatePresence(packet nex.PacketInterface) {
+func (protocol *FriendsWiiUProtocol) handleUpdatePresence(packet nex.PacketInterface) {
 	if protocol.UpdatePresenceHandler == nil {
 		globals.Logger.Warning("FriendsWiiU::UpdatePresence not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

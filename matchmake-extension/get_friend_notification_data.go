@@ -12,7 +12,7 @@ func (protocol *MatchmakeExtensionProtocol) GetFriendNotificationData(handler fu
 	protocol.GetFriendNotificationDataHandler = handler
 }
 
-func (protocol *MatchmakeExtensionProtocol) HandleGetFriendNotificationData(packet nex.PacketInterface) {
+func (protocol *MatchmakeExtensionProtocol) handleGetFriendNotificationData(packet nex.PacketInterface) {
 	if protocol.GetFriendNotificationDataHandler == nil {
 		globals.Logger.Warning("MatchmakeExtension::GetFriendNotificationData not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

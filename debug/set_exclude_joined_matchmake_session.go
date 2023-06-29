@@ -10,7 +10,7 @@ func (protocol *DebugProtocol) SetExcludeJoinedMatchmakeSession(handler func(err
 	protocol.SetExcludeJoinedMatchmakeSessionHandler = handler
 }
 
-func (protocol *DebugProtocol) HandleSetExcludeJoinedMatchmakeSession(packet nex.PacketInterface) {
+func (protocol *DebugProtocol) handleSetExcludeJoinedMatchmakeSession(packet nex.PacketInterface) {
 	globals.Logger.Warning("Debug::SetExcludeJoinedMatchmakeSession STUBBED")
 
 	if protocol.SetExcludeJoinedMatchmakeSessionHandler == nil {

@@ -37,7 +37,7 @@ func (protocol *MessageDeliveryProtocol) HandlePacket(packet nex.PacketInterface
 
 	switch request.MethodID() {
 	case MethodDeliverMessage:
-		go protocol.HandleDeliverMessage(packet)
+		go protocol.handleDeliverMessage(packet)
 	default:
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		fmt.Printf("Unsupported MessageDelivery method ID: %#v\n", request.MethodID())

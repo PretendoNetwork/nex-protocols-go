@@ -10,7 +10,7 @@ func (protocol *UtilityProtocol) AcquireNexUniqueID(handler func(err error, clie
 	protocol.AcquireNexUniqueIDHandler = handler
 }
 
-func (protocol *UtilityProtocol) HandleAcquireNexUniqueID(packet nex.PacketInterface) {
+func (protocol *UtilityProtocol) handleAcquireNexUniqueID(packet nex.PacketInterface) {
 	if protocol.AcquireNexUniqueIDHandler == nil {
 		globals.Logger.Warning("Utility::AcquireNexUniqueID not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

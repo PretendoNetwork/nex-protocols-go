@@ -12,7 +12,7 @@ func (protocol *MatchMakingProtocol) UnregisterGatherings(handler func(err error
 	protocol.UnregisterGatheringsHandler = handler
 }
 
-func (protocol *MatchMakingProtocol) HandleUnregisterGatherings(packet nex.PacketInterface) {
+func (protocol *MatchMakingProtocol) handleUnregisterGatherings(packet nex.PacketInterface) {
 	if protocol.UnregisterGatheringsHandler == nil {
 		globals.Logger.Warning("MatchMaking::UnregisterGatherings not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

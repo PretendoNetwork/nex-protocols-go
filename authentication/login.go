@@ -12,7 +12,7 @@ func (protocol *AuthenticationProtocol) Login(handler func(err error, client *ne
 	protocol.LoginHandler = handler
 }
 
-func (protocol *AuthenticationProtocol) HandleLogin(packet nex.PacketInterface) {
+func (protocol *AuthenticationProtocol) handleLogin(packet nex.PacketInterface) {
 	if protocol.LoginHandler == nil {
 		globals.Logger.Warning("Authentication::Login not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

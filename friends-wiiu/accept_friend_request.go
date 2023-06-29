@@ -12,7 +12,7 @@ func (protocol *FriendsWiiUProtocol) AcceptFriendRequest(handler func(err error,
 	protocol.AcceptFriendRequestHandler = handler
 }
 
-func (protocol *FriendsWiiUProtocol) HandleAcceptFriendRequest(packet nex.PacketInterface) {
+func (protocol *FriendsWiiUProtocol) handleAcceptFriendRequest(packet nex.PacketInterface) {
 	if protocol.AcceptFriendRequestHandler == nil {
 		globals.Logger.Warning("FriendsWiiU::AcceptFriendRequest not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

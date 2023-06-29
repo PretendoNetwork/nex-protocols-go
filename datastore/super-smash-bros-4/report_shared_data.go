@@ -12,7 +12,7 @@ func (protocol *DataStoreSuperSmashBros4Protocol) ReportSharedData(handler func(
 	protocol.ReportSharedDataHandler = handler
 }
 
-func (protocol *DataStoreSuperSmashBros4Protocol) HandleReportSharedData(packet nex.PacketInterface) {
+func (protocol *DataStoreSuperSmashBros4Protocol) handleReportSharedData(packet nex.PacketInterface) {
 	if protocol.ReportSharedDataHandler == nil {
 		globals.Logger.Warning("DataStoreSmash4::ReportSharedData not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

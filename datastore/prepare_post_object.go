@@ -13,7 +13,7 @@ func (protocol *DataStoreProtocol) PreparePostObject(handler func(err error, cli
 	protocol.PreparePostObjectHandler = handler
 }
 
-func (protocol *DataStoreProtocol) HandlePreparePostObject(packet nex.PacketInterface) {
+func (protocol *DataStoreProtocol) handlePreparePostObject(packet nex.PacketInterface) {
 	if protocol.PreparePostObjectHandler == nil {
 		globals.Logger.Warning("DataStore::PreparePostObject not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

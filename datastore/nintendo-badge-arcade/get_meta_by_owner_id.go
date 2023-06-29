@@ -13,7 +13,7 @@ func (protocol *DataStoreNintendoBadgeArcadeProtocol) GetMetaByOwnerID(handler f
 	protocol.GetMetaByOwnerIDHandler = handler
 }
 
-func (protocol *DataStoreNintendoBadgeArcadeProtocol) HandleGetMetaByOwnerID(packet nex.PacketInterface) {
+func (protocol *DataStoreNintendoBadgeArcadeProtocol) handleGetMetaByOwnerID(packet nex.PacketInterface) {
 	if protocol.GetMetaByOwnerIDHandler == nil {
 		globals.Logger.Warning("DataStoreBadgeArcade::GetMetaByOwnerID not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

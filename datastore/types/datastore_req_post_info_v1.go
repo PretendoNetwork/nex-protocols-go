@@ -14,7 +14,7 @@ type DataStoreReqPostInfoV1 struct {
 	URL            string
 	RequestHeaders []*DataStoreKeyValue
 	FormFields     []*DataStoreKeyValue
-	RootCaCert     []byte
+	RootCACert     []byte
 }
 
 // ExtractFromStream extracts a DataStoreReqPostInfoV1 structure from a stream
@@ -45,9 +45,9 @@ func (dataStoreReqPostInfoV1 *DataStoreReqPostInfoV1) ExtractFromStream(stream *
 
 	dataStoreReqPostInfoV1.FormFields = formFields.([]*DataStoreKeyValue)
 
-	dataStoreReqPostInfoV1.RootCaCert, err = stream.ReadBuffer()
+	dataStoreReqPostInfoV1.RootCACert, err = stream.ReadBuffer()
 	if err != nil {
-		return fmt.Errorf("Failed to extract DataStoreReqPostInfoV1.RootCaCert. %s", err.Error())
+		return fmt.Errorf("Failed to extract DataStoreReqPostInfoV1.RootCACert. %s", err.Error())
 	}
 
 	return nil
@@ -59,7 +59,7 @@ func (dataStoreReqPostInfoV1 *DataStoreReqPostInfoV1) Bytes(stream *nex.StreamOu
 	stream.WriteString(dataStoreReqPostInfoV1.URL)
 	stream.WriteListStructure(dataStoreReqPostInfoV1.RequestHeaders)
 	stream.WriteListStructure(dataStoreReqPostInfoV1.FormFields)
-	stream.WriteBuffer(dataStoreReqPostInfoV1.RootCaCert)
+	stream.WriteBuffer(dataStoreReqPostInfoV1.RootCACert)
 
 	return stream.Bytes()
 }
@@ -82,9 +82,9 @@ func (dataStoreReqPostInfoV1 *DataStoreReqPostInfoV1) Copy() nex.StructureInterf
 		copied.FormFields[i] = dataStoreReqPostInfoV1.FormFields[i].Copy().(*DataStoreKeyValue)
 	}
 
-	copied.RootCaCert = make([]byte, len(dataStoreReqPostInfoV1.RootCaCert))
+	copied.RootCACert = make([]byte, len(dataStoreReqPostInfoV1.RootCACert))
 
-	copy(copied.RootCaCert, dataStoreReqPostInfoV1.RootCaCert)
+	copy(copied.RootCACert, dataStoreReqPostInfoV1.RootCACert)
 
 	return copied
 }
@@ -121,7 +121,7 @@ func (dataStoreReqPostInfoV1 *DataStoreReqPostInfoV1) Equals(structure nex.Struc
 		}
 	}
 
-	if !bytes.Equal(dataStoreReqPostInfoV1.RootCaCert, other.RootCaCert) {
+	if !bytes.Equal(dataStoreReqPostInfoV1.RootCACert, other.RootCACert) {
 		return false
 	}
 
@@ -180,7 +180,7 @@ func (dataStoreReqPostInfoV1 *DataStoreReqPostInfoV1) FormatToString(indentation
 		b.WriteString(fmt.Sprintf("%s],\n", indentationValues))
 	}
 
-	b.WriteString(fmt.Sprintf("%sRootCaCert: %x\n", indentationValues, dataStoreReqPostInfoV1.RootCaCert))
+	b.WriteString(fmt.Sprintf("%sRootCaCert: %x\n", indentationValues, dataStoreReqPostInfoV1.RootCACert))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()

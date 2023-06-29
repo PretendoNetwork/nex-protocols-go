@@ -13,7 +13,7 @@ type DataStoreReqGetInfoV1 struct {
 	URL            string
 	RequestHeaders []*DataStoreKeyValue
 	Size           uint32
-	RootCaCert     []byte
+	RootCACert     []byte
 }
 
 // ExtractFromStream extracts a DataStoreReqGetInfoV1 structure from a stream
@@ -36,9 +36,9 @@ func (dataStoreReqGetInfoV1 *DataStoreReqGetInfoV1) ExtractFromStream(stream *ne
 		return fmt.Errorf("Failed to extract DataStoreReqGetInfoV1.Size. %s", err.Error())
 	}
 
-	dataStoreReqGetInfoV1.RootCaCert, err = stream.ReadBuffer()
+	dataStoreReqGetInfoV1.RootCACert, err = stream.ReadBuffer()
 	if err != nil {
-		return fmt.Errorf("Failed to extract DataStoreReqGetInfoV1.RootCaCert. %s", err.Error())
+		return fmt.Errorf("Failed to extract DataStoreReqGetInfoV1.RootCACert. %s", err.Error())
 	}
 
 	return nil
@@ -49,7 +49,7 @@ func (dataStoreReqGetInfoV1 *DataStoreReqGetInfoV1) Bytes(stream *nex.StreamOut)
 	stream.WriteString(dataStoreReqGetInfoV1.URL)
 	stream.WriteListStructure(dataStoreReqGetInfoV1.RequestHeaders)
 	stream.WriteUInt32LE(dataStoreReqGetInfoV1.Size)
-	stream.WriteBuffer(dataStoreReqGetInfoV1.RootCaCert)
+	stream.WriteBuffer(dataStoreReqGetInfoV1.RootCACert)
 
 	return stream.Bytes()
 }
@@ -67,9 +67,9 @@ func (dataStoreReqGetInfoV1 *DataStoreReqGetInfoV1) Copy() nex.StructureInterfac
 
 	copied.Size = dataStoreReqGetInfoV1.Size
 
-	copied.RootCaCert = make([]byte, len(dataStoreReqGetInfoV1.RootCaCert))
+	copied.RootCACert = make([]byte, len(dataStoreReqGetInfoV1.RootCACert))
 
-	copy(copied.RootCaCert, dataStoreReqGetInfoV1.RootCaCert)
+	copy(copied.RootCACert, dataStoreReqGetInfoV1.RootCACert)
 
 	return copied
 }
@@ -96,7 +96,7 @@ func (dataStoreReqGetInfoV1 *DataStoreReqGetInfoV1) Equals(structure nex.Structu
 		return false
 	}
 
-	if !bytes.Equal(dataStoreReqGetInfoV1.RootCaCert, other.RootCaCert) {
+	if !bytes.Equal(dataStoreReqGetInfoV1.RootCACert, other.RootCACert) {
 		return false
 	}
 
@@ -138,7 +138,7 @@ func (dataStoreReqGetInfoV1 *DataStoreReqGetInfoV1) FormatToString(indentationLe
 	}
 
 	b.WriteString(fmt.Sprintf("%sSize: %d,\n", indentationValues, dataStoreReqGetInfoV1.Size))
-	b.WriteString(fmt.Sprintf("%sRootCaCert: %x\n", indentationValues, dataStoreReqGetInfoV1.RootCaCert))
+	b.WriteString(fmt.Sprintf("%sRootCaCert: %x\n", indentationValues, dataStoreReqGetInfoV1.RootCACert))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()

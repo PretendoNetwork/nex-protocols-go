@@ -14,7 +14,7 @@ type DataStoreReqGetInfo struct {
 	URL            string
 	RequestHeaders []*DataStoreKeyValue
 	Size           uint32
-	RootCA         []byte
+	RootCACert     []byte
 	DataID         uint64 // NEX 3.5.0+
 }
 
@@ -25,7 +25,7 @@ func (dataStoreReqGetInfo *DataStoreReqGetInfo) Bytes(stream *nex.StreamOut) []b
 	stream.WriteString(dataStoreReqGetInfo.URL)
 	stream.WriteListStructure(dataStoreReqGetInfo.RequestHeaders)
 	stream.WriteUInt32LE(dataStoreReqGetInfo.Size)
-	stream.WriteBuffer(dataStoreReqGetInfo.RootCA)
+	stream.WriteBuffer(dataStoreReqGetInfo.RootCACert)
 
 	if datastoreVersion.Major >= 3 && datastoreVersion.Minor >= 5 {
 		stream.WriteUInt64LE(dataStoreReqGetInfo.DataID)
@@ -46,9 +46,9 @@ func (dataStoreReqGetInfo *DataStoreReqGetInfo) Copy() nex.StructureInterface {
 	}
 
 	copied.Size = dataStoreReqGetInfo.Size
-	copied.RootCA = make([]byte, len(dataStoreReqGetInfo.RootCA))
+	copied.RootCACert = make([]byte, len(dataStoreReqGetInfo.RootCACert))
 
-	copy(copied.RootCA, dataStoreReqGetInfo.RootCA)
+	copy(copied.RootCACert, dataStoreReqGetInfo.RootCACert)
 
 	copied.DataID = dataStoreReqGetInfo.DataID
 
@@ -77,7 +77,7 @@ func (dataStoreReqGetInfo *DataStoreReqGetInfo) Equals(structure nex.StructureIn
 		return false
 	}
 
-	if !bytes.Equal(dataStoreReqGetInfo.RootCA, other.RootCA) {
+	if !bytes.Equal(dataStoreReqGetInfo.RootCACert, other.RootCACert) {
 		return false
 	}
 
@@ -123,7 +123,7 @@ func (dataStoreReqGetInfo *DataStoreReqGetInfo) FormatToString(indentationLevel 
 	}
 
 	b.WriteString(fmt.Sprintf("%sSize: %d,\n", indentationValues, dataStoreReqGetInfo.Size))
-	b.WriteString(fmt.Sprintf("%sRootCA: %x,\n", indentationValues, dataStoreReqGetInfo.RootCA))
+	b.WriteString(fmt.Sprintf("%sRootCA: %x,\n", indentationValues, dataStoreReqGetInfo.RootCACert))
 	b.WriteString(fmt.Sprintf("%sDataID: %d\n", indentationValues, dataStoreReqGetInfo.DataID))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 

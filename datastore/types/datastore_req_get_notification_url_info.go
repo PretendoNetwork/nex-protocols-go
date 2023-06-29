@@ -13,7 +13,7 @@ type DataStoreReqGetNotificationURLInfo struct {
 	URL        string
 	Key        string
 	Query      string
-	RootCaCert []byte
+	RootCACert []byte
 }
 
 // ExtractFromStream extracts a DataStoreReqGetNotificationURLInfo structure from a stream
@@ -35,9 +35,9 @@ func (dataStoreReqGetNotificationURLInfo *DataStoreReqGetNotificationURLInfo) Ex
 		return fmt.Errorf("Failed to extract DataStoreReqGetNotificationURLInfo.Query. %s", err.Error())
 	}
 
-	dataStoreReqGetNotificationURLInfo.RootCaCert, err = stream.ReadBuffer()
+	dataStoreReqGetNotificationURLInfo.RootCACert, err = stream.ReadBuffer()
 	if err != nil {
-		return fmt.Errorf("Failed to extract DataStoreReqGetNotificationURLInfo.RootCaCert. %s", err.Error())
+		return fmt.Errorf("Failed to extract DataStoreReqGetNotificationURLInfo.RootCACert. %s", err.Error())
 	}
 
 	return nil
@@ -48,7 +48,7 @@ func (dataStoreReqGetNotificationURLInfo *DataStoreReqGetNotificationURLInfo) By
 	stream.WriteString(dataStoreReqGetNotificationURLInfo.URL)
 	stream.WriteString(dataStoreReqGetNotificationURLInfo.Key)
 	stream.WriteString(dataStoreReqGetNotificationURLInfo.Query)
-	stream.WriteBuffer(dataStoreReqGetNotificationURLInfo.RootCaCert)
+	stream.WriteBuffer(dataStoreReqGetNotificationURLInfo.RootCACert)
 
 	return stream.Bytes()
 }
@@ -60,9 +60,9 @@ func (dataStoreReqGetNotificationURLInfo *DataStoreReqGetNotificationURLInfo) Co
 	copied.URL = dataStoreReqGetNotificationURLInfo.URL
 	copied.Key = dataStoreReqGetNotificationURLInfo.Key
 	copied.Query = dataStoreReqGetNotificationURLInfo.Query
-	copied.RootCaCert = make([]byte, len(dataStoreReqGetNotificationURLInfo.RootCaCert))
+	copied.RootCACert = make([]byte, len(dataStoreReqGetNotificationURLInfo.RootCACert))
 
-	copy(copied.RootCaCert, dataStoreReqGetNotificationURLInfo.RootCaCert)
+	copy(copied.RootCACert, dataStoreReqGetNotificationURLInfo.RootCACert)
 
 	return copied
 }
@@ -83,7 +83,7 @@ func (dataStoreReqGetNotificationURLInfo *DataStoreReqGetNotificationURLInfo) Eq
 		return false
 	}
 
-	if !bytes.Equal(dataStoreReqGetNotificationURLInfo.RootCaCert, other.RootCaCert) {
+	if !bytes.Equal(dataStoreReqGetNotificationURLInfo.RootCACert, other.RootCACert) {
 		return false
 	}
 
@@ -107,7 +107,7 @@ func (dataStoreReqGetNotificationURLInfo *DataStoreReqGetNotificationURLInfo) Fo
 	b.WriteString(fmt.Sprintf("%sURL: %q,\n", indentationValues, dataStoreReqGetNotificationURLInfo.URL))
 	b.WriteString(fmt.Sprintf("%sKey: %q,\n", indentationValues, dataStoreReqGetNotificationURLInfo.Key))
 	b.WriteString(fmt.Sprintf("%sQuery: %q,\n", indentationValues, dataStoreReqGetNotificationURLInfo.Query))
-	b.WriteString(fmt.Sprintf("%sRootCaCert: %x\n", indentationValues, dataStoreReqGetNotificationURLInfo.RootCaCert))
+	b.WriteString(fmt.Sprintf("%sRootCaCert: %x\n", indentationValues, dataStoreReqGetNotificationURLInfo.RootCACert))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()

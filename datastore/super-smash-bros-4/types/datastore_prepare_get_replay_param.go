@@ -2,6 +2,7 @@ package datastore_super_smash_bros_4_types
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
 )
@@ -68,6 +69,27 @@ func (dataStorePrepareGetReplayParam *DataStorePrepareGetReplayParam) Equals(str
 	}
 
 	return true
+}
+
+// String returns a string representation of the struct
+func (dataStorePrepareGetReplayParam *DataStorePrepareGetReplayParam) String() string {
+	return dataStorePrepareGetReplayParam.FormatToString(0)
+}
+
+// FormatToString pretty-prints the struct data using the provided indentation level
+func (dataStorePrepareGetReplayParam *DataStorePrepareGetReplayParam) FormatToString(indentationLevel int) string {
+	indentationValues := strings.Repeat("\t", indentationLevel+1)
+	indentationEnd := strings.Repeat("\t", indentationLevel)
+
+	var b strings.Builder
+
+	b.WriteString("DataStorePrepareGetReplayParam{\n")
+	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, dataStorePrepareGetReplayParam.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sReplayID: %d,\n", indentationValues, dataStorePrepareGetReplayParam.ReplayID))
+	b.WriteString(fmt.Sprintf("%sExtraData: %v\n", indentationValues, dataStorePrepareGetReplayParam.ExtraData))
+	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+
+	return b.String()
 }
 
 // NewDataStorePrepareGetReplayParam returns a new DataStorePrepareGetReplayParam

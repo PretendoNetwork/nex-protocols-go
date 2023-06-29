@@ -2,6 +2,7 @@ package authentication_types
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
 )
@@ -84,6 +85,30 @@ func (authenticationInfo *AuthenticationInfo) Equals(structure nex.StructureInte
 	}
 
 	return true
+}
+
+// String returns a string representation of the struct
+func (authenticationInfo *AuthenticationInfo) String() string {
+	return authenticationInfo.FormatToString(0)
+}
+
+// FormatToString pretty-prints the struct data using the provided indentation level
+func (authenticationInfo *AuthenticationInfo) FormatToString(indentationLevel int) string {
+	indentationValues := strings.Repeat("\t", indentationLevel+1)
+	indentationEnd := strings.Repeat("\t", indentationLevel)
+
+	var b strings.Builder
+
+	b.WriteString("AuthenticationInfo{\n")
+	b.WriteString(fmt.Sprintf("%sParentType: %s,\n", indentationValues, authenticationInfo.ParentType().FormatToString(indentationLevel+1)))
+	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, authenticationInfo.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sToken: %s,\n", indentationValues, authenticationInfo.Token))
+	b.WriteString(fmt.Sprintf("%sTokenType: %d,\n", indentationValues, authenticationInfo.TokenType))
+	b.WriteString(fmt.Sprintf("%sNGSVersion: %d,\n", indentationValues, authenticationInfo.NGSVersion))
+	b.WriteString(fmt.Sprintf("%sServerVersion: %d\n", indentationValues, authenticationInfo.ServerVersion))
+	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+
+	return b.String()
 }
 
 // NewAuthenticationInfo returns a new AuthenticationInfo

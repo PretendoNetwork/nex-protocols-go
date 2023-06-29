@@ -3,6 +3,7 @@ package datastore_super_smash_bros_4_types
 import (
 	"bytes"
 	"fmt"
+	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
 )
@@ -159,6 +160,34 @@ func (dataStorePreparePostSharedDataParam *DataStorePreparePostSharedDataParam) 
 	}
 
 	return true
+}
+
+// String returns a string representation of the struct
+func (dataStorePreparePostSharedDataParam *DataStorePreparePostSharedDataParam) String() string {
+	return dataStorePreparePostSharedDataParam.FormatToString(0)
+}
+
+// FormatToString pretty-prints the struct data using the provided indentation level
+func (dataStorePreparePostSharedDataParam *DataStorePreparePostSharedDataParam) FormatToString(indentationLevel int) string {
+	indentationValues := strings.Repeat("\t", indentationLevel+1)
+	indentationEnd := strings.Repeat("\t", indentationLevel)
+
+	var b strings.Builder
+
+	b.WriteString("DataStorePreparePostSharedDataParam{\n")
+	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, dataStorePreparePostSharedDataParam.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sDataType: %d,\n", indentationValues, dataStorePreparePostSharedDataParam.DataType))
+	b.WriteString(fmt.Sprintf("%sRegion: %d,\n", indentationValues, dataStorePreparePostSharedDataParam.Region))
+	b.WriteString(fmt.Sprintf("%sAttribute1: %d,\n", indentationValues, dataStorePreparePostSharedDataParam.Attribute1))
+	b.WriteString(fmt.Sprintf("%sAttribute2: %d,\n", indentationValues, dataStorePreparePostSharedDataParam.Attribute2))
+	b.WriteString(fmt.Sprintf("%sFighter: %x,\n", indentationValues, dataStorePreparePostSharedDataParam.Fighter))
+	b.WriteString(fmt.Sprintf("%sSize: %d,\n", indentationValues, dataStorePreparePostSharedDataParam.Size))
+	b.WriteString(fmt.Sprintf("%sComment: %q,\n", indentationValues, dataStorePreparePostSharedDataParam.Comment))
+	b.WriteString(fmt.Sprintf("%sMetaBinary: %x,\n", indentationValues, dataStorePreparePostSharedDataParam.MetaBinary))
+	b.WriteString(fmt.Sprintf("%sExtraData: %v\n", indentationValues, dataStorePreparePostSharedDataParam.ExtraData))
+	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+
+	return b.String()
 }
 
 // NewDataStorePreparePostSharedDataParam returns a new DataStorePreparePostSharedDataParam

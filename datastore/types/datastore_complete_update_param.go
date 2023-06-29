@@ -2,6 +2,7 @@ package datastore_types
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
 )
@@ -72,6 +73,28 @@ func (dataStoreCompleteUpdateParam *DataStoreCompleteUpdateParam) Equals(structu
 	}
 
 	return true
+}
+
+// String returns a string representation of the struct
+func (dataStoreCompleteUpdateParam *DataStoreCompleteUpdateParam) String() string {
+	return dataStoreCompleteUpdateParam.FormatToString(0)
+}
+
+// FormatToString pretty-prints the struct data using the provided indentation level
+func (dataStoreCompleteUpdateParam *DataStoreCompleteUpdateParam) FormatToString(indentationLevel int) string {
+	indentationValues := strings.Repeat("\t", indentationLevel+1)
+	indentationEnd := strings.Repeat("\t", indentationLevel)
+
+	var b strings.Builder
+
+	b.WriteString("DataStoreCompleteUpdateParam{\n")
+	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, dataStoreCompleteUpdateParam.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sDataID: %d,\n", indentationValues, dataStoreCompleteUpdateParam.DataID))
+	b.WriteString(fmt.Sprintf("%sVersion: %d,\n", indentationValues, dataStoreCompleteUpdateParam.Version))
+	b.WriteString(fmt.Sprintf("%sIsSuccess: %t\n", indentationValues, dataStoreCompleteUpdateParam.IsSuccess))
+	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+
+	return b.String()
 }
 
 // NewDataStoreCompleteUpdateParam returns a new DataStoreCompleteUpdateParam

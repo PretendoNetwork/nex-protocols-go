@@ -2,6 +2,7 @@ package friends_wiiu_types
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
 )
@@ -86,6 +87,35 @@ func (principalInfo *PrincipalBasicInfo) Equals(structure nex.StructureInterface
 	}
 
 	return true
+}
+
+// String returns a string representation of the struct
+func (principalInfo *PrincipalBasicInfo) String() string {
+	return principalInfo.FormatToString(0)
+}
+
+// FormatToString pretty-prints the struct data using the provided indentation level
+func (principalInfo *PrincipalBasicInfo) FormatToString(indentationLevel int) string {
+	indentationValues := strings.Repeat("\t", indentationLevel+1)
+	indentationEnd := strings.Repeat("\t", indentationLevel)
+
+	var b strings.Builder
+
+	b.WriteString("PrincipalBasicInfo{\n")
+	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, principalInfo.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sPID: %d,\n", indentationValues, principalInfo.PID))
+	b.WriteString(fmt.Sprintf("%sNNID: %q,\n", indentationValues, principalInfo.NNID))
+
+	if principalInfo.Mii != nil {
+		b.WriteString(fmt.Sprintf("%sMii: %s,\n", indentationValues, principalInfo.Mii.FormatToString(indentationLevel+1)))
+	} else {
+		b.WriteString(fmt.Sprintf("%sMii: nil,\n", indentationValues))
+	}
+
+	b.WriteString(fmt.Sprintf("%sUnknown: %d\n", indentationValues, principalInfo.Unknown))
+	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+
+	return b.String()
 }
 
 // NewPrincipalBasicInfo returns a new PrincipalBasicInfo

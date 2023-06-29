@@ -2,6 +2,7 @@ package datastore_types
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
 )
@@ -72,6 +73,28 @@ func (dataStorePersistenceInfo *DataStorePersistenceInfo) Equals(structure nex.S
 	}
 
 	return true
+}
+
+// String returns a string representation of the struct
+func (dataStorePersistenceInfo *DataStorePersistenceInfo) String() string {
+	return dataStorePersistenceInfo.FormatToString(0)
+}
+
+// FormatToString pretty-prints the struct data using the provided indentation level
+func (dataStorePersistenceInfo *DataStorePersistenceInfo) FormatToString(indentationLevel int) string {
+	indentationValues := strings.Repeat("\t", indentationLevel+1)
+	indentationEnd := strings.Repeat("\t", indentationLevel)
+
+	var b strings.Builder
+
+	b.WriteString("DataStorePersistenceInfo{\n")
+	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, dataStorePersistenceInfo.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sOwnerID: %d,\n", indentationValues, dataStorePersistenceInfo.OwnerID))
+	b.WriteString(fmt.Sprintf("%sPersistenceSlotID: %d,\n", indentationValues, dataStorePersistenceInfo.PersistenceSlotID))
+	b.WriteString(fmt.Sprintf("%sDataID: %d\n", indentationValues, dataStorePersistenceInfo.DataID))
+	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+
+	return b.String()
 }
 
 // NewDataStorePersistenceInfo returns a new DataStorePersistenceInfo

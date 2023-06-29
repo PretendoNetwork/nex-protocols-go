@@ -2,6 +2,7 @@ package datastore_types
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
 )
@@ -62,6 +63,33 @@ func (dataStoreRatingInfoWithSlot *DataStoreRatingInfoWithSlot) Equals(structure
 	}
 
 	return true
+}
+
+// String returns a string representation of the struct
+func (dataStoreRatingInfoWithSlot *DataStoreRatingInfoWithSlot) String() string {
+	return dataStoreRatingInfoWithSlot.FormatToString(0)
+}
+
+// FormatToString pretty-prints the struct data using the provided indentation level
+func (dataStoreRatingInfoWithSlot *DataStoreRatingInfoWithSlot) FormatToString(indentationLevel int) string {
+	indentationValues := strings.Repeat("\t", indentationLevel+1)
+	indentationEnd := strings.Repeat("\t", indentationLevel)
+
+	var b strings.Builder
+
+	b.WriteString("DataStoreRatingInfoWithSlot{\n")
+	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, dataStoreRatingInfoWithSlot.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sSlot: %d,\n", indentationValues, dataStoreRatingInfoWithSlot.Slot))
+
+	if dataStoreRatingInfoWithSlot.Rating != nil {
+		b.WriteString(fmt.Sprintf("%sRating: %s\n", indentationValues, dataStoreRatingInfoWithSlot.Rating.FormatToString(indentationLevel+1)))
+	} else {
+		b.WriteString(fmt.Sprintf("%sRating: nil\n", indentationValues))
+	}
+
+	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+
+	return b.String()
 }
 
 // NewDataStoreRatingInfoWithSlot returns a new DataStoreRatingInfoWithSlot

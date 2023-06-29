@@ -3,6 +3,7 @@ package friends_3ds_types
 import (
 	"bytes"
 	"fmt"
+	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
 )
@@ -87,6 +88,29 @@ func (mii *Mii) Equals(structure nex.StructureInterface) bool {
 	}
 
 	return true
+}
+
+// String returns a string representation of the struct
+func (mii *Mii) String() string {
+	return mii.FormatToString(0)
+}
+
+// FormatToString pretty-prints the struct data using the provided indentation level
+func (mii *Mii) FormatToString(indentationLevel int) string {
+	indentationValues := strings.Repeat("\t", indentationLevel+1)
+	indentationEnd := strings.Repeat("\t", indentationLevel)
+
+	var b strings.Builder
+
+	b.WriteString("Mii{\n")
+	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, mii.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sName: %q,\n", indentationValues, mii.Name))
+	b.WriteString(fmt.Sprintf("%sUnknown2: %t,\n", indentationValues, mii.Unknown2))
+	b.WriteString(fmt.Sprintf("%sUnknown3: %d,\n", indentationValues, mii.Unknown3))
+	b.WriteString(fmt.Sprintf("%sMiiData: %x\n", indentationValues, mii.MiiData))
+	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+
+	return b.String()
 }
 
 // NewMii returns a new Mii

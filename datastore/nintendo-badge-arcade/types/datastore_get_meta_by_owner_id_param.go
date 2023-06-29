@@ -2,6 +2,7 @@ package datastore_nintendo_badge_arcade_types
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
 )
@@ -104,6 +105,35 @@ func (dataStoreGetMetaByOwnerIDParam *DataStoreGetMetaByOwnerIDParam) Equals(str
 	}
 
 	return true
+}
+
+// String returns a string representation of the struct
+func (dataStoreGetMetaByOwnerIDParam *DataStoreGetMetaByOwnerIDParam) String() string {
+	return dataStoreGetMetaByOwnerIDParam.FormatToString(0)
+}
+
+// FormatToString pretty-prints the struct data using the provided indentation level
+func (dataStoreGetMetaByOwnerIDParam *DataStoreGetMetaByOwnerIDParam) FormatToString(indentationLevel int) string {
+	indentationValues := strings.Repeat("\t", indentationLevel+1)
+	indentationEnd := strings.Repeat("\t", indentationLevel)
+
+	var b strings.Builder
+
+	b.WriteString("DataStoreGetMetaByOwnerIDParam{\n")
+	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, dataStoreGetMetaByOwnerIDParam.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sOwnerIDs: %v,\n", indentationValues, dataStoreGetMetaByOwnerIDParam.OwnerIDs))
+	b.WriteString(fmt.Sprintf("%sDataTypes: %v,\n", indentationValues, dataStoreGetMetaByOwnerIDParam.DataTypes))
+	b.WriteString(fmt.Sprintf("%sResultOption: %d,\n", indentationValues, dataStoreGetMetaByOwnerIDParam.ResultOption))
+
+	if dataStoreGetMetaByOwnerIDParam.ResultRange != nil {
+		b.WriteString(fmt.Sprintf("%sResultRange: %s,\n", indentationValues, dataStoreGetMetaByOwnerIDParam.ResultRange.FormatToString(indentationLevel+1)))
+	} else {
+		b.WriteString(fmt.Sprintf("%sResultRange: nil,\n", indentationValues))
+	}
+
+	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+
+	return b.String()
 }
 
 // NewDataStoreGetMetaByOwnerIDParam returns a new DataStoreGetMetaByOwnerIDParam

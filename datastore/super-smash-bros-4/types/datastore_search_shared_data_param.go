@@ -2,6 +2,7 @@ package datastore_super_smash_bros_4_types
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
 )
@@ -122,6 +123,38 @@ func (dataStoreSearchSharedDataParam *DataStoreSearchSharedDataParam) Equals(str
 	}
 
 	return true
+}
+
+// String returns a string representation of the struct
+func (dataStoreSearchSharedDataParam *DataStoreSearchSharedDataParam) String() string {
+	return dataStoreSearchSharedDataParam.FormatToString(0)
+}
+
+// FormatToString pretty-prints the struct data using the provided indentation level
+func (dataStoreSearchSharedDataParam *DataStoreSearchSharedDataParam) FormatToString(indentationLevel int) string {
+	indentationValues := strings.Repeat("\t", indentationLevel+1)
+	indentationEnd := strings.Repeat("\t", indentationLevel)
+
+	var b strings.Builder
+
+	b.WriteString("DataStoreSearchSharedDataParam{\n")
+	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, dataStoreSearchSharedDataParam.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sDataType: %d,\n", indentationValues, dataStoreSearchSharedDataParam.DataType))
+	b.WriteString(fmt.Sprintf("%sOwner: %d,\n", indentationValues, dataStoreSearchSharedDataParam.Owner))
+	b.WriteString(fmt.Sprintf("%sRegion: %d,\n", indentationValues, dataStoreSearchSharedDataParam.Region))
+	b.WriteString(fmt.Sprintf("%sAttribute1: %d,\n", indentationValues, dataStoreSearchSharedDataParam.Attribute1))
+	b.WriteString(fmt.Sprintf("%sAttribute2: %d,\n", indentationValues, dataStoreSearchSharedDataParam.Attribute2))
+	b.WriteString(fmt.Sprintf("%sFighter: %d,\n", indentationValues, dataStoreSearchSharedDataParam.Fighter))
+
+	if dataStoreSearchSharedDataParam.ResultRange != nil {
+		b.WriteString(fmt.Sprintf("%sResultRange: %s\n", indentationValues, dataStoreSearchSharedDataParam.ResultRange.FormatToString(indentationLevel+1)))
+	} else {
+		b.WriteString(fmt.Sprintf("%sResultRange: nil\n", indentationValues))
+	}
+
+	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+
+	return b.String()
 }
 
 // NewDataStoreSearchSharedDataParam returns a new DataStoreSearchSharedDataParam

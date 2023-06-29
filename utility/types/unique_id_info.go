@@ -2,6 +2,7 @@ package utility_types
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
 )
@@ -62,6 +63,27 @@ func (uniqueIDInfo *UniqueIDInfo) Equals(structure nex.StructureInterface) bool 
 	}
 
 	return true
+}
+
+// String returns a string representation of the struct
+func (uniqueIDInfo *UniqueIDInfo) String() string {
+	return uniqueIDInfo.FormatToString(0)
+}
+
+// FormatToString pretty-prints the struct data using the provided indentation level
+func (uniqueIDInfo *UniqueIDInfo) FormatToString(indentationLevel int) string {
+	indentationValues := strings.Repeat("\t", indentationLevel+1)
+	indentationEnd := strings.Repeat("\t", indentationLevel)
+
+	var b strings.Builder
+
+	b.WriteString("UniqueIDInfo{\n")
+	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, uniqueIDInfo.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sNexUniqueID: %d,\n", indentationValues, uniqueIDInfo.NexUniqueID))
+	b.WriteString(fmt.Sprintf("%sNexUniqueIDPassword: %d\n", indentationValues, uniqueIDInfo.NexUniqueIDPassword))
+	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+
+	return b.String()
 }
 
 // NewUniqueIDInfo returns a new UniqueIDInfo

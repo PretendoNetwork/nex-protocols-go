@@ -3,6 +3,7 @@ package datastore_types
 import (
 	"bytes"
 	"fmt"
+	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
 )
@@ -125,6 +126,63 @@ func (dataStoreReqUpdateInfo *DataStoreReqUpdateInfo) Equals(structure nex.Struc
 	}
 
 	return true
+}
+
+// String returns a string representation of the struct
+func (dataStoreReqUpdateInfo *DataStoreReqUpdateInfo) String() string {
+	return dataStoreReqUpdateInfo.FormatToString(0)
+}
+
+// FormatToString pretty-prints the struct data using the provided indentation level
+func (dataStoreReqUpdateInfo *DataStoreReqUpdateInfo) FormatToString(indentationLevel int) string {
+	indentationValues := strings.Repeat("\t", indentationLevel+1)
+	indentationListValues := strings.Repeat("\t", indentationLevel+2)
+	indentationEnd := strings.Repeat("\t", indentationLevel)
+
+	var b strings.Builder
+
+	b.WriteString("DataStoreReqUpdateInfo{\n")
+	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, dataStoreReqUpdateInfo.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sUrl: %q,\n", indentationValues, dataStoreReqUpdateInfo.Url))
+
+	if len(dataStoreReqUpdateInfo.RequestHeaders) == 0 {
+		b.WriteString(fmt.Sprintf("%sRequestHeaders: [],\n", indentationValues))
+	} else {
+		b.WriteString(fmt.Sprintf("%sRequestHeaders: [\n", indentationValues))
+
+		for i := 0; i < len(dataStoreReqUpdateInfo.RequestHeaders); i++ {
+			str := dataStoreReqUpdateInfo.RequestHeaders[i].FormatToString(indentationLevel + 2)
+			if i == len(dataStoreReqUpdateInfo.RequestHeaders)-1 {
+				b.WriteString(fmt.Sprintf("%s%s\n", indentationListValues, str))
+			} else {
+				b.WriteString(fmt.Sprintf("%s%s,\n", indentationListValues, str))
+			}
+		}
+
+		b.WriteString(fmt.Sprintf("%s],\n", indentationValues))
+	}
+
+	if len(dataStoreReqUpdateInfo.FormFields) == 0 {
+		b.WriteString(fmt.Sprintf("%sFormFields: [],\n", indentationValues))
+	} else {
+		b.WriteString(fmt.Sprintf("%sFormFields: [\n", indentationValues))
+
+		for i := 0; i < len(dataStoreReqUpdateInfo.FormFields); i++ {
+			str := dataStoreReqUpdateInfo.FormFields[i].FormatToString(indentationLevel + 2)
+			if i == len(dataStoreReqUpdateInfo.FormFields)-1 {
+				b.WriteString(fmt.Sprintf("%s%s\n", indentationListValues, str))
+			} else {
+				b.WriteString(fmt.Sprintf("%s%s,\n", indentationListValues, str))
+			}
+		}
+
+		b.WriteString(fmt.Sprintf("%s],\n", indentationValues))
+	}
+
+	b.WriteString(fmt.Sprintf("%sRootCaCert: %x\n", indentationValues, dataStoreReqUpdateInfo.RootCaCert))
+	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+
+	return b.String()
 }
 
 // NewDataStoreReqUpdateInfo returns a new DataStoreReqUpdateInfo

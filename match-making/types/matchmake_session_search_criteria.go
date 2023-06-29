@@ -2,6 +2,7 @@ package match_making_types
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
 )
@@ -175,6 +176,35 @@ func (matchmakeSessionSearchCriteria *MatchmakeSessionSearchCriteria) Equals(str
 	}
 
 	return true
+}
+
+// String returns a string representation of the struct
+func (matchmakeSessionSearchCriteria *MatchmakeSessionSearchCriteria) String() string {
+	return matchmakeSessionSearchCriteria.FormatToString(0)
+}
+
+// FormatToString pretty-prints the struct data using the provided indentation level
+func (matchmakeSessionSearchCriteria *MatchmakeSessionSearchCriteria) FormatToString(indentationLevel int) string {
+	indentationValues := strings.Repeat("\t", indentationLevel+1)
+	indentationEnd := strings.Repeat("\t", indentationLevel)
+
+	var b strings.Builder
+
+	b.WriteString("MatchmakeSessionSearchCriteria{\n")
+	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, matchmakeSessionSearchCriteria.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sAttribs: %v,\n", indentationValues, matchmakeSessionSearchCriteria.Attribs))
+	b.WriteString(fmt.Sprintf("%sGameMode: %q,\n", indentationValues, matchmakeSessionSearchCriteria.GameMode))
+	b.WriteString(fmt.Sprintf("%sMinParticipants: %q,\n", indentationValues, matchmakeSessionSearchCriteria.MinParticipants))
+	b.WriteString(fmt.Sprintf("%sMaxParticipants: %q,\n", indentationValues, matchmakeSessionSearchCriteria.MaxParticipants))
+	b.WriteString(fmt.Sprintf("%sMatchmakeSystemType: %q,\n", indentationValues, matchmakeSessionSearchCriteria.MatchmakeSystemType))
+	b.WriteString(fmt.Sprintf("%sVacantOnly: %t,\n", indentationValues, matchmakeSessionSearchCriteria.VacantOnly))
+	b.WriteString(fmt.Sprintf("%sExcludeLocked: %t,\n", indentationValues, matchmakeSessionSearchCriteria.ExcludeLocked))
+	b.WriteString(fmt.Sprintf("%sExcludeNonHostPid: %t,\n", indentationValues, matchmakeSessionSearchCriteria.ExcludeNonHostPid))
+	b.WriteString(fmt.Sprintf("%sSelectionMethod: %d,\n", indentationValues, matchmakeSessionSearchCriteria.SelectionMethod))
+	b.WriteString(fmt.Sprintf("%sVacantParticipants: %d\n", indentationValues, matchmakeSessionSearchCriteria.VacantParticipants))
+	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+
+	return b.String()
 }
 
 // NewMatchmakeSessionSearchCriteria returns a new MatchmakeSessionSearchCriteria

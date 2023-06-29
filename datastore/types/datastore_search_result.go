@@ -2,6 +2,7 @@ package datastore_types
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
 )
@@ -84,6 +85,46 @@ func (dataStoreSearchResult *DataStoreSearchResult) Equals(structure nex.Structu
 	}
 
 	return true
+}
+
+// String returns a string representation of the struct
+func (dataStoreSearchResult *DataStoreSearchResult) String() string {
+	return dataStoreSearchResult.FormatToString(0)
+}
+
+// FormatToString pretty-prints the struct data using the provided indentation level
+func (dataStoreSearchResult *DataStoreSearchResult) FormatToString(indentationLevel int) string {
+	indentationValues := strings.Repeat("\t", indentationLevel+1)
+	indentationListValues := strings.Repeat("\t", indentationLevel+2)
+	indentationEnd := strings.Repeat("\t", indentationLevel)
+
+	var b strings.Builder
+
+	b.WriteString("DataStoreSearchResult{\n")
+	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, dataStoreSearchResult.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sTotalCount: %d,\n", indentationValues, dataStoreSearchResult.TotalCount))
+
+	if len(dataStoreSearchResult.Result) == 0 {
+		b.WriteString(fmt.Sprintf("%sResult: [],\n", indentationValues))
+	} else {
+		b.WriteString(fmt.Sprintf("%sResult: [\n", indentationValues))
+
+		for i := 0; i < len(dataStoreSearchResult.Result); i++ {
+			str := dataStoreSearchResult.Result[i].FormatToString(indentationLevel + 2)
+			if i == len(dataStoreSearchResult.Result)-1 {
+				b.WriteString(fmt.Sprintf("%s%s\n", indentationListValues, str))
+			} else {
+				b.WriteString(fmt.Sprintf("%s%s,\n", indentationListValues, str))
+			}
+		}
+
+		b.WriteString(fmt.Sprintf("%s],\n", indentationValues))
+	}
+
+	b.WriteString(fmt.Sprintf("%sTotalCountType: %d\n", indentationValues, dataStoreSearchResult.TotalCountType))
+	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+
+	return b.String()
 }
 
 // NewDataStoreSearchResult returns a new DataStoreSearchResult

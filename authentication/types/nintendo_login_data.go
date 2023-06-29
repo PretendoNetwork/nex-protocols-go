@@ -2,6 +2,7 @@ package authentication_types
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
 )
@@ -38,6 +39,26 @@ func (nintendoLoginData *NintendoLoginData) Equals(structure nex.StructureInterf
 	other := structure.(*NintendoLoginData)
 
 	return nintendoLoginData.Token == other.Token
+}
+
+// String returns a string representation of the struct
+func (nintendoLoginData *NintendoLoginData) String() string {
+	return nintendoLoginData.FormatToString(0)
+}
+
+// FormatToString pretty-prints the struct data using the provided indentation level
+func (nintendoLoginData *NintendoLoginData) FormatToString(indentationLevel int) string {
+	indentationValues := strings.Repeat("\t", indentationLevel+1)
+	indentationEnd := strings.Repeat("\t", indentationLevel)
+
+	var b strings.Builder
+
+	b.WriteString("NintendoLoginData{\n")
+	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, nintendoLoginData.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sToken: %s\n", indentationValues, nintendoLoginData.Token))
+	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+
+	return b.String()
 }
 
 // NewAuthenticationInfo returns a new NintendoLoginData

@@ -2,6 +2,7 @@ package match_making_types
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
 )
@@ -157,6 +158,35 @@ func (gathering *Gathering) Equals(structure nex.StructureInterface) bool {
 	}
 
 	return true
+}
+
+// String returns a string representation of the struct
+func (gathering *Gathering) String() string {
+	return gathering.FormatToString(0)
+}
+
+// FormatToString pretty-prints the struct data using the provided indentation level
+func (gathering *Gathering) FormatToString(indentationLevel int) string {
+	indentationValues := strings.Repeat("\t", indentationLevel+1)
+	indentationEnd := strings.Repeat("\t", indentationLevel)
+
+	var b strings.Builder
+
+	b.WriteString("Gathering{\n")
+	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, gathering.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sID: %d,\n", indentationValues, gathering.ID))
+	b.WriteString(fmt.Sprintf("%sOwnerPID: %d,\n", indentationValues, gathering.OwnerPID))
+	b.WriteString(fmt.Sprintf("%sHostPID: %d,\n", indentationValues, gathering.HostPID))
+	b.WriteString(fmt.Sprintf("%sMinimumParticipants: %d,\n", indentationValues, gathering.MinimumParticipants))
+	b.WriteString(fmt.Sprintf("%sMaximumParticipants: %d,\n", indentationValues, gathering.MaximumParticipants))
+	b.WriteString(fmt.Sprintf("%sParticipationPolicy: %d,\n", indentationValues, gathering.ParticipationPolicy))
+	b.WriteString(fmt.Sprintf("%sPolicyArgument: %d,\n", indentationValues, gathering.PolicyArgument))
+	b.WriteString(fmt.Sprintf("%sFlags: %d,\n", indentationValues, gathering.Flags))
+	b.WriteString(fmt.Sprintf("%sState: %d,\n", indentationValues, gathering.State))
+	b.WriteString(fmt.Sprintf("%sDescription: %q\n", indentationValues, gathering.Description))
+	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+
+	return b.String()
 }
 
 // NewGathering returns a new Gathering

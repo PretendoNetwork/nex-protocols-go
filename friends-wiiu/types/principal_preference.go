@@ -2,6 +2,7 @@ package friends_wiiu_types
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
 )
@@ -73,6 +74,28 @@ func (principalPreference *PrincipalPreference) Equals(structure nex.StructureIn
 	}
 
 	return true
+}
+
+// String returns a string representation of the struct
+func (principalPreference *PrincipalPreference) String() string {
+	return principalPreference.FormatToString(0)
+}
+
+// FormatToString pretty-prints the struct data using the provided indentation level
+func (principalPreference *PrincipalPreference) FormatToString(indentationLevel int) string {
+	indentationValues := strings.Repeat("\t", indentationLevel+1)
+	indentationEnd := strings.Repeat("\t", indentationLevel)
+
+	var b strings.Builder
+
+	b.WriteString("PrincipalPreference{\n")
+	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, principalPreference.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sShowOnlinePresence: %t,\n", indentationValues, principalPreference.ShowOnlinePresence))
+	b.WriteString(fmt.Sprintf("%sShowCurrentTitle: %t,\n", indentationValues, principalPreference.ShowCurrentTitle))
+	b.WriteString(fmt.Sprintf("%sBlockFriendRequests: %t\n", indentationValues, principalPreference.BlockFriendRequests))
+	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+
+	return b.String()
 }
 
 // NewPrincipalPreference returns a new PrincipalPreference

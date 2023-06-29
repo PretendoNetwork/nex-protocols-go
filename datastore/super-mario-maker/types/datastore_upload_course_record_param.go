@@ -2,6 +2,7 @@ package datastore_super_mario_maker_types
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
 )
@@ -63,6 +64,28 @@ func (dataStoreUploadCourseRecordParam *DataStoreUploadCourseRecordParam) Equals
 	}
 
 	return true
+}
+
+// String returns a string representation of the struct
+func (dataStoreUploadCourseRecordParam *DataStoreUploadCourseRecordParam) String() string {
+	return dataStoreUploadCourseRecordParam.FormatToString(0)
+}
+
+// FormatToString pretty-prints the struct data using the provided indentation level
+func (dataStoreUploadCourseRecordParam *DataStoreUploadCourseRecordParam) FormatToString(indentationLevel int) string {
+	indentationValues := strings.Repeat("\t", indentationLevel+1)
+	indentationEnd := strings.Repeat("\t", indentationLevel)
+
+	var b strings.Builder
+
+	b.WriteString("DataStoreUploadCourseRecordParam{\n")
+	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, dataStoreUploadCourseRecordParam.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sDataID: %d,\n", indentationValues, dataStoreUploadCourseRecordParam.DataID))
+	b.WriteString(fmt.Sprintf("%sSlot: %d,\n", indentationValues, dataStoreUploadCourseRecordParam.Slot))
+	b.WriteString(fmt.Sprintf("%sScore: %d\n", indentationValues, dataStoreUploadCourseRecordParam.Score))
+	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+
+	return b.String()
 }
 
 // NewDataStoreUploadCourseRecordParam returns a new DataStoreUploadCourseRecordParam

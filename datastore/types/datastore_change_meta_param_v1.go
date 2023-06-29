@@ -3,6 +3,7 @@ package datastore_types
 import (
 	"bytes"
 	"fmt"
+	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
 )
@@ -160,6 +161,45 @@ func (dataStoreChangeMetaParamV1 *DataStoreChangeMetaParamV1) Equals(structure n
 	}
 
 	return true
+}
+
+// String returns a string representation of the struct
+func (dataStoreChangeMetaParamV1 *DataStoreChangeMetaParamV1) String() string {
+	return dataStoreChangeMetaParamV1.FormatToString(0)
+}
+
+// FormatToString pretty-prints the struct data using the provided indentation level
+func (dataStoreChangeMetaParamV1 *DataStoreChangeMetaParamV1) FormatToString(indentationLevel int) string {
+	indentationValues := strings.Repeat("\t", indentationLevel+1)
+	indentationEnd := strings.Repeat("\t", indentationLevel)
+
+	var b strings.Builder
+
+	b.WriteString("DataStoreChangeMetaParamV1{\n")
+	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, dataStoreChangeMetaParamV1.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sDataID: %d,\n", indentationValues, dataStoreChangeMetaParamV1.DataID))
+	b.WriteString(fmt.Sprintf("%sModifiesFlag: %d,\n", indentationValues, dataStoreChangeMetaParamV1.ModifiesFlag))
+	b.WriteString(fmt.Sprintf("%sName: %q,\n", indentationValues, dataStoreChangeMetaParamV1.Name))
+
+	if dataStoreChangeMetaParamV1.Permission != nil {
+		b.WriteString(fmt.Sprintf("%sPermission: %s,\n", indentationValues, dataStoreChangeMetaParamV1.Permission.FormatToString(indentationLevel+1)))
+	} else {
+		b.WriteString(fmt.Sprintf("%sPermission: nil,\n", indentationValues))
+	}
+
+	if dataStoreChangeMetaParamV1.DelPermission != nil {
+		b.WriteString(fmt.Sprintf("%sDelPermission: %s,\n", indentationValues, dataStoreChangeMetaParamV1.DelPermission.FormatToString(indentationLevel+1)))
+	} else {
+		b.WriteString(fmt.Sprintf("%sDelPermission: nil,\n", indentationValues))
+	}
+
+	b.WriteString(fmt.Sprintf("%sPeriod: %d,\n", indentationValues, dataStoreChangeMetaParamV1.Period))
+	b.WriteString(fmt.Sprintf("%sMetaBinary: %x,\n", indentationValues, dataStoreChangeMetaParamV1.MetaBinary))
+	b.WriteString(fmt.Sprintf("%sTags: %v,\n", indentationValues, dataStoreChangeMetaParamV1.Tags))
+	b.WriteString(fmt.Sprintf("%sUpdatePassword: %d\n", indentationValues, dataStoreChangeMetaParamV1.UpdatePassword))
+	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+
+	return b.String()
 }
 
 // NewDataStoreChangeMetaParamV1 returns a new DataStoreChangeMetaParamV1

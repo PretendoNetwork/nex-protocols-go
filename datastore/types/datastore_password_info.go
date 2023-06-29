@@ -2,6 +2,7 @@ package datastore_types
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
 )
@@ -72,6 +73,28 @@ func (dataStorePasswordInfo *DataStorePasswordInfo) Equals(structure nex.Structu
 	}
 
 	return true
+}
+
+// String returns a string representation of the struct
+func (dataStorePasswordInfo *DataStorePasswordInfo) String() string {
+	return dataStorePasswordInfo.FormatToString(0)
+}
+
+// FormatToString pretty-prints the struct data using the provided indentation level
+func (dataStorePasswordInfo *DataStorePasswordInfo) FormatToString(indentationLevel int) string {
+	indentationValues := strings.Repeat("\t", indentationLevel+1)
+	indentationEnd := strings.Repeat("\t", indentationLevel)
+
+	var b strings.Builder
+
+	b.WriteString("DataStorePasswordInfo{\n")
+	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, dataStorePasswordInfo.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sDataID: %d,\n", indentationValues, dataStorePasswordInfo.DataID))
+	b.WriteString(fmt.Sprintf("%sAccessPassword: %d,\n", indentationValues, dataStorePasswordInfo.AccessPassword))
+	b.WriteString(fmt.Sprintf("%sUpdatePassword: %d\n", indentationValues, dataStorePasswordInfo.UpdatePassword))
+	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+
+	return b.String()
 }
 
 // NewDataStorePasswordInfo returns a new DataStorePasswordInfo

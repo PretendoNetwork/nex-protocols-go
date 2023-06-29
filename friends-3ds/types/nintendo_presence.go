@@ -3,6 +3,7 @@ package friends_3ds_types
 import (
 	"bytes"
 	"fmt"
+	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
 )
@@ -161,6 +162,41 @@ func (presence *NintendoPresence) Equals(structure nex.StructureInterface) bool 
 	}
 
 	return true
+}
+
+// String returns a string representation of the struct
+func (presence *NintendoPresence) String() string {
+	return presence.FormatToString(0)
+}
+
+// FormatToString pretty-prints the struct data using the provided indentation level
+func (presence *NintendoPresence) FormatToString(indentationLevel int) string {
+	indentationValues := strings.Repeat("\t", indentationLevel+1)
+	indentationEnd := strings.Repeat("\t", indentationLevel)
+
+	var b strings.Builder
+
+	b.WriteString("NintendoPresence{\n")
+	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, presence.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sChangedFlags: %d,\n", indentationValues, presence.ChangedFlags))
+
+	if presence.GameKey != nil {
+		b.WriteString(fmt.Sprintf("%sGameKey: %s,\n", indentationValues, presence.GameKey.FormatToString(indentationLevel+1)))
+	} else {
+		b.WriteString(fmt.Sprintf("%sGameKey: nil,\n", indentationValues))
+	}
+
+	b.WriteString(fmt.Sprintf("%sMessage: %q,\n", indentationValues, presence.Message))
+	b.WriteString(fmt.Sprintf("%sJoinAvailableFlag: %d,\n", indentationValues, presence.JoinAvailableFlag))
+	b.WriteString(fmt.Sprintf("%sMatchmakeType: %d,\n", indentationValues, presence.MatchmakeType))
+	b.WriteString(fmt.Sprintf("%sJoinGameID: %d,\n", indentationValues, presence.JoinGameID))
+	b.WriteString(fmt.Sprintf("%sJoinGameMode: %d,\n", indentationValues, presence.JoinGameMode))
+	b.WriteString(fmt.Sprintf("%sOwnerPID: %d,\n", indentationValues, presence.OwnerPID))
+	b.WriteString(fmt.Sprintf("%sJoinGroupID: %d,\n", indentationValues, presence.JoinGroupID))
+	b.WriteString(fmt.Sprintf("%sApplicationArg: %x\n", indentationValues, presence.ApplicationArg))
+	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+
+	return b.String()
 }
 
 // NewNintendoPresence returns a new NintendoPresence

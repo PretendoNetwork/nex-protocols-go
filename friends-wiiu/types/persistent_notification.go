@@ -2,6 +2,7 @@ package friends_wiiu_types
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
 )
@@ -86,6 +87,30 @@ func (notification *PersistentNotification) Equals(structure nex.StructureInterf
 	}
 
 	return true
+}
+
+// String returns a string representation of the struct
+func (notification *PersistentNotification) String() string {
+	return notification.FormatToString(0)
+}
+
+// FormatToString pretty-prints the struct data using the provided indentation level
+func (notification *PersistentNotification) FormatToString(indentationLevel int) string {
+	indentationValues := strings.Repeat("\t", indentationLevel+1)
+	indentationEnd := strings.Repeat("\t", indentationLevel)
+
+	var b strings.Builder
+
+	b.WriteString("PersistentNotification{\n")
+	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, notification.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sUnknown1: %d,\n", indentationValues, notification.Unknown1))
+	b.WriteString(fmt.Sprintf("%sUnknown2: %d,\n", indentationValues, notification.Unknown2))
+	b.WriteString(fmt.Sprintf("%sUnknown3: %d,\n", indentationValues, notification.Unknown3))
+	b.WriteString(fmt.Sprintf("%sUnknown4: %d,\n", indentationValues, notification.Unknown4))
+	b.WriteString(fmt.Sprintf("%sUnknown5: %q\n", indentationValues, notification.Unknown5))
+	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+
+	return b.String()
 }
 
 // NewPersistentNotification returns a new PersistentNotification

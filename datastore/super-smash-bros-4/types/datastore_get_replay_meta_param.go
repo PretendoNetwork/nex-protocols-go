@@ -2,6 +2,7 @@ package datastore_super_smash_bros_4_types
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
 )
@@ -60,6 +61,27 @@ func (dataStoreGetReplayMetaParam *DataStoreGetReplayMetaParam) Equals(structure
 	}
 
 	return true
+}
+
+// String returns a string representation of the struct
+func (dataStoreGetReplayMetaParam *DataStoreGetReplayMetaParam) String() string {
+	return dataStoreGetReplayMetaParam.FormatToString(0)
+}
+
+// FormatToString pretty-prints the struct data using the provided indentation level
+func (dataStoreGetReplayMetaParam *DataStoreGetReplayMetaParam) FormatToString(indentationLevel int) string {
+	indentationValues := strings.Repeat("\t", indentationLevel+1)
+	indentationEnd := strings.Repeat("\t", indentationLevel)
+
+	var b strings.Builder
+
+	b.WriteString("DataStoreGetReplayMetaParam{\n")
+	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, dataStoreGetReplayMetaParam.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sReplayID: %d,\n", indentationValues, dataStoreGetReplayMetaParam.ReplayID))
+	b.WriteString(fmt.Sprintf("%sMetaType: %d\n", indentationValues, dataStoreGetReplayMetaParam.MetaType))
+	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+
+	return b.String()
 }
 
 // NewDataStoreGetReplayMetaParam returns a new DataStoreGetReplayMetaParam

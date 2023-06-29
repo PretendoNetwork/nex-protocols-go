@@ -1,6 +1,11 @@
 package friends_wiiu_types
 
-import "github.com/PretendoNetwork/nex-go"
+import (
+	"fmt"
+	"strings"
+
+	"github.com/PretendoNetwork/nex-go"
+)
 
 // FriendRequestMessage contains message data for a FriendRequest
 type FriendRequestMessage struct {
@@ -89,6 +94,50 @@ func (friendRequestMessage *FriendRequestMessage) Equals(structure nex.Structure
 	}
 
 	return true
+}
+
+// String returns a string representation of the struct
+func (friendRequestMessage *FriendRequestMessage) String() string {
+	return friendRequestMessage.FormatToString(0)
+}
+
+// FormatToString pretty-prints the struct data using the provided indentation level
+func (friendRequestMessage *FriendRequestMessage) FormatToString(indentationLevel int) string {
+	indentationValues := strings.Repeat("\t", indentationLevel+1)
+	indentationEnd := strings.Repeat("\t", indentationLevel)
+
+	var b strings.Builder
+
+	b.WriteString("FriendRequestMessage{\n")
+	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, friendRequestMessage.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sFriendRequestID: %d,\n", indentationValues, friendRequestMessage.FriendRequestID))
+	b.WriteString(fmt.Sprintf("%sReceived: %t,\n", indentationValues, friendRequestMessage.Received))
+	b.WriteString(fmt.Sprintf("%sUnknown2: %d,\n", indentationValues, friendRequestMessage.Unknown2))
+	b.WriteString(fmt.Sprintf("%sMessage: %q,\n", indentationValues, friendRequestMessage.Message))
+	b.WriteString(fmt.Sprintf("%sUnknown3: %d,\n", indentationValues, friendRequestMessage.Unknown3))
+	b.WriteString(fmt.Sprintf("%sUnknown4: %q,\n", indentationValues, friendRequestMessage.Unknown4))
+
+	if friendRequestMessage.GameKey != nil {
+		b.WriteString(fmt.Sprintf("%sGameKey: %s,\n", indentationValues, friendRequestMessage.GameKey.FormatToString(indentationLevel+1)))
+	} else {
+		b.WriteString(fmt.Sprintf("%sGameKey: nil,\n", indentationValues))
+	}
+
+	if friendRequestMessage.Unknown5 != nil {
+		b.WriteString(fmt.Sprintf("%sUnknown5: %s,\n", indentationValues, friendRequestMessage.Unknown5.FormatToString(indentationLevel+1)))
+	} else {
+		b.WriteString(fmt.Sprintf("%sUnknown5: nil,\n", indentationValues))
+	}
+
+	if friendRequestMessage.ExpiresOn != nil {
+		b.WriteString(fmt.Sprintf("%sExpiresOn: %s\n", indentationValues, friendRequestMessage.ExpiresOn.FormatToString(indentationLevel+1)))
+	} else {
+		b.WriteString(fmt.Sprintf("%sExpiresOn: nil\n", indentationValues))
+	}
+
+	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+
+	return b.String()
 }
 
 // NewFriendRequestMessage returns a new FriendRequestMessage

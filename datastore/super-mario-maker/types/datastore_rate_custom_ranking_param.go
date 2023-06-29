@@ -2,6 +2,7 @@ package datastore_super_mario_maker_types
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
 )
@@ -75,6 +76,29 @@ func (dataStoreRateCustomRankingParam *DataStoreRateCustomRankingParam) Equals(s
 	}
 
 	return true
+}
+
+// String returns a string representation of the struct
+func (dataStoreRateCustomRankingParam *DataStoreRateCustomRankingParam) String() string {
+	return dataStoreRateCustomRankingParam.FormatToString(0)
+}
+
+// FormatToString pretty-prints the struct data using the provided indentation level
+func (dataStoreRateCustomRankingParam *DataStoreRateCustomRankingParam) FormatToString(indentationLevel int) string {
+	indentationValues := strings.Repeat("\t", indentationLevel+1)
+	indentationEnd := strings.Repeat("\t", indentationLevel)
+
+	var b strings.Builder
+
+	b.WriteString("DataStoreRateCustomRankingParam{\n")
+	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, dataStoreRateCustomRankingParam.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sDataID: %d,\n", indentationValues, dataStoreRateCustomRankingParam.DataID))
+	b.WriteString(fmt.Sprintf("%sApplicationId: %d,\n", indentationValues, dataStoreRateCustomRankingParam.ApplicationId))
+	b.WriteString(fmt.Sprintf("%sScore: %d,\n", indentationValues, dataStoreRateCustomRankingParam.Score))
+	b.WriteString(fmt.Sprintf("%sPeriod: %d\n", indentationValues, dataStoreRateCustomRankingParam.Period))
+	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+
+	return b.String()
 }
 
 // NewDataStoreRateCustomRankingParam returns a new DataStoreRateCustomRankingParam

@@ -3,6 +3,7 @@ package friends_wiiu_types
 import (
 	"bytes"
 	"fmt"
+	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
 )
@@ -226,6 +227,46 @@ func (presence *NintendoPresenceV2) Equals(structure nex.StructureInterface) boo
 	}
 
 	return true
+}
+
+// String returns a string representation of the struct
+func (presence *NintendoPresenceV2) String() string {
+	return presence.FormatToString(0)
+}
+
+// FormatToString pretty-prints the struct data using the provided indentation level
+func (presence *NintendoPresenceV2) FormatToString(indentationLevel int) string {
+	indentationValues := strings.Repeat("\t", indentationLevel+1)
+	indentationEnd := strings.Repeat("\t", indentationLevel)
+
+	var b strings.Builder
+
+	b.WriteString("PrincipalBasicInfo{\n")
+	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, presence.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sChangedFlags: %d,\n", indentationValues, presence.ChangedFlags))
+	b.WriteString(fmt.Sprintf("%sOnline: %t,\n", indentationValues, presence.Online))
+
+	if presence.GameKey != nil {
+		b.WriteString(fmt.Sprintf("%sGameKey: %s,\n", indentationValues, presence.GameKey.FormatToString(indentationLevel+1)))
+	} else {
+		b.WriteString(fmt.Sprintf("%sGameKey: nil,\n", indentationValues))
+	}
+
+	b.WriteString(fmt.Sprintf("%sUnknown1: %d,\n", indentationValues, presence.Unknown1))
+	b.WriteString(fmt.Sprintf("%sMessage: %q,\n", indentationValues, presence.Message))
+	b.WriteString(fmt.Sprintf("%sUnknown2: %d,\n", indentationValues, presence.Unknown2))
+	b.WriteString(fmt.Sprintf("%sUnknown3: %d,\n", indentationValues, presence.Unknown3))
+	b.WriteString(fmt.Sprintf("%sGameServerID: %d,\n", indentationValues, presence.GameServerID))
+	b.WriteString(fmt.Sprintf("%sUnknown4: %d,\n", indentationValues, presence.Unknown4))
+	b.WriteString(fmt.Sprintf("%sPID: %d,\n", indentationValues, presence.PID))
+	b.WriteString(fmt.Sprintf("%sGatheringID: %d,\n", indentationValues, presence.GatheringID))
+	b.WriteString(fmt.Sprintf("%sApplicationData: %x,\n", indentationValues, presence.ApplicationData))
+	b.WriteString(fmt.Sprintf("%sUnknown5: %d,\n", indentationValues, presence.Unknown5))
+	b.WriteString(fmt.Sprintf("%sUnknown6: %d,\n", indentationValues, presence.Unknown6))
+	b.WriteString(fmt.Sprintf("%sUnknown7: %d,\n", indentationValues, presence.Unknown7))
+	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+
+	return b.String()
 }
 
 // NewNintendoPresenceV2 returns a new NintendoPresenceV2

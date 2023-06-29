@@ -2,6 +2,7 @@ package match_making_types
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
 )
@@ -166,6 +167,42 @@ func (joinMatchmakeSessionParam *JoinMatchmakeSessionParam) Equals(structure nex
 	}
 
 	return true
+}
+
+// String returns a string representation of the struct
+func (joinMatchmakeSessionParam *JoinMatchmakeSessionParam) String() string {
+	return joinMatchmakeSessionParam.FormatToString(0)
+}
+
+// FormatToString pretty-prints the struct data using the provided indentation level
+func (joinMatchmakeSessionParam *JoinMatchmakeSessionParam) FormatToString(indentationLevel int) string {
+	indentationValues := strings.Repeat("\t", indentationLevel+1)
+	indentationEnd := strings.Repeat("\t", indentationLevel)
+
+	var b strings.Builder
+
+	b.WriteString("JoinMatchmakeSessionParam{\n")
+	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, joinMatchmakeSessionParam.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sGID: %d,\n", indentationValues, joinMatchmakeSessionParam.GID))
+	b.WriteString(fmt.Sprintf("%sAdditionalParticipants: %v,\n", indentationValues, joinMatchmakeSessionParam.AdditionalParticipants))
+	b.WriteString(fmt.Sprintf("%sGIDForParticipationCheck: %d,\n", indentationValues, joinMatchmakeSessionParam.GIDForParticipationCheck))
+	b.WriteString(fmt.Sprintf("%sJoinMatchmakeSessionOption: %d,\n", indentationValues, joinMatchmakeSessionParam.JoinMatchmakeSessionOption))
+	b.WriteString(fmt.Sprintf("%sJoinMatchmakeSessionBehavior: %d,\n", indentationValues, joinMatchmakeSessionParam.JoinMatchmakeSessionBehavior))
+	b.WriteString(fmt.Sprintf("%sStrUserPassword: %q,\n", indentationValues, joinMatchmakeSessionParam.StrUserPassword))
+	b.WriteString(fmt.Sprintf("%sStrSystemPassword: %q,\n", indentationValues, joinMatchmakeSessionParam.StrSystemPassword))
+	b.WriteString(fmt.Sprintf("%sJoinMessage: %q,\n", indentationValues, joinMatchmakeSessionParam.JoinMessage))
+	b.WriteString(fmt.Sprintf("%sParticipationCount: %d,\n", indentationValues, joinMatchmakeSessionParam.ParticipationCount))
+	b.WriteString(fmt.Sprintf("%sExtraParticipants: %d,\n", indentationValues, joinMatchmakeSessionParam.ExtraParticipants))
+
+	if joinMatchmakeSessionParam.BlockListParam != nil {
+		b.WriteString(fmt.Sprintf("%sBlockListParam: %s\n", indentationValues, joinMatchmakeSessionParam.BlockListParam.FormatToString(indentationLevel+1)))
+	} else {
+		b.WriteString(fmt.Sprintf("%sBlockListParam: nil\n", indentationValues))
+	}
+
+	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+
+	return b.String()
 }
 
 // NewJoinMatchmakeSessionParam returns a new JoinMatchmakeSessionParam

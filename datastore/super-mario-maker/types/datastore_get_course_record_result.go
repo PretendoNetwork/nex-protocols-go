@@ -1,6 +1,11 @@
 package datastore_super_mario_maker_types
 
-import "github.com/PretendoNetwork/nex-go"
+import (
+	"fmt"
+	"strings"
+
+	"github.com/PretendoNetwork/nex-go"
+)
 
 // DataStoreGetCourseRecordResult is used to send data about a courses world record
 type DataStoreGetCourseRecordResult struct {
@@ -75,6 +80,43 @@ func (dataStoreGetCourseRecordResult *DataStoreGetCourseRecordResult) Equals(str
 	}
 
 	return true
+}
+
+// String returns a string representation of the struct
+func (dataStoreGetCourseRecordResult *DataStoreGetCourseRecordResult) String() string {
+	return dataStoreGetCourseRecordResult.FormatToString(0)
+}
+
+// FormatToString pretty-prints the struct data using the provided indentation level
+func (dataStoreGetCourseRecordResult *DataStoreGetCourseRecordResult) FormatToString(indentationLevel int) string {
+	indentationValues := strings.Repeat("\t", indentationLevel+1)
+	indentationEnd := strings.Repeat("\t", indentationLevel)
+
+	var b strings.Builder
+
+	b.WriteString("DataStoreGetCourseRecordResult{\n")
+	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, dataStoreGetCourseRecordResult.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sDataID: %d,\n", indentationValues, dataStoreGetCourseRecordResult.DataID))
+	b.WriteString(fmt.Sprintf("%sSlot: %d\n,", indentationValues, dataStoreGetCourseRecordResult.Slot))
+	b.WriteString(fmt.Sprintf("%sFirstPID: %d,\n", indentationValues, dataStoreGetCourseRecordResult.FirstPID))
+	b.WriteString(fmt.Sprintf("%sBestPID: %d,\n", indentationValues, dataStoreGetCourseRecordResult.BestPID))
+	b.WriteString(fmt.Sprintf("%sBestScore: %d,\n", indentationValues, dataStoreGetCourseRecordResult.BestScore))
+
+	if dataStoreGetCourseRecordResult.CreatedTime != nil {
+		b.WriteString(fmt.Sprintf("%sCreatedTime: %s,\n", indentationValues, dataStoreGetCourseRecordResult.CreatedTime.FormatToString(indentationLevel+1)))
+	} else {
+		b.WriteString(fmt.Sprintf("%sCreatedTime: nil,\n", indentationValues))
+	}
+
+	if dataStoreGetCourseRecordResult.UpdatedTime != nil {
+		b.WriteString(fmt.Sprintf("%sUpdatedTime: %s\n", indentationValues, dataStoreGetCourseRecordResult.UpdatedTime.FormatToString(indentationLevel+1)))
+	} else {
+		b.WriteString(fmt.Sprintf("%sUpdatedTime: nil\n", indentationValues))
+	}
+
+	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+
+	return b.String()
 }
 
 // NewDataStoreGetCourseRecordResult returns a new DataStoreGetCourseRecordResult

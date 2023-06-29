@@ -2,6 +2,7 @@ package match_making_types
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
 )
@@ -38,6 +39,27 @@ func (matchmakeBlockListParam *MatchmakeBlockListParam) Equals(structure nex.Str
 	other := structure.(*MatchmakeBlockListParam)
 
 	return matchmakeBlockListParam.OptionFlag == other.OptionFlag
+}
+
+// String returns a string representation of the struct
+func (matchmakeBlockListParam *MatchmakeBlockListParam) String() string {
+	return matchmakeBlockListParam.FormatToString(0)
+}
+
+// FormatToString pretty-prints the struct data using the provided indentation level
+func (matchmakeBlockListParam *MatchmakeBlockListParam) FormatToString(indentationLevel int) string {
+	indentationValues := strings.Repeat("\t", indentationLevel+1)
+	indentationEnd := strings.Repeat("\t", indentationLevel)
+
+	var b strings.Builder
+
+	b.WriteString("MatchmakeBlockListParam{\n")
+	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, matchmakeBlockListParam.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sOptionFlag: %d\n", indentationValues, matchmakeBlockListParam.OptionFlag))
+
+	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+
+	return b.String()
 }
 
 // NewMatchmakeBlockListParam returns a new MatchmakeBlockListParam

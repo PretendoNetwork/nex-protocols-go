@@ -2,6 +2,7 @@ package datastore_types
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
 )
@@ -264,6 +265,71 @@ func (dataStoreSearchParam *DataStoreSearchParam) Equals(structure nex.Structure
 	}
 
 	return true
+}
+
+// String returns a string representation of the struct
+func (dataStoreSearchParam *DataStoreSearchParam) String() string {
+	return dataStoreSearchParam.FormatToString(0)
+}
+
+// FormatToString pretty-prints the struct data using the provided indentation level
+func (dataStoreSearchParam *DataStoreSearchParam) FormatToString(indentationLevel int) string {
+	indentationValues := strings.Repeat("\t", indentationLevel+1)
+	indentationEnd := strings.Repeat("\t", indentationLevel)
+
+	var b strings.Builder
+
+	b.WriteString("DataStoreSearchParam{\n")
+	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, dataStoreSearchParam.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sSearchTarget: %d,\n", indentationValues, dataStoreSearchParam.SearchTarget))
+	b.WriteString(fmt.Sprintf("%sOwnerIds: %v,\n", indentationValues, dataStoreSearchParam.OwnerIds))
+	b.WriteString(fmt.Sprintf("%sOwnerType: %d,\n", indentationValues, dataStoreSearchParam.OwnerType))
+	b.WriteString(fmt.Sprintf("%sDestinationIds: %v,\n", indentationValues, dataStoreSearchParam.DestinationIds))
+	b.WriteString(fmt.Sprintf("%sDataType: %d,\n", indentationValues, dataStoreSearchParam.DataType))
+
+	if dataStoreSearchParam.CreatedAfter != nil {
+		b.WriteString(fmt.Sprintf("%sCreatedAfter: %s,\n", indentationValues, dataStoreSearchParam.CreatedAfter.FormatToString(indentationLevel+1)))
+	} else {
+		b.WriteString(fmt.Sprintf("%sCreatedAfter: nil,\n", indentationValues))
+	}
+
+	if dataStoreSearchParam.CreatedBefore != nil {
+		b.WriteString(fmt.Sprintf("%sCreatedBefore: %s,\n", indentationValues, dataStoreSearchParam.CreatedBefore.FormatToString(indentationLevel+1)))
+	} else {
+		b.WriteString(fmt.Sprintf("%sCreatedBefore: nil,\n", indentationValues))
+	}
+
+	if dataStoreSearchParam.UpdatedAfter != nil {
+		b.WriteString(fmt.Sprintf("%sUpdatedAfter: %s,\n", indentationValues, dataStoreSearchParam.UpdatedAfter.FormatToString(indentationLevel+1)))
+	} else {
+		b.WriteString(fmt.Sprintf("%sUpdatedAfter: nil,\n", indentationValues))
+	}
+
+	if dataStoreSearchParam.UpdatedBefore != nil {
+		b.WriteString(fmt.Sprintf("%sUpdatedBefore: %s,\n", indentationValues, dataStoreSearchParam.UpdatedBefore.FormatToString(indentationLevel+1)))
+	} else {
+		b.WriteString(fmt.Sprintf("%sUpdatedBefore: nil,\n", indentationValues))
+	}
+
+	b.WriteString(fmt.Sprintf("%sReferDataId: %d,\n", indentationValues, dataStoreSearchParam.ReferDataId))
+	b.WriteString(fmt.Sprintf("%sTags: %v,\n", indentationValues, dataStoreSearchParam.Tags))
+	b.WriteString(fmt.Sprintf("%sResultOrderColumn: %d,\n", indentationValues, dataStoreSearchParam.ResultOrderColumn))
+	b.WriteString(fmt.Sprintf("%sResultOrder: %d,\n", indentationValues, dataStoreSearchParam.ResultOrder))
+
+	if dataStoreSearchParam.ResultRange != nil {
+		b.WriteString(fmt.Sprintf("%sResultRange: %s,\n", indentationValues, dataStoreSearchParam.ResultRange.FormatToString(indentationLevel+1)))
+	} else {
+		b.WriteString(fmt.Sprintf("%sResultRange: nil,\n", indentationValues))
+	}
+
+	b.WriteString(fmt.Sprintf("%sResultOption: %d,\n", indentationValues, dataStoreSearchParam.ResultOption))
+	b.WriteString(fmt.Sprintf("%sMinimalRatingFrequency: %v,\n", indentationValues, dataStoreSearchParam.MinimalRatingFrequency))
+	b.WriteString(fmt.Sprintf("%sUseCache: %t,\n", indentationValues, dataStoreSearchParam.UseCache))
+	b.WriteString(fmt.Sprintf("%sTotalCountEnabled: %t,\n", indentationValues, dataStoreSearchParam.TotalCountEnabled))
+	b.WriteString(fmt.Sprintf("%sDataTypes: %v\n", indentationValues, dataStoreSearchParam.DataTypes))
+	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+
+	return b.String()
 }
 
 // NewDataStoreSearchParam returns a new DataStoreSearchParam

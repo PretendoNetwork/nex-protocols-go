@@ -2,6 +2,7 @@ package datastore_super_smash_bros_4_types
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
 )
@@ -84,6 +85,35 @@ func (dataStoreSearchReplayParam *DataStoreSearchReplayParam) Equals(structure n
 	}
 
 	return true
+}
+
+// String returns a string representation of the struct
+func (dataStoreSearchReplayParam *DataStoreSearchReplayParam) String() string {
+	return dataStoreSearchReplayParam.FormatToString(0)
+}
+
+// FormatToString pretty-prints the struct data using the provided indentation level
+func (dataStoreSearchReplayParam *DataStoreSearchReplayParam) FormatToString(indentationLevel int) string {
+	indentationValues := strings.Repeat("\t", indentationLevel+1)
+	indentationEnd := strings.Repeat("\t", indentationLevel)
+
+	var b strings.Builder
+
+	b.WriteString("DataStoreSearchReplayParam{\n")
+	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, dataStoreSearchReplayParam.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sMode: %d,\n", indentationValues, dataStoreSearchReplayParam.Mode))
+	b.WriteString(fmt.Sprintf("%sStyle: %d,\n", indentationValues, dataStoreSearchReplayParam.Style))
+	b.WriteString(fmt.Sprintf("%sFighter: %d,\n", indentationValues, dataStoreSearchReplayParam.Fighter))
+
+	if dataStoreSearchReplayParam.ResultRange != nil {
+		b.WriteString(fmt.Sprintf("%sResultRange: %s\n", indentationValues, dataStoreSearchReplayParam.ResultRange.FormatToString(indentationLevel+1)))
+	} else {
+		b.WriteString(fmt.Sprintf("%sResultRange: nil\n", indentationValues))
+	}
+
+	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+
+	return b.String()
 }
 
 // NewDataStoreSearchReplayParam returns a new DataStoreSearchReplayParam

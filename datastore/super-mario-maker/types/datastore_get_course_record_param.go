@@ -2,6 +2,7 @@ package datastore_super_mario_maker_types
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
 )
@@ -53,6 +54,27 @@ func (dataStoreGetCourseRecordParam *DataStoreGetCourseRecordParam) Equals(struc
 	}
 
 	return true
+}
+
+// String returns a string representation of the struct
+func (dataStoreGetCourseRecordParam *DataStoreGetCourseRecordParam) String() string {
+	return dataStoreGetCourseRecordParam.FormatToString(0)
+}
+
+// FormatToString pretty-prints the struct data using the provided indentation level
+func (dataStoreGetCourseRecordParam *DataStoreGetCourseRecordParam) FormatToString(indentationLevel int) string {
+	indentationValues := strings.Repeat("\t", indentationLevel+1)
+	indentationEnd := strings.Repeat("\t", indentationLevel)
+
+	var b strings.Builder
+
+	b.WriteString("DataStoreGetCourseRecordParam{\n")
+	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, dataStoreGetCourseRecordParam.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sDataID: %d,\n", indentationValues, dataStoreGetCourseRecordParam.DataID))
+	b.WriteString(fmt.Sprintf("%sSlot: %d\n", indentationValues, dataStoreGetCourseRecordParam.Slot))
+	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+
+	return b.String()
 }
 
 // NewDataStoreGetCourseRecordParamreturns a new DataStoreGetCourseRecordParam

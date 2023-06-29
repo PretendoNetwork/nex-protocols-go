@@ -1,6 +1,11 @@
 package match_making_types
 
-import "github.com/PretendoNetwork/nex-go"
+import (
+	"fmt"
+	"strings"
+
+	"github.com/PretendoNetwork/nex-go"
+)
 
 // MatchmakeParam holds parameters for a matchmake session
 type MatchmakeParam struct {
@@ -60,6 +65,40 @@ func (matchmakeParam *MatchmakeParam) Equals(structure nex.StructureInterface) b
 	}
 
 	return true
+}
+
+// String returns a string representation of the struct
+func (matchmakeParam *MatchmakeParam) String() string {
+	return matchmakeParam.FormatToString(0)
+}
+
+// FormatToString pretty-prints the struct data using the provided indentation level
+func (matchmakeParam *MatchmakeParam) FormatToString(indentationLevel int) string {
+	indentationValues := strings.Repeat("\t", indentationLevel+1)
+	indentationMapValues := strings.Repeat("\t", indentationLevel+2)
+	indentationEnd := strings.Repeat("\t", indentationLevel)
+
+	var b strings.Builder
+
+	b.WriteString("MatchmakeParam{\n")
+	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, matchmakeParam.StructureVersion()))
+
+	if len(matchmakeParam.Parameters) == 0 {
+		b.WriteString(fmt.Sprintf("%sParameters: {}\n", indentationValues))
+	} else {
+		b.WriteString(fmt.Sprintf("%sParameters: {\n", indentationValues))
+
+		for k, v := range matchmakeParam.Parameters {
+			// TODO - Special handle the the last item to not add the comma on last item
+			b.WriteString(fmt.Sprintf("%s%q: %s,\n", indentationMapValues, k, v.FormatToString(indentationLevel+2)))
+		}
+
+		b.WriteString(fmt.Sprintf("%s}\n", indentationValues))
+	}
+
+	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+
+	return b.String()
 }
 
 // NewMatchmakeParam returns a new MatchmakeParam

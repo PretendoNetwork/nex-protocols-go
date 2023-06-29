@@ -2,6 +2,7 @@ package datastore_super_smash_bros_4_types
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
 )
@@ -60,6 +61,27 @@ func (dataStoreFightingPowerScore *DataStoreFightingPowerScore) Equals(structure
 	}
 
 	return true
+}
+
+// String returns a string representation of the struct
+func (dataStoreFightingPowerScore *DataStoreFightingPowerScore) String() string {
+	return dataStoreFightingPowerScore.FormatToString(0)
+}
+
+// FormatToString pretty-prints the struct data using the provided indentation level
+func (dataStoreFightingPowerScore *DataStoreFightingPowerScore) FormatToString(indentationLevel int) string {
+	indentationValues := strings.Repeat("\t", indentationLevel+1)
+	indentationEnd := strings.Repeat("\t", indentationLevel)
+
+	var b strings.Builder
+
+	b.WriteString("DataStoreFightingPowerScore{\n")
+	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, dataStoreFightingPowerScore.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sScore: %d,\n", indentationValues, dataStoreFightingPowerScore.Score))
+	b.WriteString(fmt.Sprintf("%sRank: %d\n", indentationValues, dataStoreFightingPowerScore.Rank))
+	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+
+	return b.String()
 }
 
 // NewDataStoreFightingPowerScore returns a new DataStoreFightingPowerScore

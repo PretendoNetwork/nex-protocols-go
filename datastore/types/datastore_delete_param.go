@@ -2,6 +2,7 @@ package datastore_types
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
 )
@@ -60,6 +61,27 @@ func (dataStoreDeleteParam *DataStoreDeleteParam) Equals(structure nex.Structure
 	}
 
 	return true
+}
+
+// String returns a string representation of the struct
+func (dataStoreDeleteParam *DataStoreDeleteParam) String() string {
+	return dataStoreDeleteParam.FormatToString(0)
+}
+
+// FormatToString pretty-prints the struct data using the provided indentation level
+func (dataStoreDeleteParam *DataStoreDeleteParam) FormatToString(indentationLevel int) string {
+	indentationValues := strings.Repeat("\t", indentationLevel+1)
+	indentationEnd := strings.Repeat("\t", indentationLevel)
+
+	var b strings.Builder
+
+	b.WriteString("DataStoreDeleteParam{\n")
+	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, dataStoreDeleteParam.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sDataID: %d,\n", indentationValues, dataStoreDeleteParam.DataID))
+	b.WriteString(fmt.Sprintf("%sUpdatePassword: %d\n", indentationValues, dataStoreDeleteParam.UpdatePassword))
+	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+
+	return b.String()
 }
 
 // NewDataStoreDeleteParam returns a new DataStoreDeleteParam

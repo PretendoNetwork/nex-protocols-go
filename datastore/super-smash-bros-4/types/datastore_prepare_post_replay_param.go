@@ -2,6 +2,7 @@ package datastore_super_smash_bros_4_types
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
 )
@@ -210,6 +211,55 @@ func (dataStorePreparePostReplayParam *DataStorePreparePostReplayParam) Equals(s
 	}
 
 	return true
+}
+
+// String returns a string representation of the struct
+func (dataStorePreparePostReplayParam *DataStorePreparePostReplayParam) String() string {
+	return dataStorePreparePostReplayParam.FormatToString(0)
+}
+
+// FormatToString pretty-prints the struct data using the provided indentation level
+func (dataStorePreparePostReplayParam *DataStorePreparePostReplayParam) FormatToString(indentationLevel int) string {
+	indentationValues := strings.Repeat("\t", indentationLevel+1)
+	indentationListValues := strings.Repeat("\t", indentationLevel+2)
+	indentationEnd := strings.Repeat("\t", indentationLevel)
+
+	var b strings.Builder
+
+	b.WriteString("DataStorePreparePostReplayParam{\n")
+	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, dataStorePreparePostReplayParam.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sSize: %d,\n", indentationValues, dataStorePreparePostReplayParam.Size))
+	b.WriteString(fmt.Sprintf("%sMode: %d,\n", indentationValues, dataStorePreparePostReplayParam.Mode))
+	b.WriteString(fmt.Sprintf("%sStyle: %d,\n", indentationValues, dataStorePreparePostReplayParam.Style))
+	b.WriteString(fmt.Sprintf("%sRule: %d,\n", indentationValues, dataStorePreparePostReplayParam.Rule))
+	b.WriteString(fmt.Sprintf("%sStage: %d,\n", indentationValues, dataStorePreparePostReplayParam.Stage))
+	b.WriteString(fmt.Sprintf("%sReplayType: %d,\n", indentationValues, dataStorePreparePostReplayParam.ReplayType))
+	b.WriteString(fmt.Sprintf("%sCompetitionID: %d,\n", indentationValues, dataStorePreparePostReplayParam.CompetitionID))
+	b.WriteString(fmt.Sprintf("%sScore: %d,\n", indentationValues, dataStorePreparePostReplayParam.Score))
+
+	if len(dataStorePreparePostReplayParam.Players) == 0 {
+		b.WriteString(fmt.Sprintf("%sPlayers: [],\n", indentationValues))
+	} else {
+		b.WriteString(fmt.Sprintf("%sPlayers: [\n", indentationValues))
+
+		for i := 0; i < len(dataStorePreparePostReplayParam.Players); i++ {
+			str := dataStorePreparePostReplayParam.Players[i].FormatToString(indentationLevel + 2)
+			if i == len(dataStorePreparePostReplayParam.Players)-1 {
+				b.WriteString(fmt.Sprintf("%s%s\n", indentationListValues, str))
+			} else {
+				b.WriteString(fmt.Sprintf("%s%s,\n", indentationListValues, str))
+			}
+		}
+
+		b.WriteString(fmt.Sprintf("%s],\n", indentationValues))
+	}
+
+	b.WriteString(fmt.Sprintf("%sWinners: %v,\n", indentationValues, dataStorePreparePostReplayParam.Winners))
+	b.WriteString(fmt.Sprintf("%sKeyVersion: %d,\n", indentationValues, dataStorePreparePostReplayParam.KeyVersion))
+	b.WriteString(fmt.Sprintf("%sExtraData: %v\n", indentationValues, dataStorePreparePostReplayParam.ExtraData))
+	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+
+	return b.String()
 }
 
 // NewDataStorePreparePostReplayParam returns a new DataStorePreparePostReplayParam

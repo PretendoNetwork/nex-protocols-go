@@ -1,6 +1,11 @@
 package nintendo_notifications_types
 
-import "github.com/PretendoNetwork/nex-go"
+import (
+	"fmt"
+	"strings"
+
+	"github.com/PretendoNetwork/nex-go"
+)
 
 // NintendoNotificationEvent is used to send data about a notification event to a client
 type NintendoNotificationEvent struct {
@@ -47,6 +52,34 @@ func (nintendoNotificationEvent *NintendoNotificationEvent) Equals(structure nex
 	}
 
 	return true
+}
+
+// String returns a string representation of the struct
+func (nintendoNotificationEvent *NintendoNotificationEvent) String() string {
+	return nintendoNotificationEvent.FormatToString(0)
+}
+
+// FormatToString pretty-prints the struct data using the provided indentation level
+func (nintendoNotificationEvent *NintendoNotificationEvent) FormatToString(indentationLevel int) string {
+	indentationValues := strings.Repeat("\t", indentationLevel+1)
+	indentationEnd := strings.Repeat("\t", indentationLevel)
+
+	var b strings.Builder
+
+	b.WriteString("NintendoNotificationEvent{\n")
+	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, nintendoNotificationEvent.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sType: %d,\n", indentationValues, nintendoNotificationEvent.Type))
+	b.WriteString(fmt.Sprintf("%sSenderPID: %d,\n", indentationValues, nintendoNotificationEvent.SenderPID))
+
+	if nintendoNotificationEvent.DataHolder != nil {
+		b.WriteString(fmt.Sprintf("%sDataHolder: %s\n", indentationValues, nintendoNotificationEvent.DataHolder.FormatToString(indentationLevel+1)))
+	} else {
+		b.WriteString(fmt.Sprintf("%sDataHolder: nil\n", indentationValues))
+	}
+
+	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+
+	return b.String()
 }
 
 // NewNintendoNotificationEvent returns a new NintendoNotificationEvent

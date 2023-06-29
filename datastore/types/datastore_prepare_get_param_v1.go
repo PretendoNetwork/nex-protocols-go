@@ -2,6 +2,7 @@ package datastore_types
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
 )
@@ -60,6 +61,27 @@ func (dataStorePrepareGetParamV1 *DataStorePrepareGetParamV1) Equals(structure n
 	}
 
 	return true
+}
+
+// String returns a string representation of the struct
+func (dataStorePrepareGetParamV1 *DataStorePrepareGetParamV1) String() string {
+	return dataStorePrepareGetParamV1.FormatToString(0)
+}
+
+// FormatToString pretty-prints the struct data using the provided indentation level
+func (dataStorePrepareGetParamV1 *DataStorePrepareGetParamV1) FormatToString(indentationLevel int) string {
+	indentationValues := strings.Repeat("\t", indentationLevel+1)
+	indentationEnd := strings.Repeat("\t", indentationLevel)
+
+	var b strings.Builder
+
+	b.WriteString("DataStorePrepareGetParamV1{\n")
+	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, dataStorePrepareGetParamV1.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sDataID: %d,\n", indentationValues, dataStorePrepareGetParamV1.DataID))
+	b.WriteString(fmt.Sprintf("%sLockID: %d\n", indentationValues, dataStorePrepareGetParamV1.LockID))
+	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+
+	return b.String()
 }
 
 // NewDataStorePrepareGetParamV1 returns a new DataStorePrepareGetParamV1

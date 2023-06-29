@@ -3,6 +3,7 @@ package match_making_types
 import (
 	"bytes"
 	"fmt"
+	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
 )
@@ -320,6 +321,53 @@ func (matchmakeSession *MatchmakeSession) Equals(structure nex.StructureInterfac
 	}
 
 	return true
+}
+
+// String returns a string representation of the struct
+func (matchmakeSession *MatchmakeSession) String() string {
+	return matchmakeSession.FormatToString(0)
+}
+
+// FormatToString pretty-prints the struct data using the provided indentation level
+func (matchmakeSession *MatchmakeSession) FormatToString(indentationLevel int) string {
+	indentationValues := strings.Repeat("\t", indentationLevel+1)
+	indentationEnd := strings.Repeat("\t", indentationLevel)
+
+	var b strings.Builder
+
+	b.WriteString("MatchmakeSession{\n")
+	b.WriteString(fmt.Sprintf("%sParentType: %s,\n", indentationValues, matchmakeSession.ParentType().FormatToString(indentationLevel+1)))
+	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, matchmakeSession.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sGameMode: %d,\n", indentationValues, matchmakeSession.GameMode))
+	b.WriteString(fmt.Sprintf("%sAttributes: %v,\n", indentationValues, matchmakeSession.Attributes))
+	b.WriteString(fmt.Sprintf("%sOpenParticipation: %t,\n", indentationValues, matchmakeSession.OpenParticipation))
+	b.WriteString(fmt.Sprintf("%sMatchmakeSystemType: %d,\n", indentationValues, matchmakeSession.MatchmakeSystemType))
+	b.WriteString(fmt.Sprintf("%sApplicationData: %x,\n", indentationValues, matchmakeSession.ApplicationData))
+	b.WriteString(fmt.Sprintf("%sParticipationCount: %d,\n", indentationValues, matchmakeSession.ParticipationCount))
+	b.WriteString(fmt.Sprintf("%sProgressScore: %d,\n", indentationValues, matchmakeSession.ProgressScore))
+	b.WriteString(fmt.Sprintf("%sSessionKey: %x,\n", indentationValues, matchmakeSession.SessionKey))
+	b.WriteString(fmt.Sprintf("%sOption: %d,\n", indentationValues, matchmakeSession.Option))
+
+	if matchmakeSession.MatchmakeParam != nil {
+		b.WriteString(fmt.Sprintf("%sMatchmakeParam: %s,\n", indentationValues, matchmakeSession.MatchmakeParam.FormatToString(indentationLevel+1)))
+	} else {
+		b.WriteString(fmt.Sprintf("%sMatchmakeParam: nil,\n", indentationValues))
+	}
+
+	if matchmakeSession.StartedTime != nil {
+		b.WriteString(fmt.Sprintf("%sStartedTime: %s,\n", indentationValues, matchmakeSession.StartedTime.FormatToString(indentationLevel+1)))
+	} else {
+		b.WriteString(fmt.Sprintf("%sStartedTime: nil,\n", indentationValues))
+	}
+
+	b.WriteString(fmt.Sprintf("%sUserPassword: %q,\n", indentationValues, matchmakeSession.UserPassword))
+	b.WriteString(fmt.Sprintf("%sReferGID: %d,\n", indentationValues, matchmakeSession.ReferGID))
+	b.WriteString(fmt.Sprintf("%sUserPasswordEnabled: %t,\n", indentationValues, matchmakeSession.UserPasswordEnabled))
+	b.WriteString(fmt.Sprintf("%sSystemPasswordEnabled: %t,\n", indentationValues, matchmakeSession.SystemPasswordEnabled))
+	b.WriteString(fmt.Sprintf("%sCodeWord: %q\n", indentationValues, matchmakeSession.CodeWord))
+	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+
+	return b.String()
 }
 
 // NewMatchmakeSession returns a new MatchmakeSession

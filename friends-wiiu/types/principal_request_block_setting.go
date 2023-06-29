@@ -1,6 +1,11 @@
 package friends_wiiu_types
 
-import "github.com/PretendoNetwork/nex-go"
+import (
+	"fmt"
+	"strings"
+
+	"github.com/PretendoNetwork/nex-go"
+)
 
 // PrincipalRequestBlockSetting contains unknow data
 type PrincipalRequestBlockSetting struct {
@@ -40,6 +45,27 @@ func (principalRequestBlockSetting *PrincipalRequestBlockSetting) Equals(structu
 	}
 
 	return true
+}
+
+// String returns a string representation of the struct
+func (principalRequestBlockSetting *PrincipalRequestBlockSetting) String() string {
+	return principalRequestBlockSetting.FormatToString(0)
+}
+
+// FormatToString pretty-prints the struct data using the provided indentation level
+func (principalRequestBlockSetting *PrincipalRequestBlockSetting) FormatToString(indentationLevel int) string {
+	indentationValues := strings.Repeat("\t", indentationLevel+1)
+	indentationEnd := strings.Repeat("\t", indentationLevel)
+
+	var b strings.Builder
+
+	b.WriteString("PrincipalRequestBlockSetting{\n")
+	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, principalRequestBlockSetting.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sPID: %d,\n", indentationValues, principalRequestBlockSetting.PID))
+	b.WriteString(fmt.Sprintf("%sIsBlocked: %t\n", indentationValues, principalRequestBlockSetting.IsBlocked))
+	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+
+	return b.String()
 }
 
 // NewPrincipalRequestBlockSetting returns a new PrincipalRequestBlockSetting

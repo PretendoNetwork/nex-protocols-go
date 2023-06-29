@@ -2,6 +2,7 @@ package friends_wiiu_types
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
 )
@@ -73,6 +74,34 @@ func (comment *Comment) Equals(structure nex.StructureInterface) bool {
 	}
 
 	return true
+}
+
+// String returns a string representation of the struct
+func (comment *Comment) String() string {
+	return comment.FormatToString(0)
+}
+
+// FormatToString pretty-prints the struct data using the provided indentation level
+func (comment *Comment) FormatToString(indentationLevel int) string {
+	indentationValues := strings.Repeat("\t", indentationLevel+1)
+	indentationEnd := strings.Repeat("\t", indentationLevel)
+
+	var b strings.Builder
+
+	b.WriteString("Comment{\n")
+	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, comment.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sUnknown: %d\n", indentationValues, comment.Unknown))
+	b.WriteString(fmt.Sprintf("%sContents: %q\n", indentationValues, comment.Contents))
+
+	if comment.LastChanged != nil {
+		b.WriteString(fmt.Sprintf("%sLastChanged: %s\n", indentationValues, comment.LastChanged.FormatToString(indentationLevel+1)))
+	} else {
+		b.WriteString(fmt.Sprintf("%sLastChanged: nil\n", indentationValues))
+	}
+
+	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+
+	return b.String()
 }
 
 // NewComment returns a new Comment

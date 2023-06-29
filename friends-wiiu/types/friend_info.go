@@ -1,6 +1,11 @@
 package friends_wiiu_types
 
-import "github.com/PretendoNetwork/nex-go"
+import (
+	"fmt"
+	"strings"
+
+	"github.com/PretendoNetwork/nex-go"
+)
 
 // FriendInfo contains information about a friend
 type FriendInfo struct {
@@ -68,6 +73,57 @@ func (friendInfo *FriendInfo) Equals(structure nex.StructureInterface) bool {
 	}
 
 	return true
+}
+
+// String returns a string representation of the struct
+func (friendInfo *FriendInfo) String() string {
+	return friendInfo.FormatToString(0)
+}
+
+// FormatToString pretty-prints the struct data using the provided indentation level
+func (friendInfo *FriendInfo) FormatToString(indentationLevel int) string {
+	indentationValues := strings.Repeat("\t", indentationLevel+1)
+	indentationEnd := strings.Repeat("\t", indentationLevel)
+
+	var b strings.Builder
+
+	b.WriteString("FriendInfo{\n")
+	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, friendInfo.StructureVersion()))
+
+	if friendInfo.NNAInfo != nil {
+		b.WriteString(fmt.Sprintf("%sNNAInfo: %s,\n", indentationValues, friendInfo.NNAInfo.FormatToString(indentationLevel+1)))
+	} else {
+		b.WriteString(fmt.Sprintf("%sNNAInfo: nil,\n", indentationValues))
+	}
+
+	if friendInfo.Presence != nil {
+		b.WriteString(fmt.Sprintf("%sPresence: %s,\n", indentationValues, friendInfo.Presence.FormatToString(indentationLevel+1)))
+	} else {
+		b.WriteString(fmt.Sprintf("%sPresence: nil,\n", indentationValues))
+	}
+
+	if friendInfo.Status != nil {
+		b.WriteString(fmt.Sprintf("%sStatus: %s,\n", indentationValues, friendInfo.Status.FormatToString(indentationLevel+1)))
+	} else {
+		b.WriteString(fmt.Sprintf("%sStatus: nil,\n", indentationValues))
+	}
+
+	if friendInfo.BecameFriend != nil {
+		b.WriteString(fmt.Sprintf("%sBecameFriend: %s,\n", indentationValues, friendInfo.BecameFriend.FormatToString(indentationLevel+1)))
+	} else {
+		b.WriteString(fmt.Sprintf("%sBecameFriend: nil,\n", indentationValues))
+	}
+
+	if friendInfo.LastOnline != nil {
+		b.WriteString(fmt.Sprintf("%sLastOnline: %s,\n", indentationValues, friendInfo.LastOnline.FormatToString(indentationLevel+1)))
+	} else {
+		b.WriteString(fmt.Sprintf("%sLastOnline: nil,\n", indentationValues))
+	}
+
+	b.WriteString(fmt.Sprintf("%sUnknown: %d\n", indentationValues, friendInfo.Unknown))
+	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+
+	return b.String()
 }
 
 // NewFriendInfo returns a new FriendInfo

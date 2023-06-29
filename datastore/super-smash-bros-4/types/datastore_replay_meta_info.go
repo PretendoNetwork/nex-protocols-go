@@ -2,6 +2,7 @@ package datastore_super_smash_bros_4_types
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
 )
@@ -164,6 +165,52 @@ func (dataStoreReplayMetaInfo *DataStoreReplayMetaInfo) Equals(structure nex.Str
 	}
 
 	return true
+}
+
+// String returns a string representation of the struct
+func (dataStoreReplayMetaInfo *DataStoreReplayMetaInfo) String() string {
+	return dataStoreReplayMetaInfo.FormatToString(0)
+}
+
+// FormatToString pretty-prints the struct data using the provided indentation level
+func (dataStoreReplayMetaInfo *DataStoreReplayMetaInfo) FormatToString(indentationLevel int) string {
+	indentationValues := strings.Repeat("\t", indentationLevel+1)
+	indentationListValues := strings.Repeat("\t", indentationLevel+2)
+	indentationEnd := strings.Repeat("\t", indentationLevel)
+
+	var b strings.Builder
+
+	b.WriteString("DataStoreReplayMetaInfo{\n")
+	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, dataStoreReplayMetaInfo.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sReplayID: %d,\n", indentationValues, dataStoreReplayMetaInfo.ReplayID))
+	b.WriteString(fmt.Sprintf("%sSize: %d,\n", indentationValues, dataStoreReplayMetaInfo.Size))
+	b.WriteString(fmt.Sprintf("%sMode: %d,\n", indentationValues, dataStoreReplayMetaInfo.Mode))
+	b.WriteString(fmt.Sprintf("%sStyle: %d,\n", indentationValues, dataStoreReplayMetaInfo.Style))
+	b.WriteString(fmt.Sprintf("%sRule: %d,\n", indentationValues, dataStoreReplayMetaInfo.Rule))
+	b.WriteString(fmt.Sprintf("%sStage: %d,\n", indentationValues, dataStoreReplayMetaInfo.Stage))
+	b.WriteString(fmt.Sprintf("%sReplayType: %d,\n", indentationValues, dataStoreReplayMetaInfo.ReplayType))
+
+	if len(dataStoreReplayMetaInfo.Players) == 0 {
+		b.WriteString(fmt.Sprintf("%sPlayers: [],\n", indentationValues))
+	} else {
+		b.WriteString(fmt.Sprintf("%sPlayers: [\n", indentationValues))
+
+		for i := 0; i < len(dataStoreReplayMetaInfo.Players); i++ {
+			str := dataStoreReplayMetaInfo.Players[i].FormatToString(indentationLevel + 2)
+			if i == len(dataStoreReplayMetaInfo.Players)-1 {
+				b.WriteString(fmt.Sprintf("%s%s\n", indentationListValues, str))
+			} else {
+				b.WriteString(fmt.Sprintf("%s%s,\n", indentationListValues, str))
+			}
+		}
+
+		b.WriteString(fmt.Sprintf("%s]\n", indentationValues))
+	}
+
+	b.WriteString(fmt.Sprintf("%sWinners: %v\n", indentationValues, dataStoreReplayMetaInfo.Winners))
+	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+
+	return b.String()
 }
 
 // NewDataStoreReplayMetaInfo returns a new DataStoreReplayMetaInfo

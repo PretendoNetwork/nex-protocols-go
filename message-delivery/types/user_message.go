@@ -2,6 +2,7 @@ package message_delivery_types
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
 )
@@ -138,6 +139,47 @@ func (userMessage *UserMessage) Equals(structure nex.StructureInterface) bool {
 	}
 
 	return true
+}
+
+// String returns a string representation of the struct
+func (userMessage *UserMessage) String() string {
+	return userMessage.FormatToString(0)
+}
+
+// FormatToString pretty-prints the struct data using the provided indentation level
+func (userMessage *UserMessage) FormatToString(indentationLevel int) string {
+	indentationValues := strings.Repeat("\t", indentationLevel+1)
+	indentationEnd := strings.Repeat("\t", indentationLevel)
+
+	var b strings.Builder
+
+	b.WriteString("UserMessage{\n")
+	b.WriteString(fmt.Sprintf("%sParentType: %s,\n", indentationValues, userMessage.ParentType().FormatToString(indentationLevel+1)))
+	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, userMessage.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sm_uiID: %d,\n", indentationValues, userMessage.m_uiID))
+	b.WriteString(fmt.Sprintf("%sm_uiParentID: %d,\n", indentationValues, userMessage.m_uiParentID))
+	b.WriteString(fmt.Sprintf("%sm_pidSender: %d,\n", indentationValues, userMessage.m_pidSender))
+
+	if userMessage.m_receptiontime != nil {
+		b.WriteString(fmt.Sprintf("%sm_receptiontime: %s,\n", indentationValues, userMessage.m_receptiontime))
+	} else {
+		b.WriteString(fmt.Sprintf("%sm_receptiontime: nil,\n", indentationValues))
+	}
+
+	b.WriteString(fmt.Sprintf("%sm_uiLifeTime: %d,\n", indentationValues, userMessage.m_uiLifeTime))
+	b.WriteString(fmt.Sprintf("%sm_uiFlags: %d,\n", indentationValues, userMessage.m_uiFlags))
+	b.WriteString(fmt.Sprintf("%sm_strSubject: %q,\n", indentationValues, userMessage.m_strSubject))
+	b.WriteString(fmt.Sprintf("%sm_strSender: %q,\n", indentationValues, userMessage.m_strSender))
+
+	if userMessage.m_messageRecipient != nil {
+		b.WriteString(fmt.Sprintf("%sm_messageRecipient: %s,\n", indentationValues, userMessage.m_messageRecipient))
+	} else {
+		b.WriteString(fmt.Sprintf("%sm_messageRecipient: nil,\n", indentationValues))
+	}
+
+	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+
+	return b.String()
 }
 
 // NewUserMessage returns a new UserMessage

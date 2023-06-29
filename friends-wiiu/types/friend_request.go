@@ -1,6 +1,11 @@
 package friends_wiiu_types
 
-import "github.com/PretendoNetwork/nex-go"
+import (
+	"fmt"
+	"strings"
+
+	"github.com/PretendoNetwork/nex-go"
+)
 
 // FriendRequest contains information about a friend request
 type FriendRequest struct {
@@ -47,6 +52,44 @@ func (friendRequest *FriendRequest) Equals(structure nex.StructureInterface) boo
 	}
 
 	return true
+}
+
+// String returns a string representation of the struct
+func (friendRequest *FriendRequest) String() string {
+	return friendRequest.FormatToString(0)
+}
+
+// FormatToString pretty-prints the struct data using the provided indentation level
+func (friendRequest *FriendRequest) FormatToString(indentationLevel int) string {
+	indentationValues := strings.Repeat("\t", indentationLevel+1)
+	indentationEnd := strings.Repeat("\t", indentationLevel)
+
+	var b strings.Builder
+
+	b.WriteString("FriendRequest{\n")
+	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, friendRequest.StructureVersion()))
+
+	if friendRequest.PrincipalInfo != nil {
+		b.WriteString(fmt.Sprintf("%sPrincipalInfo: %s,\n", indentationValues, friendRequest.PrincipalInfo.FormatToString(indentationLevel+1)))
+	} else {
+		b.WriteString(fmt.Sprintf("%sPrincipalInfo: nil,\n", indentationValues))
+	}
+
+	if friendRequest.Message != nil {
+		b.WriteString(fmt.Sprintf("%sMessage: %s,\n", indentationValues, friendRequest.Message.FormatToString(indentationLevel+1)))
+	} else {
+		b.WriteString(fmt.Sprintf("%sMessage: nil,\n", indentationValues))
+	}
+
+	if friendRequest.SentOn != nil {
+		b.WriteString(fmt.Sprintf("%sSentOn: %s\n", indentationValues, friendRequest.SentOn.FormatToString(indentationLevel+1)))
+	} else {
+		b.WriteString(fmt.Sprintf("%sSentOn: nil\n", indentationValues))
+	}
+
+	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+
+	return b.String()
 }
 
 // NewFriendRequest returns a new FriendRequest

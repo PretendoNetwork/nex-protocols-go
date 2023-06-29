@@ -2,6 +2,7 @@ package datastore_types
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
 )
@@ -72,6 +73,28 @@ func (dataStoreTouchObjectParam *DataStoreTouchObjectParam) Equals(structure nex
 	}
 
 	return true
+}
+
+// String returns a string representation of the struct
+func (dataStoreTouchObjectParam *DataStoreTouchObjectParam) String() string {
+	return dataStoreTouchObjectParam.FormatToString(0)
+}
+
+// FormatToString pretty-prints the struct data using the provided indentation level
+func (dataStoreTouchObjectParam *DataStoreTouchObjectParam) FormatToString(indentationLevel int) string {
+	indentationValues := strings.Repeat("\t", indentationLevel+1)
+	indentationEnd := strings.Repeat("\t", indentationLevel)
+
+	var b strings.Builder
+
+	b.WriteString("DataStoreTouchObjectParam{\n")
+	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, dataStoreTouchObjectParam.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sDataID: %d,\n", indentationValues, dataStoreTouchObjectParam.DataID))
+	b.WriteString(fmt.Sprintf("%sLockID: %d,\n", indentationValues, dataStoreTouchObjectParam.LockID))
+	b.WriteString(fmt.Sprintf("%sAccessPassword: %d\n", indentationValues, dataStoreTouchObjectParam.AccessPassword))
+	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+
+	return b.String()
 }
 
 // NewDataStoreTouchObjectParam returns a new DataStoreTouchObjectParam

@@ -3,6 +3,7 @@ package datastore_super_smash_bros_4_types
 import (
 	"bytes"
 	"fmt"
+	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
 )
@@ -157,6 +158,45 @@ func (dataStoreSharedDataInfo *DataStoreSharedDataInfo) Equals(structure nex.Str
 	}
 
 	return true
+}
+
+// String returns a string representation of the struct
+func (dataStoreSharedDataInfo *DataStoreSharedDataInfo) String() string {
+	return dataStoreSharedDataInfo.FormatToString(0)
+}
+
+// FormatToString pretty-prints the struct data using the provided indentation level
+func (dataStoreSharedDataInfo *DataStoreSharedDataInfo) FormatToString(indentationLevel int) string {
+	indentationValues := strings.Repeat("\t", indentationLevel+1)
+	indentationEnd := strings.Repeat("\t", indentationLevel)
+
+	var b strings.Builder
+
+	b.WriteString("DataStoreSharedDataInfo{\n")
+	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, dataStoreSharedDataInfo.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sDataID: %d,\n", indentationValues, dataStoreSharedDataInfo.DataID))
+	b.WriteString(fmt.Sprintf("%sOwnerID: %d,\n", indentationValues, dataStoreSharedDataInfo.OwnerID))
+	b.WriteString(fmt.Sprintf("%sDataType: %d,\n", indentationValues, dataStoreSharedDataInfo.DataType))
+	b.WriteString(fmt.Sprintf("%sComment: %q,\n", indentationValues, dataStoreSharedDataInfo.Comment))
+	b.WriteString(fmt.Sprintf("%sMetaBinary: %x,\n", indentationValues, dataStoreSharedDataInfo.MetaBinary))
+	b.WriteString(fmt.Sprintf("%sProfile: %x,\n", indentationValues, dataStoreSharedDataInfo.Profile))
+	b.WriteString(fmt.Sprintf("%sRating: %d,\n", indentationValues, dataStoreSharedDataInfo.Rating))
+
+	if dataStoreSharedDataInfo.CreatedTime != nil {
+		b.WriteString(fmt.Sprintf("%sCreatedTime: %s\n", indentationValues, dataStoreSharedDataInfo.CreatedTime.FormatToString(indentationLevel+1)))
+	} else {
+		b.WriteString(fmt.Sprintf("%sCreatedTime: nil\n", indentationValues))
+	}
+
+	if dataStoreSharedDataInfo.Info != nil {
+		b.WriteString(fmt.Sprintf("%sInfo: %s\n", indentationValues, dataStoreSharedDataInfo.Info.FormatToString(indentationLevel+1)))
+	} else {
+		b.WriteString(fmt.Sprintf("%sInfo: nil\n", indentationValues))
+	}
+
+	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+
+	return b.String()
 }
 
 // NewDataStoreSharedDataInfo returns a new DataStoreSharedDataInfo

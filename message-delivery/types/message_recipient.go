@@ -2,6 +2,7 @@ package message_delivery_types
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
 )
@@ -63,6 +64,28 @@ func (messageRecipient *MessageRecipient) Equals(structure nex.StructureInterfac
 	}
 
 	return true
+}
+
+// String returns a string representation of the struct
+func (messageRecipient *MessageRecipient) String() string {
+	return messageRecipient.FormatToString(0)
+}
+
+// FormatToString pretty-prints the struct data using the provided indentation level
+func (messageRecipient *MessageRecipient) FormatToString(indentationLevel int) string {
+	indentationValues := strings.Repeat("\t", indentationLevel+1)
+	indentationEnd := strings.Repeat("\t", indentationLevel)
+
+	var b strings.Builder
+
+	b.WriteString("MessageRecipient{\n")
+	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, messageRecipient.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sm_uiRecipientType: %d,\n", indentationValues, messageRecipient.m_uiRecipientType))
+	b.WriteString(fmt.Sprintf("%sm_principalID: %d,\n", indentationValues, messageRecipient.m_principalID))
+	b.WriteString(fmt.Sprintf("%sm_gatheringID: %d\n", indentationValues, messageRecipient.m_gatheringID))
+	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+
+	return b.String()
 }
 
 // NewMessageRecipient returns a new MessageRecipient

@@ -3,6 +3,7 @@ package datastore_types
 import (
 	"bytes"
 	"fmt"
+	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
 )
@@ -217,6 +218,72 @@ func (dataStorePreparePostParam *DataStorePreparePostParam) Equals(structure nex
 	}
 
 	return true
+}
+
+// String returns a string representation of the struct
+func (dataStorePreparePostParam *DataStorePreparePostParam) String() string {
+	return dataStorePreparePostParam.FormatToString(0)
+}
+
+// FormatToString pretty-prints the struct data using the provided indentation level
+func (dataStorePreparePostParam *DataStorePreparePostParam) FormatToString(indentationLevel int) string {
+	indentationValues := strings.Repeat("\t", indentationLevel+1)
+	indentationListValues := strings.Repeat("\t", indentationLevel+2)
+	indentationEnd := strings.Repeat("\t", indentationLevel)
+
+	var b strings.Builder
+
+	b.WriteString("DataStorePreparePostParam{\n")
+	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, dataStorePreparePostParam.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sSize: %d,\n", indentationValues, dataStorePreparePostParam.Size))
+	b.WriteString(fmt.Sprintf("%sName: %q,\n", indentationValues, dataStorePreparePostParam.Name))
+	b.WriteString(fmt.Sprintf("%sDataType: %d,\n", indentationValues, dataStorePreparePostParam.DataType))
+	b.WriteString(fmt.Sprintf("%sMetaBinary: %x,\n", indentationValues, dataStorePreparePostParam.MetaBinary))
+
+	if dataStorePreparePostParam.Permission != nil {
+		b.WriteString(fmt.Sprintf("%sPermission: %s,\n", indentationValues, dataStorePreparePostParam.Permission.FormatToString(indentationLevel+1)))
+	} else {
+		b.WriteString(fmt.Sprintf("%sPermission: nil,\n", indentationValues))
+	}
+
+	if dataStorePreparePostParam.DelPermission != nil {
+		b.WriteString(fmt.Sprintf("%sDelPermission: %s,\n", indentationValues, dataStorePreparePostParam.DelPermission.FormatToString(indentationLevel+1)))
+	} else {
+		b.WriteString(fmt.Sprintf("%sDelPermission: nil,\n", indentationValues))
+	}
+
+	b.WriteString(fmt.Sprintf("%sFlag: %d,\n", indentationValues, dataStorePreparePostParam.Flag))
+	b.WriteString(fmt.Sprintf("%sPeriod: %d,\n", indentationValues, dataStorePreparePostParam.Period))
+	b.WriteString(fmt.Sprintf("%sReferDataId: %d,\n", indentationValues, dataStorePreparePostParam.ReferDataId))
+	b.WriteString(fmt.Sprintf("%sTags: %v,\n", indentationValues, dataStorePreparePostParam.Tags))
+
+	if len(dataStorePreparePostParam.RatingInitParams) == 0 {
+		b.WriteString(fmt.Sprintf("%sRatingInitParams: [],\n", indentationValues))
+	} else {
+		b.WriteString(fmt.Sprintf("%sRatingInitParams: [\n", indentationValues))
+
+		for i := 0; i < len(dataStorePreparePostParam.RatingInitParams); i++ {
+			str := dataStorePreparePostParam.RatingInitParams[i].FormatToString(indentationLevel + 2)
+			if i == len(dataStorePreparePostParam.RatingInitParams)-1 {
+				b.WriteString(fmt.Sprintf("%s%s\n", indentationListValues, str))
+			} else {
+				b.WriteString(fmt.Sprintf("%s%s,\n", indentationListValues, str))
+			}
+		}
+
+		b.WriteString(fmt.Sprintf("%s],\n", indentationValues))
+	}
+
+	if dataStorePreparePostParam.PersistenceInitParam != nil {
+		b.WriteString(fmt.Sprintf("%sPersistenceInitParam: %s,\n", indentationValues, dataStorePreparePostParam.PersistenceInitParam.FormatToString(indentationLevel+1)))
+	} else {
+		b.WriteString(fmt.Sprintf("%sPersistenceInitParam: nil,\n", indentationValues))
+	}
+
+	b.WriteString(fmt.Sprintf("%sExtraData: %v,\n", indentationValues, dataStorePreparePostParam.ExtraData))
+	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+
+	return b.String()
 }
 
 // NewDataStorePreparePostParam returns a new DataStorePreparePostParam

@@ -3,6 +3,7 @@ package shop_types
 import (
 	"bytes"
 	"fmt"
+	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
 )
@@ -91,6 +92,29 @@ func (shopItem *ShopItem) Equals(structure nex.StructureInterface) bool {
 	}
 
 	return true
+}
+
+// String returns a string representation of the struct
+func (shopItem *ShopItem) String() string {
+	return shopItem.FormatToString(0)
+}
+
+// FormatToString pretty-prints the struct data using the provided indentation level
+func (shopItem *ShopItem) FormatToString(indentationLevel int) string {
+	indentationValues := strings.Repeat("\t", indentationLevel+1)
+	indentationEnd := strings.Repeat("\t", indentationLevel)
+
+	var b strings.Builder
+
+	b.WriteString("ShopItem{\n")
+	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, shopItem.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sItemID: %d,\n", indentationValues, shopItem.ItemID))
+	b.WriteString(fmt.Sprintf("%sReferenceID: %x,\n", indentationValues, shopItem.ReferenceID))
+	b.WriteString(fmt.Sprintf("%sServiceName: %q,\n", indentationValues, shopItem.ServiceName))
+	b.WriteString(fmt.Sprintf("%sItemCode: %q\n", indentationValues, shopItem.ItemCode))
+	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+
+	return b.String()
 }
 
 // NewShopItem returns a new ShopItem

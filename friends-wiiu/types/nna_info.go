@@ -2,6 +2,7 @@ package friends_wiiu_types
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
 )
@@ -74,6 +75,34 @@ func (nnaInfo *NNAInfo) Equals(structure nex.StructureInterface) bool {
 	}
 
 	return true
+}
+
+// String returns a string representation of the struct
+func (nnaInfo *NNAInfo) String() string {
+	return nnaInfo.FormatToString(0)
+}
+
+// FormatToString pretty-prints the struct data using the provided indentation level
+func (nnaInfo *NNAInfo) FormatToString(indentationLevel int) string {
+	indentationValues := strings.Repeat("\t", indentationLevel+1)
+	indentationEnd := strings.Repeat("\t", indentationLevel)
+
+	var b strings.Builder
+
+	b.WriteString("NNAInfo{\n")
+	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, nnaInfo.StructureVersion()))
+
+	if nnaInfo.PrincipalBasicInfo != nil {
+		b.WriteString(fmt.Sprintf("%sPrincipalBasicInfo: %s,\n", indentationValues, nnaInfo.PrincipalBasicInfo.FormatToString(indentationLevel+1)))
+	} else {
+		b.WriteString(fmt.Sprintf("%sPrincipalBasicInfo: nil,\n", indentationValues))
+	}
+
+	b.WriteString(fmt.Sprintf("%sUnknown1: %d,\n", indentationValues, nnaInfo.Unknown1))
+	b.WriteString(fmt.Sprintf("%sUnknown2: %d\n", indentationValues, nnaInfo.Unknown2))
+	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+
+	return b.String()
 }
 
 // NewNNAInfo returns a new NNAInfo

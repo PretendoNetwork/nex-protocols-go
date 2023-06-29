@@ -3,6 +3,7 @@ package datastore_super_smash_bros_4_types
 import (
 	"bytes"
 	"fmt"
+	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
 )
@@ -87,6 +88,29 @@ func (dataStoreReqGetAdditionalMeta *DataStoreReqGetAdditionalMeta) Equals(struc
 	}
 
 	return true
+}
+
+// String returns a string representation of the struct
+func (dataStoreReqGetAdditionalMeta *DataStoreReqGetAdditionalMeta) String() string {
+	return dataStoreReqGetAdditionalMeta.FormatToString(0)
+}
+
+// FormatToString pretty-prints the struct data using the provided indentation level
+func (dataStoreReqGetAdditionalMeta *DataStoreReqGetAdditionalMeta) FormatToString(indentationLevel int) string {
+	indentationValues := strings.Repeat("\t", indentationLevel+1)
+	indentationEnd := strings.Repeat("\t", indentationLevel)
+
+	var b strings.Builder
+
+	b.WriteString("DataStoreReqGetAdditionalMeta{\n")
+	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, dataStoreReqGetAdditionalMeta.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sOwnerID: %d,\n", indentationValues, dataStoreReqGetAdditionalMeta.OwnerID))
+	b.WriteString(fmt.Sprintf("%sDataType: %d,\n", indentationValues, dataStoreReqGetAdditionalMeta.DataType))
+	b.WriteString(fmt.Sprintf("%sVersion: %d,\n", indentationValues, dataStoreReqGetAdditionalMeta.Version))
+	b.WriteString(fmt.Sprintf("%sMetaBinary: %x\n", indentationValues, dataStoreReqGetAdditionalMeta.MetaBinary))
+	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+
+	return b.String()
 }
 
 // NewDataStoreReqGetAdditionalMeta returns a new DataStoreReqGetAdditionalMeta

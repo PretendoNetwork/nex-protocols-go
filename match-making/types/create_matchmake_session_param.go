@@ -2,6 +2,7 @@ package match_making_types
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
 )
@@ -120,6 +121,37 @@ func (createMatchmakeSessionParam *CreateMatchmakeSessionParam) Equals(structure
 	}
 
 	return true
+}
+
+// String returns a string representation of the struct
+func (createMatchmakeSessionParam *CreateMatchmakeSessionParam) String() string {
+	return createMatchmakeSessionParam.FormatToString(0)
+}
+
+// FormatToString pretty-prints the struct data using the provided indentation level
+func (createMatchmakeSessionParam *CreateMatchmakeSessionParam) FormatToString(indentationLevel int) string {
+	indentationValues := strings.Repeat("\t", indentationLevel+1)
+	indentationEnd := strings.Repeat("\t", indentationLevel)
+
+	var b strings.Builder
+
+	b.WriteString("CreateMatchmakeSessionParam{\n")
+	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, createMatchmakeSessionParam.StructureVersion()))
+
+	if createMatchmakeSessionParam.SourceMatchmakeSession != nil {
+		b.WriteString(fmt.Sprintf("%sSourceMatchmakeSession: %s,\n", indentationValues, createMatchmakeSessionParam.SourceMatchmakeSession.FormatToString(indentationLevel+1)))
+	} else {
+		b.WriteString(fmt.Sprintf("%sSourceMatchmakeSession: nil,\n", indentationValues))
+	}
+
+	b.WriteString(fmt.Sprintf("%sAdditionalParticipants: %v,\n", indentationValues, createMatchmakeSessionParam.AdditionalParticipants))
+	b.WriteString(fmt.Sprintf("%sGIDForParticipationCheck: %d,\n", indentationValues, createMatchmakeSessionParam.GIDForParticipationCheck))
+	b.WriteString(fmt.Sprintf("%sCreateMatchmakeSessionOption: %d,\n", indentationValues, createMatchmakeSessionParam.CreateMatchmakeSessionOption))
+	b.WriteString(fmt.Sprintf("%sJoinMessage: %q,\n", indentationValues, createMatchmakeSessionParam.JoinMessage))
+	b.WriteString(fmt.Sprintf("%sParticipationCount: %d\n", indentationValues, createMatchmakeSessionParam.ParticipationCount))
+	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+
+	return b.String()
 }
 
 // NewCreateMatchmakeSessionParam returns a new CreateMatchmakeSessionParam

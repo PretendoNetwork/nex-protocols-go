@@ -2,6 +2,7 @@ package datastore_types
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
 )
@@ -69,6 +70,27 @@ func (dataStorePermission *DataStorePermission) Equals(structure nex.StructureIn
 	}
 
 	return true
+}
+
+// String returns a string representation of the struct
+func (dataStorePermission *DataStorePermission) String() string {
+	return dataStorePermission.FormatToString(0)
+}
+
+// FormatToString pretty-prints the struct data using the provided indentation level
+func (dataStorePermission *DataStorePermission) FormatToString(indentationLevel int) string {
+	indentationValues := strings.Repeat("\t", indentationLevel+1)
+	indentationEnd := strings.Repeat("\t", indentationLevel)
+
+	var b strings.Builder
+
+	b.WriteString("DataStorePermission{\n")
+	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, dataStorePermission.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sPermission: %d,\n", indentationValues, dataStorePermission.Permission))
+	b.WriteString(fmt.Sprintf("%sRecipientIds: %v\n", indentationValues, dataStorePermission.RecipientIds))
+	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+
+	return b.String()
 }
 
 // NewDataStorePermission returns a new DataStorePermission

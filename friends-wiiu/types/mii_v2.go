@@ -3,6 +3,7 @@ package friends_wiiu_types
 import (
 	"bytes"
 	"fmt"
+	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
 )
@@ -101,6 +102,36 @@ func (mii *MiiV2) Equals(structure nex.StructureInterface) bool {
 	}
 
 	return true
+}
+
+// String returns a string representation of the struct
+func (mii *MiiV2) String() string {
+	return mii.FormatToString(0)
+}
+
+// FormatToString pretty-prints the struct data using the provided indentation level
+func (mii *MiiV2) FormatToString(indentationLevel int) string {
+	indentationValues := strings.Repeat("\t", indentationLevel+1)
+	indentationEnd := strings.Repeat("\t", indentationLevel)
+
+	var b strings.Builder
+
+	b.WriteString("MiiV2{\n")
+	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, mii.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sName: %q,\n", indentationValues, mii.Name))
+	b.WriteString(fmt.Sprintf("%sUnknown1: %d,\n", indentationValues, mii.Unknown1))
+	b.WriteString(fmt.Sprintf("%sUnknown2: %d,\n", indentationValues, mii.Unknown2))
+	b.WriteString(fmt.Sprintf("%sData: %x,\n", indentationValues, mii.Data))
+
+	if mii.Datetime != nil {
+		b.WriteString(fmt.Sprintf("%sDatetime: %s\n", indentationValues, mii.Datetime.FormatToString(indentationLevel+1)))
+	} else {
+		b.WriteString(fmt.Sprintf("%sDatetime: nil\n", indentationValues))
+	}
+
+	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+
+	return b.String()
 }
 
 // NewMiiV2 returns a new MiiV2

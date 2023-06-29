@@ -3,6 +3,7 @@ package datastore_types
 import (
 	"bytes"
 	"fmt"
+	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
 )
@@ -125,6 +126,64 @@ func (dataStoreReqPostInfoV1 *DataStoreReqPostInfoV1) Equals(structure nex.Struc
 	}
 
 	return true
+}
+
+// String returns a string representation of the struct
+func (dataStoreReqPostInfoV1 *DataStoreReqPostInfoV1) String() string {
+	return dataStoreReqPostInfoV1.FormatToString(0)
+}
+
+// FormatToString pretty-prints the struct data using the provided indentation level
+func (dataStoreReqPostInfoV1 *DataStoreReqPostInfoV1) FormatToString(indentationLevel int) string {
+	indentationValues := strings.Repeat("\t", indentationLevel+1)
+	indentationListValues := strings.Repeat("\t", indentationLevel+2)
+	indentationEnd := strings.Repeat("\t", indentationLevel)
+
+	var b strings.Builder
+
+	b.WriteString("DataStoreReqPostInfoV1{\n")
+	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, dataStoreReqPostInfoV1.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sDataID: %d,\n", indentationValues, dataStoreReqPostInfoV1.DataID))
+	b.WriteString(fmt.Sprintf("%sUrl: %q,\n", indentationValues, dataStoreReqPostInfoV1.Url))
+
+	if len(dataStoreReqPostInfoV1.RequestHeaders) == 0 {
+		b.WriteString(fmt.Sprintf("%sRequestHeaders: [],\n", indentationValues))
+	} else {
+		b.WriteString(fmt.Sprintf("%sRequestHeaders: [\n", indentationValues))
+
+		for i := 0; i < len(dataStoreReqPostInfoV1.RequestHeaders); i++ {
+			str := dataStoreReqPostInfoV1.RequestHeaders[i].FormatToString(indentationLevel + 2)
+			if i == len(dataStoreReqPostInfoV1.RequestHeaders)-1 {
+				b.WriteString(fmt.Sprintf("%s%s\n", indentationListValues, str))
+			} else {
+				b.WriteString(fmt.Sprintf("%s%s,\n", indentationListValues, str))
+			}
+		}
+
+		b.WriteString(fmt.Sprintf("%s],\n", indentationValues))
+	}
+
+	if len(dataStoreReqPostInfoV1.FormFields) == 0 {
+		b.WriteString(fmt.Sprintf("%sFormFields: [],\n", indentationValues))
+	} else {
+		b.WriteString(fmt.Sprintf("%sFormFields: [\n", indentationValues))
+
+		for i := 0; i < len(dataStoreReqPostInfoV1.FormFields); i++ {
+			str := dataStoreReqPostInfoV1.FormFields[i].FormatToString(indentationLevel + 2)
+			if i == len(dataStoreReqPostInfoV1.FormFields)-1 {
+				b.WriteString(fmt.Sprintf("%s%s\n", indentationListValues, str))
+			} else {
+				b.WriteString(fmt.Sprintf("%s%s,\n", indentationListValues, str))
+			}
+		}
+
+		b.WriteString(fmt.Sprintf("%s],\n", indentationValues))
+	}
+
+	b.WriteString(fmt.Sprintf("%sRootCaCert: %x\n", indentationValues, dataStoreReqPostInfoV1.RootCaCert))
+	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+
+	return b.String()
 }
 
 // NewDataStoreReqPostInfoV1 returns a new DataStoreReqPostInfoV1

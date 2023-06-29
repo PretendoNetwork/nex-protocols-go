@@ -2,6 +2,7 @@ package match_making_types
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
 )
@@ -162,6 +163,57 @@ func (autoMatchmakeParam *AutoMatchmakeParam) Equals(structure nex.StructureInte
 	}
 
 	return true
+}
+
+// String returns a string representation of the struct
+func (autoMatchmakeParam *AutoMatchmakeParam) String() string {
+	return autoMatchmakeParam.FormatToString(0)
+}
+
+// FormatToString pretty-prints the struct data using the provided indentation level
+func (autoMatchmakeParam *AutoMatchmakeParam) FormatToString(indentationLevel int) string {
+	indentationValues := strings.Repeat("\t", indentationLevel+1)
+	indentationListValues := strings.Repeat("\t", indentationLevel+2)
+	indentationEnd := strings.Repeat("\t", indentationLevel)
+
+	var b strings.Builder
+
+	b.WriteString("AutoMatchmakeParam{\n")
+	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, autoMatchmakeParam.StructureVersion()))
+
+	if autoMatchmakeParam.SourceMatchmakeSession != nil {
+		b.WriteString(fmt.Sprintf("%sSourceMatchmakeSession: %s,\n", indentationValues, autoMatchmakeParam.SourceMatchmakeSession.FormatToString(indentationLevel+1)))
+	} else {
+		b.WriteString(fmt.Sprintf("%sSourceMatchmakeSession: nil,\n", indentationValues))
+	}
+
+	b.WriteString(fmt.Sprintf("%sAdditionalParticipants: %v,\n", indentationValues, autoMatchmakeParam.AdditionalParticipants))
+	b.WriteString(fmt.Sprintf("%sGIDForParticipationCheck: %d,\n", indentationValues, autoMatchmakeParam.GIDForParticipationCheck))
+	b.WriteString(fmt.Sprintf("%sAutoMatchmakeOption: %d,\n", indentationValues, autoMatchmakeParam.AutoMatchmakeOption))
+	b.WriteString(fmt.Sprintf("%sJoinMessage: %q,\n", indentationValues, autoMatchmakeParam.JoinMessage))
+	b.WriteString(fmt.Sprintf("%sParticipationCount: %d,\n", indentationValues, autoMatchmakeParam.ParticipationCount))
+
+	if len(autoMatchmakeParam.LstSearchCriteria) == 0 {
+		b.WriteString(fmt.Sprintf("%sLstSearchCriteria: [],\n", indentationValues))
+	} else {
+		b.WriteString(fmt.Sprintf("%sLstSearchCriteria: [\n", indentationValues))
+
+		for i := 0; i < len(autoMatchmakeParam.LstSearchCriteria); i++ {
+			str := autoMatchmakeParam.LstSearchCriteria[i].FormatToString(indentationLevel + 2)
+			if i == len(autoMatchmakeParam.LstSearchCriteria)-1 {
+				b.WriteString(fmt.Sprintf("%s%s\n", indentationListValues, str))
+			} else {
+				b.WriteString(fmt.Sprintf("%s%s,\n", indentationListValues, str))
+			}
+		}
+
+		b.WriteString(fmt.Sprintf("%s],\n", indentationValues))
+	}
+
+	b.WriteString(fmt.Sprintf("%sTargetGIDs: %v\n", indentationValues, autoMatchmakeParam.TargetGIDs))
+	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+
+	return b.String()
 }
 
 // NewAutoMatchmakeParam returns a new AutoMatchmakeParam

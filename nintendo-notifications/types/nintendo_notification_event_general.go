@@ -1,6 +1,11 @@
 package nintendo_notifications_types
 
-import "github.com/PretendoNetwork/nex-go"
+import (
+	"fmt"
+	"strings"
+
+	"github.com/PretendoNetwork/nex-go"
+)
 
 // NintendoNotificationEventGeneral holds general purpose notification data
 type NintendoNotificationEventGeneral struct {
@@ -54,6 +59,29 @@ func (nintendoNotificationEventGeneral *NintendoNotificationEventGeneral) Equals
 	}
 
 	return true
+}
+
+// String returns a string representation of the struct
+func (nintendoNotificationEventGeneral *NintendoNotificationEventGeneral) String() string {
+	return nintendoNotificationEventGeneral.FormatToString(0)
+}
+
+// FormatToString pretty-prints the struct data using the provided indentation level
+func (nintendoNotificationEventGeneral *NintendoNotificationEventGeneral) FormatToString(indentationLevel int) string {
+	indentationValues := strings.Repeat("\t", indentationLevel+1)
+	indentationEnd := strings.Repeat("\t", indentationLevel)
+
+	var b strings.Builder
+
+	b.WriteString("NintendoNotificationEventGeneral{\n")
+	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, nintendoNotificationEventGeneral.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sU32Param: %d,\n", indentationValues, nintendoNotificationEventGeneral.U32Param))
+	b.WriteString(fmt.Sprintf("%sU64Param1: %d,\n", indentationValues, nintendoNotificationEventGeneral.U64Param1))
+	b.WriteString(fmt.Sprintf("%sU64Param2: %d,\n", indentationValues, nintendoNotificationEventGeneral.U64Param2))
+	b.WriteString(fmt.Sprintf("%sStrParam: %q\n", indentationValues, nintendoNotificationEventGeneral.StrParam))
+	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+
+	return b.String()
 }
 
 // NintendoNotificationEventGeneral returns a new NintendoNotificationEventGeneral

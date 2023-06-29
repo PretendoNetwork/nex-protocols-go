@@ -1,6 +1,11 @@
 package notifications_types
 
-import "github.com/PretendoNetwork/nex-go"
+import (
+	"fmt"
+	"strings"
+
+	"github.com/PretendoNetwork/nex-go"
+)
 
 // NotificationEvent holds general purpose notification data
 type NotificationEvent struct {
@@ -73,6 +78,31 @@ func (notificationEvent *NotificationEvent) Equals(structure nex.StructureInterf
 	}
 
 	return true
+}
+
+// String returns a string representation of the struct
+func (notificationEvent *NotificationEvent) String() string {
+	return notificationEvent.FormatToString(0)
+}
+
+// FormatToString pretty-prints the struct data using the provided indentation level
+func (notificationEvent *NotificationEvent) FormatToString(indentationLevel int) string {
+	indentationValues := strings.Repeat("\t", indentationLevel+1)
+	indentationEnd := strings.Repeat("\t", indentationLevel)
+
+	var b strings.Builder
+
+	b.WriteString("NotificationEvent{\n")
+	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, notificationEvent.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sPIDSource: %d,\n", indentationValues, notificationEvent.PIDSource))
+	b.WriteString(fmt.Sprintf("%sType: %d,\n", indentationValues, notificationEvent.Type))
+	b.WriteString(fmt.Sprintf("%sParam1: %d,\n", indentationValues, notificationEvent.Param1))
+	b.WriteString(fmt.Sprintf("%sParam2: %d,\n", indentationValues, notificationEvent.Param2))
+	b.WriteString(fmt.Sprintf("%sStrParam: %q,\n", indentationValues, notificationEvent.StrParam))
+	b.WriteString(fmt.Sprintf("%sParam3: %d\n", indentationValues, notificationEvent.Param3))
+	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+
+	return b.String()
 }
 
 // NotificationEvent returns a new NotificationEvent

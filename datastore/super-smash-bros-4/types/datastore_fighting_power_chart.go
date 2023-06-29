@@ -2,6 +2,7 @@ package datastore_super_smash_bros_4_types
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
 )
@@ -72,6 +73,45 @@ func (dataStoreFightingPowerChart *DataStoreFightingPowerChart) Equals(structure
 	}
 
 	return true
+}
+
+// String returns a string representation of the struct
+func (dataStoreFightingPowerChart *DataStoreFightingPowerChart) String() string {
+	return dataStoreFightingPowerChart.FormatToString(0)
+}
+
+// FormatToString pretty-prints the struct data using the provided indentation level
+func (dataStoreFightingPowerChart *DataStoreFightingPowerChart) FormatToString(indentationLevel int) string {
+	indentationValues := strings.Repeat("\t", indentationLevel+1)
+	indentationListValues := strings.Repeat("\t", indentationLevel+2)
+	indentationEnd := strings.Repeat("\t", indentationLevel)
+
+	var b strings.Builder
+
+	b.WriteString("DataStoreFightingPowerChart{\n")
+	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, dataStoreFightingPowerChart.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sUserNum: %d,\n", indentationValues, dataStoreFightingPowerChart.UserNum))
+
+	if len(dataStoreFightingPowerChart.Chart) == 0 {
+		b.WriteString(fmt.Sprintf("%sChart: [],\n", indentationValues))
+	} else {
+		b.WriteString(fmt.Sprintf("%sChart: [\n", indentationValues))
+
+		for i := 0; i < len(dataStoreFightingPowerChart.Chart); i++ {
+			str := dataStoreFightingPowerChart.Chart[i].FormatToString(indentationLevel + 2)
+			if i == len(dataStoreFightingPowerChart.Chart)-1 {
+				b.WriteString(fmt.Sprintf("%s%s\n", indentationListValues, str))
+			} else {
+				b.WriteString(fmt.Sprintf("%s%s,\n", indentationListValues, str))
+			}
+		}
+
+		b.WriteString(fmt.Sprintf("%s]\n", indentationValues))
+	}
+
+	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+
+	return b.String()
 }
 
 // NewDataStoreFightingPowerChart returns a new DataStoreFightingPowerChart

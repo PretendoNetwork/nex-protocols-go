@@ -3,6 +3,7 @@ package match_making_types
 import (
 	"bytes"
 	"fmt"
+	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
 )
@@ -165,6 +166,45 @@ func (persistentGathering *PersistentGathering) Equals(structure nex.StructureIn
 	}
 
 	return true
+}
+
+// String returns a string representation of the struct
+func (persistentGathering *PersistentGathering) String() string {
+	return persistentGathering.FormatToString(0)
+}
+
+// FormatToString pretty-prints the struct data using the provided indentation level
+func (persistentGathering *PersistentGathering) FormatToString(indentationLevel int) string {
+	indentationValues := strings.Repeat("\t", indentationLevel+1)
+	indentationEnd := strings.Repeat("\t", indentationLevel)
+
+	var b strings.Builder
+
+	b.WriteString("PersistentGathering{\n")
+	b.WriteString(fmt.Sprintf("%sParentType: %s,\n", indentationValues, persistentGathering.ParentType().FormatToString(indentationLevel+1)))
+	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, persistentGathering.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sM_CommunityType: %d,\n", indentationValues, persistentGathering.M_CommunityType))
+	b.WriteString(fmt.Sprintf("%sM_Password: %q,\n", indentationValues, persistentGathering.M_Password))
+	b.WriteString(fmt.Sprintf("%sM_Attribs: %v,\n", indentationValues, persistentGathering.M_Attribs))
+	b.WriteString(fmt.Sprintf("%sM_ApplicationBuffer: %x,\n", indentationValues, persistentGathering.M_ApplicationBuffer))
+
+	if persistentGathering.M_ParticipationStartDate != nil {
+		b.WriteString(fmt.Sprintf("%sM_ParticipationStartDate: %s,\n", indentationValues, persistentGathering.M_ParticipationStartDate.FormatToString(indentationLevel+1)))
+	} else {
+		b.WriteString(fmt.Sprintf("%sM_ParticipationStartDate: nil,\n", indentationValues))
+	}
+
+	if persistentGathering.M_ParticipationEndDate != nil {
+		b.WriteString(fmt.Sprintf("%sM_ParticipationEndDate: %s,\n", indentationValues, persistentGathering.M_ParticipationEndDate.FormatToString(indentationLevel+1)))
+	} else {
+		b.WriteString(fmt.Sprintf("%sM_ParticipationEndDate: nil,\n", indentationValues))
+	}
+
+	b.WriteString(fmt.Sprintf("%sM_MatchmakeSessionCount: %d,\n", indentationValues, persistentGathering.M_MatchmakeSessionCount))
+	b.WriteString(fmt.Sprintf("%sM_ParticipationCount: %d\n", indentationValues, persistentGathering.M_ParticipationCount))
+	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+
+	return b.String()
 }
 
 // NewPersistentGathering returns a new PersistentGathering

@@ -2,6 +2,7 @@ package shop_nintendo_badge_arcade_types
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
 )
@@ -81,6 +82,34 @@ func (shopPostPlayLogParam *ShopPostPlayLogParam) Equals(structure nex.Structure
 	}
 
 	return true
+}
+
+// String returns a string representation of the struct
+func (shopPostPlayLogParam *ShopPostPlayLogParam) String() string {
+	return shopPostPlayLogParam.FormatToString(0)
+}
+
+// FormatToString pretty-prints the struct data using the provided indentation level
+func (shopPostPlayLogParam *ShopPostPlayLogParam) FormatToString(indentationLevel int) string {
+	indentationValues := strings.Repeat("\t", indentationLevel+1)
+	indentationEnd := strings.Repeat("\t", indentationLevel)
+
+	var b strings.Builder
+
+	b.WriteString("ShopPostPlayLogParam{\n")
+	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, shopPostPlayLogParam.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sUnknown1: %v,\n", indentationValues, shopPostPlayLogParam.Unknown1))
+
+	if shopPostPlayLogParam.Timestamp != nil {
+		b.WriteString(fmt.Sprintf("%sTimestamp: %s,\n", indentationValues, shopPostPlayLogParam.Timestamp.FormatToString(indentationLevel+1)))
+	} else {
+		b.WriteString(fmt.Sprintf("%sTimestamp: nil,\n", indentationValues))
+	}
+
+	b.WriteString(fmt.Sprintf("%sUnknown2: %q\n", indentationValues, shopPostPlayLogParam.Unknown2))
+	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+
+	return b.String()
 }
 
 // NewShopPostPlayLogParam returns a new ShopPostPlayLogParam

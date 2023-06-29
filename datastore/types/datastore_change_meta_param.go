@@ -3,6 +3,7 @@ package datastore_types
 import (
 	"bytes"
 	"fmt"
+	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
 )
@@ -219,6 +220,61 @@ func (dataStoreChangeMetaParam *DataStoreChangeMetaParam) Equals(structure nex.S
 	}
 
 	return true
+}
+
+// String returns a string representation of the struct
+func (dataStoreChangeMetaParam *DataStoreChangeMetaParam) String() string {
+	return dataStoreChangeMetaParam.FormatToString(0)
+}
+
+// FormatToString pretty-prints the struct data using the provided indentation level
+func (dataStoreChangeMetaParam *DataStoreChangeMetaParam) FormatToString(indentationLevel int) string {
+	indentationValues := strings.Repeat("\t", indentationLevel+1)
+	indentationEnd := strings.Repeat("\t", indentationLevel)
+
+	var b strings.Builder
+
+	b.WriteString("DataStoreChangeMetaParam{\n")
+	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, dataStoreChangeMetaParam.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sDataID: %d,\n", indentationValues, dataStoreChangeMetaParam.DataID))
+	b.WriteString(fmt.Sprintf("%sModifiesFlag: %d,\n", indentationValues, dataStoreChangeMetaParam.ModifiesFlag))
+	b.WriteString(fmt.Sprintf("%sName: %q,\n", indentationValues, dataStoreChangeMetaParam.Name))
+
+	if dataStoreChangeMetaParam.Permission != nil {
+		b.WriteString(fmt.Sprintf("%sPermission: %s,\n", indentationValues, dataStoreChangeMetaParam.Permission.FormatToString(indentationLevel+1)))
+	} else {
+		b.WriteString(fmt.Sprintf("%sPermission: nil,\n", indentationValues))
+	}
+
+	if dataStoreChangeMetaParam.DelPermission != nil {
+		b.WriteString(fmt.Sprintf("%sDelPermission: %s,\n", indentationValues, dataStoreChangeMetaParam.DelPermission.FormatToString(indentationLevel+1)))
+	} else {
+		b.WriteString(fmt.Sprintf("%sDelPermission: nil,\n", indentationValues))
+	}
+
+	b.WriteString(fmt.Sprintf("%sPeriod: %d,\n", indentationValues, dataStoreChangeMetaParam.Period))
+	b.WriteString(fmt.Sprintf("%sMetaBinary: %x,\n", indentationValues, dataStoreChangeMetaParam.MetaBinary))
+	b.WriteString(fmt.Sprintf("%sTags: %v,\n", indentationValues, dataStoreChangeMetaParam.Tags))
+	b.WriteString(fmt.Sprintf("%sUpdatePassword: %d,\n", indentationValues, dataStoreChangeMetaParam.UpdatePassword))
+	b.WriteString(fmt.Sprintf("%sReferredCnt: %d,\n", indentationValues, dataStoreChangeMetaParam.ReferredCnt))
+	b.WriteString(fmt.Sprintf("%sDataType: %d,\n", indentationValues, dataStoreChangeMetaParam.DataType))
+	b.WriteString(fmt.Sprintf("%sStatus: %d,\n", indentationValues, dataStoreChangeMetaParam.Status))
+
+	if dataStoreChangeMetaParam.CompareParam != nil {
+		b.WriteString(fmt.Sprintf("%sCompareParam: %s,\n", indentationValues, dataStoreChangeMetaParam.CompareParam.FormatToString(indentationLevel+1)))
+	} else {
+		b.WriteString(fmt.Sprintf("%sCompareParam: nil,\n", indentationValues))
+	}
+
+	if dataStoreChangeMetaParam.PersistenceTarget != nil {
+		b.WriteString(fmt.Sprintf("%sPersistenceTarget: %s\n", indentationValues, dataStoreChangeMetaParam.PersistenceTarget.FormatToString(indentationLevel+1)))
+	} else {
+		b.WriteString(fmt.Sprintf("%sPersistenceTarget: nil\n", indentationValues))
+	}
+
+	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+
+	return b.String()
 }
 
 // NewDataStoreChangeMetaParam returns a new DataStoreChangeMetaParam

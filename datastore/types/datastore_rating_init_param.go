@@ -2,6 +2,7 @@ package datastore_types
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
 )
@@ -119,6 +120,33 @@ func (dataStoreRatingInitParam *DataStoreRatingInitParam) Equals(structure nex.S
 	}
 
 	return true
+}
+
+// String returns a string representation of the struct
+func (dataStoreRatingInitParam *DataStoreRatingInitParam) String() string {
+	return dataStoreRatingInitParam.FormatToString(0)
+}
+
+// FormatToString pretty-prints the struct data using the provided indentation level
+func (dataStoreRatingInitParam *DataStoreRatingInitParam) FormatToString(indentationLevel int) string {
+	indentationValues := strings.Repeat("\t", indentationLevel+1)
+	indentationEnd := strings.Repeat("\t", indentationLevel)
+
+	var b strings.Builder
+
+	b.WriteString("DataStoreRatingInitParam{\n")
+	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, dataStoreRatingInitParam.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sFlag: %d,\n", indentationValues, dataStoreRatingInitParam.Flag))
+	b.WriteString(fmt.Sprintf("%sInternalFlag: %d,\n", indentationValues, dataStoreRatingInitParam.InternalFlag))
+	b.WriteString(fmt.Sprintf("%sLockType: %d,\n", indentationValues, dataStoreRatingInitParam.LockType))
+	b.WriteString(fmt.Sprintf("%sInitialValue: %d,\n", indentationValues, dataStoreRatingInitParam.InitialValue))
+	b.WriteString(fmt.Sprintf("%sRangeMin: %d,\n", indentationValues, dataStoreRatingInitParam.RangeMin))
+	b.WriteString(fmt.Sprintf("%sRangeMax: %d,\n", indentationValues, dataStoreRatingInitParam.RangeMax))
+	b.WriteString(fmt.Sprintf("%sPeriodHour: %d,\n", indentationValues, dataStoreRatingInitParam.PeriodHour))
+	b.WriteString(fmt.Sprintf("%sPeriodDuration: %d\n", indentationValues, dataStoreRatingInitParam.PeriodDuration))
+	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+
+	return b.String()
 }
 
 // NewDataStoreRatingInitParam returns a new DataStoreRatingInitParam

@@ -2,6 +2,7 @@ package datastore_types
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
 )
@@ -101,6 +102,29 @@ func (dataStorePrepareUpdateParam *DataStorePrepareUpdateParam) Equals(structure
 	}
 
 	return true
+}
+
+// String returns a string representation of the struct
+func (dataStorePrepareUpdateParam *DataStorePrepareUpdateParam) String() string {
+	return dataStorePrepareUpdateParam.FormatToString(0)
+}
+
+// FormatToString pretty-prints the struct data using the provided indentation level
+func (dataStorePrepareUpdateParam *DataStorePrepareUpdateParam) FormatToString(indentationLevel int) string {
+	indentationValues := strings.Repeat("\t", indentationLevel+1)
+	indentationEnd := strings.Repeat("\t", indentationLevel)
+
+	var b strings.Builder
+
+	b.WriteString("DataStorePrepareUpdateParam{\n")
+	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, dataStorePrepareUpdateParam.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sDataID: %d,\n", indentationValues, dataStorePrepareUpdateParam.DataID))
+	b.WriteString(fmt.Sprintf("%sSize: %d,\n", indentationValues, dataStorePrepareUpdateParam.Size))
+	b.WriteString(fmt.Sprintf("%sUpdatePassword: %d,\n", indentationValues, dataStorePrepareUpdateParam.UpdatePassword))
+	b.WriteString(fmt.Sprintf("%sExtraData: %v\n", indentationValues, dataStorePrepareUpdateParam.ExtraData))
+	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+
+	return b.String()
 }
 
 // NewDataStorePrepareUpdateParam returns a new DataStorePrepareUpdateParam

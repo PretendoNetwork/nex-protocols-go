@@ -2,6 +2,7 @@ package datastore_types
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
 )
@@ -76,6 +77,35 @@ func (dataStoreGetMetaParam *DataStoreGetMetaParam) Equals(structure nex.Structu
 	}
 
 	return true
+}
+
+// String returns a string representation of the struct
+func (dataStoreGetMetaParam *DataStoreGetMetaParam) String() string {
+	return dataStoreGetMetaParam.FormatToString(0)
+}
+
+// FormatToString pretty-prints the struct data using the provided indentation level
+func (dataStoreGetMetaParam *DataStoreGetMetaParam) FormatToString(indentationLevel int) string {
+	indentationValues := strings.Repeat("\t", indentationLevel+1)
+	indentationEnd := strings.Repeat("\t", indentationLevel)
+
+	var b strings.Builder
+
+	b.WriteString("DataStoreGetMetaParam{\n")
+	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, dataStoreGetMetaParam.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sDataID: %d,\n", indentationValues, dataStoreGetMetaParam.DataID))
+
+	if dataStoreGetMetaParam.PersistenceTarget != nil {
+		b.WriteString(fmt.Sprintf("%sPersistenceTarget: %s,\n", indentationValues, dataStoreGetMetaParam.PersistenceTarget.FormatToString(indentationLevel+1)))
+	} else {
+		b.WriteString(fmt.Sprintf("%sPersistenceTarget: nil,\n", indentationValues))
+	}
+
+	b.WriteString(fmt.Sprintf("%sResultOption: %d,\n", indentationValues, dataStoreGetMetaParam.ResultOption))
+	b.WriteString(fmt.Sprintf("%sAccessPassword: %d\n", indentationValues, dataStoreGetMetaParam.AccessPassword))
+	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+
+	return b.String()
 }
 
 // NewDataStoreGetMetaParam returns a new DataStoreGetMetaParam

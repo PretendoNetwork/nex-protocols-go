@@ -2,6 +2,7 @@ package datastore_super_smash_bros_4_types
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
 )
@@ -144,6 +145,34 @@ func (dataStoreReplayPlayer *DataStoreReplayPlayer) Equals(structure nex.Structu
 	}
 
 	return true
+}
+
+// String returns a string representation of the struct
+func (dataStoreReplayPlayer *DataStoreReplayPlayer) String() string {
+	return dataStoreReplayPlayer.FormatToString(0)
+}
+
+// FormatToString pretty-prints the struct data using the provided indentation level
+func (dataStoreReplayPlayer *DataStoreReplayPlayer) FormatToString(indentationLevel int) string {
+	indentationValues := strings.Repeat("\t", indentationLevel+1)
+	indentationEnd := strings.Repeat("\t", indentationLevel)
+
+	var b strings.Builder
+
+	b.WriteString("DataStoreReplayPlayer{\n")
+	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, dataStoreReplayPlayer.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sFighter: %d,\n", indentationValues, dataStoreReplayPlayer.Fighter))
+	b.WriteString(fmt.Sprintf("%sHealth: %d,\n", indentationValues, dataStoreReplayPlayer.Health))
+	b.WriteString(fmt.Sprintf("%sWinningRate: %d,\n", indentationValues, dataStoreReplayPlayer.WinningRate))
+	b.WriteString(fmt.Sprintf("%sColor: %d,\n", indentationValues, dataStoreReplayPlayer.Color))
+	b.WriteString(fmt.Sprintf("%sColor2: %d,\n", indentationValues, dataStoreReplayPlayer.Color2))
+	b.WriteString(fmt.Sprintf("%sPrincipalID: %d,\n", indentationValues, dataStoreReplayPlayer.PrincipalID))
+	b.WriteString(fmt.Sprintf("%sCountry: %d,\n", indentationValues, dataStoreReplayPlayer.Country))
+	b.WriteString(fmt.Sprintf("%sRegion: %d,\n", indentationValues, dataStoreReplayPlayer.Region))
+	b.WriteString(fmt.Sprintf("%sNumber: %d\n", indentationValues, dataStoreReplayPlayer.Number))
+	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+
+	return b.String()
 }
 
 // NewDataStoreReplayPlayer returns a new DataStoreReplayPlayer

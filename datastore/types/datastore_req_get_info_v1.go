@@ -3,6 +3,7 @@ package datastore_types
 import (
 	"bytes"
 	"fmt"
+	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
 )
@@ -100,6 +101,47 @@ func (dataStoreReqGetInfoV1 *DataStoreReqGetInfoV1) Equals(structure nex.Structu
 	}
 
 	return true
+}
+
+// String returns a string representation of the struct
+func (dataStoreReqGetInfoV1 *DataStoreReqGetInfoV1) String() string {
+	return dataStoreReqGetInfoV1.FormatToString(0)
+}
+
+// FormatToString pretty-prints the struct data using the provided indentation level
+func (dataStoreReqGetInfoV1 *DataStoreReqGetInfoV1) FormatToString(indentationLevel int) string {
+	indentationValues := strings.Repeat("\t", indentationLevel+1)
+	indentationListValues := strings.Repeat("\t", indentationLevel+2)
+	indentationEnd := strings.Repeat("\t", indentationLevel)
+
+	var b strings.Builder
+
+	b.WriteString("DataStoreReqGetInfoV1{\n")
+	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, dataStoreReqGetInfoV1.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sUrl: %q,\n", indentationValues, dataStoreReqGetInfoV1.Url))
+
+	if len(dataStoreReqGetInfoV1.RequestHeaders) == 0 {
+		b.WriteString(fmt.Sprintf("%sRequestHeaders: [],\n", indentationValues))
+	} else {
+		b.WriteString(fmt.Sprintf("%sRequestHeaders: [\n", indentationValues))
+
+		for i := 0; i < len(dataStoreReqGetInfoV1.RequestHeaders); i++ {
+			str := dataStoreReqGetInfoV1.RequestHeaders[i].FormatToString(indentationLevel + 2)
+			if i == len(dataStoreReqGetInfoV1.RequestHeaders)-1 {
+				b.WriteString(fmt.Sprintf("%s%s\n", indentationListValues, str))
+			} else {
+				b.WriteString(fmt.Sprintf("%s%s,\n", indentationListValues, str))
+			}
+		}
+
+		b.WriteString(fmt.Sprintf("%s],\n", indentationValues))
+	}
+
+	b.WriteString(fmt.Sprintf("%sSize: %d,\n", indentationValues, dataStoreReqGetInfoV1.Size))
+	b.WriteString(fmt.Sprintf("%sRootCaCert: %x\n", indentationValues, dataStoreReqGetInfoV1.RootCaCert))
+	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+
+	return b.String()
 }
 
 // NewDataStoreReqGetInfoV1 returns a new DataStoreReqGetInfoV1

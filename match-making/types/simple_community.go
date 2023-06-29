@@ -2,6 +2,7 @@ package match_making_types
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
 )
@@ -53,6 +54,27 @@ func (simpleCommunity *SimpleCommunity) Equals(structure nex.StructureInterface)
 	}
 
 	return true
+}
+
+// String returns a string representation of the struct
+func (simpleCommunity *SimpleCommunity) String() string {
+	return simpleCommunity.FormatToString(0)
+}
+
+// FormatToString pretty-prints the struct data using the provided indentation level
+func (simpleCommunity *SimpleCommunity) FormatToString(indentationLevel int) string {
+	indentationValues := strings.Repeat("\t", indentationLevel+1)
+	indentationEnd := strings.Repeat("\t", indentationLevel)
+
+	var b strings.Builder
+
+	b.WriteString("MatchmakeSession{\n")
+	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, simpleCommunity.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sM_GatheringID: %d,\n", indentationValues, simpleCommunity.M_GatheringID))
+	b.WriteString(fmt.Sprintf("%sM_MatchmakeSessionCount: %d\n", indentationValues, simpleCommunity.M_MatchmakeSessionCount))
+	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+
+	return b.String()
 }
 
 // NewSimpleCommunity returns a new SimpleCommunity

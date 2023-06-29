@@ -2,6 +2,7 @@ package datastore_super_smash_bros_4_types
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
 )
@@ -72,6 +73,28 @@ func (dataStorePostFightingPowerScoreParam *DataStorePostFightingPowerScoreParam
 	}
 
 	return true
+}
+
+// String returns a string representation of the struct
+func (dataStorePostFightingPowerScoreParam *DataStorePostFightingPowerScoreParam) String() string {
+	return dataStorePostFightingPowerScoreParam.FormatToString(0)
+}
+
+// FormatToString pretty-prints the struct data using the provided indentation level
+func (dataStorePostFightingPowerScoreParam *DataStorePostFightingPowerScoreParam) FormatToString(indentationLevel int) string {
+	indentationValues := strings.Repeat("\t", indentationLevel+1)
+	indentationEnd := strings.Repeat("\t", indentationLevel)
+
+	var b strings.Builder
+
+	b.WriteString("DataStorePostFightingPowerScoreParam{\n")
+	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, dataStorePostFightingPowerScoreParam.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sMode: %d,\n", indentationValues, dataStorePostFightingPowerScoreParam.Mode))
+	b.WriteString(fmt.Sprintf("%sScore: %d,\n", indentationValues, dataStorePostFightingPowerScoreParam.Score))
+	b.WriteString(fmt.Sprintf("%sIsWorldHighScore: %t\n", indentationValues, dataStorePostFightingPowerScoreParam.IsWorldHighScore))
+	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+
+	return b.String()
 }
 
 // NewDataStorePostFightingPowerScoreParam returns a new DataStorePostFightingPowerScoreParam

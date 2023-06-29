@@ -2,6 +2,7 @@ package datastore_types
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
 )
@@ -56,6 +57,26 @@ func (dataStoreGetSpecificMetaParam *DataStoreGetSpecificMetaParam) Equals(struc
 	}
 
 	return true
+}
+
+// String returns a string representation of the struct
+func (dataStoreGetSpecificMetaParam *DataStoreGetSpecificMetaParam) String() string {
+	return dataStoreGetSpecificMetaParam.FormatToString(0)
+}
+
+// FormatToString pretty-prints the struct data using the provided indentation level
+func (dataStoreGetSpecificMetaParam *DataStoreGetSpecificMetaParam) FormatToString(indentationLevel int) string {
+	indentationValues := strings.Repeat("\t", indentationLevel+1)
+	indentationEnd := strings.Repeat("\t", indentationLevel)
+
+	var b strings.Builder
+
+	b.WriteString("DataStoreGetSpecificMetaParam{\n")
+	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, dataStoreGetSpecificMetaParam.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sDataIDs: %v\n", indentationValues, dataStoreGetSpecificMetaParam.DataIDs))
+	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+
+	return b.String()
 }
 
 // NewDataStoreGetSpecificMetaParam returns a new DataStoreGetSpecificMetaParam

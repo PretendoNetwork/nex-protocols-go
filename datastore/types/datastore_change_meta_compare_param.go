@@ -3,6 +3,7 @@ package datastore_types
 import (
 	"bytes"
 	"fmt"
+	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
 )
@@ -156,6 +157,46 @@ func (dataStoreChangeMetaCompareParam *DataStoreChangeMetaCompareParam) Equals(s
 	}
 
 	return true
+}
+
+// String returns a string representation of the struct
+func (dataStoreChangeMetaCompareParam *DataStoreChangeMetaCompareParam) String() string {
+	return dataStoreChangeMetaCompareParam.FormatToString(0)
+}
+
+// FormatToString pretty-prints the struct data using the provided indentation level
+func (dataStoreChangeMetaCompareParam *DataStoreChangeMetaCompareParam) FormatToString(indentationLevel int) string {
+	indentationValues := strings.Repeat("\t", indentationLevel+1)
+	indentationEnd := strings.Repeat("\t", indentationLevel)
+
+	var b strings.Builder
+
+	b.WriteString("DataStoreChangeMetaCompareParam{\n")
+	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, dataStoreChangeMetaCompareParam.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sComparisonFlag: %d,\n", indentationValues, dataStoreChangeMetaCompareParam.ComparisonFlag))
+	b.WriteString(fmt.Sprintf("%sName: %q,\n", indentationValues, dataStoreChangeMetaCompareParam.Name))
+
+	if dataStoreChangeMetaCompareParam.Permission != nil {
+		b.WriteString(fmt.Sprintf("%sPermission: %s,\n", indentationValues, dataStoreChangeMetaCompareParam.Permission.FormatToString(indentationLevel+1)))
+	} else {
+		b.WriteString(fmt.Sprintf("%sPermission: nil,\n", indentationValues))
+	}
+
+	if dataStoreChangeMetaCompareParam.DelPermission != nil {
+		b.WriteString(fmt.Sprintf("%sDelPermission: %s,\n", indentationValues, dataStoreChangeMetaCompareParam.DelPermission.FormatToString(indentationLevel+1)))
+	} else {
+		b.WriteString(fmt.Sprintf("%sDelPermission: nil,\n", indentationValues))
+	}
+
+	b.WriteString(fmt.Sprintf("%sPeriod: %d,\n", indentationValues, dataStoreChangeMetaCompareParam.Period))
+	b.WriteString(fmt.Sprintf("%sMetaBinary: %x,\n", indentationValues, dataStoreChangeMetaCompareParam.MetaBinary))
+	b.WriteString(fmt.Sprintf("%sTags: %v,\n", indentationValues, dataStoreChangeMetaCompareParam.Tags))
+	b.WriteString(fmt.Sprintf("%sReferredCnt: %d,\n", indentationValues, dataStoreChangeMetaCompareParam.ReferredCnt))
+	b.WriteString(fmt.Sprintf("%sDataType: %d,\n", indentationValues, dataStoreChangeMetaCompareParam.DataType))
+	b.WriteString(fmt.Sprintf("%sStatus: %d\n", indentationValues, dataStoreChangeMetaCompareParam.Status))
+	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+
+	return b.String()
 }
 
 // NewDataStoreChangeMetaCompareParam returns a new DataStoreChangeMetaCompareParam

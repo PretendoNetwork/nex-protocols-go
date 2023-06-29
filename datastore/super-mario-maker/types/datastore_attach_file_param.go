@@ -2,6 +2,7 @@ package datastore_super_mario_maker_types
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
 	datastore_types "github.com/PretendoNetwork/nex-protocols-go/datastore/types"
@@ -66,6 +67,34 @@ func (dataStoreAttachFileParam *DataStoreAttachFileParam) Equals(structure nex.S
 	}
 
 	return true
+}
+
+// String returns a string representation of the struct
+func (dataStoreAttachFileParam *DataStoreAttachFileParam) String() string {
+	return dataStoreAttachFileParam.FormatToString(0)
+}
+
+// FormatToString pretty-prints the struct data using the provided indentation level
+func (dataStoreAttachFileParam *DataStoreAttachFileParam) FormatToString(indentationLevel int) string {
+	indentationValues := strings.Repeat("\t", indentationLevel+1)
+	indentationEnd := strings.Repeat("\t", indentationLevel)
+
+	var b strings.Builder
+
+	b.WriteString("DataStoreAttachFileParam{\n")
+	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, dataStoreAttachFileParam.StructureVersion()))
+
+	if dataStoreAttachFileParam.PostParam != nil {
+		b.WriteString(fmt.Sprintf("%sPostParam: %s,\n", indentationValues, dataStoreAttachFileParam.PostParam.FormatToString(indentationLevel+1)))
+	} else {
+		b.WriteString(fmt.Sprintf("%sPostParam: nil,\n", indentationValues))
+	}
+
+	b.WriteString(fmt.Sprintf("%sReferDataID: %d,\n", indentationValues, dataStoreAttachFileParam.ReferDataID))
+	b.WriteString(fmt.Sprintf("%sContentType: %q\n", indentationValues, dataStoreAttachFileParam.ContentType))
+	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+
+	return b.String()
 }
 
 // NewDataStoreAttachFileParam returns a new DataStoreAttachFileParam

@@ -3,6 +3,7 @@ package message_delivery_types
 import (
 	"bytes"
 	"fmt"
+	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
 )
@@ -56,6 +57,27 @@ func (binaryMessage *BinaryMessage) Equals(structure nex.StructureInterface) boo
 	}
 
 	return true
+}
+
+// String returns a string representation of the struct
+func (binaryMessage *BinaryMessage) String() string {
+	return binaryMessage.FormatToString(0)
+}
+
+// FormatToString pretty-prints the struct data using the provided indentation level
+func (binaryMessage *BinaryMessage) FormatToString(indentationLevel int) string {
+	indentationValues := strings.Repeat("\t", indentationLevel+1)
+	indentationEnd := strings.Repeat("\t", indentationLevel)
+
+	var b strings.Builder
+
+	b.WriteString("BinaryMessage{\n")
+	b.WriteString(fmt.Sprintf("%sParentType: %s,\n", indentationValues, binaryMessage.ParentType().FormatToString(indentationLevel+1)))
+	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, binaryMessage.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sm_binaryBody: %x\n", indentationValues, binaryMessage.m_binaryBody))
+	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+
+	return b.String()
 }
 
 // NewBinaryMessage returns a new BinaryMessage

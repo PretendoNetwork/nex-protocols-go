@@ -2,6 +2,7 @@ package datastore_super_mario_maker_types
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
 )
@@ -53,6 +54,27 @@ func (bufferQueueParam *BufferQueueParam) Equals(structure nex.StructureInterfac
 	}
 
 	return true
+}
+
+// String returns a string representation of the struct
+func (bufferQueueParam *BufferQueueParam) String() string {
+	return bufferQueueParam.FormatToString(0)
+}
+
+// FormatToString pretty-prints the struct data using the provided indentation level
+func (bufferQueueParam *BufferQueueParam) FormatToString(indentationLevel int) string {
+	indentationValues := strings.Repeat("\t", indentationLevel+1)
+	indentationEnd := strings.Repeat("\t", indentationLevel)
+
+	var b strings.Builder
+
+	b.WriteString("BufferQueueParam{\n")
+	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, bufferQueueParam.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sDataID: %d,\n", indentationValues, bufferQueueParam.DataID))
+	b.WriteString(fmt.Sprintf("%sSlot: %d\n", indentationValues, bufferQueueParam.Slot))
+	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+
+	return b.String()
 }
 
 // NewBufferQueueParam returns a new BufferQueueParam

@@ -2,6 +2,7 @@ package datastore_types
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
 )
@@ -60,6 +61,27 @@ func (dataStoreGetNewArrivedNotificationsParam *DataStoreGetNewArrivedNotificati
 	}
 
 	return true
+}
+
+// String returns a string representation of the struct
+func (dataStoreGetNewArrivedNotificationsParam *DataStoreGetNewArrivedNotificationsParam) String() string {
+	return dataStoreGetNewArrivedNotificationsParam.FormatToString(0)
+}
+
+// FormatToString pretty-prints the struct data using the provided indentation level
+func (dataStoreGetNewArrivedNotificationsParam *DataStoreGetNewArrivedNotificationsParam) FormatToString(indentationLevel int) string {
+	indentationValues := strings.Repeat("\t", indentationLevel+1)
+	indentationEnd := strings.Repeat("\t", indentationLevel)
+
+	var b strings.Builder
+
+	b.WriteString("DataStoreGetNewArrivedNotificationsParam{\n")
+	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, dataStoreGetNewArrivedNotificationsParam.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sLastNotificationID: %d,\n", indentationValues, dataStoreGetNewArrivedNotificationsParam.LastNotificationID))
+	b.WriteString(fmt.Sprintf("%sLimit: %d\n", indentationValues, dataStoreGetNewArrivedNotificationsParam.Limit))
+	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+
+	return b.String()
 }
 
 // NewDataStoreGetNewArrivedNotificationsParam returns a new DataStoreGetNewArrivedNotificationsParam

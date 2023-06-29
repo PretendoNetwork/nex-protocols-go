@@ -1,6 +1,11 @@
 package friends_3ds_types
 
-import "github.com/PretendoNetwork/nex-go"
+import (
+	"fmt"
+	"strings"
+
+	"github.com/PretendoNetwork/nex-go"
+)
 
 // FriendPersistentInfo contains user settings
 type FriendPersistentInfo struct {
@@ -103,6 +108,58 @@ func (friendPersistentInfo *FriendPersistentInfo) Equals(structure nex.Structure
 	}
 
 	return true
+}
+
+// String returns a string representation of the struct
+func (friendPersistentInfo *FriendPersistentInfo) String() string {
+	return friendPersistentInfo.FormatToString(0)
+}
+
+// FormatToString pretty-prints the struct data using the provided indentation level
+func (friendPersistentInfo *FriendPersistentInfo) FormatToString(indentationLevel int) string {
+	indentationValues := strings.Repeat("\t", indentationLevel+1)
+	indentationEnd := strings.Repeat("\t", indentationLevel)
+
+	var b strings.Builder
+
+	b.WriteString("FriendPersistentInfo{\n")
+	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, friendPersistentInfo.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sPID: %d,\n", indentationValues, friendPersistentInfo.PID))
+	b.WriteString(fmt.Sprintf("%sRegion: %d,\n", indentationValues, friendPersistentInfo.Region))
+	b.WriteString(fmt.Sprintf("%sCountry: %d,\n", indentationValues, friendPersistentInfo.Country))
+	b.WriteString(fmt.Sprintf("%sArea: %d,\n", indentationValues, friendPersistentInfo.Area))
+	b.WriteString(fmt.Sprintf("%sLanguage: %d,\n", indentationValues, friendPersistentInfo.Language))
+	b.WriteString(fmt.Sprintf("%sPlatform: %d,\n", indentationValues, friendPersistentInfo.Platform))
+
+	if friendPersistentInfo.GameKey != nil {
+		b.WriteString(fmt.Sprintf("%sGameKey: %s,\n", indentationValues, friendPersistentInfo.GameKey.FormatToString(indentationLevel+1)))
+	} else {
+		b.WriteString(fmt.Sprintf("%sGameKey: nil,\n", indentationValues))
+	}
+
+	b.WriteString(fmt.Sprintf("%sMessage: %q,\n", indentationValues, friendPersistentInfo.Message))
+
+	if friendPersistentInfo.MessageUpdatedAt != nil {
+		b.WriteString(fmt.Sprintf("%sMessageUpdatedAt: %s,\n", indentationValues, friendPersistentInfo.MessageUpdatedAt.FormatToString(indentationLevel+1)))
+	} else {
+		b.WriteString(fmt.Sprintf("%sMessageUpdatedAt: nil,\n", indentationValues))
+	}
+
+	if friendPersistentInfo.FriendedAt != nil {
+		b.WriteString(fmt.Sprintf("%sFriendedAt: %s,\n", indentationValues, friendPersistentInfo.FriendedAt.FormatToString(indentationLevel+1)))
+	} else {
+		b.WriteString(fmt.Sprintf("%sFriendedAt: nil,\n", indentationValues))
+	}
+
+	if friendPersistentInfo.LastOnline != nil {
+		b.WriteString(fmt.Sprintf("%sLastOnline: %s\n", indentationValues, friendPersistentInfo.LastOnline.FormatToString(indentationLevel+1)))
+	} else {
+		b.WriteString(fmt.Sprintf("%sLastOnline: nil\n", indentationValues))
+	}
+
+	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+
+	return b.String()
 }
 
 // NewFriendPersistentInfo returns a new FriendPersistentInfo

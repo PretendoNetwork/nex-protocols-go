@@ -1,6 +1,9 @@
 package datastore_super_mario_maker_types
 
 import (
+	"fmt"
+	"strings"
+
 	"github.com/PretendoNetwork/nex-go"
 	datastore_types "github.com/PretendoNetwork/nex-protocols-go/datastore/types"
 )
@@ -43,6 +46,33 @@ func (dataStoreFileServerObjectInfo *DataStoreFileServerObjectInfo) Equals(struc
 	}
 
 	return true
+}
+
+// String returns a string representation of the struct
+func (dataStoreFileServerObjectInfo *DataStoreFileServerObjectInfo) String() string {
+	return dataStoreFileServerObjectInfo.FormatToString(0)
+}
+
+// FormatToString pretty-prints the struct data using the provided indentation level
+func (dataStoreFileServerObjectInfo *DataStoreFileServerObjectInfo) FormatToString(indentationLevel int) string {
+	indentationValues := strings.Repeat("\t", indentationLevel+1)
+	indentationEnd := strings.Repeat("\t", indentationLevel)
+
+	var b strings.Builder
+
+	b.WriteString("DataStoreFileServerObjectInfo{\n")
+	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, dataStoreFileServerObjectInfo.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sDataID: %d,\n", indentationValues, dataStoreFileServerObjectInfo.DataID))
+
+	if dataStoreFileServerObjectInfo.GetInfo != nil {
+		b.WriteString(fmt.Sprintf("%sGetInfo: %s\n", indentationValues, dataStoreFileServerObjectInfo.GetInfo.FormatToString(indentationLevel+1)))
+	} else {
+		b.WriteString(fmt.Sprintf("%sGetInfo: nil\n", indentationValues))
+	}
+
+	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+
+	return b.String()
 }
 
 // NewDataStoreFileServerObjectInfo returns a new DataStoreFileServerObjectInfo

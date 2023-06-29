@@ -2,6 +2,7 @@ package datastore_types
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
 )
@@ -44,6 +45,26 @@ func (dataStoreGetNotificationURLParam *DataStoreGetNotificationURLParam) Equals
 	other := structure.(*DataStoreGetNotificationURLParam)
 
 	return dataStoreGetNotificationURLParam.PreviousUrl != other.PreviousUrl
+}
+
+// String returns a string representation of the struct
+func (dataStoreGetNotificationURLParam *DataStoreGetNotificationURLParam) String() string {
+	return dataStoreGetNotificationURLParam.FormatToString(0)
+}
+
+// FormatToString pretty-prints the struct data using the provided indentation level
+func (dataStoreGetNotificationURLParam *DataStoreGetNotificationURLParam) FormatToString(indentationLevel int) string {
+	indentationValues := strings.Repeat("\t", indentationLevel+1)
+	indentationEnd := strings.Repeat("\t", indentationLevel)
+
+	var b strings.Builder
+
+	b.WriteString("DataStoreGetNotificationURLParam{\n")
+	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, dataStoreGetNotificationURLParam.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sPreviousUrl: %q\n", indentationValues, dataStoreGetNotificationURLParam.PreviousUrl))
+	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+
+	return b.String()
 }
 
 // NewDataStoreGetNotificationURLParam returns a new DataStoreGetNotificationURLParam

@@ -2,6 +2,7 @@ package datastore_super_smash_bros_4_types
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
 	datastore_types "github.com/PretendoNetwork/nex-protocols-go/datastore/types"
@@ -77,6 +78,39 @@ func (dataStoreCompletePostSharedDataParam *DataStoreCompletePostSharedDataParam
 	}
 
 	return true
+}
+
+// String returns a string representation of the struct
+func (dataStoreCompletePostSharedDataParam *DataStoreCompletePostSharedDataParam) String() string {
+	return dataStoreCompletePostSharedDataParam.FormatToString(0)
+}
+
+// FormatToString pretty-prints the struct data using the provided indentation level
+func (dataStoreCompletePostSharedDataParam *DataStoreCompletePostSharedDataParam) FormatToString(indentationLevel int) string {
+	indentationValues := strings.Repeat("\t", indentationLevel+1)
+	indentationEnd := strings.Repeat("\t", indentationLevel)
+
+	var b strings.Builder
+
+	b.WriteString("DataStoreCompletePostSharedDataParam{\n")
+	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, dataStoreCompletePostSharedDataParam.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sDataID: %d,\n", indentationValues, dataStoreCompletePostSharedDataParam.DataID))
+
+	if dataStoreCompletePostSharedDataParam.CompleteParam != nil {
+		b.WriteString(fmt.Sprintf("%sCompleteParam: %s,\n", indentationValues, dataStoreCompletePostSharedDataParam.CompleteParam.FormatToString(indentationLevel+1)))
+	} else {
+		b.WriteString(fmt.Sprintf("%sCompleteParam: nil,\n", indentationValues))
+	}
+
+	if dataStoreCompletePostSharedDataParam.PrepareParam != nil {
+		b.WriteString(fmt.Sprintf("%sPrepareParam: %s\n", indentationValues, dataStoreCompletePostSharedDataParam.PrepareParam.FormatToString(indentationLevel+1)))
+	} else {
+		b.WriteString(fmt.Sprintf("%sPrepareParam: nil\n", indentationValues))
+	}
+
+	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+
+	return b.String()
 }
 
 // NewDataStoreCompletePostSharedDataParam returns a new DataStoreCompletePostSharedDataParam

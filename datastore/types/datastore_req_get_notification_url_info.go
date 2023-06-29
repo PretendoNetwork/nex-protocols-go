@@ -3,6 +3,7 @@ package datastore_types
 import (
 	"bytes"
 	"fmt"
+	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
 )
@@ -87,6 +88,29 @@ func (dataStoreReqGetNotificationURLInfo *DataStoreReqGetNotificationURLInfo) Eq
 	}
 
 	return true
+}
+
+// String returns a string representation of the struct
+func (dataStoreReqGetNotificationURLInfo *DataStoreReqGetNotificationURLInfo) String() string {
+	return dataStoreReqGetNotificationURLInfo.FormatToString(0)
+}
+
+// FormatToString pretty-prints the struct data using the provided indentation level
+func (dataStoreReqGetNotificationURLInfo *DataStoreReqGetNotificationURLInfo) FormatToString(indentationLevel int) string {
+	indentationValues := strings.Repeat("\t", indentationLevel+1)
+	indentationEnd := strings.Repeat("\t", indentationLevel)
+
+	var b strings.Builder
+
+	b.WriteString("DataStoreReqGetNotificationURLInfo{\n")
+	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, dataStoreReqGetNotificationURLInfo.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sUrl: %q,\n", indentationValues, dataStoreReqGetNotificationURLInfo.Url))
+	b.WriteString(fmt.Sprintf("%sKey: %q,\n", indentationValues, dataStoreReqGetNotificationURLInfo.Key))
+	b.WriteString(fmt.Sprintf("%sQuery: %q,\n", indentationValues, dataStoreReqGetNotificationURLInfo.Query))
+	b.WriteString(fmt.Sprintf("%sRootCaCert: %x\n", indentationValues, dataStoreReqGetNotificationURLInfo.RootCaCert))
+	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+
+	return b.String()
 }
 
 // NewDataStoreReqGetNotificationURLInfo returns a new DataStoreReqGetNotificationURLInfo

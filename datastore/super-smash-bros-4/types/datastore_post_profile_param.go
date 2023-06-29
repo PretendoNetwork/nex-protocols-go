@@ -3,6 +3,7 @@ package datastore_super_smash_bros_4_types
 import (
 	"bytes"
 	"fmt"
+	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
 )
@@ -51,6 +52,26 @@ func (dataStorePostProfileParam *DataStorePostProfileParam) Equals(structure nex
 	}
 
 	return true
+}
+
+// String returns a string representation of the struct
+func (dataStorePostProfileParam *DataStorePostProfileParam) String() string {
+	return dataStorePostProfileParam.FormatToString(0)
+}
+
+// FormatToString pretty-prints the struct data using the provided indentation level
+func (dataStorePostProfileParam *DataStorePostProfileParam) FormatToString(indentationLevel int) string {
+	indentationValues := strings.Repeat("\t", indentationLevel+1)
+	indentationEnd := strings.Repeat("\t", indentationLevel)
+
+	var b strings.Builder
+
+	b.WriteString("DataStorePostProfileParam{\n")
+	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, dataStorePostProfileParam.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sProfile: %x\n", indentationValues, dataStorePostProfileParam.Profile))
+	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+
+	return b.String()
 }
 
 // NewDataStorePostProfileParam returns a new DataStorePostProfileParam

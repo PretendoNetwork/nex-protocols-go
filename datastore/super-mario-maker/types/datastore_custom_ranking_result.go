@@ -2,6 +2,7 @@ package datastore_super_mario_maker_types
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
 	datastore_types "github.com/PretendoNetwork/nex-protocols-go/datastore/types"
@@ -76,6 +77,34 @@ func (dataStoreCustomRankingResult *DataStoreCustomRankingResult) Equals(structu
 	}
 
 	return true
+}
+
+// String returns a string representation of the struct
+func (dataStoreCustomRankingResult *DataStoreCustomRankingResult) String() string {
+	return dataStoreCustomRankingResult.FormatToString(0)
+}
+
+// FormatToString pretty-prints the struct data using the provided indentation level
+func (dataStoreCustomRankingResult *DataStoreCustomRankingResult) FormatToString(indentationLevel int) string {
+	indentationValues := strings.Repeat("\t", indentationLevel+1)
+	indentationEnd := strings.Repeat("\t", indentationLevel)
+
+	var b strings.Builder
+
+	b.WriteString("DataStoreCustomRankingResult{\n")
+	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, dataStoreCustomRankingResult.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sOrder: %d,\n", indentationValues, dataStoreCustomRankingResult.Order))
+	b.WriteString(fmt.Sprintf("%sScore: %d,\n", indentationValues, dataStoreCustomRankingResult.Score))
+
+	if dataStoreCustomRankingResult.MetaInfo != nil {
+		b.WriteString(fmt.Sprintf("%sMetaInfo: %s\n", indentationValues, dataStoreCustomRankingResult.MetaInfo.FormatToString(indentationLevel+1)))
+	} else {
+		b.WriteString(fmt.Sprintf("%sMetaInfo: nil\n", indentationValues))
+	}
+
+	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+
+	return b.String()
 }
 
 // NewDataStoreCustomRankingResult returns a new DataStoreCustomRankingResult

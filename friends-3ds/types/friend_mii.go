@@ -1,6 +1,11 @@
 package friends_3ds_types
 
-import "github.com/PretendoNetwork/nex-go"
+import (
+	"fmt"
+	"strings"
+
+	"github.com/PretendoNetwork/nex-go"
+)
 
 type FriendMii struct {
 	nex.Structure
@@ -46,6 +51,39 @@ func (friendMii *FriendMii) Equals(structure nex.StructureInterface) bool {
 	}
 
 	return true
+}
+
+// String returns a string representation of the struct
+func (friendMii *FriendMii) String() string {
+	return friendMii.FormatToString(0)
+}
+
+// FormatToString pretty-prints the struct data using the provided indentation level
+func (friendMii *FriendMii) FormatToString(indentationLevel int) string {
+	indentationValues := strings.Repeat("\t", indentationLevel+1)
+	indentationEnd := strings.Repeat("\t", indentationLevel)
+
+	var b strings.Builder
+
+	b.WriteString("FriendMii{\n")
+	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, friendMii.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sPID: %d,\n", indentationValues, friendMii.PID))
+
+	if friendMii.Mii != nil {
+		b.WriteString(fmt.Sprintf("%sMii: %s,\n", indentationValues, friendMii.Mii.FormatToString(indentationLevel+1)))
+	} else {
+		b.WriteString(fmt.Sprintf("%sMii: nil,\n", indentationValues))
+	}
+
+	if friendMii.ModifiedAt != nil {
+		b.WriteString(fmt.Sprintf("%sModifiedAt: %s\n", indentationValues, friendMii.ModifiedAt.FormatToString(indentationLevel+1)))
+	} else {
+		b.WriteString(fmt.Sprintf("%sModifiedAt: nil\n", indentationValues))
+	}
+
+	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+
+	return b.String()
 }
 
 // NewFriendMii returns a new FriendMii

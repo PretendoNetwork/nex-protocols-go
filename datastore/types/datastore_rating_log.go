@@ -2,6 +2,7 @@ package datastore_types
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
 )
@@ -84,6 +85,35 @@ func (dataStoreRatingLog *DataStoreRatingLog) Equals(structure nex.StructureInte
 	}
 
 	return true
+}
+
+// String returns a string representation of the struct
+func (dataStoreRatingLog *DataStoreRatingLog) String() string {
+	return dataStoreRatingLog.FormatToString(0)
+}
+
+// FormatToString pretty-prints the struct data using the provided indentation level
+func (dataStoreRatingLog *DataStoreRatingLog) FormatToString(indentationLevel int) string {
+	indentationValues := strings.Repeat("\t", indentationLevel+1)
+	indentationEnd := strings.Repeat("\t", indentationLevel)
+
+	var b strings.Builder
+
+	b.WriteString("DataStoreRatingLog{\n")
+	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, dataStoreRatingLog.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sIsRated: %t,\n", indentationValues, dataStoreRatingLog.IsRated))
+	b.WriteString(fmt.Sprintf("%sPid: %d,\n", indentationValues, dataStoreRatingLog.Pid))
+	b.WriteString(fmt.Sprintf("%sRatingValue: %d,\n", indentationValues, dataStoreRatingLog.RatingValue))
+
+	if dataStoreRatingLog.LockExpirationTime != nil {
+		b.WriteString(fmt.Sprintf("%sLockExpirationTime: %s\n", indentationValues, dataStoreRatingLog.LockExpirationTime.FormatToString(indentationLevel+1)))
+	} else {
+		b.WriteString(fmt.Sprintf("%sLockExpirationTime: nil\n", indentationValues))
+	}
+
+	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+
+	return b.String()
 }
 
 // NewDataStoreRatingLog returns a new DataStoreRatingLog

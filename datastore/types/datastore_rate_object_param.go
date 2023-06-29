@@ -2,6 +2,7 @@ package datastore_types
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
 )
@@ -53,6 +54,27 @@ func (dataStoreRateObjectParam *DataStoreRateObjectParam) Equals(structure nex.S
 	}
 
 	return true
+}
+
+// String returns a string representation of the struct
+func (dataStoreRateObjectParam *DataStoreRateObjectParam) String() string {
+	return dataStoreRateObjectParam.FormatToString(0)
+}
+
+// FormatToString pretty-prints the struct data using the provided indentation level
+func (dataStoreRateObjectParam *DataStoreRateObjectParam) FormatToString(indentationLevel int) string {
+	indentationValues := strings.Repeat("\t", indentationLevel+1)
+	indentationEnd := strings.Repeat("\t", indentationLevel)
+
+	var b strings.Builder
+
+	b.WriteString("DataStoreRateObjectParam{\n")
+	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, dataStoreRateObjectParam.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sRatingValue: %d,\n", indentationValues, dataStoreRateObjectParam.RatingValue))
+	b.WriteString(fmt.Sprintf("%sAccessPassword: %d\n", indentationValues, dataStoreRateObjectParam.AccessPassword))
+	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+
+	return b.String()
 }
 
 // NewDataStoreRateObjectParam returns a new DataStoreRateObjectParam

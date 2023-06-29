@@ -2,6 +2,7 @@ package account_management_types
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
 	friends_wiiu_types "github.com/PretendoNetwork/nex-protocols-go/friends-wiiu/types"
@@ -100,6 +101,41 @@ func (nintendoCreateAccountData *NintendoCreateAccountData) Equals(structure nex
 	}
 
 	return true
+}
+
+// String returns a string representation of the struct
+func (nintendoCreateAccountData *NintendoCreateAccountData) String() string {
+	return nintendoCreateAccountData.FormatToString(0)
+}
+
+// FormatToString pretty-prints the struct data using the provided indentation level
+func (nintendoCreateAccountData *NintendoCreateAccountData) FormatToString(indentationLevel int) string {
+	indentationValues := strings.Repeat("\t", indentationLevel+1)
+	indentationEnd := strings.Repeat("\t", indentationLevel)
+
+	var b strings.Builder
+
+	b.WriteString("NintendoCreateAccountData{\n")
+	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, nintendoCreateAccountData.StructureVersion()))
+
+	if nintendoCreateAccountData.NNAInfo != nil {
+		b.WriteString(fmt.Sprintf("%sNNAInfo: %s,\n", indentationValues, nintendoCreateAccountData.NNAInfo.FormatToString(indentationLevel+1)))
+	} else {
+		b.WriteString(fmt.Sprintf("%sNNAInfo: nil,\n", indentationValues))
+	}
+
+	b.WriteString(fmt.Sprintf("%sToken: %s,\n", indentationValues, nintendoCreateAccountData.Token))
+
+	if nintendoCreateAccountData.Birthday != nil {
+		b.WriteString(fmt.Sprintf("%sBirthday: %s,\n", indentationValues, nintendoCreateAccountData.Birthday.FormatToString(indentationLevel+1)))
+	} else {
+		b.WriteString(fmt.Sprintf("%sBirthday: nil,\n", indentationValues))
+	}
+
+	b.WriteString(fmt.Sprintf("%sUnknown: %d\n", indentationValues, nintendoCreateAccountData.Unknown))
+	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+
+	return b.String()
 }
 
 // NewNintendoCreateAccountData returns a new NintendoCreateAccountData

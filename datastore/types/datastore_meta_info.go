@@ -3,6 +3,7 @@ package datastore_types
 import (
 	"bytes"
 	"fmt"
+	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
 )
@@ -292,6 +293,94 @@ func (dataStoreMetaInfo *DataStoreMetaInfo) Equals(structure nex.StructureInterf
 	}
 
 	return true
+}
+
+// String returns a string representation of the struct
+func (dataStoreMetaInfo *DataStoreMetaInfo) String() string {
+	return dataStoreMetaInfo.FormatToString(0)
+}
+
+// FormatToString pretty-prints the struct data using the provided indentation level
+func (dataStoreMetaInfo *DataStoreMetaInfo) FormatToString(indentationLevel int) string {
+	indentationValues := strings.Repeat("\t", indentationLevel+1)
+	indentationListValues := strings.Repeat("\t", indentationLevel+2)
+	indentationEnd := strings.Repeat("\t", indentationLevel)
+
+	var b strings.Builder
+
+	b.WriteString("DataStoreMetaInfo{\n")
+	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, dataStoreMetaInfo.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sDataID: %d,\n", indentationValues, dataStoreMetaInfo.DataID))
+	b.WriteString(fmt.Sprintf("%sOwnerID: %d,\n", indentationValues, dataStoreMetaInfo.OwnerID))
+	b.WriteString(fmt.Sprintf("%sSize: %d,\n", indentationValues, dataStoreMetaInfo.Size))
+	b.WriteString(fmt.Sprintf("%sDataType: %d,\n", indentationValues, dataStoreMetaInfo.DataType))
+	b.WriteString(fmt.Sprintf("%sName: %q,\n", indentationValues, dataStoreMetaInfo.Name))
+	b.WriteString(fmt.Sprintf("%sMetaBinary: %x,\n", indentationValues, dataStoreMetaInfo.MetaBinary))
+
+	if dataStoreMetaInfo.Permission != nil {
+		b.WriteString(fmt.Sprintf("%sPermission: %s,\n", indentationValues, dataStoreMetaInfo.Permission.FormatToString(indentationLevel+1)))
+	} else {
+		b.WriteString(fmt.Sprintf("%sPermission: nil,\n", indentationValues))
+	}
+
+	if dataStoreMetaInfo.DelPermission != nil {
+		b.WriteString(fmt.Sprintf("%sDelPermission: %s,\n", indentationValues, dataStoreMetaInfo.DelPermission.FormatToString(indentationLevel+1)))
+	} else {
+		b.WriteString(fmt.Sprintf("%sDelPermission: nil,\n", indentationValues))
+	}
+
+	if dataStoreMetaInfo.CreatedTime != nil {
+		b.WriteString(fmt.Sprintf("%sCreatedTime: %s,\n", indentationValues, dataStoreMetaInfo.CreatedTime.FormatToString(indentationLevel+1)))
+	} else {
+		b.WriteString(fmt.Sprintf("%sCreatedTime: nil,\n", indentationValues))
+	}
+
+	if dataStoreMetaInfo.UpdatedTime != nil {
+		b.WriteString(fmt.Sprintf("%sUpdatedTime: %s,\n", indentationValues, dataStoreMetaInfo.UpdatedTime.FormatToString(indentationLevel+1)))
+	} else {
+		b.WriteString(fmt.Sprintf("%sUpdatedTime: nil,\n", indentationValues))
+	}
+
+	b.WriteString(fmt.Sprintf("%sPeriod: %d,\n", indentationValues, dataStoreMetaInfo.Period))
+	b.WriteString(fmt.Sprintf("%sStatus: %d,\n", indentationValues, dataStoreMetaInfo.Status))
+	b.WriteString(fmt.Sprintf("%sReferredCnt: %d,\n", indentationValues, dataStoreMetaInfo.ReferredCnt))
+	b.WriteString(fmt.Sprintf("%sReferDataID: %d,\n", indentationValues, dataStoreMetaInfo.ReferDataID))
+	b.WriteString(fmt.Sprintf("%sFlag: %d,\n", indentationValues, dataStoreMetaInfo.Flag))
+
+	if dataStoreMetaInfo.ReferredTime != nil {
+		b.WriteString(fmt.Sprintf("%sReferredTime: %s,\n", indentationValues, dataStoreMetaInfo.ReferredTime.FormatToString(indentationLevel+1)))
+	} else {
+		b.WriteString(fmt.Sprintf("%sReferredTime: nil,\n", indentationValues))
+	}
+
+	if dataStoreMetaInfo.ExpireTime != nil {
+		b.WriteString(fmt.Sprintf("%sExpireTime: %s,\n", indentationValues, dataStoreMetaInfo.ExpireTime.FormatToString(indentationLevel+1)))
+	} else {
+		b.WriteString(fmt.Sprintf("%sExpireTime: nil,\n", indentationValues))
+	}
+
+	b.WriteString(fmt.Sprintf("%sTags: %v,\n", indentationValues, dataStoreMetaInfo.Tags))
+
+	if len(dataStoreMetaInfo.Ratings) == 0 {
+		b.WriteString(fmt.Sprintf("%sRatings: [],\n", indentationValues))
+	} else {
+		b.WriteString(fmt.Sprintf("%sRatings: [\n", indentationValues))
+
+		for i := 0; i < len(dataStoreMetaInfo.Ratings); i++ {
+			str := dataStoreMetaInfo.Ratings[i].FormatToString(indentationLevel + 2)
+			if i == len(dataStoreMetaInfo.Ratings)-1 {
+				b.WriteString(fmt.Sprintf("%s%s\n", indentationListValues, str))
+			} else {
+				b.WriteString(fmt.Sprintf("%s%s,\n", indentationListValues, str))
+			}
+		}
+
+		b.WriteString(fmt.Sprintf("%s]\n", indentationValues))
+	}
+
+	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+
+	return b.String()
 }
 
 // NewDataStoreMetaInfo returns a new DataStoreMetaInfo

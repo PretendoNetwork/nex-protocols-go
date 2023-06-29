@@ -2,6 +2,7 @@ package account_management_types
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
 )
@@ -75,6 +76,29 @@ func (accountExtraInfo *AccountExtraInfo) Equals(structure nex.StructureInterfac
 	}
 
 	return true
+}
+
+// String returns a string representation of the struct
+func (accountExtraInfo *AccountExtraInfo) String() string {
+	return accountExtraInfo.FormatToString(0)
+}
+
+// FormatToString pretty-prints the struct data using the provided indentation level
+func (accountExtraInfo *AccountExtraInfo) FormatToString(indentationLevel int) string {
+	indentationValues := strings.Repeat("\t", indentationLevel+1)
+	indentationEnd := strings.Repeat("\t", indentationLevel)
+
+	var b strings.Builder
+
+	b.WriteString("AccountExtraInfo{\n")
+	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, accountExtraInfo.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sUnknown: %d,\n", indentationValues, accountExtraInfo.Unknown))
+	b.WriteString(fmt.Sprintf("%sUnknown2: %d,\n", indentationValues, accountExtraInfo.Unknown2))
+	b.WriteString(fmt.Sprintf("%sUnknown3: %d,\n", indentationValues, accountExtraInfo.Unknown3))
+	b.WriteString(fmt.Sprintf("%sNEXToken: %s\n", indentationValues, accountExtraInfo.NEXToken))
+	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+
+	return b.String()
 }
 
 // NewAccountExtraInfo returns a new AccountExtraInfo

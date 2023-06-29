@@ -2,6 +2,8 @@ package datastore_types
 
 import (
 	"bytes"
+	"fmt"
+	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
 )
@@ -84,6 +86,48 @@ func (dataStoreReqGetInfo *DataStoreReqGetInfo) Equals(structure nex.StructureIn
 	}
 
 	return true
+}
+
+// String returns a string representation of the struct
+func (dataStoreReqGetInfo *DataStoreReqGetInfo) String() string {
+	return dataStoreReqGetInfo.FormatToString(0)
+}
+
+// FormatToString pretty-prints the struct data using the provided indentation level
+func (dataStoreReqGetInfo *DataStoreReqGetInfo) FormatToString(indentationLevel int) string {
+	indentationValues := strings.Repeat("\t", indentationLevel+1)
+	indentationListValues := strings.Repeat("\t", indentationLevel+2)
+	indentationEnd := strings.Repeat("\t", indentationLevel)
+
+	var b strings.Builder
+
+	b.WriteString("DataStoreReqGetInfo{\n")
+	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, dataStoreReqGetInfo.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sURL: %q,\n", indentationValues, dataStoreReqGetInfo.URL))
+
+	if len(dataStoreReqGetInfo.RequestHeaders) == 0 {
+		b.WriteString(fmt.Sprintf("%sRequestHeaders: [],\n", indentationValues))
+	} else {
+		b.WriteString(fmt.Sprintf("%sRequestHeaders: [\n", indentationValues))
+
+		for i := 0; i < len(dataStoreReqGetInfo.RequestHeaders); i++ {
+			str := dataStoreReqGetInfo.RequestHeaders[i].FormatToString(indentationLevel + 2)
+			if i == len(dataStoreReqGetInfo.RequestHeaders)-1 {
+				b.WriteString(fmt.Sprintf("%s%s\n", indentationListValues, str))
+			} else {
+				b.WriteString(fmt.Sprintf("%s%s,\n", indentationListValues, str))
+			}
+		}
+
+		b.WriteString(fmt.Sprintf("%s],\n", indentationValues))
+	}
+
+	b.WriteString(fmt.Sprintf("%sSize: %d,\n", indentationValues, dataStoreReqGetInfo.Size))
+	b.WriteString(fmt.Sprintf("%sRootCA: %x,\n", indentationValues, dataStoreReqGetInfo.RootCA))
+	b.WriteString(fmt.Sprintf("%sDataID: %d\n", indentationValues, dataStoreReqGetInfo.DataID))
+	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+
+	return b.String()
 }
 
 // NewDataStoreReqGetInfo returns a new DataStoreReqGetInfo

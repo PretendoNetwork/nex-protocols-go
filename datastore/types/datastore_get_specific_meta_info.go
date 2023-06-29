@@ -2,6 +2,7 @@ package datastore_types
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
 )
@@ -96,6 +97,30 @@ func (dataStoreSpecificMetaInfo *DataStoreSpecificMetaInfo) Equals(structure nex
 	}
 
 	return true
+}
+
+// String returns a string representation of the struct
+func (dataStoreSpecificMetaInfo *DataStoreSpecificMetaInfo) String() string {
+	return dataStoreSpecificMetaInfo.FormatToString(0)
+}
+
+// FormatToString pretty-prints the struct data using the provided indentation level
+func (dataStoreSpecificMetaInfo *DataStoreSpecificMetaInfo) FormatToString(indentationLevel int) string {
+	indentationValues := strings.Repeat("\t", indentationLevel+1)
+	indentationEnd := strings.Repeat("\t", indentationLevel)
+
+	var b strings.Builder
+
+	b.WriteString("DataStoreSpecificMetaInfo{\n")
+	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, dataStoreSpecificMetaInfo.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sDataID: %d,\n", indentationValues, dataStoreSpecificMetaInfo.DataID))
+	b.WriteString(fmt.Sprintf("%sOwnerID: %d,\n", indentationValues, dataStoreSpecificMetaInfo.OwnerID))
+	b.WriteString(fmt.Sprintf("%sSize: %d,\n", indentationValues, dataStoreSpecificMetaInfo.Size))
+	b.WriteString(fmt.Sprintf("%sDataType: %d,\n", indentationValues, dataStoreSpecificMetaInfo.DataType))
+	b.WriteString(fmt.Sprintf("%sVersion: %d\n", indentationValues, dataStoreSpecificMetaInfo.Version))
+	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+
+	return b.String()
 }
 
 // NewDataStoreSpecificMetaInfo returns a new DataStoreSpecificMetaInfo

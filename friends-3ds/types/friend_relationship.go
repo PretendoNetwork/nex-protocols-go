@@ -1,6 +1,11 @@
 package friends_3ds_types
 
-import "github.com/PretendoNetwork/nex-go"
+import (
+	"fmt"
+	"strings"
+
+	"github.com/PretendoNetwork/nex-go"
+)
 
 // FriendRelationship contains information about a users relationship with another PID
 type FriendRelationship struct {
@@ -47,6 +52,28 @@ func (relationship *FriendRelationship) Equals(structure nex.StructureInterface)
 	}
 
 	return true
+}
+
+// String returns a string representation of the struct
+func (relationship *FriendRelationship) String() string {
+	return relationship.FormatToString(0)
+}
+
+// FormatToString pretty-prints the struct data using the provided indentation level
+func (relationship *FriendRelationship) FormatToString(indentationLevel int) string {
+	indentationValues := strings.Repeat("\t", indentationLevel+1)
+	indentationEnd := strings.Repeat("\t", indentationLevel)
+
+	var b strings.Builder
+
+	b.WriteString("FriendRelationship{\n")
+	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, relationship.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sPID: %d,\n", indentationValues, relationship.PID))
+	b.WriteString(fmt.Sprintf("%sLFC: %d,\n", indentationValues, relationship.LFC))
+	b.WriteString(fmt.Sprintf("%sRelationshipType: %d\n", indentationValues, relationship.RelationshipType))
+	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+
+	return b.String()
 }
 
 // NewFriendRelationship returns a new FriendRelationship

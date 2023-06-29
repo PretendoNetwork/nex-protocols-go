@@ -132,9 +132,9 @@ func (protocol *Friends3DSProtocol) HandlePacket(packet nex.PacketInterface) {
 
 // NewFriends3DSProtocol returns a new Friends3DSProtocol
 func NewFriends3DSProtocol(server *nex.Server) *Friends3DSProtocol {
-	Friends3DSProtocol := &Friends3DSProtocol{Server: server}
+	protocol := &Friends3DSProtocol{Server: server}
 
-	Friends3DSProtocol.Setup()
+	protocol.Setup()
 
-	return Friends3DSProtocol
+	return protocol
 }

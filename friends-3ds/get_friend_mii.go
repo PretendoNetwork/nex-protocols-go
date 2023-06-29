@@ -27,11 +27,11 @@ func (protocol *Friends3DSProtocol) handleGetFriendMii(packet nex.PacketInterfac
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	PIDList, err := parametersStream.ReadListUInt32LE()
+	pidList, err := parametersStream.ReadListUInt32LE()
 	if err != nil {
 		go protocol.GetFriendMiiHandler(fmt.Errorf("Failed to read pid from parameters. %s", err.Error()), client, callID, nil)
 		return
 	}
 
-	go protocol.GetFriendMiiHandler(nil, client, callID, PIDList)
+	go protocol.GetFriendMiiHandler(nil, client, callID, pidList)
 }

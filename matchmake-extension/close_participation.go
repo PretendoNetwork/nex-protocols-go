@@ -27,11 +27,11 @@ func (protocol *MatchmakeExtensionProtocol) handleCloseParticipation(packet nex.
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	GID, err := parametersStream.ReadUInt32LE()
+	gid, err := parametersStream.ReadUInt32LE()
 	if err != nil {
 		go protocol.CloseParticipationHandler(fmt.Errorf("Failed to read GID from parameters. %s", err.Error()), client, callID, 0)
 		return
 	}
 
-	go protocol.CloseParticipationHandler(nil, client, callID, GID)
+	go protocol.CloseParticipationHandler(nil, client, callID, gid)
 }

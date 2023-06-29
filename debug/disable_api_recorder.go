@@ -5,14 +5,14 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// DisableApiRecorder sets the DisableApiRecorder handler function
-func (protocol *DebugProtocol) DisableApiRecorder(handler func(err error, client *nex.Client, callID uint32)) {
-	protocol.DisableApiRecorderHandler = handler
+// DisableAPIRecorder sets the DisableAPIRecorder handler function
+func (protocol *DebugProtocol) DisableAPIRecorder(handler func(err error, client *nex.Client, callID uint32)) {
+	protocol.DisableAPIRecorderHandler = handler
 }
 
-func (protocol *DebugProtocol) handleDisableApiRecorder(packet nex.PacketInterface) {
-	if protocol.DisableApiRecorderHandler == nil {
-		globals.Logger.Warning("Debug::DisableApiRecorder not implemented")
+func (protocol *DebugProtocol) handleDisableAPIRecorder(packet nex.PacketInterface) {
+	if protocol.DisableAPIRecorderHandler == nil {
+		globals.Logger.Warning("Debug::DisableAPIRecorder not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
 	}
@@ -22,5 +22,5 @@ func (protocol *DebugProtocol) handleDisableApiRecorder(packet nex.PacketInterfa
 
 	callID := request.CallID()
 
-	go protocol.DisableApiRecorderHandler(nil, client, callID)
+	go protocol.DisableAPIRecorderHandler(nil, client, callID)
 }

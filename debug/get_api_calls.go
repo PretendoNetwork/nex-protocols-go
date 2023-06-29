@@ -7,14 +7,14 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// GetApiCalls sets the GetApiCalls handler function
-func (protocol *DebugProtocol) GetApiCalls(handler func(err error, client *nex.Client, callID uint32, pids []uint32, unknown *nex.DateTime, unknown2 *nex.DateTime)) {
-	protocol.GetApiCallsHandler = handler
+// GetAPICalls sets the GetAPICalls handler function
+func (protocol *DebugProtocol) GetAPICalls(handler func(err error, client *nex.Client, callID uint32, pids []uint32, unknown *nex.DateTime, unknown2 *nex.DateTime)) {
+	protocol.GetAPICallsHandler = handler
 }
 
-func (protocol *DebugProtocol) handleGetApiCalls(packet nex.PacketInterface) {
-	if protocol.GetApiCallsHandler == nil {
-		globals.Logger.Warning("Debug::GetApiCalls not implemented")
+func (protocol *DebugProtocol) handleGetAPICalls(packet nex.PacketInterface) {
+	if protocol.GetAPICallsHandler == nil {
+		globals.Logger.Warning("Debug::GetAPICalls not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
 	}
@@ -29,21 +29,21 @@ func (protocol *DebugProtocol) handleGetApiCalls(packet nex.PacketInterface) {
 
 	pids, err := parametersStream.ReadListUInt32LE()
 	if err != nil {
-		go protocol.GetApiCallsHandler(fmt.Errorf("Failed to read pids from parameters. %s", err.Error()), client, callID, nil, nil, nil)
+		go protocol.GetAPICallsHandler(fmt.Errorf("Failed to read pids from parameters. %s", err.Error()), client, callID, nil, nil, nil)
 		return
 	}
 
 	unknown, err := parametersStream.ReadDateTime()
 	if err != nil {
-		go protocol.GetApiCallsHandler(fmt.Errorf("Failed to read unknown from parameters. %s", err.Error()), client, callID, nil, nil, nil)
+		go protocol.GetAPICallsHandler(fmt.Errorf("Failed to read unknown from parameters. %s", err.Error()), client, callID, nil, nil, nil)
 		return
 	}
 
 	unknown2, err := parametersStream.ReadDateTime()
 	if err != nil {
-		go protocol.GetApiCallsHandler(fmt.Errorf("Failed to read unknown2 from parameters. %s", err.Error()), client, callID, nil, nil, nil)
+		go protocol.GetAPICallsHandler(fmt.Errorf("Failed to read unknown2 from parameters. %s", err.Error()), client, callID, nil, nil, nil)
 		return
 	}
 
-	go protocol.GetApiCallsHandler(nil, client, callID, pids, unknown, unknown2)
+	go protocol.GetAPICallsHandler(nil, client, callID, pids, unknown, unknown2)
 }

@@ -5,16 +5,16 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// GetApiCallSummary sets the GetApiCallSummary handler function
-func (protocol *DebugProtocol) GetApiCallSummary(handler func(err error, client *nex.Client, callID uint32)) {
-	protocol.GetApiCallSummaryHandler = handler
+// GetAPICallSummary sets the GetAPICallSummary handler function
+func (protocol *DebugProtocol) GetAPICallSummary(handler func(err error, client *nex.Client, callID uint32)) {
+	protocol.GetAPICallSummaryHandler = handler
 }
 
-func (protocol *DebugProtocol) handleGetApiCallSummary(packet nex.PacketInterface) {
-	globals.Logger.Warning("Debug::GetApiCallSummary STUBBED")
+func (protocol *DebugProtocol) handleGetAPICallSummary(packet nex.PacketInterface) {
+	globals.Logger.Warning("Debug::GetAPICallSummary STUBBED")
 
-	if protocol.GetApiCallSummaryHandler == nil {
-		globals.Logger.Warning("Debug::GetApiCallSummary not implemented")
+	if protocol.GetAPICallSummaryHandler == nil {
+		globals.Logger.Warning("Debug::GetAPICallSummary not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
 	}

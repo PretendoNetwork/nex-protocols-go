@@ -56,6 +56,8 @@ func (protocol *ShopNintendoBadgeArcadeProtocol) HandlePacket(packet nex.PacketI
 	request := packet.RMCRequest()
 
 	switch request.MethodID() {
+	case MethodGetRivToken:
+		go protocol.handleGetRivToken(packet)
 	case MethodPostPlayLog:
 		go protocol.handlePostPlayLog(packet)
 	default:

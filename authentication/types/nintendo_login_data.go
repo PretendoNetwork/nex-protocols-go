@@ -61,7 +61,7 @@ func (nintendoLoginData *NintendoLoginData) FormatToString(indentationLevel int)
 	return b.String()
 }
 
-// NewAuthenticationInfo returns a new NintendoLoginData
+// NewNintendoLoginData returns a new NintendoLoginData
 func NewNintendoLoginData() *NintendoLoginData {
 	return &NintendoLoginData{}
 }

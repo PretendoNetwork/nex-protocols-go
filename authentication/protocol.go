@@ -30,7 +30,7 @@ const (
 	MethodLoginWithParam = 0x6
 )
 
-// AuthenticationProtocol handles the Authentication nex protocol
+// AuthenticationProtocol handles the Authentication NEX protocol
 type AuthenticationProtocol struct {
 	Server                *nex.Server
 	LoginHandler          func(err error, client *nex.Client, callID uint32, strUserName string)

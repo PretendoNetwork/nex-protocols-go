@@ -7,7 +7,7 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// GetSessionURLs sets the GetSessionURLs handler function
+// UpdateSessionHost sets the UpdateSessionHost handler function
 func (protocol *MatchMakingProtocol) UpdateSessionHost(handler func(err error, client *nex.Client, callID uint32, gid uint32, isMigrateOwner bool)) {
 	protocol.UpdateSessionHostHandler = handler
 }

@@ -29,7 +29,7 @@ var patchedMethods = []uint32{
 	MethodPostPlayLog,
 }
 
-// ShopNintendoBadgeArcadeProtocol handles the Shop (Badge Arcade) nex protocol
+// ShopNintendoBadgeArcadeProtocol handles the Shop (Badge Arcade) NEX protocol
 type ShopNintendoBadgeArcadeProtocol struct {
 	Server *nex.Server
 	shop.ShopProtocol

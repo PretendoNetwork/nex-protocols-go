@@ -8,7 +8,7 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// SearchObject sets the SearchObject handler function
+// SearchObjectLight sets the SearchObjectLight handler function
 func (protocol *DataStoreProtocol) SearchObjectLight(handler func(err error, client *nex.Client, callID uint32, param *datastore_types.DataStoreSearchParam)) {
 	protocol.SearchObjectLightHandler = handler
 }

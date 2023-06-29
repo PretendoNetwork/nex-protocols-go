@@ -70,7 +70,7 @@ const (
 	MethodAutoMatchmakeWithParam_Postpone = 0x28
 )
 
-// MatchmakeExtensionProtocol handles the Matchmake Extension nex protocol
+// MatchmakeExtensionProtocol handles the Matchmake Extension NEX protocol
 type MatchmakeExtensionProtocol struct {
 	Server                                          *nex.Server
 	CloseParticipationHandler                       func(err error, client *nex.Client, callID uint32, gid uint32)

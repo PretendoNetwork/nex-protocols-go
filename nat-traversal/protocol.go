@@ -27,7 +27,7 @@ const (
 	MethodGetRelaySignatureKey = 0x6
 )
 
-// AuthenticationProtocol handles the Authentication nex protocol
+// NATTraversalProtocol handles the NAT Traversal NEX protocol
 type NATTraversalProtocol struct {
 	Server                           *nex.Server
 	InitiateProbeHandler             func(err error, client *nex.Client, callID uint32)

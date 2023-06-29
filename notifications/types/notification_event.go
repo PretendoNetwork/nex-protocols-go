@@ -105,7 +105,7 @@ func (notificationEvent *NotificationEvent) FormatToString(indentationLevel int)
 	return b.String()
 }
 
-// NotificationEvent returns a new NotificationEvent
+// NewNotificationEvent returns a new NotificationEvent
 func NewNotificationEvent() *NotificationEvent {
 	return &NotificationEvent{}
 }

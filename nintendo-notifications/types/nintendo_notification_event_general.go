@@ -84,7 +84,7 @@ func (nintendoNotificationEventGeneral *NintendoNotificationEventGeneral) Format
 	return b.String()
 }
 
-// NintendoNotificationEventGeneral returns a new NintendoNotificationEventGeneral
+// NewNintendoNotificationEventGeneral returns a new NintendoNotificationEventGeneral
 func NewNintendoNotificationEventGeneral() *NintendoNotificationEventGeneral {
 	return &NintendoNotificationEventGeneral{}
 }

@@ -45,7 +45,7 @@ const (
 	// MethodRecommendedCourseSearchObject is the method ID for the method RecommendedCourseSearchObject
 	MethodRecommendedCourseSearchObject = 0x42
 
-	// MethodSuggestedCourseSearchObjectis the method ID for the method SuggestedCourseSearchObject
+	// MethodSuggestedCourseSearchObject is the method ID for the method SuggestedCourseSearchObject
 	MethodSuggestedCourseSearchObject = 0x44
 
 	// MethodUploadCourseRecord is the method ID for the method UploadCourseRecord
@@ -91,7 +91,7 @@ var patchedMethods = []uint32{
 	MethodCTRPickUpCourseSearchObject,
 }
 
-// DataStoreSuperMarioMakerProtocol handles the DataStore (SMM) nex protocol. Embeds DataStoreProtocol
+// DataStoreSuperMarioMakerProtocol handles the DataStore (SMM) NEX protocol. Embeds DataStoreProtocol
 type DataStoreSuperMarioMakerProtocol struct {
 	Server *nex.Server
 	datastore.DataStoreProtocol

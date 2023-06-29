@@ -73,7 +73,7 @@ const (
 	MethodGetRequestBlockSettings = 0x14
 )
 
-// FriendsWiiUProtocol handles the Friends (WiiU) nex protocol
+// FriendsWiiUProtocol handles the Friends (WiiU) NEX protocol
 type FriendsWiiUProtocol struct {
 	Server                              *nex.Server
 	UpdateAndGetAllInformationHandler   func(err error, client *nex.Client, callID uint32, nnaInfo *friends_wiiu_types.NNAInfo, presence *friends_wiiu_types.NintendoPresenceV2, birthday *nex.DateTime)

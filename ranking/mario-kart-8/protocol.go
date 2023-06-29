@@ -13,7 +13,7 @@ const (
 	ProtocolID = 0x70
 )
 
-// RankingMK8Protocol handles the Ranking (Mario Kart 8) nex protocol. Embeds RankingProtocol
+// RankingMK8Protocol handles the Ranking (Mario Kart 8) NEX protocol. Embeds RankingProtocol
 type RankingMK8Protocol struct {
 	Server *nex.Server
 	ranking.RankingProtocol

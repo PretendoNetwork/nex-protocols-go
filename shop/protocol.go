@@ -15,7 +15,7 @@ const (
 	ProtocolID = 0xC8
 )
 
-// ShopProtocol handles the Shop (Badge Arcade) nex protocol
+// ShopProtocol handles the Shop (Badge Arcade) NEX protocol
 type ShopProtocol struct {
 	Server *nex.Server
 }

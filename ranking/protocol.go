@@ -57,7 +57,7 @@ const (
 	MethodGetCachedTopXRankings = 0xF
 )
 
-// RankingProtocol handles the Ranking nex protocol
+// RankingProtocol handles the Ranking NEX protocol
 type RankingProtocol struct {
 	Server                  *nex.Server
 	UploadCommonDataHandler func(err error, client *nex.Client, callID uint32, commonData []byte, uniqueID uint64)

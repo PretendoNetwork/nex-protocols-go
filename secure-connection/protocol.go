@@ -36,7 +36,7 @@ const (
 	MethodSendReport = 0x8
 )
 
-// SecureConnectionProtocol handles the Secure Connection nex protocol
+// SecureConnectionProtocol handles the Secure Connection NEX protocol
 type SecureConnectionProtocol struct {
 	Server                       *nex.Server
 	RegisterHandler              func(err error, client *nex.Client, callID uint32, vecMyURLs []*nex.StationURL)

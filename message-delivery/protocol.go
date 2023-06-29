@@ -15,7 +15,7 @@ const (
 	MethodDeliverMessage = 0x1
 )
 
-// MessageDeliveryProtocol handles the Authentication nex protocol
+// MessageDeliveryProtocol handles the Authentication NEX protocol
 type MessageDeliveryProtocol struct {
 	Server                *nex.Server
 	DeliverMessageHandler func(err error, client *nex.Client, callID uint32, oUserMessage *nex.DataHolder)

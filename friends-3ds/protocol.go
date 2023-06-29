@@ -36,7 +36,7 @@ const (
 	// MethodRemoveFriendByPrincipalID is the method ID for method RemoveFriendByPrincipalID
 	MethodRemoveFriendByPrincipalID = 0xe
 
-	// MethodRemoveFriendByPrincipalID is the method ID for method RemoveFriendByPrincipalID
+	// MethodGetAllFriends is the method ID for method MethodGetAllFriends
 	MethodGetAllFriends = 0xf
 
 	// MethodSyncFriend is the method ID for method SyncFriend
@@ -58,7 +58,7 @@ const (
 	MethodGetFriendPersistentInfo = 0x19
 )
 
-// Friends3DSProtocol handles the Friends (3DS) nex protocol
+// Friends3DSProtocol handles the Friends (3DS) NEX protocol
 type Friends3DSProtocol struct {
 	Server                                 *nex.Server
 	UpdateProfileHandler                   func(err error, client *nex.Client, callID uint32, profileData *friends_3ds_types.MyProfile)

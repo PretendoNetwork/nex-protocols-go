@@ -94,7 +94,7 @@ var patchedMethods = []uint32{
 	MethodReportSharedData,
 }
 
-// DataStoreSuperSmashBros4Protocol handles the DataStore (Smash4) nex protocol. Embeds DataStoreProtocol
+// DataStoreSuperSmashBros4Protocol handles the DataStore (Smash4) NEX protocol. Embeds DataStoreProtocol
 type DataStoreSuperSmashBros4Protocol struct {
 	Server *nex.Server
 	datastore.DataStoreProtocol

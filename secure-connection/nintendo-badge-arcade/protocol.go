@@ -21,7 +21,7 @@ var patchedMethods = []uint32{
 	MethodGetMaintenanceStatus,
 }
 
-// SecureConnectionNintendoBadgeArcadeProtocol handles the Secure Connection (Nintendo Badge Arcade) nex protocol. Embeds SecureProtocol
+// SecureConnectionNintendoBadgeArcadeProtocol handles the Secure Connection (Nintendo Badge Arcade) NEX protocol. Embeds SecureProtocol
 type SecureConnectionNintendoBadgeArcadeProtocol struct {
 	Server *nex.Server
 	secure_connection.SecureConnectionProtocol

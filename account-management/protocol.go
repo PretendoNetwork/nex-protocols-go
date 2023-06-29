@@ -16,7 +16,7 @@ const (
 	MethodNintendoCreateAccount = 0x1B
 )
 
-// AccountManagementProtocol handles the Account Management nex protocol
+// AccountManagementProtocol handles the Account Management NEX protocol
 type AccountManagementProtocol struct {
 	Server                       *nex.Server
 	NintendoCreateAccountHandler func(err error, client *nex.Client, callID uint32, strPrincipalName string, strKey string, uiGroups uint32, strEmail string, oAuthData *nex.DataHolder)

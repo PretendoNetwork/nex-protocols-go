@@ -37,7 +37,7 @@ const (
 	MethodGetStringSettings = 0x8
 )
 
-// UtilityProtocol handles the Utility nex protocol
+// UtilityProtocol handles the Utility NEX protocol
 type UtilityProtocol struct {
 	Server                                            *nex.Server
 	AcquireNexUniqueIDHandler                         func(err error, client *nex.Client, callID uint32)

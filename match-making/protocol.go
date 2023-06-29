@@ -30,7 +30,7 @@ const (
 	MethodUpdateSessionHost = 0x2A
 )
 
-// AuthenticationProtocol handles the Authentication nex protocol
+// MatchMakingProtocol handles the MatchMaking NEX protocol
 type MatchMakingProtocol struct {
 	Server                      *nex.Server
 	UnregisterGatheringHandler  func(err error, client *nex.Client, callID uint32, idGathering uint32)

@@ -22,7 +22,7 @@ var patchedMethods = []uint32{
 	MethodGetMetaByOwnerID,
 }
 
-// DataStoreNintendoBadgeArcadeProtocol handles the DataStore (Badge Arcade) nex protocol. Embeds DataStoreProtocol
+// DataStoreNintendoBadgeArcadeProtocol handles the DataStore (Badge Arcade) NEX protocol. Embeds DataStoreProtocol
 type DataStoreNintendoBadgeArcadeProtocol struct {
 	Server *nex.Server
 	datastore.DataStoreProtocol

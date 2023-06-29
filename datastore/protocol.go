@@ -151,7 +151,7 @@ const (
 	MethodSearchObjectLight = 0x2E
 )
 
-// DataStoreProtocol handles the DataStore nex protocol
+// DataStoreProtocol handles the DataStore NEX protocol
 type DataStoreProtocol struct {
 	Server                              *nex.Server
 	PrepareGetObjectV1Handler           func(err error, client *nex.Client, callID uint32, dataStorePrepareGetParamV1 *datastore_types.DataStorePrepareGetParamV1)

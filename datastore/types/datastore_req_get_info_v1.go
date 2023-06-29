@@ -10,7 +10,7 @@ import (
 
 type DataStoreReqGetInfoV1 struct {
 	nex.Structure
-	Url            string
+	URL            string
 	RequestHeaders []*DataStoreKeyValue
 	Size           uint32
 	RootCaCert     []byte
@@ -20,9 +20,9 @@ type DataStoreReqGetInfoV1 struct {
 func (dataStoreReqGetInfoV1 *DataStoreReqGetInfoV1) ExtractFromStream(stream *nex.StreamIn) error {
 	var err error
 
-	dataStoreReqGetInfoV1.Url, err = stream.ReadString()
+	dataStoreReqGetInfoV1.URL, err = stream.ReadString()
 	if err != nil {
-		return fmt.Errorf("Failed to extract DataStoreReqGetInfoV1.Url. %s", err.Error())
+		return fmt.Errorf("Failed to extract DataStoreReqGetInfoV1.URL. %s", err.Error())
 	}
 
 	requestHeaders, err := stream.ReadListStructure(NewDataStoreKeyValue())
@@ -46,7 +46,7 @@ func (dataStoreReqGetInfoV1 *DataStoreReqGetInfoV1) ExtractFromStream(stream *ne
 
 // Bytes encodes the DataStoreReqGetInfoV1 and returns a byte array
 func (dataStoreReqGetInfoV1 *DataStoreReqGetInfoV1) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteString(dataStoreReqGetInfoV1.Url)
+	stream.WriteString(dataStoreReqGetInfoV1.URL)
 	stream.WriteListStructure(dataStoreReqGetInfoV1.RequestHeaders)
 	stream.WriteUInt32LE(dataStoreReqGetInfoV1.Size)
 	stream.WriteBuffer(dataStoreReqGetInfoV1.RootCaCert)
@@ -58,7 +58,7 @@ func (dataStoreReqGetInfoV1 *DataStoreReqGetInfoV1) Bytes(stream *nex.StreamOut)
 func (dataStoreReqGetInfoV1 *DataStoreReqGetInfoV1) Copy() nex.StructureInterface {
 	copied := NewDataStoreReqGetInfoV1()
 
-	copied.Url = dataStoreReqGetInfoV1.Url
+	copied.URL = dataStoreReqGetInfoV1.URL
 	copied.RequestHeaders = make([]*DataStoreKeyValue, len(dataStoreReqGetInfoV1.RequestHeaders))
 
 	for i := 0; i < len(dataStoreReqGetInfoV1.RequestHeaders); i++ {
@@ -78,7 +78,7 @@ func (dataStoreReqGetInfoV1 *DataStoreReqGetInfoV1) Copy() nex.StructureInterfac
 func (dataStoreReqGetInfoV1 *DataStoreReqGetInfoV1) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*DataStoreReqGetInfoV1)
 
-	if dataStoreReqGetInfoV1.Url != other.Url {
+	if dataStoreReqGetInfoV1.URL != other.URL {
 		return false
 	}
 
@@ -118,7 +118,7 @@ func (dataStoreReqGetInfoV1 *DataStoreReqGetInfoV1) FormatToString(indentationLe
 
 	b.WriteString("DataStoreReqGetInfoV1{\n")
 	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, dataStoreReqGetInfoV1.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sUrl: %q,\n", indentationValues, dataStoreReqGetInfoV1.Url))
+	b.WriteString(fmt.Sprintf("%sURL: %q,\n", indentationValues, dataStoreReqGetInfoV1.URL))
 
 	if len(dataStoreReqGetInfoV1.RequestHeaders) == 0 {
 		b.WriteString(fmt.Sprintf("%sRequestHeaders: [],\n", indentationValues))

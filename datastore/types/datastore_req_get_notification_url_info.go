@@ -10,7 +10,7 @@ import (
 
 type DataStoreReqGetNotificationURLInfo struct {
 	nex.Structure
-	Url        string
+	URL        string
 	Key        string
 	Query      string
 	RootCaCert []byte
@@ -20,9 +20,9 @@ type DataStoreReqGetNotificationURLInfo struct {
 func (dataStoreReqGetNotificationURLInfo *DataStoreReqGetNotificationURLInfo) ExtractFromStream(stream *nex.StreamIn) error {
 	var err error
 
-	dataStoreReqGetNotificationURLInfo.Url, err = stream.ReadString()
+	dataStoreReqGetNotificationURLInfo.URL, err = stream.ReadString()
 	if err != nil {
-		return fmt.Errorf("Failed to extract DataStoreReqGetNotificationURLInfo.Url. %s", err.Error())
+		return fmt.Errorf("Failed to extract DataStoreReqGetNotificationURLInfo.URL. %s", err.Error())
 	}
 
 	dataStoreReqGetNotificationURLInfo.Key, err = stream.ReadString()
@@ -45,7 +45,7 @@ func (dataStoreReqGetNotificationURLInfo *DataStoreReqGetNotificationURLInfo) Ex
 
 // Bytes encodes the DataStoreReqGetNotificationURLInfo and returns a byte array
 func (dataStoreReqGetNotificationURLInfo *DataStoreReqGetNotificationURLInfo) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteString(dataStoreReqGetNotificationURLInfo.Url)
+	stream.WriteString(dataStoreReqGetNotificationURLInfo.URL)
 	stream.WriteString(dataStoreReqGetNotificationURLInfo.Key)
 	stream.WriteString(dataStoreReqGetNotificationURLInfo.Query)
 	stream.WriteBuffer(dataStoreReqGetNotificationURLInfo.RootCaCert)
@@ -57,7 +57,7 @@ func (dataStoreReqGetNotificationURLInfo *DataStoreReqGetNotificationURLInfo) By
 func (dataStoreReqGetNotificationURLInfo *DataStoreReqGetNotificationURLInfo) Copy() nex.StructureInterface {
 	copied := NewDataStoreReqGetNotificationURLInfo()
 
-	copied.Url = dataStoreReqGetNotificationURLInfo.Url
+	copied.URL = dataStoreReqGetNotificationURLInfo.URL
 	copied.Key = dataStoreReqGetNotificationURLInfo.Key
 	copied.Query = dataStoreReqGetNotificationURLInfo.Query
 	copied.RootCaCert = make([]byte, len(dataStoreReqGetNotificationURLInfo.RootCaCert))
@@ -71,7 +71,7 @@ func (dataStoreReqGetNotificationURLInfo *DataStoreReqGetNotificationURLInfo) Co
 func (dataStoreReqGetNotificationURLInfo *DataStoreReqGetNotificationURLInfo) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*DataStoreReqGetNotificationURLInfo)
 
-	if dataStoreReqGetNotificationURLInfo.Url != other.Url {
+	if dataStoreReqGetNotificationURLInfo.URL != other.URL {
 		return false
 	}
 
@@ -104,7 +104,7 @@ func (dataStoreReqGetNotificationURLInfo *DataStoreReqGetNotificationURLInfo) Fo
 
 	b.WriteString("DataStoreReqGetNotificationURLInfo{\n")
 	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, dataStoreReqGetNotificationURLInfo.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sUrl: %q,\n", indentationValues, dataStoreReqGetNotificationURLInfo.Url))
+	b.WriteString(fmt.Sprintf("%sURL: %q,\n", indentationValues, dataStoreReqGetNotificationURLInfo.URL))
 	b.WriteString(fmt.Sprintf("%sKey: %q,\n", indentationValues, dataStoreReqGetNotificationURLInfo.Key))
 	b.WriteString(fmt.Sprintf("%sQuery: %q,\n", indentationValues, dataStoreReqGetNotificationURLInfo.Query))
 	b.WriteString(fmt.Sprintf("%sRootCaCert: %x\n", indentationValues, dataStoreReqGetNotificationURLInfo.RootCaCert))

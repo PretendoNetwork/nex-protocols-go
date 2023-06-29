@@ -21,8 +21,8 @@ const (
 	// MethodRateCustomRanking is the method ID for the method RateCustomRanking
 	MethodRateCustomRanking = 0x30
 
-	// MethodGetCustomRankingByDataId is the method ID for the method GetCustomRankingByDataId
-	MethodGetCustomRankingByDataId = 0x32
+	// MethodGetCustomRankingByDataID is the method ID for the method GetCustomRankingByDataID
+	MethodGetCustomRankingByDataID = 0x32
 
 	// MethodAddToBufferQueues is the method ID for the method AddToBufferQueues
 	MethodAddToBufferQueues = 0x35
@@ -73,7 +73,7 @@ const (
 var patchedMethods = []uint32{
 	MethodGetObjectInfos,
 	MethodRateCustomRanking,
-	MethodGetCustomRankingByDataId,
+	MethodGetCustomRankingByDataID,
 	MethodAddToBufferQueues,
 	MethodGetBufferQueue,
 	MethodCompleteAttachFile,
@@ -97,7 +97,7 @@ type DataStoreSuperMarioMakerProtocol struct {
 	datastore.DataStoreProtocol
 	GetObjectInfosHandler                     func(err error, client *nex.Client, callID uint32, dataIDs []uint64)
 	RateCustomRankingHandler                  func(err error, client *nex.Client, callID uint32, dataStoreRateCustomRankingParams []*datastore_super_mario_maker_types.DataStoreRateCustomRankingParam)
-	GetCustomRankingByDataIdHandler           func(err error, client *nex.Client, callID uint32, dataStoreGetCustomRankingByDataIdParam *datastore_super_mario_maker_types.DataStoreGetCustomRankingByDataIdParam)
+	GetCustomRankingByDataIDHandler           func(err error, client *nex.Client, callID uint32, dataStoreGetCustomRankingByDataIDParam *datastore_super_mario_maker_types.DataStoreGetCustomRankingByDataIDParam)
 	AddToBufferQueuesHandler                  func(err error, client *nex.Client, callID uint32, params []*datastore_super_mario_maker_types.BufferQueueParam, buffers [][]byte)
 	GetBufferQueueHandler                     func(err error, client *nex.Client, callID uint32, bufferQueueParam *datastore_super_mario_maker_types.BufferQueueParam)
 	CompleteAttachFileHandler                 func(err error, client *nex.Client, callID uint32, dataStoreCompletePostParam *datastore_types.DataStoreCompletePostParam)
@@ -109,7 +109,7 @@ type DataStoreSuperMarioMakerProtocol struct {
 	UploadCourseRecordHandler                 func(err error, client *nex.Client, callID uint32, param *datastore_super_mario_maker_types.DataStoreUploadCourseRecordParam)
 	GetCourseRecordHandler                    func(err error, client *nex.Client, callID uint32, param *datastore_super_mario_maker_types.DataStoreGetCourseRecordParam)
 	GetApplicationConfigStringHandler         func(err error, client *nex.Client, callID uint32, applicationID uint32)
-	GetDeletionReasonHandler                  func(err error, client *nex.Client, callID uint32, dataIdLst []uint64)
+	GetDeletionReasonHandler                  func(err error, client *nex.Client, callID uint32, dataIDLst []uint64)
 	GetMetasWithCourseRecordHandler           func(err error, client *nex.Client, callID uint32, dataStoreGetCourseRecordParams []*datastore_super_mario_maker_types.DataStoreGetCourseRecordParam, dataStoreGetMetaParam *datastore_types.DataStoreGetMetaParam)
 	CheckRateCustomRankingCounterHandler      func(err error, client *nex.Client, callID uint32, applicationID uint32)
 	CTRPickUpCourseSearchObjectHandler        func(err error, client *nex.Client, callID uint32, dataStoreSearchParam *datastore_types.DataStoreSearchParam, extraData []string)
@@ -138,8 +138,8 @@ func (protocol *DataStoreSuperMarioMakerProtocol) HandlePacket(packet nex.Packet
 		go protocol.HandleGetObjectInfos(packet)
 	case MethodRateCustomRanking:
 		go protocol.HandleRateCustomRanking(packet)
-	case MethodGetCustomRankingByDataId:
-		go protocol.HandleGetCustomRankingByDataId(packet)
+	case MethodGetCustomRankingByDataID:
+		go protocol.HandleGetCustomRankingByDataID(packet)
 	case MethodAddToBufferQueues:
 		go protocol.HandleAddToBufferQueues(packet)
 	case MethodGetBufferQueue:

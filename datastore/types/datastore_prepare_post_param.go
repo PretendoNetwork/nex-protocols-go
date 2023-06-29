@@ -19,7 +19,7 @@ type DataStorePreparePostParam struct {
 	DelPermission        *DataStorePermission
 	Flag                 uint32
 	Period               uint16
-	ReferDataId          uint32
+	ReferDataID          uint32
 	Tags                 []string
 	RatingInitParams     []*DataStoreRatingInitParamWithSlot
 	PersistenceInitParam *DataStorePersistenceInitParam
@@ -75,9 +75,9 @@ func (dataStorePreparePostParam *DataStorePreparePostParam) ExtractFromStream(st
 		return fmt.Errorf("Failed to extract DataStorePreparePostParam.Period. %s", err.Error())
 	}
 
-	dataStorePreparePostParam.ReferDataId, err = stream.ReadUInt32LE()
+	dataStorePreparePostParam.ReferDataID, err = stream.ReadUInt32LE()
 	if err != nil {
-		return fmt.Errorf("Failed to extract DataStorePreparePostParam.ReferDataId. %s", err.Error())
+		return fmt.Errorf("Failed to extract DataStorePreparePostParam.ReferDataID. %s", err.Error())
 	}
 
 	dataStorePreparePostParam.Tags, err = stream.ReadListString()
@@ -124,7 +124,7 @@ func (dataStorePreparePostParam *DataStorePreparePostParam) Copy() nex.Structure
 	copied.DelPermission = dataStorePreparePostParam.DelPermission.Copy().(*DataStorePermission)
 	copied.Flag = dataStorePreparePostParam.Flag
 	copied.Period = dataStorePreparePostParam.Period
-	copied.ReferDataId = dataStorePreparePostParam.ReferDataId
+	copied.ReferDataID = dataStorePreparePostParam.ReferDataID
 	copied.Tags = make([]string, len(dataStorePreparePostParam.Tags))
 
 	copy(copied.Tags, dataStorePreparePostParam.Tags)
@@ -179,7 +179,7 @@ func (dataStorePreparePostParam *DataStorePreparePostParam) Equals(structure nex
 		return false
 	}
 
-	if dataStorePreparePostParam.ReferDataId != other.ReferDataId {
+	if dataStorePreparePostParam.ReferDataID != other.ReferDataID {
 		return false
 	}
 
@@ -254,7 +254,7 @@ func (dataStorePreparePostParam *DataStorePreparePostParam) FormatToString(inden
 
 	b.WriteString(fmt.Sprintf("%sFlag: %d,\n", indentationValues, dataStorePreparePostParam.Flag))
 	b.WriteString(fmt.Sprintf("%sPeriod: %d,\n", indentationValues, dataStorePreparePostParam.Period))
-	b.WriteString(fmt.Sprintf("%sReferDataId: %d,\n", indentationValues, dataStorePreparePostParam.ReferDataId))
+	b.WriteString(fmt.Sprintf("%sReferDataID: %d,\n", indentationValues, dataStorePreparePostParam.ReferDataID))
 	b.WriteString(fmt.Sprintf("%sTags: %v,\n", indentationValues, dataStorePreparePostParam.Tags))
 
 	if len(dataStorePreparePostParam.RatingInitParams) == 0 {

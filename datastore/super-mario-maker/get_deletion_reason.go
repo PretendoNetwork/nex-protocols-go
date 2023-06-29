@@ -8,7 +8,7 @@ import (
 )
 
 // GetDeletionReason sets the GetDeletionReason handler function
-func (protocol *DataStoreSuperMarioMakerProtocol) GetDeletionReason(handler func(err error, client *nex.Client, callID uint32, dataIdLst []uint64)) {
+func (protocol *DataStoreSuperMarioMakerProtocol) GetDeletionReason(handler func(err error, client *nex.Client, callID uint32, dataIDLst []uint64)) {
 	protocol.GetDeletionReasonHandler = handler
 }
 
@@ -27,11 +27,11 @@ func (protocol *DataStoreSuperMarioMakerProtocol) HandleGetDeletionReason(packet
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	dataIdLst, err := parametersStream.ReadListUInt64LE()
+	dataIDLst, err := parametersStream.ReadListUInt64LE()
 	if err != nil {
-		go protocol.GetDeletionReasonHandler(fmt.Errorf("Failed to read dataIdLst from parameters. %s", err.Error()), client, callID, nil)
+		go protocol.GetDeletionReasonHandler(fmt.Errorf("Failed to read dataIDLst from parameters. %s", err.Error()), client, callID, nil)
 		return
 	}
 
-	go protocol.GetDeletionReasonHandler(nil, client, callID, dataIdLst)
+	go protocol.GetDeletionReasonHandler(nil, client, callID, dataIDLst)
 }

@@ -132,10 +132,10 @@ const (
 	// MethodRateObjects is the method ID for the method RateObjects
 	MethodRateObjects = 0x28
 
-	// MethodPostMetaBinaryWithDataID is the method ID for the method PostMetaBinaryWithDataId
+	// MethodPostMetaBinaryWithDataID is the method ID for the method PostMetaBinaryWithDataID
 	MethodPostMetaBinaryWithDataID = 0x29
 
-	// MethodPostMetaBinariesWithDataID is the method ID for the method PostMetaBinariesWithDataId
+	// MethodPostMetaBinariesWithDataID is the method ID for the method PostMetaBinariesWithDataID
 	MethodPostMetaBinariesWithDataID = 0x2A
 
 	// MethodRateObjectWithPosting is the method ID for the method RateObjectWithPosting

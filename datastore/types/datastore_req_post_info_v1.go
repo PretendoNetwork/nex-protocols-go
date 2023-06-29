@@ -11,7 +11,7 @@ import (
 type DataStoreReqPostInfoV1 struct {
 	nex.Structure
 	DataID         uint32
-	Url            string
+	URL            string
 	RequestHeaders []*DataStoreKeyValue
 	FormFields     []*DataStoreKeyValue
 	RootCaCert     []byte
@@ -26,9 +26,9 @@ func (dataStoreReqPostInfoV1 *DataStoreReqPostInfoV1) ExtractFromStream(stream *
 		return fmt.Errorf("Failed to extract DataStoreReqPostInfoV1.DataID. %s", err.Error())
 	}
 
-	dataStoreReqPostInfoV1.Url, err = stream.ReadString()
+	dataStoreReqPostInfoV1.URL, err = stream.ReadString()
 	if err != nil {
-		return fmt.Errorf("Failed to extract DataStoreReqPostInfoV1.Url. %s", err.Error())
+		return fmt.Errorf("Failed to extract DataStoreReqPostInfoV1.URL. %s", err.Error())
 	}
 
 	requestHeaders, err := stream.ReadListStructure(NewDataStoreKeyValue())
@@ -56,7 +56,7 @@ func (dataStoreReqPostInfoV1 *DataStoreReqPostInfoV1) ExtractFromStream(stream *
 // Bytes encodes the DataStoreReqPostInfoV1 and returns a byte array
 func (dataStoreReqPostInfoV1 *DataStoreReqPostInfoV1) Bytes(stream *nex.StreamOut) []byte {
 	stream.WriteUInt32LE(dataStoreReqPostInfoV1.DataID)
-	stream.WriteString(dataStoreReqPostInfoV1.Url)
+	stream.WriteString(dataStoreReqPostInfoV1.URL)
 	stream.WriteListStructure(dataStoreReqPostInfoV1.RequestHeaders)
 	stream.WriteListStructure(dataStoreReqPostInfoV1.FormFields)
 	stream.WriteBuffer(dataStoreReqPostInfoV1.RootCaCert)
@@ -69,7 +69,7 @@ func (dataStoreReqPostInfoV1 *DataStoreReqPostInfoV1) Copy() nex.StructureInterf
 	copied := NewDataStoreReqPostInfoV1()
 
 	copied.DataID = dataStoreReqPostInfoV1.DataID
-	copied.Url = dataStoreReqPostInfoV1.Url
+	copied.URL = dataStoreReqPostInfoV1.URL
 	copied.RequestHeaders = make([]*DataStoreKeyValue, len(dataStoreReqPostInfoV1.RequestHeaders))
 
 	for i := 0; i < len(dataStoreReqPostInfoV1.RequestHeaders); i++ {
@@ -97,7 +97,7 @@ func (dataStoreReqPostInfoV1 *DataStoreReqPostInfoV1) Equals(structure nex.Struc
 		return false
 	}
 
-	if dataStoreReqPostInfoV1.Url != other.Url {
+	if dataStoreReqPostInfoV1.URL != other.URL {
 		return false
 	}
 
@@ -144,7 +144,7 @@ func (dataStoreReqPostInfoV1 *DataStoreReqPostInfoV1) FormatToString(indentation
 	b.WriteString("DataStoreReqPostInfoV1{\n")
 	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, dataStoreReqPostInfoV1.StructureVersion()))
 	b.WriteString(fmt.Sprintf("%sDataID: %d,\n", indentationValues, dataStoreReqPostInfoV1.DataID))
-	b.WriteString(fmt.Sprintf("%sUrl: %q,\n", indentationValues, dataStoreReqPostInfoV1.Url))
+	b.WriteString(fmt.Sprintf("%sURL: %q,\n", indentationValues, dataStoreReqPostInfoV1.URL))
 
 	if len(dataStoreReqPostInfoV1.RequestHeaders) == 0 {
 		b.WriteString(fmt.Sprintf("%sRequestHeaders: [],\n", indentationValues))

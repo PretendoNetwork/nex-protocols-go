@@ -47,7 +47,7 @@ const (
 	// MethodGetRankingByPIDList is the method ID for method GetRankingByPIDList
 	MethodGetRankingByPIDList = 0xC
 
-	// MethodGetRankingByUniqueIDList is the method ID for method GetRankingByUniqueIdList
+	// MethodGetRankingByUniqueIDList is the method ID for method GetRankingByUniqueIDList
 	MethodGetRankingByUniqueIDList = 0xD
 
 	// MethodGetCachedTopXRanking is the method ID for method GetCachedTopXRanking

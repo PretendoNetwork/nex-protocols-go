@@ -11,7 +11,7 @@ import (
 type DataStoreRateCustomRankingParam struct {
 	nex.Structure
 	DataID        uint64
-	ApplicationId uint32
+	ApplicationID uint32
 	Score         uint32
 	Period        uint16
 }
@@ -25,9 +25,9 @@ func (dataStoreRateCustomRankingParam *DataStoreRateCustomRankingParam) ExtractF
 		return fmt.Errorf("Failed to extract DataStoreRateCustomRankingParam.DataID. %s", err.Error())
 	}
 
-	dataStoreRateCustomRankingParam.ApplicationId, err = stream.ReadUInt32LE()
+	dataStoreRateCustomRankingParam.ApplicationID, err = stream.ReadUInt32LE()
 	if err != nil {
-		return fmt.Errorf("Failed to extract DataStoreRateCustomRankingParam.ApplicationId. %s", err.Error())
+		return fmt.Errorf("Failed to extract DataStoreRateCustomRankingParam.ApplicationID. %s", err.Error())
 	}
 
 	dataStoreRateCustomRankingParam.Score, err = stream.ReadUInt32LE()
@@ -48,7 +48,7 @@ func (dataStoreRateCustomRankingParam *DataStoreRateCustomRankingParam) Copy() n
 	copied := NewDataStoreRateCustomRankingParam()
 
 	copied.DataID = dataStoreRateCustomRankingParam.DataID
-	copied.ApplicationId = dataStoreRateCustomRankingParam.ApplicationId
+	copied.ApplicationID = dataStoreRateCustomRankingParam.ApplicationID
 	copied.Score = dataStoreRateCustomRankingParam.Score
 	copied.Period = dataStoreRateCustomRankingParam.Period
 
@@ -63,7 +63,7 @@ func (dataStoreRateCustomRankingParam *DataStoreRateCustomRankingParam) Equals(s
 		return false
 	}
 
-	if dataStoreRateCustomRankingParam.ApplicationId != other.ApplicationId {
+	if dataStoreRateCustomRankingParam.ApplicationID != other.ApplicationID {
 		return false
 	}
 
@@ -93,7 +93,7 @@ func (dataStoreRateCustomRankingParam *DataStoreRateCustomRankingParam) FormatTo
 	b.WriteString("DataStoreRateCustomRankingParam{\n")
 	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, dataStoreRateCustomRankingParam.StructureVersion()))
 	b.WriteString(fmt.Sprintf("%sDataID: %d,\n", indentationValues, dataStoreRateCustomRankingParam.DataID))
-	b.WriteString(fmt.Sprintf("%sApplicationId: %d,\n", indentationValues, dataStoreRateCustomRankingParam.ApplicationId))
+	b.WriteString(fmt.Sprintf("%sApplicationID: %d,\n", indentationValues, dataStoreRateCustomRankingParam.ApplicationID))
 	b.WriteString(fmt.Sprintf("%sScore: %d,\n", indentationValues, dataStoreRateCustomRankingParam.Score))
 	b.WriteString(fmt.Sprintf("%sPeriod: %d\n", indentationValues, dataStoreRateCustomRankingParam.Period))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))

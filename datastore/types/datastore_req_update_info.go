@@ -11,7 +11,7 @@ import (
 type DataStoreReqUpdateInfo struct {
 	nex.Structure
 	Version        uint32
-	Url            string
+	URL            string
 	RequestHeaders []*DataStoreKeyValue
 	FormFields     []*DataStoreKeyValue
 	RootCaCert     []byte
@@ -26,9 +26,9 @@ func (dataStoreReqUpdateInfo *DataStoreReqUpdateInfo) ExtractFromStream(stream *
 		return fmt.Errorf("Failed to extract DataStoreReqUpdateInfo.Version. %s", err.Error())
 	}
 
-	dataStoreReqUpdateInfo.Url, err = stream.ReadString()
+	dataStoreReqUpdateInfo.URL, err = stream.ReadString()
 	if err != nil {
-		return fmt.Errorf("Failed to extract DataStoreReqUpdateInfo.Url. %s", err.Error())
+		return fmt.Errorf("Failed to extract DataStoreReqUpdateInfo.URL. %s", err.Error())
 	}
 
 	requestHeaders, err := stream.ReadListStructure(NewDataStoreKeyValue())
@@ -56,7 +56,7 @@ func (dataStoreReqUpdateInfo *DataStoreReqUpdateInfo) ExtractFromStream(stream *
 // Bytes encodes the DataStoreReqUpdateInfo and returns a byte array
 func (dataStoreReqUpdateInfo *DataStoreReqUpdateInfo) Bytes(stream *nex.StreamOut) []byte {
 	stream.WriteUInt32LE(dataStoreReqUpdateInfo.Version)
-	stream.WriteString(dataStoreReqUpdateInfo.Url)
+	stream.WriteString(dataStoreReqUpdateInfo.URL)
 	stream.WriteListStructure(dataStoreReqUpdateInfo.RequestHeaders)
 	stream.WriteListStructure(dataStoreReqUpdateInfo.FormFields)
 	stream.WriteBuffer(dataStoreReqUpdateInfo.RootCaCert)
@@ -69,7 +69,7 @@ func (dataStoreReqUpdateInfo *DataStoreReqUpdateInfo) Copy() nex.StructureInterf
 	copied := NewDataStoreReqUpdateInfo()
 
 	copied.Version = dataStoreReqUpdateInfo.Version
-	copied.Url = dataStoreReqUpdateInfo.Url
+	copied.URL = dataStoreReqUpdateInfo.URL
 	copied.RequestHeaders = make([]*DataStoreKeyValue, len(dataStoreReqUpdateInfo.RequestHeaders))
 
 	for i := 0; i < len(dataStoreReqUpdateInfo.RequestHeaders); i++ {
@@ -97,7 +97,7 @@ func (dataStoreReqUpdateInfo *DataStoreReqUpdateInfo) Equals(structure nex.Struc
 		return false
 	}
 
-	if dataStoreReqUpdateInfo.Url != other.Url {
+	if dataStoreReqUpdateInfo.URL != other.URL {
 		return false
 	}
 
@@ -143,7 +143,7 @@ func (dataStoreReqUpdateInfo *DataStoreReqUpdateInfo) FormatToString(indentation
 
 	b.WriteString("DataStoreReqUpdateInfo{\n")
 	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, dataStoreReqUpdateInfo.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sUrl: %q,\n", indentationValues, dataStoreReqUpdateInfo.Url))
+	b.WriteString(fmt.Sprintf("%sURL: %q,\n", indentationValues, dataStoreReqUpdateInfo.URL))
 
 	if len(dataStoreReqUpdateInfo.RequestHeaders) == 0 {
 		b.WriteString(fmt.Sprintf("%sRequestHeaders: [],\n", indentationValues))

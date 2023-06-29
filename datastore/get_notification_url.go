@@ -8,7 +8,7 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// GetNotificationUrl sets the GetNotificationUrl handler function
+// GetNotificationURL sets the GetNotificationURL handler function
 func (protocol *DataStoreProtocol) GetNotificationURL(handler func(err error, client *nex.Client, callID uint32, param *datastore_types.DataStoreGetNotificationURLParam)) {
 	protocol.GetNotificationURLHandler = handler
 }

@@ -9,16 +9,16 @@ import (
 
 type DataStoreGetNotificationURLParam struct {
 	nex.Structure
-	PreviousUrl string
+	PreviousURL string
 }
 
 // ExtractFromStream extracts a DataStoreGetNotificationURLParam structure from a stream
 func (dataStoreGetNotificationURLParam *DataStoreGetNotificationURLParam) ExtractFromStream(stream *nex.StreamIn) error {
 	var err error
 
-	dataStoreGetNotificationURLParam.PreviousUrl, err = stream.ReadString()
+	dataStoreGetNotificationURLParam.PreviousURL, err = stream.ReadString()
 	if err != nil {
-		return fmt.Errorf("Failed to extract DataStoreGetNotificationURLParam.PreviousUrl. %s", err.Error())
+		return fmt.Errorf("Failed to extract DataStoreGetNotificationURLParam.PreviousURL. %s", err.Error())
 	}
 
 	return nil
@@ -26,7 +26,7 @@ func (dataStoreGetNotificationURLParam *DataStoreGetNotificationURLParam) Extrac
 
 // Bytes encodes the DataStoreGetNotificationURLParam and returns a byte array
 func (dataStoreGetNotificationURLParam *DataStoreGetNotificationURLParam) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteString(dataStoreGetNotificationURLParam.PreviousUrl)
+	stream.WriteString(dataStoreGetNotificationURLParam.PreviousURL)
 
 	return stream.Bytes()
 }
@@ -35,7 +35,7 @@ func (dataStoreGetNotificationURLParam *DataStoreGetNotificationURLParam) Bytes(
 func (dataStoreGetNotificationURLParam *DataStoreGetNotificationURLParam) Copy() nex.StructureInterface {
 	copied := NewDataStoreGetNotificationURLParam()
 
-	copied.PreviousUrl = dataStoreGetNotificationURLParam.PreviousUrl
+	copied.PreviousURL = dataStoreGetNotificationURLParam.PreviousURL
 
 	return copied
 }
@@ -44,7 +44,7 @@ func (dataStoreGetNotificationURLParam *DataStoreGetNotificationURLParam) Copy()
 func (dataStoreGetNotificationURLParam *DataStoreGetNotificationURLParam) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*DataStoreGetNotificationURLParam)
 
-	return dataStoreGetNotificationURLParam.PreviousUrl != other.PreviousUrl
+	return dataStoreGetNotificationURLParam.PreviousURL != other.PreviousURL
 }
 
 // String returns a string representation of the struct
@@ -61,7 +61,7 @@ func (dataStoreGetNotificationURLParam *DataStoreGetNotificationURLParam) Format
 
 	b.WriteString("DataStoreGetNotificationURLParam{\n")
 	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, dataStoreGetNotificationURLParam.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sPreviousUrl: %q\n", indentationValues, dataStoreGetNotificationURLParam.PreviousUrl))
+	b.WriteString(fmt.Sprintf("%sPreviousURL: %q\n", indentationValues, dataStoreGetNotificationURLParam.PreviousURL))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()

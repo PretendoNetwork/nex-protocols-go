@@ -10,7 +10,7 @@ import (
 // DataStorePersistenceInitParam is sent in the PreparePostObject method
 type DataStorePersistenceInitParam struct {
 	nex.Structure
-	PersistenceSlotId uint16
+	PersistenceSlotID uint16
 	DeleteLastObject  bool
 }
 
@@ -18,9 +18,9 @@ type DataStorePersistenceInitParam struct {
 func (dataStorePersistenceInitParam *DataStorePersistenceInitParam) ExtractFromStream(stream *nex.StreamIn) error {
 	var err error
 
-	dataStorePersistenceInitParam.PersistenceSlotId, err = stream.ReadUInt16LE()
+	dataStorePersistenceInitParam.PersistenceSlotID, err = stream.ReadUInt16LE()
 	if err != nil {
-		return fmt.Errorf("Failed to extract DataStorePersistenceInitParam.PersistenceSlotId. %s", err.Error())
+		return fmt.Errorf("Failed to extract DataStorePersistenceInitParam.PersistenceSlotID. %s", err.Error())
 	}
 
 	dataStorePersistenceInitParam.DeleteLastObject, err = stream.ReadBool()
@@ -35,7 +35,7 @@ func (dataStorePersistenceInitParam *DataStorePersistenceInitParam) ExtractFromS
 func (dataStorePersistenceInitParam *DataStorePersistenceInitParam) Copy() nex.StructureInterface {
 	copied := NewDataStorePersistenceInitParam()
 
-	copied.PersistenceSlotId = dataStorePersistenceInitParam.PersistenceSlotId
+	copied.PersistenceSlotID = dataStorePersistenceInitParam.PersistenceSlotID
 	copied.DeleteLastObject = dataStorePersistenceInitParam.DeleteLastObject
 
 	return copied
@@ -45,7 +45,7 @@ func (dataStorePersistenceInitParam *DataStorePersistenceInitParam) Copy() nex.S
 func (dataStorePersistenceInitParam *DataStorePersistenceInitParam) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*DataStorePersistenceInitParam)
 
-	if dataStorePersistenceInitParam.PersistenceSlotId != other.PersistenceSlotId {
+	if dataStorePersistenceInitParam.PersistenceSlotID != other.PersistenceSlotID {
 		return false
 	}
 
@@ -70,7 +70,7 @@ func (dataStorePersistenceInitParam *DataStorePersistenceInitParam) FormatToStri
 
 	b.WriteString("DataStorePersistenceInitParam{\n")
 	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, dataStorePersistenceInitParam.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sPersistenceSlotId: %d,\n", indentationValues, dataStorePersistenceInitParam.PersistenceSlotId))
+	b.WriteString(fmt.Sprintf("%sPersistenceSlotID: %d,\n", indentationValues, dataStorePersistenceInitParam.PersistenceSlotID))
 	b.WriteString(fmt.Sprintf("%sDeleteLastObject: %t\n", indentationValues, dataStorePersistenceInitParam.DeleteLastObject))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 

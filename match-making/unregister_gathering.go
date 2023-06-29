@@ -29,7 +29,7 @@ func (protocol *MatchMakingProtocol) HandleUnregisterGathering(packet nex.Packet
 
 	idGathering, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		go protocol.UnregisterGatheringHandler(fmt.Errorf("Failed to read gatheringId from parameters. %s", err.Error()), client, callID, 0)
+		go protocol.UnregisterGatheringHandler(fmt.Errorf("Failed to read gatheringID from parameters. %s", err.Error()), client, callID, 0)
 	}
 
 	go protocol.UnregisterGatheringHandler(nil, client, callID, idGathering)

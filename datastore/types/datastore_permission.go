@@ -11,7 +11,7 @@ import (
 type DataStorePermission struct {
 	nex.Structure
 	Permission   uint8
-	RecipientIds []uint32
+	RecipientIDs []uint32
 }
 
 // ExtractFromStream extracts a DataStorePermission structure from a stream
@@ -23,9 +23,9 @@ func (dataStorePermission *DataStorePermission) ExtractFromStream(stream *nex.St
 		return fmt.Errorf("Failed to extract DataStorePermission.Permission. %s", err.Error())
 	}
 
-	dataStorePermission.RecipientIds, err = stream.ReadListUInt32LE()
+	dataStorePermission.RecipientIDs, err = stream.ReadListUInt32LE()
 	if err != nil {
-		return fmt.Errorf("Failed to extract DataStorePermission.RecipientIds. %s", err.Error())
+		return fmt.Errorf("Failed to extract DataStorePermission.RecipientIDs. %s", err.Error())
 	}
 
 	return nil
@@ -34,7 +34,7 @@ func (dataStorePermission *DataStorePermission) ExtractFromStream(stream *nex.St
 // Bytes encodes the DataStorePermission and returns a byte array
 func (dataStorePermission *DataStorePermission) Bytes(stream *nex.StreamOut) []byte {
 	stream.WriteUInt8(dataStorePermission.Permission)
-	stream.WriteListUInt32LE(dataStorePermission.RecipientIds)
+	stream.WriteListUInt32LE(dataStorePermission.RecipientIDs)
 
 	return stream.Bytes()
 }
@@ -44,9 +44,9 @@ func (dataStorePermission *DataStorePermission) Copy() nex.StructureInterface {
 	copied := NewDataStorePermission()
 
 	copied.Permission = dataStorePermission.Permission
-	copied.RecipientIds = make([]uint32, len(dataStorePermission.RecipientIds))
+	copied.RecipientIDs = make([]uint32, len(dataStorePermission.RecipientIDs))
 
-	copy(copied.RecipientIds, dataStorePermission.RecipientIds)
+	copy(copied.RecipientIDs, dataStorePermission.RecipientIDs)
 
 	return copied
 }
@@ -59,12 +59,12 @@ func (dataStorePermission *DataStorePermission) Equals(structure nex.StructureIn
 		return false
 	}
 
-	if len(dataStorePermission.RecipientIds) != len(other.RecipientIds) {
+	if len(dataStorePermission.RecipientIDs) != len(other.RecipientIDs) {
 		return false
 	}
 
-	for i := 0; i < len(dataStorePermission.RecipientIds); i++ {
-		if dataStorePermission.RecipientIds[i] != other.RecipientIds[i] {
+	for i := 0; i < len(dataStorePermission.RecipientIDs); i++ {
+		if dataStorePermission.RecipientIDs[i] != other.RecipientIDs[i] {
 			return false
 		}
 	}
@@ -87,7 +87,7 @@ func (dataStorePermission *DataStorePermission) FormatToString(indentationLevel 
 	b.WriteString("DataStorePermission{\n")
 	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, dataStorePermission.StructureVersion()))
 	b.WriteString(fmt.Sprintf("%sPermission: %d,\n", indentationValues, dataStorePermission.Permission))
-	b.WriteString(fmt.Sprintf("%sRecipientIds: %v\n", indentationValues, dataStorePermission.RecipientIds))
+	b.WriteString(fmt.Sprintf("%sRecipientIDs: %v\n", indentationValues, dataStorePermission.RecipientIDs))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()

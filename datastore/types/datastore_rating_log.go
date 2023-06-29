@@ -10,7 +10,7 @@ import (
 type DataStoreRatingLog struct {
 	nex.Structure
 	IsRated            bool
-	Pid                uint32
+	PID                uint32
 	RatingValue        int32
 	LockExpirationTime *nex.DateTime
 }
@@ -24,9 +24,9 @@ func (dataStoreRatingLog *DataStoreRatingLog) ExtractFromStream(stream *nex.Stre
 		return fmt.Errorf("Failed to extract DataStoreRatingLog.IsRated. %s", err.Error())
 	}
 
-	dataStoreRatingLog.Pid, err = stream.ReadUInt32LE()
+	dataStoreRatingLog.PID, err = stream.ReadUInt32LE()
 	if err != nil {
-		return fmt.Errorf("Failed to extract DataStoreRatingLog.Pid. %s", err.Error())
+		return fmt.Errorf("Failed to extract DataStoreRatingLog.PID. %s", err.Error())
 	}
 
 	dataStoreRatingLog.RatingValue, err = stream.ReadInt32LE()
@@ -45,7 +45,7 @@ func (dataStoreRatingLog *DataStoreRatingLog) ExtractFromStream(stream *nex.Stre
 // Bytes encodes the DataStoreRatingLog and returns a byte array
 func (dataStoreRatingLog *DataStoreRatingLog) Bytes(stream *nex.StreamOut) []byte {
 	stream.WriteBool(dataStoreRatingLog.IsRated)
-	stream.WriteUInt32LE(dataStoreRatingLog.Pid)
+	stream.WriteUInt32LE(dataStoreRatingLog.PID)
 	stream.WriteInt32LE(dataStoreRatingLog.RatingValue)
 	stream.WriteDateTime(dataStoreRatingLog.LockExpirationTime)
 
@@ -57,7 +57,7 @@ func (dataStoreRatingLog *DataStoreRatingLog) Copy() nex.StructureInterface {
 	copied := NewDataStoreRatingLog()
 
 	copied.IsRated = dataStoreRatingLog.IsRated
-	copied.Pid = dataStoreRatingLog.Pid
+	copied.PID = dataStoreRatingLog.PID
 	copied.RatingValue = dataStoreRatingLog.RatingValue
 	copied.LockExpirationTime = dataStoreRatingLog.LockExpirationTime.Copy()
 
@@ -72,7 +72,7 @@ func (dataStoreRatingLog *DataStoreRatingLog) Equals(structure nex.StructureInte
 		return false
 	}
 
-	if dataStoreRatingLog.Pid != other.Pid {
+	if dataStoreRatingLog.PID != other.PID {
 		return false
 	}
 
@@ -102,7 +102,7 @@ func (dataStoreRatingLog *DataStoreRatingLog) FormatToString(indentationLevel in
 	b.WriteString("DataStoreRatingLog{\n")
 	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, dataStoreRatingLog.StructureVersion()))
 	b.WriteString(fmt.Sprintf("%sIsRated: %t,\n", indentationValues, dataStoreRatingLog.IsRated))
-	b.WriteString(fmt.Sprintf("%sPid: %d,\n", indentationValues, dataStoreRatingLog.Pid))
+	b.WriteString(fmt.Sprintf("%sPID: %d,\n", indentationValues, dataStoreRatingLog.PID))
 	b.WriteString(fmt.Sprintf("%sRatingValue: %d,\n", indentationValues, dataStoreRatingLog.RatingValue))
 
 	if dataStoreRatingLog.LockExpirationTime != nil {

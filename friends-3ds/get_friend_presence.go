@@ -27,11 +27,11 @@ func (protocol *Friends3DSProtocol) handleGetFriendPresence(packet nex.PacketInt
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	PidList, err := parametersStream.ReadListUInt32LE()
+	PIDList, err := parametersStream.ReadListUInt32LE()
 	if err != nil {
 		go protocol.GetFriendPresenceHandler(fmt.Errorf("Failed to read pid from parameters. %s", err.Error()), client, callID, nil)
 		return
 	}
 
-	go protocol.GetFriendPresenceHandler(nil, client, callID, PidList)
+	go protocol.GetFriendPresenceHandler(nil, client, callID, PIDList)
 }

@@ -10,7 +10,7 @@ import (
 
 type DataStoreProfileInfo struct {
 	nex.Structure
-	Pid     uint32
+	PID     uint32
 	Profile []byte
 }
 
@@ -18,9 +18,9 @@ type DataStoreProfileInfo struct {
 func (dataStoreProfileInfo *DataStoreProfileInfo) ExtractFromStream(stream *nex.StreamIn) error {
 	var err error
 
-	dataStoreProfileInfo.Pid, err = stream.ReadUInt32LE()
+	dataStoreProfileInfo.PID, err = stream.ReadUInt32LE()
 	if err != nil {
-		return fmt.Errorf("Failed to extract DataStoreProfileInfo.Pid. %s", err.Error())
+		return fmt.Errorf("Failed to extract DataStoreProfileInfo.PID. %s", err.Error())
 	}
 
 	dataStoreProfileInfo.Profile, err = stream.ReadQBuffer()
@@ -33,7 +33,7 @@ func (dataStoreProfileInfo *DataStoreProfileInfo) ExtractFromStream(stream *nex.
 
 // Bytes encodes the DataStoreProfileInfo and returns a byte array
 func (dataStoreProfileInfo *DataStoreProfileInfo) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt32LE(dataStoreProfileInfo.Pid)
+	stream.WriteUInt32LE(dataStoreProfileInfo.PID)
 	stream.WriteQBuffer(dataStoreProfileInfo.Profile)
 
 	return stream.Bytes()
@@ -43,7 +43,7 @@ func (dataStoreProfileInfo *DataStoreProfileInfo) Bytes(stream *nex.StreamOut) [
 func (dataStoreProfileInfo *DataStoreProfileInfo) Copy() nex.StructureInterface {
 	copied := NewDataStoreProfileInfo()
 
-	copied.Pid = dataStoreProfileInfo.Pid
+	copied.PID = dataStoreProfileInfo.PID
 	copied.Profile = make([]byte, len(dataStoreProfileInfo.Profile))
 
 	copy(copied.Profile, dataStoreProfileInfo.Profile)
@@ -55,7 +55,7 @@ func (dataStoreProfileInfo *DataStoreProfileInfo) Copy() nex.StructureInterface 
 func (dataStoreProfileInfo *DataStoreProfileInfo) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*DataStoreProfileInfo)
 
-	if dataStoreProfileInfo.Pid != other.Pid {
+	if dataStoreProfileInfo.PID != other.PID {
 		return false
 	}
 
@@ -80,7 +80,7 @@ func (dataStoreProfileInfo *DataStoreProfileInfo) FormatToString(indentationLeve
 
 	b.WriteString("DataStoreProfileInfo{\n")
 	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, dataStoreProfileInfo.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sPid: %d,\n", indentationValues, dataStoreProfileInfo.Pid))
+	b.WriteString(fmt.Sprintf("%sPID: %d,\n", indentationValues, dataStoreProfileInfo.PID))
 	b.WriteString(fmt.Sprintf("%sProfile: %x\n", indentationValues, dataStoreProfileInfo.Profile))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 

@@ -17,7 +17,7 @@ type MatchmakeSessionSearchCriteria struct {
 	MatchmakeSystemType string
 	VacantOnly          bool
 	ExcludeLocked       bool
-	ExcludeNonHostPid   bool
+	ExcludeNonHostPID   bool
 	SelectionMethod     uint32
 	VacantParticipants  uint16 // NEX v3.4.0+
 }
@@ -63,9 +63,9 @@ func (matchmakeSessionSearchCriteria *MatchmakeSessionSearchCriteria) ExtractFro
 		return fmt.Errorf("Failed to extract MatchmakeSessionSearchCriteria.ExcludeLocked. %s", err.Error())
 	}
 
-	matchmakeSessionSearchCriteria.ExcludeNonHostPid, err = stream.ReadBool()
+	matchmakeSessionSearchCriteria.ExcludeNonHostPID, err = stream.ReadBool()
 	if err != nil {
-		return fmt.Errorf("Failed to extract MatchmakeSessionSearchCriteria.ExcludeNonHostPid. %s", err.Error())
+		return fmt.Errorf("Failed to extract MatchmakeSessionSearchCriteria.ExcludeNonHostPID. %s", err.Error())
 	}
 
 	matchmakeSessionSearchCriteria.SelectionMethod, err = stream.ReadUInt32LE()
@@ -94,7 +94,7 @@ func (matchmakeSessionSearchCriteria *MatchmakeSessionSearchCriteria) Bytes(stre
 	stream.WriteString(matchmakeSessionSearchCriteria.MatchmakeSystemType)
 	stream.WriteBool(matchmakeSessionSearchCriteria.VacantOnly)
 	stream.WriteBool(matchmakeSessionSearchCriteria.ExcludeLocked)
-	stream.WriteBool(matchmakeSessionSearchCriteria.ExcludeNonHostPid)
+	stream.WriteBool(matchmakeSessionSearchCriteria.ExcludeNonHostPID)
 	stream.WriteUInt32LE(matchmakeSessionSearchCriteria.SelectionMethod)
 
 	if matchmakingVersion.Major >= 3 && matchmakingVersion.Minor >= 4 {
@@ -118,7 +118,7 @@ func (matchmakeSessionSearchCriteria *MatchmakeSessionSearchCriteria) Copy() nex
 	copied.MatchmakeSystemType = matchmakeSessionSearchCriteria.MatchmakeSystemType
 	copied.VacantOnly = matchmakeSessionSearchCriteria.VacantOnly
 	copied.ExcludeLocked = matchmakeSessionSearchCriteria.ExcludeLocked
-	copied.ExcludeNonHostPid = matchmakeSessionSearchCriteria.ExcludeNonHostPid
+	copied.ExcludeNonHostPID = matchmakeSessionSearchCriteria.ExcludeNonHostPID
 	copied.SelectionMethod = matchmakeSessionSearchCriteria.SelectionMethod
 	copied.VacantParticipants = matchmakeSessionSearchCriteria.VacantParticipants
 
@@ -163,7 +163,7 @@ func (matchmakeSessionSearchCriteria *MatchmakeSessionSearchCriteria) Equals(str
 		return false
 	}
 
-	if matchmakeSessionSearchCriteria.ExcludeNonHostPid != other.ExcludeNonHostPid {
+	if matchmakeSessionSearchCriteria.ExcludeNonHostPID != other.ExcludeNonHostPID {
 		return false
 	}
 
@@ -199,7 +199,7 @@ func (matchmakeSessionSearchCriteria *MatchmakeSessionSearchCriteria) FormatToSt
 	b.WriteString(fmt.Sprintf("%sMatchmakeSystemType: %q,\n", indentationValues, matchmakeSessionSearchCriteria.MatchmakeSystemType))
 	b.WriteString(fmt.Sprintf("%sVacantOnly: %t,\n", indentationValues, matchmakeSessionSearchCriteria.VacantOnly))
 	b.WriteString(fmt.Sprintf("%sExcludeLocked: %t,\n", indentationValues, matchmakeSessionSearchCriteria.ExcludeLocked))
-	b.WriteString(fmt.Sprintf("%sExcludeNonHostPid: %t,\n", indentationValues, matchmakeSessionSearchCriteria.ExcludeNonHostPid))
+	b.WriteString(fmt.Sprintf("%sExcludeNonHostPID: %t,\n", indentationValues, matchmakeSessionSearchCriteria.ExcludeNonHostPID))
 	b.WriteString(fmt.Sprintf("%sSelectionMethod: %d,\n", indentationValues, matchmakeSessionSearchCriteria.SelectionMethod))
 	b.WriteString(fmt.Sprintf("%sVacantParticipants: %d\n", indentationValues, matchmakeSessionSearchCriteria.VacantParticipants))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))

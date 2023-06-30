@@ -1,4 +1,4 @@
-// Package match_making implements the Match Making Ext NEX protocol
+// Package match_making_ext implements the Match Making Ext NEX protocol
 package match_making_ext
 
 import (

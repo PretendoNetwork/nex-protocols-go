@@ -1,3 +1,4 @@
+// Package authentication implements the Authentication NEX protocol
 package authentication
 
 import (

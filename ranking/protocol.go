@@ -1,3 +1,4 @@
+// Package ranking implements the Ranking NEX protocol
 package ranking
 
 import (

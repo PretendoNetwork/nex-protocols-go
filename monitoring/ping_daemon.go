@@ -1,3 +1,4 @@
+// Package monitoring implements the Monitoring NEX protocol
 package monitoring
 
 import (

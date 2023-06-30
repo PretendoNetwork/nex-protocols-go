@@ -1,3 +1,4 @@
+// Package shop_types implements all the types used by the Shop protocol
 package shop_types
 
 import (

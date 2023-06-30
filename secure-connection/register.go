@@ -1,3 +1,4 @@
+// Package secure_connection implements the Secure Connection NEX protocol
 package secure_connection
 
 import (

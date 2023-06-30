@@ -1,3 +1,4 @@
+// Package friends_wiiu_types implements all the types used by the Friends WiiU protocol
 package friends_wiiu_types
 
 import (

@@ -1,3 +1,4 @@
+// Package screening implements the Screening NEX protocol
 package screening
 
 import (

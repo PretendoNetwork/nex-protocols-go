@@ -1,3 +1,4 @@
+// Package utility_types implements all the types used by the Utility protocol
 package utility_types
 
 import (

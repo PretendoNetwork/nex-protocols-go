@@ -1,3 +1,4 @@
+// Package friends_wiiu implements the Friends WiiU NEX protocol
 package friends_wiiu
 
 import (

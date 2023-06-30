@@ -1,3 +1,4 @@
+// Package shop_nintendo_badge_arcade_types implements all the types used by the Shop Nintendo Badge Arcade protocol
 package shop_nintendo_badge_arcade_types
 
 import (

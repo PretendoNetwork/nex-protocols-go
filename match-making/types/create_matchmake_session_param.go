@@ -1,3 +1,7 @@
+// Package match_making_types implements all the types used by the Matchmaking protocols.
+//
+// Since there are multiple match making related protocols, and they all share types
+// all types used by all match making protocols is defined here
 package match_making_types
 
 import (

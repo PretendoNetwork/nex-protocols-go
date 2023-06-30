@@ -1,3 +1,4 @@
+// Package matchmake_extension implements the Matchmake Extension NEX protocol
 package matchmake_extension
 
 import (

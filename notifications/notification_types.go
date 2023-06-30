@@ -1,3 +1,4 @@
+// Package notifications implements the Notfications NEX protocol
 package notifications
 
 type notificationTypes struct {

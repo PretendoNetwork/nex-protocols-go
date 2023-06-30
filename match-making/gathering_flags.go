@@ -1,3 +1,4 @@
+// Package match_making implements the Match Making NEX protocol
 package match_making
 
 type gatheringFlags struct {

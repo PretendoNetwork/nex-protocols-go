@@ -1,3 +1,4 @@
+// Package message_delivery_types implements all the types used by the Message Delivery protocol
 package message_delivery_types
 
 import (

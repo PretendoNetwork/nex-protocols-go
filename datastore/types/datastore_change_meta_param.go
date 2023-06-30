@@ -1,3 +1,4 @@
+// Package datastore_types implements all the types used by the DataStore protocol
 package datastore_types
 
 import (

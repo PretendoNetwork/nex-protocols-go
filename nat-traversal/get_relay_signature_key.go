@@ -1,3 +1,4 @@
+// Package nat_traversal implements the NAT Traversal NEX protocol
 package nat_traversal
 
 import (

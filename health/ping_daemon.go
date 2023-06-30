@@ -1,3 +1,4 @@
+// Package health implements the Health NEX protocol
 package health
 
 import (

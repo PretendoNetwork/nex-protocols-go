@@ -1,3 +1,4 @@
+// Package datastore implements the DataStore NEX protocol
 package datastore
 
 import (

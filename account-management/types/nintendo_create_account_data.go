@@ -1,3 +1,4 @@
+// Package account_management_types implements all the types used by the Account Management protocol
 package account_management_types
 
 import (

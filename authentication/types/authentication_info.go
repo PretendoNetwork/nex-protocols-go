@@ -1,3 +1,4 @@
+// Package authentication_types implements all the types used by the Authentication protocol
 package authentication_types
 
 import (

@@ -1,3 +1,4 @@
+// Package message_delivery implements the Message Deliver NEX protocol
 package message_delivery
 
 import (

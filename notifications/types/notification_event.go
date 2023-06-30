@@ -1,3 +1,4 @@
+// Package notifications_types implements all the types used by the Notifications protocol
 package notifications_types
 
 import (

@@ -1,3 +1,4 @@
+// Package nintendo_notifications_types implements all the types used by the Nintendo Notifications protocol
 package nintendo_notifications_types
 
 import (

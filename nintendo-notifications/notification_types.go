@@ -1,3 +1,4 @@
+// Package nintendo_notifications implements the Nintendo Notfications NEX protocol
 package nintendo_notifications
 
 type notificationTypes struct {

@@ -1,3 +1,4 @@
+// Package friends_3ds implements the Friends 3DS NEX protocol
 package friends_3ds
 
 import (

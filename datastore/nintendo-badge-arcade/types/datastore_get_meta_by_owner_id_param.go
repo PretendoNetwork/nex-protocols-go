@@ -1,3 +1,4 @@
+// Package datastore_nintendo_badge_arcade_types implements all the types used by the DataStore Nintendo Badge Arcade protocol
 package datastore_nintendo_badge_arcade_types
 
 import (

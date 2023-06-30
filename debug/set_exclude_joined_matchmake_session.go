@@ -1,3 +1,4 @@
+// Package debug implements the Debug NEX protocol
 package debug
 
 import (

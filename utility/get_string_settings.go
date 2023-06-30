@@ -1,3 +1,4 @@
+// Package utility implements the Utility NEX protocol
 package utility
 
 import (

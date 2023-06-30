@@ -1,3 +1,4 @@
+// Package account_management implements the Account Management NEX protocol
 package account_management
 
 import (

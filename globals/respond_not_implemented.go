@@ -1,3 +1,4 @@
+// Package globals implements variables and functions used by all protocol packages
 package globals
 
 import "github.com/PretendoNetwork/nex-go"

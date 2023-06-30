@@ -1,3 +1,4 @@
+// Package shop implements the Shop NEX protocol
 package shop
 
 // * Stubbed, Kinnay documents this as being game-specific for Pokemon bank however Badge Arcade and Pokemon gen 7 uses this protocol as well

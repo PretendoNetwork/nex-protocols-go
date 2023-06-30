@@ -1,3 +1,4 @@
+// Package datastore_super_smash_bros_4_types implements all the types used by the DataStore Super Smash Bros. 4 protocol
 package datastore_super_smash_bros_4_types
 
 import (

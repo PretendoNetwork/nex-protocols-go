@@ -1,3 +1,4 @@
+// Package remote_log_device implements the Remote Log Device NEX protocol
 package remote_log_device
 
 import (

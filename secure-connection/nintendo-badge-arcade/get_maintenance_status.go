@@ -1,3 +1,4 @@
+// Package secure_connection_nintendo_badge_arcade implements the Nintendo Badge Arcade Secure Connection NEX protocol
 package secure_connection_nintendo_badge_arcade
 
 import (

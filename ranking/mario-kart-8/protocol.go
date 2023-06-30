@@ -1,3 +1,4 @@
+// Package ranking_mario_kart_8 implements the Mario Kart 8 Ranking NEX protocol
 package ranking_mario_kart_8
 
 import (

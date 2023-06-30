@@ -1,3 +1,4 @@
+// Package shop_nintendo_badge_arcade implements the Nintendo Badge Arcade Shop NEX protocol
 package shop_nintendo_badge_arcade
 
 import (

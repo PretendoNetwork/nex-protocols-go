@@ -1,3 +1,4 @@
+// Package datastore_super_mario_maker implements the Super Mario Maker DataStore NEX protocol
 package datastore_super_mario_maker
 
 import (

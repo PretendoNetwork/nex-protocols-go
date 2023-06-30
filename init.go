@@ -1,3 +1,7 @@
+// Package nexproto provides all the main NEX protocols.
+//
+// Each folder contains a different package for that specific protocol,
+// with all their types and methods needed to parse and build packets with RMC payloads
 package nexproto
 
 import (

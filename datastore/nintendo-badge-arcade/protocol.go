@@ -1,3 +1,4 @@
+// Package datastore_nintendo_badge_arcade implements the Nintendo Badge Arcade DataStore NEX protocol
 package datastore_nintendo_badge_arcade
 
 import (

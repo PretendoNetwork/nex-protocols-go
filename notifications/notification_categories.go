@@ -4,6 +4,8 @@ package notifications
 type notificationCategories struct {
 	Participation                uint32
 	OwnershipChanged             uint32
+	RequestJoinGathering         uint32 // * This is what these mean in WiiU Chat, unclear if this is the real use
+	EndGathering                 uint32 // * This is what these mean in WiiU Chat, unclear if this is the real use
 	GatheringUnregistered        uint32
 	HostChanged                  uint32
 	ServiceItemRequestCompleted  uint32
@@ -20,6 +22,8 @@ type notificationCategories struct {
 var NotificationCategories = notificationCategories{
 	Participation:                3,
 	OwnershipChanged:             4,
+	RequestJoinGathering:         101, // * This is what these mean in WiiU Chat, unclear if this is the real use
+	EndGathering:                 102, // * This is what these mean in WiiU Chat, unclear if this is the real use
 	GatheringUnregistered:        109,
 	HostChanged:                  110,
 	ServiceItemRequestCompleted:  115,

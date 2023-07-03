@@ -4,6 +4,8 @@ package notifications
 type notificationSubTypes struct {
 	Participation                notificationParticipationSubTypes
 	OwnershipChanged             notificationsOwnershipChangedSubTypes
+	RequestJoinGathering         notificationsRequestJoinGatheringSubTypes
+	EndGathering                 notificationsEndGatheringSubTypes
 	GatheringUnregistered        notificationsGatheringUnregisteredSubTypes
 	HostChanged                  notificationsHostChangedSubTypes
 	ServiceItemRequestCompleted  notificationsServiceItemRequestCompletedSubTypes
@@ -22,6 +24,14 @@ type notificationParticipationSubTypes struct {
 }
 
 type notificationsOwnershipChangedSubTypes struct {
+	None uint32
+}
+
+type notificationsRequestJoinGatheringSubTypes struct {
+	None uint32
+}
+
+type notificationsEndGatheringSubTypes struct {
 	None uint32
 }
 
@@ -65,6 +75,12 @@ var NotificationSubTypes = notificationSubTypes{
 		Ended:          8,
 	},
 	OwnershipChanged: notificationsOwnershipChangedSubTypes{
+		None: 0,
+	},
+	RequestJoinGathering: notificationsRequestJoinGatheringSubTypes{
+		None: 0,
+	},
+	EndGathering: notificationsEndGatheringSubTypes{
 		None: 0,
 	},
 	GatheringUnregistered: notificationsGatheringUnregisteredSubTypes{

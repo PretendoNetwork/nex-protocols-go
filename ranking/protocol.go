@@ -6,6 +6,7 @@ import (
 
 	nex "github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
+	ranking_types "github.com/PretendoNetwork/nex-protocols-go/ranking/types"
 )
 
 const (
@@ -61,6 +62,7 @@ const (
 // RankingProtocol handles the Ranking NEX protocol
 type RankingProtocol struct {
 	Server                  *nex.Server
+	UploadScoreHandler      func(err error, client *nex.Client, callID uint32, scoreData *ranking_types.RankingScoreData, uniqueID uint64)
 	UploadCommonDataHandler func(err error, client *nex.Client, callID uint32, commonData []byte, uniqueID uint64)
 }
 
@@ -71,6 +73,8 @@ func (protocol *RankingProtocol) Setup() {
 
 		if request.ProtocolID() == ProtocolID {
 			switch request.MethodID() {
+			case MethodUploadScore:
+				go protocol.handleUploadScore(packet)
 			case MethodUploadCommonData:
 				go protocol.handleUploadCommonData(packet)
 			default:

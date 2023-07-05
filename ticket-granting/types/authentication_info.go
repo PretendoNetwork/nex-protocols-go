@@ -1,5 +1,5 @@
-// Package authentication_types implements all the types used by the Authentication protocol
-package authentication_types
+// Package ticket_granting_types implements all the types used by the Ticket Granting protocol
+package ticket_granting_types
 
 import (
 	"fmt"

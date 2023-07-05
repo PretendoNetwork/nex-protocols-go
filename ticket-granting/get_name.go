@@ -1,5 +1,5 @@
-// Package authentication implements the Authentication NEX protocol
-package authentication
+// Package ticket_granting implements the Ticket Granting NEX protocol
+package ticket_granting
 
 import (
 	"fmt"
@@ -9,13 +9,13 @@ import (
 )
 
 // GetName sets the GetName handler function
-func (protocol *AuthenticationProtocol) GetName(handler func(err error, client *nex.Client, callID uint32, userPID uint32)) {
+func (protocol *TicketGrantingProtocol) GetName(handler func(err error, client *nex.Client, callID uint32, userPID uint32)) {
 	protocol.GetNameHandler = handler
 }
 
-func (protocol *AuthenticationProtocol) handleGetName(packet nex.PacketInterface) {
+func (protocol *TicketGrantingProtocol) handleGetName(packet nex.PacketInterface) {
 	if protocol.GetNameHandler == nil {
-		globals.Logger.Warning("Authentication::GetName not implemented")
+		globals.Logger.Warning("TicketGranting::GetName not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
 	}

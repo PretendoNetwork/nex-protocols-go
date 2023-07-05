@@ -1,5 +1,5 @@
-// Package authentication implements the Authentication NEX protocol
-package authentication
+// Package ticket_granting implements the Ticket Granting NEX protocol
+package ticket_granting
 
 import (
 	"fmt"
@@ -9,13 +9,13 @@ import (
 )
 
 // LoginEx sets the LoginEx handler function
-func (protocol *AuthenticationProtocol) LoginEx(handler func(err error, client *nex.Client, callID uint32, strUserName string, oExtraData *nex.DataHolder)) {
+func (protocol *TicketGrantingProtocol) LoginEx(handler func(err error, client *nex.Client, callID uint32, strUserName string, oExtraData *nex.DataHolder)) {
 	protocol.LoginExHandler = handler
 }
 
-func (protocol *AuthenticationProtocol) handleLoginEx(packet nex.PacketInterface) {
+func (protocol *TicketGrantingProtocol) handleLoginEx(packet nex.PacketInterface) {
 	if protocol.LoginExHandler == nil {
-		globals.Logger.Warning("Authentication::LoginEx not implemented")
+		globals.Logger.Warning("TicketGranting::LoginEx not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
 	}

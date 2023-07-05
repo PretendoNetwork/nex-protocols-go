@@ -1,5 +1,5 @@
-// Package authentication implements the Authentication NEX protocol
-package authentication
+// Package ticket_granting implements the Ticket Granting NEX protocol
+package ticket_granting
 
 import (
 	"fmt"
@@ -9,7 +9,7 @@ import (
 )
 
 const (
-	// ProtocolID is the protocol ID for the Authentication protocol
+	// ProtocolID is the protocol ID for the Ticket Granting protocol
 	ProtocolID = 0xA
 
 	// MethodLogin is the method ID for the method Login
@@ -31,8 +31,8 @@ const (
 	MethodLoginWithParam = 0x6
 )
 
-// AuthenticationProtocol handles the Authentication NEX protocol
-type AuthenticationProtocol struct {
+// TicketGrantingProtocol handles the Ticket Granting NEX protocol
+type TicketGrantingProtocol struct {
 	Server                *nex.Server
 	LoginHandler          func(err error, client *nex.Client, callID uint32, strUserName string)
 	LoginExHandler        func(err error, client *nex.Client, callID uint32, strUserName string, oExtraData *nex.DataHolder)
@@ -43,7 +43,7 @@ type AuthenticationProtocol struct {
 }
 
 // Setup initializes the protocol
-func (protocol *AuthenticationProtocol) Setup() {
+func (protocol *TicketGrantingProtocol) Setup() {
 	protocol.Server.On("Data", func(packet nex.PacketInterface) {
 		request := packet.RMCRequest()
 
@@ -54,7 +54,7 @@ func (protocol *AuthenticationProtocol) Setup() {
 }
 
 // HandlePacket sends the packet to the correct RMC method handler
-func (protocol *AuthenticationProtocol) HandlePacket(packet nex.PacketInterface) {
+func (protocol *TicketGrantingProtocol) HandlePacket(packet nex.PacketInterface) {
 	request := packet.RMCRequest()
 
 	switch request.MethodID() {
@@ -72,13 +72,13 @@ func (protocol *AuthenticationProtocol) HandlePacket(packet nex.PacketInterface)
 		go protocol.handleLoginWithParam(packet)
 	default:
 		go globals.RespondNotImplemented(packet, ProtocolID)
-		fmt.Printf("Unsupported Authentication method ID: %#v\n", request.MethodID())
+		fmt.Printf("Unsupported Ticket Granting method ID: %#v\n", request.MethodID())
 	}
 }
 
-// NewAuthenticationProtocol returns a new AuthenticationProtocol
-func NewAuthenticationProtocol(server *nex.Server) *AuthenticationProtocol {
-	protocol := &AuthenticationProtocol{Server: server}
+// NewTicketGrantingProtocol returns a new TicketGrantingProtocol
+func NewTicketGrantingProtocol(server *nex.Server) *TicketGrantingProtocol {
+	protocol := &TicketGrantingProtocol{Server: server}
 
 	protocol.Setup()
 

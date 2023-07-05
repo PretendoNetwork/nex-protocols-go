@@ -1,5 +1,5 @@
-// Package authentication implements the Authentication NEX protocol
-package authentication
+// Package ticket_granting implements the Ticket Granting NEX protocol
+package ticket_granting
 
 import (
 	nex "github.com/PretendoNetwork/nex-go"
@@ -7,13 +7,13 @@ import (
 )
 
 // LoginWithParam sets the LoginWithParam handler function
-func (protocol *AuthenticationProtocol) LoginWithParam(handler func(err error, client *nex.Client, callID uint32)) {
+func (protocol *TicketGrantingProtocol) LoginWithParam(handler func(err error, client *nex.Client, callID uint32)) {
 	protocol.LoginWithParamHandler = handler
 }
 
-func (protocol *AuthenticationProtocol) handleLoginWithParam(packet nex.PacketInterface) {
+func (protocol *TicketGrantingProtocol) handleLoginWithParam(packet nex.PacketInterface) {
 	if protocol.LoginWithParamHandler == nil {
-		globals.Logger.Warning("Authentication::LoginWithParam not implemented")
+		globals.Logger.Warning("TicketGranting::LoginWithParam not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
 	}

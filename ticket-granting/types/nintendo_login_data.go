@@ -1,5 +1,5 @@
-// Package authentication_types implements all the types used by the Authentication protocol
-package authentication_types
+// Package ticket_granting_types implements all the types used by the Ticket Granting protocol
+package ticket_granting_types
 
 import (
 	"fmt"
@@ -14,7 +14,7 @@ type NintendoLoginData struct {
 	Token string
 }
 
-// ExtractFromStream extracts a AuthenticationInfo structure from a stream
+// ExtractFromStream extracts a NintendoLoginData structure from a stream
 func (nintendoLoginData *NintendoLoginData) ExtractFromStream(stream *nex.StreamIn) error {
 	var err error
 

@@ -1,5 +1,5 @@
-// Package authentication implements the Authentication NEX protocol
-package authentication
+// Package ticket_granting implements the Ticket Granting NEX protocol
+package ticket_granting
 
 import (
 	"fmt"
@@ -9,13 +9,13 @@ import (
 )
 
 // RequestTicket sets the RequestTicket handler function
-func (protocol *AuthenticationProtocol) RequestTicket(handler func(err error, client *nex.Client, callID uint32, idSource uint32, idTarget uint32)) {
+func (protocol *TicketGrantingProtocol) RequestTicket(handler func(err error, client *nex.Client, callID uint32, idSource uint32, idTarget uint32)) {
 	protocol.RequestTicketHandler = handler
 }
 
-func (protocol *AuthenticationProtocol) handleRequestTicket(packet nex.PacketInterface) {
+func (protocol *TicketGrantingProtocol) handleRequestTicket(packet nex.PacketInterface) {
 	if protocol.RequestTicketHandler == nil {
-		globals.Logger.Warning("Authentication::RequestTicket not implemented")
+		globals.Logger.Warning("TicketGranting::RequestTicket not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
 	}

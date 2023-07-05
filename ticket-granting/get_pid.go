@@ -1,5 +1,5 @@
-// Package authentication implements the Authentication NEX protocol
-package authentication
+// Package ticket_granting implements the Ticket Granting NEX protocol
+package ticket_granting
 
 import (
 	"fmt"
@@ -9,13 +9,13 @@ import (
 )
 
 // GetPID sets the GetPID handler function
-func (protocol *AuthenticationProtocol) GetPID(handler func(err error, client *nex.Client, callID uint32, strUserName string)) {
+func (protocol *TicketGrantingProtocol) GetPID(handler func(err error, client *nex.Client, callID uint32, strUserName string)) {
 	protocol.GetPIDHandler = handler
 }
 
-func (protocol *AuthenticationProtocol) handleGetPID(packet nex.PacketInterface) {
+func (protocol *TicketGrantingProtocol) handleGetPID(packet nex.PacketInterface) {
 	if protocol.GetPIDHandler == nil {
-		globals.Logger.Warning("Authentication::GetPID not implemented")
+		globals.Logger.Warning("TicketGranting::GetPID not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
 	}

@@ -64,6 +64,7 @@ type RankingProtocol struct {
 	Server                  *nex.Server
 	UploadScoreHandler      func(err error, client *nex.Client, callID uint32, scoreData *ranking_types.RankingScoreData, uniqueID uint64)
 	UploadCommonDataHandler func(err error, client *nex.Client, callID uint32, commonData []byte, uniqueID uint64)
+	GetRankingHandler       func(err error, client *nex.Client, callID uint32, rankingMode uint8, category uint32, orderParam *ranking_types.RankingOrderParam, uniqueID uint64, principalID uint32)
 }
 
 // Setup initializes the protocol
@@ -77,6 +78,8 @@ func (protocol *RankingProtocol) Setup() {
 				go protocol.handleUploadScore(packet)
 			case MethodUploadCommonData:
 				go protocol.handleUploadCommonData(packet)
+			case MethodGetRanking:
+				go protocol.handleGetRanking(packet)
 			default:
 				go globals.RespondNotImplemented(packet, ProtocolID)
 				fmt.Printf("Unsupported Ranking method ID: %#v\n", request.MethodID())

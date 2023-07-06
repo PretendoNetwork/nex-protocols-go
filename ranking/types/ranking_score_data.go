@@ -2,6 +2,7 @@
 package ranking_types
 
 import (
+	"bytes"
 	"fmt"
 	"strings"
 
@@ -15,7 +16,7 @@ type RankingScoreData struct {
 	Score      uint32
 	OrderBy    uint8
 	UpdateMode uint8
-	Groups     []uint8
+	Groups     []byte
 	Param      uint64
 }
 
@@ -43,7 +44,7 @@ func (rankingScoreData *RankingScoreData) ExtractFromStream(stream *nex.StreamIn
 		return fmt.Errorf("Failed to extract RankingScoreData.UpdateMode from stream. %s", err.Error())
 	}
 
-	rankingScoreData.Groups, err = stream.ReadListUInt8()
+	rankingScoreData.Groups, err = stream.ReadBuffer()
 	if err != nil {
 		return fmt.Errorf("Failed to extract RankingScoreData.Groups from stream. %s", err.Error())
 	}
@@ -62,7 +63,7 @@ func (rankingScoreData *RankingScoreData) Bytes(stream *nex.StreamOut) []byte {
 	stream.WriteUInt32LE(rankingScoreData.Score)
 	stream.WriteUInt8(rankingScoreData.OrderBy)
 	stream.WriteUInt8(rankingScoreData.UpdateMode)
-	stream.WriteListUInt8(rankingScoreData.Groups)
+	stream.WriteBuffer(rankingScoreData.Groups)
 	stream.WriteUInt64LE(rankingScoreData.Param)
 
 	return stream.Bytes()
@@ -76,7 +77,7 @@ func (rankingScoreData *RankingScoreData) Copy() nex.StructureInterface {
 	copied.Score = rankingScoreData.Score
 	copied.OrderBy = rankingScoreData.OrderBy
 	copied.UpdateMode = rankingScoreData.UpdateMode
-	copied.Groups = make([]uint8, len(rankingScoreData.Groups))
+	copied.Groups = make([]byte, len(rankingScoreData.Groups))
 
 	copy(copied.Groups, rankingScoreData.Groups)
 
@@ -105,14 +106,8 @@ func (rankingScoreData *RankingScoreData) Equals(structure nex.StructureInterfac
 		return false
 	}
 
-	if len(rankingScoreData.Groups) != len(other.Groups) {
+	if !bytes.Equal(rankingScoreData.Groups, other.Groups) {
 		return false
-	}
-
-	for i := 0; i < len(rankingScoreData.Groups); i++ {
-		if rankingScoreData.Groups[i] != other.Groups[i] {
-			return false
-		}
 	}
 
 	return rankingScoreData.Param != other.Param
@@ -136,7 +131,7 @@ func (rankingScoreData *RankingScoreData) FormatToString(indentationLevel int) s
 	b.WriteString(fmt.Sprintf("%sScore: %d,\n", indentationValues, rankingScoreData.Score))
 	b.WriteString(fmt.Sprintf("%sOrderBy: %d,\n", indentationValues, rankingScoreData.OrderBy))
 	b.WriteString(fmt.Sprintf("%sUpdateMode: %d,\n", indentationValues, rankingScoreData.UpdateMode))
-	b.WriteString(fmt.Sprintf("%sGroups: %v,\n", indentationValues, rankingScoreData.Groups))
+	b.WriteString(fmt.Sprintf("%sGroups: %x,\n", indentationValues, rankingScoreData.Groups))
 	b.WriteString(fmt.Sprintf("%sParam: %d\n", indentationValues, rankingScoreData.Param))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 

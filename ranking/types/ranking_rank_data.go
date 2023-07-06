@@ -17,7 +17,7 @@ type RankingRankData struct {
 	Order       uint32
 	Category    uint32
 	Score       uint32
-	Groups      []uint8
+	Groups      []byte
 	Param       uint64
 	CommonData  []byte
 	UpdateTime  *nex.DateTime // * NEX 4.0.0+
@@ -54,7 +54,7 @@ func (rankingRankData *RankingRankData) ExtractFromStream(stream *nex.StreamIn) 
 		return fmt.Errorf("Failed to extract RankingRankData.Score from stream. %s", err.Error())
 	}
 
-	rankingRankData.Groups, err = stream.ReadListUInt8()
+	rankingRankData.Groups, err = stream.ReadBuffer()
 	if err != nil {
 		return fmt.Errorf("Failed to extract RankingRankData.Groups from stream. %s", err.Error())
 	}
@@ -88,7 +88,7 @@ func (rankingRankData *RankingRankData) Bytes(stream *nex.StreamOut) []byte {
 	stream.WriteUInt32LE(rankingRankData.Order)
 	stream.WriteUInt32LE(rankingRankData.Category)
 	stream.WriteUInt32LE(rankingRankData.Score)
-	stream.WriteListUInt8(rankingRankData.Groups)
+	stream.WriteBuffer(rankingRankData.Groups)
 	stream.WriteUInt64LE(rankingRankData.Param)
 	stream.WriteBuffer(rankingRankData.CommonData)
 
@@ -108,7 +108,7 @@ func (rankingRankData *RankingRankData) Copy() nex.StructureInterface {
 	copied.Order = rankingRankData.Order
 	copied.Category = rankingRankData.Category
 	copied.Score = rankingRankData.Score
-	copied.Groups = make([]uint8, len(rankingRankData.Groups))
+	copied.Groups = make([]byte, len(rankingRankData.Groups))
 
 	copy(copied.Groups, rankingRankData.Groups)
 
@@ -196,7 +196,7 @@ func (rankingRankData *RankingRankData) FormatToString(indentationLevel int) str
 	b.WriteString(fmt.Sprintf("%sOrder: %d,\n", indentationValues, rankingRankData.Order))
 	b.WriteString(fmt.Sprintf("%sCategory: %d,\n", indentationValues, rankingRankData.Category))
 	b.WriteString(fmt.Sprintf("%sScore: %d,\n", indentationValues, rankingRankData.Score))
-	b.WriteString(fmt.Sprintf("%sGroups: %v,\n", indentationValues, rankingRankData.Groups))
+	b.WriteString(fmt.Sprintf("%sGroups: %x,\n", indentationValues, rankingRankData.Groups))
 	b.WriteString(fmt.Sprintf("%sParam: %d,\n", indentationValues, rankingRankData.Param))
 	b.WriteString(fmt.Sprintf("%sCommonData: %x,\n", indentationValues, rankingRankData.CommonData))
 

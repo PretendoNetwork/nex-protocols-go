@@ -113,7 +113,7 @@ func (rankingRankData *RankingRankData) Copy() nex.StructureInterface {
 	copy(copied.Groups, rankingRankData.Groups)
 
 	copied.Param = rankingRankData.Param
-	copied.CommonData = make([]uint8, len(rankingRankData.CommonData))
+	copied.CommonData = make([]byte, len(rankingRankData.CommonData))
 
 	copy(copied.CommonData, rankingRankData.CommonData)
 

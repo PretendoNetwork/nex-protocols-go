@@ -12,6 +12,9 @@ const (
 	// ProtocolID is the protocol ID for the Message Delivery protocol
 	ProtocolID = 0x3
 
+	// MethodRequestProbeInitiation is the method ID for the method RequestProbeInitiation
+	MethodRequestProbeInitiation = 0x1
+
 	// MethodInitiateProbe is the method ID for the method InitiateProbe
 	MethodInitiateProbe = 0x2
 
@@ -34,6 +37,7 @@ const (
 // NATTraversalProtocol handles the NAT Traversal NEX protocol
 type NATTraversalProtocol struct {
 	Server                                *nex.Server
+	RequestProbeInitiationHandler         func(err error, client *nex.Client, callID uint32, urlTargetList []*nex.StationURL)
 	InitiateProbeHandler                  func(err error, client *nex.Client, callID uint32, urlStationToProbe *nex.StationURL)
 	RequestProbeInitiationExtHandler      func(err error, client *nex.Client, callID uint32, targetList []string, stationToProbe string)
 	ReportNATTraversalResultHandler       func(err error, client *nex.Client, callID uint32, cid uint32, result bool, rtt uint32)
@@ -49,6 +53,8 @@ func (protocol *NATTraversalProtocol) Setup() {
 
 		if request.ProtocolID() == ProtocolID {
 			switch request.MethodID() {
+			case MethodRequestProbeInitiation:
+				go protocol.handleRequestProbeInitiation(packet)
 			case MethodInitiateProbe:
 				go protocol.handleInitiateProbe(packet)
 			case MethodRequestProbeInitiationExt:

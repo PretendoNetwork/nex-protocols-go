@@ -20,8 +20,7 @@ func (protocol *NATTraversalProtocol) handleReportNATTraversalResult(packet nex.
 		return
 	}
 
-	// TODO - The NEX server should add a NATTraversalProtocolVersion method
-	matchmakingVersion := protocol.Server.MatchMakingProtocolVersion()
+	natTraversalVersion := protocol.Server.NATTraversalProtocolVersion()
 
 	client := packet.Sender()
 	request := packet.RMCRequest()
@@ -46,7 +45,7 @@ func (protocol *NATTraversalProtocol) handleReportNATTraversalResult(packet nex.
 	var rtt uint32 = 0
 
 	// TODO - Is this the right version?
-	if matchmakingVersion.Major >= 3 && matchmakingVersion.Minor >= 0 {
+	if natTraversalVersion.Major >= 3 && natTraversalVersion.Minor >= 0 {
 		rtt, err = parametersStream.ReadUInt32LE()
 		if err != nil {
 			go protocol.ReportNATTraversalResultHandler(fmt.Errorf("Failed to read rtt from parameters. %s", err.Error()), client, callID, 0, false, 0)

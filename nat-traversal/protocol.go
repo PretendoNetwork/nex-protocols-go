@@ -34,7 +34,7 @@ const (
 // NATTraversalProtocol handles the NAT Traversal NEX protocol
 type NATTraversalProtocol struct {
 	Server                                *nex.Server
-	InitiateProbeHandler                  func(err error, client *nex.Client, callID uint32)
+	InitiateProbeHandler                  func(err error, client *nex.Client, callID uint32, urlStationToProbe *nex.StationURL)
 	RequestProbeInitiationExtHandler      func(err error, client *nex.Client, callID uint32, targetList []string, stationToProbe string)
 	ReportNATTraversalResultHandler       func(err error, client *nex.Client, callID uint32, cid uint32, result bool, rtt uint32)
 	ReportNATPropertiesHandler            func(err error, client *nex.Client, callID uint32, natmapping uint32, natfiltering uint32, rtt uint32)
@@ -49,6 +49,8 @@ func (protocol *NATTraversalProtocol) Setup() {
 
 		if request.ProtocolID() == ProtocolID {
 			switch request.MethodID() {
+			case MethodInitiateProbe:
+				go protocol.handleInitiateProbe(packet)
 			case MethodRequestProbeInitiationExt:
 				go protocol.handleRequestProbeInitiationExt(packet)
 			case MethodReportNATTraversalResult:

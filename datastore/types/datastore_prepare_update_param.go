@@ -13,7 +13,7 @@ type DataStorePrepareUpdateParam struct {
 	nex.Structure
 	DataID         uint64
 	Size           uint32
-	UpdatePassword uint64
+	UpdatePassword uint64   // NEX 3.0.0+
 	ExtraData      []string // NEX 3.5.0+
 }
 
@@ -23,9 +23,20 @@ func (dataStorePrepareUpdateParam *DataStorePrepareUpdateParam) ExtractFromStrea
 
 	var err error
 
-	dataStorePrepareUpdateParam.DataID, err = stream.ReadUInt64LE()
-	if err != nil {
-		return fmt.Errorf("Failed to extract DataStorePrepareUpdateParam.DataID. %s", err.Error())
+	if datastoreVersion.Major >= 3 {
+		dataID, err := stream.ReadUInt64LE()
+		if err != nil {
+			return fmt.Errorf("Failed to extract DataStorePrepareUpdateParam.DataID. %s", err.Error())
+		}
+
+		dataStorePrepareUpdateParam.DataID = dataID
+	} else {
+		dataID, err := stream.ReadUInt32LE()
+		if err != nil {
+			return fmt.Errorf("Failed to extract DataStorePrepareUpdateParam.DataID. %s", err.Error())
+		}
+
+		dataStorePrepareUpdateParam.DataID = uint64(dataID)
 	}
 
 	dataStorePrepareUpdateParam.Size, err = stream.ReadUInt32LE()
@@ -52,9 +63,17 @@ func (dataStorePrepareUpdateParam *DataStorePrepareUpdateParam) ExtractFromStrea
 func (dataStorePrepareUpdateParam *DataStorePrepareUpdateParam) Bytes(stream *nex.StreamOut) []byte {
 	datastoreVersion := stream.Server.DataStoreProtocolVersion()
 
-	stream.WriteUInt64LE(dataStorePrepareUpdateParam.DataID)
+	if datastoreVersion.Major >= 3 {
+		stream.WriteUInt64LE(dataStorePrepareUpdateParam.DataID)
+	} else {
+		stream.WriteUInt32LE(uint32(dataStorePrepareUpdateParam.DataID))
+	}
+
 	stream.WriteUInt32LE(dataStorePrepareUpdateParam.Size)
-	stream.WriteUInt64LE(dataStorePrepareUpdateParam.UpdatePassword)
+
+	if datastoreVersion.Major >= 3 {
+		stream.WriteUInt64LE(dataStorePrepareUpdateParam.UpdatePassword)
+	}
 
 	if datastoreVersion.Major >= 3 && datastoreVersion.Minor >= 5 {
 		stream.WriteListString(dataStorePrepareUpdateParam.ExtraData)

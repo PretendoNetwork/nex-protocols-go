@@ -15,7 +15,7 @@ func (protocol *DataStoreProtocol) GetSpecificMetaV1(handler func(err error, cli
 }
 
 func (protocol *DataStoreProtocol) handleGetSpecificMetaV1(packet nex.PacketInterface) {
-	if protocol.PrepareGetObjectV1Handler == nil {
+	if protocol.GetSpecificMetaV1Handler == nil {
 		globals.Logger.Warning("DataStore::GetSpecificMetaV1 not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -31,7 +31,7 @@ func (protocol *DataStoreProtocol) handleGetSpecificMetaV1(packet nex.PacketInte
 
 	param, err := parametersStream.ReadStructure(datastore_types.NewDataStoreGetSpecificMetaParamV1())
 	if err != nil {
-		go protocol.GetSpecificMetaV1Handler(fmt.Errorf("Failed to read dataStoreGetSpecificMetaParamV1 from parameters. %s", err.Error()), client, callID, nil)
+		go protocol.GetSpecificMetaV1Handler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
 		return
 	}
 

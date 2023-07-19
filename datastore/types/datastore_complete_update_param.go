@@ -18,16 +18,40 @@ type DataStoreCompleteUpdateParam struct {
 
 // ExtractFromStream extracts a DataStoreCompleteUpdateParam structure from a stream
 func (dataStoreCompleteUpdateParam *DataStoreCompleteUpdateParam) ExtractFromStream(stream *nex.StreamIn) error {
+	datastoreVersion := stream.Server.DataStoreProtocolVersion()
+
 	var err error
 
-	dataStoreCompleteUpdateParam.DataID, err = stream.ReadUInt64LE()
-	if err != nil {
-		return fmt.Errorf("Failed to extract DataStoreCompleteUpdateParam.DataID. %s", err.Error())
+	if datastoreVersion.Major >= 3 {
+		dataID, err := stream.ReadUInt64LE()
+		if err != nil {
+			return fmt.Errorf("Failed to extract DataStoreCompleteUpdateParam.DataID. %s", err.Error())
+		}
+
+		dataStoreCompleteUpdateParam.DataID = dataID
+	} else {
+		dataID, err := stream.ReadUInt32LE()
+		if err != nil {
+			return fmt.Errorf("Failed to extract DataStoreCompleteUpdateParam.DataID. %s", err.Error())
+		}
+
+		dataStoreCompleteUpdateParam.DataID = uint64(dataID)
 	}
 
-	dataStoreCompleteUpdateParam.Version, err = stream.ReadUInt32LE()
-	if err != nil {
-		return fmt.Errorf("Failed to extract DataStoreCompleteUpdateParam.Version. %s", err.Error())
+	if datastoreVersion.Major >= 3 {
+		version, err := stream.ReadUInt32LE()
+		if err != nil {
+			return fmt.Errorf("Failed to extract DataStoreReqUpdateInfo.Version. %s", err.Error())
+		}
+
+		dataStoreCompleteUpdateParam.Version = version
+	} else {
+		version, err := stream.ReadUInt16LE()
+		if err != nil {
+			return fmt.Errorf("Failed to extract DataStoreReqUpdateInfo.Version. %s", err.Error())
+		}
+
+		dataStoreCompleteUpdateParam.Version = uint32(version)
 	}
 
 	dataStoreCompleteUpdateParam.IsSuccess, err = stream.ReadBool()
@@ -40,8 +64,20 @@ func (dataStoreCompleteUpdateParam *DataStoreCompleteUpdateParam) ExtractFromStr
 
 // Bytes encodes the DataStoreCompleteUpdateParam and returns a byte array
 func (dataStoreCompleteUpdateParam *DataStoreCompleteUpdateParam) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt64LE(dataStoreCompleteUpdateParam.DataID)
-	stream.WriteUInt32LE(dataStoreCompleteUpdateParam.Version)
+	datastoreVersion := stream.Server.DataStoreProtocolVersion()
+
+	if datastoreVersion.Major >= 3 {
+		stream.WriteUInt64LE(dataStoreCompleteUpdateParam.DataID)
+	} else {
+		stream.WriteUInt32LE(uint32(dataStoreCompleteUpdateParam.DataID))
+	}
+
+	if datastoreVersion.Major >= 3 {
+		stream.WriteUInt32LE(dataStoreCompleteUpdateParam.Version)
+	} else {
+		stream.WriteUInt16LE(uint16(dataStoreCompleteUpdateParam.Version))
+	}
+
 	stream.WriteBool(dataStoreCompleteUpdateParam.IsSuccess)
 
 	return stream.Bytes()

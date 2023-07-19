@@ -21,12 +21,26 @@ type DataStoreReqUpdateInfo struct {
 
 // ExtractFromStream extracts a DataStoreReqUpdateInfo structure from a stream
 func (dataStoreReqUpdateInfo *DataStoreReqUpdateInfo) ExtractFromStream(stream *nex.StreamIn) error {
+	datastoreVersion := stream.Server.DataStoreProtocolVersion()
+
 	var err error
 
-	dataStoreReqUpdateInfo.Version, err = stream.ReadUInt32LE()
-	if err != nil {
-		return fmt.Errorf("Failed to extract DataStoreReqUpdateInfo.Version. %s", err.Error())
+	if datastoreVersion.Major >= 3 {
+		version, err := stream.ReadUInt32LE()
+		if err != nil {
+			return fmt.Errorf("Failed to extract DataStoreReqUpdateInfo.Version. %s", err.Error())
+		}
+
+		dataStoreReqUpdateInfo.Version = version
+	} else {
+		version, err := stream.ReadUInt16LE()
+		if err != nil {
+			return fmt.Errorf("Failed to extract DataStoreReqUpdateInfo.Version. %s", err.Error())
+		}
+
+		dataStoreReqUpdateInfo.Version = uint32(version)
 	}
+
 
 	dataStoreReqUpdateInfo.URL, err = stream.ReadString()
 	if err != nil {
@@ -57,7 +71,14 @@ func (dataStoreReqUpdateInfo *DataStoreReqUpdateInfo) ExtractFromStream(stream *
 
 // Bytes encodes the DataStoreReqUpdateInfo and returns a byte array
 func (dataStoreReqUpdateInfo *DataStoreReqUpdateInfo) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt32LE(dataStoreReqUpdateInfo.Version)
+	datastoreVersion := stream.Server.DataStoreProtocolVersion()
+
+	if datastoreVersion.Major >= 3 {
+		stream.WriteUInt32LE(dataStoreReqUpdateInfo.Version)
+	} else {
+		stream.WriteUInt16LE(uint16(dataStoreReqUpdateInfo.Version))
+	}
+
 	stream.WriteString(dataStoreReqUpdateInfo.URL)
 	stream.WriteListStructure(dataStoreReqUpdateInfo.RequestHeaders)
 	stream.WriteListStructure(dataStoreReqUpdateInfo.FormFields)

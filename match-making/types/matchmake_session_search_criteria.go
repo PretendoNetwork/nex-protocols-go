@@ -22,7 +22,7 @@ type MatchmakeSessionSearchCriteria struct {
 	VacantOnly          bool
 	ExcludeLocked       bool
 	ExcludeNonHostPID   bool
-	SelectionMethod     uint32
+	SelectionMethod     uint32 // NEX v3.0.0+
 	VacantParticipants  uint16 // NEX v3.4.0+
 }
 
@@ -72,10 +72,13 @@ func (matchmakeSessionSearchCriteria *MatchmakeSessionSearchCriteria) ExtractFro
 		return fmt.Errorf("Failed to extract MatchmakeSessionSearchCriteria.ExcludeNonHostPID. %s", err.Error())
 	}
 
-	matchmakeSessionSearchCriteria.SelectionMethod, err = stream.ReadUInt32LE()
-	if err != nil {
-		return fmt.Errorf("Failed to extract MatchmakeSessionSearchCriteria.SelectionMethod. %s", err.Error())
+	if matchmakingVersion.Major >= 3 {
+		matchmakeSessionSearchCriteria.SelectionMethod, err = stream.ReadUInt32LE()
+		if err != nil {
+			return fmt.Errorf("Failed to extract MatchmakeSessionSearchCriteria.SelectionMethod. %s", err.Error())
+		}
 	}
+
 
 	if matchmakingVersion.Major >= 3 && matchmakingVersion.Minor >= 4 {
 		matchmakeSessionSearchCriteria.VacantParticipants, err = stream.ReadUInt16LE()
@@ -99,7 +102,10 @@ func (matchmakeSessionSearchCriteria *MatchmakeSessionSearchCriteria) Bytes(stre
 	stream.WriteBool(matchmakeSessionSearchCriteria.VacantOnly)
 	stream.WriteBool(matchmakeSessionSearchCriteria.ExcludeLocked)
 	stream.WriteBool(matchmakeSessionSearchCriteria.ExcludeNonHostPID)
-	stream.WriteUInt32LE(matchmakeSessionSearchCriteria.SelectionMethod)
+
+	if matchmakingVersion.Major >= 3 {
+		stream.WriteUInt32LE(matchmakeSessionSearchCriteria.SelectionMethod)
+	}
 
 	if matchmakingVersion.Major >= 3 && matchmakingVersion.Minor >= 4 {
 		stream.WriteUInt16LE(matchmakeSessionSearchCriteria.VacantParticipants)

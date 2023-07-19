@@ -167,11 +167,13 @@ type DataStoreProtocol struct {
 	CompleteUpdateObjectHandler         func(err error, client *nex.Client, callID uint32, dataStoreCompleteUpdateParam *datastore_types.DataStoreCompleteUpdateParam)
 	SearchObjectHandler                 func(err error, client *nex.Client, callID uint32, param *datastore_types.DataStoreSearchParam)
 	RateObjectHandler                   func(err error, client *nex.Client, callID uint32, target *datastore_types.DataStoreRatingTarget, param *datastore_types.DataStoreRateObjectParam, fetchRatings bool)
+	GetSpecificMetaV1Handler            func(err error, client *nex.Client, callID uint32, param *datastore_types.DataStoreGetSpecificMetaParamV1)
 	PostMetaBinaryHandler               func(err error, client *nex.Client, callID uint32, dataStorePreparePostParam *datastore_types.DataStorePreparePostParam)
 	PreparePostObjectHandler            func(err error, client *nex.Client, callID uint32, dataStorePrepareGetParam *datastore_types.DataStorePreparePostParam)
 	PrepareGetObjectHandler             func(err error, client *nex.Client, callID uint32, dataStorePrepareGetParam *datastore_types.DataStorePrepareGetParam)
 	CompletePostObjectHandler           func(err error, client *nex.Client, callID uint32, dataStoreCompletePostParam *datastore_types.DataStoreCompletePostParam)
 	GetNewArrivedNotificationsHandler   func(err error, client *nex.Client, callID uint32, param *datastore_types.DataStoreGetNewArrivedNotificationsParam)
+	GetSpecificMetaHandler              func(err error, client *nex.Client, callID uint32, param *datastore_types.DataStoreGetSpecificMetaParam)
 	GetPersistenceInfoHandler           func(err error, client *nex.Client, callID uint32, ownerID uint32, persistenceSlotID uint16)
 	GetMetasMultipleParamHandler        func(err error, client *nex.Client, callID uint32, dataStoreGetMetaParams []*datastore_types.DataStoreGetMetaParam)
 	CompletePostObjectsHandler          func(err error, client *nex.Client, callID uint32, dataIDs []uint64)
@@ -220,6 +222,8 @@ func (protocol *DataStoreProtocol) HandlePacket(packet nex.PacketInterface) {
 		go protocol.handleGetNewArrivedNotificationsV1(packet)
 	case MethodRateObject:
 		go protocol.handleRateObject(packet)
+	case MethodGetSpecificMetaV1:
+		go protocol.handleGetSpecificMetaV1(packet)
 	case MethodPostMetaBinary:
 		go protocol.handlePostMetaBinary(packet)
 	case MethodPreparePostObject:
@@ -230,6 +234,8 @@ func (protocol *DataStoreProtocol) HandlePacket(packet nex.PacketInterface) {
 		go protocol.handleCompletePostObject(packet)
 	case MethodGetNewArrivedNotifications:
 		go protocol.handleGetNewArrivedNotifications(packet)
+	case MethodGetSpecificMeta:
+		go protocol.handleGetSpecificMeta(packet)
 	case MethodGetPersistenceInfo:
 		go protocol.handleGetPersistenceInfo(packet)
 	case MethodGetMetasMultipleParam:

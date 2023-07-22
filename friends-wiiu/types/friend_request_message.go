@@ -11,6 +11,7 @@ import (
 // FriendRequestMessage contains message data for a FriendRequest
 type FriendRequestMessage struct {
 	nex.Structure
+	*nex.Data
 	FriendRequestID uint64
 	Received        bool
 	Unknown2        uint8
@@ -41,6 +42,9 @@ func (friendRequestMessage *FriendRequestMessage) Bytes(stream *nex.StreamOut) [
 func (friendRequestMessage *FriendRequestMessage) Copy() nex.StructureInterface {
 	copied := NewFriendRequestMessage()
 
+	copied.Data = friendRequestMessage.ParentType().Copy().(*nex.Data)
+	copied.SetParentType(copied.Data)
+
 	copied.FriendRequestID = friendRequestMessage.FriendRequestID
 	copied.Received = friendRequestMessage.Received
 	copied.Unknown2 = friendRequestMessage.Unknown2
@@ -57,6 +61,10 @@ func (friendRequestMessage *FriendRequestMessage) Copy() nex.StructureInterface 
 // Equals checks if the passed Structure contains the same data as the current instance
 func (friendRequestMessage *FriendRequestMessage) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*FriendRequestMessage)
+
+	if !friendRequestMessage.ParentType().Equals(other.ParentType()) {
+		return false
+	}
 
 	if friendRequestMessage.FriendRequestID != other.FriendRequestID {
 		return false

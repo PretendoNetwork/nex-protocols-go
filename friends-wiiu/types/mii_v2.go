@@ -12,10 +12,11 @@ import (
 // MiiV2 contains data about a Mii
 type MiiV2 struct {
 	nex.Structure
+	*nex.Data
 	Name     string
 	Unknown1 uint8
 	Unknown2 uint8
-	Data     []byte
+	MiiData  []byte
 	Datetime *nex.DateTime
 }
 
@@ -24,7 +25,7 @@ func (mii *MiiV2) Bytes(stream *nex.StreamOut) []byte {
 	stream.WriteString(mii.Name)
 	stream.WriteUInt8(mii.Unknown1)
 	stream.WriteUInt8(mii.Unknown2)
-	stream.WriteBuffer(mii.Data)
+	stream.WriteBuffer(mii.MiiData)
 	stream.WriteDateTime(mii.Datetime)
 
 	return stream.Bytes()
@@ -49,9 +50,9 @@ func (mii *MiiV2) ExtractFromStream(stream *nex.StreamIn) error {
 		return fmt.Errorf("Failed to extract MiiV2.Unknown2. %s", err.Error())
 	}
 
-	mii.Data, err = stream.ReadBuffer()
+	mii.MiiData, err = stream.ReadBuffer()
 	if err != nil {
-		return fmt.Errorf("Failed to extract MiiV2.Data. %s", err.Error())
+		return fmt.Errorf("Failed to extract MiiV2.MiiData. %s", err.Error())
 	}
 
 	mii.Datetime, err = stream.ReadDateTime()
@@ -66,12 +67,15 @@ func (mii *MiiV2) ExtractFromStream(stream *nex.StreamIn) error {
 func (mii *MiiV2) Copy() nex.StructureInterface {
 	copied := NewMiiV2()
 
+	copied.Data = mii.ParentType().Copy().(*nex.Data)
+	copied.SetParentType(copied.Data)
+
 	copied.Name = mii.Name
 	copied.Unknown1 = mii.Unknown1
 	copied.Unknown2 = mii.Unknown2
-	copied.Data = make([]byte, len(mii.Data))
+	copied.MiiData = make([]byte, len(mii.MiiData))
 
-	copy(copied.Data, mii.Data)
+	copy(copied.MiiData, mii.MiiData)
 
 	copied.Datetime = mii.Datetime.Copy()
 
@@ -81,6 +85,10 @@ func (mii *MiiV2) Copy() nex.StructureInterface {
 // Equals checks if the passed Structure contains the same data as the current instance
 func (mii *MiiV2) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*MiiV2)
+
+	if !mii.ParentType().Equals(other.ParentType()) {
+		return false
+	}
 
 	if mii.Name != other.Name {
 		return false
@@ -94,7 +102,7 @@ func (mii *MiiV2) Equals(structure nex.StructureInterface) bool {
 		return false
 	}
 
-	if !bytes.Equal(mii.Data, other.Data) {
+	if !bytes.Equal(mii.MiiData, other.MiiData) {
 		return false
 	}
 
@@ -122,7 +130,7 @@ func (mii *MiiV2) FormatToString(indentationLevel int) string {
 	b.WriteString(fmt.Sprintf("%sName: %q,\n", indentationValues, mii.Name))
 	b.WriteString(fmt.Sprintf("%sUnknown1: %d,\n", indentationValues, mii.Unknown1))
 	b.WriteString(fmt.Sprintf("%sUnknown2: %d,\n", indentationValues, mii.Unknown2))
-	b.WriteString(fmt.Sprintf("%sData: %x,\n", indentationValues, mii.Data))
+	b.WriteString(fmt.Sprintf("%sMiiData: %x,\n", indentationValues, mii.MiiData))
 
 	if mii.Datetime != nil {
 		b.WriteString(fmt.Sprintf("%sDatetime: %s\n", indentationValues, mii.Datetime.FormatToString(indentationLevel+1)))

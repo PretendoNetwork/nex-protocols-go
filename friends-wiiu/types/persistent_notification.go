@@ -11,6 +11,7 @@ import (
 // PersistentNotification contains unknown data
 type PersistentNotification struct {
 	nex.Structure
+	*nex.Data
 	Unknown1 uint64
 	Unknown2 uint32
 	Unknown3 uint32
@@ -54,6 +55,9 @@ func (notification *PersistentNotification) ExtractFromStream(stream *nex.Stream
 func (notification *PersistentNotification) Copy() nex.StructureInterface {
 	copied := NewPersistentNotification()
 
+	copied.Data = notification.ParentType().Copy().(*nex.Data)
+	copied.SetParentType(copied.Data)
+
 	copied.Unknown1 = notification.Unknown1
 	copied.Unknown2 = notification.Unknown2
 	copied.Unknown3 = notification.Unknown3
@@ -66,6 +70,10 @@ func (notification *PersistentNotification) Copy() nex.StructureInterface {
 // Equals checks if the passed Structure contains the same data as the current instance
 func (notification *PersistentNotification) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*PersistentNotification)
+
+	if !notification.ParentType().Equals(other.ParentType()) {
+		return false
+	}
 
 	if notification.Unknown1 != other.Unknown1 {
 		return false

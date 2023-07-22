@@ -11,6 +11,7 @@ import (
 // FriendRequest contains information about a friend request
 type FriendRequest struct {
 	nex.Structure
+	*nex.Data
 	PrincipalInfo *PrincipalBasicInfo
 	Message       *FriendRequestMessage
 	SentOn        *nex.DateTime
@@ -29,6 +30,9 @@ func (friendRequest *FriendRequest) Bytes(stream *nex.StreamOut) []byte {
 func (friendRequest *FriendRequest) Copy() nex.StructureInterface {
 	copied := NewFriendRequest()
 
+	copied.Data = friendRequest.ParentType().Copy().(*nex.Data)
+	copied.SetParentType(copied.Data)
+
 	copied.PrincipalInfo = friendRequest.PrincipalInfo.Copy().(*PrincipalBasicInfo)
 	copied.Message = friendRequest.Message.Copy().(*FriendRequestMessage)
 	copied.SentOn = friendRequest.SentOn.Copy()
@@ -39,6 +43,10 @@ func (friendRequest *FriendRequest) Copy() nex.StructureInterface {
 // Equals checks if the passed Structure contains the same data as the current instance
 func (friendRequest *FriendRequest) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*FriendRequest)
+
+	if !friendRequest.ParentType().Equals(other.ParentType()) {
+		return false
+	}
 
 	if !friendRequest.PrincipalInfo.Equals(other.PrincipalInfo) {
 		return false

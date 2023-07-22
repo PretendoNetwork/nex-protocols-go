@@ -11,6 +11,7 @@ import (
 // PrincipalBasicInfo contains user account and Mii data
 type PrincipalBasicInfo struct {
 	nex.Structure
+	*nex.Data
 	PID     uint32
 	NNID    string
 	Mii     *MiiV2
@@ -59,6 +60,9 @@ func (principalInfo *PrincipalBasicInfo) ExtractFromStream(stream *nex.StreamIn)
 func (principalInfo *PrincipalBasicInfo) Copy() nex.StructureInterface {
 	copied := NewPrincipalBasicInfo()
 
+	copied.Data = principalInfo.ParentType().Copy().(*nex.Data)
+	copied.SetParentType(copied.Data)
+
 	copied.PID = principalInfo.PID
 	copied.NNID = principalInfo.NNID
 	copied.Mii = principalInfo.Mii.Copy().(*MiiV2)
@@ -70,6 +74,10 @@ func (principalInfo *PrincipalBasicInfo) Copy() nex.StructureInterface {
 // Equals checks if the passed Structure contains the same data as the current instance
 func (principalInfo *PrincipalBasicInfo) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*PrincipalBasicInfo)
+
+	if !principalInfo.ParentType().Equals(other.ParentType()) {
+		return false
+	}
 
 	if principalInfo.PID != other.PID {
 		return false

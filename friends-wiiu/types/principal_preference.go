@@ -11,6 +11,7 @@ import (
 // PrincipalPreference contains unknown data
 type PrincipalPreference struct {
 	nex.Structure
+	*nex.Data
 	ShowOnlinePresence  bool
 	ShowCurrentTitle    bool
 	BlockFriendRequests bool
@@ -51,6 +52,9 @@ func (principalPreference *PrincipalPreference) ExtractFromStream(stream *nex.St
 func (principalPreference *PrincipalPreference) Copy() nex.StructureInterface {
 	copied := NewPrincipalPreference()
 
+	copied.Data = principalPreference.ParentType().Copy().(*nex.Data)
+	copied.SetParentType(copied.Data)
+
 	copied.ShowOnlinePresence = principalPreference.ShowOnlinePresence
 	copied.ShowCurrentTitle = principalPreference.ShowCurrentTitle
 	copied.BlockFriendRequests = principalPreference.BlockFriendRequests
@@ -61,6 +65,10 @@ func (principalPreference *PrincipalPreference) Copy() nex.StructureInterface {
 // Equals checks if the passed Structure contains the same data as the current instance
 func (principalPreference *PrincipalPreference) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*PrincipalPreference)
+
+	if !principalPreference.ParentType().Equals(other.ParentType()) {
+		return false
+	}
 
 	if principalPreference.ShowOnlinePresence != other.ShowOnlinePresence {
 		return false

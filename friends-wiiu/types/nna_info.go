@@ -11,6 +11,7 @@ import (
 // NNAInfo contains information about a Nintendo Network Account
 type NNAInfo struct {
 	nex.Structure
+	*nex.Data
 	PrincipalBasicInfo *PrincipalBasicInfo
 	Unknown1           uint8
 	Unknown2           uint8
@@ -52,6 +53,9 @@ func (nnaInfo *NNAInfo) ExtractFromStream(stream *nex.StreamIn) error {
 func (nnaInfo *NNAInfo) Copy() nex.StructureInterface {
 	copied := NewNNAInfo()
 
+	copied.Data = nnaInfo.ParentType().Copy().(*nex.Data)
+	copied.SetParentType(copied.Data)
+
 	copied.PrincipalBasicInfo = nnaInfo.PrincipalBasicInfo.Copy().(*PrincipalBasicInfo)
 	copied.Unknown1 = nnaInfo.Unknown1
 	copied.Unknown2 = nnaInfo.Unknown2
@@ -62,6 +66,10 @@ func (nnaInfo *NNAInfo) Copy() nex.StructureInterface {
 // Equals checks if the passed Structure contains the same data as the current instance
 func (nnaInfo *NNAInfo) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*NNAInfo)
+
+	if !nnaInfo.ParentType().Equals(other.ParentType()) {
+		return false
+	}
 
 	if !nnaInfo.PrincipalBasicInfo.Equals(other.PrincipalBasicInfo) {
 		return false

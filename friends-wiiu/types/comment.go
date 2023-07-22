@@ -11,6 +11,7 @@ import (
 // Comment contains data about a text comment
 type Comment struct {
 	nex.Structure
+	*nex.Data
 	Unknown     uint8
 	Contents    string
 	LastChanged *nex.DateTime
@@ -51,6 +52,9 @@ func (comment *Comment) ExtractFromStream(stream *nex.StreamIn) error {
 func (comment *Comment) Copy() nex.StructureInterface {
 	copied := NewComment()
 
+	copied.Data = comment.ParentType().Copy().(*nex.Data)
+	copied.SetParentType(copied.Data)
+
 	copied.Unknown = comment.Unknown
 	copied.Contents = comment.Contents
 	copied.LastChanged = comment.LastChanged.Copy()
@@ -61,6 +65,10 @@ func (comment *Comment) Copy() nex.StructureInterface {
 // Equals checks if the passed Structure contains the same data as the current instance
 func (comment *Comment) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*Comment)
+
+	if !comment.ParentType().Equals(other.ParentType()) {
+		return false
+	}
 
 	if comment.Unknown != other.Unknown {
 		return false

@@ -12,6 +12,7 @@ import (
 // NintendoPresenceV2 contains information about a users online presence
 type NintendoPresenceV2 struct {
 	nex.Structure
+	*nex.Data
 	ChangedFlags    uint32
 	Online          bool
 	GameKey         *GameKey
@@ -32,11 +33,7 @@ type NintendoPresenceV2 struct {
 // Bytes encodes the NintendoPresenceV2 and returns a byte array
 func (presence *NintendoPresenceV2) Bytes(stream *nex.StreamOut) []byte {
 	stream.WriteUInt32LE(presence.ChangedFlags)
-	if presence.Online {
-		stream.WriteUInt8(1)
-	} else {
-		stream.WriteUInt8(0)
-	}
+	stream.WriteBool(presence.Online)
 	stream.WriteStructure(presence.GameKey)
 	stream.WriteUInt8(presence.Unknown1)
 	stream.WriteString(presence.Message)
@@ -141,6 +138,9 @@ func (presence *NintendoPresenceV2) ExtractFromStream(stream *nex.StreamIn) erro
 func (presence *NintendoPresenceV2) Copy() nex.StructureInterface {
 	copied := NewNintendoPresenceV2()
 
+	copied.Data = presence.ParentType().Copy().(*nex.Data)
+	copied.SetParentType(copied.Data)
+
 	copied.ChangedFlags = presence.ChangedFlags
 	copied.Online = presence.Online
 	copied.GameKey = presence.GameKey.Copy().(*GameKey)
@@ -166,6 +166,10 @@ func (presence *NintendoPresenceV2) Copy() nex.StructureInterface {
 // Equals checks if the passed Structure contains the same data as the current instance
 func (presence *NintendoPresenceV2) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*NintendoPresenceV2)
+
+	if !presence.ParentType().Equals(other.ParentType()) {
+		return false
+	}
 
 	if presence.ChangedFlags != other.ChangedFlags {
 		return false

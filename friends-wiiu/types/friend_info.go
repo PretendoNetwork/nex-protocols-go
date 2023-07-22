@@ -11,6 +11,7 @@ import (
 // FriendInfo contains information about a friend
 type FriendInfo struct {
 	nex.Structure
+	*nex.Data
 	NNAInfo      *NNAInfo
 	Presence     *NintendoPresenceV2
 	Status       *Comment
@@ -35,6 +36,9 @@ func (friendInfo *FriendInfo) Bytes(stream *nex.StreamOut) []byte {
 func (friendInfo *FriendInfo) Copy() nex.StructureInterface {
 	copied := NewFriendInfo()
 
+	copied.Data = friendInfo.ParentType().Copy().(*nex.Data)
+	copied.SetParentType(copied.Data)
+
 	copied.NNAInfo = friendInfo.NNAInfo.Copy().(*NNAInfo)
 	copied.Presence = friendInfo.Presence.Copy().(*NintendoPresenceV2)
 	copied.Status = friendInfo.Status.Copy().(*Comment)
@@ -48,6 +52,10 @@ func (friendInfo *FriendInfo) Copy() nex.StructureInterface {
 // Equals checks if the passed Structure contains the same data as the current instance
 func (friendInfo *FriendInfo) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*FriendInfo)
+
+	if !friendInfo.ParentType().Equals(other.ParentType()) {
+		return false
+	}
 
 	if !friendInfo.NNAInfo.Equals(other.NNAInfo) {
 		return false

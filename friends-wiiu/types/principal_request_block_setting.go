@@ -11,6 +11,7 @@ import (
 // PrincipalRequestBlockSetting contains unknow data
 type PrincipalRequestBlockSetting struct {
 	nex.Structure
+	*nex.Data
 	PID       uint32
 	IsBlocked bool
 }
@@ -27,6 +28,9 @@ func (principalRequestBlockSetting *PrincipalRequestBlockSetting) Bytes(stream *
 func (principalRequestBlockSetting *PrincipalRequestBlockSetting) Copy() nex.StructureInterface {
 	copied := NewPrincipalRequestBlockSetting()
 
+	copied.Data = principalRequestBlockSetting.ParentType().Copy().(*nex.Data)
+	copied.SetParentType(copied.Data)
+
 	copied.PID = principalRequestBlockSetting.PID
 	copied.IsBlocked = principalRequestBlockSetting.IsBlocked
 
@@ -36,6 +40,10 @@ func (principalRequestBlockSetting *PrincipalRequestBlockSetting) Copy() nex.Str
 // Equals checks if the passed Structure contains the same data as the current instance
 func (principalRequestBlockSetting *PrincipalRequestBlockSetting) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*PrincipalRequestBlockSetting)
+
+	if !principalRequestBlockSetting.ParentType().Equals(other.ParentType()) {
+		return false
+	}
 
 	if principalRequestBlockSetting.PID != other.PID {
 		return false

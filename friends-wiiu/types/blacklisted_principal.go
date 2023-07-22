@@ -11,6 +11,7 @@ import (
 // BlacklistedPrincipal contains information about a blocked user
 type BlacklistedPrincipal struct {
 	nex.Structure
+	*nex.Data
 	PrincipalBasicInfo *PrincipalBasicInfo
 	GameKey            *GameKey
 	BlackListedSince   *nex.DateTime
@@ -53,6 +54,9 @@ func (blacklistedPrincipal *BlacklistedPrincipal) ExtractFromStream(stream *nex.
 func (blacklistedPrincipal *BlacklistedPrincipal) Copy() nex.StructureInterface {
 	copied := NewBlacklistedPrincipal()
 
+	copied.Data = blacklistedPrincipal.ParentType().Copy().(*nex.Data)
+	copied.SetParentType(copied.Data)
+
 	copied.PrincipalBasicInfo = blacklistedPrincipal.PrincipalBasicInfo.Copy().(*PrincipalBasicInfo)
 	copied.GameKey = blacklistedPrincipal.GameKey.Copy().(*GameKey)
 	copied.BlackListedSince = blacklistedPrincipal.BlackListedSince.Copy()
@@ -63,6 +67,10 @@ func (blacklistedPrincipal *BlacklistedPrincipal) Copy() nex.StructureInterface 
 // Equals checks if the passed Structure contains the same data as the current instance
 func (blacklistedPrincipal *BlacklistedPrincipal) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*BlacklistedPrincipal)
+
+	if !blacklistedPrincipal.ParentType().Equals(other.ParentType()) {
+		return false
+	}
 
 	if !blacklistedPrincipal.PrincipalBasicInfo.Equals(other.PrincipalBasicInfo) {
 		return false

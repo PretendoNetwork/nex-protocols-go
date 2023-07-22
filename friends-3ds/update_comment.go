@@ -10,11 +10,11 @@ import (
 
 // UpdateComment sets the UpdateComment handler function
 func (protocol *Friends3DSProtocol) UpdateComment(handler func(err error, client *nex.Client, callID uint32, comment string)) {
-	protocol.UpdateCommentHandler = handler
+	protocol.updateCommentHandler = handler
 }
 
 func (protocol *Friends3DSProtocol) handleUpdateComment(packet nex.PacketInterface) {
-	if protocol.UpdateCommentHandler == nil {
+	if protocol.updateCommentHandler == nil {
 		globals.Logger.Warning("Friends3DS::UpdateComment not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -30,9 +30,9 @@ func (protocol *Friends3DSProtocol) handleUpdateComment(packet nex.PacketInterfa
 
 	comment, err := parametersStream.ReadString()
 	if err != nil {
-		go protocol.UpdateCommentHandler(fmt.Errorf("Failed to read comment from parameters. %s", err.Error()), client, callID, "")
+		go protocol.updateCommentHandler(fmt.Errorf("Failed to read comment from parameters. %s", err.Error()), client, callID, "")
 		return
 	}
 
-	go protocol.UpdateCommentHandler(nil, client, callID, comment)
+	go protocol.updateCommentHandler(nil, client, callID, comment)
 }

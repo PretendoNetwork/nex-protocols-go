@@ -10,11 +10,11 @@ import (
 
 // AddFriendByPrincipalID sets the AddFriendByPrincipalID handler function
 func (protocol *Friends3DSProtocol) AddFriendByPrincipalID(handler func(err error, client *nex.Client, callID uint32, lfc uint64, pid uint32)) {
-	protocol.AddFriendByPrincipalIDHandler = handler
+	protocol.addFriendByPrincipalIDHandler = handler
 }
 
 func (protocol *Friends3DSProtocol) handleAddFriendByPrincipalID(packet nex.PacketInterface) {
-	if protocol.AddFriendByPrincipalIDHandler == nil {
+	if protocol.addFriendByPrincipalIDHandler == nil {
 		globals.Logger.Warning("Friends3DS::AddFriendByPrincipalID not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -30,15 +30,15 @@ func (protocol *Friends3DSProtocol) handleAddFriendByPrincipalID(packet nex.Pack
 
 	lfc, err := parametersStream.ReadUInt64LE()
 	if err != nil {
-		go protocol.AddFriendByPrincipalIDHandler(fmt.Errorf("Failed to read lfc from parameters. %s", err.Error()), client, callID, 0, 0)
+		go protocol.addFriendByPrincipalIDHandler(fmt.Errorf("Failed to read lfc from parameters. %s", err.Error()), client, callID, 0, 0)
 		return
 	}
 
 	pid, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		go protocol.AddFriendByPrincipalIDHandler(fmt.Errorf("Failed to read pid from parameters. %s", err.Error()), client, callID, 0, 0)
+		go protocol.addFriendByPrincipalIDHandler(fmt.Errorf("Failed to read pid from parameters. %s", err.Error()), client, callID, 0, 0)
 		return
 	}
 
-	go protocol.AddFriendByPrincipalIDHandler(nil, client, callID, lfc, pid)
+	go protocol.addFriendByPrincipalIDHandler(nil, client, callID, lfc, pid)
 }

@@ -10,11 +10,11 @@ import (
 
 // GetFriendMii sets the GetFriendMii handler function
 func (protocol *Friends3DSProtocol) GetFriendMii(handler func(err error, client *nex.Client, callID uint32, pidList []uint32)) {
-	protocol.GetFriendMiiHandler = handler
+	protocol.getFriendMiiHandler = handler
 }
 
 func (protocol *Friends3DSProtocol) handleGetFriendMii(packet nex.PacketInterface) {
-	if protocol.GetFriendMiiHandler == nil {
+	if protocol.getFriendMiiHandler == nil {
 		globals.Logger.Warning("Friends3DS::GetFriendMii not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -30,9 +30,9 @@ func (protocol *Friends3DSProtocol) handleGetFriendMii(packet nex.PacketInterfac
 
 	pidList, err := parametersStream.ReadListUInt32LE()
 	if err != nil {
-		go protocol.GetFriendMiiHandler(fmt.Errorf("Failed to read pid from parameters. %s", err.Error()), client, callID, nil)
+		go protocol.getFriendMiiHandler(fmt.Errorf("Failed to read pidList from parameters. %s", err.Error()), client, callID, nil)
 		return
 	}
 
-	go protocol.GetFriendMiiHandler(nil, client, callID, pidList)
+	go protocol.getFriendMiiHandler(nil, client, callID, pidList)
 }

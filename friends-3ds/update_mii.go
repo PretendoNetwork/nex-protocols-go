@@ -11,11 +11,11 @@ import (
 
 // UpdateMii sets the UpdateMii handler function
 func (protocol *Friends3DSProtocol) UpdateMii(handler func(err error, client *nex.Client, callID uint32, mii *friends_3ds_types.Mii)) {
-	protocol.UpdateMiiHandler = handler
+	protocol.updateMiiHandler = handler
 }
 
 func (protocol *Friends3DSProtocol) handleUpdateMii(packet nex.PacketInterface) {
-	if protocol.UpdateMiiHandler == nil {
+	if protocol.updateMiiHandler == nil {
 		globals.Logger.Warning("Friends3DS::UpdateMii not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -31,9 +31,9 @@ func (protocol *Friends3DSProtocol) handleUpdateMii(packet nex.PacketInterface) 
 
 	mii, err := parametersStream.ReadStructure(friends_3ds_types.NewMii())
 	if err != nil {
-		go protocol.UpdateMiiHandler(fmt.Errorf("Failed to read mii from parameters. %s", err.Error()), client, callID, nil)
+		go protocol.updateMiiHandler(fmt.Errorf("Failed to read mii from parameters. %s", err.Error()), client, callID, nil)
 		return
 	}
 
-	go protocol.UpdateMiiHandler(nil, client, callID, mii.(*friends_3ds_types.Mii))
+	go protocol.updateMiiHandler(nil, client, callID, mii.(*friends_3ds_types.Mii))
 }

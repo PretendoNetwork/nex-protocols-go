@@ -10,11 +10,11 @@ import (
 
 // RemoveFriendByLocalFriendCode sets the RemoveFriendByLocalFriendCode handler function
 func (protocol *Friends3DSProtocol) RemoveFriendByLocalFriendCode(handler func(err error, client *nex.Client, callID uint32, lfc uint64)) {
-	protocol.RemoveFriendByLocalFriendCodeHandler = handler
+	protocol.removeFriendByLocalFriendCodeHandler = handler
 }
 
 func (protocol *Friends3DSProtocol) handleRemoveFriendByLocalFriendCode(packet nex.PacketInterface) {
-	if protocol.RemoveFriendByLocalFriendCodeHandler == nil {
+	if protocol.removeFriendByLocalFriendCodeHandler == nil {
 		globals.Logger.Warning("Friends3DS::RemoveFriendByLocalFriendCode not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -30,9 +30,9 @@ func (protocol *Friends3DSProtocol) handleRemoveFriendByLocalFriendCode(packet n
 
 	lfc, err := parametersStream.ReadUInt64LE()
 	if err != nil {
-		go protocol.RemoveFriendByLocalFriendCodeHandler(fmt.Errorf("Failed to read lfc from parameters. %s", err.Error()), client, callID, 0)
+		go protocol.removeFriendByLocalFriendCodeHandler(fmt.Errorf("Failed to read lfc from parameters. %s", err.Error()), client, callID, 0)
 		return
 	}
 
-	go protocol.RemoveFriendByLocalFriendCodeHandler(nil, client, callID, lfc)
+	go protocol.removeFriendByLocalFriendCodeHandler(nil, client, callID, lfc)
 }

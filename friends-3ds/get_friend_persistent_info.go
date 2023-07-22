@@ -10,11 +10,11 @@ import (
 
 // GetFriendPersistentInfo sets the GetFriendPersistentInfo handler function
 func (protocol *Friends3DSProtocol) GetFriendPersistentInfo(handler func(err error, client *nex.Client, callID uint32, pidList []uint32)) {
-	protocol.GetFriendPersistentInfoHandler = handler
+	protocol.getFriendPersistentInfoHandler = handler
 }
 
 func (protocol *Friends3DSProtocol) handleGetFriendPersistentInfo(packet nex.PacketInterface) {
-	if protocol.GetFriendPersistentInfoHandler == nil {
+	if protocol.getFriendPersistentInfoHandler == nil {
 		globals.Logger.Warning("Friends3DS::GetFriendPersistentInfo not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -30,9 +30,9 @@ func (protocol *Friends3DSProtocol) handleGetFriendPersistentInfo(packet nex.Pac
 
 	pidList, err := parametersStream.ReadListUInt32LE()
 	if err != nil {
-		go protocol.GetFriendPersistentInfoHandler(fmt.Errorf("Failed to read pid from parameters. %s", err.Error()), client, callID, nil)
+		go protocol.getFriendPersistentInfoHandler(fmt.Errorf("Failed to read pidList from parameters. %s", err.Error()), client, callID, nil)
 		return
 	}
 
-	go protocol.GetFriendPersistentInfoHandler(nil, client, callID, pidList)
+	go protocol.getFriendPersistentInfoHandler(nil, client, callID, pidList)
 }

@@ -11,11 +11,11 @@ import (
 
 // UpdateProfile sets the UpdateProfile handler function
 func (protocol *Friends3DSProtocol) UpdateProfile(handler func(err error, client *nex.Client, callID uint32, profileData *friends_3ds_types.MyProfile)) {
-	protocol.UpdateProfileHandler = handler
+	protocol.updateProfileHandler = handler
 }
 
 func (protocol *Friends3DSProtocol) handleUpdateProfile(packet nex.PacketInterface) {
-	if protocol.UpdateProfileHandler == nil {
+	if protocol.updateProfileHandler == nil {
 		globals.Logger.Warning("Friends3DS::UpdateProfile not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -31,9 +31,9 @@ func (protocol *Friends3DSProtocol) handleUpdateProfile(packet nex.PacketInterfa
 
 	profileData, err := parametersStream.ReadStructure(friends_3ds_types.NewMyProfile())
 	if err != nil {
-		go protocol.UpdateProfileHandler(fmt.Errorf("Failed to read showGame from profileData. %s", err.Error()), client, callID, nil)
+		go protocol.updateProfileHandler(fmt.Errorf("Failed to read showGame from profileData. %s", err.Error()), client, callID, nil)
 		return
 	}
 
-	go protocol.UpdateProfileHandler(nil, client, callID, profileData.(*friends_3ds_types.MyProfile))
+	go protocol.updateProfileHandler(nil, client, callID, profileData.(*friends_3ds_types.MyProfile))
 }

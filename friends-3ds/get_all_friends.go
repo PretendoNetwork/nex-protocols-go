@@ -8,11 +8,11 @@ import (
 
 // GetAllFriends sets the GetAllFriends handler function
 func (protocol *Friends3DSProtocol) GetAllFriends(handler func(err error, client *nex.Client, callID uint32)) {
-	protocol.GetAllFriendsHandler = handler
+	protocol.getAllFriendsHandler = handler
 }
 
 func (protocol *Friends3DSProtocol) handleGetAllFriends(packet nex.PacketInterface) {
-	if protocol.GetAllFriendsHandler == nil {
+	if protocol.getAllFriendsHandler == nil {
 		globals.Logger.Warning("Friends3DS::GetAllFriends not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -23,5 +23,5 @@ func (protocol *Friends3DSProtocol) handleGetAllFriends(packet nex.PacketInterfa
 
 	callID := request.CallID()
 
-	go protocol.GetAllFriendsHandler(nil, client, callID)
+	go protocol.getAllFriendsHandler(nil, client, callID)
 }

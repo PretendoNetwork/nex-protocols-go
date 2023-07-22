@@ -10,11 +10,11 @@ import (
 
 // UpdatePreference sets the UpdatePreference handler function
 func (protocol *Friends3DSProtocol) UpdatePreference(handler func(err error, client *nex.Client, callID uint32, publicMode bool, showGame bool, showPlayedGame bool)) {
-	protocol.UpdatePreferenceHandler = handler
+	protocol.updatePreferenceHandler = handler
 }
 
 func (protocol *Friends3DSProtocol) handleUpdatePreference(packet nex.PacketInterface) {
-	if protocol.UpdatePreferenceHandler == nil {
+	if protocol.updatePreferenceHandler == nil {
 		globals.Logger.Warning("Friends3DS::UpdatePreference not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -30,21 +30,21 @@ func (protocol *Friends3DSProtocol) handleUpdatePreference(packet nex.PacketInte
 
 	publicMode, err := parametersStream.ReadBool()
 	if err != nil {
-		go protocol.UpdatePreferenceHandler(fmt.Errorf("Failed to read publicMode from parameters. %s", err.Error()), client, callID, false, false, false)
+		go protocol.updatePreferenceHandler(fmt.Errorf("Failed to read publicMode from parameters. %s", err.Error()), client, callID, false, false, false)
 		return
 	}
 
 	showGame, err := parametersStream.ReadBool()
 	if err != nil {
-		go protocol.UpdatePreferenceHandler(fmt.Errorf("Failed to read showGame from parameters. %s", err.Error()), client, callID, false, false, false)
+		go protocol.updatePreferenceHandler(fmt.Errorf("Failed to read showGame from parameters. %s", err.Error()), client, callID, false, false, false)
 		return
 	}
 
 	showPlayedGame, err := parametersStream.ReadBool()
 	if err != nil {
-		go protocol.UpdatePreferenceHandler(fmt.Errorf("Failed to read showPlayedGame from parameters. %s", err.Error()), client, callID, false, false, false)
+		go protocol.updatePreferenceHandler(fmt.Errorf("Failed to read showPlayedGame from parameters. %s", err.Error()), client, callID, false, false, false)
 		return
 	}
 
-	go protocol.UpdatePreferenceHandler(nil, client, callID, publicMode, showGame, showPlayedGame)
+	go protocol.updatePreferenceHandler(nil, client, callID, publicMode, showGame, showPlayedGame)
 }

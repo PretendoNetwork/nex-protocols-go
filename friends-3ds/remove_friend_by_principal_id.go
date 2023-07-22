@@ -10,11 +10,11 @@ import (
 
 // RemoveFriendByPrincipalID sets the RemoveFriendByPrincipalID handler function
 func (protocol *Friends3DSProtocol) RemoveFriendByPrincipalID(handler func(err error, client *nex.Client, callID uint32, pid uint32)) {
-	protocol.RemoveFriendByPrincipalIDHandler = handler
+	protocol.removeFriendByPrincipalIDHandler = handler
 }
 
 func (protocol *Friends3DSProtocol) handleRemoveFriendByPrincipalID(packet nex.PacketInterface) {
-	if protocol.RemoveFriendByPrincipalIDHandler == nil {
+	if protocol.removeFriendByPrincipalIDHandler == nil {
 		globals.Logger.Warning("Friends3DS::RemoveFriendByPrincipalID not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -30,9 +30,9 @@ func (protocol *Friends3DSProtocol) handleRemoveFriendByPrincipalID(packet nex.P
 
 	pid, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		go protocol.RemoveFriendByPrincipalIDHandler(fmt.Errorf("Failed to read pid from parameters. %s", err.Error()), client, callID, 0)
+		go protocol.removeFriendByPrincipalIDHandler(fmt.Errorf("Failed to read pid from parameters. %s", err.Error()), client, callID, 0)
 		return
 	}
 
-	go protocol.RemoveFriendByPrincipalIDHandler(nil, client, callID, pid)
+	go protocol.removeFriendByPrincipalIDHandler(nil, client, callID, pid)
 }

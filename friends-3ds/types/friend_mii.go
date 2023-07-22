@@ -11,6 +11,7 @@ import (
 // FriendMii is a data structure used by the Friends 3DS protocol to hold information about a friends Mii
 type FriendMii struct {
 	nex.Structure
+	*nex.Data
 	PID        uint32
 	Mii        *Mii
 	ModifiedAt *nex.DateTime
@@ -29,6 +30,9 @@ func (friendMii *FriendMii) Bytes(stream *nex.StreamOut) []byte {
 func (friendMii *FriendMii) Copy() nex.StructureInterface {
 	copied := NewFriendMii()
 
+	copied.Data = friendMii.ParentType().Copy().(*nex.Data)
+	copied.SetParentType(copied.Data)
+
 	copied.PID = friendMii.PID
 	copied.Mii = friendMii.Mii.Copy().(*Mii)
 	copied.ModifiedAt = friendMii.ModifiedAt.Copy()
@@ -39,6 +43,10 @@ func (friendMii *FriendMii) Copy() nex.StructureInterface {
 // Equals checks if the passed Structure contains the same data as the current instance
 func (friendMii *FriendMii) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*FriendMii)
+
+	if !friendMii.ParentType().Equals(other.ParentType()) {
+		return false
+	}
 
 	if friendMii.PID != other.PID {
 		return false

@@ -11,6 +11,7 @@ import (
 // FriendRelationship contains information about a users relationship with another PID
 type FriendRelationship struct {
 	nex.Structure
+	*nex.Data
 	PID              uint32
 	LFC              uint64
 	RelationshipType uint8
@@ -29,6 +30,9 @@ func (relationship *FriendRelationship) Bytes(stream *nex.StreamOut) []byte {
 func (relationship *FriendRelationship) Copy() nex.StructureInterface {
 	copied := NewFriendRelationship()
 
+	copied.Data = relationship.ParentType().Copy().(*nex.Data)
+	copied.SetParentType(copied.Data)
+
 	copied.PID = relationship.PID
 	copied.LFC = relationship.LFC
 	copied.RelationshipType = relationship.RelationshipType
@@ -39,6 +43,10 @@ func (relationship *FriendRelationship) Copy() nex.StructureInterface {
 // Equals checks if the passed Structure contains the same data as the current instance
 func (relationship *FriendRelationship) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*FriendRelationship)
+
+	if !relationship.ParentType().Equals(other.ParentType()) {
+		return false
+	}
 
 	if relationship.PID != other.PID {
 		return false

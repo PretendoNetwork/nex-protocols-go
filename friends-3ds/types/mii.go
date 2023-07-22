@@ -12,6 +12,7 @@ import (
 // Mii is a data structure used by the Friends 3DS protocol to hold information about a Mii
 type Mii struct {
 	nex.Structure
+	*nex.Data
 	Name     string
 	Unknown2 bool
 	Unknown3 uint8
@@ -59,6 +60,9 @@ func (mii *Mii) ExtractFromStream(stream *nex.StreamIn) error {
 func (mii *Mii) Copy() nex.StructureInterface {
 	copied := NewMii()
 
+	copied.Data = mii.ParentType().Copy().(*nex.Data)
+	copied.SetParentType(copied.Data)
+
 	copied.Name = mii.Name
 	copied.Unknown2 = mii.Unknown2
 	copied.Unknown3 = mii.Unknown3
@@ -72,6 +76,10 @@ func (mii *Mii) Copy() nex.StructureInterface {
 // Equals checks if the passed Structure contains the same data as the current instance
 func (mii *Mii) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*Mii)
+
+	if !mii.ParentType().Equals(other.ParentType()) {
+		return false
+	}
 
 	if mii.Name != other.Name {
 		return false

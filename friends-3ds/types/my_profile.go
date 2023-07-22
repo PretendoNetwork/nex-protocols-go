@@ -11,6 +11,7 @@ import (
 // MyProfile is a data structure used by the Friends 3DS protocol to hold user profile information
 type MyProfile struct {
 	nex.Structure
+	*nex.Data
 	Region   uint8
 	Country  uint8
 	Area     uint8
@@ -72,6 +73,9 @@ func (myProfile *MyProfile) ExtractFromStream(stream *nex.StreamIn) error {
 func (myProfile *MyProfile) Copy() nex.StructureInterface {
 	copied := NewMyProfile()
 
+	copied.Data = myProfile.ParentType().Copy().(*nex.Data)
+	copied.SetParentType(copied.Data)
+
 	copied.Region = myProfile.Region
 	copied.Country = myProfile.Country
 	copied.Area = myProfile.Area
@@ -87,6 +91,10 @@ func (myProfile *MyProfile) Copy() nex.StructureInterface {
 // Equals checks if the passed Structure contains the same data as the current instance
 func (myProfile *MyProfile) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*MyProfile)
+
+	if !myProfile.ParentType().Equals(other.ParentType()) {
+		return false
+	}
 
 	if myProfile.Region != other.Region {
 		return false

@@ -11,6 +11,7 @@ import (
 // GameKey contains the title ID and version for a title
 type GameKey struct {
 	nex.Structure
+	*nex.Data
 	TitleID      uint64
 	TitleVersion uint16
 }
@@ -44,6 +45,9 @@ func (gameKey *GameKey) ExtractFromStream(stream *nex.StreamIn) error {
 func (gameKey *GameKey) Copy() nex.StructureInterface {
 	copied := NewGameKey()
 
+	copied.Data = gameKey.ParentType().Copy().(*nex.Data)
+	copied.SetParentType(copied.Data)
+
 	copied.TitleID = gameKey.TitleID
 	copied.TitleVersion = gameKey.TitleVersion
 
@@ -53,6 +57,10 @@ func (gameKey *GameKey) Copy() nex.StructureInterface {
 // Equals checks if the passed Structure contains the same data as the current instance
 func (gameKey *GameKey) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*GameKey)
+
+	if !gameKey.ParentType().Equals(other.ParentType()) {
+		return false
+	}
 
 	if gameKey.TitleID != other.TitleID {
 		return false

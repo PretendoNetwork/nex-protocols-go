@@ -11,6 +11,7 @@ import (
 // FriendPersistentInfo contains user settings
 type FriendPersistentInfo struct {
 	nex.Structure
+	*nex.Data
 	PID              uint32
 	Region           uint8
 	Country          uint8
@@ -45,6 +46,9 @@ func (friendPersistentInfo *FriendPersistentInfo) Bytes(stream *nex.StreamOut) [
 func (friendPersistentInfo *FriendPersistentInfo) Copy() nex.StructureInterface {
 	copied := NewFriendPersistentInfo()
 
+	copied.Data = friendPersistentInfo.ParentType().Copy().(*nex.Data)
+	copied.SetParentType(copied.Data)
+
 	copied.PID = friendPersistentInfo.PID
 	copied.Region = friendPersistentInfo.Region
 	copied.Country = friendPersistentInfo.Country
@@ -63,6 +67,10 @@ func (friendPersistentInfo *FriendPersistentInfo) Copy() nex.StructureInterface 
 // Equals checks if the passed Structure contains the same data as the current instance
 func (friendPersistentInfo *FriendPersistentInfo) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*FriendPersistentInfo)
+
+	if !friendPersistentInfo.ParentType().Equals(other.ParentType()) {
+		return false
+	}
 
 	if friendPersistentInfo.PID != other.PID {
 		return false

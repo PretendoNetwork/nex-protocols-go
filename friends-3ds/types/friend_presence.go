@@ -11,6 +11,7 @@ import (
 // FriendPresence contains information about a users online presence
 type FriendPresence struct {
 	nex.Structure
+	*nex.Data
 	PID      uint32
 	Presence *NintendoPresence
 }
@@ -27,6 +28,9 @@ func (presence *FriendPresence) Bytes(stream *nex.StreamOut) []byte {
 func (presence *FriendPresence) Copy() nex.StructureInterface {
 	copied := NewFriendPresence()
 
+	copied.Data = presence.ParentType().Copy().(*nex.Data)
+	copied.SetParentType(copied.Data)
+
 	copied.PID = presence.PID
 	copied.Presence = presence.Presence.Copy().(*NintendoPresence)
 
@@ -36,6 +40,10 @@ func (presence *FriendPresence) Copy() nex.StructureInterface {
 // Equals checks if the passed Structure contains the same data as the current instance
 func (presence *FriendPresence) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*FriendPresence)
+
+	if !presence.ParentType().Equals(other.ParentType()) {
+		return false
+	}
 
 	if presence.PID != other.PID {
 		return false

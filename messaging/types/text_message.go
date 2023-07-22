@@ -17,10 +17,6 @@ type TextMessage struct {
 
 // Bytes encodes the TextMessage and returns a byte array
 func (textMessage *TextMessage) Bytes(stream *nex.StreamOut) []byte {
-	if textMessage.ParentType() != nil {
-		stream.WriteStructure(textMessage.ParentType())
-	}
-
 	stream.WriteString(textMessage.StrTextBody)
 
 	return stream.Bytes()

@@ -18,10 +18,6 @@ type BinaryMessage struct {
 
 // Bytes encodes the BinaryMessage and returns a byte array
 func (binaryMessage *BinaryMessage) Bytes(stream *nex.StreamOut) []byte {
-	if binaryMessage.ParentType() != nil {
-		stream.WriteStructure(binaryMessage.ParentType())
-	}
-
 	stream.WriteQBuffer(binaryMessage.BinaryBody)
 
 	return stream.Bytes()

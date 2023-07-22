@@ -1,5 +1,5 @@
-// Package message_delivery_types implements all the types used by the Message Delivery protocol
-package message_delivery_types
+// Package messaging_types implements all the types used by the Message Delivery protocol
+package messaging_types
 
 import (
 	"bytes"
@@ -13,21 +13,27 @@ import (
 type BinaryMessage struct {
 	nex.Structure
 	*UserMessage
-	m_binaryBody []byte
+	BinaryBody []byte
 }
 
 // Bytes encodes the BinaryMessage and returns a byte array
 func (binaryMessage *BinaryMessage) Bytes(stream *nex.StreamOut) []byte {
-	return []byte{}
+	if binaryMessage.ParentType() != nil {
+		stream.WriteStructure(binaryMessage.ParentType())
+	}
+
+	stream.WriteQBuffer(binaryMessage.BinaryBody)
+
+	return stream.Bytes()
 }
 
 // ExtractFromStream extracts a BinaryMessage structure from a stream
 func (binaryMessage *BinaryMessage) ExtractFromStream(stream *nex.StreamIn) error {
 	var err error
 
-	binaryMessage.m_binaryBody, err = stream.ReadQBuffer()
+	binaryMessage.BinaryBody, err = stream.ReadQBuffer()
 	if err != nil {
-		return fmt.Errorf("Failed to extract BinaryMessage.m_binaryBody from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract BinaryMessage.BinaryBody from stream. %s", err.Error())
 	}
 
 	return nil
@@ -39,9 +45,10 @@ func (binaryMessage *BinaryMessage) Copy() nex.StructureInterface {
 
 	copied.UserMessage = binaryMessage.UserMessage.Copy().(*UserMessage)
 	copied.SetParentType(copied.UserMessage)
-	copied.m_binaryBody = make([]byte, len(binaryMessage.m_binaryBody))
 
-	copy(copied.m_binaryBody, binaryMessage.m_binaryBody)
+	copied.BinaryBody = make([]byte, len(binaryMessage.BinaryBody))
+
+	copy(copied.BinaryBody, binaryMessage.BinaryBody)
 
 	return copied
 }
@@ -54,7 +61,7 @@ func (binaryMessage *BinaryMessage) Equals(structure nex.StructureInterface) boo
 		return false
 	}
 
-	if !bytes.Equal(binaryMessage.m_binaryBody, other.m_binaryBody) {
+	if !bytes.Equal(binaryMessage.BinaryBody, other.BinaryBody) {
 		return false
 	}
 
@@ -76,7 +83,7 @@ func (binaryMessage *BinaryMessage) FormatToString(indentationLevel int) string 
 	b.WriteString("BinaryMessage{\n")
 	b.WriteString(fmt.Sprintf("%sParentType: %s,\n", indentationValues, binaryMessage.ParentType().FormatToString(indentationLevel+1)))
 	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, binaryMessage.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sm_binaryBody: %x\n", indentationValues, binaryMessage.m_binaryBody))
+	b.WriteString(fmt.Sprintf("%sBinaryBody: %x\n", indentationValues, binaryMessage.BinaryBody))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()

@@ -1,5 +1,5 @@
-// Package message_delivery_types implements all the types used by the Message Delivery protocol
-package message_delivery_types
+// Package messaging_types implements all the types used by the Message Delivery protocol
+package messaging_types
 
 import (
 	"fmt"
@@ -11,28 +11,28 @@ import (
 // MessageRecipient is a data structure used by the Message Delivery protocol
 type MessageRecipient struct {
 	nex.Structure
-	m_uiRecipientType uint32
-	m_principalID     uint32
-	m_gatheringID     uint32
+	UIRecipientType uint32
+	PrincipalID     uint32
+	GatheringID     uint32
 }
 
 // ExtractFromStream extracts a MessageRecipient structure from a stream
 func (messageRecipient *MessageRecipient) ExtractFromStream(stream *nex.StreamIn) error {
 	var err error
 
-	messageRecipient.m_uiRecipientType, err = stream.ReadUInt32LE()
+	messageRecipient.UIRecipientType, err = stream.ReadUInt32LE()
 	if err != nil {
-		return fmt.Errorf("Failed to extract MessageRecipient.m_uiRecipientType from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract MessageRecipient.UIRecipientType from stream. %s", err.Error())
 	}
 
-	messageRecipient.m_principalID, err = stream.ReadUInt32LE()
+	messageRecipient.PrincipalID, err = stream.ReadUInt32LE()
 	if err != nil {
-		return fmt.Errorf("Failed to extract MessageRecipient.m_principalID from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract MessageRecipient.PrincipalID from stream. %s", err.Error())
 	}
 
-	messageRecipient.m_gatheringID, err = stream.ReadUInt32LE()
+	messageRecipient.GatheringID, err = stream.ReadUInt32LE()
 	if err != nil {
-		return fmt.Errorf("Failed to extract MessageRecipient.m_gatheringID from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract MessageRecipient.GatheringID from stream. %s", err.Error())
 	}
 
 	return nil
@@ -42,9 +42,9 @@ func (messageRecipient *MessageRecipient) ExtractFromStream(stream *nex.StreamIn
 func (messageRecipient *MessageRecipient) Copy() nex.StructureInterface {
 	copied := NewMessageRecipient()
 
-	copied.m_uiRecipientType = messageRecipient.m_uiRecipientType
-	copied.m_principalID = messageRecipient.m_principalID
-	copied.m_gatheringID = messageRecipient.m_gatheringID
+	copied.UIRecipientType = messageRecipient.UIRecipientType
+	copied.PrincipalID = messageRecipient.PrincipalID
+	copied.GatheringID = messageRecipient.GatheringID
 
 	return copied
 }
@@ -53,15 +53,15 @@ func (messageRecipient *MessageRecipient) Copy() nex.StructureInterface {
 func (messageRecipient *MessageRecipient) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*MessageRecipient)
 
-	if messageRecipient.m_uiRecipientType != other.m_uiRecipientType {
+	if messageRecipient.UIRecipientType != other.UIRecipientType {
 		return false
 	}
 
-	if messageRecipient.m_principalID != other.m_principalID {
+	if messageRecipient.PrincipalID != other.PrincipalID {
 		return false
 	}
 
-	if messageRecipient.m_gatheringID != other.m_gatheringID {
+	if messageRecipient.GatheringID != other.GatheringID {
 		return false
 	}
 
@@ -82,9 +82,9 @@ func (messageRecipient *MessageRecipient) FormatToString(indentationLevel int) s
 
 	b.WriteString("MessageRecipient{\n")
 	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, messageRecipient.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sm_uiRecipientType: %d,\n", indentationValues, messageRecipient.m_uiRecipientType))
-	b.WriteString(fmt.Sprintf("%sm_principalID: %d,\n", indentationValues, messageRecipient.m_principalID))
-	b.WriteString(fmt.Sprintf("%sm_gatheringID: %d\n", indentationValues, messageRecipient.m_gatheringID))
+	b.WriteString(fmt.Sprintf("%sUIRecipientType: %d,\n", indentationValues, messageRecipient.UIRecipientType))
+	b.WriteString(fmt.Sprintf("%sPrincipalID: %d,\n", indentationValues, messageRecipient.PrincipalID))
+	b.WriteString(fmt.Sprintf("%sGatheringID: %d\n", indentationValues, messageRecipient.GatheringID))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()

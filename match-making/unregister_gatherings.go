@@ -10,11 +10,11 @@ import (
 
 // UnregisterGatherings sets the UnregisterGatherings handler function
 func (protocol *MatchMakingProtocol) UnregisterGatherings(handler func(err error, client *nex.Client, callID uint32, lstGatherings []uint32)) {
-	protocol.UnregisterGatheringsHandler = handler
+	protocol.unregisterGatheringsHandler = handler
 }
 
 func (protocol *MatchMakingProtocol) handleUnregisterGatherings(packet nex.PacketInterface) {
-	if protocol.UnregisterGatheringsHandler == nil {
+	if protocol.unregisterGatheringsHandler == nil {
 		globals.Logger.Warning("MatchMaking::UnregisterGatherings not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -30,8 +30,8 @@ func (protocol *MatchMakingProtocol) handleUnregisterGatherings(packet nex.Packe
 
 	lstGatherings, err := parametersStream.ReadListUInt32LE()
 	if err != nil {
-		go protocol.UnregisterGatheringsHandler(fmt.Errorf("Failed to read lstGatherings from parameters. %s", err.Error()), client, callID, nil)
+		go protocol.unregisterGatheringsHandler(fmt.Errorf("Failed to read lstGatherings from parameters. %s", err.Error()), client, callID, nil)
 	}
 
-	go protocol.UnregisterGatheringsHandler(nil, client, callID, lstGatherings)
+	go protocol.unregisterGatheringsHandler(nil, client, callID, lstGatherings)
 }

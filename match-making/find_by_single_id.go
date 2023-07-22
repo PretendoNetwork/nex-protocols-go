@@ -10,11 +10,11 @@ import (
 
 // FindBySingleID sets the FindBySingleID handler function
 func (protocol *MatchMakingProtocol) FindBySingleID(handler func(err error, client *nex.Client, callID uint32, id uint32)) {
-	protocol.FindBySingleIDHandler = handler
+	protocol.findBySingleIDHandler = handler
 }
 
 func (protocol *MatchMakingProtocol) handleFindBySingleID(packet nex.PacketInterface) {
-	if protocol.FindBySingleIDHandler == nil {
+	if protocol.findBySingleIDHandler == nil {
 		globals.Logger.Warning("MatchMaking::FindBySingleID not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -30,8 +30,8 @@ func (protocol *MatchMakingProtocol) handleFindBySingleID(packet nex.PacketInter
 
 	id, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		go protocol.FindBySingleIDHandler(fmt.Errorf("Failed to read id from parameters. %s", err.Error()), client, callID, 0)
+		go protocol.findBySingleIDHandler(fmt.Errorf("Failed to read id from parameters. %s", err.Error()), client, callID, 0)
 	}
 
-	go protocol.FindBySingleIDHandler(nil, client, callID, id)
+	go protocol.findBySingleIDHandler(nil, client, callID, id)
 }

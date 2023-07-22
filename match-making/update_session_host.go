@@ -10,11 +10,11 @@ import (
 
 // UpdateSessionHost sets the UpdateSessionHost handler function
 func (protocol *MatchMakingProtocol) UpdateSessionHost(handler func(err error, client *nex.Client, callID uint32, gid uint32, isMigrateOwner bool)) {
-	protocol.UpdateSessionHostHandler = handler
+	protocol.updateSessionHostHandler = handler
 }
 
 func (protocol *MatchMakingProtocol) handleUpdateSessionHost(packet nex.PacketInterface) {
-	if protocol.UpdateSessionHostHandler == nil {
+	if protocol.updateSessionHostHandler == nil {
 		fmt.Println("[Warning] MatchMaking::UpdateSessionHost not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -30,13 +30,13 @@ func (protocol *MatchMakingProtocol) handleUpdateSessionHost(packet nex.PacketIn
 
 	gid, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		go protocol.UpdateSessionHostHandler(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), client, callID, 0, false)
+		go protocol.updateSessionHostHandler(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), client, callID, 0, false)
 	}
 
 	isMigrateOwner, err := parametersStream.ReadBool()
 	if err != nil {
-		go protocol.UpdateSessionHostHandler(fmt.Errorf("Failed to read isMigrateOwner from parameters. %s", err.Error()), client, callID, 0, false)
+		go protocol.updateSessionHostHandler(fmt.Errorf("Failed to read isMigrateOwner from parameters. %s", err.Error()), client, callID, 0, false)
 	}
 
-	go protocol.UpdateSessionHostHandler(nil, client, callID, gid, isMigrateOwner)
+	go protocol.updateSessionHostHandler(nil, client, callID, gid, isMigrateOwner)
 }

@@ -10,11 +10,11 @@ import (
 
 // UpdateSessionHostV1 sets the UpdateSessionHostV1 handler function
 func (protocol *MatchMakingProtocol) UpdateSessionHostV1(handler func(err error, client *nex.Client, callID uint32, gid uint32)) {
-	protocol.UpdateSessionHostV1Handler = handler
+	protocol.updateSessionHostV1Handler = handler
 }
 
 func (protocol *MatchMakingProtocol) handleUpdateSessionHostV1(packet nex.PacketInterface) {
-	if protocol.UpdateSessionHostV1Handler == nil {
+	if protocol.updateSessionHostV1Handler == nil {
 		fmt.Println("[Warning] MatchMaking::UpdateSessionHostV1 not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -30,8 +30,8 @@ func (protocol *MatchMakingProtocol) handleUpdateSessionHostV1(packet nex.Packet
 
 	gid, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		go protocol.UpdateSessionHostV1Handler(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), client, callID, 0)
+		go protocol.updateSessionHostV1Handler(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), client, callID, 0)
 	}
 
-	go protocol.UpdateSessionHostV1Handler(nil, client, callID, gid)
+	go protocol.updateSessionHostV1Handler(nil, client, callID, gid)
 }

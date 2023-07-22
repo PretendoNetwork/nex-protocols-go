@@ -10,11 +10,11 @@ import (
 
 // UnregisterGathering sets the UnregisterGathering handler function
 func (protocol *MatchMakingProtocol) UnregisterGathering(handler func(err error, client *nex.Client, callID uint32, idGathering uint32)) {
-	protocol.UnregisterGatheringHandler = handler
+	protocol.unregisterGatheringHandler = handler
 }
 
 func (protocol *MatchMakingProtocol) handleUnregisterGathering(packet nex.PacketInterface) {
-	if protocol.UnregisterGatheringHandler == nil {
+	if protocol.unregisterGatheringHandler == nil {
 		globals.Logger.Warning("MatchMaking::UnregisterGathering not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -30,8 +30,8 @@ func (protocol *MatchMakingProtocol) handleUnregisterGathering(packet nex.Packet
 
 	idGathering, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		go protocol.UnregisterGatheringHandler(fmt.Errorf("Failed to read gatheringID from parameters. %s", err.Error()), client, callID, 0)
+		go protocol.unregisterGatheringHandler(fmt.Errorf("Failed to read gatheringID from parameters. %s", err.Error()), client, callID, 0)
 	}
 
-	go protocol.UnregisterGatheringHandler(nil, client, callID, idGathering)
+	go protocol.unregisterGatheringHandler(nil, client, callID, idGathering)
 }

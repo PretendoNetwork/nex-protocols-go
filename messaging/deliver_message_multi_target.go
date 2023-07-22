@@ -13,7 +13,7 @@ func (protocol *MessagingProtocol) DeliverMessageMultiTarget(handler func(err er
 
 func (protocol *MessagingProtocol) handleDeliverMessageMultiTarget(packet nex.PacketInterface) {
 	if protocol.deliverMessageMultiTargetHandler == nil {
-		globals.Logger.Warning("MessageDelivery::DeliverMessageMultiTarget not implemented")
+		globals.Logger.Warning("Messaging::DeliverMessageMultiTarget not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
 	}

@@ -16,7 +16,7 @@ func (protocol *MessagingProtocol) GetNumberOfMessages(handler func(err error, c
 
 func (protocol *MessagingProtocol) handleGetNumberOfMessages(packet nex.PacketInterface) {
 	if protocol.getNumberOfMessagesHandler == nil {
-		globals.Logger.Warning("MessageDelivery::GetNumberOfMessages not implemented")
+		globals.Logger.Warning("Messaging::GetNumberOfMessages not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
 	}

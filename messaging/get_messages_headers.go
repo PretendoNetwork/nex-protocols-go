@@ -16,7 +16,7 @@ func (protocol *MessagingProtocol) GetMessagesHeaders(handler func(err error, cl
 
 func (protocol *MessagingProtocol) handleGetMessagesHeaders(packet nex.PacketInterface) {
 	if protocol.getMessagesHeadersHandler == nil {
-		globals.Logger.Warning("MessageDelivery::GetMessagesHeaders not implemented")
+		globals.Logger.Warning("Messaging::GetMessagesHeaders not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
 	}

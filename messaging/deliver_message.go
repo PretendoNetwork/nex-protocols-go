@@ -15,7 +15,7 @@ func (protocol *MessagingProtocol) DeliverMessage(handler func(err error, client
 
 func (protocol *MessagingProtocol) handleDeliverMessage(packet nex.PacketInterface) {
 	if protocol.deliverMessageHandler == nil {
-		globals.Logger.Warning("MessageDelivery::DeliverMessage not implemented")
+		globals.Logger.Warning("Messaging::DeliverMessage not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
 	}

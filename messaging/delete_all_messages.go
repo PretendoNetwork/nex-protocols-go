@@ -16,7 +16,7 @@ func (protocol *MessagingProtocol) DeleteAllMessages(handler func(err error, cli
 
 func (protocol *MessagingProtocol) handleDeleteAllMessages(packet nex.PacketInterface) {
 	if protocol.deleteAllMessagesHandler == nil {
-		globals.Logger.Warning("MessageDelivery::DeleteAllMessages not implemented")
+		globals.Logger.Warning("Messaging::DeleteAllMessages not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
 	}

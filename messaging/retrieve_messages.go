@@ -16,7 +16,7 @@ func (protocol *MessagingProtocol) RetrieveMessages(handler func(err error, clie
 
 func (protocol *MessagingProtocol) handleRetrieveMessages(packet nex.PacketInterface) {
 	if protocol.retrieveMessagesHandler == nil {
-		globals.Logger.Warning("MessageDelivery::RetrieveMessages not implemented")
+		globals.Logger.Warning("Messaging::RetrieveMessages not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
 	}

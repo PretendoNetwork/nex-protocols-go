@@ -10,11 +10,11 @@ import (
 
 // OpenParticipation sets the OpenParticipation handler function
 func (protocol *MatchmakeExtensionProtocol) OpenParticipation(handler func(err error, client *nex.Client, callID uint32, gid uint32)) {
-	protocol.OpenParticipationHandler = handler
+	protocol.openParticipationHandler = handler
 }
 
 func (protocol *MatchmakeExtensionProtocol) handleOpenParticipation(packet nex.PacketInterface) {
-	if protocol.OpenParticipationHandler == nil {
+	if protocol.openParticipationHandler == nil {
 		globals.Logger.Warning("MatchmakeExtension::OpenParticipation not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -30,9 +30,9 @@ func (protocol *MatchmakeExtensionProtocol) handleOpenParticipation(packet nex.P
 
 	gid, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		go protocol.OpenParticipationHandler(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), client, callID, 0)
+		go protocol.openParticipationHandler(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), client, callID, 0)
 		return
 	}
 
-	go protocol.OpenParticipationHandler(nil, client, callID, gid)
+	go protocol.openParticipationHandler(nil, client, callID, gid)
 }

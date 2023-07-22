@@ -10,11 +10,11 @@ import (
 
 // GetSimpleCommunity sets the GetSimpleCommunity handler function
 func (protocol *MatchmakeExtensionProtocol) GetSimpleCommunity(handler func(err error, client *nex.Client, callID uint32, gatheringIDList []uint32)) {
-	protocol.GetSimpleCommunityHandler = handler
+	protocol.getSimpleCommunityHandler = handler
 }
 
 func (protocol *MatchmakeExtensionProtocol) handleGetSimpleCommunity(packet nex.PacketInterface) {
-	if protocol.GetSimpleCommunityHandler == nil {
+	if protocol.getSimpleCommunityHandler == nil {
 		globals.Logger.Warning("MatchmakeExtension::GetSimpleCommunity not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -30,9 +30,9 @@ func (protocol *MatchmakeExtensionProtocol) handleGetSimpleCommunity(packet nex.
 
 	gatheringIDList, err := parametersStream.ReadListUInt32LE()
 	if err != nil {
-		go protocol.GetSimpleCommunityHandler(fmt.Errorf("Failed to read gatheringIDList from parameters. %s", err.Error()), client, callID, nil)
+		go protocol.getSimpleCommunityHandler(fmt.Errorf("Failed to read gatheringIDList from parameters. %s", err.Error()), client, callID, nil)
 		return
 	}
 
-	go protocol.GetSimpleCommunityHandler(nil, client, callID, gatheringIDList)
+	go protocol.getSimpleCommunityHandler(nil, client, callID, gatheringIDList)
 }

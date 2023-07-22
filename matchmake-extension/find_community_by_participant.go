@@ -10,11 +10,11 @@ import (
 
 // FindCommunityByParticipant sets the FindCommunityByParticipant handler function
 func (protocol *MatchmakeExtensionProtocol) FindCommunityByParticipant(handler func(err error, client *nex.Client, callID uint32, pid uint32, resultRange *nex.ResultRange)) {
-	protocol.FindCommunityByParticipantHandler = handler
+	protocol.findCommunityByParticipantHandler = handler
 }
 
 func (protocol *MatchmakeExtensionProtocol) handleFindCommunityByParticipant(packet nex.PacketInterface) {
-	if protocol.FindCommunityByParticipantHandler == nil {
+	if protocol.findCommunityByParticipantHandler == nil {
 		globals.Logger.Warning("MatchmakeExtension::FindCommunityByParticipant not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -30,15 +30,15 @@ func (protocol *MatchmakeExtensionProtocol) handleFindCommunityByParticipant(pac
 
 	pid, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		go protocol.FindCommunityByParticipantHandler(fmt.Errorf("Failed to read pid from parameters. %s", err.Error()), client, callID, 0, nil)
+		go protocol.findCommunityByParticipantHandler(fmt.Errorf("Failed to read pid from parameters. %s", err.Error()), client, callID, 0, nil)
 		return
 	}
 
 	resultRange, err := parametersStream.ReadStructure(nex.NewResultRange())
 	if err != nil {
-		go protocol.FindCommunityByParticipantHandler(fmt.Errorf("Failed to read resultRange from parameters. %s", err.Error()), client, callID, 0, nil)
+		go protocol.findCommunityByParticipantHandler(fmt.Errorf("Failed to read resultRange from parameters. %s", err.Error()), client, callID, 0, nil)
 		return
 	}
 
-	go protocol.FindCommunityByParticipantHandler(nil, client, callID, pid, resultRange.(*nex.ResultRange))
+	go protocol.findCommunityByParticipantHandler(nil, client, callID, pid, resultRange.(*nex.ResultRange))
 }

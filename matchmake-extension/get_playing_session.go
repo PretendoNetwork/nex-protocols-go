@@ -10,11 +10,11 @@ import (
 
 // GetPlayingSession sets the GetPlayingSession handler function
 func (protocol *MatchmakeExtensionProtocol) GetPlayingSession(handler func(err error, client *nex.Client, callID uint32, lstPID []uint32)) {
-	protocol.GetPlayingSessionHandler = handler
+	protocol.getPlayingSessionHandler = handler
 }
 
 func (protocol *MatchmakeExtensionProtocol) handleGetPlayingSession(packet nex.PacketInterface) {
-	if protocol.GetPlayingSessionHandler == nil {
+	if protocol.getPlayingSessionHandler == nil {
 		globals.Logger.Warning("MatchmakeExtension::GetPlayingSession not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -30,9 +30,9 @@ func (protocol *MatchmakeExtensionProtocol) handleGetPlayingSession(packet nex.P
 
 	lstPID, err := parametersStream.ReadListUInt32LE()
 	if err != nil {
-		go protocol.GetPlayingSessionHandler(fmt.Errorf("Failed to read lstPID from parameters. %s", err.Error()), client, callID, nil)
+		go protocol.getPlayingSessionHandler(fmt.Errorf("Failed to read lstPID from parameters. %s", err.Error()), client, callID, nil)
 		return
 	}
 
-	go protocol.GetPlayingSessionHandler(nil, client, callID, lstPID)
+	go protocol.getPlayingSessionHandler(nil, client, callID, lstPID)
 }

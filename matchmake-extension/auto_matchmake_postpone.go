@@ -9,12 +9,12 @@ import (
 )
 
 // AutoMatchmake_Postpone sets the AutoMatchmake_Postpone handler function
-func (protocol *MatchmakeExtensionProtocol) AutoMatchmake_Postpone(handler func(err error, client *nex.Client, callID uint32, anyGathering *nex.DataHolder, message string)) {
-	protocol.AutoMatchmake_PostponeHandler = handler
+func (protocol *MatchmakeExtensionProtocol) AutoMatchmake_Postpone(handler func(err error, client *nex.Client, callID uint32, anyGathering *nex.DataHolder, strMessage string)) {
+	protocol.autoMatchmake_PostponeHandler = handler
 }
 
 func (protocol *MatchmakeExtensionProtocol) handleAutoMatchmake_Postpone(packet nex.PacketInterface) {
-	if protocol.AutoMatchmake_PostponeHandler == nil {
+	if protocol.autoMatchmake_PostponeHandler == nil {
 		globals.Logger.Warning("MatchmakeExtension::AutoMatchmake_Postpone not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -30,15 +30,15 @@ func (protocol *MatchmakeExtensionProtocol) handleAutoMatchmake_Postpone(packet 
 
 	anyGathering, err := parametersStream.ReadDataHolder()
 	if err != nil {
-		go protocol.AutoMatchmake_PostponeHandler(fmt.Errorf("Failed to read anyGathering from parameters. %s", err.Error()), client, callID, nil, "")
+		go protocol.autoMatchmake_PostponeHandler(fmt.Errorf("Failed to read anyGathering from parameters. %s", err.Error()), client, callID, nil, "")
 		return
 	}
 
-	message, err := parametersStream.ReadString()
+	strMessage, err := parametersStream.ReadString()
 	if err != nil {
-		go protocol.AutoMatchmake_PostponeHandler(fmt.Errorf("Failed to read message from parameters. %s", err.Error()), client, callID, nil, "")
+		go protocol.autoMatchmake_PostponeHandler(fmt.Errorf("Failed to read strMessage from parameters. %s", err.Error()), client, callID, nil, "")
 		return
 	}
 
-	go protocol.AutoMatchmake_PostponeHandler(nil, client, callID, anyGathering, message)
+	go protocol.autoMatchmake_PostponeHandler(nil, client, callID, anyGathering, strMessage)
 }

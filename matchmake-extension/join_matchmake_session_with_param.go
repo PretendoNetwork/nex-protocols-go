@@ -11,11 +11,11 @@ import (
 
 // JoinMatchmakeSessionWithParam sets the JoinMatchmakeSessionWithParam handler function
 func (protocol *MatchmakeExtensionProtocol) JoinMatchmakeSessionWithParam(handler func(err error, client *nex.Client, callID uint32, joinMatchmakeSessionParam *match_making_types.JoinMatchmakeSessionParam)) {
-	protocol.JoinMatchmakeSessionWithParamHandler = handler
+	protocol.joinMatchmakeSessionWithParamHandler = handler
 }
 
 func (protocol *MatchmakeExtensionProtocol) handleJoinMatchmakeSessionWithParam(packet nex.PacketInterface) {
-	if protocol.JoinMatchmakeSessionWithParamHandler == nil {
+	if protocol.joinMatchmakeSessionWithParamHandler == nil {
 		globals.Logger.Warning("MatchmakeExtension::JoinMatchmakeSessionWithParam not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -31,9 +31,9 @@ func (protocol *MatchmakeExtensionProtocol) handleJoinMatchmakeSessionWithParam(
 
 	joinMatchmakeSessionParam, err := parametersStream.ReadStructure(match_making_types.NewJoinMatchmakeSessionParam())
 	if err != nil {
-		go protocol.JoinMatchmakeSessionWithParamHandler(fmt.Errorf("Failed to read joinMatchmakeSessionParam from parameters. %s", err.Error()), client, callID, nil)
+		go protocol.joinMatchmakeSessionWithParamHandler(fmt.Errorf("Failed to read joinMatchmakeSessionParam from parameters. %s", err.Error()), client, callID, nil)
 		return
 	}
 
-	go protocol.JoinMatchmakeSessionWithParamHandler(nil, client, callID, joinMatchmakeSessionParam.(*match_making_types.JoinMatchmakeSessionParam))
+	go protocol.joinMatchmakeSessionWithParamHandler(nil, client, callID, joinMatchmakeSessionParam.(*match_making_types.JoinMatchmakeSessionParam))
 }

@@ -10,11 +10,11 @@ import (
 
 // FindCommunityByGatheringID sets the FindCommunityByGatheringID handler function
 func (protocol *MatchmakeExtensionProtocol) FindCommunityByGatheringID(handler func(err error, client *nex.Client, callID uint32, lstGID []uint32)) {
-	protocol.FindCommunityByGatheringIDHandler = handler
+	protocol.findCommunityByGatheringIDHandler = handler
 }
 
 func (protocol *MatchmakeExtensionProtocol) handleFindCommunityByGatheringID(packet nex.PacketInterface) {
-	if protocol.FindCommunityByGatheringIDHandler == nil {
+	if protocol.findCommunityByGatheringIDHandler == nil {
 		globals.Logger.Warning("MatchmakeExtension::FindCommunityByGatheringID not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -30,9 +30,9 @@ func (protocol *MatchmakeExtensionProtocol) handleFindCommunityByGatheringID(pac
 
 	lstGID, err := parametersStream.ReadListUInt32LE()
 	if err != nil {
-		go protocol.FindCommunityByGatheringIDHandler(fmt.Errorf("Failed to read lstGID from parameters. %s", err.Error()), client, callID, nil)
+		go protocol.findCommunityByGatheringIDHandler(fmt.Errorf("Failed to read lstGID from parameters. %s", err.Error()), client, callID, nil)
 		return
 	}
 
-	go protocol.FindCommunityByGatheringIDHandler(nil, client, callID, lstGID)
+	go protocol.findCommunityByGatheringIDHandler(nil, client, callID, lstGID)
 }

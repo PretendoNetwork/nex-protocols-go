@@ -10,11 +10,11 @@ import (
 
 // UpdateProgressScore sets the UpdateProgressScore handler function
 func (protocol *MatchmakeExtensionProtocol) UpdateProgressScore(handler func(err error, client *nex.Client, callID uint32, gid uint32, progressScore uint8)) {
-	protocol.UpdateProgressScoreHandler = handler
+	protocol.updateProgressScoreHandler = handler
 }
 
 func (protocol *MatchmakeExtensionProtocol) handleUpdateProgressScore(packet nex.PacketInterface) {
-	if protocol.UpdateProgressScoreHandler == nil {
+	if protocol.updateProgressScoreHandler == nil {
 		globals.Logger.Warning("MatchmakeExtension::UpdateProgressScore not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -30,15 +30,15 @@ func (protocol *MatchmakeExtensionProtocol) handleUpdateProgressScore(packet nex
 
 	gid, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		go protocol.UpdateProgressScoreHandler(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), client, callID, 0, 0)
+		go protocol.updateProgressScoreHandler(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), client, callID, 0, 0)
 		return
 	}
 
 	progressScore, err := parametersStream.ReadUInt8()
 	if err != nil {
-		go protocol.UpdateProgressScoreHandler(fmt.Errorf("Failed to read progressScore from parameters. %s", err.Error()), client, callID, 0, 0)
+		go protocol.updateProgressScoreHandler(fmt.Errorf("Failed to read progressScore from parameters. %s", err.Error()), client, callID, 0, 0)
 		return
 	}
 
-	go protocol.UpdateProgressScoreHandler(nil, client, callID, gid, progressScore)
+	go protocol.updateProgressScoreHandler(nil, client, callID, gid, progressScore)
 }

@@ -11,11 +11,11 @@ import (
 
 // AutoMatchmakeWithParam_Postpone sets the AutoMatchmakeWithParam_Postpone handler function
 func (protocol *MatchmakeExtensionProtocol) AutoMatchmakeWithParam_Postpone(handler func(err error, client *nex.Client, callID uint32, autoMatchmakeParam *match_making_types.AutoMatchmakeParam)) {
-	protocol.AutoMatchmakeWithParam_PostponeHandler = handler
+	protocol.autoMatchmakeWithParam_PostponeHandler = handler
 }
 
 func (protocol *MatchmakeExtensionProtocol) handleAutoMatchmakeWithParam_Postpone(packet nex.PacketInterface) {
-	if protocol.AutoMatchmakeWithParam_PostponeHandler == nil {
+	if protocol.autoMatchmakeWithParam_PostponeHandler == nil {
 		globals.Logger.Warning("MatchmakeExtension::AutoMatchmakeWithParam_Postpone not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -31,9 +31,9 @@ func (protocol *MatchmakeExtensionProtocol) handleAutoMatchmakeWithParam_Postpon
 
 	autoMatchmakeParam, err := parametersStream.ReadStructure(match_making_types.NewAutoMatchmakeParam())
 	if err != nil {
-		go protocol.AutoMatchmakeWithParam_PostponeHandler(fmt.Errorf("Failed to read autoMatchmakeParam from parameters. %s", err.Error()), client, callID, nil)
+		go protocol.autoMatchmakeWithParam_PostponeHandler(fmt.Errorf("Failed to read autoMatchmakeParam from parameters. %s", err.Error()), client, callID, nil)
 		return
 	}
 
-	go protocol.AutoMatchmakeWithParam_PostponeHandler(nil, client, callID, autoMatchmakeParam.(*match_making_types.AutoMatchmakeParam))
+	go protocol.autoMatchmakeWithParam_PostponeHandler(nil, client, callID, autoMatchmakeParam.(*match_making_types.AutoMatchmakeParam))
 }

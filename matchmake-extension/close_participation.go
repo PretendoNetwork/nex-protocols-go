@@ -9,12 +9,12 @@ import (
 )
 
 // CloseParticipation sets the CloseParticipation handler function
-func (protocol *MatchmakeExtensionProtocol) CloseParticipation(handler func(err error, client *nex.Client, callID uint32, GID uint32)) {
-	protocol.CloseParticipationHandler = handler
+func (protocol *MatchmakeExtensionProtocol) CloseParticipation(handler func(err error, client *nex.Client, callID uint32, gid uint32)) {
+	protocol.closeParticipationHandler = handler
 }
 
 func (protocol *MatchmakeExtensionProtocol) handleCloseParticipation(packet nex.PacketInterface) {
-	if protocol.CloseParticipationHandler == nil {
+	if protocol.closeParticipationHandler == nil {
 		globals.Logger.Warning("MatchmakeExtension::CloseParticipation not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -30,9 +30,9 @@ func (protocol *MatchmakeExtensionProtocol) handleCloseParticipation(packet nex.
 
 	gid, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		go protocol.CloseParticipationHandler(fmt.Errorf("Failed to read GID from parameters. %s", err.Error()), client, callID, 0)
+		go protocol.closeParticipationHandler(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), client, callID, 0)
 		return
 	}
 
-	go protocol.CloseParticipationHandler(nil, client, callID, gid)
+	go protocol.closeParticipationHandler(nil, client, callID, gid)
 }

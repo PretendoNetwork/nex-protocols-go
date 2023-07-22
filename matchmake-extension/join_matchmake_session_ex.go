@@ -10,11 +10,11 @@ import (
 
 // JoinMatchmakeSessionEx sets the JoinMatchmakeSessionEx handler function
 func (protocol *MatchmakeExtensionProtocol) JoinMatchmakeSessionEx(handler func(err error, client *nex.Client, callID uint32, gid uint32, strMessage string, dontCareMyBlockList bool, participationCount uint16)) {
-	protocol.JoinMatchmakeSessionExHandler = handler
+	protocol.joinMatchmakeSessionExHandler = handler
 }
 
 func (protocol *MatchmakeExtensionProtocol) handleJoinMatchmakeSessionEx(packet nex.PacketInterface) {
-	if protocol.JoinMatchmakeSessionExHandler == nil {
+	if protocol.joinMatchmakeSessionExHandler == nil {
 		globals.Logger.Warning("MatchmakeExtension::JoinMatchmakeSessionEx not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -30,27 +30,27 @@ func (protocol *MatchmakeExtensionProtocol) handleJoinMatchmakeSessionEx(packet 
 
 	gid, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		go protocol.JoinMatchmakeSessionExHandler(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), client, callID, 0, "", false, 0)
+		go protocol.joinMatchmakeSessionExHandler(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), client, callID, 0, "", false, 0)
 		return
 	}
 
 	strMessage, err := parametersStream.ReadString()
 	if err != nil {
-		go protocol.JoinMatchmakeSessionExHandler(fmt.Errorf("Failed to read strMessage from parameters. %s", err.Error()), client, callID, 0, "", false, 0)
+		go protocol.joinMatchmakeSessionExHandler(fmt.Errorf("Failed to read strMessage from parameters. %s", err.Error()), client, callID, 0, "", false, 0)
 		return
 	}
 
 	dontCareMyBlockList, err := parametersStream.ReadBool()
 	if err != nil {
-		go protocol.JoinMatchmakeSessionExHandler(fmt.Errorf("Failed to read dontCareMyBlockList from parameters. %s", err.Error()), client, callID, 0, "", false, 0)
+		go protocol.joinMatchmakeSessionExHandler(fmt.Errorf("Failed to read dontCareMyBlockList from parameters. %s", err.Error()), client, callID, 0, "", false, 0)
 		return
 	}
 
 	participationCount, err := parametersStream.ReadUInt16LE()
 	if err != nil {
-		go protocol.JoinMatchmakeSessionExHandler(fmt.Errorf("Failed to read participationCount from parameters. %s", err.Error()), client, callID, 0, "", false, 0)
+		go protocol.joinMatchmakeSessionExHandler(fmt.Errorf("Failed to read participationCount from parameters. %s", err.Error()), client, callID, 0, "", false, 0)
 		return
 	}
 
-	go protocol.JoinMatchmakeSessionExHandler(nil, client, callID, gid, strMessage, dontCareMyBlockList, participationCount)
+	go protocol.joinMatchmakeSessionExHandler(nil, client, callID, gid, strMessage, dontCareMyBlockList, participationCount)
 }

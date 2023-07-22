@@ -10,11 +10,11 @@ import (
 
 // NintendoCreateAccount sets the NintendoCreateAccount handler function
 func (protocol *AccountManagementProtocol) NintendoCreateAccount(handler func(err error, client *nex.Client, callID uint32, strPrincipalName string, strKey string, uiGroups uint32, strEmail string, oAuthData *nex.DataHolder)) {
-	protocol.NintendoCreateAccountHandler = handler
+	protocol.nintendoCreateAccountHandler = handler
 }
 
 func (protocol *AccountManagementProtocol) handleNintendoCreateAccount(packet nex.PacketInterface) {
-	if protocol.NintendoCreateAccountHandler == nil {
+	if protocol.nintendoCreateAccountHandler == nil {
 		globals.Logger.Warning("AccountManagement::NintendoCreateAccount not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -30,33 +30,33 @@ func (protocol *AccountManagementProtocol) handleNintendoCreateAccount(packet ne
 
 	strPrincipalName, err := parametersStream.ReadString()
 	if err != nil {
-		go protocol.NintendoCreateAccountHandler(fmt.Errorf("Failed to read strPrincipalName from parameters. %s", err.Error()), client, callID, "", "", 0, "", nil)
+		go protocol.nintendoCreateAccountHandler(fmt.Errorf("Failed to read strPrincipalName from parameters. %s", err.Error()), client, callID, "", "", 0, "", nil)
 		return
 	}
 
 	strKey, err := parametersStream.ReadString()
 	if err != nil {
-		go protocol.NintendoCreateAccountHandler(fmt.Errorf("Failed to read strKey from parameters. %s", err.Error()), client, callID, "", "", 0, "", nil)
+		go protocol.nintendoCreateAccountHandler(fmt.Errorf("Failed to read strKey from parameters. %s", err.Error()), client, callID, "", "", 0, "", nil)
 		return
 	}
 
 	uiGroups, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		go protocol.NintendoCreateAccountHandler(fmt.Errorf("Failed to read uiGroups from parameters. %s", err.Error()), client, callID, "", "", 0, "", nil)
+		go protocol.nintendoCreateAccountHandler(fmt.Errorf("Failed to read uiGroups from parameters. %s", err.Error()), client, callID, "", "", 0, "", nil)
 		return
 	}
 
 	strEmail, err := parametersStream.ReadString()
 	if err != nil {
-		go protocol.NintendoCreateAccountHandler(fmt.Errorf("Failed to read strEmail from parameters. %s", err.Error()), client, callID, "", "", 0, "", nil)
+		go protocol.nintendoCreateAccountHandler(fmt.Errorf("Failed to read strEmail from parameters. %s", err.Error()), client, callID, "", "", 0, "", nil)
 		return
 	}
 
 	oAuthData, err := parametersStream.ReadDataHolder()
 	if err != nil {
-		go protocol.NintendoCreateAccountHandler(fmt.Errorf("Failed to read oAuthData from parameters. %s", err.Error()), client, callID, "", "", 0, "", nil)
+		go protocol.nintendoCreateAccountHandler(fmt.Errorf("Failed to read oAuthData from parameters. %s", err.Error()), client, callID, "", "", 0, "", nil)
 		return
 	}
 
-	go protocol.NintendoCreateAccountHandler(nil, client, callID, strPrincipalName, strKey, uiGroups, strEmail, oAuthData)
+	go protocol.nintendoCreateAccountHandler(nil, client, callID, strPrincipalName, strKey, uiGroups, strEmail, oAuthData)
 }

@@ -96,7 +96,7 @@ func (accountExtraInfo *AccountExtraInfo) FormatToString(indentationLevel int) s
 	b.WriteString(fmt.Sprintf("%sUnknown: %d,\n", indentationValues, accountExtraInfo.Unknown))
 	b.WriteString(fmt.Sprintf("%sUnknown2: %d,\n", indentationValues, accountExtraInfo.Unknown2))
 	b.WriteString(fmt.Sprintf("%sUnknown3: %d,\n", indentationValues, accountExtraInfo.Unknown3))
-	b.WriteString(fmt.Sprintf("%sNEXToken: %s\n", indentationValues, accountExtraInfo.NEXToken))
+	b.WriteString(fmt.Sprintf("%sNEXToken: %q\n", indentationValues, accountExtraInfo.NEXToken))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()

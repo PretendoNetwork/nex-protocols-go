@@ -190,5 +190,7 @@ func NewDataStoreSuperSmashBros4Protocol(server *nex.Server) *DataStoreSuperSmas
 	protocol := &DataStoreSuperSmashBros4Protocol{Server: server}
 	protocol.DataStoreProtocol.Server = server
 
+	protocol.Setup()
+
 	return protocol
 }

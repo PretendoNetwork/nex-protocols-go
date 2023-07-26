@@ -12,7 +12,7 @@ import (
 type MatchmakeRefereeRound struct {
 	nex.Structure
 	*nex.Data
-	RoundId                        uint64
+	RoundID                        uint64
 	GID                            uint32
 	State                          uint32
 	PersonalDataCategory           uint32
@@ -21,7 +21,7 @@ type MatchmakeRefereeRound struct {
 
 // Bytes encodes the MatchmakeRefereeRound and returns a byte array
 func (matchmakeRefereeRound *MatchmakeRefereeRound) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt64LE(matchmakeRefereeRound.RoundId)
+	stream.WriteUInt64LE(matchmakeRefereeRound.RoundID)
 	stream.WriteUInt32LE(matchmakeRefereeRound.GID)
 	stream.WriteUInt32LE(matchmakeRefereeRound.State)
 	stream.WriteUInt32LE(matchmakeRefereeRound.PersonalDataCategory)
@@ -34,9 +34,9 @@ func (matchmakeRefereeRound *MatchmakeRefereeRound) Bytes(stream *nex.StreamOut)
 func (matchmakeRefereeRound *MatchmakeRefereeRound) ExtractFromStream(stream *nex.StreamIn) error {
 	var err error
 
-	matchmakeRefereeRound.RoundId, err = stream.ReadUInt64LE()
+	matchmakeRefereeRound.RoundID, err = stream.ReadUInt64LE()
 	if err != nil {
-		return fmt.Errorf("Failed to extract MatchmakeRefereeRound.RoundId. %s", err.Error())
+		return fmt.Errorf("Failed to extract MatchmakeRefereeRound.RoundID. %s", err.Error())
 	}
 
 	matchmakeRefereeRound.GID, err = stream.ReadUInt32LE()
@@ -71,7 +71,7 @@ func (matchmakeRefereeRound *MatchmakeRefereeRound) Copy() nex.StructureInterfac
 	copied.Data = matchmakeRefereeRound.ParentType().Copy().(*nex.Data)
 	copied.SetParentType(copied.Data)
 
-	copied.RoundId = matchmakeRefereeRound.RoundId
+	copied.RoundID = matchmakeRefereeRound.RoundID
 	copied.GID = matchmakeRefereeRound.GID
 	copied.State = matchmakeRefereeRound.State
 	copied.PersonalDataCategory = matchmakeRefereeRound.PersonalDataCategory
@@ -92,7 +92,7 @@ func (matchmakeRefereeRound *MatchmakeRefereeRound) Equals(structure nex.Structu
 		return false
 	}
 
-	if matchmakeRefereeRound.RoundId != other.RoundId {
+	if matchmakeRefereeRound.RoundID != other.RoundID {
 		return false
 	}
 
@@ -142,7 +142,7 @@ func (matchmakeRefereeRound *MatchmakeRefereeRound) FormatToString(indentationLe
 
 	b.WriteString("MatchmakeRefereeRound{\n")
 	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, matchmakeRefereeRound.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sRoundId: %d,\n", indentationValues, matchmakeRefereeRound.RoundId))
+	b.WriteString(fmt.Sprintf("%sRoundID: %d,\n", indentationValues, matchmakeRefereeRound.RoundID))
 	b.WriteString(fmt.Sprintf("%sGID: %d,\n", indentationValues, matchmakeRefereeRound.GID))
 	b.WriteString(fmt.Sprintf("%sState: %d,\n", indentationValues, matchmakeRefereeRound.State))
 	b.WriteString(fmt.Sprintf("%sPersonalDataCategory: %d,\n", indentationValues, matchmakeRefereeRound.PersonalDataCategory))

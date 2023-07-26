@@ -12,7 +12,7 @@ import (
 type MatchmakeRefereeStats struct {
 	nex.Structure
 	*nex.Data
-	UniqueId            uint64
+	UniqueID            uint64
 	Category            uint32
 	PID                 uint32
 	RecentDisconnection uint32
@@ -32,7 +32,7 @@ type MatchmakeRefereeStats struct {
 
 // Bytes encodes the MatchmakeRefereeStats and returns a byte array
 func (matchmakeRefereeStats *MatchmakeRefereeStats) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt64LE(matchmakeRefereeStats.UniqueId)
+	stream.WriteUInt64LE(matchmakeRefereeStats.UniqueID)
 	stream.WriteUInt32LE(matchmakeRefereeStats.Category)
 	stream.WriteUInt32LE(matchmakeRefereeStats.PID)
 	stream.WriteUInt32LE(matchmakeRefereeStats.RecentDisconnection)
@@ -56,9 +56,9 @@ func (matchmakeRefereeStats *MatchmakeRefereeStats) Bytes(stream *nex.StreamOut)
 func (matchmakeRefereeStats *MatchmakeRefereeStats) ExtractFromStream(stream *nex.StreamIn) error {
 	var err error
 
-	matchmakeRefereeStats.UniqueId, err = stream.ReadUInt64LE()
+	matchmakeRefereeStats.UniqueID, err = stream.ReadUInt64LE()
 	if err != nil {
-		return fmt.Errorf("Failed to extract MatchmakeRefereeStats.UniqueId. %s", err.Error())
+		return fmt.Errorf("Failed to extract MatchmakeRefereeStats.UniqueID. %s", err.Error())
 	}
 
 	matchmakeRefereeStats.Category, err = stream.ReadUInt32LE()
@@ -146,7 +146,7 @@ func (matchmakeRefereeStats *MatchmakeRefereeStats) Copy() nex.StructureInterfac
 	copied.Data = matchmakeRefereeStats.ParentType().Copy().(*nex.Data)
 	copied.SetParentType(copied.Data)
 
-	copied.UniqueId = matchmakeRefereeStats.UniqueId
+	copied.UniqueID = matchmakeRefereeStats.UniqueID
 	copied.Category = matchmakeRefereeStats.Category
 	copied.PID = matchmakeRefereeStats.PID
 	copied.RecentDisconnection = matchmakeRefereeStats.RecentDisconnection
@@ -174,7 +174,7 @@ func (matchmakeRefereeStats *MatchmakeRefereeStats) Equals(structure nex.Structu
 		return false
 	}
 
-	if matchmakeRefereeStats.UniqueId != other.UniqueId {
+	if matchmakeRefereeStats.UniqueID != other.UniqueID {
 		return false
 	}
 
@@ -255,7 +255,7 @@ func (matchmakeRefereeStats *MatchmakeRefereeStats) FormatToString(indentationLe
 
 	b.WriteString("MatchmakeRefereeStats{\n")
 	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, matchmakeRefereeStats.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sUniqueId: %d,\n", indentationValues, matchmakeRefereeStats.UniqueId))
+	b.WriteString(fmt.Sprintf("%sUniqueID: %d,\n", indentationValues, matchmakeRefereeStats.UniqueID))
 	b.WriteString(fmt.Sprintf("%sCategory: %d,\n", indentationValues, matchmakeRefereeStats.Category))
 	b.WriteString(fmt.Sprintf("%sPID: %d,\n", indentationValues, matchmakeRefereeStats.PID))
 	b.WriteString(fmt.Sprintf("%sRecentDisconnection: %d,\n", indentationValues, matchmakeRefereeStats.RecentDisconnection))

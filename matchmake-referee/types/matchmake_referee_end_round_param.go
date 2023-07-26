@@ -12,13 +12,13 @@ import (
 type MatchmakeRefereeEndRoundParam struct {
 	nex.Structure
 	*nex.Data
-	RoundId              uint64
+	RoundID              uint64
 	PersonalRoundResults []*MatchmakeRefereePersonalRoundResult
 }
 
 // Bytes encodes the MatchmakeRefereeEndRoundParam and returns a byte array
 func (matchmakeRefereeEndRoundParam *MatchmakeRefereeEndRoundParam) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt64LE(matchmakeRefereeEndRoundParam.RoundId)
+	stream.WriteUInt64LE(matchmakeRefereeEndRoundParam.RoundID)
 	stream.WriteListStructure(matchmakeRefereeEndRoundParam.PersonalRoundResults)
 
 	return stream.Bytes()
@@ -28,9 +28,9 @@ func (matchmakeRefereeEndRoundParam *MatchmakeRefereeEndRoundParam) Bytes(stream
 func (matchmakeRefereeEndRoundParam *MatchmakeRefereeEndRoundParam) ExtractFromStream(stream *nex.StreamIn) error {
 	var err error
 
-	matchmakeRefereeEndRoundParam.RoundId, err = stream.ReadUInt64LE()
+	matchmakeRefereeEndRoundParam.RoundID, err = stream.ReadUInt64LE()
 	if err != nil {
-		return fmt.Errorf("Failed to extract MatchmakeRefereeEndRoundParam.RoundId. %s", err.Error())
+		return fmt.Errorf("Failed to extract MatchmakeRefereeEndRoundParam.RoundID. %s", err.Error())
 	}
 
 	resultList, err := stream.ReadListStructure(NewMatchmakeRefereePersonalRoundResult())
@@ -50,7 +50,7 @@ func (matchmakeRefereeEndRoundParam *MatchmakeRefereeEndRoundParam) Copy() nex.S
 	copied.Data = matchmakeRefereeEndRoundParam.ParentType().Copy().(*nex.Data)
 	copied.SetParentType(copied.Data)
 
-	copied.RoundId = matchmakeRefereeEndRoundParam.RoundId
+	copied.RoundID = matchmakeRefereeEndRoundParam.RoundID
 
 	copied.PersonalRoundResults = make([]*MatchmakeRefereePersonalRoundResult, len(matchmakeRefereeEndRoundParam.PersonalRoundResults))
 	for i := 0; i < len(matchmakeRefereeEndRoundParam.PersonalRoundResults); i++ {
@@ -68,7 +68,7 @@ func (matchmakeRefereeEndRoundParam *MatchmakeRefereeEndRoundParam) Equals(struc
 		return false
 	}
 
-	if matchmakeRefereeEndRoundParam.RoundId != other.RoundId {
+	if matchmakeRefereeEndRoundParam.RoundID != other.RoundID {
 		return false
 	}
 
@@ -106,7 +106,7 @@ func (matchmakeRefereeEndRoundParam *MatchmakeRefereeEndRoundParam) FormatToStri
 
 	b.WriteString("MatchmakeRefereeEndRoundParam{\n")
 	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, matchmakeRefereeEndRoundParam.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sRoundId: %d,\n", indentationValues, matchmakeRefereeEndRoundParam.RoundId))
+	b.WriteString(fmt.Sprintf("%sRoundID: %d,\n", indentationValues, matchmakeRefereeEndRoundParam.RoundID))
 	if len(matchmakeRefereeEndRoundParam.PersonalRoundResults) == 0 {
 		b.WriteString(fmt.Sprintf("%sPersonalRoundResults: [],\n", indentationValues))
 	} else {

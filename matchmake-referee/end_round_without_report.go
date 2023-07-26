@@ -34,5 +34,5 @@ func (protocol *MatchmakeRefereeProtocol) handleEndRoundWithoutReport(packet nex
 		return
 	}
 
-	go protocol.EndRoundWithoutReportHandler(nil, client, callID, roundId)
+	go protocol.EndRoundWithoutReportHandler(nil, client, callID, roundID)
 }

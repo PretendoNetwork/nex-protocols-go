@@ -1,5 +1,5 @@
-// Package match_making_ext implements the Match Making Ext NEX protocol
-package match_making_ext
+// Package protocol implements the Match Making Ext protocol
+package protocol
 
 import (
 	"fmt"
@@ -9,11 +9,11 @@ import (
 )
 
 // EndParticipation sets the EndParticipation handler function
-func (protocol *MatchMakingExtProtocol) EndParticipation(handler func(err error, client *nex.Client, callID uint32, idGathering uint32, strMessage string)) {
+func (protocol *Protocol) EndParticipation(handler func(err error, client *nex.Client, callID uint32, idGathering uint32, strMessage string)) {
 	protocol.EndParticipationHandler = handler
 }
 
-func (protocol *MatchMakingExtProtocol) handleEndParticipation(packet nex.PacketInterface) {
+func (protocol *Protocol) handleEndParticipation(packet nex.PacketInterface) {
 	if protocol.EndParticipationHandler == nil {
 		globals.Logger.Warning("MatchMakingExt::EndParticipation not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

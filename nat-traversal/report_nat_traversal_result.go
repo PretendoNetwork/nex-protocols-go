@@ -1,5 +1,5 @@
-// Package nat_traversal implements the NAT Traversal NEX protocol
-package nat_traversal
+// Package protocol implements the NAT Traversal protocol
+package protocol
 
 import (
 	"fmt"
@@ -9,11 +9,11 @@ import (
 )
 
 // ReportNATTraversalResult sets the ReportNATTraversalResult handler function
-func (protocol *NATTraversalProtocol) ReportNATTraversalResult(handler func(err error, client *nex.Client, callID uint32, cid uint32, result bool, rtt uint32)) {
+func (protocol *Protocol) ReportNATTraversalResult(handler func(err error, client *nex.Client, callID uint32, cid uint32, result bool, rtt uint32)) {
 	protocol.ReportNATTraversalResultHandler = handler
 }
 
-func (protocol *NATTraversalProtocol) handleReportNATTraversalResult(packet nex.PacketInterface) {
+func (protocol *Protocol) handleReportNATTraversalResult(packet nex.PacketInterface) {
 	if protocol.ReportNATTraversalResultHandler == nil {
 		globals.Logger.Warning("NATTraversal::ReportNATTraversalResult not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

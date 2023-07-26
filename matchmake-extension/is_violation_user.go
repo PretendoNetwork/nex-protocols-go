@@ -1,5 +1,5 @@
-// Package matchmake_extension implements the Matchmake Extension NEX protocol
-package matchmake_extension
+// Package protocol implements the Matchmake Extension protocol
+package protocol
 
 import (
 	nex "github.com/PretendoNetwork/nex-go"
@@ -7,11 +7,11 @@ import (
 )
 
 // IsViolationUser sets the IsViolationUser handler function
-func (protocol *MatchmakeExtensionProtocol) IsViolationUser(handler func(err error, client *nex.Client, callID uint32)) {
+func (protocol *Protocol) IsViolationUser(handler func(err error, client *nex.Client, callID uint32)) {
 	protocol.isViolationUserHandler = handler
 }
 
-func (protocol *MatchmakeExtensionProtocol) handleIsViolationUser(packet nex.PacketInterface) {
+func (protocol *Protocol) handleIsViolationUser(packet nex.PacketInterface) {
 	if protocol.isViolationUserHandler == nil {
 		globals.Logger.Warning("MatchmakeExtension::IsViolationUser not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

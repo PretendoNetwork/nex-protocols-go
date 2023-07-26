@@ -1,5 +1,5 @@
-// Package secure_connection implements the Secure Connection NEX protocol
-package secure_connection
+// Package protocol implements the Secure Connection protocol
+package protocol
 
 import (
 	"fmt"
@@ -9,11 +9,11 @@ import (
 )
 
 // RequestURLs sets the RequestURLs handler function
-func (protocol *SecureConnectionProtocol) RequestURLs(handler func(err error, client *nex.Client, callID uint32, cidTarget uint32, pidTarget uint32)) {
+func (protocol *Protocol) RequestURLs(handler func(err error, client *nex.Client, callID uint32, cidTarget uint32, pidTarget uint32)) {
 	protocol.RequestURLsHandler = handler
 }
 
-func (protocol *SecureConnectionProtocol) handleRequestURLs(packet nex.PacketInterface) {
+func (protocol *Protocol) handleRequestURLs(packet nex.PacketInterface) {
 	if protocol.RequestURLsHandler == nil {
 		globals.Logger.Warning("SecureConnection::RequestURLs not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

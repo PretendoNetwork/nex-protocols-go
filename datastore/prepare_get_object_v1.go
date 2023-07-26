@@ -1,5 +1,5 @@
-// Package datastore implements the DataStore NEX protocol
-package datastore
+// Package protocol implements the DataStore protocol
+package protocol
 
 import (
 	"fmt"
@@ -10,11 +10,11 @@ import (
 )
 
 // PrepareGetObjectV1 sets the PrepareGetObjectV1 handler function
-func (protocol *DataStoreProtocol) PrepareGetObjectV1(handler func(err error, client *nex.Client, callID uint32, dataStorePrepareGetParamV1 *datastore_types.DataStorePrepareGetParamV1)) {
+func (protocol *Protocol) PrepareGetObjectV1(handler func(err error, client *nex.Client, callID uint32, dataStorePrepareGetParamV1 *datastore_types.DataStorePrepareGetParamV1)) {
 	protocol.PrepareGetObjectV1Handler = handler
 }
 
-func (protocol *DataStoreProtocol) handlePrepareGetObjectV1(packet nex.PacketInterface) {
+func (protocol *Protocol) handlePrepareGetObjectV1(packet nex.PacketInterface) {
 	if protocol.PrepareGetObjectV1Handler == nil {
 		globals.Logger.Warning("DataStore::PrepareGetObjectV1 not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

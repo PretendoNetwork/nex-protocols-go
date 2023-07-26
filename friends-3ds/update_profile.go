@@ -1,5 +1,5 @@
-// Package friends_3ds implements the Friends 3DS NEX protocol
-package friends_3ds
+// Package protocol implements the Friends 3DS protocol
+package protocol
 
 import (
 	"fmt"
@@ -10,11 +10,11 @@ import (
 )
 
 // UpdateProfile sets the UpdateProfile handler function
-func (protocol *Friends3DSProtocol) UpdateProfile(handler func(err error, client *nex.Client, callID uint32, profileData *friends_3ds_types.MyProfile)) {
+func (protocol *Protocol) UpdateProfile(handler func(err error, client *nex.Client, callID uint32, profileData *friends_3ds_types.MyProfile)) {
 	protocol.updateProfileHandler = handler
 }
 
-func (protocol *Friends3DSProtocol) handleUpdateProfile(packet nex.PacketInterface) {
+func (protocol *Protocol) handleUpdateProfile(packet nex.PacketInterface) {
 	if protocol.updateProfileHandler == nil {
 		globals.Logger.Warning("Friends3DS::UpdateProfile not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

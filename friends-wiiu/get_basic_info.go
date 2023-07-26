@@ -1,5 +1,5 @@
-// Package friends_wiiu implements the Friends WiiU NEX protocol
-package friends_wiiu
+// Package protocol implements the Friends WiiU protocol
+package protocol
 
 import (
 	"fmt"
@@ -9,11 +9,11 @@ import (
 )
 
 // GetBasicInfo sets the GetBasicInfo handler function
-func (protocol *FriendsWiiUProtocol) GetBasicInfo(handler func(err error, client *nex.Client, callID uint32, pids []uint32)) {
+func (protocol *Protocol) GetBasicInfo(handler func(err error, client *nex.Client, callID uint32, pids []uint32)) {
 	protocol.GetBasicInfoHandler = handler
 }
 
-func (protocol *FriendsWiiUProtocol) handleGetBasicInfo(packet nex.PacketInterface) {
+func (protocol *Protocol) handleGetBasicInfo(packet nex.PacketInterface) {
 	if protocol.GetBasicInfoHandler == nil {
 		globals.Logger.Warning("FriendsWiiU::GetBasicInfo not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

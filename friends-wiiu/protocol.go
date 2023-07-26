@@ -1,5 +1,5 @@
-// Package friends_wiiu implements the Friends WiiU NEX protocol
-package friends_wiiu
+// Package protocol implements the Friends WiiU protocol
+package protocol
 
 import (
 	"fmt"
@@ -74,8 +74,8 @@ const (
 	MethodGetRequestBlockSettings = 0x14
 )
 
-// FriendsWiiUProtocol handles the Friends (WiiU) NEX protocol
-type FriendsWiiUProtocol struct {
+// Protocol stores all the RMC method handlers for the Friends (WiiU) protocol and listens for requests
+type Protocol struct {
 	Server                              *nex.Server
 	UpdateAndGetAllInformationHandler   func(err error, client *nex.Client, callID uint32, nnaInfo *friends_wiiu_types.NNAInfo, presence *friends_wiiu_types.NintendoPresenceV2, birthday *nex.DateTime)
 	AddFriendHandler                    func(err error, client *nex.Client, callID uint32, pid uint32)
@@ -100,7 +100,7 @@ type FriendsWiiUProtocol struct {
 }
 
 // Setup initializes the protocol
-func (protocol *FriendsWiiUProtocol) Setup() {
+func (protocol *Protocol) Setup() {
 	protocol.Server.On("Data", func(packet nex.PacketInterface) {
 		request := packet.RMCRequest()
 
@@ -111,7 +111,7 @@ func (protocol *FriendsWiiUProtocol) Setup() {
 }
 
 // HandlePacket sends the packet to the correct RMC method handler
-func (protocol *FriendsWiiUProtocol) HandlePacket(packet nex.PacketInterface) {
+func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 	request := packet.RMCRequest()
 
 	switch request.MethodID() {
@@ -161,9 +161,9 @@ func (protocol *FriendsWiiUProtocol) HandlePacket(packet nex.PacketInterface) {
 	}
 }
 
-// NewFriendsWiiUProtocol returns a new FriendsWiiUProtocol
-func NewFriendsWiiUProtocol(server *nex.Server) *FriendsWiiUProtocol {
-	protocol := &FriendsWiiUProtocol{Server: server}
+// NewProtocol returns a new Friends (WiiU) protocol
+func NewProtocol(server *nex.Server) *Protocol {
+	protocol := &Protocol{Server: server}
 
 	protocol.Setup()
 

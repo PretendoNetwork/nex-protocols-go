@@ -1,5 +1,5 @@
-// Package datastore implements the DataStore NEX protocol
-package datastore
+// Package protocol implements the DataStore protocol
+package protocol
 
 import (
 	"fmt"
@@ -10,11 +10,11 @@ import (
 )
 
 // PrepareUpdateObject sets the PrepareUpdateObject handler function
-func (protocol *DataStoreProtocol) PrepareUpdateObject(handler func(err error, client *nex.Client, callID uint32, dataStorePrepareUpdateParam *datastore_types.DataStorePrepareUpdateParam)) {
+func (protocol *Protocol) PrepareUpdateObject(handler func(err error, client *nex.Client, callID uint32, dataStorePrepareUpdateParam *datastore_types.DataStorePrepareUpdateParam)) {
 	protocol.PrepareUpdateObjectHandler = handler
 }
 
-func (protocol *DataStoreProtocol) handlePrepareUpdateObject(packet nex.PacketInterface) {
+func (protocol *Protocol) handlePrepareUpdateObject(packet nex.PacketInterface) {
 	if protocol.PrepareUpdateObjectHandler == nil {
 		globals.Logger.Warning("DataStore::PrepareUpdateObject not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

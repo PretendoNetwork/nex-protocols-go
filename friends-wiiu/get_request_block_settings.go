@@ -1,5 +1,5 @@
-// Package friends_wiiu implements the Friends WiiU NEX protocol
-package friends_wiiu
+// Package protocol implements the Friends WiiU protocol
+package protocol
 
 import (
 	"fmt"
@@ -9,11 +9,11 @@ import (
 )
 
 // GetRequestBlockSettings sets the GetRequestBlockSettings handler function
-func (protocol *FriendsWiiUProtocol) GetRequestBlockSettings(handler func(err error, client *nex.Client, callID uint32, unknowns []uint32)) {
+func (protocol *Protocol) GetRequestBlockSettings(handler func(err error, client *nex.Client, callID uint32, unknowns []uint32)) {
 	protocol.GetRequestBlockSettingsHandler = handler
 }
 
-func (protocol *FriendsWiiUProtocol) handleGetRequestBlockSettings(packet nex.PacketInterface) {
+func (protocol *Protocol) handleGetRequestBlockSettings(packet nex.PacketInterface) {
 	if protocol.GetRequestBlockSettingsHandler == nil {
 		globals.Logger.Warning("FriendsWiiU::GetRequestBlockSettings not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

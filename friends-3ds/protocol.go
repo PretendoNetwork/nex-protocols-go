@@ -1,5 +1,5 @@
-// Package friends_3ds implements the Friends 3DS NEX protocol
-package friends_3ds
+// Package protocol implements the Friends 3DS protocol
+package protocol
 
 import (
 	"fmt"
@@ -92,8 +92,8 @@ const (
 	MethodSendInvitation = 0x1A
 )
 
-// Friends3DSProtocol handles the Friends (3DS) NEX protocol
-type Friends3DSProtocol struct {
+// Protocol stores all the RMC method handlers for the Friends (3DS) protocol and listens for requests
+type Protocol struct {
 	Server                                 *nex.Server
 	updateProfileHandler                   func(err error, client *nex.Client, callID uint32, profileData *friends_3ds_types.MyProfile)
 	updateMiiHandler                       func(err error, client *nex.Client, callID uint32, mii *friends_3ds_types.Mii)
@@ -124,7 +124,7 @@ type Friends3DSProtocol struct {
 }
 
 // Setup initializes the protocol
-func (protocol *Friends3DSProtocol) Setup() {
+func (protocol *Protocol) Setup() {
 	protocol.Server.On("Data", func(packet nex.PacketInterface) {
 		request := packet.RMCRequest()
 
@@ -135,7 +135,7 @@ func (protocol *Friends3DSProtocol) Setup() {
 }
 
 // HandlePacket sends the packet to the correct RMC method handler
-func (protocol *Friends3DSProtocol) HandlePacket(packet nex.PacketInterface) {
+func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 	request := packet.RMCRequest()
 
 	switch request.MethodID() {
@@ -197,9 +197,9 @@ func (protocol *Friends3DSProtocol) HandlePacket(packet nex.PacketInterface) {
 	}
 }
 
-// NewFriends3DSProtocol returns a new Friends3DSProtocol
-func NewFriends3DSProtocol(server *nex.Server) *Friends3DSProtocol {
-	protocol := &Friends3DSProtocol{Server: server}
+// NewProtocol returns a new Friends (3DS) protocol
+func NewProtocol(server *nex.Server) *Protocol {
+	protocol := &Protocol{Server: server}
 
 	protocol.Setup()
 

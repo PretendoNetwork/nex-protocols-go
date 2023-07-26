@@ -1,5 +1,5 @@
-// Package datastore implements the DataStore NEX protocol
-package datastore
+// Package protocol implements the DataStore protocol
+package protocol
 
 import (
 	"fmt"
@@ -10,11 +10,11 @@ import (
 )
 
 // CompletePostObject sets the CompletePostObject handler function
-func (protocol *DataStoreProtocol) CompletePostObject(handler func(err error, client *nex.Client, callID uint32, dataStoreCompletePostParam *datastore_types.DataStoreCompletePostParam)) {
+func (protocol *Protocol) CompletePostObject(handler func(err error, client *nex.Client, callID uint32, dataStoreCompletePostParam *datastore_types.DataStoreCompletePostParam)) {
 	protocol.CompletePostObjectHandler = handler
 }
 
-func (protocol *DataStoreProtocol) handleCompletePostObject(packet nex.PacketInterface) {
+func (protocol *Protocol) handleCompletePostObject(packet nex.PacketInterface) {
 	if protocol.CompletePostObjectHandler == nil {
 		globals.Logger.Warning("DataStore::CompletePostObject not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

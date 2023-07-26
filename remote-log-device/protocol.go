@@ -1,5 +1,5 @@
-// Package remote_log_device implements the Remote Log Device NEX protocol
-package remote_log_device
+// Package protocol implements the Remote Log Device protocol
+package protocol
 
 import (
 	"fmt"
@@ -15,14 +15,14 @@ const (
 	MethodLog = 0x1
 )
 
-// RemoteLogDeviceProtocol handles the RemoteLogDevice protocol
-type RemoteLogDeviceProtocol struct {
+// Protocol handles the RemoteLogDevice protocol
+type Protocol struct {
 	Server     *nex.Server
 	LogHandler func(err error, client *nex.Client, callID uint32, strLine string)
 }
 
 // Setup initializes the protocol
-func (protocol *RemoteLogDeviceProtocol) Setup() {
+func (protocol *Protocol) Setup() {
 	protocol.Server.On("Data", func(packet nex.PacketInterface) {
 		request := packet.RMCRequest()
 
@@ -33,7 +33,7 @@ func (protocol *RemoteLogDeviceProtocol) Setup() {
 }
 
 // HandlePacket sends the packet to the correct RMC method handler
-func (protocol *RemoteLogDeviceProtocol) HandlePacket(packet nex.PacketInterface) {
+func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 	request := packet.RMCRequest()
 
 	switch request.MethodID() {
@@ -44,9 +44,9 @@ func (protocol *RemoteLogDeviceProtocol) HandlePacket(packet nex.PacketInterface
 	}
 }
 
-// NewRemoteLogDeviceProtocol returns a new RemoteLogDeviceProtocol
-func NewRemoteLogDeviceProtocol(server *nex.Server) *RemoteLogDeviceProtocol {
-	protocol := &RemoteLogDeviceProtocol{Server: server}
+// NewProtocol returns a new Remote Log Device protocol
+func NewProtocol(server *nex.Server) *Protocol {
+	protocol := &Protocol{Server: server}
 
 	protocol.Setup()
 

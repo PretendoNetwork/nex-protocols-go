@@ -1,11 +1,11 @@
-// Package datastore_super_mario_maker implements the Super Mario Maker DataStore NEX protocol
-package datastore_super_mario_maker
+// Package protocol implements the Super Mario Maker DataStore protocol
+package protocol
 
 import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
-	"github.com/PretendoNetwork/nex-protocols-go/datastore"
+	datastore "github.com/PretendoNetwork/nex-protocols-go/datastore"
 	datastore_super_mario_maker_types "github.com/PretendoNetwork/nex-protocols-go/datastore/super-mario-maker/types"
 	datastore_types "github.com/PretendoNetwork/nex-protocols-go/datastore/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
@@ -92,10 +92,13 @@ var patchedMethods = []uint32{
 	MethodCTRPickUpCourseSearchObject,
 }
 
-// DataStoreSuperMarioMakerProtocol handles the DataStore (SMM) NEX protocol. Embeds DataStoreProtocol
-type DataStoreSuperMarioMakerProtocol struct {
+type datastoreProtocol = datastore.Protocol
+
+// Protocol stores all the RMC method handlers for the DataStore (SMM) protocol and listens for requests
+// Embeds the DataStore protocol
+type Protocol struct {
 	Server *nex.Server
-	datastore.DataStoreProtocol
+	datastoreProtocol
 	GetObjectInfosHandler                     func(err error, client *nex.Client, callID uint32, dataIDs []uint64)
 	RateCustomRankingHandler                  func(err error, client *nex.Client, callID uint32, dataStoreRateCustomRankingParams []*datastore_super_mario_maker_types.DataStoreRateCustomRankingParam)
 	GetCustomRankingByDataIDHandler           func(err error, client *nex.Client, callID uint32, dataStoreGetCustomRankingByDataIDParam *datastore_super_mario_maker_types.DataStoreGetCustomRankingByDataIDParam)
@@ -117,7 +120,7 @@ type DataStoreSuperMarioMakerProtocol struct {
 }
 
 // Setup initializes the protocol
-func (protocol *DataStoreSuperMarioMakerProtocol) Setup() {
+func (protocol *Protocol) Setup() {
 	protocol.Server.On("Data", func(packet nex.PacketInterface) {
 		request := packet.RMCRequest()
 
@@ -125,14 +128,14 @@ func (protocol *DataStoreSuperMarioMakerProtocol) Setup() {
 			if slices.Contains(patchedMethods, request.MethodID()) {
 				protocol.HandlePacket(packet)
 			} else {
-				protocol.DataStoreProtocol.HandlePacket(packet)
+				protocol.datastoreProtocol.HandlePacket(packet)
 			}
 		}
 	})
 }
 
 // HandlePacket sends the packet to the correct RMC method handler
-func (protocol *DataStoreSuperMarioMakerProtocol) HandlePacket(packet nex.PacketInterface) {
+func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 	request := packet.RMCRequest()
 
 	switch request.MethodID() {
@@ -178,10 +181,10 @@ func (protocol *DataStoreSuperMarioMakerProtocol) HandlePacket(packet nex.Packet
 	}
 }
 
-// NewDataStoreSuperMarioMakerProtocol returns a new DataStoreSuperMarioMakerProtocol
-func NewDataStoreSuperMarioMakerProtocol(server *nex.Server) *DataStoreSuperMarioMakerProtocol {
-	protocol := &DataStoreSuperMarioMakerProtocol{Server: server}
-	protocol.DataStoreProtocol.Server = server
+// NewProtocol returns a new DataStore (SMM) protocol
+func NewProtocol(server *nex.Server) *Protocol {
+	protocol := &Protocol{Server: server}
+	protocol.datastoreProtocol.Server = server
 
 	protocol.Setup()
 

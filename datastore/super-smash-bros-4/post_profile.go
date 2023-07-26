@@ -1,5 +1,5 @@
-// Package datastore_super_smash_bros_4 implements the Super Smash Bros. 4 DataStore NEX protocol
-package datastore_super_smash_bros_4
+// Package protocol implements the Super Smash Bros. 4 DataStore protocol
+package protocol
 
 import (
 	"fmt"
@@ -10,11 +10,11 @@ import (
 )
 
 // PostProfile sets the PostProfile handler function
-func (protocol *DataStoreSuperSmashBros4Protocol) PostProfile(handler func(err error, client *nex.Client, callID uint32, param *datastore_super_smash_bros_4_types.DataStorePostProfileParam)) {
+func (protocol *Protocol) PostProfile(handler func(err error, client *nex.Client, callID uint32, param *datastore_super_smash_bros_4_types.DataStorePostProfileParam)) {
 	protocol.PostProfileHandler = handler
 }
 
-func (protocol *DataStoreSuperSmashBros4Protocol) handlePostProfile(packet nex.PacketInterface) {
+func (protocol *Protocol) handlePostProfile(packet nex.PacketInterface) {
 	if protocol.PostProfileHandler == nil {
 		globals.Logger.Warning("DataStoreSmash4::PostProfile not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

@@ -1,5 +1,5 @@
-// Package match_making implements the Match Making NEX protocol
-package match_making
+// Package protocol implements the Match Making protocol
+package protocol
 
 import (
 	"fmt"
@@ -9,11 +9,11 @@ import (
 )
 
 // GetDetailedParticipants sets the GetDetailedParticipants handler function
-func (protocol *MatchMakingProtocol) GetDetailedParticipants(handler func(err error, client *nex.Client, callID uint32, idGathering uint32)) {
+func (protocol *Protocol) GetDetailedParticipants(handler func(err error, client *nex.Client, callID uint32, idGathering uint32)) {
 	protocol.getDetailedParticipantsHandler = handler
 }
 
-func (protocol *MatchMakingProtocol) handleGetDetailedParticipants(packet nex.PacketInterface) {
+func (protocol *Protocol) handleGetDetailedParticipants(packet nex.PacketInterface) {
 	if protocol.getDetailedParticipantsHandler == nil {
 		globals.Logger.Warning("MatchMaking::GetDetailedParticipants not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

@@ -1,5 +1,5 @@
-// Package secure_connection_nintendo_badge_arcade implements the Nintendo Badge Arcade Secure Connection NEX protocol
-package secure_connection_nintendo_badge_arcade
+// Package protocol implements the Nintendo Badge Arcade Secure Connection protocol
+package protocol
 
 import (
 	nex "github.com/PretendoNetwork/nex-go"
@@ -7,11 +7,11 @@ import (
 )
 
 // GetMaintenanceStatus sets the GetMaintenanceStatus function
-func (protocol *SecureConnectionNintendoBadgeArcadeProtocol) GetMaintenanceStatus(handler func(err error, client *nex.Client, callID uint32)) {
+func (protocol *Protocol) GetMaintenanceStatus(handler func(err error, client *nex.Client, callID uint32)) {
 	protocol.GetMaintenanceStatusHandler = handler
 }
 
-func (protocol *SecureConnectionNintendoBadgeArcadeProtocol) handleGetMaintenanceStatus(packet nex.PacketInterface) {
+func (protocol *Protocol) handleGetMaintenanceStatus(packet nex.PacketInterface) {
 	if protocol.GetMaintenanceStatusHandler == nil {
 		globals.Logger.Warning("SecureConnectionBadgeArcade::GetMaintenanceStatus not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

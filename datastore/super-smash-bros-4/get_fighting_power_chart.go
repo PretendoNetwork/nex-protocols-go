@@ -1,5 +1,5 @@
-// Package datastore_super_smash_bros_4 implements the Super Smash Bros. 4 DataStore NEX protocol
-package datastore_super_smash_bros_4
+// Package protocol implements the Super Smash Bros. 4 DataStore protocol
+package protocol
 
 import (
 	"fmt"
@@ -9,11 +9,11 @@ import (
 )
 
 // GetFightingPowerChart sets the GetFightingPowerChart handler function
-func (protocol *DataStoreSuperSmashBros4Protocol) GetFightingPowerChart(handler func(err error, client *nex.Client, callID uint32, mode uint8)) {
+func (protocol *Protocol) GetFightingPowerChart(handler func(err error, client *nex.Client, callID uint32, mode uint8)) {
 	protocol.GetFightingPowerChartHandler = handler
 }
 
-func (protocol *DataStoreSuperSmashBros4Protocol) handleGetFightingPowerChart(packet nex.PacketInterface) {
+func (protocol *Protocol) handleGetFightingPowerChart(packet nex.PacketInterface) {
 	if protocol.GetFightingPowerChartHandler == nil {
 		globals.Logger.Warning("DataStoreSmash4::GetFightingPowerChart not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

@@ -1,5 +1,5 @@
-// Package datastore_super_mario_maker implements the Super Mario Maker DataStore NEX protocol
-package datastore_super_mario_maker
+// Package protocol implements the Super Mario Maker DataStore protocol
+package protocol
 
 import (
 	"fmt"
@@ -10,11 +10,11 @@ import (
 )
 
 // GetCustomRankingByDataID sets the GetCustomRankingByDataID handler function
-func (protocol *DataStoreSuperMarioMakerProtocol) GetCustomRankingByDataID(handler func(err error, client *nex.Client, callID uint32, dataStoreGetCustomRankingByDataIDParam *datastore_super_mario_maker_types.DataStoreGetCustomRankingByDataIDParam)) {
+func (protocol *Protocol) GetCustomRankingByDataID(handler func(err error, client *nex.Client, callID uint32, dataStoreGetCustomRankingByDataIDParam *datastore_super_mario_maker_types.DataStoreGetCustomRankingByDataIDParam)) {
 	protocol.GetCustomRankingByDataIDHandler = handler
 }
 
-func (protocol *DataStoreSuperMarioMakerProtocol) handleGetCustomRankingByDataID(packet nex.PacketInterface) {
+func (protocol *Protocol) handleGetCustomRankingByDataID(packet nex.PacketInterface) {
 	if protocol.GetCustomRankingByDataIDHandler == nil {
 		globals.Logger.Warning("DataStoreSMM::GetCustomRankingByDataID not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

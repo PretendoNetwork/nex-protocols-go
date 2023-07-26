@@ -1,5 +1,5 @@
-// Package friends_3ds implements the Friends 3DS NEX protocol
-package friends_3ds
+// Package protocol implements the Friends 3DS protocol
+package protocol
 
 import (
 	"fmt"
@@ -10,11 +10,11 @@ import (
 )
 
 // UpdatePresence sets the UpdatePresence handler function
-func (protocol *Friends3DSProtocol) UpdatePresence(handler func(err error, client *nex.Client, callID uint32, presence *friends_3ds_types.NintendoPresence, showGame bool)) {
+func (protocol *Protocol) UpdatePresence(handler func(err error, client *nex.Client, callID uint32, presence *friends_3ds_types.NintendoPresence, showGame bool)) {
 	protocol.updatePresenceHandler = handler
 }
 
-func (protocol *Friends3DSProtocol) handleUpdatePresence(packet nex.PacketInterface) {
+func (protocol *Protocol) handleUpdatePresence(packet nex.PacketInterface) {
 	if protocol.updatePresenceHandler == nil {
 		globals.Logger.Warning("Friends3DS::UpdatePresence not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

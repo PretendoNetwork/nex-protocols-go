@@ -1,5 +1,5 @@
-// Package secure_connection implements the Secure Connection NEX protocol
-package secure_connection
+// Package protocol implements the Secure Connection protocol
+package protocol
 
 import (
 	"fmt"
@@ -9,11 +9,11 @@ import (
 )
 
 // ReplaceURL sets the ReplaceURL handler function
-func (protocol *SecureConnectionProtocol) ReplaceURL(handler func(err error, client *nex.Client, callID uint32, target *nex.StationURL, url *nex.StationURL)) {
+func (protocol *Protocol) ReplaceURL(handler func(err error, client *nex.Client, callID uint32, target *nex.StationURL, url *nex.StationURL)) {
 	protocol.ReplaceURLHandler = handler
 }
 
-func (protocol *SecureConnectionProtocol) handleReplaceURL(packet nex.PacketInterface) {
+func (protocol *Protocol) handleReplaceURL(packet nex.PacketInterface) {
 	if protocol.ReplaceURLHandler == nil {
 		globals.Logger.Warning("SecureConnection::ReplaceURL not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

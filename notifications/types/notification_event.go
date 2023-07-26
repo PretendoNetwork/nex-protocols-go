@@ -1,5 +1,5 @@
-// Package notifications_types implements all the types used by the Notifications protocol
-package notifications_types
+// Package types implements all the types used by the Notifications protocol
+package types
 
 import (
 	"fmt"

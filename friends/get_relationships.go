@@ -1,5 +1,5 @@
-// Package friends implements the Friends QRV protocol
-package friends
+// Package protocol implements the Friends QRV protocol
+package protocol
 
 import (
 	"fmt"
@@ -9,11 +9,11 @@ import (
 )
 
 // GetRelationships sets the GetRelationships handler function
-func (protocol *FriendsProtocol) GetRelationships(handler func(err error, client *nex.Client, callID uint32, resultRange *nex.ResultRange)) {
+func (protocol *Protocol) GetRelationships(handler func(err error, client *nex.Client, callID uint32, resultRange *nex.ResultRange)) {
 	protocol.getRelationshipsHandler = handler
 }
 
-func (protocol *FriendsProtocol) handleGetRelationships(packet nex.PacketInterface) {
+func (protocol *Protocol) handleGetRelationships(packet nex.PacketInterface) {
 	if protocol.getRelationshipsHandler == nil {
 		globals.Logger.Warning("Friends::GetRelationships not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

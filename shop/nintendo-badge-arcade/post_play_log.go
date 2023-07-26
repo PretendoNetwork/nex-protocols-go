@@ -1,5 +1,5 @@
-// Package shop_nintendo_badge_arcade implements the Nintendo Badge Arcade Shop NEX protocol
-package shop_nintendo_badge_arcade
+// Package protocol implements the Nintendo Badge Arcade Shop protocol
+package protocol
 
 import (
 	"fmt"
@@ -10,11 +10,11 @@ import (
 )
 
 // PostPlayLog sets the PostPlayLog function
-func (protocol *ShopNintendoBadgeArcadeProtocol) PostPlayLog(handler func(err error, client *nex.Client, callID uint32, param *shop_nintendo_badge_arcade_types.ShopPostPlayLogParam)) {
+func (protocol *Protocol) PostPlayLog(handler func(err error, client *nex.Client, callID uint32, param *shop_nintendo_badge_arcade_types.ShopPostPlayLogParam)) {
 	protocol.PostPlayLogHandler = handler
 }
 
-func (protocol *ShopNintendoBadgeArcadeProtocol) handlePostPlayLog(packet nex.PacketInterface) {
+func (protocol *Protocol) handlePostPlayLog(packet nex.PacketInterface) {
 	if protocol.PostPlayLogHandler == nil {
 		globals.Logger.Warning("ShopNintendoBadgeArcade::PostPlayLog not implemented")
 		go globals.RespondNotImplementedCustom(packet, CustomProtocolID)

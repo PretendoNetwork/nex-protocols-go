@@ -1,5 +1,5 @@
-// Package match_making_ext implements the Match Making Ext NEX protocol
-package match_making_ext
+// Package protocol implements the Match Making Ext protocol
+package protocol
 
 import (
 	"fmt"
@@ -30,8 +30,8 @@ const (
 	MethodDeleteFromDeletions = 0x6
 )
 
-// MatchMakingExtProtocol handles the MatchMakingExt protocol
-type MatchMakingExtProtocol struct {
+// Protocol handles the MatchMakingExt protocol
+type Protocol struct {
 	Server                         *nex.Server
 	EndParticipationHandler        func(err error, client *nex.Client, callID uint32, idGathering uint32, strMessage string)
 	GetParticipantsHandler         func(err error, client *nex.Client, callID uint32, idGathering uint32, bOnlyActive bool)
@@ -42,7 +42,7 @@ type MatchMakingExtProtocol struct {
 }
 
 // Setup initializes the protocol
-func (protocol *MatchMakingExtProtocol) Setup() {
+func (protocol *Protocol) Setup() {
 	protocol.Server.On("Data", func(packet nex.PacketInterface) {
 		request := packet.RMCRequest()
 
@@ -53,7 +53,7 @@ func (protocol *MatchMakingExtProtocol) Setup() {
 }
 
 // HandlePacket sends the packet to the correct RMC method handler
-func (protocol *MatchMakingExtProtocol) HandlePacket(packet nex.PacketInterface) {
+func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 	request := packet.RMCRequest()
 
 	switch request.MethodID() {
@@ -74,9 +74,9 @@ func (protocol *MatchMakingExtProtocol) HandlePacket(packet nex.PacketInterface)
 	}
 }
 
-// NewMatchMakingExtProtocol returns a new MatchMakingExtProtocol
-func NewMatchMakingExtProtocol(server *nex.Server) *MatchMakingExtProtocol {
-	protocol := &MatchMakingExtProtocol{Server: server}
+// NewProtocol returns a new Match Making Ext protocol
+func NewProtocol(server *nex.Server) *Protocol {
+	protocol := &Protocol{Server: server}
 
 	protocol.Setup()
 

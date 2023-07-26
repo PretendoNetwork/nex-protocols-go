@@ -1,5 +1,5 @@
-// Package matchmake_extension implements the Matchmake Extension NEX protocol
-package matchmake_extension
+// Package protocol implements the Matchmake Extension protocol
+package protocol
 
 import (
 	"fmt"
@@ -10,11 +10,11 @@ import (
 )
 
 // BrowseMatchmakeSessionNoHolder sets the BrowseMatchmakeSessionNoHolder handler function
-func (protocol *MatchmakeExtensionProtocol) BrowseMatchmakeSessionNoHolder(handler func(err error, client *nex.Client, callID uint32, searchCriteria *match_making_types.MatchmakeSessionSearchCriteria, resultRange *nex.ResultRange)) {
+func (protocol *Protocol) BrowseMatchmakeSessionNoHolder(handler func(err error, client *nex.Client, callID uint32, searchCriteria *match_making_types.MatchmakeSessionSearchCriteria, resultRange *nex.ResultRange)) {
 	protocol.browseMatchmakeSessionNoHolderHandler = handler
 }
 
-func (protocol *MatchmakeExtensionProtocol) handleBrowseMatchmakeSessionNoHolder(packet nex.PacketInterface) {
+func (protocol *Protocol) handleBrowseMatchmakeSessionNoHolder(packet nex.PacketInterface) {
 	if protocol.browseMatchmakeSessionNoHolderHandler == nil {
 		globals.Logger.Warning("MatchmakeExtension::BrowseMatchmakeSessionNoHolder not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

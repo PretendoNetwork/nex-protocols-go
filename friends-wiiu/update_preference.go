@@ -1,5 +1,5 @@
-// Package friends_wiiu implements the Friends WiiU NEX protocol
-package friends_wiiu
+// Package protocol implements the Friends WiiU protocol
+package protocol
 
 import (
 	"fmt"
@@ -10,11 +10,11 @@ import (
 )
 
 // UpdatePreference sets the UpdatePreference handler function
-func (protocol *FriendsWiiUProtocol) UpdatePreference(handler func(err error, client *nex.Client, callID uint32, preference *friends_wiiu_types.PrincipalPreference)) {
+func (protocol *Protocol) UpdatePreference(handler func(err error, client *nex.Client, callID uint32, preference *friends_wiiu_types.PrincipalPreference)) {
 	protocol.UpdatePreferenceHandler = handler
 }
 
-func (protocol *FriendsWiiUProtocol) handleUpdatePreference(packet nex.PacketInterface) {
+func (protocol *Protocol) handleUpdatePreference(packet nex.PacketInterface) {
 	if protocol.UpdatePreferenceHandler == nil {
 		globals.Logger.Warning("FriendsWiiU::UpdatePreference not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

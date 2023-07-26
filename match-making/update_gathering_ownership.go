@@ -1,5 +1,5 @@
-// Package match_making implements the Match Making NEX protocol
-package match_making
+// Package protocol implements the Match Making protocol
+package protocol
 
 import (
 	"fmt"
@@ -9,11 +9,11 @@ import (
 )
 
 // UpdateGatheringOwnership sets the UpdateGatheringOwnership handler function
-func (protocol *MatchMakingProtocol) UpdateGatheringOwnership(handler func(err error, client *nex.Client, callID uint32, gid uint32, participantsOnly bool)) {
+func (protocol *Protocol) UpdateGatheringOwnership(handler func(err error, client *nex.Client, callID uint32, gid uint32, participantsOnly bool)) {
 	protocol.updateGatheringOwnershipHandler = handler
 }
 
-func (protocol *MatchMakingProtocol) handleUpdateGatheringOwnership(packet nex.PacketInterface) {
+func (protocol *Protocol) handleUpdateGatheringOwnership(packet nex.PacketInterface) {
 	if protocol.updateGatheringOwnershipHandler == nil {
 		globals.Logger.Warning("MatchMaking::UpdateGatheringOwnership not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

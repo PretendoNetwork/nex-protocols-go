@@ -1,5 +1,5 @@
-// Package match_making implements the Match Making NEX protocol
-package match_making
+// Package protocol implements the Match Making protocol
+package protocol
 
 import (
 	"fmt"
@@ -146,8 +146,8 @@ const (
 	MethodMigrateGatheringOwnership = 0x2C
 )
 
-// MatchMakingProtocol handles the MatchMaking NEX protocol
-type MatchMakingProtocol struct {
+// Protocol stores all the RMC method handlers for the MatchMaking protocol and listens for requests
+type Protocol struct {
 	Server                             *nex.Server
 	registerGatheringHandler           func(err error, client *nex.Client, callID uint32, anyGathering *nex.DataHolder)
 	unregisterGatheringHandler         func(err error, client *nex.Client, callID uint32, idGathering uint32)
@@ -196,7 +196,7 @@ type MatchMakingProtocol struct {
 }
 
 // Setup initializes the protocol
-func (protocol *MatchMakingProtocol) Setup() {
+func (protocol *Protocol) Setup() {
 	protocol.Server.On("Data", func(packet nex.PacketInterface) {
 		request := packet.RMCRequest()
 
@@ -207,7 +207,7 @@ func (protocol *MatchMakingProtocol) Setup() {
 }
 
 // HandlePacket sends the packet to the correct RMC method handler
-func (protocol *MatchMakingProtocol) HandlePacket(packet nex.PacketInterface) {
+func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 	request := packet.RMCRequest()
 
 	switch request.MethodID() {
@@ -305,9 +305,9 @@ func (protocol *MatchMakingProtocol) HandlePacket(packet nex.PacketInterface) {
 	}
 }
 
-// NewMatchMakingProtocol returns a new MatchMakingProtocol
-func NewMatchMakingProtocol(server *nex.Server) *MatchMakingProtocol {
-	protocol := &MatchMakingProtocol{Server: server}
+// NewProtocol returns a new Match Making protocol
+func NewProtocol(server *nex.Server) *Protocol {
+	protocol := &Protocol{Server: server}
 
 	protocol.Setup()
 

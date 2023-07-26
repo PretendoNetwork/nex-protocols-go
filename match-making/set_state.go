@@ -1,5 +1,5 @@
-// Package match_making implements the Match Making NEX protocol
-package match_making
+// Package protocol implements the Match Making protocol
+package protocol
 
 import (
 	"fmt"
@@ -9,11 +9,11 @@ import (
 )
 
 // SetState sets the SetState handler function
-func (protocol *MatchMakingProtocol) SetState(handler func(err error, client *nex.Client, callID uint32, idGathering uint32, uiNewState uint32)) {
+func (protocol *Protocol) SetState(handler func(err error, client *nex.Client, callID uint32, idGathering uint32, uiNewState uint32)) {
 	protocol.setStateHandler = handler
 }
 
-func (protocol *MatchMakingProtocol) handleSetState(packet nex.PacketInterface) {
+func (protocol *Protocol) handleSetState(packet nex.PacketInterface) {
 	if protocol.setStateHandler == nil {
 		globals.Logger.Warning("MatchMaking::SetState not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

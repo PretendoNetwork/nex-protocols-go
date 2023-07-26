@@ -1,5 +1,5 @@
-// Package secure_connection_nintendo_badge_arcade implements the Nintendo Badge Arcade Secure Connection NEX protocol
-package secure_connection_nintendo_badge_arcade
+// Package protocol implements the Nintendo Badge Arcade Secure Connection protocol
+package protocol
 
 import (
 	"fmt"
@@ -11,7 +11,7 @@ import (
 )
 
 const (
-	// ProtocolID is the protocol ID for the Secure Connection (Badge Arcade) protocol. ID is the same as the Secure Connection Protocol
+	// ProtocolID is the protocol ID for the Secure Connection (Nintendo Badge Arcade) protocol. ID is the same as the Secure Connection Protocol
 	ProtocolID = 0xB
 
 	// MethodGetMaintenanceStatus is the method ID for GetMaintenanceStatus
@@ -22,15 +22,18 @@ var patchedMethods = []uint32{
 	MethodGetMaintenanceStatus,
 }
 
-// SecureConnectionNintendoBadgeArcadeProtocol handles the Secure Connection (Nintendo Badge Arcade) NEX protocol. Embeds SecureProtocol
-type SecureConnectionNintendoBadgeArcadeProtocol struct {
+type secureConnectionProtocol = secure_connection.Protocol
+
+// Protocol stores all the RMC method handlers for the Secure Connection (Nintendo Badge Arcade) protocol and listens for requests
+// Embeds the SecureConnection Protocol
+type Protocol struct {
 	Server *nex.Server
-	secure_connection.SecureConnectionProtocol
+	secureConnectionProtocol
 	GetMaintenanceStatusHandler func(err error, client *nex.Client, callID uint32)
 }
 
 // Setup initializes the protocol
-func (protocol *SecureConnectionNintendoBadgeArcadeProtocol) Setup() {
+func (protocol *Protocol) Setup() {
 	protocol.Server.On("Data", func(packet nex.PacketInterface) {
 		request := packet.RMCRequest()
 
@@ -38,14 +41,14 @@ func (protocol *SecureConnectionNintendoBadgeArcadeProtocol) Setup() {
 			if slices.Contains(patchedMethods, request.MethodID()) {
 				protocol.HandlePacket(packet)
 			} else {
-				protocol.SecureConnectionProtocol.HandlePacket(packet)
+				protocol.secureConnectionProtocol.HandlePacket(packet)
 			}
 		}
 	})
 }
 
 // HandlePacket sends the packet to the correct RMC method handler
-func (protocol *SecureConnectionNintendoBadgeArcadeProtocol) HandlePacket(packet nex.PacketInterface) {
+func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 	request := packet.RMCRequest()
 
 	switch request.MethodID() {
@@ -53,14 +56,14 @@ func (protocol *SecureConnectionNintendoBadgeArcadeProtocol) HandlePacket(packet
 		go protocol.handleGetMaintenanceStatus(packet)
 	default:
 		go globals.RespondNotImplemented(packet, ProtocolID)
-		fmt.Printf("Unsupported SecureBadgeArcade method ID: %#v\n", request.MethodID())
+		fmt.Printf("Unsupported SecureConnectionBadgeArcade method ID: %#v\n", request.MethodID())
 	}
 }
 
-// NewSecureConnectionNintendoBadgeArcadeProtocol returns a new protocol
-func NewSecureConnectionNintendoBadgeArcadeProtocol(server *nex.Server) *SecureConnectionNintendoBadgeArcadeProtocol {
-	protocol := &SecureConnectionNintendoBadgeArcadeProtocol{Server: server}
-	protocol.SecureConnectionProtocol.Server = server
+// NewProtocol returns a new Secure Connection (Nintendo Badge Arcade) protocol
+func NewProtocol(server *nex.Server) *Protocol {
+	protocol := &Protocol{Server: server}
+	protocol.secureConnectionProtocol.Server = server
 
 	protocol.Setup()
 

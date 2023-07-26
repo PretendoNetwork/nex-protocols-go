@@ -1,5 +1,5 @@
-// Package storage_manager implements the StorageManager NEX protocol
-package storage_manager
+// Package protocol implements the StorageManager protocol
+package protocol
 
 import (
 	nex "github.com/PretendoNetwork/nex-go"
@@ -7,11 +7,11 @@ import (
 )
 
 // AcquireCardID sets the AcquireCardID handler function
-func (protocol *StorageManagerProtocol) AcquireCardID(handler func(err error, client *nex.Client, callID uint32)) {
+func (protocol *Protocol) AcquireCardID(handler func(err error, client *nex.Client, callID uint32)) {
 	protocol.acquireCardIDHandler = handler
 }
 
-func (protocol *StorageManagerProtocol) handleAcquireCardID(packet nex.PacketInterface) {
+func (protocol *Protocol) handleAcquireCardID(packet nex.PacketInterface) {
 	if protocol.acquireCardIDHandler == nil {
 		globals.Logger.Warning("StorageManager::AcquireCardID not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

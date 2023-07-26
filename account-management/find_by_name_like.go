@@ -1,5 +1,5 @@
-// Package account_management implements the Account Management NEX protocol
-package account_management
+// Package protocol implements the Account Management protocol
+package protocol
 
 import (
 	"fmt"
@@ -9,11 +9,11 @@ import (
 )
 
 // FindByNameLike sets the FindByNameLike handler function
-func (protocol *AccountManagementProtocol) FindByNameLike(handler func(err error, client *nex.Client, callID uint32, uiGroups uint32, strLike string, resultRange *nex.ResultRange)) {
+func (protocol *Protocol) FindByNameLike(handler func(err error, client *nex.Client, callID uint32, uiGroups uint32, strLike string, resultRange *nex.ResultRange)) {
 	protocol.findByNameLikeHandler = handler
 }
 
-func (protocol *AccountManagementProtocol) handleFindByNameLike(packet nex.PacketInterface) {
+func (protocol *Protocol) handleFindByNameLike(packet nex.PacketInterface) {
 	if protocol.findByNameLikeHandler == nil {
 		globals.Logger.Warning("AccountManagement::FindByNameLike not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

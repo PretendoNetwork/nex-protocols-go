@@ -1,5 +1,5 @@
-// Package friends_wiiu implements the Friends WiiU NEX protocol
-package friends_wiiu
+// Package protocol implements the Friends WiiU protocol
+package protocol
 
 import (
 	"fmt"
@@ -10,11 +10,11 @@ import (
 )
 
 // UpdatePresence sets the UpdatePresence handler function
-func (protocol *FriendsWiiUProtocol) UpdatePresence(handler func(err error, client *nex.Client, callID uint32, presence *friends_wiiu_types.NintendoPresenceV2)) {
+func (protocol *Protocol) UpdatePresence(handler func(err error, client *nex.Client, callID uint32, presence *friends_wiiu_types.NintendoPresenceV2)) {
 	protocol.UpdatePresenceHandler = handler
 }
 
-func (protocol *FriendsWiiUProtocol) handleUpdatePresence(packet nex.PacketInterface) {
+func (protocol *Protocol) handleUpdatePresence(packet nex.PacketInterface) {
 	if protocol.UpdatePresenceHandler == nil {
 		globals.Logger.Warning("FriendsWiiU::UpdatePresence not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

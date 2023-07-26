@@ -1,5 +1,5 @@
-// Package health implements the Health NEX protocol
-package health
+// Package protocol implements the Health protocol
+package protocol
 
 import (
 	"fmt"
@@ -24,8 +24,8 @@ const (
 	MethodFixSanityErrors = 0x4
 )
 
-// HealthProtocol handles the Health protocol
-type HealthProtocol struct {
+// Protocol handles the Health protocol
+type Protocol struct {
 	Server                 *nex.Server
 	PingDaemonHandler      func(err error, client *nex.Client, callID uint32)
 	PingDatabaseHandler    func(err error, client *nex.Client, callID uint32)
@@ -34,7 +34,7 @@ type HealthProtocol struct {
 }
 
 // Setup initializes the protocol
-func (protocol *HealthProtocol) Setup() {
+func (protocol *Protocol) Setup() {
 	protocol.Server.On("Data", func(packet nex.PacketInterface) {
 		request := packet.RMCRequest()
 
@@ -55,9 +55,9 @@ func (protocol *HealthProtocol) Setup() {
 	})
 }
 
-// NewHealthProtocol returns a new HealthProtocol
-func NewHealthProtocol(server *nex.Server) *HealthProtocol {
-	protocol := &HealthProtocol{Server: server}
+// NewProtocol returns a new Health protocol
+func NewProtocol(server *nex.Server) *Protocol {
+	protocol := &Protocol{Server: server}
 
 	protocol.Setup()
 

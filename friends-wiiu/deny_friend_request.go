@@ -1,5 +1,5 @@
-// Package friends_wiiu implements the Friends WiiU NEX protocol
-package friends_wiiu
+// Package protocol implements the Friends WiiU protocol
+package protocol
 
 import (
 	"errors"
@@ -10,11 +10,11 @@ import (
 )
 
 // DenyFriendRequest sets the DenyFriendRequest handler function
-func (protocol *FriendsWiiUProtocol) DenyFriendRequest(handler func(err error, client *nex.Client, callID uint32, id uint64)) {
+func (protocol *Protocol) DenyFriendRequest(handler func(err error, client *nex.Client, callID uint32, id uint64)) {
 	protocol.DenyFriendRequestHandler = handler
 }
 
-func (protocol *FriendsWiiUProtocol) handleDenyFriendRequest(packet nex.PacketInterface) {
+func (protocol *Protocol) handleDenyFriendRequest(packet nex.PacketInterface) {
 	if protocol.DenyFriendRequestHandler == nil {
 		globals.Logger.Warning("FriendsWiiU::DenyFriendRequest not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

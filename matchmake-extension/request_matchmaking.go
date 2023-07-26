@@ -1,5 +1,5 @@
-// Package matchmake_extension implements the Matchmake Extension NEX protocol
-package matchmake_extension
+// Package protocol implements the Matchmake Extension protocol
+package protocol
 
 import (
 	"fmt"
@@ -10,11 +10,11 @@ import (
 )
 
 // RequestMatchmaking sets the RequestMatchmaking handler function
-func (protocol *MatchmakeExtensionProtocol) RequestMatchmaking(handler func(err error, client *nex.Client, callID uint32, autoMatchmakeParam *match_making_types.AutoMatchmakeParam)) {
+func (protocol *Protocol) RequestMatchmaking(handler func(err error, client *nex.Client, callID uint32, autoMatchmakeParam *match_making_types.AutoMatchmakeParam)) {
 	protocol.requestMatchmakingHandler = handler
 }
 
-func (protocol *MatchmakeExtensionProtocol) handleRequestMatchmaking(packet nex.PacketInterface) {
+func (protocol *Protocol) handleRequestMatchmaking(packet nex.PacketInterface) {
 	if protocol.requestMatchmakingHandler == nil {
 		globals.Logger.Warning("MatchmakeExtension::RequestMatchmaking not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

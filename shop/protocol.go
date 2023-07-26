@@ -1,5 +1,5 @@
-// Package shop implements the Shop NEX protocol
-package shop
+// Package protocol implements the Shop protocol
+package protocol
 
 // * Stubbed, Kinnay documents this as being game-specific for Pokemon bank however Badge Arcade and Pokemon gen 7 uses this protocol as well
 // TODO - Figure out more about this protocol, unsure if anything here is right
@@ -12,17 +12,17 @@ import (
 )
 
 const (
-	// ProtocolID is the Protocol ID for the Shop (Badge Arcade) protocol
+	// ProtocolID is the Protocol ID for the Shop protocol
 	ProtocolID = 0xC8
 )
 
-// ShopProtocol handles the Shop (Badge Arcade) NEX protocol
-type ShopProtocol struct {
+// Protocol stores all the RMC method handlers for the Shop protocol and listens for requests
+type Protocol struct {
 	Server *nex.Server
 }
 
 // Setup initializes the protocol
-func (protocol *ShopProtocol) Setup() {
+func (protocol *Protocol) Setup() {
 	protocol.Server.On("Data", func(packet nex.PacketInterface) {
 		request := packet.RMCRequest()
 
@@ -33,7 +33,7 @@ func (protocol *ShopProtocol) Setup() {
 }
 
 // HandlePacket sends the packet to the correct RMC method handler
-func (protocol *ShopProtocol) HandlePacket(packet nex.PacketInterface) {
+func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 	request := packet.RMCRequest()
 
 	switch request.MethodID() {

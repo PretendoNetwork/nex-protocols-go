@@ -1,5 +1,5 @@
-// Package messaging implements the Messaging protocol
-package messaging
+// Package protocol implements the Messaging protocol
+package protocol
 
 import (
 	"fmt"
@@ -10,11 +10,11 @@ import (
 )
 
 // GetMessagesHeaders sets the GetMessagesHeaders handler function
-func (protocol *MessagingProtocol) GetMessagesHeaders(handler func(err error, client *nex.Client, callID uint32, recipient *messaging_types.MessageRecipient, resultRange *nex.ResultRange)) {
+func (protocol *Protocol) GetMessagesHeaders(handler func(err error, client *nex.Client, callID uint32, recipient *messaging_types.MessageRecipient, resultRange *nex.ResultRange)) {
 	protocol.getMessagesHeadersHandler = handler
 }
 
-func (protocol *MessagingProtocol) handleGetMessagesHeaders(packet nex.PacketInterface) {
+func (protocol *Protocol) handleGetMessagesHeaders(packet nex.PacketInterface) {
 	if protocol.getMessagesHeadersHandler == nil {
 		globals.Logger.Warning("Messaging::GetMessagesHeaders not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

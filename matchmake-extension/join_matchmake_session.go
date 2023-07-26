@@ -1,5 +1,5 @@
-// Package matchmake_extension implements the Matchmake tension NEX protocol
-package matchmake_extension
+// Package protocol implements the Matchmake tension protocol
+package protocol
 
 import (
 	"fmt"
@@ -9,11 +9,11 @@ import (
 )
 
 // JoinMatchmakeSession sets the JoinMatchmakeSession handler function
-func (protocol *MatchmakeExtensionProtocol) JoinMatchmakeSession(handler func(err error, client *nex.Client, callID uint32, gid uint32, strMessage string)) {
+func (protocol *Protocol) JoinMatchmakeSession(handler func(err error, client *nex.Client, callID uint32, gid uint32, strMessage string)) {
 	protocol.joinMatchmakeSessionHandler = handler
 }
 
-func (protocol *MatchmakeExtensionProtocol) handleJoinMatchmakeSession(packet nex.PacketInterface) {
+func (protocol *Protocol) handleJoinMatchmakeSession(packet nex.PacketInterface) {
 	if protocol.joinMatchmakeSessionExHandler == nil {
 		globals.Logger.Warning("MatchmakeExtension::JoinMatchmakeSession not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

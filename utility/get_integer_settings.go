@@ -1,5 +1,5 @@
-// Package utility implements the Utility NEX protocol
-package utility
+// Package protocol implements the Utility protocol
+package protocol
 
 import (
 	"fmt"
@@ -9,11 +9,11 @@ import (
 )
 
 // GetIntegerSettings sets the GetIntegerSettings handler function
-func (protocol *UtilityProtocol) GetIntegerSettings(handler func(err error, client *nex.Client, callID uint32, integerSettingIndex uint32)) {
+func (protocol *Protocol) GetIntegerSettings(handler func(err error, client *nex.Client, callID uint32, integerSettingIndex uint32)) {
 	protocol.getIntegerSettingsHandler = handler
 }
 
-func (protocol *UtilityProtocol) handleGetIntegerSettings(packet nex.PacketInterface) {
+func (protocol *Protocol) handleGetIntegerSettings(packet nex.PacketInterface) {
 	if protocol.getIntegerSettingsHandler == nil {
 		globals.Logger.Warning("Utility::GetIntegerSettings not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

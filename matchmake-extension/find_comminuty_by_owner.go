@@ -1,5 +1,5 @@
-// Package matchmake_extension implements the Matchmake Extension NEX protocol
-package matchmake_extension
+// Package protocol implements the Matchmake Extension protocol
+package protocol
 
 import (
 	nex "github.com/PretendoNetwork/nex-go"
@@ -7,11 +7,11 @@ import (
 )
 
 // FindCommunityByOwner sets the FindCommunityByOwner handler function
-func (protocol *MatchmakeExtensionProtocol) FindCommunityByOwner(handler func(err error, client *nex.Client, callID uint32)) {
+func (protocol *Protocol) FindCommunityByOwner(handler func(err error, client *nex.Client, callID uint32)) {
 	protocol.findCommunityByOwnerHandler = handler
 }
 
-func (protocol *MatchmakeExtensionProtocol) handleFindCommunityByOwner(packet nex.PacketInterface) {
+func (protocol *Protocol) handleFindCommunityByOwner(packet nex.PacketInterface) {
 	if protocol.findCommunityByOwnerHandler == nil {
 		globals.Logger.Warning("MatchmakeExtension::FindCommunityByOwner not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

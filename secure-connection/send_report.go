@@ -1,5 +1,5 @@
-// Package secure_connection implements the Secure Connection NEX protocol
-package secure_connection
+// Package protocol implements the Secure Connection protocol
+package protocol
 
 import (
 	"fmt"
@@ -9,11 +9,11 @@ import (
 )
 
 // SendReport sets the SendReport handler function
-func (protocol *SecureConnectionProtocol) SendReport(handler func(err error, client *nex.Client, callID uint32, reportID uint32, reportData []byte)) {
+func (protocol *Protocol) SendReport(handler func(err error, client *nex.Client, callID uint32, reportID uint32, reportData []byte)) {
 	protocol.SendReportHandler = handler
 }
 
-func (protocol *SecureConnectionProtocol) handleSendReport(packet nex.PacketInterface) {
+func (protocol *Protocol) handleSendReport(packet nex.PacketInterface) {
 	if protocol.SendReportHandler == nil {
 		globals.Logger.Warning("SecureConnection::SendReport not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

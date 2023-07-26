@@ -1,5 +1,5 @@
-// Package monitoring implements the Monitoring NEX protocol
-package monitoring
+// Package protocol implements the Monitoring protocol
+package protocol
 
 import (
 	nex "github.com/PretendoNetwork/nex-go"
@@ -7,11 +7,11 @@ import (
 )
 
 // PingDaemon sets the PingDaemon handler function
-func (protocol *MonitoringProtocol) PingDaemon(handler func(err error, client *nex.Client, callID uint32)) {
+func (protocol *Protocol) PingDaemon(handler func(err error, client *nex.Client, callID uint32)) {
 	protocol.PingDaemonHandler = handler
 }
 
-func (protocol *MonitoringProtocol) handlePingDaemon(packet nex.PacketInterface) {
+func (protocol *Protocol) handlePingDaemon(packet nex.PacketInterface) {
 	if protocol.PingDaemonHandler == nil {
 		globals.Logger.Warning("Monitoring::PingDaemon not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

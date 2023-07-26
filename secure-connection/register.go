@@ -1,5 +1,5 @@
-// Package secure_connection implements the Secure Connection NEX protocol
-package secure_connection
+// Package protocol implements the Secure Connection protocol
+package protocol
 
 import (
 	"fmt"
@@ -9,11 +9,11 @@ import (
 )
 
 // Register sets the Register handler function
-func (protocol *SecureConnectionProtocol) Register(handler func(err error, client *nex.Client, callID uint32, vecMyURLs []*nex.StationURL)) {
+func (protocol *Protocol) Register(handler func(err error, client *nex.Client, callID uint32, vecMyURLs []*nex.StationURL)) {
 	protocol.RegisterHandler = handler
 }
 
-func (protocol *SecureConnectionProtocol) handleRegister(packet nex.PacketInterface) {
+func (protocol *Protocol) handleRegister(packet nex.PacketInterface) {
 	if protocol.RegisterHandler == nil {
 		globals.Logger.Warning("SecureConnection::Register not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

@@ -1,5 +1,5 @@
-// Package persistent_store implements the NAT Traversal NEX protocol
-package persistent_store
+// Package protocol implements the NAT Traversal protocol
+package protocol
 
 import (
 	"fmt"
@@ -9,11 +9,11 @@ import (
 )
 
 // GetItem sets the GetItem handler function
-func (protocol *PersistentStoreProtocol) GetItem(handler func(err error, client *nex.Client, callID uint32, uiGroup uint32, strTag string)) {
+func (protocol *Protocol) GetItem(handler func(err error, client *nex.Client, callID uint32, uiGroup uint32, strTag string)) {
 	protocol.getItemHandler = handler
 }
 
-func (protocol *PersistentStoreProtocol) handleGetItem(packet nex.PacketInterface) {
+func (protocol *Protocol) handleGetItem(packet nex.PacketInterface) {
 	if protocol.getItemHandler == nil {
 		globals.Logger.Warning("PersistentStore::GetItem not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

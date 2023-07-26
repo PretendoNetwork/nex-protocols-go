@@ -1,5 +1,5 @@
-// Package friends_wiiu implements the Friends WiiU NEX protocol
-package friends_wiiu
+// Package protocol implements the Friends WiiU protocol
+package protocol
 
 import (
 	"fmt"
@@ -9,11 +9,11 @@ import (
 )
 
 // AddFriendByName sets the AddFriendByName handler function
-func (protocol *FriendsWiiUProtocol) AddFriendByName(handler func(err error, client *nex.Client, callID uint32, username string)) {
+func (protocol *Protocol) AddFriendByName(handler func(err error, client *nex.Client, callID uint32, username string)) {
 	protocol.AddFriendByNameHandler = handler
 }
 
-func (protocol *FriendsWiiUProtocol) handleAddFriendByName(packet nex.PacketInterface) {
+func (protocol *Protocol) handleAddFriendByName(packet nex.PacketInterface) {
 	if protocol.AddFriendByNameHandler == nil {
 		globals.Logger.Warning("FriendsWiiU::AddFriendByName not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

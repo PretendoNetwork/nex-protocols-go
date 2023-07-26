@@ -1,5 +1,5 @@
-// Package datastore implements the DataStore NEX protocol
-package datastore
+// Package protocol implements the DataStore protocol
+package protocol
 
 import (
 	"fmt"
@@ -10,11 +10,11 @@ import (
 )
 
 // GetMeta sets the GetMeta handler function
-func (protocol *DataStoreProtocol) GetMeta(handler func(err error, client *nex.Client, callID uint32, dataStoreGetMetaParam *datastore_types.DataStoreGetMetaParam)) {
+func (protocol *Protocol) GetMeta(handler func(err error, client *nex.Client, callID uint32, dataStoreGetMetaParam *datastore_types.DataStoreGetMetaParam)) {
 	protocol.GetMetaHandler = handler
 }
 
-func (protocol *DataStoreProtocol) handleGetMeta(packet nex.PacketInterface) {
+func (protocol *Protocol) handleGetMeta(packet nex.PacketInterface) {
 	if protocol.GetMetaHandler == nil {
 		globals.Logger.Warning("DataStore::GetMeta not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

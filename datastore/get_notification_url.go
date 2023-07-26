@@ -1,5 +1,5 @@
-// Package datastore implements the DataStore NEX protocol
-package datastore
+// Package protocol implements the DataStore protocol
+package protocol
 
 import (
 	"fmt"
@@ -10,11 +10,11 @@ import (
 )
 
 // GetNotificationURL sets the GetNotificationURL handler function
-func (protocol *DataStoreProtocol) GetNotificationURL(handler func(err error, client *nex.Client, callID uint32, param *datastore_types.DataStoreGetNotificationURLParam)) {
+func (protocol *Protocol) GetNotificationURL(handler func(err error, client *nex.Client, callID uint32, param *datastore_types.DataStoreGetNotificationURLParam)) {
 	protocol.GetNotificationURLHandler = handler
 }
 
-func (protocol *DataStoreProtocol) handleGetNotificationURL(packet nex.PacketInterface) {
+func (protocol *Protocol) handleGetNotificationURL(packet nex.PacketInterface) {
 	if protocol.GetNotificationURLHandler == nil {
 		globals.Logger.Warning("DataStore::GetNotificationURL not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

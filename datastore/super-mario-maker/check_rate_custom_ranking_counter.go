@@ -1,5 +1,5 @@
-// Package datastore_super_mario_maker implements the Super Mario Maker DataStore NEX protocol
-package datastore_super_mario_maker
+// Package protocol implements the Super Mario Maker DataStore protocol
+package protocol
 
 import (
 	"fmt"
@@ -9,11 +9,11 @@ import (
 )
 
 // CheckRateCustomRankingCounter sets the CheckRateCustomRankingCounter handler function
-func (protocol *DataStoreSuperMarioMakerProtocol) CheckRateCustomRankingCounter(handler func(err error, client *nex.Client, callID uint32, applicationID uint32)) {
+func (protocol *Protocol) CheckRateCustomRankingCounter(handler func(err error, client *nex.Client, callID uint32, applicationID uint32)) {
 	protocol.CheckRateCustomRankingCounterHandler = handler
 }
 
-func (protocol *DataStoreSuperMarioMakerProtocol) handleCheckRateCustomRankingCounter(packet nex.PacketInterface) {
+func (protocol *Protocol) handleCheckRateCustomRankingCounter(packet nex.PacketInterface) {
 	if protocol.CheckRateCustomRankingCounterHandler == nil {
 		globals.Logger.Warning("DataStoreSMM::CheckRateCustomRankingCounter not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

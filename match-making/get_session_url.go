@@ -1,5 +1,5 @@
-// Package match_making implements the Match Making NEX protocol
-package match_making
+// Package protocol implements the Match Making protocol
+package protocol
 
 import (
 	"fmt"
@@ -9,11 +9,11 @@ import (
 )
 
 // GetSessionURL sets the GetSessionURL handler function
-func (protocol *MatchMakingProtocol) GetSessionURL(handler func(err error, client *nex.Client, callID uint32, idGathering uint32)) {
+func (protocol *Protocol) GetSessionURL(handler func(err error, client *nex.Client, callID uint32, idGathering uint32)) {
 	protocol.getSessionURLHandler = handler
 }
 
-func (protocol *MatchMakingProtocol) handleGetSessionURL(packet nex.PacketInterface) {
+func (protocol *Protocol) handleGetSessionURL(packet nex.PacketInterface) {
 	if protocol.getSessionURLHandler == nil {
 		globals.Logger.Warning("MatchMaking::GetSessionURL not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

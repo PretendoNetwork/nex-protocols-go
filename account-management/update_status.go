@@ -1,5 +1,5 @@
-// Package account_management implements the Account Management NEX protocol
-package account_management
+// Package protocol implements the Account Management protocol
+package protocol
 
 import (
 	"fmt"
@@ -9,11 +9,11 @@ import (
 )
 
 // UpdateStatus sets the UpdateStatus handler function
-func (protocol *AccountManagementProtocol) UpdateStatus(handler func(err error, client *nex.Client, callID uint32, strStatus string)) {
+func (protocol *Protocol) UpdateStatus(handler func(err error, client *nex.Client, callID uint32, strStatus string)) {
 	protocol.updateStatusHandler = handler
 }
 
-func (protocol *AccountManagementProtocol) handleUpdateStatus(packet nex.PacketInterface) {
+func (protocol *Protocol) handleUpdateStatus(packet nex.PacketInterface) {
 	if protocol.updateStatusHandler == nil {
 		globals.Logger.Warning("AccountManagement::UpdateStatus not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

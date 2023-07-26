@@ -1,5 +1,5 @@
-// Package datastore_super_smash_bros_4 implements the Super Smash Bros. 4 DataStore NEX protocol
-package datastore_super_smash_bros_4
+// Package protocol implements the Super Smash Bros. 4 DataStore protocol
+package protocol
 
 import (
 	"fmt"
@@ -10,11 +10,11 @@ import (
 )
 
 // PrepareGetReplay sets the PrepareGetReplay handler function
-func (protocol *DataStoreSuperSmashBros4Protocol) PrepareGetReplay(handler func(err error, client *nex.Client, callID uint32, param *datastore_super_smash_bros_4_types.DataStorePrepareGetReplayParam)) {
+func (protocol *Protocol) PrepareGetReplay(handler func(err error, client *nex.Client, callID uint32, param *datastore_super_smash_bros_4_types.DataStorePrepareGetReplayParam)) {
 	protocol.PrepareGetReplayHandler = handler
 }
 
-func (protocol *DataStoreSuperSmashBros4Protocol) handlePrepareGetReplay(packet nex.PacketInterface) {
+func (protocol *Protocol) handlePrepareGetReplay(packet nex.PacketInterface) {
 	if protocol.PrepareGetReplayHandler == nil {
 		globals.Logger.Warning("DataStoreSmash4::PrepareGetReplay not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

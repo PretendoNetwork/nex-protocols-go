@@ -1,5 +1,5 @@
-// Package utility implements the Utility NEX protocol
-package utility
+// Package protocol implements the Utility protocol
+package protocol
 
 import (
 	"fmt"
@@ -9,11 +9,11 @@ import (
 )
 
 // GetStringSettings sets the GetStringSettings handler function
-func (protocol *UtilityProtocol) GetStringSettings(handler func(err error, client *nex.Client, callID uint32, stringSettingIndex uint32)) {
+func (protocol *Protocol) GetStringSettings(handler func(err error, client *nex.Client, callID uint32, stringSettingIndex uint32)) {
 	protocol.getStringSettingsHandler = handler
 }
 
-func (protocol *UtilityProtocol) handleGetStringSettings(packet nex.PacketInterface) {
+func (protocol *Protocol) handleGetStringSettings(packet nex.PacketInterface) {
 	if protocol.getStringSettingsHandler == nil {
 		globals.Logger.Warning("Utility::GetStringSettings not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

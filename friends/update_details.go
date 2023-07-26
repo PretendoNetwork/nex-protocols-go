@@ -1,5 +1,5 @@
-// Package friends implements the Friends QRV protocol
-package friends
+// Package protocol implements the Friends QRV protocol
+package protocol
 
 import (
 	"fmt"
@@ -9,11 +9,11 @@ import (
 )
 
 // UpdateDetails sets the UpdateDetails handler function
-func (protocol *FriendsProtocol) UpdateDetails(handler func(err error, client *nex.Client, callID uint32, uiPlayer uint32, uiDetails uint32)) {
+func (protocol *Protocol) UpdateDetails(handler func(err error, client *nex.Client, callID uint32, uiPlayer uint32, uiDetails uint32)) {
 	protocol.updateDetailsHandler = handler
 }
 
-func (protocol *FriendsProtocol) handleUpdateDetails(packet nex.PacketInterface) {
+func (protocol *Protocol) handleUpdateDetails(packet nex.PacketInterface) {
 	if protocol.updateDetailsHandler == nil {
 		globals.Logger.Warning("Friends::UpdateDetails not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

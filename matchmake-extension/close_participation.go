@@ -1,5 +1,5 @@
-// Package matchmake_extension implements the Matchmake Extension NEX protocol
-package matchmake_extension
+// Package protocol implements the Matchmake Extension protocol
+package protocol
 
 import (
 	"fmt"
@@ -9,11 +9,11 @@ import (
 )
 
 // CloseParticipation sets the CloseParticipation handler function
-func (protocol *MatchmakeExtensionProtocol) CloseParticipation(handler func(err error, client *nex.Client, callID uint32, gid uint32)) {
+func (protocol *Protocol) CloseParticipation(handler func(err error, client *nex.Client, callID uint32, gid uint32)) {
 	protocol.closeParticipationHandler = handler
 }
 
-func (protocol *MatchmakeExtensionProtocol) handleCloseParticipation(packet nex.PacketInterface) {
+func (protocol *Protocol) handleCloseParticipation(packet nex.PacketInterface) {
 	if protocol.closeParticipationHandler == nil {
 		globals.Logger.Warning("MatchmakeExtension::CloseParticipation not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

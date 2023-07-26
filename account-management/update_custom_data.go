@@ -1,5 +1,5 @@
-// Package account_management implements the Account Management NEX protocol
-package account_management
+// Package protocol implements the Account Management protocol
+package protocol
 
 import (
 	"fmt"
@@ -9,11 +9,11 @@ import (
 )
 
 // UpdateCustomData sets the UpdateCustomData handler function
-func (protocol *AccountManagementProtocol) UpdateCustomData(handler func(err error, client *nex.Client, callID uint32, oPublicData *nex.DataHolder, oPrivateData *nex.DataHolder)) {
+func (protocol *Protocol) UpdateCustomData(handler func(err error, client *nex.Client, callID uint32, oPublicData *nex.DataHolder, oPrivateData *nex.DataHolder)) {
 	protocol.updateCustomDataHandler = handler
 }
 
-func (protocol *AccountManagementProtocol) handleUpdateCustomData(packet nex.PacketInterface) {
+func (protocol *Protocol) handleUpdateCustomData(packet nex.PacketInterface) {
 	if protocol.updateCustomDataHandler == nil {
 		globals.Logger.Warning("AccountManagement::UpdateCustomData not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

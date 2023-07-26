@@ -1,5 +1,5 @@
-// Package datastore implements the DataStore NEX protocol
-package datastore
+// Package protocol implements the DataStore protocol
+package protocol
 
 import (
 	"fmt"
@@ -152,8 +152,8 @@ const (
 	MethodSearchObjectLight = 0x2E
 )
 
-// DataStoreProtocol handles the DataStore NEX protocol
-type DataStoreProtocol struct {
+// Protocol stores all the RMC method handlers for the DataStore protocol and listens for requests
+type Protocol struct {
 	Server                              *nex.Server
 	PrepareGetObjectV1Handler           func(err error, client *nex.Client, callID uint32, dataStorePrepareGetParamV1 *datastore_types.DataStorePrepareGetParamV1)
 	PreparePostObjectV1Handler          func(err error, client *nex.Client, callID uint32, dataStorePreparePostParamV1 *datastore_types.DataStorePreparePostParamV1)
@@ -183,7 +183,7 @@ type DataStoreProtocol struct {
 }
 
 // Setup initializes the protocol
-func (protocol *DataStoreProtocol) Setup() {
+func (protocol *Protocol) Setup() {
 	protocol.Server.On("Data", func(packet nex.PacketInterface) {
 		request := packet.RMCRequest()
 
@@ -194,7 +194,7 @@ func (protocol *DataStoreProtocol) Setup() {
 }
 
 // HandlePacket sends the packet to the correct RMC method handler
-func (protocol *DataStoreProtocol) HandlePacket(packet nex.PacketInterface) {
+func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 	request := packet.RMCRequest()
 
 	switch request.MethodID() {
@@ -254,9 +254,9 @@ func (protocol *DataStoreProtocol) HandlePacket(packet nex.PacketInterface) {
 	}
 }
 
-// NewDataStoreProtocol returns a new DataStoreProtocol
-func NewDataStoreProtocol(server *nex.Server) *DataStoreProtocol {
-	protocol := &DataStoreProtocol{Server: server}
+// NewProtocol returns a new DataStore protocol
+func NewProtocol(server *nex.Server) *Protocol {
+	protocol := &Protocol{Server: server}
 
 	protocol.Setup()
 

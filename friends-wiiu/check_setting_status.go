@@ -1,5 +1,5 @@
-// Package friends_wiiu implements the Friends WiiU NEX protocol
-package friends_wiiu
+// Package protocol implements the Friends WiiU protocol
+package protocol
 
 import (
 	nex "github.com/PretendoNetwork/nex-go"
@@ -7,11 +7,11 @@ import (
 )
 
 // CheckSettingStatus sets the CheckSettingStatus handler function
-func (protocol *FriendsWiiUProtocol) CheckSettingStatus(handler func(err error, client *nex.Client, callID uint32)) {
+func (protocol *Protocol) CheckSettingStatus(handler func(err error, client *nex.Client, callID uint32)) {
 	protocol.CheckSettingStatusHandler = handler
 }
 
-func (protocol *FriendsWiiUProtocol) handleCheckSettingStatus(packet nex.PacketInterface) {
+func (protocol *Protocol) handleCheckSettingStatus(packet nex.PacketInterface) {
 	if protocol.CheckSettingStatusHandler == nil {
 		globals.Logger.Warning("FriendsWiiU::CheckSettingStatus not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

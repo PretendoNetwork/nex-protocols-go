@@ -1,5 +1,5 @@
-// Package datastore_super_mario_maker implements the Super Mario Maker DataStore NEX protocol
-package datastore_super_mario_maker
+// Package protocol implements the Super Mario Maker DataStore protocol
+package protocol
 
 import (
 	"fmt"
@@ -10,11 +10,11 @@ import (
 )
 
 // RecommendedCourseSearchObject sets the RecommendedCourseSearchObject handler function
-func (protocol *DataStoreSuperMarioMakerProtocol) RecommendedCourseSearchObject(handler func(err error, client *nex.Client, callID uint32, dataStoreSearchParam *datastore_types.DataStoreSearchParam, extraData []string)) {
+func (protocol *Protocol) RecommendedCourseSearchObject(handler func(err error, client *nex.Client, callID uint32, dataStoreSearchParam *datastore_types.DataStoreSearchParam, extraData []string)) {
 	protocol.RecommendedCourseSearchObjectHandler = handler
 }
 
-func (protocol *DataStoreSuperMarioMakerProtocol) handleRecommendedCourseSearchObject(packet nex.PacketInterface) {
+func (protocol *Protocol) handleRecommendedCourseSearchObject(packet nex.PacketInterface) {
 	if protocol.RecommendedCourseSearchObjectHandler == nil {
 		globals.Logger.Warning("DataStoreSMM::RecommendedCourseSearchObject not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

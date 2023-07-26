@@ -1,5 +1,5 @@
-// Package utility implements the Utility NEX protocol
-package utility
+// Package protocol implements the Utility protocol
+package protocol
 
 import (
 	"fmt"
@@ -38,8 +38,8 @@ const (
 	MethodGetStringSettings = 0x8
 )
 
-// UtilityProtocol handles the Utility NEX protocol
-type UtilityProtocol struct {
+// Protocol stores all the RMC method handlers for the Utility protocol and listens for requests
+type Protocol struct {
 	Server                                            *nex.Server
 	acquireNexUniqueIDHandler                         func(err error, client *nex.Client, callID uint32)
 	acquireNexUniqueIDWithPasswordHandler             func(err error, client *nex.Client, callID uint32)
@@ -52,7 +52,7 @@ type UtilityProtocol struct {
 }
 
 // Setup initializes the protocol
-func (protocol *UtilityProtocol) Setup() {
+func (protocol *Protocol) Setup() {
 	protocol.Server.On("Data", func(packet nex.PacketInterface) {
 		request := packet.RMCRequest()
 
@@ -82,9 +82,9 @@ func (protocol *UtilityProtocol) Setup() {
 	})
 }
 
-// NewUtilityProtocol returns a new UtilityProtocol
-func NewUtilityProtocol(server *nex.Server) *UtilityProtocol {
-	protocol := &UtilityProtocol{Server: server}
+// NewProtocol returns a new Utility protocol
+func NewProtocol(server *nex.Server) *Protocol {
+	protocol := &Protocol{Server: server}
 
 	protocol.Setup()
 

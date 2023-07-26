@@ -1,5 +1,5 @@
-// Package secure_connection implements the Secure Connection NEX protocol
-package secure_connection
+// Package protocol implements the Secure Connection protocol
+package protocol
 
 import (
 	"fmt"
@@ -37,8 +37,8 @@ const (
 	MethodSendReport = 0x8
 )
 
-// SecureConnectionProtocol handles the Secure Connection NEX protocol
-type SecureConnectionProtocol struct {
+// Protocol stores all the RMC method handlers for the Secure Connection protocol and listens for requests
+type Protocol struct {
 	Server                       *nex.Server
 	RegisterHandler              func(err error, client *nex.Client, callID uint32, vecMyURLs []*nex.StationURL)
 	RequestConnectionDataHandler func(err error, client *nex.Client, callID uint32, cidTarget uint32, pidTarget uint32)
@@ -51,7 +51,7 @@ type SecureConnectionProtocol struct {
 }
 
 // Setup initializes the protocol
-func (protocol *SecureConnectionProtocol) Setup() {
+func (protocol *Protocol) Setup() {
 	protocol.Server.On("Data", func(packet nex.PacketInterface) {
 		request := packet.RMCRequest()
 
@@ -62,7 +62,7 @@ func (protocol *SecureConnectionProtocol) Setup() {
 }
 
 // HandlePacket sends the packet to the correct RMC method handler
-func (protocol *SecureConnectionProtocol) HandlePacket(packet nex.PacketInterface) {
+func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 	request := packet.RMCRequest()
 
 	switch request.MethodID() {
@@ -84,13 +84,13 @@ func (protocol *SecureConnectionProtocol) HandlePacket(packet nex.PacketInterfac
 		go protocol.handleSendReport(packet)
 	default:
 		go globals.RespondNotImplemented(packet, ProtocolID)
-		fmt.Printf("Unsupported Secure Connection method ID: %#v\n", request.MethodID())
+		fmt.Printf("Unsupported SecureConnection method ID: %#v\n", request.MethodID())
 	}
 }
 
-// NewSecureConnectionProtocol returns a new SecureConnectionProtocol
-func NewSecureConnectionProtocol(server *nex.Server) *SecureConnectionProtocol {
-	protocol := &SecureConnectionProtocol{Server: server}
+// NewProtocol returns a new Secure Connection protocol
+func NewProtocol(server *nex.Server) *Protocol {
+	protocol := &Protocol{Server: server}
 
 	protocol.Setup()
 

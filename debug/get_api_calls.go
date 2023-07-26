@@ -1,5 +1,5 @@
-// Package debug implements the Debug NEX protocol
-package debug
+// Package protocol implements the Debug protocol
+package protocol
 
 import (
 	"fmt"
@@ -9,11 +9,11 @@ import (
 )
 
 // GetAPICalls sets the GetAPICalls handler function
-func (protocol *DebugProtocol) GetAPICalls(handler func(err error, client *nex.Client, callID uint32, pids []uint32, unknown *nex.DateTime, unknown2 *nex.DateTime)) {
+func (protocol *Protocol) GetAPICalls(handler func(err error, client *nex.Client, callID uint32, pids []uint32, unknown *nex.DateTime, unknown2 *nex.DateTime)) {
 	protocol.GetAPICallsHandler = handler
 }
 
-func (protocol *DebugProtocol) handleGetAPICalls(packet nex.PacketInterface) {
+func (protocol *Protocol) handleGetAPICalls(packet nex.PacketInterface) {
 	if protocol.GetAPICallsHandler == nil {
 		globals.Logger.Warning("Debug::GetAPICalls not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

@@ -1,5 +1,5 @@
-// Package shop_nintendo_badge_arcade implements the Nintendo Badge Arcade Shop NEX protocol
-package shop_nintendo_badge_arcade
+// Package protocol implements the Nintendo Badge Arcade Shop protocol
+package protocol
 
 import (
 	"fmt"
@@ -9,11 +9,11 @@ import (
 )
 
 // GetRivToken sets the GetRivToken function
-func (protocol *ShopNintendoBadgeArcadeProtocol) GetRivToken(handler func(err error, client *nex.Client, callID uint32, itemCode string, referenceID []byte)) {
+func (protocol *Protocol) GetRivToken(handler func(err error, client *nex.Client, callID uint32, itemCode string, referenceID []byte)) {
 	protocol.GetRivTokenHandler = handler
 }
 
-func (protocol *ShopNintendoBadgeArcadeProtocol) handleGetRivToken(packet nex.PacketInterface) {
+func (protocol *Protocol) handleGetRivToken(packet nex.PacketInterface) {
 	if protocol.GetRivTokenHandler == nil {
 		globals.Logger.Warning("ShopNintendoBadgeArcade::GetRivToken not implemented")
 		go globals.RespondNotImplementedCustom(packet, CustomProtocolID)

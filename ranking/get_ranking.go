@@ -1,5 +1,5 @@
-// Package ranking implements the Ranking NEX protocol
-package ranking
+// Package protocol implements the Ranking protocol
+package protocol
 
 import (
 	"fmt"
@@ -10,11 +10,11 @@ import (
 )
 
 // GetRanking sets the GetRanking handler function
-func (protocol *RankingProtocol) GetRanking(handler func(err error, client *nex.Client, callID uint32, rankingMode uint8, category uint32, orderParam *ranking_types.RankingOrderParam, uniqueID uint64, principalID uint32)) {
+func (protocol *Protocol) GetRanking(handler func(err error, client *nex.Client, callID uint32, rankingMode uint8, category uint32, orderParam *ranking_types.RankingOrderParam, uniqueID uint64, principalID uint32)) {
 	protocol.GetRankingHandler = handler
 }
 
-func (protocol *RankingProtocol) handleGetRanking(packet nex.PacketInterface) {
+func (protocol *Protocol) handleGetRanking(packet nex.PacketInterface) {
 	if protocol.GetRankingHandler == nil {
 		globals.Logger.Warning("Ranking::GetRanking not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

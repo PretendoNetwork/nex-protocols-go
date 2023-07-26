@@ -1,5 +1,5 @@
-// Package datastore implements the DataStore NEX protocol
-package datastore
+// Package protocol implements the DataStore protocol
+package protocol
 
 import (
 	"fmt"
@@ -10,11 +10,11 @@ import (
 )
 
 // ChangeMeta sets the ChangeMeta handler function
-func (protocol *DataStoreProtocol) ChangeMeta(handler func(err error, client *nex.Client, callID uint32, dataStoreChangeMetaParam *datastore_types.DataStoreChangeMetaParam)) {
+func (protocol *Protocol) ChangeMeta(handler func(err error, client *nex.Client, callID uint32, dataStoreChangeMetaParam *datastore_types.DataStoreChangeMetaParam)) {
 	protocol.ChangeMetaHandler = handler
 }
 
-func (protocol *DataStoreProtocol) handleChangeMeta(packet nex.PacketInterface) {
+func (protocol *Protocol) handleChangeMeta(packet nex.PacketInterface) {
 	if protocol.ChangeMetaHandler == nil {
 		globals.Logger.Warning("DataStore::ChangeMeta not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

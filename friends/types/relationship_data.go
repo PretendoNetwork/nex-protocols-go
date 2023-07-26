@@ -1,5 +1,5 @@
-// Package friends_types implements all the types used by the Friends protocol
-package friends_types
+// Package types implements all the types used by the Friends protocol
+package types
 
 import (
 	"fmt"

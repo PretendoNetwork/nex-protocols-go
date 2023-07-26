@@ -1,5 +1,5 @@
-// Package storage_manager implements the StorageManager NEX protocol
-package storage_manager
+// Package protocol implements the StorageManager protocol
+package protocol
 
 import (
 	"fmt"
@@ -19,15 +19,15 @@ const (
 	MethodActivateWithCardID = 0x5
 )
 
-// StorageManagerProtocol handles the StorageManager NEX protocol
-type StorageManagerProtocol struct {
+// Protocol stores all the RMC method handlers for the StorageManager protocol and listens for requests
+type Protocol struct {
 	Server                    *nex.Server
 	acquireCardIDHandler      func(err error, client *nex.Client, callID uint32)
 	activateWithCardIDHandler func(err error, client *nex.Client, callID uint32, unknown uint8, cardID uint64)
 }
 
 // Setup initializes the protocol
-func (protocol *StorageManagerProtocol) Setup() {
+func (protocol *Protocol) Setup() {
 	protocol.Server.On("Data", func(packet nex.PacketInterface) {
 		request := packet.RMCRequest()
 
@@ -45,9 +45,9 @@ func (protocol *StorageManagerProtocol) Setup() {
 	})
 }
 
-// NewStorageManagerProtocol returns a new StorageManagerProtocol
-func NewStorageManagerProtocol(server *nex.Server) *StorageManagerProtocol {
-	protocol := &StorageManagerProtocol{Server: server}
+// NewProtocol returns a new StorageManager protocol
+func NewProtocol(server *nex.Server) *Protocol {
+	protocol := &Protocol{Server: server}
 
 	protocol.Setup()
 

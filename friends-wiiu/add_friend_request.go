@@ -1,5 +1,5 @@
-// Package friends_wiiu implements the Friends WiiU NEX protocol
-package friends_wiiu
+// Package protocol implements the Friends WiiU protocol
+package protocol
 
 import (
 	"fmt"
@@ -10,11 +10,11 @@ import (
 )
 
 // AddFriendRequest sets the AddFriendRequest handler function
-func (protocol *FriendsWiiUProtocol) AddFriendRequest(handler func(err error, client *nex.Client, callID uint32, pid uint32, unknown2 uint8, message string, unknown4 uint8, unknown5 string, gameKey *friends_wiiu_types.GameKey, unknown6 *nex.DateTime)) {
+func (protocol *Protocol) AddFriendRequest(handler func(err error, client *nex.Client, callID uint32, pid uint32, unknown2 uint8, message string, unknown4 uint8, unknown5 string, gameKey *friends_wiiu_types.GameKey, unknown6 *nex.DateTime)) {
 	protocol.AddFriendRequestHandler = handler
 }
 
-func (protocol *FriendsWiiUProtocol) handleAddFriendRequest(packet nex.PacketInterface) {
+func (protocol *Protocol) handleAddFriendRequest(packet nex.PacketInterface) {
 	if protocol.AddFriendRequestHandler == nil {
 		globals.Logger.Warning("FriendsWiiU::AddFriendRequest not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

@@ -1,5 +1,5 @@
-// Package debug implements the Debug NEX protocol
-package debug
+// Package protocol implements the Debug protocol
+package protocol
 
 import (
 	nex "github.com/PretendoNetwork/nex-go"
@@ -7,11 +7,11 @@ import (
 )
 
 // GetAPICallSummary sets the GetAPICallSummary handler function
-func (protocol *DebugProtocol) GetAPICallSummary(handler func(err error, client *nex.Client, callID uint32)) {
+func (protocol *Protocol) GetAPICallSummary(handler func(err error, client *nex.Client, callID uint32)) {
 	protocol.GetAPICallSummaryHandler = handler
 }
 
-func (protocol *DebugProtocol) handleGetAPICallSummary(packet nex.PacketInterface) {
+func (protocol *Protocol) handleGetAPICallSummary(packet nex.PacketInterface) {
 	globals.Logger.Warning("Debug::GetAPICallSummary STUBBED")
 
 	if protocol.GetAPICallSummaryHandler == nil {

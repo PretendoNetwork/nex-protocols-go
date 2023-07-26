@@ -1,5 +1,5 @@
-// Package datastore implements the DataStore NEX protocol
-package datastore
+// Package protocol implements the DataStore protocol
+package protocol
 
 import (
 	"fmt"
@@ -9,11 +9,11 @@ import (
 )
 
 // GetPersistenceInfo sets the GetPersistenceInfo handler function
-func (protocol *DataStoreProtocol) GetPersistenceInfo(handler func(err error, client *nex.Client, callID uint32, ownerID uint32, persistenceSlotID uint16)) {
+func (protocol *Protocol) GetPersistenceInfo(handler func(err error, client *nex.Client, callID uint32, ownerID uint32, persistenceSlotID uint16)) {
 	protocol.GetPersistenceInfoHandler = handler
 }
 
-func (protocol *DataStoreProtocol) handleGetPersistenceInfo(packet nex.PacketInterface) {
+func (protocol *Protocol) handleGetPersistenceInfo(packet nex.PacketInterface) {
 	if protocol.GetPersistenceInfoHandler == nil {
 		globals.Logger.Warning("DataStorePotocol::GetPersistenceInfo not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

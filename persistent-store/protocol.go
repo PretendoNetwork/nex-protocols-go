@@ -1,5 +1,5 @@
-// Package persistent_store implements the Persistent Store protocol
-package persistent_store
+// Package protocol implements the Persistent Store protocol
+package protocol
 
 import (
 	"fmt"
@@ -9,7 +9,7 @@ import (
 )
 
 const (
-	// ProtocolID is the protocol ID for the Nintendo Persistent Store protocol
+	// ProtocolID is the protocol ID for the Persistent Store protocol
 	ProtocolID = 0x18
 
 	// MethodFindByGroup is the method ID for method FindByGroup
@@ -34,8 +34,8 @@ const (
 	MethodFindItemsBySQLQuery = 0x7
 )
 
-// PersistentStoreProtocol handles the Persistent Store protocol
-type PersistentStoreProtocol struct {
+// Protocol handles the Persistent Store protocol
+type Protocol struct {
 	Server                     *nex.Server
 	findByGroupHandler         func(err error, client *nex.Client, callID uint32, uiGroup uint32)
 	insertItemHandler          func(err error, client *nex.Client, callID uint32, uiGroup uint32, strTag string, bufData []byte, bReplace bool)
@@ -47,7 +47,7 @@ type PersistentStoreProtocol struct {
 }
 
 // Setup initializes the protocol
-func (protocol *PersistentStoreProtocol) Setup() {
+func (protocol *Protocol) Setup() {
 	protocol.Server.On("Data", func(packet nex.PacketInterface) {
 		request := packet.RMCRequest()
 
@@ -75,9 +75,9 @@ func (protocol *PersistentStoreProtocol) Setup() {
 	})
 }
 
-// NewPersistentStoreProtocol returns a new PersistentStoreProtocol
-func NewPersistentStoreProtocol(server *nex.Server) *PersistentStoreProtocol {
-	persistentStoreProtocol := &PersistentStoreProtocol{Server: server}
+// NewProtocol returns a new Persistent Store protocol
+func NewProtocol(server *nex.Server) *Protocol {
+	persistentStoreProtocol := &Protocol{Server: server}
 
 	persistentStoreProtocol.Setup()
 

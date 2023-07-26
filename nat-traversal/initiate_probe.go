@@ -1,5 +1,5 @@
-// Package nat_traversal implements the NAT Traversal NEX protocol
-package nat_traversal
+// Package protocol implements the NAT Traversal protocol
+package protocol
 
 import (
 	"fmt"
@@ -9,11 +9,11 @@ import (
 )
 
 // InitiateProbe sets the InitiateProbe handler function
-func (protocol *NATTraversalProtocol) InitiateProbe(handler func(err error, client *nex.Client, callID uint32, urlStationToProbe *nex.StationURL)) {
+func (protocol *Protocol) InitiateProbe(handler func(err error, client *nex.Client, callID uint32, urlStationToProbe *nex.StationURL)) {
 	protocol.InitiateProbeHandler = handler
 }
 
-func (protocol *NATTraversalProtocol) handleInitiateProbe(packet nex.PacketInterface) {
+func (protocol *Protocol) handleInitiateProbe(packet nex.PacketInterface) {
 	if protocol.InitiateProbeHandler == nil {
 		globals.Logger.Warning("NATTraversal::InitiateProbe not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

@@ -1,5 +1,5 @@
-// Package account_management implements the Account Management NEX protocol
-package account_management
+// Package protocol implements the Account Management protocol
+package protocol
 
 import (
 	nex "github.com/PretendoNetwork/nex-go"
@@ -7,11 +7,11 @@ import (
 )
 
 // ResetPassword sets the ResetPassword handler function
-func (protocol *AccountManagementProtocol) ResetPassword(handler func(err error, client *nex.Client, callID uint32)) {
+func (protocol *Protocol) ResetPassword(handler func(err error, client *nex.Client, callID uint32)) {
 	protocol.resetPasswordHandler = handler
 }
 
-func (protocol *AccountManagementProtocol) handleResetPassword(packet nex.PacketInterface) {
+func (protocol *Protocol) handleResetPassword(packet nex.PacketInterface) {
 	if protocol.resetPasswordHandler == nil {
 		globals.Logger.Warning("AccountManagement::ResetPassword not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

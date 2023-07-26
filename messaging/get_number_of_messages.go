@@ -1,5 +1,5 @@
-// Package messaging implements the Messaging protocol
-package messaging
+// Package protocol implements the Messaging protocol
+package protocol
 
 import (
 	"fmt"
@@ -10,11 +10,11 @@ import (
 )
 
 // GetNumberOfMessages sets the GetNumberOfMessages handler function
-func (protocol *MessagingProtocol) GetNumberOfMessages(handler func(err error, client *nex.Client, callID uint32, recipient *messaging_types.MessageRecipient)) {
+func (protocol *Protocol) GetNumberOfMessages(handler func(err error, client *nex.Client, callID uint32, recipient *messaging_types.MessageRecipient)) {
 	protocol.getNumberOfMessagesHandler = handler
 }
 
-func (protocol *MessagingProtocol) handleGetNumberOfMessages(packet nex.PacketInterface) {
+func (protocol *Protocol) handleGetNumberOfMessages(packet nex.PacketInterface) {
 	if protocol.getNumberOfMessagesHandler == nil {
 		globals.Logger.Warning("Messaging::GetNumberOfMessages not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

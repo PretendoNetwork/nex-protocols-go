@@ -1,5 +1,5 @@
-// Package match_making implements the Match Making NEX protocol
-package match_making
+// Package protocol implements the Match Making protocol
+package protocol
 
 import (
 	"fmt"
@@ -9,11 +9,11 @@ import (
 )
 
 // GetInvitationsSent sets the GetInvitationsSent handler function
-func (protocol *MatchMakingProtocol) GetInvitationsSent(handler func(err error, client *nex.Client, callID uint32, idGathering uint32)) {
+func (protocol *Protocol) GetInvitationsSent(handler func(err error, client *nex.Client, callID uint32, idGathering uint32)) {
 	protocol.getInvitationsSentHandler = handler
 }
 
-func (protocol *MatchMakingProtocol) handleGetInvitationsSent(packet nex.PacketInterface) {
+func (protocol *Protocol) handleGetInvitationsSent(packet nex.PacketInterface) {
 	if protocol.getInvitationsSentHandler == nil {
 		globals.Logger.Warning("MatchMaking::GetInvitationsSent not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

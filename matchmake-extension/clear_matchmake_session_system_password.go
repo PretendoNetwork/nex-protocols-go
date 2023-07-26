@@ -1,5 +1,5 @@
-// Package matchmake_extension implements the Matchmake Extension NEX protocol
-package matchmake_extension
+// Package protocol implements the Matchmake Extension protocol
+package protocol
 
 import (
 	"fmt"
@@ -9,11 +9,11 @@ import (
 )
 
 // ClearMatchmakeSessionSystemPassword sets the ClearMatchmakeSessionSystemPassword handler function
-func (protocol *MatchmakeExtensionProtocol) ClearMatchmakeSessionSystemPassword(handler func(err error, client *nex.Client, callID uint32, gid uint32)) {
+func (protocol *Protocol) ClearMatchmakeSessionSystemPassword(handler func(err error, client *nex.Client, callID uint32, gid uint32)) {
 	protocol.clearMatchmakeSessionSystemPasswordHandler = handler
 }
 
-func (protocol *MatchmakeExtensionProtocol) handleClearMatchmakeSessionSystemPassword(packet nex.PacketInterface) {
+func (protocol *Protocol) handleClearMatchmakeSessionSystemPassword(packet nex.PacketInterface) {
 	if protocol.clearMatchmakeSessionSystemPasswordHandler == nil {
 		globals.Logger.Warning("MatchmakeExtension::ClearMatchmakeSessionSystemPassword not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

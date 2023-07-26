@@ -1,5 +1,5 @@
-// Package datastore_super_mario_maker implements the Super Mario Maker DataStore NEX protocol
-package datastore_super_mario_maker
+// Package protocol implements the Super Mario Maker DataStore protocol
+package protocol
 
 import (
 	"fmt"
@@ -9,11 +9,11 @@ import (
 )
 
 // GetDeletionReason sets the GetDeletionReason handler function
-func (protocol *DataStoreSuperMarioMakerProtocol) GetDeletionReason(handler func(err error, client *nex.Client, callID uint32, dataIDLst []uint64)) {
+func (protocol *Protocol) GetDeletionReason(handler func(err error, client *nex.Client, callID uint32, dataIDLst []uint64)) {
 	protocol.GetDeletionReasonHandler = handler
 }
 
-func (protocol *DataStoreSuperMarioMakerProtocol) handleGetDeletionReason(packet nex.PacketInterface) {
+func (protocol *Protocol) handleGetDeletionReason(packet nex.PacketInterface) {
 	if protocol.GetDeletionReasonHandler == nil {
 		globals.Logger.Warning("DataStoreSMM::GetDeletionReason not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

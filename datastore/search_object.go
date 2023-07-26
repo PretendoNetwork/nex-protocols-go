@@ -1,5 +1,5 @@
-// Package datastore implements the DataStore NEX protocol
-package datastore
+// Package protocol implements the DataStore protocol
+package protocol
 
 import (
 	"fmt"
@@ -10,11 +10,11 @@ import (
 )
 
 // SearchObject sets the SearchObject handler function
-func (protocol *DataStoreProtocol) SearchObject(handler func(err error, client *nex.Client, callID uint32, param *datastore_types.DataStoreSearchParam)) {
+func (protocol *Protocol) SearchObject(handler func(err error, client *nex.Client, callID uint32, param *datastore_types.DataStoreSearchParam)) {
 	protocol.SearchObjectHandler = handler
 }
 
-func (protocol *DataStoreProtocol) handleSearchObject(packet nex.PacketInterface) {
+func (protocol *Protocol) handleSearchObject(packet nex.PacketInterface) {
 	if protocol.SearchObjectHandler == nil {
 		globals.Logger.Warning("DataStore::SearchObject not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

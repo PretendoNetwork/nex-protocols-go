@@ -1,5 +1,5 @@
-// Package match_making implements the Match Making NEX protocol
-package match_making
+// Package protocol implements the Match Making protocol
+package protocol
 
 import (
 	"fmt"
@@ -9,11 +9,11 @@ import (
 )
 
 // RegisterLocalURL sets the RegisterLocalURL handler function
-func (protocol *MatchMakingProtocol) RegisterLocalURL(handler func(err error, client *nex.Client, callID uint32, gid uint32, url *nex.StationURL)) {
+func (protocol *Protocol) RegisterLocalURL(handler func(err error, client *nex.Client, callID uint32, gid uint32, url *nex.StationURL)) {
 	protocol.registerLocalURLHandler = handler
 }
 
-func (protocol *MatchMakingProtocol) handleRegisterLocalURL(packet nex.PacketInterface) {
+func (protocol *Protocol) handleRegisterLocalURL(packet nex.PacketInterface) {
 	if protocol.registerLocalURLHandler == nil {
 		globals.Logger.Warning("MatchMaking::RegisterLocalURL not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

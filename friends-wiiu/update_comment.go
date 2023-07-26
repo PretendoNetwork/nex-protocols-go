@@ -1,5 +1,5 @@
-// Package friends_wiiu implements the Friends WiiU NEX protocol
-package friends_wiiu
+// Package protocol implements the Friends WiiU protocol
+package protocol
 
 import (
 	"fmt"
@@ -10,11 +10,11 @@ import (
 )
 
 // UpdateComment sets the UpdateComment handler function
-func (protocol *FriendsWiiUProtocol) UpdateComment(handler func(err error, client *nex.Client, callID uint32, comment *friends_wiiu_types.Comment)) {
+func (protocol *Protocol) UpdateComment(handler func(err error, client *nex.Client, callID uint32, comment *friends_wiiu_types.Comment)) {
 	protocol.UpdateCommentHandler = handler
 }
 
-func (protocol *FriendsWiiUProtocol) handleUpdateComment(packet nex.PacketInterface) {
+func (protocol *Protocol) handleUpdateComment(packet nex.PacketInterface) {
 	if protocol.UpdateCommentHandler == nil {
 		globals.Logger.Warning("FriendsWiiU::UpdateComment not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

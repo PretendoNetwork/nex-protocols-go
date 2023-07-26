@@ -1,5 +1,5 @@
-// Package account_management implements the Account Management NEX protocol
-package account_management
+// Package protocol implements the Account Management protocol
+package protocol
 
 import (
 	"fmt"
@@ -9,11 +9,11 @@ import (
 )
 
 // FindByNameRegex sets the FindByNameRegex handler function
-func (protocol *AccountManagementProtocol) FindByNameRegex(handler func(err error, client *nex.Client, callID uint32, uiGroups uint32, strRegex string, resultRange *nex.ResultRange)) {
+func (protocol *Protocol) FindByNameRegex(handler func(err error, client *nex.Client, callID uint32, uiGroups uint32, strRegex string, resultRange *nex.ResultRange)) {
 	protocol.findByNameRegexHandler = handler
 }
 
-func (protocol *AccountManagementProtocol) handleFindByNameRegex(packet nex.PacketInterface) {
+func (protocol *Protocol) handleFindByNameRegex(packet nex.PacketInterface) {
 	if protocol.findByNameRegexHandler == nil {
 		globals.Logger.Warning("AccountManagement::FindByNameRegex not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

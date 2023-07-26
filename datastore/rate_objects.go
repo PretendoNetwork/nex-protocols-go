@@ -1,5 +1,5 @@
-// Package datastore implements the DataStore NEX protocol
-package datastore
+// Package protocol implements the DataStore protocol
+package protocol
 
 import (
 	"fmt"
@@ -10,11 +10,11 @@ import (
 )
 
 // RateObjects sets the RateObjects handler function
-func (protocol *DataStoreProtocol) RateObjects(handler func(err error, client *nex.Client, callID uint32, targets []*datastore_types.DataStoreRatingTarget, params []*datastore_types.DataStoreRateObjectParam, transactional bool, fetchRatings bool)) {
+func (protocol *Protocol) RateObjects(handler func(err error, client *nex.Client, callID uint32, targets []*datastore_types.DataStoreRatingTarget, params []*datastore_types.DataStoreRateObjectParam, transactional bool, fetchRatings bool)) {
 	protocol.RateObjectsHandler = handler
 }
 
-func (protocol *DataStoreProtocol) handleRateObjects(packet nex.PacketInterface) {
+func (protocol *Protocol) handleRateObjects(packet nex.PacketInterface) {
 	if protocol.RateObjectsHandler == nil {
 		globals.Logger.Warning("DataStore::RateObjects not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

@@ -1,5 +1,5 @@
-// Package ticket_granting_types implements all the types used by the Ticket Granting protocol
-package ticket_granting_types
+// Package types implements all the types used by the Ticket Granting protocol
+package types
 
 import (
 	"fmt"

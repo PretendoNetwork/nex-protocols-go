@@ -1,5 +1,5 @@
-// Package datastore_super_mario_maker implements the Super Mario Maker DataStore NEX protocol
-package datastore_super_mario_maker
+// Package protocol implements the Super Mario Maker DataStore protocol
+package protocol
 
 import (
 	"fmt"
@@ -10,11 +10,11 @@ import (
 )
 
 // CompleteAttachFile sets the CompleteAttachFile handler function
-func (protocol *DataStoreSuperMarioMakerProtocol) CompleteAttachFile(handler func(err error, client *nex.Client, callID uint32, dataStoreCompletePostParam *datastore_types.DataStoreCompletePostParam)) {
+func (protocol *Protocol) CompleteAttachFile(handler func(err error, client *nex.Client, callID uint32, dataStoreCompletePostParam *datastore_types.DataStoreCompletePostParam)) {
 	protocol.CompleteAttachFileHandler = handler
 }
 
-func (protocol *DataStoreSuperMarioMakerProtocol) handleCompleteAttachFile(packet nex.PacketInterface) {
+func (protocol *Protocol) handleCompleteAttachFile(packet nex.PacketInterface) {
 	if protocol.CompleteAttachFileHandler == nil {
 		globals.Logger.Warning("DataStoreSMM::CompleteAttachFile not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

@@ -1,5 +1,5 @@
-// Package monitoring implements the Monitoring NEX protocol
-package monitoring
+// Package protocol implements the Monitoring protocol
+package protocol
 
 import (
 	"fmt"
@@ -18,15 +18,15 @@ const (
 	MethodGetClusterMembers = 0x2
 )
 
-// MonitoringProtocol handles the Monitoring protocol
-type MonitoringProtocol struct {
+// Protocol handles the Monitoring protocol
+type Protocol struct {
 	Server                   *nex.Server
 	PingDaemonHandler        func(err error, client *nex.Client, callID uint32)
 	GetClusterMembersHandler func(err error, client *nex.Client, callID uint32)
 }
 
 // Setup initializes the protocol
-func (protocol *MonitoringProtocol) Setup() {
+func (protocol *Protocol) Setup() {
 	protocol.Server.On("Data", func(packet nex.PacketInterface) {
 		request := packet.RMCRequest()
 
@@ -37,7 +37,7 @@ func (protocol *MonitoringProtocol) Setup() {
 }
 
 // HandlePacket sends the packet to the correct RMC method handler
-func (protocol *MonitoringProtocol) HandlePacket(packet nex.PacketInterface) {
+func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 	request := packet.RMCRequest()
 
 	switch request.MethodID() {
@@ -50,9 +50,9 @@ func (protocol *MonitoringProtocol) HandlePacket(packet nex.PacketInterface) {
 	}
 }
 
-// NewMonitoringProtocol returns a new MonitoringProtocol
-func NewMonitoringProtocol(server *nex.Server) *MonitoringProtocol {
-	protocol := &MonitoringProtocol{Server: server}
+// NewProtocol returns a new Monitoring protocol
+func NewProtocol(server *nex.Server) *Protocol {
+	protocol := &Protocol{Server: server}
 
 	protocol.Setup()
 

@@ -1,5 +1,5 @@
-// Package matchmake_extension implements the Matchmake Extension NEX protocol
-package matchmake_extension
+// Package protocol implements the Matchmake Extension protocol
+package protocol
 
 import (
 	"fmt"
@@ -9,11 +9,11 @@ import (
 )
 
 // GetlstFriendNotificationData sets the GetlstFriendNotificationData handler function
-func (protocol *MatchmakeExtensionProtocol) GetlstFriendNotificationData(handler func(err error, client *nex.Client, callID uint32, lstTypes []uint32)) {
+func (protocol *Protocol) GetlstFriendNotificationData(handler func(err error, client *nex.Client, callID uint32, lstTypes []uint32)) {
 	protocol.getlstFriendNotificationDataHandler = handler
 }
 
-func (protocol *MatchmakeExtensionProtocol) handleGetlstFriendNotificationData(packet nex.PacketInterface) {
+func (protocol *Protocol) handleGetlstFriendNotificationData(packet nex.PacketInterface) {
 	if protocol.getlstFriendNotificationDataHandler == nil {
 		globals.Logger.Warning("MatchmakeExtension::GetlstFriendNotificationData not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

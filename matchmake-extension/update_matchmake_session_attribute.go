@@ -1,5 +1,5 @@
-// Package matchmake_extension implements the Matchmake Extension NEX protocol
-package matchmake_extension
+// Package protocol implements the Matchmake Extension protocol
+package protocol
 
 import (
 	"fmt"
@@ -9,11 +9,11 @@ import (
 )
 
 // UpdateMatchmakeSessionAttribute sets the UpdateMatchmakeSessionAttribute handler function
-func (protocol *MatchmakeExtensionProtocol) UpdateMatchmakeSessionAttribute(handler func(err error, client *nex.Client, callID uint32, gid uint32, attribs []uint32)) {
+func (protocol *Protocol) UpdateMatchmakeSessionAttribute(handler func(err error, client *nex.Client, callID uint32, gid uint32, attribs []uint32)) {
 	protocol.updateMatchmakeSessionAttributeHandler = handler
 }
 
-func (protocol *MatchmakeExtensionProtocol) handleUpdateMatchmakeSessionAttribute(packet nex.PacketInterface) {
+func (protocol *Protocol) handleUpdateMatchmakeSessionAttribute(packet nex.PacketInterface) {
 	if protocol.updateMatchmakeSessionAttributeHandler == nil {
 		globals.Logger.Warning("MatchmakeExtension::UpdateMatchmakeSessionAttribute not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

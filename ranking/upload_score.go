@@ -1,5 +1,5 @@
-// Package ranking implements the Ranking NEX protocol
-package ranking
+// Package protocol implements the Ranking protocol
+package protocol
 
 import (
 	"fmt"
@@ -10,11 +10,11 @@ import (
 )
 
 // UploadScore sets the UploadScore handler function
-func (protocol *RankingProtocol) UploadScore(handler func(err error, client *nex.Client, callID uint32, scoreData *ranking_types.RankingScoreData, uniqueID uint64)) {
+func (protocol *Protocol) UploadScore(handler func(err error, client *nex.Client, callID uint32, scoreData *ranking_types.RankingScoreData, uniqueID uint64)) {
 	protocol.UploadScoreHandler = handler
 }
 
-func (protocol *RankingProtocol) handleUploadScore(packet nex.PacketInterface) {
+func (protocol *Protocol) handleUploadScore(packet nex.PacketInterface) {
 	if protocol.UploadScoreHandler == nil {
 		globals.Logger.Warning("Ranking::UploadScore not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

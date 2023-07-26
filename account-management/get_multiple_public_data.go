@@ -1,5 +1,5 @@
-// Package account_management implements the Account Management NEX protocol
-package account_management
+// Package protocol implements the Account Management protocol
+package protocol
 
 import (
 	"fmt"
@@ -9,11 +9,11 @@ import (
 )
 
 // GetMultiplePublicData sets the GetMultiplePublicData handler function
-func (protocol *AccountManagementProtocol) GetMultiplePublicData(handler func(err error, client *nex.Client, callID uint32, lstPrincipals []uint32)) {
+func (protocol *Protocol) GetMultiplePublicData(handler func(err error, client *nex.Client, callID uint32, lstPrincipals []uint32)) {
 	protocol.getMultiplePublicDataHandler = handler
 }
 
-func (protocol *AccountManagementProtocol) handleGetMultiplePublicData(packet nex.PacketInterface) {
+func (protocol *Protocol) handleGetMultiplePublicData(packet nex.PacketInterface) {
 	if protocol.getMultiplePublicDataHandler == nil {
 		globals.Logger.Warning("AccountManagement::GetMultiplePublicData not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

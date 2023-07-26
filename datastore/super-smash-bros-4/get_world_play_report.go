@@ -1,5 +1,5 @@
-// Package datastore_super_smash_bros_4 implements the Super Smash Bros. 4 DataStore NEX protocol
-package datastore_super_smash_bros_4
+// Package protocol implements the Super Smash Bros. 4 DataStore protocol
+package protocol
 
 import (
 	nex "github.com/PretendoNetwork/nex-go"
@@ -7,11 +7,11 @@ import (
 )
 
 // GetWorldPlayReport sets the GetWorldPlayReport handler function
-func (protocol *DataStoreSuperSmashBros4Protocol) GetWorldPlayReport(handler func(err error, client *nex.Client, callID uint32)) {
+func (protocol *Protocol) GetWorldPlayReport(handler func(err error, client *nex.Client, callID uint32)) {
 	protocol.GetWorldPlayReportHandler = handler
 }
 
-func (protocol *DataStoreSuperSmashBros4Protocol) handleGetWorldPlayReport(packet nex.PacketInterface) {
+func (protocol *Protocol) handleGetWorldPlayReport(packet nex.PacketInterface) {
 	if protocol.GetWorldPlayReportHandler == nil {
 		globals.Logger.Warning("DataStoreSmash4::GetWorldPlayReport not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

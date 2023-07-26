@@ -1,5 +1,5 @@
-// Package matchmake_extension implements the Matchmake Extension NEX protocol
-package matchmake_extension
+// Package protocol implements the Matchmake Extension protocol
+package protocol
 
 import (
 	"fmt"
@@ -9,11 +9,11 @@ import (
 )
 
 // ModifyCurrentGameAttribute sets the ModifyCurrentGameAttribute handler function
-func (protocol *MatchmakeExtensionProtocol) ModifyCurrentGameAttribute(handler func(err error, client *nex.Client, callID uint32, gid uint32, attribIndex uint32, newValue uint32)) {
+func (protocol *Protocol) ModifyCurrentGameAttribute(handler func(err error, client *nex.Client, callID uint32, gid uint32, attribIndex uint32, newValue uint32)) {
 	protocol.modifyCurrentGameAttributeHandler = handler
 }
 
-func (protocol *MatchmakeExtensionProtocol) handleModifyCurrentGameAttribute(packet nex.PacketInterface) {
+func (protocol *Protocol) handleModifyCurrentGameAttribute(packet nex.PacketInterface) {
 	if protocol.modifyCurrentGameAttributeHandler == nil {
 		globals.Logger.Warning("MatchmakeExtension::ModifyCurrentGameAttribute not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

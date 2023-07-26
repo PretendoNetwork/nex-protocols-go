@@ -1,5 +1,5 @@
-// Package ranking implements the Ranking NEX protocol
-package ranking
+// Package protocol implements the Ranking protocol
+package protocol
 
 import (
 	"fmt"
@@ -9,11 +9,11 @@ import (
 )
 
 // UploadCommonData sets the UploadCommonData handler function
-func (protocol *RankingProtocol) UploadCommonData(handler func(err error, client *nex.Client, callID uint32, commonData []byte, uniqueID uint64)) {
+func (protocol *Protocol) UploadCommonData(handler func(err error, client *nex.Client, callID uint32, commonData []byte, uniqueID uint64)) {
 	protocol.UploadCommonDataHandler = handler
 }
 
-func (protocol *RankingProtocol) handleUploadCommonData(packet nex.PacketInterface) {
+func (protocol *Protocol) handleUploadCommonData(packet nex.PacketInterface) {
 	if protocol.UploadCommonDataHandler == nil {
 		globals.Logger.Warning("Ranking::UploadCommonData not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

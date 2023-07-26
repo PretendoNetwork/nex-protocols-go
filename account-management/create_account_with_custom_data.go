@@ -1,5 +1,5 @@
-// Package account_management implements the Account Management NEX protocol
-package account_management
+// Package protocol implements the Account Management protocol
+package protocol
 
 import (
 	"fmt"
@@ -9,11 +9,11 @@ import (
 )
 
 // CreateAccountWithCustomData sets the CreateAccountWithCustomData handler function
-func (protocol *AccountManagementProtocol) CreateAccountWithCustomData(handler func(err error, client *nex.Client, callID uint32, strPrincipalName string, strKey string, uiGroups uint32, strEmail string, oPublicData *nex.DataHolder, oPrivateData *nex.DataHolder)) {
+func (protocol *Protocol) CreateAccountWithCustomData(handler func(err error, client *nex.Client, callID uint32, strPrincipalName string, strKey string, uiGroups uint32, strEmail string, oPublicData *nex.DataHolder, oPrivateData *nex.DataHolder)) {
 	protocol.createAccountWithCustomDataHandler = handler
 }
 
-func (protocol *AccountManagementProtocol) handleCreateAccountWithCustomData(packet nex.PacketInterface) {
+func (protocol *Protocol) handleCreateAccountWithCustomData(packet nex.PacketInterface) {
 	if protocol.createAccountWithCustomDataHandler == nil {
 		globals.Logger.Warning("AccountManagement::CreateAccountWithCustomData not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

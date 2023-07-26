@@ -1,5 +1,5 @@
-// Package friends implements the Friends QRV protocol
-package friends
+// Package protocol implements the Friends QRV protocol
+package protocol
 
 import (
 	"fmt"
@@ -52,8 +52,8 @@ const (
 	MethodGetRelationships = 0xD
 )
 
-// FriendsProtocol handles the Friends QRV protocol
-type FriendsProtocol struct {
+// Protocol handles the Friends QRV protocol
+type Protocol struct {
 	Server                            *nex.Server
 	addFriendHandler                  func(err error, client *nex.Client, callID uint32, uiPlayer uint32, uiDetails uint32, strMessage string)
 	addFriendByNameHandler            func(err error, client *nex.Client, callID uint32, strPlayerName string, uiDetails uint32, strMessage string)
@@ -71,7 +71,7 @@ type FriendsProtocol struct {
 }
 
 // Setup initializes the protocol
-func (protocol *FriendsProtocol) Setup() {
+func (protocol *Protocol) Setup() {
 	protocol.Server.On("Data", func(packet nex.PacketInterface) {
 		request := packet.RMCRequest()
 
@@ -82,7 +82,7 @@ func (protocol *FriendsProtocol) Setup() {
 }
 
 // HandlePacket sends the packet to the correct RMC method handler
-func (protocol *FriendsProtocol) HandlePacket(packet nex.PacketInterface) {
+func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 	request := packet.RMCRequest()
 
 	switch request.MethodID() {
@@ -118,9 +118,9 @@ func (protocol *FriendsProtocol) HandlePacket(packet nex.PacketInterface) {
 	}
 }
 
-// NewFriendsProtocol returns a new FriendsProtocol
-func NewFriendsProtocol(server *nex.Server) *FriendsProtocol {
-	protocol := &FriendsProtocol{Server: server}
+// NewProtocol returns a new Friends protocol
+func NewProtocol(server *nex.Server) *Protocol {
+	protocol := &Protocol{Server: server}
 
 	protocol.Setup()
 

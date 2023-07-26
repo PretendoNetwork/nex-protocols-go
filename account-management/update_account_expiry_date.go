@@ -1,5 +1,5 @@
-// Package account_management implements the Account Management NEX protocol
-package account_management
+// Package protocol implements the Account Management protocol
+package protocol
 
 import (
 	"fmt"
@@ -9,11 +9,11 @@ import (
 )
 
 // UpdateAccountExpiryDate sets the UpdateAccountExpiryDate handler function
-func (protocol *AccountManagementProtocol) UpdateAccountExpiryDate(handler func(err error, client *nex.Client, callID uint32, idPrincipal uint32, dtExpiry *nex.DateTime, strExpiredMessage string)) {
+func (protocol *Protocol) UpdateAccountExpiryDate(handler func(err error, client *nex.Client, callID uint32, idPrincipal uint32, dtExpiry *nex.DateTime, strExpiredMessage string)) {
 	protocol.updateAccountExpiryDateHandler = handler
 }
 
-func (protocol *AccountManagementProtocol) handleUpdateAccountExpiryDate(packet nex.PacketInterface) {
+func (protocol *Protocol) handleUpdateAccountExpiryDate(packet nex.PacketInterface) {
 	if protocol.updateAccountExpiryDateHandler == nil {
 		globals.Logger.Warning("AccountManagement::UpdateAccountExpiryDate not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

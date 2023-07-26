@@ -1,5 +1,5 @@
-// Package match_making_ext implements the Match Making Ext NEX protocol
-package match_making_ext
+// Package protocol implements the Match Making Ext protocol
+package protocol
 
 import (
 	"fmt"
@@ -9,11 +9,11 @@ import (
 )
 
 // DeleteFromDeletions sets the DeleteFromDeletions handler function
-func (protocol *MatchMakingExtProtocol) DeleteFromDeletions(handler func(err error, client *nex.Client, callID uint32, lstDeletions []uint32, pid uint32)) {
+func (protocol *Protocol) DeleteFromDeletions(handler func(err error, client *nex.Client, callID uint32, lstDeletions []uint32, pid uint32)) {
 	protocol.DeleteFromDeletionsHandler = handler
 }
 
-func (protocol *MatchMakingExtProtocol) handleDeleteFromDeletions(packet nex.PacketInterface) {
+func (protocol *Protocol) handleDeleteFromDeletions(packet nex.PacketInterface) {
 	if protocol.DeleteFromDeletionsHandler == nil {
 		globals.Logger.Warning("MatchMakingExt::DeleteFromDeletions not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

@@ -1,5 +1,5 @@
-// Package secure_connection implements the Secure Connection NEX protocol
-package secure_connection
+// Package protocol implements the Secure Connection protocol
+package protocol
 
 import (
 	"fmt"
@@ -9,11 +9,11 @@ import (
 )
 
 // RequestConnectionData sets the RequestConnectionData handler function
-func (protocol *SecureConnectionProtocol) RequestConnectionData(handler func(err error, client *nex.Client, callID uint32, cidTarget uint32, pidTarget uint32)) {
+func (protocol *Protocol) RequestConnectionData(handler func(err error, client *nex.Client, callID uint32, cidTarget uint32, pidTarget uint32)) {
 	protocol.RequestConnectionDataHandler = handler
 }
 
-func (protocol *SecureConnectionProtocol) handleRequestConnectionData(packet nex.PacketInterface) {
+func (protocol *Protocol) handleRequestConnectionData(packet nex.PacketInterface) {
 	if protocol.RequestConnectionDataHandler == nil {
 		globals.Logger.Warning("SecureConnection::RequestConnectionData not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

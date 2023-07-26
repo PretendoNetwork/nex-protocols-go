@@ -1,5 +1,5 @@
-// Package matchmake_extension implements the Matchmake Extension NEX protocol
-package matchmake_extension
+// Package protocol implements the Matchmake Extension protocol
+package protocol
 
 import (
 	"fmt"
@@ -9,11 +9,11 @@ import (
 )
 
 // UpdateMatchmakeSession sets the UpdateMatchmakeSession handler function
-func (protocol *MatchmakeExtensionProtocol) UpdateMatchmakeSession(handler func(err error, client *nex.Client, callID uint32, anyGathering *nex.DataHolder)) {
+func (protocol *Protocol) UpdateMatchmakeSession(handler func(err error, client *nex.Client, callID uint32, anyGathering *nex.DataHolder)) {
 	protocol.updateMatchmakeSessionHandler = handler
 }
 
-func (protocol *MatchmakeExtensionProtocol) handleUpdateMatchmakeSession(packet nex.PacketInterface) {
+func (protocol *Protocol) handleUpdateMatchmakeSession(packet nex.PacketInterface) {
 	if protocol.updateMatchmakeSessionHandler == nil {
 		globals.Logger.Warning("MatchmakeExtension::UpdateMatchmakeSession not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

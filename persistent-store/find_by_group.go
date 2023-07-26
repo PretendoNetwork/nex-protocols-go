@@ -1,5 +1,5 @@
-// Package persistent_store implements the NAT Traversal NEX protocol
-package persistent_store
+// Package protocol implements the NAT Traversal protocol
+package protocol
 
 import (
 	"fmt"
@@ -9,11 +9,11 @@ import (
 )
 
 // FindByGroup sets the FindByGroup handler function
-func (protocol *PersistentStoreProtocol) FindByGroup(handler func(err error, client *nex.Client, callID uint32, uiGroup uint32)) {
+func (protocol *Protocol) FindByGroup(handler func(err error, client *nex.Client, callID uint32, uiGroup uint32)) {
 	protocol.findByGroupHandler = handler
 }
 
-func (protocol *PersistentStoreProtocol) handleFindByGroup(packet nex.PacketInterface) {
+func (protocol *Protocol) handleFindByGroup(packet nex.PacketInterface) {
 	if protocol.findByGroupHandler == nil {
 		globals.Logger.Warning("PersistentStore::FindByGroup not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

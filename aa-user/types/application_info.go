@@ -1,5 +1,5 @@
-// Package aauser_types implements all the types used by the AAUser protocol
-package aauser_types
+// Package types implements all the types used by the AAUser protocol
+package types
 
 import (
 	"fmt"

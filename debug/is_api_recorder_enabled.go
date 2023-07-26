@@ -1,5 +1,5 @@
-// Package debug implements the Debug NEX protocol
-package debug
+// Package protocol implements the Debug protocol
+package protocol
 
 import (
 	nex "github.com/PretendoNetwork/nex-go"
@@ -7,11 +7,11 @@ import (
 )
 
 // IsAPIRecorderEnabled sets the IsAPIRecorderEnabled handler function
-func (protocol *DebugProtocol) IsAPIRecorderEnabled(handler func(err error, client *nex.Client, callID uint32)) {
+func (protocol *Protocol) IsAPIRecorderEnabled(handler func(err error, client *nex.Client, callID uint32)) {
 	protocol.IsAPIRecorderEnabledHandler = handler
 }
 
-func (protocol *DebugProtocol) handleIsAPIRecorderEnabled(packet nex.PacketInterface) {
+func (protocol *Protocol) handleIsAPIRecorderEnabled(packet nex.PacketInterface) {
 	if protocol.IsAPIRecorderEnabledHandler == nil {
 		globals.Logger.Warning("Debug::IsAPIRecorderEnabled not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

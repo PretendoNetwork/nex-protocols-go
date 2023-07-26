@@ -1,5 +1,5 @@
-// Package datastore_nintendo_badge_arcade implements the Nintendo Badge Arcade DataStore NEX protocol
-package datastore_nintendo_badge_arcade
+// Package protocol implements the Nintendo Badge Arcade DataStore protocol
+package protocol
 
 import (
 	"fmt"
@@ -10,11 +10,11 @@ import (
 )
 
 // GetMetaByOwnerID sets the GetMetaByOwnerID function
-func (protocol *DataStoreNintendoBadgeArcadeProtocol) GetMetaByOwnerID(handler func(err error, client *nex.Client, callID uint32, param *datastore_nintendo_badge_arcade_types.DataStoreGetMetaByOwnerIDParam)) {
+func (protocol *Protocol) GetMetaByOwnerID(handler func(err error, client *nex.Client, callID uint32, param *datastore_nintendo_badge_arcade_types.DataStoreGetMetaByOwnerIDParam)) {
 	protocol.GetMetaByOwnerIDHandler = handler
 }
 
-func (protocol *DataStoreNintendoBadgeArcadeProtocol) handleGetMetaByOwnerID(packet nex.PacketInterface) {
+func (protocol *Protocol) handleGetMetaByOwnerID(packet nex.PacketInterface) {
 	if protocol.GetMetaByOwnerIDHandler == nil {
 		globals.Logger.Warning("DataStoreBadgeArcade::GetMetaByOwnerID not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

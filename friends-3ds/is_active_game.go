@@ -1,5 +1,5 @@
-// Package friends_3ds implements the Friends 3DS NEX protocol
-package friends_3ds
+// Package protocol implements the Friends 3DS protocol
+package protocol
 
 import (
 	"fmt"
@@ -10,11 +10,11 @@ import (
 )
 
 // IsActiveGame sets the IsActiveGame handler function
-func (protocol *Friends3DSProtocol) IsActiveGame(handler func(err error, client *nex.Client, callID uint32, pids []uint32, gameKey *friends_3ds_types.GameKey)) {
+func (protocol *Protocol) IsActiveGame(handler func(err error, client *nex.Client, callID uint32, pids []uint32, gameKey *friends_3ds_types.GameKey)) {
 	protocol.isActiveGameHandler = handler
 }
 
-func (protocol *Friends3DSProtocol) handleIsActiveGame(packet nex.PacketInterface) {
+func (protocol *Protocol) handleIsActiveGame(packet nex.PacketInterface) {
 	if protocol.isActiveGameHandler == nil {
 		globals.Logger.Warning("Friends3DS::IsActiveGame not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

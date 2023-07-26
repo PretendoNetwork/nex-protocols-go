@@ -1,5 +1,5 @@
-// Package friends_wiiu implements the Friends WiiU NEX protocol
-package friends_wiiu
+// Package protocol implements the Friends WiiU protocol
+package protocol
 
 import (
 	"fmt"
@@ -9,11 +9,11 @@ import (
 )
 
 // AcceptFriendRequest sets the AcceptFriendRequest handler function
-func (protocol *FriendsWiiUProtocol) AcceptFriendRequest(handler func(err error, client *nex.Client, callID uint32, id uint64)) {
+func (protocol *Protocol) AcceptFriendRequest(handler func(err error, client *nex.Client, callID uint32, id uint64)) {
 	protocol.AcceptFriendRequestHandler = handler
 }
 
-func (protocol *FriendsWiiUProtocol) handleAcceptFriendRequest(packet nex.PacketInterface) {
+func (protocol *Protocol) handleAcceptFriendRequest(packet nex.PacketInterface) {
 	if protocol.AcceptFriendRequestHandler == nil {
 		globals.Logger.Warning("FriendsWiiU::AcceptFriendRequest not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

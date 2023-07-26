@@ -1,5 +1,5 @@
-// Package persistent_store implements the NAT Traversal NEX protocol
-package persistent_store
+// Package protocol implements the NAT Traversal protocol
+package protocol
 
 import (
 	"fmt"
@@ -9,11 +9,11 @@ import (
 )
 
 // RemoveItem sets the RemoveItem handler function
-func (protocol *PersistentStoreProtocol) RemoveItem(handler func(err error, client *nex.Client, callID uint32, uiGroup uint32, strTag string)) {
+func (protocol *Protocol) RemoveItem(handler func(err error, client *nex.Client, callID uint32, uiGroup uint32, strTag string)) {
 	protocol.removeItemHandler = handler
 }
 
-func (protocol *PersistentStoreProtocol) handleRemoveItem(packet nex.PacketInterface) {
+func (protocol *Protocol) handleRemoveItem(packet nex.PacketInterface) {
 	if protocol.removeItemHandler == nil {
 		globals.Logger.Warning("PersistentStore::RemoveItem not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

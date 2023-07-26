@@ -1,5 +1,5 @@
-// Package matchmake_extension implements the Matchmake Extension NEX protocol
-package matchmake_extension
+// Package protocol implements the Matchmake Extension protocol
+package protocol
 
 import (
 	"fmt"
@@ -9,11 +9,11 @@ import (
 )
 
 // FindCommunityByParticipant sets the FindCommunityByParticipant handler function
-func (protocol *MatchmakeExtensionProtocol) FindCommunityByParticipant(handler func(err error, client *nex.Client, callID uint32, pid uint32, resultRange *nex.ResultRange)) {
+func (protocol *Protocol) FindCommunityByParticipant(handler func(err error, client *nex.Client, callID uint32, pid uint32, resultRange *nex.ResultRange)) {
 	protocol.findCommunityByParticipantHandler = handler
 }
 
-func (protocol *MatchmakeExtensionProtocol) handleFindCommunityByParticipant(packet nex.PacketInterface) {
+func (protocol *Protocol) handleFindCommunityByParticipant(packet nex.PacketInterface) {
 	if protocol.findCommunityByParticipantHandler == nil {
 		globals.Logger.Warning("MatchmakeExtension::FindCommunityByParticipant not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

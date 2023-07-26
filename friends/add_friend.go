@@ -1,5 +1,5 @@
-// Package friends implements the Friends QRV protocol
-package friends
+// Package protocol implements the Friends QRV protocol
+package protocol
 
 import (
 	"fmt"
@@ -9,11 +9,11 @@ import (
 )
 
 // AddFriend sets the AddFriend handler function
-func (protocol *FriendsProtocol) AddFriend(handler func(err error, client *nex.Client, callID uint32, uiPlayer uint32, uiDetails uint32, strMessage string)) {
+func (protocol *Protocol) AddFriend(handler func(err error, client *nex.Client, callID uint32, uiPlayer uint32, uiDetails uint32, strMessage string)) {
 	protocol.addFriendHandler = handler
 }
 
-func (protocol *FriendsProtocol) handleAddFriend(packet nex.PacketInterface) {
+func (protocol *Protocol) handleAddFriend(packet nex.PacketInterface) {
 	if protocol.addFriendHandler == nil {
 		globals.Logger.Warning("Friends::AddFriend not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

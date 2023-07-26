@@ -1,5 +1,5 @@
-// Package aauser implements the AAUser NEX protocol
-package aauser
+// Package protocol implements the AAUser protocol
+package protocol
 
 import (
 	"fmt"
@@ -9,11 +9,11 @@ import (
 )
 
 // UnregisterApplication sets the UnregisterApplication handler function
-func (protocol *AAUserProtocol) UnregisterApplication(handler func(err error, client *nex.Client, callID uint32, titleID uint64)) {
+func (protocol *Protocol) UnregisterApplication(handler func(err error, client *nex.Client, callID uint32, titleID uint64)) {
 	protocol.unregisterApplicationHandler = handler
 }
 
-func (protocol *AAUserProtocol) handleUnregisterApplication(packet nex.PacketInterface) {
+func (protocol *Protocol) handleUnregisterApplication(packet nex.PacketInterface) {
 	if protocol.unregisterApplicationHandler == nil {
 		globals.Logger.Warning("AAUser::UnregisterApplication not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

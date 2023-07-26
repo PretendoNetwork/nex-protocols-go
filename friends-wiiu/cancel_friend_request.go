@@ -1,5 +1,5 @@
-// Package friends_wiiu implements the Friends WiiU NEX protocol
-package friends_wiiu
+// Package protocol implements the Friends WiiU protocol
+package protocol
 
 import (
 	"fmt"
@@ -9,11 +9,11 @@ import (
 )
 
 // CancelFriendRequest sets the CancelFriendRequest handler function
-func (protocol *FriendsWiiUProtocol) CancelFriendRequest(handler func(err error, client *nex.Client, callID uint32, id uint64)) {
+func (protocol *Protocol) CancelFriendRequest(handler func(err error, client *nex.Client, callID uint32, id uint64)) {
 	protocol.CancelFriendRequestHandler = handler
 }
 
-func (protocol *FriendsWiiUProtocol) handleCancelFriendRequest(packet nex.PacketInterface) {
+func (protocol *Protocol) handleCancelFriendRequest(packet nex.PacketInterface) {
 	if protocol.CancelFriendRequestHandler == nil {
 		globals.Logger.Warning("FriendsWiiU::CancelFriendRequest not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

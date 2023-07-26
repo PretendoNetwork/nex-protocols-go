@@ -1,5 +1,5 @@
-// Package datastore implements the DataStore NEX protocol
-package datastore
+// Package protocol implements the DataStore protocol
+package protocol
 
 import (
 	"fmt"
@@ -10,11 +10,11 @@ import (
 )
 
 // GetNewArrivedNotifications sets the GetNewArrivedNotifications handler function
-func (protocol *DataStoreProtocol) GetNewArrivedNotifications(handler func(err error, client *nex.Client, callID uint32, param *datastore_types.DataStoreGetNewArrivedNotificationsParam)) {
+func (protocol *Protocol) GetNewArrivedNotifications(handler func(err error, client *nex.Client, callID uint32, param *datastore_types.DataStoreGetNewArrivedNotificationsParam)) {
 	protocol.GetNewArrivedNotificationsHandler = handler
 }
 
-func (protocol *DataStoreProtocol) handleGetNewArrivedNotifications(packet nex.PacketInterface) {
+func (protocol *Protocol) handleGetNewArrivedNotifications(packet nex.PacketInterface) {
 	if protocol.GetNewArrivedNotificationsHandler == nil {
 		globals.Logger.Warning("DataStore::GetNewArrivedNotifications not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

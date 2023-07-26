@@ -1,5 +1,5 @@
-// Package match_making implements the Match Making NEX protocol
-package match_making
+// Package protocol implements the Match Making protocol
+package protocol
 
 import (
 	"fmt"
@@ -10,11 +10,11 @@ import (
 )
 
 // ReportStats sets the ReportStats handler function
-func (protocol *MatchMakingProtocol) ReportStats(handler func(err error, client *nex.Client, callID uint32, idGathering uint32, lstStats []*match_making_types.GatheringStats)) {
+func (protocol *Protocol) ReportStats(handler func(err error, client *nex.Client, callID uint32, idGathering uint32, lstStats []*match_making_types.GatheringStats)) {
 	protocol.reportStatsHandler = handler
 }
 
-func (protocol *MatchMakingProtocol) handleReportStats(packet nex.PacketInterface) {
+func (protocol *Protocol) handleReportStats(packet nex.PacketInterface) {
 	if protocol.reportStatsHandler == nil {
 		globals.Logger.Warning("MatchMaking::ReportStats not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

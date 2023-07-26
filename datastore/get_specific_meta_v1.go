@@ -1,5 +1,5 @@
-// Package datastore implements the DataStore NEX protocol
-package datastore
+// Package protocol implements the DataStore protocol
+package protocol
 
 import (
 	"fmt"
@@ -10,11 +10,11 @@ import (
 )
 
 // GetSpecificMetaV1 sets the GetSpecificMetaV1 handler function
-func (protocol *DataStoreProtocol) GetSpecificMetaV1(handler func(err error, client *nex.Client, callID uint32, param *datastore_types.DataStoreGetSpecificMetaParamV1)) {
+func (protocol *Protocol) GetSpecificMetaV1(handler func(err error, client *nex.Client, callID uint32, param *datastore_types.DataStoreGetSpecificMetaParamV1)) {
 	protocol.GetSpecificMetaV1Handler = handler
 }
 
-func (protocol *DataStoreProtocol) handleGetSpecificMetaV1(packet nex.PacketInterface) {
+func (protocol *Protocol) handleGetSpecificMetaV1(packet nex.PacketInterface) {
 	if protocol.GetSpecificMetaV1Handler == nil {
 		globals.Logger.Warning("DataStore::GetSpecificMetaV1 not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

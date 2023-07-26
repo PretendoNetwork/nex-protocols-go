@@ -1,5 +1,5 @@
-// Package screening implements the Screening NEX protocol
-package screening
+// Package protocol implements the Screening protocol
+package protocol
 
 import (
 	nex "github.com/PretendoNetwork/nex-go"
@@ -7,11 +7,11 @@ import (
 )
 
 // ReportDataStoreContent sets the ReportDataStoreContent handler function
-func (protocol *ScreeningProtocol) ReportDataStoreContent(handler func(err error, client *nex.Client, callID uint32)) {
+func (protocol *Protocol) ReportDataStoreContent(handler func(err error, client *nex.Client, callID uint32)) {
 	protocol.ReportDataStoreContentHandler = handler
 }
 
-func (protocol *ScreeningProtocol) handleReportDataStoreContent(packet nex.PacketInterface) {
+func (protocol *Protocol) handleReportDataStoreContent(packet nex.PacketInterface) {
 	globals.Logger.Warning("Screening::ReportDataStoreContent STUBBED")
 
 	if protocol.ReportDataStoreContentHandler == nil {

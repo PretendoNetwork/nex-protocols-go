@@ -1,5 +1,5 @@
-// Package screening implements the Screening NEX protocol
-package screening
+// Package protocol implements the Screening protocol
+package protocol
 
 import (
 	nex "github.com/PretendoNetwork/nex-go"
@@ -7,11 +7,11 @@ import (
 )
 
 // ReportUser sets the ReportUser handler function
-func (protocol *ScreeningProtocol) ReportUser(handler func(err error, client *nex.Client, callID uint32)) {
+func (protocol *Protocol) ReportUser(handler func(err error, client *nex.Client, callID uint32)) {
 	protocol.ReportUserHandler = handler
 }
 
-func (protocol *ScreeningProtocol) handleReportUser(packet nex.PacketInterface) {
+func (protocol *Protocol) handleReportUser(packet nex.PacketInterface) {
 	globals.Logger.Warning("Screening::ReportUser STUBBED")
 
 	if protocol.ReportUserHandler == nil {

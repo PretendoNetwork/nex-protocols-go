@@ -1,5 +1,5 @@
-// Package datastore_super_mario_maker implements the Super Mario Maker DataStore NEX protocol
-package datastore_super_mario_maker
+// Package protocol implements the Super Mario Maker DataStore protocol
+package protocol
 
 import (
 	"fmt"
@@ -9,11 +9,11 @@ import (
 )
 
 // GetObjectInfos sets the GetObjectInfos handler function
-func (protocol *DataStoreSuperMarioMakerProtocol) GetObjectInfos(handler func(err error, client *nex.Client, callID uint32, dataIDs []uint64)) {
+func (protocol *Protocol) GetObjectInfos(handler func(err error, client *nex.Client, callID uint32, dataIDs []uint64)) {
 	protocol.GetObjectInfosHandler = handler
 }
 
-func (protocol *DataStoreSuperMarioMakerProtocol) handleGetObjectInfos(packet nex.PacketInterface) {
+func (protocol *Protocol) handleGetObjectInfos(packet nex.PacketInterface) {
 	if protocol.GetObjectInfosHandler == nil {
 		globals.Logger.Warning("DataStoreSMM::GetObjectInfos not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

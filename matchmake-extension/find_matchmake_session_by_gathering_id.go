@@ -1,5 +1,5 @@
-// Package matchmake_extension implements the Matchmake Extension NEX protocol
-package matchmake_extension
+// Package protocol implements the Matchmake Extension protocol
+package protocol
 
 import (
 	"fmt"
@@ -9,11 +9,11 @@ import (
 )
 
 // FindMatchmakeSessionByGatheringID sets the FindMatchmakeSessionByGatheringID handler function
-func (protocol *MatchmakeExtensionProtocol) FindMatchmakeSessionByGatheringID(handler func(err error, client *nex.Client, callID uint32, lstGID []uint32)) {
+func (protocol *Protocol) FindMatchmakeSessionByGatheringID(handler func(err error, client *nex.Client, callID uint32, lstGID []uint32)) {
 	protocol.findMatchmakeSessionByGatheringIDHandler = handler
 }
 
-func (protocol *MatchmakeExtensionProtocol) handleFindMatchmakeSessionByGatheringID(packet nex.PacketInterface) {
+func (protocol *Protocol) handleFindMatchmakeSessionByGatheringID(packet nex.PacketInterface) {
 	if protocol.findMatchmakeSessionByGatheringIDHandler == nil {
 		globals.Logger.Warning("MatchmakeExtension::FindMatchmakeSessionByGatheringID not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

@@ -1,5 +1,5 @@
-// Package friends_3ds implements the Friends 3DS NEX protocol
-package friends_3ds
+// Package protocol implements the Friends 3DS protocol
+package protocol
 
 import (
 	"fmt"
@@ -9,11 +9,11 @@ import (
 )
 
 // GetFriendPersistentInfo sets the GetFriendPersistentInfo handler function
-func (protocol *Friends3DSProtocol) GetFriendPersistentInfo(handler func(err error, client *nex.Client, callID uint32, pidList []uint32)) {
+func (protocol *Protocol) GetFriendPersistentInfo(handler func(err error, client *nex.Client, callID uint32, pidList []uint32)) {
 	protocol.getFriendPersistentInfoHandler = handler
 }
 
-func (protocol *Friends3DSProtocol) handleGetFriendPersistentInfo(packet nex.PacketInterface) {
+func (protocol *Protocol) handleGetFriendPersistentInfo(packet nex.PacketInterface) {
 	if protocol.getFriendPersistentInfoHandler == nil {
 		globals.Logger.Warning("Friends3DS::GetFriendPersistentInfo not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

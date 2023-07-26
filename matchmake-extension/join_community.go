@@ -1,5 +1,5 @@
-// Package matchmake_extension implements the Matchmake Extension NEX protocol
-package matchmake_extension
+// Package protocol implements the Matchmake Extension protocol
+package protocol
 
 import (
 	"fmt"
@@ -9,11 +9,11 @@ import (
 )
 
 // JoinCommunity sets the JoinCommunity handler function
-func (protocol *MatchmakeExtensionProtocol) JoinCommunity(handler func(err error, client *nex.Client, callID uint32, gid uint32, strMessage string, strPassword string)) {
+func (protocol *Protocol) JoinCommunity(handler func(err error, client *nex.Client, callID uint32, gid uint32, strMessage string, strPassword string)) {
 	protocol.joinCommunityHandler = handler
 }
 
-func (protocol *MatchmakeExtensionProtocol) handleJoinCommunity(packet nex.PacketInterface) {
+func (protocol *Protocol) handleJoinCommunity(packet nex.PacketInterface) {
 	if protocol.joinCommunityHandler == nil {
 		globals.Logger.Warning("MatchmakeExtension::JoinCommunity not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

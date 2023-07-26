@@ -1,5 +1,5 @@
-// Package health implements the Health NEX protocol
-package health
+// Package protocol implements the Health protocol
+package protocol
 
 import (
 	nex "github.com/PretendoNetwork/nex-go"
@@ -7,11 +7,11 @@ import (
 )
 
 // RunSanityCheck sets the RunSanityCheck handler function
-func (protocol *HealthProtocol) RunSanityCheck(handler func(err error, client *nex.Client, callID uint32)) {
+func (protocol *Protocol) RunSanityCheck(handler func(err error, client *nex.Client, callID uint32)) {
 	protocol.RunSanityCheckHandler = handler
 }
 
-func (protocol *HealthProtocol) handleRunSanityCheck(packet nex.PacketInterface) {
+func (protocol *Protocol) handleRunSanityCheck(packet nex.PacketInterface) {
 	if protocol.RunSanityCheckHandler == nil {
 		globals.Logger.Warning("Health::RunSanityCheck not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

@@ -1,5 +1,5 @@
-// Package datastore_types implements all the types used by the DataStore protocol
-package datastore_types
+// Package types implements all the types used by the DataStore protocol
+package types
 
 import (
 	"bytes"
@@ -40,7 +40,6 @@ func (dataStoreReqUpdateInfo *DataStoreReqUpdateInfo) ExtractFromStream(stream *
 
 		dataStoreReqUpdateInfo.Version = uint32(version)
 	}
-
 
 	dataStoreReqUpdateInfo.URL, err = stream.ReadString()
 	if err != nil {

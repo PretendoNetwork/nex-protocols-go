@@ -1,11 +1,11 @@
-// Package datastore_super_smash_bros_4 implements the Super Smash Bros. 4 DataStore NEX protocol
-package datastore_super_smash_bros_4
+// Package protocol implements the Super Smash Bros. 4 DataStore protocol
+package protocol
 
 import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
-	"github.com/PretendoNetwork/nex-protocols-go/datastore"
+	datastore "github.com/PretendoNetwork/nex-protocols-go/datastore"
 	datastore_super_smash_bros_4_types "github.com/PretendoNetwork/nex-protocols-go/datastore/super-smash-bros-4/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 	"golang.org/x/exp/slices"
@@ -95,11 +95,13 @@ var patchedMethods = []uint32{
 	MethodReportSharedData,
 }
 
-// DataStoreSuperSmashBros4Protocol handles the DataStore (Smash4) NEX protocol. Embeds DataStoreProtocol
-type DataStoreSuperSmashBros4Protocol struct {
-	Server *nex.Server
-	datastore.DataStoreProtocol
+type datastoreProtocol = datastore.Protocol
 
+// Protocol stores all the RMC method handlers for the DataStore (Smash4) protocol and listens for requests
+// Embeds the DataStore protocol
+type Protocol struct {
+	Server *nex.Server
+	datastoreProtocol
 	PostProfileHandler              func(err error, client *nex.Client, callID uint32, param *datastore_super_smash_bros_4_types.DataStorePostProfileParam)
 	GetProfilesHandler              func(err error, client *nex.Client, callID uint32, pidList []uint32)
 	SendPlayReportHandler           func(err error, client *nex.Client, callID uint32, playReport []int32)
@@ -122,7 +124,7 @@ type DataStoreSuperSmashBros4Protocol struct {
 }
 
 // Setup initializes the protocol
-func (protocol *DataStoreSuperSmashBros4Protocol) Setup() {
+func (protocol *Protocol) Setup() {
 	protocol.Server.On("Data", func(packet nex.PacketInterface) {
 		request := packet.RMCRequest()
 
@@ -130,14 +132,14 @@ func (protocol *DataStoreSuperSmashBros4Protocol) Setup() {
 			if slices.Contains(patchedMethods, request.MethodID()) {
 				protocol.HandlePacket(packet)
 			} else {
-				protocol.DataStoreProtocol.HandlePacket(packet)
+				protocol.datastoreProtocol.HandlePacket(packet)
 			}
 		}
 	})
 }
 
 // HandlePacket sends the packet to the correct RMC method handler
-func (protocol *DataStoreSuperSmashBros4Protocol) HandlePacket(packet nex.PacketInterface) {
+func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 	request := packet.RMCRequest()
 
 	switch request.MethodID() {
@@ -185,10 +187,10 @@ func (protocol *DataStoreSuperSmashBros4Protocol) HandlePacket(packet nex.Packet
 	}
 }
 
-// NewDataStoreSuperSmashBros4Protocol returns a new DataStoreSuperSmashBros4Protocol
-func NewDataStoreSuperSmashBros4Protocol(server *nex.Server) *DataStoreSuperSmashBros4Protocol {
-	protocol := &DataStoreSuperSmashBros4Protocol{Server: server}
-	protocol.DataStoreProtocol.Server = server
+// NewProtocol returns a new DataStore (Smash4) protocol
+func NewProtocol(server *nex.Server) *Protocol {
+	protocol := &Protocol{Server: server}
+	protocol.datastoreProtocol.Server = server
 
 	protocol.Setup()
 

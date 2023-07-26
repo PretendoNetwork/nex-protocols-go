@@ -1,5 +1,5 @@
-// Package friends_wiiu implements the Friends WiiU NEX protocol
-package friends_wiiu
+// Package protocol implements the Friends WiiU protocol
+package protocol
 
 import (
 	"fmt"
@@ -10,11 +10,11 @@ import (
 )
 
 // UpdateAndGetAllInformation sets the UpdateAndGetAllInformation handler function
-func (protocol *FriendsWiiUProtocol) UpdateAndGetAllInformation(handler func(err error, client *nex.Client, callID uint32, nnaInfo *friends_wiiu_types.NNAInfo, presence *friends_wiiu_types.NintendoPresenceV2, birthday *nex.DateTime)) {
+func (protocol *Protocol) UpdateAndGetAllInformation(handler func(err error, client *nex.Client, callID uint32, nnaInfo *friends_wiiu_types.NNAInfo, presence *friends_wiiu_types.NintendoPresenceV2, birthday *nex.DateTime)) {
 	protocol.UpdateAndGetAllInformationHandler = handler
 }
 
-func (protocol *FriendsWiiUProtocol) handleUpdateAndGetAllInformation(packet nex.PacketInterface) {
+func (protocol *Protocol) handleUpdateAndGetAllInformation(packet nex.PacketInterface) {
 	if protocol.UpdateAndGetAllInformationHandler == nil {
 		globals.Logger.Warning("FriendsWiiU::UpdateAndGetAllInformation not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

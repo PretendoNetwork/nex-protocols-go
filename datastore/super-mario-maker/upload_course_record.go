@@ -1,5 +1,5 @@
-// Package datastore_super_mario_maker implements the Super Mario Maker DataStore NEX protocol
-package datastore_super_mario_maker
+// Package protocol implements the Super Mario Maker DataStore protocol
+package protocol
 
 import (
 	"fmt"
@@ -10,11 +10,11 @@ import (
 )
 
 // UploadCourseRecord sets the UploadCourseRecord handler function
-func (protocol *DataStoreSuperMarioMakerProtocol) UploadCourseRecord(handler func(err error, client *nex.Client, callID uint32, param *datastore_super_mario_maker_types.DataStoreUploadCourseRecordParam)) {
+func (protocol *Protocol) UploadCourseRecord(handler func(err error, client *nex.Client, callID uint32, param *datastore_super_mario_maker_types.DataStoreUploadCourseRecordParam)) {
 	protocol.UploadCourseRecordHandler = handler
 }
 
-func (protocol *DataStoreSuperMarioMakerProtocol) handleUploadCourseRecord(packet nex.PacketInterface) {
+func (protocol *Protocol) handleUploadCourseRecord(packet nex.PacketInterface) {
 	if protocol.UploadCourseRecordHandler == nil {
 		globals.Logger.Warning("DataStoreSMM::UploadCourseRecord not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

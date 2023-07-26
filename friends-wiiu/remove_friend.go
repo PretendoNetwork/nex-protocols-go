@@ -1,5 +1,5 @@
-// Package friends_wiiu implements the Friends WiiU NEX protocol
-package friends_wiiu
+// Package protocol implements the Friends WiiU protocol
+package protocol
 
 import (
 	"fmt"
@@ -9,11 +9,11 @@ import (
 )
 
 // RemoveFriend sets the RemoveFriend handler function
-func (protocol *FriendsWiiUProtocol) RemoveFriend(handler func(err error, client *nex.Client, callID uint32, pid uint32)) {
+func (protocol *Protocol) RemoveFriend(handler func(err error, client *nex.Client, callID uint32, pid uint32)) {
 	protocol.RemoveFriendHandler = handler
 }
 
-func (protocol *FriendsWiiUProtocol) handleRemoveFriend(packet nex.PacketInterface) {
+func (protocol *Protocol) handleRemoveFriend(packet nex.PacketInterface) {
 	if protocol.RemoveFriendHandler == nil {
 		globals.Logger.Warning("FriendsWiiU::RemoveFriend not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

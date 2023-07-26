@@ -1,5 +1,5 @@
-// Package datastore_super_mario_maker implements the Super Mario Maker DataStore NEX protocol
-package datastore_super_mario_maker
+// Package protocol implements the Super Mario Maker DataStore protocol
+package protocol
 
 import (
 	"fmt"
@@ -11,11 +11,11 @@ import (
 )
 
 // GetMetasWithCourseRecord sets the GetMetasWithCourseRecord handler function
-func (protocol *DataStoreSuperMarioMakerProtocol) GetMetasWithCourseRecord(handler func(err error, client *nex.Client, callID uint32, dataStoreGetCourseRecordParams []*datastore_super_mario_maker_types.DataStoreGetCourseRecordParam, dataStoreGetMetaParam *datastore_types.DataStoreGetMetaParam)) {
+func (protocol *Protocol) GetMetasWithCourseRecord(handler func(err error, client *nex.Client, callID uint32, dataStoreGetCourseRecordParams []*datastore_super_mario_maker_types.DataStoreGetCourseRecordParam, dataStoreGetMetaParam *datastore_types.DataStoreGetMetaParam)) {
 	protocol.GetMetasWithCourseRecordHandler = handler
 }
 
-func (protocol *DataStoreSuperMarioMakerProtocol) handleGetMetasWithCourseRecord(packet nex.PacketInterface) {
+func (protocol *Protocol) handleGetMetasWithCourseRecord(packet nex.PacketInterface) {
 	if protocol.GetMetasWithCourseRecordHandler == nil {
 		globals.Logger.Warning("DataStoreSMM::GetMetasWithCourseRecord not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

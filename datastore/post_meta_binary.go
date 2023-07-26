@@ -1,5 +1,5 @@
-// Package datastore implements the DataStore NEX protocol
-package datastore
+// Package protocol implements the DataStore protocol
+package protocol
 
 import (
 	"fmt"
@@ -10,11 +10,11 @@ import (
 )
 
 // PostMetaBinary sets the PostMetaBinary handler function
-func (protocol *DataStoreProtocol) PostMetaBinary(handler func(err error, client *nex.Client, callID uint32, dataStorePreparePostParam *datastore_types.DataStorePreparePostParam)) {
+func (protocol *Protocol) PostMetaBinary(handler func(err error, client *nex.Client, callID uint32, dataStorePreparePostParam *datastore_types.DataStorePreparePostParam)) {
 	protocol.PostMetaBinaryHandler = handler
 }
 
-func (protocol *DataStoreProtocol) handlePostMetaBinary(packet nex.PacketInterface) {
+func (protocol *Protocol) handlePostMetaBinary(packet nex.PacketInterface) {
 	if protocol.PostMetaBinaryHandler == nil {
 		globals.Logger.Warning("DataStore::PostMetaBinary not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

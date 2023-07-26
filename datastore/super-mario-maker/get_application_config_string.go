@@ -1,5 +1,5 @@
-// Package datastore_super_mario_maker implements the Super Mario Maker DataStore NEX protocol
-package datastore_super_mario_maker
+// Package protocol implements the Super Mario Maker DataStore protocol
+package protocol
 
 import (
 	"fmt"
@@ -9,11 +9,11 @@ import (
 )
 
 // GetApplicationConfigString sets the GetApplicationConfigString handler function
-func (protocol *DataStoreSuperMarioMakerProtocol) GetApplicationConfigString(handler func(err error, client *nex.Client, callID uint32, applicationID uint32)) {
+func (protocol *Protocol) GetApplicationConfigString(handler func(err error, client *nex.Client, callID uint32, applicationID uint32)) {
 	protocol.GetApplicationConfigStringHandler = handler
 }
 
-func (protocol *DataStoreSuperMarioMakerProtocol) handleGetApplicationConfigString(packet nex.PacketInterface) {
+func (protocol *Protocol) handleGetApplicationConfigString(packet nex.PacketInterface) {
 	if protocol.GetApplicationConfigStringHandler == nil {
 		globals.Logger.Warning("DataStoreSMM::GetApplicationConfigString not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

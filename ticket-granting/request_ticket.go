@@ -1,5 +1,5 @@
-// Package ticket_granting implements the Ticket Granting NEX protocol
-package ticket_granting
+// Package protocol implements the Ticket Granting protocol
+package protocol
 
 import (
 	"fmt"
@@ -9,11 +9,11 @@ import (
 )
 
 // RequestTicket sets the RequestTicket handler function
-func (protocol *TicketGrantingProtocol) RequestTicket(handler func(err error, client *nex.Client, callID uint32, idSource uint32, idTarget uint32)) {
+func (protocol *Protocol) RequestTicket(handler func(err error, client *nex.Client, callID uint32, idSource uint32, idTarget uint32)) {
 	protocol.RequestTicketHandler = handler
 }
 
-func (protocol *TicketGrantingProtocol) handleRequestTicket(packet nex.PacketInterface) {
+func (protocol *Protocol) handleRequestTicket(packet nex.PacketInterface) {
 	if protocol.RequestTicketHandler == nil {
 		globals.Logger.Warning("TicketGranting::RequestTicket not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

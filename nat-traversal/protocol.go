@@ -1,5 +1,5 @@
-// Package nat_traversal implements the NAT Traversal NEX protocol
-package nat_traversal
+// Package protocol implements the NAT Traversal protocol
+package protocol
 
 import (
 	"fmt"
@@ -34,8 +34,8 @@ const (
 	MethodReportNATTraversalResultDetail = 0x7
 )
 
-// NATTraversalProtocol handles the NAT Traversal NEX protocol
-type NATTraversalProtocol struct {
+// Protocol stores all the RMC method handlers for the NAT Traversal protocol and listens for requests
+type Protocol struct {
 	Server                                *nex.Server
 	RequestProbeInitiationHandler         func(err error, client *nex.Client, callID uint32, urlTargetList []*nex.StationURL)
 	InitiateProbeHandler                  func(err error, client *nex.Client, callID uint32, urlStationToProbe *nex.StationURL)
@@ -47,7 +47,7 @@ type NATTraversalProtocol struct {
 }
 
 // Setup initializes the protocol
-func (protocol *NATTraversalProtocol) Setup() {
+func (protocol *Protocol) Setup() {
 	protocol.Server.On("Data", func(packet nex.PacketInterface) {
 		request := packet.RMCRequest()
 
@@ -75,9 +75,9 @@ func (protocol *NATTraversalProtocol) Setup() {
 	})
 }
 
-// NewNATTraversalProtocol returns a new NATTraversalProtocol
-func NewNATTraversalProtocol(server *nex.Server) *NATTraversalProtocol {
-	protocol := &NATTraversalProtocol{Server: server}
+// NewNATTraversalProtocol returns a new NAT Traversal NEX protocol
+func NewNATTraversalProtocol(server *nex.Server) *Protocol {
+	protocol := &Protocol{Server: server}
 
 	protocol.Setup()
 

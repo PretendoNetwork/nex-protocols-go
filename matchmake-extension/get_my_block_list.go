@@ -1,5 +1,5 @@
-// Package matchmake_extension implements the Matchmake Extension NEX protocol
-package matchmake_extension
+// Package protocol implements the Matchmake Extension protocol
+package protocol
 
 import (
 	nex "github.com/PretendoNetwork/nex-go"
@@ -7,11 +7,11 @@ import (
 )
 
 // GetMyBlockList sets the GetMyBlockList handler function
-func (protocol *MatchmakeExtensionProtocol) GetMyBlockList(handler func(err error, client *nex.Client, callID uint32)) {
+func (protocol *Protocol) GetMyBlockList(handler func(err error, client *nex.Client, callID uint32)) {
 	protocol.getMyBlockListHandler = handler
 }
 
-func (protocol *MatchmakeExtensionProtocol) handleGetMyBlockList(packet nex.PacketInterface) {
+func (protocol *Protocol) handleGetMyBlockList(packet nex.PacketInterface) {
 	if protocol.getMyBlockListHandler == nil {
 		globals.Logger.Warning("MatchmakeExtension::GetMyBlockList not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

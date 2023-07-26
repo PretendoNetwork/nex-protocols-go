@@ -1,5 +1,5 @@
-// Package messaging implements the Messaging protocol
-package messaging
+// Package protocol implements the Messaging protocol
+package protocol
 
 import (
 	nex "github.com/PretendoNetwork/nex-go"
@@ -7,11 +7,11 @@ import (
 )
 
 // DeliverMessageMultiTarget sets the DeliverMessageMultiTarget handler function
-func (protocol *MessagingProtocol) DeliverMessageMultiTarget(handler func(err error, client *nex.Client, callID uint32)) {
+func (protocol *Protocol) DeliverMessageMultiTarget(handler func(err error, client *nex.Client, callID uint32)) {
 	protocol.deliverMessageMultiTargetHandler = handler
 }
 
-func (protocol *MessagingProtocol) handleDeliverMessageMultiTarget(packet nex.PacketInterface) {
+func (protocol *Protocol) handleDeliverMessageMultiTarget(packet nex.PacketInterface) {
 	if protocol.deliverMessageMultiTargetHandler == nil {
 		globals.Logger.Warning("Messaging::DeliverMessageMultiTarget not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

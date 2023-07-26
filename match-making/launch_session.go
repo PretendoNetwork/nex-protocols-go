@@ -1,5 +1,5 @@
-// Package match_making implements the Match Making NEX protocol
-package match_making
+// Package protocol implements the Match Making protocol
+package protocol
 
 import (
 	"fmt"
@@ -9,11 +9,11 @@ import (
 )
 
 // LaunchSession sets the LaunchSession handler function
-func (protocol *MatchMakingProtocol) LaunchSession(handler func(err error, client *nex.Client, callID uint32, idGathering uint32, strURL string)) {
+func (protocol *Protocol) LaunchSession(handler func(err error, client *nex.Client, callID uint32, idGathering uint32, strURL string)) {
 	protocol.launchSessionHandler = handler
 }
 
-func (protocol *MatchMakingProtocol) handleLaunchSession(packet nex.PacketInterface) {
+func (protocol *Protocol) handleLaunchSession(packet nex.PacketInterface) {
 	if protocol.launchSessionHandler == nil {
 		globals.Logger.Warning("MatchMaking::LaunchSession not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

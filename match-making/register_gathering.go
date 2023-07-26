@@ -1,5 +1,5 @@
-// Package match_making implements the Match Making NEX protocol
-package match_making
+// Package protocol implements the Match Making protocol
+package protocol
 
 import (
 	"fmt"
@@ -9,11 +9,11 @@ import (
 )
 
 // RegisterGathering sets the RegisterGathering handler function
-func (protocol *MatchMakingProtocol) RegisterGathering(handler func(err error, client *nex.Client, callID uint32, anyGathering *nex.DataHolder)) {
+func (protocol *Protocol) RegisterGathering(handler func(err error, client *nex.Client, callID uint32, anyGathering *nex.DataHolder)) {
 	protocol.registerGatheringHandler = handler
 }
 
-func (protocol *MatchMakingProtocol) handleRegisterGathering(packet nex.PacketInterface) {
+func (protocol *Protocol) handleRegisterGathering(packet nex.PacketInterface) {
 	if protocol.registerGatheringHandler == nil {
 		globals.Logger.Warning("MatchMaking::RegisterGathering not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

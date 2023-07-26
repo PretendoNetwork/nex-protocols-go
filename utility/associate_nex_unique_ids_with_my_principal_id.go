@@ -1,5 +1,5 @@
-// Package utility implements the Utility NEX protocol
-package utility
+// Package protocol implements the Utility protocol
+package protocol
 
 import (
 	"fmt"
@@ -10,11 +10,11 @@ import (
 )
 
 // AssociateNexUniqueIDsWithMyPrincipalID sets the AssociateNexUniqueIDsWithMyPrincipalID handler function
-func (protocol *UtilityProtocol) AssociateNexUniqueIDsWithMyPrincipalID(handler func(err error, client *nex.Client, callID uint32, uniqueIDInfo []*utility_types.UniqueIDInfo)) {
+func (protocol *Protocol) AssociateNexUniqueIDsWithMyPrincipalID(handler func(err error, client *nex.Client, callID uint32, uniqueIDInfo []*utility_types.UniqueIDInfo)) {
 	protocol.associateNexUniqueIDsWithMyPrincipalIDHandler = handler
 }
 
-func (protocol *UtilityProtocol) handleAssociateNexUniqueIDsWithMyPrincipalID(packet nex.PacketInterface) {
+func (protocol *Protocol) handleAssociateNexUniqueIDsWithMyPrincipalID(packet nex.PacketInterface) {
 	if protocol.getAssociatedNexUniqueIDWithMyPrincipalIDHandler == nil {
 		globals.Logger.Warning("Utility::AssociateNexUniqueIDsWithMyPrincipalID not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

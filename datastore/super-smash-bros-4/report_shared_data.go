@@ -1,5 +1,5 @@
-// Package datastore_super_smash_bros_4 implements the Super Smash Bros. 4 DataStore NEX protocol
-package datastore_super_smash_bros_4
+// Package protocol implements the Super Smash Bros. 4 DataStore protocol
+package protocol
 
 import (
 	"fmt"
@@ -9,11 +9,11 @@ import (
 )
 
 // ReportSharedData sets the ReportSharedData handler function
-func (protocol *DataStoreSuperSmashBros4Protocol) ReportSharedData(handler func(err error, client *nex.Client, callID uint32, dataID uint64)) {
+func (protocol *Protocol) ReportSharedData(handler func(err error, client *nex.Client, callID uint32, dataID uint64)) {
 	protocol.ReportSharedDataHandler = handler
 }
 
-func (protocol *DataStoreSuperSmashBros4Protocol) handleReportSharedData(packet nex.PacketInterface) {
+func (protocol *Protocol) handleReportSharedData(packet nex.PacketInterface) {
 	if protocol.ReportSharedDataHandler == nil {
 		globals.Logger.Warning("DataStoreSmash4::ReportSharedData not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

@@ -1,5 +1,5 @@
-// Package datastore_super_smash_bros_4 implements the Super Smash Bros. 4 DataStore NEX protocol
-package datastore_super_smash_bros_4
+// Package protocol implements the Super Smash Bros. 4 DataStore protocol
+package protocol
 
 import (
 	"fmt"
@@ -10,11 +10,11 @@ import (
 )
 
 // GetReplayMeta sets the GetReplayMeta handler function
-func (protocol *DataStoreSuperSmashBros4Protocol) GetReplayMeta(handler func(err error, client *nex.Client, callID uint32, param *datastore_super_smash_bros_4_types.DataStoreGetReplayMetaParam)) {
+func (protocol *Protocol) GetReplayMeta(handler func(err error, client *nex.Client, callID uint32, param *datastore_super_smash_bros_4_types.DataStoreGetReplayMetaParam)) {
 	protocol.GetReplayMetaHandler = handler
 }
 
-func (protocol *DataStoreSuperSmashBros4Protocol) handleGetReplayMeta(packet nex.PacketInterface) {
+func (protocol *Protocol) handleGetReplayMeta(packet nex.PacketInterface) {
 	if protocol.GetReplayMetaHandler == nil {
 		globals.Logger.Warning("DataStoreSmash4::GetReplayMeta not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

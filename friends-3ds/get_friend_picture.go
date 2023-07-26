@@ -1,5 +1,5 @@
-// Package friends_3ds implements the Friends 3DS NEX protocol
-package friends_3ds
+// Package protocol implements the Friends 3DS protocol
+package protocol
 
 import (
 	"fmt"
@@ -9,11 +9,11 @@ import (
 )
 
 // GetFriendPicture sets the GetFriendPicture handler function
-func (protocol *Friends3DSProtocol) GetFriendPicture(handler func(err error, client *nex.Client, callID uint32, unknown []uint32)) {
+func (protocol *Protocol) GetFriendPicture(handler func(err error, client *nex.Client, callID uint32, unknown []uint32)) {
 	protocol.getFriendPictureHandler = handler
 }
 
-func (protocol *Friends3DSProtocol) handleGetFriendPicture(packet nex.PacketInterface) {
+func (protocol *Protocol) handleGetFriendPicture(packet nex.PacketInterface) {
 	if protocol.getFriendPictureHandler == nil {
 		globals.Logger.Warning("Friends3DS::GetFriendPicture not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

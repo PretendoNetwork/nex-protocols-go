@@ -1,5 +1,5 @@
-// Package health implements the Health NEX protocol
-package health
+// Package protocol implements the Health protocol
+package protocol
 
 import (
 	nex "github.com/PretendoNetwork/nex-go"
@@ -7,11 +7,11 @@ import (
 )
 
 // FixSanityErrors sets the FixSanityErrors handler function
-func (protocol *HealthProtocol) FixSanityErrors(handler func(err error, client *nex.Client, callID uint32)) {
+func (protocol *Protocol) FixSanityErrors(handler func(err error, client *nex.Client, callID uint32)) {
 	protocol.FixSanityErrorsHandler = handler
 }
 
-func (protocol *HealthProtocol) handleFixSanityErrors(packet nex.PacketInterface) {
+func (protocol *Protocol) handleFixSanityErrors(packet nex.PacketInterface) {
 	if protocol.FixSanityErrorsHandler == nil {
 		globals.Logger.Warning("Health::FixSanityErrors not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

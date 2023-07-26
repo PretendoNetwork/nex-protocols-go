@@ -1,5 +1,5 @@
-// Package matchmake_extension implements the Matchmake Extension NEX protocol
-package matchmake_extension
+// Package protocol implements the Matchmake Extension protocol
+package protocol
 
 import (
 	"fmt"
@@ -9,11 +9,11 @@ import (
 )
 
 // GetSimplePlayingSession sets the GetSimplePlayingSession handler function
-func (protocol *MatchmakeExtensionProtocol) GetSimplePlayingSession(handler func(err error, client *nex.Client, callID uint32, listPID []uint32, includeLoginUser bool)) {
+func (protocol *Protocol) GetSimplePlayingSession(handler func(err error, client *nex.Client, callID uint32, listPID []uint32, includeLoginUser bool)) {
 	protocol.getSimplePlayingSessionHandler = handler
 }
 
-func (protocol *MatchmakeExtensionProtocol) handleGetSimplePlayingSession(packet nex.PacketInterface) {
+func (protocol *Protocol) handleGetSimplePlayingSession(packet nex.PacketInterface) {
 	if protocol.getSimplePlayingSessionHandler == nil {
 		globals.Logger.Warning("MatchmakeExtension::GetSimplePlayingSession not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

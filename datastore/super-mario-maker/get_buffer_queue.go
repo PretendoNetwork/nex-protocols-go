@@ -1,5 +1,5 @@
-// Package datastore_super_mario_maker implements the Super Mario Maker DataStore NEX protocol
-package datastore_super_mario_maker
+// Package protocol implements the Super Mario Maker DataStore protocol
+package protocol
 
 import (
 	"fmt"
@@ -10,11 +10,11 @@ import (
 )
 
 // GetBufferQueue sets the GetBufferQueue handler function
-func (protocol *DataStoreSuperMarioMakerProtocol) GetBufferQueue(handler func(err error, client *nex.Client, callID uint32, bufferQueueParam *datastore_super_mario_maker_types.BufferQueueParam)) {
+func (protocol *Protocol) GetBufferQueue(handler func(err error, client *nex.Client, callID uint32, bufferQueueParam *datastore_super_mario_maker_types.BufferQueueParam)) {
 	protocol.GetBufferQueueHandler = handler
 }
 
-func (protocol *DataStoreSuperMarioMakerProtocol) handleGetBufferQueue(packet nex.PacketInterface) {
+func (protocol *Protocol) handleGetBufferQueue(packet nex.PacketInterface) {
 	if protocol.GetBufferQueueHandler == nil {
 		globals.Logger.Warning("DataStoreSMM::GetBufferQueue not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

@@ -1,5 +1,5 @@
-// Package matchmake_referee implements the Matchmake Referee NEX protocol
-package matchmake_referee
+// Package protocol implements the Matchmake Referee protocol
+package protocol
 
 import (
 	nex "github.com/PretendoNetwork/nex-go"
@@ -7,11 +7,11 @@ import (
 )
 
 // ResetStats sets the ResetStats handler function
-func (protocol *MatchmakeRefereeProtocol) ResetStats(handler func(err error, client *nex.Client, callID uint32)) {
+func (protocol *Protocol) ResetStats(handler func(err error, client *nex.Client, callID uint32)) {
 	protocol.resetStatsHandler = handler
 }
 
-func (protocol *MatchmakeRefereeProtocol) handleResetStats(packet nex.PacketInterface) {
+func (protocol *Protocol) handleResetStats(packet nex.PacketInterface) {
 	if protocol.resetStatsHandler == nil {
 		globals.Logger.Warning("MatchmakeReferee::ResetStats not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

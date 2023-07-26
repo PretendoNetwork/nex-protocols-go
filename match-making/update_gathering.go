@@ -1,5 +1,5 @@
-// Package match_making implements the Match Making NEX protocol
-package match_making
+// Package protocol implements the Match Making protocol
+package protocol
 
 import (
 	"fmt"
@@ -9,11 +9,11 @@ import (
 )
 
 // UpdateGathering sets the UpdateGathering handler function
-func (protocol *MatchMakingProtocol) UpdateGathering(handler func(err error, client *nex.Client, callID uint32, anyGathering *nex.DataHolder)) {
+func (protocol *Protocol) UpdateGathering(handler func(err error, client *nex.Client, callID uint32, anyGathering *nex.DataHolder)) {
 	protocol.updateGatheringHandler = handler
 }
 
-func (protocol *MatchMakingProtocol) handleUpdateGathering(packet nex.PacketInterface) {
+func (protocol *Protocol) handleUpdateGathering(packet nex.PacketInterface) {
 	if protocol.updateGatheringHandler == nil {
 		globals.Logger.Warning("MatchMaking::UpdateGathering not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

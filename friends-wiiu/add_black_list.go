@@ -1,5 +1,5 @@
-// Package friends_wiiu implements the Friends WiiU NEX protocol
-package friends_wiiu
+// Package protocol implements the Friends WiiU protocol
+package protocol
 
 import (
 	"fmt"
@@ -10,11 +10,11 @@ import (
 )
 
 // AddBlackList sets the AddBlackList handler function
-func (protocol *FriendsWiiUProtocol) AddBlackList(handler func(err error, client *nex.Client, callID uint32, blacklistedPrincipal *friends_wiiu_types.BlacklistedPrincipal)) {
+func (protocol *Protocol) AddBlackList(handler func(err error, client *nex.Client, callID uint32, blacklistedPrincipal *friends_wiiu_types.BlacklistedPrincipal)) {
 	protocol.AddBlackListHandler = handler
 }
 
-func (protocol *FriendsWiiUProtocol) handleAddBlackList(packet nex.PacketInterface) {
+func (protocol *Protocol) handleAddBlackList(packet nex.PacketInterface) {
 	if protocol.AddBlackListHandler == nil {
 		globals.Logger.Warning("FriendsWiiU::AddBlackList not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

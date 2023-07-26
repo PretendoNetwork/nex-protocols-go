@@ -43,9 +43,7 @@ func (protocol *Protocol) handleReportNATTraversalResultDetail(packet nex.Packet
 		return
 	}
 
-	var detail int32 = 0
-
-	detail, err = parametersStream.ReadInt32LE()
+	detail, err := parametersStream.ReadInt32LE()
 	if err != nil {
 		go protocol.ReportNATTraversalResultDetailHandler(fmt.Errorf("Failed to read detail from parameters. %s", err.Error()), client, callID, 0, false, 0, 0)
 		return

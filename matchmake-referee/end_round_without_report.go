@@ -28,7 +28,7 @@ func (protocol *MatchmakeRefereeProtocol) handleEndRoundWithoutReport(packet nex
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	roundId, err := parametersStream.ReadUInt64LE()
+	roundID, err := parametersStream.ReadUInt64LE()
 	if err != nil {
 		go protocol.EndRoundWithoutReportHandler(fmt.Errorf("Failed to read roundId from parameters. %s", err.Error()), client, callID, 0)
 		return

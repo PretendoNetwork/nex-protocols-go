@@ -8,11 +8,11 @@ import (
 
 // GetAssociatedNexUniqueIDsWithMyPrincipalID sets the GetAssociatedNexUniqueIDsWithMyPrincipalID handler function
 func (protocol *UtilityProtocol) GetAssociatedNexUniqueIDsWithMyPrincipalID(handler func(err error, client *nex.Client, callID uint32)) {
-	protocol.GetAssociatedNexUniqueIDsWithMyPrincipalIDHandler = handler
+	protocol.getAssociatedNexUniqueIDsWithMyPrincipalIDHandler = handler
 }
 
 func (protocol *UtilityProtocol) handleGetAssociatedNexUniqueIDsWithMyPrincipalID(packet nex.PacketInterface) {
-	if protocol.GetAssociatedNexUniqueIDsWithMyPrincipalIDHandler == nil {
+	if protocol.getAssociatedNexUniqueIDsWithMyPrincipalIDHandler == nil {
 		globals.Logger.Warning("Utility::GetAssociatedNexUniqueIDsWithMyPrincipalID not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -23,5 +23,5 @@ func (protocol *UtilityProtocol) handleGetAssociatedNexUniqueIDsWithMyPrincipalI
 
 	callID := request.CallID()
 
-	go protocol.GetAssociatedNexUniqueIDsWithMyPrincipalIDHandler(nil, client, callID)
+	go protocol.getAssociatedNexUniqueIDsWithMyPrincipalIDHandler(nil, client, callID)
 }

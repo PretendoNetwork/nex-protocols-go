@@ -11,7 +11,7 @@ import (
 
 const (
 	// ProtocolID is the protocol ID for the Utility protocol
-	ProtocolID = 0x6e
+	ProtocolID = 0x6E
 
 	// MethodAcquireNexUniqueID is the method ID for the method AcquireNexUniqueID
 	MethodAcquireNexUniqueID = 0x1
@@ -41,14 +41,14 @@ const (
 // UtilityProtocol handles the Utility NEX protocol
 type UtilityProtocol struct {
 	Server                                            *nex.Server
-	AcquireNexUniqueIDHandler                         func(err error, client *nex.Client, callID uint32)
-	AcquireNexUniqueIDWithPasswordHandler             func(err error, client *nex.Client, callID uint32)
-	AssociateNexUniqueIDWithMyPrincipalIDHandler      func(err error, client *nex.Client, callID uint32, uniqueIDInfo *utility_types.UniqueIDInfo)
-	AssociateNexUniqueIDsWithMyPrincipalIDHandler     func(err error, client *nex.Client, callID uint32, uniqueIDInfo []*utility_types.UniqueIDInfo)
-	GetAssociatedNexUniqueIDWithMyPrincipalIDHandler  func(err error, client *nex.Client, callID uint32)
-	GetAssociatedNexUniqueIDsWithMyPrincipalIDHandler func(err error, client *nex.Client, callID uint32)
-	GetIntegerSettingsHandler                         func(err error, client *nex.Client, callID uint32, integerSettingIndex uint32)
-	GetStringSettingsHandler                          func(err error, client *nex.Client, callID uint32, stringSettingIndex uint32)
+	acquireNexUniqueIDHandler                         func(err error, client *nex.Client, callID uint32)
+	acquireNexUniqueIDWithPasswordHandler             func(err error, client *nex.Client, callID uint32)
+	associateNexUniqueIDWithMyPrincipalIDHandler      func(err error, client *nex.Client, callID uint32, uniqueIDInfo *utility_types.UniqueIDInfo)
+	associateNexUniqueIDsWithMyPrincipalIDHandler     func(err error, client *nex.Client, callID uint32, uniqueIDInfo []*utility_types.UniqueIDInfo)
+	getAssociatedNexUniqueIDWithMyPrincipalIDHandler  func(err error, client *nex.Client, callID uint32)
+	getAssociatedNexUniqueIDsWithMyPrincipalIDHandler func(err error, client *nex.Client, callID uint32)
+	getIntegerSettingsHandler                         func(err error, client *nex.Client, callID uint32, integerSettingIndex uint32)
+	getStringSettingsHandler                          func(err error, client *nex.Client, callID uint32, stringSettingIndex uint32)
 }
 
 // Setup initializes the protocol

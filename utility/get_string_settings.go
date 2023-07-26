@@ -10,11 +10,11 @@ import (
 
 // GetStringSettings sets the GetStringSettings handler function
 func (protocol *UtilityProtocol) GetStringSettings(handler func(err error, client *nex.Client, callID uint32, stringSettingIndex uint32)) {
-	protocol.GetStringSettingsHandler = handler
+	protocol.getStringSettingsHandler = handler
 }
 
 func (protocol *UtilityProtocol) handleGetStringSettings(packet nex.PacketInterface) {
-	if protocol.GetStringSettingsHandler == nil {
+	if protocol.getStringSettingsHandler == nil {
 		globals.Logger.Warning("Utility::GetStringSettings not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -31,9 +31,9 @@ func (protocol *UtilityProtocol) handleGetStringSettings(packet nex.PacketInterf
 
 	stringSettingIndex, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		go protocol.GetStringSettingsHandler(fmt.Errorf("Failed to read stringSettingIndex from parameters. %s", err.Error()), client, callID, 0)
+		go protocol.getStringSettingsHandler(fmt.Errorf("Failed to read stringSettingIndex from parameters. %s", err.Error()), client, callID, 0)
 		return
 	}
 
-	go protocol.GetStringSettingsHandler(nil, client, callID, stringSettingIndex)
+	go protocol.getStringSettingsHandler(nil, client, callID, stringSettingIndex)
 }

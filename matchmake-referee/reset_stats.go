@@ -8,11 +8,11 @@ import (
 
 // ResetStats sets the ResetStats handler function
 func (protocol *MatchmakeRefereeProtocol) ResetStats(handler func(err error, client *nex.Client, callID uint32)) {
-	protocol.ResetStatsHandler = handler
+	protocol.resetStatsHandler = handler
 }
 
 func (protocol *MatchmakeRefereeProtocol) handleResetStats(packet nex.PacketInterface) {
-	if protocol.ResetStatsHandler == nil {
+	if protocol.resetStatsHandler == nil {
 		globals.Logger.Warning("MatchmakeReferee::ResetStats not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -23,5 +23,5 @@ func (protocol *MatchmakeRefereeProtocol) handleResetStats(packet nex.PacketInte
 
 	callID := request.CallID()
 
-	go protocol.ResetStatsHandler(nil, client, callID)
+	go protocol.resetStatsHandler(nil, client, callID)
 }

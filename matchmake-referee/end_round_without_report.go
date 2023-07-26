@@ -10,11 +10,11 @@ import (
 
 // EndRoundWithoutReport sets the EndRoundWithoutReport handler function
 func (protocol *MatchmakeRefereeProtocol) EndRoundWithoutReport(handler func(err error, client *nex.Client, callID uint32, roundId uint64)) {
-	protocol.EndRoundWithoutReportHandler = handler
+	protocol.endRoundWithoutReportHandler = handler
 }
 
 func (protocol *MatchmakeRefereeProtocol) handleEndRoundWithoutReport(packet nex.PacketInterface) {
-	if protocol.EndRoundWithoutReportHandler == nil {
+	if protocol.endRoundWithoutReportHandler == nil {
 		globals.Logger.Warning("MatchmakeReferee::EndRoundWithoutReport not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -30,9 +30,9 @@ func (protocol *MatchmakeRefereeProtocol) handleEndRoundWithoutReport(packet nex
 
 	roundID, err := parametersStream.ReadUInt64LE()
 	if err != nil {
-		go protocol.EndRoundWithoutReportHandler(fmt.Errorf("Failed to read roundID from parameters. %s", err.Error()), client, callID, 0)
+		go protocol.endRoundWithoutReportHandler(fmt.Errorf("Failed to read roundID from parameters. %s", err.Error()), client, callID, 0)
 		return
 	}
 
-	go protocol.EndRoundWithoutReportHandler(nil, client, callID, roundID)
+	go protocol.endRoundWithoutReportHandler(nil, client, callID, roundID)
 }

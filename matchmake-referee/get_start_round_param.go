@@ -10,11 +10,11 @@ import (
 
 // GetStartRoundParam sets the GetStartRoundParam handler function
 func (protocol *MatchmakeRefereeProtocol) GetStartRoundParam(handler func(err error, client *nex.Client, callID uint32, roundID uint64)) {
-	protocol.GetStartRoundParamHandler = handler
+	protocol.getStartRoundParamHandler = handler
 }
 
 func (protocol *MatchmakeRefereeProtocol) handleGetStartRoundParam(packet nex.PacketInterface) {
-	if protocol.GetStartRoundParamHandler == nil {
+	if protocol.getStartRoundParamHandler == nil {
 		globals.Logger.Warning("MatchmakeReferee::GetStartRoundParam not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -30,9 +30,9 @@ func (protocol *MatchmakeRefereeProtocol) handleGetStartRoundParam(packet nex.Pa
 
 	roundID, err := parametersStream.ReadUInt64LE()
 	if err != nil {
-		go protocol.GetStartRoundParamHandler(fmt.Errorf("Failed to read roundID from parameters. %s", err.Error()), client, callID, 0)
+		go protocol.getStartRoundParamHandler(fmt.Errorf("Failed to read roundID from parameters. %s", err.Error()), client, callID, 0)
 		return
 	}
 
-	go protocol.GetStartRoundParamHandler(nil, client, callID, roundID)
+	go protocol.getStartRoundParamHandler(nil, client, callID, roundID)
 }

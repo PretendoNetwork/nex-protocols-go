@@ -11,11 +11,11 @@ import (
 
 // GetStatsAll sets the GetStatsAll handler function
 func (protocol *MatchmakeRefereeProtocol) GetStatsAll(handler func(err error, client *nex.Client, callID uint32, target *matchmake_referee_types.MatchmakeRefereeStatsTarget)) {
-	protocol.GetStatsAllHandler = handler
+	protocol.getStatsAllHandler = handler
 }
 
 func (protocol *MatchmakeRefereeProtocol) handleGetStatsAll(packet nex.PacketInterface) {
-	if protocol.GetStatsAllHandler == nil {
+	if protocol.getStatsAllHandler == nil {
 		globals.Logger.Warning("MatchmakeReferee::GetStatsAll not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -31,9 +31,9 @@ func (protocol *MatchmakeRefereeProtocol) handleGetStatsAll(packet nex.PacketInt
 
 	target, err := parametersStream.ReadStructure(matchmake_referee_types.NewMatchmakeRefereeStatsTarget())
 	if err != nil {
-		go protocol.GetStatsAllHandler(fmt.Errorf("Failed to read target from parameters. %s", err.Error()), client, callID, nil)
+		go protocol.getStatsAllHandler(fmt.Errorf("Failed to read target from parameters. %s", err.Error()), client, callID, nil)
 		return
 	}
 
-	go protocol.GetStatsAllHandler(nil, client, callID, target.(*matchmake_referee_types.MatchmakeRefereeStatsTarget))
+	go protocol.getStatsAllHandler(nil, client, callID, target.(*matchmake_referee_types.MatchmakeRefereeStatsTarget))
 }

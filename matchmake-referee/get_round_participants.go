@@ -10,11 +10,11 @@ import (
 
 // GetRoundParticipants sets the GetRoundParticipants handler function
 func (protocol *MatchmakeRefereeProtocol) GetRoundParticipants(handler func(err error, client *nex.Client, callID uint32, roundID uint64)) {
-	protocol.GetRoundParticipantsHandler = handler
+	protocol.getRoundParticipantsHandler = handler
 }
 
 func (protocol *MatchmakeRefereeProtocol) handleGetRoundParticipants(packet nex.PacketInterface) {
-	if protocol.GetRoundParticipantsHandler == nil {
+	if protocol.getRoundParticipantsHandler == nil {
 		globals.Logger.Warning("MatchmakeReferee::GetRoundParticipants not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -30,9 +30,9 @@ func (protocol *MatchmakeRefereeProtocol) handleGetRoundParticipants(packet nex.
 
 	roundID, err := parametersStream.ReadUInt64LE()
 	if err != nil {
-		go protocol.GetRoundParticipantsHandler(fmt.Errorf("Failed to read roundID from parameters. %s", err.Error()), client, callID, 0)
+		go protocol.getRoundParticipantsHandler(fmt.Errorf("Failed to read roundID from parameters. %s", err.Error()), client, callID, 0)
 		return
 	}
 
-	go protocol.GetRoundParticipantsHandler(nil, client, callID, roundID)
+	go protocol.getRoundParticipantsHandler(nil, client, callID, roundID)
 }

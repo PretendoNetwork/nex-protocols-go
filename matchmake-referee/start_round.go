@@ -11,11 +11,11 @@ import (
 
 // StartRound sets the StartRound handler function
 func (protocol *MatchmakeRefereeProtocol) StartRound(handler func(err error, client *nex.Client, callID uint32, param *matchmake_referee_types.MatchmakeRefereeStartRoundParam)) {
-	protocol.StartRoundHandler = handler
+	protocol.startRoundHandler = handler
 }
 
 func (protocol *MatchmakeRefereeProtocol) handleStartRound(packet nex.PacketInterface) {
-	if protocol.StartRoundHandler == nil {
+	if protocol.startRoundHandler == nil {
 		globals.Logger.Warning("MatchmakeReferee::StartRound not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -31,9 +31,9 @@ func (protocol *MatchmakeRefereeProtocol) handleStartRound(packet nex.PacketInte
 
 	param, err := parametersStream.ReadStructure(matchmake_referee_types.NewMatchmakeRefereeStartRoundParam())
 	if err != nil {
-		go protocol.StartRoundHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
+		go protocol.startRoundHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
 		return
 	}
 
-	go protocol.StartRoundHandler(nil, client, callID, param.(*matchmake_referee_types.MatchmakeRefereeStartRoundParam))
+	go protocol.startRoundHandler(nil, client, callID, param.(*matchmake_referee_types.MatchmakeRefereeStartRoundParam))
 }

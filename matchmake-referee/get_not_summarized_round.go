@@ -8,11 +8,11 @@ import (
 
 // GetNotSummarizedRound sets the GetNotSummarizedRound handler function
 func (protocol *MatchmakeRefereeProtocol) GetNotSummarizedRound(handler func(err error, client *nex.Client, callID uint32)) {
-	protocol.GetNotSummarizedRoundHandler = handler
+	protocol.getNotSummarizedRoundHandler = handler
 }
 
 func (protocol *MatchmakeRefereeProtocol) handleGetNotSummarizedRound(packet nex.PacketInterface) {
-	if protocol.GetNotSummarizedRoundHandler == nil {
+	if protocol.getNotSummarizedRoundHandler == nil {
 		globals.Logger.Warning("MatchmakeReferee::GetNotSummarizedRound not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -23,5 +23,5 @@ func (protocol *MatchmakeRefereeProtocol) handleGetNotSummarizedRound(packet nex
 
 	callID := request.CallID()
 
-	go protocol.GetNotSummarizedRoundHandler(nil, client, callID)
+	go protocol.getNotSummarizedRoundHandler(nil, client, callID)
 }

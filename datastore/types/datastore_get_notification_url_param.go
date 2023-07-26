@@ -46,7 +46,7 @@ func (dataStoreGetNotificationURLParam *DataStoreGetNotificationURLParam) Copy()
 func (dataStoreGetNotificationURLParam *DataStoreGetNotificationURLParam) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*DataStoreGetNotificationURLParam)
 
-	return dataStoreGetNotificationURLParam.PreviousURL != other.PreviousURL
+	return dataStoreGetNotificationURLParam.PreviousURL == other.PreviousURL
 }
 
 // String returns a string representation of the struct

@@ -106,7 +106,7 @@ func (rankingOrderParam *RankingOrderParam) Equals(structure nex.StructureInterf
 		return false
 	}
 
-	return rankingOrderParam.Length != other.Length
+	return rankingOrderParam.Length == other.Length
 }
 
 // String returns a string representation of the struct

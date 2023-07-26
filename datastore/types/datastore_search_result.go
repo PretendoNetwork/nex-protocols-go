@@ -82,11 +82,7 @@ func (dataStoreSearchResult *DataStoreSearchResult) Equals(structure nex.Structu
 		}
 	}
 
-	if dataStoreSearchResult.TotalCountType != other.TotalCountType {
-		return false
-	}
-
-	return true
+	return dataStoreSearchResult.TotalCountType == other.TotalCountType
 }
 
 // String returns a string representation of the struct

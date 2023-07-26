@@ -158,11 +158,7 @@ func (dataStoreChangeMetaParamV1 *DataStoreChangeMetaParamV1) Equals(structure n
 		}
 	}
 
-	if dataStoreChangeMetaParamV1.UpdatePassword != other.UpdatePassword {
-		return false
-	}
-
-	return true
+	return dataStoreChangeMetaParamV1.UpdatePassword == other.UpdatePassword
 }
 
 // String returns a string representation of the struct

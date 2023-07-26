@@ -110,7 +110,7 @@ func (rankingScoreData *RankingScoreData) Equals(structure nex.StructureInterfac
 		return false
 	}
 
-	return rankingScoreData.Param != other.Param
+	return rankingScoreData.Param == other.Param
 }
 
 // String returns a string representation of the struct

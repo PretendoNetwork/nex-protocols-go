@@ -49,11 +49,7 @@ func (dataStorePostProfileParam *DataStorePostProfileParam) Copy() nex.Structure
 func (dataStorePostProfileParam *DataStorePostProfileParam) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*DataStorePostProfileParam)
 
-	if !bytes.Equal(dataStorePostProfileParam.Profile, other.Profile) {
-		return false
-	}
-
-	return true
+	return bytes.Equal(dataStorePostProfileParam.Profile, other.Profile)
 }
 
 // String returns a string representation of the struct

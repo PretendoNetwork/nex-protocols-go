@@ -143,11 +143,7 @@ func (dataStoreReqUpdateInfo *DataStoreReqUpdateInfo) Equals(structure nex.Struc
 		}
 	}
 
-	if !bytes.Equal(dataStoreReqUpdateInfo.RootCACert, other.RootCACert) {
-		return false
-	}
-
-	return true
+	return bytes.Equal(dataStoreReqUpdateInfo.RootCACert, other.RootCACert)
 }
 
 // String returns a string representation of the struct

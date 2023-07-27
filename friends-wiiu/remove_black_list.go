@@ -1,5 +1,5 @@
-// Package friends_wiiu implements the Friends WiiU NEX protocol
-package friends_wiiu
+// Package protocol implements the Friends WiiU protocol
+package protocol
 
 import (
 	"fmt"
@@ -9,12 +9,12 @@ import (
 )
 
 // RemoveBlackList sets the RemoveBlackList handler function
-func (protocol *FriendsWiiUProtocol) RemoveBlackList(handler func(err error, client *nex.Client, callID uint32, pid uint32)) {
-	protocol.RemoveBlackListHandler = handler
+func (protocol *Protocol) RemoveBlackList(handler func(err error, client *nex.Client, callID uint32, pid uint32)) {
+	protocol.removeBlackListHandler = handler
 }
 
-func (protocol *FriendsWiiUProtocol) handleRemoveBlackList(packet nex.PacketInterface) {
-	if protocol.RemoveBlackListHandler == nil {
+func (protocol *Protocol) handleRemoveBlackList(packet nex.PacketInterface) {
+	if protocol.removeBlackListHandler == nil {
 		globals.Logger.Warning("FriendsWiiU::RemoveBlackList not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -30,9 +30,9 @@ func (protocol *FriendsWiiUProtocol) handleRemoveBlackList(packet nex.PacketInte
 
 	pid, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		go protocol.RemoveBlackListHandler(fmt.Errorf("Failed to read pid from parameters. %s", err.Error()), client, callID, 0)
+		go protocol.removeBlackListHandler(fmt.Errorf("Failed to read pid from parameters. %s", err.Error()), client, callID, 0)
 		return
 	}
 
-	go protocol.RemoveBlackListHandler(nil, client, callID, pid)
+	go protocol.removeBlackListHandler(nil, client, callID, pid)
 }

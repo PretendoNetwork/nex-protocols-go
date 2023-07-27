@@ -1,5 +1,5 @@
-// Package message_delivery implements the Message Deliver NEX protocol
-package message_delivery
+// Package protocol implements the Message Deliver protocol
+package protocol
 
 import (
 	"fmt"
@@ -16,14 +16,14 @@ const (
 	MethodDeliverMessage = 0x1
 )
 
-// MessageDeliveryProtocol handles the Message Delivery NEX protocol
-type MessageDeliveryProtocol struct {
+// Protocol stores all the RMC method handlers for the Message Delivery protocol and listens for requests
+type Protocol struct {
 	Server                *nex.Server
-	DeliverMessageHandler func(err error, client *nex.Client, callID uint32, oUserMessage *nex.DataHolder)
+	deliverMessageHandler func(err error, client *nex.Client, callID uint32, oUserMessage *nex.DataHolder)
 }
 
 // Setup initializes the protocol
-func (protocol *MessageDeliveryProtocol) Setup() {
+func (protocol *Protocol) Setup() {
 	protocol.Server.On("Data", func(packet nex.PacketInterface) {
 		request := packet.RMCRequest()
 
@@ -34,7 +34,7 @@ func (protocol *MessageDeliveryProtocol) Setup() {
 }
 
 // HandlePacket sends the packet to the correct RMC method handler
-func (protocol *MessageDeliveryProtocol) HandlePacket(packet nex.PacketInterface) {
+func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 	request := packet.RMCRequest()
 
 	switch request.MethodID() {
@@ -46,9 +46,9 @@ func (protocol *MessageDeliveryProtocol) HandlePacket(packet nex.PacketInterface
 	}
 }
 
-// NewMessageDeliveryProtocol returns a new MessageDeliveryProtocol
-func NewMessageDeliveryProtocol(server *nex.Server) *MessageDeliveryProtocol {
-	protocol := &MessageDeliveryProtocol{Server: server}
+// NewProtocol returns a new Message Delivery protocol
+func NewProtocol(server *nex.Server) *Protocol {
+	protocol := &Protocol{Server: server}
 
 	protocol.Setup()
 

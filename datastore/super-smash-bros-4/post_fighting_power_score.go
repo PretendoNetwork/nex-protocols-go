@@ -1,5 +1,5 @@
-// Package datastore_super_smash_bros_4 implements the Super Smash Bros. 4 DataStore NEX protocol
-package datastore_super_smash_bros_4
+// Package protocol implements the Super Smash Bros. 4 DataStore protocol
+package protocol
 
 import (
 	"fmt"
@@ -10,13 +10,13 @@ import (
 )
 
 // PostFightingPowerScore sets the PostFightingPowerScore handler function
-func (protocol *DataStoreSuperSmashBros4Protocol) PostFightingPowerScore(handler func(err error, client *nex.Client, callID uint32, params []*datastore_super_smash_bros_4_types.DataStorePostFightingPowerScoreParam)) {
-	protocol.PostFightingPowerScoreHandler = handler
+func (protocol *Protocol) PostFightingPowerScore(handler func(err error, client *nex.Client, callID uint32, params []*datastore_super_smash_bros_4_types.DataStorePostFightingPowerScoreParam)) {
+	protocol.postFightingPowerScoreHandler = handler
 }
 
-func (protocol *DataStoreSuperSmashBros4Protocol) handlePostFightingPowerScore(packet nex.PacketInterface) {
-	if protocol.PostFightingPowerScoreHandler == nil {
-		globals.Logger.Warning("DataStoreSmash4::PostFightingPowerScore not implemented")
+func (protocol *Protocol) handlePostFightingPowerScore(packet nex.PacketInterface) {
+	if protocol.postFightingPowerScoreHandler == nil {
+		globals.Logger.Warning("DataStoreSuperSmashBros4::PostFightingPowerScore not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
 	}
@@ -31,9 +31,9 @@ func (protocol *DataStoreSuperSmashBros4Protocol) handlePostFightingPowerScore(p
 
 	params, err := parametersStream.ReadListStructure(datastore_super_smash_bros_4_types.NewDataStorePostFightingPowerScoreParam())
 	if err != nil {
-		go protocol.PostFightingPowerScoreHandler(fmt.Errorf("Failed to read params from parameters. %s", err.Error()), client, callID, nil)
+		go protocol.postFightingPowerScoreHandler(fmt.Errorf("Failed to read params from parameters. %s", err.Error()), client, callID, nil)
 		return
 	}
 
-	go protocol.PostFightingPowerScoreHandler(nil, client, callID, params.([]*datastore_super_smash_bros_4_types.DataStorePostFightingPowerScoreParam))
+	go protocol.postFightingPowerScoreHandler(nil, client, callID, params.([]*datastore_super_smash_bros_4_types.DataStorePostFightingPowerScoreParam))
 }

@@ -1,5 +1,5 @@
-// Package ranking implements the Ranking NEX protocol
-package ranking
+// Package protocol implements the Ranking protocol
+package protocol
 
 import (
 	"fmt"
@@ -59,16 +59,16 @@ const (
 	MethodGetCachedTopXRankings = 0xF
 )
 
-// RankingProtocol handles the Ranking NEX protocol
-type RankingProtocol struct {
+// Protocol stores all the RMC method handlers for the Ranking protocol and listens for requests
+type Protocol struct {
 	Server                  *nex.Server
-	UploadScoreHandler      func(err error, client *nex.Client, callID uint32, scoreData *ranking_types.RankingScoreData, uniqueID uint64)
-	UploadCommonDataHandler func(err error, client *nex.Client, callID uint32, commonData []byte, uniqueID uint64)
-	GetRankingHandler       func(err error, client *nex.Client, callID uint32, rankingMode uint8, category uint32, orderParam *ranking_types.RankingOrderParam, uniqueID uint64, principalID uint32)
+	uploadScoreHandler      func(err error, client *nex.Client, callID uint32, scoreData *ranking_types.RankingScoreData, uniqueID uint64)
+	uploadCommonDataHandler func(err error, client *nex.Client, callID uint32, commonData []byte, uniqueID uint64)
+	getRankingHandler       func(err error, client *nex.Client, callID uint32, rankingMode uint8, category uint32, orderParam *ranking_types.RankingOrderParam, uniqueID uint64, principalID uint32)
 }
 
 // Setup initializes the protocol
-func (protocol *RankingProtocol) Setup() {
+func (protocol *Protocol) Setup() {
 	protocol.Server.On("Data", func(packet nex.PacketInterface) {
 		request := packet.RMCRequest()
 
@@ -88,9 +88,9 @@ func (protocol *RankingProtocol) Setup() {
 	})
 }
 
-// NewRankingProtocol returns a new RankingProtocol
-func NewRankingProtocol(server *nex.Server) *RankingProtocol {
-	protocol := &RankingProtocol{Server: server}
+// NewProtocol returns a new Ranking protocol
+func NewProtocol(server *nex.Server) *Protocol {
+	protocol := &Protocol{Server: server}
 
 	protocol.Setup()
 

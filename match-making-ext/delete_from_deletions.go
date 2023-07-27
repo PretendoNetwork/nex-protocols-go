@@ -1,5 +1,5 @@
-// Package match_making_ext implements the Match Making Ext NEX protocol
-package match_making_ext
+// Package protocol implements the Match Making Ext protocol
+package protocol
 
 import (
 	"fmt"
@@ -9,12 +9,12 @@ import (
 )
 
 // DeleteFromDeletions sets the DeleteFromDeletions handler function
-func (protocol *MatchMakingExtProtocol) DeleteFromDeletions(handler func(err error, client *nex.Client, callID uint32, lstDeletions []uint32, pid uint32)) {
-	protocol.DeleteFromDeletionsHandler = handler
+func (protocol *Protocol) DeleteFromDeletions(handler func(err error, client *nex.Client, callID uint32, lstDeletions []uint32, pid uint32)) {
+	protocol.deleteFromDeletionsHandler = handler
 }
 
-func (protocol *MatchMakingExtProtocol) handleDeleteFromDeletions(packet nex.PacketInterface) {
-	if protocol.DeleteFromDeletionsHandler == nil {
+func (protocol *Protocol) handleDeleteFromDeletions(packet nex.PacketInterface) {
+	if protocol.deleteFromDeletionsHandler == nil {
 		globals.Logger.Warning("MatchMakingExt::DeleteFromDeletions not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -30,15 +30,15 @@ func (protocol *MatchMakingExtProtocol) handleDeleteFromDeletions(packet nex.Pac
 
 	lstDeletions, err := parametersStream.ReadListUInt32LE()
 	if err != nil {
-		go protocol.DeleteFromDeletionsHandler(fmt.Errorf("Failed to read lstDeletionsCount from parameters. %s", err.Error()), client, callID, nil, 0)
+		go protocol.deleteFromDeletionsHandler(fmt.Errorf("Failed to read lstDeletionsCount from parameters. %s", err.Error()), client, callID, nil, 0)
 		return
 	}
 
 	pid, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		go protocol.DeleteFromDeletionsHandler(fmt.Errorf("Failed to read pid from parameters. %s", err.Error()), client, callID, nil, 0)
+		go protocol.deleteFromDeletionsHandler(fmt.Errorf("Failed to read pid from parameters. %s", err.Error()), client, callID, nil, 0)
 		return
 	}
 
-	go protocol.DeleteFromDeletionsHandler(nil, client, callID, lstDeletions, pid)
+	go protocol.deleteFromDeletionsHandler(nil, client, callID, lstDeletions, pid)
 }

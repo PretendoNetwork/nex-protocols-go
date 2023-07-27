@@ -1,5 +1,5 @@
-// Package datastore_types implements all the types used by the DataStore protocol
-package datastore_types
+// Package types implements all the types used by the DataStore protocol
+package types
 
 import (
 	"bytes"
@@ -158,11 +158,7 @@ func (dataStoreChangeMetaParamV1 *DataStoreChangeMetaParamV1) Equals(structure n
 		}
 	}
 
-	if dataStoreChangeMetaParamV1.UpdatePassword != other.UpdatePassword {
-		return false
-	}
-
-	return true
+	return dataStoreChangeMetaParamV1.UpdatePassword == other.UpdatePassword
 }
 
 // String returns a string representation of the struct

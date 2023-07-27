@@ -1,5 +1,5 @@
-// Package notifications implements the Notifications NEX protocol
-package notifications
+// Package protocol implements the Notifications protocol
+package protocol
 
 type notificationSubTypes struct {
 	Participation                notificationParticipationSubTypes

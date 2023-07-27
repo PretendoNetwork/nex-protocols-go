@@ -1,5 +1,5 @@
-// Package matchmake_extension implements the Matchmake Extension NEX protocol
-package matchmake_extension
+// Package protocol implements the Matchmake Extension protocol
+package protocol
 
 import (
 	nex "github.com/PretendoNetwork/nex-go"
@@ -7,11 +7,11 @@ import (
 )
 
 // ClearMyBlockList sets the ClearMyBlockList handler function
-func (protocol *MatchmakeExtensionProtocol) ClearMyBlockList(handler func(err error, client *nex.Client, callID uint32)) {
+func (protocol *Protocol) ClearMyBlockList(handler func(err error, client *nex.Client, callID uint32)) {
 	protocol.clearMyBlockListHandler = handler
 }
 
-func (protocol *MatchmakeExtensionProtocol) handleClearMyBlockList(packet nex.PacketInterface) {
+func (protocol *Protocol) handleClearMyBlockList(packet nex.PacketInterface) {
 	if protocol.clearMyBlockListHandler == nil {
 		globals.Logger.Warning("MatchmakeExtension::ClearMyBlockList not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

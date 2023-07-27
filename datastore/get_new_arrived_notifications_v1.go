@@ -1,5 +1,5 @@
-// Package datastore implements the DataStore NEX protocol
-package datastore
+// Package protocol implements the DataStore protocol
+package protocol
 
 import (
 	"fmt"
@@ -10,12 +10,12 @@ import (
 )
 
 // GetNewArrivedNotificationsV1 sets the GetNewArrivedNotificationsV1 handler function
-func (protocol *DataStoreProtocol) GetNewArrivedNotificationsV1(handler func(err error, client *nex.Client, callID uint32, param *datastore_types.DataStoreGetNewArrivedNotificationsParam)) {
-	protocol.GetNewArrivedNotificationsV1Handler = handler
+func (protocol *Protocol) GetNewArrivedNotificationsV1(handler func(err error, client *nex.Client, callID uint32, param *datastore_types.DataStoreGetNewArrivedNotificationsParam)) {
+	protocol.getNewArrivedNotificationsV1Handler = handler
 }
 
-func (protocol *DataStoreProtocol) handleGetNewArrivedNotificationsV1(packet nex.PacketInterface) {
-	if protocol.GetNewArrivedNotificationsV1Handler == nil {
+func (protocol *Protocol) handleGetNewArrivedNotificationsV1(packet nex.PacketInterface) {
+	if protocol.getNewArrivedNotificationsV1Handler == nil {
 		globals.Logger.Warning("DataStore::GetNewArrivedNotificationsV1 not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -31,9 +31,9 @@ func (protocol *DataStoreProtocol) handleGetNewArrivedNotificationsV1(packet nex
 
 	param, err := parametersStream.ReadStructure(datastore_types.NewDataStoreGetNewArrivedNotificationsParam())
 	if err != nil {
-		go protocol.GetNewArrivedNotificationsV1Handler(fmt.Errorf("Failed to read dataStoreGetNewArrivedNotificationsParam from parameters. %s", err.Error()), client, callID, nil)
+		go protocol.getNewArrivedNotificationsV1Handler(fmt.Errorf("Failed to read dataStoreGetNewArrivedNotificationsParam from parameters. %s", err.Error()), client, callID, nil)
 		return
 	}
 
-	go protocol.GetNewArrivedNotificationsV1Handler(nil, client, callID, param.(*datastore_types.DataStoreGetNewArrivedNotificationsParam))
+	go protocol.getNewArrivedNotificationsV1Handler(nil, client, callID, param.(*datastore_types.DataStoreGetNewArrivedNotificationsParam))
 }

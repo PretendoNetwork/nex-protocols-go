@@ -1,5 +1,5 @@
-// Package matchmake_referee implements the Matchmake Referee NEX protocol
-package matchmake_referee
+// Package protocol implements the Matchmake Referee protocol
+package protocol
 
 import (
 	"fmt"
@@ -9,11 +9,11 @@ import (
 )
 
 // GetRoundParticipants sets the GetRoundParticipants handler function
-func (protocol *MatchmakeRefereeProtocol) GetRoundParticipants(handler func(err error, client *nex.Client, callID uint32, roundID uint64)) {
+func (protocol *Protocol) GetRoundParticipants(handler func(err error, client *nex.Client, callID uint32, roundID uint64)) {
 	protocol.getRoundParticipantsHandler = handler
 }
 
-func (protocol *MatchmakeRefereeProtocol) handleGetRoundParticipants(packet nex.PacketInterface) {
+func (protocol *Protocol) handleGetRoundParticipants(packet nex.PacketInterface) {
 	if protocol.getRoundParticipantsHandler == nil {
 		globals.Logger.Warning("MatchmakeReferee::GetRoundParticipants not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

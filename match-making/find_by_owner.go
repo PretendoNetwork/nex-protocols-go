@@ -1,5 +1,5 @@
-// Package match_making implements the Match Making NEX protocol
-package match_making
+// Package protocol implements the Match Making protocol
+package protocol
 
 import (
 	"fmt"
@@ -9,11 +9,11 @@ import (
 )
 
 // FindByOwner sets the FindByOwner handler function
-func (protocol *MatchMakingProtocol) FindByOwner(handler func(err error, client *nex.Client, callID uint32, id uint32, resultRange *nex.ResultRange)) {
+func (protocol *Protocol) FindByOwner(handler func(err error, client *nex.Client, callID uint32, id uint32, resultRange *nex.ResultRange)) {
 	protocol.findByOwnerHandler = handler
 }
 
-func (protocol *MatchMakingProtocol) handleFindByOwner(packet nex.PacketInterface) {
+func (protocol *Protocol) handleFindByOwner(packet nex.PacketInterface) {
 	if protocol.findByOwnerHandler == nil {
 		globals.Logger.Warning("MatchMaking::FindByOwner not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

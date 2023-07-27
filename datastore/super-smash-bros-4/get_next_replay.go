@@ -1,5 +1,5 @@
-// Package datastore_super_smash_bros_4 implements the Super Smash Bros. 4 DataStore NEX protocol
-package datastore_super_smash_bros_4
+// Package protocol implements the Super Smash Bros. 4 DataStore protocol
+package protocol
 
 import (
 	nex "github.com/PretendoNetwork/nex-go"
@@ -7,13 +7,13 @@ import (
 )
 
 // GetNextReplay sets the GetNextReplay handler function
-func (protocol *DataStoreSuperSmashBros4Protocol) GetNextReplay(handler func(err error, client *nex.Client, callID uint32)) {
-	protocol.GetNextReplayHandler = handler
+func (protocol *Protocol) GetNextReplay(handler func(err error, client *nex.Client, callID uint32)) {
+	protocol.getNextReplayHandler = handler
 }
 
-func (protocol *DataStoreSuperSmashBros4Protocol) handleGetNextReplay(packet nex.PacketInterface) {
-	if protocol.GetNextReplayHandler == nil {
-		globals.Logger.Warning("DataStoreSmash4::GetNextReplay not implemented")
+func (protocol *Protocol) handleGetNextReplay(packet nex.PacketInterface) {
+	if protocol.getNextReplayHandler == nil {
+		globals.Logger.Warning("DataStoreSuperSmashBros4::GetNextReplay not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
 	}
@@ -23,5 +23,5 @@ func (protocol *DataStoreSuperSmashBros4Protocol) handleGetNextReplay(packet nex
 
 	callID := request.CallID()
 
-	go protocol.GetNextReplayHandler(nil, client, callID)
+	go protocol.getNextReplayHandler(nil, client, callID)
 }

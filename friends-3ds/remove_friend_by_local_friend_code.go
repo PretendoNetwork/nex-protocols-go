@@ -1,5 +1,5 @@
-// Package friends_3ds implements the Friends 3DS NEX protocol
-package friends_3ds
+// Package protocol implements the Friends 3DS protocol
+package protocol
 
 import (
 	"fmt"
@@ -9,11 +9,11 @@ import (
 )
 
 // RemoveFriendByLocalFriendCode sets the RemoveFriendByLocalFriendCode handler function
-func (protocol *Friends3DSProtocol) RemoveFriendByLocalFriendCode(handler func(err error, client *nex.Client, callID uint32, lfc uint64)) {
+func (protocol *Protocol) RemoveFriendByLocalFriendCode(handler func(err error, client *nex.Client, callID uint32, lfc uint64)) {
 	protocol.removeFriendByLocalFriendCodeHandler = handler
 }
 
-func (protocol *Friends3DSProtocol) handleRemoveFriendByLocalFriendCode(packet nex.PacketInterface) {
+func (protocol *Protocol) handleRemoveFriendByLocalFriendCode(packet nex.PacketInterface) {
 	if protocol.removeFriendByLocalFriendCodeHandler == nil {
 		globals.Logger.Warning("Friends3DS::RemoveFriendByLocalFriendCode not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

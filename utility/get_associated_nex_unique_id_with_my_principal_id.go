@@ -1,5 +1,5 @@
-// Package utility implements the Utility NEX protocol
-package utility
+// Package protocol implements the Utility protocol
+package protocol
 
 import (
 	nex "github.com/PretendoNetwork/nex-go"
@@ -7,11 +7,11 @@ import (
 )
 
 // GetAssociatedNexUniqueIDWithMyPrincipalID sets the GetAssociatedNexUniqueIDWithMyPrincipalID handler function
-func (protocol *UtilityProtocol) GetAssociatedNexUniqueIDWithMyPrincipalID(handler func(err error, client *nex.Client, callID uint32)) {
+func (protocol *Protocol) GetAssociatedNexUniqueIDWithMyPrincipalID(handler func(err error, client *nex.Client, callID uint32)) {
 	protocol.getAssociatedNexUniqueIDWithMyPrincipalIDHandler = handler
 }
 
-func (protocol *UtilityProtocol) handleGetAssociatedNexUniqueIDWithMyPrincipalID(packet nex.PacketInterface) {
+func (protocol *Protocol) handleGetAssociatedNexUniqueIDWithMyPrincipalID(packet nex.PacketInterface) {
 	if protocol.getAssociatedNexUniqueIDWithMyPrincipalIDHandler == nil {
 		globals.Logger.Warning("Utility::GetAssociatedNexUniqueIDWithMyPrincipalID not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

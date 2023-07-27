@@ -1,5 +1,5 @@
-// Package datastore_types implements all the types used by the DataStore protocol
-package datastore_types
+// Package types implements all the types used by the DataStore protocol
+package types
 
 import (
 	"fmt"
@@ -82,11 +82,7 @@ func (dataStoreSearchResult *DataStoreSearchResult) Equals(structure nex.Structu
 		}
 	}
 
-	if dataStoreSearchResult.TotalCountType != other.TotalCountType {
-		return false
-	}
-
-	return true
+	return dataStoreSearchResult.TotalCountType == other.TotalCountType
 }
 
 // String returns a string representation of the struct

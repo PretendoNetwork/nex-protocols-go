@@ -1,5 +1,5 @@
-// Package match_making implements the Match Making NEX protocol
-package match_making
+// Package protocol implements the Match Making protocol
+package protocol
 
 import (
 	"fmt"
@@ -9,11 +9,11 @@ import (
 )
 
 // GetState sets the GetState handler function
-func (protocol *MatchMakingProtocol) GetState(handler func(err error, client *nex.Client, callID uint32, idGathering uint32)) {
+func (protocol *Protocol) GetState(handler func(err error, client *nex.Client, callID uint32, idGathering uint32)) {
 	protocol.getStateHandler = handler
 }
 
-func (protocol *MatchMakingProtocol) handleGetState(packet nex.PacketInterface) {
+func (protocol *Protocol) handleGetState(packet nex.PacketInterface) {
 	if protocol.getStateHandler == nil {
 		globals.Logger.Warning("MatchMaking::GetState not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

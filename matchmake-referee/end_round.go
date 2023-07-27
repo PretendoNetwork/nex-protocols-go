@@ -1,5 +1,5 @@
-// Package matchmake_referee implements the Matchmake Referee NEX protocol
-package matchmake_referee
+// Package protocol implements the Matchmake Referee protocol
+package protocol
 
 import (
 	"fmt"
@@ -10,11 +10,11 @@ import (
 )
 
 // EndRound sets the EndRound handler function
-func (protocol *MatchmakeRefereeProtocol) EndRound(handler func(err error, client *nex.Client, callID uint32, endRoundParam *matchmake_referee_types.MatchmakeRefereeEndRoundParam)) {
+func (protocol *Protocol) EndRound(handler func(err error, client *nex.Client, callID uint32, endRoundParam *matchmake_referee_types.MatchmakeRefereeEndRoundParam)) {
 	protocol.endRoundHandler = handler
 }
 
-func (protocol *MatchmakeRefereeProtocol) handleEndRound(packet nex.PacketInterface) {
+func (protocol *Protocol) handleEndRound(packet nex.PacketInterface) {
 	if protocol.endRoundHandler == nil {
 		globals.Logger.Warning("MatchmakeReferee::EndRound not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

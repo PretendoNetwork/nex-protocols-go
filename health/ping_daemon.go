@@ -1,5 +1,5 @@
-// Package health implements the Health NEX protocol
-package health
+// Package protocol implements the Health protocol
+package protocol
 
 import (
 	nex "github.com/PretendoNetwork/nex-go"
@@ -7,12 +7,12 @@ import (
 )
 
 // PingDaemon sets the PingDaemon handler function
-func (protocol *HealthProtocol) PingDaemon(handler func(err error, client *nex.Client, callID uint32)) {
-	protocol.PingDaemonHandler = handler
+func (protocol *Protocol) PingDaemon(handler func(err error, client *nex.Client, callID uint32)) {
+	protocol.pingDaemonHandler = handler
 }
 
-func (protocol *HealthProtocol) handlePingDaemon(packet nex.PacketInterface) {
-	if protocol.PingDaemonHandler == nil {
+func (protocol *Protocol) handlePingDaemon(packet nex.PacketInterface) {
+	if protocol.pingDaemonHandler == nil {
 		globals.Logger.Warning("Health::PingDaemon not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -23,5 +23,5 @@ func (protocol *HealthProtocol) handlePingDaemon(packet nex.PacketInterface) {
 
 	callID := request.CallID()
 
-	go protocol.PingDaemonHandler(nil, client, callID)
+	go protocol.pingDaemonHandler(nil, client, callID)
 }

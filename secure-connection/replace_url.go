@@ -1,5 +1,5 @@
-// Package secure_connection implements the Secure Connection NEX protocol
-package secure_connection
+// Package protocol implements the Secure Connection protocol
+package protocol
 
 import (
 	"fmt"
@@ -9,12 +9,12 @@ import (
 )
 
 // ReplaceURL sets the ReplaceURL handler function
-func (protocol *SecureConnectionProtocol) ReplaceURL(handler func(err error, client *nex.Client, callID uint32, target *nex.StationURL, url *nex.StationURL)) {
-	protocol.ReplaceURLHandler = handler
+func (protocol *Protocol) ReplaceURL(handler func(err error, client *nex.Client, callID uint32, target *nex.StationURL, url *nex.StationURL)) {
+	protocol.replaceURLHandler = handler
 }
 
-func (protocol *SecureConnectionProtocol) handleReplaceURL(packet nex.PacketInterface) {
-	if protocol.ReplaceURLHandler == nil {
+func (protocol *Protocol) handleReplaceURL(packet nex.PacketInterface) {
+	if protocol.replaceURLHandler == nil {
 		globals.Logger.Warning("SecureConnection::ReplaceURL not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -30,15 +30,15 @@ func (protocol *SecureConnectionProtocol) handleReplaceURL(packet nex.PacketInte
 
 	target, err := parametersStream.ReadStationURL()
 	if err != nil {
-		go protocol.ReplaceURLHandler(fmt.Errorf("Failed to read target from parameters. %s", err.Error()), client, callID, nil, nil)
+		go protocol.replaceURLHandler(fmt.Errorf("Failed to read target from parameters. %s", err.Error()), client, callID, nil, nil)
 		return
 	}
 
 	url, err := parametersStream.ReadStationURL()
 	if err != nil {
-		go protocol.ReplaceURLHandler(fmt.Errorf("Failed to read url from parameters. %s", err.Error()), client, callID, nil, nil)
+		go protocol.replaceURLHandler(fmt.Errorf("Failed to read url from parameters. %s", err.Error()), client, callID, nil, nil)
 		return
 	}
 
-	go protocol.ReplaceURLHandler(nil, client, callID, target, url)
+	go protocol.replaceURLHandler(nil, client, callID, target, url)
 }

@@ -1,5 +1,5 @@
-// Package datastore_super_mario_maker_types implements all the types used by the DataStore Super Mario Maker protocol
-package datastore_super_mario_maker_types
+// Package types implements all the types used by the DataStore Super Mario Maker protocol
+package types
 
 import (
 	"fmt"
@@ -70,11 +70,7 @@ func (dataStoreGetCustomRankingByDataIDParam *DataStoreGetCustomRankingByDataIDP
 		}
 	}
 
-	if dataStoreGetCustomRankingByDataIDParam.ResultOption != other.ResultOption {
-		return false
-	}
-
-	return true
+	return dataStoreGetCustomRankingByDataIDParam.ResultOption == other.ResultOption
 }
 
 // String returns a string representation of the struct

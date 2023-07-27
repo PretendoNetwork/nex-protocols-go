@@ -1,8 +1,8 @@
-// Package match_making_types implements all the types used by the Matchmaking protocols.
+// Package types implements all the types used by the Matchmaking protocols.
 //
 // Since there are multiple match making related protocols, and they all share types
 // all types used by all match making protocols is defined here
-package match_making_types
+package types
 
 import (
 	"bytes"
@@ -16,58 +16,58 @@ import (
 type PersistentGathering struct {
 	nex.Structure
 	*Gathering
-	M_CommunityType          uint32
-	M_Password               string
-	M_Attribs                []uint32
-	M_ApplicationBuffer      []byte
-	M_ParticipationStartDate *nex.DateTime
-	M_ParticipationEndDate   *nex.DateTime
-	M_MatchmakeSessionCount  uint32
-	M_ParticipationCount     uint32
+	CommunityType          uint32
+	Password               string
+	Attribs                []uint32
+	ApplicationBuffer      []byte
+	ParticipationStartDate *nex.DateTime
+	ParticipationEndDate   *nex.DateTime
+	MatchmakeSessionCount  uint32
+	ParticipationCount     uint32
 }
 
 // ExtractFromStream extracts a PersistentGathering structure from a stream
 func (persistentGathering *PersistentGathering) ExtractFromStream(stream *nex.StreamIn) error {
 	var err error
 
-	persistentGathering.M_CommunityType, err = stream.ReadUInt32LE()
+	persistentGathering.CommunityType, err = stream.ReadUInt32LE()
 	if err != nil {
-		return fmt.Errorf("Failed to extract PersistentGathering.M_CommunityType. %s", err.Error())
+		return fmt.Errorf("Failed to extract PersistentGathering.CommunityType. %s", err.Error())
 	}
 
-	persistentGathering.M_Password, err = stream.ReadString()
+	persistentGathering.Password, err = stream.ReadString()
 	if err != nil {
-		return fmt.Errorf("Failed to extract PersistentGathering.M_Password. %s", err.Error())
+		return fmt.Errorf("Failed to extract PersistentGathering.Password. %s", err.Error())
 	}
 
-	persistentGathering.M_Attribs, err = stream.ReadListUInt32LE()
+	persistentGathering.Attribs, err = stream.ReadListUInt32LE()
 	if err != nil {
-		return fmt.Errorf("Failed to extract PersistentGathering.M_Attribs. %s", err.Error())
+		return fmt.Errorf("Failed to extract PersistentGathering.Attribs. %s", err.Error())
 	}
 
-	persistentGathering.M_ApplicationBuffer, err = stream.ReadBuffer()
+	persistentGathering.ApplicationBuffer, err = stream.ReadBuffer()
 	if err != nil {
-		return fmt.Errorf("Failed to extract PersistentGathering.M_ApplicationBuffer. %s", err.Error())
+		return fmt.Errorf("Failed to extract PersistentGathering.ApplicationBuffer. %s", err.Error())
 	}
 
-	persistentGathering.M_ParticipationStartDate, err = stream.ReadDateTime()
+	persistentGathering.ParticipationStartDate, err = stream.ReadDateTime()
 	if err != nil {
-		return fmt.Errorf("Failed to extract PersistentGathering.M_ParticipationStartDate. %s", err.Error())
+		return fmt.Errorf("Failed to extract PersistentGathering.ParticipationStartDate. %s", err.Error())
 	}
 
-	persistentGathering.M_ParticipationEndDate, err = stream.ReadDateTime()
+	persistentGathering.ParticipationEndDate, err = stream.ReadDateTime()
 	if err != nil {
-		return fmt.Errorf("Failed to extract PersistentGathering.M_ParticipationEndDate. %s", err.Error())
+		return fmt.Errorf("Failed to extract PersistentGathering.ParticipationEndDate. %s", err.Error())
 	}
 
-	persistentGathering.M_MatchmakeSessionCount, err = stream.ReadUInt32LE()
+	persistentGathering.MatchmakeSessionCount, err = stream.ReadUInt32LE()
 	if err != nil {
-		return fmt.Errorf("Failed to extract PersistentGathering.M_MatchmakeSessionCount. %s", err.Error())
+		return fmt.Errorf("Failed to extract PersistentGathering.MatchmakeSessionCount. %s", err.Error())
 	}
 
-	persistentGathering.M_ParticipationCount, err = stream.ReadUInt32LE()
+	persistentGathering.ParticipationCount, err = stream.ReadUInt32LE()
 	if err != nil {
-		return fmt.Errorf("Failed to extract PersistentGathering.M_ParticipationCount. %s", err.Error())
+		return fmt.Errorf("Failed to extract PersistentGathering.ParticipationCount. %s", err.Error())
 	}
 
 	return nil
@@ -79,26 +79,26 @@ func (persistentGathering *PersistentGathering) Copy() nex.StructureInterface {
 
 	copied.Gathering = persistentGathering.Gathering.Copy().(*Gathering)
 	copied.SetParentType(copied.Gathering)
-	copied.M_CommunityType = persistentGathering.M_CommunityType
-	copied.M_Password = persistentGathering.M_Password
-	copied.M_Attribs = make([]uint32, len(persistentGathering.M_Attribs))
+	copied.CommunityType = persistentGathering.CommunityType
+	copied.Password = persistentGathering.Password
+	copied.Attribs = make([]uint32, len(persistentGathering.Attribs))
 
-	copy(copied.M_Attribs, persistentGathering.M_Attribs)
+	copy(copied.Attribs, persistentGathering.Attribs)
 
-	copied.M_ApplicationBuffer = make([]byte, len(persistentGathering.M_ApplicationBuffer))
+	copied.ApplicationBuffer = make([]byte, len(persistentGathering.ApplicationBuffer))
 
-	copy(copied.M_ApplicationBuffer, persistentGathering.M_ApplicationBuffer)
+	copy(copied.ApplicationBuffer, persistentGathering.ApplicationBuffer)
 
-	if persistentGathering.M_ParticipationStartDate != nil {
-		copied.M_ParticipationStartDate = persistentGathering.M_ParticipationStartDate.Copy()
+	if persistentGathering.ParticipationStartDate != nil {
+		copied.ParticipationStartDate = persistentGathering.ParticipationStartDate.Copy()
 	}
 
-	if persistentGathering.M_ParticipationEndDate != nil {
-		copied.M_ParticipationEndDate = persistentGathering.M_ParticipationEndDate.Copy()
+	if persistentGathering.ParticipationEndDate != nil {
+		copied.ParticipationEndDate = persistentGathering.ParticipationEndDate.Copy()
 	}
 
-	copied.M_MatchmakeSessionCount = persistentGathering.M_MatchmakeSessionCount
-	copied.M_ParticipationCount = persistentGathering.M_ParticipationCount
+	copied.MatchmakeSessionCount = persistentGathering.MatchmakeSessionCount
+	copied.ParticipationCount = persistentGathering.ParticipationCount
 
 	return copied
 }
@@ -111,61 +111,61 @@ func (persistentGathering *PersistentGathering) Equals(structure nex.StructureIn
 		return false
 	}
 
-	if persistentGathering.M_CommunityType != other.M_CommunityType {
+	if persistentGathering.CommunityType != other.CommunityType {
 		return false
 	}
 
-	if persistentGathering.M_Password != other.M_Password {
+	if persistentGathering.Password != other.Password {
 		return false
 	}
 
-	if len(persistentGathering.M_Attribs) != len(other.M_Attribs) {
+	if len(persistentGathering.Attribs) != len(other.Attribs) {
 		return false
 	}
 
-	for i := 0; i < len(persistentGathering.M_Attribs); i++ {
-		if persistentGathering.M_Attribs[i] != other.M_Attribs[i] {
+	for i := 0; i < len(persistentGathering.Attribs); i++ {
+		if persistentGathering.Attribs[i] != other.Attribs[i] {
 			return false
 		}
 	}
 
-	if !bytes.Equal(persistentGathering.M_ApplicationBuffer, other.M_ApplicationBuffer) {
+	if !bytes.Equal(persistentGathering.ApplicationBuffer, other.ApplicationBuffer) {
 		return false
 	}
 
-	if persistentGathering.M_ParticipationStartDate != nil && other.M_ParticipationStartDate == nil {
+	if persistentGathering.ParticipationStartDate != nil && other.ParticipationStartDate == nil {
 		return false
 	}
 
-	if persistentGathering.M_ParticipationStartDate == nil && other.M_ParticipationStartDate != nil {
+	if persistentGathering.ParticipationStartDate == nil && other.ParticipationStartDate != nil {
 		return false
 	}
 
-	if persistentGathering.M_ParticipationStartDate != nil && other.M_ParticipationStartDate != nil {
-		if persistentGathering.M_ParticipationStartDate.Equals(other.M_ParticipationStartDate) {
+	if persistentGathering.ParticipationStartDate != nil && other.ParticipationStartDate != nil {
+		if persistentGathering.ParticipationStartDate.Equals(other.ParticipationStartDate) {
 			return false
 		}
 	}
 
-	if persistentGathering.M_ParticipationEndDate != nil && other.M_ParticipationEndDate == nil {
+	if persistentGathering.ParticipationEndDate != nil && other.ParticipationEndDate == nil {
 		return false
 	}
 
-	if persistentGathering.M_ParticipationEndDate == nil && other.M_ParticipationEndDate != nil {
+	if persistentGathering.ParticipationEndDate == nil && other.ParticipationEndDate != nil {
 		return false
 	}
 
-	if persistentGathering.M_ParticipationEndDate != nil && other.M_ParticipationEndDate != nil {
-		if persistentGathering.M_ParticipationEndDate.Equals(other.M_ParticipationEndDate) {
+	if persistentGathering.ParticipationEndDate != nil && other.ParticipationEndDate != nil {
+		if persistentGathering.ParticipationEndDate.Equals(other.ParticipationEndDate) {
 			return false
 		}
 	}
 
-	if persistentGathering.M_MatchmakeSessionCount != other.M_MatchmakeSessionCount {
+	if persistentGathering.MatchmakeSessionCount != other.MatchmakeSessionCount {
 		return false
 	}
 
-	if persistentGathering.M_ParticipationCount != other.M_ParticipationCount {
+	if persistentGathering.ParticipationCount != other.ParticipationCount {
 		return false
 	}
 
@@ -187,25 +187,25 @@ func (persistentGathering *PersistentGathering) FormatToString(indentationLevel 
 	b.WriteString("PersistentGathering{\n")
 	b.WriteString(fmt.Sprintf("%sParentType: %s,\n", indentationValues, persistentGathering.ParentType().FormatToString(indentationLevel+1)))
 	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, persistentGathering.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sM_CommunityType: %d,\n", indentationValues, persistentGathering.M_CommunityType))
-	b.WriteString(fmt.Sprintf("%sM_Password: %q,\n", indentationValues, persistentGathering.M_Password))
-	b.WriteString(fmt.Sprintf("%sM_Attribs: %v,\n", indentationValues, persistentGathering.M_Attribs))
-	b.WriteString(fmt.Sprintf("%sM_ApplicationBuffer: %x,\n", indentationValues, persistentGathering.M_ApplicationBuffer))
+	b.WriteString(fmt.Sprintf("%sCommunityType: %d,\n", indentationValues, persistentGathering.CommunityType))
+	b.WriteString(fmt.Sprintf("%sPassword: %q,\n", indentationValues, persistentGathering.Password))
+	b.WriteString(fmt.Sprintf("%sAttribs: %v,\n", indentationValues, persistentGathering.Attribs))
+	b.WriteString(fmt.Sprintf("%sApplicationBuffer: %x,\n", indentationValues, persistentGathering.ApplicationBuffer))
 
-	if persistentGathering.M_ParticipationStartDate != nil {
-		b.WriteString(fmt.Sprintf("%sM_ParticipationStartDate: %s,\n", indentationValues, persistentGathering.M_ParticipationStartDate.FormatToString(indentationLevel+1)))
+	if persistentGathering.ParticipationStartDate != nil {
+		b.WriteString(fmt.Sprintf("%sParticipationStartDate: %s,\n", indentationValues, persistentGathering.ParticipationStartDate.FormatToString(indentationLevel+1)))
 	} else {
-		b.WriteString(fmt.Sprintf("%sM_ParticipationStartDate: nil,\n", indentationValues))
+		b.WriteString(fmt.Sprintf("%sParticipationStartDate: nil,\n", indentationValues))
 	}
 
-	if persistentGathering.M_ParticipationEndDate != nil {
-		b.WriteString(fmt.Sprintf("%sM_ParticipationEndDate: %s,\n", indentationValues, persistentGathering.M_ParticipationEndDate.FormatToString(indentationLevel+1)))
+	if persistentGathering.ParticipationEndDate != nil {
+		b.WriteString(fmt.Sprintf("%sParticipationEndDate: %s,\n", indentationValues, persistentGathering.ParticipationEndDate.FormatToString(indentationLevel+1)))
 	} else {
-		b.WriteString(fmt.Sprintf("%sM_ParticipationEndDate: nil,\n", indentationValues))
+		b.WriteString(fmt.Sprintf("%sParticipationEndDate: nil,\n", indentationValues))
 	}
 
-	b.WriteString(fmt.Sprintf("%sM_MatchmakeSessionCount: %d,\n", indentationValues, persistentGathering.M_MatchmakeSessionCount))
-	b.WriteString(fmt.Sprintf("%sM_ParticipationCount: %d\n", indentationValues, persistentGathering.M_ParticipationCount))
+	b.WriteString(fmt.Sprintf("%sMatchmakeSessionCount: %d,\n", indentationValues, persistentGathering.MatchmakeSessionCount))
+	b.WriteString(fmt.Sprintf("%sParticipationCount: %d\n", indentationValues, persistentGathering.ParticipationCount))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()

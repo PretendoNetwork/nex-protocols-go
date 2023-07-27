@@ -1,5 +1,5 @@
-// Package messaging implements the Messaging protocol
-package messaging
+// Package protocol implements the Messaging protocol
+package protocol
 
 import (
 	"fmt"
@@ -10,11 +10,11 @@ import (
 )
 
 // RetrieveMessages sets the RetrieveMessages handler function
-func (protocol *MessagingProtocol) RetrieveMessages(handler func(err error, client *nex.Client, callID uint32, recipient *messaging_types.MessageRecipient, lstMsgIDs []uint32, bLeaveOnServer bool)) {
+func (protocol *Protocol) RetrieveMessages(handler func(err error, client *nex.Client, callID uint32, recipient *messaging_types.MessageRecipient, lstMsgIDs []uint32, bLeaveOnServer bool)) {
 	protocol.retrieveMessagesHandler = handler
 }
 
-func (protocol *MessagingProtocol) handleRetrieveMessages(packet nex.PacketInterface) {
+func (protocol *Protocol) handleRetrieveMessages(packet nex.PacketInterface) {
 	if protocol.retrieveMessagesHandler == nil {
 		globals.Logger.Warning("Messaging::RetrieveMessages not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

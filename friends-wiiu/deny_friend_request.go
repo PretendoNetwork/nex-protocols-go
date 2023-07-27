@@ -1,5 +1,5 @@
-// Package friends_wiiu implements the Friends WiiU NEX protocol
-package friends_wiiu
+// Package protocol implements the Friends WiiU protocol
+package protocol
 
 import (
 	"errors"
@@ -10,12 +10,12 @@ import (
 )
 
 // DenyFriendRequest sets the DenyFriendRequest handler function
-func (protocol *FriendsWiiUProtocol) DenyFriendRequest(handler func(err error, client *nex.Client, callID uint32, id uint64)) {
-	protocol.DenyFriendRequestHandler = handler
+func (protocol *Protocol) DenyFriendRequest(handler func(err error, client *nex.Client, callID uint32, id uint64)) {
+	protocol.denyFriendRequestHandler = handler
 }
 
-func (protocol *FriendsWiiUProtocol) handleDenyFriendRequest(packet nex.PacketInterface) {
-	if protocol.DenyFriendRequestHandler == nil {
+func (protocol *Protocol) handleDenyFriendRequest(packet nex.PacketInterface) {
+	if protocol.denyFriendRequestHandler == nil {
 		globals.Logger.Warning("FriendsWiiU::DenyFriendRequest not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -31,15 +31,15 @@ func (protocol *FriendsWiiUProtocol) handleDenyFriendRequest(packet nex.PacketIn
 
 	if len(parametersStream.Bytes()[parametersStream.ByteOffset():]) < 8 {
 		err := errors.New("[FriendsWiiU::DenyFriendRequest] Data missing list length")
-		go protocol.DenyFriendRequestHandler(err, client, callID, 0)
+		go protocol.denyFriendRequestHandler(err, client, callID, 0)
 		return
 	}
 
 	id, err := parametersStream.ReadUInt64LE()
 	if err != nil {
-		go protocol.DenyFriendRequestHandler(fmt.Errorf("Failed to read id from parameters. %s", err.Error()), client, callID, 0)
+		go protocol.denyFriendRequestHandler(fmt.Errorf("Failed to read id from parameters. %s", err.Error()), client, callID, 0)
 		return
 	}
 
-	go protocol.DenyFriendRequestHandler(nil, client, callID, id)
+	go protocol.denyFriendRequestHandler(nil, client, callID, id)
 }

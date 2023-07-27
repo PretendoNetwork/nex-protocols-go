@@ -1,5 +1,5 @@
-// Package friends implements the Friends QRV protocol
-package friends
+// Package protocol implements the Friends QRV protocol
+package protocol
 
 import (
 	"fmt"
@@ -9,11 +9,11 @@ import (
 )
 
 // GetDetailedList sets the GetDetailedList handler function
-func (protocol *FriendsProtocol) GetDetailedList(handler func(err error, client *nex.Client, callID uint32, byRelationship uint8, bReversed bool)) {
+func (protocol *Protocol) GetDetailedList(handler func(err error, client *nex.Client, callID uint32, byRelationship uint8, bReversed bool)) {
 	protocol.getDetailedListHandler = handler
 }
 
-func (protocol *FriendsProtocol) handleGetDetailedList(packet nex.PacketInterface) {
+func (protocol *Protocol) handleGetDetailedList(packet nex.PacketInterface) {
 	if protocol.getDetailedListHandler == nil {
 		globals.Logger.Warning("Friends::GetDetailedList not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

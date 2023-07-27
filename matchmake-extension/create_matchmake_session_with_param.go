@@ -1,5 +1,5 @@
-// Package matchmake_extension implements the Matchmake Extension NEX protocol
-package matchmake_extension
+// Package protocol implements the Matchmake Extension protocol
+package protocol
 
 import (
 	"fmt"
@@ -10,11 +10,11 @@ import (
 )
 
 // CreateMatchmakeSessionWithParam sets the CreateMatchmakeSessionWithParam handler function
-func (protocol *MatchmakeExtensionProtocol) CreateMatchmakeSessionWithParam(handler func(err error, client *nex.Client, callID uint32, createMatchmakeSessionParam *match_making_types.CreateMatchmakeSessionParam)) {
+func (protocol *Protocol) CreateMatchmakeSessionWithParam(handler func(err error, client *nex.Client, callID uint32, createMatchmakeSessionParam *match_making_types.CreateMatchmakeSessionParam)) {
 	protocol.createMatchmakeSessionWithParamHandler = handler
 }
 
-func (protocol *MatchmakeExtensionProtocol) handleCreateMatchmakeSessionWithParam(packet nex.PacketInterface) {
+func (protocol *Protocol) handleCreateMatchmakeSessionWithParam(packet nex.PacketInterface) {
 	if protocol.createMatchmakeSessionWithParamHandler == nil {
 		globals.Logger.Warning("MatchmakeExtension::CreateMatchmakeSessionWithParam not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

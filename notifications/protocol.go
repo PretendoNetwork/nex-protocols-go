@@ -1,5 +1,5 @@
-// Package notifications implements the Notfications NEX protocol
-package notifications
+// Package protocol implements the Notfications protocol
+package protocol
 
 import (
 	nex "github.com/PretendoNetwork/nex-go"
@@ -13,21 +13,21 @@ const (
 	MethodProcessNotificationEvent = 0x1
 )
 
-// NotificationsProtocol handles the Notifications protocol
-type NotificationsProtocol struct {
+// Protocol handles the Notifications protocol
+type Protocol struct {
 	Server *nex.Server
 }
 
 // Setup initializes the protocol
-func (protocol *NotificationsProtocol) Setup() {
+func (protocol *Protocol) Setup() {
 	// TODO: Do something
 	// This protocol doesn't seem to get requests from the client, it only sends them
 	// So no handling is done for in-coming requests at the moment
 }
 
-// NewNotificationsProtocol returns a new NotificationsProtocol
-func NewNotificationsProtocol(server *nex.Server) *NotificationsProtocol {
-	notificationsProtocol := &NotificationsProtocol{Server: server}
+// NewProtocol returns a new Notifications protocol
+func NewProtocol(server *nex.Server) *Protocol {
+	notificationsProtocol := &Protocol{Server: server}
 
 	notificationsProtocol.Setup()
 

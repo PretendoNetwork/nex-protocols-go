@@ -1,5 +1,5 @@
-// Package account_management implements the Account Management NEX protocol
-package account_management
+// Package protocol implements the Account Management protocol
+package protocol
 
 import (
 	"fmt"
@@ -9,11 +9,11 @@ import (
 )
 
 // ChangePassword sets the ChangePassword handler function
-func (protocol *AccountManagementProtocol) ChangePassword(handler func(err error, client *nex.Client, callID uint32, strNewKey string)) {
+func (protocol *Protocol) ChangePassword(handler func(err error, client *nex.Client, callID uint32, strNewKey string)) {
 	protocol.changePasswordHandler = handler
 }
 
-func (protocol *AccountManagementProtocol) handleChangePassword(packet nex.PacketInterface) {
+func (protocol *Protocol) handleChangePassword(packet nex.PacketInterface) {
 	if protocol.changePasswordHandler == nil {
 		globals.Logger.Warning("AccountManagement::ChangePassword not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

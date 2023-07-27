@@ -1,5 +1,5 @@
-// Package nintendo_notifications implements the Nintendo Notfications NEX protocol
-package nintendo_notifications
+// Package protocol implements the Nintendo Notfications protocol
+package protocol
 
 import nex "github.com/PretendoNetwork/nex-go"
 
@@ -14,21 +14,21 @@ const (
 	MethodProcessNintendoNotificationEvent2 = 0x2
 )
 
-// NintendoNotificationsProtocol handles the NintendoNotifications protocol
-type NintendoNotificationsProtocol struct {
+// Protocol handles the NintendoNotifications protocol
+type Protocol struct {
 	Server *nex.Server
 }
 
 // Setup initializes the protocol
-func (protocol *NintendoNotificationsProtocol) Setup() {
+func (protocol *Protocol) Setup() {
 	// TODO: Do something
 	// This protocol doesn't seem to get requests from the client, it only sends them
 	// So no handling is done for in-coming requests at the moment
 }
 
-// NewNintendoNotificationsProtocol returns a new NintendoNotificationsProtocol
-func NewNintendoNotificationsProtocol(server *nex.Server) *NintendoNotificationsProtocol {
-	nintendoNotificationsProtocol := &NintendoNotificationsProtocol{Server: server}
+// NewProtocol returns a new Nintendo Notifications protocol
+func NewProtocol(server *nex.Server) *Protocol {
+	nintendoNotificationsProtocol := &Protocol{Server: server}
 
 	nintendoNotificationsProtocol.Setup()
 

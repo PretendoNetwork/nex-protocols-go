@@ -1,5 +1,5 @@
-// Package messaging implements the Messaging protocol
-package messaging
+// Package protocol implements the Messaging protocol
+package protocol
 
 import (
 	"fmt"
@@ -10,11 +10,11 @@ import (
 )
 
 // DeleteAllMessages sets the DeleteAllMessages handler function
-func (protocol *MessagingProtocol) DeleteAllMessages(handler func(err error, client *nex.Client, callID uint32, recipient *messaging_types.MessageRecipient)) {
+func (protocol *Protocol) DeleteAllMessages(handler func(err error, client *nex.Client, callID uint32, recipient *messaging_types.MessageRecipient)) {
 	protocol.deleteAllMessagesHandler = handler
 }
 
-func (protocol *MessagingProtocol) handleDeleteAllMessages(packet nex.PacketInterface) {
+func (protocol *Protocol) handleDeleteAllMessages(packet nex.PacketInterface) {
 	if protocol.deleteAllMessagesHandler == nil {
 		globals.Logger.Warning("Messaging::DeleteAllMessages not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

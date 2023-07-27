@@ -1,5 +1,5 @@
-// Package friends implements the Friends QRV protocol
-package friends
+// Package protocol implements the Friends QRV protocol
+package protocol
 
 import (
 	"fmt"
@@ -9,11 +9,11 @@ import (
 )
 
 // DeclineFriendship sets the DeclineFriendship handler function
-func (protocol *FriendsProtocol) DeclineFriendship(handler func(err error, client *nex.Client, callID uint32, uiPlayer uint32)) {
+func (protocol *Protocol) DeclineFriendship(handler func(err error, client *nex.Client, callID uint32, uiPlayer uint32)) {
 	protocol.declineFriendshipHandler = handler
 }
 
-func (protocol *FriendsProtocol) handleDeclineFriendship(packet nex.PacketInterface) {
+func (protocol *Protocol) handleDeclineFriendship(packet nex.PacketInterface) {
 	if protocol.declineFriendshipHandler == nil {
 		globals.Logger.Warning("Friends::DeclineFriendship not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

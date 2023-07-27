@@ -1,5 +1,5 @@
-// Package match_making_ext implements the Match Making Ext NEX protocol
-package match_making_ext
+// Package protocol implements the Match Making Ext protocol
+package protocol
 
 import (
 	"fmt"
@@ -9,12 +9,12 @@ import (
 )
 
 // GetDetailedParticipants sets the GetDetailedParticipants handler function
-func (protocol *MatchMakingExtProtocol) GetDetailedParticipants(handler func(err error, client *nex.Client, callID uint32, idGathering uint32, bOnlyActive bool)) {
-	protocol.GetDetailedParticipantsHandler = handler
+func (protocol *Protocol) GetDetailedParticipants(handler func(err error, client *nex.Client, callID uint32, idGathering uint32, bOnlyActive bool)) {
+	protocol.getDetailedParticipantsHandler = handler
 }
 
-func (protocol *MatchMakingExtProtocol) handleGetDetailedParticipants(packet nex.PacketInterface) {
-	if protocol.GetDetailedParticipantsHandler == nil {
+func (protocol *Protocol) handleGetDetailedParticipants(packet nex.PacketInterface) {
+	if protocol.getDetailedParticipantsHandler == nil {
 		globals.Logger.Warning("MatchMakingExt::GetDetailedParticipants not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -30,13 +30,13 @@ func (protocol *MatchMakingExtProtocol) handleGetDetailedParticipants(packet nex
 
 	idGathering, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		go protocol.GetDetailedParticipantsHandler(fmt.Errorf("Failed to read idGathering from parameters. %s", err.Error()), client, callID, 0, false)
+		go protocol.getDetailedParticipantsHandler(fmt.Errorf("Failed to read idGathering from parameters. %s", err.Error()), client, callID, 0, false)
 	}
 
 	bOnlyActive, err := parametersStream.ReadBool()
 	if err != nil {
-		go protocol.GetDetailedParticipantsHandler(fmt.Errorf("Failed to read bOnlyActive from parameters. %s", err.Error()), client, callID, 0, false)
+		go protocol.getDetailedParticipantsHandler(fmt.Errorf("Failed to read bOnlyActive from parameters. %s", err.Error()), client, callID, 0, false)
 	}
 
-	go protocol.GetDetailedParticipantsHandler(nil, client, callID, idGathering, bOnlyActive)
+	go protocol.getDetailedParticipantsHandler(nil, client, callID, idGathering, bOnlyActive)
 }

@@ -1,5 +1,5 @@
-// Package match_making implements the Match Making NEX protocol
-package match_making
+// Package protocol implements the Match Making protocol
+package protocol
 
 import (
 	nex "github.com/PretendoNetwork/nex-go"
@@ -7,11 +7,11 @@ import (
 )
 
 // GetInvitationsReceived sets the GetInvitationsReceived handler function
-func (protocol *MatchMakingProtocol) GetInvitationsReceived(handler func(err error, client *nex.Client, callID uint32)) {
+func (protocol *Protocol) GetInvitationsReceived(handler func(err error, client *nex.Client, callID uint32)) {
 	protocol.getInvitationsReceivedHandler = handler
 }
 
-func (protocol *MatchMakingProtocol) handleGetInvitationsReceived(packet nex.PacketInterface) {
+func (protocol *Protocol) handleGetInvitationsReceived(packet nex.PacketInterface) {
 	if protocol.getInvitationsReceivedHandler == nil {
 		globals.Logger.Warning("MatchMaking::GetInvitationsReceived not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

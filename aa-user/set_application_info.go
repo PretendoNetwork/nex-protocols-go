@@ -1,5 +1,5 @@
-// Package aauser implements the AAUser NEX protocol
-package aauser
+// Package protocol implements the AAUser protocol
+package protocol
 
 import (
 	"fmt"
@@ -10,11 +10,11 @@ import (
 )
 
 // SetApplicationInfo sets the SetApplicationInfo handler function
-func (protocol *AAUserProtocol) SetApplicationInfo(handler func(err error, client *nex.Client, callID uint32, applicationInfo []*aauser_types.ApplicationInfo)) {
+func (protocol *Protocol) SetApplicationInfo(handler func(err error, client *nex.Client, callID uint32, applicationInfo []*aauser_types.ApplicationInfo)) {
 	protocol.setApplicationInfoHandler = handler
 }
 
-func (protocol *AAUserProtocol) handleSetApplicationInfo(packet nex.PacketInterface) {
+func (protocol *Protocol) handleSetApplicationInfo(packet nex.PacketInterface) {
 	if protocol.setApplicationInfoHandler == nil {
 		globals.Logger.Warning("AAUser::SetApplicationInfo not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

@@ -1,5 +1,5 @@
-// Package shop_types implements all the types used by the Shop protocol
-package shop_types
+// Package types implements all the types used by the Shop protocol
+package types
 
 import (
 	"bytes"

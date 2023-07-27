@@ -1,5 +1,5 @@
-// Package matchmake_referee implements the Matchmake Referee NEX protocol
-package matchmake_referee
+// Package protocol implements the Matchmake Referee protocol
+package protocol
 
 import (
 	"fmt"
@@ -53,8 +53,8 @@ const (
 	MethodResetStats = 0xD
 )
 
-// MatchmakeRefereeProtocol handles the Matchmake Referee NEX protocol
-type MatchmakeRefereeProtocol struct {
+// Protocol stores all the RMC method handlers for the Matchmake Referee protocol and listens for requests
+type Protocol struct {
 	Server                       *nex.Server
 	startRoundHandler            func(err error, client *nex.Client, callID uint32, param *matchmake_referee_types.MatchmakeRefereeStartRoundParam)
 	getStartRoundParamHandler    func(err error, client *nex.Client, callID uint32, roundID uint64)
@@ -72,7 +72,7 @@ type MatchmakeRefereeProtocol struct {
 }
 
 // Setup initializes the protocol
-func (protocol *MatchmakeRefereeProtocol) Setup() {
+func (protocol *Protocol) Setup() {
 	protocol.Server.On("Data", func(packet nex.PacketInterface) {
 		request := packet.RMCRequest()
 
@@ -112,9 +112,9 @@ func (protocol *MatchmakeRefereeProtocol) Setup() {
 	})
 }
 
-// NewMatchmakeRefereeProtocol returns a new MatchmakeRefereeProtocol
-func NewMatchmakeRefereeProtocol(server *nex.Server) *MatchmakeRefereeProtocol {
-	protocol := &MatchmakeRefereeProtocol{Server: server}
+// NewProtocol returns a new Matchmake Referee protocol
+func NewProtocol(server *nex.Server) *Protocol {
+	protocol := &Protocol{Server: server}
 
 	protocol.Setup()
 

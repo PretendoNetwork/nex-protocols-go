@@ -1,5 +1,5 @@
-// Package matchmake_extension implements the Matchmake Extension NEX protocol
-package matchmake_extension
+// Package protocol implements the Matchmake Extension protocol
+package protocol
 
 import (
 	"fmt"
@@ -9,11 +9,11 @@ import (
 )
 
 // DebugNotifyEvent sets the DebugNotifyEvent handler function
-func (protocol *MatchmakeExtensionProtocol) DebugNotifyEvent(handler func(err error, client *nex.Client, callID uint32, pid uint32, mainType uint32, subType uint32, param1 uint64, param2 uint64, stringParam string)) {
+func (protocol *Protocol) DebugNotifyEvent(handler func(err error, client *nex.Client, callID uint32, pid uint32, mainType uint32, subType uint32, param1 uint64, param2 uint64, stringParam string)) {
 	protocol.debugNotifyEventHandler = handler
 }
 
-func (protocol *MatchmakeExtensionProtocol) handleDebugNotifyEvent(packet nex.PacketInterface) {
+func (protocol *Protocol) handleDebugNotifyEvent(packet nex.PacketInterface) {
 	if protocol.debugNotifyEventHandler == nil {
 		globals.Logger.Warning("MatchmakeExtension::DebugNotifyEvent not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

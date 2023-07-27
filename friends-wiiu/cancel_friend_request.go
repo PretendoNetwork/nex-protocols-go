@@ -1,5 +1,5 @@
-// Package friends_wiiu implements the Friends WiiU NEX protocol
-package friends_wiiu
+// Package protocol implements the Friends WiiU protocol
+package protocol
 
 import (
 	"fmt"
@@ -9,12 +9,12 @@ import (
 )
 
 // CancelFriendRequest sets the CancelFriendRequest handler function
-func (protocol *FriendsWiiUProtocol) CancelFriendRequest(handler func(err error, client *nex.Client, callID uint32, id uint64)) {
-	protocol.CancelFriendRequestHandler = handler
+func (protocol *Protocol) CancelFriendRequest(handler func(err error, client *nex.Client, callID uint32, id uint64)) {
+	protocol.cancelFriendRequestHandler = handler
 }
 
-func (protocol *FriendsWiiUProtocol) handleCancelFriendRequest(packet nex.PacketInterface) {
-	if protocol.CancelFriendRequestHandler == nil {
+func (protocol *Protocol) handleCancelFriendRequest(packet nex.PacketInterface) {
+	if protocol.cancelFriendRequestHandler == nil {
 		globals.Logger.Warning("FriendsWiiU::CancelFriendRequest not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -30,9 +30,9 @@ func (protocol *FriendsWiiUProtocol) handleCancelFriendRequest(packet nex.Packet
 
 	id, err := parametersStream.ReadUInt64LE()
 	if err != nil {
-		go protocol.CancelFriendRequestHandler(fmt.Errorf("Failed to read id from parameters. %s", err.Error()), client, callID, 0)
+		go protocol.cancelFriendRequestHandler(fmt.Errorf("Failed to read id from parameters. %s", err.Error()), client, callID, 0)
 		return
 	}
 
-	go protocol.CancelFriendRequestHandler(nil, client, callID, id)
+	go protocol.cancelFriendRequestHandler(nil, client, callID, id)
 }

@@ -1,5 +1,5 @@
-// Package screening implements the Screening NEX protocol
-package screening
+// Package protocol implements the Screening protocol
+package protocol
 
 import (
 	"fmt"
@@ -18,15 +18,15 @@ const (
 	MethodReportUser = 0x2
 )
 
-// ScreeningProtocol handles the Screening protocol
-type ScreeningProtocol struct {
+// Protocol handles the Screening protocol
+type Protocol struct {
 	Server                        *nex.Server
-	ReportDataStoreContentHandler func(err error, client *nex.Client, callID uint32)
-	ReportUserHandler             func(err error, client *nex.Client, callID uint32)
+	reportDataStoreContentHandler func(err error, client *nex.Client, callID uint32)
+	reportUserHandler             func(err error, client *nex.Client, callID uint32)
 }
 
 // Setup initializes the protocol
-func (protocol *ScreeningProtocol) Setup() {
+func (protocol *Protocol) Setup() {
 	protocol.Server.On("Data", func(packet nex.PacketInterface) {
 		request := packet.RMCRequest()
 
@@ -37,7 +37,7 @@ func (protocol *ScreeningProtocol) Setup() {
 }
 
 // HandlePacket sends the packet to the correct RMC method handler
-func (protocol *ScreeningProtocol) HandlePacket(packet nex.PacketInterface) {
+func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 	request := packet.RMCRequest()
 
 	switch request.MethodID() {
@@ -50,9 +50,9 @@ func (protocol *ScreeningProtocol) HandlePacket(packet nex.PacketInterface) {
 	}
 }
 
-// NewScreeningProtocol returns a new ScreeningProtocol
-func NewScreeningProtocol(server *nex.Server) *ScreeningProtocol {
-	protocol := &ScreeningProtocol{Server: server}
+// NewProtocol returns a new Screening protocol
+func NewProtocol(server *nex.Server) *Protocol {
+	protocol := &Protocol{Server: server}
 
 	protocol.Setup()
 

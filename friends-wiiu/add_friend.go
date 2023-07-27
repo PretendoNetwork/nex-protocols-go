@@ -1,5 +1,5 @@
-// Package friends_wiiu implements the Friends WiiU NEX protocol
-package friends_wiiu
+// Package protocol implements the Friends WiiU protocol
+package protocol
 
 import (
 	"fmt"
@@ -9,12 +9,12 @@ import (
 )
 
 // AddFriend sets the AddFriend handler function
-func (protocol *FriendsWiiUProtocol) AddFriend(handler func(err error, client *nex.Client, callID uint32, pid uint32)) {
-	protocol.AddFriendHandler = handler
+func (protocol *Protocol) AddFriend(handler func(err error, client *nex.Client, callID uint32, pid uint32)) {
+	protocol.addFriendHandler = handler
 }
 
-func (protocol *FriendsWiiUProtocol) handleAddFriend(packet nex.PacketInterface) {
-	if protocol.AddFriendHandler == nil {
+func (protocol *Protocol) handleAddFriend(packet nex.PacketInterface) {
+	if protocol.addFriendHandler == nil {
 		globals.Logger.Warning("FriendsWiiU::AddFriend not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -30,9 +30,9 @@ func (protocol *FriendsWiiUProtocol) handleAddFriend(packet nex.PacketInterface)
 
 	pid, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		go protocol.AddFriendHandler(fmt.Errorf("Failed to read pid from parameters. %s", err.Error()), client, callID, 0)
+		go protocol.addFriendHandler(fmt.Errorf("Failed to read pid from parameters. %s", err.Error()), client, callID, 0)
 		return
 	}
 
-	go protocol.AddFriendHandler(nil, client, callID, pid)
+	go protocol.addFriendHandler(nil, client, callID, pid)
 }

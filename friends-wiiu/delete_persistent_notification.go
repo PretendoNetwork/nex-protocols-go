@@ -1,5 +1,5 @@
-// Package friends_wiiu implements the Friends WiiU NEX protocol
-package friends_wiiu
+// Package protocol implements the Friends WiiU protocol
+package protocol
 
 import (
 	"fmt"
@@ -10,12 +10,12 @@ import (
 )
 
 // DeletePersistentNotification sets the DeletePersistentNotification handler function
-func (protocol *FriendsWiiUProtocol) DeletePersistentNotification(handler func(err error, client *nex.Client, callID uint32, notifications []*friends_wiiu_types.PersistentNotification)) {
-	protocol.DeletePersistentNotificationHandler = handler
+func (protocol *Protocol) DeletePersistentNotification(handler func(err error, client *nex.Client, callID uint32, notifications []*friends_wiiu_types.PersistentNotification)) {
+	protocol.deletePersistentNotificationHandler = handler
 }
 
-func (protocol *FriendsWiiUProtocol) handleDeletePersistentNotification(packet nex.PacketInterface) {
-	if protocol.DeletePersistentNotificationHandler == nil {
+func (protocol *Protocol) handleDeletePersistentNotification(packet nex.PacketInterface) {
+	if protocol.deletePersistentNotificationHandler == nil {
 		globals.Logger.Warning("FriendsWiiU::DeletePersistentNotification not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -31,9 +31,9 @@ func (protocol *FriendsWiiUProtocol) handleDeletePersistentNotification(packet n
 
 	persistentNotifications, err := parametersStream.ReadListStructure(friends_wiiu_types.NewPersistentNotification())
 	if err != nil {
-		go protocol.DeletePersistentNotificationHandler(fmt.Errorf("Failed to read persistentNotifications from parameters. %s", err.Error()), client, callID, nil)
+		go protocol.deletePersistentNotificationHandler(fmt.Errorf("Failed to read persistentNotifications from parameters. %s", err.Error()), client, callID, nil)
 		return
 	}
 
-	go protocol.DeletePersistentNotificationHandler(nil, client, callID, persistentNotifications.([]*friends_wiiu_types.PersistentNotification))
+	go protocol.deletePersistentNotificationHandler(nil, client, callID, persistentNotifications.([]*friends_wiiu_types.PersistentNotification))
 }

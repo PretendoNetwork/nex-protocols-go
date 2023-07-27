@@ -1,5 +1,5 @@
-// Package matchmake_extension implements the Matchmake Extension NEX protocol
-package matchmake_extension
+// Package protocol implements the Matchmake Extension protocol
+package protocol
 
 import (
 	"fmt"
@@ -19,8 +19,8 @@ const (
 	// MethodOpenParticipation is the method ID for method OpenParticipation
 	MethodOpenParticipation = 0x2
 
-	// MethodAutoMatchmake_Postpone is the method ID for method AutoMatchmake_Postpone
-	MethodAutoMatchmake_Postpone = 0x3
+	// MethodAutoMatchmakePostpone is the method ID for method AutoMatchmakePostpone
+	MethodAutoMatchmakePostpone = 0x3
 
 	// MethodBrowseMatchmakeSession is the method ID for method BrowseMatchmakeSession
 	MethodBrowseMatchmakeSession = 0x4
@@ -55,8 +55,8 @@ const (
 	// MethodUpdateMatchmakeSession is the method ID for method UpdateMatchmakeSession
 	MethodUpdateMatchmakeSession = 0xE
 
-	// MethodAutoMatchmakeWithSearchCriteria_Postpone is the method ID for method AutoMatchmakeWithSearchCriteria_Postpone
-	MethodAutoMatchmakeWithSearchCriteria_Postpone = 0xF
+	// MethodAutoMatchmakeWithSearchCriteriaPostpone is the method ID for method AutoMatchmakeWithSearchCriteriaPostpone
+	MethodAutoMatchmakeWithSearchCriteriaPostpone = 0xF
 
 	// MethodGetPlayingSession is the method ID for method GetPlayingSession
 	MethodGetPlayingSession = 0x10
@@ -109,8 +109,8 @@ const (
 	// MethodGetSimpleCommunity is the method ID for method GetSimpleCommunity
 	MethodGetSimpleCommunity = 0x20
 
-	// MethodAutoMatchmakeWithGatheringID_Postpone is the method ID for method AutoMatchmakeWithGatheringID_Postpone
-	MethodAutoMatchmakeWithGatheringID_Postpone = 0x21
+	// MethodAutoMatchmakeWithGatheringIDPostpone is the method ID for method AutoMatchmakeWithGatheringIDPostpone
+	MethodAutoMatchmakeWithGatheringIDPostpone = 0x21
 
 	// MethodUpdateProgressScore is the method ID for method UpdateProgressScore
 	MethodUpdateProgressScore = 0x22
@@ -130,8 +130,8 @@ const (
 	// MethodJoinMatchmakeSessionWithParam is the method ID for method JoinMatchmakeSessionWithParam
 	MethodJoinMatchmakeSessionWithParam = 0x27
 
-	// MethodAutoMatchmakeWithParam_Postpone is the method ID for method AutoMatchmakeWithParam_Postpone
-	MethodAutoMatchmakeWithParam_Postpone = 0x28
+	// MethodAutoMatchmakeWithParamPostpone is the method ID for method AutoMatchmakeWithParamPostpone
+	MethodAutoMatchmakeWithParamPostpone = 0x28
 
 	// MethodFindMatchmakeSessionByGatheringIDDetail is the method ID for method FindMatchmakeSessionByGatheringIDDetail
 	MethodFindMatchmakeSessionByGatheringIDDetail = 0x29
@@ -176,12 +176,12 @@ const (
 	MethodFindCommunityByOwner = 0x36
 )
 
-// MatchmakeExtensionProtocol handles the Matchmake Extension NEX protocol
-type MatchmakeExtensionProtocol struct {
+// Protocol stores all the RMC method handlers for the Matchmake Extension protocol and listens for requests
+type Protocol struct {
 	Server                                                         *nex.Server
 	closeParticipationHandler                                      func(err error, client *nex.Client, callID uint32, gid uint32)
 	openParticipationHandler                                       func(err error, client *nex.Client, callID uint32, gid uint32)
-	autoMatchmake_PostponeHandler                                  func(err error, client *nex.Client, callID uint32, anyGathering *nex.DataHolder, message string)
+	autoMatchmakePostponeHandler                                   func(err error, client *nex.Client, callID uint32, anyGathering *nex.DataHolder, message string)
 	browseMatchmakeSessionHandler                                  func(err error, client *nex.Client, callID uint32, searchCriteria *match_making_types.MatchmakeSessionSearchCriteria, resultRange *nex.ResultRange)
 	browseMatchmakeSessionWithHostURLsHandler                      func(err error, client *nex.Client, callID uint32, searchCriteria *match_making_types.MatchmakeSessionSearchCriteria, resultRange *nex.ResultRange)
 	createMatchmakeSessionHandler                                  func(err error, client *nex.Client, callID uint32, anyGathering *nex.DataHolder, message string, participationCount uint16)
@@ -193,7 +193,7 @@ type MatchmakeExtensionProtocol struct {
 	updateMatchmakeSessionAttributeHandler                         func(err error, client *nex.Client, callID uint32, gid uint32, attribs []uint32)
 	getlstFriendNotificationDataHandler                            func(err error, client *nex.Client, callID uint32, lstTypes []uint32)
 	updateMatchmakeSessionHandler                                  func(err error, client *nex.Client, callID uint32, anyGathering *nex.DataHolder)
-	autoMatchmakeWithSearchCriteria_PostponeHandler                func(err error, client *nex.Client, callID uint32, lstSearchCriteria []*match_making_types.MatchmakeSessionSearchCriteria, anyGathering *nex.DataHolder, strMessage string)
+	autoMatchmakeWithSearchCriteriaPostponeHandler                 func(err error, client *nex.Client, callID uint32, lstSearchCriteria []*match_making_types.MatchmakeSessionSearchCriteria, anyGathering *nex.DataHolder, strMessage string)
 	getPlayingSessionHandler                                       func(err error, client *nex.Client, callID uint32, lstPID []uint32)
 	createCommunityHandler                                         func(err error, client *nex.Client, callID uint32, community *match_making_types.PersistentGathering, strMessage string)
 	updateCommunityHandler                                         func(err error, client *nex.Client, callID uint32, community *match_making_types.PersistentGathering)
@@ -211,14 +211,14 @@ type MatchmakeExtensionProtocol struct {
 	joinMatchmakeSessionExHandler                                  func(err error, client *nex.Client, callID uint32, gid uint32, strMessage string, dontCareMyBlockList bool, participationCount uint16)
 	getSimplePlayingSessionHandler                                 func(err error, client *nex.Client, callID uint32, listPID []uint32, includeLoginUser bool)
 	getSimpleCommunityHandler                                      func(err error, client *nex.Client, callID uint32, gatheringIDList []uint32)
-	autoMatchmakeWithGatheringID_PostponeHandler                   func(err error, client *nex.Client, callID uint32, lstGID []uint32, anyGathering *nex.DataHolder, strMessage string)
+	autoMatchmakeWithGatheringIDPostponeHandler                    func(err error, client *nex.Client, callID uint32, lstGID []uint32, anyGathering *nex.DataHolder, strMessage string)
 	updateProgressScoreHandler                                     func(err error, client *nex.Client, callID uint32, gid uint32, progressScore uint8)
 	debugNotifyEventHandler                                        func(err error, client *nex.Client, callID uint32, pid uint32, mainType uint32, subType uint32, param1 uint64, param2 uint64, stringParam string)
 	generateMatchmakeSessionSystemPasswordHandler                  func(err error, client *nex.Client, callID uint32, gid uint32)
 	clearMatchmakeSessionSystemPasswordHandler                     func(err error, client *nex.Client, callID uint32, gid uint32)
 	createMatchmakeSessionWithParamHandler                         func(err error, client *nex.Client, callID uint32, createMatchmakeSessionParam *match_making_types.CreateMatchmakeSessionParam)
 	joinMatchmakeSessionWithParamHandler                           func(err error, client *nex.Client, callID uint32, joinMatchmakeSessionParam *match_making_types.JoinMatchmakeSessionParam)
-	autoMatchmakeWithParam_PostponeHandler                         func(err error, client *nex.Client, callID uint32, autoMatchmakeParam *match_making_types.AutoMatchmakeParam)
+	autoMatchmakeWithParamPostponeHandler                          func(err error, client *nex.Client, callID uint32, autoMatchmakeParam *match_making_types.AutoMatchmakeParam)
 	findMatchmakeSessionByGatheringIDDetailHandler                 func(err error, client *nex.Client, callID uint32, gid uint32)
 	browseMatchmakeSessionNoHolderHandler                          func(err error, client *nex.Client, callID uint32, searchCriteria *match_making_types.MatchmakeSessionSearchCriteria, resultRange *nex.ResultRange)
 	browseMatchmakeSessionWithHostURLsNoHolderHandler              func(err error, client *nex.Client, callID uint32, searchCriteria *match_making_types.MatchmakeSessionSearchCriteria, resultRange *nex.ResultRange)
@@ -236,7 +236,7 @@ type MatchmakeExtensionProtocol struct {
 }
 
 // Setup initializes the protocol
-func (protocol *MatchmakeExtensionProtocol) Setup() {
+func (protocol *Protocol) Setup() {
 	protocol.Server.On("Data", func(packet nex.PacketInterface) {
 		request := packet.RMCRequest()
 
@@ -247,7 +247,7 @@ func (protocol *MatchmakeExtensionProtocol) Setup() {
 }
 
 // HandlePacket sends the packet to the correct RMC method handler
-func (protocol *MatchmakeExtensionProtocol) HandlePacket(packet nex.PacketInterface) {
+func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 	request := packet.RMCRequest()
 
 	switch request.MethodID() {
@@ -255,8 +255,8 @@ func (protocol *MatchmakeExtensionProtocol) HandlePacket(packet nex.PacketInterf
 		go protocol.handleCloseParticipation(packet)
 	case MethodOpenParticipation:
 		go protocol.handleOpenParticipation(packet)
-	case MethodAutoMatchmake_Postpone:
-		go protocol.handleAutoMatchmake_Postpone(packet)
+	case MethodAutoMatchmakePostpone:
+		go protocol.handleAutoMatchmakePostpone(packet)
 	case MethodBrowseMatchmakeSession:
 		go protocol.handleBrowseMatchmakeSession(packet)
 	case MethodBrowseMatchmakeSessionWithHostURLs:
@@ -279,8 +279,8 @@ func (protocol *MatchmakeExtensionProtocol) HandlePacket(packet nex.PacketInterf
 		go protocol.handleGetlstFriendNotificationData(packet)
 	case MethodUpdateMatchmakeSession:
 		go protocol.handleUpdateMatchmakeSession(packet)
-	case MethodAutoMatchmakeWithSearchCriteria_Postpone:
-		go protocol.handleAutoMatchmakeWithSearchCriteria_Postpone(packet)
+	case MethodAutoMatchmakeWithSearchCriteriaPostpone:
+		go protocol.handleAutoMatchmakeWithSearchCriteriaPostpone(packet)
 	case MethodGetPlayingSession:
 		go protocol.handleGetPlayingSession(packet)
 	case MethodCreateCommunity:
@@ -315,8 +315,8 @@ func (protocol *MatchmakeExtensionProtocol) HandlePacket(packet nex.PacketInterf
 		go protocol.handleGetSimplePlayingSession(packet)
 	case MethodGetSimpleCommunity:
 		go protocol.handleGetSimpleCommunity(packet)
-	case MethodAutoMatchmakeWithGatheringID_Postpone:
-		go protocol.handleAutoMatchmakeWithGatheringID_Postpone(packet)
+	case MethodAutoMatchmakeWithGatheringIDPostpone:
+		go protocol.handleAutoMatchmakeWithGatheringIDPostpone(packet)
 	case MethodUpdateProgressScore:
 		go protocol.handleUpdateProgressScore(packet)
 	case MethodDebugNotifyEvent:
@@ -329,8 +329,8 @@ func (protocol *MatchmakeExtensionProtocol) HandlePacket(packet nex.PacketInterf
 		go protocol.handleCreateMatchmakeSessionWithParam(packet)
 	case MethodJoinMatchmakeSessionWithParam:
 		go protocol.handleJoinMatchmakeSessionWithParam(packet)
-	case MethodAutoMatchmakeWithParam_Postpone:
-		go protocol.handleAutoMatchmakeWithParam_Postpone(packet)
+	case MethodAutoMatchmakeWithParamPostpone:
+		go protocol.handleAutoMatchmakeWithParamPostpone(packet)
 	case MethodFindMatchmakeSessionByGatheringIDDetail:
 		go protocol.handleFindMatchmakeSessionByGatheringIDDetail(packet)
 	case MethodBrowseMatchmakeSessionNoHolder:
@@ -365,9 +365,9 @@ func (protocol *MatchmakeExtensionProtocol) HandlePacket(packet nex.PacketInterf
 	}
 }
 
-// NewMatchmakeExtensionProtocol returns a new MatchmakeExtensionProtocol
-func NewMatchmakeExtensionProtocol(server *nex.Server) *MatchmakeExtensionProtocol {
-	protocol := &MatchmakeExtensionProtocol{Server: server}
+// NewProtocol returns a new Matchmake Extension protocol
+func NewProtocol(server *nex.Server) *Protocol {
+	protocol := &Protocol{Server: server}
 
 	protocol.Setup()
 

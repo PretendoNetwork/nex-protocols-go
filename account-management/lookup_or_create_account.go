@@ -1,5 +1,5 @@
-// Package account_management implements the Account Management NEX protocol
-package account_management
+// Package protocol implements the Account Management protocol
+package protocol
 
 import (
 	"fmt"
@@ -9,11 +9,11 @@ import (
 )
 
 // LookupOrCreateAccount sets the LookupOrCreateAccount handler function
-func (protocol *AccountManagementProtocol) LookupOrCreateAccount(handler func(err error, client *nex.Client, callID uint32, strPrincipalName string, strKey string, uiGroups uint32, strEmail string, oAuthData *nex.DataHolder)) {
+func (protocol *Protocol) LookupOrCreateAccount(handler func(err error, client *nex.Client, callID uint32, strPrincipalName string, strKey string, uiGroups uint32, strEmail string, oAuthData *nex.DataHolder)) {
 	protocol.lookupOrCreateAccountHandler = handler
 }
 
-func (protocol *AccountManagementProtocol) handleLookupOrCreateAccount(packet nex.PacketInterface) {
+func (protocol *Protocol) handleLookupOrCreateAccount(packet nex.PacketInterface) {
 	if protocol.lookupOrCreateAccountHandler == nil {
 		globals.Logger.Warning("AccountManagement::LookupOrCreateAccount not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

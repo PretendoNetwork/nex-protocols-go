@@ -1,5 +1,5 @@
-// Package datastore_super_smash_bros_4 implements the Super Smash Bros. 4 DataStore NEX protocol
-package datastore_super_smash_bros_4
+// Package protocol implements the Super Smash Bros. 4 DataStore protocol
+package protocol
 
 import (
 	"fmt"
@@ -10,13 +10,13 @@ import (
 )
 
 // PreparePostSharedData sets the PreparePostSharedData handler function
-func (protocol *DataStoreSuperSmashBros4Protocol) PreparePostSharedData(handler func(err error, client *nex.Client, callID uint32, param *datastore_super_smash_bros_4_types.DataStorePreparePostSharedDataParam)) {
-	protocol.PreparePostSharedDataHandler = handler
+func (protocol *Protocol) PreparePostSharedData(handler func(err error, client *nex.Client, callID uint32, param *datastore_super_smash_bros_4_types.DataStorePreparePostSharedDataParam)) {
+	protocol.preparePostSharedDataHandler = handler
 }
 
-func (protocol *DataStoreSuperSmashBros4Protocol) handlePreparePostSharedData(packet nex.PacketInterface) {
-	if protocol.PreparePostSharedDataHandler == nil {
-		globals.Logger.Warning("DataStoreSmash4::PreparePostSharedData not implemented")
+func (protocol *Protocol) handlePreparePostSharedData(packet nex.PacketInterface) {
+	if protocol.preparePostSharedDataHandler == nil {
+		globals.Logger.Warning("DataStoreSuperSmashBros4::PreparePostSharedData not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
 	}
@@ -31,9 +31,9 @@ func (protocol *DataStoreSuperSmashBros4Protocol) handlePreparePostSharedData(pa
 
 	param, err := parametersStream.ReadStructure(datastore_super_smash_bros_4_types.NewDataStorePreparePostSharedDataParam())
 	if err != nil {
-		go protocol.PreparePostSharedDataHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
+		go protocol.preparePostSharedDataHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
 		return
 	}
 
-	go protocol.PreparePostSharedDataHandler(nil, client, callID, param.(*datastore_super_smash_bros_4_types.DataStorePreparePostSharedDataParam))
+	go protocol.preparePostSharedDataHandler(nil, client, callID, param.(*datastore_super_smash_bros_4_types.DataStorePreparePostSharedDataParam))
 }

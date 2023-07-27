@@ -1,5 +1,5 @@
-// Package account_management implements the Account Management NEX protocol
-package account_management
+// Package protocol implements the Account Management protocol
+package protocol
 
 import (
 	nex "github.com/PretendoNetwork/nex-go"
@@ -7,11 +7,11 @@ import (
 )
 
 // GetPrivateData sets the GetPrivateData handler function
-func (protocol *AccountManagementProtocol) GetPrivateData(handler func(err error, client *nex.Client, callID uint32)) {
+func (protocol *Protocol) GetPrivateData(handler func(err error, client *nex.Client, callID uint32)) {
 	protocol.getPrivateDataHandler = handler
 }
 
-func (protocol *AccountManagementProtocol) handleGetPrivateData(packet nex.PacketInterface) {
+func (protocol *Protocol) handleGetPrivateData(packet nex.PacketInterface) {
 	if protocol.getPrivateDataHandler == nil {
 		globals.Logger.Warning("AccountManagement::GetPrivateData not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

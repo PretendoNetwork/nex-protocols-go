@@ -1,5 +1,5 @@
-// Package match_making_ext implements the Match Making Ext NEX protocol
-package match_making_ext
+// Package protocol implements the Match Making Ext protocol
+package protocol
 
 import (
 	"fmt"
@@ -9,12 +9,12 @@ import (
 )
 
 // GetParticipantsURLs sets the GetParticipantsURLs handler function
-func (protocol *MatchMakingExtProtocol) GetParticipantsURLs(handler func(err error, client *nex.Client, callID uint32, lstGatherings []uint32)) {
-	protocol.GetParticipantsURLsHandler = handler
+func (protocol *Protocol) GetParticipantsURLs(handler func(err error, client *nex.Client, callID uint32, lstGatherings []uint32)) {
+	protocol.getParticipantsURLsHandler = handler
 }
 
-func (protocol *MatchMakingExtProtocol) handleGetParticipantsURLs(packet nex.PacketInterface) {
-	if protocol.GetParticipantsURLsHandler == nil {
+func (protocol *Protocol) handleGetParticipantsURLs(packet nex.PacketInterface) {
+	if protocol.getParticipantsURLsHandler == nil {
 		globals.Logger.Warning("MatchMakingExt::GetParticipantsURLs not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -30,8 +30,8 @@ func (protocol *MatchMakingExtProtocol) handleGetParticipantsURLs(packet nex.Pac
 
 	lstGatherings, err := parametersStream.ReadListUInt32LE()
 	if err != nil {
-		go protocol.GetParticipantsURLsHandler(fmt.Errorf("Failed to read lstGatherings from parameters. %s", err.Error()), client, callID, nil)
+		go protocol.getParticipantsURLsHandler(fmt.Errorf("Failed to read lstGatherings from parameters. %s", err.Error()), client, callID, nil)
 	}
 
-	go protocol.GetParticipantsURLsHandler(nil, client, callID, lstGatherings)
+	go protocol.getParticipantsURLsHandler(nil, client, callID, lstGatherings)
 }

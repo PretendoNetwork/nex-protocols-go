@@ -1,21 +1,21 @@
-// Package shop_nintendo_badge_arcade implements the Nintendo Badge Arcade Shop NEX protocol
-package shop_nintendo_badge_arcade
+// Package protocol implements the Nintendo Badge Arcade Shop protocol
+package protocol
 
 import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
-	"github.com/PretendoNetwork/nex-protocols-go/shop"
+	shop "github.com/PretendoNetwork/nex-protocols-go/shop"
 	shop_nintendo_badge_arcade_types "github.com/PretendoNetwork/nex-protocols-go/shop/nintendo-badge-arcade/types"
 	"golang.org/x/exp/slices"
 )
 
 const (
-	// ProtocolID is the Protocol ID for the Shop (Badge Arcade) protocol
+	// ProtocolID is the Protocol ID for the Shop (Nintendo Badge Arcade) protocol
 	ProtocolID = 0x7F
 
-	// CustomProtocolID is the Custom ID for the Shop (Badge Arcade) protocol
+	// CustomProtocolID is the Custom ID for the Shop (Nintendo Badge Arcade) protocol
 	CustomProtocolID = 0xC8
 
 	// MethodGetRivToken is the method ID for GetRivToken
@@ -30,16 +30,19 @@ var patchedMethods = []uint32{
 	MethodPostPlayLog,
 }
 
-// ShopNintendoBadgeArcadeProtocol handles the Shop (Badge Arcade) NEX protocol
-type ShopNintendoBadgeArcadeProtocol struct {
+type shopProtocol = shop.Protocol
+
+// Protocol stores all the RMC method handlers for the Shop (Nintendo Badge Arcade) protocol and listens for requests
+// Embeds the Shop protocol
+type Protocol struct {
 	Server *nex.Server
-	shop.ShopProtocol
-	GetRivTokenHandler func(err error, client *nex.Client, callID uint32, itemCode string, referenceID []byte)
-	PostPlayLogHandler func(err error, client *nex.Client, callID uint32, param *shop_nintendo_badge_arcade_types.ShopPostPlayLogParam)
+	shopProtocol
+	getRivTokenHandler func(err error, client *nex.Client, callID uint32, itemCode string, referenceID []byte)
+	postPlayLogHandler func(err error, client *nex.Client, callID uint32, param *shop_nintendo_badge_arcade_types.ShopPostPlayLogParam)
 }
 
 // Setup initializes the protocol
-func (protocol *ShopNintendoBadgeArcadeProtocol) Setup() {
+func (protocol *Protocol) Setup() {
 	protocol.Server.On("Data", func(packet nex.PacketInterface) {
 		request := packet.RMCRequest()
 
@@ -47,14 +50,14 @@ func (protocol *ShopNintendoBadgeArcadeProtocol) Setup() {
 			if slices.Contains(patchedMethods, request.MethodID()) {
 				protocol.HandlePacket(packet)
 			} else {
-				protocol.ShopProtocol.HandlePacket(packet)
+				protocol.shopProtocol.HandlePacket(packet)
 			}
 		}
 	})
 }
 
 // HandlePacket sends the packet to the correct RMC method handler
-func (protocol *ShopNintendoBadgeArcadeProtocol) HandlePacket(packet nex.PacketInterface) {
+func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 	request := packet.RMCRequest()
 
 	switch request.MethodID() {
@@ -68,10 +71,10 @@ func (protocol *ShopNintendoBadgeArcadeProtocol) HandlePacket(packet nex.PacketI
 	}
 }
 
-// NewShopNintendoBadgeArcadeProtocol returns a new ShopNintendoBadgeArcadeProtocol
-func NewShopNintendoBadgeArcadeProtocol(server *nex.Server) *ShopNintendoBadgeArcadeProtocol {
-	protocol := &ShopNintendoBadgeArcadeProtocol{Server: server}
-	protocol.ShopProtocol.Server = server
+// NewProtocol returns a new Shop (Nintendo Badge Arcade)
+func NewProtocol(server *nex.Server) *Protocol {
+	protocol := &Protocol{Server: server}
+	protocol.shopProtocol.Server = server
 
 	protocol.Setup()
 

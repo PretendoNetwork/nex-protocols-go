@@ -1,5 +1,5 @@
-// Package friends_3ds implements the Friends 3DS NEX protocol
-package friends_3ds
+// Package protocol implements the Friends 3DS protocol
+package protocol
 
 import (
 	"fmt"
@@ -9,11 +9,11 @@ import (
 )
 
 // GetFriendMii sets the GetFriendMii handler function
-func (protocol *Friends3DSProtocol) GetFriendMii(handler func(err error, client *nex.Client, callID uint32, pidList []uint32)) {
+func (protocol *Protocol) GetFriendMii(handler func(err error, client *nex.Client, callID uint32, pidList []uint32)) {
 	protocol.getFriendMiiHandler = handler
 }
 
-func (protocol *Friends3DSProtocol) handleGetFriendMii(packet nex.PacketInterface) {
+func (protocol *Protocol) handleGetFriendMii(packet nex.PacketInterface) {
 	if protocol.getFriendMiiHandler == nil {
 		globals.Logger.Warning("Friends3DS::GetFriendMii not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

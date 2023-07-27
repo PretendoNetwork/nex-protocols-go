@@ -1,5 +1,5 @@
-// Package nintendo_notifications implements the Nintendo Notfications NEX protocol
-package nintendo_notifications
+// Package protocol implements the Nintendo Notfications protocol
+package protocol
 
 type notificationTypes struct {
 	FriendPresenceUpdated3DS               uint32

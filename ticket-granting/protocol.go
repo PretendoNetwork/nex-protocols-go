@@ -1,5 +1,5 @@
-// Package ticket_granting implements the Ticket Granting NEX protocol
-package ticket_granting
+// Package protocol implements the Ticket Granting protocol
+package protocol
 
 import (
 	"fmt"
@@ -31,19 +31,19 @@ const (
 	MethodLoginWithParam = 0x6
 )
 
-// TicketGrantingProtocol handles the Ticket Granting NEX protocol
-type TicketGrantingProtocol struct {
+// Protocol stores all the RMC method handlers for the Ticket Granting protocol and listens for requests
+type Protocol struct {
 	Server                *nex.Server
-	LoginHandler          func(err error, client *nex.Client, callID uint32, strUserName string)
-	LoginExHandler        func(err error, client *nex.Client, callID uint32, strUserName string, oExtraData *nex.DataHolder)
-	RequestTicketHandler  func(err error, client *nex.Client, callID uint32, idSource uint32, idTarget uint32)
-	GetPIDHandler         func(err error, client *nex.Client, callID uint32, strUserName string)
-	GetNameHandler        func(err error, client *nex.Client, callID uint32, id uint32)
-	LoginWithParamHandler func(err error, client *nex.Client, callID uint32)
+	loginHandler          func(err error, client *nex.Client, callID uint32, strUserName string)
+	loginExHandler        func(err error, client *nex.Client, callID uint32, strUserName string, oExtraData *nex.DataHolder)
+	requestTicketHandler  func(err error, client *nex.Client, callID uint32, idSource uint32, idTarget uint32)
+	getPIDHandler         func(err error, client *nex.Client, callID uint32, strUserName string)
+	getNameHandler        func(err error, client *nex.Client, callID uint32, id uint32)
+	loginWithParamHandler func(err error, client *nex.Client, callID uint32)
 }
 
 // Setup initializes the protocol
-func (protocol *TicketGrantingProtocol) Setup() {
+func (protocol *Protocol) Setup() {
 	protocol.Server.On("Data", func(packet nex.PacketInterface) {
 		request := packet.RMCRequest()
 
@@ -54,7 +54,7 @@ func (protocol *TicketGrantingProtocol) Setup() {
 }
 
 // HandlePacket sends the packet to the correct RMC method handler
-func (protocol *TicketGrantingProtocol) HandlePacket(packet nex.PacketInterface) {
+func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 	request := packet.RMCRequest()
 
 	switch request.MethodID() {
@@ -76,9 +76,9 @@ func (protocol *TicketGrantingProtocol) HandlePacket(packet nex.PacketInterface)
 	}
 }
 
-// NewTicketGrantingProtocol returns a new TicketGrantingProtocol
-func NewTicketGrantingProtocol(server *nex.Server) *TicketGrantingProtocol {
-	protocol := &TicketGrantingProtocol{Server: server}
+// NewProtocol returns a new Ticket Granting protocol
+func NewProtocol(server *nex.Server) *Protocol {
+	protocol := &Protocol{Server: server}
 
 	protocol.Setup()
 

@@ -1,5 +1,5 @@
-// Package matchmake_extension implements the Matchmake Extension NEX protocol
-package matchmake_extension
+// Package protocol implements the Matchmake Extension protocol
+package protocol
 
 import (
 	"fmt"
@@ -9,11 +9,11 @@ import (
 )
 
 // UpdatePrivacySetting sets the UpdatePrivacySetting handler function
-func (protocol *MatchmakeExtensionProtocol) UpdatePrivacySetting(handler func(err error, client *nex.Client, callID uint32, onlineStatus bool, participationCommunity bool)) {
+func (protocol *Protocol) UpdatePrivacySetting(handler func(err error, client *nex.Client, callID uint32, onlineStatus bool, participationCommunity bool)) {
 	protocol.updatePrivacySettingHandler = handler
 }
 
-func (protocol *MatchmakeExtensionProtocol) handleUpdatePrivacySetting(packet nex.PacketInterface) {
+func (protocol *Protocol) handleUpdatePrivacySetting(packet nex.PacketInterface) {
 	if protocol.updatePrivacySettingHandler == nil {
 		globals.Logger.Warning("MatchmakeExtension::UpdatePrivacySetting not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

@@ -1,5 +1,5 @@
-// Package datastore implements the DataStore NEX protocol
-package datastore
+// Package protocol implements the DataStore protocol
+package protocol
 
 import (
 	"fmt"
@@ -10,12 +10,12 @@ import (
 )
 
 // SearchObjectLight sets the SearchObjectLight handler function
-func (protocol *DataStoreProtocol) SearchObjectLight(handler func(err error, client *nex.Client, callID uint32, param *datastore_types.DataStoreSearchParam)) {
-	protocol.SearchObjectLightHandler = handler
+func (protocol *Protocol) SearchObjectLight(handler func(err error, client *nex.Client, callID uint32, param *datastore_types.DataStoreSearchParam)) {
+	protocol.searchObjectLightHandler = handler
 }
 
-func (protocol *DataStoreProtocol) handleSearchObjectLight(packet nex.PacketInterface) {
-	if protocol.SearchObjectLightHandler == nil {
+func (protocol *Protocol) handleSearchObjectLight(packet nex.PacketInterface) {
+	if protocol.searchObjectLightHandler == nil {
 		globals.Logger.Warning("DataStore::SearchObjectLight not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -31,9 +31,9 @@ func (protocol *DataStoreProtocol) handleSearchObjectLight(packet nex.PacketInte
 
 	param, err := parametersStream.ReadStructure(datastore_types.NewDataStoreSearchParam())
 	if err != nil {
-		go protocol.SearchObjectLightHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
+		go protocol.searchObjectLightHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
 		return
 	}
 
-	go protocol.SearchObjectLightHandler(nil, client, callID, param.(*datastore_types.DataStoreSearchParam))
+	go protocol.searchObjectLightHandler(nil, client, callID, param.(*datastore_types.DataStoreSearchParam))
 }

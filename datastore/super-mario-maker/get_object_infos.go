@@ -1,5 +1,5 @@
-// Package datastore_super_mario_maker implements the Super Mario Maker DataStore NEX protocol
-package datastore_super_mario_maker
+// Package protocol implements the Super Mario Maker DataStore protocol
+package protocol
 
 import (
 	"fmt"
@@ -9,12 +9,12 @@ import (
 )
 
 // GetObjectInfos sets the GetObjectInfos handler function
-func (protocol *DataStoreSuperMarioMakerProtocol) GetObjectInfos(handler func(err error, client *nex.Client, callID uint32, dataIDs []uint64)) {
-	protocol.GetObjectInfosHandler = handler
+func (protocol *Protocol) GetObjectInfos(handler func(err error, client *nex.Client, callID uint32, dataIDs []uint64)) {
+	protocol.getObjectInfosHandler = handler
 }
 
-func (protocol *DataStoreSuperMarioMakerProtocol) handleGetObjectInfos(packet nex.PacketInterface) {
-	if protocol.GetObjectInfosHandler == nil {
+func (protocol *Protocol) handleGetObjectInfos(packet nex.PacketInterface) {
+	if protocol.getObjectInfosHandler == nil {
 		globals.Logger.Warning("DataStoreSMM::GetObjectInfos not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -30,9 +30,9 @@ func (protocol *DataStoreSuperMarioMakerProtocol) handleGetObjectInfos(packet ne
 
 	dataIDs, err := parametersStream.ReadListUInt64LE()
 	if err != nil {
-		go protocol.GetObjectInfosHandler(fmt.Errorf("Failed to read dataIDs from parameters. %s", err.Error()), client, callID, nil)
+		go protocol.getObjectInfosHandler(fmt.Errorf("Failed to read dataIDs from parameters. %s", err.Error()), client, callID, nil)
 		return
 	}
 
-	go protocol.GetObjectInfosHandler(nil, client, callID, dataIDs)
+	go protocol.getObjectInfosHandler(nil, client, callID, dataIDs)
 }

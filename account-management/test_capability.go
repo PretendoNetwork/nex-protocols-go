@@ -1,5 +1,5 @@
-// Package account_management implements the Account Management NEX protocol
-package account_management
+// Package protocol implements the Account Management protocol
+package protocol
 
 import (
 	"fmt"
@@ -9,11 +9,11 @@ import (
 )
 
 // TestCapability sets the TestCapability handler function
-func (protocol *AccountManagementProtocol) TestCapability(handler func(err error, client *nex.Client, callID uint32, uiCapability uint32)) {
+func (protocol *Protocol) TestCapability(handler func(err error, client *nex.Client, callID uint32, uiCapability uint32)) {
 	protocol.testCapabilityHandler = handler
 }
 
-func (protocol *AccountManagementProtocol) handleTestCapability(packet nex.PacketInterface) {
+func (protocol *Protocol) handleTestCapability(packet nex.PacketInterface) {
 	if protocol.testCapabilityHandler == nil {
 		globals.Logger.Warning("AccountManagement::TestCapability not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

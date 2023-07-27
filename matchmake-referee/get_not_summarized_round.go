@@ -1,5 +1,5 @@
-// Package matchmake_referee implements the Matchmake Referee NEX protocol
-package matchmake_referee
+// Package protocol implements the Matchmake Referee protocol
+package protocol
 
 import (
 	nex "github.com/PretendoNetwork/nex-go"
@@ -7,11 +7,11 @@ import (
 )
 
 // GetNotSummarizedRound sets the GetNotSummarizedRound handler function
-func (protocol *MatchmakeRefereeProtocol) GetNotSummarizedRound(handler func(err error, client *nex.Client, callID uint32)) {
+func (protocol *Protocol) GetNotSummarizedRound(handler func(err error, client *nex.Client, callID uint32)) {
 	protocol.getNotSummarizedRoundHandler = handler
 }
 
-func (protocol *MatchmakeRefereeProtocol) handleGetNotSummarizedRound(packet nex.PacketInterface) {
+func (protocol *Protocol) handleGetNotSummarizedRound(packet nex.PacketInterface) {
 	if protocol.getNotSummarizedRoundHandler == nil {
 		globals.Logger.Warning("MatchmakeReferee::GetNotSummarizedRound not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

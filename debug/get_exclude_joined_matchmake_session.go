@@ -1,5 +1,5 @@
-// Package debug implements the Debug NEX protocol
-package debug
+// Package protocol implements the Debug protocol
+package protocol
 
 import (
 	nex "github.com/PretendoNetwork/nex-go"
@@ -7,14 +7,14 @@ import (
 )
 
 // GetExcludeJoinedMatchmakeSession sets the GetExcludeJoinedMatchmakeSession handler function
-func (protocol *DebugProtocol) GetExcludeJoinedMatchmakeSession(handler func(err error, client *nex.Client, callID uint32)) {
-	protocol.GetExcludeJoinedMatchmakeSessionHandler = handler
+func (protocol *Protocol) GetExcludeJoinedMatchmakeSession(handler func(err error, client *nex.Client, callID uint32)) {
+	protocol.getExcludeJoinedMatchmakeSessionHandler = handler
 }
 
-func (protocol *DebugProtocol) handleGetExcludeJoinedMatchmakeSession(packet nex.PacketInterface) {
+func (protocol *Protocol) handleGetExcludeJoinedMatchmakeSession(packet nex.PacketInterface) {
 	globals.Logger.Warning("Debug::GetExcludeJoinedMatchmakeSession STUBBED")
 
-	if protocol.GetExcludeJoinedMatchmakeSessionHandler == nil {
+	if protocol.getExcludeJoinedMatchmakeSessionHandler == nil {
 		globals.Logger.Warning("Debug::GetExcludeJoinedMatchmakeSession not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return

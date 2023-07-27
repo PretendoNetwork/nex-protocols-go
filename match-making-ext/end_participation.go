@@ -1,5 +1,5 @@
-// Package match_making_ext implements the Match Making Ext NEX protocol
-package match_making_ext
+// Package protocol implements the Match Making Ext protocol
+package protocol
 
 import (
 	"fmt"
@@ -9,12 +9,12 @@ import (
 )
 
 // EndParticipation sets the EndParticipation handler function
-func (protocol *MatchMakingExtProtocol) EndParticipation(handler func(err error, client *nex.Client, callID uint32, idGathering uint32, strMessage string)) {
-	protocol.EndParticipationHandler = handler
+func (protocol *Protocol) EndParticipation(handler func(err error, client *nex.Client, callID uint32, idGathering uint32, strMessage string)) {
+	protocol.endParticipationHandler = handler
 }
 
-func (protocol *MatchMakingExtProtocol) handleEndParticipation(packet nex.PacketInterface) {
-	if protocol.EndParticipationHandler == nil {
+func (protocol *Protocol) handleEndParticipation(packet nex.PacketInterface) {
+	if protocol.endParticipationHandler == nil {
 		globals.Logger.Warning("MatchMakingExt::EndParticipation not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -30,14 +30,14 @@ func (protocol *MatchMakingExtProtocol) handleEndParticipation(packet nex.Packet
 
 	idGathering, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		go protocol.EndParticipationHandler(fmt.Errorf("Failed to read idGathering from parameters. %s", err.Error()), client, callID, 0, "")
+		go protocol.endParticipationHandler(fmt.Errorf("Failed to read idGathering from parameters. %s", err.Error()), client, callID, 0, "")
 		return
 	}
 
 	strMessage, err := parametersStream.ReadString()
 	if err != nil {
-		go protocol.EndParticipationHandler(fmt.Errorf("Failed to read strMessage from parameters. %s", err.Error()), client, callID, 0, "")
+		go protocol.endParticipationHandler(fmt.Errorf("Failed to read strMessage from parameters. %s", err.Error()), client, callID, 0, "")
 	}
 
-	go protocol.EndParticipationHandler(nil, client, callID, idGathering, strMessage)
+	go protocol.endParticipationHandler(nil, client, callID, idGathering, strMessage)
 }

@@ -1,5 +1,5 @@
-// Package datastore implements the DataStore NEX protocol
-package datastore
+// Package protocol implements the DataStore protocol
+package protocol
 
 import (
 	"fmt"
@@ -10,12 +10,12 @@ import (
 )
 
 // GetMetasMultipleParam sets the GetMetasMultipleParam handler function
-func (protocol *DataStoreProtocol) GetMetasMultipleParam(handler func(err error, client *nex.Client, callID uint32, dataStorePrepareGetParams []*datastore_types.DataStoreGetMetaParam)) {
-	protocol.GetMetasMultipleParamHandler = handler
+func (protocol *Protocol) GetMetasMultipleParam(handler func(err error, client *nex.Client, callID uint32, dataStorePrepareGetParams []*datastore_types.DataStoreGetMetaParam)) {
+	protocol.getMetasMultipleParamHandler = handler
 }
 
-func (protocol *DataStoreProtocol) handleGetMetasMultipleParam(packet nex.PacketInterface) {
-	if protocol.GetMetasMultipleParamHandler == nil {
+func (protocol *Protocol) handleGetMetasMultipleParam(packet nex.PacketInterface) {
+	if protocol.getMetasMultipleParamHandler == nil {
 		globals.Logger.Warning("DataStore::GetMetasMultipleParam not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -31,9 +31,9 @@ func (protocol *DataStoreProtocol) handleGetMetasMultipleParam(packet nex.Packet
 
 	params, err := parametersStream.ReadListStructure(datastore_types.NewDataStoreGetMetaParam())
 	if err != nil {
-		go protocol.GetMetasMultipleParamHandler(fmt.Errorf("Failed to read params from parameters. %s", err.Error()), client, callID, nil)
+		go protocol.getMetasMultipleParamHandler(fmt.Errorf("Failed to read params from parameters. %s", err.Error()), client, callID, nil)
 		return
 	}
 
-	go protocol.GetMetasMultipleParamHandler(nil, client, callID, params.([]*datastore_types.DataStoreGetMetaParam))
+	go protocol.getMetasMultipleParamHandler(nil, client, callID, params.([]*datastore_types.DataStoreGetMetaParam))
 }

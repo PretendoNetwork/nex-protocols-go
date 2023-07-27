@@ -1,5 +1,5 @@
-// Package account_management implements the Account Management NEX protocol
-package account_management
+// Package protocol implements the Account Management protocol
+package protocol
 
 import (
 	"fmt"
@@ -9,11 +9,11 @@ import (
 )
 
 // UpdateAccountEffectiveDate sets the UpdateAccountEffectiveDate handler function
-func (protocol *AccountManagementProtocol) UpdateAccountEffectiveDate(handler func(err error, client *nex.Client, callID uint32, idPrincipal uint32, dtEffectiveFrom *nex.DateTime, strNotEffectiveMessage string)) {
+func (protocol *Protocol) UpdateAccountEffectiveDate(handler func(err error, client *nex.Client, callID uint32, idPrincipal uint32, dtEffectiveFrom *nex.DateTime, strNotEffectiveMessage string)) {
 	protocol.updateAccountEffectiveDateHandler = handler
 }
 
-func (protocol *AccountManagementProtocol) handleUpdateAccountEffectiveDate(packet nex.PacketInterface) {
+func (protocol *Protocol) handleUpdateAccountEffectiveDate(packet nex.PacketInterface) {
 	if protocol.updateAccountEffectiveDateHandler == nil {
 		globals.Logger.Warning("AccountManagement::UpdateAccountEffectiveDate not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

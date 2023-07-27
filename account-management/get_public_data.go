@@ -1,5 +1,5 @@
-// Package account_management implements the Account Management NEX protocol
-package account_management
+// Package protocol implements the Account Management protocol
+package protocol
 
 import (
 	"fmt"
@@ -9,11 +9,11 @@ import (
 )
 
 // GetPublicData sets the GetPublicData handler function
-func (protocol *AccountManagementProtocol) GetPublicData(handler func(err error, client *nex.Client, callID uint32, idPrincipal uint32)) {
+func (protocol *Protocol) GetPublicData(handler func(err error, client *nex.Client, callID uint32, idPrincipal uint32)) {
 	protocol.getPublicDataHandler = handler
 }
 
-func (protocol *AccountManagementProtocol) handleGetPublicData(packet nex.PacketInterface) {
+func (protocol *Protocol) handleGetPublicData(packet nex.PacketInterface) {
 	if protocol.getPublicDataHandler == nil {
 		globals.Logger.Warning("AccountManagement::GetPublicData not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

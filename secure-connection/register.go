@@ -1,5 +1,5 @@
-// Package secure_connection implements the Secure Connection NEX protocol
-package secure_connection
+// Package protocol implements the Secure Connection protocol
+package protocol
 
 import (
 	"fmt"
@@ -9,12 +9,12 @@ import (
 )
 
 // Register sets the Register handler function
-func (protocol *SecureConnectionProtocol) Register(handler func(err error, client *nex.Client, callID uint32, vecMyURLs []*nex.StationURL)) {
-	protocol.RegisterHandler = handler
+func (protocol *Protocol) Register(handler func(err error, client *nex.Client, callID uint32, vecMyURLs []*nex.StationURL)) {
+	protocol.registerHandler = handler
 }
 
-func (protocol *SecureConnectionProtocol) handleRegister(packet nex.PacketInterface) {
-	if protocol.RegisterHandler == nil {
+func (protocol *Protocol) handleRegister(packet nex.PacketInterface) {
+	if protocol.registerHandler == nil {
 		globals.Logger.Warning("SecureConnection::Register not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -30,9 +30,9 @@ func (protocol *SecureConnectionProtocol) handleRegister(packet nex.PacketInterf
 
 	vecMyURLs, err := parametersStream.ReadListStationURL()
 	if err != nil {
-		go protocol.RegisterHandler(fmt.Errorf("Failed to read hCustomData from parameters. %s", err.Error()), client, callID, nil)
+		go protocol.registerHandler(fmt.Errorf("Failed to read hCustomData from parameters. %s", err.Error()), client, callID, nil)
 		return
 	}
 
-	go protocol.RegisterHandler(nil, client, callID, vecMyURLs)
+	go protocol.registerHandler(nil, client, callID, vecMyURLs)
 }

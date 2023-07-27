@@ -1,8 +1,8 @@
-// Package match_making_types implements all the types used by the Matchmaking protocols.
+// Package types implements all the types used by the Matchmaking protocols.
 //
 // Since there are multiple match making related protocols, and they all share types
 // all types used by all match making protocols is defined here
-package match_making_types
+package types
 
 import (
 	"fmt"
@@ -78,7 +78,6 @@ func (matchmakeSessionSearchCriteria *MatchmakeSessionSearchCriteria) ExtractFro
 			return fmt.Errorf("Failed to extract MatchmakeSessionSearchCriteria.SelectionMethod. %s", err.Error())
 		}
 	}
-
 
 	if matchmakingVersion.Major >= 3 && matchmakingVersion.Minor >= 4 {
 		matchmakeSessionSearchCriteria.VacantParticipants, err = stream.ReadUInt16LE()

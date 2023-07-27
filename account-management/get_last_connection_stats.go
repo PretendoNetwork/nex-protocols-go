@@ -1,5 +1,5 @@
-// Package account_management implements the Account Management NEX protocol
-package account_management
+// Package protocol implements the Account Management protocol
+package protocol
 
 import (
 	"fmt"
@@ -9,11 +9,11 @@ import (
 )
 
 // GetLastConnectionStats sets the GetLastConnectionStats handler function
-func (protocol *AccountManagementProtocol) GetLastConnectionStats(handler func(err error, client *nex.Client, callID uint32, idPrincipal uint32)) {
+func (protocol *Protocol) GetLastConnectionStats(handler func(err error, client *nex.Client, callID uint32, idPrincipal uint32)) {
 	protocol.getLastConnectionStatsHandler = handler
 }
 
-func (protocol *AccountManagementProtocol) handleGetLastConnectionStats(packet nex.PacketInterface) {
+func (protocol *Protocol) handleGetLastConnectionStats(packet nex.PacketInterface) {
 	if protocol.getLastConnectionStatsHandler == nil {
 		globals.Logger.Warning("AccountManagement::GetLastConnectionStats not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

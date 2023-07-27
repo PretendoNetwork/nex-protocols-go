@@ -1,5 +1,5 @@
-// Package datastore implements the DataStore NEX protocol
-package datastore
+// Package protocol implements the DataStore protocol
+package protocol
 
 import (
 	"fmt"
@@ -10,12 +10,12 @@ import (
 )
 
 // CompleteUpdateObject sets the CompleteUpdateObject handler function
-func (protocol *DataStoreProtocol) CompleteUpdateObject(handler func(err error, client *nex.Client, callID uint32, dataStoreCompleteUpdateParam *datastore_types.DataStoreCompleteUpdateParam)) {
-	protocol.CompleteUpdateObjectHandler = handler
+func (protocol *Protocol) CompleteUpdateObject(handler func(err error, client *nex.Client, callID uint32, dataStoreCompleteUpdateParam *datastore_types.DataStoreCompleteUpdateParam)) {
+	protocol.completeUpdateObjectHandler = handler
 }
 
-func (protocol *DataStoreProtocol) handleCompleteUpdateObject(packet nex.PacketInterface) {
-	if protocol.CompleteUpdateObjectHandler == nil {
+func (protocol *Protocol) handleCompleteUpdateObject(packet nex.PacketInterface) {
+	if protocol.completeUpdateObjectHandler == nil {
 		globals.Logger.Warning("DataStore::CompleteUpdateObject not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -31,9 +31,9 @@ func (protocol *DataStoreProtocol) handleCompleteUpdateObject(packet nex.PacketI
 
 	dataStoreCompleteUpdateParam, err := parametersStream.ReadStructure(datastore_types.NewDataStoreCompleteUpdateParam())
 	if err != nil {
-		go protocol.CompleteUpdateObjectHandler(fmt.Errorf("Failed to read dataStoreCompleteUpdateParam from parameters. %s", err.Error()), client, callID, nil)
+		go protocol.completeUpdateObjectHandler(fmt.Errorf("Failed to read dataStoreCompleteUpdateParam from parameters. %s", err.Error()), client, callID, nil)
 		return
 	}
 
-	go protocol.CompleteUpdateObjectHandler(nil, client, callID, dataStoreCompleteUpdateParam.(*datastore_types.DataStoreCompleteUpdateParam))
+	go protocol.completeUpdateObjectHandler(nil, client, callID, dataStoreCompleteUpdateParam.(*datastore_types.DataStoreCompleteUpdateParam))
 }

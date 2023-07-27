@@ -1,5 +1,5 @@
-// Package messaging implements the Messaging protocol
-package messaging
+// Package protocol implements the Messaging protocol
+package protocol
 
 import (
 	"fmt"
@@ -9,11 +9,11 @@ import (
 )
 
 // DeliverMessage sets the DeliverMessage handler function
-func (protocol *MessagingProtocol) DeliverMessage(handler func(err error, client *nex.Client, callID uint32, oUserMessage *nex.DataHolder)) {
+func (protocol *Protocol) DeliverMessage(handler func(err error, client *nex.Client, callID uint32, oUserMessage *nex.DataHolder)) {
 	protocol.deliverMessageHandler = handler
 }
 
-func (protocol *MessagingProtocol) handleDeliverMessage(packet nex.PacketInterface) {
+func (protocol *Protocol) handleDeliverMessage(packet nex.PacketInterface) {
 	if protocol.deliverMessageHandler == nil {
 		globals.Logger.Warning("Messaging::DeliverMessage not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

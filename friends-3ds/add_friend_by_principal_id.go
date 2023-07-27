@@ -1,5 +1,5 @@
-// Package friends_3ds implements the Friends 3DS NEX protocol
-package friends_3ds
+// Package protocol implements the Friends 3DS protocol
+package protocol
 
 import (
 	"fmt"
@@ -9,11 +9,11 @@ import (
 )
 
 // AddFriendByPrincipalID sets the AddFriendByPrincipalID handler function
-func (protocol *Friends3DSProtocol) AddFriendByPrincipalID(handler func(err error, client *nex.Client, callID uint32, lfc uint64, pid uint32)) {
+func (protocol *Protocol) AddFriendByPrincipalID(handler func(err error, client *nex.Client, callID uint32, lfc uint64, pid uint32)) {
 	protocol.addFriendByPrincipalIDHandler = handler
 }
 
-func (protocol *Friends3DSProtocol) handleAddFriendByPrincipalID(packet nex.PacketInterface) {
+func (protocol *Protocol) handleAddFriendByPrincipalID(packet nex.PacketInterface) {
 	if protocol.addFriendByPrincipalIDHandler == nil {
 		globals.Logger.Warning("Friends3DS::AddFriendByPrincipalID not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

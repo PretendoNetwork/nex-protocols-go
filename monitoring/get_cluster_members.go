@@ -1,5 +1,5 @@
-// Package monitoring implements the Monitoring NEX protocol
-package monitoring
+// Package protocol implements the Monitoring protocol
+package protocol
 
 import (
 	nex "github.com/PretendoNetwork/nex-go"
@@ -7,12 +7,12 @@ import (
 )
 
 // GetClusterMembers sets the GetClusterMembers handler function
-func (protocol *MonitoringProtocol) GetClusterMembers(handler func(err error, client *nex.Client, callID uint32)) {
-	protocol.GetClusterMembersHandler = handler
+func (protocol *Protocol) GetClusterMembers(handler func(err error, client *nex.Client, callID uint32)) {
+	protocol.getClusterMembersHandler = handler
 }
 
-func (protocol *MonitoringProtocol) handleGetClusterMembers(packet nex.PacketInterface) {
-	if protocol.GetClusterMembersHandler == nil {
+func (protocol *Protocol) handleGetClusterMembers(packet nex.PacketInterface) {
+	if protocol.getClusterMembersHandler == nil {
 		globals.Logger.Warning("Monitoring::GetClusterMembers not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -23,5 +23,5 @@ func (protocol *MonitoringProtocol) handleGetClusterMembers(packet nex.PacketInt
 
 	callID := request.CallID()
 
-	go protocol.GetClusterMembersHandler(nil, client, callID)
+	go protocol.getClusterMembersHandler(nil, client, callID)
 }

@@ -1,5 +1,5 @@
-// Package ranking_types implements all the types used by the Ranking protocol
-package ranking_types
+// Package types implements all the types used by the Ranking protocol
+package types
 
 import (
 	"fmt"
@@ -106,7 +106,7 @@ func (rankingOrderParam *RankingOrderParam) Equals(structure nex.StructureInterf
 		return false
 	}
 
-	return rankingOrderParam.Length != other.Length
+	return rankingOrderParam.Length == other.Length
 }
 
 // String returns a string representation of the struct

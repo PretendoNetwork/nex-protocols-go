@@ -1,5 +1,5 @@
-// Package friends_3ds implements the Friends 3DS NEX protocol
-package friends_3ds
+// Package protocol implements the Friends 3DS protocol
+package protocol
 
 import (
 	"fmt"
@@ -9,11 +9,11 @@ import (
 )
 
 // SyncFriend sets the SyncFriend handler function
-func (protocol *Friends3DSProtocol) SyncFriend(handler func(err error, client *nex.Client, callID uint32, lfc uint64, pids []uint32, lfcList []uint64)) {
+func (protocol *Protocol) SyncFriend(handler func(err error, client *nex.Client, callID uint32, lfc uint64, pids []uint32, lfcList []uint64)) {
 	protocol.syncFriendHandler = handler
 }
 
-func (protocol *Friends3DSProtocol) handleSyncFriend(packet nex.PacketInterface) {
+func (protocol *Protocol) handleSyncFriend(packet nex.PacketInterface) {
 	if protocol.syncFriendHandler == nil {
 		globals.Logger.Warning("Friends3DS::SyncFriend not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

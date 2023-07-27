@@ -1,5 +1,5 @@
-// Package datastore implements the DataStore NEX protocol
-package datastore
+// Package protocol implements the DataStore protocol
+package protocol
 
 import (
 	"fmt"
@@ -10,12 +10,12 @@ import (
 )
 
 // SearchObject sets the SearchObject handler function
-func (protocol *DataStoreProtocol) SearchObject(handler func(err error, client *nex.Client, callID uint32, param *datastore_types.DataStoreSearchParam)) {
-	protocol.SearchObjectHandler = handler
+func (protocol *Protocol) SearchObject(handler func(err error, client *nex.Client, callID uint32, param *datastore_types.DataStoreSearchParam)) {
+	protocol.searchObjectHandler = handler
 }
 
-func (protocol *DataStoreProtocol) handleSearchObject(packet nex.PacketInterface) {
-	if protocol.SearchObjectHandler == nil {
+func (protocol *Protocol) handleSearchObject(packet nex.PacketInterface) {
+	if protocol.searchObjectHandler == nil {
 		globals.Logger.Warning("DataStore::SearchObject not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -31,9 +31,9 @@ func (protocol *DataStoreProtocol) handleSearchObject(packet nex.PacketInterface
 
 	param, err := parametersStream.ReadStructure(datastore_types.NewDataStoreSearchParam())
 	if err != nil {
-		go protocol.SearchObjectHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
+		go protocol.searchObjectHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
 		return
 	}
 
-	go protocol.SearchObjectHandler(nil, client, callID, param.(*datastore_types.DataStoreSearchParam))
+	go protocol.searchObjectHandler(nil, client, callID, param.(*datastore_types.DataStoreSearchParam))
 }

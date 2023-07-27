@@ -1,5 +1,5 @@
-// Package datastore_types implements all the types used by the DataStore protocol
-package datastore_types
+// Package types implements all the types used by the DataStore protocol
+package types
 
 import (
 	"fmt"
@@ -46,7 +46,7 @@ func (dataStoreGetNotificationURLParam *DataStoreGetNotificationURLParam) Copy()
 func (dataStoreGetNotificationURLParam *DataStoreGetNotificationURLParam) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*DataStoreGetNotificationURLParam)
 
-	return dataStoreGetNotificationURLParam.PreviousURL != other.PreviousURL
+	return dataStoreGetNotificationURLParam.PreviousURL == other.PreviousURL
 }
 
 // String returns a string representation of the struct

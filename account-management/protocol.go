@@ -1,11 +1,11 @@
-// Package account_management implements the Account Management NEX protocol
-package account_management
+// Package protocol implements the Account Management protocol
+package protocol
 
 import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
-	account_management_types "github.com/PretendoNetwork/nex-protocols-go/account-management/types"
+	types "github.com/PretendoNetwork/nex-protocols-go/account-management/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
@@ -104,8 +104,8 @@ const (
 	MethodDisconnectAllPrincipals = 0x1E
 )
 
-// AccountManagementProtocol handles the Account Management NEX protocol
-type AccountManagementProtocol struct {
+// Protocol stores all the RMC method handlers for the Account Management protocol and listens for requests
+type Protocol struct {
 	Server                             *nex.Server
 	createAccountHandler               func(err error, client *nex.Client, callID uint32, strPrincipalName string, strKey string, uiGroups uint32, strEmail string)
 	deleteAccountHandler               func(err error, client *nex.Client, callID uint32, idPrincipal uint32)
@@ -140,9 +140,9 @@ type AccountManagementProtocol struct {
 }
 
 // Setup initializes the protocol
-func (protocol *AccountManagementProtocol) Setup() {
-	nex.RegisterDataHolderType(account_management_types.NewNintendoCreateAccountData())
-	nex.RegisterDataHolderType(account_management_types.NewAccountExtraInfo())
+func (protocol *Protocol) Setup() {
+	nex.RegisterDataHolderType(types.NewNintendoCreateAccountData())
+	nex.RegisterDataHolderType(types.NewAccountExtraInfo())
 
 	protocol.Server.On("Data", func(packet nex.PacketInterface) {
 		request := packet.RMCRequest()
@@ -154,7 +154,7 @@ func (protocol *AccountManagementProtocol) Setup() {
 }
 
 // HandlePacket sends the packet to the correct RMC method handler
-func (protocol *AccountManagementProtocol) HandlePacket(packet nex.PacketInterface) {
+func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 	request := packet.RMCRequest()
 
 	switch request.MethodID() {
@@ -224,9 +224,9 @@ func (protocol *AccountManagementProtocol) HandlePacket(packet nex.PacketInterfa
 	}
 }
 
-// NewAccountManagementProtocol returns a new AccountManagementProtocol
-func NewAccountManagementProtocol(server *nex.Server) *AccountManagementProtocol {
-	protocol := &AccountManagementProtocol{Server: server}
+// NewProtocol returns a new Account Management protocol
+func NewProtocol(server *nex.Server) *Protocol {
+	protocol := &Protocol{Server: server}
 
 	protocol.Setup()
 

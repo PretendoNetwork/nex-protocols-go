@@ -1,5 +1,5 @@
-// Package ticket_granting implements the Ticket Granting NEX protocol
-package ticket_granting
+// Package protocol implements the Ticket Granting protocol
+package protocol
 
 import (
 	"fmt"
@@ -9,12 +9,12 @@ import (
 )
 
 // GetName sets the GetName handler function
-func (protocol *TicketGrantingProtocol) GetName(handler func(err error, client *nex.Client, callID uint32, userPID uint32)) {
-	protocol.GetNameHandler = handler
+func (protocol *Protocol) GetName(handler func(err error, client *nex.Client, callID uint32, userPID uint32)) {
+	protocol.getNameHandler = handler
 }
 
-func (protocol *TicketGrantingProtocol) handleGetName(packet nex.PacketInterface) {
-	if protocol.GetNameHandler == nil {
+func (protocol *Protocol) handleGetName(packet nex.PacketInterface) {
+	if protocol.getNameHandler == nil {
 		globals.Logger.Warning("TicketGranting::GetName not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -30,9 +30,9 @@ func (protocol *TicketGrantingProtocol) handleGetName(packet nex.PacketInterface
 
 	id, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		go protocol.GetNameHandler(fmt.Errorf("Failed to read id from parameters. %s", err.Error()), client, callID, 0)
+		go protocol.getNameHandler(fmt.Errorf("Failed to read id from parameters. %s", err.Error()), client, callID, 0)
 		return
 	}
 
-	go protocol.GetNameHandler(nil, client, callID, id)
+	go protocol.getNameHandler(nil, client, callID, id)
 }

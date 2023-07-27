@@ -1,5 +1,5 @@
-// Package ranking_types implements all the types used by the Ranking protocol
-package ranking_types
+// Package types implements all the types used by the Ranking protocol
+package types
 
 import (
 	"fmt"

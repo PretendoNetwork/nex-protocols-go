@@ -1,5 +1,5 @@
-// Package datastore implements the DataStore NEX protocol
-package datastore
+// Package protocol implements the DataStore protocol
+package protocol
 
 import (
 	"fmt"
@@ -10,12 +10,12 @@ import (
 )
 
 // GetSpecificMeta sets the GetSpecificMeta handler function
-func (protocol *DataStoreProtocol) GetSpecificMeta(handler func(err error, client *nex.Client, callID uint32, param *datastore_types.DataStoreGetSpecificMetaParam)) {
-	protocol.GetSpecificMetaHandler = handler
+func (protocol *Protocol) GetSpecificMeta(handler func(err error, client *nex.Client, callID uint32, param *datastore_types.DataStoreGetSpecificMetaParam)) {
+	protocol.getSpecificMetaHandler = handler
 }
 
-func (protocol *DataStoreProtocol) handleGetSpecificMeta(packet nex.PacketInterface) {
-	if protocol.GetSpecificMetaHandler == nil {
+func (protocol *Protocol) handleGetSpecificMeta(packet nex.PacketInterface) {
+	if protocol.getSpecificMetaHandler == nil {
 		globals.Logger.Warning("DataStore::GetSpecificMeta not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -31,9 +31,9 @@ func (protocol *DataStoreProtocol) handleGetSpecificMeta(packet nex.PacketInterf
 
 	param, err := parametersStream.ReadStructure(datastore_types.NewDataStoreGetSpecificMetaParam())
 	if err != nil {
-		go protocol.GetSpecificMetaHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
+		go protocol.getSpecificMetaHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
 		return
 	}
 
-	go protocol.GetSpecificMetaHandler(nil, client, callID, param.(*datastore_types.DataStoreGetSpecificMetaParam))
+	go protocol.getSpecificMetaHandler(nil, client, callID, param.(*datastore_types.DataStoreGetSpecificMetaParam))
 }

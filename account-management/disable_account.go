@@ -1,5 +1,5 @@
-// Package account_management implements the Account Management NEX protocol
-package account_management
+// Package protocol implements the Account Management protocol
+package protocol
 
 import (
 	"fmt"
@@ -9,11 +9,11 @@ import (
 )
 
 // DisableAccount sets the DisableAccount handler function
-func (protocol *AccountManagementProtocol) DisableAccount(handler func(err error, client *nex.Client, callID uint32, idPrincipal uint32, dtUntil *nex.DateTime, strMessage string)) {
+func (protocol *Protocol) DisableAccount(handler func(err error, client *nex.Client, callID uint32, idPrincipal uint32, dtUntil *nex.DateTime, strMessage string)) {
 	protocol.disableAccountHandler = handler
 }
 
-func (protocol *AccountManagementProtocol) handleDisableAccount(packet nex.PacketInterface) {
+func (protocol *Protocol) handleDisableAccount(packet nex.PacketInterface) {
 	if protocol.disableAccountHandler == nil {
 		globals.Logger.Warning("AccountManagement::DisableAccount not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

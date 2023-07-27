@@ -1,5 +1,5 @@
-// Package messaging implements the Messaging protocol
-package messaging
+// Package protocol implements the Messaging protocol
+package protocol
 
 import (
 	"fmt"
@@ -38,8 +38,8 @@ const (
 	MethodDeliverMessageMultiTarget = 0x8
 )
 
-// MessagingProtocol handles the Messaging NEX protocol
-type MessagingProtocol struct {
+// Protocol stores all the RMC method handlers for the Messaging protocol and listens for requests
+type Protocol struct {
 	Server                                *nex.Server
 	deliverMessageHandler                 func(err error, client *nex.Client, callID uint32, oUserMessage *nex.DataHolder)
 	getNumberOfMessagesHandler            func(err error, client *nex.Client, callID uint32, recipient *messaging_types.MessageRecipient)
@@ -52,7 +52,7 @@ type MessagingProtocol struct {
 }
 
 // Setup initializes the protocol
-func (protocol *MessagingProtocol) Setup() {
+func (protocol *Protocol) Setup() {
 	protocol.Server.On("Data", func(packet nex.PacketInterface) {
 		request := packet.RMCRequest()
 
@@ -63,7 +63,7 @@ func (protocol *MessagingProtocol) Setup() {
 }
 
 // HandlePacket sends the packet to the correct RMC method handler
-func (protocol *MessagingProtocol) HandlePacket(packet nex.PacketInterface) {
+func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 	request := packet.RMCRequest()
 
 	switch request.MethodID() {
@@ -89,9 +89,9 @@ func (protocol *MessagingProtocol) HandlePacket(packet nex.PacketInterface) {
 	}
 }
 
-// NewMessagingProtocol returns a new MessagingProtocol
-func NewMessagingProtocol(server *nex.Server) *MessagingProtocol {
-	protocol := &MessagingProtocol{Server: server}
+// NewProtocol returns a new Messaging protocol
+func NewProtocol(server *nex.Server) *Protocol {
+	protocol := &Protocol{Server: server}
 
 	protocol.Setup()
 

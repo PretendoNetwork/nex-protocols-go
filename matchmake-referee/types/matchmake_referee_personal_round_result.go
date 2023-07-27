@@ -1,5 +1,5 @@
-// Package matchmake_referee_types implements all the types used by the Matchmake Referee protocol
-package matchmake_referee_types
+// Package types implements all the types used by the Matchmake Referee protocol
+package types
 
 import (
 	"bytes"

@@ -1,5 +1,5 @@
-// Package friends implements the Friends QRV protocol
-package friends
+// Package protocol implements the Friends QRV protocol
+package protocol
 
 import (
 	"fmt"
@@ -9,11 +9,11 @@ import (
 )
 
 // BlackListByName sets the BlackListByName handler function
-func (protocol *FriendsProtocol) BlackListByName(handler func(err error, client *nex.Client, callID uint32, strPlayerName string, uiDetails uint32)) {
+func (protocol *Protocol) BlackListByName(handler func(err error, client *nex.Client, callID uint32, strPlayerName string, uiDetails uint32)) {
 	protocol.blackListByNameHandler = handler
 }
 
-func (protocol *FriendsProtocol) handleBlackListByName(packet nex.PacketInterface) {
+func (protocol *Protocol) handleBlackListByName(packet nex.PacketInterface) {
 	if protocol.blackListByNameHandler == nil {
 		globals.Logger.Warning("Friends::BlackListByName not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

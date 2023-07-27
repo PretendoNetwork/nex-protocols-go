@@ -1,5 +1,5 @@
-// Package matchmake_referee implements the Matchmake Referee NEX protocol
-package matchmake_referee
+// Package protocol implements the Matchmake Referee protocol
+package protocol
 
 import (
 	"fmt"
@@ -10,11 +10,11 @@ import (
 )
 
 // GetStatsPrimaries sets the GetStatsPrimaries handler function
-func (protocol *MatchmakeRefereeProtocol) GetStatsPrimaries(handler func(err error, client *nex.Client, callID uint32, targets []*matchmake_referee_types.MatchmakeRefereeStatsTarget)) {
+func (protocol *Protocol) GetStatsPrimaries(handler func(err error, client *nex.Client, callID uint32, targets []*matchmake_referee_types.MatchmakeRefereeStatsTarget)) {
 	protocol.getStatsPrimariesHandler = handler
 }
 
-func (protocol *MatchmakeRefereeProtocol) handleGetStatsPrimaries(packet nex.PacketInterface) {
+func (protocol *Protocol) handleGetStatsPrimaries(packet nex.PacketInterface) {
 	if protocol.getStatsPrimariesHandler == nil {
 		globals.Logger.Warning("MatchmakeReferee::GetStatsPrimaries not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

@@ -1,5 +1,5 @@
-// Package nat_traversal implements the NAT Traversal NEX protocol
-package nat_traversal
+// Package protocol implements the NAT Traversal protocol
+package protocol
 
 import (
 	nex "github.com/PretendoNetwork/nex-go"
@@ -7,12 +7,12 @@ import (
 )
 
 // GetRelaySignatureKey sets the GetRelaySignatureKey handler function
-func (protocol *NATTraversalProtocol) GetRelaySignatureKey(handler func(err error, client *nex.Client, callID uint32)) {
-	protocol.GetRelaySignatureKeyHandler = handler
+func (protocol *Protocol) GetRelaySignatureKey(handler func(err error, client *nex.Client, callID uint32)) {
+	protocol.getRelaySignatureKeyHandler = handler
 }
 
-func (protocol *NATTraversalProtocol) handleGetRelaySignatureKey(packet nex.PacketInterface) {
-	if protocol.GetRelaySignatureKeyHandler == nil {
+func (protocol *Protocol) handleGetRelaySignatureKey(packet nex.PacketInterface) {
+	if protocol.getRelaySignatureKeyHandler == nil {
 		globals.Logger.Warning("NATTraversal::GetRelaySignatureKey not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -23,5 +23,5 @@ func (protocol *NATTraversalProtocol) handleGetRelaySignatureKey(packet nex.Pack
 
 	callID := request.CallID()
 
-	go protocol.GetRelaySignatureKeyHandler(nil, client, callID)
+	go protocol.getRelaySignatureKeyHandler(nil, client, callID)
 }

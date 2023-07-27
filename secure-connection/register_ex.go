@@ -1,5 +1,5 @@
-// Package secure_connection implements the Secure Connection NEX protocol
-package secure_connection
+// Package protocol implements the Secure Connection protocol
+package protocol
 
 import (
 	"fmt"
@@ -9,12 +9,12 @@ import (
 )
 
 // RegisterEx sets the RegisterEx handler function
-func (protocol *SecureConnectionProtocol) RegisterEx(handler func(err error, client *nex.Client, callID uint32, vecMyURLs []*nex.StationURL, hCustomData *nex.DataHolder)) {
-	protocol.RegisterExHandler = handler
+func (protocol *Protocol) RegisterEx(handler func(err error, client *nex.Client, callID uint32, vecMyURLs []*nex.StationURL, hCustomData *nex.DataHolder)) {
+	protocol.registerExHandler = handler
 }
 
-func (protocol *SecureConnectionProtocol) handleRegisterEx(packet nex.PacketInterface) {
-	if protocol.RegisterExHandler == nil {
+func (protocol *Protocol) handleRegisterEx(packet nex.PacketInterface) {
+	if protocol.registerExHandler == nil {
 		globals.Logger.Warning("SecureConnection::RegisterEx not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -30,15 +30,15 @@ func (protocol *SecureConnectionProtocol) handleRegisterEx(packet nex.PacketInte
 
 	vecMyURLs, err := parametersStream.ReadListStationURL()
 	if err != nil {
-		go protocol.RegisterExHandler(fmt.Errorf("Failed to read vecMyURLs from parameters. %s", err.Error()), client, callID, nil, nil)
+		go protocol.registerExHandler(fmt.Errorf("Failed to read vecMyURLs from parameters. %s", err.Error()), client, callID, nil, nil)
 		return
 	}
 
 	hCustomData, err := parametersStream.ReadDataHolder()
 	if err != nil {
-		go protocol.RegisterExHandler(fmt.Errorf("Failed to read hCustomData from parameters. %s", err.Error()), client, callID, nil, nil)
+		go protocol.registerExHandler(fmt.Errorf("Failed to read hCustomData from parameters. %s", err.Error()), client, callID, nil, nil)
 		return
 	}
 
-	go protocol.RegisterExHandler(nil, client, callID, vecMyURLs, hCustomData)
+	go protocol.registerExHandler(nil, client, callID, vecMyURLs, hCustomData)
 }

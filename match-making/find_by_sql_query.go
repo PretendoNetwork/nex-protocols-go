@@ -1,5 +1,5 @@
-// Package match_making implements the Match Making NEX protocol
-package match_making
+// Package protocol implements the Match Making protocol
+package protocol
 
 import (
 	"fmt"
@@ -9,11 +9,11 @@ import (
 )
 
 // FindBySQLQuery sets the FindBySQLQuery handler function
-func (protocol *MatchMakingProtocol) FindBySQLQuery(handler func(err error, client *nex.Client, callID uint32, strQuery string, resultRange *nex.ResultRange)) {
+func (protocol *Protocol) FindBySQLQuery(handler func(err error, client *nex.Client, callID uint32, strQuery string, resultRange *nex.ResultRange)) {
 	protocol.findBySQLQueryHandler = handler
 }
 
-func (protocol *MatchMakingProtocol) handleFindBySQLQuery(packet nex.PacketInterface) {
+func (protocol *Protocol) handleFindBySQLQuery(packet nex.PacketInterface) {
 	if protocol.findBySQLQueryHandler == nil {
 		globals.Logger.Warning("MatchMaking::FindBySQLQuery not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

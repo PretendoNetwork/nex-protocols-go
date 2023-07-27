@@ -1,5 +1,5 @@
-// Package match_making implements the Match Making NEX protocol
-package match_making
+// Package protocol implements the Match Making protocol
+package protocol
 
 import (
 	"fmt"
@@ -9,11 +9,11 @@ import (
 )
 
 // FindBySingleID sets the FindBySingleID handler function
-func (protocol *MatchMakingProtocol) FindBySingleID(handler func(err error, client *nex.Client, callID uint32, id uint32)) {
+func (protocol *Protocol) FindBySingleID(handler func(err error, client *nex.Client, callID uint32, id uint32)) {
 	protocol.findBySingleIDHandler = handler
 }
 
-func (protocol *MatchMakingProtocol) handleFindBySingleID(packet nex.PacketInterface) {
+func (protocol *Protocol) handleFindBySingleID(packet nex.PacketInterface) {
 	if protocol.findBySingleIDHandler == nil {
 		globals.Logger.Warning("MatchMaking::FindBySingleID not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

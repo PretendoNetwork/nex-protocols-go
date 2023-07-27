@@ -1,5 +1,5 @@
-// Package datastore_super_smash_bros_4 implements the Super Smash Bros. 4 DataStore NEX protocol
-package datastore_super_smash_bros_4
+// Package protocol implements the Super Smash Bros. 4 DataStore protocol
+package protocol
 
 import (
 	"fmt"
@@ -9,13 +9,13 @@ import (
 )
 
 // ReportSharedData sets the ReportSharedData handler function
-func (protocol *DataStoreSuperSmashBros4Protocol) ReportSharedData(handler func(err error, client *nex.Client, callID uint32, dataID uint64)) {
-	protocol.ReportSharedDataHandler = handler
+func (protocol *Protocol) ReportSharedData(handler func(err error, client *nex.Client, callID uint32, dataID uint64)) {
+	protocol.reportSharedDataHandler = handler
 }
 
-func (protocol *DataStoreSuperSmashBros4Protocol) handleReportSharedData(packet nex.PacketInterface) {
-	if protocol.ReportSharedDataHandler == nil {
-		globals.Logger.Warning("DataStoreSmash4::ReportSharedData not implemented")
+func (protocol *Protocol) handleReportSharedData(packet nex.PacketInterface) {
+	if protocol.reportSharedDataHandler == nil {
+		globals.Logger.Warning("DataStoreSuperSmashBros4::ReportSharedData not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
 	}
@@ -30,9 +30,9 @@ func (protocol *DataStoreSuperSmashBros4Protocol) handleReportSharedData(packet 
 
 	dataID, err := parametersStream.ReadUInt64LE()
 	if err != nil {
-		go protocol.ReportSharedDataHandler(fmt.Errorf("Failed to read dataID from parameters. %s", err.Error()), client, callID, 0)
+		go protocol.reportSharedDataHandler(fmt.Errorf("Failed to read dataID from parameters. %s", err.Error()), client, callID, 0)
 		return
 	}
 
-	go protocol.ReportSharedDataHandler(nil, client, callID, dataID)
+	go protocol.reportSharedDataHandler(nil, client, callID, dataID)
 }

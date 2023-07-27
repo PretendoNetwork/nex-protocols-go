@@ -1,5 +1,5 @@
-// Package match_making implements the Match Making NEX protocol
-package match_making
+// Package protocol implements the Match Making protocol
+package protocol
 
 type gatheringFlags struct {
 	DisconnectChangeOwner uint32 // TODO - Does this really only happen when a disconnect happens, or can the owner change at other times?

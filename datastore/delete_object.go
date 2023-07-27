@@ -1,5 +1,5 @@
-// Package datastore implements the DataStore NEX protocol
-package datastore
+// Package protocol implements the DataStore protocol
+package protocol
 
 import (
 	"fmt"
@@ -10,12 +10,12 @@ import (
 )
 
 // DeleteObject sets the DeleteObject handler function
-func (protocol *DataStoreProtocol) DeleteObject(handler func(err error, client *nex.Client, callID uint32, param *datastore_types.DataStoreDeleteParam)) {
-	protocol.DeleteObjectHandler = handler
+func (protocol *Protocol) DeleteObject(handler func(err error, client *nex.Client, callID uint32, param *datastore_types.DataStoreDeleteParam)) {
+	protocol.deleteObjectHandler = handler
 }
 
-func (protocol *DataStoreProtocol) handleDeleteObject(packet nex.PacketInterface) {
-	if protocol.DeleteObjectHandler == nil {
+func (protocol *Protocol) handleDeleteObject(packet nex.PacketInterface) {
+	if protocol.deleteObjectHandler == nil {
 		globals.Logger.Warning("DataStore::DeleteObject not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -31,9 +31,9 @@ func (protocol *DataStoreProtocol) handleDeleteObject(packet nex.PacketInterface
 
 	param, err := parametersStream.ReadStructure(datastore_types.NewDataStoreDeleteParam())
 	if err != nil {
-		go protocol.DeleteObjectHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
+		go protocol.deleteObjectHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
 		return
 	}
 
-	go protocol.DeleteObjectHandler(nil, client, callID, param.(*datastore_types.DataStoreDeleteParam))
+	go protocol.deleteObjectHandler(nil, client, callID, param.(*datastore_types.DataStoreDeleteParam))
 }

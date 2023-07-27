@@ -1,5 +1,5 @@
-// Package datastore_super_mario_maker_types implements all the types used by the DataStore Super Mario Maker protocol
-package datastore_super_mario_maker_types
+// Package types implements all the types used by the DataStore Super Mario Maker protocol
+package types
 
 import (
 	"fmt"

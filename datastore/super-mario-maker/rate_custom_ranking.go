@@ -1,5 +1,5 @@
-// Package datastore_super_mario_maker implements the Super Mario Maker DataStore NEX protocol
-package datastore_super_mario_maker
+// Package protocol implements the Super Mario Maker DataStore protocol
+package protocol
 
 import (
 	"fmt"
@@ -10,12 +10,12 @@ import (
 )
 
 // RateCustomRanking sets the RateCustomRanking handler function
-func (protocol *DataStoreSuperMarioMakerProtocol) RateCustomRanking(handler func(err error, client *nex.Client, callID uint32, dataStoreRateCustomRankingParams []*datastore_super_mario_maker_types.DataStoreRateCustomRankingParam)) {
-	protocol.RateCustomRankingHandler = handler
+func (protocol *Protocol) RateCustomRanking(handler func(err error, client *nex.Client, callID uint32, dataStoreRateCustomRankingParams []*datastore_super_mario_maker_types.DataStoreRateCustomRankingParam)) {
+	protocol.rateCustomRankingHandler = handler
 }
 
-func (protocol *DataStoreSuperMarioMakerProtocol) handleRateCustomRanking(packet nex.PacketInterface) {
-	if protocol.RateCustomRankingHandler == nil {
+func (protocol *Protocol) handleRateCustomRanking(packet nex.PacketInterface) {
+	if protocol.rateCustomRankingHandler == nil {
 		globals.Logger.Warning("DataStoreSMM::RateCustomRanking not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -31,9 +31,9 @@ func (protocol *DataStoreSuperMarioMakerProtocol) handleRateCustomRanking(packet
 
 	params, err := parametersStream.ReadListStructure(datastore_super_mario_maker_types.NewDataStoreRateCustomRankingParam())
 	if err != nil {
-		go protocol.RateCustomRankingHandler(fmt.Errorf("Failed to read params from parameters. %s", err.Error()), client, callID, nil)
+		go protocol.rateCustomRankingHandler(fmt.Errorf("Failed to read params from parameters. %s", err.Error()), client, callID, nil)
 		return
 	}
 
-	go protocol.RateCustomRankingHandler(nil, client, callID, params.([]*datastore_super_mario_maker_types.DataStoreRateCustomRankingParam))
+	go protocol.rateCustomRankingHandler(nil, client, callID, params.([]*datastore_super_mario_maker_types.DataStoreRateCustomRankingParam))
 }

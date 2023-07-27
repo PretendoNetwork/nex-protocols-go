@@ -1,11 +1,11 @@
-// Package datastore_super_mario_maker implements the Super Mario Maker DataStore NEX protocol
-package datastore_super_mario_maker
+// Package protocol implements the Super Mario Maker DataStore protocol
+package protocol
 
 import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
-	"github.com/PretendoNetwork/nex-protocols-go/datastore"
+	datastore "github.com/PretendoNetwork/nex-protocols-go/datastore"
 	datastore_super_mario_maker_types "github.com/PretendoNetwork/nex-protocols-go/datastore/super-mario-maker/types"
 	datastore_types "github.com/PretendoNetwork/nex-protocols-go/datastore/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
@@ -92,32 +92,35 @@ var patchedMethods = []uint32{
 	MethodCTRPickUpCourseSearchObject,
 }
 
-// DataStoreSuperMarioMakerProtocol handles the DataStore (SMM) NEX protocol. Embeds DataStoreProtocol
-type DataStoreSuperMarioMakerProtocol struct {
+type datastoreProtocol = datastore.Protocol
+
+// Protocol stores all the RMC method handlers for the DataStore (SMM) protocol and listens for requests
+// Embeds the DataStore protocol
+type Protocol struct {
 	Server *nex.Server
-	datastore.DataStoreProtocol
-	GetObjectInfosHandler                     func(err error, client *nex.Client, callID uint32, dataIDs []uint64)
-	RateCustomRankingHandler                  func(err error, client *nex.Client, callID uint32, dataStoreRateCustomRankingParams []*datastore_super_mario_maker_types.DataStoreRateCustomRankingParam)
-	GetCustomRankingByDataIDHandler           func(err error, client *nex.Client, callID uint32, dataStoreGetCustomRankingByDataIDParam *datastore_super_mario_maker_types.DataStoreGetCustomRankingByDataIDParam)
-	AddToBufferQueuesHandler                  func(err error, client *nex.Client, callID uint32, params []*datastore_super_mario_maker_types.BufferQueueParam, buffers [][]byte)
-	GetBufferQueueHandler                     func(err error, client *nex.Client, callID uint32, bufferQueueParam *datastore_super_mario_maker_types.BufferQueueParam)
-	CompleteAttachFileHandler                 func(err error, client *nex.Client, callID uint32, dataStoreCompletePostParam *datastore_types.DataStoreCompletePostParam)
-	PrepareAttachFileHandler                  func(err error, client *nex.Client, callID uint32, dataStoreAttachFileParam *datastore_super_mario_maker_types.DataStoreAttachFileParam)
-	GetApplicationConfigHandler               func(err error, client *nex.Client, callID uint32, applicationID uint32)
-	FollowingsLatestCourseSearchObjectHandler func(err error, client *nex.Client, callID uint32, dataStoreSearchParam *datastore_types.DataStoreSearchParam, extraData []string)
-	RecommendedCourseSearchObjectHandler      func(err error, client *nex.Client, callID uint32, dataStoreSearchParam *datastore_types.DataStoreSearchParam, extraData []string)
-	SuggestedCourseSearchObjectHandler        func(err error, client *nex.Client, callID uint32, param *datastore_types.DataStoreSearchParam, extraData []string)
-	UploadCourseRecordHandler                 func(err error, client *nex.Client, callID uint32, param *datastore_super_mario_maker_types.DataStoreUploadCourseRecordParam)
-	GetCourseRecordHandler                    func(err error, client *nex.Client, callID uint32, param *datastore_super_mario_maker_types.DataStoreGetCourseRecordParam)
-	GetApplicationConfigStringHandler         func(err error, client *nex.Client, callID uint32, applicationID uint32)
-	GetDeletionReasonHandler                  func(err error, client *nex.Client, callID uint32, dataIDLst []uint64)
-	GetMetasWithCourseRecordHandler           func(err error, client *nex.Client, callID uint32, dataStoreGetCourseRecordParams []*datastore_super_mario_maker_types.DataStoreGetCourseRecordParam, dataStoreGetMetaParam *datastore_types.DataStoreGetMetaParam)
-	CheckRateCustomRankingCounterHandler      func(err error, client *nex.Client, callID uint32, applicationID uint32)
-	CTRPickUpCourseSearchObjectHandler        func(err error, client *nex.Client, callID uint32, dataStoreSearchParam *datastore_types.DataStoreSearchParam, extraData []string)
+	datastoreProtocol
+	getObjectInfosHandler                     func(err error, client *nex.Client, callID uint32, dataIDs []uint64)
+	rateCustomRankingHandler                  func(err error, client *nex.Client, callID uint32, dataStoreRateCustomRankingParams []*datastore_super_mario_maker_types.DataStoreRateCustomRankingParam)
+	getCustomRankingByDataIDHandler           func(err error, client *nex.Client, callID uint32, dataStoreGetCustomRankingByDataIDParam *datastore_super_mario_maker_types.DataStoreGetCustomRankingByDataIDParam)
+	addToBufferQueuesHandler                  func(err error, client *nex.Client, callID uint32, params []*datastore_super_mario_maker_types.BufferQueueParam, buffers [][]byte)
+	getBufferQueueHandler                     func(err error, client *nex.Client, callID uint32, bufferQueueParam *datastore_super_mario_maker_types.BufferQueueParam)
+	completeAttachFileHandler                 func(err error, client *nex.Client, callID uint32, dataStoreCompletePostParam *datastore_types.DataStoreCompletePostParam)
+	prepareAttachFileHandler                  func(err error, client *nex.Client, callID uint32, dataStoreAttachFileParam *datastore_super_mario_maker_types.DataStoreAttachFileParam)
+	getApplicationConfigHandler               func(err error, client *nex.Client, callID uint32, applicationID uint32)
+	followingsLatestCourseSearchObjectHandler func(err error, client *nex.Client, callID uint32, dataStoreSearchParam *datastore_types.DataStoreSearchParam, extraData []string)
+	recommendedCourseSearchObjectHandler      func(err error, client *nex.Client, callID uint32, dataStoreSearchParam *datastore_types.DataStoreSearchParam, extraData []string)
+	suggestedCourseSearchObjectHandler        func(err error, client *nex.Client, callID uint32, param *datastore_types.DataStoreSearchParam, extraData []string)
+	uploadCourseRecordHandler                 func(err error, client *nex.Client, callID uint32, param *datastore_super_mario_maker_types.DataStoreUploadCourseRecordParam)
+	getCourseRecordHandler                    func(err error, client *nex.Client, callID uint32, param *datastore_super_mario_maker_types.DataStoreGetCourseRecordParam)
+	getApplicationConfigStringHandler         func(err error, client *nex.Client, callID uint32, applicationID uint32)
+	getDeletionReasonHandler                  func(err error, client *nex.Client, callID uint32, dataIDLst []uint64)
+	getMetasWithCourseRecordHandler           func(err error, client *nex.Client, callID uint32, dataStoreGetCourseRecordParams []*datastore_super_mario_maker_types.DataStoreGetCourseRecordParam, dataStoreGetMetaParam *datastore_types.DataStoreGetMetaParam)
+	checkRateCustomRankingCounterHandler      func(err error, client *nex.Client, callID uint32, applicationID uint32)
+	cTRPickUpCourseSearchObjectHandler        func(err error, client *nex.Client, callID uint32, dataStoreSearchParam *datastore_types.DataStoreSearchParam, extraData []string)
 }
 
 // Setup initializes the protocol
-func (protocol *DataStoreSuperMarioMakerProtocol) Setup() {
+func (protocol *Protocol) Setup() {
 	protocol.Server.On("Data", func(packet nex.PacketInterface) {
 		request := packet.RMCRequest()
 
@@ -125,14 +128,14 @@ func (protocol *DataStoreSuperMarioMakerProtocol) Setup() {
 			if slices.Contains(patchedMethods, request.MethodID()) {
 				protocol.HandlePacket(packet)
 			} else {
-				protocol.DataStoreProtocol.HandlePacket(packet)
+				protocol.datastoreProtocol.HandlePacket(packet)
 			}
 		}
 	})
 }
 
 // HandlePacket sends the packet to the correct RMC method handler
-func (protocol *DataStoreSuperMarioMakerProtocol) HandlePacket(packet nex.PacketInterface) {
+func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 	request := packet.RMCRequest()
 
 	switch request.MethodID() {
@@ -178,10 +181,10 @@ func (protocol *DataStoreSuperMarioMakerProtocol) HandlePacket(packet nex.Packet
 	}
 }
 
-// NewDataStoreSuperMarioMakerProtocol returns a new DataStoreSuperMarioMakerProtocol
-func NewDataStoreSuperMarioMakerProtocol(server *nex.Server) *DataStoreSuperMarioMakerProtocol {
-	protocol := &DataStoreSuperMarioMakerProtocol{Server: server}
-	protocol.DataStoreProtocol.Server = server
+// NewProtocol returns a new DataStore (SMM) protocol
+func NewProtocol(server *nex.Server) *Protocol {
+	protocol := &Protocol{Server: server}
+	protocol.datastoreProtocol.Server = server
 
 	protocol.Setup()
 

@@ -1,5 +1,5 @@
-// Package matchmake_extension implements the Matchmake Extension NEX protocol
-package matchmake_extension
+// Package protocol implements the Matchmake Extension protocol
+package protocol
 
 import (
 	"fmt"
@@ -9,11 +9,11 @@ import (
 )
 
 // RemoveFromBlockList sets the RemoveFromBlockList handler function
-func (protocol *MatchmakeExtensionProtocol) RemoveFromBlockList(handler func(err error, client *nex.Client, callID uint32, lstPrincipalID []uint32)) {
+func (protocol *Protocol) RemoveFromBlockList(handler func(err error, client *nex.Client, callID uint32, lstPrincipalID []uint32)) {
 	protocol.removeFromBlockListHandler = handler
 }
 
-func (protocol *MatchmakeExtensionProtocol) handleRemoveFromBlockList(packet nex.PacketInterface) {
+func (protocol *Protocol) handleRemoveFromBlockList(packet nex.PacketInterface) {
 	if protocol.removeFromBlockListHandler == nil {
 		globals.Logger.Warning("MatchmakeExtension::RemoveFromBlockList not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

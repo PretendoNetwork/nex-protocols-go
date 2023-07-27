@@ -1,5 +1,5 @@
-// Package ranking implements the Ranking NEX protocol
-package ranking
+// Package protocol implements the Ranking protocol
+package protocol
 
 import (
 	"fmt"
@@ -10,12 +10,12 @@ import (
 )
 
 // UploadScore sets the UploadScore handler function
-func (protocol *RankingProtocol) UploadScore(handler func(err error, client *nex.Client, callID uint32, scoreData *ranking_types.RankingScoreData, uniqueID uint64)) {
-	protocol.UploadScoreHandler = handler
+func (protocol *Protocol) UploadScore(handler func(err error, client *nex.Client, callID uint32, scoreData *ranking_types.RankingScoreData, uniqueID uint64)) {
+	protocol.uploadScoreHandler = handler
 }
 
-func (protocol *RankingProtocol) handleUploadScore(packet nex.PacketInterface) {
-	if protocol.UploadScoreHandler == nil {
+func (protocol *Protocol) handleUploadScore(packet nex.PacketInterface) {
+	if protocol.uploadScoreHandler == nil {
 		globals.Logger.Warning("Ranking::UploadScore not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -31,15 +31,15 @@ func (protocol *RankingProtocol) handleUploadScore(packet nex.PacketInterface) {
 
 	scoreData, err := parametersStream.ReadStructure(ranking_types.NewRankingScoreData())
 	if err != nil {
-		go protocol.UploadScoreHandler(fmt.Errorf("Failed to read scoreData from parameters. %s", err.Error()), client, callID, nil, 0)
+		go protocol.uploadScoreHandler(fmt.Errorf("Failed to read scoreData from parameters. %s", err.Error()), client, callID, nil, 0)
 		return
 	}
 
 	uniqueID, err := parametersStream.ReadUInt64LE()
 	if err != nil {
-		go protocol.UploadScoreHandler(fmt.Errorf("Failed to read uniqueID from parameters. %s", err.Error()), client, callID, nil, 0)
+		go protocol.uploadScoreHandler(fmt.Errorf("Failed to read uniqueID from parameters. %s", err.Error()), client, callID, nil, 0)
 		return
 	}
 
-	go protocol.UploadScoreHandler(nil, client, callID, scoreData.(*ranking_types.RankingScoreData), uniqueID)
+	go protocol.uploadScoreHandler(nil, client, callID, scoreData.(*ranking_types.RankingScoreData), uniqueID)
 }

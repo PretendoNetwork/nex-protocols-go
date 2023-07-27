@@ -1,5 +1,5 @@
-// Package datastore_types implements all the types used by the DataStore protocol
-package datastore_types
+// Package types implements all the types used by the DataStore protocol
+package types
 
 import (
 	"bytes"
@@ -123,11 +123,7 @@ func (dataStoreReqPostInfoV1 *DataStoreReqPostInfoV1) Equals(structure nex.Struc
 		}
 	}
 
-	if !bytes.Equal(dataStoreReqPostInfoV1.RootCACert, other.RootCACert) {
-		return false
-	}
-
-	return true
+	return bytes.Equal(dataStoreReqPostInfoV1.RootCACert, other.RootCACert)
 }
 
 // String returns a string representation of the struct

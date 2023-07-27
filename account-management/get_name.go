@@ -1,5 +1,5 @@
-// Package account_management implements the Account Management NEX protocol
-package account_management
+// Package protocol implements the Account Management protocol
+package protocol
 
 import (
 	"fmt"
@@ -9,11 +9,11 @@ import (
 )
 
 // GetName sets the GetName handler function
-func (protocol *AccountManagementProtocol) GetName(handler func(err error, client *nex.Client, callID uint32, idPrincipal uint32)) {
+func (protocol *Protocol) GetName(handler func(err error, client *nex.Client, callID uint32, idPrincipal uint32)) {
 	protocol.getNameHandler = handler
 }
 
-func (protocol *AccountManagementProtocol) handleGetName(packet nex.PacketInterface) {
+func (protocol *Protocol) handleGetName(packet nex.PacketInterface) {
 	if protocol.getNameHandler == nil {
 		globals.Logger.Warning("AccountManagement::GetName not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

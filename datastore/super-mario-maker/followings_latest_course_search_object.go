@@ -1,5 +1,5 @@
-// Package datastore_super_mario_maker implements the Super Mario Maker DataStore NEX protocol
-package datastore_super_mario_maker
+// Package protocol implements the Super Mario Maker DataStore protocol
+package protocol
 
 import (
 	"fmt"
@@ -10,12 +10,12 @@ import (
 )
 
 // FollowingsLatestCourseSearchObject sets the FollowingsLatestCourseSearchObject handler function
-func (protocol *DataStoreSuperMarioMakerProtocol) FollowingsLatestCourseSearchObject(handler func(err error, client *nex.Client, callID uint32, dataStoreSearchParam *datastore_types.DataStoreSearchParam, extraData []string)) {
-	protocol.FollowingsLatestCourseSearchObjectHandler = handler
+func (protocol *Protocol) FollowingsLatestCourseSearchObject(handler func(err error, client *nex.Client, callID uint32, dataStoreSearchParam *datastore_types.DataStoreSearchParam, extraData []string)) {
+	protocol.followingsLatestCourseSearchObjectHandler = handler
 }
 
-func (protocol *DataStoreSuperMarioMakerProtocol) handleFollowingsLatestCourseSearchObject(packet nex.PacketInterface) {
-	if protocol.FollowingsLatestCourseSearchObjectHandler == nil {
+func (protocol *Protocol) handleFollowingsLatestCourseSearchObject(packet nex.PacketInterface) {
+	if protocol.followingsLatestCourseSearchObjectHandler == nil {
 		globals.Logger.Warning("DataStoreSMM::FollowingsLatestCourseSearchObject not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -31,15 +31,15 @@ func (protocol *DataStoreSuperMarioMakerProtocol) handleFollowingsLatestCourseSe
 
 	param, err := parametersStream.ReadStructure(datastore_types.NewDataStoreSearchParam())
 	if err != nil {
-		go protocol.FollowingsLatestCourseSearchObjectHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil, nil)
+		go protocol.followingsLatestCourseSearchObjectHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil, nil)
 		return
 	}
 
 	extraData, err := parametersStream.ReadListString()
 	if err != nil {
-		go protocol.FollowingsLatestCourseSearchObjectHandler(fmt.Errorf("Failed to read extraData from parameters. %s", err.Error()), client, callID, nil, nil)
+		go protocol.followingsLatestCourseSearchObjectHandler(fmt.Errorf("Failed to read extraData from parameters. %s", err.Error()), client, callID, nil, nil)
 		return
 	}
 
-	go protocol.FollowingsLatestCourseSearchObjectHandler(nil, client, callID, param.(*datastore_types.DataStoreSearchParam), extraData)
+	go protocol.followingsLatestCourseSearchObjectHandler(nil, client, callID, param.(*datastore_types.DataStoreSearchParam), extraData)
 }

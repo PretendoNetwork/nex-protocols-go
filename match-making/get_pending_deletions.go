@@ -1,5 +1,5 @@
-// Package match_making implements the Match Making NEX protocol
-package match_making
+// Package protocol implements the Match Making protocol
+package protocol
 
 import (
 	"fmt"
@@ -9,11 +9,11 @@ import (
 )
 
 // GetPendingDeletions sets the GetPendingDeletions handler function
-func (protocol *MatchMakingProtocol) GetPendingDeletions(handler func(err error, client *nex.Client, callID uint32, uiReason uint32, resultRange *nex.ResultRange)) {
+func (protocol *Protocol) GetPendingDeletions(handler func(err error, client *nex.Client, callID uint32, uiReason uint32, resultRange *nex.ResultRange)) {
 	protocol.getPendingDeletionsHandler = handler
 }
 
-func (protocol *MatchMakingProtocol) handleGetPendingDeletions(packet nex.PacketInterface) {
+func (protocol *Protocol) handleGetPendingDeletions(packet nex.PacketInterface) {
 	if protocol.getPendingDeletionsHandler == nil {
 		globals.Logger.Warning("MatchMaking::GetPendingDeletions not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

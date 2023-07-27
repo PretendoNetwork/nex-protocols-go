@@ -1,5 +1,5 @@
-// Package messaging implements the Messaging protocol
-package messaging
+// Package protocol implements the Messaging protocol
+package protocol
 
 import (
 	"fmt"
@@ -10,11 +10,11 @@ import (
 )
 
 // RetrieveAllMessagesWithinRange sets the RetrieveAllMessagesWithinRange handler function
-func (protocol *MessagingProtocol) RetrieveAllMessagesWithinRange(handler func(err error, client *nex.Client, callID uint32, recipient *messaging_types.MessageRecipient, resultRange *nex.ResultRange)) {
+func (protocol *Protocol) RetrieveAllMessagesWithinRange(handler func(err error, client *nex.Client, callID uint32, recipient *messaging_types.MessageRecipient, resultRange *nex.ResultRange)) {
 	protocol.retrieveAllMessagesWithinRangeHandler = handler
 }
 
-func (protocol *MessagingProtocol) handleRetrieveAllMessagesWithinRange(packet nex.PacketInterface) {
+func (protocol *Protocol) handleRetrieveAllMessagesWithinRange(packet nex.PacketInterface) {
 	if protocol.retrieveAllMessagesWithinRangeHandler == nil {
 		globals.Logger.Warning("Messaging::RetrieveAllMessagesWithinRange not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

@@ -1,5 +1,5 @@
-// Package storage_manager implements the StorageManager NEX protocol
-package storage_manager
+// Package protocol implements the StorageManager protocol
+package protocol
 
 import (
 	"fmt"
@@ -9,11 +9,11 @@ import (
 )
 
 // ActivateWithCardID sets the ActivateWithCardID handler function
-func (protocol *StorageManagerProtocol) ActivateWithCardID(handler func(err error, client *nex.Client, callID uint32, unknown uint8, cardID uint64)) {
+func (protocol *Protocol) ActivateWithCardID(handler func(err error, client *nex.Client, callID uint32, unknown uint8, cardID uint64)) {
 	protocol.activateWithCardIDHandler = handler
 }
 
-func (protocol *StorageManagerProtocol) handleActivateWithCardID(packet nex.PacketInterface) {
+func (protocol *Protocol) handleActivateWithCardID(packet nex.PacketInterface) {
 	if protocol.activateWithCardIDHandler == nil {
 		globals.Logger.Warning("StorageManager::ActivateWithCardID not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

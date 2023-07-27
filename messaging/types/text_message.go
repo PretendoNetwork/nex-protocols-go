@@ -1,5 +1,5 @@
-// Package messaging_types implements all the types used by the Message Delivery protocol
-package messaging_types
+// Package types implements all the types used by the Message Delivery protocol
+package types
 
 import (
 	"fmt"

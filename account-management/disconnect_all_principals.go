@@ -1,5 +1,5 @@
-// Package account_management implements the Account Management NEX protocol
-package account_management
+// Package protocol implements the Account Management protocol
+package protocol
 
 import (
 	nex "github.com/PretendoNetwork/nex-go"
@@ -7,11 +7,11 @@ import (
 )
 
 // DisconnectAllPrincipals sets the DisconnectAllPrincipals handler function
-func (protocol *AccountManagementProtocol) DisconnectAllPrincipals(handler func(err error, client *nex.Client, callID uint32)) {
+func (protocol *Protocol) DisconnectAllPrincipals(handler func(err error, client *nex.Client, callID uint32)) {
 	protocol.disconnectAllPrincipalsHandler = handler
 }
 
-func (protocol *AccountManagementProtocol) handleDisconnectAllPrincipals(packet nex.PacketInterface) {
+func (protocol *Protocol) handleDisconnectAllPrincipals(packet nex.PacketInterface) {
 	if protocol.disconnectAllPrincipalsHandler == nil {
 		globals.Logger.Warning("AccountManagement::DisconnectAllPrincipals not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

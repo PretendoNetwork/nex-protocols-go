@@ -1,5 +1,5 @@
-// Package matchmake_extension_pokemon_gen6 implements the Pokemon GEN 6 Matchmake Extension NEX protocol
-package matchmake_extension_pokemon_gen6
+// Package protocol implements the Pokemon GEN 6 Matchmake Extension protocol
+package protocol
 
 import (
 	"fmt"
@@ -22,15 +22,18 @@ var patchedMethods = []uint32{
 	MethodClearMyPreviouslyMatchedUserCache,
 }
 
-// MatchmakeExtensionPokemonGen6Protocol handles the Matchmake Extension (Pokemon GEN 6) NEX protocol. Embeds MatchmakeExtensionProtocol
-type MatchmakeExtensionPokemonGen6Protocol struct {
+type matchmakeExtensionProtocol = matchmake_extension.Protocol
+
+// Protocol stores all the RMC method handlers for the Matchmake Extension (Pokemon GEN 6) protocol and listens for requests
+// Embeds the Matchmake Extension protocol
+type Protocol struct {
 	Server *nex.Server
-	matchmake_extension.MatchmakeExtensionProtocol
+	matchmakeExtensionProtocol
 	clearMyPreviouslyMatchedUserCacheHandler func(err error, client *nex.Client, callID uint32)
 }
 
 // Setup initializes the protocol
-func (protocol *MatchmakeExtensionPokemonGen6Protocol) Setup() {
+func (protocol *Protocol) Setup() {
 	protocol.Server.On("Data", func(packet nex.PacketInterface) {
 		request := packet.RMCRequest()
 
@@ -38,14 +41,14 @@ func (protocol *MatchmakeExtensionPokemonGen6Protocol) Setup() {
 			if slices.Contains(patchedMethods, request.MethodID()) {
 				protocol.HandlePacket(packet)
 			} else {
-				protocol.MatchmakeExtensionProtocol.HandlePacket(packet)
+				protocol.matchmakeExtensionProtocol.HandlePacket(packet)
 			}
 		}
 	})
 }
 
 // HandlePacket sends the packet to the correct RMC method handler
-func (protocol *MatchmakeExtensionPokemonGen6Protocol) HandlePacket(packet nex.PacketInterface) {
+func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 	request := packet.RMCRequest()
 
 	switch request.MethodID() {
@@ -57,10 +60,10 @@ func (protocol *MatchmakeExtensionPokemonGen6Protocol) HandlePacket(packet nex.P
 	}
 }
 
-// NewMatchmakeExtensionPokemonGen6Protocol returns a new MatchmakeExtensionPokemonGen6Protocol
-func NewMatchmakeExtensionPokemonGen6Protocol(server *nex.Server) *MatchmakeExtensionPokemonGen6Protocol {
-	protocol := &MatchmakeExtensionPokemonGen6Protocol{Server: server}
-	protocol.MatchmakeExtensionProtocol.Server = server
+// NewProtocol returns a new Matchmake Extension (Pokemon GEN 6) protocol
+func NewProtocol(server *nex.Server) *Protocol {
+	protocol := &Protocol{Server: server}
+	protocol.matchmakeExtensionProtocol.Server = server
 
 	protocol.Setup()
 

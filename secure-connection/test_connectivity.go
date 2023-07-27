@@ -1,5 +1,5 @@
-// Package secure_connection implements the Secure Connection NEX protocol
-package secure_connection
+// Package protocol implements the Secure Connection protocol
+package protocol
 
 import (
 	nex "github.com/PretendoNetwork/nex-go"
@@ -7,12 +7,12 @@ import (
 )
 
 // TestConnectivity sets the TestConnectivity handler function
-func (protocol *SecureConnectionProtocol) TestConnectivity(handler func(err error, client *nex.Client, callID uint32)) {
-	protocol.TestConnectivityHandler = handler
+func (protocol *Protocol) TestConnectivity(handler func(err error, client *nex.Client, callID uint32)) {
+	protocol.testConnectivityHandler = handler
 }
 
-func (protocol *SecureConnectionProtocol) handleTestConnectivity(packet nex.PacketInterface) {
-	if protocol.TestConnectivityHandler == nil {
+func (protocol *Protocol) handleTestConnectivity(packet nex.PacketInterface) {
+	if protocol.testConnectivityHandler == nil {
 		globals.Logger.Warning("SecureConnection::TestConnectivity not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -23,5 +23,5 @@ func (protocol *SecureConnectionProtocol) handleTestConnectivity(packet nex.Pack
 
 	callID := request.CallID()
 
-	go protocol.TestConnectivityHandler(nil, client, callID)
+	go protocol.testConnectivityHandler(nil, client, callID)
 }

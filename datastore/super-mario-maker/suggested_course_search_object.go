@@ -1,5 +1,5 @@
-// Package datastore_super_mario_maker implements the Super Mario Maker DataStore NEX protocol
-package datastore_super_mario_maker
+// Package protocol implements the Super Mario Maker DataStore protocol
+package protocol
 
 import (
 	"fmt"
@@ -10,12 +10,12 @@ import (
 )
 
 // SuggestedCourseSearchObject sets the SuggestedCourseSearchObject handler function
-func (protocol *DataStoreSuperMarioMakerProtocol) SuggestedCourseSearchObject(handler func(err error, client *nex.Client, callID uint32, param *datastore_types.DataStoreSearchParam, extraData []string)) {
-	protocol.SuggestedCourseSearchObjectHandler = handler
+func (protocol *Protocol) SuggestedCourseSearchObject(handler func(err error, client *nex.Client, callID uint32, param *datastore_types.DataStoreSearchParam, extraData []string)) {
+	protocol.suggestedCourseSearchObjectHandler = handler
 }
 
-func (protocol *DataStoreSuperMarioMakerProtocol) handleSuggestedCourseSearchObject(packet nex.PacketInterface) {
-	if protocol.SuggestedCourseSearchObjectHandler == nil {
+func (protocol *Protocol) handleSuggestedCourseSearchObject(packet nex.PacketInterface) {
+	if protocol.suggestedCourseSearchObjectHandler == nil {
 		globals.Logger.Warning("DataStoreSMM::SuggestedCourseSearchObject not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -31,15 +31,15 @@ func (protocol *DataStoreSuperMarioMakerProtocol) handleSuggestedCourseSearchObj
 
 	param, err := parametersStream.ReadStructure(datastore_types.NewDataStoreSearchParam())
 	if err != nil {
-		go protocol.SuggestedCourseSearchObjectHandler(err, client, callID, nil, []string{})
+		go protocol.suggestedCourseSearchObjectHandler(err, client, callID, nil, []string{})
 		return
 	}
 
 	extraData, err := parametersStream.ReadListString()
 	if err != nil {
-		go protocol.SuggestedCourseSearchObjectHandler(fmt.Errorf("Failed to read extraData from parameters. %s", err.Error()), client, callID, nil, nil)
+		go protocol.suggestedCourseSearchObjectHandler(fmt.Errorf("Failed to read extraData from parameters. %s", err.Error()), client, callID, nil, nil)
 		return
 	}
 
-	go protocol.SuggestedCourseSearchObjectHandler(nil, client, callID, param.(*datastore_types.DataStoreSearchParam), extraData)
+	go protocol.suggestedCourseSearchObjectHandler(nil, client, callID, param.(*datastore_types.DataStoreSearchParam), extraData)
 }

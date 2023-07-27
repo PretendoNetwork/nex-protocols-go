@@ -1,5 +1,5 @@
-// Package matchmake_referee implements the Matchmake Referee NEX protocol
-package matchmake_referee
+// Package protocol implements the Matchmake Referee protocol
+package protocol
 
 import (
 	"fmt"
@@ -10,11 +10,11 @@ import (
 )
 
 // CreateStats sets the CreateStats handler function
-func (protocol *MatchmakeRefereeProtocol) CreateStats(handler func(err error, client *nex.Client, callID uint32, param *matchmake_referee_types.MatchmakeRefereeStatsInitParam)) {
+func (protocol *Protocol) CreateStats(handler func(err error, client *nex.Client, callID uint32, param *matchmake_referee_types.MatchmakeRefereeStatsInitParam)) {
 	protocol.createStatsHandler = handler
 }
 
-func (protocol *MatchmakeRefereeProtocol) handleCreateStats(packet nex.PacketInterface) {
+func (protocol *Protocol) handleCreateStats(packet nex.PacketInterface) {
 	if protocol.createStatsHandler == nil {
 		globals.Logger.Warning("MatchmakeReferee::CreateStats not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

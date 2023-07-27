@@ -1,5 +1,5 @@
-// Package persistent_store implements the NAT Traversal NEX protocol
-package persistent_store
+// Package protocol implements the NAT Traversal protocol
+package protocol
 
 import (
 	"fmt"
@@ -9,11 +9,11 @@ import (
 )
 
 // FindItemsBySQLQuery sets the FindItemsBySQLQuery handler function
-func (protocol *PersistentStoreProtocol) FindItemsBySQLQuery(handler func(err error, client *nex.Client, callID uint32, uiGroup uint32, strTag string, strQuery string)) {
+func (protocol *Protocol) FindItemsBySQLQuery(handler func(err error, client *nex.Client, callID uint32, uiGroup uint32, strTag string, strQuery string)) {
 	protocol.findItemsBySQLQueryHandler = handler
 }
 
-func (protocol *PersistentStoreProtocol) handleFindItemsBySQLQuery(packet nex.PacketInterface) {
+func (protocol *Protocol) handleFindItemsBySQLQuery(packet nex.PacketInterface) {
 	if protocol.findItemsBySQLQueryHandler == nil {
 		globals.Logger.Warning("PersistentStore::FindItemsBySQLQuery not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

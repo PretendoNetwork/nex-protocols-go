@@ -1,18 +1,18 @@
-// Package datastore_super_smash_bros_4 implements the Super Smash Bros. 4 DataStore NEX protocol
-package datastore_super_smash_bros_4
+// Package protocol implements the Super Smash Bros. 4 DataStore protocol
+package protocol
 
 import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
-	"github.com/PretendoNetwork/nex-protocols-go/datastore"
+	datastore "github.com/PretendoNetwork/nex-protocols-go/datastore"
 	datastore_super_smash_bros_4_types "github.com/PretendoNetwork/nex-protocols-go/datastore/super-smash-bros-4/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 	"golang.org/x/exp/slices"
 )
 
 const (
-	// ProtocolID is the protocol ID for the DataStore (Smash4) protocol. ID is the same as the DataStore protocol
+	// ProtocolID is the protocol ID for the DataStore (Super Smash Bros 4) protocol. ID is the same as the DataStore protocol
 	ProtocolID = 0x73
 
 	// MethodPostProfile is the method ID for the method PostProfile
@@ -95,34 +95,36 @@ var patchedMethods = []uint32{
 	MethodReportSharedData,
 }
 
-// DataStoreSuperSmashBros4Protocol handles the DataStore (Smash4) NEX protocol. Embeds DataStoreProtocol
-type DataStoreSuperSmashBros4Protocol struct {
-	Server *nex.Server
-	datastore.DataStoreProtocol
+type datastoreProtocol = datastore.Protocol
 
-	PostProfileHandler              func(err error, client *nex.Client, callID uint32, param *datastore_super_smash_bros_4_types.DataStorePostProfileParam)
-	GetProfilesHandler              func(err error, client *nex.Client, callID uint32, pidList []uint32)
-	SendPlayReportHandler           func(err error, client *nex.Client, callID uint32, playReport []int32)
-	GetWorldPlayReportHandler       func(err error, client *nex.Client, callID uint32)
-	GetReplayMetaHandler            func(err error, client *nex.Client, callID uint32, param *datastore_super_smash_bros_4_types.DataStoreGetReplayMetaParam)
-	PrepareGetReplayHandler         func(err error, client *nex.Client, callID uint32, param *datastore_super_smash_bros_4_types.DataStorePrepareGetReplayParam)
-	PreparePostReplayHandler        func(err error, client *nex.Client, callID uint32, param *datastore_super_smash_bros_4_types.DataStorePreparePostReplayParam)
-	CompletePostReplayHandler       func(err error, client *nex.Client, callID uint32, param *datastore_super_smash_bros_4_types.DataStoreCompletePostReplayParam)
-	CheckPostReplayHandler          func(err error, client *nex.Client, callID uint32, param *datastore_super_smash_bros_4_types.DataStorePreparePostReplayParam)
-	GetNextReplayHandler            func(err error, client *nex.Client, callID uint32)
-	PreparePostSharedDataHandler    func(err error, client *nex.Client, callID uint32, param *datastore_super_smash_bros_4_types.DataStorePreparePostSharedDataParam)
-	CompletePostSharedDataHandler   func(err error, client *nex.Client, callID uint32, param *datastore_super_smash_bros_4_types.DataStoreCompletePostSharedDataParam)
-	SearchSharedDataHandler         func(err error, client *nex.Client, callID uint32, param *datastore_super_smash_bros_4_types.DataStoreSearchSharedDataParam)
-	GetApplicationConfigHandler     func(err error, client *nex.Client, callID uint32, applicationID uint32)
-	SearchReplayHandler             func(err error, client *nex.Client, callID uint32, param *datastore_super_smash_bros_4_types.DataStoreSearchReplayParam)
-	PostFightingPowerScoreHandler   func(err error, client *nex.Client, callID uint32, params []*datastore_super_smash_bros_4_types.DataStorePostFightingPowerScoreParam)
-	GetFightingPowerChartHandler    func(err error, client *nex.Client, callID uint32, mode uint8)
-	GetFightingPowerChartAllHandler func(err error, client *nex.Client, callID uint32)
-	ReportSharedDataHandler         func(err error, client *nex.Client, callID uint32, dataID uint64)
+// Protocol stores all the RMC method handlers for the DataStore (Super Smash Bros 4) protocol and listens for requests
+// Embeds the DataStore protocol
+type Protocol struct {
+	Server *nex.Server
+	datastoreProtocol
+	postProfileHandler              func(err error, client *nex.Client, callID uint32, param *datastore_super_smash_bros_4_types.DataStorePostProfileParam)
+	getProfilesHandler              func(err error, client *nex.Client, callID uint32, pidList []uint32)
+	sendPlayReportHandler           func(err error, client *nex.Client, callID uint32, playReport []int32)
+	getWorldPlayReportHandler       func(err error, client *nex.Client, callID uint32)
+	getReplayMetaHandler            func(err error, client *nex.Client, callID uint32, param *datastore_super_smash_bros_4_types.DataStoreGetReplayMetaParam)
+	prepareGetReplayHandler         func(err error, client *nex.Client, callID uint32, param *datastore_super_smash_bros_4_types.DataStorePrepareGetReplayParam)
+	preparePostReplayHandler        func(err error, client *nex.Client, callID uint32, param *datastore_super_smash_bros_4_types.DataStorePreparePostReplayParam)
+	completePostReplayHandler       func(err error, client *nex.Client, callID uint32, param *datastore_super_smash_bros_4_types.DataStoreCompletePostReplayParam)
+	checkPostReplayHandler          func(err error, client *nex.Client, callID uint32, param *datastore_super_smash_bros_4_types.DataStorePreparePostReplayParam)
+	getNextReplayHandler            func(err error, client *nex.Client, callID uint32)
+	preparePostSharedDataHandler    func(err error, client *nex.Client, callID uint32, param *datastore_super_smash_bros_4_types.DataStorePreparePostSharedDataParam)
+	completePostSharedDataHandler   func(err error, client *nex.Client, callID uint32, param *datastore_super_smash_bros_4_types.DataStoreCompletePostSharedDataParam)
+	searchSharedDataHandler         func(err error, client *nex.Client, callID uint32, param *datastore_super_smash_bros_4_types.DataStoreSearchSharedDataParam)
+	getApplicationConfigHandler     func(err error, client *nex.Client, callID uint32, applicationID uint32)
+	searchReplayHandler             func(err error, client *nex.Client, callID uint32, param *datastore_super_smash_bros_4_types.DataStoreSearchReplayParam)
+	postFightingPowerScoreHandler   func(err error, client *nex.Client, callID uint32, params []*datastore_super_smash_bros_4_types.DataStorePostFightingPowerScoreParam)
+	getFightingPowerChartHandler    func(err error, client *nex.Client, callID uint32, mode uint8)
+	getFightingPowerChartAllHandler func(err error, client *nex.Client, callID uint32)
+	reportSharedDataHandler         func(err error, client *nex.Client, callID uint32, dataID uint64)
 }
 
 // Setup initializes the protocol
-func (protocol *DataStoreSuperSmashBros4Protocol) Setup() {
+func (protocol *Protocol) Setup() {
 	protocol.Server.On("Data", func(packet nex.PacketInterface) {
 		request := packet.RMCRequest()
 
@@ -130,14 +132,14 @@ func (protocol *DataStoreSuperSmashBros4Protocol) Setup() {
 			if slices.Contains(patchedMethods, request.MethodID()) {
 				protocol.HandlePacket(packet)
 			} else {
-				protocol.DataStoreProtocol.HandlePacket(packet)
+				protocol.datastoreProtocol.HandlePacket(packet)
 			}
 		}
 	})
 }
 
 // HandlePacket sends the packet to the correct RMC method handler
-func (protocol *DataStoreSuperSmashBros4Protocol) HandlePacket(packet nex.PacketInterface) {
+func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 	request := packet.RMCRequest()
 
 	switch request.MethodID() {
@@ -181,14 +183,14 @@ func (protocol *DataStoreSuperSmashBros4Protocol) HandlePacket(packet nex.Packet
 		go protocol.handleReportSharedData(packet)
 	default:
 		go globals.RespondNotImplemented(packet, ProtocolID)
-		fmt.Printf("Unsupported DataStoreSmash4 method ID: %#v\n", request.MethodID())
+		fmt.Printf("Unsupported DataStoreSuperSmashBros4 method ID: %#v\n", request.MethodID())
 	}
 }
 
-// NewDataStoreSuperSmashBros4Protocol returns a new DataStoreSuperSmashBros4Protocol
-func NewDataStoreSuperSmashBros4Protocol(server *nex.Server) *DataStoreSuperSmashBros4Protocol {
-	protocol := &DataStoreSuperSmashBros4Protocol{Server: server}
-	protocol.DataStoreProtocol.Server = server
+// NewProtocol returns a new DataStore (Super Smash Bros 4) protocol
+func NewProtocol(server *nex.Server) *Protocol {
+	protocol := &Protocol{Server: server}
+	protocol.datastoreProtocol.Server = server
 
 	protocol.Setup()
 

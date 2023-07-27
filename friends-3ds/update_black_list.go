@@ -1,5 +1,5 @@
-// Package friends_3ds implements the Friends 3DS NEX protocol
-package friends_3ds
+// Package protocol implements the Friends 3DS protocol
+package protocol
 
 import (
 	"fmt"
@@ -9,11 +9,11 @@ import (
 )
 
 // UpdateBlackList sets the UpdateBlackList handler function
-func (protocol *Friends3DSProtocol) UpdateBlackList(handler func(err error, client *nex.Client, callID uint32, unknown []uint32)) {
+func (protocol *Protocol) UpdateBlackList(handler func(err error, client *nex.Client, callID uint32, unknown []uint32)) {
 	protocol.updateBlackListHandler = handler
 }
 
-func (protocol *Friends3DSProtocol) handleUpdateBlackList(packet nex.PacketInterface) {
+func (protocol *Protocol) handleUpdateBlackList(packet nex.PacketInterface) {
 	if protocol.updateBlackListHandler == nil {
 		globals.Logger.Warning("Friends3DS::UpdateBlackList not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

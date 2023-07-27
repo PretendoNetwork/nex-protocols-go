@@ -1,5 +1,5 @@
-// Package match_making implements the Match Making NEX protocol
-package match_making
+// Package protocol implements the Match Making protocol
+package protocol
 
 import (
 	"fmt"
@@ -9,11 +9,11 @@ import (
 )
 
 // AddParticipants sets the AddParticipants handler function
-func (protocol *MatchMakingProtocol) AddParticipants(handler func(err error, client *nex.Client, callID uint32, idGathering uint32, lstPrincipals []uint32, strMessage string)) {
+func (protocol *Protocol) AddParticipants(handler func(err error, client *nex.Client, callID uint32, idGathering uint32, lstPrincipals []uint32, strMessage string)) {
 	protocol.addParticipantsHandler = handler
 }
 
-func (protocol *MatchMakingProtocol) handleAddParticipants(packet nex.PacketInterface) {
+func (protocol *Protocol) handleAddParticipants(packet nex.PacketInterface) {
 	if protocol.addParticipantsHandler == nil {
 		globals.Logger.Warning("MatchMaking::AddParticipants not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

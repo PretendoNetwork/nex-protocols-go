@@ -1,5 +1,5 @@
-// Package datastore_super_mario_maker implements the Super Mario Maker DataStore NEX protocol
-package datastore_super_mario_maker
+// Package protocol implements the Super Mario Maker DataStore protocol
+package protocol
 
 import (
 	"fmt"
@@ -9,12 +9,12 @@ import (
 )
 
 // GetApplicationConfigString sets the GetApplicationConfigString handler function
-func (protocol *DataStoreSuperMarioMakerProtocol) GetApplicationConfigString(handler func(err error, client *nex.Client, callID uint32, applicationID uint32)) {
-	protocol.GetApplicationConfigStringHandler = handler
+func (protocol *Protocol) GetApplicationConfigString(handler func(err error, client *nex.Client, callID uint32, applicationID uint32)) {
+	protocol.getApplicationConfigStringHandler = handler
 }
 
-func (protocol *DataStoreSuperMarioMakerProtocol) handleGetApplicationConfigString(packet nex.PacketInterface) {
-	if protocol.GetApplicationConfigStringHandler == nil {
+func (protocol *Protocol) handleGetApplicationConfigString(packet nex.PacketInterface) {
+	if protocol.getApplicationConfigStringHandler == nil {
 		globals.Logger.Warning("DataStoreSMM::GetApplicationConfigString not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -30,9 +30,9 @@ func (protocol *DataStoreSuperMarioMakerProtocol) handleGetApplicationConfigStri
 
 	applicationID, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		go protocol.GetApplicationConfigStringHandler(fmt.Errorf("Failed to read applicationID from parameters. %s", err.Error()), client, callID, 0)
+		go protocol.getApplicationConfigStringHandler(fmt.Errorf("Failed to read applicationID from parameters. %s", err.Error()), client, callID, 0)
 		return
 	}
 
-	go protocol.GetApplicationConfigStringHandler(nil, client, callID, applicationID)
+	go protocol.getApplicationConfigStringHandler(nil, client, callID, applicationID)
 }

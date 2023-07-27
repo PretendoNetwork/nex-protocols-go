@@ -1,5 +1,5 @@
-// Package friends implements the Friends QRV protocol
-package friends
+// Package protocol implements the Friends QRV protocol
+package protocol
 
 import (
 	"fmt"
@@ -9,11 +9,11 @@ import (
 )
 
 // ClearRelationship sets the ClearRelationship handler function
-func (protocol *FriendsProtocol) ClearRelationship(handler func(err error, client *nex.Client, callID uint32, uiPlayer uint32)) {
+func (protocol *Protocol) ClearRelationship(handler func(err error, client *nex.Client, callID uint32, uiPlayer uint32)) {
 	protocol.clearRelationshipHandler = handler
 }
 
-func (protocol *FriendsProtocol) handleClearRelationship(packet nex.PacketInterface) {
+func (protocol *Protocol) handleClearRelationship(packet nex.PacketInterface) {
 	if protocol.clearRelationshipHandler == nil {
 		globals.Logger.Warning("Friends::ClearRelationship not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

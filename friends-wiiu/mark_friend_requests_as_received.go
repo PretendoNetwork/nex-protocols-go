@@ -1,5 +1,5 @@
-// Package friends_wiiu implements the Friends WiiU NEX protocol
-package friends_wiiu
+// Package protocol implements the Friends WiiU protocol
+package protocol
 
 import (
 	"fmt"
@@ -9,12 +9,12 @@ import (
 )
 
 // MarkFriendRequestsAsReceived sets the MarkFriendRequestsAsReceived handler function
-func (protocol *FriendsWiiUProtocol) MarkFriendRequestsAsReceived(handler func(err error, client *nex.Client, callID uint32, ids []uint64)) {
-	protocol.MarkFriendRequestsAsReceivedHandler = handler
+func (protocol *Protocol) MarkFriendRequestsAsReceived(handler func(err error, client *nex.Client, callID uint32, ids []uint64)) {
+	protocol.markFriendRequestsAsReceivedHandler = handler
 }
 
-func (protocol *FriendsWiiUProtocol) handleMarkFriendRequestsAsReceived(packet nex.PacketInterface) {
-	if protocol.MarkFriendRequestsAsReceivedHandler == nil {
+func (protocol *Protocol) handleMarkFriendRequestsAsReceived(packet nex.PacketInterface) {
+	if protocol.markFriendRequestsAsReceivedHandler == nil {
 		globals.Logger.Warning("FriendsWiiU::MarkFriendRequestsAsReceived not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -30,9 +30,9 @@ func (protocol *FriendsWiiUProtocol) handleMarkFriendRequestsAsReceived(packet n
 
 	ids, err := parametersStream.ReadListUInt64LE()
 	if err != nil {
-		go protocol.GetRequestBlockSettingsHandler(fmt.Errorf("Failed to read ids from parameters. %s", err.Error()), client, callID, nil)
+		go protocol.getRequestBlockSettingsHandler(fmt.Errorf("Failed to read ids from parameters. %s", err.Error()), client, callID, nil)
 		return
 	}
 
-	go protocol.MarkFriendRequestsAsReceivedHandler(nil, client, callID, ids)
+	go protocol.markFriendRequestsAsReceivedHandler(nil, client, callID, ids)
 }

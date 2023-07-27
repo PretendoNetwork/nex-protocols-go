@@ -1,5 +1,5 @@
-// Package matchmake_extension implements the Matchmake Extension NEX protocol
-package matchmake_extension
+// Package protocol implements the Matchmake Extension protocol
+package protocol
 
 import (
 	"fmt"
@@ -9,11 +9,11 @@ import (
 )
 
 // WithdrawMatchmaking sets the WithdrawMatchmaking handler function
-func (protocol *MatchmakeExtensionProtocol) WithdrawMatchmaking(handler func(err error, client *nex.Client, callID uint32, requestID uint64)) {
+func (protocol *Protocol) WithdrawMatchmaking(handler func(err error, client *nex.Client, callID uint32, requestID uint64)) {
 	protocol.withdrawMatchmakingHandler = handler
 }
 
-func (protocol *MatchmakeExtensionProtocol) handleWithdrawMatchmaking(packet nex.PacketInterface) {
+func (protocol *Protocol) handleWithdrawMatchmaking(packet nex.PacketInterface) {
 	if protocol.withdrawMatchmakingHandler == nil {
 		globals.Logger.Warning("MatchmakeExtension::WithdrawMatchmaking not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

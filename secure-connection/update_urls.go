@@ -1,5 +1,5 @@
-// Package secure_connection implements the Secure Connection NEX protocol
-package secure_connection
+// Package protocol implements the Secure Connection protocol
+package protocol
 
 import (
 	"fmt"
@@ -9,12 +9,12 @@ import (
 )
 
 // UpdateURLs sets the UpdateURLs handler function
-func (protocol *SecureConnectionProtocol) UpdateURLs(handler func(err error, client *nex.Client, callID uint32, vecMyURLs []*nex.StationURL)) {
-	protocol.UpdateURLsHandler = handler
+func (protocol *Protocol) UpdateURLs(handler func(err error, client *nex.Client, callID uint32, vecMyURLs []*nex.StationURL)) {
+	protocol.updateURLsHandler = handler
 }
 
-func (protocol *SecureConnectionProtocol) handleUpdateURLs(packet nex.PacketInterface) {
-	if protocol.UpdateURLsHandler == nil {
+func (protocol *Protocol) handleUpdateURLs(packet nex.PacketInterface) {
+	if protocol.updateURLsHandler == nil {
 		globals.Logger.Warning("SecureConnection::UpdateURLs not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -30,9 +30,9 @@ func (protocol *SecureConnectionProtocol) handleUpdateURLs(packet nex.PacketInte
 
 	vecMyURLs, err := parametersStream.ReadListStationURL()
 	if err != nil {
-		go protocol.UpdateURLsHandler(fmt.Errorf("Failed to read vecMyURLs from parameters. %s", err.Error()), client, callID, nil)
+		go protocol.updateURLsHandler(fmt.Errorf("Failed to read vecMyURLs from parameters. %s", err.Error()), client, callID, nil)
 		return
 	}
 
-	go protocol.UpdateURLsHandler(nil, client, callID, vecMyURLs)
+	go protocol.updateURLsHandler(nil, client, callID, vecMyURLs)
 }

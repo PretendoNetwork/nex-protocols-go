@@ -1,5 +1,5 @@
-// Package matchmake_extension implements the Matchmake Extension NEX protocol
-package matchmake_extension
+// Package protocol implements the Matchmake Extension protocol
+package protocol
 
 import (
 	"fmt"
@@ -9,11 +9,11 @@ import (
 )
 
 // UpdateApplicationBuffer sets the UpdateApplicationBuffer handler function
-func (protocol *MatchmakeExtensionProtocol) UpdateApplicationBuffer(handler func(err error, client *nex.Client, callID uint32, gid uint32, applicationBuffer []byte)) {
+func (protocol *Protocol) UpdateApplicationBuffer(handler func(err error, client *nex.Client, callID uint32, gid uint32, applicationBuffer []byte)) {
 	protocol.updateApplicationBufferHandler = handler
 }
 
-func (protocol *MatchmakeExtensionProtocol) handleUpdateApplicationBuffer(packet nex.PacketInterface) {
+func (protocol *Protocol) handleUpdateApplicationBuffer(packet nex.PacketInterface) {
 	if protocol.updateApplicationBufferHandler == nil {
 		globals.Logger.Warning("MatchmakeExtension::UpdateApplicationBuffer not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

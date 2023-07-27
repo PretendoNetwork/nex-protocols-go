@@ -1,5 +1,5 @@
-// Package remote_log_device implements the Remote Log Device NEX protocol
-package remote_log_device
+// Package protocol implements the Remote Log Device protocol
+package protocol
 
 import (
 	"fmt"
@@ -9,12 +9,12 @@ import (
 )
 
 // Log sets the Log handler function
-func (protocol *RemoteLogDeviceProtocol) Log(handler func(err error, client *nex.Client, callID uint32, strLine string)) {
-	protocol.LogHandler = handler
+func (protocol *Protocol) Log(handler func(err error, client *nex.Client, callID uint32, strLine string)) {
+	protocol.logHandler = handler
 }
 
-func (protocol *RemoteLogDeviceProtocol) handleLog(packet nex.PacketInterface) {
-	if protocol.LogHandler == nil {
+func (protocol *Protocol) handleLog(packet nex.PacketInterface) {
+	if protocol.logHandler == nil {
 		globals.Logger.Warning("RemoteLogDevice::Log not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -30,8 +30,8 @@ func (protocol *RemoteLogDeviceProtocol) handleLog(packet nex.PacketInterface) {
 
 	strLine, err := parametersStream.ReadString()
 	if err != nil {
-		go protocol.LogHandler(fmt.Errorf("Failed to read strLine from parameters. %s", err.Error()), client, callID, "")
+		go protocol.logHandler(fmt.Errorf("Failed to read strLine from parameters. %s", err.Error()), client, callID, "")
 	}
 
-	go protocol.LogHandler(nil, client, callID, strLine)
+	go protocol.logHandler(nil, client, callID, strLine)
 }

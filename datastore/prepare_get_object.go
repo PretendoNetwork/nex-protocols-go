@@ -1,5 +1,5 @@
-// Package datastore implements the DataStore NEX protocol
-package datastore
+// Package protocol implements the DataStore protocol
+package protocol
 
 import (
 	"fmt"
@@ -10,12 +10,12 @@ import (
 )
 
 // PrepareGetObject sets the PrepareGetObject handler function
-func (protocol *DataStoreProtocol) PrepareGetObject(handler func(err error, client *nex.Client, callID uint32, dataStorePrepareGetParam *datastore_types.DataStorePrepareGetParam)) {
-	protocol.PrepareGetObjectHandler = handler
+func (protocol *Protocol) PrepareGetObject(handler func(err error, client *nex.Client, callID uint32, dataStorePrepareGetParam *datastore_types.DataStorePrepareGetParam)) {
+	protocol.prepareGetObjectHandler = handler
 }
 
-func (protocol *DataStoreProtocol) handlePrepareGetObject(packet nex.PacketInterface) {
-	if protocol.PrepareGetObjectHandler == nil {
+func (protocol *Protocol) handlePrepareGetObject(packet nex.PacketInterface) {
+	if protocol.prepareGetObjectHandler == nil {
 		globals.Logger.Warning("DataStore::PrepareGetObject not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -31,9 +31,9 @@ func (protocol *DataStoreProtocol) handlePrepareGetObject(packet nex.PacketInter
 
 	dataStorePrepareGetParam, err := parametersStream.ReadStructure(datastore_types.NewDataStorePrepareGetParam())
 	if err != nil {
-		go protocol.PrepareGetObjectHandler(fmt.Errorf("Failed to read dataStorePrepareGetParam from parameters. %s", err.Error()), client, callID, nil)
+		go protocol.prepareGetObjectHandler(fmt.Errorf("Failed to read dataStorePrepareGetParam from parameters. %s", err.Error()), client, callID, nil)
 		return
 	}
 
-	go protocol.PrepareGetObjectHandler(nil, client, callID, dataStorePrepareGetParam.(*datastore_types.DataStorePrepareGetParam))
+	go protocol.prepareGetObjectHandler(nil, client, callID, dataStorePrepareGetParam.(*datastore_types.DataStorePrepareGetParam))
 }

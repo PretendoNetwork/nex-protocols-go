@@ -1,5 +1,5 @@
-// Package aauser implements the AAUser NEX protocol
-package aauser
+// Package protocol implements the AAUser protocol
+package protocol
 
 import (
 	"fmt"
@@ -9,11 +9,11 @@ import (
 )
 
 // RegisterApplication sets the RegisterApplication handler function
-func (protocol *AAUserProtocol) RegisterApplication(handler func(err error, client *nex.Client, callID uint32, titleID uint64)) {
+func (protocol *Protocol) RegisterApplication(handler func(err error, client *nex.Client, callID uint32, titleID uint64)) {
 	protocol.registerApplicationHandler = handler
 }
 
-func (protocol *AAUserProtocol) handleRegisterApplication(packet nex.PacketInterface) {
+func (protocol *Protocol) handleRegisterApplication(packet nex.PacketInterface) {
 	if protocol.registerApplicationHandler == nil {
 		globals.Logger.Warning("AAUser::RegisterApplication not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

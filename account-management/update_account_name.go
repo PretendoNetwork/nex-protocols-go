@@ -1,5 +1,5 @@
-// Package account_management implements the Account Management NEX protocol
-package account_management
+// Package protocol implements the Account Management protocol
+package protocol
 
 import (
 	"fmt"
@@ -9,11 +9,11 @@ import (
 )
 
 // UpdateAccountName sets the UpdateAccountName handler function
-func (protocol *AccountManagementProtocol) UpdateAccountName(handler func(err error, client *nex.Client, callID uint32, strName string)) {
+func (protocol *Protocol) UpdateAccountName(handler func(err error, client *nex.Client, callID uint32, strName string)) {
 	protocol.updateAccountNameHandler = handler
 }
 
-func (protocol *AccountManagementProtocol) handleUpdateAccountName(packet nex.PacketInterface) {
+func (protocol *Protocol) handleUpdateAccountName(packet nex.PacketInterface) {
 	if protocol.updateAccountNameHandler == nil {
 		globals.Logger.Warning("AccountManagement::UpdateAccountName not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

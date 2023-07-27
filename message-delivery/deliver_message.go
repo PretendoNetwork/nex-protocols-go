@@ -1,5 +1,5 @@
-// Package message_delivery implements the Message Deliver NEX protocol
-package message_delivery
+// Package protocol implements the Message Deliver protocol
+package protocol
 
 import (
 	"fmt"
@@ -9,12 +9,12 @@ import (
 )
 
 // DeliverMessage sets the DeliverMessage handler function
-func (protocol *MessageDeliveryProtocol) DeliverMessage(handler func(err error, client *nex.Client, callID uint32, oUserMessage *nex.DataHolder)) {
-	protocol.DeliverMessageHandler = handler
+func (protocol *Protocol) DeliverMessage(handler func(err error, client *nex.Client, callID uint32, oUserMessage *nex.DataHolder)) {
+	protocol.deliverMessageHandler = handler
 }
 
-func (protocol *MessageDeliveryProtocol) handleDeliverMessage(packet nex.PacketInterface) {
-	if protocol.DeliverMessageHandler == nil {
+func (protocol *Protocol) handleDeliverMessage(packet nex.PacketInterface) {
+	if protocol.deliverMessageHandler == nil {
 		globals.Logger.Warning("MessageDelivery::DeliverMessage not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -30,9 +30,9 @@ func (protocol *MessageDeliveryProtocol) handleDeliverMessage(packet nex.PacketI
 
 	oUserMessage, err := parametersStream.ReadDataHolder()
 	if err != nil {
-		go protocol.DeliverMessageHandler(fmt.Errorf("Failed to read oUserMessage from parameters. %s", err.Error()), client, callID, nil)
+		go protocol.deliverMessageHandler(fmt.Errorf("Failed to read oUserMessage from parameters. %s", err.Error()), client, callID, nil)
 		return
 	}
 
-	go protocol.DeliverMessageHandler(nil, client, callID, oUserMessage)
+	go protocol.deliverMessageHandler(nil, client, callID, oUserMessage)
 }

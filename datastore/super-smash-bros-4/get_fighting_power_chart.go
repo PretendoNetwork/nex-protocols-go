@@ -1,5 +1,5 @@
-// Package datastore_super_smash_bros_4 implements the Super Smash Bros. 4 DataStore NEX protocol
-package datastore_super_smash_bros_4
+// Package protocol implements the Super Smash Bros. 4 DataStore protocol
+package protocol
 
 import (
 	"fmt"
@@ -9,13 +9,13 @@ import (
 )
 
 // GetFightingPowerChart sets the GetFightingPowerChart handler function
-func (protocol *DataStoreSuperSmashBros4Protocol) GetFightingPowerChart(handler func(err error, client *nex.Client, callID uint32, mode uint8)) {
-	protocol.GetFightingPowerChartHandler = handler
+func (protocol *Protocol) GetFightingPowerChart(handler func(err error, client *nex.Client, callID uint32, mode uint8)) {
+	protocol.getFightingPowerChartHandler = handler
 }
 
-func (protocol *DataStoreSuperSmashBros4Protocol) handleGetFightingPowerChart(packet nex.PacketInterface) {
-	if protocol.GetFightingPowerChartHandler == nil {
-		globals.Logger.Warning("DataStoreSmash4::GetFightingPowerChart not implemented")
+func (protocol *Protocol) handleGetFightingPowerChart(packet nex.PacketInterface) {
+	if protocol.getFightingPowerChartHandler == nil {
+		globals.Logger.Warning("DataStoreSuperSmashBros4::GetFightingPowerChart not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
 	}
@@ -30,9 +30,9 @@ func (protocol *DataStoreSuperSmashBros4Protocol) handleGetFightingPowerChart(pa
 
 	mode, err := parametersStream.ReadUInt8()
 	if err != nil {
-		go protocol.GetFightingPowerChartHandler(fmt.Errorf("Failed to read mode from parameters. %s", err.Error()), client, callID, 0)
+		go protocol.getFightingPowerChartHandler(fmt.Errorf("Failed to read mode from parameters. %s", err.Error()), client, callID, 0)
 		return
 	}
 
-	go protocol.GetFightingPowerChartHandler(nil, client, callID, mode)
+	go protocol.getFightingPowerChartHandler(nil, client, callID, mode)
 }

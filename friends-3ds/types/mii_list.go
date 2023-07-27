@@ -1,5 +1,5 @@
-// Package friends_3ds_types implements all the types used by the Friends 3DS protocol
-package friends_3ds_types
+// Package types implements all the types used by the Friends 3DS protocol
+package types
 
 import (
 	"bytes"

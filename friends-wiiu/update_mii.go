@@ -1,5 +1,5 @@
-// Package friends_wiiu implements the Friends WiiU NEX protocol
-package friends_wiiu
+// Package protocol implements the Friends WiiU protocol
+package protocol
 
 import (
 	"fmt"
@@ -10,12 +10,12 @@ import (
 )
 
 // UpdateMii sets the UpdateMii handler function
-func (protocol *FriendsWiiUProtocol) UpdateMii(handler func(err error, client *nex.Client, callID uint32, mii *friends_wiiu_types.MiiV2)) {
-	protocol.UpdateMiiHandler = handler
+func (protocol *Protocol) UpdateMii(handler func(err error, client *nex.Client, callID uint32, mii *friends_wiiu_types.MiiV2)) {
+	protocol.updateMiiHandler = handler
 }
 
-func (protocol *FriendsWiiUProtocol) handleUpdateMii(packet nex.PacketInterface) {
-	if protocol.UpdateMiiHandler == nil {
+func (protocol *Protocol) handleUpdateMii(packet nex.PacketInterface) {
+	if protocol.updateMiiHandler == nil {
 		globals.Logger.Warning("FriendsWiiU::UpdateMii not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -31,9 +31,9 @@ func (protocol *FriendsWiiUProtocol) handleUpdateMii(packet nex.PacketInterface)
 
 	miiV2, err := parametersStream.ReadStructure(friends_wiiu_types.NewMiiV2())
 	if err != nil {
-		go protocol.UpdateMiiHandler(fmt.Errorf("Failed to read miiV2 from parameters. %s", err.Error()), client, callID, nil)
+		go protocol.updateMiiHandler(fmt.Errorf("Failed to read miiV2 from parameters. %s", err.Error()), client, callID, nil)
 		return
 	}
 
-	go protocol.UpdateMiiHandler(nil, client, callID, miiV2.(*friends_wiiu_types.MiiV2))
+	go protocol.updateMiiHandler(nil, client, callID, miiV2.(*friends_wiiu_types.MiiV2))
 }

@@ -1,5 +1,5 @@
-// Package match_making implements the Match Making NEX protocol
-package match_making
+// Package protocol implements the Match Making protocol
+package protocol
 
 import (
 	"fmt"
@@ -9,11 +9,11 @@ import (
 )
 
 // UnregisterGathering sets the UnregisterGathering handler function
-func (protocol *MatchMakingProtocol) UnregisterGathering(handler func(err error, client *nex.Client, callID uint32, idGathering uint32)) {
+func (protocol *Protocol) UnregisterGathering(handler func(err error, client *nex.Client, callID uint32, idGathering uint32)) {
 	protocol.unregisterGatheringHandler = handler
 }
 
-func (protocol *MatchMakingProtocol) handleUnregisterGathering(packet nex.PacketInterface) {
+func (protocol *Protocol) handleUnregisterGathering(packet nex.PacketInterface) {
 	if protocol.unregisterGatheringHandler == nil {
 		globals.Logger.Warning("MatchMaking::UnregisterGathering not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

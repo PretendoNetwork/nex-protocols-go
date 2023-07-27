@@ -1,5 +1,5 @@
-// Package friends_wiiu implements the Friends WiiU NEX protocol
-package friends_wiiu
+// Package protocol implements the Friends WiiU protocol
+package protocol
 
 import (
 	"fmt"
@@ -10,12 +10,12 @@ import (
 )
 
 // UpdatePresence sets the UpdatePresence handler function
-func (protocol *FriendsWiiUProtocol) UpdatePresence(handler func(err error, client *nex.Client, callID uint32, presence *friends_wiiu_types.NintendoPresenceV2)) {
-	protocol.UpdatePresenceHandler = handler
+func (protocol *Protocol) UpdatePresence(handler func(err error, client *nex.Client, callID uint32, presence *friends_wiiu_types.NintendoPresenceV2)) {
+	protocol.updatePresenceHandler = handler
 }
 
-func (protocol *FriendsWiiUProtocol) handleUpdatePresence(packet nex.PacketInterface) {
-	if protocol.UpdatePresenceHandler == nil {
+func (protocol *Protocol) handleUpdatePresence(packet nex.PacketInterface) {
+	if protocol.updatePresenceHandler == nil {
 		globals.Logger.Warning("FriendsWiiU::UpdatePresence not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -31,9 +31,9 @@ func (protocol *FriendsWiiUProtocol) handleUpdatePresence(packet nex.PacketInter
 
 	nintendoPresenceV2, err := parametersStream.ReadStructure(friends_wiiu_types.NewNintendoPresenceV2())
 	if err != nil {
-		go protocol.UpdatePresenceHandler(fmt.Errorf("Failed to read nintendoPresenceV2 from parameters. %s", err.Error()), client, callID, nil)
+		go protocol.updatePresenceHandler(fmt.Errorf("Failed to read nintendoPresenceV2 from parameters. %s", err.Error()), client, callID, nil)
 		return
 	}
 
-	go protocol.UpdatePresenceHandler(nil, client, callID, nintendoPresenceV2.(*friends_wiiu_types.NintendoPresenceV2))
+	go protocol.updatePresenceHandler(nil, client, callID, nintendoPresenceV2.(*friends_wiiu_types.NintendoPresenceV2))
 }

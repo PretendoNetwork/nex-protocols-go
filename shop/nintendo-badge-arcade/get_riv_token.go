@@ -1,5 +1,5 @@
-// Package shop_nintendo_badge_arcade implements the Nintendo Badge Arcade Shop NEX protocol
-package shop_nintendo_badge_arcade
+// Package protocol implements the Nintendo Badge Arcade Shop protocol
+package protocol
 
 import (
 	"fmt"
@@ -9,12 +9,12 @@ import (
 )
 
 // GetRivToken sets the GetRivToken function
-func (protocol *ShopNintendoBadgeArcadeProtocol) GetRivToken(handler func(err error, client *nex.Client, callID uint32, itemCode string, referenceID []byte)) {
-	protocol.GetRivTokenHandler = handler
+func (protocol *Protocol) GetRivToken(handler func(err error, client *nex.Client, callID uint32, itemCode string, referenceID []byte)) {
+	protocol.getRivTokenHandler = handler
 }
 
-func (protocol *ShopNintendoBadgeArcadeProtocol) handleGetRivToken(packet nex.PacketInterface) {
-	if protocol.GetRivTokenHandler == nil {
+func (protocol *Protocol) handleGetRivToken(packet nex.PacketInterface) {
+	if protocol.getRivTokenHandler == nil {
 		globals.Logger.Warning("ShopNintendoBadgeArcade::GetRivToken not implemented")
 		go globals.RespondNotImplementedCustom(packet, CustomProtocolID)
 		return
@@ -30,15 +30,15 @@ func (protocol *ShopNintendoBadgeArcadeProtocol) handleGetRivToken(packet nex.Pa
 
 	itemCode, err := parametersStream.ReadString()
 	if err != nil {
-		go protocol.GetRivTokenHandler(fmt.Errorf("Failed to read itemCode from parameters. %s", err.Error()), client, callID, "", nil)
+		go protocol.getRivTokenHandler(fmt.Errorf("Failed to read itemCode from parameters. %s", err.Error()), client, callID, "", nil)
 		return
 	}
 
 	referenceID, err := parametersStream.ReadQBuffer()
 	if err != nil {
-		go protocol.GetRivTokenHandler(fmt.Errorf("Failed to read referenceID from parameters. %s", err.Error()), client, callID, "", nil)
+		go protocol.getRivTokenHandler(fmt.Errorf("Failed to read referenceID from parameters. %s", err.Error()), client, callID, "", nil)
 		return
 	}
 
-	go protocol.GetRivTokenHandler(nil, client, callID, itemCode, referenceID)
+	go protocol.getRivTokenHandler(nil, client, callID, itemCode, referenceID)
 }

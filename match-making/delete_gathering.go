@@ -1,5 +1,5 @@
-// Package match_making implements the Match Making NEX protocol
-package match_making
+// Package protocol implements the Match Making protocol
+package protocol
 
 import (
 	"fmt"
@@ -9,11 +9,11 @@ import (
 )
 
 // DeleteGathering sets the DeleteGathering handler function
-func (protocol *MatchMakingProtocol) DeleteGathering(handler func(err error, client *nex.Client, callID uint32, idGathering uint32)) {
+func (protocol *Protocol) DeleteGathering(handler func(err error, client *nex.Client, callID uint32, idGathering uint32)) {
 	protocol.deleteGatheringHandler = handler
 }
 
-func (protocol *MatchMakingProtocol) handleDeleteGathering(packet nex.PacketInterface) {
+func (protocol *Protocol) handleDeleteGathering(packet nex.PacketInterface) {
 	if protocol.deleteGatheringHandler == nil {
 		globals.Logger.Warning("MatchMaking::DeleteGathering not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

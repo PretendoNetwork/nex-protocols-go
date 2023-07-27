@@ -1,5 +1,5 @@
-// Package datastore_super_smash_bros_4 implements the Super Smash Bros. 4 DataStore NEX protocol
-package datastore_super_smash_bros_4
+// Package protocol implements the Super Smash Bros. 4 DataStore protocol
+package protocol
 
 import (
 	"fmt"
@@ -10,13 +10,13 @@ import (
 )
 
 // PreparePostReplay sets the PreparePostReplay handler function
-func (protocol *DataStoreSuperSmashBros4Protocol) PreparePostReplay(handler func(err error, client *nex.Client, callID uint32, param *datastore_super_smash_bros_4_types.DataStorePreparePostReplayParam)) {
-	protocol.PreparePostReplayHandler = handler
+func (protocol *Protocol) PreparePostReplay(handler func(err error, client *nex.Client, callID uint32, param *datastore_super_smash_bros_4_types.DataStorePreparePostReplayParam)) {
+	protocol.preparePostReplayHandler = handler
 }
 
-func (protocol *DataStoreSuperSmashBros4Protocol) handlePreparePostReplay(packet nex.PacketInterface) {
-	if protocol.PreparePostReplayHandler == nil {
-		globals.Logger.Warning("DataStoreSmash4::PreparePostReplay not implemented")
+func (protocol *Protocol) handlePreparePostReplay(packet nex.PacketInterface) {
+	if protocol.preparePostReplayHandler == nil {
+		globals.Logger.Warning("DataStoreSuperSmashBros4::PreparePostReplay not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
 	}
@@ -31,9 +31,9 @@ func (protocol *DataStoreSuperSmashBros4Protocol) handlePreparePostReplay(packet
 
 	param, err := parametersStream.ReadStructure(datastore_super_smash_bros_4_types.NewDataStorePreparePostReplayParam())
 	if err != nil {
-		go protocol.PreparePostReplayHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
+		go protocol.preparePostReplayHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
 		return
 	}
 
-	go protocol.PreparePostReplayHandler(nil, client, callID, param.(*datastore_super_smash_bros_4_types.DataStorePreparePostReplayParam))
+	go protocol.preparePostReplayHandler(nil, client, callID, param.(*datastore_super_smash_bros_4_types.DataStorePreparePostReplayParam))
 }

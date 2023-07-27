@@ -1,5 +1,5 @@
-// Package datastore_super_mario_maker implements the Super Mario Maker DataStore NEX protocol
-package datastore_super_mario_maker
+// Package protocol implements the Super Mario Maker DataStore protocol
+package protocol
 
 import (
 	"fmt"
@@ -10,12 +10,12 @@ import (
 )
 
 // UploadCourseRecord sets the UploadCourseRecord handler function
-func (protocol *DataStoreSuperMarioMakerProtocol) UploadCourseRecord(handler func(err error, client *nex.Client, callID uint32, param *datastore_super_mario_maker_types.DataStoreUploadCourseRecordParam)) {
-	protocol.UploadCourseRecordHandler = handler
+func (protocol *Protocol) UploadCourseRecord(handler func(err error, client *nex.Client, callID uint32, param *datastore_super_mario_maker_types.DataStoreUploadCourseRecordParam)) {
+	protocol.uploadCourseRecordHandler = handler
 }
 
-func (protocol *DataStoreSuperMarioMakerProtocol) handleUploadCourseRecord(packet nex.PacketInterface) {
-	if protocol.UploadCourseRecordHandler == nil {
+func (protocol *Protocol) handleUploadCourseRecord(packet nex.PacketInterface) {
+	if protocol.uploadCourseRecordHandler == nil {
 		globals.Logger.Warning("DataStoreSMM::UploadCourseRecord not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -31,9 +31,9 @@ func (protocol *DataStoreSuperMarioMakerProtocol) handleUploadCourseRecord(packe
 
 	param, err := parametersStream.ReadStructure(datastore_super_mario_maker_types.NewDataStoreUploadCourseRecordParam())
 	if err != nil {
-		go protocol.UploadCourseRecordHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
+		go protocol.uploadCourseRecordHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
 		return
 	}
 
-	go protocol.UploadCourseRecordHandler(nil, client, callID, param.(*datastore_super_mario_maker_types.DataStoreUploadCourseRecordParam))
+	go protocol.uploadCourseRecordHandler(nil, client, callID, param.(*datastore_super_mario_maker_types.DataStoreUploadCourseRecordParam))
 }

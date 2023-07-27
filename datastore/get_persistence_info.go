@@ -1,5 +1,5 @@
-// Package datastore implements the DataStore NEX protocol
-package datastore
+// Package protocol implements the DataStore protocol
+package protocol
 
 import (
 	"fmt"
@@ -9,12 +9,12 @@ import (
 )
 
 // GetPersistenceInfo sets the GetPersistenceInfo handler function
-func (protocol *DataStoreProtocol) GetPersistenceInfo(handler func(err error, client *nex.Client, callID uint32, ownerID uint32, persistenceSlotID uint16)) {
-	protocol.GetPersistenceInfoHandler = handler
+func (protocol *Protocol) GetPersistenceInfo(handler func(err error, client *nex.Client, callID uint32, ownerID uint32, persistenceSlotID uint16)) {
+	protocol.getPersistenceInfoHandler = handler
 }
 
-func (protocol *DataStoreProtocol) handleGetPersistenceInfo(packet nex.PacketInterface) {
-	if protocol.GetPersistenceInfoHandler == nil {
+func (protocol *Protocol) handleGetPersistenceInfo(packet nex.PacketInterface) {
+	if protocol.getPersistenceInfoHandler == nil {
 		globals.Logger.Warning("DataStorePotocol::GetPersistenceInfo not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -30,15 +30,15 @@ func (protocol *DataStoreProtocol) handleGetPersistenceInfo(packet nex.PacketInt
 
 	ownerID, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		go protocol.GetPersistenceInfoHandler(fmt.Errorf("Failed to read ownerID from parameters. %s", err.Error()), client, callID, 0, 0)
+		go protocol.getPersistenceInfoHandler(fmt.Errorf("Failed to read ownerID from parameters. %s", err.Error()), client, callID, 0, 0)
 		return
 	}
 
 	persistenceSlotID, err := parametersStream.ReadUInt16LE()
 	if err != nil {
-		go protocol.GetPersistenceInfoHandler(fmt.Errorf("Failed to read persistenceSlotID from parameters. %s", err.Error()), client, callID, 0, 0)
+		go protocol.getPersistenceInfoHandler(fmt.Errorf("Failed to read persistenceSlotID from parameters. %s", err.Error()), client, callID, 0, 0)
 		return
 	}
 
-	go protocol.GetPersistenceInfoHandler(nil, client, callID, ownerID, persistenceSlotID)
+	go protocol.getPersistenceInfoHandler(nil, client, callID, ownerID, persistenceSlotID)
 }

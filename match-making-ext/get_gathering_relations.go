@@ -1,5 +1,5 @@
-// Package match_making_ext implements the Match Making Ext NEX protocol
-package match_making_ext
+// Package protocol implements the Match Making Ext protocol
+package protocol
 
 import (
 	"fmt"
@@ -9,12 +9,12 @@ import (
 )
 
 // GetGatheringRelations sets the GetGatheringRelations handler function
-func (protocol *MatchMakingExtProtocol) GetGatheringRelations(handler func(err error, client *nex.Client, callID uint32, id uint32, descr string)) {
-	protocol.GetGatheringRelationsHandler = handler
+func (protocol *Protocol) GetGatheringRelations(handler func(err error, client *nex.Client, callID uint32, id uint32, descr string)) {
+	protocol.getGatheringRelationsHandler = handler
 }
 
-func (protocol *MatchMakingExtProtocol) handleGetGatheringRelations(packet nex.PacketInterface) {
-	if protocol.GetGatheringRelationsHandler == nil {
+func (protocol *Protocol) handleGetGatheringRelations(packet nex.PacketInterface) {
+	if protocol.getGatheringRelationsHandler == nil {
 		globals.Logger.Warning("MatchMakingExt::GetGatheringRelations not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -30,13 +30,13 @@ func (protocol *MatchMakingExtProtocol) handleGetGatheringRelations(packet nex.P
 
 	id, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		go protocol.GetGatheringRelationsHandler(fmt.Errorf("Failed to read id from parameters. %s", err.Error()), client, callID, 0, "")
+		go protocol.getGatheringRelationsHandler(fmt.Errorf("Failed to read id from parameters. %s", err.Error()), client, callID, 0, "")
 	}
 
 	descr, err := parametersStream.ReadString()
 	if err != nil {
-		go protocol.GetGatheringRelationsHandler(fmt.Errorf("Failed to read descr from parameters. %s", err.Error()), client, callID, 0, "")
+		go protocol.getGatheringRelationsHandler(fmt.Errorf("Failed to read descr from parameters. %s", err.Error()), client, callID, 0, "")
 	}
 
-	go protocol.GetGatheringRelationsHandler(nil, client, callID, id, descr)
+	go protocol.getGatheringRelationsHandler(nil, client, callID, id, descr)
 }

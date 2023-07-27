@@ -1,5 +1,5 @@
-// Package datastore_super_smash_bros_4 implements the Super Smash Bros. 4 DataStore NEX protocol
-package datastore_super_smash_bros_4
+// Package protocol implements the Super Smash Bros. 4 DataStore protocol
+package protocol
 
 import (
 	"fmt"
@@ -9,13 +9,13 @@ import (
 )
 
 // GetProfiles sets the GetProfiles handler function
-func (protocol *DataStoreSuperSmashBros4Protocol) GetProfiles(handler func(err error, client *nex.Client, callID uint32, pidList []uint32)) {
-	protocol.GetProfilesHandler = handler
+func (protocol *Protocol) GetProfiles(handler func(err error, client *nex.Client, callID uint32, pidList []uint32)) {
+	protocol.getProfilesHandler = handler
 }
 
-func (protocol *DataStoreSuperSmashBros4Protocol) handleGetProfiles(packet nex.PacketInterface) {
-	if protocol.GetProfilesHandler == nil {
-		globals.Logger.Warning("DataStoreSmash4::GetProfiles not implemented")
+func (protocol *Protocol) handleGetProfiles(packet nex.PacketInterface) {
+	if protocol.getProfilesHandler == nil {
+		globals.Logger.Warning("DataStoreSuperSmashBros4::GetProfiles not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
 	}
@@ -30,9 +30,9 @@ func (protocol *DataStoreSuperSmashBros4Protocol) handleGetProfiles(packet nex.P
 
 	pidList, err := parametersStream.ReadListUInt32LE()
 	if err != nil {
-		go protocol.GetProfilesHandler(fmt.Errorf("Failed to read pidList from parameters. %s", err.Error()), client, callID, nil)
+		go protocol.getProfilesHandler(fmt.Errorf("Failed to read pidList from parameters. %s", err.Error()), client, callID, nil)
 		return
 	}
 
-	go protocol.GetProfilesHandler(nil, client, callID, pidList)
+	go protocol.getProfilesHandler(nil, client, callID, pidList)
 }

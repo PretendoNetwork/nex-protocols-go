@@ -1,5 +1,5 @@
-// Package debug implements the Debug NEX protocol
-package debug
+// Package protocol implements the Debug protocol
+package protocol
 
 import (
 	"fmt"
@@ -33,20 +33,20 @@ const (
 	MethodGetAPICallSummary = 0x7
 )
 
-// DebugProtocol handles the Debug protocol
-type DebugProtocol struct {
+// Protocol handles the Debug protocol
+type Protocol struct {
 	Server                                  *nex.Server
-	EnableAPIRecorderHandler                func(err error, client *nex.Client, callID uint32)
-	DisableAPIRecorderHandler               func(err error, client *nex.Client, callID uint32)
-	IsAPIRecorderEnabledHandler             func(err error, client *nex.Client, callID uint32)
-	GetAPICallsHandler                      func(err error, client *nex.Client, callID uint32, pids []uint32, unknown *nex.DateTime, unknown2 *nex.DateTime)
-	SetExcludeJoinedMatchmakeSessionHandler func(err error, client *nex.Client, callID uint32)
-	GetExcludeJoinedMatchmakeSessionHandler func(err error, client *nex.Client, callID uint32)
-	GetAPICallSummaryHandler                func(err error, client *nex.Client, callID uint32)
+	enableAPIRecorderHandler                func(err error, client *nex.Client, callID uint32)
+	disableAPIRecorderHandler               func(err error, client *nex.Client, callID uint32)
+	isAPIRecorderEnabledHandler             func(err error, client *nex.Client, callID uint32)
+	getAPICallsHandler                      func(err error, client *nex.Client, callID uint32, pids []uint32, unknown *nex.DateTime, unknown2 *nex.DateTime)
+	setExcludeJoinedMatchmakeSessionHandler func(err error, client *nex.Client, callID uint32)
+	getExcludeJoinedMatchmakeSessionHandler func(err error, client *nex.Client, callID uint32)
+	getAPICallSummaryHandler                func(err error, client *nex.Client, callID uint32)
 }
 
 // Setup initializes the protocol
-func (protocol *DebugProtocol) Setup() {
+func (protocol *Protocol) Setup() {
 	protocol.Server.On("Data", func(packet nex.PacketInterface) {
 		request := packet.RMCRequest()
 
@@ -57,7 +57,7 @@ func (protocol *DebugProtocol) Setup() {
 }
 
 // HandlePacket sends the packet to the correct RMC method handler
-func (protocol *DebugProtocol) HandlePacket(packet nex.PacketInterface) {
+func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 	request := packet.RMCRequest()
 
 	switch request.MethodID() {
@@ -80,9 +80,9 @@ func (protocol *DebugProtocol) HandlePacket(packet nex.PacketInterface) {
 	}
 }
 
-// NewDebugProtocol returns a new DebugProtocol
-func NewDebugProtocol(server *nex.Server) *DebugProtocol {
-	protocol := &DebugProtocol{Server: server}
+// NewProtocol returns a new Debug protocol
+func NewProtocol(server *nex.Server) *Protocol {
+	protocol := &Protocol{Server: server}
 
 	protocol.Setup()
 

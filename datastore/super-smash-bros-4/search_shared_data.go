@@ -1,5 +1,5 @@
-// Package datastore_super_smash_bros_4 implements the Super Smash Bros. 4 DataStore NEX protocol
-package datastore_super_smash_bros_4
+// Package protocol implements the Super Smash Bros. 4 DataStore protocol
+package protocol
 
 import (
 	"fmt"
@@ -10,13 +10,13 @@ import (
 )
 
 // SearchSharedData sets the SearchSharedData handler function
-func (protocol *DataStoreSuperSmashBros4Protocol) SearchSharedData(handler func(err error, client *nex.Client, callID uint32, param *datastore_super_smash_bros_4_types.DataStoreSearchSharedDataParam)) {
-	protocol.SearchSharedDataHandler = handler
+func (protocol *Protocol) SearchSharedData(handler func(err error, client *nex.Client, callID uint32, param *datastore_super_smash_bros_4_types.DataStoreSearchSharedDataParam)) {
+	protocol.searchSharedDataHandler = handler
 }
 
-func (protocol *DataStoreSuperSmashBros4Protocol) handleSearchSharedData(packet nex.PacketInterface) {
-	if protocol.SearchSharedDataHandler == nil {
-		globals.Logger.Warning("DataStoreSmash4::SearchSharedData not implemented")
+func (protocol *Protocol) handleSearchSharedData(packet nex.PacketInterface) {
+	if protocol.searchSharedDataHandler == nil {
+		globals.Logger.Warning("DataStoreSuperSmashBros4::SearchSharedData not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
 	}
@@ -31,9 +31,9 @@ func (protocol *DataStoreSuperSmashBros4Protocol) handleSearchSharedData(packet 
 
 	param, err := parametersStream.ReadStructure(datastore_super_smash_bros_4_types.NewDataStoreSearchSharedDataParam())
 	if err != nil {
-		go protocol.SearchSharedDataHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
+		go protocol.searchSharedDataHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
 		return
 	}
 
-	go protocol.SearchSharedDataHandler(nil, client, callID, param.(*datastore_super_smash_bros_4_types.DataStoreSearchSharedDataParam))
+	go protocol.searchSharedDataHandler(nil, client, callID, param.(*datastore_super_smash_bros_4_types.DataStoreSearchSharedDataParam))
 }

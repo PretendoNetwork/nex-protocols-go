@@ -1,5 +1,5 @@
-// Package datastore_super_mario_maker implements the Super Mario Maker DataStore NEX protocol
-package datastore_super_mario_maker
+// Package protocol implements the Super Mario Maker DataStore protocol
+package protocol
 
 import (
 	"fmt"
@@ -9,12 +9,12 @@ import (
 )
 
 // GetDeletionReason sets the GetDeletionReason handler function
-func (protocol *DataStoreSuperMarioMakerProtocol) GetDeletionReason(handler func(err error, client *nex.Client, callID uint32, dataIDLst []uint64)) {
-	protocol.GetDeletionReasonHandler = handler
+func (protocol *Protocol) GetDeletionReason(handler func(err error, client *nex.Client, callID uint32, dataIDLst []uint64)) {
+	protocol.getDeletionReasonHandler = handler
 }
 
-func (protocol *DataStoreSuperMarioMakerProtocol) handleGetDeletionReason(packet nex.PacketInterface) {
-	if protocol.GetDeletionReasonHandler == nil {
+func (protocol *Protocol) handleGetDeletionReason(packet nex.PacketInterface) {
+	if protocol.getDeletionReasonHandler == nil {
 		globals.Logger.Warning("DataStoreSMM::GetDeletionReason not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -30,9 +30,9 @@ func (protocol *DataStoreSuperMarioMakerProtocol) handleGetDeletionReason(packet
 
 	dataIDLst, err := parametersStream.ReadListUInt64LE()
 	if err != nil {
-		go protocol.GetDeletionReasonHandler(fmt.Errorf("Failed to read dataIDLst from parameters. %s", err.Error()), client, callID, nil)
+		go protocol.getDeletionReasonHandler(fmt.Errorf("Failed to read dataIDLst from parameters. %s", err.Error()), client, callID, nil)
 		return
 	}
 
-	go protocol.GetDeletionReasonHandler(nil, client, callID, dataIDLst)
+	go protocol.getDeletionReasonHandler(nil, client, callID, dataIDLst)
 }

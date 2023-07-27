@@ -1,5 +1,5 @@
-// Package friends_3ds implements the Friends 3DS NEX protocol
-package friends_3ds
+// Package protocol implements the Friends 3DS protocol
+package protocol
 
 import (
 	nex "github.com/PretendoNetwork/nex-go"
@@ -7,11 +7,11 @@ import (
 )
 
 // GetAllFriends sets the GetAllFriends handler function
-func (protocol *Friends3DSProtocol) GetAllFriends(handler func(err error, client *nex.Client, callID uint32)) {
+func (protocol *Protocol) GetAllFriends(handler func(err error, client *nex.Client, callID uint32)) {
 	protocol.getAllFriendsHandler = handler
 }
 
-func (protocol *Friends3DSProtocol) handleGetAllFriends(packet nex.PacketInterface) {
+func (protocol *Protocol) handleGetAllFriends(packet nex.PacketInterface) {
 	if protocol.getAllFriendsHandler == nil {
 		globals.Logger.Warning("Friends3DS::GetAllFriends not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

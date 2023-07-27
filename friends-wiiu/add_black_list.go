@@ -1,5 +1,5 @@
-// Package friends_wiiu implements the Friends WiiU NEX protocol
-package friends_wiiu
+// Package protocol implements the Friends WiiU protocol
+package protocol
 
 import (
 	"fmt"
@@ -10,12 +10,12 @@ import (
 )
 
 // AddBlackList sets the AddBlackList handler function
-func (protocol *FriendsWiiUProtocol) AddBlackList(handler func(err error, client *nex.Client, callID uint32, blacklistedPrincipal *friends_wiiu_types.BlacklistedPrincipal)) {
-	protocol.AddBlackListHandler = handler
+func (protocol *Protocol) AddBlackList(handler func(err error, client *nex.Client, callID uint32, blacklistedPrincipal *friends_wiiu_types.BlacklistedPrincipal)) {
+	protocol.addBlackListHandler = handler
 }
 
-func (protocol *FriendsWiiUProtocol) handleAddBlackList(packet nex.PacketInterface) {
-	if protocol.AddBlackListHandler == nil {
+func (protocol *Protocol) handleAddBlackList(packet nex.PacketInterface) {
+	if protocol.addBlackListHandler == nil {
 		globals.Logger.Warning("FriendsWiiU::AddBlackList not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -31,9 +31,9 @@ func (protocol *FriendsWiiUProtocol) handleAddBlackList(packet nex.PacketInterfa
 
 	blacklistedPrincipal, err := parametersStream.ReadStructure(friends_wiiu_types.NewBlacklistedPrincipal())
 	if err != nil {
-		go protocol.AddBlackListHandler(fmt.Errorf("Failed to read blacklistedPrincipal from parameters. %s", err.Error()), client, callID, nil)
+		go protocol.addBlackListHandler(fmt.Errorf("Failed to read blacklistedPrincipal from parameters. %s", err.Error()), client, callID, nil)
 		return
 	}
 
-	go protocol.AddBlackListHandler(nil, client, callID, blacklistedPrincipal.(*friends_wiiu_types.BlacklistedPrincipal))
+	go protocol.addBlackListHandler(nil, client, callID, blacklistedPrincipal.(*friends_wiiu_types.BlacklistedPrincipal))
 }

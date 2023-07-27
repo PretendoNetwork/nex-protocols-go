@@ -1,5 +1,5 @@
-// Package friends_3ds implements the Friends 3DS NEX protocol
-package friends_3ds
+// Package protocol implements the Friends 3DS protocol
+package protocol
 
 import (
 	"fmt"
@@ -9,11 +9,11 @@ import (
 )
 
 // UpdatePreference sets the UpdatePreference handler function
-func (protocol *Friends3DSProtocol) UpdatePreference(handler func(err error, client *nex.Client, callID uint32, publicMode bool, showGame bool, showPlayedGame bool)) {
+func (protocol *Protocol) UpdatePreference(handler func(err error, client *nex.Client, callID uint32, publicMode bool, showGame bool, showPlayedGame bool)) {
 	protocol.updatePreferenceHandler = handler
 }
 
-func (protocol *Friends3DSProtocol) handleUpdatePreference(packet nex.PacketInterface) {
+func (protocol *Protocol) handleUpdatePreference(packet nex.PacketInterface) {
 	if protocol.updatePreferenceHandler == nil {
 		globals.Logger.Warning("Friends3DS::UpdatePreference not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

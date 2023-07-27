@@ -1,5 +1,5 @@
-// Package datastore_super_smash_bros_4_types implements all the types used by the DataStore Super Smash Bros. 4 protocol
-package datastore_super_smash_bros_4_types
+// Package types implements all the types used by the DataStore Super Smash Bros. 4 protocol
+package types
 
 import (
 	"bytes"
@@ -49,11 +49,7 @@ func (dataStorePostProfileParam *DataStorePostProfileParam) Copy() nex.Structure
 func (dataStorePostProfileParam *DataStorePostProfileParam) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*DataStorePostProfileParam)
 
-	if !bytes.Equal(dataStorePostProfileParam.Profile, other.Profile) {
-		return false
-	}
-
-	return true
+	return bytes.Equal(dataStorePostProfileParam.Profile, other.Profile)
 }
 
 // String returns a string representation of the struct

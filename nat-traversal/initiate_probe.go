@@ -1,5 +1,5 @@
-// Package nat_traversal implements the NAT Traversal NEX protocol
-package nat_traversal
+// Package protocol implements the NAT Traversal protocol
+package protocol
 
 import (
 	"fmt"
@@ -9,12 +9,12 @@ import (
 )
 
 // InitiateProbe sets the InitiateProbe handler function
-func (protocol *NATTraversalProtocol) InitiateProbe(handler func(err error, client *nex.Client, callID uint32, urlStationToProbe *nex.StationURL)) {
-	protocol.InitiateProbeHandler = handler
+func (protocol *Protocol) InitiateProbe(handler func(err error, client *nex.Client, callID uint32, urlStationToProbe *nex.StationURL)) {
+	protocol.initiateProbeHandler = handler
 }
 
-func (protocol *NATTraversalProtocol) handleInitiateProbe(packet nex.PacketInterface) {
-	if protocol.InitiateProbeHandler == nil {
+func (protocol *Protocol) handleInitiateProbe(packet nex.PacketInterface) {
+	if protocol.initiateProbeHandler == nil {
 		globals.Logger.Warning("NATTraversal::InitiateProbe not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -30,9 +30,9 @@ func (protocol *NATTraversalProtocol) handleInitiateProbe(packet nex.PacketInter
 
 	urlStationToProbe, err := parametersStream.ReadStationURL()
 	if err != nil {
-		go protocol.InitiateProbeHandler(fmt.Errorf("Failed to read urlStationToProbe from parameters. %s", err.Error()), client, callID, nil)
+		go protocol.initiateProbeHandler(fmt.Errorf("Failed to read urlStationToProbe from parameters. %s", err.Error()), client, callID, nil)
 		return
 	}
 
-	go protocol.InitiateProbeHandler(nil, client, callID, urlStationToProbe)
+	go protocol.initiateProbeHandler(nil, client, callID, urlStationToProbe)
 }

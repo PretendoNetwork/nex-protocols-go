@@ -1,5 +1,5 @@
-// Package secure_connection implements the Secure Connection NEX protocol
-package secure_connection
+// Package protocol implements the Secure Connection protocol
+package protocol
 
 import (
 	"fmt"
@@ -9,12 +9,12 @@ import (
 )
 
 // RequestConnectionData sets the RequestConnectionData handler function
-func (protocol *SecureConnectionProtocol) RequestConnectionData(handler func(err error, client *nex.Client, callID uint32, cidTarget uint32, pidTarget uint32)) {
-	protocol.RequestConnectionDataHandler = handler
+func (protocol *Protocol) RequestConnectionData(handler func(err error, client *nex.Client, callID uint32, cidTarget uint32, pidTarget uint32)) {
+	protocol.requestConnectionDataHandler = handler
 }
 
-func (protocol *SecureConnectionProtocol) handleRequestConnectionData(packet nex.PacketInterface) {
-	if protocol.RequestConnectionDataHandler == nil {
+func (protocol *Protocol) handleRequestConnectionData(packet nex.PacketInterface) {
+	if protocol.requestConnectionDataHandler == nil {
 		globals.Logger.Warning("SecureConnection::RequestConnectionData not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -30,15 +30,15 @@ func (protocol *SecureConnectionProtocol) handleRequestConnectionData(packet nex
 
 	cidTarget, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		go protocol.RequestConnectionDataHandler(fmt.Errorf("Failed to read cidTarget from parameters. %s", err.Error()), client, callID, 0, 0)
+		go protocol.requestConnectionDataHandler(fmt.Errorf("Failed to read cidTarget from parameters. %s", err.Error()), client, callID, 0, 0)
 		return
 	}
 
 	pidTarget, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		go protocol.RequestConnectionDataHandler(fmt.Errorf("Failed to read pidTarget from parameters. %s", err.Error()), client, callID, 0, 0)
+		go protocol.requestConnectionDataHandler(fmt.Errorf("Failed to read pidTarget from parameters. %s", err.Error()), client, callID, 0, 0)
 		return
 	}
 
-	go protocol.RequestConnectionDataHandler(nil, client, callID, cidTarget, pidTarget)
+	go protocol.requestConnectionDataHandler(nil, client, callID, cidTarget, pidTarget)
 }

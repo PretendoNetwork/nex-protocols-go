@@ -1,5 +1,5 @@
-// Package match_making implements the Match Making NEX protocol
-package match_making
+// Package protocol implements the Match Making protocol
+package protocol
 
 import (
 	"fmt"
@@ -9,11 +9,11 @@ import (
 )
 
 // CancelParticipation sets the CancelParticipation handler function
-func (protocol *MatchMakingProtocol) CancelParticipation(handler func(err error, client *nex.Client, callID uint32, idGathering uint32, strMessage string)) {
+func (protocol *Protocol) CancelParticipation(handler func(err error, client *nex.Client, callID uint32, idGathering uint32, strMessage string)) {
 	protocol.cancelParticipationHandler = handler
 }
 
-func (protocol *MatchMakingProtocol) handleCancelParticipation(packet nex.PacketInterface) {
+func (protocol *Protocol) handleCancelParticipation(packet nex.PacketInterface) {
 	if protocol.cancelParticipationHandler == nil {
 		globals.Logger.Warning("MatchMaking::CancelParticipation not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

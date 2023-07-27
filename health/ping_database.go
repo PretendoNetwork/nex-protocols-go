@@ -1,5 +1,5 @@
-// Package health implements the Health NEX protocol
-package health
+// Package protocol implements the Health protocol
+package protocol
 
 import (
 	nex "github.com/PretendoNetwork/nex-go"
@@ -7,12 +7,12 @@ import (
 )
 
 // PingDatabase sets the PingDatabase handler function
-func (protocol *HealthProtocol) PingDatabase(handler func(err error, client *nex.Client, callID uint32)) {
-	protocol.PingDatabaseHandler = handler
+func (protocol *Protocol) PingDatabase(handler func(err error, client *nex.Client, callID uint32)) {
+	protocol.pingDatabaseHandler = handler
 }
 
-func (protocol *HealthProtocol) handlePingDatabase(packet nex.PacketInterface) {
-	if protocol.PingDatabaseHandler == nil {
+func (protocol *Protocol) handlePingDatabase(packet nex.PacketInterface) {
+	if protocol.pingDatabaseHandler == nil {
 		globals.Logger.Warning("Health::PingDatabase not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -23,5 +23,5 @@ func (protocol *HealthProtocol) handlePingDatabase(packet nex.PacketInterface) {
 
 	callID := request.CallID()
 
-	go protocol.PingDatabaseHandler(nil, client, callID)
+	go protocol.pingDatabaseHandler(nil, client, callID)
 }

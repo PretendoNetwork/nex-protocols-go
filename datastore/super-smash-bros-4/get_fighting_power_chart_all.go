@@ -1,5 +1,5 @@
-// Package datastore_super_smash_bros_4 implements the Super Smash Bros. 4 DataStore NEX protocol
-package datastore_super_smash_bros_4
+// Package protocol implements the Super Smash Bros. 4 DataStore protocol
+package protocol
 
 import (
 	nex "github.com/PretendoNetwork/nex-go"
@@ -7,13 +7,13 @@ import (
 )
 
 // GetFightingPowerChartAll sets the GetFightingPowerChartAll handler function
-func (protocol *DataStoreSuperSmashBros4Protocol) GetFightingPowerChartAll(handler func(err error, client *nex.Client, callID uint32)) {
-	protocol.GetFightingPowerChartAllHandler = handler
+func (protocol *Protocol) GetFightingPowerChartAll(handler func(err error, client *nex.Client, callID uint32)) {
+	protocol.getFightingPowerChartAllHandler = handler
 }
 
-func (protocol *DataStoreSuperSmashBros4Protocol) handleGetFightingPowerChartAll(packet nex.PacketInterface) {
-	if protocol.GetFightingPowerChartAllHandler == nil {
-		globals.Logger.Warning("DataStoreSmash4::GetFightingPowerChartAll not implemented")
+func (protocol *Protocol) handleGetFightingPowerChartAll(packet nex.PacketInterface) {
+	if protocol.getFightingPowerChartAllHandler == nil {
+		globals.Logger.Warning("DataStoreSuperSmashBros4::GetFightingPowerChartAll not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
 	}
@@ -23,5 +23,5 @@ func (protocol *DataStoreSuperSmashBros4Protocol) handleGetFightingPowerChartAll
 
 	callID := request.CallID()
 
-	go protocol.GetFightingPowerChartAllHandler(nil, client, callID)
+	go protocol.getFightingPowerChartAllHandler(nil, client, callID)
 }

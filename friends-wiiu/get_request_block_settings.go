@@ -1,5 +1,5 @@
-// Package friends_wiiu implements the Friends WiiU NEX protocol
-package friends_wiiu
+// Package protocol implements the Friends WiiU protocol
+package protocol
 
 import (
 	"fmt"
@@ -9,12 +9,12 @@ import (
 )
 
 // GetRequestBlockSettings sets the GetRequestBlockSettings handler function
-func (protocol *FriendsWiiUProtocol) GetRequestBlockSettings(handler func(err error, client *nex.Client, callID uint32, unknowns []uint32)) {
-	protocol.GetRequestBlockSettingsHandler = handler
+func (protocol *Protocol) GetRequestBlockSettings(handler func(err error, client *nex.Client, callID uint32, unknowns []uint32)) {
+	protocol.getRequestBlockSettingsHandler = handler
 }
 
-func (protocol *FriendsWiiUProtocol) handleGetRequestBlockSettings(packet nex.PacketInterface) {
-	if protocol.GetRequestBlockSettingsHandler == nil {
+func (protocol *Protocol) handleGetRequestBlockSettings(packet nex.PacketInterface) {
+	if protocol.getRequestBlockSettingsHandler == nil {
 		globals.Logger.Warning("FriendsWiiU::GetRequestBlockSettings not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -30,9 +30,9 @@ func (protocol *FriendsWiiUProtocol) handleGetRequestBlockSettings(packet nex.Pa
 
 	pids, err := parametersStream.ReadListUInt32LE()
 	if err != nil {
-		go protocol.GetRequestBlockSettingsHandler(fmt.Errorf("Failed to read pids from parameters. %s", err.Error()), client, callID, nil)
+		go protocol.getRequestBlockSettingsHandler(fmt.Errorf("Failed to read pids from parameters. %s", err.Error()), client, callID, nil)
 		return
 	}
 
-	go protocol.GetRequestBlockSettingsHandler(nil, client, callID, pids)
+	go protocol.getRequestBlockSettingsHandler(nil, client, callID, pids)
 }

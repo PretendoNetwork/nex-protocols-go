@@ -1,5 +1,5 @@
-// Package datastore_super_mario_maker implements the Super Mario Maker DataStore NEX protocol
-package datastore_super_mario_maker
+// Package protocol implements the Super Mario Maker DataStore protocol
+package protocol
 
 import (
 	"fmt"
@@ -9,12 +9,12 @@ import (
 )
 
 // CheckRateCustomRankingCounter sets the CheckRateCustomRankingCounter handler function
-func (protocol *DataStoreSuperMarioMakerProtocol) CheckRateCustomRankingCounter(handler func(err error, client *nex.Client, callID uint32, applicationID uint32)) {
-	protocol.CheckRateCustomRankingCounterHandler = handler
+func (protocol *Protocol) CheckRateCustomRankingCounter(handler func(err error, client *nex.Client, callID uint32, applicationID uint32)) {
+	protocol.checkRateCustomRankingCounterHandler = handler
 }
 
-func (protocol *DataStoreSuperMarioMakerProtocol) handleCheckRateCustomRankingCounter(packet nex.PacketInterface) {
-	if protocol.CheckRateCustomRankingCounterHandler == nil {
+func (protocol *Protocol) handleCheckRateCustomRankingCounter(packet nex.PacketInterface) {
+	if protocol.checkRateCustomRankingCounterHandler == nil {
 		globals.Logger.Warning("DataStoreSMM::CheckRateCustomRankingCounter not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -30,9 +30,9 @@ func (protocol *DataStoreSuperMarioMakerProtocol) handleCheckRateCustomRankingCo
 
 	applicationID, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		go protocol.CheckRateCustomRankingCounterHandler(fmt.Errorf("Failed to read applicationID from parameters. %s", err.Error()), client, callID, 0)
+		go protocol.checkRateCustomRankingCounterHandler(fmt.Errorf("Failed to read applicationID from parameters. %s", err.Error()), client, callID, 0)
 		return
 	}
 
-	go protocol.CheckRateCustomRankingCounterHandler(nil, client, callID, applicationID)
+	go protocol.checkRateCustomRankingCounterHandler(nil, client, callID, applicationID)
 }

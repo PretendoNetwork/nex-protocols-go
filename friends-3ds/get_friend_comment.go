@@ -1,5 +1,5 @@
-// Package friends_3ds implements the Friends 3DS NEX protocol
-package friends_3ds
+// Package protocol implements the Friends 3DS protocol
+package protocol
 
 import (
 	"fmt"
@@ -10,11 +10,11 @@ import (
 )
 
 // GetFriendComment sets the GetFriendComment handler function
-func (protocol *Friends3DSProtocol) GetFriendComment(handler func(err error, client *nex.Client, callID uint32, friends []*friends_3ds_types.FriendInfo)) {
+func (protocol *Protocol) GetFriendComment(handler func(err error, client *nex.Client, callID uint32, friends []*friends_3ds_types.FriendInfo)) {
 	protocol.getFriendCommentHandler = handler
 }
 
-func (protocol *Friends3DSProtocol) handleGetFriendComment(packet nex.PacketInterface) {
+func (protocol *Protocol) handleGetFriendComment(packet nex.PacketInterface) {
 	if protocol.getFriendCommentHandler == nil {
 		globals.Logger.Warning("Friends3DS::GetFriendComment not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)

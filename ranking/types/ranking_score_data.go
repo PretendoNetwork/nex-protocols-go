@@ -1,5 +1,5 @@
-// Package ranking_types implements all the types used by the Ranking protocol
-package ranking_types
+// Package types implements all the types used by the Ranking protocol
+package types
 
 import (
 	"bytes"
@@ -110,7 +110,7 @@ func (rankingScoreData *RankingScoreData) Equals(structure nex.StructureInterfac
 		return false
 	}
 
-	return rankingScoreData.Param != other.Param
+	return rankingScoreData.Param == other.Param
 }
 
 // String returns a string representation of the struct

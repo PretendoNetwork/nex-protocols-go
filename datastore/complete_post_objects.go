@@ -1,5 +1,5 @@
-// Package datastore implements the DataStore NEX protocol
-package datastore
+// Package protocol implements the DataStore protocol
+package protocol
 
 import (
 	"fmt"
@@ -9,12 +9,12 @@ import (
 )
 
 // CompletePostObjects sets the CompletePostObjects handler function
-func (protocol *DataStoreProtocol) CompletePostObjects(handler func(err error, client *nex.Client, callID uint32, dataIDs []uint64)) {
-	protocol.CompletePostObjectsHandler = handler
+func (protocol *Protocol) CompletePostObjects(handler func(err error, client *nex.Client, callID uint32, dataIDs []uint64)) {
+	protocol.completePostObjectsHandler = handler
 }
 
-func (protocol *DataStoreProtocol) handleCompletePostObjects(packet nex.PacketInterface) {
-	if protocol.CompletePostObjectsHandler == nil {
+func (protocol *Protocol) handleCompletePostObjects(packet nex.PacketInterface) {
+	if protocol.completePostObjectsHandler == nil {
 		globals.Logger.Warning("DataStore::CompletePostObjects not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -30,9 +30,9 @@ func (protocol *DataStoreProtocol) handleCompletePostObjects(packet nex.PacketIn
 
 	dataIDs, err := parametersStream.ReadListUInt64LE()
 	if err != nil {
-		go protocol.CompletePostObjectsHandler(fmt.Errorf("Failed to read dataIDs from parameters. %s", err.Error()), client, callID, nil)
+		go protocol.completePostObjectsHandler(fmt.Errorf("Failed to read dataIDs from parameters. %s", err.Error()), client, callID, nil)
 		return
 	}
 
-	go protocol.CompletePostObjectsHandler(nil, client, callID, dataIDs)
+	go protocol.completePostObjectsHandler(nil, client, callID, dataIDs)
 }

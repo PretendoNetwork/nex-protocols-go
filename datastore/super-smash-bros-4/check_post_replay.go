@@ -16,7 +16,7 @@ func (protocol *Protocol) CheckPostReplay(handler func(err error, client *nex.Cl
 
 func (protocol *Protocol) handleCheckPostReplay(packet nex.PacketInterface) {
 	if protocol.CheckPostReplayHandler == nil {
-		globals.Logger.Warning("DataStoreSmash4::CheckPostReplay not implemented")
+		globals.Logger.Warning("DataStoreSuperSmashBros4::CheckPostReplay not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
 	}

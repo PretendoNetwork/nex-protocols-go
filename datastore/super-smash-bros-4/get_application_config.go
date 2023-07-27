@@ -15,7 +15,7 @@ func (protocol *Protocol) GetApplicationConfig(handler func(err error, client *n
 
 func (protocol *Protocol) handleGetApplicationConfig(packet nex.PacketInterface) {
 	if protocol.GetApplicationConfigHandler == nil {
-		globals.Logger.Warning("DataStoreSmash4::GetApplicationConfig not implemented")
+		globals.Logger.Warning("DataStoreSuperSmashBros4::GetApplicationConfig not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
 	}

@@ -12,7 +12,7 @@ import (
 )
 
 const (
-	// ProtocolID is the protocol ID for the DataStore (Smash4) protocol. ID is the same as the DataStore protocol
+	// ProtocolID is the protocol ID for the DataStore (Super Smash Bros 4) protocol. ID is the same as the DataStore protocol
 	ProtocolID = 0x73
 
 	// MethodPostProfile is the method ID for the method PostProfile
@@ -97,7 +97,7 @@ var patchedMethods = []uint32{
 
 type datastoreProtocol = datastore.Protocol
 
-// Protocol stores all the RMC method handlers for the DataStore (Smash4) protocol and listens for requests
+// Protocol stores all the RMC method handlers for the DataStore (Super Smash Bros 4) protocol and listens for requests
 // Embeds the DataStore protocol
 type Protocol struct {
 	Server *nex.Server
@@ -183,11 +183,11 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 		go protocol.handleReportSharedData(packet)
 	default:
 		go globals.RespondNotImplemented(packet, ProtocolID)
-		fmt.Printf("Unsupported DataStoreSmash4 method ID: %#v\n", request.MethodID())
+		fmt.Printf("Unsupported DataStoreSuperSmashBros4 method ID: %#v\n", request.MethodID())
 	}
 }
 
-// NewProtocol returns a new DataStore (Smash4) protocol
+// NewProtocol returns a new DataStore (Super Smash Bros 4) protocol
 func NewProtocol(server *nex.Server) *Protocol {
 	protocol := &Protocol{Server: server}
 	protocol.datastoreProtocol.Server = server

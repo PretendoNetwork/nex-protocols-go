@@ -13,7 +13,7 @@ func (protocol *Protocol) GetWorldPlayReport(handler func(err error, client *nex
 
 func (protocol *Protocol) handleGetWorldPlayReport(packet nex.PacketInterface) {
 	if protocol.GetWorldPlayReportHandler == nil {
-		globals.Logger.Warning("DataStoreSmash4::GetWorldPlayReport not implemented")
+		globals.Logger.Warning("DataStoreSuperSmashBros4::GetWorldPlayReport not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
 	}

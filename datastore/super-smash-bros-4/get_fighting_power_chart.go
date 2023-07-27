@@ -15,7 +15,7 @@ func (protocol *Protocol) GetFightingPowerChart(handler func(err error, client *
 
 func (protocol *Protocol) handleGetFightingPowerChart(packet nex.PacketInterface) {
 	if protocol.GetFightingPowerChartHandler == nil {
-		globals.Logger.Warning("DataStoreSmash4::GetFightingPowerChart not implemented")
+		globals.Logger.Warning("DataStoreSuperSmashBros4::GetFightingPowerChart not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
 	}

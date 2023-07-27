@@ -16,7 +16,7 @@ func (protocol *Protocol) PreparePostSharedData(handler func(err error, client *
 
 func (protocol *Protocol) handlePreparePostSharedData(packet nex.PacketInterface) {
 	if protocol.PreparePostSharedDataHandler == nil {
-		globals.Logger.Warning("DataStoreSmash4::PreparePostSharedData not implemented")
+		globals.Logger.Warning("DataStoreSuperSmashBros4::PreparePostSharedData not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
 	}

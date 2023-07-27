@@ -8,11 +8,11 @@ import (
 
 // LoginWithParam sets the LoginWithParam handler function
 func (protocol *Protocol) LoginWithParam(handler func(err error, client *nex.Client, callID uint32)) {
-	protocol.LoginWithParamHandler = handler
+	protocol.loginWithParamHandler = handler
 }
 
 func (protocol *Protocol) handleLoginWithParam(packet nex.PacketInterface) {
-	if protocol.LoginWithParamHandler == nil {
+	if protocol.loginWithParamHandler == nil {
 		globals.Logger.Warning("TicketGranting::LoginWithParam not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return

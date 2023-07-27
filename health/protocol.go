@@ -27,10 +27,10 @@ const (
 // Protocol handles the Health protocol
 type Protocol struct {
 	Server                 *nex.Server
-	PingDaemonHandler      func(err error, client *nex.Client, callID uint32)
-	PingDatabaseHandler    func(err error, client *nex.Client, callID uint32)
-	RunSanityCheckHandler  func(err error, client *nex.Client, callID uint32)
-	FixSanityErrorsHandler func(err error, client *nex.Client, callID uint32)
+	pingDaemonHandler      func(err error, client *nex.Client, callID uint32)
+	pingDatabaseHandler    func(err error, client *nex.Client, callID uint32)
+	runSanityCheckHandler  func(err error, client *nex.Client, callID uint32)
+	fixSanityErrorsHandler func(err error, client *nex.Client, callID uint32)
 }
 
 // Setup initializes the protocol

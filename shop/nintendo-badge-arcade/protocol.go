@@ -37,8 +37,8 @@ type shopProtocol = shop.Protocol
 type Protocol struct {
 	Server *nex.Server
 	shopProtocol
-	GetRivTokenHandler func(err error, client *nex.Client, callID uint32, itemCode string, referenceID []byte)
-	PostPlayLogHandler func(err error, client *nex.Client, callID uint32, param *shop_nintendo_badge_arcade_types.ShopPostPlayLogParam)
+	getRivTokenHandler func(err error, client *nex.Client, callID uint32, itemCode string, referenceID []byte)
+	postPlayLogHandler func(err error, client *nex.Client, callID uint32, param *shop_nintendo_badge_arcade_types.ShopPostPlayLogParam)
 }
 
 // Setup initializes the protocol

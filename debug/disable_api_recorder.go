@@ -8,11 +8,11 @@ import (
 
 // DisableAPIRecorder sets the DisableAPIRecorder handler function
 func (protocol *Protocol) DisableAPIRecorder(handler func(err error, client *nex.Client, callID uint32)) {
-	protocol.DisableAPIRecorderHandler = handler
+	protocol.disableAPIRecorderHandler = handler
 }
 
 func (protocol *Protocol) handleDisableAPIRecorder(packet nex.PacketInterface) {
-	if protocol.DisableAPIRecorderHandler == nil {
+	if protocol.disableAPIRecorderHandler == nil {
 		globals.Logger.Warning("Debug::DisableAPIRecorder not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -23,5 +23,5 @@ func (protocol *Protocol) handleDisableAPIRecorder(packet nex.PacketInterface) {
 
 	callID := request.CallID()
 
-	go protocol.DisableAPIRecorderHandler(nil, client, callID)
+	go protocol.disableAPIRecorderHandler(nil, client, callID)
 }

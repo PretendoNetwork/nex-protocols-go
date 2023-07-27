@@ -8,11 +8,11 @@ import (
 
 // GetWorldPlayReport sets the GetWorldPlayReport handler function
 func (protocol *Protocol) GetWorldPlayReport(handler func(err error, client *nex.Client, callID uint32)) {
-	protocol.GetWorldPlayReportHandler = handler
+	protocol.getWorldPlayReportHandler = handler
 }
 
 func (protocol *Protocol) handleGetWorldPlayReport(packet nex.PacketInterface) {
-	if protocol.GetWorldPlayReportHandler == nil {
+	if protocol.getWorldPlayReportHandler == nil {
 		globals.Logger.Warning("DataStoreSuperSmashBros4::GetWorldPlayReport not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -23,5 +23,5 @@ func (protocol *Protocol) handleGetWorldPlayReport(packet nex.PacketInterface) {
 
 	callID := request.CallID()
 
-	go protocol.GetWorldPlayReportHandler(nil, client, callID)
+	go protocol.getWorldPlayReportHandler(nil, client, callID)
 }

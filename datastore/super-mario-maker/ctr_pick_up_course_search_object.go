@@ -11,11 +11,11 @@ import (
 
 // CTRPickUpCourseSearchObject sets the CTRPickUpCourseSearchObject handler function
 func (protocol *Protocol) CTRPickUpCourseSearchObject(handler func(err error, client *nex.Client, callID uint32, dataStoreSearchParam *datastore_types.DataStoreSearchParam, extraData []string)) {
-	protocol.CTRPickUpCourseSearchObjectHandler = handler
+	protocol.cTRPickUpCourseSearchObjectHandler = handler
 }
 
 func (protocol *Protocol) handleCTRPickUpCourseSearchObject(packet nex.PacketInterface) {
-	if protocol.CTRPickUpCourseSearchObjectHandler == nil {
+	if protocol.cTRPickUpCourseSearchObjectHandler == nil {
 		globals.Logger.Warning("DataStoreSMM::CTRPickUpCourseSearchObject not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -31,15 +31,15 @@ func (protocol *Protocol) handleCTRPickUpCourseSearchObject(packet nex.PacketInt
 
 	param, err := parametersStream.ReadStructure(datastore_types.NewDataStoreSearchParam())
 	if err != nil {
-		go protocol.CTRPickUpCourseSearchObjectHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil, nil)
+		go protocol.cTRPickUpCourseSearchObjectHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil, nil)
 		return
 	}
 
 	extraData, err := parametersStream.ReadListString()
 	if err != nil {
-		go protocol.CTRPickUpCourseSearchObjectHandler(fmt.Errorf("Failed to read extraData from parameters. %s", err.Error()), client, callID, nil, nil)
+		go protocol.cTRPickUpCourseSearchObjectHandler(fmt.Errorf("Failed to read extraData from parameters. %s", err.Error()), client, callID, nil, nil)
 		return
 	}
 
-	go protocol.CTRPickUpCourseSearchObjectHandler(nil, client, callID, param.(*datastore_types.DataStoreSearchParam), extraData)
+	go protocol.cTRPickUpCourseSearchObjectHandler(nil, client, callID, param.(*datastore_types.DataStoreSearchParam), extraData)
 }

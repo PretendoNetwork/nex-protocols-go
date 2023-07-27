@@ -10,11 +10,11 @@ import (
 
 // GetPID sets the GetPID handler function
 func (protocol *Protocol) GetPID(handler func(err error, client *nex.Client, callID uint32, strUserName string)) {
-	protocol.GetPIDHandler = handler
+	protocol.getPIDHandler = handler
 }
 
 func (protocol *Protocol) handleGetPID(packet nex.PacketInterface) {
-	if protocol.GetPIDHandler == nil {
+	if protocol.getPIDHandler == nil {
 		globals.Logger.Warning("TicketGranting::GetPID not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -30,9 +30,9 @@ func (protocol *Protocol) handleGetPID(packet nex.PacketInterface) {
 
 	strUserName, err := parametersStream.ReadString()
 	if err != nil {
-		go protocol.GetPIDHandler(fmt.Errorf("Failed to read strUserName from parameters. %s", err.Error()), client, callID, "")
+		go protocol.getPIDHandler(fmt.Errorf("Failed to read strUserName from parameters. %s", err.Error()), client, callID, "")
 		return
 	}
 
-	go protocol.GetPIDHandler(nil, client, callID, strUserName)
+	go protocol.getPIDHandler(nil, client, callID, strUserName)
 }

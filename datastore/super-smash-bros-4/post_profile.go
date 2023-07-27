@@ -11,11 +11,11 @@ import (
 
 // PostProfile sets the PostProfile handler function
 func (protocol *Protocol) PostProfile(handler func(err error, client *nex.Client, callID uint32, param *datastore_super_smash_bros_4_types.DataStorePostProfileParam)) {
-	protocol.PostProfileHandler = handler
+	protocol.postProfileHandler = handler
 }
 
 func (protocol *Protocol) handlePostProfile(packet nex.PacketInterface) {
-	if protocol.PostProfileHandler == nil {
+	if protocol.postProfileHandler == nil {
 		globals.Logger.Warning("DataStoreSuperSmashBros4::PostProfile not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -31,9 +31,9 @@ func (protocol *Protocol) handlePostProfile(packet nex.PacketInterface) {
 
 	param, err := parametersStream.ReadStructure(datastore_super_smash_bros_4_types.NewDataStorePostProfileParam())
 	if err != nil {
-		go protocol.PostProfileHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
+		go protocol.postProfileHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
 		return
 	}
 
-	go protocol.PostProfileHandler(nil, client, callID, param.(*datastore_super_smash_bros_4_types.DataStorePostProfileParam))
+	go protocol.postProfileHandler(nil, client, callID, param.(*datastore_super_smash_bros_4_types.DataStorePostProfileParam))
 }

@@ -11,11 +11,11 @@ import (
 
 // UpdatePreference sets the UpdatePreference handler function
 func (protocol *Protocol) UpdatePreference(handler func(err error, client *nex.Client, callID uint32, preference *friends_wiiu_types.PrincipalPreference)) {
-	protocol.UpdatePreferenceHandler = handler
+	protocol.updatePreferenceHandler = handler
 }
 
 func (protocol *Protocol) handleUpdatePreference(packet nex.PacketInterface) {
-	if protocol.UpdatePreferenceHandler == nil {
+	if protocol.updatePreferenceHandler == nil {
 		globals.Logger.Warning("FriendsWiiU::UpdatePreference not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -31,9 +31,9 @@ func (protocol *Protocol) handleUpdatePreference(packet nex.PacketInterface) {
 
 	principalPreference, err := parametersStream.ReadStructure(friends_wiiu_types.NewPrincipalPreference())
 	if err != nil {
-		go protocol.UpdatePreferenceHandler(fmt.Errorf("Failed to read principalPreference from parameters. %s", err.Error()), client, callID, nil)
+		go protocol.updatePreferenceHandler(fmt.Errorf("Failed to read principalPreference from parameters. %s", err.Error()), client, callID, nil)
 		return
 	}
 
-	go protocol.UpdatePreferenceHandler(nil, client, callID, principalPreference.(*friends_wiiu_types.PrincipalPreference))
+	go protocol.updatePreferenceHandler(nil, client, callID, principalPreference.(*friends_wiiu_types.PrincipalPreference))
 }

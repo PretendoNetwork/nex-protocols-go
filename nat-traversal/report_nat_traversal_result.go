@@ -10,11 +10,11 @@ import (
 
 // ReportNATTraversalResult sets the ReportNATTraversalResult handler function
 func (protocol *Protocol) ReportNATTraversalResult(handler func(err error, client *nex.Client, callID uint32, cid uint32, result bool, rtt uint32)) {
-	protocol.ReportNATTraversalResultHandler = handler
+	protocol.reportNATTraversalResultHandler = handler
 }
 
 func (protocol *Protocol) handleReportNATTraversalResult(packet nex.PacketInterface) {
-	if protocol.ReportNATTraversalResultHandler == nil {
+	if protocol.reportNATTraversalResultHandler == nil {
 		globals.Logger.Warning("NATTraversal::ReportNATTraversalResult not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -32,13 +32,13 @@ func (protocol *Protocol) handleReportNATTraversalResult(packet nex.PacketInterf
 
 	cid, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		go protocol.ReportNATTraversalResultHandler(fmt.Errorf("Failed to read cid from parameters. %s", err.Error()), client, callID, 0, false, 0)
+		go protocol.reportNATTraversalResultHandler(fmt.Errorf("Failed to read cid from parameters. %s", err.Error()), client, callID, 0, false, 0)
 		return
 	}
 
 	result, err := parametersStream.ReadBool()
 	if err != nil {
-		go protocol.ReportNATTraversalResultHandler(fmt.Errorf("Failed to read result from parameters. %s", err.Error()), client, callID, 0, false, 0)
+		go protocol.reportNATTraversalResultHandler(fmt.Errorf("Failed to read result from parameters. %s", err.Error()), client, callID, 0, false, 0)
 		return
 	}
 
@@ -48,10 +48,10 @@ func (protocol *Protocol) handleReportNATTraversalResult(packet nex.PacketInterf
 	if natTraversalVersion.Major >= 3 && natTraversalVersion.Minor >= 0 {
 		rtt, err = parametersStream.ReadUInt32LE()
 		if err != nil {
-			go protocol.ReportNATTraversalResultHandler(fmt.Errorf("Failed to read rtt from parameters. %s", err.Error()), client, callID, 0, false, 0)
+			go protocol.reportNATTraversalResultHandler(fmt.Errorf("Failed to read rtt from parameters. %s", err.Error()), client, callID, 0, false, 0)
 			return
 		}
 	}
 
-	go protocol.ReportNATTraversalResultHandler(nil, client, callID, cid, result, rtt)
+	go protocol.reportNATTraversalResultHandler(nil, client, callID, cid, result, rtt)
 }

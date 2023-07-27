@@ -10,11 +10,11 @@ import (
 
 // GetObjectInfos sets the GetObjectInfos handler function
 func (protocol *Protocol) GetObjectInfos(handler func(err error, client *nex.Client, callID uint32, dataIDs []uint64)) {
-	protocol.GetObjectInfosHandler = handler
+	protocol.getObjectInfosHandler = handler
 }
 
 func (protocol *Protocol) handleGetObjectInfos(packet nex.PacketInterface) {
-	if protocol.GetObjectInfosHandler == nil {
+	if protocol.getObjectInfosHandler == nil {
 		globals.Logger.Warning("DataStoreSMM::GetObjectInfos not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -30,9 +30,9 @@ func (protocol *Protocol) handleGetObjectInfos(packet nex.PacketInterface) {
 
 	dataIDs, err := parametersStream.ReadListUInt64LE()
 	if err != nil {
-		go protocol.GetObjectInfosHandler(fmt.Errorf("Failed to read dataIDs from parameters. %s", err.Error()), client, callID, nil)
+		go protocol.getObjectInfosHandler(fmt.Errorf("Failed to read dataIDs from parameters. %s", err.Error()), client, callID, nil)
 		return
 	}
 
-	go protocol.GetObjectInfosHandler(nil, client, callID, dataIDs)
+	go protocol.getObjectInfosHandler(nil, client, callID, dataIDs)
 }

@@ -11,11 +11,11 @@ import (
 
 // GetBufferQueue sets the GetBufferQueue handler function
 func (protocol *Protocol) GetBufferQueue(handler func(err error, client *nex.Client, callID uint32, bufferQueueParam *datastore_super_mario_maker_types.BufferQueueParam)) {
-	protocol.GetBufferQueueHandler = handler
+	protocol.getBufferQueueHandler = handler
 }
 
 func (protocol *Protocol) handleGetBufferQueue(packet nex.PacketInterface) {
-	if protocol.GetBufferQueueHandler == nil {
+	if protocol.getBufferQueueHandler == nil {
 		globals.Logger.Warning("DataStoreSMM::GetBufferQueue not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -31,9 +31,9 @@ func (protocol *Protocol) handleGetBufferQueue(packet nex.PacketInterface) {
 
 	bufferQueueParam, err := parametersStream.ReadStructure(datastore_super_mario_maker_types.NewBufferQueueParam())
 	if err != nil {
-		go protocol.GetBufferQueueHandler(fmt.Errorf("Failed to read bufferQueueParam from parameters. %s", err.Error()), client, callID, nil)
+		go protocol.getBufferQueueHandler(fmt.Errorf("Failed to read bufferQueueParam from parameters. %s", err.Error()), client, callID, nil)
 		return
 	}
 
-	go protocol.GetBufferQueueHandler(nil, client, callID, bufferQueueParam.(*datastore_super_mario_maker_types.BufferQueueParam))
+	go protocol.getBufferQueueHandler(nil, client, callID, bufferQueueParam.(*datastore_super_mario_maker_types.BufferQueueParam))
 }

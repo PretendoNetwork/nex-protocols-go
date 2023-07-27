@@ -10,11 +10,11 @@ import (
 
 // Login sets the Login handler function
 func (protocol *Protocol) Login(handler func(err error, client *nex.Client, callID uint32, strUserName string)) {
-	protocol.LoginHandler = handler
+	protocol.loginHandler = handler
 }
 
 func (protocol *Protocol) handleLogin(packet nex.PacketInterface) {
-	if protocol.LoginHandler == nil {
+	if protocol.loginHandler == nil {
 		globals.Logger.Warning("TicketGranting::Login not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -30,9 +30,9 @@ func (protocol *Protocol) handleLogin(packet nex.PacketInterface) {
 
 	strUserName, err := parametersStream.ReadString()
 	if err != nil {
-		go protocol.LoginHandler(fmt.Errorf("Failed to read strUserName from parameters. %s", err.Error()), client, callID, "")
+		go protocol.loginHandler(fmt.Errorf("Failed to read strUserName from parameters. %s", err.Error()), client, callID, "")
 		return
 	}
 
-	go protocol.LoginHandler(nil, client, callID, strUserName)
+	go protocol.loginHandler(nil, client, callID, strUserName)
 }

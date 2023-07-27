@@ -8,13 +8,13 @@ import (
 
 // ReportUser sets the ReportUser handler function
 func (protocol *Protocol) ReportUser(handler func(err error, client *nex.Client, callID uint32)) {
-	protocol.ReportUserHandler = handler
+	protocol.reportUserHandler = handler
 }
 
 func (protocol *Protocol) handleReportUser(packet nex.PacketInterface) {
 	globals.Logger.Warning("Screening::ReportUser STUBBED")
 
-	if protocol.ReportUserHandler == nil {
+	if protocol.reportUserHandler == nil {
 		globals.Logger.Warning("Screening::ReportUser not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return

@@ -10,11 +10,11 @@ import (
 
 // UploadCommonData sets the UploadCommonData handler function
 func (protocol *Protocol) UploadCommonData(handler func(err error, client *nex.Client, callID uint32, commonData []byte, uniqueID uint64)) {
-	protocol.UploadCommonDataHandler = handler
+	protocol.uploadCommonDataHandler = handler
 }
 
 func (protocol *Protocol) handleUploadCommonData(packet nex.PacketInterface) {
-	if protocol.UploadCommonDataHandler == nil {
+	if protocol.uploadCommonDataHandler == nil {
 		globals.Logger.Warning("Ranking::UploadCommonData not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -30,15 +30,15 @@ func (protocol *Protocol) handleUploadCommonData(packet nex.PacketInterface) {
 
 	commonData, err := parametersStream.ReadBuffer()
 	if err != nil {
-		go protocol.UploadCommonDataHandler(fmt.Errorf("Failed to read commonData from parameters. %s", err.Error()), client, callID, nil, 0)
+		go protocol.uploadCommonDataHandler(fmt.Errorf("Failed to read commonData from parameters. %s", err.Error()), client, callID, nil, 0)
 		return
 	}
 
 	uniqueID, err := parametersStream.ReadUInt64LE()
 	if err != nil {
-		go protocol.UploadCommonDataHandler(fmt.Errorf("Failed to read uniqueID from parameters. %s", err.Error()), client, callID, nil, 0)
+		go protocol.uploadCommonDataHandler(fmt.Errorf("Failed to read uniqueID from parameters. %s", err.Error()), client, callID, nil, 0)
 		return
 	}
 
-	go protocol.UploadCommonDataHandler(nil, client, callID, commonData, uniqueID)
+	go protocol.uploadCommonDataHandler(nil, client, callID, commonData, uniqueID)
 }

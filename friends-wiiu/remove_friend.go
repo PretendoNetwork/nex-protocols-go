@@ -10,11 +10,11 @@ import (
 
 // RemoveFriend sets the RemoveFriend handler function
 func (protocol *Protocol) RemoveFriend(handler func(err error, client *nex.Client, callID uint32, pid uint32)) {
-	protocol.RemoveFriendHandler = handler
+	protocol.removeFriendHandler = handler
 }
 
 func (protocol *Protocol) handleRemoveFriend(packet nex.PacketInterface) {
-	if protocol.RemoveFriendHandler == nil {
+	if protocol.removeFriendHandler == nil {
 		globals.Logger.Warning("FriendsWiiU::RemoveFriend not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -30,9 +30,9 @@ func (protocol *Protocol) handleRemoveFriend(packet nex.PacketInterface) {
 
 	pid, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		go protocol.RemoveFriendHandler(fmt.Errorf("Failed to read pid from parameters. %s", err.Error()), client, callID, 0)
+		go protocol.removeFriendHandler(fmt.Errorf("Failed to read pid from parameters. %s", err.Error()), client, callID, 0)
 		return
 	}
 
-	go protocol.RemoveFriendHandler(nil, client, callID, pid)
+	go protocol.removeFriendHandler(nil, client, callID, pid)
 }

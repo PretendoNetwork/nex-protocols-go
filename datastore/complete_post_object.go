@@ -11,11 +11,11 @@ import (
 
 // CompletePostObject sets the CompletePostObject handler function
 func (protocol *Protocol) CompletePostObject(handler func(err error, client *nex.Client, callID uint32, dataStoreCompletePostParam *datastore_types.DataStoreCompletePostParam)) {
-	protocol.CompletePostObjectHandler = handler
+	protocol.completePostObjectHandler = handler
 }
 
 func (protocol *Protocol) handleCompletePostObject(packet nex.PacketInterface) {
-	if protocol.CompletePostObjectHandler == nil {
+	if protocol.completePostObjectHandler == nil {
 		globals.Logger.Warning("DataStore::CompletePostObject not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -31,9 +31,9 @@ func (protocol *Protocol) handleCompletePostObject(packet nex.PacketInterface) {
 
 	dataStoreCompletePostParam, err := parametersStream.ReadStructure(datastore_types.NewDataStoreCompletePostParam())
 	if err != nil {
-		go protocol.CompletePostObjectHandler(fmt.Errorf("Failed to read dataStoreCompletePostParam from parameters. %s", err.Error()), client, callID, nil)
+		go protocol.completePostObjectHandler(fmt.Errorf("Failed to read dataStoreCompletePostParam from parameters. %s", err.Error()), client, callID, nil)
 		return
 	}
 
-	go protocol.CompletePostObjectHandler(nil, client, callID, dataStoreCompletePostParam.(*datastore_types.DataStoreCompletePostParam))
+	go protocol.completePostObjectHandler(nil, client, callID, dataStoreCompletePostParam.(*datastore_types.DataStoreCompletePostParam))
 }

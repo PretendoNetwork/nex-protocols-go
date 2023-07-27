@@ -11,11 +11,11 @@ import (
 
 // PrepareAttachFile sets the PrepareAttachFile handler function
 func (protocol *Protocol) PrepareAttachFile(handler func(err error, client *nex.Client, callID uint32, dataStoreAttachFileParam *datastore_super_mario_maker_types.DataStoreAttachFileParam)) {
-	protocol.PrepareAttachFileHandler = handler
+	protocol.prepareAttachFileHandler = handler
 }
 
 func (protocol *Protocol) handlePrepareAttachFile(packet nex.PacketInterface) {
-	if protocol.PrepareAttachFileHandler == nil {
+	if protocol.prepareAttachFileHandler == nil {
 		globals.Logger.Warning("DataStoreSMM::PrepareAttachFile not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -31,9 +31,9 @@ func (protocol *Protocol) handlePrepareAttachFile(packet nex.PacketInterface) {
 
 	dataStoreAttachFileParam, err := parametersStream.ReadStructure(datastore_super_mario_maker_types.NewDataStoreAttachFileParam())
 	if err != nil {
-		go protocol.PrepareAttachFileHandler(fmt.Errorf("Failed to read dataStoreAttachFileParam from parameters. %s", err.Error()), client, callID, nil)
+		go protocol.prepareAttachFileHandler(fmt.Errorf("Failed to read dataStoreAttachFileParam from parameters. %s", err.Error()), client, callID, nil)
 		return
 	}
 
-	go protocol.PrepareAttachFileHandler(nil, client, callID, dataStoreAttachFileParam.(*datastore_super_mario_maker_types.DataStoreAttachFileParam))
+	go protocol.prepareAttachFileHandler(nil, client, callID, dataStoreAttachFileParam.(*datastore_super_mario_maker_types.DataStoreAttachFileParam))
 }

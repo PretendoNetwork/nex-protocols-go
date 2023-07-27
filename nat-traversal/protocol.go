@@ -37,13 +37,13 @@ const (
 // Protocol stores all the RMC method handlers for the NAT Traversal protocol and listens for requests
 type Protocol struct {
 	Server                                *nex.Server
-	RequestProbeInitiationHandler         func(err error, client *nex.Client, callID uint32, urlTargetList []*nex.StationURL)
-	InitiateProbeHandler                  func(err error, client *nex.Client, callID uint32, urlStationToProbe *nex.StationURL)
-	RequestProbeInitiationExtHandler      func(err error, client *nex.Client, callID uint32, targetList []string, stationToProbe string)
-	ReportNATTraversalResultHandler       func(err error, client *nex.Client, callID uint32, cid uint32, result bool, rtt uint32)
-	ReportNATPropertiesHandler            func(err error, client *nex.Client, callID uint32, natmapping uint32, natfiltering uint32, rtt uint32)
-	GetRelaySignatureKeyHandler           func(err error, client *nex.Client, callID uint32)
-	ReportNATTraversalResultDetailHandler func(err error, client *nex.Client, callID uint32, cid uint32, result bool, detail int32, rtt uint32)
+	requestProbeInitiationHandler         func(err error, client *nex.Client, callID uint32, urlTargetList []*nex.StationURL)
+	initiateProbeHandler                  func(err error, client *nex.Client, callID uint32, urlStationToProbe *nex.StationURL)
+	requestProbeInitiationExtHandler      func(err error, client *nex.Client, callID uint32, targetList []string, stationToProbe string)
+	reportNATTraversalResultHandler       func(err error, client *nex.Client, callID uint32, cid uint32, result bool, rtt uint32)
+	reportNATPropertiesHandler            func(err error, client *nex.Client, callID uint32, natmapping uint32, natfiltering uint32, rtt uint32)
+	getRelaySignatureKeyHandler           func(err error, client *nex.Client, callID uint32)
+	reportNATTraversalResultDetailHandler func(err error, client *nex.Client, callID uint32, cid uint32, result bool, detail int32, rtt uint32)
 }
 
 // Setup initializes the protocol

@@ -11,11 +11,11 @@ import (
 
 // GetMeta sets the GetMeta handler function
 func (protocol *Protocol) GetMeta(handler func(err error, client *nex.Client, callID uint32, dataStoreGetMetaParam *datastore_types.DataStoreGetMetaParam)) {
-	protocol.GetMetaHandler = handler
+	protocol.getMetaHandler = handler
 }
 
 func (protocol *Protocol) handleGetMeta(packet nex.PacketInterface) {
-	if protocol.GetMetaHandler == nil {
+	if protocol.getMetaHandler == nil {
 		globals.Logger.Warning("DataStore::GetMeta not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -31,9 +31,9 @@ func (protocol *Protocol) handleGetMeta(packet nex.PacketInterface) {
 
 	dataStoreGetMetaParam, err := parametersStream.ReadStructure(datastore_types.NewDataStoreGetMetaParam())
 	if err != nil {
-		go protocol.GetMetaHandler(fmt.Errorf("Failed to read dataStoreGetMetaParam from parameters. %s", err.Error()), client, callID, nil)
+		go protocol.getMetaHandler(fmt.Errorf("Failed to read dataStoreGetMetaParam from parameters. %s", err.Error()), client, callID, nil)
 		return
 	}
 
-	go protocol.GetMetaHandler(nil, client, callID, dataStoreGetMetaParam.(*datastore_types.DataStoreGetMetaParam))
+	go protocol.getMetaHandler(nil, client, callID, dataStoreGetMetaParam.(*datastore_types.DataStoreGetMetaParam))
 }

@@ -10,11 +10,11 @@ import (
 
 // GetApplicationConfigString sets the GetApplicationConfigString handler function
 func (protocol *Protocol) GetApplicationConfigString(handler func(err error, client *nex.Client, callID uint32, applicationID uint32)) {
-	protocol.GetApplicationConfigStringHandler = handler
+	protocol.getApplicationConfigStringHandler = handler
 }
 
 func (protocol *Protocol) handleGetApplicationConfigString(packet nex.PacketInterface) {
-	if protocol.GetApplicationConfigStringHandler == nil {
+	if protocol.getApplicationConfigStringHandler == nil {
 		globals.Logger.Warning("DataStoreSMM::GetApplicationConfigString not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -30,9 +30,9 @@ func (protocol *Protocol) handleGetApplicationConfigString(packet nex.PacketInte
 
 	applicationID, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		go protocol.GetApplicationConfigStringHandler(fmt.Errorf("Failed to read applicationID from parameters. %s", err.Error()), client, callID, 0)
+		go protocol.getApplicationConfigStringHandler(fmt.Errorf("Failed to read applicationID from parameters. %s", err.Error()), client, callID, 0)
 		return
 	}
 
-	go protocol.GetApplicationConfigStringHandler(nil, client, callID, applicationID)
+	go protocol.getApplicationConfigStringHandler(nil, client, callID, applicationID)
 }

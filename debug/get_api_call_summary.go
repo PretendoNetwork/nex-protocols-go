@@ -8,13 +8,13 @@ import (
 
 // GetAPICallSummary sets the GetAPICallSummary handler function
 func (protocol *Protocol) GetAPICallSummary(handler func(err error, client *nex.Client, callID uint32)) {
-	protocol.GetAPICallSummaryHandler = handler
+	protocol.getAPICallSummaryHandler = handler
 }
 
 func (protocol *Protocol) handleGetAPICallSummary(packet nex.PacketInterface) {
 	globals.Logger.Warning("Debug::GetAPICallSummary STUBBED")
 
-	if protocol.GetAPICallSummaryHandler == nil {
+	if protocol.getAPICallSummaryHandler == nil {
 		globals.Logger.Warning("Debug::GetAPICallSummary not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return

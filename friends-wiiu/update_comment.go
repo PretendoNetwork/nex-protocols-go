@@ -11,11 +11,11 @@ import (
 
 // UpdateComment sets the UpdateComment handler function
 func (protocol *Protocol) UpdateComment(handler func(err error, client *nex.Client, callID uint32, comment *friends_wiiu_types.Comment)) {
-	protocol.UpdateCommentHandler = handler
+	protocol.updateCommentHandler = handler
 }
 
 func (protocol *Protocol) handleUpdateComment(packet nex.PacketInterface) {
-	if protocol.UpdateCommentHandler == nil {
+	if protocol.updateCommentHandler == nil {
 		globals.Logger.Warning("FriendsWiiU::UpdateComment not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -31,9 +31,9 @@ func (protocol *Protocol) handleUpdateComment(packet nex.PacketInterface) {
 
 	comment, err := parametersStream.ReadStructure(friends_wiiu_types.NewComment())
 	if err != nil {
-		go protocol.UpdateCommentHandler(fmt.Errorf("Failed to read comment from parameters. %s", err.Error()), client, callID, nil)
+		go protocol.updateCommentHandler(fmt.Errorf("Failed to read comment from parameters. %s", err.Error()), client, callID, nil)
 		return
 	}
 
-	go protocol.UpdateCommentHandler(nil, client, callID, comment.(*friends_wiiu_types.Comment))
+	go protocol.updateCommentHandler(nil, client, callID, comment.(*friends_wiiu_types.Comment))
 }

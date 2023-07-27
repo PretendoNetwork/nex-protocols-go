@@ -10,11 +10,11 @@ import (
 
 // CheckRateCustomRankingCounter sets the CheckRateCustomRankingCounter handler function
 func (protocol *Protocol) CheckRateCustomRankingCounter(handler func(err error, client *nex.Client, callID uint32, applicationID uint32)) {
-	protocol.CheckRateCustomRankingCounterHandler = handler
+	protocol.checkRateCustomRankingCounterHandler = handler
 }
 
 func (protocol *Protocol) handleCheckRateCustomRankingCounter(packet nex.PacketInterface) {
-	if protocol.CheckRateCustomRankingCounterHandler == nil {
+	if protocol.checkRateCustomRankingCounterHandler == nil {
 		globals.Logger.Warning("DataStoreSMM::CheckRateCustomRankingCounter not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -30,9 +30,9 @@ func (protocol *Protocol) handleCheckRateCustomRankingCounter(packet nex.PacketI
 
 	applicationID, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		go protocol.CheckRateCustomRankingCounterHandler(fmt.Errorf("Failed to read applicationID from parameters. %s", err.Error()), client, callID, 0)
+		go protocol.checkRateCustomRankingCounterHandler(fmt.Errorf("Failed to read applicationID from parameters. %s", err.Error()), client, callID, 0)
 		return
 	}
 
-	go protocol.CheckRateCustomRankingCounterHandler(nil, client, callID, applicationID)
+	go protocol.checkRateCustomRankingCounterHandler(nil, client, callID, applicationID)
 }

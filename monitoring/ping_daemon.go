@@ -8,11 +8,11 @@ import (
 
 // PingDaemon sets the PingDaemon handler function
 func (protocol *Protocol) PingDaemon(handler func(err error, client *nex.Client, callID uint32)) {
-	protocol.PingDaemonHandler = handler
+	protocol.pingDaemonHandler = handler
 }
 
 func (protocol *Protocol) handlePingDaemon(packet nex.PacketInterface) {
-	if protocol.PingDaemonHandler == nil {
+	if protocol.pingDaemonHandler == nil {
 		globals.Logger.Warning("Monitoring::PingDaemon not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -23,5 +23,5 @@ func (protocol *Protocol) handlePingDaemon(packet nex.PacketInterface) {
 
 	callID := request.CallID()
 
-	go protocol.PingDaemonHandler(nil, client, callID)
+	go protocol.pingDaemonHandler(nil, client, callID)
 }

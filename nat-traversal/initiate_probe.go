@@ -10,11 +10,11 @@ import (
 
 // InitiateProbe sets the InitiateProbe handler function
 func (protocol *Protocol) InitiateProbe(handler func(err error, client *nex.Client, callID uint32, urlStationToProbe *nex.StationURL)) {
-	protocol.InitiateProbeHandler = handler
+	protocol.initiateProbeHandler = handler
 }
 
 func (protocol *Protocol) handleInitiateProbe(packet nex.PacketInterface) {
-	if protocol.InitiateProbeHandler == nil {
+	if protocol.initiateProbeHandler == nil {
 		globals.Logger.Warning("NATTraversal::InitiateProbe not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -30,9 +30,9 @@ func (protocol *Protocol) handleInitiateProbe(packet nex.PacketInterface) {
 
 	urlStationToProbe, err := parametersStream.ReadStationURL()
 	if err != nil {
-		go protocol.InitiateProbeHandler(fmt.Errorf("Failed to read urlStationToProbe from parameters. %s", err.Error()), client, callID, nil)
+		go protocol.initiateProbeHandler(fmt.Errorf("Failed to read urlStationToProbe from parameters. %s", err.Error()), client, callID, nil)
 		return
 	}
 
-	go protocol.InitiateProbeHandler(nil, client, callID, urlStationToProbe)
+	go protocol.initiateProbeHandler(nil, client, callID, urlStationToProbe)
 }

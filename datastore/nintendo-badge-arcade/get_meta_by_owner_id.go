@@ -11,11 +11,11 @@ import (
 
 // GetMetaByOwnerID sets the GetMetaByOwnerID function
 func (protocol *Protocol) GetMetaByOwnerID(handler func(err error, client *nex.Client, callID uint32, param *datastore_nintendo_badge_arcade_types.DataStoreGetMetaByOwnerIDParam)) {
-	protocol.GetMetaByOwnerIDHandler = handler
+	protocol.getMetaByOwnerIDHandler = handler
 }
 
 func (protocol *Protocol) handleGetMetaByOwnerID(packet nex.PacketInterface) {
-	if protocol.GetMetaByOwnerIDHandler == nil {
+	if protocol.getMetaByOwnerIDHandler == nil {
 		globals.Logger.Warning("DataStoreBadgeArcade::GetMetaByOwnerID not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -31,9 +31,9 @@ func (protocol *Protocol) handleGetMetaByOwnerID(packet nex.PacketInterface) {
 
 	param, err := parametersStream.ReadStructure(datastore_nintendo_badge_arcade_types.NewDataStoreGetMetaByOwnerIDParam())
 	if err != nil {
-		go protocol.GetMetaByOwnerIDHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
+		go protocol.getMetaByOwnerIDHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
 		return
 	}
 
-	go protocol.GetMetaByOwnerIDHandler(nil, client, callID, param.(*datastore_nintendo_badge_arcade_types.DataStoreGetMetaByOwnerIDParam))
+	go protocol.getMetaByOwnerIDHandler(nil, client, callID, param.(*datastore_nintendo_badge_arcade_types.DataStoreGetMetaByOwnerIDParam))
 }

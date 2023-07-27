@@ -10,11 +10,11 @@ import (
 
 // MarkFriendRequestsAsReceived sets the MarkFriendRequestsAsReceived handler function
 func (protocol *Protocol) MarkFriendRequestsAsReceived(handler func(err error, client *nex.Client, callID uint32, ids []uint64)) {
-	protocol.MarkFriendRequestsAsReceivedHandler = handler
+	protocol.markFriendRequestsAsReceivedHandler = handler
 }
 
 func (protocol *Protocol) handleMarkFriendRequestsAsReceived(packet nex.PacketInterface) {
-	if protocol.MarkFriendRequestsAsReceivedHandler == nil {
+	if protocol.markFriendRequestsAsReceivedHandler == nil {
 		globals.Logger.Warning("FriendsWiiU::MarkFriendRequestsAsReceived not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -30,9 +30,9 @@ func (protocol *Protocol) handleMarkFriendRequestsAsReceived(packet nex.PacketIn
 
 	ids, err := parametersStream.ReadListUInt64LE()
 	if err != nil {
-		go protocol.GetRequestBlockSettingsHandler(fmt.Errorf("Failed to read ids from parameters. %s", err.Error()), client, callID, nil)
+		go protocol.getRequestBlockSettingsHandler(fmt.Errorf("Failed to read ids from parameters. %s", err.Error()), client, callID, nil)
 		return
 	}
 
-	go protocol.MarkFriendRequestsAsReceivedHandler(nil, client, callID, ids)
+	go protocol.markFriendRequestsAsReceivedHandler(nil, client, callID, ids)
 }

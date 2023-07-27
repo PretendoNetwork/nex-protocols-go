@@ -8,13 +8,13 @@ import (
 
 // ReportDataStoreContent sets the ReportDataStoreContent handler function
 func (protocol *Protocol) ReportDataStoreContent(handler func(err error, client *nex.Client, callID uint32)) {
-	protocol.ReportDataStoreContentHandler = handler
+	protocol.reportDataStoreContentHandler = handler
 }
 
 func (protocol *Protocol) handleReportDataStoreContent(packet nex.PacketInterface) {
 	globals.Logger.Warning("Screening::ReportDataStoreContent STUBBED")
 
-	if protocol.ReportDataStoreContentHandler == nil {
+	if protocol.reportDataStoreContentHandler == nil {
 		globals.Logger.Warning("Screening::ReportDataStoreContent not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return

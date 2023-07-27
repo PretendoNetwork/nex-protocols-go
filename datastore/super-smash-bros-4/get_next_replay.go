@@ -8,11 +8,11 @@ import (
 
 // GetNextReplay sets the GetNextReplay handler function
 func (protocol *Protocol) GetNextReplay(handler func(err error, client *nex.Client, callID uint32)) {
-	protocol.GetNextReplayHandler = handler
+	protocol.getNextReplayHandler = handler
 }
 
 func (protocol *Protocol) handleGetNextReplay(packet nex.PacketInterface) {
-	if protocol.GetNextReplayHandler == nil {
+	if protocol.getNextReplayHandler == nil {
 		globals.Logger.Warning("DataStoreSuperSmashBros4::GetNextReplay not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -23,5 +23,5 @@ func (protocol *Protocol) handleGetNextReplay(packet nex.PacketInterface) {
 
 	callID := request.CallID()
 
-	go protocol.GetNextReplayHandler(nil, client, callID)
+	go protocol.getNextReplayHandler(nil, client, callID)
 }

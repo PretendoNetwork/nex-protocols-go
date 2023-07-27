@@ -10,11 +10,11 @@ import (
 
 // GetName sets the GetName handler function
 func (protocol *Protocol) GetName(handler func(err error, client *nex.Client, callID uint32, userPID uint32)) {
-	protocol.GetNameHandler = handler
+	protocol.getNameHandler = handler
 }
 
 func (protocol *Protocol) handleGetName(packet nex.PacketInterface) {
-	if protocol.GetNameHandler == nil {
+	if protocol.getNameHandler == nil {
 		globals.Logger.Warning("TicketGranting::GetName not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -30,9 +30,9 @@ func (protocol *Protocol) handleGetName(packet nex.PacketInterface) {
 
 	id, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		go protocol.GetNameHandler(fmt.Errorf("Failed to read id from parameters. %s", err.Error()), client, callID, 0)
+		go protocol.getNameHandler(fmt.Errorf("Failed to read id from parameters. %s", err.Error()), client, callID, 0)
 		return
 	}
 
-	go protocol.GetNameHandler(nil, client, callID, id)
+	go protocol.getNameHandler(nil, client, callID, id)
 }

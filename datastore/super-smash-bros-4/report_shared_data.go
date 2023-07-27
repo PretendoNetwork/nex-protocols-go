@@ -10,11 +10,11 @@ import (
 
 // ReportSharedData sets the ReportSharedData handler function
 func (protocol *Protocol) ReportSharedData(handler func(err error, client *nex.Client, callID uint32, dataID uint64)) {
-	protocol.ReportSharedDataHandler = handler
+	protocol.reportSharedDataHandler = handler
 }
 
 func (protocol *Protocol) handleReportSharedData(packet nex.PacketInterface) {
-	if protocol.ReportSharedDataHandler == nil {
+	if protocol.reportSharedDataHandler == nil {
 		globals.Logger.Warning("DataStoreSuperSmashBros4::ReportSharedData not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -30,9 +30,9 @@ func (protocol *Protocol) handleReportSharedData(packet nex.PacketInterface) {
 
 	dataID, err := parametersStream.ReadUInt64LE()
 	if err != nil {
-		go protocol.ReportSharedDataHandler(fmt.Errorf("Failed to read dataID from parameters. %s", err.Error()), client, callID, 0)
+		go protocol.reportSharedDataHandler(fmt.Errorf("Failed to read dataID from parameters. %s", err.Error()), client, callID, 0)
 		return
 	}
 
-	go protocol.ReportSharedDataHandler(nil, client, callID, dataID)
+	go protocol.reportSharedDataHandler(nil, client, callID, dataID)
 }

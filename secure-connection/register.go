@@ -10,11 +10,11 @@ import (
 
 // Register sets the Register handler function
 func (protocol *Protocol) Register(handler func(err error, client *nex.Client, callID uint32, vecMyURLs []*nex.StationURL)) {
-	protocol.RegisterHandler = handler
+	protocol.registerHandler = handler
 }
 
 func (protocol *Protocol) handleRegister(packet nex.PacketInterface) {
-	if protocol.RegisterHandler == nil {
+	if protocol.registerHandler == nil {
 		globals.Logger.Warning("SecureConnection::Register not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -30,9 +30,9 @@ func (protocol *Protocol) handleRegister(packet nex.PacketInterface) {
 
 	vecMyURLs, err := parametersStream.ReadListStationURL()
 	if err != nil {
-		go protocol.RegisterHandler(fmt.Errorf("Failed to read hCustomData from parameters. %s", err.Error()), client, callID, nil)
+		go protocol.registerHandler(fmt.Errorf("Failed to read hCustomData from parameters. %s", err.Error()), client, callID, nil)
 		return
 	}
 
-	go protocol.RegisterHandler(nil, client, callID, vecMyURLs)
+	go protocol.registerHandler(nil, client, callID, vecMyURLs)
 }

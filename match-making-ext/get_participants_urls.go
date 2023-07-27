@@ -10,11 +10,11 @@ import (
 
 // GetParticipantsURLs sets the GetParticipantsURLs handler function
 func (protocol *Protocol) GetParticipantsURLs(handler func(err error, client *nex.Client, callID uint32, lstGatherings []uint32)) {
-	protocol.GetParticipantsURLsHandler = handler
+	protocol.getParticipantsURLsHandler = handler
 }
 
 func (protocol *Protocol) handleGetParticipantsURLs(packet nex.PacketInterface) {
-	if protocol.GetParticipantsURLsHandler == nil {
+	if protocol.getParticipantsURLsHandler == nil {
 		globals.Logger.Warning("MatchMakingExt::GetParticipantsURLs not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -30,8 +30,8 @@ func (protocol *Protocol) handleGetParticipantsURLs(packet nex.PacketInterface) 
 
 	lstGatherings, err := parametersStream.ReadListUInt32LE()
 	if err != nil {
-		go protocol.GetParticipantsURLsHandler(fmt.Errorf("Failed to read lstGatherings from parameters. %s", err.Error()), client, callID, nil)
+		go protocol.getParticipantsURLsHandler(fmt.Errorf("Failed to read lstGatherings from parameters. %s", err.Error()), client, callID, nil)
 	}
 
-	go protocol.GetParticipantsURLsHandler(nil, client, callID, lstGatherings)
+	go protocol.getParticipantsURLsHandler(nil, client, callID, lstGatherings)
 }

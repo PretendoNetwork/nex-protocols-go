@@ -10,11 +10,11 @@ import (
 
 // DeleteFromDeletions sets the DeleteFromDeletions handler function
 func (protocol *Protocol) DeleteFromDeletions(handler func(err error, client *nex.Client, callID uint32, lstDeletions []uint32, pid uint32)) {
-	protocol.DeleteFromDeletionsHandler = handler
+	protocol.deleteFromDeletionsHandler = handler
 }
 
 func (protocol *Protocol) handleDeleteFromDeletions(packet nex.PacketInterface) {
-	if protocol.DeleteFromDeletionsHandler == nil {
+	if protocol.deleteFromDeletionsHandler == nil {
 		globals.Logger.Warning("MatchMakingExt::DeleteFromDeletions not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -30,15 +30,15 @@ func (protocol *Protocol) handleDeleteFromDeletions(packet nex.PacketInterface) 
 
 	lstDeletions, err := parametersStream.ReadListUInt32LE()
 	if err != nil {
-		go protocol.DeleteFromDeletionsHandler(fmt.Errorf("Failed to read lstDeletionsCount from parameters. %s", err.Error()), client, callID, nil, 0)
+		go protocol.deleteFromDeletionsHandler(fmt.Errorf("Failed to read lstDeletionsCount from parameters. %s", err.Error()), client, callID, nil, 0)
 		return
 	}
 
 	pid, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		go protocol.DeleteFromDeletionsHandler(fmt.Errorf("Failed to read pid from parameters. %s", err.Error()), client, callID, nil, 0)
+		go protocol.deleteFromDeletionsHandler(fmt.Errorf("Failed to read pid from parameters. %s", err.Error()), client, callID, nil, 0)
 		return
 	}
 
-	go protocol.DeleteFromDeletionsHandler(nil, client, callID, lstDeletions, pid)
+	go protocol.deleteFromDeletionsHandler(nil, client, callID, lstDeletions, pid)
 }

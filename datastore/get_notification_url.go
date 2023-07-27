@@ -11,11 +11,11 @@ import (
 
 // GetNotificationURL sets the GetNotificationURL handler function
 func (protocol *Protocol) GetNotificationURL(handler func(err error, client *nex.Client, callID uint32, param *datastore_types.DataStoreGetNotificationURLParam)) {
-	protocol.GetNotificationURLHandler = handler
+	protocol.getNotificationURLHandler = handler
 }
 
 func (protocol *Protocol) handleGetNotificationURL(packet nex.PacketInterface) {
-	if protocol.GetNotificationURLHandler == nil {
+	if protocol.getNotificationURLHandler == nil {
 		globals.Logger.Warning("DataStore::GetNotificationURL not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -31,9 +31,9 @@ func (protocol *Protocol) handleGetNotificationURL(packet nex.PacketInterface) {
 
 	param, err := parametersStream.ReadStructure(datastore_types.NewDataStoreGetNotificationURLParam())
 	if err != nil {
-		go protocol.GetNotificationURLHandler(fmt.Errorf("Failed to read dataStoreGetNotificationURLParam from parameters. %s", err.Error()), client, callID, nil)
+		go protocol.getNotificationURLHandler(fmt.Errorf("Failed to read dataStoreGetNotificationURLParam from parameters. %s", err.Error()), client, callID, nil)
 		return
 	}
 
-	go protocol.GetNotificationURLHandler(nil, client, callID, param.(*datastore_types.DataStoreGetNotificationURLParam))
+	go protocol.getNotificationURLHandler(nil, client, callID, param.(*datastore_types.DataStoreGetNotificationURLParam))
 }

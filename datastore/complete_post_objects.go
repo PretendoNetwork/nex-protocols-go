@@ -10,11 +10,11 @@ import (
 
 // CompletePostObjects sets the CompletePostObjects handler function
 func (protocol *Protocol) CompletePostObjects(handler func(err error, client *nex.Client, callID uint32, dataIDs []uint64)) {
-	protocol.CompletePostObjectsHandler = handler
+	protocol.completePostObjectsHandler = handler
 }
 
 func (protocol *Protocol) handleCompletePostObjects(packet nex.PacketInterface) {
-	if protocol.CompletePostObjectsHandler == nil {
+	if protocol.completePostObjectsHandler == nil {
 		globals.Logger.Warning("DataStore::CompletePostObjects not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -30,9 +30,9 @@ func (protocol *Protocol) handleCompletePostObjects(packet nex.PacketInterface) 
 
 	dataIDs, err := parametersStream.ReadListUInt64LE()
 	if err != nil {
-		go protocol.CompletePostObjectsHandler(fmt.Errorf("Failed to read dataIDs from parameters. %s", err.Error()), client, callID, nil)
+		go protocol.completePostObjectsHandler(fmt.Errorf("Failed to read dataIDs from parameters. %s", err.Error()), client, callID, nil)
 		return
 	}
 
-	go protocol.CompletePostObjectsHandler(nil, client, callID, dataIDs)
+	go protocol.completePostObjectsHandler(nil, client, callID, dataIDs)
 }

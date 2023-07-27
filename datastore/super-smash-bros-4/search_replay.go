@@ -11,11 +11,11 @@ import (
 
 // SearchReplay sets the SearchReplay handler function
 func (protocol *Protocol) SearchReplay(handler func(err error, client *nex.Client, callID uint32, param *datastore_super_smash_bros_4_types.DataStoreSearchReplayParam)) {
-	protocol.SearchReplayHandler = handler
+	protocol.searchReplayHandler = handler
 }
 
 func (protocol *Protocol) handleSearchReplay(packet nex.PacketInterface) {
-	if protocol.SearchReplayHandler == nil {
+	if protocol.searchReplayHandler == nil {
 		globals.Logger.Warning("DataStoreSuperSmashBros4::SearchReplay not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -31,9 +31,9 @@ func (protocol *Protocol) handleSearchReplay(packet nex.PacketInterface) {
 
 	param, err := parametersStream.ReadStructure(datastore_super_smash_bros_4_types.NewDataStoreSearchReplayParam())
 	if err != nil {
-		go protocol.SearchReplayHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
+		go protocol.searchReplayHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
 		return
 	}
 
-	go protocol.SearchReplayHandler(nil, client, callID, param.(*datastore_super_smash_bros_4_types.DataStoreSearchReplayParam))
+	go protocol.searchReplayHandler(nil, client, callID, param.(*datastore_super_smash_bros_4_types.DataStoreSearchReplayParam))
 }

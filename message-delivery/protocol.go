@@ -19,7 +19,7 @@ const (
 // Protocol stores all the RMC method handlers for the Message Delivery protocol and listens for requests
 type Protocol struct {
 	Server                *nex.Server
-	DeliverMessageHandler func(err error, client *nex.Client, callID uint32, oUserMessage *nex.DataHolder)
+	deliverMessageHandler func(err error, client *nex.Client, callID uint32, oUserMessage *nex.DataHolder)
 }
 
 // Setup initializes the protocol

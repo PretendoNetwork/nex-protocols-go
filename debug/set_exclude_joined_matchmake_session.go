@@ -8,13 +8,13 @@ import (
 
 // SetExcludeJoinedMatchmakeSession sets the SetExcludeJoinedMatchmakeSession handler function
 func (protocol *Protocol) SetExcludeJoinedMatchmakeSession(handler func(err error, client *nex.Client, callID uint32)) {
-	protocol.SetExcludeJoinedMatchmakeSessionHandler = handler
+	protocol.setExcludeJoinedMatchmakeSessionHandler = handler
 }
 
 func (protocol *Protocol) handleSetExcludeJoinedMatchmakeSession(packet nex.PacketInterface) {
 	globals.Logger.Warning("Debug::SetExcludeJoinedMatchmakeSession STUBBED")
 
-	if protocol.SetExcludeJoinedMatchmakeSessionHandler == nil {
+	if protocol.setExcludeJoinedMatchmakeSessionHandler == nil {
 		globals.Logger.Warning("Debug::SetExcludeJoinedMatchmakeSession not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return

@@ -40,14 +40,14 @@ const (
 // Protocol stores all the RMC method handlers for the Secure Connection protocol and listens for requests
 type Protocol struct {
 	Server                       *nex.Server
-	RegisterHandler              func(err error, client *nex.Client, callID uint32, vecMyURLs []*nex.StationURL)
-	RequestConnectionDataHandler func(err error, client *nex.Client, callID uint32, cidTarget uint32, pidTarget uint32)
-	RequestURLsHandler           func(err error, client *nex.Client, callID uint32, cidTarget uint32, pidTarget uint32)
-	RegisterExHandler            func(err error, client *nex.Client, callID uint32, vecMyURLs []*nex.StationURL, hCustomData *nex.DataHolder)
-	TestConnectivityHandler      func(err error, client *nex.Client, callID uint32)
-	UpdateURLsHandler            func(err error, client *nex.Client, callID uint32, vecMyURLs []*nex.StationURL)
-	ReplaceURLHandler            func(err error, client *nex.Client, callID uint32, target *nex.StationURL, url *nex.StationURL)
-	SendReportHandler            func(err error, client *nex.Client, callID uint32, reportID uint32, reportData []byte)
+	registerHandler              func(err error, client *nex.Client, callID uint32, vecMyURLs []*nex.StationURL)
+	requestConnectionDataHandler func(err error, client *nex.Client, callID uint32, cidTarget uint32, pidTarget uint32)
+	requestURLsHandler           func(err error, client *nex.Client, callID uint32, cidTarget uint32, pidTarget uint32)
+	registerExHandler            func(err error, client *nex.Client, callID uint32, vecMyURLs []*nex.StationURL, hCustomData *nex.DataHolder)
+	testConnectivityHandler      func(err error, client *nex.Client, callID uint32)
+	updateURLsHandler            func(err error, client *nex.Client, callID uint32, vecMyURLs []*nex.StationURL)
+	replaceURLHandler            func(err error, client *nex.Client, callID uint32, target *nex.StationURL, url *nex.StationURL)
+	sendReportHandler            func(err error, client *nex.Client, callID uint32, reportID uint32, reportData []byte)
 }
 
 // Setup initializes the protocol

@@ -8,11 +8,11 @@ import (
 
 // GetFightingPowerChartAll sets the GetFightingPowerChartAll handler function
 func (protocol *Protocol) GetFightingPowerChartAll(handler func(err error, client *nex.Client, callID uint32)) {
-	protocol.GetFightingPowerChartAllHandler = handler
+	protocol.getFightingPowerChartAllHandler = handler
 }
 
 func (protocol *Protocol) handleGetFightingPowerChartAll(packet nex.PacketInterface) {
-	if protocol.GetFightingPowerChartAllHandler == nil {
+	if protocol.getFightingPowerChartAllHandler == nil {
 		globals.Logger.Warning("DataStoreSuperSmashBros4::GetFightingPowerChartAll not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -23,5 +23,5 @@ func (protocol *Protocol) handleGetFightingPowerChartAll(packet nex.PacketInterf
 
 	callID := request.CallID()
 
-	go protocol.GetFightingPowerChartAllHandler(nil, client, callID)
+	go protocol.getFightingPowerChartAllHandler(nil, client, callID)
 }

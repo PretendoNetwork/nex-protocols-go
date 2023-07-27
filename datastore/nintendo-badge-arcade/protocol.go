@@ -30,7 +30,7 @@ type datastoreProtocol = datastore.Protocol
 type Protocol struct {
 	Server *nex.Server
 	datastoreProtocol
-	GetMetaByOwnerIDHandler func(err error, client *nex.Client, callID uint32, param *datastore_nintendo_badge_arcade_types.DataStoreGetMetaByOwnerIDParam)
+	getMetaByOwnerIDHandler func(err error, client *nex.Client, callID uint32, param *datastore_nintendo_badge_arcade_types.DataStoreGetMetaByOwnerIDParam)
 }
 
 // Setup initializes the protocol

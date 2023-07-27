@@ -8,11 +8,11 @@ import (
 
 // GetClusterMembers sets the GetClusterMembers handler function
 func (protocol *Protocol) GetClusterMembers(handler func(err error, client *nex.Client, callID uint32)) {
-	protocol.GetClusterMembersHandler = handler
+	protocol.getClusterMembersHandler = handler
 }
 
 func (protocol *Protocol) handleGetClusterMembers(packet nex.PacketInterface) {
-	if protocol.GetClusterMembersHandler == nil {
+	if protocol.getClusterMembersHandler == nil {
 		globals.Logger.Warning("Monitoring::GetClusterMembers not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -23,5 +23,5 @@ func (protocol *Protocol) handleGetClusterMembers(packet nex.PacketInterface) {
 
 	callID := request.CallID()
 
-	go protocol.GetClusterMembersHandler(nil, client, callID)
+	go protocol.getClusterMembersHandler(nil, client, callID)
 }

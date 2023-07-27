@@ -8,11 +8,11 @@ import (
 
 // GetMaintenanceStatus sets the GetMaintenanceStatus function
 func (protocol *Protocol) GetMaintenanceStatus(handler func(err error, client *nex.Client, callID uint32)) {
-	protocol.GetMaintenanceStatusHandler = handler
+	protocol.getMaintenanceStatusHandler = handler
 }
 
 func (protocol *Protocol) handleGetMaintenanceStatus(packet nex.PacketInterface) {
-	if protocol.GetMaintenanceStatusHandler == nil {
+	if protocol.getMaintenanceStatusHandler == nil {
 		globals.Logger.Warning("SecureConnectionNintendoBadgeArcade::GetMaintenanceStatus not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -23,5 +23,5 @@ func (protocol *Protocol) handleGetMaintenanceStatus(packet nex.PacketInterface)
 
 	callID := request.CallID()
 
-	go protocol.GetMaintenanceStatusHandler(nil, client, callID)
+	go protocol.getMaintenanceStatusHandler(nil, client, callID)
 }

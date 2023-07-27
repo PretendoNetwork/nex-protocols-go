@@ -11,11 +11,11 @@ import (
 
 // PrepareGetReplay sets the PrepareGetReplay handler function
 func (protocol *Protocol) PrepareGetReplay(handler func(err error, client *nex.Client, callID uint32, param *datastore_super_smash_bros_4_types.DataStorePrepareGetReplayParam)) {
-	protocol.PrepareGetReplayHandler = handler
+	protocol.prepareGetReplayHandler = handler
 }
 
 func (protocol *Protocol) handlePrepareGetReplay(packet nex.PacketInterface) {
-	if protocol.PrepareGetReplayHandler == nil {
+	if protocol.prepareGetReplayHandler == nil {
 		globals.Logger.Warning("DataStoreSuperSmashBros4::PrepareGetReplay not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -31,9 +31,9 @@ func (protocol *Protocol) handlePrepareGetReplay(packet nex.PacketInterface) {
 
 	param, err := parametersStream.ReadStructure(datastore_super_smash_bros_4_types.NewDataStorePrepareGetReplayParam())
 	if err != nil {
-		go protocol.PrepareGetReplayHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
+		go protocol.prepareGetReplayHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
 		return
 	}
 
-	go protocol.PrepareGetReplayHandler(nil, client, callID, param.(*datastore_super_smash_bros_4_types.DataStorePrepareGetReplayParam))
+	go protocol.prepareGetReplayHandler(nil, client, callID, param.(*datastore_super_smash_bros_4_types.DataStorePrepareGetReplayParam))
 }

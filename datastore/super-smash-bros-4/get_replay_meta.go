@@ -11,11 +11,11 @@ import (
 
 // GetReplayMeta sets the GetReplayMeta handler function
 func (protocol *Protocol) GetReplayMeta(handler func(err error, client *nex.Client, callID uint32, param *datastore_super_smash_bros_4_types.DataStoreGetReplayMetaParam)) {
-	protocol.GetReplayMetaHandler = handler
+	protocol.getReplayMetaHandler = handler
 }
 
 func (protocol *Protocol) handleGetReplayMeta(packet nex.PacketInterface) {
-	if protocol.GetReplayMetaHandler == nil {
+	if protocol.getReplayMetaHandler == nil {
 		globals.Logger.Warning("DataStoreSuperSmashBros4::GetReplayMeta not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -31,9 +31,9 @@ func (protocol *Protocol) handleGetReplayMeta(packet nex.PacketInterface) {
 
 	param, err := parametersStream.ReadStructure(datastore_super_smash_bros_4_types.NewDataStoreGetReplayMetaParam())
 	if err != nil {
-		go protocol.GetReplayMetaHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
+		go protocol.getReplayMetaHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
 		return
 	}
 
-	go protocol.GetReplayMetaHandler(nil, client, callID, param.(*datastore_super_smash_bros_4_types.DataStoreGetReplayMetaParam))
+	go protocol.getReplayMetaHandler(nil, client, callID, param.(*datastore_super_smash_bros_4_types.DataStoreGetReplayMetaParam))
 }

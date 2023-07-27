@@ -11,11 +11,11 @@ import (
 
 // GetCourseRecord sets the GetCourseRecord handler function
 func (protocol *Protocol) GetCourseRecord(handler func(err error, client *nex.Client, callID uint32, param *datastore_super_mario_maker_types.DataStoreGetCourseRecordParam)) {
-	protocol.GetCourseRecordHandler = handler
+	protocol.getCourseRecordHandler = handler
 }
 
 func (protocol *Protocol) handleGetCourseRecord(packet nex.PacketInterface) {
-	if protocol.GetCourseRecordHandler == nil {
+	if protocol.getCourseRecordHandler == nil {
 		globals.Logger.Warning("DataStoreSMM::GetCourseRecord not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -31,9 +31,9 @@ func (protocol *Protocol) handleGetCourseRecord(packet nex.PacketInterface) {
 
 	param, err := parametersStream.ReadStructure(datastore_super_mario_maker_types.NewDataStoreGetCourseRecordParam())
 	if err != nil {
-		go protocol.GetCourseRecordHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
+		go protocol.getCourseRecordHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
 		return
 	}
 
-	go protocol.GetCourseRecordHandler(nil, client, callID, param.(*datastore_super_mario_maker_types.DataStoreGetCourseRecordParam))
+	go protocol.getCourseRecordHandler(nil, client, callID, param.(*datastore_super_mario_maker_types.DataStoreGetCourseRecordParam))
 }

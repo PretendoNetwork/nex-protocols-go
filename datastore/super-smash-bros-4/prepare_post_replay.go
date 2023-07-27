@@ -11,11 +11,11 @@ import (
 
 // PreparePostReplay sets the PreparePostReplay handler function
 func (protocol *Protocol) PreparePostReplay(handler func(err error, client *nex.Client, callID uint32, param *datastore_super_smash_bros_4_types.DataStorePreparePostReplayParam)) {
-	protocol.PreparePostReplayHandler = handler
+	protocol.preparePostReplayHandler = handler
 }
 
 func (protocol *Protocol) handlePreparePostReplay(packet nex.PacketInterface) {
-	if protocol.PreparePostReplayHandler == nil {
+	if protocol.preparePostReplayHandler == nil {
 		globals.Logger.Warning("DataStoreSuperSmashBros4::PreparePostReplay not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -31,9 +31,9 @@ func (protocol *Protocol) handlePreparePostReplay(packet nex.PacketInterface) {
 
 	param, err := parametersStream.ReadStructure(datastore_super_smash_bros_4_types.NewDataStorePreparePostReplayParam())
 	if err != nil {
-		go protocol.PreparePostReplayHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
+		go protocol.preparePostReplayHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
 		return
 	}
 
-	go protocol.PreparePostReplayHandler(nil, client, callID, param.(*datastore_super_smash_bros_4_types.DataStorePreparePostReplayParam))
+	go protocol.preparePostReplayHandler(nil, client, callID, param.(*datastore_super_smash_bros_4_types.DataStorePreparePostReplayParam))
 }

@@ -8,11 +8,11 @@ import (
 
 // TestConnectivity sets the TestConnectivity handler function
 func (protocol *Protocol) TestConnectivity(handler func(err error, client *nex.Client, callID uint32)) {
-	protocol.TestConnectivityHandler = handler
+	protocol.testConnectivityHandler = handler
 }
 
 func (protocol *Protocol) handleTestConnectivity(packet nex.PacketInterface) {
-	if protocol.TestConnectivityHandler == nil {
+	if protocol.testConnectivityHandler == nil {
 		globals.Logger.Warning("SecureConnection::TestConnectivity not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -23,5 +23,5 @@ func (protocol *Protocol) handleTestConnectivity(packet nex.PacketInterface) {
 
 	callID := request.CallID()
 
-	go protocol.TestConnectivityHandler(nil, client, callID)
+	go protocol.testConnectivityHandler(nil, client, callID)
 }

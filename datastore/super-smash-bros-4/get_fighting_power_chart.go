@@ -10,11 +10,11 @@ import (
 
 // GetFightingPowerChart sets the GetFightingPowerChart handler function
 func (protocol *Protocol) GetFightingPowerChart(handler func(err error, client *nex.Client, callID uint32, mode uint8)) {
-	protocol.GetFightingPowerChartHandler = handler
+	protocol.getFightingPowerChartHandler = handler
 }
 
 func (protocol *Protocol) handleGetFightingPowerChart(packet nex.PacketInterface) {
-	if protocol.GetFightingPowerChartHandler == nil {
+	if protocol.getFightingPowerChartHandler == nil {
 		globals.Logger.Warning("DataStoreSuperSmashBros4::GetFightingPowerChart not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -30,9 +30,9 @@ func (protocol *Protocol) handleGetFightingPowerChart(packet nex.PacketInterface
 
 	mode, err := parametersStream.ReadUInt8()
 	if err != nil {
-		go protocol.GetFightingPowerChartHandler(fmt.Errorf("Failed to read mode from parameters. %s", err.Error()), client, callID, 0)
+		go protocol.getFightingPowerChartHandler(fmt.Errorf("Failed to read mode from parameters. %s", err.Error()), client, callID, 0)
 		return
 	}
 
-	go protocol.GetFightingPowerChartHandler(nil, client, callID, mode)
+	go protocol.getFightingPowerChartHandler(nil, client, callID, mode)
 }

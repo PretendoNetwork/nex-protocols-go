@@ -8,11 +8,11 @@ import (
 
 // CheckSettingStatus sets the CheckSettingStatus handler function
 func (protocol *Protocol) CheckSettingStatus(handler func(err error, client *nex.Client, callID uint32)) {
-	protocol.CheckSettingStatusHandler = handler
+	protocol.checkSettingStatusHandler = handler
 }
 
 func (protocol *Protocol) handleCheckSettingStatus(packet nex.PacketInterface) {
-	if protocol.CheckSettingStatusHandler == nil {
+	if protocol.checkSettingStatusHandler == nil {
 		globals.Logger.Warning("FriendsWiiU::CheckSettingStatus not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -23,5 +23,5 @@ func (protocol *Protocol) handleCheckSettingStatus(packet nex.PacketInterface) {
 
 	callID := request.CallID()
 
-	go protocol.CheckSettingStatusHandler(nil, client, callID)
+	go protocol.checkSettingStatusHandler(nil, client, callID)
 }

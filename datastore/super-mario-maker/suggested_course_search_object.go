@@ -11,11 +11,11 @@ import (
 
 // SuggestedCourseSearchObject sets the SuggestedCourseSearchObject handler function
 func (protocol *Protocol) SuggestedCourseSearchObject(handler func(err error, client *nex.Client, callID uint32, param *datastore_types.DataStoreSearchParam, extraData []string)) {
-	protocol.SuggestedCourseSearchObjectHandler = handler
+	protocol.suggestedCourseSearchObjectHandler = handler
 }
 
 func (protocol *Protocol) handleSuggestedCourseSearchObject(packet nex.PacketInterface) {
-	if protocol.SuggestedCourseSearchObjectHandler == nil {
+	if protocol.suggestedCourseSearchObjectHandler == nil {
 		globals.Logger.Warning("DataStoreSMM::SuggestedCourseSearchObject not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -31,15 +31,15 @@ func (protocol *Protocol) handleSuggestedCourseSearchObject(packet nex.PacketInt
 
 	param, err := parametersStream.ReadStructure(datastore_types.NewDataStoreSearchParam())
 	if err != nil {
-		go protocol.SuggestedCourseSearchObjectHandler(err, client, callID, nil, []string{})
+		go protocol.suggestedCourseSearchObjectHandler(err, client, callID, nil, []string{})
 		return
 	}
 
 	extraData, err := parametersStream.ReadListString()
 	if err != nil {
-		go protocol.SuggestedCourseSearchObjectHandler(fmt.Errorf("Failed to read extraData from parameters. %s", err.Error()), client, callID, nil, nil)
+		go protocol.suggestedCourseSearchObjectHandler(fmt.Errorf("Failed to read extraData from parameters. %s", err.Error()), client, callID, nil, nil)
 		return
 	}
 
-	go protocol.SuggestedCourseSearchObjectHandler(nil, client, callID, param.(*datastore_types.DataStoreSearchParam), extraData)
+	go protocol.suggestedCourseSearchObjectHandler(nil, client, callID, param.(*datastore_types.DataStoreSearchParam), extraData)
 }

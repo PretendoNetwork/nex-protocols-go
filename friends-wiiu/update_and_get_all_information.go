@@ -11,11 +11,11 @@ import (
 
 // UpdateAndGetAllInformation sets the UpdateAndGetAllInformation handler function
 func (protocol *Protocol) UpdateAndGetAllInformation(handler func(err error, client *nex.Client, callID uint32, nnaInfo *friends_wiiu_types.NNAInfo, presence *friends_wiiu_types.NintendoPresenceV2, birthday *nex.DateTime)) {
-	protocol.UpdateAndGetAllInformationHandler = handler
+	protocol.updateAndGetAllInformationHandler = handler
 }
 
 func (protocol *Protocol) handleUpdateAndGetAllInformation(packet nex.PacketInterface) {
-	if protocol.UpdateAndGetAllInformationHandler == nil {
+	if protocol.updateAndGetAllInformationHandler == nil {
 		globals.Logger.Warning("FriendsWiiU::UpdateAndGetAllInformation not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -31,21 +31,21 @@ func (protocol *Protocol) handleUpdateAndGetAllInformation(packet nex.PacketInte
 
 	nnaInfo, err := parametersStream.ReadStructure(friends_wiiu_types.NewNNAInfo())
 	if err != nil {
-		go protocol.UpdateAndGetAllInformationHandler(fmt.Errorf("Failed to read nnaInfo from parameters. %s", err.Error()), client, callID, nil, nil, nil)
+		go protocol.updateAndGetAllInformationHandler(fmt.Errorf("Failed to read nnaInfo from parameters. %s", err.Error()), client, callID, nil, nil, nil)
 		return
 	}
 
 	presence, err := parametersStream.ReadStructure(friends_wiiu_types.NewNintendoPresenceV2())
 	if err != nil {
-		go protocol.UpdateAndGetAllInformationHandler(fmt.Errorf("Failed to read presence from parameters. %s", err.Error()), client, callID, nil, nil, nil)
+		go protocol.updateAndGetAllInformationHandler(fmt.Errorf("Failed to read presence from parameters. %s", err.Error()), client, callID, nil, nil, nil)
 		return
 	}
 
 	birthday, err := parametersStream.ReadDateTime()
 	if err != nil {
-		go protocol.UpdateAndGetAllInformationHandler(fmt.Errorf("Failed to read birthday from parameters. %s", err.Error()), client, callID, nil, nil, nil)
+		go protocol.updateAndGetAllInformationHandler(fmt.Errorf("Failed to read birthday from parameters. %s", err.Error()), client, callID, nil, nil, nil)
 		return
 	}
 
-	go protocol.UpdateAndGetAllInformationHandler(nil, client, callID, nnaInfo.(*friends_wiiu_types.NNAInfo), presence.(*friends_wiiu_types.NintendoPresenceV2), birthday)
+	go protocol.updateAndGetAllInformationHandler(nil, client, callID, nnaInfo.(*friends_wiiu_types.NNAInfo), presence.(*friends_wiiu_types.NintendoPresenceV2), birthday)
 }

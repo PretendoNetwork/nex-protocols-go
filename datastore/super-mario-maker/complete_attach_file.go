@@ -11,11 +11,11 @@ import (
 
 // CompleteAttachFile sets the CompleteAttachFile handler function
 func (protocol *Protocol) CompleteAttachFile(handler func(err error, client *nex.Client, callID uint32, dataStoreCompletePostParam *datastore_types.DataStoreCompletePostParam)) {
-	protocol.CompleteAttachFileHandler = handler
+	protocol.completeAttachFileHandler = handler
 }
 
 func (protocol *Protocol) handleCompleteAttachFile(packet nex.PacketInterface) {
-	if protocol.CompleteAttachFileHandler == nil {
+	if protocol.completeAttachFileHandler == nil {
 		globals.Logger.Warning("DataStoreSMM::CompleteAttachFile not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -31,9 +31,9 @@ func (protocol *Protocol) handleCompleteAttachFile(packet nex.PacketInterface) {
 
 	param, err := parametersStream.ReadStructure(datastore_types.NewDataStoreCompletePostParam())
 	if err != nil {
-		go protocol.CompleteAttachFileHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
+		go protocol.completeAttachFileHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
 		return
 	}
 
-	go protocol.CompleteAttachFileHandler(nil, client, callID, param.(*datastore_types.DataStoreCompletePostParam))
+	go protocol.completeAttachFileHandler(nil, client, callID, param.(*datastore_types.DataStoreCompletePostParam))
 }

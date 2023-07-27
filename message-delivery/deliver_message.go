@@ -10,11 +10,11 @@ import (
 
 // DeliverMessage sets the DeliverMessage handler function
 func (protocol *Protocol) DeliverMessage(handler func(err error, client *nex.Client, callID uint32, oUserMessage *nex.DataHolder)) {
-	protocol.DeliverMessageHandler = handler
+	protocol.deliverMessageHandler = handler
 }
 
 func (protocol *Protocol) handleDeliverMessage(packet nex.PacketInterface) {
-	if protocol.DeliverMessageHandler == nil {
+	if protocol.deliverMessageHandler == nil {
 		globals.Logger.Warning("MessageDelivery::DeliverMessage not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -30,9 +30,9 @@ func (protocol *Protocol) handleDeliverMessage(packet nex.PacketInterface) {
 
 	oUserMessage, err := parametersStream.ReadDataHolder()
 	if err != nil {
-		go protocol.DeliverMessageHandler(fmt.Errorf("Failed to read oUserMessage from parameters. %s", err.Error()), client, callID, nil)
+		go protocol.deliverMessageHandler(fmt.Errorf("Failed to read oUserMessage from parameters. %s", err.Error()), client, callID, nil)
 		return
 	}
 
-	go protocol.DeliverMessageHandler(nil, client, callID, oUserMessage)
+	go protocol.deliverMessageHandler(nil, client, callID, oUserMessage)
 }

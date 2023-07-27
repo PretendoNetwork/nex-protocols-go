@@ -21,8 +21,8 @@ const (
 // Protocol handles the Monitoring protocol
 type Protocol struct {
 	Server                   *nex.Server
-	PingDaemonHandler        func(err error, client *nex.Client, callID uint32)
-	GetClusterMembersHandler func(err error, client *nex.Client, callID uint32)
+	pingDaemonHandler        func(err error, client *nex.Client, callID uint32)
+	getClusterMembersHandler func(err error, client *nex.Client, callID uint32)
 }
 
 // Setup initializes the protocol

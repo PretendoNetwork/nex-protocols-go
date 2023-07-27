@@ -11,11 +11,11 @@ import (
 
 // CompletePostReplay sets the CompletePostReplay handler function
 func (protocol *Protocol) CompletePostReplay(handler func(err error, client *nex.Client, callID uint32, param *datastore_super_smash_bros_4_types.DataStoreCompletePostReplayParam)) {
-	protocol.CompletePostReplayHandler = handler
+	protocol.completePostReplayHandler = handler
 }
 
 func (protocol *Protocol) handleCompletePostReplay(packet nex.PacketInterface) {
-	if protocol.CompletePostReplayHandler == nil {
+	if protocol.completePostReplayHandler == nil {
 		globals.Logger.Warning("DataStoreSuperSmashBros4::CompletePostReplay not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -31,9 +31,9 @@ func (protocol *Protocol) handleCompletePostReplay(packet nex.PacketInterface) {
 
 	param, err := parametersStream.ReadStructure(datastore_super_smash_bros_4_types.NewDataStoreCompletePostReplayParam())
 	if err != nil {
-		go protocol.CompletePostReplayHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
+		go protocol.completePostReplayHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
 		return
 	}
 
-	go protocol.CompletePostReplayHandler(nil, client, callID, param.(*datastore_super_smash_bros_4_types.DataStoreCompletePostReplayParam))
+	go protocol.completePostReplayHandler(nil, client, callID, param.(*datastore_super_smash_bros_4_types.DataStoreCompletePostReplayParam))
 }

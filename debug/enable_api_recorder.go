@@ -8,11 +8,11 @@ import (
 
 // EnableAPIRecorder sets the EnableAPIRecorder handler function
 func (protocol *Protocol) EnableAPIRecorder(handler func(err error, client *nex.Client, callID uint32)) {
-	protocol.EnableAPIRecorderHandler = handler
+	protocol.enableAPIRecorderHandler = handler
 }
 
 func (protocol *Protocol) handleEnableAPIRecorder(packet nex.PacketInterface) {
-	if protocol.EnableAPIRecorderHandler == nil {
+	if protocol.enableAPIRecorderHandler == nil {
 		globals.Logger.Warning("Debug::EnableAPIRecorder not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -23,5 +23,5 @@ func (protocol *Protocol) handleEnableAPIRecorder(packet nex.PacketInterface) {
 
 	callID := request.CallID()
 
-	go protocol.EnableAPIRecorderHandler(nil, client, callID)
+	go protocol.enableAPIRecorderHandler(nil, client, callID)
 }

@@ -11,11 +11,11 @@ import (
 
 // PrepareUpdateObject sets the PrepareUpdateObject handler function
 func (protocol *Protocol) PrepareUpdateObject(handler func(err error, client *nex.Client, callID uint32, dataStorePrepareUpdateParam *datastore_types.DataStorePrepareUpdateParam)) {
-	protocol.PrepareUpdateObjectHandler = handler
+	protocol.prepareUpdateObjectHandler = handler
 }
 
 func (protocol *Protocol) handlePrepareUpdateObject(packet nex.PacketInterface) {
-	if protocol.PrepareUpdateObjectHandler == nil {
+	if protocol.prepareUpdateObjectHandler == nil {
 		globals.Logger.Warning("DataStore::PrepareUpdateObject not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -31,9 +31,9 @@ func (protocol *Protocol) handlePrepareUpdateObject(packet nex.PacketInterface) 
 
 	dataStorePrepareUpdateParam, err := parametersStream.ReadStructure(datastore_types.NewDataStorePrepareUpdateParam())
 	if err != nil {
-		go protocol.PrepareUpdateObjectHandler(fmt.Errorf("Failed to read dataStorePrepareUpdateParam from parameters. %s", err.Error()), client, callID, nil)
+		go protocol.prepareUpdateObjectHandler(fmt.Errorf("Failed to read dataStorePrepareUpdateParam from parameters. %s", err.Error()), client, callID, nil)
 		return
 	}
 
-	go protocol.PrepareUpdateObjectHandler(nil, client, callID, dataStorePrepareUpdateParam.(*datastore_types.DataStorePrepareUpdateParam))
+	go protocol.prepareUpdateObjectHandler(nil, client, callID, dataStorePrepareUpdateParam.(*datastore_types.DataStorePrepareUpdateParam))
 }

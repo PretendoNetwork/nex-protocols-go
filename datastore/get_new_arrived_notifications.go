@@ -11,11 +11,11 @@ import (
 
 // GetNewArrivedNotifications sets the GetNewArrivedNotifications handler function
 func (protocol *Protocol) GetNewArrivedNotifications(handler func(err error, client *nex.Client, callID uint32, param *datastore_types.DataStoreGetNewArrivedNotificationsParam)) {
-	protocol.GetNewArrivedNotificationsHandler = handler
+	protocol.getNewArrivedNotificationsHandler = handler
 }
 
 func (protocol *Protocol) handleGetNewArrivedNotifications(packet nex.PacketInterface) {
-	if protocol.GetNewArrivedNotificationsHandler == nil {
+	if protocol.getNewArrivedNotificationsHandler == nil {
 		globals.Logger.Warning("DataStore::GetNewArrivedNotifications not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -31,9 +31,9 @@ func (protocol *Protocol) handleGetNewArrivedNotifications(packet nex.PacketInte
 
 	param, err := parametersStream.ReadStructure(datastore_types.NewDataStoreGetNewArrivedNotificationsParam())
 	if err != nil {
-		go protocol.GetNewArrivedNotificationsHandler(fmt.Errorf("Failed to read dataStoreGetNewArrivedNotificationsParam from parameters. %s", err.Error()), client, callID, nil)
+		go protocol.getNewArrivedNotificationsHandler(fmt.Errorf("Failed to read dataStoreGetNewArrivedNotificationsParam from parameters. %s", err.Error()), client, callID, nil)
 		return
 	}
 
-	go protocol.GetNewArrivedNotificationsHandler(nil, client, callID, param.(*datastore_types.DataStoreGetNewArrivedNotificationsParam))
+	go protocol.getNewArrivedNotificationsHandler(nil, client, callID, param.(*datastore_types.DataStoreGetNewArrivedNotificationsParam))
 }

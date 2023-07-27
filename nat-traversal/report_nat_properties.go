@@ -10,11 +10,11 @@ import (
 
 // ReportNATProperties sets the ReportNATProperties handler function
 func (protocol *Protocol) ReportNATProperties(handler func(err error, client *nex.Client, callID uint32, natmapping uint32, natfiltering uint32, rtt uint32)) {
-	protocol.ReportNATPropertiesHandler = handler
+	protocol.reportNATPropertiesHandler = handler
 }
 
 func (protocol *Protocol) handleReportNATProperties(packet nex.PacketInterface) {
-	if protocol.ReportNATPropertiesHandler == nil {
+	if protocol.reportNATPropertiesHandler == nil {
 		globals.Logger.Warning("NATTraversal::ReportNATProperties not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
@@ -30,21 +30,21 @@ func (protocol *Protocol) handleReportNATProperties(packet nex.PacketInterface) 
 
 	natmapping, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		go protocol.ReportNATPropertiesHandler(fmt.Errorf("Failed to read natmapping from parameters. %s", err.Error()), client, callID, 0, 0, 0)
+		go protocol.reportNATPropertiesHandler(fmt.Errorf("Failed to read natmapping from parameters. %s", err.Error()), client, callID, 0, 0, 0)
 		return
 	}
 
 	natfiltering, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		go protocol.ReportNATPropertiesHandler(fmt.Errorf("Failed to read natfiltering from parameters. %s", err.Error()), client, callID, 0, 0, 0)
+		go protocol.reportNATPropertiesHandler(fmt.Errorf("Failed to read natfiltering from parameters. %s", err.Error()), client, callID, 0, 0, 0)
 		return
 	}
 
 	rtt, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		go protocol.ReportNATPropertiesHandler(fmt.Errorf("Failed to read rtt from parameters. %s", err.Error()), client, callID, 0, 0, 0)
+		go protocol.reportNATPropertiesHandler(fmt.Errorf("Failed to read rtt from parameters. %s", err.Error()), client, callID, 0, 0, 0)
 		return
 	}
 
-	go protocol.ReportNATPropertiesHandler(nil, client, callID, natmapping, natfiltering, rtt)
+	go protocol.reportNATPropertiesHandler(nil, client, callID, natmapping, natfiltering, rtt)
 }

@@ -56,7 +56,7 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 		go protocol.handleGetMaintenanceStatus(packet)
 	default:
 		go globals.RespondNotImplemented(packet, ProtocolID)
-		fmt.Printf("Unsupported SecureConnectionBadgeArcade method ID: %#v\n", request.MethodID())
+		fmt.Printf("Unsupported SecureConnectionNintendoBadgeArcade method ID: %#v\n", request.MethodID())
 	}
 }
 

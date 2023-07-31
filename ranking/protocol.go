@@ -61,10 +61,22 @@ const (
 
 // Protocol stores all the RMC method handlers for the Ranking protocol and listens for requests
 type Protocol struct {
-	Server                  *nex.Server
-	uploadScoreHandler      func(err error, client *nex.Client, callID uint32, scoreData *ranking_types.RankingScoreData, uniqueID uint64)
-	uploadCommonDataHandler func(err error, client *nex.Client, callID uint32, commonData []byte, uniqueID uint64)
-	getRankingHandler       func(err error, client *nex.Client, callID uint32, rankingMode uint8, category uint32, orderParam *ranking_types.RankingOrderParam, uniqueID uint64, principalID uint32)
+	Server                          *nex.Server
+	uploadScoreHandler              func(err error, client *nex.Client, callID uint32, scoreData *ranking_types.RankingScoreData, uniqueID uint64)
+	deleteScoreHandler              func(err error, client *nex.Client, callID uint32, category uint32, uniqueID uint64)
+	deleteAllScoresHandler          func(err error, client *nex.Client, callID uint32, uniqueID uint64)
+	uploadCommonDataHandler         func(err error, client *nex.Client, callID uint32, commonData []byte, uniqueID uint64)
+	deleteCommonDataHandler         func(err error, client *nex.Client, callID uint32, uniqueID uint64)
+	getCommonDataHandler            func(err error, client *nex.Client, callID uint32, uniqueID uint64)
+	changeAttributesHandler         func(err error, client *nex.Client, callID uint32, category uint32, changeParam *ranking_types.RankingChangeAttributesParam, uniqueID uint64)
+	changeAllAttributesHandler      func(err error, client *nex.Client, callID uint32, changeParam *ranking_types.RankingChangeAttributesParam, uniqueID uint64)
+	getRankingHandler               func(err error, client *nex.Client, callID uint32, rankingMode uint8, category uint32, orderParam *ranking_types.RankingOrderParam, uniqueID uint64, principalID uint32)
+	getApproxOrderHandler           func(err error, client *nex.Client, callID uint32, category uint32, orderParam *ranking_types.RankingOrderParam, score uint32, uniqueID uint64, principalID uint32)
+	getStatsHandler                 func(err error, client *nex.Client, callID uint32, category uint32, orderParam *ranking_types.RankingOrderParam, flags uint32)
+	getRankingByPIDListHandler      func(err error, client *nex.Client, callID uint32, principalIDList []uint32, rankingMode uint8, category uint32, orderParam *ranking_types.RankingOrderParam, uniqueID uint64)
+	getRankingByUniqueIDListHandler func(err error, client *nex.Client, callID uint32, nexUniqueIDList []uint64, rankingMode uint8, category uint32, orderParam *ranking_types.RankingOrderParam, uniqueID uint64)
+	getCachedTopXRankingHandler     func(err error, client *nex.Client, callID uint32, category uint32, orderParam *ranking_types.RankingOrderParam)
+	getCachedTopXRankingsHandler    func(err error, client *nex.Client, callID uint32, categories []uint32, orderParams []*ranking_types.RankingOrderParam)
 }
 
 // Setup initializes the protocol
@@ -75,11 +87,35 @@ func (protocol *Protocol) Setup() {
 		if request.ProtocolID() == ProtocolID {
 			switch request.MethodID() {
 			case MethodUploadScore:
-				go protocol.handleUploadScore(packet)
+				protocol.handleUploadScore(packet)
+			case MethodDeleteScore:
+				protocol.handleDeleteScore(packet)
+			case MethodDeleteAllScores:
+				protocol.handleDeleteAllScores(packet)
 			case MethodUploadCommonData:
-				go protocol.handleUploadCommonData(packet)
+				protocol.handleUploadCommonData(packet)
+			case MethodDeleteCommonData:
+				protocol.handleDeleteCommonData(packet)
+			case MethodGetCommonData:
+				protocol.handleGetCommonData(packet)
+			case MethodChangeAttributes:
+				protocol.handleChangeAttributes(packet)
+			case MethodChangeAllAttributes:
+				protocol.handleChangeAllAttributes(packet)
 			case MethodGetRanking:
-				go protocol.handleGetRanking(packet)
+				protocol.handleGetRanking(packet)
+			case MethodGetApproxOrder:
+				protocol.handleGetApproxOrder(packet)
+			case MethodGetStats:
+				protocol.handleGetStats(packet)
+			case MethodGetRankingByPIDList:
+				protocol.handleGetRankingByPIDList(packet)
+			case MethodGetRankingByUniqueIDList:
+				protocol.handleGetRankingByUniqueIDList(packet)
+			case MethodGetCachedTopXRanking:
+				protocol.handleGetCachedTopXRanking(packet)
+			case MethodGetCachedTopXRankings:
+				protocol.handleGetCachedTopXRankings(packet)
 			default:
 				go globals.RespondNotImplemented(packet, ProtocolID)
 				fmt.Printf("Unsupported Ranking method ID: %#v\n", request.MethodID())

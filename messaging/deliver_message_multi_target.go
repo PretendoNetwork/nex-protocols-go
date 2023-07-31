@@ -7,7 +7,7 @@ import (
 )
 
 // DeliverMessageMultiTarget sets the DeliverMessageMultiTarget handler function
-func (protocol *Protocol) DeliverMessageMultiTarget(handler func(err error, client *nex.Client, callID uint32)) {
+func (protocol *Protocol) DeliverMessageMultiTarget(handler func(err error, client *nex.Client, callID uint32, packetPayload []byte)) {
 	protocol.deliverMessageMultiTargetHandler = handler
 }
 
@@ -18,6 +18,8 @@ func (protocol *Protocol) handleDeliverMessageMultiTarget(packet nex.PacketInter
 		return
 	}
 
+	globals.Logger.Warning("Messaging::DeliverMessageMultiTarget STUBBED")
+
 	client := packet.Sender()
 	request := packet.RMCRequest()
 
@@ -25,5 +27,5 @@ func (protocol *Protocol) handleDeliverMessageMultiTarget(packet nex.PacketInter
 
 	// TODO - THIS METHOD HAS AN UNKNOWN REQUEST/RESPONSE FORMAT
 
-	go protocol.deliverMessageMultiTargetHandler(nil, client, callID)
+	go protocol.deliverMessageMultiTargetHandler(nil, client, callID, packet.Payload())
 }

@@ -48,7 +48,7 @@ type Protocol struct {
 	retrieveMessagesHandler               func(err error, client *nex.Client, callID uint32, recipient *messaging_types.MessageRecipient, lstMsgIDs []uint32, bLeaveOnServer bool)
 	deleteMessagesHandler                 func(err error, client *nex.Client, callID uint32, recipient *messaging_types.MessageRecipient, lstMessagesToDelete []uint32)
 	deleteAllMessagesHandler              func(err error, client *nex.Client, callID uint32, recipient *messaging_types.MessageRecipient)
-	deliverMessageMultiTargetHandler      func(err error, client *nex.Client, callID uint32)
+	deliverMessageMultiTargetHandler      func(err error, client *nex.Client, callID uint32, packetPayload []byte) // TODO - Unknown request/response format
 }
 
 // Setup initializes the protocol

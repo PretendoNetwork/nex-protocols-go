@@ -7,16 +7,25 @@ import (
 )
 
 // GetAPICallSummary sets the GetAPICallSummary handler function
-func (protocol *Protocol) GetAPICallSummary(handler func(err error, client *nex.Client, callID uint32)) {
+func (protocol *Protocol) GetAPICallSummary(handler func(err error, client *nex.Client, callID uint32, pakcetPayload []byte)) {
 	protocol.getAPICallSummaryHandler = handler
 }
 
 func (protocol *Protocol) handleGetAPICallSummary(packet nex.PacketInterface) {
-	globals.Logger.Warning("Debug::GetAPICallSummary STUBBED")
-
 	if protocol.getAPICallSummaryHandler == nil {
 		globals.Logger.Warning("Debug::GetAPICallSummary not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
 	}
+
+	globals.Logger.Warning("Debug::GetAPICallSummary STUBBED")
+
+	client := packet.Sender()
+	request := packet.RMCRequest()
+
+	callID := request.CallID()
+
+	// TODO - THIS METHOD HAS AN UNKNOWN REQUEST/RESPONSE FORMAT
+
+	go protocol.getAPICallSummaryHandler(nil, client, callID, packet.Payload())
 }

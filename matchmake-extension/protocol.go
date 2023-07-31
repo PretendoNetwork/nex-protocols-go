@@ -232,7 +232,7 @@ type Protocol struct {
 	findMatchmakeSessionByParticipantHandler                       func(err error, client *nex.Client, callID uint32, param *match_making_types.FindMatchmakeSessionByParticipantParam)
 	browseMatchmakeSessionNoHolderNoResultRangeHandler             func(err error, client *nex.Client, callID uint32, searchCriteria *match_making_types.MatchmakeSessionSearchCriteria)
 	browseMatchmakeSessionWithHostURLsNoHolderNoResultRangeHandler func(err error, client *nex.Client, callID uint32, searchCriteria *match_making_types.MatchmakeSessionSearchCriteria)
-	findCommunityByOwnerHandler                                    func(err error, client *nex.Client, callID uint32)
+	findCommunityByOwnerHandler                                    func(err error, client *nex.Client, callID uint32, packetPayload []byte) // TODO - Unknown request/response format
 }
 
 // Setup initializes the protocol

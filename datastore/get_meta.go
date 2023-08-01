@@ -10,7 +10,7 @@ import (
 )
 
 // GetMeta sets the GetMeta handler function
-func (protocol *Protocol) GetMeta(handler func(err error, client *nex.Client, callID uint32, dataStoreGetMetaParam *datastore_types.DataStoreGetMetaParam)) {
+func (protocol *Protocol) GetMeta(handler func(err error, client *nex.Client, callID uint32, param *datastore_types.DataStoreGetMetaParam)) {
 	protocol.getMetaHandler = handler
 }
 
@@ -29,11 +29,11 @@ func (protocol *Protocol) handleGetMeta(packet nex.PacketInterface) {
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	dataStoreGetMetaParam, err := parametersStream.ReadStructure(datastore_types.NewDataStoreGetMetaParam())
+	param, err := parametersStream.ReadStructure(datastore_types.NewDataStoreGetMetaParam())
 	if err != nil {
-		go protocol.getMetaHandler(fmt.Errorf("Failed to read dataStoreGetMetaParam from parameters. %s", err.Error()), client, callID, nil)
+		go protocol.getMetaHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
 		return
 	}
 
-	go protocol.getMetaHandler(nil, client, callID, dataStoreGetMetaParam.(*datastore_types.DataStoreGetMetaParam))
+	go protocol.getMetaHandler(nil, client, callID, param.(*datastore_types.DataStoreGetMetaParam))
 }

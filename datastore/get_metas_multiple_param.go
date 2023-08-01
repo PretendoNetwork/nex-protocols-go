@@ -10,7 +10,7 @@ import (
 )
 
 // GetMetasMultipleParam sets the GetMetasMultipleParam handler function
-func (protocol *Protocol) GetMetasMultipleParam(handler func(err error, client *nex.Client, callID uint32, dataStorePrepareGetParams []*datastore_types.DataStoreGetMetaParam)) {
+func (protocol *Protocol) GetMetasMultipleParam(handler func(err error, client *nex.Client, callID uint32, params []*datastore_types.DataStoreGetMetaParam)) {
 	protocol.getMetasMultipleParamHandler = handler
 }
 

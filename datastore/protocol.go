@@ -155,30 +155,51 @@ const (
 // Protocol stores all the RMC method handlers for the DataStore protocol and listens for requests
 type Protocol struct {
 	Server                              *nex.Server
-	prepareGetObjectV1Handler           func(err error, client *nex.Client, callID uint32, dataStorePrepareGetParamV1 *datastore_types.DataStorePrepareGetParamV1)
-	preparePostObjectV1Handler          func(err error, client *nex.Client, callID uint32, dataStorePreparePostParamV1 *datastore_types.DataStorePreparePostParamV1)
-	completePostObjectV1Handler         func(err error, client *nex.Client, callID uint32, dataStoreCompletePostParamV1 *datastore_types.DataStoreCompletePostParamV1)
+	prepareGetObjectV1Handler           func(err error, client *nex.Client, callID uint32, param *datastore_types.DataStorePrepareGetParamV1)
+	preparePostObjectV1Handler          func(err error, client *nex.Client, callID uint32, param *datastore_types.DataStorePreparePostParamV1)
+	completePostObjectV1Handler         func(err error, client *nex.Client, callID uint32, param *datastore_types.DataStoreCompletePostParamV1)
+	deleteObjectHandler                 func(err error, client *nex.Client, callID uint32, param *datastore_types.DataStoreDeleteParam)
+	deleteObjectsHandler                func(err error, client *nex.Client, callID uint32, params []*datastore_types.DataStoreDeleteParam, transactional bool)
+	changeMetaV1Handler                 func(err error, client *nex.Client, callID uint32, param *datastore_types.DataStoreChangeMetaParamV1)
+	changeMetasV1Handler                func(err error, client *nex.Client, callID uint32, dataIDs []uint64, params []*datastore_types.DataStoreChangeMetaParamV1, transactional bool)
+	getMetaHandler                      func(err error, client *nex.Client, callID uint32, param *datastore_types.DataStoreGetMetaParam)
+	getMetasHandler                     func(err error, client *nex.Client, callID uint32, dataIDs []uint64, param *datastore_types.DataStoreGetMetaParam)
+	prepareUpdateObjectHandler          func(err error, client *nex.Client, callID uint32, param *datastore_types.DataStorePrepareUpdateParam)
+	completeUpdateObjectHandler         func(err error, client *nex.Client, callID uint32, param *datastore_types.DataStoreCompleteUpdateParam)
+	searchObjectHandler                 func(err error, client *nex.Client, callID uint32, param *datastore_types.DataStoreSearchParam)
 	getNotificationURLHandler           func(err error, client *nex.Client, callID uint32, param *datastore_types.DataStoreGetNotificationURLParam)
 	getNewArrivedNotificationsV1Handler func(err error, client *nex.Client, callID uint32, param *datastore_types.DataStoreGetNewArrivedNotificationsParam)
-	deleteObjectHandler                 func(err error, client *nex.Client, callID uint32, param *datastore_types.DataStoreDeleteParam)
-	getMetaHandler                      func(err error, client *nex.Client, callID uint32, dataStoreGetMetaParam *datastore_types.DataStoreGetMetaParam)
-	getMetasHandler                     func(err error, client *nex.Client, callID uint32, dataIDs []uint64, param *datastore_types.DataStoreGetMetaParam)
-	prepareUpdateObjectHandler          func(err error, client *nex.Client, callID uint32, dataStorePrepareUpdateParam *datastore_types.DataStorePrepareUpdateParam)
-	completeUpdateObjectHandler         func(err error, client *nex.Client, callID uint32, dataStoreCompleteUpdateParam *datastore_types.DataStoreCompleteUpdateParam)
-	searchObjectHandler                 func(err error, client *nex.Client, callID uint32, param *datastore_types.DataStoreSearchParam)
 	rateObjectHandler                   func(err error, client *nex.Client, callID uint32, target *datastore_types.DataStoreRatingTarget, param *datastore_types.DataStoreRateObjectParam, fetchRatings bool)
+	getRatingHandler                    func(err error, client *nex.Client, callID uint32, target *datastore_types.DataStoreRatingTarget, accessPassword uint64)
+	getRatingsHandler                   func(err error, client *nex.Client, callID uint32, dataIDs []uint64, accessPassword uint64)
+	resetRatingHandler                  func(err error, client *nex.Client, callID uint32, target *datastore_types.DataStoreRatingTarget, accessPassword uint64)
+	resetRatingsHandler                 func(err error, client *nex.Client, callID uint32, target *datastore_types.DataStoreRatingTarget, transactional bool)
 	getSpecificMetaV1Handler            func(err error, client *nex.Client, callID uint32, param *datastore_types.DataStoreGetSpecificMetaParamV1)
-	postMetaBinaryHandler               func(err error, client *nex.Client, callID uint32, dataStorePreparePostParam *datastore_types.DataStorePreparePostParam)
-	preparePostObjectHandler            func(err error, client *nex.Client, callID uint32, dataStorePrepareGetParam *datastore_types.DataStorePreparePostParam)
-	prepareGetObjectHandler             func(err error, client *nex.Client, callID uint32, dataStorePrepareGetParam *datastore_types.DataStorePrepareGetParam)
-	completePostObjectHandler           func(err error, client *nex.Client, callID uint32, dataStoreCompletePostParam *datastore_types.DataStoreCompletePostParam)
+	postMetaBinaryHandler               func(err error, client *nex.Client, callID uint32, param *datastore_types.DataStorePreparePostParam)
+	touchObjectHandler                  func(err error, client *nex.Client, callID uint32, param *datastore_types.DataStoreTouchObjectParam)
+	getRatingWithLogHandler             func(err error, client *nex.Client, callID uint32, target *datastore_types.DataStoreRatingTarget, accessPassword uint64)
+	preparePostObjectHandler            func(err error, client *nex.Client, callID uint32, param *datastore_types.DataStorePreparePostParam)
+	prepareGetObjectHandler             func(err error, client *nex.Client, callID uint32, param *datastore_types.DataStorePrepareGetParam)
+	completePostObjectHandler           func(err error, client *nex.Client, callID uint32, param *datastore_types.DataStoreCompletePostParam)
 	getNewArrivedNotificationsHandler   func(err error, client *nex.Client, callID uint32, param *datastore_types.DataStoreGetNewArrivedNotificationsParam)
 	getSpecificMetaHandler              func(err error, client *nex.Client, callID uint32, param *datastore_types.DataStoreGetSpecificMetaParam)
 	getPersistenceInfoHandler           func(err error, client *nex.Client, callID uint32, ownerID uint32, persistenceSlotID uint16)
-	getMetasMultipleParamHandler        func(err error, client *nex.Client, callID uint32, dataStoreGetMetaParams []*datastore_types.DataStoreGetMetaParam)
+	getPersistenceInfosHandler          func(err error, client *nex.Client, callID uint32, ownerID uint32, persistenceSlotIDs []uint16)
+	perpetuateObjectHandler             func(err error, client *nex.Client, callID uint32, persistenceSlotID uint16, dataID uint64, deleteLastObject bool)
+	unperpetuateObjectHandler           func(err error, client *nex.Client, callID uint32, persistenceSlotID uint16, deleteLastObject bool)
+	prepareGetObjectOrMetaBinaryHandler func(err error, client *nex.Client, callID uint32, param *datastore_types.DataStorePrepareGetParam)
+	getPasswordInfoHandler              func(err error, client *nex.Client, callID uint32, dataID uint64)
+	getPasswordInfosHandler             func(err error, client *nex.Client, callID uint32, dataIDs []uint64)
+	getMetasMultipleParamHandler        func(err error, client *nex.Client, callID uint32, params []*datastore_types.DataStoreGetMetaParam)
 	completePostObjectsHandler          func(err error, client *nex.Client, callID uint32, dataIDs []uint64)
-	changeMetaHandler                   func(err error, client *nex.Client, callID uint32, dataStoreChangeMetaParam *datastore_types.DataStoreChangeMetaParam)
+	changeMetaHandler                   func(err error, client *nex.Client, callID uint32, param *datastore_types.DataStoreChangeMetaParam)
+	changeMetasHandler                  func(err error, client *nex.Client, callID uint32, dataIDs []uint64, params []*datastore_types.DataStoreChangeMetaParam, transactional bool)
 	rateObjectsHandler                  func(err error, client *nex.Client, callID uint32, targets []*datastore_types.DataStoreRatingTarget, params []*datastore_types.DataStoreRateObjectParam, transactional bool, fetchRatings bool)
+	postMetaBinaryWithDataIDHandler     func(err error, client *nex.Client, callID uint32, dataID uint64, param *datastore_types.DataStorePreparePostParam)
+	postMetaBinariesWithDataIDHandler   func(err error, client *nex.Client, callID uint32, dataIDs []uint64, params []*datastore_types.DataStorePreparePostParam, transactional bool)
+	rateObjectWithPostingHandler        func(err error, client *nex.Client, callID uint32, target *datastore_types.DataStoreRatingTarget, rateParam *datastore_types.DataStoreRateObjectParam, postParam *datastore_types.DataStorePreparePostParam, fetchRatings bool)
+	rateObjectsWithPostingHandler       func(err error, client *nex.Client, callID uint32, targets []*datastore_types.DataStoreRatingTarget, rateParams []*datastore_types.DataStoreRateObjectParam, postParams []*datastore_types.DataStorePreparePostParam, transactional bool, fetchRatings bool)
+	getObjectInfosHandler               func(err error, client *nex.Client, callID uint32, dataIDs uint64)
 	searchObjectLightHandler            func(err error, client *nex.Client, callID uint32, param *datastore_types.DataStoreSearchParam)
 }
 
@@ -199,55 +220,97 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 
 	switch request.MethodID() {
 	case MethodPrepareGetObjectV1:
-		go protocol.handlePrepareGetObjectV1(packet)
+		protocol.handlePrepareGetObjectV1(packet)
 	case MethodPreparePostObjectV1:
-		go protocol.handlePreparePostObjectV1(packet)
+		protocol.handlePreparePostObjectV1(packet)
 	case MethodCompletePostObjectV1:
-		go protocol.handleCompletePostObjectV1(packet)
+		protocol.handleCompletePostObjectV1(packet)
 	case MethodDeleteObject:
-		go protocol.handleDeleteObject(packet)
+		protocol.handleDeleteObject(packet)
+	case MethodDeleteObjects:
+		protocol.handleDeleteObjects(packet)
+	case MethodChangeMetaV1:
+		protocol.handleChangeMetaV1(packet)
+	case MethodChangeMetasV1:
+		protocol.handleChangeMetasV1(packet)
 	case MethodGetMeta:
-		go protocol.handleGetMeta(packet)
+		protocol.handleGetMeta(packet)
 	case MethodGetMetas:
-		go protocol.handleGetMetas(packet)
+		protocol.handleGetMetas(packet)
 	case MethodPrepareUpdateObject:
-		go protocol.handlePrepareUpdateObject(packet)
+		protocol.handlePrepareUpdateObject(packet)
 	case MethodCompleteUpdateObject:
-		go protocol.handleCompleteUpdateObject(packet)
+		protocol.handleCompleteUpdateObject(packet)
 	case MethodSearchObject:
-		go protocol.handleSearchObject(packet)
+		protocol.handleSearchObject(packet)
 	case MethodGetNotificationURL:
-		go protocol.handleGetNotificationURL(packet)
+		protocol.handleGetNotificationURL(packet)
 	case MethodGetNewArrivedNotificationsV1:
-		go protocol.handleGetNewArrivedNotificationsV1(packet)
+		protocol.handleGetNewArrivedNotificationsV1(packet)
 	case MethodRateObject:
-		go protocol.handleRateObject(packet)
+		protocol.handleRateObject(packet)
+	case MethodGetRating:
+		protocol.handleGetRating(packet)
+	case MethodGetRatings:
+		protocol.handleGetRatings(packet)
+	case MethodResetRating:
+		protocol.handleResetRating(packet)
+	case MethodResetRatings:
+		protocol.handleResetRatings(packet)
 	case MethodGetSpecificMetaV1:
-		go protocol.handleGetSpecificMetaV1(packet)
+		protocol.handleGetSpecificMetaV1(packet)
 	case MethodPostMetaBinary:
-		go protocol.handlePostMetaBinary(packet)
+		protocol.handlePostMetaBinary(packet)
+	case MethodTouchObject:
+		protocol.handleTouchObject(packet)
+	case MethodGetRatingWithLog:
+		protocol.handleGetRatingWithLog(packet)
 	case MethodPreparePostObject:
-		go protocol.handlePreparePostObject(packet)
+		protocol.handlePreparePostObject(packet)
 	case MethodPrepareGetObject:
-		go protocol.handlePrepareGetObject(packet)
+		protocol.handlePrepareGetObject(packet)
 	case MethodCompletePostObject:
-		go protocol.handleCompletePostObject(packet)
+		protocol.handleCompletePostObject(packet)
 	case MethodGetNewArrivedNotifications:
-		go protocol.handleGetNewArrivedNotifications(packet)
+		protocol.handleGetNewArrivedNotifications(packet)
 	case MethodGetSpecificMeta:
-		go protocol.handleGetSpecificMeta(packet)
+		protocol.handleGetSpecificMeta(packet)
 	case MethodGetPersistenceInfo:
-		go protocol.handleGetPersistenceInfo(packet)
+		protocol.handleGetPersistenceInfo(packet)
+	case MethodGetPersistenceInfos:
+		protocol.handleGetPersistenceInfos(packet)
+	case MethodPerpetuateObject:
+		protocol.handlePerpetuateObject(packet)
+	case MethodUnperpetuateObject:
+		protocol.handleUnperpetuateObject(packet)
+	case MethodPrepareGetObjectOrMetaBinary:
+		protocol.handlePrepareGetObjectOrMetaBinary(packet)
+	case MethodGetPasswordInfo:
+		protocol.handleGetPasswordInfo(packet)
+	case MethodGetPasswordInfos:
+		protocol.handleGetPasswordInfos(packet)
 	case MethodGetMetasMultipleParam:
-		go protocol.handleGetMetasMultipleParam(packet)
+		protocol.handleGetMetasMultipleParam(packet)
 	case MethodCompletePostObjects:
-		go protocol.handleCompletePostObjects(packet)
+		protocol.handleCompletePostObjects(packet)
 	case MethodChangeMeta:
-		go protocol.handleChangeMeta(packet)
+		protocol.handleChangeMeta(packet)
+	case MethodChangeMetas:
+		protocol.handleChangeMetas(packet)
 	case MethodRateObjects:
-		go protocol.handleRateObjects(packet)
+		protocol.handleRateObjects(packet)
+	case MethodPostMetaBinaryWithDataID:
+		protocol.handlePostMetaBinaryWithDataID(packet)
+	case MethodPostMetaBinariesWithDataID:
+		protocol.handlePostMetaBinariesWithDataID(packet)
+	case MethodRateObjectWithPosting:
+		protocol.handleRateObjectWithPosting(packet)
+	case MethodRateObjectsWithPosting:
+		protocol.handleRateObjectsWithPosting(packet)
+	case MethodGetObjectInfos:
+		protocol.handleGetObjectInfos(packet)
 	case MethodSearchObjectLight:
-		go protocol.handleSearchObjectLight(packet)
+		protocol.handleSearchObjectLight(packet)
 	default:
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		fmt.Printf("Unsupported DataStore method ID: %#v\n", request.MethodID())

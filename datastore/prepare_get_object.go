@@ -10,7 +10,7 @@ import (
 )
 
 // PrepareGetObject sets the PrepareGetObject handler function
-func (protocol *Protocol) PrepareGetObject(handler func(err error, client *nex.Client, callID uint32, dataStorePrepareGetParam *datastore_types.DataStorePrepareGetParam)) {
+func (protocol *Protocol) PrepareGetObject(handler func(err error, client *nex.Client, callID uint32, param *datastore_types.DataStorePrepareGetParam)) {
 	protocol.prepareGetObjectHandler = handler
 }
 
@@ -29,11 +29,11 @@ func (protocol *Protocol) handlePrepareGetObject(packet nex.PacketInterface) {
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	dataStorePrepareGetParam, err := parametersStream.ReadStructure(datastore_types.NewDataStorePrepareGetParam())
+	param, err := parametersStream.ReadStructure(datastore_types.NewDataStorePrepareGetParam())
 	if err != nil {
-		go protocol.prepareGetObjectHandler(fmt.Errorf("Failed to read dataStorePrepareGetParam from parameters. %s", err.Error()), client, callID, nil)
+		go protocol.prepareGetObjectHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
 		return
 	}
 
-	go protocol.prepareGetObjectHandler(nil, client, callID, dataStorePrepareGetParam.(*datastore_types.DataStorePrepareGetParam))
+	go protocol.prepareGetObjectHandler(nil, client, callID, param.(*datastore_types.DataStorePrepareGetParam))
 }

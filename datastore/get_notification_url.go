@@ -31,7 +31,7 @@ func (protocol *Protocol) handleGetNotificationURL(packet nex.PacketInterface) {
 
 	param, err := parametersStream.ReadStructure(datastore_types.NewDataStoreGetNotificationURLParam())
 	if err != nil {
-		go protocol.getNotificationURLHandler(fmt.Errorf("Failed to read dataStoreGetNotificationURLParam from parameters. %s", err.Error()), client, callID, nil)
+		go protocol.getNotificationURLHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
 		return
 	}
 

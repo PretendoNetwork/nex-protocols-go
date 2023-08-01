@@ -10,7 +10,7 @@ import (
 )
 
 // CompleteUpdateObject sets the CompleteUpdateObject handler function
-func (protocol *Protocol) CompleteUpdateObject(handler func(err error, client *nex.Client, callID uint32, dataStoreCompleteUpdateParam *datastore_types.DataStoreCompleteUpdateParam)) {
+func (protocol *Protocol) CompleteUpdateObject(handler func(err error, client *nex.Client, callID uint32, param *datastore_types.DataStoreCompleteUpdateParam)) {
 	protocol.completeUpdateObjectHandler = handler
 }
 
@@ -29,11 +29,11 @@ func (protocol *Protocol) handleCompleteUpdateObject(packet nex.PacketInterface)
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	dataStoreCompleteUpdateParam, err := parametersStream.ReadStructure(datastore_types.NewDataStoreCompleteUpdateParam())
+	param, err := parametersStream.ReadStructure(datastore_types.NewDataStoreCompleteUpdateParam())
 	if err != nil {
-		go protocol.completeUpdateObjectHandler(fmt.Errorf("Failed to read dataStoreCompleteUpdateParam from parameters. %s", err.Error()), client, callID, nil)
+		go protocol.completeUpdateObjectHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
 		return
 	}
 
-	go protocol.completeUpdateObjectHandler(nil, client, callID, dataStoreCompleteUpdateParam.(*datastore_types.DataStoreCompleteUpdateParam))
+	go protocol.completeUpdateObjectHandler(nil, client, callID, param.(*datastore_types.DataStoreCompleteUpdateParam))
 }

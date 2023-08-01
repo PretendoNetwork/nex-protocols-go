@@ -10,7 +10,7 @@ import (
 )
 
 // ChangeMeta sets the ChangeMeta handler function
-func (protocol *Protocol) ChangeMeta(handler func(err error, client *nex.Client, callID uint32, dataStoreChangeMetaParam *datastore_types.DataStoreChangeMetaParam)) {
+func (protocol *Protocol) ChangeMeta(handler func(err error, client *nex.Client, callID uint32, param *datastore_types.DataStoreChangeMetaParam)) {
 	protocol.changeMetaHandler = handler
 }
 

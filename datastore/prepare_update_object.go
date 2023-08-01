@@ -10,7 +10,7 @@ import (
 )
 
 // PrepareUpdateObject sets the PrepareUpdateObject handler function
-func (protocol *Protocol) PrepareUpdateObject(handler func(err error, client *nex.Client, callID uint32, dataStorePrepareUpdateParam *datastore_types.DataStorePrepareUpdateParam)) {
+func (protocol *Protocol) PrepareUpdateObject(handler func(err error, client *nex.Client, callID uint32, param *datastore_types.DataStorePrepareUpdateParam)) {
 	protocol.prepareUpdateObjectHandler = handler
 }
 
@@ -29,11 +29,11 @@ func (protocol *Protocol) handlePrepareUpdateObject(packet nex.PacketInterface) 
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	dataStorePrepareUpdateParam, err := parametersStream.ReadStructure(datastore_types.NewDataStorePrepareUpdateParam())
+	param, err := parametersStream.ReadStructure(datastore_types.NewDataStorePrepareUpdateParam())
 	if err != nil {
-		go protocol.prepareUpdateObjectHandler(fmt.Errorf("Failed to read dataStorePrepareUpdateParam from parameters. %s", err.Error()), client, callID, nil)
+		go protocol.prepareUpdateObjectHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
 		return
 	}
 
-	go protocol.prepareUpdateObjectHandler(nil, client, callID, dataStorePrepareUpdateParam.(*datastore_types.DataStorePrepareUpdateParam))
+	go protocol.prepareUpdateObjectHandler(nil, client, callID, param.(*datastore_types.DataStorePrepareUpdateParam))
 }

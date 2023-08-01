@@ -10,7 +10,7 @@ import (
 )
 
 // CompletePostObjectV1 sets the CompletePostObjectV1 handler function
-func (protocol *Protocol) CompletePostObjectV1(handler func(err error, client *nex.Client, callID uint32, dataStoreCompletePostParamV1 *datastore_types.DataStoreCompletePostParamV1)) {
+func (protocol *Protocol) CompletePostObjectV1(handler func(err error, client *nex.Client, callID uint32, param *datastore_types.DataStoreCompletePostParamV1)) {
 	protocol.completePostObjectV1Handler = handler
 }
 
@@ -29,11 +29,11 @@ func (protocol *Protocol) handleCompletePostObjectV1(packet nex.PacketInterface)
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	dataStoreCompletePostParamV1, err := parametersStream.ReadStructure(datastore_types.NewDataStoreCompletePostParamV1())
+	param, err := parametersStream.ReadStructure(datastore_types.NewDataStoreCompletePostParamV1())
 	if err != nil {
-		go protocol.completePostObjectV1Handler(fmt.Errorf("Failed to read dataStoreCompletePostParamV1 from parameters. %s", err.Error()), client, callID, nil)
+		go protocol.completePostObjectV1Handler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
 		return
 	}
 
-	go protocol.completePostObjectV1Handler(nil, client, callID, dataStoreCompletePostParamV1.(*datastore_types.DataStoreCompletePostParamV1))
+	go protocol.completePostObjectV1Handler(nil, client, callID, param.(*datastore_types.DataStoreCompletePostParamV1))
 }

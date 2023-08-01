@@ -10,7 +10,7 @@ import (
 )
 
 // PrepareGetObjectV1 sets the PrepareGetObjectV1 handler function
-func (protocol *Protocol) PrepareGetObjectV1(handler func(err error, client *nex.Client, callID uint32, dataStorePrepareGetParamV1 *datastore_types.DataStorePrepareGetParamV1)) {
+func (protocol *Protocol) PrepareGetObjectV1(handler func(err error, client *nex.Client, callID uint32, param *datastore_types.DataStorePrepareGetParamV1)) {
 	protocol.prepareGetObjectV1Handler = handler
 }
 
@@ -29,11 +29,11 @@ func (protocol *Protocol) handlePrepareGetObjectV1(packet nex.PacketInterface) {
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	dataStorePrepareGetParamV1, err := parametersStream.ReadStructure(datastore_types.NewDataStorePrepareGetParamV1())
+	param, err := parametersStream.ReadStructure(datastore_types.NewDataStorePrepareGetParamV1())
 	if err != nil {
-		go protocol.prepareGetObjectV1Handler(fmt.Errorf("Failed to read dataStorePrepareGetParamV1 from parameters. %s", err.Error()), client, callID, nil)
+		go protocol.prepareGetObjectV1Handler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
 		return
 	}
 
-	go protocol.prepareGetObjectV1Handler(nil, client, callID, dataStorePrepareGetParamV1.(*datastore_types.DataStorePrepareGetParamV1))
+	go protocol.prepareGetObjectV1Handler(nil, client, callID, param.(*datastore_types.DataStorePrepareGetParamV1))
 }

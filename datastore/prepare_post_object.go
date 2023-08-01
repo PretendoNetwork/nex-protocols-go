@@ -10,7 +10,7 @@ import (
 )
 
 // PreparePostObject sets the PreparePostObject handler function
-func (protocol *Protocol) PreparePostObject(handler func(err error, client *nex.Client, callID uint32, dataStorePreparePostParam *datastore_types.DataStorePreparePostParam)) {
+func (protocol *Protocol) PreparePostObject(handler func(err error, client *nex.Client, callID uint32, param *datastore_types.DataStorePreparePostParam)) {
 	protocol.preparePostObjectHandler = handler
 }
 
@@ -29,11 +29,11 @@ func (protocol *Protocol) handlePreparePostObject(packet nex.PacketInterface) {
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	dataStorePreparePostParam, err := parametersStream.ReadStructure(datastore_types.NewDataStorePreparePostParam())
+	param, err := parametersStream.ReadStructure(datastore_types.NewDataStorePreparePostParam())
 	if err != nil {
-		go protocol.preparePostObjectHandler(fmt.Errorf("Failed to read dataStorePreparePostParam from parameters. %s", err.Error()), client, callID, nil)
+		go protocol.preparePostObjectHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
 		return
 	}
 
-	go protocol.preparePostObjectHandler(nil, client, callID, dataStorePreparePostParam.(*datastore_types.DataStorePreparePostParam))
+	go protocol.preparePostObjectHandler(nil, client, callID, param.(*datastore_types.DataStorePreparePostParam))
 }

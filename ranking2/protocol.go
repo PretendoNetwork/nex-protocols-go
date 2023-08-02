@@ -28,7 +28,7 @@ const (
 	// MethodGetRanking is the method ID for the method GetRanking
 	MethodGetRanking = 0x5
 
-	// MethodGetRankingByPrincipalId is the method ID for the method GetRankingByPrincipalId
+	// MethodGetRankingByPrincipalID is the method ID for the method GetRankingByPrincipalID
 	MethodGetRankingByPrincipalID = 0x6
 
 	// MethodGetCategorySetting is the method ID for the method GetCategorySetting

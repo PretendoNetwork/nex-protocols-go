@@ -123,13 +123,13 @@ func (rankingCachedResult *RankingCachedResult) FormatToString(indentationLevel 
 	b.WriteString(fmt.Sprintf("%sParentType: %s,\n", indentationValues, rankingCachedResult.ParentType().FormatToString(indentationLevel+1)))
 	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, rankingCachedResult.StructureVersion()))
 
-	if rankingCachedResult.SinceTime != nil {
+	if rankingCachedResult.CreatedTime != nil {
 		b.WriteString(fmt.Sprintf("%sCreatedTime: %s\n", indentationValues, rankingCachedResult.CreatedTime.FormatToString(indentationLevel+1)))
 	} else {
 		b.WriteString(fmt.Sprintf("%sCreatedTime: nil\n", indentationValues))
 	}
 
-	if rankingCachedResult.SinceTime != nil {
+	if rankingCachedResult.ExpiredTime != nil {
 		b.WriteString(fmt.Sprintf("%sExpiredTime: %s\n", indentationValues, rankingCachedResult.ExpiredTime.FormatToString(indentationLevel+1)))
 	} else {
 		b.WriteString(fmt.Sprintf("%sExpiredTime: nil\n", indentationValues))

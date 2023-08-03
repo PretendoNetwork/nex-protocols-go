@@ -87,35 +87,35 @@ func (protocol *Protocol) Setup() {
 		if request.ProtocolID() == ProtocolID {
 			switch request.MethodID() {
 			case MethodHello:
-				protocol.handleHello(packet)
+				go protocol.handleHello(packet)
 			case MethodPostContent:
-				protocol.handlePostContent(packet)
+				go protocol.handlePostContent(packet)
 			case MethodGetContent:
-				protocol.handleGetContent(packet)
+				go protocol.handleGetContent(packet)
 			case MethodFollow:
-				protocol.handleFollow(packet)
+				go protocol.handleFollow(packet)
 			case MethodUnfollowAllAndFollow:
-				protocol.handleUnfollowAllAndFollow(packet)
+				go protocol.handleUnfollowAllAndFollow(packet)
 			case MethodUnfollow:
-				protocol.handleUnfollow(packet)
+				go protocol.handleUnfollow(packet)
 			case MethodGetFollowing:
-				protocol.handleGetFollowing(packet)
+				go protocol.handleGetFollowing(packet)
 			case MethodGetFollower:
-				protocol.handleGetFollower(packet)
+				go protocol.handleGetFollower(packet)
 			case MethodGetNumFollowers:
-				protocol.handleGetNumFollowers(packet)
+				go protocol.handleGetNumFollowers(packet)
 			case MethodGetTimeline:
-				protocol.handleGetTimeline(packet)
+				go protocol.handleGetTimeline(packet)
 			case MethodDeleteContent:
-				protocol.handleDeleteContent(packet)
+				go protocol.handleDeleteContent(packet)
 			case MethodGetContentMulti:
-				protocol.handleGetContentMulti(packet)
+				go protocol.handleGetContentMulti(packet)
 			case MethodUpdateUserStatus:
-				protocol.handleUpdateUserStatus(packet)
+				go protocol.handleUpdateUserStatus(packet)
 			case MethodGetFriendUserStatuses:
-				protocol.handleGetFriendUserStatuses(packet)
+				go protocol.handleGetFriendUserStatuses(packet)
 			case MethodGetUserStatuses:
-				protocol.handleGetUserStatuses(packet)
+				go protocol.handleGetUserStatuses(packet)
 			default:
 				go globals.RespondNotImplemented(packet, ProtocolID)
 				fmt.Printf("Unsupported Subscriber method ID: %#v\n", request.MethodID())

@@ -97,35 +97,35 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 	if request.ProtocolID() == ProtocolID {
 		switch request.MethodID() {
 		case MethodUploadScore:
-			protocol.handleUploadScore(packet)
+			go protocol.handleUploadScore(packet)
 		case MethodDeleteScore:
-			protocol.handleDeleteScore(packet)
+			go protocol.handleDeleteScore(packet)
 		case MethodDeleteAllScores:
-			protocol.handleDeleteAllScores(packet)
+			go protocol.handleDeleteAllScores(packet)
 		case MethodUploadCommonData:
-			protocol.handleUploadCommonData(packet)
+			go protocol.handleUploadCommonData(packet)
 		case MethodDeleteCommonData:
-			protocol.handleDeleteCommonData(packet)
+			go protocol.handleDeleteCommonData(packet)
 		case MethodGetCommonData:
-			protocol.handleGetCommonData(packet)
+			go protocol.handleGetCommonData(packet)
 		case MethodChangeAttributes:
-			protocol.handleChangeAttributes(packet)
+			go protocol.handleChangeAttributes(packet)
 		case MethodChangeAllAttributes:
-			protocol.handleChangeAllAttributes(packet)
+			go protocol.handleChangeAllAttributes(packet)
 		case MethodGetRanking:
-			protocol.handleGetRanking(packet)
+			go protocol.handleGetRanking(packet)
 		case MethodGetApproxOrder:
-			protocol.handleGetApproxOrder(packet)
+			go protocol.handleGetApproxOrder(packet)
 		case MethodGetStats:
-			protocol.handleGetStats(packet)
+			go protocol.handleGetStats(packet)
 		case MethodGetRankingByPIDList:
-			protocol.handleGetRankingByPIDList(packet)
+			go protocol.handleGetRankingByPIDList(packet)
 		case MethodGetRankingByUniqueIDList:
-			protocol.handleGetRankingByUniqueIDList(packet)
+			go protocol.handleGetRankingByUniqueIDList(packet)
 		case MethodGetCachedTopXRanking:
-			protocol.handleGetCachedTopXRanking(packet)
+			go protocol.handleGetCachedTopXRanking(packet)
 		case MethodGetCachedTopXRankings:
-			protocol.handleGetCachedTopXRankings(packet)
+			go protocol.handleGetCachedTopXRankings(packet)
 		default:
 			go globals.RespondNotImplemented(packet, ProtocolID)
 			fmt.Printf("Unsupported Ranking method ID: %#v\n", request.MethodID())

@@ -67,25 +67,25 @@ func (protocol *Protocol) Setup() {
 		if request.ProtocolID() == ProtocolID {
 			switch request.MethodID() {
 			case MethodPutScore:
-				protocol.handlePutScore(packet)
+				go protocol.handlePutScore(packet)
 			case MethodGetCommonData:
-				protocol.handleGetCommonData(packet)
+				go protocol.handleGetCommonData(packet)
 			case MethodPutCommonData:
-				protocol.handlePutCommonData(packet)
+				go protocol.handlePutCommonData(packet)
 			case MethodDeleteCommonData:
-				protocol.handleDeleteCommonData(packet)
+				go protocol.handleDeleteCommonData(packet)
 			case MethodGetRanking:
-				protocol.handleGetRanking(packet)
+				go protocol.handleGetRanking(packet)
 			case MethodGetRankingByPrincipalID:
-				protocol.handleGetRankingByPrincipalID(packet)
+				go protocol.handleGetRankingByPrincipalID(packet)
 			case MethodGetCategorySetting:
-				protocol.handleGetCategorySetting(packet)
+				go protocol.handleGetCategorySetting(packet)
 			case MethodGetRankingChart:
-				protocol.handleGetRankingChart(packet)
+				go protocol.handleGetRankingChart(packet)
 			case MethodGetRankingCharts:
-				protocol.handleGetRankingCharts(packet)
+				go protocol.handleGetRankingCharts(packet)
 			case MethodGetEstimateScoreRank:
-				protocol.handleGetEstimateScoreRank(packet)
+				go protocol.handleGetEstimateScoreRank(packet)
 			default:
 				go globals.RespondNotImplemented(packet, ProtocolID)
 				fmt.Printf("Unsupported Ranking2 method ID: %#v\n", request.MethodID())

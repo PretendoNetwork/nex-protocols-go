@@ -79,17 +79,17 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 
 	switch request.MethodID() {
 	case MethodCreateSimpleSearchObject:
-		protocol.handleCreateSimpleSearchObject(packet)
+		go protocol.handleCreateSimpleSearchObject(packet)
 	case MethodUpdateSimpleSearchObject:
-		protocol.handleUpdateSimpleSearchObject(packet)
+		go protocol.handleUpdateSimpleSearchObject(packet)
 	case MethodDeleteSimpleSearchObject:
-		protocol.handleDeleteSimpleSearchObject(packet)
+		go protocol.handleDeleteSimpleSearchObject(packet)
 	case MethodSearchSimpleSearchObject:
-		protocol.handleSearchSimpleSearchObject(packet)
+		go protocol.handleSearchSimpleSearchObject(packet)
 	case MethodJoinMatchmakeSessionWithExtraParticipants:
-		protocol.handleJoinMatchmakeSessionWithExtraParticipants(packet)
+		go protocol.handleJoinMatchmakeSessionWithExtraParticipants(packet)
 	case MethodSearchSimpleSearchObjectByObjectIDs:
-		protocol.handleSearchSimpleSearchObjectByObjectIDs(packet)
+		go protocol.handleSearchSimpleSearchObjectByObjectIDs(packet)
 	default:
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		fmt.Printf("Unsupported Matchmake Extension (Mario Kart 8) method ID: %#v\n", request.MethodID())

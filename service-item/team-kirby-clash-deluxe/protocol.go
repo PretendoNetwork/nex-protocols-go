@@ -159,49 +159,49 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 
 	switch request.MethodID() {
 	case MethodGetEnvironment:
-		protocol.handleGetEnvironment(packet)
+		go protocol.handleGetEnvironment(packet)
 	case MethodHTTPGetRequest:
-		protocol.handleHTTPGetRequest(packet)
+		go protocol.handleHTTPGetRequest(packet)
 	case MethodHTTPGetResponse:
-		protocol.handleHTTPGetResponse(packet)
+		go protocol.handleHTTPGetResponse(packet)
 	case MethodPurchaseServiceItemRequest:
-		protocol.handlePurchaseServiceItemRequest(packet)
+		go protocol.handlePurchaseServiceItemRequest(packet)
 	case MethodPurchaseServiceItemResponse:
-		protocol.handlePurchaseServiceItemResponse(packet)
+		go protocol.handlePurchaseServiceItemResponse(packet)
 	case MethodListServiceItemRequest:
-		protocol.handleListServiceItemRequest(packet)
+		go protocol.handleListServiceItemRequest(packet)
 	case MethodListServiceItemResponse:
-		protocol.handleListServiceItemResponse(packet)
+		go protocol.handleListServiceItemResponse(packet)
 	case MethodGetBalanceRequest:
-		protocol.handleGetBalanceRequest(packet)
+		go protocol.handleGetBalanceRequest(packet)
 	case MethodGetBalanceResponse:
-		protocol.handleGetBalanceResponse(packet)
+		go protocol.handleGetBalanceResponse(packet)
 	case MethodGetPrepurchaseInfoRequest:
-		protocol.handleGetPrepurchaseInfoRequest(packet)
+		go protocol.handleGetPrepurchaseInfoRequest(packet)
 	case MethodGetPrepurchaseInfoResponse:
-		protocol.handleGetPrepurchaseInfoResponse(packet)
+		go protocol.handleGetPrepurchaseInfoResponse(packet)
 	case MethodGetServiceItemRightRequest:
-		protocol.handleGetServiceItemRightRequest(packet)
+		go protocol.handleGetServiceItemRightRequest(packet)
 	case MethodGetServiceItemRightResponse:
-		protocol.handleGetServiceItemRightResponse(packet)
+		go protocol.handleGetServiceItemRightResponse(packet)
 	case MethodGetPurchaseHistoryRequest:
-		protocol.handleGetPurchaseHistoryRequest(packet)
+		go protocol.handleGetPurchaseHistoryRequest(packet)
 	case MethodGetPurchaseHistoryResponse:
-		protocol.handleGetPurchaseHistoryResponse(packet)
+		go protocol.handleGetPurchaseHistoryResponse(packet)
 	case MethodPostRightBinaryByAccount:
-		protocol.handlePostRightBinaryByAccount(packet)
+		go protocol.handlePostRightBinaryByAccount(packet)
 	case MethodUseServiceItemByAccountRequest:
-		protocol.handleUseServiceItemByAccountRequest(packet)
+		go protocol.handleUseServiceItemByAccountRequest(packet)
 	case MethodUseServiceItemByAccountResponse:
-		protocol.handleUseServiceItemByAccountResponse(packet)
+		go protocol.handleUseServiceItemByAccountResponse(packet)
 	case MethodAcquireServiceItemByAccount:
-		protocol.handleAcquireServiceItemByAccount(packet)
+		go protocol.handleAcquireServiceItemByAccount(packet)
 	case MethodGetSupportID:
-		protocol.handleGetSupportID(packet)
+		go protocol.handleGetSupportID(packet)
 	case MethodGetLawMessageRequest:
-		protocol.handleGetLawMessageRequest(packet)
+		go protocol.handleGetLawMessageRequest(packet)
 	case MethodGetLawMessageResponse:
-		protocol.handleGetLawMessageResponse(packet)
+		go protocol.handleGetLawMessageResponse(packet)
 	default:
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		fmt.Printf("Unsupported Service Item (Team Kirby Clash Deluxe) method ID: %#v\n", request.MethodID())

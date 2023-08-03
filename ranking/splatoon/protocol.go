@@ -68,13 +68,13 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 
 	switch request.MethodID() {
 	case MethodGetCompetitionRankingScore:
-		protocol.handleGetCompetitionRankingScore(packet)
+		go protocol.handleGetCompetitionRankingScore(packet)
 	case MethodGetcompetitionRankingScoreByPeriodList:
-		protocol.handleGetcompetitionRankingScoreByPeriodList(packet)
+		go protocol.handleGetcompetitionRankingScoreByPeriodList(packet)
 	case MethodUploadCompetitionRankingScore:
-		protocol.handleUploadCompetitionRankingScore(packet)
+		go protocol.handleUploadCompetitionRankingScore(packet)
 	case MethodDeleteCompetitionRankingScore:
-		protocol.handleDeleteCompetitionRankingScore(packet)
+		go protocol.handleDeleteCompetitionRankingScore(packet)
 	default:
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		fmt.Printf("Unsupported Ranking (Splatoon) method ID: %#v\n", request.MethodID())

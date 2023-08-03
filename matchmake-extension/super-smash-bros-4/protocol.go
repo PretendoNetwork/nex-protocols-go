@@ -228,77 +228,77 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 
 	switch request.MethodID() {
 	case MethodGetTournament:
-		protocol.handleGetTournament(packet)
+		go protocol.handleGetTournament(packet)
 	case MethodGetTournamentReplayID:
-		protocol.handleGetTournamentReplayID(packet)
+		go protocol.handleGetTournamentReplayID(packet)
 	case MethodGetTournamentResult:
-		protocol.handleGetTournamentResult(packet)
+		go protocol.handleGetTournamentResult(packet)
 	case MethodSetTournamentReplayID:
-		protocol.handleSetTournamentReplayID(packet)
+		go protocol.handleSetTournamentReplayID(packet)
 	case MethodGetTournamentProfiles:
-		protocol.handleGetTournamentProfiles(packet)
+		go protocol.handleGetTournamentProfiles(packet)
 	case MethodJoinOrCreateMatchmakeSession:
-		protocol.handleJoinOrCreateMatchmakeSession(packet)
+		go protocol.handleJoinOrCreateMatchmakeSession(packet)
 	case MethodRegisterTournamentPlayerInfo:
-		protocol.handleRegisterTournamentPlayerInfo(packet)
+		go protocol.handleRegisterTournamentPlayerInfo(packet)
 	case MethodRegisterTournamentBot:
-		protocol.handleRegisterTournamentBot(packet)
+		go protocol.handleRegisterTournamentBot(packet)
 	case MethodReportTournamentBotRoundResult:
-		protocol.handleReportTournamentBotRoundResult(packet)
+		go protocol.handleReportTournamentBotRoundResult(packet)
 	case MethodReplaceTournamentLeafNode:
-		protocol.handleReplaceTournamentLeafNode(packet)
+		go protocol.handleReplaceTournamentLeafNode(packet)
 	case MethodStartTournament:
-		protocol.handleStartTournament(packet)
+		go protocol.handleStartTournament(packet)
 	case MethodAutoTournamentMatchmake:
-		protocol.handleAutoTournamentMatchmake(packet)
+		go protocol.handleAutoTournamentMatchmake(packet)
 	case MethodSimpleFindByID:
-		protocol.handleSimpleFindByID(packet)
+		go protocol.handleSimpleFindByID(packet)
 	case MethodGetTournamentCompetitions:
-		protocol.handleGetTournamentCompetitions(packet)
+		go protocol.handleGetTournamentCompetitions(packet)
 	case MethodGetTournamentCompetition:
-		protocol.handleGetTournamentCompetition(packet)
+		go protocol.handleGetTournamentCompetition(packet)
 	case MethodGetTournamentReplayIDs:
-		protocol.handleGetTournamentReplayIDs(packet)
+		go protocol.handleGetTournamentReplayIDs(packet)
 	case MethodRegisterCommunityCompetition:
-		protocol.handleRegisterCommunityCompetition(packet)
+		go protocol.handleRegisterCommunityCompetition(packet)
 	case MethodUnregisterCommunityCompetition:
-		protocol.handleUnregisterCommunityCompetition(packet)
+		go protocol.handleUnregisterCommunityCompetition(packet)
 	case MethodUnregisterCommunityCompetitionByID:
-		protocol.handleUnregisterCommunityCompetitionByID(packet)
+		go protocol.handleUnregisterCommunityCompetitionByID(packet)
 	case MethodGetCommunityCompetitions:
-		protocol.handleGetCommunityCompetitions(packet)
+		go protocol.handleGetCommunityCompetitions(packet)
 	case MethodGetCommunityCompetitionByID:
-		protocol.handleGetCommunityCompetitionByID(packet)
+		go protocol.handleGetCommunityCompetitionByID(packet)
 	case MethodFindCommunityCompetitionsByParticipant:
-		protocol.handleFindCommunityCompetitionsByParticipant(packet)
+		go protocol.handleFindCommunityCompetitionsByParticipant(packet)
 	case MethodFindCommunityCompetitionsByGatheringID:
-		protocol.handleFindCommunityCompetitionsByGatheringID(packet)
+		go protocol.handleFindCommunityCompetitionsByGatheringID(packet)
 	case MethodSelectCommunityCompetitionByOwner:
-		protocol.handleSelectCommunityCompetitionByOwner(packet)
+		go protocol.handleSelectCommunityCompetitionByOwner(packet)
 	case MethodJoinCommunityCompetition:
-		protocol.handleJoinCommunityCompetition(packet)
+		go protocol.handleJoinCommunityCompetition(packet)
 	case MethodJoinCommunityCompetitionByGatheringID:
-		protocol.handleJoinCommunityCompetitionByGatheringID(packet)
+		go protocol.handleJoinCommunityCompetitionByGatheringID(packet)
 	case MethodEndCommunityCompetitionParticipation:
-		protocol.handleEndCommunityCompetitionParticipation(packet)
+		go protocol.handleEndCommunityCompetitionParticipation(packet)
 	case MethodEndCommunityCompetitionParticipationByGatheringID:
-		protocol.handleEndCommunityCompetitionParticipationByGatheringID(packet)
+		go protocol.handleEndCommunityCompetitionParticipationByGatheringID(packet)
 	case MethodSearchCommunityCompetition:
-		protocol.handleSearchCommunityCompetition(packet)
+		go protocol.handleSearchCommunityCompetition(packet)
 	case MethodPostCommunityCompetitionMatchResult:
-		protocol.handlePostCommunityCompetitionMatchResult(packet)
+		go protocol.handlePostCommunityCompetitionMatchResult(packet)
 	case MethodGetCommunityCompetitionRanking:
-		protocol.handleGetCommunityCompetitionRanking(packet)
+		go protocol.handleGetCommunityCompetitionRanking(packet)
 	case MethodDebugRegisterCommunityCompetition:
-		protocol.handleDebugRegisterCommunityCompetition(packet)
+		go protocol.handleDebugRegisterCommunityCompetition(packet)
 	case MethodDebugUnregisterCommunityCompetition:
-		protocol.handleDebugUnregisterCommunityCompetition(packet)
+		go protocol.handleDebugUnregisterCommunityCompetition(packet)
 	case MethodDebugJoinCommunityCompetition:
-		protocol.handleDebugJoinCommunityCompetition(packet)
+		go protocol.handleDebugJoinCommunityCompetition(packet)
 	case MethodDebugEndCommunityCompetitionParticipation:
-		protocol.handleDebugEndCommunityCompetitionParticipation(packet)
+		go protocol.handleDebugEndCommunityCompetitionParticipation(packet)
 	case MethodDebugPostCommunityCompetitionMatchResult:
-		protocol.handleDebugPostCommunityCompetitionMatchResult(packet)
+		go protocol.handleDebugPostCommunityCompetitionMatchResult(packet)
 	default:
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		fmt.Printf("Unsupported Matchmake Extension (Super Smash Bros. 4) method ID: %#v\n", request.MethodID())

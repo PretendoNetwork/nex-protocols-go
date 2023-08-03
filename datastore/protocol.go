@@ -220,97 +220,97 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 
 	switch request.MethodID() {
 	case MethodPrepareGetObjectV1:
-		protocol.handlePrepareGetObjectV1(packet)
+		go protocol.handlePrepareGetObjectV1(packet)
 	case MethodPreparePostObjectV1:
-		protocol.handlePreparePostObjectV1(packet)
+		go protocol.handlePreparePostObjectV1(packet)
 	case MethodCompletePostObjectV1:
-		protocol.handleCompletePostObjectV1(packet)
+		go protocol.handleCompletePostObjectV1(packet)
 	case MethodDeleteObject:
-		protocol.handleDeleteObject(packet)
+		go protocol.handleDeleteObject(packet)
 	case MethodDeleteObjects:
-		protocol.handleDeleteObjects(packet)
+		go protocol.handleDeleteObjects(packet)
 	case MethodChangeMetaV1:
-		protocol.handleChangeMetaV1(packet)
+		go protocol.handleChangeMetaV1(packet)
 	case MethodChangeMetasV1:
-		protocol.handleChangeMetasV1(packet)
+		go protocol.handleChangeMetasV1(packet)
 	case MethodGetMeta:
-		protocol.handleGetMeta(packet)
+		go protocol.handleGetMeta(packet)
 	case MethodGetMetas:
-		protocol.handleGetMetas(packet)
+		go protocol.handleGetMetas(packet)
 	case MethodPrepareUpdateObject:
-		protocol.handlePrepareUpdateObject(packet)
+		go protocol.handlePrepareUpdateObject(packet)
 	case MethodCompleteUpdateObject:
-		protocol.handleCompleteUpdateObject(packet)
+		go protocol.handleCompleteUpdateObject(packet)
 	case MethodSearchObject:
-		protocol.handleSearchObject(packet)
+		go protocol.handleSearchObject(packet)
 	case MethodGetNotificationURL:
-		protocol.handleGetNotificationURL(packet)
+		go protocol.handleGetNotificationURL(packet)
 	case MethodGetNewArrivedNotificationsV1:
-		protocol.handleGetNewArrivedNotificationsV1(packet)
+		go protocol.handleGetNewArrivedNotificationsV1(packet)
 	case MethodRateObject:
-		protocol.handleRateObject(packet)
+		go protocol.handleRateObject(packet)
 	case MethodGetRating:
-		protocol.handleGetRating(packet)
+		go protocol.handleGetRating(packet)
 	case MethodGetRatings:
-		protocol.handleGetRatings(packet)
+		go protocol.handleGetRatings(packet)
 	case MethodResetRating:
-		protocol.handleResetRating(packet)
+		go protocol.handleResetRating(packet)
 	case MethodResetRatings:
-		protocol.handleResetRatings(packet)
+		go protocol.handleResetRatings(packet)
 	case MethodGetSpecificMetaV1:
-		protocol.handleGetSpecificMetaV1(packet)
+		go protocol.handleGetSpecificMetaV1(packet)
 	case MethodPostMetaBinary:
-		protocol.handlePostMetaBinary(packet)
+		go protocol.handlePostMetaBinary(packet)
 	case MethodTouchObject:
-		protocol.handleTouchObject(packet)
+		go protocol.handleTouchObject(packet)
 	case MethodGetRatingWithLog:
-		protocol.handleGetRatingWithLog(packet)
+		go protocol.handleGetRatingWithLog(packet)
 	case MethodPreparePostObject:
-		protocol.handlePreparePostObject(packet)
+		go protocol.handlePreparePostObject(packet)
 	case MethodPrepareGetObject:
-		protocol.handlePrepareGetObject(packet)
+		go protocol.handlePrepareGetObject(packet)
 	case MethodCompletePostObject:
-		protocol.handleCompletePostObject(packet)
+		go protocol.handleCompletePostObject(packet)
 	case MethodGetNewArrivedNotifications:
-		protocol.handleGetNewArrivedNotifications(packet)
+		go protocol.handleGetNewArrivedNotifications(packet)
 	case MethodGetSpecificMeta:
-		protocol.handleGetSpecificMeta(packet)
+		go protocol.handleGetSpecificMeta(packet)
 	case MethodGetPersistenceInfo:
-		protocol.handleGetPersistenceInfo(packet)
+		go protocol.handleGetPersistenceInfo(packet)
 	case MethodGetPersistenceInfos:
-		protocol.handleGetPersistenceInfos(packet)
+		go protocol.handleGetPersistenceInfos(packet)
 	case MethodPerpetuateObject:
-		protocol.handlePerpetuateObject(packet)
+		go protocol.handlePerpetuateObject(packet)
 	case MethodUnperpetuateObject:
-		protocol.handleUnperpetuateObject(packet)
+		go protocol.handleUnperpetuateObject(packet)
 	case MethodPrepareGetObjectOrMetaBinary:
-		protocol.handlePrepareGetObjectOrMetaBinary(packet)
+		go protocol.handlePrepareGetObjectOrMetaBinary(packet)
 	case MethodGetPasswordInfo:
-		protocol.handleGetPasswordInfo(packet)
+		go protocol.handleGetPasswordInfo(packet)
 	case MethodGetPasswordInfos:
-		protocol.handleGetPasswordInfos(packet)
+		go protocol.handleGetPasswordInfos(packet)
 	case MethodGetMetasMultipleParam:
-		protocol.handleGetMetasMultipleParam(packet)
+		go protocol.handleGetMetasMultipleParam(packet)
 	case MethodCompletePostObjects:
-		protocol.handleCompletePostObjects(packet)
+		go protocol.handleCompletePostObjects(packet)
 	case MethodChangeMeta:
-		protocol.handleChangeMeta(packet)
+		go protocol.handleChangeMeta(packet)
 	case MethodChangeMetas:
-		protocol.handleChangeMetas(packet)
+		go protocol.handleChangeMetas(packet)
 	case MethodRateObjects:
-		protocol.handleRateObjects(packet)
+		go protocol.handleRateObjects(packet)
 	case MethodPostMetaBinaryWithDataID:
-		protocol.handlePostMetaBinaryWithDataID(packet)
+		go protocol.handlePostMetaBinaryWithDataID(packet)
 	case MethodPostMetaBinariesWithDataID:
-		protocol.handlePostMetaBinariesWithDataID(packet)
+		go protocol.handlePostMetaBinariesWithDataID(packet)
 	case MethodRateObjectWithPosting:
-		protocol.handleRateObjectWithPosting(packet)
+		go protocol.handleRateObjectWithPosting(packet)
 	case MethodRateObjectsWithPosting:
-		protocol.handleRateObjectsWithPosting(packet)
+		go protocol.handleRateObjectsWithPosting(packet)
 	case MethodGetObjectInfos:
-		protocol.handleGetObjectInfos(packet)
+		go protocol.handleGetObjectInfos(packet)
 	case MethodSearchObjectLight:
-		protocol.handleSearchObjectLight(packet)
+		go protocol.handleSearchObjectLight(packet)
 	default:
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		fmt.Printf("Unsupported DataStore method ID: %#v\n", request.MethodID())

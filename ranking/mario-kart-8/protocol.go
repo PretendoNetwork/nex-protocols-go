@@ -64,11 +64,11 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 
 	switch request.MethodID() {
 	case MethodGetCompetitionRankingScore:
-		protocol.handleGetCompetitionRankingScore(packet)
+		go protocol.handleGetCompetitionRankingScore(packet)
 	case MethodUploadCompetitionRankingScore:
-		protocol.handleUploadCompetitionRankingScore(packet)
+		go protocol.handleUploadCompetitionRankingScore(packet)
 	case MethodGetCompetitionInfo:
-		protocol.handleGetCompetitionInfo(packet)
+		go protocol.handleGetCompetitionInfo(packet)
 	default:
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		fmt.Printf("Unsupported Ranking (Mario Kart 8) method ID: %#v\n", request.MethodID())

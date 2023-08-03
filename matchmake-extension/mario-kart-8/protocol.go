@@ -18,17 +18,29 @@ const (
 	// MethodCreateSimpleSearchObject is the method ID for the CreateSimpleSearchObject method
 	MethodCreateSimpleSearchObject = 0x24
 
+	// MethodUpdateSimpleSearchObject is the method ID for the UpdateSimpleSearchObject method
+	MethodUpdateSimpleSearchObject = 0x25
+
+	// MethodDeleteSimpleSearchObject is the method ID for the DeleteSimpleSearchObject method
+	MethodDeleteSimpleSearchObject = 0x26
+
 	// MethodSearchSimpleSearchObject is the method ID for the SearchSimpleSearchObject method
 	MethodSearchSimpleSearchObject = 0x27
 
 	// MethodJoinMatchmakeSessionWithExtraParticipants is the method ID for the JoinMatchmakeSessionWithExtraParticipants method
 	MethodJoinMatchmakeSessionWithExtraParticipants = 0x28
+
+	// MethodSearchSimpleSearchObjectByObjectIDs is the method ID for the SearchSimpleSearchObjectByObjectIDs method
+	MethodSearchSimpleSearchObjectByObjectIDs = 0x29
 )
 
 var patchedMethods = []uint32{
 	MethodCreateSimpleSearchObject,
+	MethodUpdateSimpleSearchObject,
+	MethodDeleteSimpleSearchObject,
 	MethodSearchSimpleSearchObject,
 	MethodJoinMatchmakeSessionWithExtraParticipants,
+	MethodSearchSimpleSearchObjectByObjectIDs,
 }
 
 type matchmakeExtensionProtocol = matchmake_extension.Protocol
@@ -39,8 +51,11 @@ type Protocol struct {
 	Server *nex.Server
 	matchmakeExtensionProtocol
 	createSimpleSearchObjectHandler                  func(err error, client *nex.Client, callID uint32, object *matchmake_extension_mario_kart8_types.SimpleSearchObject)
+	updateSimpleSearchObjectHandler                  func(err error, client *nex.Client, callID uint32, objectID uint32, newObject *matchmake_extension_mario_kart8_types.SimpleSearchObject)
+	deleteSimpleSearchObjectHandler                  func(err error, client *nex.Client, callID uint32, objectID uint32)
 	searchSimpleSearchObjectHandler                  func(err error, client *nex.Client, callID uint32, param *matchmake_extension_mario_kart8_types.SimpleSearchParam)
 	joinMatchmakeSessionWithExtraParticipantsHandler func(err error, client *nex.Client, callID uint32, packetPayload []byte)
+	searchSimpleSearchObjectByObjectIDsHandler       func(err error, client *nex.Client, callID uint32, objectIDs []uint32)
 }
 
 // Setup initializes the protocol
@@ -65,10 +80,16 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 	switch request.MethodID() {
 	case MethodCreateSimpleSearchObject:
 		protocol.handleCreateSimpleSearchObject(packet)
+	case MethodUpdateSimpleSearchObject:
+		protocol.handleUpdateSimpleSearchObject(packet)
+	case MethodDeleteSimpleSearchObject:
+		protocol.handleDeleteSimpleSearchObject(packet)
 	case MethodSearchSimpleSearchObject:
 		protocol.handleSearchSimpleSearchObject(packet)
 	case MethodJoinMatchmakeSessionWithExtraParticipants:
 		protocol.handleJoinMatchmakeSessionWithExtraParticipants(packet)
+	case MethodSearchSimpleSearchObjectByObjectIDs:
+		protocol.handleSearchSimpleSearchObjectByObjectIDs(packet)
 	default:
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		fmt.Printf("Unsupported Matchmake Extension (Mario Kart 8) method ID: %#v\n", request.MethodID())

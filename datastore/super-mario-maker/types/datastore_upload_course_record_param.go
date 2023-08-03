@@ -1,4 +1,4 @@
-// Package types implements all the types used by the DataStore Super Mario Maker protocol
+// Package types implements all the types used by the DataStore (Super Mario Maker) protocol
 package types
 
 import (
@@ -8,7 +8,7 @@ import (
 	"github.com/PretendoNetwork/nex-go"
 )
 
-// DataStoreUploadCourseRecordParam is a data structure used by the DataStore Super Mario Maker protocol
+// DataStoreUploadCourseRecordParam holds data for the DataStore (Super Mario Maker) protocol
 type DataStoreUploadCourseRecordParam struct {
 	nex.Structure
 	DataID uint64
@@ -22,20 +22,29 @@ func (dataStoreUploadCourseRecordParam *DataStoreUploadCourseRecordParam) Extrac
 
 	dataStoreUploadCourseRecordParam.DataID, err = stream.ReadUInt64LE()
 	if err != nil {
-		return fmt.Errorf("Failed to extract DataStoreUploadCourseRecordParam.DataID. %s", err.Error())
+		return fmt.Errorf("Failed to extract DataStoreUploadCourseRecordParam.DataID from stream. %s", err.Error())
 	}
 
 	dataStoreUploadCourseRecordParam.Slot, err = stream.ReadUInt8()
 	if err != nil {
-		return fmt.Errorf("Failed to extract DataStoreUploadCourseRecordParam.Slot. %s", err.Error())
+		return fmt.Errorf("Failed to extract DataStoreUploadCourseRecordParam.Slot from stream. %s", err.Error())
 	}
 
 	dataStoreUploadCourseRecordParam.Score, err = stream.ReadInt32LE()
 	if err != nil {
-		return fmt.Errorf("Failed to extract DataStoreUploadCourseRecordParam.Score. %s", err.Error())
+		return fmt.Errorf("Failed to extract DataStoreUploadCourseRecordParam.Score from stream. %s", err.Error())
 	}
 
 	return nil
+}
+
+// Bytes encodes the DataStoreUploadCourseRecordParam and returns a byte array
+func (dataStoreUploadCourseRecordParam *DataStoreUploadCourseRecordParam) Bytes(stream *nex.StreamOut) []byte {
+	stream.WriteUInt64LE(dataStoreUploadCourseRecordParam.DataID)
+	stream.WriteUInt8(dataStoreUploadCourseRecordParam.Slot)
+	stream.WriteInt32LE(dataStoreUploadCourseRecordParam.Score)
+
+	return stream.Bytes()
 }
 
 // Copy returns a new copied instance of DataStoreUploadCourseRecordParam
@@ -84,7 +93,7 @@ func (dataStoreUploadCourseRecordParam *DataStoreUploadCourseRecordParam) Format
 	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, dataStoreUploadCourseRecordParam.StructureVersion()))
 	b.WriteString(fmt.Sprintf("%sDataID: %d,\n", indentationValues, dataStoreUploadCourseRecordParam.DataID))
 	b.WriteString(fmt.Sprintf("%sSlot: %d,\n", indentationValues, dataStoreUploadCourseRecordParam.Slot))
-	b.WriteString(fmt.Sprintf("%sScore: %d\n", indentationValues, dataStoreUploadCourseRecordParam.Score))
+	b.WriteString(fmt.Sprintf("%sScore: %d,\n", indentationValues, dataStoreUploadCourseRecordParam.Score))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()

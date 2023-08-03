@@ -1,4 +1,4 @@
-// Package protocol implements the Super Mario Maker DataStore protocol
+// Package protocol implements the DataStoreSuperMarioMaker protocol
 package protocol
 
 import (
@@ -10,13 +10,13 @@ import (
 )
 
 // CTRPickUpCourseSearchObject sets the CTRPickUpCourseSearchObject handler function
-func (protocol *Protocol) CTRPickUpCourseSearchObject(handler func(err error, client *nex.Client, callID uint32, dataStoreSearchParam *datastore_types.DataStoreSearchParam, extraData []string)) {
+func (protocol *Protocol) CTRPickUpCourseSearchObject(handler func(err error, client *nex.Client, callID uint32, param *datastore_types.DataStoreSearchParam, extraData []string)) {
 	protocol.cTRPickUpCourseSearchObjectHandler = handler
 }
 
 func (protocol *Protocol) handleCTRPickUpCourseSearchObject(packet nex.PacketInterface) {
 	if protocol.cTRPickUpCourseSearchObjectHandler == nil {
-		globals.Logger.Warning("DataStoreSMM::CTRPickUpCourseSearchObject not implemented")
+		globals.Logger.Warning("DataStoreSuperMarioMaker::CTRPickUpCourseSearchObject not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
 	}

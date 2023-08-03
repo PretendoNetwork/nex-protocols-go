@@ -1,4 +1,4 @@
-// Package protocol implements the Super Mario Maker DataStore protocol
+// Package protocol implements the DataStoreSuperMarioMaker protocol
 package protocol
 
 import (
@@ -16,7 +16,7 @@ func (protocol *Protocol) AddToBufferQueues(handler func(err error, client *nex.
 
 func (protocol *Protocol) handleAddToBufferQueues(packet nex.PacketInterface) {
 	if protocol.addToBufferQueuesHandler == nil {
-		globals.Logger.Warning("DataStoreSMM::AddToBufferQueues not implemented")
+		globals.Logger.Warning("DataStoreSuperMarioMaker::AddToBufferQueues not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
 	}

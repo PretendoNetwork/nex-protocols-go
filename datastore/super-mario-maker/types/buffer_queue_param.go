@@ -1,4 +1,4 @@
-// Package types implements all the types used by the DataStore Super Mario Maker protocol
+// Package types implements all the types used by the DataStore (Super Mario Maker) protocol
 package types
 
 import (
@@ -8,7 +8,7 @@ import (
 	"github.com/PretendoNetwork/nex-go"
 )
 
-// BufferQueueParam is sent in the GetBufferQueue method
+// BufferQueueParam holds data for the DataStore (Super Mario Maker) protocol
 type BufferQueueParam struct {
 	nex.Structure
 	DataID uint64
@@ -21,15 +21,23 @@ func (bufferQueueParam *BufferQueueParam) ExtractFromStream(stream *nex.StreamIn
 
 	bufferQueueParam.DataID, err = stream.ReadUInt64LE()
 	if err != nil {
-		return fmt.Errorf("Failed to extract BufferQueueParam.DataID. %s", err.Error())
+		return fmt.Errorf("Failed to extract BufferQueueParam.DataID from stream. %s", err.Error())
 	}
 
 	bufferQueueParam.Slot, err = stream.ReadUInt32LE()
 	if err != nil {
-		return fmt.Errorf("Failed to extract BufferQueueParam.Slot. %s", err.Error())
+		return fmt.Errorf("Failed to extract BufferQueueParam.Slot from stream. %s", err.Error())
 	}
 
 	return nil
+}
+
+// Bytes encodes the BufferQueueParam and returns a byte array
+func (bufferQueueParam *BufferQueueParam) Bytes(stream *nex.StreamOut) []byte {
+	stream.WriteUInt64LE(bufferQueueParam.DataID)
+	stream.WriteUInt32LE(bufferQueueParam.Slot)
+
+	return stream.Bytes()
 }
 
 // Copy returns a new copied instance of BufferQueueParam
@@ -72,7 +80,7 @@ func (bufferQueueParam *BufferQueueParam) FormatToString(indentationLevel int) s
 	b.WriteString("BufferQueueParam{\n")
 	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, bufferQueueParam.StructureVersion()))
 	b.WriteString(fmt.Sprintf("%sDataID: %d,\n", indentationValues, bufferQueueParam.DataID))
-	b.WriteString(fmt.Sprintf("%sSlot: %d\n", indentationValues, bufferQueueParam.Slot))
+	b.WriteString(fmt.Sprintf("%sSlot: %d,\n", indentationValues, bufferQueueParam.Slot))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()

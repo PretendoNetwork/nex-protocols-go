@@ -1,4 +1,4 @@
-// Package protocol implements the Super Mario Maker DataStore protocol
+// Package protocol implements the DataStoreSuperMarioMaker protocol
 package protocol
 
 import (
@@ -15,7 +15,7 @@ func (protocol *Protocol) GetApplicationConfigString(handler func(err error, cli
 
 func (protocol *Protocol) handleGetApplicationConfigString(packet nex.PacketInterface) {
 	if protocol.getApplicationConfigStringHandler == nil {
-		globals.Logger.Warning("DataStoreSMM::GetApplicationConfigString not implemented")
+		globals.Logger.Warning("DataStoreSuperMarioMaker::GetApplicationConfigString not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
 	}

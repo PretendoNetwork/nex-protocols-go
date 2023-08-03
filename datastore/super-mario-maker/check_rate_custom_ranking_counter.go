@@ -1,4 +1,4 @@
-// Package protocol implements the Super Mario Maker DataStore protocol
+// Package protocol implements the DataStoreSuperMarioMaker protocol
 package protocol
 
 import (
@@ -15,7 +15,7 @@ func (protocol *Protocol) CheckRateCustomRankingCounter(handler func(err error, 
 
 func (protocol *Protocol) handleCheckRateCustomRankingCounter(packet nex.PacketInterface) {
 	if protocol.checkRateCustomRankingCounterHandler == nil {
-		globals.Logger.Warning("DataStoreSMM::CheckRateCustomRankingCounter not implemented")
+		globals.Logger.Warning("DataStoreSuperMarioMaker::CheckRateCustomRankingCounter not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
 	}

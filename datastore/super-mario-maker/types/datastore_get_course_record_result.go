@@ -1,4 +1,4 @@
-// Package types implements all the types used by the DataStore Super Mario Maker protocol
+// Package types implements all the types used by the DataStore (Super Mario Maker) protocol
 package types
 
 import (
@@ -8,7 +8,7 @@ import (
 	"github.com/PretendoNetwork/nex-go"
 )
 
-// DataStoreGetCourseRecordResult is used to send data about a courses world record
+// DataStoreGetCourseRecordResult holds data for the DataStore (Super Mario Maker) protocol
 type DataStoreGetCourseRecordResult struct {
 	nex.Structure
 	DataID      uint64
@@ -18,6 +18,48 @@ type DataStoreGetCourseRecordResult struct {
 	BestScore   int32
 	CreatedTime *nex.DateTime
 	UpdatedTime *nex.DateTime
+}
+
+// ExtractFromStream extracts a DataStoreGetCourseRecordResult structure from a stream
+func (dataStoreGetCourseRecordResult *DataStoreGetCourseRecordResult) ExtractFromStream(stream *nex.StreamIn) error {
+	var err error
+
+	dataStoreGetCourseRecordResult.DataID, err = stream.ReadUInt64LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreGetCourseRecordResult.DataID from stream. %s", err.Error())
+	}
+
+	dataStoreGetCourseRecordResult.Slot, err = stream.ReadUInt8()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreGetCourseRecordResult.Slot from stream. %s", err.Error())
+	}
+
+	dataStoreGetCourseRecordResult.FirstPID, err = stream.ReadUInt32LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreGetCourseRecordResult.FirstPID from stream. %s", err.Error())
+	}
+
+	dataStoreGetCourseRecordResult.BestPID, err = stream.ReadUInt32LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreGetCourseRecordResult.BestPID from stream. %s", err.Error())
+	}
+
+	dataStoreGetCourseRecordResult.BestScore, err = stream.ReadInt32LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreGetCourseRecordResult.BestScore from stream. %s", err.Error())
+	}
+
+	dataStoreGetCourseRecordResult.CreatedTime, err = stream.ReadDateTime()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreGetCourseRecordResult.CreatedTime from stream. %s", err.Error())
+	}
+
+	dataStoreGetCourseRecordResult.UpdatedTime, err = stream.ReadDateTime()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreGetCourseRecordResult.UpdatedTime from stream. %s", err.Error())
+	}
+
+	return nil
 }
 
 // Bytes encodes the DataStoreGetCourseRecordResult and returns a byte array
@@ -98,15 +140,15 @@ func (dataStoreGetCourseRecordResult *DataStoreGetCourseRecordResult) FormatToSt
 	b.WriteString("DataStoreGetCourseRecordResult{\n")
 	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, dataStoreGetCourseRecordResult.StructureVersion()))
 	b.WriteString(fmt.Sprintf("%sDataID: %d,\n", indentationValues, dataStoreGetCourseRecordResult.DataID))
-	b.WriteString(fmt.Sprintf("%sSlot: %d\n,", indentationValues, dataStoreGetCourseRecordResult.Slot))
+	b.WriteString(fmt.Sprintf("%sSlot: %d,\n", indentationValues, dataStoreGetCourseRecordResult.Slot))
 	b.WriteString(fmt.Sprintf("%sFirstPID: %d,\n", indentationValues, dataStoreGetCourseRecordResult.FirstPID))
 	b.WriteString(fmt.Sprintf("%sBestPID: %d,\n", indentationValues, dataStoreGetCourseRecordResult.BestPID))
 	b.WriteString(fmt.Sprintf("%sBestScore: %d,\n", indentationValues, dataStoreGetCourseRecordResult.BestScore))
 
 	if dataStoreGetCourseRecordResult.CreatedTime != nil {
-		b.WriteString(fmt.Sprintf("%sCreatedTime: %s,\n", indentationValues, dataStoreGetCourseRecordResult.CreatedTime.FormatToString(indentationLevel+1)))
+		b.WriteString(fmt.Sprintf("%sCreatedTime: %s\n", indentationValues, dataStoreGetCourseRecordResult.CreatedTime.FormatToString(indentationLevel+1)))
 	} else {
-		b.WriteString(fmt.Sprintf("%sCreatedTime: nil,\n", indentationValues))
+		b.WriteString(fmt.Sprintf("%sCreatedTime: nil\n", indentationValues))
 	}
 
 	if dataStoreGetCourseRecordResult.UpdatedTime != nil {

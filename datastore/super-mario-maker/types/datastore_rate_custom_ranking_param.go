@@ -1,4 +1,4 @@
-// Package types implements all the types used by the DataStore Super Mario Maker protocol
+// Package types implements all the types used by the DataStore (Super Mario Maker) protocol
 package types
 
 import (
@@ -8,7 +8,7 @@ import (
 	"github.com/PretendoNetwork/nex-go"
 )
 
-// DataStoreRateCustomRankingParam is sent in the RateCustomRanking method
+// DataStoreRateCustomRankingParam holds data for the DataStore (Super Mario Maker) protocol
 type DataStoreRateCustomRankingParam struct {
 	nex.Structure
 	DataID        uint64
@@ -23,25 +23,35 @@ func (dataStoreRateCustomRankingParam *DataStoreRateCustomRankingParam) ExtractF
 
 	dataStoreRateCustomRankingParam.DataID, err = stream.ReadUInt64LE()
 	if err != nil {
-		return fmt.Errorf("Failed to extract DataStoreRateCustomRankingParam.DataID. %s", err.Error())
+		return fmt.Errorf("Failed to extract DataStoreRateCustomRankingParam.DataID from stream. %s", err.Error())
 	}
 
 	dataStoreRateCustomRankingParam.ApplicationID, err = stream.ReadUInt32LE()
 	if err != nil {
-		return fmt.Errorf("Failed to extract DataStoreRateCustomRankingParam.ApplicationID. %s", err.Error())
+		return fmt.Errorf("Failed to extract DataStoreRateCustomRankingParam.ApplicationID from stream. %s", err.Error())
 	}
 
 	dataStoreRateCustomRankingParam.Score, err = stream.ReadUInt32LE()
 	if err != nil {
-		return fmt.Errorf("Failed to extract DataStoreRateCustomRankingParam.Score. %s", err.Error())
+		return fmt.Errorf("Failed to extract DataStoreRateCustomRankingParam.Score from stream. %s", err.Error())
 	}
 
 	dataStoreRateCustomRankingParam.Period, err = stream.ReadUInt16LE()
 	if err != nil {
-		return fmt.Errorf("Failed to extract DataStoreRateCustomRankingParam.Period. %s", err.Error())
+		return fmt.Errorf("Failed to extract DataStoreRateCustomRankingParam.Period from stream. %s", err.Error())
 	}
 
 	return nil
+}
+
+// Bytes encodes the DataStoreRateCustomRankingParam and returns a byte array
+func (dataStoreRateCustomRankingParam *DataStoreRateCustomRankingParam) Bytes(stream *nex.StreamOut) []byte {
+	stream.WriteUInt64LE(dataStoreRateCustomRankingParam.DataID)
+	stream.WriteUInt32LE(dataStoreRateCustomRankingParam.ApplicationID)
+	stream.WriteUInt32LE(dataStoreRateCustomRankingParam.Score)
+	stream.WriteUInt16LE(dataStoreRateCustomRankingParam.Period)
+
+	return stream.Bytes()
 }
 
 // Copy returns a new copied instance of DataStoreRateCustomRankingParam
@@ -96,7 +106,7 @@ func (dataStoreRateCustomRankingParam *DataStoreRateCustomRankingParam) FormatTo
 	b.WriteString(fmt.Sprintf("%sDataID: %d,\n", indentationValues, dataStoreRateCustomRankingParam.DataID))
 	b.WriteString(fmt.Sprintf("%sApplicationID: %d,\n", indentationValues, dataStoreRateCustomRankingParam.ApplicationID))
 	b.WriteString(fmt.Sprintf("%sScore: %d,\n", indentationValues, dataStoreRateCustomRankingParam.Score))
-	b.WriteString(fmt.Sprintf("%sPeriod: %d\n", indentationValues, dataStoreRateCustomRankingParam.Period))
+	b.WriteString(fmt.Sprintf("%sPeriod: %d,\n", indentationValues, dataStoreRateCustomRankingParam.Period))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()

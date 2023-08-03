@@ -1,4 +1,4 @@
-// Package protocol implements the Super Mario Maker DataStore protocol
+// Package protocol implements the DataStoreSuperMarioMaker protocol
 package protocol
 
 import (
@@ -10,13 +10,13 @@ import (
 )
 
 // GetCustomRankingByDataID sets the GetCustomRankingByDataID handler function
-func (protocol *Protocol) GetCustomRankingByDataID(handler func(err error, client *nex.Client, callID uint32, dataStoreGetCustomRankingByDataIDParam *datastore_super_mario_maker_types.DataStoreGetCustomRankingByDataIDParam)) {
+func (protocol *Protocol) GetCustomRankingByDataID(handler func(err error, client *nex.Client, callID uint32, param *datastore_super_mario_maker_types.DataStoreGetCustomRankingByDataIDParam)) {
 	protocol.getCustomRankingByDataIDHandler = handler
 }
 
 func (protocol *Protocol) handleGetCustomRankingByDataID(packet nex.PacketInterface) {
 	if protocol.getCustomRankingByDataIDHandler == nil {
-		globals.Logger.Warning("DataStoreSMM::GetCustomRankingByDataID not implemented")
+		globals.Logger.Warning("DataStoreSuperMarioMaker::GetCustomRankingByDataID not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
 	}
@@ -29,11 +29,11 @@ func (protocol *Protocol) handleGetCustomRankingByDataID(packet nex.PacketInterf
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	dataStoreGetCustomRankingByDataIDParam, err := parametersStream.ReadStructure(datastore_super_mario_maker_types.NewDataStoreGetCustomRankingByDataIDParam())
+	param, err := parametersStream.ReadStructure(datastore_super_mario_maker_types.NewDataStoreGetCustomRankingByDataIDParam())
 	if err != nil {
-		go protocol.getCustomRankingByDataIDHandler(fmt.Errorf("Failed to read dataStoreGetCustomRankingByDataIDParam from parameters. %s", err.Error()), client, callID, nil)
+		go protocol.getCustomRankingByDataIDHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
 		return
 	}
 
-	go protocol.getCustomRankingByDataIDHandler(nil, client, callID, dataStoreGetCustomRankingByDataIDParam.(*datastore_super_mario_maker_types.DataStoreGetCustomRankingByDataIDParam))
+	go protocol.getCustomRankingByDataIDHandler(nil, client, callID, param.(*datastore_super_mario_maker_types.DataStoreGetCustomRankingByDataIDParam))
 }

@@ -1,4 +1,4 @@
-// Package protocol implements the Super Mario Maker DataStore protocol
+// Package protocol implements the DataStoreSuperMarioMaker protocol
 package protocol
 
 import (
@@ -10,13 +10,13 @@ import (
 )
 
 // FollowingsLatestCourseSearchObject sets the FollowingsLatestCourseSearchObject handler function
-func (protocol *Protocol) FollowingsLatestCourseSearchObject(handler func(err error, client *nex.Client, callID uint32, dataStoreSearchParam *datastore_types.DataStoreSearchParam, extraData []string)) {
+func (protocol *Protocol) FollowingsLatestCourseSearchObject(handler func(err error, client *nex.Client, callID uint32, param *datastore_types.DataStoreSearchParam, extraData []string)) {
 	protocol.followingsLatestCourseSearchObjectHandler = handler
 }
 
 func (protocol *Protocol) handleFollowingsLatestCourseSearchObject(packet nex.PacketInterface) {
 	if protocol.followingsLatestCourseSearchObjectHandler == nil {
-		globals.Logger.Warning("DataStoreSMM::FollowingsLatestCourseSearchObject not implemented")
+		globals.Logger.Warning("DataStoreSuperMarioMaker::FollowingsLatestCourseSearchObject not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
 	}

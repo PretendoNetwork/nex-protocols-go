@@ -1,4 +1,4 @@
-// Package types implements all the types used by the DataStore Super Mario Maker protocol
+// Package types implements all the types used by the DataStore (Super Mario Maker) protocol
 package types
 
 import (
@@ -9,11 +9,30 @@ import (
 	datastore_types "github.com/PretendoNetwork/nex-protocols-go/datastore/types"
 )
 
-// DataStoreFileServerObjectInfo is sent in the GetObjectInfos method
+// DataStoreFileServerObjectInfo holds data for the DataStore (Super Mario Maker) protocol
 type DataStoreFileServerObjectInfo struct {
 	nex.Structure
 	DataID  uint64
 	GetInfo *datastore_types.DataStoreReqGetInfo
+}
+
+// ExtractFromStream extracts a DataStoreFileServerObjectInfo structure from a stream
+func (dataStoreFileServerObjectInfo *DataStoreFileServerObjectInfo) ExtractFromStream(stream *nex.StreamIn) error {
+	var err error
+
+	dataStoreFileServerObjectInfo.DataID, err = stream.ReadUInt64LE()
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreFileServerObjectInfo.DataID from stream. %s", err.Error())
+	}
+
+	getInfo, err := stream.ReadStructure(datastore_types.NewDataStoreReqGetInfo())
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreFileServerObjectInfo.GetInfo from stream. %s", err.Error())
+	}
+
+	dataStoreFileServerObjectInfo.GetInfo = getInfo.(*datastore_types.DataStoreReqGetInfo)
+
+	return nil
 }
 
 // Bytes encodes the DataStoreFileServerObjectInfo and returns a byte array

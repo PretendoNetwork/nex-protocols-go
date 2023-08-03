@@ -1,4 +1,4 @@
-// Package protocol implements the Super Mario Maker DataStore protocol
+// Package protocol implements the DataStoreSuperMarioMaker protocol
 package protocol
 
 import (
@@ -15,7 +15,7 @@ func (protocol *Protocol) GetDeletionReason(handler func(err error, client *nex.
 
 func (protocol *Protocol) handleGetDeletionReason(packet nex.PacketInterface) {
 	if protocol.getDeletionReasonHandler == nil {
-		globals.Logger.Warning("DataStoreSMM::GetDeletionReason not implemented")
+		globals.Logger.Warning("DataStoreSuperMarioMaker::GetDeletionReason not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
 	}

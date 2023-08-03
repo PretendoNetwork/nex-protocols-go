@@ -1,4 +1,4 @@
-// Package protocol implements the Super Mario Maker DataStore protocol
+// Package protocol implements the DataStoreSuperMarioMaker protocol
 package protocol
 
 import (
@@ -10,13 +10,13 @@ import (
 )
 
 // CompleteAttachFile sets the CompleteAttachFile handler function
-func (protocol *Protocol) CompleteAttachFile(handler func(err error, client *nex.Client, callID uint32, dataStoreCompletePostParam *datastore_types.DataStoreCompletePostParam)) {
+func (protocol *Protocol) CompleteAttachFile(handler func(err error, client *nex.Client, callID uint32, param *datastore_types.DataStoreCompletePostParam)) {
 	protocol.completeAttachFileHandler = handler
 }
 
 func (protocol *Protocol) handleCompleteAttachFile(packet nex.PacketInterface) {
 	if protocol.completeAttachFileHandler == nil {
-		globals.Logger.Warning("DataStoreSMM::CompleteAttachFile not implemented")
+		globals.Logger.Warning("DataStoreSuperMarioMaker::CompleteAttachFile not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
 	}

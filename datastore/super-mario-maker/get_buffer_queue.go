@@ -1,4 +1,4 @@
-// Package protocol implements the Super Mario Maker DataStore protocol
+// Package protocol implements the DataStoreSuperMarioMaker protocol
 package protocol
 
 import (
@@ -10,13 +10,13 @@ import (
 )
 
 // GetBufferQueue sets the GetBufferQueue handler function
-func (protocol *Protocol) GetBufferQueue(handler func(err error, client *nex.Client, callID uint32, bufferQueueParam *datastore_super_mario_maker_types.BufferQueueParam)) {
+func (protocol *Protocol) GetBufferQueue(handler func(err error, client *nex.Client, callID uint32, param *datastore_super_mario_maker_types.BufferQueueParam)) {
 	protocol.getBufferQueueHandler = handler
 }
 
 func (protocol *Protocol) handleGetBufferQueue(packet nex.PacketInterface) {
 	if protocol.getBufferQueueHandler == nil {
-		globals.Logger.Warning("DataStoreSMM::GetBufferQueue not implemented")
+		globals.Logger.Warning("DataStoreSuperMarioMaker::GetBufferQueue not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
 	}
@@ -29,11 +29,11 @@ func (protocol *Protocol) handleGetBufferQueue(packet nex.PacketInterface) {
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	bufferQueueParam, err := parametersStream.ReadStructure(datastore_super_mario_maker_types.NewBufferQueueParam())
+	param, err := parametersStream.ReadStructure(datastore_super_mario_maker_types.NewBufferQueueParam())
 	if err != nil {
-		go protocol.getBufferQueueHandler(fmt.Errorf("Failed to read bufferQueueParam from parameters. %s", err.Error()), client, callID, nil)
+		go protocol.getBufferQueueHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
 		return
 	}
 
-	go protocol.getBufferQueueHandler(nil, client, callID, bufferQueueParam.(*datastore_super_mario_maker_types.BufferQueueParam))
+	go protocol.getBufferQueueHandler(nil, client, callID, param.(*datastore_super_mario_maker_types.BufferQueueParam))
 }

@@ -1,4 +1,4 @@
-// Package types implements all the types used by the DataStore Super Mario Maker protocol
+// Package types implements all the types used by the DataStore (Super Mario Maker) protocol
 package types
 
 import (
@@ -9,7 +9,7 @@ import (
 	datastore_types "github.com/PretendoNetwork/nex-protocols-go/datastore/types"
 )
 
-// DataStoreCustomRankingResult is sent in the FollowingsLatestCourseSearchObject method
+// DataStoreCustomRankingResult holds data for the DataStore (Super Mario Maker) protocol
 type DataStoreCustomRankingResult struct {
 	nex.Structure
 	Order    uint32
@@ -23,17 +23,17 @@ func (dataStoreCustomRankingResult *DataStoreCustomRankingResult) ExtractFromStr
 
 	dataStoreCustomRankingResult.Order, err = stream.ReadUInt32LE()
 	if err != nil {
-		return fmt.Errorf("Failed to extract DataStoreCustomRankingResult.Order. %s", err.Error())
+		return fmt.Errorf("Failed to extract DataStoreCustomRankingResult.Order from stream. %s", err.Error())
 	}
 
 	dataStoreCustomRankingResult.Score, err = stream.ReadUInt32LE()
 	if err != nil {
-		return fmt.Errorf("Failed to extract DataStoreCustomRankingResult.Score. %s", err.Error())
+		return fmt.Errorf("Failed to extract DataStoreCustomRankingResult.Score from stream. %s", err.Error())
 	}
 
 	metaInfo, err := stream.ReadStructure(datastore_types.NewDataStoreMetaInfo())
 	if err != nil {
-		return fmt.Errorf("Failed to extract DataStoreCustomRankingResult.MetaInfo. %s", err.Error())
+		return fmt.Errorf("Failed to extract DataStoreCustomRankingResult.MetaInfo from stream. %s", err.Error())
 	}
 
 	dataStoreCustomRankingResult.MetaInfo = metaInfo.(*datastore_types.DataStoreMetaInfo)

@@ -1,4 +1,4 @@
-// Package protocol implements the Super Mario Maker DataStore protocol
+// Package protocol implements the DataStoreSuperMarioMaker protocol
 package protocol
 
 import (
@@ -16,7 +16,7 @@ func (protocol *Protocol) SuggestedCourseSearchObject(handler func(err error, cl
 
 func (protocol *Protocol) handleSuggestedCourseSearchObject(packet nex.PacketInterface) {
 	if protocol.suggestedCourseSearchObjectHandler == nil {
-		globals.Logger.Warning("DataStoreSMM::SuggestedCourseSearchObject not implemented")
+		globals.Logger.Warning("DataStoreSuperMarioMaker::SuggestedCourseSearchObject not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
 	}
@@ -31,7 +31,7 @@ func (protocol *Protocol) handleSuggestedCourseSearchObject(packet nex.PacketInt
 
 	param, err := parametersStream.ReadStructure(datastore_types.NewDataStoreSearchParam())
 	if err != nil {
-		go protocol.suggestedCourseSearchObjectHandler(err, client, callID, nil, []string{})
+		go protocol.suggestedCourseSearchObjectHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil, nil)
 		return
 	}
 

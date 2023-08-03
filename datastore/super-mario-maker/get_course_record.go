@@ -1,4 +1,4 @@
-// Package protocol implements the Super Mario Maker DataStore protocol
+// Package protocol implements the DataStoreSuperMarioMaker protocol
 package protocol
 
 import (
@@ -16,7 +16,7 @@ func (protocol *Protocol) GetCourseRecord(handler func(err error, client *nex.Cl
 
 func (protocol *Protocol) handleGetCourseRecord(packet nex.PacketInterface) {
 	if protocol.getCourseRecordHandler == nil {
-		globals.Logger.Warning("DataStoreSMM::GetCourseRecord not implemented")
+		globals.Logger.Warning("DataStoreSuperMarioMaker::GetCourseRecord not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
 	}

@@ -1,4 +1,4 @@
-// Package protocol implements the Super Mario Maker DataStore protocol
+// Package protocol implements the DataStoreSuperMarioMaker protocol
 package protocol
 
 import (
@@ -10,13 +10,13 @@ import (
 )
 
 // RateCustomRanking sets the RateCustomRanking handler function
-func (protocol *Protocol) RateCustomRanking(handler func(err error, client *nex.Client, callID uint32, dataStoreRateCustomRankingParams []*datastore_super_mario_maker_types.DataStoreRateCustomRankingParam)) {
+func (protocol *Protocol) RateCustomRanking(handler func(err error, client *nex.Client, callID uint32, params []*datastore_super_mario_maker_types.DataStoreRateCustomRankingParam)) {
 	protocol.rateCustomRankingHandler = handler
 }
 
 func (protocol *Protocol) handleRateCustomRanking(packet nex.PacketInterface) {
 	if protocol.rateCustomRankingHandler == nil {
-		globals.Logger.Warning("DataStoreSMM::RateCustomRanking not implemented")
+		globals.Logger.Warning("DataStoreSuperMarioMaker::RateCustomRanking not implemented")
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		return
 	}

@@ -1,4 +1,4 @@
-// Package types implements all the types used by the DataStore Super Mario Maker protocol
+// Package types implements all the types used by the DataStore (Super Mario Maker) protocol
 package types
 
 import (
@@ -8,7 +8,7 @@ import (
 	"github.com/PretendoNetwork/nex-go"
 )
 
-// DataStoreGetCourseRecordParam is sent in the GetMetasWithCourseRecord method
+// DataStoreGetCourseRecordParam holds data for the DataStore (Super Mario Maker) protocol
 type DataStoreGetCourseRecordParam struct {
 	nex.Structure
 	DataID uint64
@@ -21,15 +21,23 @@ func (dataStoreGetCourseRecordParam *DataStoreGetCourseRecordParam) ExtractFromS
 
 	dataStoreGetCourseRecordParam.DataID, err = stream.ReadUInt64LE()
 	if err != nil {
-		return fmt.Errorf("Failed to extract DataStoreGetCourseRecordParam.DataID. %s", err.Error())
+		return fmt.Errorf("Failed to extract DataStoreGetCourseRecordParam.DataID from stream. %s", err.Error())
 	}
 
 	dataStoreGetCourseRecordParam.Slot, err = stream.ReadUInt8()
 	if err != nil {
-		return fmt.Errorf("Failed to extract DataStoreGetCourseRecordParam.Slot. %s", err.Error())
+		return fmt.Errorf("Failed to extract DataStoreGetCourseRecordParam.Slot from stream. %s", err.Error())
 	}
 
 	return nil
+}
+
+// Bytes encodes the DataStoreGetCourseRecordParam and returns a byte array
+func (dataStoreGetCourseRecordParam *DataStoreGetCourseRecordParam) Bytes(stream *nex.StreamOut) []byte {
+	stream.WriteUInt64LE(dataStoreGetCourseRecordParam.DataID)
+	stream.WriteUInt8(dataStoreGetCourseRecordParam.Slot)
+
+	return stream.Bytes()
 }
 
 // Copy returns a new copied instance of DataStoreGetCourseRecordParam
@@ -72,7 +80,7 @@ func (dataStoreGetCourseRecordParam *DataStoreGetCourseRecordParam) FormatToStri
 	b.WriteString("DataStoreGetCourseRecordParam{\n")
 	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, dataStoreGetCourseRecordParam.StructureVersion()))
 	b.WriteString(fmt.Sprintf("%sDataID: %d,\n", indentationValues, dataStoreGetCourseRecordParam.DataID))
-	b.WriteString(fmt.Sprintf("%sSlot: %d\n", indentationValues, dataStoreGetCourseRecordParam.Slot))
+	b.WriteString(fmt.Sprintf("%sSlot: %d,\n", indentationValues, dataStoreGetCourseRecordParam.Slot))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()

@@ -85,43 +85,52 @@ func (protocol *Protocol) Setup() {
 		request := packet.RMCRequest()
 
 		if request.ProtocolID() == ProtocolID {
-			switch request.MethodID() {
-			case MethodUploadScore:
-				protocol.handleUploadScore(packet)
-			case MethodDeleteScore:
-				protocol.handleDeleteScore(packet)
-			case MethodDeleteAllScores:
-				protocol.handleDeleteAllScores(packet)
-			case MethodUploadCommonData:
-				protocol.handleUploadCommonData(packet)
-			case MethodDeleteCommonData:
-				protocol.handleDeleteCommonData(packet)
-			case MethodGetCommonData:
-				protocol.handleGetCommonData(packet)
-			case MethodChangeAttributes:
-				protocol.handleChangeAttributes(packet)
-			case MethodChangeAllAttributes:
-				protocol.handleChangeAllAttributes(packet)
-			case MethodGetRanking:
-				protocol.handleGetRanking(packet)
-			case MethodGetApproxOrder:
-				protocol.handleGetApproxOrder(packet)
-			case MethodGetStats:
-				protocol.handleGetStats(packet)
-			case MethodGetRankingByPIDList:
-				protocol.handleGetRankingByPIDList(packet)
-			case MethodGetRankingByUniqueIDList:
-				protocol.handleGetRankingByUniqueIDList(packet)
-			case MethodGetCachedTopXRanking:
-				protocol.handleGetCachedTopXRanking(packet)
-			case MethodGetCachedTopXRankings:
-				protocol.handleGetCachedTopXRankings(packet)
-			default:
-				go globals.RespondNotImplemented(packet, ProtocolID)
-				fmt.Printf("Unsupported Ranking method ID: %#v\n", request.MethodID())
-			}
+			protocol.HandlePacket(packet)
 		}
 	})
+}
+
+// HandlePacket sends the packet to the correct RMC method handler
+func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
+	request := packet.RMCRequest()
+
+	if request.ProtocolID() == ProtocolID {
+		switch request.MethodID() {
+		case MethodUploadScore:
+			protocol.handleUploadScore(packet)
+		case MethodDeleteScore:
+			protocol.handleDeleteScore(packet)
+		case MethodDeleteAllScores:
+			protocol.handleDeleteAllScores(packet)
+		case MethodUploadCommonData:
+			protocol.handleUploadCommonData(packet)
+		case MethodDeleteCommonData:
+			protocol.handleDeleteCommonData(packet)
+		case MethodGetCommonData:
+			protocol.handleGetCommonData(packet)
+		case MethodChangeAttributes:
+			protocol.handleChangeAttributes(packet)
+		case MethodChangeAllAttributes:
+			protocol.handleChangeAllAttributes(packet)
+		case MethodGetRanking:
+			protocol.handleGetRanking(packet)
+		case MethodGetApproxOrder:
+			protocol.handleGetApproxOrder(packet)
+		case MethodGetStats:
+			protocol.handleGetStats(packet)
+		case MethodGetRankingByPIDList:
+			protocol.handleGetRankingByPIDList(packet)
+		case MethodGetRankingByUniqueIDList:
+			protocol.handleGetRankingByUniqueIDList(packet)
+		case MethodGetCachedTopXRanking:
+			protocol.handleGetCachedTopXRanking(packet)
+		case MethodGetCachedTopXRankings:
+			protocol.handleGetCachedTopXRankings(packet)
+		default:
+			go globals.RespondNotImplemented(packet, ProtocolID)
+			fmt.Printf("Unsupported Ranking method ID: %#v\n", request.MethodID())
+		}
+	}
 }
 
 // NewProtocol returns a new Ranking protocol

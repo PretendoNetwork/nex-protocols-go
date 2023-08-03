@@ -1,4 +1,3 @@
-
 // Package protocol implements the RankingMarioKart8 protocol
 package protocol
 
@@ -7,8 +6,8 @@ import (
 
 	nex "github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
-	ranking_mario_kart8_types "github.com/PretendoNetwork/nex-protocols-go/ranking/mario-kart-8/types"
 	ranking "github.com/PretendoNetwork/nex-protocols-go/ranking"
+	ranking_mario_kart8_types "github.com/PretendoNetwork/nex-protocols-go/ranking/mario-kart-8/types"
 	"golang.org/x/exp/slices"
 )
 
@@ -26,7 +25,11 @@ const (
 	MethodGetCompetitionInfo = 0x10
 )
 
-var patchedMethods = []uint32{}
+var patchedMethods = []uint32{
+	MethodGetCompetitionRankingScore,
+	MethodUploadCompetitionRankingScore,
+	MethodGetCompetitionInfo,
+}
 
 type rankingProtocol = ranking.Protocol
 
@@ -35,9 +38,9 @@ type rankingProtocol = ranking.Protocol
 type Protocol struct {
 	Server *nex.Server
 	rankingProtocol
-	getCompetitionRankingScoreHandler func(err error, client *nex.Client, callID uint32, packetPayload []byte)
+	getCompetitionRankingScoreHandler    func(err error, client *nex.Client, callID uint32, packetPayload []byte)
 	uploadCompetitionRankingScoreHandler func(err error, client *nex.Client, callID uint32, param *ranking_mario_kart8_types.CompetitionRankingUploadScoreParam)
-	getCompetitionInfoHandler func(err error, client *nex.Client, callID uint32, param *ranking_mario_kart8_types.CompetitionRankingInfoGetParam)
+	getCompetitionInfoHandler            func(err error, client *nex.Client, callID uint32, param *ranking_mario_kart8_types.CompetitionRankingInfoGetParam)
 }
 
 // Setup initializes the protocol

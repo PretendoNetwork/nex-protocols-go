@@ -82,7 +82,30 @@ const (
 	MethodGetLawMessageResponse = 0x16
 )
 
-var patchedMethods = []uint32{}
+var patchedMethods = []uint32{
+	MethodGetEnvironment,
+	MethodHTTPGetRequest,
+	MethodHTTPGetResponse,
+	MethodPurchaseServiceItemRequest,
+	MethodPurchaseServiceItemResponse,
+	MethodListServiceItemRequest,
+	MethodListServiceItemResponse,
+	MethodGetBalanceRequest,
+	MethodGetBalanceResponse,
+	MethodGetPrepurchaseInfoRequest,
+	MethodGetPrepurchaseInfoResponse,
+	MethodGetServiceItemRightRequest,
+	MethodGetServiceItemRightResponse,
+	MethodGetPurchaseHistoryRequest,
+	MethodGetPurchaseHistoryResponse,
+	MethodPostRightBinaryByAccount,
+	MethodUseServiceItemByAccountRequest,
+	MethodUseServiceItemByAccountResponse,
+	MethodAcquireServiceItemByAccount,
+	MethodGetSupportID,
+	MethodGetLawMessageRequest,
+	MethodGetLawMessageResponse,
+}
 
 type serviceItemProtocol = service_item.Protocol
 

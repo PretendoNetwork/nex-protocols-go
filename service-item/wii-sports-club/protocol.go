@@ -82,7 +82,30 @@ const (
 	MethodRequestTicketRestoration = 0x16
 )
 
-var patchedMethods = []uint32{}
+var patchedMethods = []uint32{
+	MethodHello,
+	MethodHTTPGetRequest,
+	MethodHTTPGetResponse,
+	MethodPurchaseServiceItemRequest,
+	MethodPurchaseServiceItemResponse,
+	MethodListServiceItemRequest,
+	MethodListServiceItemResponse,
+	MethodGetBalanceRequest,
+	MethodGetBalanceResponse,
+	MethodGetPrepurchaseInfoRequest,
+	MethodGetPrepurchaseInfoResponse,
+	MethodGetServiceItemRightRequest,
+	MethodGetServiceItemRightResponse,
+	MethodGetPurchaseHistoryRequest,
+	MethodGetPurchaseHistoryResponse,
+	MethodGetNotice,
+	MethodUpdateAndGetTicketInfo,
+	MethodLoadUserInfo,
+	MethodSaveUserInfo,
+	MethodStartChallenge,
+	MethodEndChallenge,
+	MethodRequestTicketRestoration,
+}
 
 type serviceItemProtocol = service_item.Protocol
 

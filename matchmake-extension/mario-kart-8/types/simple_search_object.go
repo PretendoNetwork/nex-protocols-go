@@ -12,27 +12,27 @@ import (
 // SimpleSearchObject holds data for the Matchmake Extension (Mario Kart 8) protocol
 type SimpleSearchObject struct {
 	nex.Structure
-	Object     uint32
-	Owner      uint32
-	Attributes []uint32
-	Metadata   []byte
-	Community  uint32
-	Community2 string
-	Datetime   *SimpleSearchDateTimeAttribute
+	ObjectID            uint32
+	OwnerPID            uint32
+	Attributes          []uint32
+	Metadata            []byte
+	CommunityIDMiiverse uint32
+	CommunityCode       string
+	DatetimeAttribute   *SimpleSearchDateTimeAttribute
 }
 
 // ExtractFromStream extracts a SimpleSearchObject structure from a stream
 func (simpleSearchObject *SimpleSearchObject) ExtractFromStream(stream *nex.StreamIn) error {
 	var err error
 
-	simpleSearchObject.Object, err = stream.ReadUInt32LE()
+	simpleSearchObject.ObjectID, err = stream.ReadUInt32LE()
 	if err != nil {
-		return fmt.Errorf("Failed to extract SimpleSearchObject.Object from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract SimpleSearchObject.ObjectID from stream. %s", err.Error())
 	}
 
-	simpleSearchObject.Owner, err = stream.ReadUInt32LE()
+	simpleSearchObject.OwnerPID, err = stream.ReadUInt32LE()
 	if err != nil {
-		return fmt.Errorf("Failed to extract SimpleSearchObject.Owner from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract SimpleSearchObject.OwnerPID from stream. %s", err.Error())
 	}
 
 	simpleSearchObject.Attributes, err = stream.ReadListUInt32LE()
@@ -45,35 +45,35 @@ func (simpleSearchObject *SimpleSearchObject) ExtractFromStream(stream *nex.Stre
 		return fmt.Errorf("Failed to extract SimpleSearchObject.Metadata from stream. %s", err.Error())
 	}
 
-	simpleSearchObject.Community, err = stream.ReadUInt32LE()
+	simpleSearchObject.CommunityIDMiiverse, err = stream.ReadUInt32LE()
 	if err != nil {
-		return fmt.Errorf("Failed to extract SimpleSearchObject.Community from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract SimpleSearchObject.CommunityIDMiiverse from stream. %s", err.Error())
 	}
 
-	simpleSearchObject.Community2, err = stream.ReadString()
+	simpleSearchObject.CommunityCode, err = stream.ReadString()
 	if err != nil {
-		return fmt.Errorf("Failed to extract SimpleSearchObject.Community2 from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract SimpleSearchObject.CommunityCode from stream. %s", err.Error())
 	}
 
-	datetime, err := stream.ReadStructure(NewSimpleSearchDateTimeAttribute())
+	datetimeAttribute, err := stream.ReadStructure(NewSimpleSearchDateTimeAttribute())
 	if err != nil {
-		return fmt.Errorf("Failed to extract SimpleSearchObject.Datetime from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract SimpleSearchObject.DatetimeAttribute from stream. %s", err.Error())
 	}
 
-	simpleSearchObject.Datetime = datetime.(*SimpleSearchDateTimeAttribute)
+	simpleSearchObject.DatetimeAttribute = datetimeAttribute.(*SimpleSearchDateTimeAttribute)
 
 	return nil
 }
 
 // Bytes encodes the SimpleSearchObject and returns a byte array
 func (simpleSearchObject *SimpleSearchObject) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt32LE(simpleSearchObject.Object)
-	stream.WriteUInt32LE(simpleSearchObject.Owner)
+	stream.WriteUInt32LE(simpleSearchObject.ObjectID)
+	stream.WriteUInt32LE(simpleSearchObject.OwnerPID)
 	stream.WriteListUInt32LE(simpleSearchObject.Attributes)
 	stream.WriteQBuffer(simpleSearchObject.Metadata)
-	stream.WriteUInt32LE(simpleSearchObject.Community)
-	stream.WriteString(simpleSearchObject.Community2)
-	stream.WriteStructure(simpleSearchObject.Datetime)
+	stream.WriteUInt32LE(simpleSearchObject.CommunityIDMiiverse)
+	stream.WriteString(simpleSearchObject.CommunityCode)
+	stream.WriteStructure(simpleSearchObject.DatetimeAttribute)
 
 	return stream.Bytes()
 }
@@ -82,16 +82,16 @@ func (simpleSearchObject *SimpleSearchObject) Bytes(stream *nex.StreamOut) []byt
 func (simpleSearchObject *SimpleSearchObject) Copy() nex.StructureInterface {
 	copied := NewSimpleSearchObject()
 
-	copied.Object = simpleSearchObject.Object
-	copied.Owner = simpleSearchObject.Owner
+	copied.ObjectID = simpleSearchObject.ObjectID
+	copied.OwnerPID = simpleSearchObject.OwnerPID
 	copied.Attributes = make([]uint32, len(simpleSearchObject.Attributes))
 
 	copy(copied.Attributes, simpleSearchObject.Attributes)
 
 	copied.Metadata = simpleSearchObject.Metadata
-	copied.Community = simpleSearchObject.Community
-	copied.Community2 = simpleSearchObject.Community2
-	copied.Datetime = simpleSearchObject.Datetime.Copy().(*SimpleSearchDateTimeAttribute)
+	copied.CommunityIDMiiverse = simpleSearchObject.CommunityIDMiiverse
+	copied.CommunityCode = simpleSearchObject.CommunityCode
+	copied.DatetimeAttribute = simpleSearchObject.DatetimeAttribute.Copy().(*SimpleSearchDateTimeAttribute)
 
 	return copied
 }
@@ -100,11 +100,11 @@ func (simpleSearchObject *SimpleSearchObject) Copy() nex.StructureInterface {
 func (simpleSearchObject *SimpleSearchObject) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*SimpleSearchObject)
 
-	if simpleSearchObject.Object != other.Object {
+	if simpleSearchObject.ObjectID != other.ObjectID {
 		return false
 	}
 
-	if simpleSearchObject.Owner != other.Owner {
+	if simpleSearchObject.OwnerPID != other.OwnerPID {
 		return false
 	}
 
@@ -122,15 +122,15 @@ func (simpleSearchObject *SimpleSearchObject) Equals(structure nex.StructureInte
 		return false
 	}
 
-	if simpleSearchObject.Community != other.Community {
+	if simpleSearchObject.CommunityIDMiiverse != other.CommunityIDMiiverse {
 		return false
 	}
 
-	if simpleSearchObject.Community2 != other.Community2 {
+	if simpleSearchObject.CommunityCode != other.CommunityCode {
 		return false
 	}
 
-	if !simpleSearchObject.Datetime.Equals(other.Datetime) {
+	if !simpleSearchObject.DatetimeAttribute.Equals(other.DatetimeAttribute) {
 		return false
 	}
 
@@ -151,17 +151,17 @@ func (simpleSearchObject *SimpleSearchObject) FormatToString(indentationLevel in
 
 	b.WriteString("SimpleSearchObject{\n")
 	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, simpleSearchObject.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sObject: %d,\n", indentationValues, simpleSearchObject.Object))
-	b.WriteString(fmt.Sprintf("%sOwner: %d,\n", indentationValues, simpleSearchObject.Owner))
+	b.WriteString(fmt.Sprintf("%sObjectID: %d,\n", indentationValues, simpleSearchObject.ObjectID))
+	b.WriteString(fmt.Sprintf("%sOwnerPID: %d,\n", indentationValues, simpleSearchObject.OwnerPID))
 	b.WriteString(fmt.Sprintf("%sAttributes: %v,\n", indentationValues, simpleSearchObject.Attributes))
 	b.WriteString(fmt.Sprintf("%sMetadata: %x,\n", indentationValues, simpleSearchObject.Metadata))
-	b.WriteString(fmt.Sprintf("%sCommunity: %d,\n", indentationValues, simpleSearchObject.Community))
-	b.WriteString(fmt.Sprintf("%sCommunity2: %q,\n", indentationValues, simpleSearchObject.Community2))
+	b.WriteString(fmt.Sprintf("%sCommunityIDMiiverse: %d,\n", indentationValues, simpleSearchObject.CommunityIDMiiverse))
+	b.WriteString(fmt.Sprintf("%sCommunityCode: %q,\n", indentationValues, simpleSearchObject.CommunityCode))
 
-	if simpleSearchObject.Datetime != nil {
-		b.WriteString(fmt.Sprintf("%sDatetime: %s\n", indentationValues, simpleSearchObject.Datetime.FormatToString(indentationLevel+1)))
+	if simpleSearchObject.DatetimeAttribute != nil {
+		b.WriteString(fmt.Sprintf("%sDatetimeAttribute: %s\n", indentationValues, simpleSearchObject.DatetimeAttribute.FormatToString(indentationLevel+1)))
 	} else {
-		b.WriteString(fmt.Sprintf("%sDatetime: nil\n", indentationValues))
+		b.WriteString(fmt.Sprintf("%sDatetimeAttribute: nil\n", indentationValues))
 	}
 
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))

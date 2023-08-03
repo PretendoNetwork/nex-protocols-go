@@ -11,12 +11,12 @@ import (
 // SimpleSearchDateTimeAttribute holds data for the Matchmake Extension (Mario Kart 8) protocol
 type SimpleSearchDateTimeAttribute struct {
 	nex.Structure
-	Unknown  uint32
-	Unknown2 uint32
-	Unknown3 uint32
-	Unknown4 uint32
-	Start    *nex.DateTime
-	End      *nex.DateTime
+	Unknown   uint32
+	Unknown2  uint32
+	Unknown3  uint32
+	Unknown4  uint32
+	StartTime *nex.DateTime
+	EndTime   *nex.DateTime
 }
 
 // ExtractFromStream extracts a SimpleSearchDateTimeAttribute structure from a stream
@@ -43,14 +43,14 @@ func (simpleSearchDateTimeAttribute *SimpleSearchDateTimeAttribute) ExtractFromS
 		return fmt.Errorf("Failed to extract SimpleSearchDateTimeAttribute.Unknown4 from stream. %s", err.Error())
 	}
 
-	simpleSearchDateTimeAttribute.Start, err = stream.ReadDateTime()
+	simpleSearchDateTimeAttribute.StartTime, err = stream.ReadDateTime()
 	if err != nil {
-		return fmt.Errorf("Failed to extract SimpleSearchDateTimeAttribute.Start from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract SimpleSearchDateTimeAttribute.StartTime from stream. %s", err.Error())
 	}
 
-	simpleSearchDateTimeAttribute.End, err = stream.ReadDateTime()
+	simpleSearchDateTimeAttribute.EndTime, err = stream.ReadDateTime()
 	if err != nil {
-		return fmt.Errorf("Failed to extract SimpleSearchDateTimeAttribute.End from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract SimpleSearchDateTimeAttribute.EndTime from stream. %s", err.Error())
 	}
 
 	return nil
@@ -62,8 +62,8 @@ func (simpleSearchDateTimeAttribute *SimpleSearchDateTimeAttribute) Bytes(stream
 	stream.WriteUInt32LE(simpleSearchDateTimeAttribute.Unknown2)
 	stream.WriteUInt32LE(simpleSearchDateTimeAttribute.Unknown3)
 	stream.WriteUInt32LE(simpleSearchDateTimeAttribute.Unknown4)
-	stream.WriteDateTime(simpleSearchDateTimeAttribute.Start)
-	stream.WriteDateTime(simpleSearchDateTimeAttribute.End)
+	stream.WriteDateTime(simpleSearchDateTimeAttribute.StartTime)
+	stream.WriteDateTime(simpleSearchDateTimeAttribute.EndTime)
 
 	return stream.Bytes()
 }
@@ -76,8 +76,8 @@ func (simpleSearchDateTimeAttribute *SimpleSearchDateTimeAttribute) Copy() nex.S
 	copied.Unknown2 = simpleSearchDateTimeAttribute.Unknown2
 	copied.Unknown3 = simpleSearchDateTimeAttribute.Unknown3
 	copied.Unknown4 = simpleSearchDateTimeAttribute.Unknown4
-	copied.Start = simpleSearchDateTimeAttribute.Start.Copy()
-	copied.End = simpleSearchDateTimeAttribute.End.Copy()
+	copied.StartTime = simpleSearchDateTimeAttribute.StartTime.Copy()
+	copied.EndTime = simpleSearchDateTimeAttribute.EndTime.Copy()
 
 	return copied
 }
@@ -102,11 +102,11 @@ func (simpleSearchDateTimeAttribute *SimpleSearchDateTimeAttribute) Equals(struc
 		return false
 	}
 
-	if !simpleSearchDateTimeAttribute.Start.Equals(other.Start) {
+	if !simpleSearchDateTimeAttribute.StartTime.Equals(other.StartTime) {
 		return false
 	}
 
-	if !simpleSearchDateTimeAttribute.End.Equals(other.End) {
+	if !simpleSearchDateTimeAttribute.EndTime.Equals(other.EndTime) {
 		return false
 	}
 
@@ -132,16 +132,16 @@ func (simpleSearchDateTimeAttribute *SimpleSearchDateTimeAttribute) FormatToStri
 	b.WriteString(fmt.Sprintf("%sUnknown3: %d,\n", indentationValues, simpleSearchDateTimeAttribute.Unknown3))
 	b.WriteString(fmt.Sprintf("%sUnknown4: %d,\n", indentationValues, simpleSearchDateTimeAttribute.Unknown4))
 
-	if simpleSearchDateTimeAttribute.Start != nil {
-		b.WriteString(fmt.Sprintf("%sStart: %s\n", indentationValues, simpleSearchDateTimeAttribute.Start.FormatToString(indentationLevel+1)))
+	if simpleSearchDateTimeAttribute.StartTime != nil {
+		b.WriteString(fmt.Sprintf("%sStartTime: %s\n", indentationValues, simpleSearchDateTimeAttribute.StartTime.FormatToString(indentationLevel+1)))
 	} else {
-		b.WriteString(fmt.Sprintf("%sStart: nil\n", indentationValues))
+		b.WriteString(fmt.Sprintf("%sStartTime: nil\n", indentationValues))
 	}
 
-	if simpleSearchDateTimeAttribute.End != nil {
-		b.WriteString(fmt.Sprintf("%sEnd: %s\n", indentationValues, simpleSearchDateTimeAttribute.End.FormatToString(indentationLevel+1)))
+	if simpleSearchDateTimeAttribute.EndTime != nil {
+		b.WriteString(fmt.Sprintf("%sEndTime: %s\n", indentationValues, simpleSearchDateTimeAttribute.EndTime.FormatToString(indentationLevel+1)))
 	} else {
-		b.WriteString(fmt.Sprintf("%sEnd: nil\n", indentationValues))
+		b.WriteString(fmt.Sprintf("%sEndTime: nil\n", indentationValues))
 	}
 
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))

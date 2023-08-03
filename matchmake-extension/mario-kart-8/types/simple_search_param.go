@@ -11,12 +11,12 @@ import (
 // SimpleSearchParam holds data for the Matchmake Extension (Mario Kart 8) protocol
 type SimpleSearchParam struct {
 	nex.Structure
-	Unknown    uint32
-	Unknown2   uint32
-	Conditions []*SimpleSearchCondition
-	Unknown3   string
-	Result     *nex.ResultRange
-	Unknown4   *nex.DateTime
+	Unknown     uint32
+	Unknown2    uint32
+	Conditions  []*SimpleSearchCondition
+	Unknown3    string
+	ResultRange *nex.ResultRange
+	Unknown4    *nex.DateTime
 }
 
 // ExtractFromStream extracts a SimpleSearchParam structure from a stream
@@ -45,12 +45,12 @@ func (simpleSearchParam *SimpleSearchParam) ExtractFromStream(stream *nex.Stream
 		return fmt.Errorf("Failed to extract SimpleSearchParam.Unknown3 from stream. %s", err.Error())
 	}
 
-	result, err := stream.ReadStructure(nex.NewResultRange())
+	resultRange, err := stream.ReadStructure(nex.NewResultRange())
 	if err != nil {
-		return fmt.Errorf("Failed to extract SimpleSearchParam.Result from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract SimpleSearchParam.ResultRange from stream. %s", err.Error())
 	}
 
-	simpleSearchParam.Result = result.(*nex.ResultRange)
+	simpleSearchParam.ResultRange = resultRange.(*nex.ResultRange)
 
 	simpleSearchParam.Unknown4, err = stream.ReadDateTime()
 	if err != nil {
@@ -66,7 +66,7 @@ func (simpleSearchParam *SimpleSearchParam) Bytes(stream *nex.StreamOut) []byte 
 	stream.WriteUInt32LE(simpleSearchParam.Unknown2)
 	stream.WriteListStructure(simpleSearchParam.Conditions)
 	stream.WriteString(simpleSearchParam.Unknown3)
-	stream.WriteStructure(simpleSearchParam.Result)
+	stream.WriteStructure(simpleSearchParam.ResultRange)
 	stream.WriteDateTime(simpleSearchParam.Unknown4)
 
 	return stream.Bytes()
@@ -85,7 +85,7 @@ func (simpleSearchParam *SimpleSearchParam) Copy() nex.StructureInterface {
 	}
 
 	copied.Unknown3 = simpleSearchParam.Unknown3
-	copied.Result = simpleSearchParam.Result.Copy().(*nex.ResultRange)
+	copied.ResultRange = simpleSearchParam.ResultRange.Copy().(*nex.ResultRange)
 	copied.Unknown4 = simpleSearchParam.Unknown4.Copy()
 
 	return copied
@@ -117,7 +117,7 @@ func (simpleSearchParam *SimpleSearchParam) Equals(structure nex.StructureInterf
 		return false
 	}
 
-	if !simpleSearchParam.Result.Equals(other.Result) {
+	if !simpleSearchParam.ResultRange.Equals(other.ResultRange) {
 		return false
 	}
 
@@ -165,10 +165,10 @@ func (simpleSearchParam *SimpleSearchParam) FormatToString(indentationLevel int)
 
 	b.WriteString(fmt.Sprintf("%sUnknown3: %q,\n", indentationValues, simpleSearchParam.Unknown3))
 
-	if simpleSearchParam.Result != nil {
-		b.WriteString(fmt.Sprintf("%sResult: %s\n", indentationValues, simpleSearchParam.Result.FormatToString(indentationLevel+1)))
+	if simpleSearchParam.ResultRange != nil {
+		b.WriteString(fmt.Sprintf("%sResultRange: %s\n", indentationValues, simpleSearchParam.ResultRange.FormatToString(indentationLevel+1)))
 	} else {
-		b.WriteString(fmt.Sprintf("%sResult: nil\n", indentationValues))
+		b.WriteString(fmt.Sprintf("%sResultRange: nil\n", indentationValues))
 	}
 
 	if simpleSearchParam.Unknown4 != nil {

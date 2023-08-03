@@ -11,8 +11,8 @@ import (
 // SimpleSearchCondition holds data for the Matchmake Extension (Mario Kart 8) protocol
 type SimpleSearchCondition struct {
 	nex.Structure
-	Value      uint32
-	Comparison uint32
+	Value              uint32
+	ComparisonOperator uint32
 }
 
 // ExtractFromStream extracts a SimpleSearchCondition structure from a stream
@@ -24,9 +24,9 @@ func (simpleSearchCondition *SimpleSearchCondition) ExtractFromStream(stream *ne
 		return fmt.Errorf("Failed to extract SimpleSearchCondition.Value from stream. %s", err.Error())
 	}
 
-	simpleSearchCondition.Comparison, err = stream.ReadUInt32LE()
+	simpleSearchCondition.ComparisonOperator, err = stream.ReadUInt32LE()
 	if err != nil {
-		return fmt.Errorf("Failed to extract SimpleSearchCondition.Comparison from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract SimpleSearchCondition.ComparisonOperator from stream. %s", err.Error())
 	}
 
 	return nil
@@ -35,7 +35,7 @@ func (simpleSearchCondition *SimpleSearchCondition) ExtractFromStream(stream *ne
 // Bytes encodes the SimpleSearchCondition and returns a byte array
 func (simpleSearchCondition *SimpleSearchCondition) Bytes(stream *nex.StreamOut) []byte {
 	stream.WriteUInt32LE(simpleSearchCondition.Value)
-	stream.WriteUInt32LE(simpleSearchCondition.Comparison)
+	stream.WriteUInt32LE(simpleSearchCondition.ComparisonOperator)
 
 	return stream.Bytes()
 }
@@ -45,7 +45,7 @@ func (simpleSearchCondition *SimpleSearchCondition) Copy() nex.StructureInterfac
 	copied := NewSimpleSearchCondition()
 
 	copied.Value = simpleSearchCondition.Value
-	copied.Comparison = simpleSearchCondition.Comparison
+	copied.ComparisonOperator = simpleSearchCondition.ComparisonOperator
 
 	return copied
 }
@@ -58,7 +58,7 @@ func (simpleSearchCondition *SimpleSearchCondition) Equals(structure nex.Structu
 		return false
 	}
 
-	if simpleSearchCondition.Comparison != other.Comparison {
+	if simpleSearchCondition.ComparisonOperator != other.ComparisonOperator {
 		return false
 	}
 
@@ -80,7 +80,7 @@ func (simpleSearchCondition *SimpleSearchCondition) FormatToString(indentationLe
 	b.WriteString("SimpleSearchCondition{\n")
 	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, simpleSearchCondition.StructureVersion()))
 	b.WriteString(fmt.Sprintf("%sValue: %d,\n", indentationValues, simpleSearchCondition.Value))
-	b.WriteString(fmt.Sprintf("%sComparison: %d,\n", indentationValues, simpleSearchCondition.Comparison))
+	b.WriteString(fmt.Sprintf("%sComparisonOperator: %d,\n", indentationValues, simpleSearchCondition.ComparisonOperator))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()

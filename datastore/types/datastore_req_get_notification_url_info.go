@@ -109,7 +109,7 @@ func (dataStoreReqGetNotificationURLInfo *DataStoreReqGetNotificationURLInfo) Fo
 	b.WriteString(fmt.Sprintf("%sURL: %q,\n", indentationValues, dataStoreReqGetNotificationURLInfo.URL))
 	b.WriteString(fmt.Sprintf("%sKey: %q,\n", indentationValues, dataStoreReqGetNotificationURLInfo.Key))
 	b.WriteString(fmt.Sprintf("%sQuery: %q,\n", indentationValues, dataStoreReqGetNotificationURLInfo.Query))
-	b.WriteString(fmt.Sprintf("%sRootCaCert: %x\n", indentationValues, dataStoreReqGetNotificationURLInfo.RootCACert))
+	b.WriteString(fmt.Sprintf("%sRootCACert: %x\n", indentationValues, dataStoreReqGetNotificationURLInfo.RootCACert))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()

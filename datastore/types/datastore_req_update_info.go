@@ -197,7 +197,7 @@ func (dataStoreReqUpdateInfo *DataStoreReqUpdateInfo) FormatToString(indentation
 		b.WriteString(fmt.Sprintf("%s],\n", indentationValues))
 	}
 
-	b.WriteString(fmt.Sprintf("%sRootCaCert: %x\n", indentationValues, dataStoreReqUpdateInfo.RootCACert))
+	b.WriteString(fmt.Sprintf("%sRootCACert: %x\n", indentationValues, dataStoreReqUpdateInfo.RootCACert))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()

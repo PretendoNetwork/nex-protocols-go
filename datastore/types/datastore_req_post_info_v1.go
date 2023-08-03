@@ -178,7 +178,7 @@ func (dataStoreReqPostInfoV1 *DataStoreReqPostInfoV1) FormatToString(indentation
 		b.WriteString(fmt.Sprintf("%s],\n", indentationValues))
 	}
 
-	b.WriteString(fmt.Sprintf("%sRootCaCert: %x\n", indentationValues, dataStoreReqPostInfoV1.RootCACert))
+	b.WriteString(fmt.Sprintf("%sRootCACert: %x\n", indentationValues, dataStoreReqPostInfoV1.RootCACert))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()

@@ -71,6 +71,9 @@ const (
 
 	// MethodReportSharedData is the method ID for the method ReportSharedData
 	MethodReportSharedData = 0x3F
+
+	// MethodGetSharedDataMeta is the method ID for the method GetSharedDataMeta
+	MethodGetSharedDataMeta = 0x40
 )
 
 var patchedMethods = []uint32{
@@ -121,6 +124,7 @@ type Protocol struct {
 	getFightingPowerChartHandler    func(err error, client *nex.Client, callID uint32, mode uint8)
 	getFightingPowerChartAllHandler func(err error, client *nex.Client, callID uint32)
 	reportSharedDataHandler         func(err error, client *nex.Client, callID uint32, dataID uint64)
+	getSharedDataMetaHandler        func(err error, client *nex.Client, callID uint32, packetPayload []byte)
 }
 
 // Setup initializes the protocol
@@ -181,6 +185,8 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 		go protocol.handleGetFightingPowerChartAll(packet)
 	case MethodReportSharedData:
 		go protocol.handleReportSharedData(packet)
+	case MethodGetSharedDataMeta:
+		go protocol.handleGetSharedDataMeta(packet)
 	default:
 		go globals.RespondNotImplemented(packet, ProtocolID)
 		fmt.Printf("Unsupported DataStoreSuperSmashBros4 method ID: %#v\n", request.MethodID())

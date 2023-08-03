@@ -12,7 +12,7 @@ import (
 // ServiceItemRightBinary holds data for the Service Item (Team Kirby Clash Deluxe) protocol
 type ServiceItemRightBinary struct {
 	nex.Structure
-	UseType uint8
+	UseType     uint8
 	RightBinary []byte
 }
 

@@ -49,7 +49,6 @@ func (serviceItemGetLawMessageResponse *ServiceItemGetLawMessageResponse) Copy()
 		copied.NullableLawMessage[i] = serviceItemGetLawMessageResponse.NullableLawMessage[i].Copy().(*ServiceItemLawMessage)
 	}
 
-
 	return copied
 }
 

@@ -114,7 +114,7 @@ type serviceItemProtocol = service_item.Protocol
 type Protocol struct {
 	Server *nex.Server
 	serviceItemProtocol
-	getEnvironmentHandler                  func(err error, client *nex.Client, callID uint32, uniqueID string)
+	getEnvironmentHandler                  func(err error, client *nex.Client, callID uint32, uniqueID string, platform uint8)
 	httpGetRequestHandler                  func(err error, client *nex.Client, callID uint32, url *service_item_team_kirby_clash_deluxe_types.ServiceItemHTTPGetParam)
 	httpGetResponseHandler                 func(err error, client *nex.Client, callID uint32, requestID uint32)
 	purchaseServiceItemRequestHandler      func(err error, client *nex.Client, callID uint32, purchaseServiceItemParam *service_item_team_kirby_clash_deluxe_types.ServiceItemPurchaseServiceItemParam)
@@ -125,7 +125,7 @@ type Protocol struct {
 	getBalanceResponseHandler              func(err error, client *nex.Client, callID uint32, requestID uint32)
 	getPrepurchaseInfoRequestHandler       func(err error, client *nex.Client, callID uint32, getPrepurchaseInfoParam *service_item_team_kirby_clash_deluxe_types.ServiceItemGetPrepurchaseInfoParam)
 	getPrepurchaseInfoResponseHandler      func(err error, client *nex.Client, callID uint32, requestID uint32)
-	getServiceItemRightRequestHandler      func(err error, client *nex.Client, callID uint32, getServiceItemRightParam *service_item_team_kirby_clash_deluxe_types.ServiceItemGetServiceItemRightParam)
+	getServiceItemRightRequestHandler      func(err error, client *nex.Client, callID uint32, getServiceItemRightParam *service_item_team_kirby_clash_deluxe_types.ServiceItemGetServiceItemRightParam, withoutRightBinary bool)
 	getServiceItemRightResponseHandler     func(err error, client *nex.Client, callID uint32, requestID uint32)
 	getPurchaseHistoryRequestHandler       func(err error, client *nex.Client, callID uint32, getPurchaseHistoryParam *service_item_team_kirby_clash_deluxe_types.ServiceItemGetPurchaseHistoryParam)
 	getPurchaseHistoryResponseHandler      func(err error, client *nex.Client, callID uint32, requestID uint32)

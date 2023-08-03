@@ -9,7 +9,7 @@ import (
 )
 
 // GetEnvironment sets the GetEnvironment handler function
-func (protocol *Protocol) GetEnvironment(handler func(err error, client *nex.Client, callID uint32, uniqueID string)) {
+func (protocol *Protocol) GetEnvironment(handler func(err error, client *nex.Client, callID uint32, uniqueID string, platform uint8)) {
 	protocol.getEnvironmentHandler = handler
 }
 
@@ -30,9 +30,15 @@ func (protocol *Protocol) handleGetEnvironment(packet nex.PacketInterface) {
 
 	uniqueID, err := parametersStream.ReadString()
 	if err != nil {
-		go protocol.getEnvironmentHandler(fmt.Errorf("Failed to read uniqueID from parameters. %s", err.Error()), client, callID, "")
+		go protocol.getEnvironmentHandler(fmt.Errorf("Failed to read uniqueID from parameters. %s", err.Error()), client, callID, "", 0)
 		return
 	}
 
-	go protocol.getEnvironmentHandler(nil, client, callID, uniqueID)
+	platform, err := parametersStream.ReadUInt8()
+	if err != nil {
+		go protocol.getEnvironmentHandler(fmt.Errorf("Failed to read platform from parameters. %s", err.Error()), client, callID, "", 0)
+		return
+	}
+
+	go protocol.getEnvironmentHandler(nil, client, callID, uniqueID, platform)
 }

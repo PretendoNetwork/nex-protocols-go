@@ -12,7 +12,7 @@ import (
 type ServiceItemAccountRightConsumption struct {
 	nex.Structure
 	*ServiceItemAccountRight
-	UsedCount uint32
+	UsedCount    uint32
 	ExpiredCount uint32
 	ExpiryCounts []uint32
 }
@@ -60,7 +60,6 @@ func (serviceItemAccountRightConsumption *ServiceItemAccountRightConsumption) Co
 	copied.ExpiryCounts = make([]uint32, len(serviceItemAccountRightConsumption.ExpiryCounts))
 
 	copy(copied.ExpiryCounts, serviceItemAccountRightConsumption.ExpiryCounts)
-
 
 	return copied
 }

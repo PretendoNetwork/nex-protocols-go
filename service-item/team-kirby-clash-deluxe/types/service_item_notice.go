@@ -12,13 +12,13 @@ import (
 // ServiceItemNotice holds data for the Service Item (Team Kirby Clash Deluxe) protocol
 type ServiceItemNotice struct {
 	nex.Structure
-	ScheduleID uint64
+	ScheduleID   uint64
 	ScheduleType uint32
-	ParamInt int32
-	ParamString string
-	ParamBinary []byte
-	TimeBegin *nex.DateTime
-	TimeEnd *nex.DateTime
+	ParamInt     int32
+	ParamString  string
+	ParamBinary  []byte
+	TimeBegin    *nex.DateTime
+	TimeEnd      *nex.DateTime
 }
 
 // ExtractFromStream extracts a ServiceItemNotice structure from a stream
@@ -151,7 +151,6 @@ func (serviceItemNotice *ServiceItemNotice) FormatToString(indentationLevel int)
 	} else {
 		b.WriteString(fmt.Sprintf("%sTimeBegin: nil\n", indentationValues))
 	}
-
 
 	if serviceItemNotice.TimeEnd != nil {
 		b.WriteString(fmt.Sprintf("%sTimeEnd: %s\n", indentationValues, serviceItemNotice.TimeEnd.FormatToString(indentationLevel+1)))

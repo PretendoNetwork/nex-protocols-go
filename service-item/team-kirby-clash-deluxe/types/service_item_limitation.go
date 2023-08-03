@@ -11,7 +11,7 @@ import (
 // ServiceItemLimitation holds data for the Service Item (Team Kirby Clash Deluxe) protocol
 type ServiceItemLimitation struct {
 	nex.Structure
-	LimitationType uint32
+	LimitationType  uint32
 	LimitationValue uint32
 }
 

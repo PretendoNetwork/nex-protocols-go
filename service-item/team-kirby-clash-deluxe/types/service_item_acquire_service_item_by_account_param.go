@@ -14,12 +14,12 @@ type ServiceItemAcquireServiceItemByAccountParam struct {
 	nex.Structure
 	ReferenceIDForAcquisition string
 	ReferenceIDForRightBinary string
-	UseType uint8
-	LimitationType uint32
-	LimitationValue uint32
-	RightBinary []byte
-	LogMessage string
-	UniqueID uint32
+	UseType                   uint8
+	LimitationType            uint32
+	LimitationValue           uint32
+	RightBinary               []byte
+	LogMessage                string
+	UniqueID                  uint32
 }
 
 // ExtractFromStream extracts a ServiceItemAcquireServiceItemByAccountParam structure from a stream

@@ -13,10 +13,10 @@ import (
 type ServiceItemPostRightBinaryByAccountParam struct {
 	nex.Structure
 	ReferenceID string
-	UseType uint8
+	UseType     uint8
 	RightBinary []byte
-	LogMessage string
-	UniqueID uint32
+	LogMessage  string
+	UniqueID    uint32
 }
 
 // ExtractFromStream extracts a ServiceItemPostRightBinaryByAccountParam structure from a stream

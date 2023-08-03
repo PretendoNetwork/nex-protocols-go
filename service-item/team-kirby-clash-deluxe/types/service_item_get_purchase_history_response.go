@@ -49,7 +49,6 @@ func (serviceItemGetPurchaseHistoryResponse *ServiceItemGetPurchaseHistoryRespon
 		copied.NullablePurchaseHistory[i] = serviceItemGetPurchaseHistoryResponse.NullablePurchaseHistory[i].Copy().(*ServiceItemPurchaseHistory)
 	}
 
-
 	return copied
 }
 

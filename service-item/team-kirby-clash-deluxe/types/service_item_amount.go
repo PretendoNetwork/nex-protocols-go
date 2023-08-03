@@ -12,8 +12,8 @@ import (
 type ServiceItemAmount struct {
 	nex.Structure
 	FormattedAmount string
-	Currency string
-	RawValue string
+	Currency        string
+	RawValue        string
 }
 
 // ExtractFromStream extracts a ServiceItemAmount structure from a stream

@@ -49,7 +49,6 @@ func (serviceItemListServiceItemResponse *ServiceItemListServiceItemResponse) Co
 		copied.NullableCatalog[i] = serviceItemListServiceItemResponse.NullableCatalog[i].Copy().(*ServiceItemCatalog)
 	}
 
-
 	return copied
 }
 

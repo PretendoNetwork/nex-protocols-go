@@ -11,15 +11,15 @@ import (
 // ServiceItemTransaction holds data for the Service Item (Team Kirby Clash Deluxe) protocol
 type ServiceItemTransaction struct {
 	nex.Structure
-	TransactionID string
-	ExtTransactionID string
-	Time *nex.DateTime
-	TransactionType uint32
+	TransactionID          string
+	ExtTransactionID       string
+	Time                   *nex.DateTime
+	TransactionType        uint32
 	TransactionDescription string
-	TransactionAmount *ServiceItemAmount
-	ItemCode string
-	ReferenceID string
-	Limitation *ServiceItemLimitation
+	TransactionAmount      *ServiceItemAmount
+	ItemCode               string
+	ReferenceID            string
+	Limitation             *ServiceItemLimitation
 }
 
 // ExtractFromStream extracts a ServiceItemTransaction structure from a stream

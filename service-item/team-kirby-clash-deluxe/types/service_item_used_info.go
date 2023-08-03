@@ -12,7 +12,7 @@ import (
 type ServiceItemUsedInfo struct {
 	nex.Structure
 	AcquiredCount uint32
-	UsedCount uint32
+	UsedCount     uint32
 }
 
 // ExtractFromStream extracts a ServiceItemUsedInfo structure from a stream

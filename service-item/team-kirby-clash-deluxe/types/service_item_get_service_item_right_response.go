@@ -49,7 +49,6 @@ func (serviceItemGetServiceItemRightResponse *ServiceItemGetServiceItemRightResp
 		copied.NullableRightInfos[i] = serviceItemGetServiceItemRightResponse.NullableRightInfos[i].Copy().(*ServiceItemRightInfos)
 	}
 
-
 	return copied
 }
 

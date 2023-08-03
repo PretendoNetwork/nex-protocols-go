@@ -5,12 +5,12 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
-	service_item_team_kirby_clash_deluxe_types "github.com/PretendoNetwork/nex-protocols-go/service-item/team-kirby-clash-deluxe/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
+	service_item_team_kirby_clash_deluxe_types "github.com/PretendoNetwork/nex-protocols-go/service-item/team-kirby-clash-deluxe/types"
 )
 
 // GetServiceItemRightRequest sets the GetServiceItemRightRequest handler function
-func (protocol *Protocol) GetServiceItemRightRequest(handler func(err error, client *nex.Client, callID uint32, getServiceItemRightParam *service_item_team_kirby_clash_deluxe_types.ServiceItemGetServiceItemRightParam)) {
+func (protocol *Protocol) GetServiceItemRightRequest(handler func(err error, client *nex.Client, callID uint32, getServiceItemRightParam *service_item_team_kirby_clash_deluxe_types.ServiceItemGetServiceItemRightParam, withoutRightBinary bool)) {
 	protocol.getServiceItemRightRequestHandler = handler
 }
 
@@ -31,9 +31,15 @@ func (protocol *Protocol) handleGetServiceItemRightRequest(packet nex.PacketInte
 
 	getServiceItemRightParam, err := parametersStream.ReadStructure(service_item_team_kirby_clash_deluxe_types.NewServiceItemGetServiceItemRightParam())
 	if err != nil {
-		go protocol.getServiceItemRightRequestHandler(fmt.Errorf("Failed to read getServiceItemRightParam from parameters. %s", err.Error()), client, callID, nil)
+		go protocol.getServiceItemRightRequestHandler(fmt.Errorf("Failed to read getServiceItemRightParam from parameters. %s", err.Error()), client, callID, nil, false)
 		return
 	}
 
-	go protocol.getServiceItemRightRequestHandler(nil, client, callID, getServiceItemRightParam.(*service_item_team_kirby_clash_deluxe_types.ServiceItemGetServiceItemRightParam))
+	withoutRightBinary, err := parametersStream.ReadBool()
+	if err != nil {
+		go protocol.getServiceItemRightRequestHandler(fmt.Errorf("Failed to read withoutRightBinary from parameters. %s", err.Error()), client, callID, nil, false)
+		return
+	}
+
+	go protocol.getServiceItemRightRequestHandler(nil, client, callID, getServiceItemRightParam.(*service_item_team_kirby_clash_deluxe_types.ServiceItemGetServiceItemRightParam), withoutRightBinary)
 }

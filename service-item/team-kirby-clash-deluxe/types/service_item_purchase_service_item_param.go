@@ -11,14 +11,14 @@ import (
 // ServiceItemPurchaseServiceItemParam holds data for the Service Item (Team Kirby Clash Deluxe) protocol
 type ServiceItemPurchaseServiceItemParam struct {
 	nex.Structure
-	ItemCode string
-	PriceID string
-	ReferenceID string
-	Balance string
-	ItemName string
+	ItemCode       string
+	PriceID        string
+	ReferenceID    string
+	Balance        string
+	ItemName       string
 	EcServiceToken string
-	Language string
-	UniqueID uint32
+	Language       string
+	UniqueID       uint32
 }
 
 // ExtractFromStream extracts a ServiceItemPurchaseServiceItemParam structure from a stream

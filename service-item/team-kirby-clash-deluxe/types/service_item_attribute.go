@@ -11,7 +11,7 @@ import (
 // ServiceItemAttribute holds data for the Service Item (Team Kirby Clash Deluxe) protocol
 type ServiceItemAttribute struct {
 	nex.Structure
-	Name string
+	Name  string
 	Value string
 }
 

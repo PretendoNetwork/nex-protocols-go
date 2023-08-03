@@ -49,7 +49,6 @@ func (serviceItemRightTimeInfo *ServiceItemRightTimeInfo) Copy() nex.StructureIn
 		copied.AccountRights[i] = serviceItemRightTimeInfo.AccountRights[i].Copy().(*ServiceItemAccountRightTime)
 	}
 
-
 	return copied
 }
 

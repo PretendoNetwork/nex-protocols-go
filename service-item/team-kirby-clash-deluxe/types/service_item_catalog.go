@@ -11,11 +11,11 @@ import (
 // ServiceItemCatalog holds data for the Service Item (Team Kirby Clash Deluxe) protocol
 type ServiceItemCatalog struct {
 	nex.Structure
-	TotalSize uint32
-	Offset uint32
-	ListItems []*ServiceItemListItem
+	TotalSize          uint32
+	Offset             uint32
+	ListItems          []*ServiceItemListItem
 	IsBalanceAvailable bool
-	Balance *ServiceItemAmount
+	Balance            *ServiceItemAmount
 }
 
 // ExtractFromStream extracts a ServiceItemCatalog structure from a stream

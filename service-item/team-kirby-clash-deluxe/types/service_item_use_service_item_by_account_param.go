@@ -12,13 +12,13 @@ import (
 // ServiceItemUseServiceItemByAccountParam holds data for the Service Item (Team Kirby Clash Deluxe) protocol
 type ServiceItemUseServiceItemByAccountParam struct {
 	nex.Structure
-	ReferenceIDForUse string
+	ReferenceIDForUse         string
 	ReferenceIDForRightBinary string
-	UseType uint8
-	UseNumber uint8
-	RightBinary []byte
-	LogMessage string
-	UniqueID uint32
+	UseType                   uint8
+	UseNumber                 uint8
+	RightBinary               []byte
+	LogMessage                string
+	UniqueID                  uint32
 }
 
 // ExtractFromStream extracts a ServiceItemUseServiceItemByAccountParam structure from a stream

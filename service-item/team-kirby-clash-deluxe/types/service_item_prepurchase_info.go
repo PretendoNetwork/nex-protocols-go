@@ -11,16 +11,16 @@ import (
 // ServiceItemPrepurchaseInfo holds data for the Service Item (Team Kirby Clash Deluxe) protocol
 type ServiceItemPrepurchaseInfo struct {
 	nex.Structure
-	ItemCode string
-	PriceID string
-	RegularPrice *ServiceItemAmount
-	IsTaxAvailable bool
-	TaxAmount *ServiceItemAmount
-	TotalAmount *ServiceItemAmount
-	CurrentBalance *ServiceItemAmount
-	PostBalance *ServiceItemAmount
+	ItemCode         string
+	PriceID          string
+	RegularPrice     *ServiceItemAmount
+	IsTaxAvailable   bool
+	TaxAmount        *ServiceItemAmount
+	TotalAmount      *ServiceItemAmount
+	CurrentBalance   *ServiceItemAmount
+	PostBalance      *ServiceItemAmount
 	CurrentRightInfo *ServiceItemPrepurchaseRightInfo
-	PostRightInfo *ServiceItemPrepurchaseRightInfo
+	PostRightInfo    *ServiceItemPrepurchaseRightInfo
 }
 
 // ExtractFromStream extracts a ServiceItemPrepurchaseInfo structure from a stream
@@ -206,13 +206,11 @@ func (serviceItemPrepurchaseInfo *ServiceItemPrepurchaseInfo) FormatToString(ind
 		b.WriteString(fmt.Sprintf("%sTaxAmount: nil\n", indentationValues))
 	}
 
-
 	if serviceItemPrepurchaseInfo.TotalAmount != nil {
 		b.WriteString(fmt.Sprintf("%sTotalAmount: %s\n", indentationValues, serviceItemPrepurchaseInfo.TotalAmount.FormatToString(indentationLevel+1)))
 	} else {
 		b.WriteString(fmt.Sprintf("%sTotalAmount: nil\n", indentationValues))
 	}
-
 
 	if serviceItemPrepurchaseInfo.CurrentBalance != nil {
 		b.WriteString(fmt.Sprintf("%sCurrentBalance: %s\n", indentationValues, serviceItemPrepurchaseInfo.CurrentBalance.FormatToString(indentationLevel+1)))
@@ -220,20 +218,17 @@ func (serviceItemPrepurchaseInfo *ServiceItemPrepurchaseInfo) FormatToString(ind
 		b.WriteString(fmt.Sprintf("%sCurrentBalance: nil\n", indentationValues))
 	}
 
-
 	if serviceItemPrepurchaseInfo.PostBalance != nil {
 		b.WriteString(fmt.Sprintf("%sPostBalance: %s\n", indentationValues, serviceItemPrepurchaseInfo.PostBalance.FormatToString(indentationLevel+1)))
 	} else {
 		b.WriteString(fmt.Sprintf("%sPostBalance: nil\n", indentationValues))
 	}
 
-
 	if serviceItemPrepurchaseInfo.CurrentRightInfo != nil {
 		b.WriteString(fmt.Sprintf("%sCurrentRightInfo: %s\n", indentationValues, serviceItemPrepurchaseInfo.CurrentRightInfo.FormatToString(indentationLevel+1)))
 	} else {
 		b.WriteString(fmt.Sprintf("%sCurrentRightInfo: nil\n", indentationValues))
 	}
-
 
 	if serviceItemPrepurchaseInfo.PostRightInfo != nil {
 		b.WriteString(fmt.Sprintf("%sPostRightInfo: %s\n", indentationValues, serviceItemPrepurchaseInfo.PostRightInfo.FormatToString(indentationLevel+1)))

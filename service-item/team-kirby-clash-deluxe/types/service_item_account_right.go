@@ -11,8 +11,8 @@ import (
 // ServiceItemAccountRight holds data for the Service Item (Team Kirby Clash Deluxe) protocol
 type ServiceItemAccountRight struct {
 	nex.Structure
-	PID uint32
-	Limitation *ServiceItemLimitation
+	PID           uint32
+	Limitation    *ServiceItemLimitation
 	RightBinaries []*ServiceItemRightBinary
 }
 
@@ -62,7 +62,6 @@ func (serviceItemAccountRight *ServiceItemAccountRight) Copy() nex.StructureInte
 	for i := 0; i < len(serviceItemAccountRight.RightBinaries); i++ {
 		copied.RightBinaries[i] = serviceItemAccountRight.RightBinaries[i].Copy().(*ServiceItemRightBinary)
 	}
-
 
 	return copied
 }
@@ -114,7 +113,6 @@ func (serviceItemAccountRight *ServiceItemAccountRight) FormatToString(indentati
 	} else {
 		b.WriteString(fmt.Sprintf("%sLimitation: nil\n", indentationValues))
 	}
-
 
 	if len(serviceItemAccountRight.RightBinaries) == 0 {
 		b.WriteString(fmt.Sprintf("%sRightBinaries: [],\n", indentationValues))

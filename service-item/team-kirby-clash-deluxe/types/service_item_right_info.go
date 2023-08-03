@@ -11,7 +11,7 @@ import (
 // ServiceItemRightInfo holds data for the Service Item (Team Kirby Clash Deluxe) protocol
 type ServiceItemRightInfo struct {
 	nex.Structure
-	ReferenceID string
+	ReferenceID     string
 	ReferenceIDType uint32
 }
 

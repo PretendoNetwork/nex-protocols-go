@@ -12,11 +12,11 @@ import (
 type ServiceItemAcquireServiceItemResponse struct {
 	nex.Structure
 	LimitationType uint32
-	AcquiredCount uint32
-	UsedCount uint32
-	ExpiryDate uint32
-	ExpiredCount uint32
-	ExpiryCounts []uint32
+	AcquiredCount  uint32
+	UsedCount      uint32
+	ExpiryDate     uint32
+	ExpiredCount   uint32
+	ExpiryCounts   []uint32
 }
 
 // ExtractFromStream extracts a ServiceItemAcquireServiceItemResponse structure from a stream
@@ -80,7 +80,6 @@ func (serviceItemAcquireServiceItemResponse *ServiceItemAcquireServiceItemRespon
 	copied.ExpiryCounts = make([]uint32, len(serviceItemAcquireServiceItemResponse.ExpiryCounts))
 
 	copy(copied.ExpiryCounts, serviceItemAcquireServiceItemResponse.ExpiryCounts)
-
 
 	return copied
 }

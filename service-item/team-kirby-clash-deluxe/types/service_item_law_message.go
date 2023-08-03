@@ -12,7 +12,7 @@ import (
 type ServiceItemLawMessage struct {
 	nex.Structure
 	IsMessageRequired bool
-	LawMessage string
+	LawMessage        string
 }
 
 // ExtractFromStream extracts a ServiceItemLawMessage structure from a stream

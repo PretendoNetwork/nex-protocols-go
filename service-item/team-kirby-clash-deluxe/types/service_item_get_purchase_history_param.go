@@ -12,8 +12,8 @@ import (
 type ServiceItemGetPurchaseHistoryParam struct {
 	nex.Structure
 	Language string
-	Offset uint32
-	Size uint32
+	Offset   uint32
+	Size     uint32
 	UniqueID uint32
 }
 

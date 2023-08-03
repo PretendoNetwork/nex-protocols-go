@@ -12,11 +12,11 @@ import (
 type ServiceItemPrepurchaseRightInfo struct {
 	nex.Structure
 	LimitationType uint32
-	AcquiredCount uint32
-	UsedCount uint32
-	ExpiryDate uint32
-	ExpiredCount uint32
-	ExpiryCounts []uint32
+	AcquiredCount  uint32
+	UsedCount      uint32
+	ExpiryDate     uint32
+	ExpiredCount   uint32
+	ExpiryCounts   []uint32
 }
 
 // ExtractFromStream extracts a ServiceItemPrepurchaseRightInfo structure from a stream
@@ -80,7 +80,6 @@ func (serviceItemPrepurchaseRightInfo *ServiceItemPrepurchaseRightInfo) Copy() n
 	copied.ExpiryCounts = make([]uint32, len(serviceItemPrepurchaseRightInfo.ExpiryCounts))
 
 	copy(copied.ExpiryCounts, serviceItemPrepurchaseRightInfo.ExpiryCounts)
-
 
 	return copied
 }

@@ -49,7 +49,6 @@ func (serviceItemRightConsumptionInfo *ServiceItemRightConsumptionInfo) Copy() n
 		copied.AccountRights[i] = serviceItemRightConsumptionInfo.AccountRights[i].Copy().(*ServiceItemAccountRightConsumption)
 	}
 
-
 	return copied
 }
 

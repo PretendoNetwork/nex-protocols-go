@@ -11,12 +11,12 @@ import (
 // ServiceItemListItem holds data for the Service Item (Team Kirby Clash Deluxe) protocol
 type ServiceItemListItem struct {
 	nex.Structure
-	ItemCode string
-	RegularPrice *ServiceItemAmount
-	TaxExcluded bool
+	ItemCode            string
+	RegularPrice        *ServiceItemAmount
+	TaxExcluded         bool
 	InitialPurchaseOnly bool
-	Limitation *ServiceItemLimitation
-	Attributes []*ServiceItemAttribute
+	Limitation          *ServiceItemLimitation
+	Attributes          []*ServiceItemAttribute
 }
 
 // ExtractFromStream extracts a ServiceItemListItem structure from a stream
@@ -89,7 +89,6 @@ func (serviceItemListItem *ServiceItemListItem) Copy() nex.StructureInterface {
 		copied.Attributes[i] = serviceItemListItem.Attributes[i].Copy().(*ServiceItemAttribute)
 	}
 
-
 	return copied
 }
 
@@ -161,7 +160,6 @@ func (serviceItemListItem *ServiceItemListItem) FormatToString(indentationLevel 
 	} else {
 		b.WriteString(fmt.Sprintf("%sLimitation: nil\n", indentationValues))
 	}
-
 
 	if len(serviceItemListItem.Attributes) == 0 {
 		b.WriteString(fmt.Sprintf("%sAttributes: [],\n", indentationValues))

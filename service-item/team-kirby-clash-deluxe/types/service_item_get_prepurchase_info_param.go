@@ -11,11 +11,11 @@ import (
 // ServiceItemGetPrepurchaseInfoParam holds data for the Service Item (Team Kirby Clash Deluxe) protocol
 type ServiceItemGetPrepurchaseInfoParam struct {
 	nex.Structure
-	ItemCode string
+	ItemCode    string
 	ReferenceID string
-	Limitation *ServiceItemLimitation
-	Language string
-	UniqueID uint32
+	Limitation  *ServiceItemLimitation
+	Language    string
+	UniqueID    uint32
 }
 
 // ExtractFromStream extracts a ServiceItemGetPrepurchaseInfoParam structure from a stream

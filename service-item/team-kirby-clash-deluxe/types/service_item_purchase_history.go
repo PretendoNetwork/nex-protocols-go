@@ -11,8 +11,8 @@ import (
 // ServiceItemPurchaseHistory holds data for the Service Item (Team Kirby Clash Deluxe) protocol
 type ServiceItemPurchaseHistory struct {
 	nex.Structure
-	TotalSize uint32
-	Offset uint32
+	TotalSize    uint32
+	Offset       uint32
 	Transactions []*ServiceItemTransaction
 }
 
@@ -60,7 +60,6 @@ func (serviceItemPurchaseHistory *ServiceItemPurchaseHistory) Copy() nex.Structu
 	for i := 0; i < len(serviceItemPurchaseHistory.Transactions); i++ {
 		copied.Transactions[i] = serviceItemPurchaseHistory.Transactions[i].Copy().(*ServiceItemTransaction)
 	}
-
 
 	return copied
 }

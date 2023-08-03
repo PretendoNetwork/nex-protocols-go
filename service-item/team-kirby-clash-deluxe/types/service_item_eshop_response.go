@@ -11,8 +11,8 @@ import (
 // ServiceItemEShopResponse holds data for the Service Item (Team Kirby Clash Deluxe) protocol
 type ServiceItemEShopResponse struct {
 	nex.Structure
-	HTTPStatus uint32
-	ErrorCode uint32
+	HTTPStatus    uint32
+	ErrorCode     uint32
 	CorrelationID string
 }
 

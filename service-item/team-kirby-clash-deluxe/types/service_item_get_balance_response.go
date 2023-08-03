@@ -49,7 +49,6 @@ func (serviceItemGetBalanceResponse *ServiceItemGetBalanceResponse) Copy() nex.S
 		copied.NullableBalance[i] = serviceItemGetBalanceResponse.NullableBalance[i].Copy().(*ServiceItemAmount)
 	}
 
-
 	return copied
 }
 

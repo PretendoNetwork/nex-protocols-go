@@ -12,9 +12,9 @@ import (
 type ServiceItemGetServiceItemRightParam struct {
 	nex.Structure
 	ReferenceID string
-	DeviceID string
-	UniqueID uint32
-	ItemGroup uint8
+	DeviceID    string
+	UniqueID    uint32
+	ItemGroup   uint8
 }
 
 // ExtractFromStream extracts a ServiceItemGetServiceItemRightParam structure from a stream

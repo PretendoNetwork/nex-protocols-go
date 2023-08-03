@@ -49,7 +49,6 @@ func (serviceItemPurchaseServiceItemResponse *ServiceItemPurchaseServiceItemResp
 		copied.NullablePurchaseInfo[i] = serviceItemPurchaseServiceItemResponse.NullablePurchaseInfo[i].Copy().(*ServiceItemPurchaseInfo)
 	}
 
-
 	return copied
 }
 

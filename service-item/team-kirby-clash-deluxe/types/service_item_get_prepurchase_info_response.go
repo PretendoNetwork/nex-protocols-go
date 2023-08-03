@@ -49,7 +49,6 @@ func (serviceItemGetPrepurchaseInfoResponse *ServiceItemGetPrepurchaseInfoRespon
 		copied.NullablePrepurchaseInfo[i] = serviceItemGetPrepurchaseInfoResponse.NullablePrepurchaseInfo[i].Copy().(*ServiceItemPrepurchaseInfo)
 	}
 
-
 	return copied
 }
 

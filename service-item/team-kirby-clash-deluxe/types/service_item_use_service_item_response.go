@@ -49,7 +49,6 @@ func (serviceItemUseServiceItemResponse *ServiceItemUseServiceItemResponse) Copy
 		copied.NullableUsedInfo[i] = serviceItemUseServiceItemResponse.NullableUsedInfo[i].Copy().(*ServiceItemUsedInfo)
 	}
 
-
 	return copied
 }
 

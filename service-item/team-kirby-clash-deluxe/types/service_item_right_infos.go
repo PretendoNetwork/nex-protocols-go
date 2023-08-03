@@ -133,7 +133,7 @@ func (serviceItemRightInfos *ServiceItemRightInfos) Equals(structure nex.Structu
 		}
 	}
 
-	return serviceItemRightInfos.AlreadyPurchasedInitialOnlyItem != other.AlreadyPurchasedInitialOnlyItem
+	return serviceItemRightInfos.AlreadyPurchasedInitialOnlyItem == other.AlreadyPurchasedInitialOnlyItem
 }
 
 // String returns a string representation of the struct

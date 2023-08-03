@@ -46,7 +46,7 @@ func (serviceItemHTTPGetParam *ServiceItemHTTPGetParam) Copy() nex.StructureInte
 func (serviceItemHTTPGetParam *ServiceItemHTTPGetParam) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*ServiceItemHTTPGetParam)
 
-	return serviceItemHTTPGetParam.URL != other.URL
+	return serviceItemHTTPGetParam.URL == other.URL
 }
 
 // String returns a string representation of the struct

@@ -46,7 +46,7 @@ func (serviceItemGetNoticeParam *ServiceItemGetNoticeParam) Copy() nex.Structure
 func (serviceItemGetNoticeParam *ServiceItemGetNoticeParam) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*ServiceItemGetNoticeParam)
 
-	return serviceItemGetNoticeParam.NoticeType != other.NoticeType
+	return serviceItemGetNoticeParam.NoticeType == other.NoticeType
 }
 
 // String returns a string representation of the struct

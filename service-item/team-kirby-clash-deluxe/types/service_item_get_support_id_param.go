@@ -46,7 +46,7 @@ func (serviceItemGetSupportIDParam *ServiceItemGetSupportIDParam) Copy() nex.Str
 func (serviceItemGetSupportIDParam *ServiceItemGetSupportIDParam) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*ServiceItemGetSupportIDParam)
 
-	return serviceItemGetSupportIDParam.UniqueID != other.UniqueID
+	return serviceItemGetSupportIDParam.UniqueID == other.UniqueID
 }
 
 // String returns a string representation of the struct

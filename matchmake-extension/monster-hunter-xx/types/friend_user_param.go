@@ -46,7 +46,7 @@ func (friendUserParam *FriendUserParam) Copy() nex.StructureInterface {
 func (friendUserParam *FriendUserParam) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*FriendUserParam)
 
-	return friendUserParam.Name != other.Name
+	return friendUserParam.Name == other.Name
 }
 
 // String returns a string representation of the struct

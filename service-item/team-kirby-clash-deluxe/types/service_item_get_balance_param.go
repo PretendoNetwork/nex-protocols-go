@@ -13,6 +13,7 @@ type ServiceItemGetBalanceParam struct {
 	nex.Structure
 	Language string
 	UniqueID uint32
+	Platform uint8 // * Revision 1
 }
 
 // ExtractFromStream extracts a ServiceItemGetBalanceParam structure from a stream
@@ -29,6 +30,13 @@ func (serviceItemGetBalanceParam *ServiceItemGetBalanceParam) ExtractFromStream(
 		return fmt.Errorf("Failed to extract ServiceItemGetBalanceParam.UniqueID from stream. %s", err.Error())
 	}
 
+	if serviceItemGetBalanceParam.StructureVersion() >= 1 {
+		serviceItemGetBalanceParam.Platform, err = stream.ReadUInt8()
+		if err != nil {
+			return fmt.Errorf("Failed to extract ServiceItemGetBalanceParam.Platform from stream. %s", err.Error())
+		}
+	}
+
 	return nil
 }
 
@@ -36,6 +44,10 @@ func (serviceItemGetBalanceParam *ServiceItemGetBalanceParam) ExtractFromStream(
 func (serviceItemGetBalanceParam *ServiceItemGetBalanceParam) Bytes(stream *nex.StreamOut) []byte {
 	stream.WriteString(serviceItemGetBalanceParam.Language)
 	stream.WriteUInt32LE(serviceItemGetBalanceParam.UniqueID)
+
+	if serviceItemGetBalanceParam.StructureVersion() >= 1 {
+		stream.WriteUInt8(serviceItemGetBalanceParam.Platform)
+	}
 
 	return stream.Bytes()
 }
@@ -46,6 +58,7 @@ func (serviceItemGetBalanceParam *ServiceItemGetBalanceParam) Copy() nex.Structu
 
 	copied.Language = serviceItemGetBalanceParam.Language
 	copied.UniqueID = serviceItemGetBalanceParam.UniqueID
+	copied.Platform = serviceItemGetBalanceParam.Platform
 
 	return copied
 }
@@ -59,6 +72,10 @@ func (serviceItemGetBalanceParam *ServiceItemGetBalanceParam) Equals(structure n
 	}
 
 	if serviceItemGetBalanceParam.UniqueID != other.UniqueID {
+		return false
+	}
+
+	if serviceItemGetBalanceParam.Platform != other.Platform {
 		return false
 	}
 
@@ -81,6 +98,11 @@ func (serviceItemGetBalanceParam *ServiceItemGetBalanceParam) FormatToString(ind
 	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, serviceItemGetBalanceParam.StructureVersion()))
 	b.WriteString(fmt.Sprintf("%sLanguage: %q,\n", indentationValues, serviceItemGetBalanceParam.Language))
 	b.WriteString(fmt.Sprintf("%sUniqueID: %d,\n", indentationValues, serviceItemGetBalanceParam.UniqueID))
+
+	if serviceItemGetBalanceParam.StructureVersion() >= 1 {
+		b.WriteString(fmt.Sprintf("%sPlatform: %d,\n", indentationValues, serviceItemGetBalanceParam.Platform))
+	}
+
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()

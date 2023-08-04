@@ -15,6 +15,7 @@ type ServiceItemGetPurchaseHistoryParam struct {
 	Offset   uint32
 	Size     uint32
 	UniqueID uint32
+	Platform uint8
 }
 
 // ExtractFromStream extracts a ServiceItemGetPurchaseHistoryParam structure from a stream
@@ -41,6 +42,13 @@ func (serviceItemGetPurchaseHistoryParam *ServiceItemGetPurchaseHistoryParam) Ex
 		return fmt.Errorf("Failed to extract ServiceItemGetPurchaseHistoryParam.UniqueID from stream. %s", err.Error())
 	}
 
+	if serviceItemGetPurchaseHistoryParam.StructureVersion() >= 1 {
+		serviceItemGetPurchaseHistoryParam.Platform, err = stream.ReadUInt8()
+		if err != nil {
+			return fmt.Errorf("Failed to extract ServiceItemGetPurchaseHistoryParam.Platform from stream. %s", err.Error())
+		}
+	}
+
 	return nil
 }
 
@@ -50,6 +58,10 @@ func (serviceItemGetPurchaseHistoryParam *ServiceItemGetPurchaseHistoryParam) By
 	stream.WriteUInt32LE(serviceItemGetPurchaseHistoryParam.Offset)
 	stream.WriteUInt32LE(serviceItemGetPurchaseHistoryParam.Size)
 	stream.WriteUInt32LE(serviceItemGetPurchaseHistoryParam.UniqueID)
+
+	if serviceItemGetPurchaseHistoryParam.StructureVersion() >= 1 {
+		stream.WriteUInt8(serviceItemGetPurchaseHistoryParam.Platform)
+	}
 
 	return stream.Bytes()
 }
@@ -62,6 +74,7 @@ func (serviceItemGetPurchaseHistoryParam *ServiceItemGetPurchaseHistoryParam) Co
 	copied.Offset = serviceItemGetPurchaseHistoryParam.Offset
 	copied.Size = serviceItemGetPurchaseHistoryParam.Size
 	copied.UniqueID = serviceItemGetPurchaseHistoryParam.UniqueID
+	copied.Platform = serviceItemGetPurchaseHistoryParam.Platform
 
 	return copied
 }
@@ -86,6 +99,10 @@ func (serviceItemGetPurchaseHistoryParam *ServiceItemGetPurchaseHistoryParam) Eq
 		return false
 	}
 
+	if serviceItemGetPurchaseHistoryParam.Platform != other.Platform {
+		return false
+	}
+
 	return true
 }
 
@@ -107,6 +124,11 @@ func (serviceItemGetPurchaseHistoryParam *ServiceItemGetPurchaseHistoryParam) Fo
 	b.WriteString(fmt.Sprintf("%sOffset: %d,\n", indentationValues, serviceItemGetPurchaseHistoryParam.Offset))
 	b.WriteString(fmt.Sprintf("%sSize: %d,\n", indentationValues, serviceItemGetPurchaseHistoryParam.Size))
 	b.WriteString(fmt.Sprintf("%sUniqueID: %d,\n", indentationValues, serviceItemGetPurchaseHistoryParam.UniqueID))
+
+	if serviceItemGetPurchaseHistoryParam.StructureVersion() >= 1 {
+		b.WriteString(fmt.Sprintf("%sPlatform: %d,\n", indentationValues, serviceItemGetPurchaseHistoryParam.Platform))
+	}
+
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()

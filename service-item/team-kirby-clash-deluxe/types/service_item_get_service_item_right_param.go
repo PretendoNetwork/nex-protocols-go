@@ -15,6 +15,7 @@ type ServiceItemGetServiceItemRightParam struct {
 	DeviceID    string
 	UniqueID    uint32
 	ItemGroup   uint8
+	Platform    uint8 // * Revision 1
 }
 
 // ExtractFromStream extracts a ServiceItemGetServiceItemRightParam structure from a stream
@@ -41,6 +42,13 @@ func (serviceItemGetServiceItemRightParam *ServiceItemGetServiceItemRightParam) 
 		return fmt.Errorf("Failed to extract ServiceItemGetServiceItemRightParam.ItemGroup from stream. %s", err.Error())
 	}
 
+	if serviceItemGetServiceItemRightParam.StructureVersion() >= 1 {
+		serviceItemGetServiceItemRightParam.Platform, err = stream.ReadUInt8()
+		if err != nil {
+			return fmt.Errorf("Failed to extract ServiceItemGetServiceItemRightParam.Platform from stream. %s", err.Error())
+		}
+	}
+
 	return nil
 }
 
@@ -50,6 +58,10 @@ func (serviceItemGetServiceItemRightParam *ServiceItemGetServiceItemRightParam) 
 	stream.WriteString(serviceItemGetServiceItemRightParam.DeviceID)
 	stream.WriteUInt32LE(serviceItemGetServiceItemRightParam.UniqueID)
 	stream.WriteUInt8(serviceItemGetServiceItemRightParam.ItemGroup)
+
+	if serviceItemGetServiceItemRightParam.StructureVersion() >= 1 {
+		stream.WriteUInt8(serviceItemGetServiceItemRightParam.Platform)
+	}
 
 	return stream.Bytes()
 }
@@ -62,6 +74,7 @@ func (serviceItemGetServiceItemRightParam *ServiceItemGetServiceItemRightParam) 
 	copied.DeviceID = serviceItemGetServiceItemRightParam.DeviceID
 	copied.UniqueID = serviceItemGetServiceItemRightParam.UniqueID
 	copied.ItemGroup = serviceItemGetServiceItemRightParam.ItemGroup
+	copied.Platform = serviceItemGetServiceItemRightParam.Platform
 
 	return copied
 }
@@ -86,6 +99,10 @@ func (serviceItemGetServiceItemRightParam *ServiceItemGetServiceItemRightParam) 
 		return false
 	}
 
+	if serviceItemGetServiceItemRightParam.Platform != other.Platform {
+		return false
+	}
+
 	return true
 }
 
@@ -107,6 +124,11 @@ func (serviceItemGetServiceItemRightParam *ServiceItemGetServiceItemRightParam) 
 	b.WriteString(fmt.Sprintf("%sDeviceID: %q,\n", indentationValues, serviceItemGetServiceItemRightParam.DeviceID))
 	b.WriteString(fmt.Sprintf("%sUniqueID: %d,\n", indentationValues, serviceItemGetServiceItemRightParam.UniqueID))
 	b.WriteString(fmt.Sprintf("%sItemGroup: %d,\n", indentationValues, serviceItemGetServiceItemRightParam.ItemGroup))
+
+	if serviceItemGetServiceItemRightParam.StructureVersion() >= 1 {
+		b.WriteString(fmt.Sprintf("%sPlatform: %d,\n", indentationValues, serviceItemGetServiceItemRightParam.Platform))
+	}
+
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()

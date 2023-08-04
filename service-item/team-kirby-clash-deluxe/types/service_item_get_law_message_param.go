@@ -13,6 +13,7 @@ type ServiceItemGetLawMessageParam struct {
 	nex.Structure
 	Language string
 	UniqueID uint32
+	Platform uint8 // * Revision 1
 }
 
 // ExtractFromStream extracts a ServiceItemGetLawMessageParam structure from a stream
@@ -29,6 +30,13 @@ func (serviceItemGetLawMessageParam *ServiceItemGetLawMessageParam) ExtractFromS
 		return fmt.Errorf("Failed to extract ServiceItemGetLawMessageParam.UniqueID from stream. %s", err.Error())
 	}
 
+	if serviceItemGetLawMessageParam.StructureVersion() >= 1 {
+		serviceItemGetLawMessageParam.Platform, err = stream.ReadUInt8()
+		if err != nil {
+			return fmt.Errorf("Failed to extract ServiceItemGetLawMessageParam.Platform from stream. %s", err.Error())
+		}
+	}
+
 	return nil
 }
 
@@ -36,6 +44,10 @@ func (serviceItemGetLawMessageParam *ServiceItemGetLawMessageParam) ExtractFromS
 func (serviceItemGetLawMessageParam *ServiceItemGetLawMessageParam) Bytes(stream *nex.StreamOut) []byte {
 	stream.WriteString(serviceItemGetLawMessageParam.Language)
 	stream.WriteUInt32LE(serviceItemGetLawMessageParam.UniqueID)
+
+	if serviceItemGetLawMessageParam.StructureVersion() >= 1 {
+		stream.WriteUInt8(serviceItemGetLawMessageParam.Platform)
+	}
 
 	return stream.Bytes()
 }
@@ -46,6 +58,7 @@ func (serviceItemGetLawMessageParam *ServiceItemGetLawMessageParam) Copy() nex.S
 
 	copied.Language = serviceItemGetLawMessageParam.Language
 	copied.UniqueID = serviceItemGetLawMessageParam.UniqueID
+	copied.Platform = serviceItemGetLawMessageParam.Platform
 
 	return copied
 }
@@ -59,6 +72,10 @@ func (serviceItemGetLawMessageParam *ServiceItemGetLawMessageParam) Equals(struc
 	}
 
 	if serviceItemGetLawMessageParam.UniqueID != other.UniqueID {
+		return false
+	}
+
+	if serviceItemGetLawMessageParam.Platform != other.Platform {
 		return false
 	}
 
@@ -81,6 +98,11 @@ func (serviceItemGetLawMessageParam *ServiceItemGetLawMessageParam) FormatToStri
 	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, serviceItemGetLawMessageParam.StructureVersion()))
 	b.WriteString(fmt.Sprintf("%sLanguage: %q,\n", indentationValues, serviceItemGetLawMessageParam.Language))
 	b.WriteString(fmt.Sprintf("%sUniqueID: %d,\n", indentationValues, serviceItemGetLawMessageParam.UniqueID))
+
+	if serviceItemGetLawMessageParam.StructureVersion() >= 1 {
+		b.WriteString(fmt.Sprintf("%sPlatform: %d,\n", indentationValues, serviceItemGetLawMessageParam.Platform))
+	}
+
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()

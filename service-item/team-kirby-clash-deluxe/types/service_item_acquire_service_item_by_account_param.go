@@ -20,6 +20,7 @@ type ServiceItemAcquireServiceItemByAccountParam struct {
 	RightBinary               []byte
 	LogMessage                string
 	UniqueID                  uint32
+	Platform                  uint8
 }
 
 // ExtractFromStream extracts a ServiceItemAcquireServiceItemByAccountParam structure from a stream
@@ -66,6 +67,13 @@ func (serviceItemAcquireServiceItemByAccountParam *ServiceItemAcquireServiceItem
 		return fmt.Errorf("Failed to extract ServiceItemAcquireServiceItemByAccountParam.UniqueID from stream. %s", err.Error())
 	}
 
+	if serviceItemAcquireServiceItemByAccountParam.StructureVersion() >= 1 {
+		serviceItemAcquireServiceItemByAccountParam.Platform, err = stream.ReadUInt8()
+		if err != nil {
+			return fmt.Errorf("Failed to extract ServiceItemAcquireServiceItemByAccountParam.Platform from stream. %s", err.Error())
+		}
+	}
+
 	return nil
 }
 
@@ -79,6 +87,10 @@ func (serviceItemAcquireServiceItemByAccountParam *ServiceItemAcquireServiceItem
 	stream.WriteQBuffer(serviceItemAcquireServiceItemByAccountParam.RightBinary)
 	stream.WriteString(serviceItemAcquireServiceItemByAccountParam.LogMessage)
 	stream.WriteUInt32LE(serviceItemAcquireServiceItemByAccountParam.UniqueID)
+
+	if serviceItemAcquireServiceItemByAccountParam.StructureVersion() >= 1 {
+		stream.WriteUInt8(serviceItemAcquireServiceItemByAccountParam.Platform)
+	}
 
 	return stream.Bytes()
 }
@@ -95,6 +107,7 @@ func (serviceItemAcquireServiceItemByAccountParam *ServiceItemAcquireServiceItem
 	copied.RightBinary = serviceItemAcquireServiceItemByAccountParam.RightBinary
 	copied.LogMessage = serviceItemAcquireServiceItemByAccountParam.LogMessage
 	copied.UniqueID = serviceItemAcquireServiceItemByAccountParam.UniqueID
+	copied.Platform = serviceItemAcquireServiceItemByAccountParam.Platform
 
 	return copied
 }
@@ -135,6 +148,10 @@ func (serviceItemAcquireServiceItemByAccountParam *ServiceItemAcquireServiceItem
 		return false
 	}
 
+	if serviceItemAcquireServiceItemByAccountParam.Platform != other.Platform {
+		return false
+	}
+
 	return true
 }
 
@@ -160,6 +177,11 @@ func (serviceItemAcquireServiceItemByAccountParam *ServiceItemAcquireServiceItem
 	b.WriteString(fmt.Sprintf("%sRightBinary: %x,\n", indentationValues, serviceItemAcquireServiceItemByAccountParam.RightBinary))
 	b.WriteString(fmt.Sprintf("%sLogMessage: %q,\n", indentationValues, serviceItemAcquireServiceItemByAccountParam.LogMessage))
 	b.WriteString(fmt.Sprintf("%sUniqueID: %d,\n", indentationValues, serviceItemAcquireServiceItemByAccountParam.UniqueID))
+
+	if serviceItemAcquireServiceItemByAccountParam.StructureVersion() >= 1 {
+		b.WriteString(fmt.Sprintf("%sPlatform: %d,\n", indentationValues, serviceItemAcquireServiceItemByAccountParam.Platform))
+	}
+
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()

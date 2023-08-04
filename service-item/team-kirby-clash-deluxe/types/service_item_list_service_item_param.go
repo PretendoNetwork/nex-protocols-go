@@ -16,6 +16,7 @@ type ServiceItemListServiceItemParam struct {
 	Size               uint32
 	IsBalanceAvailable bool
 	UniqueID           uint32
+	Platform           uint8 // * Revision 1
 }
 
 // ExtractFromStream extracts a ServiceItemListServiceItemParam structure from a stream
@@ -47,6 +48,13 @@ func (serviceItemListServiceItemParam *ServiceItemListServiceItemParam) ExtractF
 		return fmt.Errorf("Failed to extract ServiceItemListServiceItemParam.UniqueID from stream. %s", err.Error())
 	}
 
+	if serviceItemListServiceItemParam.StructureVersion() >= 1 {
+		serviceItemListServiceItemParam.Platform, err = stream.ReadUInt8()
+		if err != nil {
+			return fmt.Errorf("Failed to extract ServiceItemListServiceItemParam.Platform from stream. %s", err.Error())
+		}
+	}
+
 	return nil
 }
 
@@ -57,6 +65,10 @@ func (serviceItemListServiceItemParam *ServiceItemListServiceItemParam) Bytes(st
 	stream.WriteUInt32LE(serviceItemListServiceItemParam.Size)
 	stream.WriteBool(serviceItemListServiceItemParam.IsBalanceAvailable)
 	stream.WriteUInt32LE(serviceItemListServiceItemParam.UniqueID)
+
+	if serviceItemListServiceItemParam.StructureVersion() >= 1 {
+		stream.WriteUInt8(serviceItemListServiceItemParam.Platform)
+	}
 
 	return stream.Bytes()
 }
@@ -70,6 +82,7 @@ func (serviceItemListServiceItemParam *ServiceItemListServiceItemParam) Copy() n
 	copied.Size = serviceItemListServiceItemParam.Size
 	copied.IsBalanceAvailable = serviceItemListServiceItemParam.IsBalanceAvailable
 	copied.UniqueID = serviceItemListServiceItemParam.UniqueID
+	copied.Platform = serviceItemListServiceItemParam.Platform
 
 	return copied
 }
@@ -98,6 +111,10 @@ func (serviceItemListServiceItemParam *ServiceItemListServiceItemParam) Equals(s
 		return false
 	}
 
+	if serviceItemListServiceItemParam.Platform != other.Platform {
+		return false
+	}
+
 	return true
 }
 
@@ -120,6 +137,11 @@ func (serviceItemListServiceItemParam *ServiceItemListServiceItemParam) FormatTo
 	b.WriteString(fmt.Sprintf("%sSize: %d,\n", indentationValues, serviceItemListServiceItemParam.Size))
 	b.WriteString(fmt.Sprintf("%sIsBalanceAvailable: %t,\n", indentationValues, serviceItemListServiceItemParam.IsBalanceAvailable))
 	b.WriteString(fmt.Sprintf("%sUniqueID: %d,\n", indentationValues, serviceItemListServiceItemParam.UniqueID))
+
+	if serviceItemListServiceItemParam.StructureVersion() >= 1 {
+		b.WriteString(fmt.Sprintf("%sPlatform: %d,\n", indentationValues, serviceItemListServiceItemParam.Platform))
+	}
+
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()

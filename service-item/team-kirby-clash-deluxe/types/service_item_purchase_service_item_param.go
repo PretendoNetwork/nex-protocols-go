@@ -19,6 +19,7 @@ type ServiceItemPurchaseServiceItemParam struct {
 	EcServiceToken string
 	Language       string
 	UniqueID       uint32
+	Platform       uint8 // * Revision 1
 }
 
 // ExtractFromStream extracts a ServiceItemPurchaseServiceItemParam structure from a stream
@@ -65,6 +66,13 @@ func (serviceItemPurchaseServiceItemParam *ServiceItemPurchaseServiceItemParam) 
 		return fmt.Errorf("Failed to extract ServiceItemPurchaseServiceItemParam.UniqueID from stream. %s", err.Error())
 	}
 
+	if serviceItemPurchaseServiceItemParam.StructureVersion() >= 1 {
+		serviceItemPurchaseServiceItemParam.Platform, err = stream.ReadUInt8()
+		if err != nil {
+			return fmt.Errorf("Failed to extract ServiceItemPurchaseServiceItemParam.Platform from stream. %s", err.Error())
+		}
+	}
+
 	return nil
 }
 
@@ -78,6 +86,10 @@ func (serviceItemPurchaseServiceItemParam *ServiceItemPurchaseServiceItemParam) 
 	stream.WriteString(serviceItemPurchaseServiceItemParam.EcServiceToken)
 	stream.WriteString(serviceItemPurchaseServiceItemParam.Language)
 	stream.WriteUInt32LE(serviceItemPurchaseServiceItemParam.UniqueID)
+
+	if serviceItemPurchaseServiceItemParam.StructureVersion() >= 1 {
+		stream.WriteUInt8(serviceItemPurchaseServiceItemParam.Platform)
+	}
 
 	return stream.Bytes()
 }
@@ -94,6 +106,7 @@ func (serviceItemPurchaseServiceItemParam *ServiceItemPurchaseServiceItemParam) 
 	copied.EcServiceToken = serviceItemPurchaseServiceItemParam.EcServiceToken
 	copied.Language = serviceItemPurchaseServiceItemParam.Language
 	copied.UniqueID = serviceItemPurchaseServiceItemParam.UniqueID
+	copied.Platform = serviceItemPurchaseServiceItemParam.Platform
 
 	return copied
 }
@@ -134,6 +147,10 @@ func (serviceItemPurchaseServiceItemParam *ServiceItemPurchaseServiceItemParam) 
 		return false
 	}
 
+	if serviceItemPurchaseServiceItemParam.Platform != other.Platform {
+		return false
+	}
+
 	return true
 }
 
@@ -159,6 +176,11 @@ func (serviceItemPurchaseServiceItemParam *ServiceItemPurchaseServiceItemParam) 
 	b.WriteString(fmt.Sprintf("%sEcServiceToken: %q,\n", indentationValues, serviceItemPurchaseServiceItemParam.EcServiceToken))
 	b.WriteString(fmt.Sprintf("%sLanguage: %q,\n", indentationValues, serviceItemPurchaseServiceItemParam.Language))
 	b.WriteString(fmt.Sprintf("%sUniqueID: %d,\n", indentationValues, serviceItemPurchaseServiceItemParam.UniqueID))
+
+	if serviceItemPurchaseServiceItemParam.StructureVersion() >= 1 {
+		b.WriteString(fmt.Sprintf("%sPlatform: %d,\n", indentationValues, serviceItemPurchaseServiceItemParam.Platform))
+	}
+
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()

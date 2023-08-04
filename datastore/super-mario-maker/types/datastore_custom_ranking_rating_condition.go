@@ -14,6 +14,8 @@ type DataStoreCustomRankingRatingCondition struct {
 	Slot     int8
 	MinValue int32
 	MaxValue int32
+	MinCount int32 // * Revision 1
+	MaxCount int32 // * Revision 1
 }
 
 // ExtractFromStream extracts a DataStoreCustomRankingRatingCondition structure from a stream
@@ -35,6 +37,18 @@ func (dataStoreCustomRankingRatingCondition *DataStoreCustomRankingRatingConditi
 		return fmt.Errorf("Failed to extract DataStoreCustomRankingRatingCondition.MaxValue from stream. %s", err.Error())
 	}
 
+	if dataStoreCustomRankingRatingCondition.StructureVersion() >= 1 {
+		dataStoreCustomRankingRatingCondition.MaxCount, err = stream.ReadInt32LE()
+		if err != nil {
+			return fmt.Errorf("Failed to extract DataStoreCustomRankingRatingCondition.MaxCount from stream. %s", err.Error())
+		}
+
+		dataStoreCustomRankingRatingCondition.MaxCount, err = stream.ReadInt32LE()
+		if err != nil {
+			return fmt.Errorf("Failed to extract DataStoreCustomRankingRatingCondition.MaxCount from stream. %s", err.Error())
+		}
+	}
+
 	return nil
 }
 
@@ -43,6 +57,11 @@ func (dataStoreCustomRankingRatingCondition *DataStoreCustomRankingRatingConditi
 	stream.WriteInt8(dataStoreCustomRankingRatingCondition.Slot)
 	stream.WriteInt32LE(dataStoreCustomRankingRatingCondition.MinValue)
 	stream.WriteInt32LE(dataStoreCustomRankingRatingCondition.MaxValue)
+
+	if dataStoreCustomRankingRatingCondition.StructureVersion() >= 1 {
+		stream.WriteInt32LE(dataStoreCustomRankingRatingCondition.MinCount)
+		stream.WriteInt32LE(dataStoreCustomRankingRatingCondition.MaxCount)
+	}
 
 	return stream.Bytes()
 }
@@ -54,6 +73,8 @@ func (dataStoreCustomRankingRatingCondition *DataStoreCustomRankingRatingConditi
 	copied.Slot = dataStoreCustomRankingRatingCondition.Slot
 	copied.MinValue = dataStoreCustomRankingRatingCondition.MinValue
 	copied.MaxValue = dataStoreCustomRankingRatingCondition.MaxValue
+	copied.MinCount = dataStoreCustomRankingRatingCondition.MinCount
+	copied.MaxCount = dataStoreCustomRankingRatingCondition.MaxCount
 
 	return copied
 }
@@ -71,6 +92,14 @@ func (dataStoreCustomRankingRatingCondition *DataStoreCustomRankingRatingConditi
 	}
 
 	if dataStoreCustomRankingRatingCondition.MaxValue != other.MaxValue {
+		return false
+	}
+
+	if dataStoreCustomRankingRatingCondition.MinCount != other.MinCount {
+		return false
+	}
+
+	if dataStoreCustomRankingRatingCondition.MaxCount != other.MaxCount {
 		return false
 	}
 
@@ -94,6 +123,12 @@ func (dataStoreCustomRankingRatingCondition *DataStoreCustomRankingRatingConditi
 	b.WriteString(fmt.Sprintf("%sSlot: %d,\n", indentationValues, dataStoreCustomRankingRatingCondition.Slot))
 	b.WriteString(fmt.Sprintf("%sMinValue: %d,\n", indentationValues, dataStoreCustomRankingRatingCondition.MinValue))
 	b.WriteString(fmt.Sprintf("%sMaxValue: %d,\n", indentationValues, dataStoreCustomRankingRatingCondition.MaxValue))
+
+	if dataStoreCustomRankingRatingCondition.StructureVersion() >= 1 {
+		b.WriteString(fmt.Sprintf("%sMinCount: %d,\n", indentationValues, dataStoreCustomRankingRatingCondition.MinCount))
+		b.WriteString(fmt.Sprintf("%sMaxCount: %d,\n", indentationValues, dataStoreCustomRankingRatingCondition.MaxCount))
+	}
+
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()

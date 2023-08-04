@@ -17,6 +17,7 @@ type ServiceItemPostRightBinaryByAccountParam struct {
 	RightBinary []byte
 	LogMessage  string
 	UniqueID    uint32
+	Platform    uint8
 }
 
 // ExtractFromStream extracts a ServiceItemPostRightBinaryByAccountParam structure from a stream
@@ -48,6 +49,13 @@ func (serviceItemPostRightBinaryByAccountParam *ServiceItemPostRightBinaryByAcco
 		return fmt.Errorf("Failed to extract ServiceItemPostRightBinaryByAccountParam.UniqueID from stream. %s", err.Error())
 	}
 
+	if serviceItemPostRightBinaryByAccountParam.StructureVersion() >= 1 {
+		serviceItemPostRightBinaryByAccountParam.Platform, err = stream.ReadUInt8()
+		if err != nil {
+			return fmt.Errorf("Failed to extract ServiceItemPostRightBinaryByAccountParam.Platform from stream. %s", err.Error())
+		}
+	}
+
 	return nil
 }
 
@@ -58,6 +66,10 @@ func (serviceItemPostRightBinaryByAccountParam *ServiceItemPostRightBinaryByAcco
 	stream.WriteQBuffer(serviceItemPostRightBinaryByAccountParam.RightBinary)
 	stream.WriteString(serviceItemPostRightBinaryByAccountParam.LogMessage)
 	stream.WriteUInt32LE(serviceItemPostRightBinaryByAccountParam.UniqueID)
+
+	if serviceItemPostRightBinaryByAccountParam.StructureVersion() >= 1 {
+		stream.WriteUInt8(serviceItemPostRightBinaryByAccountParam.Platform)
+	}
 
 	return stream.Bytes()
 }
@@ -71,6 +83,7 @@ func (serviceItemPostRightBinaryByAccountParam *ServiceItemPostRightBinaryByAcco
 	copied.RightBinary = serviceItemPostRightBinaryByAccountParam.RightBinary
 	copied.LogMessage = serviceItemPostRightBinaryByAccountParam.LogMessage
 	copied.UniqueID = serviceItemPostRightBinaryByAccountParam.UniqueID
+	copied.Platform = serviceItemPostRightBinaryByAccountParam.Platform
 
 	return copied
 }
@@ -99,6 +112,10 @@ func (serviceItemPostRightBinaryByAccountParam *ServiceItemPostRightBinaryByAcco
 		return false
 	}
 
+	if serviceItemPostRightBinaryByAccountParam.Platform != other.Platform {
+		return false
+	}
+
 	return true
 }
 
@@ -121,6 +138,11 @@ func (serviceItemPostRightBinaryByAccountParam *ServiceItemPostRightBinaryByAcco
 	b.WriteString(fmt.Sprintf("%sRightBinary: %x,\n", indentationValues, serviceItemPostRightBinaryByAccountParam.RightBinary))
 	b.WriteString(fmt.Sprintf("%sLogMessage: %q,\n", indentationValues, serviceItemPostRightBinaryByAccountParam.LogMessage))
 	b.WriteString(fmt.Sprintf("%sUniqueID: %d,\n", indentationValues, serviceItemPostRightBinaryByAccountParam.UniqueID))
+
+	if serviceItemPostRightBinaryByAccountParam.StructureVersion() >= 1 {
+		b.WriteString(fmt.Sprintf("%sPlatform: %d,\n", indentationValues, serviceItemPostRightBinaryByAccountParam.Platform))
+	}
+
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()

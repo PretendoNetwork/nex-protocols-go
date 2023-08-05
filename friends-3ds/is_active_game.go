@@ -10,14 +10,14 @@ import (
 )
 
 // IsActiveGame sets the IsActiveGame handler function
-func (protocol *Protocol) IsActiveGame(handler func(err error, client *nex.Client, callID uint32, pids []uint32, gameKey *friends_3ds_types.GameKey)) {
+func (protocol *Protocol) IsActiveGame(handler func(err error, client *nex.Client, callID uint32, pids []uint32, gameKey *friends_3ds_types.GameKey) uint32) {
 	protocol.isActiveGameHandler = handler
 }
 
 func (protocol *Protocol) handleIsActiveGame(packet nex.PacketInterface) {
 	if protocol.isActiveGameHandler == nil {
 		globals.Logger.Warning("Friends3DS::IsActiveGame not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

@@ -9,14 +9,14 @@ import (
 )
 
 // UpdateGatheringOwnership sets the UpdateGatheringOwnership handler function
-func (protocol *Protocol) UpdateGatheringOwnership(handler func(err error, client *nex.Client, callID uint32, gid uint32, participantsOnly bool)) {
+func (protocol *Protocol) UpdateGatheringOwnership(handler func(err error, client *nex.Client, callID uint32, gid uint32, participantsOnly bool) uint32) {
 	protocol.updateGatheringOwnershipHandler = handler
 }
 
 func (protocol *Protocol) handleUpdateGatheringOwnership(packet nex.PacketInterface) {
 	if protocol.updateGatheringOwnershipHandler == nil {
 		globals.Logger.Warning("MatchMaking::UpdateGatheringOwnership not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

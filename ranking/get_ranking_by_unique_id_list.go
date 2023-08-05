@@ -10,14 +10,14 @@ import (
 )
 
 // GetRankingByUniqueIDList sets the GetRankingByUniqueIDList handler function
-func (protocol *Protocol) GetRankingByUniqueIDList(handler func(err error, client *nex.Client, callID uint32, nexUniqueIDList []uint64, rankingMode uint8, category uint32, orderParam *ranking_types.RankingOrderParam, uniqueID uint64)) {
+func (protocol *Protocol) GetRankingByUniqueIDList(handler func(err error, client *nex.Client, callID uint32, nexUniqueIDList []uint64, rankingMode uint8, category uint32, orderParam *ranking_types.RankingOrderParam, uniqueID uint64) uint32) {
 	protocol.getRankingByUniqueIDListHandler = handler
 }
 
 func (protocol *Protocol) handleGetRankingByUniqueIDList(packet nex.PacketInterface) {
 	if protocol.getRankingByUniqueIDListHandler == nil {
 		globals.Logger.Warning("Ranking::GetRankingByUniqueIDList not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

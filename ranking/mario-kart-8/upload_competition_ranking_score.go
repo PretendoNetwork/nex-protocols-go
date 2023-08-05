@@ -5,19 +5,19 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
-	ranking_mario_kart8_types "github.com/PretendoNetwork/nex-protocols-go/ranking/mario-kart-8/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
+	ranking_mario_kart8_types "github.com/PretendoNetwork/nex-protocols-go/ranking/mario-kart-8/types"
 )
 
 // UploadCompetitionRankingScore sets the UploadCompetitionRankingScore handler function
-func (protocol *Protocol) UploadCompetitionRankingScore(handler func(err error, client *nex.Client, callID uint32, param *ranking_mario_kart8_types.CompetitionRankingUploadScoreParam)) {
+func (protocol *Protocol) UploadCompetitionRankingScore(handler func(err error, client *nex.Client, callID uint32, param *ranking_mario_kart8_types.CompetitionRankingUploadScoreParam) uint32) {
 	protocol.uploadCompetitionRankingScoreHandler = handler
 }
 
 func (protocol *Protocol) handleUploadCompetitionRankingScore(packet nex.PacketInterface) {
 	if protocol.uploadCompetitionRankingScoreHandler == nil {
 		globals.Logger.Warning("RankingMarioKart8::UploadCompetitionRankingScore not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

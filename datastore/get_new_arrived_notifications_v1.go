@@ -10,14 +10,14 @@ import (
 )
 
 // GetNewArrivedNotificationsV1 sets the GetNewArrivedNotificationsV1 handler function
-func (protocol *Protocol) GetNewArrivedNotificationsV1(handler func(err error, client *nex.Client, callID uint32, param *datastore_types.DataStoreGetNewArrivedNotificationsParam)) {
+func (protocol *Protocol) GetNewArrivedNotificationsV1(handler func(err error, client *nex.Client, callID uint32, param *datastore_types.DataStoreGetNewArrivedNotificationsParam) uint32) {
 	protocol.getNewArrivedNotificationsV1Handler = handler
 }
 
 func (protocol *Protocol) handleGetNewArrivedNotificationsV1(packet nex.PacketInterface) {
 	if protocol.getNewArrivedNotificationsV1Handler == nil {
 		globals.Logger.Warning("DataStore::GetNewArrivedNotificationsV1 not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

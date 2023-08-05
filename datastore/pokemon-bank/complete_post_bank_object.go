@@ -10,14 +10,14 @@ import (
 )
 
 // CompletePostBankObject sets the CompletePostBankObject handler function
-func (protocol *Protocol) CompletePostBankObject(handler func(err error, client *nex.Client, callID uint32, param *datastore_types.DataStoreCompletePostParam)) {
+func (protocol *Protocol) CompletePostBankObject(handler func(err error, client *nex.Client, callID uint32, param *datastore_types.DataStoreCompletePostParam) uint32) {
 	protocol.completePostBankObjectHandler = handler
 }
 
 func (protocol *Protocol) handleCompletePostBankObject(packet nex.PacketInterface) {
 	if protocol.completePostBankObjectHandler == nil {
 		globals.Logger.Warning("DataStorePokemonBank::CompletePostBankObject not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

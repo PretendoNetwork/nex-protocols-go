@@ -9,14 +9,14 @@ import (
 )
 
 // UpdateSessionHostV1 sets the UpdateSessionHostV1 handler function
-func (protocol *Protocol) UpdateSessionHostV1(handler func(err error, client *nex.Client, callID uint32, gid uint32)) {
+func (protocol *Protocol) UpdateSessionHostV1(handler func(err error, client *nex.Client, callID uint32, gid uint32) uint32) {
 	protocol.updateSessionHostV1Handler = handler
 }
 
 func (protocol *Protocol) handleUpdateSessionHostV1(packet nex.PacketInterface) {
 	if protocol.updateSessionHostV1Handler == nil {
 		fmt.Println("[Warning] MatchMaking::UpdateSessionHostV1 not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

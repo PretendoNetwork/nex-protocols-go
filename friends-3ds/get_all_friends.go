@@ -7,14 +7,14 @@ import (
 )
 
 // GetAllFriends sets the GetAllFriends handler function
-func (protocol *Protocol) GetAllFriends(handler func(err error, client *nex.Client, callID uint32)) {
+func (protocol *Protocol) GetAllFriends(handler func(err error, client *nex.Client, callID uint32) uint32) {
 	protocol.getAllFriendsHandler = handler
 }
 
 func (protocol *Protocol) handleGetAllFriends(packet nex.PacketInterface) {
 	if protocol.getAllFriendsHandler == nil {
 		globals.Logger.Warning("Friends3DS::GetAllFriends not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

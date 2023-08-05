@@ -9,14 +9,14 @@ import (
 )
 
 // MigrateGatheringOwnershipV1 sets the MigrateGatheringOwnershipV1 handler function
-func (protocol *Protocol) MigrateGatheringOwnershipV1(handler func(err error, client *nex.Client, callID uint32, gid uint32, lstPotentialNewOwnersID []uint32)) {
+func (protocol *Protocol) MigrateGatheringOwnershipV1(handler func(err error, client *nex.Client, callID uint32, gid uint32, lstPotentialNewOwnersID []uint32) uint32) {
 	protocol.migrateGatheringOwnershipV1Handler = handler
 }
 
 func (protocol *Protocol) handleMigrateGatheringOwnershipV1(packet nex.PacketInterface) {
 	if protocol.migrateGatheringOwnershipV1Handler == nil {
 		globals.Logger.Warning("MatchMaking::MigrateGatheringOwnershipV1 not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

@@ -10,14 +10,14 @@ import (
 )
 
 // PurchaseServiceItemRequest sets the PurchaseServiceItemRequest handler function
-func (protocol *Protocol) PurchaseServiceItemRequest(handler func(err error, client *nex.Client, callID uint32, purchaseServiceItemParam *service_item_team_kirby_clash_deluxe_types.ServiceItemPurchaseServiceItemParam)) {
+func (protocol *Protocol) PurchaseServiceItemRequest(handler func(err error, client *nex.Client, callID uint32, purchaseServiceItemParam *service_item_team_kirby_clash_deluxe_types.ServiceItemPurchaseServiceItemParam) uint32) {
 	protocol.purchaseServiceItemRequestHandler = handler
 }
 
 func (protocol *Protocol) handlePurchaseServiceItemRequest(packet nex.PacketInterface) {
 	if protocol.purchaseServiceItemRequestHandler == nil {
 		globals.Logger.Warning("ServiceItemTeamKirbyClashDeluxe::PurchaseServiceItemRequest not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

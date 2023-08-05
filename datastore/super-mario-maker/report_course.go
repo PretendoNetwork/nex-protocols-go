@@ -10,14 +10,14 @@ import (
 )
 
 // ReportCourse sets the ReportCourse handler function
-func (protocol *Protocol) ReportCourse(handler func(err error, client *nex.Client, callID uint32, param *datastore_super_mario_maker_types.DataStoreReportCourseParam)) {
+func (protocol *Protocol) ReportCourse(handler func(err error, client *nex.Client, callID uint32, param *datastore_super_mario_maker_types.DataStoreReportCourseParam) uint32) {
 	protocol.reportCourseHandler = handler
 }
 
 func (protocol *Protocol) handleReportCourse(packet nex.PacketInterface) {
 	if protocol.reportCourseHandler == nil {
 		globals.Logger.Warning("DataStoreSuperMarioMaker::ReportCourse not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

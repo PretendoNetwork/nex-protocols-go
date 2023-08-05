@@ -47,16 +47,16 @@ const (
 // Protocol stores all the RMC method handlers for the Ranking2 protocol and listens for requests
 type Protocol struct {
 	Server                         *nex.Server
-	putScoreHandler                func(err error, client *nex.Client, callID uint32, scoreDataList []*ranking2_types.Ranking2ScoreData, nexUniqueID uint64)
-	getCommonDataHandler           func(err error, client *nex.Client, callID uint32, optionFlags uint32, principalID uint32, nexUniqueID uint64)
-	putCommonDataHandler           func(err error, client *nex.Client, callID uint32, commonData *ranking2_types.Ranking2CommonData, nexUniqueID uint64)
-	deleteCommonDataHandler        func(err error, client *nex.Client, callID uint32, nexUniqueID uint64)
-	getRankingHandler              func(err error, client *nex.Client, callID uint32, getParam *ranking2_types.Ranking2GetParam)
-	getRankingByPrincipalIDHandler func(err error, client *nex.Client, callID uint32, getParam *ranking2_types.Ranking2GetParam, principalIDList []uint32)
-	getCategorySettingHandler      func(err error, client *nex.Client, callID uint32, category uint32)
-	getRankingChartHandler         func(err error, client *nex.Client, callID uint32, info *ranking2_types.Ranking2ChartInfoInput)
-	getRankingChartsHandler        func(err error, client *nex.Client, callID uint32, infoArray []*ranking2_types.Ranking2ChartInfoInput)
-	getEstimateScoreRankHandler    func(err error, client *nex.Client, callID uint32, input *ranking2_types.Ranking2EstimateScoreRankInput)
+	putScoreHandler                func(err error, client *nex.Client, callID uint32, scoreDataList []*ranking2_types.Ranking2ScoreData, nexUniqueID uint64) uint32
+	getCommonDataHandler           func(err error, client *nex.Client, callID uint32, optionFlags uint32, principalID uint32, nexUniqueID uint64) uint32
+	putCommonDataHandler           func(err error, client *nex.Client, callID uint32, commonData *ranking2_types.Ranking2CommonData, nexUniqueID uint64) uint32
+	deleteCommonDataHandler        func(err error, client *nex.Client, callID uint32, nexUniqueID uint64) uint32
+	getRankingHandler              func(err error, client *nex.Client, callID uint32, getParam *ranking2_types.Ranking2GetParam) uint32
+	getRankingByPrincipalIDHandler func(err error, client *nex.Client, callID uint32, getParam *ranking2_types.Ranking2GetParam, principalIDList []uint32) uint32
+	getCategorySettingHandler      func(err error, client *nex.Client, callID uint32, category uint32) uint32
+	getRankingChartHandler         func(err error, client *nex.Client, callID uint32, info *ranking2_types.Ranking2ChartInfoInput) uint32
+	getRankingChartsHandler        func(err error, client *nex.Client, callID uint32, infoArray []*ranking2_types.Ranking2ChartInfoInput) uint32
+	getEstimateScoreRankHandler    func(err error, client *nex.Client, callID uint32, input *ranking2_types.Ranking2EstimateScoreRankInput) uint32
 }
 
 // Setup initializes the protocol
@@ -87,7 +87,7 @@ func (protocol *Protocol) Setup() {
 			case MethodGetEstimateScoreRank:
 				go protocol.handleGetEstimateScoreRank(packet)
 			default:
-				go globals.RespondNotImplemented(packet, ProtocolID)
+				go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 				fmt.Printf("Unsupported Ranking2 method ID: %#v\n", request.MethodID())
 			}
 		}

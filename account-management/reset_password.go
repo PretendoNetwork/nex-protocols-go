@@ -7,14 +7,14 @@ import (
 )
 
 // ResetPassword sets the ResetPassword handler function
-func (protocol *Protocol) ResetPassword(handler func(err error, client *nex.Client, callID uint32)) {
+func (protocol *Protocol) ResetPassword(handler func(err error, client *nex.Client, callID uint32) uint32) {
 	protocol.resetPasswordHandler = handler
 }
 
 func (protocol *Protocol) handleResetPassword(packet nex.PacketInterface) {
 	if protocol.resetPasswordHandler == nil {
 		globals.Logger.Warning("AccountManagement::ResetPassword not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

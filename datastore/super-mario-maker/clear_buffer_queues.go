@@ -10,14 +10,14 @@ import (
 )
 
 // ClearBufferQueues sets the ClearBufferQueues handler function
-func (protocol *Protocol) ClearBufferQueues(handler func(err error, client *nex.Client, callID uint32, params []*datastore_super_mario_maker_types.BufferQueueParam)) {
+func (protocol *Protocol) ClearBufferQueues(handler func(err error, client *nex.Client, callID uint32, params []*datastore_super_mario_maker_types.BufferQueueParam) uint32) {
 	protocol.clearBufferQueuesHandler = handler
 }
 
 func (protocol *Protocol) handleClearBufferQueues(packet nex.PacketInterface) {
 	if protocol.clearBufferQueuesHandler == nil {
 		globals.Logger.Warning("DataStoreSuperMarioMaker::ClearBufferQueues not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

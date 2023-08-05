@@ -10,14 +10,14 @@ import (
 )
 
 // UpdateProfile sets the UpdateProfile handler function
-func (protocol *Protocol) UpdateProfile(handler func(err error, client *nex.Client, callID uint32, profileData *friends_3ds_types.MyProfile)) {
+func (protocol *Protocol) UpdateProfile(handler func(err error, client *nex.Client, callID uint32, profileData *friends_3ds_types.MyProfile) uint32) {
 	protocol.updateProfileHandler = handler
 }
 
 func (protocol *Protocol) handleUpdateProfile(packet nex.PacketInterface) {
 	if protocol.updateProfileHandler == nil {
 		globals.Logger.Warning("Friends3DS::UpdateProfile not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

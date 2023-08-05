@@ -9,14 +9,14 @@ import (
 )
 
 // GetItem sets the GetItem handler function
-func (protocol *Protocol) GetItem(handler func(err error, client *nex.Client, callID uint32, uiGroup uint32, strTag string)) {
+func (protocol *Protocol) GetItem(handler func(err error, client *nex.Client, callID uint32, uiGroup uint32, strTag string) uint32) {
 	protocol.getItemHandler = handler
 }
 
 func (protocol *Protocol) handleGetItem(packet nex.PacketInterface) {
 	if protocol.getItemHandler == nil {
 		globals.Logger.Warning("PersistentStore::GetItem not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

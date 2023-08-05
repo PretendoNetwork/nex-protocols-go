@@ -10,14 +10,14 @@ import (
 )
 
 // CompletePostObject sets the CompletePostObject handler function
-func (protocol *Protocol) CompletePostObject(handler func(err error, client *nex.Client, callID uint32, param *datastore_types.DataStoreCompletePostParam)) {
+func (protocol *Protocol) CompletePostObject(handler func(err error, client *nex.Client, callID uint32, param *datastore_types.DataStoreCompletePostParam) uint32) {
 	protocol.completePostObjectHandler = handler
 }
 
 func (protocol *Protocol) handleCompletePostObject(packet nex.PacketInterface) {
 	if protocol.completePostObjectHandler == nil {
 		globals.Logger.Warning("DataStore::CompletePostObject not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

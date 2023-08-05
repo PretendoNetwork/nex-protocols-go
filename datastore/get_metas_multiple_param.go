@@ -10,14 +10,14 @@ import (
 )
 
 // GetMetasMultipleParam sets the GetMetasMultipleParam handler function
-func (protocol *Protocol) GetMetasMultipleParam(handler func(err error, client *nex.Client, callID uint32, params []*datastore_types.DataStoreGetMetaParam)) {
+func (protocol *Protocol) GetMetasMultipleParam(handler func(err error, client *nex.Client, callID uint32, params []*datastore_types.DataStoreGetMetaParam) uint32) {
 	protocol.getMetasMultipleParamHandler = handler
 }
 
 func (protocol *Protocol) handleGetMetasMultipleParam(packet nex.PacketInterface) {
 	if protocol.getMetasMultipleParamHandler == nil {
 		globals.Logger.Warning("DataStore::GetMetasMultipleParam not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

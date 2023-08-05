@@ -9,14 +9,14 @@ import (
 )
 
 // Participate sets the Participate handler function
-func (protocol *Protocol) Participate(handler func(err error, client *nex.Client, callID uint32, idGathering uint32, strMessage string)) {
+func (protocol *Protocol) Participate(handler func(err error, client *nex.Client, callID uint32, idGathering uint32, strMessage string) uint32) {
 	protocol.participateHandler = handler
 }
 
 func (protocol *Protocol) handleParticipate(packet nex.PacketInterface) {
 	if protocol.participateHandler == nil {
 		globals.Logger.Warning("MatchMaking::Participate not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

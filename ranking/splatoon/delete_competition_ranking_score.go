@@ -7,14 +7,14 @@ import (
 )
 
 // DeleteCompetitionRankingScore sets the DeleteCompetitionRankingScore handler function
-func (protocol *Protocol) DeleteCompetitionRankingScore(handler func(err error, client *nex.Client, callID uint32, packetPayload []byte)) {
+func (protocol *Protocol) DeleteCompetitionRankingScore(handler func(err error, client *nex.Client, callID uint32, packetPayload []byte) uint32) {
 	protocol.deleteCompetitionRankingScoreHandler = handler
 }
 
 func (protocol *Protocol) handleDeleteCompetitionRankingScore(packet nex.PacketInterface) {
 	if protocol.deleteCompetitionRankingScoreHandler == nil {
 		globals.Logger.Warning("RankingSplatoon::DeleteCompetitionRankingScore not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

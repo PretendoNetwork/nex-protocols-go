@@ -9,14 +9,14 @@ import (
 )
 
 // Register sets the Register handler function
-func (protocol *Protocol) Register(handler func(err error, client *nex.Client, callID uint32, vecMyURLs []*nex.StationURL)) {
+func (protocol *Protocol) Register(handler func(err error, client *nex.Client, callID uint32, vecMyURLs []*nex.StationURL) uint32) {
 	protocol.registerHandler = handler
 }
 
 func (protocol *Protocol) handleRegister(packet nex.PacketInterface) {
 	if protocol.registerHandler == nil {
 		globals.Logger.Warning("SecureConnection::Register not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

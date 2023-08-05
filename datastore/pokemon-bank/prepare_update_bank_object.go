@@ -10,14 +10,14 @@ import (
 )
 
 // PrepareUpdateBankObject sets the PrepareUpdateBankObject handler function
-func (protocol *Protocol) PrepareUpdateBankObject(handler func(err error, client *nex.Client, callID uint32, transactionParam *datastore_pokemon_bank_types.BankTransactionParam)) {
+func (protocol *Protocol) PrepareUpdateBankObject(handler func(err error, client *nex.Client, callID uint32, transactionParam *datastore_pokemon_bank_types.BankTransactionParam) uint32) {
 	protocol.prepareUpdateBankObjectHandler = handler
 }
 
 func (protocol *Protocol) handlePrepareUpdateBankObject(packet nex.PacketInterface) {
 	if protocol.prepareUpdateBankObjectHandler == nil {
 		globals.Logger.Warning("DataStorePokemonBank::PrepareUpdateBankObject not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

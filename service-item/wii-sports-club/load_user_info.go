@@ -7,14 +7,14 @@ import (
 )
 
 // LoadUserInfo sets the LoadUserInfo handler function
-func (protocol *Protocol) LoadUserInfo(handler func(err error, client *nex.Client, callID uint32)) {
+func (protocol *Protocol) LoadUserInfo(handler func(err error, client *nex.Client, callID uint32) uint32) {
 	protocol.loadUserInfoHandler = handler
 }
 
 func (protocol *Protocol) handleLoadUserInfo(packet nex.PacketInterface) {
 	if protocol.loadUserInfoHandler == nil {
 		globals.Logger.Warning("ServiceItemWiiSportsClub::LoadUserInfo not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

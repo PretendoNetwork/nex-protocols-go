@@ -10,14 +10,14 @@ import (
 )
 
 // PostRightBinaryByAccount sets the PostRightBinaryByAccount handler function
-func (protocol *Protocol) PostRightBinaryByAccount(handler func(err error, client *nex.Client, callID uint32, postRightBinaryByAccountParam *service_item_team_kirby_clash_deluxe_types.ServiceItemPostRightBinaryByAccountParam)) {
+func (protocol *Protocol) PostRightBinaryByAccount(handler func(err error, client *nex.Client, callID uint32, postRightBinaryByAccountParam *service_item_team_kirby_clash_deluxe_types.ServiceItemPostRightBinaryByAccountParam) uint32) {
 	protocol.postRightBinaryByAccountHandler = handler
 }
 
 func (protocol *Protocol) handlePostRightBinaryByAccount(packet nex.PacketInterface) {
 	if protocol.postRightBinaryByAccountHandler == nil {
 		globals.Logger.Warning("ServiceItemTeamKirbyClashDeluxe::PostRightBinaryByAccount not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

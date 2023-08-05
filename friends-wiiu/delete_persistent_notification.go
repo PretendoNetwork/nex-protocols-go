@@ -10,14 +10,14 @@ import (
 )
 
 // DeletePersistentNotification sets the DeletePersistentNotification handler function
-func (protocol *Protocol) DeletePersistentNotification(handler func(err error, client *nex.Client, callID uint32, notifications []*friends_wiiu_types.PersistentNotification)) {
+func (protocol *Protocol) DeletePersistentNotification(handler func(err error, client *nex.Client, callID uint32, notifications []*friends_wiiu_types.PersistentNotification) uint32) {
 	protocol.deletePersistentNotificationHandler = handler
 }
 
 func (protocol *Protocol) handleDeletePersistentNotification(packet nex.PacketInterface) {
 	if protocol.deletePersistentNotificationHandler == nil {
 		globals.Logger.Warning("FriendsWiiU::DeletePersistentNotification not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

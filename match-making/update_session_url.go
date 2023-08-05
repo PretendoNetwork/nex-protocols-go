@@ -9,14 +9,14 @@ import (
 )
 
 // UpdateSessionURL sets the UpdateSessionURL handler function
-func (protocol *Protocol) UpdateSessionURL(handler func(err error, client *nex.Client, callID uint32, idGathering uint32, strURL string)) {
+func (protocol *Protocol) UpdateSessionURL(handler func(err error, client *nex.Client, callID uint32, idGathering uint32, strURL string) uint32) {
 	protocol.updateSessionURLHandler = handler
 }
 
 func (protocol *Protocol) handleUpdateSessionURL(packet nex.PacketInterface) {
 	if protocol.updateSessionURLHandler == nil {
 		globals.Logger.Warning("MatchMaking::UpdateSessionURL not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

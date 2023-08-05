@@ -9,14 +9,14 @@ import (
 )
 
 // GetRivToken sets the GetRivToken function
-func (protocol *Protocol) GetRivToken(handler func(err error, client *nex.Client, callID uint32, itemCode string, referenceID []byte)) {
+func (protocol *Protocol) GetRivToken(handler func(err error, client *nex.Client, callID uint32, itemCode string, referenceID []byte) uint32) {
 	protocol.getRivTokenHandler = handler
 }
 
 func (protocol *Protocol) handleGetRivToken(packet nex.PacketInterface) {
 	if protocol.getRivTokenHandler == nil {
 		globals.Logger.Warning("ShopNintendoBadgeArcade::GetRivToken not implemented")
-		go globals.RespondNotImplementedCustom(packet, CustomProtocolID)
+		go globals.RespondErrorCustom(packet, CustomProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

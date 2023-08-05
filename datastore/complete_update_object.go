@@ -10,14 +10,14 @@ import (
 )
 
 // CompleteUpdateObject sets the CompleteUpdateObject handler function
-func (protocol *Protocol) CompleteUpdateObject(handler func(err error, client *nex.Client, callID uint32, param *datastore_types.DataStoreCompleteUpdateParam)) {
+func (protocol *Protocol) CompleteUpdateObject(handler func(err error, client *nex.Client, callID uint32, param *datastore_types.DataStoreCompleteUpdateParam) uint32) {
 	protocol.completeUpdateObjectHandler = handler
 }
 
 func (protocol *Protocol) handleCompleteUpdateObject(packet nex.PacketInterface) {
 	if protocol.completeUpdateObjectHandler == nil {
 		globals.Logger.Warning("DataStore::CompleteUpdateObject not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

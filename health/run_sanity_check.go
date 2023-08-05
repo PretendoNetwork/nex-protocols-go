@@ -7,14 +7,14 @@ import (
 )
 
 // RunSanityCheck sets the RunSanityCheck handler function
-func (protocol *Protocol) RunSanityCheck(handler func(err error, client *nex.Client, callID uint32)) {
+func (protocol *Protocol) RunSanityCheck(handler func(err error, client *nex.Client, callID uint32) uint32) {
 	protocol.runSanityCheckHandler = handler
 }
 
 func (protocol *Protocol) handleRunSanityCheck(packet nex.PacketInterface) {
 	if protocol.runSanityCheckHandler == nil {
 		globals.Logger.Warning("Health::RunSanityCheck not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

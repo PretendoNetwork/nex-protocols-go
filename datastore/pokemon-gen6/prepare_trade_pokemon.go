@@ -10,14 +10,14 @@ import (
 )
 
 // PrepareTradePokemon sets the PrepareTradePokemon handler function
-func (protocol *Protocol) PrepareTradePokemon(handler func(err error, client *nex.Client, callID uint32, param *datastore_pokemon_gen6_types.GlobalTradeStationPrepareTradePokemonParam)) {
+func (protocol *Protocol) PrepareTradePokemon(handler func(err error, client *nex.Client, callID uint32, param *datastore_pokemon_gen6_types.GlobalTradeStationPrepareTradePokemonParam) uint32) {
 	protocol.prepareTradePokemonHandler = handler
 }
 
 func (protocol *Protocol) handlePrepareTradePokemon(packet nex.PacketInterface) {
 	if protocol.prepareTradePokemonHandler == nil {
 		globals.Logger.Warning("DataStorePokemonGen6::PrepareTradePokemon not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

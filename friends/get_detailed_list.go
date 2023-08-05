@@ -9,14 +9,14 @@ import (
 )
 
 // GetDetailedList sets the GetDetailedList handler function
-func (protocol *Protocol) GetDetailedList(handler func(err error, client *nex.Client, callID uint32, byRelationship uint8, bReversed bool)) {
+func (protocol *Protocol) GetDetailedList(handler func(err error, client *nex.Client, callID uint32, byRelationship uint8, bReversed bool) uint32) {
 	protocol.getDetailedListHandler = handler
 }
 
 func (protocol *Protocol) handleGetDetailedList(packet nex.PacketInterface) {
 	if protocol.getDetailedListHandler == nil {
 		globals.Logger.Warning("Friends::GetDetailedList not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

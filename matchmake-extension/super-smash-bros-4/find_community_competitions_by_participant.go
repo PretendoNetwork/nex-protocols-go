@@ -7,14 +7,14 @@ import (
 )
 
 // FindCommunityCompetitionsByParticipant sets the FindCommunityCompetitionsByParticipant handler function
-func (protocol *Protocol) FindCommunityCompetitionsByParticipant(handler func(err error, client *nex.Client, callID uint32, packetPayload []byte)) {
+func (protocol *Protocol) FindCommunityCompetitionsByParticipant(handler func(err error, client *nex.Client, callID uint32, packetPayload []byte) uint32) {
 	protocol.findCommunityCompetitionsByParticipantHandler = handler
 }
 
 func (protocol *Protocol) handleFindCommunityCompetitionsByParticipant(packet nex.PacketInterface) {
 	if protocol.findCommunityCompetitionsByParticipantHandler == nil {
 		globals.Logger.Warning("MatchmakeExtensionSuperSmashBros4::FindCommunityCompetitionsByParticipant not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

@@ -7,14 +7,14 @@ import (
 )
 
 // Unfollow sets the Unfollow handler function
-func (protocol *Protocol) Unfollow(handler func(err error, client *nex.Client, callID uint32, packetPayload []byte)) {
+func (protocol *Protocol) Unfollow(handler func(err error, client *nex.Client, callID uint32, packetPayload []byte) uint32) {
 	protocol.unfollowHandler = handler
 }
 
 func (protocol *Protocol) handleUnfollow(packet nex.PacketInterface) {
 	if protocol.unfollowHandler == nil {
 		globals.Logger.Warning("Subscriber::Unfollow not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

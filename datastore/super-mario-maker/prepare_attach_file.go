@@ -10,14 +10,14 @@ import (
 )
 
 // PrepareAttachFile sets the PrepareAttachFile handler function
-func (protocol *Protocol) PrepareAttachFile(handler func(err error, client *nex.Client, callID uint32, param *datastore_super_mario_maker_types.DataStoreAttachFileParam)) {
+func (protocol *Protocol) PrepareAttachFile(handler func(err error, client *nex.Client, callID uint32, param *datastore_super_mario_maker_types.DataStoreAttachFileParam) uint32) {
 	protocol.prepareAttachFileHandler = handler
 }
 
 func (protocol *Protocol) handlePrepareAttachFile(packet nex.PacketInterface) {
 	if protocol.prepareAttachFileHandler == nil {
 		globals.Logger.Warning("DataStoreSuperMarioMaker::PrepareAttachFile not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

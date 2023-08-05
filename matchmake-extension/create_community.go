@@ -10,14 +10,14 @@ import (
 )
 
 // CreateCommunity sets the CreateCommunity handler function
-func (protocol *Protocol) CreateCommunity(handler func(err error, client *nex.Client, callID uint32, community *match_making_types.PersistentGathering, strMessage string)) {
+func (protocol *Protocol) CreateCommunity(handler func(err error, client *nex.Client, callID uint32, community *match_making_types.PersistentGathering, strMessage string) uint32) {
 	protocol.createCommunityHandler = handler
 }
 
 func (protocol *Protocol) handleCreateCommunity(packet nex.PacketInterface) {
 	if protocol.createCommunityHandler == nil {
 		globals.Logger.Warning("MatchmakeExtension::CreateCommunity not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

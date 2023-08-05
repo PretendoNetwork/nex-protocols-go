@@ -9,14 +9,14 @@ import (
 )
 
 // UpdatePrivacySetting sets the UpdatePrivacySetting handler function
-func (protocol *Protocol) UpdatePrivacySetting(handler func(err error, client *nex.Client, callID uint32, onlineStatus bool, participationCommunity bool)) {
+func (protocol *Protocol) UpdatePrivacySetting(handler func(err error, client *nex.Client, callID uint32, onlineStatus bool, participationCommunity bool) uint32) {
 	protocol.updatePrivacySettingHandler = handler
 }
 
 func (protocol *Protocol) handleUpdatePrivacySetting(packet nex.PacketInterface) {
 	if protocol.updatePrivacySettingHandler == nil {
 		globals.Logger.Warning("MatchmakeExtension::UpdatePrivacySetting not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

@@ -9,14 +9,14 @@ import (
 )
 
 // ChangePasswordByGuest sets the ChangePasswordByGuest handler function
-func (protocol *Protocol) ChangePasswordByGuest(handler func(err error, client *nex.Client, callID uint32, strPrincipalName string, strKey string, strEmail string)) {
+func (protocol *Protocol) ChangePasswordByGuest(handler func(err error, client *nex.Client, callID uint32, strPrincipalName string, strKey string, strEmail string) uint32) {
 	protocol.changePasswordByGuestHandler = handler
 }
 
 func (protocol *Protocol) handleChangePasswordByGuest(packet nex.PacketInterface) {
 	if protocol.changePasswordByGuestHandler == nil {
 		globals.Logger.Warning("AccountManagement::ChangePasswordByGuest not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

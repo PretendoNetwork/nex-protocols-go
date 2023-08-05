@@ -10,14 +10,14 @@ import (
 )
 
 // UpdatePreference sets the UpdatePreference handler function
-func (protocol *Protocol) UpdatePreference(handler func(err error, client *nex.Client, callID uint32, preference *friends_wiiu_types.PrincipalPreference)) {
+func (protocol *Protocol) UpdatePreference(handler func(err error, client *nex.Client, callID uint32, preference *friends_wiiu_types.PrincipalPreference) uint32) {
 	protocol.updatePreferenceHandler = handler
 }
 
 func (protocol *Protocol) handleUpdatePreference(packet nex.PacketInterface) {
 	if protocol.updatePreferenceHandler == nil {
 		globals.Logger.Warning("FriendsWiiU::UpdatePreference not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

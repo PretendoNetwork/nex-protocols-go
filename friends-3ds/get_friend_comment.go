@@ -10,14 +10,14 @@ import (
 )
 
 // GetFriendComment sets the GetFriendComment handler function
-func (protocol *Protocol) GetFriendComment(handler func(err error, client *nex.Client, callID uint32, friends []*friends_3ds_types.FriendInfo)) {
+func (protocol *Protocol) GetFriendComment(handler func(err error, client *nex.Client, callID uint32, friends []*friends_3ds_types.FriendInfo) uint32) {
 	protocol.getFriendCommentHandler = handler
 }
 
 func (protocol *Protocol) handleGetFriendComment(packet nex.PacketInterface) {
 	if protocol.getFriendCommentHandler == nil {
 		globals.Logger.Warning("Friends3DS::GetFriendComment not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

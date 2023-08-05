@@ -10,14 +10,14 @@ import (
 )
 
 // PostMetaBinary sets the PostMetaBinary handler function
-func (protocol *Protocol) PostMetaBinary(handler func(err error, client *nex.Client, callID uint32, param *datastore_types.DataStorePreparePostParam)) {
+func (protocol *Protocol) PostMetaBinary(handler func(err error, client *nex.Client, callID uint32, param *datastore_types.DataStorePreparePostParam) uint32) {
 	protocol.postMetaBinaryHandler = handler
 }
 
 func (protocol *Protocol) handlePostMetaBinary(packet nex.PacketInterface) {
 	if protocol.postMetaBinaryHandler == nil {
 		globals.Logger.Warning("DataStore::PostMetaBinary not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

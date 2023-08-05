@@ -9,14 +9,14 @@ import (
 )
 
 // RequestTicket sets the RequestTicket handler function
-func (protocol *Protocol) RequestTicket(handler func(err error, client *nex.Client, callID uint32, idSource uint32, idTarget uint32)) {
+func (protocol *Protocol) RequestTicket(handler func(err error, client *nex.Client, callID uint32, idSource uint32, idTarget uint32) uint32) {
 	protocol.requestTicketHandler = handler
 }
 
 func (protocol *Protocol) handleRequestTicket(packet nex.PacketInterface) {
 	if protocol.requestTicketHandler == nil {
 		globals.Logger.Warning("TicketGranting::RequestTicket not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

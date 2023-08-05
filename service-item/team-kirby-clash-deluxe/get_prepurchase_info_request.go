@@ -10,14 +10,14 @@ import (
 )
 
 // GetPrepurchaseInfoRequest sets the GetPrepurchaseInfoRequest handler function
-func (protocol *Protocol) GetPrepurchaseInfoRequest(handler func(err error, client *nex.Client, callID uint32, getPrepurchaseInfoParam *service_item_team_kirby_clash_deluxe_types.ServiceItemGetPrepurchaseInfoParam)) {
+func (protocol *Protocol) GetPrepurchaseInfoRequest(handler func(err error, client *nex.Client, callID uint32, getPrepurchaseInfoParam *service_item_team_kirby_clash_deluxe_types.ServiceItemGetPrepurchaseInfoParam) uint32) {
 	protocol.getPrepurchaseInfoRequestHandler = handler
 }
 
 func (protocol *Protocol) handleGetPrepurchaseInfoRequest(packet nex.PacketInterface) {
 	if protocol.getPrepurchaseInfoRequestHandler == nil {
 		globals.Logger.Warning("ServiceItemTeamKirbyClashDeluxe::GetPrepurchaseInfoRequest not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

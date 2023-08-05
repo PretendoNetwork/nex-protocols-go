@@ -9,14 +9,14 @@ import (
 )
 
 // DeclineFriendship sets the DeclineFriendship handler function
-func (protocol *Protocol) DeclineFriendship(handler func(err error, client *nex.Client, callID uint32, uiPlayer uint32)) {
+func (protocol *Protocol) DeclineFriendship(handler func(err error, client *nex.Client, callID uint32, uiPlayer uint32) uint32) {
 	protocol.declineFriendshipHandler = handler
 }
 
 func (protocol *Protocol) handleDeclineFriendship(packet nex.PacketInterface) {
 	if protocol.declineFriendshipHandler == nil {
 		globals.Logger.Warning("Friends::DeclineFriendship not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

@@ -10,14 +10,14 @@ import (
 )
 
 // RateCustomRanking sets the RateCustomRanking handler function
-func (protocol *Protocol) RateCustomRanking(handler func(err error, client *nex.Client, callID uint32, params []*datastore_super_mario_maker_types.DataStoreRateCustomRankingParam)) {
+func (protocol *Protocol) RateCustomRanking(handler func(err error, client *nex.Client, callID uint32, params []*datastore_super_mario_maker_types.DataStoreRateCustomRankingParam) uint32) {
 	protocol.rateCustomRankingHandler = handler
 }
 
 func (protocol *Protocol) handleRateCustomRanking(packet nex.PacketInterface) {
 	if protocol.rateCustomRankingHandler == nil {
 		globals.Logger.Warning("DataStoreSuperMarioMaker::RateCustomRanking not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

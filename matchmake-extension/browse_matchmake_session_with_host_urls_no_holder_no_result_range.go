@@ -10,14 +10,14 @@ import (
 )
 
 // BrowseMatchmakeSessionWithHostURLsNoHolderNoResultRange sets the BrowseMatchmakeSessionWithHostURLsNoHolderNoResultRange handler function
-func (protocol *Protocol) BrowseMatchmakeSessionWithHostURLsNoHolderNoResultRange(handler func(err error, client *nex.Client, callID uint32, searchCriteria *match_making_types.MatchmakeSessionSearchCriteria)) {
+func (protocol *Protocol) BrowseMatchmakeSessionWithHostURLsNoHolderNoResultRange(handler func(err error, client *nex.Client, callID uint32, searchCriteria *match_making_types.MatchmakeSessionSearchCriteria) uint32) {
 	protocol.browseMatchmakeSessionWithHostURLsNoHolderNoResultRangeHandler = handler
 }
 
 func (protocol *Protocol) handleBrowseMatchmakeSessionWithHostURLsNoHolderNoResultRange(packet nex.PacketInterface) {
 	if protocol.browseMatchmakeSessionWithHostURLsNoHolderNoResultRangeHandler == nil {
 		globals.Logger.Warning("MatchmakeExtension::BrowseMatchmakeSessionWithHostURLsNoHolderNoResultRange not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

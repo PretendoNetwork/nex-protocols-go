@@ -7,14 +7,14 @@ import (
 )
 
 // GetTournamentProfiles sets the GetTournamentProfiles handler function
-func (protocol *Protocol) GetTournamentProfiles(handler func(err error, client *nex.Client, callID uint32, packetPayload []byte)) {
+func (protocol *Protocol) GetTournamentProfiles(handler func(err error, client *nex.Client, callID uint32, packetPayload []byte) uint32) {
 	protocol.getTournamentProfilesHandler = handler
 }
 
 func (protocol *Protocol) handleGetTournamentProfiles(packet nex.PacketInterface) {
 	if protocol.getTournamentProfilesHandler == nil {
 		globals.Logger.Warning("MatchmakeExtensionSuperSmashBros4::GetTournamentProfiles not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

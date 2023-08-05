@@ -9,14 +9,14 @@ import (
 )
 
 // SendReport sets the SendReport handler function
-func (protocol *Protocol) SendReport(handler func(err error, client *nex.Client, callID uint32, reportID uint32, reportData []byte)) {
+func (protocol *Protocol) SendReport(handler func(err error, client *nex.Client, callID uint32, reportID uint32, reportData []byte) uint32) {
 	protocol.sendReportHandler = handler
 }
 
 func (protocol *Protocol) handleSendReport(packet nex.PacketInterface) {
 	if protocol.sendReportHandler == nil {
 		globals.Logger.Warning("SecureConnection::SendReport not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

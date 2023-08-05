@@ -9,14 +9,14 @@ import (
 )
 
 // DeleteScore sets the DeleteScore handler function
-func (protocol *Protocol) DeleteScore(handler func(err error, client *nex.Client, callID uint32, category uint32, uniqueID uint64)) {
+func (protocol *Protocol) DeleteScore(handler func(err error, client *nex.Client, callID uint32, category uint32, uniqueID uint64) uint32) {
 	protocol.deleteScoreHandler = handler
 }
 
 func (protocol *Protocol) handleDeleteScore(packet nex.PacketInterface) {
 	if protocol.deleteScoreHandler == nil {
 		globals.Logger.Warning("Ranking::DeleteScore not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

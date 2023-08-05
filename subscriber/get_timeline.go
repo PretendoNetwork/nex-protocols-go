@@ -7,14 +7,14 @@ import (
 )
 
 // GetTimeline sets the GetTimeline handler function
-func (protocol *Protocol) GetTimeline(handler func(err error, client *nex.Client, callID uint32, packetPayload []byte)) {
+func (protocol *Protocol) GetTimeline(handler func(err error, client *nex.Client, callID uint32, packetPayload []byte) uint32) {
 	protocol.getTimelineHandler = handler
 }
 
 func (protocol *Protocol) handleGetTimeline(packet nex.PacketInterface) {
 	if protocol.getTimelineHandler == nil {
 		globals.Logger.Warning("Subscriber::GetTimeline not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

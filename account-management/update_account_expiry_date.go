@@ -9,14 +9,14 @@ import (
 )
 
 // UpdateAccountExpiryDate sets the UpdateAccountExpiryDate handler function
-func (protocol *Protocol) UpdateAccountExpiryDate(handler func(err error, client *nex.Client, callID uint32, idPrincipal uint32, dtExpiry *nex.DateTime, strExpiredMessage string)) {
+func (protocol *Protocol) UpdateAccountExpiryDate(handler func(err error, client *nex.Client, callID uint32, idPrincipal uint32, dtExpiry *nex.DateTime, strExpiredMessage string) uint32) {
 	protocol.updateAccountExpiryDateHandler = handler
 }
 
 func (protocol *Protocol) handleUpdateAccountExpiryDate(packet nex.PacketInterface) {
 	if protocol.updateAccountExpiryDateHandler == nil {
 		globals.Logger.Warning("AccountManagement::UpdateAccountExpiryDate not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

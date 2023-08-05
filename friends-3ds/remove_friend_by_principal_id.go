@@ -9,14 +9,14 @@ import (
 )
 
 // RemoveFriendByPrincipalID sets the RemoveFriendByPrincipalID handler function
-func (protocol *Protocol) RemoveFriendByPrincipalID(handler func(err error, client *nex.Client, callID uint32, pid uint32)) {
+func (protocol *Protocol) RemoveFriendByPrincipalID(handler func(err error, client *nex.Client, callID uint32, pid uint32) uint32) {
 	protocol.removeFriendByPrincipalIDHandler = handler
 }
 
 func (protocol *Protocol) handleRemoveFriendByPrincipalID(packet nex.PacketInterface) {
 	if protocol.removeFriendByPrincipalIDHandler == nil {
 		globals.Logger.Warning("Friends3DS::RemoveFriendByPrincipalID not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

@@ -9,14 +9,14 @@ import (
 )
 
 // FindMatchmakeSessionByOwner sets the FindMatchmakeSessionByOwner handler function
-func (protocol *Protocol) FindMatchmakeSessionByOwner(handler func(err error, client *nex.Client, callID uint32, id uint32, resultRange *nex.ResultRange)) {
+func (protocol *Protocol) FindMatchmakeSessionByOwner(handler func(err error, client *nex.Client, callID uint32, id uint32, resultRange *nex.ResultRange) uint32) {
 	protocol.findMatchmakeSessionByOwnerHandler = handler
 }
 
 func (protocol *Protocol) handleFindMatchmakeSessionByOwner(packet nex.PacketInterface) {
 	if protocol.findMatchmakeSessionByOwnerHandler == nil {
 		globals.Logger.Warning("MatchmakeExtension::FindMatchmakeSessionByOwner not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

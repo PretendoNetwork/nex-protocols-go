@@ -9,14 +9,14 @@ import (
 )
 
 // CancelInvitation sets the CancelInvitation handler function
-func (protocol *Protocol) CancelInvitation(handler func(err error, client *nex.Client, callID uint32, idGathering uint32, lstPrincipals []uint32, strMessage string)) {
+func (protocol *Protocol) CancelInvitation(handler func(err error, client *nex.Client, callID uint32, idGathering uint32, lstPrincipals []uint32, strMessage string) uint32) {
 	protocol.cancelInvitationHandler = handler
 }
 
 func (protocol *Protocol) handleCancelInvitation(packet nex.PacketInterface) {
 	if protocol.cancelInvitationHandler == nil {
 		globals.Logger.Warning("MatchMaking::CancelInvitation not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

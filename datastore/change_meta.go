@@ -10,14 +10,14 @@ import (
 )
 
 // ChangeMeta sets the ChangeMeta handler function
-func (protocol *Protocol) ChangeMeta(handler func(err error, client *nex.Client, callID uint32, param *datastore_types.DataStoreChangeMetaParam)) {
+func (protocol *Protocol) ChangeMeta(handler func(err error, client *nex.Client, callID uint32, param *datastore_types.DataStoreChangeMetaParam) uint32) {
 	protocol.changeMetaHandler = handler
 }
 
 func (protocol *Protocol) handleChangeMeta(packet nex.PacketInterface) {
 	if protocol.changeMetaHandler == nil {
 		globals.Logger.Warning("DataStore::ChangeMeta not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

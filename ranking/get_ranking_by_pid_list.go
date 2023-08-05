@@ -10,14 +10,14 @@ import (
 )
 
 // GetRankingByPIDList sets the GetRankingByPIDList handler function
-func (protocol *Protocol) GetRankingByPIDList(handler func(err error, client *nex.Client, callID uint32, principalIDList []uint32, rankingMode uint8, category uint32, orderParam *ranking_types.RankingOrderParam, uniqueID uint64)) {
+func (protocol *Protocol) GetRankingByPIDList(handler func(err error, client *nex.Client, callID uint32, principalIDList []uint32, rankingMode uint8, category uint32, orderParam *ranking_types.RankingOrderParam, uniqueID uint64) uint32) {
 	protocol.getRankingByPIDListHandler = handler
 }
 
 func (protocol *Protocol) handleGetRankingByPIDList(packet nex.PacketInterface) {
 	if protocol.getRankingByPIDListHandler == nil {
 		globals.Logger.Warning("Ranking::GetRankingByPIDList not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

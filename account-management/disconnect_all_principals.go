@@ -7,14 +7,14 @@ import (
 )
 
 // DisconnectAllPrincipals sets the DisconnectAllPrincipals handler function
-func (protocol *Protocol) DisconnectAllPrincipals(handler func(err error, client *nex.Client, callID uint32)) {
+func (protocol *Protocol) DisconnectAllPrincipals(handler func(err error, client *nex.Client, callID uint32) uint32) {
 	protocol.disconnectAllPrincipalsHandler = handler
 }
 
 func (protocol *Protocol) handleDisconnectAllPrincipals(packet nex.PacketInterface) {
 	if protocol.disconnectAllPrincipalsHandler == nil {
 		globals.Logger.Warning("AccountManagement::DisconnectAllPrincipals not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

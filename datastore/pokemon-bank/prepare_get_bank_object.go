@@ -9,14 +9,14 @@ import (
 )
 
 // PrepareGetBankObject sets the PrepareGetBankObject handler function
-func (protocol *Protocol) PrepareGetBankObject(handler func(err error, client *nex.Client, callID uint32, slotID uint16, applicationID uint16)) {
+func (protocol *Protocol) PrepareGetBankObject(handler func(err error, client *nex.Client, callID uint32, slotID uint16, applicationID uint16) uint32) {
 	protocol.prepareGetBankObjectHandler = handler
 }
 
 func (protocol *Protocol) handlePrepareGetBankObject(packet nex.PacketInterface) {
 	if protocol.prepareGetBankObjectHandler == nil {
 		globals.Logger.Warning("DataStorePokemonBank::PrepareGetBankObject not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

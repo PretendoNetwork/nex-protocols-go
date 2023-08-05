@@ -9,14 +9,14 @@ import (
 )
 
 // DeleteCustomRanking sets the DeleteCustomRanking handler function
-func (protocol *Protocol) DeleteCustomRanking(handler func(err error, client *nex.Client, callID uint32, dataIDList []uint64)) {
+func (protocol *Protocol) DeleteCustomRanking(handler func(err error, client *nex.Client, callID uint32, dataIDList []uint64) uint32) {
 	protocol.deleteCustomRankingHandler = handler
 }
 
 func (protocol *Protocol) handleDeleteCustomRanking(packet nex.PacketInterface) {
 	if protocol.deleteCustomRankingHandler == nil {
 		globals.Logger.Warning("DataStoreSuperMarioMaker::DeleteCustomRanking not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

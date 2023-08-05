@@ -7,14 +7,14 @@ import (
 )
 
 // RegisterTournamentBot sets the RegisterTournamentBot handler function
-func (protocol *Protocol) RegisterTournamentBot(handler func(err error, client *nex.Client, callID uint32, packetPayload []byte)) {
+func (protocol *Protocol) RegisterTournamentBot(handler func(err error, client *nex.Client, callID uint32, packetPayload []byte) uint32) {
 	protocol.registerTournamentBotHandler = handler
 }
 
 func (protocol *Protocol) handleRegisterTournamentBot(packet nex.PacketInterface) {
 	if protocol.registerTournamentBotHandler == nil {
 		globals.Logger.Warning("MatchmakeExtensionSuperSmashBros4::RegisterTournamentBot not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

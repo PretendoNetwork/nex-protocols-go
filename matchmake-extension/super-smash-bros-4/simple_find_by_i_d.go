@@ -7,14 +7,14 @@ import (
 )
 
 // SimpleFindByID sets the SimpleFindByID handler function
-func (protocol *Protocol) SimpleFindByID(handler func(err error, client *nex.Client, callID uint32, packetPayload []byte)) {
+func (protocol *Protocol) SimpleFindByID(handler func(err error, client *nex.Client, callID uint32, packetPayload []byte) uint32) {
 	protocol.simpleFindByIDHandler = handler
 }
 
 func (protocol *Protocol) handleSimpleFindByID(packet nex.PacketInterface) {
 	if protocol.simpleFindByIDHandler == nil {
 		globals.Logger.Warning("MatchmakeExtensionSuperSmashBros4::SimpleFindByID not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

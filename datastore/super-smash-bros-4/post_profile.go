@@ -10,14 +10,14 @@ import (
 )
 
 // PostProfile sets the PostProfile handler function
-func (protocol *Protocol) PostProfile(handler func(err error, client *nex.Client, callID uint32, param *datastore_super_smash_bros_4_types.DataStorePostProfileParam)) {
+func (protocol *Protocol) PostProfile(handler func(err error, client *nex.Client, callID uint32, param *datastore_super_smash_bros_4_types.DataStorePostProfileParam) uint32) {
 	protocol.postProfileHandler = handler
 }
 
 func (protocol *Protocol) handlePostProfile(packet nex.PacketInterface) {
 	if protocol.postProfileHandler == nil {
 		globals.Logger.Warning("DataStoreSuperSmashBros4::PostProfile not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

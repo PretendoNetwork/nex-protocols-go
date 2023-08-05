@@ -10,14 +10,14 @@ import (
 )
 
 // RecommendedCourseSearchObject sets the RecommendedCourseSearchObject handler function
-func (protocol *Protocol) RecommendedCourseSearchObject(handler func(err error, client *nex.Client, callID uint32, param *datastore_types.DataStoreSearchParam, extraData []string)) {
+func (protocol *Protocol) RecommendedCourseSearchObject(handler func(err error, client *nex.Client, callID uint32, param *datastore_types.DataStoreSearchParam, extraData []string) uint32) {
 	protocol.recommendedCourseSearchObjectHandler = handler
 }
 
 func (protocol *Protocol) handleRecommendedCourseSearchObject(packet nex.PacketInterface) {
 	if protocol.recommendedCourseSearchObjectHandler == nil {
 		globals.Logger.Warning("DataStoreSuperMarioMaker::RecommendedCourseSearchObject not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

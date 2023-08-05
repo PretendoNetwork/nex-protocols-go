@@ -9,14 +9,14 @@ import (
 )
 
 // GenerateMatchmakeSessionSystemPassword sets the GenerateMatchmakeSessionSystemPassword handler function
-func (protocol *Protocol) GenerateMatchmakeSessionSystemPassword(handler func(err error, client *nex.Client, callID uint32, GID uint32)) {
+func (protocol *Protocol) GenerateMatchmakeSessionSystemPassword(handler func(err error, client *nex.Client, callID uint32, GID uint32) uint32) {
 	protocol.generateMatchmakeSessionSystemPasswordHandler = handler
 }
 
 func (protocol *Protocol) handleGenerateMatchmakeSessionSystemPassword(packet nex.PacketInterface) {
 	if protocol.generateMatchmakeSessionSystemPasswordHandler == nil {
 		globals.Logger.Warning("MatchmakeExtension::GenerateMatchmakeSessionSystemPassword not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

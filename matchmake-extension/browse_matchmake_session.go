@@ -10,14 +10,14 @@ import (
 )
 
 // BrowseMatchmakeSession sets the BrowseMatchmakeSession handler function
-func (protocol *Protocol) BrowseMatchmakeSession(handler func(err error, client *nex.Client, callID uint32, searchCriteria *match_making_types.MatchmakeSessionSearchCriteria, resultRange *nex.ResultRange)) {
+func (protocol *Protocol) BrowseMatchmakeSession(handler func(err error, client *nex.Client, callID uint32, searchCriteria *match_making_types.MatchmakeSessionSearchCriteria, resultRange *nex.ResultRange) uint32) {
 	protocol.browseMatchmakeSessionHandler = handler
 }
 
 func (protocol *Protocol) handleBrowseMatchmakeSession(packet nex.PacketInterface) {
 	if protocol.browseMatchmakeSessionHandler == nil {
 		globals.Logger.Warning("MatchmakeExtension::BrowseMatchmakeSession not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

@@ -10,14 +10,14 @@ import (
 )
 
 // PreparePostObjectWithOwnerIDAndDataID sets the PreparePostObjectWithOwnerIDAndDataID handler function
-func (protocol *Protocol) PreparePostObjectWithOwnerIDAndDataID(handler func(err error, client *nex.Client, callID uint32, ownerID uint32, dataID uint64, param *datastore_types.DataStorePreparePostParam)) {
+func (protocol *Protocol) PreparePostObjectWithOwnerIDAndDataID(handler func(err error, client *nex.Client, callID uint32, ownerID uint32, dataID uint64, param *datastore_types.DataStorePreparePostParam) uint32) {
 	protocol.preparePostObjectWithOwnerIDAndDataIDHandler = handler
 }
 
 func (protocol *Protocol) handlePreparePostObjectWithOwnerIDAndDataID(packet nex.PacketInterface) {
 	if protocol.preparePostObjectWithOwnerIDAndDataIDHandler == nil {
 		globals.Logger.Warning("DataStoreSuperMarioMaker::PreparePostObjectWithOwnerIDAndDataID not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

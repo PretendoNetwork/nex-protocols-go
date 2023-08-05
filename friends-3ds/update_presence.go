@@ -10,14 +10,14 @@ import (
 )
 
 // UpdatePresence sets the UpdatePresence handler function
-func (protocol *Protocol) UpdatePresence(handler func(err error, client *nex.Client, callID uint32, presence *friends_3ds_types.NintendoPresence, showGame bool)) {
+func (protocol *Protocol) UpdatePresence(handler func(err error, client *nex.Client, callID uint32, presence *friends_3ds_types.NintendoPresence, showGame bool) uint32) {
 	protocol.updatePresenceHandler = handler
 }
 
 func (protocol *Protocol) handleUpdatePresence(packet nex.PacketInterface) {
 	if protocol.updatePresenceHandler == nil {
 		globals.Logger.Warning("Friends3DS::UpdatePresence not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

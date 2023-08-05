@@ -9,14 +9,14 @@ import (
 )
 
 // FindByDescription sets the FindByDescription handler function
-func (protocol *Protocol) FindByDescription(handler func(err error, client *nex.Client, callID uint32, strDescription string, resultRange *nex.ResultRange)) {
+func (protocol *Protocol) FindByDescription(handler func(err error, client *nex.Client, callID uint32, strDescription string, resultRange *nex.ResultRange) uint32) {
 	protocol.findByDescriptionHandler = handler
 }
 
 func (protocol *Protocol) handleFindByDescription(packet nex.PacketInterface) {
 	if protocol.findByDescriptionHandler == nil {
 		globals.Logger.Warning("MatchMaking::FindByDescription not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

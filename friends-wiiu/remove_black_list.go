@@ -9,14 +9,14 @@ import (
 )
 
 // RemoveBlackList sets the RemoveBlackList handler function
-func (protocol *Protocol) RemoveBlackList(handler func(err error, client *nex.Client, callID uint32, pid uint32)) {
+func (protocol *Protocol) RemoveBlackList(handler func(err error, client *nex.Client, callID uint32, pid uint32) uint32) {
 	protocol.removeBlackListHandler = handler
 }
 
 func (protocol *Protocol) handleRemoveBlackList(packet nex.PacketInterface) {
 	if protocol.removeBlackListHandler == nil {
 		globals.Logger.Warning("FriendsWiiU::RemoveBlackList not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

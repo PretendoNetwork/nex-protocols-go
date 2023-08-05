@@ -9,14 +9,14 @@ import (
 )
 
 // CancelFriendRequest sets the CancelFriendRequest handler function
-func (protocol *Protocol) CancelFriendRequest(handler func(err error, client *nex.Client, callID uint32, id uint64)) {
+func (protocol *Protocol) CancelFriendRequest(handler func(err error, client *nex.Client, callID uint32, id uint64) uint32) {
 	protocol.cancelFriendRequestHandler = handler
 }
 
 func (protocol *Protocol) handleCancelFriendRequest(packet nex.PacketInterface) {
 	if protocol.cancelFriendRequestHandler == nil {
 		globals.Logger.Warning("FriendsWiiU::CancelFriendRequest not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

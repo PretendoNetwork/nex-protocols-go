@@ -9,14 +9,14 @@ import (
 )
 
 // FindCommunityByParticipant sets the FindCommunityByParticipant handler function
-func (protocol *Protocol) FindCommunityByParticipant(handler func(err error, client *nex.Client, callID uint32, pid uint32, resultRange *nex.ResultRange)) {
+func (protocol *Protocol) FindCommunityByParticipant(handler func(err error, client *nex.Client, callID uint32, pid uint32, resultRange *nex.ResultRange) uint32) {
 	protocol.findCommunityByParticipantHandler = handler
 }
 
 func (protocol *Protocol) handleFindCommunityByParticipant(packet nex.PacketInterface) {
 	if protocol.findCommunityByParticipantHandler == nil {
 		globals.Logger.Warning("MatchmakeExtension::FindCommunityByParticipant not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

@@ -10,14 +10,14 @@ import (
 )
 
 // UploadCourseRecord sets the UploadCourseRecord handler function
-func (protocol *Protocol) UploadCourseRecord(handler func(err error, client *nex.Client, callID uint32, param *datastore_super_mario_maker_types.DataStoreUploadCourseRecordParam)) {
+func (protocol *Protocol) UploadCourseRecord(handler func(err error, client *nex.Client, callID uint32, param *datastore_super_mario_maker_types.DataStoreUploadCourseRecordParam) uint32) {
 	protocol.uploadCourseRecordHandler = handler
 }
 
 func (protocol *Protocol) handleUploadCourseRecord(packet nex.PacketInterface) {
 	if protocol.uploadCourseRecordHandler == nil {
 		globals.Logger.Warning("DataStoreSuperMarioMaker::UploadCourseRecord not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

@@ -5,19 +5,19 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
-	ranking2_types "github.com/PretendoNetwork/nex-protocols-go/ranking2/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
+	ranking2_types "github.com/PretendoNetwork/nex-protocols-go/ranking2/types"
 )
 
 // GetRankingByPrincipalID sets the GetRankingByPrincipalID handler function
-func (protocol *Protocol) GetRankingByPrincipalID(handler func(err error, client *nex.Client, callID uint32, getParam *ranking2_types.Ranking2GetParam, principalIDList []uint32)) {
+func (protocol *Protocol) GetRankingByPrincipalID(handler func(err error, client *nex.Client, callID uint32, getParam *ranking2_types.Ranking2GetParam, principalIDList []uint32) uint32) {
 	protocol.getRankingByPrincipalIDHandler = handler
 }
 
 func (protocol *Protocol) handleGetRankingByPrincipalID(packet nex.PacketInterface) {
 	if protocol.getRankingByPrincipalIDHandler == nil {
 		globals.Logger.Warning("Ranking2::GetRankingByPrincipalID not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 	client := packet.Sender()

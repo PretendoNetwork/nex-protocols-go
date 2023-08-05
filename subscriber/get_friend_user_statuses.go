@@ -9,14 +9,14 @@ import (
 )
 
 // GetFriendUserStatuses sets the GetFriendUserStatuses handler function
-func (protocol *Protocol) GetFriendUserStatuses(handler func(err error, client *nex.Client, callID uint32, unknown []uint8)) {
+func (protocol *Protocol) GetFriendUserStatuses(handler func(err error, client *nex.Client, callID uint32, unknown []uint8) uint32) {
 	protocol.getFriendUserStatusesHandler = handler
 }
 
 func (protocol *Protocol) handleGetFriendUserStatuses(packet nex.PacketInterface) {
 	if protocol.getFriendUserStatusesHandler == nil {
 		globals.Logger.Warning("Subscriber::GetFriendUserStatuses not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 	client := packet.Sender()

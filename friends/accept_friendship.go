@@ -9,14 +9,14 @@ import (
 )
 
 // AcceptFriendship sets the AcceptFriendship handler function
-func (protocol *Protocol) AcceptFriendship(handler func(err error, client *nex.Client, callID uint32, uiPlayer uint32)) {
+func (protocol *Protocol) AcceptFriendship(handler func(err error, client *nex.Client, callID uint32, uiPlayer uint32) uint32) {
 	protocol.acceptFriendshipHandler = handler
 }
 
 func (protocol *Protocol) handleAcceptFriendship(packet nex.PacketInterface) {
 	if protocol.acceptFriendshipHandler == nil {
 		globals.Logger.Warning("Friends::AcceptFriendship not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

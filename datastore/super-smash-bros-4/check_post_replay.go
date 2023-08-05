@@ -10,14 +10,14 @@ import (
 )
 
 // CheckPostReplay sets the CheckPostReplay handler function
-func (protocol *Protocol) CheckPostReplay(handler func(err error, client *nex.Client, callID uint32, param *datastore_super_smash_bros_4_types.DataStorePreparePostReplayParam)) {
+func (protocol *Protocol) CheckPostReplay(handler func(err error, client *nex.Client, callID uint32, param *datastore_super_smash_bros_4_types.DataStorePreparePostReplayParam) uint32) {
 	protocol.checkPostReplayHandler = handler
 }
 
 func (protocol *Protocol) handleCheckPostReplay(packet nex.PacketInterface) {
 	if protocol.checkPostReplayHandler == nil {
 		globals.Logger.Warning("DataStoreSuperSmashBros4::CheckPostReplay not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

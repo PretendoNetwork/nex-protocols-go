@@ -7,14 +7,14 @@ import (
 )
 
 // GetAPICallSummary sets the GetAPICallSummary handler function
-func (protocol *Protocol) GetAPICallSummary(handler func(err error, client *nex.Client, callID uint32, pakcetPayload []byte)) {
+func (protocol *Protocol) GetAPICallSummary(handler func(err error, client *nex.Client, callID uint32, pakcetPayload []byte) uint32) {
 	protocol.getAPICallSummaryHandler = handler
 }
 
 func (protocol *Protocol) handleGetAPICallSummary(packet nex.PacketInterface) {
 	if protocol.getAPICallSummaryHandler == nil {
 		globals.Logger.Warning("Debug::GetAPICallSummary not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

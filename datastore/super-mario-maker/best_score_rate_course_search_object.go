@@ -10,14 +10,14 @@ import (
 )
 
 // BestScoreRateCourseSearchObject sets the BestScoreRateCourseSearchObject handler function
-func (protocol *Protocol) BestScoreRateCourseSearchObject(handler func(err error, client *nex.Client, callID uint32, param *datastore_types.DataStoreSearchParam, extraData []string)) {
+func (protocol *Protocol) BestScoreRateCourseSearchObject(handler func(err error, client *nex.Client, callID uint32, param *datastore_types.DataStoreSearchParam, extraData []string) uint32) {
 	protocol.bestScoreRateCourseSearchObjectHandler = handler
 }
 
 func (protocol *Protocol) handleBestScoreRateCourseSearchObject(packet nex.PacketInterface) {
 	if protocol.bestScoreRateCourseSearchObjectHandler == nil {
 		globals.Logger.Warning("DataStoreSuperMarioMaker::BestScoreRateCourseSearchObject not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

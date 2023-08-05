@@ -9,14 +9,14 @@ import (
 )
 
 // DeleteSimpleSearchObject sets the DeleteSimpleSearchObject handler function
-func (protocol *Protocol) DeleteSimpleSearchObject(handler func(err error, client *nex.Client, callID uint32, objectID uint32)) {
+func (protocol *Protocol) DeleteSimpleSearchObject(handler func(err error, client *nex.Client, callID uint32, objectID uint32) uint32) {
 	protocol.deleteSimpleSearchObjectHandler = handler
 }
 
 func (protocol *Protocol) handleDeleteSimpleSearchObject(packet nex.PacketInterface) {
 	if protocol.deleteSimpleSearchObjectHandler == nil {
 		globals.Logger.Warning("MatchmakeExtensionMarioKart8::DeleteSimpleSearchObject not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

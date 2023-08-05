@@ -9,14 +9,14 @@ import (
 )
 
 // GetCategorySetting sets the GetCategorySetting handler function
-func (protocol *Protocol) GetCategorySetting(handler func(err error, client *nex.Client, callID uint32, category uint32)) {
+func (protocol *Protocol) GetCategorySetting(handler func(err error, client *nex.Client, callID uint32, category uint32) uint32) {
 	protocol.getCategorySettingHandler = handler
 }
 
 func (protocol *Protocol) handleGetCategorySetting(packet nex.PacketInterface) {
 	if protocol.getCategorySettingHandler == nil {
 		globals.Logger.Warning("Ranking2::GetCategorySetting not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 	client := packet.Sender()

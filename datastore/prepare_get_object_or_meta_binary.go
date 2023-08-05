@@ -10,14 +10,14 @@ import (
 )
 
 // PrepareGetObjectOrMetaBinary sets the PrepareGetObjectOrMetaBinary handler function
-func (protocol *Protocol) PrepareGetObjectOrMetaBinary(handler func(err error, client *nex.Client, callID uint32, param *datastore_types.DataStorePrepareGetParam)) {
+func (protocol *Protocol) PrepareGetObjectOrMetaBinary(handler func(err error, client *nex.Client, callID uint32, param *datastore_types.DataStorePrepareGetParam) uint32) {
 	protocol.prepareGetObjectOrMetaBinaryHandler = handler
 }
 
 func (protocol *Protocol) handlePrepareGetObjectOrMetaBinary(packet nex.PacketInterface) {
 	if protocol.prepareGetObjectOrMetaBinaryHandler == nil {
 		globals.Logger.Warning("DataStore::PrepareGetObjectOrMetaBinary not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

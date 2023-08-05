@@ -10,14 +10,14 @@ import (
 )
 
 // GetMetaByOwnerID sets the GetMetaByOwnerID function
-func (protocol *Protocol) GetMetaByOwnerID(handler func(err error, client *nex.Client, callID uint32, param *datastore_nintendo_badge_arcade_types.DataStoreGetMetaByOwnerIDParam)) {
+func (protocol *Protocol) GetMetaByOwnerID(handler func(err error, client *nex.Client, callID uint32, param *datastore_nintendo_badge_arcade_types.DataStoreGetMetaByOwnerIDParam) uint32) {
 	protocol.getMetaByOwnerIDHandler = handler
 }
 
 func (protocol *Protocol) handleGetMetaByOwnerID(packet nex.PacketInterface) {
 	if protocol.getMetaByOwnerIDHandler == nil {
 		globals.Logger.Warning("DataStoreBadgeArcade::GetMetaByOwnerID not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

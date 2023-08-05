@@ -9,14 +9,14 @@ import (
 )
 
 // DeleteAllScores sets the DeleteAllScores handler function
-func (protocol *Protocol) DeleteAllScores(handler func(err error, client *nex.Client, callID uint32, uniqueID uint64)) {
+func (protocol *Protocol) DeleteAllScores(handler func(err error, client *nex.Client, callID uint32, uniqueID uint64) uint32) {
 	protocol.deleteAllScoresHandler = handler
 }
 
 func (protocol *Protocol) handleDeleteAllScores(packet nex.PacketInterface) {
 	if protocol.deleteAllScoresHandler == nil {
 		globals.Logger.Warning("Ranking::DeleteAllScores not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

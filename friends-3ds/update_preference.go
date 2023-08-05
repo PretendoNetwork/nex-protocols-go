@@ -9,14 +9,14 @@ import (
 )
 
 // UpdatePreference sets the UpdatePreference handler function
-func (protocol *Protocol) UpdatePreference(handler func(err error, client *nex.Client, callID uint32, publicMode bool, showGame bool, showPlayedGame bool)) {
+func (protocol *Protocol) UpdatePreference(handler func(err error, client *nex.Client, callID uint32, publicMode bool, showGame bool, showPlayedGame bool) uint32) {
 	protocol.updatePreferenceHandler = handler
 }
 
 func (protocol *Protocol) handleUpdatePreference(packet nex.PacketInterface) {
 	if protocol.updatePreferenceHandler == nil {
 		globals.Logger.Warning("Friends3DS::UpdatePreference not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

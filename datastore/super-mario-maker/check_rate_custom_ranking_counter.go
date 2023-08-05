@@ -9,14 +9,14 @@ import (
 )
 
 // CheckRateCustomRankingCounter sets the CheckRateCustomRankingCounter handler function
-func (protocol *Protocol) CheckRateCustomRankingCounter(handler func(err error, client *nex.Client, callID uint32, applicationID uint32)) {
+func (protocol *Protocol) CheckRateCustomRankingCounter(handler func(err error, client *nex.Client, callID uint32, applicationID uint32) uint32) {
 	protocol.checkRateCustomRankingCounterHandler = handler
 }
 
 func (protocol *Protocol) handleCheckRateCustomRankingCounter(packet nex.PacketInterface) {
 	if protocol.checkRateCustomRankingCounterHandler == nil {
 		globals.Logger.Warning("DataStoreSuperMarioMaker::CheckRateCustomRankingCounter not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

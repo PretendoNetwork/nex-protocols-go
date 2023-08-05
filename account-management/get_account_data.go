@@ -7,14 +7,14 @@ import (
 )
 
 // GetAccountData sets the GetAccountData handler function
-func (protocol *Protocol) GetAccountData(handler func(err error, client *nex.Client, callID uint32)) {
+func (protocol *Protocol) GetAccountData(handler func(err error, client *nex.Client, callID uint32) uint32) {
 	protocol.getAccountDataHandler = handler
 }
 
 func (protocol *Protocol) handleGetAccountData(packet nex.PacketInterface) {
 	if protocol.getAccountDataHandler == nil {
 		globals.Logger.Warning("AccountManagement::GetAccountData not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

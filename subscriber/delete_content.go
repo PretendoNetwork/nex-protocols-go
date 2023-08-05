@@ -9,14 +9,14 @@ import (
 )
 
 // DeleteContent sets the DeleteContent handler function
-func (protocol *Protocol) DeleteContent(handler func(err error, client *nex.Client, callID uint32, unknown1 []string, unknown2 uint64)) {
+func (protocol *Protocol) DeleteContent(handler func(err error, client *nex.Client, callID uint32, unknown1 []string, unknown2 uint64) uint32) {
 	protocol.deleteContentHandler = handler
 }
 
 func (protocol *Protocol) handleDeleteContent(packet nex.PacketInterface) {
 	if protocol.deleteContentHandler == nil {
 		globals.Logger.Warning("Subscriber::DeleteContent not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 	client := packet.Sender()

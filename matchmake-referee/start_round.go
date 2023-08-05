@@ -10,14 +10,14 @@ import (
 )
 
 // StartRound sets the StartRound handler function
-func (protocol *Protocol) StartRound(handler func(err error, client *nex.Client, callID uint32, param *matchmake_referee_types.MatchmakeRefereeStartRoundParam)) {
+func (protocol *Protocol) StartRound(handler func(err error, client *nex.Client, callID uint32, param *matchmake_referee_types.MatchmakeRefereeStartRoundParam) uint32) {
 	protocol.startRoundHandler = handler
 }
 
 func (protocol *Protocol) handleStartRound(packet nex.PacketInterface) {
 	if protocol.startRoundHandler == nil {
 		globals.Logger.Warning("MatchmakeReferee::StartRound not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

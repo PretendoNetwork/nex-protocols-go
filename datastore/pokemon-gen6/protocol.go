@@ -54,13 +54,13 @@ type dataStoreProtocol = datastore.Protocol
 type Protocol struct {
 	Server *nex.Server
 	dataStoreProtocol
-	uploadPokemonHandler        func(err error, client *nex.Client, callID uint32, param *datastore_pokemon_gen6_types.GlobalTradeStationUploadPokemonParam)
-	searchPokemonHandler        func(err error, client *nex.Client, callID uint32, param *datastore_pokemon_gen6_types.GlobalTradeStationSearchPokemonParam)
-	prepareTradePokemonHandler  func(err error, client *nex.Client, callID uint32, param *datastore_pokemon_gen6_types.GlobalTradeStationPrepareTradePokemonParam)
-	tradePokemonHandler         func(err error, client *nex.Client, callID uint32, param *datastore_pokemon_gen6_types.GlobalTradeStationTradePokemonParam)
-	downloadOtherPokemonHandler func(err error, client *nex.Client, callID uint32, param *datastore_pokemon_gen6_types.GlobalTradeStationDownloadOtherPokemonParam)
-	downloadMyPokemonHandler    func(err error, client *nex.Client, callID uint32, param *datastore_pokemon_gen6_types.GlobalTradeStationDownloadMyPokemonParam)
-	deletePokemonHandler        func(err error, client *nex.Client, callID uint32, param *datastore_pokemon_gen6_types.GlobalTradeStationDeletePokemonParam)
+	uploadPokemonHandler        func(err error, client *nex.Client, callID uint32, param *datastore_pokemon_gen6_types.GlobalTradeStationUploadPokemonParam) uint32
+	searchPokemonHandler        func(err error, client *nex.Client, callID uint32, param *datastore_pokemon_gen6_types.GlobalTradeStationSearchPokemonParam) uint32
+	prepareTradePokemonHandler  func(err error, client *nex.Client, callID uint32, param *datastore_pokemon_gen6_types.GlobalTradeStationPrepareTradePokemonParam) uint32
+	tradePokemonHandler         func(err error, client *nex.Client, callID uint32, param *datastore_pokemon_gen6_types.GlobalTradeStationTradePokemonParam) uint32
+	downloadOtherPokemonHandler func(err error, client *nex.Client, callID uint32, param *datastore_pokemon_gen6_types.GlobalTradeStationDownloadOtherPokemonParam) uint32
+	downloadMyPokemonHandler    func(err error, client *nex.Client, callID uint32, param *datastore_pokemon_gen6_types.GlobalTradeStationDownloadMyPokemonParam) uint32
+	deletePokemonHandler        func(err error, client *nex.Client, callID uint32, param *datastore_pokemon_gen6_types.GlobalTradeStationDeletePokemonParam) uint32
 }
 
 // Setup initializes the protocol
@@ -98,7 +98,7 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 	case MethodDeletePokemon:
 		go protocol.handleDeletePokemon(packet)
 	default:
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		fmt.Printf("Unsupported DataStore (Pokemon Gen6) method ID: %#v\n", request.MethodID())
 	}
 }

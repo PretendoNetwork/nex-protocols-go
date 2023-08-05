@@ -9,14 +9,14 @@ import (
 )
 
 // GetCustomItem sets the GetCustomItem handler function
-func (protocol *Protocol) GetCustomItem(handler func(err error, client *nex.Client, callID uint32, uiGroup uint32, strTag string)) {
+func (protocol *Protocol) GetCustomItem(handler func(err error, client *nex.Client, callID uint32, uiGroup uint32, strTag string) uint32) {
 	protocol.getCustomItemHandler = handler
 }
 
 func (protocol *Protocol) handleGetCustomItem(packet nex.PacketInterface) {
 	if protocol.getCustomItemHandler == nil {
 		globals.Logger.Warning("PersistentStore::GetCustomItem not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

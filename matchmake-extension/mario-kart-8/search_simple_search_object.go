@@ -10,14 +10,14 @@ import (
 )
 
 // SearchSimpleSearchObject sets the SearchSimpleSearchObject handler function
-func (protocol *Protocol) SearchSimpleSearchObject(handler func(err error, client *nex.Client, callID uint32, param *matchmake_extension_mario_kart8_types.SimpleSearchParam)) {
+func (protocol *Protocol) SearchSimpleSearchObject(handler func(err error, client *nex.Client, callID uint32, param *matchmake_extension_mario_kart8_types.SimpleSearchParam) uint32) {
 	protocol.searchSimpleSearchObjectHandler = handler
 }
 
 func (protocol *Protocol) handleSearchSimpleSearchObject(packet nex.PacketInterface) {
 	if protocol.searchSimpleSearchObjectHandler == nil {
 		globals.Logger.Warning("MatchmakeExtensionMarioKart8::SearchSimpleSearchObject not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

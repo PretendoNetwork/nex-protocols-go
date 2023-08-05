@@ -7,14 +7,14 @@ import (
 )
 
 // SetTournamentReplayID sets the SetTournamentReplayID handler function
-func (protocol *Protocol) SetTournamentReplayID(handler func(err error, client *nex.Client, callID uint32, packetPayload []byte)) {
+func (protocol *Protocol) SetTournamentReplayID(handler func(err error, client *nex.Client, callID uint32, packetPayload []byte) uint32) {
 	protocol.setTournamentReplayIDHandler = handler
 }
 
 func (protocol *Protocol) handleSetTournamentReplayID(packet nex.PacketInterface) {
 	if protocol.setTournamentReplayIDHandler == nil {
 		globals.Logger.Warning("MatchmakeExtensionSuperSmashBros4::SetTournamentReplayID not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

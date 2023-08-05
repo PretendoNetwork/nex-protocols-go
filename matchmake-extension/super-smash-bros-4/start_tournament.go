@@ -7,14 +7,14 @@ import (
 )
 
 // StartTournament sets the StartTournament handler function
-func (protocol *Protocol) StartTournament(handler func(err error, client *nex.Client, callID uint32, packetPayload []byte)) {
+func (protocol *Protocol) StartTournament(handler func(err error, client *nex.Client, callID uint32, packetPayload []byte) uint32) {
 	protocol.startTournamentHandler = handler
 }
 
 func (protocol *Protocol) handleStartTournament(packet nex.PacketInterface) {
 	if protocol.startTournamentHandler == nil {
 		globals.Logger.Warning("MatchmakeExtensionSuperSmashBros4::StartTournament not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

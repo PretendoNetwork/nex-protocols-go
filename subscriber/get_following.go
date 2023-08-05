@@ -7,14 +7,14 @@ import (
 )
 
 // GetFollowing sets the GetFollowing handler function
-func (protocol *Protocol) GetFollowing(handler func(err error, client *nex.Client, callID uint32, packetPayload []byte)) {
+func (protocol *Protocol) GetFollowing(handler func(err error, client *nex.Client, callID uint32, packetPayload []byte) uint32) {
 	protocol.getFollowingHandler = handler
 }
 
 func (protocol *Protocol) handleGetFollowing(packet nex.PacketInterface) {
 	if protocol.getFollowingHandler == nil {
 		globals.Logger.Warning("Subscriber::GetFollowing not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

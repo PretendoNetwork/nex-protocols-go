@@ -7,14 +7,14 @@ import (
 )
 
 // GetcompetitionRankingScoreByPeriodList sets the GetcompetitionRankingScoreByPeriodList handler function
-func (protocol *Protocol) GetcompetitionRankingScoreByPeriodList(handler func(err error, client *nex.Client, callID uint32, packetPayload []byte)) {
+func (protocol *Protocol) GetcompetitionRankingScoreByPeriodList(handler func(err error, client *nex.Client, callID uint32, packetPayload []byte) uint32) {
 	protocol.getcompetitionRankingScoreByPeriodListHandler = handler
 }
 
 func (protocol *Protocol) handleGetcompetitionRankingScoreByPeriodList(packet nex.PacketInterface) {
 	if protocol.getcompetitionRankingScoreByPeriodListHandler == nil {
 		globals.Logger.Warning("RankingSplatoon::GetcompetitionRankingScoreByPeriodList not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

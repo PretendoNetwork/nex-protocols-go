@@ -10,14 +10,14 @@ import (
 )
 
 // GetReplayMeta sets the GetReplayMeta handler function
-func (protocol *Protocol) GetReplayMeta(handler func(err error, client *nex.Client, callID uint32, param *datastore_super_smash_bros_4_types.DataStoreGetReplayMetaParam)) {
+func (protocol *Protocol) GetReplayMeta(handler func(err error, client *nex.Client, callID uint32, param *datastore_super_smash_bros_4_types.DataStoreGetReplayMetaParam) uint32) {
 	protocol.getReplayMetaHandler = handler
 }
 
 func (protocol *Protocol) handleGetReplayMeta(packet nex.PacketInterface) {
 	if protocol.getReplayMetaHandler == nil {
 		globals.Logger.Warning("DataStoreSuperSmashBros4::GetReplayMeta not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

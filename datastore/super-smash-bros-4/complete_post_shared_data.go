@@ -10,14 +10,14 @@ import (
 )
 
 // CompletePostSharedData sets the CompletePostSharedData handler function
-func (protocol *Protocol) CompletePostSharedData(handler func(err error, client *nex.Client, callID uint32, param *datastore_super_smash_bros_4_types.DataStoreCompletePostSharedDataParam)) {
+func (protocol *Protocol) CompletePostSharedData(handler func(err error, client *nex.Client, callID uint32, param *datastore_super_smash_bros_4_types.DataStoreCompletePostSharedDataParam) uint32) {
 	protocol.completePostSharedDataHandler = handler
 }
 
 func (protocol *Protocol) handleCompletePostSharedData(packet nex.PacketInterface) {
 	if protocol.completePostSharedDataHandler == nil {
 		globals.Logger.Warning("DataStoreSuperSmashBros4::CompletePostSharedData not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

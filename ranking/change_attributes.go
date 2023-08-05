@@ -10,14 +10,14 @@ import (
 )
 
 // ChangeAttributes sets the ChangeAttributes handler function
-func (protocol *Protocol) ChangeAttributes(handler func(err error, client *nex.Client, callID uint32, category uint32, changeParam *ranking_types.RankingChangeAttributesParam, uniqueID uint64)) {
+func (protocol *Protocol) ChangeAttributes(handler func(err error, client *nex.Client, callID uint32, category uint32, changeParam *ranking_types.RankingChangeAttributesParam, uniqueID uint64) uint32) {
 	protocol.changeAttributesHandler = handler
 }
 
 func (protocol *Protocol) handleChangeAttributes(packet nex.PacketInterface) {
 	if protocol.changeAttributesHandler == nil {
 		globals.Logger.Warning("Ranking::ChangeAttributes not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

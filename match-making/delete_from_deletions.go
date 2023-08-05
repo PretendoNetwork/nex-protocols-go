@@ -9,14 +9,14 @@ import (
 )
 
 // DeleteFromDeletions sets the DeleteFromDeletions handler function
-func (protocol *Protocol) DeleteFromDeletions(handler func(err error, client *nex.Client, callID uint32, lstDeletions []uint32)) {
+func (protocol *Protocol) DeleteFromDeletions(handler func(err error, client *nex.Client, callID uint32, lstDeletions []uint32) uint32) {
 	protocol.deleteFromDeletionsHandler = handler
 }
 
 func (protocol *Protocol) handleDeleteFromDeletions(packet nex.PacketInterface) {
 	if protocol.deleteFromDeletionsHandler == nil {
 		globals.Logger.Warning("MatchMaking::DeleteFromDeletions not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

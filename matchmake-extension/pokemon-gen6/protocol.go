@@ -29,7 +29,7 @@ type matchmakeExtensionProtocol = matchmake_extension.Protocol
 type Protocol struct {
 	Server *nex.Server
 	matchmakeExtensionProtocol
-	clearMyPreviouslyMatchedUserCacheHandler func(err error, client *nex.Client, callID uint32)
+	clearMyPreviouslyMatchedUserCacheHandler func(err error, client *nex.Client, callID uint32) uint32
 }
 
 // Setup initializes the protocol
@@ -55,7 +55,7 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 	case MethodClearMyPreviouslyMatchedUserCache:
 		go protocol.handleClearMyPreviouslyMatchedUserCache(packet)
 	default:
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		fmt.Printf("Unsupported MatchmakeExtension (Pokemon GEN 6) method ID: %#v\n", request.MethodID())
 	}
 }

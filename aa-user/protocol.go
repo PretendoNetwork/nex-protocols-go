@@ -29,10 +29,10 @@ const (
 // Protocol stores all the RMC method handlers for the AAUser protocol and listens for requests
 type Protocol struct {
 	Server                       *nex.Server
-	registerApplicationHandler   func(err error, client *nex.Client, callID uint32, titleID uint64)
-	unregisterApplicationHandler func(err error, client *nex.Client, callID uint32, titleID uint64)
-	setApplicationInfoHandler    func(err error, client *nex.Client, callID uint32, applicationInfo []*aauser_types.ApplicationInfo)
-	getApplicationInfoHandler    func(err error, client *nex.Client, callID uint32)
+	registerApplicationHandler   func(err error, client *nex.Client, callID uint32, titleID uint64) uint32
+	unregisterApplicationHandler func(err error, client *nex.Client, callID uint32, titleID uint64) uint32
+	setApplicationInfoHandler    func(err error, client *nex.Client, callID uint32, applicationInfo []*aauser_types.ApplicationInfo) uint32
+	getApplicationInfoHandler    func(err error, client *nex.Client, callID uint32) uint32
 }
 
 // Setup initializes the protocol
@@ -51,7 +51,7 @@ func (protocol *Protocol) Setup() {
 			case MethodGetApplicationInfo:
 				go protocol.handleGetApplicationInfo(packet)
 			default:
-				go globals.RespondNotImplemented(packet, ProtocolID)
+				go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 				fmt.Printf("Unsupported AAUser method ID: %#v\n", request.MethodID())
 			}
 		}

@@ -7,14 +7,14 @@ import (
 )
 
 // SearchCommunityCompetition sets the SearchCommunityCompetition handler function
-func (protocol *Protocol) SearchCommunityCompetition(handler func(err error, client *nex.Client, callID uint32, packetPayload []byte)) {
+func (protocol *Protocol) SearchCommunityCompetition(handler func(err error, client *nex.Client, callID uint32, packetPayload []byte) uint32) {
 	protocol.searchCommunityCompetitionHandler = handler
 }
 
 func (protocol *Protocol) handleSearchCommunityCompetition(packet nex.PacketInterface) {
 	if protocol.searchCommunityCompetitionHandler == nil {
 		globals.Logger.Warning("MatchmakeExtensionSuperSmashBros4::SearchCommunityCompetition not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

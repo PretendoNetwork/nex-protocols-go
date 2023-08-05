@@ -10,14 +10,14 @@ import (
 )
 
 // AddToBufferQueues sets the AddToBufferQueues handler function
-func (protocol *Protocol) AddToBufferQueues(handler func(err error, client *nex.Client, callID uint32, params []*datastore_super_mario_maker_types.BufferQueueParam, buffers [][]byte)) {
+func (protocol *Protocol) AddToBufferQueues(handler func(err error, client *nex.Client, callID uint32, params []*datastore_super_mario_maker_types.BufferQueueParam, buffers [][]byte) uint32) {
 	protocol.addToBufferQueuesHandler = handler
 }
 
 func (protocol *Protocol) handleAddToBufferQueues(packet nex.PacketInterface) {
 	if protocol.addToBufferQueuesHandler == nil {
 		globals.Logger.Warning("DataStoreSuperMarioMaker::AddToBufferQueues not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

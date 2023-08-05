@@ -10,14 +10,14 @@ import (
 )
 
 // CreateStats sets the CreateStats handler function
-func (protocol *Protocol) CreateStats(handler func(err error, client *nex.Client, callID uint32, param *matchmake_referee_types.MatchmakeRefereeStatsInitParam)) {
+func (protocol *Protocol) CreateStats(handler func(err error, client *nex.Client, callID uint32, param *matchmake_referee_types.MatchmakeRefereeStatsInitParam) uint32) {
 	protocol.createStatsHandler = handler
 }
 
 func (protocol *Protocol) handleCreateStats(packet nex.PacketInterface) {
 	if protocol.createStatsHandler == nil {
 		globals.Logger.Warning("MatchmakeReferee::CreateStats not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

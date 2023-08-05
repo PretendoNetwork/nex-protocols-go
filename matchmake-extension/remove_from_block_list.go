@@ -9,14 +9,14 @@ import (
 )
 
 // RemoveFromBlockList sets the RemoveFromBlockList handler function
-func (protocol *Protocol) RemoveFromBlockList(handler func(err error, client *nex.Client, callID uint32, lstPrincipalID []uint32)) {
+func (protocol *Protocol) RemoveFromBlockList(handler func(err error, client *nex.Client, callID uint32, lstPrincipalID []uint32) uint32) {
 	protocol.removeFromBlockListHandler = handler
 }
 
 func (protocol *Protocol) handleRemoveFromBlockList(packet nex.PacketInterface) {
 	if protocol.removeFromBlockListHandler == nil {
 		globals.Logger.Warning("MatchmakeExtension::RemoveFromBlockList not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

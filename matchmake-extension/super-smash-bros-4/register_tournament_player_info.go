@@ -7,14 +7,14 @@ import (
 )
 
 // RegisterTournamentPlayerInfo sets the RegisterTournamentPlayerInfo handler function
-func (protocol *Protocol) RegisterTournamentPlayerInfo(handler func(err error, client *nex.Client, callID uint32, packetPayload []byte)) {
+func (protocol *Protocol) RegisterTournamentPlayerInfo(handler func(err error, client *nex.Client, callID uint32, packetPayload []byte) uint32) {
 	protocol.registerTournamentPlayerInfoHandler = handler
 }
 
 func (protocol *Protocol) handleRegisterTournamentPlayerInfo(packet nex.PacketInterface) {
 	if protocol.registerTournamentPlayerInfoHandler == nil {
 		globals.Logger.Warning("MatchmakeExtensionSuperSmashBros4::RegisterTournamentPlayerInfo not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

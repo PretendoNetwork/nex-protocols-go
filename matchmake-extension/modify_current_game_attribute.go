@@ -9,14 +9,14 @@ import (
 )
 
 // ModifyCurrentGameAttribute sets the ModifyCurrentGameAttribute handler function
-func (protocol *Protocol) ModifyCurrentGameAttribute(handler func(err error, client *nex.Client, callID uint32, gid uint32, attribIndex uint32, newValue uint32)) {
+func (protocol *Protocol) ModifyCurrentGameAttribute(handler func(err error, client *nex.Client, callID uint32, gid uint32, attribIndex uint32, newValue uint32) uint32) {
 	protocol.modifyCurrentGameAttributeHandler = handler
 }
 
 func (protocol *Protocol) handleModifyCurrentGameAttribute(packet nex.PacketInterface) {
 	if protocol.modifyCurrentGameAttributeHandler == nil {
 		globals.Logger.Warning("MatchmakeExtension::ModifyCurrentGameAttribute not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

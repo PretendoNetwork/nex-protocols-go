@@ -9,14 +9,14 @@ import (
 )
 
 // FindByDescriptionRegex sets the FindByDescriptionRegex handler function
-func (protocol *Protocol) FindByDescriptionRegex(handler func(err error, client *nex.Client, callID uint32, strDescriptionRegex string, resultRange *nex.ResultRange)) {
+func (protocol *Protocol) FindByDescriptionRegex(handler func(err error, client *nex.Client, callID uint32, strDescriptionRegex string, resultRange *nex.ResultRange) uint32) {
 	protocol.findByDescriptionRegexHandler = handler
 }
 
 func (protocol *Protocol) handleFindByDescriptionRegex(packet nex.PacketInterface) {
 	if protocol.findByDescriptionRegexHandler == nil {
 		globals.Logger.Warning("MatchMaking::FindByDescriptionRegex not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

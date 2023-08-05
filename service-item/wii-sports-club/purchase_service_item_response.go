@@ -9,14 +9,14 @@ import (
 )
 
 // PurchaseServiceItemResponse sets the PurchaseServiceItemResponse handler function
-func (protocol *Protocol) PurchaseServiceItemResponse(handler func(err error, client *nex.Client, callID uint32, requestID uint32)) {
+func (protocol *Protocol) PurchaseServiceItemResponse(handler func(err error, client *nex.Client, callID uint32, requestID uint32) uint32) {
 	protocol.purchaseServiceItemResponseHandler = handler
 }
 
 func (protocol *Protocol) handlePurchaseServiceItemResponse(packet nex.PacketInterface) {
 	if protocol.purchaseServiceItemResponseHandler == nil {
 		globals.Logger.Warning("ServiceItemWiiSportsClub::PurchaseServiceItemResponse not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

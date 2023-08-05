@@ -9,14 +9,14 @@ import (
 )
 
 // DeleteCachedRanking sets the DeleteCachedRanking handler function
-func (protocol *Protocol) DeleteCachedRanking(handler func(err error, client *nex.Client, callID uint32, rankingType string, rankingArgs []string)) {
+func (protocol *Protocol) DeleteCachedRanking(handler func(err error, client *nex.Client, callID uint32, rankingType string, rankingArgs []string) uint32) {
 	protocol.deleteCachedRankingHandler = handler
 }
 
 func (protocol *Protocol) handleDeleteCachedRanking(packet nex.PacketInterface) {
 	if protocol.deleteCachedRankingHandler == nil {
 		globals.Logger.Warning("DataStoreSuperMarioMaker::DeleteCachedRanking not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

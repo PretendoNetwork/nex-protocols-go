@@ -9,14 +9,14 @@ import (
 )
 
 // AutoMatchmakePostpone sets the AutoMatchmakePostpone handler function
-func (protocol *Protocol) AutoMatchmakePostpone(handler func(err error, client *nex.Client, callID uint32, anyGathering *nex.DataHolder, strMessage string)) {
+func (protocol *Protocol) AutoMatchmakePostpone(handler func(err error, client *nex.Client, callID uint32, anyGathering *nex.DataHolder, strMessage string) uint32) {
 	protocol.autoMatchmakePostponeHandler = handler
 }
 
 func (protocol *Protocol) handleAutoMatchmakePostpone(packet nex.PacketInterface) {
 	if protocol.autoMatchmakePostponeHandler == nil {
 		globals.Logger.Warning("MatchmakeExtension::AutoMatchmakePostpone not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

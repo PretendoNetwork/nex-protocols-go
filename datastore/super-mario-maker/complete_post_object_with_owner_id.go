@@ -10,14 +10,14 @@ import (
 )
 
 // CompletePostObjectWithOwnerID sets the CompletePostObjectWithOwnerID handler function
-func (protocol *Protocol) CompletePostObjectWithOwnerID(handler func(err error, client *nex.Client, callID uint32, ownerID uint32, param *datastore_types.DataStoreCompletePostParam)) {
+func (protocol *Protocol) CompletePostObjectWithOwnerID(handler func(err error, client *nex.Client, callID uint32, ownerID uint32, param *datastore_types.DataStoreCompletePostParam) uint32) {
 	protocol.completePostObjectWithOwnerIDHandler = handler
 }
 
 func (protocol *Protocol) handleCompletePostObjectWithOwnerID(packet nex.PacketInterface) {
 	if protocol.completePostObjectWithOwnerIDHandler == nil {
 		globals.Logger.Warning("DataStoreSuperMarioMaker::CompletePostObjectWithOwnerID not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

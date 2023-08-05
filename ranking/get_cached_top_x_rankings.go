@@ -10,14 +10,14 @@ import (
 )
 
 // GetCachedTopXRankings sets the GetCachedTopXRankings handler function
-func (protocol *Protocol) GetCachedTopXRankings(handler func(err error, client *nex.Client, callID uint32, categories []uint32, orderParams []*ranking_types.RankingOrderParam)) {
+func (protocol *Protocol) GetCachedTopXRankings(handler func(err error, client *nex.Client, callID uint32, categories []uint32, orderParams []*ranking_types.RankingOrderParam) uint32) {
 	protocol.getCachedTopXRankingsHandler = handler
 }
 
 func (protocol *Protocol) handleGetCachedTopXRankings(packet nex.PacketInterface) {
 	if protocol.getCachedTopXRankingsHandler == nil {
 		globals.Logger.Warning("Ranking::GetCachedTopXRankings not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

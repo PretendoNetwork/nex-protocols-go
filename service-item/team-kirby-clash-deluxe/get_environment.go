@@ -9,14 +9,14 @@ import (
 )
 
 // GetEnvironment sets the GetEnvironment handler function
-func (protocol *Protocol) GetEnvironment(handler func(err error, client *nex.Client, callID uint32, uniqueID string, platform uint8)) {
+func (protocol *Protocol) GetEnvironment(handler func(err error, client *nex.Client, callID uint32, uniqueID string, platform uint8) uint32) {
 	protocol.getEnvironmentHandler = handler
 }
 
 func (protocol *Protocol) handleGetEnvironment(packet nex.PacketInterface) {
 	if protocol.getEnvironmentHandler == nil {
 		globals.Logger.Warning("ServiceItemTeamKirbyClashDeluxe::GetEnvironment not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

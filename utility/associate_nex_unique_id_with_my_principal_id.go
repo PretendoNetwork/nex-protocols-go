@@ -10,14 +10,14 @@ import (
 )
 
 // AssociateNexUniqueIDWithMyPrincipalID sets the AssociateNexUniqueIDWithMyPrincipalID handler function
-func (protocol *Protocol) AssociateNexUniqueIDWithMyPrincipalID(handler func(err error, client *nex.Client, callID uint32, uniqueIDInfo *utility_types.UniqueIDInfo)) {
+func (protocol *Protocol) AssociateNexUniqueIDWithMyPrincipalID(handler func(err error, client *nex.Client, callID uint32, uniqueIDInfo *utility_types.UniqueIDInfo) uint32) {
 	protocol.associateNexUniqueIDWithMyPrincipalIDHandler = handler
 }
 
 func (protocol *Protocol) handleAssociateNexUniqueIDWithMyPrincipalID(packet nex.PacketInterface) {
 	if protocol.associateNexUniqueIDWithMyPrincipalIDHandler == nil {
 		globals.Logger.Warning("Utility::AssociateNexUniqueIDWithMyPrincipalID not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

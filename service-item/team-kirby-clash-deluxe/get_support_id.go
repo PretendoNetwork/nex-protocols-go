@@ -10,14 +10,14 @@ import (
 )
 
 // GetSupportID sets the GetSupportID handler function
-func (protocol *Protocol) GetSupportID(handler func(err error, client *nex.Client, callID uint32, getSuppordIDParam *service_item_team_kirby_clash_deluxe_types.ServiceItemGetSupportIDParam)) {
+func (protocol *Protocol) GetSupportID(handler func(err error, client *nex.Client, callID uint32, getSuppordIDParam *service_item_team_kirby_clash_deluxe_types.ServiceItemGetSupportIDParam) uint32) {
 	protocol.getSupportIDHandler = handler
 }
 
 func (protocol *Protocol) handleGetSupportID(packet nex.PacketInterface) {
 	if protocol.getSupportIDHandler == nil {
 		globals.Logger.Warning("ServiceItemTeamKirbyClashDeluxe::GetSupportID not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

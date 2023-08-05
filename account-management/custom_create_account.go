@@ -9,14 +9,14 @@ import (
 )
 
 // CustomCreateAccount sets the CustomCreateAccount handler function
-func (protocol *Protocol) CustomCreateAccount(handler func(err error, client *nex.Client, callID uint32, strPrincipalName string, strKey string, uiGroups uint32, strEmail string, oAuthData *nex.DataHolder)) {
+func (protocol *Protocol) CustomCreateAccount(handler func(err error, client *nex.Client, callID uint32, strPrincipalName string, strKey string, uiGroups uint32, strEmail string, oAuthData *nex.DataHolder) uint32) {
 	protocol.customCreateAccountHandler = handler
 }
 
 func (protocol *Protocol) handleCustomCreateAccount(packet nex.PacketInterface) {
 	if protocol.customCreateAccountHandler == nil {
 		globals.Logger.Warning("AccountManagement::CustomCreateAccount not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

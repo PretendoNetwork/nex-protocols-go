@@ -9,14 +9,14 @@ import (
 )
 
 // LookupOrCreateAccount sets the LookupOrCreateAccount handler function
-func (protocol *Protocol) LookupOrCreateAccount(handler func(err error, client *nex.Client, callID uint32, strPrincipalName string, strKey string, uiGroups uint32, strEmail string, oAuthData *nex.DataHolder)) {
+func (protocol *Protocol) LookupOrCreateAccount(handler func(err error, client *nex.Client, callID uint32, strPrincipalName string, strKey string, uiGroups uint32, strEmail string, oAuthData *nex.DataHolder) uint32) {
 	protocol.lookupOrCreateAccountHandler = handler
 }
 
 func (protocol *Protocol) handleLookupOrCreateAccount(packet nex.PacketInterface) {
 	if protocol.lookupOrCreateAccountHandler == nil {
 		globals.Logger.Warning("AccountManagement::LookupOrCreateAccount not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

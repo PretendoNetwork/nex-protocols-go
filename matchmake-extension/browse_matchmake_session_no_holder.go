@@ -10,14 +10,14 @@ import (
 )
 
 // BrowseMatchmakeSessionNoHolder sets the BrowseMatchmakeSessionNoHolder handler function
-func (protocol *Protocol) BrowseMatchmakeSessionNoHolder(handler func(err error, client *nex.Client, callID uint32, searchCriteria *match_making_types.MatchmakeSessionSearchCriteria, resultRange *nex.ResultRange)) {
+func (protocol *Protocol) BrowseMatchmakeSessionNoHolder(handler func(err error, client *nex.Client, callID uint32, searchCriteria *match_making_types.MatchmakeSessionSearchCriteria, resultRange *nex.ResultRange) uint32) {
 	protocol.browseMatchmakeSessionNoHolderHandler = handler
 }
 
 func (protocol *Protocol) handleBrowseMatchmakeSessionNoHolder(packet nex.PacketInterface) {
 	if protocol.browseMatchmakeSessionNoHolderHandler == nil {
 		globals.Logger.Warning("MatchmakeExtension::BrowseMatchmakeSessionNoHolder not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

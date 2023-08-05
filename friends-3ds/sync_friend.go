@@ -9,14 +9,14 @@ import (
 )
 
 // SyncFriend sets the SyncFriend handler function
-func (protocol *Protocol) SyncFriend(handler func(err error, client *nex.Client, callID uint32, lfc uint64, pids []uint32, lfcList []uint64)) {
+func (protocol *Protocol) SyncFriend(handler func(err error, client *nex.Client, callID uint32, lfc uint64, pids []uint32, lfcList []uint64) uint32) {
 	protocol.syncFriendHandler = handler
 }
 
 func (protocol *Protocol) handleSyncFriend(packet nex.PacketInterface) {
 	if protocol.syncFriendHandler == nil {
 		globals.Logger.Warning("Friends3DS::SyncFriend not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

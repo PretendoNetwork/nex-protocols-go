@@ -7,14 +7,14 @@ import (
 )
 
 // ReportUser sets the ReportUser handler function
-func (protocol *Protocol) ReportUser(handler func(err error, client *nex.Client, callID uint32, packetPayload []byte)) {
+func (protocol *Protocol) ReportUser(handler func(err error, client *nex.Client, callID uint32, packetPayload []byte) uint32) {
 	protocol.reportUserHandler = handler
 }
 
 func (protocol *Protocol) handleReportUser(packet nex.PacketInterface) {
 	if protocol.reportUserHandler == nil {
 		globals.Logger.Warning("Screening::ReportUser not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

@@ -9,14 +9,14 @@ import (
 )
 
 // DeleteCommonData sets the DeleteCommonData handler function
-func (protocol *Protocol) DeleteCommonData(handler func(err error, client *nex.Client, callID uint32, uniqueID uint64)) {
+func (protocol *Protocol) DeleteCommonData(handler func(err error, client *nex.Client, callID uint32, uniqueID uint64) uint32) {
 	protocol.deleteCommonDataHandler = handler
 }
 
 func (protocol *Protocol) handleDeleteCommonData(packet nex.PacketInterface) {
 	if protocol.deleteCommonDataHandler == nil {
 		globals.Logger.Warning("Ranking::DeleteCommonData not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

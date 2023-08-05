@@ -9,14 +9,14 @@ import (
 )
 
 // UpdatePicture sets the UpdatePicture handler function
-func (protocol *Protocol) UpdatePicture(handler func(err error, client *nex.Client, callID uint32, unknown uint32, picture []byte)) {
+func (protocol *Protocol) UpdatePicture(handler func(err error, client *nex.Client, callID uint32, unknown uint32, picture []byte) uint32) {
 	protocol.updatePictureHandler = handler
 }
 
 func (protocol *Protocol) handleUpdatePicture(packet nex.PacketInterface) {
 	if protocol.updatePictureHandler == nil {
 		globals.Logger.Warning("Friends3DS::UpdatePicture not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

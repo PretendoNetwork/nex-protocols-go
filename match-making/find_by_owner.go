@@ -9,14 +9,14 @@ import (
 )
 
 // FindByOwner sets the FindByOwner handler function
-func (protocol *Protocol) FindByOwner(handler func(err error, client *nex.Client, callID uint32, id uint32, resultRange *nex.ResultRange)) {
+func (protocol *Protocol) FindByOwner(handler func(err error, client *nex.Client, callID uint32, id uint32, resultRange *nex.ResultRange) uint32) {
 	protocol.findByOwnerHandler = handler
 }
 
 func (protocol *Protocol) handleFindByOwner(packet nex.PacketInterface) {
 	if protocol.findByOwnerHandler == nil {
 		globals.Logger.Warning("MatchMaking::FindByOwner not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

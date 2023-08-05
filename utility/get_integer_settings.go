@@ -9,14 +9,14 @@ import (
 )
 
 // GetIntegerSettings sets the GetIntegerSettings handler function
-func (protocol *Protocol) GetIntegerSettings(handler func(err error, client *nex.Client, callID uint32, integerSettingIndex uint32)) {
+func (protocol *Protocol) GetIntegerSettings(handler func(err error, client *nex.Client, callID uint32, integerSettingIndex uint32) uint32) {
 	protocol.getIntegerSettingsHandler = handler
 }
 
 func (protocol *Protocol) handleGetIntegerSettings(packet nex.PacketInterface) {
 	if protocol.getIntegerSettingsHandler == nil {
 		globals.Logger.Warning("Utility::GetIntegerSettings not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

@@ -10,14 +10,14 @@ import (
 )
 
 // EndRound sets the EndRound handler function
-func (protocol *Protocol) EndRound(handler func(err error, client *nex.Client, callID uint32, endRoundParam *matchmake_referee_types.MatchmakeRefereeEndRoundParam)) {
+func (protocol *Protocol) EndRound(handler func(err error, client *nex.Client, callID uint32, endRoundParam *matchmake_referee_types.MatchmakeRefereeEndRoundParam) uint32) {
 	protocol.endRoundHandler = handler
 }
 
 func (protocol *Protocol) handleEndRound(packet nex.PacketInterface) {
 	if protocol.endRoundHandler == nil {
 		globals.Logger.Warning("MatchmakeReferee::EndRound not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

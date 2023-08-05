@@ -9,14 +9,14 @@ import (
 )
 
 // ReportNATTraversalResult sets the ReportNATTraversalResult handler function
-func (protocol *Protocol) ReportNATTraversalResult(handler func(err error, client *nex.Client, callID uint32, cid uint32, result bool, rtt uint32)) {
+func (protocol *Protocol) ReportNATTraversalResult(handler func(err error, client *nex.Client, callID uint32, cid uint32, result bool, rtt uint32) uint32) {
 	protocol.reportNATTraversalResultHandler = handler
 }
 
 func (protocol *Protocol) handleReportNATTraversalResult(packet nex.PacketInterface) {
 	if protocol.reportNATTraversalResultHandler == nil {
 		globals.Logger.Warning("NATTraversal::ReportNATTraversalResult not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

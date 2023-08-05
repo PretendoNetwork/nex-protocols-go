@@ -10,14 +10,14 @@ import (
 )
 
 // GetStatsPrimaries sets the GetStatsPrimaries handler function
-func (protocol *Protocol) GetStatsPrimaries(handler func(err error, client *nex.Client, callID uint32, targets []*matchmake_referee_types.MatchmakeRefereeStatsTarget)) {
+func (protocol *Protocol) GetStatsPrimaries(handler func(err error, client *nex.Client, callID uint32, targets []*matchmake_referee_types.MatchmakeRefereeStatsTarget) uint32) {
 	protocol.getStatsPrimariesHandler = handler
 }
 
 func (protocol *Protocol) handleGetStatsPrimaries(packet nex.PacketInterface) {
 	if protocol.getStatsPrimariesHandler == nil {
 		globals.Logger.Warning("MatchmakeReferee::GetStatsPrimaries not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

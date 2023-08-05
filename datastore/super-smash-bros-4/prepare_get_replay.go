@@ -10,14 +10,14 @@ import (
 )
 
 // PrepareGetReplay sets the PrepareGetReplay handler function
-func (protocol *Protocol) PrepareGetReplay(handler func(err error, client *nex.Client, callID uint32, param *datastore_super_smash_bros_4_types.DataStorePrepareGetReplayParam)) {
+func (protocol *Protocol) PrepareGetReplay(handler func(err error, client *nex.Client, callID uint32, param *datastore_super_smash_bros_4_types.DataStorePrepareGetReplayParam) uint32) {
 	protocol.prepareGetReplayHandler = handler
 }
 
 func (protocol *Protocol) handlePrepareGetReplay(packet nex.PacketInterface) {
 	if protocol.prepareGetReplayHandler == nil {
 		globals.Logger.Warning("DataStoreSuperSmashBros4::PrepareGetReplay not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

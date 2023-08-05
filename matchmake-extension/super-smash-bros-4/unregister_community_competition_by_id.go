@@ -7,14 +7,14 @@ import (
 )
 
 // UnregisterCommunityCompetitionByID sets the UnregisterCommunityCompetitionByID handler function
-func (protocol *Protocol) UnregisterCommunityCompetitionByID(handler func(err error, client *nex.Client, callID uint32, packetPayload []byte)) {
+func (protocol *Protocol) UnregisterCommunityCompetitionByID(handler func(err error, client *nex.Client, callID uint32, packetPayload []byte) uint32) {
 	protocol.unregisterCommunityCompetitionByIDHandler = handler
 }
 
 func (protocol *Protocol) handleUnregisterCommunityCompetitionByID(packet nex.PacketInterface) {
 	if protocol.unregisterCommunityCompetitionByIDHandler == nil {
 		globals.Logger.Warning("MatchmakeExtensionSuperSmashBros4::UnregisterCommunityCompetitionByID not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

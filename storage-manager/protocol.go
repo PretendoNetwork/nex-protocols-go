@@ -22,8 +22,8 @@ const (
 // Protocol stores all the RMC method handlers for the StorageManager protocol and listens for requests
 type Protocol struct {
 	Server                    *nex.Server
-	acquireCardIDHandler      func(err error, client *nex.Client, callID uint32)
-	activateWithCardIDHandler func(err error, client *nex.Client, callID uint32, unknown uint8, cardID uint64)
+	acquireCardIDHandler      func(err error, client *nex.Client, callID uint32) uint32
+	activateWithCardIDHandler func(err error, client *nex.Client, callID uint32, unknown uint8, cardID uint64) uint32
 }
 
 // Setup initializes the protocol
@@ -38,7 +38,7 @@ func (protocol *Protocol) Setup() {
 			case MethodActivateWithCardID:
 				go protocol.handleActivateWithCardID(packet)
 			default:
-				go globals.RespondNotImplemented(packet, ProtocolID)
+				go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 				fmt.Printf("Unsupported StorageManager method ID: %#v\n", request.MethodID())
 			}
 		}

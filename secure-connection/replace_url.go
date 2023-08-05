@@ -9,14 +9,14 @@ import (
 )
 
 // ReplaceURL sets the ReplaceURL handler function
-func (protocol *Protocol) ReplaceURL(handler func(err error, client *nex.Client, callID uint32, target *nex.StationURL, url *nex.StationURL)) {
+func (protocol *Protocol) ReplaceURL(handler func(err error, client *nex.Client, callID uint32, target *nex.StationURL, url *nex.StationURL) uint32) {
 	protocol.replaceURLHandler = handler
 }
 
 func (protocol *Protocol) handleReplaceURL(packet nex.PacketInterface) {
 	if protocol.replaceURLHandler == nil {
 		globals.Logger.Warning("SecureConnection::ReplaceURL not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

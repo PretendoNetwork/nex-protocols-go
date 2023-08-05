@@ -10,14 +10,14 @@ import (
 )
 
 // ConditionalSearchObject sets the ConditionalSearchObject handler function
-func (protocol *Protocol) ConditionalSearchObject(handler func(err error, client *nex.Client, callID uint32, condition uint32, param *datastore_types.DataStoreSearchParam, extraData []string)) {
+func (protocol *Protocol) ConditionalSearchObject(handler func(err error, client *nex.Client, callID uint32, condition uint32, param *datastore_types.DataStoreSearchParam, extraData []string) uint32) {
 	protocol.conditionalSearchObjectHandler = handler
 }
 
 func (protocol *Protocol) handleConditionalSearchObject(packet nex.PacketInterface) {
 	if protocol.conditionalSearchObjectHandler == nil {
 		globals.Logger.Warning("DataStoreSuperMarioMaker::ConditionalSearchObject not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

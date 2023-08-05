@@ -5,19 +5,19 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
-	service_item_wii_sports_club_types "github.com/PretendoNetwork/nex-protocols-go/service-item/wii-sports-club/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
+	service_item_wii_sports_club_types "github.com/PretendoNetwork/nex-protocols-go/service-item/wii-sports-club/types"
 )
 
 // GetNotice sets the GetNotice handler function
-func (protocol *Protocol) GetNotice(handler func(err error, client *nex.Client, callID uint32, getNoticeParam *service_item_wii_sports_club_types.ServiceItemGetNoticeParam)) {
+func (protocol *Protocol) GetNotice(handler func(err error, client *nex.Client, callID uint32, getNoticeParam *service_item_wii_sports_club_types.ServiceItemGetNoticeParam) uint32) {
 	protocol.getNoticeHandler = handler
 }
 
 func (protocol *Protocol) handleGetNotice(packet nex.PacketInterface) {
 	if protocol.getNoticeHandler == nil {
 		globals.Logger.Warning("ServiceItemWiiSportsClub::GetNotice not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

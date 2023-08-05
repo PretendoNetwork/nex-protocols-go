@@ -9,14 +9,14 @@ import (
 )
 
 // GetTransactionParam sets the GetTransactionParam handler function
-func (protocol *Protocol) GetTransactionParam(handler func(err error, client *nex.Client, callID uint32, slotID uint16)) {
+func (protocol *Protocol) GetTransactionParam(handler func(err error, client *nex.Client, callID uint32, slotID uint16) uint32) {
 	protocol.getTransactionParamHandler = handler
 }
 
 func (protocol *Protocol) handleGetTransactionParam(packet nex.PacketInterface) {
 	if protocol.getTransactionParamHandler == nil {
 		globals.Logger.Warning("DataStorePokemonBank::GetTransactionParam not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

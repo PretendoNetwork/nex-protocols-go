@@ -10,14 +10,14 @@ import (
 )
 
 // GetBalanceRequest sets the GetBalanceRequest handler function
-func (protocol *Protocol) GetBalanceRequest(handler func(err error, client *nex.Client, callID uint32, getBalanceParam *service_item_team_kirby_clash_deluxe_types.ServiceItemGetBalanceParam)) {
+func (protocol *Protocol) GetBalanceRequest(handler func(err error, client *nex.Client, callID uint32, getBalanceParam *service_item_team_kirby_clash_deluxe_types.ServiceItemGetBalanceParam) uint32) {
 	protocol.getBalanceRequestHandler = handler
 }
 
 func (protocol *Protocol) handleGetBalanceRequest(packet nex.PacketInterface) {
 	if protocol.getBalanceRequestHandler == nil {
 		globals.Logger.Warning("ServiceItemTeamKirbyClashDeluxe::GetBalanceRequest not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

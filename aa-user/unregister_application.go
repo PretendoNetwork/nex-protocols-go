@@ -9,14 +9,14 @@ import (
 )
 
 // UnregisterApplication sets the UnregisterApplication handler function
-func (protocol *Protocol) UnregisterApplication(handler func(err error, client *nex.Client, callID uint32, titleID uint64)) {
+func (protocol *Protocol) UnregisterApplication(handler func(err error, client *nex.Client, callID uint32, titleID uint64) uint32) {
 	protocol.unregisterApplicationHandler = handler
 }
 
 func (protocol *Protocol) handleUnregisterApplication(packet nex.PacketInterface) {
 	if protocol.unregisterApplicationHandler == nil {
 		globals.Logger.Warning("AAUser::UnregisterApplication not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

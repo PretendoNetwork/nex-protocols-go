@@ -9,14 +9,14 @@ import (
 )
 
 // SetState sets the SetState handler function
-func (protocol *Protocol) SetState(handler func(err error, client *nex.Client, callID uint32, idGathering uint32, uiNewState uint32)) {
+func (protocol *Protocol) SetState(handler func(err error, client *nex.Client, callID uint32, idGathering uint32, uiNewState uint32) uint32) {
 	protocol.setStateHandler = handler
 }
 
 func (protocol *Protocol) handleSetState(packet nex.PacketInterface) {
 	if protocol.setStateHandler == nil {
 		globals.Logger.Warning("MatchMaking::SetState not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

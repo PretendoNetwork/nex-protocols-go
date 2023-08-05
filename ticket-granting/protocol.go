@@ -34,12 +34,12 @@ const (
 // Protocol stores all the RMC method handlers for the Ticket Granting protocol and listens for requests
 type Protocol struct {
 	Server                  *nex.Server
-	loginHandler            func(err error, client *nex.Client, callID uint32, strUserName string)
-	loginExHandler          func(err error, client *nex.Client, callID uint32, strUserName string, oExtraData *nex.DataHolder)
-	requestTicketHandler    func(err error, client *nex.Client, callID uint32, idSource uint32, idTarget uint32)
-	getPIDHandler           func(err error, client *nex.Client, callID uint32, strUserName string)
-	getNameHandler          func(err error, client *nex.Client, callID uint32, id uint32)
-	loginWithContextHandler func(err error, client *nex.Client, callID uint32)
+	loginHandler            func(err error, client *nex.Client, callID uint32, strUserName string) uint32
+	loginExHandler          func(err error, client *nex.Client, callID uint32, strUserName string, oExtraData *nex.DataHolder) uint32
+	requestTicketHandler    func(err error, client *nex.Client, callID uint32, idSource uint32, idTarget uint32) uint32
+	getPIDHandler           func(err error, client *nex.Client, callID uint32, strUserName string) uint32
+	getNameHandler          func(err error, client *nex.Client, callID uint32, id uint32) uint32
+	loginWithContextHandler func(err error, client *nex.Client, callID uint32) uint32
 }
 
 // Setup initializes the protocol
@@ -71,7 +71,7 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 	case MethodLoginWithContext:
 		go protocol.handleLoginWithContext(packet)
 	default:
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		fmt.Printf("Unsupported Ticket Granting method ID: %#v\n", request.MethodID())
 	}
 }

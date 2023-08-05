@@ -10,14 +10,14 @@ import (
 )
 
 // GetSpecificMetaV1 sets the GetSpecificMetaV1 handler function
-func (protocol *Protocol) GetSpecificMetaV1(handler func(err error, client *nex.Client, callID uint32, param *datastore_types.DataStoreGetSpecificMetaParamV1)) {
+func (protocol *Protocol) GetSpecificMetaV1(handler func(err error, client *nex.Client, callID uint32, param *datastore_types.DataStoreGetSpecificMetaParamV1) uint32) {
 	protocol.getSpecificMetaV1Handler = handler
 }
 
 func (protocol *Protocol) handleGetSpecificMetaV1(packet nex.PacketInterface) {
 	if protocol.getSpecificMetaV1Handler == nil {
 		globals.Logger.Warning("DataStore::GetSpecificMetaV1 not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

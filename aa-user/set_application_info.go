@@ -10,14 +10,14 @@ import (
 )
 
 // SetApplicationInfo sets the SetApplicationInfo handler function
-func (protocol *Protocol) SetApplicationInfo(handler func(err error, client *nex.Client, callID uint32, applicationInfo []*aauser_types.ApplicationInfo)) {
+func (protocol *Protocol) SetApplicationInfo(handler func(err error, client *nex.Client, callID uint32, applicationInfo []*aauser_types.ApplicationInfo) uint32) {
 	protocol.setApplicationInfoHandler = handler
 }
 
 func (protocol *Protocol) handleSetApplicationInfo(packet nex.PacketInterface) {
 	if protocol.setApplicationInfoHandler == nil {
 		globals.Logger.Warning("AAUser::SetApplicationInfo not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

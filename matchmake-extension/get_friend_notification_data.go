@@ -9,14 +9,14 @@ import (
 )
 
 // GetFriendNotificationData sets the GetFriendNotificationData handler function
-func (protocol *Protocol) GetFriendNotificationData(handler func(err error, client *nex.Client, callID uint32, uiType int32)) {
+func (protocol *Protocol) GetFriendNotificationData(handler func(err error, client *nex.Client, callID uint32, uiType int32) uint32) {
 	protocol.getFriendNotificationDataHandler = handler
 }
 
 func (protocol *Protocol) handleGetFriendNotificationData(packet nex.PacketInterface) {
 	if protocol.getFriendNotificationDataHandler == nil {
 		globals.Logger.Warning("MatchmakeExtension::GetFriendNotificationData not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

@@ -10,14 +10,14 @@ import (
 )
 
 // RequestMatchmaking sets the RequestMatchmaking handler function
-func (protocol *Protocol) RequestMatchmaking(handler func(err error, client *nex.Client, callID uint32, autoMatchmakeParam *match_making_types.AutoMatchmakeParam)) {
+func (protocol *Protocol) RequestMatchmaking(handler func(err error, client *nex.Client, callID uint32, autoMatchmakeParam *match_making_types.AutoMatchmakeParam) uint32) {
 	protocol.requestMatchmakingHandler = handler
 }
 
 func (protocol *Protocol) handleRequestMatchmaking(packet nex.PacketInterface) {
 	if protocol.requestMatchmakingHandler == nil {
 		globals.Logger.Warning("MatchmakeExtension::RequestMatchmaking not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

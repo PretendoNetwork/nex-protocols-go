@@ -10,14 +10,14 @@ import (
 )
 
 // ChangePlayablePlatform sets the ChangePlayablePlatform handler function
-func (protocol *Protocol) ChangePlayablePlatform(handler func(err error, client *nex.Client, callID uint32, params []*datastore_super_mario_maker_types.DataStoreChangePlayablePlatformParam)) {
+func (protocol *Protocol) ChangePlayablePlatform(handler func(err error, client *nex.Client, callID uint32, params []*datastore_super_mario_maker_types.DataStoreChangePlayablePlatformParam) uint32) {
 	protocol.changePlayablePlatformHandler = handler
 }
 
 func (protocol *Protocol) handleChangePlayablePlatform(packet nex.PacketInterface) {
 	if protocol.changePlayablePlatformHandler == nil {
 		globals.Logger.Warning("DataStoreSuperMarioMaker::ChangePlayablePlatform not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

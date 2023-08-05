@@ -7,14 +7,14 @@ import (
 )
 
 // UnfollowAllAndFollow sets the UnfollowAllAndFollow handler function
-func (protocol *Protocol) UnfollowAllAndFollow(handler func(err error, client *nex.Client, callID uint32, packetPayload []byte)) {
+func (protocol *Protocol) UnfollowAllAndFollow(handler func(err error, client *nex.Client, callID uint32, packetPayload []byte) uint32) {
 	protocol.unfollowAllAndFollowHandler = handler
 }
 
 func (protocol *Protocol) handleUnfollowAllAndFollow(packet nex.PacketInterface) {
 	if protocol.unfollowAllAndFollowHandler == nil {
 		globals.Logger.Warning("Subscriber::UnfollowAllAndFollow not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

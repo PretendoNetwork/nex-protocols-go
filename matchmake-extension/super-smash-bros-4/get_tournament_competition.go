@@ -7,14 +7,14 @@ import (
 )
 
 // GetTournamentCompetition sets the GetTournamentCompetition handler function
-func (protocol *Protocol) GetTournamentCompetition(handler func(err error, client *nex.Client, callID uint32, packetPayload []byte)) {
+func (protocol *Protocol) GetTournamentCompetition(handler func(err error, client *nex.Client, callID uint32, packetPayload []byte) uint32) {
 	protocol.getTournamentCompetitionHandler = handler
 }
 
 func (protocol *Protocol) handleGetTournamentCompetition(packet nex.PacketInterface) {
 	if protocol.getTournamentCompetitionHandler == nil {
 		globals.Logger.Warning("MatchmakeExtensionSuperSmashBros4::GetTournamentCompetition not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

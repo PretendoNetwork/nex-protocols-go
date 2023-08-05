@@ -9,14 +9,14 @@ import (
 )
 
 // AddToBlockList sets the AddToBlockList handler function
-func (protocol *Protocol) AddToBlockList(handler func(err error, client *nex.Client, callID uint32, lstPrincipalID []uint32)) {
+func (protocol *Protocol) AddToBlockList(handler func(err error, client *nex.Client, callID uint32, lstPrincipalID []uint32) uint32) {
 	protocol.addToBlockListHandler = handler
 }
 
 func (protocol *Protocol) handleAddToBlockList(packet nex.PacketInterface) {
 	if protocol.addToBlockListHandler == nil {
 		globals.Logger.Warning("MatchmakeExtension::AddToBlockList not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

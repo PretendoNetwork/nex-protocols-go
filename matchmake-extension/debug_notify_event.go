@@ -9,14 +9,14 @@ import (
 )
 
 // DebugNotifyEvent sets the DebugNotifyEvent handler function
-func (protocol *Protocol) DebugNotifyEvent(handler func(err error, client *nex.Client, callID uint32, pid uint32, mainType uint32, subType uint32, param1 uint64, param2 uint64, stringParam string)) {
+func (protocol *Protocol) DebugNotifyEvent(handler func(err error, client *nex.Client, callID uint32, pid uint32, mainType uint32, subType uint32, param1 uint64, param2 uint64, stringParam string) uint32) {
 	protocol.debugNotifyEventHandler = handler
 }
 
 func (protocol *Protocol) handleDebugNotifyEvent(packet nex.PacketInterface) {
 	if protocol.debugNotifyEventHandler == nil {
 		globals.Logger.Warning("MatchmakeExtension::DebugNotifyEvent not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

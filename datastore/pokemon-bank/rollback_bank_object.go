@@ -10,14 +10,14 @@ import (
 )
 
 // RollbackBankObject sets the RollbackBankObject handler function
-func (protocol *Protocol) RollbackBankObject(handler func(err error, client *nex.Client, callID uint32, slotID uint16, transactionParam *datastore_pokemon_bank_types.BankTransactionParam, isForce bool)) {
+func (protocol *Protocol) RollbackBankObject(handler func(err error, client *nex.Client, callID uint32, slotID uint16, transactionParam *datastore_pokemon_bank_types.BankTransactionParam, isForce bool) uint32) {
 	protocol.rollbackBankObjectHandler = handler
 }
 
 func (protocol *Protocol) handleRollbackBankObject(packet nex.PacketInterface) {
 	if protocol.rollbackBankObjectHandler == nil {
 		globals.Logger.Warning("DataStorePokemonBank::RollbackBankObject not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

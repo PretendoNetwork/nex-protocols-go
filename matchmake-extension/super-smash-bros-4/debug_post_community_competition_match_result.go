@@ -7,14 +7,14 @@ import (
 )
 
 // DebugPostCommunityCompetitionMatchResult sets the DebugPostCommunityCompetitionMatchResult handler function
-func (protocol *Protocol) DebugPostCommunityCompetitionMatchResult(handler func(err error, client *nex.Client, callID uint32, packetPayload []byte)) {
+func (protocol *Protocol) DebugPostCommunityCompetitionMatchResult(handler func(err error, client *nex.Client, callID uint32, packetPayload []byte) uint32) {
 	protocol.debugPostCommunityCompetitionMatchResultHandler = handler
 }
 
 func (protocol *Protocol) handleDebugPostCommunityCompetitionMatchResult(packet nex.PacketInterface) {
 	if protocol.debugPostCommunityCompetitionMatchResultHandler == nil {
 		globals.Logger.Warning("MatchmakeExtensionSuperSmashBros4::DebugPostCommunityCompetitionMatchResult not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

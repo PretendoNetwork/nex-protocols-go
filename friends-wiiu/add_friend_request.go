@@ -10,14 +10,14 @@ import (
 )
 
 // AddFriendRequest sets the AddFriendRequest handler function
-func (protocol *Protocol) AddFriendRequest(handler func(err error, client *nex.Client, callID uint32, pid uint32, unknown2 uint8, message string, unknown4 uint8, unknown5 string, gameKey *friends_wiiu_types.GameKey, unknown6 *nex.DateTime)) {
+func (protocol *Protocol) AddFriendRequest(handler func(err error, client *nex.Client, callID uint32, pid uint32, unknown2 uint8, message string, unknown4 uint8, unknown5 string, gameKey *friends_wiiu_types.GameKey, unknown6 *nex.DateTime) uint32) {
 	protocol.addFriendRequestHandler = handler
 }
 
 func (protocol *Protocol) handleAddFriendRequest(packet nex.PacketInterface) {
 	if protocol.addFriendRequestHandler == nil {
 		globals.Logger.Warning("FriendsWiiU::AddFriendRequest not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

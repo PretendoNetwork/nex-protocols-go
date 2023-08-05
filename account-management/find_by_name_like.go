@@ -9,14 +9,14 @@ import (
 )
 
 // FindByNameLike sets the FindByNameLike handler function
-func (protocol *Protocol) FindByNameLike(handler func(err error, client *nex.Client, callID uint32, uiGroups uint32, strLike string, resultRange *nex.ResultRange)) {
+func (protocol *Protocol) FindByNameLike(handler func(err error, client *nex.Client, callID uint32, uiGroups uint32, strLike string, resultRange *nex.ResultRange) uint32) {
 	protocol.findByNameLikeHandler = handler
 }
 
 func (protocol *Protocol) handleFindByNameLike(packet nex.PacketInterface) {
 	if protocol.findByNameLikeHandler == nil {
 		globals.Logger.Warning("AccountManagement::FindByNameLike not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

@@ -9,14 +9,14 @@ import (
 )
 
 // GetMultiplePublicData sets the GetMultiplePublicData handler function
-func (protocol *Protocol) GetMultiplePublicData(handler func(err error, client *nex.Client, callID uint32, lstPrincipals []uint32)) {
+func (protocol *Protocol) GetMultiplePublicData(handler func(err error, client *nex.Client, callID uint32, lstPrincipals []uint32) uint32) {
 	protocol.getMultiplePublicDataHandler = handler
 }
 
 func (protocol *Protocol) handleGetMultiplePublicData(packet nex.PacketInterface) {
 	if protocol.getMultiplePublicDataHandler == nil {
 		globals.Logger.Warning("AccountManagement::GetMultiplePublicData not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

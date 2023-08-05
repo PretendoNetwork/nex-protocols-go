@@ -9,14 +9,14 @@ import (
 )
 
 // ReportViolation sets the ReportViolation handler function
-func (protocol *Protocol) ReportViolation(handler func(err error, client *nex.Client, callID uint32, pid uint32, userName string, violationCode uint32)) {
+func (protocol *Protocol) ReportViolation(handler func(err error, client *nex.Client, callID uint32, pid uint32, userName string, violationCode uint32) uint32) {
 	protocol.reportViolationHandler = handler
 }
 
 func (protocol *Protocol) handleReportViolation(packet nex.PacketInterface) {
 	if protocol.reportViolationHandler == nil {
 		globals.Logger.Warning("MatchmakeExtension::ReportViolation not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

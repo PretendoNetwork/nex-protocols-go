@@ -7,14 +7,14 @@ import (
 )
 
 // ReportTournamentBotRoundResult sets the ReportTournamentBotRoundResult handler function
-func (protocol *Protocol) ReportTournamentBotRoundResult(handler func(err error, client *nex.Client, callID uint32, packetPayload []byte)) {
+func (protocol *Protocol) ReportTournamentBotRoundResult(handler func(err error, client *nex.Client, callID uint32, packetPayload []byte) uint32) {
 	protocol.reportTournamentBotRoundResultHandler = handler
 }
 
 func (protocol *Protocol) handleReportTournamentBotRoundResult(packet nex.PacketInterface) {
 	if protocol.reportTournamentBotRoundResultHandler == nil {
 		globals.Logger.Warning("MatchmakeExtensionSuperSmashBros4::ReportTournamentBotRoundResult not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

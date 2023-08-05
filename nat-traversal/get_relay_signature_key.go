@@ -7,14 +7,14 @@ import (
 )
 
 // GetRelaySignatureKey sets the GetRelaySignatureKey handler function
-func (protocol *Protocol) GetRelaySignatureKey(handler func(err error, client *nex.Client, callID uint32)) {
+func (protocol *Protocol) GetRelaySignatureKey(handler func(err error, client *nex.Client, callID uint32) uint32) {
 	protocol.getRelaySignatureKeyHandler = handler
 }
 
 func (protocol *Protocol) handleGetRelaySignatureKey(packet nex.PacketInterface) {
 	if protocol.getRelaySignatureKeyHandler == nil {
 		globals.Logger.Warning("NATTraversal::GetRelaySignatureKey not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

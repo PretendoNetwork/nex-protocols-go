@@ -5,19 +5,19 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
-	ranking2_types "github.com/PretendoNetwork/nex-protocols-go/ranking2/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
+	ranking2_types "github.com/PretendoNetwork/nex-protocols-go/ranking2/types"
 )
 
 // PutScore sets the PutScore handler function
-func (protocol *Protocol) PutScore(handler func(err error, client *nex.Client, callID uint32, scoreDataList []*ranking2_types.Ranking2ScoreData, nexUniqueID uint64)) {
+func (protocol *Protocol) PutScore(handler func(err error, client *nex.Client, callID uint32, scoreDataList []*ranking2_types.Ranking2ScoreData, nexUniqueID uint64) uint32) {
 	protocol.putScoreHandler = handler
 }
 
 func (protocol *Protocol) handlePutScore(packet nex.PacketInterface) {
 	if protocol.putScoreHandler == nil {
 		globals.Logger.Warning("Ranking2::PutScore not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 	client := packet.Sender()

@@ -9,14 +9,14 @@ import (
 )
 
 // CancelParticipation sets the CancelParticipation handler function
-func (protocol *Protocol) CancelParticipation(handler func(err error, client *nex.Client, callID uint32, idGathering uint32, strMessage string)) {
+func (protocol *Protocol) CancelParticipation(handler func(err error, client *nex.Client, callID uint32, idGathering uint32, strMessage string) uint32) {
 	protocol.cancelParticipationHandler = handler
 }
 
 func (protocol *Protocol) handleCancelParticipation(packet nex.PacketInterface) {
 	if protocol.cancelParticipationHandler == nil {
 		globals.Logger.Warning("MatchMaking::CancelParticipation not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

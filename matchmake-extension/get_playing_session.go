@@ -9,14 +9,14 @@ import (
 )
 
 // GetPlayingSession sets the GetPlayingSession handler function
-func (protocol *Protocol) GetPlayingSession(handler func(err error, client *nex.Client, callID uint32, lstPID []uint32)) {
+func (protocol *Protocol) GetPlayingSession(handler func(err error, client *nex.Client, callID uint32, lstPID []uint32) uint32) {
 	protocol.getPlayingSessionHandler = handler
 }
 
 func (protocol *Protocol) handleGetPlayingSession(packet nex.PacketInterface) {
 	if protocol.getPlayingSessionHandler == nil {
 		globals.Logger.Warning("MatchmakeExtension::GetPlayingSession not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

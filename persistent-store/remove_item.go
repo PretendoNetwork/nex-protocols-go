@@ -9,14 +9,14 @@ import (
 )
 
 // RemoveItem sets the RemoveItem handler function
-func (protocol *Protocol) RemoveItem(handler func(err error, client *nex.Client, callID uint32, uiGroup uint32, strTag string)) {
+func (protocol *Protocol) RemoveItem(handler func(err error, client *nex.Client, callID uint32, uiGroup uint32, strTag string) uint32) {
 	protocol.removeItemHandler = handler
 }
 
 func (protocol *Protocol) handleRemoveItem(packet nex.PacketInterface) {
 	if protocol.removeItemHandler == nil {
 		globals.Logger.Warning("PersistentStore::RemoveItem not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

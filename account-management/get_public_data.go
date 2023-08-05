@@ -9,14 +9,14 @@ import (
 )
 
 // GetPublicData sets the GetPublicData handler function
-func (protocol *Protocol) GetPublicData(handler func(err error, client *nex.Client, callID uint32, idPrincipal uint32)) {
+func (protocol *Protocol) GetPublicData(handler func(err error, client *nex.Client, callID uint32, idPrincipal uint32) uint32) {
 	protocol.getPublicDataHandler = handler
 }
 
 func (protocol *Protocol) handleGetPublicData(packet nex.PacketInterface) {
 	if protocol.getPublicDataHandler == nil {
 		globals.Logger.Warning("AccountManagement::GetPublicData not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

@@ -10,14 +10,14 @@ import (
 )
 
 // PostPlayLog sets the PostPlayLog function
-func (protocol *Protocol) PostPlayLog(handler func(err error, client *nex.Client, callID uint32, param *shop_nintendo_badge_arcade_types.ShopPostPlayLogParam)) {
+func (protocol *Protocol) PostPlayLog(handler func(err error, client *nex.Client, callID uint32, param *shop_nintendo_badge_arcade_types.ShopPostPlayLogParam) uint32) {
 	protocol.postPlayLogHandler = handler
 }
 
 func (protocol *Protocol) handlePostPlayLog(packet nex.PacketInterface) {
 	if protocol.postPlayLogHandler == nil {
 		globals.Logger.Warning("ShopNintendoBadgeArcade::PostPlayLog not implemented")
-		go globals.RespondNotImplementedCustom(packet, CustomProtocolID)
+		go globals.RespondErrorCustom(packet, CustomProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

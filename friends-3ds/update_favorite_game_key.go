@@ -10,14 +10,14 @@ import (
 )
 
 // UpdateFavoriteGameKey sets the UpdateFavoriteGameKey handler function
-func (protocol *Protocol) UpdateFavoriteGameKey(handler func(err error, client *nex.Client, callID uint32, gameKey *friends_3ds_types.GameKey)) {
+func (protocol *Protocol) UpdateFavoriteGameKey(handler func(err error, client *nex.Client, callID uint32, gameKey *friends_3ds_types.GameKey) uint32) {
 	protocol.updateFavoriteGameKeyHandler = handler
 }
 
 func (protocol *Protocol) handleUpdateFavoriteGameKey(packet nex.PacketInterface) {
 	if protocol.updateFavoriteGameKeyHandler == nil {
 		globals.Logger.Warning("Friends3DS::UpdateFavoriteGameKey not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

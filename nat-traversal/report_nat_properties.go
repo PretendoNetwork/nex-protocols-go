@@ -9,14 +9,14 @@ import (
 )
 
 // ReportNATProperties sets the ReportNATProperties handler function
-func (protocol *Protocol) ReportNATProperties(handler func(err error, client *nex.Client, callID uint32, natmapping uint32, natfiltering uint32, rtt uint32)) {
+func (protocol *Protocol) ReportNATProperties(handler func(err error, client *nex.Client, callID uint32, natmapping uint32, natfiltering uint32, rtt uint32) uint32) {
 	protocol.reportNATPropertiesHandler = handler
 }
 
 func (protocol *Protocol) handleReportNATProperties(packet nex.PacketInterface) {
 	if protocol.reportNATPropertiesHandler == nil {
 		globals.Logger.Warning("NATTraversal::ReportNATProperties not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

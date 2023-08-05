@@ -10,14 +10,14 @@ import (
 )
 
 // UpdatePlayedGames sets the UpdatePlayedGames handler function
-func (protocol *Protocol) UpdatePlayedGames(handler func(err error, client *nex.Client, callID uint32, playedGames []*friends_3ds_types.PlayedGame)) {
+func (protocol *Protocol) UpdatePlayedGames(handler func(err error, client *nex.Client, callID uint32, playedGames []*friends_3ds_types.PlayedGame) uint32) {
 	protocol.updatePlayedGamesHandler = handler
 }
 
 func (protocol *Protocol) handleUpdatePlayedGames(packet nex.PacketInterface) {
 	if protocol.updatePlayedGamesHandler == nil {
 		globals.Logger.Warning("Friends3DS::UpdatePlayedGames not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

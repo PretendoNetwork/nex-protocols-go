@@ -9,14 +9,14 @@ import (
 )
 
 // GetPrincipalIDByLocalFriendCode sets the GetPrincipalIDByLocalFriendCode handler function
-func (protocol *Protocol) GetPrincipalIDByLocalFriendCode(handler func(err error, client *nex.Client, callID uint32, lfc uint64, lfcList []uint64)) {
+func (protocol *Protocol) GetPrincipalIDByLocalFriendCode(handler func(err error, client *nex.Client, callID uint32, lfc uint64, lfcList []uint64) uint32) {
 	protocol.getPrincipalIDByLocalFriendCodeHandler = handler
 }
 
 func (protocol *Protocol) handleGetPrincipalIDByLocalFriendCode(packet nex.PacketInterface) {
 	if protocol.getPrincipalIDByLocalFriendCodeHandler == nil {
 		globals.Logger.Warning("Friends3DS::GetPrincipalIDByLocalFriendCode not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

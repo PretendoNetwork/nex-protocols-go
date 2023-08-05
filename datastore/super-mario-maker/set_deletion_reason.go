@@ -9,14 +9,14 @@ import (
 )
 
 // SetDeletionReason sets the SetDeletionReason handler function
-func (protocol *Protocol) SetDeletionReason(handler func(err error, client *nex.Client, callID uint32, dataIDLst []uint64, deletionReason uint32)) {
+func (protocol *Protocol) SetDeletionReason(handler func(err error, client *nex.Client, callID uint32, dataIDLst []uint64, deletionReason uint32) uint32) {
 	protocol.setDeletionReasonHandler = handler
 }
 
 func (protocol *Protocol) handleSetDeletionReason(packet nex.PacketInterface) {
 	if protocol.setDeletionReasonHandler == nil {
 		globals.Logger.Warning("DataStoreSuperMarioMaker::SetDeletionReason not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

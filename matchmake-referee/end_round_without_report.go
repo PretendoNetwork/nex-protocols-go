@@ -9,14 +9,14 @@ import (
 )
 
 // EndRoundWithoutReport sets the EndRoundWithoutReport handler function
-func (protocol *Protocol) EndRoundWithoutReport(handler func(err error, client *nex.Client, callID uint32, roundId uint64)) {
+func (protocol *Protocol) EndRoundWithoutReport(handler func(err error, client *nex.Client, callID uint32, roundId uint64) uint32) {
 	protocol.endRoundWithoutReportHandler = handler
 }
 
 func (protocol *Protocol) handleEndRoundWithoutReport(packet nex.PacketInterface) {
 	if protocol.endRoundWithoutReportHandler == nil {
 		globals.Logger.Warning("MatchmakeReferee::EndRoundWithoutReport not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

@@ -10,14 +10,14 @@ import (
 )
 
 // SearchReplay sets the SearchReplay handler function
-func (protocol *Protocol) SearchReplay(handler func(err error, client *nex.Client, callID uint32, param *datastore_super_smash_bros_4_types.DataStoreSearchReplayParam)) {
+func (protocol *Protocol) SearchReplay(handler func(err error, client *nex.Client, callID uint32, param *datastore_super_smash_bros_4_types.DataStoreSearchReplayParam) uint32) {
 	protocol.searchReplayHandler = handler
 }
 
 func (protocol *Protocol) handleSearchReplay(packet nex.PacketInterface) {
 	if protocol.searchReplayHandler == nil {
 		globals.Logger.Warning("DataStoreSuperSmashBros4::SearchReplay not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

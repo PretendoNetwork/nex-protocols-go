@@ -77,26 +77,26 @@ const (
 // Protocol stores all the RMC method handlers for the Friends (WiiU) protocol and listens for requests
 type Protocol struct {
 	Server                              *nex.Server
-	updateAndGetAllInformationHandler   func(err error, client *nex.Client, callID uint32, nnaInfo *friends_wiiu_types.NNAInfo, presence *friends_wiiu_types.NintendoPresenceV2, birthday *nex.DateTime)
-	addFriendHandler                    func(err error, client *nex.Client, callID uint32, pid uint32)
-	addFriendByNameHandler              func(err error, client *nex.Client, callID uint32, username string)
-	removeFriendHandler                 func(err error, client *nex.Client, callID uint32, pid uint32)
-	addFriendRequestHandler             func(err error, client *nex.Client, callID uint32, pid uint32, unknown2 uint8, message string, unknown4 uint8, unknown5 string, gameKey *friends_wiiu_types.GameKey, unknown6 *nex.DateTime)
-	cancelFriendRequestHandler          func(err error, client *nex.Client, callID uint32, id uint64)
-	acceptFriendRequestHandler          func(err error, client *nex.Client, callID uint32, id uint64)
-	deleteFriendRequestHandler          func(err error, client *nex.Client, callID uint32, id uint64)
-	denyFriendRequestHandler            func(err error, client *nex.Client, callID uint32, id uint64)
-	markFriendRequestsAsReceivedHandler func(err error, client *nex.Client, callID uint32, ids []uint64)
-	addBlackListHandler                 func(err error, client *nex.Client, callID uint32, blacklistedPrincipal *friends_wiiu_types.BlacklistedPrincipal)
-	removeBlackListHandler              func(err error, client *nex.Client, callID uint32, pid uint32)
-	updatePresenceHandler               func(err error, client *nex.Client, callID uint32, presence *friends_wiiu_types.NintendoPresenceV2)
-	updateMiiHandler                    func(err error, client *nex.Client, callID uint32, mii *friends_wiiu_types.MiiV2)
-	updateCommentHandler                func(err error, client *nex.Client, callID uint32, comment *friends_wiiu_types.Comment)
-	updatePreferenceHandler             func(err error, client *nex.Client, callID uint32, preference *friends_wiiu_types.PrincipalPreference)
-	getBasicInfoHandler                 func(err error, client *nex.Client, callID uint32, pids []uint32)
-	deletePersistentNotificationHandler func(err error, client *nex.Client, callID uint32, notifications []*friends_wiiu_types.PersistentNotification)
-	checkSettingStatusHandler           func(err error, client *nex.Client, callID uint32)
-	getRequestBlockSettingsHandler      func(err error, client *nex.Client, callID uint32, pids []uint32)
+	updateAndGetAllInformationHandler   func(err error, client *nex.Client, callID uint32, nnaInfo *friends_wiiu_types.NNAInfo, presence *friends_wiiu_types.NintendoPresenceV2, birthday *nex.DateTime) uint32
+	addFriendHandler                    func(err error, client *nex.Client, callID uint32, pid uint32) uint32
+	addFriendByNameHandler              func(err error, client *nex.Client, callID uint32, username string) uint32
+	removeFriendHandler                 func(err error, client *nex.Client, callID uint32, pid uint32) uint32
+	addFriendRequestHandler             func(err error, client *nex.Client, callID uint32, pid uint32, unknown2 uint8, message string, unknown4 uint8, unknown5 string, gameKey *friends_wiiu_types.GameKey, unknown6 *nex.DateTime) uint32
+	cancelFriendRequestHandler          func(err error, client *nex.Client, callID uint32, id uint64) uint32
+	acceptFriendRequestHandler          func(err error, client *nex.Client, callID uint32, id uint64) uint32
+	deleteFriendRequestHandler          func(err error, client *nex.Client, callID uint32, id uint64) uint32
+	denyFriendRequestHandler            func(err error, client *nex.Client, callID uint32, id uint64) uint32
+	markFriendRequestsAsReceivedHandler func(err error, client *nex.Client, callID uint32, ids []uint64) uint32
+	addBlackListHandler                 func(err error, client *nex.Client, callID uint32, blacklistedPrincipal *friends_wiiu_types.BlacklistedPrincipal) uint32
+	removeBlackListHandler              func(err error, client *nex.Client, callID uint32, pid uint32) uint32
+	updatePresenceHandler               func(err error, client *nex.Client, callID uint32, presence *friends_wiiu_types.NintendoPresenceV2) uint32
+	updateMiiHandler                    func(err error, client *nex.Client, callID uint32, mii *friends_wiiu_types.MiiV2) uint32
+	updateCommentHandler                func(err error, client *nex.Client, callID uint32, comment *friends_wiiu_types.Comment) uint32
+	updatePreferenceHandler             func(err error, client *nex.Client, callID uint32, preference *friends_wiiu_types.PrincipalPreference) uint32
+	getBasicInfoHandler                 func(err error, client *nex.Client, callID uint32, pids []uint32) uint32
+	deletePersistentNotificationHandler func(err error, client *nex.Client, callID uint32, notifications []*friends_wiiu_types.PersistentNotification) uint32
+	checkSettingStatusHandler           func(err error, client *nex.Client, callID uint32) uint32
+	getRequestBlockSettingsHandler      func(err error, client *nex.Client, callID uint32, pids []uint32) uint32
 }
 
 // Setup initializes the protocol
@@ -156,7 +156,7 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 	case MethodGetRequestBlockSettings:
 		go protocol.handleGetRequestBlockSettings(packet)
 	default:
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		fmt.Printf("Unsupported Friends (WiiU) method ID: %#v\n", request.MethodID())
 	}
 }

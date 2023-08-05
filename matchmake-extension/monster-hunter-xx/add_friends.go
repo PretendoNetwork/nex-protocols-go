@@ -9,14 +9,14 @@ import (
 )
 
 // AddFriends sets the AddFriends handler function
-func (protocol *Protocol) AddFriends(handler func(err error, client *nex.Client, callID uint32, pids []uint64)) {
+func (protocol *Protocol) AddFriends(handler func(err error, client *nex.Client, callID uint32, pids []uint64) uint32) {
 	protocol.addFriendsHandler = handler
 }
 
 func (protocol *Protocol) handleAddFriends(packet nex.PacketInterface) {
 	if protocol.addFriendsHandler == nil {
 		globals.Logger.Warning("MatchmakeExtensionMonsterHunterXX::AddFriends not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

@@ -9,14 +9,14 @@ import (
 )
 
 // ListServiceItemResponse sets the ListServiceItemResponse handler function
-func (protocol *Protocol) ListServiceItemResponse(handler func(err error, client *nex.Client, callID uint32, requestID uint32)) {
+func (protocol *Protocol) ListServiceItemResponse(handler func(err error, client *nex.Client, callID uint32, requestID uint32) uint32) {
 	protocol.listServiceItemResponseHandler = handler
 }
 
 func (protocol *Protocol) handleListServiceItemResponse(packet nex.PacketInterface) {
 	if protocol.listServiceItemResponseHandler == nil {
 		globals.Logger.Warning("ServiceItemWiiSportsClub::ListServiceItemResponse not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

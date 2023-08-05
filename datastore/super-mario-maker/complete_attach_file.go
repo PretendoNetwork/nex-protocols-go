@@ -10,14 +10,14 @@ import (
 )
 
 // CompleteAttachFile sets the CompleteAttachFile handler function
-func (protocol *Protocol) CompleteAttachFile(handler func(err error, client *nex.Client, callID uint32, param *datastore_types.DataStoreCompletePostParam)) {
+func (protocol *Protocol) CompleteAttachFile(handler func(err error, client *nex.Client, callID uint32, param *datastore_types.DataStoreCompletePostParam) uint32) {
 	protocol.completeAttachFileHandler = handler
 }
 
 func (protocol *Protocol) handleCompleteAttachFile(packet nex.PacketInterface) {
 	if protocol.completeAttachFileHandler == nil {
 		globals.Logger.Warning("DataStoreSuperMarioMaker::CompleteAttachFile not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

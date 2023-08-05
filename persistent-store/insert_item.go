@@ -9,14 +9,14 @@ import (
 )
 
 // InsertItem sets the InsertItem handler function
-func (protocol *Protocol) InsertItem(handler func(err error, client *nex.Client, callID uint32, uiGroup uint32, strTag string, bufData []byte, bReplace bool)) {
+func (protocol *Protocol) InsertItem(handler func(err error, client *nex.Client, callID uint32, uiGroup uint32, strTag string, bufData []byte, bReplace bool) uint32) {
 	protocol.insertItemHandler = handler
 }
 
 func (protocol *Protocol) handleInsertItem(packet nex.PacketInterface) {
 	if protocol.insertItemHandler == nil {
 		globals.Logger.Warning("PersistentStore::InsertItem not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

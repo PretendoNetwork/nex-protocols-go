@@ -7,14 +7,14 @@ import (
 )
 
 // JoinMatchmakeSessionWithExtraParticipants sets the JoinMatchmakeSessionWithExtraParticipants handler function
-func (protocol *Protocol) JoinMatchmakeSessionWithExtraParticipants(handler func(err error, client *nex.Client, callID uint32, packetPayload []byte)) {
+func (protocol *Protocol) JoinMatchmakeSessionWithExtraParticipants(handler func(err error, client *nex.Client, callID uint32, packetPayload []byte) uint32) {
 	protocol.joinMatchmakeSessionWithExtraParticipantsHandler = handler
 }
 
 func (protocol *Protocol) handleJoinMatchmakeSessionWithExtraParticipants(packet nex.PacketInterface) {
 	if protocol.joinMatchmakeSessionWithExtraParticipantsHandler == nil {
 		globals.Logger.Warning("MatchmakeExtensionMarioKart8::JoinMatchmakeSessionWithExtraParticipants not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

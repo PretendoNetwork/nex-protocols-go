@@ -9,14 +9,14 @@ import (
 )
 
 // GetApplicationConfig sets the GetApplicationConfig handler function
-func (protocol *Protocol) GetApplicationConfig(handler func(err error, client *nex.Client, callID uint32, applicationID uint32)) {
+func (protocol *Protocol) GetApplicationConfig(handler func(err error, client *nex.Client, callID uint32, applicationID uint32) uint32) {
 	protocol.getApplicationConfigHandler = handler
 }
 
 func (protocol *Protocol) handleGetApplicationConfig(packet nex.PacketInterface) {
 	if protocol.getApplicationConfigHandler == nil {
 		globals.Logger.Warning("DataStoreSuperSmashBros4::GetApplicationConfig not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

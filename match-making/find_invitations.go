@@ -9,14 +9,14 @@ import (
 )
 
 // FindInvitations sets the FindInvitations handler function
-func (protocol *Protocol) FindInvitations(handler func(err error, client *nex.Client, callID uint32, resultRange *nex.ResultRange)) {
+func (protocol *Protocol) FindInvitations(handler func(err error, client *nex.Client, callID uint32, resultRange *nex.ResultRange) uint32) {
 	protocol.findInvitationsHandler = handler
 }
 
 func (protocol *Protocol) handleFindInvitations(packet nex.PacketInterface) {
 	if protocol.findInvitationsHandler == nil {
 		globals.Logger.Warning("MatchMaking::FindInvitations not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

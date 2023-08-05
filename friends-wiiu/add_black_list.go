@@ -10,14 +10,14 @@ import (
 )
 
 // AddBlackList sets the AddBlackList handler function
-func (protocol *Protocol) AddBlackList(handler func(err error, client *nex.Client, callID uint32, blacklistedPrincipal *friends_wiiu_types.BlacklistedPrincipal)) {
+func (protocol *Protocol) AddBlackList(handler func(err error, client *nex.Client, callID uint32, blacklistedPrincipal *friends_wiiu_types.BlacklistedPrincipal) uint32) {
 	protocol.addBlackListHandler = handler
 }
 
 func (protocol *Protocol) handleAddBlackList(packet nex.PacketInterface) {
 	if protocol.addBlackListHandler == nil {
 		globals.Logger.Warning("FriendsWiiU::AddBlackList not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

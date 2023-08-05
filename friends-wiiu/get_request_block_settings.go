@@ -9,14 +9,14 @@ import (
 )
 
 // GetRequestBlockSettings sets the GetRequestBlockSettings handler function
-func (protocol *Protocol) GetRequestBlockSettings(handler func(err error, client *nex.Client, callID uint32, unknowns []uint32)) {
+func (protocol *Protocol) GetRequestBlockSettings(handler func(err error, client *nex.Client, callID uint32, unknowns []uint32) uint32) {
 	protocol.getRequestBlockSettingsHandler = handler
 }
 
 func (protocol *Protocol) handleGetRequestBlockSettings(packet nex.PacketInterface) {
 	if protocol.getRequestBlockSettingsHandler == nil {
 		globals.Logger.Warning("FriendsWiiU::GetRequestBlockSettings not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

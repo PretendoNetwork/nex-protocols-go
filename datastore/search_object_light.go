@@ -10,14 +10,14 @@ import (
 )
 
 // SearchObjectLight sets the SearchObjectLight handler function
-func (protocol *Protocol) SearchObjectLight(handler func(err error, client *nex.Client, callID uint32, param *datastore_types.DataStoreSearchParam)) {
+func (protocol *Protocol) SearchObjectLight(handler func(err error, client *nex.Client, callID uint32, param *datastore_types.DataStoreSearchParam) uint32) {
 	protocol.searchObjectLightHandler = handler
 }
 
 func (protocol *Protocol) handleSearchObjectLight(packet nex.PacketInterface) {
 	if protocol.searchObjectLightHandler == nil {
 		globals.Logger.Warning("DataStore::SearchObjectLight not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

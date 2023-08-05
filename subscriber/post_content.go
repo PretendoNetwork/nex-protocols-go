@@ -5,19 +5,19 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
-	subscriber_types "github.com/PretendoNetwork/nex-protocols-go/subscriber/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
+	subscriber_types "github.com/PretendoNetwork/nex-protocols-go/subscriber/types"
 )
 
 // PostContent sets the PostContent handler function
-func (protocol *Protocol) PostContent(handler func(err error, client *nex.Client, callID uint32, param *subscriber_types.SubscriberPostContentParam)) {
+func (protocol *Protocol) PostContent(handler func(err error, client *nex.Client, callID uint32, param *subscriber_types.SubscriberPostContentParam) uint32) {
 	protocol.postContentHandler = handler
 }
 
 func (protocol *Protocol) handlePostContent(packet nex.PacketInterface) {
 	if protocol.postContentHandler == nil {
 		globals.Logger.Warning("Subscriber::PostContent not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 	client := packet.Sender()

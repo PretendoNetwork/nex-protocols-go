@@ -9,14 +9,14 @@ import (
 )
 
 // GetObjectInfos sets the GetObjectInfos handler function
-func (protocol *Protocol) GetObjectInfos(handler func(err error, client *nex.Client, callID uint32, dataIDs uint64)) {
+func (protocol *Protocol) GetObjectInfos(handler func(err error, client *nex.Client, callID uint32, dataIDs uint64) uint32) {
 	protocol.getObjectInfosHandler = handler
 }
 
 func (protocol *Protocol) handleGetObjectInfos(packet nex.PacketInterface) {
 	if protocol.getObjectInfosHandler == nil {
 		globals.Logger.Warning("DataStore::GetObjectInfos not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

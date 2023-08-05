@@ -10,14 +10,14 @@ import (
 )
 
 // DownloadMyPokemon sets the DownloadMyPokemon handler function
-func (protocol *Protocol) DownloadMyPokemon(handler func(err error, client *nex.Client, callID uint32, param *datastore_pokemon_gen6_types.GlobalTradeStationDownloadMyPokemonParam)) {
+func (protocol *Protocol) DownloadMyPokemon(handler func(err error, client *nex.Client, callID uint32, param *datastore_pokemon_gen6_types.GlobalTradeStationDownloadMyPokemonParam) uint32) {
 	protocol.downloadMyPokemonHandler = handler
 }
 
 func (protocol *Protocol) handleDownloadMyPokemon(packet nex.PacketInterface) {
 	if protocol.downloadMyPokemonHandler == nil {
 		globals.Logger.Warning("DataStorePokemonGen6::DownloadMyPokemon not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

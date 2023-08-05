@@ -9,14 +9,14 @@ import (
 )
 
 // GetFriendUserProfiles sets the GetFriendUserProfiles handler function
-func (protocol *Protocol) GetFriendUserProfiles(handler func(err error, client *nex.Client, callID uint32, pids []uint64)) {
+func (protocol *Protocol) GetFriendUserProfiles(handler func(err error, client *nex.Client, callID uint32, pids []uint64) uint32) {
 	protocol.getFriendUserProfilesHandler = handler
 }
 
 func (protocol *Protocol) handleGetFriendUserProfiles(packet nex.PacketInterface) {
 	if protocol.getFriendUserProfilesHandler == nil {
 		globals.Logger.Warning("MatchmakeExtensionMonsterHunterXX::GetFriendUserProfiles not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

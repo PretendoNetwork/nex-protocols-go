@@ -7,14 +7,14 @@ import (
 )
 
 // JoinCommunityCompetition sets the JoinCommunityCompetition handler function
-func (protocol *Protocol) JoinCommunityCompetition(handler func(err error, client *nex.Client, callID uint32, packetPayload []byte)) {
+func (protocol *Protocol) JoinCommunityCompetition(handler func(err error, client *nex.Client, callID uint32, packetPayload []byte) uint32) {
 	protocol.joinCommunityCompetitionHandler = handler
 }
 
 func (protocol *Protocol) handleJoinCommunityCompetition(packet nex.PacketInterface) {
 	if protocol.joinCommunityCompetitionHandler == nil {
 		globals.Logger.Warning("MatchmakeExtensionSuperSmashBros4::JoinCommunityCompetition not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

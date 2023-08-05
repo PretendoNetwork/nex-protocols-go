@@ -9,14 +9,14 @@ import (
 )
 
 // LoginEx sets the LoginEx handler function
-func (protocol *Protocol) LoginEx(handler func(err error, client *nex.Client, callID uint32, strUserName string, oExtraData *nex.DataHolder)) {
+func (protocol *Protocol) LoginEx(handler func(err error, client *nex.Client, callID uint32, strUserName string, oExtraData *nex.DataHolder) uint32) {
 	protocol.loginExHandler = handler
 }
 
 func (protocol *Protocol) handleLoginEx(packet nex.PacketInterface) {
 	if protocol.loginExHandler == nil {
 		globals.Logger.Warning("TicketGranting::LoginEx not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

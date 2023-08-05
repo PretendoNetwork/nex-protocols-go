@@ -5,19 +5,19 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
-	ranking2_types "github.com/PretendoNetwork/nex-protocols-go/ranking2/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
+	ranking2_types "github.com/PretendoNetwork/nex-protocols-go/ranking2/types"
 )
 
 // PutCommonData sets the PutCommonData handler function
-func (protocol *Protocol) PutCommonData(handler func(err error, client *nex.Client, callID uint32, commonData *ranking2_types.Ranking2CommonData, nexUniqueID uint64)) {
+func (protocol *Protocol) PutCommonData(handler func(err error, client *nex.Client, callID uint32, commonData *ranking2_types.Ranking2CommonData, nexUniqueID uint64) uint32) {
 	protocol.putCommonDataHandler = handler
 }
 
 func (protocol *Protocol) handlePutCommonData(packet nex.PacketInterface) {
 	if protocol.putCommonDataHandler == nil {
 		globals.Logger.Warning("Ranking2::PutCommonData not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 	client := packet.Sender()

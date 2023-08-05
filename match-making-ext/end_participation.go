@@ -9,14 +9,14 @@ import (
 )
 
 // EndParticipation sets the EndParticipation handler function
-func (protocol *Protocol) EndParticipation(handler func(err error, client *nex.Client, callID uint32, idGathering uint32, strMessage string)) {
+func (protocol *Protocol) EndParticipation(handler func(err error, client *nex.Client, callID uint32, idGathering uint32, strMessage string) uint32) {
 	protocol.endParticipationHandler = handler
 }
 
 func (protocol *Protocol) handleEndParticipation(packet nex.PacketInterface) {
 	if protocol.endParticipationHandler == nil {
 		globals.Logger.Warning("MatchMakingExt::EndParticipation not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

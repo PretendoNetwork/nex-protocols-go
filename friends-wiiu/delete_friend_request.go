@@ -9,14 +9,14 @@ import (
 )
 
 // DeleteFriendRequest sets the DeleteFriendRequest handler function
-func (protocol *Protocol) DeleteFriendRequest(handler func(err error, client *nex.Client, callID uint32, id uint64)) {
+func (protocol *Protocol) DeleteFriendRequest(handler func(err error, client *nex.Client, callID uint32, id uint64) uint32) {
 	protocol.deleteFriendRequestHandler = handler
 }
 
 func (protocol *Protocol) handleDeleteFriendRequest(packet nex.PacketInterface) {
 	if protocol.deleteFriendRequestHandler == nil {
 		globals.Logger.Warning("FriendsWiiU::DeleteFriendRequest not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

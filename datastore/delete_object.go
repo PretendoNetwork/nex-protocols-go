@@ -10,14 +10,14 @@ import (
 )
 
 // DeleteObject sets the DeleteObject handler function
-func (protocol *Protocol) DeleteObject(handler func(err error, client *nex.Client, callID uint32, param *datastore_types.DataStoreDeleteParam)) {
+func (protocol *Protocol) DeleteObject(handler func(err error, client *nex.Client, callID uint32, param *datastore_types.DataStoreDeleteParam) uint32) {
 	protocol.deleteObjectHandler = handler
 }
 
 func (protocol *Protocol) handleDeleteObject(packet nex.PacketInterface) {
 	if protocol.deleteObjectHandler == nil {
 		globals.Logger.Warning("DataStore::DeleteObject not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

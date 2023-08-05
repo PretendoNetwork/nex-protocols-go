@@ -9,14 +9,14 @@ import (
 )
 
 // UpdateURLs sets the UpdateURLs handler function
-func (protocol *Protocol) UpdateURLs(handler func(err error, client *nex.Client, callID uint32, vecMyURLs []*nex.StationURL)) {
+func (protocol *Protocol) UpdateURLs(handler func(err error, client *nex.Client, callID uint32, vecMyURLs []*nex.StationURL) uint32) {
 	protocol.updateURLsHandler = handler
 }
 
 func (protocol *Protocol) handleUpdateURLs(packet nex.PacketInterface) {
 	if protocol.updateURLsHandler == nil {
 		globals.Logger.Warning("SecureConnection::UpdateURLs not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

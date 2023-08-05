@@ -9,14 +9,14 @@ import (
 )
 
 // GetFriendMii sets the GetFriendMii handler function
-func (protocol *Protocol) GetFriendMii(handler func(err error, client *nex.Client, callID uint32, pidList []uint32)) {
+func (protocol *Protocol) GetFriendMii(handler func(err error, client *nex.Client, callID uint32, pidList []uint32) uint32) {
 	protocol.getFriendMiiHandler = handler
 }
 
 func (protocol *Protocol) handleGetFriendMii(packet nex.PacketInterface) {
 	if protocol.getFriendMiiHandler == nil {
 		globals.Logger.Warning("Friends3DS::GetFriendMii not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

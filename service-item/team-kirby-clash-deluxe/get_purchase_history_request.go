@@ -10,14 +10,14 @@ import (
 )
 
 // GetPurchaseHistoryRequest sets the GetPurchaseHistoryRequest handler function
-func (protocol *Protocol) GetPurchaseHistoryRequest(handler func(err error, client *nex.Client, callID uint32, getPurchaseHistoryParam *service_item_team_kirby_clash_deluxe_types.ServiceItemGetPurchaseHistoryParam)) {
+func (protocol *Protocol) GetPurchaseHistoryRequest(handler func(err error, client *nex.Client, callID uint32, getPurchaseHistoryParam *service_item_team_kirby_clash_deluxe_types.ServiceItemGetPurchaseHistoryParam) uint32) {
 	protocol.getPurchaseHistoryRequestHandler = handler
 }
 
 func (protocol *Protocol) handleGetPurchaseHistoryRequest(packet nex.PacketInterface) {
 	if protocol.getPurchaseHistoryRequestHandler == nil {
 		globals.Logger.Warning("ServiceItemTeamKirbyClashDeluxe::GetPurchaseHistoryRequest not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

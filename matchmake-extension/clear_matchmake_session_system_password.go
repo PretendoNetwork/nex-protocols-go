@@ -9,14 +9,14 @@ import (
 )
 
 // ClearMatchmakeSessionSystemPassword sets the ClearMatchmakeSessionSystemPassword handler function
-func (protocol *Protocol) ClearMatchmakeSessionSystemPassword(handler func(err error, client *nex.Client, callID uint32, gid uint32)) {
+func (protocol *Protocol) ClearMatchmakeSessionSystemPassword(handler func(err error, client *nex.Client, callID uint32, gid uint32) uint32) {
 	protocol.clearMatchmakeSessionSystemPasswordHandler = handler
 }
 
 func (protocol *Protocol) handleClearMatchmakeSessionSystemPassword(packet nex.PacketInterface) {
 	if protocol.clearMatchmakeSessionSystemPasswordHandler == nil {
 		globals.Logger.Warning("MatchmakeExtension::ClearMatchmakeSessionSystemPassword not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

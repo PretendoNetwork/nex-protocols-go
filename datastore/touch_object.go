@@ -10,14 +10,14 @@ import (
 )
 
 // TouchObject sets the TouchObject handler function
-func (protocol *Protocol) TouchObject(handler func(err error, client *nex.Client, callID uint32, param *datastore_types.DataStoreTouchObjectParam)) {
+func (protocol *Protocol) TouchObject(handler func(err error, client *nex.Client, callID uint32, param *datastore_types.DataStoreTouchObjectParam) uint32) {
 	protocol.touchObjectHandler = handler
 }
 
 func (protocol *Protocol) handleTouchObject(packet nex.PacketInterface) {
 	if protocol.touchObjectHandler == nil {
 		globals.Logger.Warning("DataStore::TouchObject not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

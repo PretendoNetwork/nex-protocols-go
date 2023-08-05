@@ -9,14 +9,14 @@ import (
 )
 
 // UpdateStatus sets the UpdateStatus handler function
-func (protocol *Protocol) UpdateStatus(handler func(err error, client *nex.Client, callID uint32, strStatus string)) {
+func (protocol *Protocol) UpdateStatus(handler func(err error, client *nex.Client, callID uint32, strStatus string) uint32) {
 	protocol.updateStatusHandler = handler
 }
 
 func (protocol *Protocol) handleUpdateStatus(packet nex.PacketInterface) {
 	if protocol.updateStatusHandler == nil {
 		globals.Logger.Warning("AccountManagement::UpdateStatus not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

@@ -9,14 +9,14 @@ import (
 )
 
 // DisableAccount sets the DisableAccount handler function
-func (protocol *Protocol) DisableAccount(handler func(err error, client *nex.Client, callID uint32, idPrincipal uint32, dtUntil *nex.DateTime, strMessage string)) {
+func (protocol *Protocol) DisableAccount(handler func(err error, client *nex.Client, callID uint32, idPrincipal uint32, dtUntil *nex.DateTime, strMessage string) uint32) {
 	protocol.disableAccountHandler = handler
 }
 
 func (protocol *Protocol) handleDisableAccount(packet nex.PacketInterface) {
 	if protocol.disableAccountHandler == nil {
 		globals.Logger.Warning("AccountManagement::DisableAccount not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

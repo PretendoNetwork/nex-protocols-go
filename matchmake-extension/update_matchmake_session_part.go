@@ -10,14 +10,14 @@ import (
 )
 
 // UpdateMatchmakeSessionPart sets the UpdateMatchmakeSessionPart handler function
-func (protocol *Protocol) UpdateMatchmakeSessionPart(handler func(err error, client *nex.Client, callID uint32, updateMatchmakeSessionParam *match_making_types.UpdateMatchmakeSessionParam)) {
+func (protocol *Protocol) UpdateMatchmakeSessionPart(handler func(err error, client *nex.Client, callID uint32, updateMatchmakeSessionParam *match_making_types.UpdateMatchmakeSessionParam) uint32) {
 	protocol.updateMatchmakeSessionPartHandler = handler
 }
 
 func (protocol *Protocol) handleUpdateMatchmakeSessionPart(packet nex.PacketInterface) {
 	if protocol.updateMatchmakeSessionPartHandler == nil {
 		globals.Logger.Warning("MatchmakeExtension::UpdateMatchmakeSessionPart not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

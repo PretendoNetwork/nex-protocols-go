@@ -9,14 +9,14 @@ import (
 )
 
 // GetlstFriendNotificationData sets the GetlstFriendNotificationData handler function
-func (protocol *Protocol) GetlstFriendNotificationData(handler func(err error, client *nex.Client, callID uint32, lstTypes []uint32)) {
+func (protocol *Protocol) GetlstFriendNotificationData(handler func(err error, client *nex.Client, callID uint32, lstTypes []uint32) uint32) {
 	protocol.getlstFriendNotificationDataHandler = handler
 }
 
 func (protocol *Protocol) handleGetlstFriendNotificationData(packet nex.PacketInterface) {
 	if protocol.getlstFriendNotificationDataHandler == nil {
 		globals.Logger.Warning("MatchmakeExtension::GetlstFriendNotificationData not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

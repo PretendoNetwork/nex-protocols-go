@@ -10,14 +10,14 @@ import (
 )
 
 // ListServiceItemRequest sets the ListServiceItemRequest handler function
-func (protocol *Protocol) ListServiceItemRequest(handler func(err error, client *nex.Client, callID uint32, listServiceItemParam *service_item_team_kirby_clash_deluxe_types.ServiceItemListServiceItemParam)) {
+func (protocol *Protocol) ListServiceItemRequest(handler func(err error, client *nex.Client, callID uint32, listServiceItemParam *service_item_team_kirby_clash_deluxe_types.ServiceItemListServiceItemParam) uint32) {
 	protocol.listServiceItemRequestHandler = handler
 }
 
 func (protocol *Protocol) handleListServiceItemRequest(packet nex.PacketInterface) {
 	if protocol.listServiceItemRequestHandler == nil {
 		globals.Logger.Warning("ServiceItemTeamKirbyClashDeluxe::ListServiceItemRequest not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

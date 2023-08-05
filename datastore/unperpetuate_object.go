@@ -9,14 +9,14 @@ import (
 )
 
 // UnperpetuateObject sets the UnperpetuateObject handler function
-func (protocol *Protocol) UnperpetuateObject(handler func(err error, client *nex.Client, callID uint32, persistenceSlotID uint16, deleteLastObject bool)) {
+func (protocol *Protocol) UnperpetuateObject(handler func(err error, client *nex.Client, callID uint32, persistenceSlotID uint16, deleteLastObject bool) uint32) {
 	protocol.unperpetuateObjectHandler = handler
 }
 
 func (protocol *Protocol) handleUnperpetuateObject(packet nex.PacketInterface) {
 	if protocol.unperpetuateObjectHandler == nil {
 		globals.Logger.Warning("DataStore::UnperpetuateObject not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

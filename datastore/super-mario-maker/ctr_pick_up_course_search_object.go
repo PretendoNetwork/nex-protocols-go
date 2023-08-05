@@ -10,14 +10,14 @@ import (
 )
 
 // CTRPickUpCourseSearchObject sets the CTRPickUpCourseSearchObject handler function
-func (protocol *Protocol) CTRPickUpCourseSearchObject(handler func(err error, client *nex.Client, callID uint32, param *datastore_types.DataStoreSearchParam, extraData []string)) {
+func (protocol *Protocol) CTRPickUpCourseSearchObject(handler func(err error, client *nex.Client, callID uint32, param *datastore_types.DataStoreSearchParam, extraData []string) uint32) {
 	protocol.cTRPickUpCourseSearchObjectHandler = handler
 }
 
 func (protocol *Protocol) handleCTRPickUpCourseSearchObject(packet nex.PacketInterface) {
 	if protocol.cTRPickUpCourseSearchObjectHandler == nil {
 		globals.Logger.Warning("DataStoreSuperMarioMaker::CTRPickUpCourseSearchObject not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

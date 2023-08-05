@@ -9,14 +9,14 @@ import (
 )
 
 // AddFriendBylstPrincipalID sets the AddFriendBylstPrincipalID handler function
-func (protocol *Protocol) AddFriendBylstPrincipalID(handler func(err error, client *nex.Client, callID uint32, lfc uint64, pids []uint32)) {
+func (protocol *Protocol) AddFriendBylstPrincipalID(handler func(err error, client *nex.Client, callID uint32, lfc uint64, pids []uint32) uint32) {
 	protocol.addFriendBylstPrincipalIDHandler = handler
 }
 
 func (protocol *Protocol) handleAddFriendBylstPrincipalID(packet nex.PacketInterface) {
 	if protocol.addFriendBylstPrincipalIDHandler == nil {
 		globals.Logger.Warning("Friends3DS::AddFriendBylstPrincipalID not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

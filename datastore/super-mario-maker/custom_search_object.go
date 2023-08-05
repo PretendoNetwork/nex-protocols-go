@@ -10,14 +10,14 @@ import (
 )
 
 // CustomSearchObject sets the CustomSearchObject handler function
-func (protocol *Protocol) CustomSearchObject(handler func(err error, client *nex.Client, callID uint32, condition uint32, param *datastore_types.DataStoreSearchParam)) {
+func (protocol *Protocol) CustomSearchObject(handler func(err error, client *nex.Client, callID uint32, condition uint32, param *datastore_types.DataStoreSearchParam) uint32) {
 	protocol.customSearchObjectHandler = handler
 }
 
 func (protocol *Protocol) handleCustomSearchObject(packet nex.PacketInterface) {
 	if protocol.customSearchObjectHandler == nil {
 		globals.Logger.Warning("DataStoreSuperMarioMaker::CustomSearchObject not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

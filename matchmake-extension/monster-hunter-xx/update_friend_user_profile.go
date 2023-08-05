@@ -10,14 +10,14 @@ import (
 )
 
 // UpdateFriendUserProfile sets the UpdateFriendUserProfile handler function
-func (protocol *Protocol) UpdateFriendUserProfile(handler func(err error, client *nex.Client, callID uint32, param *matchmake_extension_monster_hunter_xx_types.FriendUserParam)) {
+func (protocol *Protocol) UpdateFriendUserProfile(handler func(err error, client *nex.Client, callID uint32, param *matchmake_extension_monster_hunter_xx_types.FriendUserParam) uint32) {
 	protocol.updateFriendUserProfileHandler = handler
 }
 
 func (protocol *Protocol) handleUpdateFriendUserProfile(packet nex.PacketInterface) {
 	if protocol.updateFriendUserProfileHandler == nil {
 		globals.Logger.Warning("MatchmakeExtensionMonsterHunterXX::UpdateFriendUserProfile not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

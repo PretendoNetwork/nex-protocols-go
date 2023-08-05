@@ -9,14 +9,14 @@ import (
 )
 
 // SearchSimpleSearchObjectByObjectIDs sets the SearchSimpleSearchObjectByObjectIDs handler function
-func (protocol *Protocol) SearchSimpleSearchObjectByObjectIDs(handler func(err error, client *nex.Client, callID uint32, objectIDs []uint32)) {
+func (protocol *Protocol) SearchSimpleSearchObjectByObjectIDs(handler func(err error, client *nex.Client, callID uint32, objectIDs []uint32) uint32) {
 	protocol.searchSimpleSearchObjectByObjectIDsHandler = handler
 }
 
 func (protocol *Protocol) handleSearchSimpleSearchObjectByObjectIDs(packet nex.PacketInterface) {
 	if protocol.searchSimpleSearchObjectByObjectIDsHandler == nil {
 		globals.Logger.Warning("MatchmakeExtensionMarioKart8::SearchSimpleSearchObjectByObjectIDs not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

@@ -7,14 +7,14 @@ import (
 )
 
 // SetExcludeJoinedMatchmakeSession sets the SetExcludeJoinedMatchmakeSession handler function
-func (protocol *Protocol) SetExcludeJoinedMatchmakeSession(handler func(err error, client *nex.Client, callID uint32, packetPayload []byte)) {
+func (protocol *Protocol) SetExcludeJoinedMatchmakeSession(handler func(err error, client *nex.Client, callID uint32, packetPayload []byte) uint32) {
 	protocol.setExcludeJoinedMatchmakeSessionHandler = handler
 }
 
 func (protocol *Protocol) handleSetExcludeJoinedMatchmakeSession(packet nex.PacketInterface) {
 	if protocol.setExcludeJoinedMatchmakeSessionHandler == nil {
 		globals.Logger.Warning("Debug::SetExcludeJoinedMatchmakeSession not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

@@ -9,14 +9,14 @@ import (
 )
 
 // RegisterGathering sets the RegisterGathering handler function
-func (protocol *Protocol) RegisterGathering(handler func(err error, client *nex.Client, callID uint32, anyGathering *nex.DataHolder)) {
+func (protocol *Protocol) RegisterGathering(handler func(err error, client *nex.Client, callID uint32, anyGathering *nex.DataHolder) uint32) {
 	protocol.registerGatheringHandler = handler
 }
 
 func (protocol *Protocol) handleRegisterGathering(packet nex.PacketInterface) {
 	if protocol.registerGatheringHandler == nil {
 		globals.Logger.Warning("MatchMaking::RegisterGathering not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

@@ -9,14 +9,14 @@ import (
 )
 
 // JoinMatchmakeSessionEx sets the JoinMatchmakeSessionEx handler function
-func (protocol *Protocol) JoinMatchmakeSessionEx(handler func(err error, client *nex.Client, callID uint32, gid uint32, strMessage string, dontCareMyBlockList bool, participationCount uint16)) {
+func (protocol *Protocol) JoinMatchmakeSessionEx(handler func(err error, client *nex.Client, callID uint32, gid uint32, strMessage string, dontCareMyBlockList bool, participationCount uint16) uint32) {
 	protocol.joinMatchmakeSessionExHandler = handler
 }
 
 func (protocol *Protocol) handleJoinMatchmakeSessionEx(packet nex.PacketInterface) {
 	if protocol.joinMatchmakeSessionExHandler == nil {
 		globals.Logger.Warning("MatchmakeExtension::JoinMatchmakeSessionEx not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

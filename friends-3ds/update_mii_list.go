@@ -10,14 +10,14 @@ import (
 )
 
 // UpdateMiiList sets the UpdateMiiList handler function
-func (protocol *Protocol) UpdateMiiList(handler func(err error, client *nex.Client, callID uint32, miiList *friends_3ds_types.MiiList)) {
+func (protocol *Protocol) UpdateMiiList(handler func(err error, client *nex.Client, callID uint32, miiList *friends_3ds_types.MiiList) uint32) {
 	protocol.updateMiiListHandler = handler
 }
 
 func (protocol *Protocol) handleUpdateMiiList(packet nex.PacketInterface) {
 	if protocol.updateMiiListHandler == nil {
 		globals.Logger.Warning("Friends3DS::UpdateMiiList not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

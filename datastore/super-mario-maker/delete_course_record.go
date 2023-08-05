@@ -10,14 +10,14 @@ import (
 )
 
 // DeleteCourseRecord sets the DeleteCourseRecord handler function
-func (protocol *Protocol) DeleteCourseRecord(handler func(err error, client *nex.Client, callID uint32, param *datastore_super_mario_maker_types.DataStoreGetCourseRecordParam)) {
+func (protocol *Protocol) DeleteCourseRecord(handler func(err error, client *nex.Client, callID uint32, param *datastore_super_mario_maker_types.DataStoreGetCourseRecordParam) uint32) {
 	protocol.deleteCourseRecordHandler = handler
 }
 
 func (protocol *Protocol) handleDeleteCourseRecord(packet nex.PacketInterface) {
 	if protocol.deleteCourseRecordHandler == nil {
 		globals.Logger.Warning("DataStoreSuperMarioMaker::DeleteCourseRecord not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

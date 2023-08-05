@@ -9,14 +9,14 @@ import (
 )
 
 // GetFriendRelationships sets the GetFriendRelationships handler function
-func (protocol *Protocol) GetFriendRelationships(handler func(err error, client *nex.Client, callID uint32, pids []uint32)) {
+func (protocol *Protocol) GetFriendRelationships(handler func(err error, client *nex.Client, callID uint32, pids []uint32) uint32) {
 	protocol.getFriendRelationshipsHandler = handler
 }
 
 func (protocol *Protocol) handleGetFriendRelationships(packet nex.PacketInterface) {
 	if protocol.getFriendRelationshipsHandler == nil {
 		globals.Logger.Warning("Friends3DS::GetFriendRelationships not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

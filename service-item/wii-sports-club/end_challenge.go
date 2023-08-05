@@ -5,19 +5,19 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
-	service_item_wii_sports_club_types "github.com/PretendoNetwork/nex-protocols-go/service-item/wii-sports-club/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
+	service_item_wii_sports_club_types "github.com/PretendoNetwork/nex-protocols-go/service-item/wii-sports-club/types"
 )
 
 // EndChallenge sets the EndChallenge handler function
-func (protocol *Protocol) EndChallenge(handler func(err error, client *nex.Client, callID uint32, endChallengeParam *service_item_wii_sports_club_types.ServiceItemEndChallengeParam)) {
+func (protocol *Protocol) EndChallenge(handler func(err error, client *nex.Client, callID uint32, endChallengeParam *service_item_wii_sports_club_types.ServiceItemEndChallengeParam) uint32) {
 	protocol.endChallengeHandler = handler
 }
 
 func (protocol *Protocol) handleEndChallenge(packet nex.PacketInterface) {
 	if protocol.endChallengeHandler == nil {
 		globals.Logger.Warning("ServiceItemWiiSportsClub::EndChallenge not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

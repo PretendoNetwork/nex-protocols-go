@@ -10,14 +10,14 @@ import (
 )
 
 // CompletePostReplay sets the CompletePostReplay handler function
-func (protocol *Protocol) CompletePostReplay(handler func(err error, client *nex.Client, callID uint32, param *datastore_super_smash_bros_4_types.DataStoreCompletePostReplayParam)) {
+func (protocol *Protocol) CompletePostReplay(handler func(err error, client *nex.Client, callID uint32, param *datastore_super_smash_bros_4_types.DataStoreCompletePostReplayParam) uint32) {
 	protocol.completePostReplayHandler = handler
 }
 
 func (protocol *Protocol) handleCompletePostReplay(packet nex.PacketInterface) {
 	if protocol.completePostReplayHandler == nil {
 		globals.Logger.Warning("DataStoreSuperSmashBros4::CompletePostReplay not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

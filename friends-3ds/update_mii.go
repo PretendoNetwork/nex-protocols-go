@@ -10,14 +10,14 @@ import (
 )
 
 // UpdateMii sets the UpdateMii handler function
-func (protocol *Protocol) UpdateMii(handler func(err error, client *nex.Client, callID uint32, mii *friends_3ds_types.Mii)) {
+func (protocol *Protocol) UpdateMii(handler func(err error, client *nex.Client, callID uint32, mii *friends_3ds_types.Mii) uint32) {
 	protocol.updateMiiHandler = handler
 }
 
 func (protocol *Protocol) handleUpdateMii(packet nex.PacketInterface) {
 	if protocol.updateMiiHandler == nil {
 		globals.Logger.Warning("Friends3DS::UpdateMii not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

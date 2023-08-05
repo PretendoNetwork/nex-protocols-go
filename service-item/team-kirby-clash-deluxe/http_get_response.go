@@ -9,14 +9,14 @@ import (
 )
 
 // HTTPGetResponse sets the HTTPGetResponse handler function
-func (protocol *Protocol) HTTPGetResponse(handler func(err error, client *nex.Client, callID uint32, requestID uint32)) {
+func (protocol *Protocol) HTTPGetResponse(handler func(err error, client *nex.Client, callID uint32, requestID uint32) uint32) {
 	protocol.httpGetResponseHandler = handler
 }
 
 func (protocol *Protocol) handleHTTPGetResponse(packet nex.PacketInterface) {
 	if protocol.httpGetResponseHandler == nil {
 		globals.Logger.Warning("ServiceItemTeamKirbyClashDeluxe::HTTPGetResponse not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

@@ -10,14 +10,14 @@ import (
 )
 
 // UpdateCommunity sets the UpdateCommunity handler function
-func (protocol *Protocol) UpdateCommunity(handler func(err error, client *nex.Client, callID uint32, community *match_making_types.PersistentGathering)) {
+func (protocol *Protocol) UpdateCommunity(handler func(err error, client *nex.Client, callID uint32, community *match_making_types.PersistentGathering) uint32) {
 	protocol.updateCommunityHandler = handler
 }
 
 func (protocol *Protocol) handleUpdateCommunity(packet nex.PacketInterface) {
 	if protocol.updateCommunityHandler == nil {
 		globals.Logger.Warning("MatchmakeExtension::UpdateCommunity not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

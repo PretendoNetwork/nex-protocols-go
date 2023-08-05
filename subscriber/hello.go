@@ -9,14 +9,14 @@ import (
 )
 
 // Hello sets the Hello handler function
-func (protocol *Protocol) Hello(handler func(err error, client *nex.Client, callID uint32, unknown string)) {
+func (protocol *Protocol) Hello(handler func(err error, client *nex.Client, callID uint32, unknown string) uint32) {
 	protocol.helloHandler = handler
 }
 
 func (protocol *Protocol) handleHello(packet nex.PacketInterface) {
 	if protocol.helloHandler == nil {
 		globals.Logger.Warning("Subscriber::Hello not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 	client := packet.Sender()

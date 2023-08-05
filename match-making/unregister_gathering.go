@@ -9,14 +9,14 @@ import (
 )
 
 // UnregisterGathering sets the UnregisterGathering handler function
-func (protocol *Protocol) UnregisterGathering(handler func(err error, client *nex.Client, callID uint32, idGathering uint32)) {
+func (protocol *Protocol) UnregisterGathering(handler func(err error, client *nex.Client, callID uint32, idGathering uint32) uint32) {
 	protocol.unregisterGatheringHandler = handler
 }
 
 func (protocol *Protocol) handleUnregisterGathering(packet nex.PacketInterface) {
 	if protocol.unregisterGatheringHandler == nil {
 		globals.Logger.Warning("MatchMaking::UnregisterGathering not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

@@ -114,28 +114,28 @@ type serviceItemProtocol = service_item.Protocol
 type Protocol struct {
 	Server *nex.Server
 	serviceItemProtocol
-	getEnvironmentHandler                  func(err error, client *nex.Client, callID uint32, uniqueID string, platform uint8)
-	httpGetRequestHandler                  func(err error, client *nex.Client, callID uint32, url *service_item_team_kirby_clash_deluxe_types.ServiceItemHTTPGetParam)
-	httpGetResponseHandler                 func(err error, client *nex.Client, callID uint32, requestID uint32)
-	purchaseServiceItemRequestHandler      func(err error, client *nex.Client, callID uint32, purchaseServiceItemParam *service_item_team_kirby_clash_deluxe_types.ServiceItemPurchaseServiceItemParam)
-	purchaseServiceItemResponseHandler     func(err error, client *nex.Client, callID uint32, requestID uint32)
-	listServiceItemRequestHandler          func(err error, client *nex.Client, callID uint32, listServiceItemParam *service_item_team_kirby_clash_deluxe_types.ServiceItemListServiceItemParam)
-	listServiceItemResponseHandler         func(err error, client *nex.Client, callID uint32, requestID uint32)
-	getBalanceRequestHandler               func(err error, client *nex.Client, callID uint32, getBalanceParam *service_item_team_kirby_clash_deluxe_types.ServiceItemGetBalanceParam)
-	getBalanceResponseHandler              func(err error, client *nex.Client, callID uint32, requestID uint32)
-	getPrepurchaseInfoRequestHandler       func(err error, client *nex.Client, callID uint32, getPrepurchaseInfoParam *service_item_team_kirby_clash_deluxe_types.ServiceItemGetPrepurchaseInfoParam)
-	getPrepurchaseInfoResponseHandler      func(err error, client *nex.Client, callID uint32, requestID uint32)
-	getServiceItemRightRequestHandler      func(err error, client *nex.Client, callID uint32, getServiceItemRightParam *service_item_team_kirby_clash_deluxe_types.ServiceItemGetServiceItemRightParam, withoutRightBinary bool)
-	getServiceItemRightResponseHandler     func(err error, client *nex.Client, callID uint32, requestID uint32)
-	getPurchaseHistoryRequestHandler       func(err error, client *nex.Client, callID uint32, getPurchaseHistoryParam *service_item_team_kirby_clash_deluxe_types.ServiceItemGetPurchaseHistoryParam)
-	getPurchaseHistoryResponseHandler      func(err error, client *nex.Client, callID uint32, requestID uint32)
-	postRightBinaryByAccountHandler        func(err error, client *nex.Client, callID uint32, postRightBinaryByAccountParam *service_item_team_kirby_clash_deluxe_types.ServiceItemPostRightBinaryByAccountParam)
-	useServiceItemByAccountRequestHandler  func(err error, client *nex.Client, callID uint32, useServiceItemByAccountParam *service_item_team_kirby_clash_deluxe_types.ServiceItemUseServiceItemByAccountParam)
-	useServiceItemByAccountResponseHandler func(err error, client *nex.Client, callID uint32, requestID uint32)
-	acquireServiceItemByAccountHandler     func(err error, client *nex.Client, callID uint32, acquireServiceItemByAccountParam *service_item_team_kirby_clash_deluxe_types.ServiceItemAcquireServiceItemByAccountParam)
-	getSupportIDHandler                    func(err error, client *nex.Client, callID uint32, getSuppordIDParam *service_item_team_kirby_clash_deluxe_types.ServiceItemGetSupportIDParam)
-	getLawMessageRequestHandler            func(err error, client *nex.Client, callID uint32, getLawMessageParam *service_item_team_kirby_clash_deluxe_types.ServiceItemGetLawMessageParam)
-	getLawMessageResponseHandler           func(err error, client *nex.Client, callID uint32, requestID uint32)
+	getEnvironmentHandler                  func(err error, client *nex.Client, callID uint32, uniqueID string, platform uint8) uint32
+	httpGetRequestHandler                  func(err error, client *nex.Client, callID uint32, url *service_item_team_kirby_clash_deluxe_types.ServiceItemHTTPGetParam) uint32
+	httpGetResponseHandler                 func(err error, client *nex.Client, callID uint32, requestID uint32) uint32
+	purchaseServiceItemRequestHandler      func(err error, client *nex.Client, callID uint32, purchaseServiceItemParam *service_item_team_kirby_clash_deluxe_types.ServiceItemPurchaseServiceItemParam) uint32
+	purchaseServiceItemResponseHandler     func(err error, client *nex.Client, callID uint32, requestID uint32) uint32
+	listServiceItemRequestHandler          func(err error, client *nex.Client, callID uint32, listServiceItemParam *service_item_team_kirby_clash_deluxe_types.ServiceItemListServiceItemParam) uint32
+	listServiceItemResponseHandler         func(err error, client *nex.Client, callID uint32, requestID uint32) uint32
+	getBalanceRequestHandler               func(err error, client *nex.Client, callID uint32, getBalanceParam *service_item_team_kirby_clash_deluxe_types.ServiceItemGetBalanceParam) uint32
+	getBalanceResponseHandler              func(err error, client *nex.Client, callID uint32, requestID uint32) uint32
+	getPrepurchaseInfoRequestHandler       func(err error, client *nex.Client, callID uint32, getPrepurchaseInfoParam *service_item_team_kirby_clash_deluxe_types.ServiceItemGetPrepurchaseInfoParam) uint32
+	getPrepurchaseInfoResponseHandler      func(err error, client *nex.Client, callID uint32, requestID uint32) uint32
+	getServiceItemRightRequestHandler      func(err error, client *nex.Client, callID uint32, getServiceItemRightParam *service_item_team_kirby_clash_deluxe_types.ServiceItemGetServiceItemRightParam, withoutRightBinary bool) uint32
+	getServiceItemRightResponseHandler     func(err error, client *nex.Client, callID uint32, requestID uint32) uint32
+	getPurchaseHistoryRequestHandler       func(err error, client *nex.Client, callID uint32, getPurchaseHistoryParam *service_item_team_kirby_clash_deluxe_types.ServiceItemGetPurchaseHistoryParam) uint32
+	getPurchaseHistoryResponseHandler      func(err error, client *nex.Client, callID uint32, requestID uint32) uint32
+	postRightBinaryByAccountHandler        func(err error, client *nex.Client, callID uint32, postRightBinaryByAccountParam *service_item_team_kirby_clash_deluxe_types.ServiceItemPostRightBinaryByAccountParam) uint32
+	useServiceItemByAccountRequestHandler  func(err error, client *nex.Client, callID uint32, useServiceItemByAccountParam *service_item_team_kirby_clash_deluxe_types.ServiceItemUseServiceItemByAccountParam) uint32
+	useServiceItemByAccountResponseHandler func(err error, client *nex.Client, callID uint32, requestID uint32) uint32
+	acquireServiceItemByAccountHandler     func(err error, client *nex.Client, callID uint32, acquireServiceItemByAccountParam *service_item_team_kirby_clash_deluxe_types.ServiceItemAcquireServiceItemByAccountParam) uint32
+	getSupportIDHandler                    func(err error, client *nex.Client, callID uint32, getSuppordIDParam *service_item_team_kirby_clash_deluxe_types.ServiceItemGetSupportIDParam) uint32
+	getLawMessageRequestHandler            func(err error, client *nex.Client, callID uint32, getLawMessageParam *service_item_team_kirby_clash_deluxe_types.ServiceItemGetLawMessageParam) uint32
+	getLawMessageResponseHandler           func(err error, client *nex.Client, callID uint32, requestID uint32) uint32
 }
 
 // Setup initializes the protocol
@@ -203,7 +203,7 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 	case MethodGetLawMessageResponse:
 		go protocol.handleGetLawMessageResponse(packet)
 	default:
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		fmt.Printf("Unsupported Service Item (Team Kirby Clash Deluxe) method ID: %#v\n", request.MethodID())
 	}
 }

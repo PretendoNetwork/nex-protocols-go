@@ -9,14 +9,14 @@ import (
 )
 
 // DeleteGathering sets the DeleteGathering handler function
-func (protocol *Protocol) DeleteGathering(handler func(err error, client *nex.Client, callID uint32, idGathering uint32)) {
+func (protocol *Protocol) DeleteGathering(handler func(err error, client *nex.Client, callID uint32, idGathering uint32) uint32) {
 	protocol.deleteGatheringHandler = handler
 }
 
 func (protocol *Protocol) handleDeleteGathering(packet nex.PacketInterface) {
 	if protocol.deleteGatheringHandler == nil {
 		globals.Logger.Warning("MatchMaking::DeleteGathering not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

@@ -7,14 +7,14 @@ import (
 )
 
 // SelectCommunityCompetitionByOwner sets the SelectCommunityCompetitionByOwner handler function
-func (protocol *Protocol) SelectCommunityCompetitionByOwner(handler func(err error, client *nex.Client, callID uint32, packetPayload []byte)) {
+func (protocol *Protocol) SelectCommunityCompetitionByOwner(handler func(err error, client *nex.Client, callID uint32, packetPayload []byte) uint32) {
 	protocol.selectCommunityCompetitionByOwnerHandler = handler
 }
 
 func (protocol *Protocol) handleSelectCommunityCompetitionByOwner(packet nex.PacketInterface) {
 	if protocol.selectCommunityCompetitionByOwnerHandler == nil {
 		globals.Logger.Warning("MatchmakeExtensionSuperSmashBros4::SelectCommunityCompetitionByOwner not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

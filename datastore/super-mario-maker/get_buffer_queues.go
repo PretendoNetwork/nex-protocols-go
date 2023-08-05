@@ -10,14 +10,14 @@ import (
 )
 
 // GetBufferQueues sets the GetBufferQueues handler function
-func (protocol *Protocol) GetBufferQueues(handler func(err error, client *nex.Client, callID uint32, params []*datastore_super_mario_maker_types.BufferQueueParam)) {
+func (protocol *Protocol) GetBufferQueues(handler func(err error, client *nex.Client, callID uint32, params []*datastore_super_mario_maker_types.BufferQueueParam) uint32) {
 	protocol.getBufferQueuesHandler = handler
 }
 
 func (protocol *Protocol) handleGetBufferQueues(packet nex.PacketInterface) {
 	if protocol.getBufferQueuesHandler == nil {
 		globals.Logger.Warning("DataStoreSuperMarioMaker::GetBufferQueues not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

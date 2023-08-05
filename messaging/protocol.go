@@ -41,14 +41,14 @@ const (
 // Protocol stores all the RMC method handlers for the Messaging protocol and listens for requests
 type Protocol struct {
 	Server                                *nex.Server
-	deliverMessageHandler                 func(err error, client *nex.Client, callID uint32, oUserMessage *nex.DataHolder)
-	getNumberOfMessagesHandler            func(err error, client *nex.Client, callID uint32, recipient *messaging_types.MessageRecipient)
-	getMessagesHeadersHandler             func(err error, client *nex.Client, callID uint32, recipient *messaging_types.MessageRecipient, resultRange *nex.ResultRange)
-	retrieveAllMessagesWithinRangeHandler func(err error, client *nex.Client, callID uint32, recipient *messaging_types.MessageRecipient, resultRange *nex.ResultRange)
-	retrieveMessagesHandler               func(err error, client *nex.Client, callID uint32, recipient *messaging_types.MessageRecipient, lstMsgIDs []uint32, bLeaveOnServer bool)
-	deleteMessagesHandler                 func(err error, client *nex.Client, callID uint32, recipient *messaging_types.MessageRecipient, lstMessagesToDelete []uint32)
-	deleteAllMessagesHandler              func(err error, client *nex.Client, callID uint32, recipient *messaging_types.MessageRecipient)
-	deliverMessageMultiTargetHandler      func(err error, client *nex.Client, callID uint32, packetPayload []byte) // TODO - Unknown request/response format
+	deliverMessageHandler                 func(err error, client *nex.Client, callID uint32, oUserMessage *nex.DataHolder) uint32
+	getNumberOfMessagesHandler            func(err error, client *nex.Client, callID uint32, recipient *messaging_types.MessageRecipient) uint32
+	getMessagesHeadersHandler             func(err error, client *nex.Client, callID uint32, recipient *messaging_types.MessageRecipient, resultRange *nex.ResultRange) uint32
+	retrieveAllMessagesWithinRangeHandler func(err error, client *nex.Client, callID uint32, recipient *messaging_types.MessageRecipient, resultRange *nex.ResultRange) uint32
+	retrieveMessagesHandler               func(err error, client *nex.Client, callID uint32, recipient *messaging_types.MessageRecipient, lstMsgIDs []uint32, bLeaveOnServer bool) uint32
+	deleteMessagesHandler                 func(err error, client *nex.Client, callID uint32, recipient *messaging_types.MessageRecipient, lstMessagesToDelete []uint32) uint32
+	deleteAllMessagesHandler              func(err error, client *nex.Client, callID uint32, recipient *messaging_types.MessageRecipient) uint32
+	deliverMessageMultiTargetHandler      func(err error, client *nex.Client, callID uint32, packetPayload []byte) uint32 // TODO - Unknown request/response format
 }
 
 // Setup initializes the protocol
@@ -84,7 +84,7 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 	case MethodDeliverMessageMultiTarget:
 		go protocol.handleDeliverMessageMultiTarget(packet)
 	default:
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		fmt.Printf("Unsupported Messaging method ID: %#v\n", request.MethodID())
 	}
 }

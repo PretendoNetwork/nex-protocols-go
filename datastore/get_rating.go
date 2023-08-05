@@ -10,14 +10,14 @@ import (
 )
 
 // GetRating sets the GetRating handler function
-func (protocol *Protocol) GetRating(handler func(err error, client *nex.Client, callID uint32, target *datastore_types.DataStoreRatingTarget, accessPassword uint64)) {
+func (protocol *Protocol) GetRating(handler func(err error, client *nex.Client, callID uint32, target *datastore_types.DataStoreRatingTarget, accessPassword uint64) uint32) {
 	protocol.getRatingHandler = handler
 }
 
 func (protocol *Protocol) handleGetRating(packet nex.PacketInterface) {
 	if protocol.getRatingHandler == nil {
 		globals.Logger.Warning("DataStore::GetRating not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

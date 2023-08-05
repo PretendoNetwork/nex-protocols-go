@@ -10,14 +10,14 @@ import (
 )
 
 // GetServiceItemRightRequest sets the GetServiceItemRightRequest handler function
-func (protocol *Protocol) GetServiceItemRightRequest(handler func(err error, client *nex.Client, callID uint32, getServiceItemRightParam *service_item_team_kirby_clash_deluxe_types.ServiceItemGetServiceItemRightParam, withoutRightBinary bool)) {
+func (protocol *Protocol) GetServiceItemRightRequest(handler func(err error, client *nex.Client, callID uint32, getServiceItemRightParam *service_item_team_kirby_clash_deluxe_types.ServiceItemGetServiceItemRightParam, withoutRightBinary bool) uint32) {
 	protocol.getServiceItemRightRequestHandler = handler
 }
 
 func (protocol *Protocol) handleGetServiceItemRightRequest(packet nex.PacketInterface) {
 	if protocol.getServiceItemRightRequestHandler == nil {
 		globals.Logger.Warning("ServiceItemTeamKirbyClashDeluxe::GetServiceItemRightRequest not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

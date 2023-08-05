@@ -7,14 +7,14 @@ import (
 )
 
 // Follow sets the Follow handler function
-func (protocol *Protocol) Follow(handler func(err error, client *nex.Client, callID uint32, packetPayload []byte)) {
+func (protocol *Protocol) Follow(handler func(err error, client *nex.Client, callID uint32, packetPayload []byte) uint32) {
 	protocol.followHandler = handler
 }
 
 func (protocol *Protocol) handleFollow(packet nex.PacketInterface) {
 	if protocol.followHandler == nil {
 		globals.Logger.Warning("Subscriber::Follow not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

@@ -9,14 +9,14 @@ import (
 )
 
 // GetPrepurchaseInfoResponse sets the GetPrepurchaseInfoResponse handler function
-func (protocol *Protocol) GetPrepurchaseInfoResponse(handler func(err error, client *nex.Client, callID uint32, requestID uint32)) {
+func (protocol *Protocol) GetPrepurchaseInfoResponse(handler func(err error, client *nex.Client, callID uint32, requestID uint32) uint32) {
 	protocol.getPrepurchaseInfoResponseHandler = handler
 }
 
 func (protocol *Protocol) handleGetPrepurchaseInfoResponse(packet nex.PacketInterface) {
 	if protocol.getPrepurchaseInfoResponseHandler == nil {
 		globals.Logger.Warning("ServiceItemWiiSportsClub::GetPrepurchaseInfoResponse not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

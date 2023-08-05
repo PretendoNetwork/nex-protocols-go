@@ -9,14 +9,14 @@ import (
 )
 
 // UpdateComment sets the UpdateComment handler function
-func (protocol *Protocol) UpdateComment(handler func(err error, client *nex.Client, callID uint32, comment string)) {
+func (protocol *Protocol) UpdateComment(handler func(err error, client *nex.Client, callID uint32, comment string) uint32) {
 	protocol.updateCommentHandler = handler
 }
 
 func (protocol *Protocol) handleUpdateComment(packet nex.PacketInterface) {
 	if protocol.updateCommentHandler == nil {
 		globals.Logger.Warning("Friends3DS::UpdateComment not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

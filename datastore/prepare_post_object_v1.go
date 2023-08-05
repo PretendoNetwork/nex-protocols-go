@@ -10,14 +10,14 @@ import (
 )
 
 // PreparePostObjectV1 sets the PreparePostObjectV1 handler function
-func (protocol *Protocol) PreparePostObjectV1(handler func(err error, client *nex.Client, callID uint32, param *datastore_types.DataStorePreparePostParamV1)) {
+func (protocol *Protocol) PreparePostObjectV1(handler func(err error, client *nex.Client, callID uint32, param *datastore_types.DataStorePreparePostParamV1) uint32) {
 	protocol.preparePostObjectV1Handler = handler
 }
 
 func (protocol *Protocol) handlePreparePostObjectV1(packet nex.PacketInterface) {
 	if protocol.preparePostObjectV1Handler == nil {
 		globals.Logger.Warning("DataStore::PreparePostObjectV1 not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

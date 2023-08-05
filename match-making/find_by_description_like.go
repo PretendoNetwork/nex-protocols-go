@@ -9,14 +9,14 @@ import (
 )
 
 // FindByDescriptionLike sets the FindByDescriptionLike handler function
-func (protocol *Protocol) FindByDescriptionLike(handler func(err error, client *nex.Client, callID uint32, strDescriptionLike string, resultRange *nex.ResultRange)) {
+func (protocol *Protocol) FindByDescriptionLike(handler func(err error, client *nex.Client, callID uint32, strDescriptionLike string, resultRange *nex.ResultRange) uint32) {
 	protocol.findByDescriptionLikeHandler = handler
 }
 
 func (protocol *Protocol) handleFindByDescriptionLike(packet nex.PacketInterface) {
 	if protocol.findByDescriptionLikeHandler == nil {
 		globals.Logger.Warning("MatchMaking::FindByDescriptionLike not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

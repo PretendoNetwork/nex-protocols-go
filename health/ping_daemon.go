@@ -7,14 +7,14 @@ import (
 )
 
 // PingDaemon sets the PingDaemon handler function
-func (protocol *Protocol) PingDaemon(handler func(err error, client *nex.Client, callID uint32)) {
+func (protocol *Protocol) PingDaemon(handler func(err error, client *nex.Client, callID uint32) uint32) {
 	protocol.pingDaemonHandler = handler
 }
 
 func (protocol *Protocol) handlePingDaemon(packet nex.PacketInterface) {
 	if protocol.pingDaemonHandler == nil {
 		globals.Logger.Warning("Health::PingDaemon not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

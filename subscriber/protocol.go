@@ -62,21 +62,21 @@ const (
 // Protocol stores all the RMC method handlers for the Subscriber protocol and listens for requests
 type Protocol struct {
 	Server                       *nex.Server
-	helloHandler                 func(err error, client *nex.Client, callID uint32, unknown string)
-	postContentHandler           func(err error, client *nex.Client, callID uint32, param *subscriber_types.SubscriberPostContentParam)
-	getContentHandler            func(err error, client *nex.Client, callID uint32, param *subscriber_types.SubscriberGetContentParam)
-	followHandler                func(err error, client *nex.Client, callID uint32, packetPayload []byte)
-	unfollowAllAndFollowHandler  func(err error, client *nex.Client, callID uint32, packetPayload []byte)
-	unfollowHandler              func(err error, client *nex.Client, callID uint32, packetPayload []byte)
-	getFollowingHandler          func(err error, client *nex.Client, callID uint32, packetPayload []byte)
-	getFollowerHandler           func(err error, client *nex.Client, callID uint32, packetPayload []byte)
-	getNumFollowersHandler       func(err error, client *nex.Client, callID uint32, packetPayload []byte)
-	getTimelineHandler           func(err error, client *nex.Client, callID uint32, packetPayload []byte)
-	deleteContentHandler         func(err error, client *nex.Client, callID uint32, unknown1 []string, unknown2 uint64)
-	getContentMultiHandler       func(err error, client *nex.Client, callID uint32, params []*subscriber_types.SubscriberGetContentParam)
-	updateUserStatusHandler      func(err error, client *nex.Client, callID uint32, unknown1 []*subscriber_types.Unknown, unknown2 []uint8)
-	getFriendUserStatusesHandler func(err error, client *nex.Client, callID uint32, unknown []uint8)
-	getUserStatusesHandler       func(err error, client *nex.Client, callID uint32, pids []uint32, unknown []uint8)
+	helloHandler                 func(err error, client *nex.Client, callID uint32, unknown string) uint32
+	postContentHandler           func(err error, client *nex.Client, callID uint32, param *subscriber_types.SubscriberPostContentParam) uint32
+	getContentHandler            func(err error, client *nex.Client, callID uint32, param *subscriber_types.SubscriberGetContentParam) uint32
+	followHandler                func(err error, client *nex.Client, callID uint32, packetPayload []byte) uint32
+	unfollowAllAndFollowHandler  func(err error, client *nex.Client, callID uint32, packetPayload []byte) uint32
+	unfollowHandler              func(err error, client *nex.Client, callID uint32, packetPayload []byte) uint32
+	getFollowingHandler          func(err error, client *nex.Client, callID uint32, packetPayload []byte) uint32
+	getFollowerHandler           func(err error, client *nex.Client, callID uint32, packetPayload []byte) uint32
+	getNumFollowersHandler       func(err error, client *nex.Client, callID uint32, packetPayload []byte) uint32
+	getTimelineHandler           func(err error, client *nex.Client, callID uint32, packetPayload []byte) uint32
+	deleteContentHandler         func(err error, client *nex.Client, callID uint32, unknown1 []string, unknown2 uint64) uint32
+	getContentMultiHandler       func(err error, client *nex.Client, callID uint32, params []*subscriber_types.SubscriberGetContentParam) uint32
+	updateUserStatusHandler      func(err error, client *nex.Client, callID uint32, unknown1 []*subscriber_types.Unknown, unknown2 []uint8) uint32
+	getFriendUserStatusesHandler func(err error, client *nex.Client, callID uint32, unknown []uint8) uint32
+	getUserStatusesHandler       func(err error, client *nex.Client, callID uint32, pids []uint32, unknown []uint8) uint32
 }
 
 // Setup initializes the protocol
@@ -117,7 +117,7 @@ func (protocol *Protocol) Setup() {
 			case MethodGetUserStatuses:
 				go protocol.handleGetUserStatuses(packet)
 			default:
-				go globals.RespondNotImplemented(packet, ProtocolID)
+				go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 				fmt.Printf("Unsupported Subscriber method ID: %#v\n", request.MethodID())
 			}
 		}

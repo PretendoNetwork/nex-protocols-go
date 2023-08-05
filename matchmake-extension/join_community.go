@@ -9,14 +9,14 @@ import (
 )
 
 // JoinCommunity sets the JoinCommunity handler function
-func (protocol *Protocol) JoinCommunity(handler func(err error, client *nex.Client, callID uint32, gid uint32, strMessage string, strPassword string)) {
+func (protocol *Protocol) JoinCommunity(handler func(err error, client *nex.Client, callID uint32, gid uint32, strMessage string, strPassword string) uint32) {
 	protocol.joinCommunityHandler = handler
 }
 
 func (protocol *Protocol) handleJoinCommunity(packet nex.PacketInterface) {
 	if protocol.joinCommunityHandler == nil {
 		globals.Logger.Warning("MatchmakeExtension::JoinCommunity not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

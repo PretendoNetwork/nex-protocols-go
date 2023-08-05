@@ -9,14 +9,14 @@ import (
 )
 
 // GetGatheringRelations sets the GetGatheringRelations handler function
-func (protocol *Protocol) GetGatheringRelations(handler func(err error, client *nex.Client, callID uint32, id uint32, descr string)) {
+func (protocol *Protocol) GetGatheringRelations(handler func(err error, client *nex.Client, callID uint32, id uint32, descr string) uint32) {
 	protocol.getGatheringRelationsHandler = handler
 }
 
 func (protocol *Protocol) handleGetGatheringRelations(packet nex.PacketInterface) {
 	if protocol.getGatheringRelationsHandler == nil {
 		globals.Logger.Warning("MatchMakingExt::GetGatheringRelations not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

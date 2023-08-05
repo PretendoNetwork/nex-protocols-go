@@ -9,7 +9,7 @@ import (
 )
 
 // CreateMatchmakeSession sets the CreateMatchmakeSession handler function
-func (protocol *Protocol) CreateMatchmakeSession(handler func(err error, client *nex.Client, callID uint32, anyGathering *nex.DataHolder, message string, participationCount uint16)) {
+func (protocol *Protocol) CreateMatchmakeSession(handler func(err error, client *nex.Client, callID uint32, anyGathering *nex.DataHolder, message string, participationCount uint16) uint32) {
 	protocol.createMatchmakeSessionHandler = handler
 }
 
@@ -18,7 +18,7 @@ func (protocol *Protocol) handleCreateMatchmakeSession(packet nex.PacketInterfac
 
 	if protocol.createMatchmakeSessionHandler == nil {
 		globals.Logger.Warning("MatchmakeExtension::CreateMatchmakeSession not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

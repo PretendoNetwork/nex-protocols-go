@@ -10,14 +10,14 @@ import (
 )
 
 // RateObject sets the RateObject handler function
-func (protocol *Protocol) RateObject(handler func(err error, client *nex.Client, callID uint32, target *datastore_types.DataStoreRatingTarget, param *datastore_types.DataStoreRateObjectParam, fetchRatings bool)) {
+func (protocol *Protocol) RateObject(handler func(err error, client *nex.Client, callID uint32, target *datastore_types.DataStoreRatingTarget, param *datastore_types.DataStoreRateObjectParam, fetchRatings bool) uint32) {
 	protocol.rateObjectHandler = handler
 }
 
 func (protocol *Protocol) handleRateObject(packet nex.PacketInterface) {
 	if protocol.rateObjectHandler == nil {
 		globals.Logger.Warning("DataStore::RateObject not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

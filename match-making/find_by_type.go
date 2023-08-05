@@ -9,14 +9,14 @@ import (
 )
 
 // FindByType sets the FindByType handler function
-func (protocol *Protocol) FindByType(handler func(err error, client *nex.Client, callID uint32, strType string, resultRange *nex.ResultRange)) {
+func (protocol *Protocol) FindByType(handler func(err error, client *nex.Client, callID uint32, strType string, resultRange *nex.ResultRange) uint32) {
 	protocol.findByTypeHandler = handler
 }
 
 func (protocol *Protocol) handleFindByType(packet nex.PacketInterface) {
 	if protocol.findByTypeHandler == nil {
 		globals.Logger.Warning("MatchMaking::FindByType not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

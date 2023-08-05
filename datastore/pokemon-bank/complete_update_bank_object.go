@@ -10,14 +10,14 @@ import (
 )
 
 // CompleteUpdateBankObject sets the CompleteUpdateBankObject handler function
-func (protocol *Protocol) CompleteUpdateBankObject(handler func(err error, client *nex.Client, callID uint32, slotID uint16, transactionParam *datastore_pokemon_bank_types.BankTransactionParam, isForce bool)) {
+func (protocol *Protocol) CompleteUpdateBankObject(handler func(err error, client *nex.Client, callID uint32, slotID uint16, transactionParam *datastore_pokemon_bank_types.BankTransactionParam, isForce bool) uint32) {
 	protocol.completeUpdateBankObjectHandler = handler
 }
 
 func (protocol *Protocol) handleCompleteUpdateBankObject(packet nex.PacketInterface) {
 	if protocol.completeUpdateBankObjectHandler == nil {
 		globals.Logger.Warning("DataStorePokemonBank::CompleteUpdateBankObject not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

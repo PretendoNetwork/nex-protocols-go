@@ -10,14 +10,14 @@ import (
 )
 
 // DeletePokemon sets the DeletePokemon handler function
-func (protocol *Protocol) DeletePokemon(handler func(err error, client *nex.Client, callID uint32, param *datastore_pokemon_bank_types.GlobalTradeStationDeletePokemonParam)) {
+func (protocol *Protocol) DeletePokemon(handler func(err error, client *nex.Client, callID uint32, param *datastore_pokemon_bank_types.GlobalTradeStationDeletePokemonParam) uint32) {
 	protocol.deletePokemonHandler = handler
 }
 
 func (protocol *Protocol) handleDeletePokemon(packet nex.PacketInterface) {
 	if protocol.deletePokemonHandler == nil {
 		globals.Logger.Warning("DataStorePokemonBank::DeletePokemon not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

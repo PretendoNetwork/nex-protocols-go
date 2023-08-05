@@ -9,14 +9,14 @@ import (
 )
 
 // GetApplicationConfigString sets the GetApplicationConfigString handler function
-func (protocol *Protocol) GetApplicationConfigString(handler func(err error, client *nex.Client, callID uint32, applicationID uint32)) {
+func (protocol *Protocol) GetApplicationConfigString(handler func(err error, client *nex.Client, callID uint32, applicationID uint32) uint32) {
 	protocol.getApplicationConfigStringHandler = handler
 }
 
 func (protocol *Protocol) handleGetApplicationConfigString(packet nex.PacketInterface) {
 	if protocol.getApplicationConfigStringHandler == nil {
 		globals.Logger.Warning("DataStoreSuperMarioMaker::GetApplicationConfigString not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

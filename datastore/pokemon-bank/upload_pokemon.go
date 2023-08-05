@@ -10,14 +10,14 @@ import (
 )
 
 // UploadPokemon sets the UploadPokemon handler function
-func (protocol *Protocol) UploadPokemon(handler func(err error, client *nex.Client, callID uint32, param *datastore_pokemon_bank_types.GlobalTradeStationUploadPokemonParam)) {
+func (protocol *Protocol) UploadPokemon(handler func(err error, client *nex.Client, callID uint32, param *datastore_pokemon_bank_types.GlobalTradeStationUploadPokemonParam) uint32) {
 	protocol.uploadPokemonHandler = handler
 }
 
 func (protocol *Protocol) handleUploadPokemon(packet nex.PacketInterface) {
 	if protocol.uploadPokemonHandler == nil {
 		globals.Logger.Warning("DataStorePokemonBank::UploadPokemon not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

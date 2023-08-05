@@ -9,14 +9,14 @@ import (
 )
 
 // GetFriendPersistentInfo sets the GetFriendPersistentInfo handler function
-func (protocol *Protocol) GetFriendPersistentInfo(handler func(err error, client *nex.Client, callID uint32, pidList []uint32)) {
+func (protocol *Protocol) GetFriendPersistentInfo(handler func(err error, client *nex.Client, callID uint32, pidList []uint32) uint32) {
 	protocol.getFriendPersistentInfoHandler = handler
 }
 
 func (protocol *Protocol) handleGetFriendPersistentInfo(packet nex.PacketInterface) {
 	if protocol.getFriendPersistentInfoHandler == nil {
 		globals.Logger.Warning("Friends3DS::GetFriendPersistentInfo not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

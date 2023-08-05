@@ -9,14 +9,14 @@ import (
 )
 
 // RequestProbeInitiation sets the RequestProbeInitiation handler function
-func (protocol *Protocol) RequestProbeInitiation(handler func(err error, client *nex.Client, callID uint32, urlTargetList []*nex.StationURL)) {
+func (protocol *Protocol) RequestProbeInitiation(handler func(err error, client *nex.Client, callID uint32, urlTargetList []*nex.StationURL) uint32) {
 	protocol.requestProbeInitiationHandler = handler
 }
 
 func (protocol *Protocol) handleRequestProbeInitiation(packet nex.PacketInterface) {
 	if protocol.requestProbeInitiationHandler == nil {
 		globals.Logger.Warning("NATTraversal::RequestProbeInitiation not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

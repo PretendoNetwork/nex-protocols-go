@@ -9,14 +9,14 @@ import (
 )
 
 // FindCommunityByGatheringID sets the FindCommunityByGatheringID handler function
-func (protocol *Protocol) FindCommunityByGatheringID(handler func(err error, client *nex.Client, callID uint32, lstGID []uint32)) {
+func (protocol *Protocol) FindCommunityByGatheringID(handler func(err error, client *nex.Client, callID uint32, lstGID []uint32) uint32) {
 	protocol.findCommunityByGatheringIDHandler = handler
 }
 
 func (protocol *Protocol) handleFindCommunityByGatheringID(packet nex.PacketInterface) {
 	if protocol.findCommunityByGatheringIDHandler == nil {
 		globals.Logger.Warning("MatchmakeExtension::FindCommunityByGatheringID not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

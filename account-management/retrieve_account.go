@@ -7,14 +7,14 @@ import (
 )
 
 // RetrieveAccount sets the RetrieveAccount handler function
-func (protocol *Protocol) RetrieveAccount(handler func(err error, client *nex.Client, callID uint32)) {
+func (protocol *Protocol) RetrieveAccount(handler func(err error, client *nex.Client, callID uint32) uint32) {
 	protocol.retrieveAccountHandler = handler
 }
 
 func (protocol *Protocol) handleRetrieveAccount(packet nex.PacketInterface) {
 	if protocol.retrieveAccountHandler == nil {
 		globals.Logger.Warning("AccountManagement::RetrieveAccount not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

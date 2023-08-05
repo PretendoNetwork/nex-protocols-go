@@ -7,14 +7,14 @@ import (
 )
 
 // GetNotSummarizedRound sets the GetNotSummarizedRound handler function
-func (protocol *Protocol) GetNotSummarizedRound(handler func(err error, client *nex.Client, callID uint32)) {
+func (protocol *Protocol) GetNotSummarizedRound(handler func(err error, client *nex.Client, callID uint32) uint32) {
 	protocol.getNotSummarizedRoundHandler = handler
 }
 
 func (protocol *Protocol) handleGetNotSummarizedRound(packet nex.PacketInterface) {
 	if protocol.getNotSummarizedRoundHandler == nil {
 		globals.Logger.Warning("MatchmakeReferee::GetNotSummarizedRound not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

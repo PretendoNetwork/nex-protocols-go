@@ -9,14 +9,14 @@ import (
 )
 
 // GetSessionURLs sets the GetSessionURLs handler function
-func (protocol *Protocol) GetSessionURLs(handler func(err error, client *nex.Client, callID uint32, gid uint32)) {
+func (protocol *Protocol) GetSessionURLs(handler func(err error, client *nex.Client, callID uint32, gid uint32) uint32) {
 	protocol.getSessionURLsHandler = handler
 }
 
 func (protocol *Protocol) handleGetSessionURLs(packet nex.PacketInterface) {
 	if protocol.getSessionURLsHandler == nil {
 		globals.Logger.Warning("MatchMaking::GetSessionURLs not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

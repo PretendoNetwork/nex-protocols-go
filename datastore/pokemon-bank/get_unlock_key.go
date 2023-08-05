@@ -9,14 +9,14 @@ import (
 )
 
 // GetUnlockKey sets the GetUnlockKey handler function
-func (protocol *Protocol) GetUnlockKey(handler func(err error, client *nex.Client, callID uint32, challengeValue uint32)) {
+func (protocol *Protocol) GetUnlockKey(handler func(err error, client *nex.Client, callID uint32, challengeValue uint32) uint32) {
 	protocol.getUnlockKeyHandler = handler
 }
 
 func (protocol *Protocol) handleGetUnlockKey(packet nex.PacketInterface) {
 	if protocol.getUnlockKeyHandler == nil {
 		globals.Logger.Warning("DataStorePokemonBank::GetUnlockKey not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

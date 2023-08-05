@@ -9,14 +9,14 @@ import (
 )
 
 // GetStatus sets the GetStatus handler function
-func (protocol *Protocol) GetStatus(handler func(err error, client *nex.Client, callID uint32, idPrincipal uint32)) {
+func (protocol *Protocol) GetStatus(handler func(err error, client *nex.Client, callID uint32, idPrincipal uint32) uint32) {
 	protocol.getStatusHandler = handler
 }
 
 func (protocol *Protocol) handleGetStatus(packet nex.PacketInterface) {
 	if protocol.getStatusHandler == nil {
 		globals.Logger.Warning("AccountManagement::GetStatus not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

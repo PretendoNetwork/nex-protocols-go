@@ -10,14 +10,14 @@ import (
 )
 
 // AutoMatchmakeWithGatheringIDPostpone sets the AutoMatchmakeWithGatheringIDPostpone handler function
-func (protocol *Protocol) AutoMatchmakeWithGatheringIDPostpone(handler func(err error, client *nex.Client, callID uint32, lstGID []uint32, anyGathering *nex.DataHolder, strMessage string)) {
+func (protocol *Protocol) AutoMatchmakeWithGatheringIDPostpone(handler func(err error, client *nex.Client, callID uint32, lstGID []uint32, anyGathering *nex.DataHolder, strMessage string) uint32) {
 	protocol.autoMatchmakeWithGatheringIDPostponeHandler = handler
 }
 
 func (protocol *Protocol) handleAutoMatchmakeWithGatheringIDPostpone(packet nex.PacketInterface) {
 	if protocol.autoMatchmakeWithGatheringIDPostponeHandler == nil {
 		globals.Logger.Warning("MatchmakeExtension::AutoMatchmakeWithGatheringIDPostpone not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

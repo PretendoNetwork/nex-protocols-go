@@ -9,14 +9,14 @@ import (
 )
 
 // SetApplicationConfig sets the SetApplicationConfig handler function
-func (protocol *Protocol) SetApplicationConfig(handler func(err error, client *nex.Client, callID uint32, applicationID uint32, key uint32, value int32)) {
+func (protocol *Protocol) SetApplicationConfig(handler func(err error, client *nex.Client, callID uint32, applicationID uint32, key uint32, value int32) uint32) {
 	protocol.setApplicationConfigHandler = handler
 }
 
 func (protocol *Protocol) handleSetApplicationConfig(packet nex.PacketInterface) {
 	if protocol.setApplicationConfigHandler == nil {
 		globals.Logger.Warning("DataStoreSuperMarioMaker::SetApplicationConfig not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

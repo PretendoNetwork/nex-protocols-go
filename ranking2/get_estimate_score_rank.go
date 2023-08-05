@@ -5,19 +5,19 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
-	ranking2_types "github.com/PretendoNetwork/nex-protocols-go/ranking2/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
+	ranking2_types "github.com/PretendoNetwork/nex-protocols-go/ranking2/types"
 )
 
 // GetEstimateScoreRank sets the GetEstimateScoreRank handler function
-func (protocol *Protocol) GetEstimateScoreRank(handler func(err error, client *nex.Client, callID uint32, input *ranking2_types.Ranking2EstimateScoreRankInput)) {
+func (protocol *Protocol) GetEstimateScoreRank(handler func(err error, client *nex.Client, callID uint32, input *ranking2_types.Ranking2EstimateScoreRankInput) uint32) {
 	protocol.getEstimateScoreRankHandler = handler
 }
 
 func (protocol *Protocol) handleGetEstimateScoreRank(packet nex.PacketInterface) {
 	if protocol.getEstimateScoreRankHandler == nil {
 		globals.Logger.Warning("Ranking2::GetEstimateScoreRank not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 	client := packet.Sender()

@@ -9,14 +9,14 @@ import (
 )
 
 // GetParticipantsURLs sets the GetParticipantsURLs handler function
-func (protocol *Protocol) GetParticipantsURLs(handler func(err error, client *nex.Client, callID uint32, idGathering uint32)) {
+func (protocol *Protocol) GetParticipantsURLs(handler func(err error, client *nex.Client, callID uint32, idGathering uint32) uint32) {
 	protocol.getParticipantsURLsHandler = handler
 }
 
 func (protocol *Protocol) handleGetParticipantsURLs(packet nex.PacketInterface) {
 	if protocol.getParticipantsURLsHandler == nil {
 		globals.Logger.Warning("MatchMaking::GetParticipantsURLs not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

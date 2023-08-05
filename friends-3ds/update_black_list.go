@@ -9,14 +9,14 @@ import (
 )
 
 // UpdateBlackList sets the UpdateBlackList handler function
-func (protocol *Protocol) UpdateBlackList(handler func(err error, client *nex.Client, callID uint32, unknown []uint32)) {
+func (protocol *Protocol) UpdateBlackList(handler func(err error, client *nex.Client, callID uint32, unknown []uint32) uint32) {
 	protocol.updateBlackListHandler = handler
 }
 
 func (protocol *Protocol) handleUpdateBlackList(packet nex.PacketInterface) {
 	if protocol.updateBlackListHandler == nil {
 		globals.Logger.Warning("Friends3DS::UpdateBlackList not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

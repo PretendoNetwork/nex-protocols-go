@@ -9,14 +9,14 @@ import (
 )
 
 // ActivateWithCardID sets the ActivateWithCardID handler function
-func (protocol *Protocol) ActivateWithCardID(handler func(err error, client *nex.Client, callID uint32, unknown uint8, cardID uint64)) {
+func (protocol *Protocol) ActivateWithCardID(handler func(err error, client *nex.Client, callID uint32, unknown uint8, cardID uint64) uint32) {
 	protocol.activateWithCardIDHandler = handler
 }
 
 func (protocol *Protocol) handleActivateWithCardID(packet nex.PacketInterface) {
 	if protocol.activateWithCardIDHandler == nil {
 		globals.Logger.Warning("StorageManager::ActivateWithCardID not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

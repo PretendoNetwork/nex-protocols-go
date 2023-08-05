@@ -10,14 +10,14 @@ import (
 )
 
 // RetrieveMessages sets the RetrieveMessages handler function
-func (protocol *Protocol) RetrieveMessages(handler func(err error, client *nex.Client, callID uint32, recipient *messaging_types.MessageRecipient, lstMsgIDs []uint32, bLeaveOnServer bool)) {
+func (protocol *Protocol) RetrieveMessages(handler func(err error, client *nex.Client, callID uint32, recipient *messaging_types.MessageRecipient, lstMsgIDs []uint32, bLeaveOnServer bool) uint32) {
 	protocol.retrieveMessagesHandler = handler
 }
 
 func (protocol *Protocol) handleRetrieveMessages(packet nex.PacketInterface) {
 	if protocol.retrieveMessagesHandler == nil {
 		globals.Logger.Warning("Messaging::RetrieveMessages not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

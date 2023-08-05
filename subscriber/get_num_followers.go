@@ -7,14 +7,14 @@ import (
 )
 
 // GetNumFollowers sets the GetNumFollowers handler function
-func (protocol *Protocol) GetNumFollowers(handler func(err error, client *nex.Client, callID uint32, packetPayload []byte)) {
+func (protocol *Protocol) GetNumFollowers(handler func(err error, client *nex.Client, callID uint32, packetPayload []byte) uint32) {
 	protocol.getNumFollowersHandler = handler
 }
 
 func (protocol *Protocol) handleGetNumFollowers(packet nex.PacketInterface) {
 	if protocol.getNumFollowersHandler == nil {
 		globals.Logger.Warning("Subscriber::GetNumFollowers not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

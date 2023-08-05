@@ -9,14 +9,14 @@ import (
 )
 
 // UpdateSessionHost sets the UpdateSessionHost handler function
-func (protocol *Protocol) UpdateSessionHost(handler func(err error, client *nex.Client, callID uint32, gid uint32, isMigrateOwner bool)) {
+func (protocol *Protocol) UpdateSessionHost(handler func(err error, client *nex.Client, callID uint32, gid uint32, isMigrateOwner bool) uint32) {
 	protocol.updateSessionHostHandler = handler
 }
 
 func (protocol *Protocol) handleUpdateSessionHost(packet nex.PacketInterface) {
 	if protocol.updateSessionHostHandler == nil {
 		fmt.Println("[Warning] MatchMaking::UpdateSessionHost not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

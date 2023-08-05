@@ -7,14 +7,14 @@ import (
 )
 
 // ClearMyBlockList sets the ClearMyBlockList handler function
-func (protocol *Protocol) ClearMyBlockList(handler func(err error, client *nex.Client, callID uint32)) {
+func (protocol *Protocol) ClearMyBlockList(handler func(err error, client *nex.Client, callID uint32) uint32) {
 	protocol.clearMyBlockListHandler = handler
 }
 
 func (protocol *Protocol) handleClearMyBlockList(packet nex.PacketInterface) {
 	if protocol.clearMyBlockListHandler == nil {
 		globals.Logger.Warning("MatchmakeExtension::ClearMyBlockList not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

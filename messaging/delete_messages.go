@@ -10,14 +10,14 @@ import (
 )
 
 // DeleteMessages sets the DeleteMessages handler function
-func (protocol *Protocol) DeleteMessages(handler func(err error, client *nex.Client, callID uint32, recipient *messaging_types.MessageRecipient, lstMessagesToDelete []uint32)) {
+func (protocol *Protocol) DeleteMessages(handler func(err error, client *nex.Client, callID uint32, recipient *messaging_types.MessageRecipient, lstMessagesToDelete []uint32) uint32) {
 	protocol.deleteMessagesHandler = handler
 }
 
 func (protocol *Protocol) handleDeleteMessages(packet nex.PacketInterface) {
 	if protocol.deleteMessagesHandler == nil {
 		globals.Logger.Warning("Messaging::DeleteMessages not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

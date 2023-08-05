@@ -3,8 +3,8 @@ package globals
 
 import "github.com/PretendoNetwork/nex-go"
 
-// RespondNotImplementedCustom sends the client the Core::NotImplemented error for custom protocols
-func RespondNotImplementedCustom(packet nex.PacketInterface, customID uint16) {
+// RespondError sends the client a given error code
+func RespondError(packet nex.PacketInterface, protocolID uint8, errorCode uint32) {
 	client := packet.Sender()
 	request := packet.RMCRequest()
 
@@ -13,15 +13,14 @@ func RespondNotImplementedCustom(packet nex.PacketInterface, customID uint16) {
 	switch packet := packet.(type) {
 	case *nex.HPPPacket:
 		rmcResponse := nex.NewRMCResponse(0, request.CallID())
-		rmcResponse.SetError(nex.Errors.Core.NotImplemented)
+		rmcResponse.SetError(errorCode)
 
 		rmcResponseBytes = rmcResponse.Bytes()
 
 		responsePacket, _ = nex.NewHPPPacket(client, nil)
 	default:
-		rmcResponse := nex.NewRMCResponse(0x7F, request.CallID())
-		rmcResponse.SetCustomID(customID)
-		rmcResponse.SetError(nex.Errors.Core.NotImplemented)
+		rmcResponse := nex.NewRMCResponse(protocolID, request.CallID())
+		rmcResponse.SetError(errorCode)
 
 		rmcResponseBytes = rmcResponse.Bytes()
 

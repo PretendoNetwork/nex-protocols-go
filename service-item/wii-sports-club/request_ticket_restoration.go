@@ -5,19 +5,19 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
-	service_item_wii_sports_club_types "github.com/PretendoNetwork/nex-protocols-go/service-item/wii-sports-club/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
+	service_item_wii_sports_club_types "github.com/PretendoNetwork/nex-protocols-go/service-item/wii-sports-club/types"
 )
 
 // RequestTicketRestoration sets the RequestTicketRestoration handler function
-func (protocol *Protocol) RequestTicketRestoration(handler func(err error, client *nex.Client, callID uint32, requestTicketRestorationParam *service_item_wii_sports_club_types.ServiceItemRequestTicketRestorationParam)) {
+func (protocol *Protocol) RequestTicketRestoration(handler func(err error, client *nex.Client, callID uint32, requestTicketRestorationParam *service_item_wii_sports_club_types.ServiceItemRequestTicketRestorationParam) uint32) {
 	protocol.requestTicketRestorationHandler = handler
 }
 
 func (protocol *Protocol) handleRequestTicketRestoration(packet nex.PacketInterface) {
 	if protocol.requestTicketRestorationHandler == nil {
 		globals.Logger.Warning("ServiceItemWiiSportsClub::RequestTicketRestoration not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

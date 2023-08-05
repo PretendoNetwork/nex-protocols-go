@@ -10,14 +10,14 @@ import (
 )
 
 // SearchPokemon sets the SearchPokemon handler function
-func (protocol *Protocol) SearchPokemon(handler func(err error, client *nex.Client, callID uint32, param *datastore_pokemon_gen6_types.GlobalTradeStationSearchPokemonParam)) {
+func (protocol *Protocol) SearchPokemon(handler func(err error, client *nex.Client, callID uint32, param *datastore_pokemon_gen6_types.GlobalTradeStationSearchPokemonParam) uint32) {
 	protocol.searchPokemonHandler = handler
 }
 
 func (protocol *Protocol) handleSearchPokemon(packet nex.PacketInterface) {
 	if protocol.searchPokemonHandler == nil {
 		globals.Logger.Warning("DataStorePokemonGen6::SearchPokemon not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

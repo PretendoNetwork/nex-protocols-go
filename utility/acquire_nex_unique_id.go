@@ -7,14 +7,14 @@ import (
 )
 
 // AcquireNexUniqueID sets the AcquireNexUniqueID handler function
-func (protocol *Protocol) AcquireNexUniqueID(handler func(err error, client *nex.Client, callID uint32)) {
+func (protocol *Protocol) AcquireNexUniqueID(handler func(err error, client *nex.Client, callID uint32) uint32) {
 	protocol.acquireNexUniqueIDHandler = handler
 }
 
 func (protocol *Protocol) handleAcquireNexUniqueID(packet nex.PacketInterface) {
 	if protocol.acquireNexUniqueIDHandler == nil {
 		globals.Logger.Warning("Utility::AcquireNexUniqueID not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

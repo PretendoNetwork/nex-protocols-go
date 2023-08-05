@@ -9,14 +9,14 @@ import (
 )
 
 // UpdateAccountEmail sets the UpdateAccountEmail handler function
-func (protocol *Protocol) UpdateAccountEmail(handler func(err error, client *nex.Client, callID uint32, strName string)) {
+func (protocol *Protocol) UpdateAccountEmail(handler func(err error, client *nex.Client, callID uint32, strName string) uint32) {
 	protocol.updateAccountEmailHandler = handler
 }
 
 func (protocol *Protocol) handleUpdateAccountEmail(packet nex.PacketInterface) {
 	if protocol.updateAccountEmailHandler == nil {
 		globals.Logger.Warning("AccountManagement::UpdateAccountEmail not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

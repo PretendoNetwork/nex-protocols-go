@@ -30,7 +30,7 @@ type datastoreProtocol = datastore.Protocol
 type Protocol struct {
 	Server *nex.Server
 	datastoreProtocol
-	getMetaByOwnerIDHandler func(err error, client *nex.Client, callID uint32, param *datastore_nintendo_badge_arcade_types.DataStoreGetMetaByOwnerIDParam)
+	getMetaByOwnerIDHandler func(err error, client *nex.Client, callID uint32, param *datastore_nintendo_badge_arcade_types.DataStoreGetMetaByOwnerIDParam) uint32
 }
 
 // Setup initializes the protocol
@@ -57,7 +57,7 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 	case MethodGetMetaByOwnerID:
 		go protocol.handleGetMetaByOwnerID(packet)
 	default:
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		fmt.Printf("Unsupported DataStoreBadgeArcade method ID: %#v\n", request.MethodID())
 	}
 }

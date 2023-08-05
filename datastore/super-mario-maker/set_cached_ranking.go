@@ -9,14 +9,14 @@ import (
 )
 
 // SetCachedRanking sets the SetCachedRanking handler function
-func (protocol *Protocol) SetCachedRanking(handler func(err error, client *nex.Client, callID uint32, rankingType string, rankingArgs []string, dataIDLst []uint64)) {
+func (protocol *Protocol) SetCachedRanking(handler func(err error, client *nex.Client, callID uint32, rankingType string, rankingArgs []string, dataIDLst []uint64) uint32) {
 	protocol.setCachedRankingHandler = handler
 }
 
 func (protocol *Protocol) handleSetCachedRanking(packet nex.PacketInterface) {
 	if protocol.setCachedRankingHandler == nil {
 		globals.Logger.Warning("DataStoreSuperMarioMaker::SetCachedRanking not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

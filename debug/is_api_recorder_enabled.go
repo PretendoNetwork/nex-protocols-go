@@ -7,14 +7,14 @@ import (
 )
 
 // IsAPIRecorderEnabled sets the IsAPIRecorderEnabled handler function
-func (protocol *Protocol) IsAPIRecorderEnabled(handler func(err error, client *nex.Client, callID uint32)) {
+func (protocol *Protocol) IsAPIRecorderEnabled(handler func(err error, client *nex.Client, callID uint32) uint32) {
 	protocol.isAPIRecorderEnabledHandler = handler
 }
 
 func (protocol *Protocol) handleIsAPIRecorderEnabled(packet nex.PacketInterface) {
 	if protocol.isAPIRecorderEnabledHandler == nil {
 		globals.Logger.Warning("Debug::IsAPIRecorderEnabled not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

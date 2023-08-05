@@ -9,14 +9,14 @@ import (
 )
 
 // FindByGroup sets the FindByGroup handler function
-func (protocol *Protocol) FindByGroup(handler func(err error, client *nex.Client, callID uint32, uiGroup uint32)) {
+func (protocol *Protocol) FindByGroup(handler func(err error, client *nex.Client, callID uint32, uiGroup uint32) uint32) {
 	protocol.findByGroupHandler = handler
 }
 
 func (protocol *Protocol) handleFindByGroup(packet nex.PacketInterface) {
 	if protocol.findByGroupHandler == nil {
 		globals.Logger.Warning("PersistentStore::FindByGroup not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

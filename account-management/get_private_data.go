@@ -7,14 +7,14 @@ import (
 )
 
 // GetPrivateData sets the GetPrivateData handler function
-func (protocol *Protocol) GetPrivateData(handler func(err error, client *nex.Client, callID uint32)) {
+func (protocol *Protocol) GetPrivateData(handler func(err error, client *nex.Client, callID uint32) uint32) {
 	protocol.getPrivateDataHandler = handler
 }
 
 func (protocol *Protocol) handleGetPrivateData(packet nex.PacketInterface) {
 	if protocol.getPrivateDataHandler == nil {
 		globals.Logger.Warning("AccountManagement::GetPrivateData not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

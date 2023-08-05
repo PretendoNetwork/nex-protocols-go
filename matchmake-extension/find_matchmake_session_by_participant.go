@@ -10,14 +10,14 @@ import (
 )
 
 // FindMatchmakeSessionByParticipant sets the FindMatchmakeSessionByParticipant handler function
-func (protocol *Protocol) FindMatchmakeSessionByParticipant(handler func(err error, client *nex.Client, callID uint32, param *match_making_types.FindMatchmakeSessionByParticipantParam)) {
+func (protocol *Protocol) FindMatchmakeSessionByParticipant(handler func(err error, client *nex.Client, callID uint32, param *match_making_types.FindMatchmakeSessionByParticipantParam) uint32) {
 	protocol.findMatchmakeSessionByParticipantHandler = handler
 }
 
 func (protocol *Protocol) handleFindMatchmakeSessionByParticipant(packet nex.PacketInterface) {
 	if protocol.findMatchmakeSessionByParticipantHandler == nil {
 		globals.Logger.Warning("MatchmakeExtension::FindMatchmakeSessionByParticipant not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

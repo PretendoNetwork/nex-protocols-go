@@ -7,14 +7,14 @@ import (
 )
 
 // JoinCommunityCompetitionByGatheringID sets the JoinCommunityCompetitionByGatheringID handler function
-func (protocol *Protocol) JoinCommunityCompetitionByGatheringID(handler func(err error, client *nex.Client, callID uint32, packetPayload []byte)) {
+func (protocol *Protocol) JoinCommunityCompetitionByGatheringID(handler func(err error, client *nex.Client, callID uint32, packetPayload []byte) uint32) {
 	protocol.joinCommunityCompetitionByGatheringIDHandler = handler
 }
 
 func (protocol *Protocol) handleJoinCommunityCompetitionByGatheringID(packet nex.PacketInterface) {
 	if protocol.joinCommunityCompetitionByGatheringIDHandler == nil {
 		globals.Logger.Warning("MatchmakeExtensionSuperSmashBros4::JoinCommunityCompetitionByGatheringID not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

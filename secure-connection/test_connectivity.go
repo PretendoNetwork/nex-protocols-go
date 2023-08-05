@@ -7,14 +7,14 @@ import (
 )
 
 // TestConnectivity sets the TestConnectivity handler function
-func (protocol *Protocol) TestConnectivity(handler func(err error, client *nex.Client, callID uint32)) {
+func (protocol *Protocol) TestConnectivity(handler func(err error, client *nex.Client, callID uint32) uint32) {
 	protocol.testConnectivityHandler = handler
 }
 
 func (protocol *Protocol) handleTestConnectivity(packet nex.PacketInterface) {
 	if protocol.testConnectivityHandler == nil {
 		globals.Logger.Warning("SecureConnection::TestConnectivity not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

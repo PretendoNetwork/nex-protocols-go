@@ -10,14 +10,14 @@ import (
 )
 
 // BrowseMatchmakeSessionWithHostURLs sets the BrowseMatchmakeSessionWithHostURLs handler function
-func (protocol *Protocol) BrowseMatchmakeSessionWithHostURLs(handler func(err error, client *nex.Client, callID uint32, searchCriteria *match_making_types.MatchmakeSessionSearchCriteria, resultRange *nex.ResultRange)) {
+func (protocol *Protocol) BrowseMatchmakeSessionWithHostURLs(handler func(err error, client *nex.Client, callID uint32, searchCriteria *match_making_types.MatchmakeSessionSearchCriteria, resultRange *nex.ResultRange) uint32) {
 	protocol.browseMatchmakeSessionWithHostURLsHandler = handler
 }
 
 func (protocol *Protocol) handleBrowseMatchmakeSessionWithHostURLs(packet nex.PacketInterface) {
 	if protocol.browseMatchmakeSessionWithHostURLsHandler == nil {
 		globals.Logger.Warning("MatchmakeExtension::BrowseMatchmakeSessionWithHostURLs not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

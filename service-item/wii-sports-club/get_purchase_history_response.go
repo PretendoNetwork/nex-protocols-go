@@ -9,14 +9,14 @@ import (
 )
 
 // GetPurchaseHistoryResponse sets the GetPurchaseHistoryResponse handler function
-func (protocol *Protocol) GetPurchaseHistoryResponse(handler func(err error, client *nex.Client, callID uint32, requestID uint32)) {
+func (protocol *Protocol) GetPurchaseHistoryResponse(handler func(err error, client *nex.Client, callID uint32, requestID uint32) uint32) {
 	protocol.getPurchaseHistoryResponseHandler = handler
 }
 
 func (protocol *Protocol) handleGetPurchaseHistoryResponse(packet nex.PacketInterface) {
 	if protocol.getPurchaseHistoryResponseHandler == nil {
 		globals.Logger.Warning("ServiceItemWiiSportsClub::GetPurchaseHistoryResponse not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

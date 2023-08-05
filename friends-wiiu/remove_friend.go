@@ -9,14 +9,14 @@ import (
 )
 
 // RemoveFriend sets the RemoveFriend handler function
-func (protocol *Protocol) RemoveFriend(handler func(err error, client *nex.Client, callID uint32, pid uint32)) {
+func (protocol *Protocol) RemoveFriend(handler func(err error, client *nex.Client, callID uint32, pid uint32) uint32) {
 	protocol.removeFriendHandler = handler
 }
 
 func (protocol *Protocol) handleRemoveFriend(packet nex.PacketInterface) {
 	if protocol.removeFriendHandler == nil {
 		globals.Logger.Warning("FriendsWiiU::RemoveFriend not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

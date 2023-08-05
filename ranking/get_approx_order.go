@@ -10,14 +10,14 @@ import (
 )
 
 // GetApproxOrder sets the GetApproxOrder handler function
-func (protocol *Protocol) GetApproxOrder(handler func(err error, client *nex.Client, callID uint32, category uint32, orderParam *ranking_types.RankingOrderParam, score uint32, uniqueID uint64, principalID uint32)) {
+func (protocol *Protocol) GetApproxOrder(handler func(err error, client *nex.Client, callID uint32, category uint32, orderParam *ranking_types.RankingOrderParam, score uint32, uniqueID uint64, principalID uint32) uint32) {
 	protocol.getApproxOrderHandler = handler
 }
 
 func (protocol *Protocol) handleGetApproxOrder(packet nex.PacketInterface) {
 	if protocol.getApproxOrderHandler == nil {
 		globals.Logger.Warning("Ranking::GetApproxOrder not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

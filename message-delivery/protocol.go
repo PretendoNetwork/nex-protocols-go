@@ -19,7 +19,7 @@ const (
 // Protocol stores all the RMC method handlers for the Message Delivery protocol and listens for requests
 type Protocol struct {
 	Server                *nex.Server
-	deliverMessageHandler func(err error, client *nex.Client, callID uint32, oUserMessage *nex.DataHolder)
+	deliverMessageHandler func(err error, client *nex.Client, callID uint32, oUserMessage *nex.DataHolder) uint32
 }
 
 // Setup initializes the protocol
@@ -41,7 +41,7 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 	case MethodDeliverMessage:
 		go protocol.handleDeliverMessage(packet)
 	default:
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		fmt.Printf("Unsupported MessageDelivery method ID: %#v\n", request.MethodID())
 	}
 }

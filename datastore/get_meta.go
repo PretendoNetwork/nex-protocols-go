@@ -10,14 +10,14 @@ import (
 )
 
 // GetMeta sets the GetMeta handler function
-func (protocol *Protocol) GetMeta(handler func(err error, client *nex.Client, callID uint32, param *datastore_types.DataStoreGetMetaParam)) {
+func (protocol *Protocol) GetMeta(handler func(err error, client *nex.Client, callID uint32, param *datastore_types.DataStoreGetMetaParam) uint32) {
 	protocol.getMetaHandler = handler
 }
 
 func (protocol *Protocol) handleGetMeta(packet nex.PacketInterface) {
 	if protocol.getMetaHandler == nil {
 		globals.Logger.Warning("DataStore::GetMeta not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

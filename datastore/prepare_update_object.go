@@ -10,14 +10,14 @@ import (
 )
 
 // PrepareUpdateObject sets the PrepareUpdateObject handler function
-func (protocol *Protocol) PrepareUpdateObject(handler func(err error, client *nex.Client, callID uint32, param *datastore_types.DataStorePrepareUpdateParam)) {
+func (protocol *Protocol) PrepareUpdateObject(handler func(err error, client *nex.Client, callID uint32, param *datastore_types.DataStorePrepareUpdateParam) uint32) {
 	protocol.prepareUpdateObjectHandler = handler
 }
 
 func (protocol *Protocol) handlePrepareUpdateObject(packet nex.PacketInterface) {
 	if protocol.prepareUpdateObjectHandler == nil {
 		globals.Logger.Warning("DataStore::PrepareUpdateObject not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

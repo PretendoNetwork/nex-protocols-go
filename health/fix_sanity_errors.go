@@ -7,14 +7,14 @@ import (
 )
 
 // FixSanityErrors sets the FixSanityErrors handler function
-func (protocol *Protocol) FixSanityErrors(handler func(err error, client *nex.Client, callID uint32)) {
+func (protocol *Protocol) FixSanityErrors(handler func(err error, client *nex.Client, callID uint32) uint32) {
 	protocol.fixSanityErrorsHandler = handler
 }
 
 func (protocol *Protocol) handleFixSanityErrors(packet nex.PacketInterface) {
 	if protocol.fixSanityErrorsHandler == nil {
 		globals.Logger.Warning("Health::FixSanityErrors not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

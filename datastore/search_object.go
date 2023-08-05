@@ -10,14 +10,14 @@ import (
 )
 
 // SearchObject sets the SearchObject handler function
-func (protocol *Protocol) SearchObject(handler func(err error, client *nex.Client, callID uint32, param *datastore_types.DataStoreSearchParam)) {
+func (protocol *Protocol) SearchObject(handler func(err error, client *nex.Client, callID uint32, param *datastore_types.DataStoreSearchParam) uint32) {
 	protocol.searchObjectHandler = handler
 }
 
 func (protocol *Protocol) handleSearchObject(packet nex.PacketInterface) {
 	if protocol.searchObjectHandler == nil {
 		globals.Logger.Warning("DataStore::SearchObject not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

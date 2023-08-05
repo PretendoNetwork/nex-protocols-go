@@ -7,14 +7,14 @@ import (
 )
 
 // SearchUnknownPlatformObjects sets the SearchUnknownPlatformObjects handler function
-func (protocol *Protocol) SearchUnknownPlatformObjects(handler func(err error, client *nex.Client, callID uint32, packetPayload []byte)) {
+func (protocol *Protocol) SearchUnknownPlatformObjects(handler func(err error, client *nex.Client, callID uint32, packetPayload []byte) uint32) {
 	protocol.searchUnknownPlatformObjectsHandler = handler
 }
 
 func (protocol *Protocol) handleSearchUnknownPlatformObjects(packet nex.PacketInterface) {
 	if protocol.searchUnknownPlatformObjectsHandler == nil {
 		globals.Logger.Warning("DataStoreSuperMarioMaker::SearchUnknownPlatformObjects not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

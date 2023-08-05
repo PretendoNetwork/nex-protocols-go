@@ -10,14 +10,14 @@ import (
 )
 
 // GetCourseRecord sets the GetCourseRecord handler function
-func (protocol *Protocol) GetCourseRecord(handler func(err error, client *nex.Client, callID uint32, param *datastore_super_mario_maker_types.DataStoreGetCourseRecordParam)) {
+func (protocol *Protocol) GetCourseRecord(handler func(err error, client *nex.Client, callID uint32, param *datastore_super_mario_maker_types.DataStoreGetCourseRecordParam) uint32) {
 	protocol.getCourseRecordHandler = handler
 }
 
 func (protocol *Protocol) handleGetCourseRecord(packet nex.PacketInterface) {
 	if protocol.getCourseRecordHandler == nil {
 		globals.Logger.Warning("DataStoreSuperMarioMaker::GetCourseRecord not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

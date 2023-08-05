@@ -9,14 +9,14 @@ import (
 )
 
 // GetRound sets the GetRound handler function
-func (protocol *Protocol) GetRound(handler func(err error, client *nex.Client, callID uint32, roundID uint64)) {
+func (protocol *Protocol) GetRound(handler func(err error, client *nex.Client, callID uint32, roundID uint64) uint32) {
 	protocol.getRoundHandler = handler
 }
 
 func (protocol *Protocol) handleGetRound(packet nex.PacketInterface) {
 	if protocol.getRoundHandler == nil {
 		globals.Logger.Warning("MatchmakeReferee::GetRound not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

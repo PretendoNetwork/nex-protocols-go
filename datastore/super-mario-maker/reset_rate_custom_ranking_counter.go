@@ -9,14 +9,14 @@ import (
 )
 
 // ResetRateCustomRankingCounter sets the ResetRateCustomRankingCounter handler function
-func (protocol *Protocol) ResetRateCustomRankingCounter(handler func(err error, client *nex.Client, callID uint32, applicationID uint32)) {
+func (protocol *Protocol) ResetRateCustomRankingCounter(handler func(err error, client *nex.Client, callID uint32, applicationID uint32) uint32) {
 	protocol.resetRateCustomRankingCounterHandler = handler
 }
 
 func (protocol *Protocol) handleResetRateCustomRankingCounter(packet nex.PacketInterface) {
 	if protocol.resetRateCustomRankingCounterHandler == nil {
 		globals.Logger.Warning("DataStoreSuperMarioMaker::ResetRateCustomRankingCounter not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

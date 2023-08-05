@@ -9,14 +9,14 @@ import (
 )
 
 // GetList sets the GetList handler function
-func (protocol *Protocol) GetList(handler func(err error, client *nex.Client, callID uint32, byRelationship uint8, bReversed bool)) {
+func (protocol *Protocol) GetList(handler func(err error, client *nex.Client, callID uint32, byRelationship uint8, bReversed bool) uint32) {
 	protocol.getListHandler = handler
 }
 
 func (protocol *Protocol) handleGetList(packet nex.PacketInterface) {
 	if protocol.getListHandler == nil {
 		globals.Logger.Warning("Friends::GetList not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

@@ -9,14 +9,14 @@ import (
 )
 
 // Log sets the Log handler function
-func (protocol *Protocol) Log(handler func(err error, client *nex.Client, callID uint32, strLine string)) {
+func (protocol *Protocol) Log(handler func(err error, client *nex.Client, callID uint32, strLine string) uint32) {
 	protocol.logHandler = handler
 }
 
 func (protocol *Protocol) handleLog(packet nex.PacketInterface) {
 	if protocol.logHandler == nil {
 		globals.Logger.Warning("RemoteLogDevice::Log not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

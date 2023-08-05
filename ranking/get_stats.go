@@ -10,14 +10,14 @@ import (
 )
 
 // GetStats sets the GetStats handler function
-func (protocol *Protocol) GetStats(handler func(err error, client *nex.Client, callID uint32, category uint32, orderParam *ranking_types.RankingOrderParam, flags uint32)) {
+func (protocol *Protocol) GetStats(handler func(err error, client *nex.Client, callID uint32, category uint32, orderParam *ranking_types.RankingOrderParam, flags uint32) uint32) {
 	protocol.getStatsHandler = handler
 }
 
 func (protocol *Protocol) handleGetStats(packet nex.PacketInterface) {
 	if protocol.getStatsHandler == nil {
 		globals.Logger.Warning("Ranking::GetStats not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

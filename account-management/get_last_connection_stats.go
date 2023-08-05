@@ -9,14 +9,14 @@ import (
 )
 
 // GetLastConnectionStats sets the GetLastConnectionStats handler function
-func (protocol *Protocol) GetLastConnectionStats(handler func(err error, client *nex.Client, callID uint32, idPrincipal uint32)) {
+func (protocol *Protocol) GetLastConnectionStats(handler func(err error, client *nex.Client, callID uint32, idPrincipal uint32) uint32) {
 	protocol.getLastConnectionStatsHandler = handler
 }
 
 func (protocol *Protocol) handleGetLastConnectionStats(packet nex.PacketInterface) {
 	if protocol.getLastConnectionStatsHandler == nil {
 		globals.Logger.Warning("AccountManagement::GetLastConnectionStats not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

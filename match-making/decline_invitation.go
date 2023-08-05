@@ -9,14 +9,14 @@ import (
 )
 
 // DeclineInvitation sets the DeclineInvitation handler function
-func (protocol *Protocol) DeclineInvitation(handler func(err error, client *nex.Client, callID uint32, idGathering uint32, strMessage string)) {
+func (protocol *Protocol) DeclineInvitation(handler func(err error, client *nex.Client, callID uint32, idGathering uint32, strMessage string) uint32) {
 	protocol.declineInvitationHandler = handler
 }
 
 func (protocol *Protocol) handleDeclineInvitation(packet nex.PacketInterface) {
 	if protocol.declineInvitationHandler == nil {
 		globals.Logger.Warning("MatchMaking::DeclineInvitation not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

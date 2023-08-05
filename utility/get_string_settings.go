@@ -9,14 +9,14 @@ import (
 )
 
 // GetStringSettings sets the GetStringSettings handler function
-func (protocol *Protocol) GetStringSettings(handler func(err error, client *nex.Client, callID uint32, stringSettingIndex uint32)) {
+func (protocol *Protocol) GetStringSettings(handler func(err error, client *nex.Client, callID uint32, stringSettingIndex uint32) uint32) {
 	protocol.getStringSettingsHandler = handler
 }
 
 func (protocol *Protocol) handleGetStringSettings(packet nex.PacketInterface) {
 	if protocol.getStringSettingsHandler == nil {
 		globals.Logger.Warning("Utility::GetStringSettings not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

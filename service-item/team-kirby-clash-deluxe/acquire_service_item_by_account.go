@@ -10,14 +10,14 @@ import (
 )
 
 // AcquireServiceItemByAccount sets the AcquireServiceItemByAccount handler function
-func (protocol *Protocol) AcquireServiceItemByAccount(handler func(err error, client *nex.Client, callID uint32, acquireServiceItemByAccountParam *service_item_team_kirby_clash_deluxe_types.ServiceItemAcquireServiceItemByAccountParam)) {
+func (protocol *Protocol) AcquireServiceItemByAccount(handler func(err error, client *nex.Client, callID uint32, acquireServiceItemByAccountParam *service_item_team_kirby_clash_deluxe_types.ServiceItemAcquireServiceItemByAccountParam) uint32) {
 	protocol.acquireServiceItemByAccountHandler = handler
 }
 
 func (protocol *Protocol) handleAcquireServiceItemByAccount(packet nex.PacketInterface) {
 	if protocol.acquireServiceItemByAccountHandler == nil {
 		globals.Logger.Warning("ServiceItemTeamKirbyClashDeluxe::AcquireServiceItemByAccount not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

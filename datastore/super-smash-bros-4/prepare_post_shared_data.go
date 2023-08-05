@@ -10,14 +10,14 @@ import (
 )
 
 // PreparePostSharedData sets the PreparePostSharedData handler function
-func (protocol *Protocol) PreparePostSharedData(handler func(err error, client *nex.Client, callID uint32, param *datastore_super_smash_bros_4_types.DataStorePreparePostSharedDataParam)) {
+func (protocol *Protocol) PreparePostSharedData(handler func(err error, client *nex.Client, callID uint32, param *datastore_super_smash_bros_4_types.DataStorePreparePostSharedDataParam) uint32) {
 	protocol.preparePostSharedDataHandler = handler
 }
 
 func (protocol *Protocol) handlePreparePostSharedData(packet nex.PacketInterface) {
 	if protocol.preparePostSharedDataHandler == nil {
 		globals.Logger.Warning("DataStoreSuperSmashBros4::PreparePostSharedData not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

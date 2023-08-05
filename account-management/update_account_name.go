@@ -9,14 +9,14 @@ import (
 )
 
 // UpdateAccountName sets the UpdateAccountName handler function
-func (protocol *Protocol) UpdateAccountName(handler func(err error, client *nex.Client, callID uint32, strName string)) {
+func (protocol *Protocol) UpdateAccountName(handler func(err error, client *nex.Client, callID uint32, strName string) uint32) {
 	protocol.updateAccountNameHandler = handler
 }
 
 func (protocol *Protocol) handleUpdateAccountName(packet nex.PacketInterface) {
 	if protocol.updateAccountNameHandler == nil {
 		globals.Logger.Warning("AccountManagement::UpdateAccountName not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

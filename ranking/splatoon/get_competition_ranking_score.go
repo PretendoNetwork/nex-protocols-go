@@ -7,14 +7,14 @@ import (
 )
 
 // GetCompetitionRankingScore sets the GetCompetitionRankingScore handler function
-func (protocol *Protocol) GetCompetitionRankingScore(handler func(err error, client *nex.Client, callID uint32, packetPayload []byte)) {
+func (protocol *Protocol) GetCompetitionRankingScore(handler func(err error, client *nex.Client, callID uint32, packetPayload []byte) uint32) {
 	protocol.getCompetitionRankingScoreHandler = handler
 }
 
 func (protocol *Protocol) handleGetCompetitionRankingScore(packet nex.PacketInterface) {
 	if protocol.getCompetitionRankingScoreHandler == nil {
 		globals.Logger.Warning("RankingSplatoon::GetCompetitionRankingScore not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

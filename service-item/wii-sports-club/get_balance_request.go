@@ -5,19 +5,19 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
-	service_item_wii_sports_club_types "github.com/PretendoNetwork/nex-protocols-go/service-item/wii-sports-club/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
+	service_item_wii_sports_club_types "github.com/PretendoNetwork/nex-protocols-go/service-item/wii-sports-club/types"
 )
 
 // GetBalanceRequest sets the GetBalanceRequest handler function
-func (protocol *Protocol) GetBalanceRequest(handler func(err error, client *nex.Client, callID uint32, getBalanceParam *service_item_wii_sports_club_types.ServiceItemGetBalanceParam)) {
+func (protocol *Protocol) GetBalanceRequest(handler func(err error, client *nex.Client, callID uint32, getBalanceParam *service_item_wii_sports_club_types.ServiceItemGetBalanceParam) uint32) {
 	protocol.getBalanceRequestHandler = handler
 }
 
 func (protocol *Protocol) handleGetBalanceRequest(packet nex.PacketInterface) {
 	if protocol.getBalanceRequestHandler == nil {
 		globals.Logger.Warning("ServiceItemWiiSportsClub::GetBalanceRequest not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

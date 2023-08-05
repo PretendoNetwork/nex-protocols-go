@@ -9,14 +9,14 @@ import (
 )
 
 // AcceptFriendRequest sets the AcceptFriendRequest handler function
-func (protocol *Protocol) AcceptFriendRequest(handler func(err error, client *nex.Client, callID uint32, id uint64)) {
+func (protocol *Protocol) AcceptFriendRequest(handler func(err error, client *nex.Client, callID uint32, id uint64) uint32) {
 	protocol.acceptFriendRequestHandler = handler
 }
 
 func (protocol *Protocol) handleAcceptFriendRequest(packet nex.PacketInterface) {
 	if protocol.acceptFriendRequestHandler == nil {
 		globals.Logger.Warning("FriendsWiiU::AcceptFriendRequest not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

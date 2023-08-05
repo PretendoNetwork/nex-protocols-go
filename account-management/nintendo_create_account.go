@@ -9,14 +9,14 @@ import (
 )
 
 // NintendoCreateAccount sets the NintendoCreateAccount handler function
-func (protocol *Protocol) NintendoCreateAccount(handler func(err error, client *nex.Client, callID uint32, strPrincipalName string, strKey string, uiGroups uint32, strEmail string, oAuthData *nex.DataHolder)) {
+func (protocol *Protocol) NintendoCreateAccount(handler func(err error, client *nex.Client, callID uint32, strPrincipalName string, strKey string, uiGroups uint32, strEmail string, oAuthData *nex.DataHolder) uint32) {
 	protocol.nintendoCreateAccountHandler = handler
 }
 
 func (protocol *Protocol) handleNintendoCreateAccount(packet nex.PacketInterface) {
 	if protocol.nintendoCreateAccountHandler == nil {
 		globals.Logger.Warning("AccountManagement::NintendoCreateAccount not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

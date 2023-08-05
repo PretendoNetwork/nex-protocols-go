@@ -7,14 +7,14 @@ import (
 )
 
 // UploadCompetitionRankingScore sets the UploadCompetitionRankingScore handler function
-func (protocol *Protocol) UploadCompetitionRankingScore(handler func(err error, client *nex.Client, callID uint32, packetPayload []byte)) {
+func (protocol *Protocol) UploadCompetitionRankingScore(handler func(err error, client *nex.Client, callID uint32, packetPayload []byte) uint32) {
 	protocol.uploadCompetitionRankingScoreHandler = handler
 }
 
 func (protocol *Protocol) handleUploadCompetitionRankingScore(packet nex.PacketInterface) {
 	if protocol.uploadCompetitionRankingScoreHandler == nil {
 		globals.Logger.Warning("RankingSplatoon::UploadCompetitionRankingScore not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

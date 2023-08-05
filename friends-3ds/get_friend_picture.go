@@ -9,14 +9,14 @@ import (
 )
 
 // GetFriendPicture sets the GetFriendPicture handler function
-func (protocol *Protocol) GetFriendPicture(handler func(err error, client *nex.Client, callID uint32, unknown []uint32)) {
+func (protocol *Protocol) GetFriendPicture(handler func(err error, client *nex.Client, callID uint32, unknown []uint32) uint32) {
 	protocol.getFriendPictureHandler = handler
 }
 
 func (protocol *Protocol) handleGetFriendPicture(packet nex.PacketInterface) {
 	if protocol.getFriendPictureHandler == nil {
 		globals.Logger.Warning("Friends3DS::GetFriendPicture not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

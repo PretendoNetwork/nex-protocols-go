@@ -10,14 +10,14 @@ import (
 )
 
 // JoinMatchmakeSessionWithParam sets the JoinMatchmakeSessionWithParam handler function
-func (protocol *Protocol) JoinMatchmakeSessionWithParam(handler func(err error, client *nex.Client, callID uint32, joinMatchmakeSessionParam *match_making_types.JoinMatchmakeSessionParam)) {
+func (protocol *Protocol) JoinMatchmakeSessionWithParam(handler func(err error, client *nex.Client, callID uint32, joinMatchmakeSessionParam *match_making_types.JoinMatchmakeSessionParam) uint32) {
 	protocol.joinMatchmakeSessionWithParamHandler = handler
 }
 
 func (protocol *Protocol) handleJoinMatchmakeSessionWithParam(packet nex.PacketInterface) {
 	if protocol.joinMatchmakeSessionWithParamHandler == nil {
 		globals.Logger.Warning("MatchmakeExtension::JoinMatchmakeSessionWithParam not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

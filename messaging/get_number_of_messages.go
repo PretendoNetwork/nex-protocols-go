@@ -10,14 +10,14 @@ import (
 )
 
 // GetNumberOfMessages sets the GetNumberOfMessages handler function
-func (protocol *Protocol) GetNumberOfMessages(handler func(err error, client *nex.Client, callID uint32, recipient *messaging_types.MessageRecipient)) {
+func (protocol *Protocol) GetNumberOfMessages(handler func(err error, client *nex.Client, callID uint32, recipient *messaging_types.MessageRecipient) uint32) {
 	protocol.getNumberOfMessagesHandler = handler
 }
 
 func (protocol *Protocol) handleGetNumberOfMessages(packet nex.PacketInterface) {
 	if protocol.getNumberOfMessagesHandler == nil {
 		globals.Logger.Warning("Messaging::GetNumberOfMessages not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

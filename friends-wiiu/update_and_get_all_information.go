@@ -10,14 +10,14 @@ import (
 )
 
 // UpdateAndGetAllInformation sets the UpdateAndGetAllInformation handler function
-func (protocol *Protocol) UpdateAndGetAllInformation(handler func(err error, client *nex.Client, callID uint32, nnaInfo *friends_wiiu_types.NNAInfo, presence *friends_wiiu_types.NintendoPresenceV2, birthday *nex.DateTime)) {
+func (protocol *Protocol) UpdateAndGetAllInformation(handler func(err error, client *nex.Client, callID uint32, nnaInfo *friends_wiiu_types.NNAInfo, presence *friends_wiiu_types.NintendoPresenceV2, birthday *nex.DateTime) uint32) {
 	protocol.updateAndGetAllInformationHandler = handler
 }
 
 func (protocol *Protocol) handleUpdateAndGetAllInformation(packet nex.PacketInterface) {
 	if protocol.updateAndGetAllInformationHandler == nil {
 		globals.Logger.Warning("FriendsWiiU::UpdateAndGetAllInformation not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

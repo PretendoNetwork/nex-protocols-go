@@ -9,14 +9,14 @@ import (
 )
 
 // UpdateProgressScore sets the UpdateProgressScore handler function
-func (protocol *Protocol) UpdateProgressScore(handler func(err error, client *nex.Client, callID uint32, gid uint32, progressScore uint8)) {
+func (protocol *Protocol) UpdateProgressScore(handler func(err error, client *nex.Client, callID uint32, gid uint32, progressScore uint8) uint32) {
 	protocol.updateProgressScoreHandler = handler
 }
 
 func (protocol *Protocol) handleUpdateProgressScore(packet nex.PacketInterface) {
 	if protocol.updateProgressScoreHandler == nil {
 		globals.Logger.Warning("MatchmakeExtension::UpdateProgressScore not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

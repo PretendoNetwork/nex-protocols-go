@@ -9,14 +9,14 @@ import (
 )
 
 // RequestProbeInitiationExt sets the RequestProbeInitiationExt handler function
-func (protocol *Protocol) RequestProbeInitiationExt(handler func(err error, client *nex.Client, callID uint32, targetList []string, stationToProbe string)) {
+func (protocol *Protocol) RequestProbeInitiationExt(handler func(err error, client *nex.Client, callID uint32, targetList []string, stationToProbe string) uint32) {
 	protocol.requestProbeInitiationExtHandler = handler
 }
 
 func (protocol *Protocol) handleRequestProbeInitiationExt(packet nex.PacketInterface) {
 	if protocol.reportNATPropertiesHandler == nil {
 		globals.Logger.Warning("NATTraversal::RequestProbeInitiationExt not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

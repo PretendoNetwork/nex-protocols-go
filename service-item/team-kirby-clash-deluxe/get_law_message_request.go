@@ -10,14 +10,14 @@ import (
 )
 
 // GetLawMessageRequest sets the GetLawMessageRequest handler function
-func (protocol *Protocol) GetLawMessageRequest(handler func(err error, client *nex.Client, callID uint32, getLawMessageParam *service_item_team_kirby_clash_deluxe_types.ServiceItemGetLawMessageParam)) {
+func (protocol *Protocol) GetLawMessageRequest(handler func(err error, client *nex.Client, callID uint32, getLawMessageParam *service_item_team_kirby_clash_deluxe_types.ServiceItemGetLawMessageParam) uint32) {
 	protocol.getLawMessageRequestHandler = handler
 }
 
 func (protocol *Protocol) handleGetLawMessageRequest(packet nex.PacketInterface) {
 	if protocol.getLawMessageRequestHandler == nil {
 		globals.Logger.Warning("ServiceItemTeamKirbyClashDeluxe::GetLawMessageRequest not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

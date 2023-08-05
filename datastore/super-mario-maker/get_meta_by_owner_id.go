@@ -10,14 +10,14 @@ import (
 )
 
 // GetMetaByOwnerID sets the GetMetaByOwnerID handler function
-func (protocol *Protocol) GetMetaByOwnerID(handler func(err error, client *nex.Client, callID uint32, param *datastore_super_mario_maker_types.DataStoreGetMetaByOwnerIDParam)) {
+func (protocol *Protocol) GetMetaByOwnerID(handler func(err error, client *nex.Client, callID uint32, param *datastore_super_mario_maker_types.DataStoreGetMetaByOwnerIDParam) uint32) {
 	protocol.getMetaByOwnerIDHandler = handler
 }
 
 func (protocol *Protocol) handleGetMetaByOwnerID(packet nex.PacketInterface) {
 	if protocol.getMetaByOwnerIDHandler == nil {
 		globals.Logger.Warning("DataStoreSuperMarioMaker::GetMetaByOwnerID not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

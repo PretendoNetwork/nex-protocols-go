@@ -10,14 +10,14 @@ import (
 )
 
 // UploadScore sets the UploadScore handler function
-func (protocol *Protocol) UploadScore(handler func(err error, client *nex.Client, callID uint32, scoreData *ranking_types.RankingScoreData, uniqueID uint64)) {
+func (protocol *Protocol) UploadScore(handler func(err error, client *nex.Client, callID uint32, scoreData *ranking_types.RankingScoreData, uniqueID uint64) uint32) {
 	protocol.uploadScoreHandler = handler
 }
 
 func (protocol *Protocol) handleUploadScore(packet nex.PacketInterface) {
 	if protocol.uploadScoreHandler == nil {
 		globals.Logger.Warning("Ranking::UploadScore not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

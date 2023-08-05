@@ -37,8 +37,8 @@ type shopProtocol = shop.Protocol
 type Protocol struct {
 	Server *nex.Server
 	shopProtocol
-	getRivTokenHandler func(err error, client *nex.Client, callID uint32, itemCode string, referenceID []byte)
-	postPlayLogHandler func(err error, client *nex.Client, callID uint32, param *shop_nintendo_badge_arcade_types.ShopPostPlayLogParam)
+	getRivTokenHandler func(err error, client *nex.Client, callID uint32, itemCode string, referenceID []byte) uint32
+	postPlayLogHandler func(err error, client *nex.Client, callID uint32, param *shop_nintendo_badge_arcade_types.ShopPostPlayLogParam) uint32
 }
 
 // Setup initializes the protocol
@@ -66,7 +66,7 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 	case MethodPostPlayLog:
 		go protocol.handlePostPlayLog(packet)
 	default:
-		go globals.RespondNotImplementedCustom(packet, CustomProtocolID)
+		go globals.RespondErrorCustom(packet, CustomProtocolID, nex.Errors.Core.NotImplemented)
 		fmt.Printf("Unsupported ShopNintendoBadgeArcade method ID: %#v\n", request.MethodID())
 	}
 }

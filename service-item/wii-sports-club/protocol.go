@@ -114,28 +114,28 @@ type serviceItemProtocol = service_item.Protocol
 type Protocol struct {
 	Server *nex.Server
 	serviceItemProtocol
-	helloHandler                       func(err error, client *nex.Client, callID uint32, name string)
-	httpGetRequestHandler              func(err error, client *nex.Client, callID uint32, url *service_item_wii_sports_club_types.ServiceItemHTTPGetParam)
-	httpGetResponseHandler             func(err error, client *nex.Client, callID uint32, requestID uint32)
-	purchaseServiceItemRequestHandler  func(err error, client *nex.Client, callID uint32, purchaseServiceItemParam *service_item_wii_sports_club_types.ServiceItemPurchaseServiceItemParam)
-	purchaseServiceItemResponseHandler func(err error, client *nex.Client, callID uint32, requestID uint32)
-	listServiceItemRequestHandler      func(err error, client *nex.Client, callID uint32, listServiceItemParam *service_item_wii_sports_club_types.ServiceItemListServiceItemParam)
-	listServiceItemResponseHandler     func(err error, client *nex.Client, callID uint32, requestID uint32)
-	getBalanceRequestHandler           func(err error, client *nex.Client, callID uint32, getBalanceParam *service_item_wii_sports_club_types.ServiceItemGetBalanceParam)
-	getBalanceResponseHandler          func(err error, client *nex.Client, callID uint32, requestID uint32)
-	getPrepurchaseInfoRequestHandler   func(err error, client *nex.Client, callID uint32, getPrepurchaseInfoParam *service_item_wii_sports_club_types.ServiceItemGetPrepurchaseInfoParam)
-	getPrepurchaseInfoResponseHandler  func(err error, client *nex.Client, callID uint32, requestID uint32)
-	getServiceItemRightRequestHandler  func(err error, client *nex.Client, callID uint32, getServiceItemRightParam *service_item_wii_sports_club_types.ServiceItemGetServiceItemRightParam)
-	getServiceItemRightResponseHandler func(err error, client *nex.Client, callID uint32, requestID uint32)
-	getPurchaseHistoryRequestHandler   func(err error, client *nex.Client, callID uint32, getPurchaseHistoryParam *service_item_wii_sports_club_types.ServiceItemGetPurchaseHistoryParam)
-	getPurchaseHistoryResponseHandler  func(err error, client *nex.Client, callID uint32, requestID uint32)
-	getNoticeHandler                   func(err error, client *nex.Client, callID uint32, getNoticeParam *service_item_wii_sports_club_types.ServiceItemGetNoticeParam)
-	updateAndGetTicketInfoHandler      func(err error, client *nex.Client, callID uint32, forceRetrieveFromEShop bool)
-	loadUserInfoHandler                func(err error, client *nex.Client, callID uint32)
-	saveUserInfoHandler                func(err error, client *nex.Client, callID uint32, userInfo *service_item_wii_sports_club_types.ServiceItemUserInfo)
-	startChallengeHandler              func(err error, client *nex.Client, callID uint32, startChallengeParam *service_item_wii_sports_club_types.ServiceItemStartChallengeParam)
-	endChallengeHandler                func(err error, client *nex.Client, callID uint32, endChallengeParam *service_item_wii_sports_club_types.ServiceItemEndChallengeParam)
-	requestTicketRestorationHandler    func(err error, client *nex.Client, callID uint32, requestTicketRestorationParam *service_item_wii_sports_club_types.ServiceItemRequestTicketRestorationParam)
+	helloHandler                       func(err error, client *nex.Client, callID uint32, name string) uint32
+	httpGetRequestHandler              func(err error, client *nex.Client, callID uint32, url *service_item_wii_sports_club_types.ServiceItemHTTPGetParam) uint32
+	httpGetResponseHandler             func(err error, client *nex.Client, callID uint32, requestID uint32) uint32
+	purchaseServiceItemRequestHandler  func(err error, client *nex.Client, callID uint32, purchaseServiceItemParam *service_item_wii_sports_club_types.ServiceItemPurchaseServiceItemParam) uint32
+	purchaseServiceItemResponseHandler func(err error, client *nex.Client, callID uint32, requestID uint32) uint32
+	listServiceItemRequestHandler      func(err error, client *nex.Client, callID uint32, listServiceItemParam *service_item_wii_sports_club_types.ServiceItemListServiceItemParam) uint32
+	listServiceItemResponseHandler     func(err error, client *nex.Client, callID uint32, requestID uint32) uint32
+	getBalanceRequestHandler           func(err error, client *nex.Client, callID uint32, getBalanceParam *service_item_wii_sports_club_types.ServiceItemGetBalanceParam) uint32
+	getBalanceResponseHandler          func(err error, client *nex.Client, callID uint32, requestID uint32) uint32
+	getPrepurchaseInfoRequestHandler   func(err error, client *nex.Client, callID uint32, getPrepurchaseInfoParam *service_item_wii_sports_club_types.ServiceItemGetPrepurchaseInfoParam) uint32
+	getPrepurchaseInfoResponseHandler  func(err error, client *nex.Client, callID uint32, requestID uint32) uint32
+	getServiceItemRightRequestHandler  func(err error, client *nex.Client, callID uint32, getServiceItemRightParam *service_item_wii_sports_club_types.ServiceItemGetServiceItemRightParam) uint32
+	getServiceItemRightResponseHandler func(err error, client *nex.Client, callID uint32, requestID uint32) uint32
+	getPurchaseHistoryRequestHandler   func(err error, client *nex.Client, callID uint32, getPurchaseHistoryParam *service_item_wii_sports_club_types.ServiceItemGetPurchaseHistoryParam) uint32
+	getPurchaseHistoryResponseHandler  func(err error, client *nex.Client, callID uint32, requestID uint32) uint32
+	getNoticeHandler                   func(err error, client *nex.Client, callID uint32, getNoticeParam *service_item_wii_sports_club_types.ServiceItemGetNoticeParam) uint32
+	updateAndGetTicketInfoHandler      func(err error, client *nex.Client, callID uint32, forceRetrieveFromEShop bool) uint32
+	loadUserInfoHandler                func(err error, client *nex.Client, callID uint32) uint32
+	saveUserInfoHandler                func(err error, client *nex.Client, callID uint32, userInfo *service_item_wii_sports_club_types.ServiceItemUserInfo) uint32
+	startChallengeHandler              func(err error, client *nex.Client, callID uint32, startChallengeParam *service_item_wii_sports_club_types.ServiceItemStartChallengeParam) uint32
+	endChallengeHandler                func(err error, client *nex.Client, callID uint32, endChallengeParam *service_item_wii_sports_club_types.ServiceItemEndChallengeParam) uint32
+	requestTicketRestorationHandler    func(err error, client *nex.Client, callID uint32, requestTicketRestorationParam *service_item_wii_sports_club_types.ServiceItemRequestTicketRestorationParam) uint32
 }
 
 // Setup initializes the protocol
@@ -203,7 +203,7 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 	case MethodRequestTicketRestoration:
 		go protocol.handleRequestTicketRestoration(packet)
 	default:
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		fmt.Printf("Unsupported Service Item (Wii Sports Club) method ID: %#v\n", request.MethodID())
 	}
 }

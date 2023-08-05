@@ -9,14 +9,14 @@ import (
 )
 
 // AcceptInvitation sets the AcceptInvitation handler function
-func (protocol *Protocol) AcceptInvitation(handler func(err error, client *nex.Client, callID uint32, idGathering uint32, strMessage string)) {
+func (protocol *Protocol) AcceptInvitation(handler func(err error, client *nex.Client, callID uint32, idGathering uint32, strMessage string) uint32) {
 	protocol.acceptInvitationHandler = handler
 }
 
 func (protocol *Protocol) handleAcceptInvitation(packet nex.PacketInterface) {
 	if protocol.acceptInvitationHandler == nil {
 		globals.Logger.Warning("MatchMaking::AcceptInvitation not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

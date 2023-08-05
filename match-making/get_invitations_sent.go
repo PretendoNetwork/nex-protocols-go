@@ -9,14 +9,14 @@ import (
 )
 
 // GetInvitationsSent sets the GetInvitationsSent handler function
-func (protocol *Protocol) GetInvitationsSent(handler func(err error, client *nex.Client, callID uint32, idGathering uint32)) {
+func (protocol *Protocol) GetInvitationsSent(handler func(err error, client *nex.Client, callID uint32, idGathering uint32) uint32) {
 	protocol.getInvitationsSentHandler = handler
 }
 
 func (protocol *Protocol) handleGetInvitationsSent(packet nex.PacketInterface) {
 	if protocol.getInvitationsSentHandler == nil {
 		globals.Logger.Warning("MatchMaking::GetInvitationsSent not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

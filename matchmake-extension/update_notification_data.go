@@ -9,14 +9,14 @@ import (
 )
 
 // UpdateNotificationData sets the UpdateNotificationData handler function
-func (protocol *Protocol) UpdateNotificationData(handler func(err error, client *nex.Client, callID uint32, uiType uint32, uiParam1 uint32, uiParam2 uint32, strParam string)) {
+func (protocol *Protocol) UpdateNotificationData(handler func(err error, client *nex.Client, callID uint32, uiType uint32, uiParam1 uint32, uiParam2 uint32, strParam string) uint32) {
 	protocol.updateNotificationDataHandler = handler
 }
 
 func (protocol *Protocol) handleUpdateNotificationData(packet nex.PacketInterface) {
 	if protocol.updateNotificationDataHandler == nil {
 		globals.Logger.Warning("MatchmakeExtension::UpdateNotificationData not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

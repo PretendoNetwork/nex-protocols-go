@@ -7,14 +7,14 @@ import (
 )
 
 // GetTournamentResult sets the GetTournamentResult handler function
-func (protocol *Protocol) GetTournamentResult(handler func(err error, client *nex.Client, callID uint32, packetPayload []byte)) {
+func (protocol *Protocol) GetTournamentResult(handler func(err error, client *nex.Client, callID uint32, packetPayload []byte) uint32) {
 	protocol.getTournamentResultHandler = handler
 }
 
 func (protocol *Protocol) handleGetTournamentResult(packet nex.PacketInterface) {
 	if protocol.getTournamentResultHandler == nil {
 		globals.Logger.Warning("MatchmakeExtensionSuperSmashBros4::GetTournamentResult not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

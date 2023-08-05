@@ -10,14 +10,14 @@ import (
 )
 
 // DenyFriendRequest sets the DenyFriendRequest handler function
-func (protocol *Protocol) DenyFriendRequest(handler func(err error, client *nex.Client, callID uint32, id uint64)) {
+func (protocol *Protocol) DenyFriendRequest(handler func(err error, client *nex.Client, callID uint32, id uint64) uint32) {
 	protocol.denyFriendRequestHandler = handler
 }
 
 func (protocol *Protocol) handleDenyFriendRequest(packet nex.PacketInterface) {
 	if protocol.denyFriendRequestHandler == nil {
 		globals.Logger.Warning("FriendsWiiU::DenyFriendRequest not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

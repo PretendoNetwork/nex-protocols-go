@@ -11,14 +11,14 @@ import (
 )
 
 // AutoMatchmakeWithSearchCriteriaPostpone sets the AutoMatchmakeWithSearchCriteriaPostpone handler function
-func (protocol *Protocol) AutoMatchmakeWithSearchCriteriaPostpone(handler func(err error, client *nex.Client, callID uint32, lstSearchCriteria []*match_making_types.MatchmakeSessionSearchCriteria, anyGathering *nex.DataHolder, strMessage string)) {
+func (protocol *Protocol) AutoMatchmakeWithSearchCriteriaPostpone(handler func(err error, client *nex.Client, callID uint32, lstSearchCriteria []*match_making_types.MatchmakeSessionSearchCriteria, anyGathering *nex.DataHolder, strMessage string) uint32) {
 	protocol.autoMatchmakeWithSearchCriteriaPostponeHandler = handler
 }
 
 func (protocol *Protocol) handleAutoMatchmakeWithSearchCriteriaPostpone(packet nex.PacketInterface) {
 	if protocol.autoMatchmakeWithSearchCriteriaPostponeHandler == nil {
 		globals.Logger.Warning("MatchmakeExtension::AutoMatchmakeWithSearchCriteriaPostpone not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

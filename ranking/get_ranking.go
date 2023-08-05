@@ -10,14 +10,14 @@ import (
 )
 
 // GetRanking sets the GetRanking handler function
-func (protocol *Protocol) GetRanking(handler func(err error, client *nex.Client, callID uint32, rankingMode uint8, category uint32, orderParam *ranking_types.RankingOrderParam, uniqueID uint64, principalID uint32)) {
+func (protocol *Protocol) GetRanking(handler func(err error, client *nex.Client, callID uint32, rankingMode uint8, category uint32, orderParam *ranking_types.RankingOrderParam, uniqueID uint64, principalID uint32) uint32) {
 	protocol.getRankingHandler = handler
 }
 
 func (protocol *Protocol) handleGetRanking(packet nex.PacketInterface) {
 	if protocol.getRankingHandler == nil {
 		globals.Logger.Warning("Ranking::GetRanking not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

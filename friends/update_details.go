@@ -9,14 +9,14 @@ import (
 )
 
 // UpdateDetails sets the UpdateDetails handler function
-func (protocol *Protocol) UpdateDetails(handler func(err error, client *nex.Client, callID uint32, uiPlayer uint32, uiDetails uint32)) {
+func (protocol *Protocol) UpdateDetails(handler func(err error, client *nex.Client, callID uint32, uiPlayer uint32, uiDetails uint32) uint32) {
 	protocol.updateDetailsHandler = handler
 }
 
 func (protocol *Protocol) handleUpdateDetails(packet nex.PacketInterface) {
 	if protocol.updateDetailsHandler == nil {
 		globals.Logger.Warning("Friends::UpdateDetails not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

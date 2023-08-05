@@ -10,14 +10,14 @@ import (
 )
 
 // ReportStats sets the ReportStats handler function
-func (protocol *Protocol) ReportStats(handler func(err error, client *nex.Client, callID uint32, idGathering uint32, lstStats []*match_making_types.GatheringStats)) {
+func (protocol *Protocol) ReportStats(handler func(err error, client *nex.Client, callID uint32, idGathering uint32, lstStats []*match_making_types.GatheringStats) uint32) {
 	protocol.reportStatsHandler = handler
 }
 
 func (protocol *Protocol) handleReportStats(packet nex.PacketInterface) {
 	if protocol.reportStatsHandler == nil {
 		globals.Logger.Warning("MatchMaking::ReportStats not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

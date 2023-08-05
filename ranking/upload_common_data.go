@@ -9,14 +9,14 @@ import (
 )
 
 // UploadCommonData sets the UploadCommonData handler function
-func (protocol *Protocol) UploadCommonData(handler func(err error, client *nex.Client, callID uint32, commonData []byte, uniqueID uint64)) {
+func (protocol *Protocol) UploadCommonData(handler func(err error, client *nex.Client, callID uint32, commonData []byte, uniqueID uint64) uint32) {
 	protocol.uploadCommonDataHandler = handler
 }
 
 func (protocol *Protocol) handleUploadCommonData(packet nex.PacketInterface) {
 	if protocol.uploadCommonDataHandler == nil {
 		globals.Logger.Warning("Ranking::UploadCommonData not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

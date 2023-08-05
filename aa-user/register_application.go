@@ -9,14 +9,14 @@ import (
 )
 
 // RegisterApplication sets the RegisterApplication handler function
-func (protocol *Protocol) RegisterApplication(handler func(err error, client *nex.Client, callID uint32, titleID uint64)) {
+func (protocol *Protocol) RegisterApplication(handler func(err error, client *nex.Client, callID uint32, titleID uint64) uint32) {
 	protocol.registerApplicationHandler = handler
 }
 
 func (protocol *Protocol) handleRegisterApplication(packet nex.PacketInterface) {
 	if protocol.registerApplicationHandler == nil {
 		globals.Logger.Warning("AAUser::RegisterApplication not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

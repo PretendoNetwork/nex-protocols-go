@@ -9,14 +9,14 @@ import (
 )
 
 // GetSimplePlayingSession sets the GetSimplePlayingSession handler function
-func (protocol *Protocol) GetSimplePlayingSession(handler func(err error, client *nex.Client, callID uint32, listPID []uint32, includeLoginUser bool)) {
+func (protocol *Protocol) GetSimplePlayingSession(handler func(err error, client *nex.Client, callID uint32, listPID []uint32, includeLoginUser bool) uint32) {
 	protocol.getSimplePlayingSessionHandler = handler
 }
 
 func (protocol *Protocol) handleGetSimplePlayingSession(packet nex.PacketInterface) {
 	if protocol.getSimplePlayingSessionHandler == nil {
 		globals.Logger.Warning("MatchmakeExtension::GetSimplePlayingSession not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

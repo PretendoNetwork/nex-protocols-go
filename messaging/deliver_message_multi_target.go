@@ -7,14 +7,14 @@ import (
 )
 
 // DeliverMessageMultiTarget sets the DeliverMessageMultiTarget handler function
-func (protocol *Protocol) DeliverMessageMultiTarget(handler func(err error, client *nex.Client, callID uint32, packetPayload []byte)) {
+func (protocol *Protocol) DeliverMessageMultiTarget(handler func(err error, client *nex.Client, callID uint32, packetPayload []byte) uint32) {
 	protocol.deliverMessageMultiTargetHandler = handler
 }
 
 func (protocol *Protocol) handleDeliverMessageMultiTarget(packet nex.PacketInterface) {
 	if protocol.deliverMessageMultiTargetHandler == nil {
 		globals.Logger.Warning("Messaging::DeliverMessageMultiTarget not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

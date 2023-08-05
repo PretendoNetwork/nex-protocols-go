@@ -9,14 +9,14 @@ import (
 )
 
 // GetFriendPresence sets the GetFriendPresence handler function
-func (protocol *Protocol) GetFriendPresence(handler func(err error, client *nex.Client, callID uint32, pidList []uint32)) {
+func (protocol *Protocol) GetFriendPresence(handler func(err error, client *nex.Client, callID uint32, pidList []uint32) uint32) {
 	protocol.getFriendPresenceHandler = handler
 }
 
 func (protocol *Protocol) handleGetFriendPresence(packet nex.PacketInterface) {
 	if protocol.getFriendPresenceHandler == nil {
 		globals.Logger.Warning("Friends3DS::GetFriendPresence not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

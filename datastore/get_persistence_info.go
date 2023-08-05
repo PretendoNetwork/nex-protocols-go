@@ -9,14 +9,14 @@ import (
 )
 
 // GetPersistenceInfo sets the GetPersistenceInfo handler function
-func (protocol *Protocol) GetPersistenceInfo(handler func(err error, client *nex.Client, callID uint32, ownerID uint32, persistenceSlotID uint16)) {
+func (protocol *Protocol) GetPersistenceInfo(handler func(err error, client *nex.Client, callID uint32, ownerID uint32, persistenceSlotID uint16) uint32) {
 	protocol.getPersistenceInfoHandler = handler
 }
 
 func (protocol *Protocol) handleGetPersistenceInfo(packet nex.PacketInterface) {
 	if protocol.getPersistenceInfoHandler == nil {
 		globals.Logger.Warning("DataStore::GetPersistenceInfo not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

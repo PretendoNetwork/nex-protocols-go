@@ -7,14 +7,14 @@ import (
 )
 
 // AutoTournamentMatchmake sets the AutoTournamentMatchmake handler function
-func (protocol *Protocol) AutoTournamentMatchmake(handler func(err error, client *nex.Client, callID uint32, packetPayload []byte)) {
+func (protocol *Protocol) AutoTournamentMatchmake(handler func(err error, client *nex.Client, callID uint32, packetPayload []byte) uint32) {
 	protocol.autoTournamentMatchmakeHandler = handler
 }
 
 func (protocol *Protocol) handleAutoTournamentMatchmake(packet nex.PacketInterface) {
 	if protocol.autoTournamentMatchmakeHandler == nil {
 		globals.Logger.Warning("MatchmakeExtensionSuperSmashBros4::AutoTournamentMatchmake not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

@@ -5,19 +5,19 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
-	subscriber_types "github.com/PretendoNetwork/nex-protocols-go/subscriber/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
+	subscriber_types "github.com/PretendoNetwork/nex-protocols-go/subscriber/types"
 )
 
 // GetContent sets the GetContent handler function
-func (protocol *Protocol) GetContent(handler func(err error, client *nex.Client, callID uint32, param *subscriber_types.SubscriberGetContentParam)) {
+func (protocol *Protocol) GetContent(handler func(err error, client *nex.Client, callID uint32, param *subscriber_types.SubscriberGetContentParam) uint32) {
 	protocol.getContentHandler = handler
 }
 
 func (protocol *Protocol) handleGetContent(packet nex.PacketInterface) {
 	if protocol.getContentHandler == nil {
 		globals.Logger.Warning("Subscriber::GetContent not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 	client := packet.Sender()

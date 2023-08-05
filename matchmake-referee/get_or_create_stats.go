@@ -10,14 +10,14 @@ import (
 )
 
 // GetOrCreateStats sets the GetOrCreateStats handler function
-func (protocol *Protocol) GetOrCreateStats(handler func(err error, client *nex.Client, callID uint32, param *matchmake_referee_types.MatchmakeRefereeStatsInitParam)) {
+func (protocol *Protocol) GetOrCreateStats(handler func(err error, client *nex.Client, callID uint32, param *matchmake_referee_types.MatchmakeRefereeStatsInitParam) uint32) {
 	protocol.getOrCreateStatsHandler = handler
 }
 
 func (protocol *Protocol) handleGetOrCreateStats(packet nex.PacketInterface) {
 	if protocol.getOrCreateStatsHandler == nil {
 		globals.Logger.Warning("MatchmakeReferee::GetOrCreateStats not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

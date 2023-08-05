@@ -9,14 +9,14 @@ import (
 )
 
 // GetPasswordInfos sets the GetPasswordInfos handler function
-func (protocol *Protocol) GetPasswordInfos(handler func(err error, client *nex.Client, callID uint32, dataIDs []uint64)) {
+func (protocol *Protocol) GetPasswordInfos(handler func(err error, client *nex.Client, callID uint32, dataIDs []uint64) uint32) {
 	protocol.getPasswordInfosHandler = handler
 }
 
 func (protocol *Protocol) handleGetPasswordInfos(packet nex.PacketInterface) {
 	if protocol.getPasswordInfosHandler == nil {
 		globals.Logger.Warning("DataStore::GetPasswordInfos not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

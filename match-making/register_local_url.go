@@ -9,14 +9,14 @@ import (
 )
 
 // RegisterLocalURL sets the RegisterLocalURL handler function
-func (protocol *Protocol) RegisterLocalURL(handler func(err error, client *nex.Client, callID uint32, gid uint32, url *nex.StationURL)) {
+func (protocol *Protocol) RegisterLocalURL(handler func(err error, client *nex.Client, callID uint32, gid uint32, url *nex.StationURL) uint32) {
 	protocol.registerLocalURLHandler = handler
 }
 
 func (protocol *Protocol) handleRegisterLocalURL(packet nex.PacketInterface) {
 	if protocol.registerLocalURLHandler == nil {
 		globals.Logger.Warning("MatchMaking::RegisterLocalURL not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

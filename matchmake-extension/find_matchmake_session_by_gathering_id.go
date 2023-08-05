@@ -9,14 +9,14 @@ import (
 )
 
 // FindMatchmakeSessionByGatheringID sets the FindMatchmakeSessionByGatheringID handler function
-func (protocol *Protocol) FindMatchmakeSessionByGatheringID(handler func(err error, client *nex.Client, callID uint32, lstGID []uint32)) {
+func (protocol *Protocol) FindMatchmakeSessionByGatheringID(handler func(err error, client *nex.Client, callID uint32, lstGID []uint32) uint32) {
 	protocol.findMatchmakeSessionByGatheringIDHandler = handler
 }
 
 func (protocol *Protocol) handleFindMatchmakeSessionByGatheringID(packet nex.PacketInterface) {
 	if protocol.findMatchmakeSessionByGatheringIDHandler == nil {
 		globals.Logger.Warning("MatchmakeExtension::FindMatchmakeSessionByGatheringID not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

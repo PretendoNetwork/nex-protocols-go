@@ -9,14 +9,14 @@ import (
 )
 
 // Invite sets the Invite handler function
-func (protocol *Protocol) Invite(handler func(err error, client *nex.Client, callID uint32, idGathering uint32, lstPrincipals []uint32, strMessage string)) {
+func (protocol *Protocol) Invite(handler func(err error, client *nex.Client, callID uint32, idGathering uint32, lstPrincipals []uint32, strMessage string) uint32) {
 	protocol.inviteHandler = handler
 }
 
 func (protocol *Protocol) handleInvite(packet nex.PacketInterface) {
 	if protocol.inviteHandler == nil {
 		globals.Logger.Warning("MatchMaking::Invite not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

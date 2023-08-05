@@ -9,14 +9,14 @@ import (
 )
 
 // FindByParticipants sets the FindByParticipants handler function
-func (protocol *Protocol) FindByParticipants(handler func(err error, client *nex.Client, callID uint32, pid []uint32)) {
+func (protocol *Protocol) FindByParticipants(handler func(err error, client *nex.Client, callID uint32, pid []uint32) uint32) {
 	protocol.findByParticipantsHandler = handler
 }
 
 func (protocol *Protocol) handleFindByParticipants(packet nex.PacketInterface) {
 	if protocol.findByParticipantsHandler == nil {
 		globals.Logger.Warning("MatchMaking::FindByParticipants not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

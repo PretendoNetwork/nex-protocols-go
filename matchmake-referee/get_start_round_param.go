@@ -9,14 +9,14 @@ import (
 )
 
 // GetStartRoundParam sets the GetStartRoundParam handler function
-func (protocol *Protocol) GetStartRoundParam(handler func(err error, client *nex.Client, callID uint32, roundID uint64)) {
+func (protocol *Protocol) GetStartRoundParam(handler func(err error, client *nex.Client, callID uint32, roundID uint64) uint32) {
 	protocol.getStartRoundParamHandler = handler
 }
 
 func (protocol *Protocol) handleGetStartRoundParam(packet nex.PacketInterface) {
 	if protocol.getStartRoundParamHandler == nil {
 		globals.Logger.Warning("MatchmakeReferee::GetStartRoundParam not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

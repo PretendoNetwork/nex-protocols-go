@@ -40,14 +40,14 @@ const (
 // Protocol stores all the RMC method handlers for the Secure Connection protocol and listens for requests
 type Protocol struct {
 	Server                       *nex.Server
-	registerHandler              func(err error, client *nex.Client, callID uint32, vecMyURLs []*nex.StationURL)
-	requestConnectionDataHandler func(err error, client *nex.Client, callID uint32, cidTarget uint32, pidTarget uint32)
-	requestURLsHandler           func(err error, client *nex.Client, callID uint32, cidTarget uint32, pidTarget uint32)
-	registerExHandler            func(err error, client *nex.Client, callID uint32, vecMyURLs []*nex.StationURL, hCustomData *nex.DataHolder)
-	testConnectivityHandler      func(err error, client *nex.Client, callID uint32)
-	updateURLsHandler            func(err error, client *nex.Client, callID uint32, vecMyURLs []*nex.StationURL)
-	replaceURLHandler            func(err error, client *nex.Client, callID uint32, target *nex.StationURL, url *nex.StationURL)
-	sendReportHandler            func(err error, client *nex.Client, callID uint32, reportID uint32, reportData []byte)
+	registerHandler              func(err error, client *nex.Client, callID uint32, vecMyURLs []*nex.StationURL) uint32
+	requestConnectionDataHandler func(err error, client *nex.Client, callID uint32, cidTarget uint32, pidTarget uint32) uint32
+	requestURLsHandler           func(err error, client *nex.Client, callID uint32, cidTarget uint32, pidTarget uint32) uint32
+	registerExHandler            func(err error, client *nex.Client, callID uint32, vecMyURLs []*nex.StationURL, hCustomData *nex.DataHolder) uint32
+	testConnectivityHandler      func(err error, client *nex.Client, callID uint32) uint32
+	updateURLsHandler            func(err error, client *nex.Client, callID uint32, vecMyURLs []*nex.StationURL) uint32
+	replaceURLHandler            func(err error, client *nex.Client, callID uint32, target *nex.StationURL, url *nex.StationURL) uint32
+	sendReportHandler            func(err error, client *nex.Client, callID uint32, reportID uint32, reportData []byte) uint32
 }
 
 // Setup initializes the protocol
@@ -83,7 +83,7 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 	case MethodSendReport:
 		go protocol.handleSendReport(packet)
 	default:
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		fmt.Printf("Unsupported SecureConnection method ID: %#v\n", request.MethodID())
 	}
 }

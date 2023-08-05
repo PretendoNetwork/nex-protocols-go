@@ -9,14 +9,14 @@ import (
 )
 
 // GetStats sets the GetStats handler function
-func (protocol *Protocol) GetStats(handler func(err error, client *nex.Client, callID uint32, idGathering uint32, lstParticipants []uint32, lstColumns []byte)) {
+func (protocol *Protocol) GetStats(handler func(err error, client *nex.Client, callID uint32, idGathering uint32, lstParticipants []uint32, lstColumns []byte) uint32) {
 	protocol.getStatsHandler = handler
 }
 
 func (protocol *Protocol) handleGetStats(packet nex.PacketInterface) {
 	if protocol.getStatsHandler == nil {
 		globals.Logger.Warning("MatchMaking::GetStats not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

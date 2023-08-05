@@ -9,14 +9,14 @@ import (
 )
 
 // UpdateGathering sets the UpdateGathering handler function
-func (protocol *Protocol) UpdateGathering(handler func(err error, client *nex.Client, callID uint32, anyGathering *nex.DataHolder)) {
+func (protocol *Protocol) UpdateGathering(handler func(err error, client *nex.Client, callID uint32, anyGathering *nex.DataHolder) uint32) {
 	protocol.updateGatheringHandler = handler
 }
 
 func (protocol *Protocol) handleUpdateGathering(packet nex.PacketInterface) {
 	if protocol.updateGatheringHandler == nil {
 		globals.Logger.Warning("MatchMaking::UpdateGathering not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

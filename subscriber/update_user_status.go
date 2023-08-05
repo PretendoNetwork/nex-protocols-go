@@ -5,19 +5,19 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
-	subscriber_types "github.com/PretendoNetwork/nex-protocols-go/subscriber/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
+	subscriber_types "github.com/PretendoNetwork/nex-protocols-go/subscriber/types"
 )
 
 // UpdateUserStatus sets the UpdateUserStatus handler function
-func (protocol *Protocol) UpdateUserStatus(handler func(err error, client *nex.Client, callID uint32, unknown1 []*subscriber_types.Unknown, unknown2 []uint8)) {
+func (protocol *Protocol) UpdateUserStatus(handler func(err error, client *nex.Client, callID uint32, unknown1 []*subscriber_types.Unknown, unknown2 []uint8) uint32) {
 	protocol.updateUserStatusHandler = handler
 }
 
 func (protocol *Protocol) handleUpdateUserStatus(packet nex.PacketInterface) {
 	if protocol.updateUserStatusHandler == nil {
 		globals.Logger.Warning("Subscriber::UpdateUserStatus not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 	client := packet.Sender()

@@ -10,14 +10,14 @@ import (
 )
 
 // RateObjectsWithPosting sets the RateObjectsWithPosting handler function
-func (protocol *Protocol) RateObjectsWithPosting(handler func(err error, client *nex.Client, callID uint32, targets []*datastore_types.DataStoreRatingTarget, rateParams []*datastore_types.DataStoreRateObjectParam, postParams []*datastore_types.DataStorePreparePostParam, transactional bool, fetchRatings bool)) {
+func (protocol *Protocol) RateObjectsWithPosting(handler func(err error, client *nex.Client, callID uint32, targets []*datastore_types.DataStoreRatingTarget, rateParams []*datastore_types.DataStoreRateObjectParam, postParams []*datastore_types.DataStorePreparePostParam, transactional bool, fetchRatings bool) uint32) {
 	protocol.rateObjectsWithPostingHandler = handler
 }
 
 func (protocol *Protocol) handleRateObjectsWithPosting(packet nex.PacketInterface) {
 	if protocol.rateObjectsWithPostingHandler == nil {
 		globals.Logger.Warning("DataStore::RateObjectsWithPosting not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

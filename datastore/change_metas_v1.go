@@ -10,14 +10,14 @@ import (
 )
 
 // ChangeMetasV1 sets the ChangeMetasV1 handler function
-func (protocol *Protocol) ChangeMetasV1(handler func(err error, client *nex.Client, callID uint32, dataIDs []uint64, params []*datastore_types.DataStoreChangeMetaParamV1, transactional bool)) {
+func (protocol *Protocol) ChangeMetasV1(handler func(err error, client *nex.Client, callID uint32, dataIDs []uint64, params []*datastore_types.DataStoreChangeMetaParamV1, transactional bool) uint32) {
 	protocol.changeMetasV1Handler = handler
 }
 
 func (protocol *Protocol) handleChangeMetasV1(packet nex.PacketInterface) {
 	if protocol.changeMetasV1Handler == nil {
 		globals.Logger.Warning("DataStore::ChangeMetasV1 not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

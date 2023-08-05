@@ -9,14 +9,14 @@ import (
 )
 
 // GetCommonData sets the GetCommonData handler function
-func (protocol *Protocol) GetCommonData(handler func(err error, client *nex.Client, callID uint32, uniqueID uint64)) {
+func (protocol *Protocol) GetCommonData(handler func(err error, client *nex.Client, callID uint32, uniqueID uint64) uint32) {
 	protocol.getCommonDataHandler = handler
 }
 
 func (protocol *Protocol) handleGetCommonData(packet nex.PacketInterface) {
 	if protocol.getCommonDataHandler == nil {
 		globals.Logger.Warning("Ranking::GetCommonData not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

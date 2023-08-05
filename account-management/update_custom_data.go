@@ -9,14 +9,14 @@ import (
 )
 
 // UpdateCustomData sets the UpdateCustomData handler function
-func (protocol *Protocol) UpdateCustomData(handler func(err error, client *nex.Client, callID uint32, oPublicData *nex.DataHolder, oPrivateData *nex.DataHolder)) {
+func (protocol *Protocol) UpdateCustomData(handler func(err error, client *nex.Client, callID uint32, oPublicData *nex.DataHolder, oPrivateData *nex.DataHolder) uint32) {
 	protocol.updateCustomDataHandler = handler
 }
 
 func (protocol *Protocol) handleUpdateCustomData(packet nex.PacketInterface) {
 	if protocol.updateCustomDataHandler == nil {
 		globals.Logger.Warning("AccountManagement::UpdateCustomData not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

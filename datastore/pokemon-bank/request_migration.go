@@ -9,14 +9,14 @@ import (
 )
 
 // RequestMigration sets the RequestMigration handler function
-func (protocol *Protocol) RequestMigration(handler func(err error, client *nex.Client, callID uint32, oneTimePassword string, boxes []uint32)) {
+func (protocol *Protocol) RequestMigration(handler func(err error, client *nex.Client, callID uint32, oneTimePassword string, boxes []uint32) uint32) {
 	protocol.requestMigrationHandler = handler
 }
 
 func (protocol *Protocol) handleRequestMigration(packet nex.PacketInterface) {
 	if protocol.requestMigrationHandler == nil {
 		globals.Logger.Warning("DataStorePokemonBank::RequestMigration not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

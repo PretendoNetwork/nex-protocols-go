@@ -7,14 +7,14 @@ import (
 )
 
 // JoinOrCreateMatchmakeSession sets the JoinOrCreateMatchmakeSession handler function
-func (protocol *Protocol) JoinOrCreateMatchmakeSession(handler func(err error, client *nex.Client, callID uint32, packetPayload []byte)) {
+func (protocol *Protocol) JoinOrCreateMatchmakeSession(handler func(err error, client *nex.Client, callID uint32, packetPayload []byte) uint32) {
 	protocol.joinOrCreateMatchmakeSessionHandler = handler
 }
 
 func (protocol *Protocol) handleJoinOrCreateMatchmakeSession(packet nex.PacketInterface) {
 	if protocol.joinOrCreateMatchmakeSessionHandler == nil {
 		globals.Logger.Warning("MatchmakeExtensionSuperSmashBros4::JoinOrCreateMatchmakeSession not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

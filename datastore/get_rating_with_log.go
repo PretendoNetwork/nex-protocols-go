@@ -10,14 +10,14 @@ import (
 )
 
 // GetRatingWithLog sets the GetRatingWithLog handler function
-func (protocol *Protocol) GetRatingWithLog(handler func(err error, client *nex.Client, callID uint32, target *datastore_types.DataStoreRatingTarget, accessPassword uint64)) {
+func (protocol *Protocol) GetRatingWithLog(handler func(err error, client *nex.Client, callID uint32, target *datastore_types.DataStoreRatingTarget, accessPassword uint64) uint32) {
 	protocol.getRatingWithLogHandler = handler
 }
 
 func (protocol *Protocol) handleGetRatingWithLog(packet nex.PacketInterface) {
 	if protocol.getRatingWithLogHandler == nil {
 		globals.Logger.Warning("DataStore::GetRatingWithLog not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

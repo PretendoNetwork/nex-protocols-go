@@ -9,14 +9,14 @@ import (
 )
 
 // MarkFriendRequestsAsReceived sets the MarkFriendRequestsAsReceived handler function
-func (protocol *Protocol) MarkFriendRequestsAsReceived(handler func(err error, client *nex.Client, callID uint32, ids []uint64)) {
+func (protocol *Protocol) MarkFriendRequestsAsReceived(handler func(err error, client *nex.Client, callID uint32, ids []uint64) uint32) {
 	protocol.markFriendRequestsAsReceivedHandler = handler
 }
 
 func (protocol *Protocol) handleMarkFriendRequestsAsReceived(packet nex.PacketInterface) {
 	if protocol.markFriendRequestsAsReceivedHandler == nil {
 		globals.Logger.Warning("FriendsWiiU::MarkFriendRequestsAsReceived not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

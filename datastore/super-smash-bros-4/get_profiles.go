@@ -9,14 +9,14 @@ import (
 )
 
 // GetProfiles sets the GetProfiles handler function
-func (protocol *Protocol) GetProfiles(handler func(err error, client *nex.Client, callID uint32, pidList []uint32)) {
+func (protocol *Protocol) GetProfiles(handler func(err error, client *nex.Client, callID uint32, pidList []uint32) uint32) {
 	protocol.getProfilesHandler = handler
 }
 
 func (protocol *Protocol) handleGetProfiles(packet nex.PacketInterface) {
 	if protocol.getProfilesHandler == nil {
 		globals.Logger.Warning("DataStoreSuperSmashBros4::GetProfiles not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

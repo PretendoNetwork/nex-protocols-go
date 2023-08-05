@@ -9,14 +9,14 @@ import (
 )
 
 // GetBalanceResponse sets the GetBalanceResponse handler function
-func (protocol *Protocol) GetBalanceResponse(handler func(err error, client *nex.Client, callID uint32, requestID uint32)) {
+func (protocol *Protocol) GetBalanceResponse(handler func(err error, client *nex.Client, callID uint32, requestID uint32) uint32) {
 	protocol.getBalanceResponseHandler = handler
 }
 
 func (protocol *Protocol) handleGetBalanceResponse(packet nex.PacketInterface) {
 	if protocol.getBalanceResponseHandler == nil {
 		globals.Logger.Warning("ServiceItemTeamKirbyClashDeluxe::GetBalanceResponse not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

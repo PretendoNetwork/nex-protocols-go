@@ -10,14 +10,14 @@ import (
 )
 
 // ScoreRangeCascadedSearchObject sets the ScoreRangeCascadedSearchObject handler function
-func (protocol *Protocol) ScoreRangeCascadedSearchObject(handler func(err error, client *nex.Client, callID uint32, param *datastore_types.DataStoreSearchParam, extraData []string)) {
+func (protocol *Protocol) ScoreRangeCascadedSearchObject(handler func(err error, client *nex.Client, callID uint32, param *datastore_types.DataStoreSearchParam, extraData []string) uint32) {
 	protocol.scoreRangeCascadedSearchObjectHandler = handler
 }
 
 func (protocol *Protocol) handleScoreRangeCascadedSearchObject(packet nex.PacketInterface) {
 	if protocol.scoreRangeCascadedSearchObjectHandler == nil {
 		globals.Logger.Warning("DataStoreSuperMarioMaker::ScoreRangeCascadedSearchObject not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

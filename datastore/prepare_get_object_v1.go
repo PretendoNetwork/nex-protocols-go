@@ -10,14 +10,14 @@ import (
 )
 
 // PrepareGetObjectV1 sets the PrepareGetObjectV1 handler function
-func (protocol *Protocol) PrepareGetObjectV1(handler func(err error, client *nex.Client, callID uint32, param *datastore_types.DataStorePrepareGetParamV1)) {
+func (protocol *Protocol) PrepareGetObjectV1(handler func(err error, client *nex.Client, callID uint32, param *datastore_types.DataStorePrepareGetParamV1) uint32) {
 	protocol.prepareGetObjectV1Handler = handler
 }
 
 func (protocol *Protocol) handlePrepareGetObjectV1(packet nex.PacketInterface) {
 	if protocol.prepareGetObjectV1Handler == nil {
 		globals.Logger.Warning("DataStore::PrepareGetObjectV1 not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

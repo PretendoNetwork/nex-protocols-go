@@ -9,14 +9,14 @@ import (
 )
 
 // PerpetuateObject sets the PerpetuateObject handler function
-func (protocol *Protocol) PerpetuateObject(handler func(err error, client *nex.Client, callID uint32, persistenceSlotID uint16, dataID uint64, deleteLastObject bool)) {
+func (protocol *Protocol) PerpetuateObject(handler func(err error, client *nex.Client, callID uint32, persistenceSlotID uint16, dataID uint64, deleteLastObject bool) uint32) {
 	protocol.perpetuateObjectHandler = handler
 }
 
 func (protocol *Protocol) handlePerpetuateObject(packet nex.PacketInterface) {
 	if protocol.perpetuateObjectHandler == nil {
 		globals.Logger.Warning("DataStore::PerpetuateObject not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

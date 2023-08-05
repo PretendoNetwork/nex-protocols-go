@@ -9,14 +9,14 @@ import (
 )
 
 // InsertCustomItem sets the InsertCustomItem handler function
-func (protocol *Protocol) InsertCustomItem(handler func(err error, client *nex.Client, callID uint32, uiGroup uint32, strTag string, hData *nex.DataHolder, bReplace bool)) {
+func (protocol *Protocol) InsertCustomItem(handler func(err error, client *nex.Client, callID uint32, uiGroup uint32, strTag string, hData *nex.DataHolder, bReplace bool) uint32) {
 	protocol.insertCustomItemHandler = handler
 }
 
 func (protocol *Protocol) handleInsertCustomItem(packet nex.PacketInterface) {
 	if protocol.insertCustomItemHandler == nil {
 		globals.Logger.Warning("PersistentStore::InsertCustomItem not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

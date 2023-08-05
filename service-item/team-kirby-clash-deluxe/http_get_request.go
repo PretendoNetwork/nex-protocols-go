@@ -10,14 +10,14 @@ import (
 )
 
 // HTTPGetRequest sets the HTTPGetRequest handler function
-func (protocol *Protocol) HTTPGetRequest(handler func(err error, client *nex.Client, callID uint32, url *service_item_team_kirby_clash_deluxe_types.ServiceItemHTTPGetParam)) {
+func (protocol *Protocol) HTTPGetRequest(handler func(err error, client *nex.Client, callID uint32, url *service_item_team_kirby_clash_deluxe_types.ServiceItemHTTPGetParam) uint32) {
 	protocol.httpGetRequestHandler = handler
 }
 
 func (protocol *Protocol) handleHTTPGetRequest(packet nex.PacketInterface) {
 	if protocol.httpGetRequestHandler == nil {
 		globals.Logger.Warning("ServiceItemTeamKirbyClashDeluxe::HTTPGetRequest not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

@@ -9,14 +9,14 @@ import (
 )
 
 // RequestURLs sets the RequestURLs handler function
-func (protocol *Protocol) RequestURLs(handler func(err error, client *nex.Client, callID uint32, cidTarget uint32, pidTarget uint32)) {
+func (protocol *Protocol) RequestURLs(handler func(err error, client *nex.Client, callID uint32, cidTarget uint32, pidTarget uint32) uint32) {
 	protocol.requestURLsHandler = handler
 }
 
 func (protocol *Protocol) handleRequestURLs(packet nex.PacketInterface) {
 	if protocol.requestURLsHandler == nil {
 		globals.Logger.Warning("SecureConnection::RequestURLs not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

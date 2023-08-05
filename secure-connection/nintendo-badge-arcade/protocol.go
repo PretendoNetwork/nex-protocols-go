@@ -29,7 +29,7 @@ type secureConnectionProtocol = secure_connection.Protocol
 type Protocol struct {
 	Server *nex.Server
 	secureConnectionProtocol
-	getMaintenanceStatusHandler func(err error, client *nex.Client, callID uint32)
+	getMaintenanceStatusHandler func(err error, client *nex.Client, callID uint32) uint32
 }
 
 // Setup initializes the protocol
@@ -55,7 +55,7 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 	case MethodGetMaintenanceStatus:
 		go protocol.handleGetMaintenanceStatus(packet)
 	default:
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		fmt.Printf("Unsupported SecureConnectionNintendoBadgeArcade method ID: %#v\n", request.MethodID())
 	}
 }

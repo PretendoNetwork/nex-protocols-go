@@ -9,14 +9,14 @@ import (
 )
 
 // AddParticipants sets the AddParticipants handler function
-func (protocol *Protocol) AddParticipants(handler func(err error, client *nex.Client, callID uint32, idGathering uint32, lstPrincipals []uint32, strMessage string)) {
+func (protocol *Protocol) AddParticipants(handler func(err error, client *nex.Client, callID uint32, idGathering uint32, lstPrincipals []uint32, strMessage string) uint32) {
 	protocol.addParticipantsHandler = handler
 }
 
 func (protocol *Protocol) handleAddParticipants(packet nex.PacketInterface) {
 	if protocol.addParticipantsHandler == nil {
 		globals.Logger.Warning("MatchMaking::AddParticipants not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

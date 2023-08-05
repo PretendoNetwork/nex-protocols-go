@@ -9,14 +9,14 @@ import (
 )
 
 // Login sets the Login handler function
-func (protocol *Protocol) Login(handler func(err error, client *nex.Client, callID uint32, strUserName string)) {
+func (protocol *Protocol) Login(handler func(err error, client *nex.Client, callID uint32, strUserName string) uint32) {
 	protocol.loginHandler = handler
 }
 
 func (protocol *Protocol) handleLogin(packet nex.PacketInterface) {
 	if protocol.loginHandler == nil {
 		globals.Logger.Warning("TicketGranting::Login not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

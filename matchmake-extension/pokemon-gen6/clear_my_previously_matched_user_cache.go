@@ -7,14 +7,14 @@ import (
 )
 
 // ClearMyPreviouslyMatchedUserCache sets the ClearMyPreviouslyMatchedUserCache handler function
-func (protocol *Protocol) ClearMyPreviouslyMatchedUserCache(handler func(err error, client *nex.Client, callID uint32)) {
+func (protocol *Protocol) ClearMyPreviouslyMatchedUserCache(handler func(err error, client *nex.Client, callID uint32) uint32) {
 	protocol.clearMyPreviouslyMatchedUserCacheHandler = handler
 }
 
 func (protocol *Protocol) handleClearMyPreviouslyMatchedUserCache(packet nex.PacketInterface) {
 	if protocol.clearMyPreviouslyMatchedUserCacheHandler == nil {
 		globals.Logger.Warning("MatchmakeExtension::ClearMyPreviouslyMatchedUserCache not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

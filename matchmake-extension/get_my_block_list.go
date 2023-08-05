@@ -7,14 +7,14 @@ import (
 )
 
 // GetMyBlockList sets the GetMyBlockList handler function
-func (protocol *Protocol) GetMyBlockList(handler func(err error, client *nex.Client, callID uint32)) {
+func (protocol *Protocol) GetMyBlockList(handler func(err error, client *nex.Client, callID uint32) uint32) {
 	protocol.getMyBlockListHandler = handler
 }
 
 func (protocol *Protocol) handleGetMyBlockList(packet nex.PacketInterface) {
 	if protocol.getMyBlockListHandler == nil {
 		globals.Logger.Warning("MatchmakeExtension::GetMyBlockList not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

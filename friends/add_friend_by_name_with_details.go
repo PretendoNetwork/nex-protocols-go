@@ -9,14 +9,14 @@ import (
 )
 
 // AddFriendWithDetails sets the AddFriendWithDetails handler function
-func (protocol *Protocol) AddFriendWithDetails(handler func(err error, client *nex.Client, callID uint32, uiPlayer uint32, uiDetails uint32, strMessage string)) {
+func (protocol *Protocol) AddFriendWithDetails(handler func(err error, client *nex.Client, callID uint32, uiPlayer uint32, uiDetails uint32, strMessage string) uint32) {
 	protocol.addFriendWithDetailsHandler = handler
 }
 
 func (protocol *Protocol) handleAddFriendWithDetails(packet nex.PacketInterface) {
 	if protocol.addFriendWithDetailsHandler == nil {
 		globals.Logger.Warning("Friends::AddFriendWithDetails not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

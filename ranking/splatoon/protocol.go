@@ -41,10 +41,10 @@ type rankingProtocol = ranking.Protocol
 type Protocol struct {
 	Server *nex.Server
 	rankingProtocol
-	getCompetitionRankingScoreHandler             func(err error, client *nex.Client, callID uint32, packetPayload []byte)
-	getcompetitionRankingScoreByPeriodListHandler func(err error, client *nex.Client, callID uint32, packetPayload []byte)
-	uploadCompetitionRankingScoreHandler          func(err error, client *nex.Client, callID uint32, packetPayload []byte)
-	deleteCompetitionRankingScoreHandler          func(err error, client *nex.Client, callID uint32, packetPayload []byte)
+	getCompetitionRankingScoreHandler             func(err error, client *nex.Client, callID uint32, packetPayload []byte) uint32
+	getcompetitionRankingScoreByPeriodListHandler func(err error, client *nex.Client, callID uint32, packetPayload []byte) uint32
+	uploadCompetitionRankingScoreHandler          func(err error, client *nex.Client, callID uint32, packetPayload []byte) uint32
+	deleteCompetitionRankingScoreHandler          func(err error, client *nex.Client, callID uint32, packetPayload []byte) uint32
 }
 
 // Setup initializes the protocol
@@ -76,7 +76,7 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 	case MethodDeleteCompetitionRankingScore:
 		go protocol.handleDeleteCompetitionRankingScore(packet)
 	default:
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		fmt.Printf("Unsupported Ranking (Splatoon) method ID: %#v\n", request.MethodID())
 	}
 }

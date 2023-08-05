@@ -9,14 +9,14 @@ import (
 )
 
 // RemoveFriendByLocalFriendCode sets the RemoveFriendByLocalFriendCode handler function
-func (protocol *Protocol) RemoveFriendByLocalFriendCode(handler func(err error, client *nex.Client, callID uint32, lfc uint64)) {
+func (protocol *Protocol) RemoveFriendByLocalFriendCode(handler func(err error, client *nex.Client, callID uint32, lfc uint64) uint32) {
 	protocol.removeFriendByLocalFriendCodeHandler = handler
 }
 
 func (protocol *Protocol) handleRemoveFriendByLocalFriendCode(packet nex.PacketInterface) {
 	if protocol.removeFriendByLocalFriendCodeHandler == nil {
 		globals.Logger.Warning("Friends3DS::RemoveFriendByLocalFriendCode not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

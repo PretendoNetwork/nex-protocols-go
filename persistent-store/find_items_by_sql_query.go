@@ -9,14 +9,14 @@ import (
 )
 
 // FindItemsBySQLQuery sets the FindItemsBySQLQuery handler function
-func (protocol *Protocol) FindItemsBySQLQuery(handler func(err error, client *nex.Client, callID uint32, uiGroup uint32, strTag string, strQuery string)) {
+func (protocol *Protocol) FindItemsBySQLQuery(handler func(err error, client *nex.Client, callID uint32, uiGroup uint32, strTag string, strQuery string) uint32) {
 	protocol.findItemsBySQLQueryHandler = handler
 }
 
 func (protocol *Protocol) handleFindItemsBySQLQuery(packet nex.PacketInterface) {
 	if protocol.findItemsBySQLQueryHandler == nil {
 		globals.Logger.Warning("PersistentStore::FindItemsBySQLQuery not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

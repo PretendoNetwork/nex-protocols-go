@@ -10,14 +10,14 @@ import (
 )
 
 // LatestCourseSearchObject sets the LatestCourseSearchObject handler function
-func (protocol *Protocol) LatestCourseSearchObject(handler func(err error, client *nex.Client, callID uint32, param *datastore_types.DataStoreSearchParam, extraData []string)) {
+func (protocol *Protocol) LatestCourseSearchObject(handler func(err error, client *nex.Client, callID uint32, param *datastore_types.DataStoreSearchParam, extraData []string) uint32) {
 	protocol.latestCourseSearchObjectHandler = handler
 }
 
 func (protocol *Protocol) handleLatestCourseSearchObject(packet nex.PacketInterface) {
 	if protocol.latestCourseSearchObjectHandler == nil {
 		globals.Logger.Warning("DataStoreSuperMarioMaker::LatestCourseSearchObject not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

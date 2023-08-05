@@ -10,14 +10,14 @@ import (
 )
 
 // SearchSharedData sets the SearchSharedData handler function
-func (protocol *Protocol) SearchSharedData(handler func(err error, client *nex.Client, callID uint32, param *datastore_super_smash_bros_4_types.DataStoreSearchSharedDataParam)) {
+func (protocol *Protocol) SearchSharedData(handler func(err error, client *nex.Client, callID uint32, param *datastore_super_smash_bros_4_types.DataStoreSearchSharedDataParam) uint32) {
 	protocol.searchSharedDataHandler = handler
 }
 
 func (protocol *Protocol) handleSearchSharedData(packet nex.PacketInterface) {
 	if protocol.searchSharedDataHandler == nil {
 		globals.Logger.Warning("DataStoreSuperSmashBros4::SearchSharedData not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

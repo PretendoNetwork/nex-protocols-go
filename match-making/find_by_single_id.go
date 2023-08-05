@@ -9,14 +9,14 @@ import (
 )
 
 // FindBySingleID sets the FindBySingleID handler function
-func (protocol *Protocol) FindBySingleID(handler func(err error, client *nex.Client, callID uint32, id uint32)) {
+func (protocol *Protocol) FindBySingleID(handler func(err error, client *nex.Client, callID uint32, id uint32) uint32) {
 	protocol.findBySingleIDHandler = handler
 }
 
 func (protocol *Protocol) handleFindBySingleID(packet nex.PacketInterface) {
 	if protocol.findBySingleIDHandler == nil {
 		globals.Logger.Warning("MatchMaking::FindBySingleID not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

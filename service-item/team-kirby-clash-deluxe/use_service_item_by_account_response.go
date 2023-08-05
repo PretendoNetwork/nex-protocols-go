@@ -9,14 +9,14 @@ import (
 )
 
 // UseServiceItemByAccountResponse sets the UseServiceItemByAccountResponse handler function
-func (protocol *Protocol) UseServiceItemByAccountResponse(handler func(err error, client *nex.Client, callID uint32, requestID uint32)) {
+func (protocol *Protocol) UseServiceItemByAccountResponse(handler func(err error, client *nex.Client, callID uint32, requestID uint32) uint32) {
 	protocol.useServiceItemByAccountResponseHandler = handler
 }
 
 func (protocol *Protocol) handleUseServiceItemByAccountResponse(packet nex.PacketInterface) {
 	if protocol.useServiceItemByAccountResponseHandler == nil {
 		globals.Logger.Warning("ServiceItemTeamKirbyClashDeluxe::UseServiceItemByAccountResponse not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

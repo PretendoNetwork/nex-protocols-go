@@ -9,14 +9,14 @@ import (
 )
 
 // AddFriend sets the AddFriend handler function
-func (protocol *Protocol) AddFriend(handler func(err error, client *nex.Client, callID uint32, pid uint32)) {
+func (protocol *Protocol) AddFriend(handler func(err error, client *nex.Client, callID uint32, pid uint32) uint32) {
 	protocol.addFriendHandler = handler
 }
 
 func (protocol *Protocol) handleAddFriend(packet nex.PacketInterface) {
 	if protocol.addFriendHandler == nil {
 		globals.Logger.Warning("FriendsWiiU::AddFriend not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

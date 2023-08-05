@@ -10,14 +10,14 @@ import (
 )
 
 // ResetRating sets the ResetRating handler function
-func (protocol *Protocol) ResetRating(handler func(err error, client *nex.Client, callID uint32, target *datastore_types.DataStoreRatingTarget, accessPassword uint64)) {
+func (protocol *Protocol) ResetRating(handler func(err error, client *nex.Client, callID uint32, target *datastore_types.DataStoreRatingTarget, accessPassword uint64) uint32) {
 	protocol.resetRatingHandler = handler
 }
 
 func (protocol *Protocol) handleResetRating(packet nex.PacketInterface) {
 	if protocol.resetRatingHandler == nil {
 		globals.Logger.Warning("DataStore::ResetRating not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

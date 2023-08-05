@@ -9,14 +9,14 @@ import (
 )
 
 // FindBySQLQuery sets the FindBySQLQuery handler function
-func (protocol *Protocol) FindBySQLQuery(handler func(err error, client *nex.Client, callID uint32, strQuery string, resultRange *nex.ResultRange)) {
+func (protocol *Protocol) FindBySQLQuery(handler func(err error, client *nex.Client, callID uint32, strQuery string, resultRange *nex.ResultRange) uint32) {
 	protocol.findBySQLQueryHandler = handler
 }
 
 func (protocol *Protocol) handleFindBySQLQuery(packet nex.PacketInterface) {
 	if protocol.findBySQLQueryHandler == nil {
 		globals.Logger.Warning("MatchMaking::FindBySQLQuery not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

@@ -7,14 +7,14 @@ import (
 )
 
 // WithdrawMatchmakingAll sets the WithdrawMatchmakingAll handler function
-func (protocol *Protocol) WithdrawMatchmakingAll(handler func(err error, client *nex.Client, callID uint32)) {
+func (protocol *Protocol) WithdrawMatchmakingAll(handler func(err error, client *nex.Client, callID uint32) uint32) {
 	protocol.withdrawMatchmakingAllHandler = handler
 }
 
 func (protocol *Protocol) handleWithdrawMatchmakingAll(packet nex.PacketInterface) {
 	if protocol.withdrawMatchmakingAllHandler == nil {
 		globals.Logger.Warning("MatchmakeExtension::WithdrawMatchmakingAll not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

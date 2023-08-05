@@ -9,14 +9,14 @@ import (
 )
 
 // GetSimpleCommunity sets the GetSimpleCommunity handler function
-func (protocol *Protocol) GetSimpleCommunity(handler func(err error, client *nex.Client, callID uint32, gatheringIDList []uint32)) {
+func (protocol *Protocol) GetSimpleCommunity(handler func(err error, client *nex.Client, callID uint32, gatheringIDList []uint32) uint32) {
 	protocol.getSimpleCommunityHandler = handler
 }
 
 func (protocol *Protocol) handleGetSimpleCommunity(packet nex.PacketInterface) {
 	if protocol.getSimpleCommunityHandler == nil {
 		globals.Logger.Warning("MatchmakeExtension::GetSimpleCommunity not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

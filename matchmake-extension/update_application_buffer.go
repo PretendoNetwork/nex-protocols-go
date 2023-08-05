@@ -9,14 +9,14 @@ import (
 )
 
 // UpdateApplicationBuffer sets the UpdateApplicationBuffer handler function
-func (protocol *Protocol) UpdateApplicationBuffer(handler func(err error, client *nex.Client, callID uint32, gid uint32, applicationBuffer []byte)) {
+func (protocol *Protocol) UpdateApplicationBuffer(handler func(err error, client *nex.Client, callID uint32, gid uint32, applicationBuffer []byte) uint32) {
 	protocol.updateApplicationBufferHandler = handler
 }
 
 func (protocol *Protocol) handleUpdateApplicationBuffer(packet nex.PacketInterface) {
 	if protocol.updateApplicationBufferHandler == nil {
 		globals.Logger.Warning("MatchmakeExtension::UpdateApplicationBuffer not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

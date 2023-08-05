@@ -9,14 +9,14 @@ import (
 )
 
 // FindCommunityByOwner sets the FindCommunityByOwner handler function
-func (protocol *Protocol) FindCommunityByOwner(handler func(err error, client *nex.Client, callID uint32, id uint64, resultRange *nex.ResultRange)) {
+func (protocol *Protocol) FindCommunityByOwner(handler func(err error, client *nex.Client, callID uint32, id uint64, resultRange *nex.ResultRange) uint32) {
 	protocol.findCommunityByOwnerHandler = handler
 }
 
 func (protocol *Protocol) handleFindCommunityByOwner(packet nex.PacketInterface) {
 	if protocol.findCommunityByOwnerHandler == nil {
 		globals.Logger.Warning("MatchmakeExtensionMonsterHunterXX::FindCommunityByOwner not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

@@ -9,14 +9,14 @@ import (
 )
 
 // TestCapability sets the TestCapability handler function
-func (protocol *Protocol) TestCapability(handler func(err error, client *nex.Client, callID uint32, uiCapability uint32)) {
+func (protocol *Protocol) TestCapability(handler func(err error, client *nex.Client, callID uint32, uiCapability uint32) uint32) {
 	protocol.testCapabilityHandler = handler
 }
 
 func (protocol *Protocol) handleTestCapability(packet nex.PacketInterface) {
 	if protocol.testCapabilityHandler == nil {
 		globals.Logger.Warning("AccountManagement::TestCapability not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

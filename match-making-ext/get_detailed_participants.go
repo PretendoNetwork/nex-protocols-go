@@ -9,14 +9,14 @@ import (
 )
 
 // GetDetailedParticipants sets the GetDetailedParticipants handler function
-func (protocol *Protocol) GetDetailedParticipants(handler func(err error, client *nex.Client, callID uint32, idGathering uint32, bOnlyActive bool)) {
+func (protocol *Protocol) GetDetailedParticipants(handler func(err error, client *nex.Client, callID uint32, idGathering uint32, bOnlyActive bool) uint32) {
 	protocol.getDetailedParticipantsHandler = handler
 }
 
 func (protocol *Protocol) handleGetDetailedParticipants(packet nex.PacketInterface) {
 	if protocol.getDetailedParticipantsHandler == nil {
 		globals.Logger.Warning("MatchMakingExt::GetDetailedParticipants not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

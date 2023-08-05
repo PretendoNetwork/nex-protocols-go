@@ -10,14 +10,14 @@ import (
 )
 
 // GetStatsAll sets the GetStatsAll handler function
-func (protocol *Protocol) GetStatsAll(handler func(err error, client *nex.Client, callID uint32, target *matchmake_referee_types.MatchmakeRefereeStatsTarget)) {
+func (protocol *Protocol) GetStatsAll(handler func(err error, client *nex.Client, callID uint32, target *matchmake_referee_types.MatchmakeRefereeStatsTarget) uint32) {
 	protocol.getStatsAllHandler = handler
 }
 
 func (protocol *Protocol) handleGetStatsAll(packet nex.PacketInterface) {
 	if protocol.getStatsAllHandler == nil {
 		globals.Logger.Warning("MatchmakeReferee::GetStatsAll not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

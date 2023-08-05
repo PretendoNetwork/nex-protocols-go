@@ -9,14 +9,14 @@ import (
 )
 
 // BlackListByName sets the BlackListByName handler function
-func (protocol *Protocol) BlackListByName(handler func(err error, client *nex.Client, callID uint32, strPlayerName string, uiDetails uint32)) {
+func (protocol *Protocol) BlackListByName(handler func(err error, client *nex.Client, callID uint32, strPlayerName string, uiDetails uint32) uint32) {
 	protocol.blackListByNameHandler = handler
 }
 
 func (protocol *Protocol) handleBlackListByName(packet nex.PacketInterface) {
 	if protocol.blackListByNameHandler == nil {
 		globals.Logger.Warning("Friends::BlackListByName not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

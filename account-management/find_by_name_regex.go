@@ -9,14 +9,14 @@ import (
 )
 
 // FindByNameRegex sets the FindByNameRegex handler function
-func (protocol *Protocol) FindByNameRegex(handler func(err error, client *nex.Client, callID uint32, uiGroups uint32, strRegex string, resultRange *nex.ResultRange)) {
+func (protocol *Protocol) FindByNameRegex(handler func(err error, client *nex.Client, callID uint32, uiGroups uint32, strRegex string, resultRange *nex.ResultRange) uint32) {
 	protocol.findByNameRegexHandler = handler
 }
 
 func (protocol *Protocol) handleFindByNameRegex(packet nex.PacketInterface) {
 	if protocol.findByNameRegexHandler == nil {
 		globals.Logger.Warning("AccountManagement::FindByNameRegex not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

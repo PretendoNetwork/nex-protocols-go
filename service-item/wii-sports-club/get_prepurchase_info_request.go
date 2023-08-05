@@ -5,19 +5,19 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
-	service_item_wii_sports_club_types "github.com/PretendoNetwork/nex-protocols-go/service-item/wii-sports-club/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
+	service_item_wii_sports_club_types "github.com/PretendoNetwork/nex-protocols-go/service-item/wii-sports-club/types"
 )
 
 // GetPrepurchaseInfoRequest sets the GetPrepurchaseInfoRequest handler function
-func (protocol *Protocol) GetPrepurchaseInfoRequest(handler func(err error, client *nex.Client, callID uint32, getPrepurchaseInfoParam *service_item_wii_sports_club_types.ServiceItemGetPrepurchaseInfoParam)) {
+func (protocol *Protocol) GetPrepurchaseInfoRequest(handler func(err error, client *nex.Client, callID uint32, getPrepurchaseInfoParam *service_item_wii_sports_club_types.ServiceItemGetPrepurchaseInfoParam) uint32) {
 	protocol.getPrepurchaseInfoRequestHandler = handler
 }
 
 func (protocol *Protocol) handleGetPrepurchaseInfoRequest(packet nex.PacketInterface) {
 	if protocol.getPrepurchaseInfoRequestHandler == nil {
 		globals.Logger.Warning("ServiceItemWiiSportsClub::GetPrepurchaseInfoRequest not implemented")
-		go globals.RespondNotImplemented(packet, ProtocolID)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

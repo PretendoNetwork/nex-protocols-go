@@ -15,6 +15,8 @@ func (protocol *Protocol) DeleteMessages(handler func(err error, client *nex.Cli
 }
 
 func (protocol *Protocol) handleDeleteMessages(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.deleteMessagesHandler == nil {
 		globals.Logger.Warning("Messaging::DeleteMessages not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -31,15 +33,26 @@ func (protocol *Protocol) handleDeleteMessages(packet nex.PacketInterface) {
 
 	recipient, err := parametersStream.ReadStructure(messaging_types.NewMessageRecipient())
 	if err != nil {
-		go protocol.deleteMessagesHandler(fmt.Errorf("Failed to read recipient from parameters. %s", err.Error()), client, callID, nil, nil)
+		errorCode = protocol.deleteMessagesHandler(fmt.Errorf("Failed to read recipient from parameters. %s", err.Error()), client, callID, nil, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
 	lstMessagesToDelete, err := parametersStream.ReadListUInt32LE()
 	if err != nil {
-		go protocol.deleteMessagesHandler(fmt.Errorf("Failed to read lstMessagesToDelete from parameters. %s", err.Error()), client, callID, nil, nil)
+		errorCode = protocol.deleteMessagesHandler(fmt.Errorf("Failed to read lstMessagesToDelete from parameters. %s", err.Error()), client, callID, nil, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.deleteMessagesHandler(nil, client, callID, recipient.(*messaging_types.MessageRecipient), lstMessagesToDelete)
+	errorCode = protocol.deleteMessagesHandler(nil, client, callID, recipient.(*messaging_types.MessageRecipient), lstMessagesToDelete)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

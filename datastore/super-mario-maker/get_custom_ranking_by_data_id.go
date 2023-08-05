@@ -15,6 +15,8 @@ func (protocol *Protocol) GetCustomRankingByDataID(handler func(err error, clien
 }
 
 func (protocol *Protocol) handleGetCustomRankingByDataID(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.getCustomRankingByDataIDHandler == nil {
 		globals.Logger.Warning("DataStoreSuperMarioMaker::GetCustomRankingByDataID not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -31,9 +33,16 @@ func (protocol *Protocol) handleGetCustomRankingByDataID(packet nex.PacketInterf
 
 	param, err := parametersStream.ReadStructure(datastore_super_mario_maker_types.NewDataStoreGetCustomRankingByDataIDParam())
 	if err != nil {
-		go protocol.getCustomRankingByDataIDHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.getCustomRankingByDataIDHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.getCustomRankingByDataIDHandler(nil, client, callID, param.(*datastore_super_mario_maker_types.DataStoreGetCustomRankingByDataIDParam))
+	errorCode = protocol.getCustomRankingByDataIDHandler(nil, client, callID, param.(*datastore_super_mario_maker_types.DataStoreGetCustomRankingByDataIDParam))
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

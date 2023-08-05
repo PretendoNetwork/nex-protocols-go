@@ -14,6 +14,8 @@ func (protocol *Protocol) DeleteFriendRequest(handler func(err error, client *ne
 }
 
 func (protocol *Protocol) handleDeleteFriendRequest(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.deleteFriendRequestHandler == nil {
 		globals.Logger.Warning("FriendsWiiU::DeleteFriendRequest not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,9 +32,16 @@ func (protocol *Protocol) handleDeleteFriendRequest(packet nex.PacketInterface) 
 
 	id, err := parametersStream.ReadUInt64LE()
 	if err != nil {
-		go protocol.deleteFriendRequestHandler(fmt.Errorf("Failed to read id from parameters. %s", err.Error()), client, callID, 0)
+		errorCode = protocol.deleteFriendRequestHandler(fmt.Errorf("Failed to read id from parameters. %s", err.Error()), client, callID, 0)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.deleteFriendRequestHandler(nil, client, callID, id)
+	errorCode = protocol.deleteFriendRequestHandler(nil, client, callID, id)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

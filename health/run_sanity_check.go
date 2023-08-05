@@ -12,6 +12,8 @@ func (protocol *Protocol) RunSanityCheck(handler func(err error, client *nex.Cli
 }
 
 func (protocol *Protocol) handleRunSanityCheck(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.runSanityCheckHandler == nil {
 		globals.Logger.Warning("Health::RunSanityCheck not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -23,5 +25,8 @@ func (protocol *Protocol) handleRunSanityCheck(packet nex.PacketInterface) {
 
 	callID := request.CallID()
 
-	go protocol.runSanityCheckHandler(nil, client, callID)
+	errorCode = protocol.runSanityCheckHandler(nil, client, callID)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

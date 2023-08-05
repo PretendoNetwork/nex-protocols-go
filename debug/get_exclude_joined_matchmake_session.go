@@ -12,6 +12,8 @@ func (protocol *Protocol) GetExcludeJoinedMatchmakeSession(handler func(err erro
 }
 
 func (protocol *Protocol) handleGetExcludeJoinedMatchmakeSession(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.getExcludeJoinedMatchmakeSessionHandler == nil {
 		globals.Logger.Warning("Debug::GetExcludeJoinedMatchmakeSession not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -27,5 +29,8 @@ func (protocol *Protocol) handleGetExcludeJoinedMatchmakeSession(packet nex.Pack
 
 	// TODO - THIS METHOD HAS AN UNKNOWN REQUEST/RESPONSE FORMAT
 
-	go protocol.getExcludeJoinedMatchmakeSessionHandler(nil, client, callID, packet.Payload())
+	errorCode = protocol.getExcludeJoinedMatchmakeSessionHandler(nil, client, callID, packet.Payload())
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

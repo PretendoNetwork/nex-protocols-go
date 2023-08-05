@@ -14,6 +14,8 @@ func (protocol *Protocol) InsertItem(handler func(err error, client *nex.Client,
 }
 
 func (protocol *Protocol) handleInsertItem(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.insertItemHandler == nil {
 		globals.Logger.Warning("PersistentStore::InsertItem not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,27 +32,46 @@ func (protocol *Protocol) handleInsertItem(packet nex.PacketInterface) {
 
 	uiGroup, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		go protocol.insertItemHandler(fmt.Errorf("Failed to read uiGroup from parameters. %s", err.Error()), client, callID, 0, "", nil, false)
+		errorCode = protocol.insertItemHandler(fmt.Errorf("Failed to read uiGroup from parameters. %s", err.Error()), client, callID, 0, "", nil, false)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
 	strTag, err := parametersStream.ReadString()
 	if err != nil {
-		go protocol.insertItemHandler(fmt.Errorf("Failed to read strTag from parameters. %s", err.Error()), client, callID, 0, "", nil, false)
+		errorCode = protocol.insertItemHandler(fmt.Errorf("Failed to read strTag from parameters. %s", err.Error()), client, callID, 0, "", nil, false)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
 	bufData, err := parametersStream.ReadBuffer()
 	if err != nil {
-		go protocol.insertItemHandler(fmt.Errorf("Failed to read bufData from parameters. %s", err.Error()), client, callID, 0, "", nil, false)
+		errorCode = protocol.insertItemHandler(fmt.Errorf("Failed to read bufData from parameters. %s", err.Error()), client, callID, 0, "", nil, false)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
 	bReplace, err := parametersStream.ReadBool()
 	if err != nil {
-		go protocol.insertItemHandler(fmt.Errorf("Failed to read bReplace from parameters. %s", err.Error()), client, callID, 0, "", nil, false)
+		errorCode = protocol.insertItemHandler(fmt.Errorf("Failed to read bReplace from parameters. %s", err.Error()), client, callID, 0, "", nil, false)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.insertItemHandler(nil, client, callID, uiGroup, strTag, bufData, bReplace)
+	errorCode = protocol.insertItemHandler(nil, client, callID, uiGroup, strTag, bufData, bReplace)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

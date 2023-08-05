@@ -14,6 +14,8 @@ func (protocol *Protocol) GetApplicationConfig(handler func(err error, client *n
 }
 
 func (protocol *Protocol) handleGetApplicationConfig(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.getApplicationConfigHandler == nil {
 		globals.Logger.Warning("DataStoreSuperSmashBros4::GetApplicationConfig not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,9 +32,16 @@ func (protocol *Protocol) handleGetApplicationConfig(packet nex.PacketInterface)
 
 	applicationID, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		go protocol.getApplicationConfigHandler(fmt.Errorf("Failed to read applicationID from parameters. %s", err.Error()), client, callID, 0)
+		errorCode = protocol.getApplicationConfigHandler(fmt.Errorf("Failed to read applicationID from parameters. %s", err.Error()), client, callID, 0)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.getApplicationConfigHandler(nil, client, callID, applicationID)
+	errorCode = protocol.getApplicationConfigHandler(nil, client, callID, applicationID)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

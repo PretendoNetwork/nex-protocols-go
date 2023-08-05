@@ -12,6 +12,8 @@ func (protocol *Protocol) UnregisterCommunityCompetition(handler func(err error,
 }
 
 func (protocol *Protocol) handleUnregisterCommunityCompetition(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.unregisterCommunityCompetitionHandler == nil {
 		globals.Logger.Warning("MatchmakeExtensionSuperSmashBros4::UnregisterCommunityCompetition not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -25,5 +27,8 @@ func (protocol *Protocol) handleUnregisterCommunityCompetition(packet nex.Packet
 
 	callID := request.CallID()
 
-	go protocol.unregisterCommunityCompetitionHandler(nil, client, callID, packet.Payload())
+	errorCode = protocol.unregisterCommunityCompetitionHandler(nil, client, callID, packet.Payload())
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

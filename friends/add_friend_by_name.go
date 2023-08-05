@@ -14,6 +14,8 @@ func (protocol *Protocol) AddFriendByName(handler func(err error, client *nex.Cl
 }
 
 func (protocol *Protocol) handleAddFriendByName(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.addFriendByNameHandler == nil {
 		globals.Logger.Warning("Friends::AddFriendByName not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,21 +32,36 @@ func (protocol *Protocol) handleAddFriendByName(packet nex.PacketInterface) {
 
 	strPlayerName, err := parametersStream.ReadString()
 	if err != nil {
-		go protocol.addFriendByNameHandler(fmt.Errorf("Failed to read strPlayerName from parameters. %s", err.Error()), client, callID, "", 0, "")
+		errorCode = protocol.addFriendByNameHandler(fmt.Errorf("Failed to read strPlayerName from parameters. %s", err.Error()), client, callID, "", 0, "")
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
 	uiDetails, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		go protocol.addFriendByNameHandler(fmt.Errorf("Failed to read uiDetails from parameters. %s", err.Error()), client, callID, "", 0, "")
+		errorCode = protocol.addFriendByNameHandler(fmt.Errorf("Failed to read uiDetails from parameters. %s", err.Error()), client, callID, "", 0, "")
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
 	strMessage, err := parametersStream.ReadString()
 	if err != nil {
-		go protocol.addFriendByNameHandler(fmt.Errorf("Failed to read strMessage from parameters. %s", err.Error()), client, callID, "", 0, "")
+		errorCode = protocol.addFriendByNameHandler(fmt.Errorf("Failed to read strMessage from parameters. %s", err.Error()), client, callID, "", 0, "")
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.addFriendByNameHandler(nil, client, callID, strPlayerName, uiDetails, strMessage)
+	errorCode = protocol.addFriendByNameHandler(nil, client, callID, strPlayerName, uiDetails, strMessage)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

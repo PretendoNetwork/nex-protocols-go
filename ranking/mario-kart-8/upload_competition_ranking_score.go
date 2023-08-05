@@ -15,6 +15,8 @@ func (protocol *Protocol) UploadCompetitionRankingScore(handler func(err error, 
 }
 
 func (protocol *Protocol) handleUploadCompetitionRankingScore(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.uploadCompetitionRankingScoreHandler == nil {
 		globals.Logger.Warning("RankingMarioKart8::UploadCompetitionRankingScore not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -31,9 +33,16 @@ func (protocol *Protocol) handleUploadCompetitionRankingScore(packet nex.PacketI
 
 	param, err := parametersStream.ReadStructure(ranking_mario_kart8_types.NewCompetitionRankingUploadScoreParam())
 	if err != nil {
-		go protocol.uploadCompetitionRankingScoreHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.uploadCompetitionRankingScoreHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.uploadCompetitionRankingScoreHandler(nil, client, callID, param.(*ranking_mario_kart8_types.CompetitionRankingUploadScoreParam))
+	errorCode = protocol.uploadCompetitionRankingScoreHandler(nil, client, callID, param.(*ranking_mario_kart8_types.CompetitionRankingUploadScoreParam))
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

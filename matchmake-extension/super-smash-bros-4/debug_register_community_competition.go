@@ -12,6 +12,8 @@ func (protocol *Protocol) DebugRegisterCommunityCompetition(handler func(err err
 }
 
 func (protocol *Protocol) handleDebugRegisterCommunityCompetition(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.debugRegisterCommunityCompetitionHandler == nil {
 		globals.Logger.Warning("MatchmakeExtensionSuperSmashBros4::DebugRegisterCommunityCompetition not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -25,5 +27,8 @@ func (protocol *Protocol) handleDebugRegisterCommunityCompetition(packet nex.Pac
 
 	callID := request.CallID()
 
-	go protocol.debugRegisterCommunityCompetitionHandler(nil, client, callID, packet.Payload())
+	errorCode = protocol.debugRegisterCommunityCompetitionHandler(nil, client, callID, packet.Payload())
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

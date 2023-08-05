@@ -15,6 +15,8 @@ func (protocol *Protocol) GetServiceItemRightRequest(handler func(err error, cli
 }
 
 func (protocol *Protocol) handleGetServiceItemRightRequest(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.getServiceItemRightRequestHandler == nil {
 		globals.Logger.Warning("ServiceItemWiiSportsClub::GetServiceItemRightRequest not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -31,9 +33,16 @@ func (protocol *Protocol) handleGetServiceItemRightRequest(packet nex.PacketInte
 
 	getServiceItemRightParam, err := parametersStream.ReadStructure(service_item_wii_sports_club_types.NewServiceItemGetServiceItemRightParam())
 	if err != nil {
-		go protocol.getServiceItemRightRequestHandler(fmt.Errorf("Failed to read getServiceItemRightParam from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.getServiceItemRightRequestHandler(fmt.Errorf("Failed to read getServiceItemRightParam from parameters. %s", err.Error()), client, callID, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.getServiceItemRightRequestHandler(nil, client, callID, getServiceItemRightParam.(*service_item_wii_sports_club_types.ServiceItemGetServiceItemRightParam))
+	errorCode = protocol.getServiceItemRightRequestHandler(nil, client, callID, getServiceItemRightParam.(*service_item_wii_sports_club_types.ServiceItemGetServiceItemRightParam))
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

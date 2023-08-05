@@ -15,6 +15,8 @@ func (protocol *Protocol) UpdateProfile(handler func(err error, client *nex.Clie
 }
 
 func (protocol *Protocol) handleUpdateProfile(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.updateProfileHandler == nil {
 		globals.Logger.Warning("Friends3DS::UpdateProfile not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -31,9 +33,16 @@ func (protocol *Protocol) handleUpdateProfile(packet nex.PacketInterface) {
 
 	profileData, err := parametersStream.ReadStructure(friends_3ds_types.NewMyProfile())
 	if err != nil {
-		go protocol.updateProfileHandler(fmt.Errorf("Failed to read showGame from profileData. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.updateProfileHandler(fmt.Errorf("Failed to read showGame from profileData. %s", err.Error()), client, callID, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.updateProfileHandler(nil, client, callID, profileData.(*friends_3ds_types.MyProfile))
+	errorCode = protocol.updateProfileHandler(nil, client, callID, profileData.(*friends_3ds_types.MyProfile))
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

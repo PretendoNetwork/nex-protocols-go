@@ -15,6 +15,8 @@ func (protocol *Protocol) BrowseMatchmakeSessionWithHostURLs(handler func(err er
 }
 
 func (protocol *Protocol) handleBrowseMatchmakeSessionWithHostURLs(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.browseMatchmakeSessionWithHostURLsHandler == nil {
 		globals.Logger.Warning("MatchmakeExtension::BrowseMatchmakeSessionWithHostURLs not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -31,15 +33,26 @@ func (protocol *Protocol) handleBrowseMatchmakeSessionWithHostURLs(packet nex.Pa
 
 	searchCriteria, err := parametersStream.ReadStructure(match_making_types.NewMatchmakeSessionSearchCriteria())
 	if err != nil {
-		go protocol.browseMatchmakeSessionWithHostURLsHandler(fmt.Errorf("Failed to read searchCriteria from parameters. %s", err.Error()), client, callID, nil, nil)
+		errorCode = protocol.browseMatchmakeSessionWithHostURLsHandler(fmt.Errorf("Failed to read searchCriteria from parameters. %s", err.Error()), client, callID, nil, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
 	resultRange, err := parametersStream.ReadStructure(nex.NewResultRange())
 	if err != nil {
-		go protocol.browseMatchmakeSessionWithHostURLsHandler(fmt.Errorf("Failed to read resultRange from parameters. %s", err.Error()), client, callID, nil, nil)
+		errorCode = protocol.browseMatchmakeSessionWithHostURLsHandler(fmt.Errorf("Failed to read resultRange from parameters. %s", err.Error()), client, callID, nil, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.browseMatchmakeSessionWithHostURLsHandler(nil, client, callID, searchCriteria.(*match_making_types.MatchmakeSessionSearchCriteria), resultRange.(*nex.ResultRange))
+	errorCode = protocol.browseMatchmakeSessionWithHostURLsHandler(nil, client, callID, searchCriteria.(*match_making_types.MatchmakeSessionSearchCriteria), resultRange.(*nex.ResultRange))
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

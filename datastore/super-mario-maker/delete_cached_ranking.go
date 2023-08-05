@@ -14,6 +14,8 @@ func (protocol *Protocol) DeleteCachedRanking(handler func(err error, client *ne
 }
 
 func (protocol *Protocol) handleDeleteCachedRanking(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.deleteCachedRankingHandler == nil {
 		globals.Logger.Warning("DataStoreSuperMarioMaker::DeleteCachedRanking not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,15 +32,26 @@ func (protocol *Protocol) handleDeleteCachedRanking(packet nex.PacketInterface) 
 
 	rankingType, err := parametersStream.ReadString()
 	if err != nil {
-		go protocol.deleteCachedRankingHandler(fmt.Errorf("Failed to read rankingType from parameters. %s", err.Error()), client, callID, "", nil)
+		errorCode = protocol.deleteCachedRankingHandler(fmt.Errorf("Failed to read rankingType from parameters. %s", err.Error()), client, callID, "", nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
 	rankingArgs, err := parametersStream.ReadListString()
 	if err != nil {
-		go protocol.deleteCachedRankingHandler(fmt.Errorf("Failed to read rankingArgs from parameters. %s", err.Error()), client, callID, "", nil)
+		errorCode = protocol.deleteCachedRankingHandler(fmt.Errorf("Failed to read rankingArgs from parameters. %s", err.Error()), client, callID, "", nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.deleteCachedRankingHandler(nil, client, callID, rankingType, rankingArgs)
+	errorCode = protocol.deleteCachedRankingHandler(nil, client, callID, rankingType, rankingArgs)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

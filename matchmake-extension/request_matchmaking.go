@@ -15,6 +15,8 @@ func (protocol *Protocol) RequestMatchmaking(handler func(err error, client *nex
 }
 
 func (protocol *Protocol) handleRequestMatchmaking(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.requestMatchmakingHandler == nil {
 		globals.Logger.Warning("MatchmakeExtension::RequestMatchmaking not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -31,9 +33,16 @@ func (protocol *Protocol) handleRequestMatchmaking(packet nex.PacketInterface) {
 
 	autoMatchmakeParam, err := parametersStream.ReadStructure(match_making_types.NewAutoMatchmakeParam())
 	if err != nil {
-		go protocol.requestMatchmakingHandler(fmt.Errorf("Failed to read pid from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.requestMatchmakingHandler(fmt.Errorf("Failed to read pid from parameters. %s", err.Error()), client, callID, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.requestMatchmakingHandler(nil, client, callID, autoMatchmakeParam.(*match_making_types.AutoMatchmakeParam))
+	errorCode = protocol.requestMatchmakingHandler(nil, client, callID, autoMatchmakeParam.(*match_making_types.AutoMatchmakeParam))
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

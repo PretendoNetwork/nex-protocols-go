@@ -14,6 +14,8 @@ func (protocol *Protocol) DeleteCustomRanking(handler func(err error, client *ne
 }
 
 func (protocol *Protocol) handleDeleteCustomRanking(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.deleteCustomRankingHandler == nil {
 		globals.Logger.Warning("DataStoreSuperMarioMaker::DeleteCustomRanking not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,9 +32,16 @@ func (protocol *Protocol) handleDeleteCustomRanking(packet nex.PacketInterface) 
 
 	dataIDList, err := parametersStream.ReadListUInt64LE()
 	if err != nil {
-		go protocol.deleteCustomRankingHandler(fmt.Errorf("Failed to read dataIDList from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.deleteCustomRankingHandler(fmt.Errorf("Failed to read dataIDList from parameters. %s", err.Error()), client, callID, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.deleteCustomRankingHandler(nil, client, callID, dataIDList)
+	errorCode = protocol.deleteCustomRankingHandler(nil, client, callID, dataIDList)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

@@ -15,6 +15,8 @@ func (protocol *Protocol) DeletePokemon(handler func(err error, client *nex.Clie
 }
 
 func (protocol *Protocol) handleDeletePokemon(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.deletePokemonHandler == nil {
 		globals.Logger.Warning("DataStorePokemonBank::DeletePokemon not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -31,9 +33,16 @@ func (protocol *Protocol) handleDeletePokemon(packet nex.PacketInterface) {
 
 	param, err := parametersStream.ReadStructure(datastore_pokemon_bank_types.NewGlobalTradeStationDeletePokemonParam())
 	if err != nil {
-		go protocol.deletePokemonHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.deletePokemonHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.deletePokemonHandler(nil, client, callID, param.(*datastore_pokemon_bank_types.GlobalTradeStationDeletePokemonParam))
+	errorCode = protocol.deletePokemonHandler(nil, client, callID, param.(*datastore_pokemon_bank_types.GlobalTradeStationDeletePokemonParam))
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

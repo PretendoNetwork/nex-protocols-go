@@ -15,6 +15,8 @@ func (protocol *Protocol) DeleteAllMessages(handler func(err error, client *nex.
 }
 
 func (protocol *Protocol) handleDeleteAllMessages(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.deleteAllMessagesHandler == nil {
 		globals.Logger.Warning("Messaging::DeleteAllMessages not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -31,9 +33,16 @@ func (protocol *Protocol) handleDeleteAllMessages(packet nex.PacketInterface) {
 
 	recipient, err := parametersStream.ReadStructure(messaging_types.NewMessageRecipient())
 	if err != nil {
-		go protocol.deleteAllMessagesHandler(fmt.Errorf("Failed to read recipient from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.deleteAllMessagesHandler(fmt.Errorf("Failed to read recipient from parameters. %s", err.Error()), client, callID, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.deleteAllMessagesHandler(nil, client, callID, recipient.(*messaging_types.MessageRecipient))
+	errorCode = protocol.deleteAllMessagesHandler(nil, client, callID, recipient.(*messaging_types.MessageRecipient))
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

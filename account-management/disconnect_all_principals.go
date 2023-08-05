@@ -12,6 +12,8 @@ func (protocol *Protocol) DisconnectAllPrincipals(handler func(err error, client
 }
 
 func (protocol *Protocol) handleDisconnectAllPrincipals(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.disconnectAllPrincipalsHandler == nil {
 		globals.Logger.Warning("AccountManagement::DisconnectAllPrincipals not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -23,5 +25,8 @@ func (protocol *Protocol) handleDisconnectAllPrincipals(packet nex.PacketInterfa
 
 	callID := request.CallID()
 
-	go protocol.disconnectAllPrincipalsHandler(nil, client, callID)
+	errorCode = protocol.disconnectAllPrincipalsHandler(nil, client, callID)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

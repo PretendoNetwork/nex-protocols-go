@@ -14,6 +14,8 @@ func (protocol *Protocol) FindByDescriptionLike(handler func(err error, client *
 }
 
 func (protocol *Protocol) handleFindByDescriptionLike(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.findByDescriptionLikeHandler == nil {
 		globals.Logger.Warning("MatchMaking::FindByDescriptionLike not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,13 +32,26 @@ func (protocol *Protocol) handleFindByDescriptionLike(packet nex.PacketInterface
 
 	strDescriptionLike, err := parametersStream.ReadString()
 	if err != nil {
-		go protocol.findByDescriptionLikeHandler(fmt.Errorf("Failed to read strDescriptionLike from parameters. %s", err.Error()), client, callID, "", nil)
+		errorCode = protocol.findByDescriptionLikeHandler(fmt.Errorf("Failed to read strDescriptionLike from parameters. %s", err.Error()), client, callID, "", nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
+		return
 	}
 
 	resultRange, err := parametersStream.ReadStructure(nex.NewResultRange())
 	if err != nil {
-		go protocol.findByDescriptionLikeHandler(fmt.Errorf("Failed to read resultRange from parameters. %s", err.Error()), client, callID, "", nil)
+		errorCode = protocol.findByDescriptionLikeHandler(fmt.Errorf("Failed to read resultRange from parameters. %s", err.Error()), client, callID, "", nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
+		return
 	}
 
-	go protocol.findByDescriptionLikeHandler(nil, client, callID, strDescriptionLike, resultRange.(*nex.ResultRange))
+	errorCode = protocol.findByDescriptionLikeHandler(nil, client, callID, strDescriptionLike, resultRange.(*nex.ResultRange))
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

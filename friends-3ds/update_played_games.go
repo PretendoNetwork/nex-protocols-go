@@ -15,6 +15,8 @@ func (protocol *Protocol) UpdatePlayedGames(handler func(err error, client *nex.
 }
 
 func (protocol *Protocol) handleUpdatePlayedGames(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.updatePlayedGamesHandler == nil {
 		globals.Logger.Warning("Friends3DS::UpdatePlayedGames not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -31,9 +33,16 @@ func (protocol *Protocol) handleUpdatePlayedGames(packet nex.PacketInterface) {
 
 	playedGames, err := parametersStream.ReadListStructure(friends_3ds_types.NewPlayedGame())
 	if err != nil {
-		go protocol.updatePlayedGamesHandler(fmt.Errorf("Failed to read playedGames from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.updatePlayedGamesHandler(fmt.Errorf("Failed to read playedGames from parameters. %s", err.Error()), client, callID, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.updatePlayedGamesHandler(nil, client, callID, playedGames.([]*friends_3ds_types.PlayedGame))
+	errorCode = protocol.updatePlayedGamesHandler(nil, client, callID, playedGames.([]*friends_3ds_types.PlayedGame))
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

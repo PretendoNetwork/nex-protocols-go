@@ -15,6 +15,8 @@ func (protocol *Protocol) RequestTicketRestoration(handler func(err error, clien
 }
 
 func (protocol *Protocol) handleRequestTicketRestoration(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.requestTicketRestorationHandler == nil {
 		globals.Logger.Warning("ServiceItemWiiSportsClub::RequestTicketRestoration not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -31,9 +33,16 @@ func (protocol *Protocol) handleRequestTicketRestoration(packet nex.PacketInterf
 
 	requestTicketRestorationParam, err := parametersStream.ReadStructure(service_item_wii_sports_club_types.NewServiceItemRequestTicketRestorationParam())
 	if err != nil {
-		go protocol.requestTicketRestorationHandler(fmt.Errorf("Failed to read requestTicketRestorationParam from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.requestTicketRestorationHandler(fmt.Errorf("Failed to read requestTicketRestorationParam from parameters. %s", err.Error()), client, callID, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.requestTicketRestorationHandler(nil, client, callID, requestTicketRestorationParam.(*service_item_wii_sports_club_types.ServiceItemRequestTicketRestorationParam))
+	errorCode = protocol.requestTicketRestorationHandler(nil, client, callID, requestTicketRestorationParam.(*service_item_wii_sports_club_types.ServiceItemRequestTicketRestorationParam))
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

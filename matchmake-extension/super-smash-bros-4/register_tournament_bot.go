@@ -12,6 +12,8 @@ func (protocol *Protocol) RegisterTournamentBot(handler func(err error, client *
 }
 
 func (protocol *Protocol) handleRegisterTournamentBot(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.registerTournamentBotHandler == nil {
 		globals.Logger.Warning("MatchmakeExtensionSuperSmashBros4::RegisterTournamentBot not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -25,5 +27,8 @@ func (protocol *Protocol) handleRegisterTournamentBot(packet nex.PacketInterface
 
 	callID := request.CallID()
 
-	go protocol.registerTournamentBotHandler(nil, client, callID, packet.Payload())
+	errorCode = protocol.registerTournamentBotHandler(nil, client, callID, packet.Payload())
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

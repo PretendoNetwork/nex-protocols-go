@@ -15,6 +15,8 @@ func (protocol *Protocol) PrepareGetObjectOrMetaBinary(handler func(err error, c
 }
 
 func (protocol *Protocol) handlePrepareGetObjectOrMetaBinary(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.prepareGetObjectOrMetaBinaryHandler == nil {
 		globals.Logger.Warning("DataStore::PrepareGetObjectOrMetaBinary not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -31,9 +33,16 @@ func (protocol *Protocol) handlePrepareGetObjectOrMetaBinary(packet nex.PacketIn
 
 	param, err := parametersStream.ReadStructure(datastore_types.NewDataStorePrepareGetParam())
 	if err != nil {
-		go protocol.prepareGetObjectOrMetaBinaryHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.prepareGetObjectOrMetaBinaryHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.prepareGetObjectOrMetaBinaryHandler(nil, client, callID, param.(*datastore_types.DataStorePrepareGetParam))
+	errorCode = protocol.prepareGetObjectOrMetaBinaryHandler(nil, client, callID, param.(*datastore_types.DataStorePrepareGetParam))
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

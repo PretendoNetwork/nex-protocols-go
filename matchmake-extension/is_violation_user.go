@@ -12,6 +12,8 @@ func (protocol *Protocol) IsViolationUser(handler func(err error, client *nex.Cl
 }
 
 func (protocol *Protocol) handleIsViolationUser(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.isViolationUserHandler == nil {
 		globals.Logger.Warning("MatchmakeExtension::IsViolationUser not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -23,5 +25,8 @@ func (protocol *Protocol) handleIsViolationUser(packet nex.PacketInterface) {
 
 	callID := request.CallID()
 
-	go protocol.isViolationUserHandler(nil, client, callID)
+	errorCode = protocol.isViolationUserHandler(nil, client, callID)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

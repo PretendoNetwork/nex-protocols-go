@@ -14,6 +14,8 @@ func (protocol *Protocol) JoinCommunity(handler func(err error, client *nex.Clie
 }
 
 func (protocol *Protocol) handleJoinCommunity(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.joinCommunityHandler == nil {
 		globals.Logger.Warning("MatchmakeExtension::JoinCommunity not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,21 +32,36 @@ func (protocol *Protocol) handleJoinCommunity(packet nex.PacketInterface) {
 
 	gid, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		go protocol.joinCommunityHandler(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), client, callID, 0, "", "")
+		errorCode = protocol.joinCommunityHandler(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), client, callID, 0, "", "")
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
 	strMessage, err := parametersStream.ReadString()
 	if err != nil {
-		go protocol.joinCommunityHandler(fmt.Errorf("Failed to read strMessage from parameters. %s", err.Error()), client, callID, 0, "", "")
+		errorCode = protocol.joinCommunityHandler(fmt.Errorf("Failed to read strMessage from parameters. %s", err.Error()), client, callID, 0, "", "")
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
 	strPassword, err := parametersStream.ReadString()
 	if err != nil {
-		go protocol.joinCommunityHandler(fmt.Errorf("Failed to read strPassword from parameters. %s", err.Error()), client, callID, 0, "", "")
+		errorCode = protocol.joinCommunityHandler(fmt.Errorf("Failed to read strPassword from parameters. %s", err.Error()), client, callID, 0, "", "")
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.joinCommunityHandler(nil, client, callID, gid, strMessage, strPassword)
+	errorCode = protocol.joinCommunityHandler(nil, client, callID, gid, strMessage, strPassword)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

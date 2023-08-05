@@ -18,5 +18,5 @@ func (protocol *Protocol) handleLoginWithContext(packet nex.PacketInterface) {
 		return
 	}
 
-	// Unsure what data is sent here, or how to trigger the console to send it
+	// * Unsure what data is sent here, or how to trigger the console to send it
 }

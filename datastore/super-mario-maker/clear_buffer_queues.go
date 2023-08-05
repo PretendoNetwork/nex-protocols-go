@@ -15,6 +15,8 @@ func (protocol *Protocol) ClearBufferQueues(handler func(err error, client *nex.
 }
 
 func (protocol *Protocol) handleClearBufferQueues(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.clearBufferQueuesHandler == nil {
 		globals.Logger.Warning("DataStoreSuperMarioMaker::ClearBufferQueues not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -31,9 +33,16 @@ func (protocol *Protocol) handleClearBufferQueues(packet nex.PacketInterface) {
 
 	params, err := parametersStream.ReadListStructure(datastore_super_mario_maker_types.NewBufferQueueParam())
 	if err != nil {
-		go protocol.clearBufferQueuesHandler(fmt.Errorf("Failed to read params from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.clearBufferQueuesHandler(fmt.Errorf("Failed to read params from parameters. %s", err.Error()), client, callID, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.clearBufferQueuesHandler(nil, client, callID, params.([]*datastore_super_mario_maker_types.BufferQueueParam))
+	errorCode = protocol.clearBufferQueuesHandler(nil, client, callID, params.([]*datastore_super_mario_maker_types.BufferQueueParam))
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

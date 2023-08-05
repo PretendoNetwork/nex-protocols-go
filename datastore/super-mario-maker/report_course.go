@@ -15,6 +15,8 @@ func (protocol *Protocol) ReportCourse(handler func(err error, client *nex.Clien
 }
 
 func (protocol *Protocol) handleReportCourse(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.reportCourseHandler == nil {
 		globals.Logger.Warning("DataStoreSuperMarioMaker::ReportCourse not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -31,9 +33,16 @@ func (protocol *Protocol) handleReportCourse(packet nex.PacketInterface) {
 
 	param, err := parametersStream.ReadStructure(datastore_super_mario_maker_types.NewDataStoreReportCourseParam())
 	if err != nil {
-		go protocol.reportCourseHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.reportCourseHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.reportCourseHandler(nil, client, callID, param.(*datastore_super_mario_maker_types.DataStoreReportCourseParam))
+	errorCode = protocol.reportCourseHandler(nil, client, callID, param.(*datastore_super_mario_maker_types.DataStoreReportCourseParam))
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

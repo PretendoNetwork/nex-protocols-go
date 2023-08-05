@@ -15,6 +15,8 @@ func (protocol *Protocol) CustomSearchObject(handler func(err error, client *nex
 }
 
 func (protocol *Protocol) handleCustomSearchObject(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.customSearchObjectHandler == nil {
 		globals.Logger.Warning("DataStoreSuperMarioMaker::CustomSearchObject not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -31,15 +33,26 @@ func (protocol *Protocol) handleCustomSearchObject(packet nex.PacketInterface) {
 
 	condition, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		go protocol.customSearchObjectHandler(fmt.Errorf("Failed to read condition from parameters. %s", err.Error()), client, callID, 0, nil)
+		errorCode = protocol.customSearchObjectHandler(fmt.Errorf("Failed to read condition from parameters. %s", err.Error()), client, callID, 0, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
 	param, err := parametersStream.ReadStructure(datastore_types.NewDataStoreSearchParam())
 	if err != nil {
-		go protocol.customSearchObjectHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, 0, nil)
+		errorCode = protocol.customSearchObjectHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, 0, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.customSearchObjectHandler(nil, client, callID, condition, param.(*datastore_types.DataStoreSearchParam))
+	errorCode = protocol.customSearchObjectHandler(nil, client, callID, condition, param.(*datastore_types.DataStoreSearchParam))
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

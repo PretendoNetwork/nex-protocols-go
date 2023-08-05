@@ -15,6 +15,8 @@ func (protocol *Protocol) PurchaseServiceItemRequest(handler func(err error, cli
 }
 
 func (protocol *Protocol) handlePurchaseServiceItemRequest(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.purchaseServiceItemRequestHandler == nil {
 		globals.Logger.Warning("ServiceItemTeamKirbyClashDeluxe::PurchaseServiceItemRequest not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -31,9 +33,16 @@ func (protocol *Protocol) handlePurchaseServiceItemRequest(packet nex.PacketInte
 
 	purchaseServiceItemParam, err := parametersStream.ReadStructure(service_item_team_kirby_clash_deluxe_types.NewServiceItemPurchaseServiceItemParam())
 	if err != nil {
-		go protocol.purchaseServiceItemRequestHandler(fmt.Errorf("Failed to read purchaseServiceItemParam from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.purchaseServiceItemRequestHandler(fmt.Errorf("Failed to read purchaseServiceItemParam from parameters. %s", err.Error()), client, callID, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.purchaseServiceItemRequestHandler(nil, client, callID, purchaseServiceItemParam.(*service_item_team_kirby_clash_deluxe_types.ServiceItemPurchaseServiceItemParam))
+	errorCode = protocol.purchaseServiceItemRequestHandler(nil, client, callID, purchaseServiceItemParam.(*service_item_team_kirby_clash_deluxe_types.ServiceItemPurchaseServiceItemParam))
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

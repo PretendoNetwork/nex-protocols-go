@@ -14,6 +14,8 @@ func (protocol *Protocol) DisconnectPrincipal(handler func(err error, client *ne
 }
 
 func (protocol *Protocol) handleDisconnectPrincipal(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.disconnectPrincipalHandler == nil {
 		globals.Logger.Warning("AccountManagement::DisconnectPrincipal not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,9 +32,16 @@ func (protocol *Protocol) handleDisconnectPrincipal(packet nex.PacketInterface) 
 
 	idPrincipal, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		go protocol.disconnectPrincipalHandler(fmt.Errorf("Failed to read idPrincipal from parameters. %s", err.Error()), client, callID, 0)
+		errorCode = protocol.disconnectPrincipalHandler(fmt.Errorf("Failed to read idPrincipal from parameters. %s", err.Error()), client, callID, 0)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.disconnectPrincipalHandler(nil, client, callID, idPrincipal)
+	errorCode = protocol.disconnectPrincipalHandler(nil, client, callID, idPrincipal)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

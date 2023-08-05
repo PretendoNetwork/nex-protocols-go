@@ -12,6 +12,8 @@ func (protocol *Protocol) GetPrivateData(handler func(err error, client *nex.Cli
 }
 
 func (protocol *Protocol) handleGetPrivateData(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.getPrivateDataHandler == nil {
 		globals.Logger.Warning("AccountManagement::GetPrivateData not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -23,5 +25,8 @@ func (protocol *Protocol) handleGetPrivateData(packet nex.PacketInterface) {
 
 	callID := request.CallID()
 
-	go protocol.getPrivateDataHandler(nil, client, callID)
+	errorCode = protocol.getPrivateDataHandler(nil, client, callID)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

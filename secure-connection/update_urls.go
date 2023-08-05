@@ -14,6 +14,8 @@ func (protocol *Protocol) UpdateURLs(handler func(err error, client *nex.Client,
 }
 
 func (protocol *Protocol) handleUpdateURLs(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.updateURLsHandler == nil {
 		globals.Logger.Warning("SecureConnection::UpdateURLs not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,9 +32,16 @@ func (protocol *Protocol) handleUpdateURLs(packet nex.PacketInterface) {
 
 	vecMyURLs, err := parametersStream.ReadListStationURL()
 	if err != nil {
-		go protocol.updateURLsHandler(fmt.Errorf("Failed to read vecMyURLs from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.updateURLsHandler(fmt.Errorf("Failed to read vecMyURLs from parameters. %s", err.Error()), client, callID, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.updateURLsHandler(nil, client, callID, vecMyURLs)
+	errorCode = protocol.updateURLsHandler(nil, client, callID, vecMyURLs)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

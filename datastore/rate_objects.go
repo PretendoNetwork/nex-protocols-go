@@ -15,6 +15,8 @@ func (protocol *Protocol) RateObjects(handler func(err error, client *nex.Client
 }
 
 func (protocol *Protocol) handleRateObjects(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.rateObjectsHandler == nil {
 		globals.Logger.Warning("DataStore::RateObjects not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -31,27 +33,46 @@ func (protocol *Protocol) handleRateObjects(packet nex.PacketInterface) {
 
 	targets, err := parametersStream.ReadListStructure(datastore_types.NewDataStoreRatingTarget())
 	if err != nil {
-		go protocol.rateObjectsHandler(fmt.Errorf("Failed to read targets from parameters. %s", err.Error()), client, callID, nil, nil, false, false)
+		errorCode = protocol.rateObjectsHandler(fmt.Errorf("Failed to read targets from parameters. %s", err.Error()), client, callID, nil, nil, false, false)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
 	params, err := parametersStream.ReadListStructure(datastore_types.NewDataStoreRateObjectParam())
 	if err != nil {
-		go protocol.rateObjectsHandler(fmt.Errorf("Failed to read params from parameters. %s", err.Error()), client, callID, nil, nil, false, false)
+		errorCode = protocol.rateObjectsHandler(fmt.Errorf("Failed to read params from parameters. %s", err.Error()), client, callID, nil, nil, false, false)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
 	transactional, err := parametersStream.ReadBool()
 	if err != nil {
-		go protocol.rateObjectsHandler(fmt.Errorf("Failed to read transactional from parameters. %s", err.Error()), client, callID, nil, nil, false, false)
+		errorCode = protocol.rateObjectsHandler(fmt.Errorf("Failed to read transactional from parameters. %s", err.Error()), client, callID, nil, nil, false, false)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
 	fetchRatings, err := parametersStream.ReadBool()
 	if err != nil {
-		go protocol.rateObjectsHandler(fmt.Errorf("Failed to read fetchRatings from parameters. %s", err.Error()), client, callID, nil, nil, false, false)
+		errorCode = protocol.rateObjectsHandler(fmt.Errorf("Failed to read fetchRatings from parameters. %s", err.Error()), client, callID, nil, nil, false, false)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.rateObjectsHandler(nil, client, callID, targets.([]*datastore_types.DataStoreRatingTarget), params.([]*datastore_types.DataStoreRateObjectParam), transactional, fetchRatings)
+	errorCode = protocol.rateObjectsHandler(nil, client, callID, targets.([]*datastore_types.DataStoreRatingTarget), params.([]*datastore_types.DataStoreRateObjectParam), transactional, fetchRatings)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

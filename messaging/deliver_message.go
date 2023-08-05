@@ -14,6 +14,8 @@ func (protocol *Protocol) DeliverMessage(handler func(err error, client *nex.Cli
 }
 
 func (protocol *Protocol) handleDeliverMessage(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.deliverMessageHandler == nil {
 		globals.Logger.Warning("Messaging::DeliverMessage not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,9 +32,16 @@ func (protocol *Protocol) handleDeliverMessage(packet nex.PacketInterface) {
 
 	oUserMessage, err := parametersStream.ReadDataHolder()
 	if err != nil {
-		go protocol.deleteMessagesHandler(fmt.Errorf("Failed to read oUserMessage from parameters. %s", err.Error()), client, callID, nil, nil)
+		errorCode = protocol.deleteMessagesHandler(fmt.Errorf("Failed to read oUserMessage from parameters. %s", err.Error()), client, callID, nil, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.deliverMessageHandler(nil, client, callID, oUserMessage)
+	errorCode = protocol.deliverMessageHandler(nil, client, callID, oUserMessage)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

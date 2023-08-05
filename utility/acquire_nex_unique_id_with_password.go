@@ -12,6 +12,8 @@ func (protocol *Protocol) AcquireNexUniqueIDWithPassword(handler func(err error,
 }
 
 func (protocol *Protocol) handleAcquireNexUniqueIDWithPassword(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.acquireNexUniqueIDWithPasswordHandler == nil {
 		globals.Logger.Warning("Utility::AcquireNexUniqueIDWithPassword not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -23,5 +25,8 @@ func (protocol *Protocol) handleAcquireNexUniqueIDWithPassword(packet nex.Packet
 
 	callID := request.CallID()
 
-	go protocol.acquireNexUniqueIDWithPasswordHandler(nil, client, callID)
+	errorCode = protocol.acquireNexUniqueIDWithPasswordHandler(nil, client, callID)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

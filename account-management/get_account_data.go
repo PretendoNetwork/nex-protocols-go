@@ -12,6 +12,8 @@ func (protocol *Protocol) GetAccountData(handler func(err error, client *nex.Cli
 }
 
 func (protocol *Protocol) handleGetAccountData(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.getAccountDataHandler == nil {
 		globals.Logger.Warning("AccountManagement::GetAccountData not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -23,5 +25,8 @@ func (protocol *Protocol) handleGetAccountData(packet nex.PacketInterface) {
 
 	callID := request.CallID()
 
-	go protocol.getAccountDataHandler(nil, client, callID)
+	errorCode = protocol.getAccountDataHandler(nil, client, callID)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

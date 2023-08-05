@@ -12,6 +12,8 @@ func (protocol *Protocol) GetTournamentResult(handler func(err error, client *ne
 }
 
 func (protocol *Protocol) handleGetTournamentResult(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.getTournamentResultHandler == nil {
 		globals.Logger.Warning("MatchmakeExtensionSuperSmashBros4::GetTournamentResult not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -25,5 +27,8 @@ func (protocol *Protocol) handleGetTournamentResult(packet nex.PacketInterface) 
 
 	callID := request.CallID()
 
-	go protocol.getTournamentResultHandler(nil, client, callID, packet.Payload())
+	errorCode = protocol.getTournamentResultHandler(nil, client, callID, packet.Payload())
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

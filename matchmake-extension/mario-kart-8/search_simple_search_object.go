@@ -15,6 +15,8 @@ func (protocol *Protocol) SearchSimpleSearchObject(handler func(err error, clien
 }
 
 func (protocol *Protocol) handleSearchSimpleSearchObject(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.searchSimpleSearchObjectHandler == nil {
 		globals.Logger.Warning("MatchmakeExtensionMarioKart8::SearchSimpleSearchObject not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -31,9 +33,16 @@ func (protocol *Protocol) handleSearchSimpleSearchObject(packet nex.PacketInterf
 
 	param, err := parametersStream.ReadStructure(matchmake_extension_mario_kart8_types.NewSimpleSearchParam())
 	if err != nil {
-		go protocol.searchSimpleSearchObjectHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.searchSimpleSearchObjectHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.searchSimpleSearchObjectHandler(nil, client, callID, param.(*matchmake_extension_mario_kart8_types.SimpleSearchParam))
+	errorCode = protocol.searchSimpleSearchObjectHandler(nil, client, callID, param.(*matchmake_extension_mario_kart8_types.SimpleSearchParam))
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

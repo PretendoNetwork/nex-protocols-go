@@ -14,6 +14,8 @@ func (protocol *Protocol) DisableAccount(handler func(err error, client *nex.Cli
 }
 
 func (protocol *Protocol) handleDisableAccount(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.disableAccountHandler == nil {
 		globals.Logger.Warning("AccountManagement::DisableAccount not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,21 +32,36 @@ func (protocol *Protocol) handleDisableAccount(packet nex.PacketInterface) {
 
 	idPrincipal, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		go protocol.disableAccountHandler(fmt.Errorf("Failed to read idPrincipal from parameters. %s", err.Error()), client, callID, 0, nil, "")
+		errorCode = protocol.disableAccountHandler(fmt.Errorf("Failed to read idPrincipal from parameters. %s", err.Error()), client, callID, 0, nil, "")
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
 	dtUntil, err := parametersStream.ReadDateTime()
 	if err != nil {
-		go protocol.disableAccountHandler(fmt.Errorf("Failed to read dtUntil from parameters. %s", err.Error()), client, callID, 0, nil, "")
+		errorCode = protocol.disableAccountHandler(fmt.Errorf("Failed to read dtUntil from parameters. %s", err.Error()), client, callID, 0, nil, "")
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
 	strMessage, err := parametersStream.ReadString()
 	if err != nil {
-		go protocol.disableAccountHandler(fmt.Errorf("Failed to read strMessage from parameters. %s", err.Error()), client, callID, 0, nil, "")
+		errorCode = protocol.disableAccountHandler(fmt.Errorf("Failed to read strMessage from parameters. %s", err.Error()), client, callID, 0, nil, "")
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.disableAccountHandler(nil, client, callID, idPrincipal, dtUntil, strMessage)
+	errorCode = protocol.disableAccountHandler(nil, client, callID, idPrincipal, dtUntil, strMessage)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

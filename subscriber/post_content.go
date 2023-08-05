@@ -15,6 +15,8 @@ func (protocol *Protocol) PostContent(handler func(err error, client *nex.Client
 }
 
 func (protocol *Protocol) handlePostContent(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.postContentHandler == nil {
 		globals.Logger.Warning("Subscriber::PostContent not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,9 +32,16 @@ func (protocol *Protocol) handlePostContent(packet nex.PacketInterface) {
 
 	param, err := parametersStream.ReadStructure(subscriber_types.NewSubscriberPostContentParam())
 	if err != nil {
-		go protocol.postContentHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.postContentHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.postContentHandler(nil, client, callID, param.(*subscriber_types.SubscriberPostContentParam))
+	errorCode = protocol.postContentHandler(nil, client, callID, param.(*subscriber_types.SubscriberPostContentParam))
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

@@ -15,6 +15,8 @@ func (protocol *Protocol) DeleteCourseRecord(handler func(err error, client *nex
 }
 
 func (protocol *Protocol) handleDeleteCourseRecord(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.deleteCourseRecordHandler == nil {
 		globals.Logger.Warning("DataStoreSuperMarioMaker::DeleteCourseRecord not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -31,9 +33,16 @@ func (protocol *Protocol) handleDeleteCourseRecord(packet nex.PacketInterface) {
 
 	param, err := parametersStream.ReadStructure(datastore_super_mario_maker_types.NewDataStoreGetCourseRecordParam())
 	if err != nil {
-		go protocol.deleteCourseRecordHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.deleteCourseRecordHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.deleteCourseRecordHandler(nil, client, callID, param.(*datastore_super_mario_maker_types.DataStoreGetCourseRecordParam))
+	errorCode = protocol.deleteCourseRecordHandler(nil, client, callID, param.(*datastore_super_mario_maker_types.DataStoreGetCourseRecordParam))
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

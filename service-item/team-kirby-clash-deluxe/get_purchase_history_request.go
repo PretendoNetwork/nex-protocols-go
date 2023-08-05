@@ -15,6 +15,8 @@ func (protocol *Protocol) GetPurchaseHistoryRequest(handler func(err error, clie
 }
 
 func (protocol *Protocol) handleGetPurchaseHistoryRequest(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.getPurchaseHistoryRequestHandler == nil {
 		globals.Logger.Warning("ServiceItemTeamKirbyClashDeluxe::GetPurchaseHistoryRequest not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -31,9 +33,16 @@ func (protocol *Protocol) handleGetPurchaseHistoryRequest(packet nex.PacketInter
 
 	getPurchaseHistoryParam, err := parametersStream.ReadStructure(service_item_team_kirby_clash_deluxe_types.NewServiceItemGetPurchaseHistoryParam())
 	if err != nil {
-		go protocol.getPurchaseHistoryRequestHandler(fmt.Errorf("Failed to read getPurchaseHistoryParam from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.getPurchaseHistoryRequestHandler(fmt.Errorf("Failed to read getPurchaseHistoryParam from parameters. %s", err.Error()), client, callID, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.getPurchaseHistoryRequestHandler(nil, client, callID, getPurchaseHistoryParam.(*service_item_team_kirby_clash_deluxe_types.ServiceItemGetPurchaseHistoryParam))
+	errorCode = protocol.getPurchaseHistoryRequestHandler(nil, client, callID, getPurchaseHistoryParam.(*service_item_team_kirby_clash_deluxe_types.ServiceItemGetPurchaseHistoryParam))
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

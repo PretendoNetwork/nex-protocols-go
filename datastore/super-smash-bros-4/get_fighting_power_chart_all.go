@@ -12,6 +12,8 @@ func (protocol *Protocol) GetFightingPowerChartAll(handler func(err error, clien
 }
 
 func (protocol *Protocol) handleGetFightingPowerChartAll(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.getFightingPowerChartAllHandler == nil {
 		globals.Logger.Warning("DataStoreSuperSmashBros4::GetFightingPowerChartAll not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -23,5 +25,8 @@ func (protocol *Protocol) handleGetFightingPowerChartAll(packet nex.PacketInterf
 
 	callID := request.CallID()
 
-	go protocol.getFightingPowerChartAllHandler(nil, client, callID)
+	errorCode = protocol.getFightingPowerChartAllHandler(nil, client, callID)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

@@ -15,6 +15,8 @@ func (protocol *Protocol) UpdateMatchmakeSessionPart(handler func(err error, cli
 }
 
 func (protocol *Protocol) handleUpdateMatchmakeSessionPart(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.updateMatchmakeSessionPartHandler == nil {
 		globals.Logger.Warning("MatchmakeExtension::UpdateMatchmakeSessionPart not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -31,9 +33,16 @@ func (protocol *Protocol) handleUpdateMatchmakeSessionPart(packet nex.PacketInte
 
 	updateMatchmakeSessionParam, err := parametersStream.ReadStructure(match_making_types.NewUpdateMatchmakeSessionParam())
 	if err != nil {
-		go protocol.updateMatchmakeSessionPartHandler(fmt.Errorf("Failed to read updateMatchmakeSessionParam from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.updateMatchmakeSessionPartHandler(fmt.Errorf("Failed to read updateMatchmakeSessionParam from parameters. %s", err.Error()), client, callID, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.updateMatchmakeSessionPartHandler(nil, client, callID, updateMatchmakeSessionParam.(*match_making_types.UpdateMatchmakeSessionParam))
+	errorCode = protocol.updateMatchmakeSessionPartHandler(nil, client, callID, updateMatchmakeSessionParam.(*match_making_types.UpdateMatchmakeSessionParam))
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

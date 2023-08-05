@@ -14,6 +14,8 @@ func (protocol *Protocol) GetLastConnectionStats(handler func(err error, client 
 }
 
 func (protocol *Protocol) handleGetLastConnectionStats(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.getLastConnectionStatsHandler == nil {
 		globals.Logger.Warning("AccountManagement::GetLastConnectionStats not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,9 +32,16 @@ func (protocol *Protocol) handleGetLastConnectionStats(packet nex.PacketInterfac
 
 	idPrincipal, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		go protocol.getLastConnectionStatsHandler(fmt.Errorf("Failed to read idPrincipal from parameters. %s", err.Error()), client, callID, 0)
+		errorCode = protocol.getLastConnectionStatsHandler(fmt.Errorf("Failed to read idPrincipal from parameters. %s", err.Error()), client, callID, 0)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.getLastConnectionStatsHandler(nil, client, callID, idPrincipal)
+	errorCode = protocol.getLastConnectionStatsHandler(nil, client, callID, idPrincipal)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

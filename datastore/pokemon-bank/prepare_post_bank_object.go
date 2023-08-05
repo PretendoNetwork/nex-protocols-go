@@ -14,6 +14,8 @@ func (protocol *Protocol) PreparePostBankObject(handler func(err error, client *
 }
 
 func (protocol *Protocol) handlePreparePostBankObject(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.preparePostBankObjectHandler == nil {
 		globals.Logger.Warning("DataStorePokemonBank::PreparePostBankObject not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,15 +32,26 @@ func (protocol *Protocol) handlePreparePostBankObject(packet nex.PacketInterface
 
 	slotID, err := parametersStream.ReadUInt16LE()
 	if err != nil {
-		go protocol.preparePostBankObjectHandler(fmt.Errorf("Failed to read slotID from parameters. %s", err.Error()), client, callID, 0, 0)
+		errorCode = protocol.preparePostBankObjectHandler(fmt.Errorf("Failed to read slotID from parameters. %s", err.Error()), client, callID, 0, 0)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
 	size, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		go protocol.preparePostBankObjectHandler(fmt.Errorf("Failed to read size from parameters. %s", err.Error()), client, callID, 0, 0)
+		errorCode = protocol.preparePostBankObjectHandler(fmt.Errorf("Failed to read size from parameters. %s", err.Error()), client, callID, 0, 0)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.preparePostBankObjectHandler(nil, client, callID, slotID, size)
+	errorCode = protocol.preparePostBankObjectHandler(nil, client, callID, slotID, size)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

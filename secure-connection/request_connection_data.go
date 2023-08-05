@@ -14,6 +14,8 @@ func (protocol *Protocol) RequestConnectionData(handler func(err error, client *
 }
 
 func (protocol *Protocol) handleRequestConnectionData(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.requestConnectionDataHandler == nil {
 		globals.Logger.Warning("SecureConnection::RequestConnectionData not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,15 +32,26 @@ func (protocol *Protocol) handleRequestConnectionData(packet nex.PacketInterface
 
 	cidTarget, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		go protocol.requestConnectionDataHandler(fmt.Errorf("Failed to read cidTarget from parameters. %s", err.Error()), client, callID, 0, 0)
+		errorCode = protocol.requestConnectionDataHandler(fmt.Errorf("Failed to read cidTarget from parameters. %s", err.Error()), client, callID, 0, 0)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
 	pidTarget, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		go protocol.requestConnectionDataHandler(fmt.Errorf("Failed to read pidTarget from parameters. %s", err.Error()), client, callID, 0, 0)
+		errorCode = protocol.requestConnectionDataHandler(fmt.Errorf("Failed to read pidTarget from parameters. %s", err.Error()), client, callID, 0, 0)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.requestConnectionDataHandler(nil, client, callID, cidTarget, pidTarget)
+	errorCode = protocol.requestConnectionDataHandler(nil, client, callID, cidTarget, pidTarget)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

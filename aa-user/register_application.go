@@ -14,6 +14,8 @@ func (protocol *Protocol) RegisterApplication(handler func(err error, client *ne
 }
 
 func (protocol *Protocol) handleRegisterApplication(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.registerApplicationHandler == nil {
 		globals.Logger.Warning("AAUser::RegisterApplication not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,9 +32,16 @@ func (protocol *Protocol) handleRegisterApplication(packet nex.PacketInterface) 
 
 	titleID, err := parametersStream.ReadUInt64LE()
 	if err != nil {
-		go protocol.registerApplicationHandler(fmt.Errorf("Failed to read titleID from parameters. %s", err.Error()), client, callID, 0)
+		errorCode = protocol.registerApplicationHandler(fmt.Errorf("Failed to read titleID from parameters. %s", err.Error()), client, callID, 0)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.registerApplicationHandler(nil, client, callID, titleID)
+	errorCode = protocol.registerApplicationHandler(nil, client, callID, titleID)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

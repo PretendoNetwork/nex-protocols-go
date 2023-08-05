@@ -15,6 +15,8 @@ func (protocol *Protocol) DownloadOtherPokemon(handler func(err error, client *n
 }
 
 func (protocol *Protocol) handleDownloadOtherPokemon(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.downloadOtherPokemonHandler == nil {
 		globals.Logger.Warning("DataStorePokemonBank::DownloadOtherPokemon not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -31,9 +33,16 @@ func (protocol *Protocol) handleDownloadOtherPokemon(packet nex.PacketInterface)
 
 	param, err := parametersStream.ReadStructure(datastore_pokemon_bank_types.NewGlobalTradeStationDownloadOtherPokemonParam())
 	if err != nil {
-		go protocol.downloadOtherPokemonHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.downloadOtherPokemonHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.downloadOtherPokemonHandler(nil, client, callID, param.(*datastore_pokemon_bank_types.GlobalTradeStationDownloadOtherPokemonParam))
+	errorCode = protocol.downloadOtherPokemonHandler(nil, client, callID, param.(*datastore_pokemon_bank_types.GlobalTradeStationDownloadOtherPokemonParam))
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

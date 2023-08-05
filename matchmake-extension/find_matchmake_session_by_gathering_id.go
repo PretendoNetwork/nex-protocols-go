@@ -14,6 +14,8 @@ func (protocol *Protocol) FindMatchmakeSessionByGatheringID(handler func(err err
 }
 
 func (protocol *Protocol) handleFindMatchmakeSessionByGatheringID(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.findMatchmakeSessionByGatheringIDHandler == nil {
 		globals.Logger.Warning("MatchmakeExtension::FindMatchmakeSessionByGatheringID not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,9 +32,16 @@ func (protocol *Protocol) handleFindMatchmakeSessionByGatheringID(packet nex.Pac
 
 	lstGID, err := parametersStream.ReadListUInt32LE()
 	if err != nil {
-		go protocol.findMatchmakeSessionByGatheringIDHandler(fmt.Errorf("Failed to read lstGID from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.findMatchmakeSessionByGatheringIDHandler(fmt.Errorf("Failed to read lstGID from parameters. %s", err.Error()), client, callID, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.findMatchmakeSessionByGatheringIDHandler(nil, client, callID, lstGID)
+	errorCode = protocol.findMatchmakeSessionByGatheringIDHandler(nil, client, callID, lstGID)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

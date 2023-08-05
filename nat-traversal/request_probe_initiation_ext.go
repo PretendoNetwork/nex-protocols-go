@@ -14,6 +14,8 @@ func (protocol *Protocol) RequestProbeInitiationExt(handler func(err error, clie
 }
 
 func (protocol *Protocol) handleRequestProbeInitiationExt(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.reportNATPropertiesHandler == nil {
 		globals.Logger.Warning("NATTraversal::RequestProbeInitiationExt not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,15 +32,26 @@ func (protocol *Protocol) handleRequestProbeInitiationExt(packet nex.PacketInter
 
 	targetList, err := parametersStream.ReadListString()
 	if err != nil {
-		go protocol.requestProbeInitiationExtHandler(fmt.Errorf("Failed to read targetList from parameters. %s", err.Error()), client, callID, nil, "")
+		errorCode = protocol.requestProbeInitiationExtHandler(fmt.Errorf("Failed to read targetList from parameters. %s", err.Error()), client, callID, nil, "")
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
 	stationToProbe, err := parametersStream.ReadString()
 	if err != nil {
-		go protocol.requestProbeInitiationExtHandler(fmt.Errorf("Failed to read stationToProbe from parameters. %s", err.Error()), client, callID, nil, "")
+		errorCode = protocol.requestProbeInitiationExtHandler(fmt.Errorf("Failed to read stationToProbe from parameters. %s", err.Error()), client, callID, nil, "")
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.requestProbeInitiationExtHandler(nil, client, callID, targetList, stationToProbe)
+	errorCode = protocol.requestProbeInitiationExtHandler(nil, client, callID, targetList, stationToProbe)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

@@ -15,6 +15,8 @@ func (protocol *Protocol) GetContent(handler func(err error, client *nex.Client,
 }
 
 func (protocol *Protocol) handleGetContent(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.getContentHandler == nil {
 		globals.Logger.Warning("Subscriber::GetContent not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,9 +32,16 @@ func (protocol *Protocol) handleGetContent(packet nex.PacketInterface) {
 
 	param, err := parametersStream.ReadStructure(subscriber_types.NewSubscriberGetContentParam())
 	if err != nil {
-		go protocol.getContentHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.getContentHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.getContentHandler(nil, client, callID, param.(*subscriber_types.SubscriberGetContentParam))
+	errorCode = protocol.getContentHandler(nil, client, callID, param.(*subscriber_types.SubscriberGetContentParam))
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

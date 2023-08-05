@@ -15,6 +15,8 @@ func (protocol *Protocol) ChangePlayablePlatform(handler func(err error, client 
 }
 
 func (protocol *Protocol) handleChangePlayablePlatform(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.changePlayablePlatformHandler == nil {
 		globals.Logger.Warning("DataStoreSuperMarioMaker::ChangePlayablePlatform not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -31,9 +33,16 @@ func (protocol *Protocol) handleChangePlayablePlatform(packet nex.PacketInterfac
 
 	params, err := parametersStream.ReadListStructure(datastore_super_mario_maker_types.NewDataStoreChangePlayablePlatformParam())
 	if err != nil {
-		go protocol.changePlayablePlatformHandler(fmt.Errorf("Failed to read params from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.changePlayablePlatformHandler(fmt.Errorf("Failed to read params from parameters. %s", err.Error()), client, callID, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.changePlayablePlatformHandler(nil, client, callID, params.([]*datastore_super_mario_maker_types.DataStoreChangePlayablePlatformParam))
+	errorCode = protocol.changePlayablePlatformHandler(nil, client, callID, params.([]*datastore_super_mario_maker_types.DataStoreChangePlayablePlatformParam))
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

@@ -12,6 +12,8 @@ func (protocol *Protocol) JoinOrCreateMatchmakeSession(handler func(err error, c
 }
 
 func (protocol *Protocol) handleJoinOrCreateMatchmakeSession(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.joinOrCreateMatchmakeSessionHandler == nil {
 		globals.Logger.Warning("MatchmakeExtensionSuperSmashBros4::JoinOrCreateMatchmakeSession not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -25,5 +27,8 @@ func (protocol *Protocol) handleJoinOrCreateMatchmakeSession(packet nex.PacketIn
 
 	callID := request.CallID()
 
-	go protocol.joinOrCreateMatchmakeSessionHandler(nil, client, callID, packet.Payload())
+	errorCode = protocol.joinOrCreateMatchmakeSessionHandler(nil, client, callID, packet.Payload())
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

@@ -15,6 +15,8 @@ func (protocol *Protocol) GetMessagesHeaders(handler func(err error, client *nex
 }
 
 func (protocol *Protocol) handleGetMessagesHeaders(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.getMessagesHeadersHandler == nil {
 		globals.Logger.Warning("Messaging::GetMessagesHeaders not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -31,15 +33,26 @@ func (protocol *Protocol) handleGetMessagesHeaders(packet nex.PacketInterface) {
 
 	recipient, err := parametersStream.ReadStructure(messaging_types.NewMessageRecipient())
 	if err != nil {
-		go protocol.getMessagesHeadersHandler(fmt.Errorf("Failed to read recipient from parameters. %s", err.Error()), client, callID, nil, nil)
+		errorCode = protocol.getMessagesHeadersHandler(fmt.Errorf("Failed to read recipient from parameters. %s", err.Error()), client, callID, nil, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
 	resultRange, err := parametersStream.ReadStructure(nex.NewResultRange())
 	if err != nil {
-		go protocol.getMessagesHeadersHandler(fmt.Errorf("Failed to read resultRange from parameters. %s", err.Error()), client, callID, nil, nil)
+		errorCode = protocol.getMessagesHeadersHandler(fmt.Errorf("Failed to read resultRange from parameters. %s", err.Error()), client, callID, nil, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.getMessagesHeadersHandler(nil, client, callID, recipient.(*messaging_types.MessageRecipient), resultRange.(*nex.ResultRange))
+	errorCode = protocol.getMessagesHeadersHandler(nil, client, callID, recipient.(*messaging_types.MessageRecipient), resultRange.(*nex.ResultRange))
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

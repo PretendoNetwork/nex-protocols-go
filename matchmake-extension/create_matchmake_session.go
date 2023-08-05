@@ -16,6 +16,8 @@ func (protocol *Protocol) CreateMatchmakeSession(handler func(err error, client 
 func (protocol *Protocol) handleCreateMatchmakeSession(packet nex.PacketInterface) {
 	matchmakingVersion := protocol.Server.MatchMakingProtocolVersion()
 
+	var errorCode uint32
+
 	if protocol.createMatchmakeSessionHandler == nil {
 		globals.Logger.Warning("MatchmakeExtension::CreateMatchmakeSession not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -32,13 +34,21 @@ func (protocol *Protocol) handleCreateMatchmakeSession(packet nex.PacketInterfac
 
 	anyGathering, err := parametersStream.ReadDataHolder()
 	if err != nil {
-		go protocol.createMatchmakeSessionHandler(fmt.Errorf("Failed to read anyGathering from parameters. %s", err.Error()), client, callID, nil, "", 0)
+		errorCode = protocol.createMatchmakeSessionHandler(fmt.Errorf("Failed to read anyGathering from parameters. %s", err.Error()), client, callID, nil, "", 0)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
 	message, err := parametersStream.ReadString()
 	if err != nil {
-		go protocol.createMatchmakeSessionHandler(fmt.Errorf("Failed to read message from parameters. %s", err.Error()), client, callID, nil, "", 0)
+		errorCode = protocol.createMatchmakeSessionHandler(fmt.Errorf("Failed to read message from parameters. %s", err.Error()), client, callID, nil, "", 0)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
@@ -47,10 +57,17 @@ func (protocol *Protocol) handleCreateMatchmakeSession(packet nex.PacketInterfac
 	if matchmakingVersion.Major >= 3 && matchmakingVersion.Minor >= 4 {
 		participationCount, err = parametersStream.ReadUInt16LE()
 		if err != nil {
-			go protocol.createMatchmakeSessionHandler(fmt.Errorf("Failed to read message from participationCount. %s", err.Error()), client, callID, nil, "", 0)
+			errorCode = protocol.createMatchmakeSessionHandler(fmt.Errorf("Failed to read message from participationCount. %s", err.Error()), client, callID, nil, "", 0)
+			if errorCode != 0 {
+				globals.RespondError(packet, ProtocolID, errorCode)
+			}
+
 			return
 		}
 	}
 
-	go protocol.createMatchmakeSessionHandler(nil, client, callID, anyGathering, message, participationCount)
+	errorCode = protocol.createMatchmakeSessionHandler(nil, client, callID, anyGathering, message, participationCount)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

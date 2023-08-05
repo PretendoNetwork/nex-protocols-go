@@ -12,6 +12,8 @@ func (protocol *Protocol) TestConnectivity(handler func(err error, client *nex.C
 }
 
 func (protocol *Protocol) handleTestConnectivity(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.testConnectivityHandler == nil {
 		globals.Logger.Warning("SecureConnection::TestConnectivity not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -23,5 +25,8 @@ func (protocol *Protocol) handleTestConnectivity(packet nex.PacketInterface) {
 
 	callID := request.CallID()
 
-	go protocol.testConnectivityHandler(nil, client, callID)
+	errorCode = protocol.testConnectivityHandler(nil, client, callID)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

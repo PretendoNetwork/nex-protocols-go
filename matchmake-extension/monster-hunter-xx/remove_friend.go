@@ -14,6 +14,8 @@ func (protocol *Protocol) RemoveFriend(handler func(err error, client *nex.Clien
 }
 
 func (protocol *Protocol) handleRemoveFriend(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.removeFriendHandler == nil {
 		globals.Logger.Warning("MatchmakeExtensionMonsterHunterXX::RemoveFriend not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,9 +32,16 @@ func (protocol *Protocol) handleRemoveFriend(packet nex.PacketInterface) {
 
 	pid, err := parametersStream.ReadUInt64LE()
 	if err != nil {
-		go protocol.removeFriendHandler(fmt.Errorf("Failed to read pid from parameters. %s", err.Error()), client, callID, 0)
+		errorCode = protocol.removeFriendHandler(fmt.Errorf("Failed to read pid from parameters. %s", err.Error()), client, callID, 0)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.removeFriendHandler(nil, client, callID, pid)
+	errorCode = protocol.removeFriendHandler(nil, client, callID, pid)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

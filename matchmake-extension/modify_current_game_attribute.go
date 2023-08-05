@@ -14,6 +14,8 @@ func (protocol *Protocol) ModifyCurrentGameAttribute(handler func(err error, cli
 }
 
 func (protocol *Protocol) handleModifyCurrentGameAttribute(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.modifyCurrentGameAttributeHandler == nil {
 		globals.Logger.Warning("MatchmakeExtension::ModifyCurrentGameAttribute not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,21 +32,36 @@ func (protocol *Protocol) handleModifyCurrentGameAttribute(packet nex.PacketInte
 
 	gid, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		go protocol.modifyCurrentGameAttributeHandler(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), client, callID, 0, 0, 0)
+		errorCode = protocol.modifyCurrentGameAttributeHandler(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), client, callID, 0, 0, 0)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
 	attribIndex, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		go protocol.modifyCurrentGameAttributeHandler(fmt.Errorf("Failed to read attribIndex from parameters. %s", err.Error()), client, callID, 0, 0, 0)
+		errorCode = protocol.modifyCurrentGameAttributeHandler(fmt.Errorf("Failed to read attribIndex from parameters. %s", err.Error()), client, callID, 0, 0, 0)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
 	newValue, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		go protocol.modifyCurrentGameAttributeHandler(fmt.Errorf("Failed to read newValue from parameters. %s", err.Error()), client, callID, 0, 0, 0)
+		errorCode = protocol.modifyCurrentGameAttributeHandler(fmt.Errorf("Failed to read newValue from parameters. %s", err.Error()), client, callID, 0, 0, 0)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.modifyCurrentGameAttributeHandler(nil, client, callID, gid, attribIndex, newValue)
+	errorCode = protocol.modifyCurrentGameAttributeHandler(nil, client, callID, gid, attribIndex, newValue)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

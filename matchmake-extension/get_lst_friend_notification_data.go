@@ -14,6 +14,8 @@ func (protocol *Protocol) GetlstFriendNotificationData(handler func(err error, c
 }
 
 func (protocol *Protocol) handleGetlstFriendNotificationData(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.getlstFriendNotificationDataHandler == nil {
 		globals.Logger.Warning("MatchmakeExtension::GetlstFriendNotificationData not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,9 +32,16 @@ func (protocol *Protocol) handleGetlstFriendNotificationData(packet nex.PacketIn
 
 	lstTypes, err := parametersStream.ReadListUInt32LE()
 	if err != nil {
-		go protocol.getlstFriendNotificationDataHandler(fmt.Errorf("Failed to read lstTypes from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.getlstFriendNotificationDataHandler(fmt.Errorf("Failed to read lstTypes from parameters. %s", err.Error()), client, callID, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.getlstFriendNotificationDataHandler(nil, client, callID, lstTypes)
+	errorCode = protocol.getlstFriendNotificationDataHandler(nil, client, callID, lstTypes)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

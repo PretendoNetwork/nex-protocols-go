@@ -15,6 +15,8 @@ func (protocol *Protocol) UpdatePreference(handler func(err error, client *nex.C
 }
 
 func (protocol *Protocol) handleUpdatePreference(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.updatePreferenceHandler == nil {
 		globals.Logger.Warning("FriendsWiiU::UpdatePreference not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -31,9 +33,16 @@ func (protocol *Protocol) handleUpdatePreference(packet nex.PacketInterface) {
 
 	principalPreference, err := parametersStream.ReadStructure(friends_wiiu_types.NewPrincipalPreference())
 	if err != nil {
-		go protocol.updatePreferenceHandler(fmt.Errorf("Failed to read principalPreference from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.updatePreferenceHandler(fmt.Errorf("Failed to read principalPreference from parameters. %s", err.Error()), client, callID, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.updatePreferenceHandler(nil, client, callID, principalPreference.(*friends_wiiu_types.PrincipalPreference))
+	errorCode = protocol.updatePreferenceHandler(nil, client, callID, principalPreference.(*friends_wiiu_types.PrincipalPreference))
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

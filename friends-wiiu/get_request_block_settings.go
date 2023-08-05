@@ -14,6 +14,8 @@ func (protocol *Protocol) GetRequestBlockSettings(handler func(err error, client
 }
 
 func (protocol *Protocol) handleGetRequestBlockSettings(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.getRequestBlockSettingsHandler == nil {
 		globals.Logger.Warning("FriendsWiiU::GetRequestBlockSettings not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,9 +32,16 @@ func (protocol *Protocol) handleGetRequestBlockSettings(packet nex.PacketInterfa
 
 	pids, err := parametersStream.ReadListUInt32LE()
 	if err != nil {
-		go protocol.getRequestBlockSettingsHandler(fmt.Errorf("Failed to read pids from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.getRequestBlockSettingsHandler(fmt.Errorf("Failed to read pids from parameters. %s", err.Error()), client, callID, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.getRequestBlockSettingsHandler(nil, client, callID, pids)
+	errorCode = protocol.getRequestBlockSettingsHandler(nil, client, callID, pids)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

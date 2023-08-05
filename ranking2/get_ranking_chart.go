@@ -15,6 +15,8 @@ func (protocol *Protocol) GetRankingChart(handler func(err error, client *nex.Cl
 }
 
 func (protocol *Protocol) handleGetRankingChart(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.getRankingChartHandler == nil {
 		globals.Logger.Warning("Ranking2::GetRankingChart not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,9 +32,16 @@ func (protocol *Protocol) handleGetRankingChart(packet nex.PacketInterface) {
 
 	info, err := parametersStream.ReadStructure(ranking2_types.NewRanking2ChartInfoInput())
 	if err != nil {
-		go protocol.getRankingChartHandler(fmt.Errorf("Failed to read info from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.getRankingChartHandler(fmt.Errorf("Failed to read info from parameters. %s", err.Error()), client, callID, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.getRankingChartHandler(nil, client, callID, info.(*ranking2_types.Ranking2ChartInfoInput))
+	errorCode = protocol.getRankingChartHandler(nil, client, callID, info.(*ranking2_types.Ranking2ChartInfoInput))
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

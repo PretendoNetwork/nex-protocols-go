@@ -14,6 +14,8 @@ func (protocol *Protocol) GenerateMatchmakeSessionSystemPassword(handler func(er
 }
 
 func (protocol *Protocol) handleGenerateMatchmakeSessionSystemPassword(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.generateMatchmakeSessionSystemPasswordHandler == nil {
 		globals.Logger.Warning("MatchmakeExtension::GenerateMatchmakeSessionSystemPassword not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,9 +32,16 @@ func (protocol *Protocol) handleGenerateMatchmakeSessionSystemPassword(packet ne
 
 	gid, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		go protocol.generateMatchmakeSessionSystemPasswordHandler(fmt.Errorf("Failed to read GID from parameters. %s", err.Error()), client, callID, 0)
+		errorCode = protocol.generateMatchmakeSessionSystemPasswordHandler(fmt.Errorf("Failed to read GID from parameters. %s", err.Error()), client, callID, 0)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.generateMatchmakeSessionSystemPasswordHandler(nil, client, callID, gid)
+	errorCode = protocol.generateMatchmakeSessionSystemPasswordHandler(nil, client, callID, gid)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

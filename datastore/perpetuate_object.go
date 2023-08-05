@@ -14,6 +14,8 @@ func (protocol *Protocol) PerpetuateObject(handler func(err error, client *nex.C
 }
 
 func (protocol *Protocol) handlePerpetuateObject(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.perpetuateObjectHandler == nil {
 		globals.Logger.Warning("DataStore::PerpetuateObject not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,21 +32,36 @@ func (protocol *Protocol) handlePerpetuateObject(packet nex.PacketInterface) {
 
 	persistenceSlotID, err := parametersStream.ReadUInt16LE()
 	if err != nil {
-		go protocol.perpetuateObjectHandler(fmt.Errorf("Failed to read persistenceSlotID from parameters. %s", err.Error()), client, callID, 0, 0, false)
+		errorCode = protocol.perpetuateObjectHandler(fmt.Errorf("Failed to read persistenceSlotID from parameters. %s", err.Error()), client, callID, 0, 0, false)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
 	dataID, err := parametersStream.ReadUInt64LE()
 	if err != nil {
-		go protocol.perpetuateObjectHandler(fmt.Errorf("Failed to read dataID from parameters. %s", err.Error()), client, callID, 0, 0, false)
+		errorCode = protocol.perpetuateObjectHandler(fmt.Errorf("Failed to read dataID from parameters. %s", err.Error()), client, callID, 0, 0, false)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
 	deleteLastObject, err := parametersStream.ReadBool()
 	if err != nil {
-		go protocol.perpetuateObjectHandler(fmt.Errorf("Failed to read deleteLastObject from parameters. %s", err.Error()), client, callID, 0, 0, false)
+		errorCode = protocol.perpetuateObjectHandler(fmt.Errorf("Failed to read deleteLastObject from parameters. %s", err.Error()), client, callID, 0, 0, false)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.perpetuateObjectHandler(nil, client, callID, persistenceSlotID, dataID, deleteLastObject)
+	errorCode = protocol.perpetuateObjectHandler(nil, client, callID, persistenceSlotID, dataID, deleteLastObject)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

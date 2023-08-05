@@ -14,6 +14,8 @@ func (protocol *Protocol) JoinMatchmakeSession(handler func(err error, client *n
 }
 
 func (protocol *Protocol) handleJoinMatchmakeSession(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.joinMatchmakeSessionExHandler == nil {
 		globals.Logger.Warning("MatchmakeExtension::JoinMatchmakeSession not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,15 +32,26 @@ func (protocol *Protocol) handleJoinMatchmakeSession(packet nex.PacketInterface)
 
 	gid, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		go protocol.joinMatchmakeSessionHandler(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), client, callID, 0, "")
+		errorCode = protocol.joinMatchmakeSessionHandler(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), client, callID, 0, "")
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
 	strMessage, err := parametersStream.ReadString()
 	if err != nil {
-		go protocol.joinMatchmakeSessionHandler(fmt.Errorf("Failed to read strMessage from parameters. %s", err.Error()), client, callID, 0, "")
+		errorCode = protocol.joinMatchmakeSessionHandler(fmt.Errorf("Failed to read strMessage from parameters. %s", err.Error()), client, callID, 0, "")
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.joinMatchmakeSessionHandler(nil, client, callID, gid, strMessage)
+	errorCode = protocol.joinMatchmakeSessionHandler(nil, client, callID, gid, strMessage)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

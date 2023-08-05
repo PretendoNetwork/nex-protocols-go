@@ -14,6 +14,8 @@ func (protocol *Protocol) CloseParticipation(handler func(err error, client *nex
 }
 
 func (protocol *Protocol) handleCloseParticipation(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.closeParticipationHandler == nil {
 		globals.Logger.Warning("MatchmakeExtension::CloseParticipation not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,9 +32,16 @@ func (protocol *Protocol) handleCloseParticipation(packet nex.PacketInterface) {
 
 	gid, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		go protocol.closeParticipationHandler(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), client, callID, 0)
+		errorCode = protocol.closeParticipationHandler(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), client, callID, 0)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.closeParticipationHandler(nil, client, callID, gid)
+	errorCode = protocol.closeParticipationHandler(nil, client, callID, gid)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

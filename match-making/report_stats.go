@@ -15,6 +15,8 @@ func (protocol *Protocol) ReportStats(handler func(err error, client *nex.Client
 }
 
 func (protocol *Protocol) handleReportStats(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.reportStatsHandler == nil {
 		globals.Logger.Warning("MatchMaking::ReportStats not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -31,13 +33,26 @@ func (protocol *Protocol) handleReportStats(packet nex.PacketInterface) {
 
 	idGathering, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		go protocol.reportStatsHandler(fmt.Errorf("Failed to read idGathering from parameters. %s", err.Error()), client, callID, 0, nil)
+		errorCode = protocol.reportStatsHandler(fmt.Errorf("Failed to read idGathering from parameters. %s", err.Error()), client, callID, 0, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
+		return
 	}
 
 	lstStats, err := parametersStream.ReadListStructure(match_making_types.NewGatheringStats())
 	if err != nil {
-		go protocol.reportStatsHandler(fmt.Errorf("Failed to read lstStats from parameters. %s", err.Error()), client, callID, 0, nil)
+		errorCode = protocol.reportStatsHandler(fmt.Errorf("Failed to read lstStats from parameters. %s", err.Error()), client, callID, 0, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
+		return
 	}
 
-	go protocol.reportStatsHandler(nil, client, callID, idGathering, lstStats.([]*match_making_types.GatheringStats))
+	errorCode = protocol.reportStatsHandler(nil, client, callID, idGathering, lstStats.([]*match_making_types.GatheringStats))
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

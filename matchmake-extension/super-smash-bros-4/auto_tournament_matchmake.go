@@ -12,6 +12,8 @@ func (protocol *Protocol) AutoTournamentMatchmake(handler func(err error, client
 }
 
 func (protocol *Protocol) handleAutoTournamentMatchmake(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.autoTournamentMatchmakeHandler == nil {
 		globals.Logger.Warning("MatchmakeExtensionSuperSmashBros4::AutoTournamentMatchmake not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -25,5 +27,8 @@ func (protocol *Protocol) handleAutoTournamentMatchmake(packet nex.PacketInterfa
 
 	callID := request.CallID()
 
-	go protocol.autoTournamentMatchmakeHandler(nil, client, callID, packet.Payload())
+	errorCode = protocol.autoTournamentMatchmakeHandler(nil, client, callID, packet.Payload())
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

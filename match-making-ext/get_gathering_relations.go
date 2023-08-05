@@ -14,6 +14,8 @@ func (protocol *Protocol) GetGatheringRelations(handler func(err error, client *
 }
 
 func (protocol *Protocol) handleGetGatheringRelations(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.getGatheringRelationsHandler == nil {
 		globals.Logger.Warning("MatchMakingExt::GetGatheringRelations not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,13 +32,26 @@ func (protocol *Protocol) handleGetGatheringRelations(packet nex.PacketInterface
 
 	id, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		go protocol.getGatheringRelationsHandler(fmt.Errorf("Failed to read id from parameters. %s", err.Error()), client, callID, 0, "")
+		errorCode = protocol.getGatheringRelationsHandler(fmt.Errorf("Failed to read id from parameters. %s", err.Error()), client, callID, 0, "")
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
+		return
 	}
 
 	descr, err := parametersStream.ReadString()
 	if err != nil {
-		go protocol.getGatheringRelationsHandler(fmt.Errorf("Failed to read descr from parameters. %s", err.Error()), client, callID, 0, "")
+		errorCode = protocol.getGatheringRelationsHandler(fmt.Errorf("Failed to read descr from parameters. %s", err.Error()), client, callID, 0, "")
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
+		return
 	}
 
-	go protocol.getGatheringRelationsHandler(nil, client, callID, id, descr)
+	errorCode = protocol.getGatheringRelationsHandler(nil, client, callID, id, descr)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

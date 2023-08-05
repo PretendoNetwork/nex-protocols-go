@@ -14,6 +14,8 @@ func (protocol *Protocol) FindByID(handler func(err error, client *nex.Client, c
 }
 
 func (protocol *Protocol) handleFindByID(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.findByIDHandler == nil {
 		globals.Logger.Warning("MatchMaking::FindByID not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,8 +32,16 @@ func (protocol *Protocol) handleFindByID(packet nex.PacketInterface) {
 
 	lstID, err := parametersStream.ReadListUInt32LE()
 	if err != nil {
-		go protocol.findByIDHandler(fmt.Errorf("Failed to read lstID from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.findByIDHandler(fmt.Errorf("Failed to read lstID from parameters. %s", err.Error()), client, callID, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
+		return
 	}
 
-	go protocol.findByIDHandler(nil, client, callID, lstID)
+	errorCode = protocol.findByIDHandler(nil, client, callID, lstID)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

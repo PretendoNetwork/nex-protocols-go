@@ -14,6 +14,8 @@ func (protocol *Protocol) UpdateGathering(handler func(err error, client *nex.Cl
 }
 
 func (protocol *Protocol) handleUpdateGathering(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.updateGatheringHandler == nil {
 		globals.Logger.Warning("MatchMaking::UpdateGathering not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,8 +32,16 @@ func (protocol *Protocol) handleUpdateGathering(packet nex.PacketInterface) {
 
 	anyGathering, err := parametersStream.ReadDataHolder()
 	if err != nil {
-		go protocol.updateGatheringHandler(fmt.Errorf("Failed to read anyGathering from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.updateGatheringHandler(fmt.Errorf("Failed to read anyGathering from parameters. %s", err.Error()), client, callID, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
+		return
 	}
 
-	go protocol.updateGatheringHandler(nil, client, callID, anyGathering)
+	errorCode = protocol.updateGatheringHandler(nil, client, callID, anyGathering)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

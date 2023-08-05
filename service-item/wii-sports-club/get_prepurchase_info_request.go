@@ -15,6 +15,8 @@ func (protocol *Protocol) GetPrepurchaseInfoRequest(handler func(err error, clie
 }
 
 func (protocol *Protocol) handleGetPrepurchaseInfoRequest(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.getPrepurchaseInfoRequestHandler == nil {
 		globals.Logger.Warning("ServiceItemWiiSportsClub::GetPrepurchaseInfoRequest not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -31,9 +33,16 @@ func (protocol *Protocol) handleGetPrepurchaseInfoRequest(packet nex.PacketInter
 
 	getPrepurchaseInfoParam, err := parametersStream.ReadStructure(service_item_wii_sports_club_types.NewServiceItemGetPrepurchaseInfoParam())
 	if err != nil {
-		go protocol.getPrepurchaseInfoRequestHandler(fmt.Errorf("Failed to read getPrepurchaseInfoParam from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.getPrepurchaseInfoRequestHandler(fmt.Errorf("Failed to read getPrepurchaseInfoParam from parameters. %s", err.Error()), client, callID, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.getPrepurchaseInfoRequestHandler(nil, client, callID, getPrepurchaseInfoParam.(*service_item_wii_sports_club_types.ServiceItemGetPrepurchaseInfoParam))
+	errorCode = protocol.getPrepurchaseInfoRequestHandler(nil, client, callID, getPrepurchaseInfoParam.(*service_item_wii_sports_club_types.ServiceItemGetPrepurchaseInfoParam))
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

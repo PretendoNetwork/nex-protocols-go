@@ -15,6 +15,8 @@ func (protocol *Protocol) ResetRatings(handler func(err error, client *nex.Clien
 }
 
 func (protocol *Protocol) handleResetRatings(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.resetRatingsHandler == nil {
 		globals.Logger.Warning("DataStore::ResetRatings not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -31,15 +33,26 @@ func (protocol *Protocol) handleResetRatings(packet nex.PacketInterface) {
 
 	target, err := parametersStream.ReadStructure(datastore_types.NewDataStoreRatingTarget())
 	if err != nil {
-		go protocol.resetRatingsHandler(fmt.Errorf("Failed to read target from parameters. %s", err.Error()), client, callID, nil, false)
+		errorCode = protocol.resetRatingsHandler(fmt.Errorf("Failed to read target from parameters. %s", err.Error()), client, callID, nil, false)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
 	transactional, err := parametersStream.ReadBool()
 	if err != nil {
-		go protocol.resetRatingsHandler(fmt.Errorf("Failed to read transactional from parameters. %s", err.Error()), client, callID, nil, false)
+		errorCode = protocol.resetRatingsHandler(fmt.Errorf("Failed to read transactional from parameters. %s", err.Error()), client, callID, nil, false)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.resetRatingsHandler(nil, client, callID, target.(*datastore_types.DataStoreRatingTarget), transactional)
+	errorCode = protocol.resetRatingsHandler(nil, client, callID, target.(*datastore_types.DataStoreRatingTarget), transactional)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

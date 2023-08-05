@@ -14,6 +14,8 @@ func (protocol *Protocol) GetFriendPresence(handler func(err error, client *nex.
 }
 
 func (protocol *Protocol) handleGetFriendPresence(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.getFriendPresenceHandler == nil {
 		globals.Logger.Warning("Friends3DS::GetFriendPresence not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,9 +32,16 @@ func (protocol *Protocol) handleGetFriendPresence(packet nex.PacketInterface) {
 
 	pidList, err := parametersStream.ReadListUInt32LE()
 	if err != nil {
-		go protocol.getFriendPresenceHandler(fmt.Errorf("Failed to read pidList from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.getFriendPresenceHandler(fmt.Errorf("Failed to read pidList from parameters. %s", err.Error()), client, callID, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.getFriendPresenceHandler(nil, client, callID, pidList)
+	errorCode = protocol.getFriendPresenceHandler(nil, client, callID, pidList)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

@@ -14,6 +14,8 @@ func (protocol *Protocol) DeleteCommonData(handler func(err error, client *nex.C
 }
 
 func (protocol *Protocol) handleDeleteCommonData(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.deleteCommonDataHandler == nil {
 		globals.Logger.Warning("Ranking::DeleteCommonData not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,9 +32,16 @@ func (protocol *Protocol) handleDeleteCommonData(packet nex.PacketInterface) {
 
 	uniqueID, err := parametersStream.ReadUInt64LE()
 	if err != nil {
-		go protocol.deleteCommonDataHandler(fmt.Errorf("Failed to read uniqueID from parameters. %s", err.Error()), client, callID, 0)
+		errorCode = protocol.deleteCommonDataHandler(fmt.Errorf("Failed to read uniqueID from parameters. %s", err.Error()), client, callID, 0)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.deleteCommonDataHandler(nil, client, callID, uniqueID)
+	errorCode = protocol.deleteCommonDataHandler(nil, client, callID, uniqueID)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

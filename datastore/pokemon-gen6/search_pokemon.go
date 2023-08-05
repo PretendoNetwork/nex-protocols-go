@@ -15,6 +15,8 @@ func (protocol *Protocol) SearchPokemon(handler func(err error, client *nex.Clie
 }
 
 func (protocol *Protocol) handleSearchPokemon(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.searchPokemonHandler == nil {
 		globals.Logger.Warning("DataStorePokemonGen6::SearchPokemon not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -31,9 +33,16 @@ func (protocol *Protocol) handleSearchPokemon(packet nex.PacketInterface) {
 
 	param, err := parametersStream.ReadStructure(datastore_pokemon_gen6_types.NewGlobalTradeStationSearchPokemonParam())
 	if err != nil {
-		go protocol.searchPokemonHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.searchPokemonHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.searchPokemonHandler(nil, client, callID, param.(*datastore_pokemon_gen6_types.GlobalTradeStationSearchPokemonParam))
+	errorCode = protocol.searchPokemonHandler(nil, client, callID, param.(*datastore_pokemon_gen6_types.GlobalTradeStationSearchPokemonParam))
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

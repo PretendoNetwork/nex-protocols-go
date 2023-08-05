@@ -15,6 +15,8 @@ func (protocol *Protocol) GetMetas(handler func(err error, client *nex.Client, c
 }
 
 func (protocol *Protocol) handleGetMetas(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.getMetasHandler == nil {
 		globals.Logger.Warning("DataStore::GetMetas not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -31,15 +33,26 @@ func (protocol *Protocol) handleGetMetas(packet nex.PacketInterface) {
 
 	dataIDs, err := parametersStream.ReadListUInt64LE()
 	if err != nil {
-		go protocol.getMetasHandler(fmt.Errorf("Failed to read dataIDs from parameters. %s", err.Error()), client, callID, nil, nil)
+		errorCode = protocol.getMetasHandler(fmt.Errorf("Failed to read dataIDs from parameters. %s", err.Error()), client, callID, nil, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
 	param, err := parametersStream.ReadStructure(datastore_types.NewDataStoreGetMetaParam())
 	if err != nil {
-		go protocol.getMetasHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil, nil)
+		errorCode = protocol.getMetasHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.getMetasHandler(nil, client, callID, dataIDs, param.(*datastore_types.DataStoreGetMetaParam))
+	errorCode = protocol.getMetasHandler(nil, client, callID, dataIDs, param.(*datastore_types.DataStoreGetMetaParam))
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

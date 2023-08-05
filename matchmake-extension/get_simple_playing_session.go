@@ -14,6 +14,8 @@ func (protocol *Protocol) GetSimplePlayingSession(handler func(err error, client
 }
 
 func (protocol *Protocol) handleGetSimplePlayingSession(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.getSimplePlayingSessionHandler == nil {
 		globals.Logger.Warning("MatchmakeExtension::GetSimplePlayingSession not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,15 +32,26 @@ func (protocol *Protocol) handleGetSimplePlayingSession(packet nex.PacketInterfa
 
 	listPID, err := parametersStream.ReadListUInt32LE()
 	if err != nil {
-		go protocol.getSimplePlayingSessionHandler(fmt.Errorf("Failed to read listPID from parameters. %s", err.Error()), client, callID, nil, false)
+		errorCode = protocol.getSimplePlayingSessionHandler(fmt.Errorf("Failed to read listPID from parameters. %s", err.Error()), client, callID, nil, false)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
 	includeLoginUser, err := parametersStream.ReadBool()
 	if err != nil {
-		go protocol.getSimplePlayingSessionHandler(fmt.Errorf("Failed to read includeLoginUser from parameters. %s", err.Error()), client, callID, nil, false)
+		errorCode = protocol.getSimplePlayingSessionHandler(fmt.Errorf("Failed to read includeLoginUser from parameters. %s", err.Error()), client, callID, nil, false)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.getSimplePlayingSessionHandler(nil, client, callID, listPID, includeLoginUser)
+	errorCode = protocol.getSimplePlayingSessionHandler(nil, client, callID, listPID, includeLoginUser)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

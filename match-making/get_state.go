@@ -14,6 +14,8 @@ func (protocol *Protocol) GetState(handler func(err error, client *nex.Client, c
 }
 
 func (protocol *Protocol) handleGetState(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.getStateHandler == nil {
 		globals.Logger.Warning("MatchMaking::GetState not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,8 +32,16 @@ func (protocol *Protocol) handleGetState(packet nex.PacketInterface) {
 
 	idGathering, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		go protocol.getStateHandler(fmt.Errorf("Failed to read idGathering from parameters. %s", err.Error()), client, callID, 0)
+		errorCode = protocol.getStateHandler(fmt.Errorf("Failed to read idGathering from parameters. %s", err.Error()), client, callID, 0)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
+		return
 	}
 
-	go protocol.getStateHandler(nil, client, callID, idGathering)
+	errorCode = protocol.getStateHandler(nil, client, callID, idGathering)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

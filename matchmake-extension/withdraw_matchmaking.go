@@ -14,6 +14,8 @@ func (protocol *Protocol) WithdrawMatchmaking(handler func(err error, client *ne
 }
 
 func (protocol *Protocol) handleWithdrawMatchmaking(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.withdrawMatchmakingHandler == nil {
 		globals.Logger.Warning("MatchmakeExtension::WithdrawMatchmaking not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,9 +32,16 @@ func (protocol *Protocol) handleWithdrawMatchmaking(packet nex.PacketInterface) 
 
 	requestID, err := parametersStream.ReadUInt64LE()
 	if err != nil {
-		go protocol.updateProgressScoreHandler(fmt.Errorf("Failed to read requestID from parameters. %s", err.Error()), client, callID, 0, 0)
+		errorCode = protocol.updateProgressScoreHandler(fmt.Errorf("Failed to read requestID from parameters. %s", err.Error()), client, callID, 0, 0)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.withdrawMatchmakingHandler(nil, client, callID, requestID)
+	errorCode = protocol.withdrawMatchmakingHandler(nil, client, callID, requestID)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

@@ -15,6 +15,8 @@ func (protocol *Protocol) PostRightBinaryByAccount(handler func(err error, clien
 }
 
 func (protocol *Protocol) handlePostRightBinaryByAccount(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.postRightBinaryByAccountHandler == nil {
 		globals.Logger.Warning("ServiceItemTeamKirbyClashDeluxe::PostRightBinaryByAccount not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -31,9 +33,16 @@ func (protocol *Protocol) handlePostRightBinaryByAccount(packet nex.PacketInterf
 
 	postRightBinaryByAccountParam, err := parametersStream.ReadStructure(service_item_team_kirby_clash_deluxe_types.NewServiceItemPostRightBinaryByAccountParam())
 	if err != nil {
-		go protocol.postRightBinaryByAccountHandler(fmt.Errorf("Failed to read postRightBinaryByAccountParam from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.postRightBinaryByAccountHandler(fmt.Errorf("Failed to read postRightBinaryByAccountParam from parameters. %s", err.Error()), client, callID, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.postRightBinaryByAccountHandler(nil, client, callID, postRightBinaryByAccountParam.(*service_item_team_kirby_clash_deluxe_types.ServiceItemPostRightBinaryByAccountParam))
+	errorCode = protocol.postRightBinaryByAccountHandler(nil, client, callID, postRightBinaryByAccountParam.(*service_item_team_kirby_clash_deluxe_types.ServiceItemPostRightBinaryByAccountParam))
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

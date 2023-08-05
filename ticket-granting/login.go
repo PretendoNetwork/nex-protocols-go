@@ -14,6 +14,8 @@ func (protocol *Protocol) Login(handler func(err error, client *nex.Client, call
 }
 
 func (protocol *Protocol) handleLogin(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.loginHandler == nil {
 		globals.Logger.Warning("TicketGranting::Login not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,9 +32,16 @@ func (protocol *Protocol) handleLogin(packet nex.PacketInterface) {
 
 	strUserName, err := parametersStream.ReadString()
 	if err != nil {
-		go protocol.loginHandler(fmt.Errorf("Failed to read strUserName from parameters. %s", err.Error()), client, callID, "")
+		errorCode = protocol.loginHandler(fmt.Errorf("Failed to read strUserName from parameters. %s", err.Error()), client, callID, "")
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.loginHandler(nil, client, callID, strUserName)
+	errorCode = protocol.loginHandler(nil, client, callID, strUserName)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

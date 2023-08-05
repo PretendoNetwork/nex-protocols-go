@@ -14,6 +14,8 @@ func (protocol *Protocol) DeclineInvitation(handler func(err error, client *nex.
 }
 
 func (protocol *Protocol) handleDeclineInvitation(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.declineInvitationHandler == nil {
 		globals.Logger.Warning("MatchMaking::DeclineInvitation not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,13 +32,26 @@ func (protocol *Protocol) handleDeclineInvitation(packet nex.PacketInterface) {
 
 	idGathering, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		go protocol.declineInvitationHandler(fmt.Errorf("Failed to read idGathering from parameters. %s", err.Error()), client, callID, 0, "")
+		errorCode = protocol.declineInvitationHandler(fmt.Errorf("Failed to read idGathering from parameters. %s", err.Error()), client, callID, 0, "")
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
+		return
 	}
 
 	strMessage, err := parametersStream.ReadString()
 	if err != nil {
-		go protocol.declineInvitationHandler(fmt.Errorf("Failed to read strMessage from parameters. %s", err.Error()), client, callID, 0, "")
+		errorCode = protocol.declineInvitationHandler(fmt.Errorf("Failed to read strMessage from parameters. %s", err.Error()), client, callID, 0, "")
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
+		return
 	}
 
-	go protocol.declineInvitationHandler(nil, client, callID, idGathering, strMessage)
+	errorCode = protocol.declineInvitationHandler(nil, client, callID, idGathering, strMessage)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

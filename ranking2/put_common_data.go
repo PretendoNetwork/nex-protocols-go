@@ -15,6 +15,8 @@ func (protocol *Protocol) PutCommonData(handler func(err error, client *nex.Clie
 }
 
 func (protocol *Protocol) handlePutCommonData(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.putCommonDataHandler == nil {
 		globals.Logger.Warning("Ranking2::PutCommonData not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,15 +32,26 @@ func (protocol *Protocol) handlePutCommonData(packet nex.PacketInterface) {
 
 	commonData, err := parametersStream.ReadStructure(ranking2_types.NewRanking2CommonData())
 	if err != nil {
-		go protocol.putCommonDataHandler(fmt.Errorf("Failed to read commonData from parameters. %s", err.Error()), client, callID, nil, 0)
+		errorCode = protocol.putCommonDataHandler(fmt.Errorf("Failed to read commonData from parameters. %s", err.Error()), client, callID, nil, 0)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
 	nexUniqueID, err := parametersStream.ReadUInt64LE()
 	if err != nil {
-		go protocol.putCommonDataHandler(fmt.Errorf("Failed to read nexUniqueID from parameters. %s", err.Error()), client, callID, nil, 0)
+		errorCode = protocol.putCommonDataHandler(fmt.Errorf("Failed to read nexUniqueID from parameters. %s", err.Error()), client, callID, nil, 0)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.putCommonDataHandler(nil, client, callID, commonData.(*ranking2_types.Ranking2CommonData), nexUniqueID)
+	errorCode = protocol.putCommonDataHandler(nil, client, callID, commonData.(*ranking2_types.Ranking2CommonData), nexUniqueID)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

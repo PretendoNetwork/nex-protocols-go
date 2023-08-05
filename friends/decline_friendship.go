@@ -14,6 +14,8 @@ func (protocol *Protocol) DeclineFriendship(handler func(err error, client *nex.
 }
 
 func (protocol *Protocol) handleDeclineFriendship(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.declineFriendshipHandler == nil {
 		globals.Logger.Warning("Friends::DeclineFriendship not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,9 +32,16 @@ func (protocol *Protocol) handleDeclineFriendship(packet nex.PacketInterface) {
 
 	uiPlayer, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		go protocol.declineFriendshipHandler(fmt.Errorf("Failed to read uiPlayer from parameters. %s", err.Error()), client, callID, 0)
+		errorCode = protocol.declineFriendshipHandler(fmt.Errorf("Failed to read uiPlayer from parameters. %s", err.Error()), client, callID, 0)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.declineFriendshipHandler(nil, client, callID, uiPlayer)
+	errorCode = protocol.declineFriendshipHandler(nil, client, callID, uiPlayer)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

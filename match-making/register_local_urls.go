@@ -14,6 +14,8 @@ func (protocol *Protocol) RegisterLocalURLs(handler func(err error, client *nex.
 }
 
 func (protocol *Protocol) handleRegisterLocalURLs(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.registerLocalURLsHandler == nil {
 		globals.Logger.Warning("MatchMaking::RegisterLocalURLs not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,13 +32,26 @@ func (protocol *Protocol) handleRegisterLocalURLs(packet nex.PacketInterface) {
 
 	gid, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		go protocol.registerLocalURLsHandler(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), client, callID, 0, nil)
+		errorCode = protocol.registerLocalURLsHandler(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), client, callID, 0, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
+		return
 	}
 
 	lstURLs, err := parametersStream.ReadListStationURL()
 	if err != nil {
-		go protocol.registerLocalURLsHandler(fmt.Errorf("Failed to read lstURLs from parameters. %s", err.Error()), client, callID, 0, nil)
+		errorCode = protocol.registerLocalURLsHandler(fmt.Errorf("Failed to read lstURLs from parameters. %s", err.Error()), client, callID, 0, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
+		return
 	}
 
-	go protocol.registerLocalURLsHandler(nil, client, callID, gid, lstURLs)
+	errorCode = protocol.registerLocalURLsHandler(nil, client, callID, gid, lstURLs)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

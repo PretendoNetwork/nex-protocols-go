@@ -15,6 +15,8 @@ func (protocol *Protocol) RollbackBankObject(handler func(err error, client *nex
 }
 
 func (protocol *Protocol) handleRollbackBankObject(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.rollbackBankObjectHandler == nil {
 		globals.Logger.Warning("DataStorePokemonBank::RollbackBankObject not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -31,21 +33,36 @@ func (protocol *Protocol) handleRollbackBankObject(packet nex.PacketInterface) {
 
 	slotID, err := parametersStream.ReadUInt16LE()
 	if err != nil {
-		go protocol.rollbackBankObjectHandler(fmt.Errorf("Failed to read slotID from parameters. %s", err.Error()), client, callID, 0, nil, false)
+		errorCode = protocol.rollbackBankObjectHandler(fmt.Errorf("Failed to read slotID from parameters. %s", err.Error()), client, callID, 0, nil, false)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
 	transactionParam, err := parametersStream.ReadStructure(datastore_pokemon_bank_types.NewBankTransactionParam())
 	if err != nil {
-		go protocol.rollbackBankObjectHandler(fmt.Errorf("Failed to read transactionParam from parameters. %s", err.Error()), client, callID, 0, nil, false)
+		errorCode = protocol.rollbackBankObjectHandler(fmt.Errorf("Failed to read transactionParam from parameters. %s", err.Error()), client, callID, 0, nil, false)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
 	isForce, err := parametersStream.ReadBool()
 	if err != nil {
-		go protocol.rollbackBankObjectHandler(fmt.Errorf("Failed to read isForce from parameters. %s", err.Error()), client, callID, 0, nil, false)
+		errorCode = protocol.rollbackBankObjectHandler(fmt.Errorf("Failed to read isForce from parameters. %s", err.Error()), client, callID, 0, nil, false)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.rollbackBankObjectHandler(nil, client, callID, slotID, transactionParam.(*datastore_pokemon_bank_types.BankTransactionParam), isForce)
+	errorCode = protocol.rollbackBankObjectHandler(nil, client, callID, slotID, transactionParam.(*datastore_pokemon_bank_types.BankTransactionParam), isForce)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

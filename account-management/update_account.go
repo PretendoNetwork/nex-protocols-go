@@ -14,6 +14,8 @@ func (protocol *Protocol) UpdateAccount(handler func(err error, client *nex.Clie
 }
 
 func (protocol *Protocol) handleUpdateAccount(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.updateAccountHandler == nil {
 		globals.Logger.Warning("AccountManagement::UpdateAccount not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,27 +32,46 @@ func (protocol *Protocol) handleUpdateAccount(packet nex.PacketInterface) {
 
 	strKey, err := parametersStream.ReadString()
 	if err != nil {
-		go protocol.updateAccountHandler(fmt.Errorf("Failed to read strKey from parameters. %s", err.Error()), client, callID, "", "", nil, nil)
+		errorCode = protocol.updateAccountHandler(fmt.Errorf("Failed to read strKey from parameters. %s", err.Error()), client, callID, "", "", nil, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
 	strEmail, err := parametersStream.ReadString()
 	if err != nil {
-		go protocol.updateAccountHandler(fmt.Errorf("Failed to read strEmail from parameters. %s", err.Error()), client, callID, "", "", nil, nil)
+		errorCode = protocol.updateAccountHandler(fmt.Errorf("Failed to read strEmail from parameters. %s", err.Error()), client, callID, "", "", nil, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
 	oPublicData, err := parametersStream.ReadDataHolder()
 	if err != nil {
-		go protocol.updateAccountHandler(fmt.Errorf("Failed to read oPublicData from parameters. %s", err.Error()), client, callID, "", "", nil, nil)
+		errorCode = protocol.updateAccountHandler(fmt.Errorf("Failed to read oPublicData from parameters. %s", err.Error()), client, callID, "", "", nil, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
 	oPrivateData, err := parametersStream.ReadDataHolder()
 	if err != nil {
-		go protocol.updateAccountHandler(fmt.Errorf("Failed to read oPrivateData from parameters. %s", err.Error()), client, callID, "", "", nil, nil)
+		errorCode = protocol.updateAccountHandler(fmt.Errorf("Failed to read oPrivateData from parameters. %s", err.Error()), client, callID, "", "", nil, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.updateAccountHandler(nil, client, callID, strKey, strEmail, oPublicData, oPrivateData)
+	errorCode = protocol.updateAccountHandler(nil, client, callID, strKey, strEmail, oPublicData, oPrivateData)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

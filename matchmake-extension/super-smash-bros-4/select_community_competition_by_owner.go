@@ -12,6 +12,8 @@ func (protocol *Protocol) SelectCommunityCompetitionByOwner(handler func(err err
 }
 
 func (protocol *Protocol) handleSelectCommunityCompetitionByOwner(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.selectCommunityCompetitionByOwnerHandler == nil {
 		globals.Logger.Warning("MatchmakeExtensionSuperSmashBros4::SelectCommunityCompetitionByOwner not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -25,5 +27,8 @@ func (protocol *Protocol) handleSelectCommunityCompetitionByOwner(packet nex.Pac
 
 	callID := request.CallID()
 
-	go protocol.selectCommunityCompetitionByOwnerHandler(nil, client, callID, packet.Payload())
+	errorCode = protocol.selectCommunityCompetitionByOwnerHandler(nil, client, callID, packet.Payload())
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

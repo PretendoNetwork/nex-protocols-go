@@ -12,6 +12,8 @@ func (protocol *Protocol) GetFollower(handler func(err error, client *nex.Client
 }
 
 func (protocol *Protocol) handleGetFollower(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.getFollowerHandler == nil {
 		globals.Logger.Warning("Subscriber::GetFollower not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -25,5 +27,8 @@ func (protocol *Protocol) handleGetFollower(packet nex.PacketInterface) {
 
 	callID := request.CallID()
 
-	go protocol.getFollowerHandler(nil, client, callID, packet.Payload())
+	errorCode = protocol.getFollowerHandler(nil, client, callID, packet.Payload())
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

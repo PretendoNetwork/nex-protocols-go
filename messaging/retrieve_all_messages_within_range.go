@@ -15,6 +15,8 @@ func (protocol *Protocol) RetrieveAllMessagesWithinRange(handler func(err error,
 }
 
 func (protocol *Protocol) handleRetrieveAllMessagesWithinRange(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.retrieveAllMessagesWithinRangeHandler == nil {
 		globals.Logger.Warning("Messaging::RetrieveAllMessagesWithinRange not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -31,15 +33,26 @@ func (protocol *Protocol) handleRetrieveAllMessagesWithinRange(packet nex.Packet
 
 	recipient, err := parametersStream.ReadStructure(messaging_types.NewMessageRecipient())
 	if err != nil {
-		go protocol.retrieveAllMessagesWithinRangeHandler(fmt.Errorf("Failed to read recipient from parameters. %s", err.Error()), client, callID, nil, nil)
+		errorCode = protocol.retrieveAllMessagesWithinRangeHandler(fmt.Errorf("Failed to read recipient from parameters. %s", err.Error()), client, callID, nil, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
 	resultRange, err := parametersStream.ReadStructure(nex.NewResultRange())
 	if err != nil {
-		go protocol.retrieveAllMessagesWithinRangeHandler(fmt.Errorf("Failed to read resultRange from parameters. %s", err.Error()), client, callID, nil, nil)
+		errorCode = protocol.retrieveAllMessagesWithinRangeHandler(fmt.Errorf("Failed to read resultRange from parameters. %s", err.Error()), client, callID, nil, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.retrieveAllMessagesWithinRangeHandler(nil, client, callID, recipient.(*messaging_types.MessageRecipient), resultRange.(*nex.ResultRange))
+	errorCode = protocol.retrieveAllMessagesWithinRangeHandler(nil, client, callID, recipient.(*messaging_types.MessageRecipient), resultRange.(*nex.ResultRange))
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

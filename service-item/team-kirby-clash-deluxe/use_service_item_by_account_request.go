@@ -15,6 +15,8 @@ func (protocol *Protocol) UseServiceItemByAccountRequest(handler func(err error,
 }
 
 func (protocol *Protocol) handleUseServiceItemByAccountRequest(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.useServiceItemByAccountRequestHandler == nil {
 		globals.Logger.Warning("ServiceItemTeamKirbyClashDeluxe::UseServiceItemByAccountRequest not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -31,9 +33,16 @@ func (protocol *Protocol) handleUseServiceItemByAccountRequest(packet nex.Packet
 
 	useServiceItemByAccountParam, err := parametersStream.ReadStructure(service_item_team_kirby_clash_deluxe_types.NewServiceItemUseServiceItemByAccountParam())
 	if err != nil {
-		go protocol.useServiceItemByAccountRequestHandler(fmt.Errorf("Failed to read useServiceItemByAccountParam from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.useServiceItemByAccountRequestHandler(fmt.Errorf("Failed to read useServiceItemByAccountParam from parameters. %s", err.Error()), client, callID, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.useServiceItemByAccountRequestHandler(nil, client, callID, useServiceItemByAccountParam.(*service_item_team_kirby_clash_deluxe_types.ServiceItemUseServiceItemByAccountParam))
+	errorCode = protocol.useServiceItemByAccountRequestHandler(nil, client, callID, useServiceItemByAccountParam.(*service_item_team_kirby_clash_deluxe_types.ServiceItemUseServiceItemByAccountParam))
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

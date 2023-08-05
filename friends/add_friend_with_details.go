@@ -14,6 +14,8 @@ func (protocol *Protocol) AddFriendByNameWithDetails(handler func(err error, cli
 }
 
 func (protocol *Protocol) handleAddFriendByNameWithDetails(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.addFriendByNameWithDetailsHandler == nil {
 		globals.Logger.Warning("Friends::AddFriendByNameWithDetails not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,21 +32,36 @@ func (protocol *Protocol) handleAddFriendByNameWithDetails(packet nex.PacketInte
 
 	uiPlayer, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		go protocol.addFriendByNameWithDetailsHandler(fmt.Errorf("Failed to read uiPlayer from parameters. %s", err.Error()), client, callID, 0, 0, "")
+		errorCode = protocol.addFriendByNameWithDetailsHandler(fmt.Errorf("Failed to read uiPlayer from parameters. %s", err.Error()), client, callID, 0, 0, "")
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
 	uiDetails, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		go protocol.addFriendByNameWithDetailsHandler(fmt.Errorf("Failed to read uiDetails from parameters. %s", err.Error()), client, callID, 0, 0, "")
+		errorCode = protocol.addFriendByNameWithDetailsHandler(fmt.Errorf("Failed to read uiDetails from parameters. %s", err.Error()), client, callID, 0, 0, "")
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
 	strMessage, err := parametersStream.ReadString()
 	if err != nil {
-		go protocol.addFriendByNameWithDetailsHandler(fmt.Errorf("Failed to read strMessage from parameters. %s", err.Error()), client, callID, 0, 0, "")
+		errorCode = protocol.addFriendByNameWithDetailsHandler(fmt.Errorf("Failed to read strMessage from parameters. %s", err.Error()), client, callID, 0, 0, "")
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.addFriendByNameWithDetailsHandler(nil, client, callID, uiPlayer, uiDetails, strMessage)
+	errorCode = protocol.addFriendByNameWithDetailsHandler(nil, client, callID, uiPlayer, uiDetails, strMessage)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

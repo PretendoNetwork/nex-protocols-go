@@ -14,6 +14,8 @@ func (protocol *Protocol) ReportViolation(handler func(err error, client *nex.Cl
 }
 
 func (protocol *Protocol) handleReportViolation(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.reportViolationHandler == nil {
 		globals.Logger.Warning("MatchmakeExtension::ReportViolation not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,21 +32,36 @@ func (protocol *Protocol) handleReportViolation(packet nex.PacketInterface) {
 
 	pid, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		go protocol.reportViolationHandler(fmt.Errorf("Failed to read pid from parameters. %s", err.Error()), client, callID, 0, "", 0)
+		errorCode = protocol.reportViolationHandler(fmt.Errorf("Failed to read pid from parameters. %s", err.Error()), client, callID, 0, "", 0)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
 	userName, err := parametersStream.ReadString()
 	if err != nil {
-		go protocol.reportViolationHandler(fmt.Errorf("Failed to read userName from parameters. %s", err.Error()), client, callID, 0, "", 0)
+		errorCode = protocol.reportViolationHandler(fmt.Errorf("Failed to read userName from parameters. %s", err.Error()), client, callID, 0, "", 0)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
 	violationCode, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		go protocol.reportViolationHandler(fmt.Errorf("Failed to read violationCode from parameters. %s", err.Error()), client, callID, 0, "", 0)
+		errorCode = protocol.reportViolationHandler(fmt.Errorf("Failed to read violationCode from parameters. %s", err.Error()), client, callID, 0, "", 0)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.reportViolationHandler(nil, client, callID, pid, userName, violationCode)
+	errorCode = protocol.reportViolationHandler(nil, client, callID, pid, userName, violationCode)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

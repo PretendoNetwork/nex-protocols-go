@@ -14,6 +14,8 @@ func (protocol *Protocol) UpdateMatchmakeSession(handler func(err error, client 
 }
 
 func (protocol *Protocol) handleUpdateMatchmakeSession(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.updateMatchmakeSessionHandler == nil {
 		globals.Logger.Warning("MatchmakeExtension::UpdateMatchmakeSession not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,9 +32,16 @@ func (protocol *Protocol) handleUpdateMatchmakeSession(packet nex.PacketInterfac
 
 	anyGathering, err := parametersStream.ReadDataHolder()
 	if err != nil {
-		go protocol.updateMatchmakeSessionHandler(fmt.Errorf("Failed to read anyGathering from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.updateMatchmakeSessionHandler(fmt.Errorf("Failed to read anyGathering from parameters. %s", err.Error()), client, callID, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.updateMatchmakeSessionHandler(nil, client, callID, anyGathering)
+	errorCode = protocol.updateMatchmakeSessionHandler(nil, client, callID, anyGathering)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

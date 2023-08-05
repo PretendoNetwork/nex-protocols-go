@@ -14,6 +14,8 @@ func (protocol *Protocol) RegisterEx(handler func(err error, client *nex.Client,
 }
 
 func (protocol *Protocol) handleRegisterEx(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.registerExHandler == nil {
 		globals.Logger.Warning("SecureConnection::RegisterEx not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,15 +32,26 @@ func (protocol *Protocol) handleRegisterEx(packet nex.PacketInterface) {
 
 	vecMyURLs, err := parametersStream.ReadListStationURL()
 	if err != nil {
-		go protocol.registerExHandler(fmt.Errorf("Failed to read vecMyURLs from parameters. %s", err.Error()), client, callID, nil, nil)
+		errorCode = protocol.registerExHandler(fmt.Errorf("Failed to read vecMyURLs from parameters. %s", err.Error()), client, callID, nil, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
 	hCustomData, err := parametersStream.ReadDataHolder()
 	if err != nil {
-		go protocol.registerExHandler(fmt.Errorf("Failed to read hCustomData from parameters. %s", err.Error()), client, callID, nil, nil)
+		errorCode = protocol.registerExHandler(fmt.Errorf("Failed to read hCustomData from parameters. %s", err.Error()), client, callID, nil, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.registerExHandler(nil, client, callID, vecMyURLs, hCustomData)
+	errorCode = protocol.registerExHandler(nil, client, callID, vecMyURLs, hCustomData)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

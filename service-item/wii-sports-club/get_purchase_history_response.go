@@ -14,6 +14,8 @@ func (protocol *Protocol) GetPurchaseHistoryResponse(handler func(err error, cli
 }
 
 func (protocol *Protocol) handleGetPurchaseHistoryResponse(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.getPurchaseHistoryResponseHandler == nil {
 		globals.Logger.Warning("ServiceItemWiiSportsClub::GetPurchaseHistoryResponse not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,9 +32,16 @@ func (protocol *Protocol) handleGetPurchaseHistoryResponse(packet nex.PacketInte
 
 	requestID, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		go protocol.getPurchaseHistoryResponseHandler(fmt.Errorf("Failed to read requestID from parameters. %s", err.Error()), client, callID, 0)
+		errorCode = protocol.getPurchaseHistoryResponseHandler(fmt.Errorf("Failed to read requestID from parameters. %s", err.Error()), client, callID, 0)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.getPurchaseHistoryResponseHandler(nil, client, callID, requestID)
+	errorCode = protocol.getPurchaseHistoryResponseHandler(nil, client, callID, requestID)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

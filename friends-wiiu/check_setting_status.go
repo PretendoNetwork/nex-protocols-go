@@ -12,6 +12,8 @@ func (protocol *Protocol) CheckSettingStatus(handler func(err error, client *nex
 }
 
 func (protocol *Protocol) handleCheckSettingStatus(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.checkSettingStatusHandler == nil {
 		globals.Logger.Warning("FriendsWiiU::CheckSettingStatus not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -23,5 +25,8 @@ func (protocol *Protocol) handleCheckSettingStatus(packet nex.PacketInterface) {
 
 	callID := request.CallID()
 
-	go protocol.checkSettingStatusHandler(nil, client, callID)
+	errorCode = protocol.checkSettingStatusHandler(nil, client, callID)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

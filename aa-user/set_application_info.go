@@ -15,6 +15,8 @@ func (protocol *Protocol) SetApplicationInfo(handler func(err error, client *nex
 }
 
 func (protocol *Protocol) handleSetApplicationInfo(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.setApplicationInfoHandler == nil {
 		globals.Logger.Warning("AAUser::SetApplicationInfo not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -31,9 +33,16 @@ func (protocol *Protocol) handleSetApplicationInfo(packet nex.PacketInterface) {
 
 	applicationInfo, err := parametersStream.ReadListStructure(aauser_types.NewApplicationInfo())
 	if err != nil {
-		go protocol.setApplicationInfoHandler(fmt.Errorf("Failed to read applicationInfo from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.setApplicationInfoHandler(fmt.Errorf("Failed to read applicationInfo from parameters. %s", err.Error()), client, callID, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.setApplicationInfoHandler(nil, client, callID, applicationInfo.([]*aauser_types.ApplicationInfo))
+	errorCode = protocol.setApplicationInfoHandler(nil, client, callID, applicationInfo.([]*aauser_types.ApplicationInfo))
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

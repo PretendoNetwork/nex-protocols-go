@@ -14,6 +14,8 @@ func (protocol *Protocol) GetUnlockKey(handler func(err error, client *nex.Clien
 }
 
 func (protocol *Protocol) handleGetUnlockKey(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.getUnlockKeyHandler == nil {
 		globals.Logger.Warning("DataStorePokemonBank::GetUnlockKey not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,9 +32,16 @@ func (protocol *Protocol) handleGetUnlockKey(packet nex.PacketInterface) {
 
 	challengeValue, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		go protocol.getUnlockKeyHandler(fmt.Errorf("Failed to read challengeValue from parameters. %s", err.Error()), client, callID, 0)
+		errorCode = protocol.getUnlockKeyHandler(fmt.Errorf("Failed to read challengeValue from parameters. %s", err.Error()), client, callID, 0)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.getUnlockKeyHandler(nil, client, callID, challengeValue)
+	errorCode = protocol.getUnlockKeyHandler(nil, client, callID, challengeValue)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

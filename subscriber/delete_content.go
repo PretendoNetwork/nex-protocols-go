@@ -14,6 +14,8 @@ func (protocol *Protocol) DeleteContent(handler func(err error, client *nex.Clie
 }
 
 func (protocol *Protocol) handleDeleteContent(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.deleteContentHandler == nil {
 		globals.Logger.Warning("Subscriber::DeleteContent not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -29,15 +31,26 @@ func (protocol *Protocol) handleDeleteContent(packet nex.PacketInterface) {
 
 	unknown1, err := parametersStream.ReadListString()
 	if err != nil {
-		go protocol.deleteContentHandler(fmt.Errorf("Failed to read unknown1 from parameters. %s", err.Error()), client, callID, nil, 0)
+		errorCode = protocol.deleteContentHandler(fmt.Errorf("Failed to read unknown1 from parameters. %s", err.Error()), client, callID, nil, 0)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
 	unknown2, err := parametersStream.ReadUInt64LE()
 	if err != nil {
-		go protocol.deleteContentHandler(fmt.Errorf("Failed to read unknown2 from parameters. %s", err.Error()), client, callID, nil, 0)
+		errorCode = protocol.deleteContentHandler(fmt.Errorf("Failed to read unknown2 from parameters. %s", err.Error()), client, callID, nil, 0)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.deleteContentHandler(nil, client, callID, unknown1, unknown2)
+	errorCode = protocol.deleteContentHandler(nil, client, callID, unknown1, unknown2)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

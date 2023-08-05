@@ -15,6 +15,8 @@ func (protocol *Protocol) UpdateAndGetAllInformation(handler func(err error, cli
 }
 
 func (protocol *Protocol) handleUpdateAndGetAllInformation(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.updateAndGetAllInformationHandler == nil {
 		globals.Logger.Warning("FriendsWiiU::UpdateAndGetAllInformation not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -31,21 +33,36 @@ func (protocol *Protocol) handleUpdateAndGetAllInformation(packet nex.PacketInte
 
 	nnaInfo, err := parametersStream.ReadStructure(friends_wiiu_types.NewNNAInfo())
 	if err != nil {
-		go protocol.updateAndGetAllInformationHandler(fmt.Errorf("Failed to read nnaInfo from parameters. %s", err.Error()), client, callID, nil, nil, nil)
+		errorCode = protocol.updateAndGetAllInformationHandler(fmt.Errorf("Failed to read nnaInfo from parameters. %s", err.Error()), client, callID, nil, nil, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
 	presence, err := parametersStream.ReadStructure(friends_wiiu_types.NewNintendoPresenceV2())
 	if err != nil {
-		go protocol.updateAndGetAllInformationHandler(fmt.Errorf("Failed to read presence from parameters. %s", err.Error()), client, callID, nil, nil, nil)
+		errorCode = protocol.updateAndGetAllInformationHandler(fmt.Errorf("Failed to read presence from parameters. %s", err.Error()), client, callID, nil, nil, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
 	birthday, err := parametersStream.ReadDateTime()
 	if err != nil {
-		go protocol.updateAndGetAllInformationHandler(fmt.Errorf("Failed to read birthday from parameters. %s", err.Error()), client, callID, nil, nil, nil)
+		errorCode = protocol.updateAndGetAllInformationHandler(fmt.Errorf("Failed to read birthday from parameters. %s", err.Error()), client, callID, nil, nil, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.updateAndGetAllInformationHandler(nil, client, callID, nnaInfo.(*friends_wiiu_types.NNAInfo), presence.(*friends_wiiu_types.NintendoPresenceV2), birthday)
+	errorCode = protocol.updateAndGetAllInformationHandler(nil, client, callID, nnaInfo.(*friends_wiiu_types.NNAInfo), presence.(*friends_wiiu_types.NintendoPresenceV2), birthday)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

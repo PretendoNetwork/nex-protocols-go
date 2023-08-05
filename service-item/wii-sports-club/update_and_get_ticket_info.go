@@ -14,6 +14,8 @@ func (protocol *Protocol) UpdateAndGetTicketInfo(handler func(err error, client 
 }
 
 func (protocol *Protocol) handleUpdateAndGetTicketInfo(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.updateAndGetTicketInfoHandler == nil {
 		globals.Logger.Warning("ServiceItemWiiSportsClub::UpdateAndGetTicketInfo not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,9 +32,16 @@ func (protocol *Protocol) handleUpdateAndGetTicketInfo(packet nex.PacketInterfac
 
 	forceRetrieveFromEShop, err := parametersStream.ReadBool()
 	if err != nil {
-		go protocol.updateAndGetTicketInfoHandler(fmt.Errorf("Failed to read forceRetrieveFromEShop from parameters. %s", err.Error()), client, callID, false)
+		errorCode = protocol.updateAndGetTicketInfoHandler(fmt.Errorf("Failed to read forceRetrieveFromEShop from parameters. %s", err.Error()), client, callID, false)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.updateAndGetTicketInfoHandler(nil, client, callID, forceRetrieveFromEShop)
+	errorCode = protocol.updateAndGetTicketInfoHandler(nil, client, callID, forceRetrieveFromEShop)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

@@ -14,6 +14,8 @@ func (protocol *Protocol) UpdateNotificationData(handler func(err error, client 
 }
 
 func (protocol *Protocol) handleUpdateNotificationData(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.updateNotificationDataHandler == nil {
 		globals.Logger.Warning("MatchmakeExtension::UpdateNotificationData not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,27 +32,46 @@ func (protocol *Protocol) handleUpdateNotificationData(packet nex.PacketInterfac
 
 	uiType, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		go protocol.updateNotificationDataHandler(fmt.Errorf("Failed to read uiType from parameters. %s", err.Error()), client, callID, 0, 0, 0, "")
+		errorCode = protocol.updateNotificationDataHandler(fmt.Errorf("Failed to read uiType from parameters. %s", err.Error()), client, callID, 0, 0, 0, "")
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
 	uiParam1, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		go protocol.updateNotificationDataHandler(fmt.Errorf("Failed to read uiParam1 from parameters. %s", err.Error()), client, callID, 0, 0, 0, "")
+		errorCode = protocol.updateNotificationDataHandler(fmt.Errorf("Failed to read uiParam1 from parameters. %s", err.Error()), client, callID, 0, 0, 0, "")
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
 	uiParam2, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		go protocol.updateNotificationDataHandler(fmt.Errorf("Failed to read uiParam2 from parameters. %s", err.Error()), client, callID, 0, 0, 0, "")
+		errorCode = protocol.updateNotificationDataHandler(fmt.Errorf("Failed to read uiParam2 from parameters. %s", err.Error()), client, callID, 0, 0, 0, "")
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
 	strParam, err := parametersStream.ReadString()
 	if err != nil {
-		go protocol.updateNotificationDataHandler(fmt.Errorf("Failed to read strParam from parameters. %s", err.Error()), client, callID, 0, 0, 0, "")
+		errorCode = protocol.updateNotificationDataHandler(fmt.Errorf("Failed to read strParam from parameters. %s", err.Error()), client, callID, 0, 0, 0, "")
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.updateNotificationDataHandler(nil, client, callID, uiType, uiParam1, uiParam2, strParam)
+	errorCode = protocol.updateNotificationDataHandler(nil, client, callID, uiType, uiParam1, uiParam2, strParam)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

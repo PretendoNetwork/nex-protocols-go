@@ -15,6 +15,8 @@ func (protocol *Protocol) PostMetaBinaryWithDataID(handler func(err error, clien
 }
 
 func (protocol *Protocol) handlePostMetaBinaryWithDataID(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.postMetaBinaryWithDataIDHandler == nil {
 		globals.Logger.Warning("DataStore::PostMetaBinaryWithDataID not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -31,15 +33,26 @@ func (protocol *Protocol) handlePostMetaBinaryWithDataID(packet nex.PacketInterf
 
 	dataID, err := parametersStream.ReadUInt64LE()
 	if err != nil {
-		go protocol.postMetaBinaryWithDataIDHandler(fmt.Errorf("Failed to read dataID from parameters. %s", err.Error()), client, callID, 0, nil)
+		errorCode = protocol.postMetaBinaryWithDataIDHandler(fmt.Errorf("Failed to read dataID from parameters. %s", err.Error()), client, callID, 0, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
 	param, err := parametersStream.ReadStructure(datastore_types.NewDataStorePreparePostParam())
 	if err != nil {
-		go protocol.postMetaBinaryWithDataIDHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, 0, nil)
+		errorCode = protocol.postMetaBinaryWithDataIDHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, 0, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.postMetaBinaryWithDataIDHandler(nil, client, callID, dataID, param.(*datastore_types.DataStorePreparePostParam))
+	errorCode = protocol.postMetaBinaryWithDataIDHandler(nil, client, callID, dataID, param.(*datastore_types.DataStorePreparePostParam))
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

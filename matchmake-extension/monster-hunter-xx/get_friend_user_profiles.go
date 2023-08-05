@@ -14,6 +14,8 @@ func (protocol *Protocol) GetFriendUserProfiles(handler func(err error, client *
 }
 
 func (protocol *Protocol) handleGetFriendUserProfiles(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.getFriendUserProfilesHandler == nil {
 		globals.Logger.Warning("MatchmakeExtensionMonsterHunterXX::GetFriendUserProfiles not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,9 +32,16 @@ func (protocol *Protocol) handleGetFriendUserProfiles(packet nex.PacketInterface
 
 	pids, err := parametersStream.ReadListUInt64LE()
 	if err != nil {
-		go protocol.getFriendUserProfilesHandler(fmt.Errorf("Failed to read pids from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.getFriendUserProfilesHandler(fmt.Errorf("Failed to read pids from parameters. %s", err.Error()), client, callID, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.getFriendUserProfilesHandler(nil, client, callID, pids)
+	errorCode = protocol.getFriendUserProfilesHandler(nil, client, callID, pids)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

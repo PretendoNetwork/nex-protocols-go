@@ -15,6 +15,8 @@ func (protocol *Protocol) PutScore(handler func(err error, client *nex.Client, c
 }
 
 func (protocol *Protocol) handlePutScore(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.putScoreHandler == nil {
 		globals.Logger.Warning("Ranking2::PutScore not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,15 +32,26 @@ func (protocol *Protocol) handlePutScore(packet nex.PacketInterface) {
 
 	scoreDataList, err := parametersStream.ReadListStructure(ranking2_types.NewRanking2ScoreData())
 	if err != nil {
-		go protocol.putScoreHandler(fmt.Errorf("Failed to read scoreDataList from parameters. %s", err.Error()), client, callID, nil, 0)
+		errorCode = protocol.putScoreHandler(fmt.Errorf("Failed to read scoreDataList from parameters. %s", err.Error()), client, callID, nil, 0)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
 	nexUniqueID, err := parametersStream.ReadUInt64LE()
 	if err != nil {
-		go protocol.putScoreHandler(fmt.Errorf("Failed to read nexUniqueID from parameters. %s", err.Error()), client, callID, nil, 0)
+		errorCode = protocol.putScoreHandler(fmt.Errorf("Failed to read nexUniqueID from parameters. %s", err.Error()), client, callID, nil, 0)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.putScoreHandler(nil, client, callID, scoreDataList.([]*ranking2_types.Ranking2ScoreData), nexUniqueID)
+	errorCode = protocol.putScoreHandler(nil, client, callID, scoreDataList.([]*ranking2_types.Ranking2ScoreData), nexUniqueID)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

@@ -14,6 +14,8 @@ func (protocol *Protocol) CancelParticipation(handler func(err error, client *ne
 }
 
 func (protocol *Protocol) handleCancelParticipation(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.cancelParticipationHandler == nil {
 		globals.Logger.Warning("MatchMaking::CancelParticipation not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,13 +32,26 @@ func (protocol *Protocol) handleCancelParticipation(packet nex.PacketInterface) 
 
 	idGathering, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		go protocol.cancelParticipationHandler(fmt.Errorf("Failed to read idGathering from parameters. %s", err.Error()), client, callID, 0, "")
+		errorCode = protocol.cancelParticipationHandler(fmt.Errorf("Failed to read idGathering from parameters. %s", err.Error()), client, callID, 0, "")
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
+		return
 	}
 
 	strMessage, err := parametersStream.ReadString()
 	if err != nil {
-		go protocol.cancelParticipationHandler(fmt.Errorf("Failed to read strMessage from parameters. %s", err.Error()), client, callID, 0, "")
+		errorCode = protocol.cancelParticipationHandler(fmt.Errorf("Failed to read strMessage from parameters. %s", err.Error()), client, callID, 0, "")
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
+		return
 	}
 
-	go protocol.cancelParticipationHandler(nil, client, callID, idGathering, strMessage)
+	errorCode = protocol.cancelParticipationHandler(nil, client, callID, idGathering, strMessage)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

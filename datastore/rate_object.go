@@ -15,6 +15,8 @@ func (protocol *Protocol) RateObject(handler func(err error, client *nex.Client,
 }
 
 func (protocol *Protocol) handleRateObject(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.rateObjectHandler == nil {
 		globals.Logger.Warning("DataStore::RateObject not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -31,21 +33,36 @@ func (protocol *Protocol) handleRateObject(packet nex.PacketInterface) {
 
 	target, err := parametersStream.ReadStructure(datastore_types.NewDataStoreRatingTarget())
 	if err != nil {
-		go protocol.rateObjectHandler(fmt.Errorf("Failed to read target from parameters. %s", err.Error()), client, callID, nil, nil, false)
+		errorCode = protocol.rateObjectHandler(fmt.Errorf("Failed to read target from parameters. %s", err.Error()), client, callID, nil, nil, false)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
 	param, err := parametersStream.ReadStructure(datastore_types.NewDataStoreRateObjectParam())
 	if err != nil {
-		go protocol.rateObjectHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil, nil, false)
+		errorCode = protocol.rateObjectHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil, nil, false)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
 	fetchRatings, err := parametersStream.ReadBool()
 	if err != nil {
-		go protocol.rateObjectHandler(fmt.Errorf("Failed to read fetchRatings from parameters. %s", err.Error()), client, callID, nil, nil, false)
+		errorCode = protocol.rateObjectHandler(fmt.Errorf("Failed to read fetchRatings from parameters. %s", err.Error()), client, callID, nil, nil, false)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.rateObjectHandler(nil, client, callID, target.(*datastore_types.DataStoreRatingTarget), param.(*datastore_types.DataStoreRateObjectParam), fetchRatings)
+	errorCode = protocol.rateObjectHandler(nil, client, callID, target.(*datastore_types.DataStoreRatingTarget), param.(*datastore_types.DataStoreRateObjectParam), fetchRatings)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

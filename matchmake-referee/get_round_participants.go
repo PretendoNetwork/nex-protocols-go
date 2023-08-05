@@ -14,6 +14,8 @@ func (protocol *Protocol) GetRoundParticipants(handler func(err error, client *n
 }
 
 func (protocol *Protocol) handleGetRoundParticipants(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.getRoundParticipantsHandler == nil {
 		globals.Logger.Warning("MatchmakeReferee::GetRoundParticipants not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,9 +32,16 @@ func (protocol *Protocol) handleGetRoundParticipants(packet nex.PacketInterface)
 
 	roundID, err := parametersStream.ReadUInt64LE()
 	if err != nil {
-		go protocol.getRoundParticipantsHandler(fmt.Errorf("Failed to read roundID from parameters. %s", err.Error()), client, callID, 0)
+		errorCode = protocol.getRoundParticipantsHandler(fmt.Errorf("Failed to read roundID from parameters. %s", err.Error()), client, callID, 0)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.getRoundParticipantsHandler(nil, client, callID, roundID)
+	errorCode = protocol.getRoundParticipantsHandler(nil, client, callID, roundID)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

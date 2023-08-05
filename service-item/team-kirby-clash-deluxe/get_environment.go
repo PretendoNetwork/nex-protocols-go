@@ -14,6 +14,8 @@ func (protocol *Protocol) GetEnvironment(handler func(err error, client *nex.Cli
 }
 
 func (protocol *Protocol) handleGetEnvironment(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.getEnvironmentHandler == nil {
 		globals.Logger.Warning("ServiceItemTeamKirbyClashDeluxe::GetEnvironment not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,15 +32,26 @@ func (protocol *Protocol) handleGetEnvironment(packet nex.PacketInterface) {
 
 	uniqueID, err := parametersStream.ReadString()
 	if err != nil {
-		go protocol.getEnvironmentHandler(fmt.Errorf("Failed to read uniqueID from parameters. %s", err.Error()), client, callID, "", 0)
+		errorCode = protocol.getEnvironmentHandler(fmt.Errorf("Failed to read uniqueID from parameters. %s", err.Error()), client, callID, "", 0)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
 	platform, err := parametersStream.ReadUInt8()
 	if err != nil {
-		go protocol.getEnvironmentHandler(fmt.Errorf("Failed to read platform from parameters. %s", err.Error()), client, callID, "", 0)
+		errorCode = protocol.getEnvironmentHandler(fmt.Errorf("Failed to read platform from parameters. %s", err.Error()), client, callID, "", 0)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.getEnvironmentHandler(nil, client, callID, uniqueID, platform)
+	errorCode = protocol.getEnvironmentHandler(nil, client, callID, uniqueID, platform)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

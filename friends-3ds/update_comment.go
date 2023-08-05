@@ -14,6 +14,8 @@ func (protocol *Protocol) UpdateComment(handler func(err error, client *nex.Clie
 }
 
 func (protocol *Protocol) handleUpdateComment(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.updateCommentHandler == nil {
 		globals.Logger.Warning("Friends3DS::UpdateComment not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,9 +32,16 @@ func (protocol *Protocol) handleUpdateComment(packet nex.PacketInterface) {
 
 	comment, err := parametersStream.ReadString()
 	if err != nil {
-		go protocol.updateCommentHandler(fmt.Errorf("Failed to read comment from parameters. %s", err.Error()), client, callID, "")
+		errorCode = protocol.updateCommentHandler(fmt.Errorf("Failed to read comment from parameters. %s", err.Error()), client, callID, "")
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.updateCommentHandler(nil, client, callID, comment)
+	errorCode = protocol.updateCommentHandler(nil, client, callID, comment)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

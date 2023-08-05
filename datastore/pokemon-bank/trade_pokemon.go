@@ -15,6 +15,8 @@ func (protocol *Protocol) TradePokemon(handler func(err error, client *nex.Clien
 }
 
 func (protocol *Protocol) handleTradePokemon(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.tradePokemonHandler == nil {
 		globals.Logger.Warning("DataStorePokemonBank::TradePokemon not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -31,9 +33,16 @@ func (protocol *Protocol) handleTradePokemon(packet nex.PacketInterface) {
 
 	param, err := parametersStream.ReadStructure(datastore_pokemon_bank_types.NewGlobalTradeStationTradePokemonParam())
 	if err != nil {
-		go protocol.tradePokemonHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.tradePokemonHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.tradePokemonHandler(nil, client, callID, param.(*datastore_pokemon_bank_types.GlobalTradeStationTradePokemonParam))
+	errorCode = protocol.tradePokemonHandler(nil, client, callID, param.(*datastore_pokemon_bank_types.GlobalTradeStationTradePokemonParam))
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

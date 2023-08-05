@@ -14,6 +14,8 @@ func (protocol *Protocol) GetFriendPicture(handler func(err error, client *nex.C
 }
 
 func (protocol *Protocol) handleGetFriendPicture(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.getFriendPictureHandler == nil {
 		globals.Logger.Warning("Friends3DS::GetFriendPicture not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,9 +32,16 @@ func (protocol *Protocol) handleGetFriendPicture(packet nex.PacketInterface) {
 
 	unknown, err := parametersStream.ReadListUInt32LE()
 	if err != nil {
-		go protocol.getFriendPictureHandler(fmt.Errorf("Failed to read unknown from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.getFriendPictureHandler(fmt.Errorf("Failed to read unknown from parameters. %s", err.Error()), client, callID, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.getFriendPictureHandler(nil, client, callID, unknown)
+	errorCode = protocol.getFriendPictureHandler(nil, client, callID, unknown)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

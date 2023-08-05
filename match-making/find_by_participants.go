@@ -14,6 +14,8 @@ func (protocol *Protocol) FindByParticipants(handler func(err error, client *nex
 }
 
 func (protocol *Protocol) handleFindByParticipants(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.findByParticipantsHandler == nil {
 		globals.Logger.Warning("MatchMaking::FindByParticipants not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,8 +32,16 @@ func (protocol *Protocol) handleFindByParticipants(packet nex.PacketInterface) {
 
 	pid, err := parametersStream.ReadListUInt32LE()
 	if err != nil {
-		go protocol.findByParticipantsHandler(fmt.Errorf("Failed to read pid from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.findByParticipantsHandler(fmt.Errorf("Failed to read pid from parameters. %s", err.Error()), client, callID, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
+		return
 	}
 
-	go protocol.findByParticipantsHandler(nil, client, callID, pid)
+	errorCode = protocol.findByParticipantsHandler(nil, client, callID, pid)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

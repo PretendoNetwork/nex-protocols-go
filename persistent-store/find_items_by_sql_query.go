@@ -14,6 +14,8 @@ func (protocol *Protocol) FindItemsBySQLQuery(handler func(err error, client *ne
 }
 
 func (protocol *Protocol) handleFindItemsBySQLQuery(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.findItemsBySQLQueryHandler == nil {
 		globals.Logger.Warning("PersistentStore::FindItemsBySQLQuery not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,21 +32,36 @@ func (protocol *Protocol) handleFindItemsBySQLQuery(packet nex.PacketInterface) 
 
 	uiGroup, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		go protocol.findItemsBySQLQueryHandler(fmt.Errorf("Failed to read uiGroup from parameters. %s", err.Error()), client, callID, 0, "", "")
+		errorCode = protocol.findItemsBySQLQueryHandler(fmt.Errorf("Failed to read uiGroup from parameters. %s", err.Error()), client, callID, 0, "", "")
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
 	strTag, err := parametersStream.ReadString()
 	if err != nil {
-		go protocol.findItemsBySQLQueryHandler(fmt.Errorf("Failed to read strTag from parameters. %s", err.Error()), client, callID, 0, "", "")
+		errorCode = protocol.findItemsBySQLQueryHandler(fmt.Errorf("Failed to read strTag from parameters. %s", err.Error()), client, callID, 0, "", "")
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
 	strQuery, err := parametersStream.ReadString()
 	if err != nil {
-		go protocol.findItemsBySQLQueryHandler(fmt.Errorf("Failed to read strQuery from parameters. %s", err.Error()), client, callID, 0, "", "")
+		errorCode = protocol.findItemsBySQLQueryHandler(fmt.Errorf("Failed to read strQuery from parameters. %s", err.Error()), client, callID, 0, "", "")
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.findItemsBySQLQueryHandler(nil, client, callID, uiGroup, strTag, strQuery)
+	errorCode = protocol.findItemsBySQLQueryHandler(nil, client, callID, uiGroup, strTag, strQuery)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

@@ -14,6 +14,8 @@ func (protocol *Protocol) GetBalanceResponse(handler func(err error, client *nex
 }
 
 func (protocol *Protocol) handleGetBalanceResponse(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.getBalanceResponseHandler == nil {
 		globals.Logger.Warning("ServiceItemTeamKirbyClashDeluxe::GetBalanceResponse not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,9 +32,16 @@ func (protocol *Protocol) handleGetBalanceResponse(packet nex.PacketInterface) {
 
 	requestID, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		go protocol.getBalanceResponseHandler(fmt.Errorf("Failed to read requestID from parameters. %s", err.Error()), client, callID, 0)
+		errorCode = protocol.getBalanceResponseHandler(fmt.Errorf("Failed to read requestID from parameters. %s", err.Error()), client, callID, 0)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.getBalanceResponseHandler(nil, client, callID, requestID)
+	errorCode = protocol.getBalanceResponseHandler(nil, client, callID, requestID)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

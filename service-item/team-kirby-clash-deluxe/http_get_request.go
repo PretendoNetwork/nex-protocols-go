@@ -15,6 +15,8 @@ func (protocol *Protocol) HTTPGetRequest(handler func(err error, client *nex.Cli
 }
 
 func (protocol *Protocol) handleHTTPGetRequest(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.httpGetRequestHandler == nil {
 		globals.Logger.Warning("ServiceItemTeamKirbyClashDeluxe::HTTPGetRequest not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -31,9 +33,16 @@ func (protocol *Protocol) handleHTTPGetRequest(packet nex.PacketInterface) {
 
 	url, err := parametersStream.ReadStructure(service_item_team_kirby_clash_deluxe_types.NewServiceItemHTTPGetParam())
 	if err != nil {
-		go protocol.httpGetRequestHandler(fmt.Errorf("Failed to read url from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.httpGetRequestHandler(fmt.Errorf("Failed to read url from parameters. %s", err.Error()), client, callID, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.httpGetRequestHandler(nil, client, callID, url.(*service_item_team_kirby_clash_deluxe_types.ServiceItemHTTPGetParam))
+	errorCode = protocol.httpGetRequestHandler(nil, client, callID, url.(*service_item_team_kirby_clash_deluxe_types.ServiceItemHTTPGetParam))
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

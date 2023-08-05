@@ -12,6 +12,8 @@ func (protocol *Protocol) DeliverMessageMultiTarget(handler func(err error, clie
 }
 
 func (protocol *Protocol) handleDeliverMessageMultiTarget(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.deliverMessageMultiTargetHandler == nil {
 		globals.Logger.Warning("Messaging::DeliverMessageMultiTarget not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -27,5 +29,8 @@ func (protocol *Protocol) handleDeliverMessageMultiTarget(packet nex.PacketInter
 
 	// TODO - THIS METHOD HAS AN UNKNOWN REQUEST/RESPONSE FORMAT
 
-	go protocol.deliverMessageMultiTargetHandler(nil, client, callID, packet.Payload())
+	errorCode = protocol.deliverMessageMultiTargetHandler(nil, client, callID, packet.Payload())
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

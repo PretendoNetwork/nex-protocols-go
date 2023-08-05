@@ -14,6 +14,8 @@ func (protocol *Protocol) GetMultiplePublicData(handler func(err error, client *
 }
 
 func (protocol *Protocol) handleGetMultiplePublicData(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.getMultiplePublicDataHandler == nil {
 		globals.Logger.Warning("AccountManagement::GetMultiplePublicData not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,9 +32,16 @@ func (protocol *Protocol) handleGetMultiplePublicData(packet nex.PacketInterface
 
 	lstPrincipals, err := parametersStream.ReadListUInt32LE()
 	if err != nil {
-		go protocol.getMultiplePublicDataHandler(fmt.Errorf("Failed to read lstPrincipals from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.getMultiplePublicDataHandler(fmt.Errorf("Failed to read lstPrincipals from parameters. %s", err.Error()), client, callID, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.getMultiplePublicDataHandler(nil, client, callID, lstPrincipals)
+	errorCode = protocol.getMultiplePublicDataHandler(nil, client, callID, lstPrincipals)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

@@ -15,6 +15,8 @@ func (protocol *Protocol) GetCachedTopXRanking(handler func(err error, client *n
 }
 
 func (protocol *Protocol) handleGetCachedTopXRanking(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.getCachedTopXRankingHandler == nil {
 		globals.Logger.Warning("Ranking::GetCachedTopXRanking not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -31,15 +33,26 @@ func (protocol *Protocol) handleGetCachedTopXRanking(packet nex.PacketInterface)
 
 	category, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		go protocol.getCachedTopXRankingHandler(fmt.Errorf("Failed to read category from parameters. %s", err.Error()), client, callID, 0, nil)
+		errorCode = protocol.getCachedTopXRankingHandler(fmt.Errorf("Failed to read category from parameters. %s", err.Error()), client, callID, 0, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
 	orderParam, err := parametersStream.ReadStructure(ranking_types.NewRankingOrderParam())
 	if err != nil {
-		go protocol.getCachedTopXRankingHandler(fmt.Errorf("Failed to read orderParam from parameters. %s", err.Error()), client, callID, 0, nil)
+		errorCode = protocol.getCachedTopXRankingHandler(fmt.Errorf("Failed to read orderParam from parameters. %s", err.Error()), client, callID, 0, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.getCachedTopXRankingHandler(nil, client, callID, category, orderParam.(*ranking_types.RankingOrderParam))
+	errorCode = protocol.getCachedTopXRankingHandler(nil, client, callID, category, orderParam.(*ranking_types.RankingOrderParam))
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

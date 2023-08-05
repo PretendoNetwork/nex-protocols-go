@@ -15,6 +15,8 @@ func (protocol *Protocol) GetBufferQueue(handler func(err error, client *nex.Cli
 }
 
 func (protocol *Protocol) handleGetBufferQueue(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.getBufferQueueHandler == nil {
 		globals.Logger.Warning("DataStoreSuperMarioMaker::GetBufferQueue not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -31,9 +33,16 @@ func (protocol *Protocol) handleGetBufferQueue(packet nex.PacketInterface) {
 
 	param, err := parametersStream.ReadStructure(datastore_super_mario_maker_types.NewBufferQueueParam())
 	if err != nil {
-		go protocol.getBufferQueueHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.getBufferQueueHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.getBufferQueueHandler(nil, client, callID, param.(*datastore_super_mario_maker_types.BufferQueueParam))
+	errorCode = protocol.getBufferQueueHandler(nil, client, callID, param.(*datastore_super_mario_maker_types.BufferQueueParam))
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

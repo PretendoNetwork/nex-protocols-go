@@ -15,6 +15,8 @@ func (protocol *Protocol) BrowseMatchmakeSessionWithHostURLsNoHolder(handler fun
 }
 
 func (protocol *Protocol) handleBrowseMatchmakeSessionWithHostURLsNoHolder(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.browseMatchmakeSessionWithHostURLsNoHolderHandler == nil {
 		globals.Logger.Warning("MatchmakeExtension::BrowseMatchmakeSessionWithHostURLsNoHolder not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -31,15 +33,26 @@ func (protocol *Protocol) handleBrowseMatchmakeSessionWithHostURLsNoHolder(packe
 
 	searchCriteria, err := parametersStream.ReadStructure(match_making_types.NewMatchmakeSessionSearchCriteria())
 	if err != nil {
-		go protocol.browseMatchmakeSessionWithHostURLsNoHolderHandler(fmt.Errorf("Failed to read searchCriteria from parameters. %s", err.Error()), client, callID, nil, nil)
+		errorCode = protocol.browseMatchmakeSessionWithHostURLsNoHolderHandler(fmt.Errorf("Failed to read searchCriteria from parameters. %s", err.Error()), client, callID, nil, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
 	resultRange, err := parametersStream.ReadStructure(nex.NewResultRange())
 	if err != nil {
-		go protocol.browseMatchmakeSessionWithHostURLsNoHolderHandler(fmt.Errorf("Failed to read resultRange from parameters. %s", err.Error()), client, callID, nil, nil)
+		errorCode = protocol.browseMatchmakeSessionWithHostURLsNoHolderHandler(fmt.Errorf("Failed to read resultRange from parameters. %s", err.Error()), client, callID, nil, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.browseMatchmakeSessionWithHostURLsNoHolderHandler(nil, client, callID, searchCriteria.(*match_making_types.MatchmakeSessionSearchCriteria), resultRange.(*nex.ResultRange))
+	errorCode = protocol.browseMatchmakeSessionWithHostURLsNoHolderHandler(nil, client, callID, searchCriteria.(*match_making_types.MatchmakeSessionSearchCriteria), resultRange.(*nex.ResultRange))
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

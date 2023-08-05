@@ -14,6 +14,8 @@ func (protocol *Protocol) UpdateMatchmakeSessionAttribute(handler func(err error
 }
 
 func (protocol *Protocol) handleUpdateMatchmakeSessionAttribute(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.updateMatchmakeSessionAttributeHandler == nil {
 		globals.Logger.Warning("MatchmakeExtension::UpdateMatchmakeSessionAttribute not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,15 +32,26 @@ func (protocol *Protocol) handleUpdateMatchmakeSessionAttribute(packet nex.Packe
 
 	gid, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		go protocol.updateMatchmakeSessionAttributeHandler(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), client, callID, 0, nil)
+		errorCode = protocol.updateMatchmakeSessionAttributeHandler(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), client, callID, 0, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
 	attribs, err := parametersStream.ReadListUInt32LE()
 	if err != nil {
-		go protocol.updateMatchmakeSessionAttributeHandler(fmt.Errorf("Failed to read attribs from parameters. %s", err.Error()), client, callID, 0, nil)
+		errorCode = protocol.updateMatchmakeSessionAttributeHandler(fmt.Errorf("Failed to read attribs from parameters. %s", err.Error()), client, callID, 0, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.updateMatchmakeSessionAttributeHandler(nil, client, callID, gid, attribs)
+	errorCode = protocol.updateMatchmakeSessionAttributeHandler(nil, client, callID, gid, attribs)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

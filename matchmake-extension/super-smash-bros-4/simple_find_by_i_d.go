@@ -12,6 +12,8 @@ func (protocol *Protocol) SimpleFindByID(handler func(err error, client *nex.Cli
 }
 
 func (protocol *Protocol) handleSimpleFindByID(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.simpleFindByIDHandler == nil {
 		globals.Logger.Warning("MatchmakeExtensionSuperSmashBros4::SimpleFindByID not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -25,5 +27,8 @@ func (protocol *Protocol) handleSimpleFindByID(packet nex.PacketInterface) {
 
 	callID := request.CallID()
 
-	go protocol.simpleFindByIDHandler(nil, client, callID, packet.Payload())
+	errorCode = protocol.simpleFindByIDHandler(nil, client, callID, packet.Payload())
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

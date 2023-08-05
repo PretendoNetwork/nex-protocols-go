@@ -12,6 +12,8 @@ func (protocol *Protocol) UploadCompetitionRankingScore(handler func(err error, 
 }
 
 func (protocol *Protocol) handleUploadCompetitionRankingScore(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.uploadCompetitionRankingScoreHandler == nil {
 		globals.Logger.Warning("RankingSplatoon::UploadCompetitionRankingScore not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -25,5 +27,8 @@ func (protocol *Protocol) handleUploadCompetitionRankingScore(packet nex.PacketI
 
 	callID := request.CallID()
 
-	go protocol.uploadCompetitionRankingScoreHandler(nil, client, callID, packet.Payload())
+	errorCode = protocol.uploadCompetitionRankingScoreHandler(nil, client, callID, packet.Payload())
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

@@ -14,6 +14,8 @@ func (protocol *Protocol) ListServiceItemResponse(handler func(err error, client
 }
 
 func (protocol *Protocol) handleListServiceItemResponse(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.listServiceItemResponseHandler == nil {
 		globals.Logger.Warning("ServiceItemWiiSportsClub::ListServiceItemResponse not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,9 +32,16 @@ func (protocol *Protocol) handleListServiceItemResponse(packet nex.PacketInterfa
 
 	requestID, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		go protocol.listServiceItemResponseHandler(fmt.Errorf("Failed to read requestID from parameters. %s", err.Error()), client, callID, 0)
+		errorCode = protocol.listServiceItemResponseHandler(fmt.Errorf("Failed to read requestID from parameters. %s", err.Error()), client, callID, 0)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.listServiceItemResponseHandler(nil, client, callID, requestID)
+	errorCode = protocol.listServiceItemResponseHandler(nil, client, callID, requestID)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

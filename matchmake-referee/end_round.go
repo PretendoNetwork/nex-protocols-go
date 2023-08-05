@@ -15,6 +15,8 @@ func (protocol *Protocol) EndRound(handler func(err error, client *nex.Client, c
 }
 
 func (protocol *Protocol) handleEndRound(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.endRoundHandler == nil {
 		globals.Logger.Warning("MatchmakeReferee::EndRound not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -31,9 +33,16 @@ func (protocol *Protocol) handleEndRound(packet nex.PacketInterface) {
 
 	endRoundParam, err := parametersStream.ReadStructure(matchmake_referee_types.NewMatchmakeRefereeEndRoundParam())
 	if err != nil {
-		go protocol.endRoundHandler(fmt.Errorf("Failed to read endRoundParam from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.endRoundHandler(fmt.Errorf("Failed to read endRoundParam from parameters. %s", err.Error()), client, callID, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.endRoundHandler(nil, client, callID, endRoundParam.(*matchmake_referee_types.MatchmakeRefereeEndRoundParam))
+	errorCode = protocol.endRoundHandler(nil, client, callID, endRoundParam.(*matchmake_referee_types.MatchmakeRefereeEndRoundParam))
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

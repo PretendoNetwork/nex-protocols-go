@@ -12,6 +12,8 @@ func (protocol *Protocol) FixSanityErrors(handler func(err error, client *nex.Cl
 }
 
 func (protocol *Protocol) handleFixSanityErrors(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.fixSanityErrorsHandler == nil {
 		globals.Logger.Warning("Health::FixSanityErrors not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -23,5 +25,8 @@ func (protocol *Protocol) handleFixSanityErrors(packet nex.PacketInterface) {
 
 	callID := request.CallID()
 
-	go protocol.fixSanityErrorsHandler(nil, client, callID)
+	errorCode = protocol.fixSanityErrorsHandler(nil, client, callID)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

@@ -14,6 +14,8 @@ func (protocol *Protocol) GetFriendMii(handler func(err error, client *nex.Clien
 }
 
 func (protocol *Protocol) handleGetFriendMii(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.getFriendMiiHandler == nil {
 		globals.Logger.Warning("Friends3DS::GetFriendMii not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,9 +32,16 @@ func (protocol *Protocol) handleGetFriendMii(packet nex.PacketInterface) {
 
 	pidList, err := parametersStream.ReadListUInt32LE()
 	if err != nil {
-		go protocol.getFriendMiiHandler(fmt.Errorf("Failed to read pidList from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.getFriendMiiHandler(fmt.Errorf("Failed to read pidList from parameters. %s", err.Error()), client, callID, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.getFriendMiiHandler(nil, client, callID, pidList)
+	errorCode = protocol.getFriendMiiHandler(nil, client, callID, pidList)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

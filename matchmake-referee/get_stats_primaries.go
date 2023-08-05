@@ -15,6 +15,8 @@ func (protocol *Protocol) GetStatsPrimaries(handler func(err error, client *nex.
 }
 
 func (protocol *Protocol) handleGetStatsPrimaries(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.getStatsPrimariesHandler == nil {
 		globals.Logger.Warning("MatchmakeReferee::GetStatsPrimaries not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -31,9 +33,16 @@ func (protocol *Protocol) handleGetStatsPrimaries(packet nex.PacketInterface) {
 
 	targets, err := parametersStream.ReadListStructure(matchmake_referee_types.NewMatchmakeRefereeStatsTarget())
 	if err != nil {
-		go protocol.getStatsPrimariesHandler(fmt.Errorf("Failed to read targets from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.getStatsPrimariesHandler(fmt.Errorf("Failed to read targets from parameters. %s", err.Error()), client, callID, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.getStatsPrimariesHandler(nil, client, callID, targets.([]*matchmake_referee_types.MatchmakeRefereeStatsTarget))
+	errorCode = protocol.getStatsPrimariesHandler(nil, client, callID, targets.([]*matchmake_referee_types.MatchmakeRefereeStatsTarget))
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

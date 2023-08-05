@@ -12,6 +12,8 @@ func (protocol *Protocol) JoinMatchmakeSessionWithExtraParticipants(handler func
 }
 
 func (protocol *Protocol) handleJoinMatchmakeSessionWithExtraParticipants(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.joinMatchmakeSessionWithExtraParticipantsHandler == nil {
 		globals.Logger.Warning("MatchmakeExtensionMarioKart8::JoinMatchmakeSessionWithExtraParticipants not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -25,5 +27,8 @@ func (protocol *Protocol) handleJoinMatchmakeSessionWithExtraParticipants(packet
 
 	callID := request.CallID()
 
-	go protocol.joinMatchmakeSessionWithExtraParticipantsHandler(nil, client, callID, packet.Payload())
+	errorCode = protocol.joinMatchmakeSessionWithExtraParticipantsHandler(nil, client, callID, packet.Payload())
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

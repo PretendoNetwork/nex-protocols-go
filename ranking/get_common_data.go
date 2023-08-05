@@ -14,6 +14,8 @@ func (protocol *Protocol) GetCommonData(handler func(err error, client *nex.Clie
 }
 
 func (protocol *Protocol) handleGetCommonData(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.getCommonDataHandler == nil {
 		globals.Logger.Warning("Ranking::GetCommonData not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,9 +32,16 @@ func (protocol *Protocol) handleGetCommonData(packet nex.PacketInterface) {
 
 	uniqueID, err := parametersStream.ReadUInt64LE()
 	if err != nil {
-		go protocol.getCommonDataHandler(fmt.Errorf("Failed to read uniqueID from parameters. %s", err.Error()), client, callID, 0)
+		errorCode = protocol.getCommonDataHandler(fmt.Errorf("Failed to read uniqueID from parameters. %s", err.Error()), client, callID, 0)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.getCommonDataHandler(nil, client, callID, uniqueID)
+	errorCode = protocol.getCommonDataHandler(nil, client, callID, uniqueID)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

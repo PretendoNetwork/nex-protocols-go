@@ -12,6 +12,8 @@ func (protocol *Protocol) ClearMyBlockList(handler func(err error, client *nex.C
 }
 
 func (protocol *Protocol) handleClearMyBlockList(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.clearMyBlockListHandler == nil {
 		globals.Logger.Warning("MatchmakeExtension::ClearMyBlockList not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -23,5 +25,8 @@ func (protocol *Protocol) handleClearMyBlockList(packet nex.PacketInterface) {
 
 	callID := request.CallID()
 
-	go protocol.clearMyBlockListHandler(nil, client, callID)
+	errorCode = protocol.clearMyBlockListHandler(nil, client, callID)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

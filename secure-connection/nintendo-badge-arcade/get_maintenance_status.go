@@ -12,6 +12,8 @@ func (protocol *Protocol) GetMaintenanceStatus(handler func(err error, client *n
 }
 
 func (protocol *Protocol) handleGetMaintenanceStatus(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.getMaintenanceStatusHandler == nil {
 		globals.Logger.Warning("SecureConnectionNintendoBadgeArcade::GetMaintenanceStatus not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -23,5 +25,8 @@ func (protocol *Protocol) handleGetMaintenanceStatus(packet nex.PacketInterface)
 
 	callID := request.CallID()
 
-	go protocol.getMaintenanceStatusHandler(nil, client, callID)
+	errorCode = protocol.getMaintenanceStatusHandler(nil, client, callID)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

@@ -14,6 +14,8 @@ func (protocol *Protocol) MarkFriendRequestsAsReceived(handler func(err error, c
 }
 
 func (protocol *Protocol) handleMarkFriendRequestsAsReceived(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.markFriendRequestsAsReceivedHandler == nil {
 		globals.Logger.Warning("FriendsWiiU::MarkFriendRequestsAsReceived not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,9 +32,16 @@ func (protocol *Protocol) handleMarkFriendRequestsAsReceived(packet nex.PacketIn
 
 	ids, err := parametersStream.ReadListUInt64LE()
 	if err != nil {
-		go protocol.getRequestBlockSettingsHandler(fmt.Errorf("Failed to read ids from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.getRequestBlockSettingsHandler(fmt.Errorf("Failed to read ids from parameters. %s", err.Error()), client, callID, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.markFriendRequestsAsReceivedHandler(nil, client, callID, ids)
+	errorCode = protocol.markFriendRequestsAsReceivedHandler(nil, client, callID, ids)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

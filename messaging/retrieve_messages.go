@@ -15,6 +15,8 @@ func (protocol *Protocol) RetrieveMessages(handler func(err error, client *nex.C
 }
 
 func (protocol *Protocol) handleRetrieveMessages(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.retrieveMessagesHandler == nil {
 		globals.Logger.Warning("Messaging::RetrieveMessages not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -31,21 +33,36 @@ func (protocol *Protocol) handleRetrieveMessages(packet nex.PacketInterface) {
 
 	recipient, err := parametersStream.ReadStructure(messaging_types.NewMessageRecipient())
 	if err != nil {
-		go protocol.retrieveMessagesHandler(fmt.Errorf("Failed to read recipient from parameters. %s", err.Error()), client, callID, nil, nil, false)
+		errorCode = protocol.retrieveMessagesHandler(fmt.Errorf("Failed to read recipient from parameters. %s", err.Error()), client, callID, nil, nil, false)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
 	lstMsgIDs, err := parametersStream.ReadListUInt32LE()
 	if err != nil {
-		go protocol.retrieveMessagesHandler(fmt.Errorf("Failed to read lstMsgIDs from parameters. %s", err.Error()), client, callID, nil, nil, false)
+		errorCode = protocol.retrieveMessagesHandler(fmt.Errorf("Failed to read lstMsgIDs from parameters. %s", err.Error()), client, callID, nil, nil, false)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
 	bLeaveOnServer, err := parametersStream.ReadBool()
 	if err != nil {
-		go protocol.retrieveMessagesHandler(fmt.Errorf("Failed to read bLeaveOnServer from parameters. %s", err.Error()), client, callID, nil, nil, false)
+		errorCode = protocol.retrieveMessagesHandler(fmt.Errorf("Failed to read bLeaveOnServer from parameters. %s", err.Error()), client, callID, nil, nil, false)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.retrieveMessagesHandler(nil, client, callID, recipient.(*messaging_types.MessageRecipient), lstMsgIDs, bLeaveOnServer)
+	errorCode = protocol.retrieveMessagesHandler(nil, client, callID, recipient.(*messaging_types.MessageRecipient), lstMsgIDs, bLeaveOnServer)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

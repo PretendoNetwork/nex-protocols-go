@@ -15,6 +15,8 @@ func (protocol *Protocol) ListServiceItemRequest(handler func(err error, client 
 }
 
 func (protocol *Protocol) handleListServiceItemRequest(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.listServiceItemRequestHandler == nil {
 		globals.Logger.Warning("ServiceItemTeamKirbyClashDeluxe::ListServiceItemRequest not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -31,9 +33,16 @@ func (protocol *Protocol) handleListServiceItemRequest(packet nex.PacketInterfac
 
 	listServiceItemParam, err := parametersStream.ReadStructure(service_item_team_kirby_clash_deluxe_types.NewServiceItemListServiceItemParam())
 	if err != nil {
-		go protocol.listServiceItemRequestHandler(fmt.Errorf("Failed to read listServiceItemParam from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.listServiceItemRequestHandler(fmt.Errorf("Failed to read listServiceItemParam from parameters. %s", err.Error()), client, callID, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.listServiceItemRequestHandler(nil, client, callID, listServiceItemParam.(*service_item_team_kirby_clash_deluxe_types.ServiceItemListServiceItemParam))
+	errorCode = protocol.listServiceItemRequestHandler(nil, client, callID, listServiceItemParam.(*service_item_team_kirby_clash_deluxe_types.ServiceItemListServiceItemParam))
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

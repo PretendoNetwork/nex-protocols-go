@@ -14,6 +14,8 @@ func (protocol *Protocol) UpdateAccountName(handler func(err error, client *nex.
 }
 
 func (protocol *Protocol) handleUpdateAccountName(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.updateAccountNameHandler == nil {
 		globals.Logger.Warning("AccountManagement::UpdateAccountName not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,9 +32,16 @@ func (protocol *Protocol) handleUpdateAccountName(packet nex.PacketInterface) {
 
 	strName, err := parametersStream.ReadString()
 	if err != nil {
-		go protocol.updateAccountNameHandler(fmt.Errorf("Failed to read strName from parameters. %s", err.Error()), client, callID, "")
+		errorCode = protocol.updateAccountNameHandler(fmt.Errorf("Failed to read strName from parameters. %s", err.Error()), client, callID, "")
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.updateAccountNameHandler(nil, client, callID, strName)
+	errorCode = protocol.updateAccountNameHandler(nil, client, callID, strName)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

@@ -12,6 +12,8 @@ func (protocol *Protocol) AcquireNexUniqueID(handler func(err error, client *nex
 }
 
 func (protocol *Protocol) handleAcquireNexUniqueID(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.acquireNexUniqueIDHandler == nil {
 		globals.Logger.Warning("Utility::AcquireNexUniqueID not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -23,5 +25,8 @@ func (protocol *Protocol) handleAcquireNexUniqueID(packet nex.PacketInterface) {
 
 	callID := request.CallID()
 
-	go protocol.acquireNexUniqueIDHandler(nil, client, callID)
+	errorCode = protocol.acquireNexUniqueIDHandler(nil, client, callID)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

@@ -14,6 +14,8 @@ func (protocol *Protocol) GetParticipants(handler func(err error, client *nex.Cl
 }
 
 func (protocol *Protocol) handleGetParticipants(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.getParticipantsHandler == nil {
 		globals.Logger.Warning("MatchMakingExt::GetParticipants not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,13 +32,26 @@ func (protocol *Protocol) handleGetParticipants(packet nex.PacketInterface) {
 
 	idGathering, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		go protocol.getParticipantsHandler(fmt.Errorf("Failed to read idGathering from parameters. %s", err.Error()), client, callID, 0, false)
+		errorCode = protocol.getParticipantsHandler(fmt.Errorf("Failed to read idGathering from parameters. %s", err.Error()), client, callID, 0, false)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
+		return
 	}
 
 	bOnlyActive, err := parametersStream.ReadBool()
 	if err != nil {
-		go protocol.getParticipantsHandler(fmt.Errorf("Failed to read bOnlyActive from parameters. %s", err.Error()), client, callID, 0, false)
+		errorCode = protocol.getParticipantsHandler(fmt.Errorf("Failed to read bOnlyActive from parameters. %s", err.Error()), client, callID, 0, false)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
+		return
 	}
 
-	go protocol.getParticipantsHandler(nil, client, callID, idGathering, bOnlyActive)
+	errorCode = protocol.getParticipantsHandler(nil, client, callID, idGathering, bOnlyActive)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

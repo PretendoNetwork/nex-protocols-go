@@ -14,6 +14,8 @@ func (protocol *Protocol) SendPlayReport(handler func(err error, client *nex.Cli
 }
 
 func (protocol *Protocol) handleSendPlayReport(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.sendPlayReportHandler == nil {
 		globals.Logger.Warning("DataStoreSuperSmashBros4::SendPlayReport not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,9 +32,16 @@ func (protocol *Protocol) handleSendPlayReport(packet nex.PacketInterface) {
 
 	playReport, err := parametersStream.ReadListInt32LE()
 	if err != nil {
-		go protocol.sendPlayReportHandler(fmt.Errorf("Failed to read playReport from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.sendPlayReportHandler(fmt.Errorf("Failed to read playReport from parameters. %s", err.Error()), client, callID, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.sendPlayReportHandler(nil, client, callID, playReport)
+	errorCode = protocol.sendPlayReportHandler(nil, client, callID, playReport)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

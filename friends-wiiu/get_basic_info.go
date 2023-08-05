@@ -14,6 +14,8 @@ func (protocol *Protocol) GetBasicInfo(handler func(err error, client *nex.Clien
 }
 
 func (protocol *Protocol) handleGetBasicInfo(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.getBasicInfoHandler == nil {
 		globals.Logger.Warning("FriendsWiiU::GetBasicInfo not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,9 +32,16 @@ func (protocol *Protocol) handleGetBasicInfo(packet nex.PacketInterface) {
 
 	pids, err := parametersStream.ReadListUInt32LE()
 	if err != nil {
-		go protocol.getBasicInfoHandler(fmt.Errorf("Failed to read pids from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.getBasicInfoHandler(fmt.Errorf("Failed to read pids from parameters. %s", err.Error()), client, callID, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.getBasicInfoHandler(nil, client, callID, pids)
+	errorCode = protocol.getBasicInfoHandler(nil, client, callID, pids)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

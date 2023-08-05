@@ -14,6 +14,8 @@ func (protocol *Protocol) GetFriendRelationships(handler func(err error, client 
 }
 
 func (protocol *Protocol) handleGetFriendRelationships(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.getFriendRelationshipsHandler == nil {
 		globals.Logger.Warning("Friends3DS::GetFriendRelationships not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,9 +32,16 @@ func (protocol *Protocol) handleGetFriendRelationships(packet nex.PacketInterfac
 
 	pids, err := parametersStream.ReadListUInt32LE()
 	if err != nil {
-		go protocol.getFriendRelationshipsHandler(fmt.Errorf("Failed to read pids from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.getFriendRelationshipsHandler(fmt.Errorf("Failed to read pids from parameters. %s", err.Error()), client, callID, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.getFriendRelationshipsHandler(nil, client, callID, pids)
+	errorCode = protocol.getFriendRelationshipsHandler(nil, client, callID, pids)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

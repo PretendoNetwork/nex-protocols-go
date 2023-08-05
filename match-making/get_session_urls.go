@@ -14,6 +14,8 @@ func (protocol *Protocol) GetSessionURLs(handler func(err error, client *nex.Cli
 }
 
 func (protocol *Protocol) handleGetSessionURLs(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.getSessionURLsHandler == nil {
 		globals.Logger.Warning("MatchMaking::GetSessionURLs not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,8 +32,16 @@ func (protocol *Protocol) handleGetSessionURLs(packet nex.PacketInterface) {
 
 	gid, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		go protocol.getSessionURLsHandler(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), client, callID, 0)
+		errorCode = protocol.getSessionURLsHandler(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), client, callID, 0)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
+		return
 	}
 
-	go protocol.getSessionURLsHandler(nil, client, callID, gid)
+	errorCode = protocol.getSessionURLsHandler(nil, client, callID, gid)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

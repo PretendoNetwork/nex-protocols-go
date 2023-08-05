@@ -14,6 +14,8 @@ func (protocol *Protocol) GetPrincipalIDByLocalFriendCode(handler func(err error
 }
 
 func (protocol *Protocol) handleGetPrincipalIDByLocalFriendCode(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.getPrincipalIDByLocalFriendCodeHandler == nil {
 		globals.Logger.Warning("Friends3DS::GetPrincipalIDByLocalFriendCode not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,15 +32,26 @@ func (protocol *Protocol) handleGetPrincipalIDByLocalFriendCode(packet nex.Packe
 
 	lfc, err := parametersStream.ReadUInt64LE()
 	if err != nil {
-		go protocol.getPrincipalIDByLocalFriendCodeHandler(fmt.Errorf("Failed to read lfc from parameters. %s", err.Error()), client, callID, 0, nil)
+		errorCode = protocol.getPrincipalIDByLocalFriendCodeHandler(fmt.Errorf("Failed to read lfc from parameters. %s", err.Error()), client, callID, 0, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
 	lfcList, err := parametersStream.ReadListUInt64LE()
 	if err != nil {
-		go protocol.getPrincipalIDByLocalFriendCodeHandler(fmt.Errorf("Failed to read lfcList from parameters. %s", err.Error()), client, callID, 0, nil)
+		errorCode = protocol.getPrincipalIDByLocalFriendCodeHandler(fmt.Errorf("Failed to read lfcList from parameters. %s", err.Error()), client, callID, 0, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.getPrincipalIDByLocalFriendCodeHandler(nil, client, callID, lfc, lfcList)
+	errorCode = protocol.getPrincipalIDByLocalFriendCodeHandler(nil, client, callID, lfc, lfcList)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

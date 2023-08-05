@@ -12,6 +12,8 @@ func (protocol *Protocol) GetClusterMembers(handler func(err error, client *nex.
 }
 
 func (protocol *Protocol) handleGetClusterMembers(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.getClusterMembersHandler == nil {
 		globals.Logger.Warning("Monitoring::GetClusterMembers not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -23,5 +25,8 @@ func (protocol *Protocol) handleGetClusterMembers(packet nex.PacketInterface) {
 
 	callID := request.CallID()
 
-	go protocol.getClusterMembersHandler(nil, client, callID)
+	errorCode = protocol.getClusterMembersHandler(nil, client, callID)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

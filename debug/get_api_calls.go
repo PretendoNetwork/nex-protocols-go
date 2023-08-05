@@ -14,6 +14,8 @@ func (protocol *Protocol) GetAPICalls(handler func(err error, client *nex.Client
 }
 
 func (protocol *Protocol) handleGetAPICalls(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.getAPICallsHandler == nil {
 		globals.Logger.Warning("Debug::GetAPICalls not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,21 +32,36 @@ func (protocol *Protocol) handleGetAPICalls(packet nex.PacketInterface) {
 
 	pids, err := parametersStream.ReadListUInt32LE()
 	if err != nil {
-		go protocol.getAPICallsHandler(fmt.Errorf("Failed to read pids from parameters. %s", err.Error()), client, callID, nil, nil, nil)
+		errorCode = protocol.getAPICallsHandler(fmt.Errorf("Failed to read pids from parameters. %s", err.Error()), client, callID, nil, nil, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
 	unknown, err := parametersStream.ReadDateTime()
 	if err != nil {
-		go protocol.getAPICallsHandler(fmt.Errorf("Failed to read unknown from parameters. %s", err.Error()), client, callID, nil, nil, nil)
+		errorCode = protocol.getAPICallsHandler(fmt.Errorf("Failed to read unknown from parameters. %s", err.Error()), client, callID, nil, nil, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
 	unknown2, err := parametersStream.ReadDateTime()
 	if err != nil {
-		go protocol.getAPICallsHandler(fmt.Errorf("Failed to read unknown2 from parameters. %s", err.Error()), client, callID, nil, nil, nil)
+		errorCode = protocol.getAPICallsHandler(fmt.Errorf("Failed to read unknown2 from parameters. %s", err.Error()), client, callID, nil, nil, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.getAPICallsHandler(nil, client, callID, pids, unknown, unknown2)
+	errorCode = protocol.getAPICallsHandler(nil, client, callID, pids, unknown, unknown2)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

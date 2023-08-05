@@ -15,6 +15,8 @@ func (protocol *Protocol) ConditionalSearchObject(handler func(err error, client
 }
 
 func (protocol *Protocol) handleConditionalSearchObject(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.conditionalSearchObjectHandler == nil {
 		globals.Logger.Warning("DataStoreSuperMarioMaker::ConditionalSearchObject not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -31,21 +33,36 @@ func (protocol *Protocol) handleConditionalSearchObject(packet nex.PacketInterfa
 
 	condition, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		go protocol.conditionalSearchObjectHandler(fmt.Errorf("Failed to read condition from parameters. %s", err.Error()), client, callID, 0, nil, nil)
+		errorCode = protocol.conditionalSearchObjectHandler(fmt.Errorf("Failed to read condition from parameters. %s", err.Error()), client, callID, 0, nil, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
 	param, err := parametersStream.ReadStructure(datastore_types.NewDataStoreSearchParam())
 	if err != nil {
-		go protocol.conditionalSearchObjectHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, 0, nil, nil)
+		errorCode = protocol.conditionalSearchObjectHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, 0, nil, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
 	extraData, err := parametersStream.ReadListString()
 	if err != nil {
-		go protocol.conditionalSearchObjectHandler(fmt.Errorf("Failed to read extraData from parameters. %s", err.Error()), client, callID, 0, nil, nil)
+		errorCode = protocol.conditionalSearchObjectHandler(fmt.Errorf("Failed to read extraData from parameters. %s", err.Error()), client, callID, 0, nil, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.conditionalSearchObjectHandler(nil, client, callID, condition, param.(*datastore_types.DataStoreSearchParam), extraData)
+	errorCode = protocol.conditionalSearchObjectHandler(nil, client, callID, condition, param.(*datastore_types.DataStoreSearchParam), extraData)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

@@ -15,6 +15,8 @@ func (protocol *Protocol) GetMetasMultipleParam(handler func(err error, client *
 }
 
 func (protocol *Protocol) handleGetMetasMultipleParam(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.getMetasMultipleParamHandler == nil {
 		globals.Logger.Warning("DataStore::GetMetasMultipleParam not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -31,9 +33,16 @@ func (protocol *Protocol) handleGetMetasMultipleParam(packet nex.PacketInterface
 
 	params, err := parametersStream.ReadListStructure(datastore_types.NewDataStoreGetMetaParam())
 	if err != nil {
-		go protocol.getMetasMultipleParamHandler(fmt.Errorf("Failed to read params from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.getMetasMultipleParamHandler(fmt.Errorf("Failed to read params from parameters. %s", err.Error()), client, callID, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.getMetasMultipleParamHandler(nil, client, callID, params.([]*datastore_types.DataStoreGetMetaParam))
+	errorCode = protocol.getMetasMultipleParamHandler(nil, client, callID, params.([]*datastore_types.DataStoreGetMetaParam))
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

@@ -15,6 +15,8 @@ func (protocol *Protocol) UpdateCommunity(handler func(err error, client *nex.Cl
 }
 
 func (protocol *Protocol) handleUpdateCommunity(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.updateCommunityHandler == nil {
 		globals.Logger.Warning("MatchmakeExtension::UpdateCommunity not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -31,9 +33,16 @@ func (protocol *Protocol) handleUpdateCommunity(packet nex.PacketInterface) {
 
 	community, err := parametersStream.ReadStructure(match_making_types.NewPersistentGathering())
 	if err != nil {
-		go protocol.updateCommunityHandler(fmt.Errorf("Failed to read community from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.updateCommunityHandler(fmt.Errorf("Failed to read community from parameters. %s", err.Error()), client, callID, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.updateCommunityHandler(nil, client, callID, community.(*match_making_types.PersistentGathering))
+	errorCode = protocol.updateCommunityHandler(nil, client, callID, community.(*match_making_types.PersistentGathering))
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

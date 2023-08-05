@@ -15,6 +15,8 @@ func (protocol *Protocol) PostMetaBinary(handler func(err error, client *nex.Cli
 }
 
 func (protocol *Protocol) handlePostMetaBinary(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.postMetaBinaryHandler == nil {
 		globals.Logger.Warning("DataStore::PostMetaBinary not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -31,9 +33,16 @@ func (protocol *Protocol) handlePostMetaBinary(packet nex.PacketInterface) {
 
 	param, err := parametersStream.ReadStructure(datastore_types.NewDataStorePreparePostParam())
 	if err != nil {
-		go protocol.postMetaBinaryHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.postMetaBinaryHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.postMetaBinaryHandler(nil, client, callID, param.(*datastore_types.DataStorePreparePostParam))
+	errorCode = protocol.postMetaBinaryHandler(nil, client, callID, param.(*datastore_types.DataStorePreparePostParam))
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

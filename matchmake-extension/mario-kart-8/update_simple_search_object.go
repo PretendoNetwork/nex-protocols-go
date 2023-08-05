@@ -15,6 +15,8 @@ func (protocol *Protocol) UpdateSimpleSearchObject(handler func(err error, clien
 }
 
 func (protocol *Protocol) handleUpdateSimpleSearchObject(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.updateSimpleSearchObjectHandler == nil {
 		globals.Logger.Warning("MatchmakeExtensionMarioKart8::UpdateSimpleSearchObject not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -31,15 +33,26 @@ func (protocol *Protocol) handleUpdateSimpleSearchObject(packet nex.PacketInterf
 
 	objectID, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		go protocol.updateSimpleSearchObjectHandler(fmt.Errorf("Failed to read objectID from parameters. %s", err.Error()), client, callID, 0, nil)
+		errorCode = protocol.updateSimpleSearchObjectHandler(fmt.Errorf("Failed to read objectID from parameters. %s", err.Error()), client, callID, 0, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
 	newObject, err := parametersStream.ReadStructure(matchmake_extension_mario_kart8_types.NewSimpleSearchObject())
 	if err != nil {
-		go protocol.updateSimpleSearchObjectHandler(fmt.Errorf("Failed to read newObject from parameters. %s", err.Error()), client, callID, 0, nil)
+		errorCode = protocol.updateSimpleSearchObjectHandler(fmt.Errorf("Failed to read newObject from parameters. %s", err.Error()), client, callID, 0, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.updateSimpleSearchObjectHandler(nil, client, callID, objectID, newObject.(*matchmake_extension_mario_kart8_types.SimpleSearchObject))
+	errorCode = protocol.updateSimpleSearchObjectHandler(nil, client, callID, objectID, newObject.(*matchmake_extension_mario_kart8_types.SimpleSearchObject))
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

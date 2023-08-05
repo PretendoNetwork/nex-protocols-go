@@ -15,6 +15,8 @@ func (protocol *Protocol) AddToBufferQueues(handler func(err error, client *nex.
 }
 
 func (protocol *Protocol) handleAddToBufferQueues(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.addToBufferQueuesHandler == nil {
 		globals.Logger.Warning("DataStoreSuperMarioMaker::AddToBufferQueues not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -31,15 +33,26 @@ func (protocol *Protocol) handleAddToBufferQueues(packet nex.PacketInterface) {
 
 	params, err := parametersStream.ReadListStructure(datastore_super_mario_maker_types.NewBufferQueueParam())
 	if err != nil {
-		go protocol.addToBufferQueuesHandler(fmt.Errorf("Failed to read params from parameters. %s", err.Error()), client, callID, nil, nil)
+		errorCode = protocol.addToBufferQueuesHandler(fmt.Errorf("Failed to read params from parameters. %s", err.Error()), client, callID, nil, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
 	buffers, err := parametersStream.ReadListQBuffer()
 	if err != nil {
-		go protocol.addToBufferQueuesHandler(fmt.Errorf("Failed to read buffers from parameters. %s", err.Error()), client, callID, nil, nil)
+		errorCode = protocol.addToBufferQueuesHandler(fmt.Errorf("Failed to read buffers from parameters. %s", err.Error()), client, callID, nil, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.addToBufferQueuesHandler(nil, client, callID, params.([]*datastore_super_mario_maker_types.BufferQueueParam), buffers)
+	errorCode = protocol.addToBufferQueuesHandler(nil, client, callID, params.([]*datastore_super_mario_maker_types.BufferQueueParam), buffers)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

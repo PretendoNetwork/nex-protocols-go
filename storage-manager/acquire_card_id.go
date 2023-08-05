@@ -12,6 +12,8 @@ func (protocol *Protocol) AcquireCardID(handler func(err error, client *nex.Clie
 }
 
 func (protocol *Protocol) handleAcquireCardID(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.acquireCardIDHandler == nil {
 		globals.Logger.Warning("StorageManager::AcquireCardID not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -23,5 +25,8 @@ func (protocol *Protocol) handleAcquireCardID(packet nex.PacketInterface) {
 
 	callID := request.CallID()
 
-	go protocol.acquireCardIDHandler(nil, client, callID)
+	errorCode = protocol.acquireCardIDHandler(nil, client, callID)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

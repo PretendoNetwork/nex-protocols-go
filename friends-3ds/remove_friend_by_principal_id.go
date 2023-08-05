@@ -14,6 +14,8 @@ func (protocol *Protocol) RemoveFriendByPrincipalID(handler func(err error, clie
 }
 
 func (protocol *Protocol) handleRemoveFriendByPrincipalID(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.removeFriendByPrincipalIDHandler == nil {
 		globals.Logger.Warning("Friends3DS::RemoveFriendByPrincipalID not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,9 +32,16 @@ func (protocol *Protocol) handleRemoveFriendByPrincipalID(packet nex.PacketInter
 
 	pid, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		go protocol.removeFriendByPrincipalIDHandler(fmt.Errorf("Failed to read pid from parameters. %s", err.Error()), client, callID, 0)
+		errorCode = protocol.removeFriendByPrincipalIDHandler(fmt.Errorf("Failed to read pid from parameters. %s", err.Error()), client, callID, 0)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.removeFriendByPrincipalIDHandler(nil, client, callID, pid)
+	errorCode = protocol.removeFriendByPrincipalIDHandler(nil, client, callID, pid)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

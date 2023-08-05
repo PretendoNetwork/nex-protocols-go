@@ -14,6 +14,8 @@ func (protocol *Protocol) GetParticipantsURLs(handler func(err error, client *ne
 }
 
 func (protocol *Protocol) handleGetParticipantsURLs(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.getParticipantsURLsHandler == nil {
 		globals.Logger.Warning("MatchMaking::GetParticipantsURLs not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,8 +32,16 @@ func (protocol *Protocol) handleGetParticipantsURLs(packet nex.PacketInterface) 
 
 	idGathering, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		go protocol.getParticipantsURLsHandler(fmt.Errorf("Failed to read gatheringID from parameters. %s", err.Error()), client, callID, 0)
+		errorCode = protocol.getParticipantsURLsHandler(fmt.Errorf("Failed to read gatheringID from parameters. %s", err.Error()), client, callID, 0)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
+		return
 	}
 
-	go protocol.getParticipantsURLsHandler(nil, client, callID, idGathering)
+	errorCode = protocol.getParticipantsURLsHandler(nil, client, callID, idGathering)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

@@ -12,6 +12,8 @@ func (protocol *Protocol) GetAssociatedNexUniqueIDsWithMyPrincipalID(handler fun
 }
 
 func (protocol *Protocol) handleGetAssociatedNexUniqueIDsWithMyPrincipalID(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.getAssociatedNexUniqueIDsWithMyPrincipalIDHandler == nil {
 		globals.Logger.Warning("Utility::GetAssociatedNexUniqueIDsWithMyPrincipalID not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -23,5 +25,8 @@ func (protocol *Protocol) handleGetAssociatedNexUniqueIDsWithMyPrincipalID(packe
 
 	callID := request.CallID()
 
-	go protocol.getAssociatedNexUniqueIDsWithMyPrincipalIDHandler(nil, client, callID)
+	errorCode = protocol.getAssociatedNexUniqueIDsWithMyPrincipalIDHandler(nil, client, callID)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

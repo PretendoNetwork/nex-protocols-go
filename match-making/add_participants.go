@@ -14,6 +14,8 @@ func (protocol *Protocol) AddParticipants(handler func(err error, client *nex.Cl
 }
 
 func (protocol *Protocol) handleAddParticipants(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.addParticipantsHandler == nil {
 		globals.Logger.Warning("MatchMaking::AddParticipants not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,18 +32,36 @@ func (protocol *Protocol) handleAddParticipants(packet nex.PacketInterface) {
 
 	idGathering, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		go protocol.addParticipantsHandler(fmt.Errorf("Failed to read idGathering from parameters. %s", err.Error()), client, callID, 0, nil, "")
+		errorCode = protocol.addParticipantsHandler(fmt.Errorf("Failed to read idGathering from parameters. %s", err.Error()), client, callID, 0, nil, "")
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
+		return
 	}
 
 	lstPrincipals, err := parametersStream.ReadListUInt32LE()
 	if err != nil {
-		go protocol.addParticipantsHandler(fmt.Errorf("Failed to read lstPrincipals from parameters. %s", err.Error()), client, callID, 0, nil, "")
+		errorCode = protocol.addParticipantsHandler(fmt.Errorf("Failed to read lstPrincipals from parameters. %s", err.Error()), client, callID, 0, nil, "")
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
+		return
 	}
 
 	strMessage, err := parametersStream.ReadString()
 	if err != nil {
-		go protocol.addParticipantsHandler(fmt.Errorf("Failed to read strMessage from parameters. %s", err.Error()), client, callID, 0, nil, "")
+		errorCode = protocol.addParticipantsHandler(fmt.Errorf("Failed to read strMessage from parameters. %s", err.Error()), client, callID, 0, nil, "")
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
+		return
 	}
 
-	go protocol.addParticipantsHandler(nil, client, callID, idGathering, lstPrincipals, strMessage)
+	errorCode = protocol.addParticipantsHandler(nil, client, callID, idGathering, lstPrincipals, strMessage)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

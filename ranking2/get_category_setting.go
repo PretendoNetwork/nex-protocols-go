@@ -14,6 +14,8 @@ func (protocol *Protocol) GetCategorySetting(handler func(err error, client *nex
 }
 
 func (protocol *Protocol) handleGetCategorySetting(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.getCategorySettingHandler == nil {
 		globals.Logger.Warning("Ranking2::GetCategorySetting not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -29,9 +31,16 @@ func (protocol *Protocol) handleGetCategorySetting(packet nex.PacketInterface) {
 
 	category, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		go protocol.getCategorySettingHandler(fmt.Errorf("Failed to read category from parameters. %s", err.Error()), client, callID, 0)
+		errorCode = protocol.getCategorySettingHandler(fmt.Errorf("Failed to read category from parameters. %s", err.Error()), client, callID, 0)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.getCategorySettingHandler(nil, client, callID, category)
+	errorCode = protocol.getCategorySettingHandler(nil, client, callID, category)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

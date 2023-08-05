@@ -14,6 +14,8 @@ func (protocol *Protocol) ChangePasswordByGuest(handler func(err error, client *
 }
 
 func (protocol *Protocol) handleChangePasswordByGuest(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.changePasswordByGuestHandler == nil {
 		globals.Logger.Warning("AccountManagement::ChangePasswordByGuest not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,21 +32,36 @@ func (protocol *Protocol) handleChangePasswordByGuest(packet nex.PacketInterface
 
 	strPrincipalName, err := parametersStream.ReadString()
 	if err != nil {
-		go protocol.changePasswordByGuestHandler(fmt.Errorf("Failed to read strPrincipalName from parameters. %s", err.Error()), client, callID, "", "", "")
+		errorCode = protocol.changePasswordByGuestHandler(fmt.Errorf("Failed to read strPrincipalName from parameters. %s", err.Error()), client, callID, "", "", "")
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
 	strKey, err := parametersStream.ReadString()
 	if err != nil {
-		go protocol.changePasswordByGuestHandler(fmt.Errorf("Failed to read strKey from parameters. %s", err.Error()), client, callID, "", "", "")
+		errorCode = protocol.changePasswordByGuestHandler(fmt.Errorf("Failed to read strKey from parameters. %s", err.Error()), client, callID, "", "", "")
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
 	strEmail, err := parametersStream.ReadString()
 	if err != nil {
-		go protocol.changePasswordByGuestHandler(fmt.Errorf("Failed to read strEmail from parameters. %s", err.Error()), client, callID, "", "", "")
+		errorCode = protocol.changePasswordByGuestHandler(fmt.Errorf("Failed to read strEmail from parameters. %s", err.Error()), client, callID, "", "", "")
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.changePasswordByGuestHandler(nil, client, callID, strPrincipalName, strKey, strEmail)
+	errorCode = protocol.changePasswordByGuestHandler(nil, client, callID, strPrincipalName, strKey, strEmail)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

@@ -15,6 +15,8 @@ func (protocol *Protocol) ChangeMetas(handler func(err error, client *nex.Client
 }
 
 func (protocol *Protocol) handleChangeMetas(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.changeMetasHandler == nil {
 		globals.Logger.Warning("DataStore::ChangeMetas not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -31,21 +33,36 @@ func (protocol *Protocol) handleChangeMetas(packet nex.PacketInterface) {
 
 	dataIDs, err := parametersStream.ReadListUInt64LE()
 	if err != nil {
-		go protocol.changeMetasHandler(fmt.Errorf("Failed to read dataIDs from parameters. %s", err.Error()), client, callID, nil, nil, false)
+		errorCode = protocol.changeMetasHandler(fmt.Errorf("Failed to read dataIDs from parameters. %s", err.Error()), client, callID, nil, nil, false)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
 	params, err := parametersStream.ReadListStructure(datastore_types.NewDataStoreChangeMetaParam())
 	if err != nil {
-		go protocol.changeMetasHandler(fmt.Errorf("Failed to read params from parameters. %s", err.Error()), client, callID, nil, nil, false)
+		errorCode = protocol.changeMetasHandler(fmt.Errorf("Failed to read params from parameters. %s", err.Error()), client, callID, nil, nil, false)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
 	transactional, err := parametersStream.ReadBool()
 	if err != nil {
-		go protocol.changeMetasHandler(fmt.Errorf("Failed to read transactional from parameters. %s", err.Error()), client, callID, nil, nil, false)
+		errorCode = protocol.changeMetasHandler(fmt.Errorf("Failed to read transactional from parameters. %s", err.Error()), client, callID, nil, nil, false)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.changeMetasHandler(nil, client, callID, dataIDs, params.([]*datastore_types.DataStoreChangeMetaParam), transactional)
+	errorCode = protocol.changeMetasHandler(nil, client, callID, dataIDs, params.([]*datastore_types.DataStoreChangeMetaParam), transactional)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

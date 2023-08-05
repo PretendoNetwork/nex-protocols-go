@@ -14,6 +14,8 @@ func (protocol *Protocol) UpdateAccountExpiryDate(handler func(err error, client
 }
 
 func (protocol *Protocol) handleUpdateAccountExpiryDate(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.updateAccountExpiryDateHandler == nil {
 		globals.Logger.Warning("AccountManagement::UpdateAccountExpiryDate not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,21 +32,36 @@ func (protocol *Protocol) handleUpdateAccountExpiryDate(packet nex.PacketInterfa
 
 	idPrincipal, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		go protocol.updateAccountExpiryDateHandler(fmt.Errorf("Failed to read idPrincipal from parameters. %s", err.Error()), client, callID, 0, nil, "")
+		errorCode = protocol.updateAccountExpiryDateHandler(fmt.Errorf("Failed to read idPrincipal from parameters. %s", err.Error()), client, callID, 0, nil, "")
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
 	dtExpiry, err := parametersStream.ReadDateTime()
 	if err != nil {
-		go protocol.updateAccountExpiryDateHandler(fmt.Errorf("Failed to read dtExpiry from parameters. %s", err.Error()), client, callID, 0, nil, "")
+		errorCode = protocol.updateAccountExpiryDateHandler(fmt.Errorf("Failed to read dtExpiry from parameters. %s", err.Error()), client, callID, 0, nil, "")
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
 	strExpiredMessage, err := parametersStream.ReadString()
 	if err != nil {
-		go protocol.updateAccountExpiryDateHandler(fmt.Errorf("Failed to read strExpiredMessage from parameters. %s", err.Error()), client, callID, 0, nil, "")
+		errorCode = protocol.updateAccountExpiryDateHandler(fmt.Errorf("Failed to read strExpiredMessage from parameters. %s", err.Error()), client, callID, 0, nil, "")
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.updateAccountExpiryDateHandler(nil, client, callID, idPrincipal, dtExpiry, strExpiredMessage)
+	errorCode = protocol.updateAccountExpiryDateHandler(nil, client, callID, idPrincipal, dtExpiry, strExpiredMessage)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

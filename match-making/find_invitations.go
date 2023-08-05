@@ -14,6 +14,8 @@ func (protocol *Protocol) FindInvitations(handler func(err error, client *nex.Cl
 }
 
 func (protocol *Protocol) handleFindInvitations(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.findInvitationsHandler == nil {
 		globals.Logger.Warning("MatchMaking::FindInvitations not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,8 +32,16 @@ func (protocol *Protocol) handleFindInvitations(packet nex.PacketInterface) {
 
 	resultRange, err := parametersStream.ReadStructure(nex.NewResultRange())
 	if err != nil {
-		go protocol.findInvitationsHandler(fmt.Errorf("Failed to read resultRange from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.findInvitationsHandler(fmt.Errorf("Failed to read resultRange from parameters. %s", err.Error()), client, callID, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
+		return
 	}
 
-	go protocol.findInvitationsHandler(nil, client, callID, resultRange.(*nex.ResultRange))
+	errorCode = protocol.findInvitationsHandler(nil, client, callID, resultRange.(*nex.ResultRange))
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

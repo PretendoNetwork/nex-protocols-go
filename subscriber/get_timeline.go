@@ -12,6 +12,8 @@ func (protocol *Protocol) GetTimeline(handler func(err error, client *nex.Client
 }
 
 func (protocol *Protocol) handleGetTimeline(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.getTimelineHandler == nil {
 		globals.Logger.Warning("Subscriber::GetTimeline not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -25,5 +27,8 @@ func (protocol *Protocol) handleGetTimeline(packet nex.PacketInterface) {
 
 	callID := request.CallID()
 
-	go protocol.getTimelineHandler(nil, client, callID, packet.Payload())
+	errorCode = protocol.getTimelineHandler(nil, client, callID, packet.Payload())
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

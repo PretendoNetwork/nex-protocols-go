@@ -14,6 +14,8 @@ func (protocol *Protocol) MigrateGatheringOwnership(handler func(err error, clie
 }
 
 func (protocol *Protocol) handleMigrateGatheringOwnership(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.migrateGatheringOwnershipHandler == nil {
 		globals.Logger.Warning("MatchMaking::MigrateGatheringOwnership not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,18 +32,36 @@ func (protocol *Protocol) handleMigrateGatheringOwnership(packet nex.PacketInter
 
 	gid, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		go protocol.migrateGatheringOwnershipHandler(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), client, callID, 0, nil, false)
+		errorCode = protocol.migrateGatheringOwnershipHandler(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), client, callID, 0, nil, false)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
+		return
 	}
 
 	lstPotentialNewOwnersID, err := parametersStream.ReadListUInt32LE()
 	if err != nil {
-		go protocol.migrateGatheringOwnershipHandler(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), client, callID, 0, nil, false)
+		errorCode = protocol.migrateGatheringOwnershipHandler(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), client, callID, 0, nil, false)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
+		return
 	}
 
 	participantsOnly, err := parametersStream.ReadBool()
 	if err != nil {
-		go protocol.migrateGatheringOwnershipHandler(fmt.Errorf("Failed to read participantsOnly from parameters. %s", err.Error()), client, callID, 0, nil, false)
+		errorCode = protocol.migrateGatheringOwnershipHandler(fmt.Errorf("Failed to read participantsOnly from parameters. %s", err.Error()), client, callID, 0, nil, false)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
+		return
 	}
 
-	go protocol.migrateGatheringOwnershipHandler(nil, client, callID, gid, lstPotentialNewOwnersID, participantsOnly)
+	errorCode = protocol.migrateGatheringOwnershipHandler(nil, client, callID, gid, lstPotentialNewOwnersID, participantsOnly)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

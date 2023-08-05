@@ -15,6 +15,8 @@ func (protocol *Protocol) BestScoreRateCourseSearchObject(handler func(err error
 }
 
 func (protocol *Protocol) handleBestScoreRateCourseSearchObject(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.bestScoreRateCourseSearchObjectHandler == nil {
 		globals.Logger.Warning("DataStoreSuperMarioMaker::BestScoreRateCourseSearchObject not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -31,15 +33,26 @@ func (protocol *Protocol) handleBestScoreRateCourseSearchObject(packet nex.Packe
 
 	param, err := parametersStream.ReadStructure(datastore_types.NewDataStoreSearchParam())
 	if err != nil {
-		go protocol.bestScoreRateCourseSearchObjectHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil, nil)
+		errorCode = protocol.bestScoreRateCourseSearchObjectHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
 	extraData, err := parametersStream.ReadListString()
 	if err != nil {
-		go protocol.bestScoreRateCourseSearchObjectHandler(fmt.Errorf("Failed to read extraData from parameters. %s", err.Error()), client, callID, nil, nil)
+		errorCode = protocol.bestScoreRateCourseSearchObjectHandler(fmt.Errorf("Failed to read extraData from parameters. %s", err.Error()), client, callID, nil, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.bestScoreRateCourseSearchObjectHandler(nil, client, callID, param.(*datastore_types.DataStoreSearchParam), extraData)
+	errorCode = protocol.bestScoreRateCourseSearchObjectHandler(nil, client, callID, param.(*datastore_types.DataStoreSearchParam), extraData)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

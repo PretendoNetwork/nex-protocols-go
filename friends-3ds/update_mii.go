@@ -15,6 +15,8 @@ func (protocol *Protocol) UpdateMii(handler func(err error, client *nex.Client, 
 }
 
 func (protocol *Protocol) handleUpdateMii(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.updateMiiHandler == nil {
 		globals.Logger.Warning("Friends3DS::UpdateMii not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -31,9 +33,16 @@ func (protocol *Protocol) handleUpdateMii(packet nex.PacketInterface) {
 
 	mii, err := parametersStream.ReadStructure(friends_3ds_types.NewMii())
 	if err != nil {
-		go protocol.updateMiiHandler(fmt.Errorf("Failed to read mii from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.updateMiiHandler(fmt.Errorf("Failed to read mii from parameters. %s", err.Error()), client, callID, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.updateMiiHandler(nil, client, callID, mii.(*friends_3ds_types.Mii))
+	errorCode = protocol.updateMiiHandler(nil, client, callID, mii.(*friends_3ds_types.Mii))
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

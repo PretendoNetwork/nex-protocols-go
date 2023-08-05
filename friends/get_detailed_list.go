@@ -14,6 +14,8 @@ func (protocol *Protocol) GetDetailedList(handler func(err error, client *nex.Cl
 }
 
 func (protocol *Protocol) handleGetDetailedList(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.getDetailedListHandler == nil {
 		globals.Logger.Warning("Friends::GetDetailedList not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,15 +32,26 @@ func (protocol *Protocol) handleGetDetailedList(packet nex.PacketInterface) {
 
 	byRelationship, err := parametersStream.ReadUInt8()
 	if err != nil {
-		go protocol.getDetailedListHandler(fmt.Errorf("Failed to read byRelationship from parameters. %s", err.Error()), client, callID, 0, false)
+		errorCode = protocol.getDetailedListHandler(fmt.Errorf("Failed to read byRelationship from parameters. %s", err.Error()), client, callID, 0, false)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
 	bReversed, err := parametersStream.ReadBool()
 	if err != nil {
-		go protocol.getDetailedListHandler(fmt.Errorf("Failed to read bReversed from parameters. %s", err.Error()), client, callID, 0, false)
+		errorCode = protocol.getDetailedListHandler(fmt.Errorf("Failed to read bReversed from parameters. %s", err.Error()), client, callID, 0, false)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.getDetailedListHandler(nil, client, callID, byRelationship, bReversed)
+	errorCode = protocol.getDetailedListHandler(nil, client, callID, byRelationship, bReversed)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

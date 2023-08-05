@@ -15,6 +15,8 @@ func (protocol *Protocol) PreparePostObjectV1(handler func(err error, client *ne
 }
 
 func (protocol *Protocol) handlePreparePostObjectV1(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.preparePostObjectV1Handler == nil {
 		globals.Logger.Warning("DataStore::PreparePostObjectV1 not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -31,9 +33,16 @@ func (protocol *Protocol) handlePreparePostObjectV1(packet nex.PacketInterface) 
 
 	param, err := parametersStream.ReadStructure(datastore_types.NewDataStorePreparePostParamV1())
 	if err != nil {
-		go protocol.preparePostObjectV1Handler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.preparePostObjectV1Handler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.preparePostObjectV1Handler(nil, client, callID, param.(*datastore_types.DataStorePreparePostParamV1))
+	errorCode = protocol.preparePostObjectV1Handler(nil, client, callID, param.(*datastore_types.DataStorePreparePostParamV1))
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

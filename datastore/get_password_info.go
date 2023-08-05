@@ -14,6 +14,8 @@ func (protocol *Protocol) GetPasswordInfo(handler func(err error, client *nex.Cl
 }
 
 func (protocol *Protocol) handleGetPasswordInfo(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.getPasswordInfoHandler == nil {
 		globals.Logger.Warning("DataStore::GetPasswordInfo not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,9 +32,16 @@ func (protocol *Protocol) handleGetPasswordInfo(packet nex.PacketInterface) {
 
 	dataID, err := parametersStream.ReadUInt64LE()
 	if err != nil {
-		go protocol.getPasswordInfoHandler(fmt.Errorf("Failed to read dataID from parameters. %s", err.Error()), client, callID, 0)
+		errorCode = protocol.getPasswordInfoHandler(fmt.Errorf("Failed to read dataID from parameters. %s", err.Error()), client, callID, 0)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.getPasswordInfoHandler(nil, client, callID, dataID)
+	errorCode = protocol.getPasswordInfoHandler(nil, client, callID, dataID)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

@@ -14,6 +14,8 @@ func (protocol *Protocol) FindOfficialCommunity(handler func(err error, client *
 }
 
 func (protocol *Protocol) handleFindOfficialCommunity(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.findOfficialCommunityHandler == nil {
 		globals.Logger.Warning("MatchmakeExtension::FindOfficialCommunity not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,15 +32,26 @@ func (protocol *Protocol) handleFindOfficialCommunity(packet nex.PacketInterface
 
 	isAvailableOnly, err := parametersStream.ReadBool()
 	if err != nil {
-		go protocol.findOfficialCommunityHandler(fmt.Errorf("Failed to read isAvailableOnly from parameters. %s", err.Error()), client, callID, false, nil)
+		errorCode = protocol.findOfficialCommunityHandler(fmt.Errorf("Failed to read isAvailableOnly from parameters. %s", err.Error()), client, callID, false, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
 	resultRange, err := parametersStream.ReadStructure(nex.NewResultRange())
 	if err != nil {
-		go protocol.findOfficialCommunityHandler(fmt.Errorf("Failed to read resultRange from parameters. %s", err.Error()), client, callID, false, nil)
+		errorCode = protocol.findOfficialCommunityHandler(fmt.Errorf("Failed to read resultRange from parameters. %s", err.Error()), client, callID, false, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.findOfficialCommunityHandler(nil, client, callID, isAvailableOnly, resultRange.(*nex.ResultRange))
+	errorCode = protocol.findOfficialCommunityHandler(nil, client, callID, isAvailableOnly, resultRange.(*nex.ResultRange))
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

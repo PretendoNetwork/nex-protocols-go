@@ -14,6 +14,8 @@ func (protocol *Protocol) AcceptFriendship(handler func(err error, client *nex.C
 }
 
 func (protocol *Protocol) handleAcceptFriendship(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.acceptFriendshipHandler == nil {
 		globals.Logger.Warning("Friends::AcceptFriendship not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,9 +32,16 @@ func (protocol *Protocol) handleAcceptFriendship(packet nex.PacketInterface) {
 
 	uiPlayer, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		go protocol.acceptFriendshipHandler(fmt.Errorf("Failed to read uiPlayer from parameters. %s", err.Error()), client, callID, 0)
+		errorCode = protocol.acceptFriendshipHandler(fmt.Errorf("Failed to read uiPlayer from parameters. %s", err.Error()), client, callID, 0)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.acceptFriendshipHandler(nil, client, callID, uiPlayer)
+	errorCode = protocol.acceptFriendshipHandler(nil, client, callID, uiPlayer)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

@@ -14,6 +14,8 @@ func (protocol *Protocol) RegisterGathering(handler func(err error, client *nex.
 }
 
 func (protocol *Protocol) handleRegisterGathering(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.registerGatheringHandler == nil {
 		globals.Logger.Warning("MatchMaking::RegisterGathering not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,8 +32,16 @@ func (protocol *Protocol) handleRegisterGathering(packet nex.PacketInterface) {
 
 	anyGathering, err := parametersStream.ReadDataHolder()
 	if err != nil {
-		go protocol.registerGatheringHandler(fmt.Errorf("Failed to read anyGathering from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.registerGatheringHandler(fmt.Errorf("Failed to read anyGathering from parameters. %s", err.Error()), client, callID, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
+		return
 	}
 
-	go protocol.registerGatheringHandler(nil, client, callID, anyGathering)
+	errorCode = protocol.registerGatheringHandler(nil, client, callID, anyGathering)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

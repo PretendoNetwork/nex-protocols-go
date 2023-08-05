@@ -14,6 +14,8 @@ func (protocol *Protocol) EndParticipation(handler func(err error, client *nex.C
 }
 
 func (protocol *Protocol) handleEndParticipation(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.endParticipationHandler == nil {
 		globals.Logger.Warning("MatchMakingExt::EndParticipation not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,14 +32,26 @@ func (protocol *Protocol) handleEndParticipation(packet nex.PacketInterface) {
 
 	idGathering, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		go protocol.endParticipationHandler(fmt.Errorf("Failed to read idGathering from parameters. %s", err.Error()), client, callID, 0, "")
+		errorCode = protocol.endParticipationHandler(fmt.Errorf("Failed to read idGathering from parameters. %s", err.Error()), client, callID, 0, "")
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
 	strMessage, err := parametersStream.ReadString()
 	if err != nil {
-		go protocol.endParticipationHandler(fmt.Errorf("Failed to read strMessage from parameters. %s", err.Error()), client, callID, 0, "")
+		errorCode = protocol.endParticipationHandler(fmt.Errorf("Failed to read strMessage from parameters. %s", err.Error()), client, callID, 0, "")
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
+		return
 	}
 
-	go protocol.endParticipationHandler(nil, client, callID, idGathering, strMessage)
+	errorCode = protocol.endParticipationHandler(nil, client, callID, idGathering, strMessage)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

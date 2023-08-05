@@ -14,6 +14,8 @@ func (protocol *Protocol) GetStartRoundParam(handler func(err error, client *nex
 }
 
 func (protocol *Protocol) handleGetStartRoundParam(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.getStartRoundParamHandler == nil {
 		globals.Logger.Warning("MatchmakeReferee::GetStartRoundParam not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,9 +32,16 @@ func (protocol *Protocol) handleGetStartRoundParam(packet nex.PacketInterface) {
 
 	roundID, err := parametersStream.ReadUInt64LE()
 	if err != nil {
-		go protocol.getStartRoundParamHandler(fmt.Errorf("Failed to read roundID from parameters. %s", err.Error()), client, callID, 0)
+		errorCode = protocol.getStartRoundParamHandler(fmt.Errorf("Failed to read roundID from parameters. %s", err.Error()), client, callID, 0)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.getStartRoundParamHandler(nil, client, callID, roundID)
+	errorCode = protocol.getStartRoundParamHandler(nil, client, callID, roundID)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

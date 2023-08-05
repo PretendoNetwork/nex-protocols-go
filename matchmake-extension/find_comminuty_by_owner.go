@@ -12,6 +12,8 @@ func (protocol *Protocol) FindCommunityByOwner(handler func(err error, client *n
 }
 
 func (protocol *Protocol) handleFindCommunityByOwner(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.findCommunityByOwnerHandler == nil {
 		globals.Logger.Warning("MatchmakeExtension::FindCommunityByOwner not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -27,5 +29,8 @@ func (protocol *Protocol) handleFindCommunityByOwner(packet nex.PacketInterface)
 
 	// TODO - THIS METHOD HAS AN UNKNOWN REQUEST/RESPONSE FORMAT
 
-	go protocol.findCommunityByOwnerHandler(nil, client, callID, packet.Payload())
+	errorCode = protocol.findCommunityByOwnerHandler(nil, client, callID, packet.Payload())
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

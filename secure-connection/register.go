@@ -14,6 +14,8 @@ func (protocol *Protocol) Register(handler func(err error, client *nex.Client, c
 }
 
 func (protocol *Protocol) handleRegister(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.registerHandler == nil {
 		globals.Logger.Warning("SecureConnection::Register not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,9 +32,16 @@ func (protocol *Protocol) handleRegister(packet nex.PacketInterface) {
 
 	vecMyURLs, err := parametersStream.ReadListStationURL()
 	if err != nil {
-		go protocol.registerHandler(fmt.Errorf("Failed to read hCustomData from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.registerHandler(fmt.Errorf("Failed to read hCustomData from parameters. %s", err.Error()), client, callID, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.registerHandler(nil, client, callID, vecMyURLs)
+	errorCode = protocol.registerHandler(nil, client, callID, vecMyURLs)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

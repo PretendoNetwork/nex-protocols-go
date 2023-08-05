@@ -14,6 +14,8 @@ func (protocol *Protocol) ChangePassword(handler func(err error, client *nex.Cli
 }
 
 func (protocol *Protocol) handleChangePassword(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.changePasswordHandler == nil {
 		globals.Logger.Warning("AccountManagement::ChangePassword not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,9 +32,16 @@ func (protocol *Protocol) handleChangePassword(packet nex.PacketInterface) {
 
 	strNewKey, err := parametersStream.ReadString()
 	if err != nil {
-		go protocol.changePasswordHandler(fmt.Errorf("Failed to read strNewKey from parameters. %s", err.Error()), client, callID, "")
+		errorCode = protocol.changePasswordHandler(fmt.Errorf("Failed to read strNewKey from parameters. %s", err.Error()), client, callID, "")
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.changePasswordHandler(nil, client, callID, strNewKey)
+	errorCode = protocol.changePasswordHandler(nil, client, callID, strNewKey)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

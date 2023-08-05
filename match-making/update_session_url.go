@@ -14,6 +14,8 @@ func (protocol *Protocol) UpdateSessionURL(handler func(err error, client *nex.C
 }
 
 func (protocol *Protocol) handleUpdateSessionURL(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.updateSessionURLHandler == nil {
 		globals.Logger.Warning("MatchMaking::UpdateSessionURL not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,13 +32,26 @@ func (protocol *Protocol) handleUpdateSessionURL(packet nex.PacketInterface) {
 
 	idGathering, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		go protocol.updateSessionURLHandler(fmt.Errorf("Failed to read idGathering from parameters. %s", err.Error()), client, callID, 0, "")
+		errorCode = protocol.updateSessionURLHandler(fmt.Errorf("Failed to read idGathering from parameters. %s", err.Error()), client, callID, 0, "")
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
+		return
 	}
 
 	strURL, err := parametersStream.ReadString()
 	if err != nil {
-		go protocol.updateSessionURLHandler(fmt.Errorf("Failed to read strURL from parameters. %s", err.Error()), client, callID, 0, "")
+		errorCode = protocol.updateSessionURLHandler(fmt.Errorf("Failed to read strURL from parameters. %s", err.Error()), client, callID, 0, "")
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
+		return
 	}
 
-	go protocol.updateSessionURLHandler(nil, client, callID, idGathering, strURL)
+	errorCode = protocol.updateSessionURLHandler(nil, client, callID, idGathering, strURL)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

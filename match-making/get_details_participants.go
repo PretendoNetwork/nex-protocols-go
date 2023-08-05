@@ -14,6 +14,8 @@ func (protocol *Protocol) GetDetailedParticipants(handler func(err error, client
 }
 
 func (protocol *Protocol) handleGetDetailedParticipants(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.getDetailedParticipantsHandler == nil {
 		globals.Logger.Warning("MatchMaking::GetDetailedParticipants not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,8 +32,16 @@ func (protocol *Protocol) handleGetDetailedParticipants(packet nex.PacketInterfa
 
 	idGathering, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		go protocol.getDetailedParticipantsHandler(fmt.Errorf("Failed to read gatheringID from parameters. %s", err.Error()), client, callID, 0)
+		errorCode = protocol.getDetailedParticipantsHandler(fmt.Errorf("Failed to read gatheringID from parameters. %s", err.Error()), client, callID, 0)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
+		return
 	}
 
-	go protocol.getDetailedParticipantsHandler(nil, client, callID, idGathering)
+	errorCode = protocol.getDetailedParticipantsHandler(nil, client, callID, idGathering)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

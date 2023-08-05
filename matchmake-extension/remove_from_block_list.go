@@ -14,6 +14,8 @@ func (protocol *Protocol) RemoveFromBlockList(handler func(err error, client *ne
 }
 
 func (protocol *Protocol) handleRemoveFromBlockList(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.removeFromBlockListHandler == nil {
 		globals.Logger.Warning("MatchmakeExtension::RemoveFromBlockList not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,9 +32,16 @@ func (protocol *Protocol) handleRemoveFromBlockList(packet nex.PacketInterface) 
 
 	lstPrincipalID, err := parametersStream.ReadListUInt32LE()
 	if err != nil {
-		go protocol.removeFromBlockListHandler(fmt.Errorf("Failed to read lstPrincipalID from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.removeFromBlockListHandler(fmt.Errorf("Failed to read lstPrincipalID from parameters. %s", err.Error()), client, callID, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.removeFromBlockListHandler(nil, client, callID, lstPrincipalID)
+	errorCode = protocol.removeFromBlockListHandler(nil, client, callID, lstPrincipalID)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

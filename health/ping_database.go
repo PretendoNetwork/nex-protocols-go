@@ -12,6 +12,8 @@ func (protocol *Protocol) PingDatabase(handler func(err error, client *nex.Clien
 }
 
 func (protocol *Protocol) handlePingDatabase(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.pingDatabaseHandler == nil {
 		globals.Logger.Warning("Health::PingDatabase not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -23,5 +25,8 @@ func (protocol *Protocol) handlePingDatabase(packet nex.PacketInterface) {
 
 	callID := request.CallID()
 
-	go protocol.pingDatabaseHandler(nil, client, callID)
+	errorCode = protocol.pingDatabaseHandler(nil, client, callID)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

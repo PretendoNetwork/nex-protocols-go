@@ -15,6 +15,8 @@ func (protocol *Protocol) ChangeAllAttributes(handler func(err error, client *ne
 }
 
 func (protocol *Protocol) handleChangeAllAttributes(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.changeAllAttributesHandler == nil {
 		globals.Logger.Warning("Ranking::ChangeAllAttributes not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -31,15 +33,26 @@ func (protocol *Protocol) handleChangeAllAttributes(packet nex.PacketInterface) 
 
 	changeParam, err := parametersStream.ReadStructure(ranking_types.NewRankingChangeAttributesParam())
 	if err != nil {
-		go protocol.changeAllAttributesHandler(fmt.Errorf("Failed to read changeParam from parameters. %s", err.Error()), client, callID, nil, 0)
+		errorCode = protocol.changeAllAttributesHandler(fmt.Errorf("Failed to read changeParam from parameters. %s", err.Error()), client, callID, nil, 0)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
 	uniqueID, err := parametersStream.ReadUInt64LE()
 	if err != nil {
-		go protocol.changeAllAttributesHandler(fmt.Errorf("Failed to read uniqueID from parameters. %s", err.Error()), client, callID, nil, 0)
+		errorCode = protocol.changeAllAttributesHandler(fmt.Errorf("Failed to read uniqueID from parameters. %s", err.Error()), client, callID, nil, 0)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.changeAllAttributesHandler(nil, client, callID, changeParam.(*ranking_types.RankingChangeAttributesParam), uniqueID)
+	errorCode = protocol.changeAllAttributesHandler(nil, client, callID, changeParam.(*ranking_types.RankingChangeAttributesParam), uniqueID)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

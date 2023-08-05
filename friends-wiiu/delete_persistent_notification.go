@@ -15,6 +15,8 @@ func (protocol *Protocol) DeletePersistentNotification(handler func(err error, c
 }
 
 func (protocol *Protocol) handleDeletePersistentNotification(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.deletePersistentNotificationHandler == nil {
 		globals.Logger.Warning("FriendsWiiU::DeletePersistentNotification not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -31,9 +33,16 @@ func (protocol *Protocol) handleDeletePersistentNotification(packet nex.PacketIn
 
 	persistentNotifications, err := parametersStream.ReadListStructure(friends_wiiu_types.NewPersistentNotification())
 	if err != nil {
-		go protocol.deletePersistentNotificationHandler(fmt.Errorf("Failed to read persistentNotifications from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.deletePersistentNotificationHandler(fmt.Errorf("Failed to read persistentNotifications from parameters. %s", err.Error()), client, callID, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.deletePersistentNotificationHandler(nil, client, callID, persistentNotifications.([]*friends_wiiu_types.PersistentNotification))
+	errorCode = protocol.deletePersistentNotificationHandler(nil, client, callID, persistentNotifications.([]*friends_wiiu_types.PersistentNotification))
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

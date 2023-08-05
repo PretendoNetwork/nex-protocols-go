@@ -15,6 +15,8 @@ func (protocol *Protocol) CreateCommunity(handler func(err error, client *nex.Cl
 }
 
 func (protocol *Protocol) handleCreateCommunity(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.createCommunityHandler == nil {
 		globals.Logger.Warning("MatchmakeExtension::CreateCommunity not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -31,15 +33,26 @@ func (protocol *Protocol) handleCreateCommunity(packet nex.PacketInterface) {
 
 	community, err := parametersStream.ReadStructure(match_making_types.NewPersistentGathering())
 	if err != nil {
-		go protocol.createCommunityHandler(fmt.Errorf("Failed to read community from parameters. %s", err.Error()), client, callID, nil, "")
+		errorCode = protocol.createCommunityHandler(fmt.Errorf("Failed to read community from parameters. %s", err.Error()), client, callID, nil, "")
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
 	strMessage, err := parametersStream.ReadString()
 	if err != nil {
-		go protocol.createCommunityHandler(fmt.Errorf("Failed to read strMessage from parameters. %s", err.Error()), client, callID, nil, "")
+		errorCode = protocol.createCommunityHandler(fmt.Errorf("Failed to read strMessage from parameters. %s", err.Error()), client, callID, nil, "")
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.createCommunityHandler(nil, client, callID, community.(*match_making_types.PersistentGathering), strMessage)
+	errorCode = protocol.createCommunityHandler(nil, client, callID, community.(*match_making_types.PersistentGathering), strMessage)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

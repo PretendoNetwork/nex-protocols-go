@@ -15,6 +15,8 @@ func (protocol *Protocol) GetSupportID(handler func(err error, client *nex.Clien
 }
 
 func (protocol *Protocol) handleGetSupportID(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.getSupportIDHandler == nil {
 		globals.Logger.Warning("ServiceItemTeamKirbyClashDeluxe::GetSupportID not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -31,9 +33,16 @@ func (protocol *Protocol) handleGetSupportID(packet nex.PacketInterface) {
 
 	getSuppordIDParam, err := parametersStream.ReadStructure(service_item_team_kirby_clash_deluxe_types.NewServiceItemGetSupportIDParam())
 	if err != nil {
-		go protocol.getSupportIDHandler(fmt.Errorf("Failed to read getSuppordIDParam from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.getSupportIDHandler(fmt.Errorf("Failed to read getSuppordIDParam from parameters. %s", err.Error()), client, callID, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.getSupportIDHandler(nil, client, callID, getSuppordIDParam.(*service_item_team_kirby_clash_deluxe_types.ServiceItemGetSupportIDParam))
+	errorCode = protocol.getSupportIDHandler(nil, client, callID, getSuppordIDParam.(*service_item_team_kirby_clash_deluxe_types.ServiceItemGetSupportIDParam))
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

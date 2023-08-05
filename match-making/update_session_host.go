@@ -14,6 +14,8 @@ func (protocol *Protocol) UpdateSessionHost(handler func(err error, client *nex.
 }
 
 func (protocol *Protocol) handleUpdateSessionHost(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.updateSessionHostHandler == nil {
 		fmt.Println("[Warning] MatchMaking::UpdateSessionHost not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,13 +32,26 @@ func (protocol *Protocol) handleUpdateSessionHost(packet nex.PacketInterface) {
 
 	gid, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		go protocol.updateSessionHostHandler(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), client, callID, 0, false)
+		errorCode = protocol.updateSessionHostHandler(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), client, callID, 0, false)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
+		return
 	}
 
 	isMigrateOwner, err := parametersStream.ReadBool()
 	if err != nil {
-		go protocol.updateSessionHostHandler(fmt.Errorf("Failed to read isMigrateOwner from parameters. %s", err.Error()), client, callID, 0, false)
+		errorCode = protocol.updateSessionHostHandler(fmt.Errorf("Failed to read isMigrateOwner from parameters. %s", err.Error()), client, callID, 0, false)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
+		return
 	}
 
-	go protocol.updateSessionHostHandler(nil, client, callID, gid, isMigrateOwner)
+	errorCode = protocol.updateSessionHostHandler(nil, client, callID, gid, isMigrateOwner)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

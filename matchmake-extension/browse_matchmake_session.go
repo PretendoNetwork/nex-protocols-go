@@ -15,6 +15,8 @@ func (protocol *Protocol) BrowseMatchmakeSession(handler func(err error, client 
 }
 
 func (protocol *Protocol) handleBrowseMatchmakeSession(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.browseMatchmakeSessionHandler == nil {
 		globals.Logger.Warning("MatchmakeExtension::BrowseMatchmakeSession not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -31,15 +33,26 @@ func (protocol *Protocol) handleBrowseMatchmakeSession(packet nex.PacketInterfac
 
 	searchCriteria, err := parametersStream.ReadStructure(match_making_types.NewMatchmakeSessionSearchCriteria())
 	if err != nil {
-		go protocol.browseMatchmakeSessionHandler(fmt.Errorf("Failed to read searchCriteria from parameters. %s", err.Error()), client, callID, nil, nil)
+		errorCode = protocol.browseMatchmakeSessionHandler(fmt.Errorf("Failed to read searchCriteria from parameters. %s", err.Error()), client, callID, nil, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
 	resultRange, err := parametersStream.ReadStructure(nex.NewResultRange())
 	if err != nil {
-		go protocol.browseMatchmakeSessionHandler(fmt.Errorf("Failed to read resultRange from parameters. %s", err.Error()), client, callID, nil, nil)
+		errorCode = protocol.browseMatchmakeSessionHandler(fmt.Errorf("Failed to read resultRange from parameters. %s", err.Error()), client, callID, nil, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.browseMatchmakeSessionHandler(nil, client, callID, searchCriteria.(*match_making_types.MatchmakeSessionSearchCriteria), resultRange.(*nex.ResultRange))
+	errorCode = protocol.browseMatchmakeSessionHandler(nil, client, callID, searchCriteria.(*match_making_types.MatchmakeSessionSearchCriteria), resultRange.(*nex.ResultRange))
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

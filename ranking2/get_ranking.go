@@ -15,6 +15,8 @@ func (protocol *Protocol) GetRanking(handler func(err error, client *nex.Client,
 }
 
 func (protocol *Protocol) handleGetRanking(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.getRankingHandler == nil {
 		globals.Logger.Warning("Ranking2::GetRanking not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,9 +32,16 @@ func (protocol *Protocol) handleGetRanking(packet nex.PacketInterface) {
 
 	getParam, err := parametersStream.ReadStructure(ranking2_types.NewRanking2GetParam())
 	if err != nil {
-		go protocol.getRankingHandler(fmt.Errorf("Failed to read getParam from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.getRankingHandler(fmt.Errorf("Failed to read getParam from parameters. %s", err.Error()), client, callID, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.getRankingHandler(nil, client, callID, getParam.(*ranking2_types.Ranking2GetParam))
+	errorCode = protocol.getRankingHandler(nil, client, callID, getParam.(*ranking2_types.Ranking2GetParam))
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

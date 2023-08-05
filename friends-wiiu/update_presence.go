@@ -15,6 +15,8 @@ func (protocol *Protocol) UpdatePresence(handler func(err error, client *nex.Cli
 }
 
 func (protocol *Protocol) handleUpdatePresence(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.updatePresenceHandler == nil {
 		globals.Logger.Warning("FriendsWiiU::UpdatePresence not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -31,9 +33,16 @@ func (protocol *Protocol) handleUpdatePresence(packet nex.PacketInterface) {
 
 	nintendoPresenceV2, err := parametersStream.ReadStructure(friends_wiiu_types.NewNintendoPresenceV2())
 	if err != nil {
-		go protocol.updatePresenceHandler(fmt.Errorf("Failed to read nintendoPresenceV2 from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.updatePresenceHandler(fmt.Errorf("Failed to read nintendoPresenceV2 from parameters. %s", err.Error()), client, callID, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.updatePresenceHandler(nil, client, callID, nintendoPresenceV2.(*friends_wiiu_types.NintendoPresenceV2))
+	errorCode = protocol.updatePresenceHandler(nil, client, callID, nintendoPresenceV2.(*friends_wiiu_types.NintendoPresenceV2))
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

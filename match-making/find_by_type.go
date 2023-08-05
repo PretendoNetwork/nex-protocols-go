@@ -14,6 +14,8 @@ func (protocol *Protocol) FindByType(handler func(err error, client *nex.Client,
 }
 
 func (protocol *Protocol) handleFindByType(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.findByTypeHandler == nil {
 		globals.Logger.Warning("MatchMaking::FindByType not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,13 +32,26 @@ func (protocol *Protocol) handleFindByType(packet nex.PacketInterface) {
 
 	strType, err := parametersStream.ReadString()
 	if err != nil {
-		go protocol.findByTypeHandler(fmt.Errorf("Failed to read strType from parameters. %s", err.Error()), client, callID, "", nil)
+		errorCode = protocol.findByTypeHandler(fmt.Errorf("Failed to read strType from parameters. %s", err.Error()), client, callID, "", nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
+		return
 	}
 
 	resultRange, err := parametersStream.ReadStructure(nex.NewResultRange())
 	if err != nil {
-		go protocol.findByTypeHandler(fmt.Errorf("Failed to read resultRange from parameters. %s", err.Error()), client, callID, "", nil)
+		errorCode = protocol.findByTypeHandler(fmt.Errorf("Failed to read resultRange from parameters. %s", err.Error()), client, callID, "", nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
+		return
 	}
 
-	go protocol.findByTypeHandler(nil, client, callID, strType, resultRange.(*nex.ResultRange))
+	errorCode = protocol.findByTypeHandler(nil, client, callID, strType, resultRange.(*nex.ResultRange))
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

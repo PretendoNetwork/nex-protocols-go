@@ -14,6 +14,8 @@ func (protocol *Protocol) ClearMatchmakeSessionSystemPassword(handler func(err e
 }
 
 func (protocol *Protocol) handleClearMatchmakeSessionSystemPassword(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.clearMatchmakeSessionSystemPasswordHandler == nil {
 		globals.Logger.Warning("MatchmakeExtension::ClearMatchmakeSessionSystemPassword not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,9 +32,16 @@ func (protocol *Protocol) handleClearMatchmakeSessionSystemPassword(packet nex.P
 
 	gid, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		go protocol.clearMatchmakeSessionSystemPasswordHandler(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), client, callID, 0)
+		errorCode = protocol.clearMatchmakeSessionSystemPasswordHandler(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), client, callID, 0)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.clearMatchmakeSessionSystemPasswordHandler(nil, client, callID, gid)
+	errorCode = protocol.clearMatchmakeSessionSystemPasswordHandler(nil, client, callID, gid)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

@@ -14,6 +14,8 @@ func (protocol *Protocol) TestCapability(handler func(err error, client *nex.Cli
 }
 
 func (protocol *Protocol) handleTestCapability(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.testCapabilityHandler == nil {
 		globals.Logger.Warning("AccountManagement::TestCapability not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,9 +32,16 @@ func (protocol *Protocol) handleTestCapability(packet nex.PacketInterface) {
 
 	uiCapability, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		go protocol.testCapabilityHandler(fmt.Errorf("Failed to read uiCapability from parameters. %s", err.Error()), client, callID, 0)
+		errorCode = protocol.testCapabilityHandler(fmt.Errorf("Failed to read uiCapability from parameters. %s", err.Error()), client, callID, 0)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.testCapabilityHandler(nil, client, callID, uiCapability)
+	errorCode = protocol.testCapabilityHandler(nil, client, callID, uiCapability)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

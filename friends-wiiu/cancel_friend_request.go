@@ -14,6 +14,8 @@ func (protocol *Protocol) CancelFriendRequest(handler func(err error, client *ne
 }
 
 func (protocol *Protocol) handleCancelFriendRequest(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.cancelFriendRequestHandler == nil {
 		globals.Logger.Warning("FriendsWiiU::CancelFriendRequest not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,9 +32,16 @@ func (protocol *Protocol) handleCancelFriendRequest(packet nex.PacketInterface) 
 
 	id, err := parametersStream.ReadUInt64LE()
 	if err != nil {
-		go protocol.cancelFriendRequestHandler(fmt.Errorf("Failed to read id from parameters. %s", err.Error()), client, callID, 0)
+		errorCode = protocol.cancelFriendRequestHandler(fmt.Errorf("Failed to read id from parameters. %s", err.Error()), client, callID, 0)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.cancelFriendRequestHandler(nil, client, callID, id)
+	errorCode = protocol.cancelFriendRequestHandler(nil, client, callID, id)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

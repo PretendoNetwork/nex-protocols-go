@@ -12,6 +12,8 @@ func (protocol *Protocol) ClearMyPreviouslyMatchedUserCache(handler func(err err
 }
 
 func (protocol *Protocol) handleClearMyPreviouslyMatchedUserCache(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.clearMyPreviouslyMatchedUserCacheHandler == nil {
 		globals.Logger.Warning("MatchmakeExtension::ClearMyPreviouslyMatchedUserCache not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -23,5 +25,8 @@ func (protocol *Protocol) handleClearMyPreviouslyMatchedUserCache(packet nex.Pac
 
 	callID := request.CallID()
 
-	go protocol.clearMyPreviouslyMatchedUserCacheHandler(nil, client, callID)
+	errorCode = protocol.clearMyPreviouslyMatchedUserCacheHandler(nil, client, callID)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

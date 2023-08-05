@@ -15,6 +15,8 @@ func (protocol *Protocol) GetRankingByPrincipalID(handler func(err error, client
 }
 
 func (protocol *Protocol) handleGetRankingByPrincipalID(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.getRankingByPrincipalIDHandler == nil {
 		globals.Logger.Warning("Ranking2::GetRankingByPrincipalID not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,15 +32,26 @@ func (protocol *Protocol) handleGetRankingByPrincipalID(packet nex.PacketInterfa
 
 	getParam, err := parametersStream.ReadStructure(ranking2_types.NewRanking2GetParam())
 	if err != nil {
-		go protocol.getRankingByPrincipalIDHandler(fmt.Errorf("Failed to read getParam from parameters. %s", err.Error()), client, callID, nil, nil)
+		errorCode = protocol.getRankingByPrincipalIDHandler(fmt.Errorf("Failed to read getParam from parameters. %s", err.Error()), client, callID, nil, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
 	principalIDList, err := parametersStream.ReadListUInt32LE()
 	if err != nil {
-		go protocol.getRankingByPrincipalIDHandler(fmt.Errorf("Failed to read principalIDList from parameters. %s", err.Error()), client, callID, nil, nil)
+		errorCode = protocol.getRankingByPrincipalIDHandler(fmt.Errorf("Failed to read principalIDList from parameters. %s", err.Error()), client, callID, nil, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.getRankingByPrincipalIDHandler(nil, client, callID, getParam.(*ranking2_types.Ranking2GetParam), principalIDList)
+	errorCode = protocol.getRankingByPrincipalIDHandler(nil, client, callID, getParam.(*ranking2_types.Ranking2GetParam), principalIDList)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

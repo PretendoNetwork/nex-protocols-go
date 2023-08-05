@@ -14,6 +14,8 @@ func (protocol *Protocol) UpdateApplicationBuffer(handler func(err error, client
 }
 
 func (protocol *Protocol) handleUpdateApplicationBuffer(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.updateApplicationBufferHandler == nil {
 		globals.Logger.Warning("MatchmakeExtension::UpdateApplicationBuffer not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,15 +32,26 @@ func (protocol *Protocol) handleUpdateApplicationBuffer(packet nex.PacketInterfa
 
 	gid, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		go protocol.updateApplicationBufferHandler(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), client, callID, 0, nil)
+		errorCode = protocol.updateApplicationBufferHandler(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), client, callID, 0, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
 	applicationBuffer, err := parametersStream.ReadBuffer()
 	if err != nil {
-		go protocol.updateApplicationBufferHandler(fmt.Errorf("Failed to read applicationBuffer from parameters. %s", err.Error()), client, callID, 0, nil)
+		errorCode = protocol.updateApplicationBufferHandler(fmt.Errorf("Failed to read applicationBuffer from parameters. %s", err.Error()), client, callID, 0, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.updateApplicationBufferHandler(nil, client, callID, gid, applicationBuffer)
+	errorCode = protocol.updateApplicationBufferHandler(nil, client, callID, gid, applicationBuffer)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

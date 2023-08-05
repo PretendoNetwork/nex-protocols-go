@@ -14,6 +14,8 @@ func (protocol *Protocol) SetApplicationConfig(handler func(err error, client *n
 }
 
 func (protocol *Protocol) handleSetApplicationConfig(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.setApplicationConfigHandler == nil {
 		globals.Logger.Warning("DataStoreSuperMarioMaker::SetApplicationConfig not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,21 +32,36 @@ func (protocol *Protocol) handleSetApplicationConfig(packet nex.PacketInterface)
 
 	applicationID, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		go protocol.setApplicationConfigHandler(fmt.Errorf("Failed to read applicationID from parameters. %s", err.Error()), client, callID, 0, 0, 0)
+		errorCode = protocol.setApplicationConfigHandler(fmt.Errorf("Failed to read applicationID from parameters. %s", err.Error()), client, callID, 0, 0, 0)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
 	key, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		go protocol.setApplicationConfigHandler(fmt.Errorf("Failed to read key from parameters. %s", err.Error()), client, callID, 0, 0, 0)
+		errorCode = protocol.setApplicationConfigHandler(fmt.Errorf("Failed to read key from parameters. %s", err.Error()), client, callID, 0, 0, 0)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
 	value, err := parametersStream.ReadInt32LE()
 	if err != nil {
-		go protocol.setApplicationConfigHandler(fmt.Errorf("Failed to read value from parameters. %s", err.Error()), client, callID, 0, 0, 0)
+		errorCode = protocol.setApplicationConfigHandler(fmt.Errorf("Failed to read value from parameters. %s", err.Error()), client, callID, 0, 0, 0)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.setApplicationConfigHandler(nil, client, callID, applicationID, key, value)
+	errorCode = protocol.setApplicationConfigHandler(nil, client, callID, applicationID, key, value)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

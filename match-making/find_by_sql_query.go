@@ -14,6 +14,8 @@ func (protocol *Protocol) FindBySQLQuery(handler func(err error, client *nex.Cli
 }
 
 func (protocol *Protocol) handleFindBySQLQuery(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.findBySQLQueryHandler == nil {
 		globals.Logger.Warning("MatchMaking::FindBySQLQuery not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,13 +32,26 @@ func (protocol *Protocol) handleFindBySQLQuery(packet nex.PacketInterface) {
 
 	strQuery, err := parametersStream.ReadString()
 	if err != nil {
-		go protocol.findBySQLQueryHandler(fmt.Errorf("Failed to read strQuery from parameters. %s", err.Error()), client, callID, "", nil)
+		errorCode = protocol.findBySQLQueryHandler(fmt.Errorf("Failed to read strQuery from parameters. %s", err.Error()), client, callID, "", nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
+		return
 	}
 
 	resultRange, err := parametersStream.ReadStructure(nex.NewResultRange())
 	if err != nil {
-		go protocol.findBySQLQueryHandler(fmt.Errorf("Failed to read resultRange from parameters. %s", err.Error()), client, callID, "", nil)
+		errorCode = protocol.findBySQLQueryHandler(fmt.Errorf("Failed to read resultRange from parameters. %s", err.Error()), client, callID, "", nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
+		return
 	}
 
-	go protocol.findBySQLQueryHandler(nil, client, callID, strQuery, resultRange.(*nex.ResultRange))
+	errorCode = protocol.findBySQLQueryHandler(nil, client, callID, strQuery, resultRange.(*nex.ResultRange))
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

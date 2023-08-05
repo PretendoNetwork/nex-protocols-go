@@ -14,6 +14,8 @@ func (protocol *Protocol) GetFightingPowerChart(handler func(err error, client *
 }
 
 func (protocol *Protocol) handleGetFightingPowerChart(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.getFightingPowerChartHandler == nil {
 		globals.Logger.Warning("DataStoreSuperSmashBros4::GetFightingPowerChart not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,9 +32,16 @@ func (protocol *Protocol) handleGetFightingPowerChart(packet nex.PacketInterface
 
 	mode, err := parametersStream.ReadUInt8()
 	if err != nil {
-		go protocol.getFightingPowerChartHandler(fmt.Errorf("Failed to read mode from parameters. %s", err.Error()), client, callID, 0)
+		errorCode = protocol.getFightingPowerChartHandler(fmt.Errorf("Failed to read mode from parameters. %s", err.Error()), client, callID, 0)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.getFightingPowerChartHandler(nil, client, callID, mode)
+	errorCode = protocol.getFightingPowerChartHandler(nil, client, callID, mode)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

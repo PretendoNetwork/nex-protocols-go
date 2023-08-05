@@ -14,6 +14,8 @@ func (protocol *Protocol) UpdateDetails(handler func(err error, client *nex.Clie
 }
 
 func (protocol *Protocol) handleUpdateDetails(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.updateDetailsHandler == nil {
 		globals.Logger.Warning("Friends::UpdateDetails not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,15 +32,26 @@ func (protocol *Protocol) handleUpdateDetails(packet nex.PacketInterface) {
 
 	uiPlayer, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		go protocol.updateDetailsHandler(fmt.Errorf("Failed to read uiPlayer from parameters. %s", err.Error()), client, callID, 0, 0)
+		errorCode = protocol.updateDetailsHandler(fmt.Errorf("Failed to read uiPlayer from parameters. %s", err.Error()), client, callID, 0, 0)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
 	uiDetails, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		go protocol.updateDetailsHandler(fmt.Errorf("Failed to read uiDetails from parameters. %s", err.Error()), client, callID, 0, 0)
+		errorCode = protocol.updateDetailsHandler(fmt.Errorf("Failed to read uiDetails from parameters. %s", err.Error()), client, callID, 0, 0)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.updateDetailsHandler(nil, client, callID, uiPlayer, uiDetails)
+	errorCode = protocol.updateDetailsHandler(nil, client, callID, uiPlayer, uiDetails)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

@@ -14,6 +14,8 @@ func (protocol *Protocol) Invite(handler func(err error, client *nex.Client, cal
 }
 
 func (protocol *Protocol) handleInvite(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.inviteHandler == nil {
 		globals.Logger.Warning("MatchMaking::Invite not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,18 +32,36 @@ func (protocol *Protocol) handleInvite(packet nex.PacketInterface) {
 
 	idGathering, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		go protocol.inviteHandler(fmt.Errorf("Failed to read idGathering from parameters. %s", err.Error()), client, callID, 0, nil, "")
+		errorCode = protocol.inviteHandler(fmt.Errorf("Failed to read idGathering from parameters. %s", err.Error()), client, callID, 0, nil, "")
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
+		return
 	}
 
 	lstPrincipals, err := parametersStream.ReadListUInt32LE()
 	if err != nil {
-		go protocol.inviteHandler(fmt.Errorf("Failed to read lstPrincipals from parameters. %s", err.Error()), client, callID, 0, nil, "")
+		errorCode = protocol.inviteHandler(fmt.Errorf("Failed to read lstPrincipals from parameters. %s", err.Error()), client, callID, 0, nil, "")
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
+		return
 	}
 
 	strMessage, err := parametersStream.ReadString()
 	if err != nil {
-		go protocol.inviteHandler(fmt.Errorf("Failed to read strMessage from parameters. %s", err.Error()), client, callID, 0, nil, "")
+		errorCode = protocol.inviteHandler(fmt.Errorf("Failed to read strMessage from parameters. %s", err.Error()), client, callID, 0, nil, "")
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
+		return
 	}
 
-	go protocol.inviteHandler(nil, client, callID, idGathering, lstPrincipals, strMessage)
+	errorCode = protocol.inviteHandler(nil, client, callID, idGathering, lstPrincipals, strMessage)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

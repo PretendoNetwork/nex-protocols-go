@@ -15,6 +15,8 @@ func (protocol *Protocol) SaveUserInfo(handler func(err error, client *nex.Clien
 }
 
 func (protocol *Protocol) handleSaveUserInfo(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.saveUserInfoHandler == nil {
 		globals.Logger.Warning("ServiceItemWiiSportsClub::SaveUserInfo not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -31,9 +33,16 @@ func (protocol *Protocol) handleSaveUserInfo(packet nex.PacketInterface) {
 
 	userInfo, err := parametersStream.ReadStructure(service_item_wii_sports_club_types.NewServiceItemUserInfo())
 	if err != nil {
-		go protocol.saveUserInfoHandler(fmt.Errorf("Failed to read userInfo from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.saveUserInfoHandler(fmt.Errorf("Failed to read userInfo from parameters. %s", err.Error()), client, callID, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.saveUserInfoHandler(nil, client, callID, userInfo.(*service_item_wii_sports_club_types.ServiceItemUserInfo))
+	errorCode = protocol.saveUserInfoHandler(nil, client, callID, userInfo.(*service_item_wii_sports_club_types.ServiceItemUserInfo))
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

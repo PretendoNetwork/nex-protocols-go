@@ -12,6 +12,8 @@ func (protocol *Protocol) FindCommunityCompetitionsByGatheringID(handler func(er
 }
 
 func (protocol *Protocol) handleFindCommunityCompetitionsByGatheringID(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.findCommunityCompetitionsByGatheringIDHandler == nil {
 		globals.Logger.Warning("MatchmakeExtensionSuperSmashBros4::FindCommunityCompetitionsByGatheringID not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -25,5 +27,8 @@ func (protocol *Protocol) handleFindCommunityCompetitionsByGatheringID(packet ne
 
 	callID := request.CallID()
 
-	go protocol.findCommunityCompetitionsByGatheringIDHandler(nil, client, callID, packet.Payload())
+	errorCode = protocol.findCommunityCompetitionsByGatheringIDHandler(nil, client, callID, packet.Payload())
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

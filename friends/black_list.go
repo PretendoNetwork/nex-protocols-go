@@ -14,6 +14,8 @@ func (protocol *Protocol) BlackList(handler func(err error, client *nex.Client, 
 }
 
 func (protocol *Protocol) handleBlackList(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.blackListHandler == nil {
 		globals.Logger.Warning("Friends::BlackList not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,15 +32,26 @@ func (protocol *Protocol) handleBlackList(packet nex.PacketInterface) {
 
 	uiPlayer, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		go protocol.blackListHandler(fmt.Errorf("Failed to read uiPlayer from parameters. %s", err.Error()), client, callID, 0, 0)
+		errorCode = protocol.blackListHandler(fmt.Errorf("Failed to read uiPlayer from parameters. %s", err.Error()), client, callID, 0, 0)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
 	uiDetails, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		go protocol.blackListHandler(fmt.Errorf("Failed to read uiDetails from parameters. %s", err.Error()), client, callID, 0, 0)
+		errorCode = protocol.blackListHandler(fmt.Errorf("Failed to read uiDetails from parameters. %s", err.Error()), client, callID, 0, 0)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.blackListHandler(nil, client, callID, uiPlayer, uiDetails)
+	errorCode = protocol.blackListHandler(nil, client, callID, uiPlayer, uiDetails)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

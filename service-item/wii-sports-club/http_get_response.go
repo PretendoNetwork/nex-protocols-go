@@ -14,6 +14,8 @@ func (protocol *Protocol) HTTPGetResponse(handler func(err error, client *nex.Cl
 }
 
 func (protocol *Protocol) handleHTTPGetResponse(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.httpGetResponseHandler == nil {
 		globals.Logger.Warning("ServiceItemWiiSportsClub::HTTPGetResponse not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,9 +32,16 @@ func (protocol *Protocol) handleHTTPGetResponse(packet nex.PacketInterface) {
 
 	requestID, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		go protocol.httpGetResponseHandler(fmt.Errorf("Failed to read requestID from parameters. %s", err.Error()), client, callID, 0)
+		errorCode = protocol.httpGetResponseHandler(fmt.Errorf("Failed to read requestID from parameters. %s", err.Error()), client, callID, 0)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.httpGetResponseHandler(nil, client, callID, requestID)
+	errorCode = protocol.httpGetResponseHandler(nil, client, callID, requestID)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

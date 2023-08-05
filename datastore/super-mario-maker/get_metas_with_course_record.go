@@ -16,6 +16,8 @@ func (protocol *Protocol) GetMetasWithCourseRecord(handler func(err error, clien
 }
 
 func (protocol *Protocol) handleGetMetasWithCourseRecord(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.getMetasWithCourseRecordHandler == nil {
 		globals.Logger.Warning("DataStoreSuperMarioMaker::GetMetasWithCourseRecord not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -32,15 +34,26 @@ func (protocol *Protocol) handleGetMetasWithCourseRecord(packet nex.PacketInterf
 
 	params, err := parametersStream.ReadListStructure(datastore_super_mario_maker_types.NewDataStoreGetCourseRecordParam())
 	if err != nil {
-		go protocol.getMetasWithCourseRecordHandler(fmt.Errorf("Failed to read params from parameters. %s", err.Error()), client, callID, nil, nil)
+		errorCode = protocol.getMetasWithCourseRecordHandler(fmt.Errorf("Failed to read params from parameters. %s", err.Error()), client, callID, nil, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
 	metaParam, err := parametersStream.ReadStructure(datastore_types.NewDataStoreGetMetaParam())
 	if err != nil {
-		go protocol.getMetasWithCourseRecordHandler(fmt.Errorf("Failed to read metaParam from parameters. %s", err.Error()), client, callID, nil, nil)
+		errorCode = protocol.getMetasWithCourseRecordHandler(fmt.Errorf("Failed to read metaParam from parameters. %s", err.Error()), client, callID, nil, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.getMetasWithCourseRecordHandler(nil, client, callID, params.([]*datastore_super_mario_maker_types.DataStoreGetCourseRecordParam), metaParam.(*datastore_types.DataStoreGetMetaParam))
+	errorCode = protocol.getMetasWithCourseRecordHandler(nil, client, callID, params.([]*datastore_super_mario_maker_types.DataStoreGetCourseRecordParam), metaParam.(*datastore_types.DataStoreGetMetaParam))
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

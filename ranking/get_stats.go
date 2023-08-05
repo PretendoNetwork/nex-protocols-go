@@ -15,6 +15,8 @@ func (protocol *Protocol) GetStats(handler func(err error, client *nex.Client, c
 }
 
 func (protocol *Protocol) handleGetStats(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.getStatsHandler == nil {
 		globals.Logger.Warning("Ranking::GetStats not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -31,21 +33,36 @@ func (protocol *Protocol) handleGetStats(packet nex.PacketInterface) {
 
 	category, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		go protocol.getStatsHandler(fmt.Errorf("Failed to read category from parameters. %s", err.Error()), client, callID, 0, nil, 0)
+		errorCode = protocol.getStatsHandler(fmt.Errorf("Failed to read category from parameters. %s", err.Error()), client, callID, 0, nil, 0)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
 	orderParam, err := parametersStream.ReadStructure(ranking_types.NewRankingOrderParam())
 	if err != nil {
-		go protocol.getStatsHandler(fmt.Errorf("Failed to read orderParam from parameters. %s", err.Error()), client, callID, 0, nil, 0)
+		errorCode = protocol.getStatsHandler(fmt.Errorf("Failed to read orderParam from parameters. %s", err.Error()), client, callID, 0, nil, 0)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
 	flags, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		go protocol.getStatsHandler(fmt.Errorf("Failed to read flags from parameters. %s", err.Error()), client, callID, 0, nil, 0)
+		errorCode = protocol.getStatsHandler(fmt.Errorf("Failed to read flags from parameters. %s", err.Error()), client, callID, 0, nil, 0)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.getStatsHandler(nil, client, callID, category, orderParam.(*ranking_types.RankingOrderParam), flags)
+	errorCode = protocol.getStatsHandler(nil, client, callID, category, orderParam.(*ranking_types.RankingOrderParam), flags)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

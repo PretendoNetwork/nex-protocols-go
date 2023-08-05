@@ -14,6 +14,8 @@ func (protocol *Protocol) UpdateStatus(handler func(err error, client *nex.Clien
 }
 
 func (protocol *Protocol) handleUpdateStatus(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.updateStatusHandler == nil {
 		globals.Logger.Warning("AccountManagement::UpdateStatus not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,9 +32,16 @@ func (protocol *Protocol) handleUpdateStatus(packet nex.PacketInterface) {
 
 	strStatus, err := parametersStream.ReadString()
 	if err != nil {
-		go protocol.updateStatusHandler(fmt.Errorf("Failed to read strStatus from parameters. %s", err.Error()), client, callID, "")
+		errorCode = protocol.updateStatusHandler(fmt.Errorf("Failed to read strStatus from parameters. %s", err.Error()), client, callID, "")
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.updateStatusHandler(nil, client, callID, strStatus)
+	errorCode = protocol.updateStatusHandler(nil, client, callID, strStatus)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

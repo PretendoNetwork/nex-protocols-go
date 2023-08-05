@@ -14,6 +14,8 @@ func (protocol *Protocol) GetSimpleCommunity(handler func(err error, client *nex
 }
 
 func (protocol *Protocol) handleGetSimpleCommunity(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.getSimpleCommunityHandler == nil {
 		globals.Logger.Warning("MatchmakeExtension::GetSimpleCommunity not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,9 +32,16 @@ func (protocol *Protocol) handleGetSimpleCommunity(packet nex.PacketInterface) {
 
 	gatheringIDList, err := parametersStream.ReadListUInt32LE()
 	if err != nil {
-		go protocol.getSimpleCommunityHandler(fmt.Errorf("Failed to read gatheringIDList from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.getSimpleCommunityHandler(fmt.Errorf("Failed to read gatheringIDList from parameters. %s", err.Error()), client, callID, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.getSimpleCommunityHandler(nil, client, callID, gatheringIDList)
+	errorCode = protocol.getSimpleCommunityHandler(nil, client, callID, gatheringIDList)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

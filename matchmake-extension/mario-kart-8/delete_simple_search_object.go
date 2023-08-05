@@ -14,6 +14,8 @@ func (protocol *Protocol) DeleteSimpleSearchObject(handler func(err error, clien
 }
 
 func (protocol *Protocol) handleDeleteSimpleSearchObject(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.deleteSimpleSearchObjectHandler == nil {
 		globals.Logger.Warning("MatchmakeExtensionMarioKart8::DeleteSimpleSearchObject not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,9 +32,16 @@ func (protocol *Protocol) handleDeleteSimpleSearchObject(packet nex.PacketInterf
 
 	objectID, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		go protocol.deleteSimpleSearchObjectHandler(fmt.Errorf("Failed to read objectID from parameters. %s", err.Error()), client, callID, 0)
+		errorCode = protocol.deleteSimpleSearchObjectHandler(fmt.Errorf("Failed to read objectID from parameters. %s", err.Error()), client, callID, 0)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.deleteSimpleSearchObjectHandler(nil, client, callID, objectID)
+	errorCode = protocol.deleteSimpleSearchObjectHandler(nil, client, callID, objectID)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

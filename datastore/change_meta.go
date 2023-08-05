@@ -15,6 +15,8 @@ func (protocol *Protocol) ChangeMeta(handler func(err error, client *nex.Client,
 }
 
 func (protocol *Protocol) handleChangeMeta(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.changeMetaHandler == nil {
 		globals.Logger.Warning("DataStore::ChangeMeta not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -31,9 +33,16 @@ func (protocol *Protocol) handleChangeMeta(packet nex.PacketInterface) {
 
 	param, err := parametersStream.ReadStructure(datastore_types.NewDataStoreChangeMetaParam())
 	if err != nil {
-		go protocol.changeMetaHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.changeMetaHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.changeMetaHandler(nil, client, callID, param.(*datastore_types.DataStoreChangeMetaParam))
+	errorCode = protocol.changeMetaHandler(nil, client, callID, param.(*datastore_types.DataStoreChangeMetaParam))
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

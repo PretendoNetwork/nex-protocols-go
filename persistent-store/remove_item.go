@@ -14,6 +14,8 @@ func (protocol *Protocol) RemoveItem(handler func(err error, client *nex.Client,
 }
 
 func (protocol *Protocol) handleRemoveItem(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.removeItemHandler == nil {
 		globals.Logger.Warning("PersistentStore::RemoveItem not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,15 +32,26 @@ func (protocol *Protocol) handleRemoveItem(packet nex.PacketInterface) {
 
 	uiGroup, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		go protocol.removeItemHandler(fmt.Errorf("Failed to read uiGroup from parameters. %s", err.Error()), client, callID, 0, "")
+		errorCode = protocol.removeItemHandler(fmt.Errorf("Failed to read uiGroup from parameters. %s", err.Error()), client, callID, 0, "")
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
 	strTag, err := parametersStream.ReadString()
 	if err != nil {
-		go protocol.removeItemHandler(fmt.Errorf("Failed to read strTag from parameters. %s", err.Error()), client, callID, 0, "")
+		errorCode = protocol.removeItemHandler(fmt.Errorf("Failed to read strTag from parameters. %s", err.Error()), client, callID, 0, "")
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.removeItemHandler(nil, client, callID, uiGroup, strTag)
+	errorCode = protocol.removeItemHandler(nil, client, callID, uiGroup, strTag)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

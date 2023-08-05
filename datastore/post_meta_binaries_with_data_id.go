@@ -15,6 +15,8 @@ func (protocol *Protocol) PostMetaBinariesWithDataID(handler func(err error, cli
 }
 
 func (protocol *Protocol) handlePostMetaBinariesWithDataID(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.postMetaBinariesWithDataIDHandler == nil {
 		globals.Logger.Warning("DataStore::PostMetaBinariesWithDataID not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -31,21 +33,36 @@ func (protocol *Protocol) handlePostMetaBinariesWithDataID(packet nex.PacketInte
 
 	dataIDs, err := parametersStream.ReadListUInt64LE()
 	if err != nil {
-		go protocol.postMetaBinariesWithDataIDHandler(fmt.Errorf("Failed to read dataIDs from parameters. %s", err.Error()), client, callID, nil, nil, false)
+		errorCode = protocol.postMetaBinariesWithDataIDHandler(fmt.Errorf("Failed to read dataIDs from parameters. %s", err.Error()), client, callID, nil, nil, false)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
 	params, err := parametersStream.ReadListStructure(datastore_types.NewDataStorePreparePostParam())
 	if err != nil {
-		go protocol.postMetaBinariesWithDataIDHandler(fmt.Errorf("Failed to read params from parameters. %s", err.Error()), client, callID, nil, nil, false)
+		errorCode = protocol.postMetaBinariesWithDataIDHandler(fmt.Errorf("Failed to read params from parameters. %s", err.Error()), client, callID, nil, nil, false)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
 	transactional, err := parametersStream.ReadBool()
 	if err != nil {
-		go protocol.postMetaBinariesWithDataIDHandler(fmt.Errorf("Failed to read transactional from parameters. %s", err.Error()), client, callID, nil, nil, false)
+		errorCode = protocol.postMetaBinariesWithDataIDHandler(fmt.Errorf("Failed to read transactional from parameters. %s", err.Error()), client, callID, nil, nil, false)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.postMetaBinariesWithDataIDHandler(nil, client, callID, dataIDs, params.([]*datastore_types.DataStorePreparePostParam), transactional)
+	errorCode = protocol.postMetaBinariesWithDataIDHandler(nil, client, callID, dataIDs, params.([]*datastore_types.DataStorePreparePostParam), transactional)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

@@ -14,6 +14,8 @@ func (protocol *Protocol) UnregisterGatherings(handler func(err error, client *n
 }
 
 func (protocol *Protocol) handleUnregisterGatherings(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.unregisterGatheringsHandler == nil {
 		globals.Logger.Warning("MatchMaking::UnregisterGatherings not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,8 +32,16 @@ func (protocol *Protocol) handleUnregisterGatherings(packet nex.PacketInterface)
 
 	lstGatherings, err := parametersStream.ReadListUInt32LE()
 	if err != nil {
-		go protocol.unregisterGatheringsHandler(fmt.Errorf("Failed to read lstGatherings from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.unregisterGatheringsHandler(fmt.Errorf("Failed to read lstGatherings from parameters. %s", err.Error()), client, callID, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
+		return
 	}
 
-	go protocol.unregisterGatheringsHandler(nil, client, callID, lstGatherings)
+	errorCode = protocol.unregisterGatheringsHandler(nil, client, callID, lstGatherings)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

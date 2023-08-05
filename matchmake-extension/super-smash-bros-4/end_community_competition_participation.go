@@ -12,6 +12,8 @@ func (protocol *Protocol) EndCommunityCompetitionParticipation(handler func(err 
 }
 
 func (protocol *Protocol) handleEndCommunityCompetitionParticipation(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.endCommunityCompetitionParticipationHandler == nil {
 		globals.Logger.Warning("MatchmakeExtensionSuperSmashBros4::EndCommunityCompetitionParticipation not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -25,5 +27,8 @@ func (protocol *Protocol) handleEndCommunityCompetitionParticipation(packet nex.
 
 	callID := request.CallID()
 
-	go protocol.endCommunityCompetitionParticipationHandler(nil, client, callID, packet.Payload())
+	errorCode = protocol.endCommunityCompetitionParticipationHandler(nil, client, callID, packet.Payload())
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

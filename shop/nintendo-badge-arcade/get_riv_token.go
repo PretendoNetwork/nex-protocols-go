@@ -14,6 +14,8 @@ func (protocol *Protocol) GetRivToken(handler func(err error, client *nex.Client
 }
 
 func (protocol *Protocol) handleGetRivToken(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.getRivTokenHandler == nil {
 		globals.Logger.Warning("ShopNintendoBadgeArcade::GetRivToken not implemented")
 		go globals.RespondErrorCustom(packet, CustomProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,15 +32,26 @@ func (protocol *Protocol) handleGetRivToken(packet nex.PacketInterface) {
 
 	itemCode, err := parametersStream.ReadString()
 	if err != nil {
-		go protocol.getRivTokenHandler(fmt.Errorf("Failed to read itemCode from parameters. %s", err.Error()), client, callID, "", nil)
+		errorCode = protocol.getRivTokenHandler(fmt.Errorf("Failed to read itemCode from parameters. %s", err.Error()), client, callID, "", nil)
+		if errorCode != 0 {
+			globals.RespondErrorCustom(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
 	referenceID, err := parametersStream.ReadQBuffer()
 	if err != nil {
-		go protocol.getRivTokenHandler(fmt.Errorf("Failed to read referenceID from parameters. %s", err.Error()), client, callID, "", nil)
+		errorCode = protocol.getRivTokenHandler(fmt.Errorf("Failed to read referenceID from parameters. %s", err.Error()), client, callID, "", nil)
+		if errorCode != 0 {
+			globals.RespondErrorCustom(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.getRivTokenHandler(nil, client, callID, itemCode, referenceID)
+	errorCode = protocol.getRivTokenHandler(nil, client, callID, itemCode, referenceID)
+	if errorCode != 0 {
+		globals.RespondErrorCustom(packet, ProtocolID, errorCode)
+	}
 }

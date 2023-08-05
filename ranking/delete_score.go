@@ -14,6 +14,8 @@ func (protocol *Protocol) DeleteScore(handler func(err error, client *nex.Client
 }
 
 func (protocol *Protocol) handleDeleteScore(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.deleteScoreHandler == nil {
 		globals.Logger.Warning("Ranking::DeleteScore not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,15 +32,26 @@ func (protocol *Protocol) handleDeleteScore(packet nex.PacketInterface) {
 
 	category, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		go protocol.deleteScoreHandler(fmt.Errorf("Failed to read category from parameters. %s", err.Error()), client, callID, 0, 0)
+		errorCode = protocol.deleteScoreHandler(fmt.Errorf("Failed to read category from parameters. %s", err.Error()), client, callID, 0, 0)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
 	uniqueID, err := parametersStream.ReadUInt64LE()
 	if err != nil {
-		go protocol.deleteScoreHandler(fmt.Errorf("Failed to read uniqueID from parameters. %s", err.Error()), client, callID, 0, 0)
+		errorCode = protocol.deleteScoreHandler(fmt.Errorf("Failed to read uniqueID from parameters. %s", err.Error()), client, callID, 0, 0)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.deleteScoreHandler(nil, client, callID, category, uniqueID)
+	errorCode = protocol.deleteScoreHandler(nil, client, callID, category, uniqueID)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

@@ -14,6 +14,8 @@ func (protocol *Protocol) GetPendingDeletions(handler func(err error, client *ne
 }
 
 func (protocol *Protocol) handleGetPendingDeletions(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.getPendingDeletionsHandler == nil {
 		globals.Logger.Warning("MatchMaking::GetPendingDeletions not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,13 +32,26 @@ func (protocol *Protocol) handleGetPendingDeletions(packet nex.PacketInterface) 
 
 	uiReason, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		go protocol.getPendingDeletionsHandler(fmt.Errorf("Failed to read uiReason from parameters. %s", err.Error()), client, callID, 0, nil)
+		errorCode = protocol.getPendingDeletionsHandler(fmt.Errorf("Failed to read uiReason from parameters. %s", err.Error()), client, callID, 0, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
+		return
 	}
 
 	resultRange, err := parametersStream.ReadStructure(nex.NewResultRange())
 	if err != nil {
-		go protocol.getPendingDeletionsHandler(fmt.Errorf("Failed to read resultRange from parameters. %s", err.Error()), client, callID, 0, nil)
+		errorCode = protocol.getPendingDeletionsHandler(fmt.Errorf("Failed to read resultRange from parameters. %s", err.Error()), client, callID, 0, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
+		return
 	}
 
-	go protocol.getPendingDeletionsHandler(nil, client, callID, uiReason, resultRange.(*nex.ResultRange))
+	errorCode = protocol.getPendingDeletionsHandler(nil, client, callID, uiReason, resultRange.(*nex.ResultRange))
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

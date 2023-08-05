@@ -14,6 +14,8 @@ func (protocol *Protocol) GetTransactionParam(handler func(err error, client *ne
 }
 
 func (protocol *Protocol) handleGetTransactionParam(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.getTransactionParamHandler == nil {
 		globals.Logger.Warning("DataStorePokemonBank::GetTransactionParam not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,9 +32,16 @@ func (protocol *Protocol) handleGetTransactionParam(packet nex.PacketInterface) 
 
 	slotID, err := parametersStream.ReadUInt16LE()
 	if err != nil {
-		go protocol.getTransactionParamHandler(fmt.Errorf("Failed to read slotID from parameters. %s", err.Error()), client, callID, 0)
+		errorCode = protocol.getTransactionParamHandler(fmt.Errorf("Failed to read slotID from parameters. %s", err.Error()), client, callID, 0)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.getTransactionParamHandler(nil, client, callID, slotID)
+	errorCode = protocol.getTransactionParamHandler(nil, client, callID, slotID)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

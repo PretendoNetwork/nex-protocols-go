@@ -14,6 +14,8 @@ func (protocol *Protocol) SendInvitation(handler func(err error, client *nex.Cli
 }
 
 func (protocol *Protocol) handleSendInvitation(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.sendInvitationHandler == nil {
 		globals.Logger.Warning("Friends3DS::SendInvitation not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,9 +32,16 @@ func (protocol *Protocol) handleSendInvitation(packet nex.PacketInterface) {
 
 	pids, err := parametersStream.ReadListUInt32LE()
 	if err != nil {
-		go protocol.sendInvitationHandler(fmt.Errorf("Failed to read pids from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.sendInvitationHandler(fmt.Errorf("Failed to read pids from parameters. %s", err.Error()), client, callID, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.sendInvitationHandler(nil, client, callID, pids)
+	errorCode = protocol.sendInvitationHandler(nil, client, callID, pids)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

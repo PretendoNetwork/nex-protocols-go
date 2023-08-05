@@ -14,6 +14,8 @@ func (protocol *Protocol) ReportNATProperties(handler func(err error, client *ne
 }
 
 func (protocol *Protocol) handleReportNATProperties(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.reportNATPropertiesHandler == nil {
 		globals.Logger.Warning("NATTraversal::ReportNATProperties not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,21 +32,36 @@ func (protocol *Protocol) handleReportNATProperties(packet nex.PacketInterface) 
 
 	natmapping, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		go protocol.reportNATPropertiesHandler(fmt.Errorf("Failed to read natmapping from parameters. %s", err.Error()), client, callID, 0, 0, 0)
+		errorCode = protocol.reportNATPropertiesHandler(fmt.Errorf("Failed to read natmapping from parameters. %s", err.Error()), client, callID, 0, 0, 0)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
 	natfiltering, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		go protocol.reportNATPropertiesHandler(fmt.Errorf("Failed to read natfiltering from parameters. %s", err.Error()), client, callID, 0, 0, 0)
+		errorCode = protocol.reportNATPropertiesHandler(fmt.Errorf("Failed to read natfiltering from parameters. %s", err.Error()), client, callID, 0, 0, 0)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
 	rtt, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		go protocol.reportNATPropertiesHandler(fmt.Errorf("Failed to read rtt from parameters. %s", err.Error()), client, callID, 0, 0, 0)
+		errorCode = protocol.reportNATPropertiesHandler(fmt.Errorf("Failed to read rtt from parameters. %s", err.Error()), client, callID, 0, 0, 0)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.reportNATPropertiesHandler(nil, client, callID, natmapping, natfiltering, rtt)
+	errorCode = protocol.reportNATPropertiesHandler(nil, client, callID, natmapping, natfiltering, rtt)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

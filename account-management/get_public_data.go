@@ -14,6 +14,8 @@ func (protocol *Protocol) GetPublicData(handler func(err error, client *nex.Clie
 }
 
 func (protocol *Protocol) handleGetPublicData(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.getPublicDataHandler == nil {
 		globals.Logger.Warning("AccountManagement::GetPublicData not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,9 +32,16 @@ func (protocol *Protocol) handleGetPublicData(packet nex.PacketInterface) {
 
 	idPrincipal, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		go protocol.getPublicDataHandler(fmt.Errorf("Failed to read idPrincipal from parameters. %s", err.Error()), client, callID, 0)
+		errorCode = protocol.getPublicDataHandler(fmt.Errorf("Failed to read idPrincipal from parameters. %s", err.Error()), client, callID, 0)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.getPublicDataHandler(nil, client, callID, idPrincipal)
+	errorCode = protocol.getPublicDataHandler(nil, client, callID, idPrincipal)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

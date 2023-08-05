@@ -15,6 +15,8 @@ func (protocol *Protocol) UpdateUserStatus(handler func(err error, client *nex.C
 }
 
 func (protocol *Protocol) handleUpdateUserStatus(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.updateUserStatusHandler == nil {
 		globals.Logger.Warning("Subscriber::UpdateUserStatus not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,15 +32,26 @@ func (protocol *Protocol) handleUpdateUserStatus(packet nex.PacketInterface) {
 
 	unknown1, err := parametersStream.ReadListStructure(subscriber_types.NewUnknown())
 	if err != nil {
-		go protocol.updateUserStatusHandler(fmt.Errorf("Failed to read unknown1 from parameters. %s", err.Error()), client, callID, nil, nil)
+		errorCode = protocol.updateUserStatusHandler(fmt.Errorf("Failed to read unknown1 from parameters. %s", err.Error()), client, callID, nil, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
 	unknown2, err := parametersStream.ReadListUInt8()
 	if err != nil {
-		go protocol.updateUserStatusHandler(fmt.Errorf("Failed to read unknown2 from parameters. %s", err.Error()), client, callID, nil, nil)
+		errorCode = protocol.updateUserStatusHandler(fmt.Errorf("Failed to read unknown2 from parameters. %s", err.Error()), client, callID, nil, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.updateUserStatusHandler(nil, client, callID, unknown1.([]*subscriber_types.Unknown), unknown2)
+	errorCode = protocol.updateUserStatusHandler(nil, client, callID, unknown1.([]*subscriber_types.Unknown), unknown2)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

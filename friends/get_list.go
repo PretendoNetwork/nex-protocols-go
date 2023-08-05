@@ -14,6 +14,8 @@ func (protocol *Protocol) GetList(handler func(err error, client *nex.Client, ca
 }
 
 func (protocol *Protocol) handleGetList(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.getListHandler == nil {
 		globals.Logger.Warning("Friends::GetList not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,15 +32,26 @@ func (protocol *Protocol) handleGetList(packet nex.PacketInterface) {
 
 	byRelationship, err := parametersStream.ReadUInt8()
 	if err != nil {
-		go protocol.getListHandler(fmt.Errorf("Failed to read byRelationship from parameters. %s", err.Error()), client, callID, 0, false)
+		errorCode = protocol.getListHandler(fmt.Errorf("Failed to read byRelationship from parameters. %s", err.Error()), client, callID, 0, false)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
 	bReversed, err := parametersStream.ReadBool()
 	if err != nil {
-		go protocol.getListHandler(fmt.Errorf("Failed to read bReversed from parameters. %s", err.Error()), client, callID, 0, false)
+		errorCode = protocol.getListHandler(fmt.Errorf("Failed to read bReversed from parameters. %s", err.Error()), client, callID, 0, false)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.getListHandler(nil, client, callID, byRelationship, bReversed)
+	errorCode = protocol.getListHandler(nil, client, callID, byRelationship, bReversed)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

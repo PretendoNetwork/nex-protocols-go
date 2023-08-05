@@ -14,6 +14,8 @@ func (protocol *Protocol) UpdateAccountEmail(handler func(err error, client *nex
 }
 
 func (protocol *Protocol) handleUpdateAccountEmail(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.updateAccountEmailHandler == nil {
 		globals.Logger.Warning("AccountManagement::UpdateAccountEmail not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,9 +32,16 @@ func (protocol *Protocol) handleUpdateAccountEmail(packet nex.PacketInterface) {
 
 	strName, err := parametersStream.ReadString()
 	if err != nil {
-		go protocol.updateAccountEmailHandler(fmt.Errorf("Failed to read strName from parameters. %s", err.Error()), client, callID, "")
+		errorCode = protocol.updateAccountEmailHandler(fmt.Errorf("Failed to read strName from parameters. %s", err.Error()), client, callID, "")
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.updateAccountEmailHandler(nil, client, callID, strName)
+	errorCode = protocol.updateAccountEmailHandler(nil, client, callID, strName)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

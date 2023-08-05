@@ -12,6 +12,8 @@ func (protocol *Protocol) RetrieveAccount(handler func(err error, client *nex.Cl
 }
 
 func (protocol *Protocol) handleRetrieveAccount(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.retrieveAccountHandler == nil {
 		globals.Logger.Warning("AccountManagement::RetrieveAccount not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -23,5 +25,8 @@ func (protocol *Protocol) handleRetrieveAccount(packet nex.PacketInterface) {
 
 	callID := request.CallID()
 
-	go protocol.retrieveAccountHandler(nil, client, callID)
+	errorCode = protocol.retrieveAccountHandler(nil, client, callID)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

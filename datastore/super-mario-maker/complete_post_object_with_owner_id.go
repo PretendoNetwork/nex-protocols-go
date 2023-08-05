@@ -15,6 +15,8 @@ func (protocol *Protocol) CompletePostObjectWithOwnerID(handler func(err error, 
 }
 
 func (protocol *Protocol) handleCompletePostObjectWithOwnerID(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.completePostObjectWithOwnerIDHandler == nil {
 		globals.Logger.Warning("DataStoreSuperMarioMaker::CompletePostObjectWithOwnerID not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -31,15 +33,26 @@ func (protocol *Protocol) handleCompletePostObjectWithOwnerID(packet nex.PacketI
 
 	ownerID, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		go protocol.completePostObjectWithOwnerIDHandler(fmt.Errorf("Failed to read ownerID from parameters. %s", err.Error()), client, callID, 0, nil)
+		errorCode = protocol.completePostObjectWithOwnerIDHandler(fmt.Errorf("Failed to read ownerID from parameters. %s", err.Error()), client, callID, 0, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
 	param, err := parametersStream.ReadStructure(datastore_types.NewDataStoreCompletePostParam())
 	if err != nil {
-		go protocol.completePostObjectWithOwnerIDHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, 0, nil)
+		errorCode = protocol.completePostObjectWithOwnerIDHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, 0, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.completePostObjectWithOwnerIDHandler(nil, client, callID, ownerID, param.(*datastore_types.DataStoreCompletePostParam))
+	errorCode = protocol.completePostObjectWithOwnerIDHandler(nil, client, callID, ownerID, param.(*datastore_types.DataStoreCompletePostParam))
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

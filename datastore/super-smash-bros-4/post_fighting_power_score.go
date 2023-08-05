@@ -15,6 +15,8 @@ func (protocol *Protocol) PostFightingPowerScore(handler func(err error, client 
 }
 
 func (protocol *Protocol) handlePostFightingPowerScore(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.postFightingPowerScoreHandler == nil {
 		globals.Logger.Warning("DataStoreSuperSmashBros4::PostFightingPowerScore not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -31,9 +33,16 @@ func (protocol *Protocol) handlePostFightingPowerScore(packet nex.PacketInterfac
 
 	params, err := parametersStream.ReadListStructure(datastore_super_smash_bros_4_types.NewDataStorePostFightingPowerScoreParam())
 	if err != nil {
-		go protocol.postFightingPowerScoreHandler(fmt.Errorf("Failed to read params from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.postFightingPowerScoreHandler(fmt.Errorf("Failed to read params from parameters. %s", err.Error()), client, callID, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.postFightingPowerScoreHandler(nil, client, callID, params.([]*datastore_super_smash_bros_4_types.DataStorePostFightingPowerScoreParam))
+	errorCode = protocol.postFightingPowerScoreHandler(nil, client, callID, params.([]*datastore_super_smash_bros_4_types.DataStorePostFightingPowerScoreParam))
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

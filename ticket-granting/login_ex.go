@@ -14,6 +14,8 @@ func (protocol *Protocol) LoginEx(handler func(err error, client *nex.Client, ca
 }
 
 func (protocol *Protocol) handleLoginEx(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.loginExHandler == nil {
 		globals.Logger.Warning("TicketGranting::LoginEx not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,15 +32,26 @@ func (protocol *Protocol) handleLoginEx(packet nex.PacketInterface) {
 
 	strUserName, err := parametersStream.ReadString()
 	if err != nil {
-		go protocol.loginExHandler(fmt.Errorf("Failed to read strUserName from parameters. %s", err.Error()), client, callID, "", nil)
+		errorCode = protocol.loginExHandler(fmt.Errorf("Failed to read strUserName from parameters. %s", err.Error()), client, callID, "", nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
 	oExtraData, err := parametersStream.ReadDataHolder()
 	if err != nil {
-		go protocol.loginExHandler(fmt.Errorf("Failed to read oExtraData from parameters. %s", err.Error()), client, callID, "", nil)
+		errorCode = protocol.loginExHandler(fmt.Errorf("Failed to read oExtraData from parameters. %s", err.Error()), client, callID, "", nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.loginExHandler(nil, client, callID, strUserName, oExtraData)
+	errorCode = protocol.loginExHandler(nil, client, callID, strUserName, oExtraData)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

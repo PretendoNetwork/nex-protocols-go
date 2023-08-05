@@ -14,6 +14,8 @@ func (protocol *Protocol) FindByDescription(handler func(err error, client *nex.
 }
 
 func (protocol *Protocol) handleFindByDescription(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.findByDescriptionHandler == nil {
 		globals.Logger.Warning("MatchMaking::FindByDescription not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,13 +32,26 @@ func (protocol *Protocol) handleFindByDescription(packet nex.PacketInterface) {
 
 	strDescription, err := parametersStream.ReadString()
 	if err != nil {
-		go protocol.findByDescriptionHandler(fmt.Errorf("Failed to read strDescription from parameters. %s", err.Error()), client, callID, "", nil)
+		errorCode = protocol.findByDescriptionHandler(fmt.Errorf("Failed to read strDescription from parameters. %s", err.Error()), client, callID, "", nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
+		return
 	}
 
 	resultRange, err := parametersStream.ReadStructure(nex.NewResultRange())
 	if err != nil {
-		go protocol.findByDescriptionHandler(fmt.Errorf("Failed to read resultRange from parameters. %s", err.Error()), client, callID, "", nil)
+		errorCode = protocol.findByDescriptionHandler(fmt.Errorf("Failed to read resultRange from parameters. %s", err.Error()), client, callID, "", nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
+		return
 	}
 
-	go protocol.findByDescriptionHandler(nil, client, callID, strDescription, resultRange.(*nex.ResultRange))
+	errorCode = protocol.findByDescriptionHandler(nil, client, callID, strDescription, resultRange.(*nex.ResultRange))
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

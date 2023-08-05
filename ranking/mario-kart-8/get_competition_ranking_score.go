@@ -12,6 +12,8 @@ func (protocol *Protocol) GetCompetitionRankingScore(handler func(err error, cli
 }
 
 func (protocol *Protocol) handleGetCompetitionRankingScore(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.getCompetitionRankingScoreHandler == nil {
 		globals.Logger.Warning("RankingMarioKart8::GetCompetitionRankingScore not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -25,5 +27,8 @@ func (protocol *Protocol) handleGetCompetitionRankingScore(packet nex.PacketInte
 
 	callID := request.CallID()
 
-	go protocol.getCompetitionRankingScoreHandler(nil, client, callID, packet.Payload())
+	errorCode = protocol.getCompetitionRankingScoreHandler(nil, client, callID, packet.Payload())
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

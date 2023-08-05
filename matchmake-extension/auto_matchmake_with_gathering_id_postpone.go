@@ -15,6 +15,8 @@ func (protocol *Protocol) AutoMatchmakeWithGatheringIDPostpone(handler func(err 
 }
 
 func (protocol *Protocol) handleAutoMatchmakeWithGatheringIDPostpone(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.autoMatchmakeWithGatheringIDPostponeHandler == nil {
 		globals.Logger.Warning("MatchmakeExtension::AutoMatchmakeWithGatheringIDPostpone not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -32,21 +34,36 @@ func (protocol *Protocol) handleAutoMatchmakeWithGatheringIDPostpone(packet nex.
 
 	lstGID, err := parametersStream.ReadListUInt32LE()
 	if err != nil {
-		go protocol.autoMatchmakeWithGatheringIDPostponeHandler(fmt.Errorf("Failed to read lstGID from parameters. %s", err.Error()), client, callID, nil, nil, "")
+		errorCode = protocol.autoMatchmakeWithGatheringIDPostponeHandler(fmt.Errorf("Failed to read lstGID from parameters. %s", err.Error()), client, callID, nil, nil, "")
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
 	anyGathering, err := parametersStream.ReadDataHolder()
 	if err != nil {
-		go protocol.autoMatchmakeWithGatheringIDPostponeHandler(fmt.Errorf("Failed to read anyGathering from parameters. %s", err.Error()), client, callID, nil, nil, "")
+		errorCode = protocol.autoMatchmakeWithGatheringIDPostponeHandler(fmt.Errorf("Failed to read anyGathering from parameters. %s", err.Error()), client, callID, nil, nil, "")
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
 	strMessage, err := parametersStream.ReadString()
 	if err != nil {
-		go protocol.autoMatchmakeWithGatheringIDPostponeHandler(fmt.Errorf("Failed to read strMessage from parameters. %s", err.Error()), client, callID, nil, nil, "")
+		errorCode = protocol.autoMatchmakeWithGatheringIDPostponeHandler(fmt.Errorf("Failed to read strMessage from parameters. %s", err.Error()), client, callID, nil, nil, "")
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.autoMatchmakeWithGatheringIDPostponeHandler(nil, client, callID, lstGID, anyGathering, strMessage)
+	errorCode = protocol.autoMatchmakeWithGatheringIDPostponeHandler(nil, client, callID, lstGID, anyGathering, strMessage)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

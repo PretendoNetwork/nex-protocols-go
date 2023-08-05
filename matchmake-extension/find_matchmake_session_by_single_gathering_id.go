@@ -14,6 +14,8 @@ func (protocol *Protocol) FindMatchmakeSessionBySingleGatheringID(handler func(e
 }
 
 func (protocol *Protocol) handleFindMatchmakeSessionBySingleGatheringID(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.findMatchmakeSessionBySingleGatheringIDHandler == nil {
 		globals.Logger.Warning("MatchmakeExtension::FindMatchmakeSessionBySingleGatheringID not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,9 +32,16 @@ func (protocol *Protocol) handleFindMatchmakeSessionBySingleGatheringID(packet n
 
 	gid, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		go protocol.findMatchmakeSessionBySingleGatheringIDHandler(fmt.Errorf("Failed to read GID from parameters. %s", err.Error()), client, callID, 0)
+		errorCode = protocol.findMatchmakeSessionBySingleGatheringIDHandler(fmt.Errorf("Failed to read GID from parameters. %s", err.Error()), client, callID, 0)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.findMatchmakeSessionBySingleGatheringIDHandler(nil, client, callID, gid)
+	errorCode = protocol.findMatchmakeSessionBySingleGatheringIDHandler(nil, client, callID, gid)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

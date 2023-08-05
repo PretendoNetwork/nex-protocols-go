@@ -14,6 +14,8 @@ func (protocol *Protocol) UpdateSessionHostV1(handler func(err error, client *ne
 }
 
 func (protocol *Protocol) handleUpdateSessionHostV1(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.updateSessionHostV1Handler == nil {
 		fmt.Println("[Warning] MatchMaking::UpdateSessionHostV1 not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,8 +32,16 @@ func (protocol *Protocol) handleUpdateSessionHostV1(packet nex.PacketInterface) 
 
 	gid, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		go protocol.updateSessionHostV1Handler(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), client, callID, 0)
+		errorCode = protocol.updateSessionHostV1Handler(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), client, callID, 0)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
+		return
 	}
 
-	go protocol.updateSessionHostV1Handler(nil, client, callID, gid)
+	errorCode = protocol.updateSessionHostV1Handler(nil, client, callID, gid)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

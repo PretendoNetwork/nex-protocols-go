@@ -14,6 +14,8 @@ func (protocol *Protocol) UpdateBlackList(handler func(err error, client *nex.Cl
 }
 
 func (protocol *Protocol) handleUpdateBlackList(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.updateBlackListHandler == nil {
 		globals.Logger.Warning("Friends3DS::UpdateBlackList not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,9 +32,16 @@ func (protocol *Protocol) handleUpdateBlackList(packet nex.PacketInterface) {
 
 	unknown, err := parametersStream.ReadListUInt32LE()
 	if err != nil {
-		go protocol.updateBlackListHandler(fmt.Errorf("Failed to read unknown from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.updateBlackListHandler(fmt.Errorf("Failed to read unknown from parameters. %s", err.Error()), client, callID, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.updateBlackListHandler(nil, client, callID, unknown)
+	errorCode = protocol.updateBlackListHandler(nil, client, callID, unknown)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

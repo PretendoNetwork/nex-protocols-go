@@ -15,6 +15,8 @@ func (protocol *Protocol) PrepareUpdateBankObject(handler func(err error, client
 }
 
 func (protocol *Protocol) handlePrepareUpdateBankObject(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.prepareUpdateBankObjectHandler == nil {
 		globals.Logger.Warning("DataStorePokemonBank::PrepareUpdateBankObject not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -31,9 +33,16 @@ func (protocol *Protocol) handlePrepareUpdateBankObject(packet nex.PacketInterfa
 
 	transactionParam, err := parametersStream.ReadStructure(datastore_pokemon_bank_types.NewBankTransactionParam())
 	if err != nil {
-		go protocol.prepareUpdateBankObjectHandler(fmt.Errorf("Failed to read transactionParam from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.prepareUpdateBankObjectHandler(fmt.Errorf("Failed to read transactionParam from parameters. %s", err.Error()), client, callID, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.prepareUpdateBankObjectHandler(nil, client, callID, transactionParam.(*datastore_pokemon_bank_types.BankTransactionParam))
+	errorCode = protocol.prepareUpdateBankObjectHandler(nil, client, callID, transactionParam.(*datastore_pokemon_bank_types.BankTransactionParam))
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

@@ -14,6 +14,8 @@ func (protocol *Protocol) RequestMigration(handler func(err error, client *nex.C
 }
 
 func (protocol *Protocol) handleRequestMigration(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.requestMigrationHandler == nil {
 		globals.Logger.Warning("DataStorePokemonBank::RequestMigration not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,15 +32,26 @@ func (protocol *Protocol) handleRequestMigration(packet nex.PacketInterface) {
 
 	oneTimePassword, err := parametersStream.ReadString()
 	if err != nil {
-		go protocol.requestMigrationHandler(fmt.Errorf("Failed to read oneTimePassword from parameters. %s", err.Error()), client, callID, "", nil)
+		errorCode = protocol.requestMigrationHandler(fmt.Errorf("Failed to read oneTimePassword from parameters. %s", err.Error()), client, callID, "", nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
 	boxes, err := parametersStream.ReadListUInt32LE()
 	if err != nil {
-		go protocol.requestMigrationHandler(fmt.Errorf("Failed to read boxes from parameters. %s", err.Error()), client, callID, "", nil)
+		errorCode = protocol.requestMigrationHandler(fmt.Errorf("Failed to read boxes from parameters. %s", err.Error()), client, callID, "", nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.requestMigrationHandler(nil, client, callID, oneTimePassword, boxes)
+	errorCode = protocol.requestMigrationHandler(nil, client, callID, oneTimePassword, boxes)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

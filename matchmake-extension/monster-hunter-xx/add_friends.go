@@ -14,6 +14,8 @@ func (protocol *Protocol) AddFriends(handler func(err error, client *nex.Client,
 }
 
 func (protocol *Protocol) handleAddFriends(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.addFriendsHandler == nil {
 		globals.Logger.Warning("MatchmakeExtensionMonsterHunterXX::AddFriends not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,9 +32,16 @@ func (protocol *Protocol) handleAddFriends(packet nex.PacketInterface) {
 
 	pids, err := parametersStream.ReadListUInt64LE()
 	if err != nil {
-		go protocol.addFriendsHandler(fmt.Errorf("Failed to read pids from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.addFriendsHandler(fmt.Errorf("Failed to read pids from parameters. %s", err.Error()), client, callID, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.addFriendsHandler(nil, client, callID, pids)
+	errorCode = protocol.addFriendsHandler(nil, client, callID, pids)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

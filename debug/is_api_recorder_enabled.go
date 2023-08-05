@@ -12,6 +12,8 @@ func (protocol *Protocol) IsAPIRecorderEnabled(handler func(err error, client *n
 }
 
 func (protocol *Protocol) handleIsAPIRecorderEnabled(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.isAPIRecorderEnabledHandler == nil {
 		globals.Logger.Warning("Debug::IsAPIRecorderEnabled not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -23,5 +25,8 @@ func (protocol *Protocol) handleIsAPIRecorderEnabled(packet nex.PacketInterface)
 
 	callID := request.CallID()
 
-	go protocol.isAPIRecorderEnabledHandler(nil, client, callID)
+	errorCode = protocol.isAPIRecorderEnabledHandler(nil, client, callID)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

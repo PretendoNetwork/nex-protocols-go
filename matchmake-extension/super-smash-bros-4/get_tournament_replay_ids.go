@@ -12,6 +12,8 @@ func (protocol *Protocol) GetTournamentReplayIDs(handler func(err error, client 
 }
 
 func (protocol *Protocol) handleGetTournamentReplayIDs(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.getTournamentReplayIDsHandler == nil {
 		globals.Logger.Warning("MatchmakeExtensionSuperSmashBros4::GetTournamentReplayIDs not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -25,5 +27,8 @@ func (protocol *Protocol) handleGetTournamentReplayIDs(packet nex.PacketInterfac
 
 	callID := request.CallID()
 
-	go protocol.getTournamentReplayIDsHandler(nil, client, callID, packet.Payload())
+	errorCode = protocol.getTournamentReplayIDsHandler(nil, client, callID, packet.Payload())
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

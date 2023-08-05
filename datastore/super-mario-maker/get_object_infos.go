@@ -14,6 +14,8 @@ func (protocol *Protocol) GetObjectInfos(handler func(err error, client *nex.Cli
 }
 
 func (protocol *Protocol) handleGetObjectInfos(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.getObjectInfosHandler == nil {
 		globals.Logger.Warning("DataStoreSuperMarioMaker::GetObjectInfos not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,9 +32,16 @@ func (protocol *Protocol) handleGetObjectInfos(packet nex.PacketInterface) {
 
 	dataIDs, err := parametersStream.ReadListUInt64LE()
 	if err != nil {
-		go protocol.getObjectInfosHandler(fmt.Errorf("Failed to read dataIDs from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.getObjectInfosHandler(fmt.Errorf("Failed to read dataIDs from parameters. %s", err.Error()), client, callID, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.getObjectInfosHandler(nil, client, callID, dataIDs)
+	errorCode = protocol.getObjectInfosHandler(nil, client, callID, dataIDs)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

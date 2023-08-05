@@ -14,6 +14,8 @@ func (protocol *Protocol) CreateAccount(handler func(err error, client *nex.Clie
 }
 
 func (protocol *Protocol) handleCreateAccount(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.createAccountHandler == nil {
 		globals.Logger.Warning("AccountManagement::CreateAccount not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,27 +32,46 @@ func (protocol *Protocol) handleCreateAccount(packet nex.PacketInterface) {
 
 	strPrincipalName, err := parametersStream.ReadString()
 	if err != nil {
-		go protocol.createAccountHandler(fmt.Errorf("Failed to read strPrincipalName from parameters. %s", err.Error()), client, callID, "", "", 0, "")
+		errorCode = protocol.createAccountHandler(fmt.Errorf("Failed to read strPrincipalName from parameters. %s", err.Error()), client, callID, "", "", 0, "")
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
 	strKey, err := parametersStream.ReadString()
 	if err != nil {
-		go protocol.createAccountHandler(fmt.Errorf("Failed to read strKey from parameters. %s", err.Error()), client, callID, "", "", 0, "")
+		errorCode = protocol.createAccountHandler(fmt.Errorf("Failed to read strKey from parameters. %s", err.Error()), client, callID, "", "", 0, "")
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
 	uiGroups, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		go protocol.createAccountHandler(fmt.Errorf("Failed to read uiGroups from parameters. %s", err.Error()), client, callID, "", "", 0, "")
+		errorCode = protocol.createAccountHandler(fmt.Errorf("Failed to read uiGroups from parameters. %s", err.Error()), client, callID, "", "", 0, "")
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
 	strEmail, err := parametersStream.ReadString()
 	if err != nil {
-		go protocol.createAccountHandler(fmt.Errorf("Failed to read strEmail from parameters. %s", err.Error()), client, callID, "", "", 0, "")
+		errorCode = protocol.createAccountHandler(fmt.Errorf("Failed to read strEmail from parameters. %s", err.Error()), client, callID, "", "", 0, "")
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.createAccountHandler(nil, client, callID, strPrincipalName, strKey, uiGroups, strEmail)
+	errorCode = protocol.createAccountHandler(nil, client, callID, strPrincipalName, strKey, uiGroups, strEmail)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

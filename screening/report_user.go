@@ -12,6 +12,8 @@ func (protocol *Protocol) ReportUser(handler func(err error, client *nex.Client,
 }
 
 func (protocol *Protocol) handleReportUser(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.reportUserHandler == nil {
 		globals.Logger.Warning("Screening::ReportUser not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -27,5 +29,8 @@ func (protocol *Protocol) handleReportUser(packet nex.PacketInterface) {
 
 	// TODO - THIS METHOD HAS AN UNKNOWN REQUEST/RESPONSE FORMAT
 
-	go protocol.reportUserHandler(nil, client, callID, packet.Payload())
+	errorCode = protocol.reportUserHandler(nil, client, callID, packet.Payload())
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

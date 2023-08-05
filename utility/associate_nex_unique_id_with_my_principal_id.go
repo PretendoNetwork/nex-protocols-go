@@ -15,6 +15,8 @@ func (protocol *Protocol) AssociateNexUniqueIDWithMyPrincipalID(handler func(err
 }
 
 func (protocol *Protocol) handleAssociateNexUniqueIDWithMyPrincipalID(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.associateNexUniqueIDWithMyPrincipalIDHandler == nil {
 		globals.Logger.Warning("Utility::AssociateNexUniqueIDWithMyPrincipalID not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -32,9 +34,16 @@ func (protocol *Protocol) handleAssociateNexUniqueIDWithMyPrincipalID(packet nex
 
 	uniqueIDInfo, err := parametersStream.ReadStructure(utility_types.NewUniqueIDInfo())
 	if err != nil {
-		go protocol.associateNexUniqueIDWithMyPrincipalIDHandler(fmt.Errorf("Failed to read uniqueIDInfo from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.associateNexUniqueIDWithMyPrincipalIDHandler(fmt.Errorf("Failed to read uniqueIDInfo from parameters. %s", err.Error()), client, callID, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.associateNexUniqueIDWithMyPrincipalIDHandler(nil, client, callID, uniqueIDInfo.(*utility_types.UniqueIDInfo))
+	errorCode = protocol.associateNexUniqueIDWithMyPrincipalIDHandler(nil, client, callID, uniqueIDInfo.(*utility_types.UniqueIDInfo))
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

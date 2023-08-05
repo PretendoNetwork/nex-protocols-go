@@ -15,6 +15,8 @@ func (protocol *Protocol) PrepareTradePokemon(handler func(err error, client *ne
 }
 
 func (protocol *Protocol) handlePrepareTradePokemon(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.prepareTradePokemonHandler == nil {
 		globals.Logger.Warning("DataStorePokemonGen6::PrepareTradePokemon not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -31,9 +33,16 @@ func (protocol *Protocol) handlePrepareTradePokemon(packet nex.PacketInterface) 
 
 	param, err := parametersStream.ReadStructure(datastore_pokemon_gen6_types.NewGlobalTradeStationPrepareTradePokemonParam())
 	if err != nil {
-		go protocol.prepareTradePokemonHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.prepareTradePokemonHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.prepareTradePokemonHandler(nil, client, callID, param.(*datastore_pokemon_gen6_types.GlobalTradeStationPrepareTradePokemonParam))
+	errorCode = protocol.prepareTradePokemonHandler(nil, client, callID, param.(*datastore_pokemon_gen6_types.GlobalTradeStationPrepareTradePokemonParam))
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

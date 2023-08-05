@@ -12,6 +12,8 @@ func (protocol *Protocol) ReportTournamentBotRoundResult(handler func(err error,
 }
 
 func (protocol *Protocol) handleReportTournamentBotRoundResult(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.reportTournamentBotRoundResultHandler == nil {
 		globals.Logger.Warning("MatchmakeExtensionSuperSmashBros4::ReportTournamentBotRoundResult not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -25,5 +27,8 @@ func (protocol *Protocol) handleReportTournamentBotRoundResult(packet nex.Packet
 
 	callID := request.CallID()
 
-	go protocol.reportTournamentBotRoundResultHandler(nil, client, callID, packet.Payload())
+	errorCode = protocol.reportTournamentBotRoundResultHandler(nil, client, callID, packet.Payload())
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

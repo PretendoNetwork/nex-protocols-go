@@ -14,6 +14,8 @@ func (protocol *Protocol) GetRelationships(handler func(err error, client *nex.C
 }
 
 func (protocol *Protocol) handleGetRelationships(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.getRelationshipsHandler == nil {
 		globals.Logger.Warning("Friends::GetRelationships not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,9 +32,16 @@ func (protocol *Protocol) handleGetRelationships(packet nex.PacketInterface) {
 
 	resultRange, err := parametersStream.ReadStructure(nex.NewResultRange())
 	if err != nil {
-		go protocol.getRelationshipsHandler(fmt.Errorf("Failed to read resultRange from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.getRelationshipsHandler(fmt.Errorf("Failed to read resultRange from parameters. %s", err.Error()), client, callID, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.getRelationshipsHandler(nil, client, callID, resultRange.(*nex.ResultRange))
+	errorCode = protocol.getRelationshipsHandler(nil, client, callID, resultRange.(*nex.ResultRange))
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

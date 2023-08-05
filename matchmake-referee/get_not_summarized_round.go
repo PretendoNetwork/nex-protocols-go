@@ -12,6 +12,8 @@ func (protocol *Protocol) GetNotSummarizedRound(handler func(err error, client *
 }
 
 func (protocol *Protocol) handleGetNotSummarizedRound(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.getNotSummarizedRoundHandler == nil {
 		globals.Logger.Warning("MatchmakeReferee::GetNotSummarizedRound not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -23,5 +25,8 @@ func (protocol *Protocol) handleGetNotSummarizedRound(packet nex.PacketInterface
 
 	callID := request.CallID()
 
-	go protocol.getNotSummarizedRoundHandler(nil, client, callID)
+	errorCode = protocol.getNotSummarizedRoundHandler(nil, client, callID)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

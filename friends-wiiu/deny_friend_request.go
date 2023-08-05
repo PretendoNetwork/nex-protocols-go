@@ -15,6 +15,8 @@ func (protocol *Protocol) DenyFriendRequest(handler func(err error, client *nex.
 }
 
 func (protocol *Protocol) handleDenyFriendRequest(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.denyFriendRequestHandler == nil {
 		globals.Logger.Warning("FriendsWiiU::DenyFriendRequest not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -31,15 +33,26 @@ func (protocol *Protocol) handleDenyFriendRequest(packet nex.PacketInterface) {
 
 	if len(parametersStream.Bytes()[parametersStream.ByteOffset():]) < 8 {
 		err := errors.New("[FriendsWiiU::DenyFriendRequest] Data missing list length")
-		go protocol.denyFriendRequestHandler(err, client, callID, 0)
+		errorCode = protocol.denyFriendRequestHandler(err, client, callID, 0)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
 	id, err := parametersStream.ReadUInt64LE()
 	if err != nil {
-		go protocol.denyFriendRequestHandler(fmt.Errorf("Failed to read id from parameters. %s", err.Error()), client, callID, 0)
+		errorCode = protocol.denyFriendRequestHandler(fmt.Errorf("Failed to read id from parameters. %s", err.Error()), client, callID, 0)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.denyFriendRequestHandler(nil, client, callID, id)
+	errorCode = protocol.denyFriendRequestHandler(nil, client, callID, id)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

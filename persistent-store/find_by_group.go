@@ -14,6 +14,8 @@ func (protocol *Protocol) FindByGroup(handler func(err error, client *nex.Client
 }
 
 func (protocol *Protocol) handleFindByGroup(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.findByGroupHandler == nil {
 		globals.Logger.Warning("PersistentStore::FindByGroup not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,9 +32,16 @@ func (protocol *Protocol) handleFindByGroup(packet nex.PacketInterface) {
 
 	uiGroup, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		go protocol.findByGroupHandler(fmt.Errorf("Failed to read uiGroup from parameters. %s", err.Error()), client, callID, 0)
+		errorCode = protocol.findByGroupHandler(fmt.Errorf("Failed to read uiGroup from parameters. %s", err.Error()), client, callID, 0)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.findByGroupHandler(nil, client, callID, uiGroup)
+	errorCode = protocol.findByGroupHandler(nil, client, callID, uiGroup)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

@@ -12,6 +12,8 @@ func (protocol *Protocol) PostCommunityCompetitionMatchResult(handler func(err e
 }
 
 func (protocol *Protocol) handlePostCommunityCompetitionMatchResult(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.postCommunityCompetitionMatchResultHandler == nil {
 		globals.Logger.Warning("MatchmakeExtensionSuperSmashBros4::PostCommunityCompetitionMatchResult not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -25,5 +27,8 @@ func (protocol *Protocol) handlePostCommunityCompetitionMatchResult(packet nex.P
 
 	callID := request.CallID()
 
-	go protocol.postCommunityCompetitionMatchResultHandler(nil, client, callID, packet.Payload())
+	errorCode = protocol.postCommunityCompetitionMatchResultHandler(nil, client, callID, packet.Payload())
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

@@ -14,6 +14,8 @@ func (protocol *Protocol) FindMatchmakeSessionByOwner(handler func(err error, cl
 }
 
 func (protocol *Protocol) handleFindMatchmakeSessionByOwner(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.findMatchmakeSessionByOwnerHandler == nil {
 		globals.Logger.Warning("MatchmakeExtension::FindMatchmakeSessionByOwner not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,15 +32,26 @@ func (protocol *Protocol) handleFindMatchmakeSessionByOwner(packet nex.PacketInt
 
 	id, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		go protocol.findMatchmakeSessionByOwnerHandler(fmt.Errorf("Failed to read id from parameters. %s", err.Error()), client, callID, 0, nil)
+		errorCode = protocol.findMatchmakeSessionByOwnerHandler(fmt.Errorf("Failed to read id from parameters. %s", err.Error()), client, callID, 0, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
 	resultRange, err := parametersStream.ReadStructure(nex.NewResultRange())
 	if err != nil {
-		go protocol.findMatchmakeSessionByOwnerHandler(fmt.Errorf("Failed to read resultRange from parameters. %s", err.Error()), client, callID, 0, nil)
+		errorCode = protocol.findMatchmakeSessionByOwnerHandler(fmt.Errorf("Failed to read resultRange from parameters. %s", err.Error()), client, callID, 0, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.findMatchmakeSessionByOwnerHandler(nil, client, callID, id, resultRange.(*nex.ResultRange))
+	errorCode = protocol.findMatchmakeSessionByOwnerHandler(nil, client, callID, id, resultRange.(*nex.ResultRange))
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

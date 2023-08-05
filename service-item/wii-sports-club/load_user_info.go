@@ -12,6 +12,8 @@ func (protocol *Protocol) LoadUserInfo(handler func(err error, client *nex.Clien
 }
 
 func (protocol *Protocol) handleLoadUserInfo(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.loadUserInfoHandler == nil {
 		globals.Logger.Warning("ServiceItemWiiSportsClub::LoadUserInfo not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -23,5 +25,8 @@ func (protocol *Protocol) handleLoadUserInfo(packet nex.PacketInterface) {
 
 	callID := request.CallID()
 
-	go protocol.loadUserInfoHandler(nil, client, callID)
+	errorCode = protocol.loadUserInfoHandler(nil, client, callID)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

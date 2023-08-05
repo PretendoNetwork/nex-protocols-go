@@ -15,6 +15,8 @@ func (protocol *Protocol) CompletePostSharedData(handler func(err error, client 
 }
 
 func (protocol *Protocol) handleCompletePostSharedData(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.completePostSharedDataHandler == nil {
 		globals.Logger.Warning("DataStoreSuperSmashBros4::CompletePostSharedData not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -31,9 +33,16 @@ func (protocol *Protocol) handleCompletePostSharedData(packet nex.PacketInterfac
 
 	param, err := parametersStream.ReadStructure(datastore_super_smash_bros_4_types.NewDataStoreCompletePostSharedDataParam())
 	if err != nil {
-		go protocol.completePostSharedDataHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.completePostSharedDataHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.completePostSharedDataHandler(nil, client, callID, param.(*datastore_super_smash_bros_4_types.DataStoreCompletePostSharedDataParam))
+	errorCode = protocol.completePostSharedDataHandler(nil, client, callID, param.(*datastore_super_smash_bros_4_types.DataStoreCompletePostSharedDataParam))
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

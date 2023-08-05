@@ -14,6 +14,8 @@ func (protocol *Protocol) GetPersistenceInfos(handler func(err error, client *ne
 }
 
 func (protocol *Protocol) handleGetPersistenceInfos(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.getPersistenceInfosHandler == nil {
 		globals.Logger.Warning("DataStore::GetPersistenceInfos not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,15 +32,26 @@ func (protocol *Protocol) handleGetPersistenceInfos(packet nex.PacketInterface) 
 
 	ownerID, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		go protocol.getPersistenceInfosHandler(fmt.Errorf("Failed to read ownerID from parameters. %s", err.Error()), client, callID, 0, nil)
+		errorCode = protocol.getPersistenceInfosHandler(fmt.Errorf("Failed to read ownerID from parameters. %s", err.Error()), client, callID, 0, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
 	persistenceSlotIDs, err := parametersStream.ReadListUInt16LE()
 	if err != nil {
-		go protocol.getPersistenceInfosHandler(fmt.Errorf("Failed to read persistenceSlotIDs from parameters. %s", err.Error()), client, callID, 0, nil)
+		errorCode = protocol.getPersistenceInfosHandler(fmt.Errorf("Failed to read persistenceSlotIDs from parameters. %s", err.Error()), client, callID, 0, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.getPersistenceInfosHandler(nil, client, callID, ownerID, persistenceSlotIDs)
+	errorCode = protocol.getPersistenceInfosHandler(nil, client, callID, ownerID, persistenceSlotIDs)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

@@ -12,6 +12,8 @@ func (protocol *Protocol) ReportDataStoreContent(handler func(err error, client 
 }
 
 func (protocol *Protocol) handleReportDataStoreContent(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.reportDataStoreContentHandler == nil {
 		globals.Logger.Warning("Screening::ReportDataStoreContent not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -27,5 +29,8 @@ func (protocol *Protocol) handleReportDataStoreContent(packet nex.PacketInterfac
 
 	// TODO - THIS METHOD HAS AN UNKNOWN REQUEST/RESPONSE FORMAT
 
-	go protocol.reportDataStoreContentHandler(nil, client, callID, packet.Payload())
+	errorCode = protocol.reportDataStoreContentHandler(nil, client, callID, packet.Payload())
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

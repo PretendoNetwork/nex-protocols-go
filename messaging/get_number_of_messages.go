@@ -15,6 +15,8 @@ func (protocol *Protocol) GetNumberOfMessages(handler func(err error, client *ne
 }
 
 func (protocol *Protocol) handleGetNumberOfMessages(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.getNumberOfMessagesHandler == nil {
 		globals.Logger.Warning("Messaging::GetNumberOfMessages not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -31,9 +33,16 @@ func (protocol *Protocol) handleGetNumberOfMessages(packet nex.PacketInterface) 
 
 	recipient, err := parametersStream.ReadStructure(messaging_types.NewMessageRecipient())
 	if err != nil {
-		go protocol.getNumberOfMessagesHandler(fmt.Errorf("Failed to read recipient from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.getNumberOfMessagesHandler(fmt.Errorf("Failed to read recipient from parameters. %s", err.Error()), client, callID, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.getNumberOfMessagesHandler(nil, client, callID, recipient.(*messaging_types.MessageRecipient))
+	errorCode = protocol.getNumberOfMessagesHandler(nil, client, callID, recipient.(*messaging_types.MessageRecipient))
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

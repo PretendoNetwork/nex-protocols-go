@@ -14,6 +14,8 @@ func (protocol *Protocol) Log(handler func(err error, client *nex.Client, callID
 }
 
 func (protocol *Protocol) handleLog(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.logHandler == nil {
 		globals.Logger.Warning("RemoteLogDevice::Log not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,8 +32,16 @@ func (protocol *Protocol) handleLog(packet nex.PacketInterface) {
 
 	strLine, err := parametersStream.ReadString()
 	if err != nil {
-		go protocol.logHandler(fmt.Errorf("Failed to read strLine from parameters. %s", err.Error()), client, callID, "")
+		errorCode = protocol.logHandler(fmt.Errorf("Failed to read strLine from parameters. %s", err.Error()), client, callID, "")
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
+		return
 	}
 
-	go protocol.logHandler(nil, client, callID, strLine)
+	errorCode = protocol.logHandler(nil, client, callID, strLine)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

@@ -15,6 +15,8 @@ func (protocol *Protocol) FindMatchmakeSessionByParticipant(handler func(err err
 }
 
 func (protocol *Protocol) handleFindMatchmakeSessionByParticipant(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.findMatchmakeSessionByParticipantHandler == nil {
 		globals.Logger.Warning("MatchmakeExtension::FindMatchmakeSessionByParticipant not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -31,9 +33,16 @@ func (protocol *Protocol) handleFindMatchmakeSessionByParticipant(packet nex.Pac
 
 	param, err := parametersStream.ReadStructure(match_making_types.NewFindMatchmakeSessionByParticipantParam())
 	if err != nil {
-		go protocol.findMatchmakeSessionByParticipantHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.findMatchmakeSessionByParticipantHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.findMatchmakeSessionByParticipantHandler(nil, client, callID, param.(*match_making_types.FindMatchmakeSessionByParticipantParam))
+	errorCode = protocol.findMatchmakeSessionByParticipantHandler(nil, client, callID, param.(*match_making_types.FindMatchmakeSessionByParticipantParam))
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

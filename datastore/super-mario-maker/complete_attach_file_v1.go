@@ -15,6 +15,8 @@ func (protocol *Protocol) CompleteAttachFileV1(handler func(err error, client *n
 }
 
 func (protocol *Protocol) handleCompleteAttachFileV1(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.completeAttachFileV1Handler == nil {
 		globals.Logger.Warning("DataStoreSuperMarioMaker::CompleteAttachFileV1 not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -31,9 +33,16 @@ func (protocol *Protocol) handleCompleteAttachFileV1(packet nex.PacketInterface)
 
 	param, err := parametersStream.ReadStructure(datastore_types.NewDataStoreCompletePostParamV1())
 	if err != nil {
-		go protocol.completeAttachFileV1Handler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.completeAttachFileV1Handler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.completeAttachFileV1Handler(nil, client, callID, param.(*datastore_types.DataStoreCompletePostParamV1))
+	errorCode = protocol.completeAttachFileV1Handler(nil, client, callID, param.(*datastore_types.DataStoreCompletePostParamV1))
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

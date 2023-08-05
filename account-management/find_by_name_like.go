@@ -14,6 +14,8 @@ func (protocol *Protocol) FindByNameLike(handler func(err error, client *nex.Cli
 }
 
 func (protocol *Protocol) handleFindByNameLike(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.findByNameLikeHandler == nil {
 		globals.Logger.Warning("AccountManagement::FindByNameLike not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,21 +32,36 @@ func (protocol *Protocol) handleFindByNameLike(packet nex.PacketInterface) {
 
 	uiGroups, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		go protocol.findByNameLikeHandler(fmt.Errorf("Failed to read uiGroups from parameters. %s", err.Error()), client, callID, 0, "", nil)
+		errorCode = protocol.findByNameLikeHandler(fmt.Errorf("Failed to read uiGroups from parameters. %s", err.Error()), client, callID, 0, "", nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
 	strLike, err := parametersStream.ReadString()
 	if err != nil {
-		go protocol.findByNameLikeHandler(fmt.Errorf("Failed to read strLike from parameters. %s", err.Error()), client, callID, 0, "", nil)
+		errorCode = protocol.findByNameLikeHandler(fmt.Errorf("Failed to read strLike from parameters. %s", err.Error()), client, callID, 0, "", nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
 	resultRange, err := parametersStream.ReadStructure(nex.NewResultRange())
 	if err != nil {
-		go protocol.findByNameLikeHandler(fmt.Errorf("Failed to read resultRange from parameters. %s", err.Error()), client, callID, 0, "", nil)
+		errorCode = protocol.findByNameLikeHandler(fmt.Errorf("Failed to read resultRange from parameters. %s", err.Error()), client, callID, 0, "", nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.findByNameLikeHandler(nil, client, callID, uiGroups, strLike, resultRange.(*nex.ResultRange))
+	errorCode = protocol.findByNameLikeHandler(nil, client, callID, uiGroups, strLike, resultRange.(*nex.ResultRange))
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

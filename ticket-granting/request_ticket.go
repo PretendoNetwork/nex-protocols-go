@@ -14,6 +14,8 @@ func (protocol *Protocol) RequestTicket(handler func(err error, client *nex.Clie
 }
 
 func (protocol *Protocol) handleRequestTicket(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.requestTicketHandler == nil {
 		globals.Logger.Warning("TicketGranting::RequestTicket not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,15 +32,26 @@ func (protocol *Protocol) handleRequestTicket(packet nex.PacketInterface) {
 
 	idSource, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		go protocol.requestTicketHandler(fmt.Errorf("Failed to read idSource from parameters. %s", err.Error()), client, callID, 0, 0)
+		errorCode = protocol.requestTicketHandler(fmt.Errorf("Failed to read idSource from parameters. %s", err.Error()), client, callID, 0, 0)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
 	idTarget, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		go protocol.requestTicketHandler(fmt.Errorf("Failed to read idTarget from parameters. %s", err.Error()), client, callID, 0, 0)
+		errorCode = protocol.requestTicketHandler(fmt.Errorf("Failed to read idTarget from parameters. %s", err.Error()), client, callID, 0, 0)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.requestTicketHandler(nil, client, callID, idSource, idTarget)
+	errorCode = protocol.requestTicketHandler(nil, client, callID, idSource, idTarget)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

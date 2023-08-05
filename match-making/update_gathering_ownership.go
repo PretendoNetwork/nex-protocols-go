@@ -14,6 +14,8 @@ func (protocol *Protocol) UpdateGatheringOwnership(handler func(err error, clien
 }
 
 func (protocol *Protocol) handleUpdateGatheringOwnership(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.updateGatheringOwnershipHandler == nil {
 		globals.Logger.Warning("MatchMaking::UpdateGatheringOwnership not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,13 +32,26 @@ func (protocol *Protocol) handleUpdateGatheringOwnership(packet nex.PacketInterf
 
 	gid, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		go protocol.updateGatheringOwnershipHandler(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), client, callID, 0, false)
+		errorCode = protocol.updateGatheringOwnershipHandler(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), client, callID, 0, false)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
+		return
 	}
 
 	participantsOnly, err := parametersStream.ReadBool()
 	if err != nil {
-		go protocol.updateGatheringOwnershipHandler(fmt.Errorf("Failed to read participantsOnly from parameters. %s", err.Error()), client, callID, 0, false)
+		errorCode = protocol.updateGatheringOwnershipHandler(fmt.Errorf("Failed to read participantsOnly from parameters. %s", err.Error()), client, callID, 0, false)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
+		return
 	}
 
-	go protocol.updateGatheringOwnershipHandler(nil, client, callID, gid, participantsOnly)
+	errorCode = protocol.updateGatheringOwnershipHandler(nil, client, callID, gid, participantsOnly)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

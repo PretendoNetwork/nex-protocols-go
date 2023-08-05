@@ -15,6 +15,8 @@ func (protocol *Protocol) UploadPokemon(handler func(err error, client *nex.Clie
 }
 
 func (protocol *Protocol) handleUploadPokemon(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.uploadPokemonHandler == nil {
 		globals.Logger.Warning("DataStorePokemonGen6::UploadPokemon not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -31,9 +33,16 @@ func (protocol *Protocol) handleUploadPokemon(packet nex.PacketInterface) {
 
 	param, err := parametersStream.ReadStructure(datastore_pokemon_gen6_types.NewGlobalTradeStationUploadPokemonParam())
 	if err != nil {
-		go protocol.uploadPokemonHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.uploadPokemonHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.uploadPokemonHandler(nil, client, callID, param.(*datastore_pokemon_gen6_types.GlobalTradeStationUploadPokemonParam))
+	errorCode = protocol.uploadPokemonHandler(nil, client, callID, param.(*datastore_pokemon_gen6_types.GlobalTradeStationUploadPokemonParam))
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

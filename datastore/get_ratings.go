@@ -14,6 +14,8 @@ func (protocol *Protocol) GetRatings(handler func(err error, client *nex.Client,
 }
 
 func (protocol *Protocol) handleGetRatings(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.getRatingsHandler == nil {
 		globals.Logger.Warning("DataStore::GetRatings not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,15 +32,26 @@ func (protocol *Protocol) handleGetRatings(packet nex.PacketInterface) {
 
 	dataIDs, err := parametersStream.ReadListUInt64LE()
 	if err != nil {
-		go protocol.getRatingsHandler(fmt.Errorf("Failed to read dataIDs from parameters. %s", err.Error()), client, callID, nil, 0)
+		errorCode = protocol.getRatingsHandler(fmt.Errorf("Failed to read dataIDs from parameters. %s", err.Error()), client, callID, nil, 0)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
 	accessPassword, err := parametersStream.ReadUInt64LE()
 	if err != nil {
-		go protocol.getRatingsHandler(fmt.Errorf("Failed to read accessPassword from parameters. %s", err.Error()), client, callID, nil, 0)
+		errorCode = protocol.getRatingsHandler(fmt.Errorf("Failed to read accessPassword from parameters. %s", err.Error()), client, callID, nil, 0)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.getRatingsHandler(nil, client, callID, dataIDs, accessPassword)
+	errorCode = protocol.getRatingsHandler(nil, client, callID, dataIDs, accessPassword)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

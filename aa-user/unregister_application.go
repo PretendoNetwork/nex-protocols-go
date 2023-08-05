@@ -14,6 +14,8 @@ func (protocol *Protocol) UnregisterApplication(handler func(err error, client *
 }
 
 func (protocol *Protocol) handleUnregisterApplication(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.unregisterApplicationHandler == nil {
 		globals.Logger.Warning("AAUser::UnregisterApplication not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,9 +32,16 @@ func (protocol *Protocol) handleUnregisterApplication(packet nex.PacketInterface
 
 	titleID, err := parametersStream.ReadUInt64LE()
 	if err != nil {
-		go protocol.unregisterApplicationHandler(fmt.Errorf("Failed to read titleID from parameters. %s", err.Error()), client, callID, 0)
+		errorCode = protocol.unregisterApplicationHandler(fmt.Errorf("Failed to read titleID from parameters. %s", err.Error()), client, callID, 0)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.unregisterApplicationHandler(nil, client, callID, titleID)
+	errorCode = protocol.unregisterApplicationHandler(nil, client, callID, titleID)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

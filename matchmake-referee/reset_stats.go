@@ -12,6 +12,8 @@ func (protocol *Protocol) ResetStats(handler func(err error, client *nex.Client,
 }
 
 func (protocol *Protocol) handleResetStats(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.resetStatsHandler == nil {
 		globals.Logger.Warning("MatchmakeReferee::ResetStats not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -23,5 +25,8 @@ func (protocol *Protocol) handleResetStats(packet nex.PacketInterface) {
 
 	callID := request.CallID()
 
-	go protocol.resetStatsHandler(nil, client, callID)
+	errorCode = protocol.resetStatsHandler(nil, client, callID)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

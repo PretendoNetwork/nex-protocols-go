@@ -14,6 +14,8 @@ func (protocol *Protocol) DeleteFromDeletions(handler func(err error, client *ne
 }
 
 func (protocol *Protocol) handleDeleteFromDeletions(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.deleteFromDeletionsHandler == nil {
 		globals.Logger.Warning("MatchMaking::DeleteFromDeletions not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,8 +32,16 @@ func (protocol *Protocol) handleDeleteFromDeletions(packet nex.PacketInterface) 
 
 	lstDeletions, err := parametersStream.ReadListUInt32LE()
 	if err != nil {
-		go protocol.deleteFromDeletionsHandler(fmt.Errorf("Failed to read lstDeletions from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.deleteFromDeletionsHandler(fmt.Errorf("Failed to read lstDeletions from parameters. %s", err.Error()), client, callID, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
+		return
 	}
 
-	go protocol.deleteFromDeletionsHandler(nil, client, callID, lstDeletions)
+	errorCode = protocol.deleteFromDeletionsHandler(nil, client, callID, lstDeletions)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

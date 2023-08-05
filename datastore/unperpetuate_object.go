@@ -14,6 +14,8 @@ func (protocol *Protocol) UnperpetuateObject(handler func(err error, client *nex
 }
 
 func (protocol *Protocol) handleUnperpetuateObject(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.unperpetuateObjectHandler == nil {
 		globals.Logger.Warning("DataStore::UnperpetuateObject not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,15 +32,26 @@ func (protocol *Protocol) handleUnperpetuateObject(packet nex.PacketInterface) {
 
 	persistenceSlotID, err := parametersStream.ReadUInt16LE()
 	if err != nil {
-		go protocol.unperpetuateObjectHandler(fmt.Errorf("Failed to read persistenceSlotID from parameters. %s", err.Error()), client, callID, 0, false)
+		errorCode = protocol.unperpetuateObjectHandler(fmt.Errorf("Failed to read persistenceSlotID from parameters. %s", err.Error()), client, callID, 0, false)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
 	deleteLastObject, err := parametersStream.ReadBool()
 	if err != nil {
-		go protocol.unperpetuateObjectHandler(fmt.Errorf("Failed to read deleteLastObject from parameters. %s", err.Error()), client, callID, 0, false)
+		errorCode = protocol.unperpetuateObjectHandler(fmt.Errorf("Failed to read deleteLastObject from parameters. %s", err.Error()), client, callID, 0, false)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.unperpetuateObjectHandler(nil, client, callID, persistenceSlotID, deleteLastObject)
+	errorCode = protocol.unperpetuateObjectHandler(nil, client, callID, persistenceSlotID, deleteLastObject)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

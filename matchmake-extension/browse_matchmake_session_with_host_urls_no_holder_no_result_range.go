@@ -15,6 +15,8 @@ func (protocol *Protocol) BrowseMatchmakeSessionWithHostURLsNoHolderNoResultRang
 }
 
 func (protocol *Protocol) handleBrowseMatchmakeSessionWithHostURLsNoHolderNoResultRange(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.browseMatchmakeSessionWithHostURLsNoHolderNoResultRangeHandler == nil {
 		globals.Logger.Warning("MatchmakeExtension::BrowseMatchmakeSessionWithHostURLsNoHolderNoResultRange not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -31,9 +33,16 @@ func (protocol *Protocol) handleBrowseMatchmakeSessionWithHostURLsNoHolderNoResu
 
 	searchCriteria, err := parametersStream.ReadStructure(match_making_types.NewMatchmakeSessionSearchCriteria())
 	if err != nil {
-		go protocol.browseMatchmakeSessionWithHostURLsNoHolderNoResultRangeHandler(fmt.Errorf("Failed to read searchCriteria from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.browseMatchmakeSessionWithHostURLsNoHolderNoResultRangeHandler(fmt.Errorf("Failed to read searchCriteria from parameters. %s", err.Error()), client, callID, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.browseMatchmakeSessionWithHostURLsNoHolderNoResultRangeHandler(nil, client, callID, searchCriteria.(*match_making_types.MatchmakeSessionSearchCriteria))
+	errorCode = protocol.browseMatchmakeSessionWithHostURLsNoHolderNoResultRangeHandler(nil, client, callID, searchCriteria.(*match_making_types.MatchmakeSessionSearchCriteria))
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

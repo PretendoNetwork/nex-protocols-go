@@ -14,6 +14,8 @@ func (protocol *Protocol) AddFriendByName(handler func(err error, client *nex.Cl
 }
 
 func (protocol *Protocol) handleAddFriendByName(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.addFriendByNameHandler == nil {
 		globals.Logger.Warning("FriendsWiiU::AddFriendByName not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,9 +32,16 @@ func (protocol *Protocol) handleAddFriendByName(packet nex.PacketInterface) {
 
 	username, err := parametersStream.ReadString()
 	if err != nil {
-		go protocol.addFriendByNameHandler(fmt.Errorf("Failed to read username from parameters. %s", err.Error()), client, callID, "")
+		errorCode = protocol.addFriendByNameHandler(fmt.Errorf("Failed to read username from parameters. %s", err.Error()), client, callID, "")
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.addFriendByNameHandler(nil, client, callID, username)
+	errorCode = protocol.addFriendByNameHandler(nil, client, callID, username)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

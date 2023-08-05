@@ -14,6 +14,8 @@ func (protocol *Protocol) PrepareGetBankObject(handler func(err error, client *n
 }
 
 func (protocol *Protocol) handlePrepareGetBankObject(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.prepareGetBankObjectHandler == nil {
 		globals.Logger.Warning("DataStorePokemonBank::PrepareGetBankObject not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,15 +32,26 @@ func (protocol *Protocol) handlePrepareGetBankObject(packet nex.PacketInterface)
 
 	slotID, err := parametersStream.ReadUInt16LE()
 	if err != nil {
-		go protocol.prepareGetBankObjectHandler(fmt.Errorf("Failed to read slotID from parameters. %s", err.Error()), client, callID, 0, 0)
+		errorCode = protocol.prepareGetBankObjectHandler(fmt.Errorf("Failed to read slotID from parameters. %s", err.Error()), client, callID, 0, 0)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
 	applicationID, err := parametersStream.ReadUInt16LE()
 	if err != nil {
-		go protocol.prepareGetBankObjectHandler(fmt.Errorf("Failed to read applicationID from parameters. %s", err.Error()), client, callID, 0, 0)
+		errorCode = protocol.prepareGetBankObjectHandler(fmt.Errorf("Failed to read applicationID from parameters. %s", err.Error()), client, callID, 0, 0)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.prepareGetBankObjectHandler(nil, client, callID, slotID, applicationID)
+	errorCode = protocol.prepareGetBankObjectHandler(nil, client, callID, slotID, applicationID)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

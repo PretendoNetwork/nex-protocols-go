@@ -15,6 +15,8 @@ func (protocol *Protocol) GetFriendComment(handler func(err error, client *nex.C
 }
 
 func (protocol *Protocol) handleGetFriendComment(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.getFriendCommentHandler == nil {
 		globals.Logger.Warning("Friends3DS::GetFriendComment not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -31,9 +33,16 @@ func (protocol *Protocol) handleGetFriendComment(packet nex.PacketInterface) {
 
 	friends, err := parametersStream.ReadListStructure(friends_3ds_types.NewFriendInfo())
 	if err != nil {
-		go protocol.getFriendCommentHandler(fmt.Errorf("Failed to read friends from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.getFriendCommentHandler(fmt.Errorf("Failed to read friends from parameters. %s", err.Error()), client, callID, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.getFriendCommentHandler(nil, client, callID, friends.([]*friends_3ds_types.FriendInfo))
+	errorCode = protocol.getFriendCommentHandler(nil, client, callID, friends.([]*friends_3ds_types.FriendInfo))
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

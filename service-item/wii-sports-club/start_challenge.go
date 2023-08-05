@@ -15,6 +15,8 @@ func (protocol *Protocol) StartChallenge(handler func(err error, client *nex.Cli
 }
 
 func (protocol *Protocol) handleStartChallenge(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.startChallengeHandler == nil {
 		globals.Logger.Warning("ServiceItemWiiSportsClub::StartChallenge not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -31,9 +33,16 @@ func (protocol *Protocol) handleStartChallenge(packet nex.PacketInterface) {
 
 	startChallengeParam, err := parametersStream.ReadStructure(service_item_wii_sports_club_types.NewServiceItemStartChallengeParam())
 	if err != nil {
-		go protocol.startChallengeHandler(fmt.Errorf("Failed to read startChallengeParam from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.startChallengeHandler(fmt.Errorf("Failed to read startChallengeParam from parameters. %s", err.Error()), client, callID, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.startChallengeHandler(nil, client, callID, startChallengeParam.(*service_item_wii_sports_club_types.ServiceItemStartChallengeParam))
+	errorCode = protocol.startChallengeHandler(nil, client, callID, startChallengeParam.(*service_item_wii_sports_club_types.ServiceItemStartChallengeParam))
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

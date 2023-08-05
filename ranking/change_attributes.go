@@ -15,6 +15,8 @@ func (protocol *Protocol) ChangeAttributes(handler func(err error, client *nex.C
 }
 
 func (protocol *Protocol) handleChangeAttributes(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.changeAttributesHandler == nil {
 		globals.Logger.Warning("Ranking::ChangeAttributes not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -31,21 +33,36 @@ func (protocol *Protocol) handleChangeAttributes(packet nex.PacketInterface) {
 
 	category, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		go protocol.changeAttributesHandler(fmt.Errorf("Failed to read category from parameters. %s", err.Error()), client, callID, 0, nil, 0)
+		errorCode = protocol.changeAttributesHandler(fmt.Errorf("Failed to read category from parameters. %s", err.Error()), client, callID, 0, nil, 0)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
 	changeParam, err := parametersStream.ReadStructure(ranking_types.NewRankingChangeAttributesParam())
 	if err != nil {
-		go protocol.changeAttributesHandler(fmt.Errorf("Failed to read changeParam from parameters. %s", err.Error()), client, callID, 0, nil, 0)
+		errorCode = protocol.changeAttributesHandler(fmt.Errorf("Failed to read changeParam from parameters. %s", err.Error()), client, callID, 0, nil, 0)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
 	uniqueID, err := parametersStream.ReadUInt64LE()
 	if err != nil {
-		go protocol.changeAttributesHandler(fmt.Errorf("Failed to read uniqueID from parameters. %s", err.Error()), client, callID, 0, nil, 0)
+		errorCode = protocol.changeAttributesHandler(fmt.Errorf("Failed to read uniqueID from parameters. %s", err.Error()), client, callID, 0, nil, 0)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.changeAttributesHandler(nil, client, callID, category, changeParam.(*ranking_types.RankingChangeAttributesParam), uniqueID)
+	errorCode = protocol.changeAttributesHandler(nil, client, callID, category, changeParam.(*ranking_types.RankingChangeAttributesParam), uniqueID)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

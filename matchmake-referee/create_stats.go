@@ -15,6 +15,8 @@ func (protocol *Protocol) CreateStats(handler func(err error, client *nex.Client
 }
 
 func (protocol *Protocol) handleCreateStats(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.createStatsHandler == nil {
 		globals.Logger.Warning("MatchmakeReferee::CreateStats not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -31,9 +33,16 @@ func (protocol *Protocol) handleCreateStats(packet nex.PacketInterface) {
 
 	param, err := parametersStream.ReadStructure(matchmake_referee_types.NewMatchmakeRefereeStatsInitParam())
 	if err != nil {
-		go protocol.createStatsHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.createStatsHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.createStatsHandler(nil, client, callID, param.(*matchmake_referee_types.MatchmakeRefereeStatsInitParam))
+	errorCode = protocol.createStatsHandler(nil, client, callID, param.(*matchmake_referee_types.MatchmakeRefereeStatsInitParam))
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

@@ -12,6 +12,8 @@ func (protocol *Protocol) GetCommunityCompetitions(handler func(err error, clien
 }
 
 func (protocol *Protocol) handleGetCommunityCompetitions(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.getCommunityCompetitionsHandler == nil {
 		globals.Logger.Warning("MatchmakeExtensionSuperSmashBros4::GetCommunityCompetitions not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -25,5 +27,8 @@ func (protocol *Protocol) handleGetCommunityCompetitions(packet nex.PacketInterf
 
 	callID := request.CallID()
 
-	go protocol.getCommunityCompetitionsHandler(nil, client, callID, packet.Payload())
+	errorCode = protocol.getCommunityCompetitionsHandler(nil, client, callID, packet.Payload())
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

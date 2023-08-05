@@ -14,6 +14,8 @@ func (protocol *Protocol) GetUserStatuses(handler func(err error, client *nex.Cl
 }
 
 func (protocol *Protocol) handleGetUserStatuses(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.getUserStatusesHandler == nil {
 		globals.Logger.Warning("Subscriber::GetUserStatuses not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -29,15 +31,26 @@ func (protocol *Protocol) handleGetUserStatuses(packet nex.PacketInterface) {
 
 	pids, err := parametersStream.ReadListUInt32LE()
 	if err != nil {
-		go protocol.getUserStatusesHandler(fmt.Errorf("Failed to read pids from parameters. %s", err.Error()), client, callID, nil, nil)
+		errorCode = protocol.getUserStatusesHandler(fmt.Errorf("Failed to read pids from parameters. %s", err.Error()), client, callID, nil, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
 	unknown, err := parametersStream.ReadListUInt8()
 	if err != nil {
-		go protocol.getUserStatusesHandler(fmt.Errorf("Failed to read unknown from parameters. %s", err.Error()), client, callID, nil, nil)
+		errorCode = protocol.getUserStatusesHandler(fmt.Errorf("Failed to read unknown from parameters. %s", err.Error()), client, callID, nil, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.getUserStatusesHandler(nil, client, callID, pids, unknown)
+	errorCode = protocol.getUserStatusesHandler(nil, client, callID, pids, unknown)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

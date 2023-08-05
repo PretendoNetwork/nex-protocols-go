@@ -12,6 +12,8 @@ func (protocol *Protocol) ResetPassword(handler func(err error, client *nex.Clie
 }
 
 func (protocol *Protocol) handleResetPassword(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.resetPasswordHandler == nil {
 		globals.Logger.Warning("AccountManagement::ResetPassword not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -23,5 +25,8 @@ func (protocol *Protocol) handleResetPassword(packet nex.PacketInterface) {
 
 	callID := request.CallID()
 
-	go protocol.resetPasswordHandler(nil, client, callID)
+	errorCode = protocol.resetPasswordHandler(nil, client, callID)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

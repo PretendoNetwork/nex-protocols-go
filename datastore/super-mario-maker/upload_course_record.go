@@ -15,6 +15,8 @@ func (protocol *Protocol) UploadCourseRecord(handler func(err error, client *nex
 }
 
 func (protocol *Protocol) handleUploadCourseRecord(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.uploadCourseRecordHandler == nil {
 		globals.Logger.Warning("DataStoreSuperMarioMaker::UploadCourseRecord not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -31,9 +33,16 @@ func (protocol *Protocol) handleUploadCourseRecord(packet nex.PacketInterface) {
 
 	param, err := parametersStream.ReadStructure(datastore_super_mario_maker_types.NewDataStoreUploadCourseRecordParam())
 	if err != nil {
-		go protocol.uploadCourseRecordHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.uploadCourseRecordHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.uploadCourseRecordHandler(nil, client, callID, param.(*datastore_super_mario_maker_types.DataStoreUploadCourseRecordParam))
+	errorCode = protocol.uploadCourseRecordHandler(nil, client, callID, param.(*datastore_super_mario_maker_types.DataStoreUploadCourseRecordParam))
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

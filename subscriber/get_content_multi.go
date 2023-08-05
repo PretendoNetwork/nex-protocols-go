@@ -15,6 +15,8 @@ func (protocol *Protocol) GetContentMulti(handler func(err error, client *nex.Cl
 }
 
 func (protocol *Protocol) handleGetContentMulti(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.getContentMultiHandler == nil {
 		globals.Logger.Warning("Subscriber::GetContentMulti not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,9 +32,16 @@ func (protocol *Protocol) handleGetContentMulti(packet nex.PacketInterface) {
 
 	params, err := parametersStream.ReadListStructure(subscriber_types.NewSubscriberGetContentParam())
 	if err != nil {
-		go protocol.getContentMultiHandler(fmt.Errorf("Failed to read params from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.getContentMultiHandler(fmt.Errorf("Failed to read params from parameters. %s", err.Error()), client, callID, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.getContentMultiHandler(nil, client, callID, params.([]*subscriber_types.SubscriberGetContentParam))
+	errorCode = protocol.getContentMultiHandler(nil, client, callID, params.([]*subscriber_types.SubscriberGetContentParam))
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

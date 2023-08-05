@@ -14,6 +14,8 @@ func (protocol *Protocol) MigrateGatheringOwnershipV1(handler func(err error, cl
 }
 
 func (protocol *Protocol) handleMigrateGatheringOwnershipV1(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.migrateGatheringOwnershipV1Handler == nil {
 		globals.Logger.Warning("MatchMaking::MigrateGatheringOwnershipV1 not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,13 +32,26 @@ func (protocol *Protocol) handleMigrateGatheringOwnershipV1(packet nex.PacketInt
 
 	gid, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		go protocol.migrateGatheringOwnershipV1Handler(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), client, callID, 0, nil)
+		errorCode = protocol.migrateGatheringOwnershipV1Handler(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), client, callID, 0, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
+		return
 	}
 
 	lstPotentialNewOwnersID, err := parametersStream.ReadListUInt32LE()
 	if err != nil {
-		go protocol.migrateGatheringOwnershipV1Handler(fmt.Errorf("Failed to read lstPotentialNewOwnersID from parameters. %s", err.Error()), client, callID, 0, nil)
+		errorCode = protocol.migrateGatheringOwnershipV1Handler(fmt.Errorf("Failed to read lstPotentialNewOwnersID from parameters. %s", err.Error()), client, callID, 0, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
+		return
 	}
 
-	go protocol.migrateGatheringOwnershipV1Handler(nil, client, callID, gid, lstPotentialNewOwnersID)
+	errorCode = protocol.migrateGatheringOwnershipV1Handler(nil, client, callID, gid, lstPotentialNewOwnersID)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

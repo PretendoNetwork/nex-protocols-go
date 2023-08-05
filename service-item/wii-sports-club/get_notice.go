@@ -15,6 +15,8 @@ func (protocol *Protocol) GetNotice(handler func(err error, client *nex.Client, 
 }
 
 func (protocol *Protocol) handleGetNotice(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.getNoticeHandler == nil {
 		globals.Logger.Warning("ServiceItemWiiSportsClub::GetNotice not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -31,9 +33,16 @@ func (protocol *Protocol) handleGetNotice(packet nex.PacketInterface) {
 
 	getNoticeParam, err := parametersStream.ReadStructure(service_item_wii_sports_club_types.NewServiceItemGetNoticeParam())
 	if err != nil {
-		go protocol.getNoticeHandler(fmt.Errorf("Failed to read getNoticeParam from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.getNoticeHandler(fmt.Errorf("Failed to read getNoticeParam from parameters. %s", err.Error()), client, callID, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.getNoticeHandler(nil, client, callID, getNoticeParam.(*service_item_wii_sports_club_types.ServiceItemGetNoticeParam))
+	errorCode = protocol.getNoticeHandler(nil, client, callID, getNoticeParam.(*service_item_wii_sports_club_types.ServiceItemGetNoticeParam))
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

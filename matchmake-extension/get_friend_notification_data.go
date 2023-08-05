@@ -14,6 +14,8 @@ func (protocol *Protocol) GetFriendNotificationData(handler func(err error, clie
 }
 
 func (protocol *Protocol) handleGetFriendNotificationData(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.getFriendNotificationDataHandler == nil {
 		globals.Logger.Warning("MatchmakeExtension::GetFriendNotificationData not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,9 +32,16 @@ func (protocol *Protocol) handleGetFriendNotificationData(packet nex.PacketInter
 
 	uiType, err := parametersStream.ReadInt32LE()
 	if err != nil {
-		go protocol.getFriendNotificationDataHandler(fmt.Errorf("Failed to read uiType from parameters. %s", err.Error()), client, callID, 0)
+		errorCode = protocol.getFriendNotificationDataHandler(fmt.Errorf("Failed to read uiType from parameters. %s", err.Error()), client, callID, 0)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.getFriendNotificationDataHandler(nil, client, callID, uiType)
+	errorCode = protocol.getFriendNotificationDataHandler(nil, client, callID, uiType)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

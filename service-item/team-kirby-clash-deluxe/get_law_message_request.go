@@ -15,6 +15,8 @@ func (protocol *Protocol) GetLawMessageRequest(handler func(err error, client *n
 }
 
 func (protocol *Protocol) handleGetLawMessageRequest(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.getLawMessageRequestHandler == nil {
 		globals.Logger.Warning("ServiceItemTeamKirbyClashDeluxe::GetLawMessageRequest not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -31,9 +33,16 @@ func (protocol *Protocol) handleGetLawMessageRequest(packet nex.PacketInterface)
 
 	getLawMessageParam, err := parametersStream.ReadStructure(service_item_team_kirby_clash_deluxe_types.NewServiceItemGetLawMessageParam())
 	if err != nil {
-		go protocol.getLawMessageRequestHandler(fmt.Errorf("Failed to read getLawMessageParam from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.getLawMessageRequestHandler(fmt.Errorf("Failed to read getLawMessageParam from parameters. %s", err.Error()), client, callID, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.getLawMessageRequestHandler(nil, client, callID, getLawMessageParam.(*service_item_team_kirby_clash_deluxe_types.ServiceItemGetLawMessageParam))
+	errorCode = protocol.getLawMessageRequestHandler(nil, client, callID, getLawMessageParam.(*service_item_team_kirby_clash_deluxe_types.ServiceItemGetLawMessageParam))
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

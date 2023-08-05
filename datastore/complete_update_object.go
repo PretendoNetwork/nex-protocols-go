@@ -15,6 +15,8 @@ func (protocol *Protocol) CompleteUpdateObject(handler func(err error, client *n
 }
 
 func (protocol *Protocol) handleCompleteUpdateObject(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.completeUpdateObjectHandler == nil {
 		globals.Logger.Warning("DataStore::CompleteUpdateObject not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -31,9 +33,16 @@ func (protocol *Protocol) handleCompleteUpdateObject(packet nex.PacketInterface)
 
 	param, err := parametersStream.ReadStructure(datastore_types.NewDataStoreCompleteUpdateParam())
 	if err != nil {
-		go protocol.completeUpdateObjectHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.completeUpdateObjectHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.completeUpdateObjectHandler(nil, client, callID, param.(*datastore_types.DataStoreCompleteUpdateParam))
+	errorCode = protocol.completeUpdateObjectHandler(nil, client, callID, param.(*datastore_types.DataStoreCompleteUpdateParam))
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

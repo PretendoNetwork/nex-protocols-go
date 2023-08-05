@@ -14,6 +14,8 @@ func (protocol *Protocol) RemoveBlackList(handler func(err error, client *nex.Cl
 }
 
 func (protocol *Protocol) handleRemoveBlackList(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.removeBlackListHandler == nil {
 		globals.Logger.Warning("FriendsWiiU::RemoveBlackList not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,9 +32,16 @@ func (protocol *Protocol) handleRemoveBlackList(packet nex.PacketInterface) {
 
 	pid, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		go protocol.removeBlackListHandler(fmt.Errorf("Failed to read pid from parameters. %s", err.Error()), client, callID, 0)
+		errorCode = protocol.removeBlackListHandler(fmt.Errorf("Failed to read pid from parameters. %s", err.Error()), client, callID, 0)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.removeBlackListHandler(nil, client, callID, pid)
+	errorCode = protocol.removeBlackListHandler(nil, client, callID, pid)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

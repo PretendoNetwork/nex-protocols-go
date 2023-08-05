@@ -14,6 +14,8 @@ func (protocol *Protocol) GetApplicationConfigString(handler func(err error, cli
 }
 
 func (protocol *Protocol) handleGetApplicationConfigString(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.getApplicationConfigStringHandler == nil {
 		globals.Logger.Warning("DataStoreSuperMarioMaker::GetApplicationConfigString not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,9 +32,16 @@ func (protocol *Protocol) handleGetApplicationConfigString(packet nex.PacketInte
 
 	applicationID, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		go protocol.getApplicationConfigStringHandler(fmt.Errorf("Failed to read applicationID from parameters. %s", err.Error()), client, callID, 0)
+		errorCode = protocol.getApplicationConfigStringHandler(fmt.Errorf("Failed to read applicationID from parameters. %s", err.Error()), client, callID, 0)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.getApplicationConfigStringHandler(nil, client, callID, applicationID)
+	errorCode = protocol.getApplicationConfigStringHandler(nil, client, callID, applicationID)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

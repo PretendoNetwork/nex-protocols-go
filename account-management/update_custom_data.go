@@ -14,6 +14,8 @@ func (protocol *Protocol) UpdateCustomData(handler func(err error, client *nex.C
 }
 
 func (protocol *Protocol) handleUpdateCustomData(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.updateCustomDataHandler == nil {
 		globals.Logger.Warning("AccountManagement::UpdateCustomData not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,15 +32,26 @@ func (protocol *Protocol) handleUpdateCustomData(packet nex.PacketInterface) {
 
 	oPublicData, err := parametersStream.ReadDataHolder()
 	if err != nil {
-		go protocol.updateCustomDataHandler(fmt.Errorf("Failed to read oPublicData from parameters. %s", err.Error()), client, callID, nil, nil)
+		errorCode = protocol.updateCustomDataHandler(fmt.Errorf("Failed to read oPublicData from parameters. %s", err.Error()), client, callID, nil, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
 	oPrivateData, err := parametersStream.ReadDataHolder()
 	if err != nil {
-		go protocol.updateCustomDataHandler(fmt.Errorf("Failed to read oPrivateData from parameters. %s", err.Error()), client, callID, nil, nil)
+		errorCode = protocol.updateCustomDataHandler(fmt.Errorf("Failed to read oPrivateData from parameters. %s", err.Error()), client, callID, nil, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.updateCustomDataHandler(nil, client, callID, oPublicData, oPrivateData)
+	errorCode = protocol.updateCustomDataHandler(nil, client, callID, oPublicData, oPrivateData)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

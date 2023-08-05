@@ -14,6 +14,8 @@ func (protocol *Protocol) ClearRelationship(handler func(err error, client *nex.
 }
 
 func (protocol *Protocol) handleClearRelationship(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.clearRelationshipHandler == nil {
 		globals.Logger.Warning("Friends::ClearRelationship not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,9 +32,16 @@ func (protocol *Protocol) handleClearRelationship(packet nex.PacketInterface) {
 
 	uiPlayer, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		go protocol.clearRelationshipHandler(fmt.Errorf("Failed to read uiPlayer from parameters. %s", err.Error()), client, callID, 0)
+		errorCode = protocol.clearRelationshipHandler(fmt.Errorf("Failed to read uiPlayer from parameters. %s", err.Error()), client, callID, 0)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.clearRelationshipHandler(nil, client, callID, uiPlayer)
+	errorCode = protocol.clearRelationshipHandler(nil, client, callID, uiPlayer)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

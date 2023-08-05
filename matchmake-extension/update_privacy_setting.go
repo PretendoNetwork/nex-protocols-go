@@ -14,6 +14,8 @@ func (protocol *Protocol) UpdatePrivacySetting(handler func(err error, client *n
 }
 
 func (protocol *Protocol) handleUpdatePrivacySetting(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.updatePrivacySettingHandler == nil {
 		globals.Logger.Warning("MatchmakeExtension::UpdatePrivacySetting not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,15 +32,26 @@ func (protocol *Protocol) handleUpdatePrivacySetting(packet nex.PacketInterface)
 
 	onlineStatus, err := parametersStream.ReadBool()
 	if err != nil {
-		go protocol.updatePrivacySettingHandler(fmt.Errorf("Failed to read onlineStatus from parameters. %s", err.Error()), client, callID, false, false)
+		errorCode = protocol.updatePrivacySettingHandler(fmt.Errorf("Failed to read onlineStatus from parameters. %s", err.Error()), client, callID, false, false)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
 	participationCommunity, err := parametersStream.ReadBool()
 	if err != nil {
-		go protocol.updatePrivacySettingHandler(fmt.Errorf("Failed to read participationCommunity from parameters. %s", err.Error()), client, callID, false, false)
+		errorCode = protocol.updatePrivacySettingHandler(fmt.Errorf("Failed to read participationCommunity from parameters. %s", err.Error()), client, callID, false, false)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.updatePrivacySettingHandler(nil, client, callID, onlineStatus, participationCommunity)
+	errorCode = protocol.updatePrivacySettingHandler(nil, client, callID, onlineStatus, participationCommunity)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

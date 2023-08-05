@@ -14,6 +14,8 @@ func (protocol *Protocol) ReplaceURL(handler func(err error, client *nex.Client,
 }
 
 func (protocol *Protocol) handleReplaceURL(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.replaceURLHandler == nil {
 		globals.Logger.Warning("SecureConnection::ReplaceURL not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -30,15 +32,26 @@ func (protocol *Protocol) handleReplaceURL(packet nex.PacketInterface) {
 
 	target, err := parametersStream.ReadStationURL()
 	if err != nil {
-		go protocol.replaceURLHandler(fmt.Errorf("Failed to read target from parameters. %s", err.Error()), client, callID, nil, nil)
+		errorCode = protocol.replaceURLHandler(fmt.Errorf("Failed to read target from parameters. %s", err.Error()), client, callID, nil, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
 	url, err := parametersStream.ReadStationURL()
 	if err != nil {
-		go protocol.replaceURLHandler(fmt.Errorf("Failed to read url from parameters. %s", err.Error()), client, callID, nil, nil)
+		errorCode = protocol.replaceURLHandler(fmt.Errorf("Failed to read url from parameters. %s", err.Error()), client, callID, nil, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
 		return
 	}
 
-	go protocol.replaceURLHandler(nil, client, callID, target, url)
+	errorCode = protocol.replaceURLHandler(nil, client, callID, target, url)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+	}
 }

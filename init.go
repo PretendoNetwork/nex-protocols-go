@@ -12,10 +12,10 @@ import (
 )
 
 func init() {
-	nex.RegisterDataHolderType(account_management_types.NewNintendoCreateAccountData())
-	nex.RegisterDataHolderType(account_management_types.NewAccountExtraInfo())
-	nex.RegisterDataHolderType(ticket_granting_types.NewNintendoLoginData())
-	nex.RegisterDataHolderType(ticket_granting_types.NewAuthenticationInfo())
-	nex.RegisterDataHolderType(match_making_types.NewGathering())
-	nex.RegisterDataHolderType(match_making_types.NewMatchmakeSession())
+	nex.RegisterDataHolderType("NintendoCreateAccountData", account_management_types.NewNintendoCreateAccountData())
+	nex.RegisterDataHolderType("AccountExtraInfo", account_management_types.NewAccountExtraInfo())
+	nex.RegisterDataHolderType("NintendoLoginData", ticket_granting_types.NewNintendoLoginData())
+	nex.RegisterDataHolderType("AuthenticationInfo", ticket_granting_types.NewAuthenticationInfo())
+	nex.RegisterDataHolderType("Gathering", match_making_types.NewGathering())
+	nex.RegisterDataHolderType("MatchmakeSession", match_making_types.NewMatchmakeSession())
 }

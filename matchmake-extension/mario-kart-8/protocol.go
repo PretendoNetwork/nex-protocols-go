@@ -54,7 +54,7 @@ type Protocol struct {
 	updateSimpleSearchObjectHandler                  func(err error, client *nex.Client, callID uint32, objectID uint32, newObject *matchmake_extension_mario_kart8_types.SimpleSearchObject) uint32
 	deleteSimpleSearchObjectHandler                  func(err error, client *nex.Client, callID uint32, objectID uint32) uint32
 	searchSimpleSearchObjectHandler                  func(err error, client *nex.Client, callID uint32, param *matchmake_extension_mario_kart8_types.SimpleSearchParam) uint32
-	joinMatchmakeSessionWithExtraParticipantsHandler func(err error, client *nex.Client, callID uint32, packetPayload []byte) uint32
+	joinMatchmakeSessionWithExtraParticipantsHandler func(err error, client *nex.Client, callID uint32, gid uint32, joinMessage string, ignoreBlacklist bool, participationCount uint16, extraParticipants uint32) uint32
 	searchSimpleSearchObjectByObjectIDsHandler       func(err error, client *nex.Client, callID uint32, objectIDs []uint32) uint32
 }
 

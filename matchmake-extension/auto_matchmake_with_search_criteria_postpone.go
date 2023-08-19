@@ -2,7 +2,6 @@
 package protocol
 
 import (
-	"encoding/hex"
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
@@ -29,7 +28,6 @@ func (protocol *Protocol) handleAutoMatchmakeWithSearchCriteriaPostpone(packet n
 
 	callID := request.CallID()
 	parameters := request.Parameters()
-	globals.Logger.Info(hex.EncodeToString(parameters))
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 

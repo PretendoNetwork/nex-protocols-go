@@ -14,16 +14,22 @@ import (
 // MatchmakeSessionSearchCriteria holds information about a matchmaking search
 type MatchmakeSessionSearchCriteria struct {
 	nex.Structure
-	Attribs             []string
-	GameMode            string
-	MinParticipants     string
-	MaxParticipants     string
-	MatchmakeSystemType string
-	VacantOnly          bool
-	ExcludeLocked       bool
-	ExcludeNonHostPID   bool
-	SelectionMethod     uint32 // NEX v3.0.0+
-	VacantParticipants  uint16 // NEX v3.4.0+
+	Attribs                  []string
+	GameMode                 string
+	MinParticipants          string
+	MaxParticipants          string
+	MatchmakeSystemType      string
+	VacantOnly               bool
+	ExcludeLocked            bool
+	ExcludeNonHostPID        bool
+	SelectionMethod          uint32           // NEX v3.0.0+
+	VacantParticipants       uint16           // NEX v3.4.0+
+	MatchmakeParam           *MatchmakeParam  // NEX v3.6.0+
+	ExcludeUserPasswordSet   bool             // NEX v3.7.0+
+	ExcludeSystemPasswordSet bool             // NEX v3.7.0+
+	ReferGID                 uint32           // NEX v3.8.0+
+	CodeWord                 string           // NEX v4.0.0+
+	ResultRange              *nex.ResultRange // NEX v4.0.0+
 }
 
 // ExtractFromStream extracts a Gathering structure from a stream
@@ -86,6 +92,48 @@ func (matchmakeSessionSearchCriteria *MatchmakeSessionSearchCriteria) ExtractFro
 		}
 	}
 
+	if matchmakingVersion.Major >= 3 && matchmakingVersion.Minor >= 6 {
+		matchmakeParam, err := stream.ReadStructure(NewMatchmakeParam())
+		if err != nil {
+			return fmt.Errorf("Failed to extract MatchmakeSessionSearchCriteria.MatchmakeParam. %s", err.Error())
+		}
+
+		matchmakeSessionSearchCriteria.MatchmakeParam = matchmakeParam.(*MatchmakeParam)
+	}
+
+	if matchmakingVersion.Major >= 3 && matchmakingVersion.Minor >= 7 {
+		matchmakeSessionSearchCriteria.ExcludeUserPasswordSet, err = stream.ReadBool()
+		if err != nil {
+			return fmt.Errorf("Failed to extract MatchmakeSessionSearchCriteria.ExcludeUserPasswordSet. %s", err.Error())
+		}
+
+		matchmakeSessionSearchCriteria.ExcludeSystemPasswordSet, err = stream.ReadBool()
+		if err != nil {
+			return fmt.Errorf("Failed to extract MatchmakeSessionSearchCriteria.ExcludeSystemPasswordSet. %s", err.Error())
+		}
+	}
+
+	if matchmakingVersion.Major >= 3 && matchmakingVersion.Minor >= 8 {
+		matchmakeSessionSearchCriteria.ReferGID, err = stream.ReadUInt32LE()
+		if err != nil {
+			return fmt.Errorf("Failed to extract MatchmakeSessionSearchCriteria.ReferGID. %s", err.Error())
+		}
+	}
+
+	if matchmakingVersion.Major >= 4 {
+		matchmakeSessionSearchCriteria.CodeWord, err = stream.ReadString()
+		if err != nil {
+			return fmt.Errorf("Failed to extract MatchmakeSessionSearchCriteria.CodeWord. %s", err.Error())
+		}
+
+		resultRange, err := stream.ReadStructure(nex.NewResultRange())
+		if err != nil {
+			return fmt.Errorf("Failed to extract MatchmakeSessionSearchCriteria.ResultRange. %s", err.Error())
+		}
+
+		matchmakeSessionSearchCriteria.ResultRange = resultRange.(*nex.ResultRange)
+	}
+
 	return nil
 }
 
@@ -110,6 +158,24 @@ func (matchmakeSessionSearchCriteria *MatchmakeSessionSearchCriteria) Bytes(stre
 		stream.WriteUInt16LE(matchmakeSessionSearchCriteria.VacantParticipants)
 	}
 
+	if matchmakingVersion.Major >= 3 && matchmakingVersion.Minor >= 6 {
+		stream.WriteStructure(matchmakeSessionSearchCriteria.MatchmakeParam)
+	}
+
+	if matchmakingVersion.Major >= 3 && matchmakingVersion.Minor >= 7 {
+		stream.WriteBool(matchmakeSessionSearchCriteria.ExcludeUserPasswordSet)
+		stream.WriteBool(matchmakeSessionSearchCriteria.ExcludeSystemPasswordSet)
+	}
+
+	if matchmakingVersion.Major >= 3 && matchmakingVersion.Minor >= 8 {
+		stream.WriteUInt32LE(matchmakeSessionSearchCriteria.ReferGID)
+	}
+
+	if matchmakingVersion.Major >= 4 {
+		stream.WriteString(matchmakeSessionSearchCriteria.CodeWord)
+		stream.WriteStructure(matchmakeSessionSearchCriteria.ResultRange)
+	}
+
 	return stream.Bytes()
 }
 
@@ -130,6 +196,19 @@ func (matchmakeSessionSearchCriteria *MatchmakeSessionSearchCriteria) Copy() nex
 	copied.ExcludeNonHostPID = matchmakeSessionSearchCriteria.ExcludeNonHostPID
 	copied.SelectionMethod = matchmakeSessionSearchCriteria.SelectionMethod
 	copied.VacantParticipants = matchmakeSessionSearchCriteria.VacantParticipants
+
+	if matchmakeSessionSearchCriteria.MatchmakeParam != nil {
+		copied.MatchmakeParam = matchmakeSessionSearchCriteria.MatchmakeParam.Copy().(*MatchmakeParam)
+	}
+
+	copied.ExcludeUserPasswordSet = matchmakeSessionSearchCriteria.ExcludeUserPasswordSet
+	copied.ExcludeSystemPasswordSet = matchmakeSessionSearchCriteria.ExcludeSystemPasswordSet
+	copied.ReferGID = matchmakeSessionSearchCriteria.ReferGID
+	copied.CodeWord = matchmakeSessionSearchCriteria.CodeWord
+
+	if matchmakeSessionSearchCriteria.ResultRange != nil {
+		copied.ResultRange = matchmakeSessionSearchCriteria.ResultRange.Copy().(*nex.ResultRange)
+	}
 
 	return copied
 }
@@ -184,6 +263,50 @@ func (matchmakeSessionSearchCriteria *MatchmakeSessionSearchCriteria) Equals(str
 		return false
 	}
 
+	if matchmakeSessionSearchCriteria.MatchmakeParam != nil && other.MatchmakeParam == nil {
+		return false
+	}
+
+	if matchmakeSessionSearchCriteria.MatchmakeParam == nil && other.MatchmakeParam != nil {
+		return false
+	}
+
+	if matchmakeSessionSearchCriteria.MatchmakeParam != nil && other.MatchmakeParam != nil {
+		if !matchmakeSessionSearchCriteria.MatchmakeParam.Equals(other.MatchmakeParam) {
+			return false
+		}
+	}
+
+	if matchmakeSessionSearchCriteria.ExcludeUserPasswordSet != other.ExcludeUserPasswordSet {
+		return false
+	}
+
+	if matchmakeSessionSearchCriteria.ExcludeSystemPasswordSet != other.ExcludeSystemPasswordSet {
+		return false
+	}
+
+	if matchmakeSessionSearchCriteria.ReferGID != other.ReferGID {
+		return false
+	}
+
+	if matchmakeSessionSearchCriteria.CodeWord != other.CodeWord {
+		return false
+	}
+
+	if matchmakeSessionSearchCriteria.ResultRange != nil && other.ResultRange == nil {
+		return false
+	}
+
+	if matchmakeSessionSearchCriteria.ResultRange == nil && other.ResultRange != nil {
+		return false
+	}
+
+	if matchmakeSessionSearchCriteria.ResultRange != nil && other.ResultRange != nil {
+		if !matchmakeSessionSearchCriteria.ResultRange.Equals(other.ResultRange) {
+			return false
+		}
+	}
+
 	return true
 }
 
@@ -210,7 +333,25 @@ func (matchmakeSessionSearchCriteria *MatchmakeSessionSearchCriteria) FormatToSt
 	b.WriteString(fmt.Sprintf("%sExcludeLocked: %t,\n", indentationValues, matchmakeSessionSearchCriteria.ExcludeLocked))
 	b.WriteString(fmt.Sprintf("%sExcludeNonHostPID: %t,\n", indentationValues, matchmakeSessionSearchCriteria.ExcludeNonHostPID))
 	b.WriteString(fmt.Sprintf("%sSelectionMethod: %d,\n", indentationValues, matchmakeSessionSearchCriteria.SelectionMethod))
-	b.WriteString(fmt.Sprintf("%sVacantParticipants: %d\n", indentationValues, matchmakeSessionSearchCriteria.VacantParticipants))
+	b.WriteString(fmt.Sprintf("%sVacantParticipants: %d,\n", indentationValues, matchmakeSessionSearchCriteria.VacantParticipants))
+
+	if matchmakeSessionSearchCriteria.MatchmakeParam != nil {
+		b.WriteString(fmt.Sprintf("%sMatchmakeParam: %s,\n", indentationValues, matchmakeSessionSearchCriteria.MatchmakeParam.FormatToString(indentationLevel+1)))
+	} else {
+		b.WriteString(fmt.Sprintf("%sMatchmakeParam: nil,\n", indentationValues))
+	}
+
+	b.WriteString(fmt.Sprintf("%sExcludeUserPasswordSet: %t,\n", indentationValues, matchmakeSessionSearchCriteria.ExcludeUserPasswordSet))
+	b.WriteString(fmt.Sprintf("%sExcludeSystemPasswordSet: %t,\n", indentationValues, matchmakeSessionSearchCriteria.ExcludeSystemPasswordSet))
+	b.WriteString(fmt.Sprintf("%sReferGID: %d,\n", indentationValues, matchmakeSessionSearchCriteria.ReferGID))
+	b.WriteString(fmt.Sprintf("%sCodeWord: %q\n", indentationValues, matchmakeSessionSearchCriteria.CodeWord))
+
+	if matchmakeSessionSearchCriteria.ResultRange != nil {
+		b.WriteString(fmt.Sprintf("%sResultRange: %s\n", indentationValues, matchmakeSessionSearchCriteria.ResultRange.FormatToString(indentationLevel+1)))
+	} else {
+		b.WriteString(fmt.Sprintf("%sResultRange: nil\n", indentationValues))
+	}
+
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()

@@ -24,11 +24,13 @@ type JoinMatchmakeSessionParam struct {
 	JoinMessage                  string
 	ParticipationCount           uint16
 	ExtraParticipants            uint16
-	BlockListParam               *MatchmakeBlockListParam
+	BlockListParam               *MatchmakeBlockListParam // * NEX 4.0+ ? Not seen in Minecraft, which is 3.10.0
 }
 
 // ExtractFromStream extracts a JoinMatchmakeSessionParam structure from a stream
 func (joinMatchmakeSessionParam *JoinMatchmakeSessionParam) ExtractFromStream(stream *nex.StreamIn) error {
+	matchmakingVersion := stream.Server.MatchMakingProtocolVersion()
+
 	var err error
 
 	joinMatchmakeSessionParam.GID, err = stream.ReadUInt32LE()
@@ -81,12 +83,15 @@ func (joinMatchmakeSessionParam *JoinMatchmakeSessionParam) ExtractFromStream(st
 		return fmt.Errorf("Failed to extract JoinMatchmakeSessionParam.ExtraParticipants. %s", err.Error())
 	}
 
-	blockListParam, err := stream.ReadStructure(NewMatchmakeBlockListParam())
-	if err != nil {
-		return fmt.Errorf("Failed to extract JoinMatchmakeSessionParam.BlockListParam. %s", err.Error())
-	}
+	// * Not positive this is correct. Minecraft uses NEX 3.10 and does not use this field
+	if matchmakingVersion.Major >= 4 {
+		blockListParam, err := stream.ReadStructure(NewMatchmakeBlockListParam())
+		if err != nil {
+			return fmt.Errorf("Failed to extract JoinMatchmakeSessionParam.BlockListParam. %s", err.Error())
+		}
 
-	joinMatchmakeSessionParam.BlockListParam = blockListParam.(*MatchmakeBlockListParam)
+		joinMatchmakeSessionParam.BlockListParam = blockListParam.(*MatchmakeBlockListParam)
+	}
 
 	return nil
 }

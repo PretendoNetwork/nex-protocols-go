@@ -3,9 +3,11 @@ module github.com/PretendoNetwork/nex-protocols-go
 go 1.19
 
 require (
-	github.com/PretendoNetwork/nex-go v1.0.37
+	github.com/PretendoNetwork/nex-go v1.0.38
 	github.com/PretendoNetwork/plogger-go v1.0.4
 )
+
+require golang.org/x/mod v0.12.0 // indirect
 
 require (
 	github.com/fatih/color v1.15.0 // indirect

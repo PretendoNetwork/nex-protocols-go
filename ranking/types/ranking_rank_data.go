@@ -69,7 +69,7 @@ func (rankingRankData *RankingRankData) ExtractFromStream(stream *nex.StreamIn) 
 		return fmt.Errorf("Failed to extract RankingRankData.CommonData from stream. %s", err.Error())
 	}
 
-	if nexVersion.Major >= 3 && nexVersion.Minor >= 6 {
+	if nexVersion.GreaterOrEqual("3.6.0") {
 		rankingRankData.UpdateTime, err = stream.ReadDateTime()
 		if err != nil {
 			return fmt.Errorf("Failed to extract RankingRankData.UpdateTime from stream. %s", err.Error())
@@ -92,7 +92,7 @@ func (rankingRankData *RankingRankData) Bytes(stream *nex.StreamOut) []byte {
 	stream.WriteUInt64LE(rankingRankData.Param)
 	stream.WriteBuffer(rankingRankData.CommonData)
 
-	if nexVersion.Major >= 4 {
+	if nexVersion.GreaterOrEqual("4.0.0") {
 		stream.WriteDateTime(rankingRankData.UpdateTime)
 	}
 

@@ -22,7 +22,7 @@ func (dataStoreCompleteUpdateParam *DataStoreCompleteUpdateParam) ExtractFromStr
 
 	var err error
 
-	if datastoreVersion.Major >= 3 {
+	if datastoreVersion.GreaterOrEqual("3.0.0") {
 		dataID, err := stream.ReadUInt64LE()
 		if err != nil {
 			return fmt.Errorf("Failed to extract DataStoreCompleteUpdateParam.DataID. %s", err.Error())
@@ -38,7 +38,7 @@ func (dataStoreCompleteUpdateParam *DataStoreCompleteUpdateParam) ExtractFromStr
 		dataStoreCompleteUpdateParam.DataID = uint64(dataID)
 	}
 
-	if datastoreVersion.Major >= 3 {
+	if datastoreVersion.GreaterOrEqual("3.0.0") {
 		version, err := stream.ReadUInt32LE()
 		if err != nil {
 			return fmt.Errorf("Failed to extract DataStoreReqUpdateInfo.Version. %s", err.Error())
@@ -66,13 +66,13 @@ func (dataStoreCompleteUpdateParam *DataStoreCompleteUpdateParam) ExtractFromStr
 func (dataStoreCompleteUpdateParam *DataStoreCompleteUpdateParam) Bytes(stream *nex.StreamOut) []byte {
 	datastoreVersion := stream.Server.DataStoreProtocolVersion()
 
-	if datastoreVersion.Major >= 3 {
+	if datastoreVersion.GreaterOrEqual("3.0.0") {
 		stream.WriteUInt64LE(dataStoreCompleteUpdateParam.DataID)
 	} else {
 		stream.WriteUInt32LE(uint32(dataStoreCompleteUpdateParam.DataID))
 	}
 
-	if datastoreVersion.Major >= 3 {
+	if datastoreVersion.GreaterOrEqual("3.0.0") {
 		stream.WriteUInt32LE(dataStoreCompleteUpdateParam.Version)
 	} else {
 		stream.WriteUInt16LE(uint16(dataStoreCompleteUpdateParam.Version))

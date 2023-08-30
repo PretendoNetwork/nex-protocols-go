@@ -28,7 +28,7 @@ func (dataStoreReqGetInfo *DataStoreReqGetInfo) Bytes(stream *nex.StreamOut) []b
 	stream.WriteUInt32LE(dataStoreReqGetInfo.Size)
 	stream.WriteBuffer(dataStoreReqGetInfo.RootCACert)
 
-	if datastoreVersion.Major >= 3 && datastoreVersion.Minor >= 5 {
+	if datastoreVersion.GreaterOrEqual("3.5.0") {
 		stream.WriteUInt64LE(dataStoreReqGetInfo.DataID)
 	}
 

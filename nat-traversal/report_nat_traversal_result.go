@@ -55,7 +55,7 @@ func (protocol *Protocol) handleReportNATTraversalResult(packet nex.PacketInterf
 	var rtt uint32 = 0
 
 	// TODO - Is this the right version?
-	if natTraversalVersion.Major >= 3 && natTraversalVersion.Minor >= 0 {
+	if natTraversalVersion.GreaterOrEqual("3.0.0") {
 		rtt, err = parametersStream.ReadUInt32LE()
 		if err != nil {
 			errorCode = protocol.reportNATTraversalResultHandler(fmt.Errorf("Failed to read rtt from parameters. %s", err.Error()), client, callID, 0, false, 0)

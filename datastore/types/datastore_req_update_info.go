@@ -25,7 +25,7 @@ func (dataStoreReqUpdateInfo *DataStoreReqUpdateInfo) ExtractFromStream(stream *
 
 	var err error
 
-	if datastoreVersion.Major >= 3 {
+	if datastoreVersion.GreaterOrEqual("3.0.0") {
 		version, err := stream.ReadUInt32LE()
 		if err != nil {
 			return fmt.Errorf("Failed to extract DataStoreReqUpdateInfo.Version. %s", err.Error())
@@ -72,7 +72,7 @@ func (dataStoreReqUpdateInfo *DataStoreReqUpdateInfo) ExtractFromStream(stream *
 func (dataStoreReqUpdateInfo *DataStoreReqUpdateInfo) Bytes(stream *nex.StreamOut) []byte {
 	datastoreVersion := stream.Server.DataStoreProtocolVersion()
 
-	if datastoreVersion.Major >= 3 {
+	if datastoreVersion.GreaterOrEqual("3.0.0") {
 		stream.WriteUInt32LE(dataStoreReqUpdateInfo.Version)
 	} else {
 		stream.WriteUInt16LE(uint16(dataStoreReqUpdateInfo.Version))

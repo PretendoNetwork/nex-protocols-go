@@ -100,7 +100,7 @@ func (dataStorePreparePostParam *DataStorePreparePostParam) ExtractFromStream(st
 
 	dataStorePreparePostParam.PersistenceInitParam = persistenceInitParam.(*DataStorePersistenceInitParam)
 
-	if datastoreVersion.Major >= 3 && datastoreVersion.Minor >= 5 {
+	if datastoreVersion.GreaterOrEqual("3.5.0") {
 		dataStorePreparePostParam.ExtraData, err = stream.ReadListString()
 		if err != nil {
 			return fmt.Errorf("Failed to extract DataStorePreparePostParam.ExtraData. %s", err.Error())

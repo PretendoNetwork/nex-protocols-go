@@ -78,13 +78,23 @@ func (joinMatchmakeSessionParam *JoinMatchmakeSessionParam) ExtractFromStream(st
 		return fmt.Errorf("Failed to extract JoinMatchmakeSessionParam.ParticipationCount. %s", err.Error())
 	}
 
-	joinMatchmakeSessionParam.ExtraParticipants, err = stream.ReadUInt16LE()
-	if err != nil {
-		return fmt.Errorf("Failed to extract JoinMatchmakeSessionParam.ExtraParticipants. %s", err.Error())
+	// * From Dani:
+	// * - "Just for future reference, Minecraft has structure version 1 on JoinMatchmakeSessionParam"
+	// * These fields COULD be different structure versions, not related to NEX updates
+	// TODO - Needs more research
+
+	// * Assuming this to be 3.10.0
+	// * Not seen in Terraria, which is 3.8.3
+	if matchmakingVersion.GreaterOrEqual("3.10.0") {
+		joinMatchmakeSessionParam.ExtraParticipants, err = stream.ReadUInt16LE()
+		if err != nil {
+			return fmt.Errorf("Failed to extract JoinMatchmakeSessionParam.ExtraParticipants. %s", err.Error())
+		}
 	}
 
-	// * Not positive this is correct. Minecraft uses NEX 3.10 and does not use this field
-	if matchmakingVersion.Major >= 4 {
+	// * Assuming this to be 4.0.0
+	// * Not seen in Minecraft, which is 3.10.0
+	if matchmakingVersion.GreaterOrEqual("4.0.0") {
 		blockListParam, err := stream.ReadStructure(NewMatchmakeBlockListParam())
 		if err != nil {
 			return fmt.Errorf("Failed to extract JoinMatchmakeSessionParam.BlockListParam. %s", err.Error())

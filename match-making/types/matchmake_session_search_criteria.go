@@ -78,21 +78,21 @@ func (matchmakeSessionSearchCriteria *MatchmakeSessionSearchCriteria) ExtractFro
 		return fmt.Errorf("Failed to extract MatchmakeSessionSearchCriteria.ExcludeNonHostPID. %s", err.Error())
 	}
 
-	if matchmakingVersion.Major >= 3 {
+	if matchmakingVersion.GreaterOrEqual("3.0.0") {
 		matchmakeSessionSearchCriteria.SelectionMethod, err = stream.ReadUInt32LE()
 		if err != nil {
 			return fmt.Errorf("Failed to extract MatchmakeSessionSearchCriteria.SelectionMethod. %s", err.Error())
 		}
 	}
 
-	if matchmakingVersion.Major >= 3 && matchmakingVersion.Minor >= 4 {
+	if matchmakingVersion.GreaterOrEqual("3.4.0") {
 		matchmakeSessionSearchCriteria.VacantParticipants, err = stream.ReadUInt16LE()
 		if err != nil {
 			return fmt.Errorf("Failed to extract MatchmakeSessionSearchCriteria.VacantParticipants. %s", err.Error())
 		}
 	}
 
-	if matchmakingVersion.Major >= 3 && matchmakingVersion.Minor >= 6 {
+	if matchmakingVersion.GreaterOrEqual("3.6.0") {
 		matchmakeParam, err := stream.ReadStructure(NewMatchmakeParam())
 		if err != nil {
 			return fmt.Errorf("Failed to extract MatchmakeSessionSearchCriteria.MatchmakeParam. %s", err.Error())
@@ -101,7 +101,7 @@ func (matchmakeSessionSearchCriteria *MatchmakeSessionSearchCriteria) ExtractFro
 		matchmakeSessionSearchCriteria.MatchmakeParam = matchmakeParam.(*MatchmakeParam)
 	}
 
-	if matchmakingVersion.Major >= 3 && matchmakingVersion.Minor >= 7 {
+	if matchmakingVersion.GreaterOrEqual("3.7.0") {
 		matchmakeSessionSearchCriteria.ExcludeUserPasswordSet, err = stream.ReadBool()
 		if err != nil {
 			return fmt.Errorf("Failed to extract MatchmakeSessionSearchCriteria.ExcludeUserPasswordSet. %s", err.Error())
@@ -113,14 +113,14 @@ func (matchmakeSessionSearchCriteria *MatchmakeSessionSearchCriteria) ExtractFro
 		}
 	}
 
-	if matchmakingVersion.Major >= 3 && matchmakingVersion.Minor >= 8 {
+	if matchmakingVersion.GreaterOrEqual("3.8.0") {
 		matchmakeSessionSearchCriteria.ReferGID, err = stream.ReadUInt32LE()
 		if err != nil {
 			return fmt.Errorf("Failed to extract MatchmakeSessionSearchCriteria.ReferGID. %s", err.Error())
 		}
 	}
 
-	if matchmakingVersion.Major >= 4 {
+	if matchmakingVersion.GreaterOrEqual("4.0.0") {
 		matchmakeSessionSearchCriteria.CodeWord, err = stream.ReadString()
 		if err != nil {
 			return fmt.Errorf("Failed to extract MatchmakeSessionSearchCriteria.CodeWord. %s", err.Error())
@@ -150,28 +150,28 @@ func (matchmakeSessionSearchCriteria *MatchmakeSessionSearchCriteria) Bytes(stre
 	stream.WriteBool(matchmakeSessionSearchCriteria.ExcludeLocked)
 	stream.WriteBool(matchmakeSessionSearchCriteria.ExcludeNonHostPID)
 
-	if matchmakingVersion.Major >= 3 {
+	if matchmakingVersion.GreaterOrEqual("3.0.0") {
 		stream.WriteUInt32LE(matchmakeSessionSearchCriteria.SelectionMethod)
 	}
 
-	if matchmakingVersion.Major >= 3 && matchmakingVersion.Minor >= 4 {
+	if matchmakingVersion.GreaterOrEqual("3.4.0") {
 		stream.WriteUInt16LE(matchmakeSessionSearchCriteria.VacantParticipants)
 	}
 
-	if matchmakingVersion.Major >= 3 && matchmakingVersion.Minor >= 6 {
+	if matchmakingVersion.GreaterOrEqual("3.6.0") {
 		stream.WriteStructure(matchmakeSessionSearchCriteria.MatchmakeParam)
 	}
 
-	if matchmakingVersion.Major >= 3 && matchmakingVersion.Minor >= 7 {
+	if matchmakingVersion.GreaterOrEqual("3.7.0") {
 		stream.WriteBool(matchmakeSessionSearchCriteria.ExcludeUserPasswordSet)
 		stream.WriteBool(matchmakeSessionSearchCriteria.ExcludeSystemPasswordSet)
 	}
 
-	if matchmakingVersion.Major >= 3 && matchmakingVersion.Minor >= 8 {
+	if matchmakingVersion.GreaterOrEqual("3.8.0") {
 		stream.WriteUInt32LE(matchmakeSessionSearchCriteria.ReferGID)
 	}
 
-	if matchmakingVersion.Major >= 4 {
+	if matchmakingVersion.GreaterOrEqual("4.0.0") {
 		stream.WriteString(matchmakeSessionSearchCriteria.CodeWord)
 		stream.WriteStructure(matchmakeSessionSearchCriteria.ResultRange)
 	}

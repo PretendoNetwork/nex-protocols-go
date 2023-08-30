@@ -45,7 +45,7 @@ func (dataStorePrepareGetParam *DataStorePrepareGetParam) ExtractFromStream(stre
 		return fmt.Errorf("Failed to extract DataStorePrepareGetParam.AccessPassword. %s", err.Error())
 	}
 
-	if datastoreVersion.Major >= 3 && datastoreVersion.Minor >= 5 {
+	if datastoreVersion.GreaterOrEqual("3.5.0") {
 		dataStorePrepareGetParam.ExtraData, err = stream.ReadListString()
 		if err != nil {
 			return fmt.Errorf("Failed to extract DataStorePrepareGetParam.ExtraData. %s", err.Error())

@@ -70,28 +70,28 @@ func (matchmakeSession *MatchmakeSession) ExtractFromStream(stream *nex.StreamIn
 		return fmt.Errorf("Failed to extract MatchmakeSession.ParticipationCount. %s", err.Error())
 	}
 
-	if matchmakingVersion.Major >= 3 && matchmakingVersion.Minor >= 4 {
+	if matchmakingVersion.GreaterOrEqual("3.4.0") {
 		matchmakeSession.ProgressScore, err = stream.ReadUInt8()
 		if err != nil {
 			return fmt.Errorf("Failed to extract MatchmakeSession.ProgressScore. %s", err.Error())
 		}
 	}
 
-	if matchmakingVersion.Major >= 3 {
+	if matchmakingVersion.GreaterOrEqual("3.0.0") {
 		matchmakeSession.SessionKey, err = stream.ReadBuffer()
 		if err != nil {
 			return fmt.Errorf("Failed to extract MatchmakeSession.SessionKey. %s", err.Error())
 		}
 	}
 
-	if matchmakingVersion.Major >= 3 && matchmakingVersion.Minor >= 5 {
+	if matchmakingVersion.GreaterOrEqual("3.5.0") {
 		matchmakeSession.Option, err = stream.ReadUInt32LE()
 		if err != nil {
 			return fmt.Errorf("Failed to extract MatchmakeSession.Option. %s", err.Error())
 		}
 	}
 
-	if matchmakingVersion.Major >= 3 && matchmakingVersion.Minor >= 6 {
+	if matchmakingVersion.GreaterOrEqual("3.6.0") {
 		matchmakeParam, err := stream.ReadStructure(NewMatchmakeParam())
 		if err != nil {
 			return fmt.Errorf("Failed to extract MatchmakeSession.MatchmakeParam. %s", err.Error())
@@ -104,14 +104,14 @@ func (matchmakeSession *MatchmakeSession) ExtractFromStream(stream *nex.StreamIn
 		}
 	}
 
-	if matchmakingVersion.Major >= 3 && matchmakingVersion.Minor >= 7 {
+	if matchmakingVersion.GreaterOrEqual("3.7.0") {
 		matchmakeSession.UserPassword, err = stream.ReadString()
 		if err != nil {
 			return fmt.Errorf("Failed to extract MatchmakeSession.UserPassword. %s", err.Error())
 		}
 	}
 
-	if matchmakingVersion.Major >= 3 && matchmakingVersion.Minor >= 8 {
+	if matchmakingVersion.GreaterOrEqual("3.8.0") {
 		matchmakeSession.ReferGID, err = stream.ReadUInt32LE()
 		if err != nil {
 			return fmt.Errorf("Failed to extract MatchmakeSession.ReferGID. %s", err.Error())
@@ -128,7 +128,7 @@ func (matchmakeSession *MatchmakeSession) ExtractFromStream(stream *nex.StreamIn
 		}
 	}
 
-	if matchmakingVersion.Major >= 4 {
+	if matchmakingVersion.GreaterOrEqual("4.0.0") {
 		matchmakeSession.CodeWord, err = stream.ReadString()
 		if err != nil {
 			return fmt.Errorf("Failed to extract MatchmakeSession.CodeWord. %s", err.Error())
@@ -150,34 +150,34 @@ func (matchmakeSession *MatchmakeSession) Bytes(stream *nex.StreamOut) []byte {
 
 	stream.WriteUInt32LE(matchmakeSession.ParticipationCount)
 
-	if matchmakingVersion.Major >= 3 && matchmakingVersion.Minor >= 4 {
+	if matchmakingVersion.GreaterOrEqual("3.4.0") {
 		stream.WriteUInt8(matchmakeSession.ProgressScore)
 	}
 
-	if matchmakingVersion.Major >= 3 {
+	if matchmakingVersion.GreaterOrEqual("3.0.0") {
 		stream.WriteBuffer(matchmakeSession.SessionKey)
 	}
 
-	if matchmakingVersion.Major >= 3 && matchmakingVersion.Minor >= 5 {
+	if matchmakingVersion.GreaterOrEqual("3.5.0") {
 		stream.WriteUInt32LE(matchmakeSession.Option)
 	}
 
-	if matchmakingVersion.Major >= 3 && matchmakingVersion.Minor >= 6 {
+	if matchmakingVersion.GreaterOrEqual("3.6.0") {
 		stream.WriteStructure(matchmakeSession.MatchmakeParam)
 		stream.WriteDateTime(matchmakeSession.StartedTime)
 	}
 
-	if matchmakingVersion.Major >= 3 && matchmakingVersion.Minor >= 7 {
+	if matchmakingVersion.GreaterOrEqual("3.7.0") {
 		stream.WriteString(matchmakeSession.UserPassword)
 	}
 
-	if matchmakingVersion.Major >= 3 && matchmakingVersion.Minor >= 8 {
+	if matchmakingVersion.GreaterOrEqual("3.7.0") {
 		stream.WriteUInt32LE(matchmakeSession.ReferGID)
 		stream.WriteBool(matchmakeSession.UserPasswordEnabled)
 		stream.WriteBool(matchmakeSession.SystemPasswordEnabled)
 	}
 
-	if matchmakingVersion.Major >= 4 {
+	if matchmakingVersion.GreaterOrEqual("4.0.0") {
 		stream.WriteString(matchmakeSession.CodeWord)
 	}
 

@@ -54,7 +54,7 @@ func (protocol *Protocol) handleCreateMatchmakeSession(packet nex.PacketInterfac
 
 	var participationCount uint16 = 0
 
-	if matchmakingVersion.Major >= 3 && matchmakingVersion.Minor >= 4 {
+	if matchmakingVersion.GreaterOrEqual("3.4.0") {
 		participationCount, err = parametersStream.ReadUInt16LE()
 		if err != nil {
 			errorCode = protocol.createMatchmakeSessionHandler(fmt.Errorf("Failed to read message from participationCount. %s", err.Error()), client, callID, nil, "", 0)

@@ -53,6 +53,8 @@ func (serviceItemPurchaseHistory *ServiceItemPurchaseHistory) Bytes(stream *nex.
 func (serviceItemPurchaseHistory *ServiceItemPurchaseHistory) Copy() nex.StructureInterface {
 	copied := NewServiceItemPurchaseHistory()
 
+	copied.SetStructureVersion(serviceItemPurchaseHistory.StructureVersion())
+
 	copied.TotalSize = serviceItemPurchaseHistory.TotalSize
 	copied.Offset = serviceItemPurchaseHistory.Offset
 	copied.Transactions = make([]*ServiceItemTransaction, len(serviceItemPurchaseHistory.Transactions))
@@ -67,6 +69,10 @@ func (serviceItemPurchaseHistory *ServiceItemPurchaseHistory) Copy() nex.Structu
 // Equals checks if the passed Structure contains the same data as the current instance
 func (serviceItemPurchaseHistory *ServiceItemPurchaseHistory) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*ServiceItemPurchaseHistory)
+
+	if serviceItemPurchaseHistory.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if serviceItemPurchaseHistory.TotalSize != other.TotalSize {
 		return false

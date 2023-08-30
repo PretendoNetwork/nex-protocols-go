@@ -46,6 +46,8 @@ func (dataStoreFightingPowerChart *DataStoreFightingPowerChart) Bytes(stream *ne
 func (dataStoreFightingPowerChart *DataStoreFightingPowerChart) Copy() nex.StructureInterface {
 	copied := NewDataStoreFightingPowerChart()
 
+	copied.SetStructureVersion(dataStoreFightingPowerChart.StructureVersion())
+
 	copied.UserNum = dataStoreFightingPowerChart.UserNum
 	copied.Chart = make([]*DataStoreFightingPowerScore, len(dataStoreFightingPowerChart.Chart))
 
@@ -59,6 +61,10 @@ func (dataStoreFightingPowerChart *DataStoreFightingPowerChart) Copy() nex.Struc
 // Equals checks if the passed Structure contains the same data as the current instance
 func (dataStoreFightingPowerChart *DataStoreFightingPowerChart) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*DataStoreFightingPowerChart)
+
+	if dataStoreFightingPowerChart.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if dataStoreFightingPowerChart.UserNum != other.UserNum {
 		return false

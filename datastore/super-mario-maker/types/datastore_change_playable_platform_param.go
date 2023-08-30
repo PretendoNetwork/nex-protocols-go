@@ -44,6 +44,8 @@ func (dataStoreChangePlayablePlatformParam *DataStoreChangePlayablePlatformParam
 func (dataStoreChangePlayablePlatformParam *DataStoreChangePlayablePlatformParam) Copy() nex.StructureInterface {
 	copied := NewDataStoreChangePlayablePlatformParam()
 
+	copied.SetStructureVersion(dataStoreChangePlayablePlatformParam.StructureVersion())
+
 	copied.DataID = dataStoreChangePlayablePlatformParam.DataID
 	copied.PlayablePlatform = dataStoreChangePlayablePlatformParam.PlayablePlatform
 
@@ -53,6 +55,10 @@ func (dataStoreChangePlayablePlatformParam *DataStoreChangePlayablePlatformParam
 // Equals checks if the passed Structure contains the same data as the current instance
 func (dataStoreChangePlayablePlatformParam *DataStoreChangePlayablePlatformParam) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*DataStoreChangePlayablePlatformParam)
+
+	if dataStoreChangePlayablePlatformParam.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if dataStoreChangePlayablePlatformParam.DataID != other.DataID {
 		return false

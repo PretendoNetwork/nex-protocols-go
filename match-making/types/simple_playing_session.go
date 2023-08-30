@@ -61,6 +61,8 @@ func (simplePlayingSession *SimplePlayingSession) Bytes(stream *nex.StreamOut) [
 func (simplePlayingSession *SimplePlayingSession) Copy() nex.StructureInterface {
 	copied := NewSimplePlayingSession()
 
+	copied.SetStructureVersion(simplePlayingSession.StructureVersion())
+
 	copied.PrincipalID = simplePlayingSession.PrincipalID
 	copied.GatheringID = simplePlayingSession.GatheringID
 	copied.GameMode = simplePlayingSession.GameMode
@@ -72,6 +74,10 @@ func (simplePlayingSession *SimplePlayingSession) Copy() nex.StructureInterface 
 // Equals checks if the passed Structure contains the same data as the current instance
 func (simplePlayingSession *SimplePlayingSession) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*SimplePlayingSession)
+
+	if simplePlayingSession.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if simplePlayingSession.PrincipalID != other.PrincipalID {
 		return false

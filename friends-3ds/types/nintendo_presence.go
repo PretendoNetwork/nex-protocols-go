@@ -103,6 +103,8 @@ func (presence *NintendoPresence) ExtractFromStream(stream *nex.StreamIn) error 
 func (presence *NintendoPresence) Copy() nex.StructureInterface {
 	copied := NewNintendoPresence()
 
+	copied.SetStructureVersion(presence.StructureVersion())
+
 	copied.Data = presence.ParentType().Copy().(*nex.Data)
 	copied.SetParentType(copied.Data)
 
@@ -125,6 +127,10 @@ func (presence *NintendoPresence) Copy() nex.StructureInterface {
 // Equals checks if the passed Structure contains the same data as the current instance
 func (presence *NintendoPresence) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*NintendoPresence)
+
+	if presence.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if !presence.ParentType().Equals(other.ParentType()) {
 		return false

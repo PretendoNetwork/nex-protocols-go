@@ -11,10 +11,10 @@ import (
 // ServiceItemPurchaceInfo holds data for the Service Item (Wii Sports Club) protocol
 type ServiceItemPurchaceInfo struct {
 	nex.Structure
-	TransactionID string
+	TransactionID    string
 	ExtTransactionID string
-	ItemCode string
-	PostBalance *ServiceItemAmount
+	ItemCode         string
+	PostBalance      *ServiceItemAmount
 }
 
 // ExtractFromStream extracts a ServiceItemPurchaceInfo structure from a stream
@@ -60,6 +60,8 @@ func (serviceItemPurchaceInfo *ServiceItemPurchaceInfo) Bytes(stream *nex.Stream
 func (serviceItemPurchaceInfo *ServiceItemPurchaceInfo) Copy() nex.StructureInterface {
 	copied := NewServiceItemPurchaceInfo()
 
+	copied.SetStructureVersion(serviceItemPurchaceInfo.StructureVersion())
+
 	copied.TransactionID = serviceItemPurchaceInfo.TransactionID
 	copied.ExtTransactionID = serviceItemPurchaceInfo.ExtTransactionID
 	copied.ItemCode = serviceItemPurchaceInfo.ItemCode
@@ -71,6 +73,10 @@ func (serviceItemPurchaceInfo *ServiceItemPurchaceInfo) Copy() nex.StructureInte
 // Equals checks if the passed Structure contains the same data as the current instance
 func (serviceItemPurchaceInfo *ServiceItemPurchaceInfo) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*ServiceItemPurchaceInfo)
+
+	if serviceItemPurchaceInfo.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if serviceItemPurchaceInfo.TransactionID != other.TransactionID {
 		return false

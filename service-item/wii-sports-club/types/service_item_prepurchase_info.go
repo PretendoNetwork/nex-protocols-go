@@ -11,14 +11,14 @@ import (
 // ServiceItemPrepurchaseInfo holds data for the Service Item (Wii Sports Club) protocol
 type ServiceItemPrepurchaseInfo struct {
 	nex.Structure
-	ItemCode string
-	PriceID string
-	RegularPrice *ServiceItemAmount
+	ItemCode       string
+	PriceID        string
+	RegularPrice   *ServiceItemAmount
 	IsTaxAvailable bool
-	TaxAmount *ServiceItemAmount
-	TotalAmount *ServiceItemAmount
+	TaxAmount      *ServiceItemAmount
+	TotalAmount    *ServiceItemAmount
 	CurrentBalance *ServiceItemAmount
-	PostBalance *ServiceItemAmount
+	PostBalance    *ServiceItemAmount
 }
 
 // ExtractFromStream extracts a ServiceItemPrepurchaseInfo structure from a stream
@@ -96,6 +96,8 @@ func (serviceItemPrepurchaseInfo *ServiceItemPrepurchaseInfo) Bytes(stream *nex.
 func (serviceItemPrepurchaseInfo *ServiceItemPrepurchaseInfo) Copy() nex.StructureInterface {
 	copied := NewServiceItemPrepurchaseInfo()
 
+	copied.SetStructureVersion(serviceItemPrepurchaseInfo.StructureVersion())
+
 	copied.ItemCode = serviceItemPrepurchaseInfo.ItemCode
 	copied.PriceID = serviceItemPrepurchaseInfo.PriceID
 	copied.RegularPrice = serviceItemPrepurchaseInfo.RegularPrice.Copy().(*ServiceItemAmount)
@@ -111,6 +113,10 @@ func (serviceItemPrepurchaseInfo *ServiceItemPrepurchaseInfo) Copy() nex.Structu
 // Equals checks if the passed Structure contains the same data as the current instance
 func (serviceItemPrepurchaseInfo *ServiceItemPrepurchaseInfo) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*ServiceItemPrepurchaseInfo)
+
+	if serviceItemPrepurchaseInfo.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if serviceItemPrepurchaseInfo.ItemCode != other.ItemCode {
 		return false
@@ -178,20 +184,17 @@ func (serviceItemPrepurchaseInfo *ServiceItemPrepurchaseInfo) FormatToString(ind
 		b.WriteString(fmt.Sprintf("%sTaxAmount: nil\n", indentationValues))
 	}
 
-
 	if serviceItemPrepurchaseInfo.TotalAmount != nil {
 		b.WriteString(fmt.Sprintf("%sTotalAmount: %s\n", indentationValues, serviceItemPrepurchaseInfo.TotalAmount.FormatToString(indentationLevel+1)))
 	} else {
 		b.WriteString(fmt.Sprintf("%sTotalAmount: nil\n", indentationValues))
 	}
 
-
 	if serviceItemPrepurchaseInfo.CurrentBalance != nil {
 		b.WriteString(fmt.Sprintf("%sCurrentBalance: %s\n", indentationValues, serviceItemPrepurchaseInfo.CurrentBalance.FormatToString(indentationLevel+1)))
 	} else {
 		b.WriteString(fmt.Sprintf("%sCurrentBalance: nil\n", indentationValues))
 	}
-
 
 	if serviceItemPrepurchaseInfo.PostBalance != nil {
 		b.WriteString(fmt.Sprintf("%sPostBalance: %s\n", indentationValues, serviceItemPrepurchaseInfo.PostBalance.FormatToString(indentationLevel+1)))

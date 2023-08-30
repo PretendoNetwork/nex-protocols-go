@@ -61,6 +61,8 @@ func (participantDetails *ParticipantDetails) Bytes(stream *nex.StreamOut) []byt
 func (participantDetails *ParticipantDetails) Copy() nex.StructureInterface {
 	copied := NewParticipantDetails()
 
+	copied.SetStructureVersion(participantDetails.StructureVersion())
+
 	copied.IDParticipant = participantDetails.IDParticipant
 	copied.StrName = participantDetails.StrName
 	copied.StrMessage = participantDetails.StrMessage
@@ -72,6 +74,10 @@ func (participantDetails *ParticipantDetails) Copy() nex.StructureInterface {
 // Equals checks if the passed Structure contains the same data as the current instance
 func (participantDetails *ParticipantDetails) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*ParticipantDetails)
+
+	if participantDetails.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if participantDetails.IDParticipant != other.IDParticipant {
 		return false

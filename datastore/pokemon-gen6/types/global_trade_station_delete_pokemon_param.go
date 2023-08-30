@@ -46,6 +46,8 @@ func (globalTradeStationDeletePokemonParam *GlobalTradeStationDeletePokemonParam
 func (globalTradeStationDeletePokemonParam *GlobalTradeStationDeletePokemonParam) Copy() nex.StructureInterface {
 	copied := NewGlobalTradeStationDeletePokemonParam()
 
+	copied.SetStructureVersion(globalTradeStationDeletePokemonParam.StructureVersion())
+
 	copied.PrepareUploadKey = globalTradeStationDeletePokemonParam.PrepareUploadKey.Copy().(*GlobalTradeStationRecordKey)
 	copied.DeleteFlag = globalTradeStationDeletePokemonParam.DeleteFlag
 
@@ -55,6 +57,10 @@ func (globalTradeStationDeletePokemonParam *GlobalTradeStationDeletePokemonParam
 // Equals checks if the passed Structure contains the same data as the current instance
 func (globalTradeStationDeletePokemonParam *GlobalTradeStationDeletePokemonParam) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*GlobalTradeStationDeletePokemonParam)
+
+	if globalTradeStationDeletePokemonParam.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if !globalTradeStationDeletePokemonParam.PrepareUploadKey.Equals(other.PrepareUploadKey) {
 		return false

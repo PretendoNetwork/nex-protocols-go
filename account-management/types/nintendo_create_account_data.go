@@ -50,6 +50,8 @@ func (nintendoCreateAccountData *NintendoCreateAccountData) ExtractFromStream(st
 func (nintendoCreateAccountData *NintendoCreateAccountData) Copy() nex.StructureInterface {
 	copied := NewNintendoCreateAccountData()
 
+	copied.SetStructureVersion(nintendoCreateAccountData.StructureVersion())
+
 	if nintendoCreateAccountData.NNAInfo != nil {
 		copied.NNAInfo = nintendoCreateAccountData.NNAInfo.Copy().(*friends_wiiu_types.NNAInfo)
 	}
@@ -68,6 +70,10 @@ func (nintendoCreateAccountData *NintendoCreateAccountData) Copy() nex.Structure
 // Equals checks if the passed Structure contains the same data as the current instance
 func (nintendoCreateAccountData *NintendoCreateAccountData) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*NintendoCreateAccountData)
+
+	if nintendoCreateAccountData.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if nintendoCreateAccountData.NNAInfo == nil && other.NNAInfo != nil {
 		return false

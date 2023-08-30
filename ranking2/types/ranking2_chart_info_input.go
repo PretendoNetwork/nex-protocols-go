@@ -44,6 +44,8 @@ func (ranking2ChartInfoInput *Ranking2ChartInfoInput) Bytes(stream *nex.StreamOu
 func (ranking2ChartInfoInput *Ranking2ChartInfoInput) Copy() nex.StructureInterface {
 	copied := NewRanking2ChartInfoInput()
 
+	copied.SetStructureVersion(ranking2ChartInfoInput.StructureVersion())
+
 	copied.ChartIndex = ranking2ChartInfoInput.ChartIndex
 	copied.NumSeasonsToGoBack = ranking2ChartInfoInput.NumSeasonsToGoBack
 	return copied
@@ -52,6 +54,10 @@ func (ranking2ChartInfoInput *Ranking2ChartInfoInput) Copy() nex.StructureInterf
 // Equals checks if the passed Structure contains the same data as the current instance
 func (ranking2ChartInfoInput *Ranking2ChartInfoInput) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*Ranking2ChartInfoInput)
+
+	if ranking2ChartInfoInput.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if ranking2ChartInfoInput.ChartIndex != other.ChartIndex {
 		return false

@@ -37,6 +37,8 @@ func (serviceItemGetNoticeParam *ServiceItemGetNoticeParam) Bytes(stream *nex.St
 func (serviceItemGetNoticeParam *ServiceItemGetNoticeParam) Copy() nex.StructureInterface {
 	copied := NewServiceItemGetNoticeParam()
 
+	copied.SetStructureVersion(serviceItemGetNoticeParam.StructureVersion())
+
 	copied.ScheduleType = serviceItemGetNoticeParam.ScheduleType
 
 	return copied
@@ -45,6 +47,10 @@ func (serviceItemGetNoticeParam *ServiceItemGetNoticeParam) Copy() nex.Structure
 // Equals checks if the passed Structure contains the same data as the current instance
 func (serviceItemGetNoticeParam *ServiceItemGetNoticeParam) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*ServiceItemGetNoticeParam)
+
+	if serviceItemGetNoticeParam.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	return serviceItemGetNoticeParam.ScheduleType == other.ScheduleType
 }

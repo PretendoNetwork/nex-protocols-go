@@ -97,6 +97,8 @@ func (dataStoreChangeMetaParamV1 *DataStoreChangeMetaParamV1) Bytes(stream *nex.
 func (dataStoreChangeMetaParamV1 *DataStoreChangeMetaParamV1) Copy() nex.StructureInterface {
 	copied := NewDataStoreChangeMetaParamV1()
 
+	copied.SetStructureVersion(dataStoreChangeMetaParamV1.StructureVersion())
+
 	copied.DataID = dataStoreChangeMetaParamV1.DataID
 	copied.ModifiesFlag = dataStoreChangeMetaParamV1.ModifiesFlag
 	copied.Name = dataStoreChangeMetaParamV1.Name
@@ -119,6 +121,10 @@ func (dataStoreChangeMetaParamV1 *DataStoreChangeMetaParamV1) Copy() nex.Structu
 // Equals checks if the passed Structure contains the same data as the current instance
 func (dataStoreChangeMetaParamV1 *DataStoreChangeMetaParamV1) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*DataStoreChangeMetaParamV1)
+
+	if dataStoreChangeMetaParamV1.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if dataStoreChangeMetaParamV1.DataID != other.DataID {
 		return false

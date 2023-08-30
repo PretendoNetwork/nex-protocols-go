@@ -40,6 +40,8 @@ func (serviceItemUseServiceItemResponse *ServiceItemUseServiceItemResponse) Byte
 func (serviceItemUseServiceItemResponse *ServiceItemUseServiceItemResponse) Copy() nex.StructureInterface {
 	copied := NewServiceItemUseServiceItemResponse()
 
+	copied.SetStructureVersion(serviceItemUseServiceItemResponse.StructureVersion())
+
 	copied.ServiceItemEShopResponse = serviceItemUseServiceItemResponse.ServiceItemEShopResponse.Copy().(*ServiceItemEShopResponse)
 	copied.SetParentType(copied.ServiceItemEShopResponse)
 
@@ -55,6 +57,10 @@ func (serviceItemUseServiceItemResponse *ServiceItemUseServiceItemResponse) Copy
 // Equals checks if the passed Structure contains the same data as the current instance
 func (serviceItemUseServiceItemResponse *ServiceItemUseServiceItemResponse) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*ServiceItemUseServiceItemResponse)
+
+	if serviceItemUseServiceItemResponse.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if !serviceItemUseServiceItemResponse.ParentType().Equals(other.ParentType()) {
 		return false

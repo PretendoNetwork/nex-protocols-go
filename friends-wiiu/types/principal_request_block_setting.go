@@ -28,6 +28,8 @@ func (principalRequestBlockSetting *PrincipalRequestBlockSetting) Bytes(stream *
 func (principalRequestBlockSetting *PrincipalRequestBlockSetting) Copy() nex.StructureInterface {
 	copied := NewPrincipalRequestBlockSetting()
 
+	copied.SetStructureVersion(principalRequestBlockSetting.StructureVersion())
+
 	copied.Data = principalRequestBlockSetting.ParentType().Copy().(*nex.Data)
 	copied.SetParentType(copied.Data)
 
@@ -40,6 +42,10 @@ func (principalRequestBlockSetting *PrincipalRequestBlockSetting) Copy() nex.Str
 // Equals checks if the passed Structure contains the same data as the current instance
 func (principalRequestBlockSetting *PrincipalRequestBlockSetting) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*PrincipalRequestBlockSetting)
+
+	if principalRequestBlockSetting.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if !principalRequestBlockSetting.ParentType().Equals(other.ParentType()) {
 		return false

@@ -156,6 +156,8 @@ func (ranking2ChartInfo *Ranking2ChartInfo) Bytes(stream *nex.StreamOut) []byte 
 func (ranking2ChartInfo *Ranking2ChartInfo) Copy() nex.StructureInterface {
 	copied := NewRanking2ChartInfo()
 
+	copied.SetStructureVersion(ranking2ChartInfo.StructureVersion())
+
 	copied.CreateTime = ranking2ChartInfo.CreateTime.Copy()
 	copied.Index = ranking2ChartInfo.Index
 	copied.Category = ranking2ChartInfo.Category
@@ -183,6 +185,10 @@ func (ranking2ChartInfo *Ranking2ChartInfo) Copy() nex.StructureInterface {
 // Equals checks if the passed Structure contains the same data as the current instance
 func (ranking2ChartInfo *Ranking2ChartInfo) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*Ranking2ChartInfo)
+
+	if ranking2ChartInfo.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if !ranking2ChartInfo.CreateTime.Equals(other.CreateTime) {
 		return false

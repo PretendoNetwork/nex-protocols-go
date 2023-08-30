@@ -39,6 +39,8 @@ func (binaryMessage *BinaryMessage) ExtractFromStream(stream *nex.StreamIn) erro
 func (binaryMessage *BinaryMessage) Copy() nex.StructureInterface {
 	copied := NewBinaryMessage()
 
+	copied.SetStructureVersion(binaryMessage.StructureVersion())
+
 	copied.UserMessage = binaryMessage.UserMessage.Copy().(*UserMessage)
 	copied.SetParentType(copied.UserMessage)
 
@@ -52,6 +54,10 @@ func (binaryMessage *BinaryMessage) Copy() nex.StructureInterface {
 // Equals checks if the passed Structure contains the same data as the current instance
 func (binaryMessage *BinaryMessage) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*BinaryMessage)
+
+	if binaryMessage.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if !binaryMessage.ParentType().Equals(other.ParentType()) {
 		return false

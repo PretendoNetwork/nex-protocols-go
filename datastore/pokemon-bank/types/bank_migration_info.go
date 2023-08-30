@@ -44,6 +44,8 @@ func (bankMigrationInfo *BankMigrationInfo) Bytes(stream *nex.StreamOut) []byte 
 func (bankMigrationInfo *BankMigrationInfo) Copy() nex.StructureInterface {
 	copied := NewBankMigrationInfo()
 
+	copied.SetStructureVersion(bankMigrationInfo.StructureVersion())
+
 	copied.MigrationStatus = bankMigrationInfo.MigrationStatus
 	copied.UpdatedTime = bankMigrationInfo.UpdatedTime.Copy()
 
@@ -53,6 +55,10 @@ func (bankMigrationInfo *BankMigrationInfo) Copy() nex.StructureInterface {
 // Equals checks if the passed Structure contains the same data as the current instance
 func (bankMigrationInfo *BankMigrationInfo) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*BankMigrationInfo)
+
+	if bankMigrationInfo.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if bankMigrationInfo.MigrationStatus != other.MigrationStatus {
 		return false

@@ -93,6 +93,8 @@ func (ranking2GetParam *Ranking2GetParam) Bytes(stream *nex.StreamOut) []byte {
 func (ranking2GetParam *Ranking2GetParam) Copy() nex.StructureInterface {
 	copied := NewRanking2GetParam()
 
+	copied.SetStructureVersion(ranking2GetParam.StructureVersion())
+
 	copied.NexUniqueID = ranking2GetParam.NexUniqueID
 	copied.PrincipalID = ranking2GetParam.PrincipalID
 	copied.Category = ranking2GetParam.Category
@@ -108,6 +110,10 @@ func (ranking2GetParam *Ranking2GetParam) Copy() nex.StructureInterface {
 // Equals checks if the passed Structure contains the same data as the current instance
 func (ranking2GetParam *Ranking2GetParam) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*Ranking2GetParam)
+
+	if ranking2GetParam.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if ranking2GetParam.NexUniqueID != other.NexUniqueID {
 		return false

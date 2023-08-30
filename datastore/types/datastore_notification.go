@@ -44,6 +44,8 @@ func (dataStoreNotification *DataStoreNotification) Bytes(stream *nex.StreamOut)
 func (dataStoreNotification *DataStoreNotification) Copy() nex.StructureInterface {
 	copied := NewDataStoreNotification()
 
+	copied.SetStructureVersion(dataStoreNotification.StructureVersion())
+
 	copied.NotificationID = dataStoreNotification.NotificationID
 	copied.DataID = dataStoreNotification.DataID
 
@@ -53,6 +55,10 @@ func (dataStoreNotification *DataStoreNotification) Copy() nex.StructureInterfac
 // Equals checks if the passed Structure contains the same data as the current instance
 func (dataStoreNotification *DataStoreNotification) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*DataStoreNotification)
+
+	if dataStoreNotification.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if dataStoreNotification.NotificationID != other.NotificationID {
 		return false

@@ -44,6 +44,8 @@ func (bufferQueueParam *BufferQueueParam) Bytes(stream *nex.StreamOut) []byte {
 func (bufferQueueParam *BufferQueueParam) Copy() nex.StructureInterface {
 	copied := NewBufferQueueParam()
 
+	copied.SetStructureVersion(bufferQueueParam.StructureVersion())
+
 	copied.DataID = bufferQueueParam.DataID
 	copied.Slot = bufferQueueParam.Slot
 
@@ -53,6 +55,10 @@ func (bufferQueueParam *BufferQueueParam) Copy() nex.StructureInterface {
 // Equals checks if the passed Structure contains the same data as the current instance
 func (bufferQueueParam *BufferQueueParam) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*BufferQueueParam)
+
+	if bufferQueueParam.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if bufferQueueParam.DataID != other.DataID {
 		return false

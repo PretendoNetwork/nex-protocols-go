@@ -58,6 +58,8 @@ func (dataStoreSearchReplayParam *DataStoreSearchReplayParam) Bytes(stream *nex.
 func (dataStoreSearchReplayParam *DataStoreSearchReplayParam) Copy() nex.StructureInterface {
 	copied := NewDataStoreSearchReplayParam()
 
+	copied.SetStructureVersion(dataStoreSearchReplayParam.StructureVersion())
+
 	copied.Mode = dataStoreSearchReplayParam.Mode
 	copied.Style = dataStoreSearchReplayParam.Style
 	copied.Fighter = dataStoreSearchReplayParam.Fighter
@@ -69,6 +71,10 @@ func (dataStoreSearchReplayParam *DataStoreSearchReplayParam) Copy() nex.Structu
 // Equals checks if the passed Structure contains the same data as the current instance
 func (dataStoreSearchReplayParam *DataStoreSearchReplayParam) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*DataStoreSearchReplayParam)
+
+	if dataStoreSearchReplayParam.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if dataStoreSearchReplayParam.Mode != other.Mode {
 		return false

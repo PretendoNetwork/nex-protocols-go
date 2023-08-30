@@ -86,6 +86,8 @@ func (dataStorePrepareUpdateParam *DataStorePrepareUpdateParam) Bytes(stream *ne
 func (dataStorePrepareUpdateParam *DataStorePrepareUpdateParam) Copy() nex.StructureInterface {
 	copied := NewDataStorePrepareUpdateParam()
 
+	copied.SetStructureVersion(dataStorePrepareUpdateParam.StructureVersion())
+
 	copied.DataID = dataStorePrepareUpdateParam.DataID
 	copied.Size = dataStorePrepareUpdateParam.Size
 	copied.UpdatePassword = dataStorePrepareUpdateParam.UpdatePassword
@@ -99,6 +101,10 @@ func (dataStorePrepareUpdateParam *DataStorePrepareUpdateParam) Copy() nex.Struc
 // Equals checks if the passed Structure contains the same data as the current instance
 func (dataStorePrepareUpdateParam *DataStorePrepareUpdateParam) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*DataStorePrepareUpdateParam)
+
+	if dataStorePrepareUpdateParam.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if dataStorePrepareUpdateParam.DataID != other.DataID {
 		return false

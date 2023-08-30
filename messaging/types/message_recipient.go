@@ -42,6 +42,8 @@ func (messageRecipient *MessageRecipient) ExtractFromStream(stream *nex.StreamIn
 func (messageRecipient *MessageRecipient) Copy() nex.StructureInterface {
 	copied := NewMessageRecipient()
 
+	copied.SetStructureVersion(messageRecipient.StructureVersion())
+
 	copied.UIRecipientType = messageRecipient.UIRecipientType
 	copied.PrincipalID = messageRecipient.PrincipalID
 	copied.GatheringID = messageRecipient.GatheringID
@@ -52,6 +54,10 @@ func (messageRecipient *MessageRecipient) Copy() nex.StructureInterface {
 // Equals checks if the passed Structure contains the same data as the current instance
 func (messageRecipient *MessageRecipient) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*MessageRecipient)
+
+	if messageRecipient.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if messageRecipient.UIRecipientType != other.UIRecipientType {
 		return false

@@ -183,6 +183,8 @@ func (matchmakeSessionSearchCriteria *MatchmakeSessionSearchCriteria) Bytes(stre
 func (matchmakeSessionSearchCriteria *MatchmakeSessionSearchCriteria) Copy() nex.StructureInterface {
 	copied := NewMatchmakeSessionSearchCriteria()
 
+	copied.SetStructureVersion(matchmakeSessionSearchCriteria.StructureVersion())
+
 	copied.Attribs = make([]string, len(matchmakeSessionSearchCriteria.Attribs))
 
 	copy(copied.Attribs, matchmakeSessionSearchCriteria.Attribs)
@@ -216,6 +218,10 @@ func (matchmakeSessionSearchCriteria *MatchmakeSessionSearchCriteria) Copy() nex
 // Equals checks if the passed Structure contains the same data as the current instance
 func (matchmakeSessionSearchCriteria *MatchmakeSessionSearchCriteria) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*MatchmakeSessionSearchCriteria)
+
+	if matchmakeSessionSearchCriteria.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if len(matchmakeSessionSearchCriteria.Attribs) != len(other.Attribs) {
 		return false

@@ -52,6 +52,8 @@ func (serviceItemAccountRightConsumption *ServiceItemAccountRightConsumption) By
 func (serviceItemAccountRightConsumption *ServiceItemAccountRightConsumption) Copy() nex.StructureInterface {
 	copied := NewServiceItemAccountRightConsumption()
 
+	copied.SetStructureVersion(serviceItemAccountRightConsumption.StructureVersion())
+
 	copied.ServiceItemAccountRight = serviceItemAccountRightConsumption.ServiceItemAccountRight.Copy().(*ServiceItemAccountRight)
 	copied.SetParentType(copied.ServiceItemAccountRight)
 
@@ -67,6 +69,10 @@ func (serviceItemAccountRightConsumption *ServiceItemAccountRightConsumption) Co
 // Equals checks if the passed Structure contains the same data as the current instance
 func (serviceItemAccountRightConsumption *ServiceItemAccountRightConsumption) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*ServiceItemAccountRightConsumption)
+
+	if serviceItemAccountRightConsumption.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if !serviceItemAccountRightConsumption.ParentType().Equals(other.ParentType()) {
 		return false

@@ -60,6 +60,8 @@ func (dataStoreReqGetInfoV1 *DataStoreReqGetInfoV1) Bytes(stream *nex.StreamOut)
 func (dataStoreReqGetInfoV1 *DataStoreReqGetInfoV1) Copy() nex.StructureInterface {
 	copied := NewDataStoreReqGetInfoV1()
 
+	copied.SetStructureVersion(dataStoreReqGetInfoV1.StructureVersion())
+
 	copied.URL = dataStoreReqGetInfoV1.URL
 	copied.RequestHeaders = make([]*DataStoreKeyValue, len(dataStoreReqGetInfoV1.RequestHeaders))
 
@@ -79,6 +81,10 @@ func (dataStoreReqGetInfoV1 *DataStoreReqGetInfoV1) Copy() nex.StructureInterfac
 // Equals checks if the passed Structure contains the same data as the current instance
 func (dataStoreReqGetInfoV1 *DataStoreReqGetInfoV1) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*DataStoreReqGetInfoV1)
+
+	if dataStoreReqGetInfoV1.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if dataStoreReqGetInfoV1.URL != other.URL {
 		return false

@@ -87,6 +87,8 @@ func (dataStoreChangeMetaCompareParam *DataStoreChangeMetaCompareParam) ExtractF
 func (dataStoreChangeMetaCompareParam *DataStoreChangeMetaCompareParam) Copy() nex.StructureInterface {
 	copied := NewDataStoreChangeMetaCompareParam()
 
+	copied.SetStructureVersion(dataStoreChangeMetaCompareParam.StructureVersion())
+
 	copied.ComparisonFlag = dataStoreChangeMetaCompareParam.ComparisonFlag
 	copied.Name = dataStoreChangeMetaCompareParam.Name
 	copied.Permission = dataStoreChangeMetaCompareParam.Permission.Copy().(*DataStorePermission)
@@ -110,6 +112,10 @@ func (dataStoreChangeMetaCompareParam *DataStoreChangeMetaCompareParam) Copy() n
 // Equals checks if the passed Structure contains the same data as the current instance
 func (dataStoreChangeMetaCompareParam *DataStoreChangeMetaCompareParam) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*DataStoreChangeMetaCompareParam)
+
+	if dataStoreChangeMetaCompareParam.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if dataStoreChangeMetaCompareParam.ComparisonFlag != other.ComparisonFlag {
 		return false

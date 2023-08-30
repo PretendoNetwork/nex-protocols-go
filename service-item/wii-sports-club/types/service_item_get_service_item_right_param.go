@@ -12,7 +12,7 @@ import (
 type ServiceItemGetServiceItemRightParam struct {
 	nex.Structure
 	ReferenceID string
-	TitleID string
+	TitleID     string
 }
 
 // ExtractFromStream extracts a ServiceItemGetServiceItemRightParam structure from a stream
@@ -44,6 +44,8 @@ func (serviceItemGetServiceItemRightParam *ServiceItemGetServiceItemRightParam) 
 func (serviceItemGetServiceItemRightParam *ServiceItemGetServiceItemRightParam) Copy() nex.StructureInterface {
 	copied := NewServiceItemGetServiceItemRightParam()
 
+	copied.SetStructureVersion(serviceItemGetServiceItemRightParam.StructureVersion())
+
 	copied.ReferenceID = serviceItemGetServiceItemRightParam.ReferenceID
 	copied.TitleID = serviceItemGetServiceItemRightParam.TitleID
 
@@ -53,6 +55,10 @@ func (serviceItemGetServiceItemRightParam *ServiceItemGetServiceItemRightParam) 
 // Equals checks if the passed Structure contains the same data as the current instance
 func (serviceItemGetServiceItemRightParam *ServiceItemGetServiceItemRightParam) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*ServiceItemGetServiceItemRightParam)
+
+	if serviceItemGetServiceItemRightParam.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if serviceItemGetServiceItemRightParam.ReferenceID != other.ReferenceID {
 		return false

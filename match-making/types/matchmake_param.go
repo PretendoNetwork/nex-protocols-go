@@ -45,6 +45,8 @@ func (matchmakeParam *MatchmakeParam) Bytes(stream *nex.StreamOut) []byte {
 func (matchmakeParam *MatchmakeParam) Copy() nex.StructureInterface {
 	copied := NewMatchmakeParam()
 
+	copied.SetStructureVersion(matchmakeParam.StructureVersion())
+
 	copied.Parameters = make(map[string]*nex.Variant, len(matchmakeParam.Parameters))
 
 	for key, value := range matchmakeParam.Parameters {
@@ -57,6 +59,10 @@ func (matchmakeParam *MatchmakeParam) Copy() nex.StructureInterface {
 // Equals checks if the passed Structure contains the same data as the current instance
 func (matchmakeParam *MatchmakeParam) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*MatchmakeParam)
+
+	if matchmakeParam.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if len(matchmakeParam.Parameters) != len(other.Parameters) {
 		return false

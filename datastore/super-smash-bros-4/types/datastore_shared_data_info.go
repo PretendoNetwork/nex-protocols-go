@@ -96,6 +96,8 @@ func (dataStoreSharedDataInfo *DataStoreSharedDataInfo) Bytes(stream *nex.Stream
 func (dataStoreSharedDataInfo *DataStoreSharedDataInfo) Copy() nex.StructureInterface {
 	copied := NewDataStoreSharedDataInfo()
 
+	copied.SetStructureVersion(dataStoreSharedDataInfo.StructureVersion())
+
 	copied.DataID = dataStoreSharedDataInfo.DataID
 	copied.OwnerID = dataStoreSharedDataInfo.OwnerID
 	copied.DataType = dataStoreSharedDataInfo.DataType
@@ -118,6 +120,10 @@ func (dataStoreSharedDataInfo *DataStoreSharedDataInfo) Copy() nex.StructureInte
 // Equals checks if the passed Structure contains the same data as the current instance
 func (dataStoreSharedDataInfo *DataStoreSharedDataInfo) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*DataStoreSharedDataInfo)
+
+	if dataStoreSharedDataInfo.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if dataStoreSharedDataInfo.DataType != other.DataType {
 		return false

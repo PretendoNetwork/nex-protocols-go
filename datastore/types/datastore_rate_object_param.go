@@ -36,6 +36,8 @@ func (dataStoreRateObjectParam *DataStoreRateObjectParam) ExtractFromStream(stre
 func (dataStoreRateObjectParam *DataStoreRateObjectParam) Copy() nex.StructureInterface {
 	copied := NewDataStoreRateObjectParam()
 
+	copied.SetStructureVersion(dataStoreRateObjectParam.StructureVersion())
+
 	copied.RatingValue = dataStoreRateObjectParam.RatingValue
 	copied.AccessPassword = dataStoreRateObjectParam.AccessPassword
 
@@ -45,6 +47,10 @@ func (dataStoreRateObjectParam *DataStoreRateObjectParam) Copy() nex.StructureIn
 // Equals checks if the passed Structure contains the same data as the current instance
 func (dataStoreRateObjectParam *DataStoreRateObjectParam) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*DataStoreRateObjectParam)
+
+	if dataStoreRateObjectParam.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if dataStoreRateObjectParam.RatingValue != other.RatingValue {
 		return false

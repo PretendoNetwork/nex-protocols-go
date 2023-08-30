@@ -37,6 +37,8 @@ func (serviceItemHTTPGetParam *ServiceItemHTTPGetParam) Bytes(stream *nex.Stream
 func (serviceItemHTTPGetParam *ServiceItemHTTPGetParam) Copy() nex.StructureInterface {
 	copied := NewServiceItemHTTPGetParam()
 
+	copied.SetStructureVersion(serviceItemHTTPGetParam.StructureVersion())
+
 	copied.URL = serviceItemHTTPGetParam.URL
 
 	return copied
@@ -45,6 +47,10 @@ func (serviceItemHTTPGetParam *ServiceItemHTTPGetParam) Copy() nex.StructureInte
 // Equals checks if the passed Structure contains the same data as the current instance
 func (serviceItemHTTPGetParam *ServiceItemHTTPGetParam) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*ServiceItemHTTPGetParam)
+
+	if serviceItemHTTPGetParam.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	return serviceItemHTTPGetParam.URL == other.URL
 }

@@ -51,6 +51,8 @@ func (dataStorePersistenceInfo *DataStorePersistenceInfo) Bytes(stream *nex.Stre
 func (dataStorePersistenceInfo *DataStorePersistenceInfo) Copy() nex.StructureInterface {
 	copied := NewDataStorePersistenceInfo()
 
+	copied.SetStructureVersion(dataStorePersistenceInfo.StructureVersion())
+
 	copied.OwnerID = dataStorePersistenceInfo.OwnerID
 	copied.PersistenceSlotID = dataStorePersistenceInfo.PersistenceSlotID
 	copied.DataID = dataStorePersistenceInfo.DataID
@@ -61,6 +63,10 @@ func (dataStorePersistenceInfo *DataStorePersistenceInfo) Copy() nex.StructureIn
 // Equals checks if the passed Structure contains the same data as the current instance
 func (dataStorePersistenceInfo *DataStorePersistenceInfo) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*DataStorePersistenceInfo)
+
+	if dataStorePersistenceInfo.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if dataStorePersistenceInfo.OwnerID != other.OwnerID {
 		return false

@@ -53,6 +53,8 @@ func (rankingResult *RankingResult) Bytes(stream *nex.StreamOut) []byte {
 func (rankingResult *RankingResult) Copy() nex.StructureInterface {
 	copied := NewRankingResult()
 
+	copied.SetStructureVersion(rankingResult.StructureVersion())
+
 	copied.RankDataList = make([]*RankingRankData, len(rankingResult.RankDataList))
 
 	for i := 0; i < len(rankingResult.RankDataList); i++ {
@@ -71,6 +73,10 @@ func (rankingResult *RankingResult) Copy() nex.StructureInterface {
 // Equals checks if the passed Structure contains the same data as the current instance
 func (rankingResult *RankingResult) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*RankingResult)
+
+	if rankingResult.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if len(rankingResult.RankDataList) != len(other.RankDataList) {
 		return false

@@ -58,6 +58,8 @@ func (subscriberGetContentParam *SubscriberGetContentParam) Bytes(stream *nex.St
 func (subscriberGetContentParam *SubscriberGetContentParam) Copy() nex.StructureInterface {
 	copied := NewSubscriberGetContentParam()
 
+	copied.SetStructureVersion(subscriberGetContentParam.StructureVersion())
+
 	copied.Unknown1 = subscriberGetContentParam.Unknown1
 	copied.Unknown2 = subscriberGetContentParam.Unknown2
 	copied.Unknown3 = subscriberGetContentParam.Unknown3
@@ -69,6 +71,10 @@ func (subscriberGetContentParam *SubscriberGetContentParam) Copy() nex.Structure
 // Equals checks if the passed Structure contains the same data as the current instance
 func (subscriberGetContentParam *SubscriberGetContentParam) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*SubscriberGetContentParam)
+
+	if subscriberGetContentParam.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if subscriberGetContentParam.Unknown1 != other.Unknown1 {
 		return false

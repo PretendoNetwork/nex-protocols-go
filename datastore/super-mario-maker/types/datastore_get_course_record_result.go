@@ -79,6 +79,8 @@ func (dataStoreGetCourseRecordResult *DataStoreGetCourseRecordResult) Bytes(stre
 func (dataStoreGetCourseRecordResult *DataStoreGetCourseRecordResult) Copy() nex.StructureInterface {
 	copied := NewDataStoreGetCourseRecordResult()
 
+	copied.SetStructureVersion(dataStoreGetCourseRecordResult.StructureVersion())
+
 	copied.DataID = dataStoreGetCourseRecordResult.DataID
 	copied.Slot = dataStoreGetCourseRecordResult.Slot
 	copied.FirstPID = dataStoreGetCourseRecordResult.FirstPID
@@ -93,6 +95,10 @@ func (dataStoreGetCourseRecordResult *DataStoreGetCourseRecordResult) Copy() nex
 // Equals checks if the passed Structure contains the same data as the current instance
 func (dataStoreGetCourseRecordResult *DataStoreGetCourseRecordResult) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*DataStoreGetCourseRecordResult)
+
+	if dataStoreGetCourseRecordResult.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if dataStoreGetCourseRecordResult.DataID != other.DataID {
 		return false

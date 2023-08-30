@@ -77,6 +77,8 @@ func (persistentGathering *PersistentGathering) ExtractFromStream(stream *nex.St
 func (persistentGathering *PersistentGathering) Copy() nex.StructureInterface {
 	copied := NewPersistentGathering()
 
+	copied.SetStructureVersion(persistentGathering.StructureVersion())
+
 	copied.Gathering = persistentGathering.Gathering.Copy().(*Gathering)
 	copied.SetParentType(copied.Gathering)
 	copied.CommunityType = persistentGathering.CommunityType
@@ -106,6 +108,10 @@ func (persistentGathering *PersistentGathering) Copy() nex.StructureInterface {
 // Equals checks if the passed Structure contains the same data as the current instance
 func (persistentGathering *PersistentGathering) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*PersistentGathering)
+
+	if persistentGathering.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if !persistentGathering.ParentType().Equals(other.ParentType()) {
 		return false

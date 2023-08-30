@@ -65,6 +65,8 @@ func (bankTransactionParam *BankTransactionParam) Bytes(stream *nex.StreamOut) [
 func (bankTransactionParam *BankTransactionParam) Copy() nex.StructureInterface {
 	copied := NewBankTransactionParam()
 
+	copied.SetStructureVersion(bankTransactionParam.StructureVersion())
+
 	copied.DataID = bankTransactionParam.DataID
 	copied.CurVersion = bankTransactionParam.CurVersion
 	copied.UpdateVersion = bankTransactionParam.UpdateVersion
@@ -77,6 +79,10 @@ func (bankTransactionParam *BankTransactionParam) Copy() nex.StructureInterface 
 // Equals checks if the passed Structure contains the same data as the current instance
 func (bankTransactionParam *BankTransactionParam) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*BankTransactionParam)
+
+	if bankTransactionParam.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if bankTransactionParam.DataID != other.DataID {
 		return false

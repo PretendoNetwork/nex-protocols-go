@@ -54,6 +54,8 @@ func (relationshipData *RelationshipData) ExtractFromStream(stream *nex.StreamIn
 func (relationshipData *RelationshipData) Copy() nex.StructureInterface {
 	copied := NewRelationshipData()
 
+	copied.SetStructureVersion(relationshipData.StructureVersion())
+
 	copied.PID = relationshipData.PID
 	copied.StrName = relationshipData.StrName
 	copied.ByRelationship = relationshipData.ByRelationship
@@ -66,6 +68,10 @@ func (relationshipData *RelationshipData) Copy() nex.StructureInterface {
 // Equals checks if the passed Structure contains the same data as the current instance
 func (relationshipData *RelationshipData) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*RelationshipData)
+
+	if relationshipData.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if relationshipData.PID != other.PID {
 		return false

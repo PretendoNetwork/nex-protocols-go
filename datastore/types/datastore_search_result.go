@@ -52,6 +52,8 @@ func (dataStoreSearchResult *DataStoreSearchResult) Bytes(stream *nex.StreamOut)
 func (dataStoreSearchResult *DataStoreSearchResult) Copy() nex.StructureInterface {
 	copied := NewDataStoreSearchResult()
 
+	copied.SetStructureVersion(dataStoreSearchResult.StructureVersion())
+
 	copied.TotalCount = dataStoreSearchResult.TotalCount
 	copied.Result = make([]*DataStoreMetaInfo, len(dataStoreSearchResult.Result))
 
@@ -67,6 +69,10 @@ func (dataStoreSearchResult *DataStoreSearchResult) Copy() nex.StructureInterfac
 // Equals checks if the passed Structure contains the same data as the current instance
 func (dataStoreSearchResult *DataStoreSearchResult) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*DataStoreSearchResult)
+
+	if dataStoreSearchResult.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if dataStoreSearchResult.TotalCount != other.TotalCount {
 		return false

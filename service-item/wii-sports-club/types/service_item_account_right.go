@@ -11,7 +11,7 @@ import (
 // ServiceItemAccountRight holds data for the Service Item (Wii Sports Club) protocol
 type ServiceItemAccountRight struct {
 	nex.Structure
-	PID uint32
+	PID        uint32
 	Limitation *ServiceItemLimitation
 }
 
@@ -46,6 +46,8 @@ func (serviceItemAccountRight *ServiceItemAccountRight) Bytes(stream *nex.Stream
 func (serviceItemAccountRight *ServiceItemAccountRight) Copy() nex.StructureInterface {
 	copied := NewServiceItemAccountRight()
 
+	copied.SetStructureVersion(serviceItemAccountRight.StructureVersion())
+
 	copied.PID = serviceItemAccountRight.PID
 	copied.Limitation = serviceItemAccountRight.Limitation.Copy().(*ServiceItemLimitation)
 
@@ -55,6 +57,10 @@ func (serviceItemAccountRight *ServiceItemAccountRight) Copy() nex.StructureInte
 // Equals checks if the passed Structure contains the same data as the current instance
 func (serviceItemAccountRight *ServiceItemAccountRight) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*ServiceItemAccountRight)
+
+	if serviceItemAccountRight.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if serviceItemAccountRight.PID != other.PID {
 		return false

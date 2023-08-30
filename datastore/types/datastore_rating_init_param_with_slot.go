@@ -38,6 +38,8 @@ func (dataStoreRatingInitParamWithSlot *DataStoreRatingInitParamWithSlot) Extrac
 func (dataStoreRatingInitParamWithSlot *DataStoreRatingInitParamWithSlot) Copy() nex.StructureInterface {
 	copied := NewDataStoreRatingInitParamWithSlot()
 
+	copied.SetStructureVersion(dataStoreRatingInitParamWithSlot.StructureVersion())
+
 	copied.Slot = dataStoreRatingInitParamWithSlot.Slot
 	copied.Param = dataStoreRatingInitParamWithSlot.Param.Copy().(*DataStoreRatingInitParam)
 
@@ -47,6 +49,10 @@ func (dataStoreRatingInitParamWithSlot *DataStoreRatingInitParamWithSlot) Copy()
 // Equals checks if the passed Structure contains the same data as the current instance
 func (dataStoreRatingInitParamWithSlot *DataStoreRatingInitParamWithSlot) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*DataStoreRatingInitParamWithSlot)
+
+	if dataStoreRatingInitParamWithSlot.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if dataStoreRatingInitParamWithSlot.Slot != other.Slot {
 		return false

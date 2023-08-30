@@ -52,6 +52,8 @@ func (principalPreference *PrincipalPreference) ExtractFromStream(stream *nex.St
 func (principalPreference *PrincipalPreference) Copy() nex.StructureInterface {
 	copied := NewPrincipalPreference()
 
+	copied.SetStructureVersion(principalPreference.StructureVersion())
+
 	copied.Data = principalPreference.ParentType().Copy().(*nex.Data)
 	copied.SetParentType(copied.Data)
 
@@ -65,6 +67,10 @@ func (principalPreference *PrincipalPreference) Copy() nex.StructureInterface {
 // Equals checks if the passed Structure contains the same data as the current instance
 func (principalPreference *PrincipalPreference) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*PrincipalPreference)
+
+	if principalPreference.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if !principalPreference.ParentType().Equals(other.ParentType()) {
 		return false

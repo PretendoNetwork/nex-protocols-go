@@ -72,6 +72,8 @@ func (serviceItemAcquireServiceItemResponse *ServiceItemAcquireServiceItemRespon
 func (serviceItemAcquireServiceItemResponse *ServiceItemAcquireServiceItemResponse) Copy() nex.StructureInterface {
 	copied := NewServiceItemAcquireServiceItemResponse()
 
+	copied.SetStructureVersion(serviceItemAcquireServiceItemResponse.StructureVersion())
+
 	copied.LimitationType = serviceItemAcquireServiceItemResponse.LimitationType
 	copied.AcquiredCount = serviceItemAcquireServiceItemResponse.AcquiredCount
 	copied.UsedCount = serviceItemAcquireServiceItemResponse.UsedCount
@@ -87,6 +89,10 @@ func (serviceItemAcquireServiceItemResponse *ServiceItemAcquireServiceItemRespon
 // Equals checks if the passed Structure contains the same data as the current instance
 func (serviceItemAcquireServiceItemResponse *ServiceItemAcquireServiceItemResponse) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*ServiceItemAcquireServiceItemResponse)
+
+	if serviceItemAcquireServiceItemResponse.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if serviceItemAcquireServiceItemResponse.LimitationType != other.LimitationType {
 		return false

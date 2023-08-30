@@ -145,6 +145,8 @@ func (dataStoreSearchParam *DataStoreSearchParam) ExtractFromStream(stream *nex.
 func (dataStoreSearchParam *DataStoreSearchParam) Copy() nex.StructureInterface {
 	copied := NewDataStoreSearchParam()
 
+	copied.SetStructureVersion(dataStoreSearchParam.StructureVersion())
+
 	copied.SearchTarget = dataStoreSearchParam.SearchTarget
 	copied.OwnerIDs = make([]uint32, len(dataStoreSearchParam.OwnerIDs))
 
@@ -178,6 +180,10 @@ func (dataStoreSearchParam *DataStoreSearchParam) Copy() nex.StructureInterface 
 // Equals checks if the passed Structure contains the same data as the current instance
 func (dataStoreSearchParam *DataStoreSearchParam) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*DataStoreSearchParam)
+
+	if dataStoreSearchParam.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if dataStoreSearchParam.SearchTarget != other.SearchTarget {
 		return false

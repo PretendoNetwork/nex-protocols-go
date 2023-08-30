@@ -56,6 +56,8 @@ func (dataStoreCompletePostReplayParam *DataStoreCompletePostReplayParam) Bytes(
 func (dataStoreCompletePostReplayParam *DataStoreCompletePostReplayParam) Copy() nex.StructureInterface {
 	copied := NewDataStoreCompletePostReplayParam()
 
+	copied.SetStructureVersion(dataStoreCompletePostReplayParam.StructureVersion())
+
 	copied.ReplayID = dataStoreCompletePostReplayParam.ReplayID
 	copied.CompleteParam = dataStoreCompletePostReplayParam.CompleteParam.Copy().(*datastore_types.DataStoreCompletePostParam)
 	copied.PrepareParam = dataStoreCompletePostReplayParam.PrepareParam.Copy().(*DataStorePreparePostReplayParam)
@@ -66,6 +68,10 @@ func (dataStoreCompletePostReplayParam *DataStoreCompletePostReplayParam) Copy()
 // Equals checks if the passed Structure contains the same data as the current instance
 func (dataStoreCompletePostReplayParam *DataStoreCompletePostReplayParam) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*DataStoreCompletePostReplayParam)
+
+	if dataStoreCompletePostReplayParam.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if dataStoreCompletePostReplayParam.ReplayID != other.ReplayID {
 		return false

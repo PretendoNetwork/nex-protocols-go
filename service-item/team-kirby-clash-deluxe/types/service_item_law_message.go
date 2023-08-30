@@ -44,6 +44,8 @@ func (serviceItemLawMessage *ServiceItemLawMessage) Bytes(stream *nex.StreamOut)
 func (serviceItemLawMessage *ServiceItemLawMessage) Copy() nex.StructureInterface {
 	copied := NewServiceItemLawMessage()
 
+	copied.SetStructureVersion(serviceItemLawMessage.StructureVersion())
+
 	copied.IsMessageRequired = serviceItemLawMessage.IsMessageRequired
 	copied.LawMessage = serviceItemLawMessage.LawMessage
 
@@ -53,6 +55,10 @@ func (serviceItemLawMessage *ServiceItemLawMessage) Copy() nex.StructureInterfac
 // Equals checks if the passed Structure contains the same data as the current instance
 func (serviceItemLawMessage *ServiceItemLawMessage) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*ServiceItemLawMessage)
+
+	if serviceItemLawMessage.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if serviceItemLawMessage.IsMessageRequired != other.IsMessageRequired {
 		return false

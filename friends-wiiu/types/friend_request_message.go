@@ -42,6 +42,8 @@ func (friendRequestMessage *FriendRequestMessage) Bytes(stream *nex.StreamOut) [
 func (friendRequestMessage *FriendRequestMessage) Copy() nex.StructureInterface {
 	copied := NewFriendRequestMessage()
 
+	copied.SetStructureVersion(friendRequestMessage.StructureVersion())
+
 	copied.Data = friendRequestMessage.ParentType().Copy().(*nex.Data)
 	copied.SetParentType(copied.Data)
 
@@ -61,6 +63,10 @@ func (friendRequestMessage *FriendRequestMessage) Copy() nex.StructureInterface 
 // Equals checks if the passed Structure contains the same data as the current instance
 func (friendRequestMessage *FriendRequestMessage) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*FriendRequestMessage)
+
+	if friendRequestMessage.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if !friendRequestMessage.ParentType().Equals(other.ParentType()) {
 		return false

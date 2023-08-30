@@ -53,6 +53,8 @@ func (matchmakeRefereeStartRoundParam *MatchmakeRefereeStartRoundParam) ExtractF
 func (matchmakeRefereeStartRoundParam *MatchmakeRefereeStartRoundParam) Copy() nex.StructureInterface {
 	copied := NewMatchmakeRefereeStartRoundParam()
 
+	copied.SetStructureVersion(matchmakeRefereeStartRoundParam.StructureVersion())
+
 	copied.Data = matchmakeRefereeStartRoundParam.ParentType().Copy().(*nex.Data)
 	copied.SetParentType(copied.Data)
 
@@ -67,6 +69,10 @@ func (matchmakeRefereeStartRoundParam *MatchmakeRefereeStartRoundParam) Copy() n
 // Equals checks if the passed Structure contains the same data as the current instance
 func (matchmakeRefereeStartRoundParam *MatchmakeRefereeStartRoundParam) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*MatchmakeRefereeStartRoundParam)
+
+	if matchmakeRefereeStartRoundParam.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if !matchmakeRefereeStartRoundParam.ParentType().Equals(other.ParentType()) {
 		return false

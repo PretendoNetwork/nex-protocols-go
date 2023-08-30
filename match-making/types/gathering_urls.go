@@ -47,6 +47,8 @@ func (gatheringURLs *GatheringURLs) Bytes(stream *nex.StreamOut) []byte {
 func (gatheringURLs *GatheringURLs) Copy() nex.StructureInterface {
 	copied := NewGatheringURLs()
 
+	copied.SetStructureVersion(gatheringURLs.StructureVersion())
+
 	copied.GID = gatheringURLs.GID
 	copied.LstStationURLs = make([]*nex.StationURL, len(gatheringURLs.LstStationURLs))
 
@@ -60,6 +62,10 @@ func (gatheringURLs *GatheringURLs) Copy() nex.StructureInterface {
 // Equals checks if the passed Structure contains the same data as the current instance
 func (gatheringURLs *GatheringURLs) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*GatheringURLs)
+
+	if gatheringURLs.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if gatheringURLs.GID != other.GID {
 		return false

@@ -30,6 +30,8 @@ func (friendMiiList *FriendMiiList) Bytes(stream *nex.StreamOut) []byte {
 func (friendMiiList *FriendMiiList) Copy() nex.StructureInterface {
 	copied := NewFriendMiiList()
 
+	copied.SetStructureVersion(friendMiiList.StructureVersion())
+
 	copied.Data = friendMiiList.ParentType().Copy().(*nex.Data)
 	copied.SetParentType(copied.Data)
 
@@ -43,6 +45,10 @@ func (friendMiiList *FriendMiiList) Copy() nex.StructureInterface {
 // Equals checks if the passed Structure contains the same data as the current instance
 func (friendMiiList *FriendMiiList) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*FriendMiiList)
+
+	if friendMiiList.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if !friendMiiList.ParentType().Equals(other.ParentType()) {
 		return false

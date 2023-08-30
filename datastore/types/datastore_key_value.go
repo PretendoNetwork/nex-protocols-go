@@ -27,6 +27,8 @@ func (dataStoreKeyValue *DataStoreKeyValue) Bytes(stream *nex.StreamOut) []byte 
 func (dataStoreKeyValue *DataStoreKeyValue) Copy() nex.StructureInterface {
 	copied := NewDataStoreKeyValue()
 
+	copied.SetStructureVersion(dataStoreKeyValue.StructureVersion())
+
 	copied.Key = dataStoreKeyValue.Key
 	copied.Value = dataStoreKeyValue.Value
 
@@ -36,6 +38,10 @@ func (dataStoreKeyValue *DataStoreKeyValue) Copy() nex.StructureInterface {
 // Equals checks if the passed Structure contains the same data as the current instance
 func (dataStoreKeyValue *DataStoreKeyValue) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*DataStoreKeyValue)
+
+	if dataStoreKeyValue.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if dataStoreKeyValue.Key != other.Key {
 		return false

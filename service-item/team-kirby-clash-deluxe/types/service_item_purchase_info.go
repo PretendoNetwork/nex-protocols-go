@@ -60,6 +60,8 @@ func (serviceItemPurchaseInfo *ServiceItemPurchaseInfo) Bytes(stream *nex.Stream
 func (serviceItemPurchaseInfo *ServiceItemPurchaseInfo) Copy() nex.StructureInterface {
 	copied := NewServiceItemPurchaseInfo()
 
+	copied.SetStructureVersion(serviceItemPurchaseInfo.StructureVersion())
+
 	copied.TransactionID = serviceItemPurchaseInfo.TransactionID
 	copied.ExtTransactionID = serviceItemPurchaseInfo.ExtTransactionID
 	copied.ItemCode = serviceItemPurchaseInfo.ItemCode
@@ -71,6 +73,10 @@ func (serviceItemPurchaseInfo *ServiceItemPurchaseInfo) Copy() nex.StructureInte
 // Equals checks if the passed Structure contains the same data as the current instance
 func (serviceItemPurchaseInfo *ServiceItemPurchaseInfo) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*ServiceItemPurchaseInfo)
+
+	if serviceItemPurchaseInfo.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if serviceItemPurchaseInfo.TransactionID != other.TransactionID {
 		return false

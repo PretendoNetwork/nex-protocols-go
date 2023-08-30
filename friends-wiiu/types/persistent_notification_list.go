@@ -31,6 +31,8 @@ func (notificationList *PersistentNotificationList) ExtractFromStream(stream *ne
 func (notificationList *PersistentNotificationList) Copy() nex.StructureInterface {
 	copied := NewPersistentNotificationList()
 
+	copied.SetStructureVersion(notificationList.StructureVersion())
+
 	copied.Data = notificationList.ParentType().Copy().(*nex.Data)
 	copied.SetParentType(copied.Data)
 
@@ -46,6 +48,10 @@ func (notificationList *PersistentNotificationList) Copy() nex.StructureInterfac
 // Equals checks if the passed Structure contains the same data as the current instance
 func (notificationList *PersistentNotificationList) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*PersistentNotificationList)
+
+	if notificationList.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if !notificationList.ParentType().Equals(other.ParentType()) {
 		return false

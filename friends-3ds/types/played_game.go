@@ -27,6 +27,8 @@ func (playedGame *PlayedGame) Bytes(stream *nex.StreamOut) []byte {
 func (playedGame *PlayedGame) Copy() nex.StructureInterface {
 	copied := NewPlayedGame()
 
+	copied.SetStructureVersion(playedGame.StructureVersion())
+
 	copied.GameKey = playedGame.GameKey.Copy().(*GameKey)
 	copied.Unknown = playedGame.Unknown.Copy()
 
@@ -36,6 +38,10 @@ func (playedGame *PlayedGame) Copy() nex.StructureInterface {
 // Equals checks if the passed Structure contains the same data as the current instance
 func (playedGame *PlayedGame) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*PlayedGame)
+
+	if playedGame.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if !playedGame.GameKey.Equals(other.GameKey) {
 		return false

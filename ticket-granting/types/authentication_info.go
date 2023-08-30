@@ -51,6 +51,8 @@ func (authenticationInfo *AuthenticationInfo) ExtractFromStream(stream *nex.Stre
 func (authenticationInfo *AuthenticationInfo) Copy() nex.StructureInterface {
 	copied := NewAuthenticationInfo()
 
+	copied.SetStructureVersion(authenticationInfo.StructureVersion())
+
 	copied.Data = authenticationInfo.Data.Copy().(*nex.Data)
 	copied.SetParentType(copied.Data)
 	copied.Token = authenticationInfo.Token
@@ -64,6 +66,10 @@ func (authenticationInfo *AuthenticationInfo) Copy() nex.StructureInterface {
 // Equals checks if the passed Structure contains the same data as the current instance
 func (authenticationInfo *AuthenticationInfo) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*AuthenticationInfo)
+
+	if authenticationInfo.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if !authenticationInfo.ParentType().Equals(other.ParentType()) {
 		return false

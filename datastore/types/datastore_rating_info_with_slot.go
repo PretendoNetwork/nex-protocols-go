@@ -46,6 +46,8 @@ func (dataStoreRatingInfoWithSlot *DataStoreRatingInfoWithSlot) Bytes(stream *ne
 func (dataStoreRatingInfoWithSlot *DataStoreRatingInfoWithSlot) Copy() nex.StructureInterface {
 	copied := NewDataStoreRatingInfoWithSlot()
 
+	copied.SetStructureVersion(dataStoreRatingInfoWithSlot.StructureVersion())
+
 	copied.Slot = dataStoreRatingInfoWithSlot.Slot
 	copied.Rating = dataStoreRatingInfoWithSlot.Rating.Copy().(*DataStoreRatingInfo)
 
@@ -55,6 +57,10 @@ func (dataStoreRatingInfoWithSlot *DataStoreRatingInfoWithSlot) Copy() nex.Struc
 // Equals checks if the passed Structure contains the same data as the current instance
 func (dataStoreRatingInfoWithSlot *DataStoreRatingInfoWithSlot) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*DataStoreRatingInfoWithSlot)
+
+	if dataStoreRatingInfoWithSlot.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if dataStoreRatingInfoWithSlot.Slot != other.Slot {
 		return false

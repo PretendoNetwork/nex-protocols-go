@@ -36,6 +36,8 @@ func (dataStorePersistenceInitParam *DataStorePersistenceInitParam) ExtractFromS
 func (dataStorePersistenceInitParam *DataStorePersistenceInitParam) Copy() nex.StructureInterface {
 	copied := NewDataStorePersistenceInitParam()
 
+	copied.SetStructureVersion(dataStorePersistenceInitParam.StructureVersion())
+
 	copied.PersistenceSlotID = dataStorePersistenceInitParam.PersistenceSlotID
 	copied.DeleteLastObject = dataStorePersistenceInitParam.DeleteLastObject
 
@@ -45,6 +47,10 @@ func (dataStorePersistenceInitParam *DataStorePersistenceInitParam) Copy() nex.S
 // Equals checks if the passed Structure contains the same data as the current instance
 func (dataStorePersistenceInitParam *DataStorePersistenceInitParam) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*DataStorePersistenceInitParam)
+
+	if dataStorePersistenceInitParam.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if dataStorePersistenceInitParam.PersistenceSlotID != other.PersistenceSlotID {
 		return false

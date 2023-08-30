@@ -77,6 +77,8 @@ func (autoMatchmakeParam *AutoMatchmakeParam) ExtractFromStream(stream *nex.Stre
 func (autoMatchmakeParam *AutoMatchmakeParam) Copy() nex.StructureInterface {
 	copied := NewAutoMatchmakeParam()
 
+	copied.SetStructureVersion(autoMatchmakeParam.StructureVersion())
+
 	if autoMatchmakeParam.SourceMatchmakeSession != nil {
 		copied.SourceMatchmakeSession = autoMatchmakeParam.SourceMatchmakeSession.Copy().(*MatchmakeSession)
 	}
@@ -105,6 +107,10 @@ func (autoMatchmakeParam *AutoMatchmakeParam) Copy() nex.StructureInterface {
 // Equals checks if the passed Structure contains the same data as the current instance
 func (autoMatchmakeParam *AutoMatchmakeParam) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*AutoMatchmakeParam)
+
+	if autoMatchmakeParam.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if autoMatchmakeParam.SourceMatchmakeSession != nil && other.SourceMatchmakeSession == nil {
 		return false

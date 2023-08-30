@@ -67,6 +67,8 @@ func (matchmakeRefereePersonalRoundResult *MatchmakeRefereePersonalRoundResult) 
 func (matchmakeRefereePersonalRoundResult *MatchmakeRefereePersonalRoundResult) Copy() nex.StructureInterface {
 	copied := NewMatchmakeRefereePersonalRoundResult()
 
+	copied.SetStructureVersion(matchmakeRefereePersonalRoundResult.StructureVersion())
+
 	copied.Data = matchmakeRefereePersonalRoundResult.ParentType().Copy().(*nex.Data)
 	copied.SetParentType(copied.Data)
 
@@ -83,6 +85,10 @@ func (matchmakeRefereePersonalRoundResult *MatchmakeRefereePersonalRoundResult) 
 // Equals checks if the passed Structure contains the same data as the current instance
 func (matchmakeRefereePersonalRoundResult *MatchmakeRefereePersonalRoundResult) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*MatchmakeRefereePersonalRoundResult)
+
+	if matchmakeRefereePersonalRoundResult.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if !matchmakeRefereePersonalRoundResult.ParentType().Equals(other.ParentType()) {
 		return false

@@ -51,6 +51,8 @@ func (ranking2ScoreData *Ranking2ScoreData) Bytes(stream *nex.StreamOut) []byte 
 func (ranking2ScoreData *Ranking2ScoreData) Copy() nex.StructureInterface {
 	copied := NewRanking2ScoreData()
 
+	copied.SetStructureVersion(ranking2ScoreData.StructureVersion())
+
 	copied.Misc = ranking2ScoreData.Misc
 	copied.Category = ranking2ScoreData.Category
 	copied.Score = ranking2ScoreData.Score
@@ -60,6 +62,10 @@ func (ranking2ScoreData *Ranking2ScoreData) Copy() nex.StructureInterface {
 // Equals checks if the passed Structure contains the same data as the current instance
 func (ranking2ScoreData *Ranking2ScoreData) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*Ranking2ScoreData)
+
+	if ranking2ScoreData.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if ranking2ScoreData.Misc != other.Misc {
 		return false

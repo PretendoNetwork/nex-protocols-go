@@ -44,6 +44,8 @@ func (dataStorePermission *DataStorePermission) Bytes(stream *nex.StreamOut) []b
 func (dataStorePermission *DataStorePermission) Copy() nex.StructureInterface {
 	copied := NewDataStorePermission()
 
+	copied.SetStructureVersion(dataStorePermission.StructureVersion())
+
 	copied.Permission = dataStorePermission.Permission
 	copied.RecipientIDs = make([]uint32, len(dataStorePermission.RecipientIDs))
 
@@ -55,6 +57,10 @@ func (dataStorePermission *DataStorePermission) Copy() nex.StructureInterface {
 // Equals checks if the passed Structure contains the same data as the current instance
 func (dataStorePermission *DataStorePermission) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*DataStorePermission)
+
+	if dataStorePermission.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if dataStorePermission.Permission != other.Permission {
 		return false

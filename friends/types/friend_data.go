@@ -54,6 +54,8 @@ func (friendData *FriendData) ExtractFromStream(stream *nex.StreamIn) error {
 func (friendData *FriendData) Copy() nex.StructureInterface {
 	copied := NewFriendData()
 
+	copied.SetStructureVersion(friendData.StructureVersion())
+
 	copied.PID = friendData.PID
 	copied.StrName = friendData.StrName
 	copied.ByRelationship = friendData.ByRelationship
@@ -66,6 +68,10 @@ func (friendData *FriendData) Copy() nex.StructureInterface {
 // Equals checks if the passed Structure contains the same data as the current instance
 func (friendData *FriendData) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*FriendData)
+
+	if friendData.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if friendData.PID != other.PID {
 		return false

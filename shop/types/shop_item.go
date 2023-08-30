@@ -62,6 +62,8 @@ func (shopItem *ShopItem) Bytes(stream *nex.StreamOut) []byte {
 func (shopItem *ShopItem) Copy() nex.StructureInterface {
 	copied := NewShopItem()
 
+	copied.SetStructureVersion(shopItem.StructureVersion())
+
 	copied.ItemID = shopItem.ItemID
 	copied.ReferenceID = make([]byte, len(shopItem.ReferenceID))
 
@@ -76,6 +78,10 @@ func (shopItem *ShopItem) Copy() nex.StructureInterface {
 // Equals checks if the passed Structure contains the same data as the current instance
 func (shopItem *ShopItem) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*ShopItem)
+
+	if shopItem.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if shopItem.ItemID != other.ItemID {
 		return false

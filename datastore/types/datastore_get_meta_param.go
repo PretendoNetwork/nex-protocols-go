@@ -49,6 +49,8 @@ func (dataStoreGetMetaParam *DataStoreGetMetaParam) ExtractFromStream(stream *ne
 func (dataStoreGetMetaParam *DataStoreGetMetaParam) Copy() nex.StructureInterface {
 	copied := NewDataStoreGetMetaParam()
 
+	copied.SetStructureVersion(dataStoreGetMetaParam.StructureVersion())
+
 	copied.DataID = dataStoreGetMetaParam.DataID
 	copied.PersistenceTarget = dataStoreGetMetaParam.PersistenceTarget.Copy().(*DataStorePersistenceTarget)
 	copied.ResultOption = dataStoreGetMetaParam.ResultOption
@@ -60,6 +62,10 @@ func (dataStoreGetMetaParam *DataStoreGetMetaParam) Copy() nex.StructureInterfac
 // Equals checks if the passed Structure contains the same data as the current instance
 func (dataStoreGetMetaParam *DataStoreGetMetaParam) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*DataStoreGetMetaParam)
+
+	if dataStoreGetMetaParam.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if dataStoreGetMetaParam.DataID != other.DataID {
 		return false

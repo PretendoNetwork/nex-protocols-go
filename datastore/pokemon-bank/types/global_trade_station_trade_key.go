@@ -44,6 +44,8 @@ func (globalTradeStationTradeKey *GlobalTradeStationTradeKey) Bytes(stream *nex.
 func (globalTradeStationTradeKey *GlobalTradeStationTradeKey) Copy() nex.StructureInterface {
 	copied := NewGlobalTradeStationTradeKey()
 
+	copied.SetStructureVersion(globalTradeStationTradeKey.StructureVersion())
+
 	copied.DataID = globalTradeStationTradeKey.DataID
 	copied.Version = globalTradeStationTradeKey.Version
 
@@ -53,6 +55,10 @@ func (globalTradeStationTradeKey *GlobalTradeStationTradeKey) Copy() nex.Structu
 // Equals checks if the passed Structure contains the same data as the current instance
 func (globalTradeStationTradeKey *GlobalTradeStationTradeKey) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*GlobalTradeStationTradeKey)
+
+	if globalTradeStationTradeKey.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if globalTradeStationTradeKey.DataID != other.DataID {
 		return false

@@ -38,6 +38,8 @@ func (dataStorePostProfileParam *DataStorePostProfileParam) Bytes(stream *nex.St
 func (dataStorePostProfileParam *DataStorePostProfileParam) Copy() nex.StructureInterface {
 	copied := NewDataStorePostProfileParam()
 
+	copied.SetStructureVersion(dataStorePostProfileParam.StructureVersion())
+
 	copied.Profile = make([]byte, len(dataStorePostProfileParam.Profile))
 
 	copy(copied.Profile, dataStorePostProfileParam.Profile)
@@ -48,6 +50,10 @@ func (dataStorePostProfileParam *DataStorePostProfileParam) Copy() nex.Structure
 // Equals checks if the passed Structure contains the same data as the current instance
 func (dataStorePostProfileParam *DataStorePostProfileParam) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*DataStorePostProfileParam)
+
+	if dataStorePostProfileParam.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	return bytes.Equal(dataStorePostProfileParam.Profile, other.Profile)
 }

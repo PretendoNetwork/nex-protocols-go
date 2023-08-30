@@ -49,6 +49,8 @@ func (serviceItemGetSupportIDParam *ServiceItemGetSupportIDParam) Bytes(stream *
 func (serviceItemGetSupportIDParam *ServiceItemGetSupportIDParam) Copy() nex.StructureInterface {
 	copied := NewServiceItemGetSupportIDParam()
 
+	copied.SetStructureVersion(serviceItemGetSupportIDParam.StructureVersion())
+
 	copied.UniqueID = serviceItemGetSupportIDParam.UniqueID
 	copied.Platform = serviceItemGetSupportIDParam.Platform
 
@@ -58,6 +60,10 @@ func (serviceItemGetSupportIDParam *ServiceItemGetSupportIDParam) Copy() nex.Str
 // Equals checks if the passed Structure contains the same data as the current instance
 func (serviceItemGetSupportIDParam *ServiceItemGetSupportIDParam) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*ServiceItemGetSupportIDParam)
+
+	if serviceItemGetSupportIDParam.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if serviceItemGetSupportIDParam.UniqueID != other.UniqueID {
 		return false

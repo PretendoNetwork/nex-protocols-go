@@ -51,6 +51,8 @@ func (dataStorePostFightingPowerScoreParam *DataStorePostFightingPowerScoreParam
 func (dataStorePostFightingPowerScoreParam *DataStorePostFightingPowerScoreParam) Copy() nex.StructureInterface {
 	copied := NewDataStorePostFightingPowerScoreParam()
 
+	copied.SetStructureVersion(dataStorePostFightingPowerScoreParam.StructureVersion())
+
 	copied.Mode = dataStorePostFightingPowerScoreParam.Mode
 	copied.Score = dataStorePostFightingPowerScoreParam.Score
 	copied.IsWorldHighScore = dataStorePostFightingPowerScoreParam.IsWorldHighScore
@@ -61,6 +63,10 @@ func (dataStorePostFightingPowerScoreParam *DataStorePostFightingPowerScoreParam
 // Equals checks if the passed Structure contains the same data as the current instance
 func (dataStorePostFightingPowerScoreParam *DataStorePostFightingPowerScoreParam) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*DataStorePostFightingPowerScoreParam)
+
+	if dataStorePostFightingPowerScoreParam.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if dataStorePostFightingPowerScoreParam.Mode != other.Mode {
 		return false

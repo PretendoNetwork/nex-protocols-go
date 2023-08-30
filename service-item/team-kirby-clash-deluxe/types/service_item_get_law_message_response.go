@@ -40,6 +40,8 @@ func (serviceItemGetLawMessageResponse *ServiceItemGetLawMessageResponse) Bytes(
 func (serviceItemGetLawMessageResponse *ServiceItemGetLawMessageResponse) Copy() nex.StructureInterface {
 	copied := NewServiceItemGetLawMessageResponse()
 
+	copied.SetStructureVersion(serviceItemGetLawMessageResponse.StructureVersion())
+
 	copied.ServiceItemEShopResponse = serviceItemGetLawMessageResponse.ServiceItemEShopResponse.Copy().(*ServiceItemEShopResponse)
 	copied.SetParentType(copied.ServiceItemEShopResponse)
 
@@ -55,6 +57,10 @@ func (serviceItemGetLawMessageResponse *ServiceItemGetLawMessageResponse) Copy()
 // Equals checks if the passed Structure contains the same data as the current instance
 func (serviceItemGetLawMessageResponse *ServiceItemGetLawMessageResponse) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*ServiceItemGetLawMessageResponse)
+
+	if serviceItemGetLawMessageResponse.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if !serviceItemGetLawMessageResponse.ParentType().Equals(other.ParentType()) {
 		return false

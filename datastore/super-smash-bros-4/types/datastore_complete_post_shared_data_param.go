@@ -56,6 +56,8 @@ func (dataStoreCompletePostSharedDataParam *DataStoreCompletePostSharedDataParam
 func (dataStoreCompletePostSharedDataParam *DataStoreCompletePostSharedDataParam) Copy() nex.StructureInterface {
 	copied := NewDataStoreCompletePostSharedDataParam()
 
+	copied.SetStructureVersion(dataStoreCompletePostSharedDataParam.StructureVersion())
+
 	copied.DataID = dataStoreCompletePostSharedDataParam.DataID
 	copied.CompleteParam = dataStoreCompletePostSharedDataParam.CompleteParam.Copy().(*datastore_types.DataStoreCompletePostParam)
 	copied.PrepareParam = dataStoreCompletePostSharedDataParam.PrepareParam.Copy().(*DataStorePreparePostSharedDataParam)
@@ -66,6 +68,10 @@ func (dataStoreCompletePostSharedDataParam *DataStoreCompletePostSharedDataParam
 // Equals checks if the passed Structure contains the same data as the current instance
 func (dataStoreCompletePostSharedDataParam *DataStoreCompletePostSharedDataParam) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*DataStoreCompletePostSharedDataParam)
+
+	if dataStoreCompletePostSharedDataParam.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if dataStoreCompletePostSharedDataParam.DataID != other.DataID {
 		return false

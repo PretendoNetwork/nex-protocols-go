@@ -54,6 +54,8 @@ func (invitation *Invitation) Bytes(stream *nex.StreamOut) []byte {
 func (invitation *Invitation) Copy() nex.StructureInterface {
 	copied := NewInvitation()
 
+	copied.SetStructureVersion(invitation.StructureVersion())
+
 	copied.IDGathering = invitation.IDGathering
 	copied.IDGuest = invitation.IDGuest
 	copied.StrMessage = invitation.StrMessage
@@ -64,6 +66,10 @@ func (invitation *Invitation) Copy() nex.StructureInterface {
 // Equals checks if the passed Structure contains the same data as the current instance
 func (invitation *Invitation) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*Invitation)
+
+	if invitation.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if invitation.IDGathering != other.IDGathering {
 		return false

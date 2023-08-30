@@ -13,7 +13,7 @@ import (
 type ServiceItemUserInfo struct {
 	nex.Structure
 	NumTotalEntryTicket uint32
-	ApplicationBuffer []byte
+	ApplicationBuffer   []byte
 }
 
 // ExtractFromStream extracts a ServiceItemUserInfo structure from a stream
@@ -45,6 +45,8 @@ func (serviceItemUserInfo *ServiceItemUserInfo) Bytes(stream *nex.StreamOut) []b
 func (serviceItemUserInfo *ServiceItemUserInfo) Copy() nex.StructureInterface {
 	copied := NewServiceItemUserInfo()
 
+	copied.SetStructureVersion(serviceItemUserInfo.StructureVersion())
+
 	copied.NumTotalEntryTicket = serviceItemUserInfo.NumTotalEntryTicket
 	copied.ApplicationBuffer = serviceItemUserInfo.ApplicationBuffer
 
@@ -54,6 +56,10 @@ func (serviceItemUserInfo *ServiceItemUserInfo) Copy() nex.StructureInterface {
 // Equals checks if the passed Structure contains the same data as the current instance
 func (serviceItemUserInfo *ServiceItemUserInfo) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*ServiceItemUserInfo)
+
+	if serviceItemUserInfo.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if serviceItemUserInfo.NumTotalEntryTicket != other.NumTotalEntryTicket {
 		return false

@@ -41,6 +41,8 @@ func (findMatchmakeSessionByParticipantResult *FindMatchmakeSessionByParticipant
 func (findMatchmakeSessionByParticipantResult *FindMatchmakeSessionByParticipantResult) Copy() nex.StructureInterface {
 	copied := NewFindMatchmakeSessionByParticipantResult()
 
+	copied.SetStructureVersion(findMatchmakeSessionByParticipantResult.StructureVersion())
+
 	copied.PrincipalID = findMatchmakeSessionByParticipantResult.PrincipalID
 
 	if findMatchmakeSessionByParticipantResult.Session != nil {
@@ -53,6 +55,10 @@ func (findMatchmakeSessionByParticipantResult *FindMatchmakeSessionByParticipant
 // Equals checks if the passed Structure contains the same data as the current instance
 func (findMatchmakeSessionByParticipantResult *FindMatchmakeSessionByParticipantResult) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*FindMatchmakeSessionByParticipantResult)
+
+	if findMatchmakeSessionByParticipantResult.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if findMatchmakeSessionByParticipantResult.PrincipalID != other.PrincipalID {
 		return false

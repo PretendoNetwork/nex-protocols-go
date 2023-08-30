@@ -73,6 +73,8 @@ func (subscriberContent *SubscriberContent) Bytes(stream *nex.StreamOut) []byte 
 func (subscriberContent *SubscriberContent) Copy() nex.StructureInterface {
 	copied := NewSubscriberContent()
 
+	copied.SetStructureVersion(subscriberContent.StructureVersion())
+
 	copied.Unknown1 = subscriberContent.Unknown1
 	copied.Unknown2 = subscriberContent.Unknown2
 	copied.Unknown3 = make([]byte, len(subscriberContent.Unknown3))
@@ -94,6 +96,10 @@ func (subscriberContent *SubscriberContent) Copy() nex.StructureInterface {
 // Equals checks if the passed Structure contains the same data as the current instance
 func (subscriberContent *SubscriberContent) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*SubscriberContent)
+
+	if subscriberContent.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if subscriberContent.Unknown1 != other.Unknown1 {
 		return false

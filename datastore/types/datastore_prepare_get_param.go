@@ -59,6 +59,8 @@ func (dataStorePrepareGetParam *DataStorePrepareGetParam) ExtractFromStream(stre
 func (dataStorePrepareGetParam *DataStorePrepareGetParam) Copy() nex.StructureInterface {
 	copied := NewDataStorePrepareGetParam()
 
+	copied.SetStructureVersion(dataStorePrepareGetParam.StructureVersion())
+
 	copied.DataID = dataStorePrepareGetParam.DataID
 	copied.LockID = dataStorePrepareGetParam.LockID
 	copied.PersistenceTarget = dataStorePrepareGetParam.PersistenceTarget.Copy().(*DataStorePersistenceTarget)
@@ -73,6 +75,10 @@ func (dataStorePrepareGetParam *DataStorePrepareGetParam) Copy() nex.StructureIn
 // Equals checks if the passed Structure contains the same data as the current instance
 func (dataStorePrepareGetParam *DataStorePrepareGetParam) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*DataStorePrepareGetParam)
+
+	if dataStorePrepareGetParam.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if dataStorePrepareGetParam.DataID != other.DataID {
 		return false

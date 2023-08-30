@@ -40,6 +40,8 @@ func (serviceItemGetPurchaseHistoryResponse *ServiceItemGetPurchaseHistoryRespon
 func (serviceItemGetPurchaseHistoryResponse *ServiceItemGetPurchaseHistoryResponse) Copy() nex.StructureInterface {
 	copied := NewServiceItemGetPurchaseHistoryResponse()
 
+	copied.SetStructureVersion(serviceItemGetPurchaseHistoryResponse.StructureVersion())
+
 	copied.ServiceItemEShopResponse = serviceItemGetPurchaseHistoryResponse.ServiceItemEShopResponse.Copy().(*ServiceItemEShopResponse)
 	copied.SetParentType(copied.ServiceItemEShopResponse)
 
@@ -49,13 +51,16 @@ func (serviceItemGetPurchaseHistoryResponse *ServiceItemGetPurchaseHistoryRespon
 		copied.NullablePurchaseHistory[i] = serviceItemGetPurchaseHistoryResponse.NullablePurchaseHistory[i].Copy().(*ServiceItemPurchaseHistory)
 	}
 
-
 	return copied
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
 func (serviceItemGetPurchaseHistoryResponse *ServiceItemGetPurchaseHistoryResponse) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*ServiceItemGetPurchaseHistoryResponse)
+
+	if serviceItemGetPurchaseHistoryResponse.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if !serviceItemGetPurchaseHistoryResponse.ParentType().Equals(other.ParentType()) {
 		return false

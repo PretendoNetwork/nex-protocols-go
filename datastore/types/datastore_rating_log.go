@@ -58,6 +58,8 @@ func (dataStoreRatingLog *DataStoreRatingLog) Bytes(stream *nex.StreamOut) []byt
 func (dataStoreRatingLog *DataStoreRatingLog) Copy() nex.StructureInterface {
 	copied := NewDataStoreRatingLog()
 
+	copied.SetStructureVersion(dataStoreRatingLog.StructureVersion())
+
 	copied.IsRated = dataStoreRatingLog.IsRated
 	copied.PID = dataStoreRatingLog.PID
 	copied.RatingValue = dataStoreRatingLog.RatingValue
@@ -69,6 +71,10 @@ func (dataStoreRatingLog *DataStoreRatingLog) Copy() nex.StructureInterface {
 // Equals checks if the passed Structure contains the same data as the current instance
 func (dataStoreRatingLog *DataStoreRatingLog) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*DataStoreRatingLog)
+
+	if dataStoreRatingLog.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if dataStoreRatingLog.IsRated != other.IsRated {
 		return false

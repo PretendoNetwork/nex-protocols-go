@@ -78,6 +78,8 @@ func (accountData *AccountData) ExtractFromStream(stream *nex.StreamIn) error {
 func (accountData *AccountData) Copy() nex.StructureInterface {
 	copied := NewAccountData()
 
+	copied.SetStructureVersion(accountData.StructureVersion())
+
 	copied.PID = accountData.PID
 	copied.StrName = accountData.StrName
 	copied.UIGroups = accountData.UIGroups
@@ -105,6 +107,10 @@ func (accountData *AccountData) Copy() nex.StructureInterface {
 // Equals checks if the passed Structure contains the same data as the current instance
 func (accountData *AccountData) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*AccountData)
+
+	if accountData.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if accountData.PID != other.PID {
 		return false

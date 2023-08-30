@@ -54,6 +54,8 @@ func (gatheringStats *GatheringStats) Bytes(stream *nex.StreamOut) []byte {
 func (gatheringStats *GatheringStats) Copy() nex.StructureInterface {
 	copied := NewGatheringStats()
 
+	copied.SetStructureVersion(gatheringStats.StructureVersion())
+
 	copied.PIDParticipant = gatheringStats.PIDParticipant
 	copied.UIFlags = gatheringStats.UIFlags
 	copied.LstValues = make([]float32, len(gatheringStats.LstValues))
@@ -66,6 +68,10 @@ func (gatheringStats *GatheringStats) Copy() nex.StructureInterface {
 // Equals checks if the passed Structure contains the same data as the current instance
 func (gatheringStats *GatheringStats) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*GatheringStats)
+
+	if gatheringStats.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if gatheringStats.PIDParticipant != other.PIDParticipant {
 		return false

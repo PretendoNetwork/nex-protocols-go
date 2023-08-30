@@ -45,6 +45,8 @@ func (gameKey *GameKey) ExtractFromStream(stream *nex.StreamIn) error {
 func (gameKey *GameKey) Copy() nex.StructureInterface {
 	copied := NewGameKey()
 
+	copied.SetStructureVersion(gameKey.StructureVersion())
+
 	copied.Data = gameKey.ParentType().Copy().(*nex.Data)
 	copied.SetParentType(copied.Data)
 
@@ -57,6 +59,10 @@ func (gameKey *GameKey) Copy() nex.StructureInterface {
 // Equals checks if the passed Structure contains the same data as the current instance
 func (gameKey *GameKey) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*GameKey)
+
+	if gameKey.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if !gameKey.ParentType().Equals(other.ParentType()) {
 		return false

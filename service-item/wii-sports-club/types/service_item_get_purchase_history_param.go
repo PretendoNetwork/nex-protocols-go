@@ -12,9 +12,9 @@ import (
 type ServiceItemGetPurchaseHistoryParam struct {
 	nex.Structure
 	Language string
-	Offset uint32
-	Size uint32
-	TitleID string
+	Offset   uint32
+	Size     uint32
+	TitleID  string
 }
 
 // ExtractFromStream extracts a ServiceItemGetPurchaseHistoryParam structure from a stream
@@ -58,6 +58,8 @@ func (serviceItemGetPurchaseHistoryParam *ServiceItemGetPurchaseHistoryParam) By
 func (serviceItemGetPurchaseHistoryParam *ServiceItemGetPurchaseHistoryParam) Copy() nex.StructureInterface {
 	copied := NewServiceItemGetPurchaseHistoryParam()
 
+	copied.SetStructureVersion(serviceItemGetPurchaseHistoryParam.StructureVersion())
+
 	copied.Language = serviceItemGetPurchaseHistoryParam.Language
 	copied.Offset = serviceItemGetPurchaseHistoryParam.Offset
 	copied.Size = serviceItemGetPurchaseHistoryParam.Size
@@ -69,6 +71,10 @@ func (serviceItemGetPurchaseHistoryParam *ServiceItemGetPurchaseHistoryParam) Co
 // Equals checks if the passed Structure contains the same data as the current instance
 func (serviceItemGetPurchaseHistoryParam *ServiceItemGetPurchaseHistoryParam) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*ServiceItemGetPurchaseHistoryParam)
+
+	if serviceItemGetPurchaseHistoryParam.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if serviceItemGetPurchaseHistoryParam.Language != other.Language {
 		return false

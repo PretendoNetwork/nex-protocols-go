@@ -51,6 +51,8 @@ func (shopPostPlayLogParam *ShopPostPlayLogParam) Bytes(stream *nex.StreamOut) [
 func (shopPostPlayLogParam *ShopPostPlayLogParam) Copy() nex.StructureInterface {
 	copied := NewShopPostPlayLogParam()
 
+	copied.SetStructureVersion(shopPostPlayLogParam.StructureVersion())
+
 	copied.Unknown1 = make([]uint32, len(shopPostPlayLogParam.Unknown1))
 
 	copy(copied.Unknown1, shopPostPlayLogParam.Unknown1)
@@ -64,6 +66,10 @@ func (shopPostPlayLogParam *ShopPostPlayLogParam) Copy() nex.StructureInterface 
 // Equals checks if the passed Structure contains the same data as the current instance
 func (shopPostPlayLogParam *ShopPostPlayLogParam) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*ShopPostPlayLogParam)
+
+	if shopPostPlayLogParam.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if len(shopPostPlayLogParam.Unknown1) != len(other.Unknown1) {
 		return false

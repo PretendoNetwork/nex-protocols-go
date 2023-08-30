@@ -114,6 +114,8 @@ func (dataStorePreparePostParam *DataStorePreparePostParam) ExtractFromStream(st
 func (dataStorePreparePostParam *DataStorePreparePostParam) Copy() nex.StructureInterface {
 	copied := NewDataStorePreparePostParam()
 
+	copied.SetStructureVersion(dataStorePreparePostParam.StructureVersion())
+
 	copied.Size = dataStorePreparePostParam.Size
 	copied.Name = dataStorePreparePostParam.Name
 	copied.DataType = dataStorePreparePostParam.DataType
@@ -147,6 +149,10 @@ func (dataStorePreparePostParam *DataStorePreparePostParam) Copy() nex.Structure
 // Equals checks if the passed Structure contains the same data as the current instance
 func (dataStorePreparePostParam *DataStorePreparePostParam) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*DataStorePreparePostParam)
+
+	if dataStorePreparePostParam.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if dataStorePreparePostParam.Size != other.Size {
 		return false

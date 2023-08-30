@@ -11,12 +11,12 @@ import (
 // ServiceItemListItem holds data for the Service Item (Wii Sports Club) protocol
 type ServiceItemListItem struct {
 	nex.Structure
-	ItemCode string
-	RegularPrice *ServiceItemAmount
-	TaxExcluded bool
+	ItemCode            string
+	RegularPrice        *ServiceItemAmount
+	TaxExcluded         bool
 	InitialPurchaseOnly bool
-	Limitation *ServiceItemLimitation
-	Attributes []*ServiceItemAttribute
+	Limitation          *ServiceItemLimitation
+	Attributes          []*ServiceItemAttribute
 }
 
 // ExtractFromStream extracts a ServiceItemListItem structure from a stream
@@ -78,6 +78,8 @@ func (serviceItemListItem *ServiceItemListItem) Bytes(stream *nex.StreamOut) []b
 func (serviceItemListItem *ServiceItemListItem) Copy() nex.StructureInterface {
 	copied := NewServiceItemListItem()
 
+	copied.SetStructureVersion(serviceItemListItem.StructureVersion())
+
 	copied.ItemCode = serviceItemListItem.ItemCode
 	copied.RegularPrice = serviceItemListItem.RegularPrice.Copy().(*ServiceItemAmount)
 	copied.TaxExcluded = serviceItemListItem.TaxExcluded
@@ -89,13 +91,16 @@ func (serviceItemListItem *ServiceItemListItem) Copy() nex.StructureInterface {
 		copied.Attributes[i] = serviceItemListItem.Attributes[i].Copy().(*ServiceItemAttribute)
 	}
 
-
 	return copied
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
 func (serviceItemListItem *ServiceItemListItem) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*ServiceItemListItem)
+
+	if serviceItemListItem.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if serviceItemListItem.ItemCode != other.ItemCode {
 		return false
@@ -161,7 +166,6 @@ func (serviceItemListItem *ServiceItemListItem) FormatToString(indentationLevel 
 	} else {
 		b.WriteString(fmt.Sprintf("%sLimitation: nil\n", indentationValues))
 	}
-
 
 	if len(serviceItemListItem.Attributes) == 0 {
 		b.WriteString(fmt.Sprintf("%sAttributes: [],\n", indentationValues))

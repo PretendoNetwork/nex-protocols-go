@@ -40,6 +40,8 @@ func (serviceItemGetPrepurchaseInfoResponse *ServiceItemGetPrepurchaseInfoRespon
 func (serviceItemGetPrepurchaseInfoResponse *ServiceItemGetPrepurchaseInfoResponse) Copy() nex.StructureInterface {
 	copied := NewServiceItemGetPrepurchaseInfoResponse()
 
+	copied.SetStructureVersion(serviceItemGetPrepurchaseInfoResponse.StructureVersion())
+
 	copied.ServiceItemEShopResponse = serviceItemGetPrepurchaseInfoResponse.ServiceItemEShopResponse.Copy().(*ServiceItemEShopResponse)
 	copied.SetParentType(copied.ServiceItemEShopResponse)
 
@@ -49,13 +51,16 @@ func (serviceItemGetPrepurchaseInfoResponse *ServiceItemGetPrepurchaseInfoRespon
 		copied.NullablePrepurchaseInfo[i] = serviceItemGetPrepurchaseInfoResponse.NullablePrepurchaseInfo[i].Copy().(*ServiceItemPrepurchaseInfo)
 	}
 
-
 	return copied
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
 func (serviceItemGetPrepurchaseInfoResponse *ServiceItemGetPrepurchaseInfoResponse) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*ServiceItemGetPrepurchaseInfoResponse)
+
+	if serviceItemGetPrepurchaseInfoResponse.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if !serviceItemGetPrepurchaseInfoResponse.ParentType().Equals(other.ParentType()) {
 		return false

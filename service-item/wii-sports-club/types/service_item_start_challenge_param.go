@@ -12,8 +12,8 @@ import (
 type ServiceItemStartChallengeParam struct {
 	nex.Structure
 	ChallengeScheduleID uint32
-	TicketType uint32
-	NumTicket uint32
+	TicketType          uint32
+	NumTicket           uint32
 }
 
 // ExtractFromStream extracts a ServiceItemStartChallengeParam structure from a stream
@@ -51,6 +51,8 @@ func (serviceItemStartChallengeParam *ServiceItemStartChallengeParam) Bytes(stre
 func (serviceItemStartChallengeParam *ServiceItemStartChallengeParam) Copy() nex.StructureInterface {
 	copied := NewServiceItemStartChallengeParam()
 
+	copied.SetStructureVersion(serviceItemStartChallengeParam.StructureVersion())
+
 	copied.ChallengeScheduleID = serviceItemStartChallengeParam.ChallengeScheduleID
 	copied.TicketType = serviceItemStartChallengeParam.TicketType
 	copied.NumTicket = serviceItemStartChallengeParam.NumTicket
@@ -61,6 +63,10 @@ func (serviceItemStartChallengeParam *ServiceItemStartChallengeParam) Copy() nex
 // Equals checks if the passed Structure contains the same data as the current instance
 func (serviceItemStartChallengeParam *ServiceItemStartChallengeParam) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*ServiceItemStartChallengeParam)
+
+	if serviceItemStartChallengeParam.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if serviceItemStartChallengeParam.ChallengeScheduleID != other.ChallengeScheduleID {
 		return false

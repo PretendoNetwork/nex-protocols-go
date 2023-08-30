@@ -44,6 +44,8 @@ func (dataStoreGetNewArrivedNotificationsParam *DataStoreGetNewArrivedNotificati
 func (dataStoreGetNewArrivedNotificationsParam *DataStoreGetNewArrivedNotificationsParam) Copy() nex.StructureInterface {
 	copied := NewDataStoreGetNewArrivedNotificationsParam()
 
+	copied.SetStructureVersion(dataStoreGetNewArrivedNotificationsParam.StructureVersion())
+
 	copied.LastNotificationID = dataStoreGetNewArrivedNotificationsParam.LastNotificationID
 	copied.Limit = dataStoreGetNewArrivedNotificationsParam.Limit
 
@@ -53,6 +55,10 @@ func (dataStoreGetNewArrivedNotificationsParam *DataStoreGetNewArrivedNotificati
 // Equals checks if the passed Structure contains the same data as the current instance
 func (dataStoreGetNewArrivedNotificationsParam *DataStoreGetNewArrivedNotificationsParam) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*DataStoreGetNewArrivedNotificationsParam)
+
+	if dataStoreGetNewArrivedNotificationsParam.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if dataStoreGetNewArrivedNotificationsParam.LastNotificationID != other.LastNotificationID {
 		return false

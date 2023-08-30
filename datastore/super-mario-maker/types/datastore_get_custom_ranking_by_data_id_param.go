@@ -51,6 +51,8 @@ func (dataStoreGetCustomRankingByDataIDParam *DataStoreGetCustomRankingByDataIDP
 func (dataStoreGetCustomRankingByDataIDParam *DataStoreGetCustomRankingByDataIDParam) Copy() nex.StructureInterface {
 	copied := NewDataStoreGetCustomRankingByDataIDParam()
 
+	copied.SetStructureVersion(dataStoreGetCustomRankingByDataIDParam.StructureVersion())
+
 	copied.ApplicationID = dataStoreGetCustomRankingByDataIDParam.ApplicationID
 	copied.DataIDList = make([]uint64, len(dataStoreGetCustomRankingByDataIDParam.DataIDList))
 
@@ -64,6 +66,10 @@ func (dataStoreGetCustomRankingByDataIDParam *DataStoreGetCustomRankingByDataIDP
 // Equals checks if the passed Structure contains the same data as the current instance
 func (dataStoreGetCustomRankingByDataIDParam *DataStoreGetCustomRankingByDataIDParam) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*DataStoreGetCustomRankingByDataIDParam)
+
+	if dataStoreGetCustomRankingByDataIDParam.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if dataStoreGetCustomRankingByDataIDParam.ApplicationID != other.ApplicationID {
 		return false

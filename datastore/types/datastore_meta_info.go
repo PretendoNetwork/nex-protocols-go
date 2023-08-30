@@ -168,6 +168,8 @@ func (dataStoreMetaInfo *DataStoreMetaInfo) Bytes(stream *nex.StreamOut) []byte 
 func (dataStoreMetaInfo *DataStoreMetaInfo) Copy() nex.StructureInterface {
 	copied := NewDataStoreMetaInfo()
 
+	copied.SetStructureVersion(dataStoreMetaInfo.StructureVersion())
+
 	copied.DataID = dataStoreMetaInfo.DataID
 	copied.OwnerID = dataStoreMetaInfo.OwnerID
 	copied.Size = dataStoreMetaInfo.Size
@@ -204,6 +206,10 @@ func (dataStoreMetaInfo *DataStoreMetaInfo) Copy() nex.StructureInterface {
 // Equals checks if the passed Structure contains the same data as the current instance
 func (dataStoreMetaInfo *DataStoreMetaInfo) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*DataStoreMetaInfo)
+
+	if dataStoreMetaInfo.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if dataStoreMetaInfo.DataID != other.DataID {
 		return false

@@ -30,6 +30,8 @@ func (nintendoLoginData *NintendoLoginData) ExtractFromStream(stream *nex.Stream
 func (nintendoLoginData *NintendoLoginData) Copy() nex.StructureInterface {
 	copied := NewNintendoLoginData()
 
+	copied.SetStructureVersion(nintendoLoginData.StructureVersion())
+
 	copied.Token = nintendoLoginData.Token
 
 	return copied
@@ -38,6 +40,10 @@ func (nintendoLoginData *NintendoLoginData) Copy() nex.StructureInterface {
 // Equals checks if the passed Structure contains the same data as the current instance
 func (nintendoLoginData *NintendoLoginData) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*NintendoLoginData)
+
+	if nintendoLoginData.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	return nintendoLoginData.Token == other.Token
 }

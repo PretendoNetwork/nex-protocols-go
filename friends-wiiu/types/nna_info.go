@@ -53,6 +53,8 @@ func (nnaInfo *NNAInfo) ExtractFromStream(stream *nex.StreamIn) error {
 func (nnaInfo *NNAInfo) Copy() nex.StructureInterface {
 	copied := NewNNAInfo()
 
+	copied.SetStructureVersion(nnaInfo.StructureVersion())
+
 	copied.Data = nnaInfo.ParentType().Copy().(*nex.Data)
 	copied.SetParentType(copied.Data)
 
@@ -66,6 +68,10 @@ func (nnaInfo *NNAInfo) Copy() nex.StructureInterface {
 // Equals checks if the passed Structure contains the same data as the current instance
 func (nnaInfo *NNAInfo) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*NNAInfo)
+
+	if nnaInfo.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if !nnaInfo.ParentType().Equals(other.ParentType()) {
 		return false

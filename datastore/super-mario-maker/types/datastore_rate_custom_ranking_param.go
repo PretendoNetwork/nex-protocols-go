@@ -58,6 +58,8 @@ func (dataStoreRateCustomRankingParam *DataStoreRateCustomRankingParam) Bytes(st
 func (dataStoreRateCustomRankingParam *DataStoreRateCustomRankingParam) Copy() nex.StructureInterface {
 	copied := NewDataStoreRateCustomRankingParam()
 
+	copied.SetStructureVersion(dataStoreRateCustomRankingParam.StructureVersion())
+
 	copied.DataID = dataStoreRateCustomRankingParam.DataID
 	copied.ApplicationID = dataStoreRateCustomRankingParam.ApplicationID
 	copied.Score = dataStoreRateCustomRankingParam.Score
@@ -69,6 +71,10 @@ func (dataStoreRateCustomRankingParam *DataStoreRateCustomRankingParam) Copy() n
 // Equals checks if the passed Structure contains the same data as the current instance
 func (dataStoreRateCustomRankingParam *DataStoreRateCustomRankingParam) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*DataStoreRateCustomRankingParam)
+
+	if dataStoreRateCustomRankingParam.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if dataStoreRateCustomRankingParam.DataID != other.DataID {
 		return false

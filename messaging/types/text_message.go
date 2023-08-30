@@ -38,6 +38,8 @@ func (textMessage *TextMessage) ExtractFromStream(stream *nex.StreamIn) error {
 func (textMessage *TextMessage) Copy() nex.StructureInterface {
 	copied := NewTextMessage()
 
+	copied.SetStructureVersion(textMessage.StructureVersion())
+
 	copied.UserMessage = textMessage.UserMessage.Copy().(*UserMessage)
 	copied.SetParentType(copied.UserMessage)
 
@@ -49,6 +51,10 @@ func (textMessage *TextMessage) Copy() nex.StructureInterface {
 // Equals checks if the passed Structure contains the same data as the current instance
 func (textMessage *TextMessage) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*TextMessage)
+
+	if textMessage.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if !textMessage.ParentType().Equals(other.ParentType()) {
 		return false

@@ -44,6 +44,8 @@ func (dataStoreGetCourseRecordParam *DataStoreGetCourseRecordParam) Bytes(stream
 func (dataStoreGetCourseRecordParam *DataStoreGetCourseRecordParam) Copy() nex.StructureInterface {
 	copied := NewDataStoreGetCourseRecordParam()
 
+	copied.SetStructureVersion(dataStoreGetCourseRecordParam.StructureVersion())
+
 	copied.DataID = dataStoreGetCourseRecordParam.DataID
 	copied.Slot = dataStoreGetCourseRecordParam.Slot
 
@@ -53,6 +55,10 @@ func (dataStoreGetCourseRecordParam *DataStoreGetCourseRecordParam) Copy() nex.S
 // Equals checks if the passed Structure contains the same data as the current instance
 func (dataStoreGetCourseRecordParam *DataStoreGetCourseRecordParam) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*DataStoreGetCourseRecordParam)
+
+	if dataStoreGetCourseRecordParam.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if dataStoreGetCourseRecordParam.DataID != other.DataID {
 		return false

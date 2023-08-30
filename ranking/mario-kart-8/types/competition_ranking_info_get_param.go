@@ -12,7 +12,7 @@ import (
 type CompetitionRankingInfoGetParam struct {
 	nex.Structure
 	Unknown uint8
-	Result *nex.ResultRange
+	Result  *nex.ResultRange
 }
 
 // ExtractFromStream extracts a CompetitionRankingInfoGetParam structure from a stream
@@ -46,6 +46,8 @@ func (competitionRankingInfoGetParam *CompetitionRankingInfoGetParam) Bytes(stre
 func (competitionRankingInfoGetParam *CompetitionRankingInfoGetParam) Copy() nex.StructureInterface {
 	copied := NewCompetitionRankingInfoGetParam()
 
+	copied.SetStructureVersion(competitionRankingInfoGetParam.StructureVersion())
+
 	copied.Unknown = competitionRankingInfoGetParam.Unknown
 	copied.Result = competitionRankingInfoGetParam.Result.Copy().(*nex.ResultRange)
 
@@ -55,6 +57,10 @@ func (competitionRankingInfoGetParam *CompetitionRankingInfoGetParam) Copy() nex
 // Equals checks if the passed Structure contains the same data as the current instance
 func (competitionRankingInfoGetParam *CompetitionRankingInfoGetParam) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*CompetitionRankingInfoGetParam)
+
+	if competitionRankingInfoGetParam.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if competitionRankingInfoGetParam.Unknown != other.Unknown {
 		return false

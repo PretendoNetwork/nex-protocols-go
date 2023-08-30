@@ -11,8 +11,8 @@ import (
 // ServiceItemEShopResponse holds data for the Service Item (Wii Sports Club) protocol
 type ServiceItemEShopResponse struct {
 	nex.Structure
-	HTTPStatus uint32
-	ErrorCode uint32
+	HTTPStatus    uint32
+	ErrorCode     uint32
 	CorrelationID string
 }
 
@@ -51,6 +51,8 @@ func (serviceItemEShopResponse *ServiceItemEShopResponse) Bytes(stream *nex.Stre
 func (serviceItemEShopResponse *ServiceItemEShopResponse) Copy() nex.StructureInterface {
 	copied := NewServiceItemEShopResponse()
 
+	copied.SetStructureVersion(serviceItemEShopResponse.StructureVersion())
+
 	copied.HTTPStatus = serviceItemEShopResponse.HTTPStatus
 	copied.ErrorCode = serviceItemEShopResponse.ErrorCode
 	copied.CorrelationID = serviceItemEShopResponse.CorrelationID
@@ -61,6 +63,10 @@ func (serviceItemEShopResponse *ServiceItemEShopResponse) Copy() nex.StructureIn
 // Equals checks if the passed Structure contains the same data as the current instance
 func (serviceItemEShopResponse *ServiceItemEShopResponse) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*ServiceItemEShopResponse)
+
+	if serviceItemEShopResponse.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if serviceItemEShopResponse.HTTPStatus != other.HTTPStatus {
 		return false

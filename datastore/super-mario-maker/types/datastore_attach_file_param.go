@@ -54,6 +54,8 @@ func (dataStoreAttachFileParam *DataStoreAttachFileParam) Bytes(stream *nex.Stre
 func (dataStoreAttachFileParam *DataStoreAttachFileParam) Copy() nex.StructureInterface {
 	copied := NewDataStoreAttachFileParam()
 
+	copied.SetStructureVersion(dataStoreAttachFileParam.StructureVersion())
+
 	copied.PostParam = dataStoreAttachFileParam.PostParam.Copy().(*datastore_types.DataStorePreparePostParam)
 	copied.ReferDataID = dataStoreAttachFileParam.ReferDataID
 	copied.ContentType = dataStoreAttachFileParam.ContentType
@@ -64,6 +66,10 @@ func (dataStoreAttachFileParam *DataStoreAttachFileParam) Copy() nex.StructureIn
 // Equals checks if the passed Structure contains the same data as the current instance
 func (dataStoreAttachFileParam *DataStoreAttachFileParam) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*DataStoreAttachFileParam)
+
+	if dataStoreAttachFileParam.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if !dataStoreAttachFileParam.PostParam.Equals(other.PostParam) {
 		return false

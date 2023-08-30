@@ -31,6 +31,8 @@ func (nintendoNotificationEventGeneral *NintendoNotificationEventGeneral) Bytes(
 func (nintendoNotificationEventGeneral *NintendoNotificationEventGeneral) Copy() nex.StructureInterface {
 	copied := NewNintendoNotificationEventGeneral()
 
+	copied.SetStructureVersion(nintendoNotificationEventGeneral.StructureVersion())
+
 	copied.U32Param = nintendoNotificationEventGeneral.U32Param
 	copied.U64Param1 = nintendoNotificationEventGeneral.U64Param1
 	copied.U64Param2 = nintendoNotificationEventGeneral.U64Param2
@@ -42,6 +44,10 @@ func (nintendoNotificationEventGeneral *NintendoNotificationEventGeneral) Copy()
 // Equals checks if the passed Structure contains the same data as the current instance
 func (nintendoNotificationEventGeneral *NintendoNotificationEventGeneral) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*NintendoNotificationEventGeneral)
+
+	if nintendoNotificationEventGeneral.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if nintendoNotificationEventGeneral.U32Param != other.U32Param {
 		return false

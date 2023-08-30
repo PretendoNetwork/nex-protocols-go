@@ -51,6 +51,8 @@ func (serviceItemAmount *ServiceItemAmount) Bytes(stream *nex.StreamOut) []byte 
 func (serviceItemAmount *ServiceItemAmount) Copy() nex.StructureInterface {
 	copied := NewServiceItemAmount()
 
+	copied.SetStructureVersion(serviceItemAmount.StructureVersion())
+
 	copied.FormattedAmount = serviceItemAmount.FormattedAmount
 	copied.Currency = serviceItemAmount.Currency
 	copied.RawValue = serviceItemAmount.RawValue
@@ -61,6 +63,10 @@ func (serviceItemAmount *ServiceItemAmount) Copy() nex.StructureInterface {
 // Equals checks if the passed Structure contains the same data as the current instance
 func (serviceItemAmount *ServiceItemAmount) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*ServiceItemAmount)
+
+	if serviceItemAmount.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if serviceItemAmount.FormattedAmount != other.FormattedAmount {
 		return false

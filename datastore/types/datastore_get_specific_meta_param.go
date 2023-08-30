@@ -37,6 +37,8 @@ func (dataStoreGetSpecificMetaParam *DataStoreGetSpecificMetaParam) Bytes(stream
 func (dataStoreGetSpecificMetaParam *DataStoreGetSpecificMetaParam) Copy() nex.StructureInterface {
 	copied := NewDataStoreGetSpecificMetaParam()
 
+	copied.SetStructureVersion(dataStoreGetSpecificMetaParam.StructureVersion())
+
 	copied.DataIDs = make([]uint64, len(dataStoreGetSpecificMetaParam.DataIDs))
 
 	copy(copied.DataIDs, dataStoreGetSpecificMetaParam.DataIDs)
@@ -47,6 +49,10 @@ func (dataStoreGetSpecificMetaParam *DataStoreGetSpecificMetaParam) Copy() nex.S
 // Equals checks if the passed Structure contains the same data as the current instance
 func (dataStoreGetSpecificMetaParam *DataStoreGetSpecificMetaParam) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*DataStoreGetSpecificMetaParam)
+
+	if dataStoreGetSpecificMetaParam.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if len(dataStoreGetSpecificMetaParam.DataIDs) != len(other.DataIDs) {
 		return false

@@ -143,6 +143,8 @@ func (matchmakeRefereeStats *MatchmakeRefereeStats) ExtractFromStream(stream *ne
 func (matchmakeRefereeStats *MatchmakeRefereeStats) Copy() nex.StructureInterface {
 	copied := NewMatchmakeRefereeStats()
 
+	copied.SetStructureVersion(matchmakeRefereeStats.StructureVersion())
+
 	copied.Data = matchmakeRefereeStats.ParentType().Copy().(*nex.Data)
 	copied.SetParentType(copied.Data)
 
@@ -169,6 +171,10 @@ func (matchmakeRefereeStats *MatchmakeRefereeStats) Copy() nex.StructureInterfac
 // Equals checks if the passed Structure contains the same data as the current instance
 func (matchmakeRefereeStats *MatchmakeRefereeStats) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*MatchmakeRefereeStats)
+
+	if matchmakeRefereeStats.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if !matchmakeRefereeStats.ParentType().Equals(other.ParentType()) {
 		return false

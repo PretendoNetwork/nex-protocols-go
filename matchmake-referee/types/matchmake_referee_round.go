@@ -68,6 +68,8 @@ func (matchmakeRefereeRound *MatchmakeRefereeRound) ExtractFromStream(stream *ne
 func (matchmakeRefereeRound *MatchmakeRefereeRound) Copy() nex.StructureInterface {
 	copied := NewMatchmakeRefereeRound()
 
+	copied.SetStructureVersion(matchmakeRefereeRound.StructureVersion())
+
 	copied.Data = matchmakeRefereeRound.ParentType().Copy().(*nex.Data)
 	copied.SetParentType(copied.Data)
 
@@ -87,6 +89,10 @@ func (matchmakeRefereeRound *MatchmakeRefereeRound) Copy() nex.StructureInterfac
 // Equals checks if the passed Structure contains the same data as the current instance
 func (matchmakeRefereeRound *MatchmakeRefereeRound) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*MatchmakeRefereeRound)
+
+	if matchmakeRefereeRound.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if !matchmakeRefereeRound.ParentType().Equals(other.ParentType()) {
 		return false

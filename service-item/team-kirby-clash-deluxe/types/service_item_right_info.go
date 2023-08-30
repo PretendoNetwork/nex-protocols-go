@@ -44,6 +44,8 @@ func (serviceItemRightInfo *ServiceItemRightInfo) Bytes(stream *nex.StreamOut) [
 func (serviceItemRightInfo *ServiceItemRightInfo) Copy() nex.StructureInterface {
 	copied := NewServiceItemRightInfo()
 
+	copied.SetStructureVersion(serviceItemRightInfo.StructureVersion())
+
 	copied.ReferenceID = serviceItemRightInfo.ReferenceID
 	copied.ReferenceIDType = serviceItemRightInfo.ReferenceIDType
 
@@ -53,6 +55,10 @@ func (serviceItemRightInfo *ServiceItemRightInfo) Copy() nex.StructureInterface 
 // Equals checks if the passed Structure contains the same data as the current instance
 func (serviceItemRightInfo *ServiceItemRightInfo) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*ServiceItemRightInfo)
+
+	if serviceItemRightInfo.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if serviceItemRightInfo.ReferenceID != other.ReferenceID {
 		return false

@@ -60,6 +60,8 @@ func (principalInfo *PrincipalBasicInfo) ExtractFromStream(stream *nex.StreamIn)
 func (principalInfo *PrincipalBasicInfo) Copy() nex.StructureInterface {
 	copied := NewPrincipalBasicInfo()
 
+	copied.SetStructureVersion(principalInfo.StructureVersion())
+
 	copied.Data = principalInfo.ParentType().Copy().(*nex.Data)
 	copied.SetParentType(copied.Data)
 
@@ -74,6 +76,10 @@ func (principalInfo *PrincipalBasicInfo) Copy() nex.StructureInterface {
 // Equals checks if the passed Structure contains the same data as the current instance
 func (principalInfo *PrincipalBasicInfo) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*PrincipalBasicInfo)
+
+	if principalInfo.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if !principalInfo.ParentType().Equals(other.ParentType()) {
 		return false

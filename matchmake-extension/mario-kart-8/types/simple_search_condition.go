@@ -44,6 +44,8 @@ func (simpleSearchCondition *SimpleSearchCondition) Bytes(stream *nex.StreamOut)
 func (simpleSearchCondition *SimpleSearchCondition) Copy() nex.StructureInterface {
 	copied := NewSimpleSearchCondition()
 
+	copied.SetStructureVersion(simpleSearchCondition.StructureVersion())
+
 	copied.Value = simpleSearchCondition.Value
 	copied.ComparisonOperator = simpleSearchCondition.ComparisonOperator
 
@@ -53,6 +55,10 @@ func (simpleSearchCondition *SimpleSearchCondition) Copy() nex.StructureInterfac
 // Equals checks if the passed Structure contains the same data as the current instance
 func (simpleSearchCondition *SimpleSearchCondition) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*SimpleSearchCondition)
+
+	if simpleSearchCondition.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if simpleSearchCondition.Value != other.Value {
 		return false

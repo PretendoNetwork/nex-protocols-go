@@ -94,6 +94,8 @@ func (dataStoreReplayMetaInfo *DataStoreReplayMetaInfo) Bytes(stream *nex.Stream
 func (dataStoreReplayMetaInfo *DataStoreReplayMetaInfo) Copy() nex.StructureInterface {
 	copied := NewDataStoreReplayMetaInfo()
 
+	copied.SetStructureVersion(dataStoreReplayMetaInfo.StructureVersion())
+
 	copied.ReplayID = dataStoreReplayMetaInfo.ReplayID
 	copied.Size = dataStoreReplayMetaInfo.Size
 	copied.Mode = dataStoreReplayMetaInfo.Mode
@@ -117,6 +119,10 @@ func (dataStoreReplayMetaInfo *DataStoreReplayMetaInfo) Copy() nex.StructureInte
 // Equals checks if the passed Structure contains the same data as the current instance
 func (dataStoreReplayMetaInfo *DataStoreReplayMetaInfo) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*DataStoreReplayMetaInfo)
+
+	if dataStoreReplayMetaInfo.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if dataStoreReplayMetaInfo.ReplayID != other.ReplayID {
 		return false

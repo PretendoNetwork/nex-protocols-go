@@ -188,6 +188,8 @@ func (matchmakeSession *MatchmakeSession) Bytes(stream *nex.StreamOut) []byte {
 func (matchmakeSession *MatchmakeSession) Copy() nex.StructureInterface {
 	copied := NewMatchmakeSession()
 
+	copied.SetStructureVersion(matchmakeSession.StructureVersion())
+
 	copied.Gathering = matchmakeSession.Gathering.Copy().(*Gathering)
 	copied.SetParentType(copied.Gathering)
 	copied.GameMode = matchmakeSession.GameMode
@@ -229,6 +231,10 @@ func (matchmakeSession *MatchmakeSession) Copy() nex.StructureInterface {
 // Equals checks if the passed Structure contains the same data as the current instance
 func (matchmakeSession *MatchmakeSession) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*MatchmakeSession)
+
+	if matchmakeSession.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if !matchmakeSession.ParentType().Equals(other.ParentType()) {
 		return false

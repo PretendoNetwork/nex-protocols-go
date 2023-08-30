@@ -103,6 +103,8 @@ func (rankingRankData *RankingRankData) Bytes(stream *nex.StreamOut) []byte {
 func (rankingRankData *RankingRankData) Copy() nex.StructureInterface {
 	copied := NewRankingRankData()
 
+	copied.SetStructureVersion(rankingRankData.StructureVersion())
+
 	copied.PrincipalID = rankingRankData.PrincipalID
 	copied.UniqueID = rankingRankData.UniqueID
 	copied.Order = rankingRankData.Order
@@ -127,6 +129,10 @@ func (rankingRankData *RankingRankData) Copy() nex.StructureInterface {
 // Equals checks if the passed Structure contains the same data as the current instance
 func (rankingRankData *RankingRankData) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*RankingRankData)
+
+	if rankingRankData.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if rankingRankData.PrincipalID != other.PrincipalID {
 		return false

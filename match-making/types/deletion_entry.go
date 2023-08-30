@@ -54,6 +54,8 @@ func (deletionEntry *DeletionEntry) Bytes(stream *nex.StreamOut) []byte {
 func (deletionEntry *DeletionEntry) Copy() nex.StructureInterface {
 	copied := NewDeletionEntry()
 
+	copied.SetStructureVersion(deletionEntry.StructureVersion())
+
 	copied.IDGathering = deletionEntry.IDGathering
 	copied.PID = deletionEntry.PID
 	copied.UIReason = deletionEntry.UIReason
@@ -64,6 +66,10 @@ func (deletionEntry *DeletionEntry) Copy() nex.StructureInterface {
 // Equals checks if the passed Structure contains the same data as the current instance
 func (deletionEntry *DeletionEntry) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*DeletionEntry)
+
+	if deletionEntry.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if deletionEntry.IDGathering != other.IDGathering {
 		return false

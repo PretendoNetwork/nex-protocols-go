@@ -44,6 +44,8 @@ func (serviceItemLimitation *ServiceItemLimitation) Bytes(stream *nex.StreamOut)
 func (serviceItemLimitation *ServiceItemLimitation) Copy() nex.StructureInterface {
 	copied := NewServiceItemLimitation()
 
+	copied.SetStructureVersion(serviceItemLimitation.StructureVersion())
+
 	copied.LimitationType = serviceItemLimitation.LimitationType
 	copied.LimitationValue = serviceItemLimitation.LimitationValue
 
@@ -53,6 +55,10 @@ func (serviceItemLimitation *ServiceItemLimitation) Copy() nex.StructureInterfac
 // Equals checks if the passed Structure contains the same data as the current instance
 func (serviceItemLimitation *ServiceItemLimitation) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*ServiceItemLimitation)
+
+	if serviceItemLimitation.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if serviceItemLimitation.LimitationType != other.LimitationType {
 		return false

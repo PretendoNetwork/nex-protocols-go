@@ -29,6 +29,8 @@ func (nintendoNotificationEvent *NintendoNotificationEvent) Bytes(stream *nex.St
 func (nintendoNotificationEvent *NintendoNotificationEvent) Copy() nex.StructureInterface {
 	copied := NewNintendoNotificationEvent()
 
+	copied.SetStructureVersion(nintendoNotificationEvent.StructureVersion())
+
 	copied.Type = nintendoNotificationEvent.Type
 	copied.SenderPID = nintendoNotificationEvent.SenderPID
 	copied.DataHolder = nintendoNotificationEvent.DataHolder.Copy()
@@ -39,6 +41,10 @@ func (nintendoNotificationEvent *NintendoNotificationEvent) Copy() nex.Structure
 // Equals checks if the passed Structure contains the same data as the current instance
 func (nintendoNotificationEvent *NintendoNotificationEvent) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*NintendoNotificationEvent)
+
+	if nintendoNotificationEvent.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if nintendoNotificationEvent.Type != other.Type {
 		return false

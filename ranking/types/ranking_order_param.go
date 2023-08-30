@@ -72,6 +72,8 @@ func (rankingOrderParam *RankingOrderParam) Bytes(stream *nex.StreamOut) []byte 
 func (rankingOrderParam *RankingOrderParam) Copy() nex.StructureInterface {
 	copied := NewRankingOrderParam()
 
+	copied.SetStructureVersion(rankingOrderParam.StructureVersion())
+
 	copied.OrderCalculation = rankingOrderParam.OrderCalculation
 	copied.GroupIndex = rankingOrderParam.GroupIndex
 	copied.GroupNum = rankingOrderParam.GroupNum
@@ -85,6 +87,10 @@ func (rankingOrderParam *RankingOrderParam) Copy() nex.StructureInterface {
 // Equals checks if the passed Structure contains the same data as the current instance
 func (rankingOrderParam *RankingOrderParam) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*RankingOrderParam)
+
+	if rankingOrderParam.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if rankingOrderParam.OrderCalculation != other.OrderCalculation {
 		return false

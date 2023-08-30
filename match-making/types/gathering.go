@@ -103,6 +103,8 @@ func (gathering *Gathering) Bytes(stream *nex.StreamOut) []byte {
 func (gathering *Gathering) Copy() nex.StructureInterface {
 	copied := NewGathering()
 
+	copied.SetStructureVersion(gathering.StructureVersion())
+
 	copied.ID = gathering.ID
 	copied.OwnerPID = gathering.OwnerPID
 	copied.HostPID = gathering.HostPID
@@ -120,6 +122,10 @@ func (gathering *Gathering) Copy() nex.StructureInterface {
 // Equals checks if the passed Structure contains the same data as the current instance
 func (gathering *Gathering) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*Gathering)
+
+	if gathering.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if gathering.ID != other.ID {
 		return false

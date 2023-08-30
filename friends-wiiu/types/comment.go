@@ -52,6 +52,8 @@ func (comment *Comment) ExtractFromStream(stream *nex.StreamIn) error {
 func (comment *Comment) Copy() nex.StructureInterface {
 	copied := NewComment()
 
+	copied.SetStructureVersion(comment.StructureVersion())
+
 	copied.Data = comment.ParentType().Copy().(*nex.Data)
 	copied.SetParentType(copied.Data)
 
@@ -65,6 +67,10 @@ func (comment *Comment) Copy() nex.StructureInterface {
 // Equals checks if the passed Structure contains the same data as the current instance
 func (comment *Comment) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*Comment)
+
+	if comment.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if !comment.ParentType().Equals(other.ParentType()) {
 		return false

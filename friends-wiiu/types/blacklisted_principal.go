@@ -54,6 +54,8 @@ func (blacklistedPrincipal *BlacklistedPrincipal) ExtractFromStream(stream *nex.
 func (blacklistedPrincipal *BlacklistedPrincipal) Copy() nex.StructureInterface {
 	copied := NewBlacklistedPrincipal()
 
+	copied.SetStructureVersion(blacklistedPrincipal.StructureVersion())
+
 	copied.Data = blacklistedPrincipal.ParentType().Copy().(*nex.Data)
 	copied.SetParentType(copied.Data)
 
@@ -67,6 +69,10 @@ func (blacklistedPrincipal *BlacklistedPrincipal) Copy() nex.StructureInterface 
 // Equals checks if the passed Structure contains the same data as the current instance
 func (blacklistedPrincipal *BlacklistedPrincipal) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*BlacklistedPrincipal)
+
+	if blacklistedPrincipal.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if !blacklistedPrincipal.ParentType().Equals(other.ParentType()) {
 		return false

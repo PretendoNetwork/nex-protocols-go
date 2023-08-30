@@ -62,6 +62,8 @@ func (dataStoreGetCustomRankingParam *DataStoreGetCustomRankingParam) Bytes(stre
 func (dataStoreGetCustomRankingParam *DataStoreGetCustomRankingParam) Copy() nex.StructureInterface {
 	copied := NewDataStoreGetCustomRankingParam()
 
+	copied.SetStructureVersion(dataStoreGetCustomRankingParam.StructureVersion())
+
 	copied.ApplicationID = dataStoreGetCustomRankingParam.ApplicationID
 	copied.Condition = dataStoreGetCustomRankingParam.Condition.Copy().(*DataStoreCustomRankingRatingCondition)
 	copied.ResultOption = dataStoreGetCustomRankingParam.ResultOption
@@ -73,6 +75,10 @@ func (dataStoreGetCustomRankingParam *DataStoreGetCustomRankingParam) Copy() nex
 // Equals checks if the passed Structure contains the same data as the current instance
 func (dataStoreGetCustomRankingParam *DataStoreGetCustomRankingParam) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*DataStoreGetCustomRankingParam)
+
+	if dataStoreGetCustomRankingParam.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if dataStoreGetCustomRankingParam.ApplicationID != other.ApplicationID {
 		return false

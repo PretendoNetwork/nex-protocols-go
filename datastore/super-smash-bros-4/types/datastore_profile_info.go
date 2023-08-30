@@ -45,6 +45,8 @@ func (dataStoreProfileInfo *DataStoreProfileInfo) Bytes(stream *nex.StreamOut) [
 func (dataStoreProfileInfo *DataStoreProfileInfo) Copy() nex.StructureInterface {
 	copied := NewDataStoreProfileInfo()
 
+	copied.SetStructureVersion(dataStoreProfileInfo.StructureVersion())
+
 	copied.PID = dataStoreProfileInfo.PID
 	copied.Profile = make([]byte, len(dataStoreProfileInfo.Profile))
 
@@ -56,6 +58,10 @@ func (dataStoreProfileInfo *DataStoreProfileInfo) Copy() nex.StructureInterface 
 // Equals checks if the passed Structure contains the same data as the current instance
 func (dataStoreProfileInfo *DataStoreProfileInfo) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*DataStoreProfileInfo)
+
+	if dataStoreProfileInfo.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if dataStoreProfileInfo.PID != other.PID {
 		return false

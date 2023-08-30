@@ -60,6 +60,8 @@ func (dataStoreGetMetaByOwnerIDParam *DataStoreGetMetaByOwnerIDParam) Bytes(stre
 func (dataStoreGetMetaByOwnerIDParam *DataStoreGetMetaByOwnerIDParam) Copy() nex.StructureInterface {
 	copied := NewDataStoreGetMetaByOwnerIDParam()
 
+	copied.SetStructureVersion(dataStoreGetMetaByOwnerIDParam.StructureVersion())
+
 	copied.OwnerIDs = make([]uint32, len(dataStoreGetMetaByOwnerIDParam.OwnerIDs))
 
 	copy(copied.OwnerIDs, dataStoreGetMetaByOwnerIDParam.OwnerIDs)
@@ -77,6 +79,10 @@ func (dataStoreGetMetaByOwnerIDParam *DataStoreGetMetaByOwnerIDParam) Copy() nex
 // Equals checks if the passed Structure contains the same data as the current instance
 func (dataStoreGetMetaByOwnerIDParam *DataStoreGetMetaByOwnerIDParam) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*DataStoreGetMetaByOwnerIDParam)
+
+	if dataStoreGetMetaByOwnerIDParam.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if len(dataStoreGetMetaByOwnerIDParam.OwnerIDs) != len(other.OwnerIDs) {
 		return false

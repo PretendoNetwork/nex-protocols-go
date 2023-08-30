@@ -11,7 +11,7 @@ import (
 // ServiceItemRightInfo holds data for the Service Item (Wii Sports Club) protocol
 type ServiceItemRightInfo struct {
 	nex.Structure
-	ReferenceID string
+	ReferenceID   string
 	AccountRights []*ServiceItemAccountRight
 }
 
@@ -46,6 +46,8 @@ func (serviceItemRightInfo *ServiceItemRightInfo) Bytes(stream *nex.StreamOut) [
 func (serviceItemRightInfo *ServiceItemRightInfo) Copy() nex.StructureInterface {
 	copied := NewServiceItemRightInfo()
 
+	copied.SetStructureVersion(serviceItemRightInfo.StructureVersion())
+
 	copied.ReferenceID = serviceItemRightInfo.ReferenceID
 	copied.AccountRights = make([]*ServiceItemAccountRight, len(serviceItemRightInfo.AccountRights))
 
@@ -53,13 +55,16 @@ func (serviceItemRightInfo *ServiceItemRightInfo) Copy() nex.StructureInterface 
 		copied.AccountRights[i] = serviceItemRightInfo.AccountRights[i].Copy().(*ServiceItemAccountRight)
 	}
 
-
 	return copied
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
 func (serviceItemRightInfo *ServiceItemRightInfo) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*ServiceItemRightInfo)
+
+	if serviceItemRightInfo.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if serviceItemRightInfo.ReferenceID != other.ReferenceID {
 		return false

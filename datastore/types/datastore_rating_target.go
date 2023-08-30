@@ -36,6 +36,8 @@ func (dataStoreRatingTarget *DataStoreRatingTarget) ExtractFromStream(stream *ne
 func (dataStoreRatingTarget *DataStoreRatingTarget) Copy() nex.StructureInterface {
 	copied := NewDataStoreRatingTarget()
 
+	copied.SetStructureVersion(dataStoreRatingTarget.StructureVersion())
+
 	copied.DataID = dataStoreRatingTarget.DataID
 	copied.Slot = dataStoreRatingTarget.Slot
 
@@ -45,6 +47,10 @@ func (dataStoreRatingTarget *DataStoreRatingTarget) Copy() nex.StructureInterfac
 // Equals checks if the passed Structure contains the same data as the current instance
 func (dataStoreRatingTarget *DataStoreRatingTarget) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*DataStoreRatingTarget)
+
+	if dataStoreRatingTarget.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if dataStoreRatingTarget.DataID != other.DataID {
 		return false

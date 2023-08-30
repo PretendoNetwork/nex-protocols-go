@@ -45,6 +45,8 @@ func (applicationInfo *ApplicationInfo) ExtractFromStream(stream *nex.StreamIn) 
 func (applicationInfo *ApplicationInfo) Copy() nex.StructureInterface {
 	copied := NewApplicationInfo()
 
+	copied.SetStructureVersion(applicationInfo.StructureVersion())
+
 	copied.Data = applicationInfo.ParentType().Copy().(*nex.Data)
 	copied.SetParentType(copied.Data)
 
@@ -57,6 +59,10 @@ func (applicationInfo *ApplicationInfo) Copy() nex.StructureInterface {
 // Equals checks if the passed Structure contains the same data as the current instance
 func (applicationInfo *ApplicationInfo) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*ApplicationInfo)
+
+	if applicationInfo.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if !applicationInfo.ParentType().Equals(other.ParentType()) {
 		return false

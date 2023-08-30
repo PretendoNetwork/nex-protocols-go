@@ -52,6 +52,8 @@ func (rankingCachedResult *RankingCachedResult) Bytes(stream *nex.StreamOut) []b
 func (rankingCachedResult *RankingCachedResult) Copy() nex.StructureInterface {
 	copied := NewRankingCachedResult()
 
+	copied.SetStructureVersion(rankingCachedResult.StructureVersion())
+
 	copied.RankingResult = rankingCachedResult.RankingResult.Copy().(*RankingResult)
 	copied.SetParentType(copied.RankingResult)
 
@@ -71,6 +73,10 @@ func (rankingCachedResult *RankingCachedResult) Copy() nex.StructureInterface {
 // Equals checks if the passed Structure contains the same data as the current instance
 func (rankingCachedResult *RankingCachedResult) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*RankingCachedResult)
+
+	if rankingCachedResult.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if rankingCachedResult.CreatedTime == nil && other.CreatedTime != nil {
 		return false

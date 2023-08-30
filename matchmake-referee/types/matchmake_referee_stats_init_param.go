@@ -45,6 +45,8 @@ func (matchmakeRefereeStatsInitParam *MatchmakeRefereeStatsInitParam) ExtractFro
 func (matchmakeRefereeStatsInitParam *MatchmakeRefereeStatsInitParam) Copy() nex.StructureInterface {
 	copied := NewMatchmakeRefereeStatsInitParam()
 
+	copied.SetStructureVersion(matchmakeRefereeStatsInitParam.StructureVersion())
+
 	copied.Data = matchmakeRefereeStatsInitParam.ParentType().Copy().(*nex.Data)
 	copied.SetParentType(copied.Data)
 
@@ -57,6 +59,10 @@ func (matchmakeRefereeStatsInitParam *MatchmakeRefereeStatsInitParam) Copy() nex
 // Equals checks if the passed Structure contains the same data as the current instance
 func (matchmakeRefereeStatsInitParam *MatchmakeRefereeStatsInitParam) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*MatchmakeRefereeStatsInitParam)
+
+	if matchmakeRefereeStatsInitParam.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if !matchmakeRefereeStatsInitParam.ParentType().Equals(other.ParentType()) {
 		return false

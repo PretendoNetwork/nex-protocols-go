@@ -59,6 +59,8 @@ func (dataStoreReqGetNotificationURLInfo *DataStoreReqGetNotificationURLInfo) By
 func (dataStoreReqGetNotificationURLInfo *DataStoreReqGetNotificationURLInfo) Copy() nex.StructureInterface {
 	copied := NewDataStoreReqGetNotificationURLInfo()
 
+	copied.SetStructureVersion(dataStoreReqGetNotificationURLInfo.StructureVersion())
+
 	copied.URL = dataStoreReqGetNotificationURLInfo.URL
 	copied.Key = dataStoreReqGetNotificationURLInfo.Key
 	copied.Query = dataStoreReqGetNotificationURLInfo.Query
@@ -72,6 +74,10 @@ func (dataStoreReqGetNotificationURLInfo *DataStoreReqGetNotificationURLInfo) Co
 // Equals checks if the passed Structure contains the same data as the current instance
 func (dataStoreReqGetNotificationURLInfo *DataStoreReqGetNotificationURLInfo) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*DataStoreReqGetNotificationURLInfo)
+
+	if dataStoreReqGetNotificationURLInfo.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if dataStoreReqGetNotificationURLInfo.URL != other.URL {
 		return false

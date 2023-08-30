@@ -53,6 +53,8 @@ func (globalTradeStationSearchPokemonResult *GlobalTradeStationSearchPokemonResu
 func (globalTradeStationSearchPokemonResult *GlobalTradeStationSearchPokemonResult) Copy() nex.StructureInterface {
 	copied := NewGlobalTradeStationSearchPokemonResult()
 
+	copied.SetStructureVersion(globalTradeStationSearchPokemonResult.StructureVersion())
+
 	copied.TotalCount = globalTradeStationSearchPokemonResult.TotalCount
 	copied.Result = make([]*GlobalTradeStationData, len(globalTradeStationSearchPokemonResult.Result))
 
@@ -68,6 +70,10 @@ func (globalTradeStationSearchPokemonResult *GlobalTradeStationSearchPokemonResu
 // Equals checks if the passed Structure contains the same data as the current instance
 func (globalTradeStationSearchPokemonResult *GlobalTradeStationSearchPokemonResult) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*GlobalTradeStationSearchPokemonResult)
+
+	if globalTradeStationSearchPokemonResult.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if globalTradeStationSearchPokemonResult.TotalCount != other.TotalCount {
 		return false

@@ -12,7 +12,7 @@ import (
 // CompetitionRankingUploadScoreParam holds data for the Ranking (Mario Kart 8) protocol
 type CompetitionRankingUploadScoreParam struct {
 	nex.Structure
-	Unknown uint32
+	Unknown  uint32
 	Unknown2 uint32
 	Unknown3 uint32
 	Unknown4 uint32
@@ -87,6 +87,8 @@ func (competitionRankingUploadScoreParam *CompetitionRankingUploadScoreParam) By
 func (competitionRankingUploadScoreParam *CompetitionRankingUploadScoreParam) Copy() nex.StructureInterface {
 	copied := NewCompetitionRankingUploadScoreParam()
 
+	copied.SetStructureVersion(competitionRankingUploadScoreParam.StructureVersion())
+
 	copied.Unknown = competitionRankingUploadScoreParam.Unknown
 	copied.Unknown2 = competitionRankingUploadScoreParam.Unknown2
 	copied.Unknown3 = competitionRankingUploadScoreParam.Unknown3
@@ -102,6 +104,10 @@ func (competitionRankingUploadScoreParam *CompetitionRankingUploadScoreParam) Co
 // Equals checks if the passed Structure contains the same data as the current instance
 func (competitionRankingUploadScoreParam *CompetitionRankingUploadScoreParam) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*CompetitionRankingUploadScoreParam)
+
+	if competitionRankingUploadScoreParam.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if competitionRankingUploadScoreParam.Unknown != other.Unknown {
 		return false

@@ -38,6 +38,8 @@ func (serviceItemHTTPGetResponse *ServiceItemHTTPGetResponse) Bytes(stream *nex.
 func (serviceItemHTTPGetResponse *ServiceItemHTTPGetResponse) Copy() nex.StructureInterface {
 	copied := NewServiceItemHTTPGetResponse()
 
+	copied.SetStructureVersion(serviceItemHTTPGetResponse.StructureVersion())
+
 	copied.Response = serviceItemHTTPGetResponse.Response
 
 	return copied
@@ -46,6 +48,10 @@ func (serviceItemHTTPGetResponse *ServiceItemHTTPGetResponse) Copy() nex.Structu
 // Equals checks if the passed Structure contains the same data as the current instance
 func (serviceItemHTTPGetResponse *ServiceItemHTTPGetResponse) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*ServiceItemHTTPGetResponse)
+
+	if serviceItemHTTPGetResponse.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	return bytes.Equal(serviceItemHTTPGetResponse.Response, other.Response)
 }

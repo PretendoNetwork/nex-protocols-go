@@ -110,6 +110,8 @@ func (joinMatchmakeSessionParam *JoinMatchmakeSessionParam) ExtractFromStream(st
 func (joinMatchmakeSessionParam *JoinMatchmakeSessionParam) Copy() nex.StructureInterface {
 	copied := NewJoinMatchmakeSessionParam()
 
+	copied.SetStructureVersion(joinMatchmakeSessionParam.StructureVersion())
+
 	copied.GID = joinMatchmakeSessionParam.GID
 	copied.AdditionalParticipants = make([]uint32, len(joinMatchmakeSessionParam.AdditionalParticipants))
 
@@ -134,6 +136,10 @@ func (joinMatchmakeSessionParam *JoinMatchmakeSessionParam) Copy() nex.Structure
 // Equals checks if the passed Structure contains the same data as the current instance
 func (joinMatchmakeSessionParam *JoinMatchmakeSessionParam) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*JoinMatchmakeSessionParam)
+
+	if joinMatchmakeSessionParam.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if joinMatchmakeSessionParam.GID != other.GID {
 		return false

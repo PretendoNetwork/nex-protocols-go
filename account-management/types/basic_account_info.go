@@ -36,6 +36,8 @@ func (basicAccountInfo *BasicAccountInfo) ExtractFromStream(stream *nex.StreamIn
 func (basicAccountInfo *BasicAccountInfo) Copy() nex.StructureInterface {
 	copied := NewBasicAccountInfo()
 
+	copied.SetStructureVersion(basicAccountInfo.StructureVersion())
+
 	copied.PIDOwner = basicAccountInfo.PIDOwner
 	copied.StrName = basicAccountInfo.StrName
 
@@ -45,6 +47,10 @@ func (basicAccountInfo *BasicAccountInfo) Copy() nex.StructureInterface {
 // Equals checks if the passed Structure contains the same data as the current instance
 func (basicAccountInfo *BasicAccountInfo) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*BasicAccountInfo)
+
+	if basicAccountInfo.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if basicAccountInfo.PIDOwner != other.PIDOwner {
 		return false

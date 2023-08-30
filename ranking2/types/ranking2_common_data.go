@@ -52,6 +52,8 @@ func (ranking2CommonData *Ranking2CommonData) Bytes(stream *nex.StreamOut) []byt
 func (ranking2CommonData *Ranking2CommonData) Copy() nex.StructureInterface {
 	copied := NewRanking2CommonData()
 
+	copied.SetStructureVersion(ranking2CommonData.StructureVersion())
+
 	copied.UserName = ranking2CommonData.UserName
 	copied.Mii = ranking2CommonData.Mii
 	copied.BinaryData = ranking2CommonData.BinaryData
@@ -61,6 +63,10 @@ func (ranking2CommonData *Ranking2CommonData) Copy() nex.StructureInterface {
 // Equals checks if the passed Structure contains the same data as the current instance
 func (ranking2CommonData *Ranking2CommonData) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*Ranking2CommonData)
+
+	if ranking2CommonData.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if ranking2CommonData.UserName != other.UserName {
 		return false

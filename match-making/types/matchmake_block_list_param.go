@@ -33,6 +33,8 @@ func (matchmakeBlockListParam *MatchmakeBlockListParam) ExtractFromStream(stream
 func (matchmakeBlockListParam *MatchmakeBlockListParam) Copy() nex.StructureInterface {
 	copied := NewMatchmakeBlockListParam()
 
+	copied.SetStructureVersion(matchmakeBlockListParam.StructureVersion())
+
 	copied.OptionFlag = matchmakeBlockListParam.OptionFlag
 
 	return copied
@@ -41,6 +43,10 @@ func (matchmakeBlockListParam *MatchmakeBlockListParam) Copy() nex.StructureInte
 // Equals checks if the passed Structure contains the same data as the current instance
 func (matchmakeBlockListParam *MatchmakeBlockListParam) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*MatchmakeBlockListParam)
+
+	if matchmakeBlockListParam.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	return matchmakeBlockListParam.OptionFlag == other.OptionFlag
 }

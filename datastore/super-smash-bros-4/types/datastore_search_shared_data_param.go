@@ -81,6 +81,8 @@ func (dataStoreSearchSharedDataParam *DataStoreSearchSharedDataParam) Bytes(stre
 func (dataStoreSearchSharedDataParam *DataStoreSearchSharedDataParam) Copy() nex.StructureInterface {
 	copied := NewDataStoreSearchSharedDataParam()
 
+	copied.SetStructureVersion(dataStoreSearchSharedDataParam.StructureVersion())
+
 	copied.DataType = dataStoreSearchSharedDataParam.DataType
 	copied.Owner = dataStoreSearchSharedDataParam.Owner
 	copied.Region = dataStoreSearchSharedDataParam.Region
@@ -95,6 +97,10 @@ func (dataStoreSearchSharedDataParam *DataStoreSearchSharedDataParam) Copy() nex
 // Equals checks if the passed Structure contains the same data as the current instance
 func (dataStoreSearchSharedDataParam *DataStoreSearchSharedDataParam) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*DataStoreSearchSharedDataParam)
+
+	if dataStoreSearchSharedDataParam.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if dataStoreSearchSharedDataParam.DataType != other.DataType {
 		return false

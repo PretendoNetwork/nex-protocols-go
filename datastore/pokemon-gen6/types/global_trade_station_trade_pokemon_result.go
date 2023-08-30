@@ -46,6 +46,8 @@ func (globalTradeStationTradePokemonResult *GlobalTradeStationTradePokemonResult
 func (globalTradeStationTradePokemonResult *GlobalTradeStationTradePokemonResult) Copy() nex.StructureInterface {
 	copied := NewGlobalTradeStationTradePokemonResult()
 
+	copied.SetStructureVersion(globalTradeStationTradePokemonResult.StructureVersion())
+
 	copied.Result = globalTradeStationTradePokemonResult.Result.Copy().(*GlobalTradeStationDownloadPokemonResult)
 	copied.MyDataID = globalTradeStationTradePokemonResult.MyDataID
 
@@ -55,6 +57,10 @@ func (globalTradeStationTradePokemonResult *GlobalTradeStationTradePokemonResult
 // Equals checks if the passed Structure contains the same data as the current instance
 func (globalTradeStationTradePokemonResult *GlobalTradeStationTradePokemonResult) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*GlobalTradeStationTradePokemonResult)
+
+	if globalTradeStationTradePokemonResult.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if !globalTradeStationTradePokemonResult.Result.Equals(other.Result) {
 		return false

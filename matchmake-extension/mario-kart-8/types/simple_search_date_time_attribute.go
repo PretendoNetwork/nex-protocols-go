@@ -72,6 +72,8 @@ func (simpleSearchDateTimeAttribute *SimpleSearchDateTimeAttribute) Bytes(stream
 func (simpleSearchDateTimeAttribute *SimpleSearchDateTimeAttribute) Copy() nex.StructureInterface {
 	copied := NewSimpleSearchDateTimeAttribute()
 
+	copied.SetStructureVersion(simpleSearchDateTimeAttribute.StructureVersion())
+
 	copied.Unknown = simpleSearchDateTimeAttribute.Unknown
 	copied.Unknown2 = simpleSearchDateTimeAttribute.Unknown2
 	copied.Unknown3 = simpleSearchDateTimeAttribute.Unknown3
@@ -85,6 +87,10 @@ func (simpleSearchDateTimeAttribute *SimpleSearchDateTimeAttribute) Copy() nex.S
 // Equals checks if the passed Structure contains the same data as the current instance
 func (simpleSearchDateTimeAttribute *SimpleSearchDateTimeAttribute) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*SimpleSearchDateTimeAttribute)
+
+	if simpleSearchDateTimeAttribute.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if simpleSearchDateTimeAttribute.Unknown != other.Unknown {
 		return false

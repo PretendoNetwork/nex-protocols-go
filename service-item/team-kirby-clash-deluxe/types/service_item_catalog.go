@@ -69,6 +69,8 @@ func (serviceItemCatalog *ServiceItemCatalog) Bytes(stream *nex.StreamOut) []byt
 func (serviceItemCatalog *ServiceItemCatalog) Copy() nex.StructureInterface {
 	copied := NewServiceItemCatalog()
 
+	copied.SetStructureVersion(serviceItemCatalog.StructureVersion())
+
 	copied.TotalSize = serviceItemCatalog.TotalSize
 	copied.Offset = serviceItemCatalog.Offset
 	copied.ListItems = make([]*ServiceItemListItem, len(serviceItemCatalog.ListItems))
@@ -86,6 +88,10 @@ func (serviceItemCatalog *ServiceItemCatalog) Copy() nex.StructureInterface {
 // Equals checks if the passed Structure contains the same data as the current instance
 func (serviceItemCatalog *ServiceItemCatalog) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*ServiceItemCatalog)
+
+	if serviceItemCatalog.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if serviceItemCatalog.TotalSize != other.TotalSize {
 		return false

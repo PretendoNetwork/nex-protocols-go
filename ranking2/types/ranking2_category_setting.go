@@ -93,6 +93,8 @@ func (ranking2CategorySetting *Ranking2CategorySetting) Bytes(stream *nex.Stream
 func (ranking2CategorySetting *Ranking2CategorySetting) Copy() nex.StructureInterface {
 	copied := NewRanking2CategorySetting()
 
+	copied.SetStructureVersion(ranking2CategorySetting.StructureVersion())
+
 	copied.MinScore = ranking2CategorySetting.MinScore
 	copied.MaxScore = ranking2CategorySetting.MaxScore
 	copied.LowestRank = ranking2CategorySetting.LowestRank
@@ -108,6 +110,10 @@ func (ranking2CategorySetting *Ranking2CategorySetting) Copy() nex.StructureInte
 // Equals checks if the passed Structure contains the same data as the current instance
 func (ranking2CategorySetting *Ranking2CategorySetting) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*Ranking2CategorySetting)
+
+	if ranking2CategorySetting.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if ranking2CategorySetting.MinScore != other.MinScore {
 		return false

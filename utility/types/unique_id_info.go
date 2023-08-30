@@ -45,6 +45,8 @@ func (uniqueIDInfo *UniqueIDInfo) ExtractFromStream(stream *nex.StreamIn) error 
 func (uniqueIDInfo *UniqueIDInfo) Copy() nex.StructureInterface {
 	copied := NewUniqueIDInfo()
 
+	copied.SetStructureVersion(uniqueIDInfo.StructureVersion())
+
 	copied.NexUniqueID = uniqueIDInfo.NexUniqueID
 	copied.NexUniqueIDPassword = uniqueIDInfo.NexUniqueIDPassword
 
@@ -54,6 +56,10 @@ func (uniqueIDInfo *UniqueIDInfo) Copy() nex.StructureInterface {
 // Equals checks if the passed Structure contains the same data as the current instance
 func (uniqueIDInfo *UniqueIDInfo) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*UniqueIDInfo)
+
+	if uniqueIDInfo.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if uniqueIDInfo.NexUniqueID != other.NexUniqueID {
 		return false

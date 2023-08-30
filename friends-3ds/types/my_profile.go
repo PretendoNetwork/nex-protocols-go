@@ -73,6 +73,8 @@ func (myProfile *MyProfile) ExtractFromStream(stream *nex.StreamIn) error {
 func (myProfile *MyProfile) Copy() nex.StructureInterface {
 	copied := NewMyProfile()
 
+	copied.SetStructureVersion(myProfile.StructureVersion())
+
 	copied.Data = myProfile.ParentType().Copy().(*nex.Data)
 	copied.SetParentType(copied.Data)
 
@@ -91,6 +93,10 @@ func (myProfile *MyProfile) Copy() nex.StructureInterface {
 // Equals checks if the passed Structure contains the same data as the current instance
 func (myProfile *MyProfile) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*MyProfile)
+
+	if myProfile.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if !myProfile.ParentType().Equals(other.ParentType()) {
 		return false

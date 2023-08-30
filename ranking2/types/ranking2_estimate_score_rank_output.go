@@ -72,6 +72,8 @@ func (ranking2EstimateScoreRankOutput *Ranking2EstimateScoreRankOutput) Bytes(st
 func (ranking2EstimateScoreRankOutput *Ranking2EstimateScoreRankOutput) Copy() nex.StructureInterface {
 	copied := NewRanking2EstimateScoreRankOutput()
 
+	copied.SetStructureVersion(ranking2EstimateScoreRankOutput.StructureVersion())
+
 	copied.Rank = ranking2EstimateScoreRankOutput.Rank
 	copied.Length = ranking2EstimateScoreRankOutput.Length
 	copied.Score = ranking2EstimateScoreRankOutput.Score
@@ -84,6 +86,10 @@ func (ranking2EstimateScoreRankOutput *Ranking2EstimateScoreRankOutput) Copy() n
 // Equals checks if the passed Structure contains the same data as the current instance
 func (ranking2EstimateScoreRankOutput *Ranking2EstimateScoreRankOutput) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*Ranking2EstimateScoreRankOutput)
+
+	if ranking2EstimateScoreRankOutput.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if ranking2EstimateScoreRankOutput.Rank != other.Rank {
 		return false

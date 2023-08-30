@@ -30,6 +30,8 @@ func (friendRequest *FriendRequest) Bytes(stream *nex.StreamOut) []byte {
 func (friendRequest *FriendRequest) Copy() nex.StructureInterface {
 	copied := NewFriendRequest()
 
+	copied.SetStructureVersion(friendRequest.StructureVersion())
+
 	copied.Data = friendRequest.ParentType().Copy().(*nex.Data)
 	copied.SetParentType(copied.Data)
 
@@ -43,6 +45,10 @@ func (friendRequest *FriendRequest) Copy() nex.StructureInterface {
 // Equals checks if the passed Structure contains the same data as the current instance
 func (friendRequest *FriendRequest) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*FriendRequest)
+
+	if friendRequest.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if !friendRequest.ParentType().Equals(other.ParentType()) {
 		return false

@@ -82,6 +82,8 @@ func (simpleSearchObject *SimpleSearchObject) Bytes(stream *nex.StreamOut) []byt
 func (simpleSearchObject *SimpleSearchObject) Copy() nex.StructureInterface {
 	copied := NewSimpleSearchObject()
 
+	copied.SetStructureVersion(simpleSearchObject.StructureVersion())
+
 	copied.ObjectID = simpleSearchObject.ObjectID
 	copied.OwnerPID = simpleSearchObject.OwnerPID
 	copied.Attributes = make([]uint32, len(simpleSearchObject.Attributes))
@@ -99,6 +101,10 @@ func (simpleSearchObject *SimpleSearchObject) Copy() nex.StructureInterface {
 // Equals checks if the passed Structure contains the same data as the current instance
 func (simpleSearchObject *SimpleSearchObject) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*SimpleSearchObject)
+
+	if simpleSearchObject.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if simpleSearchObject.ObjectID != other.ObjectID {
 		return false

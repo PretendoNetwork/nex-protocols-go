@@ -45,6 +45,8 @@ func (serviceItemRightBinary *ServiceItemRightBinary) Bytes(stream *nex.StreamOu
 func (serviceItemRightBinary *ServiceItemRightBinary) Copy() nex.StructureInterface {
 	copied := NewServiceItemRightBinary()
 
+	copied.SetStructureVersion(serviceItemRightBinary.StructureVersion())
+
 	copied.UseType = serviceItemRightBinary.UseType
 	copied.RightBinary = serviceItemRightBinary.RightBinary
 
@@ -54,6 +56,10 @@ func (serviceItemRightBinary *ServiceItemRightBinary) Copy() nex.StructureInterf
 // Equals checks if the passed Structure contains the same data as the current instance
 func (serviceItemRightBinary *ServiceItemRightBinary) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*ServiceItemRightBinary)
+
+	if serviceItemRightBinary.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if serviceItemRightBinary.UseType != other.UseType {
 		return false

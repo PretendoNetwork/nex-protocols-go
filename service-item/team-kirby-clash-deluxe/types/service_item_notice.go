@@ -80,6 +80,8 @@ func (serviceItemNotice *ServiceItemNotice) Bytes(stream *nex.StreamOut) []byte 
 func (serviceItemNotice *ServiceItemNotice) Copy() nex.StructureInterface {
 	copied := NewServiceItemNotice()
 
+	copied.SetStructureVersion(serviceItemNotice.StructureVersion())
+
 	copied.ScheduleID = serviceItemNotice.ScheduleID
 	copied.ScheduleType = serviceItemNotice.ScheduleType
 	copied.ParamInt = serviceItemNotice.ParamInt
@@ -94,6 +96,10 @@ func (serviceItemNotice *ServiceItemNotice) Copy() nex.StructureInterface {
 // Equals checks if the passed Structure contains the same data as the current instance
 func (serviceItemNotice *ServiceItemNotice) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*ServiceItemNotice)
+
+	if serviceItemNotice.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if serviceItemNotice.ScheduleID != other.ScheduleID {
 		return false

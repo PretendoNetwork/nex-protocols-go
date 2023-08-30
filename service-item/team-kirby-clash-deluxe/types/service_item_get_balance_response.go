@@ -40,6 +40,8 @@ func (serviceItemGetBalanceResponse *ServiceItemGetBalanceResponse) Bytes(stream
 func (serviceItemGetBalanceResponse *ServiceItemGetBalanceResponse) Copy() nex.StructureInterface {
 	copied := NewServiceItemGetBalanceResponse()
 
+	copied.SetStructureVersion(serviceItemGetBalanceResponse.StructureVersion())
+
 	copied.ServiceItemEShopResponse = serviceItemGetBalanceResponse.ServiceItemEShopResponse.Copy().(*ServiceItemEShopResponse)
 	copied.SetParentType(copied.ServiceItemEShopResponse)
 
@@ -55,6 +57,10 @@ func (serviceItemGetBalanceResponse *ServiceItemGetBalanceResponse) Copy() nex.S
 // Equals checks if the passed Structure contains the same data as the current instance
 func (serviceItemGetBalanceResponse *ServiceItemGetBalanceResponse) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*ServiceItemGetBalanceResponse)
+
+	if serviceItemGetBalanceResponse.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if !serviceItemGetBalanceResponse.ParentType().Equals(other.ParentType()) {
 		return false

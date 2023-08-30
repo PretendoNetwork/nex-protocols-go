@@ -12,13 +12,13 @@ import (
 // ServiceItemNotice holds data for the Service Item (Wii Sports Club) protocol
 type ServiceItemNotice struct {
 	nex.Structure
-	ScheduleID uint64
+	ScheduleID   uint64
 	ScheduleType uint32
-	ParamInt int32
-	ParamString string
-	ParamBinary []byte
-	TimeBegin *nex.DateTime
-	TimeEnd *nex.DateTime
+	ParamInt     int32
+	ParamString  string
+	ParamBinary  []byte
+	TimeBegin    *nex.DateTime
+	TimeEnd      *nex.DateTime
 }
 
 // ExtractFromStream extracts a ServiceItemNotice structure from a stream
@@ -80,6 +80,8 @@ func (serviceItemNotice *ServiceItemNotice) Bytes(stream *nex.StreamOut) []byte 
 func (serviceItemNotice *ServiceItemNotice) Copy() nex.StructureInterface {
 	copied := NewServiceItemNotice()
 
+	copied.SetStructureVersion(serviceItemNotice.StructureVersion())
+
 	copied.ScheduleID = serviceItemNotice.ScheduleID
 	copied.ScheduleType = serviceItemNotice.ScheduleType
 	copied.ParamInt = serviceItemNotice.ParamInt
@@ -94,6 +96,10 @@ func (serviceItemNotice *ServiceItemNotice) Copy() nex.StructureInterface {
 // Equals checks if the passed Structure contains the same data as the current instance
 func (serviceItemNotice *ServiceItemNotice) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*ServiceItemNotice)
+
+	if serviceItemNotice.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if serviceItemNotice.ScheduleID != other.ScheduleID {
 		return false
@@ -151,7 +157,6 @@ func (serviceItemNotice *ServiceItemNotice) FormatToString(indentationLevel int)
 	} else {
 		b.WriteString(fmt.Sprintf("%sTimeBegin: nil\n", indentationValues))
 	}
-
 
 	if serviceItemNotice.TimeEnd != nil {
 		b.WriteString(fmt.Sprintf("%sTimeEnd: %s\n", indentationValues, serviceItemNotice.TimeEnd.FormatToString(indentationLevel+1)))

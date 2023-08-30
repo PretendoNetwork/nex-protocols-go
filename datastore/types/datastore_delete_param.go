@@ -44,6 +44,8 @@ func (dataStoreDeleteParam *DataStoreDeleteParam) Bytes(stream *nex.StreamOut) [
 func (dataStoreDeleteParam *DataStoreDeleteParam) Copy() nex.StructureInterface {
 	copied := NewDataStoreChangeMetaParamV1()
 
+	copied.SetStructureVersion(dataStoreDeleteParam.StructureVersion())
+
 	copied.DataID = dataStoreDeleteParam.DataID
 	copied.UpdatePassword = dataStoreDeleteParam.UpdatePassword
 
@@ -53,6 +55,10 @@ func (dataStoreDeleteParam *DataStoreDeleteParam) Copy() nex.StructureInterface 
 // Equals checks if the passed Structure contains the same data as the current instance
 func (dataStoreDeleteParam *DataStoreDeleteParam) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*DataStoreChangeMetaParamV1)
+
+	if dataStoreDeleteParam.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if dataStoreDeleteParam.DataID != other.DataID {
 		return false

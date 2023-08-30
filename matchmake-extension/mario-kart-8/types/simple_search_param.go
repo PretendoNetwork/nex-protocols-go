@@ -76,6 +76,8 @@ func (simpleSearchParam *SimpleSearchParam) Bytes(stream *nex.StreamOut) []byte 
 func (simpleSearchParam *SimpleSearchParam) Copy() nex.StructureInterface {
 	copied := NewSimpleSearchParam()
 
+	copied.SetStructureVersion(simpleSearchParam.StructureVersion())
+
 	copied.Unknown = simpleSearchParam.Unknown
 	copied.Unknown2 = simpleSearchParam.Unknown2
 	copied.Conditions = make([]*SimpleSearchCondition, len(simpleSearchParam.Conditions))
@@ -94,6 +96,10 @@ func (simpleSearchParam *SimpleSearchParam) Copy() nex.StructureInterface {
 // Equals checks if the passed Structure contains the same data as the current instance
 func (simpleSearchParam *SimpleSearchParam) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*SimpleSearchParam)
+
+	if simpleSearchParam.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if simpleSearchParam.Unknown != other.Unknown {
 		return false

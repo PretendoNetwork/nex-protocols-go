@@ -77,6 +77,8 @@ func (serviceItemListServiceItemParam *ServiceItemListServiceItemParam) Bytes(st
 func (serviceItemListServiceItemParam *ServiceItemListServiceItemParam) Copy() nex.StructureInterface {
 	copied := NewServiceItemListServiceItemParam()
 
+	copied.SetStructureVersion(serviceItemListServiceItemParam.StructureVersion())
+
 	copied.Language = serviceItemListServiceItemParam.Language
 	copied.Offset = serviceItemListServiceItemParam.Offset
 	copied.Size = serviceItemListServiceItemParam.Size
@@ -90,6 +92,10 @@ func (serviceItemListServiceItemParam *ServiceItemListServiceItemParam) Copy() n
 // Equals checks if the passed Structure contains the same data as the current instance
 func (serviceItemListServiceItemParam *ServiceItemListServiceItemParam) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*ServiceItemListServiceItemParam)
+
+	if serviceItemListServiceItemParam.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if serviceItemListServiceItemParam.Language != other.Language {
 		return false

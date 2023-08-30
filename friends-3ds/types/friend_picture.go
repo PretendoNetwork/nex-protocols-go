@@ -31,6 +31,8 @@ func (friendPicture *FriendPicture) Bytes(stream *nex.StreamOut) []byte {
 func (friendPicture *FriendPicture) Copy() nex.StructureInterface {
 	copied := NewFriendPicture()
 
+	copied.SetStructureVersion(friendPicture.StructureVersion())
+
 	copied.Data = friendPicture.ParentType().Copy().(*nex.Data)
 	copied.SetParentType(copied.Data)
 
@@ -47,6 +49,10 @@ func (friendPicture *FriendPicture) Copy() nex.StructureInterface {
 // Equals checks if the passed Structure contains the same data as the current instance
 func (friendPicture *FriendPicture) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*FriendPicture)
+
+	if friendPicture.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if !friendPicture.ParentType().Equals(other.ParentType()) {
 		return false

@@ -54,6 +54,8 @@ func (dataStoreCustomRankingResult *DataStoreCustomRankingResult) Bytes(stream *
 func (dataStoreCustomRankingResult *DataStoreCustomRankingResult) Copy() nex.StructureInterface {
 	copied := NewDataStoreCustomRankingResult()
 
+	copied.SetStructureVersion(dataStoreCustomRankingResult.StructureVersion())
+
 	copied.Order = dataStoreCustomRankingResult.Order
 	copied.Score = dataStoreCustomRankingResult.Score
 	copied.MetaInfo = dataStoreCustomRankingResult.MetaInfo.Copy().(*datastore_types.DataStoreMetaInfo)
@@ -64,6 +66,10 @@ func (dataStoreCustomRankingResult *DataStoreCustomRankingResult) Copy() nex.Str
 // Equals checks if the passed Structure contains the same data as the current instance
 func (dataStoreCustomRankingResult *DataStoreCustomRankingResult) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*DataStoreCustomRankingResult)
+
+	if dataStoreCustomRankingResult.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if dataStoreCustomRankingResult.Order != other.Order {
 		return false

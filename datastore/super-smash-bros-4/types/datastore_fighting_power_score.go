@@ -44,6 +44,8 @@ func (dataStoreFightingPowerScore *DataStoreFightingPowerScore) Bytes(stream *ne
 func (dataStoreFightingPowerScore *DataStoreFightingPowerScore) Copy() nex.StructureInterface {
 	copied := NewDataStoreFightingPowerScore()
 
+	copied.SetStructureVersion(dataStoreFightingPowerScore.StructureVersion())
+
 	copied.Score = dataStoreFightingPowerScore.Score
 	copied.Rank = dataStoreFightingPowerScore.Rank
 
@@ -53,6 +55,10 @@ func (dataStoreFightingPowerScore *DataStoreFightingPowerScore) Copy() nex.Struc
 // Equals checks if the passed Structure contains the same data as the current instance
 func (dataStoreFightingPowerScore *DataStoreFightingPowerScore) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*DataStoreFightingPowerScore)
+
+	if dataStoreFightingPowerScore.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if dataStoreFightingPowerScore.Score != other.Score {
 		return false

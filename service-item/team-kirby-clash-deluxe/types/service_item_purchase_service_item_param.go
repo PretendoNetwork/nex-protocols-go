@@ -98,6 +98,8 @@ func (serviceItemPurchaseServiceItemParam *ServiceItemPurchaseServiceItemParam) 
 func (serviceItemPurchaseServiceItemParam *ServiceItemPurchaseServiceItemParam) Copy() nex.StructureInterface {
 	copied := NewServiceItemPurchaseServiceItemParam()
 
+	copied.SetStructureVersion(serviceItemPurchaseServiceItemParam.StructureVersion())
+
 	copied.ItemCode = serviceItemPurchaseServiceItemParam.ItemCode
 	copied.PriceID = serviceItemPurchaseServiceItemParam.PriceID
 	copied.ReferenceID = serviceItemPurchaseServiceItemParam.ReferenceID
@@ -114,6 +116,10 @@ func (serviceItemPurchaseServiceItemParam *ServiceItemPurchaseServiceItemParam) 
 // Equals checks if the passed Structure contains the same data as the current instance
 func (serviceItemPurchaseServiceItemParam *ServiceItemPurchaseServiceItemParam) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*ServiceItemPurchaseServiceItemParam)
+
+	if serviceItemPurchaseServiceItemParam.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if serviceItemPurchaseServiceItemParam.ItemCode != other.ItemCode {
 		return false

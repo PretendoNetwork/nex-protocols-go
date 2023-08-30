@@ -39,6 +39,8 @@ func (simpleCommunity *SimpleCommunity) ExtractFromStream(stream *nex.StreamIn) 
 func (simpleCommunity *SimpleCommunity) Copy() nex.StructureInterface {
 	copied := NewSimpleCommunity()
 
+	copied.SetStructureVersion(simpleCommunity.StructureVersion())
+
 	copied.GatheringID = simpleCommunity.GatheringID
 	copied.MatchmakeSessionCount = simpleCommunity.MatchmakeSessionCount
 
@@ -48,6 +50,10 @@ func (simpleCommunity *SimpleCommunity) Copy() nex.StructureInterface {
 // Equals checks if the passed Structure contains the same data as the current instance
 func (simpleCommunity *SimpleCommunity) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*SimpleCommunity)
+
+	if simpleCommunity.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if simpleCommunity.GatheringID != other.GatheringID {
 		return false

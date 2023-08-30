@@ -11,7 +11,7 @@ import (
 // ServiceItemAttribute holds data for the Service Item (Wii Sports Club) protocol
 type ServiceItemAttribute struct {
 	nex.Structure
-	Name string
+	Name  string
 	Value string
 }
 
@@ -44,6 +44,8 @@ func (serviceItemAttribute *ServiceItemAttribute) Bytes(stream *nex.StreamOut) [
 func (serviceItemAttribute *ServiceItemAttribute) Copy() nex.StructureInterface {
 	copied := NewServiceItemAttribute()
 
+	copied.SetStructureVersion(serviceItemAttribute.StructureVersion())
+
 	copied.Name = serviceItemAttribute.Name
 	copied.Value = serviceItemAttribute.Value
 
@@ -53,6 +55,10 @@ func (serviceItemAttribute *ServiceItemAttribute) Copy() nex.StructureInterface 
 // Equals checks if the passed Structure contains the same data as the current instance
 func (serviceItemAttribute *ServiceItemAttribute) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*ServiceItemAttribute)
+
+	if serviceItemAttribute.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if serviceItemAttribute.Name != other.Name {
 		return false

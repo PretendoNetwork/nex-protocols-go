@@ -59,6 +59,8 @@ func (dataStoreReqGetAdditionalMeta *DataStoreReqGetAdditionalMeta) Bytes(stream
 func (dataStoreReqGetAdditionalMeta *DataStoreReqGetAdditionalMeta) Copy() nex.StructureInterface {
 	copied := NewDataStoreReqGetAdditionalMeta()
 
+	copied.SetStructureVersion(dataStoreReqGetAdditionalMeta.StructureVersion())
+
 	copied.OwnerID = dataStoreReqGetAdditionalMeta.OwnerID
 	copied.DataType = dataStoreReqGetAdditionalMeta.DataType
 	copied.Version = dataStoreReqGetAdditionalMeta.Version
@@ -72,6 +74,10 @@ func (dataStoreReqGetAdditionalMeta *DataStoreReqGetAdditionalMeta) Copy() nex.S
 // Equals checks if the passed Structure contains the same data as the current instance
 func (dataStoreReqGetAdditionalMeta *DataStoreReqGetAdditionalMeta) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*DataStoreReqGetAdditionalMeta)
+
+	if dataStoreReqGetAdditionalMeta.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if dataStoreReqGetAdditionalMeta.OwnerID != other.OwnerID {
 		return false

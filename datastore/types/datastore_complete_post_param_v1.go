@@ -44,6 +44,8 @@ func (dataStoreCompletePostParamV1 *DataStoreCompletePostParamV1) Bytes(stream *
 func (dataStoreCompletePostParamV1 *DataStoreCompletePostParamV1) Copy() nex.StructureInterface {
 	copied := NewDataStoreCompletePostParamV1()
 
+	copied.SetStructureVersion(dataStoreCompletePostParamV1.StructureVersion())
+
 	copied.DataID = dataStoreCompletePostParamV1.DataID
 	copied.IsSuccess = dataStoreCompletePostParamV1.IsSuccess
 
@@ -53,6 +55,10 @@ func (dataStoreCompletePostParamV1 *DataStoreCompletePostParamV1) Copy() nex.Str
 // Equals checks if the passed Structure contains the same data as the current instance
 func (dataStoreCompletePostParamV1 *DataStoreCompletePostParamV1) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*DataStoreCompletePostParamV1)
+
+	if dataStoreCompletePostParamV1.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if dataStoreCompletePostParamV1.DataID != other.DataID {
 		return false

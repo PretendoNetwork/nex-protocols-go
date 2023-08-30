@@ -131,6 +131,8 @@ func (updateMatchmakeSessionParam *UpdateMatchmakeSessionParam) ExtractFromStrea
 func (updateMatchmakeSessionParam *UpdateMatchmakeSessionParam) Copy() nex.StructureInterface {
 	copied := NewUpdateMatchmakeSessionParam()
 
+	copied.SetStructureVersion(updateMatchmakeSessionParam.StructureVersion())
+
 	copied.GID = updateMatchmakeSessionParam.GID
 	copied.ModificationFlag = updateMatchmakeSessionParam.ModificationFlag
 	copied.Attributes = make([]uint32, len(updateMatchmakeSessionParam.Attributes))
@@ -168,6 +170,10 @@ func (updateMatchmakeSessionParam *UpdateMatchmakeSessionParam) Copy() nex.Struc
 // Equals checks if the passed Structure contains the same data as the current instance
 func (updateMatchmakeSessionParam *UpdateMatchmakeSessionParam) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*UpdateMatchmakeSessionParam)
+
+	if updateMatchmakeSessionParam.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if updateMatchmakeSessionParam.GID != other.GID {
 		return false

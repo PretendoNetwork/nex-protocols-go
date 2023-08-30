@@ -56,6 +56,8 @@ func (serviceItemGetLawMessageParam *ServiceItemGetLawMessageParam) Bytes(stream
 func (serviceItemGetLawMessageParam *ServiceItemGetLawMessageParam) Copy() nex.StructureInterface {
 	copied := NewServiceItemGetLawMessageParam()
 
+	copied.SetStructureVersion(serviceItemGetLawMessageParam.StructureVersion())
+
 	copied.Language = serviceItemGetLawMessageParam.Language
 	copied.UniqueID = serviceItemGetLawMessageParam.UniqueID
 	copied.Platform = serviceItemGetLawMessageParam.Platform
@@ -66,6 +68,10 @@ func (serviceItemGetLawMessageParam *ServiceItemGetLawMessageParam) Copy() nex.S
 // Equals checks if the passed Structure contains the same data as the current instance
 func (serviceItemGetLawMessageParam *ServiceItemGetLawMessageParam) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*ServiceItemGetLawMessageParam)
+
+	if serviceItemGetLawMessageParam.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if serviceItemGetLawMessageParam.Language != other.Language {
 		return false

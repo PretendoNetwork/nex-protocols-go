@@ -51,6 +51,8 @@ func (dataStoreTouchObjectParam *DataStoreTouchObjectParam) Bytes(stream *nex.St
 func (dataStoreTouchObjectParam *DataStoreTouchObjectParam) Copy() nex.StructureInterface {
 	copied := NewDataStoreTouchObjectParam()
 
+	copied.SetStructureVersion(dataStoreTouchObjectParam.StructureVersion())
+
 	copied.DataID = dataStoreTouchObjectParam.DataID
 	copied.LockID = dataStoreTouchObjectParam.LockID
 	copied.AccessPassword = dataStoreTouchObjectParam.AccessPassword
@@ -61,6 +63,10 @@ func (dataStoreTouchObjectParam *DataStoreTouchObjectParam) Copy() nex.Structure
 // Equals checks if the passed Structure contains the same data as the current instance
 func (dataStoreTouchObjectParam *DataStoreTouchObjectParam) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*DataStoreTouchObjectParam)
+
+	if dataStoreTouchObjectParam.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if dataStoreTouchObjectParam.DataID != other.DataID {
 		return false

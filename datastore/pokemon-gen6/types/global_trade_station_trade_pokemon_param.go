@@ -93,6 +93,8 @@ func (globalTradeStationTradePokemonParam *GlobalTradeStationTradePokemonParam) 
 func (globalTradeStationTradePokemonParam *GlobalTradeStationTradePokemonParam) Copy() nex.StructureInterface {
 	copied := NewGlobalTradeStationTradePokemonParam()
 
+	copied.SetStructureVersion(globalTradeStationTradePokemonParam.StructureVersion())
+
 	copied.TradeKey = globalTradeStationTradePokemonParam.TradeKey.Copy().(*GlobalTradeStationTradeKey)
 	copied.PrepareTradeKey = globalTradeStationTradePokemonParam.PrepareTradeKey.Copy().(*GlobalTradeStationRecordKey)
 	copied.PrepareUploadKey = globalTradeStationTradePokemonParam.PrepareUploadKey.Copy().(*GlobalTradeStationRecordKey)
@@ -108,6 +110,10 @@ func (globalTradeStationTradePokemonParam *GlobalTradeStationTradePokemonParam) 
 // Equals checks if the passed Structure contains the same data as the current instance
 func (globalTradeStationTradePokemonParam *GlobalTradeStationTradePokemonParam) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*GlobalTradeStationTradePokemonParam)
+
+	if globalTradeStationTradePokemonParam.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if !globalTradeStationTradePokemonParam.TradeKey.Equals(other.TradeKey) {
 		return false

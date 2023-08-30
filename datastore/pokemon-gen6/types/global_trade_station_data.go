@@ -66,6 +66,8 @@ func (globalTradeStationData *GlobalTradeStationData) Bytes(stream *nex.StreamOu
 func (globalTradeStationData *GlobalTradeStationData) Copy() nex.StructureInterface {
 	copied := NewGlobalTradeStationData()
 
+	copied.SetStructureVersion(globalTradeStationData.StructureVersion())
+
 	copied.DataID = globalTradeStationData.DataID
 	copied.OwnerID = globalTradeStationData.OwnerID
 	copied.UpdatedTime = globalTradeStationData.UpdatedTime.Copy()
@@ -78,6 +80,10 @@ func (globalTradeStationData *GlobalTradeStationData) Copy() nex.StructureInterf
 // Equals checks if the passed Structure contains the same data as the current instance
 func (globalTradeStationData *GlobalTradeStationData) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*GlobalTradeStationData)
+
+	if globalTradeStationData.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if globalTradeStationData.DataID != other.DataID {
 		return false

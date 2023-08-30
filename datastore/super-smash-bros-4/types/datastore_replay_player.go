@@ -93,6 +93,8 @@ func (dataStoreReplayPlayer *DataStoreReplayPlayer) Bytes(stream *nex.StreamOut)
 func (dataStoreReplayPlayer *DataStoreReplayPlayer) Copy() nex.StructureInterface {
 	copied := NewDataStoreReplayPlayer()
 
+	copied.SetStructureVersion(dataStoreReplayPlayer.StructureVersion())
+
 	copied.Fighter = dataStoreReplayPlayer.Fighter
 	copied.Health = dataStoreReplayPlayer.Health
 	copied.WinningRate = dataStoreReplayPlayer.WinningRate
@@ -109,6 +111,10 @@ func (dataStoreReplayPlayer *DataStoreReplayPlayer) Copy() nex.StructureInterfac
 // Equals checks if the passed Structure contains the same data as the current instance
 func (dataStoreReplayPlayer *DataStoreReplayPlayer) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*DataStoreReplayPlayer)
+
+	if dataStoreReplayPlayer.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if dataStoreReplayPlayer.Fighter != other.Fighter {
 		return false

@@ -97,6 +97,8 @@ func (serviceItemTransaction *ServiceItemTransaction) Bytes(stream *nex.StreamOu
 func (serviceItemTransaction *ServiceItemTransaction) Copy() nex.StructureInterface {
 	copied := NewServiceItemTransaction()
 
+	copied.SetStructureVersion(serviceItemTransaction.StructureVersion())
+
 	copied.TransactionID = serviceItemTransaction.TransactionID
 	copied.ExtTransactionID = serviceItemTransaction.ExtTransactionID
 	copied.Time = serviceItemTransaction.Time.Copy()
@@ -113,6 +115,10 @@ func (serviceItemTransaction *ServiceItemTransaction) Copy() nex.StructureInterf
 // Equals checks if the passed Structure contains the same data as the current instance
 func (serviceItemTransaction *ServiceItemTransaction) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*ServiceItemTransaction)
+
+	if serviceItemTransaction.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if serviceItemTransaction.TransactionID != other.TransactionID {
 		return false

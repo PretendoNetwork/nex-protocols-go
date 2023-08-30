@@ -47,6 +47,8 @@ func (dataStoreFileServerObjectInfo *DataStoreFileServerObjectInfo) Bytes(stream
 func (dataStoreFileServerObjectInfo *DataStoreFileServerObjectInfo) Copy() nex.StructureInterface {
 	copied := NewDataStoreFileServerObjectInfo()
 
+	copied.SetStructureVersion(dataStoreFileServerObjectInfo.StructureVersion())
+
 	copied.DataID = dataStoreFileServerObjectInfo.DataID
 	copied.GetInfo = dataStoreFileServerObjectInfo.GetInfo.Copy().(*datastore_types.DataStoreReqGetInfo)
 
@@ -56,6 +58,10 @@ func (dataStoreFileServerObjectInfo *DataStoreFileServerObjectInfo) Copy() nex.S
 // Equals checks if the passed Structure contains the same data as the current instance
 func (dataStoreFileServerObjectInfo *DataStoreFileServerObjectInfo) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*DataStoreFileServerObjectInfo)
+
+	if dataStoreFileServerObjectInfo.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if dataStoreFileServerObjectInfo.DataID != other.DataID {
 		return false

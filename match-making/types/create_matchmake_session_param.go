@@ -64,6 +64,8 @@ func (createMatchmakeSessionParam *CreateMatchmakeSessionParam) ExtractFromStrea
 func (createMatchmakeSessionParam *CreateMatchmakeSessionParam) Copy() nex.StructureInterface {
 	copied := NewCreateMatchmakeSessionParam()
 
+	copied.SetStructureVersion(createMatchmakeSessionParam.StructureVersion())
+
 	if createMatchmakeSessionParam.SourceMatchmakeSession != nil {
 		copied.SourceMatchmakeSession = createMatchmakeSessionParam.SourceMatchmakeSession.Copy().(*MatchmakeSession)
 	}
@@ -83,6 +85,10 @@ func (createMatchmakeSessionParam *CreateMatchmakeSessionParam) Copy() nex.Struc
 // Equals checks if the passed Structure contains the same data as the current instance
 func (createMatchmakeSessionParam *CreateMatchmakeSessionParam) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*CreateMatchmakeSessionParam)
+
+	if createMatchmakeSessionParam.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if createMatchmakeSessionParam.SourceMatchmakeSession != nil && other.SourceMatchmakeSession == nil {
 		return false

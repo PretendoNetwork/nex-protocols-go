@@ -78,6 +78,8 @@ func (serviceItemPostRightBinaryByAccountParam *ServiceItemPostRightBinaryByAcco
 func (serviceItemPostRightBinaryByAccountParam *ServiceItemPostRightBinaryByAccountParam) Copy() nex.StructureInterface {
 	copied := NewServiceItemPostRightBinaryByAccountParam()
 
+	copied.SetStructureVersion(serviceItemPostRightBinaryByAccountParam.StructureVersion())
+
 	copied.ReferenceID = serviceItemPostRightBinaryByAccountParam.ReferenceID
 	copied.UseType = serviceItemPostRightBinaryByAccountParam.UseType
 	copied.RightBinary = serviceItemPostRightBinaryByAccountParam.RightBinary
@@ -91,6 +93,10 @@ func (serviceItemPostRightBinaryByAccountParam *ServiceItemPostRightBinaryByAcco
 // Equals checks if the passed Structure contains the same data as the current instance
 func (serviceItemPostRightBinaryByAccountParam *ServiceItemPostRightBinaryByAccountParam) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*ServiceItemPostRightBinaryByAccountParam)
+
+	if serviceItemPostRightBinaryByAccountParam.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if serviceItemPostRightBinaryByAccountParam.ReferenceID != other.ReferenceID {
 		return false

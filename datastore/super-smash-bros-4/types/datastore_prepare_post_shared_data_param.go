@@ -94,6 +94,8 @@ func (dataStorePreparePostSharedDataParam *DataStorePreparePostSharedDataParam) 
 func (dataStorePreparePostSharedDataParam *DataStorePreparePostSharedDataParam) Copy() nex.StructureInterface {
 	copied := NewDataStorePreparePostSharedDataParam()
 
+	copied.SetStructureVersion(dataStorePreparePostSharedDataParam.StructureVersion())
+
 	copied.DataType = dataStorePreparePostSharedDataParam.DataType
 	copied.Region = dataStorePreparePostSharedDataParam.Region
 	copied.Attribute1 = dataStorePreparePostSharedDataParam.Attribute1
@@ -118,6 +120,10 @@ func (dataStorePreparePostSharedDataParam *DataStorePreparePostSharedDataParam) 
 // Equals checks if the passed Structure contains the same data as the current instance
 func (dataStorePreparePostSharedDataParam *DataStorePreparePostSharedDataParam) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*DataStorePreparePostSharedDataParam)
+
+	if dataStorePreparePostSharedDataParam.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if dataStorePreparePostSharedDataParam.DataType != other.DataType {
 		return false

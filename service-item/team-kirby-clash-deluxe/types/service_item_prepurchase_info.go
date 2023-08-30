@@ -114,6 +114,8 @@ func (serviceItemPrepurchaseInfo *ServiceItemPrepurchaseInfo) Bytes(stream *nex.
 func (serviceItemPrepurchaseInfo *ServiceItemPrepurchaseInfo) Copy() nex.StructureInterface {
 	copied := NewServiceItemPrepurchaseInfo()
 
+	copied.SetStructureVersion(serviceItemPrepurchaseInfo.StructureVersion())
+
 	copied.ItemCode = serviceItemPrepurchaseInfo.ItemCode
 	copied.PriceID = serviceItemPrepurchaseInfo.PriceID
 	copied.RegularPrice = serviceItemPrepurchaseInfo.RegularPrice.Copy().(*ServiceItemAmount)
@@ -131,6 +133,10 @@ func (serviceItemPrepurchaseInfo *ServiceItemPrepurchaseInfo) Copy() nex.Structu
 // Equals checks if the passed Structure contains the same data as the current instance
 func (serviceItemPrepurchaseInfo *ServiceItemPrepurchaseInfo) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*ServiceItemPrepurchaseInfo)
+
+	if serviceItemPrepurchaseInfo.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if serviceItemPrepurchaseInfo.ItemCode != other.ItemCode {
 		return false

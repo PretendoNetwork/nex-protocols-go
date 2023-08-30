@@ -12,7 +12,7 @@ import (
 type ServiceItemGetBalanceParam struct {
 	nex.Structure
 	Language string
-	TitleID string
+	TitleID  string
 }
 
 // ExtractFromStream extracts a ServiceItemGetBalanceParam structure from a stream
@@ -44,6 +44,8 @@ func (serviceItemGetBalanceParam *ServiceItemGetBalanceParam) Bytes(stream *nex.
 func (serviceItemGetBalanceParam *ServiceItemGetBalanceParam) Copy() nex.StructureInterface {
 	copied := NewServiceItemGetBalanceParam()
 
+	copied.SetStructureVersion(serviceItemGetBalanceParam.StructureVersion())
+
 	copied.Language = serviceItemGetBalanceParam.Language
 	copied.TitleID = serviceItemGetBalanceParam.TitleID
 
@@ -53,6 +55,10 @@ func (serviceItemGetBalanceParam *ServiceItemGetBalanceParam) Copy() nex.Structu
 // Equals checks if the passed Structure contains the same data as the current instance
 func (serviceItemGetBalanceParam *ServiceItemGetBalanceParam) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*ServiceItemGetBalanceParam)
+
+	if serviceItemGetBalanceParam.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if serviceItemGetBalanceParam.Language != other.Language {
 		return false

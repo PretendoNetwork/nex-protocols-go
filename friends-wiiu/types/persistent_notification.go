@@ -55,6 +55,8 @@ func (notification *PersistentNotification) ExtractFromStream(stream *nex.Stream
 func (notification *PersistentNotification) Copy() nex.StructureInterface {
 	copied := NewPersistentNotification()
 
+	copied.SetStructureVersion(notification.StructureVersion())
+
 	copied.Data = notification.ParentType().Copy().(*nex.Data)
 	copied.SetParentType(copied.Data)
 
@@ -70,6 +72,10 @@ func (notification *PersistentNotification) Copy() nex.StructureInterface {
 // Equals checks if the passed Structure contains the same data as the current instance
 func (notification *PersistentNotification) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*PersistentNotification)
+
+	if notification.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if !notification.ParentType().Equals(other.ParentType()) {
 		return false

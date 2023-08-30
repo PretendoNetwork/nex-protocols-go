@@ -37,6 +37,8 @@ func (friendUserParam *FriendUserParam) Bytes(stream *nex.StreamOut) []byte {
 func (friendUserParam *FriendUserParam) Copy() nex.StructureInterface {
 	copied := NewFriendUserParam()
 
+	copied.SetStructureVersion(friendUserParam.StructureVersion())
+
 	copied.Name = friendUserParam.Name
 
 	return copied
@@ -45,6 +47,10 @@ func (friendUserParam *FriendUserParam) Copy() nex.StructureInterface {
 // Equals checks if the passed Structure contains the same data as the current instance
 func (friendUserParam *FriendUserParam) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*FriendUserParam)
+
+	if friendUserParam.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	return friendUserParam.Name == other.Name
 }

@@ -72,6 +72,8 @@ func (dataStoreRatingInitParam *DataStoreRatingInitParam) ExtractFromStream(stre
 func (dataStoreRatingInitParam *DataStoreRatingInitParam) Copy() nex.StructureInterface {
 	copied := NewDataStoreRatingInitParam()
 
+	copied.SetStructureVersion(dataStoreRatingInitParam.StructureVersion())
+
 	copied.Flag = dataStoreRatingInitParam.Flag
 	copied.InternalFlag = dataStoreRatingInitParam.InternalFlag
 	copied.LockType = dataStoreRatingInitParam.LockType
@@ -87,6 +89,10 @@ func (dataStoreRatingInitParam *DataStoreRatingInitParam) Copy() nex.StructureIn
 // Equals checks if the passed Structure contains the same data as the current instance
 func (dataStoreRatingInitParam *DataStoreRatingInitParam) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*DataStoreRatingInitParam)
+
+	if dataStoreRatingInitParam.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if dataStoreRatingInitParam.Flag != other.Flag {
 		return false

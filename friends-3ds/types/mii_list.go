@@ -60,6 +60,8 @@ func (miiList *MiiList) ExtractFromStream(stream *nex.StreamIn) error {
 func (miiList *MiiList) Copy() nex.StructureInterface {
 	copied := NewMiiList()
 
+	copied.SetStructureVersion(miiList.StructureVersion())
+
 	copied.Data = miiList.ParentType().Copy().(*nex.Data)
 	copied.SetParentType(copied.Data)
 
@@ -80,6 +82,10 @@ func (miiList *MiiList) Copy() nex.StructureInterface {
 // Equals checks if the passed Structure contains the same data as the current instance
 func (miiList *MiiList) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*MiiList)
+
+	if miiList.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if !miiList.ParentType().Equals(other.ParentType()) {
 		return false

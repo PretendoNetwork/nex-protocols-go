@@ -67,6 +67,8 @@ func (serviceItemGetPrepurchaseInfoParam *ServiceItemGetPrepurchaseInfoParam) By
 func (serviceItemGetPrepurchaseInfoParam *ServiceItemGetPrepurchaseInfoParam) Copy() nex.StructureInterface {
 	copied := NewServiceItemGetPrepurchaseInfoParam()
 
+	copied.SetStructureVersion(serviceItemGetPrepurchaseInfoParam.StructureVersion())
+
 	copied.ItemCode = serviceItemGetPrepurchaseInfoParam.ItemCode
 	copied.ReferenceID = serviceItemGetPrepurchaseInfoParam.ReferenceID
 	copied.Limitation = serviceItemGetPrepurchaseInfoParam.Limitation.Copy().(*ServiceItemLimitation)
@@ -79,6 +81,10 @@ func (serviceItemGetPrepurchaseInfoParam *ServiceItemGetPrepurchaseInfoParam) Co
 // Equals checks if the passed Structure contains the same data as the current instance
 func (serviceItemGetPrepurchaseInfoParam *ServiceItemGetPrepurchaseInfoParam) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*ServiceItemGetPrepurchaseInfoParam)
+
+	if serviceItemGetPrepurchaseInfoParam.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if serviceItemGetPrepurchaseInfoParam.ItemCode != other.ItemCode {
 		return false

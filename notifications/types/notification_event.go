@@ -40,6 +40,8 @@ func (notificationEvent *NotificationEvent) Bytes(stream *nex.StreamOut) []byte 
 func (notificationEvent *NotificationEvent) Copy() nex.StructureInterface {
 	copied := NewNotificationEvent()
 
+	copied.SetStructureVersion(notificationEvent.StructureVersion())
+
 	copied.PIDSource = notificationEvent.PIDSource
 	copied.Type = notificationEvent.Type
 	copied.Param1 = notificationEvent.Param1
@@ -53,6 +55,10 @@ func (notificationEvent *NotificationEvent) Copy() nex.StructureInterface {
 // Equals checks if the passed Structure contains the same data as the current instance
 func (notificationEvent *NotificationEvent) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*NotificationEvent)
+
+	if notificationEvent.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if notificationEvent.PIDSource != other.PIDSource {
 		return false

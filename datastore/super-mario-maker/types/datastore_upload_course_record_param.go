@@ -51,6 +51,8 @@ func (dataStoreUploadCourseRecordParam *DataStoreUploadCourseRecordParam) Bytes(
 func (dataStoreUploadCourseRecordParam *DataStoreUploadCourseRecordParam) Copy() nex.StructureInterface {
 	copied := NewDataStoreUploadCourseRecordParam()
 
+	copied.SetStructureVersion(dataStoreUploadCourseRecordParam.StructureVersion())
+
 	copied.DataID = dataStoreUploadCourseRecordParam.DataID
 	copied.Slot = dataStoreUploadCourseRecordParam.Slot
 	copied.Score = dataStoreUploadCourseRecordParam.Score
@@ -61,6 +63,10 @@ func (dataStoreUploadCourseRecordParam *DataStoreUploadCourseRecordParam) Copy()
 // Equals checks if the passed Structure contains the same data as the current instance
 func (dataStoreUploadCourseRecordParam *DataStoreUploadCourseRecordParam) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*DataStoreUploadCourseRecordParam)
+
+	if dataStoreUploadCourseRecordParam.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if dataStoreUploadCourseRecordParam.DataID != other.DataID {
 		return false

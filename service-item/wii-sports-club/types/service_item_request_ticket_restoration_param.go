@@ -12,7 +12,7 @@ import (
 type ServiceItemRequestTicketRestorationParam struct {
 	nex.Structure
 	TicketType uint32
-	NumTicket uint32
+	NumTicket  uint32
 }
 
 // ExtractFromStream extracts a ServiceItemRequestTicketRestorationParam structure from a stream
@@ -44,6 +44,8 @@ func (serviceItemRequestTicketRestorationParam *ServiceItemRequestTicketRestorat
 func (serviceItemRequestTicketRestorationParam *ServiceItemRequestTicketRestorationParam) Copy() nex.StructureInterface {
 	copied := NewServiceItemRequestTicketRestorationParam()
 
+	copied.SetStructureVersion(serviceItemRequestTicketRestorationParam.StructureVersion())
+
 	copied.TicketType = serviceItemRequestTicketRestorationParam.TicketType
 	copied.NumTicket = serviceItemRequestTicketRestorationParam.NumTicket
 
@@ -53,6 +55,10 @@ func (serviceItemRequestTicketRestorationParam *ServiceItemRequestTicketRestorat
 // Equals checks if the passed Structure contains the same data as the current instance
 func (serviceItemRequestTicketRestorationParam *ServiceItemRequestTicketRestorationParam) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*ServiceItemRequestTicketRestorationParam)
+
+	if serviceItemRequestTicketRestorationParam.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if serviceItemRequestTicketRestorationParam.TicketType != other.TicketType {
 		return false

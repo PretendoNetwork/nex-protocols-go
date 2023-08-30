@@ -11,7 +11,7 @@ import (
 // CompetitionRankingInfo holds data for the Ranking (Mario Kart 8) protocol
 type CompetitionRankingInfo struct {
 	nex.Structure
-	Unknown uint32
+	Unknown  uint32
 	Unknown2 uint32
 	Unknown3 []uint32
 }
@@ -51,12 +51,13 @@ func (competitionRankingInfo *CompetitionRankingInfo) Bytes(stream *nex.StreamOu
 func (competitionRankingInfo *CompetitionRankingInfo) Copy() nex.StructureInterface {
 	copied := NewCompetitionRankingInfo()
 
+	copied.SetStructureVersion(competitionRankingInfo.StructureVersion())
+
 	copied.Unknown = competitionRankingInfo.Unknown
 	copied.Unknown2 = competitionRankingInfo.Unknown2
 	copied.Unknown3 = make([]uint32, len(competitionRankingInfo.Unknown3))
 
 	copy(copied.Unknown3, competitionRankingInfo.Unknown3)
-
 
 	return copied
 }
@@ -64,6 +65,10 @@ func (competitionRankingInfo *CompetitionRankingInfo) Copy() nex.StructureInterf
 // Equals checks if the passed Structure contains the same data as the current instance
 func (competitionRankingInfo *CompetitionRankingInfo) Equals(structure nex.StructureInterface) bool {
 	other := structure.(*CompetitionRankingInfo)
+
+	if competitionRankingInfo.StructureVersion() != other.StructureVersion() {
+		return false
+	}
 
 	if competitionRankingInfo.Unknown != other.Unknown {
 		return false

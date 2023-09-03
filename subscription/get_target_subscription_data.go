@@ -10,11 +10,11 @@ import (
 
 // GetTargetSubscriptionData sets the GetTargetSubscriptionData handler function
 func (protocol *SubscriptionProtocol) GetTargetSubscriptionData(handler func(err error, client *nex.Client, callID uint32)) {
-	protocol.GetTargetSubscriptionDataHandler = handler
+	protocol.getTargetSubscriptionDataHandler = handler
 }
 
 func (protocol *SubscriptionProtocol) handleGetTargetSubscriptionData(packet nex.PacketInterface) {
-	if protocol.GetTargetSubscriptionDataHandler == nil {
+	if protocol.getTargetSubscriptionDataHandler == nil {
 		fmt.Println("[Warning] SubscriptionProtocol::GetTargetSubscriptionData not implemented")
 		go globals.RespondError(packet, SubscriptionProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -25,5 +25,5 @@ func (protocol *SubscriptionProtocol) handleGetTargetSubscriptionData(packet nex
 
 	callID := request.CallID()
 
-	go protocol.GetTargetSubscriptionDataHandler(nil, client, callID)
+	go protocol.getTargetSubscriptionDataHandler(nil, client, callID)
 }

@@ -10,11 +10,11 @@ import (
 
 // ReplaceTargetAndGetSubscriptionData sets the ReplaceTargetAndGetSubscriptionData handler function
 func (protocol *SubscriptionProtocol) ReplaceTargetAndGetSubscriptionData(handler func(err error, client *nex.Client, callID uint32)) {
-	protocol.ReplaceTargetAndGetSubscriptionDataHandler = handler
+	protocol.replaceTargetAndGetSubscriptionDataHandler = handler
 }
 
 func (protocol *SubscriptionProtocol) handleReplaceTargetAndGetSubscriptionData(packet nex.PacketInterface) {
-	if protocol.ReplaceTargetAndGetSubscriptionDataHandler == nil {
+	if protocol.replaceTargetAndGetSubscriptionDataHandler == nil {
 		fmt.Println("[Warning] SubscriptionProtocol::ReplaceTargetAndGetSubscriptionData not implemented")
 		go globals.RespondError(packet, SubscriptionProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -25,5 +25,5 @@ func (protocol *SubscriptionProtocol) handleReplaceTargetAndGetSubscriptionData(
 
 	callID := request.CallID()
 
-	go protocol.ReplaceTargetAndGetSubscriptionDataHandler(nil, client, callID)
+	go protocol.replaceTargetAndGetSubscriptionDataHandler(nil, client, callID)
 }

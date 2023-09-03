@@ -18,6 +18,18 @@ const (
 	// SubscriptionUpdateMySubscriptionDataID is the method ID for the method SubscriptionUpdateMySubscriptionData
 	SubscriptionUpdateMySubscriptionDataID = 0x2
 
+	// SubscriptionClearMySubscriptionDataID is the method ID for the method SubscriptionClearMySubscriptionDataID
+	SubscriptionClearMySubscriptionDataID = 0x3
+
+	// SubscriptionAddTargetID is the method ID for the method SubscriptionAddTarget
+	SubscriptionAddTargetID = 0x4
+
+	// SubscriptionDeleteTargetID is the method ID for the method SubscriptionDeleteTarget
+	SubscriptionDeleteTargetID = 0x5
+
+	// SubscriptionClearTargetID is the method ID for the method SubscriptionClearTarget
+	SubscriptionClearTargetID = 0x6
+
 	// SubscriptionGetFriendSubscriptionDataID is the method ID for the method SubscriptionGetFriendSubscriptionData
 	SubscriptionGetFriendSubscriptionDataID = 0x7
 
@@ -31,23 +43,32 @@ const (
 	SubscriptionGetSubscriptionDataID = 0xA
 
 	// SubscriptionReplaceTargetAndGetSubscriptionDataID is the method ID for the method SubscriptionReplaceTargetAndGetSubscriptionData
-	SubscriptionReplaceTargetAndGetSubscriptionDataID = 0xb
+	SubscriptionReplaceTargetAndGetSubscriptionDataID = 0xB
+
+	// SubscriptionSetPrivacyLevelID is the method ID for the method SubscriptionSetPrivacyLevel
+	SubscriptionSetPrivacyLevelID = 0xC
+
+	// SubscriptionGetPrivacyLevelID is the method ID for the method SubscriptionGetPrivacyLevel
+	SubscriptionGetPrivacyLevelID = 0xD
+
+	// SubscriptionGetSubscriptionUserFriendListID is the method ID for the method SubscriptionGetSubscriptionUserFriendList
+	SubscriptionGetSubscriptionUserFriendListID = 0xE
 
 	// SubscriptionGetPrivacyLevelsID is the method ID for the method SubscriptionGetPrivacyLevels
-	SubscriptionGetPrivacyLevelsID = 0xf
+	SubscriptionGetPrivacyLevelsID = 0xF
 )
 
 // SubscriptionProtocol handles the Subscription nex protocol
 type SubscriptionProtocol struct {
-	Server										*nex.Server
-	CreateMySubscriptionDataHandler				func(err error, client *nex.Client, callID uint32, content []byte)
-	UpdateMySubscriptionDataHandler				func(err error, client *nex.Client, callID uint32, content []byte)
-	GetFriendSubscriptionDataHandler			func(err error, client *nex.Client, callID uint32)
-	GetTargetSubscriptionDataHandler			func(err error, client *nex.Client, callID uint32)
-	GetActivePlayerSubscriptionDataHandler		func(err error, client *nex.Client, callID uint32)
-	GetSubscriptionDataHandler					func(err error, client *nex.Client, callID uint32, pids []uint32)
-	ReplaceTargetAndGetSubscriptionDataHandler	func(err error, client *nex.Client, callID uint32)
-	GetPrivacyLevelsHandler						func(err error, client *nex.Client, callID uint32)
+	Server                                      *nex.Server
+	createMySubscriptionDataHandler             func(err error, client *nex.Client, callID uint32, unk uint64, content []byte)
+	updateMySubscriptionDataHandler             func(err error, client *nex.Client, callID uint32, unk uint32, content []byte)
+	getFriendSubscriptionDataHandler            func(err error, client *nex.Client, callID uint32)
+	getTargetSubscriptionDataHandler            func(err error, client *nex.Client, callID uint32)
+	getActivePlayerSubscriptionDataHandler      func(err error, client *nex.Client, callID uint32)
+	getSubscriptionDataHandler                  func(err error, client *nex.Client, callID uint32, pids []uint32)
+	replaceTargetAndGetSubscriptionDataHandler  func(err error, client *nex.Client, callID uint32)
+	getPrivacyLevelsHandler                     func(err error, client *nex.Client, callID uint32)
 }
 
 // Setup initializes the protocol

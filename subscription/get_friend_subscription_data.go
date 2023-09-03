@@ -10,11 +10,11 @@ import (
 
 // GetFriendSubscriptionData sets GetFriendSubscriptionData Unk1 handler function
 func (protocol *SubscriptionProtocol) GetFriendSubscriptionData(handler func(err error, client *nex.Client, callID uint32)) {
-	protocol.GetFriendSubscriptionDataHandler = handler
+	protocol.getFriendSubscriptionDataHandler = handler
 }
 
 func (protocol *SubscriptionProtocol) handleGetFriendSubscriptionData(packet nex.PacketInterface) {
-	if protocol.GetFriendSubscriptionDataHandler == nil {
+	if protocol.getFriendSubscriptionDataHandler == nil {
 		fmt.Println("[Warning] SubscriptionProtocol::GetFriendSubscriptionData not implemented")
 		go globals.RespondError(packet, SubscriptionProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -25,5 +25,5 @@ func (protocol *SubscriptionProtocol) handleGetFriendSubscriptionData(packet nex
 
 	callID := request.CallID()
 
-	go protocol.GetFriendSubscriptionDataHandler(nil, client, callID)
+	go protocol.getFriendSubscriptionDataHandler(nil, client, callID)
 }

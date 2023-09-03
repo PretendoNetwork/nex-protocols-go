@@ -10,11 +10,11 @@ import (
 
 // GetActivePlayerSubscriptionData sets the GetActivePlayerSubscriptionData handler function
 func (protocol *SubscriptionProtocol) GetActivePlayerSubscriptionData(handler func(err error, client *nex.Client, callID uint32)) {
-	protocol.GetActivePlayerSubscriptionDataHandler = handler
+	protocol.getActivePlayerSubscriptionDataHandler = handler
 }
 
 func (protocol *SubscriptionProtocol) handleGetActivePlayerSubscriptionData(packet nex.PacketInterface) {
-	if protocol.GetActivePlayerSubscriptionDataHandler == nil {
+	if protocol.getActivePlayerSubscriptionDataHandler == nil {
 		fmt.Println("[Warning] SubscriptionProtocol::GetActivePlayerSubscriptionData not implemented")
 		go globals.RespondError(packet, SubscriptionProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -25,5 +25,5 @@ func (protocol *SubscriptionProtocol) handleGetActivePlayerSubscriptionData(pack
 
 	callID := request.CallID()
 	
-	go protocol.GetActivePlayerSubscriptionDataHandler(nil, client, callID)
+	go protocol.getActivePlayerSubscriptionDataHandler(nil, client, callID)
 }

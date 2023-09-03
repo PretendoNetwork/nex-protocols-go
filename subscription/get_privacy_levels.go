@@ -10,11 +10,11 @@ import (
 
 // GetPrivacyLevels sets the GetPrivacyLevels handler function
 func (protocol *SubscriptionProtocol) GetPrivacyLevels(handler func(err error, client *nex.Client, callID uint32)) {
-	protocol.GetPrivacyLevelsHandler = handler
+	protocol.getPrivacyLevelsHandler = handler
 }
 
 func (protocol *SubscriptionProtocol) handleGetPrivacyLevels(packet nex.PacketInterface) {
-	if protocol.GetPrivacyLevelsHandler == nil {
+	if protocol.getPrivacyLevelsHandler == nil {
 		fmt.Println("[Warning] SubscriptionProtocol::GetPrivacyLevels not implemented")
 		go globals.RespondError(packet, SubscriptionProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -25,5 +25,5 @@ func (protocol *SubscriptionProtocol) handleGetPrivacyLevels(packet nex.PacketIn
 
 	callID := request.CallID()
 
-	go protocol.GetPrivacyLevelsHandler(nil, client, callID)
+	go protocol.getPrivacyLevelsHandler(nil, client, callID)
 }

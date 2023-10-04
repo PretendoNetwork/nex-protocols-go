@@ -34,6 +34,6 @@ func (protocol *SubscriptionProtocol) handleUpdateMySubscriptionData(packet nex.
 	}
 
 	//This is done since the server doesn't need to care about the data here (it's game-specific), so we just pass it along to store however the handler wants
-	content := parameters[4:]
+	content := parametersStream.ReadRemaining()
 	go protocol.updateMySubscriptionDataHandler(nil, client, callID, unk, content)
 }

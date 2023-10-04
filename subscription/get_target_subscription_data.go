@@ -16,7 +16,7 @@ func (protocol *SubscriptionProtocol) GetTargetSubscriptionData(handler func(err
 func (protocol *SubscriptionProtocol) handleGetTargetSubscriptionData(packet nex.PacketInterface) {
 	if protocol.getTargetSubscriptionDataHandler == nil {
 		fmt.Println("[Warning] SubscriptionProtocol::GetTargetSubscriptionData not implemented")
-		go globals.RespondError(packet, SubscriptionProtocolID, nex.Errors.Core.NotImplemented)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

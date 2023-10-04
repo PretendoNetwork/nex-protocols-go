@@ -16,7 +16,7 @@ func (protocol *SubscriptionProtocol) ReplaceTargetAndGetSubscriptionData(handle
 func (protocol *SubscriptionProtocol) handleReplaceTargetAndGetSubscriptionData(packet nex.PacketInterface) {
 	if protocol.replaceTargetAndGetSubscriptionDataHandler == nil {
 		fmt.Println("[Warning] SubscriptionProtocol::ReplaceTargetAndGetSubscriptionData not implemented")
-		go globals.RespondError(packet, SubscriptionProtocolID, nex.Errors.Core.NotImplemented)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

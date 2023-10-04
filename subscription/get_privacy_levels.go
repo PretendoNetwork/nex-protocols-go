@@ -16,7 +16,7 @@ func (protocol *SubscriptionProtocol) GetPrivacyLevels(handler func(err error, c
 func (protocol *SubscriptionProtocol) handleGetPrivacyLevels(packet nex.PacketInterface) {
 	if protocol.getPrivacyLevelsHandler == nil {
 		fmt.Println("[Warning] SubscriptionProtocol::GetPrivacyLevels not implemented")
-		go globals.RespondError(packet, SubscriptionProtocolID, nex.Errors.Core.NotImplemented)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

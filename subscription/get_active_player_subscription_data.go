@@ -16,7 +16,7 @@ func (protocol *SubscriptionProtocol) GetActivePlayerSubscriptionData(handler fu
 func (protocol *SubscriptionProtocol) handleGetActivePlayerSubscriptionData(packet nex.PacketInterface) {
 	if protocol.getActivePlayerSubscriptionDataHandler == nil {
 		fmt.Println("[Warning] SubscriptionProtocol::GetActivePlayerSubscriptionData not implemented")
-		go globals.RespondError(packet, SubscriptionProtocolID, nex.Errors.Core.NotImplemented)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

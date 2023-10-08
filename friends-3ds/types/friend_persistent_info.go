@@ -20,8 +20,8 @@ type FriendPersistentInfo struct {
 	Platform         uint8
 	GameKey          *GameKey
 	Message          string
-	MessageUpdatedAt *nex.DateTime //appears to be correct, but not 100% sure.
-	FriendedAt       *nex.DateTime
+	MessageUpdatedAt *nex.DateTime
+	MiiModifiedAt    *nex.DateTime
 	LastOnline       *nex.DateTime
 }
 
@@ -36,7 +36,7 @@ func (friendPersistentInfo *FriendPersistentInfo) Bytes(stream *nex.StreamOut) [
 	stream.WriteStructure(friendPersistentInfo.GameKey)
 	stream.WriteString(friendPersistentInfo.Message)
 	stream.WriteDateTime(friendPersistentInfo.MessageUpdatedAt)
-	stream.WriteDateTime(friendPersistentInfo.FriendedAt)
+	stream.WriteDateTime(friendPersistentInfo.MiiModifiedAt)
 	stream.WriteDateTime(friendPersistentInfo.LastOnline)
 
 	return stream.Bytes()
@@ -60,7 +60,7 @@ func (friendPersistentInfo *FriendPersistentInfo) Copy() nex.StructureInterface 
 	copied.GameKey = friendPersistentInfo.GameKey.Copy().(*GameKey)
 	copied.Message = friendPersistentInfo.Message
 	copied.MessageUpdatedAt = friendPersistentInfo.MessageUpdatedAt.Copy()
-	copied.FriendedAt = friendPersistentInfo.FriendedAt.Copy()
+	copied.MiiModifiedAt = friendPersistentInfo.MiiModifiedAt.Copy()
 	copied.LastOnline = friendPersistentInfo.LastOnline.Copy()
 
 	return copied
@@ -114,7 +114,7 @@ func (friendPersistentInfo *FriendPersistentInfo) Equals(structure nex.Structure
 		return false
 	}
 
-	if !friendPersistentInfo.FriendedAt.Equals(other.FriendedAt) {
+	if !friendPersistentInfo.MiiModifiedAt.Equals(other.MiiModifiedAt) {
 		return false
 	}
 
@@ -160,10 +160,10 @@ func (friendPersistentInfo *FriendPersistentInfo) FormatToString(indentationLeve
 		b.WriteString(fmt.Sprintf("%sMessageUpdatedAt: nil,\n", indentationValues))
 	}
 
-	if friendPersistentInfo.FriendedAt != nil {
-		b.WriteString(fmt.Sprintf("%sFriendedAt: %s,\n", indentationValues, friendPersistentInfo.FriendedAt.FormatToString(indentationLevel+1)))
+	if friendPersistentInfo.MiiModifiedAt != nil {
+		b.WriteString(fmt.Sprintf("%sMiiModifiedAt: %s,\n", indentationValues, friendPersistentInfo.MiiModifiedAt.FormatToString(indentationLevel+1)))
 	} else {
-		b.WriteString(fmt.Sprintf("%sFriendedAt: nil,\n", indentationValues))
+		b.WriteString(fmt.Sprintf("%sMiiModifiedAt: nil,\n", indentationValues))
 	}
 
 	if friendPersistentInfo.LastOnline != nil {

@@ -41,7 +41,10 @@ func (dataStoreRatingInitParamWithSlot *DataStoreRatingInitParamWithSlot) Copy()
 	copied.SetStructureVersion(dataStoreRatingInitParamWithSlot.StructureVersion())
 
 	copied.Slot = dataStoreRatingInitParamWithSlot.Slot
-	copied.Param = dataStoreRatingInitParamWithSlot.Param.Copy().(*DataStoreRatingInitParam)
+
+	if dataStoreRatingInitParamWithSlot.Param != nil {
+		copied.Param = dataStoreRatingInitParamWithSlot.Param.Copy().(*DataStoreRatingInitParam)
+	}
 
 	return copied
 }

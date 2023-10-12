@@ -52,7 +52,11 @@ func (dataStoreGetMetaParam *DataStoreGetMetaParam) Copy() nex.StructureInterfac
 	copied.SetStructureVersion(dataStoreGetMetaParam.StructureVersion())
 
 	copied.DataID = dataStoreGetMetaParam.DataID
-	copied.PersistenceTarget = dataStoreGetMetaParam.PersistenceTarget.Copy().(*DataStorePersistenceTarget)
+
+	if dataStoreGetMetaParam.PersistenceTarget != nil {
+		copied.PersistenceTarget = dataStoreGetMetaParam.PersistenceTarget.Copy().(*DataStorePersistenceTarget)
+	}
+
 	copied.ResultOption = dataStoreGetMetaParam.ResultOption
 	copied.AccessPassword = dataStoreGetMetaParam.AccessPassword
 

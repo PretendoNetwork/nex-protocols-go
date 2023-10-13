@@ -36,6 +36,8 @@ func (principalRequestBlockSetting *PrincipalRequestBlockSetting) Copy() nex.Str
 		copied.Data = nex.NewData()
 	}
 
+	copied.SetParentType(copied.Data)
+
 	copied.PID = principalRequestBlockSetting.PID
 	copied.IsBlocked = principalRequestBlockSetting.IsBlocked
 

@@ -50,6 +50,8 @@ func (friendRequestMessage *FriendRequestMessage) Copy() nex.StructureInterface 
 		copied.Data = nex.NewData()
 	}
 
+	copied.SetParentType(copied.Data)
+
 	copied.FriendRequestID = friendRequestMessage.FriendRequestID
 	copied.Received = friendRequestMessage.Received
 	copied.Unknown2 = friendRequestMessage.Unknown2

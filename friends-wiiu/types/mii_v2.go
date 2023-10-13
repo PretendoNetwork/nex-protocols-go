@@ -75,6 +75,8 @@ func (mii *MiiV2) Copy() nex.StructureInterface {
 		copied.Data = nex.NewData()
 	}
 
+	copied.SetParentType(copied.Data)
+
 	copied.Name = mii.Name
 	copied.Unknown1 = mii.Unknown1
 	copied.Unknown2 = mii.Unknown2

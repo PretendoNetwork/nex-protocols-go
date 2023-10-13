@@ -39,6 +39,8 @@ func (friendPicture *FriendPicture) Copy() nex.StructureInterface {
 		copied.Data = nex.NewData()
 	}
 
+	copied.SetParentType(copied.Data)
+
 	copied.Unknown1 = friendPicture.Unknown1
 	copied.PictureData = make([]byte, len(friendPicture.PictureData))
 

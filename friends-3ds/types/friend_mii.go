@@ -38,6 +38,8 @@ func (friendMii *FriendMii) Copy() nex.StructureInterface {
 		copied.Data = nex.NewData()
 	}
 
+	copied.SetParentType(copied.Data)
+
 	copied.PID = friendMii.PID
 	copied.Mii = friendMii.Mii.Copy().(*Mii)
 	copied.ModifiedAt = friendMii.ModifiedAt.Copy()

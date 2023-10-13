@@ -38,6 +38,8 @@ func (friendRequest *FriendRequest) Copy() nex.StructureInterface {
 		copied.Data = nex.NewData()
 	}
 
+	copied.SetParentType(copied.Data)
+
 	copied.PrincipalInfo = friendRequest.PrincipalInfo.Copy().(*PrincipalBasicInfo)
 	copied.Message = friendRequest.Message.Copy().(*FriendRequestMessage)
 	copied.SentOn = friendRequest.SentOn.Copy()

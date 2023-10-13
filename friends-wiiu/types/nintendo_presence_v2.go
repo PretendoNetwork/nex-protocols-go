@@ -146,6 +146,8 @@ func (presence *NintendoPresenceV2) Copy() nex.StructureInterface {
 		copied.Data = nex.NewData()
 	}
 
+	copied.SetParentType(copied.Data)
+
 	copied.ChangedFlags = presence.ChangedFlags
 	copied.Online = presence.Online
 	copied.GameKey = presence.GameKey.Copy().(*GameKey)

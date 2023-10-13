@@ -60,6 +60,8 @@ func (principalPreference *PrincipalPreference) Copy() nex.StructureInterface {
 		copied.Data = nex.NewData()
 	}
 
+	copied.SetParentType(copied.Data)
+
 	copied.ShowOnlinePresence = principalPreference.ShowOnlinePresence
 	copied.ShowCurrentTitle = principalPreference.ShowCurrentTitle
 	copied.BlockFriendRequests = principalPreference.BlockFriendRequests

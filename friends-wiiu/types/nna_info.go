@@ -61,6 +61,8 @@ func (nnaInfo *NNAInfo) Copy() nex.StructureInterface {
 		copied.Data = nex.NewData()
 	}
 
+	copied.SetParentType(copied.Data)
+
 	copied.PrincipalBasicInfo = nnaInfo.PrincipalBasicInfo.Copy().(*PrincipalBasicInfo)
 	copied.Unknown1 = nnaInfo.Unknown1
 	copied.Unknown2 = nnaInfo.Unknown2

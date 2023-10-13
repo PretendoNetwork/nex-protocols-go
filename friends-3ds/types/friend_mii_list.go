@@ -38,6 +38,8 @@ func (friendMiiList *FriendMiiList) Copy() nex.StructureInterface {
 		copied.Data = nex.NewData()
 	}
 
+	copied.SetParentType(copied.Data)
+
 	copied.Unknown1 = friendMiiList.Unknown1
 	copied.MiiList = friendMiiList.MiiList.Copy().(*MiiList)
 	copied.Unknown2 = friendMiiList.Unknown2.Copy()

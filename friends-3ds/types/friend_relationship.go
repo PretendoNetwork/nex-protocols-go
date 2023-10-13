@@ -38,6 +38,8 @@ func (relationship *FriendRelationship) Copy() nex.StructureInterface {
 		copied.Data = nex.NewData()
 	}
 
+	copied.SetParentType(copied.Data)
+
 	copied.PID = relationship.PID
 	copied.LFC = relationship.LFC
 	copied.RelationshipType = relationship.RelationshipType

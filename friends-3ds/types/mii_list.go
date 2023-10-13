@@ -68,6 +68,8 @@ func (miiList *MiiList) Copy() nex.StructureInterface {
 		copied.Data = nex.NewData()
 	}
 
+	copied.SetParentType(copied.Data)
+
 	copied.Unknown1 = miiList.Unknown1
 	copied.Unknown2 = miiList.Unknown2
 	copied.Unknown3 = miiList.Unknown3

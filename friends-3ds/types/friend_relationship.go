@@ -32,8 +32,11 @@ func (relationship *FriendRelationship) Copy() nex.StructureInterface {
 
 	copied.SetStructureVersion(relationship.StructureVersion())
 
-	copied.Data = relationship.ParentType().Copy().(*nex.Data)
-	copied.SetParentType(copied.Data)
+	if relationship.ParentType() != nil {
+		copied.Data = relationship.ParentType().Copy().(*nex.Data)
+	} else {
+		copied.Data = nex.NewData()
+	}
 
 	copied.PID = relationship.PID
 	copied.LFC = relationship.LFC

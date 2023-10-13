@@ -44,8 +44,11 @@ func (friendRequestMessage *FriendRequestMessage) Copy() nex.StructureInterface 
 
 	copied.SetStructureVersion(friendRequestMessage.StructureVersion())
 
-	copied.Data = friendRequestMessage.ParentType().Copy().(*nex.Data)
-	copied.SetParentType(copied.Data)
+	if friendRequestMessage.ParentType() != nil {
+		copied.Data = friendRequestMessage.ParentType().Copy().(*nex.Data)
+	} else {
+		copied.Data = nex.NewData()
+	}
 
 	copied.FriendRequestID = friendRequestMessage.FriendRequestID
 	copied.Received = friendRequestMessage.Received

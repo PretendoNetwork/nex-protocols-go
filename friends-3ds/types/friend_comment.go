@@ -32,8 +32,11 @@ func (friendComment *FriendComment) Copy() nex.StructureInterface {
 
 	copied.SetStructureVersion(friendComment.StructureVersion())
 
-	copied.Data = friendComment.ParentType().Copy().(*nex.Data)
-	copied.SetParentType(copied.Data)
+	if friendComment.ParentType() != nil {
+		copied.Data = friendComment.ParentType().Copy().(*nex.Data)
+	} else {
+		copied.Data = nex.NewData()
+	}
 
 	copied.PID = friendComment.PID
 	copied.Comment = friendComment.Comment

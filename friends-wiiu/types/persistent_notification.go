@@ -57,7 +57,12 @@ func (notification *PersistentNotification) Copy() nex.StructureInterface {
 
 	copied.SetStructureVersion(notification.StructureVersion())
 
-	copied.Data = notification.ParentType().Copy().(*nex.Data)
+	if notification.ParentType() != nil {
+		copied.Data = notification.ParentType().Copy().(*nex.Data)
+	} else {
+		copied.Data = nex.NewData()
+	}
+
 	copied.SetParentType(copied.Data)
 
 	copied.Unknown1 = notification.Unknown1

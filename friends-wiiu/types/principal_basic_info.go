@@ -62,8 +62,11 @@ func (principalInfo *PrincipalBasicInfo) Copy() nex.StructureInterface {
 
 	copied.SetStructureVersion(principalInfo.StructureVersion())
 
-	copied.Data = principalInfo.ParentType().Copy().(*nex.Data)
-	copied.SetParentType(copied.Data)
+	if principalInfo.ParentType() != nil {
+		copied.Data = principalInfo.ParentType().Copy().(*nex.Data)
+	} else {
+		copied.Data = nex.NewData()
+	}
 
 	copied.PID = principalInfo.PID
 	copied.NNID = principalInfo.NNID

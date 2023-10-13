@@ -75,8 +75,11 @@ func (myProfile *MyProfile) Copy() nex.StructureInterface {
 
 	copied.SetStructureVersion(myProfile.StructureVersion())
 
-	copied.Data = myProfile.ParentType().Copy().(*nex.Data)
-	copied.SetParentType(copied.Data)
+	if myProfile.ParentType() != nil {
+		copied.Data = myProfile.ParentType().Copy().(*nex.Data)
+	} else {
+		copied.Data = nex.NewData()
+	}
 
 	copied.Region = myProfile.Region
 	copied.Country = myProfile.Country

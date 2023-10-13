@@ -33,8 +33,11 @@ func (notificationList *PersistentNotificationList) Copy() nex.StructureInterfac
 
 	copied.SetStructureVersion(notificationList.StructureVersion())
 
-	copied.Data = notificationList.ParentType().Copy().(*nex.Data)
-	copied.SetParentType(copied.Data)
+	if notificationList.ParentType() != nil {
+		copied.Data = notificationList.ParentType().Copy().(*nex.Data)
+	} else {
+		copied.Data = nex.NewData()
+	}
 
 	copied.Notifications = make([]*PersistentNotification, len(notificationList.Notifications))
 

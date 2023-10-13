@@ -30,8 +30,11 @@ func (principalRequestBlockSetting *PrincipalRequestBlockSetting) Copy() nex.Str
 
 	copied.SetStructureVersion(principalRequestBlockSetting.StructureVersion())
 
-	copied.Data = principalRequestBlockSetting.ParentType().Copy().(*nex.Data)
-	copied.SetParentType(copied.Data)
+	if principalRequestBlockSetting.ParentType() != nil {
+		copied.Data = principalRequestBlockSetting.ParentType().Copy().(*nex.Data)
+	} else {
+		copied.Data = nex.NewData()
+	}
 
 	copied.PID = principalRequestBlockSetting.PID
 	copied.IsBlocked = principalRequestBlockSetting.IsBlocked

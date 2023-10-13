@@ -54,8 +54,11 @@ func (comment *Comment) Copy() nex.StructureInterface {
 
 	copied.SetStructureVersion(comment.StructureVersion())
 
-	copied.Data = comment.ParentType().Copy().(*nex.Data)
-	copied.SetParentType(copied.Data)
+	if comment.ParentType() != nil {
+		copied.Data = comment.ParentType().Copy().(*nex.Data)
+	} else {
+		copied.Data = nex.NewData()
+	}
 
 	copied.Unknown = comment.Unknown
 	copied.Contents = comment.Contents

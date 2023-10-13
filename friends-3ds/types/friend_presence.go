@@ -30,8 +30,11 @@ func (presence *FriendPresence) Copy() nex.StructureInterface {
 
 	copied.SetStructureVersion(presence.StructureVersion())
 
-	copied.Data = presence.ParentType().Copy().(*nex.Data)
-	copied.SetParentType(copied.Data)
+	if presence.ParentType() != nil {
+		copied.Data = presence.ParentType().Copy().(*nex.Data)
+	} else {
+		copied.Data = nex.NewData()
+	}
 
 	copied.PID = presence.PID
 	copied.Presence = presence.Presence.Copy().(*NintendoPresence)

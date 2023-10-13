@@ -55,8 +55,11 @@ func (nnaInfo *NNAInfo) Copy() nex.StructureInterface {
 
 	copied.SetStructureVersion(nnaInfo.StructureVersion())
 
-	copied.Data = nnaInfo.ParentType().Copy().(*nex.Data)
-	copied.SetParentType(copied.Data)
+	if nnaInfo.ParentType() != nil {
+		copied.Data = nnaInfo.ParentType().Copy().(*nex.Data)
+	} else {
+		copied.Data = nex.NewData()
+	}
 
 	copied.PrincipalBasicInfo = nnaInfo.PrincipalBasicInfo.Copy().(*PrincipalBasicInfo)
 	copied.Unknown1 = nnaInfo.Unknown1

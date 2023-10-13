@@ -56,8 +56,11 @@ func (blacklistedPrincipal *BlacklistedPrincipal) Copy() nex.StructureInterface 
 
 	copied.SetStructureVersion(blacklistedPrincipal.StructureVersion())
 
-	copied.Data = blacklistedPrincipal.ParentType().Copy().(*nex.Data)
-	copied.SetParentType(copied.Data)
+	if blacklistedPrincipal.ParentType() != nil {
+		copied.Data = blacklistedPrincipal.ParentType().Copy().(*nex.Data)
+	} else {
+		copied.Data = nex.NewData()
+	}
 
 	copied.PrincipalBasicInfo = blacklistedPrincipal.PrincipalBasicInfo.Copy().(*PrincipalBasicInfo)
 	copied.GameKey = blacklistedPrincipal.GameKey.Copy().(*GameKey)

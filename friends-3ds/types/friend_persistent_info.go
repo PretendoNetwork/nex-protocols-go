@@ -48,8 +48,11 @@ func (friendPersistentInfo *FriendPersistentInfo) Copy() nex.StructureInterface 
 
 	copied.SetStructureVersion(friendPersistentInfo.StructureVersion())
 
-	copied.Data = friendPersistentInfo.ParentType().Copy().(*nex.Data)
-	copied.SetParentType(copied.Data)
+	if friendPersistentInfo.ParentType() != nil {
+		copied.Data = friendPersistentInfo.ParentType().Copy().(*nex.Data)
+	} else {
+		copied.Data = nex.NewData()
+	}
 
 	copied.PID = friendPersistentInfo.PID
 	copied.Region = friendPersistentInfo.Region

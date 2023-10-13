@@ -38,8 +38,11 @@ func (friendInfo *FriendInfo) Copy() nex.StructureInterface {
 
 	copied.SetStructureVersion(friendInfo.StructureVersion())
 
-	copied.Data = friendInfo.ParentType().Copy().(*nex.Data)
-	copied.SetParentType(copied.Data)
+	if friendInfo.ParentType() != nil {
+		copied.Data = friendInfo.ParentType().Copy().(*nex.Data)
+	} else {
+		copied.Data = nex.NewData()
+	}
 
 	copied.NNAInfo = friendInfo.NNAInfo.Copy().(*NNAInfo)
 	copied.Presence = friendInfo.Presence.Copy().(*NintendoPresenceV2)

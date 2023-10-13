@@ -47,8 +47,11 @@ func (gameKey *GameKey) Copy() nex.StructureInterface {
 
 	copied.SetStructureVersion(gameKey.StructureVersion())
 
-	copied.Data = gameKey.ParentType().Copy().(*nex.Data)
-	copied.SetParentType(copied.Data)
+	if gameKey.ParentType() != nil {
+		copied.Data = gameKey.ParentType().Copy().(*nex.Data)
+	} else {
+		copied.Data = nex.NewData()
+	}
 
 	copied.TitleID = gameKey.TitleID
 	copied.TitleVersion = gameKey.TitleVersion

@@ -16,7 +16,7 @@ func (protocol *Protocol) JoinMatchmakeSession(handler func(err error, client *n
 func (protocol *Protocol) handleJoinMatchmakeSession(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.joinMatchmakeSessionExHandler == nil {
+	if protocol.joinMatchmakeSessionHandler == nil {
 		globals.Logger.Warning("MatchmakeExtension::JoinMatchmakeSession not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return

@@ -156,5 +156,11 @@ func (dataStoreReqPostInfo *DataStoreReqPostInfo) FormatToString(indentationLeve
 
 // NewDataStoreReqPostInfo returns a new DataStoreReqPostInfo
 func NewDataStoreReqPostInfo() *DataStoreReqPostInfo {
-	return &DataStoreReqPostInfo{}
+	return &DataStoreReqPostInfo{
+		DataID:         0,
+		URL:            "",
+		RequestHeaders: make([]*DataStoreKeyValue, 0),
+		FormFields:     make([]*DataStoreKeyValue, 0),
+		RootCACert:     make([]byte, 0),
+	}
 }

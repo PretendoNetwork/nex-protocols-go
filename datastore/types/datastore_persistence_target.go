@@ -32,6 +32,37 @@ func (dataStorePersistenceTarget *DataStorePersistenceTarget) ExtractFromStream(
 	return nil
 }
 
+// Copy returns a new copied instance of dataStorePersistenceTarget
+func (dataStorePersistenceTarget *DataStorePersistenceTarget) Copy() nex.StructureInterface {
+	copied := NewDataStorePersistenceTarget()
+
+	copied.SetStructureVersion(dataStorePersistenceTarget.StructureVersion())
+
+	copied.OwnerID = dataStorePersistenceTarget.OwnerID
+	copied.PersistenceSlotID = dataStorePersistenceTarget.PersistenceSlotID
+
+	return copied
+}
+
+// Equals checks if the passed Structure contains the same data as the current instance
+func (dataStorePersistenceTarget *DataStorePersistenceTarget) Equals(structure nex.StructureInterface) bool {
+	other := structure.(*DataStorePersistenceTarget)
+
+	if dataStorePersistenceTarget.StructureVersion() != other.StructureVersion() {
+		return false
+	}
+
+	if dataStorePersistenceTarget.OwnerID != other.OwnerID {
+		return false
+	}
+
+	if dataStorePersistenceTarget.PersistenceSlotID != other.PersistenceSlotID {
+		return false
+	}
+
+	return true
+}
+
 // String returns a string representation of the struct
 func (dataStorePersistenceTarget *DataStorePersistenceTarget) String() string {
 	return dataStorePersistenceTarget.FormatToString(0)
@@ -55,5 +86,8 @@ func (dataStorePersistenceTarget *DataStorePersistenceTarget) FormatToString(ind
 
 // NewDataStorePersistenceTarget returns a new DataStorePersistenceTarget
 func NewDataStorePersistenceTarget() *DataStorePersistenceTarget {
-	return &DataStorePersistenceTarget{}
+	return &DataStorePersistenceTarget{
+		OwnerID:           0,
+		PersistenceSlotID: 0,
+	}
 }

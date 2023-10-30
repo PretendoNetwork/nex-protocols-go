@@ -107,5 +107,9 @@ func (dataStoreTouchObjectParam *DataStoreTouchObjectParam) FormatToString(inden
 
 // NewDataStoreTouchObjectParam returns a new DataStoreTouchObjectParam
 func NewDataStoreTouchObjectParam() *DataStoreTouchObjectParam {
-	return &DataStoreTouchObjectParam{}
+	return &DataStoreTouchObjectParam{
+		DataID:         0,
+		LockID:         0,
+		AccessPassword: 0,
+	}
 }

@@ -143,5 +143,9 @@ func (dataStoreCompleteUpdateParam *DataStoreCompleteUpdateParam) FormatToString
 
 // NewDataStoreCompleteUpdateParam returns a new DataStoreCompleteUpdateParam
 func NewDataStoreCompleteUpdateParam() *DataStoreCompleteUpdateParam {
-	return &DataStoreCompleteUpdateParam{}
+	return &DataStoreCompleteUpdateParam{
+		DataID:    0,
+		Version:   0,
+		IsSuccess: false,
+	}
 }

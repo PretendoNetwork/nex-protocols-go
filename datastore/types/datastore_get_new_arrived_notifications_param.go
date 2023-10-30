@@ -94,5 +94,8 @@ func (dataStoreGetNewArrivedNotificationsParam *DataStoreGetNewArrivedNotificati
 
 // NewDataStoreGetNewArrivedNotificationsParam returns a new DataStoreGetNewArrivedNotificationsParam
 func NewDataStoreGetNewArrivedNotificationsParam() *DataStoreGetNewArrivedNotificationsParam {
-	return &DataStoreGetNewArrivedNotificationsParam{}
+	return &DataStoreGetNewArrivedNotificationsParam{
+		LastNotificationID: 0,
+		Limit:              0,
+	}
 }

@@ -86,5 +86,8 @@ func (dataStoreRateObjectParam *DataStoreRateObjectParam) FormatToString(indenta
 
 // NewDataStoreRateObjectParam returns a new DataStoreRateObjectParam
 func NewDataStoreRateObjectParam() *DataStoreRateObjectParam {
-	return &DataStoreRateObjectParam{}
+	return &DataStoreRateObjectParam{
+		RatingValue:    0,
+		AccessPassword: 0,
+	}
 }

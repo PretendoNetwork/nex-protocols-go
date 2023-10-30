@@ -208,5 +208,15 @@ func (dataStoreChangeMetaParamV1 *DataStoreChangeMetaParamV1) FormatToString(ind
 
 // NewDataStoreChangeMetaParamV1 returns a new DataStoreChangeMetaParamV1
 func NewDataStoreChangeMetaParamV1() *DataStoreChangeMetaParamV1 {
-	return &DataStoreChangeMetaParamV1{}
+	return &DataStoreChangeMetaParamV1{
+		DataID:         0,
+		ModifiesFlag:   0,
+		Name:           "",
+		Permission:     NewDataStorePermission(),
+		DelPermission:  NewDataStorePermission(),
+		Period:         0,
+		MetaBinary:     make([]byte, 0),
+		Tags:           make([]string, 0),
+		UpdatePassword: 0,
+	}
 }

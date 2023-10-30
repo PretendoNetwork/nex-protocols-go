@@ -89,5 +89,7 @@ func (dataStoreGetSpecificMetaParam *DataStoreGetSpecificMetaParam) FormatToStri
 
 // NewDataStoreGetSpecificMetaParam returns a new DataStoreGetSpecificMetaParam
 func NewDataStoreGetSpecificMetaParam() *DataStoreGetSpecificMetaParam {
-	return &DataStoreGetSpecificMetaParam{}
+	return &DataStoreGetSpecificMetaParam{
+		DataIDs: make([]uint64, 0),
+	}
 }

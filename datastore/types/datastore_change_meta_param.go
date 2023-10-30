@@ -286,5 +286,20 @@ func (dataStoreChangeMetaParam *DataStoreChangeMetaParam) FormatToString(indenta
 
 // NewDataStoreChangeMetaParam returns a new DataStoreChangeMetaParam
 func NewDataStoreChangeMetaParam() *DataStoreChangeMetaParam {
-	return &DataStoreChangeMetaParam{}
+	return &DataStoreChangeMetaParam{
+		DataID:            0,
+		ModifiesFlag:      0,
+		Name:              "",
+		Permission:        NewDataStorePermission(),
+		DelPermission:     NewDataStorePermission(),
+		Period:            0,
+		MetaBinary:        make([]byte, 0),
+		Tags:              make([]string, 0),
+		UpdatePassword:    0,
+		ReferredCnt:       0,
+		DataType:          0,
+		Status:            0,
+		CompareParam:      NewDataStoreChangeMetaCompareParam(),
+		PersistenceTarget: NewDataStorePersistenceTarget(),
+	}
 }

@@ -123,5 +123,10 @@ func (dataStoreReqGetNotificationURLInfo *DataStoreReqGetNotificationURLInfo) Fo
 
 // NewDataStoreReqGetNotificationURLInfo returns a new DataStoreReqGetNotificationURLInfo
 func NewDataStoreReqGetNotificationURLInfo() *DataStoreReqGetNotificationURLInfo {
-	return &DataStoreReqGetNotificationURLInfo{}
+	return &DataStoreReqGetNotificationURLInfo{
+		URL:        "",
+		Key:        "",
+		Query:      "",
+		RootCACert: make([]byte, 0),
+	}
 }

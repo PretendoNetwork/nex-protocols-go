@@ -133,5 +133,9 @@ func (dataStoreSearchResult *DataStoreSearchResult) FormatToString(indentationLe
 
 // NewDataStoreSearchResult returns a new DataStoreSearchResult
 func NewDataStoreSearchResult() *DataStoreSearchResult {
-	return &DataStoreSearchResult{}
+	return &DataStoreSearchResult{
+		TotalCount:     0,
+		Result:         make([]*DataStoreMetaInfo, 0),
+		TotalCountType: 0,
+	}
 }

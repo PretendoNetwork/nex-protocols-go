@@ -392,5 +392,25 @@ func (dataStoreMetaInfo *DataStoreMetaInfo) FormatToString(indentationLevel int)
 
 // NewDataStoreMetaInfo returns a new DataStoreMetaInfo
 func NewDataStoreMetaInfo() *DataStoreMetaInfo {
-	return &DataStoreMetaInfo{}
+	return &DataStoreMetaInfo{
+		DataID:        0,
+		OwnerID:       0,
+		Size:          0,
+		DataType:      0,
+		Name:          "",
+		MetaBinary:    make([]byte, 0),
+		Permission:    NewDataStorePermission(),
+		DelPermission: NewDataStorePermission(),
+		CreatedTime:   nex.NewDateTime(0),
+		UpdatedTime:   nex.NewDateTime(0),
+		Period:        0,
+		Status:        0,
+		ReferredCnt:   0,
+		ReferDataID:   0,
+		Flag:          0,
+		ReferredTime:  nex.NewDateTime(0),
+		ExpireTime:    nex.NewDateTime(0),
+		Tags:          make([]string, 0),
+		Ratings:       make([]*DataStoreRatingInfoWithSlot, 0),
+	}
 }

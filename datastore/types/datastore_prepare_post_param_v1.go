@@ -268,5 +268,17 @@ func (dataStorePreparePostParamV1 *DataStorePreparePostParamV1) FormatToString(i
 
 // NewDataStorePreparePostParamV1 returns a new DataStorePreparePostParamV1
 func NewDataStorePreparePostParamV1() *DataStorePreparePostParamV1 {
-	return &DataStorePreparePostParamV1{}
+	return &DataStorePreparePostParamV1{
+		Size:             0,
+		Name:             "",
+		DataType:         0,
+		MetaBinary:       make([]byte, 0),
+		Permission:       NewDataStorePermission(),
+		DelPermission:    NewDataStorePermission(),
+		Flag:             0,
+		Period:           0,
+		ReferDataID:      0,
+		Tags:             make([]string, 0),
+		RatingInitParams: make([]*DataStoreRatingInitParamWithSlot, 0),
+	}
 }

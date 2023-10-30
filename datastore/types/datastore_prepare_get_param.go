@@ -141,5 +141,11 @@ func (dataStorePrepareGetParam *DataStorePrepareGetParam) FormatToString(indenta
 
 // NewDataStorePrepareGetParam returns a new DataStorePrepareGetParam
 func NewDataStorePrepareGetParam() *DataStorePrepareGetParam {
-	return &DataStorePrepareGetParam{}
+	return &DataStorePrepareGetParam{
+		DataID:            0,
+		LockID:            0,
+		PersistenceTarget: NewDataStorePersistenceTarget(),
+		AccessPassword:    0,
+		ExtraData:         make([]string, 0),
+	}
 }

@@ -86,5 +86,8 @@ func (dataStoreRatingTarget *DataStoreRatingTarget) FormatToString(indentationLe
 
 // NewDataStoreRatingTarget returns a new DataStoreRatingTarget
 func NewDataStoreRatingTarget() *DataStoreRatingTarget {
-	return &DataStoreRatingTarget{}
+	return &DataStoreRatingTarget{
+		DataID: 0,
+		Slot:   0,
+	}
 }

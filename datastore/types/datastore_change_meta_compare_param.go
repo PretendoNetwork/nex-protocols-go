@@ -208,5 +208,16 @@ func (dataStoreChangeMetaCompareParam *DataStoreChangeMetaCompareParam) FormatTo
 
 // NewDataStoreChangeMetaCompareParam returns a new DataStoreChangeMetaCompareParam
 func NewDataStoreChangeMetaCompareParam() *DataStoreChangeMetaCompareParam {
-	return &DataStoreChangeMetaCompareParam{}
+	return &DataStoreChangeMetaCompareParam{
+		ComparisonFlag: 0,
+		Name:           "",
+		Permission:     NewDataStorePermission(),
+		DelPermission:  NewDataStorePermission(),
+		Period:         0,
+		MetaBinary:     make([]byte, 0),
+		Tags:           make([]string, 0),
+		ReferredCnt:    0,
+		DataType:       0,
+		Status:         0,
+	}
 }

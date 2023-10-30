@@ -211,5 +211,11 @@ func (dataStoreReqUpdateInfo *DataStoreReqUpdateInfo) FormatToString(indentation
 
 // NewDataStoreReqUpdateInfo returns a new DataStoreReqUpdateInfo
 func NewDataStoreReqUpdateInfo() *DataStoreReqUpdateInfo {
-	return &DataStoreReqUpdateInfo{}
+	return &DataStoreReqUpdateInfo{
+		Version:        0,
+		URL:            "",
+		RequestHeaders: make([]*DataStoreKeyValue, 0),
+		FormFields:     make([]*DataStoreKeyValue, 0),
+		RootCACert:     make([]byte, 0),
+	}
 }

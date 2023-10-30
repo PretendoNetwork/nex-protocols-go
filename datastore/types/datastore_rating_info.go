@@ -107,5 +107,9 @@ func (dataStoreRatingInfo *DataStoreRatingInfo) FormatToString(indentationLevel 
 
 // NewDataStoreRatingInfo returns a new DataStoreRatingInfo
 func NewDataStoreRatingInfo() *DataStoreRatingInfo {
-	return &DataStoreRatingInfo{}
+	return &DataStoreRatingInfo{
+		TotalValue:   0,
+		Count:        0,
+		InitialValue: 0,
+	}
 }

@@ -94,5 +94,8 @@ func (dataStoreNotification *DataStoreNotification) FormatToString(indentationLe
 
 // NewDataStoreNotification returns a new DataStoreNotification
 func NewDataStoreNotification() *DataStoreNotification {
-	return &DataStoreNotification{}
+	return &DataStoreNotification{
+		NotificationID: 0,
+		DataID:         0,
+	}
 }

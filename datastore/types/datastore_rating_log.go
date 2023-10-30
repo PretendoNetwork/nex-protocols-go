@@ -126,5 +126,10 @@ func (dataStoreRatingLog *DataStoreRatingLog) FormatToString(indentationLevel in
 
 // NewDataStoreRatingLog returns a new DataStoreRatingLog
 func NewDataStoreRatingLog() *DataStoreRatingLog {
-	return &DataStoreRatingLog{}
+	return &DataStoreRatingLog{
+		IsRated:            false,
+		PID:                0,
+		RatingValue:        0,
+		LockExpirationTime: nex.NewDateTime(0),
+	}
 }

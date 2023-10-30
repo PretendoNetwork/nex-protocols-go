@@ -156,5 +156,10 @@ func (dataStorePrepareUpdateParam *DataStorePrepareUpdateParam) FormatToString(i
 
 // NewDataStorePrepareUpdateParam returns a new DataStorePrepareUpdateParam
 func NewDataStorePrepareUpdateParam() *DataStorePrepareUpdateParam {
-	return &DataStorePrepareUpdateParam{}
+	return &DataStorePrepareUpdateParam{
+		DataID:         0,
+		Size:           0,
+		UpdatePassword: 0,
+		ExtraData:      make([]string, 0),
+	}
 }

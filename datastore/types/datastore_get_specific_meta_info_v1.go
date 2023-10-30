@@ -133,5 +133,11 @@ func (dataStoreSpecificMetaInfoV1 *DataStoreSpecificMetaInfoV1) FormatToString(i
 
 // NewDataStoreSpecificMetaInfoV1 returns a new DataStoreSpecificMetaInfoV1
 func NewDataStoreSpecificMetaInfoV1() *DataStoreSpecificMetaInfoV1 {
-	return &DataStoreSpecificMetaInfoV1{}
+	return &DataStoreSpecificMetaInfoV1{
+		DataID:   0,
+		OwnerID:  0,
+		Size:     0,
+		DataType: 0,
+		Version:  0,
+	}
 }

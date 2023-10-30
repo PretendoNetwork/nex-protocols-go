@@ -341,5 +341,25 @@ func (dataStoreSearchParam *DataStoreSearchParam) FormatToString(indentationLeve
 
 // NewDataStoreSearchParam returns a new DataStoreSearchParam
 func NewDataStoreSearchParam() *DataStoreSearchParam {
-	return &DataStoreSearchParam{}
+	return &DataStoreSearchParam{
+		SearchTarget:           0,
+		OwnerIDs:               make([]uint32, 0),
+		OwnerType:              0,
+		DestinationIDs:         make([]uint64, 0),
+		DataType:               0,
+		CreatedAfter:           nex.NewDateTime(0),
+		CreatedBefore:          nex.NewDateTime(0),
+		UpdatedAfter:           nex.NewDateTime(0),
+		UpdatedBefore:          nex.NewDateTime(0),
+		ReferDataID:            0,
+		Tags:                   make([]string, 0),
+		ResultOrderColumn:      0,
+		ResultOrder:            0,
+		ResultRange:            nex.NewResultRange(),
+		ResultOption:           0,
+		MinimalRatingFrequency: 0,
+		UseCache:               false,
+		TotalCountEnabled:      false,
+		DataTypes:              make([]uint16, 0),
+	}
 }

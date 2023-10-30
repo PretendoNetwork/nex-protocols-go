@@ -94,5 +94,8 @@ func (dataStorePrepareGetParamV1 *DataStorePrepareGetParamV1) FormatToString(ind
 
 // NewDataStorePrepareGetParamV1 returns a new DataStorePrepareGetParamV1
 func NewDataStorePrepareGetParamV1() *DataStorePrepareGetParamV1 {
-	return &DataStorePrepareGetParamV1{}
+	return &DataStorePrepareGetParamV1{
+		DataID: 0,
+		LockID: 0,
+	}
 }

@@ -102,5 +102,8 @@ func (dataStoreRatingInfoWithSlot *DataStoreRatingInfoWithSlot) FormatToString(i
 
 // NewDataStoreRatingInfoWithSlot returns a new DataStoreRatingInfoWithSlot
 func NewDataStoreRatingInfoWithSlot() *DataStoreRatingInfoWithSlot {
-	return &DataStoreRatingInfoWithSlot{}
+	return &DataStoreRatingInfoWithSlot{
+		Slot:   0,
+		Rating: NewDataStoreRatingInfo(),
+	}
 }

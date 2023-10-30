@@ -86,5 +86,8 @@ func (dataStoreCompletePostParam *DataStoreCompletePostParam) FormatToString(ind
 
 // NewDataStoreCompletePostParam returns a new DataStoreCompletePostParam
 func NewDataStoreCompletePostParam() *DataStoreCompletePostParam {
-	return &DataStoreCompletePostParam{}
+	return &DataStoreCompletePostParam{
+		DataID:    0,
+		IsSuccess: false,
+	}
 }

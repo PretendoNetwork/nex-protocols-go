@@ -158,5 +158,14 @@ func (dataStoreRatingInitParam *DataStoreRatingInitParam) FormatToString(indenta
 
 // NewDataStoreRatingInitParam returns a new DataStoreRatingInitParam
 func NewDataStoreRatingInitParam() *DataStoreRatingInitParam {
-	return &DataStoreRatingInitParam{}
+	return &DataStoreRatingInitParam{
+		Flag:           0,
+		InternalFlag:   0,
+		LockType:       0,
+		InitialValue:   0,
+		RangeMin:       0,
+		RangeMax:       0,
+		PeriodHour:     0,
+		PeriodDuration: 0,
+	}
 }

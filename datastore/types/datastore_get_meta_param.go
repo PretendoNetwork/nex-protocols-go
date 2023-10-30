@@ -121,5 +121,10 @@ func (dataStoreGetMetaParam *DataStoreGetMetaParam) FormatToString(indentationLe
 
 // NewDataStoreGetMetaParam returns a new DataStoreGetMetaParam
 func NewDataStoreGetMetaParam() *DataStoreGetMetaParam {
-	return &DataStoreGetMetaParam{}
+	return &DataStoreGetMetaParam{
+		DataID:            0,
+		PersistenceTarget: NewDataStorePersistenceTarget(),
+		ResultOption:      0,
+		AccessPassword:    0,
+	}
 }

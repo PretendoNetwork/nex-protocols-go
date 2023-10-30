@@ -123,5 +123,10 @@ func (dataStoreReqGetAdditionalMeta *DataStoreReqGetAdditionalMeta) FormatToStri
 
 // NewDataStoreReqGetAdditionalMeta returns a new DataStoreReqGetAdditionalMeta
 func NewDataStoreReqGetAdditionalMeta() *DataStoreReqGetAdditionalMeta {
-	return &DataStoreReqGetAdditionalMeta{}
+	return &DataStoreReqGetAdditionalMeta{
+		OwnerID:    0,
+		DataType:   0,
+		Version:    0,
+		MetaBinary: make([]byte, 0),
+	}
 }

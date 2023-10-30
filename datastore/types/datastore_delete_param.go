@@ -94,5 +94,8 @@ func (dataStoreDeleteParam *DataStoreDeleteParam) FormatToString(indentationLeve
 
 // NewDataStoreDeleteParam returns a new DataStoreDeleteParam
 func NewDataStoreDeleteParam() *DataStoreDeleteParam {
-	return &DataStoreDeleteParam{}
+	return &DataStoreDeleteParam{
+		DataID:         0,
+		UpdatePassword: 0,
+	}
 }

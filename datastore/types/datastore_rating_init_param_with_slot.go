@@ -97,5 +97,8 @@ func (dataStoreRatingInitParamWithSlot *DataStoreRatingInitParamWithSlot) Format
 
 // NewDataStoreRatingInitParamWithSlot returns a new DataStoreRatingInitParamWithSlot
 func NewDataStoreRatingInitParamWithSlot() *DataStoreRatingInitParamWithSlot {
-	return &DataStoreRatingInitParamWithSlot{}
+	return &DataStoreRatingInitParamWithSlot{
+		Slot:  0,
+		Param: NewDataStoreRatingInitParam(),
+	}
 }

@@ -139,5 +139,11 @@ func (dataStoreReqGetInfo *DataStoreReqGetInfo) FormatToString(indentationLevel 
 
 // NewDataStoreReqGetInfo returns a new DataStoreReqGetInfo
 func NewDataStoreReqGetInfo() *DataStoreReqGetInfo {
-	return &DataStoreReqGetInfo{}
+	return &DataStoreReqGetInfo{
+		URL:            "",
+		RequestHeaders: make([]*DataStoreKeyValue, 0),
+		Size:           0,
+		RootCACert:     make([]byte, 0),
+		DataID:         0,
+	}
 }

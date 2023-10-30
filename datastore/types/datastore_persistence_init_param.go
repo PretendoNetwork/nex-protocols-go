@@ -86,5 +86,8 @@ func (dataStorePersistenceInitParam *DataStorePersistenceInitParam) FormatToStri
 
 // NewDataStorePersistenceInitParam returns a new DataStorePersistenceInitParam
 func NewDataStorePersistenceInitParam() *DataStorePersistenceInitParam {
-	return &DataStorePersistenceInitParam{}
+	return &DataStorePersistenceInitParam{
+		PersistenceSlotID: 0,
+		DeleteLastObject:  false,
+	}
 }

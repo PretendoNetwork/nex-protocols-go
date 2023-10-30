@@ -107,5 +107,9 @@ func (dataStorePasswordInfo *DataStorePasswordInfo) FormatToString(indentationLe
 
 // NewDataStorePasswordInfo returns a new DataStorePasswordInfo
 func NewDataStorePasswordInfo() *DataStorePasswordInfo {
-	return &DataStorePasswordInfo{}
+	return &DataStorePasswordInfo{
+		DataID:         0,
+		AccessPassword: 0,
+		UpdatePassword: 0,
+	}
 }

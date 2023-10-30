@@ -94,5 +94,8 @@ func (dataStoreCompletePostParamV1 *DataStoreCompletePostParamV1) FormatToString
 
 // NewDataStoreCompletePostParamV1 returns a new DataStoreCompletePostParamV1
 func NewDataStoreCompletePostParamV1() *DataStoreCompletePostParamV1 {
-	return &DataStoreCompletePostParamV1{}
+	return &DataStoreCompletePostParamV1{
+		DataID:    0,
+		IsSuccess: false,
+	}
 }

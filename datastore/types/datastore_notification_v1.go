@@ -94,5 +94,8 @@ func (dataStoreNotificationV1 *DataStoreNotificationV1) FormatToString(indentati
 
 // NewDataStoreNotificationV1 returns a new DataStoreNotificationV1
 func NewDataStoreNotificationV1() *DataStoreNotificationV1 {
-	return &DataStoreNotificationV1{}
+	return &DataStoreNotificationV1{
+		NotificationID: 0,
+		DataID:         0,
+	}
 }

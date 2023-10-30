@@ -102,5 +102,8 @@ func (dataStorePermission *DataStorePermission) FormatToString(indentationLevel 
 
 // NewDataStorePermission returns a new DataStorePermission
 func NewDataStorePermission() *DataStorePermission {
-	return &DataStorePermission{}
+	return &DataStorePermission{
+		Permission:   0,
+		RecipientIDs: make([]uint32, 0),
+	}
 }

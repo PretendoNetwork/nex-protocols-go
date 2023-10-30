@@ -77,5 +77,8 @@ func (dataStoreKeyValue *DataStoreKeyValue) FormatToString(indentationLevel int)
 
 // NewDataStoreKeyValue returns a new DataStoreKeyValue
 func NewDataStoreKeyValue() *DataStoreKeyValue {
-	return &DataStoreKeyValue{}
+	return &DataStoreKeyValue{
+		Key:   "",
+		Value: "",
+	}
 }

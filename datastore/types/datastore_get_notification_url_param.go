@@ -77,5 +77,7 @@ func (dataStoreGetNotificationURLParam *DataStoreGetNotificationURLParam) Format
 
 // NewDataStoreGetNotificationURLParam returns a new DataStoreGetNotificationURLParam
 func NewDataStoreGetNotificationURLParam() *DataStoreGetNotificationURLParam {
-	return &DataStoreGetNotificationURLParam{}
+	return &DataStoreGetNotificationURLParam{
+		PreviousURL: "",
+	}
 }

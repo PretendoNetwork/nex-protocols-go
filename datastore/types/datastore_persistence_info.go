@@ -107,5 +107,9 @@ func (dataStorePersistenceInfo *DataStorePersistenceInfo) FormatToString(indenta
 
 // NewDataStorePersistenceInfo returns a new DataStorePersistenceInfo
 func NewDataStorePersistenceInfo() *DataStorePersistenceInfo {
-	return &DataStorePersistenceInfo{}
+	return &DataStorePersistenceInfo{
+		OwnerID:           0,
+		PersistenceSlotID: 0,
+		DataID:            0,
+	}
 }

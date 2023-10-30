@@ -120,5 +120,10 @@ func (dataStoreReportCourseParam *DataStoreReportCourseParam) FormatToString(ind
 
 // NewDataStoreReportCourseParam returns a new DataStoreReportCourseParam
 func NewDataStoreReportCourseParam() *DataStoreReportCourseParam {
-	return &DataStoreReportCourseParam{}
+	return &DataStoreReportCourseParam{
+		DataID:         0,
+		MiiName:        "",
+		ReportCategory: 0,
+		ReportReason:   "",
+	}
 }

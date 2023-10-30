@@ -94,5 +94,8 @@ func (bufferQueueParam *BufferQueueParam) FormatToString(indentationLevel int) s
 
 // NewBufferQueueParam returns a new BufferQueueParam
 func NewBufferQueueParam() *BufferQueueParam {
-	return &BufferQueueParam{}
+	return &BufferQueueParam{
+		DataID: 0,
+		Slot:   0,
+	}
 }

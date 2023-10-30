@@ -94,5 +94,8 @@ func (dataStoreGetCourseRecordParam *DataStoreGetCourseRecordParam) FormatToStri
 
 // NewDataStoreGetCourseRecordParam returns a new DataStoreGetCourseRecordParam
 func NewDataStoreGetCourseRecordParam() *DataStoreGetCourseRecordParam {
-	return &DataStoreGetCourseRecordParam{}
+	return &DataStoreGetCourseRecordParam{
+		DataID: 0,
+		Slot:   0,
+	}
 }

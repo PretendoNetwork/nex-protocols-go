@@ -94,5 +94,8 @@ func (dataStoreChangePlayablePlatformParam *DataStoreChangePlayablePlatformParam
 
 // NewDataStoreChangePlayablePlatformParam returns a new DataStoreChangePlayablePlatformParam
 func NewDataStoreChangePlayablePlatformParam() *DataStoreChangePlayablePlatformParam {
-	return &DataStoreChangePlayablePlatformParam{}
+	return &DataStoreChangePlayablePlatformParam{
+		DataID:           0,
+		PlayablePlatform: 0,
+	}
 }

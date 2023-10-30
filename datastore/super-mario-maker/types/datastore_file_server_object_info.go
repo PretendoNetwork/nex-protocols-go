@@ -103,5 +103,8 @@ func (dataStoreFileServerObjectInfo *DataStoreFileServerObjectInfo) FormatToStri
 
 // NewDataStoreFileServerObjectInfo returns a new DataStoreFileServerObjectInfo
 func NewDataStoreFileServerObjectInfo() *DataStoreFileServerObjectInfo {
-	return &DataStoreFileServerObjectInfo{}
+	return &DataStoreFileServerObjectInfo{
+		DataID:  0,
+		GetInfo: datastore_types.NewDataStoreReqGetInfo(),
+	}
 }

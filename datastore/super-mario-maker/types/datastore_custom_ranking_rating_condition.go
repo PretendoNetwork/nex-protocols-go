@@ -142,5 +142,11 @@ func (dataStoreCustomRankingRatingCondition *DataStoreCustomRankingRatingConditi
 
 // NewDataStoreCustomRankingRatingCondition returns a new DataStoreCustomRankingRatingCondition
 func NewDataStoreCustomRankingRatingCondition() *DataStoreCustomRankingRatingCondition {
-	return &DataStoreCustomRankingRatingCondition{}
+	return &DataStoreCustomRankingRatingCondition{
+		Slot:     0,
+		MinValue: 0,
+		MaxValue: 0,
+		MinCount: 0,
+		MaxCount: 0,
+	}
 }

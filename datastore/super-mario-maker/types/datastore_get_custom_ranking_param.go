@@ -136,5 +136,10 @@ func (dataStoreGetCustomRankingParam *DataStoreGetCustomRankingParam) FormatToSt
 
 // NewDataStoreGetCustomRankingParam returns a new DataStoreGetCustomRankingParam
 func NewDataStoreGetCustomRankingParam() *DataStoreGetCustomRankingParam {
-	return &DataStoreGetCustomRankingParam{}
+	return &DataStoreGetCustomRankingParam{
+		ApplicationID: 0,
+		Condition:     NewDataStoreCustomRankingRatingCondition(),
+		ResultOption:  0,
+		ResultRange:   nex.NewResultRange(),
+	}
 }

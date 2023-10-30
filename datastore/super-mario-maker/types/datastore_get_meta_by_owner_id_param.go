@@ -146,5 +146,10 @@ func (dataStoreGetMetaByOwnerIDParam *DataStoreGetMetaByOwnerIDParam) FormatToSt
 
 // NewDataStoreGetMetaByOwnerIDParam returns a new DataStoreGetMetaByOwnerIDParam
 func NewDataStoreGetMetaByOwnerIDParam() *DataStoreGetMetaByOwnerIDParam {
-	return &DataStoreGetMetaByOwnerIDParam{}
+	return &DataStoreGetMetaByOwnerIDParam{
+		OwnerIDs:     make([]uint32, 0),
+		DataTypes:    make([]uint16, 0),
+		ResultOption: 0,
+		ResultRange:  nex.NewResultRange(),
+	}
 }

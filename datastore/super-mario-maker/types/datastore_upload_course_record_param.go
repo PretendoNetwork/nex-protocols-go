@@ -107,5 +107,9 @@ func (dataStoreUploadCourseRecordParam *DataStoreUploadCourseRecordParam) Format
 
 // NewDataStoreUploadCourseRecordParam returns a new DataStoreUploadCourseRecordParam
 func NewDataStoreUploadCourseRecordParam() *DataStoreUploadCourseRecordParam {
-	return &DataStoreUploadCourseRecordParam{}
+	return &DataStoreUploadCourseRecordParam{
+		DataID: 0,
+		Slot:   0,
+		Score:  0,
+	}
 }

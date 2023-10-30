@@ -116,5 +116,9 @@ func (dataStoreCustomRankingResult *DataStoreCustomRankingResult) FormatToString
 
 // NewDataStoreCustomRankingResult returns a new DataStoreCustomRankingResult
 func NewDataStoreCustomRankingResult() *DataStoreCustomRankingResult {
-	return &DataStoreCustomRankingResult{}
+	return &DataStoreCustomRankingResult{
+		Order:    0,
+		Score:    0,
+		MetaInfo: datastore_types.NewDataStoreMetaInfo(),
+	}
 }

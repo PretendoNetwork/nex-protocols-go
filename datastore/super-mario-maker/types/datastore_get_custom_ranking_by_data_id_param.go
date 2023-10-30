@@ -112,5 +112,9 @@ func (dataStoreGetCustomRankingByDataIDParam *DataStoreGetCustomRankingByDataIDP
 
 // NewDataStoreGetCustomRankingByDataIDParam returns a new DataStoreGetCustomRankingByDataIDParam
 func NewDataStoreGetCustomRankingByDataIDParam() *DataStoreGetCustomRankingByDataIDParam {
-	return &DataStoreGetCustomRankingByDataIDParam{}
+	return &DataStoreGetCustomRankingByDataIDParam{
+		ApplicationID: 0,
+		DataIDList:    make([]uint64, 0),
+		ResultOption:  0,
+	}
 }

@@ -170,5 +170,13 @@ func (dataStoreGetCourseRecordResult *DataStoreGetCourseRecordResult) FormatToSt
 
 // NewDataStoreGetCourseRecordResult returns a new DataStoreGetCourseRecordResult
 func NewDataStoreGetCourseRecordResult() *DataStoreGetCourseRecordResult {
-	return &DataStoreGetCourseRecordResult{}
+	return &DataStoreGetCourseRecordResult{
+		DataID:      0,
+		Slot:        0,
+		FirstPID:    0,
+		BestPID:     0,
+		BestScore:   0,
+		CreatedTime: nex.NewDateTime(0),
+		UpdatedTime: nex.NewDateTime(0),
+	}
 }

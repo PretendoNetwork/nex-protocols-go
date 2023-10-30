@@ -116,5 +116,9 @@ func (dataStoreAttachFileParam *DataStoreAttachFileParam) FormatToString(indenta
 
 // NewDataStoreAttachFileParam returns a new DataStoreAttachFileParam
 func NewDataStoreAttachFileParam() *DataStoreAttachFileParam {
-	return &DataStoreAttachFileParam{}
+	return &DataStoreAttachFileParam{
+		PostParam:   datastore_types.NewDataStorePreparePostParam(),
+		ReferDataID: 0,
+		ContentType: "",
+	}
 }

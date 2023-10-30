@@ -120,5 +120,10 @@ func (dataStoreRateCustomRankingParam *DataStoreRateCustomRankingParam) FormatTo
 
 // NewDataStoreRateCustomRankingParam returns a new DataStoreRateCustomRankingParam
 func NewDataStoreRateCustomRankingParam() *DataStoreRateCustomRankingParam {
-	return &DataStoreRateCustomRankingParam{}
+	return &DataStoreRateCustomRankingParam{
+		DataID:        0,
+		ApplicationID: 0,
+		Score:         0,
+		Period:        0,
+	}
 }

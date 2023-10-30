@@ -390,6 +390,30 @@ func (dataStoreMetaInfo *DataStoreMetaInfo) FormatToString(indentationLevel int)
 	return b.String()
 }
 
+// FilterPropertiesByResultOption zeroes out certain struct properties based on the input flags
+func (dataStoreMetaInfo *DataStoreMetaInfo) FilterPropertiesByResultOption(resultOption uint8) {
+	// * This is kind of backwards
+	// *
+	// * This method assumes all struct data exists
+	// * by default. This is done in order to simplify
+	// * database calls by just querying for all fields
+	// * at once. Therefore, instead of the ResultOption
+	// * flags being used to conditionally ADD properties,
+	// * it's used to conditionally REMOVE them
+
+	if resultOption&0x1 == 0 {
+		dataStoreMetaInfo.Tags = make([]string, 0)
+	}
+
+	if resultOption&0x2 == 0 {
+		dataStoreMetaInfo.Ratings = make([]*DataStoreRatingInfoWithSlot, 0)
+	}
+
+	if resultOption&0x4 == 0 {
+		dataStoreMetaInfo.MetaBinary = make([]byte, 0)
+	}
+}
+
 // NewDataStoreMetaInfo returns a new DataStoreMetaInfo
 func NewDataStoreMetaInfo() *DataStoreMetaInfo {
 	return &DataStoreMetaInfo{

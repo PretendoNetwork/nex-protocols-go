@@ -9,7 +9,7 @@ import (
 )
 
 // GetRelationships sets the GetRelationships handler function
-func (protocol *Protocol) GetRelationships(handler func(err error, client *nex.Client, callID uint32, resultRange *nex.ResultRange) uint32) {
+func (protocol *Protocol) GetRelationships(handler func(err error, packet nex.PacketInterface, callID uint32, resultRange *nex.ResultRange) uint32) {
 	protocol.getRelationshipsHandler = handler
 }
 
@@ -22,7 +22,6 @@ func (protocol *Protocol) handleGetRelationships(packet nex.PacketInterface) {
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -32,7 +31,7 @@ func (protocol *Protocol) handleGetRelationships(packet nex.PacketInterface) {
 
 	resultRange, err := parametersStream.ReadStructure(nex.NewResultRange())
 	if err != nil {
-		errorCode = protocol.getRelationshipsHandler(fmt.Errorf("Failed to read resultRange from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.getRelationshipsHandler(fmt.Errorf("Failed to read resultRange from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -40,7 +39,7 @@ func (protocol *Protocol) handleGetRelationships(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.getRelationshipsHandler(nil, client, callID, resultRange.(*nex.ResultRange))
+	errorCode = protocol.getRelationshipsHandler(nil, packet, callID, resultRange.(*nex.ResultRange))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

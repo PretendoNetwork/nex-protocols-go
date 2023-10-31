@@ -10,7 +10,7 @@ import (
 )
 
 // GetCustomRankingByDataID sets the GetCustomRankingByDataID handler function
-func (protocol *Protocol) GetCustomRankingByDataID(handler func(err error, client *nex.Client, callID uint32, param *datastore_super_mario_maker_types.DataStoreGetCustomRankingByDataIDParam) uint32) {
+func (protocol *Protocol) GetCustomRankingByDataID(handler func(err error, packet nex.PacketInterface, callID uint32, param *datastore_super_mario_maker_types.DataStoreGetCustomRankingByDataIDParam) uint32) {
 	protocol.getCustomRankingByDataIDHandler = handler
 }
 
@@ -23,7 +23,6 @@ func (protocol *Protocol) handleGetCustomRankingByDataID(packet nex.PacketInterf
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -33,7 +32,7 @@ func (protocol *Protocol) handleGetCustomRankingByDataID(packet nex.PacketInterf
 
 	param, err := parametersStream.ReadStructure(datastore_super_mario_maker_types.NewDataStoreGetCustomRankingByDataIDParam())
 	if err != nil {
-		errorCode = protocol.getCustomRankingByDataIDHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.getCustomRankingByDataIDHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -41,7 +40,7 @@ func (protocol *Protocol) handleGetCustomRankingByDataID(packet nex.PacketInterf
 		return
 	}
 
-	errorCode = protocol.getCustomRankingByDataIDHandler(nil, client, callID, param.(*datastore_super_mario_maker_types.DataStoreGetCustomRankingByDataIDParam))
+	errorCode = protocol.getCustomRankingByDataIDHandler(nil, packet, callID, param.(*datastore_super_mario_maker_types.DataStoreGetCustomRankingByDataIDParam))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

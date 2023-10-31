@@ -9,7 +9,7 @@ import (
 )
 
 // ReportNATTraversalResultDetail sets the ReportNATTraversalResultDetail handler function
-func (protocol *Protocol) ReportNATTraversalResultDetail(handler func(err error, client *nex.Client, callID uint32, cid uint32, result bool, detail int32, rtt uint32) uint32) {
+func (protocol *Protocol) ReportNATTraversalResultDetail(handler func(err error, packet nex.PacketInterface, callID uint32, cid uint32, result bool, detail int32, rtt uint32) uint32) {
 	protocol.reportNATTraversalResultDetailHandler = handler
 }
 
@@ -25,7 +25,6 @@ func (protocol *Protocol) handleReportNATTraversalResultDetail(packet nex.Packet
 	// TODO - The NEX server should add a NATTraversalProtocolVersion method
 	matchmakingVersion := protocol.Server.MatchMakingProtocolVersion()
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -35,7 +34,7 @@ func (protocol *Protocol) handleReportNATTraversalResultDetail(packet nex.Packet
 
 	cid, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.reportNATTraversalResultDetailHandler(fmt.Errorf("Failed to read cid from parameters. %s", err.Error()), client, callID, 0, false, 0, 0)
+		errorCode = protocol.reportNATTraversalResultDetailHandler(fmt.Errorf("Failed to read cid from parameters. %s", err.Error()), packet, callID, 0, false, 0, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -45,7 +44,7 @@ func (protocol *Protocol) handleReportNATTraversalResultDetail(packet nex.Packet
 
 	result, err := parametersStream.ReadBool()
 	if err != nil {
-		errorCode = protocol.reportNATTraversalResultDetailHandler(fmt.Errorf("Failed to read result from parameters. %s", err.Error()), client, callID, 0, false, 0, 0)
+		errorCode = protocol.reportNATTraversalResultDetailHandler(fmt.Errorf("Failed to read result from parameters. %s", err.Error()), packet, callID, 0, false, 0, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -55,7 +54,7 @@ func (protocol *Protocol) handleReportNATTraversalResultDetail(packet nex.Packet
 
 	detail, err := parametersStream.ReadInt32LE()
 	if err != nil {
-		errorCode = protocol.reportNATTraversalResultDetailHandler(fmt.Errorf("Failed to read detail from parameters. %s", err.Error()), client, callID, 0, false, 0, 0)
+		errorCode = protocol.reportNATTraversalResultDetailHandler(fmt.Errorf("Failed to read detail from parameters. %s", err.Error()), packet, callID, 0, false, 0, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -69,7 +68,7 @@ func (protocol *Protocol) handleReportNATTraversalResultDetail(packet nex.Packet
 	if matchmakingVersion.GreaterOrEqual("3.0.0") {
 		rtt, err = parametersStream.ReadUInt32LE()
 		if err != nil {
-			errorCode = protocol.reportNATTraversalResultDetailHandler(fmt.Errorf("Failed to read rtt from parameters. %s", err.Error()), client, callID, 0, false, 0, 0)
+			errorCode = protocol.reportNATTraversalResultDetailHandler(fmt.Errorf("Failed to read rtt from parameters. %s", err.Error()), packet, callID, 0, false, 0, 0)
 			if errorCode != 0 {
 				globals.RespondError(packet, ProtocolID, errorCode)
 			}
@@ -78,7 +77,7 @@ func (protocol *Protocol) handleReportNATTraversalResultDetail(packet nex.Packet
 		}
 	}
 
-	errorCode = protocol.reportNATTraversalResultDetailHandler(nil, client, callID, cid, result, detail, rtt)
+	errorCode = protocol.reportNATTraversalResultDetailHandler(nil, packet, callID, cid, result, detail, rtt)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

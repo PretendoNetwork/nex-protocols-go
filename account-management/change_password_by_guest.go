@@ -9,7 +9,7 @@ import (
 )
 
 // ChangePasswordByGuest sets the ChangePasswordByGuest handler function
-func (protocol *Protocol) ChangePasswordByGuest(handler func(err error, client *nex.Client, callID uint32, strPrincipalName string, strKey string, strEmail string) uint32) {
+func (protocol *Protocol) ChangePasswordByGuest(handler func(err error, packet nex.PacketInterface, callID uint32, strPrincipalName string, strKey string, strEmail string) uint32) {
 	protocol.changePasswordByGuestHandler = handler
 }
 
@@ -22,7 +22,6 @@ func (protocol *Protocol) handleChangePasswordByGuest(packet nex.PacketInterface
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -32,7 +31,7 @@ func (protocol *Protocol) handleChangePasswordByGuest(packet nex.PacketInterface
 
 	strPrincipalName, err := parametersStream.ReadString()
 	if err != nil {
-		errorCode = protocol.changePasswordByGuestHandler(fmt.Errorf("Failed to read strPrincipalName from parameters. %s", err.Error()), client, callID, "", "", "")
+		errorCode = protocol.changePasswordByGuestHandler(fmt.Errorf("Failed to read strPrincipalName from parameters. %s", err.Error()), packet, callID, "", "", "")
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -42,7 +41,7 @@ func (protocol *Protocol) handleChangePasswordByGuest(packet nex.PacketInterface
 
 	strKey, err := parametersStream.ReadString()
 	if err != nil {
-		errorCode = protocol.changePasswordByGuestHandler(fmt.Errorf("Failed to read strKey from parameters. %s", err.Error()), client, callID, "", "", "")
+		errorCode = protocol.changePasswordByGuestHandler(fmt.Errorf("Failed to read strKey from parameters. %s", err.Error()), packet, callID, "", "", "")
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -52,7 +51,7 @@ func (protocol *Protocol) handleChangePasswordByGuest(packet nex.PacketInterface
 
 	strEmail, err := parametersStream.ReadString()
 	if err != nil {
-		errorCode = protocol.changePasswordByGuestHandler(fmt.Errorf("Failed to read strEmail from parameters. %s", err.Error()), client, callID, "", "", "")
+		errorCode = protocol.changePasswordByGuestHandler(fmt.Errorf("Failed to read strEmail from parameters. %s", err.Error()), packet, callID, "", "", "")
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -60,7 +59,7 @@ func (protocol *Protocol) handleChangePasswordByGuest(packet nex.PacketInterface
 		return
 	}
 
-	errorCode = protocol.changePasswordByGuestHandler(nil, client, callID, strPrincipalName, strKey, strEmail)
+	errorCode = protocol.changePasswordByGuestHandler(nil, packet, callID, strPrincipalName, strKey, strEmail)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

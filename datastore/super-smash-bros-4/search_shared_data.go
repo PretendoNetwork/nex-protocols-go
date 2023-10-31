@@ -10,7 +10,7 @@ import (
 )
 
 // SearchSharedData sets the SearchSharedData handler function
-func (protocol *Protocol) SearchSharedData(handler func(err error, client *nex.Client, callID uint32, param *datastore_super_smash_bros_4_types.DataStoreSearchSharedDataParam) uint32) {
+func (protocol *Protocol) SearchSharedData(handler func(err error, packet nex.PacketInterface, callID uint32, param *datastore_super_smash_bros_4_types.DataStoreSearchSharedDataParam) uint32) {
 	protocol.searchSharedDataHandler = handler
 }
 
@@ -23,7 +23,6 @@ func (protocol *Protocol) handleSearchSharedData(packet nex.PacketInterface) {
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -33,7 +32,7 @@ func (protocol *Protocol) handleSearchSharedData(packet nex.PacketInterface) {
 
 	param, err := parametersStream.ReadStructure(datastore_super_smash_bros_4_types.NewDataStoreSearchSharedDataParam())
 	if err != nil {
-		errorCode = protocol.searchSharedDataHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.searchSharedDataHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -41,7 +40,7 @@ func (protocol *Protocol) handleSearchSharedData(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.searchSharedDataHandler(nil, client, callID, param.(*datastore_super_smash_bros_4_types.DataStoreSearchSharedDataParam))
+	errorCode = protocol.searchSharedDataHandler(nil, packet, callID, param.(*datastore_super_smash_bros_4_types.DataStoreSearchSharedDataParam))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

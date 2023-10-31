@@ -10,7 +10,7 @@ import (
 )
 
 // UpdateSimpleSearchObject sets the UpdateSimpleSearchObject handler function
-func (protocol *Protocol) UpdateSimpleSearchObject(handler func(err error, client *nex.Client, callID uint32, objectID uint32, newObject *matchmake_extension_mario_kart8_types.SimpleSearchObject) uint32) {
+func (protocol *Protocol) UpdateSimpleSearchObject(handler func(err error, packet nex.PacketInterface, callID uint32, objectID uint32, newObject *matchmake_extension_mario_kart8_types.SimpleSearchObject) uint32) {
 	protocol.updateSimpleSearchObjectHandler = handler
 }
 
@@ -23,7 +23,6 @@ func (protocol *Protocol) handleUpdateSimpleSearchObject(packet nex.PacketInterf
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -33,7 +32,7 @@ func (protocol *Protocol) handleUpdateSimpleSearchObject(packet nex.PacketInterf
 
 	objectID, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.updateSimpleSearchObjectHandler(fmt.Errorf("Failed to read objectID from parameters. %s", err.Error()), client, callID, 0, nil)
+		errorCode = protocol.updateSimpleSearchObjectHandler(fmt.Errorf("Failed to read objectID from parameters. %s", err.Error()), packet, callID, 0, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -43,7 +42,7 @@ func (protocol *Protocol) handleUpdateSimpleSearchObject(packet nex.PacketInterf
 
 	newObject, err := parametersStream.ReadStructure(matchmake_extension_mario_kart8_types.NewSimpleSearchObject())
 	if err != nil {
-		errorCode = protocol.updateSimpleSearchObjectHandler(fmt.Errorf("Failed to read newObject from parameters. %s", err.Error()), client, callID, 0, nil)
+		errorCode = protocol.updateSimpleSearchObjectHandler(fmt.Errorf("Failed to read newObject from parameters. %s", err.Error()), packet, callID, 0, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -51,7 +50,7 @@ func (protocol *Protocol) handleUpdateSimpleSearchObject(packet nex.PacketInterf
 		return
 	}
 
-	errorCode = protocol.updateSimpleSearchObjectHandler(nil, client, callID, objectID, newObject.(*matchmake_extension_mario_kart8_types.SimpleSearchObject))
+	errorCode = protocol.updateSimpleSearchObjectHandler(nil, packet, callID, objectID, newObject.(*matchmake_extension_mario_kart8_types.SimpleSearchObject))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

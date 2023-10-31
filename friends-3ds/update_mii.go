@@ -10,7 +10,7 @@ import (
 )
 
 // UpdateMii sets the UpdateMii handler function
-func (protocol *Protocol) UpdateMii(handler func(err error, client *nex.Client, callID uint32, mii *friends_3ds_types.Mii) uint32) {
+func (protocol *Protocol) UpdateMii(handler func(err error, packet nex.PacketInterface, callID uint32, mii *friends_3ds_types.Mii) uint32) {
 	protocol.updateMiiHandler = handler
 }
 
@@ -23,7 +23,6 @@ func (protocol *Protocol) handleUpdateMii(packet nex.PacketInterface) {
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -33,7 +32,7 @@ func (protocol *Protocol) handleUpdateMii(packet nex.PacketInterface) {
 
 	mii, err := parametersStream.ReadStructure(friends_3ds_types.NewMii())
 	if err != nil {
-		errorCode = protocol.updateMiiHandler(fmt.Errorf("Failed to read mii from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.updateMiiHandler(fmt.Errorf("Failed to read mii from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -41,7 +40,7 @@ func (protocol *Protocol) handleUpdateMii(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.updateMiiHandler(nil, client, callID, mii.(*friends_3ds_types.Mii))
+	errorCode = protocol.updateMiiHandler(nil, packet, callID, mii.(*friends_3ds_types.Mii))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

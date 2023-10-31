@@ -9,7 +9,7 @@ import (
 )
 
 // DeleteSimpleSearchObject sets the DeleteSimpleSearchObject handler function
-func (protocol *Protocol) DeleteSimpleSearchObject(handler func(err error, client *nex.Client, callID uint32, objectID uint32) uint32) {
+func (protocol *Protocol) DeleteSimpleSearchObject(handler func(err error, packet nex.PacketInterface, callID uint32, objectID uint32) uint32) {
 	protocol.deleteSimpleSearchObjectHandler = handler
 }
 
@@ -22,7 +22,6 @@ func (protocol *Protocol) handleDeleteSimpleSearchObject(packet nex.PacketInterf
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -32,7 +31,7 @@ func (protocol *Protocol) handleDeleteSimpleSearchObject(packet nex.PacketInterf
 
 	objectID, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.deleteSimpleSearchObjectHandler(fmt.Errorf("Failed to read objectID from parameters. %s", err.Error()), client, callID, 0)
+		errorCode = protocol.deleteSimpleSearchObjectHandler(fmt.Errorf("Failed to read objectID from parameters. %s", err.Error()), packet, callID, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -40,7 +39,7 @@ func (protocol *Protocol) handleDeleteSimpleSearchObject(packet nex.PacketInterf
 		return
 	}
 
-	errorCode = protocol.deleteSimpleSearchObjectHandler(nil, client, callID, objectID)
+	errorCode = protocol.deleteSimpleSearchObjectHandler(nil, packet, callID, objectID)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

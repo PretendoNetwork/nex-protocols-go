@@ -9,7 +9,7 @@ import (
 )
 
 // DebugNotifyEvent sets the DebugNotifyEvent handler function
-func (protocol *Protocol) DebugNotifyEvent(handler func(err error, client *nex.Client, callID uint32, pid uint32, mainType uint32, subType uint32, param1 uint64, param2 uint64, stringParam string) uint32) {
+func (protocol *Protocol) DebugNotifyEvent(handler func(err error, packet nex.PacketInterface, callID uint32, pid uint32, mainType uint32, subType uint32, param1 uint64, param2 uint64, stringParam string) uint32) {
 	protocol.debugNotifyEventHandler = handler
 }
 
@@ -22,7 +22,6 @@ func (protocol *Protocol) handleDebugNotifyEvent(packet nex.PacketInterface) {
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -32,7 +31,7 @@ func (protocol *Protocol) handleDebugNotifyEvent(packet nex.PacketInterface) {
 
 	pid, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.debugNotifyEventHandler(fmt.Errorf("Failed to read pid from parameters. %s", err.Error()), client, callID, 0, 0, 0, 0, 0, "")
+		errorCode = protocol.debugNotifyEventHandler(fmt.Errorf("Failed to read pid from parameters. %s", err.Error()), packet, callID, 0, 0, 0, 0, 0, "")
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -42,7 +41,7 @@ func (protocol *Protocol) handleDebugNotifyEvent(packet nex.PacketInterface) {
 
 	mainType, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.debugNotifyEventHandler(fmt.Errorf("Failed to read mainType from parameters. %s", err.Error()), client, callID, 0, 0, 0, 0, 0, "")
+		errorCode = protocol.debugNotifyEventHandler(fmt.Errorf("Failed to read mainType from parameters. %s", err.Error()), packet, callID, 0, 0, 0, 0, 0, "")
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -52,7 +51,7 @@ func (protocol *Protocol) handleDebugNotifyEvent(packet nex.PacketInterface) {
 
 	subType, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.debugNotifyEventHandler(fmt.Errorf("Failed to read subType from parameters. %s", err.Error()), client, callID, 0, 0, 0, 0, 0, "")
+		errorCode = protocol.debugNotifyEventHandler(fmt.Errorf("Failed to read subType from parameters. %s", err.Error()), packet, callID, 0, 0, 0, 0, 0, "")
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -62,7 +61,7 @@ func (protocol *Protocol) handleDebugNotifyEvent(packet nex.PacketInterface) {
 
 	param1, err := parametersStream.ReadUInt64LE()
 	if err != nil {
-		errorCode = protocol.debugNotifyEventHandler(fmt.Errorf("Failed to read param1 from parameters. %s", err.Error()), client, callID, 0, 0, 0, 0, 0, "")
+		errorCode = protocol.debugNotifyEventHandler(fmt.Errorf("Failed to read param1 from parameters. %s", err.Error()), packet, callID, 0, 0, 0, 0, 0, "")
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -72,7 +71,7 @@ func (protocol *Protocol) handleDebugNotifyEvent(packet nex.PacketInterface) {
 
 	param2, err := parametersStream.ReadUInt64LE()
 	if err != nil {
-		errorCode = protocol.debugNotifyEventHandler(fmt.Errorf("Failed to read param2 from parameters. %s", err.Error()), client, callID, 0, 0, 0, 0, 0, "")
+		errorCode = protocol.debugNotifyEventHandler(fmt.Errorf("Failed to read param2 from parameters. %s", err.Error()), packet, callID, 0, 0, 0, 0, 0, "")
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -82,7 +81,7 @@ func (protocol *Protocol) handleDebugNotifyEvent(packet nex.PacketInterface) {
 
 	stringParam, err := parametersStream.ReadString()
 	if err != nil {
-		errorCode = protocol.debugNotifyEventHandler(fmt.Errorf("Failed to read stringParam from parameters. %s", err.Error()), client, callID, 0, 0, 0, 0, 0, "")
+		errorCode = protocol.debugNotifyEventHandler(fmt.Errorf("Failed to read stringParam from parameters. %s", err.Error()), packet, callID, 0, 0, 0, 0, 0, "")
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -90,7 +89,7 @@ func (protocol *Protocol) handleDebugNotifyEvent(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.debugNotifyEventHandler(nil, client, callID, pid, mainType, subType, param1, param2, stringParam)
+	errorCode = protocol.debugNotifyEventHandler(nil, packet, callID, pid, mainType, subType, param1, param2, stringParam)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

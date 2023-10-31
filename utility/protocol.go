@@ -41,14 +41,14 @@ const (
 // Protocol stores all the RMC method handlers for the Utility protocol and listens for requests
 type Protocol struct {
 	Server                                            *nex.Server
-	acquireNexUniqueIDHandler                         func(err error, client *nex.Client, callID uint32) uint32
-	acquireNexUniqueIDWithPasswordHandler             func(err error, client *nex.Client, callID uint32) uint32
-	associateNexUniqueIDWithMyPrincipalIDHandler      func(err error, client *nex.Client, callID uint32, uniqueIDInfo *utility_types.UniqueIDInfo) uint32
-	associateNexUniqueIDsWithMyPrincipalIDHandler     func(err error, client *nex.Client, callID uint32, uniqueIDInfo []*utility_types.UniqueIDInfo) uint32
-	getAssociatedNexUniqueIDWithMyPrincipalIDHandler  func(err error, client *nex.Client, callID uint32) uint32
-	getAssociatedNexUniqueIDsWithMyPrincipalIDHandler func(err error, client *nex.Client, callID uint32) uint32
-	getIntegerSettingsHandler                         func(err error, client *nex.Client, callID uint32, integerSettingIndex uint32) uint32
-	getStringSettingsHandler                          func(err error, client *nex.Client, callID uint32, stringSettingIndex uint32) uint32
+	acquireNexUniqueIDHandler                         func(err error, packet nex.PacketInterface, callID uint32) uint32
+	acquireNexUniqueIDWithPasswordHandler             func(err error, packet nex.PacketInterface, callID uint32) uint32
+	associateNexUniqueIDWithMyPrincipalIDHandler      func(err error, packet nex.PacketInterface, callID uint32, uniqueIDInfo *utility_types.UniqueIDInfo) uint32
+	associateNexUniqueIDsWithMyPrincipalIDHandler     func(err error, packet nex.PacketInterface, callID uint32, uniqueIDInfo []*utility_types.UniqueIDInfo) uint32
+	getAssociatedNexUniqueIDWithMyPrincipalIDHandler  func(err error, packet nex.PacketInterface, callID uint32) uint32
+	getAssociatedNexUniqueIDsWithMyPrincipalIDHandler func(err error, packet nex.PacketInterface, callID uint32) uint32
+	getIntegerSettingsHandler                         func(err error, packet nex.PacketInterface, callID uint32, integerSettingIndex uint32) uint32
+	getStringSettingsHandler                          func(err error, packet nex.PacketInterface, callID uint32, stringSettingIndex uint32) uint32
 }
 
 // Setup initializes the protocol

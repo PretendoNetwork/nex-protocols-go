@@ -10,7 +10,7 @@ import (
 )
 
 // ResetRatings sets the ResetRatings handler function
-func (protocol *Protocol) ResetRatings(handler func(err error, client *nex.Client, callID uint32, target *datastore_types.DataStoreRatingTarget, transactional bool) uint32) {
+func (protocol *Protocol) ResetRatings(handler func(err error, packet nex.PacketInterface, callID uint32, target *datastore_types.DataStoreRatingTarget, transactional bool) uint32) {
 	protocol.resetRatingsHandler = handler
 }
 
@@ -23,7 +23,6 @@ func (protocol *Protocol) handleResetRatings(packet nex.PacketInterface) {
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -33,7 +32,7 @@ func (protocol *Protocol) handleResetRatings(packet nex.PacketInterface) {
 
 	target, err := parametersStream.ReadStructure(datastore_types.NewDataStoreRatingTarget())
 	if err != nil {
-		errorCode = protocol.resetRatingsHandler(fmt.Errorf("Failed to read target from parameters. %s", err.Error()), client, callID, nil, false)
+		errorCode = protocol.resetRatingsHandler(fmt.Errorf("Failed to read target from parameters. %s", err.Error()), packet, callID, nil, false)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -43,7 +42,7 @@ func (protocol *Protocol) handleResetRatings(packet nex.PacketInterface) {
 
 	transactional, err := parametersStream.ReadBool()
 	if err != nil {
-		errorCode = protocol.resetRatingsHandler(fmt.Errorf("Failed to read transactional from parameters. %s", err.Error()), client, callID, nil, false)
+		errorCode = protocol.resetRatingsHandler(fmt.Errorf("Failed to read transactional from parameters. %s", err.Error()), packet, callID, nil, false)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -51,7 +50,7 @@ func (protocol *Protocol) handleResetRatings(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.resetRatingsHandler(nil, client, callID, target.(*datastore_types.DataStoreRatingTarget), transactional)
+	errorCode = protocol.resetRatingsHandler(nil, packet, callID, target.(*datastore_types.DataStoreRatingTarget), transactional)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

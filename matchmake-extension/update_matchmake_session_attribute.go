@@ -9,7 +9,7 @@ import (
 )
 
 // UpdateMatchmakeSessionAttribute sets the UpdateMatchmakeSessionAttribute handler function
-func (protocol *Protocol) UpdateMatchmakeSessionAttribute(handler func(err error, client *nex.Client, callID uint32, gid uint32, attribs []uint32) uint32) {
+func (protocol *Protocol) UpdateMatchmakeSessionAttribute(handler func(err error, packet nex.PacketInterface, callID uint32, gid uint32, attribs []uint32) uint32) {
 	protocol.updateMatchmakeSessionAttributeHandler = handler
 }
 
@@ -22,7 +22,6 @@ func (protocol *Protocol) handleUpdateMatchmakeSessionAttribute(packet nex.Packe
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -32,7 +31,7 @@ func (protocol *Protocol) handleUpdateMatchmakeSessionAttribute(packet nex.Packe
 
 	gid, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.updateMatchmakeSessionAttributeHandler(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), client, callID, 0, nil)
+		errorCode = protocol.updateMatchmakeSessionAttributeHandler(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), packet, callID, 0, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -42,7 +41,7 @@ func (protocol *Protocol) handleUpdateMatchmakeSessionAttribute(packet nex.Packe
 
 	attribs, err := parametersStream.ReadListUInt32LE()
 	if err != nil {
-		errorCode = protocol.updateMatchmakeSessionAttributeHandler(fmt.Errorf("Failed to read attribs from parameters. %s", err.Error()), client, callID, 0, nil)
+		errorCode = protocol.updateMatchmakeSessionAttributeHandler(fmt.Errorf("Failed to read attribs from parameters. %s", err.Error()), packet, callID, 0, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -50,7 +49,7 @@ func (protocol *Protocol) handleUpdateMatchmakeSessionAttribute(packet nex.Packe
 		return
 	}
 
-	errorCode = protocol.updateMatchmakeSessionAttributeHandler(nil, client, callID, gid, attribs)
+	errorCode = protocol.updateMatchmakeSessionAttributeHandler(nil, packet, callID, gid, attribs)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

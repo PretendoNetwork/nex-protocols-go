@@ -9,7 +9,7 @@ import (
 )
 
 // UpdateAndGetTicketInfo sets the UpdateAndGetTicketInfo handler function
-func (protocol *Protocol) UpdateAndGetTicketInfo(handler func(err error, client *nex.Client, callID uint32, forceRetrieveFromEShop bool) uint32) {
+func (protocol *Protocol) UpdateAndGetTicketInfo(handler func(err error, packet nex.PacketInterface, callID uint32, forceRetrieveFromEShop bool) uint32) {
 	protocol.updateAndGetTicketInfoHandler = handler
 }
 
@@ -22,7 +22,6 @@ func (protocol *Protocol) handleUpdateAndGetTicketInfo(packet nex.PacketInterfac
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -32,7 +31,7 @@ func (protocol *Protocol) handleUpdateAndGetTicketInfo(packet nex.PacketInterfac
 
 	forceRetrieveFromEShop, err := parametersStream.ReadBool()
 	if err != nil {
-		errorCode = protocol.updateAndGetTicketInfoHandler(fmt.Errorf("Failed to read forceRetrieveFromEShop from parameters. %s", err.Error()), client, callID, false)
+		errorCode = protocol.updateAndGetTicketInfoHandler(fmt.Errorf("Failed to read forceRetrieveFromEShop from parameters. %s", err.Error()), packet, callID, false)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -40,7 +39,7 @@ func (protocol *Protocol) handleUpdateAndGetTicketInfo(packet nex.PacketInterfac
 		return
 	}
 
-	errorCode = protocol.updateAndGetTicketInfoHandler(nil, client, callID, forceRetrieveFromEShop)
+	errorCode = protocol.updateAndGetTicketInfoHandler(nil, packet, callID, forceRetrieveFromEShop)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

@@ -9,7 +9,7 @@ import (
 )
 
 // SetState sets the SetState handler function
-func (protocol *Protocol) SetState(handler func(err error, client *nex.Client, callID uint32, idGathering uint32, uiNewState uint32) uint32) {
+func (protocol *Protocol) SetState(handler func(err error, packet nex.PacketInterface, callID uint32, idGathering uint32, uiNewState uint32) uint32) {
 	protocol.setStateHandler = handler
 }
 
@@ -22,7 +22,6 @@ func (protocol *Protocol) handleSetState(packet nex.PacketInterface) {
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -32,7 +31,7 @@ func (protocol *Protocol) handleSetState(packet nex.PacketInterface) {
 
 	idGathering, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.setStateHandler(fmt.Errorf("Failed to read idGathering from parameters. %s", err.Error()), client, callID, 0, 0)
+		errorCode = protocol.setStateHandler(fmt.Errorf("Failed to read idGathering from parameters. %s", err.Error()), packet, callID, 0, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -42,7 +41,7 @@ func (protocol *Protocol) handleSetState(packet nex.PacketInterface) {
 
 	uiNewState, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.setStateHandler(fmt.Errorf("Failed to read uiNewState from parameters. %s", err.Error()), client, callID, 0, 0)
+		errorCode = protocol.setStateHandler(fmt.Errorf("Failed to read uiNewState from parameters. %s", err.Error()), packet, callID, 0, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -50,7 +49,7 @@ func (protocol *Protocol) handleSetState(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.setStateHandler(nil, client, callID, idGathering, uiNewState)
+	errorCode = protocol.setStateHandler(nil, packet, callID, idGathering, uiNewState)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

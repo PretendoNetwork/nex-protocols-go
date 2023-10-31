@@ -7,7 +7,7 @@ import (
 )
 
 // DisconnectAllPrincipals sets the DisconnectAllPrincipals handler function
-func (protocol *Protocol) DisconnectAllPrincipals(handler func(err error, client *nex.Client, callID uint32) uint32) {
+func (protocol *Protocol) DisconnectAllPrincipals(handler func(err error, packet nex.PacketInterface, callID uint32) uint32) {
 	protocol.disconnectAllPrincipalsHandler = handler
 }
 
@@ -20,12 +20,11 @@ func (protocol *Protocol) handleDisconnectAllPrincipals(packet nex.PacketInterfa
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
 
-	errorCode = protocol.disconnectAllPrincipalsHandler(nil, client, callID)
+	errorCode = protocol.disconnectAllPrincipalsHandler(nil, packet, callID)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

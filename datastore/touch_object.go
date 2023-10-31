@@ -10,7 +10,7 @@ import (
 )
 
 // TouchObject sets the TouchObject handler function
-func (protocol *Protocol) TouchObject(handler func(err error, client *nex.Client, callID uint32, param *datastore_types.DataStoreTouchObjectParam) uint32) {
+func (protocol *Protocol) TouchObject(handler func(err error, packet nex.PacketInterface, callID uint32, param *datastore_types.DataStoreTouchObjectParam) uint32) {
 	protocol.touchObjectHandler = handler
 }
 
@@ -23,7 +23,6 @@ func (protocol *Protocol) handleTouchObject(packet nex.PacketInterface) {
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -33,7 +32,7 @@ func (protocol *Protocol) handleTouchObject(packet nex.PacketInterface) {
 
 	param, err := parametersStream.ReadStructure(datastore_types.NewDataStoreTouchObjectParam())
 	if err != nil {
-		errorCode = protocol.touchObjectHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.touchObjectHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -41,7 +40,7 @@ func (protocol *Protocol) handleTouchObject(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.touchObjectHandler(nil, client, callID, param.(*datastore_types.DataStoreTouchObjectParam))
+	errorCode = protocol.touchObjectHandler(nil, packet, callID, param.(*datastore_types.DataStoreTouchObjectParam))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

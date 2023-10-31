@@ -55,19 +55,19 @@ const (
 // Protocol handles the Friends QRV protocol
 type Protocol struct {
 	Server                            *nex.Server
-	addFriendHandler                  func(err error, client *nex.Client, callID uint32, uiPlayer uint32, uiDetails uint32, strMessage string) uint32
-	addFriendByNameHandler            func(err error, client *nex.Client, callID uint32, strPlayerName string, uiDetails uint32, strMessage string) uint32
-	addFriendWithDetailsHandler       func(err error, client *nex.Client, callID uint32, uiPlayer uint32, uiDetails uint32, strMessage string) uint32
-	addFriendByNameWithDetailsHandler func(err error, client *nex.Client, callID uint32, uiPlayer uint32, uiDetails uint32, strMessage string) uint32 // TODO - Is this the right signature?
-	acceptFriendshipHandler           func(err error, client *nex.Client, callID uint32, uiPlayer uint32) uint32
-	declineFriendshipHandler          func(err error, client *nex.Client, callID uint32, uiPlayer uint32) uint32
-	blackListHandler                  func(err error, client *nex.Client, callID uint32, uiPlayer uint32, uiDetails uint32) uint32
-	blackListByNameHandler            func(err error, client *nex.Client, callID uint32, strPlayerName string, uiDetails uint32) uint32
-	clearRelationshipHandler          func(err error, client *nex.Client, callID uint32, uiPlayer uint32) uint32
-	updateDetailsHandler              func(err error, client *nex.Client, callID uint32, uiPlayer uint32, uiDetails uint32) uint32
-	getListHandler                    func(err error, client *nex.Client, callID uint32, byRelationship uint8, bReversed bool) uint32
-	getDetailedListHandler            func(err error, client *nex.Client, callID uint32, byRelationship uint8, bReversed bool) uint32
-	getRelationshipsHandler           func(err error, client *nex.Client, callID uint32, resultRange *nex.ResultRange) uint32
+	addFriendHandler                  func(err error, packet nex.PacketInterface, callID uint32, uiPlayer uint32, uiDetails uint32, strMessage string) uint32
+	addFriendByNameHandler            func(err error, packet nex.PacketInterface, callID uint32, strPlayerName string, uiDetails uint32, strMessage string) uint32
+	addFriendWithDetailsHandler       func(err error, packet nex.PacketInterface, callID uint32, uiPlayer uint32, uiDetails uint32, strMessage string) uint32
+	addFriendByNameWithDetailsHandler func(err error, packet nex.PacketInterface, callID uint32, uiPlayer uint32, uiDetails uint32, strMessage string) uint32 // TODO - Is this the right signature?
+	acceptFriendshipHandler           func(err error, packet nex.PacketInterface, callID uint32, uiPlayer uint32) uint32
+	declineFriendshipHandler          func(err error, packet nex.PacketInterface, callID uint32, uiPlayer uint32) uint32
+	blackListHandler                  func(err error, packet nex.PacketInterface, callID uint32, uiPlayer uint32, uiDetails uint32) uint32
+	blackListByNameHandler            func(err error, packet nex.PacketInterface, callID uint32, strPlayerName string, uiDetails uint32) uint32
+	clearRelationshipHandler          func(err error, packet nex.PacketInterface, callID uint32, uiPlayer uint32) uint32
+	updateDetailsHandler              func(err error, packet nex.PacketInterface, callID uint32, uiPlayer uint32, uiDetails uint32) uint32
+	getListHandler                    func(err error, packet nex.PacketInterface, callID uint32, byRelationship uint8, bReversed bool) uint32
+	getDetailedListHandler            func(err error, packet nex.PacketInterface, callID uint32, byRelationship uint8, bReversed bool) uint32
+	getRelationshipsHandler           func(err error, packet nex.PacketInterface, callID uint32, resultRange *nex.ResultRange) uint32
 }
 
 // Setup initializes the protocol

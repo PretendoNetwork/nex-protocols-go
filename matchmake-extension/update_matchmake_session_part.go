@@ -10,7 +10,7 @@ import (
 )
 
 // UpdateMatchmakeSessionPart sets the UpdateMatchmakeSessionPart handler function
-func (protocol *Protocol) UpdateMatchmakeSessionPart(handler func(err error, client *nex.Client, callID uint32, updateMatchmakeSessionParam *match_making_types.UpdateMatchmakeSessionParam) uint32) {
+func (protocol *Protocol) UpdateMatchmakeSessionPart(handler func(err error, packet nex.PacketInterface, callID uint32, updateMatchmakeSessionParam *match_making_types.UpdateMatchmakeSessionParam) uint32) {
 	protocol.updateMatchmakeSessionPartHandler = handler
 }
 
@@ -23,7 +23,6 @@ func (protocol *Protocol) handleUpdateMatchmakeSessionPart(packet nex.PacketInte
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -33,7 +32,7 @@ func (protocol *Protocol) handleUpdateMatchmakeSessionPart(packet nex.PacketInte
 
 	updateMatchmakeSessionParam, err := parametersStream.ReadStructure(match_making_types.NewUpdateMatchmakeSessionParam())
 	if err != nil {
-		errorCode = protocol.updateMatchmakeSessionPartHandler(fmt.Errorf("Failed to read updateMatchmakeSessionParam from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.updateMatchmakeSessionPartHandler(fmt.Errorf("Failed to read updateMatchmakeSessionParam from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -41,7 +40,7 @@ func (protocol *Protocol) handleUpdateMatchmakeSessionPart(packet nex.PacketInte
 		return
 	}
 
-	errorCode = protocol.updateMatchmakeSessionPartHandler(nil, client, callID, updateMatchmakeSessionParam.(*match_making_types.UpdateMatchmakeSessionParam))
+	errorCode = protocol.updateMatchmakeSessionPartHandler(nil, packet, callID, updateMatchmakeSessionParam.(*match_making_types.UpdateMatchmakeSessionParam))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

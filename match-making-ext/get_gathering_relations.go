@@ -9,7 +9,7 @@ import (
 )
 
 // GetGatheringRelations sets the GetGatheringRelations handler function
-func (protocol *Protocol) GetGatheringRelations(handler func(err error, client *nex.Client, callID uint32, id uint32, descr string) uint32) {
+func (protocol *Protocol) GetGatheringRelations(handler func(err error, packet nex.PacketInterface, callID uint32, id uint32, descr string) uint32) {
 	protocol.getGatheringRelationsHandler = handler
 }
 
@@ -22,7 +22,6 @@ func (protocol *Protocol) handleGetGatheringRelations(packet nex.PacketInterface
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -32,7 +31,7 @@ func (protocol *Protocol) handleGetGatheringRelations(packet nex.PacketInterface
 
 	id, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.getGatheringRelationsHandler(fmt.Errorf("Failed to read id from parameters. %s", err.Error()), client, callID, 0, "")
+		errorCode = protocol.getGatheringRelationsHandler(fmt.Errorf("Failed to read id from parameters. %s", err.Error()), packet, callID, 0, "")
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -42,7 +41,7 @@ func (protocol *Protocol) handleGetGatheringRelations(packet nex.PacketInterface
 
 	descr, err := parametersStream.ReadString()
 	if err != nil {
-		errorCode = protocol.getGatheringRelationsHandler(fmt.Errorf("Failed to read descr from parameters. %s", err.Error()), client, callID, 0, "")
+		errorCode = protocol.getGatheringRelationsHandler(fmt.Errorf("Failed to read descr from parameters. %s", err.Error()), packet, callID, 0, "")
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -50,7 +49,7 @@ func (protocol *Protocol) handleGetGatheringRelations(packet nex.PacketInterface
 		return
 	}
 
-	errorCode = protocol.getGatheringRelationsHandler(nil, client, callID, id, descr)
+	errorCode = protocol.getGatheringRelationsHandler(nil, packet, callID, id, descr)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

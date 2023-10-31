@@ -9,7 +9,7 @@ import (
 )
 
 // GetTransactionParam sets the GetTransactionParam handler function
-func (protocol *Protocol) GetTransactionParam(handler func(err error, client *nex.Client, callID uint32, slotID uint16) uint32) {
+func (protocol *Protocol) GetTransactionParam(handler func(err error, packet nex.PacketInterface, callID uint32, slotID uint16) uint32) {
 	protocol.getTransactionParamHandler = handler
 }
 
@@ -22,7 +22,6 @@ func (protocol *Protocol) handleGetTransactionParam(packet nex.PacketInterface) 
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -32,7 +31,7 @@ func (protocol *Protocol) handleGetTransactionParam(packet nex.PacketInterface) 
 
 	slotID, err := parametersStream.ReadUInt16LE()
 	if err != nil {
-		errorCode = protocol.getTransactionParamHandler(fmt.Errorf("Failed to read slotID from parameters. %s", err.Error()), client, callID, 0)
+		errorCode = protocol.getTransactionParamHandler(fmt.Errorf("Failed to read slotID from parameters. %s", err.Error()), packet, callID, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -40,7 +39,7 @@ func (protocol *Protocol) handleGetTransactionParam(packet nex.PacketInterface) 
 		return
 	}
 
-	errorCode = protocol.getTransactionParamHandler(nil, client, callID, slotID)
+	errorCode = protocol.getTransactionParamHandler(nil, packet, callID, slotID)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

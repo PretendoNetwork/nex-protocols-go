@@ -9,7 +9,7 @@ import (
 )
 
 // UpdateMatchmakeSession sets the UpdateMatchmakeSession handler function
-func (protocol *Protocol) UpdateMatchmakeSession(handler func(err error, client *nex.Client, callID uint32, anyGathering *nex.DataHolder) uint32) {
+func (protocol *Protocol) UpdateMatchmakeSession(handler func(err error, packet nex.PacketInterface, callID uint32, anyGathering *nex.DataHolder) uint32) {
 	protocol.updateMatchmakeSessionHandler = handler
 }
 
@@ -22,7 +22,6 @@ func (protocol *Protocol) handleUpdateMatchmakeSession(packet nex.PacketInterfac
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -32,7 +31,7 @@ func (protocol *Protocol) handleUpdateMatchmakeSession(packet nex.PacketInterfac
 
 	anyGathering, err := parametersStream.ReadDataHolder()
 	if err != nil {
-		errorCode = protocol.updateMatchmakeSessionHandler(fmt.Errorf("Failed to read anyGathering from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.updateMatchmakeSessionHandler(fmt.Errorf("Failed to read anyGathering from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -40,7 +39,7 @@ func (protocol *Protocol) handleUpdateMatchmakeSession(packet nex.PacketInterfac
 		return
 	}
 
-	errorCode = protocol.updateMatchmakeSessionHandler(nil, client, callID, anyGathering)
+	errorCode = protocol.updateMatchmakeSessionHandler(nil, packet, callID, anyGathering)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

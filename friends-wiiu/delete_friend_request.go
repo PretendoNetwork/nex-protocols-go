@@ -9,7 +9,7 @@ import (
 )
 
 // DeleteFriendRequest sets the DeleteFriendRequest handler function
-func (protocol *Protocol) DeleteFriendRequest(handler func(err error, client *nex.Client, callID uint32, id uint64) uint32) {
+func (protocol *Protocol) DeleteFriendRequest(handler func(err error, packet nex.PacketInterface, callID uint32, id uint64) uint32) {
 	protocol.deleteFriendRequestHandler = handler
 }
 
@@ -22,7 +22,6 @@ func (protocol *Protocol) handleDeleteFriendRequest(packet nex.PacketInterface) 
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -32,7 +31,7 @@ func (protocol *Protocol) handleDeleteFriendRequest(packet nex.PacketInterface) 
 
 	id, err := parametersStream.ReadUInt64LE()
 	if err != nil {
-		errorCode = protocol.deleteFriendRequestHandler(fmt.Errorf("Failed to read id from parameters. %s", err.Error()), client, callID, 0)
+		errorCode = protocol.deleteFriendRequestHandler(fmt.Errorf("Failed to read id from parameters. %s", err.Error()), packet, callID, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -40,7 +39,7 @@ func (protocol *Protocol) handleDeleteFriendRequest(packet nex.PacketInterface) 
 		return
 	}
 
-	errorCode = protocol.deleteFriendRequestHandler(nil, client, callID, id)
+	errorCode = protocol.deleteFriendRequestHandler(nil, packet, callID, id)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

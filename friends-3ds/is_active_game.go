@@ -10,7 +10,7 @@ import (
 )
 
 // IsActiveGame sets the IsActiveGame handler function
-func (protocol *Protocol) IsActiveGame(handler func(err error, client *nex.Client, callID uint32, pids []uint32, gameKey *friends_3ds_types.GameKey) uint32) {
+func (protocol *Protocol) IsActiveGame(handler func(err error, packet nex.PacketInterface, callID uint32, pids []uint32, gameKey *friends_3ds_types.GameKey) uint32) {
 	protocol.isActiveGameHandler = handler
 }
 
@@ -23,7 +23,6 @@ func (protocol *Protocol) handleIsActiveGame(packet nex.PacketInterface) {
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -33,7 +32,7 @@ func (protocol *Protocol) handleIsActiveGame(packet nex.PacketInterface) {
 
 	pids, err := parametersStream.ReadListUInt32LE()
 	if err != nil {
-		errorCode = protocol.isActiveGameHandler(fmt.Errorf("Failed to read pids from parameters. %s", err.Error()), client, callID, nil, nil)
+		errorCode = protocol.isActiveGameHandler(fmt.Errorf("Failed to read pids from parameters. %s", err.Error()), packet, callID, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -43,7 +42,7 @@ func (protocol *Protocol) handleIsActiveGame(packet nex.PacketInterface) {
 
 	gameKey, err := parametersStream.ReadStructure(friends_3ds_types.NewGameKey())
 	if err != nil {
-		errorCode = protocol.isActiveGameHandler(fmt.Errorf("Failed to read gameKey from parameters. %s", err.Error()), client, callID, nil, nil)
+		errorCode = protocol.isActiveGameHandler(fmt.Errorf("Failed to read gameKey from parameters. %s", err.Error()), packet, callID, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -51,7 +50,7 @@ func (protocol *Protocol) handleIsActiveGame(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.isActiveGameHandler(nil, client, callID, pids, gameKey.(*friends_3ds_types.GameKey))
+	errorCode = protocol.isActiveGameHandler(nil, packet, callID, pids, gameKey.(*friends_3ds_types.GameKey))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

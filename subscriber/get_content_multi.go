@@ -10,7 +10,7 @@ import (
 )
 
 // GetContentMulti sets the GetContentMulti handler function
-func (protocol *Protocol) GetContentMulti(handler func(err error, client *nex.Client, callID uint32, params []*subscriber_types.SubscriberGetContentParam) uint32) {
+func (protocol *Protocol) GetContentMulti(handler func(err error, packet nex.PacketInterface, callID uint32, params []*subscriber_types.SubscriberGetContentParam) uint32) {
 	protocol.getContentMultiHandler = handler
 }
 
@@ -22,7 +22,7 @@ func (protocol *Protocol) handleGetContentMulti(packet nex.PacketInterface) {
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
-	client := packet.Sender()
+
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -32,7 +32,7 @@ func (protocol *Protocol) handleGetContentMulti(packet nex.PacketInterface) {
 
 	params, err := parametersStream.ReadListStructure(subscriber_types.NewSubscriberGetContentParam())
 	if err != nil {
-		errorCode = protocol.getContentMultiHandler(fmt.Errorf("Failed to read params from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.getContentMultiHandler(fmt.Errorf("Failed to read params from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -40,7 +40,7 @@ func (protocol *Protocol) handleGetContentMulti(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.getContentMultiHandler(nil, client, callID, params.([]*subscriber_types.SubscriberGetContentParam))
+	errorCode = protocol.getContentMultiHandler(nil, packet, callID, params.([]*subscriber_types.SubscriberGetContentParam))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

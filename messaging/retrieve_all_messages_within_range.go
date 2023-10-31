@@ -10,7 +10,7 @@ import (
 )
 
 // RetrieveAllMessagesWithinRange sets the RetrieveAllMessagesWithinRange handler function
-func (protocol *Protocol) RetrieveAllMessagesWithinRange(handler func(err error, client *nex.Client, callID uint32, recipient *messaging_types.MessageRecipient, resultRange *nex.ResultRange) uint32) {
+func (protocol *Protocol) RetrieveAllMessagesWithinRange(handler func(err error, packet nex.PacketInterface, callID uint32, recipient *messaging_types.MessageRecipient, resultRange *nex.ResultRange) uint32) {
 	protocol.retrieveAllMessagesWithinRangeHandler = handler
 }
 
@@ -23,7 +23,6 @@ func (protocol *Protocol) handleRetrieveAllMessagesWithinRange(packet nex.Packet
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -33,7 +32,7 @@ func (protocol *Protocol) handleRetrieveAllMessagesWithinRange(packet nex.Packet
 
 	recipient, err := parametersStream.ReadStructure(messaging_types.NewMessageRecipient())
 	if err != nil {
-		errorCode = protocol.retrieveAllMessagesWithinRangeHandler(fmt.Errorf("Failed to read recipient from parameters. %s", err.Error()), client, callID, nil, nil)
+		errorCode = protocol.retrieveAllMessagesWithinRangeHandler(fmt.Errorf("Failed to read recipient from parameters. %s", err.Error()), packet, callID, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -43,7 +42,7 @@ func (protocol *Protocol) handleRetrieveAllMessagesWithinRange(packet nex.Packet
 
 	resultRange, err := parametersStream.ReadStructure(nex.NewResultRange())
 	if err != nil {
-		errorCode = protocol.retrieveAllMessagesWithinRangeHandler(fmt.Errorf("Failed to read resultRange from parameters. %s", err.Error()), client, callID, nil, nil)
+		errorCode = protocol.retrieveAllMessagesWithinRangeHandler(fmt.Errorf("Failed to read resultRange from parameters. %s", err.Error()), packet, callID, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -51,7 +50,7 @@ func (protocol *Protocol) handleRetrieveAllMessagesWithinRange(packet nex.Packet
 		return
 	}
 
-	errorCode = protocol.retrieveAllMessagesWithinRangeHandler(nil, client, callID, recipient.(*messaging_types.MessageRecipient), resultRange.(*nex.ResultRange))
+	errorCode = protocol.retrieveAllMessagesWithinRangeHandler(nil, packet, callID, recipient.(*messaging_types.MessageRecipient), resultRange.(*nex.ResultRange))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

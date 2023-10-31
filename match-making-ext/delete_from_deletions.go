@@ -9,7 +9,7 @@ import (
 )
 
 // DeleteFromDeletions sets the DeleteFromDeletions handler function
-func (protocol *Protocol) DeleteFromDeletions(handler func(err error, client *nex.Client, callID uint32, lstDeletions []uint32, pid uint32) uint32) {
+func (protocol *Protocol) DeleteFromDeletions(handler func(err error, packet nex.PacketInterface, callID uint32, lstDeletions []uint32, pid uint32) uint32) {
 	protocol.deleteFromDeletionsHandler = handler
 }
 
@@ -22,7 +22,6 @@ func (protocol *Protocol) handleDeleteFromDeletions(packet nex.PacketInterface) 
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -32,7 +31,7 @@ func (protocol *Protocol) handleDeleteFromDeletions(packet nex.PacketInterface) 
 
 	lstDeletions, err := parametersStream.ReadListUInt32LE()
 	if err != nil {
-		errorCode = protocol.deleteFromDeletionsHandler(fmt.Errorf("Failed to read lstDeletionsCount from parameters. %s", err.Error()), client, callID, nil, 0)
+		errorCode = protocol.deleteFromDeletionsHandler(fmt.Errorf("Failed to read lstDeletionsCount from parameters. %s", err.Error()), packet, callID, nil, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -42,7 +41,7 @@ func (protocol *Protocol) handleDeleteFromDeletions(packet nex.PacketInterface) 
 
 	pid, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.deleteFromDeletionsHandler(fmt.Errorf("Failed to read pid from parameters. %s", err.Error()), client, callID, nil, 0)
+		errorCode = protocol.deleteFromDeletionsHandler(fmt.Errorf("Failed to read pid from parameters. %s", err.Error()), packet, callID, nil, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -50,7 +49,7 @@ func (protocol *Protocol) handleDeleteFromDeletions(packet nex.PacketInterface) 
 		return
 	}
 
-	errorCode = protocol.deleteFromDeletionsHandler(nil, client, callID, lstDeletions, pid)
+	errorCode = protocol.deleteFromDeletionsHandler(nil, packet, callID, lstDeletions, pid)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

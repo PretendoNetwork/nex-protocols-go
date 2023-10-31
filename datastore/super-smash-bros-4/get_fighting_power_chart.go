@@ -9,7 +9,7 @@ import (
 )
 
 // GetFightingPowerChart sets the GetFightingPowerChart handler function
-func (protocol *Protocol) GetFightingPowerChart(handler func(err error, client *nex.Client, callID uint32, mode uint8) uint32) {
+func (protocol *Protocol) GetFightingPowerChart(handler func(err error, packet nex.PacketInterface, callID uint32, mode uint8) uint32) {
 	protocol.getFightingPowerChartHandler = handler
 }
 
@@ -22,7 +22,6 @@ func (protocol *Protocol) handleGetFightingPowerChart(packet nex.PacketInterface
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -32,7 +31,7 @@ func (protocol *Protocol) handleGetFightingPowerChart(packet nex.PacketInterface
 
 	mode, err := parametersStream.ReadUInt8()
 	if err != nil {
-		errorCode = protocol.getFightingPowerChartHandler(fmt.Errorf("Failed to read mode from parameters. %s", err.Error()), client, callID, 0)
+		errorCode = protocol.getFightingPowerChartHandler(fmt.Errorf("Failed to read mode from parameters. %s", err.Error()), packet, callID, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -40,7 +39,7 @@ func (protocol *Protocol) handleGetFightingPowerChart(packet nex.PacketInterface
 		return
 	}
 
-	errorCode = protocol.getFightingPowerChartHandler(nil, client, callID, mode)
+	errorCode = protocol.getFightingPowerChartHandler(nil, packet, callID, mode)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

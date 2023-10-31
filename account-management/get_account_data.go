@@ -7,7 +7,7 @@ import (
 )
 
 // GetAccountData sets the GetAccountData handler function
-func (protocol *Protocol) GetAccountData(handler func(err error, client *nex.Client, callID uint32) uint32) {
+func (protocol *Protocol) GetAccountData(handler func(err error, packet nex.PacketInterface, callID uint32) uint32) {
 	protocol.getAccountDataHandler = handler
 }
 
@@ -20,12 +20,11 @@ func (protocol *Protocol) handleGetAccountData(packet nex.PacketInterface) {
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
 
-	errorCode = protocol.getAccountDataHandler(nil, client, callID)
+	errorCode = protocol.getAccountDataHandler(nil, packet, callID)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

@@ -9,7 +9,7 @@ import (
 )
 
 // DeclineInvitation sets the DeclineInvitation handler function
-func (protocol *Protocol) DeclineInvitation(handler func(err error, client *nex.Client, callID uint32, idGathering uint32, strMessage string) uint32) {
+func (protocol *Protocol) DeclineInvitation(handler func(err error, packet nex.PacketInterface, callID uint32, idGathering uint32, strMessage string) uint32) {
 	protocol.declineInvitationHandler = handler
 }
 
@@ -22,7 +22,6 @@ func (protocol *Protocol) handleDeclineInvitation(packet nex.PacketInterface) {
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -32,7 +31,7 @@ func (protocol *Protocol) handleDeclineInvitation(packet nex.PacketInterface) {
 
 	idGathering, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.declineInvitationHandler(fmt.Errorf("Failed to read idGathering from parameters. %s", err.Error()), client, callID, 0, "")
+		errorCode = protocol.declineInvitationHandler(fmt.Errorf("Failed to read idGathering from parameters. %s", err.Error()), packet, callID, 0, "")
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -42,7 +41,7 @@ func (protocol *Protocol) handleDeclineInvitation(packet nex.PacketInterface) {
 
 	strMessage, err := parametersStream.ReadString()
 	if err != nil {
-		errorCode = protocol.declineInvitationHandler(fmt.Errorf("Failed to read strMessage from parameters. %s", err.Error()), client, callID, 0, "")
+		errorCode = protocol.declineInvitationHandler(fmt.Errorf("Failed to read strMessage from parameters. %s", err.Error()), packet, callID, 0, "")
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -50,7 +49,7 @@ func (protocol *Protocol) handleDeclineInvitation(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.declineInvitationHandler(nil, client, callID, idGathering, strMessage)
+	errorCode = protocol.declineInvitationHandler(nil, packet, callID, idGathering, strMessage)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

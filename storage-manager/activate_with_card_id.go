@@ -9,7 +9,7 @@ import (
 )
 
 // ActivateWithCardID sets the ActivateWithCardID handler function
-func (protocol *Protocol) ActivateWithCardID(handler func(err error, client *nex.Client, callID uint32, unknown uint8, cardID uint64) uint32) {
+func (protocol *Protocol) ActivateWithCardID(handler func(err error, packet nex.PacketInterface, callID uint32, unknown uint8, cardID uint64) uint32) {
 	protocol.activateWithCardIDHandler = handler
 }
 
@@ -22,7 +22,6 @@ func (protocol *Protocol) handleActivateWithCardID(packet nex.PacketInterface) {
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -32,7 +31,7 @@ func (protocol *Protocol) handleActivateWithCardID(packet nex.PacketInterface) {
 
 	unknown, err := parametersStream.ReadUInt8()
 	if err != nil {
-		errorCode = protocol.activateWithCardIDHandler(fmt.Errorf("Failed to read unknown from parameters. %s", err.Error()), client, callID, 0, 0)
+		errorCode = protocol.activateWithCardIDHandler(fmt.Errorf("Failed to read unknown from parameters. %s", err.Error()), packet, callID, 0, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -42,7 +41,7 @@ func (protocol *Protocol) handleActivateWithCardID(packet nex.PacketInterface) {
 
 	cardID, err := parametersStream.ReadUInt64LE()
 	if err != nil {
-		errorCode = protocol.activateWithCardIDHandler(fmt.Errorf("Failed to read cardID from parameters. %s", err.Error()), client, callID, 0, 0)
+		errorCode = protocol.activateWithCardIDHandler(fmt.Errorf("Failed to read cardID from parameters. %s", err.Error()), packet, callID, 0, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -50,7 +49,7 @@ func (protocol *Protocol) handleActivateWithCardID(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.activateWithCardIDHandler(nil, client, callID, unknown, cardID)
+	errorCode = protocol.activateWithCardIDHandler(nil, packet, callID, unknown, cardID)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

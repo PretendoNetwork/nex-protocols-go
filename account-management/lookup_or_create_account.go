@@ -9,7 +9,7 @@ import (
 )
 
 // LookupOrCreateAccount sets the LookupOrCreateAccount handler function
-func (protocol *Protocol) LookupOrCreateAccount(handler func(err error, client *nex.Client, callID uint32, strPrincipalName string, strKey string, uiGroups uint32, strEmail string, oAuthData *nex.DataHolder) uint32) {
+func (protocol *Protocol) LookupOrCreateAccount(handler func(err error, packet nex.PacketInterface, callID uint32, strPrincipalName string, strKey string, uiGroups uint32, strEmail string, oAuthData *nex.DataHolder) uint32) {
 	protocol.lookupOrCreateAccountHandler = handler
 }
 
@@ -22,7 +22,6 @@ func (protocol *Protocol) handleLookupOrCreateAccount(packet nex.PacketInterface
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -32,7 +31,7 @@ func (protocol *Protocol) handleLookupOrCreateAccount(packet nex.PacketInterface
 
 	strPrincipalName, err := parametersStream.ReadString()
 	if err != nil {
-		errorCode = protocol.lookupOrCreateAccountHandler(fmt.Errorf("Failed to read strPrincipalName from parameters. %s", err.Error()), client, callID, "", "", 0, "", nil)
+		errorCode = protocol.lookupOrCreateAccountHandler(fmt.Errorf("Failed to read strPrincipalName from parameters. %s", err.Error()), packet, callID, "", "", 0, "", nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -42,7 +41,7 @@ func (protocol *Protocol) handleLookupOrCreateAccount(packet nex.PacketInterface
 
 	strKey, err := parametersStream.ReadString()
 	if err != nil {
-		errorCode = protocol.lookupOrCreateAccountHandler(fmt.Errorf("Failed to read strKey from parameters. %s", err.Error()), client, callID, "", "", 0, "", nil)
+		errorCode = protocol.lookupOrCreateAccountHandler(fmt.Errorf("Failed to read strKey from parameters. %s", err.Error()), packet, callID, "", "", 0, "", nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -52,7 +51,7 @@ func (protocol *Protocol) handleLookupOrCreateAccount(packet nex.PacketInterface
 
 	uiGroups, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.lookupOrCreateAccountHandler(fmt.Errorf("Failed to read uiGroups from parameters. %s", err.Error()), client, callID, "", "", 0, "", nil)
+		errorCode = protocol.lookupOrCreateAccountHandler(fmt.Errorf("Failed to read uiGroups from parameters. %s", err.Error()), packet, callID, "", "", 0, "", nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -62,7 +61,7 @@ func (protocol *Protocol) handleLookupOrCreateAccount(packet nex.PacketInterface
 
 	strEmail, err := parametersStream.ReadString()
 	if err != nil {
-		errorCode = protocol.lookupOrCreateAccountHandler(fmt.Errorf("Failed to read strEmail from parameters. %s", err.Error()), client, callID, "", "", 0, "", nil)
+		errorCode = protocol.lookupOrCreateAccountHandler(fmt.Errorf("Failed to read strEmail from parameters. %s", err.Error()), packet, callID, "", "", 0, "", nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -72,7 +71,7 @@ func (protocol *Protocol) handleLookupOrCreateAccount(packet nex.PacketInterface
 
 	oAuthData, err := parametersStream.ReadDataHolder()
 	if err != nil {
-		errorCode = protocol.lookupOrCreateAccountHandler(fmt.Errorf("Failed to read oAuthData from parameters. %s", err.Error()), client, callID, "", "", 0, "", nil)
+		errorCode = protocol.lookupOrCreateAccountHandler(fmt.Errorf("Failed to read oAuthData from parameters. %s", err.Error()), packet, callID, "", "", 0, "", nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -80,7 +79,7 @@ func (protocol *Protocol) handleLookupOrCreateAccount(packet nex.PacketInterface
 		return
 	}
 
-	errorCode = protocol.lookupOrCreateAccountHandler(nil, client, callID, strPrincipalName, strKey, uiGroups, strEmail, oAuthData)
+	errorCode = protocol.lookupOrCreateAccountHandler(nil, packet, callID, strPrincipalName, strKey, uiGroups, strEmail, oAuthData)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

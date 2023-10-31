@@ -9,7 +9,7 @@ import (
 )
 
 // GetMultiplePublicData sets the GetMultiplePublicData handler function
-func (protocol *Protocol) GetMultiplePublicData(handler func(err error, client *nex.Client, callID uint32, lstPrincipals []uint32) uint32) {
+func (protocol *Protocol) GetMultiplePublicData(handler func(err error, packet nex.PacketInterface, callID uint32, lstPrincipals []uint32) uint32) {
 	protocol.getMultiplePublicDataHandler = handler
 }
 
@@ -22,7 +22,6 @@ func (protocol *Protocol) handleGetMultiplePublicData(packet nex.PacketInterface
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -32,7 +31,7 @@ func (protocol *Protocol) handleGetMultiplePublicData(packet nex.PacketInterface
 
 	lstPrincipals, err := parametersStream.ReadListUInt32LE()
 	if err != nil {
-		errorCode = protocol.getMultiplePublicDataHandler(fmt.Errorf("Failed to read lstPrincipals from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.getMultiplePublicDataHandler(fmt.Errorf("Failed to read lstPrincipals from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -40,7 +39,7 @@ func (protocol *Protocol) handleGetMultiplePublicData(packet nex.PacketInterface
 		return
 	}
 
-	errorCode = protocol.getMultiplePublicDataHandler(nil, client, callID, lstPrincipals)
+	errorCode = protocol.getMultiplePublicDataHandler(nil, packet, callID, lstPrincipals)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

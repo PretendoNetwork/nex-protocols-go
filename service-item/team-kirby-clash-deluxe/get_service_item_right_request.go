@@ -10,7 +10,7 @@ import (
 )
 
 // GetServiceItemRightRequest sets the GetServiceItemRightRequest handler function
-func (protocol *Protocol) GetServiceItemRightRequest(handler func(err error, client *nex.Client, callID uint32, getServiceItemRightParam *service_item_team_kirby_clash_deluxe_types.ServiceItemGetServiceItemRightParam, withoutRightBinary bool) uint32) {
+func (protocol *Protocol) GetServiceItemRightRequest(handler func(err error, packet nex.PacketInterface, callID uint32, getServiceItemRightParam *service_item_team_kirby_clash_deluxe_types.ServiceItemGetServiceItemRightParam, withoutRightBinary bool) uint32) {
 	protocol.getServiceItemRightRequestHandler = handler
 }
 
@@ -23,7 +23,6 @@ func (protocol *Protocol) handleGetServiceItemRightRequest(packet nex.PacketInte
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -33,7 +32,7 @@ func (protocol *Protocol) handleGetServiceItemRightRequest(packet nex.PacketInte
 
 	getServiceItemRightParam, err := parametersStream.ReadStructure(service_item_team_kirby_clash_deluxe_types.NewServiceItemGetServiceItemRightParam())
 	if err != nil {
-		errorCode = protocol.getServiceItemRightRequestHandler(fmt.Errorf("Failed to read getServiceItemRightParam from parameters. %s", err.Error()), client, callID, nil, false)
+		errorCode = protocol.getServiceItemRightRequestHandler(fmt.Errorf("Failed to read getServiceItemRightParam from parameters. %s", err.Error()), packet, callID, nil, false)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -43,7 +42,7 @@ func (protocol *Protocol) handleGetServiceItemRightRequest(packet nex.PacketInte
 
 	withoutRightBinary, err := parametersStream.ReadBool()
 	if err != nil {
-		errorCode = protocol.getServiceItemRightRequestHandler(fmt.Errorf("Failed to read withoutRightBinary from parameters. %s", err.Error()), client, callID, nil, false)
+		errorCode = protocol.getServiceItemRightRequestHandler(fmt.Errorf("Failed to read withoutRightBinary from parameters. %s", err.Error()), packet, callID, nil, false)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -51,7 +50,7 @@ func (protocol *Protocol) handleGetServiceItemRightRequest(packet nex.PacketInte
 		return
 	}
 
-	errorCode = protocol.getServiceItemRightRequestHandler(nil, client, callID, getServiceItemRightParam.(*service_item_team_kirby_clash_deluxe_types.ServiceItemGetServiceItemRightParam), withoutRightBinary)
+	errorCode = protocol.getServiceItemRightRequestHandler(nil, packet, callID, getServiceItemRightParam.(*service_item_team_kirby_clash_deluxe_types.ServiceItemGetServiceItemRightParam), withoutRightBinary)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

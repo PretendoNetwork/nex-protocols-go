@@ -9,7 +9,7 @@ import (
 )
 
 // SendInvitation sets the SendInvitation handler function
-func (protocol *Protocol) SendInvitation(handler func(err error, client *nex.Client, callID uint32, pids []uint32) uint32) {
+func (protocol *Protocol) SendInvitation(handler func(err error, packet nex.PacketInterface, callID uint32, pids []uint32) uint32) {
 	protocol.sendInvitationHandler = handler
 }
 
@@ -22,7 +22,6 @@ func (protocol *Protocol) handleSendInvitation(packet nex.PacketInterface) {
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -32,7 +31,7 @@ func (protocol *Protocol) handleSendInvitation(packet nex.PacketInterface) {
 
 	pids, err := parametersStream.ReadListUInt32LE()
 	if err != nil {
-		errorCode = protocol.sendInvitationHandler(fmt.Errorf("Failed to read pids from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.sendInvitationHandler(fmt.Errorf("Failed to read pids from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -40,7 +39,7 @@ func (protocol *Protocol) handleSendInvitation(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.sendInvitationHandler(nil, client, callID, pids)
+	errorCode = protocol.sendInvitationHandler(nil, packet, callID, pids)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

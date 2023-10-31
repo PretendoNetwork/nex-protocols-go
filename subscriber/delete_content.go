@@ -9,7 +9,7 @@ import (
 )
 
 // DeleteContent sets the DeleteContent handler function
-func (protocol *Protocol) DeleteContent(handler func(err error, client *nex.Client, callID uint32, unknown1 []string, unknown2 uint64) uint32) {
+func (protocol *Protocol) DeleteContent(handler func(err error, packet nex.PacketInterface, callID uint32, unknown1 []string, unknown2 uint64) uint32) {
 	protocol.deleteContentHandler = handler
 }
 
@@ -21,7 +21,7 @@ func (protocol *Protocol) handleDeleteContent(packet nex.PacketInterface) {
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
-	client := packet.Sender()
+
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -31,7 +31,7 @@ func (protocol *Protocol) handleDeleteContent(packet nex.PacketInterface) {
 
 	unknown1, err := parametersStream.ReadListString()
 	if err != nil {
-		errorCode = protocol.deleteContentHandler(fmt.Errorf("Failed to read unknown1 from parameters. %s", err.Error()), client, callID, nil, 0)
+		errorCode = protocol.deleteContentHandler(fmt.Errorf("Failed to read unknown1 from parameters. %s", err.Error()), packet, callID, nil, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -41,7 +41,7 @@ func (protocol *Protocol) handleDeleteContent(packet nex.PacketInterface) {
 
 	unknown2, err := parametersStream.ReadUInt64LE()
 	if err != nil {
-		errorCode = protocol.deleteContentHandler(fmt.Errorf("Failed to read unknown2 from parameters. %s", err.Error()), client, callID, nil, 0)
+		errorCode = protocol.deleteContentHandler(fmt.Errorf("Failed to read unknown2 from parameters. %s", err.Error()), packet, callID, nil, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -49,7 +49,7 @@ func (protocol *Protocol) handleDeleteContent(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.deleteContentHandler(nil, client, callID, unknown1, unknown2)
+	errorCode = protocol.deleteContentHandler(nil, packet, callID, unknown1, unknown2)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

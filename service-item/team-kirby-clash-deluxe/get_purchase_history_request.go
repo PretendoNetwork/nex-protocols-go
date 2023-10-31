@@ -10,7 +10,7 @@ import (
 )
 
 // GetPurchaseHistoryRequest sets the GetPurchaseHistoryRequest handler function
-func (protocol *Protocol) GetPurchaseHistoryRequest(handler func(err error, client *nex.Client, callID uint32, getPurchaseHistoryParam *service_item_team_kirby_clash_deluxe_types.ServiceItemGetPurchaseHistoryParam) uint32) {
+func (protocol *Protocol) GetPurchaseHistoryRequest(handler func(err error, packet nex.PacketInterface, callID uint32, getPurchaseHistoryParam *service_item_team_kirby_clash_deluxe_types.ServiceItemGetPurchaseHistoryParam) uint32) {
 	protocol.getPurchaseHistoryRequestHandler = handler
 }
 
@@ -23,7 +23,6 @@ func (protocol *Protocol) handleGetPurchaseHistoryRequest(packet nex.PacketInter
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -33,7 +32,7 @@ func (protocol *Protocol) handleGetPurchaseHistoryRequest(packet nex.PacketInter
 
 	getPurchaseHistoryParam, err := parametersStream.ReadStructure(service_item_team_kirby_clash_deluxe_types.NewServiceItemGetPurchaseHistoryParam())
 	if err != nil {
-		errorCode = protocol.getPurchaseHistoryRequestHandler(fmt.Errorf("Failed to read getPurchaseHistoryParam from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.getPurchaseHistoryRequestHandler(fmt.Errorf("Failed to read getPurchaseHistoryParam from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -41,7 +40,7 @@ func (protocol *Protocol) handleGetPurchaseHistoryRequest(packet nex.PacketInter
 		return
 	}
 
-	errorCode = protocol.getPurchaseHistoryRequestHandler(nil, client, callID, getPurchaseHistoryParam.(*service_item_team_kirby_clash_deluxe_types.ServiceItemGetPurchaseHistoryParam))
+	errorCode = protocol.getPurchaseHistoryRequestHandler(nil, packet, callID, getPurchaseHistoryParam.(*service_item_team_kirby_clash_deluxe_types.ServiceItemGetPurchaseHistoryParam))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

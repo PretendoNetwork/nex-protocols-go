@@ -10,7 +10,7 @@ import (
 )
 
 // PrepareAttachFile sets the PrepareAttachFile handler function
-func (protocol *Protocol) PrepareAttachFile(handler func(err error, client *nex.Client, callID uint32, param *datastore_super_mario_maker_types.DataStoreAttachFileParam) uint32) {
+func (protocol *Protocol) PrepareAttachFile(handler func(err error, packet nex.PacketInterface, callID uint32, param *datastore_super_mario_maker_types.DataStoreAttachFileParam) uint32) {
 	protocol.prepareAttachFileHandler = handler
 }
 
@@ -23,7 +23,6 @@ func (protocol *Protocol) handlePrepareAttachFile(packet nex.PacketInterface) {
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -33,7 +32,7 @@ func (protocol *Protocol) handlePrepareAttachFile(packet nex.PacketInterface) {
 
 	param, err := parametersStream.ReadStructure(datastore_super_mario_maker_types.NewDataStoreAttachFileParam())
 	if err != nil {
-		errorCode = protocol.prepareAttachFileHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.prepareAttachFileHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -41,7 +40,7 @@ func (protocol *Protocol) handlePrepareAttachFile(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.prepareAttachFileHandler(nil, client, callID, param.(*datastore_super_mario_maker_types.DataStoreAttachFileParam))
+	errorCode = protocol.prepareAttachFileHandler(nil, packet, callID, param.(*datastore_super_mario_maker_types.DataStoreAttachFileParam))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

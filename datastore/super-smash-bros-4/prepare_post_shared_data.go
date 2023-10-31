@@ -10,7 +10,7 @@ import (
 )
 
 // PreparePostSharedData sets the PreparePostSharedData handler function
-func (protocol *Protocol) PreparePostSharedData(handler func(err error, client *nex.Client, callID uint32, param *datastore_super_smash_bros_4_types.DataStorePreparePostSharedDataParam) uint32) {
+func (protocol *Protocol) PreparePostSharedData(handler func(err error, packet nex.PacketInterface, callID uint32, param *datastore_super_smash_bros_4_types.DataStorePreparePostSharedDataParam) uint32) {
 	protocol.preparePostSharedDataHandler = handler
 }
 
@@ -23,7 +23,6 @@ func (protocol *Protocol) handlePreparePostSharedData(packet nex.PacketInterface
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -33,7 +32,7 @@ func (protocol *Protocol) handlePreparePostSharedData(packet nex.PacketInterface
 
 	param, err := parametersStream.ReadStructure(datastore_super_smash_bros_4_types.NewDataStorePreparePostSharedDataParam())
 	if err != nil {
-		errorCode = protocol.preparePostSharedDataHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.preparePostSharedDataHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -41,7 +40,7 @@ func (protocol *Protocol) handlePreparePostSharedData(packet nex.PacketInterface
 		return
 	}
 
-	errorCode = protocol.preparePostSharedDataHandler(nil, client, callID, param.(*datastore_super_smash_bros_4_types.DataStorePreparePostSharedDataParam))
+	errorCode = protocol.preparePostSharedDataHandler(nil, packet, callID, param.(*datastore_super_smash_bros_4_types.DataStorePreparePostSharedDataParam))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

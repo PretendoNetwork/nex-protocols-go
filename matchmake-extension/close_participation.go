@@ -9,7 +9,7 @@ import (
 )
 
 // CloseParticipation sets the CloseParticipation handler function
-func (protocol *Protocol) CloseParticipation(handler func(err error, client *nex.Client, callID uint32, gid uint32) uint32) {
+func (protocol *Protocol) CloseParticipation(handler func(err error, packet nex.PacketInterface, callID uint32, gid uint32) uint32) {
 	protocol.closeParticipationHandler = handler
 }
 
@@ -22,7 +22,6 @@ func (protocol *Protocol) handleCloseParticipation(packet nex.PacketInterface) {
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -32,7 +31,7 @@ func (protocol *Protocol) handleCloseParticipation(packet nex.PacketInterface) {
 
 	gid, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.closeParticipationHandler(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), client, callID, 0)
+		errorCode = protocol.closeParticipationHandler(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), packet, callID, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -40,7 +39,7 @@ func (protocol *Protocol) handleCloseParticipation(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.closeParticipationHandler(nil, client, callID, gid)
+	errorCode = protocol.closeParticipationHandler(nil, packet, callID, gid)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

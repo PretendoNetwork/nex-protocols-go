@@ -10,7 +10,7 @@ import (
 )
 
 // UpdateUserStatus sets the UpdateUserStatus handler function
-func (protocol *Protocol) UpdateUserStatus(handler func(err error, client *nex.Client, callID uint32, unknown1 []*subscriber_types.Unknown, unknown2 []uint8) uint32) {
+func (protocol *Protocol) UpdateUserStatus(handler func(err error, packet nex.PacketInterface, callID uint32, unknown1 []*subscriber_types.Unknown, unknown2 []uint8) uint32) {
 	protocol.updateUserStatusHandler = handler
 }
 
@@ -22,7 +22,7 @@ func (protocol *Protocol) handleUpdateUserStatus(packet nex.PacketInterface) {
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
-	client := packet.Sender()
+
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -32,7 +32,7 @@ func (protocol *Protocol) handleUpdateUserStatus(packet nex.PacketInterface) {
 
 	unknown1, err := parametersStream.ReadListStructure(subscriber_types.NewUnknown())
 	if err != nil {
-		errorCode = protocol.updateUserStatusHandler(fmt.Errorf("Failed to read unknown1 from parameters. %s", err.Error()), client, callID, nil, nil)
+		errorCode = protocol.updateUserStatusHandler(fmt.Errorf("Failed to read unknown1 from parameters. %s", err.Error()), packet, callID, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -42,7 +42,7 @@ func (protocol *Protocol) handleUpdateUserStatus(packet nex.PacketInterface) {
 
 	unknown2, err := parametersStream.ReadListUInt8()
 	if err != nil {
-		errorCode = protocol.updateUserStatusHandler(fmt.Errorf("Failed to read unknown2 from parameters. %s", err.Error()), client, callID, nil, nil)
+		errorCode = protocol.updateUserStatusHandler(fmt.Errorf("Failed to read unknown2 from parameters. %s", err.Error()), packet, callID, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -50,7 +50,7 @@ func (protocol *Protocol) handleUpdateUserStatus(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.updateUserStatusHandler(nil, client, callID, unknown1.([]*subscriber_types.Unknown), unknown2)
+	errorCode = protocol.updateUserStatusHandler(nil, packet, callID, unknown1.([]*subscriber_types.Unknown), unknown2)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

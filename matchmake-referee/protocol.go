@@ -56,19 +56,19 @@ const (
 // Protocol stores all the RMC method handlers for the Matchmake Referee protocol and listens for requests
 type Protocol struct {
 	Server                       *nex.Server
-	startRoundHandler            func(err error, client *nex.Client, callID uint32, param *matchmake_referee_types.MatchmakeRefereeStartRoundParam) uint32
-	getStartRoundParamHandler    func(err error, client *nex.Client, callID uint32, roundID uint64) uint32
-	endRoundHandler              func(err error, client *nex.Client, callID uint32, endRoundParam *matchmake_referee_types.MatchmakeRefereeEndRoundParam) uint32
-	endRoundWithoutReportHandler func(err error, client *nex.Client, callID uint32, roundID uint64) uint32
-	getRoundParticipantsHandler  func(err error, client *nex.Client, callID uint32, roundID uint64) uint32
-	getNotSummarizedRoundHandler func(err error, client *nex.Client, callID uint32) uint32
-	getRoundHandler              func(err error, client *nex.Client, callID uint32, roundID uint64) uint32
-	getStatsPrimaryHandler       func(err error, client *nex.Client, callID uint32, target *matchmake_referee_types.MatchmakeRefereeStatsTarget) uint32
-	getStatsPrimariesHandler     func(err error, client *nex.Client, callID uint32, targets []*matchmake_referee_types.MatchmakeRefereeStatsTarget) uint32
-	getStatsAllHandler           func(err error, client *nex.Client, callID uint32, target *matchmake_referee_types.MatchmakeRefereeStatsTarget) uint32
-	createStatsHandler           func(err error, client *nex.Client, callID uint32, param *matchmake_referee_types.MatchmakeRefereeStatsInitParam) uint32
-	getOrCreateStatsHandler      func(err error, client *nex.Client, callID uint32, param *matchmake_referee_types.MatchmakeRefereeStatsInitParam) uint32
-	resetStatsHandler            func(err error, client *nex.Client, callID uint32) uint32
+	startRoundHandler            func(err error, packet nex.PacketInterface, callID uint32, param *matchmake_referee_types.MatchmakeRefereeStartRoundParam) uint32
+	getStartRoundParamHandler    func(err error, packet nex.PacketInterface, callID uint32, roundID uint64) uint32
+	endRoundHandler              func(err error, packet nex.PacketInterface, callID uint32, endRoundParam *matchmake_referee_types.MatchmakeRefereeEndRoundParam) uint32
+	endRoundWithoutReportHandler func(err error, packet nex.PacketInterface, callID uint32, roundID uint64) uint32
+	getRoundParticipantsHandler  func(err error, packet nex.PacketInterface, callID uint32, roundID uint64) uint32
+	getNotSummarizedRoundHandler func(err error, packet nex.PacketInterface, callID uint32) uint32
+	getRoundHandler              func(err error, packet nex.PacketInterface, callID uint32, roundID uint64) uint32
+	getStatsPrimaryHandler       func(err error, packet nex.PacketInterface, callID uint32, target *matchmake_referee_types.MatchmakeRefereeStatsTarget) uint32
+	getStatsPrimariesHandler     func(err error, packet nex.PacketInterface, callID uint32, targets []*matchmake_referee_types.MatchmakeRefereeStatsTarget) uint32
+	getStatsAllHandler           func(err error, packet nex.PacketInterface, callID uint32, target *matchmake_referee_types.MatchmakeRefereeStatsTarget) uint32
+	createStatsHandler           func(err error, packet nex.PacketInterface, callID uint32, param *matchmake_referee_types.MatchmakeRefereeStatsInitParam) uint32
+	getOrCreateStatsHandler      func(err error, packet nex.PacketInterface, callID uint32, param *matchmake_referee_types.MatchmakeRefereeStatsInitParam) uint32
+	resetStatsHandler            func(err error, packet nex.PacketInterface, callID uint32) uint32
 }
 
 // Setup initializes the protocol

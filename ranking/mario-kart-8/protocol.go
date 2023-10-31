@@ -38,9 +38,9 @@ type rankingProtocol = ranking.Protocol
 type Protocol struct {
 	Server *nex.Server
 	rankingProtocol
-	getCompetitionRankingScoreHandler    func(err error, client *nex.Client, callID uint32, packetPayload []byte) uint32
-	uploadCompetitionRankingScoreHandler func(err error, client *nex.Client, callID uint32, param *ranking_mario_kart8_types.CompetitionRankingUploadScoreParam) uint32
-	getCompetitionInfoHandler            func(err error, client *nex.Client, callID uint32, param *ranking_mario_kart8_types.CompetitionRankingInfoGetParam) uint32
+	getCompetitionRankingScoreHandler    func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) uint32
+	uploadCompetitionRankingScoreHandler func(err error, packet nex.PacketInterface, callID uint32, param *ranking_mario_kart8_types.CompetitionRankingUploadScoreParam) uint32
+	getCompetitionInfoHandler            func(err error, packet nex.PacketInterface, callID uint32, param *ranking_mario_kart8_types.CompetitionRankingInfoGetParam) uint32
 }
 
 // Setup initializes the protocol

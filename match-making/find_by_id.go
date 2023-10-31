@@ -9,7 +9,7 @@ import (
 )
 
 // FindByID sets the FindByID handler function
-func (protocol *Protocol) FindByID(handler func(err error, client *nex.Client, callID uint32, lstID []uint32) uint32) {
+func (protocol *Protocol) FindByID(handler func(err error, packet nex.PacketInterface, callID uint32, lstID []uint32) uint32) {
 	protocol.findByIDHandler = handler
 }
 
@@ -22,7 +22,6 @@ func (protocol *Protocol) handleFindByID(packet nex.PacketInterface) {
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -32,7 +31,7 @@ func (protocol *Protocol) handleFindByID(packet nex.PacketInterface) {
 
 	lstID, err := parametersStream.ReadListUInt32LE()
 	if err != nil {
-		errorCode = protocol.findByIDHandler(fmt.Errorf("Failed to read lstID from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.findByIDHandler(fmt.Errorf("Failed to read lstID from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -40,7 +39,7 @@ func (protocol *Protocol) handleFindByID(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.findByIDHandler(nil, client, callID, lstID)
+	errorCode = protocol.findByIDHandler(nil, packet, callID, lstID)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

@@ -7,7 +7,7 @@ import (
 )
 
 // PostCommunityCompetitionMatchResult sets the PostCommunityCompetitionMatchResult handler function
-func (protocol *Protocol) PostCommunityCompetitionMatchResult(handler func(err error, client *nex.Client, callID uint32, packetPayload []byte) uint32) {
+func (protocol *Protocol) PostCommunityCompetitionMatchResult(handler func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) uint32) {
 	protocol.postCommunityCompetitionMatchResultHandler = handler
 }
 
@@ -22,12 +22,11 @@ func (protocol *Protocol) handlePostCommunityCompetitionMatchResult(packet nex.P
 
 	globals.Logger.Warning("MatchmakeExtensionSuperSmashBros4::PostCommunityCompetitionMatchResult STUBBED")
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
 
-	errorCode = protocol.postCommunityCompetitionMatchResultHandler(nil, client, callID, packet.Payload())
+	errorCode = protocol.postCommunityCompetitionMatchResultHandler(nil, packet, callID, packet.Payload())
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

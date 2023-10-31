@@ -37,13 +37,13 @@ const (
 // Protocol handles the Persistent Store protocol
 type Protocol struct {
 	Server                     *nex.Server
-	findByGroupHandler         func(err error, client *nex.Client, callID uint32, uiGroup uint32) uint32
-	insertItemHandler          func(err error, client *nex.Client, callID uint32, uiGroup uint32, strTag string, bufData []byte, bReplace bool) uint32
-	removeItemHandler          func(err error, client *nex.Client, callID uint32, uiGroup uint32, strTag string) uint32
-	getItemHandler             func(err error, client *nex.Client, callID uint32, uiGroup uint32, strTag string) uint32
-	insertCustomItemHandler    func(err error, client *nex.Client, callID uint32, uiGroup uint32, strTag string, hData *nex.DataHolder, bReplace bool) uint32
-	getCustomItemHandler       func(err error, client *nex.Client, callID uint32, uiGroup uint32, strTag string) uint32
-	findItemsBySQLQueryHandler func(err error, client *nex.Client, callID uint32, uiGroup uint32, strTag string, strQuery string) uint32
+	findByGroupHandler         func(err error, packet nex.PacketInterface, callID uint32, uiGroup uint32) uint32
+	insertItemHandler          func(err error, packet nex.PacketInterface, callID uint32, uiGroup uint32, strTag string, bufData []byte, bReplace bool) uint32
+	removeItemHandler          func(err error, packet nex.PacketInterface, callID uint32, uiGroup uint32, strTag string) uint32
+	getItemHandler             func(err error, packet nex.PacketInterface, callID uint32, uiGroup uint32, strTag string) uint32
+	insertCustomItemHandler    func(err error, packet nex.PacketInterface, callID uint32, uiGroup uint32, strTag string, hData *nex.DataHolder, bReplace bool) uint32
+	getCustomItemHandler       func(err error, packet nex.PacketInterface, callID uint32, uiGroup uint32, strTag string) uint32
+	findItemsBySQLQueryHandler func(err error, packet nex.PacketInterface, callID uint32, uiGroup uint32, strTag string, strQuery string) uint32
 }
 
 // Setup initializes the protocol

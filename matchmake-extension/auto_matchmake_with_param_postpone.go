@@ -10,7 +10,7 @@ import (
 )
 
 // AutoMatchmakeWithParamPostpone sets the AutoMatchmakeWithParamPostpone handler function
-func (protocol *Protocol) AutoMatchmakeWithParamPostpone(handler func(err error, client *nex.Client, callID uint32, autoMatchmakeParam *match_making_types.AutoMatchmakeParam) uint32) {
+func (protocol *Protocol) AutoMatchmakeWithParamPostpone(handler func(err error, packet nex.PacketInterface, callID uint32, autoMatchmakeParam *match_making_types.AutoMatchmakeParam) uint32) {
 	protocol.autoMatchmakeWithParamPostponeHandler = handler
 }
 
@@ -23,7 +23,6 @@ func (protocol *Protocol) handleAutoMatchmakeWithParamPostpone(packet nex.Packet
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -33,7 +32,7 @@ func (protocol *Protocol) handleAutoMatchmakeWithParamPostpone(packet nex.Packet
 
 	autoMatchmakeParam, err := parametersStream.ReadStructure(match_making_types.NewAutoMatchmakeParam())
 	if err != nil {
-		errorCode = protocol.autoMatchmakeWithParamPostponeHandler(fmt.Errorf("Failed to read autoMatchmakeParam from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.autoMatchmakeWithParamPostponeHandler(fmt.Errorf("Failed to read autoMatchmakeParam from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -41,7 +40,7 @@ func (protocol *Protocol) handleAutoMatchmakeWithParamPostpone(packet nex.Packet
 		return
 	}
 
-	errorCode = protocol.autoMatchmakeWithParamPostponeHandler(nil, client, callID, autoMatchmakeParam.(*match_making_types.AutoMatchmakeParam))
+	errorCode = protocol.autoMatchmakeWithParamPostponeHandler(nil, packet, callID, autoMatchmakeParam.(*match_making_types.AutoMatchmakeParam))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

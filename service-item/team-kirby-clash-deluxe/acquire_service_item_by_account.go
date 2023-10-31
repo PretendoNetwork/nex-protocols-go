@@ -10,7 +10,7 @@ import (
 )
 
 // AcquireServiceItemByAccount sets the AcquireServiceItemByAccount handler function
-func (protocol *Protocol) AcquireServiceItemByAccount(handler func(err error, client *nex.Client, callID uint32, acquireServiceItemByAccountParam *service_item_team_kirby_clash_deluxe_types.ServiceItemAcquireServiceItemByAccountParam) uint32) {
+func (protocol *Protocol) AcquireServiceItemByAccount(handler func(err error, packet nex.PacketInterface, callID uint32, acquireServiceItemByAccountParam *service_item_team_kirby_clash_deluxe_types.ServiceItemAcquireServiceItemByAccountParam) uint32) {
 	protocol.acquireServiceItemByAccountHandler = handler
 }
 
@@ -23,7 +23,6 @@ func (protocol *Protocol) handleAcquireServiceItemByAccount(packet nex.PacketInt
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -33,7 +32,7 @@ func (protocol *Protocol) handleAcquireServiceItemByAccount(packet nex.PacketInt
 
 	acquireServiceItemByAccountParam, err := parametersStream.ReadStructure(service_item_team_kirby_clash_deluxe_types.NewServiceItemAcquireServiceItemByAccountParam())
 	if err != nil {
-		errorCode = protocol.acquireServiceItemByAccountHandler(fmt.Errorf("Failed to read acquireServiceItemByAccountParam from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.acquireServiceItemByAccountHandler(fmt.Errorf("Failed to read acquireServiceItemByAccountParam from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -41,7 +40,7 @@ func (protocol *Protocol) handleAcquireServiceItemByAccount(packet nex.PacketInt
 		return
 	}
 
-	errorCode = protocol.acquireServiceItemByAccountHandler(nil, client, callID, acquireServiceItemByAccountParam.(*service_item_team_kirby_clash_deluxe_types.ServiceItemAcquireServiceItemByAccountParam))
+	errorCode = protocol.acquireServiceItemByAccountHandler(nil, packet, callID, acquireServiceItemByAccountParam.(*service_item_team_kirby_clash_deluxe_types.ServiceItemAcquireServiceItemByAccountParam))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

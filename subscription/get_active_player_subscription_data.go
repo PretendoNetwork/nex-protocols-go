@@ -9,7 +9,7 @@ import (
 )
 
 // GetActivePlayerSubscriptionData sets the GetActivePlayerSubscriptionData handler function
-func (protocol *SubscriptionProtocol) GetActivePlayerSubscriptionData(handler func(err error, client *nex.Client, callID uint32)) {
+func (protocol *SubscriptionProtocol) GetActivePlayerSubscriptionData(handler func(err error, packet nex.PacketInterface, callID uint32)) {
 	protocol.getActivePlayerSubscriptionDataHandler = handler
 }
 
@@ -20,10 +20,9 @@ func (protocol *SubscriptionProtocol) handleGetActivePlayerSubscriptionData(pack
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
-	
-	go protocol.getActivePlayerSubscriptionDataHandler(nil, client, callID)
+
+	go protocol.getActivePlayerSubscriptionDataHandler(nil, packet, callID)
 }

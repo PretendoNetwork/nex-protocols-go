@@ -9,7 +9,7 @@ import (
 )
 
 // Hello sets the Hello handler function
-func (protocol *Protocol) Hello(handler func(err error, client *nex.Client, callID uint32, unknown string) uint32) {
+func (protocol *Protocol) Hello(handler func(err error, packet nex.PacketInterface, callID uint32, unknown string) uint32) {
 	protocol.helloHandler = handler
 }
 
@@ -21,7 +21,7 @@ func (protocol *Protocol) handleHello(packet nex.PacketInterface) {
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
-	client := packet.Sender()
+
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -31,7 +31,7 @@ func (protocol *Protocol) handleHello(packet nex.PacketInterface) {
 
 	unknown, err := parametersStream.ReadString()
 	if err != nil {
-		errorCode = protocol.helloHandler(fmt.Errorf("Failed to read unknown from parameters. %s", err.Error()), client, callID, "")
+		errorCode = protocol.helloHandler(fmt.Errorf("Failed to read unknown from parameters. %s", err.Error()), packet, callID, "")
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -39,7 +39,7 @@ func (protocol *Protocol) handleHello(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.helloHandler(nil, client, callID, unknown)
+	errorCode = protocol.helloHandler(nil, packet, callID, unknown)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

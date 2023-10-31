@@ -9,7 +9,7 @@ import (
 )
 
 // UpdatePrivacySetting sets the UpdatePrivacySetting handler function
-func (protocol *Protocol) UpdatePrivacySetting(handler func(err error, client *nex.Client, callID uint32, onlineStatus bool, participationCommunity bool) uint32) {
+func (protocol *Protocol) UpdatePrivacySetting(handler func(err error, packet nex.PacketInterface, callID uint32, onlineStatus bool, participationCommunity bool) uint32) {
 	protocol.updatePrivacySettingHandler = handler
 }
 
@@ -22,7 +22,6 @@ func (protocol *Protocol) handleUpdatePrivacySetting(packet nex.PacketInterface)
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -32,7 +31,7 @@ func (protocol *Protocol) handleUpdatePrivacySetting(packet nex.PacketInterface)
 
 	onlineStatus, err := parametersStream.ReadBool()
 	if err != nil {
-		errorCode = protocol.updatePrivacySettingHandler(fmt.Errorf("Failed to read onlineStatus from parameters. %s", err.Error()), client, callID, false, false)
+		errorCode = protocol.updatePrivacySettingHandler(fmt.Errorf("Failed to read onlineStatus from parameters. %s", err.Error()), packet, callID, false, false)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -42,7 +41,7 @@ func (protocol *Protocol) handleUpdatePrivacySetting(packet nex.PacketInterface)
 
 	participationCommunity, err := parametersStream.ReadBool()
 	if err != nil {
-		errorCode = protocol.updatePrivacySettingHandler(fmt.Errorf("Failed to read participationCommunity from parameters. %s", err.Error()), client, callID, false, false)
+		errorCode = protocol.updatePrivacySettingHandler(fmt.Errorf("Failed to read participationCommunity from parameters. %s", err.Error()), packet, callID, false, false)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -50,7 +49,7 @@ func (protocol *Protocol) handleUpdatePrivacySetting(packet nex.PacketInterface)
 		return
 	}
 
-	errorCode = protocol.updatePrivacySettingHandler(nil, client, callID, onlineStatus, participationCommunity)
+	errorCode = protocol.updatePrivacySettingHandler(nil, packet, callID, onlineStatus, participationCommunity)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

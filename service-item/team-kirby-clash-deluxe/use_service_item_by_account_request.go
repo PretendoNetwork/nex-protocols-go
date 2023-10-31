@@ -10,7 +10,7 @@ import (
 )
 
 // UseServiceItemByAccountRequest sets the UseServiceItemByAccountRequest handler function
-func (protocol *Protocol) UseServiceItemByAccountRequest(handler func(err error, client *nex.Client, callID uint32, useServiceItemByAccountParam *service_item_team_kirby_clash_deluxe_types.ServiceItemUseServiceItemByAccountParam) uint32) {
+func (protocol *Protocol) UseServiceItemByAccountRequest(handler func(err error, packet nex.PacketInterface, callID uint32, useServiceItemByAccountParam *service_item_team_kirby_clash_deluxe_types.ServiceItemUseServiceItemByAccountParam) uint32) {
 	protocol.useServiceItemByAccountRequestHandler = handler
 }
 
@@ -23,7 +23,6 @@ func (protocol *Protocol) handleUseServiceItemByAccountRequest(packet nex.Packet
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -33,7 +32,7 @@ func (protocol *Protocol) handleUseServiceItemByAccountRequest(packet nex.Packet
 
 	useServiceItemByAccountParam, err := parametersStream.ReadStructure(service_item_team_kirby_clash_deluxe_types.NewServiceItemUseServiceItemByAccountParam())
 	if err != nil {
-		errorCode = protocol.useServiceItemByAccountRequestHandler(fmt.Errorf("Failed to read useServiceItemByAccountParam from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.useServiceItemByAccountRequestHandler(fmt.Errorf("Failed to read useServiceItemByAccountParam from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -41,7 +40,7 @@ func (protocol *Protocol) handleUseServiceItemByAccountRequest(packet nex.Packet
 		return
 	}
 
-	errorCode = protocol.useServiceItemByAccountRequestHandler(nil, client, callID, useServiceItemByAccountParam.(*service_item_team_kirby_clash_deluxe_types.ServiceItemUseServiceItemByAccountParam))
+	errorCode = protocol.useServiceItemByAccountRequestHandler(nil, packet, callID, useServiceItemByAccountParam.(*service_item_team_kirby_clash_deluxe_types.ServiceItemUseServiceItemByAccountParam))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

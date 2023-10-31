@@ -9,7 +9,7 @@ import (
 )
 
 // GetStats sets the GetStats handler function
-func (protocol *Protocol) GetStats(handler func(err error, client *nex.Client, callID uint32, idGathering uint32, lstParticipants []uint32, lstColumns []byte) uint32) {
+func (protocol *Protocol) GetStats(handler func(err error, packet nex.PacketInterface, callID uint32, idGathering uint32, lstParticipants []uint32, lstColumns []byte) uint32) {
 	protocol.getStatsHandler = handler
 }
 
@@ -22,7 +22,6 @@ func (protocol *Protocol) handleGetStats(packet nex.PacketInterface) {
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -32,7 +31,7 @@ func (protocol *Protocol) handleGetStats(packet nex.PacketInterface) {
 
 	idGathering, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.getStatsHandler(fmt.Errorf("Failed to read idGathering from parameters. %s", err.Error()), client, callID, 0, nil, nil)
+		errorCode = protocol.getStatsHandler(fmt.Errorf("Failed to read idGathering from parameters. %s", err.Error()), packet, callID, 0, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -42,7 +41,7 @@ func (protocol *Protocol) handleGetStats(packet nex.PacketInterface) {
 
 	lstParticipants, err := parametersStream.ReadListUInt32LE()
 	if err != nil {
-		errorCode = protocol.getStatsHandler(fmt.Errorf("Failed to read lstParticipants from parameters. %s", err.Error()), client, callID, 0, nil, nil)
+		errorCode = protocol.getStatsHandler(fmt.Errorf("Failed to read lstParticipants from parameters. %s", err.Error()), packet, callID, 0, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -52,7 +51,7 @@ func (protocol *Protocol) handleGetStats(packet nex.PacketInterface) {
 
 	lstColumns, err := parametersStream.ReadBuffer() // * This is documented as List<byte>, but that's justs a buffer so...
 	if err != nil {
-		errorCode = protocol.getStatsHandler(fmt.Errorf("Failed to read lstColumns from parameters. %s", err.Error()), client, callID, 0, nil, nil)
+		errorCode = protocol.getStatsHandler(fmt.Errorf("Failed to read lstColumns from parameters. %s", err.Error()), packet, callID, 0, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -60,7 +59,7 @@ func (protocol *Protocol) handleGetStats(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.getStatsHandler(nil, client, callID, idGathering, lstParticipants, lstColumns)
+	errorCode = protocol.getStatsHandler(nil, packet, callID, idGathering, lstParticipants, lstColumns)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

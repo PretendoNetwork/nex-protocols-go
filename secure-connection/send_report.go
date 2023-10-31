@@ -9,7 +9,7 @@ import (
 )
 
 // SendReport sets the SendReport handler function
-func (protocol *Protocol) SendReport(handler func(err error, client *nex.Client, callID uint32, reportID uint32, reportData []byte) uint32) {
+func (protocol *Protocol) SendReport(handler func(err error, packet nex.PacketInterface, callID uint32, reportID uint32, reportData []byte) uint32) {
 	protocol.sendReportHandler = handler
 }
 
@@ -22,7 +22,6 @@ func (protocol *Protocol) handleSendReport(packet nex.PacketInterface) {
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -32,7 +31,7 @@ func (protocol *Protocol) handleSendReport(packet nex.PacketInterface) {
 
 	reportID, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.sendReportHandler(fmt.Errorf("Failed to read reportID from parameters. %s", err.Error()), client, callID, 0, nil)
+		errorCode = protocol.sendReportHandler(fmt.Errorf("Failed to read reportID from parameters. %s", err.Error()), packet, callID, 0, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -42,7 +41,7 @@ func (protocol *Protocol) handleSendReport(packet nex.PacketInterface) {
 
 	reportData, err := parametersStream.ReadQBuffer()
 	if err != nil {
-		errorCode = protocol.sendReportHandler(fmt.Errorf("Failed to read reportData from parameters. %s", err.Error()), client, callID, 0, nil)
+		errorCode = protocol.sendReportHandler(fmt.Errorf("Failed to read reportData from parameters. %s", err.Error()), packet, callID, 0, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -50,7 +49,7 @@ func (protocol *Protocol) handleSendReport(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.sendReportHandler(nil, client, callID, reportID, reportData)
+	errorCode = protocol.sendReportHandler(nil, packet, callID, reportID, reportData)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

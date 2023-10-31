@@ -10,7 +10,7 @@ import (
 )
 
 // GetNotificationURL sets the GetNotificationURL handler function
-func (protocol *Protocol) GetNotificationURL(handler func(err error, client *nex.Client, callID uint32, param *datastore_types.DataStoreGetNotificationURLParam) uint32) {
+func (protocol *Protocol) GetNotificationURL(handler func(err error, packet nex.PacketInterface, callID uint32, param *datastore_types.DataStoreGetNotificationURLParam) uint32) {
 	protocol.getNotificationURLHandler = handler
 }
 
@@ -23,7 +23,6 @@ func (protocol *Protocol) handleGetNotificationURL(packet nex.PacketInterface) {
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -33,7 +32,7 @@ func (protocol *Protocol) handleGetNotificationURL(packet nex.PacketInterface) {
 
 	param, err := parametersStream.ReadStructure(datastore_types.NewDataStoreGetNotificationURLParam())
 	if err != nil {
-		errorCode = protocol.getNotificationURLHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.getNotificationURLHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -41,7 +40,7 @@ func (protocol *Protocol) handleGetNotificationURL(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.getNotificationURLHandler(nil, client, callID, param.(*datastore_types.DataStoreGetNotificationURLParam))
+	errorCode = protocol.getNotificationURLHandler(nil, packet, callID, param.(*datastore_types.DataStoreGetNotificationURLParam))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

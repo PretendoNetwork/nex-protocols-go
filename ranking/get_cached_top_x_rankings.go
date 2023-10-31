@@ -10,7 +10,7 @@ import (
 )
 
 // GetCachedTopXRankings sets the GetCachedTopXRankings handler function
-func (protocol *Protocol) GetCachedTopXRankings(handler func(err error, client *nex.Client, callID uint32, categories []uint32, orderParams []*ranking_types.RankingOrderParam) uint32) {
+func (protocol *Protocol) GetCachedTopXRankings(handler func(err error, packet nex.PacketInterface, callID uint32, categories []uint32, orderParams []*ranking_types.RankingOrderParam) uint32) {
 	protocol.getCachedTopXRankingsHandler = handler
 }
 
@@ -23,7 +23,6 @@ func (protocol *Protocol) handleGetCachedTopXRankings(packet nex.PacketInterface
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -33,7 +32,7 @@ func (protocol *Protocol) handleGetCachedTopXRankings(packet nex.PacketInterface
 
 	categories, err := parametersStream.ReadListUInt32LE()
 	if err != nil {
-		errorCode = protocol.getCachedTopXRankingsHandler(fmt.Errorf("Failed to read categories from parameters. %s", err.Error()), client, callID, nil, nil)
+		errorCode = protocol.getCachedTopXRankingsHandler(fmt.Errorf("Failed to read categories from parameters. %s", err.Error()), packet, callID, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -43,7 +42,7 @@ func (protocol *Protocol) handleGetCachedTopXRankings(packet nex.PacketInterface
 
 	orderParams, err := parametersStream.ReadListStructure(ranking_types.NewRankingOrderParam())
 	if err != nil {
-		errorCode = protocol.getCachedTopXRankingsHandler(fmt.Errorf("Failed to read orderParams from parameters. %s", err.Error()), client, callID, nil, nil)
+		errorCode = protocol.getCachedTopXRankingsHandler(fmt.Errorf("Failed to read orderParams from parameters. %s", err.Error()), packet, callID, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -51,7 +50,7 @@ func (protocol *Protocol) handleGetCachedTopXRankings(packet nex.PacketInterface
 		return
 	}
 
-	errorCode = protocol.getCachedTopXRankingsHandler(nil, client, callID, categories, orderParams.([]*ranking_types.RankingOrderParam))
+	errorCode = protocol.getCachedTopXRankingsHandler(nil, packet, callID, categories, orderParams.([]*ranking_types.RankingOrderParam))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

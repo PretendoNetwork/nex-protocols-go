@@ -9,7 +9,7 @@ import (
 )
 
 // MigrateGatheringOwnership sets the MigrateGatheringOwnership handler function
-func (protocol *Protocol) MigrateGatheringOwnership(handler func(err error, client *nex.Client, callID uint32, gid uint32, lstPotentialNewOwnersID []uint32, participantsOnly bool) uint32) {
+func (protocol *Protocol) MigrateGatheringOwnership(handler func(err error, packet nex.PacketInterface, callID uint32, gid uint32, lstPotentialNewOwnersID []uint32, participantsOnly bool) uint32) {
 	protocol.migrateGatheringOwnershipHandler = handler
 }
 
@@ -22,7 +22,6 @@ func (protocol *Protocol) handleMigrateGatheringOwnership(packet nex.PacketInter
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -32,7 +31,7 @@ func (protocol *Protocol) handleMigrateGatheringOwnership(packet nex.PacketInter
 
 	gid, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.migrateGatheringOwnershipHandler(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), client, callID, 0, nil, false)
+		errorCode = protocol.migrateGatheringOwnershipHandler(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), packet, callID, 0, nil, false)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -42,7 +41,7 @@ func (protocol *Protocol) handleMigrateGatheringOwnership(packet nex.PacketInter
 
 	lstPotentialNewOwnersID, err := parametersStream.ReadListUInt32LE()
 	if err != nil {
-		errorCode = protocol.migrateGatheringOwnershipHandler(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), client, callID, 0, nil, false)
+		errorCode = protocol.migrateGatheringOwnershipHandler(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), packet, callID, 0, nil, false)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -52,7 +51,7 @@ func (protocol *Protocol) handleMigrateGatheringOwnership(packet nex.PacketInter
 
 	participantsOnly, err := parametersStream.ReadBool()
 	if err != nil {
-		errorCode = protocol.migrateGatheringOwnershipHandler(fmt.Errorf("Failed to read participantsOnly from parameters. %s", err.Error()), client, callID, 0, nil, false)
+		errorCode = protocol.migrateGatheringOwnershipHandler(fmt.Errorf("Failed to read participantsOnly from parameters. %s", err.Error()), packet, callID, 0, nil, false)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -60,7 +59,7 @@ func (protocol *Protocol) handleMigrateGatheringOwnership(packet nex.PacketInter
 		return
 	}
 
-	errorCode = protocol.migrateGatheringOwnershipHandler(nil, client, callID, gid, lstPotentialNewOwnersID, participantsOnly)
+	errorCode = protocol.migrateGatheringOwnershipHandler(nil, packet, callID, gid, lstPotentialNewOwnersID, participantsOnly)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

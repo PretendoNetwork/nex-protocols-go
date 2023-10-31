@@ -10,7 +10,7 @@ import (
 )
 
 // ListServiceItemRequest sets the ListServiceItemRequest handler function
-func (protocol *Protocol) ListServiceItemRequest(handler func(err error, client *nex.Client, callID uint32, listServiceItemParam *service_item_team_kirby_clash_deluxe_types.ServiceItemListServiceItemParam) uint32) {
+func (protocol *Protocol) ListServiceItemRequest(handler func(err error, packet nex.PacketInterface, callID uint32, listServiceItemParam *service_item_team_kirby_clash_deluxe_types.ServiceItemListServiceItemParam) uint32) {
 	protocol.listServiceItemRequestHandler = handler
 }
 
@@ -23,7 +23,6 @@ func (protocol *Protocol) handleListServiceItemRequest(packet nex.PacketInterfac
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -33,7 +32,7 @@ func (protocol *Protocol) handleListServiceItemRequest(packet nex.PacketInterfac
 
 	listServiceItemParam, err := parametersStream.ReadStructure(service_item_team_kirby_clash_deluxe_types.NewServiceItemListServiceItemParam())
 	if err != nil {
-		errorCode = protocol.listServiceItemRequestHandler(fmt.Errorf("Failed to read listServiceItemParam from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.listServiceItemRequestHandler(fmt.Errorf("Failed to read listServiceItemParam from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -41,7 +40,7 @@ func (protocol *Protocol) handleListServiceItemRequest(packet nex.PacketInterfac
 		return
 	}
 
-	errorCode = protocol.listServiceItemRequestHandler(nil, client, callID, listServiceItemParam.(*service_item_team_kirby_clash_deluxe_types.ServiceItemListServiceItemParam))
+	errorCode = protocol.listServiceItemRequestHandler(nil, packet, callID, listServiceItemParam.(*service_item_team_kirby_clash_deluxe_types.ServiceItemListServiceItemParam))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

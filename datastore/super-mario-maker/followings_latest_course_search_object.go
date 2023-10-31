@@ -10,7 +10,7 @@ import (
 )
 
 // FollowingsLatestCourseSearchObject sets the FollowingsLatestCourseSearchObject handler function
-func (protocol *Protocol) FollowingsLatestCourseSearchObject(handler func(err error, client *nex.Client, callID uint32, param *datastore_types.DataStoreSearchParam, extraData []string) uint32) {
+func (protocol *Protocol) FollowingsLatestCourseSearchObject(handler func(err error, packet nex.PacketInterface, callID uint32, param *datastore_types.DataStoreSearchParam, extraData []string) uint32) {
 	protocol.followingsLatestCourseSearchObjectHandler = handler
 }
 
@@ -23,7 +23,6 @@ func (protocol *Protocol) handleFollowingsLatestCourseSearchObject(packet nex.Pa
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -33,7 +32,7 @@ func (protocol *Protocol) handleFollowingsLatestCourseSearchObject(packet nex.Pa
 
 	param, err := parametersStream.ReadStructure(datastore_types.NewDataStoreSearchParam())
 	if err != nil {
-		errorCode = protocol.followingsLatestCourseSearchObjectHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil, nil)
+		errorCode = protocol.followingsLatestCourseSearchObjectHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -43,7 +42,7 @@ func (protocol *Protocol) handleFollowingsLatestCourseSearchObject(packet nex.Pa
 
 	extraData, err := parametersStream.ReadListString()
 	if err != nil {
-		errorCode = protocol.followingsLatestCourseSearchObjectHandler(fmt.Errorf("Failed to read extraData from parameters. %s", err.Error()), client, callID, nil, nil)
+		errorCode = protocol.followingsLatestCourseSearchObjectHandler(fmt.Errorf("Failed to read extraData from parameters. %s", err.Error()), packet, callID, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -51,7 +50,7 @@ func (protocol *Protocol) handleFollowingsLatestCourseSearchObject(packet nex.Pa
 		return
 	}
 
-	errorCode = protocol.followingsLatestCourseSearchObjectHandler(nil, client, callID, param.(*datastore_types.DataStoreSearchParam), extraData)
+	errorCode = protocol.followingsLatestCourseSearchObjectHandler(nil, packet, callID, param.(*datastore_types.DataStoreSearchParam), extraData)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

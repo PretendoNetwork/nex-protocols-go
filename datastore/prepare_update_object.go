@@ -10,7 +10,7 @@ import (
 )
 
 // PrepareUpdateObject sets the PrepareUpdateObject handler function
-func (protocol *Protocol) PrepareUpdateObject(handler func(err error, client *nex.Client, callID uint32, param *datastore_types.DataStorePrepareUpdateParam) uint32) {
+func (protocol *Protocol) PrepareUpdateObject(handler func(err error, packet nex.PacketInterface, callID uint32, param *datastore_types.DataStorePrepareUpdateParam) uint32) {
 	protocol.prepareUpdateObjectHandler = handler
 }
 
@@ -23,7 +23,6 @@ func (protocol *Protocol) handlePrepareUpdateObject(packet nex.PacketInterface) 
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -33,7 +32,7 @@ func (protocol *Protocol) handlePrepareUpdateObject(packet nex.PacketInterface) 
 
 	param, err := parametersStream.ReadStructure(datastore_types.NewDataStorePrepareUpdateParam())
 	if err != nil {
-		errorCode = protocol.prepareUpdateObjectHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.prepareUpdateObjectHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -41,7 +40,7 @@ func (protocol *Protocol) handlePrepareUpdateObject(packet nex.PacketInterface) 
 		return
 	}
 
-	errorCode = protocol.prepareUpdateObjectHandler(nil, client, callID, param.(*datastore_types.DataStorePrepareUpdateParam))
+	errorCode = protocol.prepareUpdateObjectHandler(nil, packet, callID, param.(*datastore_types.DataStorePrepareUpdateParam))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

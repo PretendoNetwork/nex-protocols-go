@@ -10,7 +10,7 @@ import (
 )
 
 // CompletePostObject sets the CompletePostObject handler function
-func (protocol *Protocol) CompletePostObject(handler func(err error, client *nex.Client, callID uint32, param *datastore_types.DataStoreCompletePostParam) uint32) {
+func (protocol *Protocol) CompletePostObject(handler func(err error, packet nex.PacketInterface, callID uint32, param *datastore_types.DataStoreCompletePostParam) uint32) {
 	protocol.completePostObjectHandler = handler
 }
 
@@ -23,7 +23,6 @@ func (protocol *Protocol) handleCompletePostObject(packet nex.PacketInterface) {
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -33,7 +32,7 @@ func (protocol *Protocol) handleCompletePostObject(packet nex.PacketInterface) {
 
 	param, err := parametersStream.ReadStructure(datastore_types.NewDataStoreCompletePostParam())
 	if err != nil {
-		errorCode = protocol.completePostObjectHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.completePostObjectHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -41,7 +40,7 @@ func (protocol *Protocol) handleCompletePostObject(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.completePostObjectHandler(nil, client, callID, param.(*datastore_types.DataStoreCompletePostParam))
+	errorCode = protocol.completePostObjectHandler(nil, packet, callID, param.(*datastore_types.DataStoreCompletePostParam))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

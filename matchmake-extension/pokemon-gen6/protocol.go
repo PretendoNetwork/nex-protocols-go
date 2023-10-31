@@ -29,7 +29,7 @@ type matchmakeExtensionProtocol = matchmake_extension.Protocol
 type Protocol struct {
 	Server *nex.Server
 	matchmakeExtensionProtocol
-	clearMyPreviouslyMatchedUserCacheHandler func(err error, client *nex.Client, callID uint32) uint32
+	clearMyPreviouslyMatchedUserCacheHandler func(err error, packet nex.PacketInterface, callID uint32) uint32
 }
 
 // Setup initializes the protocol

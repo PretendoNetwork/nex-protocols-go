@@ -9,7 +9,7 @@ import (
 )
 
 // Hello sets the Hello handler function
-func (protocol *Protocol) Hello(handler func(err error, client *nex.Client, callID uint32, name string) uint32) {
+func (protocol *Protocol) Hello(handler func(err error, packet nex.PacketInterface, callID uint32, name string) uint32) {
 	protocol.helloHandler = handler
 }
 
@@ -22,7 +22,6 @@ func (protocol *Protocol) handleHello(packet nex.PacketInterface) {
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -32,7 +31,7 @@ func (protocol *Protocol) handleHello(packet nex.PacketInterface) {
 
 	name, err := parametersStream.ReadString()
 	if err != nil {
-		errorCode = protocol.helloHandler(fmt.Errorf("Failed to read name from parameters. %s", err.Error()), client, callID, "")
+		errorCode = protocol.helloHandler(fmt.Errorf("Failed to read name from parameters. %s", err.Error()), packet, callID, "")
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -40,7 +39,7 @@ func (protocol *Protocol) handleHello(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.helloHandler(nil, client, callID, name)
+	errorCode = protocol.helloHandler(nil, packet, callID, name)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

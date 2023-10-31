@@ -10,7 +10,7 @@ import (
 )
 
 // PrepareGetObjectOrMetaBinary sets the PrepareGetObjectOrMetaBinary handler function
-func (protocol *Protocol) PrepareGetObjectOrMetaBinary(handler func(err error, client *nex.Client, callID uint32, param *datastore_types.DataStorePrepareGetParam) uint32) {
+func (protocol *Protocol) PrepareGetObjectOrMetaBinary(handler func(err error, packet nex.PacketInterface, callID uint32, param *datastore_types.DataStorePrepareGetParam) uint32) {
 	protocol.prepareGetObjectOrMetaBinaryHandler = handler
 }
 
@@ -23,7 +23,6 @@ func (protocol *Protocol) handlePrepareGetObjectOrMetaBinary(packet nex.PacketIn
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -33,7 +32,7 @@ func (protocol *Protocol) handlePrepareGetObjectOrMetaBinary(packet nex.PacketIn
 
 	param, err := parametersStream.ReadStructure(datastore_types.NewDataStorePrepareGetParam())
 	if err != nil {
-		errorCode = protocol.prepareGetObjectOrMetaBinaryHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.prepareGetObjectOrMetaBinaryHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -41,7 +40,7 @@ func (protocol *Protocol) handlePrepareGetObjectOrMetaBinary(packet nex.PacketIn
 		return
 	}
 
-	errorCode = protocol.prepareGetObjectOrMetaBinaryHandler(nil, client, callID, param.(*datastore_types.DataStorePrepareGetParam))
+	errorCode = protocol.prepareGetObjectOrMetaBinaryHandler(nil, packet, callID, param.(*datastore_types.DataStorePrepareGetParam))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

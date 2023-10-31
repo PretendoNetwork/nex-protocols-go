@@ -10,7 +10,7 @@ import (
 )
 
 // UploadCompetitionRankingScore sets the UploadCompetitionRankingScore handler function
-func (protocol *Protocol) UploadCompetitionRankingScore(handler func(err error, client *nex.Client, callID uint32, param *ranking_mario_kart8_types.CompetitionRankingUploadScoreParam) uint32) {
+func (protocol *Protocol) UploadCompetitionRankingScore(handler func(err error, packet nex.PacketInterface, callID uint32, param *ranking_mario_kart8_types.CompetitionRankingUploadScoreParam) uint32) {
 	protocol.uploadCompetitionRankingScoreHandler = handler
 }
 
@@ -23,7 +23,6 @@ func (protocol *Protocol) handleUploadCompetitionRankingScore(packet nex.PacketI
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -33,7 +32,7 @@ func (protocol *Protocol) handleUploadCompetitionRankingScore(packet nex.PacketI
 
 	param, err := parametersStream.ReadStructure(ranking_mario_kart8_types.NewCompetitionRankingUploadScoreParam())
 	if err != nil {
-		errorCode = protocol.uploadCompetitionRankingScoreHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.uploadCompetitionRankingScoreHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -41,7 +40,7 @@ func (protocol *Protocol) handleUploadCompetitionRankingScore(packet nex.PacketI
 		return
 	}
 
-	errorCode = protocol.uploadCompetitionRankingScoreHandler(nil, client, callID, param.(*ranking_mario_kart8_types.CompetitionRankingUploadScoreParam))
+	errorCode = protocol.uploadCompetitionRankingScoreHandler(nil, packet, callID, param.(*ranking_mario_kart8_types.CompetitionRankingUploadScoreParam))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

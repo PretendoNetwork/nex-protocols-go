@@ -9,7 +9,7 @@ import (
 )
 
 // GetRound sets the GetRound handler function
-func (protocol *Protocol) GetRound(handler func(err error, client *nex.Client, callID uint32, roundID uint64) uint32) {
+func (protocol *Protocol) GetRound(handler func(err error, packet nex.PacketInterface, callID uint32, roundID uint64) uint32) {
 	protocol.getRoundHandler = handler
 }
 
@@ -22,7 +22,6 @@ func (protocol *Protocol) handleGetRound(packet nex.PacketInterface) {
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -32,7 +31,7 @@ func (protocol *Protocol) handleGetRound(packet nex.PacketInterface) {
 
 	roundID, err := parametersStream.ReadUInt64LE()
 	if err != nil {
-		errorCode = protocol.getRoundHandler(fmt.Errorf("Failed to read roundID from parameters. %s", err.Error()), client, callID, 0)
+		errorCode = protocol.getRoundHandler(fmt.Errorf("Failed to read roundID from parameters. %s", err.Error()), packet, callID, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -40,7 +39,7 @@ func (protocol *Protocol) handleGetRound(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.getRoundHandler(nil, client, callID, roundID)
+	errorCode = protocol.getRoundHandler(nil, packet, callID, roundID)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

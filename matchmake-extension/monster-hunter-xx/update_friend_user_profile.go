@@ -10,7 +10,7 @@ import (
 )
 
 // UpdateFriendUserProfile sets the UpdateFriendUserProfile handler function
-func (protocol *Protocol) UpdateFriendUserProfile(handler func(err error, client *nex.Client, callID uint32, param *matchmake_extension_monster_hunter_xx_types.FriendUserParam) uint32) {
+func (protocol *Protocol) UpdateFriendUserProfile(handler func(err error, packet nex.PacketInterface, callID uint32, param *matchmake_extension_monster_hunter_xx_types.FriendUserParam) uint32) {
 	protocol.updateFriendUserProfileHandler = handler
 }
 
@@ -23,7 +23,6 @@ func (protocol *Protocol) handleUpdateFriendUserProfile(packet nex.PacketInterfa
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -33,7 +32,7 @@ func (protocol *Protocol) handleUpdateFriendUserProfile(packet nex.PacketInterfa
 
 	param, err := parametersStream.ReadStructure(matchmake_extension_monster_hunter_xx_types.NewFriendUserParam())
 	if err != nil {
-		errorCode = protocol.updateFriendUserProfileHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.updateFriendUserProfileHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -41,7 +40,7 @@ func (protocol *Protocol) handleUpdateFriendUserProfile(packet nex.PacketInterfa
 		return
 	}
 
-	errorCode = protocol.updateFriendUserProfileHandler(nil, client, callID, param.(*matchmake_extension_monster_hunter_xx_types.FriendUserParam))
+	errorCode = protocol.updateFriendUserProfileHandler(nil, packet, callID, param.(*matchmake_extension_monster_hunter_xx_types.FriendUserParam))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

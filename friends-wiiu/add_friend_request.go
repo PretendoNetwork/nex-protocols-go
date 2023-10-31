@@ -10,7 +10,7 @@ import (
 )
 
 // AddFriendRequest sets the AddFriendRequest handler function
-func (protocol *Protocol) AddFriendRequest(handler func(err error, client *nex.Client, callID uint32, pid uint32, unknown2 uint8, message string, unknown4 uint8, unknown5 string, gameKey *friends_wiiu_types.GameKey, unknown6 *nex.DateTime) uint32) {
+func (protocol *Protocol) AddFriendRequest(handler func(err error, packet nex.PacketInterface, callID uint32, pid uint32, unknown2 uint8, message string, unknown4 uint8, unknown5 string, gameKey *friends_wiiu_types.GameKey, unknown6 *nex.DateTime) uint32) {
 	protocol.addFriendRequestHandler = handler
 }
 
@@ -23,7 +23,6 @@ func (protocol *Protocol) handleAddFriendRequest(packet nex.PacketInterface) {
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -33,7 +32,7 @@ func (protocol *Protocol) handleAddFriendRequest(packet nex.PacketInterface) {
 
 	pid, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.addFriendRequestHandler(fmt.Errorf("Failed to read pid from parameters. %s", err.Error()), client, callID, 0, 0, "", 0, "", nil, nil)
+		errorCode = protocol.addFriendRequestHandler(fmt.Errorf("Failed to read pid from parameters. %s", err.Error()), packet, callID, 0, 0, "", 0, "", nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -42,7 +41,7 @@ func (protocol *Protocol) handleAddFriendRequest(packet nex.PacketInterface) {
 	}
 	unknown2, err := parametersStream.ReadUInt8()
 	if err != nil {
-		errorCode = protocol.addFriendRequestHandler(fmt.Errorf("Failed to read unknown2 from parameters. %s", err.Error()), client, callID, 0, 0, "", 0, "", nil, nil)
+		errorCode = protocol.addFriendRequestHandler(fmt.Errorf("Failed to read unknown2 from parameters. %s", err.Error()), packet, callID, 0, 0, "", 0, "", nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -52,7 +51,7 @@ func (protocol *Protocol) handleAddFriendRequest(packet nex.PacketInterface) {
 
 	message, err := parametersStream.ReadString()
 	if err != nil {
-		errorCode = protocol.addFriendRequestHandler(fmt.Errorf("Failed to read message from parameters. %s", err.Error()), client, callID, 0, 0, "", 0, "", nil, nil)
+		errorCode = protocol.addFriendRequestHandler(fmt.Errorf("Failed to read message from parameters. %s", err.Error()), packet, callID, 0, 0, "", 0, "", nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -62,7 +61,7 @@ func (protocol *Protocol) handleAddFriendRequest(packet nex.PacketInterface) {
 
 	unknown4, err := parametersStream.ReadUInt8()
 	if err != nil {
-		errorCode = protocol.addFriendRequestHandler(fmt.Errorf("Failed to read unknown4 from parameters. %s", err.Error()), client, callID, 0, 0, "", 0, "", nil, nil)
+		errorCode = protocol.addFriendRequestHandler(fmt.Errorf("Failed to read unknown4 from parameters. %s", err.Error()), packet, callID, 0, 0, "", 0, "", nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -72,7 +71,7 @@ func (protocol *Protocol) handleAddFriendRequest(packet nex.PacketInterface) {
 
 	unknown5, err := parametersStream.ReadString()
 	if err != nil {
-		errorCode = protocol.addFriendRequestHandler(fmt.Errorf("Failed to read unknown5 from parameters. %s", err.Error()), client, callID, 0, 0, "", 0, "", nil, nil)
+		errorCode = protocol.addFriendRequestHandler(fmt.Errorf("Failed to read unknown5 from parameters. %s", err.Error()), packet, callID, 0, 0, "", 0, "", nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -82,7 +81,7 @@ func (protocol *Protocol) handleAddFriendRequest(packet nex.PacketInterface) {
 
 	gameKey, err := parametersStream.ReadStructure(friends_wiiu_types.NewGameKey())
 	if err != nil {
-		errorCode = protocol.addFriendRequestHandler(fmt.Errorf("Failed to read gameKey from parameters. %s", err.Error()), client, callID, 0, 0, "", 0, "", nil, nil)
+		errorCode = protocol.addFriendRequestHandler(fmt.Errorf("Failed to read gameKey from parameters. %s", err.Error()), packet, callID, 0, 0, "", 0, "", nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -92,7 +91,7 @@ func (protocol *Protocol) handleAddFriendRequest(packet nex.PacketInterface) {
 
 	unknown6, err := parametersStream.ReadDateTime()
 	if err != nil {
-		errorCode = protocol.addFriendRequestHandler(fmt.Errorf("Failed to read unknown6 from parameters. %s", err.Error()), client, callID, 0, 0, "", 0, "", nil, nil)
+		errorCode = protocol.addFriendRequestHandler(fmt.Errorf("Failed to read unknown6 from parameters. %s", err.Error()), packet, callID, 0, 0, "", 0, "", nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -100,7 +99,7 @@ func (protocol *Protocol) handleAddFriendRequest(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.addFriendRequestHandler(nil, client, callID, pid, unknown2, message, unknown4, unknown5, gameKey.(*friends_wiiu_types.GameKey), unknown6)
+	errorCode = protocol.addFriendRequestHandler(nil, packet, callID, pid, unknown2, message, unknown4, unknown5, gameKey.(*friends_wiiu_types.GameKey), unknown6)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

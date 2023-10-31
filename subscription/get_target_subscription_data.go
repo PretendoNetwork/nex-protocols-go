@@ -9,7 +9,7 @@ import (
 )
 
 // GetTargetSubscriptionData sets the GetTargetSubscriptionData handler function
-func (protocol *SubscriptionProtocol) GetTargetSubscriptionData(handler func(err error, client *nex.Client, callID uint32)) {
+func (protocol *SubscriptionProtocol) GetTargetSubscriptionData(handler func(err error, packet nex.PacketInterface, callID uint32)) {
 	protocol.getTargetSubscriptionDataHandler = handler
 }
 
@@ -20,10 +20,9 @@ func (protocol *SubscriptionProtocol) handleGetTargetSubscriptionData(packet nex
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
 
-	go protocol.getTargetSubscriptionDataHandler(nil, client, callID)
+	go protocol.getTargetSubscriptionDataHandler(nil, packet, callID)
 }

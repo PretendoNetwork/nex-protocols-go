@@ -10,7 +10,7 @@ import (
 )
 
 // PostMetaBinary sets the PostMetaBinary handler function
-func (protocol *Protocol) PostMetaBinary(handler func(err error, client *nex.Client, callID uint32, param *datastore_types.DataStorePreparePostParam) uint32) {
+func (protocol *Protocol) PostMetaBinary(handler func(err error, packet nex.PacketInterface, callID uint32, param *datastore_types.DataStorePreparePostParam) uint32) {
 	protocol.postMetaBinaryHandler = handler
 }
 
@@ -23,7 +23,6 @@ func (protocol *Protocol) handlePostMetaBinary(packet nex.PacketInterface) {
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -33,7 +32,7 @@ func (protocol *Protocol) handlePostMetaBinary(packet nex.PacketInterface) {
 
 	param, err := parametersStream.ReadStructure(datastore_types.NewDataStorePreparePostParam())
 	if err != nil {
-		errorCode = protocol.postMetaBinaryHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.postMetaBinaryHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -41,7 +40,7 @@ func (protocol *Protocol) handlePostMetaBinary(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.postMetaBinaryHandler(nil, client, callID, param.(*datastore_types.DataStorePreparePostParam))
+	errorCode = protocol.postMetaBinaryHandler(nil, packet, callID, param.(*datastore_types.DataStorePreparePostParam))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

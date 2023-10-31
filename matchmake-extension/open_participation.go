@@ -9,7 +9,7 @@ import (
 )
 
 // OpenParticipation sets the OpenParticipation handler function
-func (protocol *Protocol) OpenParticipation(handler func(err error, client *nex.Client, callID uint32, gid uint32) uint32) {
+func (protocol *Protocol) OpenParticipation(handler func(err error, packet nex.PacketInterface, callID uint32, gid uint32) uint32) {
 	protocol.openParticipationHandler = handler
 }
 
@@ -22,7 +22,6 @@ func (protocol *Protocol) handleOpenParticipation(packet nex.PacketInterface) {
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -32,7 +31,7 @@ func (protocol *Protocol) handleOpenParticipation(packet nex.PacketInterface) {
 
 	gid, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.openParticipationHandler(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), client, callID, 0)
+		errorCode = protocol.openParticipationHandler(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), packet, callID, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -40,7 +39,7 @@ func (protocol *Protocol) handleOpenParticipation(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.openParticipationHandler(nil, client, callID, gid)
+	errorCode = protocol.openParticipationHandler(nil, packet, callID, gid)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

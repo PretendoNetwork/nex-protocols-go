@@ -10,7 +10,7 @@ import (
 )
 
 // DeleteObjects sets the DeleteObjects handler function
-func (protocol *Protocol) DeleteObjects(handler func(err error, client *nex.Client, callID uint32, params []*datastore_types.DataStoreDeleteParam, transactional bool) uint32) {
+func (protocol *Protocol) DeleteObjects(handler func(err error, packet nex.PacketInterface, callID uint32, params []*datastore_types.DataStoreDeleteParam, transactional bool) uint32) {
 	protocol.deleteObjectsHandler = handler
 }
 
@@ -23,7 +23,6 @@ func (protocol *Protocol) handleDeleteObjects(packet nex.PacketInterface) {
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -33,7 +32,7 @@ func (protocol *Protocol) handleDeleteObjects(packet nex.PacketInterface) {
 
 	params, err := parametersStream.ReadListStructure(datastore_types.NewDataStoreDeleteParam())
 	if err != nil {
-		errorCode = protocol.deleteObjectsHandler(fmt.Errorf("Failed to read params from parameters. %s", err.Error()), client, callID, nil, false)
+		errorCode = protocol.deleteObjectsHandler(fmt.Errorf("Failed to read params from parameters. %s", err.Error()), packet, callID, nil, false)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -43,7 +42,7 @@ func (protocol *Protocol) handleDeleteObjects(packet nex.PacketInterface) {
 
 	transactional, err := parametersStream.ReadBool()
 	if err != nil {
-		errorCode = protocol.deleteObjectsHandler(fmt.Errorf("Failed to read transactional from parameters. %s", err.Error()), client, callID, nil, false)
+		errorCode = protocol.deleteObjectsHandler(fmt.Errorf("Failed to read transactional from parameters. %s", err.Error()), packet, callID, nil, false)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -51,7 +50,7 @@ func (protocol *Protocol) handleDeleteObjects(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.deleteObjectsHandler(nil, client, callID, params.([]*datastore_types.DataStoreDeleteParam), transactional)
+	errorCode = protocol.deleteObjectsHandler(nil, packet, callID, params.([]*datastore_types.DataStoreDeleteParam), transactional)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

@@ -9,7 +9,7 @@ import (
 )
 
 // MarkFriendRequestsAsReceived sets the MarkFriendRequestsAsReceived handler function
-func (protocol *Protocol) MarkFriendRequestsAsReceived(handler func(err error, client *nex.Client, callID uint32, ids []uint64) uint32) {
+func (protocol *Protocol) MarkFriendRequestsAsReceived(handler func(err error, packet nex.PacketInterface, callID uint32, ids []uint64) uint32) {
 	protocol.markFriendRequestsAsReceivedHandler = handler
 }
 
@@ -22,7 +22,6 @@ func (protocol *Protocol) handleMarkFriendRequestsAsReceived(packet nex.PacketIn
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -32,7 +31,7 @@ func (protocol *Protocol) handleMarkFriendRequestsAsReceived(packet nex.PacketIn
 
 	ids, err := parametersStream.ReadListUInt64LE()
 	if err != nil {
-		errorCode = protocol.getRequestBlockSettingsHandler(fmt.Errorf("Failed to read ids from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.getRequestBlockSettingsHandler(fmt.Errorf("Failed to read ids from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -40,7 +39,7 @@ func (protocol *Protocol) handleMarkFriendRequestsAsReceived(packet nex.PacketIn
 		return
 	}
 
-	errorCode = protocol.markFriendRequestsAsReceivedHandler(nil, client, callID, ids)
+	errorCode = protocol.markFriendRequestsAsReceivedHandler(nil, packet, callID, ids)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

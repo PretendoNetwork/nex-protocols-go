@@ -9,7 +9,7 @@ import (
 )
 
 // CreateAccountWithCustomData sets the CreateAccountWithCustomData handler function
-func (protocol *Protocol) CreateAccountWithCustomData(handler func(err error, client *nex.Client, callID uint32, strPrincipalName string, strKey string, uiGroups uint32, strEmail string, oPublicData *nex.DataHolder, oPrivateData *nex.DataHolder) uint32) {
+func (protocol *Protocol) CreateAccountWithCustomData(handler func(err error, packet nex.PacketInterface, callID uint32, strPrincipalName string, strKey string, uiGroups uint32, strEmail string, oPublicData *nex.DataHolder, oPrivateData *nex.DataHolder) uint32) {
 	protocol.createAccountWithCustomDataHandler = handler
 }
 
@@ -22,7 +22,6 @@ func (protocol *Protocol) handleCreateAccountWithCustomData(packet nex.PacketInt
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -32,7 +31,7 @@ func (protocol *Protocol) handleCreateAccountWithCustomData(packet nex.PacketInt
 
 	strPrincipalName, err := parametersStream.ReadString()
 	if err != nil {
-		errorCode = protocol.createAccountWithCustomDataHandler(fmt.Errorf("Failed to read strPrincipalName from parameters. %s", err.Error()), client, callID, "", "", 0, "", nil, nil)
+		errorCode = protocol.createAccountWithCustomDataHandler(fmt.Errorf("Failed to read strPrincipalName from parameters. %s", err.Error()), packet, callID, "", "", 0, "", nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -42,7 +41,7 @@ func (protocol *Protocol) handleCreateAccountWithCustomData(packet nex.PacketInt
 
 	strKey, err := parametersStream.ReadString()
 	if err != nil {
-		errorCode = protocol.createAccountWithCustomDataHandler(fmt.Errorf("Failed to read strKey from parameters. %s", err.Error()), client, callID, "", "", 0, "", nil, nil)
+		errorCode = protocol.createAccountWithCustomDataHandler(fmt.Errorf("Failed to read strKey from parameters. %s", err.Error()), packet, callID, "", "", 0, "", nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -52,7 +51,7 @@ func (protocol *Protocol) handleCreateAccountWithCustomData(packet nex.PacketInt
 
 	uiGroups, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.createAccountWithCustomDataHandler(fmt.Errorf("Failed to read uiGroups from parameters. %s", err.Error()), client, callID, "", "", 0, "", nil, nil)
+		errorCode = protocol.createAccountWithCustomDataHandler(fmt.Errorf("Failed to read uiGroups from parameters. %s", err.Error()), packet, callID, "", "", 0, "", nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -62,7 +61,7 @@ func (protocol *Protocol) handleCreateAccountWithCustomData(packet nex.PacketInt
 
 	strEmail, err := parametersStream.ReadString()
 	if err != nil {
-		errorCode = protocol.createAccountWithCustomDataHandler(fmt.Errorf("Failed to read strEmail from parameters. %s", err.Error()), client, callID, "", "", 0, "", nil, nil)
+		errorCode = protocol.createAccountWithCustomDataHandler(fmt.Errorf("Failed to read strEmail from parameters. %s", err.Error()), packet, callID, "", "", 0, "", nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -72,7 +71,7 @@ func (protocol *Protocol) handleCreateAccountWithCustomData(packet nex.PacketInt
 
 	oPublicData, err := parametersStream.ReadDataHolder()
 	if err != nil {
-		errorCode = protocol.createAccountWithCustomDataHandler(fmt.Errorf("Failed to read oPublicData from parameters. %s", err.Error()), client, callID, "", "", 0, "", nil, nil)
+		errorCode = protocol.createAccountWithCustomDataHandler(fmt.Errorf("Failed to read oPublicData from parameters. %s", err.Error()), packet, callID, "", "", 0, "", nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -82,7 +81,7 @@ func (protocol *Protocol) handleCreateAccountWithCustomData(packet nex.PacketInt
 
 	oPrivateData, err := parametersStream.ReadDataHolder()
 	if err != nil {
-		errorCode = protocol.createAccountWithCustomDataHandler(fmt.Errorf("Failed to read oPrivateData from parameters. %s", err.Error()), client, callID, "", "", 0, "", nil, nil)
+		errorCode = protocol.createAccountWithCustomDataHandler(fmt.Errorf("Failed to read oPrivateData from parameters. %s", err.Error()), packet, callID, "", "", 0, "", nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -90,7 +89,7 @@ func (protocol *Protocol) handleCreateAccountWithCustomData(packet nex.PacketInt
 		return
 	}
 
-	errorCode = protocol.createAccountWithCustomDataHandler(nil, client, callID, strPrincipalName, strKey, uiGroups, strEmail, oPublicData, oPrivateData)
+	errorCode = protocol.createAccountWithCustomDataHandler(nil, packet, callID, strPrincipalName, strKey, uiGroups, strEmail, oPublicData, oPrivateData)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

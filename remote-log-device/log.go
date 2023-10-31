@@ -9,7 +9,7 @@ import (
 )
 
 // Log sets the Log handler function
-func (protocol *Protocol) Log(handler func(err error, client *nex.Client, callID uint32, strLine string) uint32) {
+func (protocol *Protocol) Log(handler func(err error, packet nex.PacketInterface, callID uint32, strLine string) uint32) {
 	protocol.logHandler = handler
 }
 
@@ -22,7 +22,6 @@ func (protocol *Protocol) handleLog(packet nex.PacketInterface) {
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -32,7 +31,7 @@ func (protocol *Protocol) handleLog(packet nex.PacketInterface) {
 
 	strLine, err := parametersStream.ReadString()
 	if err != nil {
-		errorCode = protocol.logHandler(fmt.Errorf("Failed to read strLine from parameters. %s", err.Error()), client, callID, "")
+		errorCode = protocol.logHandler(fmt.Errorf("Failed to read strLine from parameters. %s", err.Error()), packet, callID, "")
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -40,7 +39,7 @@ func (protocol *Protocol) handleLog(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.logHandler(nil, client, callID, strLine)
+	errorCode = protocol.logHandler(nil, packet, callID, strLine)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

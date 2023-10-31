@@ -7,7 +7,7 @@ import (
 )
 
 // GetFollower sets the GetFollower handler function
-func (protocol *Protocol) GetFollower(handler func(err error, client *nex.Client, callID uint32, packetPayload []byte) uint32) {
+func (protocol *Protocol) GetFollower(handler func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) uint32) {
 	protocol.getFollowerHandler = handler
 }
 
@@ -22,12 +22,11 @@ func (protocol *Protocol) handleGetFollower(packet nex.PacketInterface) {
 
 	globals.Logger.Warning("Subscriber::GetFollower STUBBED")
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
 
-	errorCode = protocol.getFollowerHandler(nil, client, callID, packet.Payload())
+	errorCode = protocol.getFollowerHandler(nil, packet, callID, packet.Payload())
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

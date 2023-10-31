@@ -10,7 +10,7 @@ import (
 )
 
 // BrowseMatchmakeSessionWithHostURLsNoHolderNoResultRange sets the BrowseMatchmakeSessionWithHostURLsNoHolderNoResultRange handler function
-func (protocol *Protocol) BrowseMatchmakeSessionWithHostURLsNoHolderNoResultRange(handler func(err error, client *nex.Client, callID uint32, searchCriteria *match_making_types.MatchmakeSessionSearchCriteria) uint32) {
+func (protocol *Protocol) BrowseMatchmakeSessionWithHostURLsNoHolderNoResultRange(handler func(err error, packet nex.PacketInterface, callID uint32, searchCriteria *match_making_types.MatchmakeSessionSearchCriteria) uint32) {
 	protocol.browseMatchmakeSessionWithHostURLsNoHolderNoResultRangeHandler = handler
 }
 
@@ -23,7 +23,6 @@ func (protocol *Protocol) handleBrowseMatchmakeSessionWithHostURLsNoHolderNoResu
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -33,7 +32,7 @@ func (protocol *Protocol) handleBrowseMatchmakeSessionWithHostURLsNoHolderNoResu
 
 	searchCriteria, err := parametersStream.ReadStructure(match_making_types.NewMatchmakeSessionSearchCriteria())
 	if err != nil {
-		errorCode = protocol.browseMatchmakeSessionWithHostURLsNoHolderNoResultRangeHandler(fmt.Errorf("Failed to read searchCriteria from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.browseMatchmakeSessionWithHostURLsNoHolderNoResultRangeHandler(fmt.Errorf("Failed to read searchCriteria from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -41,7 +40,7 @@ func (protocol *Protocol) handleBrowseMatchmakeSessionWithHostURLsNoHolderNoResu
 		return
 	}
 
-	errorCode = protocol.browseMatchmakeSessionWithHostURLsNoHolderNoResultRangeHandler(nil, client, callID, searchCriteria.(*match_making_types.MatchmakeSessionSearchCriteria))
+	errorCode = protocol.browseMatchmakeSessionWithHostURLsNoHolderNoResultRangeHandler(nil, packet, callID, searchCriteria.(*match_making_types.MatchmakeSessionSearchCriteria))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

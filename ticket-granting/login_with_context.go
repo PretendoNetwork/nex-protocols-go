@@ -7,7 +7,7 @@ import (
 )
 
 // LoginWithContext sets the LoginWithContext handler function
-func (protocol *Protocol) LoginWithContext(handler func(err error, client *nex.Client, callID uint32) uint32) {
+func (protocol *Protocol) LoginWithContext(handler func(err error, packet nex.PacketInterface, callID uint32) uint32) {
 	protocol.loginWithContextHandler = handler
 }
 

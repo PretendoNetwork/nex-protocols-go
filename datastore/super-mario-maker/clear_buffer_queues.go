@@ -10,7 +10,7 @@ import (
 )
 
 // ClearBufferQueues sets the ClearBufferQueues handler function
-func (protocol *Protocol) ClearBufferQueues(handler func(err error, client *nex.Client, callID uint32, params []*datastore_super_mario_maker_types.BufferQueueParam) uint32) {
+func (protocol *Protocol) ClearBufferQueues(handler func(err error, packet nex.PacketInterface, callID uint32, params []*datastore_super_mario_maker_types.BufferQueueParam) uint32) {
 	protocol.clearBufferQueuesHandler = handler
 }
 
@@ -23,7 +23,6 @@ func (protocol *Protocol) handleClearBufferQueues(packet nex.PacketInterface) {
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -33,7 +32,7 @@ func (protocol *Protocol) handleClearBufferQueues(packet nex.PacketInterface) {
 
 	params, err := parametersStream.ReadListStructure(datastore_super_mario_maker_types.NewBufferQueueParam())
 	if err != nil {
-		errorCode = protocol.clearBufferQueuesHandler(fmt.Errorf("Failed to read params from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.clearBufferQueuesHandler(fmt.Errorf("Failed to read params from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -41,7 +40,7 @@ func (protocol *Protocol) handleClearBufferQueues(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.clearBufferQueuesHandler(nil, client, callID, params.([]*datastore_super_mario_maker_types.BufferQueueParam))
+	errorCode = protocol.clearBufferQueuesHandler(nil, packet, callID, params.([]*datastore_super_mario_maker_types.BufferQueueParam))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

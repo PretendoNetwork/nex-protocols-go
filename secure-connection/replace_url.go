@@ -9,7 +9,7 @@ import (
 )
 
 // ReplaceURL sets the ReplaceURL handler function
-func (protocol *Protocol) ReplaceURL(handler func(err error, client *nex.Client, callID uint32, target *nex.StationURL, url *nex.StationURL) uint32) {
+func (protocol *Protocol) ReplaceURL(handler func(err error, packet nex.PacketInterface, callID uint32, target *nex.StationURL, url *nex.StationURL) uint32) {
 	protocol.replaceURLHandler = handler
 }
 
@@ -22,7 +22,6 @@ func (protocol *Protocol) handleReplaceURL(packet nex.PacketInterface) {
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -32,7 +31,7 @@ func (protocol *Protocol) handleReplaceURL(packet nex.PacketInterface) {
 
 	target, err := parametersStream.ReadStationURL()
 	if err != nil {
-		errorCode = protocol.replaceURLHandler(fmt.Errorf("Failed to read target from parameters. %s", err.Error()), client, callID, nil, nil)
+		errorCode = protocol.replaceURLHandler(fmt.Errorf("Failed to read target from parameters. %s", err.Error()), packet, callID, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -42,7 +41,7 @@ func (protocol *Protocol) handleReplaceURL(packet nex.PacketInterface) {
 
 	url, err := parametersStream.ReadStationURL()
 	if err != nil {
-		errorCode = protocol.replaceURLHandler(fmt.Errorf("Failed to read url from parameters. %s", err.Error()), client, callID, nil, nil)
+		errorCode = protocol.replaceURLHandler(fmt.Errorf("Failed to read url from parameters. %s", err.Error()), packet, callID, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -50,7 +49,7 @@ func (protocol *Protocol) handleReplaceURL(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.replaceURLHandler(nil, client, callID, target, url)
+	errorCode = protocol.replaceURLHandler(nil, packet, callID, target, url)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

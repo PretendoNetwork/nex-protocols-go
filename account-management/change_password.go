@@ -9,7 +9,7 @@ import (
 )
 
 // ChangePassword sets the ChangePassword handler function
-func (protocol *Protocol) ChangePassword(handler func(err error, client *nex.Client, callID uint32, strNewKey string) uint32) {
+func (protocol *Protocol) ChangePassword(handler func(err error, packet nex.PacketInterface, callID uint32, strNewKey string) uint32) {
 	protocol.changePasswordHandler = handler
 }
 
@@ -22,7 +22,6 @@ func (protocol *Protocol) handleChangePassword(packet nex.PacketInterface) {
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -32,7 +31,7 @@ func (protocol *Protocol) handleChangePassword(packet nex.PacketInterface) {
 
 	strNewKey, err := parametersStream.ReadString()
 	if err != nil {
-		errorCode = protocol.changePasswordHandler(fmt.Errorf("Failed to read strNewKey from parameters. %s", err.Error()), client, callID, "")
+		errorCode = protocol.changePasswordHandler(fmt.Errorf("Failed to read strNewKey from parameters. %s", err.Error()), packet, callID, "")
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -40,7 +39,7 @@ func (protocol *Protocol) handleChangePassword(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.changePasswordHandler(nil, client, callID, strNewKey)
+	errorCode = protocol.changePasswordHandler(nil, packet, callID, strNewKey)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

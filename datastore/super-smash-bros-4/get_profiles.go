@@ -9,7 +9,7 @@ import (
 )
 
 // GetProfiles sets the GetProfiles handler function
-func (protocol *Protocol) GetProfiles(handler func(err error, client *nex.Client, callID uint32, pidList []uint32) uint32) {
+func (protocol *Protocol) GetProfiles(handler func(err error, packet nex.PacketInterface, callID uint32, pidList []uint32) uint32) {
 	protocol.getProfilesHandler = handler
 }
 
@@ -22,7 +22,6 @@ func (protocol *Protocol) handleGetProfiles(packet nex.PacketInterface) {
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -32,7 +31,7 @@ func (protocol *Protocol) handleGetProfiles(packet nex.PacketInterface) {
 
 	pidList, err := parametersStream.ReadListUInt32LE()
 	if err != nil {
-		errorCode = protocol.getProfilesHandler(fmt.Errorf("Failed to read pidList from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.getProfilesHandler(fmt.Errorf("Failed to read pidList from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -40,7 +39,7 @@ func (protocol *Protocol) handleGetProfiles(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.getProfilesHandler(nil, client, callID, pidList)
+	errorCode = protocol.getProfilesHandler(nil, packet, callID, pidList)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

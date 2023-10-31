@@ -9,7 +9,7 @@ import (
 )
 
 // GetIntegerSettings sets the GetIntegerSettings handler function
-func (protocol *Protocol) GetIntegerSettings(handler func(err error, client *nex.Client, callID uint32, integerSettingIndex uint32) uint32) {
+func (protocol *Protocol) GetIntegerSettings(handler func(err error, packet nex.PacketInterface, callID uint32, integerSettingIndex uint32) uint32) {
 	protocol.getIntegerSettingsHandler = handler
 }
 
@@ -22,7 +22,6 @@ func (protocol *Protocol) handleGetIntegerSettings(packet nex.PacketInterface) {
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -33,7 +32,7 @@ func (protocol *Protocol) handleGetIntegerSettings(packet nex.PacketInterface) {
 
 	integerSettingIndex, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.getIntegerSettingsHandler(fmt.Errorf("Failed to read integerSettingIndex from parameters. %s", err.Error()), client, callID, 0)
+		errorCode = protocol.getIntegerSettingsHandler(fmt.Errorf("Failed to read integerSettingIndex from parameters. %s", err.Error()), packet, callID, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -41,7 +40,7 @@ func (protocol *Protocol) handleGetIntegerSettings(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.getIntegerSettingsHandler(nil, client, callID, integerSettingIndex)
+	errorCode = protocol.getIntegerSettingsHandler(nil, packet, callID, integerSettingIndex)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

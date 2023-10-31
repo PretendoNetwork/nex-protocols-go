@@ -10,7 +10,7 @@ import (
 )
 
 // DeletePersistentNotification sets the DeletePersistentNotification handler function
-func (protocol *Protocol) DeletePersistentNotification(handler func(err error, client *nex.Client, callID uint32, notifications []*friends_wiiu_types.PersistentNotification) uint32) {
+func (protocol *Protocol) DeletePersistentNotification(handler func(err error, packet nex.PacketInterface, callID uint32, notifications []*friends_wiiu_types.PersistentNotification) uint32) {
 	protocol.deletePersistentNotificationHandler = handler
 }
 
@@ -23,7 +23,6 @@ func (protocol *Protocol) handleDeletePersistentNotification(packet nex.PacketIn
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -33,7 +32,7 @@ func (protocol *Protocol) handleDeletePersistentNotification(packet nex.PacketIn
 
 	persistentNotifications, err := parametersStream.ReadListStructure(friends_wiiu_types.NewPersistentNotification())
 	if err != nil {
-		errorCode = protocol.deletePersistentNotificationHandler(fmt.Errorf("Failed to read persistentNotifications from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.deletePersistentNotificationHandler(fmt.Errorf("Failed to read persistentNotifications from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -41,7 +40,7 @@ func (protocol *Protocol) handleDeletePersistentNotification(packet nex.PacketIn
 		return
 	}
 
-	errorCode = protocol.deletePersistentNotificationHandler(nil, client, callID, persistentNotifications.([]*friends_wiiu_types.PersistentNotification))
+	errorCode = protocol.deletePersistentNotificationHandler(nil, packet, callID, persistentNotifications.([]*friends_wiiu_types.PersistentNotification))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

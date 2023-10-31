@@ -9,7 +9,7 @@ import (
 )
 
 // FindByDescription sets the FindByDescription handler function
-func (protocol *Protocol) FindByDescription(handler func(err error, client *nex.Client, callID uint32, strDescription string, resultRange *nex.ResultRange) uint32) {
+func (protocol *Protocol) FindByDescription(handler func(err error, packet nex.PacketInterface, callID uint32, strDescription string, resultRange *nex.ResultRange) uint32) {
 	protocol.findByDescriptionHandler = handler
 }
 
@@ -22,7 +22,6 @@ func (protocol *Protocol) handleFindByDescription(packet nex.PacketInterface) {
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -32,7 +31,7 @@ func (protocol *Protocol) handleFindByDescription(packet nex.PacketInterface) {
 
 	strDescription, err := parametersStream.ReadString()
 	if err != nil {
-		errorCode = protocol.findByDescriptionHandler(fmt.Errorf("Failed to read strDescription from parameters. %s", err.Error()), client, callID, "", nil)
+		errorCode = protocol.findByDescriptionHandler(fmt.Errorf("Failed to read strDescription from parameters. %s", err.Error()), packet, callID, "", nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -42,7 +41,7 @@ func (protocol *Protocol) handleFindByDescription(packet nex.PacketInterface) {
 
 	resultRange, err := parametersStream.ReadStructure(nex.NewResultRange())
 	if err != nil {
-		errorCode = protocol.findByDescriptionHandler(fmt.Errorf("Failed to read resultRange from parameters. %s", err.Error()), client, callID, "", nil)
+		errorCode = protocol.findByDescriptionHandler(fmt.Errorf("Failed to read resultRange from parameters. %s", err.Error()), packet, callID, "", nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -50,7 +49,7 @@ func (protocol *Protocol) handleFindByDescription(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.findByDescriptionHandler(nil, client, callID, strDescription, resultRange.(*nex.ResultRange))
+	errorCode = protocol.findByDescriptionHandler(nil, packet, callID, strDescription, resultRange.(*nex.ResultRange))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

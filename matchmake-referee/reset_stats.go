@@ -7,7 +7,7 @@ import (
 )
 
 // ResetStats sets the ResetStats handler function
-func (protocol *Protocol) ResetStats(handler func(err error, client *nex.Client, callID uint32) uint32) {
+func (protocol *Protocol) ResetStats(handler func(err error, packet nex.PacketInterface, callID uint32) uint32) {
 	protocol.resetStatsHandler = handler
 }
 
@@ -20,12 +20,11 @@ func (protocol *Protocol) handleResetStats(packet nex.PacketInterface) {
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
 
-	errorCode = protocol.resetStatsHandler(nil, client, callID)
+	errorCode = protocol.resetStatsHandler(nil, packet, callID)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

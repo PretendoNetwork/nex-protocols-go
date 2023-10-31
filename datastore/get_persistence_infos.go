@@ -9,7 +9,7 @@ import (
 )
 
 // GetPersistenceInfos sets the GetPersistenceInfos handler function
-func (protocol *Protocol) GetPersistenceInfos(handler func(err error, client *nex.Client, callID uint32, ownerID uint32, persistenceSlotIDs []uint16) uint32) {
+func (protocol *Protocol) GetPersistenceInfos(handler func(err error, packet nex.PacketInterface, callID uint32, ownerID uint32, persistenceSlotIDs []uint16) uint32) {
 	protocol.getPersistenceInfosHandler = handler
 }
 
@@ -22,7 +22,6 @@ func (protocol *Protocol) handleGetPersistenceInfos(packet nex.PacketInterface) 
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -32,7 +31,7 @@ func (protocol *Protocol) handleGetPersistenceInfos(packet nex.PacketInterface) 
 
 	ownerID, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.getPersistenceInfosHandler(fmt.Errorf("Failed to read ownerID from parameters. %s", err.Error()), client, callID, 0, nil)
+		errorCode = protocol.getPersistenceInfosHandler(fmt.Errorf("Failed to read ownerID from parameters. %s", err.Error()), packet, callID, 0, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -42,7 +41,7 @@ func (protocol *Protocol) handleGetPersistenceInfos(packet nex.PacketInterface) 
 
 	persistenceSlotIDs, err := parametersStream.ReadListUInt16LE()
 	if err != nil {
-		errorCode = protocol.getPersistenceInfosHandler(fmt.Errorf("Failed to read persistenceSlotIDs from parameters. %s", err.Error()), client, callID, 0, nil)
+		errorCode = protocol.getPersistenceInfosHandler(fmt.Errorf("Failed to read persistenceSlotIDs from parameters. %s", err.Error()), packet, callID, 0, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -50,7 +49,7 @@ func (protocol *Protocol) handleGetPersistenceInfos(packet nex.PacketInterface) 
 		return
 	}
 
-	errorCode = protocol.getPersistenceInfosHandler(nil, client, callID, ownerID, persistenceSlotIDs)
+	errorCode = protocol.getPersistenceInfosHandler(nil, packet, callID, ownerID, persistenceSlotIDs)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

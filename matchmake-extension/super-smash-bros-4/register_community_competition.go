@@ -7,7 +7,7 @@ import (
 )
 
 // RegisterCommunityCompetition sets the RegisterCommunityCompetition handler function
-func (protocol *Protocol) RegisterCommunityCompetition(handler func(err error, client *nex.Client, callID uint32, packetPayload []byte) uint32) {
+func (protocol *Protocol) RegisterCommunityCompetition(handler func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) uint32) {
 	protocol.registerCommunityCompetitionHandler = handler
 }
 
@@ -22,12 +22,11 @@ func (protocol *Protocol) handleRegisterCommunityCompetition(packet nex.PacketIn
 
 	globals.Logger.Warning("MatchmakeExtensionSuperSmashBros4::RegisterCommunityCompetition STUBBED")
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
 
-	errorCode = protocol.registerCommunityCompetitionHandler(nil, client, callID, packet.Payload())
+	errorCode = protocol.registerCommunityCompetitionHandler(nil, packet, callID, packet.Payload())
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

@@ -9,7 +9,7 @@ import (
 )
 
 // UpdateGatheringOwnership sets the UpdateGatheringOwnership handler function
-func (protocol *Protocol) UpdateGatheringOwnership(handler func(err error, client *nex.Client, callID uint32, gid uint32, participantsOnly bool) uint32) {
+func (protocol *Protocol) UpdateGatheringOwnership(handler func(err error, packet nex.PacketInterface, callID uint32, gid uint32, participantsOnly bool) uint32) {
 	protocol.updateGatheringOwnershipHandler = handler
 }
 
@@ -22,7 +22,6 @@ func (protocol *Protocol) handleUpdateGatheringOwnership(packet nex.PacketInterf
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -32,7 +31,7 @@ func (protocol *Protocol) handleUpdateGatheringOwnership(packet nex.PacketInterf
 
 	gid, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.updateGatheringOwnershipHandler(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), client, callID, 0, false)
+		errorCode = protocol.updateGatheringOwnershipHandler(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), packet, callID, 0, false)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -42,7 +41,7 @@ func (protocol *Protocol) handleUpdateGatheringOwnership(packet nex.PacketInterf
 
 	participantsOnly, err := parametersStream.ReadBool()
 	if err != nil {
-		errorCode = protocol.updateGatheringOwnershipHandler(fmt.Errorf("Failed to read participantsOnly from parameters. %s", err.Error()), client, callID, 0, false)
+		errorCode = protocol.updateGatheringOwnershipHandler(fmt.Errorf("Failed to read participantsOnly from parameters. %s", err.Error()), packet, callID, 0, false)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -50,7 +49,7 @@ func (protocol *Protocol) handleUpdateGatheringOwnership(packet nex.PacketInterf
 		return
 	}
 
-	errorCode = protocol.updateGatheringOwnershipHandler(nil, client, callID, gid, participantsOnly)
+	errorCode = protocol.updateGatheringOwnershipHandler(nil, packet, callID, gid, participantsOnly)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

@@ -10,7 +10,7 @@ import (
 )
 
 // GetCompetitionInfo sets the GetCompetitionInfo handler function
-func (protocol *Protocol) GetCompetitionInfo(handler func(err error, client *nex.Client, callID uint32, param *ranking_mario_kart8_types.CompetitionRankingInfoGetParam) uint32) {
+func (protocol *Protocol) GetCompetitionInfo(handler func(err error, packet nex.PacketInterface, callID uint32, param *ranking_mario_kart8_types.CompetitionRankingInfoGetParam) uint32) {
 	protocol.getCompetitionInfoHandler = handler
 }
 
@@ -23,7 +23,6 @@ func (protocol *Protocol) handleGetCompetitionInfo(packet nex.PacketInterface) {
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -33,7 +32,7 @@ func (protocol *Protocol) handleGetCompetitionInfo(packet nex.PacketInterface) {
 
 	param, err := parametersStream.ReadStructure(ranking_mario_kart8_types.NewCompetitionRankingInfoGetParam())
 	if err != nil {
-		errorCode = protocol.getCompetitionInfoHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.getCompetitionInfoHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -41,7 +40,7 @@ func (protocol *Protocol) handleGetCompetitionInfo(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.getCompetitionInfoHandler(nil, client, callID, param.(*ranking_mario_kart8_types.CompetitionRankingInfoGetParam))
+	errorCode = protocol.getCompetitionInfoHandler(nil, packet, callID, param.(*ranking_mario_kart8_types.CompetitionRankingInfoGetParam))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

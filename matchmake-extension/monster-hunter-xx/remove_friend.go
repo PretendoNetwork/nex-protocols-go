@@ -9,7 +9,7 @@ import (
 )
 
 // RemoveFriend sets the RemoveFriend handler function
-func (protocol *Protocol) RemoveFriend(handler func(err error, client *nex.Client, callID uint32, pid uint64) uint32) {
+func (protocol *Protocol) RemoveFriend(handler func(err error, packet nex.PacketInterface, callID uint32, pid uint64) uint32) {
 	protocol.removeFriendHandler = handler
 }
 
@@ -22,7 +22,6 @@ func (protocol *Protocol) handleRemoveFriend(packet nex.PacketInterface) {
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -32,7 +31,7 @@ func (protocol *Protocol) handleRemoveFriend(packet nex.PacketInterface) {
 
 	pid, err := parametersStream.ReadUInt64LE()
 	if err != nil {
-		errorCode = protocol.removeFriendHandler(fmt.Errorf("Failed to read pid from parameters. %s", err.Error()), client, callID, 0)
+		errorCode = protocol.removeFriendHandler(fmt.Errorf("Failed to read pid from parameters. %s", err.Error()), packet, callID, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -40,7 +39,7 @@ func (protocol *Protocol) handleRemoveFriend(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.removeFriendHandler(nil, client, callID, pid)
+	errorCode = protocol.removeFriendHandler(nil, packet, callID, pid)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

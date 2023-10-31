@@ -10,7 +10,7 @@ import (
 )
 
 // CompletePostObjectWithOwnerID sets the CompletePostObjectWithOwnerID handler function
-func (protocol *Protocol) CompletePostObjectWithOwnerID(handler func(err error, client *nex.Client, callID uint32, ownerID uint32, param *datastore_types.DataStoreCompletePostParam) uint32) {
+func (protocol *Protocol) CompletePostObjectWithOwnerID(handler func(err error, packet nex.PacketInterface, callID uint32, ownerID uint32, param *datastore_types.DataStoreCompletePostParam) uint32) {
 	protocol.completePostObjectWithOwnerIDHandler = handler
 }
 
@@ -23,7 +23,6 @@ func (protocol *Protocol) handleCompletePostObjectWithOwnerID(packet nex.PacketI
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -33,7 +32,7 @@ func (protocol *Protocol) handleCompletePostObjectWithOwnerID(packet nex.PacketI
 
 	ownerID, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.completePostObjectWithOwnerIDHandler(fmt.Errorf("Failed to read ownerID from parameters. %s", err.Error()), client, callID, 0, nil)
+		errorCode = protocol.completePostObjectWithOwnerIDHandler(fmt.Errorf("Failed to read ownerID from parameters. %s", err.Error()), packet, callID, 0, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -43,7 +42,7 @@ func (protocol *Protocol) handleCompletePostObjectWithOwnerID(packet nex.PacketI
 
 	param, err := parametersStream.ReadStructure(datastore_types.NewDataStoreCompletePostParam())
 	if err != nil {
-		errorCode = protocol.completePostObjectWithOwnerIDHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, 0, nil)
+		errorCode = protocol.completePostObjectWithOwnerIDHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, 0, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -51,7 +50,7 @@ func (protocol *Protocol) handleCompletePostObjectWithOwnerID(packet nex.PacketI
 		return
 	}
 
-	errorCode = protocol.completePostObjectWithOwnerIDHandler(nil, client, callID, ownerID, param.(*datastore_types.DataStoreCompletePostParam))
+	errorCode = protocol.completePostObjectWithOwnerIDHandler(nil, packet, callID, ownerID, param.(*datastore_types.DataStoreCompletePostParam))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

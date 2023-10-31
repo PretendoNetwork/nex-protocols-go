@@ -9,7 +9,7 @@ import (
 )
 
 // GetPasswordInfo sets the GetPasswordInfo handler function
-func (protocol *Protocol) GetPasswordInfo(handler func(err error, client *nex.Client, callID uint32, dataID uint64) uint32) {
+func (protocol *Protocol) GetPasswordInfo(handler func(err error, packet nex.PacketInterface, callID uint32, dataID uint64) uint32) {
 	protocol.getPasswordInfoHandler = handler
 }
 
@@ -22,7 +22,6 @@ func (protocol *Protocol) handleGetPasswordInfo(packet nex.PacketInterface) {
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -32,7 +31,7 @@ func (protocol *Protocol) handleGetPasswordInfo(packet nex.PacketInterface) {
 
 	dataID, err := parametersStream.ReadUInt64LE()
 	if err != nil {
-		errorCode = protocol.getPasswordInfoHandler(fmt.Errorf("Failed to read dataID from parameters. %s", err.Error()), client, callID, 0)
+		errorCode = protocol.getPasswordInfoHandler(fmt.Errorf("Failed to read dataID from parameters. %s", err.Error()), packet, callID, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -40,7 +39,7 @@ func (protocol *Protocol) handleGetPasswordInfo(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.getPasswordInfoHandler(nil, client, callID, dataID)
+	errorCode = protocol.getPasswordInfoHandler(nil, packet, callID, dataID)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

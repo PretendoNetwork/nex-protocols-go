@@ -9,7 +9,7 @@ import (
 )
 
 // GetlstFriendNotificationData sets the GetlstFriendNotificationData handler function
-func (protocol *Protocol) GetlstFriendNotificationData(handler func(err error, client *nex.Client, callID uint32, lstTypes []uint32) uint32) {
+func (protocol *Protocol) GetlstFriendNotificationData(handler func(err error, packet nex.PacketInterface, callID uint32, lstTypes []uint32) uint32) {
 	protocol.getlstFriendNotificationDataHandler = handler
 }
 
@@ -22,7 +22,6 @@ func (protocol *Protocol) handleGetlstFriendNotificationData(packet nex.PacketIn
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -32,7 +31,7 @@ func (protocol *Protocol) handleGetlstFriendNotificationData(packet nex.PacketIn
 
 	lstTypes, err := parametersStream.ReadListUInt32LE()
 	if err != nil {
-		errorCode = protocol.getlstFriendNotificationDataHandler(fmt.Errorf("Failed to read lstTypes from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.getlstFriendNotificationDataHandler(fmt.Errorf("Failed to read lstTypes from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -40,7 +39,7 @@ func (protocol *Protocol) handleGetlstFriendNotificationData(packet nex.PacketIn
 		return
 	}
 
-	errorCode = protocol.getlstFriendNotificationDataHandler(nil, client, callID, lstTypes)
+	errorCode = protocol.getlstFriendNotificationDataHandler(nil, packet, callID, lstTypes)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

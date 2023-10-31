@@ -10,7 +10,7 @@ import (
 )
 
 // GetOrCreateStats sets the GetOrCreateStats handler function
-func (protocol *Protocol) GetOrCreateStats(handler func(err error, client *nex.Client, callID uint32, param *matchmake_referee_types.MatchmakeRefereeStatsInitParam) uint32) {
+func (protocol *Protocol) GetOrCreateStats(handler func(err error, packet nex.PacketInterface, callID uint32, param *matchmake_referee_types.MatchmakeRefereeStatsInitParam) uint32) {
 	protocol.getOrCreateStatsHandler = handler
 }
 
@@ -23,7 +23,6 @@ func (protocol *Protocol) handleGetOrCreateStats(packet nex.PacketInterface) {
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -33,7 +32,7 @@ func (protocol *Protocol) handleGetOrCreateStats(packet nex.PacketInterface) {
 
 	param, err := parametersStream.ReadStructure(matchmake_referee_types.NewMatchmakeRefereeStatsInitParam())
 	if err != nil {
-		errorCode = protocol.getOrCreateStatsHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.getOrCreateStatsHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -41,7 +40,7 @@ func (protocol *Protocol) handleGetOrCreateStats(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.getOrCreateStatsHandler(nil, client, callID, param.(*matchmake_referee_types.MatchmakeRefereeStatsInitParam))
+	errorCode = protocol.getOrCreateStatsHandler(nil, packet, callID, param.(*matchmake_referee_types.MatchmakeRefereeStatsInitParam))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

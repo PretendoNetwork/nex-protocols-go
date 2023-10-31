@@ -7,7 +7,7 @@ import (
 )
 
 // GetClusterMembers sets the GetClusterMembers handler function
-func (protocol *Protocol) GetClusterMembers(handler func(err error, client *nex.Client, callID uint32) uint32) {
+func (protocol *Protocol) GetClusterMembers(handler func(err error, packet nex.PacketInterface, callID uint32) uint32) {
 	protocol.getClusterMembersHandler = handler
 }
 
@@ -20,12 +20,11 @@ func (protocol *Protocol) handleGetClusterMembers(packet nex.PacketInterface) {
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
 
-	errorCode = protocol.getClusterMembersHandler(nil, client, callID)
+	errorCode = protocol.getClusterMembersHandler(nil, packet, callID)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

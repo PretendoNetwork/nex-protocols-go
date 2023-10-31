@@ -9,7 +9,7 @@ import (
 )
 
 // GetDeletionReason sets the GetDeletionReason handler function
-func (protocol *Protocol) GetDeletionReason(handler func(err error, client *nex.Client, callID uint32, dataIDLst []uint64) uint32) {
+func (protocol *Protocol) GetDeletionReason(handler func(err error, packet nex.PacketInterface, callID uint32, dataIDLst []uint64) uint32) {
 	protocol.getDeletionReasonHandler = handler
 }
 
@@ -22,7 +22,6 @@ func (protocol *Protocol) handleGetDeletionReason(packet nex.PacketInterface) {
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -32,7 +31,7 @@ func (protocol *Protocol) handleGetDeletionReason(packet nex.PacketInterface) {
 
 	dataIDLst, err := parametersStream.ReadListUInt64LE()
 	if err != nil {
-		errorCode = protocol.getDeletionReasonHandler(fmt.Errorf("Failed to read dataIDLst from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.getDeletionReasonHandler(fmt.Errorf("Failed to read dataIDLst from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -40,7 +39,7 @@ func (protocol *Protocol) handleGetDeletionReason(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.getDeletionReasonHandler(nil, client, callID, dataIDLst)
+	errorCode = protocol.getDeletionReasonHandler(nil, packet, callID, dataIDLst)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

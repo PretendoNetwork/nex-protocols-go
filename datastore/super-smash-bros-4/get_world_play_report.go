@@ -7,7 +7,7 @@ import (
 )
 
 // GetWorldPlayReport sets the GetWorldPlayReport handler function
-func (protocol *Protocol) GetWorldPlayReport(handler func(err error, client *nex.Client, callID uint32) uint32) {
+func (protocol *Protocol) GetWorldPlayReport(handler func(err error, packet nex.PacketInterface, callID uint32) uint32) {
 	protocol.getWorldPlayReportHandler = handler
 }
 
@@ -20,12 +20,11 @@ func (protocol *Protocol) handleGetWorldPlayReport(packet nex.PacketInterface) {
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
 
-	errorCode = protocol.getWorldPlayReportHandler(nil, client, callID)
+	errorCode = protocol.getWorldPlayReportHandler(nil, packet, callID)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

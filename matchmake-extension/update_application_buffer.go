@@ -9,7 +9,7 @@ import (
 )
 
 // UpdateApplicationBuffer sets the UpdateApplicationBuffer handler function
-func (protocol *Protocol) UpdateApplicationBuffer(handler func(err error, client *nex.Client, callID uint32, gid uint32, applicationBuffer []byte) uint32) {
+func (protocol *Protocol) UpdateApplicationBuffer(handler func(err error, packet nex.PacketInterface, callID uint32, gid uint32, applicationBuffer []byte) uint32) {
 	protocol.updateApplicationBufferHandler = handler
 }
 
@@ -22,7 +22,6 @@ func (protocol *Protocol) handleUpdateApplicationBuffer(packet nex.PacketInterfa
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -32,7 +31,7 @@ func (protocol *Protocol) handleUpdateApplicationBuffer(packet nex.PacketInterfa
 
 	gid, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.updateApplicationBufferHandler(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), client, callID, 0, nil)
+		errorCode = protocol.updateApplicationBufferHandler(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), packet, callID, 0, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -42,7 +41,7 @@ func (protocol *Protocol) handleUpdateApplicationBuffer(packet nex.PacketInterfa
 
 	applicationBuffer, err := parametersStream.ReadBuffer()
 	if err != nil {
-		errorCode = protocol.updateApplicationBufferHandler(fmt.Errorf("Failed to read applicationBuffer from parameters. %s", err.Error()), client, callID, 0, nil)
+		errorCode = protocol.updateApplicationBufferHandler(fmt.Errorf("Failed to read applicationBuffer from parameters. %s", err.Error()), packet, callID, 0, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -50,7 +49,7 @@ func (protocol *Protocol) handleUpdateApplicationBuffer(packet nex.PacketInterfa
 		return
 	}
 
-	errorCode = protocol.updateApplicationBufferHandler(nil, client, callID, gid, applicationBuffer)
+	errorCode = protocol.updateApplicationBufferHandler(nil, packet, callID, gid, applicationBuffer)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

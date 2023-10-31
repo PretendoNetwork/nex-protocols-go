@@ -10,7 +10,7 @@ import (
 )
 
 // ReportCourse sets the ReportCourse handler function
-func (protocol *Protocol) ReportCourse(handler func(err error, client *nex.Client, callID uint32, param *datastore_super_mario_maker_types.DataStoreReportCourseParam) uint32) {
+func (protocol *Protocol) ReportCourse(handler func(err error, packet nex.PacketInterface, callID uint32, param *datastore_super_mario_maker_types.DataStoreReportCourseParam) uint32) {
 	protocol.reportCourseHandler = handler
 }
 
@@ -23,7 +23,6 @@ func (protocol *Protocol) handleReportCourse(packet nex.PacketInterface) {
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -33,7 +32,7 @@ func (protocol *Protocol) handleReportCourse(packet nex.PacketInterface) {
 
 	param, err := parametersStream.ReadStructure(datastore_super_mario_maker_types.NewDataStoreReportCourseParam())
 	if err != nil {
-		errorCode = protocol.reportCourseHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.reportCourseHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -41,7 +40,7 @@ func (protocol *Protocol) handleReportCourse(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.reportCourseHandler(nil, client, callID, param.(*datastore_super_mario_maker_types.DataStoreReportCourseParam))
+	errorCode = protocol.reportCourseHandler(nil, packet, callID, param.(*datastore_super_mario_maker_types.DataStoreReportCourseParam))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

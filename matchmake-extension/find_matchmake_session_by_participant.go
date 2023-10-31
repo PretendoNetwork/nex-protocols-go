@@ -10,7 +10,7 @@ import (
 )
 
 // FindMatchmakeSessionByParticipant sets the FindMatchmakeSessionByParticipant handler function
-func (protocol *Protocol) FindMatchmakeSessionByParticipant(handler func(err error, client *nex.Client, callID uint32, param *match_making_types.FindMatchmakeSessionByParticipantParam) uint32) {
+func (protocol *Protocol) FindMatchmakeSessionByParticipant(handler func(err error, packet nex.PacketInterface, callID uint32, param *match_making_types.FindMatchmakeSessionByParticipantParam) uint32) {
 	protocol.findMatchmakeSessionByParticipantHandler = handler
 }
 
@@ -23,7 +23,6 @@ func (protocol *Protocol) handleFindMatchmakeSessionByParticipant(packet nex.Pac
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -33,7 +32,7 @@ func (protocol *Protocol) handleFindMatchmakeSessionByParticipant(packet nex.Pac
 
 	param, err := parametersStream.ReadStructure(match_making_types.NewFindMatchmakeSessionByParticipantParam())
 	if err != nil {
-		errorCode = protocol.findMatchmakeSessionByParticipantHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.findMatchmakeSessionByParticipantHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -41,7 +40,7 @@ func (protocol *Protocol) handleFindMatchmakeSessionByParticipant(packet nex.Pac
 		return
 	}
 
-	errorCode = protocol.findMatchmakeSessionByParticipantHandler(nil, client, callID, param.(*match_making_types.FindMatchmakeSessionByParticipantParam))
+	errorCode = protocol.findMatchmakeSessionByParticipantHandler(nil, packet, callID, param.(*match_making_types.FindMatchmakeSessionByParticipantParam))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

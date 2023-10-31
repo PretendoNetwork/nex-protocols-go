@@ -7,7 +7,7 @@ import (
 )
 
 // GetAssociatedNexUniqueIDsWithMyPrincipalID sets the GetAssociatedNexUniqueIDsWithMyPrincipalID handler function
-func (protocol *Protocol) GetAssociatedNexUniqueIDsWithMyPrincipalID(handler func(err error, client *nex.Client, callID uint32) uint32) {
+func (protocol *Protocol) GetAssociatedNexUniqueIDsWithMyPrincipalID(handler func(err error, packet nex.PacketInterface, callID uint32) uint32) {
 	protocol.getAssociatedNexUniqueIDsWithMyPrincipalIDHandler = handler
 }
 
@@ -20,12 +20,11 @@ func (protocol *Protocol) handleGetAssociatedNexUniqueIDsWithMyPrincipalID(packe
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
 
-	errorCode = protocol.getAssociatedNexUniqueIDsWithMyPrincipalIDHandler(nil, client, callID)
+	errorCode = protocol.getAssociatedNexUniqueIDsWithMyPrincipalIDHandler(nil, packet, callID)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

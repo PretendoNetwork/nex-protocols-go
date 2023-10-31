@@ -9,7 +9,7 @@ import (
 )
 
 // UpdateURLs sets the UpdateURLs handler function
-func (protocol *Protocol) UpdateURLs(handler func(err error, client *nex.Client, callID uint32, vecMyURLs []*nex.StationURL) uint32) {
+func (protocol *Protocol) UpdateURLs(handler func(err error, packet nex.PacketInterface, callID uint32, vecMyURLs []*nex.StationURL) uint32) {
 	protocol.updateURLsHandler = handler
 }
 
@@ -22,7 +22,6 @@ func (protocol *Protocol) handleUpdateURLs(packet nex.PacketInterface) {
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -32,7 +31,7 @@ func (protocol *Protocol) handleUpdateURLs(packet nex.PacketInterface) {
 
 	vecMyURLs, err := parametersStream.ReadListStationURL()
 	if err != nil {
-		errorCode = protocol.updateURLsHandler(fmt.Errorf("Failed to read vecMyURLs from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.updateURLsHandler(fmt.Errorf("Failed to read vecMyURLs from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -40,7 +39,7 @@ func (protocol *Protocol) handleUpdateURLs(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.updateURLsHandler(nil, client, callID, vecMyURLs)
+	errorCode = protocol.updateURLsHandler(nil, packet, callID, vecMyURLs)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

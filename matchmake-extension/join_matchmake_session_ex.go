@@ -9,7 +9,7 @@ import (
 )
 
 // JoinMatchmakeSessionEx sets the JoinMatchmakeSessionEx handler function
-func (protocol *Protocol) JoinMatchmakeSessionEx(handler func(err error, client *nex.Client, callID uint32, gid uint32, strMessage string, dontCareMyBlockList bool, participationCount uint16) uint32) {
+func (protocol *Protocol) JoinMatchmakeSessionEx(handler func(err error, packet nex.PacketInterface, callID uint32, gid uint32, strMessage string, dontCareMyBlockList bool, participationCount uint16) uint32) {
 	protocol.joinMatchmakeSessionExHandler = handler
 }
 
@@ -22,7 +22,6 @@ func (protocol *Protocol) handleJoinMatchmakeSessionEx(packet nex.PacketInterfac
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -32,7 +31,7 @@ func (protocol *Protocol) handleJoinMatchmakeSessionEx(packet nex.PacketInterfac
 
 	gid, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.joinMatchmakeSessionExHandler(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), client, callID, 0, "", false, 0)
+		errorCode = protocol.joinMatchmakeSessionExHandler(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), packet, callID, 0, "", false, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -42,7 +41,7 @@ func (protocol *Protocol) handleJoinMatchmakeSessionEx(packet nex.PacketInterfac
 
 	strMessage, err := parametersStream.ReadString()
 	if err != nil {
-		errorCode = protocol.joinMatchmakeSessionExHandler(fmt.Errorf("Failed to read strMessage from parameters. %s", err.Error()), client, callID, 0, "", false, 0)
+		errorCode = protocol.joinMatchmakeSessionExHandler(fmt.Errorf("Failed to read strMessage from parameters. %s", err.Error()), packet, callID, 0, "", false, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -52,7 +51,7 @@ func (protocol *Protocol) handleJoinMatchmakeSessionEx(packet nex.PacketInterfac
 
 	dontCareMyBlockList, err := parametersStream.ReadBool()
 	if err != nil {
-		errorCode = protocol.joinMatchmakeSessionExHandler(fmt.Errorf("Failed to read dontCareMyBlockList from parameters. %s", err.Error()), client, callID, 0, "", false, 0)
+		errorCode = protocol.joinMatchmakeSessionExHandler(fmt.Errorf("Failed to read dontCareMyBlockList from parameters. %s", err.Error()), packet, callID, 0, "", false, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -62,7 +61,7 @@ func (protocol *Protocol) handleJoinMatchmakeSessionEx(packet nex.PacketInterfac
 
 	participationCount, err := parametersStream.ReadUInt16LE()
 	if err != nil {
-		errorCode = protocol.joinMatchmakeSessionExHandler(fmt.Errorf("Failed to read participationCount from parameters. %s", err.Error()), client, callID, 0, "", false, 0)
+		errorCode = protocol.joinMatchmakeSessionExHandler(fmt.Errorf("Failed to read participationCount from parameters. %s", err.Error()), packet, callID, 0, "", false, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -70,7 +69,7 @@ func (protocol *Protocol) handleJoinMatchmakeSessionEx(packet nex.PacketInterfac
 		return
 	}
 
-	errorCode = protocol.joinMatchmakeSessionExHandler(nil, client, callID, gid, strMessage, dontCareMyBlockList, participationCount)
+	errorCode = protocol.joinMatchmakeSessionExHandler(nil, packet, callID, gid, strMessage, dontCareMyBlockList, participationCount)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

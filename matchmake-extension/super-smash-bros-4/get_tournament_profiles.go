@@ -7,7 +7,7 @@ import (
 )
 
 // GetTournamentProfiles sets the GetTournamentProfiles handler function
-func (protocol *Protocol) GetTournamentProfiles(handler func(err error, client *nex.Client, callID uint32, packetPayload []byte) uint32) {
+func (protocol *Protocol) GetTournamentProfiles(handler func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) uint32) {
 	protocol.getTournamentProfilesHandler = handler
 }
 
@@ -22,12 +22,11 @@ func (protocol *Protocol) handleGetTournamentProfiles(packet nex.PacketInterface
 
 	globals.Logger.Warning("MatchmakeExtensionSuperSmashBros4::GetTournamentProfiles STUBBED")
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
 
-	errorCode = protocol.getTournamentProfilesHandler(nil, client, callID, packet.Payload())
+	errorCode = protocol.getTournamentProfilesHandler(nil, packet, callID, packet.Payload())
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

@@ -9,7 +9,7 @@ import (
 )
 
 // SetCachedRanking sets the SetCachedRanking handler function
-func (protocol *Protocol) SetCachedRanking(handler func(err error, client *nex.Client, callID uint32, rankingType string, rankingArgs []string, dataIDLst []uint64) uint32) {
+func (protocol *Protocol) SetCachedRanking(handler func(err error, packet nex.PacketInterface, callID uint32, rankingType string, rankingArgs []string, dataIDLst []uint64) uint32) {
 	protocol.setCachedRankingHandler = handler
 }
 
@@ -22,7 +22,6 @@ func (protocol *Protocol) handleSetCachedRanking(packet nex.PacketInterface) {
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -32,7 +31,7 @@ func (protocol *Protocol) handleSetCachedRanking(packet nex.PacketInterface) {
 
 	rankingType, err := parametersStream.ReadString()
 	if err != nil {
-		errorCode = protocol.setCachedRankingHandler(fmt.Errorf("Failed to read rankingType from parameters. %s", err.Error()), client, callID, "", nil, nil)
+		errorCode = protocol.setCachedRankingHandler(fmt.Errorf("Failed to read rankingType from parameters. %s", err.Error()), packet, callID, "", nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -42,7 +41,7 @@ func (protocol *Protocol) handleSetCachedRanking(packet nex.PacketInterface) {
 
 	rankingArgs, err := parametersStream.ReadListString()
 	if err != nil {
-		errorCode = protocol.setCachedRankingHandler(fmt.Errorf("Failed to read rankingArgs from parameters. %s", err.Error()), client, callID, "", nil, nil)
+		errorCode = protocol.setCachedRankingHandler(fmt.Errorf("Failed to read rankingArgs from parameters. %s", err.Error()), packet, callID, "", nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -52,7 +51,7 @@ func (protocol *Protocol) handleSetCachedRanking(packet nex.PacketInterface) {
 
 	dataIDLst, err := parametersStream.ReadListUInt64LE()
 	if err != nil {
-		errorCode = protocol.setCachedRankingHandler(fmt.Errorf("Failed to read dataIDLst from parameters. %s", err.Error()), client, callID, "", nil, nil)
+		errorCode = protocol.setCachedRankingHandler(fmt.Errorf("Failed to read dataIDLst from parameters. %s", err.Error()), packet, callID, "", nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -60,7 +59,7 @@ func (protocol *Protocol) handleSetCachedRanking(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.setCachedRankingHandler(nil, client, callID, rankingType, rankingArgs, dataIDLst)
+	errorCode = protocol.setCachedRankingHandler(nil, packet, callID, rankingType, rankingArgs, dataIDLst)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

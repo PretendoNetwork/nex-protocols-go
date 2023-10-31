@@ -9,7 +9,7 @@ import (
 )
 
 // GetSimplePlayingSession sets the GetSimplePlayingSession handler function
-func (protocol *Protocol) GetSimplePlayingSession(handler func(err error, client *nex.Client, callID uint32, listPID []uint32, includeLoginUser bool) uint32) {
+func (protocol *Protocol) GetSimplePlayingSession(handler func(err error, packet nex.PacketInterface, callID uint32, listPID []uint32, includeLoginUser bool) uint32) {
 	protocol.getSimplePlayingSessionHandler = handler
 }
 
@@ -22,7 +22,6 @@ func (protocol *Protocol) handleGetSimplePlayingSession(packet nex.PacketInterfa
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -32,7 +31,7 @@ func (protocol *Protocol) handleGetSimplePlayingSession(packet nex.PacketInterfa
 
 	listPID, err := parametersStream.ReadListUInt32LE()
 	if err != nil {
-		errorCode = protocol.getSimplePlayingSessionHandler(fmt.Errorf("Failed to read listPID from parameters. %s", err.Error()), client, callID, nil, false)
+		errorCode = protocol.getSimplePlayingSessionHandler(fmt.Errorf("Failed to read listPID from parameters. %s", err.Error()), packet, callID, nil, false)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -42,7 +41,7 @@ func (protocol *Protocol) handleGetSimplePlayingSession(packet nex.PacketInterfa
 
 	includeLoginUser, err := parametersStream.ReadBool()
 	if err != nil {
-		errorCode = protocol.getSimplePlayingSessionHandler(fmt.Errorf("Failed to read includeLoginUser from parameters. %s", err.Error()), client, callID, nil, false)
+		errorCode = protocol.getSimplePlayingSessionHandler(fmt.Errorf("Failed to read includeLoginUser from parameters. %s", err.Error()), packet, callID, nil, false)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -50,7 +49,7 @@ func (protocol *Protocol) handleGetSimplePlayingSession(packet nex.PacketInterfa
 		return
 	}
 
-	errorCode = protocol.getSimplePlayingSessionHandler(nil, client, callID, listPID, includeLoginUser)
+	errorCode = protocol.getSimplePlayingSessionHandler(nil, packet, callID, listPID, includeLoginUser)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

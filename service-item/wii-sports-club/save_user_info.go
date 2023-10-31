@@ -10,7 +10,7 @@ import (
 )
 
 // SaveUserInfo sets the SaveUserInfo handler function
-func (protocol *Protocol) SaveUserInfo(handler func(err error, client *nex.Client, callID uint32, userInfo *service_item_wii_sports_club_types.ServiceItemUserInfo) uint32) {
+func (protocol *Protocol) SaveUserInfo(handler func(err error, packet nex.PacketInterface, callID uint32, userInfo *service_item_wii_sports_club_types.ServiceItemUserInfo) uint32) {
 	protocol.saveUserInfoHandler = handler
 }
 
@@ -23,7 +23,6 @@ func (protocol *Protocol) handleSaveUserInfo(packet nex.PacketInterface) {
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -33,7 +32,7 @@ func (protocol *Protocol) handleSaveUserInfo(packet nex.PacketInterface) {
 
 	userInfo, err := parametersStream.ReadStructure(service_item_wii_sports_club_types.NewServiceItemUserInfo())
 	if err != nil {
-		errorCode = protocol.saveUserInfoHandler(fmt.Errorf("Failed to read userInfo from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.saveUserInfoHandler(fmt.Errorf("Failed to read userInfo from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -41,7 +40,7 @@ func (protocol *Protocol) handleSaveUserInfo(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.saveUserInfoHandler(nil, client, callID, userInfo.(*service_item_wii_sports_club_types.ServiceItemUserInfo))
+	errorCode = protocol.saveUserInfoHandler(nil, packet, callID, userInfo.(*service_item_wii_sports_club_types.ServiceItemUserInfo))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

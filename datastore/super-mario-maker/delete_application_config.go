@@ -9,7 +9,7 @@ import (
 )
 
 // DeleteApplicationConfig sets the DeleteApplicationConfig handler function
-func (protocol *Protocol) DeleteApplicationConfig(handler func(err error, client *nex.Client, callID uint32, applicationID uint32, key uint32) uint32) {
+func (protocol *Protocol) DeleteApplicationConfig(handler func(err error, packet nex.PacketInterface, callID uint32, applicationID uint32, key uint32) uint32) {
 	protocol.deleteApplicationConfigHandler = handler
 }
 
@@ -22,7 +22,6 @@ func (protocol *Protocol) handleDeleteApplicationConfig(packet nex.PacketInterfa
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -32,7 +31,7 @@ func (protocol *Protocol) handleDeleteApplicationConfig(packet nex.PacketInterfa
 
 	applicationID, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.deleteApplicationConfigHandler(fmt.Errorf("Failed to read applicationID from parameters. %s", err.Error()), client, callID, 0, 0)
+		errorCode = protocol.deleteApplicationConfigHandler(fmt.Errorf("Failed to read applicationID from parameters. %s", err.Error()), packet, callID, 0, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -42,7 +41,7 @@ func (protocol *Protocol) handleDeleteApplicationConfig(packet nex.PacketInterfa
 
 	key, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.deleteApplicationConfigHandler(fmt.Errorf("Failed to read key from parameters. %s", err.Error()), client, callID, 0, 0)
+		errorCode = protocol.deleteApplicationConfigHandler(fmt.Errorf("Failed to read key from parameters. %s", err.Error()), packet, callID, 0, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -50,7 +49,7 @@ func (protocol *Protocol) handleDeleteApplicationConfig(packet nex.PacketInterfa
 		return
 	}
 
-	errorCode = protocol.deleteApplicationConfigHandler(nil, client, callID, applicationID, key)
+	errorCode = protocol.deleteApplicationConfigHandler(nil, packet, callID, applicationID, key)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

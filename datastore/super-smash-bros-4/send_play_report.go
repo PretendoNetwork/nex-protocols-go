@@ -9,7 +9,7 @@ import (
 )
 
 // SendPlayReport sets the SendPlayReport handler function
-func (protocol *Protocol) SendPlayReport(handler func(err error, client *nex.Client, callID uint32, playReport []int32) uint32) {
+func (protocol *Protocol) SendPlayReport(handler func(err error, packet nex.PacketInterface, callID uint32, playReport []int32) uint32) {
 	protocol.sendPlayReportHandler = handler
 }
 
@@ -22,7 +22,6 @@ func (protocol *Protocol) handleSendPlayReport(packet nex.PacketInterface) {
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -32,7 +31,7 @@ func (protocol *Protocol) handleSendPlayReport(packet nex.PacketInterface) {
 
 	playReport, err := parametersStream.ReadListInt32LE()
 	if err != nil {
-		errorCode = protocol.sendPlayReportHandler(fmt.Errorf("Failed to read playReport from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.sendPlayReportHandler(fmt.Errorf("Failed to read playReport from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -40,7 +39,7 @@ func (protocol *Protocol) handleSendPlayReport(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.sendPlayReportHandler(nil, client, callID, playReport)
+	errorCode = protocol.sendPlayReportHandler(nil, packet, callID, playReport)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

@@ -10,7 +10,7 @@ import (
 )
 
 // GetMetaByOwnerID sets the GetMetaByOwnerID handler function
-func (protocol *Protocol) GetMetaByOwnerID(handler func(err error, client *nex.Client, callID uint32, param *datastore_super_mario_maker_types.DataStoreGetMetaByOwnerIDParam) uint32) {
+func (protocol *Protocol) GetMetaByOwnerID(handler func(err error, packet nex.PacketInterface, callID uint32, param *datastore_super_mario_maker_types.DataStoreGetMetaByOwnerIDParam) uint32) {
 	protocol.getMetaByOwnerIDHandler = handler
 }
 
@@ -23,7 +23,6 @@ func (protocol *Protocol) handleGetMetaByOwnerID(packet nex.PacketInterface) {
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -33,7 +32,7 @@ func (protocol *Protocol) handleGetMetaByOwnerID(packet nex.PacketInterface) {
 
 	param, err := parametersStream.ReadStructure(datastore_super_mario_maker_types.NewDataStoreGetMetaByOwnerIDParam())
 	if err != nil {
-		errorCode = protocol.getMetaByOwnerIDHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.getMetaByOwnerIDHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -41,7 +40,7 @@ func (protocol *Protocol) handleGetMetaByOwnerID(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.getMetaByOwnerIDHandler(nil, client, callID, param.(*datastore_super_mario_maker_types.DataStoreGetMetaByOwnerIDParam))
+	errorCode = protocol.getMetaByOwnerIDHandler(nil, packet, callID, param.(*datastore_super_mario_maker_types.DataStoreGetMetaByOwnerIDParam))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

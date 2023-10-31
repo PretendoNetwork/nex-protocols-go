@@ -10,7 +10,7 @@ import (
 )
 
 // GetMetasMultipleParam sets the GetMetasMultipleParam handler function
-func (protocol *Protocol) GetMetasMultipleParam(handler func(err error, client *nex.Client, callID uint32, params []*datastore_types.DataStoreGetMetaParam) uint32) {
+func (protocol *Protocol) GetMetasMultipleParam(handler func(err error, packet nex.PacketInterface, callID uint32, params []*datastore_types.DataStoreGetMetaParam) uint32) {
 	protocol.getMetasMultipleParamHandler = handler
 }
 
@@ -23,7 +23,6 @@ func (protocol *Protocol) handleGetMetasMultipleParam(packet nex.PacketInterface
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -33,7 +32,7 @@ func (protocol *Protocol) handleGetMetasMultipleParam(packet nex.PacketInterface
 
 	params, err := parametersStream.ReadListStructure(datastore_types.NewDataStoreGetMetaParam())
 	if err != nil {
-		errorCode = protocol.getMetasMultipleParamHandler(fmt.Errorf("Failed to read params from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.getMetasMultipleParamHandler(fmt.Errorf("Failed to read params from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -41,7 +40,7 @@ func (protocol *Protocol) handleGetMetasMultipleParam(packet nex.PacketInterface
 		return
 	}
 
-	errorCode = protocol.getMetasMultipleParamHandler(nil, client, callID, params.([]*datastore_types.DataStoreGetMetaParam))
+	errorCode = protocol.getMetasMultipleParamHandler(nil, packet, callID, params.([]*datastore_types.DataStoreGetMetaParam))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

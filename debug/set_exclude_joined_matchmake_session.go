@@ -7,7 +7,7 @@ import (
 )
 
 // SetExcludeJoinedMatchmakeSession sets the SetExcludeJoinedMatchmakeSession handler function
-func (protocol *Protocol) SetExcludeJoinedMatchmakeSession(handler func(err error, client *nex.Client, callID uint32, packetPayload []byte) uint32) {
+func (protocol *Protocol) SetExcludeJoinedMatchmakeSession(handler func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) uint32) {
 	protocol.setExcludeJoinedMatchmakeSessionHandler = handler
 }
 
@@ -22,14 +22,13 @@ func (protocol *Protocol) handleSetExcludeJoinedMatchmakeSession(packet nex.Pack
 
 	globals.Logger.Warning("Debug::SetExcludeJoinedMatchmakeSession STUBBED")
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
 
 	// TODO - THIS METHOD HAS AN UNKNOWN REQUEST/RESPONSE FORMAT
 
-	errorCode = protocol.setExcludeJoinedMatchmakeSessionHandler(nil, client, callID, packet.Payload())
+	errorCode = protocol.setExcludeJoinedMatchmakeSessionHandler(nil, packet, callID, packet.Payload())
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

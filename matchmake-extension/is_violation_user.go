@@ -7,7 +7,7 @@ import (
 )
 
 // IsViolationUser sets the IsViolationUser handler function
-func (protocol *Protocol) IsViolationUser(handler func(err error, client *nex.Client, callID uint32) uint32) {
+func (protocol *Protocol) IsViolationUser(handler func(err error, packet nex.PacketInterface, callID uint32) uint32) {
 	protocol.isViolationUserHandler = handler
 }
 
@@ -20,12 +20,11 @@ func (protocol *Protocol) handleIsViolationUser(packet nex.PacketInterface) {
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
 
-	errorCode = protocol.isViolationUserHandler(nil, client, callID)
+	errorCode = protocol.isViolationUserHandler(nil, packet, callID)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

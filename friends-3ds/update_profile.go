@@ -10,7 +10,7 @@ import (
 )
 
 // UpdateProfile sets the UpdateProfile handler function
-func (protocol *Protocol) UpdateProfile(handler func(err error, client *nex.Client, callID uint32, profileData *friends_3ds_types.MyProfile) uint32) {
+func (protocol *Protocol) UpdateProfile(handler func(err error, packet nex.PacketInterface, callID uint32, profileData *friends_3ds_types.MyProfile) uint32) {
 	protocol.updateProfileHandler = handler
 }
 
@@ -23,7 +23,6 @@ func (protocol *Protocol) handleUpdateProfile(packet nex.PacketInterface) {
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -33,7 +32,7 @@ func (protocol *Protocol) handleUpdateProfile(packet nex.PacketInterface) {
 
 	profileData, err := parametersStream.ReadStructure(friends_3ds_types.NewMyProfile())
 	if err != nil {
-		errorCode = protocol.updateProfileHandler(fmt.Errorf("Failed to read showGame from profileData. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.updateProfileHandler(fmt.Errorf("Failed to read showGame from profileData. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -41,7 +40,7 @@ func (protocol *Protocol) handleUpdateProfile(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.updateProfileHandler(nil, client, callID, profileData.(*friends_3ds_types.MyProfile))
+	errorCode = protocol.updateProfileHandler(nil, packet, callID, profileData.(*friends_3ds_types.MyProfile))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

@@ -7,7 +7,7 @@ import (
 )
 
 // Unfollow sets the Unfollow handler function
-func (protocol *Protocol) Unfollow(handler func(err error, client *nex.Client, callID uint32, packetPayload []byte) uint32) {
+func (protocol *Protocol) Unfollow(handler func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) uint32) {
 	protocol.unfollowHandler = handler
 }
 
@@ -22,12 +22,11 @@ func (protocol *Protocol) handleUnfollow(packet nex.PacketInterface) {
 
 	globals.Logger.Warning("Subscriber::Unfollow STUBBED")
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
 
-	errorCode = protocol.unfollowHandler(nil, client, callID, packet.Payload())
+	errorCode = protocol.unfollowHandler(nil, packet, callID, packet.Payload())
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

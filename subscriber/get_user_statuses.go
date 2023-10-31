@@ -9,7 +9,7 @@ import (
 )
 
 // GetUserStatuses sets the GetUserStatuses handler function
-func (protocol *Protocol) GetUserStatuses(handler func(err error, client *nex.Client, callID uint32, pids []uint32, unknown []uint8) uint32) {
+func (protocol *Protocol) GetUserStatuses(handler func(err error, packet nex.PacketInterface, callID uint32, pids []uint32, unknown []uint8) uint32) {
 	protocol.getUserStatusesHandler = handler
 }
 
@@ -21,7 +21,7 @@ func (protocol *Protocol) handleGetUserStatuses(packet nex.PacketInterface) {
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
-	client := packet.Sender()
+
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -31,7 +31,7 @@ func (protocol *Protocol) handleGetUserStatuses(packet nex.PacketInterface) {
 
 	pids, err := parametersStream.ReadListUInt32LE()
 	if err != nil {
-		errorCode = protocol.getUserStatusesHandler(fmt.Errorf("Failed to read pids from parameters. %s", err.Error()), client, callID, nil, nil)
+		errorCode = protocol.getUserStatusesHandler(fmt.Errorf("Failed to read pids from parameters. %s", err.Error()), packet, callID, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -41,7 +41,7 @@ func (protocol *Protocol) handleGetUserStatuses(packet nex.PacketInterface) {
 
 	unknown, err := parametersStream.ReadListUInt8()
 	if err != nil {
-		errorCode = protocol.getUserStatusesHandler(fmt.Errorf("Failed to read unknown from parameters. %s", err.Error()), client, callID, nil, nil)
+		errorCode = protocol.getUserStatusesHandler(fmt.Errorf("Failed to read unknown from parameters. %s", err.Error()), packet, callID, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -49,7 +49,7 @@ func (protocol *Protocol) handleGetUserStatuses(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.getUserStatusesHandler(nil, client, callID, pids, unknown)
+	errorCode = protocol.getUserStatusesHandler(nil, packet, callID, pids, unknown)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

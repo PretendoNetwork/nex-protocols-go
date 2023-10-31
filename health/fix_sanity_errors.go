@@ -7,7 +7,7 @@ import (
 )
 
 // FixSanityErrors sets the FixSanityErrors handler function
-func (protocol *Protocol) FixSanityErrors(handler func(err error, client *nex.Client, callID uint32) uint32) {
+func (protocol *Protocol) FixSanityErrors(handler func(err error, packet nex.PacketInterface, callID uint32) uint32) {
 	protocol.fixSanityErrorsHandler = handler
 }
 
@@ -20,12 +20,11 @@ func (protocol *Protocol) handleFixSanityErrors(packet nex.PacketInterface) {
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
 
-	errorCode = protocol.fixSanityErrorsHandler(nil, client, callID)
+	errorCode = protocol.fixSanityErrorsHandler(nil, packet, callID)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

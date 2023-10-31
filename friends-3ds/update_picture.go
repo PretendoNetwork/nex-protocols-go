@@ -9,7 +9,7 @@ import (
 )
 
 // UpdatePicture sets the UpdatePicture handler function
-func (protocol *Protocol) UpdatePicture(handler func(err error, client *nex.Client, callID uint32, unknown uint32, picture []byte) uint32) {
+func (protocol *Protocol) UpdatePicture(handler func(err error, packet nex.PacketInterface, callID uint32, unknown uint32, picture []byte) uint32) {
 	protocol.updatePictureHandler = handler
 }
 
@@ -22,7 +22,6 @@ func (protocol *Protocol) handleUpdatePicture(packet nex.PacketInterface) {
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -32,7 +31,7 @@ func (protocol *Protocol) handleUpdatePicture(packet nex.PacketInterface) {
 
 	unknown, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.updatePictureHandler(fmt.Errorf("Failed to read unknown from parameters. %s", err.Error()), client, callID, 0, nil)
+		errorCode = protocol.updatePictureHandler(fmt.Errorf("Failed to read unknown from parameters. %s", err.Error()), packet, callID, 0, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -42,7 +41,7 @@ func (protocol *Protocol) handleUpdatePicture(packet nex.PacketInterface) {
 
 	picture, err := parametersStream.ReadBuffer()
 	if err != nil {
-		errorCode = protocol.updatePictureHandler(fmt.Errorf("Failed to read picture from parameters. %s", err.Error()), client, callID, 0, nil)
+		errorCode = protocol.updatePictureHandler(fmt.Errorf("Failed to read picture from parameters. %s", err.Error()), packet, callID, 0, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -50,7 +49,7 @@ func (protocol *Protocol) handleUpdatePicture(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.updatePictureHandler(nil, client, callID, unknown, picture)
+	errorCode = protocol.updatePictureHandler(nil, packet, callID, unknown, picture)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

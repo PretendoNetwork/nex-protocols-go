@@ -60,15 +60,15 @@ const (
 
 // SubscriptionProtocol handles the Subscription nex protocol
 type SubscriptionProtocol struct {
-	Server                                      *nex.Server
-	createMySubscriptionDataHandler             func(err error, client *nex.Client, callID uint32, unk uint64, content []byte)
-	updateMySubscriptionDataHandler             func(err error, client *nex.Client, callID uint32, unk uint32, content []byte)
-	getFriendSubscriptionDataHandler            func(err error, client *nex.Client, callID uint32)
-	getTargetSubscriptionDataHandler            func(err error, client *nex.Client, callID uint32)
-	getActivePlayerSubscriptionDataHandler      func(err error, client *nex.Client, callID uint32)
-	getSubscriptionDataHandler                  func(err error, client *nex.Client, callID uint32, pids []uint32)
-	replaceTargetAndGetSubscriptionDataHandler  func(err error, client *nex.Client, callID uint32)
-	getPrivacyLevelsHandler                     func(err error, client *nex.Client, callID uint32)
+	Server                                     *nex.Server
+	createMySubscriptionDataHandler            func(err error, packet nex.PacketInterface, callID uint32, unk uint64, content []byte)
+	updateMySubscriptionDataHandler            func(err error, packet nex.PacketInterface, callID uint32, unk uint32, content []byte)
+	getFriendSubscriptionDataHandler           func(err error, packet nex.PacketInterface, callID uint32)
+	getTargetSubscriptionDataHandler           func(err error, packet nex.PacketInterface, callID uint32)
+	getActivePlayerSubscriptionDataHandler     func(err error, packet nex.PacketInterface, callID uint32)
+	getSubscriptionDataHandler                 func(err error, packet nex.PacketInterface, callID uint32, pids []uint32)
+	replaceTargetAndGetSubscriptionDataHandler func(err error, packet nex.PacketInterface, callID uint32)
+	getPrivacyLevelsHandler                    func(err error, packet nex.PacketInterface, callID uint32)
 }
 
 // Setup initializes the protocol

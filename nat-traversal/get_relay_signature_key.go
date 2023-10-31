@@ -7,7 +7,7 @@ import (
 )
 
 // GetRelaySignatureKey sets the GetRelaySignatureKey handler function
-func (protocol *Protocol) GetRelaySignatureKey(handler func(err error, client *nex.Client, callID uint32) uint32) {
+func (protocol *Protocol) GetRelaySignatureKey(handler func(err error, packet nex.PacketInterface, callID uint32) uint32) {
 	protocol.getRelaySignatureKeyHandler = handler
 }
 
@@ -20,12 +20,11 @@ func (protocol *Protocol) handleGetRelaySignatureKey(packet nex.PacketInterface)
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
 
-	errorCode = protocol.getRelaySignatureKeyHandler(nil, client, callID)
+	errorCode = protocol.getRelaySignatureKeyHandler(nil, packet, callID)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

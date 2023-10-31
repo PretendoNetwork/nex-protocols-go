@@ -9,7 +9,7 @@ import (
 )
 
 // GetFriendPicture sets the GetFriendPicture handler function
-func (protocol *Protocol) GetFriendPicture(handler func(err error, client *nex.Client, callID uint32, unknown []uint32) uint32) {
+func (protocol *Protocol) GetFriendPicture(handler func(err error, packet nex.PacketInterface, callID uint32, unknown []uint32) uint32) {
 	protocol.getFriendPictureHandler = handler
 }
 
@@ -22,7 +22,6 @@ func (protocol *Protocol) handleGetFriendPicture(packet nex.PacketInterface) {
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -32,7 +31,7 @@ func (protocol *Protocol) handleGetFriendPicture(packet nex.PacketInterface) {
 
 	unknown, err := parametersStream.ReadListUInt32LE()
 	if err != nil {
-		errorCode = protocol.getFriendPictureHandler(fmt.Errorf("Failed to read unknown from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.getFriendPictureHandler(fmt.Errorf("Failed to read unknown from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -40,7 +39,7 @@ func (protocol *Protocol) handleGetFriendPicture(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.getFriendPictureHandler(nil, client, callID, unknown)
+	errorCode = protocol.getFriendPictureHandler(nil, packet, callID, unknown)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

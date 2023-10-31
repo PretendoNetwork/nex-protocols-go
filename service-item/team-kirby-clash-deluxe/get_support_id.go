@@ -10,7 +10,7 @@ import (
 )
 
 // GetSupportID sets the GetSupportID handler function
-func (protocol *Protocol) GetSupportID(handler func(err error, client *nex.Client, callID uint32, getSuppordIDParam *service_item_team_kirby_clash_deluxe_types.ServiceItemGetSupportIDParam) uint32) {
+func (protocol *Protocol) GetSupportID(handler func(err error, packet nex.PacketInterface, callID uint32, getSuppordIDParam *service_item_team_kirby_clash_deluxe_types.ServiceItemGetSupportIDParam) uint32) {
 	protocol.getSupportIDHandler = handler
 }
 
@@ -23,7 +23,6 @@ func (protocol *Protocol) handleGetSupportID(packet nex.PacketInterface) {
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -33,7 +32,7 @@ func (protocol *Protocol) handleGetSupportID(packet nex.PacketInterface) {
 
 	getSuppordIDParam, err := parametersStream.ReadStructure(service_item_team_kirby_clash_deluxe_types.NewServiceItemGetSupportIDParam())
 	if err != nil {
-		errorCode = protocol.getSupportIDHandler(fmt.Errorf("Failed to read getSuppordIDParam from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.getSupportIDHandler(fmt.Errorf("Failed to read getSuppordIDParam from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -41,7 +40,7 @@ func (protocol *Protocol) handleGetSupportID(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.getSupportIDHandler(nil, client, callID, getSuppordIDParam.(*service_item_team_kirby_clash_deluxe_types.ServiceItemGetSupportIDParam))
+	errorCode = protocol.getSupportIDHandler(nil, packet, callID, getSuppordIDParam.(*service_item_team_kirby_clash_deluxe_types.ServiceItemGetSupportIDParam))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

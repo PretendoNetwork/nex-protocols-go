@@ -9,7 +9,7 @@ import (
 )
 
 // GetPurchaseHistoryResponse sets the GetPurchaseHistoryResponse handler function
-func (protocol *Protocol) GetPurchaseHistoryResponse(handler func(err error, client *nex.Client, callID uint32, requestID uint32) uint32) {
+func (protocol *Protocol) GetPurchaseHistoryResponse(handler func(err error, packet nex.PacketInterface, callID uint32, requestID uint32) uint32) {
 	protocol.getPurchaseHistoryResponseHandler = handler
 }
 
@@ -22,7 +22,6 @@ func (protocol *Protocol) handleGetPurchaseHistoryResponse(packet nex.PacketInte
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -32,7 +31,7 @@ func (protocol *Protocol) handleGetPurchaseHistoryResponse(packet nex.PacketInte
 
 	requestID, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.getPurchaseHistoryResponseHandler(fmt.Errorf("Failed to read requestID from parameters. %s", err.Error()), client, callID, 0)
+		errorCode = protocol.getPurchaseHistoryResponseHandler(fmt.Errorf("Failed to read requestID from parameters. %s", err.Error()), packet, callID, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -40,7 +39,7 @@ func (protocol *Protocol) handleGetPurchaseHistoryResponse(packet nex.PacketInte
 		return
 	}
 
-	errorCode = protocol.getPurchaseHistoryResponseHandler(nil, client, callID, requestID)
+	errorCode = protocol.getPurchaseHistoryResponseHandler(nil, packet, callID, requestID)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

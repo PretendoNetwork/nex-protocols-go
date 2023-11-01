@@ -10,7 +10,7 @@ import (
 )
 
 // UpdateAndGetAllInformation sets the UpdateAndGetAllInformation handler function
-func (protocol *Protocol) UpdateAndGetAllInformation(handler func(err error, client *nex.Client, callID uint32, nnaInfo *friends_wiiu_types.NNAInfo, presence *friends_wiiu_types.NintendoPresenceV2, birthday *nex.DateTime) uint32) {
+func (protocol *Protocol) UpdateAndGetAllInformation(handler func(err error, packet nex.PacketInterface, callID uint32, nnaInfo *friends_wiiu_types.NNAInfo, presence *friends_wiiu_types.NintendoPresenceV2, birthday *nex.DateTime) uint32) {
 	protocol.updateAndGetAllInformationHandler = handler
 }
 
@@ -23,7 +23,6 @@ func (protocol *Protocol) handleUpdateAndGetAllInformation(packet nex.PacketInte
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -33,7 +32,7 @@ func (protocol *Protocol) handleUpdateAndGetAllInformation(packet nex.PacketInte
 
 	nnaInfo, err := parametersStream.ReadStructure(friends_wiiu_types.NewNNAInfo())
 	if err != nil {
-		errorCode = protocol.updateAndGetAllInformationHandler(fmt.Errorf("Failed to read nnaInfo from parameters. %s", err.Error()), client, callID, nil, nil, nil)
+		errorCode = protocol.updateAndGetAllInformationHandler(fmt.Errorf("Failed to read nnaInfo from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -43,7 +42,7 @@ func (protocol *Protocol) handleUpdateAndGetAllInformation(packet nex.PacketInte
 
 	presence, err := parametersStream.ReadStructure(friends_wiiu_types.NewNintendoPresenceV2())
 	if err != nil {
-		errorCode = protocol.updateAndGetAllInformationHandler(fmt.Errorf("Failed to read presence from parameters. %s", err.Error()), client, callID, nil, nil, nil)
+		errorCode = protocol.updateAndGetAllInformationHandler(fmt.Errorf("Failed to read presence from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -53,7 +52,7 @@ func (protocol *Protocol) handleUpdateAndGetAllInformation(packet nex.PacketInte
 
 	birthday, err := parametersStream.ReadDateTime()
 	if err != nil {
-		errorCode = protocol.updateAndGetAllInformationHandler(fmt.Errorf("Failed to read birthday from parameters. %s", err.Error()), client, callID, nil, nil, nil)
+		errorCode = protocol.updateAndGetAllInformationHandler(fmt.Errorf("Failed to read birthday from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -61,7 +60,7 @@ func (protocol *Protocol) handleUpdateAndGetAllInformation(packet nex.PacketInte
 		return
 	}
 
-	errorCode = protocol.updateAndGetAllInformationHandler(nil, client, callID, nnaInfo.(*friends_wiiu_types.NNAInfo), presence.(*friends_wiiu_types.NintendoPresenceV2), birthday)
+	errorCode = protocol.updateAndGetAllInformationHandler(nil, packet, callID, nnaInfo.(*friends_wiiu_types.NNAInfo), presence.(*friends_wiiu_types.NintendoPresenceV2), birthday)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

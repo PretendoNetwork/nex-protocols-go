@@ -9,7 +9,7 @@ import (
 )
 
 // FindMatchmakeSessionBySingleGatheringID sets the FindMatchmakeSessionBySingleGatheringID handler function
-func (protocol *Protocol) FindMatchmakeSessionBySingleGatheringID(handler func(err error, client *nex.Client, callID uint32, GID uint32) uint32) {
+func (protocol *Protocol) FindMatchmakeSessionBySingleGatheringID(handler func(err error, packet nex.PacketInterface, callID uint32, GID uint32) uint32) {
 	protocol.findMatchmakeSessionBySingleGatheringIDHandler = handler
 }
 
@@ -22,7 +22,6 @@ func (protocol *Protocol) handleFindMatchmakeSessionBySingleGatheringID(packet n
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -32,7 +31,7 @@ func (protocol *Protocol) handleFindMatchmakeSessionBySingleGatheringID(packet n
 
 	gid, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.findMatchmakeSessionBySingleGatheringIDHandler(fmt.Errorf("Failed to read GID from parameters. %s", err.Error()), client, callID, 0)
+		errorCode = protocol.findMatchmakeSessionBySingleGatheringIDHandler(fmt.Errorf("Failed to read GID from parameters. %s", err.Error()), packet, callID, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -40,7 +39,7 @@ func (protocol *Protocol) handleFindMatchmakeSessionBySingleGatheringID(packet n
 		return
 	}
 
-	errorCode = protocol.findMatchmakeSessionBySingleGatheringIDHandler(nil, client, callID, gid)
+	errorCode = protocol.findMatchmakeSessionBySingleGatheringIDHandler(nil, packet, callID, gid)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

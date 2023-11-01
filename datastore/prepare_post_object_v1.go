@@ -10,7 +10,7 @@ import (
 )
 
 // PreparePostObjectV1 sets the PreparePostObjectV1 handler function
-func (protocol *Protocol) PreparePostObjectV1(handler func(err error, client *nex.Client, callID uint32, param *datastore_types.DataStorePreparePostParamV1) uint32) {
+func (protocol *Protocol) PreparePostObjectV1(handler func(err error, packet nex.PacketInterface, callID uint32, param *datastore_types.DataStorePreparePostParamV1) uint32) {
 	protocol.preparePostObjectV1Handler = handler
 }
 
@@ -23,7 +23,6 @@ func (protocol *Protocol) handlePreparePostObjectV1(packet nex.PacketInterface) 
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -33,7 +32,7 @@ func (protocol *Protocol) handlePreparePostObjectV1(packet nex.PacketInterface) 
 
 	param, err := parametersStream.ReadStructure(datastore_types.NewDataStorePreparePostParamV1())
 	if err != nil {
-		errorCode = protocol.preparePostObjectV1Handler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.preparePostObjectV1Handler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -41,7 +40,7 @@ func (protocol *Protocol) handlePreparePostObjectV1(packet nex.PacketInterface) 
 		return
 	}
 
-	errorCode = protocol.preparePostObjectV1Handler(nil, client, callID, param.(*datastore_types.DataStorePreparePostParamV1))
+	errorCode = protocol.preparePostObjectV1Handler(nil, packet, callID, param.(*datastore_types.DataStorePreparePostParamV1))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

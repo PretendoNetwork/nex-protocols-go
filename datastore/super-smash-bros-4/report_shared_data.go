@@ -9,7 +9,7 @@ import (
 )
 
 // ReportSharedData sets the ReportSharedData handler function
-func (protocol *Protocol) ReportSharedData(handler func(err error, client *nex.Client, callID uint32, dataID uint64) uint32) {
+func (protocol *Protocol) ReportSharedData(handler func(err error, packet nex.PacketInterface, callID uint32, dataID uint64) uint32) {
 	protocol.reportSharedDataHandler = handler
 }
 
@@ -22,7 +22,6 @@ func (protocol *Protocol) handleReportSharedData(packet nex.PacketInterface) {
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -32,7 +31,7 @@ func (protocol *Protocol) handleReportSharedData(packet nex.PacketInterface) {
 
 	dataID, err := parametersStream.ReadUInt64LE()
 	if err != nil {
-		errorCode = protocol.reportSharedDataHandler(fmt.Errorf("Failed to read dataID from parameters. %s", err.Error()), client, callID, 0)
+		errorCode = protocol.reportSharedDataHandler(fmt.Errorf("Failed to read dataID from parameters. %s", err.Error()), packet, callID, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -40,7 +39,7 @@ func (protocol *Protocol) handleReportSharedData(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.reportSharedDataHandler(nil, client, callID, dataID)
+	errorCode = protocol.reportSharedDataHandler(nil, packet, callID, dataID)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

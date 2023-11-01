@@ -7,7 +7,7 @@ import (
 )
 
 // UploadCompetitionRankingScore sets the UploadCompetitionRankingScore handler function
-func (protocol *Protocol) UploadCompetitionRankingScore(handler func(err error, client *nex.Client, callID uint32, packetPayload []byte) uint32) {
+func (protocol *Protocol) UploadCompetitionRankingScore(handler func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) uint32) {
 	protocol.uploadCompetitionRankingScoreHandler = handler
 }
 
@@ -22,12 +22,11 @@ func (protocol *Protocol) handleUploadCompetitionRankingScore(packet nex.PacketI
 
 	globals.Logger.Warning("RankingSplatoon::UploadCompetitionRankingScore STUBBED")
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
 
-	errorCode = protocol.uploadCompetitionRankingScoreHandler(nil, client, callID, packet.Payload())
+	errorCode = protocol.uploadCompetitionRankingScoreHandler(nil, packet, callID, packet.Payload())
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

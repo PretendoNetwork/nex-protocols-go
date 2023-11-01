@@ -7,7 +7,7 @@ import (
 )
 
 // UnfollowAllAndFollow sets the UnfollowAllAndFollow handler function
-func (protocol *Protocol) UnfollowAllAndFollow(handler func(err error, client *nex.Client, callID uint32, packetPayload []byte) uint32) {
+func (protocol *Protocol) UnfollowAllAndFollow(handler func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) uint32) {
 	protocol.unfollowAllAndFollowHandler = handler
 }
 
@@ -22,12 +22,11 @@ func (protocol *Protocol) handleUnfollowAllAndFollow(packet nex.PacketInterface)
 
 	globals.Logger.Warning("Subscriber::UnfollowAllAndFollow STUBBED")
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
 
-	errorCode = protocol.unfollowAllAndFollowHandler(nil, client, callID, packet.Payload())
+	errorCode = protocol.unfollowAllAndFollowHandler(nil, packet, callID, packet.Payload())
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

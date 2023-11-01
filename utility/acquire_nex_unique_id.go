@@ -7,7 +7,7 @@ import (
 )
 
 // AcquireNexUniqueID sets the AcquireNexUniqueID handler function
-func (protocol *Protocol) AcquireNexUniqueID(handler func(err error, client *nex.Client, callID uint32) uint32) {
+func (protocol *Protocol) AcquireNexUniqueID(handler func(err error, packet nex.PacketInterface, callID uint32) uint32) {
 	protocol.acquireNexUniqueIDHandler = handler
 }
 
@@ -20,12 +20,11 @@ func (protocol *Protocol) handleAcquireNexUniqueID(packet nex.PacketInterface) {
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
 
-	errorCode = protocol.acquireNexUniqueIDHandler(nil, client, callID)
+	errorCode = protocol.acquireNexUniqueIDHandler(nil, packet, callID)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

@@ -9,7 +9,7 @@ import (
 )
 
 // FindByType sets the FindByType handler function
-func (protocol *Protocol) FindByType(handler func(err error, client *nex.Client, callID uint32, strType string, resultRange *nex.ResultRange) uint32) {
+func (protocol *Protocol) FindByType(handler func(err error, packet nex.PacketInterface, callID uint32, strType string, resultRange *nex.ResultRange) uint32) {
 	protocol.findByTypeHandler = handler
 }
 
@@ -22,7 +22,6 @@ func (protocol *Protocol) handleFindByType(packet nex.PacketInterface) {
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -32,7 +31,7 @@ func (protocol *Protocol) handleFindByType(packet nex.PacketInterface) {
 
 	strType, err := parametersStream.ReadString()
 	if err != nil {
-		errorCode = protocol.findByTypeHandler(fmt.Errorf("Failed to read strType from parameters. %s", err.Error()), client, callID, "", nil)
+		errorCode = protocol.findByTypeHandler(fmt.Errorf("Failed to read strType from parameters. %s", err.Error()), packet, callID, "", nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -42,7 +41,7 @@ func (protocol *Protocol) handleFindByType(packet nex.PacketInterface) {
 
 	resultRange, err := parametersStream.ReadStructure(nex.NewResultRange())
 	if err != nil {
-		errorCode = protocol.findByTypeHandler(fmt.Errorf("Failed to read resultRange from parameters. %s", err.Error()), client, callID, "", nil)
+		errorCode = protocol.findByTypeHandler(fmt.Errorf("Failed to read resultRange from parameters. %s", err.Error()), packet, callID, "", nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -50,7 +49,7 @@ func (protocol *Protocol) handleFindByType(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.findByTypeHandler(nil, client, callID, strType, resultRange.(*nex.ResultRange))
+	errorCode = protocol.findByTypeHandler(nil, packet, callID, strType, resultRange.(*nex.ResultRange))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

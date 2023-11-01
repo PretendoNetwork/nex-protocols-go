@@ -9,7 +9,7 @@ import (
 )
 
 // CheckRateCustomRankingCounter sets the CheckRateCustomRankingCounter handler function
-func (protocol *Protocol) CheckRateCustomRankingCounter(handler func(err error, client *nex.Client, callID uint32, applicationID uint32) uint32) {
+func (protocol *Protocol) CheckRateCustomRankingCounter(handler func(err error, packet nex.PacketInterface, callID uint32, applicationID uint32) uint32) {
 	protocol.checkRateCustomRankingCounterHandler = handler
 }
 
@@ -22,7 +22,6 @@ func (protocol *Protocol) handleCheckRateCustomRankingCounter(packet nex.PacketI
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -32,7 +31,7 @@ func (protocol *Protocol) handleCheckRateCustomRankingCounter(packet nex.PacketI
 
 	applicationID, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.checkRateCustomRankingCounterHandler(fmt.Errorf("Failed to read applicationID from parameters. %s", err.Error()), client, callID, 0)
+		errorCode = protocol.checkRateCustomRankingCounterHandler(fmt.Errorf("Failed to read applicationID from parameters. %s", err.Error()), packet, callID, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -40,7 +39,7 @@ func (protocol *Protocol) handleCheckRateCustomRankingCounter(packet nex.PacketI
 		return
 	}
 
-	errorCode = protocol.checkRateCustomRankingCounterHandler(nil, client, callID, applicationID)
+	errorCode = protocol.checkRateCustomRankingCounterHandler(nil, packet, callID, applicationID)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

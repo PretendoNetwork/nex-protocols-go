@@ -9,7 +9,7 @@ import (
 )
 
 // Register sets the Register handler function
-func (protocol *Protocol) Register(handler func(err error, client *nex.Client, callID uint32, vecMyURLs []*nex.StationURL) uint32) {
+func (protocol *Protocol) Register(handler func(err error, packet nex.PacketInterface, callID uint32, vecMyURLs []*nex.StationURL) uint32) {
 	protocol.registerHandler = handler
 }
 
@@ -22,7 +22,6 @@ func (protocol *Protocol) handleRegister(packet nex.PacketInterface) {
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -32,7 +31,7 @@ func (protocol *Protocol) handleRegister(packet nex.PacketInterface) {
 
 	vecMyURLs, err := parametersStream.ReadListStationURL()
 	if err != nil {
-		errorCode = protocol.registerHandler(fmt.Errorf("Failed to read hCustomData from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.registerHandler(fmt.Errorf("Failed to read hCustomData from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -40,7 +39,7 @@ func (protocol *Protocol) handleRegister(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.registerHandler(nil, client, callID, vecMyURLs)
+	errorCode = protocol.registerHandler(nil, packet, callID, vecMyURLs)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

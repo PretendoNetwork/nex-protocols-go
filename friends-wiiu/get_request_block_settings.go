@@ -9,7 +9,7 @@ import (
 )
 
 // GetRequestBlockSettings sets the GetRequestBlockSettings handler function
-func (protocol *Protocol) GetRequestBlockSettings(handler func(err error, client *nex.Client, callID uint32, unknowns []uint32) uint32) {
+func (protocol *Protocol) GetRequestBlockSettings(handler func(err error, packet nex.PacketInterface, callID uint32, unknowns []uint32) uint32) {
 	protocol.getRequestBlockSettingsHandler = handler
 }
 
@@ -22,7 +22,6 @@ func (protocol *Protocol) handleGetRequestBlockSettings(packet nex.PacketInterfa
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -32,7 +31,7 @@ func (protocol *Protocol) handleGetRequestBlockSettings(packet nex.PacketInterfa
 
 	pids, err := parametersStream.ReadListUInt32LE()
 	if err != nil {
-		errorCode = protocol.getRequestBlockSettingsHandler(fmt.Errorf("Failed to read pids from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.getRequestBlockSettingsHandler(fmt.Errorf("Failed to read pids from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -40,7 +39,7 @@ func (protocol *Protocol) handleGetRequestBlockSettings(packet nex.PacketInterfa
 		return
 	}
 
-	errorCode = protocol.getRequestBlockSettingsHandler(nil, client, callID, pids)
+	errorCode = protocol.getRequestBlockSettingsHandler(nil, packet, callID, pids)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

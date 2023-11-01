@@ -9,7 +9,7 @@ import (
 )
 
 // GetPendingDeletions sets the GetPendingDeletions handler function
-func (protocol *Protocol) GetPendingDeletions(handler func(err error, client *nex.Client, callID uint32, uiReason uint32, resultRange *nex.ResultRange) uint32) {
+func (protocol *Protocol) GetPendingDeletions(handler func(err error, packet nex.PacketInterface, callID uint32, uiReason uint32, resultRange *nex.ResultRange) uint32) {
 	protocol.getPendingDeletionsHandler = handler
 }
 
@@ -22,7 +22,6 @@ func (protocol *Protocol) handleGetPendingDeletions(packet nex.PacketInterface) 
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -32,7 +31,7 @@ func (protocol *Protocol) handleGetPendingDeletions(packet nex.PacketInterface) 
 
 	uiReason, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.getPendingDeletionsHandler(fmt.Errorf("Failed to read uiReason from parameters. %s", err.Error()), client, callID, 0, nil)
+		errorCode = protocol.getPendingDeletionsHandler(fmt.Errorf("Failed to read uiReason from parameters. %s", err.Error()), packet, callID, 0, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -42,7 +41,7 @@ func (protocol *Protocol) handleGetPendingDeletions(packet nex.PacketInterface) 
 
 	resultRange, err := parametersStream.ReadStructure(nex.NewResultRange())
 	if err != nil {
-		errorCode = protocol.getPendingDeletionsHandler(fmt.Errorf("Failed to read resultRange from parameters. %s", err.Error()), client, callID, 0, nil)
+		errorCode = protocol.getPendingDeletionsHandler(fmt.Errorf("Failed to read resultRange from parameters. %s", err.Error()), packet, callID, 0, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -50,7 +49,7 @@ func (protocol *Protocol) handleGetPendingDeletions(packet nex.PacketInterface) 
 		return
 	}
 
-	errorCode = protocol.getPendingDeletionsHandler(nil, client, callID, uiReason, resultRange.(*nex.ResultRange))
+	errorCode = protocol.getPendingDeletionsHandler(nil, packet, callID, uiReason, resultRange.(*nex.ResultRange))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

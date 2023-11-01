@@ -37,13 +37,13 @@ const (
 // Protocol stores all the RMC method handlers for the NAT Traversal protocol and listens for requests
 type Protocol struct {
 	Server                                *nex.Server
-	requestProbeInitiationHandler         func(err error, client *nex.Client, callID uint32, urlTargetList []*nex.StationURL) uint32
-	initiateProbeHandler                  func(err error, client *nex.Client, callID uint32, urlStationToProbe *nex.StationURL) uint32
-	requestProbeInitiationExtHandler      func(err error, client *nex.Client, callID uint32, targetList []string, stationToProbe string) uint32
-	reportNATTraversalResultHandler       func(err error, client *nex.Client, callID uint32, cid uint32, result bool, rtt uint32) uint32
-	reportNATPropertiesHandler            func(err error, client *nex.Client, callID uint32, natmapping uint32, natfiltering uint32, rtt uint32) uint32
-	getRelaySignatureKeyHandler           func(err error, client *nex.Client, callID uint32) uint32
-	reportNATTraversalResultDetailHandler func(err error, client *nex.Client, callID uint32, cid uint32, result bool, detail int32, rtt uint32) uint32
+	requestProbeInitiationHandler         func(err error, packet nex.PacketInterface, callID uint32, urlTargetList []*nex.StationURL) uint32
+	initiateProbeHandler                  func(err error, packet nex.PacketInterface, callID uint32, urlStationToProbe *nex.StationURL) uint32
+	requestProbeInitiationExtHandler      func(err error, packet nex.PacketInterface, callID uint32, targetList []string, stationToProbe string) uint32
+	reportNATTraversalResultHandler       func(err error, packet nex.PacketInterface, callID uint32, cid uint32, result bool, rtt uint32) uint32
+	reportNATPropertiesHandler            func(err error, packet nex.PacketInterface, callID uint32, natmapping uint32, natfiltering uint32, rtt uint32) uint32
+	getRelaySignatureKeyHandler           func(err error, packet nex.PacketInterface, callID uint32) uint32
+	reportNATTraversalResultDetailHandler func(err error, packet nex.PacketInterface, callID uint32, cid uint32, result bool, detail int32, rtt uint32) uint32
 }
 
 // Setup initializes the protocol

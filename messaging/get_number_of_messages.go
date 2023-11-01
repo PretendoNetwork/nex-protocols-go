@@ -10,7 +10,7 @@ import (
 )
 
 // GetNumberOfMessages sets the GetNumberOfMessages handler function
-func (protocol *Protocol) GetNumberOfMessages(handler func(err error, client *nex.Client, callID uint32, recipient *messaging_types.MessageRecipient) uint32) {
+func (protocol *Protocol) GetNumberOfMessages(handler func(err error, packet nex.PacketInterface, callID uint32, recipient *messaging_types.MessageRecipient) uint32) {
 	protocol.getNumberOfMessagesHandler = handler
 }
 
@@ -23,7 +23,6 @@ func (protocol *Protocol) handleGetNumberOfMessages(packet nex.PacketInterface) 
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -33,7 +32,7 @@ func (protocol *Protocol) handleGetNumberOfMessages(packet nex.PacketInterface) 
 
 	recipient, err := parametersStream.ReadStructure(messaging_types.NewMessageRecipient())
 	if err != nil {
-		errorCode = protocol.getNumberOfMessagesHandler(fmt.Errorf("Failed to read recipient from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.getNumberOfMessagesHandler(fmt.Errorf("Failed to read recipient from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -41,7 +40,7 @@ func (protocol *Protocol) handleGetNumberOfMessages(packet nex.PacketInterface) 
 		return
 	}
 
-	errorCode = protocol.getNumberOfMessagesHandler(nil, client, callID, recipient.(*messaging_types.MessageRecipient))
+	errorCode = protocol.getNumberOfMessagesHandler(nil, packet, callID, recipient.(*messaging_types.MessageRecipient))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

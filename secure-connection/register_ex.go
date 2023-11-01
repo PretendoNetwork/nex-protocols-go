@@ -9,7 +9,7 @@ import (
 )
 
 // RegisterEx sets the RegisterEx handler function
-func (protocol *Protocol) RegisterEx(handler func(err error, client *nex.Client, callID uint32, vecMyURLs []*nex.StationURL, hCustomData *nex.DataHolder) uint32) {
+func (protocol *Protocol) RegisterEx(handler func(err error, packet nex.PacketInterface, callID uint32, vecMyURLs []*nex.StationURL, hCustomData *nex.DataHolder) uint32) {
 	protocol.registerExHandler = handler
 }
 
@@ -22,7 +22,6 @@ func (protocol *Protocol) handleRegisterEx(packet nex.PacketInterface) {
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -32,7 +31,7 @@ func (protocol *Protocol) handleRegisterEx(packet nex.PacketInterface) {
 
 	vecMyURLs, err := parametersStream.ReadListStationURL()
 	if err != nil {
-		errorCode = protocol.registerExHandler(fmt.Errorf("Failed to read vecMyURLs from parameters. %s", err.Error()), client, callID, nil, nil)
+		errorCode = protocol.registerExHandler(fmt.Errorf("Failed to read vecMyURLs from parameters. %s", err.Error()), packet, callID, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -42,7 +41,7 @@ func (protocol *Protocol) handleRegisterEx(packet nex.PacketInterface) {
 
 	hCustomData, err := parametersStream.ReadDataHolder()
 	if err != nil {
-		errorCode = protocol.registerExHandler(fmt.Errorf("Failed to read hCustomData from parameters. %s", err.Error()), client, callID, nil, nil)
+		errorCode = protocol.registerExHandler(fmt.Errorf("Failed to read hCustomData from parameters. %s", err.Error()), packet, callID, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -50,7 +49,7 @@ func (protocol *Protocol) handleRegisterEx(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.registerExHandler(nil, client, callID, vecMyURLs, hCustomData)
+	errorCode = protocol.registerExHandler(nil, packet, callID, vecMyURLs, hCustomData)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

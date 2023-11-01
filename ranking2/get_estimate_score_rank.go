@@ -10,7 +10,7 @@ import (
 )
 
 // GetEstimateScoreRank sets the GetEstimateScoreRank handler function
-func (protocol *Protocol) GetEstimateScoreRank(handler func(err error, client *nex.Client, callID uint32, input *ranking2_types.Ranking2EstimateScoreRankInput) uint32) {
+func (protocol *Protocol) GetEstimateScoreRank(handler func(err error, packet nex.PacketInterface, callID uint32, input *ranking2_types.Ranking2EstimateScoreRankInput) uint32) {
 	protocol.getEstimateScoreRankHandler = handler
 }
 
@@ -22,7 +22,7 @@ func (protocol *Protocol) handleGetEstimateScoreRank(packet nex.PacketInterface)
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
-	client := packet.Sender()
+
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -32,7 +32,7 @@ func (protocol *Protocol) handleGetEstimateScoreRank(packet nex.PacketInterface)
 
 	input, err := parametersStream.ReadStructure(ranking2_types.NewRanking2EstimateScoreRankInput())
 	if err != nil {
-		errorCode = protocol.getEstimateScoreRankHandler(fmt.Errorf("Failed to read input from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.getEstimateScoreRankHandler(fmt.Errorf("Failed to read input from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -40,7 +40,7 @@ func (protocol *Protocol) handleGetEstimateScoreRank(packet nex.PacketInterface)
 		return
 	}
 
-	errorCode = protocol.getEstimateScoreRankHandler(nil, client, callID, input.(*ranking2_types.Ranking2EstimateScoreRankInput))
+	errorCode = protocol.getEstimateScoreRankHandler(nil, packet, callID, input.(*ranking2_types.Ranking2EstimateScoreRankInput))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

@@ -7,7 +7,7 @@ import (
 )
 
 // FindCommunityCompetitionsByParticipant sets the FindCommunityCompetitionsByParticipant handler function
-func (protocol *Protocol) FindCommunityCompetitionsByParticipant(handler func(err error, client *nex.Client, callID uint32, packetPayload []byte) uint32) {
+func (protocol *Protocol) FindCommunityCompetitionsByParticipant(handler func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) uint32) {
 	protocol.findCommunityCompetitionsByParticipantHandler = handler
 }
 
@@ -22,12 +22,11 @@ func (protocol *Protocol) handleFindCommunityCompetitionsByParticipant(packet ne
 
 	globals.Logger.Warning("MatchmakeExtensionSuperSmashBros4::FindCommunityCompetitionsByParticipant STUBBED")
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
 
-	errorCode = protocol.findCommunityCompetitionsByParticipantHandler(nil, client, callID, packet.Payload())
+	errorCode = protocol.findCommunityCompetitionsByParticipantHandler(nil, packet, callID, packet.Payload())
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

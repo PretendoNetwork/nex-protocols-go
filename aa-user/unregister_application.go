@@ -9,7 +9,7 @@ import (
 )
 
 // UnregisterApplication sets the UnregisterApplication handler function
-func (protocol *Protocol) UnregisterApplication(handler func(err error, client *nex.Client, callID uint32, titleID uint64) uint32) {
+func (protocol *Protocol) UnregisterApplication(handler func(err error, packet nex.PacketInterface, callID uint32, titleID uint64) uint32) {
 	protocol.unregisterApplicationHandler = handler
 }
 
@@ -22,7 +22,6 @@ func (protocol *Protocol) handleUnregisterApplication(packet nex.PacketInterface
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -32,7 +31,7 @@ func (protocol *Protocol) handleUnregisterApplication(packet nex.PacketInterface
 
 	titleID, err := parametersStream.ReadUInt64LE()
 	if err != nil {
-		errorCode = protocol.unregisterApplicationHandler(fmt.Errorf("Failed to read titleID from parameters. %s", err.Error()), client, callID, 0)
+		errorCode = protocol.unregisterApplicationHandler(fmt.Errorf("Failed to read titleID from parameters. %s", err.Error()), packet, callID, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -40,7 +39,7 @@ func (protocol *Protocol) handleUnregisterApplication(packet nex.PacketInterface
 		return
 	}
 
-	errorCode = protocol.unregisterApplicationHandler(nil, client, callID, titleID)
+	errorCode = protocol.unregisterApplicationHandler(nil, packet, callID, titleID)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

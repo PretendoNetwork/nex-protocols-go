@@ -7,7 +7,7 @@ import (
 )
 
 // SearchCommunityCompetition sets the SearchCommunityCompetition handler function
-func (protocol *Protocol) SearchCommunityCompetition(handler func(err error, client *nex.Client, callID uint32, packetPayload []byte) uint32) {
+func (protocol *Protocol) SearchCommunityCompetition(handler func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) uint32) {
 	protocol.searchCommunityCompetitionHandler = handler
 }
 
@@ -22,12 +22,11 @@ func (protocol *Protocol) handleSearchCommunityCompetition(packet nex.PacketInte
 
 	globals.Logger.Warning("MatchmakeExtensionSuperSmashBros4::SearchCommunityCompetition STUBBED")
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
 
-	errorCode = protocol.searchCommunityCompetitionHandler(nil, client, callID, packet.Payload())
+	errorCode = protocol.searchCommunityCompetitionHandler(nil, packet, callID, packet.Payload())
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

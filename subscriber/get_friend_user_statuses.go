@@ -9,7 +9,7 @@ import (
 )
 
 // GetFriendUserStatuses sets the GetFriendUserStatuses handler function
-func (protocol *Protocol) GetFriendUserStatuses(handler func(err error, client *nex.Client, callID uint32, unknown []uint8) uint32) {
+func (protocol *Protocol) GetFriendUserStatuses(handler func(err error, packet nex.PacketInterface, callID uint32, unknown []uint8) uint32) {
 	protocol.getFriendUserStatusesHandler = handler
 }
 
@@ -21,7 +21,7 @@ func (protocol *Protocol) handleGetFriendUserStatuses(packet nex.PacketInterface
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
-	client := packet.Sender()
+
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -31,7 +31,7 @@ func (protocol *Protocol) handleGetFriendUserStatuses(packet nex.PacketInterface
 
 	unknown, err := parametersStream.ReadListUInt8()
 	if err != nil {
-		errorCode = protocol.getFriendUserStatusesHandler(fmt.Errorf("Failed to read unknown from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.getFriendUserStatusesHandler(fmt.Errorf("Failed to read unknown from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -39,7 +39,7 @@ func (protocol *Protocol) handleGetFriendUserStatuses(packet nex.PacketInterface
 		return
 	}
 
-	errorCode = protocol.getFriendUserStatusesHandler(nil, client, callID, unknown)
+	errorCode = protocol.getFriendUserStatusesHandler(nil, packet, callID, unknown)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

@@ -10,7 +10,7 @@ import (
 )
 
 // TradePokemon sets the TradePokemon handler function
-func (protocol *Protocol) TradePokemon(handler func(err error, client *nex.Client, callID uint32, param *datastore_pokemon_bank_types.GlobalTradeStationTradePokemonParam) uint32) {
+func (protocol *Protocol) TradePokemon(handler func(err error, packet nex.PacketInterface, callID uint32, param *datastore_pokemon_bank_types.GlobalTradeStationTradePokemonParam) uint32) {
 	protocol.tradePokemonHandler = handler
 }
 
@@ -23,7 +23,6 @@ func (protocol *Protocol) handleTradePokemon(packet nex.PacketInterface) {
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -33,7 +32,7 @@ func (protocol *Protocol) handleTradePokemon(packet nex.PacketInterface) {
 
 	param, err := parametersStream.ReadStructure(datastore_pokemon_bank_types.NewGlobalTradeStationTradePokemonParam())
 	if err != nil {
-		errorCode = protocol.tradePokemonHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.tradePokemonHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -41,7 +40,7 @@ func (protocol *Protocol) handleTradePokemon(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.tradePokemonHandler(nil, client, callID, param.(*datastore_pokemon_bank_types.GlobalTradeStationTradePokemonParam))
+	errorCode = protocol.tradePokemonHandler(nil, packet, callID, param.(*datastore_pokemon_bank_types.GlobalTradeStationTradePokemonParam))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

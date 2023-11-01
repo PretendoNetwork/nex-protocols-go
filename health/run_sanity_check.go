@@ -7,7 +7,7 @@ import (
 )
 
 // RunSanityCheck sets the RunSanityCheck handler function
-func (protocol *Protocol) RunSanityCheck(handler func(err error, client *nex.Client, callID uint32) uint32) {
+func (protocol *Protocol) RunSanityCheck(handler func(err error, packet nex.PacketInterface, callID uint32) uint32) {
 	protocol.runSanityCheckHandler = handler
 }
 
@@ -20,12 +20,11 @@ func (protocol *Protocol) handleRunSanityCheck(packet nex.PacketInterface) {
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
 
-	errorCode = protocol.runSanityCheckHandler(nil, client, callID)
+	errorCode = protocol.runSanityCheckHandler(nil, packet, callID)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

@@ -10,7 +10,7 @@ import (
 )
 
 // UpdatePresence sets the UpdatePresence handler function
-func (protocol *Protocol) UpdatePresence(handler func(err error, client *nex.Client, callID uint32, presence *friends_wiiu_types.NintendoPresenceV2) uint32) {
+func (protocol *Protocol) UpdatePresence(handler func(err error, packet nex.PacketInterface, callID uint32, presence *friends_wiiu_types.NintendoPresenceV2) uint32) {
 	protocol.updatePresenceHandler = handler
 }
 
@@ -23,7 +23,6 @@ func (protocol *Protocol) handleUpdatePresence(packet nex.PacketInterface) {
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -33,7 +32,7 @@ func (protocol *Protocol) handleUpdatePresence(packet nex.PacketInterface) {
 
 	nintendoPresenceV2, err := parametersStream.ReadStructure(friends_wiiu_types.NewNintendoPresenceV2())
 	if err != nil {
-		errorCode = protocol.updatePresenceHandler(fmt.Errorf("Failed to read nintendoPresenceV2 from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.updatePresenceHandler(fmt.Errorf("Failed to read nintendoPresenceV2 from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -41,7 +40,7 @@ func (protocol *Protocol) handleUpdatePresence(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.updatePresenceHandler(nil, client, callID, nintendoPresenceV2.(*friends_wiiu_types.NintendoPresenceV2))
+	errorCode = protocol.updatePresenceHandler(nil, packet, callID, nintendoPresenceV2.(*friends_wiiu_types.NintendoPresenceV2))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

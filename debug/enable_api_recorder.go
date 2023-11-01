@@ -7,7 +7,7 @@ import (
 )
 
 // EnableAPIRecorder sets the EnableAPIRecorder handler function
-func (protocol *Protocol) EnableAPIRecorder(handler func(err error, client *nex.Client, callID uint32) uint32) {
+func (protocol *Protocol) EnableAPIRecorder(handler func(err error, packet nex.PacketInterface, callID uint32) uint32) {
 	protocol.enableAPIRecorderHandler = handler
 }
 
@@ -20,12 +20,11 @@ func (protocol *Protocol) handleEnableAPIRecorder(packet nex.PacketInterface) {
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
 
-	errorCode = protocol.enableAPIRecorderHandler(nil, client, callID)
+	errorCode = protocol.enableAPIRecorderHandler(nil, packet, callID)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

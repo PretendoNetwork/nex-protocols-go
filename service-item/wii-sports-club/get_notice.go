@@ -10,7 +10,7 @@ import (
 )
 
 // GetNotice sets the GetNotice handler function
-func (protocol *Protocol) GetNotice(handler func(err error, client *nex.Client, callID uint32, getNoticeParam *service_item_wii_sports_club_types.ServiceItemGetNoticeParam) uint32) {
+func (protocol *Protocol) GetNotice(handler func(err error, packet nex.PacketInterface, callID uint32, getNoticeParam *service_item_wii_sports_club_types.ServiceItemGetNoticeParam) uint32) {
 	protocol.getNoticeHandler = handler
 }
 
@@ -23,7 +23,6 @@ func (protocol *Protocol) handleGetNotice(packet nex.PacketInterface) {
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -33,7 +32,7 @@ func (protocol *Protocol) handleGetNotice(packet nex.PacketInterface) {
 
 	getNoticeParam, err := parametersStream.ReadStructure(service_item_wii_sports_club_types.NewServiceItemGetNoticeParam())
 	if err != nil {
-		errorCode = protocol.getNoticeHandler(fmt.Errorf("Failed to read getNoticeParam from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.getNoticeHandler(fmt.Errorf("Failed to read getNoticeParam from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -41,7 +40,7 @@ func (protocol *Protocol) handleGetNotice(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.getNoticeHandler(nil, client, callID, getNoticeParam.(*service_item_wii_sports_club_types.ServiceItemGetNoticeParam))
+	errorCode = protocol.getNoticeHandler(nil, packet, callID, getNoticeParam.(*service_item_wii_sports_club_types.ServiceItemGetNoticeParam))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

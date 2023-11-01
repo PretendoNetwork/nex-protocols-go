@@ -10,7 +10,7 @@ import (
 )
 
 // PostMetaBinaryWithDataID sets the PostMetaBinaryWithDataID handler function
-func (protocol *Protocol) PostMetaBinaryWithDataID(handler func(err error, client *nex.Client, callID uint32, dataID uint64, param *datastore_types.DataStorePreparePostParam) uint32) {
+func (protocol *Protocol) PostMetaBinaryWithDataID(handler func(err error, packet nex.PacketInterface, callID uint32, dataID uint64, param *datastore_types.DataStorePreparePostParam) uint32) {
 	protocol.postMetaBinaryWithDataIDHandler = handler
 }
 
@@ -23,7 +23,6 @@ func (protocol *Protocol) handlePostMetaBinaryWithDataID(packet nex.PacketInterf
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -33,7 +32,7 @@ func (protocol *Protocol) handlePostMetaBinaryWithDataID(packet nex.PacketInterf
 
 	dataID, err := parametersStream.ReadUInt64LE()
 	if err != nil {
-		errorCode = protocol.postMetaBinaryWithDataIDHandler(fmt.Errorf("Failed to read dataID from parameters. %s", err.Error()), client, callID, 0, nil)
+		errorCode = protocol.postMetaBinaryWithDataIDHandler(fmt.Errorf("Failed to read dataID from parameters. %s", err.Error()), packet, callID, 0, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -43,7 +42,7 @@ func (protocol *Protocol) handlePostMetaBinaryWithDataID(packet nex.PacketInterf
 
 	param, err := parametersStream.ReadStructure(datastore_types.NewDataStorePreparePostParam())
 	if err != nil {
-		errorCode = protocol.postMetaBinaryWithDataIDHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, 0, nil)
+		errorCode = protocol.postMetaBinaryWithDataIDHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, 0, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -51,7 +50,7 @@ func (protocol *Protocol) handlePostMetaBinaryWithDataID(packet nex.PacketInterf
 		return
 	}
 
-	errorCode = protocol.postMetaBinaryWithDataIDHandler(nil, client, callID, dataID, param.(*datastore_types.DataStorePreparePostParam))
+	errorCode = protocol.postMetaBinaryWithDataIDHandler(nil, packet, callID, dataID, param.(*datastore_types.DataStorePreparePostParam))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

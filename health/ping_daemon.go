@@ -7,7 +7,7 @@ import (
 )
 
 // PingDaemon sets the PingDaemon handler function
-func (protocol *Protocol) PingDaemon(handler func(err error, client *nex.Client, callID uint32) uint32) {
+func (protocol *Protocol) PingDaemon(handler func(err error, packet nex.PacketInterface, callID uint32) uint32) {
 	protocol.pingDaemonHandler = handler
 }
 
@@ -20,12 +20,11 @@ func (protocol *Protocol) handlePingDaemon(packet nex.PacketInterface) {
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
 
-	errorCode = protocol.pingDaemonHandler(nil, client, callID)
+	errorCode = protocol.pingDaemonHandler(nil, packet, callID)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

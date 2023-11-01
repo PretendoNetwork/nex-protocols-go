@@ -10,7 +10,7 @@ import (
 )
 
 // GetLawMessageRequest sets the GetLawMessageRequest handler function
-func (protocol *Protocol) GetLawMessageRequest(handler func(err error, client *nex.Client, callID uint32, getLawMessageParam *service_item_team_kirby_clash_deluxe_types.ServiceItemGetLawMessageParam) uint32) {
+func (protocol *Protocol) GetLawMessageRequest(handler func(err error, packet nex.PacketInterface, callID uint32, getLawMessageParam *service_item_team_kirby_clash_deluxe_types.ServiceItemGetLawMessageParam) uint32) {
 	protocol.getLawMessageRequestHandler = handler
 }
 
@@ -23,7 +23,6 @@ func (protocol *Protocol) handleGetLawMessageRequest(packet nex.PacketInterface)
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -33,7 +32,7 @@ func (protocol *Protocol) handleGetLawMessageRequest(packet nex.PacketInterface)
 
 	getLawMessageParam, err := parametersStream.ReadStructure(service_item_team_kirby_clash_deluxe_types.NewServiceItemGetLawMessageParam())
 	if err != nil {
-		errorCode = protocol.getLawMessageRequestHandler(fmt.Errorf("Failed to read getLawMessageParam from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.getLawMessageRequestHandler(fmt.Errorf("Failed to read getLawMessageParam from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -41,7 +40,7 @@ func (protocol *Protocol) handleGetLawMessageRequest(packet nex.PacketInterface)
 		return
 	}
 
-	errorCode = protocol.getLawMessageRequestHandler(nil, client, callID, getLawMessageParam.(*service_item_team_kirby_clash_deluxe_types.ServiceItemGetLawMessageParam))
+	errorCode = protocol.getLawMessageRequestHandler(nil, packet, callID, getLawMessageParam.(*service_item_team_kirby_clash_deluxe_types.ServiceItemGetLawMessageParam))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

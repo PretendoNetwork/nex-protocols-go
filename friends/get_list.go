@@ -9,7 +9,7 @@ import (
 )
 
 // GetList sets the GetList handler function
-func (protocol *Protocol) GetList(handler func(err error, client *nex.Client, callID uint32, byRelationship uint8, bReversed bool) uint32) {
+func (protocol *Protocol) GetList(handler func(err error, packet nex.PacketInterface, callID uint32, byRelationship uint8, bReversed bool) uint32) {
 	protocol.getListHandler = handler
 }
 
@@ -22,7 +22,6 @@ func (protocol *Protocol) handleGetList(packet nex.PacketInterface) {
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -32,7 +31,7 @@ func (protocol *Protocol) handleGetList(packet nex.PacketInterface) {
 
 	byRelationship, err := parametersStream.ReadUInt8()
 	if err != nil {
-		errorCode = protocol.getListHandler(fmt.Errorf("Failed to read byRelationship from parameters. %s", err.Error()), client, callID, 0, false)
+		errorCode = protocol.getListHandler(fmt.Errorf("Failed to read byRelationship from parameters. %s", err.Error()), packet, callID, 0, false)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -42,7 +41,7 @@ func (protocol *Protocol) handleGetList(packet nex.PacketInterface) {
 
 	bReversed, err := parametersStream.ReadBool()
 	if err != nil {
-		errorCode = protocol.getListHandler(fmt.Errorf("Failed to read bReversed from parameters. %s", err.Error()), client, callID, 0, false)
+		errorCode = protocol.getListHandler(fmt.Errorf("Failed to read bReversed from parameters. %s", err.Error()), packet, callID, 0, false)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -50,7 +49,7 @@ func (protocol *Protocol) handleGetList(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.getListHandler(nil, client, callID, byRelationship, bReversed)
+	errorCode = protocol.getListHandler(nil, packet, callID, byRelationship, bReversed)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

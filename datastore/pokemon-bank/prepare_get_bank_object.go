@@ -9,7 +9,7 @@ import (
 )
 
 // PrepareGetBankObject sets the PrepareGetBankObject handler function
-func (protocol *Protocol) PrepareGetBankObject(handler func(err error, client *nex.Client, callID uint32, slotID uint16, applicationID uint16) uint32) {
+func (protocol *Protocol) PrepareGetBankObject(handler func(err error, packet nex.PacketInterface, callID uint32, slotID uint16, applicationID uint16) uint32) {
 	protocol.prepareGetBankObjectHandler = handler
 }
 
@@ -22,7 +22,6 @@ func (protocol *Protocol) handlePrepareGetBankObject(packet nex.PacketInterface)
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -32,7 +31,7 @@ func (protocol *Protocol) handlePrepareGetBankObject(packet nex.PacketInterface)
 
 	slotID, err := parametersStream.ReadUInt16LE()
 	if err != nil {
-		errorCode = protocol.prepareGetBankObjectHandler(fmt.Errorf("Failed to read slotID from parameters. %s", err.Error()), client, callID, 0, 0)
+		errorCode = protocol.prepareGetBankObjectHandler(fmt.Errorf("Failed to read slotID from parameters. %s", err.Error()), packet, callID, 0, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -42,7 +41,7 @@ func (protocol *Protocol) handlePrepareGetBankObject(packet nex.PacketInterface)
 
 	applicationID, err := parametersStream.ReadUInt16LE()
 	if err != nil {
-		errorCode = protocol.prepareGetBankObjectHandler(fmt.Errorf("Failed to read applicationID from parameters. %s", err.Error()), client, callID, 0, 0)
+		errorCode = protocol.prepareGetBankObjectHandler(fmt.Errorf("Failed to read applicationID from parameters. %s", err.Error()), packet, callID, 0, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -50,7 +49,7 @@ func (protocol *Protocol) handlePrepareGetBankObject(packet nex.PacketInterface)
 		return
 	}
 
-	errorCode = protocol.prepareGetBankObjectHandler(nil, client, callID, slotID, applicationID)
+	errorCode = protocol.prepareGetBankObjectHandler(nil, packet, callID, slotID, applicationID)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

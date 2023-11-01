@@ -9,7 +9,7 @@ import (
 )
 
 // UpdateSessionHost sets the UpdateSessionHost handler function
-func (protocol *Protocol) UpdateSessionHost(handler func(err error, client *nex.Client, callID uint32, gid uint32, isMigrateOwner bool) uint32) {
+func (protocol *Protocol) UpdateSessionHost(handler func(err error, packet nex.PacketInterface, callID uint32, gid uint32, isMigrateOwner bool) uint32) {
 	protocol.updateSessionHostHandler = handler
 }
 
@@ -22,7 +22,6 @@ func (protocol *Protocol) handleUpdateSessionHost(packet nex.PacketInterface) {
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -32,7 +31,7 @@ func (protocol *Protocol) handleUpdateSessionHost(packet nex.PacketInterface) {
 
 	gid, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.updateSessionHostHandler(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), client, callID, 0, false)
+		errorCode = protocol.updateSessionHostHandler(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), packet, callID, 0, false)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -42,7 +41,7 @@ func (protocol *Protocol) handleUpdateSessionHost(packet nex.PacketInterface) {
 
 	isMigrateOwner, err := parametersStream.ReadBool()
 	if err != nil {
-		errorCode = protocol.updateSessionHostHandler(fmt.Errorf("Failed to read isMigrateOwner from parameters. %s", err.Error()), client, callID, 0, false)
+		errorCode = protocol.updateSessionHostHandler(fmt.Errorf("Failed to read isMigrateOwner from parameters. %s", err.Error()), packet, callID, 0, false)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -50,7 +49,7 @@ func (protocol *Protocol) handleUpdateSessionHost(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.updateSessionHostHandler(nil, client, callID, gid, isMigrateOwner)
+	errorCode = protocol.updateSessionHostHandler(nil, packet, callID, gid, isMigrateOwner)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

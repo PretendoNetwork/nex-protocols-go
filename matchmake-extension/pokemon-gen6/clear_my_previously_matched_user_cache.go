@@ -7,7 +7,7 @@ import (
 )
 
 // ClearMyPreviouslyMatchedUserCache sets the ClearMyPreviouslyMatchedUserCache handler function
-func (protocol *Protocol) ClearMyPreviouslyMatchedUserCache(handler func(err error, client *nex.Client, callID uint32) uint32) {
+func (protocol *Protocol) ClearMyPreviouslyMatchedUserCache(handler func(err error, packet nex.PacketInterface, callID uint32) uint32) {
 	protocol.clearMyPreviouslyMatchedUserCacheHandler = handler
 }
 
@@ -20,12 +20,11 @@ func (protocol *Protocol) handleClearMyPreviouslyMatchedUserCache(packet nex.Pac
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
 
-	errorCode = protocol.clearMyPreviouslyMatchedUserCacheHandler(nil, client, callID)
+	errorCode = protocol.clearMyPreviouslyMatchedUserCacheHandler(nil, packet, callID)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

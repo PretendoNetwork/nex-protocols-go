@@ -9,7 +9,7 @@ import (
 )
 
 // LaunchSession sets the LaunchSession handler function
-func (protocol *Protocol) LaunchSession(handler func(err error, client *nex.Client, callID uint32, idGathering uint32, strURL string) uint32) {
+func (protocol *Protocol) LaunchSession(handler func(err error, packet nex.PacketInterface, callID uint32, idGathering uint32, strURL string) uint32) {
 	protocol.launchSessionHandler = handler
 }
 
@@ -22,7 +22,6 @@ func (protocol *Protocol) handleLaunchSession(packet nex.PacketInterface) {
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -32,7 +31,7 @@ func (protocol *Protocol) handleLaunchSession(packet nex.PacketInterface) {
 
 	idGathering, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.launchSessionHandler(fmt.Errorf("Failed to read idGathering from parameters. %s", err.Error()), client, callID, 0, "")
+		errorCode = protocol.launchSessionHandler(fmt.Errorf("Failed to read idGathering from parameters. %s", err.Error()), packet, callID, 0, "")
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -42,7 +41,7 @@ func (protocol *Protocol) handleLaunchSession(packet nex.PacketInterface) {
 
 	strURL, err := parametersStream.ReadString()
 	if err != nil {
-		errorCode = protocol.launchSessionHandler(fmt.Errorf("Failed to read strURL from parameters. %s", err.Error()), client, callID, 0, "")
+		errorCode = protocol.launchSessionHandler(fmt.Errorf("Failed to read strURL from parameters. %s", err.Error()), packet, callID, 0, "")
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -50,7 +49,7 @@ func (protocol *Protocol) handleLaunchSession(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.launchSessionHandler(nil, client, callID, idGathering, strURL)
+	errorCode = protocol.launchSessionHandler(nil, packet, callID, idGathering, strURL)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

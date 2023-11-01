@@ -10,7 +10,7 @@ import (
 )
 
 // AddBlackList sets the AddBlackList handler function
-func (protocol *Protocol) AddBlackList(handler func(err error, client *nex.Client, callID uint32, blacklistedPrincipal *friends_wiiu_types.BlacklistedPrincipal) uint32) {
+func (protocol *Protocol) AddBlackList(handler func(err error, packet nex.PacketInterface, callID uint32, blacklistedPrincipal *friends_wiiu_types.BlacklistedPrincipal) uint32) {
 	protocol.addBlackListHandler = handler
 }
 
@@ -23,7 +23,6 @@ func (protocol *Protocol) handleAddBlackList(packet nex.PacketInterface) {
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -33,7 +32,7 @@ func (protocol *Protocol) handleAddBlackList(packet nex.PacketInterface) {
 
 	blacklistedPrincipal, err := parametersStream.ReadStructure(friends_wiiu_types.NewBlacklistedPrincipal())
 	if err != nil {
-		errorCode = protocol.addBlackListHandler(fmt.Errorf("Failed to read blacklistedPrincipal from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.addBlackListHandler(fmt.Errorf("Failed to read blacklistedPrincipal from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -41,7 +40,7 @@ func (protocol *Protocol) handleAddBlackList(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.addBlackListHandler(nil, client, callID, blacklistedPrincipal.(*friends_wiiu_types.BlacklistedPrincipal))
+	errorCode = protocol.addBlackListHandler(nil, packet, callID, blacklistedPrincipal.(*friends_wiiu_types.BlacklistedPrincipal))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

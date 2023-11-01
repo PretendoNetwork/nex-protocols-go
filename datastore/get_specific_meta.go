@@ -10,7 +10,7 @@ import (
 )
 
 // GetSpecificMeta sets the GetSpecificMeta handler function
-func (protocol *Protocol) GetSpecificMeta(handler func(err error, client *nex.Client, callID uint32, param *datastore_types.DataStoreGetSpecificMetaParam) uint32) {
+func (protocol *Protocol) GetSpecificMeta(handler func(err error, packet nex.PacketInterface, callID uint32, param *datastore_types.DataStoreGetSpecificMetaParam) uint32) {
 	protocol.getSpecificMetaHandler = handler
 }
 
@@ -23,7 +23,6 @@ func (protocol *Protocol) handleGetSpecificMeta(packet nex.PacketInterface) {
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -33,7 +32,7 @@ func (protocol *Protocol) handleGetSpecificMeta(packet nex.PacketInterface) {
 
 	param, err := parametersStream.ReadStructure(datastore_types.NewDataStoreGetSpecificMetaParam())
 	if err != nil {
-		errorCode = protocol.getSpecificMetaHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.getSpecificMetaHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -41,7 +40,7 @@ func (protocol *Protocol) handleGetSpecificMeta(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.getSpecificMetaHandler(nil, client, callID, param.(*datastore_types.DataStoreGetSpecificMetaParam))
+	errorCode = protocol.getSpecificMetaHandler(nil, packet, callID, param.(*datastore_types.DataStoreGetSpecificMetaParam))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

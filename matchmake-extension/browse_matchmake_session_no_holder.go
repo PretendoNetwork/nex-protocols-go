@@ -10,7 +10,7 @@ import (
 )
 
 // BrowseMatchmakeSessionNoHolder sets the BrowseMatchmakeSessionNoHolder handler function
-func (protocol *Protocol) BrowseMatchmakeSessionNoHolder(handler func(err error, client *nex.Client, callID uint32, searchCriteria *match_making_types.MatchmakeSessionSearchCriteria, resultRange *nex.ResultRange) uint32) {
+func (protocol *Protocol) BrowseMatchmakeSessionNoHolder(handler func(err error, packet nex.PacketInterface, callID uint32, searchCriteria *match_making_types.MatchmakeSessionSearchCriteria, resultRange *nex.ResultRange) uint32) {
 	protocol.browseMatchmakeSessionNoHolderHandler = handler
 }
 
@@ -23,7 +23,6 @@ func (protocol *Protocol) handleBrowseMatchmakeSessionNoHolder(packet nex.Packet
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -33,7 +32,7 @@ func (protocol *Protocol) handleBrowseMatchmakeSessionNoHolder(packet nex.Packet
 
 	searchCriteria, err := parametersStream.ReadStructure(match_making_types.NewMatchmakeSessionSearchCriteria())
 	if err != nil {
-		errorCode = protocol.browseMatchmakeSessionNoHolderHandler(fmt.Errorf("Failed to read searchCriteria from parameters. %s", err.Error()), client, callID, nil, nil)
+		errorCode = protocol.browseMatchmakeSessionNoHolderHandler(fmt.Errorf("Failed to read searchCriteria from parameters. %s", err.Error()), packet, callID, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -43,7 +42,7 @@ func (protocol *Protocol) handleBrowseMatchmakeSessionNoHolder(packet nex.Packet
 
 	resultRange, err := parametersStream.ReadStructure(nex.NewResultRange())
 	if err != nil {
-		errorCode = protocol.browseMatchmakeSessionNoHolderHandler(fmt.Errorf("Failed to read resultRange from parameters. %s", err.Error()), client, callID, nil, nil)
+		errorCode = protocol.browseMatchmakeSessionNoHolderHandler(fmt.Errorf("Failed to read resultRange from parameters. %s", err.Error()), packet, callID, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -51,7 +50,7 @@ func (protocol *Protocol) handleBrowseMatchmakeSessionNoHolder(packet nex.Packet
 		return
 	}
 
-	errorCode = protocol.browseMatchmakeSessionNoHolderHandler(nil, client, callID, searchCriteria.(*match_making_types.MatchmakeSessionSearchCriteria), resultRange.(*nex.ResultRange))
+	errorCode = protocol.browseMatchmakeSessionNoHolderHandler(nil, packet, callID, searchCriteria.(*match_making_types.MatchmakeSessionSearchCriteria), resultRange.(*nex.ResultRange))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

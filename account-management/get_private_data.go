@@ -7,7 +7,7 @@ import (
 )
 
 // GetPrivateData sets the GetPrivateData handler function
-func (protocol *Protocol) GetPrivateData(handler func(err error, client *nex.Client, callID uint32) uint32) {
+func (protocol *Protocol) GetPrivateData(handler func(err error, packet nex.PacketInterface, callID uint32) uint32) {
 	protocol.getPrivateDataHandler = handler
 }
 
@@ -20,12 +20,11 @@ func (protocol *Protocol) handleGetPrivateData(packet nex.PacketInterface) {
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
 
-	errorCode = protocol.getPrivateDataHandler(nil, client, callID)
+	errorCode = protocol.getPrivateDataHandler(nil, packet, callID)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

@@ -7,7 +7,7 @@ import (
 )
 
 // JoinOrCreateMatchmakeSession sets the JoinOrCreateMatchmakeSession handler function
-func (protocol *Protocol) JoinOrCreateMatchmakeSession(handler func(err error, client *nex.Client, callID uint32, packetPayload []byte) uint32) {
+func (protocol *Protocol) JoinOrCreateMatchmakeSession(handler func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) uint32) {
 	protocol.joinOrCreateMatchmakeSessionHandler = handler
 }
 
@@ -22,12 +22,11 @@ func (protocol *Protocol) handleJoinOrCreateMatchmakeSession(packet nex.PacketIn
 
 	globals.Logger.Warning("MatchmakeExtensionSuperSmashBros4::JoinOrCreateMatchmakeSession STUBBED")
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
 
-	errorCode = protocol.joinOrCreateMatchmakeSessionHandler(nil, client, callID, packet.Payload())
+	errorCode = protocol.joinOrCreateMatchmakeSessionHandler(nil, packet, callID, packet.Payload())
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

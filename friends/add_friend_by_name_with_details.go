@@ -9,7 +9,7 @@ import (
 )
 
 // AddFriendWithDetails sets the AddFriendWithDetails handler function
-func (protocol *Protocol) AddFriendWithDetails(handler func(err error, client *nex.Client, callID uint32, uiPlayer uint32, uiDetails uint32, strMessage string) uint32) {
+func (protocol *Protocol) AddFriendWithDetails(handler func(err error, packet nex.PacketInterface, callID uint32, uiPlayer uint32, uiDetails uint32, strMessage string) uint32) {
 	protocol.addFriendWithDetailsHandler = handler
 }
 
@@ -22,7 +22,6 @@ func (protocol *Protocol) handleAddFriendWithDetails(packet nex.PacketInterface)
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -32,7 +31,7 @@ func (protocol *Protocol) handleAddFriendWithDetails(packet nex.PacketInterface)
 
 	uiPlayer, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.addFriendWithDetailsHandler(fmt.Errorf("Failed to read uiPlayer from parameters. %s", err.Error()), client, callID, 0, 0, "")
+		errorCode = protocol.addFriendWithDetailsHandler(fmt.Errorf("Failed to read uiPlayer from parameters. %s", err.Error()), packet, callID, 0, 0, "")
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -42,7 +41,7 @@ func (protocol *Protocol) handleAddFriendWithDetails(packet nex.PacketInterface)
 
 	uiDetails, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.addFriendWithDetailsHandler(fmt.Errorf("Failed to read uiDetails from parameters. %s", err.Error()), client, callID, 0, 0, "")
+		errorCode = protocol.addFriendWithDetailsHandler(fmt.Errorf("Failed to read uiDetails from parameters. %s", err.Error()), packet, callID, 0, 0, "")
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -52,7 +51,7 @@ func (protocol *Protocol) handleAddFriendWithDetails(packet nex.PacketInterface)
 
 	strMessage, err := parametersStream.ReadString()
 	if err != nil {
-		errorCode = protocol.addFriendWithDetailsHandler(fmt.Errorf("Failed to read strMessage from parameters. %s", err.Error()), client, callID, 0, 0, "")
+		errorCode = protocol.addFriendWithDetailsHandler(fmt.Errorf("Failed to read strMessage from parameters. %s", err.Error()), packet, callID, 0, 0, "")
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -60,7 +59,7 @@ func (protocol *Protocol) handleAddFriendWithDetails(packet nex.PacketInterface)
 		return
 	}
 
-	errorCode = protocol.addFriendWithDetailsHandler(nil, client, callID, uiPlayer, uiDetails, strMessage)
+	errorCode = protocol.addFriendWithDetailsHandler(nil, packet, callID, uiPlayer, uiDetails, strMessage)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

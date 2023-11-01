@@ -10,7 +10,7 @@ import (
 )
 
 // AssociateNexUniqueIDWithMyPrincipalID sets the AssociateNexUniqueIDWithMyPrincipalID handler function
-func (protocol *Protocol) AssociateNexUniqueIDWithMyPrincipalID(handler func(err error, client *nex.Client, callID uint32, uniqueIDInfo *utility_types.UniqueIDInfo) uint32) {
+func (protocol *Protocol) AssociateNexUniqueIDWithMyPrincipalID(handler func(err error, packet nex.PacketInterface, callID uint32, uniqueIDInfo *utility_types.UniqueIDInfo) uint32) {
 	protocol.associateNexUniqueIDWithMyPrincipalIDHandler = handler
 }
 
@@ -23,7 +23,6 @@ func (protocol *Protocol) handleAssociateNexUniqueIDWithMyPrincipalID(packet nex
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -34,7 +33,7 @@ func (protocol *Protocol) handleAssociateNexUniqueIDWithMyPrincipalID(packet nex
 
 	uniqueIDInfo, err := parametersStream.ReadStructure(utility_types.NewUniqueIDInfo())
 	if err != nil {
-		errorCode = protocol.associateNexUniqueIDWithMyPrincipalIDHandler(fmt.Errorf("Failed to read uniqueIDInfo from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.associateNexUniqueIDWithMyPrincipalIDHandler(fmt.Errorf("Failed to read uniqueIDInfo from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -42,7 +41,7 @@ func (protocol *Protocol) handleAssociateNexUniqueIDWithMyPrincipalID(packet nex
 		return
 	}
 
-	errorCode = protocol.associateNexUniqueIDWithMyPrincipalIDHandler(nil, client, callID, uniqueIDInfo.(*utility_types.UniqueIDInfo))
+	errorCode = protocol.associateNexUniqueIDWithMyPrincipalIDHandler(nil, packet, callID, uniqueIDInfo.(*utility_types.UniqueIDInfo))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

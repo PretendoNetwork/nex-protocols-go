@@ -9,7 +9,7 @@ import (
 )
 
 // SetApplicationConfig sets the SetApplicationConfig handler function
-func (protocol *Protocol) SetApplicationConfig(handler func(err error, client *nex.Client, callID uint32, applicationID uint32, key uint32, value int32) uint32) {
+func (protocol *Protocol) SetApplicationConfig(handler func(err error, packet nex.PacketInterface, callID uint32, applicationID uint32, key uint32, value int32) uint32) {
 	protocol.setApplicationConfigHandler = handler
 }
 
@@ -22,7 +22,6 @@ func (protocol *Protocol) handleSetApplicationConfig(packet nex.PacketInterface)
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -32,7 +31,7 @@ func (protocol *Protocol) handleSetApplicationConfig(packet nex.PacketInterface)
 
 	applicationID, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.setApplicationConfigHandler(fmt.Errorf("Failed to read applicationID from parameters. %s", err.Error()), client, callID, 0, 0, 0)
+		errorCode = protocol.setApplicationConfigHandler(fmt.Errorf("Failed to read applicationID from parameters. %s", err.Error()), packet, callID, 0, 0, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -42,7 +41,7 @@ func (protocol *Protocol) handleSetApplicationConfig(packet nex.PacketInterface)
 
 	key, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.setApplicationConfigHandler(fmt.Errorf("Failed to read key from parameters. %s", err.Error()), client, callID, 0, 0, 0)
+		errorCode = protocol.setApplicationConfigHandler(fmt.Errorf("Failed to read key from parameters. %s", err.Error()), packet, callID, 0, 0, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -52,7 +51,7 @@ func (protocol *Protocol) handleSetApplicationConfig(packet nex.PacketInterface)
 
 	value, err := parametersStream.ReadInt32LE()
 	if err != nil {
-		errorCode = protocol.setApplicationConfigHandler(fmt.Errorf("Failed to read value from parameters. %s", err.Error()), client, callID, 0, 0, 0)
+		errorCode = protocol.setApplicationConfigHandler(fmt.Errorf("Failed to read value from parameters. %s", err.Error()), packet, callID, 0, 0, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -60,7 +59,7 @@ func (protocol *Protocol) handleSetApplicationConfig(packet nex.PacketInterface)
 		return
 	}
 
-	errorCode = protocol.setApplicationConfigHandler(nil, client, callID, applicationID, key, value)
+	errorCode = protocol.setApplicationConfigHandler(nil, packet, callID, applicationID, key, value)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

@@ -9,7 +9,7 @@ import (
 )
 
 // GetPrincipalIDByLocalFriendCode sets the GetPrincipalIDByLocalFriendCode handler function
-func (protocol *Protocol) GetPrincipalIDByLocalFriendCode(handler func(err error, client *nex.Client, callID uint32, lfc uint64, lfcList []uint64) uint32) {
+func (protocol *Protocol) GetPrincipalIDByLocalFriendCode(handler func(err error, packet nex.PacketInterface, callID uint32, lfc uint64, lfcList []uint64) uint32) {
 	protocol.getPrincipalIDByLocalFriendCodeHandler = handler
 }
 
@@ -22,7 +22,6 @@ func (protocol *Protocol) handleGetPrincipalIDByLocalFriendCode(packet nex.Packe
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -32,7 +31,7 @@ func (protocol *Protocol) handleGetPrincipalIDByLocalFriendCode(packet nex.Packe
 
 	lfc, err := parametersStream.ReadUInt64LE()
 	if err != nil {
-		errorCode = protocol.getPrincipalIDByLocalFriendCodeHandler(fmt.Errorf("Failed to read lfc from parameters. %s", err.Error()), client, callID, 0, nil)
+		errorCode = protocol.getPrincipalIDByLocalFriendCodeHandler(fmt.Errorf("Failed to read lfc from parameters. %s", err.Error()), packet, callID, 0, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -42,7 +41,7 @@ func (protocol *Protocol) handleGetPrincipalIDByLocalFriendCode(packet nex.Packe
 
 	lfcList, err := parametersStream.ReadListUInt64LE()
 	if err != nil {
-		errorCode = protocol.getPrincipalIDByLocalFriendCodeHandler(fmt.Errorf("Failed to read lfcList from parameters. %s", err.Error()), client, callID, 0, nil)
+		errorCode = protocol.getPrincipalIDByLocalFriendCodeHandler(fmt.Errorf("Failed to read lfcList from parameters. %s", err.Error()), packet, callID, 0, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -50,7 +49,7 @@ func (protocol *Protocol) handleGetPrincipalIDByLocalFriendCode(packet nex.Packe
 		return
 	}
 
-	errorCode = protocol.getPrincipalIDByLocalFriendCodeHandler(nil, client, callID, lfc, lfcList)
+	errorCode = protocol.getPrincipalIDByLocalFriendCodeHandler(nil, packet, callID, lfc, lfcList)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

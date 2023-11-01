@@ -10,7 +10,7 @@ import (
 )
 
 // PostPlayLog sets the PostPlayLog function
-func (protocol *Protocol) PostPlayLog(handler func(err error, client *nex.Client, callID uint32, param *shop_nintendo_badge_arcade_types.ShopPostPlayLogParam) uint32) {
+func (protocol *Protocol) PostPlayLog(handler func(err error, packet nex.PacketInterface, callID uint32, param *shop_nintendo_badge_arcade_types.ShopPostPlayLogParam) uint32) {
 	protocol.postPlayLogHandler = handler
 }
 
@@ -23,7 +23,6 @@ func (protocol *Protocol) handlePostPlayLog(packet nex.PacketInterface) {
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -33,7 +32,7 @@ func (protocol *Protocol) handlePostPlayLog(packet nex.PacketInterface) {
 
 	param, err := parametersStream.ReadStructure(shop_nintendo_badge_arcade_types.NewShopPostPlayLogParam())
 	if err != nil {
-		errorCode = protocol.postPlayLogHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.postPlayLogHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondErrorCustom(packet, ProtocolID, errorCode)
 		}
@@ -41,7 +40,7 @@ func (protocol *Protocol) handlePostPlayLog(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.postPlayLogHandler(nil, client, callID, param.(*shop_nintendo_badge_arcade_types.ShopPostPlayLogParam))
+	errorCode = protocol.postPlayLogHandler(nil, packet, callID, param.(*shop_nintendo_badge_arcade_types.ShopPostPlayLogParam))
 	if errorCode != 0 {
 		globals.RespondErrorCustom(packet, ProtocolID, errorCode)
 	}

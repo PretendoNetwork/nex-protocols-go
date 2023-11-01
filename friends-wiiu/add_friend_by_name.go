@@ -9,7 +9,7 @@ import (
 )
 
 // AddFriendByName sets the AddFriendByName handler function
-func (protocol *Protocol) AddFriendByName(handler func(err error, client *nex.Client, callID uint32, username string) uint32) {
+func (protocol *Protocol) AddFriendByName(handler func(err error, packet nex.PacketInterface, callID uint32, username string) uint32) {
 	protocol.addFriendByNameHandler = handler
 }
 
@@ -22,7 +22,6 @@ func (protocol *Protocol) handleAddFriendByName(packet nex.PacketInterface) {
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -32,7 +31,7 @@ func (protocol *Protocol) handleAddFriendByName(packet nex.PacketInterface) {
 
 	username, err := parametersStream.ReadString()
 	if err != nil {
-		errorCode = protocol.addFriendByNameHandler(fmt.Errorf("Failed to read username from parameters. %s", err.Error()), client, callID, "")
+		errorCode = protocol.addFriendByNameHandler(fmt.Errorf("Failed to read username from parameters. %s", err.Error()), packet, callID, "")
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -40,7 +39,7 @@ func (protocol *Protocol) handleAddFriendByName(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.addFriendByNameHandler(nil, client, callID, username)
+	errorCode = protocol.addFriendByNameHandler(nil, packet, callID, username)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

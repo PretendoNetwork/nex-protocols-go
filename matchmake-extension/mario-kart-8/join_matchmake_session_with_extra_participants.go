@@ -9,7 +9,7 @@ import (
 )
 
 // JoinMatchmakeSessionWithExtraParticipants sets the JoinMatchmakeSessionWithExtraParticipants handler function
-func (protocol *Protocol) JoinMatchmakeSessionWithExtraParticipants(handler func(err error, client *nex.Client, callID uint32, gid uint32, joinMessage string, ignoreBlacklist bool, participationCount uint16, extraParticipants uint32) uint32) {
+func (protocol *Protocol) JoinMatchmakeSessionWithExtraParticipants(handler func(err error, packet nex.PacketInterface, callID uint32, gid uint32, joinMessage string, ignoreBlacklist bool, participationCount uint16, extraParticipants uint32) uint32) {
 	protocol.joinMatchmakeSessionWithExtraParticipantsHandler = handler
 }
 
@@ -22,7 +22,6 @@ func (protocol *Protocol) handleJoinMatchmakeSessionWithExtraParticipants(packet
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -32,7 +31,7 @@ func (protocol *Protocol) handleJoinMatchmakeSessionWithExtraParticipants(packet
 
 	gid, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.joinMatchmakeSessionWithExtraParticipantsHandler(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), client, callID, 0, "", false, 0, 0)
+		errorCode = protocol.joinMatchmakeSessionWithExtraParticipantsHandler(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), packet, callID, 0, "", false, 0, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -42,7 +41,7 @@ func (protocol *Protocol) handleJoinMatchmakeSessionWithExtraParticipants(packet
 
 	joinMessage, err := parametersStream.ReadString()
 	if err != nil {
-		errorCode = protocol.joinMatchmakeSessionWithExtraParticipantsHandler(fmt.Errorf("Failed to read joinMessage from parameters. %s", err.Error()), client, callID, 0, "", false, 0, 0)
+		errorCode = protocol.joinMatchmakeSessionWithExtraParticipantsHandler(fmt.Errorf("Failed to read joinMessage from parameters. %s", err.Error()), packet, callID, 0, "", false, 0, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -52,7 +51,7 @@ func (protocol *Protocol) handleJoinMatchmakeSessionWithExtraParticipants(packet
 
 	ignoreBlacklist, err := parametersStream.ReadBool()
 	if err != nil {
-		errorCode = protocol.joinMatchmakeSessionWithExtraParticipantsHandler(fmt.Errorf("Failed to read ignoreBlacklist from parameters. %s", err.Error()), client, callID, 0, "", false, 0, 0)
+		errorCode = protocol.joinMatchmakeSessionWithExtraParticipantsHandler(fmt.Errorf("Failed to read ignoreBlacklist from parameters. %s", err.Error()), packet, callID, 0, "", false, 0, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -62,7 +61,7 @@ func (protocol *Protocol) handleJoinMatchmakeSessionWithExtraParticipants(packet
 
 	participationCount, err := parametersStream.ReadUInt16LE()
 	if err != nil {
-		errorCode = protocol.joinMatchmakeSessionWithExtraParticipantsHandler(fmt.Errorf("Failed to read participationCount from parameters. %s", err.Error()), client, callID, 0, "", false, 0, 0)
+		errorCode = protocol.joinMatchmakeSessionWithExtraParticipantsHandler(fmt.Errorf("Failed to read participationCount from parameters. %s", err.Error()), packet, callID, 0, "", false, 0, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -72,7 +71,7 @@ func (protocol *Protocol) handleJoinMatchmakeSessionWithExtraParticipants(packet
 
 	extraParticipants, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.joinMatchmakeSessionWithExtraParticipantsHandler(fmt.Errorf("Failed to read extraParticipants from parameters. %s", err.Error()), client, callID, 0, "", false, 0, 0)
+		errorCode = protocol.joinMatchmakeSessionWithExtraParticipantsHandler(fmt.Errorf("Failed to read extraParticipants from parameters. %s", err.Error()), packet, callID, 0, "", false, 0, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -80,7 +79,7 @@ func (protocol *Protocol) handleJoinMatchmakeSessionWithExtraParticipants(packet
 		return
 	}
 
-	errorCode = protocol.joinMatchmakeSessionWithExtraParticipantsHandler(nil, client, callID, gid, joinMessage, ignoreBlacklist, participationCount, extraParticipants)
+	errorCode = protocol.joinMatchmakeSessionWithExtraParticipantsHandler(nil, packet, callID, gid, joinMessage, ignoreBlacklist, participationCount, extraParticipants)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

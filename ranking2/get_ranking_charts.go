@@ -10,7 +10,7 @@ import (
 )
 
 // GetRankingCharts sets the GetRankingCharts handler function
-func (protocol *Protocol) GetRankingCharts(handler func(err error, client *nex.Client, callID uint32, infoArray []*ranking2_types.Ranking2ChartInfoInput) uint32) {
+func (protocol *Protocol) GetRankingCharts(handler func(err error, packet nex.PacketInterface, callID uint32, infoArray []*ranking2_types.Ranking2ChartInfoInput) uint32) {
 	protocol.getRankingChartsHandler = handler
 }
 
@@ -22,7 +22,7 @@ func (protocol *Protocol) handleGetRankingCharts(packet nex.PacketInterface) {
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
-	client := packet.Sender()
+
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -32,7 +32,7 @@ func (protocol *Protocol) handleGetRankingCharts(packet nex.PacketInterface) {
 
 	infoArray, err := parametersStream.ReadListStructure(ranking2_types.NewRanking2ChartInfoInput())
 	if err != nil {
-		errorCode = protocol.getRankingChartsHandler(fmt.Errorf("Failed to read infoArray from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.getRankingChartsHandler(fmt.Errorf("Failed to read infoArray from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -40,7 +40,7 @@ func (protocol *Protocol) handleGetRankingCharts(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.getRankingChartsHandler(nil, client, callID, infoArray.([]*ranking2_types.Ranking2ChartInfoInput))
+	errorCode = protocol.getRankingChartsHandler(nil, packet, callID, infoArray.([]*ranking2_types.Ranking2ChartInfoInput))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

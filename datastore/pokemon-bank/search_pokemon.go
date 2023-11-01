@@ -10,7 +10,7 @@ import (
 )
 
 // SearchPokemon sets the SearchPokemon handler function
-func (protocol *Protocol) SearchPokemon(handler func(err error, client *nex.Client, callID uint32, param *datastore_pokemon_bank_types.GlobalTradeStationSearchPokemonParam) uint32) {
+func (protocol *Protocol) SearchPokemon(handler func(err error, packet nex.PacketInterface, callID uint32, param *datastore_pokemon_bank_types.GlobalTradeStationSearchPokemonParam) uint32) {
 	protocol.searchPokemonHandler = handler
 }
 
@@ -23,7 +23,6 @@ func (protocol *Protocol) handleSearchPokemon(packet nex.PacketInterface) {
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -33,7 +32,7 @@ func (protocol *Protocol) handleSearchPokemon(packet nex.PacketInterface) {
 
 	param, err := parametersStream.ReadStructure(datastore_pokemon_bank_types.NewGlobalTradeStationSearchPokemonParam())
 	if err != nil {
-		errorCode = protocol.searchPokemonHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.searchPokemonHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -41,7 +40,7 @@ func (protocol *Protocol) handleSearchPokemon(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.searchPokemonHandler(nil, client, callID, param.(*datastore_pokemon_bank_types.GlobalTradeStationSearchPokemonParam))
+	errorCode = protocol.searchPokemonHandler(nil, packet, callID, param.(*datastore_pokemon_bank_types.GlobalTradeStationSearchPokemonParam))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

@@ -9,7 +9,7 @@ import (
 )
 
 // JoinMatchmakeSession sets the JoinMatchmakeSession handler function
-func (protocol *Protocol) JoinMatchmakeSession(handler func(err error, client *nex.Client, callID uint32, gid uint32, strMessage string) uint32) {
+func (protocol *Protocol) JoinMatchmakeSession(handler func(err error, packet nex.PacketInterface, callID uint32, gid uint32, strMessage string) uint32) {
 	protocol.joinMatchmakeSessionHandler = handler
 }
 
@@ -22,7 +22,6 @@ func (protocol *Protocol) handleJoinMatchmakeSession(packet nex.PacketInterface)
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -32,7 +31,7 @@ func (protocol *Protocol) handleJoinMatchmakeSession(packet nex.PacketInterface)
 
 	gid, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.joinMatchmakeSessionHandler(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), client, callID, 0, "")
+		errorCode = protocol.joinMatchmakeSessionHandler(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), packet, callID, 0, "")
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -42,7 +41,7 @@ func (protocol *Protocol) handleJoinMatchmakeSession(packet nex.PacketInterface)
 
 	strMessage, err := parametersStream.ReadString()
 	if err != nil {
-		errorCode = protocol.joinMatchmakeSessionHandler(fmt.Errorf("Failed to read strMessage from parameters. %s", err.Error()), client, callID, 0, "")
+		errorCode = protocol.joinMatchmakeSessionHandler(fmt.Errorf("Failed to read strMessage from parameters. %s", err.Error()), packet, callID, 0, "")
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -50,7 +49,7 @@ func (protocol *Protocol) handleJoinMatchmakeSession(packet nex.PacketInterface)
 		return
 	}
 
-	errorCode = protocol.joinMatchmakeSessionHandler(nil, client, callID, gid, strMessage)
+	errorCode = protocol.joinMatchmakeSessionHandler(nil, packet, callID, gid, strMessage)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

@@ -9,7 +9,7 @@ import (
 )
 
 // RequestMigration sets the RequestMigration handler function
-func (protocol *Protocol) RequestMigration(handler func(err error, client *nex.Client, callID uint32, oneTimePassword string, boxes []uint32) uint32) {
+func (protocol *Protocol) RequestMigration(handler func(err error, packet nex.PacketInterface, callID uint32, oneTimePassword string, boxes []uint32) uint32) {
 	protocol.requestMigrationHandler = handler
 }
 
@@ -22,7 +22,6 @@ func (protocol *Protocol) handleRequestMigration(packet nex.PacketInterface) {
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -32,7 +31,7 @@ func (protocol *Protocol) handleRequestMigration(packet nex.PacketInterface) {
 
 	oneTimePassword, err := parametersStream.ReadString()
 	if err != nil {
-		errorCode = protocol.requestMigrationHandler(fmt.Errorf("Failed to read oneTimePassword from parameters. %s", err.Error()), client, callID, "", nil)
+		errorCode = protocol.requestMigrationHandler(fmt.Errorf("Failed to read oneTimePassword from parameters. %s", err.Error()), packet, callID, "", nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -42,7 +41,7 @@ func (protocol *Protocol) handleRequestMigration(packet nex.PacketInterface) {
 
 	boxes, err := parametersStream.ReadListUInt32LE()
 	if err != nil {
-		errorCode = protocol.requestMigrationHandler(fmt.Errorf("Failed to read boxes from parameters. %s", err.Error()), client, callID, "", nil)
+		errorCode = protocol.requestMigrationHandler(fmt.Errorf("Failed to read boxes from parameters. %s", err.Error()), packet, callID, "", nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -50,7 +49,7 @@ func (protocol *Protocol) handleRequestMigration(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.requestMigrationHandler(nil, client, callID, oneTimePassword, boxes)
+	errorCode = protocol.requestMigrationHandler(nil, packet, callID, oneTimePassword, boxes)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

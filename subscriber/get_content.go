@@ -10,7 +10,7 @@ import (
 )
 
 // GetContent sets the GetContent handler function
-func (protocol *Protocol) GetContent(handler func(err error, client *nex.Client, callID uint32, param *subscriber_types.SubscriberGetContentParam) uint32) {
+func (protocol *Protocol) GetContent(handler func(err error, packet nex.PacketInterface, callID uint32, param *subscriber_types.SubscriberGetContentParam) uint32) {
 	protocol.getContentHandler = handler
 }
 
@@ -22,7 +22,7 @@ func (protocol *Protocol) handleGetContent(packet nex.PacketInterface) {
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
-	client := packet.Sender()
+
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -32,7 +32,7 @@ func (protocol *Protocol) handleGetContent(packet nex.PacketInterface) {
 
 	param, err := parametersStream.ReadStructure(subscriber_types.NewSubscriberGetContentParam())
 	if err != nil {
-		errorCode = protocol.getContentHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.getContentHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -40,7 +40,7 @@ func (protocol *Protocol) handleGetContent(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.getContentHandler(nil, client, callID, param.(*subscriber_types.SubscriberGetContentParam))
+	errorCode = protocol.getContentHandler(nil, packet, callID, param.(*subscriber_types.SubscriberGetContentParam))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

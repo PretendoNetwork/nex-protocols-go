@@ -9,7 +9,7 @@ import (
 )
 
 // CreateAccount sets the CreateAccount handler function
-func (protocol *Protocol) CreateAccount(handler func(err error, client *nex.Client, callID uint32, strPrincipalName string, strKey string, uiGroups uint32, strEmail string) uint32) {
+func (protocol *Protocol) CreateAccount(handler func(err error, packet nex.PacketInterface, callID uint32, strPrincipalName string, strKey string, uiGroups uint32, strEmail string) uint32) {
 	protocol.createAccountHandler = handler
 }
 
@@ -22,7 +22,6 @@ func (protocol *Protocol) handleCreateAccount(packet nex.PacketInterface) {
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -32,7 +31,7 @@ func (protocol *Protocol) handleCreateAccount(packet nex.PacketInterface) {
 
 	strPrincipalName, err := parametersStream.ReadString()
 	if err != nil {
-		errorCode = protocol.createAccountHandler(fmt.Errorf("Failed to read strPrincipalName from parameters. %s", err.Error()), client, callID, "", "", 0, "")
+		errorCode = protocol.createAccountHandler(fmt.Errorf("Failed to read strPrincipalName from parameters. %s", err.Error()), packet, callID, "", "", 0, "")
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -42,7 +41,7 @@ func (protocol *Protocol) handleCreateAccount(packet nex.PacketInterface) {
 
 	strKey, err := parametersStream.ReadString()
 	if err != nil {
-		errorCode = protocol.createAccountHandler(fmt.Errorf("Failed to read strKey from parameters. %s", err.Error()), client, callID, "", "", 0, "")
+		errorCode = protocol.createAccountHandler(fmt.Errorf("Failed to read strKey from parameters. %s", err.Error()), packet, callID, "", "", 0, "")
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -52,7 +51,7 @@ func (protocol *Protocol) handleCreateAccount(packet nex.PacketInterface) {
 
 	uiGroups, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.createAccountHandler(fmt.Errorf("Failed to read uiGroups from parameters. %s", err.Error()), client, callID, "", "", 0, "")
+		errorCode = protocol.createAccountHandler(fmt.Errorf("Failed to read uiGroups from parameters. %s", err.Error()), packet, callID, "", "", 0, "")
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -62,7 +61,7 @@ func (protocol *Protocol) handleCreateAccount(packet nex.PacketInterface) {
 
 	strEmail, err := parametersStream.ReadString()
 	if err != nil {
-		errorCode = protocol.createAccountHandler(fmt.Errorf("Failed to read strEmail from parameters. %s", err.Error()), client, callID, "", "", 0, "")
+		errorCode = protocol.createAccountHandler(fmt.Errorf("Failed to read strEmail from parameters. %s", err.Error()), packet, callID, "", "", 0, "")
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -70,7 +69,7 @@ func (protocol *Protocol) handleCreateAccount(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.createAccountHandler(nil, client, callID, strPrincipalName, strKey, uiGroups, strEmail)
+	errorCode = protocol.createAccountHandler(nil, packet, callID, strPrincipalName, strKey, uiGroups, strEmail)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

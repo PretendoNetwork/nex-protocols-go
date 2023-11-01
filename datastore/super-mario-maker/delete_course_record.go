@@ -10,7 +10,7 @@ import (
 )
 
 // DeleteCourseRecord sets the DeleteCourseRecord handler function
-func (protocol *Protocol) DeleteCourseRecord(handler func(err error, client *nex.Client, callID uint32, param *datastore_super_mario_maker_types.DataStoreGetCourseRecordParam) uint32) {
+func (protocol *Protocol) DeleteCourseRecord(handler func(err error, packet nex.PacketInterface, callID uint32, param *datastore_super_mario_maker_types.DataStoreGetCourseRecordParam) uint32) {
 	protocol.deleteCourseRecordHandler = handler
 }
 
@@ -23,7 +23,6 @@ func (protocol *Protocol) handleDeleteCourseRecord(packet nex.PacketInterface) {
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -33,7 +32,7 @@ func (protocol *Protocol) handleDeleteCourseRecord(packet nex.PacketInterface) {
 
 	param, err := parametersStream.ReadStructure(datastore_super_mario_maker_types.NewDataStoreGetCourseRecordParam())
 	if err != nil {
-		errorCode = protocol.deleteCourseRecordHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.deleteCourseRecordHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -41,7 +40,7 @@ func (protocol *Protocol) handleDeleteCourseRecord(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.deleteCourseRecordHandler(nil, client, callID, param.(*datastore_super_mario_maker_types.DataStoreGetCourseRecordParam))
+	errorCode = protocol.deleteCourseRecordHandler(nil, packet, callID, param.(*datastore_super_mario_maker_types.DataStoreGetCourseRecordParam))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

@@ -9,7 +9,7 @@ import (
 )
 
 // InitiateProbe sets the InitiateProbe handler function
-func (protocol *Protocol) InitiateProbe(handler func(err error, client *nex.Client, callID uint32, urlStationToProbe *nex.StationURL) uint32) {
+func (protocol *Protocol) InitiateProbe(handler func(err error, packet nex.PacketInterface, callID uint32, urlStationToProbe *nex.StationURL) uint32) {
 	protocol.initiateProbeHandler = handler
 }
 
@@ -22,7 +22,6 @@ func (protocol *Protocol) handleInitiateProbe(packet nex.PacketInterface) {
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -32,7 +31,7 @@ func (protocol *Protocol) handleInitiateProbe(packet nex.PacketInterface) {
 
 	urlStationToProbe, err := parametersStream.ReadStationURL()
 	if err != nil {
-		errorCode = protocol.initiateProbeHandler(fmt.Errorf("Failed to read urlStationToProbe from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.initiateProbeHandler(fmt.Errorf("Failed to read urlStationToProbe from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -40,7 +39,7 @@ func (protocol *Protocol) handleInitiateProbe(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.initiateProbeHandler(nil, client, callID, urlStationToProbe)
+	errorCode = protocol.initiateProbeHandler(nil, packet, callID, urlStationToProbe)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

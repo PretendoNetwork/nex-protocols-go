@@ -9,7 +9,7 @@ import (
 )
 
 // DeclineFriendship sets the DeclineFriendship handler function
-func (protocol *Protocol) DeclineFriendship(handler func(err error, client *nex.Client, callID uint32, uiPlayer uint32) uint32) {
+func (protocol *Protocol) DeclineFriendship(handler func(err error, packet nex.PacketInterface, callID uint32, uiPlayer uint32) uint32) {
 	protocol.declineFriendshipHandler = handler
 }
 
@@ -22,7 +22,6 @@ func (protocol *Protocol) handleDeclineFriendship(packet nex.PacketInterface) {
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -32,7 +31,7 @@ func (protocol *Protocol) handleDeclineFriendship(packet nex.PacketInterface) {
 
 	uiPlayer, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.declineFriendshipHandler(fmt.Errorf("Failed to read uiPlayer from parameters. %s", err.Error()), client, callID, 0)
+		errorCode = protocol.declineFriendshipHandler(fmt.Errorf("Failed to read uiPlayer from parameters. %s", err.Error()), packet, callID, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -40,7 +39,7 @@ func (protocol *Protocol) handleDeclineFriendship(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.declineFriendshipHandler(nil, client, callID, uiPlayer)
+	errorCode = protocol.declineFriendshipHandler(nil, packet, callID, uiPlayer)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

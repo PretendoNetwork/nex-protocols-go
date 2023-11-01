@@ -9,7 +9,7 @@ import (
 )
 
 // Login sets the Login handler function
-func (protocol *Protocol) Login(handler func(err error, client *nex.Client, callID uint32, strUserName string) uint32) {
+func (protocol *Protocol) Login(handler func(err error, packet nex.PacketInterface, callID uint32, strUserName string) uint32) {
 	protocol.loginHandler = handler
 }
 
@@ -22,7 +22,6 @@ func (protocol *Protocol) handleLogin(packet nex.PacketInterface) {
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -32,7 +31,7 @@ func (protocol *Protocol) handleLogin(packet nex.PacketInterface) {
 
 	strUserName, err := parametersStream.ReadString()
 	if err != nil {
-		errorCode = protocol.loginHandler(fmt.Errorf("Failed to read strUserName from parameters. %s", err.Error()), client, callID, "")
+		errorCode = protocol.loginHandler(fmt.Errorf("Failed to read strUserName from parameters. %s", err.Error()), packet, callID, "")
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -40,7 +39,7 @@ func (protocol *Protocol) handleLogin(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.loginHandler(nil, client, callID, strUserName)
+	errorCode = protocol.loginHandler(nil, packet, callID, strUserName)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

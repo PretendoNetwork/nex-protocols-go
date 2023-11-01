@@ -10,7 +10,7 @@ import (
 )
 
 // UpdateFavoriteGameKey sets the UpdateFavoriteGameKey handler function
-func (protocol *Protocol) UpdateFavoriteGameKey(handler func(err error, client *nex.Client, callID uint32, gameKey *friends_3ds_types.GameKey) uint32) {
+func (protocol *Protocol) UpdateFavoriteGameKey(handler func(err error, packet nex.PacketInterface, callID uint32, gameKey *friends_3ds_types.GameKey) uint32) {
 	protocol.updateFavoriteGameKeyHandler = handler
 }
 
@@ -23,7 +23,6 @@ func (protocol *Protocol) handleUpdateFavoriteGameKey(packet nex.PacketInterface
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -33,7 +32,7 @@ func (protocol *Protocol) handleUpdateFavoriteGameKey(packet nex.PacketInterface
 
 	gameKey, err := parametersStream.ReadStructure(friends_3ds_types.NewGameKey())
 	if err != nil {
-		errorCode = protocol.updateFavoriteGameKeyHandler(fmt.Errorf("Failed to read gameKey from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.updateFavoriteGameKeyHandler(fmt.Errorf("Failed to read gameKey from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -41,7 +40,7 @@ func (protocol *Protocol) handleUpdateFavoriteGameKey(packet nex.PacketInterface
 		return
 	}
 
-	errorCode = protocol.updateFavoriteGameKeyHandler(nil, client, callID, gameKey.(*friends_3ds_types.GameKey))
+	errorCode = protocol.updateFavoriteGameKeyHandler(nil, packet, callID, gameKey.(*friends_3ds_types.GameKey))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

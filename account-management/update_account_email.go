@@ -9,7 +9,7 @@ import (
 )
 
 // UpdateAccountEmail sets the UpdateAccountEmail handler function
-func (protocol *Protocol) UpdateAccountEmail(handler func(err error, client *nex.Client, callID uint32, strName string) uint32) {
+func (protocol *Protocol) UpdateAccountEmail(handler func(err error, packet nex.PacketInterface, callID uint32, strName string) uint32) {
 	protocol.updateAccountEmailHandler = handler
 }
 
@@ -22,7 +22,6 @@ func (protocol *Protocol) handleUpdateAccountEmail(packet nex.PacketInterface) {
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -32,7 +31,7 @@ func (protocol *Protocol) handleUpdateAccountEmail(packet nex.PacketInterface) {
 
 	strName, err := parametersStream.ReadString()
 	if err != nil {
-		errorCode = protocol.updateAccountEmailHandler(fmt.Errorf("Failed to read strName from parameters. %s", err.Error()), client, callID, "")
+		errorCode = protocol.updateAccountEmailHandler(fmt.Errorf("Failed to read strName from parameters. %s", err.Error()), packet, callID, "")
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -40,7 +39,7 @@ func (protocol *Protocol) handleUpdateAccountEmail(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.updateAccountEmailHandler(nil, client, callID, strName)
+	errorCode = protocol.updateAccountEmailHandler(nil, packet, callID, strName)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

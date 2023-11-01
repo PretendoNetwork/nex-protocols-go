@@ -9,7 +9,7 @@ import (
 )
 
 // RequestProbeInitiationExt sets the RequestProbeInitiationExt handler function
-func (protocol *Protocol) RequestProbeInitiationExt(handler func(err error, client *nex.Client, callID uint32, targetList []string, stationToProbe string) uint32) {
+func (protocol *Protocol) RequestProbeInitiationExt(handler func(err error, packet nex.PacketInterface, callID uint32, targetList []string, stationToProbe string) uint32) {
 	protocol.requestProbeInitiationExtHandler = handler
 }
 
@@ -22,7 +22,6 @@ func (protocol *Protocol) handleRequestProbeInitiationExt(packet nex.PacketInter
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -32,7 +31,7 @@ func (protocol *Protocol) handleRequestProbeInitiationExt(packet nex.PacketInter
 
 	targetList, err := parametersStream.ReadListString()
 	if err != nil {
-		errorCode = protocol.requestProbeInitiationExtHandler(fmt.Errorf("Failed to read targetList from parameters. %s", err.Error()), client, callID, nil, "")
+		errorCode = protocol.requestProbeInitiationExtHandler(fmt.Errorf("Failed to read targetList from parameters. %s", err.Error()), packet, callID, nil, "")
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -42,7 +41,7 @@ func (protocol *Protocol) handleRequestProbeInitiationExt(packet nex.PacketInter
 
 	stationToProbe, err := parametersStream.ReadString()
 	if err != nil {
-		errorCode = protocol.requestProbeInitiationExtHandler(fmt.Errorf("Failed to read stationToProbe from parameters. %s", err.Error()), client, callID, nil, "")
+		errorCode = protocol.requestProbeInitiationExtHandler(fmt.Errorf("Failed to read stationToProbe from parameters. %s", err.Error()), packet, callID, nil, "")
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -50,7 +49,7 @@ func (protocol *Protocol) handleRequestProbeInitiationExt(packet nex.PacketInter
 		return
 	}
 
-	errorCode = protocol.requestProbeInitiationExtHandler(nil, client, callID, targetList, stationToProbe)
+	errorCode = protocol.requestProbeInitiationExtHandler(nil, packet, callID, targetList, stationToProbe)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

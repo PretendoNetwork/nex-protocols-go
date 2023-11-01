@@ -9,7 +9,7 @@ import (
 )
 
 // GetEnvironment sets the GetEnvironment handler function
-func (protocol *Protocol) GetEnvironment(handler func(err error, client *nex.Client, callID uint32, uniqueID string, platform uint8) uint32) {
+func (protocol *Protocol) GetEnvironment(handler func(err error, packet nex.PacketInterface, callID uint32, uniqueID string, platform uint8) uint32) {
 	protocol.getEnvironmentHandler = handler
 }
 
@@ -22,7 +22,6 @@ func (protocol *Protocol) handleGetEnvironment(packet nex.PacketInterface) {
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -32,7 +31,7 @@ func (protocol *Protocol) handleGetEnvironment(packet nex.PacketInterface) {
 
 	uniqueID, err := parametersStream.ReadString()
 	if err != nil {
-		errorCode = protocol.getEnvironmentHandler(fmt.Errorf("Failed to read uniqueID from parameters. %s", err.Error()), client, callID, "", 0)
+		errorCode = protocol.getEnvironmentHandler(fmt.Errorf("Failed to read uniqueID from parameters. %s", err.Error()), packet, callID, "", 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -42,7 +41,7 @@ func (protocol *Protocol) handleGetEnvironment(packet nex.PacketInterface) {
 
 	platform, err := parametersStream.ReadUInt8()
 	if err != nil {
-		errorCode = protocol.getEnvironmentHandler(fmt.Errorf("Failed to read platform from parameters. %s", err.Error()), client, callID, "", 0)
+		errorCode = protocol.getEnvironmentHandler(fmt.Errorf("Failed to read platform from parameters. %s", err.Error()), packet, callID, "", 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -50,7 +49,7 @@ func (protocol *Protocol) handleGetEnvironment(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.getEnvironmentHandler(nil, client, callID, uniqueID, platform)
+	errorCode = protocol.getEnvironmentHandler(nil, packet, callID, uniqueID, platform)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

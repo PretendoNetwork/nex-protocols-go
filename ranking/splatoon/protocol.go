@@ -41,10 +41,10 @@ type rankingProtocol = ranking.Protocol
 type Protocol struct {
 	Server *nex.Server
 	rankingProtocol
-	getCompetitionRankingScoreHandler             func(err error, client *nex.Client, callID uint32, packetPayload []byte) uint32
-	getcompetitionRankingScoreByPeriodListHandler func(err error, client *nex.Client, callID uint32, packetPayload []byte) uint32
-	uploadCompetitionRankingScoreHandler          func(err error, client *nex.Client, callID uint32, packetPayload []byte) uint32
-	deleteCompetitionRankingScoreHandler          func(err error, client *nex.Client, callID uint32, packetPayload []byte) uint32
+	getCompetitionRankingScoreHandler             func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) uint32
+	getcompetitionRankingScoreByPeriodListHandler func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) uint32
+	uploadCompetitionRankingScoreHandler          func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) uint32
+	deleteCompetitionRankingScoreHandler          func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) uint32
 }
 
 // Setup initializes the protocol

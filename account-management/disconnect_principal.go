@@ -9,7 +9,7 @@ import (
 )
 
 // DisconnectPrincipal sets the DisconnectPrincipal handler function
-func (protocol *Protocol) DisconnectPrincipal(handler func(err error, client *nex.Client, callID uint32, idPrincipal uint32) uint32) {
+func (protocol *Protocol) DisconnectPrincipal(handler func(err error, packet nex.PacketInterface, callID uint32, idPrincipal uint32) uint32) {
 	protocol.disconnectPrincipalHandler = handler
 }
 
@@ -22,7 +22,6 @@ func (protocol *Protocol) handleDisconnectPrincipal(packet nex.PacketInterface) 
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -32,7 +31,7 @@ func (protocol *Protocol) handleDisconnectPrincipal(packet nex.PacketInterface) 
 
 	idPrincipal, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.disconnectPrincipalHandler(fmt.Errorf("Failed to read idPrincipal from parameters. %s", err.Error()), client, callID, 0)
+		errorCode = protocol.disconnectPrincipalHandler(fmt.Errorf("Failed to read idPrincipal from parameters. %s", err.Error()), packet, callID, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -40,7 +39,7 @@ func (protocol *Protocol) handleDisconnectPrincipal(packet nex.PacketInterface) 
 		return
 	}
 
-	errorCode = protocol.disconnectPrincipalHandler(nil, client, callID, idPrincipal)
+	errorCode = protocol.disconnectPrincipalHandler(nil, packet, callID, idPrincipal)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

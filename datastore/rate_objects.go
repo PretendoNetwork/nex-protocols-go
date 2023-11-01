@@ -10,7 +10,7 @@ import (
 )
 
 // RateObjects sets the RateObjects handler function
-func (protocol *Protocol) RateObjects(handler func(err error, client *nex.Client, callID uint32, targets []*datastore_types.DataStoreRatingTarget, params []*datastore_types.DataStoreRateObjectParam, transactional bool, fetchRatings bool) uint32) {
+func (protocol *Protocol) RateObjects(handler func(err error, packet nex.PacketInterface, callID uint32, targets []*datastore_types.DataStoreRatingTarget, params []*datastore_types.DataStoreRateObjectParam, transactional bool, fetchRatings bool) uint32) {
 	protocol.rateObjectsHandler = handler
 }
 
@@ -23,7 +23,6 @@ func (protocol *Protocol) handleRateObjects(packet nex.PacketInterface) {
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -33,7 +32,7 @@ func (protocol *Protocol) handleRateObjects(packet nex.PacketInterface) {
 
 	targets, err := parametersStream.ReadListStructure(datastore_types.NewDataStoreRatingTarget())
 	if err != nil {
-		errorCode = protocol.rateObjectsHandler(fmt.Errorf("Failed to read targets from parameters. %s", err.Error()), client, callID, nil, nil, false, false)
+		errorCode = protocol.rateObjectsHandler(fmt.Errorf("Failed to read targets from parameters. %s", err.Error()), packet, callID, nil, nil, false, false)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -43,7 +42,7 @@ func (protocol *Protocol) handleRateObjects(packet nex.PacketInterface) {
 
 	params, err := parametersStream.ReadListStructure(datastore_types.NewDataStoreRateObjectParam())
 	if err != nil {
-		errorCode = protocol.rateObjectsHandler(fmt.Errorf("Failed to read params from parameters. %s", err.Error()), client, callID, nil, nil, false, false)
+		errorCode = protocol.rateObjectsHandler(fmt.Errorf("Failed to read params from parameters. %s", err.Error()), packet, callID, nil, nil, false, false)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -53,7 +52,7 @@ func (protocol *Protocol) handleRateObjects(packet nex.PacketInterface) {
 
 	transactional, err := parametersStream.ReadBool()
 	if err != nil {
-		errorCode = protocol.rateObjectsHandler(fmt.Errorf("Failed to read transactional from parameters. %s", err.Error()), client, callID, nil, nil, false, false)
+		errorCode = protocol.rateObjectsHandler(fmt.Errorf("Failed to read transactional from parameters. %s", err.Error()), packet, callID, nil, nil, false, false)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -63,7 +62,7 @@ func (protocol *Protocol) handleRateObjects(packet nex.PacketInterface) {
 
 	fetchRatings, err := parametersStream.ReadBool()
 	if err != nil {
-		errorCode = protocol.rateObjectsHandler(fmt.Errorf("Failed to read fetchRatings from parameters. %s", err.Error()), client, callID, nil, nil, false, false)
+		errorCode = protocol.rateObjectsHandler(fmt.Errorf("Failed to read fetchRatings from parameters. %s", err.Error()), packet, callID, nil, nil, false, false)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -71,7 +70,7 @@ func (protocol *Protocol) handleRateObjects(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.rateObjectsHandler(nil, client, callID, targets.([]*datastore_types.DataStoreRatingTarget), params.([]*datastore_types.DataStoreRateObjectParam), transactional, fetchRatings)
+	errorCode = protocol.rateObjectsHandler(nil, packet, callID, targets.([]*datastore_types.DataStoreRatingTarget), params.([]*datastore_types.DataStoreRateObjectParam), transactional, fetchRatings)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

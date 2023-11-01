@@ -7,7 +7,7 @@ import (
 )
 
 // ResetPassword sets the ResetPassword handler function
-func (protocol *Protocol) ResetPassword(handler func(err error, client *nex.Client, callID uint32) uint32) {
+func (protocol *Protocol) ResetPassword(handler func(err error, packet nex.PacketInterface, callID uint32) uint32) {
 	protocol.resetPasswordHandler = handler
 }
 
@@ -20,12 +20,11 @@ func (protocol *Protocol) handleResetPassword(packet nex.PacketInterface) {
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
 
-	errorCode = protocol.resetPasswordHandler(nil, client, callID)
+	errorCode = protocol.resetPasswordHandler(nil, packet, callID)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

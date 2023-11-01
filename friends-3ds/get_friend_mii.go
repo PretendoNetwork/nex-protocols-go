@@ -9,7 +9,7 @@ import (
 )
 
 // GetFriendMii sets the GetFriendMii handler function
-func (protocol *Protocol) GetFriendMii(handler func(err error, client *nex.Client, callID uint32, pidList []uint32) uint32) {
+func (protocol *Protocol) GetFriendMii(handler func(err error, packet nex.PacketInterface, callID uint32, pidList []uint32) uint32) {
 	protocol.getFriendMiiHandler = handler
 }
 
@@ -22,7 +22,6 @@ func (protocol *Protocol) handleGetFriendMii(packet nex.PacketInterface) {
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -32,7 +31,7 @@ func (protocol *Protocol) handleGetFriendMii(packet nex.PacketInterface) {
 
 	pidList, err := parametersStream.ReadListUInt32LE()
 	if err != nil {
-		errorCode = protocol.getFriendMiiHandler(fmt.Errorf("Failed to read pidList from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.getFriendMiiHandler(fmt.Errorf("Failed to read pidList from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -40,7 +39,7 @@ func (protocol *Protocol) handleGetFriendMii(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.getFriendMiiHandler(nil, client, callID, pidList)
+	errorCode = protocol.getFriendMiiHandler(nil, packet, callID, pidList)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

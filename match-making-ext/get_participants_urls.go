@@ -9,7 +9,7 @@ import (
 )
 
 // GetParticipantsURLs sets the GetParticipantsURLs handler function
-func (protocol *Protocol) GetParticipantsURLs(handler func(err error, client *nex.Client, callID uint32, lstGatherings []uint32) uint32) {
+func (protocol *Protocol) GetParticipantsURLs(handler func(err error, packet nex.PacketInterface, callID uint32, lstGatherings []uint32) uint32) {
 	protocol.getParticipantsURLsHandler = handler
 }
 
@@ -22,7 +22,6 @@ func (protocol *Protocol) handleGetParticipantsURLs(packet nex.PacketInterface) 
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -32,7 +31,7 @@ func (protocol *Protocol) handleGetParticipantsURLs(packet nex.PacketInterface) 
 
 	lstGatherings, err := parametersStream.ReadListUInt32LE()
 	if err != nil {
-		errorCode = protocol.getParticipantsURLsHandler(fmt.Errorf("Failed to read lstGatherings from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.getParticipantsURLsHandler(fmt.Errorf("Failed to read lstGatherings from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -40,7 +39,7 @@ func (protocol *Protocol) handleGetParticipantsURLs(packet nex.PacketInterface) 
 		return
 	}
 
-	errorCode = protocol.getParticipantsURLsHandler(nil, client, callID, lstGatherings)
+	errorCode = protocol.getParticipantsURLsHandler(nil, packet, callID, lstGatherings)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

@@ -10,7 +10,7 @@ import (
 )
 
 // GetNewArrivedNotifications sets the GetNewArrivedNotifications handler function
-func (protocol *Protocol) GetNewArrivedNotifications(handler func(err error, client *nex.Client, callID uint32, param *datastore_types.DataStoreGetNewArrivedNotificationsParam) uint32) {
+func (protocol *Protocol) GetNewArrivedNotifications(handler func(err error, packet nex.PacketInterface, callID uint32, param *datastore_types.DataStoreGetNewArrivedNotificationsParam) uint32) {
 	protocol.getNewArrivedNotificationsHandler = handler
 }
 
@@ -23,7 +23,6 @@ func (protocol *Protocol) handleGetNewArrivedNotifications(packet nex.PacketInte
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -33,7 +32,7 @@ func (protocol *Protocol) handleGetNewArrivedNotifications(packet nex.PacketInte
 
 	param, err := parametersStream.ReadStructure(datastore_types.NewDataStoreGetNewArrivedNotificationsParam())
 	if err != nil {
-		errorCode = protocol.getNewArrivedNotificationsHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.getNewArrivedNotificationsHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -41,7 +40,7 @@ func (protocol *Protocol) handleGetNewArrivedNotifications(packet nex.PacketInte
 		return
 	}
 
-	errorCode = protocol.getNewArrivedNotificationsHandler(nil, client, callID, param.(*datastore_types.DataStoreGetNewArrivedNotificationsParam))
+	errorCode = protocol.getNewArrivedNotificationsHandler(nil, packet, callID, param.(*datastore_types.DataStoreGetNewArrivedNotificationsParam))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

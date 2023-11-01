@@ -7,7 +7,7 @@ import (
 )
 
 // RegisterTournamentBot sets the RegisterTournamentBot handler function
-func (protocol *Protocol) RegisterTournamentBot(handler func(err error, client *nex.Client, callID uint32, packetPayload []byte) uint32) {
+func (protocol *Protocol) RegisterTournamentBot(handler func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) uint32) {
 	protocol.registerTournamentBotHandler = handler
 }
 
@@ -22,12 +22,11 @@ func (protocol *Protocol) handleRegisterTournamentBot(packet nex.PacketInterface
 
 	globals.Logger.Warning("MatchmakeExtensionSuperSmashBros4::RegisterTournamentBot STUBBED")
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
 
-	errorCode = protocol.registerTournamentBotHandler(nil, client, callID, packet.Payload())
+	errorCode = protocol.registerTournamentBotHandler(nil, packet, callID, packet.Payload())
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

@@ -9,7 +9,7 @@ import (
 )
 
 // UpdateComment sets the UpdateComment handler function
-func (protocol *Protocol) UpdateComment(handler func(err error, client *nex.Client, callID uint32, comment string) uint32) {
+func (protocol *Protocol) UpdateComment(handler func(err error, packet nex.PacketInterface, callID uint32, comment string) uint32) {
 	protocol.updateCommentHandler = handler
 }
 
@@ -22,7 +22,6 @@ func (protocol *Protocol) handleUpdateComment(packet nex.PacketInterface) {
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -32,7 +31,7 @@ func (protocol *Protocol) handleUpdateComment(packet nex.PacketInterface) {
 
 	comment, err := parametersStream.ReadString()
 	if err != nil {
-		errorCode = protocol.updateCommentHandler(fmt.Errorf("Failed to read comment from parameters. %s", err.Error()), client, callID, "")
+		errorCode = protocol.updateCommentHandler(fmt.Errorf("Failed to read comment from parameters. %s", err.Error()), packet, callID, "")
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -40,7 +39,7 @@ func (protocol *Protocol) handleUpdateComment(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.updateCommentHandler(nil, client, callID, comment)
+	errorCode = protocol.updateCommentHandler(nil, packet, callID, comment)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

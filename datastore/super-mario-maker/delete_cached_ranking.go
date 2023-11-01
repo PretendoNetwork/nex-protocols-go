@@ -9,7 +9,7 @@ import (
 )
 
 // DeleteCachedRanking sets the DeleteCachedRanking handler function
-func (protocol *Protocol) DeleteCachedRanking(handler func(err error, client *nex.Client, callID uint32, rankingType string, rankingArgs []string) uint32) {
+func (protocol *Protocol) DeleteCachedRanking(handler func(err error, packet nex.PacketInterface, callID uint32, rankingType string, rankingArgs []string) uint32) {
 	protocol.deleteCachedRankingHandler = handler
 }
 
@@ -22,7 +22,6 @@ func (protocol *Protocol) handleDeleteCachedRanking(packet nex.PacketInterface) 
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -32,7 +31,7 @@ func (protocol *Protocol) handleDeleteCachedRanking(packet nex.PacketInterface) 
 
 	rankingType, err := parametersStream.ReadString()
 	if err != nil {
-		errorCode = protocol.deleteCachedRankingHandler(fmt.Errorf("Failed to read rankingType from parameters. %s", err.Error()), client, callID, "", nil)
+		errorCode = protocol.deleteCachedRankingHandler(fmt.Errorf("Failed to read rankingType from parameters. %s", err.Error()), packet, callID, "", nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -42,7 +41,7 @@ func (protocol *Protocol) handleDeleteCachedRanking(packet nex.PacketInterface) 
 
 	rankingArgs, err := parametersStream.ReadListString()
 	if err != nil {
-		errorCode = protocol.deleteCachedRankingHandler(fmt.Errorf("Failed to read rankingArgs from parameters. %s", err.Error()), client, callID, "", nil)
+		errorCode = protocol.deleteCachedRankingHandler(fmt.Errorf("Failed to read rankingArgs from parameters. %s", err.Error()), packet, callID, "", nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -50,7 +49,7 @@ func (protocol *Protocol) handleDeleteCachedRanking(packet nex.PacketInterface) 
 		return
 	}
 
-	errorCode = protocol.deleteCachedRankingHandler(nil, client, callID, rankingType, rankingArgs)
+	errorCode = protocol.deleteCachedRankingHandler(nil, packet, callID, rankingType, rankingArgs)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

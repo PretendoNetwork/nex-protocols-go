@@ -9,7 +9,7 @@ import (
 )
 
 // GetFriendPersistentInfo sets the GetFriendPersistentInfo handler function
-func (protocol *Protocol) GetFriendPersistentInfo(handler func(err error, client *nex.Client, callID uint32, pidList []uint32) uint32) {
+func (protocol *Protocol) GetFriendPersistentInfo(handler func(err error, packet nex.PacketInterface, callID uint32, pidList []uint32) uint32) {
 	protocol.getFriendPersistentInfoHandler = handler
 }
 
@@ -22,7 +22,6 @@ func (protocol *Protocol) handleGetFriendPersistentInfo(packet nex.PacketInterfa
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -32,7 +31,7 @@ func (protocol *Protocol) handleGetFriendPersistentInfo(packet nex.PacketInterfa
 
 	pidList, err := parametersStream.ReadListUInt32LE()
 	if err != nil {
-		errorCode = protocol.getFriendPersistentInfoHandler(fmt.Errorf("Failed to read pidList from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.getFriendPersistentInfoHandler(fmt.Errorf("Failed to read pidList from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -40,7 +39,7 @@ func (protocol *Protocol) handleGetFriendPersistentInfo(packet nex.PacketInterfa
 		return
 	}
 
-	errorCode = protocol.getFriendPersistentInfoHandler(nil, client, callID, pidList)
+	errorCode = protocol.getFriendPersistentInfoHandler(nil, packet, callID, pidList)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

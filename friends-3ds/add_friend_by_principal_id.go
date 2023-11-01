@@ -9,7 +9,7 @@ import (
 )
 
 // AddFriendByPrincipalID sets the AddFriendByPrincipalID handler function
-func (protocol *Protocol) AddFriendByPrincipalID(handler func(err error, client *nex.Client, callID uint32, lfc uint64, pid uint32) uint32) {
+func (protocol *Protocol) AddFriendByPrincipalID(handler func(err error, packet nex.PacketInterface, callID uint32, lfc uint64, pid uint32) uint32) {
 	protocol.addFriendByPrincipalIDHandler = handler
 }
 
@@ -22,7 +22,6 @@ func (protocol *Protocol) handleAddFriendByPrincipalID(packet nex.PacketInterfac
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -32,7 +31,7 @@ func (protocol *Protocol) handleAddFriendByPrincipalID(packet nex.PacketInterfac
 
 	lfc, err := parametersStream.ReadUInt64LE()
 	if err != nil {
-		errorCode = protocol.addFriendByPrincipalIDHandler(fmt.Errorf("Failed to read lfc from parameters. %s", err.Error()), client, callID, 0, 0)
+		errorCode = protocol.addFriendByPrincipalIDHandler(fmt.Errorf("Failed to read lfc from parameters. %s", err.Error()), packet, callID, 0, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -42,7 +41,7 @@ func (protocol *Protocol) handleAddFriendByPrincipalID(packet nex.PacketInterfac
 
 	pid, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.addFriendByPrincipalIDHandler(fmt.Errorf("Failed to read pid from parameters. %s", err.Error()), client, callID, 0, 0)
+		errorCode = protocol.addFriendByPrincipalIDHandler(fmt.Errorf("Failed to read pid from parameters. %s", err.Error()), packet, callID, 0, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -50,7 +49,7 @@ func (protocol *Protocol) handleAddFriendByPrincipalID(packet nex.PacketInterfac
 		return
 	}
 
-	errorCode = protocol.addFriendByPrincipalIDHandler(nil, client, callID, lfc, pid)
+	errorCode = protocol.addFriendByPrincipalIDHandler(nil, packet, callID, lfc, pid)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

@@ -10,7 +10,7 @@ import (
 )
 
 // StartChallenge sets the StartChallenge handler function
-func (protocol *Protocol) StartChallenge(handler func(err error, client *nex.Client, callID uint32, startChallengeParam *service_item_wii_sports_club_types.ServiceItemStartChallengeParam) uint32) {
+func (protocol *Protocol) StartChallenge(handler func(err error, packet nex.PacketInterface, callID uint32, startChallengeParam *service_item_wii_sports_club_types.ServiceItemStartChallengeParam) uint32) {
 	protocol.startChallengeHandler = handler
 }
 
@@ -23,7 +23,6 @@ func (protocol *Protocol) handleStartChallenge(packet nex.PacketInterface) {
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -33,7 +32,7 @@ func (protocol *Protocol) handleStartChallenge(packet nex.PacketInterface) {
 
 	startChallengeParam, err := parametersStream.ReadStructure(service_item_wii_sports_club_types.NewServiceItemStartChallengeParam())
 	if err != nil {
-		errorCode = protocol.startChallengeHandler(fmt.Errorf("Failed to read startChallengeParam from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.startChallengeHandler(fmt.Errorf("Failed to read startChallengeParam from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -41,7 +40,7 @@ func (protocol *Protocol) handleStartChallenge(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.startChallengeHandler(nil, client, callID, startChallengeParam.(*service_item_wii_sports_club_types.ServiceItemStartChallengeParam))
+	errorCode = protocol.startChallengeHandler(nil, packet, callID, startChallengeParam.(*service_item_wii_sports_club_types.ServiceItemStartChallengeParam))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

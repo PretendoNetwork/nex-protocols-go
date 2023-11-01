@@ -7,7 +7,7 @@ import (
 )
 
 // GetCompetitionRankingScore sets the GetCompetitionRankingScore handler function
-func (protocol *Protocol) GetCompetitionRankingScore(handler func(err error, client *nex.Client, callID uint32, packetPayload []byte) uint32) {
+func (protocol *Protocol) GetCompetitionRankingScore(handler func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) uint32) {
 	protocol.getCompetitionRankingScoreHandler = handler
 }
 
@@ -22,12 +22,11 @@ func (protocol *Protocol) handleGetCompetitionRankingScore(packet nex.PacketInte
 
 	globals.Logger.Warning("RankingMarioKart8::GetCompetitionRankingScore STUBBED")
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
 
-	errorCode = protocol.getCompetitionRankingScoreHandler(nil, client, callID, packet.Payload())
+	errorCode = protocol.getCompetitionRankingScoreHandler(nil, packet, callID, packet.Payload())
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

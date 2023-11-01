@@ -10,7 +10,7 @@ import (
 )
 
 // ChangePlayablePlatform sets the ChangePlayablePlatform handler function
-func (protocol *Protocol) ChangePlayablePlatform(handler func(err error, client *nex.Client, callID uint32, params []*datastore_super_mario_maker_types.DataStoreChangePlayablePlatformParam) uint32) {
+func (protocol *Protocol) ChangePlayablePlatform(handler func(err error, packet nex.PacketInterface, callID uint32, params []*datastore_super_mario_maker_types.DataStoreChangePlayablePlatformParam) uint32) {
 	protocol.changePlayablePlatformHandler = handler
 }
 
@@ -23,7 +23,6 @@ func (protocol *Protocol) handleChangePlayablePlatform(packet nex.PacketInterfac
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -33,7 +32,7 @@ func (protocol *Protocol) handleChangePlayablePlatform(packet nex.PacketInterfac
 
 	params, err := parametersStream.ReadListStructure(datastore_super_mario_maker_types.NewDataStoreChangePlayablePlatformParam())
 	if err != nil {
-		errorCode = protocol.changePlayablePlatformHandler(fmt.Errorf("Failed to read params from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.changePlayablePlatformHandler(fmt.Errorf("Failed to read params from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -41,7 +40,7 @@ func (protocol *Protocol) handleChangePlayablePlatform(packet nex.PacketInterfac
 		return
 	}
 
-	errorCode = protocol.changePlayablePlatformHandler(nil, client, callID, params.([]*datastore_super_mario_maker_types.DataStoreChangePlayablePlatformParam))
+	errorCode = protocol.changePlayablePlatformHandler(nil, packet, callID, params.([]*datastore_super_mario_maker_types.DataStoreChangePlayablePlatformParam))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

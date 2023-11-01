@@ -9,7 +9,7 @@ import (
 )
 
 // FindCommunityByOwner sets the FindCommunityByOwner handler function
-func (protocol *Protocol) FindCommunityByOwner(handler func(err error, client *nex.Client, callID uint32, id uint64, resultRange *nex.ResultRange) uint32) {
+func (protocol *Protocol) FindCommunityByOwner(handler func(err error, packet nex.PacketInterface, callID uint32, id uint64, resultRange *nex.ResultRange) uint32) {
 	protocol.findCommunityByOwnerHandler = handler
 }
 
@@ -22,7 +22,6 @@ func (protocol *Protocol) handleFindCommunityByOwner(packet nex.PacketInterface)
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -32,7 +31,7 @@ func (protocol *Protocol) handleFindCommunityByOwner(packet nex.PacketInterface)
 
 	id, err := parametersStream.ReadUInt64LE()
 	if err != nil {
-		errorCode = protocol.findCommunityByOwnerHandler(fmt.Errorf("Failed to read id from parameters. %s", err.Error()), client, callID, 0, nil)
+		errorCode = protocol.findCommunityByOwnerHandler(fmt.Errorf("Failed to read id from parameters. %s", err.Error()), packet, callID, 0, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -42,7 +41,7 @@ func (protocol *Protocol) handleFindCommunityByOwner(packet nex.PacketInterface)
 
 	resultRange, err := parametersStream.ReadStructure(nex.NewResultRange())
 	if err != nil {
-		errorCode = protocol.findCommunityByOwnerHandler(fmt.Errorf("Failed to read resultRange from parameters. %s", err.Error()), client, callID, 0, nil)
+		errorCode = protocol.findCommunityByOwnerHandler(fmt.Errorf("Failed to read resultRange from parameters. %s", err.Error()), packet, callID, 0, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -50,7 +49,7 @@ func (protocol *Protocol) handleFindCommunityByOwner(packet nex.PacketInterface)
 		return
 	}
 
-	errorCode = protocol.findCommunityByOwnerHandler(nil, client, callID, id, resultRange.(*nex.ResultRange))
+	errorCode = protocol.findCommunityByOwnerHandler(nil, packet, callID, id, resultRange.(*nex.ResultRange))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

@@ -9,7 +9,7 @@ import (
 )
 
 // BlackListByName sets the BlackListByName handler function
-func (protocol *Protocol) BlackListByName(handler func(err error, client *nex.Client, callID uint32, strPlayerName string, uiDetails uint32) uint32) {
+func (protocol *Protocol) BlackListByName(handler func(err error, packet nex.PacketInterface, callID uint32, strPlayerName string, uiDetails uint32) uint32) {
 	protocol.blackListByNameHandler = handler
 }
 
@@ -22,7 +22,6 @@ func (protocol *Protocol) handleBlackListByName(packet nex.PacketInterface) {
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -32,7 +31,7 @@ func (protocol *Protocol) handleBlackListByName(packet nex.PacketInterface) {
 
 	strPlayerName, err := parametersStream.ReadString()
 	if err != nil {
-		errorCode = protocol.blackListByNameHandler(fmt.Errorf("Failed to read strPlayerName from parameters. %s", err.Error()), client, callID, "", 0)
+		errorCode = protocol.blackListByNameHandler(fmt.Errorf("Failed to read strPlayerName from parameters. %s", err.Error()), packet, callID, "", 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -42,7 +41,7 @@ func (protocol *Protocol) handleBlackListByName(packet nex.PacketInterface) {
 
 	uiDetails, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.blackListByNameHandler(fmt.Errorf("Failed to read uiDetails from parameters. %s", err.Error()), client, callID, "", 0)
+		errorCode = protocol.blackListByNameHandler(fmt.Errorf("Failed to read uiDetails from parameters. %s", err.Error()), packet, callID, "", 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -50,7 +49,7 @@ func (protocol *Protocol) handleBlackListByName(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.blackListByNameHandler(nil, client, callID, strPlayerName, uiDetails)
+	errorCode = protocol.blackListByNameHandler(nil, packet, callID, strPlayerName, uiDetails)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

@@ -10,7 +10,7 @@ import (
 )
 
 // CompleteUpdateObject sets the CompleteUpdateObject handler function
-func (protocol *Protocol) CompleteUpdateObject(handler func(err error, client *nex.Client, callID uint32, param *datastore_types.DataStoreCompleteUpdateParam) uint32) {
+func (protocol *Protocol) CompleteUpdateObject(handler func(err error, packet nex.PacketInterface, callID uint32, param *datastore_types.DataStoreCompleteUpdateParam) uint32) {
 	protocol.completeUpdateObjectHandler = handler
 }
 
@@ -23,7 +23,6 @@ func (protocol *Protocol) handleCompleteUpdateObject(packet nex.PacketInterface)
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -33,7 +32,7 @@ func (protocol *Protocol) handleCompleteUpdateObject(packet nex.PacketInterface)
 
 	param, err := parametersStream.ReadStructure(datastore_types.NewDataStoreCompleteUpdateParam())
 	if err != nil {
-		errorCode = protocol.completeUpdateObjectHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.completeUpdateObjectHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -41,7 +40,7 @@ func (protocol *Protocol) handleCompleteUpdateObject(packet nex.PacketInterface)
 		return
 	}
 
-	errorCode = protocol.completeUpdateObjectHandler(nil, client, callID, param.(*datastore_types.DataStoreCompleteUpdateParam))
+	errorCode = protocol.completeUpdateObjectHandler(nil, packet, callID, param.(*datastore_types.DataStoreCompleteUpdateParam))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

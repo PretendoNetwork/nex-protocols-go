@@ -10,7 +10,7 @@ import (
 )
 
 // UpdatePreference sets the UpdatePreference handler function
-func (protocol *Protocol) UpdatePreference(handler func(err error, client *nex.Client, callID uint32, preference *friends_wiiu_types.PrincipalPreference) uint32) {
+func (protocol *Protocol) UpdatePreference(handler func(err error, packet nex.PacketInterface, callID uint32, preference *friends_wiiu_types.PrincipalPreference) uint32) {
 	protocol.updatePreferenceHandler = handler
 }
 
@@ -23,7 +23,6 @@ func (protocol *Protocol) handleUpdatePreference(packet nex.PacketInterface) {
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -33,7 +32,7 @@ func (protocol *Protocol) handleUpdatePreference(packet nex.PacketInterface) {
 
 	principalPreference, err := parametersStream.ReadStructure(friends_wiiu_types.NewPrincipalPreference())
 	if err != nil {
-		errorCode = protocol.updatePreferenceHandler(fmt.Errorf("Failed to read principalPreference from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.updatePreferenceHandler(fmt.Errorf("Failed to read principalPreference from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -41,7 +40,7 @@ func (protocol *Protocol) handleUpdatePreference(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.updatePreferenceHandler(nil, client, callID, principalPreference.(*friends_wiiu_types.PrincipalPreference))
+	errorCode = protocol.updatePreferenceHandler(nil, packet, callID, principalPreference.(*friends_wiiu_types.PrincipalPreference))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

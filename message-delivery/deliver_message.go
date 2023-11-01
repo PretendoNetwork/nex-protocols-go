@@ -9,7 +9,7 @@ import (
 )
 
 // DeliverMessage sets the DeliverMessage handler function
-func (protocol *Protocol) DeliverMessage(handler func(err error, client *nex.Client, callID uint32, oUserMessage *nex.DataHolder) uint32) {
+func (protocol *Protocol) DeliverMessage(handler func(err error, packet nex.PacketInterface, callID uint32, oUserMessage *nex.DataHolder) uint32) {
 	protocol.deliverMessageHandler = handler
 }
 
@@ -22,7 +22,6 @@ func (protocol *Protocol) handleDeliverMessage(packet nex.PacketInterface) {
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -32,7 +31,7 @@ func (protocol *Protocol) handleDeliverMessage(packet nex.PacketInterface) {
 
 	oUserMessage, err := parametersStream.ReadDataHolder()
 	if err != nil {
-		errorCode = protocol.deliverMessageHandler(fmt.Errorf("Failed to read oUserMessage from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.deliverMessageHandler(fmt.Errorf("Failed to read oUserMessage from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -40,7 +39,7 @@ func (protocol *Protocol) handleDeliverMessage(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.deliverMessageHandler(nil, client, callID, oUserMessage)
+	errorCode = protocol.deliverMessageHandler(nil, packet, callID, oUserMessage)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

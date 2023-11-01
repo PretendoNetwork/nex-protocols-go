@@ -9,7 +9,7 @@ import (
 )
 
 // GetRivToken sets the GetRivToken function
-func (protocol *Protocol) GetRivToken(handler func(err error, client *nex.Client, callID uint32, itemCode string, referenceID []byte) uint32) {
+func (protocol *Protocol) GetRivToken(handler func(err error, packet nex.PacketInterface, callID uint32, itemCode string, referenceID []byte) uint32) {
 	protocol.getRivTokenHandler = handler
 }
 
@@ -22,7 +22,6 @@ func (protocol *Protocol) handleGetRivToken(packet nex.PacketInterface) {
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -32,7 +31,7 @@ func (protocol *Protocol) handleGetRivToken(packet nex.PacketInterface) {
 
 	itemCode, err := parametersStream.ReadString()
 	if err != nil {
-		errorCode = protocol.getRivTokenHandler(fmt.Errorf("Failed to read itemCode from parameters. %s", err.Error()), client, callID, "", nil)
+		errorCode = protocol.getRivTokenHandler(fmt.Errorf("Failed to read itemCode from parameters. %s", err.Error()), packet, callID, "", nil)
 		if errorCode != 0 {
 			globals.RespondErrorCustom(packet, ProtocolID, errorCode)
 		}
@@ -42,7 +41,7 @@ func (protocol *Protocol) handleGetRivToken(packet nex.PacketInterface) {
 
 	referenceID, err := parametersStream.ReadQBuffer()
 	if err != nil {
-		errorCode = protocol.getRivTokenHandler(fmt.Errorf("Failed to read referenceID from parameters. %s", err.Error()), client, callID, "", nil)
+		errorCode = protocol.getRivTokenHandler(fmt.Errorf("Failed to read referenceID from parameters. %s", err.Error()), packet, callID, "", nil)
 		if errorCode != 0 {
 			globals.RespondErrorCustom(packet, ProtocolID, errorCode)
 		}
@@ -50,7 +49,7 @@ func (protocol *Protocol) handleGetRivToken(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.getRivTokenHandler(nil, client, callID, itemCode, referenceID)
+	errorCode = protocol.getRivTokenHandler(nil, packet, callID, itemCode, referenceID)
 	if errorCode != 0 {
 		globals.RespondErrorCustom(packet, ProtocolID, errorCode)
 	}

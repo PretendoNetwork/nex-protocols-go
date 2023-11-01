@@ -10,7 +10,7 @@ import (
 )
 
 // GetBufferQueue sets the GetBufferQueue handler function
-func (protocol *Protocol) GetBufferQueue(handler func(err error, client *nex.Client, callID uint32, param *datastore_super_mario_maker_types.BufferQueueParam) uint32) {
+func (protocol *Protocol) GetBufferQueue(handler func(err error, packet nex.PacketInterface, callID uint32, param *datastore_super_mario_maker_types.BufferQueueParam) uint32) {
 	protocol.getBufferQueueHandler = handler
 }
 
@@ -23,7 +23,6 @@ func (protocol *Protocol) handleGetBufferQueue(packet nex.PacketInterface) {
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -33,7 +32,7 @@ func (protocol *Protocol) handleGetBufferQueue(packet nex.PacketInterface) {
 
 	param, err := parametersStream.ReadStructure(datastore_super_mario_maker_types.NewBufferQueueParam())
 	if err != nil {
-		errorCode = protocol.getBufferQueueHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.getBufferQueueHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -41,7 +40,7 @@ func (protocol *Protocol) handleGetBufferQueue(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.getBufferQueueHandler(nil, client, callID, param.(*datastore_super_mario_maker_types.BufferQueueParam))
+	errorCode = protocol.getBufferQueueHandler(nil, packet, callID, param.(*datastore_super_mario_maker_types.BufferQueueParam))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

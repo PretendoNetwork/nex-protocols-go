@@ -7,7 +7,7 @@ import (
 )
 
 // EndCommunityCompetitionParticipation sets the EndCommunityCompetitionParticipation handler function
-func (protocol *Protocol) EndCommunityCompetitionParticipation(handler func(err error, client *nex.Client, callID uint32, packetPayload []byte) uint32) {
+func (protocol *Protocol) EndCommunityCompetitionParticipation(handler func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) uint32) {
 	protocol.endCommunityCompetitionParticipationHandler = handler
 }
 
@@ -22,12 +22,11 @@ func (protocol *Protocol) handleEndCommunityCompetitionParticipation(packet nex.
 
 	globals.Logger.Warning("MatchmakeExtensionSuperSmashBros4::EndCommunityCompetitionParticipation STUBBED")
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
 
-	errorCode = protocol.endCommunityCompetitionParticipationHandler(nil, client, callID, packet.Payload())
+	errorCode = protocol.endCommunityCompetitionParticipationHandler(nil, packet, callID, packet.Payload())
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

@@ -95,32 +95,32 @@ const (
 // Protocol stores all the RMC method handlers for the Friends (3DS) protocol and listens for requests
 type Protocol struct {
 	Server                                 *nex.Server
-	updateProfileHandler                   func(err error, client *nex.Client, callID uint32, profileData *friends_3ds_types.MyProfile) uint32
-	updateMiiHandler                       func(err error, client *nex.Client, callID uint32, mii *friends_3ds_types.Mii) uint32
-	updateMiiListHandler                   func(err error, client *nex.Client, callID uint32, miiList *friends_3ds_types.MiiList) uint32
-	updatePlayedGamesHandler               func(err error, client *nex.Client, callID uint32, playedGames []*friends_3ds_types.PlayedGame) uint32
-	updatePreferenceHandler                func(err error, client *nex.Client, callID uint32, publicMode bool, showGame bool, showPlayedGame bool) uint32
-	getFriendMiiHandler                    func(err error, client *nex.Client, callID uint32, pidList []uint32) uint32
-	getFriendMiiListHandler                func(err error, client *nex.Client, callID uint32, friends []*friends_3ds_types.FriendInfo) uint32
-	isActiveGameHandler                    func(err error, client *nex.Client, callID uint32, pids []uint32, gameKey *friends_3ds_types.GameKey) uint32
-	getPrincipalIDByLocalFriendCodeHandler func(err error, client *nex.Client, callID uint32, lfc uint64, lfcList []uint64) uint32
-	getFriendRelationshipsHandler          func(err error, client *nex.Client, callID uint32, pids []uint32) uint32
-	addFriendByPrincipalIDHandler          func(err error, client *nex.Client, callID uint32, lfc uint64, pid uint32) uint32
-	addFriendBylstPrincipalIDHandler       func(err error, client *nex.Client, callID uint32, lfc uint64, pids []uint32) uint32
-	removeFriendByLocalFriendCodeHandler   func(err error, client *nex.Client, callID uint32, lfc uint64) uint32
-	removeFriendByPrincipalIDHandler       func(err error, client *nex.Client, callID uint32, pid uint32) uint32
-	getAllFriendsHandler                   func(err error, client *nex.Client, callID uint32) uint32
-	updateBlackListHandler                 func(err error, client *nex.Client, callID uint32, unknown []uint32) uint32
-	syncFriendHandler                      func(err error, client *nex.Client, callID uint32, lfc uint64, pids []uint32, lfcList []uint64) uint32
-	updatePresenceHandler                  func(err error, client *nex.Client, callID uint32, presence *friends_3ds_types.NintendoPresence, showGame bool) uint32
-	updateFavoriteGameKeyHandler           func(err error, client *nex.Client, callID uint32, gameKey *friends_3ds_types.GameKey) uint32
-	updateCommentHandler                   func(err error, client *nex.Client, callID uint32, comment string) uint32
-	updatePictureHandler                   func(err error, client *nex.Client, callID uint32, unknown uint32, picture []byte) uint32
-	getFriendPresenceHandler               func(err error, client *nex.Client, callID uint32, pidList []uint32) uint32
-	getFriendCommentHandler                func(err error, client *nex.Client, callID uint32, friends []*friends_3ds_types.FriendInfo) uint32
-	getFriendPictureHandler                func(err error, client *nex.Client, callID uint32, unknown []uint32) uint32
-	getFriendPersistentInfoHandler         func(err error, client *nex.Client, callID uint32, pidList []uint32) uint32
-	sendInvitationHandler                  func(err error, client *nex.Client, callID uint32, pids []uint32) uint32
+	updateProfileHandler                   func(err error, packet nex.PacketInterface, callID uint32, profileData *friends_3ds_types.MyProfile) uint32
+	updateMiiHandler                       func(err error, packet nex.PacketInterface, callID uint32, mii *friends_3ds_types.Mii) uint32
+	updateMiiListHandler                   func(err error, packet nex.PacketInterface, callID uint32, miiList *friends_3ds_types.MiiList) uint32
+	updatePlayedGamesHandler               func(err error, packet nex.PacketInterface, callID uint32, playedGames []*friends_3ds_types.PlayedGame) uint32
+	updatePreferenceHandler                func(err error, packet nex.PacketInterface, callID uint32, publicMode bool, showGame bool, showPlayedGame bool) uint32
+	getFriendMiiHandler                    func(err error, packet nex.PacketInterface, callID uint32, pidList []uint32) uint32
+	getFriendMiiListHandler                func(err error, packet nex.PacketInterface, callID uint32, friends []*friends_3ds_types.FriendInfo) uint32
+	isActiveGameHandler                    func(err error, packet nex.PacketInterface, callID uint32, pids []uint32, gameKey *friends_3ds_types.GameKey) uint32
+	getPrincipalIDByLocalFriendCodeHandler func(err error, packet nex.PacketInterface, callID uint32, lfc uint64, lfcList []uint64) uint32
+	getFriendRelationshipsHandler          func(err error, packet nex.PacketInterface, callID uint32, pids []uint32) uint32
+	addFriendByPrincipalIDHandler          func(err error, packet nex.PacketInterface, callID uint32, lfc uint64, pid uint32) uint32
+	addFriendBylstPrincipalIDHandler       func(err error, packet nex.PacketInterface, callID uint32, lfc uint64, pids []uint32) uint32
+	removeFriendByLocalFriendCodeHandler   func(err error, packet nex.PacketInterface, callID uint32, lfc uint64) uint32
+	removeFriendByPrincipalIDHandler       func(err error, packet nex.PacketInterface, callID uint32, pid uint32) uint32
+	getAllFriendsHandler                   func(err error, packet nex.PacketInterface, callID uint32) uint32
+	updateBlackListHandler                 func(err error, packet nex.PacketInterface, callID uint32, unknown []uint32) uint32
+	syncFriendHandler                      func(err error, packet nex.PacketInterface, callID uint32, lfc uint64, pids []uint32, lfcList []uint64) uint32
+	updatePresenceHandler                  func(err error, packet nex.PacketInterface, callID uint32, presence *friends_3ds_types.NintendoPresence, showGame bool) uint32
+	updateFavoriteGameKeyHandler           func(err error, packet nex.PacketInterface, callID uint32, gameKey *friends_3ds_types.GameKey) uint32
+	updateCommentHandler                   func(err error, packet nex.PacketInterface, callID uint32, comment string) uint32
+	updatePictureHandler                   func(err error, packet nex.PacketInterface, callID uint32, unknown uint32, picture []byte) uint32
+	getFriendPresenceHandler               func(err error, packet nex.PacketInterface, callID uint32, pidList []uint32) uint32
+	getFriendCommentHandler                func(err error, packet nex.PacketInterface, callID uint32, friends []*friends_3ds_types.FriendInfo) uint32
+	getFriendPictureHandler                func(err error, packet nex.PacketInterface, callID uint32, unknown []uint32) uint32
+	getFriendPersistentInfoHandler         func(err error, packet nex.PacketInterface, callID uint32, pidList []uint32) uint32
+	sendInvitationHandler                  func(err error, packet nex.PacketInterface, callID uint32, pids []uint32) uint32
 }
 
 // Setup initializes the protocol

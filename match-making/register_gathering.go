@@ -9,7 +9,7 @@ import (
 )
 
 // RegisterGathering sets the RegisterGathering handler function
-func (protocol *Protocol) RegisterGathering(handler func(err error, client *nex.Client, callID uint32, anyGathering *nex.DataHolder) uint32) {
+func (protocol *Protocol) RegisterGathering(handler func(err error, packet nex.PacketInterface, callID uint32, anyGathering *nex.DataHolder) uint32) {
 	protocol.registerGatheringHandler = handler
 }
 
@@ -22,7 +22,6 @@ func (protocol *Protocol) handleRegisterGathering(packet nex.PacketInterface) {
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -32,7 +31,7 @@ func (protocol *Protocol) handleRegisterGathering(packet nex.PacketInterface) {
 
 	anyGathering, err := parametersStream.ReadDataHolder()
 	if err != nil {
-		errorCode = protocol.registerGatheringHandler(fmt.Errorf("Failed to read anyGathering from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.registerGatheringHandler(fmt.Errorf("Failed to read anyGathering from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -40,7 +39,7 @@ func (protocol *Protocol) handleRegisterGathering(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.registerGatheringHandler(nil, client, callID, anyGathering)
+	errorCode = protocol.registerGatheringHandler(nil, packet, callID, anyGathering)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

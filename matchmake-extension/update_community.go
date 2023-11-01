@@ -10,7 +10,7 @@ import (
 )
 
 // UpdateCommunity sets the UpdateCommunity handler function
-func (protocol *Protocol) UpdateCommunity(handler func(err error, client *nex.Client, callID uint32, community *match_making_types.PersistentGathering) uint32) {
+func (protocol *Protocol) UpdateCommunity(handler func(err error, packet nex.PacketInterface, callID uint32, community *match_making_types.PersistentGathering) uint32) {
 	protocol.updateCommunityHandler = handler
 }
 
@@ -23,7 +23,6 @@ func (protocol *Protocol) handleUpdateCommunity(packet nex.PacketInterface) {
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -33,7 +32,7 @@ func (protocol *Protocol) handleUpdateCommunity(packet nex.PacketInterface) {
 
 	community, err := parametersStream.ReadStructure(match_making_types.NewPersistentGathering())
 	if err != nil {
-		errorCode = protocol.updateCommunityHandler(fmt.Errorf("Failed to read community from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.updateCommunityHandler(fmt.Errorf("Failed to read community from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -41,7 +40,7 @@ func (protocol *Protocol) handleUpdateCommunity(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.updateCommunityHandler(nil, client, callID, community.(*match_making_types.PersistentGathering))
+	errorCode = protocol.updateCommunityHandler(nil, packet, callID, community.(*match_making_types.PersistentGathering))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

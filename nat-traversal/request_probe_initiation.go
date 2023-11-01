@@ -9,7 +9,7 @@ import (
 )
 
 // RequestProbeInitiation sets the RequestProbeInitiation handler function
-func (protocol *Protocol) RequestProbeInitiation(handler func(err error, client *nex.Client, callID uint32, urlTargetList []*nex.StationURL) uint32) {
+func (protocol *Protocol) RequestProbeInitiation(handler func(err error, packet nex.PacketInterface, callID uint32, urlTargetList []*nex.StationURL) uint32) {
 	protocol.requestProbeInitiationHandler = handler
 }
 
@@ -22,7 +22,6 @@ func (protocol *Protocol) handleRequestProbeInitiation(packet nex.PacketInterfac
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -32,7 +31,7 @@ func (protocol *Protocol) handleRequestProbeInitiation(packet nex.PacketInterfac
 
 	urlTargetList, err := parametersStream.ReadListStationURL()
 	if err != nil {
-		errorCode = protocol.requestProbeInitiationHandler(fmt.Errorf("Failed to read urlTargetList from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.requestProbeInitiationHandler(fmt.Errorf("Failed to read urlTargetList from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -40,7 +39,7 @@ func (protocol *Protocol) handleRequestProbeInitiation(packet nex.PacketInterfac
 		return
 	}
 
-	errorCode = protocol.requestProbeInitiationHandler(nil, client, callID, urlTargetList)
+	errorCode = protocol.requestProbeInitiationHandler(nil, packet, callID, urlTargetList)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

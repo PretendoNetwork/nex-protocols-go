@@ -9,7 +9,7 @@ import (
 )
 
 // ClearMatchmakeSessionSystemPassword sets the ClearMatchmakeSessionSystemPassword handler function
-func (protocol *Protocol) ClearMatchmakeSessionSystemPassword(handler func(err error, client *nex.Client, callID uint32, gid uint32) uint32) {
+func (protocol *Protocol) ClearMatchmakeSessionSystemPassword(handler func(err error, packet nex.PacketInterface, callID uint32, gid uint32) uint32) {
 	protocol.clearMatchmakeSessionSystemPasswordHandler = handler
 }
 
@@ -22,7 +22,6 @@ func (protocol *Protocol) handleClearMatchmakeSessionSystemPassword(packet nex.P
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -32,7 +31,7 @@ func (protocol *Protocol) handleClearMatchmakeSessionSystemPassword(packet nex.P
 
 	gid, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.clearMatchmakeSessionSystemPasswordHandler(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), client, callID, 0)
+		errorCode = protocol.clearMatchmakeSessionSystemPasswordHandler(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), packet, callID, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -40,7 +39,7 @@ func (protocol *Protocol) handleClearMatchmakeSessionSystemPassword(packet nex.P
 		return
 	}
 
-	errorCode = protocol.clearMatchmakeSessionSystemPasswordHandler(nil, client, callID, gid)
+	errorCode = protocol.clearMatchmakeSessionSystemPasswordHandler(nil, packet, callID, gid)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

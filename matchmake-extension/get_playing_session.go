@@ -9,7 +9,7 @@ import (
 )
 
 // GetPlayingSession sets the GetPlayingSession handler function
-func (protocol *Protocol) GetPlayingSession(handler func(err error, client *nex.Client, callID uint32, lstPID []uint32) uint32) {
+func (protocol *Protocol) GetPlayingSession(handler func(err error, packet nex.PacketInterface, callID uint32, lstPID []uint32) uint32) {
 	protocol.getPlayingSessionHandler = handler
 }
 
@@ -22,7 +22,6 @@ func (protocol *Protocol) handleGetPlayingSession(packet nex.PacketInterface) {
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -32,7 +31,7 @@ func (protocol *Protocol) handleGetPlayingSession(packet nex.PacketInterface) {
 
 	lstPID, err := parametersStream.ReadListUInt32LE()
 	if err != nil {
-		errorCode = protocol.getPlayingSessionHandler(fmt.Errorf("Failed to read lstPID from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.getPlayingSessionHandler(fmt.Errorf("Failed to read lstPID from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -40,7 +39,7 @@ func (protocol *Protocol) handleGetPlayingSession(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.getPlayingSessionHandler(nil, client, callID, lstPID)
+	errorCode = protocol.getPlayingSessionHandler(nil, packet, callID, lstPID)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

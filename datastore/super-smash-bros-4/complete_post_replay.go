@@ -10,7 +10,7 @@ import (
 )
 
 // CompletePostReplay sets the CompletePostReplay handler function
-func (protocol *Protocol) CompletePostReplay(handler func(err error, client *nex.Client, callID uint32, param *datastore_super_smash_bros_4_types.DataStoreCompletePostReplayParam) uint32) {
+func (protocol *Protocol) CompletePostReplay(handler func(err error, packet nex.PacketInterface, callID uint32, param *datastore_super_smash_bros_4_types.DataStoreCompletePostReplayParam) uint32) {
 	protocol.completePostReplayHandler = handler
 }
 
@@ -23,7 +23,6 @@ func (protocol *Protocol) handleCompletePostReplay(packet nex.PacketInterface) {
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -33,7 +32,7 @@ func (protocol *Protocol) handleCompletePostReplay(packet nex.PacketInterface) {
 
 	param, err := parametersStream.ReadStructure(datastore_super_smash_bros_4_types.NewDataStoreCompletePostReplayParam())
 	if err != nil {
-		errorCode = protocol.completePostReplayHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.completePostReplayHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -41,7 +40,7 @@ func (protocol *Protocol) handleCompletePostReplay(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.completePostReplayHandler(nil, client, callID, param.(*datastore_super_smash_bros_4_types.DataStoreCompletePostReplayParam))
+	errorCode = protocol.completePostReplayHandler(nil, packet, callID, param.(*datastore_super_smash_bros_4_types.DataStoreCompletePostReplayParam))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

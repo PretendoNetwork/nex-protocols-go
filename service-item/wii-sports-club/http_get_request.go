@@ -10,7 +10,7 @@ import (
 )
 
 // HTTPGetRequest sets the HTTPGetRequest handler function
-func (protocol *Protocol) HTTPGetRequest(handler func(err error, client *nex.Client, callID uint32, url *service_item_wii_sports_club_types.ServiceItemHTTPGetParam) uint32) {
+func (protocol *Protocol) HTTPGetRequest(handler func(err error, packet nex.PacketInterface, callID uint32, url *service_item_wii_sports_club_types.ServiceItemHTTPGetParam) uint32) {
 	protocol.httpGetRequestHandler = handler
 }
 
@@ -23,7 +23,6 @@ func (protocol *Protocol) handleHTTPGetRequest(packet nex.PacketInterface) {
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -33,7 +32,7 @@ func (protocol *Protocol) handleHTTPGetRequest(packet nex.PacketInterface) {
 
 	url, err := parametersStream.ReadStructure(service_item_wii_sports_club_types.NewServiceItemHTTPGetParam())
 	if err != nil {
-		errorCode = protocol.httpGetRequestHandler(fmt.Errorf("Failed to read url from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.httpGetRequestHandler(fmt.Errorf("Failed to read url from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -41,7 +40,7 @@ func (protocol *Protocol) handleHTTPGetRequest(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.httpGetRequestHandler(nil, client, callID, url.(*service_item_wii_sports_club_types.ServiceItemHTTPGetParam))
+	errorCode = protocol.httpGetRequestHandler(nil, packet, callID, url.(*service_item_wii_sports_club_types.ServiceItemHTTPGetParam))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

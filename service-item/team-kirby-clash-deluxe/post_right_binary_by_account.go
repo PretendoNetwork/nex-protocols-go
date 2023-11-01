@@ -10,7 +10,7 @@ import (
 )
 
 // PostRightBinaryByAccount sets the PostRightBinaryByAccount handler function
-func (protocol *Protocol) PostRightBinaryByAccount(handler func(err error, client *nex.Client, callID uint32, postRightBinaryByAccountParam *service_item_team_kirby_clash_deluxe_types.ServiceItemPostRightBinaryByAccountParam) uint32) {
+func (protocol *Protocol) PostRightBinaryByAccount(handler func(err error, packet nex.PacketInterface, callID uint32, postRightBinaryByAccountParam *service_item_team_kirby_clash_deluxe_types.ServiceItemPostRightBinaryByAccountParam) uint32) {
 	protocol.postRightBinaryByAccountHandler = handler
 }
 
@@ -23,7 +23,6 @@ func (protocol *Protocol) handlePostRightBinaryByAccount(packet nex.PacketInterf
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -33,7 +32,7 @@ func (protocol *Protocol) handlePostRightBinaryByAccount(packet nex.PacketInterf
 
 	postRightBinaryByAccountParam, err := parametersStream.ReadStructure(service_item_team_kirby_clash_deluxe_types.NewServiceItemPostRightBinaryByAccountParam())
 	if err != nil {
-		errorCode = protocol.postRightBinaryByAccountHandler(fmt.Errorf("Failed to read postRightBinaryByAccountParam from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.postRightBinaryByAccountHandler(fmt.Errorf("Failed to read postRightBinaryByAccountParam from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -41,7 +40,7 @@ func (protocol *Protocol) handlePostRightBinaryByAccount(packet nex.PacketInterf
 		return
 	}
 
-	errorCode = protocol.postRightBinaryByAccountHandler(nil, client, callID, postRightBinaryByAccountParam.(*service_item_team_kirby_clash_deluxe_types.ServiceItemPostRightBinaryByAccountParam))
+	errorCode = protocol.postRightBinaryByAccountHandler(nil, packet, callID, postRightBinaryByAccountParam.(*service_item_team_kirby_clash_deluxe_types.ServiceItemPostRightBinaryByAccountParam))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

@@ -10,7 +10,7 @@ import (
 )
 
 // GetStatsPrimary sets the GetStatsPrimary handler function
-func (protocol *Protocol) GetStatsPrimary(handler func(err error, client *nex.Client, callID uint32, target *matchmake_referee_types.MatchmakeRefereeStatsTarget) uint32) {
+func (protocol *Protocol) GetStatsPrimary(handler func(err error, packet nex.PacketInterface, callID uint32, target *matchmake_referee_types.MatchmakeRefereeStatsTarget) uint32) {
 	protocol.getStatsPrimaryHandler = handler
 }
 
@@ -23,7 +23,6 @@ func (protocol *Protocol) handleGetStatsPrimary(packet nex.PacketInterface) {
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -33,7 +32,7 @@ func (protocol *Protocol) handleGetStatsPrimary(packet nex.PacketInterface) {
 
 	target, err := parametersStream.ReadStructure(matchmake_referee_types.NewMatchmakeRefereeStatsTarget())
 	if err != nil {
-		errorCode = protocol.getStatsPrimaryHandler(fmt.Errorf("Failed to read target from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.getStatsPrimaryHandler(fmt.Errorf("Failed to read target from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -41,7 +40,7 @@ func (protocol *Protocol) handleGetStatsPrimary(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.getStatsPrimaryHandler(nil, client, callID, target.(*matchmake_referee_types.MatchmakeRefereeStatsTarget))
+	errorCode = protocol.getStatsPrimaryHandler(nil, packet, callID, target.(*matchmake_referee_types.MatchmakeRefereeStatsTarget))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

@@ -9,7 +9,7 @@ import (
 )
 
 // CancelInvitation sets the CancelInvitation handler function
-func (protocol *Protocol) CancelInvitation(handler func(err error, client *nex.Client, callID uint32, idGathering uint32, lstPrincipals []uint32, strMessage string) uint32) {
+func (protocol *Protocol) CancelInvitation(handler func(err error, packet nex.PacketInterface, callID uint32, idGathering uint32, lstPrincipals []uint32, strMessage string) uint32) {
 	protocol.cancelInvitationHandler = handler
 }
 
@@ -22,7 +22,6 @@ func (protocol *Protocol) handleCancelInvitation(packet nex.PacketInterface) {
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -32,7 +31,7 @@ func (protocol *Protocol) handleCancelInvitation(packet nex.PacketInterface) {
 
 	idGathering, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.cancelInvitationHandler(fmt.Errorf("Failed to read idGathering from parameters. %s", err.Error()), client, callID, 0, nil, "")
+		errorCode = protocol.cancelInvitationHandler(fmt.Errorf("Failed to read idGathering from parameters. %s", err.Error()), packet, callID, 0, nil, "")
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -42,7 +41,7 @@ func (protocol *Protocol) handleCancelInvitation(packet nex.PacketInterface) {
 
 	lstPrincipals, err := parametersStream.ReadListUInt32LE()
 	if err != nil {
-		errorCode = protocol.cancelInvitationHandler(fmt.Errorf("Failed to read lstPrincipals from parameters. %s", err.Error()), client, callID, 0, nil, "")
+		errorCode = protocol.cancelInvitationHandler(fmt.Errorf("Failed to read lstPrincipals from parameters. %s", err.Error()), packet, callID, 0, nil, "")
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -52,7 +51,7 @@ func (protocol *Protocol) handleCancelInvitation(packet nex.PacketInterface) {
 
 	strMessage, err := parametersStream.ReadString()
 	if err != nil {
-		errorCode = protocol.cancelInvitationHandler(fmt.Errorf("Failed to read strMessage from parameters. %s", err.Error()), client, callID, 0, nil, "")
+		errorCode = protocol.cancelInvitationHandler(fmt.Errorf("Failed to read strMessage from parameters. %s", err.Error()), packet, callID, 0, nil, "")
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -60,7 +59,7 @@ func (protocol *Protocol) handleCancelInvitation(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.cancelInvitationHandler(nil, client, callID, idGathering, lstPrincipals, strMessage)
+	errorCode = protocol.cancelInvitationHandler(nil, packet, callID, idGathering, lstPrincipals, strMessage)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

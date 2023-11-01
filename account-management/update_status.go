@@ -9,7 +9,7 @@ import (
 )
 
 // UpdateStatus sets the UpdateStatus handler function
-func (protocol *Protocol) UpdateStatus(handler func(err error, client *nex.Client, callID uint32, strStatus string) uint32) {
+func (protocol *Protocol) UpdateStatus(handler func(err error, packet nex.PacketInterface, callID uint32, strStatus string) uint32) {
 	protocol.updateStatusHandler = handler
 }
 
@@ -22,7 +22,6 @@ func (protocol *Protocol) handleUpdateStatus(packet nex.PacketInterface) {
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -32,7 +31,7 @@ func (protocol *Protocol) handleUpdateStatus(packet nex.PacketInterface) {
 
 	strStatus, err := parametersStream.ReadString()
 	if err != nil {
-		errorCode = protocol.updateStatusHandler(fmt.Errorf("Failed to read strStatus from parameters. %s", err.Error()), client, callID, "")
+		errorCode = protocol.updateStatusHandler(fmt.Errorf("Failed to read strStatus from parameters. %s", err.Error()), packet, callID, "")
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -40,7 +39,7 @@ func (protocol *Protocol) handleUpdateStatus(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.updateStatusHandler(nil, client, callID, strStatus)
+	errorCode = protocol.updateStatusHandler(nil, packet, callID, strStatus)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

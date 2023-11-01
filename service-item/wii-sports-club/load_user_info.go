@@ -7,7 +7,7 @@ import (
 )
 
 // LoadUserInfo sets the LoadUserInfo handler function
-func (protocol *Protocol) LoadUserInfo(handler func(err error, client *nex.Client, callID uint32) uint32) {
+func (protocol *Protocol) LoadUserInfo(handler func(err error, packet nex.PacketInterface, callID uint32) uint32) {
 	protocol.loadUserInfoHandler = handler
 }
 
@@ -20,12 +20,11 @@ func (protocol *Protocol) handleLoadUserInfo(packet nex.PacketInterface) {
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
 
-	errorCode = protocol.loadUserInfoHandler(nil, client, callID)
+	errorCode = protocol.loadUserInfoHandler(nil, packet, callID)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

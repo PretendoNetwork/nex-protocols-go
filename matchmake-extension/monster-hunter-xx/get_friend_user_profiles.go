@@ -9,7 +9,7 @@ import (
 )
 
 // GetFriendUserProfiles sets the GetFriendUserProfiles handler function
-func (protocol *Protocol) GetFriendUserProfiles(handler func(err error, client *nex.Client, callID uint32, pids []uint64) uint32) {
+func (protocol *Protocol) GetFriendUserProfiles(handler func(err error, packet nex.PacketInterface, callID uint32, pids []uint64) uint32) {
 	protocol.getFriendUserProfilesHandler = handler
 }
 
@@ -22,7 +22,6 @@ func (protocol *Protocol) handleGetFriendUserProfiles(packet nex.PacketInterface
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -32,7 +31,7 @@ func (protocol *Protocol) handleGetFriendUserProfiles(packet nex.PacketInterface
 
 	pids, err := parametersStream.ReadListUInt64LE()
 	if err != nil {
-		errorCode = protocol.getFriendUserProfilesHandler(fmt.Errorf("Failed to read pids from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.getFriendUserProfilesHandler(fmt.Errorf("Failed to read pids from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -40,7 +39,7 @@ func (protocol *Protocol) handleGetFriendUserProfiles(packet nex.PacketInterface
 		return
 	}
 
-	errorCode = protocol.getFriendUserProfilesHandler(nil, client, callID, pids)
+	errorCode = protocol.getFriendUserProfilesHandler(nil, packet, callID, pids)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

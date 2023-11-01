@@ -7,7 +7,7 @@ import (
 )
 
 // GetCommunityCompetitionByID sets the GetCommunityCompetitionByID handler function
-func (protocol *Protocol) GetCommunityCompetitionByID(handler func(err error, client *nex.Client, callID uint32, packetPayload []byte) uint32) {
+func (protocol *Protocol) GetCommunityCompetitionByID(handler func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) uint32) {
 	protocol.getCommunityCompetitionByIDHandler = handler
 }
 
@@ -22,12 +22,11 @@ func (protocol *Protocol) handleGetCommunityCompetitionByID(packet nex.PacketInt
 
 	globals.Logger.Warning("MatchmakeExtensionSuperSmashBros4::GetCommunityCompetitionByID STUBBED")
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
 
-	errorCode = protocol.getCommunityCompetitionByIDHandler(nil, client, callID, packet.Payload())
+	errorCode = protocol.getCommunityCompetitionByIDHandler(nil, packet, callID, packet.Payload())
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

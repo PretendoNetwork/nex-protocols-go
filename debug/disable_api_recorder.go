@@ -7,7 +7,7 @@ import (
 )
 
 // DisableAPIRecorder sets the DisableAPIRecorder handler function
-func (protocol *Protocol) DisableAPIRecorder(handler func(err error, client *nex.Client, callID uint32) uint32) {
+func (protocol *Protocol) DisableAPIRecorder(handler func(err error, packet nex.PacketInterface, callID uint32) uint32) {
 	protocol.disableAPIRecorderHandler = handler
 }
 
@@ -20,12 +20,11 @@ func (protocol *Protocol) handleDisableAPIRecorder(packet nex.PacketInterface) {
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
 
-	errorCode = protocol.disableAPIRecorderHandler(nil, client, callID)
+	errorCode = protocol.disableAPIRecorderHandler(nil, packet, callID)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

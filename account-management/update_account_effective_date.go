@@ -9,7 +9,7 @@ import (
 )
 
 // UpdateAccountEffectiveDate sets the UpdateAccountEffectiveDate handler function
-func (protocol *Protocol) UpdateAccountEffectiveDate(handler func(err error, client *nex.Client, callID uint32, idPrincipal uint32, dtEffectiveFrom *nex.DateTime, strNotEffectiveMessage string) uint32) {
+func (protocol *Protocol) UpdateAccountEffectiveDate(handler func(err error, packet nex.PacketInterface, callID uint32, idPrincipal uint32, dtEffectiveFrom *nex.DateTime, strNotEffectiveMessage string) uint32) {
 	protocol.updateAccountEffectiveDateHandler = handler
 }
 
@@ -22,7 +22,6 @@ func (protocol *Protocol) handleUpdateAccountEffectiveDate(packet nex.PacketInte
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -32,7 +31,7 @@ func (protocol *Protocol) handleUpdateAccountEffectiveDate(packet nex.PacketInte
 
 	idPrincipal, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.updateAccountEffectiveDateHandler(fmt.Errorf("Failed to read idPrincipal from parameters. %s", err.Error()), client, callID, 0, nil, "")
+		errorCode = protocol.updateAccountEffectiveDateHandler(fmt.Errorf("Failed to read idPrincipal from parameters. %s", err.Error()), packet, callID, 0, nil, "")
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -42,7 +41,7 @@ func (protocol *Protocol) handleUpdateAccountEffectiveDate(packet nex.PacketInte
 
 	dtEffectiveFrom, err := parametersStream.ReadDateTime()
 	if err != nil {
-		errorCode = protocol.updateAccountEffectiveDateHandler(fmt.Errorf("Failed to read dtEffectiveFrom from parameters. %s", err.Error()), client, callID, 0, nil, "")
+		errorCode = protocol.updateAccountEffectiveDateHandler(fmt.Errorf("Failed to read dtEffectiveFrom from parameters. %s", err.Error()), packet, callID, 0, nil, "")
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -52,7 +51,7 @@ func (protocol *Protocol) handleUpdateAccountEffectiveDate(packet nex.PacketInte
 
 	strNotEffectiveMessage, err := parametersStream.ReadString()
 	if err != nil {
-		errorCode = protocol.updateAccountEffectiveDateHandler(fmt.Errorf("Failed to read strNotEffectiveMessage from parameters. %s", err.Error()), client, callID, 0, nil, "")
+		errorCode = protocol.updateAccountEffectiveDateHandler(fmt.Errorf("Failed to read strNotEffectiveMessage from parameters. %s", err.Error()), packet, callID, 0, nil, "")
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -60,7 +59,7 @@ func (protocol *Protocol) handleUpdateAccountEffectiveDate(packet nex.PacketInte
 		return
 	}
 
-	errorCode = protocol.updateAccountEffectiveDateHandler(nil, client, callID, idPrincipal, dtEffectiveFrom, strNotEffectiveMessage)
+	errorCode = protocol.updateAccountEffectiveDateHandler(nil, packet, callID, idPrincipal, dtEffectiveFrom, strNotEffectiveMessage)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

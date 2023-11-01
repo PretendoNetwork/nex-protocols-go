@@ -7,7 +7,7 @@ import (
 )
 
 // RetrieveAccount sets the RetrieveAccount handler function
-func (protocol *Protocol) RetrieveAccount(handler func(err error, client *nex.Client, callID uint32) uint32) {
+func (protocol *Protocol) RetrieveAccount(handler func(err error, packet nex.PacketInterface, callID uint32) uint32) {
 	protocol.retrieveAccountHandler = handler
 }
 
@@ -20,12 +20,11 @@ func (protocol *Protocol) handleRetrieveAccount(packet nex.PacketInterface) {
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
 
-	errorCode = protocol.retrieveAccountHandler(nil, client, callID)
+	errorCode = protocol.retrieveAccountHandler(nil, packet, callID)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

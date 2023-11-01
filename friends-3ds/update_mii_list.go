@@ -10,7 +10,7 @@ import (
 )
 
 // UpdateMiiList sets the UpdateMiiList handler function
-func (protocol *Protocol) UpdateMiiList(handler func(err error, client *nex.Client, callID uint32, miiList *friends_3ds_types.MiiList) uint32) {
+func (protocol *Protocol) UpdateMiiList(handler func(err error, packet nex.PacketInterface, callID uint32, miiList *friends_3ds_types.MiiList) uint32) {
 	protocol.updateMiiListHandler = handler
 }
 
@@ -23,7 +23,6 @@ func (protocol *Protocol) handleUpdateMiiList(packet nex.PacketInterface) {
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -33,7 +32,7 @@ func (protocol *Protocol) handleUpdateMiiList(packet nex.PacketInterface) {
 
 	miiList, err := parametersStream.ReadStructure(friends_3ds_types.NewMiiList())
 	if err != nil {
-		errorCode = protocol.updateMiiListHandler(fmt.Errorf("Failed to read miiList from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.updateMiiListHandler(fmt.Errorf("Failed to read miiList from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -41,7 +40,7 @@ func (protocol *Protocol) handleUpdateMiiList(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.updateMiiListHandler(nil, client, callID, miiList.(*friends_3ds_types.MiiList))
+	errorCode = protocol.updateMiiListHandler(nil, packet, callID, miiList.(*friends_3ds_types.MiiList))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

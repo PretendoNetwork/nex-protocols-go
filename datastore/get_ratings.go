@@ -9,7 +9,7 @@ import (
 )
 
 // GetRatings sets the GetRatings handler function
-func (protocol *Protocol) GetRatings(handler func(err error, client *nex.Client, callID uint32, dataIDs []uint64, accessPassword uint64) uint32) {
+func (protocol *Protocol) GetRatings(handler func(err error, packet nex.PacketInterface, callID uint32, dataIDs []uint64, accessPassword uint64) uint32) {
 	protocol.getRatingsHandler = handler
 }
 
@@ -22,7 +22,6 @@ func (protocol *Protocol) handleGetRatings(packet nex.PacketInterface) {
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -32,7 +31,7 @@ func (protocol *Protocol) handleGetRatings(packet nex.PacketInterface) {
 
 	dataIDs, err := parametersStream.ReadListUInt64LE()
 	if err != nil {
-		errorCode = protocol.getRatingsHandler(fmt.Errorf("Failed to read dataIDs from parameters. %s", err.Error()), client, callID, nil, 0)
+		errorCode = protocol.getRatingsHandler(fmt.Errorf("Failed to read dataIDs from parameters. %s", err.Error()), packet, callID, nil, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -42,7 +41,7 @@ func (protocol *Protocol) handleGetRatings(packet nex.PacketInterface) {
 
 	accessPassword, err := parametersStream.ReadUInt64LE()
 	if err != nil {
-		errorCode = protocol.getRatingsHandler(fmt.Errorf("Failed to read accessPassword from parameters. %s", err.Error()), client, callID, nil, 0)
+		errorCode = protocol.getRatingsHandler(fmt.Errorf("Failed to read accessPassword from parameters. %s", err.Error()), packet, callID, nil, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -50,7 +49,7 @@ func (protocol *Protocol) handleGetRatings(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.getRatingsHandler(nil, client, callID, dataIDs, accessPassword)
+	errorCode = protocol.getRatingsHandler(nil, packet, callID, dataIDs, accessPassword)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

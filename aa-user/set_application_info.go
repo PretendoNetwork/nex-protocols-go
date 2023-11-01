@@ -10,7 +10,7 @@ import (
 )
 
 // SetApplicationInfo sets the SetApplicationInfo handler function
-func (protocol *Protocol) SetApplicationInfo(handler func(err error, client *nex.Client, callID uint32, applicationInfo []*aauser_types.ApplicationInfo) uint32) {
+func (protocol *Protocol) SetApplicationInfo(handler func(err error, packet nex.PacketInterface, callID uint32, applicationInfo []*aauser_types.ApplicationInfo) uint32) {
 	protocol.setApplicationInfoHandler = handler
 }
 
@@ -23,7 +23,6 @@ func (protocol *Protocol) handleSetApplicationInfo(packet nex.PacketInterface) {
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -33,7 +32,7 @@ func (protocol *Protocol) handleSetApplicationInfo(packet nex.PacketInterface) {
 
 	applicationInfo, err := parametersStream.ReadListStructure(aauser_types.NewApplicationInfo())
 	if err != nil {
-		errorCode = protocol.setApplicationInfoHandler(fmt.Errorf("Failed to read applicationInfo from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.setApplicationInfoHandler(fmt.Errorf("Failed to read applicationInfo from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -41,7 +40,7 @@ func (protocol *Protocol) handleSetApplicationInfo(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.setApplicationInfoHandler(nil, client, callID, applicationInfo.([]*aauser_types.ApplicationInfo))
+	errorCode = protocol.setApplicationInfoHandler(nil, packet, callID, applicationInfo.([]*aauser_types.ApplicationInfo))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

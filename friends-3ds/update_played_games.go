@@ -10,7 +10,7 @@ import (
 )
 
 // UpdatePlayedGames sets the UpdatePlayedGames handler function
-func (protocol *Protocol) UpdatePlayedGames(handler func(err error, client *nex.Client, callID uint32, playedGames []*friends_3ds_types.PlayedGame) uint32) {
+func (protocol *Protocol) UpdatePlayedGames(handler func(err error, packet nex.PacketInterface, callID uint32, playedGames []*friends_3ds_types.PlayedGame) uint32) {
 	protocol.updatePlayedGamesHandler = handler
 }
 
@@ -23,7 +23,6 @@ func (protocol *Protocol) handleUpdatePlayedGames(packet nex.PacketInterface) {
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -33,7 +32,7 @@ func (protocol *Protocol) handleUpdatePlayedGames(packet nex.PacketInterface) {
 
 	playedGames, err := parametersStream.ReadListStructure(friends_3ds_types.NewPlayedGame())
 	if err != nil {
-		errorCode = protocol.updatePlayedGamesHandler(fmt.Errorf("Failed to read playedGames from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.updatePlayedGamesHandler(fmt.Errorf("Failed to read playedGames from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -41,7 +40,7 @@ func (protocol *Protocol) handleUpdatePlayedGames(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.updatePlayedGamesHandler(nil, client, callID, playedGames.([]*friends_3ds_types.PlayedGame))
+	errorCode = protocol.updatePlayedGamesHandler(nil, packet, callID, playedGames.([]*friends_3ds_types.PlayedGame))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

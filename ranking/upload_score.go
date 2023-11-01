@@ -10,7 +10,7 @@ import (
 )
 
 // UploadScore sets the UploadScore handler function
-func (protocol *Protocol) UploadScore(handler func(err error, client *nex.Client, callID uint32, scoreData *ranking_types.RankingScoreData, uniqueID uint64) uint32) {
+func (protocol *Protocol) UploadScore(handler func(err error, packet nex.PacketInterface, callID uint32, scoreData *ranking_types.RankingScoreData, uniqueID uint64) uint32) {
 	protocol.uploadScoreHandler = handler
 }
 
@@ -23,7 +23,6 @@ func (protocol *Protocol) handleUploadScore(packet nex.PacketInterface) {
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -33,7 +32,7 @@ func (protocol *Protocol) handleUploadScore(packet nex.PacketInterface) {
 
 	scoreData, err := parametersStream.ReadStructure(ranking_types.NewRankingScoreData())
 	if err != nil {
-		errorCode = protocol.uploadScoreHandler(fmt.Errorf("Failed to read scoreData from parameters. %s", err.Error()), client, callID, nil, 0)
+		errorCode = protocol.uploadScoreHandler(fmt.Errorf("Failed to read scoreData from parameters. %s", err.Error()), packet, callID, nil, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -43,7 +42,7 @@ func (protocol *Protocol) handleUploadScore(packet nex.PacketInterface) {
 
 	uniqueID, err := parametersStream.ReadUInt64LE()
 	if err != nil {
-		errorCode = protocol.uploadScoreHandler(fmt.Errorf("Failed to read uniqueID from parameters. %s", err.Error()), client, callID, nil, 0)
+		errorCode = protocol.uploadScoreHandler(fmt.Errorf("Failed to read uniqueID from parameters. %s", err.Error()), packet, callID, nil, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -51,7 +50,7 @@ func (protocol *Protocol) handleUploadScore(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.uploadScoreHandler(nil, client, callID, scoreData.(*ranking_types.RankingScoreData), uniqueID)
+	errorCode = protocol.uploadScoreHandler(nil, packet, callID, scoreData.(*ranking_types.RankingScoreData), uniqueID)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

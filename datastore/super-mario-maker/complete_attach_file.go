@@ -10,7 +10,7 @@ import (
 )
 
 // CompleteAttachFile sets the CompleteAttachFile handler function
-func (protocol *Protocol) CompleteAttachFile(handler func(err error, client *nex.Client, callID uint32, param *datastore_types.DataStoreCompletePostParam) uint32) {
+func (protocol *Protocol) CompleteAttachFile(handler func(err error, packet nex.PacketInterface, callID uint32, param *datastore_types.DataStoreCompletePostParam) uint32) {
 	protocol.completeAttachFileHandler = handler
 }
 
@@ -23,7 +23,6 @@ func (protocol *Protocol) handleCompleteAttachFile(packet nex.PacketInterface) {
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -33,7 +32,7 @@ func (protocol *Protocol) handleCompleteAttachFile(packet nex.PacketInterface) {
 
 	param, err := parametersStream.ReadStructure(datastore_types.NewDataStoreCompletePostParam())
 	if err != nil {
-		errorCode = protocol.completeAttachFileHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.completeAttachFileHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -41,7 +40,7 @@ func (protocol *Protocol) handleCompleteAttachFile(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.completeAttachFileHandler(nil, client, callID, param.(*datastore_types.DataStoreCompletePostParam))
+	errorCode = protocol.completeAttachFileHandler(nil, packet, callID, param.(*datastore_types.DataStoreCompletePostParam))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

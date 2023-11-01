@@ -10,7 +10,7 @@ import (
 )
 
 // StartRound sets the StartRound handler function
-func (protocol *Protocol) StartRound(handler func(err error, client *nex.Client, callID uint32, param *matchmake_referee_types.MatchmakeRefereeStartRoundParam) uint32) {
+func (protocol *Protocol) StartRound(handler func(err error, packet nex.PacketInterface, callID uint32, param *matchmake_referee_types.MatchmakeRefereeStartRoundParam) uint32) {
 	protocol.startRoundHandler = handler
 }
 
@@ -23,7 +23,6 @@ func (protocol *Protocol) handleStartRound(packet nex.PacketInterface) {
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -33,7 +32,7 @@ func (protocol *Protocol) handleStartRound(packet nex.PacketInterface) {
 
 	param, err := parametersStream.ReadStructure(matchmake_referee_types.NewMatchmakeRefereeStartRoundParam())
 	if err != nil {
-		errorCode = protocol.startRoundHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.startRoundHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -41,7 +40,7 @@ func (protocol *Protocol) handleStartRound(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.startRoundHandler(nil, client, callID, param.(*matchmake_referee_types.MatchmakeRefereeStartRoundParam))
+	errorCode = protocol.startRoundHandler(nil, packet, callID, param.(*matchmake_referee_types.MatchmakeRefereeStartRoundParam))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

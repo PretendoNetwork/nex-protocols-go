@@ -36,13 +36,13 @@ const (
 // Protocol handles the Debug protocol
 type Protocol struct {
 	Server                                  *nex.Server
-	enableAPIRecorderHandler                func(err error, client *nex.Client, callID uint32) uint32
-	disableAPIRecorderHandler               func(err error, client *nex.Client, callID uint32) uint32
-	isAPIRecorderEnabledHandler             func(err error, client *nex.Client, callID uint32) uint32
-	getAPICallsHandler                      func(err error, client *nex.Client, callID uint32, pids []uint32, unknown *nex.DateTime, unknown2 *nex.DateTime) uint32
-	setExcludeJoinedMatchmakeSessionHandler func(err error, client *nex.Client, callID uint32, packetPayload []byte) uint32 // TODO - Unknown request/response format
-	getExcludeJoinedMatchmakeSessionHandler func(err error, client *nex.Client, callID uint32, packetPayload []byte) uint32 // TODO - Unknown request/response format
-	getAPICallSummaryHandler                func(err error, client *nex.Client, callID uint32, packetPayload []byte) uint32 // TODO - Unknown request/response format
+	enableAPIRecorderHandler                func(err error, packet nex.PacketInterface, callID uint32) uint32
+	disableAPIRecorderHandler               func(err error, packet nex.PacketInterface, callID uint32) uint32
+	isAPIRecorderEnabledHandler             func(err error, packet nex.PacketInterface, callID uint32) uint32
+	getAPICallsHandler                      func(err error, packet nex.PacketInterface, callID uint32, pids []uint32, unknown *nex.DateTime, unknown2 *nex.DateTime) uint32
+	setExcludeJoinedMatchmakeSessionHandler func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) uint32 // TODO - Unknown request/response format
+	getExcludeJoinedMatchmakeSessionHandler func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) uint32 // TODO - Unknown request/response format
+	getAPICallSummaryHandler                func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) uint32 // TODO - Unknown request/response format
 }
 
 // Setup initializes the protocol

@@ -9,7 +9,7 @@ import (
 )
 
 // DeleteCustomRanking sets the DeleteCustomRanking handler function
-func (protocol *Protocol) DeleteCustomRanking(handler func(err error, client *nex.Client, callID uint32, dataIDList []uint64) uint32) {
+func (protocol *Protocol) DeleteCustomRanking(handler func(err error, packet nex.PacketInterface, callID uint32, dataIDList []uint64) uint32) {
 	protocol.deleteCustomRankingHandler = handler
 }
 
@@ -22,7 +22,6 @@ func (protocol *Protocol) handleDeleteCustomRanking(packet nex.PacketInterface) 
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -32,7 +31,7 @@ func (protocol *Protocol) handleDeleteCustomRanking(packet nex.PacketInterface) 
 
 	dataIDList, err := parametersStream.ReadListUInt64LE()
 	if err != nil {
-		errorCode = protocol.deleteCustomRankingHandler(fmt.Errorf("Failed to read dataIDList from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.deleteCustomRankingHandler(fmt.Errorf("Failed to read dataIDList from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -40,7 +39,7 @@ func (protocol *Protocol) handleDeleteCustomRanking(packet nex.PacketInterface) 
 		return
 	}
 
-	errorCode = protocol.deleteCustomRankingHandler(nil, client, callID, dataIDList)
+	errorCode = protocol.deleteCustomRankingHandler(nil, packet, callID, dataIDList)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

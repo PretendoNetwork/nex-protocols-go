@@ -10,7 +10,7 @@ import (
 )
 
 // ChangeMeta sets the ChangeMeta handler function
-func (protocol *Protocol) ChangeMeta(handler func(err error, client *nex.Client, callID uint32, param *datastore_types.DataStoreChangeMetaParam) uint32) {
+func (protocol *Protocol) ChangeMeta(handler func(err error, packet nex.PacketInterface, callID uint32, param *datastore_types.DataStoreChangeMetaParam) uint32) {
 	protocol.changeMetaHandler = handler
 }
 
@@ -23,7 +23,6 @@ func (protocol *Protocol) handleChangeMeta(packet nex.PacketInterface) {
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -33,7 +32,7 @@ func (protocol *Protocol) handleChangeMeta(packet nex.PacketInterface) {
 
 	param, err := parametersStream.ReadStructure(datastore_types.NewDataStoreChangeMetaParam())
 	if err != nil {
-		errorCode = protocol.changeMetaHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.changeMetaHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -41,7 +40,7 @@ func (protocol *Protocol) handleChangeMeta(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.changeMetaHandler(nil, client, callID, param.(*datastore_types.DataStoreChangeMetaParam))
+	errorCode = protocol.changeMetaHandler(nil, packet, callID, param.(*datastore_types.DataStoreChangeMetaParam))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

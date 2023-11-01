@@ -9,7 +9,7 @@ import (
 )
 
 // RemoveFromBlockList sets the RemoveFromBlockList handler function
-func (protocol *Protocol) RemoveFromBlockList(handler func(err error, client *nex.Client, callID uint32, lstPrincipalID []uint32) uint32) {
+func (protocol *Protocol) RemoveFromBlockList(handler func(err error, packet nex.PacketInterface, callID uint32, lstPrincipalID []uint32) uint32) {
 	protocol.removeFromBlockListHandler = handler
 }
 
@@ -22,7 +22,6 @@ func (protocol *Protocol) handleRemoveFromBlockList(packet nex.PacketInterface) 
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -32,7 +31,7 @@ func (protocol *Protocol) handleRemoveFromBlockList(packet nex.PacketInterface) 
 
 	lstPrincipalID, err := parametersStream.ReadListUInt32LE()
 	if err != nil {
-		errorCode = protocol.removeFromBlockListHandler(fmt.Errorf("Failed to read lstPrincipalID from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.removeFromBlockListHandler(fmt.Errorf("Failed to read lstPrincipalID from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -40,7 +39,7 @@ func (protocol *Protocol) handleRemoveFromBlockList(packet nex.PacketInterface) 
 		return
 	}
 
-	errorCode = protocol.removeFromBlockListHandler(nil, client, callID, lstPrincipalID)
+	errorCode = protocol.removeFromBlockListHandler(nil, packet, callID, lstPrincipalID)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

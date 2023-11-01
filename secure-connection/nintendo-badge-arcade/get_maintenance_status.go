@@ -7,7 +7,7 @@ import (
 )
 
 // GetMaintenanceStatus sets the GetMaintenanceStatus function
-func (protocol *Protocol) GetMaintenanceStatus(handler func(err error, client *nex.Client, callID uint32) uint32) {
+func (protocol *Protocol) GetMaintenanceStatus(handler func(err error, packet nex.PacketInterface, callID uint32) uint32) {
 	protocol.getMaintenanceStatusHandler = handler
 }
 
@@ -20,12 +20,11 @@ func (protocol *Protocol) handleGetMaintenanceStatus(packet nex.PacketInterface)
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
 
-	errorCode = protocol.getMaintenanceStatusHandler(nil, client, callID)
+	errorCode = protocol.getMaintenanceStatusHandler(nil, packet, callID)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

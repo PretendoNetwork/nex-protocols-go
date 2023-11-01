@@ -10,7 +10,7 @@ import (
 )
 
 // DownloadMyPokemon sets the DownloadMyPokemon handler function
-func (protocol *Protocol) DownloadMyPokemon(handler func(err error, client *nex.Client, callID uint32, param *datastore_pokemon_gen6_types.GlobalTradeStationDownloadMyPokemonParam) uint32) {
+func (protocol *Protocol) DownloadMyPokemon(handler func(err error, packet nex.PacketInterface, callID uint32, param *datastore_pokemon_gen6_types.GlobalTradeStationDownloadMyPokemonParam) uint32) {
 	protocol.downloadMyPokemonHandler = handler
 }
 
@@ -23,7 +23,6 @@ func (protocol *Protocol) handleDownloadMyPokemon(packet nex.PacketInterface) {
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -33,7 +32,7 @@ func (protocol *Protocol) handleDownloadMyPokemon(packet nex.PacketInterface) {
 
 	param, err := parametersStream.ReadStructure(datastore_pokemon_gen6_types.NewGlobalTradeStationDownloadMyPokemonParam())
 	if err != nil {
-		errorCode = protocol.downloadMyPokemonHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.downloadMyPokemonHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -41,7 +40,7 @@ func (protocol *Protocol) handleDownloadMyPokemon(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.downloadMyPokemonHandler(nil, client, callID, param.(*datastore_pokemon_gen6_types.GlobalTradeStationDownloadMyPokemonParam))
+	errorCode = protocol.downloadMyPokemonHandler(nil, packet, callID, param.(*datastore_pokemon_gen6_types.GlobalTradeStationDownloadMyPokemonParam))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

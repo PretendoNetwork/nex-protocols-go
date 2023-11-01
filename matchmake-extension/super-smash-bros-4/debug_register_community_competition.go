@@ -7,7 +7,7 @@ import (
 )
 
 // DebugRegisterCommunityCompetition sets the DebugRegisterCommunityCompetition handler function
-func (protocol *Protocol) DebugRegisterCommunityCompetition(handler func(err error, client *nex.Client, callID uint32, packetPayload []byte) uint32) {
+func (protocol *Protocol) DebugRegisterCommunityCompetition(handler func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) uint32) {
 	protocol.debugRegisterCommunityCompetitionHandler = handler
 }
 
@@ -22,12 +22,11 @@ func (protocol *Protocol) handleDebugRegisterCommunityCompetition(packet nex.Pac
 
 	globals.Logger.Warning("MatchmakeExtensionSuperSmashBros4::DebugRegisterCommunityCompetition STUBBED")
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
 
-	errorCode = protocol.debugRegisterCommunityCompetitionHandler(nil, client, callID, packet.Payload())
+	errorCode = protocol.debugRegisterCommunityCompetitionHandler(nil, packet, callID, packet.Payload())
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

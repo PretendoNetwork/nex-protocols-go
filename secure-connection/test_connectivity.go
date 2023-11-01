@@ -7,7 +7,7 @@ import (
 )
 
 // TestConnectivity sets the TestConnectivity handler function
-func (protocol *Protocol) TestConnectivity(handler func(err error, client *nex.Client, callID uint32) uint32) {
+func (protocol *Protocol) TestConnectivity(handler func(err error, packet nex.PacketInterface, callID uint32) uint32) {
 	protocol.testConnectivityHandler = handler
 }
 
@@ -20,12 +20,11 @@ func (protocol *Protocol) handleTestConnectivity(packet nex.PacketInterface) {
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
 
-	errorCode = protocol.testConnectivityHandler(nil, client, callID)
+	errorCode = protocol.testConnectivityHandler(nil, packet, callID)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

@@ -10,7 +10,7 @@ import (
 )
 
 // SearchReplay sets the SearchReplay handler function
-func (protocol *Protocol) SearchReplay(handler func(err error, client *nex.Client, callID uint32, param *datastore_super_smash_bros_4_types.DataStoreSearchReplayParam) uint32) {
+func (protocol *Protocol) SearchReplay(handler func(err error, packet nex.PacketInterface, callID uint32, param *datastore_super_smash_bros_4_types.DataStoreSearchReplayParam) uint32) {
 	protocol.searchReplayHandler = handler
 }
 
@@ -23,7 +23,6 @@ func (protocol *Protocol) handleSearchReplay(packet nex.PacketInterface) {
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -33,7 +32,7 @@ func (protocol *Protocol) handleSearchReplay(packet nex.PacketInterface) {
 
 	param, err := parametersStream.ReadStructure(datastore_super_smash_bros_4_types.NewDataStoreSearchReplayParam())
 	if err != nil {
-		errorCode = protocol.searchReplayHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.searchReplayHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -41,7 +40,7 @@ func (protocol *Protocol) handleSearchReplay(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.searchReplayHandler(nil, client, callID, param.(*datastore_super_smash_bros_4_types.DataStoreSearchReplayParam))
+	errorCode = protocol.searchReplayHandler(nil, packet, callID, param.(*datastore_super_smash_bros_4_types.DataStoreSearchReplayParam))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

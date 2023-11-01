@@ -7,7 +7,7 @@ import (
 )
 
 // GetNotSummarizedRound sets the GetNotSummarizedRound handler function
-func (protocol *Protocol) GetNotSummarizedRound(handler func(err error, client *nex.Client, callID uint32) uint32) {
+func (protocol *Protocol) GetNotSummarizedRound(handler func(err error, packet nex.PacketInterface, callID uint32) uint32) {
 	protocol.getNotSummarizedRoundHandler = handler
 }
 
@@ -20,12 +20,11 @@ func (protocol *Protocol) handleGetNotSummarizedRound(packet nex.PacketInterface
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
 
-	errorCode = protocol.getNotSummarizedRoundHandler(nil, client, callID)
+	errorCode = protocol.getNotSummarizedRoundHandler(nil, packet, callID)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

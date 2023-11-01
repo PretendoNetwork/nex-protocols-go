@@ -9,7 +9,7 @@ import (
 )
 
 // AutoMatchmakePostpone sets the AutoMatchmakePostpone handler function
-func (protocol *Protocol) AutoMatchmakePostpone(handler func(err error, client *nex.Client, callID uint32, anyGathering *nex.DataHolder, strMessage string) uint32) {
+func (protocol *Protocol) AutoMatchmakePostpone(handler func(err error, packet nex.PacketInterface, callID uint32, anyGathering *nex.DataHolder, strMessage string) uint32) {
 	protocol.autoMatchmakePostponeHandler = handler
 }
 
@@ -22,7 +22,6 @@ func (protocol *Protocol) handleAutoMatchmakePostpone(packet nex.PacketInterface
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -32,7 +31,7 @@ func (protocol *Protocol) handleAutoMatchmakePostpone(packet nex.PacketInterface
 
 	anyGathering, err := parametersStream.ReadDataHolder()
 	if err != nil {
-		errorCode = protocol.autoMatchmakePostponeHandler(fmt.Errorf("Failed to read anyGathering from parameters. %s", err.Error()), client, callID, nil, "")
+		errorCode = protocol.autoMatchmakePostponeHandler(fmt.Errorf("Failed to read anyGathering from parameters. %s", err.Error()), packet, callID, nil, "")
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -42,7 +41,7 @@ func (protocol *Protocol) handleAutoMatchmakePostpone(packet nex.PacketInterface
 
 	strMessage, err := parametersStream.ReadString()
 	if err != nil {
-		errorCode = protocol.autoMatchmakePostponeHandler(fmt.Errorf("Failed to read strMessage from parameters. %s", err.Error()), client, callID, nil, "")
+		errorCode = protocol.autoMatchmakePostponeHandler(fmt.Errorf("Failed to read strMessage from parameters. %s", err.Error()), packet, callID, nil, "")
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -50,7 +49,7 @@ func (protocol *Protocol) handleAutoMatchmakePostpone(packet nex.PacketInterface
 		return
 	}
 
-	errorCode = protocol.autoMatchmakePostponeHandler(nil, client, callID, anyGathering, strMessage)
+	errorCode = protocol.autoMatchmakePostponeHandler(nil, packet, callID, anyGathering, strMessage)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

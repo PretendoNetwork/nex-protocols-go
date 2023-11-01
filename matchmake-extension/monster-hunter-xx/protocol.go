@@ -46,11 +46,11 @@ type matchmakeExtensionProtocol = matchmake_extension.Protocol
 type Protocol struct {
 	Server *nex.Server
 	matchmakeExtensionProtocol
-	updateFriendUserProfileHandler func(err error, client *nex.Client, callID uint32, param *matchmake_extension_monster_hunter_x_x_types.FriendUserParam) uint32
-	getFriendUserProfilesHandler   func(err error, client *nex.Client, callID uint32, pids []uint64) uint32
-	addFriendsHandler              func(err error, client *nex.Client, callID uint32, pids []uint64) uint32
-	removeFriendHandler            func(err error, client *nex.Client, callID uint32, pid uint64) uint32
-	findCommunityByOwnerHandler    func(err error, client *nex.Client, callID uint32, id uint64, resultRange *nex.ResultRange) uint32
+	updateFriendUserProfileHandler func(err error, packet nex.PacketInterface, callID uint32, param *matchmake_extension_monster_hunter_x_x_types.FriendUserParam) uint32
+	getFriendUserProfilesHandler   func(err error, packet nex.PacketInterface, callID uint32, pids []uint64) uint32
+	addFriendsHandler              func(err error, packet nex.PacketInterface, callID uint32, pids []uint64) uint32
+	removeFriendHandler            func(err error, packet nex.PacketInterface, callID uint32, pid uint64) uint32
+	findCommunityByOwnerHandler    func(err error, packet nex.PacketInterface, callID uint32, id uint64, resultRange *nex.ResultRange) uint32
 }
 
 // Setup initializes the protocol

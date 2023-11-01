@@ -9,7 +9,7 @@ import (
 )
 
 // PerpetuateObject sets the PerpetuateObject handler function
-func (protocol *Protocol) PerpetuateObject(handler func(err error, client *nex.Client, callID uint32, persistenceSlotID uint16, dataID uint64, deleteLastObject bool) uint32) {
+func (protocol *Protocol) PerpetuateObject(handler func(err error, packet nex.PacketInterface, callID uint32, persistenceSlotID uint16, dataID uint64, deleteLastObject bool) uint32) {
 	protocol.perpetuateObjectHandler = handler
 }
 
@@ -22,7 +22,6 @@ func (protocol *Protocol) handlePerpetuateObject(packet nex.PacketInterface) {
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -32,7 +31,7 @@ func (protocol *Protocol) handlePerpetuateObject(packet nex.PacketInterface) {
 
 	persistenceSlotID, err := parametersStream.ReadUInt16LE()
 	if err != nil {
-		errorCode = protocol.perpetuateObjectHandler(fmt.Errorf("Failed to read persistenceSlotID from parameters. %s", err.Error()), client, callID, 0, 0, false)
+		errorCode = protocol.perpetuateObjectHandler(fmt.Errorf("Failed to read persistenceSlotID from parameters. %s", err.Error()), packet, callID, 0, 0, false)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -42,7 +41,7 @@ func (protocol *Protocol) handlePerpetuateObject(packet nex.PacketInterface) {
 
 	dataID, err := parametersStream.ReadUInt64LE()
 	if err != nil {
-		errorCode = protocol.perpetuateObjectHandler(fmt.Errorf("Failed to read dataID from parameters. %s", err.Error()), client, callID, 0, 0, false)
+		errorCode = protocol.perpetuateObjectHandler(fmt.Errorf("Failed to read dataID from parameters. %s", err.Error()), packet, callID, 0, 0, false)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -52,7 +51,7 @@ func (protocol *Protocol) handlePerpetuateObject(packet nex.PacketInterface) {
 
 	deleteLastObject, err := parametersStream.ReadBool()
 	if err != nil {
-		errorCode = protocol.perpetuateObjectHandler(fmt.Errorf("Failed to read deleteLastObject from parameters. %s", err.Error()), client, callID, 0, 0, false)
+		errorCode = protocol.perpetuateObjectHandler(fmt.Errorf("Failed to read deleteLastObject from parameters. %s", err.Error()), packet, callID, 0, 0, false)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -60,7 +59,7 @@ func (protocol *Protocol) handlePerpetuateObject(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.perpetuateObjectHandler(nil, client, callID, persistenceSlotID, dataID, deleteLastObject)
+	errorCode = protocol.perpetuateObjectHandler(nil, packet, callID, persistenceSlotID, dataID, deleteLastObject)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

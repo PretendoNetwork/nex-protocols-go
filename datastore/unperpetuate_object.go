@@ -9,7 +9,7 @@ import (
 )
 
 // UnperpetuateObject sets the UnperpetuateObject handler function
-func (protocol *Protocol) UnperpetuateObject(handler func(err error, client *nex.Client, callID uint32, persistenceSlotID uint16, deleteLastObject bool) uint32) {
+func (protocol *Protocol) UnperpetuateObject(handler func(err error, packet nex.PacketInterface, callID uint32, persistenceSlotID uint16, deleteLastObject bool) uint32) {
 	protocol.unperpetuateObjectHandler = handler
 }
 
@@ -22,7 +22,6 @@ func (protocol *Protocol) handleUnperpetuateObject(packet nex.PacketInterface) {
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -32,7 +31,7 @@ func (protocol *Protocol) handleUnperpetuateObject(packet nex.PacketInterface) {
 
 	persistenceSlotID, err := parametersStream.ReadUInt16LE()
 	if err != nil {
-		errorCode = protocol.unperpetuateObjectHandler(fmt.Errorf("Failed to read persistenceSlotID from parameters. %s", err.Error()), client, callID, 0, false)
+		errorCode = protocol.unperpetuateObjectHandler(fmt.Errorf("Failed to read persistenceSlotID from parameters. %s", err.Error()), packet, callID, 0, false)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -42,7 +41,7 @@ func (protocol *Protocol) handleUnperpetuateObject(packet nex.PacketInterface) {
 
 	deleteLastObject, err := parametersStream.ReadBool()
 	if err != nil {
-		errorCode = protocol.unperpetuateObjectHandler(fmt.Errorf("Failed to read deleteLastObject from parameters. %s", err.Error()), client, callID, 0, false)
+		errorCode = protocol.unperpetuateObjectHandler(fmt.Errorf("Failed to read deleteLastObject from parameters. %s", err.Error()), packet, callID, 0, false)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -50,7 +49,7 @@ func (protocol *Protocol) handleUnperpetuateObject(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.unperpetuateObjectHandler(nil, client, callID, persistenceSlotID, deleteLastObject)
+	errorCode = protocol.unperpetuateObjectHandler(nil, packet, callID, persistenceSlotID, deleteLastObject)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

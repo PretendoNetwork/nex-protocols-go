@@ -9,7 +9,7 @@ import (
 )
 
 // GetSimpleCommunity sets the GetSimpleCommunity handler function
-func (protocol *Protocol) GetSimpleCommunity(handler func(err error, client *nex.Client, callID uint32, gatheringIDList []uint32) uint32) {
+func (protocol *Protocol) GetSimpleCommunity(handler func(err error, packet nex.PacketInterface, callID uint32, gatheringIDList []uint32) uint32) {
 	protocol.getSimpleCommunityHandler = handler
 }
 
@@ -22,7 +22,6 @@ func (protocol *Protocol) handleGetSimpleCommunity(packet nex.PacketInterface) {
 		return
 	}
 
-	client := packet.Sender()
 	request := packet.RMCRequest()
 
 	callID := request.CallID()
@@ -32,7 +31,7 @@ func (protocol *Protocol) handleGetSimpleCommunity(packet nex.PacketInterface) {
 
 	gatheringIDList, err := parametersStream.ReadListUInt32LE()
 	if err != nil {
-		errorCode = protocol.getSimpleCommunityHandler(fmt.Errorf("Failed to read gatheringIDList from parameters. %s", err.Error()), client, callID, nil)
+		errorCode = protocol.getSimpleCommunityHandler(fmt.Errorf("Failed to read gatheringIDList from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -40,7 +39,7 @@ func (protocol *Protocol) handleGetSimpleCommunity(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.getSimpleCommunityHandler(nil, client, callID, gatheringIDList)
+	errorCode = protocol.getSimpleCommunityHandler(nil, packet, callID, gatheringIDList)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

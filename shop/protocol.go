@@ -18,15 +18,15 @@ const (
 
 // Protocol stores all the RMC method handlers for the Shop protocol and listens for requests
 type Protocol struct {
-	Server *nex.Server
+	Server nex.ServerInterface
 }
 
 // Setup initializes the protocol
 func (protocol *Protocol) Setup() {
-	protocol.Server.On("Data", func(packet nex.PacketInterface) {
-		request := packet.RMCRequest()
+	protocol.Server.OnData(func(packet nex.PacketInterface) {
+		request := packet.RMCMessage()
 
-		if request.ProtocolID() == ProtocolID {
+		if request.ProtocolID == ProtocolID {
 			protocol.HandlePacket(packet)
 		}
 	})
@@ -34,11 +34,11 @@ func (protocol *Protocol) Setup() {
 
 // HandlePacket sends the packet to the correct RMC method handler
 func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
 
-	switch request.MethodID() {
+	switch request.MethodID {
 	default:
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
-		fmt.Printf("Shop method ID: %#v\n", request.MethodID())
+		fmt.Printf("Shop method ID: %#v\n", request.MethodID)
 	}
 }

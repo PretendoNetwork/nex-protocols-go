@@ -24,10 +24,10 @@ func (protocol *Protocol) handleReportNATTraversalResult(packet nex.PacketInterf
 
 	natTraversalVersion := protocol.Server.NATTraversalProtocolVersion()
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
 
-	callID := request.CallID()
-	parameters := request.Parameters()
+	callID := request.CallID
+	parameters := request.Parameters
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 

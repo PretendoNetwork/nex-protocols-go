@@ -35,7 +35,7 @@ const (
 
 // Protocol handles the Debug protocol
 type Protocol struct {
-	Server                                  *nex.Server
+	Server                                  nex.ServerInterface
 	enableAPIRecorderHandler                func(err error, packet nex.PacketInterface, callID uint32) uint32
 	disableAPIRecorderHandler               func(err error, packet nex.PacketInterface, callID uint32) uint32
 	isAPIRecorderEnabledHandler             func(err error, packet nex.PacketInterface, callID uint32) uint32
@@ -47,10 +47,10 @@ type Protocol struct {
 
 // Setup initializes the protocol
 func (protocol *Protocol) Setup() {
-	protocol.Server.On("Data", func(packet nex.PacketInterface) {
-		request := packet.RMCRequest()
+	protocol.Server.OnData(func(packet nex.PacketInterface) {
+		request := packet.RMCMessage()
 
-		if request.ProtocolID() == ProtocolID {
+		if request.ProtocolID == ProtocolID {
 			protocol.HandlePacket(packet)
 		}
 	})
@@ -58,9 +58,9 @@ func (protocol *Protocol) Setup() {
 
 // HandlePacket sends the packet to the correct RMC method handler
 func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
 
-	switch request.MethodID() {
+	switch request.MethodID {
 	case MethodEnableAPIRecorder:
 		go protocol.handleEnableAPIRecorder(packet)
 	case MethodDisableAPIRecorder:
@@ -76,12 +76,12 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 	case MethodGetAPICallSummary:
 		go protocol.handleGetAPICallSummary(packet)
 	default:
-		fmt.Printf("Unsupported Debug method ID: %#v\n", request.MethodID())
+		fmt.Printf("Unsupported Debug method ID: %#v\n", request.MethodID)
 	}
 }
 
 // NewProtocol returns a new Debug protocol
-func NewProtocol(server *nex.Server) *Protocol {
+func NewProtocol(server nex.ServerInterface) *Protocol {
 	protocol := &Protocol{Server: server}
 
 	protocol.Setup()

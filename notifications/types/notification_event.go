@@ -21,7 +21,7 @@ type NotificationEvent struct {
 
 // Bytes encodes the NotificationEvent and returns a byte array
 func (notificationEvent *NotificationEvent) Bytes(stream *nex.StreamOut) []byte {
-	nexVersion := stream.Server.NEXVersion()
+	nexVersion := stream.Server.LibraryVersion()
 
 	stream.WriteUInt32LE(notificationEvent.PIDSource)
 	stream.WriteUInt32LE(notificationEvent.Type)

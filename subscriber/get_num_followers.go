@@ -22,9 +22,9 @@ func (protocol *Protocol) handleGetNumFollowers(packet nex.PacketInterface) {
 
 	globals.Logger.Warning("Subscriber::GetNumFollowers STUBBED")
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
 
-	callID := request.CallID()
+	callID := request.CallID
 
 	errorCode = protocol.getNumFollowersHandler(nil, packet, callID, packet.Payload())
 	if errorCode != 0 {

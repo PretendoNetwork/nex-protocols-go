@@ -22,9 +22,9 @@ func (protocol *Protocol) handleUploadCompetitionRankingScore(packet nex.PacketI
 
 	globals.Logger.Warning("RankingSplatoon::UploadCompetitionRankingScore STUBBED")
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
 
-	callID := request.CallID()
+	callID := request.CallID
 
 	errorCode = protocol.uploadCompetitionRankingScoreHandler(nil, packet, callID, packet.Payload())
 	if errorCode != 0 {

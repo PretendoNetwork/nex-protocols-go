@@ -20,9 +20,9 @@ func (protocol *Protocol) handleGetAssociatedNexUniqueIDWithMyPrincipalID(packet
 		return
 	}
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
 
-	callID := request.CallID()
+	callID := request.CallID
 
 	errorCode = protocol.getAssociatedNexUniqueIDWithMyPrincipalIDHandler(nil, packet, callID)
 	if errorCode != 0 {

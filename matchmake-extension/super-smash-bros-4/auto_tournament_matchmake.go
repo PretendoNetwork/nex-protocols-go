@@ -22,9 +22,9 @@ func (protocol *Protocol) handleAutoTournamentMatchmake(packet nex.PacketInterfa
 
 	globals.Logger.Warning("MatchmakeExtensionSuperSmashBros4::AutoTournamentMatchmake STUBBED")
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
 
-	callID := request.CallID()
+	callID := request.CallID
 
 	errorCode = protocol.autoTournamentMatchmakeHandler(nil, packet, callID, packet.Payload())
 	if errorCode != 0 {

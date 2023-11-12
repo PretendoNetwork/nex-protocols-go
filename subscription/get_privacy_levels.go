@@ -20,9 +20,9 @@ func (protocol *SubscriptionProtocol) handleGetPrivacyLevels(packet nex.PacketIn
 		return
 	}
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
 
-	callID := request.CallID()
+	callID := request.CallID
 
 	go protocol.getPrivacyLevelsHandler(nil, packet, callID)
 }

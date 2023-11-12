@@ -18,14 +18,14 @@ func (protocol *Protocol) handleGetRivToken(packet nex.PacketInterface) {
 
 	if protocol.getRivTokenHandler == nil {
 		globals.Logger.Warning("ShopNintendoBadgeArcade::GetRivToken not implemented")
-		go globals.RespondErrorCustom(packet, CustomProtocolID, nex.Errors.Core.NotImplemented)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
 
-	callID := request.CallID()
-	parameters := request.Parameters()
+	callID := request.CallID
+	parameters := request.Parameters
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
@@ -33,7 +33,7 @@ func (protocol *Protocol) handleGetRivToken(packet nex.PacketInterface) {
 	if err != nil {
 		errorCode = protocol.getRivTokenHandler(fmt.Errorf("Failed to read itemCode from parameters. %s", err.Error()), packet, callID, "", nil)
 		if errorCode != 0 {
-			globals.RespondErrorCustom(packet, ProtocolID, errorCode)
+			globals.RespondError(packet, ProtocolID, errorCode)
 		}
 
 		return
@@ -43,7 +43,7 @@ func (protocol *Protocol) handleGetRivToken(packet nex.PacketInterface) {
 	if err != nil {
 		errorCode = protocol.getRivTokenHandler(fmt.Errorf("Failed to read referenceID from parameters. %s", err.Error()), packet, callID, "", nil)
 		if errorCode != 0 {
-			globals.RespondErrorCustom(packet, ProtocolID, errorCode)
+			globals.RespondError(packet, ProtocolID, errorCode)
 		}
 
 		return
@@ -51,6 +51,6 @@ func (protocol *Protocol) handleGetRivToken(packet nex.PacketInterface) {
 
 	errorCode = protocol.getRivTokenHandler(nil, packet, callID, itemCode, referenceID)
 	if errorCode != 0 {
-		globals.RespondErrorCustom(packet, ProtocolID, errorCode)
+		globals.RespondError(packet, ProtocolID, errorCode)
 	}
 }

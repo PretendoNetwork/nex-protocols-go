@@ -20,9 +20,9 @@ func (protocol *Protocol) handleGetRelaySignatureKey(packet nex.PacketInterface)
 		return
 	}
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
 
-	callID := request.CallID()
+	callID := request.CallID
 
 	errorCode = protocol.getRelaySignatureKeyHandler(nil, packet, callID)
 	if errorCode != 0 {

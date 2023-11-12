@@ -33,7 +33,7 @@ const (
 
 // Protocol stores all the RMC method handlers for the Ticket Granting protocol and listens for requests
 type Protocol struct {
-	Server                  *nex.Server
+	Server                  nex.ServerInterface
 	loginHandler            func(err error, packet nex.PacketInterface, callID uint32, strUserName string) uint32
 	loginExHandler          func(err error, packet nex.PacketInterface, callID uint32, strUserName string, oExtraData *nex.DataHolder) uint32
 	requestTicketHandler    func(err error, packet nex.PacketInterface, callID uint32, idSource uint32, idTarget uint32) uint32
@@ -44,10 +44,10 @@ type Protocol struct {
 
 // Setup initializes the protocol
 func (protocol *Protocol) Setup() {
-	protocol.Server.On("Data", func(packet nex.PacketInterface) {
-		request := packet.RMCRequest()
+	protocol.Server.OnData(func(packet nex.PacketInterface) {
+		request := packet.RMCMessage()
 
-		if request.ProtocolID() == ProtocolID {
+		if request.ProtocolID == ProtocolID {
 			protocol.HandlePacket(packet)
 		}
 	})
@@ -55,9 +55,9 @@ func (protocol *Protocol) Setup() {
 
 // HandlePacket sends the packet to the correct RMC method handler
 func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
 
-	switch request.MethodID() {
+	switch request.MethodID {
 	case MethodLogin:
 		go protocol.handleLogin(packet)
 	case MethodLoginEx:
@@ -72,12 +72,12 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 		go protocol.handleLoginWithContext(packet)
 	default:
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
-		fmt.Printf("Unsupported Ticket Granting method ID: %#v\n", request.MethodID())
+		fmt.Printf("Unsupported Ticket Granting method ID: %#v\n", request.MethodID)
 	}
 }
 
 // NewProtocol returns a new Ticket Granting protocol
-func NewProtocol(server *nex.Server) *Protocol {
+func NewProtocol(server nex.ServerInterface) *Protocol {
 	protocol := &Protocol{Server: server}
 
 	protocol.Setup()

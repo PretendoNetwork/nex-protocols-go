@@ -25,7 +25,7 @@ type RankingRankData struct {
 
 // ExtractFromStream extracts a RankingRankData structure from a stream
 func (rankingRankData *RankingRankData) ExtractFromStream(stream *nex.StreamIn) error {
-	nexVersion := stream.Server.NEXVersion()
+	nexVersion := stream.Server.LibraryVersion()
 
 	var err error
 
@@ -81,7 +81,7 @@ func (rankingRankData *RankingRankData) ExtractFromStream(stream *nex.StreamIn) 
 
 // Bytes encodes the RankingRankData and returns a byte array
 func (rankingRankData *RankingRankData) Bytes(stream *nex.StreamOut) []byte {
-	nexVersion := stream.Server.NEXVersion()
+	nexVersion := stream.Server.LibraryVersion()
 
 	stream.WriteUInt32LE(rankingRankData.PrincipalID)
 	stream.WriteUInt64LE(rankingRankData.UniqueID)

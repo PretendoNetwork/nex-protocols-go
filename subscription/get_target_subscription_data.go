@@ -20,9 +20,9 @@ func (protocol *SubscriptionProtocol) handleGetTargetSubscriptionData(packet nex
 		return
 	}
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
 
-	callID := request.CallID()
+	callID := request.CallID
 
 	go protocol.getTargetSubscriptionDataHandler(nil, packet, callID)
 }

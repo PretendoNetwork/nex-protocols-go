@@ -167,7 +167,7 @@ type matchmakeExtensionProtocol = matchmake_extension.Protocol
 // Protocol stores all the RMC method handlers for the Matchmake Extension (Super Smash Bros. 4) protocol and listens for requests
 // Embeds the Matchmake Extension protocol
 type Protocol struct {
-	Server *nex.Server
+	Server nex.ServerInterface
 	matchmakeExtensionProtocol
 	getTournamentHandler                                     func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) uint32
 	getTournamentReplayIDHandler                             func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) uint32
@@ -209,11 +209,11 @@ type Protocol struct {
 
 // Setup initializes the protocol
 func (protocol *Protocol) Setup() {
-	protocol.Server.On("Data", func(packet nex.PacketInterface) {
-		request := packet.RMCRequest()
+	protocol.Server.OnData(func(packet nex.PacketInterface) {
+		request := packet.RMCMessage()
 
-		if request.ProtocolID() == ProtocolID {
-			if slices.Contains(patchedMethods, request.MethodID()) {
+		if request.ProtocolID == ProtocolID {
+			if slices.Contains(patchedMethods, request.MethodID) {
 				protocol.HandlePacket(packet)
 			} else {
 				protocol.matchmakeExtensionProtocol.HandlePacket(packet)
@@ -224,9 +224,9 @@ func (protocol *Protocol) Setup() {
 
 // HandlePacket sends the packet to the correct RMC method handler
 func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
 
-	switch request.MethodID() {
+	switch request.MethodID {
 	case MethodGetTournament:
 		go protocol.handleGetTournament(packet)
 	case MethodGetTournamentReplayID:
@@ -301,12 +301,12 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 		go protocol.handleDebugPostCommunityCompetitionMatchResult(packet)
 	default:
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
-		fmt.Printf("Unsupported Matchmake Extension (Super Smash Bros. 4) method ID: %#v\n", request.MethodID())
+		fmt.Printf("Unsupported Matchmake Extension (Super Smash Bros. 4) method ID: %#v\n", request.MethodID)
 	}
 }
 
 // NewProtocol returns a new MatchmakeExtensionSuperSmashBros4 protocol
-func NewProtocol(server *nex.Server) *Protocol {
+func NewProtocol(server nex.ServerInterface) *Protocol {
 	protocol := &Protocol{Server: server}
 	protocol.matchmakeExtensionProtocol.Server = server
 

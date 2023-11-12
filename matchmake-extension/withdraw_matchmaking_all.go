@@ -20,9 +20,9 @@ func (protocol *Protocol) handleWithdrawMatchmakingAll(packet nex.PacketInterfac
 		return
 	}
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
 
-	callID := request.CallID()
+	callID := request.CallID
 
 	errorCode = protocol.withdrawMatchmakingAllHandler(nil, packet, callID)
 	if errorCode != 0 {

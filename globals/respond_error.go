@@ -6,37 +6,37 @@ import "github.com/PretendoNetwork/nex-go"
 // RespondError sends the client a given error code
 func RespondError(packet nex.PacketInterface, protocolID uint8, errorCode uint32) {
 	client := packet.Sender()
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
 
 	var responsePacket nex.PacketInterface
 	var rmcResponseBytes []byte
-	switch packet := packet.(type) {
-	case *nex.HPPPacket:
-		rmcResponse := nex.NewRMCResponse(0, request.CallID())
-		rmcResponse.SetError(errorCode)
+
+	// TODO - Add HPP support back once nex-go supports it again
+	if packet, ok := packet.(nex.PRUDPPacketInterface); ok {
+		rmcResponse := nex.NewRMCError(errorCode)
+		rmcResponse.CallID = request.CallID
 
 		rmcResponseBytes = rmcResponse.Bytes()
 
-		responsePacket, _ = nex.NewHPPPacket(client, nil)
-	default:
-		rmcResponse := nex.NewRMCResponse(protocolID, request.CallID())
-		rmcResponse.SetError(errorCode)
-
-		rmcResponseBytes = rmcResponse.Bytes()
+		// * Go won't type assert responsePacket in the version check below,
+		// * so to avoid a bunch of assertions just create a temp variable
+		var prudpPacket nex.PRUDPPacketInterface
 
 		if packet.Version() == 1 {
-			responsePacket, _ = nex.NewPacketV1(client, nil)
+			prudpPacket, _ = nex.NewPRUDPPacketV1(client.(*nex.PRUDPClient), nil)
 		} else {
-			responsePacket, _ = nex.NewPacketV0(client, nil)
+			prudpPacket, _ = nex.NewPRUDPPacketV0(client.(*nex.PRUDPClient), nil)
 		}
 
-		responsePacket.SetVersion(packet.Version())
-		responsePacket.SetSource(packet.Destination())
-		responsePacket.SetDestination(packet.Source())
-		responsePacket.SetType(nex.DataPacket)
+		prudpPacket.SetType(nex.DataPacket)
+		prudpPacket.AddFlag(nex.FlagNeedsAck)
+		prudpPacket.AddFlag(nex.FlagReliable)
+		prudpPacket.SetSourceStreamType(packet.DestinationStreamType())
+		prudpPacket.SetSourcePort(packet.DestinationPort())
+		prudpPacket.SetDestinationStreamType(packet.SourceStreamType())
+		prudpPacket.SetDestinationPort(packet.SourcePort())
 
-		responsePacket.AddFlag(nex.FlagNeedsAck)
-		responsePacket.AddFlag(nex.FlagReliable)
+		responsePacket = prudpPacket
 	}
 
 	responsePacket.SetPayload(rmcResponseBytes)

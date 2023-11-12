@@ -20,9 +20,9 @@ func (protocol *SubscriptionProtocol) handleGetActivePlayerSubscriptionData(pack
 		return
 	}
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
 
-	callID := request.CallID()
+	callID := request.CallID
 
 	go protocol.getActivePlayerSubscriptionDataHandler(nil, packet, callID)
 }

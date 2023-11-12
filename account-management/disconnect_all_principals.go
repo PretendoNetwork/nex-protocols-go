@@ -20,9 +20,9 @@ func (protocol *Protocol) handleDisconnectAllPrincipals(packet nex.PacketInterfa
 		return
 	}
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
 
-	callID := request.CallID()
+	callID := request.CallID
 
 	errorCode = protocol.disconnectAllPrincipalsHandler(nil, packet, callID)
 	if errorCode != 0 {

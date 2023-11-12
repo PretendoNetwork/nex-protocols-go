@@ -29,7 +29,7 @@ import (
 	nexproto "github.com/PretendoNetwork/nex-protocols-go"
 )
 
-var nexServer *nex.Server
+var nexServer nex.ServerInterface
 
 func main() {
 	nexServer = nex.NewServer()

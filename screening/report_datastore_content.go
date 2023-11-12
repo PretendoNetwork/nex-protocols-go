@@ -22,9 +22,9 @@ func (protocol *Protocol) handleReportDataStoreContent(packet nex.PacketInterfac
 
 	globals.Logger.Warning("Screening::ReportDataStoreContent STUBBED")
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
 
-	callID := request.CallID()
+	callID := request.CallID
 
 	// TODO - THIS METHOD HAS AN UNKNOWN REQUEST/RESPONSE FORMAT
 

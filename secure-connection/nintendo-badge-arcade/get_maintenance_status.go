@@ -20,9 +20,9 @@ func (protocol *Protocol) handleGetMaintenanceStatus(packet nex.PacketInterface)
 		return
 	}
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
 
-	callID := request.CallID()
+	callID := request.CallID
 
 	errorCode = protocol.getMaintenanceStatusHandler(nil, packet, callID)
 	if errorCode != 0 {

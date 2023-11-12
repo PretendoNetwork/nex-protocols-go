@@ -22,9 +22,9 @@ func (protocol *Protocol) handleGetFollower(packet nex.PacketInterface) {
 
 	globals.Logger.Warning("Subscriber::GetFollower STUBBED")
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
 
-	callID := request.CallID()
+	callID := request.CallID
 
 	errorCode = protocol.getFollowerHandler(nil, packet, callID, packet.Payload())
 	if errorCode != 0 {

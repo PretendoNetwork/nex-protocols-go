@@ -60,7 +60,7 @@ const (
 
 // SubscriptionProtocol handles the Subscription nex protocol
 type SubscriptionProtocol struct {
-	Server                                     *nex.Server
+	Server                                     nex.ServerInterface
 	createMySubscriptionDataHandler            func(err error, packet nex.PacketInterface, callID uint32, unk uint64, content []byte)
 	updateMySubscriptionDataHandler            func(err error, packet nex.PacketInterface, callID uint32, unk uint32, content []byte)
 	getFriendSubscriptionDataHandler           func(err error, packet nex.PacketInterface, callID uint32)
@@ -73,11 +73,11 @@ type SubscriptionProtocol struct {
 
 // Setup initializes the protocol
 func (protocol *SubscriptionProtocol) Setup() {
-	protocol.Server.On("Data", func(packet nex.PacketInterface) {
-		request := packet.RMCRequest()
+	protocol.Server.OnData(func(packet nex.PacketInterface) {
+		request := packet.RMCMessage()
 
-		if ProtocolID == request.ProtocolID() {
-			switch request.MethodID() {
+		if ProtocolID == request.ProtocolID {
+			switch request.MethodID {
 			case MethodCreateMySubscriptionData:
 				go protocol.handleCreateMySubscriptionData(packet)
 			case MethodUpdateMySubscriptionData:
@@ -96,14 +96,14 @@ func (protocol *SubscriptionProtocol) Setup() {
 				go protocol.handleGetPrivacyLevels(packet)
 			default:
 				go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
-				fmt.Printf("Unsupported Subscription method ID: %#v\n", request.MethodID())
+				fmt.Printf("Unsupported Subscription method ID: %#v\n", request.MethodID)
 			}
 		}
 	})
 }
 
 // NewSubscriptionProtocol returns a new SubscriptionProtocol
-func NewSubscriptionProtocol(server *nex.Server) *SubscriptionProtocol {
+func NewSubscriptionProtocol(server nex.ServerInterface) *SubscriptionProtocol {
 	protocol := &SubscriptionProtocol{Server: server}
 
 	protocol.Setup()

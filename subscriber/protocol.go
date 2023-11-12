@@ -61,7 +61,7 @@ const (
 
 // Protocol stores all the RMC method handlers for the Subscriber protocol and listens for requests
 type Protocol struct {
-	Server                       *nex.Server
+	Server                       nex.ServerInterface
 	helloHandler                 func(err error, packet nex.PacketInterface, callID uint32, unknown string) uint32
 	postContentHandler           func(err error, packet nex.PacketInterface, callID uint32, param *subscriber_types.SubscriberPostContentParam) uint32
 	getContentHandler            func(err error, packet nex.PacketInterface, callID uint32, param *subscriber_types.SubscriberGetContentParam) uint32
@@ -81,11 +81,11 @@ type Protocol struct {
 
 // Setup initializes the protocol
 func (protocol *Protocol) Setup() {
-	protocol.Server.On("Data", func(packet nex.PacketInterface) {
-		request := packet.RMCRequest()
+	protocol.Server.OnData(func(packet nex.PacketInterface) {
+		request := packet.RMCMessage()
 
-		if request.ProtocolID() == ProtocolID {
-			switch request.MethodID() {
+		if request.ProtocolID == ProtocolID {
+			switch request.MethodID {
 			case MethodHello:
 				go protocol.handleHello(packet)
 			case MethodPostContent:
@@ -118,14 +118,14 @@ func (protocol *Protocol) Setup() {
 				go protocol.handleGetUserStatuses(packet)
 			default:
 				go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
-				fmt.Printf("Unsupported Subscriber method ID: %#v\n", request.MethodID())
+				fmt.Printf("Unsupported Subscriber method ID: %#v\n", request.MethodID)
 			}
 		}
 	})
 }
 
 // NewProtocol returns a new Subscriber protocol
-func NewProtocol(server *nex.Server) *Protocol {
+func NewProtocol(server nex.ServerInterface) *Protocol {
 	protocol := &Protocol{Server: server}
 
 	protocol.Setup()

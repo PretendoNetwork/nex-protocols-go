@@ -20,9 +20,9 @@ func (protocol *Protocol) handleClearMyPreviouslyMatchedUserCache(packet nex.Pac
 		return
 	}
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
 
-	callID := request.CallID()
+	callID := request.CallID
 
 	errorCode = protocol.clearMyPreviouslyMatchedUserCacheHandler(nil, packet, callID)
 	if errorCode != 0 {

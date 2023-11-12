@@ -22,11 +22,11 @@ func (protocol *Protocol) handleGetIntegerSettings(packet nex.PacketInterface) {
 		return
 	}
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
 
-	callID := request.CallID()
+	callID := request.CallID
 
-	parameters := request.Parameters()
+	parameters := request.Parameters
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 

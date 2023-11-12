@@ -22,9 +22,9 @@ func (protocol *Protocol) handleGetTournamentCompetitions(packet nex.PacketInter
 
 	globals.Logger.Warning("MatchmakeExtensionSuperSmashBros4::GetTournamentCompetitions STUBBED")
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
 
-	callID := request.CallID()
+	callID := request.CallID
 
 	errorCode = protocol.getTournamentCompetitionsHandler(nil, packet, callID, packet.Payload())
 	if errorCode != 0 {

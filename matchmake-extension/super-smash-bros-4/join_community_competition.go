@@ -22,9 +22,9 @@ func (protocol *Protocol) handleJoinCommunityCompetition(packet nex.PacketInterf
 
 	globals.Logger.Warning("MatchmakeExtensionSuperSmashBros4::JoinCommunityCompetition STUBBED")
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
 
-	callID := request.CallID()
+	callID := request.CallID
 
 	errorCode = protocol.joinCommunityCompetitionHandler(nil, packet, callID, packet.Payload())
 	if errorCode != 0 {

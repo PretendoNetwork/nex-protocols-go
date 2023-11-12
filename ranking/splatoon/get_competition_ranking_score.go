@@ -22,9 +22,9 @@ func (protocol *Protocol) handleGetCompetitionRankingScore(packet nex.PacketInte
 
 	globals.Logger.Warning("RankingSplatoon::GetCompetitionRankingScore STUBBED")
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
 
-	callID := request.CallID()
+	callID := request.CallID
 
 	errorCode = protocol.getCompetitionRankingScoreHandler(nil, packet, callID, packet.Payload())
 	if errorCode != 0 {

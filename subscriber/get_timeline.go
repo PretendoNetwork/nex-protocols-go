@@ -22,9 +22,9 @@ func (protocol *Protocol) handleGetTimeline(packet nex.PacketInterface) {
 
 	globals.Logger.Warning("Subscriber::GetTimeline STUBBED")
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
 
-	callID := request.CallID()
+	callID := request.CallID
 
 	errorCode = protocol.getTimelineHandler(nil, packet, callID, packet.Payload())
 	if errorCode != 0 {

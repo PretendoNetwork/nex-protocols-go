@@ -25,10 +25,10 @@ func (protocol *Protocol) handleReportNATTraversalResultDetail(packet nex.Packet
 	// TODO - The NEX server should add a NATTraversalProtocolVersion method
 	matchmakingVersion := protocol.Server.MatchMakingProtocolVersion()
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
 
-	callID := request.CallID()
-	parameters := request.Parameters()
+	callID := request.CallID
+	parameters := request.Parameters
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 

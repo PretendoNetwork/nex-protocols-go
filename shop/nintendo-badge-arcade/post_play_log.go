@@ -19,14 +19,14 @@ func (protocol *Protocol) handlePostPlayLog(packet nex.PacketInterface) {
 
 	if protocol.postPlayLogHandler == nil {
 		globals.Logger.Warning("ShopNintendoBadgeArcade::PostPlayLog not implemented")
-		go globals.RespondErrorCustom(packet, CustomProtocolID, nex.Errors.Core.NotImplemented)
+		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
 
-	callID := request.CallID()
-	parameters := request.Parameters()
+	callID := request.CallID
+	parameters := request.Parameters
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
@@ -34,7 +34,7 @@ func (protocol *Protocol) handlePostPlayLog(packet nex.PacketInterface) {
 	if err != nil {
 		errorCode = protocol.postPlayLogHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
-			globals.RespondErrorCustom(packet, ProtocolID, errorCode)
+			globals.RespondError(packet, ProtocolID, errorCode)
 		}
 
 		return
@@ -42,6 +42,6 @@ func (protocol *Protocol) handlePostPlayLog(packet nex.PacketInterface) {
 
 	errorCode = protocol.postPlayLogHandler(nil, packet, callID, param.(*shop_nintendo_badge_arcade_types.ShopPostPlayLogParam))
 	if errorCode != 0 {
-		globals.RespondErrorCustom(packet, ProtocolID, errorCode)
+		globals.RespondError(packet, ProtocolID, errorCode)
 	}
 }

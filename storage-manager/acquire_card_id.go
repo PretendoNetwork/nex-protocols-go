@@ -20,9 +20,9 @@ func (protocol *Protocol) handleAcquireCardID(packet nex.PacketInterface) {
 		return
 	}
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
 
-	callID := request.CallID()
+	callID := request.CallID
 
 	errorCode = protocol.acquireCardIDHandler(nil, packet, callID)
 	if errorCode != 0 {

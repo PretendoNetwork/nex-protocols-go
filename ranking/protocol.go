@@ -61,7 +61,7 @@ const (
 
 // Protocol stores all the RMC method handlers for the Ranking protocol and listens for requests
 type Protocol struct {
-	Server                          *nex.Server
+	Server                          nex.ServerInterface
 	uploadScoreHandler              func(err error, packet nex.PacketInterface, callID uint32, scoreData *ranking_types.RankingScoreData, uniqueID uint64) uint32
 	deleteScoreHandler              func(err error, packet nex.PacketInterface, callID uint32, category uint32, uniqueID uint64) uint32
 	deleteAllScoresHandler          func(err error, packet nex.PacketInterface, callID uint32, uniqueID uint64) uint32
@@ -81,10 +81,10 @@ type Protocol struct {
 
 // Setup initializes the protocol
 func (protocol *Protocol) Setup() {
-	protocol.Server.On("Data", func(packet nex.PacketInterface) {
-		request := packet.RMCRequest()
+	protocol.Server.OnData(func(packet nex.PacketInterface) {
+		request := packet.RMCMessage()
 
-		if request.ProtocolID() == ProtocolID {
+		if request.ProtocolID == ProtocolID {
 			protocol.HandlePacket(packet)
 		}
 	})
@@ -92,10 +92,10 @@ func (protocol *Protocol) Setup() {
 
 // HandlePacket sends the packet to the correct RMC method handler
 func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
 
-	if request.ProtocolID() == ProtocolID {
-		switch request.MethodID() {
+	if request.ProtocolID == ProtocolID {
+		switch request.MethodID {
 		case MethodUploadScore:
 			go protocol.handleUploadScore(packet)
 		case MethodDeleteScore:
@@ -128,13 +128,13 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 			go protocol.handleGetCachedTopXRankings(packet)
 		default:
 			go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
-			fmt.Printf("Unsupported Ranking method ID: %#v\n", request.MethodID())
+			fmt.Printf("Unsupported Ranking method ID: %#v\n", request.MethodID)
 		}
 	}
 }
 
 // NewProtocol returns a new Ranking protocol
-func NewProtocol(server *nex.Server) *Protocol {
+func NewProtocol(server nex.ServerInterface) *Protocol {
 	protocol := &Protocol{Server: server}
 
 	protocol.Setup()

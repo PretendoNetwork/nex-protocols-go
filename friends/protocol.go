@@ -54,7 +54,7 @@ const (
 
 // Protocol handles the Friends QRV protocol
 type Protocol struct {
-	Server                            *nex.Server
+	Server                            nex.ServerInterface
 	addFriendHandler                  func(err error, packet nex.PacketInterface, callID uint32, uiPlayer uint32, uiDetails uint32, strMessage string) uint32
 	addFriendByNameHandler            func(err error, packet nex.PacketInterface, callID uint32, strPlayerName string, uiDetails uint32, strMessage string) uint32
 	addFriendWithDetailsHandler       func(err error, packet nex.PacketInterface, callID uint32, uiPlayer uint32, uiDetails uint32, strMessage string) uint32
@@ -72,10 +72,10 @@ type Protocol struct {
 
 // Setup initializes the protocol
 func (protocol *Protocol) Setup() {
-	protocol.Server.On("Data", func(packet nex.PacketInterface) {
-		request := packet.RMCRequest()
+	protocol.Server.OnData(func(packet nex.PacketInterface) {
+		request := packet.RMCMessage()
 
-		if request.ProtocolID() == ProtocolID {
+		if request.ProtocolID == ProtocolID {
 			protocol.HandlePacket(packet)
 		}
 	})
@@ -83,9 +83,9 @@ func (protocol *Protocol) Setup() {
 
 // HandlePacket sends the packet to the correct RMC method handler
 func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
 
-	switch request.MethodID() {
+	switch request.MethodID {
 	case MethodAddFriend:
 		go protocol.handleAddFriend(packet)
 	case MethodAddFriendByName:
@@ -114,12 +114,12 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 		go protocol.handleGetRelationships(packet)
 	default:
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
-		fmt.Printf("Unsupported Friends method ID: %#v\n", request.MethodID())
+		fmt.Printf("Unsupported Friends method ID: %#v\n", request.MethodID)
 	}
 }
 
 // NewProtocol returns a new Friends protocol
-func NewProtocol(server *nex.Server) *Protocol {
+func NewProtocol(server nex.ServerInterface) *Protocol {
 	protocol := &Protocol{Server: server}
 
 	protocol.Setup()

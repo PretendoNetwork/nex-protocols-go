@@ -20,9 +20,9 @@ func (protocol *Protocol) handleTestConnectivity(packet nex.PacketInterface) {
 		return
 	}
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
 
-	callID := request.CallID()
+	callID := request.CallID
 
 	errorCode = protocol.testConnectivityHandler(nil, packet, callID)
 	if errorCode != 0 {

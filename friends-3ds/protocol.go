@@ -94,7 +94,7 @@ const (
 
 // Protocol stores all the RMC method handlers for the Friends (3DS) protocol and listens for requests
 type Protocol struct {
-	Server                                 *nex.Server
+	Server                                 nex.ServerInterface
 	updateProfileHandler                   func(err error, packet nex.PacketInterface, callID uint32, profileData *friends_3ds_types.MyProfile) uint32
 	updateMiiHandler                       func(err error, packet nex.PacketInterface, callID uint32, mii *friends_3ds_types.Mii) uint32
 	updateMiiListHandler                   func(err error, packet nex.PacketInterface, callID uint32, miiList *friends_3ds_types.MiiList) uint32
@@ -125,10 +125,10 @@ type Protocol struct {
 
 // Setup initializes the protocol
 func (protocol *Protocol) Setup() {
-	protocol.Server.On("Data", func(packet nex.PacketInterface) {
-		request := packet.RMCRequest()
+	protocol.Server.OnData(func(packet nex.PacketInterface) {
+		request := packet.RMCMessage()
 
-		if request.ProtocolID() == ProtocolID {
+		if request.ProtocolID == ProtocolID {
 			protocol.HandlePacket(packet)
 		}
 	})
@@ -136,9 +136,9 @@ func (protocol *Protocol) Setup() {
 
 // HandlePacket sends the packet to the correct RMC method handler
 func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
 
-	switch request.MethodID() {
+	switch request.MethodID {
 	case MethodUpdateProfile:
 		go protocol.handleUpdateProfile(packet)
 	case MethodUpdateMii:
@@ -193,12 +193,12 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 		go protocol.handleSendInvitation(packet)
 	default:
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
-		fmt.Printf("Unsupported Friends (3DS) method ID: %#v\n", request.MethodID())
+		fmt.Printf("Unsupported Friends (3DS) method ID: %#v\n", request.MethodID)
 	}
 }
 
 // NewProtocol returns a new Friends (3DS) protocol
-func NewProtocol(server *nex.Server) *Protocol {
+func NewProtocol(server nex.ServerInterface) *Protocol {
 	protocol := &Protocol{Server: server}
 
 	protocol.Setup()

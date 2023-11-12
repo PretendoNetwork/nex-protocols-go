@@ -22,9 +22,9 @@ func (protocol *Protocol) handleUnfollowAllAndFollow(packet nex.PacketInterface)
 
 	globals.Logger.Warning("Subscriber::UnfollowAllAndFollow STUBBED")
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
 
-	callID := request.CallID()
+	callID := request.CallID
 
 	errorCode = protocol.unfollowAllAndFollowHandler(nil, packet, callID, packet.Payload())
 	if errorCode != 0 {

@@ -20,9 +20,9 @@ func (protocol *Protocol) handleAcquireNexUniqueIDWithPassword(packet nex.Packet
 		return
 	}
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
 
-	callID := request.CallID()
+	callID := request.CallID
 
 	errorCode = protocol.acquireNexUniqueIDWithPasswordHandler(nil, packet, callID)
 	if errorCode != 0 {

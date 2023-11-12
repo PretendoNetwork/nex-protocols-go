@@ -22,9 +22,9 @@ func (protocol *Protocol) handleGetExcludeJoinedMatchmakeSession(packet nex.Pack
 
 	globals.Logger.Warning("Debug::GetExcludeJoinedMatchmakeSession STUBBED")
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
 
-	callID := request.CallID()
+	callID := request.CallID
 
 	// TODO - THIS METHOD HAS AN UNKNOWN REQUEST/RESPONSE FORMAT
 

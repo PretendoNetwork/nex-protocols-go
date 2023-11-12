@@ -44,7 +44,7 @@ type matchmakeExtensionProtocol = matchmake_extension.Protocol
 // Protocol stores all the RMC method handlers for the Matchmake Extension (Monster Hunter XX) protocol and listens for requests
 // Embeds the Matchmake Extension protocol
 type Protocol struct {
-	Server *nex.Server
+	Server nex.ServerInterface
 	matchmakeExtensionProtocol
 	updateFriendUserProfileHandler func(err error, packet nex.PacketInterface, callID uint32, param *matchmake_extension_monster_hunter_x_x_types.FriendUserParam) uint32
 	getFriendUserProfilesHandler   func(err error, packet nex.PacketInterface, callID uint32, pids []uint64) uint32
@@ -55,11 +55,11 @@ type Protocol struct {
 
 // Setup initializes the protocol
 func (protocol *Protocol) Setup() {
-	protocol.Server.On("Data", func(packet nex.PacketInterface) {
-		request := packet.RMCRequest()
+	protocol.Server.OnData(func(packet nex.PacketInterface) {
+		request := packet.RMCMessage()
 
-		if request.ProtocolID() == ProtocolID {
-			if slices.Contains(patchedMethods, request.MethodID()) {
+		if request.ProtocolID == ProtocolID {
+			if slices.Contains(patchedMethods, request.MethodID) {
 				protocol.HandlePacket(packet)
 			} else {
 				protocol.matchmakeExtensionProtocol.HandlePacket(packet)
@@ -70,9 +70,9 @@ func (protocol *Protocol) Setup() {
 
 // HandlePacket sends the packet to the correct RMC method handler
 func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
 
-	switch request.MethodID() {
+	switch request.MethodID {
 	case MethodUpdateFriendUserProfile:
 		go protocol.handleUpdateFriendUserProfile(packet)
 	case MethodGetFriendUserProfiles:
@@ -85,12 +85,12 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 		go protocol.handleFindCommunityByOwner(packet)
 	default:
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
-		fmt.Printf("Unsupported Matchmake Extension (Monster Hunter XX) method ID: %#v\n", request.MethodID())
+		fmt.Printf("Unsupported Matchmake Extension (Monster Hunter XX) method ID: %#v\n", request.MethodID)
 	}
 }
 
 // NewProtocol returns a new MatchmakeExtensionMonsterHunterXX protocol
-func NewProtocol(server *nex.Server) *Protocol {
+func NewProtocol(server nex.ServerInterface) *Protocol {
 	protocol := &Protocol{Server: server}
 	protocol.matchmakeExtensionProtocol.Server = server
 

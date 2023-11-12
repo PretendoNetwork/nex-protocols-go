@@ -22,9 +22,9 @@ func (protocol *Protocol) handleSetTournamentReplayID(packet nex.PacketInterface
 
 	globals.Logger.Warning("MatchmakeExtensionSuperSmashBros4::SetTournamentReplayID STUBBED")
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
 
-	callID := request.CallID()
+	callID := request.CallID
 
 	errorCode = protocol.setTournamentReplayIDHandler(nil, packet, callID, packet.Payload())
 	if errorCode != 0 {

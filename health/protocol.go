@@ -26,7 +26,7 @@ const (
 
 // Protocol handles the Health protocol
 type Protocol struct {
-	Server                 *nex.Server
+	Server                 nex.ServerInterface
 	pingDaemonHandler      func(err error, packet nex.PacketInterface, callID uint32) uint32
 	pingDatabaseHandler    func(err error, packet nex.PacketInterface, callID uint32) uint32
 	runSanityCheckHandler  func(err error, packet nex.PacketInterface, callID uint32) uint32
@@ -35,11 +35,11 @@ type Protocol struct {
 
 // Setup initializes the protocol
 func (protocol *Protocol) Setup() {
-	protocol.Server.On("Data", func(packet nex.PacketInterface) {
-		request := packet.RMCRequest()
+	protocol.Server.OnData(func(packet nex.PacketInterface) {
+		request := packet.RMCMessage()
 
-		if request.ProtocolID() == ProtocolID {
-			switch request.MethodID() {
+		if request.ProtocolID == ProtocolID {
+			switch request.MethodID {
 			case MethodPingDaemon:
 				go protocol.handlePingDaemon(packet)
 			case MethodPingDatabase:
@@ -49,14 +49,14 @@ func (protocol *Protocol) Setup() {
 			case MethodFixSanityErrors:
 				go protocol.handleFixSanityErrors(packet)
 			default:
-				fmt.Printf("Unsupported Health method ID: %#v\n", request.MethodID())
+				fmt.Printf("Unsupported Health method ID: %#v\n", request.MethodID)
 			}
 		}
 	})
 }
 
 // NewProtocol returns a new Health protocol
-func NewProtocol(server *nex.Server) *Protocol {
+func NewProtocol(server nex.ServerInterface) *Protocol {
 	protocol := &Protocol{Server: server}
 
 	protocol.Setup()

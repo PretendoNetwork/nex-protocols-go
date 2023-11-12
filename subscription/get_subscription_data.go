@@ -20,10 +20,10 @@ func (protocol *SubscriptionProtocol) handleGetSubscriptionData(packet nex.Packe
 		return
 	}
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
 
-	callID := request.CallID()
-	parameters := request.Parameters()
+	callID := request.CallID
+	parameters := request.Parameters
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 	pids, err := parametersStream.ReadListUInt32LE()

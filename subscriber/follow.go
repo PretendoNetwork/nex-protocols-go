@@ -22,9 +22,9 @@ func (protocol *Protocol) handleFollow(packet nex.PacketInterface) {
 
 	globals.Logger.Warning("Subscriber::Follow STUBBED")
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
 
-	callID := request.CallID()
+	callID := request.CallID
 
 	errorCode = protocol.followHandler(nil, packet, callID, packet.Payload())
 	if errorCode != 0 {

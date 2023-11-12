@@ -16,7 +16,7 @@ const (
 
 // Protocol handles the NintendoNotifications protocol
 type Protocol struct {
-	Server *nex.Server
+	Server nex.ServerInterface
 }
 
 // Setup initializes the protocol
@@ -27,7 +27,7 @@ func (protocol *Protocol) Setup() {
 }
 
 // NewProtocol returns a new Nintendo Notifications protocol
-func NewProtocol(server *nex.Server) *Protocol {
+func NewProtocol(server nex.ServerInterface) *Protocol {
 	nintendoNotificationsProtocol := &Protocol{Server: server}
 
 	nintendoNotificationsProtocol.Setup()

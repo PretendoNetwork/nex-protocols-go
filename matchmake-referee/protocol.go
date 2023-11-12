@@ -55,7 +55,7 @@ const (
 
 // Protocol stores all the RMC method handlers for the Matchmake Referee protocol and listens for requests
 type Protocol struct {
-	Server                       *nex.Server
+	Server                       nex.ServerInterface
 	startRoundHandler            func(err error, packet nex.PacketInterface, callID uint32, param *matchmake_referee_types.MatchmakeRefereeStartRoundParam) uint32
 	getStartRoundParamHandler    func(err error, packet nex.PacketInterface, callID uint32, roundID uint64) uint32
 	endRoundHandler              func(err error, packet nex.PacketInterface, callID uint32, endRoundParam *matchmake_referee_types.MatchmakeRefereeEndRoundParam) uint32
@@ -73,11 +73,11 @@ type Protocol struct {
 
 // Setup initializes the protocol
 func (protocol *Protocol) Setup() {
-	protocol.Server.On("Data", func(packet nex.PacketInterface) {
-		request := packet.RMCRequest()
+	protocol.Server.OnData(func(packet nex.PacketInterface) {
+		request := packet.RMCMessage()
 
-		if request.ProtocolID() == ProtocolID {
-			switch request.MethodID() {
+		if request.ProtocolID == ProtocolID {
+			switch request.MethodID {
 			case MethodStartRound:
 				go protocol.handleStartRound(packet)
 			case MethodGetStartRoundParam:
@@ -106,14 +106,14 @@ func (protocol *Protocol) Setup() {
 				go protocol.handleResetStats(packet)
 			default:
 				go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
-				fmt.Printf("Unsupported MatchmakeReferee method ID: %#v\n", request.MethodID())
+				fmt.Printf("Unsupported MatchmakeReferee method ID: %#v\n", request.MethodID)
 			}
 		}
 	})
 }
 
 // NewProtocol returns a new Matchmake Referee protocol
-func NewProtocol(server *nex.Server) *Protocol {
+func NewProtocol(server nex.ServerInterface) *Protocol {
 	protocol := &Protocol{Server: server}
 
 	protocol.Setup()

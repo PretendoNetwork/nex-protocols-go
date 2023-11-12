@@ -20,9 +20,9 @@ func (protocol *Protocol) handleGetFightingPowerChartAll(packet nex.PacketInterf
 		return
 	}
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
 
-	callID := request.CallID()
+	callID := request.CallID
 
 	errorCode = protocol.getFightingPowerChartAllHandler(nil, packet, callID)
 	if errorCode != 0 {

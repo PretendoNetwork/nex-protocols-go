@@ -20,9 +20,9 @@ func (protocol *Protocol) handleClearMyBlockList(packet nex.PacketInterface) {
 		return
 	}
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
 
-	callID := request.CallID()
+	callID := request.CallID
 
 	errorCode = protocol.clearMyBlockListHandler(nil, packet, callID)
 	if errorCode != 0 {

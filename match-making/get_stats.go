@@ -9,7 +9,7 @@ import (
 )
 
 // GetStats sets the GetStats handler function
-func (protocol *Protocol) GetStats(handler func(err error, packet nex.PacketInterface, callID uint32, idGathering uint32, lstParticipants []uint32, lstColumns []byte) uint32) {
+func (protocol *Protocol) GetStats(handler func(err error, packet nex.PacketInterface, callID uint32, idGathering uint32, lstParticipants []*nex.PID, lstColumns []byte) uint32) {
 	protocol.getStatsHandler = handler
 }
 
@@ -39,7 +39,7 @@ func (protocol *Protocol) handleGetStats(packet nex.PacketInterface) {
 		return
 	}
 
-	lstParticipants, err := parametersStream.ReadListUInt32LE()
+	lstParticipants, err := parametersStream.ReadListPID()
 	if err != nil {
 		errorCode = protocol.getStatsHandler(fmt.Errorf("Failed to read lstParticipants from parameters. %s", err.Error()), packet, callID, 0, nil, nil)
 		if errorCode != 0 {

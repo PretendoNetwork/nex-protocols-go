@@ -14,7 +14,7 @@ import (
 // ParticipantDetails holds information a participant
 type ParticipantDetails struct {
 	nex.Structure
-	IDParticipant  uint32
+	IDParticipant  *nex.PID
 	StrName        string
 	StrMessage     string
 	UIParticipants uint16
@@ -24,7 +24,7 @@ type ParticipantDetails struct {
 func (participantDetails *ParticipantDetails) ExtractFromStream(stream *nex.StreamIn) error {
 	var err error
 
-	participantDetails.IDParticipant, err = stream.ReadUInt32LE()
+	participantDetails.IDParticipant, err = stream.ReadPID()
 	if err != nil {
 		return fmt.Errorf("Failed to extract ParticipantDetails.IDParticipant. %s", err.Error())
 	}
@@ -49,7 +49,7 @@ func (participantDetails *ParticipantDetails) ExtractFromStream(stream *nex.Stre
 
 // Bytes encodes the ParticipantDetails and returns a byte array
 func (participantDetails *ParticipantDetails) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt32LE(participantDetails.IDParticipant)
+	stream.WritePID(participantDetails.IDParticipant)
 	stream.WriteString(participantDetails.StrName)
 	stream.WriteString(participantDetails.StrMessage)
 	stream.WriteUInt16LE(participantDetails.UIParticipants)
@@ -63,7 +63,7 @@ func (participantDetails *ParticipantDetails) Copy() nex.StructureInterface {
 
 	copied.SetStructureVersion(participantDetails.StructureVersion())
 
-	copied.IDParticipant = participantDetails.IDParticipant
+	copied.IDParticipant = participantDetails.IDParticipant.Copy()
 	copied.StrName = participantDetails.StrName
 	copied.StrMessage = participantDetails.StrMessage
 	copied.UIParticipants = participantDetails.UIParticipants
@@ -79,7 +79,7 @@ func (participantDetails *ParticipantDetails) Equals(structure nex.StructureInte
 		return false
 	}
 
-	if participantDetails.IDParticipant != other.IDParticipant {
+	if !participantDetails.IDParticipant.Equals(other.IDParticipant) {
 		return false
 	}
 
@@ -112,7 +112,7 @@ func (participantDetails *ParticipantDetails) FormatToString(indentationLevel in
 
 	b.WriteString("ParticipantDetails{\n")
 	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, participantDetails.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sIDParticipant: %d,\n", indentationValues, participantDetails.IDParticipant))
+	b.WriteString(fmt.Sprintf("%sIDParticipant: %s,\n", indentationValues, participantDetails.IDParticipant.FormatToString(indentationLevel+1)))
 	b.WriteString(fmt.Sprintf("%sStrName: %q,\n", indentationValues, participantDetails.StrName))
 	b.WriteString(fmt.Sprintf("%sStrMessage: %q,\n", indentationValues, participantDetails.StrMessage))
 	b.WriteString(fmt.Sprintf("%sUIParticipants: %d\n", indentationValues, participantDetails.UIParticipants))

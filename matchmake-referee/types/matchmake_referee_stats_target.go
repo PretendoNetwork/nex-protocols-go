@@ -12,13 +12,13 @@ import (
 type MatchmakeRefereeStatsTarget struct {
 	nex.Structure
 	*nex.Data
-	PID      uint32
+	PID      *nex.PID
 	Category uint32
 }
 
 // Bytes encodes the MatchmakeRefereeStatsTarget and returns a byte array
 func (matchmakeRefereeStatsTarget *MatchmakeRefereeStatsTarget) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt32LE(matchmakeRefereeStatsTarget.PID)
+	stream.WritePID(matchmakeRefereeStatsTarget.PID)
 	stream.WriteUInt32LE(matchmakeRefereeStatsTarget.Category)
 
 	return stream.Bytes()
@@ -28,7 +28,7 @@ func (matchmakeRefereeStatsTarget *MatchmakeRefereeStatsTarget) Bytes(stream *ne
 func (matchmakeRefereeStatsTarget *MatchmakeRefereeStatsTarget) ExtractFromStream(stream *nex.StreamIn) error {
 	var err error
 
-	matchmakeRefereeStatsTarget.PID, err = stream.ReadUInt32LE()
+	matchmakeRefereeStatsTarget.PID, err = stream.ReadPID()
 	if err != nil {
 		return fmt.Errorf("Failed to extract MatchmakeRefereeStatsTarget.PID. %s", err.Error())
 	}
@@ -50,7 +50,7 @@ func (matchmakeRefereeStatsTarget *MatchmakeRefereeStatsTarget) Copy() nex.Struc
 	copied.Data = matchmakeRefereeStatsTarget.ParentType().Copy().(*nex.Data)
 	copied.SetParentType(copied.Data)
 
-	copied.PID = matchmakeRefereeStatsTarget.PID
+	copied.PID = matchmakeRefereeStatsTarget.PID.Copy()
 	copied.Category = matchmakeRefereeStatsTarget.Category
 
 	return copied
@@ -68,7 +68,7 @@ func (matchmakeRefereeStatsTarget *MatchmakeRefereeStatsTarget) Equals(structure
 		return false
 	}
 
-	if matchmakeRefereeStatsTarget.PID != other.PID {
+	if !matchmakeRefereeStatsTarget.PID.Equals(other.PID) {
 		return false
 	}
 
@@ -93,7 +93,7 @@ func (matchmakeRefereeStatsTarget *MatchmakeRefereeStatsTarget) FormatToString(i
 
 	b.WriteString("MatchmakeRefereeStatsTarget{\n")
 	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, matchmakeRefereeStatsTarget.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sPID: %d,\n", indentationValues, matchmakeRefereeStatsTarget.PID))
+	b.WriteString(fmt.Sprintf("%sPID: %s,\n", indentationValues, matchmakeRefereeStatsTarget.PID.FormatToString(indentationLevel+1)))
 	b.WriteString(fmt.Sprintf("%sCategory: %d,\n", indentationValues, matchmakeRefereeStatsTarget.Category))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 

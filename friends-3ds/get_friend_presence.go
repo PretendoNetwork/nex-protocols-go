@@ -9,7 +9,7 @@ import (
 )
 
 // GetFriendPresence sets the GetFriendPresence handler function
-func (protocol *Protocol) GetFriendPresence(handler func(err error, packet nex.PacketInterface, callID uint32, pidList []uint32) uint32) {
+func (protocol *Protocol) GetFriendPresence(handler func(err error, packet nex.PacketInterface, callID uint32, pidList []*nex.PID) uint32) {
 	protocol.getFriendPresenceHandler = handler
 }
 
@@ -29,7 +29,7 @@ func (protocol *Protocol) handleGetFriendPresence(packet nex.PacketInterface) {
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	pidList, err := parametersStream.ReadListUInt32LE()
+	pidList, err := parametersStream.ReadListPID()
 	if err != nil {
 		errorCode = protocol.getFriendPresenceHandler(fmt.Errorf("Failed to read pidList from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {

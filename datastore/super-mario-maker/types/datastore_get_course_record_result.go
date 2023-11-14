@@ -13,8 +13,8 @@ type DataStoreGetCourseRecordResult struct {
 	nex.Structure
 	DataID      uint64
 	Slot        uint8
-	FirstPID    uint32
-	BestPID     uint32
+	FirstPID    *nex.PID
+	BestPID     *nex.PID
 	BestScore   int32
 	CreatedTime *nex.DateTime
 	UpdatedTime *nex.DateTime
@@ -34,12 +34,12 @@ func (dataStoreGetCourseRecordResult *DataStoreGetCourseRecordResult) ExtractFro
 		return fmt.Errorf("Failed to extract DataStoreGetCourseRecordResult.Slot from stream. %s", err.Error())
 	}
 
-	dataStoreGetCourseRecordResult.FirstPID, err = stream.ReadUInt32LE()
+	dataStoreGetCourseRecordResult.FirstPID, err = stream.ReadPID()
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreGetCourseRecordResult.FirstPID from stream. %s", err.Error())
 	}
 
-	dataStoreGetCourseRecordResult.BestPID, err = stream.ReadUInt32LE()
+	dataStoreGetCourseRecordResult.BestPID, err = stream.ReadPID()
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreGetCourseRecordResult.BestPID from stream. %s", err.Error())
 	}
@@ -66,8 +66,8 @@ func (dataStoreGetCourseRecordResult *DataStoreGetCourseRecordResult) ExtractFro
 func (dataStoreGetCourseRecordResult *DataStoreGetCourseRecordResult) Bytes(stream *nex.StreamOut) []byte {
 	stream.WriteUInt64LE(dataStoreGetCourseRecordResult.DataID)
 	stream.WriteUInt8(dataStoreGetCourseRecordResult.Slot)
-	stream.WriteUInt32LE(dataStoreGetCourseRecordResult.FirstPID)
-	stream.WriteUInt32LE(dataStoreGetCourseRecordResult.BestPID)
+	stream.WritePID(dataStoreGetCourseRecordResult.FirstPID)
+	stream.WritePID(dataStoreGetCourseRecordResult.BestPID)
 	stream.WriteInt32LE(dataStoreGetCourseRecordResult.BestScore)
 	stream.WriteDateTime(dataStoreGetCourseRecordResult.CreatedTime)
 	stream.WriteDateTime(dataStoreGetCourseRecordResult.UpdatedTime)
@@ -83,8 +83,8 @@ func (dataStoreGetCourseRecordResult *DataStoreGetCourseRecordResult) Copy() nex
 
 	copied.DataID = dataStoreGetCourseRecordResult.DataID
 	copied.Slot = dataStoreGetCourseRecordResult.Slot
-	copied.FirstPID = dataStoreGetCourseRecordResult.FirstPID
-	copied.BestPID = dataStoreGetCourseRecordResult.BestPID
+	copied.FirstPID = dataStoreGetCourseRecordResult.FirstPID.Copy()
+	copied.BestPID = dataStoreGetCourseRecordResult.BestPID.Copy()
 	copied.BestScore = dataStoreGetCourseRecordResult.BestScore
 	copied.CreatedTime = dataStoreGetCourseRecordResult.CreatedTime.Copy()
 	copied.UpdatedTime = dataStoreGetCourseRecordResult.UpdatedTime.Copy()
@@ -108,11 +108,11 @@ func (dataStoreGetCourseRecordResult *DataStoreGetCourseRecordResult) Equals(str
 		return false
 	}
 
-	if dataStoreGetCourseRecordResult.FirstPID != other.FirstPID {
+	if !dataStoreGetCourseRecordResult.FirstPID.Equals(other.FirstPID) {
 		return false
 	}
 
-	if dataStoreGetCourseRecordResult.BestPID != other.BestPID {
+	if !dataStoreGetCourseRecordResult.BestPID.Equals(other.BestPID) {
 		return false
 	}
 
@@ -147,8 +147,8 @@ func (dataStoreGetCourseRecordResult *DataStoreGetCourseRecordResult) FormatToSt
 	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, dataStoreGetCourseRecordResult.StructureVersion()))
 	b.WriteString(fmt.Sprintf("%sDataID: %d,\n", indentationValues, dataStoreGetCourseRecordResult.DataID))
 	b.WriteString(fmt.Sprintf("%sSlot: %d,\n", indentationValues, dataStoreGetCourseRecordResult.Slot))
-	b.WriteString(fmt.Sprintf("%sFirstPID: %d,\n", indentationValues, dataStoreGetCourseRecordResult.FirstPID))
-	b.WriteString(fmt.Sprintf("%sBestPID: %d,\n", indentationValues, dataStoreGetCourseRecordResult.BestPID))
+	b.WriteString(fmt.Sprintf("%sFirstPID: %s,\n", indentationValues, dataStoreGetCourseRecordResult.FirstPID.FormatToString(indentationLevel+1)))
+	b.WriteString(fmt.Sprintf("%sBestPID: %s,\n", indentationValues, dataStoreGetCourseRecordResult.BestPID.FormatToString(indentationLevel+1)))
 	b.WriteString(fmt.Sprintf("%sBestScore: %d,\n", indentationValues, dataStoreGetCourseRecordResult.BestScore))
 
 	if dataStoreGetCourseRecordResult.CreatedTime != nil {
@@ -173,8 +173,8 @@ func NewDataStoreGetCourseRecordResult() *DataStoreGetCourseRecordResult {
 	return &DataStoreGetCourseRecordResult{
 		DataID:      0,
 		Slot:        0,
-		FirstPID:    0,
-		BestPID:     0,
+		FirstPID:    nex.NewPID[uint32](0),
+		BestPID:     nex.NewPID[uint32](0),
 		BestScore:   0,
 		CreatedTime: nex.NewDateTime(0),
 		UpdatedTime: nex.NewDateTime(0),

@@ -9,7 +9,7 @@ import (
 )
 
 // GetPersistenceInfos sets the GetPersistenceInfos handler function
-func (protocol *Protocol) GetPersistenceInfos(handler func(err error, packet nex.PacketInterface, callID uint32, ownerID uint32, persistenceSlotIDs []uint16) uint32) {
+func (protocol *Protocol) GetPersistenceInfos(handler func(err error, packet nex.PacketInterface, callID uint32, ownerID *nex.PID, persistenceSlotIDs []uint16) uint32) {
 	protocol.getPersistenceInfosHandler = handler
 }
 
@@ -29,9 +29,9 @@ func (protocol *Protocol) handleGetPersistenceInfos(packet nex.PacketInterface) 
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	ownerID, err := parametersStream.ReadUInt32LE()
+	ownerID, err := parametersStream.ReadPID()
 	if err != nil {
-		errorCode = protocol.getPersistenceInfosHandler(fmt.Errorf("Failed to read ownerID from parameters. %s", err.Error()), packet, callID, 0, nil)
+		errorCode = protocol.getPersistenceInfosHandler(fmt.Errorf("Failed to read ownerID from parameters. %s", err.Error()), packet, callID, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -41,7 +41,7 @@ func (protocol *Protocol) handleGetPersistenceInfos(packet nex.PacketInterface) 
 
 	persistenceSlotIDs, err := parametersStream.ReadListUInt16LE()
 	if err != nil {
-		errorCode = protocol.getPersistenceInfosHandler(fmt.Errorf("Failed to read persistenceSlotIDs from parameters. %s", err.Error()), packet, callID, 0, nil)
+		errorCode = protocol.getPersistenceInfosHandler(fmt.Errorf("Failed to read persistenceSlotIDs from parameters. %s", err.Error()), packet, callID, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}

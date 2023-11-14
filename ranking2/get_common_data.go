@@ -9,7 +9,7 @@ import (
 )
 
 // GetCommonData sets the GetCommonData handler function
-func (protocol *Protocol) GetCommonData(handler func(err error, packet nex.PacketInterface, callID uint32, optionFlags uint32, principalID uint32, nexUniqueID uint64) uint32) {
+func (protocol *Protocol) GetCommonData(handler func(err error, packet nex.PacketInterface, callID uint32, optionFlags uint32, principalID *nex.PID, nexUniqueID uint64) uint32) {
 	protocol.getCommonDataHandler = handler
 }
 
@@ -31,7 +31,7 @@ func (protocol *Protocol) handleGetCommonData(packet nex.PacketInterface) {
 
 	optionFlags, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.getCommonDataHandler(fmt.Errorf("Failed to read optionFlags from parameters. %s", err.Error()), packet, callID, 0, 0, 0)
+		errorCode = protocol.getCommonDataHandler(fmt.Errorf("Failed to read optionFlags from parameters. %s", err.Error()), packet, callID, 0, nil, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -39,9 +39,9 @@ func (protocol *Protocol) handleGetCommonData(packet nex.PacketInterface) {
 		return
 	}
 
-	principalID, err := parametersStream.ReadUInt32LE()
+	principalID, err := parametersStream.ReadPID()
 	if err != nil {
-		errorCode = protocol.getCommonDataHandler(fmt.Errorf("Failed to read principalID from parameters. %s", err.Error()), packet, callID, 0, 0, 0)
+		errorCode = protocol.getCommonDataHandler(fmt.Errorf("Failed to read principalID from parameters. %s", err.Error()), packet, callID, 0, nil, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -51,7 +51,7 @@ func (protocol *Protocol) handleGetCommonData(packet nex.PacketInterface) {
 
 	nexUniqueID, err := parametersStream.ReadUInt64LE()
 	if err != nil {
-		errorCode = protocol.getCommonDataHandler(fmt.Errorf("Failed to read nexUniqueID from parameters. %s", err.Error()), packet, callID, 0, 0, 0)
+		errorCode = protocol.getCommonDataHandler(fmt.Errorf("Failed to read nexUniqueID from parameters. %s", err.Error()), packet, callID, 0, nil, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}

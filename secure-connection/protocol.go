@@ -41,8 +41,8 @@ const (
 type Protocol struct {
 	Server                       nex.ServerInterface
 	registerHandler              func(err error, packet nex.PacketInterface, callID uint32, vecMyURLs []*nex.StationURL) uint32
-	requestConnectionDataHandler func(err error, packet nex.PacketInterface, callID uint32, cidTarget uint32, pidTarget uint32) uint32
-	requestURLsHandler           func(err error, packet nex.PacketInterface, callID uint32, cidTarget uint32, pidTarget uint32) uint32
+	requestConnectionDataHandler func(err error, packet nex.PacketInterface, callID uint32, cidTarget uint32, pidTarget *nex.PID) uint32
+	requestURLsHandler           func(err error, packet nex.PacketInterface, callID uint32, cidTarget uint32, pidTarget *nex.PID) uint32
 	registerExHandler            func(err error, packet nex.PacketInterface, callID uint32, vecMyURLs []*nex.StationURL, hCustomData *nex.DataHolder) uint32
 	testConnectivityHandler      func(err error, packet nex.PacketInterface, callID uint32) uint32
 	updateURLsHandler            func(err error, packet nex.PacketInterface, callID uint32, vecMyURLs []*nex.StationURL) uint32

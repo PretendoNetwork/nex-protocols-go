@@ -15,7 +15,7 @@ import (
 type CreateMatchmakeSessionParam struct {
 	nex.Structure
 	SourceMatchmakeSession       *MatchmakeSession
-	AdditionalParticipants       []uint32
+	AdditionalParticipants       []*nex.PID
 	GIDForParticipationCheck     uint32
 	CreateMatchmakeSessionOption uint32
 	JoinMessage                  string
@@ -32,7 +32,7 @@ func (createMatchmakeSessionParam *CreateMatchmakeSessionParam) ExtractFromStrea
 	}
 
 	createMatchmakeSessionParam.SourceMatchmakeSession = sourceMatchmakeSession.(*MatchmakeSession)
-	createMatchmakeSessionParam.AdditionalParticipants, err = stream.ReadListUInt32LE()
+	createMatchmakeSessionParam.AdditionalParticipants, err = stream.ReadListPID()
 	if err != nil {
 		return fmt.Errorf("Failed to extract CreateMatchmakeSessionParam.AdditionalParticipants. %s", err.Error())
 	}
@@ -70,9 +70,11 @@ func (createMatchmakeSessionParam *CreateMatchmakeSessionParam) Copy() nex.Struc
 		copied.SourceMatchmakeSession = createMatchmakeSessionParam.SourceMatchmakeSession.Copy().(*MatchmakeSession)
 	}
 
-	copied.AdditionalParticipants = make([]uint32, len(createMatchmakeSessionParam.AdditionalParticipants))
+	copied.AdditionalParticipants = make([]*nex.PID, len(createMatchmakeSessionParam.AdditionalParticipants))
 
-	copy(copied.AdditionalParticipants, createMatchmakeSessionParam.AdditionalParticipants)
+	for i := 0; i < len(createMatchmakeSessionParam.AdditionalParticipants); i++ {
+		copied.AdditionalParticipants[i] = createMatchmakeSessionParam.AdditionalParticipants[i].Copy()
+	}
 
 	copied.GIDForParticipationCheck = createMatchmakeSessionParam.GIDForParticipationCheck
 	copied.CreateMatchmakeSessionOption = createMatchmakeSessionParam.CreateMatchmakeSessionOption
@@ -109,7 +111,7 @@ func (createMatchmakeSessionParam *CreateMatchmakeSessionParam) Equals(structure
 	}
 
 	for i := 0; i < len(createMatchmakeSessionParam.AdditionalParticipants); i++ {
-		if createMatchmakeSessionParam.AdditionalParticipants[i] != other.AdditionalParticipants[i] {
+		if !createMatchmakeSessionParam.AdditionalParticipants[i].Equals(other.AdditionalParticipants[i]) {
 			return false
 		}
 	}

@@ -11,7 +11,7 @@ import (
 // BasicAccountInfo contains data for creating a new NNID on the network
 type BasicAccountInfo struct {
 	nex.Structure
-	PIDOwner uint32
+	PIDOwner *nex.PID
 	StrName  string
 }
 
@@ -19,7 +19,7 @@ type BasicAccountInfo struct {
 func (basicAccountInfo *BasicAccountInfo) ExtractFromStream(stream *nex.StreamIn) error {
 	var err error
 
-	basicAccountInfo.PIDOwner, err = stream.ReadUInt32LE()
+	basicAccountInfo.PIDOwner, err = stream.ReadPID()
 	if err != nil {
 		return fmt.Errorf("Failed to extract BasicAccountInfo.PIDOwner. %s", err.Error())
 	}
@@ -38,7 +38,7 @@ func (basicAccountInfo *BasicAccountInfo) Copy() nex.StructureInterface {
 
 	copied.SetStructureVersion(basicAccountInfo.StructureVersion())
 
-	copied.PIDOwner = basicAccountInfo.PIDOwner
+	copied.PIDOwner = basicAccountInfo.PIDOwner.Copy()
 	copied.StrName = basicAccountInfo.StrName
 
 	return copied
@@ -52,7 +52,7 @@ func (basicAccountInfo *BasicAccountInfo) Equals(structure nex.StructureInterfac
 		return false
 	}
 
-	if basicAccountInfo.PIDOwner != other.PIDOwner {
+	if !basicAccountInfo.PIDOwner.Equals(other.PIDOwner) {
 		return false
 	}
 
@@ -77,7 +77,7 @@ func (basicAccountInfo *BasicAccountInfo) FormatToString(indentationLevel int) s
 
 	b.WriteString("BasicAccountInfo{\n")
 	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, basicAccountInfo.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sPIDOwner: %d,\n", indentationValues, basicAccountInfo.PIDOwner))
+	b.WriteString(fmt.Sprintf("%sPIDOwner: %s,\n", indentationValues, basicAccountInfo.PIDOwner.FormatToString(indentationLevel+1)))
 	b.WriteString(fmt.Sprintf("%sStrName: %q\n", indentationValues, basicAccountInfo.StrName))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 

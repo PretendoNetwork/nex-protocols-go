@@ -12,14 +12,14 @@ import (
 type FriendMii struct {
 	nex.Structure
 	*nex.Data
-	PID        uint32
+	PID        *nex.PID
 	Mii        *Mii
 	ModifiedAt *nex.DateTime
 }
 
 // Bytes encodes the Mii and returns a byte array
 func (friendMii *FriendMii) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt32LE(friendMii.PID)
+	stream.WritePID(friendMii.PID)
 	stream.WriteStructure(friendMii.Mii)
 	stream.WriteDateTime(friendMii.ModifiedAt)
 
@@ -40,7 +40,7 @@ func (friendMii *FriendMii) Copy() nex.StructureInterface {
 
 	copied.SetParentType(copied.Data)
 
-	copied.PID = friendMii.PID
+	copied.PID = friendMii.PID.Copy()
 	copied.Mii = friendMii.Mii.Copy().(*Mii)
 	copied.ModifiedAt = friendMii.ModifiedAt.Copy()
 
@@ -59,7 +59,7 @@ func (friendMii *FriendMii) Equals(structure nex.StructureInterface) bool {
 		return false
 	}
 
-	if friendMii.PID != other.PID {
+	if !friendMii.PID.Equals(other.PID) {
 		return false
 	}
 
@@ -88,7 +88,7 @@ func (friendMii *FriendMii) FormatToString(indentationLevel int) string {
 
 	b.WriteString("FriendMii{\n")
 	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, friendMii.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sPID: %d,\n", indentationValues, friendMii.PID))
+	b.WriteString(fmt.Sprintf("%sPID: %s,\n", indentationValues, friendMii.PID.FormatToString(indentationLevel+1)))
 
 	if friendMii.Mii != nil {
 		b.WriteString(fmt.Sprintf("%sMii: %s,\n", indentationValues, friendMii.Mii.FormatToString(indentationLevel+1)))

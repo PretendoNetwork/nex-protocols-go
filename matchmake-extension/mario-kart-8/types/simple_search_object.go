@@ -13,7 +13,7 @@ import (
 type SimpleSearchObject struct {
 	nex.Structure
 	ObjectID            uint32
-	OwnerPID            uint32
+	OwnerPID            *nex.PID
 	Attributes          []uint32
 	Metadata            []byte
 	CommunityIDMiiverse uint32
@@ -30,7 +30,7 @@ func (simpleSearchObject *SimpleSearchObject) ExtractFromStream(stream *nex.Stre
 		return fmt.Errorf("Failed to extract SimpleSearchObject.ObjectID from stream. %s", err.Error())
 	}
 
-	simpleSearchObject.OwnerPID, err = stream.ReadUInt32LE()
+	simpleSearchObject.OwnerPID, err = stream.ReadPID()
 	if err != nil {
 		return fmt.Errorf("Failed to extract SimpleSearchObject.OwnerPID from stream. %s", err.Error())
 	}
@@ -68,7 +68,7 @@ func (simpleSearchObject *SimpleSearchObject) ExtractFromStream(stream *nex.Stre
 // Bytes encodes the SimpleSearchObject and returns a byte array
 func (simpleSearchObject *SimpleSearchObject) Bytes(stream *nex.StreamOut) []byte {
 	stream.WriteUInt32LE(simpleSearchObject.ObjectID)
-	stream.WriteUInt32LE(simpleSearchObject.OwnerPID)
+	stream.WritePID(simpleSearchObject.OwnerPID)
 	stream.WriteListUInt32LE(simpleSearchObject.Attributes)
 	stream.WriteQBuffer(simpleSearchObject.Metadata)
 	stream.WriteUInt32LE(simpleSearchObject.CommunityIDMiiverse)
@@ -85,7 +85,7 @@ func (simpleSearchObject *SimpleSearchObject) Copy() nex.StructureInterface {
 	copied.SetStructureVersion(simpleSearchObject.StructureVersion())
 
 	copied.ObjectID = simpleSearchObject.ObjectID
-	copied.OwnerPID = simpleSearchObject.OwnerPID
+	copied.OwnerPID = simpleSearchObject.OwnerPID.Copy()
 	copied.Attributes = make([]uint32, len(simpleSearchObject.Attributes))
 
 	copy(copied.Attributes, simpleSearchObject.Attributes)
@@ -110,7 +110,7 @@ func (simpleSearchObject *SimpleSearchObject) Equals(structure nex.StructureInte
 		return false
 	}
 
-	if simpleSearchObject.OwnerPID != other.OwnerPID {
+	if !simpleSearchObject.OwnerPID.Equals(other.OwnerPID) {
 		return false
 	}
 
@@ -158,7 +158,7 @@ func (simpleSearchObject *SimpleSearchObject) FormatToString(indentationLevel in
 	b.WriteString("SimpleSearchObject{\n")
 	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, simpleSearchObject.StructureVersion()))
 	b.WriteString(fmt.Sprintf("%sObjectID: %d,\n", indentationValues, simpleSearchObject.ObjectID))
-	b.WriteString(fmt.Sprintf("%sOwnerPID: %d,\n", indentationValues, simpleSearchObject.OwnerPID))
+	b.WriteString(fmt.Sprintf("%sOwnerPID: %s,\n", indentationValues, simpleSearchObject.OwnerPID.FormatToString(indentationLevel+1)))
 	b.WriteString(fmt.Sprintf("%sAttributes: %v,\n", indentationValues, simpleSearchObject.Attributes))
 	b.WriteString(fmt.Sprintf("%sMetadata: %x,\n", indentationValues, simpleSearchObject.Metadata))
 	b.WriteString(fmt.Sprintf("%sCommunityIDMiiverse: %d,\n", indentationValues, simpleSearchObject.CommunityIDMiiverse))

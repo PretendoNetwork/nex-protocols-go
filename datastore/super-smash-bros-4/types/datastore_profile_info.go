@@ -12,7 +12,7 @@ import (
 // DataStoreProfileInfo is a data structure used by the DataStore Super Smash Bros. 4 protocol
 type DataStoreProfileInfo struct {
 	nex.Structure
-	PID     uint32
+	PID     *nex.PID
 	Profile []byte
 }
 
@@ -20,7 +20,7 @@ type DataStoreProfileInfo struct {
 func (dataStoreProfileInfo *DataStoreProfileInfo) ExtractFromStream(stream *nex.StreamIn) error {
 	var err error
 
-	dataStoreProfileInfo.PID, err = stream.ReadUInt32LE()
+	dataStoreProfileInfo.PID, err = stream.ReadPID()
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreProfileInfo.PID. %s", err.Error())
 	}
@@ -35,7 +35,7 @@ func (dataStoreProfileInfo *DataStoreProfileInfo) ExtractFromStream(stream *nex.
 
 // Bytes encodes the DataStoreProfileInfo and returns a byte array
 func (dataStoreProfileInfo *DataStoreProfileInfo) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt32LE(dataStoreProfileInfo.PID)
+	stream.WritePID(dataStoreProfileInfo.PID)
 	stream.WriteQBuffer(dataStoreProfileInfo.Profile)
 
 	return stream.Bytes()
@@ -47,7 +47,7 @@ func (dataStoreProfileInfo *DataStoreProfileInfo) Copy() nex.StructureInterface 
 
 	copied.SetStructureVersion(dataStoreProfileInfo.StructureVersion())
 
-	copied.PID = dataStoreProfileInfo.PID
+	copied.PID = dataStoreProfileInfo.PID.Copy()
 	copied.Profile = make([]byte, len(dataStoreProfileInfo.Profile))
 
 	copy(copied.Profile, dataStoreProfileInfo.Profile)
@@ -63,7 +63,7 @@ func (dataStoreProfileInfo *DataStoreProfileInfo) Equals(structure nex.Structure
 		return false
 	}
 
-	if dataStoreProfileInfo.PID != other.PID {
+	if !dataStoreProfileInfo.PID.Equals(other.PID) {
 		return false
 	}
 
@@ -88,7 +88,7 @@ func (dataStoreProfileInfo *DataStoreProfileInfo) FormatToString(indentationLeve
 
 	b.WriteString("DataStoreProfileInfo{\n")
 	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, dataStoreProfileInfo.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sPID: %d,\n", indentationValues, dataStoreProfileInfo.PID))
+	b.WriteString(fmt.Sprintf("%sPID: %s,\n", indentationValues, dataStoreProfileInfo.PID.FormatToString(indentationLevel+1)))
 	b.WriteString(fmt.Sprintf("%sProfile: %x\n", indentationValues, dataStoreProfileInfo.Profile))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 

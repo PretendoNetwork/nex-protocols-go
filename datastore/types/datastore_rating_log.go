@@ -12,7 +12,7 @@ import (
 type DataStoreRatingLog struct {
 	nex.Structure
 	IsRated            bool
-	PID                uint32
+	PID                *nex.PID
 	RatingValue        int32
 	LockExpirationTime *nex.DateTime
 }
@@ -26,7 +26,7 @@ func (dataStoreRatingLog *DataStoreRatingLog) ExtractFromStream(stream *nex.Stre
 		return fmt.Errorf("Failed to extract DataStoreRatingLog.IsRated. %s", err.Error())
 	}
 
-	dataStoreRatingLog.PID, err = stream.ReadUInt32LE()
+	dataStoreRatingLog.PID, err = stream.ReadPID()
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreRatingLog.PID. %s", err.Error())
 	}
@@ -47,7 +47,7 @@ func (dataStoreRatingLog *DataStoreRatingLog) ExtractFromStream(stream *nex.Stre
 // Bytes encodes the DataStoreRatingLog and returns a byte array
 func (dataStoreRatingLog *DataStoreRatingLog) Bytes(stream *nex.StreamOut) []byte {
 	stream.WriteBool(dataStoreRatingLog.IsRated)
-	stream.WriteUInt32LE(dataStoreRatingLog.PID)
+	stream.WritePID(dataStoreRatingLog.PID)
 	stream.WriteInt32LE(dataStoreRatingLog.RatingValue)
 	stream.WriteDateTime(dataStoreRatingLog.LockExpirationTime)
 
@@ -61,7 +61,7 @@ func (dataStoreRatingLog *DataStoreRatingLog) Copy() nex.StructureInterface {
 	copied.SetStructureVersion(dataStoreRatingLog.StructureVersion())
 
 	copied.IsRated = dataStoreRatingLog.IsRated
-	copied.PID = dataStoreRatingLog.PID
+	copied.PID = dataStoreRatingLog.PID.Copy()
 	copied.RatingValue = dataStoreRatingLog.RatingValue
 	copied.LockExpirationTime = dataStoreRatingLog.LockExpirationTime.Copy()
 
@@ -80,7 +80,7 @@ func (dataStoreRatingLog *DataStoreRatingLog) Equals(structure nex.StructureInte
 		return false
 	}
 
-	if dataStoreRatingLog.PID != other.PID {
+	if !dataStoreRatingLog.PID.Equals(other.PID) {
 		return false
 	}
 
@@ -128,7 +128,7 @@ func (dataStoreRatingLog *DataStoreRatingLog) FormatToString(indentationLevel in
 func NewDataStoreRatingLog() *DataStoreRatingLog {
 	return &DataStoreRatingLog{
 		IsRated:            false,
-		PID:                0,
+		PID:                nex.NewPID[uint32](0),
 		RatingValue:        0,
 		LockExpirationTime: nex.NewDateTime(0),
 	}

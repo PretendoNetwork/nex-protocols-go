@@ -183,8 +183,8 @@ type Protocol struct {
 	completePostObjectHandler           func(err error, packet nex.PacketInterface, callID uint32, param *datastore_types.DataStoreCompletePostParam) uint32
 	getNewArrivedNotificationsHandler   func(err error, packet nex.PacketInterface, callID uint32, param *datastore_types.DataStoreGetNewArrivedNotificationsParam) uint32
 	getSpecificMetaHandler              func(err error, packet nex.PacketInterface, callID uint32, param *datastore_types.DataStoreGetSpecificMetaParam) uint32
-	getPersistenceInfoHandler           func(err error, packet nex.PacketInterface, callID uint32, ownerID uint32, persistenceSlotID uint16) uint32
-	getPersistenceInfosHandler          func(err error, packet nex.PacketInterface, callID uint32, ownerID uint32, persistenceSlotIDs []uint16) uint32
+	getPersistenceInfoHandler           func(err error, packet nex.PacketInterface, callID uint32, ownerID *nex.PID, persistenceSlotID uint16) uint32
+	getPersistenceInfosHandler          func(err error, packet nex.PacketInterface, callID uint32, ownerID *nex.PID, persistenceSlotIDs []uint16) uint32
 	perpetuateObjectHandler             func(err error, packet nex.PacketInterface, callID uint32, persistenceSlotID uint16, dataID uint64, deleteLastObject bool) uint32
 	unperpetuateObjectHandler           func(err error, packet nex.PacketInterface, callID uint32, persistenceSlotID uint16, deleteLastObject bool) uint32
 	prepareGetObjectOrMetaBinaryHandler func(err error, packet nex.PacketInterface, callID uint32, param *datastore_types.DataStorePrepareGetParam) uint32

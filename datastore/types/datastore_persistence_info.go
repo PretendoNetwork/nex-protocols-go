@@ -11,7 +11,7 @@ import (
 // DataStorePersistenceInfo is a data structure used by the DataStore protocol
 type DataStorePersistenceInfo struct {
 	nex.Structure
-	OwnerID           uint32
+	OwnerID           *nex.PID
 	PersistenceSlotID uint16
 	DataID            uint64
 }
@@ -20,7 +20,7 @@ type DataStorePersistenceInfo struct {
 func (dataStorePersistenceInfo *DataStorePersistenceInfo) ExtractFromStream(stream *nex.StreamIn) error {
 	var err error
 
-	dataStorePersistenceInfo.OwnerID, err = stream.ReadUInt32LE()
+	dataStorePersistenceInfo.OwnerID, err = stream.ReadPID()
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStorePersistenceInfo.OwnerID. %s", err.Error())
 	}
@@ -40,7 +40,7 @@ func (dataStorePersistenceInfo *DataStorePersistenceInfo) ExtractFromStream(stre
 
 // Bytes encodes the DataStorePersistenceInfo and returns a byte array
 func (dataStorePersistenceInfo *DataStorePersistenceInfo) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt32LE(dataStorePersistenceInfo.OwnerID)
+	stream.WritePID(dataStorePersistenceInfo.OwnerID)
 	stream.WriteUInt16LE(dataStorePersistenceInfo.PersistenceSlotID)
 	stream.WriteUInt64LE(dataStorePersistenceInfo.DataID)
 
@@ -53,7 +53,7 @@ func (dataStorePersistenceInfo *DataStorePersistenceInfo) Copy() nex.StructureIn
 
 	copied.SetStructureVersion(dataStorePersistenceInfo.StructureVersion())
 
-	copied.OwnerID = dataStorePersistenceInfo.OwnerID
+	copied.OwnerID = dataStorePersistenceInfo.OwnerID.Copy()
 	copied.PersistenceSlotID = dataStorePersistenceInfo.PersistenceSlotID
 	copied.DataID = dataStorePersistenceInfo.DataID
 
@@ -68,7 +68,7 @@ func (dataStorePersistenceInfo *DataStorePersistenceInfo) Equals(structure nex.S
 		return false
 	}
 
-	if dataStorePersistenceInfo.OwnerID != other.OwnerID {
+	if !dataStorePersistenceInfo.OwnerID.Equals(other.OwnerID) {
 		return false
 	}
 
@@ -108,7 +108,7 @@ func (dataStorePersistenceInfo *DataStorePersistenceInfo) FormatToString(indenta
 // NewDataStorePersistenceInfo returns a new DataStorePersistenceInfo
 func NewDataStorePersistenceInfo() *DataStorePersistenceInfo {
 	return &DataStorePersistenceInfo{
-		OwnerID:           0,
+		OwnerID:           nex.NewPID[uint32](0),
 		PersistenceSlotID: 0,
 		DataID:            0,
 	}

@@ -106,7 +106,7 @@ type Protocol struct {
 	Server nex.ServerInterface
 	datastoreProtocol
 	postProfileHandler              func(err error, packet nex.PacketInterface, callID uint32, param *datastore_super_smash_bros_4_types.DataStorePostProfileParam) uint32
-	getProfilesHandler              func(err error, packet nex.PacketInterface, callID uint32, pidList []uint32) uint32
+	getProfilesHandler              func(err error, packet nex.PacketInterface, callID uint32, pidList []*nex.PID) uint32
 	sendPlayReportHandler           func(err error, packet nex.PacketInterface, callID uint32, playReport []int32) uint32
 	getWorldPlayReportHandler       func(err error, packet nex.PacketInterface, callID uint32) uint32
 	getReplayMetaHandler            func(err error, packet nex.PacketInterface, callID uint32, param *datastore_super_smash_bros_4_types.DataStoreGetReplayMetaParam) uint32

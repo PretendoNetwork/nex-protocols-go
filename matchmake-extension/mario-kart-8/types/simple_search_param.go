@@ -12,7 +12,7 @@ import (
 type SimpleSearchParam struct {
 	nex.Structure
 	Unknown     uint32
-	Unknown2    uint32
+	Unknown2    *nex.PID
 	Conditions  []*SimpleSearchCondition
 	Unknown3    string
 	ResultRange *nex.ResultRange
@@ -28,7 +28,7 @@ func (simpleSearchParam *SimpleSearchParam) ExtractFromStream(stream *nex.Stream
 		return fmt.Errorf("Failed to extract SimpleSearchParam.Unknown from stream. %s", err.Error())
 	}
 
-	simpleSearchParam.Unknown2, err = stream.ReadUInt32LE()
+	simpleSearchParam.Unknown2, err = stream.ReadPID()
 	if err != nil {
 		return fmt.Errorf("Failed to extract SimpleSearchParam.Unknown2 from stream. %s", err.Error())
 	}
@@ -63,7 +63,7 @@ func (simpleSearchParam *SimpleSearchParam) ExtractFromStream(stream *nex.Stream
 // Bytes encodes the SimpleSearchParam and returns a byte array
 func (simpleSearchParam *SimpleSearchParam) Bytes(stream *nex.StreamOut) []byte {
 	stream.WriteUInt32LE(simpleSearchParam.Unknown)
-	stream.WriteUInt32LE(simpleSearchParam.Unknown2)
+	stream.WritePID(simpleSearchParam.Unknown2)
 	stream.WriteListStructure(simpleSearchParam.Conditions)
 	stream.WriteString(simpleSearchParam.Unknown3)
 	stream.WriteStructure(simpleSearchParam.ResultRange)
@@ -79,7 +79,7 @@ func (simpleSearchParam *SimpleSearchParam) Copy() nex.StructureInterface {
 	copied.SetStructureVersion(simpleSearchParam.StructureVersion())
 
 	copied.Unknown = simpleSearchParam.Unknown
-	copied.Unknown2 = simpleSearchParam.Unknown2
+	copied.Unknown2 = simpleSearchParam.Unknown2.Copy()
 	copied.Conditions = make([]*SimpleSearchCondition, len(simpleSearchParam.Conditions))
 
 	for i := 0; i < len(simpleSearchParam.Conditions); i++ {
@@ -105,7 +105,7 @@ func (simpleSearchParam *SimpleSearchParam) Equals(structure nex.StructureInterf
 		return false
 	}
 
-	if simpleSearchParam.Unknown2 != other.Unknown2 {
+	if !simpleSearchParam.Unknown2.Equals(other.Unknown2) {
 		return false
 	}
 
@@ -150,7 +150,7 @@ func (simpleSearchParam *SimpleSearchParam) FormatToString(indentationLevel int)
 	b.WriteString("SimpleSearchParam{\n")
 	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, simpleSearchParam.StructureVersion()))
 	b.WriteString(fmt.Sprintf("%sUnknown: %d,\n", indentationValues, simpleSearchParam.Unknown))
-	b.WriteString(fmt.Sprintf("%sUnknown2: %d,\n", indentationValues, simpleSearchParam.Unknown2))
+	b.WriteString(fmt.Sprintf("%sUnknown2: %s,\n", indentationValues, simpleSearchParam.Unknown2.FormatToString(indentationLevel+1)))
 
 	if len(simpleSearchParam.Conditions) == 0 {
 		b.WriteString(fmt.Sprintf("%sConditions: [],\n", indentationValues))

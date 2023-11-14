@@ -13,7 +13,7 @@ import (
 type MatchmakeRefereePersonalRoundResult struct {
 	nex.Structure
 	*nex.Data
-	PID                     uint32
+	PID                     *nex.PID
 	PersonalRoundResultFlag uint32
 	RoundWinLoss            uint32
 	RatingValueChange       int32
@@ -22,7 +22,7 @@ type MatchmakeRefereePersonalRoundResult struct {
 
 // Bytes encodes the MatchmakeRefereePersonalRoundResult and returns a byte array
 func (matchmakeRefereePersonalRoundResult *MatchmakeRefereePersonalRoundResult) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt32LE(matchmakeRefereePersonalRoundResult.PID)
+	stream.WritePID(matchmakeRefereePersonalRoundResult.PID)
 	stream.WriteUInt32LE(matchmakeRefereePersonalRoundResult.PersonalRoundResultFlag)
 	stream.WriteUInt32LE(matchmakeRefereePersonalRoundResult.RoundWinLoss)
 	stream.WriteInt32LE(matchmakeRefereePersonalRoundResult.RatingValueChange)
@@ -35,7 +35,7 @@ func (matchmakeRefereePersonalRoundResult *MatchmakeRefereePersonalRoundResult) 
 func (matchmakeRefereePersonalRoundResult *MatchmakeRefereePersonalRoundResult) ExtractFromStream(stream *nex.StreamIn) error {
 	var err error
 
-	matchmakeRefereePersonalRoundResult.PID, err = stream.ReadUInt32LE()
+	matchmakeRefereePersonalRoundResult.PID, err = stream.ReadPID()
 	if err != nil {
 		return fmt.Errorf("Failed to extract MatchmakeRefereePersonalRoundResult.PID. %s", err.Error())
 	}
@@ -72,7 +72,7 @@ func (matchmakeRefereePersonalRoundResult *MatchmakeRefereePersonalRoundResult) 
 	copied.Data = matchmakeRefereePersonalRoundResult.ParentType().Copy().(*nex.Data)
 	copied.SetParentType(copied.Data)
 
-	copied.PID = matchmakeRefereePersonalRoundResult.PID
+	copied.PID = matchmakeRefereePersonalRoundResult.PID.Copy()
 	copied.PersonalRoundResultFlag = matchmakeRefereePersonalRoundResult.PersonalRoundResultFlag
 	copied.RoundWinLoss = matchmakeRefereePersonalRoundResult.RoundWinLoss
 	copied.RatingValueChange = matchmakeRefereePersonalRoundResult.RatingValueChange
@@ -94,7 +94,7 @@ func (matchmakeRefereePersonalRoundResult *MatchmakeRefereePersonalRoundResult) 
 		return false
 	}
 
-	if matchmakeRefereePersonalRoundResult.PID != other.PID {
+	if !matchmakeRefereePersonalRoundResult.PID.Equals(other.PID) {
 		return false
 	}
 

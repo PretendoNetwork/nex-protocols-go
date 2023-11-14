@@ -14,7 +14,7 @@ import (
 // PlayingSession holds information for a session
 type PlayingSession struct {
 	nex.Structure
-	PrincipalID uint32
+	PrincipalID *nex.PID
 	Gathering   *nex.DataHolder
 }
 
@@ -22,7 +22,7 @@ type PlayingSession struct {
 func (playingSession *PlayingSession) ExtractFromStream(stream *nex.StreamIn) error {
 	var err error
 
-	playingSession.PrincipalID, err = stream.ReadUInt32LE()
+	playingSession.PrincipalID, err = stream.ReadPID()
 	if err != nil {
 		return fmt.Errorf("Failed to extract PlayingSession.PrincipalID. %s", err.Error())
 	}
@@ -37,7 +37,7 @@ func (playingSession *PlayingSession) ExtractFromStream(stream *nex.StreamIn) er
 
 // Bytes encodes the PlayingSession and returns a byte array
 func (playingSession *PlayingSession) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt32LE(playingSession.PrincipalID)
+	stream.WritePID(playingSession.PrincipalID)
 	stream.WriteDataHolder(playingSession.Gathering)
 
 	return stream.Bytes()
@@ -66,7 +66,7 @@ func (playingSession *PlayingSession) Equals(structure nex.StructureInterface) b
 		return false
 	}
 
-	if playingSession.PrincipalID != other.PrincipalID {
+	if !playingSession.PrincipalID.Equals(other.PrincipalID) {
 		return false
 	}
 
@@ -101,7 +101,7 @@ func (playingSession *PlayingSession) FormatToString(indentationLevel int) strin
 
 	b.WriteString("PlayingSession{\n")
 	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, playingSession.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sPrincipalID: %d,\n", indentationValues, playingSession.PrincipalID))
+	b.WriteString(fmt.Sprintf("%sPrincipalID: %s,\n", indentationValues, playingSession.PrincipalID.FormatToString(indentationLevel+1)))
 
 	if playingSession.Gathering != nil {
 		b.WriteString(fmt.Sprintf("%sGathering: %s\n", indentationValues, playingSession.Gathering.FormatToString(indentationLevel+1)))

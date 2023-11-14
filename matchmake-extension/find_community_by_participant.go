@@ -9,7 +9,7 @@ import (
 )
 
 // FindCommunityByParticipant sets the FindCommunityByParticipant handler function
-func (protocol *Protocol) FindCommunityByParticipant(handler func(err error, packet nex.PacketInterface, callID uint32, pid uint32, resultRange *nex.ResultRange) uint32) {
+func (protocol *Protocol) FindCommunityByParticipant(handler func(err error, packet nex.PacketInterface, callID uint32, pid *nex.PID, resultRange *nex.ResultRange) uint32) {
 	protocol.findCommunityByParticipantHandler = handler
 }
 
@@ -29,9 +29,9 @@ func (protocol *Protocol) handleFindCommunityByParticipant(packet nex.PacketInte
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	pid, err := parametersStream.ReadUInt32LE()
+	pid, err := parametersStream.ReadPID()
 	if err != nil {
-		errorCode = protocol.findCommunityByParticipantHandler(fmt.Errorf("Failed to read pid from parameters. %s", err.Error()), packet, callID, 0, nil)
+		errorCode = protocol.findCommunityByParticipantHandler(fmt.Errorf("Failed to read pid from parameters. %s", err.Error()), packet, callID, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -41,7 +41,7 @@ func (protocol *Protocol) handleFindCommunityByParticipant(packet nex.PacketInte
 
 	resultRange, err := parametersStream.ReadStructure(nex.NewResultRange())
 	if err != nil {
-		errorCode = protocol.findCommunityByParticipantHandler(fmt.Errorf("Failed to read resultRange from parameters. %s", err.Error()), packet, callID, 0, nil)
+		errorCode = protocol.findCommunityByParticipantHandler(fmt.Errorf("Failed to read resultRange from parameters. %s", err.Error()), packet, callID, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}

@@ -12,7 +12,7 @@ import (
 type MessageRecipient struct {
 	nex.Structure
 	UIRecipientType uint32
-	PrincipalID     uint32
+	PrincipalID     *nex.PID
 	GatheringID     uint32
 }
 
@@ -25,7 +25,7 @@ func (messageRecipient *MessageRecipient) ExtractFromStream(stream *nex.StreamIn
 		return fmt.Errorf("Failed to extract MessageRecipient.UIRecipientType from stream. %s", err.Error())
 	}
 
-	messageRecipient.PrincipalID, err = stream.ReadUInt32LE()
+	messageRecipient.PrincipalID, err = stream.ReadPID()
 	if err != nil {
 		return fmt.Errorf("Failed to extract MessageRecipient.PrincipalID from stream. %s", err.Error())
 	}
@@ -45,7 +45,7 @@ func (messageRecipient *MessageRecipient) Copy() nex.StructureInterface {
 	copied.SetStructureVersion(messageRecipient.StructureVersion())
 
 	copied.UIRecipientType = messageRecipient.UIRecipientType
-	copied.PrincipalID = messageRecipient.PrincipalID
+	copied.PrincipalID = messageRecipient.PrincipalID.Copy()
 	copied.GatheringID = messageRecipient.GatheringID
 
 	return copied
@@ -63,7 +63,7 @@ func (messageRecipient *MessageRecipient) Equals(structure nex.StructureInterfac
 		return false
 	}
 
-	if messageRecipient.PrincipalID != other.PrincipalID {
+	if !messageRecipient.PrincipalID.Equals(other.PrincipalID) {
 		return false
 	}
 
@@ -89,7 +89,7 @@ func (messageRecipient *MessageRecipient) FormatToString(indentationLevel int) s
 	b.WriteString("MessageRecipient{\n")
 	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, messageRecipient.StructureVersion()))
 	b.WriteString(fmt.Sprintf("%sUIRecipientType: %d,\n", indentationValues, messageRecipient.UIRecipientType))
-	b.WriteString(fmt.Sprintf("%sPrincipalID: %d,\n", indentationValues, messageRecipient.PrincipalID))
+	b.WriteString(fmt.Sprintf("%sPrincipalID: %s,\n", indentationValues, messageRecipient.PrincipalID.FormatToString(indentationLevel+1)))
 	b.WriteString(fmt.Sprintf("%sGatheringID: %d\n", indentationValues, messageRecipient.GatheringID))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 

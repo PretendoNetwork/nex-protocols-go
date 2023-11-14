@@ -9,7 +9,7 @@ import (
 )
 
 // ReportViolation sets the ReportViolation handler function
-func (protocol *Protocol) ReportViolation(handler func(err error, packet nex.PacketInterface, callID uint32, pid uint32, userName string, violationCode uint32) uint32) {
+func (protocol *Protocol) ReportViolation(handler func(err error, packet nex.PacketInterface, callID uint32, pid *nex.PID, userName string, violationCode uint32) uint32) {
 	protocol.reportViolationHandler = handler
 }
 
@@ -29,9 +29,9 @@ func (protocol *Protocol) handleReportViolation(packet nex.PacketInterface) {
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	pid, err := parametersStream.ReadUInt32LE()
+	pid, err := parametersStream.ReadPID()
 	if err != nil {
-		errorCode = protocol.reportViolationHandler(fmt.Errorf("Failed to read pid from parameters. %s", err.Error()), packet, callID, 0, "", 0)
+		errorCode = protocol.reportViolationHandler(fmt.Errorf("Failed to read pid from parameters. %s", err.Error()), packet, callID, nil, "", 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -41,7 +41,7 @@ func (protocol *Protocol) handleReportViolation(packet nex.PacketInterface) {
 
 	userName, err := parametersStream.ReadString()
 	if err != nil {
-		errorCode = protocol.reportViolationHandler(fmt.Errorf("Failed to read userName from parameters. %s", err.Error()), packet, callID, 0, "", 0)
+		errorCode = protocol.reportViolationHandler(fmt.Errorf("Failed to read userName from parameters. %s", err.Error()), packet, callID, nil, "", 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -51,7 +51,7 @@ func (protocol *Protocol) handleReportViolation(packet nex.PacketInterface) {
 
 	violationCode, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.reportViolationHandler(fmt.Errorf("Failed to read violationCode from parameters. %s", err.Error()), packet, callID, 0, "", 0)
+		errorCode = protocol.reportViolationHandler(fmt.Errorf("Failed to read violationCode from parameters. %s", err.Error()), packet, callID, nil, "", 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}

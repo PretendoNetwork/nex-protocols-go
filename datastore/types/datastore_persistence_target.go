@@ -11,7 +11,7 @@ import (
 // DataStorePersistenceTarget contains information about a DataStore target
 type DataStorePersistenceTarget struct {
 	nex.Structure
-	OwnerID           uint32
+	OwnerID           *nex.PID
 	PersistenceSlotID uint16
 }
 
@@ -19,7 +19,7 @@ type DataStorePersistenceTarget struct {
 func (dataStorePersistenceTarget *DataStorePersistenceTarget) ExtractFromStream(stream *nex.StreamIn) error {
 	var err error
 
-	dataStorePersistenceTarget.OwnerID, err = stream.ReadUInt32LE()
+	dataStorePersistenceTarget.OwnerID, err = stream.ReadPID()
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStorePersistenceTarget.OwnerID. %s", err.Error())
 	}
@@ -38,7 +38,7 @@ func (dataStorePersistenceTarget *DataStorePersistenceTarget) Copy() nex.Structu
 
 	copied.SetStructureVersion(dataStorePersistenceTarget.StructureVersion())
 
-	copied.OwnerID = dataStorePersistenceTarget.OwnerID
+	copied.OwnerID = dataStorePersistenceTarget.OwnerID.Copy()
 	copied.PersistenceSlotID = dataStorePersistenceTarget.PersistenceSlotID
 
 	return copied
@@ -52,7 +52,7 @@ func (dataStorePersistenceTarget *DataStorePersistenceTarget) Equals(structure n
 		return false
 	}
 
-	if dataStorePersistenceTarget.OwnerID != other.OwnerID {
+	if !dataStorePersistenceTarget.OwnerID.Equals(other.OwnerID) {
 		return false
 	}
 
@@ -87,7 +87,7 @@ func (dataStorePersistenceTarget *DataStorePersistenceTarget) FormatToString(ind
 // NewDataStorePersistenceTarget returns a new DataStorePersistenceTarget
 func NewDataStorePersistenceTarget() *DataStorePersistenceTarget {
 	return &DataStorePersistenceTarget{
-		OwnerID:           0,
+		OwnerID:           nex.NewPID[uint32](0),
 		PersistenceSlotID: 0,
 	}
 }

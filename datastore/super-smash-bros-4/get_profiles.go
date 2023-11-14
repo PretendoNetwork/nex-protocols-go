@@ -9,7 +9,7 @@ import (
 )
 
 // GetProfiles sets the GetProfiles handler function
-func (protocol *Protocol) GetProfiles(handler func(err error, packet nex.PacketInterface, callID uint32, pidList []uint32) uint32) {
+func (protocol *Protocol) GetProfiles(handler func(err error, packet nex.PacketInterface, callID uint32, pidList []*nex.PID) uint32) {
 	protocol.getProfilesHandler = handler
 }
 
@@ -29,7 +29,7 @@ func (protocol *Protocol) handleGetProfiles(packet nex.PacketInterface) {
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	pidList, err := parametersStream.ReadListUInt32LE()
+	pidList, err := parametersStream.ReadListPID()
 	if err != nil {
 		errorCode = protocol.getProfilesHandler(fmt.Errorf("Failed to read pidList from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {

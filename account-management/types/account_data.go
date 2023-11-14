@@ -11,7 +11,7 @@ import (
 // AccountData contains data for creating a new NNID on the network
 type AccountData struct {
 	nex.Structure
-	PID                uint32
+	PID                *nex.PID
 	StrName            string
 	UIGroups           uint32
 	strEmail           string
@@ -26,7 +26,7 @@ type AccountData struct {
 func (accountData *AccountData) ExtractFromStream(stream *nex.StreamIn) error {
 	var err error
 
-	accountData.PID, err = stream.ReadUInt32LE()
+	accountData.PID, err = stream.ReadPID()
 	if err != nil {
 		return fmt.Errorf("Failed to extract AccountData.PID. %s", err.Error())
 	}
@@ -80,7 +80,7 @@ func (accountData *AccountData) Copy() nex.StructureInterface {
 
 	copied.SetStructureVersion(accountData.StructureVersion())
 
-	copied.PID = accountData.PID
+	copied.PID = accountData.PID.Copy()
 	copied.StrName = accountData.StrName
 	copied.UIGroups = accountData.UIGroups
 	copied.strEmail = accountData.strEmail
@@ -112,7 +112,7 @@ func (accountData *AccountData) Equals(structure nex.StructureInterface) bool {
 		return false
 	}
 
-	if accountData.PID != other.PID {
+	if !accountData.PID.Equals(other.PID) {
 		return false
 	}
 
@@ -195,7 +195,7 @@ func (accountData *AccountData) FormatToString(indentationLevel int) string {
 
 	b.WriteString("AccountData{\n")
 	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, accountData.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sPID: %d,\n", indentationValues, accountData.PID))
+	b.WriteString(fmt.Sprintf("%sPID: %s,\n", indentationValues, accountData.PID.FormatToString(indentationLevel+1)))
 	b.WriteString(fmt.Sprintf("%sStrName: %q,\n", indentationValues, accountData.StrName))
 	b.WriteString(fmt.Sprintf("%sUIGroups: %d,\n", indentationValues, accountData.UIGroups))
 	b.WriteString(fmt.Sprintf("%sstrEmail: %q,\n", indentationValues, accountData.strEmail))

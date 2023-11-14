@@ -9,7 +9,7 @@ import (
 )
 
 // AddFriendBylstPrincipalID sets the AddFriendBylstPrincipalID handler function
-func (protocol *Protocol) AddFriendBylstPrincipalID(handler func(err error, packet nex.PacketInterface, callID uint32, lfc uint64, pids []uint32) uint32) {
+func (protocol *Protocol) AddFriendBylstPrincipalID(handler func(err error, packet nex.PacketInterface, callID uint32, lfc uint64, pids []*nex.PID) uint32) {
 	protocol.addFriendBylstPrincipalIDHandler = handler
 }
 
@@ -39,7 +39,7 @@ func (protocol *Protocol) handleAddFriendBylstPrincipalID(packet nex.PacketInter
 		return
 	}
 
-	pids, err := parametersStream.ReadListUInt32LE()
+	pids, err := parametersStream.ReadListPID()
 	if err != nil {
 		errorCode = protocol.addFriendBylstPrincipalIDHandler(fmt.Errorf("Failed to read pids from parameters. %s", err.Error()), packet, callID, 0, nil)
 		if errorCode != 0 {

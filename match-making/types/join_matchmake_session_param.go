@@ -15,7 +15,7 @@ import (
 type JoinMatchmakeSessionParam struct {
 	nex.Structure
 	GID                          uint32
-	AdditionalParticipants       []uint32
+	AdditionalParticipants       []*nex.PID
 	GIDForParticipationCheck     uint32
 	JoinMatchmakeSessionOption   uint32
 	JoinMatchmakeSessionBehavior uint8
@@ -38,7 +38,7 @@ func (joinMatchmakeSessionParam *JoinMatchmakeSessionParam) ExtractFromStream(st
 		return fmt.Errorf("Failed to extract JoinMatchmakeSessionParam.GID. %s", err.Error())
 	}
 
-	joinMatchmakeSessionParam.AdditionalParticipants, err = stream.ReadListUInt32LE()
+	joinMatchmakeSessionParam.AdditionalParticipants, err = stream.ReadListPID()
 	if err != nil {
 		return fmt.Errorf("Failed to extract JoinMatchmakeSessionParam.AdditionalParticipants. %s", err.Error())
 	}
@@ -113,9 +113,11 @@ func (joinMatchmakeSessionParam *JoinMatchmakeSessionParam) Copy() nex.Structure
 	copied.SetStructureVersion(joinMatchmakeSessionParam.StructureVersion())
 
 	copied.GID = joinMatchmakeSessionParam.GID
-	copied.AdditionalParticipants = make([]uint32, len(joinMatchmakeSessionParam.AdditionalParticipants))
+	copied.AdditionalParticipants = make([]*nex.PID, len(joinMatchmakeSessionParam.AdditionalParticipants))
 
-	copy(copied.AdditionalParticipants, joinMatchmakeSessionParam.AdditionalParticipants)
+	for i := 0; i < len(joinMatchmakeSessionParam.AdditionalParticipants); i++ {
+		copied.AdditionalParticipants[i] = joinMatchmakeSessionParam.AdditionalParticipants[i].Copy()
+	}
 
 	copied.GIDForParticipationCheck = joinMatchmakeSessionParam.GIDForParticipationCheck
 	copied.JoinMatchmakeSessionOption = joinMatchmakeSessionParam.JoinMatchmakeSessionOption
@@ -150,7 +152,7 @@ func (joinMatchmakeSessionParam *JoinMatchmakeSessionParam) Equals(structure nex
 	}
 
 	for i := 0; i < len(joinMatchmakeSessionParam.AdditionalParticipants); i++ {
-		if joinMatchmakeSessionParam.AdditionalParticipants[i] != other.AdditionalParticipants[i] {
+		if !joinMatchmakeSessionParam.AdditionalParticipants[i].Equals(other.AdditionalParticipants[i]) {
 			return false
 		}
 	}

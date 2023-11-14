@@ -14,7 +14,7 @@ import (
 // FindMatchmakeSessionByParticipantResult holds parameters for a matchmake session
 type FindMatchmakeSessionByParticipantResult struct {
 	nex.Structure
-	PrincipalID uint32
+	PrincipalID *nex.PID
 	Session     *MatchmakeSession
 }
 
@@ -22,7 +22,7 @@ type FindMatchmakeSessionByParticipantResult struct {
 func (findMatchmakeSessionByParticipantResult *FindMatchmakeSessionByParticipantResult) ExtractFromStream(stream *nex.StreamIn) error {
 	var err error
 
-	findMatchmakeSessionByParticipantResult.PrincipalID, err = stream.ReadUInt32LE()
+	findMatchmakeSessionByParticipantResult.PrincipalID, err = stream.ReadPID()
 	if err != nil {
 		return fmt.Errorf("Failed to extract FindMatchmakeSessionByParticipantResult.PrincipalID. %s", err.Error())
 	}
@@ -43,7 +43,7 @@ func (findMatchmakeSessionByParticipantResult *FindMatchmakeSessionByParticipant
 
 	copied.SetStructureVersion(findMatchmakeSessionByParticipantResult.StructureVersion())
 
-	copied.PrincipalID = findMatchmakeSessionByParticipantResult.PrincipalID
+	copied.PrincipalID = findMatchmakeSessionByParticipantResult.PrincipalID.Copy()
 
 	if findMatchmakeSessionByParticipantResult.Session != nil {
 		copied.Session = findMatchmakeSessionByParticipantResult.Session.Copy().(*MatchmakeSession)
@@ -60,7 +60,7 @@ func (findMatchmakeSessionByParticipantResult *FindMatchmakeSessionByParticipant
 		return false
 	}
 
-	if findMatchmakeSessionByParticipantResult.PrincipalID != other.PrincipalID {
+	if !findMatchmakeSessionByParticipantResult.PrincipalID.Equals(other.PrincipalID) {
 		return false
 	}
 
@@ -95,7 +95,7 @@ func (findMatchmakeSessionByParticipantResult *FindMatchmakeSessionByParticipant
 
 	b.WriteString("FindMatchmakeSessionByParticipantResult{\n")
 	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, findMatchmakeSessionByParticipantResult.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sPrincipalID: %d,\n", indentationValues, findMatchmakeSessionByParticipantResult.PrincipalID))
+	b.WriteString(fmt.Sprintf("%sPrincipalID: %s,\n", indentationValues, findMatchmakeSessionByParticipantResult.PrincipalID.FormatToString(indentationLevel+1)))
 
 	if findMatchmakeSessionByParticipantResult.Session != nil {
 		b.WriteString(fmt.Sprintf("%sSession: %s\n", indentationValues, findMatchmakeSessionByParticipantResult.Session.FormatToString(indentationLevel+1)))

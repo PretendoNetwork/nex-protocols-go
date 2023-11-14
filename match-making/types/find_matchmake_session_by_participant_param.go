@@ -14,7 +14,7 @@ import (
 // FindMatchmakeSessionByParticipantParam holds parameters for a matchmake session
 type FindMatchmakeSessionByParticipantParam struct {
 	nex.Structure
-	PrincipalIDList []uint32
+	PrincipalIDList []*nex.PID
 	ResultOptions   uint32
 	BlockListParam  *MatchmakeBlockListParam
 }
@@ -23,7 +23,7 @@ type FindMatchmakeSessionByParticipantParam struct {
 func (findMatchmakeSessionByParticipantParam *FindMatchmakeSessionByParticipantParam) ExtractFromStream(stream *nex.StreamIn) error {
 	var err error
 
-	findMatchmakeSessionByParticipantParam.PrincipalIDList, err = stream.ReadListUInt32LE()
+	findMatchmakeSessionByParticipantParam.PrincipalIDList, err = stream.ReadListPID()
 	if err != nil {
 		return fmt.Errorf("Failed to extract FindMatchmakeSessionByParticipantParam.PrincipalIDList. %s", err.Error())
 	}
@@ -49,9 +49,11 @@ func (findMatchmakeSessionByParticipantParam *FindMatchmakeSessionByParticipantP
 
 	copied.SetStructureVersion(findMatchmakeSessionByParticipantParam.StructureVersion())
 
-	copied.PrincipalIDList = make([]uint32, len(findMatchmakeSessionByParticipantParam.PrincipalIDList))
+	copied.PrincipalIDList = make([]*nex.PID, len(findMatchmakeSessionByParticipantParam.PrincipalIDList))
 
-	copy(copied.PrincipalIDList, findMatchmakeSessionByParticipantParam.PrincipalIDList)
+	for i := 0; i < len(findMatchmakeSessionByParticipantParam.PrincipalIDList); i++ {
+		copied.PrincipalIDList[i] = findMatchmakeSessionByParticipantParam.PrincipalIDList[i].Copy()
+	}
 
 	copied.ResultOptions = findMatchmakeSessionByParticipantParam.ResultOptions
 
@@ -75,7 +77,7 @@ func (findMatchmakeSessionByParticipantParam *FindMatchmakeSessionByParticipantP
 	}
 
 	for i := 0; i < len(findMatchmakeSessionByParticipantParam.PrincipalIDList); i++ {
-		if findMatchmakeSessionByParticipantParam.PrincipalIDList[i] != other.PrincipalIDList[i] {
+		if !findMatchmakeSessionByParticipantParam.PrincipalIDList[i].Equals(other.PrincipalIDList[i]) {
 			return false
 		}
 	}

@@ -39,7 +39,7 @@ type Protocol struct {
 	enableAPIRecorderHandler                func(err error, packet nex.PacketInterface, callID uint32) uint32
 	disableAPIRecorderHandler               func(err error, packet nex.PacketInterface, callID uint32) uint32
 	isAPIRecorderEnabledHandler             func(err error, packet nex.PacketInterface, callID uint32) uint32
-	getAPICallsHandler                      func(err error, packet nex.PacketInterface, callID uint32, pids []uint32, unknown *nex.DateTime, unknown2 *nex.DateTime) uint32
+	getAPICallsHandler                      func(err error, packet nex.PacketInterface, callID uint32, pids []*nex.PID, unknown *nex.DateTime, unknown2 *nex.DateTime) uint32
 	setExcludeJoinedMatchmakeSessionHandler func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) uint32 // TODO - Unknown request/response format
 	getExcludeJoinedMatchmakeSessionHandler func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) uint32 // TODO - Unknown request/response format
 	getAPICallSummaryHandler                func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) uint32 // TODO - Unknown request/response format

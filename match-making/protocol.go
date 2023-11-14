@@ -153,16 +153,16 @@ type Protocol struct {
 	unregisterGatheringHandler         func(err error, packet nex.PacketInterface, callID uint32, idGathering uint32) uint32
 	unregisterGatheringsHandler        func(err error, packet nex.PacketInterface, callID uint32, lstGatherings []uint32) uint32
 	updateGatheringHandler             func(err error, packet nex.PacketInterface, callID uint32, anyGathering *nex.DataHolder) uint32
-	inviteHandler                      func(err error, packet nex.PacketInterface, callID uint32, idGathering uint32, lstPrincipals []uint32, strMessage string) uint32
+	inviteHandler                      func(err error, packet nex.PacketInterface, callID uint32, idGathering uint32, lstPrincipals []*nex.PID, strMessage string) uint32
 	acceptInvitationHandler            func(err error, packet nex.PacketInterface, callID uint32, idGathering uint32, strMessage string) uint32
 	declineInvitationHandler           func(err error, packet nex.PacketInterface, callID uint32, idGathering uint32, strMessage string) uint32
-	cancelInvitationHandler            func(err error, packet nex.PacketInterface, callID uint32, idGathering uint32, lstPrincipals []uint32, strMessage string) uint32
+	cancelInvitationHandler            func(err error, packet nex.PacketInterface, callID uint32, idGathering uint32, lstPrincipals []*nex.PID, strMessage string) uint32
 	getInvitationsSentHandler          func(err error, packet nex.PacketInterface, callID uint32, idGathering uint32) uint32
 	getInvitationsReceivedHandler      func(err error, packet nex.PacketInterface, callID uint32) uint32
 	participateHandler                 func(err error, packet nex.PacketInterface, callID uint32, idGathering uint32, strMessage string) uint32
 	cancelParticipationHandler         func(err error, packet nex.PacketInterface, callID uint32, idGathering uint32, strMessage string) uint32
 	getParticipantsHandler             func(err error, packet nex.PacketInterface, callID uint32, idGathering uint32) uint32
-	addParticipantsHandler             func(err error, packet nex.PacketInterface, callID uint32, idGathering uint32, lstPrincipals []uint32, strMessage string) uint32
+	addParticipantsHandler             func(err error, packet nex.PacketInterface, callID uint32, idGathering uint32, lstPrincipals []*nex.PID, strMessage string) uint32
 	getDetailedParticipantsHandler     func(err error, packet nex.PacketInterface, callID uint32, idGathering uint32) uint32
 	getParticipantsURLsHandler         func(err error, packet nex.PacketInterface, callID uint32, idGathering uint32) uint32
 	findByTypeHandler                  func(err error, packet nex.PacketInterface, callID uint32, strType string, resultRange *nex.ResultRange) uint32
@@ -170,8 +170,8 @@ type Protocol struct {
 	findByDescriptionRegexHandler      func(err error, packet nex.PacketInterface, callID uint32, strDescriptionRegex string, resultRange *nex.ResultRange) uint32
 	findByIDHandler                    func(err error, packet nex.PacketInterface, callID uint32, lstID []uint32) uint32
 	findBySingleIDHandler              func(err error, packet nex.PacketInterface, callID uint32, id uint32) uint32
-	findByOwnerHandler                 func(err error, packet nex.PacketInterface, callID uint32, id uint32, resultRange *nex.ResultRange) uint32
-	findByParticipantsHandler          func(err error, packet nex.PacketInterface, callID uint32, pid []uint32) uint32
+	findByOwnerHandler                 func(err error, packet nex.PacketInterface, callID uint32, id *nex.PID, resultRange *nex.ResultRange) uint32
+	findByParticipantsHandler          func(err error, packet nex.PacketInterface, callID uint32, pid []*nex.PID) uint32
 	findInvitationsHandler             func(err error, packet nex.PacketInterface, callID uint32, resultRange *nex.ResultRange) uint32
 	findBySQLQueryHandler              func(err error, packet nex.PacketInterface, callID uint32, strQuery string, resultRange *nex.ResultRange) uint32
 	launchSessionHandler               func(err error, packet nex.PacketInterface, callID uint32, idGathering uint32, strURL string) uint32
@@ -180,11 +180,11 @@ type Protocol struct {
 	getStateHandler                    func(err error, packet nex.PacketInterface, callID uint32, idGathering uint32) uint32
 	setStateHandler                    func(err error, packet nex.PacketInterface, callID uint32, idGathering uint32, uiNewState uint32) uint32
 	reportStatsHandler                 func(err error, packet nex.PacketInterface, callID uint32, idGathering uint32, lstStats []*match_making_types.GatheringStats) uint32
-	getStatsHandler                    func(err error, packet nex.PacketInterface, callID uint32, idGathering uint32, lstParticipants []uint32, lstColumns []byte) uint32
+	getStatsHandler                    func(err error, packet nex.PacketInterface, callID uint32, idGathering uint32, lstParticipants []*nex.PID, lstColumns []byte) uint32
 	deleteGatheringHandler             func(err error, packet nex.PacketInterface, callID uint32, idGathering uint32) uint32
 	getPendingDeletionsHandler         func(err error, packet nex.PacketInterface, callID uint32, uiReason uint32, resultRange *nex.ResultRange) uint32
 	deleteFromDeletionsHandler         func(err error, packet nex.PacketInterface, callID uint32, lstDeletions []uint32) uint32
-	migrateGatheringOwnershipV1Handler func(err error, packet nex.PacketInterface, callID uint32, gid uint32, lstPotentialNewOwnersID []uint32) uint32
+	migrateGatheringOwnershipV1Handler func(err error, packet nex.PacketInterface, callID uint32, gid uint32, lstPotentialNewOwnersID []*nex.PID) uint32
 	findByDescriptionLikeHandler       func(err error, packet nex.PacketInterface, callID uint32, strDescriptionLike string, resultRange *nex.ResultRange) uint32
 	registerLocalURLHandler            func(err error, packet nex.PacketInterface, callID uint32, gid uint32, url *nex.StationURL) uint32
 	registerLocalURLsHandler           func(err error, packet nex.PacketInterface, callID uint32, gid uint32, lstURLs []*nex.StationURL) uint32
@@ -192,7 +192,7 @@ type Protocol struct {
 	getSessionURLsHandler              func(err error, packet nex.PacketInterface, callID uint32, gid uint32) uint32
 	updateSessionHostHandler           func(err error, packet nex.PacketInterface, callID uint32, gid uint32, isMigrateOwner bool) uint32
 	updateGatheringOwnershipHandler    func(err error, packet nex.PacketInterface, callID uint32, gid uint32, participantsOnly bool) uint32
-	migrateGatheringOwnershipHandler   func(err error, packet nex.PacketInterface, callID uint32, gid uint32, lstPotentialNewOwnersID []uint32, participantsOnly bool) uint32
+	migrateGatheringOwnershipHandler   func(err error, packet nex.PacketInterface, callID uint32, gid uint32, lstPotentialNewOwnersID []*nex.PID, participantsOnly bool) uint32
 }
 
 // Setup initializes the protocol

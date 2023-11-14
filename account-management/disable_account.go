@@ -9,7 +9,7 @@ import (
 )
 
 // DisableAccount sets the DisableAccount handler function
-func (protocol *Protocol) DisableAccount(handler func(err error, packet nex.PacketInterface, callID uint32, idPrincipal uint32, dtUntil *nex.DateTime, strMessage string) uint32) {
+func (protocol *Protocol) DisableAccount(handler func(err error, packet nex.PacketInterface, callID uint32, idPrincipal *nex.PID, dtUntil *nex.DateTime, strMessage string) uint32) {
 	protocol.disableAccountHandler = handler
 }
 
@@ -29,9 +29,9 @@ func (protocol *Protocol) handleDisableAccount(packet nex.PacketInterface) {
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	idPrincipal, err := parametersStream.ReadUInt32LE()
+	idPrincipal, err := parametersStream.ReadPID()
 	if err != nil {
-		errorCode = protocol.disableAccountHandler(fmt.Errorf("Failed to read idPrincipal from parameters. %s", err.Error()), packet, callID, 0, nil, "")
+		errorCode = protocol.disableAccountHandler(fmt.Errorf("Failed to read idPrincipal from parameters. %s", err.Error()), packet, callID, nil, nil, "")
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -41,7 +41,7 @@ func (protocol *Protocol) handleDisableAccount(packet nex.PacketInterface) {
 
 	dtUntil, err := parametersStream.ReadDateTime()
 	if err != nil {
-		errorCode = protocol.disableAccountHandler(fmt.Errorf("Failed to read dtUntil from parameters. %s", err.Error()), packet, callID, 0, nil, "")
+		errorCode = protocol.disableAccountHandler(fmt.Errorf("Failed to read dtUntil from parameters. %s", err.Error()), packet, callID, nil, nil, "")
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -51,7 +51,7 @@ func (protocol *Protocol) handleDisableAccount(packet nex.PacketInterface) {
 
 	strMessage, err := parametersStream.ReadString()
 	if err != nil {
-		errorCode = protocol.disableAccountHandler(fmt.Errorf("Failed to read strMessage from parameters. %s", err.Error()), packet, callID, 0, nil, "")
+		errorCode = protocol.disableAccountHandler(fmt.Errorf("Failed to read strMessage from parameters. %s", err.Error()), packet, callID, nil, nil, "")
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}

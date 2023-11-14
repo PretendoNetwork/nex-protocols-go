@@ -11,13 +11,13 @@ import (
 // FriendInfo is a data structure used by the Friends 3DS protocol to hold information about a friends Mii
 type FriendInfo struct {
 	nex.Structure
-	PID     uint32
+	PID     *nex.PID
 	Unknown *nex.DateTime
 }
 
 // Bytes encodes the FriendInfo and returns a byte array
 func (friendInfo *FriendInfo) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt32LE(friendInfo.PID)
+	stream.WritePID(friendInfo.PID)
 	stream.WriteDateTime(friendInfo.Unknown)
 
 	return stream.Bytes()
@@ -29,7 +29,7 @@ func (friendInfo *FriendInfo) Copy() nex.StructureInterface {
 
 	copied.SetStructureVersion(friendInfo.StructureVersion())
 
-	copied.PID = friendInfo.PID
+	copied.PID = friendInfo.PID.Copy()
 	copied.Unknown = friendInfo.Unknown.Copy()
 
 	return copied
@@ -43,7 +43,7 @@ func (friendInfo *FriendInfo) Equals(structure nex.StructureInterface) bool {
 		return false
 	}
 
-	if friendInfo.PID != other.PID {
+	if !friendInfo.PID.Equals(other.PID) {
 		return false
 	}
 
@@ -68,7 +68,7 @@ func (friendInfo *FriendInfo) FormatToString(indentationLevel int) string {
 
 	b.WriteString("FriendInfo{\n")
 	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, friendInfo.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sPID: %d,\n", indentationValues, friendInfo.PID))
+	b.WriteString(fmt.Sprintf("%sPID: %s,\n", indentationValues, friendInfo.PID.FormatToString(indentationLevel+1)))
 
 	if friendInfo.Unknown != nil {
 		b.WriteString(fmt.Sprintf("%sUnknown: %s\n", indentationValues, friendInfo.Unknown.FormatToString(indentationLevel+1)))

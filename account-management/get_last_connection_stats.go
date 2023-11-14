@@ -9,7 +9,7 @@ import (
 )
 
 // GetLastConnectionStats sets the GetLastConnectionStats handler function
-func (protocol *Protocol) GetLastConnectionStats(handler func(err error, packet nex.PacketInterface, callID uint32, idPrincipal uint32) uint32) {
+func (protocol *Protocol) GetLastConnectionStats(handler func(err error, packet nex.PacketInterface, callID uint32, idPrincipal *nex.PID) uint32) {
 	protocol.getLastConnectionStatsHandler = handler
 }
 
@@ -29,9 +29,9 @@ func (protocol *Protocol) handleGetLastConnectionStats(packet nex.PacketInterfac
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	idPrincipal, err := parametersStream.ReadUInt32LE()
+	idPrincipal, err := parametersStream.ReadPID()
 	if err != nil {
-		errorCode = protocol.getLastConnectionStatsHandler(fmt.Errorf("Failed to read idPrincipal from parameters. %s", err.Error()), packet, callID, 0)
+		errorCode = protocol.getLastConnectionStatsHandler(fmt.Errorf("Failed to read idPrincipal from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}

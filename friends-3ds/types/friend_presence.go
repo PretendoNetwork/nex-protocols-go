@@ -12,13 +12,13 @@ import (
 type FriendPresence struct {
 	nex.Structure
 	*nex.Data
-	PID      uint32
+	PID      *nex.PID
 	Presence *NintendoPresence
 }
 
 // Bytes encodes the FriendPresence and returns a byte array
 func (presence *FriendPresence) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt32LE(presence.PID)
+	stream.WritePID(presence.PID)
 	stream.WriteStructure(presence.Presence)
 
 	return stream.Bytes()
@@ -38,7 +38,7 @@ func (presence *FriendPresence) Copy() nex.StructureInterface {
 
 	copied.SetParentType(copied.Data)
 
-	copied.PID = presence.PID
+	copied.PID = presence.PID.Copy()
 	copied.Presence = presence.Presence.Copy().(*NintendoPresence)
 
 	return copied
@@ -56,7 +56,7 @@ func (presence *FriendPresence) Equals(structure nex.StructureInterface) bool {
 		return false
 	}
 
-	if presence.PID != other.PID {
+	if !presence.PID.Equals(other.PID) {
 		return false
 	}
 
@@ -81,7 +81,7 @@ func (presence *FriendPresence) FormatToString(indentationLevel int) string {
 
 	b.WriteString("FriendPresence{\n")
 	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, presence.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sPID: %d,\n", indentationValues, presence.PID))
+	b.WriteString(fmt.Sprintf("%sPID: %s,\n", indentationValues, presence.PID.FormatToString(indentationLevel+1)))
 
 	if presence.Presence != nil {
 		b.WriteString(fmt.Sprintf("%sPresence: %s\n", indentationValues, presence.Presence.FormatToString(indentationLevel+1)))

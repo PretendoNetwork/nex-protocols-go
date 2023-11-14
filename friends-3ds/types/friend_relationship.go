@@ -12,14 +12,14 @@ import (
 type FriendRelationship struct {
 	nex.Structure
 	*nex.Data
-	PID              uint32
+	PID              *nex.PID
 	LFC              uint64
 	RelationshipType uint8
 }
 
 // Bytes encodes the FriendRelationship and returns a byte array
 func (relationship *FriendRelationship) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt32LE(relationship.PID)
+	stream.WritePID(relationship.PID)
 	stream.WriteUInt64LE(relationship.LFC)
 	stream.WriteUInt8(relationship.RelationshipType)
 
@@ -40,7 +40,7 @@ func (relationship *FriendRelationship) Copy() nex.StructureInterface {
 
 	copied.SetParentType(copied.Data)
 
-	copied.PID = relationship.PID
+	copied.PID = relationship.PID.Copy()
 	copied.LFC = relationship.LFC
 	copied.RelationshipType = relationship.RelationshipType
 
@@ -59,7 +59,7 @@ func (relationship *FriendRelationship) Equals(structure nex.StructureInterface)
 		return false
 	}
 
-	if relationship.PID != other.PID {
+	if !relationship.PID.Equals(other.PID) {
 		return false
 	}
 
@@ -88,7 +88,7 @@ func (relationship *FriendRelationship) FormatToString(indentationLevel int) str
 
 	b.WriteString("FriendRelationship{\n")
 	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, relationship.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sPID: %d,\n", indentationValues, relationship.PID))
+	b.WriteString(fmt.Sprintf("%sPID: %s,\n", indentationValues, relationship.PID.FormatToString(indentationLevel+1)))
 	b.WriteString(fmt.Sprintf("%sLFC: %d,\n", indentationValues, relationship.LFC))
 	b.WriteString(fmt.Sprintf("%sRelationshipType: %d\n", indentationValues, relationship.RelationshipType))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))

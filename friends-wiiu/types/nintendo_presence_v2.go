@@ -22,7 +22,7 @@ type NintendoPresenceV2 struct {
 	Unknown3        uint8
 	GameServerID    uint32
 	Unknown4        uint32
-	PID             uint32
+	PID             *nex.PID
 	GatheringID     uint32
 	ApplicationData []byte
 	Unknown5        uint8
@@ -41,7 +41,7 @@ func (presence *NintendoPresenceV2) Bytes(stream *nex.StreamOut) []byte {
 	stream.WriteUInt8(presence.Unknown3)
 	stream.WriteUInt32LE(presence.GameServerID)
 	stream.WriteUInt32LE(presence.Unknown4)
-	stream.WriteUInt32LE(presence.PID)
+	stream.WritePID(presence.PID)
 	stream.WriteUInt32LE(presence.GatheringID)
 	stream.WriteBuffer(presence.ApplicationData)
 	stream.WriteUInt8(presence.Unknown5)
@@ -101,7 +101,7 @@ func (presence *NintendoPresenceV2) ExtractFromStream(stream *nex.StreamIn) erro
 		return fmt.Errorf("Failed to extract NintendoPresenceV2.Unknown4. %s", err.Error())
 	}
 
-	presence.PID, err = stream.ReadUInt32LE()
+	presence.PID, err = stream.ReadPID()
 	if err != nil {
 		return fmt.Errorf("Failed to extract NintendoPresenceV2.PID. %s", err.Error())
 	}
@@ -157,7 +157,7 @@ func (presence *NintendoPresenceV2) Copy() nex.StructureInterface {
 	copied.Unknown3 = presence.Unknown3
 	copied.GameServerID = presence.GameServerID
 	copied.Unknown4 = presence.Unknown4
-	copied.PID = presence.PID
+	copied.PID = presence.PID.Copy()
 	copied.GatheringID = presence.GatheringID
 	copied.ApplicationData = make([]byte, len(presence.ApplicationData))
 
@@ -218,7 +218,7 @@ func (presence *NintendoPresenceV2) Equals(structure nex.StructureInterface) boo
 		return false
 	}
 
-	if presence.PID != other.PID {
+	if !presence.PID.Equals(other.PID) {
 		return false
 	}
 

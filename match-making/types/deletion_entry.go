@@ -15,7 +15,7 @@ import (
 type DeletionEntry struct {
 	nex.Structure
 	IDGathering uint32
-	PID         uint32
+	PID         *nex.PID
 	UIReason    uint32
 }
 
@@ -28,7 +28,7 @@ func (deletionEntry *DeletionEntry) ExtractFromStream(stream *nex.StreamIn) erro
 		return fmt.Errorf("Failed to extract DeletionEntry.IDGathering. %s", err.Error())
 	}
 
-	deletionEntry.PID, err = stream.ReadUInt32LE()
+	deletionEntry.PID, err = stream.ReadPID()
 	if err != nil {
 		return fmt.Errorf("Failed to extract DeletionEntry.PID. %s", err.Error())
 	}
@@ -44,7 +44,7 @@ func (deletionEntry *DeletionEntry) ExtractFromStream(stream *nex.StreamIn) erro
 // Bytes encodes the DeletionEntry and returns a byte array
 func (deletionEntry *DeletionEntry) Bytes(stream *nex.StreamOut) []byte {
 	stream.WriteUInt32LE(deletionEntry.IDGathering)
-	stream.WriteUInt32LE(deletionEntry.PID)
+	stream.WritePID(deletionEntry.PID)
 	stream.WriteUInt32LE(deletionEntry.UIReason)
 
 	return stream.Bytes()
@@ -57,7 +57,7 @@ func (deletionEntry *DeletionEntry) Copy() nex.StructureInterface {
 	copied.SetStructureVersion(deletionEntry.StructureVersion())
 
 	copied.IDGathering = deletionEntry.IDGathering
-	copied.PID = deletionEntry.PID
+	copied.PID = deletionEntry.PID.Copy()
 	copied.UIReason = deletionEntry.UIReason
 
 	return copied
@@ -75,7 +75,7 @@ func (deletionEntry *DeletionEntry) Equals(structure nex.StructureInterface) boo
 		return false
 	}
 
-	if deletionEntry.PID != other.PID {
+	if !deletionEntry.PID.Equals(other.PID) {
 		return false
 	}
 
@@ -101,7 +101,7 @@ func (deletionEntry *DeletionEntry) FormatToString(indentationLevel int) string 
 	b.WriteString("DeletionEntry{\n")
 	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, deletionEntry.StructureVersion()))
 	b.WriteString(fmt.Sprintf("%sIDGathering: %d,\n", indentationValues, deletionEntry.IDGathering))
-	b.WriteString(fmt.Sprintf("%sPID: %d,\n", indentationValues, deletionEntry.PID))
+	b.WriteString(fmt.Sprintf("%sPID: %s,\n", indentationValues, deletionEntry.PID.FormatToString(indentationLevel+1)))
 	b.WriteString(fmt.Sprintf("%sUIReason: %d\n", indentationValues, deletionEntry.UIReason))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 

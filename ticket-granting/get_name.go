@@ -9,7 +9,7 @@ import (
 )
 
 // GetName sets the GetName handler function
-func (protocol *Protocol) GetName(handler func(err error, packet nex.PacketInterface, callID uint32, userPID uint32) uint32) {
+func (protocol *Protocol) GetName(handler func(err error, packet nex.PacketInterface, callID uint32, userPID *nex.PID) uint32) {
 	protocol.getNameHandler = handler
 }
 
@@ -29,9 +29,9 @@ func (protocol *Protocol) handleGetName(packet nex.PacketInterface) {
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	id, err := parametersStream.ReadUInt32LE()
+	id, err := parametersStream.ReadPID()
 	if err != nil {
-		errorCode = protocol.getNameHandler(fmt.Errorf("Failed to read id from parameters. %s", err.Error()), packet, callID, 0)
+		errorCode = protocol.getNameHandler(fmt.Errorf("Failed to read id from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}

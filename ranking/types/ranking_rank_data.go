@@ -12,7 +12,7 @@ import (
 // RankingRankData holds parameters for ordering rankings
 type RankingRankData struct {
 	nex.Structure
-	PrincipalID uint32
+	PrincipalID *nex.PID
 	UniqueID    uint64
 	Order       uint32
 	Category    uint32
@@ -29,7 +29,7 @@ func (rankingRankData *RankingRankData) ExtractFromStream(stream *nex.StreamIn) 
 
 	var err error
 
-	rankingRankData.PrincipalID, err = stream.ReadUInt32LE()
+	rankingRankData.PrincipalID, err = stream.ReadPID()
 	if err != nil {
 		return fmt.Errorf("Failed to extract RankingRankData.PrincipalID from stream. %s", err.Error())
 	}
@@ -83,7 +83,7 @@ func (rankingRankData *RankingRankData) ExtractFromStream(stream *nex.StreamIn) 
 func (rankingRankData *RankingRankData) Bytes(stream *nex.StreamOut) []byte {
 	nexVersion := stream.Server.LibraryVersion()
 
-	stream.WriteUInt32LE(rankingRankData.PrincipalID)
+	stream.WritePID(rankingRankData.PrincipalID)
 	stream.WriteUInt64LE(rankingRankData.UniqueID)
 	stream.WriteUInt32LE(rankingRankData.Order)
 	stream.WriteUInt32LE(rankingRankData.Category)
@@ -105,7 +105,7 @@ func (rankingRankData *RankingRankData) Copy() nex.StructureInterface {
 
 	copied.SetStructureVersion(rankingRankData.StructureVersion())
 
-	copied.PrincipalID = rankingRankData.PrincipalID
+	copied.PrincipalID = rankingRankData.PrincipalID.Copy()
 	copied.UniqueID = rankingRankData.UniqueID
 	copied.Order = rankingRankData.Order
 	copied.Category = rankingRankData.Category
@@ -134,7 +134,7 @@ func (rankingRankData *RankingRankData) Equals(structure nex.StructureInterface)
 		return false
 	}
 
-	if rankingRankData.PrincipalID != other.PrincipalID {
+	if !rankingRankData.PrincipalID.Equals(other.PrincipalID) {
 		return false
 	}
 
@@ -197,7 +197,7 @@ func (rankingRankData *RankingRankData) FormatToString(indentationLevel int) str
 
 	b.WriteString("RankingRankData{\n")
 	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, rankingRankData.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sPrincipalID: %d,\n", indentationValues, rankingRankData.PrincipalID))
+	b.WriteString(fmt.Sprintf("%sPrincipalID: %s,\n", indentationValues, rankingRankData.PrincipalID.FormatToString(indentationLevel+1)))
 	b.WriteString(fmt.Sprintf("%sUniqueID: %d,\n", indentationValues, rankingRankData.UniqueID))
 	b.WriteString(fmt.Sprintf("%sOrder: %d,\n", indentationValues, rankingRankData.Order))
 	b.WriteString(fmt.Sprintf("%sCategory: %d,\n", indentationValues, rankingRankData.Category))

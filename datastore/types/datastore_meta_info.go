@@ -13,7 +13,7 @@ import (
 type DataStoreMetaInfo struct {
 	nex.Structure
 	DataID        uint64
-	OwnerID       uint32
+	OwnerID       *nex.PID
 	Size          uint32
 	DataType      uint16
 	Name          string
@@ -42,7 +42,7 @@ func (dataStoreMetaInfo *DataStoreMetaInfo) ExtractFromStream(stream *nex.Stream
 		return fmt.Errorf("Failed to extract DataStoreMetaInfo.DataID. %s", err.Error())
 	}
 
-	dataStoreMetaInfo.OwnerID, err = stream.ReadUInt32LE()
+	dataStoreMetaInfo.OwnerID, err = stream.ReadPID()
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreMetaInfo.OwnerID. %s", err.Error())
 	}
@@ -142,7 +142,7 @@ func (dataStoreMetaInfo *DataStoreMetaInfo) ExtractFromStream(stream *nex.Stream
 // Bytes encodes the DataStoreMetaInfo and returns a byte array
 func (dataStoreMetaInfo *DataStoreMetaInfo) Bytes(stream *nex.StreamOut) []byte {
 	stream.WriteUInt64LE(dataStoreMetaInfo.DataID)
-	stream.WriteUInt32LE(dataStoreMetaInfo.OwnerID)
+	stream.WritePID(dataStoreMetaInfo.OwnerID)
 	stream.WriteUInt32LE(dataStoreMetaInfo.Size)
 	stream.WriteString(dataStoreMetaInfo.Name)
 	stream.WriteUInt16LE(dataStoreMetaInfo.DataType)
@@ -171,7 +171,7 @@ func (dataStoreMetaInfo *DataStoreMetaInfo) Copy() nex.StructureInterface {
 	copied.SetStructureVersion(dataStoreMetaInfo.StructureVersion())
 
 	copied.DataID = dataStoreMetaInfo.DataID
-	copied.OwnerID = dataStoreMetaInfo.OwnerID
+	copied.OwnerID = dataStoreMetaInfo.OwnerID.Copy()
 	copied.Size = dataStoreMetaInfo.Size
 	copied.DataType = dataStoreMetaInfo.DataType
 	copied.Name = dataStoreMetaInfo.Name
@@ -215,7 +215,7 @@ func (dataStoreMetaInfo *DataStoreMetaInfo) Equals(structure nex.StructureInterf
 		return false
 	}
 
-	if dataStoreMetaInfo.OwnerID != other.OwnerID {
+	if !dataStoreMetaInfo.OwnerID.Equals(other.OwnerID) {
 		return false
 	}
 
@@ -418,7 +418,7 @@ func (dataStoreMetaInfo *DataStoreMetaInfo) FilterPropertiesByResultOption(resul
 func NewDataStoreMetaInfo() *DataStoreMetaInfo {
 	return &DataStoreMetaInfo{
 		DataID:        0,
-		OwnerID:       0,
+		OwnerID:       nex.NewPID[uint32](0),
 		Size:          0,
 		DataType:      0,
 		Name:          "",

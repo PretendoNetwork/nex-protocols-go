@@ -9,7 +9,7 @@ import (
 )
 
 // GetUserStatuses sets the GetUserStatuses handler function
-func (protocol *Protocol) GetUserStatuses(handler func(err error, packet nex.PacketInterface, callID uint32, pids []uint32, unknown []uint8) uint32) {
+func (protocol *Protocol) GetUserStatuses(handler func(err error, packet nex.PacketInterface, callID uint32, pids []*nex.PID, unknown []uint8) uint32) {
 	protocol.getUserStatusesHandler = handler
 }
 
@@ -29,7 +29,7 @@ func (protocol *Protocol) handleGetUserStatuses(packet nex.PacketInterface) {
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	pids, err := parametersStream.ReadListUInt32LE()
+	pids, err := parametersStream.ReadListPID()
 	if err != nil {
 		errorCode = protocol.getUserStatusesHandler(fmt.Errorf("Failed to read pids from parameters. %s", err.Error()), packet, callID, nil, nil)
 		if errorCode != 0 {

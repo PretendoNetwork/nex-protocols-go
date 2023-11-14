@@ -9,7 +9,7 @@ import (
 )
 
 // GetFriendUserProfiles sets the GetFriendUserProfiles handler function
-func (protocol *Protocol) GetFriendUserProfiles(handler func(err error, packet nex.PacketInterface, callID uint32, pids []uint64) uint32) {
+func (protocol *Protocol) GetFriendUserProfiles(handler func(err error, packet nex.PacketInterface, callID uint32, pids []*nex.PID) uint32) {
 	protocol.getFriendUserProfilesHandler = handler
 }
 
@@ -29,7 +29,7 @@ func (protocol *Protocol) handleGetFriendUserProfiles(packet nex.PacketInterface
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	pids, err := parametersStream.ReadListUInt64LE()
+	pids, err := parametersStream.ReadListPID()
 	if err != nil {
 		errorCode = protocol.getFriendUserProfilesHandler(fmt.Errorf("Failed to read pids from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {

@@ -70,10 +70,10 @@ type Protocol struct {
 	getCommonDataHandler            func(err error, packet nex.PacketInterface, callID uint32, uniqueID uint64) uint32
 	changeAttributesHandler         func(err error, packet nex.PacketInterface, callID uint32, category uint32, changeParam *ranking_types.RankingChangeAttributesParam, uniqueID uint64) uint32
 	changeAllAttributesHandler      func(err error, packet nex.PacketInterface, callID uint32, changeParam *ranking_types.RankingChangeAttributesParam, uniqueID uint64) uint32
-	getRankingHandler               func(err error, packet nex.PacketInterface, callID uint32, rankingMode uint8, category uint32, orderParam *ranking_types.RankingOrderParam, uniqueID uint64, principalID uint32) uint32
-	getApproxOrderHandler           func(err error, packet nex.PacketInterface, callID uint32, category uint32, orderParam *ranking_types.RankingOrderParam, score uint32, uniqueID uint64, principalID uint32) uint32
+	getRankingHandler               func(err error, packet nex.PacketInterface, callID uint32, rankingMode uint8, category uint32, orderParam *ranking_types.RankingOrderParam, uniqueID uint64, principalID *nex.PID) uint32
+	getApproxOrderHandler           func(err error, packet nex.PacketInterface, callID uint32, category uint32, orderParam *ranking_types.RankingOrderParam, score uint32, uniqueID uint64, principalID *nex.PID) uint32
 	getStatsHandler                 func(err error, packet nex.PacketInterface, callID uint32, category uint32, orderParam *ranking_types.RankingOrderParam, flags uint32) uint32
-	getRankingByPIDListHandler      func(err error, packet nex.PacketInterface, callID uint32, principalIDList []uint32, rankingMode uint8, category uint32, orderParam *ranking_types.RankingOrderParam, uniqueID uint64) uint32
+	getRankingByPIDListHandler      func(err error, packet nex.PacketInterface, callID uint32, principalIDList []*nex.PID, rankingMode uint8, category uint32, orderParam *ranking_types.RankingOrderParam, uniqueID uint64) uint32
 	getRankingByUniqueIDListHandler func(err error, packet nex.PacketInterface, callID uint32, nexUniqueIDList []uint64, rankingMode uint8, category uint32, orderParam *ranking_types.RankingOrderParam, uniqueID uint64) uint32
 	getCachedTopXRankingHandler     func(err error, packet nex.PacketInterface, callID uint32, category uint32, orderParam *ranking_types.RankingOrderParam) uint32
 	getCachedTopXRankingsHandler    func(err error, packet nex.PacketInterface, callID uint32, categories []uint32, orderParams []*ranking_types.RankingOrderParam) uint32

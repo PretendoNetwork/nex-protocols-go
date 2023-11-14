@@ -9,7 +9,7 @@ import (
 )
 
 // DeleteFromDeletions sets the DeleteFromDeletions handler function
-func (protocol *Protocol) DeleteFromDeletions(handler func(err error, packet nex.PacketInterface, callID uint32, lstDeletions []uint32, pid uint32) uint32) {
+func (protocol *Protocol) DeleteFromDeletions(handler func(err error, packet nex.PacketInterface, callID uint32, lstDeletions []uint32, pid *nex.PID) uint32) {
 	protocol.deleteFromDeletionsHandler = handler
 }
 
@@ -31,7 +31,7 @@ func (protocol *Protocol) handleDeleteFromDeletions(packet nex.PacketInterface) 
 
 	lstDeletions, err := parametersStream.ReadListUInt32LE()
 	if err != nil {
-		errorCode = protocol.deleteFromDeletionsHandler(fmt.Errorf("Failed to read lstDeletionsCount from parameters. %s", err.Error()), packet, callID, nil, 0)
+		errorCode = protocol.deleteFromDeletionsHandler(fmt.Errorf("Failed to read lstDeletionsCount from parameters. %s", err.Error()), packet, callID, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -39,9 +39,9 @@ func (protocol *Protocol) handleDeleteFromDeletions(packet nex.PacketInterface) 
 		return
 	}
 
-	pid, err := parametersStream.ReadUInt32LE()
+	pid, err := parametersStream.ReadPID()
 	if err != nil {
-		errorCode = protocol.deleteFromDeletionsHandler(fmt.Errorf("Failed to read pid from parameters. %s", err.Error()), packet, callID, nil, 0)
+		errorCode = protocol.deleteFromDeletionsHandler(fmt.Errorf("Failed to read pid from parameters. %s", err.Error()), packet, callID, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}

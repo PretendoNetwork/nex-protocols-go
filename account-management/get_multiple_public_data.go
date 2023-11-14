@@ -9,7 +9,7 @@ import (
 )
 
 // GetMultiplePublicData sets the GetMultiplePublicData handler function
-func (protocol *Protocol) GetMultiplePublicData(handler func(err error, packet nex.PacketInterface, callID uint32, lstPrincipals []uint32) uint32) {
+func (protocol *Protocol) GetMultiplePublicData(handler func(err error, packet nex.PacketInterface, callID uint32, lstPrincipals []*nex.PID) uint32) {
 	protocol.getMultiplePublicDataHandler = handler
 }
 
@@ -29,7 +29,7 @@ func (protocol *Protocol) handleGetMultiplePublicData(packet nex.PacketInterface
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	lstPrincipals, err := parametersStream.ReadListUInt32LE()
+	lstPrincipals, err := parametersStream.ReadListPID()
 	if err != nil {
 		errorCode = protocol.getMultiplePublicDataHandler(fmt.Errorf("Failed to read lstPrincipals from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {

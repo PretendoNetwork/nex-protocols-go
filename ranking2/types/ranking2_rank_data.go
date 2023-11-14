@@ -13,7 +13,7 @@ type Ranking2RankData struct {
 	nex.Structure
 	Misc        uint64
 	NexUniqueID uint64
-	PrincipalID uint32
+	PrincipalID *nex.PID
 	Rank        uint32
 	Score       uint32
 	CommonData  *Ranking2CommonData
@@ -33,7 +33,7 @@ func (ranking2RankData *Ranking2RankData) ExtractFromStream(stream *nex.StreamIn
 		return fmt.Errorf("Failed to extract Ranking2RankData.NexUniqueID from stream. %s", err.Error())
 	}
 
-	ranking2RankData.PrincipalID, err = stream.ReadUInt32LE()
+	ranking2RankData.PrincipalID, err = stream.ReadPID()
 	if err != nil {
 		return fmt.Errorf("Failed to extract Ranking2RankData.PrincipalID from stream. %s", err.Error())
 	}
@@ -62,7 +62,7 @@ func (ranking2RankData *Ranking2RankData) ExtractFromStream(stream *nex.StreamIn
 func (ranking2RankData *Ranking2RankData) Bytes(stream *nex.StreamOut) []byte {
 	stream.WriteUInt64LE(ranking2RankData.Misc)
 	stream.WriteUInt64LE(ranking2RankData.NexUniqueID)
-	stream.WriteUInt32LE(ranking2RankData.PrincipalID)
+	stream.WritePID(ranking2RankData.PrincipalID)
 	stream.WriteUInt32LE(ranking2RankData.Rank)
 	stream.WriteUInt32LE(ranking2RankData.Score)
 	stream.WriteStructure(ranking2RankData.CommonData)
@@ -78,7 +78,7 @@ func (ranking2RankData *Ranking2RankData) Copy() nex.StructureInterface {
 
 	copied.Misc = ranking2RankData.Misc
 	copied.NexUniqueID = ranking2RankData.NexUniqueID
-	copied.PrincipalID = ranking2RankData.PrincipalID
+	copied.PrincipalID = ranking2RankData.PrincipalID.Copy()
 	copied.Rank = ranking2RankData.Rank
 	copied.Score = ranking2RankData.Score
 	copied.CommonData = ranking2RankData.CommonData.Copy().(*Ranking2CommonData)
@@ -101,7 +101,7 @@ func (ranking2RankData *Ranking2RankData) Equals(structure nex.StructureInterfac
 		return false
 	}
 
-	if ranking2RankData.PrincipalID != other.PrincipalID {
+	if !ranking2RankData.PrincipalID.Equals(other.PrincipalID) {
 		return false
 	}
 
@@ -136,7 +136,7 @@ func (ranking2RankData *Ranking2RankData) FormatToString(indentationLevel int) s
 	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, ranking2RankData.StructureVersion()))
 	b.WriteString(fmt.Sprintf("%sMisc: %d,\n", indentationValues, ranking2RankData.Misc))
 	b.WriteString(fmt.Sprintf("%sNexUniqueID: %d,\n", indentationValues, ranking2RankData.NexUniqueID))
-	b.WriteString(fmt.Sprintf("%sPrincipalID: %d,\n", indentationValues, ranking2RankData.PrincipalID))
+	b.WriteString(fmt.Sprintf("%sPrincipalID: %s,\n", indentationValues, ranking2RankData.PrincipalID.FormatToString(indentationLevel+1)))
 	b.WriteString(fmt.Sprintf("%sRank: %d,\n", indentationValues, ranking2RankData.Rank))
 	b.WriteString(fmt.Sprintf("%sScore: %d,\n", indentationValues, ranking2RankData.Score))
 

@@ -11,7 +11,7 @@ import (
 // FriendData contains data relating to a friend
 type FriendData struct {
 	nex.Structure
-	PID            uint32
+	PID            *nex.PID
 	StrName        string
 	ByRelationship uint8
 	UIDetails      uint32
@@ -22,7 +22,7 @@ type FriendData struct {
 func (friendData *FriendData) ExtractFromStream(stream *nex.StreamIn) error {
 	var err error
 
-	friendData.PID, err = stream.ReadUInt32LE()
+	friendData.PID, err = stream.ReadPID()
 	if err != nil {
 		return fmt.Errorf("Failed to extract FriendData.PID. %s", err.Error())
 	}
@@ -56,7 +56,7 @@ func (friendData *FriendData) Copy() nex.StructureInterface {
 
 	copied.SetStructureVersion(friendData.StructureVersion())
 
-	copied.PID = friendData.PID
+	copied.PID = friendData.PID.Copy()
 	copied.StrName = friendData.StrName
 	copied.ByRelationship = friendData.ByRelationship
 	copied.UIDetails = friendData.UIDetails
@@ -73,7 +73,7 @@ func (friendData *FriendData) Equals(structure nex.StructureInterface) bool {
 		return false
 	}
 
-	if friendData.PID != other.PID {
+	if !friendData.PID.Equals(other.PID) {
 		return false
 	}
 
@@ -110,7 +110,7 @@ func (friendData *FriendData) FormatToString(indentationLevel int) string {
 
 	b.WriteString("FriendData{\n")
 	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, friendData.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sPID: %d,\n", indentationValues, friendData.PID))
+	b.WriteString(fmt.Sprintf("%sPID: %s,\n", indentationValues, friendData.PID.FormatToString(indentationLevel+1)))
 	b.WriteString(fmt.Sprintf("%sStrName: %q,\n", indentationValues, friendData.StrName))
 	b.WriteString(fmt.Sprintf("%sByRelationship: %d,\n", indentationValues, friendData.ByRelationship))
 	b.WriteString(fmt.Sprintf("%sUIDetails: %d,\n", indentationValues, friendData.UIDetails))

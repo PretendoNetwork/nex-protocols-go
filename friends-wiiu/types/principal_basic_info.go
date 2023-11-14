@@ -12,7 +12,7 @@ import (
 type PrincipalBasicInfo struct {
 	nex.Structure
 	*nex.Data
-	PID     uint32
+	PID     *nex.PID
 	NNID    string
 	Mii     *MiiV2
 	Unknown uint8
@@ -20,7 +20,7 @@ type PrincipalBasicInfo struct {
 
 // Bytes encodes the PrincipalBasicInfo and returns a byte array
 func (principalInfo *PrincipalBasicInfo) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt32LE(principalInfo.PID)
+	stream.WritePID(principalInfo.PID)
 	stream.WriteString(principalInfo.NNID)
 	stream.WriteStructure(principalInfo.Mii)
 	stream.WriteUInt8(principalInfo.Unknown)
@@ -32,7 +32,7 @@ func (principalInfo *PrincipalBasicInfo) Bytes(stream *nex.StreamOut) []byte {
 func (principalInfo *PrincipalBasicInfo) ExtractFromStream(stream *nex.StreamIn) error {
 	var err error
 
-	principalInfo.PID, err = stream.ReadUInt32LE()
+	principalInfo.PID, err = stream.ReadPID()
 	if err != nil {
 		return fmt.Errorf("Failed to extract PrincipalBasicInfo.PID. %s", err.Error())
 	}
@@ -70,7 +70,7 @@ func (principalInfo *PrincipalBasicInfo) Copy() nex.StructureInterface {
 
 	copied.SetParentType(copied.Data)
 
-	copied.PID = principalInfo.PID
+	copied.PID = principalInfo.PID.Copy()
 	copied.NNID = principalInfo.NNID
 	copied.Mii = principalInfo.Mii.Copy().(*MiiV2)
 	copied.Unknown = principalInfo.Unknown
@@ -90,7 +90,7 @@ func (principalInfo *PrincipalBasicInfo) Equals(structure nex.StructureInterface
 		return false
 	}
 
-	if principalInfo.PID != other.PID {
+	if !principalInfo.PID.Equals(other.PID) {
 		return false
 	}
 

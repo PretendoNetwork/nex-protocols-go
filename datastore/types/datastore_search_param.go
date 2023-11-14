@@ -12,7 +12,7 @@ import (
 type DataStoreSearchParam struct {
 	nex.Structure
 	SearchTarget           uint8
-	OwnerIDs               []uint32
+	OwnerIDs               []*nex.PID
 	OwnerType              uint8
 	DestinationIDs         []uint64
 	DataType               uint16
@@ -41,7 +41,7 @@ func (dataStoreSearchParam *DataStoreSearchParam) ExtractFromStream(stream *nex.
 		return fmt.Errorf("Failed to extract DataStoreSearchParam.SearchTarget. %s", err.Error())
 	}
 
-	dataStoreSearchParam.OwnerIDs, err = stream.ReadListUInt32LE()
+	dataStoreSearchParam.OwnerIDs, err = stream.ReadListPID()
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreSearchParam.OwnerIDs. %s", err.Error())
 	}
@@ -148,9 +148,11 @@ func (dataStoreSearchParam *DataStoreSearchParam) Copy() nex.StructureInterface 
 	copied.SetStructureVersion(dataStoreSearchParam.StructureVersion())
 
 	copied.SearchTarget = dataStoreSearchParam.SearchTarget
-	copied.OwnerIDs = make([]uint32, len(dataStoreSearchParam.OwnerIDs))
+	copied.OwnerIDs = make([]*nex.PID, len(dataStoreSearchParam.OwnerIDs))
 
-	copy(copied.OwnerIDs, dataStoreSearchParam.OwnerIDs)
+	for i := 0; i < len(dataStoreSearchParam.OwnerIDs); i++ {
+		copied.OwnerIDs[i] = dataStoreSearchParam.OwnerIDs[i].Copy()
+	}
 
 	copied.OwnerType = dataStoreSearchParam.OwnerType
 	copied.DestinationIDs = make([]uint64, len(dataStoreSearchParam.DestinationIDs))
@@ -194,7 +196,7 @@ func (dataStoreSearchParam *DataStoreSearchParam) Equals(structure nex.Structure
 	}
 
 	for i := 0; i < len(dataStoreSearchParam.OwnerIDs); i++ {
-		if dataStoreSearchParam.OwnerIDs[i] != other.OwnerIDs[i] {
+		if !dataStoreSearchParam.OwnerIDs[i].Equals(other.OwnerIDs[i]) {
 			return false
 		}
 	}
@@ -343,7 +345,7 @@ func (dataStoreSearchParam *DataStoreSearchParam) FormatToString(indentationLeve
 func NewDataStoreSearchParam() *DataStoreSearchParam {
 	return &DataStoreSearchParam{
 		SearchTarget:           0,
-		OwnerIDs:               make([]uint32, 0),
+		OwnerIDs:               make([]*nex.PID, 0),
 		OwnerType:              0,
 		DestinationIDs:         make([]uint64, 0),
 		DataType:               0,

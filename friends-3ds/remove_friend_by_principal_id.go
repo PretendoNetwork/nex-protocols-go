@@ -9,7 +9,7 @@ import (
 )
 
 // RemoveFriendByPrincipalID sets the RemoveFriendByPrincipalID handler function
-func (protocol *Protocol) RemoveFriendByPrincipalID(handler func(err error, packet nex.PacketInterface, callID uint32, pid uint32) uint32) {
+func (protocol *Protocol) RemoveFriendByPrincipalID(handler func(err error, packet nex.PacketInterface, callID uint32, pid *nex.PID) uint32) {
 	protocol.removeFriendByPrincipalIDHandler = handler
 }
 
@@ -29,9 +29,9 @@ func (protocol *Protocol) handleRemoveFriendByPrincipalID(packet nex.PacketInter
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	pid, err := parametersStream.ReadUInt32LE()
+	pid, err := parametersStream.ReadPID()
 	if err != nil {
-		errorCode = protocol.removeFriendByPrincipalIDHandler(fmt.Errorf("Failed to read pid from parameters. %s", err.Error()), packet, callID, 0)
+		errorCode = protocol.removeFriendByPrincipalIDHandler(fmt.Errorf("Failed to read pid from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}

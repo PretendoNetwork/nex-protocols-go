@@ -20,7 +20,7 @@ type NintendoPresence struct {
 	MatchmakeType     uint8
 	JoinGameID        uint32
 	JoinGameMode      uint32
-	OwnerPID          uint32
+	OwnerPID          *nex.PID
 	JoinGroupID       uint32
 	ApplicationArg    []byte
 }
@@ -34,7 +34,7 @@ func (presence *NintendoPresence) Bytes(stream *nex.StreamOut) []byte {
 	stream.WriteUInt8(presence.MatchmakeType)
 	stream.WriteUInt32LE(presence.JoinGameID)
 	stream.WriteUInt32LE(presence.JoinGameMode)
-	stream.WriteUInt32LE(presence.OwnerPID)
+	stream.WritePID(presence.OwnerPID)
 	stream.WriteUInt32LE(presence.JoinGroupID)
 	stream.WriteBuffer(presence.ApplicationArg)
 
@@ -81,7 +81,7 @@ func (presence *NintendoPresence) ExtractFromStream(stream *nex.StreamIn) error 
 		return fmt.Errorf("Failed to extract NintendoPresence.JoinGameMode. %s", err.Error())
 	}
 
-	presence.OwnerPID, err = stream.ReadUInt32LE()
+	presence.OwnerPID, err = stream.ReadPID()
 	if err != nil {
 		return fmt.Errorf("Failed to extract NintendoPresence.OwnerPID. %s", err.Error())
 	}
@@ -120,7 +120,7 @@ func (presence *NintendoPresence) Copy() nex.StructureInterface {
 	copied.MatchmakeType = presence.MatchmakeType
 	copied.JoinGameID = presence.JoinGameID
 	copied.JoinGameMode = presence.JoinGameMode
-	copied.OwnerPID = presence.OwnerPID
+	copied.OwnerPID = presence.OwnerPID.Copy()
 	copied.JoinGroupID = presence.JoinGroupID
 	copied.ApplicationArg = make([]byte, len(presence.ApplicationArg))
 
@@ -169,7 +169,7 @@ func (presence *NintendoPresence) Equals(structure nex.StructureInterface) bool 
 		return false
 	}
 
-	if presence.OwnerPID != other.OwnerPID {
+	if !presence.OwnerPID.Equals(other.OwnerPID) {
 		return false
 	}
 
@@ -211,7 +211,7 @@ func (presence *NintendoPresence) FormatToString(indentationLevel int) string {
 	b.WriteString(fmt.Sprintf("%sMatchmakeType: %d,\n", indentationValues, presence.MatchmakeType))
 	b.WriteString(fmt.Sprintf("%sJoinGameID: %d,\n", indentationValues, presence.JoinGameID))
 	b.WriteString(fmt.Sprintf("%sJoinGameMode: %d,\n", indentationValues, presence.JoinGameMode))
-	b.WriteString(fmt.Sprintf("%sOwnerPID: %d,\n", indentationValues, presence.OwnerPID))
+	b.WriteString(fmt.Sprintf("%sOwnerPID: %s,\n", indentationValues, presence.OwnerPID.FormatToString(indentationLevel+1)))
 	b.WriteString(fmt.Sprintf("%sJoinGroupID: %d,\n", indentationValues, presence.JoinGroupID))
 	b.WriteString(fmt.Sprintf("%sApplicationArg: %x\n", indentationValues, presence.ApplicationArg))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))

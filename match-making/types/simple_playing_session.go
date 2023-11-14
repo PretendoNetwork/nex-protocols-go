@@ -14,7 +14,7 @@ import (
 // SimplePlayingSession holds simple information for a session
 type SimplePlayingSession struct {
 	nex.Structure
-	PrincipalID uint32
+	PrincipalID *nex.PID
 	GatheringID uint32
 	GameMode    uint32
 	Attribute0  uint32
@@ -24,7 +24,7 @@ type SimplePlayingSession struct {
 func (simplePlayingSession *SimplePlayingSession) ExtractFromStream(stream *nex.StreamIn) error {
 	var err error
 
-	simplePlayingSession.PrincipalID, err = stream.ReadUInt32LE()
+	simplePlayingSession.PrincipalID, err = stream.ReadPID()
 	if err != nil {
 		return fmt.Errorf("Failed to extract SimplePlayingSession.PrincipalID. %s", err.Error())
 	}
@@ -49,7 +49,7 @@ func (simplePlayingSession *SimplePlayingSession) ExtractFromStream(stream *nex.
 
 // Bytes encodes the SimplePlayingSession and returns a byte array
 func (simplePlayingSession *SimplePlayingSession) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt32LE(simplePlayingSession.PrincipalID)
+	stream.WritePID(simplePlayingSession.PrincipalID)
 	stream.WriteUInt32LE(simplePlayingSession.GatheringID)
 	stream.WriteUInt32LE(simplePlayingSession.GameMode)
 	stream.WriteUInt32LE(simplePlayingSession.Attribute0)
@@ -79,7 +79,7 @@ func (simplePlayingSession *SimplePlayingSession) Equals(structure nex.Structure
 		return false
 	}
 
-	if simplePlayingSession.PrincipalID != other.PrincipalID {
+	if !simplePlayingSession.PrincipalID.Equals(other.PrincipalID) {
 		return false
 	}
 
@@ -112,7 +112,7 @@ func (simplePlayingSession *SimplePlayingSession) FormatToString(indentationLeve
 
 	b.WriteString("SimplePlayingSession{\n")
 	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, simplePlayingSession.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sPrincipalID: %d,\n", indentationValues, simplePlayingSession.PrincipalID))
+	b.WriteString(fmt.Sprintf("%sPrincipalID: %s,\n", indentationValues, simplePlayingSession.PrincipalID.FormatToString(indentationLevel+1)))
 	b.WriteString(fmt.Sprintf("%sGatheringID: %d,\n", indentationValues, simplePlayingSession.GatheringID))
 	b.WriteString(fmt.Sprintf("%sGameMode: %d,\n", indentationValues, simplePlayingSession.GameMode))
 	b.WriteString(fmt.Sprintf("%sAttribute0: %d\n", indentationValues, simplePlayingSession.Attribute0))

@@ -12,7 +12,7 @@ import (
 type FriendPersistentInfo struct {
 	nex.Structure
 	*nex.Data
-	PID              uint32
+	PID              *nex.PID
 	Region           uint8
 	Country          uint8
 	Area             uint8
@@ -27,7 +27,7 @@ type FriendPersistentInfo struct {
 
 // Bytes encodes the FriendPersistentInfo and returns a byte array
 func (friendPersistentInfo *FriendPersistentInfo) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt32LE(friendPersistentInfo.PID)
+	stream.WritePID(friendPersistentInfo.PID)
 	stream.WriteUInt8(friendPersistentInfo.Region)
 	stream.WriteUInt8(friendPersistentInfo.Country)
 	stream.WriteUInt8(friendPersistentInfo.Area)
@@ -56,7 +56,7 @@ func (friendPersistentInfo *FriendPersistentInfo) Copy() nex.StructureInterface 
 
 	copied.SetParentType(copied.Data)
 
-	copied.PID = friendPersistentInfo.PID
+	copied.PID = friendPersistentInfo.PID.Copy()
 	copied.Region = friendPersistentInfo.Region
 	copied.Country = friendPersistentInfo.Country
 	copied.Area = friendPersistentInfo.Area
@@ -83,7 +83,7 @@ func (friendPersistentInfo *FriendPersistentInfo) Equals(structure nex.Structure
 		return false
 	}
 
-	if friendPersistentInfo.PID != other.PID {
+	if !friendPersistentInfo.PID.Equals(other.PID) {
 		return false
 	}
 
@@ -144,7 +144,7 @@ func (friendPersistentInfo *FriendPersistentInfo) FormatToString(indentationLeve
 
 	b.WriteString("FriendPersistentInfo{\n")
 	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, friendPersistentInfo.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sPID: %d,\n", indentationValues, friendPersistentInfo.PID))
+	b.WriteString(fmt.Sprintf("%sPID: %s,\n", indentationValues, friendPersistentInfo.PID.FormatToString(indentationLevel+1)))
 	b.WriteString(fmt.Sprintf("%sRegion: %d,\n", indentationValues, friendPersistentInfo.Region))
 	b.WriteString(fmt.Sprintf("%sCountry: %d,\n", indentationValues, friendPersistentInfo.Country))
 	b.WriteString(fmt.Sprintf("%sArea: %d,\n", indentationValues, friendPersistentInfo.Area))

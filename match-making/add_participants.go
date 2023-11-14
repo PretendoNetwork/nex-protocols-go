@@ -9,7 +9,7 @@ import (
 )
 
 // AddParticipants sets the AddParticipants handler function
-func (protocol *Protocol) AddParticipants(handler func(err error, packet nex.PacketInterface, callID uint32, idGathering uint32, lstPrincipals []uint32, strMessage string) uint32) {
+func (protocol *Protocol) AddParticipants(handler func(err error, packet nex.PacketInterface, callID uint32, idGathering uint32, lstPrincipals []*nex.PID, strMessage string) uint32) {
 	protocol.addParticipantsHandler = handler
 }
 
@@ -39,7 +39,7 @@ func (protocol *Protocol) handleAddParticipants(packet nex.PacketInterface) {
 		return
 	}
 
-	lstPrincipals, err := parametersStream.ReadListUInt32LE()
+	lstPrincipals, err := parametersStream.ReadListPID()
 	if err != nil {
 		errorCode = protocol.addParticipantsHandler(fmt.Errorf("Failed to read lstPrincipals from parameters. %s", err.Error()), packet, callID, 0, nil, "")
 		if errorCode != 0 {

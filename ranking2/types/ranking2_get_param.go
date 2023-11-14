@@ -12,7 +12,7 @@ import (
 type Ranking2GetParam struct {
 	nex.Structure
 	NexUniqueID        uint64
-	PrincipalID        uint32
+	PrincipalID        *nex.PID
 	Category           uint32
 	Offset             uint32
 	Length             uint32
@@ -31,7 +31,7 @@ func (ranking2GetParam *Ranking2GetParam) ExtractFromStream(stream *nex.StreamIn
 		return fmt.Errorf("Failed to extract Ranking2GetParam.NexUniqueID from stream. %s", err.Error())
 	}
 
-	ranking2GetParam.PrincipalID, err = stream.ReadUInt32LE()
+	ranking2GetParam.PrincipalID, err = stream.ReadPID()
 	if err != nil {
 		return fmt.Errorf("Failed to extract Ranking2GetParam.PrincipalID from stream. %s", err.Error())
 	}
@@ -77,7 +77,7 @@ func (ranking2GetParam *Ranking2GetParam) ExtractFromStream(stream *nex.StreamIn
 // Bytes encodes the Ranking2GetParam and returns a byte array
 func (ranking2GetParam *Ranking2GetParam) Bytes(stream *nex.StreamOut) []byte {
 	stream.WriteUInt64LE(ranking2GetParam.NexUniqueID)
-	stream.WriteUInt32LE(ranking2GetParam.PrincipalID)
+	stream.WritePID(ranking2GetParam.PrincipalID)
 	stream.WriteUInt32LE(ranking2GetParam.Category)
 	stream.WriteUInt32LE(ranking2GetParam.Offset)
 	stream.WriteUInt32LE(ranking2GetParam.Length)
@@ -96,7 +96,7 @@ func (ranking2GetParam *Ranking2GetParam) Copy() nex.StructureInterface {
 	copied.SetStructureVersion(ranking2GetParam.StructureVersion())
 
 	copied.NexUniqueID = ranking2GetParam.NexUniqueID
-	copied.PrincipalID = ranking2GetParam.PrincipalID
+	copied.PrincipalID = ranking2GetParam.PrincipalID.Copy()
 	copied.Category = ranking2GetParam.Category
 	copied.Offset = ranking2GetParam.Offset
 	copied.Length = ranking2GetParam.Length
@@ -119,7 +119,7 @@ func (ranking2GetParam *Ranking2GetParam) Equals(structure nex.StructureInterfac
 		return false
 	}
 
-	if ranking2GetParam.PrincipalID != other.PrincipalID {
+	if !ranking2GetParam.PrincipalID.Equals(other.PrincipalID) {
 		return false
 	}
 
@@ -169,7 +169,7 @@ func (ranking2GetParam *Ranking2GetParam) FormatToString(indentationLevel int) s
 	b.WriteString("Ranking2GetParam{\n")
 	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, ranking2GetParam.StructureVersion()))
 	b.WriteString(fmt.Sprintf("%sNexUniqueID: %d,\n", indentationValues, ranking2GetParam.NexUniqueID))
-	b.WriteString(fmt.Sprintf("%sPrincipalID: %d,\n", indentationValues, ranking2GetParam.PrincipalID))
+	b.WriteString(fmt.Sprintf("%sPrincipalID: %s,\n", indentationValues, ranking2GetParam.PrincipalID.FormatToString(indentationLevel+1)))
 	b.WriteString(fmt.Sprintf("%sCategory: %d,\n", indentationValues, ranking2GetParam.Category))
 	b.WriteString(fmt.Sprintf("%sOffset: %d,\n", indentationValues, ranking2GetParam.Offset))
 	b.WriteString(fmt.Sprintf("%sLength: %d,\n", indentationValues, ranking2GetParam.Length))

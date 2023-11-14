@@ -14,7 +14,7 @@ type UserMessage struct {
 	*nex.Data
 	UIID             uint32
 	UIParentID       uint32
-	PIDSender        uint32
+	PIDSender        *nex.PID
 	Receptiontime    *nex.DateTime
 	UILifeTime       uint32
 	UIFlags          uint32
@@ -37,7 +37,7 @@ func (userMessage *UserMessage) ExtractFromStream(stream *nex.StreamIn) error {
 		return fmt.Errorf("Failed to extract UserMessage.UIParentID from stream. %s", err.Error())
 	}
 
-	userMessage.PIDSender, err = stream.ReadUInt32LE()
+	userMessage.PIDSender, err = stream.ReadPID()
 	if err != nil {
 		return fmt.Errorf("Failed to extract UserMessage.PIDSender from stream. %s", err.Error())
 	}
@@ -88,7 +88,7 @@ func (userMessage *UserMessage) Copy() nex.StructureInterface {
 
 	copied.UIID = userMessage.UIID
 	copied.UIParentID = userMessage.UIParentID
-	copied.PIDSender = userMessage.PIDSender
+	copied.PIDSender = userMessage.PIDSender.Copy()
 	copied.Receptiontime = userMessage.Receptiontime.Copy()
 	copied.UILifeTime = userMessage.UILifeTime
 	copied.UIFlags = userMessage.UIFlags
@@ -119,7 +119,7 @@ func (userMessage *UserMessage) Equals(structure nex.StructureInterface) bool {
 		return false
 	}
 
-	if userMessage.PIDSender != other.PIDSender {
+	if !userMessage.PIDSender.Equals(other.PIDSender) {
 		return false
 	}
 
@@ -167,7 +167,7 @@ func (userMessage *UserMessage) FormatToString(indentationLevel int) string {
 	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, userMessage.StructureVersion()))
 	b.WriteString(fmt.Sprintf("%sUIID: %d,\n", indentationValues, userMessage.UIID))
 	b.WriteString(fmt.Sprintf("%sUIParentID: %d,\n", indentationValues, userMessage.UIParentID))
-	b.WriteString(fmt.Sprintf("%sPIDSender: %d,\n", indentationValues, userMessage.PIDSender))
+	b.WriteString(fmt.Sprintf("%sPIDSender: %s,\n", indentationValues, userMessage.PIDSender.FormatToString(indentationLevel+1)))
 
 	if userMessage.Receptiontime != nil {
 		b.WriteString(fmt.Sprintf("%sReceptiontime: %s,\n", indentationValues, userMessage.Receptiontime))

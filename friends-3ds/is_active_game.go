@@ -10,7 +10,7 @@ import (
 )
 
 // IsActiveGame sets the IsActiveGame handler function
-func (protocol *Protocol) IsActiveGame(handler func(err error, packet nex.PacketInterface, callID uint32, pids []uint32, gameKey *friends_3ds_types.GameKey) uint32) {
+func (protocol *Protocol) IsActiveGame(handler func(err error, packet nex.PacketInterface, callID uint32, pids []*nex.PID, gameKey *friends_3ds_types.GameKey) uint32) {
 	protocol.isActiveGameHandler = handler
 }
 
@@ -30,7 +30,7 @@ func (protocol *Protocol) handleIsActiveGame(packet nex.PacketInterface) {
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	pids, err := parametersStream.ReadListUInt32LE()
+	pids, err := parametersStream.ReadListPID()
 	if err != nil {
 		errorCode = protocol.isActiveGameHandler(fmt.Errorf("Failed to read pids from parameters. %s", err.Error()), packet, callID, nil, nil)
 		if errorCode != 0 {

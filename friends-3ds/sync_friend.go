@@ -9,7 +9,7 @@ import (
 )
 
 // SyncFriend sets the SyncFriend handler function
-func (protocol *Protocol) SyncFriend(handler func(err error, packet nex.PacketInterface, callID uint32, lfc uint64, pids []uint32, lfcList []uint64) uint32) {
+func (protocol *Protocol) SyncFriend(handler func(err error, packet nex.PacketInterface, callID uint32, lfc uint64, pids []*nex.PID, lfcList []uint64) uint32) {
 	protocol.syncFriendHandler = handler
 }
 
@@ -39,7 +39,7 @@ func (protocol *Protocol) handleSyncFriend(packet nex.PacketInterface) {
 		return
 	}
 
-	pids, err := parametersStream.ReadListUInt32LE()
+	pids, err := parametersStream.ReadListPID()
 	if err != nil {
 		errorCode = protocol.syncFriendHandler(fmt.Errorf("Failed to read pids from parameters. %s", err.Error()), packet, callID, 0, nil, nil)
 		if errorCode != 0 {

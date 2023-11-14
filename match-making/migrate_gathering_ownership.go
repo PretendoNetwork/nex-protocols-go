@@ -9,7 +9,7 @@ import (
 )
 
 // MigrateGatheringOwnership sets the MigrateGatheringOwnership handler function
-func (protocol *Protocol) MigrateGatheringOwnership(handler func(err error, packet nex.PacketInterface, callID uint32, gid uint32, lstPotentialNewOwnersID []uint32, participantsOnly bool) uint32) {
+func (protocol *Protocol) MigrateGatheringOwnership(handler func(err error, packet nex.PacketInterface, callID uint32, gid uint32, lstPotentialNewOwnersID []*nex.PID, participantsOnly bool) uint32) {
 	protocol.migrateGatheringOwnershipHandler = handler
 }
 
@@ -39,7 +39,7 @@ func (protocol *Protocol) handleMigrateGatheringOwnership(packet nex.PacketInter
 		return
 	}
 
-	lstPotentialNewOwnersID, err := parametersStream.ReadListUInt32LE()
+	lstPotentialNewOwnersID, err := parametersStream.ReadListPID()
 	if err != nil {
 		errorCode = protocol.migrateGatheringOwnershipHandler(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), packet, callID, 0, nil, false)
 		if errorCode != 0 {

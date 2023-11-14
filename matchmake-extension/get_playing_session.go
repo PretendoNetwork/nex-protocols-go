@@ -9,7 +9,7 @@ import (
 )
 
 // GetPlayingSession sets the GetPlayingSession handler function
-func (protocol *Protocol) GetPlayingSession(handler func(err error, packet nex.PacketInterface, callID uint32, lstPID []uint32) uint32) {
+func (protocol *Protocol) GetPlayingSession(handler func(err error, packet nex.PacketInterface, callID uint32, lstPID []*nex.PID) uint32) {
 	protocol.getPlayingSessionHandler = handler
 }
 
@@ -29,7 +29,7 @@ func (protocol *Protocol) handleGetPlayingSession(packet nex.PacketInterface) {
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	lstPID, err := parametersStream.ReadListUInt32LE()
+	lstPID, err := parametersStream.ReadListPID()
 	if err != nil {
 		errorCode = protocol.getPlayingSessionHandler(fmt.Errorf("Failed to read lstPID from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {

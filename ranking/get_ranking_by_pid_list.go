@@ -10,7 +10,7 @@ import (
 )
 
 // GetRankingByPIDList sets the GetRankingByPIDList handler function
-func (protocol *Protocol) GetRankingByPIDList(handler func(err error, packet nex.PacketInterface, callID uint32, principalIDList []uint32, rankingMode uint8, category uint32, orderParam *ranking_types.RankingOrderParam, uniqueID uint64) uint32) {
+func (protocol *Protocol) GetRankingByPIDList(handler func(err error, packet nex.PacketInterface, callID uint32, principalIDList []*nex.PID, rankingMode uint8, category uint32, orderParam *ranking_types.RankingOrderParam, uniqueID uint64) uint32) {
 	protocol.getRankingByPIDListHandler = handler
 }
 
@@ -30,7 +30,7 @@ func (protocol *Protocol) handleGetRankingByPIDList(packet nex.PacketInterface) 
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	principalIDList, err := parametersStream.ReadListUInt32LE()
+	principalIDList, err := parametersStream.ReadListPID()
 	if err != nil {
 		errorCode = protocol.getRankingByPIDListHandler(fmt.Errorf("Failed to read principalIDList from parameters. %s", err.Error()), packet, callID, nil, 0, 0, nil, 0)
 		if errorCode != 0 {

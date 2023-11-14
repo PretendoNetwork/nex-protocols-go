@@ -11,7 +11,7 @@ import (
 // FriendUserInfo holds data for the Matchmake Extension (Monster Hunter XX) protocol
 type FriendUserInfo struct {
 	nex.Structure
-	PID      uint64
+	PID      *nex.PID
 	Name     string
 	Presence uint32
 }
@@ -20,7 +20,7 @@ type FriendUserInfo struct {
 func (friendUserInfo *FriendUserInfo) ExtractFromStream(stream *nex.StreamIn) error {
 	var err error
 
-	friendUserInfo.PID, err = stream.ReadUInt64LE()
+	friendUserInfo.PID, err = stream.ReadPID()
 	if err != nil {
 		return fmt.Errorf("Failed to extract FriendUserInfo.PID from stream. %s", err.Error())
 	}
@@ -40,7 +40,7 @@ func (friendUserInfo *FriendUserInfo) ExtractFromStream(stream *nex.StreamIn) er
 
 // Bytes encodes the FriendUserInfo and returns a byte array
 func (friendUserInfo *FriendUserInfo) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt64LE(friendUserInfo.PID)
+	stream.WritePID(friendUserInfo.PID)
 	stream.WriteString(friendUserInfo.Name)
 	stream.WriteUInt32LE(friendUserInfo.Presence)
 
@@ -53,7 +53,7 @@ func (friendUserInfo *FriendUserInfo) Copy() nex.StructureInterface {
 
 	copied.SetStructureVersion(friendUserInfo.StructureVersion())
 
-	copied.PID = friendUserInfo.PID
+	copied.PID = friendUserInfo.PID.Copy()
 	copied.Name = friendUserInfo.Name
 	copied.Presence = friendUserInfo.Presence
 
@@ -68,7 +68,7 @@ func (friendUserInfo *FriendUserInfo) Equals(structure nex.StructureInterface) b
 		return false
 	}
 
-	if friendUserInfo.PID != other.PID {
+	if friendUserInfo.PID.Equals(other.PID) {
 		return false
 	}
 
@@ -97,7 +97,7 @@ func (friendUserInfo *FriendUserInfo) FormatToString(indentationLevel int) strin
 
 	b.WriteString("FriendUserInfo{\n")
 	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, friendUserInfo.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sPID: %d,\n", indentationValues, friendUserInfo.PID))
+	b.WriteString(fmt.Sprintf("%sPID: %s,\n", indentationValues, friendUserInfo.PID.FormatToString(indentationLevel+1)))
 	b.WriteString(fmt.Sprintf("%sName: %q,\n", indentationValues, friendUserInfo.Name))
 	b.WriteString(fmt.Sprintf("%sPresence: %d,\n", indentationValues, friendUserInfo.Presence))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))

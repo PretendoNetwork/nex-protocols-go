@@ -9,7 +9,7 @@ import (
 )
 
 // AddFriends sets the AddFriends handler function
-func (protocol *Protocol) AddFriends(handler func(err error, packet nex.PacketInterface, callID uint32, pids []uint64) uint32) {
+func (protocol *Protocol) AddFriends(handler func(err error, packet nex.PacketInterface, callID uint32, pids []*nex.PID) uint32) {
 	protocol.addFriendsHandler = handler
 }
 
@@ -29,7 +29,7 @@ func (protocol *Protocol) handleAddFriends(packet nex.PacketInterface) {
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	pids, err := parametersStream.ReadListUInt64LE()
+	pids, err := parametersStream.ReadListPID()
 	if err != nil {
 		errorCode = protocol.addFriendsHandler(fmt.Errorf("Failed to read pids from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {

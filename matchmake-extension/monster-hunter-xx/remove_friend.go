@@ -9,7 +9,7 @@ import (
 )
 
 // RemoveFriend sets the RemoveFriend handler function
-func (protocol *Protocol) RemoveFriend(handler func(err error, packet nex.PacketInterface, callID uint32, pid uint64) uint32) {
+func (protocol *Protocol) RemoveFriend(handler func(err error, packet nex.PacketInterface, callID uint32, pid *nex.PID) uint32) {
 	protocol.removeFriendHandler = handler
 }
 
@@ -29,9 +29,9 @@ func (protocol *Protocol) handleRemoveFriend(packet nex.PacketInterface) {
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	pid, err := parametersStream.ReadUInt64LE()
+	pid, err := parametersStream.ReadPID()
 	if err != nil {
-		errorCode = protocol.removeFriendHandler(fmt.Errorf("Failed to read pid from parameters. %s", err.Error()), packet, callID, 0)
+		errorCode = protocol.removeFriendHandler(fmt.Errorf("Failed to read pid from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}

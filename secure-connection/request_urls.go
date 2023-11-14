@@ -9,7 +9,7 @@ import (
 )
 
 // RequestURLs sets the RequestURLs handler function
-func (protocol *Protocol) RequestURLs(handler func(err error, packet nex.PacketInterface, callID uint32, cidTarget uint32, pidTarget uint32) uint32) {
+func (protocol *Protocol) RequestURLs(handler func(err error, packet nex.PacketInterface, callID uint32, cidTarget uint32, pidTarget *nex.PID) uint32) {
 	protocol.requestURLsHandler = handler
 }
 
@@ -31,7 +31,7 @@ func (protocol *Protocol) handleRequestURLs(packet nex.PacketInterface) {
 
 	cidTarget, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.requestURLsHandler(fmt.Errorf("Failed to read cidTarget from parameters. %s", err.Error()), packet, callID, 0, 0)
+		errorCode = protocol.requestURLsHandler(fmt.Errorf("Failed to read cidTarget from parameters. %s", err.Error()), packet, callID, 0, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -39,9 +39,9 @@ func (protocol *Protocol) handleRequestURLs(packet nex.PacketInterface) {
 		return
 	}
 
-	pidTarget, err := parametersStream.ReadUInt32LE()
+	pidTarget, err := parametersStream.ReadPID()
 	if err != nil {
-		errorCode = protocol.requestURLsHandler(fmt.Errorf("Failed to read pidTarget from parameters. %s", err.Error()), packet, callID, 0, 0)
+		errorCode = protocol.requestURLsHandler(fmt.Errorf("Failed to read pidTarget from parameters. %s", err.Error()), packet, callID, 0, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}

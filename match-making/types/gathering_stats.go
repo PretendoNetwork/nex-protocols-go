@@ -14,7 +14,7 @@ import (
 // GatheringStats holds stats about a Gathering
 type GatheringStats struct {
 	nex.Structure
-	PIDParticipant uint32
+	PIDParticipant *nex.PID
 	UIFlags        uint32
 	LstValues      []float32
 }
@@ -23,7 +23,7 @@ type GatheringStats struct {
 func (gatheringStats *GatheringStats) ExtractFromStream(stream *nex.StreamIn) error {
 	var err error
 
-	gatheringStats.PIDParticipant, err = stream.ReadUInt32LE()
+	gatheringStats.PIDParticipant, err = stream.ReadPID()
 	if err != nil {
 		return fmt.Errorf("Failed to extract GatheringStats.PIDParticipant. %s", err.Error())
 	}
@@ -43,7 +43,7 @@ func (gatheringStats *GatheringStats) ExtractFromStream(stream *nex.StreamIn) er
 
 // Bytes encodes the GatheringStats and returns a byte array
 func (gatheringStats *GatheringStats) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt32LE(gatheringStats.PIDParticipant)
+	stream.WritePID(gatheringStats.PIDParticipant)
 	stream.WriteUInt32LE(gatheringStats.UIFlags)
 	stream.WriteListFloat32LE(gatheringStats.LstValues)
 
@@ -56,7 +56,7 @@ func (gatheringStats *GatheringStats) Copy() nex.StructureInterface {
 
 	copied.SetStructureVersion(gatheringStats.StructureVersion())
 
-	copied.PIDParticipant = gatheringStats.PIDParticipant
+	copied.PIDParticipant = gatheringStats.PIDParticipant.Copy()
 	copied.UIFlags = gatheringStats.UIFlags
 	copied.LstValues = make([]float32, len(gatheringStats.LstValues))
 
@@ -73,7 +73,7 @@ func (gatheringStats *GatheringStats) Equals(structure nex.StructureInterface) b
 		return false
 	}
 
-	if gatheringStats.PIDParticipant != other.PIDParticipant {
+	if !gatheringStats.PIDParticipant.Equals(other.PIDParticipant) {
 		return false
 	}
 
@@ -108,7 +108,7 @@ func (gatheringStats *GatheringStats) FormatToString(indentationLevel int) strin
 
 	b.WriteString("GatheringStats{\n")
 	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, gatheringStats.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sPIDParticipant: %d,\n", indentationValues, gatheringStats.PIDParticipant))
+	b.WriteString(fmt.Sprintf("%sPIDParticipant: %s,\n", indentationValues, gatheringStats.PIDParticipant.FormatToString(indentationLevel+1)))
 	b.WriteString(fmt.Sprintf("%sUIFlags: %d,\n", indentationValues, gatheringStats.UIFlags))
 	b.WriteString(fmt.Sprintf("%sLstValues: %v\n", indentationValues, gatheringStats.LstValues))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))

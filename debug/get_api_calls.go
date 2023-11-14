@@ -9,7 +9,7 @@ import (
 )
 
 // GetAPICalls sets the GetAPICalls handler function
-func (protocol *Protocol) GetAPICalls(handler func(err error, packet nex.PacketInterface, callID uint32, pids []uint32, unknown *nex.DateTime, unknown2 *nex.DateTime) uint32) {
+func (protocol *Protocol) GetAPICalls(handler func(err error, packet nex.PacketInterface, callID uint32, pids []*nex.PID, unknown *nex.DateTime, unknown2 *nex.DateTime) uint32) {
 	protocol.getAPICallsHandler = handler
 }
 
@@ -29,7 +29,7 @@ func (protocol *Protocol) handleGetAPICalls(packet nex.PacketInterface) {
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	pids, err := parametersStream.ReadListUInt32LE()
+	pids, err := parametersStream.ReadListPID()
 	if err != nil {
 		errorCode = protocol.getAPICallsHandler(fmt.Errorf("Failed to read pids from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
 		if errorCode != 0 {

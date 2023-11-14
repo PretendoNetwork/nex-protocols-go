@@ -11,7 +11,7 @@ import (
 // NotificationEvent holds general purpose notification data
 type NotificationEvent struct {
 	nex.Structure
-	PIDSource uint32
+	PIDSource *nex.PID
 	Type      uint32
 	Param1    uint32
 	Param2    uint32
@@ -23,7 +23,7 @@ type NotificationEvent struct {
 func (notificationEvent *NotificationEvent) Bytes(stream *nex.StreamOut) []byte {
 	nexVersion := stream.Server.LibraryVersion()
 
-	stream.WriteUInt32LE(notificationEvent.PIDSource)
+	stream.WritePID(notificationEvent.PIDSource)
 	stream.WriteUInt32LE(notificationEvent.Type)
 	stream.WriteUInt32LE(notificationEvent.Param1)
 	stream.WriteUInt32LE(notificationEvent.Param2)
@@ -42,7 +42,7 @@ func (notificationEvent *NotificationEvent) Copy() nex.StructureInterface {
 
 	copied.SetStructureVersion(notificationEvent.StructureVersion())
 
-	copied.PIDSource = notificationEvent.PIDSource
+	copied.PIDSource = notificationEvent.PIDSource.Copy()
 	copied.Type = notificationEvent.Type
 	copied.Param1 = notificationEvent.Param1
 	copied.Param2 = notificationEvent.Param2
@@ -60,7 +60,7 @@ func (notificationEvent *NotificationEvent) Equals(structure nex.StructureInterf
 		return false
 	}
 
-	if notificationEvent.PIDSource != other.PIDSource {
+	if !notificationEvent.PIDSource.Equals(other.PIDSource) {
 		return false
 	}
 
@@ -101,7 +101,7 @@ func (notificationEvent *NotificationEvent) FormatToString(indentationLevel int)
 
 	b.WriteString("NotificationEvent{\n")
 	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, notificationEvent.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sPIDSource: %d,\n", indentationValues, notificationEvent.PIDSource))
+	b.WriteString(fmt.Sprintf("%sPIDSource: %s,\n", indentationValues, notificationEvent.PIDSource.FormatToString(indentationLevel+1)))
 	b.WriteString(fmt.Sprintf("%sType: %d,\n", indentationValues, notificationEvent.Type))
 	b.WriteString(fmt.Sprintf("%sParam1: %d,\n", indentationValues, notificationEvent.Param1))
 	b.WriteString(fmt.Sprintf("%sParam2: %d,\n", indentationValues, notificationEvent.Param2))

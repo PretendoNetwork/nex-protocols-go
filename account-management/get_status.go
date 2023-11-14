@@ -9,7 +9,7 @@ import (
 )
 
 // GetStatus sets the GetStatus handler function
-func (protocol *Protocol) GetStatus(handler func(err error, packet nex.PacketInterface, callID uint32, idPrincipal uint32) uint32) {
+func (protocol *Protocol) GetStatus(handler func(err error, packet nex.PacketInterface, callID uint32, idPrincipal *nex.PID) uint32) {
 	protocol.getStatusHandler = handler
 }
 
@@ -29,9 +29,9 @@ func (protocol *Protocol) handleGetStatus(packet nex.PacketInterface) {
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	idPrincipal, err := parametersStream.ReadUInt32LE()
+	idPrincipal, err := parametersStream.ReadPID()
 	if err != nil {
-		errorCode = protocol.getStatusHandler(fmt.Errorf("Failed to read idPrincipal from parameters. %s", err.Error()), packet, callID, 0)
+		errorCode = protocol.getStatusHandler(fmt.Errorf("Failed to read idPrincipal from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}

@@ -9,7 +9,7 @@ import (
 )
 
 // Invite sets the Invite handler function
-func (protocol *Protocol) Invite(handler func(err error, packet nex.PacketInterface, callID uint32, idGathering uint32, lstPrincipals []uint32, strMessage string) uint32) {
+func (protocol *Protocol) Invite(handler func(err error, packet nex.PacketInterface, callID uint32, idGathering uint32, lstPrincipals []*nex.PID, strMessage string) uint32) {
 	protocol.inviteHandler = handler
 }
 
@@ -39,7 +39,7 @@ func (protocol *Protocol) handleInvite(packet nex.PacketInterface) {
 		return
 	}
 
-	lstPrincipals, err := parametersStream.ReadListUInt32LE()
+	lstPrincipals, err := parametersStream.ReadListPID()
 	if err != nil {
 		errorCode = protocol.inviteHandler(fmt.Errorf("Failed to read lstPrincipals from parameters. %s", err.Error()), packet, callID, 0, nil, "")
 		if errorCode != 0 {

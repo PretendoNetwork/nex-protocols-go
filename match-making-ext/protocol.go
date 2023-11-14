@@ -38,7 +38,7 @@ type Protocol struct {
 	getDetailedParticipantsHandler func(err error, packet nex.PacketInterface, callID uint32, idGathering uint32, bOnlyActive bool) uint32
 	getParticipantsURLsHandler     func(err error, packet nex.PacketInterface, callID uint32, lstGatherings []uint32) uint32
 	getGatheringRelationsHandler   func(err error, packet nex.PacketInterface, callID uint32, id uint32, descr string) uint32
-	deleteFromDeletionsHandler     func(err error, packet nex.PacketInterface, callID uint32, lstDeletions []uint32, pid uint32) uint32
+	deleteFromDeletionsHandler     func(err error, packet nex.PacketInterface, callID uint32, lstDeletions []uint32, pid *nex.PID) uint32
 }
 
 // Setup initializes the protocol

@@ -14,7 +14,7 @@ type MatchmakeRefereeStats struct {
 	*nex.Data
 	UniqueID            uint64
 	Category            uint32
-	PID                 uint32
+	PID                 *nex.PID
 	RecentDisconnection uint32
 	RecentViolation     uint32
 	RecentMismatch      uint32
@@ -34,7 +34,7 @@ type MatchmakeRefereeStats struct {
 func (matchmakeRefereeStats *MatchmakeRefereeStats) Bytes(stream *nex.StreamOut) []byte {
 	stream.WriteUInt64LE(matchmakeRefereeStats.UniqueID)
 	stream.WriteUInt32LE(matchmakeRefereeStats.Category)
-	stream.WriteUInt32LE(matchmakeRefereeStats.PID)
+	stream.WritePID(matchmakeRefereeStats.PID)
 	stream.WriteUInt32LE(matchmakeRefereeStats.RecentDisconnection)
 	stream.WriteUInt32LE(matchmakeRefereeStats.RecentViolation)
 	stream.WriteUInt32LE(matchmakeRefereeStats.RecentMismatch)
@@ -66,7 +66,7 @@ func (matchmakeRefereeStats *MatchmakeRefereeStats) ExtractFromStream(stream *ne
 		return fmt.Errorf("Failed to extract MatchmakeRefereeStats.Category. %s", err.Error())
 	}
 
-	matchmakeRefereeStats.PID, err = stream.ReadUInt32LE()
+	matchmakeRefereeStats.PID, err = stream.ReadPID()
 	if err != nil {
 		return fmt.Errorf("Failed to extract MatchmakeRefereeStats.PID. %s", err.Error())
 	}
@@ -150,7 +150,7 @@ func (matchmakeRefereeStats *MatchmakeRefereeStats) Copy() nex.StructureInterfac
 
 	copied.UniqueID = matchmakeRefereeStats.UniqueID
 	copied.Category = matchmakeRefereeStats.Category
-	copied.PID = matchmakeRefereeStats.PID
+	copied.PID = matchmakeRefereeStats.PID.Copy()
 	copied.RecentDisconnection = matchmakeRefereeStats.RecentDisconnection
 	copied.RecentViolation = matchmakeRefereeStats.RecentViolation
 	copied.RecentMismatch = matchmakeRefereeStats.RecentMismatch
@@ -188,7 +188,7 @@ func (matchmakeRefereeStats *MatchmakeRefereeStats) Equals(structure nex.Structu
 		return false
 	}
 
-	if matchmakeRefereeStats.PID != other.PID {
+	if !matchmakeRefereeStats.PID.Equals(other.PID) {
 		return false
 	}
 
@@ -263,7 +263,7 @@ func (matchmakeRefereeStats *MatchmakeRefereeStats) FormatToString(indentationLe
 	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, matchmakeRefereeStats.StructureVersion()))
 	b.WriteString(fmt.Sprintf("%sUniqueID: %d,\n", indentationValues, matchmakeRefereeStats.UniqueID))
 	b.WriteString(fmt.Sprintf("%sCategory: %d,\n", indentationValues, matchmakeRefereeStats.Category))
-	b.WriteString(fmt.Sprintf("%sPID: %d,\n", indentationValues, matchmakeRefereeStats.PID))
+	b.WriteString(fmt.Sprintf("%sPID: %s,\n", indentationValues, matchmakeRefereeStats.PID.FormatToString(indentationLevel+1)))
 	b.WriteString(fmt.Sprintf("%sRecentDisconnection: %d,\n", indentationValues, matchmakeRefereeStats.RecentDisconnection))
 	b.WriteString(fmt.Sprintf("%sRecentViolation: %d,\n", indentationValues, matchmakeRefereeStats.RecentViolation))
 	b.WriteString(fmt.Sprintf("%sRecentMismatch: %d,\n", indentationValues, matchmakeRefereeStats.RecentMismatch))

@@ -15,7 +15,7 @@ import (
 type AutoMatchmakeParam struct {
 	nex.Structure
 	SourceMatchmakeSession   *MatchmakeSession
-	AdditionalParticipants   []uint32
+	AdditionalParticipants   []*nex.PID
 	GIDForParticipationCheck uint32
 	AutoMatchmakeOption      uint32
 	JoinMessage              string
@@ -34,7 +34,7 @@ func (autoMatchmakeParam *AutoMatchmakeParam) ExtractFromStream(stream *nex.Stre
 	}
 
 	autoMatchmakeParam.SourceMatchmakeSession = sourceMatchmakeSession.(*MatchmakeSession)
-	autoMatchmakeParam.AdditionalParticipants, err = stream.ReadListUInt32LE()
+	autoMatchmakeParam.AdditionalParticipants, err = stream.ReadListPID()
 	if err != nil {
 		return fmt.Errorf("Failed to extract AutoMatchmakeParam.AdditionalParticipants. %s", err.Error())
 	}
@@ -83,9 +83,11 @@ func (autoMatchmakeParam *AutoMatchmakeParam) Copy() nex.StructureInterface {
 		copied.SourceMatchmakeSession = autoMatchmakeParam.SourceMatchmakeSession.Copy().(*MatchmakeSession)
 	}
 
-	copied.AdditionalParticipants = make([]uint32, len(autoMatchmakeParam.AdditionalParticipants))
+	copied.AdditionalParticipants = make([]*nex.PID, len(autoMatchmakeParam.AdditionalParticipants))
 
-	copy(copied.AdditionalParticipants, autoMatchmakeParam.AdditionalParticipants)
+	for i := 0; i < len(autoMatchmakeParam.AdditionalParticipants); i++ {
+		copied.AdditionalParticipants[i] = autoMatchmakeParam.AdditionalParticipants[i].Copy()
+	}
 
 	copied.GIDForParticipationCheck = autoMatchmakeParam.GIDForParticipationCheck
 	copied.AutoMatchmakeOption = autoMatchmakeParam.AutoMatchmakeOption
@@ -131,7 +133,7 @@ func (autoMatchmakeParam *AutoMatchmakeParam) Equals(structure nex.StructureInte
 	}
 
 	for i := 0; i < len(autoMatchmakeParam.AdditionalParticipants); i++ {
-		if autoMatchmakeParam.AdditionalParticipants[i] != other.AdditionalParticipants[i] {
+		if !autoMatchmakeParam.AdditionalParticipants[i].Equals(other.AdditionalParticipants[i]) {
 			return false
 		}
 	}

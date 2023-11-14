@@ -6,7 +6,6 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
-	"golang.org/x/exp/slices"
 )
 
 // MatchmakeRefereeStartRoundParam contains the results of a round
@@ -15,14 +14,14 @@ type MatchmakeRefereeStartRoundParam struct {
 	*nex.Data
 	PersonalDataCategory uint32
 	GID                  uint32
-	PIDs                 []uint32
+	PIDs                 []*nex.PID
 }
 
 // Bytes encodes the MatchmakeRefereeStartRoundParam and returns a byte array
 func (matchmakeRefereeStartRoundParam *MatchmakeRefereeStartRoundParam) Bytes(stream *nex.StreamOut) []byte {
 	stream.WriteUInt32LE(matchmakeRefereeStartRoundParam.PersonalDataCategory)
 	stream.WriteUInt32LE(matchmakeRefereeStartRoundParam.GID)
-	stream.WriteListUInt32LE(matchmakeRefereeStartRoundParam.PIDs)
+	stream.WriteListPID(matchmakeRefereeStartRoundParam.PIDs)
 
 	return stream.Bytes()
 }
@@ -41,7 +40,7 @@ func (matchmakeRefereeStartRoundParam *MatchmakeRefereeStartRoundParam) ExtractF
 		return fmt.Errorf("Failed to extract MatchmakeRefereeStartRoundParam.GID. %s", err.Error())
 	}
 
-	matchmakeRefereeStartRoundParam.PIDs, err = stream.ReadListUInt32LE()
+	matchmakeRefereeStartRoundParam.PIDs, err = stream.ReadListPID()
 	if err != nil {
 		return fmt.Errorf("Failed to extract MatchmakeRefereeStartRoundParam.PIDs. %s", err.Error())
 	}
@@ -60,8 +59,11 @@ func (matchmakeRefereeStartRoundParam *MatchmakeRefereeStartRoundParam) Copy() n
 
 	copied.PersonalDataCategory = matchmakeRefereeStartRoundParam.PersonalDataCategory
 	copied.GID = matchmakeRefereeStartRoundParam.GID
-	copied.PIDs = make([]uint32, len(matchmakeRefereeStartRoundParam.PIDs))
-	copy(copied.PIDs, matchmakeRefereeStartRoundParam.PIDs)
+	copied.PIDs = make([]*nex.PID, len(matchmakeRefereeStartRoundParam.PIDs))
+
+	for i := 0; i < len(matchmakeRefereeStartRoundParam.PIDs); i++ {
+		copied.PIDs[i] = matchmakeRefereeStartRoundParam.PIDs[i].Copy()
+	}
 
 	return copied
 }
@@ -86,8 +88,14 @@ func (matchmakeRefereeStartRoundParam *MatchmakeRefereeStartRoundParam) Equals(s
 		return false
 	}
 
-	if !slices.Equal(matchmakeRefereeStartRoundParam.PIDs, other.PIDs) {
+	if len(matchmakeRefereeStartRoundParam.PIDs) != len(other.PIDs) {
 		return false
+	}
+
+	for i := 0; i < len(matchmakeRefereeStartRoundParam.PIDs); i++ {
+		if !matchmakeRefereeStartRoundParam.PIDs[i].Equals(other.PIDs[i]) {
+			return false
+		}
 	}
 
 	return true

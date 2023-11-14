@@ -12,7 +12,7 @@ import (
 type DataStorePermission struct {
 	nex.Structure
 	Permission   uint8
-	RecipientIDs []uint32
+	RecipientIDs []*nex.PID
 }
 
 // ExtractFromStream extracts a DataStorePermission structure from a stream
@@ -24,7 +24,7 @@ func (dataStorePermission *DataStorePermission) ExtractFromStream(stream *nex.St
 		return fmt.Errorf("Failed to extract DataStorePermission.Permission. %s", err.Error())
 	}
 
-	dataStorePermission.RecipientIDs, err = stream.ReadListUInt32LE()
+	dataStorePermission.RecipientIDs, err = stream.ReadListPID()
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStorePermission.RecipientIDs. %s", err.Error())
 	}
@@ -35,7 +35,7 @@ func (dataStorePermission *DataStorePermission) ExtractFromStream(stream *nex.St
 // Bytes encodes the DataStorePermission and returns a byte array
 func (dataStorePermission *DataStorePermission) Bytes(stream *nex.StreamOut) []byte {
 	stream.WriteUInt8(dataStorePermission.Permission)
-	stream.WriteListUInt32LE(dataStorePermission.RecipientIDs)
+	stream.WriteListPID(dataStorePermission.RecipientIDs)
 
 	return stream.Bytes()
 }
@@ -47,9 +47,11 @@ func (dataStorePermission *DataStorePermission) Copy() nex.StructureInterface {
 	copied.SetStructureVersion(dataStorePermission.StructureVersion())
 
 	copied.Permission = dataStorePermission.Permission
-	copied.RecipientIDs = make([]uint32, len(dataStorePermission.RecipientIDs))
+	copied.RecipientIDs = make([]*nex.PID, len(dataStorePermission.RecipientIDs))
 
-	copy(copied.RecipientIDs, dataStorePermission.RecipientIDs)
+	for i := 0; i < len(dataStorePermission.RecipientIDs); i++ {
+		copied.RecipientIDs[i] = dataStorePermission.RecipientIDs[i].Copy()
+	}
 
 	return copied
 }
@@ -71,7 +73,7 @@ func (dataStorePermission *DataStorePermission) Equals(structure nex.StructureIn
 	}
 
 	for i := 0; i < len(dataStorePermission.RecipientIDs); i++ {
-		if dataStorePermission.RecipientIDs[i] != other.RecipientIDs[i] {
+		if !dataStorePermission.RecipientIDs[i].Equals(other.RecipientIDs[i]) {
 			return false
 		}
 	}
@@ -104,6 +106,6 @@ func (dataStorePermission *DataStorePermission) FormatToString(indentationLevel 
 func NewDataStorePermission() *DataStorePermission {
 	return &DataStorePermission{
 		Permission:   0,
-		RecipientIDs: make([]uint32, 0),
+		RecipientIDs: make([]*nex.PID, 0),
 	}
 }

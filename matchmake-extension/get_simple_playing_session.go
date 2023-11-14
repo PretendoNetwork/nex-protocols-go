@@ -9,7 +9,7 @@ import (
 )
 
 // GetSimplePlayingSession sets the GetSimplePlayingSession handler function
-func (protocol *Protocol) GetSimplePlayingSession(handler func(err error, packet nex.PacketInterface, callID uint32, listPID []uint32, includeLoginUser bool) uint32) {
+func (protocol *Protocol) GetSimplePlayingSession(handler func(err error, packet nex.PacketInterface, callID uint32, listPID []*nex.PID, includeLoginUser bool) uint32) {
 	protocol.getSimplePlayingSessionHandler = handler
 }
 
@@ -29,7 +29,7 @@ func (protocol *Protocol) handleGetSimplePlayingSession(packet nex.PacketInterfa
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	listPID, err := parametersStream.ReadListUInt32LE()
+	listPID, err := parametersStream.ReadListPID()
 	if err != nil {
 		errorCode = protocol.getSimplePlayingSessionHandler(fmt.Errorf("Failed to read listPID from parameters. %s", err.Error()), packet, callID, nil, false)
 		if errorCode != 0 {

@@ -12,14 +12,14 @@ import (
 type NintendoNotificationEvent struct {
 	nex.Structure
 	Type       uint32
-	SenderPID  uint32
+	SenderPID  *nex.PID
 	DataHolder *nex.DataHolder
 }
 
 // Bytes encodes the NintendoNotificationEvent and returns a byte array
 func (nintendoNotificationEvent *NintendoNotificationEvent) Bytes(stream *nex.StreamOut) []byte {
 	stream.WriteUInt32LE(nintendoNotificationEvent.Type)
-	stream.WriteUInt32LE(nintendoNotificationEvent.SenderPID)
+	stream.WritePID(nintendoNotificationEvent.SenderPID)
 	stream.WriteDataHolder(nintendoNotificationEvent.DataHolder)
 
 	return stream.Bytes()
@@ -32,7 +32,7 @@ func (nintendoNotificationEvent *NintendoNotificationEvent) Copy() nex.Structure
 	copied.SetStructureVersion(nintendoNotificationEvent.StructureVersion())
 
 	copied.Type = nintendoNotificationEvent.Type
-	copied.SenderPID = nintendoNotificationEvent.SenderPID
+	copied.SenderPID = nintendoNotificationEvent.SenderPID.Copy()
 	copied.DataHolder = nintendoNotificationEvent.DataHolder.Copy()
 
 	return copied
@@ -50,7 +50,7 @@ func (nintendoNotificationEvent *NintendoNotificationEvent) Equals(structure nex
 		return false
 	}
 
-	if nintendoNotificationEvent.SenderPID != other.SenderPID {
+	if !nintendoNotificationEvent.SenderPID.Equals(other.SenderPID) {
 		return false
 	}
 
@@ -76,7 +76,7 @@ func (nintendoNotificationEvent *NintendoNotificationEvent) FormatToString(inden
 	b.WriteString("NintendoNotificationEvent{\n")
 	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, nintendoNotificationEvent.StructureVersion()))
 	b.WriteString(fmt.Sprintf("%sType: %d,\n", indentationValues, nintendoNotificationEvent.Type))
-	b.WriteString(fmt.Sprintf("%sSenderPID: %d,\n", indentationValues, nintendoNotificationEvent.SenderPID))
+	b.WriteString(fmt.Sprintf("%sSenderPID: %s,\n", indentationValues, nintendoNotificationEvent.SenderPID.FormatToString(indentationLevel+1)))
 
 	if nintendoNotificationEvent.DataHolder != nil {
 		b.WriteString(fmt.Sprintf("%sDataHolder: %s\n", indentationValues, nintendoNotificationEvent.DataHolder.FormatToString(indentationLevel+1)))

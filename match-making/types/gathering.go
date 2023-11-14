@@ -15,8 +15,8 @@ import (
 type Gathering struct {
 	nex.Structure
 	ID                  uint32
-	OwnerPID            uint32
-	HostPID             uint32
+	OwnerPID            *nex.PID
+	HostPID             *nex.PID
 	MinimumParticipants uint16
 	MaximumParticipants uint16
 	ParticipationPolicy uint32
@@ -35,12 +35,12 @@ func (gathering *Gathering) ExtractFromStream(stream *nex.StreamIn) error {
 		return fmt.Errorf("Failed to extract Gathering.ID. %s", err.Error())
 	}
 
-	gathering.OwnerPID, err = stream.ReadUInt32LE()
+	gathering.OwnerPID, err = stream.ReadPID()
 	if err != nil {
 		return fmt.Errorf("Failed to extract Gathering.OwnerPID. %s", err.Error())
 	}
 
-	gathering.HostPID, err = stream.ReadUInt32LE()
+	gathering.HostPID, err = stream.ReadPID()
 	if err != nil {
 		return fmt.Errorf("Failed to extract Gathering.HostPID. %s", err.Error())
 	}
@@ -86,8 +86,8 @@ func (gathering *Gathering) ExtractFromStream(stream *nex.StreamIn) error {
 // Bytes encodes the Gathering and returns a byte array
 func (gathering *Gathering) Bytes(stream *nex.StreamOut) []byte {
 	stream.WriteUInt32LE(gathering.ID)
-	stream.WriteUInt32LE(gathering.OwnerPID)
-	stream.WriteUInt32LE(gathering.HostPID)
+	stream.WritePID(gathering.OwnerPID)
+	stream.WritePID(gathering.HostPID)
 	stream.WriteUInt16LE(gathering.MinimumParticipants)
 	stream.WriteUInt16LE(gathering.MaximumParticipants)
 	stream.WriteUInt32LE(gathering.ParticipationPolicy)
@@ -106,8 +106,8 @@ func (gathering *Gathering) Copy() nex.StructureInterface {
 	copied.SetStructureVersion(gathering.StructureVersion())
 
 	copied.ID = gathering.ID
-	copied.OwnerPID = gathering.OwnerPID
-	copied.HostPID = gathering.HostPID
+	copied.OwnerPID = gathering.OwnerPID.Copy()
+	copied.HostPID = gathering.HostPID.Copy()
 	copied.MinimumParticipants = gathering.MinimumParticipants
 	copied.MaximumParticipants = gathering.MaximumParticipants
 	copied.ParticipationPolicy = gathering.ParticipationPolicy
@@ -131,11 +131,11 @@ func (gathering *Gathering) Equals(structure nex.StructureInterface) bool {
 		return false
 	}
 
-	if gathering.OwnerPID != other.OwnerPID {
+	if !gathering.OwnerPID.Equals(other.OwnerPID) {
 		return false
 	}
 
-	if gathering.HostPID != other.HostPID {
+	if !gathering.HostPID.Equals(other.HostPID) {
 		return false
 	}
 
@@ -185,8 +185,8 @@ func (gathering *Gathering) FormatToString(indentationLevel int) string {
 	b.WriteString("Gathering{\n")
 	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, gathering.StructureVersion()))
 	b.WriteString(fmt.Sprintf("%sID: %d,\n", indentationValues, gathering.ID))
-	b.WriteString(fmt.Sprintf("%sOwnerPID: %d,\n", indentationValues, gathering.OwnerPID))
-	b.WriteString(fmt.Sprintf("%sHostPID: %d,\n", indentationValues, gathering.HostPID))
+	b.WriteString(fmt.Sprintf("%sOwnerPID: %s,\n", indentationValues, gathering.OwnerPID.FormatToString(indentationLevel+1)))
+	b.WriteString(fmt.Sprintf("%sHostPID: %s,\n", indentationValues, gathering.HostPID.FormatToString(indentationLevel+1)))
 	b.WriteString(fmt.Sprintf("%sMinimumParticipants: %d,\n", indentationValues, gathering.MinimumParticipants))
 	b.WriteString(fmt.Sprintf("%sMaximumParticipants: %d,\n", indentationValues, gathering.MaximumParticipants))
 	b.WriteString(fmt.Sprintf("%sParticipationPolicy: %d,\n", indentationValues, gathering.ParticipationPolicy))

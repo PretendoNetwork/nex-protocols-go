@@ -9,7 +9,7 @@ import (
 )
 
 // AddFriendByPrincipalID sets the AddFriendByPrincipalID handler function
-func (protocol *Protocol) AddFriendByPrincipalID(handler func(err error, packet nex.PacketInterface, callID uint32, lfc uint64, pid uint32) uint32) {
+func (protocol *Protocol) AddFriendByPrincipalID(handler func(err error, packet nex.PacketInterface, callID uint32, lfc uint64, pid *nex.PID) uint32) {
 	protocol.addFriendByPrincipalIDHandler = handler
 }
 
@@ -31,7 +31,7 @@ func (protocol *Protocol) handleAddFriendByPrincipalID(packet nex.PacketInterfac
 
 	lfc, err := parametersStream.ReadUInt64LE()
 	if err != nil {
-		errorCode = protocol.addFriendByPrincipalIDHandler(fmt.Errorf("Failed to read lfc from parameters. %s", err.Error()), packet, callID, 0, 0)
+		errorCode = protocol.addFriendByPrincipalIDHandler(fmt.Errorf("Failed to read lfc from parameters. %s", err.Error()), packet, callID, 0, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -39,9 +39,9 @@ func (protocol *Protocol) handleAddFriendByPrincipalID(packet nex.PacketInterfac
 		return
 	}
 
-	pid, err := parametersStream.ReadUInt32LE()
+	pid, err := parametersStream.ReadPID()
 	if err != nil {
-		errorCode = protocol.addFriendByPrincipalIDHandler(fmt.Errorf("Failed to read pid from parameters. %s", err.Error()), packet, callID, 0, 0)
+		errorCode = protocol.addFriendByPrincipalIDHandler(fmt.Errorf("Failed to read pid from parameters. %s", err.Error()), packet, callID, 0, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}

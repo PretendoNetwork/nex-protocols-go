@@ -194,26 +194,26 @@ type Protocol struct {
 	getlstFriendNotificationDataHandler                            func(err error, packet nex.PacketInterface, callID uint32, lstTypes []uint32) uint32
 	updateMatchmakeSessionHandler                                  func(err error, packet nex.PacketInterface, callID uint32, anyGathering *nex.DataHolder) uint32
 	autoMatchmakeWithSearchCriteriaPostponeHandler                 func(err error, packet nex.PacketInterface, callID uint32, lstSearchCriteria []*match_making_types.MatchmakeSessionSearchCriteria, anyGathering *nex.DataHolder, strMessage string) uint32
-	getPlayingSessionHandler                                       func(err error, packet nex.PacketInterface, callID uint32, lstPID []uint32) uint32
+	getPlayingSessionHandler                                       func(err error, packet nex.PacketInterface, callID uint32, lstPID []*nex.PID) uint32
 	createCommunityHandler                                         func(err error, packet nex.PacketInterface, callID uint32, community *match_making_types.PersistentGathering, strMessage string) uint32
 	updateCommunityHandler                                         func(err error, packet nex.PacketInterface, callID uint32, community *match_making_types.PersistentGathering) uint32
 	joinCommunityHandler                                           func(err error, packet nex.PacketInterface, callID uint32, gid uint32, strMessage string, strPassword string) uint32
 	findCommunityByGatheringIDHandler                              func(err error, packet nex.PacketInterface, callID uint32, lstGID []uint32) uint32
 	findOfficialCommunityHandler                                   func(err error, packet nex.PacketInterface, callID uint32, isAvailableOnly bool, resultRange *nex.ResultRange) uint32
-	findCommunityByParticipantHandler                              func(err error, packet nex.PacketInterface, callID uint32, pid uint32, resultRange *nex.ResultRange) uint32
+	findCommunityByParticipantHandler                              func(err error, packet nex.PacketInterface, callID uint32, pid *nex.PID, resultRange *nex.ResultRange) uint32
 	updatePrivacySettingHandler                                    func(err error, packet nex.PacketInterface, callID uint32, onlineStatus bool, participationCommunity bool) uint32
 	getMyBlockListHandler                                          func(err error, packet nex.PacketInterface, callID uint32) uint32
-	addToBlockListHandler                                          func(err error, packet nex.PacketInterface, callID uint32, lstPrincipalID []uint32) uint32
-	removeFromBlockListHandler                                     func(err error, packet nex.PacketInterface, callID uint32, lstPrincipalID []uint32) uint32
+	addToBlockListHandler                                          func(err error, packet nex.PacketInterface, callID uint32, lstPrincipalID []*nex.PID) uint32
+	removeFromBlockListHandler                                     func(err error, packet nex.PacketInterface, callID uint32, lstPrincipalID []*nex.PID) uint32
 	clearMyBlockListHandler                                        func(err error, packet nex.PacketInterface, callID uint32) uint32
-	reportViolationHandler                                         func(err error, packet nex.PacketInterface, callID uint32, pid uint32, userName string, violationCode uint32) uint32
+	reportViolationHandler                                         func(err error, packet nex.PacketInterface, callID uint32, pid *nex.PID, userName string, violationCode uint32) uint32
 	isViolationUserHandler                                         func(err error, packet nex.PacketInterface, callID uint32) uint32
 	joinMatchmakeSessionExHandler                                  func(err error, packet nex.PacketInterface, callID uint32, gid uint32, strMessage string, dontCareMyBlockList bool, participationCount uint16) uint32
-	getSimplePlayingSessionHandler                                 func(err error, packet nex.PacketInterface, callID uint32, listPID []uint32, includeLoginUser bool) uint32
+	getSimplePlayingSessionHandler                                 func(err error, packet nex.PacketInterface, callID uint32, listPID []*nex.PID, includeLoginUser bool) uint32
 	getSimpleCommunityHandler                                      func(err error, packet nex.PacketInterface, callID uint32, gatheringIDList []uint32) uint32
 	autoMatchmakeWithGatheringIDPostponeHandler                    func(err error, packet nex.PacketInterface, callID uint32, lstGID []uint32, anyGathering *nex.DataHolder, strMessage string) uint32
 	updateProgressScoreHandler                                     func(err error, packet nex.PacketInterface, callID uint32, gid uint32, progressScore uint8) uint32
-	debugNotifyEventHandler                                        func(err error, packet nex.PacketInterface, callID uint32, pid uint32, mainType uint32, subType uint32, param1 uint64, param2 uint64, stringParam string) uint32
+	debugNotifyEventHandler                                        func(err error, packet nex.PacketInterface, callID uint32, pid *nex.PID, mainType uint32, subType uint32, param1 uint64, param2 uint64, stringParam string) uint32
 	generateMatchmakeSessionSystemPasswordHandler                  func(err error, packet nex.PacketInterface, callID uint32, gid uint32) uint32
 	clearMatchmakeSessionSystemPasswordHandler                     func(err error, packet nex.PacketInterface, callID uint32, gid uint32) uint32
 	createMatchmakeSessionWithParamHandler                         func(err error, packet nex.PacketInterface, callID uint32, createMatchmakeSessionParam *match_making_types.CreateMatchmakeSessionParam) uint32

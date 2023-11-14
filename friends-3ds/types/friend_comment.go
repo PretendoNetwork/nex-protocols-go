@@ -12,14 +12,14 @@ import (
 type FriendComment struct {
 	nex.Structure
 	*nex.Data
-	PID        uint32
+	PID        *nex.PID
 	Comment    string
 	ModifiedAt *nex.DateTime
 }
 
 // Bytes encodes the FriendComment and returns a byte array
 func (friendComment *FriendComment) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt32LE(friendComment.PID)
+	stream.WritePID(friendComment.PID)
 	stream.WriteString(friendComment.Comment)
 	stream.WriteDateTime(friendComment.ModifiedAt)
 
@@ -40,7 +40,7 @@ func (friendComment *FriendComment) Copy() nex.StructureInterface {
 
 	copied.SetParentType(copied.Data)
 
-	copied.PID = friendComment.PID
+	copied.PID = friendComment.PID.Copy()
 	copied.Comment = friendComment.Comment
 	copied.ModifiedAt = friendComment.ModifiedAt.Copy()
 
@@ -59,7 +59,7 @@ func (friendComment *FriendComment) Equals(structure nex.StructureInterface) boo
 		return false
 	}
 
-	if friendComment.PID != other.PID {
+	if !friendComment.PID.Equals(other.PID) {
 		return false
 	}
 
@@ -88,7 +88,7 @@ func (friendComment *FriendComment) FormatToString(indentationLevel int) string 
 
 	b.WriteString("FriendComment{\n")
 	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, friendComment.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sPID: %d,\n", indentationValues, friendComment.PID))
+	b.WriteString(fmt.Sprintf("%sPID: %s,\n", indentationValues, friendComment.PID.FormatToString(indentationLevel+1)))
 	b.WriteString(fmt.Sprintf("%sComment: %q,\n", indentationValues, friendComment.Comment))
 
 	if friendComment.ModifiedAt != nil {

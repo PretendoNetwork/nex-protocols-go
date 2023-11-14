@@ -76,7 +76,7 @@ type Protocol struct {
 	getContentMultiHandler       func(err error, packet nex.PacketInterface, callID uint32, params []*subscriber_types.SubscriberGetContentParam) uint32
 	updateUserStatusHandler      func(err error, packet nex.PacketInterface, callID uint32, unknown1 []*subscriber_types.Unknown, unknown2 []uint8) uint32
 	getFriendUserStatusesHandler func(err error, packet nex.PacketInterface, callID uint32, unknown []uint8) uint32
-	getUserStatusesHandler       func(err error, packet nex.PacketInterface, callID uint32, pids []uint32, unknown []uint8) uint32
+	getUserStatusesHandler       func(err error, packet nex.PacketInterface, callID uint32, pids []*nex.PID, unknown []uint8) uint32
 }
 
 // Setup initializes the protocol

@@ -10,7 +10,7 @@ import (
 )
 
 // GetRankingByPrincipalID sets the GetRankingByPrincipalID handler function
-func (protocol *Protocol) GetRankingByPrincipalID(handler func(err error, packet nex.PacketInterface, callID uint32, getParam *ranking2_types.Ranking2GetParam, principalIDList []uint32) uint32) {
+func (protocol *Protocol) GetRankingByPrincipalID(handler func(err error, packet nex.PacketInterface, callID uint32, getParam *ranking2_types.Ranking2GetParam, principalIDList []*nex.PID) uint32) {
 	protocol.getRankingByPrincipalIDHandler = handler
 }
 
@@ -40,7 +40,7 @@ func (protocol *Protocol) handleGetRankingByPrincipalID(packet nex.PacketInterfa
 		return
 	}
 
-	principalIDList, err := parametersStream.ReadListUInt32LE()
+	principalIDList, err := parametersStream.ReadListPID()
 	if err != nil {
 		errorCode = protocol.getRankingByPrincipalIDHandler(fmt.Errorf("Failed to read principalIDList from parameters. %s", err.Error()), packet, callID, nil, nil)
 		if errorCode != 0 {

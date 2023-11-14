@@ -9,15 +9,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// UpdatePresence sets the UpdatePresence handler function
-func (protocol *Protocol) UpdatePresence(handler func(err error, packet nex.PacketInterface, callID uint32, presence *friends_wiiu_types.NintendoPresenceV2) uint32) {
-	protocol.updatePresenceHandler = handler
-}
-
 func (protocol *Protocol) handleUpdatePresence(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.updatePresenceHandler == nil {
+	if protocol.UpdatePresence == nil {
 		globals.Logger.Warning("FriendsWiiU::UpdatePresence not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -32,7 +27,7 @@ func (protocol *Protocol) handleUpdatePresence(packet nex.PacketInterface) {
 
 	nintendoPresenceV2, err := parametersStream.ReadStructure(friends_wiiu_types.NewNintendoPresenceV2())
 	if err != nil {
-		errorCode = protocol.updatePresenceHandler(fmt.Errorf("Failed to read nintendoPresenceV2 from parameters. %s", err.Error()), packet, callID, nil)
+		errorCode = protocol.UpdatePresence(fmt.Errorf("Failed to read nintendoPresenceV2 from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -40,7 +35,7 @@ func (protocol *Protocol) handleUpdatePresence(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.updatePresenceHandler(nil, packet, callID, nintendoPresenceV2.(*friends_wiiu_types.NintendoPresenceV2))
+	errorCode = protocol.UpdatePresence(nil, packet, callID, nintendoPresenceV2.(*friends_wiiu_types.NintendoPresenceV2))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

@@ -6,15 +6,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// Unfollow sets the Unfollow handler function
-func (protocol *Protocol) Unfollow(handler func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) uint32) {
-	protocol.unfollowHandler = handler
-}
-
 func (protocol *Protocol) handleUnfollow(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.unfollowHandler == nil {
+	if protocol.Unfollow == nil {
 		globals.Logger.Warning("Subscriber::Unfollow not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -26,7 +21,7 @@ func (protocol *Protocol) handleUnfollow(packet nex.PacketInterface) {
 
 	callID := request.CallID
 
-	errorCode = protocol.unfollowHandler(nil, packet, callID, packet.Payload())
+	errorCode = protocol.Unfollow(nil, packet, callID, packet.Payload())
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

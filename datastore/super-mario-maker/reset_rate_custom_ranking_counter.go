@@ -8,15 +8,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// ResetRateCustomRankingCounter sets the ResetRateCustomRankingCounter handler function
-func (protocol *Protocol) ResetRateCustomRankingCounter(handler func(err error, packet nex.PacketInterface, callID uint32, applicationID uint32) uint32) {
-	protocol.resetRateCustomRankingCounterHandler = handler
-}
-
 func (protocol *Protocol) handleResetRateCustomRankingCounter(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.resetRateCustomRankingCounterHandler == nil {
+	if protocol.ResetRateCustomRankingCounter == nil {
 		globals.Logger.Warning("DataStoreSuperMarioMaker::ResetRateCustomRankingCounter not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -31,7 +26,7 @@ func (protocol *Protocol) handleResetRateCustomRankingCounter(packet nex.PacketI
 
 	applicationID, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.resetRateCustomRankingCounterHandler(fmt.Errorf("Failed to read applicationID from parameters. %s", err.Error()), packet, callID, 0)
+		errorCode = protocol.ResetRateCustomRankingCounter(fmt.Errorf("Failed to read applicationID from parameters. %s", err.Error()), packet, callID, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -39,7 +34,7 @@ func (protocol *Protocol) handleResetRateCustomRankingCounter(packet nex.PacketI
 		return
 	}
 
-	errorCode = protocol.resetRateCustomRankingCounterHandler(nil, packet, callID, applicationID)
+	errorCode = protocol.ResetRateCustomRankingCounter(nil, packet, callID, applicationID)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

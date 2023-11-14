@@ -10,15 +10,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// GetMetasWithCourseRecord sets the GetMetasWithCourseRecord handler function
-func (protocol *Protocol) GetMetasWithCourseRecord(handler func(err error, packet nex.PacketInterface, callID uint32, params []*datastore_super_mario_maker_types.DataStoreGetCourseRecordParam, metaParam *datastore_types.DataStoreGetMetaParam) uint32) {
-	protocol.getMetasWithCourseRecordHandler = handler
-}
-
 func (protocol *Protocol) handleGetMetasWithCourseRecord(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.getMetasWithCourseRecordHandler == nil {
+	if protocol.GetMetasWithCourseRecord == nil {
 		globals.Logger.Warning("DataStoreSuperMarioMaker::GetMetasWithCourseRecord not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -33,7 +28,7 @@ func (protocol *Protocol) handleGetMetasWithCourseRecord(packet nex.PacketInterf
 
 	params, err := parametersStream.ReadListStructure(datastore_super_mario_maker_types.NewDataStoreGetCourseRecordParam())
 	if err != nil {
-		errorCode = protocol.getMetasWithCourseRecordHandler(fmt.Errorf("Failed to read params from parameters. %s", err.Error()), packet, callID, nil, nil)
+		errorCode = protocol.GetMetasWithCourseRecord(fmt.Errorf("Failed to read params from parameters. %s", err.Error()), packet, callID, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -43,7 +38,7 @@ func (protocol *Protocol) handleGetMetasWithCourseRecord(packet nex.PacketInterf
 
 	metaParam, err := parametersStream.ReadStructure(datastore_types.NewDataStoreGetMetaParam())
 	if err != nil {
-		errorCode = protocol.getMetasWithCourseRecordHandler(fmt.Errorf("Failed to read metaParam from parameters. %s", err.Error()), packet, callID, nil, nil)
+		errorCode = protocol.GetMetasWithCourseRecord(fmt.Errorf("Failed to read metaParam from parameters. %s", err.Error()), packet, callID, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -51,7 +46,7 @@ func (protocol *Protocol) handleGetMetasWithCourseRecord(packet nex.PacketInterf
 		return
 	}
 
-	errorCode = protocol.getMetasWithCourseRecordHandler(nil, packet, callID, params.([]*datastore_super_mario_maker_types.DataStoreGetCourseRecordParam), metaParam.(*datastore_types.DataStoreGetMetaParam))
+	errorCode = protocol.GetMetasWithCourseRecord(nil, packet, callID, params.([]*datastore_super_mario_maker_types.DataStoreGetCourseRecordParam), metaParam.(*datastore_types.DataStoreGetMetaParam))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

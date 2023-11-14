@@ -8,15 +8,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// GetAPICalls sets the GetAPICalls handler function
-func (protocol *Protocol) GetAPICalls(handler func(err error, packet nex.PacketInterface, callID uint32, pids []*nex.PID, unknown *nex.DateTime, unknown2 *nex.DateTime) uint32) {
-	protocol.getAPICallsHandler = handler
-}
-
 func (protocol *Protocol) handleGetAPICalls(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.getAPICallsHandler == nil {
+	if protocol.GetAPICalls == nil {
 		globals.Logger.Warning("Debug::GetAPICalls not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -31,7 +26,7 @@ func (protocol *Protocol) handleGetAPICalls(packet nex.PacketInterface) {
 
 	pids, err := parametersStream.ReadListPID()
 	if err != nil {
-		errorCode = protocol.getAPICallsHandler(fmt.Errorf("Failed to read pids from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		errorCode = protocol.GetAPICalls(fmt.Errorf("Failed to read pids from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -41,7 +36,7 @@ func (protocol *Protocol) handleGetAPICalls(packet nex.PacketInterface) {
 
 	unknown, err := parametersStream.ReadDateTime()
 	if err != nil {
-		errorCode = protocol.getAPICallsHandler(fmt.Errorf("Failed to read unknown from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		errorCode = protocol.GetAPICalls(fmt.Errorf("Failed to read unknown from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -51,7 +46,7 @@ func (protocol *Protocol) handleGetAPICalls(packet nex.PacketInterface) {
 
 	unknown2, err := parametersStream.ReadDateTime()
 	if err != nil {
-		errorCode = protocol.getAPICallsHandler(fmt.Errorf("Failed to read unknown2 from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		errorCode = protocol.GetAPICalls(fmt.Errorf("Failed to read unknown2 from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -59,7 +54,7 @@ func (protocol *Protocol) handleGetAPICalls(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.getAPICallsHandler(nil, packet, callID, pids, unknown, unknown2)
+	errorCode = protocol.GetAPICalls(nil, packet, callID, pids, unknown, unknown2)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

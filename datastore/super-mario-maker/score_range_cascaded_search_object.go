@@ -9,15 +9,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// ScoreRangeCascadedSearchObject sets the ScoreRangeCascadedSearchObject handler function
-func (protocol *Protocol) ScoreRangeCascadedSearchObject(handler func(err error, packet nex.PacketInterface, callID uint32, param *datastore_types.DataStoreSearchParam, extraData []string) uint32) {
-	protocol.scoreRangeCascadedSearchObjectHandler = handler
-}
-
 func (protocol *Protocol) handleScoreRangeCascadedSearchObject(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.scoreRangeCascadedSearchObjectHandler == nil {
+	if protocol.ScoreRangeCascadedSearchObject == nil {
 		globals.Logger.Warning("DataStoreSuperMarioMaker::ScoreRangeCascadedSearchObject not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -32,7 +27,7 @@ func (protocol *Protocol) handleScoreRangeCascadedSearchObject(packet nex.Packet
 
 	param, err := parametersStream.ReadStructure(datastore_types.NewDataStoreSearchParam())
 	if err != nil {
-		errorCode = protocol.scoreRangeCascadedSearchObjectHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil, nil)
+		errorCode = protocol.ScoreRangeCascadedSearchObject(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -42,7 +37,7 @@ func (protocol *Protocol) handleScoreRangeCascadedSearchObject(packet nex.Packet
 
 	extraData, err := parametersStream.ReadListString()
 	if err != nil {
-		errorCode = protocol.scoreRangeCascadedSearchObjectHandler(fmt.Errorf("Failed to read extraData from parameters. %s", err.Error()), packet, callID, nil, nil)
+		errorCode = protocol.ScoreRangeCascadedSearchObject(fmt.Errorf("Failed to read extraData from parameters. %s", err.Error()), packet, callID, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -50,7 +45,7 @@ func (protocol *Protocol) handleScoreRangeCascadedSearchObject(packet nex.Packet
 		return
 	}
 
-	errorCode = protocol.scoreRangeCascadedSearchObjectHandler(nil, packet, callID, param.(*datastore_types.DataStoreSearchParam), extraData)
+	errorCode = protocol.ScoreRangeCascadedSearchObject(nil, packet, callID, param.(*datastore_types.DataStoreSearchParam), extraData)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

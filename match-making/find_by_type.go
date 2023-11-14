@@ -8,15 +8,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// FindByType sets the FindByType handler function
-func (protocol *Protocol) FindByType(handler func(err error, packet nex.PacketInterface, callID uint32, strType string, resultRange *nex.ResultRange) uint32) {
-	protocol.findByTypeHandler = handler
-}
-
 func (protocol *Protocol) handleFindByType(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.findByTypeHandler == nil {
+	if protocol.FindByType == nil {
 		globals.Logger.Warning("MatchMaking::FindByType not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -31,7 +26,7 @@ func (protocol *Protocol) handleFindByType(packet nex.PacketInterface) {
 
 	strType, err := parametersStream.ReadString()
 	if err != nil {
-		errorCode = protocol.findByTypeHandler(fmt.Errorf("Failed to read strType from parameters. %s", err.Error()), packet, callID, "", nil)
+		errorCode = protocol.FindByType(fmt.Errorf("Failed to read strType from parameters. %s", err.Error()), packet, callID, "", nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -41,7 +36,7 @@ func (protocol *Protocol) handleFindByType(packet nex.PacketInterface) {
 
 	resultRange, err := parametersStream.ReadStructure(nex.NewResultRange())
 	if err != nil {
-		errorCode = protocol.findByTypeHandler(fmt.Errorf("Failed to read resultRange from parameters. %s", err.Error()), packet, callID, "", nil)
+		errorCode = protocol.FindByType(fmt.Errorf("Failed to read resultRange from parameters. %s", err.Error()), packet, callID, "", nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -49,7 +44,7 @@ func (protocol *Protocol) handleFindByType(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.findByTypeHandler(nil, packet, callID, strType, resultRange.(*nex.ResultRange))
+	errorCode = protocol.FindByType(nil, packet, callID, strType, resultRange.(*nex.ResultRange))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

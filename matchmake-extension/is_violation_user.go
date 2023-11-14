@@ -6,15 +6,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// IsViolationUser sets the IsViolationUser handler function
-func (protocol *Protocol) IsViolationUser(handler func(err error, packet nex.PacketInterface, callID uint32) uint32) {
-	protocol.isViolationUserHandler = handler
-}
-
 func (protocol *Protocol) handleIsViolationUser(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.isViolationUserHandler == nil {
+	if protocol.IsViolationUser == nil {
 		globals.Logger.Warning("MatchmakeExtension::IsViolationUser not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -24,7 +19,7 @@ func (protocol *Protocol) handleIsViolationUser(packet nex.PacketInterface) {
 
 	callID := request.CallID
 
-	errorCode = protocol.isViolationUserHandler(nil, packet, callID)
+	errorCode = protocol.IsViolationUser(nil, packet, callID)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

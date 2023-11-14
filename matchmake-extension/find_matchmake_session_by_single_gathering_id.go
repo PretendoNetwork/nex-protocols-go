@@ -8,15 +8,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// FindMatchmakeSessionBySingleGatheringID sets the FindMatchmakeSessionBySingleGatheringID handler function
-func (protocol *Protocol) FindMatchmakeSessionBySingleGatheringID(handler func(err error, packet nex.PacketInterface, callID uint32, GID uint32) uint32) {
-	protocol.findMatchmakeSessionBySingleGatheringIDHandler = handler
-}
-
 func (protocol *Protocol) handleFindMatchmakeSessionBySingleGatheringID(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.findMatchmakeSessionBySingleGatheringIDHandler == nil {
+	if protocol.FindMatchmakeSessionBySingleGatheringID == nil {
 		globals.Logger.Warning("MatchmakeExtension::FindMatchmakeSessionBySingleGatheringID not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -31,7 +26,7 @@ func (protocol *Protocol) handleFindMatchmakeSessionBySingleGatheringID(packet n
 
 	gid, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.findMatchmakeSessionBySingleGatheringIDHandler(fmt.Errorf("Failed to read GID from parameters. %s", err.Error()), packet, callID, 0)
+		errorCode = protocol.FindMatchmakeSessionBySingleGatheringID(fmt.Errorf("Failed to read GID from parameters. %s", err.Error()), packet, callID, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -39,7 +34,7 @@ func (protocol *Protocol) handleFindMatchmakeSessionBySingleGatheringID(packet n
 		return
 	}
 
-	errorCode = protocol.findMatchmakeSessionBySingleGatheringIDHandler(nil, packet, callID, gid)
+	errorCode = protocol.FindMatchmakeSessionBySingleGatheringID(nil, packet, callID, gid)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

@@ -8,15 +8,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// DeleteCustomRanking sets the DeleteCustomRanking handler function
-func (protocol *Protocol) DeleteCustomRanking(handler func(err error, packet nex.PacketInterface, callID uint32, dataIDList []uint64) uint32) {
-	protocol.deleteCustomRankingHandler = handler
-}
-
 func (protocol *Protocol) handleDeleteCustomRanking(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.deleteCustomRankingHandler == nil {
+	if protocol.DeleteCustomRanking == nil {
 		globals.Logger.Warning("DataStoreSuperMarioMaker::DeleteCustomRanking not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -31,7 +26,7 @@ func (protocol *Protocol) handleDeleteCustomRanking(packet nex.PacketInterface) 
 
 	dataIDList, err := parametersStream.ReadListUInt64LE()
 	if err != nil {
-		errorCode = protocol.deleteCustomRankingHandler(fmt.Errorf("Failed to read dataIDList from parameters. %s", err.Error()), packet, callID, nil)
+		errorCode = protocol.DeleteCustomRanking(fmt.Errorf("Failed to read dataIDList from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -39,7 +34,7 @@ func (protocol *Protocol) handleDeleteCustomRanking(packet nex.PacketInterface) 
 		return
 	}
 
-	errorCode = protocol.deleteCustomRankingHandler(nil, packet, callID, dataIDList)
+	errorCode = protocol.DeleteCustomRanking(nil, packet, callID, dataIDList)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

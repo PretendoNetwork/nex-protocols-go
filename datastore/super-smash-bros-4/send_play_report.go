@@ -8,15 +8,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// SendPlayReport sets the SendPlayReport handler function
-func (protocol *Protocol) SendPlayReport(handler func(err error, packet nex.PacketInterface, callID uint32, playReport []int32) uint32) {
-	protocol.sendPlayReportHandler = handler
-}
-
 func (protocol *Protocol) handleSendPlayReport(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.sendPlayReportHandler == nil {
+	if protocol.SendPlayReport == nil {
 		globals.Logger.Warning("DataStoreSuperSmashBros4::SendPlayReport not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -31,7 +26,7 @@ func (protocol *Protocol) handleSendPlayReport(packet nex.PacketInterface) {
 
 	playReport, err := parametersStream.ReadListInt32LE()
 	if err != nil {
-		errorCode = protocol.sendPlayReportHandler(fmt.Errorf("Failed to read playReport from parameters. %s", err.Error()), packet, callID, nil)
+		errorCode = protocol.SendPlayReport(fmt.Errorf("Failed to read playReport from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -39,7 +34,7 @@ func (protocol *Protocol) handleSendPlayReport(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.sendPlayReportHandler(nil, packet, callID, playReport)
+	errorCode = protocol.SendPlayReport(nil, packet, callID, playReport)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

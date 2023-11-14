@@ -8,15 +8,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// RequestConnectionData sets the RequestConnectionData handler function
-func (protocol *Protocol) RequestConnectionData(handler func(err error, packet nex.PacketInterface, callID uint32, cidTarget uint32, pidTarget *nex.PID) uint32) {
-	protocol.requestConnectionDataHandler = handler
-}
-
 func (protocol *Protocol) handleRequestConnectionData(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.requestConnectionDataHandler == nil {
+	if protocol.RequestConnectionData == nil {
 		globals.Logger.Warning("SecureConnection::RequestConnectionData not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -31,7 +26,7 @@ func (protocol *Protocol) handleRequestConnectionData(packet nex.PacketInterface
 
 	cidTarget, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.requestConnectionDataHandler(fmt.Errorf("Failed to read cidTarget from parameters. %s", err.Error()), packet, callID, 0, nil)
+		errorCode = protocol.RequestConnectionData(fmt.Errorf("Failed to read cidTarget from parameters. %s", err.Error()), packet, callID, 0, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -41,7 +36,7 @@ func (protocol *Protocol) handleRequestConnectionData(packet nex.PacketInterface
 
 	pidTarget, err := parametersStream.ReadPID()
 	if err != nil {
-		errorCode = protocol.requestConnectionDataHandler(fmt.Errorf("Failed to read pidTarget from parameters. %s", err.Error()), packet, callID, 0, nil)
+		errorCode = protocol.RequestConnectionData(fmt.Errorf("Failed to read pidTarget from parameters. %s", err.Error()), packet, callID, 0, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -49,7 +44,7 @@ func (protocol *Protocol) handleRequestConnectionData(packet nex.PacketInterface
 		return
 	}
 
-	errorCode = protocol.requestConnectionDataHandler(nil, packet, callID, cidTarget, pidTarget)
+	errorCode = protocol.RequestConnectionData(nil, packet, callID, cidTarget, pidTarget)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

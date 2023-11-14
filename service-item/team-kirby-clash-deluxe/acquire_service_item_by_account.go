@@ -9,15 +9,10 @@ import (
 	service_item_team_kirby_clash_deluxe_types "github.com/PretendoNetwork/nex-protocols-go/service-item/team-kirby-clash-deluxe/types"
 )
 
-// AcquireServiceItemByAccount sets the AcquireServiceItemByAccount handler function
-func (protocol *Protocol) AcquireServiceItemByAccount(handler func(err error, packet nex.PacketInterface, callID uint32, acquireServiceItemByAccountParam *service_item_team_kirby_clash_deluxe_types.ServiceItemAcquireServiceItemByAccountParam) uint32) {
-	protocol.acquireServiceItemByAccountHandler = handler
-}
-
 func (protocol *Protocol) handleAcquireServiceItemByAccount(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.acquireServiceItemByAccountHandler == nil {
+	if protocol.AcquireServiceItemByAccount == nil {
 		globals.Logger.Warning("ServiceItemTeamKirbyClashDeluxe::AcquireServiceItemByAccount not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -32,7 +27,7 @@ func (protocol *Protocol) handleAcquireServiceItemByAccount(packet nex.PacketInt
 
 	acquireServiceItemByAccountParam, err := parametersStream.ReadStructure(service_item_team_kirby_clash_deluxe_types.NewServiceItemAcquireServiceItemByAccountParam())
 	if err != nil {
-		errorCode = protocol.acquireServiceItemByAccountHandler(fmt.Errorf("Failed to read acquireServiceItemByAccountParam from parameters. %s", err.Error()), packet, callID, nil)
+		errorCode = protocol.AcquireServiceItemByAccount(fmt.Errorf("Failed to read acquireServiceItemByAccountParam from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -40,7 +35,7 @@ func (protocol *Protocol) handleAcquireServiceItemByAccount(packet nex.PacketInt
 		return
 	}
 
-	errorCode = protocol.acquireServiceItemByAccountHandler(nil, packet, callID, acquireServiceItemByAccountParam.(*service_item_team_kirby_clash_deluxe_types.ServiceItemAcquireServiceItemByAccountParam))
+	errorCode = protocol.AcquireServiceItemByAccount(nil, packet, callID, acquireServiceItemByAccountParam.(*service_item_team_kirby_clash_deluxe_types.ServiceItemAcquireServiceItemByAccountParam))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

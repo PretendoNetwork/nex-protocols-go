@@ -8,15 +8,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// UpdateAccount sets the UpdateAccount handler function
-func (protocol *Protocol) UpdateAccount(handler func(err error, packet nex.PacketInterface, callID uint32, strKey string, strEmail string, oPublicData *nex.DataHolder, oPrivateData *nex.DataHolder) uint32) {
-	protocol.updateAccountHandler = handler
-}
-
 func (protocol *Protocol) handleUpdateAccount(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.updateAccountHandler == nil {
+	if protocol.UpdateAccount == nil {
 		globals.Logger.Warning("AccountManagement::UpdateAccount not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -31,7 +26,7 @@ func (protocol *Protocol) handleUpdateAccount(packet nex.PacketInterface) {
 
 	strKey, err := parametersStream.ReadString()
 	if err != nil {
-		errorCode = protocol.updateAccountHandler(fmt.Errorf("Failed to read strKey from parameters. %s", err.Error()), packet, callID, "", "", nil, nil)
+		errorCode = protocol.UpdateAccount(fmt.Errorf("Failed to read strKey from parameters. %s", err.Error()), packet, callID, "", "", nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -41,7 +36,7 @@ func (protocol *Protocol) handleUpdateAccount(packet nex.PacketInterface) {
 
 	strEmail, err := parametersStream.ReadString()
 	if err != nil {
-		errorCode = protocol.updateAccountHandler(fmt.Errorf("Failed to read strEmail from parameters. %s", err.Error()), packet, callID, "", "", nil, nil)
+		errorCode = protocol.UpdateAccount(fmt.Errorf("Failed to read strEmail from parameters. %s", err.Error()), packet, callID, "", "", nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -51,7 +46,7 @@ func (protocol *Protocol) handleUpdateAccount(packet nex.PacketInterface) {
 
 	oPublicData, err := parametersStream.ReadDataHolder()
 	if err != nil {
-		errorCode = protocol.updateAccountHandler(fmt.Errorf("Failed to read oPublicData from parameters. %s", err.Error()), packet, callID, "", "", nil, nil)
+		errorCode = protocol.UpdateAccount(fmt.Errorf("Failed to read oPublicData from parameters. %s", err.Error()), packet, callID, "", "", nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -61,7 +56,7 @@ func (protocol *Protocol) handleUpdateAccount(packet nex.PacketInterface) {
 
 	oPrivateData, err := parametersStream.ReadDataHolder()
 	if err != nil {
-		errorCode = protocol.updateAccountHandler(fmt.Errorf("Failed to read oPrivateData from parameters. %s", err.Error()), packet, callID, "", "", nil, nil)
+		errorCode = protocol.UpdateAccount(fmt.Errorf("Failed to read oPrivateData from parameters. %s", err.Error()), packet, callID, "", "", nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -69,7 +64,7 @@ func (protocol *Protocol) handleUpdateAccount(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.updateAccountHandler(nil, packet, callID, strKey, strEmail, oPublicData, oPrivateData)
+	errorCode = protocol.UpdateAccount(nil, packet, callID, strKey, strEmail, oPublicData, oPrivateData)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

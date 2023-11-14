@@ -8,15 +8,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// RemoveFromBlockList sets the RemoveFromBlockList handler function
-func (protocol *Protocol) RemoveFromBlockList(handler func(err error, packet nex.PacketInterface, callID uint32, lstPrincipalID []*nex.PID) uint32) {
-	protocol.removeFromBlockListHandler = handler
-}
-
 func (protocol *Protocol) handleRemoveFromBlockList(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.removeFromBlockListHandler == nil {
+	if protocol.RemoveFromBlockList == nil {
 		globals.Logger.Warning("MatchmakeExtension::RemoveFromBlockList not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -31,7 +26,7 @@ func (protocol *Protocol) handleRemoveFromBlockList(packet nex.PacketInterface) 
 
 	lstPrincipalID, err := parametersStream.ReadListPID()
 	if err != nil {
-		errorCode = protocol.removeFromBlockListHandler(fmt.Errorf("Failed to read lstPrincipalID from parameters. %s", err.Error()), packet, callID, nil)
+		errorCode = protocol.RemoveFromBlockList(fmt.Errorf("Failed to read lstPrincipalID from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -39,7 +34,7 @@ func (protocol *Protocol) handleRemoveFromBlockList(packet nex.PacketInterface) 
 		return
 	}
 
-	errorCode = protocol.removeFromBlockListHandler(nil, packet, callID, lstPrincipalID)
+	errorCode = protocol.RemoveFromBlockList(nil, packet, callID, lstPrincipalID)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

@@ -9,15 +9,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// CompletePostBankObject sets the CompletePostBankObject handler function
-func (protocol *Protocol) CompletePostBankObject(handler func(err error, packet nex.PacketInterface, callID uint32, param *datastore_types.DataStoreCompletePostParam) uint32) {
-	protocol.completePostBankObjectHandler = handler
-}
-
 func (protocol *Protocol) handleCompletePostBankObject(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.completePostBankObjectHandler == nil {
+	if protocol.CompletePostBankObject == nil {
 		globals.Logger.Warning("DataStorePokemonBank::CompletePostBankObject not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -32,7 +27,7 @@ func (protocol *Protocol) handleCompletePostBankObject(packet nex.PacketInterfac
 
 	param, err := parametersStream.ReadStructure(datastore_types.NewDataStoreCompletePostParam())
 	if err != nil {
-		errorCode = protocol.completePostBankObjectHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
+		errorCode = protocol.CompletePostBankObject(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -40,7 +35,7 @@ func (protocol *Protocol) handleCompletePostBankObject(packet nex.PacketInterfac
 		return
 	}
 
-	errorCode = protocol.completePostBankObjectHandler(nil, packet, callID, param.(*datastore_types.DataStoreCompletePostParam))
+	errorCode = protocol.CompletePostBankObject(nil, packet, callID, param.(*datastore_types.DataStoreCompletePostParam))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

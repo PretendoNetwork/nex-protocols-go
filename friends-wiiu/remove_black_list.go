@@ -8,15 +8,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// RemoveBlackList sets the RemoveBlackList handler function
-func (protocol *Protocol) RemoveBlackList(handler func(err error, packet nex.PacketInterface, callID uint32, pid *nex.PID) uint32) {
-	protocol.removeBlackListHandler = handler
-}
-
 func (protocol *Protocol) handleRemoveBlackList(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.removeBlackListHandler == nil {
+	if protocol.RemoveBlackList == nil {
 		globals.Logger.Warning("FriendsWiiU::RemoveBlackList not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -31,7 +26,7 @@ func (protocol *Protocol) handleRemoveBlackList(packet nex.PacketInterface) {
 
 	pid, err := parametersStream.ReadPID()
 	if err != nil {
-		errorCode = protocol.removeBlackListHandler(fmt.Errorf("Failed to read pid from parameters. %s", err.Error()), packet, callID, nil)
+		errorCode = protocol.RemoveBlackList(fmt.Errorf("Failed to read pid from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -39,7 +34,7 @@ func (protocol *Protocol) handleRemoveBlackList(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.removeBlackListHandler(nil, packet, callID, pid)
+	errorCode = protocol.RemoveBlackList(nil, packet, callID, pid)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

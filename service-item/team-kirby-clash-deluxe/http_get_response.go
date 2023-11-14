@@ -8,15 +8,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// HTTPGetResponse sets the HTTPGetResponse handler function
-func (protocol *Protocol) HTTPGetResponse(handler func(err error, packet nex.PacketInterface, callID uint32, requestID uint32) uint32) {
-	protocol.httpGetResponseHandler = handler
-}
-
 func (protocol *Protocol) handleHTTPGetResponse(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.httpGetResponseHandler == nil {
+	if protocol.HttpGetResponse == nil {
 		globals.Logger.Warning("ServiceItemTeamKirbyClashDeluxe::HTTPGetResponse not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -31,7 +26,7 @@ func (protocol *Protocol) handleHTTPGetResponse(packet nex.PacketInterface) {
 
 	requestID, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.httpGetResponseHandler(fmt.Errorf("Failed to read requestID from parameters. %s", err.Error()), packet, callID, 0)
+		errorCode = protocol.HttpGetResponse(fmt.Errorf("Failed to read requestID from parameters. %s", err.Error()), packet, callID, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -39,7 +34,7 @@ func (protocol *Protocol) handleHTTPGetResponse(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.httpGetResponseHandler(nil, packet, callID, requestID)
+	errorCode = protocol.HttpGetResponse(nil, packet, callID, requestID)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

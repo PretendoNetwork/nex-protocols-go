@@ -9,15 +9,10 @@ import (
 	match_making_types "github.com/PretendoNetwork/nex-protocols-go/match-making/types"
 )
 
-// BrowseMatchmakeSessionWithHostURLsNoHolderNoResultRange sets the BrowseMatchmakeSessionWithHostURLsNoHolderNoResultRange handler function
-func (protocol *Protocol) BrowseMatchmakeSessionWithHostURLsNoHolderNoResultRange(handler func(err error, packet nex.PacketInterface, callID uint32, searchCriteria *match_making_types.MatchmakeSessionSearchCriteria) uint32) {
-	protocol.browseMatchmakeSessionWithHostURLsNoHolderNoResultRangeHandler = handler
-}
-
 func (protocol *Protocol) handleBrowseMatchmakeSessionWithHostURLsNoHolderNoResultRange(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.browseMatchmakeSessionWithHostURLsNoHolderNoResultRangeHandler == nil {
+	if protocol.BrowseMatchmakeSessionWithHostURLsNoHolderNoResultRange == nil {
 		globals.Logger.Warning("MatchmakeExtension::BrowseMatchmakeSessionWithHostURLsNoHolderNoResultRange not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -32,7 +27,7 @@ func (protocol *Protocol) handleBrowseMatchmakeSessionWithHostURLsNoHolderNoResu
 
 	searchCriteria, err := parametersStream.ReadStructure(match_making_types.NewMatchmakeSessionSearchCriteria())
 	if err != nil {
-		errorCode = protocol.browseMatchmakeSessionWithHostURLsNoHolderNoResultRangeHandler(fmt.Errorf("Failed to read searchCriteria from parameters. %s", err.Error()), packet, callID, nil)
+		errorCode = protocol.BrowseMatchmakeSessionWithHostURLsNoHolderNoResultRange(fmt.Errorf("Failed to read searchCriteria from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -40,7 +35,7 @@ func (protocol *Protocol) handleBrowseMatchmakeSessionWithHostURLsNoHolderNoResu
 		return
 	}
 
-	errorCode = protocol.browseMatchmakeSessionWithHostURLsNoHolderNoResultRangeHandler(nil, packet, callID, searchCriteria.(*match_making_types.MatchmakeSessionSearchCriteria))
+	errorCode = protocol.BrowseMatchmakeSessionWithHostURLsNoHolderNoResultRange(nil, packet, callID, searchCriteria.(*match_making_types.MatchmakeSessionSearchCriteria))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

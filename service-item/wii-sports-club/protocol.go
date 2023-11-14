@@ -114,28 +114,28 @@ type serviceItemProtocol = service_item.Protocol
 type Protocol struct {
 	Server nex.ServerInterface
 	serviceItemProtocol
-	helloHandler                       func(err error, packet nex.PacketInterface, callID uint32, name string) uint32
-	httpGetRequestHandler              func(err error, packet nex.PacketInterface, callID uint32, url *service_item_wii_sports_club_types.ServiceItemHTTPGetParam) uint32
-	httpGetResponseHandler             func(err error, packet nex.PacketInterface, callID uint32, requestID uint32) uint32
-	purchaseServiceItemRequestHandler  func(err error, packet nex.PacketInterface, callID uint32, purchaseServiceItemParam *service_item_wii_sports_club_types.ServiceItemPurchaseServiceItemParam) uint32
-	purchaseServiceItemResponseHandler func(err error, packet nex.PacketInterface, callID uint32, requestID uint32) uint32
-	listServiceItemRequestHandler      func(err error, packet nex.PacketInterface, callID uint32, listServiceItemParam *service_item_wii_sports_club_types.ServiceItemListServiceItemParam) uint32
-	listServiceItemResponseHandler     func(err error, packet nex.PacketInterface, callID uint32, requestID uint32) uint32
-	getBalanceRequestHandler           func(err error, packet nex.PacketInterface, callID uint32, getBalanceParam *service_item_wii_sports_club_types.ServiceItemGetBalanceParam) uint32
-	getBalanceResponseHandler          func(err error, packet nex.PacketInterface, callID uint32, requestID uint32) uint32
-	getPrepurchaseInfoRequestHandler   func(err error, packet nex.PacketInterface, callID uint32, getPrepurchaseInfoParam *service_item_wii_sports_club_types.ServiceItemGetPrepurchaseInfoParam) uint32
-	getPrepurchaseInfoResponseHandler  func(err error, packet nex.PacketInterface, callID uint32, requestID uint32) uint32
-	getServiceItemRightRequestHandler  func(err error, packet nex.PacketInterface, callID uint32, getServiceItemRightParam *service_item_wii_sports_club_types.ServiceItemGetServiceItemRightParam) uint32
-	getServiceItemRightResponseHandler func(err error, packet nex.PacketInterface, callID uint32, requestID uint32) uint32
-	getPurchaseHistoryRequestHandler   func(err error, packet nex.PacketInterface, callID uint32, getPurchaseHistoryParam *service_item_wii_sports_club_types.ServiceItemGetPurchaseHistoryParam) uint32
-	getPurchaseHistoryResponseHandler  func(err error, packet nex.PacketInterface, callID uint32, requestID uint32) uint32
-	getNoticeHandler                   func(err error, packet nex.PacketInterface, callID uint32, getNoticeParam *service_item_wii_sports_club_types.ServiceItemGetNoticeParam) uint32
-	updateAndGetTicketInfoHandler      func(err error, packet nex.PacketInterface, callID uint32, forceRetrieveFromEShop bool) uint32
-	loadUserInfoHandler                func(err error, packet nex.PacketInterface, callID uint32) uint32
-	saveUserInfoHandler                func(err error, packet nex.PacketInterface, callID uint32, userInfo *service_item_wii_sports_club_types.ServiceItemUserInfo) uint32
-	startChallengeHandler              func(err error, packet nex.PacketInterface, callID uint32, startChallengeParam *service_item_wii_sports_club_types.ServiceItemStartChallengeParam) uint32
-	endChallengeHandler                func(err error, packet nex.PacketInterface, callID uint32, endChallengeParam *service_item_wii_sports_club_types.ServiceItemEndChallengeParam) uint32
-	requestTicketRestorationHandler    func(err error, packet nex.PacketInterface, callID uint32, requestTicketRestorationParam *service_item_wii_sports_club_types.ServiceItemRequestTicketRestorationParam) uint32
+	Hello                       func(err error, packet nex.PacketInterface, callID uint32, name string) uint32
+	HttpGetRequest              func(err error, packet nex.PacketInterface, callID uint32, url *service_item_wii_sports_club_types.ServiceItemHTTPGetParam) uint32
+	HttpGetResponse             func(err error, packet nex.PacketInterface, callID uint32, requestID uint32) uint32
+	PurchaseServiceItemRequest  func(err error, packet nex.PacketInterface, callID uint32, purchaseServiceItemParam *service_item_wii_sports_club_types.ServiceItemPurchaseServiceItemParam) uint32
+	PurchaseServiceItemResponse func(err error, packet nex.PacketInterface, callID uint32, requestID uint32) uint32
+	ListServiceItemRequest      func(err error, packet nex.PacketInterface, callID uint32, listServiceItemParam *service_item_wii_sports_club_types.ServiceItemListServiceItemParam) uint32
+	ListServiceItemResponse     func(err error, packet nex.PacketInterface, callID uint32, requestID uint32) uint32
+	GetBalanceRequest           func(err error, packet nex.PacketInterface, callID uint32, getBalanceParam *service_item_wii_sports_club_types.ServiceItemGetBalanceParam) uint32
+	GetBalanceResponse          func(err error, packet nex.PacketInterface, callID uint32, requestID uint32) uint32
+	GetPrepurchaseInfoRequest   func(err error, packet nex.PacketInterface, callID uint32, getPrepurchaseInfoParam *service_item_wii_sports_club_types.ServiceItemGetPrepurchaseInfoParam) uint32
+	GetPrepurchaseInfoResponse  func(err error, packet nex.PacketInterface, callID uint32, requestID uint32) uint32
+	GetServiceItemRightRequest  func(err error, packet nex.PacketInterface, callID uint32, getServiceItemRightParam *service_item_wii_sports_club_types.ServiceItemGetServiceItemRightParam) uint32
+	GetServiceItemRightResponse func(err error, packet nex.PacketInterface, callID uint32, requestID uint32) uint32
+	GetPurchaseHistoryRequest   func(err error, packet nex.PacketInterface, callID uint32, getPurchaseHistoryParam *service_item_wii_sports_club_types.ServiceItemGetPurchaseHistoryParam) uint32
+	GetPurchaseHistoryResponse  func(err error, packet nex.PacketInterface, callID uint32, requestID uint32) uint32
+	GetNotice                   func(err error, packet nex.PacketInterface, callID uint32, getNoticeParam *service_item_wii_sports_club_types.ServiceItemGetNoticeParam) uint32
+	UpdateAndGetTicketInfo      func(err error, packet nex.PacketInterface, callID uint32, forceRetrieveFromEShop bool) uint32
+	LoadUserInfo                func(err error, packet nex.PacketInterface, callID uint32) uint32
+	SaveUserInfo                func(err error, packet nex.PacketInterface, callID uint32, userInfo *service_item_wii_sports_club_types.ServiceItemUserInfo) uint32
+	StartChallenge              func(err error, packet nex.PacketInterface, callID uint32, startChallengeParam *service_item_wii_sports_club_types.ServiceItemStartChallengeParam) uint32
+	EndChallenge                func(err error, packet nex.PacketInterface, callID uint32, endChallengeParam *service_item_wii_sports_club_types.ServiceItemEndChallengeParam) uint32
+	RequestTicketRestoration    func(err error, packet nex.PacketInterface, callID uint32, requestTicketRestorationParam *service_item_wii_sports_club_types.ServiceItemRequestTicketRestorationParam) uint32
 }
 
 // Setup initializes the protocol

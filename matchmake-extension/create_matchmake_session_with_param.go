@@ -9,15 +9,10 @@ import (
 	match_making_types "github.com/PretendoNetwork/nex-protocols-go/match-making/types"
 )
 
-// CreateMatchmakeSessionWithParam sets the CreateMatchmakeSessionWithParam handler function
-func (protocol *Protocol) CreateMatchmakeSessionWithParam(handler func(err error, packet nex.PacketInterface, callID uint32, createMatchmakeSessionParam *match_making_types.CreateMatchmakeSessionParam) uint32) {
-	protocol.createMatchmakeSessionWithParamHandler = handler
-}
-
 func (protocol *Protocol) handleCreateMatchmakeSessionWithParam(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.createMatchmakeSessionWithParamHandler == nil {
+	if protocol.CreateMatchmakeSessionWithParam == nil {
 		globals.Logger.Warning("MatchmakeExtension::CreateMatchmakeSessionWithParam not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -32,7 +27,7 @@ func (protocol *Protocol) handleCreateMatchmakeSessionWithParam(packet nex.Packe
 
 	createMatchmakeSessionParam, err := parametersStream.ReadStructure(match_making_types.NewCreateMatchmakeSessionParam())
 	if err != nil {
-		errorCode = protocol.createMatchmakeSessionWithParamHandler(fmt.Errorf("Failed to read createMatchmakeSessionParam from parameters. %s", err.Error()), packet, callID, nil)
+		errorCode = protocol.CreateMatchmakeSessionWithParam(fmt.Errorf("Failed to read createMatchmakeSessionParam from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -40,7 +35,7 @@ func (protocol *Protocol) handleCreateMatchmakeSessionWithParam(packet nex.Packe
 		return
 	}
 
-	errorCode = protocol.createMatchmakeSessionWithParamHandler(nil, packet, callID, createMatchmakeSessionParam.(*match_making_types.CreateMatchmakeSessionParam))
+	errorCode = protocol.CreateMatchmakeSessionWithParam(nil, packet, callID, createMatchmakeSessionParam.(*match_making_types.CreateMatchmakeSessionParam))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

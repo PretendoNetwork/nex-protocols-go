@@ -8,15 +8,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// FindByID sets the FindByID handler function
-func (protocol *Protocol) FindByID(handler func(err error, packet nex.PacketInterface, callID uint32, lstID []uint32) uint32) {
-	protocol.findByIDHandler = handler
-}
-
 func (protocol *Protocol) handleFindByID(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.findByIDHandler == nil {
+	if protocol.FindByID == nil {
 		globals.Logger.Warning("MatchMaking::FindByID not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -31,7 +26,7 @@ func (protocol *Protocol) handleFindByID(packet nex.PacketInterface) {
 
 	lstID, err := parametersStream.ReadListUInt32LE()
 	if err != nil {
-		errorCode = protocol.findByIDHandler(fmt.Errorf("Failed to read lstID from parameters. %s", err.Error()), packet, callID, nil)
+		errorCode = protocol.FindByID(fmt.Errorf("Failed to read lstID from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -39,7 +34,7 @@ func (protocol *Protocol) handleFindByID(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.findByIDHandler(nil, packet, callID, lstID)
+	errorCode = protocol.FindByID(nil, packet, callID, lstID)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

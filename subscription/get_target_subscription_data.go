@@ -8,13 +8,8 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// GetTargetSubscriptionData sets the GetTargetSubscriptionData handler function
-func (protocol *SubscriptionProtocol) GetTargetSubscriptionData(handler func(err error, packet nex.PacketInterface, callID uint32)) {
-	protocol.getTargetSubscriptionDataHandler = handler
-}
-
-func (protocol *SubscriptionProtocol) handleGetTargetSubscriptionData(packet nex.PacketInterface) {
-	if protocol.getTargetSubscriptionDataHandler == nil {
+func (protocol *Protocol) handleGetTargetSubscriptionData(packet nex.PacketInterface) {
+	if protocol.GetTargetSubscriptionData == nil {
 		fmt.Println("[Warning] SubscriptionProtocol::GetTargetSubscriptionData not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -24,5 +19,5 @@ func (protocol *SubscriptionProtocol) handleGetTargetSubscriptionData(packet nex
 
 	callID := request.CallID
 
-	go protocol.getTargetSubscriptionDataHandler(nil, packet, callID)
+	go protocol.GetTargetSubscriptionData(nil, packet, callID)
 }

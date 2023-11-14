@@ -8,15 +8,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// ListServiceItemResponse sets the ListServiceItemResponse handler function
-func (protocol *Protocol) ListServiceItemResponse(handler func(err error, packet nex.PacketInterface, callID uint32, requestID uint32) uint32) {
-	protocol.listServiceItemResponseHandler = handler
-}
-
 func (protocol *Protocol) handleListServiceItemResponse(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.listServiceItemResponseHandler == nil {
+	if protocol.ListServiceItemResponse == nil {
 		globals.Logger.Warning("ServiceItemWiiSportsClub::ListServiceItemResponse not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -31,7 +26,7 @@ func (protocol *Protocol) handleListServiceItemResponse(packet nex.PacketInterfa
 
 	requestID, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.listServiceItemResponseHandler(fmt.Errorf("Failed to read requestID from parameters. %s", err.Error()), packet, callID, 0)
+		errorCode = protocol.ListServiceItemResponse(fmt.Errorf("Failed to read requestID from parameters. %s", err.Error()), packet, callID, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -39,7 +34,7 @@ func (protocol *Protocol) handleListServiceItemResponse(packet nex.PacketInterfa
 		return
 	}
 
-	errorCode = protocol.listServiceItemResponseHandler(nil, packet, callID, requestID)
+	errorCode = protocol.ListServiceItemResponse(nil, packet, callID, requestID)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

@@ -8,15 +8,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// GetFriendUserProfiles sets the GetFriendUserProfiles handler function
-func (protocol *Protocol) GetFriendUserProfiles(handler func(err error, packet nex.PacketInterface, callID uint32, pids []*nex.PID) uint32) {
-	protocol.getFriendUserProfilesHandler = handler
-}
-
 func (protocol *Protocol) handleGetFriendUserProfiles(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.getFriendUserProfilesHandler == nil {
+	if protocol.GetFriendUserProfiles == nil {
 		globals.Logger.Warning("MatchmakeExtensionMonsterHunterXX::GetFriendUserProfiles not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -31,7 +26,7 @@ func (protocol *Protocol) handleGetFriendUserProfiles(packet nex.PacketInterface
 
 	pids, err := parametersStream.ReadListPID()
 	if err != nil {
-		errorCode = protocol.getFriendUserProfilesHandler(fmt.Errorf("Failed to read pids from parameters. %s", err.Error()), packet, callID, nil)
+		errorCode = protocol.GetFriendUserProfiles(fmt.Errorf("Failed to read pids from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -39,7 +34,7 @@ func (protocol *Protocol) handleGetFriendUserProfiles(packet nex.PacketInterface
 		return
 	}
 
-	errorCode = protocol.getFriendUserProfilesHandler(nil, packet, callID, pids)
+	errorCode = protocol.GetFriendUserProfiles(nil, packet, callID, pids)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

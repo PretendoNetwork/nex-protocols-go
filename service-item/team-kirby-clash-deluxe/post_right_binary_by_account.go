@@ -9,15 +9,10 @@ import (
 	service_item_team_kirby_clash_deluxe_types "github.com/PretendoNetwork/nex-protocols-go/service-item/team-kirby-clash-deluxe/types"
 )
 
-// PostRightBinaryByAccount sets the PostRightBinaryByAccount handler function
-func (protocol *Protocol) PostRightBinaryByAccount(handler func(err error, packet nex.PacketInterface, callID uint32, postRightBinaryByAccountParam *service_item_team_kirby_clash_deluxe_types.ServiceItemPostRightBinaryByAccountParam) uint32) {
-	protocol.postRightBinaryByAccountHandler = handler
-}
-
 func (protocol *Protocol) handlePostRightBinaryByAccount(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.postRightBinaryByAccountHandler == nil {
+	if protocol.PostRightBinaryByAccount == nil {
 		globals.Logger.Warning("ServiceItemTeamKirbyClashDeluxe::PostRightBinaryByAccount not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -32,7 +27,7 @@ func (protocol *Protocol) handlePostRightBinaryByAccount(packet nex.PacketInterf
 
 	postRightBinaryByAccountParam, err := parametersStream.ReadStructure(service_item_team_kirby_clash_deluxe_types.NewServiceItemPostRightBinaryByAccountParam())
 	if err != nil {
-		errorCode = protocol.postRightBinaryByAccountHandler(fmt.Errorf("Failed to read postRightBinaryByAccountParam from parameters. %s", err.Error()), packet, callID, nil)
+		errorCode = protocol.PostRightBinaryByAccount(fmt.Errorf("Failed to read postRightBinaryByAccountParam from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -40,7 +35,7 @@ func (protocol *Protocol) handlePostRightBinaryByAccount(packet nex.PacketInterf
 		return
 	}
 
-	errorCode = protocol.postRightBinaryByAccountHandler(nil, packet, callID, postRightBinaryByAccountParam.(*service_item_team_kirby_clash_deluxe_types.ServiceItemPostRightBinaryByAccountParam))
+	errorCode = protocol.PostRightBinaryByAccount(nil, packet, callID, postRightBinaryByAccountParam.(*service_item_team_kirby_clash_deluxe_types.ServiceItemPostRightBinaryByAccountParam))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

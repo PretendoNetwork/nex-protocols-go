@@ -9,15 +9,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// PrepareTradePokemon sets the PrepareTradePokemon handler function
-func (protocol *Protocol) PrepareTradePokemon(handler func(err error, packet nex.PacketInterface, callID uint32, param *datastore_pokemon_bank_types.GlobalTradeStationPrepareTradePokemonParam) uint32) {
-	protocol.prepareTradePokemonHandler = handler
-}
-
 func (protocol *Protocol) handlePrepareTradePokemon(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.prepareTradePokemonHandler == nil {
+	if protocol.PrepareTradePokemon == nil {
 		globals.Logger.Warning("DataStorePokemonBank::PrepareTradePokemon not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -32,7 +27,7 @@ func (protocol *Protocol) handlePrepareTradePokemon(packet nex.PacketInterface) 
 
 	param, err := parametersStream.ReadStructure(datastore_pokemon_bank_types.NewGlobalTradeStationPrepareTradePokemonParam())
 	if err != nil {
-		errorCode = protocol.prepareTradePokemonHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
+		errorCode = protocol.PrepareTradePokemon(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -40,7 +35,7 @@ func (protocol *Protocol) handlePrepareTradePokemon(packet nex.PacketInterface) 
 		return
 	}
 
-	errorCode = protocol.prepareTradePokemonHandler(nil, packet, callID, param.(*datastore_pokemon_bank_types.GlobalTradeStationPrepareTradePokemonParam))
+	errorCode = protocol.PrepareTradePokemon(nil, packet, callID, param.(*datastore_pokemon_bank_types.GlobalTradeStationPrepareTradePokemonParam))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

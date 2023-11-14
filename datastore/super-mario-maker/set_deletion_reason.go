@@ -8,15 +8,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// SetDeletionReason sets the SetDeletionReason handler function
-func (protocol *Protocol) SetDeletionReason(handler func(err error, packet nex.PacketInterface, callID uint32, dataIDLst []uint64, deletionReason uint32) uint32) {
-	protocol.setDeletionReasonHandler = handler
-}
-
 func (protocol *Protocol) handleSetDeletionReason(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.setDeletionReasonHandler == nil {
+	if protocol.SetDeletionReason == nil {
 		globals.Logger.Warning("DataStoreSuperMarioMaker::SetDeletionReason not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -31,7 +26,7 @@ func (protocol *Protocol) handleSetDeletionReason(packet nex.PacketInterface) {
 
 	dataIDLst, err := parametersStream.ReadListUInt64LE()
 	if err != nil {
-		errorCode = protocol.setDeletionReasonHandler(fmt.Errorf("Failed to read dataIDLst from parameters. %s", err.Error()), packet, callID, nil, 0)
+		errorCode = protocol.SetDeletionReason(fmt.Errorf("Failed to read dataIDLst from parameters. %s", err.Error()), packet, callID, nil, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -41,7 +36,7 @@ func (protocol *Protocol) handleSetDeletionReason(packet nex.PacketInterface) {
 
 	deletionReason, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.setDeletionReasonHandler(fmt.Errorf("Failed to read deletionReason from parameters. %s", err.Error()), packet, callID, nil, 0)
+		errorCode = protocol.SetDeletionReason(fmt.Errorf("Failed to read deletionReason from parameters. %s", err.Error()), packet, callID, nil, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -49,7 +44,7 @@ func (protocol *Protocol) handleSetDeletionReason(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.setDeletionReasonHandler(nil, packet, callID, dataIDLst, deletionReason)
+	errorCode = protocol.SetDeletionReason(nil, packet, callID, dataIDLst, deletionReason)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

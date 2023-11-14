@@ -8,15 +8,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// SendReport sets the SendReport handler function
-func (protocol *Protocol) SendReport(handler func(err error, packet nex.PacketInterface, callID uint32, reportID uint32, reportData []byte) uint32) {
-	protocol.sendReportHandler = handler
-}
-
 func (protocol *Protocol) handleSendReport(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.sendReportHandler == nil {
+	if protocol.SendReport == nil {
 		globals.Logger.Warning("SecureConnection::SendReport not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -31,7 +26,7 @@ func (protocol *Protocol) handleSendReport(packet nex.PacketInterface) {
 
 	reportID, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.sendReportHandler(fmt.Errorf("Failed to read reportID from parameters. %s", err.Error()), packet, callID, 0, nil)
+		errorCode = protocol.SendReport(fmt.Errorf("Failed to read reportID from parameters. %s", err.Error()), packet, callID, 0, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -41,7 +36,7 @@ func (protocol *Protocol) handleSendReport(packet nex.PacketInterface) {
 
 	reportData, err := parametersStream.ReadQBuffer()
 	if err != nil {
-		errorCode = protocol.sendReportHandler(fmt.Errorf("Failed to read reportData from parameters. %s", err.Error()), packet, callID, 0, nil)
+		errorCode = protocol.SendReport(fmt.Errorf("Failed to read reportData from parameters. %s", err.Error()), packet, callID, 0, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -49,7 +44,7 @@ func (protocol *Protocol) handleSendReport(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.sendReportHandler(nil, packet, callID, reportID, reportData)
+	errorCode = protocol.SendReport(nil, packet, callID, reportID, reportData)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

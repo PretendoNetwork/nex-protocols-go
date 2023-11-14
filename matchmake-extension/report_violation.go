@@ -8,15 +8,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// ReportViolation sets the ReportViolation handler function
-func (protocol *Protocol) ReportViolation(handler func(err error, packet nex.PacketInterface, callID uint32, pid *nex.PID, userName string, violationCode uint32) uint32) {
-	protocol.reportViolationHandler = handler
-}
-
 func (protocol *Protocol) handleReportViolation(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.reportViolationHandler == nil {
+	if protocol.ReportViolation == nil {
 		globals.Logger.Warning("MatchmakeExtension::ReportViolation not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -31,7 +26,7 @@ func (protocol *Protocol) handleReportViolation(packet nex.PacketInterface) {
 
 	pid, err := parametersStream.ReadPID()
 	if err != nil {
-		errorCode = protocol.reportViolationHandler(fmt.Errorf("Failed to read pid from parameters. %s", err.Error()), packet, callID, nil, "", 0)
+		errorCode = protocol.ReportViolation(fmt.Errorf("Failed to read pid from parameters. %s", err.Error()), packet, callID, nil, "", 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -41,7 +36,7 @@ func (protocol *Protocol) handleReportViolation(packet nex.PacketInterface) {
 
 	userName, err := parametersStream.ReadString()
 	if err != nil {
-		errorCode = protocol.reportViolationHandler(fmt.Errorf("Failed to read userName from parameters. %s", err.Error()), packet, callID, nil, "", 0)
+		errorCode = protocol.ReportViolation(fmt.Errorf("Failed to read userName from parameters. %s", err.Error()), packet, callID, nil, "", 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -51,7 +46,7 @@ func (protocol *Protocol) handleReportViolation(packet nex.PacketInterface) {
 
 	violationCode, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.reportViolationHandler(fmt.Errorf("Failed to read violationCode from parameters. %s", err.Error()), packet, callID, nil, "", 0)
+		errorCode = protocol.ReportViolation(fmt.Errorf("Failed to read violationCode from parameters. %s", err.Error()), packet, callID, nil, "", 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -59,7 +54,7 @@ func (protocol *Protocol) handleReportViolation(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.reportViolationHandler(nil, packet, callID, pid, userName, violationCode)
+	errorCode = protocol.ReportViolation(nil, packet, callID, pid, userName, violationCode)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

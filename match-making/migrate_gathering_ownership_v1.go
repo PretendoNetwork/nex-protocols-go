@@ -8,15 +8,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// MigrateGatheringOwnershipV1 sets the MigrateGatheringOwnershipV1 handler function
-func (protocol *Protocol) MigrateGatheringOwnershipV1(handler func(err error, packet nex.PacketInterface, callID uint32, gid uint32, lstPotentialNewOwnersID []*nex.PID) uint32) {
-	protocol.migrateGatheringOwnershipV1Handler = handler
-}
-
 func (protocol *Protocol) handleMigrateGatheringOwnershipV1(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.migrateGatheringOwnershipV1Handler == nil {
+	if protocol.MigrateGatheringOwnershipV1 == nil {
 		globals.Logger.Warning("MatchMaking::MigrateGatheringOwnershipV1 not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -31,7 +26,7 @@ func (protocol *Protocol) handleMigrateGatheringOwnershipV1(packet nex.PacketInt
 
 	gid, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.migrateGatheringOwnershipV1Handler(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), packet, callID, 0, nil)
+		errorCode = protocol.MigrateGatheringOwnershipV1(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), packet, callID, 0, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -41,7 +36,7 @@ func (protocol *Protocol) handleMigrateGatheringOwnershipV1(packet nex.PacketInt
 
 	lstPotentialNewOwnersID, err := parametersStream.ReadListPID()
 	if err != nil {
-		errorCode = protocol.migrateGatheringOwnershipV1Handler(fmt.Errorf("Failed to read lstPotentialNewOwnersID from parameters. %s", err.Error()), packet, callID, 0, nil)
+		errorCode = protocol.MigrateGatheringOwnershipV1(fmt.Errorf("Failed to read lstPotentialNewOwnersID from parameters. %s", err.Error()), packet, callID, 0, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -49,7 +44,7 @@ func (protocol *Protocol) handleMigrateGatheringOwnershipV1(packet nex.PacketInt
 		return
 	}
 
-	errorCode = protocol.migrateGatheringOwnershipV1Handler(nil, packet, callID, gid, lstPotentialNewOwnersID)
+	errorCode = protocol.MigrateGatheringOwnershipV1(nil, packet, callID, gid, lstPotentialNewOwnersID)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

@@ -20,9 +20,9 @@ const (
 
 // Protocol handles the Screening protocol
 type Protocol struct {
-	Server                        nex.ServerInterface
-	reportDataStoreContentHandler func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) uint32 // TODO - Unknown request/response format
-	reportUserHandler             func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) uint32 // TODO - Unknown request/response format
+	Server                 nex.ServerInterface
+	ReportDataStoreContent func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) uint32 // TODO - Unknown request/response format
+	ReportUser             func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) uint32 // TODO - Unknown request/response format
 }
 
 // Setup initializes the protocol

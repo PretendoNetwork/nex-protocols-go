@@ -9,15 +9,10 @@ import (
 	matchmake_referee_types "github.com/PretendoNetwork/nex-protocols-go/matchmake-referee/types"
 )
 
-// GetOrCreateStats sets the GetOrCreateStats handler function
-func (protocol *Protocol) GetOrCreateStats(handler func(err error, packet nex.PacketInterface, callID uint32, param *matchmake_referee_types.MatchmakeRefereeStatsInitParam) uint32) {
-	protocol.getOrCreateStatsHandler = handler
-}
-
 func (protocol *Protocol) handleGetOrCreateStats(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.getOrCreateStatsHandler == nil {
+	if protocol.GetOrCreateStats == nil {
 		globals.Logger.Warning("MatchmakeReferee::GetOrCreateStats not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -32,7 +27,7 @@ func (protocol *Protocol) handleGetOrCreateStats(packet nex.PacketInterface) {
 
 	param, err := parametersStream.ReadStructure(matchmake_referee_types.NewMatchmakeRefereeStatsInitParam())
 	if err != nil {
-		errorCode = protocol.getOrCreateStatsHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
+		errorCode = protocol.GetOrCreateStats(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -40,7 +35,7 @@ func (protocol *Protocol) handleGetOrCreateStats(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.getOrCreateStatsHandler(nil, packet, callID, param.(*matchmake_referee_types.MatchmakeRefereeStatsInitParam))
+	errorCode = protocol.GetOrCreateStats(nil, packet, callID, param.(*matchmake_referee_types.MatchmakeRefereeStatsInitParam))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

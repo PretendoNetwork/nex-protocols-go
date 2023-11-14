@@ -8,15 +8,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// UpdateSessionHost sets the UpdateSessionHost handler function
-func (protocol *Protocol) UpdateSessionHost(handler func(err error, packet nex.PacketInterface, callID uint32, gid uint32, isMigrateOwner bool) uint32) {
-	protocol.updateSessionHostHandler = handler
-}
-
 func (protocol *Protocol) handleUpdateSessionHost(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.updateSessionHostHandler == nil {
+	if protocol.UpdateSessionHost == nil {
 		fmt.Println("[Warning] MatchMaking::UpdateSessionHost not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -31,7 +26,7 @@ func (protocol *Protocol) handleUpdateSessionHost(packet nex.PacketInterface) {
 
 	gid, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.updateSessionHostHandler(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), packet, callID, 0, false)
+		errorCode = protocol.UpdateSessionHost(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), packet, callID, 0, false)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -41,7 +36,7 @@ func (protocol *Protocol) handleUpdateSessionHost(packet nex.PacketInterface) {
 
 	isMigrateOwner, err := parametersStream.ReadBool()
 	if err != nil {
-		errorCode = protocol.updateSessionHostHandler(fmt.Errorf("Failed to read isMigrateOwner from parameters. %s", err.Error()), packet, callID, 0, false)
+		errorCode = protocol.UpdateSessionHost(fmt.Errorf("Failed to read isMigrateOwner from parameters. %s", err.Error()), packet, callID, 0, false)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -49,7 +44,7 @@ func (protocol *Protocol) handleUpdateSessionHost(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.updateSessionHostHandler(nil, packet, callID, gid, isMigrateOwner)
+	errorCode = protocol.UpdateSessionHost(nil, packet, callID, gid, isMigrateOwner)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

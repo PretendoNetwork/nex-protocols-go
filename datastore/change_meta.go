@@ -9,15 +9,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// ChangeMeta sets the ChangeMeta handler function
-func (protocol *Protocol) ChangeMeta(handler func(err error, packet nex.PacketInterface, callID uint32, param *datastore_types.DataStoreChangeMetaParam) uint32) {
-	protocol.changeMetaHandler = handler
-}
-
 func (protocol *Protocol) handleChangeMeta(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.changeMetaHandler == nil {
+	if protocol.ChangeMeta == nil {
 		globals.Logger.Warning("DataStore::ChangeMeta not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -32,7 +27,7 @@ func (protocol *Protocol) handleChangeMeta(packet nex.PacketInterface) {
 
 	param, err := parametersStream.ReadStructure(datastore_types.NewDataStoreChangeMetaParam())
 	if err != nil {
-		errorCode = protocol.changeMetaHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
+		errorCode = protocol.ChangeMeta(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -40,7 +35,7 @@ func (protocol *Protocol) handleChangeMeta(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.changeMetaHandler(nil, packet, callID, param.(*datastore_types.DataStoreChangeMetaParam))
+	errorCode = protocol.ChangeMeta(nil, packet, callID, param.(*datastore_types.DataStoreChangeMetaParam))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

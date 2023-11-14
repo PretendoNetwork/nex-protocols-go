@@ -8,15 +8,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// DeleteCommonData sets the DeleteCommonData handler function
-func (protocol *Protocol) DeleteCommonData(handler func(err error, packet nex.PacketInterface, callID uint32, nexUniqueID uint64) uint32) {
-	protocol.deleteCommonDataHandler = handler
-}
-
 func (protocol *Protocol) handleDeleteCommonData(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.deleteCommonDataHandler == nil {
+	if protocol.DeleteCommonData == nil {
 		globals.Logger.Warning("Ranking2::DeleteCommonData not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -31,7 +26,7 @@ func (protocol *Protocol) handleDeleteCommonData(packet nex.PacketInterface) {
 
 	nexUniqueID, err := parametersStream.ReadUInt64LE()
 	if err != nil {
-		errorCode = protocol.deleteCommonDataHandler(fmt.Errorf("Failed to read nexUniqueID from parameters. %s", err.Error()), packet, callID, 0)
+		errorCode = protocol.DeleteCommonData(fmt.Errorf("Failed to read nexUniqueID from parameters. %s", err.Error()), packet, callID, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -39,7 +34,7 @@ func (protocol *Protocol) handleDeleteCommonData(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.deleteCommonDataHandler(nil, packet, callID, nexUniqueID)
+	errorCode = protocol.DeleteCommonData(nil, packet, callID, nexUniqueID)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

@@ -8,15 +8,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// AcceptFriendRequest sets the AcceptFriendRequest handler function
-func (protocol *Protocol) AcceptFriendRequest(handler func(err error, packet nex.PacketInterface, callID uint32, id uint64) uint32) {
-	protocol.acceptFriendRequestHandler = handler
-}
-
 func (protocol *Protocol) handleAcceptFriendRequest(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.acceptFriendRequestHandler == nil {
+	if protocol.AcceptFriendRequest == nil {
 		globals.Logger.Warning("FriendsWiiU::AcceptFriendRequest not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -31,7 +26,7 @@ func (protocol *Protocol) handleAcceptFriendRequest(packet nex.PacketInterface) 
 
 	id, err := parametersStream.ReadUInt64LE()
 	if err != nil {
-		errorCode = protocol.acceptFriendRequestHandler(fmt.Errorf("Failed to read id from parameters. %s", err.Error()), packet, callID, 0)
+		errorCode = protocol.AcceptFriendRequest(fmt.Errorf("Failed to read id from parameters. %s", err.Error()), packet, callID, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -39,7 +34,7 @@ func (protocol *Protocol) handleAcceptFriendRequest(packet nex.PacketInterface) 
 		return
 	}
 
-	errorCode = protocol.acceptFriendRequestHandler(nil, packet, callID, id)
+	errorCode = protocol.AcceptFriendRequest(nil, packet, callID, id)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

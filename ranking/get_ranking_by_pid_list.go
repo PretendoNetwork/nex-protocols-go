@@ -9,15 +9,10 @@ import (
 	ranking_types "github.com/PretendoNetwork/nex-protocols-go/ranking/types"
 )
 
-// GetRankingByPIDList sets the GetRankingByPIDList handler function
-func (protocol *Protocol) GetRankingByPIDList(handler func(err error, packet nex.PacketInterface, callID uint32, principalIDList []*nex.PID, rankingMode uint8, category uint32, orderParam *ranking_types.RankingOrderParam, uniqueID uint64) uint32) {
-	protocol.getRankingByPIDListHandler = handler
-}
-
 func (protocol *Protocol) handleGetRankingByPIDList(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.getRankingByPIDListHandler == nil {
+	if protocol.GetRankingByPIDList == nil {
 		globals.Logger.Warning("Ranking::GetRankingByPIDList not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -32,7 +27,7 @@ func (protocol *Protocol) handleGetRankingByPIDList(packet nex.PacketInterface) 
 
 	principalIDList, err := parametersStream.ReadListPID()
 	if err != nil {
-		errorCode = protocol.getRankingByPIDListHandler(fmt.Errorf("Failed to read principalIDList from parameters. %s", err.Error()), packet, callID, nil, 0, 0, nil, 0)
+		errorCode = protocol.GetRankingByPIDList(fmt.Errorf("Failed to read principalIDList from parameters. %s", err.Error()), packet, callID, nil, 0, 0, nil, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -42,7 +37,7 @@ func (protocol *Protocol) handleGetRankingByPIDList(packet nex.PacketInterface) 
 
 	rankingMode, err := parametersStream.ReadUInt8()
 	if err != nil {
-		errorCode = protocol.getRankingByPIDListHandler(fmt.Errorf("Failed to read rankingMode from parameters. %s", err.Error()), packet, callID, nil, 0, 0, nil, 0)
+		errorCode = protocol.GetRankingByPIDList(fmt.Errorf("Failed to read rankingMode from parameters. %s", err.Error()), packet, callID, nil, 0, 0, nil, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -52,7 +47,7 @@ func (protocol *Protocol) handleGetRankingByPIDList(packet nex.PacketInterface) 
 
 	category, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.getRankingByPIDListHandler(fmt.Errorf("Failed to read category from parameters. %s", err.Error()), packet, callID, nil, 0, 0, nil, 0)
+		errorCode = protocol.GetRankingByPIDList(fmt.Errorf("Failed to read category from parameters. %s", err.Error()), packet, callID, nil, 0, 0, nil, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -62,7 +57,7 @@ func (protocol *Protocol) handleGetRankingByPIDList(packet nex.PacketInterface) 
 
 	orderParam, err := parametersStream.ReadStructure(ranking_types.NewRankingOrderParam())
 	if err != nil {
-		errorCode = protocol.getRankingByPIDListHandler(fmt.Errorf("Failed to read orderParam from parameters. %s", err.Error()), packet, callID, nil, 0, 0, nil, 0)
+		errorCode = protocol.GetRankingByPIDList(fmt.Errorf("Failed to read orderParam from parameters. %s", err.Error()), packet, callID, nil, 0, 0, nil, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -72,7 +67,7 @@ func (protocol *Protocol) handleGetRankingByPIDList(packet nex.PacketInterface) 
 
 	uniqueID, err := parametersStream.ReadUInt64LE()
 	if err != nil {
-		errorCode = protocol.getRankingByPIDListHandler(fmt.Errorf("Failed to read uniqueID from parameters. %s", err.Error()), packet, callID, nil, 0, 0, nil, 0)
+		errorCode = protocol.GetRankingByPIDList(fmt.Errorf("Failed to read uniqueID from parameters. %s", err.Error()), packet, callID, nil, 0, 0, nil, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -80,7 +75,7 @@ func (protocol *Protocol) handleGetRankingByPIDList(packet nex.PacketInterface) 
 		return
 	}
 
-	errorCode = protocol.getRankingByPIDListHandler(nil, packet, callID, principalIDList, rankingMode, category, orderParam.(*ranking_types.RankingOrderParam), uniqueID)
+	errorCode = protocol.GetRankingByPIDList(nil, packet, callID, principalIDList, rankingMode, category, orderParam.(*ranking_types.RankingOrderParam), uniqueID)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

@@ -8,15 +8,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// AddFriendBylstPrincipalID sets the AddFriendBylstPrincipalID handler function
-func (protocol *Protocol) AddFriendBylstPrincipalID(handler func(err error, packet nex.PacketInterface, callID uint32, lfc uint64, pids []*nex.PID) uint32) {
-	protocol.addFriendBylstPrincipalIDHandler = handler
-}
-
 func (protocol *Protocol) handleAddFriendBylstPrincipalID(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.addFriendBylstPrincipalIDHandler == nil {
+	if protocol.AddFriendBylstPrincipalID == nil {
 		globals.Logger.Warning("Friends3DS::AddFriendBylstPrincipalID not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -31,7 +26,7 @@ func (protocol *Protocol) handleAddFriendBylstPrincipalID(packet nex.PacketInter
 
 	lfc, err := parametersStream.ReadUInt64LE()
 	if err != nil {
-		errorCode = protocol.addFriendBylstPrincipalIDHandler(fmt.Errorf("Failed to read lfc from parameters. %s", err.Error()), packet, callID, 0, nil)
+		errorCode = protocol.AddFriendBylstPrincipalID(fmt.Errorf("Failed to read lfc from parameters. %s", err.Error()), packet, callID, 0, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -41,7 +36,7 @@ func (protocol *Protocol) handleAddFriendBylstPrincipalID(packet nex.PacketInter
 
 	pids, err := parametersStream.ReadListPID()
 	if err != nil {
-		errorCode = protocol.addFriendBylstPrincipalIDHandler(fmt.Errorf("Failed to read pids from parameters. %s", err.Error()), packet, callID, 0, nil)
+		errorCode = protocol.AddFriendBylstPrincipalID(fmt.Errorf("Failed to read pids from parameters. %s", err.Error()), packet, callID, 0, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -49,7 +44,7 @@ func (protocol *Protocol) handleAddFriendBylstPrincipalID(packet nex.PacketInter
 		return
 	}
 
-	errorCode = protocol.addFriendBylstPrincipalIDHandler(nil, packet, callID, lfc, pids)
+	errorCode = protocol.AddFriendBylstPrincipalID(nil, packet, callID, lfc, pids)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

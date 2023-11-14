@@ -8,15 +8,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// GetFriendUserStatuses sets the GetFriendUserStatuses handler function
-func (protocol *Protocol) GetFriendUserStatuses(handler func(err error, packet nex.PacketInterface, callID uint32, unknown []uint8) uint32) {
-	protocol.getFriendUserStatusesHandler = handler
-}
-
 func (protocol *Protocol) handleGetFriendUserStatuses(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.getFriendUserStatusesHandler == nil {
+	if protocol.GetFriendUserStatuses == nil {
 		globals.Logger.Warning("Subscriber::GetFriendUserStatuses not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -31,7 +26,7 @@ func (protocol *Protocol) handleGetFriendUserStatuses(packet nex.PacketInterface
 
 	unknown, err := parametersStream.ReadListUInt8()
 	if err != nil {
-		errorCode = protocol.getFriendUserStatusesHandler(fmt.Errorf("Failed to read unknown from parameters. %s", err.Error()), packet, callID, nil)
+		errorCode = protocol.GetFriendUserStatuses(fmt.Errorf("Failed to read unknown from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -39,7 +34,7 @@ func (protocol *Protocol) handleGetFriendUserStatuses(packet nex.PacketInterface
 		return
 	}
 
-	errorCode = protocol.getFriendUserStatusesHandler(nil, packet, callID, unknown)
+	errorCode = protocol.GetFriendUserStatuses(nil, packet, callID, unknown)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

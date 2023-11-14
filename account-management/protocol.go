@@ -105,37 +105,37 @@ const (
 
 // Protocol stores all the RMC method handlers for the Account Management protocol and listens for requests
 type Protocol struct {
-	Server                             nex.ServerInterface
-	createAccountHandler               func(err error, packet nex.PacketInterface, callID uint32, strPrincipalName string, strKey string, uiGroups uint32, strEmail string) uint32
-	deleteAccountHandler               func(err error, packet nex.PacketInterface, callID uint32, idPrincipal *nex.PID) uint32
-	disableAccountHandler              func(err error, packet nex.PacketInterface, callID uint32, idPrincipal *nex.PID, dtUntil *nex.DateTime, strMessage string) uint32
-	changePasswordHandler              func(err error, packet nex.PacketInterface, callID uint32, strNewKey string) uint32
-	testCapabilityHandler              func(err error, packet nex.PacketInterface, callID uint32, uiCapability uint32) uint32
-	getNameHandler                     func(err error, packet nex.PacketInterface, callID uint32, idPrincipal *nex.PID) uint32
-	getAccountDataHandler              func(err error, packet nex.PacketInterface, callID uint32) uint32
-	getPrivateDataHandler              func(err error, packet nex.PacketInterface, callID uint32) uint32
-	getPublicDataHandler               func(err error, packet nex.PacketInterface, callID uint32, idPrincipal *nex.PID) uint32
-	getMultiplePublicDataHandler       func(err error, packet nex.PacketInterface, callID uint32, lstPrincipals []*nex.PID) uint32
-	updateAccountNameHandler           func(err error, packet nex.PacketInterface, callID uint32, strName string) uint32
-	updateAccountEmailHandler          func(err error, packet nex.PacketInterface, callID uint32, strName string) uint32
-	updateCustomDataHandler            func(err error, packet nex.PacketInterface, callID uint32, oPublicData *nex.DataHolder, oPrivateData *nex.DataHolder) uint32
-	findByNameRegexHandler             func(err error, packet nex.PacketInterface, callID uint32, uiGroups uint32, strRegex string, resultRange *nex.ResultRange) uint32
-	updateAccountExpiryDateHandler     func(err error, packet nex.PacketInterface, callID uint32, idPrincipal *nex.PID, dtExpiry *nex.DateTime, strExpiredMessage string) uint32
-	updateAccountEffectiveDateHandler  func(err error, packet nex.PacketInterface, callID uint32, idPrincipal *nex.PID, dtEffectiveFrom *nex.DateTime, strNotEffectiveMessage string) uint32
-	updateStatusHandler                func(err error, packet nex.PacketInterface, callID uint32, strStatus string) uint32
-	getStatusHandler                   func(err error, packet nex.PacketInterface, callID uint32, idPrincipal *nex.PID) uint32
-	getLastConnectionStatsHandler      func(err error, packet nex.PacketInterface, callID uint32, idPrincipal *nex.PID) uint32
-	resetPasswordHandler               func(err error, packet nex.PacketInterface, callID uint32) uint32
-	createAccountWithCustomDataHandler func(err error, packet nex.PacketInterface, callID uint32, strPrincipalName string, strKey string, uiGroups uint32, strEmail string, oPublicData *nex.DataHolder, oPrivateData *nex.DataHolder) uint32
-	retrieveAccountHandler             func(err error, packet nex.PacketInterface, callID uint32) uint32
-	updateAccountHandler               func(err error, packet nex.PacketInterface, callID uint32, strKey string, strEmail string, oPublicData *nex.DataHolder, oPrivateData *nex.DataHolder) uint32
-	changePasswordByGuestHandler       func(err error, packet nex.PacketInterface, callID uint32, strPrincipalName string, strKey string, strEmail string) uint32
-	findByNameLikeHandler              func(err error, packet nex.PacketInterface, callID uint32, uiGroups uint32, strLike string, resultRange *nex.ResultRange) uint32
-	customCreateAccountHandler         func(err error, packet nex.PacketInterface, callID uint32, strPrincipalName string, strKey string, uiGroups uint32, strEmail string, oAuthData *nex.DataHolder) uint32
-	nintendoCreateAccountHandler       func(err error, packet nex.PacketInterface, callID uint32, strPrincipalName string, strKey string, uiGroups uint32, strEmail string, oAuthData *nex.DataHolder) uint32
-	lookupOrCreateAccountHandler       func(err error, packet nex.PacketInterface, callID uint32, strPrincipalName string, strKey string, uiGroups uint32, strEmail string, oAuthData *nex.DataHolder) uint32
-	disconnectPrincipalHandler         func(err error, packet nex.PacketInterface, callID uint32, idPrincipal *nex.PID) uint32
-	disconnectAllPrincipalsHandler     func(err error, packet nex.PacketInterface, callID uint32) uint32
+	Server                      nex.ServerInterface
+	CreateAccount               func(err error, packet nex.PacketInterface, callID uint32, strPrincipalName string, strKey string, uiGroups uint32, strEmail string) uint32
+	DeleteAccount               func(err error, packet nex.PacketInterface, callID uint32, idPrincipal *nex.PID) uint32
+	DisableAccount              func(err error, packet nex.PacketInterface, callID uint32, idPrincipal *nex.PID, dtUntil *nex.DateTime, strMessage string) uint32
+	ChangePassword              func(err error, packet nex.PacketInterface, callID uint32, strNewKey string) uint32
+	TestCapability              func(err error, packet nex.PacketInterface, callID uint32, uiCapability uint32) uint32
+	GetName                     func(err error, packet nex.PacketInterface, callID uint32, idPrincipal *nex.PID) uint32
+	GetAccountData              func(err error, packet nex.PacketInterface, callID uint32) uint32
+	GetPrivateData              func(err error, packet nex.PacketInterface, callID uint32) uint32
+	GetPublicData               func(err error, packet nex.PacketInterface, callID uint32, idPrincipal *nex.PID) uint32
+	GetMultiplePublicData       func(err error, packet nex.PacketInterface, callID uint32, lstPrincipals []*nex.PID) uint32
+	UpdateAccountName           func(err error, packet nex.PacketInterface, callID uint32, strName string) uint32
+	UpdateAccountEmail          func(err error, packet nex.PacketInterface, callID uint32, strName string) uint32
+	UpdateCustomData            func(err error, packet nex.PacketInterface, callID uint32, oPublicData *nex.DataHolder, oPrivateData *nex.DataHolder) uint32
+	FindByNameRegex             func(err error, packet nex.PacketInterface, callID uint32, uiGroups uint32, strRegex string, resultRange *nex.ResultRange) uint32
+	UpdateAccountExpiryDate     func(err error, packet nex.PacketInterface, callID uint32, idPrincipal *nex.PID, dtExpiry *nex.DateTime, strExpiredMessage string) uint32
+	UpdateAccountEffectiveDate  func(err error, packet nex.PacketInterface, callID uint32, idPrincipal *nex.PID, dtEffectiveFrom *nex.DateTime, strNotEffectiveMessage string) uint32
+	UpdateStatus                func(err error, packet nex.PacketInterface, callID uint32, strStatus string) uint32
+	GetStatus                   func(err error, packet nex.PacketInterface, callID uint32, idPrincipal *nex.PID) uint32
+	GetLastConnectionStats      func(err error, packet nex.PacketInterface, callID uint32, idPrincipal *nex.PID) uint32
+	ResetPassword               func(err error, packet nex.PacketInterface, callID uint32) uint32
+	CreateAccountWithCustomData func(err error, packet nex.PacketInterface, callID uint32, strPrincipalName string, strKey string, uiGroups uint32, strEmail string, oPublicData *nex.DataHolder, oPrivateData *nex.DataHolder) uint32
+	RetrieveAccount             func(err error, packet nex.PacketInterface, callID uint32) uint32
+	UpdateAccount               func(err error, packet nex.PacketInterface, callID uint32, strKey string, strEmail string, oPublicData *nex.DataHolder, oPrivateData *nex.DataHolder) uint32
+	ChangePasswordByGuest       func(err error, packet nex.PacketInterface, callID uint32, strPrincipalName string, strKey string, strEmail string) uint32
+	FindByNameLike              func(err error, packet nex.PacketInterface, callID uint32, uiGroups uint32, strLike string, resultRange *nex.ResultRange) uint32
+	CustomCreateAccount         func(err error, packet nex.PacketInterface, callID uint32, strPrincipalName string, strKey string, uiGroups uint32, strEmail string, oAuthData *nex.DataHolder) uint32
+	NintendoCreateAccount       func(err error, packet nex.PacketInterface, callID uint32, strPrincipalName string, strKey string, uiGroups uint32, strEmail string, oAuthData *nex.DataHolder) uint32
+	LookupOrCreateAccount       func(err error, packet nex.PacketInterface, callID uint32, strPrincipalName string, strKey string, uiGroups uint32, strEmail string, oAuthData *nex.DataHolder) uint32
+	DisconnectPrincipal         func(err error, packet nex.PacketInterface, callID uint32, idPrincipal *nex.PID) uint32
+	DisconnectAllPrincipals     func(err error, packet nex.PacketInterface, callID uint32) uint32
 }
 
 // Setup initializes the protocol

@@ -9,15 +9,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// GetFriendComment sets the GetFriendComment handler function
-func (protocol *Protocol) GetFriendComment(handler func(err error, packet nex.PacketInterface, callID uint32, friends []*friends_3ds_types.FriendInfo) uint32) {
-	protocol.getFriendCommentHandler = handler
-}
-
 func (protocol *Protocol) handleGetFriendComment(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.getFriendCommentHandler == nil {
+	if protocol.GetFriendComment == nil {
 		globals.Logger.Warning("Friends3DS::GetFriendComment not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -32,7 +27,7 @@ func (protocol *Protocol) handleGetFriendComment(packet nex.PacketInterface) {
 
 	friends, err := parametersStream.ReadListStructure(friends_3ds_types.NewFriendInfo())
 	if err != nil {
-		errorCode = protocol.getFriendCommentHandler(fmt.Errorf("Failed to read friends from parameters. %s", err.Error()), packet, callID, nil)
+		errorCode = protocol.GetFriendComment(fmt.Errorf("Failed to read friends from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -40,7 +35,7 @@ func (protocol *Protocol) handleGetFriendComment(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.getFriendCommentHandler(nil, packet, callID, friends.([]*friends_3ds_types.FriendInfo))
+	errorCode = protocol.GetFriendComment(nil, packet, callID, friends.([]*friends_3ds_types.FriendInfo))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

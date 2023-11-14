@@ -8,15 +8,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// RequestProbeInitiationExt sets the RequestProbeInitiationExt handler function
-func (protocol *Protocol) RequestProbeInitiationExt(handler func(err error, packet nex.PacketInterface, callID uint32, targetList []string, stationToProbe string) uint32) {
-	protocol.requestProbeInitiationExtHandler = handler
-}
-
 func (protocol *Protocol) handleRequestProbeInitiationExt(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.reportNATPropertiesHandler == nil {
+	if protocol.ReportNATProperties == nil {
 		globals.Logger.Warning("NATTraversal::RequestProbeInitiationExt not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -31,7 +26,7 @@ func (protocol *Protocol) handleRequestProbeInitiationExt(packet nex.PacketInter
 
 	targetList, err := parametersStream.ReadListString()
 	if err != nil {
-		errorCode = protocol.requestProbeInitiationExtHandler(fmt.Errorf("Failed to read targetList from parameters. %s", err.Error()), packet, callID, nil, "")
+		errorCode = protocol.RequestProbeInitiationExt(fmt.Errorf("Failed to read targetList from parameters. %s", err.Error()), packet, callID, nil, "")
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -41,7 +36,7 @@ func (protocol *Protocol) handleRequestProbeInitiationExt(packet nex.PacketInter
 
 	stationToProbe, err := parametersStream.ReadString()
 	if err != nil {
-		errorCode = protocol.requestProbeInitiationExtHandler(fmt.Errorf("Failed to read stationToProbe from parameters. %s", err.Error()), packet, callID, nil, "")
+		errorCode = protocol.RequestProbeInitiationExt(fmt.Errorf("Failed to read stationToProbe from parameters. %s", err.Error()), packet, callID, nil, "")
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -49,7 +44,7 @@ func (protocol *Protocol) handleRequestProbeInitiationExt(packet nex.PacketInter
 		return
 	}
 
-	errorCode = protocol.requestProbeInitiationExtHandler(nil, packet, callID, targetList, stationToProbe)
+	errorCode = protocol.RequestProbeInitiationExt(nil, packet, callID, targetList, stationToProbe)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

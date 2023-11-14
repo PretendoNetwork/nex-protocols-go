@@ -8,15 +8,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// NintendoCreateAccount sets the NintendoCreateAccount handler function
-func (protocol *Protocol) NintendoCreateAccount(handler func(err error, packet nex.PacketInterface, callID uint32, strPrincipalName string, strKey string, uiGroups uint32, strEmail string, oAuthData *nex.DataHolder) uint32) {
-	protocol.nintendoCreateAccountHandler = handler
-}
-
 func (protocol *Protocol) handleNintendoCreateAccount(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.nintendoCreateAccountHandler == nil {
+	if protocol.NintendoCreateAccount == nil {
 		globals.Logger.Warning("AccountManagement::NintendoCreateAccount not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -31,7 +26,7 @@ func (protocol *Protocol) handleNintendoCreateAccount(packet nex.PacketInterface
 
 	strPrincipalName, err := parametersStream.ReadString()
 	if err != nil {
-		errorCode = protocol.nintendoCreateAccountHandler(fmt.Errorf("Failed to read strPrincipalName from parameters. %s", err.Error()), packet, callID, "", "", 0, "", nil)
+		errorCode = protocol.NintendoCreateAccount(fmt.Errorf("Failed to read strPrincipalName from parameters. %s", err.Error()), packet, callID, "", "", 0, "", nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -41,7 +36,7 @@ func (protocol *Protocol) handleNintendoCreateAccount(packet nex.PacketInterface
 
 	strKey, err := parametersStream.ReadString()
 	if err != nil {
-		errorCode = protocol.nintendoCreateAccountHandler(fmt.Errorf("Failed to read strKey from parameters. %s", err.Error()), packet, callID, "", "", 0, "", nil)
+		errorCode = protocol.NintendoCreateAccount(fmt.Errorf("Failed to read strKey from parameters. %s", err.Error()), packet, callID, "", "", 0, "", nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -51,7 +46,7 @@ func (protocol *Protocol) handleNintendoCreateAccount(packet nex.PacketInterface
 
 	uiGroups, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.nintendoCreateAccountHandler(fmt.Errorf("Failed to read uiGroups from parameters. %s", err.Error()), packet, callID, "", "", 0, "", nil)
+		errorCode = protocol.NintendoCreateAccount(fmt.Errorf("Failed to read uiGroups from parameters. %s", err.Error()), packet, callID, "", "", 0, "", nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -61,7 +56,7 @@ func (protocol *Protocol) handleNintendoCreateAccount(packet nex.PacketInterface
 
 	strEmail, err := parametersStream.ReadString()
 	if err != nil {
-		errorCode = protocol.nintendoCreateAccountHandler(fmt.Errorf("Failed to read strEmail from parameters. %s", err.Error()), packet, callID, "", "", 0, "", nil)
+		errorCode = protocol.NintendoCreateAccount(fmt.Errorf("Failed to read strEmail from parameters. %s", err.Error()), packet, callID, "", "", 0, "", nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -71,7 +66,7 @@ func (protocol *Protocol) handleNintendoCreateAccount(packet nex.PacketInterface
 
 	oAuthData, err := parametersStream.ReadDataHolder()
 	if err != nil {
-		errorCode = protocol.nintendoCreateAccountHandler(fmt.Errorf("Failed to read oAuthData from parameters. %s", err.Error()), packet, callID, "", "", 0, "", nil)
+		errorCode = protocol.NintendoCreateAccount(fmt.Errorf("Failed to read oAuthData from parameters. %s", err.Error()), packet, callID, "", "", 0, "", nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -79,7 +74,7 @@ func (protocol *Protocol) handleNintendoCreateAccount(packet nex.PacketInterface
 		return
 	}
 
-	errorCode = protocol.nintendoCreateAccountHandler(nil, packet, callID, strPrincipalName, strKey, uiGroups, strEmail, oAuthData)
+	errorCode = protocol.NintendoCreateAccount(nil, packet, callID, strPrincipalName, strKey, uiGroups, strEmail, oAuthData)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

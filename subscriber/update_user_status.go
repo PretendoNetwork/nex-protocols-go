@@ -9,15 +9,10 @@ import (
 	subscriber_types "github.com/PretendoNetwork/nex-protocols-go/subscriber/types"
 )
 
-// UpdateUserStatus sets the UpdateUserStatus handler function
-func (protocol *Protocol) UpdateUserStatus(handler func(err error, packet nex.PacketInterface, callID uint32, unknown1 []*subscriber_types.Unknown, unknown2 []uint8) uint32) {
-	protocol.updateUserStatusHandler = handler
-}
-
 func (protocol *Protocol) handleUpdateUserStatus(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.updateUserStatusHandler == nil {
+	if protocol.UpdateUserStatus == nil {
 		globals.Logger.Warning("Subscriber::UpdateUserStatus not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -32,7 +27,7 @@ func (protocol *Protocol) handleUpdateUserStatus(packet nex.PacketInterface) {
 
 	unknown1, err := parametersStream.ReadListStructure(subscriber_types.NewUnknown())
 	if err != nil {
-		errorCode = protocol.updateUserStatusHandler(fmt.Errorf("Failed to read unknown1 from parameters. %s", err.Error()), packet, callID, nil, nil)
+		errorCode = protocol.UpdateUserStatus(fmt.Errorf("Failed to read unknown1 from parameters. %s", err.Error()), packet, callID, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -42,7 +37,7 @@ func (protocol *Protocol) handleUpdateUserStatus(packet nex.PacketInterface) {
 
 	unknown2, err := parametersStream.ReadListUInt8()
 	if err != nil {
-		errorCode = protocol.updateUserStatusHandler(fmt.Errorf("Failed to read unknown2 from parameters. %s", err.Error()), packet, callID, nil, nil)
+		errorCode = protocol.UpdateUserStatus(fmt.Errorf("Failed to read unknown2 from parameters. %s", err.Error()), packet, callID, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -50,7 +45,7 @@ func (protocol *Protocol) handleUpdateUserStatus(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.updateUserStatusHandler(nil, packet, callID, unknown1.([]*subscriber_types.Unknown), unknown2)
+	errorCode = protocol.UpdateUserStatus(nil, packet, callID, unknown1.([]*subscriber_types.Unknown), unknown2)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

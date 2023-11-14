@@ -8,15 +8,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// UnregisterGathering sets the UnregisterGathering handler function
-func (protocol *Protocol) UnregisterGathering(handler func(err error, packet nex.PacketInterface, callID uint32, idGathering uint32) uint32) {
-	protocol.unregisterGatheringHandler = handler
-}
-
 func (protocol *Protocol) handleUnregisterGathering(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.unregisterGatheringHandler == nil {
+	if protocol.UnregisterGathering == nil {
 		globals.Logger.Warning("MatchMaking::UnregisterGathering not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -31,7 +26,7 @@ func (protocol *Protocol) handleUnregisterGathering(packet nex.PacketInterface) 
 
 	idGathering, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.unregisterGatheringHandler(fmt.Errorf("Failed to read gatheringID from parameters. %s", err.Error()), packet, callID, 0)
+		errorCode = protocol.UnregisterGathering(fmt.Errorf("Failed to read gatheringID from parameters. %s", err.Error()), packet, callID, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -39,7 +34,7 @@ func (protocol *Protocol) handleUnregisterGathering(packet nex.PacketInterface) 
 		return
 	}
 
-	errorCode = protocol.unregisterGatheringHandler(nil, packet, callID, idGathering)
+	errorCode = protocol.UnregisterGathering(nil, packet, callID, idGathering)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

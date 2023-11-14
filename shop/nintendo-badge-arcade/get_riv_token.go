@@ -8,15 +8,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// GetRivToken sets the GetRivToken function
-func (protocol *Protocol) GetRivToken(handler func(err error, packet nex.PacketInterface, callID uint32, itemCode string, referenceID []byte) uint32) {
-	protocol.getRivTokenHandler = handler
-}
-
 func (protocol *Protocol) handleGetRivToken(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.getRivTokenHandler == nil {
+	if protocol.GetRivToken == nil {
 		globals.Logger.Warning("ShopNintendoBadgeArcade::GetRivToken not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -31,7 +26,7 @@ func (protocol *Protocol) handleGetRivToken(packet nex.PacketInterface) {
 
 	itemCode, err := parametersStream.ReadString()
 	if err != nil {
-		errorCode = protocol.getRivTokenHandler(fmt.Errorf("Failed to read itemCode from parameters. %s", err.Error()), packet, callID, "", nil)
+		errorCode = protocol.GetRivToken(fmt.Errorf("Failed to read itemCode from parameters. %s", err.Error()), packet, callID, "", nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -41,7 +36,7 @@ func (protocol *Protocol) handleGetRivToken(packet nex.PacketInterface) {
 
 	referenceID, err := parametersStream.ReadQBuffer()
 	if err != nil {
-		errorCode = protocol.getRivTokenHandler(fmt.Errorf("Failed to read referenceID from parameters. %s", err.Error()), packet, callID, "", nil)
+		errorCode = protocol.GetRivToken(fmt.Errorf("Failed to read referenceID from parameters. %s", err.Error()), packet, callID, "", nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -49,7 +44,7 @@ func (protocol *Protocol) handleGetRivToken(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.getRivTokenHandler(nil, packet, callID, itemCode, referenceID)
+	errorCode = protocol.GetRivToken(nil, packet, callID, itemCode, referenceID)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

@@ -8,15 +8,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// GetPrincipalIDByLocalFriendCode sets the GetPrincipalIDByLocalFriendCode handler function
-func (protocol *Protocol) GetPrincipalIDByLocalFriendCode(handler func(err error, packet nex.PacketInterface, callID uint32, lfc uint64, lfcList []uint64) uint32) {
-	protocol.getPrincipalIDByLocalFriendCodeHandler = handler
-}
-
 func (protocol *Protocol) handleGetPrincipalIDByLocalFriendCode(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.getPrincipalIDByLocalFriendCodeHandler == nil {
+	if protocol.GetPrincipalIDByLocalFriendCode == nil {
 		globals.Logger.Warning("Friends3DS::GetPrincipalIDByLocalFriendCode not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -31,7 +26,7 @@ func (protocol *Protocol) handleGetPrincipalIDByLocalFriendCode(packet nex.Packe
 
 	lfc, err := parametersStream.ReadUInt64LE()
 	if err != nil {
-		errorCode = protocol.getPrincipalIDByLocalFriendCodeHandler(fmt.Errorf("Failed to read lfc from parameters. %s", err.Error()), packet, callID, 0, nil)
+		errorCode = protocol.GetPrincipalIDByLocalFriendCode(fmt.Errorf("Failed to read lfc from parameters. %s", err.Error()), packet, callID, 0, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -41,7 +36,7 @@ func (protocol *Protocol) handleGetPrincipalIDByLocalFriendCode(packet nex.Packe
 
 	lfcList, err := parametersStream.ReadListUInt64LE()
 	if err != nil {
-		errorCode = protocol.getPrincipalIDByLocalFriendCodeHandler(fmt.Errorf("Failed to read lfcList from parameters. %s", err.Error()), packet, callID, 0, nil)
+		errorCode = protocol.GetPrincipalIDByLocalFriendCode(fmt.Errorf("Failed to read lfcList from parameters. %s", err.Error()), packet, callID, 0, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -49,7 +44,7 @@ func (protocol *Protocol) handleGetPrincipalIDByLocalFriendCode(packet nex.Packe
 		return
 	}
 
-	errorCode = protocol.getPrincipalIDByLocalFriendCodeHandler(nil, packet, callID, lfc, lfcList)
+	errorCode = protocol.GetPrincipalIDByLocalFriendCode(nil, packet, callID, lfc, lfcList)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

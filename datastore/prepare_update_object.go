@@ -9,15 +9,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// PrepareUpdateObject sets the PrepareUpdateObject handler function
-func (protocol *Protocol) PrepareUpdateObject(handler func(err error, packet nex.PacketInterface, callID uint32, param *datastore_types.DataStorePrepareUpdateParam) uint32) {
-	protocol.prepareUpdateObjectHandler = handler
-}
-
 func (protocol *Protocol) handlePrepareUpdateObject(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.prepareUpdateObjectHandler == nil {
+	if protocol.PrepareUpdateObject == nil {
 		globals.Logger.Warning("DataStore::PrepareUpdateObject not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -32,7 +27,7 @@ func (protocol *Protocol) handlePrepareUpdateObject(packet nex.PacketInterface) 
 
 	param, err := parametersStream.ReadStructure(datastore_types.NewDataStorePrepareUpdateParam())
 	if err != nil {
-		errorCode = protocol.prepareUpdateObjectHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
+		errorCode = protocol.PrepareUpdateObject(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -40,7 +35,7 @@ func (protocol *Protocol) handlePrepareUpdateObject(packet nex.PacketInterface) 
 		return
 	}
 
-	errorCode = protocol.prepareUpdateObjectHandler(nil, packet, callID, param.(*datastore_types.DataStorePrepareUpdateParam))
+	errorCode = protocol.PrepareUpdateObject(nil, packet, callID, param.(*datastore_types.DataStorePrepareUpdateParam))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

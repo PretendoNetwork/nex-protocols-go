@@ -8,15 +8,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// AddFriendByName sets the AddFriendByName handler function
-func (protocol *Protocol) AddFriendByName(handler func(err error, packet nex.PacketInterface, callID uint32, strPlayerName string, uiDetails uint32, strMessage string) uint32) {
-	protocol.addFriendByNameHandler = handler
-}
-
 func (protocol *Protocol) handleAddFriendByName(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.addFriendByNameHandler == nil {
+	if protocol.AddFriendByName == nil {
 		globals.Logger.Warning("Friends::AddFriendByName not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -31,7 +26,7 @@ func (protocol *Protocol) handleAddFriendByName(packet nex.PacketInterface) {
 
 	strPlayerName, err := parametersStream.ReadString()
 	if err != nil {
-		errorCode = protocol.addFriendByNameHandler(fmt.Errorf("Failed to read strPlayerName from parameters. %s", err.Error()), packet, callID, "", 0, "")
+		errorCode = protocol.AddFriendByName(fmt.Errorf("Failed to read strPlayerName from parameters. %s", err.Error()), packet, callID, "", 0, "")
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -41,7 +36,7 @@ func (protocol *Protocol) handleAddFriendByName(packet nex.PacketInterface) {
 
 	uiDetails, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.addFriendByNameHandler(fmt.Errorf("Failed to read uiDetails from parameters. %s", err.Error()), packet, callID, "", 0, "")
+		errorCode = protocol.AddFriendByName(fmt.Errorf("Failed to read uiDetails from parameters. %s", err.Error()), packet, callID, "", 0, "")
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -51,7 +46,7 @@ func (protocol *Protocol) handleAddFriendByName(packet nex.PacketInterface) {
 
 	strMessage, err := parametersStream.ReadString()
 	if err != nil {
-		errorCode = protocol.addFriendByNameHandler(fmt.Errorf("Failed to read strMessage from parameters. %s", err.Error()), packet, callID, "", 0, "")
+		errorCode = protocol.AddFriendByName(fmt.Errorf("Failed to read strMessage from parameters. %s", err.Error()), packet, callID, "", 0, "")
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -59,7 +54,7 @@ func (protocol *Protocol) handleAddFriendByName(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.addFriendByNameHandler(nil, packet, callID, strPlayerName, uiDetails, strMessage)
+	errorCode = protocol.AddFriendByName(nil, packet, callID, strPlayerName, uiDetails, strMessage)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

@@ -9,15 +9,10 @@ import (
 	match_making_types "github.com/PretendoNetwork/nex-protocols-go/match-making/types"
 )
 
-// BrowseMatchmakeSessionWithHostURLs sets the BrowseMatchmakeSessionWithHostURLs handler function
-func (protocol *Protocol) BrowseMatchmakeSessionWithHostURLs(handler func(err error, packet nex.PacketInterface, callID uint32, searchCriteria *match_making_types.MatchmakeSessionSearchCriteria, resultRange *nex.ResultRange) uint32) {
-	protocol.browseMatchmakeSessionWithHostURLsHandler = handler
-}
-
 func (protocol *Protocol) handleBrowseMatchmakeSessionWithHostURLs(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.browseMatchmakeSessionWithHostURLsHandler == nil {
+	if protocol.BrowseMatchmakeSessionWithHostURLs == nil {
 		globals.Logger.Warning("MatchmakeExtension::BrowseMatchmakeSessionWithHostURLs not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -32,7 +27,7 @@ func (protocol *Protocol) handleBrowseMatchmakeSessionWithHostURLs(packet nex.Pa
 
 	searchCriteria, err := parametersStream.ReadStructure(match_making_types.NewMatchmakeSessionSearchCriteria())
 	if err != nil {
-		errorCode = protocol.browseMatchmakeSessionWithHostURLsHandler(fmt.Errorf("Failed to read searchCriteria from parameters. %s", err.Error()), packet, callID, nil, nil)
+		errorCode = protocol.BrowseMatchmakeSessionWithHostURLs(fmt.Errorf("Failed to read searchCriteria from parameters. %s", err.Error()), packet, callID, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -42,7 +37,7 @@ func (protocol *Protocol) handleBrowseMatchmakeSessionWithHostURLs(packet nex.Pa
 
 	resultRange, err := parametersStream.ReadStructure(nex.NewResultRange())
 	if err != nil {
-		errorCode = protocol.browseMatchmakeSessionWithHostURLsHandler(fmt.Errorf("Failed to read resultRange from parameters. %s", err.Error()), packet, callID, nil, nil)
+		errorCode = protocol.BrowseMatchmakeSessionWithHostURLs(fmt.Errorf("Failed to read resultRange from parameters. %s", err.Error()), packet, callID, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -50,7 +45,7 @@ func (protocol *Protocol) handleBrowseMatchmakeSessionWithHostURLs(packet nex.Pa
 		return
 	}
 
-	errorCode = protocol.browseMatchmakeSessionWithHostURLsHandler(nil, packet, callID, searchCriteria.(*match_making_types.MatchmakeSessionSearchCriteria), resultRange.(*nex.ResultRange))
+	errorCode = protocol.BrowseMatchmakeSessionWithHostURLs(nil, packet, callID, searchCriteria.(*match_making_types.MatchmakeSessionSearchCriteria), resultRange.(*nex.ResultRange))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

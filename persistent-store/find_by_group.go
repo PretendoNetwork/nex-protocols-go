@@ -8,15 +8,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// FindByGroup sets the FindByGroup handler function
-func (protocol *Protocol) FindByGroup(handler func(err error, packet nex.PacketInterface, callID uint32, uiGroup uint32) uint32) {
-	protocol.findByGroupHandler = handler
-}
-
 func (protocol *Protocol) handleFindByGroup(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.findByGroupHandler == nil {
+	if protocol.FindByGroup == nil {
 		globals.Logger.Warning("PersistentStore::FindByGroup not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -31,7 +26,7 @@ func (protocol *Protocol) handleFindByGroup(packet nex.PacketInterface) {
 
 	uiGroup, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.findByGroupHandler(fmt.Errorf("Failed to read uiGroup from parameters. %s", err.Error()), packet, callID, 0)
+		errorCode = protocol.FindByGroup(fmt.Errorf("Failed to read uiGroup from parameters. %s", err.Error()), packet, callID, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -39,7 +34,7 @@ func (protocol *Protocol) handleFindByGroup(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.findByGroupHandler(nil, packet, callID, uiGroup)
+	errorCode = protocol.FindByGroup(nil, packet, callID, uiGroup)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

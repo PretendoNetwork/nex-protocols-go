@@ -8,15 +8,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// ClearMatchmakeSessionSystemPassword sets the ClearMatchmakeSessionSystemPassword handler function
-func (protocol *Protocol) ClearMatchmakeSessionSystemPassword(handler func(err error, packet nex.PacketInterface, callID uint32, gid uint32) uint32) {
-	protocol.clearMatchmakeSessionSystemPasswordHandler = handler
-}
-
 func (protocol *Protocol) handleClearMatchmakeSessionSystemPassword(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.clearMatchmakeSessionSystemPasswordHandler == nil {
+	if protocol.ClearMatchmakeSessionSystemPassword == nil {
 		globals.Logger.Warning("MatchmakeExtension::ClearMatchmakeSessionSystemPassword not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -31,7 +26,7 @@ func (protocol *Protocol) handleClearMatchmakeSessionSystemPassword(packet nex.P
 
 	gid, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.clearMatchmakeSessionSystemPasswordHandler(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), packet, callID, 0)
+		errorCode = protocol.ClearMatchmakeSessionSystemPassword(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), packet, callID, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -39,7 +34,7 @@ func (protocol *Protocol) handleClearMatchmakeSessionSystemPassword(packet nex.P
 		return
 	}
 
-	errorCode = protocol.clearMatchmakeSessionSystemPasswordHandler(nil, packet, callID, gid)
+	errorCode = protocol.ClearMatchmakeSessionSystemPassword(nil, packet, callID, gid)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

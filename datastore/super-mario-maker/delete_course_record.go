@@ -9,15 +9,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// DeleteCourseRecord sets the DeleteCourseRecord handler function
-func (protocol *Protocol) DeleteCourseRecord(handler func(err error, packet nex.PacketInterface, callID uint32, param *datastore_super_mario_maker_types.DataStoreGetCourseRecordParam) uint32) {
-	protocol.deleteCourseRecordHandler = handler
-}
-
 func (protocol *Protocol) handleDeleteCourseRecord(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.deleteCourseRecordHandler == nil {
+	if protocol.DeleteCourseRecord == nil {
 		globals.Logger.Warning("DataStoreSuperMarioMaker::DeleteCourseRecord not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -32,7 +27,7 @@ func (protocol *Protocol) handleDeleteCourseRecord(packet nex.PacketInterface) {
 
 	param, err := parametersStream.ReadStructure(datastore_super_mario_maker_types.NewDataStoreGetCourseRecordParam())
 	if err != nil {
-		errorCode = protocol.deleteCourseRecordHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
+		errorCode = protocol.DeleteCourseRecord(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -40,7 +35,7 @@ func (protocol *Protocol) handleDeleteCourseRecord(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.deleteCourseRecordHandler(nil, packet, callID, param.(*datastore_super_mario_maker_types.DataStoreGetCourseRecordParam))
+	errorCode = protocol.DeleteCourseRecord(nil, packet, callID, param.(*datastore_super_mario_maker_types.DataStoreGetCourseRecordParam))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

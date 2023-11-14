@@ -9,15 +9,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// CompletePostObject sets the CompletePostObject handler function
-func (protocol *Protocol) CompletePostObject(handler func(err error, packet nex.PacketInterface, callID uint32, param *datastore_types.DataStoreCompletePostParam) uint32) {
-	protocol.completePostObjectHandler = handler
-}
-
 func (protocol *Protocol) handleCompletePostObject(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.completePostObjectHandler == nil {
+	if protocol.CompletePostObject == nil {
 		globals.Logger.Warning("DataStore::CompletePostObject not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -32,7 +27,7 @@ func (protocol *Protocol) handleCompletePostObject(packet nex.PacketInterface) {
 
 	param, err := parametersStream.ReadStructure(datastore_types.NewDataStoreCompletePostParam())
 	if err != nil {
-		errorCode = protocol.completePostObjectHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
+		errorCode = protocol.CompletePostObject(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -40,7 +35,7 @@ func (protocol *Protocol) handleCompletePostObject(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.completePostObjectHandler(nil, packet, callID, param.(*datastore_types.DataStoreCompletePostParam))
+	errorCode = protocol.CompletePostObject(nil, packet, callID, param.(*datastore_types.DataStoreCompletePostParam))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

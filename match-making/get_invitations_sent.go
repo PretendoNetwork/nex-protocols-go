@@ -8,15 +8,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// GetInvitationsSent sets the GetInvitationsSent handler function
-func (protocol *Protocol) GetInvitationsSent(handler func(err error, packet nex.PacketInterface, callID uint32, idGathering uint32) uint32) {
-	protocol.getInvitationsSentHandler = handler
-}
-
 func (protocol *Protocol) handleGetInvitationsSent(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.getInvitationsSentHandler == nil {
+	if protocol.GetInvitationsSent == nil {
 		globals.Logger.Warning("MatchMaking::GetInvitationsSent not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -31,7 +26,7 @@ func (protocol *Protocol) handleGetInvitationsSent(packet nex.PacketInterface) {
 
 	idGathering, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.getInvitationsSentHandler(fmt.Errorf("Failed to read gatheringID from parameters. %s", err.Error()), packet, callID, 0)
+		errorCode = protocol.GetInvitationsSent(fmt.Errorf("Failed to read gatheringID from parameters. %s", err.Error()), packet, callID, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -39,7 +34,7 @@ func (protocol *Protocol) handleGetInvitationsSent(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.getInvitationsSentHandler(nil, packet, callID, idGathering)
+	errorCode = protocol.GetInvitationsSent(nil, packet, callID, idGathering)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

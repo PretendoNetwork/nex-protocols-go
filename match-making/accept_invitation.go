@@ -8,15 +8,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// AcceptInvitation sets the AcceptInvitation handler function
-func (protocol *Protocol) AcceptInvitation(handler func(err error, packet nex.PacketInterface, callID uint32, idGathering uint32, strMessage string) uint32) {
-	protocol.acceptInvitationHandler = handler
-}
-
 func (protocol *Protocol) handleAcceptInvitation(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.acceptInvitationHandler == nil {
+	if protocol.AcceptInvitation == nil {
 		globals.Logger.Warning("MatchMaking::AcceptInvitation not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -31,7 +26,7 @@ func (protocol *Protocol) handleAcceptInvitation(packet nex.PacketInterface) {
 
 	idGathering, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.acceptInvitationHandler(fmt.Errorf("Failed to read idGathering from parameters. %s", err.Error()), packet, callID, 0, "")
+		errorCode = protocol.AcceptInvitation(fmt.Errorf("Failed to read idGathering from parameters. %s", err.Error()), packet, callID, 0, "")
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -41,7 +36,7 @@ func (protocol *Protocol) handleAcceptInvitation(packet nex.PacketInterface) {
 
 	strMessage, err := parametersStream.ReadString()
 	if err != nil {
-		errorCode = protocol.acceptInvitationHandler(fmt.Errorf("Failed to read strMessage from parameters. %s", err.Error()), packet, callID, 0, "")
+		errorCode = protocol.AcceptInvitation(fmt.Errorf("Failed to read strMessage from parameters. %s", err.Error()), packet, callID, 0, "")
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -49,7 +44,7 @@ func (protocol *Protocol) handleAcceptInvitation(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.acceptInvitationHandler(nil, packet, callID, idGathering, strMessage)
+	errorCode = protocol.AcceptInvitation(nil, packet, callID, idGathering, strMessage)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

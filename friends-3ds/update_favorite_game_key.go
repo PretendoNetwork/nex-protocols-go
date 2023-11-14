@@ -9,15 +9,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// UpdateFavoriteGameKey sets the UpdateFavoriteGameKey handler function
-func (protocol *Protocol) UpdateFavoriteGameKey(handler func(err error, packet nex.PacketInterface, callID uint32, gameKey *friends_3ds_types.GameKey) uint32) {
-	protocol.updateFavoriteGameKeyHandler = handler
-}
-
 func (protocol *Protocol) handleUpdateFavoriteGameKey(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.updateFavoriteGameKeyHandler == nil {
+	if protocol.UpdateFavoriteGameKey == nil {
 		globals.Logger.Warning("Friends3DS::UpdateFavoriteGameKey not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -32,7 +27,7 @@ func (protocol *Protocol) handleUpdateFavoriteGameKey(packet nex.PacketInterface
 
 	gameKey, err := parametersStream.ReadStructure(friends_3ds_types.NewGameKey())
 	if err != nil {
-		errorCode = protocol.updateFavoriteGameKeyHandler(fmt.Errorf("Failed to read gameKey from parameters. %s", err.Error()), packet, callID, nil)
+		errorCode = protocol.UpdateFavoriteGameKey(fmt.Errorf("Failed to read gameKey from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -40,7 +35,7 @@ func (protocol *Protocol) handleUpdateFavoriteGameKey(packet nex.PacketInterface
 		return
 	}
 
-	errorCode = protocol.updateFavoriteGameKeyHandler(nil, packet, callID, gameKey.(*friends_3ds_types.GameKey))
+	errorCode = protocol.UpdateFavoriteGameKey(nil, packet, callID, gameKey.(*friends_3ds_types.GameKey))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

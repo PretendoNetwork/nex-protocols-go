@@ -8,15 +8,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// GetPasswordInfo sets the GetPasswordInfo handler function
-func (protocol *Protocol) GetPasswordInfo(handler func(err error, packet nex.PacketInterface, callID uint32, dataID uint64) uint32) {
-	protocol.getPasswordInfoHandler = handler
-}
-
 func (protocol *Protocol) handleGetPasswordInfo(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.getPasswordInfoHandler == nil {
+	if protocol.GetPasswordInfo == nil {
 		globals.Logger.Warning("DataStore::GetPasswordInfo not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -31,7 +26,7 @@ func (protocol *Protocol) handleGetPasswordInfo(packet nex.PacketInterface) {
 
 	dataID, err := parametersStream.ReadUInt64LE()
 	if err != nil {
-		errorCode = protocol.getPasswordInfoHandler(fmt.Errorf("Failed to read dataID from parameters. %s", err.Error()), packet, callID, 0)
+		errorCode = protocol.GetPasswordInfo(fmt.Errorf("Failed to read dataID from parameters. %s", err.Error()), packet, callID, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -39,7 +34,7 @@ func (protocol *Protocol) handleGetPasswordInfo(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.getPasswordInfoHandler(nil, packet, callID, dataID)
+	errorCode = protocol.GetPasswordInfo(nil, packet, callID, dataID)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

@@ -6,15 +6,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// DeliverMessageMultiTarget sets the DeliverMessageMultiTarget handler function
-func (protocol *Protocol) DeliverMessageMultiTarget(handler func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) uint32) {
-	protocol.deliverMessageMultiTargetHandler = handler
-}
-
 func (protocol *Protocol) handleDeliverMessageMultiTarget(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.deliverMessageMultiTargetHandler == nil {
+	if protocol.DeliverMessageMultiTarget == nil {
 		globals.Logger.Warning("Messaging::DeliverMessageMultiTarget not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -28,7 +23,7 @@ func (protocol *Protocol) handleDeliverMessageMultiTarget(packet nex.PacketInter
 
 	// TODO - THIS METHOD HAS AN UNKNOWN REQUEST/RESPONSE FORMAT
 
-	errorCode = protocol.deliverMessageMultiTargetHandler(nil, packet, callID, packet.Payload())
+	errorCode = protocol.DeliverMessageMultiTarget(nil, packet, callID, packet.Payload())
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

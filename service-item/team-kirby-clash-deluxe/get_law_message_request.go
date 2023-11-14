@@ -9,15 +9,10 @@ import (
 	service_item_team_kirby_clash_deluxe_types "github.com/PretendoNetwork/nex-protocols-go/service-item/team-kirby-clash-deluxe/types"
 )
 
-// GetLawMessageRequest sets the GetLawMessageRequest handler function
-func (protocol *Protocol) GetLawMessageRequest(handler func(err error, packet nex.PacketInterface, callID uint32, getLawMessageParam *service_item_team_kirby_clash_deluxe_types.ServiceItemGetLawMessageParam) uint32) {
-	protocol.getLawMessageRequestHandler = handler
-}
-
 func (protocol *Protocol) handleGetLawMessageRequest(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.getLawMessageRequestHandler == nil {
+	if protocol.GetLawMessageRequest == nil {
 		globals.Logger.Warning("ServiceItemTeamKirbyClashDeluxe::GetLawMessageRequest not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -32,7 +27,7 @@ func (protocol *Protocol) handleGetLawMessageRequest(packet nex.PacketInterface)
 
 	getLawMessageParam, err := parametersStream.ReadStructure(service_item_team_kirby_clash_deluxe_types.NewServiceItemGetLawMessageParam())
 	if err != nil {
-		errorCode = protocol.getLawMessageRequestHandler(fmt.Errorf("Failed to read getLawMessageParam from parameters. %s", err.Error()), packet, callID, nil)
+		errorCode = protocol.GetLawMessageRequest(fmt.Errorf("Failed to read getLawMessageParam from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -40,7 +35,7 @@ func (protocol *Protocol) handleGetLawMessageRequest(packet nex.PacketInterface)
 		return
 	}
 
-	errorCode = protocol.getLawMessageRequestHandler(nil, packet, callID, getLawMessageParam.(*service_item_team_kirby_clash_deluxe_types.ServiceItemGetLawMessageParam))
+	errorCode = protocol.GetLawMessageRequest(nil, packet, callID, getLawMessageParam.(*service_item_team_kirby_clash_deluxe_types.ServiceItemGetLawMessageParam))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

@@ -8,13 +8,8 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// GetActivePlayerSubscriptionData sets the GetActivePlayerSubscriptionData handler function
-func (protocol *SubscriptionProtocol) GetActivePlayerSubscriptionData(handler func(err error, packet nex.PacketInterface, callID uint32)) {
-	protocol.getActivePlayerSubscriptionDataHandler = handler
-}
-
-func (protocol *SubscriptionProtocol) handleGetActivePlayerSubscriptionData(packet nex.PacketInterface) {
-	if protocol.getActivePlayerSubscriptionDataHandler == nil {
+func (protocol *Protocol) handleGetActivePlayerSubscriptionData(packet nex.PacketInterface) {
+	if protocol.GetActivePlayerSubscriptionData == nil {
 		fmt.Println("[Warning] SubscriptionProtocol::GetActivePlayerSubscriptionData not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -24,5 +19,5 @@ func (protocol *SubscriptionProtocol) handleGetActivePlayerSubscriptionData(pack
 
 	callID := request.CallID
 
-	go protocol.getActivePlayerSubscriptionDataHandler(nil, packet, callID)
+	go protocol.GetActivePlayerSubscriptionData(nil, packet, callID)
 }

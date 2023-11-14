@@ -8,15 +8,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// RegisterLocalURL sets the RegisterLocalURL handler function
-func (protocol *Protocol) RegisterLocalURL(handler func(err error, packet nex.PacketInterface, callID uint32, gid uint32, url *nex.StationURL) uint32) {
-	protocol.registerLocalURLHandler = handler
-}
-
 func (protocol *Protocol) handleRegisterLocalURL(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.registerLocalURLHandler == nil {
+	if protocol.RegisterLocalURL == nil {
 		globals.Logger.Warning("MatchMaking::RegisterLocalURL not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -31,7 +26,7 @@ func (protocol *Protocol) handleRegisterLocalURL(packet nex.PacketInterface) {
 
 	gid, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.registerLocalURLHandler(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), packet, callID, 0, nil)
+		errorCode = protocol.RegisterLocalURL(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), packet, callID, 0, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -41,7 +36,7 @@ func (protocol *Protocol) handleRegisterLocalURL(packet nex.PacketInterface) {
 
 	url, err := parametersStream.ReadStationURL()
 	if err != nil {
-		errorCode = protocol.registerLocalURLHandler(fmt.Errorf("Failed to read url from parameters. %s", err.Error()), packet, callID, 0, nil)
+		errorCode = protocol.RegisterLocalURL(fmt.Errorf("Failed to read url from parameters. %s", err.Error()), packet, callID, 0, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -49,7 +44,7 @@ func (protocol *Protocol) handleRegisterLocalURL(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.registerLocalURLHandler(nil, packet, callID, gid, url)
+	errorCode = protocol.RegisterLocalURL(nil, packet, callID, gid, url)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

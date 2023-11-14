@@ -8,15 +8,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// SyncFriend sets the SyncFriend handler function
-func (protocol *Protocol) SyncFriend(handler func(err error, packet nex.PacketInterface, callID uint32, lfc uint64, pids []*nex.PID, lfcList []uint64) uint32) {
-	protocol.syncFriendHandler = handler
-}
-
 func (protocol *Protocol) handleSyncFriend(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.syncFriendHandler == nil {
+	if protocol.SyncFriend == nil {
 		globals.Logger.Warning("Friends3DS::SyncFriend not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -31,7 +26,7 @@ func (protocol *Protocol) handleSyncFriend(packet nex.PacketInterface) {
 
 	lfc, err := parametersStream.ReadUInt64LE()
 	if err != nil {
-		errorCode = protocol.syncFriendHandler(fmt.Errorf("Failed to read lfc from parameters. %s", err.Error()), packet, callID, 0, nil, nil)
+		errorCode = protocol.SyncFriend(fmt.Errorf("Failed to read lfc from parameters. %s", err.Error()), packet, callID, 0, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -41,7 +36,7 @@ func (protocol *Protocol) handleSyncFriend(packet nex.PacketInterface) {
 
 	pids, err := parametersStream.ReadListPID()
 	if err != nil {
-		errorCode = protocol.syncFriendHandler(fmt.Errorf("Failed to read pids from parameters. %s", err.Error()), packet, callID, 0, nil, nil)
+		errorCode = protocol.SyncFriend(fmt.Errorf("Failed to read pids from parameters. %s", err.Error()), packet, callID, 0, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -51,7 +46,7 @@ func (protocol *Protocol) handleSyncFriend(packet nex.PacketInterface) {
 
 	lfcList, err := parametersStream.ReadListUInt64LE()
 	if err != nil {
-		errorCode = protocol.syncFriendHandler(fmt.Errorf("Failed to read lfcList from parameters. %s", err.Error()), packet, callID, 0, nil, nil)
+		errorCode = protocol.SyncFriend(fmt.Errorf("Failed to read lfcList from parameters. %s", err.Error()), packet, callID, 0, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -59,7 +54,7 @@ func (protocol *Protocol) handleSyncFriend(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.syncFriendHandler(nil, packet, callID, lfc, pids, lfcList)
+	errorCode = protocol.SyncFriend(nil, packet, callID, lfc, pids, lfcList)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

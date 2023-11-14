@@ -8,15 +8,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// FindOfficialCommunity sets the FindOfficialCommunity handler function
-func (protocol *Protocol) FindOfficialCommunity(handler func(err error, packet nex.PacketInterface, callID uint32, isAvailableOnly bool, resultRange *nex.ResultRange) uint32) {
-	protocol.findOfficialCommunityHandler = handler
-}
-
 func (protocol *Protocol) handleFindOfficialCommunity(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.findOfficialCommunityHandler == nil {
+	if protocol.FindOfficialCommunity == nil {
 		globals.Logger.Warning("MatchmakeExtension::FindOfficialCommunity not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -31,7 +26,7 @@ func (protocol *Protocol) handleFindOfficialCommunity(packet nex.PacketInterface
 
 	isAvailableOnly, err := parametersStream.ReadBool()
 	if err != nil {
-		errorCode = protocol.findOfficialCommunityHandler(fmt.Errorf("Failed to read isAvailableOnly from parameters. %s", err.Error()), packet, callID, false, nil)
+		errorCode = protocol.FindOfficialCommunity(fmt.Errorf("Failed to read isAvailableOnly from parameters. %s", err.Error()), packet, callID, false, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -41,7 +36,7 @@ func (protocol *Protocol) handleFindOfficialCommunity(packet nex.PacketInterface
 
 	resultRange, err := parametersStream.ReadStructure(nex.NewResultRange())
 	if err != nil {
-		errorCode = protocol.findOfficialCommunityHandler(fmt.Errorf("Failed to read resultRange from parameters. %s", err.Error()), packet, callID, false, nil)
+		errorCode = protocol.FindOfficialCommunity(fmt.Errorf("Failed to read resultRange from parameters. %s", err.Error()), packet, callID, false, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -49,7 +44,7 @@ func (protocol *Protocol) handleFindOfficialCommunity(packet nex.PacketInterface
 		return
 	}
 
-	errorCode = protocol.findOfficialCommunityHandler(nil, packet, callID, isAvailableOnly, resultRange.(*nex.ResultRange))
+	errorCode = protocol.FindOfficialCommunity(nil, packet, callID, isAvailableOnly, resultRange.(*nex.ResultRange))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

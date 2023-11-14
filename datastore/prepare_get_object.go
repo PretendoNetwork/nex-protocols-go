@@ -9,15 +9,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// PrepareGetObject sets the PrepareGetObject handler function
-func (protocol *Protocol) PrepareGetObject(handler func(err error, packet nex.PacketInterface, callID uint32, param *datastore_types.DataStorePrepareGetParam) uint32) {
-	protocol.prepareGetObjectHandler = handler
-}
-
 func (protocol *Protocol) handlePrepareGetObject(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.prepareGetObjectHandler == nil {
+	if protocol.PrepareGetObject == nil {
 		globals.Logger.Warning("DataStore::PrepareGetObject not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -32,7 +27,7 @@ func (protocol *Protocol) handlePrepareGetObject(packet nex.PacketInterface) {
 
 	param, err := parametersStream.ReadStructure(datastore_types.NewDataStorePrepareGetParam())
 	if err != nil {
-		errorCode = protocol.prepareGetObjectHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
+		errorCode = protocol.PrepareGetObject(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -40,7 +35,7 @@ func (protocol *Protocol) handlePrepareGetObject(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.prepareGetObjectHandler(nil, packet, callID, param.(*datastore_types.DataStorePrepareGetParam))
+	errorCode = protocol.PrepareGetObject(nil, packet, callID, param.(*datastore_types.DataStorePrepareGetParam))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

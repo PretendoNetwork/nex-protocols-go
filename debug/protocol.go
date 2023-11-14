@@ -35,14 +35,14 @@ const (
 
 // Protocol handles the Debug protocol
 type Protocol struct {
-	Server                                  nex.ServerInterface
-	enableAPIRecorderHandler                func(err error, packet nex.PacketInterface, callID uint32) uint32
-	disableAPIRecorderHandler               func(err error, packet nex.PacketInterface, callID uint32) uint32
-	isAPIRecorderEnabledHandler             func(err error, packet nex.PacketInterface, callID uint32) uint32
-	getAPICallsHandler                      func(err error, packet nex.PacketInterface, callID uint32, pids []*nex.PID, unknown *nex.DateTime, unknown2 *nex.DateTime) uint32
-	setExcludeJoinedMatchmakeSessionHandler func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) uint32 // TODO - Unknown request/response format
-	getExcludeJoinedMatchmakeSessionHandler func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) uint32 // TODO - Unknown request/response format
-	getAPICallSummaryHandler                func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) uint32 // TODO - Unknown request/response format
+	Server                           nex.ServerInterface
+	EnableAPIRecorder                func(err error, packet nex.PacketInterface, callID uint32) uint32
+	DisableAPIRecorder               func(err error, packet nex.PacketInterface, callID uint32) uint32
+	IsAPIRecorderEnabled             func(err error, packet nex.PacketInterface, callID uint32) uint32
+	GetAPICalls                      func(err error, packet nex.PacketInterface, callID uint32, pids []*nex.PID, unknown *nex.DateTime, unknown2 *nex.DateTime) uint32
+	SetExcludeJoinedMatchmakeSession func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) uint32 // TODO - Unknown request/response format
+	GetExcludeJoinedMatchmakeSession func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) uint32 // TODO - Unknown request/response format
+	GetAPICallSummary                func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) uint32 // TODO - Unknown request/response format
 }
 
 // Setup initializes the protocol

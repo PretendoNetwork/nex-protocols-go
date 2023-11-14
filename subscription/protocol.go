@@ -58,21 +58,21 @@ const (
 	MethodGetPrivacyLevels = 0xF
 )
 
-// SubscriptionProtocol handles the Subscription nex protocol
-type SubscriptionProtocol struct {
-	Server                                     nex.ServerInterface
-	createMySubscriptionDataHandler            func(err error, packet nex.PacketInterface, callID uint32, unk uint64, content []byte)
-	updateMySubscriptionDataHandler            func(err error, packet nex.PacketInterface, callID uint32, unk uint32, content []byte)
-	getFriendSubscriptionDataHandler           func(err error, packet nex.PacketInterface, callID uint32)
-	getTargetSubscriptionDataHandler           func(err error, packet nex.PacketInterface, callID uint32)
-	getActivePlayerSubscriptionDataHandler     func(err error, packet nex.PacketInterface, callID uint32)
-	getSubscriptionDataHandler                 func(err error, packet nex.PacketInterface, callID uint32, pids []uint32)
-	replaceTargetAndGetSubscriptionDataHandler func(err error, packet nex.PacketInterface, callID uint32)
-	getPrivacyLevelsHandler                    func(err error, packet nex.PacketInterface, callID uint32)
+// Protocol handles the Subscription nex protocol
+type Protocol struct {
+	Server                              nex.ServerInterface
+	CreateMySubscriptionData            func(err error, packet nex.PacketInterface, callID uint32, unk uint64, content []byte)
+	UpdateMySubscriptionData            func(err error, packet nex.PacketInterface, callID uint32, unk uint32, content []byte)
+	GetFriendSubscriptionData           func(err error, packet nex.PacketInterface, callID uint32)
+	GetTargetSubscriptionData           func(err error, packet nex.PacketInterface, callID uint32)
+	GetActivePlayerSubscriptionData     func(err error, packet nex.PacketInterface, callID uint32)
+	GetSubscriptionData                 func(err error, packet nex.PacketInterface, callID uint32, pids []uint32)
+	ReplaceTargetAndGetSubscriptionData func(err error, packet nex.PacketInterface, callID uint32)
+	GetPrivacyLevels                    func(err error, packet nex.PacketInterface, callID uint32)
 }
 
 // Setup initializes the protocol
-func (protocol *SubscriptionProtocol) Setup() {
+func (protocol *Protocol) Setup() {
 	protocol.Server.OnData(func(packet nex.PacketInterface) {
 		request := packet.RMCMessage()
 
@@ -102,9 +102,9 @@ func (protocol *SubscriptionProtocol) Setup() {
 	})
 }
 
-// NewSubscriptionProtocol returns a new SubscriptionProtocol
-func NewSubscriptionProtocol(server nex.ServerInterface) *SubscriptionProtocol {
-	protocol := &SubscriptionProtocol{Server: server}
+// NewProtocol returns a new Protocol
+func NewProtocol(server nex.ServerInterface) *Protocol {
+	protocol := &Protocol{Server: server}
 
 	protocol.Setup()
 

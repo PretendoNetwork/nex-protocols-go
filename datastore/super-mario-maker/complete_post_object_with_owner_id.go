@@ -9,15 +9,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// CompletePostObjectWithOwnerID sets the CompletePostObjectWithOwnerID handler function
-func (protocol *Protocol) CompletePostObjectWithOwnerID(handler func(err error, packet nex.PacketInterface, callID uint32, ownerID uint32, param *datastore_types.DataStoreCompletePostParam) uint32) {
-	protocol.completePostObjectWithOwnerIDHandler = handler
-}
-
 func (protocol *Protocol) handleCompletePostObjectWithOwnerID(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.completePostObjectWithOwnerIDHandler == nil {
+	if protocol.CompletePostObjectWithOwnerID == nil {
 		globals.Logger.Warning("DataStoreSuperMarioMaker::CompletePostObjectWithOwnerID not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -32,7 +27,7 @@ func (protocol *Protocol) handleCompletePostObjectWithOwnerID(packet nex.PacketI
 
 	ownerID, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.completePostObjectWithOwnerIDHandler(fmt.Errorf("Failed to read ownerID from parameters. %s", err.Error()), packet, callID, 0, nil)
+		errorCode = protocol.CompletePostObjectWithOwnerID(fmt.Errorf("Failed to read ownerID from parameters. %s", err.Error()), packet, callID, 0, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -42,7 +37,7 @@ func (protocol *Protocol) handleCompletePostObjectWithOwnerID(packet nex.PacketI
 
 	param, err := parametersStream.ReadStructure(datastore_types.NewDataStoreCompletePostParam())
 	if err != nil {
-		errorCode = protocol.completePostObjectWithOwnerIDHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, 0, nil)
+		errorCode = protocol.CompletePostObjectWithOwnerID(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, 0, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -50,7 +45,7 @@ func (protocol *Protocol) handleCompletePostObjectWithOwnerID(packet nex.PacketI
 		return
 	}
 
-	errorCode = protocol.completePostObjectWithOwnerIDHandler(nil, packet, callID, ownerID, param.(*datastore_types.DataStoreCompletePostParam))
+	errorCode = protocol.CompletePostObjectWithOwnerID(nil, packet, callID, ownerID, param.(*datastore_types.DataStoreCompletePostParam))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

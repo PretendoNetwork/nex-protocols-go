@@ -8,15 +8,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// UpdatePreference sets the UpdatePreference handler function
-func (protocol *Protocol) UpdatePreference(handler func(err error, packet nex.PacketInterface, callID uint32, publicMode bool, showGame bool, showPlayedGame bool) uint32) {
-	protocol.updatePreferenceHandler = handler
-}
-
 func (protocol *Protocol) handleUpdatePreference(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.updatePreferenceHandler == nil {
+	if protocol.UpdatePreference == nil {
 		globals.Logger.Warning("Friends3DS::UpdatePreference not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -31,7 +26,7 @@ func (protocol *Protocol) handleUpdatePreference(packet nex.PacketInterface) {
 
 	publicMode, err := parametersStream.ReadBool()
 	if err != nil {
-		errorCode = protocol.updatePreferenceHandler(fmt.Errorf("Failed to read publicMode from parameters. %s", err.Error()), packet, callID, false, false, false)
+		errorCode = protocol.UpdatePreference(fmt.Errorf("Failed to read publicMode from parameters. %s", err.Error()), packet, callID, false, false, false)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -41,7 +36,7 @@ func (protocol *Protocol) handleUpdatePreference(packet nex.PacketInterface) {
 
 	showGame, err := parametersStream.ReadBool()
 	if err != nil {
-		errorCode = protocol.updatePreferenceHandler(fmt.Errorf("Failed to read showGame from parameters. %s", err.Error()), packet, callID, false, false, false)
+		errorCode = protocol.UpdatePreference(fmt.Errorf("Failed to read showGame from parameters. %s", err.Error()), packet, callID, false, false, false)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -51,7 +46,7 @@ func (protocol *Protocol) handleUpdatePreference(packet nex.PacketInterface) {
 
 	showPlayedGame, err := parametersStream.ReadBool()
 	if err != nil {
-		errorCode = protocol.updatePreferenceHandler(fmt.Errorf("Failed to read showPlayedGame from parameters. %s", err.Error()), packet, callID, false, false, false)
+		errorCode = protocol.UpdatePreference(fmt.Errorf("Failed to read showPlayedGame from parameters. %s", err.Error()), packet, callID, false, false, false)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -59,7 +54,7 @@ func (protocol *Protocol) handleUpdatePreference(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.updatePreferenceHandler(nil, packet, callID, publicMode, showGame, showPlayedGame)
+	errorCode = protocol.UpdatePreference(nil, packet, callID, publicMode, showGame, showPlayedGame)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

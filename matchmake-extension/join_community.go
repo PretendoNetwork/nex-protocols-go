@@ -8,15 +8,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// JoinCommunity sets the JoinCommunity handler function
-func (protocol *Protocol) JoinCommunity(handler func(err error, packet nex.PacketInterface, callID uint32, gid uint32, strMessage string, strPassword string) uint32) {
-	protocol.joinCommunityHandler = handler
-}
-
 func (protocol *Protocol) handleJoinCommunity(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.joinCommunityHandler == nil {
+	if protocol.JoinCommunity == nil {
 		globals.Logger.Warning("MatchmakeExtension::JoinCommunity not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -31,7 +26,7 @@ func (protocol *Protocol) handleJoinCommunity(packet nex.PacketInterface) {
 
 	gid, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.joinCommunityHandler(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), packet, callID, 0, "", "")
+		errorCode = protocol.JoinCommunity(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), packet, callID, 0, "", "")
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -41,7 +36,7 @@ func (protocol *Protocol) handleJoinCommunity(packet nex.PacketInterface) {
 
 	strMessage, err := parametersStream.ReadString()
 	if err != nil {
-		errorCode = protocol.joinCommunityHandler(fmt.Errorf("Failed to read strMessage from parameters. %s", err.Error()), packet, callID, 0, "", "")
+		errorCode = protocol.JoinCommunity(fmt.Errorf("Failed to read strMessage from parameters. %s", err.Error()), packet, callID, 0, "", "")
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -51,7 +46,7 @@ func (protocol *Protocol) handleJoinCommunity(packet nex.PacketInterface) {
 
 	strPassword, err := parametersStream.ReadString()
 	if err != nil {
-		errorCode = protocol.joinCommunityHandler(fmt.Errorf("Failed to read strPassword from parameters. %s", err.Error()), packet, callID, 0, "", "")
+		errorCode = protocol.JoinCommunity(fmt.Errorf("Failed to read strPassword from parameters. %s", err.Error()), packet, callID, 0, "", "")
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -59,7 +54,7 @@ func (protocol *Protocol) handleJoinCommunity(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.joinCommunityHandler(nil, packet, callID, gid, strMessage, strPassword)
+	errorCode = protocol.JoinCommunity(nil, packet, callID, gid, strMessage, strPassword)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

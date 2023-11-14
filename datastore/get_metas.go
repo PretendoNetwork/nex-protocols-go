@@ -9,15 +9,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// GetMetas sets the GetMetas handler function
-func (protocol *Protocol) GetMetas(handler func(err error, packet nex.PacketInterface, callID uint32, dataIDs []uint64, param *datastore_types.DataStoreGetMetaParam) uint32) {
-	protocol.getMetasHandler = handler
-}
-
 func (protocol *Protocol) handleGetMetas(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.getMetasHandler == nil {
+	if protocol.GetMetas == nil {
 		globals.Logger.Warning("DataStore::GetMetas not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -32,7 +27,7 @@ func (protocol *Protocol) handleGetMetas(packet nex.PacketInterface) {
 
 	dataIDs, err := parametersStream.ReadListUInt64LE()
 	if err != nil {
-		errorCode = protocol.getMetasHandler(fmt.Errorf("Failed to read dataIDs from parameters. %s", err.Error()), packet, callID, nil, nil)
+		errorCode = protocol.GetMetas(fmt.Errorf("Failed to read dataIDs from parameters. %s", err.Error()), packet, callID, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -42,7 +37,7 @@ func (protocol *Protocol) handleGetMetas(packet nex.PacketInterface) {
 
 	param, err := parametersStream.ReadStructure(datastore_types.NewDataStoreGetMetaParam())
 	if err != nil {
-		errorCode = protocol.getMetasHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil, nil)
+		errorCode = protocol.GetMetas(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -50,7 +45,7 @@ func (protocol *Protocol) handleGetMetas(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.getMetasHandler(nil, packet, callID, dataIDs, param.(*datastore_types.DataStoreGetMetaParam))
+	errorCode = protocol.GetMetas(nil, packet, callID, dataIDs, param.(*datastore_types.DataStoreGetMetaParam))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

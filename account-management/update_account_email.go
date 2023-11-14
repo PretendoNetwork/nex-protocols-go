@@ -8,15 +8,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// UpdateAccountEmail sets the UpdateAccountEmail handler function
-func (protocol *Protocol) UpdateAccountEmail(handler func(err error, packet nex.PacketInterface, callID uint32, strName string) uint32) {
-	protocol.updateAccountEmailHandler = handler
-}
-
 func (protocol *Protocol) handleUpdateAccountEmail(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.updateAccountEmailHandler == nil {
+	if protocol.UpdateAccountEmail == nil {
 		globals.Logger.Warning("AccountManagement::UpdateAccountEmail not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -31,7 +26,7 @@ func (protocol *Protocol) handleUpdateAccountEmail(packet nex.PacketInterface) {
 
 	strName, err := parametersStream.ReadString()
 	if err != nil {
-		errorCode = protocol.updateAccountEmailHandler(fmt.Errorf("Failed to read strName from parameters. %s", err.Error()), packet, callID, "")
+		errorCode = protocol.UpdateAccountEmail(fmt.Errorf("Failed to read strName from parameters. %s", err.Error()), packet, callID, "")
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -39,7 +34,7 @@ func (protocol *Protocol) handleUpdateAccountEmail(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.updateAccountEmailHandler(nil, packet, callID, strName)
+	errorCode = protocol.UpdateAccountEmail(nil, packet, callID, strName)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

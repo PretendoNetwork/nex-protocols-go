@@ -8,15 +8,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// GetRelationships sets the GetRelationships handler function
-func (protocol *Protocol) GetRelationships(handler func(err error, packet nex.PacketInterface, callID uint32, resultRange *nex.ResultRange) uint32) {
-	protocol.getRelationshipsHandler = handler
-}
-
 func (protocol *Protocol) handleGetRelationships(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.getRelationshipsHandler == nil {
+	if protocol.GetRelationships == nil {
 		globals.Logger.Warning("Friends::GetRelationships not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -31,7 +26,7 @@ func (protocol *Protocol) handleGetRelationships(packet nex.PacketInterface) {
 
 	resultRange, err := parametersStream.ReadStructure(nex.NewResultRange())
 	if err != nil {
-		errorCode = protocol.getRelationshipsHandler(fmt.Errorf("Failed to read resultRange from parameters. %s", err.Error()), packet, callID, nil)
+		errorCode = protocol.GetRelationships(fmt.Errorf("Failed to read resultRange from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -39,7 +34,7 @@ func (protocol *Protocol) handleGetRelationships(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.getRelationshipsHandler(nil, packet, callID, resultRange.(*nex.ResultRange))
+	errorCode = protocol.GetRelationships(nil, packet, callID, resultRange.(*nex.ResultRange))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

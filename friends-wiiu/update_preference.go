@@ -9,15 +9,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// UpdatePreference sets the UpdatePreference handler function
-func (protocol *Protocol) UpdatePreference(handler func(err error, packet nex.PacketInterface, callID uint32, preference *friends_wiiu_types.PrincipalPreference) uint32) {
-	protocol.updatePreferenceHandler = handler
-}
-
 func (protocol *Protocol) handleUpdatePreference(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.updatePreferenceHandler == nil {
+	if protocol.UpdatePreference == nil {
 		globals.Logger.Warning("FriendsWiiU::UpdatePreference not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -32,7 +27,7 @@ func (protocol *Protocol) handleUpdatePreference(packet nex.PacketInterface) {
 
 	principalPreference, err := parametersStream.ReadStructure(friends_wiiu_types.NewPrincipalPreference())
 	if err != nil {
-		errorCode = protocol.updatePreferenceHandler(fmt.Errorf("Failed to read principalPreference from parameters. %s", err.Error()), packet, callID, nil)
+		errorCode = protocol.UpdatePreference(fmt.Errorf("Failed to read principalPreference from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -40,7 +35,7 @@ func (protocol *Protocol) handleUpdatePreference(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.updatePreferenceHandler(nil, packet, callID, principalPreference.(*friends_wiiu_types.PrincipalPreference))
+	errorCode = protocol.UpdatePreference(nil, packet, callID, principalPreference.(*friends_wiiu_types.PrincipalPreference))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

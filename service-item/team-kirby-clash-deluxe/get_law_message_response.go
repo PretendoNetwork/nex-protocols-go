@@ -8,15 +8,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// GetLawMessageResponse sets the GetLawMessageResponse handler function
-func (protocol *Protocol) GetLawMessageResponse(handler func(err error, packet nex.PacketInterface, callID uint32, requestID uint32) uint32) {
-	protocol.getLawMessageResponseHandler = handler
-}
-
 func (protocol *Protocol) handleGetLawMessageResponse(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.getLawMessageResponseHandler == nil {
+	if protocol.GetLawMessageResponse == nil {
 		globals.Logger.Warning("ServiceItemTeamKirbyClashDeluxe::GetLawMessageResponse not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -31,7 +26,7 @@ func (protocol *Protocol) handleGetLawMessageResponse(packet nex.PacketInterface
 
 	requestID, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.getLawMessageResponseHandler(fmt.Errorf("Failed to read requestID from parameters. %s", err.Error()), packet, callID, 0)
+		errorCode = protocol.GetLawMessageResponse(fmt.Errorf("Failed to read requestID from parameters. %s", err.Error()), packet, callID, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -39,7 +34,7 @@ func (protocol *Protocol) handleGetLawMessageResponse(packet nex.PacketInterface
 		return
 	}
 
-	errorCode = protocol.getLawMessageResponseHandler(nil, packet, callID, requestID)
+	errorCode = protocol.GetLawMessageResponse(nil, packet, callID, requestID)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

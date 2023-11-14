@@ -9,15 +9,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// PreparePostSharedData sets the PreparePostSharedData handler function
-func (protocol *Protocol) PreparePostSharedData(handler func(err error, packet nex.PacketInterface, callID uint32, param *datastore_super_smash_bros_4_types.DataStorePreparePostSharedDataParam) uint32) {
-	protocol.preparePostSharedDataHandler = handler
-}
-
 func (protocol *Protocol) handlePreparePostSharedData(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.preparePostSharedDataHandler == nil {
+	if protocol.PreparePostSharedData == nil {
 		globals.Logger.Warning("DataStoreSuperSmashBros4::PreparePostSharedData not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -32,7 +27,7 @@ func (protocol *Protocol) handlePreparePostSharedData(packet nex.PacketInterface
 
 	param, err := parametersStream.ReadStructure(datastore_super_smash_bros_4_types.NewDataStorePreparePostSharedDataParam())
 	if err != nil {
-		errorCode = protocol.preparePostSharedDataHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
+		errorCode = protocol.PreparePostSharedData(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -40,7 +35,7 @@ func (protocol *Protocol) handlePreparePostSharedData(packet nex.PacketInterface
 		return
 	}
 
-	errorCode = protocol.preparePostSharedDataHandler(nil, packet, callID, param.(*datastore_super_smash_bros_4_types.DataStorePreparePostSharedDataParam))
+	errorCode = protocol.PreparePostSharedData(nil, packet, callID, param.(*datastore_super_smash_bros_4_types.DataStorePreparePostSharedDataParam))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

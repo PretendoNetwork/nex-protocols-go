@@ -6,15 +6,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// ReplaceTournamentLeafNode sets the ReplaceTournamentLeafNode handler function
-func (protocol *Protocol) ReplaceTournamentLeafNode(handler func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) uint32) {
-	protocol.replaceTournamentLeafNodeHandler = handler
-}
-
 func (protocol *Protocol) handleReplaceTournamentLeafNode(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.replaceTournamentLeafNodeHandler == nil {
+	if protocol.ReplaceTournamentLeafNode == nil {
 		globals.Logger.Warning("MatchmakeExtensionSuperSmashBros4::ReplaceTournamentLeafNode not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -26,7 +21,7 @@ func (protocol *Protocol) handleReplaceTournamentLeafNode(packet nex.PacketInter
 
 	callID := request.CallID
 
-	errorCode = protocol.replaceTournamentLeafNodeHandler(nil, packet, callID, packet.Payload())
+	errorCode = protocol.ReplaceTournamentLeafNode(nil, packet, callID, packet.Payload())
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

@@ -8,15 +8,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// GetDetailedParticipants sets the GetDetailedParticipants handler function
-func (protocol *Protocol) GetDetailedParticipants(handler func(err error, packet nex.PacketInterface, callID uint32, idGathering uint32, bOnlyActive bool) uint32) {
-	protocol.getDetailedParticipantsHandler = handler
-}
-
 func (protocol *Protocol) handleGetDetailedParticipants(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.getDetailedParticipantsHandler == nil {
+	if protocol.GetDetailedParticipants == nil {
 		globals.Logger.Warning("MatchMakingExt::GetDetailedParticipants not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -31,7 +26,7 @@ func (protocol *Protocol) handleGetDetailedParticipants(packet nex.PacketInterfa
 
 	idGathering, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.getDetailedParticipantsHandler(fmt.Errorf("Failed to read idGathering from parameters. %s", err.Error()), packet, callID, 0, false)
+		errorCode = protocol.GetDetailedParticipants(fmt.Errorf("Failed to read idGathering from parameters. %s", err.Error()), packet, callID, 0, false)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -41,7 +36,7 @@ func (protocol *Protocol) handleGetDetailedParticipants(packet nex.PacketInterfa
 
 	bOnlyActive, err := parametersStream.ReadBool()
 	if err != nil {
-		errorCode = protocol.getDetailedParticipantsHandler(fmt.Errorf("Failed to read bOnlyActive from parameters. %s", err.Error()), packet, callID, 0, false)
+		errorCode = protocol.GetDetailedParticipants(fmt.Errorf("Failed to read bOnlyActive from parameters. %s", err.Error()), packet, callID, 0, false)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -49,7 +44,7 @@ func (protocol *Protocol) handleGetDetailedParticipants(packet nex.PacketInterfa
 		return
 	}
 
-	errorCode = protocol.getDetailedParticipantsHandler(nil, packet, callID, idGathering, bOnlyActive)
+	errorCode = protocol.GetDetailedParticipants(nil, packet, callID, idGathering, bOnlyActive)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

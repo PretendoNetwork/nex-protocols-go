@@ -8,17 +8,12 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// CreateMatchmakeSession sets the CreateMatchmakeSession handler function
-func (protocol *Protocol) CreateMatchmakeSession(handler func(err error, packet nex.PacketInterface, callID uint32, anyGathering *nex.DataHolder, message string, participationCount uint16) uint32) {
-	protocol.createMatchmakeSessionHandler = handler
-}
-
 func (protocol *Protocol) handleCreateMatchmakeSession(packet nex.PacketInterface) {
 	matchmakingVersion := protocol.Server.MatchMakingProtocolVersion()
 
 	var errorCode uint32
 
-	if protocol.createMatchmakeSessionHandler == nil {
+	if protocol.CreateMatchmakeSession == nil {
 		globals.Logger.Warning("MatchmakeExtension::CreateMatchmakeSession not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -33,7 +28,7 @@ func (protocol *Protocol) handleCreateMatchmakeSession(packet nex.PacketInterfac
 
 	anyGathering, err := parametersStream.ReadDataHolder()
 	if err != nil {
-		errorCode = protocol.createMatchmakeSessionHandler(fmt.Errorf("Failed to read anyGathering from parameters. %s", err.Error()), packet, callID, nil, "", 0)
+		errorCode = protocol.CreateMatchmakeSession(fmt.Errorf("Failed to read anyGathering from parameters. %s", err.Error()), packet, callID, nil, "", 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -43,7 +38,7 @@ func (protocol *Protocol) handleCreateMatchmakeSession(packet nex.PacketInterfac
 
 	message, err := parametersStream.ReadString()
 	if err != nil {
-		errorCode = protocol.createMatchmakeSessionHandler(fmt.Errorf("Failed to read message from parameters. %s", err.Error()), packet, callID, nil, "", 0)
+		errorCode = protocol.CreateMatchmakeSession(fmt.Errorf("Failed to read message from parameters. %s", err.Error()), packet, callID, nil, "", 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -56,7 +51,7 @@ func (protocol *Protocol) handleCreateMatchmakeSession(packet nex.PacketInterfac
 	if matchmakingVersion.GreaterOrEqual("3.4.0") {
 		participationCount, err = parametersStream.ReadUInt16LE()
 		if err != nil {
-			errorCode = protocol.createMatchmakeSessionHandler(fmt.Errorf("Failed to read message from participationCount. %s", err.Error()), packet, callID, nil, "", 0)
+			errorCode = protocol.CreateMatchmakeSession(fmt.Errorf("Failed to read message from participationCount. %s", err.Error()), packet, callID, nil, "", 0)
 			if errorCode != 0 {
 				globals.RespondError(packet, ProtocolID, errorCode)
 			}
@@ -65,7 +60,7 @@ func (protocol *Protocol) handleCreateMatchmakeSession(packet nex.PacketInterfac
 		}
 	}
 
-	errorCode = protocol.createMatchmakeSessionHandler(nil, packet, callID, anyGathering, message, participationCount)
+	errorCode = protocol.CreateMatchmakeSession(nil, packet, callID, anyGathering, message, participationCount)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

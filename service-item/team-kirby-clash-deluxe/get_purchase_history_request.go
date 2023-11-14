@@ -9,15 +9,10 @@ import (
 	service_item_team_kirby_clash_deluxe_types "github.com/PretendoNetwork/nex-protocols-go/service-item/team-kirby-clash-deluxe/types"
 )
 
-// GetPurchaseHistoryRequest sets the GetPurchaseHistoryRequest handler function
-func (protocol *Protocol) GetPurchaseHistoryRequest(handler func(err error, packet nex.PacketInterface, callID uint32, getPurchaseHistoryParam *service_item_team_kirby_clash_deluxe_types.ServiceItemGetPurchaseHistoryParam) uint32) {
-	protocol.getPurchaseHistoryRequestHandler = handler
-}
-
 func (protocol *Protocol) handleGetPurchaseHistoryRequest(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.getPurchaseHistoryRequestHandler == nil {
+	if protocol.GetPurchaseHistoryRequest == nil {
 		globals.Logger.Warning("ServiceItemTeamKirbyClashDeluxe::GetPurchaseHistoryRequest not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -32,7 +27,7 @@ func (protocol *Protocol) handleGetPurchaseHistoryRequest(packet nex.PacketInter
 
 	getPurchaseHistoryParam, err := parametersStream.ReadStructure(service_item_team_kirby_clash_deluxe_types.NewServiceItemGetPurchaseHistoryParam())
 	if err != nil {
-		errorCode = protocol.getPurchaseHistoryRequestHandler(fmt.Errorf("Failed to read getPurchaseHistoryParam from parameters. %s", err.Error()), packet, callID, nil)
+		errorCode = protocol.GetPurchaseHistoryRequest(fmt.Errorf("Failed to read getPurchaseHistoryParam from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -40,7 +35,7 @@ func (protocol *Protocol) handleGetPurchaseHistoryRequest(packet nex.PacketInter
 		return
 	}
 
-	errorCode = protocol.getPurchaseHistoryRequestHandler(nil, packet, callID, getPurchaseHistoryParam.(*service_item_team_kirby_clash_deluxe_types.ServiceItemGetPurchaseHistoryParam))
+	errorCode = protocol.GetPurchaseHistoryRequest(nil, packet, callID, getPurchaseHistoryParam.(*service_item_team_kirby_clash_deluxe_types.ServiceItemGetPurchaseHistoryParam))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

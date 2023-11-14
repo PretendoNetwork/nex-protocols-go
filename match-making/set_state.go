@@ -8,15 +8,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// SetState sets the SetState handler function
-func (protocol *Protocol) SetState(handler func(err error, packet nex.PacketInterface, callID uint32, idGathering uint32, uiNewState uint32) uint32) {
-	protocol.setStateHandler = handler
-}
-
 func (protocol *Protocol) handleSetState(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.setStateHandler == nil {
+	if protocol.SetState == nil {
 		globals.Logger.Warning("MatchMaking::SetState not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -31,7 +26,7 @@ func (protocol *Protocol) handleSetState(packet nex.PacketInterface) {
 
 	idGathering, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.setStateHandler(fmt.Errorf("Failed to read idGathering from parameters. %s", err.Error()), packet, callID, 0, 0)
+		errorCode = protocol.SetState(fmt.Errorf("Failed to read idGathering from parameters. %s", err.Error()), packet, callID, 0, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -41,7 +36,7 @@ func (protocol *Protocol) handleSetState(packet nex.PacketInterface) {
 
 	uiNewState, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.setStateHandler(fmt.Errorf("Failed to read uiNewState from parameters. %s", err.Error()), packet, callID, 0, 0)
+		errorCode = protocol.SetState(fmt.Errorf("Failed to read uiNewState from parameters. %s", err.Error()), packet, callID, 0, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -49,7 +44,7 @@ func (protocol *Protocol) handleSetState(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.setStateHandler(nil, packet, callID, idGathering, uiNewState)
+	errorCode = protocol.SetState(nil, packet, callID, idGathering, uiNewState)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

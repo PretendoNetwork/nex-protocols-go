@@ -8,15 +8,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// InitiateProbe sets the InitiateProbe handler function
-func (protocol *Protocol) InitiateProbe(handler func(err error, packet nex.PacketInterface, callID uint32, urlStationToProbe *nex.StationURL) uint32) {
-	protocol.initiateProbeHandler = handler
-}
-
 func (protocol *Protocol) handleInitiateProbe(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.initiateProbeHandler == nil {
+	if protocol.InitiateProbe == nil {
 		globals.Logger.Warning("NATTraversal::InitiateProbe not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -31,7 +26,7 @@ func (protocol *Protocol) handleInitiateProbe(packet nex.PacketInterface) {
 
 	urlStationToProbe, err := parametersStream.ReadStationURL()
 	if err != nil {
-		errorCode = protocol.initiateProbeHandler(fmt.Errorf("Failed to read urlStationToProbe from parameters. %s", err.Error()), packet, callID, nil)
+		errorCode = protocol.InitiateProbe(fmt.Errorf("Failed to read urlStationToProbe from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -39,7 +34,7 @@ func (protocol *Protocol) handleInitiateProbe(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.initiateProbeHandler(nil, packet, callID, urlStationToProbe)
+	errorCode = protocol.InitiateProbe(nil, packet, callID, urlStationToProbe)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

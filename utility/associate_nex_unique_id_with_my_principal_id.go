@@ -9,15 +9,10 @@ import (
 	utility_types "github.com/PretendoNetwork/nex-protocols-go/utility/types"
 )
 
-// AssociateNexUniqueIDWithMyPrincipalID sets the AssociateNexUniqueIDWithMyPrincipalID handler function
-func (protocol *Protocol) AssociateNexUniqueIDWithMyPrincipalID(handler func(err error, packet nex.PacketInterface, callID uint32, uniqueIDInfo *utility_types.UniqueIDInfo) uint32) {
-	protocol.associateNexUniqueIDWithMyPrincipalIDHandler = handler
-}
-
 func (protocol *Protocol) handleAssociateNexUniqueIDWithMyPrincipalID(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.associateNexUniqueIDWithMyPrincipalIDHandler == nil {
+	if protocol.AssociateNexUniqueIDWithMyPrincipalID == nil {
 		globals.Logger.Warning("Utility::AssociateNexUniqueIDWithMyPrincipalID not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -33,7 +28,7 @@ func (protocol *Protocol) handleAssociateNexUniqueIDWithMyPrincipalID(packet nex
 
 	uniqueIDInfo, err := parametersStream.ReadStructure(utility_types.NewUniqueIDInfo())
 	if err != nil {
-		errorCode = protocol.associateNexUniqueIDWithMyPrincipalIDHandler(fmt.Errorf("Failed to read uniqueIDInfo from parameters. %s", err.Error()), packet, callID, nil)
+		errorCode = protocol.AssociateNexUniqueIDWithMyPrincipalID(fmt.Errorf("Failed to read uniqueIDInfo from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -41,7 +36,7 @@ func (protocol *Protocol) handleAssociateNexUniqueIDWithMyPrincipalID(packet nex
 		return
 	}
 
-	errorCode = protocol.associateNexUniqueIDWithMyPrincipalIDHandler(nil, packet, callID, uniqueIDInfo.(*utility_types.UniqueIDInfo))
+	errorCode = protocol.AssociateNexUniqueIDWithMyPrincipalID(nil, packet, callID, uniqueIDInfo.(*utility_types.UniqueIDInfo))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

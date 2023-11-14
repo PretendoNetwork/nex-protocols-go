@@ -6,15 +6,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// GetCompetitionRankingScore sets the GetCompetitionRankingScore handler function
-func (protocol *Protocol) GetCompetitionRankingScore(handler func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) uint32) {
-	protocol.getCompetitionRankingScoreHandler = handler
-}
-
 func (protocol *Protocol) handleGetCompetitionRankingScore(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.getCompetitionRankingScoreHandler == nil {
+	if protocol.GetCompetitionRankingScore == nil {
 		globals.Logger.Warning("RankingSplatoon::GetCompetitionRankingScore not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -26,7 +21,7 @@ func (protocol *Protocol) handleGetCompetitionRankingScore(packet nex.PacketInte
 
 	callID := request.CallID
 
-	errorCode = protocol.getCompetitionRankingScoreHandler(nil, packet, callID, packet.Payload())
+	errorCode = protocol.GetCompetitionRankingScore(nil, packet, callID, packet.Payload())
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

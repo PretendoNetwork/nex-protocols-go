@@ -8,15 +8,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// FindByNameLike sets the FindByNameLike handler function
-func (protocol *Protocol) FindByNameLike(handler func(err error, packet nex.PacketInterface, callID uint32, uiGroups uint32, strLike string, resultRange *nex.ResultRange) uint32) {
-	protocol.findByNameLikeHandler = handler
-}
-
 func (protocol *Protocol) handleFindByNameLike(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.findByNameLikeHandler == nil {
+	if protocol.FindByNameLike == nil {
 		globals.Logger.Warning("AccountManagement::FindByNameLike not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -31,7 +26,7 @@ func (protocol *Protocol) handleFindByNameLike(packet nex.PacketInterface) {
 
 	uiGroups, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.findByNameLikeHandler(fmt.Errorf("Failed to read uiGroups from parameters. %s", err.Error()), packet, callID, 0, "", nil)
+		errorCode = protocol.FindByNameLike(fmt.Errorf("Failed to read uiGroups from parameters. %s", err.Error()), packet, callID, 0, "", nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -41,7 +36,7 @@ func (protocol *Protocol) handleFindByNameLike(packet nex.PacketInterface) {
 
 	strLike, err := parametersStream.ReadString()
 	if err != nil {
-		errorCode = protocol.findByNameLikeHandler(fmt.Errorf("Failed to read strLike from parameters. %s", err.Error()), packet, callID, 0, "", nil)
+		errorCode = protocol.FindByNameLike(fmt.Errorf("Failed to read strLike from parameters. %s", err.Error()), packet, callID, 0, "", nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -51,7 +46,7 @@ func (protocol *Protocol) handleFindByNameLike(packet nex.PacketInterface) {
 
 	resultRange, err := parametersStream.ReadStructure(nex.NewResultRange())
 	if err != nil {
-		errorCode = protocol.findByNameLikeHandler(fmt.Errorf("Failed to read resultRange from parameters. %s", err.Error()), packet, callID, 0, "", nil)
+		errorCode = protocol.FindByNameLike(fmt.Errorf("Failed to read resultRange from parameters. %s", err.Error()), packet, callID, 0, "", nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -59,7 +54,7 @@ func (protocol *Protocol) handleFindByNameLike(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.findByNameLikeHandler(nil, packet, callID, uiGroups, strLike, resultRange.(*nex.ResultRange))
+	errorCode = protocol.FindByNameLike(nil, packet, callID, uiGroups, strLike, resultRange.(*nex.ResultRange))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

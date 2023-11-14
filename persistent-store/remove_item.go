@@ -8,15 +8,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// RemoveItem sets the RemoveItem handler function
-func (protocol *Protocol) RemoveItem(handler func(err error, packet nex.PacketInterface, callID uint32, uiGroup uint32, strTag string) uint32) {
-	protocol.removeItemHandler = handler
-}
-
 func (protocol *Protocol) handleRemoveItem(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.removeItemHandler == nil {
+	if protocol.RemoveItem == nil {
 		globals.Logger.Warning("PersistentStore::RemoveItem not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -31,7 +26,7 @@ func (protocol *Protocol) handleRemoveItem(packet nex.PacketInterface) {
 
 	uiGroup, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.removeItemHandler(fmt.Errorf("Failed to read uiGroup from parameters. %s", err.Error()), packet, callID, 0, "")
+		errorCode = protocol.RemoveItem(fmt.Errorf("Failed to read uiGroup from parameters. %s", err.Error()), packet, callID, 0, "")
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -41,7 +36,7 @@ func (protocol *Protocol) handleRemoveItem(packet nex.PacketInterface) {
 
 	strTag, err := parametersStream.ReadString()
 	if err != nil {
-		errorCode = protocol.removeItemHandler(fmt.Errorf("Failed to read strTag from parameters. %s", err.Error()), packet, callID, 0, "")
+		errorCode = protocol.RemoveItem(fmt.Errorf("Failed to read strTag from parameters. %s", err.Error()), packet, callID, 0, "")
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -49,7 +44,7 @@ func (protocol *Protocol) handleRemoveItem(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.removeItemHandler(nil, packet, callID, uiGroup, strTag)
+	errorCode = protocol.RemoveItem(nil, packet, callID, uiGroup, strTag)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

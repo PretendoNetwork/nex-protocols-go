@@ -8,15 +8,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// GetRound sets the GetRound handler function
-func (protocol *Protocol) GetRound(handler func(err error, packet nex.PacketInterface, callID uint32, roundID uint64) uint32) {
-	protocol.getRoundHandler = handler
-}
-
 func (protocol *Protocol) handleGetRound(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.getRoundHandler == nil {
+	if protocol.GetRound == nil {
 		globals.Logger.Warning("MatchmakeReferee::GetRound not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -31,7 +26,7 @@ func (protocol *Protocol) handleGetRound(packet nex.PacketInterface) {
 
 	roundID, err := parametersStream.ReadUInt64LE()
 	if err != nil {
-		errorCode = protocol.getRoundHandler(fmt.Errorf("Failed to read roundID from parameters. %s", err.Error()), packet, callID, 0)
+		errorCode = protocol.GetRound(fmt.Errorf("Failed to read roundID from parameters. %s", err.Error()), packet, callID, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -39,7 +34,7 @@ func (protocol *Protocol) handleGetRound(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.getRoundHandler(nil, packet, callID, roundID)
+	errorCode = protocol.GetRound(nil, packet, callID, roundID)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

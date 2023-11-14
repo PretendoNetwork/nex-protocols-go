@@ -9,15 +9,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// GetFriendMiiList sets the GetFriendMiiList handler function
-func (protocol *Protocol) GetFriendMiiList(handler func(err error, packet nex.PacketInterface, callID uint32, friends []*friends_3ds_types.FriendInfo) uint32) {
-	protocol.getFriendMiiListHandler = handler
-}
-
 func (protocol *Protocol) handleGetFriendMiiList(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.getFriendMiiListHandler == nil {
+	if protocol.GetFriendMiiList == nil {
 		globals.Logger.Warning("Friends3DS::GetFriendMiiList not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -32,7 +27,7 @@ func (protocol *Protocol) handleGetFriendMiiList(packet nex.PacketInterface) {
 
 	friends, err := parametersStream.ReadListStructure(friends_3ds_types.NewFriendInfo())
 	if err != nil {
-		errorCode = protocol.getFriendMiiListHandler(fmt.Errorf("Failed to read friends from parameters. %s", err.Error()), packet, callID, nil)
+		errorCode = protocol.GetFriendMiiList(fmt.Errorf("Failed to read friends from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -40,7 +35,7 @@ func (protocol *Protocol) handleGetFriendMiiList(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.getFriendMiiListHandler(nil, packet, callID, friends.([]*friends_3ds_types.FriendInfo))
+	errorCode = protocol.GetFriendMiiList(nil, packet, callID, friends.([]*friends_3ds_types.FriendInfo))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

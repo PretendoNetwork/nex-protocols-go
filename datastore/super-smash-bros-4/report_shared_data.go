@@ -8,15 +8,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// ReportSharedData sets the ReportSharedData handler function
-func (protocol *Protocol) ReportSharedData(handler func(err error, packet nex.PacketInterface, callID uint32, dataID uint64) uint32) {
-	protocol.reportSharedDataHandler = handler
-}
-
 func (protocol *Protocol) handleReportSharedData(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.reportSharedDataHandler == nil {
+	if protocol.ReportSharedData == nil {
 		globals.Logger.Warning("DataStoreSuperSmashBros4::ReportSharedData not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -31,7 +26,7 @@ func (protocol *Protocol) handleReportSharedData(packet nex.PacketInterface) {
 
 	dataID, err := parametersStream.ReadUInt64LE()
 	if err != nil {
-		errorCode = protocol.reportSharedDataHandler(fmt.Errorf("Failed to read dataID from parameters. %s", err.Error()), packet, callID, 0)
+		errorCode = protocol.ReportSharedData(fmt.Errorf("Failed to read dataID from parameters. %s", err.Error()), packet, callID, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -39,7 +34,7 @@ func (protocol *Protocol) handleReportSharedData(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.reportSharedDataHandler(nil, packet, callID, dataID)
+	errorCode = protocol.ReportSharedData(nil, packet, callID, dataID)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

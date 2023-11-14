@@ -8,15 +8,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// GetPID sets the GetPID handler function
-func (protocol *Protocol) GetPID(handler func(err error, packet nex.PacketInterface, callID uint32, strUserName string) uint32) {
-	protocol.getPIDHandler = handler
-}
-
 func (protocol *Protocol) handleGetPID(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.getPIDHandler == nil {
+	if protocol.GetPID == nil {
 		globals.Logger.Warning("TicketGranting::GetPID not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -31,7 +26,7 @@ func (protocol *Protocol) handleGetPID(packet nex.PacketInterface) {
 
 	strUserName, err := parametersStream.ReadString()
 	if err != nil {
-		errorCode = protocol.getPIDHandler(fmt.Errorf("Failed to read strUserName from parameters. %s", err.Error()), packet, callID, "")
+		errorCode = protocol.GetPID(fmt.Errorf("Failed to read strUserName from parameters. %s", err.Error()), packet, callID, "")
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -39,7 +34,7 @@ func (protocol *Protocol) handleGetPID(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.getPIDHandler(nil, packet, callID, strUserName)
+	errorCode = protocol.GetPID(nil, packet, callID, strUserName)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

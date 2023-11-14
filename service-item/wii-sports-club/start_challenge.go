@@ -9,15 +9,10 @@ import (
 	service_item_wii_sports_club_types "github.com/PretendoNetwork/nex-protocols-go/service-item/wii-sports-club/types"
 )
 
-// StartChallenge sets the StartChallenge handler function
-func (protocol *Protocol) StartChallenge(handler func(err error, packet nex.PacketInterface, callID uint32, startChallengeParam *service_item_wii_sports_club_types.ServiceItemStartChallengeParam) uint32) {
-	protocol.startChallengeHandler = handler
-}
-
 func (protocol *Protocol) handleStartChallenge(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.startChallengeHandler == nil {
+	if protocol.StartChallenge == nil {
 		globals.Logger.Warning("ServiceItemWiiSportsClub::StartChallenge not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -32,7 +27,7 @@ func (protocol *Protocol) handleStartChallenge(packet nex.PacketInterface) {
 
 	startChallengeParam, err := parametersStream.ReadStructure(service_item_wii_sports_club_types.NewServiceItemStartChallengeParam())
 	if err != nil {
-		errorCode = protocol.startChallengeHandler(fmt.Errorf("Failed to read startChallengeParam from parameters. %s", err.Error()), packet, callID, nil)
+		errorCode = protocol.StartChallenge(fmt.Errorf("Failed to read startChallengeParam from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -40,7 +35,7 @@ func (protocol *Protocol) handleStartChallenge(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.startChallengeHandler(nil, packet, callID, startChallengeParam.(*service_item_wii_sports_club_types.ServiceItemStartChallengeParam))
+	errorCode = protocol.StartChallenge(nil, packet, callID, startChallengeParam.(*service_item_wii_sports_club_types.ServiceItemStartChallengeParam))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

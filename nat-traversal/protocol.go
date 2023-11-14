@@ -36,14 +36,14 @@ const (
 
 // Protocol stores all the RMC method handlers for the NAT Traversal protocol and listens for requests
 type Protocol struct {
-	Server                                nex.ServerInterface
-	requestProbeInitiationHandler         func(err error, packet nex.PacketInterface, callID uint32, urlTargetList []*nex.StationURL) uint32
-	initiateProbeHandler                  func(err error, packet nex.PacketInterface, callID uint32, urlStationToProbe *nex.StationURL) uint32
-	requestProbeInitiationExtHandler      func(err error, packet nex.PacketInterface, callID uint32, targetList []string, stationToProbe string) uint32
-	reportNATTraversalResultHandler       func(err error, packet nex.PacketInterface, callID uint32, cid uint32, result bool, rtt uint32) uint32
-	reportNATPropertiesHandler            func(err error, packet nex.PacketInterface, callID uint32, natmapping uint32, natfiltering uint32, rtt uint32) uint32
-	getRelaySignatureKeyHandler           func(err error, packet nex.PacketInterface, callID uint32) uint32
-	reportNATTraversalResultDetailHandler func(err error, packet nex.PacketInterface, callID uint32, cid uint32, result bool, detail int32, rtt uint32) uint32
+	Server                         nex.ServerInterface
+	RequestProbeInitiation         func(err error, packet nex.PacketInterface, callID uint32, urlTargetList []*nex.StationURL) uint32
+	InitiateProbe                  func(err error, packet nex.PacketInterface, callID uint32, urlStationToProbe *nex.StationURL) uint32
+	RequestProbeInitiationExt      func(err error, packet nex.PacketInterface, callID uint32, targetList []string, stationToProbe string) uint32
+	ReportNATTraversalResult       func(err error, packet nex.PacketInterface, callID uint32, cid uint32, result bool, rtt uint32) uint32
+	ReportNATProperties            func(err error, packet nex.PacketInterface, callID uint32, natmapping uint32, natfiltering uint32, rtt uint32) uint32
+	GetRelaySignatureKey           func(err error, packet nex.PacketInterface, callID uint32) uint32
+	ReportNATTraversalResultDetail func(err error, packet nex.PacketInterface, callID uint32, cid uint32, result bool, detail int32, rtt uint32) uint32
 }
 
 // Setup initializes the protocol

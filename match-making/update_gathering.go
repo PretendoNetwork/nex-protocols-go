@@ -8,15 +8,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// UpdateGathering sets the UpdateGathering handler function
-func (protocol *Protocol) UpdateGathering(handler func(err error, packet nex.PacketInterface, callID uint32, anyGathering *nex.DataHolder) uint32) {
-	protocol.updateGatheringHandler = handler
-}
-
 func (protocol *Protocol) handleUpdateGathering(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.updateGatheringHandler == nil {
+	if protocol.UpdateGathering == nil {
 		globals.Logger.Warning("MatchMaking::UpdateGathering not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -31,7 +26,7 @@ func (protocol *Protocol) handleUpdateGathering(packet nex.PacketInterface) {
 
 	anyGathering, err := parametersStream.ReadDataHolder()
 	if err != nil {
-		errorCode = protocol.updateGatheringHandler(fmt.Errorf("Failed to read anyGathering from parameters. %s", err.Error()), packet, callID, nil)
+		errorCode = protocol.UpdateGathering(fmt.Errorf("Failed to read anyGathering from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -39,7 +34,7 @@ func (protocol *Protocol) handleUpdateGathering(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.updateGatheringHandler(nil, packet, callID, anyGathering)
+	errorCode = protocol.UpdateGathering(nil, packet, callID, anyGathering)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

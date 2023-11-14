@@ -9,15 +9,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// GetRating sets the GetRating handler function
-func (protocol *Protocol) GetRating(handler func(err error, packet nex.PacketInterface, callID uint32, target *datastore_types.DataStoreRatingTarget, accessPassword uint64) uint32) {
-	protocol.getRatingHandler = handler
-}
-
 func (protocol *Protocol) handleGetRating(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.getRatingHandler == nil {
+	if protocol.GetRating == nil {
 		globals.Logger.Warning("DataStore::GetRating not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -32,7 +27,7 @@ func (protocol *Protocol) handleGetRating(packet nex.PacketInterface) {
 
 	target, err := parametersStream.ReadStructure(datastore_types.NewDataStoreRatingTarget())
 	if err != nil {
-		errorCode = protocol.getRatingHandler(fmt.Errorf("Failed to read target from parameters. %s", err.Error()), packet, callID, nil, 0)
+		errorCode = protocol.GetRating(fmt.Errorf("Failed to read target from parameters. %s", err.Error()), packet, callID, nil, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -42,7 +37,7 @@ func (protocol *Protocol) handleGetRating(packet nex.PacketInterface) {
 
 	accessPassword, err := parametersStream.ReadUInt64LE()
 	if err != nil {
-		errorCode = protocol.getRatingHandler(fmt.Errorf("Failed to read accessPassword from parameters. %s", err.Error()), packet, callID, nil, 0)
+		errorCode = protocol.GetRating(fmt.Errorf("Failed to read accessPassword from parameters. %s", err.Error()), packet, callID, nil, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -50,7 +45,7 @@ func (protocol *Protocol) handleGetRating(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.getRatingHandler(nil, packet, callID, target.(*datastore_types.DataStoreRatingTarget), accessPassword)
+	errorCode = protocol.GetRating(nil, packet, callID, target.(*datastore_types.DataStoreRatingTarget), accessPassword)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

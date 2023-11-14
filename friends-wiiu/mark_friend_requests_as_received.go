@@ -8,15 +8,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// MarkFriendRequestsAsReceived sets the MarkFriendRequestsAsReceived handler function
-func (protocol *Protocol) MarkFriendRequestsAsReceived(handler func(err error, packet nex.PacketInterface, callID uint32, ids []uint64) uint32) {
-	protocol.markFriendRequestsAsReceivedHandler = handler
-}
-
 func (protocol *Protocol) handleMarkFriendRequestsAsReceived(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.markFriendRequestsAsReceivedHandler == nil {
+	if protocol.MarkFriendRequestsAsReceived == nil {
 		globals.Logger.Warning("FriendsWiiU::MarkFriendRequestsAsReceived not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -31,7 +26,7 @@ func (protocol *Protocol) handleMarkFriendRequestsAsReceived(packet nex.PacketIn
 
 	ids, err := parametersStream.ReadListUInt64LE()
 	if err != nil {
-		errorCode = protocol.getRequestBlockSettingsHandler(fmt.Errorf("Failed to read ids from parameters. %s", err.Error()), packet, callID, nil)
+		errorCode = protocol.GetRequestBlockSettings(fmt.Errorf("Failed to read ids from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -39,7 +34,7 @@ func (protocol *Protocol) handleMarkFriendRequestsAsReceived(packet nex.PacketIn
 		return
 	}
 
-	errorCode = protocol.markFriendRequestsAsReceivedHandler(nil, packet, callID, ids)
+	errorCode = protocol.MarkFriendRequestsAsReceived(nil, packet, callID, ids)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

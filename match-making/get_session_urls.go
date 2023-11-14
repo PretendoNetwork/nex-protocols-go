@@ -8,15 +8,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// GetSessionURLs sets the GetSessionURLs handler function
-func (protocol *Protocol) GetSessionURLs(handler func(err error, packet nex.PacketInterface, callID uint32, gid uint32) uint32) {
-	protocol.getSessionURLsHandler = handler
-}
-
 func (protocol *Protocol) handleGetSessionURLs(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.getSessionURLsHandler == nil {
+	if protocol.GetSessionURLs == nil {
 		globals.Logger.Warning("MatchMaking::GetSessionURLs not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -31,7 +26,7 @@ func (protocol *Protocol) handleGetSessionURLs(packet nex.PacketInterface) {
 
 	gid, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.getSessionURLsHandler(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), packet, callID, 0)
+		errorCode = protocol.GetSessionURLs(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), packet, callID, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -39,7 +34,7 @@ func (protocol *Protocol) handleGetSessionURLs(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.getSessionURLsHandler(nil, packet, callID, gid)
+	errorCode = protocol.GetSessionURLs(nil, packet, callID, gid)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

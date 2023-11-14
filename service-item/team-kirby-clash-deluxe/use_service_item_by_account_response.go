@@ -8,15 +8,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// UseServiceItemByAccountResponse sets the UseServiceItemByAccountResponse handler function
-func (protocol *Protocol) UseServiceItemByAccountResponse(handler func(err error, packet nex.PacketInterface, callID uint32, requestID uint32) uint32) {
-	protocol.useServiceItemByAccountResponseHandler = handler
-}
-
 func (protocol *Protocol) handleUseServiceItemByAccountResponse(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.useServiceItemByAccountResponseHandler == nil {
+	if protocol.UseServiceItemByAccountResponse == nil {
 		globals.Logger.Warning("ServiceItemTeamKirbyClashDeluxe::UseServiceItemByAccountResponse not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -31,7 +26,7 @@ func (protocol *Protocol) handleUseServiceItemByAccountResponse(packet nex.Packe
 
 	requestID, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.useServiceItemByAccountResponseHandler(fmt.Errorf("Failed to read requestID from parameters. %s", err.Error()), packet, callID, 0)
+		errorCode = protocol.UseServiceItemByAccountResponse(fmt.Errorf("Failed to read requestID from parameters. %s", err.Error()), packet, callID, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -39,7 +34,7 @@ func (protocol *Protocol) handleUseServiceItemByAccountResponse(packet nex.Packe
 		return
 	}
 
-	errorCode = protocol.useServiceItemByAccountResponseHandler(nil, packet, callID, requestID)
+	errorCode = protocol.UseServiceItemByAccountResponse(nil, packet, callID, requestID)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

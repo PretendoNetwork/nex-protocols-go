@@ -8,15 +8,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// Invite sets the Invite handler function
-func (protocol *Protocol) Invite(handler func(err error, packet nex.PacketInterface, callID uint32, idGathering uint32, lstPrincipals []*nex.PID, strMessage string) uint32) {
-	protocol.inviteHandler = handler
-}
-
 func (protocol *Protocol) handleInvite(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.inviteHandler == nil {
+	if protocol.Invite == nil {
 		globals.Logger.Warning("MatchMaking::Invite not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -31,7 +26,7 @@ func (protocol *Protocol) handleInvite(packet nex.PacketInterface) {
 
 	idGathering, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.inviteHandler(fmt.Errorf("Failed to read idGathering from parameters. %s", err.Error()), packet, callID, 0, nil, "")
+		errorCode = protocol.Invite(fmt.Errorf("Failed to read idGathering from parameters. %s", err.Error()), packet, callID, 0, nil, "")
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -41,7 +36,7 @@ func (protocol *Protocol) handleInvite(packet nex.PacketInterface) {
 
 	lstPrincipals, err := parametersStream.ReadListPID()
 	if err != nil {
-		errorCode = protocol.inviteHandler(fmt.Errorf("Failed to read lstPrincipals from parameters. %s", err.Error()), packet, callID, 0, nil, "")
+		errorCode = protocol.Invite(fmt.Errorf("Failed to read lstPrincipals from parameters. %s", err.Error()), packet, callID, 0, nil, "")
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -51,7 +46,7 @@ func (protocol *Protocol) handleInvite(packet nex.PacketInterface) {
 
 	strMessage, err := parametersStream.ReadString()
 	if err != nil {
-		errorCode = protocol.inviteHandler(fmt.Errorf("Failed to read strMessage from parameters. %s", err.Error()), packet, callID, 0, nil, "")
+		errorCode = protocol.Invite(fmt.Errorf("Failed to read strMessage from parameters. %s", err.Error()), packet, callID, 0, nil, "")
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -59,7 +54,7 @@ func (protocol *Protocol) handleInvite(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.inviteHandler(nil, packet, callID, idGathering, lstPrincipals, strMessage)
+	errorCode = protocol.Invite(nil, packet, callID, idGathering, lstPrincipals, strMessage)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

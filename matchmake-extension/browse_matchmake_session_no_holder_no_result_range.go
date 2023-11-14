@@ -9,15 +9,10 @@ import (
 	match_making_types "github.com/PretendoNetwork/nex-protocols-go/match-making/types"
 )
 
-// BrowseMatchmakeSessionNoHolderNoResultRange sets the BrowseMatchmakeSessionNoHolderNoResultRange handler function
-func (protocol *Protocol) BrowseMatchmakeSessionNoHolderNoResultRange(handler func(err error, packet nex.PacketInterface, callID uint32, searchCriteria *match_making_types.MatchmakeSessionSearchCriteria) uint32) {
-	protocol.browseMatchmakeSessionNoHolderNoResultRangeHandler = handler
-}
-
 func (protocol *Protocol) handleBrowseMatchmakeSessionNoHolderNoResultRange(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.browseMatchmakeSessionNoHolderNoResultRangeHandler == nil {
+	if protocol.BrowseMatchmakeSessionNoHolderNoResultRange == nil {
 		globals.Logger.Warning("MatchmakeExtension::BrowseMatchmakeSessionNoHolderNoResultRange not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -32,7 +27,7 @@ func (protocol *Protocol) handleBrowseMatchmakeSessionNoHolderNoResultRange(pack
 
 	searchCriteria, err := parametersStream.ReadStructure(match_making_types.NewMatchmakeSessionSearchCriteria())
 	if err != nil {
-		errorCode = protocol.browseMatchmakeSessionNoHolderNoResultRangeHandler(fmt.Errorf("Failed to read searchCriteria from parameters. %s", err.Error()), packet, callID, nil)
+		errorCode = protocol.BrowseMatchmakeSessionNoHolderNoResultRange(fmt.Errorf("Failed to read searchCriteria from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -40,7 +35,7 @@ func (protocol *Protocol) handleBrowseMatchmakeSessionNoHolderNoResultRange(pack
 		return
 	}
 
-	errorCode = protocol.browseMatchmakeSessionNoHolderNoResultRangeHandler(nil, packet, callID, searchCriteria.(*match_making_types.MatchmakeSessionSearchCriteria))
+	errorCode = protocol.BrowseMatchmakeSessionNoHolderNoResultRange(nil, packet, callID, searchCriteria.(*match_making_types.MatchmakeSessionSearchCriteria))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

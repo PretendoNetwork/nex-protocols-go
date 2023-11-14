@@ -8,15 +8,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// ReportNATProperties sets the ReportNATProperties handler function
-func (protocol *Protocol) ReportNATProperties(handler func(err error, packet nex.PacketInterface, callID uint32, natmapping uint32, natfiltering uint32, rtt uint32) uint32) {
-	protocol.reportNATPropertiesHandler = handler
-}
-
 func (protocol *Protocol) handleReportNATProperties(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.reportNATPropertiesHandler == nil {
+	if protocol.ReportNATProperties == nil {
 		globals.Logger.Warning("NATTraversal::ReportNATProperties not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -31,7 +26,7 @@ func (protocol *Protocol) handleReportNATProperties(packet nex.PacketInterface) 
 
 	natmapping, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.reportNATPropertiesHandler(fmt.Errorf("Failed to read natmapping from parameters. %s", err.Error()), packet, callID, 0, 0, 0)
+		errorCode = protocol.ReportNATProperties(fmt.Errorf("Failed to read natmapping from parameters. %s", err.Error()), packet, callID, 0, 0, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -41,7 +36,7 @@ func (protocol *Protocol) handleReportNATProperties(packet nex.PacketInterface) 
 
 	natfiltering, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.reportNATPropertiesHandler(fmt.Errorf("Failed to read natfiltering from parameters. %s", err.Error()), packet, callID, 0, 0, 0)
+		errorCode = protocol.ReportNATProperties(fmt.Errorf("Failed to read natfiltering from parameters. %s", err.Error()), packet, callID, 0, 0, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -51,7 +46,7 @@ func (protocol *Protocol) handleReportNATProperties(packet nex.PacketInterface) 
 
 	rtt, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.reportNATPropertiesHandler(fmt.Errorf("Failed to read rtt from parameters. %s", err.Error()), packet, callID, 0, 0, 0)
+		errorCode = protocol.ReportNATProperties(fmt.Errorf("Failed to read rtt from parameters. %s", err.Error()), packet, callID, 0, 0, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -59,7 +54,7 @@ func (protocol *Protocol) handleReportNATProperties(packet nex.PacketInterface) 
 		return
 	}
 
-	errorCode = protocol.reportNATPropertiesHandler(nil, packet, callID, natmapping, natfiltering, rtt)
+	errorCode = protocol.ReportNATProperties(nil, packet, callID, natmapping, natfiltering, rtt)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

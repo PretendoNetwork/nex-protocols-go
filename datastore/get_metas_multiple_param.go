@@ -9,15 +9,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// GetMetasMultipleParam sets the GetMetasMultipleParam handler function
-func (protocol *Protocol) GetMetasMultipleParam(handler func(err error, packet nex.PacketInterface, callID uint32, params []*datastore_types.DataStoreGetMetaParam) uint32) {
-	protocol.getMetasMultipleParamHandler = handler
-}
-
 func (protocol *Protocol) handleGetMetasMultipleParam(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.getMetasMultipleParamHandler == nil {
+	if protocol.GetMetasMultipleParam == nil {
 		globals.Logger.Warning("DataStore::GetMetasMultipleParam not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -32,7 +27,7 @@ func (protocol *Protocol) handleGetMetasMultipleParam(packet nex.PacketInterface
 
 	params, err := parametersStream.ReadListStructure(datastore_types.NewDataStoreGetMetaParam())
 	if err != nil {
-		errorCode = protocol.getMetasMultipleParamHandler(fmt.Errorf("Failed to read params from parameters. %s", err.Error()), packet, callID, nil)
+		errorCode = protocol.GetMetasMultipleParam(fmt.Errorf("Failed to read params from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -40,7 +35,7 @@ func (protocol *Protocol) handleGetMetasMultipleParam(packet nex.PacketInterface
 		return
 	}
 
-	errorCode = protocol.getMetasMultipleParamHandler(nil, packet, callID, params.([]*datastore_types.DataStoreGetMetaParam))
+	errorCode = protocol.GetMetasMultipleParam(nil, packet, callID, params.([]*datastore_types.DataStoreGetMetaParam))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

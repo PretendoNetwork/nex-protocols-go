@@ -9,15 +9,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// AddBlackList sets the AddBlackList handler function
-func (protocol *Protocol) AddBlackList(handler func(err error, packet nex.PacketInterface, callID uint32, blacklistedPrincipal *friends_wiiu_types.BlacklistedPrincipal) uint32) {
-	protocol.addBlackListHandler = handler
-}
-
 func (protocol *Protocol) handleAddBlackList(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.addBlackListHandler == nil {
+	if protocol.AddBlackList == nil {
 		globals.Logger.Warning("FriendsWiiU::AddBlackList not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -32,7 +27,7 @@ func (protocol *Protocol) handleAddBlackList(packet nex.PacketInterface) {
 
 	blacklistedPrincipal, err := parametersStream.ReadStructure(friends_wiiu_types.NewBlacklistedPrincipal())
 	if err != nil {
-		errorCode = protocol.addBlackListHandler(fmt.Errorf("Failed to read blacklistedPrincipal from parameters. %s", err.Error()), packet, callID, nil)
+		errorCode = protocol.AddBlackList(fmt.Errorf("Failed to read blacklistedPrincipal from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -40,7 +35,7 @@ func (protocol *Protocol) handleAddBlackList(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.addBlackListHandler(nil, packet, callID, blacklistedPrincipal.(*friends_wiiu_types.BlacklistedPrincipal))
+	errorCode = protocol.AddBlackList(nil, packet, callID, blacklistedPrincipal.(*friends_wiiu_types.BlacklistedPrincipal))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

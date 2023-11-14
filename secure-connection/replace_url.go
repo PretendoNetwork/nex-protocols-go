@@ -8,15 +8,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// ReplaceURL sets the ReplaceURL handler function
-func (protocol *Protocol) ReplaceURL(handler func(err error, packet nex.PacketInterface, callID uint32, target *nex.StationURL, url *nex.StationURL) uint32) {
-	protocol.replaceURLHandler = handler
-}
-
 func (protocol *Protocol) handleReplaceURL(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.replaceURLHandler == nil {
+	if protocol.ReplaceURL == nil {
 		globals.Logger.Warning("SecureConnection::ReplaceURL not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -31,7 +26,7 @@ func (protocol *Protocol) handleReplaceURL(packet nex.PacketInterface) {
 
 	target, err := parametersStream.ReadStationURL()
 	if err != nil {
-		errorCode = protocol.replaceURLHandler(fmt.Errorf("Failed to read target from parameters. %s", err.Error()), packet, callID, nil, nil)
+		errorCode = protocol.ReplaceURL(fmt.Errorf("Failed to read target from parameters. %s", err.Error()), packet, callID, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -41,7 +36,7 @@ func (protocol *Protocol) handleReplaceURL(packet nex.PacketInterface) {
 
 	url, err := parametersStream.ReadStationURL()
 	if err != nil {
-		errorCode = protocol.replaceURLHandler(fmt.Errorf("Failed to read url from parameters. %s", err.Error()), packet, callID, nil, nil)
+		errorCode = protocol.ReplaceURL(fmt.Errorf("Failed to read url from parameters. %s", err.Error()), packet, callID, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -49,7 +44,7 @@ func (protocol *Protocol) handleReplaceURL(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.replaceURLHandler(nil, packet, callID, target, url)
+	errorCode = protocol.ReplaceURL(nil, packet, callID, target, url)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

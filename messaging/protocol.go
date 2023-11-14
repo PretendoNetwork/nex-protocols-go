@@ -40,15 +40,15 @@ const (
 
 // Protocol stores all the RMC method handlers for the Messaging protocol and listens for requests
 type Protocol struct {
-	Server                                nex.ServerInterface
-	deliverMessageHandler                 func(err error, packet nex.PacketInterface, callID uint32, oUserMessage *nex.DataHolder) uint32
-	getNumberOfMessagesHandler            func(err error, packet nex.PacketInterface, callID uint32, recipient *messaging_types.MessageRecipient) uint32
-	getMessagesHeadersHandler             func(err error, packet nex.PacketInterface, callID uint32, recipient *messaging_types.MessageRecipient, resultRange *nex.ResultRange) uint32
-	retrieveAllMessagesWithinRangeHandler func(err error, packet nex.PacketInterface, callID uint32, recipient *messaging_types.MessageRecipient, resultRange *nex.ResultRange) uint32
-	retrieveMessagesHandler               func(err error, packet nex.PacketInterface, callID uint32, recipient *messaging_types.MessageRecipient, lstMsgIDs []uint32, bLeaveOnServer bool) uint32
-	deleteMessagesHandler                 func(err error, packet nex.PacketInterface, callID uint32, recipient *messaging_types.MessageRecipient, lstMessagesToDelete []uint32) uint32
-	deleteAllMessagesHandler              func(err error, packet nex.PacketInterface, callID uint32, recipient *messaging_types.MessageRecipient) uint32
-	deliverMessageMultiTargetHandler      func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) uint32 // TODO - Unknown request/response format
+	Server                         nex.ServerInterface
+	DeliverMessage                 func(err error, packet nex.PacketInterface, callID uint32, oUserMessage *nex.DataHolder) uint32
+	GetNumberOfMessages            func(err error, packet nex.PacketInterface, callID uint32, recipient *messaging_types.MessageRecipient) uint32
+	GetMessagesHeaders             func(err error, packet nex.PacketInterface, callID uint32, recipient *messaging_types.MessageRecipient, resultRange *nex.ResultRange) uint32
+	RetrieveAllMessagesWithinRange func(err error, packet nex.PacketInterface, callID uint32, recipient *messaging_types.MessageRecipient, resultRange *nex.ResultRange) uint32
+	RetrieveMessages               func(err error, packet nex.PacketInterface, callID uint32, recipient *messaging_types.MessageRecipient, lstMsgIDs []uint32, bLeaveOnServer bool) uint32
+	DeleteMessages                 func(err error, packet nex.PacketInterface, callID uint32, recipient *messaging_types.MessageRecipient, lstMessagesToDelete []uint32) uint32
+	DeleteAllMessages              func(err error, packet nex.PacketInterface, callID uint32, recipient *messaging_types.MessageRecipient) uint32
+	DeliverMessageMultiTarget      func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) uint32 // TODO - Unknown request/response format
 }
 
 // Setup initializes the protocol

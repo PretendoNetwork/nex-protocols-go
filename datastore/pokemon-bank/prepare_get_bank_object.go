@@ -8,15 +8,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// PrepareGetBankObject sets the PrepareGetBankObject handler function
-func (protocol *Protocol) PrepareGetBankObject(handler func(err error, packet nex.PacketInterface, callID uint32, slotID uint16, applicationID uint16) uint32) {
-	protocol.prepareGetBankObjectHandler = handler
-}
-
 func (protocol *Protocol) handlePrepareGetBankObject(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.prepareGetBankObjectHandler == nil {
+	if protocol.PrepareGetBankObject == nil {
 		globals.Logger.Warning("DataStorePokemonBank::PrepareGetBankObject not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -31,7 +26,7 @@ func (protocol *Protocol) handlePrepareGetBankObject(packet nex.PacketInterface)
 
 	slotID, err := parametersStream.ReadUInt16LE()
 	if err != nil {
-		errorCode = protocol.prepareGetBankObjectHandler(fmt.Errorf("Failed to read slotID from parameters. %s", err.Error()), packet, callID, 0, 0)
+		errorCode = protocol.PrepareGetBankObject(fmt.Errorf("Failed to read slotID from parameters. %s", err.Error()), packet, callID, 0, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -41,7 +36,7 @@ func (protocol *Protocol) handlePrepareGetBankObject(packet nex.PacketInterface)
 
 	applicationID, err := parametersStream.ReadUInt16LE()
 	if err != nil {
-		errorCode = protocol.prepareGetBankObjectHandler(fmt.Errorf("Failed to read applicationID from parameters. %s", err.Error()), packet, callID, 0, 0)
+		errorCode = protocol.PrepareGetBankObject(fmt.Errorf("Failed to read applicationID from parameters. %s", err.Error()), packet, callID, 0, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -49,7 +44,7 @@ func (protocol *Protocol) handlePrepareGetBankObject(packet nex.PacketInterface)
 		return
 	}
 
-	errorCode = protocol.prepareGetBankObjectHandler(nil, packet, callID, slotID, applicationID)
+	errorCode = protocol.PrepareGetBankObject(nil, packet, callID, slotID, applicationID)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

@@ -9,15 +9,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// GetSpecificMeta sets the GetSpecificMeta handler function
-func (protocol *Protocol) GetSpecificMeta(handler func(err error, packet nex.PacketInterface, callID uint32, param *datastore_types.DataStoreGetSpecificMetaParam) uint32) {
-	protocol.getSpecificMetaHandler = handler
-}
-
 func (protocol *Protocol) handleGetSpecificMeta(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.getSpecificMetaHandler == nil {
+	if protocol.GetSpecificMeta == nil {
 		globals.Logger.Warning("DataStore::GetSpecificMeta not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -32,7 +27,7 @@ func (protocol *Protocol) handleGetSpecificMeta(packet nex.PacketInterface) {
 
 	param, err := parametersStream.ReadStructure(datastore_types.NewDataStoreGetSpecificMetaParam())
 	if err != nil {
-		errorCode = protocol.getSpecificMetaHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
+		errorCode = protocol.GetSpecificMeta(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -40,7 +35,7 @@ func (protocol *Protocol) handleGetSpecificMeta(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.getSpecificMetaHandler(nil, packet, callID, param.(*datastore_types.DataStoreGetSpecificMetaParam))
+	errorCode = protocol.GetSpecificMeta(nil, packet, callID, param.(*datastore_types.DataStoreGetSpecificMetaParam))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

@@ -8,15 +8,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// AddParticipants sets the AddParticipants handler function
-func (protocol *Protocol) AddParticipants(handler func(err error, packet nex.PacketInterface, callID uint32, idGathering uint32, lstPrincipals []*nex.PID, strMessage string) uint32) {
-	protocol.addParticipantsHandler = handler
-}
-
 func (protocol *Protocol) handleAddParticipants(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.addParticipantsHandler == nil {
+	if protocol.AddParticipants == nil {
 		globals.Logger.Warning("MatchMaking::AddParticipants not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -31,7 +26,7 @@ func (protocol *Protocol) handleAddParticipants(packet nex.PacketInterface) {
 
 	idGathering, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.addParticipantsHandler(fmt.Errorf("Failed to read idGathering from parameters. %s", err.Error()), packet, callID, 0, nil, "")
+		errorCode = protocol.AddParticipants(fmt.Errorf("Failed to read idGathering from parameters. %s", err.Error()), packet, callID, 0, nil, "")
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -41,7 +36,7 @@ func (protocol *Protocol) handleAddParticipants(packet nex.PacketInterface) {
 
 	lstPrincipals, err := parametersStream.ReadListPID()
 	if err != nil {
-		errorCode = protocol.addParticipantsHandler(fmt.Errorf("Failed to read lstPrincipals from parameters. %s", err.Error()), packet, callID, 0, nil, "")
+		errorCode = protocol.AddParticipants(fmt.Errorf("Failed to read lstPrincipals from parameters. %s", err.Error()), packet, callID, 0, nil, "")
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -51,7 +46,7 @@ func (protocol *Protocol) handleAddParticipants(packet nex.PacketInterface) {
 
 	strMessage, err := parametersStream.ReadString()
 	if err != nil {
-		errorCode = protocol.addParticipantsHandler(fmt.Errorf("Failed to read strMessage from parameters. %s", err.Error()), packet, callID, 0, nil, "")
+		errorCode = protocol.AddParticipants(fmt.Errorf("Failed to read strMessage from parameters. %s", err.Error()), packet, callID, 0, nil, "")
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -59,7 +54,7 @@ func (protocol *Protocol) handleAddParticipants(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.addParticipantsHandler(nil, packet, callID, idGathering, lstPrincipals, strMessage)
+	errorCode = protocol.AddParticipants(nil, packet, callID, idGathering, lstPrincipals, strMessage)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

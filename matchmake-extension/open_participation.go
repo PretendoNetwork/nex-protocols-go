@@ -8,15 +8,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// OpenParticipation sets the OpenParticipation handler function
-func (protocol *Protocol) OpenParticipation(handler func(err error, packet nex.PacketInterface, callID uint32, gid uint32) uint32) {
-	protocol.openParticipationHandler = handler
-}
-
 func (protocol *Protocol) handleOpenParticipation(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.openParticipationHandler == nil {
+	if protocol.OpenParticipation == nil {
 		globals.Logger.Warning("MatchmakeExtension::OpenParticipation not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -31,7 +26,7 @@ func (protocol *Protocol) handleOpenParticipation(packet nex.PacketInterface) {
 
 	gid, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.openParticipationHandler(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), packet, callID, 0)
+		errorCode = protocol.OpenParticipation(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), packet, callID, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -39,7 +34,7 @@ func (protocol *Protocol) handleOpenParticipation(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.openParticipationHandler(nil, packet, callID, gid)
+	errorCode = protocol.OpenParticipation(nil, packet, callID, gid)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

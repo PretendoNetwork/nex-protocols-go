@@ -9,15 +9,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// ChangePlayablePlatform sets the ChangePlayablePlatform handler function
-func (protocol *Protocol) ChangePlayablePlatform(handler func(err error, packet nex.PacketInterface, callID uint32, params []*datastore_super_mario_maker_types.DataStoreChangePlayablePlatformParam) uint32) {
-	protocol.changePlayablePlatformHandler = handler
-}
-
 func (protocol *Protocol) handleChangePlayablePlatform(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.changePlayablePlatformHandler == nil {
+	if protocol.ChangePlayablePlatform == nil {
 		globals.Logger.Warning("DataStoreSuperMarioMaker::ChangePlayablePlatform not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -32,7 +27,7 @@ func (protocol *Protocol) handleChangePlayablePlatform(packet nex.PacketInterfac
 
 	params, err := parametersStream.ReadListStructure(datastore_super_mario_maker_types.NewDataStoreChangePlayablePlatformParam())
 	if err != nil {
-		errorCode = protocol.changePlayablePlatformHandler(fmt.Errorf("Failed to read params from parameters. %s", err.Error()), packet, callID, nil)
+		errorCode = protocol.ChangePlayablePlatform(fmt.Errorf("Failed to read params from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -40,7 +35,7 @@ func (protocol *Protocol) handleChangePlayablePlatform(packet nex.PacketInterfac
 		return
 	}
 
-	errorCode = protocol.changePlayablePlatformHandler(nil, packet, callID, params.([]*datastore_super_mario_maker_types.DataStoreChangePlayablePlatformParam))
+	errorCode = protocol.ChangePlayablePlatform(nil, packet, callID, params.([]*datastore_super_mario_maker_types.DataStoreChangePlayablePlatformParam))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

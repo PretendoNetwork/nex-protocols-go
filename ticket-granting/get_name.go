@@ -8,15 +8,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// GetName sets the GetName handler function
-func (protocol *Protocol) GetName(handler func(err error, packet nex.PacketInterface, callID uint32, userPID *nex.PID) uint32) {
-	protocol.getNameHandler = handler
-}
-
 func (protocol *Protocol) handleGetName(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.getNameHandler == nil {
+	if protocol.GetName == nil {
 		globals.Logger.Warning("TicketGranting::GetName not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -31,7 +26,7 @@ func (protocol *Protocol) handleGetName(packet nex.PacketInterface) {
 
 	id, err := parametersStream.ReadPID()
 	if err != nil {
-		errorCode = protocol.getNameHandler(fmt.Errorf("Failed to read id from parameters. %s", err.Error()), packet, callID, nil)
+		errorCode = protocol.GetName(fmt.Errorf("Failed to read id from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -39,7 +34,7 @@ func (protocol *Protocol) handleGetName(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.getNameHandler(nil, packet, callID, id)
+	errorCode = protocol.GetName(nil, packet, callID, id)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

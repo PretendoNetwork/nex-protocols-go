@@ -8,15 +8,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// DeleteAccount sets the DeleteAccount handler function
-func (protocol *Protocol) DeleteAccount(handler func(err error, packet nex.PacketInterface, callID uint32, idPrincipal *nex.PID) uint32) {
-	protocol.deleteAccountHandler = handler
-}
-
 func (protocol *Protocol) handleDeleteAccount(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.deleteAccountHandler == nil {
+	if protocol.DeleteAccount == nil {
 		globals.Logger.Warning("AccountManagement::DeleteAccount not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -31,7 +26,7 @@ func (protocol *Protocol) handleDeleteAccount(packet nex.PacketInterface) {
 
 	idPrincipal, err := parametersStream.ReadPID()
 	if err != nil {
-		errorCode = protocol.deleteAccountHandler(fmt.Errorf("Failed to read idPrincipal from parameters. %s", err.Error()), packet, callID, nil)
+		errorCode = protocol.DeleteAccount(fmt.Errorf("Failed to read idPrincipal from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -39,7 +34,7 @@ func (protocol *Protocol) handleDeleteAccount(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.deleteAccountHandler(nil, packet, callID, idPrincipal)
+	errorCode = protocol.DeleteAccount(nil, packet, callID, idPrincipal)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

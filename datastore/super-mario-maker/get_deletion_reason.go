@@ -8,15 +8,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// GetDeletionReason sets the GetDeletionReason handler function
-func (protocol *Protocol) GetDeletionReason(handler func(err error, packet nex.PacketInterface, callID uint32, dataIDLst []uint64) uint32) {
-	protocol.getDeletionReasonHandler = handler
-}
-
 func (protocol *Protocol) handleGetDeletionReason(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.getDeletionReasonHandler == nil {
+	if protocol.GetDeletionReason == nil {
 		globals.Logger.Warning("DataStoreSuperMarioMaker::GetDeletionReason not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -31,7 +26,7 @@ func (protocol *Protocol) handleGetDeletionReason(packet nex.PacketInterface) {
 
 	dataIDLst, err := parametersStream.ReadListUInt64LE()
 	if err != nil {
-		errorCode = protocol.getDeletionReasonHandler(fmt.Errorf("Failed to read dataIDLst from parameters. %s", err.Error()), packet, callID, nil)
+		errorCode = protocol.GetDeletionReason(fmt.Errorf("Failed to read dataIDLst from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -39,7 +34,7 @@ func (protocol *Protocol) handleGetDeletionReason(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.getDeletionReasonHandler(nil, packet, callID, dataIDLst)
+	errorCode = protocol.GetDeletionReason(nil, packet, callID, dataIDLst)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

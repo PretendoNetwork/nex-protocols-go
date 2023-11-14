@@ -8,15 +8,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// GetList sets the GetList handler function
-func (protocol *Protocol) GetList(handler func(err error, packet nex.PacketInterface, callID uint32, byRelationship uint8, bReversed bool) uint32) {
-	protocol.getListHandler = handler
-}
-
 func (protocol *Protocol) handleGetList(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.getListHandler == nil {
+	if protocol.GetList == nil {
 		globals.Logger.Warning("Friends::GetList not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -31,7 +26,7 @@ func (protocol *Protocol) handleGetList(packet nex.PacketInterface) {
 
 	byRelationship, err := parametersStream.ReadUInt8()
 	if err != nil {
-		errorCode = protocol.getListHandler(fmt.Errorf("Failed to read byRelationship from parameters. %s", err.Error()), packet, callID, 0, false)
+		errorCode = protocol.GetList(fmt.Errorf("Failed to read byRelationship from parameters. %s", err.Error()), packet, callID, 0, false)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -41,7 +36,7 @@ func (protocol *Protocol) handleGetList(packet nex.PacketInterface) {
 
 	bReversed, err := parametersStream.ReadBool()
 	if err != nil {
-		errorCode = protocol.getListHandler(fmt.Errorf("Failed to read bReversed from parameters. %s", err.Error()), packet, callID, 0, false)
+		errorCode = protocol.GetList(fmt.Errorf("Failed to read bReversed from parameters. %s", err.Error()), packet, callID, 0, false)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -49,7 +44,7 @@ func (protocol *Protocol) handleGetList(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.getListHandler(nil, packet, callID, byRelationship, bReversed)
+	errorCode = protocol.GetList(nil, packet, callID, byRelationship, bReversed)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

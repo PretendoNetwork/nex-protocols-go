@@ -8,15 +8,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// FindByNameRegex sets the FindByNameRegex handler function
-func (protocol *Protocol) FindByNameRegex(handler func(err error, packet nex.PacketInterface, callID uint32, uiGroups uint32, strRegex string, resultRange *nex.ResultRange) uint32) {
-	protocol.findByNameRegexHandler = handler
-}
-
 func (protocol *Protocol) handleFindByNameRegex(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.findByNameRegexHandler == nil {
+	if protocol.FindByNameRegex == nil {
 		globals.Logger.Warning("AccountManagement::FindByNameRegex not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -31,7 +26,7 @@ func (protocol *Protocol) handleFindByNameRegex(packet nex.PacketInterface) {
 
 	uiGroups, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.findByNameRegexHandler(fmt.Errorf("Failed to read uiGroups from parameters. %s", err.Error()), packet, callID, 0, "", nil)
+		errorCode = protocol.FindByNameRegex(fmt.Errorf("Failed to read uiGroups from parameters. %s", err.Error()), packet, callID, 0, "", nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -41,7 +36,7 @@ func (protocol *Protocol) handleFindByNameRegex(packet nex.PacketInterface) {
 
 	strRegex, err := parametersStream.ReadString()
 	if err != nil {
-		errorCode = protocol.findByNameRegexHandler(fmt.Errorf("Failed to read strRegex from parameters. %s", err.Error()), packet, callID, 0, "", nil)
+		errorCode = protocol.FindByNameRegex(fmt.Errorf("Failed to read strRegex from parameters. %s", err.Error()), packet, callID, 0, "", nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -51,7 +46,7 @@ func (protocol *Protocol) handleFindByNameRegex(packet nex.PacketInterface) {
 
 	resultRange, err := parametersStream.ReadStructure(nex.NewResultRange())
 	if err != nil {
-		errorCode = protocol.findByNameRegexHandler(fmt.Errorf("Failed to read resultRange from parameters. %s", err.Error()), packet, callID, 0, "", nil)
+		errorCode = protocol.FindByNameRegex(fmt.Errorf("Failed to read resultRange from parameters. %s", err.Error()), packet, callID, 0, "", nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -59,7 +54,7 @@ func (protocol *Protocol) handleFindByNameRegex(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.findByNameRegexHandler(nil, packet, callID, uiGroups, strRegex, resultRange.(*nex.ResultRange))
+	errorCode = protocol.FindByNameRegex(nil, packet, callID, uiGroups, strRegex, resultRange.(*nex.ResultRange))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

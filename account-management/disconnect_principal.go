@@ -8,15 +8,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// DisconnectPrincipal sets the DisconnectPrincipal handler function
-func (protocol *Protocol) DisconnectPrincipal(handler func(err error, packet nex.PacketInterface, callID uint32, idPrincipal *nex.PID) uint32) {
-	protocol.disconnectPrincipalHandler = handler
-}
-
 func (protocol *Protocol) handleDisconnectPrincipal(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.disconnectPrincipalHandler == nil {
+	if protocol.DisconnectPrincipal == nil {
 		globals.Logger.Warning("AccountManagement::DisconnectPrincipal not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -31,7 +26,7 @@ func (protocol *Protocol) handleDisconnectPrincipal(packet nex.PacketInterface) 
 
 	idPrincipal, err := parametersStream.ReadPID()
 	if err != nil {
-		errorCode = protocol.disconnectPrincipalHandler(fmt.Errorf("Failed to read idPrincipal from parameters. %s", err.Error()), packet, callID, nil)
+		errorCode = protocol.DisconnectPrincipal(fmt.Errorf("Failed to read idPrincipal from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -39,7 +34,7 @@ func (protocol *Protocol) handleDisconnectPrincipal(packet nex.PacketInterface) 
 		return
 	}
 
-	errorCode = protocol.disconnectPrincipalHandler(nil, packet, callID, idPrincipal)
+	errorCode = protocol.DisconnectPrincipal(nil, packet, callID, idPrincipal)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

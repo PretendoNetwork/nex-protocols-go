@@ -9,15 +9,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// IsActiveGame sets the IsActiveGame handler function
-func (protocol *Protocol) IsActiveGame(handler func(err error, packet nex.PacketInterface, callID uint32, pids []*nex.PID, gameKey *friends_3ds_types.GameKey) uint32) {
-	protocol.isActiveGameHandler = handler
-}
-
 func (protocol *Protocol) handleIsActiveGame(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.isActiveGameHandler == nil {
+	if protocol.IsActiveGame == nil {
 		globals.Logger.Warning("Friends3DS::IsActiveGame not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -32,7 +27,7 @@ func (protocol *Protocol) handleIsActiveGame(packet nex.PacketInterface) {
 
 	pids, err := parametersStream.ReadListPID()
 	if err != nil {
-		errorCode = protocol.isActiveGameHandler(fmt.Errorf("Failed to read pids from parameters. %s", err.Error()), packet, callID, nil, nil)
+		errorCode = protocol.IsActiveGame(fmt.Errorf("Failed to read pids from parameters. %s", err.Error()), packet, callID, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -42,7 +37,7 @@ func (protocol *Protocol) handleIsActiveGame(packet nex.PacketInterface) {
 
 	gameKey, err := parametersStream.ReadStructure(friends_3ds_types.NewGameKey())
 	if err != nil {
-		errorCode = protocol.isActiveGameHandler(fmt.Errorf("Failed to read gameKey from parameters. %s", err.Error()), packet, callID, nil, nil)
+		errorCode = protocol.IsActiveGame(fmt.Errorf("Failed to read gameKey from parameters. %s", err.Error()), packet, callID, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -50,7 +45,7 @@ func (protocol *Protocol) handleIsActiveGame(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.isActiveGameHandler(nil, packet, callID, pids, gameKey.(*friends_3ds_types.GameKey))
+	errorCode = protocol.IsActiveGame(nil, packet, callID, pids, gameKey.(*friends_3ds_types.GameKey))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

@@ -8,15 +8,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// RemoveFriendByPrincipalID sets the RemoveFriendByPrincipalID handler function
-func (protocol *Protocol) RemoveFriendByPrincipalID(handler func(err error, packet nex.PacketInterface, callID uint32, pid *nex.PID) uint32) {
-	protocol.removeFriendByPrincipalIDHandler = handler
-}
-
 func (protocol *Protocol) handleRemoveFriendByPrincipalID(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.removeFriendByPrincipalIDHandler == nil {
+	if protocol.RemoveFriendByPrincipalID == nil {
 		globals.Logger.Warning("Friends3DS::RemoveFriendByPrincipalID not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -31,7 +26,7 @@ func (protocol *Protocol) handleRemoveFriendByPrincipalID(packet nex.PacketInter
 
 	pid, err := parametersStream.ReadPID()
 	if err != nil {
-		errorCode = protocol.removeFriendByPrincipalIDHandler(fmt.Errorf("Failed to read pid from parameters. %s", err.Error()), packet, callID, nil)
+		errorCode = protocol.RemoveFriendByPrincipalID(fmt.Errorf("Failed to read pid from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -39,7 +34,7 @@ func (protocol *Protocol) handleRemoveFriendByPrincipalID(packet nex.PacketInter
 		return
 	}
 
-	errorCode = protocol.removeFriendByPrincipalIDHandler(nil, packet, callID, pid)
+	errorCode = protocol.RemoveFriendByPrincipalID(nil, packet, callID, pid)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

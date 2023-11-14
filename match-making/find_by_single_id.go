@@ -8,15 +8,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// FindBySingleID sets the FindBySingleID handler function
-func (protocol *Protocol) FindBySingleID(handler func(err error, packet nex.PacketInterface, callID uint32, id uint32) uint32) {
-	protocol.findBySingleIDHandler = handler
-}
-
 func (protocol *Protocol) handleFindBySingleID(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.findBySingleIDHandler == nil {
+	if protocol.FindBySingleID == nil {
 		globals.Logger.Warning("MatchMaking::FindBySingleID not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -31,7 +26,7 @@ func (protocol *Protocol) handleFindBySingleID(packet nex.PacketInterface) {
 
 	id, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.findBySingleIDHandler(fmt.Errorf("Failed to read id from parameters. %s", err.Error()), packet, callID, 0)
+		errorCode = protocol.FindBySingleID(fmt.Errorf("Failed to read id from parameters. %s", err.Error()), packet, callID, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -39,7 +34,7 @@ func (protocol *Protocol) handleFindBySingleID(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.findBySingleIDHandler(nil, packet, callID, id)
+	errorCode = protocol.FindBySingleID(nil, packet, callID, id)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

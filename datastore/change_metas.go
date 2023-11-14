@@ -9,15 +9,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// ChangeMetas sets the ChangeMetas handler function
-func (protocol *Protocol) ChangeMetas(handler func(err error, packet nex.PacketInterface, callID uint32, dataIDs []uint64, params []*datastore_types.DataStoreChangeMetaParam, transactional bool) uint32) {
-	protocol.changeMetasHandler = handler
-}
-
 func (protocol *Protocol) handleChangeMetas(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.changeMetasHandler == nil {
+	if protocol.ChangeMetas == nil {
 		globals.Logger.Warning("DataStore::ChangeMetas not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -32,7 +27,7 @@ func (protocol *Protocol) handleChangeMetas(packet nex.PacketInterface) {
 
 	dataIDs, err := parametersStream.ReadListUInt64LE()
 	if err != nil {
-		errorCode = protocol.changeMetasHandler(fmt.Errorf("Failed to read dataIDs from parameters. %s", err.Error()), packet, callID, nil, nil, false)
+		errorCode = protocol.ChangeMetas(fmt.Errorf("Failed to read dataIDs from parameters. %s", err.Error()), packet, callID, nil, nil, false)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -42,7 +37,7 @@ func (protocol *Protocol) handleChangeMetas(packet nex.PacketInterface) {
 
 	params, err := parametersStream.ReadListStructure(datastore_types.NewDataStoreChangeMetaParam())
 	if err != nil {
-		errorCode = protocol.changeMetasHandler(fmt.Errorf("Failed to read params from parameters. %s", err.Error()), packet, callID, nil, nil, false)
+		errorCode = protocol.ChangeMetas(fmt.Errorf("Failed to read params from parameters. %s", err.Error()), packet, callID, nil, nil, false)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -52,7 +47,7 @@ func (protocol *Protocol) handleChangeMetas(packet nex.PacketInterface) {
 
 	transactional, err := parametersStream.ReadBool()
 	if err != nil {
-		errorCode = protocol.changeMetasHandler(fmt.Errorf("Failed to read transactional from parameters. %s", err.Error()), packet, callID, nil, nil, false)
+		errorCode = protocol.ChangeMetas(fmt.Errorf("Failed to read transactional from parameters. %s", err.Error()), packet, callID, nil, nil, false)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -60,7 +55,7 @@ func (protocol *Protocol) handleChangeMetas(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.changeMetasHandler(nil, packet, callID, dataIDs, params.([]*datastore_types.DataStoreChangeMetaParam), transactional)
+	errorCode = protocol.ChangeMetas(nil, packet, callID, dataIDs, params.([]*datastore_types.DataStoreChangeMetaParam), transactional)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

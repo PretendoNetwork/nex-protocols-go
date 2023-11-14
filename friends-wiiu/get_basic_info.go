@@ -8,15 +8,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// GetBasicInfo sets the GetBasicInfo handler function
-func (protocol *Protocol) GetBasicInfo(handler func(err error, packet nex.PacketInterface, callID uint32, pids []uint32) uint32) {
-	protocol.getBasicInfoHandler = handler
-}
-
 func (protocol *Protocol) handleGetBasicInfo(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.getBasicInfoHandler == nil {
+	if protocol.GetBasicInfo == nil {
 		globals.Logger.Warning("FriendsWiiU::GetBasicInfo not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -29,9 +24,9 @@ func (protocol *Protocol) handleGetBasicInfo(packet nex.PacketInterface) {
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	pids, err := parametersStream.ReadListUInt32LE()
+	pids, err := parametersStream.ReadListPID()
 	if err != nil {
-		errorCode = protocol.getBasicInfoHandler(fmt.Errorf("Failed to read pids from parameters. %s", err.Error()), packet, callID, nil)
+		errorCode = protocol.GetBasicInfo(fmt.Errorf("Failed to read pids from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -39,7 +34,7 @@ func (protocol *Protocol) handleGetBasicInfo(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.getBasicInfoHandler(nil, packet, callID, pids)
+	errorCode = protocol.GetBasicInfo(nil, packet, callID, pids)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

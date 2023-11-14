@@ -8,15 +8,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// FindByOwner sets the FindByOwner handler function
-func (protocol *Protocol) FindByOwner(handler func(err error, packet nex.PacketInterface, callID uint32, id *nex.PID, resultRange *nex.ResultRange) uint32) {
-	protocol.findByOwnerHandler = handler
-}
-
 func (protocol *Protocol) handleFindByOwner(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.findByOwnerHandler == nil {
+	if protocol.FindByOwner == nil {
 		globals.Logger.Warning("MatchMaking::FindByOwner not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -31,7 +26,7 @@ func (protocol *Protocol) handleFindByOwner(packet nex.PacketInterface) {
 
 	id, err := parametersStream.ReadPID()
 	if err != nil {
-		errorCode = protocol.findByOwnerHandler(fmt.Errorf("Failed to read id from parameters. %s", err.Error()), packet, callID, nil, nil)
+		errorCode = protocol.FindByOwner(fmt.Errorf("Failed to read id from parameters. %s", err.Error()), packet, callID, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -41,7 +36,7 @@ func (protocol *Protocol) handleFindByOwner(packet nex.PacketInterface) {
 
 	resultRange, err := parametersStream.ReadStructure(nex.NewResultRange())
 	if err != nil {
-		errorCode = protocol.findByOwnerHandler(fmt.Errorf("Failed to read resultRange from parameters. %s", err.Error()), packet, callID, nil, nil)
+		errorCode = protocol.FindByOwner(fmt.Errorf("Failed to read resultRange from parameters. %s", err.Error()), packet, callID, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -49,7 +44,7 @@ func (protocol *Protocol) handleFindByOwner(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.findByOwnerHandler(nil, packet, callID, id, resultRange.(*nex.ResultRange))
+	errorCode = protocol.FindByOwner(nil, packet, callID, id, resultRange.(*nex.ResultRange))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

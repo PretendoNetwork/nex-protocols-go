@@ -9,15 +9,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// TouchObject sets the TouchObject handler function
-func (protocol *Protocol) TouchObject(handler func(err error, packet nex.PacketInterface, callID uint32, param *datastore_types.DataStoreTouchObjectParam) uint32) {
-	protocol.touchObjectHandler = handler
-}
-
 func (protocol *Protocol) handleTouchObject(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.touchObjectHandler == nil {
+	if protocol.TouchObject == nil {
 		globals.Logger.Warning("DataStore::TouchObject not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -32,7 +27,7 @@ func (protocol *Protocol) handleTouchObject(packet nex.PacketInterface) {
 
 	param, err := parametersStream.ReadStructure(datastore_types.NewDataStoreTouchObjectParam())
 	if err != nil {
-		errorCode = protocol.touchObjectHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
+		errorCode = protocol.TouchObject(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -40,7 +35,7 @@ func (protocol *Protocol) handleTouchObject(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.touchObjectHandler(nil, packet, callID, param.(*datastore_types.DataStoreTouchObjectParam))
+	errorCode = protocol.TouchObject(nil, packet, callID, param.(*datastore_types.DataStoreTouchObjectParam))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

@@ -6,15 +6,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// GetCommunityCompetitionByID sets the GetCommunityCompetitionByID handler function
-func (protocol *Protocol) GetCommunityCompetitionByID(handler func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) uint32) {
-	protocol.getCommunityCompetitionByIDHandler = handler
-}
-
 func (protocol *Protocol) handleGetCommunityCompetitionByID(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.getCommunityCompetitionByIDHandler == nil {
+	if protocol.GetCommunityCompetitionByID == nil {
 		globals.Logger.Warning("MatchmakeExtensionSuperSmashBros4::GetCommunityCompetitionByID not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -26,7 +21,7 @@ func (protocol *Protocol) handleGetCommunityCompetitionByID(packet nex.PacketInt
 
 	callID := request.CallID
 
-	errorCode = protocol.getCommunityCompetitionByIDHandler(nil, packet, callID, packet.Payload())
+	errorCode = protocol.GetCommunityCompetitionByID(nil, packet, callID, packet.Payload())
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

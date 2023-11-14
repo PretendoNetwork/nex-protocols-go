@@ -8,15 +8,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// GetLastConnectionStats sets the GetLastConnectionStats handler function
-func (protocol *Protocol) GetLastConnectionStats(handler func(err error, packet nex.PacketInterface, callID uint32, idPrincipal *nex.PID) uint32) {
-	protocol.getLastConnectionStatsHandler = handler
-}
-
 func (protocol *Protocol) handleGetLastConnectionStats(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.getLastConnectionStatsHandler == nil {
+	if protocol.GetLastConnectionStats == nil {
 		globals.Logger.Warning("AccountManagement::GetLastConnectionStats not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -31,7 +26,7 @@ func (protocol *Protocol) handleGetLastConnectionStats(packet nex.PacketInterfac
 
 	idPrincipal, err := parametersStream.ReadPID()
 	if err != nil {
-		errorCode = protocol.getLastConnectionStatsHandler(fmt.Errorf("Failed to read idPrincipal from parameters. %s", err.Error()), packet, callID, nil)
+		errorCode = protocol.GetLastConnectionStats(fmt.Errorf("Failed to read idPrincipal from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -39,7 +34,7 @@ func (protocol *Protocol) handleGetLastConnectionStats(packet nex.PacketInterfac
 		return
 	}
 
-	errorCode = protocol.getLastConnectionStatsHandler(nil, packet, callID, idPrincipal)
+	errorCode = protocol.GetLastConnectionStats(nil, packet, callID, idPrincipal)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

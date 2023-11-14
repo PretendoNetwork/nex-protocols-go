@@ -8,15 +8,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// GetStringSettings sets the GetStringSettings handler function
-func (protocol *Protocol) GetStringSettings(handler func(err error, packet nex.PacketInterface, callID uint32, stringSettingIndex uint32) uint32) {
-	protocol.getStringSettingsHandler = handler
-}
-
 func (protocol *Protocol) handleGetStringSettings(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.getStringSettingsHandler == nil {
+	if protocol.GetStringSettings == nil {
 		globals.Logger.Warning("Utility::GetStringSettings not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -32,7 +27,7 @@ func (protocol *Protocol) handleGetStringSettings(packet nex.PacketInterface) {
 
 	stringSettingIndex, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.getStringSettingsHandler(fmt.Errorf("Failed to read stringSettingIndex from parameters. %s", err.Error()), packet, callID, 0)
+		errorCode = protocol.GetStringSettings(fmt.Errorf("Failed to read stringSettingIndex from parameters. %s", err.Error()), packet, callID, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -40,7 +35,7 @@ func (protocol *Protocol) handleGetStringSettings(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.getStringSettingsHandler(nil, packet, callID, stringSettingIndex)
+	errorCode = protocol.GetStringSettings(nil, packet, callID, stringSettingIndex)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

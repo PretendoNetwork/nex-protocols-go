@@ -148,51 +148,51 @@ const (
 
 // Protocol stores all the RMC method handlers for the MatchMaking protocol and listens for requests
 type Protocol struct {
-	Server                             nex.ServerInterface
-	registerGatheringHandler           func(err error, packet nex.PacketInterface, callID uint32, anyGathering *nex.DataHolder) uint32
-	unregisterGatheringHandler         func(err error, packet nex.PacketInterface, callID uint32, idGathering uint32) uint32
-	unregisterGatheringsHandler        func(err error, packet nex.PacketInterface, callID uint32, lstGatherings []uint32) uint32
-	updateGatheringHandler             func(err error, packet nex.PacketInterface, callID uint32, anyGathering *nex.DataHolder) uint32
-	inviteHandler                      func(err error, packet nex.PacketInterface, callID uint32, idGathering uint32, lstPrincipals []*nex.PID, strMessage string) uint32
-	acceptInvitationHandler            func(err error, packet nex.PacketInterface, callID uint32, idGathering uint32, strMessage string) uint32
-	declineInvitationHandler           func(err error, packet nex.PacketInterface, callID uint32, idGathering uint32, strMessage string) uint32
-	cancelInvitationHandler            func(err error, packet nex.PacketInterface, callID uint32, idGathering uint32, lstPrincipals []*nex.PID, strMessage string) uint32
-	getInvitationsSentHandler          func(err error, packet nex.PacketInterface, callID uint32, idGathering uint32) uint32
-	getInvitationsReceivedHandler      func(err error, packet nex.PacketInterface, callID uint32) uint32
-	participateHandler                 func(err error, packet nex.PacketInterface, callID uint32, idGathering uint32, strMessage string) uint32
-	cancelParticipationHandler         func(err error, packet nex.PacketInterface, callID uint32, idGathering uint32, strMessage string) uint32
-	getParticipantsHandler             func(err error, packet nex.PacketInterface, callID uint32, idGathering uint32) uint32
-	addParticipantsHandler             func(err error, packet nex.PacketInterface, callID uint32, idGathering uint32, lstPrincipals []*nex.PID, strMessage string) uint32
-	getDetailedParticipantsHandler     func(err error, packet nex.PacketInterface, callID uint32, idGathering uint32) uint32
-	getParticipantsURLsHandler         func(err error, packet nex.PacketInterface, callID uint32, idGathering uint32) uint32
-	findByTypeHandler                  func(err error, packet nex.PacketInterface, callID uint32, strType string, resultRange *nex.ResultRange) uint32
-	findByDescriptionHandler           func(err error, packet nex.PacketInterface, callID uint32, strDescription string, resultRange *nex.ResultRange) uint32
-	findByDescriptionRegexHandler      func(err error, packet nex.PacketInterface, callID uint32, strDescriptionRegex string, resultRange *nex.ResultRange) uint32
-	findByIDHandler                    func(err error, packet nex.PacketInterface, callID uint32, lstID []uint32) uint32
-	findBySingleIDHandler              func(err error, packet nex.PacketInterface, callID uint32, id uint32) uint32
-	findByOwnerHandler                 func(err error, packet nex.PacketInterface, callID uint32, id *nex.PID, resultRange *nex.ResultRange) uint32
-	findByParticipantsHandler          func(err error, packet nex.PacketInterface, callID uint32, pid []*nex.PID) uint32
-	findInvitationsHandler             func(err error, packet nex.PacketInterface, callID uint32, resultRange *nex.ResultRange) uint32
-	findBySQLQueryHandler              func(err error, packet nex.PacketInterface, callID uint32, strQuery string, resultRange *nex.ResultRange) uint32
-	launchSessionHandler               func(err error, packet nex.PacketInterface, callID uint32, idGathering uint32, strURL string) uint32
-	updateSessionURLHandler            func(err error, packet nex.PacketInterface, callID uint32, idGathering uint32, strURL string) uint32
-	getSessionURLHandler               func(err error, packet nex.PacketInterface, callID uint32, idGathering uint32) uint32
-	getStateHandler                    func(err error, packet nex.PacketInterface, callID uint32, idGathering uint32) uint32
-	setStateHandler                    func(err error, packet nex.PacketInterface, callID uint32, idGathering uint32, uiNewState uint32) uint32
-	reportStatsHandler                 func(err error, packet nex.PacketInterface, callID uint32, idGathering uint32, lstStats []*match_making_types.GatheringStats) uint32
-	getStatsHandler                    func(err error, packet nex.PacketInterface, callID uint32, idGathering uint32, lstParticipants []*nex.PID, lstColumns []byte) uint32
-	deleteGatheringHandler             func(err error, packet nex.PacketInterface, callID uint32, idGathering uint32) uint32
-	getPendingDeletionsHandler         func(err error, packet nex.PacketInterface, callID uint32, uiReason uint32, resultRange *nex.ResultRange) uint32
-	deleteFromDeletionsHandler         func(err error, packet nex.PacketInterface, callID uint32, lstDeletions []uint32) uint32
-	migrateGatheringOwnershipV1Handler func(err error, packet nex.PacketInterface, callID uint32, gid uint32, lstPotentialNewOwnersID []*nex.PID) uint32
-	findByDescriptionLikeHandler       func(err error, packet nex.PacketInterface, callID uint32, strDescriptionLike string, resultRange *nex.ResultRange) uint32
-	registerLocalURLHandler            func(err error, packet nex.PacketInterface, callID uint32, gid uint32, url *nex.StationURL) uint32
-	registerLocalURLsHandler           func(err error, packet nex.PacketInterface, callID uint32, gid uint32, lstURLs []*nex.StationURL) uint32
-	updateSessionHostV1Handler         func(err error, packet nex.PacketInterface, callID uint32, gid uint32) uint32
-	getSessionURLsHandler              func(err error, packet nex.PacketInterface, callID uint32, gid uint32) uint32
-	updateSessionHostHandler           func(err error, packet nex.PacketInterface, callID uint32, gid uint32, isMigrateOwner bool) uint32
-	updateGatheringOwnershipHandler    func(err error, packet nex.PacketInterface, callID uint32, gid uint32, participantsOnly bool) uint32
-	migrateGatheringOwnershipHandler   func(err error, packet nex.PacketInterface, callID uint32, gid uint32, lstPotentialNewOwnersID []*nex.PID, participantsOnly bool) uint32
+	Server                      nex.ServerInterface
+	RegisterGathering           func(err error, packet nex.PacketInterface, callID uint32, anyGathering *nex.DataHolder) uint32
+	UnregisterGathering         func(err error, packet nex.PacketInterface, callID uint32, idGathering uint32) uint32
+	UnregisterGatherings        func(err error, packet nex.PacketInterface, callID uint32, lstGatherings []uint32) uint32
+	UpdateGathering             func(err error, packet nex.PacketInterface, callID uint32, anyGathering *nex.DataHolder) uint32
+	Invite                      func(err error, packet nex.PacketInterface, callID uint32, idGathering uint32, lstPrincipals []*nex.PID, strMessage string) uint32
+	AcceptInvitation            func(err error, packet nex.PacketInterface, callID uint32, idGathering uint32, strMessage string) uint32
+	DeclineInvitation           func(err error, packet nex.PacketInterface, callID uint32, idGathering uint32, strMessage string) uint32
+	CancelInvitation            func(err error, packet nex.PacketInterface, callID uint32, idGathering uint32, lstPrincipals []*nex.PID, strMessage string) uint32
+	GetInvitationsSent          func(err error, packet nex.PacketInterface, callID uint32, idGathering uint32) uint32
+	GetInvitationsReceived      func(err error, packet nex.PacketInterface, callID uint32) uint32
+	Participate                 func(err error, packet nex.PacketInterface, callID uint32, idGathering uint32, strMessage string) uint32
+	CancelParticipation         func(err error, packet nex.PacketInterface, callID uint32, idGathering uint32, strMessage string) uint32
+	GetParticipants             func(err error, packet nex.PacketInterface, callID uint32, idGathering uint32) uint32
+	AddParticipants             func(err error, packet nex.PacketInterface, callID uint32, idGathering uint32, lstPrincipals []*nex.PID, strMessage string) uint32
+	GetDetailedParticipants     func(err error, packet nex.PacketInterface, callID uint32, idGathering uint32) uint32
+	GetParticipantsURLs         func(err error, packet nex.PacketInterface, callID uint32, idGathering uint32) uint32
+	FindByType                  func(err error, packet nex.PacketInterface, callID uint32, strType string, resultRange *nex.ResultRange) uint32
+	FindByDescription           func(err error, packet nex.PacketInterface, callID uint32, strDescription string, resultRange *nex.ResultRange) uint32
+	FindByDescriptionRegex      func(err error, packet nex.PacketInterface, callID uint32, strDescriptionRegex string, resultRange *nex.ResultRange) uint32
+	FindByID                    func(err error, packet nex.PacketInterface, callID uint32, lstID []uint32) uint32
+	FindBySingleID              func(err error, packet nex.PacketInterface, callID uint32, id uint32) uint32
+	FindByOwner                 func(err error, packet nex.PacketInterface, callID uint32, id *nex.PID, resultRange *nex.ResultRange) uint32
+	FindByParticipants          func(err error, packet nex.PacketInterface, callID uint32, pid []*nex.PID) uint32
+	FindInvitations             func(err error, packet nex.PacketInterface, callID uint32, resultRange *nex.ResultRange) uint32
+	FindBySQLQuery              func(err error, packet nex.PacketInterface, callID uint32, strQuery string, resultRange *nex.ResultRange) uint32
+	LaunchSession               func(err error, packet nex.PacketInterface, callID uint32, idGathering uint32, strURL string) uint32
+	UpdateSessionURL            func(err error, packet nex.PacketInterface, callID uint32, idGathering uint32, strURL string) uint32
+	GetSessionURL               func(err error, packet nex.PacketInterface, callID uint32, idGathering uint32) uint32
+	GetState                    func(err error, packet nex.PacketInterface, callID uint32, idGathering uint32) uint32
+	SetState                    func(err error, packet nex.PacketInterface, callID uint32, idGathering uint32, uiNewState uint32) uint32
+	ReportStats                 func(err error, packet nex.PacketInterface, callID uint32, idGathering uint32, lstStats []*match_making_types.GatheringStats) uint32
+	GetStats                    func(err error, packet nex.PacketInterface, callID uint32, idGathering uint32, lstParticipants []*nex.PID, lstColumns []byte) uint32
+	DeleteGathering             func(err error, packet nex.PacketInterface, callID uint32, idGathering uint32) uint32
+	GetPendingDeletions         func(err error, packet nex.PacketInterface, callID uint32, uiReason uint32, resultRange *nex.ResultRange) uint32
+	DeleteFromDeletions         func(err error, packet nex.PacketInterface, callID uint32, lstDeletions []uint32) uint32
+	MigrateGatheringOwnershipV1 func(err error, packet nex.PacketInterface, callID uint32, gid uint32, lstPotentialNewOwnersID []*nex.PID) uint32
+	FindByDescriptionLike       func(err error, packet nex.PacketInterface, callID uint32, strDescriptionLike string, resultRange *nex.ResultRange) uint32
+	RegisterLocalURL            func(err error, packet nex.PacketInterface, callID uint32, gid uint32, url *nex.StationURL) uint32
+	RegisterLocalURLs           func(err error, packet nex.PacketInterface, callID uint32, gid uint32, lstURLs []*nex.StationURL) uint32
+	UpdateSessionHostV1         func(err error, packet nex.PacketInterface, callID uint32, gid uint32) uint32
+	GetSessionURLs              func(err error, packet nex.PacketInterface, callID uint32, gid uint32) uint32
+	UpdateSessionHost           func(err error, packet nex.PacketInterface, callID uint32, gid uint32, isMigrateOwner bool) uint32
+	UpdateGatheringOwnership    func(err error, packet nex.PacketInterface, callID uint32, gid uint32, participantsOnly bool) uint32
+	MigrateGatheringOwnership   func(err error, packet nex.PacketInterface, callID uint32, gid uint32, lstPotentialNewOwnersID []*nex.PID, participantsOnly bool) uint32
 }
 
 // Setup initializes the protocol

@@ -8,15 +8,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// GetGatheringRelations sets the GetGatheringRelations handler function
-func (protocol *Protocol) GetGatheringRelations(handler func(err error, packet nex.PacketInterface, callID uint32, id uint32, descr string) uint32) {
-	protocol.getGatheringRelationsHandler = handler
-}
-
 func (protocol *Protocol) handleGetGatheringRelations(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.getGatheringRelationsHandler == nil {
+	if protocol.GetGatheringRelations == nil {
 		globals.Logger.Warning("MatchMakingExt::GetGatheringRelations not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -31,7 +26,7 @@ func (protocol *Protocol) handleGetGatheringRelations(packet nex.PacketInterface
 
 	id, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.getGatheringRelationsHandler(fmt.Errorf("Failed to read id from parameters. %s", err.Error()), packet, callID, 0, "")
+		errorCode = protocol.GetGatheringRelations(fmt.Errorf("Failed to read id from parameters. %s", err.Error()), packet, callID, 0, "")
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -41,7 +36,7 @@ func (protocol *Protocol) handleGetGatheringRelations(packet nex.PacketInterface
 
 	descr, err := parametersStream.ReadString()
 	if err != nil {
-		errorCode = protocol.getGatheringRelationsHandler(fmt.Errorf("Failed to read descr from parameters. %s", err.Error()), packet, callID, 0, "")
+		errorCode = protocol.GetGatheringRelations(fmt.Errorf("Failed to read descr from parameters. %s", err.Error()), packet, callID, 0, "")
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -49,7 +44,7 @@ func (protocol *Protocol) handleGetGatheringRelations(packet nex.PacketInterface
 		return
 	}
 
-	errorCode = protocol.getGatheringRelationsHandler(nil, packet, callID, id, descr)
+	errorCode = protocol.GetGatheringRelations(nil, packet, callID, id, descr)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

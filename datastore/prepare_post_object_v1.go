@@ -9,15 +9,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// PreparePostObjectV1 sets the PreparePostObjectV1 handler function
-func (protocol *Protocol) PreparePostObjectV1(handler func(err error, packet nex.PacketInterface, callID uint32, param *datastore_types.DataStorePreparePostParamV1) uint32) {
-	protocol.preparePostObjectV1Handler = handler
-}
-
 func (protocol *Protocol) handlePreparePostObjectV1(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.preparePostObjectV1Handler == nil {
+	if protocol.PreparePostObjectV1 == nil {
 		globals.Logger.Warning("DataStore::PreparePostObjectV1 not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -32,7 +27,7 @@ func (protocol *Protocol) handlePreparePostObjectV1(packet nex.PacketInterface) 
 
 	param, err := parametersStream.ReadStructure(datastore_types.NewDataStorePreparePostParamV1())
 	if err != nil {
-		errorCode = protocol.preparePostObjectV1Handler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
+		errorCode = protocol.PreparePostObjectV1(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -40,7 +35,7 @@ func (protocol *Protocol) handlePreparePostObjectV1(packet nex.PacketInterface) 
 		return
 	}
 
-	errorCode = protocol.preparePostObjectV1Handler(nil, packet, callID, param.(*datastore_types.DataStorePreparePostParamV1))
+	errorCode = protocol.PreparePostObjectV1(nil, packet, callID, param.(*datastore_types.DataStorePreparePostParamV1))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

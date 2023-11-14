@@ -8,15 +8,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// Log sets the Log handler function
-func (protocol *Protocol) Log(handler func(err error, packet nex.PacketInterface, callID uint32, strLine string) uint32) {
-	protocol.logHandler = handler
-}
-
 func (protocol *Protocol) handleLog(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.logHandler == nil {
+	if protocol.Log == nil {
 		globals.Logger.Warning("RemoteLogDevice::Log not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -31,7 +26,7 @@ func (protocol *Protocol) handleLog(packet nex.PacketInterface) {
 
 	strLine, err := parametersStream.ReadString()
 	if err != nil {
-		errorCode = protocol.logHandler(fmt.Errorf("Failed to read strLine from parameters. %s", err.Error()), packet, callID, "")
+		errorCode = protocol.Log(fmt.Errorf("Failed to read strLine from parameters. %s", err.Error()), packet, callID, "")
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -39,7 +34,7 @@ func (protocol *Protocol) handleLog(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.logHandler(nil, packet, callID, strLine)
+	errorCode = protocol.Log(nil, packet, callID, strLine)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

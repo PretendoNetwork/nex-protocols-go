@@ -9,15 +9,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// GetNewArrivedNotifications sets the GetNewArrivedNotifications handler function
-func (protocol *Protocol) GetNewArrivedNotifications(handler func(err error, packet nex.PacketInterface, callID uint32, param *datastore_types.DataStoreGetNewArrivedNotificationsParam) uint32) {
-	protocol.getNewArrivedNotificationsHandler = handler
-}
-
 func (protocol *Protocol) handleGetNewArrivedNotifications(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.getNewArrivedNotificationsHandler == nil {
+	if protocol.GetNewArrivedNotifications == nil {
 		globals.Logger.Warning("DataStore::GetNewArrivedNotifications not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -32,7 +27,7 @@ func (protocol *Protocol) handleGetNewArrivedNotifications(packet nex.PacketInte
 
 	param, err := parametersStream.ReadStructure(datastore_types.NewDataStoreGetNewArrivedNotificationsParam())
 	if err != nil {
-		errorCode = protocol.getNewArrivedNotificationsHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
+		errorCode = protocol.GetNewArrivedNotifications(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -40,7 +35,7 @@ func (protocol *Protocol) handleGetNewArrivedNotifications(packet nex.PacketInte
 		return
 	}
 
-	errorCode = protocol.getNewArrivedNotificationsHandler(nil, packet, callID, param.(*datastore_types.DataStoreGetNewArrivedNotificationsParam))
+	errorCode = protocol.GetNewArrivedNotifications(nil, packet, callID, param.(*datastore_types.DataStoreGetNewArrivedNotificationsParam))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

@@ -8,15 +8,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// GetPersistenceInfo sets the GetPersistenceInfo handler function
-func (protocol *Protocol) GetPersistenceInfo(handler func(err error, packet nex.PacketInterface, callID uint32, ownerID *nex.PID, persistenceSlotID uint16) uint32) {
-	protocol.getPersistenceInfoHandler = handler
-}
-
 func (protocol *Protocol) handleGetPersistenceInfo(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.getPersistenceInfoHandler == nil {
+	if protocol.GetPersistenceInfo == nil {
 		globals.Logger.Warning("DataStore::GetPersistenceInfo not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -31,7 +26,7 @@ func (protocol *Protocol) handleGetPersistenceInfo(packet nex.PacketInterface) {
 
 	ownerID, err := parametersStream.ReadPID()
 	if err != nil {
-		errorCode = protocol.getPersistenceInfoHandler(fmt.Errorf("Failed to read ownerID from parameters. %s", err.Error()), packet, callID, nil, 0)
+		errorCode = protocol.GetPersistenceInfo(fmt.Errorf("Failed to read ownerID from parameters. %s", err.Error()), packet, callID, nil, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -41,7 +36,7 @@ func (protocol *Protocol) handleGetPersistenceInfo(packet nex.PacketInterface) {
 
 	persistenceSlotID, err := parametersStream.ReadUInt16LE()
 	if err != nil {
-		errorCode = protocol.getPersistenceInfoHandler(fmt.Errorf("Failed to read persistenceSlotID from parameters. %s", err.Error()), packet, callID, nil, 0)
+		errorCode = protocol.GetPersistenceInfo(fmt.Errorf("Failed to read persistenceSlotID from parameters. %s", err.Error()), packet, callID, nil, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -49,7 +44,7 @@ func (protocol *Protocol) handleGetPersistenceInfo(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.getPersistenceInfoHandler(nil, packet, callID, ownerID, persistenceSlotID)
+	errorCode = protocol.GetPersistenceInfo(nil, packet, callID, ownerID, persistenceSlotID)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

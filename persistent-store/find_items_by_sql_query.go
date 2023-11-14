@@ -8,15 +8,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// FindItemsBySQLQuery sets the FindItemsBySQLQuery handler function
-func (protocol *Protocol) FindItemsBySQLQuery(handler func(err error, packet nex.PacketInterface, callID uint32, uiGroup uint32, strTag string, strQuery string) uint32) {
-	protocol.findItemsBySQLQueryHandler = handler
-}
-
 func (protocol *Protocol) handleFindItemsBySQLQuery(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.findItemsBySQLQueryHandler == nil {
+	if protocol.FindItemsBySQLQuery == nil {
 		globals.Logger.Warning("PersistentStore::FindItemsBySQLQuery not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -31,7 +26,7 @@ func (protocol *Protocol) handleFindItemsBySQLQuery(packet nex.PacketInterface) 
 
 	uiGroup, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.findItemsBySQLQueryHandler(fmt.Errorf("Failed to read uiGroup from parameters. %s", err.Error()), packet, callID, 0, "", "")
+		errorCode = protocol.FindItemsBySQLQuery(fmt.Errorf("Failed to read uiGroup from parameters. %s", err.Error()), packet, callID, 0, "", "")
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -41,7 +36,7 @@ func (protocol *Protocol) handleFindItemsBySQLQuery(packet nex.PacketInterface) 
 
 	strTag, err := parametersStream.ReadString()
 	if err != nil {
-		errorCode = protocol.findItemsBySQLQueryHandler(fmt.Errorf("Failed to read strTag from parameters. %s", err.Error()), packet, callID, 0, "", "")
+		errorCode = protocol.FindItemsBySQLQuery(fmt.Errorf("Failed to read strTag from parameters. %s", err.Error()), packet, callID, 0, "", "")
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -51,7 +46,7 @@ func (protocol *Protocol) handleFindItemsBySQLQuery(packet nex.PacketInterface) 
 
 	strQuery, err := parametersStream.ReadString()
 	if err != nil {
-		errorCode = protocol.findItemsBySQLQueryHandler(fmt.Errorf("Failed to read strQuery from parameters. %s", err.Error()), packet, callID, 0, "", "")
+		errorCode = protocol.FindItemsBySQLQuery(fmt.Errorf("Failed to read strQuery from parameters. %s", err.Error()), packet, callID, 0, "", "")
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -59,7 +54,7 @@ func (protocol *Protocol) handleFindItemsBySQLQuery(packet nex.PacketInterface) 
 		return
 	}
 
-	errorCode = protocol.findItemsBySQLQueryHandler(nil, packet, callID, uiGroup, strTag, strQuery)
+	errorCode = protocol.FindItemsBySQLQuery(nil, packet, callID, uiGroup, strTag, strQuery)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

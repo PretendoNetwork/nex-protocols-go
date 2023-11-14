@@ -9,15 +9,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// CompletePostReplay sets the CompletePostReplay handler function
-func (protocol *Protocol) CompletePostReplay(handler func(err error, packet nex.PacketInterface, callID uint32, param *datastore_super_smash_bros_4_types.DataStoreCompletePostReplayParam) uint32) {
-	protocol.completePostReplayHandler = handler
-}
-
 func (protocol *Protocol) handleCompletePostReplay(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.completePostReplayHandler == nil {
+	if protocol.CompletePostReplay == nil {
 		globals.Logger.Warning("DataStoreSuperSmashBros4::CompletePostReplay not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -32,7 +27,7 @@ func (protocol *Protocol) handleCompletePostReplay(packet nex.PacketInterface) {
 
 	param, err := parametersStream.ReadStructure(datastore_super_smash_bros_4_types.NewDataStoreCompletePostReplayParam())
 	if err != nil {
-		errorCode = protocol.completePostReplayHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
+		errorCode = protocol.CompletePostReplay(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -40,7 +35,7 @@ func (protocol *Protocol) handleCompletePostReplay(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.completePostReplayHandler(nil, packet, callID, param.(*datastore_super_smash_bros_4_types.DataStoreCompletePostReplayParam))
+	errorCode = protocol.CompletePostReplay(nil, packet, callID, param.(*datastore_super_smash_bros_4_types.DataStoreCompletePostReplayParam))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

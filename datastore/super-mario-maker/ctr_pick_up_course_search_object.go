@@ -9,15 +9,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// CTRPickUpCourseSearchObject sets the CTRPickUpCourseSearchObject handler function
-func (protocol *Protocol) CTRPickUpCourseSearchObject(handler func(err error, packet nex.PacketInterface, callID uint32, param *datastore_types.DataStoreSearchParam, extraData []string) uint32) {
-	protocol.cTRPickUpCourseSearchObjectHandler = handler
-}
-
 func (protocol *Protocol) handleCTRPickUpCourseSearchObject(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.cTRPickUpCourseSearchObjectHandler == nil {
+	if protocol.CTRPickUpCourseSearchObject == nil {
 		globals.Logger.Warning("DataStoreSuperMarioMaker::CTRPickUpCourseSearchObject not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -32,7 +27,7 @@ func (protocol *Protocol) handleCTRPickUpCourseSearchObject(packet nex.PacketInt
 
 	param, err := parametersStream.ReadStructure(datastore_types.NewDataStoreSearchParam())
 	if err != nil {
-		errorCode = protocol.cTRPickUpCourseSearchObjectHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil, nil)
+		errorCode = protocol.CTRPickUpCourseSearchObject(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -42,7 +37,7 @@ func (protocol *Protocol) handleCTRPickUpCourseSearchObject(packet nex.PacketInt
 
 	extraData, err := parametersStream.ReadListString()
 	if err != nil {
-		errorCode = protocol.cTRPickUpCourseSearchObjectHandler(fmt.Errorf("Failed to read extraData from parameters. %s", err.Error()), packet, callID, nil, nil)
+		errorCode = protocol.CTRPickUpCourseSearchObject(fmt.Errorf("Failed to read extraData from parameters. %s", err.Error()), packet, callID, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -50,7 +45,7 @@ func (protocol *Protocol) handleCTRPickUpCourseSearchObject(packet nex.PacketInt
 		return
 	}
 
-	errorCode = protocol.cTRPickUpCourseSearchObjectHandler(nil, packet, callID, param.(*datastore_types.DataStoreSearchParam), extraData)
+	errorCode = protocol.CTRPickUpCourseSearchObject(nil, packet, callID, param.(*datastore_types.DataStoreSearchParam), extraData)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

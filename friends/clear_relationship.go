@@ -8,15 +8,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// ClearRelationship sets the ClearRelationship handler function
-func (protocol *Protocol) ClearRelationship(handler func(err error, packet nex.PacketInterface, callID uint32, uiPlayer uint32) uint32) {
-	protocol.clearRelationshipHandler = handler
-}
-
 func (protocol *Protocol) handleClearRelationship(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.clearRelationshipHandler == nil {
+	if protocol.ClearRelationship == nil {
 		globals.Logger.Warning("Friends::ClearRelationship not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -31,7 +26,7 @@ func (protocol *Protocol) handleClearRelationship(packet nex.PacketInterface) {
 
 	uiPlayer, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.clearRelationshipHandler(fmt.Errorf("Failed to read uiPlayer from parameters. %s", err.Error()), packet, callID, 0)
+		errorCode = protocol.ClearRelationship(fmt.Errorf("Failed to read uiPlayer from parameters. %s", err.Error()), packet, callID, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -39,7 +34,7 @@ func (protocol *Protocol) handleClearRelationship(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.clearRelationshipHandler(nil, packet, callID, uiPlayer)
+	errorCode = protocol.ClearRelationship(nil, packet, callID, uiPlayer)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

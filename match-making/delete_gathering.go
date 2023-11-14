@@ -8,15 +8,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// DeleteGathering sets the DeleteGathering handler function
-func (protocol *Protocol) DeleteGathering(handler func(err error, packet nex.PacketInterface, callID uint32, idGathering uint32) uint32) {
-	protocol.deleteGatheringHandler = handler
-}
-
 func (protocol *Protocol) handleDeleteGathering(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.deleteGatheringHandler == nil {
+	if protocol.DeleteGathering == nil {
 		globals.Logger.Warning("MatchMaking::DeleteGathering not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -31,7 +26,7 @@ func (protocol *Protocol) handleDeleteGathering(packet nex.PacketInterface) {
 
 	idGathering, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.deleteGatheringHandler(fmt.Errorf("Failed to read idGathering from parameters. %s", err.Error()), packet, callID, 0)
+		errorCode = protocol.DeleteGathering(fmt.Errorf("Failed to read idGathering from parameters. %s", err.Error()), packet, callID, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -39,7 +34,7 @@ func (protocol *Protocol) handleDeleteGathering(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.deleteGatheringHandler(nil, packet, callID, idGathering)
+	errorCode = protocol.DeleteGathering(nil, packet, callID, idGathering)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

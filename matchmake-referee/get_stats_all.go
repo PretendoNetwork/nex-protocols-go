@@ -9,15 +9,10 @@ import (
 	matchmake_referee_types "github.com/PretendoNetwork/nex-protocols-go/matchmake-referee/types"
 )
 
-// GetStatsAll sets the GetStatsAll handler function
-func (protocol *Protocol) GetStatsAll(handler func(err error, packet nex.PacketInterface, callID uint32, target *matchmake_referee_types.MatchmakeRefereeStatsTarget) uint32) {
-	protocol.getStatsAllHandler = handler
-}
-
 func (protocol *Protocol) handleGetStatsAll(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.getStatsAllHandler == nil {
+	if protocol.GetStatsAll == nil {
 		globals.Logger.Warning("MatchmakeReferee::GetStatsAll not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -32,7 +27,7 @@ func (protocol *Protocol) handleGetStatsAll(packet nex.PacketInterface) {
 
 	target, err := parametersStream.ReadStructure(matchmake_referee_types.NewMatchmakeRefereeStatsTarget())
 	if err != nil {
-		errorCode = protocol.getStatsAllHandler(fmt.Errorf("Failed to read target from parameters. %s", err.Error()), packet, callID, nil)
+		errorCode = protocol.GetStatsAll(fmt.Errorf("Failed to read target from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -40,7 +35,7 @@ func (protocol *Protocol) handleGetStatsAll(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.getStatsAllHandler(nil, packet, callID, target.(*matchmake_referee_types.MatchmakeRefereeStatsTarget))
+	errorCode = protocol.GetStatsAll(nil, packet, callID, target.(*matchmake_referee_types.MatchmakeRefereeStatsTarget))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

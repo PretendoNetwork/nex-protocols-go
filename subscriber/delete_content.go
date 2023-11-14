@@ -8,15 +8,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// DeleteContent sets the DeleteContent handler function
-func (protocol *Protocol) DeleteContent(handler func(err error, packet nex.PacketInterface, callID uint32, unknown1 []string, unknown2 uint64) uint32) {
-	protocol.deleteContentHandler = handler
-}
-
 func (protocol *Protocol) handleDeleteContent(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.deleteContentHandler == nil {
+	if protocol.DeleteContent == nil {
 		globals.Logger.Warning("Subscriber::DeleteContent not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -31,7 +26,7 @@ func (protocol *Protocol) handleDeleteContent(packet nex.PacketInterface) {
 
 	unknown1, err := parametersStream.ReadListString()
 	if err != nil {
-		errorCode = protocol.deleteContentHandler(fmt.Errorf("Failed to read unknown1 from parameters. %s", err.Error()), packet, callID, nil, 0)
+		errorCode = protocol.DeleteContent(fmt.Errorf("Failed to read unknown1 from parameters. %s", err.Error()), packet, callID, nil, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -41,7 +36,7 @@ func (protocol *Protocol) handleDeleteContent(packet nex.PacketInterface) {
 
 	unknown2, err := parametersStream.ReadUInt64LE()
 	if err != nil {
-		errorCode = protocol.deleteContentHandler(fmt.Errorf("Failed to read unknown2 from parameters. %s", err.Error()), packet, callID, nil, 0)
+		errorCode = protocol.DeleteContent(fmt.Errorf("Failed to read unknown2 from parameters. %s", err.Error()), packet, callID, nil, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -49,7 +44,7 @@ func (protocol *Protocol) handleDeleteContent(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.deleteContentHandler(nil, packet, callID, unknown1, unknown2)
+	errorCode = protocol.DeleteContent(nil, packet, callID, unknown1, unknown2)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

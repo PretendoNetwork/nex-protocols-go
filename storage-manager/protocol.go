@@ -21,9 +21,9 @@ const (
 
 // Protocol stores all the RMC method handlers for the StorageManager protocol and listens for requests
 type Protocol struct {
-	Server                    nex.ServerInterface
-	acquireCardIDHandler      func(err error, packet nex.PacketInterface, callID uint32) uint32
-	activateWithCardIDHandler func(err error, packet nex.PacketInterface, callID uint32, unknown uint8, cardID uint64) uint32
+	Server             nex.ServerInterface
+	AcquireCardID      func(err error, packet nex.PacketInterface, callID uint32) uint32
+	ActivateWithCardID func(err error, packet nex.PacketInterface, callID uint32, unknown uint8, cardID uint64) uint32
 }
 
 // Setup initializes the protocol

@@ -8,15 +8,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// GetApplicationConfig sets the GetApplicationConfig handler function
-func (protocol *Protocol) GetApplicationConfig(handler func(err error, packet nex.PacketInterface, callID uint32, applicationID uint32) uint32) {
-	protocol.getApplicationConfigHandler = handler
-}
-
 func (protocol *Protocol) handleGetApplicationConfig(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.getApplicationConfigHandler == nil {
+	if protocol.GetApplicationConfig == nil {
 		globals.Logger.Warning("DataStoreSuperMarioMaker::GetApplicationConfig not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -31,7 +26,7 @@ func (protocol *Protocol) handleGetApplicationConfig(packet nex.PacketInterface)
 
 	applicationID, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.getApplicationConfigHandler(fmt.Errorf("Failed to read applicationID from parameters. %s", err.Error()), packet, callID, 0)
+		errorCode = protocol.GetApplicationConfig(fmt.Errorf("Failed to read applicationID from parameters. %s", err.Error()), packet, callID, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -39,7 +34,7 @@ func (protocol *Protocol) handleGetApplicationConfig(packet nex.PacketInterface)
 		return
 	}
 
-	errorCode = protocol.getApplicationConfigHandler(nil, packet, callID, applicationID)
+	errorCode = protocol.GetApplicationConfig(nil, packet, callID, applicationID)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

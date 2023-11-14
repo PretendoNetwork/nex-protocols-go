@@ -9,15 +9,10 @@ import (
 	match_making_types "github.com/PretendoNetwork/nex-protocols-go/match-making/types"
 )
 
-// UpdateMatchmakeSessionPart sets the UpdateMatchmakeSessionPart handler function
-func (protocol *Protocol) UpdateMatchmakeSessionPart(handler func(err error, packet nex.PacketInterface, callID uint32, updateMatchmakeSessionParam *match_making_types.UpdateMatchmakeSessionParam) uint32) {
-	protocol.updateMatchmakeSessionPartHandler = handler
-}
-
 func (protocol *Protocol) handleUpdateMatchmakeSessionPart(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.updateMatchmakeSessionPartHandler == nil {
+	if protocol.UpdateMatchmakeSessionPart == nil {
 		globals.Logger.Warning("MatchmakeExtension::UpdateMatchmakeSessionPart not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -32,7 +27,7 @@ func (protocol *Protocol) handleUpdateMatchmakeSessionPart(packet nex.PacketInte
 
 	updateMatchmakeSessionParam, err := parametersStream.ReadStructure(match_making_types.NewUpdateMatchmakeSessionParam())
 	if err != nil {
-		errorCode = protocol.updateMatchmakeSessionPartHandler(fmt.Errorf("Failed to read updateMatchmakeSessionParam from parameters. %s", err.Error()), packet, callID, nil)
+		errorCode = protocol.UpdateMatchmakeSessionPart(fmt.Errorf("Failed to read updateMatchmakeSessionParam from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -40,7 +35,7 @@ func (protocol *Protocol) handleUpdateMatchmakeSessionPart(packet nex.PacketInte
 		return
 	}
 
-	errorCode = protocol.updateMatchmakeSessionPartHandler(nil, packet, callID, updateMatchmakeSessionParam.(*match_making_types.UpdateMatchmakeSessionParam))
+	errorCode = protocol.UpdateMatchmakeSessionPart(nil, packet, callID, updateMatchmakeSessionParam.(*match_making_types.UpdateMatchmakeSessionParam))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

@@ -8,15 +8,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// GetFriendRelationships sets the GetFriendRelationships handler function
-func (protocol *Protocol) GetFriendRelationships(handler func(err error, packet nex.PacketInterface, callID uint32, pids []*nex.PID) uint32) {
-	protocol.getFriendRelationshipsHandler = handler
-}
-
 func (protocol *Protocol) handleGetFriendRelationships(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.getFriendRelationshipsHandler == nil {
+	if protocol.GetFriendRelationships == nil {
 		globals.Logger.Warning("Friends3DS::GetFriendRelationships not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -31,7 +26,7 @@ func (protocol *Protocol) handleGetFriendRelationships(packet nex.PacketInterfac
 
 	pids, err := parametersStream.ReadListPID()
 	if err != nil {
-		errorCode = protocol.getFriendRelationshipsHandler(fmt.Errorf("Failed to read pids from parameters. %s", err.Error()), packet, callID, nil)
+		errorCode = protocol.GetFriendRelationships(fmt.Errorf("Failed to read pids from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -39,7 +34,7 @@ func (protocol *Protocol) handleGetFriendRelationships(packet nex.PacketInterfac
 		return
 	}
 
-	errorCode = protocol.getFriendRelationshipsHandler(nil, packet, callID, pids)
+	errorCode = protocol.GetFriendRelationships(nil, packet, callID, pids)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

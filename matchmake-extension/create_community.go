@@ -9,15 +9,10 @@ import (
 	match_making_types "github.com/PretendoNetwork/nex-protocols-go/match-making/types"
 )
 
-// CreateCommunity sets the CreateCommunity handler function
-func (protocol *Protocol) CreateCommunity(handler func(err error, packet nex.PacketInterface, callID uint32, community *match_making_types.PersistentGathering, strMessage string) uint32) {
-	protocol.createCommunityHandler = handler
-}
-
 func (protocol *Protocol) handleCreateCommunity(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.createCommunityHandler == nil {
+	if protocol.CreateCommunity == nil {
 		globals.Logger.Warning("MatchmakeExtension::CreateCommunity not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -32,7 +27,7 @@ func (protocol *Protocol) handleCreateCommunity(packet nex.PacketInterface) {
 
 	community, err := parametersStream.ReadStructure(match_making_types.NewPersistentGathering())
 	if err != nil {
-		errorCode = protocol.createCommunityHandler(fmt.Errorf("Failed to read community from parameters. %s", err.Error()), packet, callID, nil, "")
+		errorCode = protocol.CreateCommunity(fmt.Errorf("Failed to read community from parameters. %s", err.Error()), packet, callID, nil, "")
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -42,7 +37,7 @@ func (protocol *Protocol) handleCreateCommunity(packet nex.PacketInterface) {
 
 	strMessage, err := parametersStream.ReadString()
 	if err != nil {
-		errorCode = protocol.createCommunityHandler(fmt.Errorf("Failed to read strMessage from parameters. %s", err.Error()), packet, callID, nil, "")
+		errorCode = protocol.CreateCommunity(fmt.Errorf("Failed to read strMessage from parameters. %s", err.Error()), packet, callID, nil, "")
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -50,7 +45,7 @@ func (protocol *Protocol) handleCreateCommunity(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.createCommunityHandler(nil, packet, callID, community.(*match_making_types.PersistentGathering), strMessage)
+	errorCode = protocol.CreateCommunity(nil, packet, callID, community.(*match_making_types.PersistentGathering), strMessage)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

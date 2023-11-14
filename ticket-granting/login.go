@@ -8,15 +8,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// Login sets the Login handler function
-func (protocol *Protocol) Login(handler func(err error, packet nex.PacketInterface, callID uint32, strUserName string) uint32) {
-	protocol.loginHandler = handler
-}
-
 func (protocol *Protocol) handleLogin(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.loginHandler == nil {
+	if protocol.Login == nil {
 		globals.Logger.Warning("TicketGranting::Login not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -31,7 +26,7 @@ func (protocol *Protocol) handleLogin(packet nex.PacketInterface) {
 
 	strUserName, err := parametersStream.ReadString()
 	if err != nil {
-		errorCode = protocol.loginHandler(fmt.Errorf("Failed to read strUserName from parameters. %s", err.Error()), packet, callID, "")
+		errorCode = protocol.Login(fmt.Errorf("Failed to read strUserName from parameters. %s", err.Error()), packet, callID, "")
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -39,7 +34,7 @@ func (protocol *Protocol) handleLogin(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.loginHandler(nil, packet, callID, strUserName)
+	errorCode = protocol.Login(nil, packet, callID, strUserName)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

@@ -9,15 +9,10 @@ import (
 	shop_nintendo_badge_arcade_types "github.com/PretendoNetwork/nex-protocols-go/shop/nintendo-badge-arcade/types"
 )
 
-// PostPlayLog sets the PostPlayLog function
-func (protocol *Protocol) PostPlayLog(handler func(err error, packet nex.PacketInterface, callID uint32, param *shop_nintendo_badge_arcade_types.ShopPostPlayLogParam) uint32) {
-	protocol.postPlayLogHandler = handler
-}
-
 func (protocol *Protocol) handlePostPlayLog(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.postPlayLogHandler == nil {
+	if protocol.PostPlayLog == nil {
 		globals.Logger.Warning("ShopNintendoBadgeArcade::PostPlayLog not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -32,7 +27,7 @@ func (protocol *Protocol) handlePostPlayLog(packet nex.PacketInterface) {
 
 	param, err := parametersStream.ReadStructure(shop_nintendo_badge_arcade_types.NewShopPostPlayLogParam())
 	if err != nil {
-		errorCode = protocol.postPlayLogHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
+		errorCode = protocol.PostPlayLog(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -40,7 +35,7 @@ func (protocol *Protocol) handlePostPlayLog(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.postPlayLogHandler(nil, packet, callID, param.(*shop_nintendo_badge_arcade_types.ShopPostPlayLogParam))
+	errorCode = protocol.PostPlayLog(nil, packet, callID, param.(*shop_nintendo_badge_arcade_types.ShopPostPlayLogParam))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

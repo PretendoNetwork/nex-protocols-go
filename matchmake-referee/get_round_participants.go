@@ -8,15 +8,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// GetRoundParticipants sets the GetRoundParticipants handler function
-func (protocol *Protocol) GetRoundParticipants(handler func(err error, packet nex.PacketInterface, callID uint32, roundID uint64) uint32) {
-	protocol.getRoundParticipantsHandler = handler
-}
-
 func (protocol *Protocol) handleGetRoundParticipants(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.getRoundParticipantsHandler == nil {
+	if protocol.GetRoundParticipants == nil {
 		globals.Logger.Warning("MatchmakeReferee::GetRoundParticipants not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -31,7 +26,7 @@ func (protocol *Protocol) handleGetRoundParticipants(packet nex.PacketInterface)
 
 	roundID, err := parametersStream.ReadUInt64LE()
 	if err != nil {
-		errorCode = protocol.getRoundParticipantsHandler(fmt.Errorf("Failed to read roundID from parameters. %s", err.Error()), packet, callID, 0)
+		errorCode = protocol.GetRoundParticipants(fmt.Errorf("Failed to read roundID from parameters. %s", err.Error()), packet, callID, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -39,7 +34,7 @@ func (protocol *Protocol) handleGetRoundParticipants(packet nex.PacketInterface)
 		return
 	}
 
-	errorCode = protocol.getRoundParticipantsHandler(nil, packet, callID, roundID)
+	errorCode = protocol.GetRoundParticipants(nil, packet, callID, roundID)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

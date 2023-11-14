@@ -8,15 +8,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// GetSimplePlayingSession sets the GetSimplePlayingSession handler function
-func (protocol *Protocol) GetSimplePlayingSession(handler func(err error, packet nex.PacketInterface, callID uint32, listPID []*nex.PID, includeLoginUser bool) uint32) {
-	protocol.getSimplePlayingSessionHandler = handler
-}
-
 func (protocol *Protocol) handleGetSimplePlayingSession(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.getSimplePlayingSessionHandler == nil {
+	if protocol.GetSimplePlayingSession == nil {
 		globals.Logger.Warning("MatchmakeExtension::GetSimplePlayingSession not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -31,7 +26,7 @@ func (protocol *Protocol) handleGetSimplePlayingSession(packet nex.PacketInterfa
 
 	listPID, err := parametersStream.ReadListPID()
 	if err != nil {
-		errorCode = protocol.getSimplePlayingSessionHandler(fmt.Errorf("Failed to read listPID from parameters. %s", err.Error()), packet, callID, nil, false)
+		errorCode = protocol.GetSimplePlayingSession(fmt.Errorf("Failed to read listPID from parameters. %s", err.Error()), packet, callID, nil, false)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -41,7 +36,7 @@ func (protocol *Protocol) handleGetSimplePlayingSession(packet nex.PacketInterfa
 
 	includeLoginUser, err := parametersStream.ReadBool()
 	if err != nil {
-		errorCode = protocol.getSimplePlayingSessionHandler(fmt.Errorf("Failed to read includeLoginUser from parameters. %s", err.Error()), packet, callID, nil, false)
+		errorCode = protocol.GetSimplePlayingSession(fmt.Errorf("Failed to read includeLoginUser from parameters. %s", err.Error()), packet, callID, nil, false)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -49,7 +44,7 @@ func (protocol *Protocol) handleGetSimplePlayingSession(packet nex.PacketInterfa
 		return
 	}
 
-	errorCode = protocol.getSimplePlayingSessionHandler(nil, packet, callID, listPID, includeLoginUser)
+	errorCode = protocol.GetSimplePlayingSession(nil, packet, callID, listPID, includeLoginUser)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

@@ -8,15 +8,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// UpdateDetails sets the UpdateDetails handler function
-func (protocol *Protocol) UpdateDetails(handler func(err error, packet nex.PacketInterface, callID uint32, uiPlayer uint32, uiDetails uint32) uint32) {
-	protocol.updateDetailsHandler = handler
-}
-
 func (protocol *Protocol) handleUpdateDetails(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.updateDetailsHandler == nil {
+	if protocol.UpdateDetails == nil {
 		globals.Logger.Warning("Friends::UpdateDetails not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -31,7 +26,7 @@ func (protocol *Protocol) handleUpdateDetails(packet nex.PacketInterface) {
 
 	uiPlayer, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.updateDetailsHandler(fmt.Errorf("Failed to read uiPlayer from parameters. %s", err.Error()), packet, callID, 0, 0)
+		errorCode = protocol.UpdateDetails(fmt.Errorf("Failed to read uiPlayer from parameters. %s", err.Error()), packet, callID, 0, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -41,7 +36,7 @@ func (protocol *Protocol) handleUpdateDetails(packet nex.PacketInterface) {
 
 	uiDetails, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.updateDetailsHandler(fmt.Errorf("Failed to read uiDetails from parameters. %s", err.Error()), packet, callID, 0, 0)
+		errorCode = protocol.UpdateDetails(fmt.Errorf("Failed to read uiDetails from parameters. %s", err.Error()), packet, callID, 0, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -49,7 +44,7 @@ func (protocol *Protocol) handleUpdateDetails(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.updateDetailsHandler(nil, packet, callID, uiPlayer, uiDetails)
+	errorCode = protocol.UpdateDetails(nil, packet, callID, uiPlayer, uiDetails)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

@@ -50,12 +50,12 @@ type matchmakeExtensionProtocol = matchmake_extension.Protocol
 type Protocol struct {
 	Server nex.ServerInterface
 	matchmakeExtensionProtocol
-	createSimpleSearchObjectHandler                  func(err error, packet nex.PacketInterface, callID uint32, object *matchmake_extension_mario_kart8_types.SimpleSearchObject) uint32
-	updateSimpleSearchObjectHandler                  func(err error, packet nex.PacketInterface, callID uint32, objectID uint32, newObject *matchmake_extension_mario_kart8_types.SimpleSearchObject) uint32
-	deleteSimpleSearchObjectHandler                  func(err error, packet nex.PacketInterface, callID uint32, objectID uint32) uint32
-	searchSimpleSearchObjectHandler                  func(err error, packet nex.PacketInterface, callID uint32, param *matchmake_extension_mario_kart8_types.SimpleSearchParam) uint32
-	joinMatchmakeSessionWithExtraParticipantsHandler func(err error, packet nex.PacketInterface, callID uint32, gid uint32, joinMessage string, ignoreBlacklist bool, participationCount uint16, extraParticipants uint32) uint32
-	searchSimpleSearchObjectByObjectIDsHandler       func(err error, packet nex.PacketInterface, callID uint32, objectIDs []uint32) uint32
+	CreateSimpleSearchObject                  func(err error, packet nex.PacketInterface, callID uint32, object *matchmake_extension_mario_kart8_types.SimpleSearchObject) uint32
+	UpdateSimpleSearchObject                  func(err error, packet nex.PacketInterface, callID uint32, objectID uint32, newObject *matchmake_extension_mario_kart8_types.SimpleSearchObject) uint32
+	DeleteSimpleSearchObject                  func(err error, packet nex.PacketInterface, callID uint32, objectID uint32) uint32
+	SearchSimpleSearchObject                  func(err error, packet nex.PacketInterface, callID uint32, param *matchmake_extension_mario_kart8_types.SimpleSearchParam) uint32
+	JoinMatchmakeSessionWithExtraParticipants func(err error, packet nex.PacketInterface, callID uint32, gid uint32, joinMessage string, ignoreBlacklist bool, participationCount uint16, extraParticipants uint32) uint32
+	SearchSimpleSearchObjectByObjectIDs       func(err error, packet nex.PacketInterface, callID uint32, objectIDs []uint32) uint32
 }
 
 // Setup initializes the protocol

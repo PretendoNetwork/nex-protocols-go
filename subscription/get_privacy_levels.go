@@ -8,13 +8,8 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// GetPrivacyLevels sets the GetPrivacyLevels handler function
-func (protocol *SubscriptionProtocol) GetPrivacyLevels(handler func(err error, packet nex.PacketInterface, callID uint32)) {
-	protocol.getPrivacyLevelsHandler = handler
-}
-
-func (protocol *SubscriptionProtocol) handleGetPrivacyLevels(packet nex.PacketInterface) {
-	if protocol.getPrivacyLevelsHandler == nil {
+func (protocol *Protocol) handleGetPrivacyLevels(packet nex.PacketInterface) {
+	if protocol.GetPrivacyLevels == nil {
 		fmt.Println("[Warning] SubscriptionProtocol::GetPrivacyLevels not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -24,5 +19,5 @@ func (protocol *SubscriptionProtocol) handleGetPrivacyLevels(packet nex.PacketIn
 
 	callID := request.CallID
 
-	go protocol.getPrivacyLevelsHandler(nil, packet, callID)
+	go protocol.GetPrivacyLevels(nil, packet, callID)
 }

@@ -8,15 +8,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// ReportNATTraversalResult sets the ReportNATTraversalResult handler function
-func (protocol *Protocol) ReportNATTraversalResult(handler func(err error, packet nex.PacketInterface, callID uint32, cid uint32, result bool, rtt uint32) uint32) {
-	protocol.reportNATTraversalResultHandler = handler
-}
-
 func (protocol *Protocol) handleReportNATTraversalResult(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.reportNATTraversalResultHandler == nil {
+	if protocol.ReportNATTraversalResult == nil {
 		globals.Logger.Warning("NATTraversal::ReportNATTraversalResult not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -33,7 +28,7 @@ func (protocol *Protocol) handleReportNATTraversalResult(packet nex.PacketInterf
 
 	cid, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.reportNATTraversalResultHandler(fmt.Errorf("Failed to read cid from parameters. %s", err.Error()), packet, callID, 0, false, 0)
+		errorCode = protocol.ReportNATTraversalResult(fmt.Errorf("Failed to read cid from parameters. %s", err.Error()), packet, callID, 0, false, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -43,7 +38,7 @@ func (protocol *Protocol) handleReportNATTraversalResult(packet nex.PacketInterf
 
 	result, err := parametersStream.ReadBool()
 	if err != nil {
-		errorCode = protocol.reportNATTraversalResultHandler(fmt.Errorf("Failed to read result from parameters. %s", err.Error()), packet, callID, 0, false, 0)
+		errorCode = protocol.ReportNATTraversalResult(fmt.Errorf("Failed to read result from parameters. %s", err.Error()), packet, callID, 0, false, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -57,7 +52,7 @@ func (protocol *Protocol) handleReportNATTraversalResult(packet nex.PacketInterf
 	if natTraversalVersion.GreaterOrEqual("3.0.0") {
 		rtt, err = parametersStream.ReadUInt32LE()
 		if err != nil {
-			errorCode = protocol.reportNATTraversalResultHandler(fmt.Errorf("Failed to read rtt from parameters. %s", err.Error()), packet, callID, 0, false, 0)
+			errorCode = protocol.ReportNATTraversalResult(fmt.Errorf("Failed to read rtt from parameters. %s", err.Error()), packet, callID, 0, false, 0)
 			if errorCode != 0 {
 				globals.RespondError(packet, ProtocolID, errorCode)
 			}
@@ -66,7 +61,7 @@ func (protocol *Protocol) handleReportNATTraversalResult(packet nex.PacketInterf
 		}
 	}
 
-	errorCode = protocol.reportNATTraversalResultHandler(nil, packet, callID, cid, result, rtt)
+	errorCode = protocol.ReportNATTraversalResult(nil, packet, callID, cid, result, rtt)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

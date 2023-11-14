@@ -8,15 +8,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// SendInvitation sets the SendInvitation handler function
-func (protocol *Protocol) SendInvitation(handler func(err error, packet nex.PacketInterface, callID uint32, pids []*nex.PID) uint32) {
-	protocol.sendInvitationHandler = handler
-}
-
 func (protocol *Protocol) handleSendInvitation(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.sendInvitationHandler == nil {
+	if protocol.SendInvitation == nil {
 		globals.Logger.Warning("Friends3DS::SendInvitation not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -31,7 +26,7 @@ func (protocol *Protocol) handleSendInvitation(packet nex.PacketInterface) {
 
 	pids, err := parametersStream.ReadListPID()
 	if err != nil {
-		errorCode = protocol.sendInvitationHandler(fmt.Errorf("Failed to read pids from parameters. %s", err.Error()), packet, callID, nil)
+		errorCode = protocol.SendInvitation(fmt.Errorf("Failed to read pids from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -39,7 +34,7 @@ func (protocol *Protocol) handleSendInvitation(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.sendInvitationHandler(nil, packet, callID, pids)
+	errorCode = protocol.SendInvitation(nil, packet, callID, pids)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

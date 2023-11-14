@@ -8,15 +8,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// CloseParticipation sets the CloseParticipation handler function
-func (protocol *Protocol) CloseParticipation(handler func(err error, packet nex.PacketInterface, callID uint32, gid uint32) uint32) {
-	protocol.closeParticipationHandler = handler
-}
-
 func (protocol *Protocol) handleCloseParticipation(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.closeParticipationHandler == nil {
+	if protocol.CloseParticipation == nil {
 		globals.Logger.Warning("MatchmakeExtension::CloseParticipation not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -31,7 +26,7 @@ func (protocol *Protocol) handleCloseParticipation(packet nex.PacketInterface) {
 
 	gid, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.closeParticipationHandler(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), packet, callID, 0)
+		errorCode = protocol.CloseParticipation(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), packet, callID, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -39,7 +34,7 @@ func (protocol *Protocol) handleCloseParticipation(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.closeParticipationHandler(nil, packet, callID, gid)
+	errorCode = protocol.CloseParticipation(nil, packet, callID, gid)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

@@ -9,15 +9,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// SearchPokemon sets the SearchPokemon handler function
-func (protocol *Protocol) SearchPokemon(handler func(err error, packet nex.PacketInterface, callID uint32, param *datastore_pokemon_gen6_types.GlobalTradeStationSearchPokemonParam) uint32) {
-	protocol.searchPokemonHandler = handler
-}
-
 func (protocol *Protocol) handleSearchPokemon(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.searchPokemonHandler == nil {
+	if protocol.SearchPokemon == nil {
 		globals.Logger.Warning("DataStorePokemonGen6::SearchPokemon not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -32,7 +27,7 @@ func (protocol *Protocol) handleSearchPokemon(packet nex.PacketInterface) {
 
 	param, err := parametersStream.ReadStructure(datastore_pokemon_gen6_types.NewGlobalTradeStationSearchPokemonParam())
 	if err != nil {
-		errorCode = protocol.searchPokemonHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
+		errorCode = protocol.SearchPokemon(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -40,7 +35,7 @@ func (protocol *Protocol) handleSearchPokemon(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.searchPokemonHandler(nil, packet, callID, param.(*datastore_pokemon_gen6_types.GlobalTradeStationSearchPokemonParam))
+	errorCode = protocol.SearchPokemon(nil, packet, callID, param.(*datastore_pokemon_gen6_types.GlobalTradeStationSearchPokemonParam))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

@@ -8,15 +8,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// RegisterLocalURLs sets the RegisterLocalURLs handler function
-func (protocol *Protocol) RegisterLocalURLs(handler func(err error, packet nex.PacketInterface, callID uint32, gid uint32, lstURLs []*nex.StationURL) uint32) {
-	protocol.registerLocalURLsHandler = handler
-}
-
 func (protocol *Protocol) handleRegisterLocalURLs(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.registerLocalURLsHandler == nil {
+	if protocol.RegisterLocalURLs == nil {
 		globals.Logger.Warning("MatchMaking::RegisterLocalURLs not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -31,7 +26,7 @@ func (protocol *Protocol) handleRegisterLocalURLs(packet nex.PacketInterface) {
 
 	gid, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.registerLocalURLsHandler(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), packet, callID, 0, nil)
+		errorCode = protocol.RegisterLocalURLs(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), packet, callID, 0, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -41,7 +36,7 @@ func (protocol *Protocol) handleRegisterLocalURLs(packet nex.PacketInterface) {
 
 	lstURLs, err := parametersStream.ReadListStationURL()
 	if err != nil {
-		errorCode = protocol.registerLocalURLsHandler(fmt.Errorf("Failed to read lstURLs from parameters. %s", err.Error()), packet, callID, 0, nil)
+		errorCode = protocol.RegisterLocalURLs(fmt.Errorf("Failed to read lstURLs from parameters. %s", err.Error()), packet, callID, 0, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -49,7 +44,7 @@ func (protocol *Protocol) handleRegisterLocalURLs(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.registerLocalURLsHandler(nil, packet, callID, gid, lstURLs)
+	errorCode = protocol.RegisterLocalURLs(nil, packet, callID, gid, lstURLs)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

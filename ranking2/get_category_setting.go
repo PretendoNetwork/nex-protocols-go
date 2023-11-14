@@ -8,15 +8,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// GetCategorySetting sets the GetCategorySetting handler function
-func (protocol *Protocol) GetCategorySetting(handler func(err error, packet nex.PacketInterface, callID uint32, category uint32) uint32) {
-	protocol.getCategorySettingHandler = handler
-}
-
 func (protocol *Protocol) handleGetCategorySetting(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.getCategorySettingHandler == nil {
+	if protocol.GetCategorySetting == nil {
 		globals.Logger.Warning("Ranking2::GetCategorySetting not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -31,7 +26,7 @@ func (protocol *Protocol) handleGetCategorySetting(packet nex.PacketInterface) {
 
 	category, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.getCategorySettingHandler(fmt.Errorf("Failed to read category from parameters. %s", err.Error()), packet, callID, 0)
+		errorCode = protocol.GetCategorySetting(fmt.Errorf("Failed to read category from parameters. %s", err.Error()), packet, callID, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -39,7 +34,7 @@ func (protocol *Protocol) handleGetCategorySetting(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.getCategorySettingHandler(nil, packet, callID, category)
+	errorCode = protocol.GetCategorySetting(nil, packet, callID, category)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

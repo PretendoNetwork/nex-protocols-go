@@ -9,15 +9,10 @@ import (
 	service_item_wii_sports_club_types "github.com/PretendoNetwork/nex-protocols-go/service-item/wii-sports-club/types"
 )
 
-// GetServiceItemRightRequest sets the GetServiceItemRightRequest handler function
-func (protocol *Protocol) GetServiceItemRightRequest(handler func(err error, packet nex.PacketInterface, callID uint32, getServiceItemRightParam *service_item_wii_sports_club_types.ServiceItemGetServiceItemRightParam) uint32) {
-	protocol.getServiceItemRightRequestHandler = handler
-}
-
 func (protocol *Protocol) handleGetServiceItemRightRequest(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.getServiceItemRightRequestHandler == nil {
+	if protocol.GetServiceItemRightRequest == nil {
 		globals.Logger.Warning("ServiceItemWiiSportsClub::GetServiceItemRightRequest not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -32,7 +27,7 @@ func (protocol *Protocol) handleGetServiceItemRightRequest(packet nex.PacketInte
 
 	getServiceItemRightParam, err := parametersStream.ReadStructure(service_item_wii_sports_club_types.NewServiceItemGetServiceItemRightParam())
 	if err != nil {
-		errorCode = protocol.getServiceItemRightRequestHandler(fmt.Errorf("Failed to read getServiceItemRightParam from parameters. %s", err.Error()), packet, callID, nil)
+		errorCode = protocol.GetServiceItemRightRequest(fmt.Errorf("Failed to read getServiceItemRightParam from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -40,7 +35,7 @@ func (protocol *Protocol) handleGetServiceItemRightRequest(packet nex.PacketInte
 		return
 	}
 
-	errorCode = protocol.getServiceItemRightRequestHandler(nil, packet, callID, getServiceItemRightParam.(*service_item_wii_sports_club_types.ServiceItemGetServiceItemRightParam))
+	errorCode = protocol.GetServiceItemRightRequest(nil, packet, callID, getServiceItemRightParam.(*service_item_wii_sports_club_types.ServiceItemGetServiceItemRightParam))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

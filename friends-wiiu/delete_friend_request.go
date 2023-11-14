@@ -8,15 +8,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// DeleteFriendRequest sets the DeleteFriendRequest handler function
-func (protocol *Protocol) DeleteFriendRequest(handler func(err error, packet nex.PacketInterface, callID uint32, id uint64) uint32) {
-	protocol.deleteFriendRequestHandler = handler
-}
-
 func (protocol *Protocol) handleDeleteFriendRequest(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.deleteFriendRequestHandler == nil {
+	if protocol.DeleteFriendRequest == nil {
 		globals.Logger.Warning("FriendsWiiU::DeleteFriendRequest not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -31,7 +26,7 @@ func (protocol *Protocol) handleDeleteFriendRequest(packet nex.PacketInterface) 
 
 	id, err := parametersStream.ReadUInt64LE()
 	if err != nil {
-		errorCode = protocol.deleteFriendRequestHandler(fmt.Errorf("Failed to read id from parameters. %s", err.Error()), packet, callID, 0)
+		errorCode = protocol.DeleteFriendRequest(fmt.Errorf("Failed to read id from parameters. %s", err.Error()), packet, callID, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -39,7 +34,7 @@ func (protocol *Protocol) handleDeleteFriendRequest(packet nex.PacketInterface) 
 		return
 	}
 
-	errorCode = protocol.deleteFriendRequestHandler(nil, packet, callID, id)
+	errorCode = protocol.DeleteFriendRequest(nil, packet, callID, id)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

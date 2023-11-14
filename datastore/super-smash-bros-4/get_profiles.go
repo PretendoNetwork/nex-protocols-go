@@ -8,15 +8,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// GetProfiles sets the GetProfiles handler function
-func (protocol *Protocol) GetProfiles(handler func(err error, packet nex.PacketInterface, callID uint32, pidList []*nex.PID) uint32) {
-	protocol.getProfilesHandler = handler
-}
-
 func (protocol *Protocol) handleGetProfiles(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.getProfilesHandler == nil {
+	if protocol.GetProfiles == nil {
 		globals.Logger.Warning("DataStoreSuperSmashBros4::GetProfiles not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -31,7 +26,7 @@ func (protocol *Protocol) handleGetProfiles(packet nex.PacketInterface) {
 
 	pidList, err := parametersStream.ReadListPID()
 	if err != nil {
-		errorCode = protocol.getProfilesHandler(fmt.Errorf("Failed to read pidList from parameters. %s", err.Error()), packet, callID, nil)
+		errorCode = protocol.GetProfiles(fmt.Errorf("Failed to read pidList from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -39,7 +34,7 @@ func (protocol *Protocol) handleGetProfiles(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.getProfilesHandler(nil, packet, callID, pidList)
+	errorCode = protocol.GetProfiles(nil, packet, callID, pidList)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

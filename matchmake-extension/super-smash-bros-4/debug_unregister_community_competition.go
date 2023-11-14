@@ -6,15 +6,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// DebugUnregisterCommunityCompetition sets the DebugUnregisterCommunityCompetition handler function
-func (protocol *Protocol) DebugUnregisterCommunityCompetition(handler func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) uint32) {
-	protocol.debugUnregisterCommunityCompetitionHandler = handler
-}
-
 func (protocol *Protocol) handleDebugUnregisterCommunityCompetition(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.debugUnregisterCommunityCompetitionHandler == nil {
+	if protocol.DebugUnregisterCommunityCompetition == nil {
 		globals.Logger.Warning("MatchmakeExtensionSuperSmashBros4::DebugUnregisterCommunityCompetition not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -26,7 +21,7 @@ func (protocol *Protocol) handleDebugUnregisterCommunityCompetition(packet nex.P
 
 	callID := request.CallID
 
-	errorCode = protocol.debugUnregisterCommunityCompetitionHandler(nil, packet, callID, packet.Payload())
+	errorCode = protocol.DebugUnregisterCommunityCompetition(nil, packet, callID, packet.Payload())
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

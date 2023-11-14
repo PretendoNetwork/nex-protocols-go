@@ -8,15 +8,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// GetFriendPicture sets the GetFriendPicture handler function
-func (protocol *Protocol) GetFriendPicture(handler func(err error, packet nex.PacketInterface, callID uint32, unknown []uint32) uint32) {
-	protocol.getFriendPictureHandler = handler
-}
-
 func (protocol *Protocol) handleGetFriendPicture(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.getFriendPictureHandler == nil {
+	if protocol.GetFriendPicture == nil {
 		globals.Logger.Warning("Friends3DS::GetFriendPicture not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -31,7 +26,7 @@ func (protocol *Protocol) handleGetFriendPicture(packet nex.PacketInterface) {
 
 	unknown, err := parametersStream.ReadListUInt32LE()
 	if err != nil {
-		errorCode = protocol.getFriendPictureHandler(fmt.Errorf("Failed to read unknown from parameters. %s", err.Error()), packet, callID, nil)
+		errorCode = protocol.GetFriendPicture(fmt.Errorf("Failed to read unknown from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -39,7 +34,7 @@ func (protocol *Protocol) handleGetFriendPicture(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.getFriendPictureHandler(nil, packet, callID, unknown)
+	errorCode = protocol.GetFriendPicture(nil, packet, callID, unknown)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

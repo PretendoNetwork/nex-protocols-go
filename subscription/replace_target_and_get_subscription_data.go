@@ -8,13 +8,8 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// ReplaceTargetAndGetSubscriptionData sets the ReplaceTargetAndGetSubscriptionData handler function
-func (protocol *SubscriptionProtocol) ReplaceTargetAndGetSubscriptionData(handler func(err error, packet nex.PacketInterface, callID uint32)) {
-	protocol.replaceTargetAndGetSubscriptionDataHandler = handler
-}
-
-func (protocol *SubscriptionProtocol) handleReplaceTargetAndGetSubscriptionData(packet nex.PacketInterface) {
-	if protocol.replaceTargetAndGetSubscriptionDataHandler == nil {
+func (protocol *Protocol) handleReplaceTargetAndGetSubscriptionData(packet nex.PacketInterface) {
+	if protocol.ReplaceTargetAndGetSubscriptionData == nil {
 		fmt.Println("[Warning] SubscriptionProtocol::ReplaceTargetAndGetSubscriptionData not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -24,5 +19,5 @@ func (protocol *SubscriptionProtocol) handleReplaceTargetAndGetSubscriptionData(
 
 	callID := request.CallID
 
-	go protocol.replaceTargetAndGetSubscriptionDataHandler(nil, packet, callID)
+	go protocol.ReplaceTargetAndGetSubscriptionData(nil, packet, callID)
 }

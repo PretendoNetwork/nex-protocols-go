@@ -8,15 +8,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// GetFriendPresence sets the GetFriendPresence handler function
-func (protocol *Protocol) GetFriendPresence(handler func(err error, packet nex.PacketInterface, callID uint32, pidList []*nex.PID) uint32) {
-	protocol.getFriendPresenceHandler = handler
-}
-
 func (protocol *Protocol) handleGetFriendPresence(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.getFriendPresenceHandler == nil {
+	if protocol.GetFriendPresence == nil {
 		globals.Logger.Warning("Friends3DS::GetFriendPresence not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -31,7 +26,7 @@ func (protocol *Protocol) handleGetFriendPresence(packet nex.PacketInterface) {
 
 	pidList, err := parametersStream.ReadListPID()
 	if err != nil {
-		errorCode = protocol.getFriendPresenceHandler(fmt.Errorf("Failed to read pidList from parameters. %s", err.Error()), packet, callID, nil)
+		errorCode = protocol.GetFriendPresence(fmt.Errorf("Failed to read pidList from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -39,7 +34,7 @@ func (protocol *Protocol) handleGetFriendPresence(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.getFriendPresenceHandler(nil, packet, callID, pidList)
+	errorCode = protocol.GetFriendPresence(nil, packet, callID, pidList)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

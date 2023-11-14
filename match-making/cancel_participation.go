@@ -8,15 +8,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// CancelParticipation sets the CancelParticipation handler function
-func (protocol *Protocol) CancelParticipation(handler func(err error, packet nex.PacketInterface, callID uint32, idGathering uint32, strMessage string) uint32) {
-	protocol.cancelParticipationHandler = handler
-}
-
 func (protocol *Protocol) handleCancelParticipation(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.cancelParticipationHandler == nil {
+	if protocol.CancelParticipation == nil {
 		globals.Logger.Warning("MatchMaking::CancelParticipation not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -31,7 +26,7 @@ func (protocol *Protocol) handleCancelParticipation(packet nex.PacketInterface) 
 
 	idGathering, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.cancelParticipationHandler(fmt.Errorf("Failed to read idGathering from parameters. %s", err.Error()), packet, callID, 0, "")
+		errorCode = protocol.CancelParticipation(fmt.Errorf("Failed to read idGathering from parameters. %s", err.Error()), packet, callID, 0, "")
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -41,7 +36,7 @@ func (protocol *Protocol) handleCancelParticipation(packet nex.PacketInterface) 
 
 	strMessage, err := parametersStream.ReadString()
 	if err != nil {
-		errorCode = protocol.cancelParticipationHandler(fmt.Errorf("Failed to read strMessage from parameters. %s", err.Error()), packet, callID, 0, "")
+		errorCode = protocol.CancelParticipation(fmt.Errorf("Failed to read strMessage from parameters. %s", err.Error()), packet, callID, 0, "")
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -49,7 +44,7 @@ func (protocol *Protocol) handleCancelParticipation(packet nex.PacketInterface) 
 		return
 	}
 
-	errorCode = protocol.cancelParticipationHandler(nil, packet, callID, idGathering, strMessage)
+	errorCode = protocol.CancelParticipation(nil, packet, callID, idGathering, strMessage)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

@@ -6,15 +6,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// TestConnectivity sets the TestConnectivity handler function
-func (protocol *Protocol) TestConnectivity(handler func(err error, packet nex.PacketInterface, callID uint32) uint32) {
-	protocol.testConnectivityHandler = handler
-}
-
 func (protocol *Protocol) handleTestConnectivity(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.testConnectivityHandler == nil {
+	if protocol.TestConnectivity == nil {
 		globals.Logger.Warning("SecureConnection::TestConnectivity not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -24,7 +19,7 @@ func (protocol *Protocol) handleTestConnectivity(packet nex.PacketInterface) {
 
 	callID := request.CallID
 
-	errorCode = protocol.testConnectivityHandler(nil, packet, callID)
+	errorCode = protocol.TestConnectivity(nil, packet, callID)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

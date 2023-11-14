@@ -8,15 +8,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// GetUserStatuses sets the GetUserStatuses handler function
-func (protocol *Protocol) GetUserStatuses(handler func(err error, packet nex.PacketInterface, callID uint32, pids []*nex.PID, unknown []uint8) uint32) {
-	protocol.getUserStatusesHandler = handler
-}
-
 func (protocol *Protocol) handleGetUserStatuses(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.getUserStatusesHandler == nil {
+	if protocol.GetUserStatuses == nil {
 		globals.Logger.Warning("Subscriber::GetUserStatuses not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -31,7 +26,7 @@ func (protocol *Protocol) handleGetUserStatuses(packet nex.PacketInterface) {
 
 	pids, err := parametersStream.ReadListPID()
 	if err != nil {
-		errorCode = protocol.getUserStatusesHandler(fmt.Errorf("Failed to read pids from parameters. %s", err.Error()), packet, callID, nil, nil)
+		errorCode = protocol.GetUserStatuses(fmt.Errorf("Failed to read pids from parameters. %s", err.Error()), packet, callID, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -41,7 +36,7 @@ func (protocol *Protocol) handleGetUserStatuses(packet nex.PacketInterface) {
 
 	unknown, err := parametersStream.ReadListUInt8()
 	if err != nil {
-		errorCode = protocol.getUserStatusesHandler(fmt.Errorf("Failed to read unknown from parameters. %s", err.Error()), packet, callID, nil, nil)
+		errorCode = protocol.GetUserStatuses(fmt.Errorf("Failed to read unknown from parameters. %s", err.Error()), packet, callID, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -49,7 +44,7 @@ func (protocol *Protocol) handleGetUserStatuses(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.getUserStatusesHandler(nil, packet, callID, pids, unknown)
+	errorCode = protocol.GetUserStatuses(nil, packet, callID, pids, unknown)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

@@ -9,15 +9,10 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// LatestCourseSearchObject sets the LatestCourseSearchObject handler function
-func (protocol *Protocol) LatestCourseSearchObject(handler func(err error, packet nex.PacketInterface, callID uint32, param *datastore_types.DataStoreSearchParam, extraData []string) uint32) {
-	protocol.latestCourseSearchObjectHandler = handler
-}
-
 func (protocol *Protocol) handleLatestCourseSearchObject(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.latestCourseSearchObjectHandler == nil {
+	if protocol.LatestCourseSearchObject == nil {
 		globals.Logger.Warning("DataStoreSuperMarioMaker::LatestCourseSearchObject not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -32,7 +27,7 @@ func (protocol *Protocol) handleLatestCourseSearchObject(packet nex.PacketInterf
 
 	param, err := parametersStream.ReadStructure(datastore_types.NewDataStoreSearchParam())
 	if err != nil {
-		errorCode = protocol.latestCourseSearchObjectHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil, nil)
+		errorCode = protocol.LatestCourseSearchObject(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -42,7 +37,7 @@ func (protocol *Protocol) handleLatestCourseSearchObject(packet nex.PacketInterf
 
 	extraData, err := parametersStream.ReadListString()
 	if err != nil {
-		errorCode = protocol.latestCourseSearchObjectHandler(fmt.Errorf("Failed to read extraData from parameters. %s", err.Error()), packet, callID, nil, nil)
+		errorCode = protocol.LatestCourseSearchObject(fmt.Errorf("Failed to read extraData from parameters. %s", err.Error()), packet, callID, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -50,7 +45,7 @@ func (protocol *Protocol) handleLatestCourseSearchObject(packet nex.PacketInterf
 		return
 	}
 
-	errorCode = protocol.latestCourseSearchObjectHandler(nil, packet, callID, param.(*datastore_types.DataStoreSearchParam), extraData)
+	errorCode = protocol.LatestCourseSearchObject(nil, packet, callID, param.(*datastore_types.DataStoreSearchParam), extraData)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

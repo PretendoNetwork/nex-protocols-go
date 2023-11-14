@@ -9,15 +9,10 @@ import (
 	service_item_wii_sports_club_types "github.com/PretendoNetwork/nex-protocols-go/service-item/wii-sports-club/types"
 )
 
-// RequestTicketRestoration sets the RequestTicketRestoration handler function
-func (protocol *Protocol) RequestTicketRestoration(handler func(err error, packet nex.PacketInterface, callID uint32, requestTicketRestorationParam *service_item_wii_sports_club_types.ServiceItemRequestTicketRestorationParam) uint32) {
-	protocol.requestTicketRestorationHandler = handler
-}
-
 func (protocol *Protocol) handleRequestTicketRestoration(packet nex.PacketInterface) {
 	var errorCode uint32
 
-	if protocol.requestTicketRestorationHandler == nil {
+	if protocol.RequestTicketRestoration == nil {
 		globals.Logger.Warning("ServiceItemWiiSportsClub::RequestTicketRestoration not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
@@ -32,7 +27,7 @@ func (protocol *Protocol) handleRequestTicketRestoration(packet nex.PacketInterf
 
 	requestTicketRestorationParam, err := parametersStream.ReadStructure(service_item_wii_sports_club_types.NewServiceItemRequestTicketRestorationParam())
 	if err != nil {
-		errorCode = protocol.requestTicketRestorationHandler(fmt.Errorf("Failed to read requestTicketRestorationParam from parameters. %s", err.Error()), packet, callID, nil)
+		errorCode = protocol.RequestTicketRestoration(fmt.Errorf("Failed to read requestTicketRestorationParam from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -40,7 +35,7 @@ func (protocol *Protocol) handleRequestTicketRestoration(packet nex.PacketInterf
 		return
 	}
 
-	errorCode = protocol.requestTicketRestorationHandler(nil, packet, callID, requestTicketRestorationParam.(*service_item_wii_sports_club_types.ServiceItemRequestTicketRestorationParam))
+	errorCode = protocol.RequestTicketRestoration(nil, packet, callID, requestTicketRestorationParam.(*service_item_wii_sports_club_types.ServiceItemRequestTicketRestorationParam))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 	}

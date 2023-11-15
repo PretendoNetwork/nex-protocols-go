@@ -212,93 +212,93 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 
 	switch request.MethodID {
 	case MethodRegisterGathering:
-		go protocol.handleRegisterGathering(packet)
+		protocol.handleRegisterGathering(packet)
 	case MethodUnregisterGathering:
-		go protocol.handleUnregisterGathering(packet)
+		protocol.handleUnregisterGathering(packet)
 	case MethodUnregisterGatherings:
-		go protocol.handleUnregisterGatherings(packet)
+		protocol.handleUnregisterGatherings(packet)
 	case MethodUpdateGathering:
-		go protocol.handleUpdateGathering(packet)
+		protocol.handleUpdateGathering(packet)
 	case MethodInvite:
-		go protocol.handleInvite(packet)
+		protocol.handleInvite(packet)
 	case MethodAcceptInvitation:
-		go protocol.handleAcceptInvitation(packet)
+		protocol.handleAcceptInvitation(packet)
 	case MethodDeclineInvitation:
-		go protocol.handleDeclineInvitation(packet)
+		protocol.handleDeclineInvitation(packet)
 	case MethodCancelInvitation:
-		go protocol.handleCancelInvitation(packet)
+		protocol.handleCancelInvitation(packet)
 	case MethodGetInvitationsSent:
-		go protocol.handleGetInvitationsSent(packet)
+		protocol.handleGetInvitationsSent(packet)
 	case MethodGetInvitationsReceived:
-		go protocol.handleGetInvitationsReceived(packet)
+		protocol.handleGetInvitationsReceived(packet)
 	case MethodParticipate:
-		go protocol.handleParticipate(packet)
+		protocol.handleParticipate(packet)
 	case MethodCancelParticipation:
-		go protocol.handleCancelParticipation(packet)
+		protocol.handleCancelParticipation(packet)
 	case MethodGetParticipants:
-		go protocol.handleGetParticipants(packet)
+		protocol.handleGetParticipants(packet)
 	case MethodAddParticipants:
-		go protocol.handleAddParticipants(packet)
+		protocol.handleAddParticipants(packet)
 	case MethodGetDetailedParticipants:
-		go protocol.handleGetDetailedParticipants(packet)
+		protocol.handleGetDetailedParticipants(packet)
 	case MethodGetParticipantsURLs:
-		go protocol.handleGetParticipantsURLs(packet)
+		protocol.handleGetParticipantsURLs(packet)
 	case MethodFindByType:
-		go protocol.handleFindByType(packet)
+		protocol.handleFindByType(packet)
 	case MethodFindByDescription:
-		go protocol.handleFindByDescription(packet)
+		protocol.handleFindByDescription(packet)
 	case MethodFindByDescriptionRegex:
-		go protocol.handleFindByDescriptionRegex(packet)
+		protocol.handleFindByDescriptionRegex(packet)
 	case MethodFindByID:
-		go protocol.handleFindByID(packet)
+		protocol.handleFindByID(packet)
 	case MethodFindBySingleID:
-		go protocol.handleFindBySingleID(packet)
+		protocol.handleFindBySingleID(packet)
 	case MethodFindByOwner:
-		go protocol.handleFindByOwner(packet)
+		protocol.handleFindByOwner(packet)
 	case MethodFindByParticipants:
-		go protocol.handleFindByParticipants(packet)
+		protocol.handleFindByParticipants(packet)
 	case MethodFindInvitations:
-		go protocol.handleFindInvitations(packet)
+		protocol.handleFindInvitations(packet)
 	case MethodFindBySQLQuery:
-		go protocol.handleFindBySQLQuery(packet)
+		protocol.handleFindBySQLQuery(packet)
 	case MethodLaunchSession:
-		go protocol.handleLaunchSession(packet)
+		protocol.handleLaunchSession(packet)
 	case MethodUpdateSessionURL:
-		go protocol.handleUpdateSessionURL(packet)
+		protocol.handleUpdateSessionURL(packet)
 	case MethodGetSessionURL:
-		go protocol.handleGetSessionURL(packet)
+		protocol.handleGetSessionURL(packet)
 	case MethodGetState:
-		go protocol.handleGetState(packet)
+		protocol.handleGetState(packet)
 	case MethodSetState:
-		go protocol.handleSetState(packet)
+		protocol.handleSetState(packet)
 	case MethodReportStats:
-		go protocol.handleReportStats(packet)
+		protocol.handleReportStats(packet)
 	case MethodGetStats:
-		go protocol.handleGetStats(packet)
+		protocol.handleGetStats(packet)
 	case MethodDeleteGathering:
-		go protocol.handleDeleteGathering(packet)
+		protocol.handleDeleteGathering(packet)
 	case MethodGetPendingDeletions:
-		go protocol.handleGetPendingDeletions(packet)
+		protocol.handleGetPendingDeletions(packet)
 	case MethodDeleteFromDeletions:
-		go protocol.handleDeleteFromDeletions(packet)
+		protocol.handleDeleteFromDeletions(packet)
 	case MethodMigrateGatheringOwnershipV1:
-		go protocol.handleMigrateGatheringOwnershipV1(packet)
+		protocol.handleMigrateGatheringOwnershipV1(packet)
 	case MethodFindByDescriptionLike:
-		go protocol.handleFindByDescriptionLike(packet)
+		protocol.handleFindByDescriptionLike(packet)
 	case MethodRegisterLocalURL:
-		go protocol.handleRegisterLocalURL(packet)
+		protocol.handleRegisterLocalURL(packet)
 	case MethodRegisterLocalURLs:
-		go protocol.handleRegisterLocalURLs(packet)
+		protocol.handleRegisterLocalURLs(packet)
 	case MethodUpdateSessionHostV1:
-		go protocol.handleUpdateSessionHostV1(packet)
+		protocol.handleUpdateSessionHostV1(packet)
 	case MethodGetSessionURLs:
-		go protocol.handleGetSessionURLs(packet)
+		protocol.handleGetSessionURLs(packet)
 	case MethodUpdateSessionHost:
-		go protocol.handleUpdateSessionHost(packet)
+		protocol.handleUpdateSessionHost(packet)
 	case MethodUpdateGatheringOwnership:
-		go protocol.handleUpdateGatheringOwnership(packet)
+		protocol.handleUpdateGatheringOwnership(packet)
 	case MethodMigrateGatheringOwnership:
-		go protocol.handleMigrateGatheringOwnership(packet)
+		protocol.handleMigrateGatheringOwnership(packet)
 	default:
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		fmt.Printf("Unsupported MatchMaking method ID: %#v\n", request.MethodID)

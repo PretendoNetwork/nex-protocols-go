@@ -58,17 +58,17 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 
 	switch request.MethodID {
 	case MethodEndParticipation:
-		go protocol.handleEndParticipation(packet)
+		protocol.handleEndParticipation(packet)
 	case MethodGetParticipants:
-		go protocol.handleGetParticipants(packet)
+		protocol.handleGetParticipants(packet)
 	case MethodGetDetailedParticipants:
-		go protocol.handleGetDetailedParticipants(packet)
+		protocol.handleGetDetailedParticipants(packet)
 	case MethodGetParticipantsURLs:
-		go protocol.handleGetParticipantsURLs(packet)
+		protocol.handleGetParticipantsURLs(packet)
 	case MethodGetGatheringRelations:
-		go protocol.handleGetGatheringRelations(packet)
+		protocol.handleGetGatheringRelations(packet)
 	case MethodDeleteFromDeletions:
-		go protocol.handleDeleteFromDeletions(packet)
+		protocol.handleDeleteFromDeletions(packet)
 	default:
 		fmt.Printf("Unsupported MatchMakingExt method ID: %#v\n", request.MethodID)
 	}

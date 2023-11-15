@@ -265,91 +265,91 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 
 	switch request.MethodID {
 	case MethodGetObjectInfos:
-		go protocol.handleGetObjectInfos(packet)
+		protocol.handleGetObjectInfos(packet)
 	case MethodGetMetaByOwnerID:
-		go protocol.handleGetMetaByOwnerID(packet)
+		protocol.handleGetMetaByOwnerID(packet)
 	case MethodCustomSearchObject:
-		go protocol.handleCustomSearchObject(packet)
+		protocol.handleCustomSearchObject(packet)
 	case MethodRateCustomRanking:
-		go protocol.handleRateCustomRanking(packet)
+		protocol.handleRateCustomRanking(packet)
 	case MethodGetCustomRanking:
-		go protocol.handleGetCustomRanking(packet)
+		protocol.handleGetCustomRanking(packet)
 	case MethodGetCustomRankingByDataID:
-		go protocol.handleGetCustomRankingByDataID(packet)
+		protocol.handleGetCustomRankingByDataID(packet)
 	case MethodDeleteCustomRanking:
-		go protocol.handleDeleteCustomRanking(packet)
+		protocol.handleDeleteCustomRanking(packet)
 	case MethodAddToBufferQueue:
-		go protocol.handleAddToBufferQueue(packet)
+		protocol.handleAddToBufferQueue(packet)
 	case MethodAddToBufferQueues:
-		go protocol.handleAddToBufferQueues(packet)
+		protocol.handleAddToBufferQueues(packet)
 	case MethodGetBufferQueue:
-		go protocol.handleGetBufferQueue(packet)
+		protocol.handleGetBufferQueue(packet)
 	case MethodGetBufferQueues:
-		go protocol.handleGetBufferQueues(packet)
+		protocol.handleGetBufferQueues(packet)
 	case MethodClearBufferQueues:
-		go protocol.handleClearBufferQueues(packet)
+		protocol.handleClearBufferQueues(packet)
 	case MethodCompleteAttachFile:
-		go protocol.handleCompleteAttachFile(packet)
+		protocol.handleCompleteAttachFile(packet)
 	case MethodCompleteAttachFileV1:
-		go protocol.handleCompleteAttachFileV1(packet)
+		protocol.handleCompleteAttachFileV1(packet)
 	case MethodPrepareAttachFile:
-		go protocol.handlePrepareAttachFile(packet)
+		protocol.handlePrepareAttachFile(packet)
 	case MethodConditionalSearchObject:
-		go protocol.handleConditionalSearchObject(packet)
+		protocol.handleConditionalSearchObject(packet)
 	case MethodGetApplicationConfig:
-		go protocol.handleGetApplicationConfig(packet)
+		protocol.handleGetApplicationConfig(packet)
 	case MethodSetApplicationConfig:
-		go protocol.handleSetApplicationConfig(packet)
+		protocol.handleSetApplicationConfig(packet)
 	case MethodDeleteApplicationConfig:
-		go protocol.handleDeleteApplicationConfig(packet)
+		protocol.handleDeleteApplicationConfig(packet)
 	case MethodLatestCourseSearchObject:
-		go protocol.handleLatestCourseSearchObject(packet)
+		protocol.handleLatestCourseSearchObject(packet)
 	case MethodFollowingsLatestCourseSearchObject:
-		go protocol.handleFollowingsLatestCourseSearchObject(packet)
+		protocol.handleFollowingsLatestCourseSearchObject(packet)
 	case MethodRecommendedCourseSearchObject:
-		go protocol.handleRecommendedCourseSearchObject(packet)
+		protocol.handleRecommendedCourseSearchObject(packet)
 	case MethodScoreRangeCascadedSearchObject:
-		go protocol.handleScoreRangeCascadedSearchObject(packet)
+		protocol.handleScoreRangeCascadedSearchObject(packet)
 	case MethodSuggestedCourseSearchObject:
-		go protocol.handleSuggestedCourseSearchObject(packet)
+		protocol.handleSuggestedCourseSearchObject(packet)
 	case MethodPreparePostObjectWithOwnerIDAndDataID:
-		go protocol.handlePreparePostObjectWithOwnerIDAndDataID(packet)
+		protocol.handlePreparePostObjectWithOwnerIDAndDataID(packet)
 	case MethodCompletePostObjectWithOwnerID:
-		go protocol.handleCompletePostObjectWithOwnerID(packet)
+		protocol.handleCompletePostObjectWithOwnerID(packet)
 	case MethodUploadCourseRecord:
-		go protocol.handleUploadCourseRecord(packet)
+		protocol.handleUploadCourseRecord(packet)
 	case MethodGetCourseRecord:
-		go protocol.handleGetCourseRecord(packet)
+		protocol.handleGetCourseRecord(packet)
 	case MethodDeleteCourseRecord:
-		go protocol.handleDeleteCourseRecord(packet)
+		protocol.handleDeleteCourseRecord(packet)
 	case MethodGetApplicationConfigString:
-		go protocol.handleGetApplicationConfigString(packet)
+		protocol.handleGetApplicationConfigString(packet)
 	case MethodSetApplicationConfigString:
-		go protocol.handleSetApplicationConfigString(packet)
+		protocol.handleSetApplicationConfigString(packet)
 	case MethodGetDeletionReason:
-		go protocol.handleGetDeletionReason(packet)
+		protocol.handleGetDeletionReason(packet)
 	case MethodSetDeletionReason:
-		go protocol.handleSetDeletionReason(packet)
+		protocol.handleSetDeletionReason(packet)
 	case MethodGetMetasWithCourseRecord:
-		go protocol.handleGetMetasWithCourseRecord(packet)
+		protocol.handleGetMetasWithCourseRecord(packet)
 	case MethodCheckRateCustomRankingCounter:
-		go protocol.handleCheckRateCustomRankingCounter(packet)
+		protocol.handleCheckRateCustomRankingCounter(packet)
 	case MethodResetRateCustomRankingCounter:
-		go protocol.handleResetRateCustomRankingCounter(packet)
+		protocol.handleResetRateCustomRankingCounter(packet)
 	case MethodBestScoreRateCourseSearchObject:
-		go protocol.handleBestScoreRateCourseSearchObject(packet)
+		protocol.handleBestScoreRateCourseSearchObject(packet)
 	case MethodCTRPickUpCourseSearchObject:
-		go protocol.handleCTRPickUpCourseSearchObject(packet)
+		protocol.handleCTRPickUpCourseSearchObject(packet)
 	case MethodSetCachedRanking:
-		go protocol.handleSetCachedRanking(packet)
+		protocol.handleSetCachedRanking(packet)
 	case MethodDeleteCachedRanking:
-		go protocol.handleDeleteCachedRanking(packet)
+		protocol.handleDeleteCachedRanking(packet)
 	case MethodChangePlayablePlatform:
-		go protocol.handleChangePlayablePlatform(packet)
+		protocol.handleChangePlayablePlatform(packet)
 	case MethodSearchUnknownPlatformObjects:
-		go protocol.handleSearchUnknownPlatformObjects(packet)
+		protocol.handleSearchUnknownPlatformObjects(packet)
 	case MethodReportCourse:
-		go protocol.handleReportCourse(packet)
+		protocol.handleReportCourse(packet)
 	default:
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		fmt.Printf("Unsupported DataStore (Super Mario Maker) method ID: %#v\n", request.MethodID)

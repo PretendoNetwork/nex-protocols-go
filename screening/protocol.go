@@ -42,9 +42,9 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 
 	switch request.MethodID {
 	case MethodReportDataStoreContent:
-		go protocol.handleReportDataStoreContent(packet)
+		protocol.handleReportDataStoreContent(packet)
 	case MethodReportUser:
-		go protocol.handleReportUser(packet)
+		protocol.handleReportUser(packet)
 	default:
 		fmt.Printf("Unsupported Screening method ID: %#v\n", request.MethodID)
 	}

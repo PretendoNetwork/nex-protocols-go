@@ -59,17 +59,17 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 
 	switch request.MethodID {
 	case MethodLogin:
-		go protocol.handleLogin(packet)
+		protocol.handleLogin(packet)
 	case MethodLoginEx:
-		go protocol.handleLoginEx(packet)
+		protocol.handleLoginEx(packet)
 	case MethodRequestTicket:
-		go protocol.handleRequestTicket(packet)
+		protocol.handleRequestTicket(packet)
 	case MethodGetPID:
-		go protocol.handleGetPID(packet)
+		protocol.handleGetPID(packet)
 	case MethodGetName:
-		go protocol.handleGetName(packet)
+		protocol.handleGetName(packet)
 	case MethodLoginWithContext:
-		go protocol.handleLoginWithContext(packet)
+		protocol.handleLoginWithContext(packet)
 	default:
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		fmt.Printf("Unsupported Ticket Granting method ID: %#v\n", request.MethodID)

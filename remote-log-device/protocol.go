@@ -38,7 +38,7 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 
 	switch request.MethodID {
 	case MethodLog:
-		go protocol.handleLog(packet)
+		protocol.handleLog(packet)
 	default:
 		fmt.Printf("Unsupported RemoteLogDevice method ID: %#v\n", request.MethodID)
 	}

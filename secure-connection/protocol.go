@@ -67,21 +67,21 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 
 	switch request.MethodID {
 	case MethodRegister:
-		go protocol.handleRegister(packet)
+		protocol.handleRegister(packet)
 	case MethodRequestConnectionData:
-		go protocol.handleRequestConnectionData(packet)
+		protocol.handleRequestConnectionData(packet)
 	case MethodRequestURLs:
-		go protocol.handleRequestURLs(packet)
+		protocol.handleRequestURLs(packet)
 	case MethodRegisterEx:
-		go protocol.handleRegisterEx(packet)
+		protocol.handleRegisterEx(packet)
 	case MethodTestConnectivity:
-		go protocol.handleTestConnectivity(packet)
+		protocol.handleTestConnectivity(packet)
 	case MethodUpdateURLs:
-		go protocol.handleUpdateURLs(packet)
+		protocol.handleUpdateURLs(packet)
 	case MethodReplaceURL:
-		go protocol.handleReplaceURL(packet)
+		protocol.handleReplaceURL(packet)
 	case MethodSendReport:
-		go protocol.handleSendReport(packet)
+		protocol.handleSendReport(packet)
 	default:
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		fmt.Printf("Unsupported SecureConnection method ID: %#v\n", request.MethodID)

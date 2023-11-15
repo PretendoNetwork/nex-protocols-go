@@ -54,19 +54,19 @@ func (protocol *Protocol) Setup() {
 		if request.ProtocolID == ProtocolID {
 			switch request.MethodID {
 			case MethodFindByGroup:
-				go protocol.handleFindByGroup(packet)
+				protocol.handleFindByGroup(packet)
 			case MethodInsertItem:
-				go protocol.handleInsertItem(packet)
+				protocol.handleInsertItem(packet)
 			case MethodRemoveItem:
-				go protocol.handleRemoveItem(packet)
+				protocol.handleRemoveItem(packet)
 			case MethodGetItem:
-				go protocol.handleGetItem(packet)
+				protocol.handleGetItem(packet)
 			case MethodInsertCustomItem:
-				go protocol.handleInsertCustomItem(packet)
+				protocol.handleInsertCustomItem(packet)
 			case MethodGetCustomItem:
-				go protocol.handleGetCustomItem(packet)
+				protocol.handleGetCustomItem(packet)
 			case MethodFindItemsBySQLQuery:
-				go protocol.handleFindItemsBySQLQuery(packet)
+				protocol.handleFindItemsBySQLQuery(packet)
 			default:
 				go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 				fmt.Printf("Unsupported Persistent Store method ID: %#v\n", request.MethodID)

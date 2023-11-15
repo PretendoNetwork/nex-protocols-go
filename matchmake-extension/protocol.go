@@ -252,113 +252,113 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 
 	switch request.MethodID {
 	case MethodCloseParticipation:
-		go protocol.handleCloseParticipation(packet)
+		protocol.handleCloseParticipation(packet)
 	case MethodOpenParticipation:
-		go protocol.handleOpenParticipation(packet)
+		protocol.handleOpenParticipation(packet)
 	case MethodAutoMatchmakePostpone:
-		go protocol.handleAutoMatchmakePostpone(packet)
+		protocol.handleAutoMatchmakePostpone(packet)
 	case MethodBrowseMatchmakeSession:
-		go protocol.handleBrowseMatchmakeSession(packet)
+		protocol.handleBrowseMatchmakeSession(packet)
 	case MethodBrowseMatchmakeSessionWithHostURLs:
-		go protocol.handleBrowseMatchmakeSessionWithHostURLs(packet)
+		protocol.handleBrowseMatchmakeSessionWithHostURLs(packet)
 	case MethodCreateMatchmakeSession:
-		go protocol.handleCreateMatchmakeSession(packet)
+		protocol.handleCreateMatchmakeSession(packet)
 	case MethodJoinMatchmakeSession:
-		go protocol.handleJoinMatchmakeSession(packet)
+		protocol.handleJoinMatchmakeSession(packet)
 	case MethodModifyCurrentGameAttribute:
-		go protocol.handleModifyCurrentGameAttribute(packet)
+		protocol.handleModifyCurrentGameAttribute(packet)
 	case MethodUpdateNotificationData:
-		go protocol.handleUpdateNotificationData(packet)
+		protocol.handleUpdateNotificationData(packet)
 	case MethodGetFriendNotificationData:
-		go protocol.handleGetFriendNotificationData(packet)
+		protocol.handleGetFriendNotificationData(packet)
 	case MethodUpdateApplicationBuffer:
-		go protocol.handleUpdateApplicationBuffer(packet)
+		protocol.handleUpdateApplicationBuffer(packet)
 	case MethodUpdateMatchmakeSessionAttribute:
-		go protocol.handleUpdateMatchmakeSessionAttribute(packet)
+		protocol.handleUpdateMatchmakeSessionAttribute(packet)
 	case MethodGetlstFriendNotificationData:
-		go protocol.handleGetlstFriendNotificationData(packet)
+		protocol.handleGetlstFriendNotificationData(packet)
 	case MethodUpdateMatchmakeSession:
-		go protocol.handleUpdateMatchmakeSession(packet)
+		protocol.handleUpdateMatchmakeSession(packet)
 	case MethodAutoMatchmakeWithSearchCriteriaPostpone:
-		go protocol.handleAutoMatchmakeWithSearchCriteriaPostpone(packet)
+		protocol.handleAutoMatchmakeWithSearchCriteriaPostpone(packet)
 	case MethodGetPlayingSession:
-		go protocol.handleGetPlayingSession(packet)
+		protocol.handleGetPlayingSession(packet)
 	case MethodCreateCommunity:
-		go protocol.handleCreateCommunity(packet)
+		protocol.handleCreateCommunity(packet)
 	case MethodUpdateCommunity:
-		go protocol.handleUpdateCommunity(packet)
+		protocol.handleUpdateCommunity(packet)
 	case MethodJoinCommunity:
-		go protocol.handleJoinCommunity(packet)
+		protocol.handleJoinCommunity(packet)
 	case MethodFindCommunityByGatheringID:
-		go protocol.handleFindCommunityByGatheringID(packet)
+		protocol.handleFindCommunityByGatheringID(packet)
 	case MethodFindOfficialCommunity:
-		go protocol.handleFindOfficialCommunity(packet)
+		protocol.handleFindOfficialCommunity(packet)
 	case MethodFindCommunityByParticipant:
-		go protocol.handleFindCommunityByParticipant(packet)
+		protocol.handleFindCommunityByParticipant(packet)
 	case MethodUpdatePrivacySetting:
-		go protocol.handleUpdatePrivacySetting(packet)
+		protocol.handleUpdatePrivacySetting(packet)
 	case MethodGetMyBlockList:
-		go protocol.handleGetMyBlockList(packet)
+		protocol.handleGetMyBlockList(packet)
 	case MethodAddToBlockList:
-		go protocol.handleAddToBlockList(packet)
+		protocol.handleAddToBlockList(packet)
 	case MethodRemoveFromBlockList:
-		go protocol.handleRemoveFromBlockList(packet)
+		protocol.handleRemoveFromBlockList(packet)
 	case MethodClearMyBlockList:
-		go protocol.handleClearMyBlockList(packet)
+		protocol.handleClearMyBlockList(packet)
 	case MethodReportViolation:
-		go protocol.handleReportViolation(packet)
+		protocol.handleReportViolation(packet)
 	case MethodIsViolationUser:
-		go protocol.handleIsViolationUser(packet)
+		protocol.handleIsViolationUser(packet)
 	case MethodJoinMatchmakeSessionEx:
-		go protocol.handleJoinMatchmakeSessionEx(packet)
+		protocol.handleJoinMatchmakeSessionEx(packet)
 	case MethodGetSimplePlayingSession:
-		go protocol.handleGetSimplePlayingSession(packet)
+		protocol.handleGetSimplePlayingSession(packet)
 	case MethodGetSimpleCommunity:
-		go protocol.handleGetSimpleCommunity(packet)
+		protocol.handleGetSimpleCommunity(packet)
 	case MethodAutoMatchmakeWithGatheringIDPostpone:
-		go protocol.handleAutoMatchmakeWithGatheringIDPostpone(packet)
+		protocol.handleAutoMatchmakeWithGatheringIDPostpone(packet)
 	case MethodUpdateProgressScore:
-		go protocol.handleUpdateProgressScore(packet)
+		protocol.handleUpdateProgressScore(packet)
 	case MethodDebugNotifyEvent:
-		go protocol.handleDebugNotifyEvent(packet)
+		protocol.handleDebugNotifyEvent(packet)
 	case MethodGenerateMatchmakeSessionSystemPassword:
-		go protocol.handleGenerateMatchmakeSessionSystemPassword(packet)
+		protocol.handleGenerateMatchmakeSessionSystemPassword(packet)
 	case MethodClearMatchmakeSessionSystemPassword:
-		go protocol.handleClearMatchmakeSessionSystemPassword(packet)
+		protocol.handleClearMatchmakeSessionSystemPassword(packet)
 	case MethodCreateMatchmakeSessionWithParam:
-		go protocol.handleCreateMatchmakeSessionWithParam(packet)
+		protocol.handleCreateMatchmakeSessionWithParam(packet)
 	case MethodJoinMatchmakeSessionWithParam:
-		go protocol.handleJoinMatchmakeSessionWithParam(packet)
+		protocol.handleJoinMatchmakeSessionWithParam(packet)
 	case MethodAutoMatchmakeWithParamPostpone:
-		go protocol.handleAutoMatchmakeWithParamPostpone(packet)
+		protocol.handleAutoMatchmakeWithParamPostpone(packet)
 	case MethodFindMatchmakeSessionByGatheringIDDetail:
-		go protocol.handleFindMatchmakeSessionByGatheringIDDetail(packet)
+		protocol.handleFindMatchmakeSessionByGatheringIDDetail(packet)
 	case MethodBrowseMatchmakeSessionNoHolder:
-		go protocol.handleBrowseMatchmakeSessionNoHolder(packet)
+		protocol.handleBrowseMatchmakeSessionNoHolder(packet)
 	case MethodBrowseMatchmakeSessionWithHostURLsNoHolder:
-		go protocol.handleBrowseMatchmakeSessionWithHostURLsNoHolder(packet)
+		protocol.handleBrowseMatchmakeSessionWithHostURLsNoHolder(packet)
 	case MethodUpdateMatchmakeSessionPart:
-		go protocol.handleUpdateMatchmakeSessionPart(packet)
+		protocol.handleUpdateMatchmakeSessionPart(packet)
 	case MethodRequestMatchmaking:
-		go protocol.handleRequestMatchmaking(packet)
+		protocol.handleRequestMatchmaking(packet)
 	case MethodWithdrawMatchmaking:
-		go protocol.handleWithdrawMatchmaking(packet)
+		protocol.handleWithdrawMatchmaking(packet)
 	case MethodWithdrawMatchmakingAll:
-		go protocol.handleWithdrawMatchmakingAll(packet)
+		protocol.handleWithdrawMatchmakingAll(packet)
 	case MethodFindMatchmakeSessionByGatheringID:
-		go protocol.handleFindMatchmakeSessionByGatheringID(packet)
+		protocol.handleFindMatchmakeSessionByGatheringID(packet)
 	case MethodFindMatchmakeSessionBySingleGatheringID:
-		go protocol.handleFindMatchmakeSessionBySingleGatheringID(packet)
+		protocol.handleFindMatchmakeSessionBySingleGatheringID(packet)
 	case MethodFindMatchmakeSessionByOwner:
-		go protocol.handleFindMatchmakeSessionByOwner(packet)
+		protocol.handleFindMatchmakeSessionByOwner(packet)
 	case MethodFindMatchmakeSessionByParticipant:
-		go protocol.handleFindMatchmakeSessionByParticipant(packet)
+		protocol.handleFindMatchmakeSessionByParticipant(packet)
 	case MethodBrowseMatchmakeSessionNoHolderNoResultRange:
-		go protocol.handleBrowseMatchmakeSessionNoHolderNoResultRange(packet)
+		protocol.handleBrowseMatchmakeSessionNoHolderNoResultRange(packet)
 	case MethodBrowseMatchmakeSessionWithHostURLsNoHolderNoResultRange:
-		go protocol.handleBrowseMatchmakeSessionWithHostURLsNoHolderNoResultRange(packet)
+		protocol.handleBrowseMatchmakeSessionWithHostURLsNoHolderNoResultRange(packet)
 	case MethodFindCommunityByOwner:
-		go protocol.handleFindCommunityByOwner(packet)
+		protocol.handleFindCommunityByOwner(packet)
 	default:
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		fmt.Printf("Unsupported Matchmake Extension method ID: %#v\n", request.MethodID)

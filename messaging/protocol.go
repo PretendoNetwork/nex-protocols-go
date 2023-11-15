@@ -68,21 +68,21 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 
 	switch request.MethodID {
 	case MethodDeliverMessage:
-		go protocol.handleDeliverMessage(packet)
+		protocol.handleDeliverMessage(packet)
 	case MethodGetNumberOfMessages:
-		go protocol.handleGetNumberOfMessages(packet)
+		protocol.handleGetNumberOfMessages(packet)
 	case MethodGetMessagesHeaders:
-		go protocol.handleGetMessagesHeaders(packet)
+		protocol.handleGetMessagesHeaders(packet)
 	case MethodRetrieveAllMessagesWithinRange:
-		go protocol.handleRetrieveAllMessagesWithinRange(packet)
+		protocol.handleRetrieveAllMessagesWithinRange(packet)
 	case MethodRetrieveMessages:
-		go protocol.handleRetrieveMessages(packet)
+		protocol.handleRetrieveMessages(packet)
 	case MethodDeleteMessages:
-		go protocol.handleDeleteMessages(packet)
+		protocol.handleDeleteMessages(packet)
 	case MethodDeleteAllMessages:
-		go protocol.handleDeleteAllMessages(packet)
+		protocol.handleDeleteAllMessages(packet)
 	case MethodDeliverMessageMultiTarget:
-		go protocol.handleDeliverMessageMultiTarget(packet)
+		protocol.handleDeliverMessageMultiTarget(packet)
 	default:
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		fmt.Printf("Unsupported Messaging method ID: %#v\n", request.MethodID)

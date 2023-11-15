@@ -34,9 +34,9 @@ func (protocol *Protocol) Setup() {
 		if request.ProtocolID == ProtocolID {
 			switch request.MethodID {
 			case MethodAcquireCardID:
-				go protocol.handleAcquireCardID(packet)
+				protocol.handleAcquireCardID(packet)
 			case MethodActivateWithCardID:
-				go protocol.handleActivateWithCardID(packet)
+				protocol.handleActivateWithCardID(packet)
 			default:
 				go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 				fmt.Printf("Unsupported StorageManager method ID: %#v\n", request.MethodID)

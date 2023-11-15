@@ -41,13 +41,13 @@ func (protocol *Protocol) Setup() {
 		if request.ProtocolID == ProtocolID {
 			switch request.MethodID {
 			case MethodPingDaemon:
-				go protocol.handlePingDaemon(packet)
+				protocol.handlePingDaemon(packet)
 			case MethodPingDatabase:
-				go protocol.handlePingDatabase(packet)
+				protocol.handlePingDatabase(packet)
 			case MethodRunSanityCheck:
-				go protocol.handleRunSanityCheck(packet)
+				protocol.handleRunSanityCheck(packet)
 			case MethodFixSanityErrors:
-				go protocol.handleFixSanityErrors(packet)
+				protocol.handleFixSanityErrors(packet)
 			default:
 				fmt.Printf("Unsupported Health method ID: %#v\n", request.MethodID)
 			}

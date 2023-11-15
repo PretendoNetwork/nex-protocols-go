@@ -140,57 +140,57 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 
 	switch request.MethodID {
 	case MethodUpdateProfile:
-		go protocol.handleUpdateProfile(packet)
+		protocol.handleUpdateProfile(packet)
 	case MethodUpdateMii:
-		go protocol.handleUpdateMii(packet)
+		protocol.handleUpdateMii(packet)
 	case MethodUpdateMiiList:
-		go protocol.handleUpdateMiiList(packet)
+		protocol.handleUpdateMiiList(packet)
 	case MethodUpdatePlayedGames:
-		go protocol.handleUpdatePlayedGames(packet)
+		protocol.handleUpdatePlayedGames(packet)
 	case MethodUpdatePreference:
-		go protocol.handleUpdatePreference(packet)
+		protocol.handleUpdatePreference(packet)
 	case MethodGetFriendMii:
-		go protocol.handleGetFriendMii(packet)
+		protocol.handleGetFriendMii(packet)
 	case MethodGetFriendMiiList:
-		go protocol.handleGetFriendMiiList(packet)
+		protocol.handleGetFriendMiiList(packet)
 	case MethodIsActiveGame:
-		go protocol.handleIsActiveGame(packet)
+		protocol.handleIsActiveGame(packet)
 	case MethodGetPrincipalIDByLocalFriendCode:
-		go protocol.handleGetPrincipalIDByLocalFriendCode(packet)
+		protocol.handleGetPrincipalIDByLocalFriendCode(packet)
 	case MethodGetFriendRelationships:
-		go protocol.handleGetFriendRelationships(packet)
+		protocol.handleGetFriendRelationships(packet)
 	case MethodAddFriendByPrincipalID:
-		go protocol.handleAddFriendByPrincipalID(packet)
+		protocol.handleAddFriendByPrincipalID(packet)
 	case MethodAddFriendBylstPrincipalID:
-		go protocol.handleAddFriendBylstPrincipalID(packet)
+		protocol.handleAddFriendBylstPrincipalID(packet)
 	case MethodRemoveFriendByLocalFriendCode:
-		go protocol.handleRemoveFriendByLocalFriendCode(packet)
+		protocol.handleRemoveFriendByLocalFriendCode(packet)
 	case MethodRemoveFriendByPrincipalID:
-		go protocol.handleRemoveFriendByPrincipalID(packet)
+		protocol.handleRemoveFriendByPrincipalID(packet)
 	case MethodGetAllFriends:
-		go protocol.handleGetAllFriends(packet)
+		protocol.handleGetAllFriends(packet)
 	case MethodUpdateBlackList:
-		go protocol.handleUpdateBlackList(packet)
+		protocol.handleUpdateBlackList(packet)
 	case MethodSyncFriend:
-		go protocol.handleSyncFriend(packet)
+		protocol.handleSyncFriend(packet)
 	case MethodUpdatePresence:
-		go protocol.handleUpdatePresence(packet)
+		protocol.handleUpdatePresence(packet)
 	case MethodUpdateFavoriteGameKey:
-		go protocol.handleUpdateFavoriteGameKey(packet)
+		protocol.handleUpdateFavoriteGameKey(packet)
 	case MethodUpdateComment:
-		go protocol.handleUpdateComment(packet)
+		protocol.handleUpdateComment(packet)
 	case MethodUpdatePicture:
-		go protocol.handleUpdatePicture(packet)
+		protocol.handleUpdatePicture(packet)
 	case MethodGetFriendPresence:
-		go protocol.handleGetFriendPresence(packet)
+		protocol.handleGetFriendPresence(packet)
 	case MethodGetFriendComment:
-		go protocol.handleGetFriendComment(packet)
+		protocol.handleGetFriendComment(packet)
 	case MethodGetFriendPicture:
-		go protocol.handleGetFriendPicture(packet)
+		protocol.handleGetFriendPicture(packet)
 	case MethodGetFriendPersistentInfo:
-		go protocol.handleGetFriendPersistentInfo(packet)
+		protocol.handleGetFriendPersistentInfo(packet)
 	case MethodSendInvitation:
-		go protocol.handleSendInvitation(packet)
+		protocol.handleSendInvitation(packet)
 	default:
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		fmt.Printf("Unsupported Friends (3DS) method ID: %#v\n", request.MethodID)

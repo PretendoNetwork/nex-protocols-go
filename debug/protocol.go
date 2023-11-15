@@ -62,19 +62,19 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 
 	switch request.MethodID {
 	case MethodEnableAPIRecorder:
-		go protocol.handleEnableAPIRecorder(packet)
+		protocol.handleEnableAPIRecorder(packet)
 	case MethodDisableAPIRecorder:
-		go protocol.handleDisableAPIRecorder(packet)
+		protocol.handleDisableAPIRecorder(packet)
 	case MethodIsAPIRecorderEnabled:
-		go protocol.handleIsAPIRecorderEnabled(packet)
+		protocol.handleIsAPIRecorderEnabled(packet)
 	case MethodGetAPICalls:
-		go protocol.handleGetAPICalls(packet)
+		protocol.handleGetAPICalls(packet)
 	case MethodSetExcludeJoinedMatchmakeSession:
-		go protocol.handleSetExcludeJoinedMatchmakeSession(packet)
+		protocol.handleSetExcludeJoinedMatchmakeSession(packet)
 	case MethodGetExcludeJoinedMatchmakeSession:
-		go protocol.handleGetExcludeJoinedMatchmakeSession(packet)
+		protocol.handleGetExcludeJoinedMatchmakeSession(packet)
 	case MethodGetAPICallSummary:
-		go protocol.handleGetAPICallSummary(packet)
+		protocol.handleGetAPICallSummary(packet)
 	default:
 		fmt.Printf("Unsupported Debug method ID: %#v\n", request.MethodID)
 	}

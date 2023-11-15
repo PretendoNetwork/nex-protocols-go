@@ -155,65 +155,65 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 
 	switch request.MethodID {
 	case MethodCreateAccount:
-		go protocol.handleCreateAccount(packet)
+		protocol.handleCreateAccount(packet)
 	case MethodDeleteAccount:
-		go protocol.handleDeleteAccount(packet)
+		protocol.handleDeleteAccount(packet)
 	case MethodDisableAccount:
-		go protocol.handleDisableAccount(packet)
+		protocol.handleDisableAccount(packet)
 	case MethodChangePassword:
-		go protocol.handleChangePassword(packet)
+		protocol.handleChangePassword(packet)
 	case MethodTestCapability:
-		go protocol.handleTestCapability(packet)
+		protocol.handleTestCapability(packet)
 	case MethodGetName:
-		go protocol.handleGetName(packet)
+		protocol.handleGetName(packet)
 	case MethodGetAccountData:
-		go protocol.handleGetAccountData(packet)
+		protocol.handleGetAccountData(packet)
 	case MethodGetPrivateData:
-		go protocol.handleGetPrivateData(packet)
+		protocol.handleGetPrivateData(packet)
 	case MethodGetPublicData:
-		go protocol.handleGetPublicData(packet)
+		protocol.handleGetPublicData(packet)
 	case MethodGetMultiplePublicData:
-		go protocol.handleGetMultiplePublicData(packet)
+		protocol.handleGetMultiplePublicData(packet)
 	case MethodUpdateAccountName:
-		go protocol.handleUpdateAccountName(packet)
+		protocol.handleUpdateAccountName(packet)
 	case MethodUpdateAccountEmail:
-		go protocol.handleUpdateAccountEmail(packet)
+		protocol.handleUpdateAccountEmail(packet)
 	case MethodUpdateCustomData:
-		go protocol.handleUpdateCustomData(packet)
+		protocol.handleUpdateCustomData(packet)
 	case MethodFindByNameRegex:
-		go protocol.handleFindByNameRegex(packet)
+		protocol.handleFindByNameRegex(packet)
 	case MethodUpdateAccountExpiryDate:
-		go protocol.handleUpdateAccountExpiryDate(packet)
+		protocol.handleUpdateAccountExpiryDate(packet)
 	case MethodUpdateAccountEffectiveDate:
-		go protocol.handleUpdateAccountEffectiveDate(packet)
+		protocol.handleUpdateAccountEffectiveDate(packet)
 	case MethodUpdateStatus:
-		go protocol.handleUpdateStatus(packet)
+		protocol.handleUpdateStatus(packet)
 	case MethodGetStatus:
-		go protocol.handleGetStatus(packet)
+		protocol.handleGetStatus(packet)
 	case MethodGetLastConnectionStats:
-		go protocol.handleGetLastConnectionStats(packet)
+		protocol.handleGetLastConnectionStats(packet)
 	case MethodResetPassword:
-		go protocol.handleResetPassword(packet)
+		protocol.handleResetPassword(packet)
 	case MethodCreateAccountWithCustomData:
-		go protocol.handleCreateAccountWithCustomData(packet)
+		protocol.handleCreateAccountWithCustomData(packet)
 	case MethodRetrieveAccount:
-		go protocol.handleRetrieveAccount(packet)
+		protocol.handleRetrieveAccount(packet)
 	case MethodUpdateAccount:
-		go protocol.handleUpdateAccount(packet)
+		protocol.handleUpdateAccount(packet)
 	case MethodChangePasswordByGuest:
-		go protocol.handleChangePasswordByGuest(packet)
+		protocol.handleChangePasswordByGuest(packet)
 	case MethodFindByNameLike:
-		go protocol.handleFindByNameLike(packet)
+		protocol.handleFindByNameLike(packet)
 	case MethodCustomCreateAccount:
-		go protocol.handleCustomCreateAccount(packet)
+		protocol.handleCustomCreateAccount(packet)
 	case MethodNintendoCreateAccount:
-		go protocol.handleNintendoCreateAccount(packet)
+		protocol.handleNintendoCreateAccount(packet)
 	case MethodLookupOrCreateAccount:
-		go protocol.handleLookupOrCreateAccount(packet)
+		protocol.handleLookupOrCreateAccount(packet)
 	case MethodDisconnectPrincipal:
-		go protocol.handleDisconnectPrincipal(packet)
+		protocol.handleDisconnectPrincipal(packet)
 	case MethodDisconnectAllPrincipals:
-		go protocol.handleDisconnectAllPrincipals(packet)
+		protocol.handleDisconnectAllPrincipals(packet)
 	default:
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		fmt.Printf("Unsupported AccountManagement method ID: %#v\n", request.MethodID)

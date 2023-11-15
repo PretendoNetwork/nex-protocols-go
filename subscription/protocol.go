@@ -79,21 +79,21 @@ func (protocol *Protocol) Setup() {
 		if ProtocolID == request.ProtocolID {
 			switch request.MethodID {
 			case MethodCreateMySubscriptionData:
-				go protocol.handleCreateMySubscriptionData(packet)
+				protocol.handleCreateMySubscriptionData(packet)
 			case MethodUpdateMySubscriptionData:
-				go protocol.handleUpdateMySubscriptionData(packet)
+				protocol.handleUpdateMySubscriptionData(packet)
 			case MethodGetFriendSubscriptionData:
-				go protocol.handleGetFriendSubscriptionData(packet)
+				protocol.handleGetFriendSubscriptionData(packet)
 			case MethodGetTargetSubscriptionData:
-				go protocol.handleGetTargetSubscriptionData(packet)
+				protocol.handleGetTargetSubscriptionData(packet)
 			case MethodGetActivePlayerSubscriptionData:
-				go protocol.handleGetActivePlayerSubscriptionData(packet)
+				protocol.handleGetActivePlayerSubscriptionData(packet)
 			case MethodGetSubscriptionData:
-				go protocol.handleGetSubscriptionData(packet)
+				protocol.handleGetSubscriptionData(packet)
 			case MethodReplaceTargetAndGetSubscriptionData:
-				go protocol.handleReplaceTargetAndGetSubscriptionData(packet)
+				protocol.handleReplaceTargetAndGetSubscriptionData(packet)
 			case MethodGetPrivacyLevels:
-				go protocol.handleGetPrivacyLevels(packet)
+				protocol.handleGetPrivacyLevels(packet)
 			default:
 				go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 				fmt.Printf("Unsupported Subscription method ID: %#v\n", request.MethodID)

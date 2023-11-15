@@ -74,15 +74,15 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 
 	switch request.MethodID {
 	case MethodUpdateFriendUserProfile:
-		go protocol.handleUpdateFriendUserProfile(packet)
+		protocol.handleUpdateFriendUserProfile(packet)
 	case MethodGetFriendUserProfiles:
-		go protocol.handleGetFriendUserProfiles(packet)
+		protocol.handleGetFriendUserProfiles(packet)
 	case MethodAddFriends:
-		go protocol.handleAddFriends(packet)
+		protocol.handleAddFriends(packet)
 	case MethodRemoveFriend:
-		go protocol.handleRemoveFriend(packet)
+		protocol.handleRemoveFriend(packet)
 	case MethodFindCommunityByOwner:
-		go protocol.handleFindCommunityByOwner(packet)
+		protocol.handleFindCommunityByOwner(packet)
 	default:
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		fmt.Printf("Unsupported Matchmake Extension (Monster Hunter XX) method ID: %#v\n", request.MethodID)

@@ -87,31 +87,31 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 
 	switch request.MethodID {
 	case MethodAddFriend:
-		go protocol.handleAddFriend(packet)
+		protocol.handleAddFriend(packet)
 	case MethodAddFriendByName:
-		go protocol.handleAddFriendByName(packet)
+		protocol.handleAddFriendByName(packet)
 	case MethodAddFriendWithDetails:
-		go protocol.handleAddFriendWithDetails(packet)
+		protocol.handleAddFriendWithDetails(packet)
 	case MethodAddFriendByNameWithDetails:
-		go protocol.handleAddFriendByNameWithDetails(packet)
+		protocol.handleAddFriendByNameWithDetails(packet)
 	case MethodAcceptFriendship:
-		go protocol.handleAcceptFriendship(packet)
+		protocol.handleAcceptFriendship(packet)
 	case MethodDeclineFriendship:
-		go protocol.handleDeclineFriendship(packet)
+		protocol.handleDeclineFriendship(packet)
 	case MethodBlackList:
-		go protocol.handleBlackList(packet)
+		protocol.handleBlackList(packet)
 	case MethodBlackListByName:
-		go protocol.handleBlackListByName(packet)
+		protocol.handleBlackListByName(packet)
 	case MethodClearRelationship:
-		go protocol.handleClearRelationship(packet)
+		protocol.handleClearRelationship(packet)
 	case MethodUpdateDetails:
-		go protocol.handleUpdateDetails(packet)
+		protocol.handleUpdateDetails(packet)
 	case MethodGetList:
-		go protocol.handleGetList(packet)
+		protocol.handleGetList(packet)
 	case MethodGetDetailedList:
-		go protocol.handleGetDetailedList(packet)
+		protocol.handleGetDetailedList(packet)
 	case MethodGetRelationships:
-		go protocol.handleGetRelationships(packet)
+		protocol.handleGetRelationships(packet)
 	default:
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		fmt.Printf("Unsupported Friends method ID: %#v\n", request.MethodID)

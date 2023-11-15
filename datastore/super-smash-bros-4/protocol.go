@@ -148,45 +148,45 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 
 	switch request.MethodID {
 	case MethodPostProfile:
-		go protocol.handlePostProfile(packet)
+		protocol.handlePostProfile(packet)
 	case MethodGetProfiles:
-		go protocol.handleGetProfiles(packet)
+		protocol.handleGetProfiles(packet)
 	case MethodSendPlayReport:
-		go protocol.handleSendPlayReport(packet)
+		protocol.handleSendPlayReport(packet)
 	case MethodGetWorldPlayReport:
-		go protocol.handleGetWorldPlayReport(packet)
+		protocol.handleGetWorldPlayReport(packet)
 	case MethodGetReplayMeta:
-		go protocol.handleGetReplayMeta(packet)
+		protocol.handleGetReplayMeta(packet)
 	case MethodPrepareGetReplay:
-		go protocol.handlePrepareGetReplay(packet)
+		protocol.handlePrepareGetReplay(packet)
 	case MethodPreparePostReplay:
-		go protocol.handlePreparePostReplay(packet)
+		protocol.handlePreparePostReplay(packet)
 	case MethodCompletePostReplay:
-		go protocol.handleCompletePostReplay(packet)
+		protocol.handleCompletePostReplay(packet)
 	case MethodCheckPostReplay:
-		go protocol.handleCheckPostReplay(packet)
+		protocol.handleCheckPostReplay(packet)
 	case MethodGetNextReplay:
-		go protocol.handleGetNextReplay(packet)
+		protocol.handleGetNextReplay(packet)
 	case MethodPreparePostSharedData:
-		go protocol.handlePreparePostSharedData(packet)
+		protocol.handlePreparePostSharedData(packet)
 	case MethodCompletePostSharedData:
-		go protocol.handleCompletePostSharedData(packet)
+		protocol.handleCompletePostSharedData(packet)
 	case MethodSearchSharedData:
-		go protocol.handleSearchSharedData(packet)
+		protocol.handleSearchSharedData(packet)
 	case MethodGetApplicationConfig:
-		go protocol.handleGetApplicationConfig(packet)
+		protocol.handleGetApplicationConfig(packet)
 	case MethodSearchReplay:
-		go protocol.handleSearchReplay(packet)
+		protocol.handleSearchReplay(packet)
 	case MethodPostFightingPowerScore:
-		go protocol.handlePostFightingPowerScore(packet)
+		protocol.handlePostFightingPowerScore(packet)
 	case MethodGetFightingPowerChart:
-		go protocol.handleGetFightingPowerChart(packet)
+		protocol.handleGetFightingPowerChart(packet)
 	case MethodGetFightingPowerChartAll:
-		go protocol.handleGetFightingPowerChartAll(packet)
+		protocol.handleGetFightingPowerChartAll(packet)
 	case MethodReportSharedData:
-		go protocol.handleReportSharedData(packet)
+		protocol.handleReportSharedData(packet)
 	case MethodGetSharedDataMeta:
-		go protocol.handleGetSharedDataMeta(packet)
+		protocol.handleGetSharedDataMeta(packet)
 	default:
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		fmt.Printf("Unsupported DataStoreSuperSmashBros4 method ID: %#v\n", request.MethodID)

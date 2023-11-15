@@ -79,31 +79,31 @@ func (protocol *Protocol) Setup() {
 		if request.ProtocolID == ProtocolID {
 			switch request.MethodID {
 			case MethodStartRound:
-				go protocol.handleStartRound(packet)
+				protocol.handleStartRound(packet)
 			case MethodGetStartRoundParam:
-				go protocol.handleGetStartRoundParam(packet)
+				protocol.handleGetStartRoundParam(packet)
 			case MethodEndRound:
-				go protocol.handleEndRound(packet)
+				protocol.handleEndRound(packet)
 			case MethodEndRoundWithoutReport:
-				go protocol.handleEndRoundWithoutReport(packet)
+				protocol.handleEndRoundWithoutReport(packet)
 			case MethodGetRoundParticipants:
-				go protocol.handleGetRoundParticipants(packet)
+				protocol.handleGetRoundParticipants(packet)
 			case MethodGetNotSummarizedRound:
-				go protocol.handleGetNotSummarizedRound(packet)
+				protocol.handleGetNotSummarizedRound(packet)
 			case MethodGetRound:
-				go protocol.handleGetRound(packet)
+				protocol.handleGetRound(packet)
 			case MethodGetStatsPrimary:
-				go protocol.handleGetStatsPrimary(packet)
+				protocol.handleGetStatsPrimary(packet)
 			case MethodGetStatsPrimaries:
-				go protocol.handleGetStatsPrimaries(packet)
+				protocol.handleGetStatsPrimaries(packet)
 			case MethodGetStatsAll:
-				go protocol.handleGetStatsAll(packet)
+				protocol.handleGetStatsAll(packet)
 			case MethodCreateStats:
-				go protocol.handleCreateStats(packet)
+				protocol.handleCreateStats(packet)
 			case MethodGetOrCreateStats:
-				go protocol.handleGetOrCreateStats(packet)
+				protocol.handleGetOrCreateStats(packet)
 			case MethodResetStats:
-				go protocol.handleResetStats(packet)
+				protocol.handleResetStats(packet)
 			default:
 				go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 				fmt.Printf("Unsupported MatchmakeReferee method ID: %#v\n", request.MethodID)

@@ -84,19 +84,19 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 
 	switch request.MethodID {
 	case MethodUploadPokemon:
-		go protocol.handleUploadPokemon(packet)
+		protocol.handleUploadPokemon(packet)
 	case MethodSearchPokemon:
-		go protocol.handleSearchPokemon(packet)
+		protocol.handleSearchPokemon(packet)
 	case MethodPrepareTradePokemon:
-		go protocol.handlePrepareTradePokemon(packet)
+		protocol.handlePrepareTradePokemon(packet)
 	case MethodTradePokemon:
-		go protocol.handleTradePokemon(packet)
+		protocol.handleTradePokemon(packet)
 	case MethodDownloadOtherPokemon:
-		go protocol.handleDownloadOtherPokemon(packet)
+		protocol.handleDownloadOtherPokemon(packet)
 	case MethodDownloadMyPokemon:
-		go protocol.handleDownloadMyPokemon(packet)
+		protocol.handleDownloadMyPokemon(packet)
 	case MethodDeletePokemon:
-		go protocol.handleDeletePokemon(packet)
+		protocol.handleDeletePokemon(packet)
 	default:
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		fmt.Printf("Unsupported DataStore (Pokemon Gen6) method ID: %#v\n", request.MethodID)

@@ -97,35 +97,35 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 	if request.ProtocolID == ProtocolID {
 		switch request.MethodID {
 		case MethodUploadScore:
-			go protocol.handleUploadScore(packet)
+			protocol.handleUploadScore(packet)
 		case MethodDeleteScore:
-			go protocol.handleDeleteScore(packet)
+			protocol.handleDeleteScore(packet)
 		case MethodDeleteAllScores:
-			go protocol.handleDeleteAllScores(packet)
+			protocol.handleDeleteAllScores(packet)
 		case MethodUploadCommonData:
-			go protocol.handleUploadCommonData(packet)
+			protocol.handleUploadCommonData(packet)
 		case MethodDeleteCommonData:
-			go protocol.handleDeleteCommonData(packet)
+			protocol.handleDeleteCommonData(packet)
 		case MethodGetCommonData:
-			go protocol.handleGetCommonData(packet)
+			protocol.handleGetCommonData(packet)
 		case MethodChangeAttributes:
-			go protocol.handleChangeAttributes(packet)
+			protocol.handleChangeAttributes(packet)
 		case MethodChangeAllAttributes:
-			go protocol.handleChangeAllAttributes(packet)
+			protocol.handleChangeAllAttributes(packet)
 		case MethodGetRanking:
-			go protocol.handleGetRanking(packet)
+			protocol.handleGetRanking(packet)
 		case MethodGetApproxOrder:
-			go protocol.handleGetApproxOrder(packet)
+			protocol.handleGetApproxOrder(packet)
 		case MethodGetStats:
-			go protocol.handleGetStats(packet)
+			protocol.handleGetStats(packet)
 		case MethodGetRankingByPIDList:
-			go protocol.handleGetRankingByPIDList(packet)
+			protocol.handleGetRankingByPIDList(packet)
 		case MethodGetRankingByUniqueIDList:
-			go protocol.handleGetRankingByUniqueIDList(packet)
+			protocol.handleGetRankingByUniqueIDList(packet)
 		case MethodGetCachedTopXRanking:
-			go protocol.handleGetCachedTopXRanking(packet)
+			protocol.handleGetCachedTopXRanking(packet)
 		case MethodGetCachedTopXRankings:
-			go protocol.handleGetCachedTopXRankings(packet)
+			protocol.handleGetCachedTopXRankings(packet)
 		default:
 			go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 			fmt.Printf("Unsupported Ranking method ID: %#v\n", request.MethodID)

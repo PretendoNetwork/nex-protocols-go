@@ -59,9 +59,9 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 
 	switch request.MethodID {
 	case MethodGetRivToken:
-		go protocol.handleGetRivToken(packet)
+		protocol.handleGetRivToken(packet)
 	case MethodPostPlayLog:
-		go protocol.handlePostPlayLog(packet)
+		protocol.handlePostPlayLog(packet)
 	default:
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		fmt.Printf("Unsupported ShopNintendoBadgeArcade method ID: %#v\n", request.MethodID)

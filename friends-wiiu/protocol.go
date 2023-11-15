@@ -116,45 +116,45 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 
 	switch request.MethodID {
 	case MethodUpdateAndGetAllInformation:
-		go protocol.handleUpdateAndGetAllInformation(packet)
+		protocol.handleUpdateAndGetAllInformation(packet)
 	case MethodAddFriend:
-		go protocol.handleAddFriend(packet)
+		protocol.handleAddFriend(packet)
 	case MethodAddFriendByName:
-		go protocol.handleAddFriendByName(packet)
+		protocol.handleAddFriendByName(packet)
 	case MethodRemoveFriend:
-		go protocol.handleRemoveFriend(packet)
+		protocol.handleRemoveFriend(packet)
 	case MethodAddFriendRequest:
-		go protocol.handleAddFriendRequest(packet)
+		protocol.handleAddFriendRequest(packet)
 	case MethodCancelFriendRequest:
-		go protocol.handleCancelFriendRequest(packet)
+		protocol.handleCancelFriendRequest(packet)
 	case MethodAcceptFriendRequest:
-		go protocol.handleAcceptFriendRequest(packet)
+		protocol.handleAcceptFriendRequest(packet)
 	case MethodDeleteFriendRequest:
-		go protocol.handleDeleteFriendRequest(packet)
+		protocol.handleDeleteFriendRequest(packet)
 	case MethodDenyFriendRequest:
-		go protocol.handleDenyFriendRequest(packet)
+		protocol.handleDenyFriendRequest(packet)
 	case MethodMarkFriendRequestsAsReceived:
-		go protocol.handleMarkFriendRequestsAsReceived(packet)
+		protocol.handleMarkFriendRequestsAsReceived(packet)
 	case MethodAddBlackList:
-		go protocol.handleAddBlackList(packet)
+		protocol.handleAddBlackList(packet)
 	case MethodRemoveBlackList:
-		go protocol.handleRemoveBlackList(packet)
+		protocol.handleRemoveBlackList(packet)
 	case MethodUpdatePresence:
-		go protocol.handleUpdatePresence(packet)
+		protocol.handleUpdatePresence(packet)
 	case MethodUpdateMii:
-		go protocol.handleUpdateMii(packet)
+		protocol.handleUpdateMii(packet)
 	case MethodUpdateComment:
-		go protocol.handleUpdateComment(packet)
+		protocol.handleUpdateComment(packet)
 	case MethodUpdatePreference:
-		go protocol.handleUpdatePreference(packet)
+		protocol.handleUpdatePreference(packet)
 	case MethodGetBasicInfo:
-		go protocol.handleGetBasicInfo(packet)
+		protocol.handleGetBasicInfo(packet)
 	case MethodDeletePersistentNotification:
-		go protocol.handleDeletePersistentNotification(packet)
+		protocol.handleDeletePersistentNotification(packet)
 	case MethodCheckSettingStatus:
-		go protocol.handleCheckSettingStatus(packet)
+		protocol.handleCheckSettingStatus(packet)
 	case MethodGetRequestBlockSettings:
-		go protocol.handleGetRequestBlockSettings(packet)
+		protocol.handleGetRequestBlockSettings(packet)
 	default:
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		fmt.Printf("Unsupported Friends (WiiU) method ID: %#v\n", request.MethodID)

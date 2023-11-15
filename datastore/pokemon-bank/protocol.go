@@ -130,37 +130,37 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 
 	switch request.MethodID {
 	case MethodUploadPokemon:
-		go protocol.handleUploadPokemon(packet)
+		protocol.handleUploadPokemon(packet)
 	case MethodSearchPokemon:
-		go protocol.handleSearchPokemon(packet)
+		protocol.handleSearchPokemon(packet)
 	case MethodPrepareTradePokemon:
-		go protocol.handlePrepareTradePokemon(packet)
+		protocol.handlePrepareTradePokemon(packet)
 	case MethodTradePokemon:
-		go protocol.handleTradePokemon(packet)
+		protocol.handleTradePokemon(packet)
 	case MethodDownloadOtherPokemon:
-		go protocol.handleDownloadOtherPokemon(packet)
+		protocol.handleDownloadOtherPokemon(packet)
 	case MethodDownloadMyPokemon:
-		go protocol.handleDownloadMyPokemon(packet)
+		protocol.handleDownloadMyPokemon(packet)
 	case MethodDeletePokemon:
-		go protocol.handleDeletePokemon(packet)
+		protocol.handleDeletePokemon(packet)
 	case MethodGetTransactionParam:
-		go protocol.handleGetTransactionParam(packet)
+		protocol.handleGetTransactionParam(packet)
 	case MethodPreparePostBankObject:
-		go protocol.handlePreparePostBankObject(packet)
+		protocol.handlePreparePostBankObject(packet)
 	case MethodCompletePostBankObject:
-		go protocol.handleCompletePostBankObject(packet)
+		protocol.handleCompletePostBankObject(packet)
 	case MethodPrepareGetBankObject:
-		go protocol.handlePrepareGetBankObject(packet)
+		protocol.handlePrepareGetBankObject(packet)
 	case MethodPrepareUpdateBankObject:
-		go protocol.handlePrepareUpdateBankObject(packet)
+		protocol.handlePrepareUpdateBankObject(packet)
 	case MethodCompleteUpdateBankObject:
-		go protocol.handleCompleteUpdateBankObject(packet)
+		protocol.handleCompleteUpdateBankObject(packet)
 	case MethodRollbackBankObject:
-		go protocol.handleRollbackBankObject(packet)
+		protocol.handleRollbackBankObject(packet)
 	case MethodGetUnlockKey:
-		go protocol.handleGetUnlockKey(packet)
+		protocol.handleGetUnlockKey(packet)
 	case MethodRequestMigration:
-		go protocol.handleRequestMigration(packet)
+		protocol.handleRequestMigration(packet)
 	default:
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		fmt.Printf("Unsupported DataStore (Pokemon Bank) method ID: %#v\n", request.MethodID)

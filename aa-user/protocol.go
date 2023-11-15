@@ -43,13 +43,13 @@ func (protocol *Protocol) Setup() {
 		if request.ProtocolID == ProtocolID {
 			switch request.MethodID {
 			case MethodRegisterApplication:
-				go protocol.handleRegisterApplication(packet)
+				protocol.handleRegisterApplication(packet)
 			case MethodUnregisterApplication:
-				go protocol.handleUnregisterApplication(packet)
+				protocol.handleUnregisterApplication(packet)
 			case MethodSetApplicationInfo:
-				go protocol.handleSetApplicationInfo(packet)
+				protocol.handleSetApplicationInfo(packet)
 			case MethodGetApplicationInfo:
-				go protocol.handleGetApplicationInfo(packet)
+				protocol.handleGetApplicationInfo(packet)
 			default:
 				go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 				fmt.Printf("Unsupported AAUser method ID: %#v\n", request.MethodID)

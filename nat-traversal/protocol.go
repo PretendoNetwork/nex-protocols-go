@@ -54,19 +54,19 @@ func (protocol *Protocol) Setup() {
 		if request.ProtocolID == ProtocolID {
 			switch request.MethodID {
 			case MethodRequestProbeInitiation:
-				go protocol.handleRequestProbeInitiation(packet)
+				protocol.handleRequestProbeInitiation(packet)
 			case MethodInitiateProbe:
-				go protocol.handleInitiateProbe(packet)
+				protocol.handleInitiateProbe(packet)
 			case MethodRequestProbeInitiationExt:
-				go protocol.handleRequestProbeInitiationExt(packet)
+				protocol.handleRequestProbeInitiationExt(packet)
 			case MethodReportNATTraversalResult:
-				go protocol.handleReportNATTraversalResult(packet)
+				protocol.handleReportNATTraversalResult(packet)
 			case MethodReportNATProperties:
-				go protocol.handleReportNATProperties(packet)
+				protocol.handleReportNATProperties(packet)
 			case MethodGetRelaySignatureKey:
-				go protocol.handleGetRelaySignatureKey(packet)
+				protocol.handleGetRelaySignatureKey(packet)
 			case MethodReportNATTraversalResultDetail:
-				go protocol.handleReportNATTraversalResultDetail(packet)
+				protocol.handleReportNATTraversalResultDetail(packet)
 			default:
 				go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 				fmt.Printf("Unsupported NATTraversal method ID: %#v\n", request.MethodID)

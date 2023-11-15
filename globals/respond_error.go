@@ -14,6 +14,7 @@ func RespondError(packet nex.PacketInterface, protocolID uint16, errorCode uint3
 	// TODO - Add HPP support back once nex-go supports it again
 	if packet, ok := packet.(nex.PRUDPPacketInterface); ok {
 		rmcResponse := nex.NewRMCError(errorCode)
+		rmcResponse.ProtocolID = request.ProtocolID
 		rmcResponse.CallID = request.CallID
 
 		rmcResponseBytes = rmcResponse.Bytes()

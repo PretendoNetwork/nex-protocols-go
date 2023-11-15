@@ -21,8 +21,11 @@ func (protocol *Protocol) handlePostCommunityCompetitionMatchResult(packet nex.P
 
 	callID := request.CallID
 
-	errorCode = protocol.PostCommunityCompetitionMatchResult(nil, packet, callID, packet.Payload())
+	rmcMessage, errorCode := protocol.PostCommunityCompetitionMatchResult(nil, packet, callID, packet.Payload())
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

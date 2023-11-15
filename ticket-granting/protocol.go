@@ -34,12 +34,12 @@ const (
 // Protocol stores all the RMC method handlers for the Ticket Granting protocol and listens for requests
 type Protocol struct {
 	Server           nex.ServerInterface
-	Login            func(err error, packet nex.PacketInterface, callID uint32, strUserName string) uint32
-	LoginEx          func(err error, packet nex.PacketInterface, callID uint32, strUserName string, oExtraData *nex.DataHolder) uint32
-	RequestTicket    func(err error, packet nex.PacketInterface, callID uint32, idSource *nex.PID, idTarget *nex.PID) uint32
-	GetPID           func(err error, packet nex.PacketInterface, callID uint32, strUserName string) uint32
-	GetName          func(err error, packet nex.PacketInterface, callID uint32, id *nex.PID) uint32
-	LoginWithContext func(err error, packet nex.PacketInterface, callID uint32) uint32
+	Login            func(err error, packet nex.PacketInterface, callID uint32, strUserName string) (*nex.RMCMessage, uint32)
+	LoginEx          func(err error, packet nex.PacketInterface, callID uint32, strUserName string, oExtraData *nex.DataHolder) (*nex.RMCMessage, uint32)
+	RequestTicket    func(err error, packet nex.PacketInterface, callID uint32, idSource *nex.PID, idTarget *nex.PID) (*nex.RMCMessage, uint32)
+	GetPID           func(err error, packet nex.PacketInterface, callID uint32, strUserName string) (*nex.RMCMessage, uint32)
+	GetName          func(err error, packet nex.PacketInterface, callID uint32, id *nex.PID) (*nex.RMCMessage, uint32)
+	LoginWithContext func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, uint32)
 }
 
 // Setup initializes the protocol

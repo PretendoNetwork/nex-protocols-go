@@ -26,7 +26,7 @@ func (protocol *Protocol) handleFindByNameRegex(packet nex.PacketInterface) {
 
 	uiGroups, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.FindByNameRegex(fmt.Errorf("Failed to read uiGroups from parameters. %s", err.Error()), packet, callID, 0, "", nil)
+		_, errorCode = protocol.FindByNameRegex(fmt.Errorf("Failed to read uiGroups from parameters. %s", err.Error()), packet, callID, 0, "", nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -36,7 +36,7 @@ func (protocol *Protocol) handleFindByNameRegex(packet nex.PacketInterface) {
 
 	strRegex, err := parametersStream.ReadString()
 	if err != nil {
-		errorCode = protocol.FindByNameRegex(fmt.Errorf("Failed to read strRegex from parameters. %s", err.Error()), packet, callID, 0, "", nil)
+		_, errorCode = protocol.FindByNameRegex(fmt.Errorf("Failed to read strRegex from parameters. %s", err.Error()), packet, callID, 0, "", nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -46,7 +46,7 @@ func (protocol *Protocol) handleFindByNameRegex(packet nex.PacketInterface) {
 
 	resultRange, err := parametersStream.ReadStructure(nex.NewResultRange())
 	if err != nil {
-		errorCode = protocol.FindByNameRegex(fmt.Errorf("Failed to read resultRange from parameters. %s", err.Error()), packet, callID, 0, "", nil)
+		_, errorCode = protocol.FindByNameRegex(fmt.Errorf("Failed to read resultRange from parameters. %s", err.Error()), packet, callID, 0, "", nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -54,8 +54,11 @@ func (protocol *Protocol) handleFindByNameRegex(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.FindByNameRegex(nil, packet, callID, uiGroups, strRegex, resultRange.(*nex.ResultRange))
+	rmcMessage, errorCode := protocol.FindByNameRegex(nil, packet, callID, uiGroups, strRegex, resultRange.(*nex.ResultRange))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

@@ -26,7 +26,7 @@ func (protocol *Protocol) handleUpdateGathering(packet nex.PacketInterface) {
 
 	anyGathering, err := parametersStream.ReadDataHolder()
 	if err != nil {
-		errorCode = protocol.UpdateGathering(fmt.Errorf("Failed to read anyGathering from parameters. %s", err.Error()), packet, callID, nil)
+		_, errorCode = protocol.UpdateGathering(fmt.Errorf("Failed to read anyGathering from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -34,8 +34,11 @@ func (protocol *Protocol) handleUpdateGathering(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.UpdateGathering(nil, packet, callID, anyGathering)
+	rmcMessage, errorCode := protocol.UpdateGathering(nil, packet, callID, anyGathering)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

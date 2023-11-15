@@ -26,7 +26,7 @@ func (protocol *Protocol) handleModifyCurrentGameAttribute(packet nex.PacketInte
 
 	gid, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.ModifyCurrentGameAttribute(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), packet, callID, 0, 0, 0)
+		_, errorCode = protocol.ModifyCurrentGameAttribute(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), packet, callID, 0, 0, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -36,7 +36,7 @@ func (protocol *Protocol) handleModifyCurrentGameAttribute(packet nex.PacketInte
 
 	attribIndex, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.ModifyCurrentGameAttribute(fmt.Errorf("Failed to read attribIndex from parameters. %s", err.Error()), packet, callID, 0, 0, 0)
+		_, errorCode = protocol.ModifyCurrentGameAttribute(fmt.Errorf("Failed to read attribIndex from parameters. %s", err.Error()), packet, callID, 0, 0, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -46,7 +46,7 @@ func (protocol *Protocol) handleModifyCurrentGameAttribute(packet nex.PacketInte
 
 	newValue, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.ModifyCurrentGameAttribute(fmt.Errorf("Failed to read newValue from parameters. %s", err.Error()), packet, callID, 0, 0, 0)
+		_, errorCode = protocol.ModifyCurrentGameAttribute(fmt.Errorf("Failed to read newValue from parameters. %s", err.Error()), packet, callID, 0, 0, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -54,8 +54,11 @@ func (protocol *Protocol) handleModifyCurrentGameAttribute(packet nex.PacketInte
 		return
 	}
 
-	errorCode = protocol.ModifyCurrentGameAttribute(nil, packet, callID, gid, attribIndex, newValue)
+	rmcMessage, errorCode := protocol.ModifyCurrentGameAttribute(nil, packet, callID, gid, attribIndex, newValue)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

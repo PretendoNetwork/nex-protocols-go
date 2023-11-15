@@ -27,7 +27,7 @@ func (protocol *Protocol) handleGetStatsPrimaries(packet nex.PacketInterface) {
 
 	targets, err := parametersStream.ReadListStructure(matchmake_referee_types.NewMatchmakeRefereeStatsTarget())
 	if err != nil {
-		errorCode = protocol.GetStatsPrimaries(fmt.Errorf("Failed to read targets from parameters. %s", err.Error()), packet, callID, nil)
+		_, errorCode = protocol.GetStatsPrimaries(fmt.Errorf("Failed to read targets from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -35,8 +35,11 @@ func (protocol *Protocol) handleGetStatsPrimaries(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.GetStatsPrimaries(nil, packet, callID, targets.([]*matchmake_referee_types.MatchmakeRefereeStatsTarget))
+	rmcMessage, errorCode := protocol.GetStatsPrimaries(nil, packet, callID, targets.([]*matchmake_referee_types.MatchmakeRefereeStatsTarget))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

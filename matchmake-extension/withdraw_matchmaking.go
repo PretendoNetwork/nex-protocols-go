@@ -26,7 +26,7 @@ func (protocol *Protocol) handleWithdrawMatchmaking(packet nex.PacketInterface) 
 
 	requestID, err := parametersStream.ReadUInt64LE()
 	if err != nil {
-		errorCode = protocol.UpdateProgressScore(fmt.Errorf("Failed to read requestID from parameters. %s", err.Error()), packet, callID, 0, 0)
+		_, errorCode = protocol.UpdateProgressScore(fmt.Errorf("Failed to read requestID from parameters. %s", err.Error()), packet, callID, 0, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -34,8 +34,11 @@ func (protocol *Protocol) handleWithdrawMatchmaking(packet nex.PacketInterface) 
 		return
 	}
 
-	errorCode = protocol.WithdrawMatchmaking(nil, packet, callID, requestID)
+	rmcMessage, errorCode := protocol.WithdrawMatchmaking(nil, packet, callID, requestID)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

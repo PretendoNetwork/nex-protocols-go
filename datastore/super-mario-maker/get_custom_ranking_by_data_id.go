@@ -27,7 +27,7 @@ func (protocol *Protocol) handleGetCustomRankingByDataID(packet nex.PacketInterf
 
 	param, err := parametersStream.ReadStructure(datastore_super_mario_maker_types.NewDataStoreGetCustomRankingByDataIDParam())
 	if err != nil {
-		errorCode = protocol.GetCustomRankingByDataID(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
+		_, errorCode = protocol.GetCustomRankingByDataID(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -35,8 +35,11 @@ func (protocol *Protocol) handleGetCustomRankingByDataID(packet nex.PacketInterf
 		return
 	}
 
-	errorCode = protocol.GetCustomRankingByDataID(nil, packet, callID, param.(*datastore_super_mario_maker_types.DataStoreGetCustomRankingByDataIDParam))
+	rmcMessage, errorCode := protocol.GetCustomRankingByDataID(nil, packet, callID, param.(*datastore_super_mario_maker_types.DataStoreGetCustomRankingByDataIDParam))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

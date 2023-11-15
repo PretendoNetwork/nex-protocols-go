@@ -26,7 +26,7 @@ func (protocol *Protocol) handleGetApplicationConfig(packet nex.PacketInterface)
 
 	applicationID, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.GetApplicationConfig(fmt.Errorf("Failed to read applicationID from parameters. %s", err.Error()), packet, callID, 0)
+		_, errorCode = protocol.GetApplicationConfig(fmt.Errorf("Failed to read applicationID from parameters. %s", err.Error()), packet, callID, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -34,8 +34,11 @@ func (protocol *Protocol) handleGetApplicationConfig(packet nex.PacketInterface)
 		return
 	}
 
-	errorCode = protocol.GetApplicationConfig(nil, packet, callID, applicationID)
+	rmcMessage, errorCode := protocol.GetApplicationConfig(nil, packet, callID, applicationID)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

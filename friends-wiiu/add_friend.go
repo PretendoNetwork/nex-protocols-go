@@ -26,7 +26,7 @@ func (protocol *Protocol) handleAddFriend(packet nex.PacketInterface) {
 
 	pid, err := parametersStream.ReadPID()
 	if err != nil {
-		errorCode = protocol.AddFriend(fmt.Errorf("Failed to read pid from parameters. %s", err.Error()), packet, callID, nil)
+		_, errorCode = protocol.AddFriend(fmt.Errorf("Failed to read pid from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -34,8 +34,11 @@ func (protocol *Protocol) handleAddFriend(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.AddFriend(nil, packet, callID, pid)
+	rmcMessage, errorCode := protocol.AddFriend(nil, packet, callID, pid)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

@@ -62,21 +62,21 @@ const (
 // Protocol stores all the RMC method handlers for the Subscriber protocol and listens for requests
 type Protocol struct {
 	Server                nex.ServerInterface
-	Hello                 func(err error, packet nex.PacketInterface, callID uint32, unknown string) uint32
-	PostContent           func(err error, packet nex.PacketInterface, callID uint32, param *subscriber_types.SubscriberPostContentParam) uint32
-	GetContent            func(err error, packet nex.PacketInterface, callID uint32, param *subscriber_types.SubscriberGetContentParam) uint32
-	Follow                func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) uint32
-	UnfollowAllAndFollow  func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) uint32
-	Unfollow              func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) uint32
-	GetFollowing          func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) uint32
-	GetFollower           func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) uint32
-	GetNumFollowers       func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) uint32
-	GetTimeline           func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) uint32
-	DeleteContent         func(err error, packet nex.PacketInterface, callID uint32, unknown1 []string, unknown2 uint64) uint32
-	GetContentMulti       func(err error, packet nex.PacketInterface, callID uint32, params []*subscriber_types.SubscriberGetContentParam) uint32
-	UpdateUserStatus      func(err error, packet nex.PacketInterface, callID uint32, unknown1 []*subscriber_types.Unknown, unknown2 []uint8) uint32
-	GetFriendUserStatuses func(err error, packet nex.PacketInterface, callID uint32, unknown []uint8) uint32
-	GetUserStatuses       func(err error, packet nex.PacketInterface, callID uint32, pids []*nex.PID, unknown []uint8) uint32
+	Hello                 func(err error, packet nex.PacketInterface, callID uint32, unknown string) (*nex.RMCMessage, uint32)
+	PostContent           func(err error, packet nex.PacketInterface, callID uint32, param *subscriber_types.SubscriberPostContentParam) (*nex.RMCMessage, uint32)
+	GetContent            func(err error, packet nex.PacketInterface, callID uint32, param *subscriber_types.SubscriberGetContentParam) (*nex.RMCMessage, uint32)
+	Follow                func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) (*nex.RMCMessage, uint32)
+	UnfollowAllAndFollow  func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) (*nex.RMCMessage, uint32)
+	Unfollow              func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) (*nex.RMCMessage, uint32)
+	GetFollowing          func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) (*nex.RMCMessage, uint32)
+	GetFollower           func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) (*nex.RMCMessage, uint32)
+	GetNumFollowers       func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) (*nex.RMCMessage, uint32)
+	GetTimeline           func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) (*nex.RMCMessage, uint32)
+	DeleteContent         func(err error, packet nex.PacketInterface, callID uint32, unknown1 []string, unknown2 uint64) (*nex.RMCMessage, uint32)
+	GetContentMulti       func(err error, packet nex.PacketInterface, callID uint32, params []*subscriber_types.SubscriberGetContentParam) (*nex.RMCMessage, uint32)
+	UpdateUserStatus      func(err error, packet nex.PacketInterface, callID uint32, unknown1 []*subscriber_types.Unknown, unknown2 []uint8) (*nex.RMCMessage, uint32)
+	GetFriendUserStatuses func(err error, packet nex.PacketInterface, callID uint32, unknown []uint8) (*nex.RMCMessage, uint32)
+	GetUserStatuses       func(err error, packet nex.PacketInterface, callID uint32, pids []*nex.PID, unknown []uint8) (*nex.RMCMessage, uint32)
 }
 
 // Setup initializes the protocol

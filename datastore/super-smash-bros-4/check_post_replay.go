@@ -27,7 +27,7 @@ func (protocol *Protocol) handleCheckPostReplay(packet nex.PacketInterface) {
 
 	param, err := parametersStream.ReadStructure(datastore_super_smash_bros_4_types.NewDataStorePreparePostReplayParam())
 	if err != nil {
-		errorCode = protocol.CheckPostReplay(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
+		_, errorCode = protocol.CheckPostReplay(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -35,8 +35,11 @@ func (protocol *Protocol) handleCheckPostReplay(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.CheckPostReplay(nil, packet, callID, param.(*datastore_super_smash_bros_4_types.DataStorePreparePostReplayParam))
+	rmcMessage, errorCode := protocol.CheckPostReplay(nil, packet, callID, param.(*datastore_super_smash_bros_4_types.DataStorePreparePostReplayParam))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

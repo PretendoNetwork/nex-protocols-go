@@ -26,7 +26,7 @@ func (protocol *Protocol) handleFindBySingleID(packet nex.PacketInterface) {
 
 	id, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.FindBySingleID(fmt.Errorf("Failed to read id from parameters. %s", err.Error()), packet, callID, 0)
+		_, errorCode = protocol.FindBySingleID(fmt.Errorf("Failed to read id from parameters. %s", err.Error()), packet, callID, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -34,8 +34,11 @@ func (protocol *Protocol) handleFindBySingleID(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.FindBySingleID(nil, packet, callID, id)
+	rmcMessage, errorCode := protocol.FindBySingleID(nil, packet, callID, id)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

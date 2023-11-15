@@ -19,8 +19,11 @@ func (protocol *Protocol) handleWithdrawMatchmakingAll(packet nex.PacketInterfac
 
 	callID := request.CallID
 
-	errorCode = protocol.WithdrawMatchmakingAll(nil, packet, callID)
+	rmcMessage, errorCode := protocol.WithdrawMatchmakingAll(nil, packet, callID)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

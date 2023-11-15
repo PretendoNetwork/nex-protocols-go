@@ -26,7 +26,7 @@ func (protocol *Protocol) handleReplaceURL(packet nex.PacketInterface) {
 
 	target, err := parametersStream.ReadStationURL()
 	if err != nil {
-		errorCode = protocol.ReplaceURL(fmt.Errorf("Failed to read target from parameters. %s", err.Error()), packet, callID, nil, nil)
+		_, errorCode = protocol.ReplaceURL(fmt.Errorf("Failed to read target from parameters. %s", err.Error()), packet, callID, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -36,7 +36,7 @@ func (protocol *Protocol) handleReplaceURL(packet nex.PacketInterface) {
 
 	url, err := parametersStream.ReadStationURL()
 	if err != nil {
-		errorCode = protocol.ReplaceURL(fmt.Errorf("Failed to read url from parameters. %s", err.Error()), packet, callID, nil, nil)
+		_, errorCode = protocol.ReplaceURL(fmt.Errorf("Failed to read url from parameters. %s", err.Error()), packet, callID, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -44,8 +44,11 @@ func (protocol *Protocol) handleReplaceURL(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.ReplaceURL(nil, packet, callID, target, url)
+	rmcMessage, errorCode := protocol.ReplaceURL(nil, packet, callID, target, url)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

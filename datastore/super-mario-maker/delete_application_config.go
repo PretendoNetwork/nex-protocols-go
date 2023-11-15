@@ -26,7 +26,7 @@ func (protocol *Protocol) handleDeleteApplicationConfig(packet nex.PacketInterfa
 
 	applicationID, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.DeleteApplicationConfig(fmt.Errorf("Failed to read applicationID from parameters. %s", err.Error()), packet, callID, 0, 0)
+		_, errorCode = protocol.DeleteApplicationConfig(fmt.Errorf("Failed to read applicationID from parameters. %s", err.Error()), packet, callID, 0, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -36,7 +36,7 @@ func (protocol *Protocol) handleDeleteApplicationConfig(packet nex.PacketInterfa
 
 	key, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.DeleteApplicationConfig(fmt.Errorf("Failed to read key from parameters. %s", err.Error()), packet, callID, 0, 0)
+		_, errorCode = protocol.DeleteApplicationConfig(fmt.Errorf("Failed to read key from parameters. %s", err.Error()), packet, callID, 0, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -44,8 +44,11 @@ func (protocol *Protocol) handleDeleteApplicationConfig(packet nex.PacketInterfa
 		return
 	}
 
-	errorCode = protocol.DeleteApplicationConfig(nil, packet, callID, applicationID, key)
+	rmcMessage, errorCode := protocol.DeleteApplicationConfig(nil, packet, callID, applicationID, key)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

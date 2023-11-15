@@ -19,8 +19,11 @@ func (protocol *Protocol) handleRunSanityCheck(packet nex.PacketInterface) {
 
 	callID := request.CallID
 
-	errorCode = protocol.RunSanityCheck(nil, packet, callID)
+	rmcMessage, errorCode := protocol.RunSanityCheck(nil, packet, callID)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

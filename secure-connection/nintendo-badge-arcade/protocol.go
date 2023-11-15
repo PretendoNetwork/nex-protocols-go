@@ -29,7 +29,7 @@ type secureConnectionProtocol = secure_connection.Protocol
 type Protocol struct {
 	Server nex.ServerInterface
 	secureConnectionProtocol
-	GetMaintenanceStatus func(err error, packet nex.PacketInterface, callID uint32) uint32
+	GetMaintenanceStatus func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, uint32)
 }
 
 // Setup initializes the protocol

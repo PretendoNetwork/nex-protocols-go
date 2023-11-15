@@ -26,7 +26,7 @@ func (protocol *Protocol) handleDeleteCachedRanking(packet nex.PacketInterface) 
 
 	rankingType, err := parametersStream.ReadString()
 	if err != nil {
-		errorCode = protocol.DeleteCachedRanking(fmt.Errorf("Failed to read rankingType from parameters. %s", err.Error()), packet, callID, "", nil)
+		_, errorCode = protocol.DeleteCachedRanking(fmt.Errorf("Failed to read rankingType from parameters. %s", err.Error()), packet, callID, "", nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -36,7 +36,7 @@ func (protocol *Protocol) handleDeleteCachedRanking(packet nex.PacketInterface) 
 
 	rankingArgs, err := parametersStream.ReadListString()
 	if err != nil {
-		errorCode = protocol.DeleteCachedRanking(fmt.Errorf("Failed to read rankingArgs from parameters. %s", err.Error()), packet, callID, "", nil)
+		_, errorCode = protocol.DeleteCachedRanking(fmt.Errorf("Failed to read rankingArgs from parameters. %s", err.Error()), packet, callID, "", nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -44,8 +44,11 @@ func (protocol *Protocol) handleDeleteCachedRanking(packet nex.PacketInterface) 
 		return
 	}
 
-	errorCode = protocol.DeleteCachedRanking(nil, packet, callID, rankingType, rankingArgs)
+	rmcMessage, errorCode := protocol.DeleteCachedRanking(nil, packet, callID, rankingType, rankingArgs)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

@@ -114,28 +114,28 @@ type serviceItemProtocol = service_item.Protocol
 type Protocol struct {
 	Server nex.ServerInterface
 	serviceItemProtocol
-	GetEnvironment                  func(err error, packet nex.PacketInterface, callID uint32, uniqueID string, platform uint8) uint32
-	HttpGetRequest                  func(err error, packet nex.PacketInterface, callID uint32, url *service_item_team_kirby_clash_deluxe_types.ServiceItemHTTPGetParam) uint32
-	HttpGetResponse                 func(err error, packet nex.PacketInterface, callID uint32, requestID uint32) uint32
-	PurchaseServiceItemRequest      func(err error, packet nex.PacketInterface, callID uint32, purchaseServiceItemParam *service_item_team_kirby_clash_deluxe_types.ServiceItemPurchaseServiceItemParam) uint32
-	PurchaseServiceItemResponse     func(err error, packet nex.PacketInterface, callID uint32, requestID uint32) uint32
-	ListServiceItemRequest          func(err error, packet nex.PacketInterface, callID uint32, listServiceItemParam *service_item_team_kirby_clash_deluxe_types.ServiceItemListServiceItemParam) uint32
-	ListServiceItemResponse         func(err error, packet nex.PacketInterface, callID uint32, requestID uint32) uint32
-	GetBalanceRequest               func(err error, packet nex.PacketInterface, callID uint32, getBalanceParam *service_item_team_kirby_clash_deluxe_types.ServiceItemGetBalanceParam) uint32
-	GetBalanceResponse              func(err error, packet nex.PacketInterface, callID uint32, requestID uint32) uint32
-	GetPrepurchaseInfoRequest       func(err error, packet nex.PacketInterface, callID uint32, getPrepurchaseInfoParam *service_item_team_kirby_clash_deluxe_types.ServiceItemGetPrepurchaseInfoParam) uint32
-	GetPrepurchaseInfoResponse      func(err error, packet nex.PacketInterface, callID uint32, requestID uint32) uint32
-	GetServiceItemRightRequest      func(err error, packet nex.PacketInterface, callID uint32, getServiceItemRightParam *service_item_team_kirby_clash_deluxe_types.ServiceItemGetServiceItemRightParam, withoutRightBinary bool) uint32
-	GetServiceItemRightResponse     func(err error, packet nex.PacketInterface, callID uint32, requestID uint32) uint32
-	GetPurchaseHistoryRequest       func(err error, packet nex.PacketInterface, callID uint32, getPurchaseHistoryParam *service_item_team_kirby_clash_deluxe_types.ServiceItemGetPurchaseHistoryParam) uint32
-	GetPurchaseHistoryResponse      func(err error, packet nex.PacketInterface, callID uint32, requestID uint32) uint32
-	PostRightBinaryByAccount        func(err error, packet nex.PacketInterface, callID uint32, postRightBinaryByAccountParam *service_item_team_kirby_clash_deluxe_types.ServiceItemPostRightBinaryByAccountParam) uint32
-	UseServiceItemByAccountRequest  func(err error, packet nex.PacketInterface, callID uint32, useServiceItemByAccountParam *service_item_team_kirby_clash_deluxe_types.ServiceItemUseServiceItemByAccountParam) uint32
-	UseServiceItemByAccountResponse func(err error, packet nex.PacketInterface, callID uint32, requestID uint32) uint32
-	AcquireServiceItemByAccount     func(err error, packet nex.PacketInterface, callID uint32, acquireServiceItemByAccountParam *service_item_team_kirby_clash_deluxe_types.ServiceItemAcquireServiceItemByAccountParam) uint32
-	GetSupportID                    func(err error, packet nex.PacketInterface, callID uint32, getSuppordIDParam *service_item_team_kirby_clash_deluxe_types.ServiceItemGetSupportIDParam) uint32
-	GetLawMessageRequest            func(err error, packet nex.PacketInterface, callID uint32, getLawMessageParam *service_item_team_kirby_clash_deluxe_types.ServiceItemGetLawMessageParam) uint32
-	GetLawMessageResponse           func(err error, packet nex.PacketInterface, callID uint32, requestID uint32) uint32
+	GetEnvironment                  func(err error, packet nex.PacketInterface, callID uint32, uniqueID string, platform uint8) (*nex.RMCMessage, uint32)
+	HttpGetRequest                  func(err error, packet nex.PacketInterface, callID uint32, url *service_item_team_kirby_clash_deluxe_types.ServiceItemHTTPGetParam) (*nex.RMCMessage, uint32)
+	HttpGetResponse                 func(err error, packet nex.PacketInterface, callID uint32, requestID uint32) (*nex.RMCMessage, uint32)
+	PurchaseServiceItemRequest      func(err error, packet nex.PacketInterface, callID uint32, purchaseServiceItemParam *service_item_team_kirby_clash_deluxe_types.ServiceItemPurchaseServiceItemParam) (*nex.RMCMessage, uint32)
+	PurchaseServiceItemResponse     func(err error, packet nex.PacketInterface, callID uint32, requestID uint32) (*nex.RMCMessage, uint32)
+	ListServiceItemRequest          func(err error, packet nex.PacketInterface, callID uint32, listServiceItemParam *service_item_team_kirby_clash_deluxe_types.ServiceItemListServiceItemParam) (*nex.RMCMessage, uint32)
+	ListServiceItemResponse         func(err error, packet nex.PacketInterface, callID uint32, requestID uint32) (*nex.RMCMessage, uint32)
+	GetBalanceRequest               func(err error, packet nex.PacketInterface, callID uint32, getBalanceParam *service_item_team_kirby_clash_deluxe_types.ServiceItemGetBalanceParam) (*nex.RMCMessage, uint32)
+	GetBalanceResponse              func(err error, packet nex.PacketInterface, callID uint32, requestID uint32) (*nex.RMCMessage, uint32)
+	GetPrepurchaseInfoRequest       func(err error, packet nex.PacketInterface, callID uint32, getPrepurchaseInfoParam *service_item_team_kirby_clash_deluxe_types.ServiceItemGetPrepurchaseInfoParam) (*nex.RMCMessage, uint32)
+	GetPrepurchaseInfoResponse      func(err error, packet nex.PacketInterface, callID uint32, requestID uint32) (*nex.RMCMessage, uint32)
+	GetServiceItemRightRequest      func(err error, packet nex.PacketInterface, callID uint32, getServiceItemRightParam *service_item_team_kirby_clash_deluxe_types.ServiceItemGetServiceItemRightParam, withoutRightBinary bool) (*nex.RMCMessage, uint32)
+	GetServiceItemRightResponse     func(err error, packet nex.PacketInterface, callID uint32, requestID uint32) (*nex.RMCMessage, uint32)
+	GetPurchaseHistoryRequest       func(err error, packet nex.PacketInterface, callID uint32, getPurchaseHistoryParam *service_item_team_kirby_clash_deluxe_types.ServiceItemGetPurchaseHistoryParam) (*nex.RMCMessage, uint32)
+	GetPurchaseHistoryResponse      func(err error, packet nex.PacketInterface, callID uint32, requestID uint32) (*nex.RMCMessage, uint32)
+	PostRightBinaryByAccount        func(err error, packet nex.PacketInterface, callID uint32, postRightBinaryByAccountParam *service_item_team_kirby_clash_deluxe_types.ServiceItemPostRightBinaryByAccountParam) (*nex.RMCMessage, uint32)
+	UseServiceItemByAccountRequest  func(err error, packet nex.PacketInterface, callID uint32, useServiceItemByAccountParam *service_item_team_kirby_clash_deluxe_types.ServiceItemUseServiceItemByAccountParam) (*nex.RMCMessage, uint32)
+	UseServiceItemByAccountResponse func(err error, packet nex.PacketInterface, callID uint32, requestID uint32) (*nex.RMCMessage, uint32)
+	AcquireServiceItemByAccount     func(err error, packet nex.PacketInterface, callID uint32, acquireServiceItemByAccountParam *service_item_team_kirby_clash_deluxe_types.ServiceItemAcquireServiceItemByAccountParam) (*nex.RMCMessage, uint32)
+	GetSupportID                    func(err error, packet nex.PacketInterface, callID uint32, getSuppordIDParam *service_item_team_kirby_clash_deluxe_types.ServiceItemGetSupportIDParam) (*nex.RMCMessage, uint32)
+	GetLawMessageRequest            func(err error, packet nex.PacketInterface, callID uint32, getLawMessageParam *service_item_team_kirby_clash_deluxe_types.ServiceItemGetLawMessageParam) (*nex.RMCMessage, uint32)
+	GetLawMessageResponse           func(err error, packet nex.PacketInterface, callID uint32, requestID uint32) (*nex.RMCMessage, uint32)
 }
 
 // Setup initializes the protocol

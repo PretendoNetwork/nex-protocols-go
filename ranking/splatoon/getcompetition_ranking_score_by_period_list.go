@@ -21,8 +21,11 @@ func (protocol *Protocol) handleGetcompetitionRankingScoreByPeriodList(packet ne
 
 	callID := request.CallID
 
-	errorCode = protocol.GetcompetitionRankingScoreByPeriodList(nil, packet, callID, packet.Payload())
+	rmcMessage, errorCode := protocol.GetcompetitionRankingScoreByPeriodList(nil, packet, callID, packet.Payload())
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

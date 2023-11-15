@@ -27,7 +27,7 @@ func (protocol *Protocol) handlePreparePostSharedData(packet nex.PacketInterface
 
 	param, err := parametersStream.ReadStructure(datastore_super_smash_bros_4_types.NewDataStorePreparePostSharedDataParam())
 	if err != nil {
-		errorCode = protocol.PreparePostSharedData(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
+		_, errorCode = protocol.PreparePostSharedData(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -35,8 +35,11 @@ func (protocol *Protocol) handlePreparePostSharedData(packet nex.PacketInterface
 		return
 	}
 
-	errorCode = protocol.PreparePostSharedData(nil, packet, callID, param.(*datastore_super_smash_bros_4_types.DataStorePreparePostSharedDataParam))
+	rmcMessage, errorCode := protocol.PreparePostSharedData(nil, packet, callID, param.(*datastore_super_smash_bros_4_types.DataStorePreparePostSharedDataParam))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

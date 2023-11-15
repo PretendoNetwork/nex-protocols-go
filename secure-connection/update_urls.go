@@ -26,7 +26,7 @@ func (protocol *Protocol) handleUpdateURLs(packet nex.PacketInterface) {
 
 	vecMyURLs, err := parametersStream.ReadListStationURL()
 	if err != nil {
-		errorCode = protocol.UpdateURLs(fmt.Errorf("Failed to read vecMyURLs from parameters. %s", err.Error()), packet, callID, nil)
+		_, errorCode = protocol.UpdateURLs(fmt.Errorf("Failed to read vecMyURLs from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -34,8 +34,11 @@ func (protocol *Protocol) handleUpdateURLs(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.UpdateURLs(nil, packet, callID, vecMyURLs)
+	rmcMessage, errorCode := protocol.UpdateURLs(nil, packet, callID, vecMyURLs)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

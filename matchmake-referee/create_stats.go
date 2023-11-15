@@ -27,7 +27,7 @@ func (protocol *Protocol) handleCreateStats(packet nex.PacketInterface) {
 
 	param, err := parametersStream.ReadStructure(matchmake_referee_types.NewMatchmakeRefereeStatsInitParam())
 	if err != nil {
-		errorCode = protocol.CreateStats(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
+		_, errorCode = protocol.CreateStats(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -35,8 +35,11 @@ func (protocol *Protocol) handleCreateStats(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.CreateStats(nil, packet, callID, param.(*matchmake_referee_types.MatchmakeRefereeStatsInitParam))
+	rmcMessage, errorCode := protocol.CreateStats(nil, packet, callID, param.(*matchmake_referee_types.MatchmakeRefereeStatsInitParam))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

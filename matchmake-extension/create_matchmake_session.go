@@ -28,7 +28,7 @@ func (protocol *Protocol) handleCreateMatchmakeSession(packet nex.PacketInterfac
 
 	anyGathering, err := parametersStream.ReadDataHolder()
 	if err != nil {
-		errorCode = protocol.CreateMatchmakeSession(fmt.Errorf("Failed to read anyGathering from parameters. %s", err.Error()), packet, callID, nil, "", 0)
+		_, errorCode = protocol.CreateMatchmakeSession(fmt.Errorf("Failed to read anyGathering from parameters. %s", err.Error()), packet, callID, nil, "", 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -38,7 +38,7 @@ func (protocol *Protocol) handleCreateMatchmakeSession(packet nex.PacketInterfac
 
 	message, err := parametersStream.ReadString()
 	if err != nil {
-		errorCode = protocol.CreateMatchmakeSession(fmt.Errorf("Failed to read message from parameters. %s", err.Error()), packet, callID, nil, "", 0)
+		_, errorCode = protocol.CreateMatchmakeSession(fmt.Errorf("Failed to read message from parameters. %s", err.Error()), packet, callID, nil, "", 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -51,7 +51,7 @@ func (protocol *Protocol) handleCreateMatchmakeSession(packet nex.PacketInterfac
 	if matchmakingVersion.GreaterOrEqual("3.4.0") {
 		participationCount, err = parametersStream.ReadUInt16LE()
 		if err != nil {
-			errorCode = protocol.CreateMatchmakeSession(fmt.Errorf("Failed to read message from participationCount. %s", err.Error()), packet, callID, nil, "", 0)
+			_, errorCode = protocol.CreateMatchmakeSession(fmt.Errorf("Failed to read message from participationCount. %s", err.Error()), packet, callID, nil, "", 0)
 			if errorCode != 0 {
 				globals.RespondError(packet, ProtocolID, errorCode)
 			}
@@ -60,8 +60,11 @@ func (protocol *Protocol) handleCreateMatchmakeSession(packet nex.PacketInterfac
 		}
 	}
 
-	errorCode = protocol.CreateMatchmakeSession(nil, packet, callID, anyGathering, message, participationCount)
+	rmcMessage, errorCode := protocol.CreateMatchmakeSession(nil, packet, callID, anyGathering, message, participationCount)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

@@ -27,7 +27,7 @@ func (protocol *Protocol) handleDeletePokemon(packet nex.PacketInterface) {
 
 	param, err := parametersStream.ReadStructure(datastore_pokemon_gen6_types.NewGlobalTradeStationDeletePokemonParam())
 	if err != nil {
-		errorCode = protocol.DeletePokemon(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
+		_, errorCode = protocol.DeletePokemon(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -35,8 +35,11 @@ func (protocol *Protocol) handleDeletePokemon(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.DeletePokemon(nil, packet, callID, param.(*datastore_pokemon_gen6_types.GlobalTradeStationDeletePokemonParam))
+	rmcMessage, errorCode := protocol.DeletePokemon(nil, packet, callID, param.(*datastore_pokemon_gen6_types.GlobalTradeStationDeletePokemonParam))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

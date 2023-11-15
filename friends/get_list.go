@@ -26,7 +26,7 @@ func (protocol *Protocol) handleGetList(packet nex.PacketInterface) {
 
 	byRelationship, err := parametersStream.ReadUInt8()
 	if err != nil {
-		errorCode = protocol.GetList(fmt.Errorf("Failed to read byRelationship from parameters. %s", err.Error()), packet, callID, 0, false)
+		_, errorCode = protocol.GetList(fmt.Errorf("Failed to read byRelationship from parameters. %s", err.Error()), packet, callID, 0, false)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -36,7 +36,7 @@ func (protocol *Protocol) handleGetList(packet nex.PacketInterface) {
 
 	bReversed, err := parametersStream.ReadBool()
 	if err != nil {
-		errorCode = protocol.GetList(fmt.Errorf("Failed to read bReversed from parameters. %s", err.Error()), packet, callID, 0, false)
+		_, errorCode = protocol.GetList(fmt.Errorf("Failed to read bReversed from parameters. %s", err.Error()), packet, callID, 0, false)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -44,8 +44,11 @@ func (protocol *Protocol) handleGetList(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.GetList(nil, packet, callID, byRelationship, bReversed)
+	rmcMessage, errorCode := protocol.GetList(nil, packet, callID, byRelationship, bReversed)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

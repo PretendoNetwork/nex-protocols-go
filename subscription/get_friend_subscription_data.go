@@ -19,5 +19,11 @@ func (protocol *Protocol) handleGetFriendSubscriptionData(packet nex.PacketInter
 
 	callID := request.CallID
 
-	go protocol.GetFriendSubscriptionData(nil, packet, callID)
+	rmcMessage, errorCode := protocol.GetFriendSubscriptionData(nil, packet, callID)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+		return
+	}
+
+	globals.Respond(packet, rmcMessage)
 }

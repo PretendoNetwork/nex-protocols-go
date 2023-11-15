@@ -26,7 +26,7 @@ func (protocol *Protocol) handleGetObjectInfos(packet nex.PacketInterface) {
 
 	dataIDs, err := parametersStream.ReadUInt64LE()
 	if err != nil {
-		errorCode = protocol.GetObjectInfos(fmt.Errorf("Failed to read dataIDs from parameters. %s", err.Error()), packet, callID, 0)
+		_, errorCode = protocol.GetObjectInfos(fmt.Errorf("Failed to read dataIDs from parameters. %s", err.Error()), packet, callID, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -34,8 +34,11 @@ func (protocol *Protocol) handleGetObjectInfos(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.GetObjectInfos(nil, packet, callID, dataIDs)
+	rmcMessage, errorCode := protocol.GetObjectInfos(nil, packet, callID, dataIDs)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

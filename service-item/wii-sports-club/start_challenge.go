@@ -27,7 +27,7 @@ func (protocol *Protocol) handleStartChallenge(packet nex.PacketInterface) {
 
 	startChallengeParam, err := parametersStream.ReadStructure(service_item_wii_sports_club_types.NewServiceItemStartChallengeParam())
 	if err != nil {
-		errorCode = protocol.StartChallenge(fmt.Errorf("Failed to read startChallengeParam from parameters. %s", err.Error()), packet, callID, nil)
+		_, errorCode = protocol.StartChallenge(fmt.Errorf("Failed to read startChallengeParam from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -35,8 +35,11 @@ func (protocol *Protocol) handleStartChallenge(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.StartChallenge(nil, packet, callID, startChallengeParam.(*service_item_wii_sports_club_types.ServiceItemStartChallengeParam))
+	rmcMessage, errorCode := protocol.StartChallenge(nil, packet, callID, startChallengeParam.(*service_item_wii_sports_club_types.ServiceItemStartChallengeParam))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

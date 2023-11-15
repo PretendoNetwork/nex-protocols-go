@@ -19,8 +19,11 @@ func (protocol *Protocol) handleGetClusterMembers(packet nex.PacketInterface) {
 
 	callID := request.CallID
 
-	errorCode = protocol.GetClusterMembers(nil, packet, callID)
+	rmcMessage, errorCode := protocol.GetClusterMembers(nil, packet, callID)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

@@ -27,7 +27,7 @@ func (protocol *Protocol) handleGetFriendMiiList(packet nex.PacketInterface) {
 
 	friends, err := parametersStream.ReadListStructure(friends_3ds_types.NewFriendInfo())
 	if err != nil {
-		errorCode = protocol.GetFriendMiiList(fmt.Errorf("Failed to read friends from parameters. %s", err.Error()), packet, callID, nil)
+		_, errorCode = protocol.GetFriendMiiList(fmt.Errorf("Failed to read friends from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -35,8 +35,11 @@ func (protocol *Protocol) handleGetFriendMiiList(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.GetFriendMiiList(nil, packet, callID, friends.([]*friends_3ds_types.FriendInfo))
+	rmcMessage, errorCode := protocol.GetFriendMiiList(nil, packet, callID, friends.([]*friends_3ds_types.FriendInfo))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

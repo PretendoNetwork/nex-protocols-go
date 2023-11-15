@@ -26,7 +26,7 @@ func (protocol *Protocol) handleGetPID(packet nex.PacketInterface) {
 
 	strUserName, err := parametersStream.ReadString()
 	if err != nil {
-		errorCode = protocol.GetPID(fmt.Errorf("Failed to read strUserName from parameters. %s", err.Error()), packet, callID, "")
+		_, errorCode = protocol.GetPID(fmt.Errorf("Failed to read strUserName from parameters. %s", err.Error()), packet, callID, "")
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -34,8 +34,11 @@ func (protocol *Protocol) handleGetPID(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.GetPID(nil, packet, callID, strUserName)
+	rmcMessage, errorCode := protocol.GetPID(nil, packet, callID, strUserName)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

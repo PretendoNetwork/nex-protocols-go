@@ -26,7 +26,7 @@ func (protocol *Protocol) handleGetItem(packet nex.PacketInterface) {
 
 	uiGroup, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.GetItem(fmt.Errorf("Failed to read uiGroup from parameters. %s", err.Error()), packet, callID, 0, "")
+		_, errorCode = protocol.GetItem(fmt.Errorf("Failed to read uiGroup from parameters. %s", err.Error()), packet, callID, 0, "")
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -36,7 +36,7 @@ func (protocol *Protocol) handleGetItem(packet nex.PacketInterface) {
 
 	strTag, err := parametersStream.ReadString()
 	if err != nil {
-		errorCode = protocol.GetItem(fmt.Errorf("Failed to read strTag from parameters. %s", err.Error()), packet, callID, 0, "")
+		_, errorCode = protocol.GetItem(fmt.Errorf("Failed to read strTag from parameters. %s", err.Error()), packet, callID, 0, "")
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -44,8 +44,11 @@ func (protocol *Protocol) handleGetItem(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.GetItem(nil, packet, callID, uiGroup, strTag)
+	rmcMessage, errorCode := protocol.GetItem(nil, packet, callID, uiGroup, strTag)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

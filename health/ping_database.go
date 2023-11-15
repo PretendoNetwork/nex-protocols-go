@@ -19,8 +19,11 @@ func (protocol *Protocol) handlePingDatabase(packet nex.PacketInterface) {
 
 	callID := request.CallID
 
-	errorCode = protocol.PingDatabase(nil, packet, callID)
+	rmcMessage, errorCode := protocol.PingDatabase(nil, packet, callID)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

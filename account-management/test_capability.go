@@ -26,7 +26,7 @@ func (protocol *Protocol) handleTestCapability(packet nex.PacketInterface) {
 
 	uiCapability, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.TestCapability(fmt.Errorf("Failed to read uiCapability from parameters. %s", err.Error()), packet, callID, 0)
+		_, errorCode = protocol.TestCapability(fmt.Errorf("Failed to read uiCapability from parameters. %s", err.Error()), packet, callID, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -34,8 +34,11 @@ func (protocol *Protocol) handleTestCapability(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.TestCapability(nil, packet, callID, uiCapability)
+	rmcMessage, errorCode := protocol.TestCapability(nil, packet, callID, uiCapability)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

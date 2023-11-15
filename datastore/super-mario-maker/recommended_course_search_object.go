@@ -27,7 +27,7 @@ func (protocol *Protocol) handleRecommendedCourseSearchObject(packet nex.PacketI
 
 	param, err := parametersStream.ReadStructure(datastore_types.NewDataStoreSearchParam())
 	if err != nil {
-		errorCode = protocol.RecommendedCourseSearchObject(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil, nil)
+		_, errorCode = protocol.RecommendedCourseSearchObject(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -37,7 +37,7 @@ func (protocol *Protocol) handleRecommendedCourseSearchObject(packet nex.PacketI
 
 	extraData, err := parametersStream.ReadListString()
 	if err != nil {
-		errorCode = protocol.RecommendedCourseSearchObject(fmt.Errorf("Failed to read extraData from parameters. %s", err.Error()), packet, callID, nil, nil)
+		_, errorCode = protocol.RecommendedCourseSearchObject(fmt.Errorf("Failed to read extraData from parameters. %s", err.Error()), packet, callID, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -45,8 +45,11 @@ func (protocol *Protocol) handleRecommendedCourseSearchObject(packet nex.PacketI
 		return
 	}
 
-	errorCode = protocol.RecommendedCourseSearchObject(nil, packet, callID, param.(*datastore_types.DataStoreSearchParam), extraData)
+	rmcMessage, errorCode := protocol.RecommendedCourseSearchObject(nil, packet, callID, param.(*datastore_types.DataStoreSearchParam), extraData)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

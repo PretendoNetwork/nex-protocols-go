@@ -169,42 +169,42 @@ type matchmakeExtensionProtocol = matchmake_extension.Protocol
 type Protocol struct {
 	Server nex.ServerInterface
 	matchmakeExtensionProtocol
-	GetTournament                                     func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) uint32
-	GetTournamentReplayID                             func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) uint32
-	GetTournamentResult                               func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) uint32
-	SetTournamentReplayID                             func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) uint32
-	GetTournamentProfiles                             func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) uint32
-	JoinOrCreateMatchmakeSession                      func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) uint32
-	RegisterTournamentPlayerInfo                      func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) uint32
-	RegisterTournamentBot                             func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) uint32
-	ReportTournamentBotRoundResult                    func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) uint32
-	ReplaceTournamentLeafNode                         func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) uint32
-	StartTournament                                   func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) uint32
-	AutoTournamentMatchmake                           func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) uint32
-	SimpleFindByID                                    func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) uint32
-	GetTournamentCompetitions                         func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) uint32
-	GetTournamentCompetition                          func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) uint32
-	GetTournamentReplayIDs                            func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) uint32
-	RegisterCommunityCompetition                      func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) uint32
-	UnregisterCommunityCompetition                    func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) uint32
-	UnregisterCommunityCompetitionByID                func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) uint32
-	GetCommunityCompetitions                          func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) uint32
-	GetCommunityCompetitionByID                       func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) uint32
-	FindCommunityCompetitionsByParticipant            func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) uint32
-	FindCommunityCompetitionsByGatheringID            func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) uint32
-	SelectCommunityCompetitionByOwner                 func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) uint32
-	JoinCommunityCompetition                          func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) uint32
-	JoinCommunityCompetitionByGatheringID             func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) uint32
-	EndCommunityCompetitionParticipation              func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) uint32
-	EndCommunityCompetitionParticipationByGatheringID func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) uint32
-	SearchCommunityCompetition                        func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) uint32
-	PostCommunityCompetitionMatchResult               func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) uint32
-	GetCommunityCompetitionRanking                    func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) uint32
-	DebugRegisterCommunityCompetition                 func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) uint32
-	DebugUnregisterCommunityCompetition               func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) uint32
-	DebugJoinCommunityCompetition                     func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) uint32
-	DebugEndCommunityCompetitionParticipation         func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) uint32
-	DebugPostCommunityCompetitionMatchResult          func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) uint32
+	GetTournament                                     func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) (*nex.RMCMessage, uint32)
+	GetTournamentReplayID                             func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) (*nex.RMCMessage, uint32)
+	GetTournamentResult                               func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) (*nex.RMCMessage, uint32)
+	SetTournamentReplayID                             func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) (*nex.RMCMessage, uint32)
+	GetTournamentProfiles                             func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) (*nex.RMCMessage, uint32)
+	JoinOrCreateMatchmakeSession                      func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) (*nex.RMCMessage, uint32)
+	RegisterTournamentPlayerInfo                      func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) (*nex.RMCMessage, uint32)
+	RegisterTournamentBot                             func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) (*nex.RMCMessage, uint32)
+	ReportTournamentBotRoundResult                    func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) (*nex.RMCMessage, uint32)
+	ReplaceTournamentLeafNode                         func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) (*nex.RMCMessage, uint32)
+	StartTournament                                   func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) (*nex.RMCMessage, uint32)
+	AutoTournamentMatchmake                           func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) (*nex.RMCMessage, uint32)
+	SimpleFindByID                                    func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) (*nex.RMCMessage, uint32)
+	GetTournamentCompetitions                         func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) (*nex.RMCMessage, uint32)
+	GetTournamentCompetition                          func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) (*nex.RMCMessage, uint32)
+	GetTournamentReplayIDs                            func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) (*nex.RMCMessage, uint32)
+	RegisterCommunityCompetition                      func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) (*nex.RMCMessage, uint32)
+	UnregisterCommunityCompetition                    func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) (*nex.RMCMessage, uint32)
+	UnregisterCommunityCompetitionByID                func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) (*nex.RMCMessage, uint32)
+	GetCommunityCompetitions                          func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) (*nex.RMCMessage, uint32)
+	GetCommunityCompetitionByID                       func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) (*nex.RMCMessage, uint32)
+	FindCommunityCompetitionsByParticipant            func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) (*nex.RMCMessage, uint32)
+	FindCommunityCompetitionsByGatheringID            func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) (*nex.RMCMessage, uint32)
+	SelectCommunityCompetitionByOwner                 func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) (*nex.RMCMessage, uint32)
+	JoinCommunityCompetition                          func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) (*nex.RMCMessage, uint32)
+	JoinCommunityCompetitionByGatheringID             func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) (*nex.RMCMessage, uint32)
+	EndCommunityCompetitionParticipation              func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) (*nex.RMCMessage, uint32)
+	EndCommunityCompetitionParticipationByGatheringID func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) (*nex.RMCMessage, uint32)
+	SearchCommunityCompetition                        func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) (*nex.RMCMessage, uint32)
+	PostCommunityCompetitionMatchResult               func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) (*nex.RMCMessage, uint32)
+	GetCommunityCompetitionRanking                    func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) (*nex.RMCMessage, uint32)
+	DebugRegisterCommunityCompetition                 func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) (*nex.RMCMessage, uint32)
+	DebugUnregisterCommunityCompetition               func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) (*nex.RMCMessage, uint32)
+	DebugJoinCommunityCompetition                     func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) (*nex.RMCMessage, uint32)
+	DebugEndCommunityCompetitionParticipation         func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) (*nex.RMCMessage, uint32)
+	DebugPostCommunityCompetitionMatchResult          func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) (*nex.RMCMessage, uint32)
 }
 
 // Setup initializes the protocol

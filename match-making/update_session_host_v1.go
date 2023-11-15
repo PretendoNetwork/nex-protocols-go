@@ -26,7 +26,7 @@ func (protocol *Protocol) handleUpdateSessionHostV1(packet nex.PacketInterface) 
 
 	gid, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.UpdateSessionHostV1(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), packet, callID, 0)
+		_, errorCode = protocol.UpdateSessionHostV1(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), packet, callID, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -34,8 +34,11 @@ func (protocol *Protocol) handleUpdateSessionHostV1(packet nex.PacketInterface) 
 		return
 	}
 
-	errorCode = protocol.UpdateSessionHostV1(nil, packet, callID, gid)
+	rmcMessage, errorCode := protocol.UpdateSessionHostV1(nil, packet, callID, gid)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

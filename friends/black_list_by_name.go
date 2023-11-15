@@ -26,7 +26,7 @@ func (protocol *Protocol) handleBlackListByName(packet nex.PacketInterface) {
 
 	strPlayerName, err := parametersStream.ReadString()
 	if err != nil {
-		errorCode = protocol.BlackListByName(fmt.Errorf("Failed to read strPlayerName from parameters. %s", err.Error()), packet, callID, "", 0)
+		_, errorCode = protocol.BlackListByName(fmt.Errorf("Failed to read strPlayerName from parameters. %s", err.Error()), packet, callID, "", 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -36,7 +36,7 @@ func (protocol *Protocol) handleBlackListByName(packet nex.PacketInterface) {
 
 	uiDetails, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.BlackListByName(fmt.Errorf("Failed to read uiDetails from parameters. %s", err.Error()), packet, callID, "", 0)
+		_, errorCode = protocol.BlackListByName(fmt.Errorf("Failed to read uiDetails from parameters. %s", err.Error()), packet, callID, "", 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -44,8 +44,11 @@ func (protocol *Protocol) handleBlackListByName(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.BlackListByName(nil, packet, callID, strPlayerName, uiDetails)
+	rmcMessage, errorCode := protocol.BlackListByName(nil, packet, callID, strPlayerName, uiDetails)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

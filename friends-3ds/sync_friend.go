@@ -26,7 +26,7 @@ func (protocol *Protocol) handleSyncFriend(packet nex.PacketInterface) {
 
 	lfc, err := parametersStream.ReadUInt64LE()
 	if err != nil {
-		errorCode = protocol.SyncFriend(fmt.Errorf("Failed to read lfc from parameters. %s", err.Error()), packet, callID, 0, nil, nil)
+		_, errorCode = protocol.SyncFriend(fmt.Errorf("Failed to read lfc from parameters. %s", err.Error()), packet, callID, 0, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -36,7 +36,7 @@ func (protocol *Protocol) handleSyncFriend(packet nex.PacketInterface) {
 
 	pids, err := parametersStream.ReadListPID()
 	if err != nil {
-		errorCode = protocol.SyncFriend(fmt.Errorf("Failed to read pids from parameters. %s", err.Error()), packet, callID, 0, nil, nil)
+		_, errorCode = protocol.SyncFriend(fmt.Errorf("Failed to read pids from parameters. %s", err.Error()), packet, callID, 0, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -46,7 +46,7 @@ func (protocol *Protocol) handleSyncFriend(packet nex.PacketInterface) {
 
 	lfcList, err := parametersStream.ReadListUInt64LE()
 	if err != nil {
-		errorCode = protocol.SyncFriend(fmt.Errorf("Failed to read lfcList from parameters. %s", err.Error()), packet, callID, 0, nil, nil)
+		_, errorCode = protocol.SyncFriend(fmt.Errorf("Failed to read lfcList from parameters. %s", err.Error()), packet, callID, 0, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -54,8 +54,11 @@ func (protocol *Protocol) handleSyncFriend(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.SyncFriend(nil, packet, callID, lfc, pids, lfcList)
+	rmcMessage, errorCode := protocol.SyncFriend(nil, packet, callID, lfc, pids, lfcList)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

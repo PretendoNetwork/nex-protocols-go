@@ -26,7 +26,7 @@ func (protocol *Protocol) handleRegisterEx(packet nex.PacketInterface) {
 
 	vecMyURLs, err := parametersStream.ReadListStationURL()
 	if err != nil {
-		errorCode = protocol.RegisterEx(fmt.Errorf("Failed to read vecMyURLs from parameters. %s", err.Error()), packet, callID, nil, nil)
+		_, errorCode = protocol.RegisterEx(fmt.Errorf("Failed to read vecMyURLs from parameters. %s", err.Error()), packet, callID, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -36,7 +36,7 @@ func (protocol *Protocol) handleRegisterEx(packet nex.PacketInterface) {
 
 	hCustomData, err := parametersStream.ReadDataHolder()
 	if err != nil {
-		errorCode = protocol.RegisterEx(fmt.Errorf("Failed to read hCustomData from parameters. %s", err.Error()), packet, callID, nil, nil)
+		_, errorCode = protocol.RegisterEx(fmt.Errorf("Failed to read hCustomData from parameters. %s", err.Error()), packet, callID, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -44,8 +44,11 @@ func (protocol *Protocol) handleRegisterEx(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.RegisterEx(nil, packet, callID, vecMyURLs, hCustomData)
+	rmcMessage, errorCode := protocol.RegisterEx(nil, packet, callID, vecMyURLs, hCustomData)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

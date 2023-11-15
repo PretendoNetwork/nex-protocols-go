@@ -26,7 +26,7 @@ func (protocol *Protocol) handleLaunchSession(packet nex.PacketInterface) {
 
 	idGathering, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.LaunchSession(fmt.Errorf("Failed to read idGathering from parameters. %s", err.Error()), packet, callID, 0, "")
+		_, errorCode = protocol.LaunchSession(fmt.Errorf("Failed to read idGathering from parameters. %s", err.Error()), packet, callID, 0, "")
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -36,7 +36,7 @@ func (protocol *Protocol) handleLaunchSession(packet nex.PacketInterface) {
 
 	strURL, err := parametersStream.ReadString()
 	if err != nil {
-		errorCode = protocol.LaunchSession(fmt.Errorf("Failed to read strURL from parameters. %s", err.Error()), packet, callID, 0, "")
+		_, errorCode = protocol.LaunchSession(fmt.Errorf("Failed to read strURL from parameters. %s", err.Error()), packet, callID, 0, "")
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -44,8 +44,11 @@ func (protocol *Protocol) handleLaunchSession(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.LaunchSession(nil, packet, callID, idGathering, strURL)
+	rmcMessage, errorCode := protocol.LaunchSession(nil, packet, callID, idGathering, strURL)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

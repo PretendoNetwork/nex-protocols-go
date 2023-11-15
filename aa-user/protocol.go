@@ -29,10 +29,10 @@ const (
 // Protocol stores all the RMC method handlers for the AAUser protocol and listens for requests
 type Protocol struct {
 	Server                nex.ServerInterface
-	RegisterApplication   func(err error, packet nex.PacketInterface, callID uint32, titleID uint64) uint32
-	UnregisterApplication func(err error, packet nex.PacketInterface, callID uint32, titleID uint64) uint32
-	SetApplicationInfo    func(err error, packet nex.PacketInterface, callID uint32, applicationInfo []*aauser_types.ApplicationInfo) uint32
-	GetApplicationInfo    func(err error, packet nex.PacketInterface, callID uint32) uint32
+	RegisterApplication   func(err error, packet nex.PacketInterface, callID uint32, titleID uint64) (*nex.RMCMessage, uint32)
+	UnregisterApplication func(err error, packet nex.PacketInterface, callID uint32, titleID uint64) (*nex.RMCMessage, uint32)
+	SetApplicationInfo    func(err error, packet nex.PacketInterface, callID uint32, applicationInfo []*aauser_types.ApplicationInfo) (*nex.RMCMessage, uint32)
+	GetApplicationInfo    func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, uint32)
 }
 
 // Setup initializes the protocol

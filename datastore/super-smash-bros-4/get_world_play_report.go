@@ -19,8 +19,11 @@ func (protocol *Protocol) handleGetWorldPlayReport(packet nex.PacketInterface) {
 
 	callID := request.CallID
 
-	errorCode = protocol.GetWorldPlayReport(nil, packet, callID)
+	rmcMessage, errorCode := protocol.GetWorldPlayReport(nil, packet, callID)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

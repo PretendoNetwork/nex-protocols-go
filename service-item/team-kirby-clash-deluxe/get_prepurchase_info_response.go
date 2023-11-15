@@ -26,7 +26,7 @@ func (protocol *Protocol) handleGetPrepurchaseInfoResponse(packet nex.PacketInte
 
 	requestID, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.GetPrepurchaseInfoResponse(fmt.Errorf("Failed to read requestID from parameters. %s", err.Error()), packet, callID, 0)
+		_, errorCode = protocol.GetPrepurchaseInfoResponse(fmt.Errorf("Failed to read requestID from parameters. %s", err.Error()), packet, callID, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -34,8 +34,11 @@ func (protocol *Protocol) handleGetPrepurchaseInfoResponse(packet nex.PacketInte
 		return
 	}
 
-	errorCode = protocol.GetPrepurchaseInfoResponse(nil, packet, callID, requestID)
+	rmcMessage, errorCode := protocol.GetPrepurchaseInfoResponse(nil, packet, callID, requestID)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

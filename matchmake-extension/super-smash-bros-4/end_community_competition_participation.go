@@ -21,8 +21,11 @@ func (protocol *Protocol) handleEndCommunityCompetitionParticipation(packet nex.
 
 	callID := request.CallID
 
-	errorCode = protocol.EndCommunityCompetitionParticipation(nil, packet, callID, packet.Payload())
+	rmcMessage, errorCode := protocol.EndCommunityCompetitionParticipation(nil, packet, callID, packet.Payload())
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

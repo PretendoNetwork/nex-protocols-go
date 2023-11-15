@@ -27,7 +27,7 @@ func (protocol *Protocol) handleRateCustomRanking(packet nex.PacketInterface) {
 
 	params, err := parametersStream.ReadListStructure(datastore_super_mario_maker_types.NewDataStoreRateCustomRankingParam())
 	if err != nil {
-		errorCode = protocol.RateCustomRanking(fmt.Errorf("Failed to read params from parameters. %s", err.Error()), packet, callID, nil)
+		_, errorCode = protocol.RateCustomRanking(fmt.Errorf("Failed to read params from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -35,8 +35,11 @@ func (protocol *Protocol) handleRateCustomRanking(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.RateCustomRanking(nil, packet, callID, params.([]*datastore_super_mario_maker_types.DataStoreRateCustomRankingParam))
+	rmcMessage, errorCode := protocol.RateCustomRanking(nil, packet, callID, params.([]*datastore_super_mario_maker_types.DataStoreRateCustomRankingParam))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

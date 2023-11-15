@@ -26,7 +26,7 @@ func (protocol *Protocol) handleUpdateAndGetTicketInfo(packet nex.PacketInterfac
 
 	forceRetrieveFromEShop, err := parametersStream.ReadBool()
 	if err != nil {
-		errorCode = protocol.UpdateAndGetTicketInfo(fmt.Errorf("Failed to read forceRetrieveFromEShop from parameters. %s", err.Error()), packet, callID, false)
+		_, errorCode = protocol.UpdateAndGetTicketInfo(fmt.Errorf("Failed to read forceRetrieveFromEShop from parameters. %s", err.Error()), packet, callID, false)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -34,8 +34,11 @@ func (protocol *Protocol) handleUpdateAndGetTicketInfo(packet nex.PacketInterfac
 		return
 	}
 
-	errorCode = protocol.UpdateAndGetTicketInfo(nil, packet, callID, forceRetrieveFromEShop)
+	rmcMessage, errorCode := protocol.UpdateAndGetTicketInfo(nil, packet, callID, forceRetrieveFromEShop)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

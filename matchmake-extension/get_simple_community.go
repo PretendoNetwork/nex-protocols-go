@@ -26,7 +26,7 @@ func (protocol *Protocol) handleGetSimpleCommunity(packet nex.PacketInterface) {
 
 	gatheringIDList, err := parametersStream.ReadListUInt32LE()
 	if err != nil {
-		errorCode = protocol.GetSimpleCommunity(fmt.Errorf("Failed to read gatheringIDList from parameters. %s", err.Error()), packet, callID, nil)
+		_, errorCode = protocol.GetSimpleCommunity(fmt.Errorf("Failed to read gatheringIDList from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -34,8 +34,11 @@ func (protocol *Protocol) handleGetSimpleCommunity(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.GetSimpleCommunity(nil, packet, callID, gatheringIDList)
+	rmcMessage, errorCode := protocol.GetSimpleCommunity(nil, packet, callID, gatheringIDList)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

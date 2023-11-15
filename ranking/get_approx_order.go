@@ -27,7 +27,7 @@ func (protocol *Protocol) handleGetApproxOrder(packet nex.PacketInterface) {
 
 	category, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.GetApproxOrder(fmt.Errorf("Failed to read category from parameters. %s", err.Error()), packet, callID, 0, nil, 0, 0, nil)
+		_, errorCode = protocol.GetApproxOrder(fmt.Errorf("Failed to read category from parameters. %s", err.Error()), packet, callID, 0, nil, 0, 0, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -37,7 +37,7 @@ func (protocol *Protocol) handleGetApproxOrder(packet nex.PacketInterface) {
 
 	orderParam, err := parametersStream.ReadStructure(ranking_types.NewRankingOrderParam())
 	if err != nil {
-		errorCode = protocol.GetApproxOrder(fmt.Errorf("Failed to read orderParam from parameters. %s", err.Error()), packet, callID, 0, nil, 0, 0, nil)
+		_, errorCode = protocol.GetApproxOrder(fmt.Errorf("Failed to read orderParam from parameters. %s", err.Error()), packet, callID, 0, nil, 0, 0, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -47,7 +47,7 @@ func (protocol *Protocol) handleGetApproxOrder(packet nex.PacketInterface) {
 
 	score, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.GetApproxOrder(fmt.Errorf("Failed to read score from parameters. %s", err.Error()), packet, callID, 0, nil, 0, 0, nil)
+		_, errorCode = protocol.GetApproxOrder(fmt.Errorf("Failed to read score from parameters. %s", err.Error()), packet, callID, 0, nil, 0, 0, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -57,7 +57,7 @@ func (protocol *Protocol) handleGetApproxOrder(packet nex.PacketInterface) {
 
 	uniqueID, err := parametersStream.ReadUInt64LE()
 	if err != nil {
-		errorCode = protocol.GetApproxOrder(fmt.Errorf("Failed to read uniqueID from parameters. %s", err.Error()), packet, callID, 0, nil, 0, 0, nil)
+		_, errorCode = protocol.GetApproxOrder(fmt.Errorf("Failed to read uniqueID from parameters. %s", err.Error()), packet, callID, 0, nil, 0, 0, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -67,7 +67,7 @@ func (protocol *Protocol) handleGetApproxOrder(packet nex.PacketInterface) {
 
 	principalID, err := parametersStream.ReadPID()
 	if err != nil {
-		errorCode = protocol.GetApproxOrder(fmt.Errorf("Failed to read principalID from parameters. %s", err.Error()), packet, callID, 0, nil, 0, 0, nil)
+		_, errorCode = protocol.GetApproxOrder(fmt.Errorf("Failed to read principalID from parameters. %s", err.Error()), packet, callID, 0, nil, 0, 0, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -75,8 +75,11 @@ func (protocol *Protocol) handleGetApproxOrder(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.GetApproxOrder(nil, packet, callID, category, orderParam.(*ranking_types.RankingOrderParam), score, uniqueID, principalID)
+	rmcMessage, errorCode := protocol.GetApproxOrder(nil, packet, callID, category, orderParam.(*ranking_types.RankingOrderParam), score, uniqueID, principalID)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

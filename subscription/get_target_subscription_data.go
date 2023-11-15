@@ -19,5 +19,11 @@ func (protocol *Protocol) handleGetTargetSubscriptionData(packet nex.PacketInter
 
 	callID := request.CallID
 
-	go protocol.GetTargetSubscriptionData(nil, packet, callID)
+	rmcMessage, errorCode := protocol.GetTargetSubscriptionData(nil, packet, callID)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+		return
+	}
+
+	globals.Respond(packet, rmcMessage)
 }

@@ -26,7 +26,7 @@ func (protocol *Protocol) handleInitiateProbe(packet nex.PacketInterface) {
 
 	urlStationToProbe, err := parametersStream.ReadStationURL()
 	if err != nil {
-		errorCode = protocol.InitiateProbe(fmt.Errorf("Failed to read urlStationToProbe from parameters. %s", err.Error()), packet, callID, nil)
+		_, errorCode = protocol.InitiateProbe(fmt.Errorf("Failed to read urlStationToProbe from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -34,8 +34,11 @@ func (protocol *Protocol) handleInitiateProbe(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.InitiateProbe(nil, packet, callID, urlStationToProbe)
+	rmcMessage, errorCode := protocol.InitiateProbe(nil, packet, callID, urlStationToProbe)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

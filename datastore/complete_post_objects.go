@@ -26,7 +26,7 @@ func (protocol *Protocol) handleCompletePostObjects(packet nex.PacketInterface) 
 
 	dataIDs, err := parametersStream.ReadListUInt64LE()
 	if err != nil {
-		errorCode = protocol.CompletePostObjects(fmt.Errorf("Failed to read dataIDs from parameters. %s", err.Error()), packet, callID, nil)
+		_, errorCode = protocol.CompletePostObjects(fmt.Errorf("Failed to read dataIDs from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -34,8 +34,11 @@ func (protocol *Protocol) handleCompletePostObjects(packet nex.PacketInterface) 
 		return
 	}
 
-	errorCode = protocol.CompletePostObjects(nil, packet, callID, dataIDs)
+	rmcMessage, errorCode := protocol.CompletePostObjects(nil, packet, callID, dataIDs)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

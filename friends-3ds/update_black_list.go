@@ -26,7 +26,7 @@ func (protocol *Protocol) handleUpdateBlackList(packet nex.PacketInterface) {
 
 	unknown, err := parametersStream.ReadListUInt32LE()
 	if err != nil {
-		errorCode = protocol.UpdateBlackList(fmt.Errorf("Failed to read unknown from parameters. %s", err.Error()), packet, callID, nil)
+		_, errorCode = protocol.UpdateBlackList(fmt.Errorf("Failed to read unknown from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -34,8 +34,11 @@ func (protocol *Protocol) handleUpdateBlackList(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.UpdateBlackList(nil, packet, callID, unknown)
+	rmcMessage, errorCode := protocol.UpdateBlackList(nil, packet, callID, unknown)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

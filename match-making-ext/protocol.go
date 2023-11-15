@@ -33,12 +33,12 @@ const (
 // Protocol handles the MatchMakingExt protocol
 type Protocol struct {
 	Server                  nex.ServerInterface
-	EndParticipation        func(err error, packet nex.PacketInterface, callID uint32, idGathering uint32, strMessage string) uint32
-	GetParticipants         func(err error, packet nex.PacketInterface, callID uint32, idGathering uint32, bOnlyActive bool) uint32
-	GetDetailedParticipants func(err error, packet nex.PacketInterface, callID uint32, idGathering uint32, bOnlyActive bool) uint32
-	GetParticipantsURLs     func(err error, packet nex.PacketInterface, callID uint32, lstGatherings []uint32) uint32
-	GetGatheringRelations   func(err error, packet nex.PacketInterface, callID uint32, id uint32, descr string) uint32
-	DeleteFromDeletions     func(err error, packet nex.PacketInterface, callID uint32, lstDeletions []uint32, pid *nex.PID) uint32
+	EndParticipation        func(err error, packet nex.PacketInterface, callID uint32, idGathering uint32, strMessage string) (*nex.RMCMessage, uint32)
+	GetParticipants         func(err error, packet nex.PacketInterface, callID uint32, idGathering uint32, bOnlyActive bool) (*nex.RMCMessage, uint32)
+	GetDetailedParticipants func(err error, packet nex.PacketInterface, callID uint32, idGathering uint32, bOnlyActive bool) (*nex.RMCMessage, uint32)
+	GetParticipantsURLs     func(err error, packet nex.PacketInterface, callID uint32, lstGatherings []uint32) (*nex.RMCMessage, uint32)
+	GetGatheringRelations   func(err error, packet nex.PacketInterface, callID uint32, id uint32, descr string) (*nex.RMCMessage, uint32)
+	DeleteFromDeletions     func(err error, packet nex.PacketInterface, callID uint32, lstDeletions []uint32, pid *nex.PID) (*nex.RMCMessage, uint32)
 }
 
 // Setup initializes the protocol

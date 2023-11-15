@@ -27,7 +27,7 @@ func (protocol *Protocol) handleChangeAttributes(packet nex.PacketInterface) {
 
 	category, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.ChangeAttributes(fmt.Errorf("Failed to read category from parameters. %s", err.Error()), packet, callID, 0, nil, 0)
+		_, errorCode = protocol.ChangeAttributes(fmt.Errorf("Failed to read category from parameters. %s", err.Error()), packet, callID, 0, nil, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -37,7 +37,7 @@ func (protocol *Protocol) handleChangeAttributes(packet nex.PacketInterface) {
 
 	changeParam, err := parametersStream.ReadStructure(ranking_types.NewRankingChangeAttributesParam())
 	if err != nil {
-		errorCode = protocol.ChangeAttributes(fmt.Errorf("Failed to read changeParam from parameters. %s", err.Error()), packet, callID, 0, nil, 0)
+		_, errorCode = protocol.ChangeAttributes(fmt.Errorf("Failed to read changeParam from parameters. %s", err.Error()), packet, callID, 0, nil, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -47,7 +47,7 @@ func (protocol *Protocol) handleChangeAttributes(packet nex.PacketInterface) {
 
 	uniqueID, err := parametersStream.ReadUInt64LE()
 	if err != nil {
-		errorCode = protocol.ChangeAttributes(fmt.Errorf("Failed to read uniqueID from parameters. %s", err.Error()), packet, callID, 0, nil, 0)
+		_, errorCode = protocol.ChangeAttributes(fmt.Errorf("Failed to read uniqueID from parameters. %s", err.Error()), packet, callID, 0, nil, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -55,8 +55,11 @@ func (protocol *Protocol) handleChangeAttributes(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.ChangeAttributes(nil, packet, callID, category, changeParam.(*ranking_types.RankingChangeAttributesParam), uniqueID)
+	rmcMessage, errorCode := protocol.ChangeAttributes(nil, packet, callID, category, changeParam.(*ranking_types.RankingChangeAttributesParam), uniqueID)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

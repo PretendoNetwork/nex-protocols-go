@@ -18,7 +18,7 @@ const (
 // Protocol handles the RemoteLogDevice protocol
 type Protocol struct {
 	Server nex.ServerInterface
-	Log    func(err error, packet nex.PacketInterface, callID uint32, strLine string) uint32
+	Log    func(err error, packet nex.PacketInterface, callID uint32, strLine string) (*nex.RMCMessage, uint32)
 }
 
 // Setup initializes the protocol

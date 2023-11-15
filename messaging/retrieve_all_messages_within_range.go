@@ -27,7 +27,7 @@ func (protocol *Protocol) handleRetrieveAllMessagesWithinRange(packet nex.Packet
 
 	recipient, err := parametersStream.ReadStructure(messaging_types.NewMessageRecipient())
 	if err != nil {
-		errorCode = protocol.RetrieveAllMessagesWithinRange(fmt.Errorf("Failed to read recipient from parameters. %s", err.Error()), packet, callID, nil, nil)
+		_, errorCode = protocol.RetrieveAllMessagesWithinRange(fmt.Errorf("Failed to read recipient from parameters. %s", err.Error()), packet, callID, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -37,7 +37,7 @@ func (protocol *Protocol) handleRetrieveAllMessagesWithinRange(packet nex.Packet
 
 	resultRange, err := parametersStream.ReadStructure(nex.NewResultRange())
 	if err != nil {
-		errorCode = protocol.RetrieveAllMessagesWithinRange(fmt.Errorf("Failed to read resultRange from parameters. %s", err.Error()), packet, callID, nil, nil)
+		_, errorCode = protocol.RetrieveAllMessagesWithinRange(fmt.Errorf("Failed to read resultRange from parameters. %s", err.Error()), packet, callID, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -45,8 +45,11 @@ func (protocol *Protocol) handleRetrieveAllMessagesWithinRange(packet nex.Packet
 		return
 	}
 
-	errorCode = protocol.RetrieveAllMessagesWithinRange(nil, packet, callID, recipient.(*messaging_types.MessageRecipient), resultRange.(*nex.ResultRange))
+	rmcMessage, errorCode := protocol.RetrieveAllMessagesWithinRange(nil, packet, callID, recipient.(*messaging_types.MessageRecipient), resultRange.(*nex.ResultRange))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

@@ -26,7 +26,7 @@ func (protocol *Protocol) handleGetPasswordInfos(packet nex.PacketInterface) {
 
 	dataIDs, err := parametersStream.ReadListUInt64LE()
 	if err != nil {
-		errorCode = protocol.GetPasswordInfos(fmt.Errorf("Failed to read dataIDs from parameters. %s", err.Error()), packet, callID, nil)
+		_, errorCode = protocol.GetPasswordInfos(fmt.Errorf("Failed to read dataIDs from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -34,8 +34,11 @@ func (protocol *Protocol) handleGetPasswordInfos(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.GetPasswordInfos(nil, packet, callID, dataIDs)
+	rmcMessage, errorCode := protocol.GetPasswordInfos(nil, packet, callID, dataIDs)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

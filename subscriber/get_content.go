@@ -27,7 +27,7 @@ func (protocol *Protocol) handleGetContent(packet nex.PacketInterface) {
 
 	param, err := parametersStream.ReadStructure(subscriber_types.NewSubscriberGetContentParam())
 	if err != nil {
-		errorCode = protocol.GetContent(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
+		_, errorCode = protocol.GetContent(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -35,8 +35,11 @@ func (protocol *Protocol) handleGetContent(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.GetContent(nil, packet, callID, param.(*subscriber_types.SubscriberGetContentParam))
+	rmcMessage, errorCode := protocol.GetContent(nil, packet, callID, param.(*subscriber_types.SubscriberGetContentParam))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

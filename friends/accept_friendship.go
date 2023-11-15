@@ -26,7 +26,7 @@ func (protocol *Protocol) handleAcceptFriendship(packet nex.PacketInterface) {
 
 	uiPlayer, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.AcceptFriendship(fmt.Errorf("Failed to read uiPlayer from parameters. %s", err.Error()), packet, callID, 0)
+		_, errorCode = protocol.AcceptFriendship(fmt.Errorf("Failed to read uiPlayer from parameters. %s", err.Error()), packet, callID, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -34,8 +34,11 @@ func (protocol *Protocol) handleAcceptFriendship(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.AcceptFriendship(nil, packet, callID, uiPlayer)
+	rmcMessage, errorCode := protocol.AcceptFriendship(nil, packet, callID, uiPlayer)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

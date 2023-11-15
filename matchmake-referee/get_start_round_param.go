@@ -26,7 +26,7 @@ func (protocol *Protocol) handleGetStartRoundParam(packet nex.PacketInterface) {
 
 	roundID, err := parametersStream.ReadUInt64LE()
 	if err != nil {
-		errorCode = protocol.GetStartRoundParam(fmt.Errorf("Failed to read roundID from parameters. %s", err.Error()), packet, callID, 0)
+		_, errorCode = protocol.GetStartRoundParam(fmt.Errorf("Failed to read roundID from parameters. %s", err.Error()), packet, callID, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -34,8 +34,11 @@ func (protocol *Protocol) handleGetStartRoundParam(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.GetStartRoundParam(nil, packet, callID, roundID)
+	rmcMessage, errorCode := protocol.GetStartRoundParam(nil, packet, callID, roundID)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

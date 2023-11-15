@@ -26,7 +26,7 @@ func (protocol *Protocol) handleGetPersistenceInfos(packet nex.PacketInterface) 
 
 	ownerID, err := parametersStream.ReadPID()
 	if err != nil {
-		errorCode = protocol.GetPersistenceInfos(fmt.Errorf("Failed to read ownerID from parameters. %s", err.Error()), packet, callID, nil, nil)
+		_, errorCode = protocol.GetPersistenceInfos(fmt.Errorf("Failed to read ownerID from parameters. %s", err.Error()), packet, callID, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -36,7 +36,7 @@ func (protocol *Protocol) handleGetPersistenceInfos(packet nex.PacketInterface) 
 
 	persistenceSlotIDs, err := parametersStream.ReadListUInt16LE()
 	if err != nil {
-		errorCode = protocol.GetPersistenceInfos(fmt.Errorf("Failed to read persistenceSlotIDs from parameters. %s", err.Error()), packet, callID, nil, nil)
+		_, errorCode = protocol.GetPersistenceInfos(fmt.Errorf("Failed to read persistenceSlotIDs from parameters. %s", err.Error()), packet, callID, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -44,8 +44,11 @@ func (protocol *Protocol) handleGetPersistenceInfos(packet nex.PacketInterface) 
 		return
 	}
 
-	errorCode = protocol.GetPersistenceInfos(nil, packet, callID, ownerID, persistenceSlotIDs)
+	rmcMessage, errorCode := protocol.GetPersistenceInfos(nil, packet, callID, ownerID, persistenceSlotIDs)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

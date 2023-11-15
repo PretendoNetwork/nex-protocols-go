@@ -26,7 +26,7 @@ func (protocol *Protocol) handleFindByParticipants(packet nex.PacketInterface) {
 
 	pid, err := parametersStream.ReadListPID()
 	if err != nil {
-		errorCode = protocol.FindByParticipants(fmt.Errorf("Failed to read pid from parameters. %s", err.Error()), packet, callID, nil)
+		_, errorCode = protocol.FindByParticipants(fmt.Errorf("Failed to read pid from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -34,8 +34,11 @@ func (protocol *Protocol) handleFindByParticipants(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.FindByParticipants(nil, packet, callID, pid)
+	rmcMessage, errorCode := protocol.FindByParticipants(nil, packet, callID, pid)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

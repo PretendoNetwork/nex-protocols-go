@@ -46,11 +46,11 @@ type matchmakeExtensionProtocol = matchmake_extension.Protocol
 type Protocol struct {
 	Server nex.ServerInterface
 	matchmakeExtensionProtocol
-	UpdateFriendUserProfile func(err error, packet nex.PacketInterface, callID uint32, param *matchmake_extension_monster_hunter_x_x_types.FriendUserParam) uint32
-	GetFriendUserProfiles   func(err error, packet nex.PacketInterface, callID uint32, pids []*nex.PID) uint32
-	AddFriends              func(err error, packet nex.PacketInterface, callID uint32, pids []*nex.PID) uint32
-	RemoveFriend            func(err error, packet nex.PacketInterface, callID uint32, pid *nex.PID) uint32
-	FindCommunityByOwner    func(err error, packet nex.PacketInterface, callID uint32, id uint64, resultRange *nex.ResultRange) uint32
+	UpdateFriendUserProfile func(err error, packet nex.PacketInterface, callID uint32, param *matchmake_extension_monster_hunter_x_x_types.FriendUserParam) (*nex.RMCMessage, uint32)
+	GetFriendUserProfiles   func(err error, packet nex.PacketInterface, callID uint32, pids []*nex.PID) (*nex.RMCMessage, uint32)
+	AddFriends              func(err error, packet nex.PacketInterface, callID uint32, pids []*nex.PID) (*nex.RMCMessage, uint32)
+	RemoveFriend            func(err error, packet nex.PacketInterface, callID uint32, pid *nex.PID) (*nex.RMCMessage, uint32)
+	FindCommunityByOwner    func(err error, packet nex.PacketInterface, callID uint32, id uint64, resultRange *nex.ResultRange) (*nex.RMCMessage, uint32)
 }
 
 // Setup initializes the protocol

@@ -27,7 +27,7 @@ func (protocol *Protocol) handleSetApplicationInfo(packet nex.PacketInterface) {
 
 	applicationInfo, err := parametersStream.ReadListStructure(aauser_types.NewApplicationInfo())
 	if err != nil {
-		errorCode = protocol.SetApplicationInfo(fmt.Errorf("Failed to read applicationInfo from parameters. %s", err.Error()), packet, callID, nil)
+		_, errorCode = protocol.SetApplicationInfo(fmt.Errorf("Failed to read applicationInfo from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -35,8 +35,11 @@ func (protocol *Protocol) handleSetApplicationInfo(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.SetApplicationInfo(nil, packet, callID, applicationInfo.([]*aauser_types.ApplicationInfo))
+	rmcMessage, errorCode := protocol.SetApplicationInfo(nil, packet, callID, applicationInfo.([]*aauser_types.ApplicationInfo))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

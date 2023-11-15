@@ -26,7 +26,7 @@ func (protocol *Protocol) handleRequestProbeInitiation(packet nex.PacketInterfac
 
 	urlTargetList, err := parametersStream.ReadListStationURL()
 	if err != nil {
-		errorCode = protocol.RequestProbeInitiation(fmt.Errorf("Failed to read urlTargetList from parameters. %s", err.Error()), packet, callID, nil)
+		_, errorCode = protocol.RequestProbeInitiation(fmt.Errorf("Failed to read urlTargetList from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -34,8 +34,11 @@ func (protocol *Protocol) handleRequestProbeInitiation(packet nex.PacketInterfac
 		return
 	}
 
-	errorCode = protocol.RequestProbeInitiation(nil, packet, callID, urlTargetList)
+	rmcMessage, errorCode := protocol.RequestProbeInitiation(nil, packet, callID, urlTargetList)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

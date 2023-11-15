@@ -26,7 +26,7 @@ func (protocol *Protocol) handleUpdateGatheringOwnership(packet nex.PacketInterf
 
 	gid, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.UpdateGatheringOwnership(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), packet, callID, 0, false)
+		_, errorCode = protocol.UpdateGatheringOwnership(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), packet, callID, 0, false)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -36,7 +36,7 @@ func (protocol *Protocol) handleUpdateGatheringOwnership(packet nex.PacketInterf
 
 	participantsOnly, err := parametersStream.ReadBool()
 	if err != nil {
-		errorCode = protocol.UpdateGatheringOwnership(fmt.Errorf("Failed to read participantsOnly from parameters. %s", err.Error()), packet, callID, 0, false)
+		_, errorCode = protocol.UpdateGatheringOwnership(fmt.Errorf("Failed to read participantsOnly from parameters. %s", err.Error()), packet, callID, 0, false)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -44,8 +44,11 @@ func (protocol *Protocol) handleUpdateGatheringOwnership(packet nex.PacketInterf
 		return
 	}
 
-	errorCode = protocol.UpdateGatheringOwnership(nil, packet, callID, gid, participantsOnly)
+	rmcMessage, errorCode := protocol.UpdateGatheringOwnership(nil, packet, callID, gid, participantsOnly)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

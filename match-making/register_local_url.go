@@ -26,7 +26,7 @@ func (protocol *Protocol) handleRegisterLocalURL(packet nex.PacketInterface) {
 
 	gid, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.RegisterLocalURL(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), packet, callID, 0, nil)
+		_, errorCode = protocol.RegisterLocalURL(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), packet, callID, 0, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -36,7 +36,7 @@ func (protocol *Protocol) handleRegisterLocalURL(packet nex.PacketInterface) {
 
 	url, err := parametersStream.ReadStationURL()
 	if err != nil {
-		errorCode = protocol.RegisterLocalURL(fmt.Errorf("Failed to read url from parameters. %s", err.Error()), packet, callID, 0, nil)
+		_, errorCode = protocol.RegisterLocalURL(fmt.Errorf("Failed to read url from parameters. %s", err.Error()), packet, callID, 0, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -44,8 +44,11 @@ func (protocol *Protocol) handleRegisterLocalURL(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.RegisterLocalURL(nil, packet, callID, gid, url)
+	rmcMessage, errorCode := protocol.RegisterLocalURL(nil, packet, callID, gid, url)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

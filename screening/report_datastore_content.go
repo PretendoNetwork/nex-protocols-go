@@ -23,8 +23,11 @@ func (protocol *Protocol) handleReportDataStoreContent(packet nex.PacketInterfac
 
 	// TODO - THIS METHOD HAS AN UNKNOWN REQUEST/RESPONSE FORMAT
 
-	errorCode = protocol.ReportDataStoreContent(nil, packet, callID, packet.Payload())
+	rmcMessage, errorCode := protocol.ReportDataStoreContent(nil, packet, callID, packet.Payload())
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

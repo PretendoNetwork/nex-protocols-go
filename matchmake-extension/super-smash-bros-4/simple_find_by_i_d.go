@@ -21,8 +21,11 @@ func (protocol *Protocol) handleSimpleFindByID(packet nex.PacketInterface) {
 
 	callID := request.CallID
 
-	errorCode = protocol.SimpleFindByID(nil, packet, callID, packet.Payload())
+	rmcMessage, errorCode := protocol.SimpleFindByID(nil, packet, callID, packet.Payload())
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

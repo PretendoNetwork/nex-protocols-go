@@ -27,7 +27,7 @@ func (protocol *Protocol) handleAddToBufferQueue(packet nex.PacketInterface) {
 
 	param, err := parametersStream.ReadStructure(datastore_super_mario_maker_types.NewBufferQueueParam())
 	if err != nil {
-		errorCode = protocol.AddToBufferQueue(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil, nil)
+		_, errorCode = protocol.AddToBufferQueue(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -37,7 +37,7 @@ func (protocol *Protocol) handleAddToBufferQueue(packet nex.PacketInterface) {
 
 	buffer, err := parametersStream.ReadQBuffer()
 	if err != nil {
-		errorCode = protocol.AddToBufferQueue(fmt.Errorf("Failed to read buffer from parameters. %s", err.Error()), packet, callID, nil, nil)
+		_, errorCode = protocol.AddToBufferQueue(fmt.Errorf("Failed to read buffer from parameters. %s", err.Error()), packet, callID, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -45,8 +45,11 @@ func (protocol *Protocol) handleAddToBufferQueue(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.AddToBufferQueue(nil, packet, callID, param.(*datastore_super_mario_maker_types.BufferQueueParam), buffer)
+	rmcMessage, errorCode := protocol.AddToBufferQueue(nil, packet, callID, param.(*datastore_super_mario_maker_types.BufferQueueParam), buffer)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

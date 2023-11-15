@@ -26,7 +26,7 @@ func (protocol *Protocol) handleDeleteSimpleSearchObject(packet nex.PacketInterf
 
 	objectID, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.DeleteSimpleSearchObject(fmt.Errorf("Failed to read objectID from parameters. %s", err.Error()), packet, callID, 0)
+		_, errorCode = protocol.DeleteSimpleSearchObject(fmt.Errorf("Failed to read objectID from parameters. %s", err.Error()), packet, callID, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -34,8 +34,11 @@ func (protocol *Protocol) handleDeleteSimpleSearchObject(packet nex.PacketInterf
 		return
 	}
 
-	errorCode = protocol.DeleteSimpleSearchObject(nil, packet, callID, objectID)
+	rmcMessage, errorCode := protocol.DeleteSimpleSearchObject(nil, packet, callID, objectID)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

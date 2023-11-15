@@ -27,7 +27,7 @@ func (protocol *Protocol) handleUpdateComment(packet nex.PacketInterface) {
 
 	comment, err := parametersStream.ReadStructure(friends_wiiu_types.NewComment())
 	if err != nil {
-		errorCode = protocol.UpdateComment(fmt.Errorf("Failed to read comment from parameters. %s", err.Error()), packet, callID, nil)
+		_, errorCode = protocol.UpdateComment(fmt.Errorf("Failed to read comment from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -35,8 +35,11 @@ func (protocol *Protocol) handleUpdateComment(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.UpdateComment(nil, packet, callID, comment.(*friends_wiiu_types.Comment))
+	rmcMessage, errorCode := protocol.UpdateComment(nil, packet, callID, comment.(*friends_wiiu_types.Comment))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

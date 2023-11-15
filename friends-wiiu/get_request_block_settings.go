@@ -26,7 +26,7 @@ func (protocol *Protocol) handleGetRequestBlockSettings(packet nex.PacketInterfa
 
 	pids, err := parametersStream.ReadListUInt32LE()
 	if err != nil {
-		errorCode = protocol.GetRequestBlockSettings(fmt.Errorf("Failed to read pids from parameters. %s", err.Error()), packet, callID, nil)
+		_, errorCode = protocol.GetRequestBlockSettings(fmt.Errorf("Failed to read pids from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -34,8 +34,11 @@ func (protocol *Protocol) handleGetRequestBlockSettings(packet nex.PacketInterfa
 		return
 	}
 
-	errorCode = protocol.GetRequestBlockSettings(nil, packet, callID, pids)
+	rmcMessage, errorCode := protocol.GetRequestBlockSettings(nil, packet, callID, pids)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

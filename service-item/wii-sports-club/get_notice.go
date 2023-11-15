@@ -27,7 +27,7 @@ func (protocol *Protocol) handleGetNotice(packet nex.PacketInterface) {
 
 	getNoticeParam, err := parametersStream.ReadStructure(service_item_wii_sports_club_types.NewServiceItemGetNoticeParam())
 	if err != nil {
-		errorCode = protocol.GetNotice(fmt.Errorf("Failed to read getNoticeParam from parameters. %s", err.Error()), packet, callID, nil)
+		_, errorCode = protocol.GetNotice(fmt.Errorf("Failed to read getNoticeParam from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -35,8 +35,11 @@ func (protocol *Protocol) handleGetNotice(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.GetNotice(nil, packet, callID, getNoticeParam.(*service_item_wii_sports_club_types.ServiceItemGetNoticeParam))
+	rmcMessage, errorCode := protocol.GetNotice(nil, packet, callID, getNoticeParam.(*service_item_wii_sports_club_types.ServiceItemGetNoticeParam))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

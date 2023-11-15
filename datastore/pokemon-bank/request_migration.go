@@ -26,7 +26,7 @@ func (protocol *Protocol) handleRequestMigration(packet nex.PacketInterface) {
 
 	oneTimePassword, err := parametersStream.ReadString()
 	if err != nil {
-		errorCode = protocol.RequestMigration(fmt.Errorf("Failed to read oneTimePassword from parameters. %s", err.Error()), packet, callID, "", nil)
+		_, errorCode = protocol.RequestMigration(fmt.Errorf("Failed to read oneTimePassword from parameters. %s", err.Error()), packet, callID, "", nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -36,7 +36,7 @@ func (protocol *Protocol) handleRequestMigration(packet nex.PacketInterface) {
 
 	boxes, err := parametersStream.ReadListUInt32LE()
 	if err != nil {
-		errorCode = protocol.RequestMigration(fmt.Errorf("Failed to read boxes from parameters. %s", err.Error()), packet, callID, "", nil)
+		_, errorCode = protocol.RequestMigration(fmt.Errorf("Failed to read boxes from parameters. %s", err.Error()), packet, callID, "", nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -44,8 +44,11 @@ func (protocol *Protocol) handleRequestMigration(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.RequestMigration(nil, packet, callID, oneTimePassword, boxes)
+	rmcMessage, errorCode := protocol.RequestMigration(nil, packet, callID, oneTimePassword, boxes)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

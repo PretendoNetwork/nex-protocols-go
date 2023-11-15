@@ -26,7 +26,7 @@ func (protocol *Protocol) handleFindMatchmakeSessionBySingleGatheringID(packet n
 
 	gid, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.FindMatchmakeSessionBySingleGatheringID(fmt.Errorf("Failed to read GID from parameters. %s", err.Error()), packet, callID, 0)
+		_, errorCode = protocol.FindMatchmakeSessionBySingleGatheringID(fmt.Errorf("Failed to read GID from parameters. %s", err.Error()), packet, callID, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -34,8 +34,11 @@ func (protocol *Protocol) handleFindMatchmakeSessionBySingleGatheringID(packet n
 		return
 	}
 
-	errorCode = protocol.FindMatchmakeSessionBySingleGatheringID(nil, packet, callID, gid)
+	rmcMessage, errorCode := protocol.FindMatchmakeSessionBySingleGatheringID(nil, packet, callID, gid)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

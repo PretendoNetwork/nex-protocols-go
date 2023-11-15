@@ -26,7 +26,7 @@ func (protocol *Protocol) handleUpdateAccountEffectiveDate(packet nex.PacketInte
 
 	idPrincipal, err := parametersStream.ReadPID()
 	if err != nil {
-		errorCode = protocol.UpdateAccountEffectiveDate(fmt.Errorf("Failed to read idPrincipal from parameters. %s", err.Error()), packet, callID, nil, nil, "")
+		_, errorCode = protocol.UpdateAccountEffectiveDate(fmt.Errorf("Failed to read idPrincipal from parameters. %s", err.Error()), packet, callID, nil, nil, "")
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -36,7 +36,7 @@ func (protocol *Protocol) handleUpdateAccountEffectiveDate(packet nex.PacketInte
 
 	dtEffectiveFrom, err := parametersStream.ReadDateTime()
 	if err != nil {
-		errorCode = protocol.UpdateAccountEffectiveDate(fmt.Errorf("Failed to read dtEffectiveFrom from parameters. %s", err.Error()), packet, callID, nil, nil, "")
+		_, errorCode = protocol.UpdateAccountEffectiveDate(fmt.Errorf("Failed to read dtEffectiveFrom from parameters. %s", err.Error()), packet, callID, nil, nil, "")
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -46,7 +46,7 @@ func (protocol *Protocol) handleUpdateAccountEffectiveDate(packet nex.PacketInte
 
 	strNotEffectiveMessage, err := parametersStream.ReadString()
 	if err != nil {
-		errorCode = protocol.UpdateAccountEffectiveDate(fmt.Errorf("Failed to read strNotEffectiveMessage from parameters. %s", err.Error()), packet, callID, nil, nil, "")
+		_, errorCode = protocol.UpdateAccountEffectiveDate(fmt.Errorf("Failed to read strNotEffectiveMessage from parameters. %s", err.Error()), packet, callID, nil, nil, "")
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -54,8 +54,11 @@ func (protocol *Protocol) handleUpdateAccountEffectiveDate(packet nex.PacketInte
 		return
 	}
 
-	errorCode = protocol.UpdateAccountEffectiveDate(nil, packet, callID, idPrincipal, dtEffectiveFrom, strNotEffectiveMessage)
+	rmcMessage, errorCode := protocol.UpdateAccountEffectiveDate(nil, packet, callID, idPrincipal, dtEffectiveFrom, strNotEffectiveMessage)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

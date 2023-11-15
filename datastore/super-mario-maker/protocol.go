@@ -199,49 +199,49 @@ type dataStoreProtocol = datastore.Protocol
 type Protocol struct {
 	Server nex.ServerInterface
 	dataStoreProtocol
-	GetObjectInfos                        func(err error, packet nex.PacketInterface, callID uint32, dataIDs []uint64) uint32
-	GetMetaByOwnerID                      func(err error, packet nex.PacketInterface, callID uint32, param *datastore_super_mario_maker_types.DataStoreGetMetaByOwnerIDParam) uint32
-	CustomSearchObject                    func(err error, packet nex.PacketInterface, callID uint32, condition uint32, param *datastore_types.DataStoreSearchParam) uint32
-	RateCustomRanking                     func(err error, packet nex.PacketInterface, callID uint32, params []*datastore_super_mario_maker_types.DataStoreRateCustomRankingParam) uint32
-	GetCustomRanking                      func(err error, packet nex.PacketInterface, callID uint32, param *datastore_super_mario_maker_types.DataStoreGetCustomRankingParam) uint32
-	GetCustomRankingByDataID              func(err error, packet nex.PacketInterface, callID uint32, param *datastore_super_mario_maker_types.DataStoreGetCustomRankingByDataIDParam) uint32
-	DeleteCustomRanking                   func(err error, packet nex.PacketInterface, callID uint32, dataIDList []uint64) uint32
-	AddToBufferQueue                      func(err error, packet nex.PacketInterface, callID uint32, param *datastore_super_mario_maker_types.BufferQueueParam, buffer []byte) uint32
-	AddToBufferQueues                     func(err error, packet nex.PacketInterface, callID uint32, params []*datastore_super_mario_maker_types.BufferQueueParam, buffers [][]byte) uint32
-	GetBufferQueue                        func(err error, packet nex.PacketInterface, callID uint32, param *datastore_super_mario_maker_types.BufferQueueParam) uint32
-	GetBufferQueues                       func(err error, packet nex.PacketInterface, callID uint32, params []*datastore_super_mario_maker_types.BufferQueueParam) uint32
-	ClearBufferQueues                     func(err error, packet nex.PacketInterface, callID uint32, params []*datastore_super_mario_maker_types.BufferQueueParam) uint32
-	CompleteAttachFile                    func(err error, packet nex.PacketInterface, callID uint32, param *datastore_types.DataStoreCompletePostParam) uint32
-	CompleteAttachFileV1                  func(err error, packet nex.PacketInterface, callID uint32, param *datastore_types.DataStoreCompletePostParamV1) uint32
-	PrepareAttachFile                     func(err error, packet nex.PacketInterface, callID uint32, param *datastore_super_mario_maker_types.DataStoreAttachFileParam) uint32
-	ConditionalSearchObject               func(err error, packet nex.PacketInterface, callID uint32, condition uint32, param *datastore_types.DataStoreSearchParam, extraData []string) uint32
-	GetApplicationConfig                  func(err error, packet nex.PacketInterface, callID uint32, applicationID uint32) uint32
-	SetApplicationConfig                  func(err error, packet nex.PacketInterface, callID uint32, applicationID uint32, key uint32, value int32) uint32
-	DeleteApplicationConfig               func(err error, packet nex.PacketInterface, callID uint32, applicationID uint32, key uint32) uint32
-	LatestCourseSearchObject              func(err error, packet nex.PacketInterface, callID uint32, param *datastore_types.DataStoreSearchParam, extraData []string) uint32
-	FollowingsLatestCourseSearchObject    func(err error, packet nex.PacketInterface, callID uint32, param *datastore_types.DataStoreSearchParam, extraData []string) uint32
-	RecommendedCourseSearchObject         func(err error, packet nex.PacketInterface, callID uint32, param *datastore_types.DataStoreSearchParam, extraData []string) uint32
-	ScoreRangeCascadedSearchObject        func(err error, packet nex.PacketInterface, callID uint32, param *datastore_types.DataStoreSearchParam, extraData []string) uint32
-	SuggestedCourseSearchObject           func(err error, packet nex.PacketInterface, callID uint32, param *datastore_types.DataStoreSearchParam, extraData []string) uint32
-	PreparePostObjectWithOwnerIDAndDataID func(err error, packet nex.PacketInterface, callID uint32, ownerID uint32, dataID uint64, param *datastore_types.DataStorePreparePostParam) uint32
-	CompletePostObjectWithOwnerID         func(err error, packet nex.PacketInterface, callID uint32, ownerID uint32, param *datastore_types.DataStoreCompletePostParam) uint32
-	UploadCourseRecord                    func(err error, packet nex.PacketInterface, callID uint32, param *datastore_super_mario_maker_types.DataStoreUploadCourseRecordParam) uint32
-	GetCourseRecord                       func(err error, packet nex.PacketInterface, callID uint32, param *datastore_super_mario_maker_types.DataStoreGetCourseRecordParam) uint32
-	DeleteCourseRecord                    func(err error, packet nex.PacketInterface, callID uint32, param *datastore_super_mario_maker_types.DataStoreGetCourseRecordParam) uint32
-	GetApplicationConfigString            func(err error, packet nex.PacketInterface, callID uint32, applicationID uint32) uint32
-	SetApplicationConfigString            func(err error, packet nex.PacketInterface, callID uint32, applicationID uint32, key uint32, value string) uint32
-	GetDeletionReason                     func(err error, packet nex.PacketInterface, callID uint32, dataIDLst []uint64) uint32
-	SetDeletionReason                     func(err error, packet nex.PacketInterface, callID uint32, dataIDLst []uint64, deletionReason uint32) uint32
-	GetMetasWithCourseRecord              func(err error, packet nex.PacketInterface, callID uint32, params []*datastore_super_mario_maker_types.DataStoreGetCourseRecordParam, metaParam *datastore_types.DataStoreGetMetaParam) uint32
-	CheckRateCustomRankingCounter         func(err error, packet nex.PacketInterface, callID uint32, applicationID uint32) uint32
-	ResetRateCustomRankingCounter         func(err error, packet nex.PacketInterface, callID uint32, applicationID uint32) uint32
-	BestScoreRateCourseSearchObject       func(err error, packet nex.PacketInterface, callID uint32, param *datastore_types.DataStoreSearchParam, extraData []string) uint32
-	CTRPickUpCourseSearchObject           func(err error, packet nex.PacketInterface, callID uint32, param *datastore_types.DataStoreSearchParam, extraData []string) uint32
-	SetCachedRanking                      func(err error, packet nex.PacketInterface, callID uint32, rankingType string, rankingArgs []string, dataIDLst []uint64) uint32
-	DeleteCachedRanking                   func(err error, packet nex.PacketInterface, callID uint32, rankingType string, rankingArgs []string) uint32
-	ChangePlayablePlatform                func(err error, packet nex.PacketInterface, callID uint32, params []*datastore_super_mario_maker_types.DataStoreChangePlayablePlatformParam) uint32
-	SearchUnknownPlatformObjects          func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) uint32
-	ReportCourse                          func(err error, packet nex.PacketInterface, callID uint32, param *datastore_super_mario_maker_types.DataStoreReportCourseParam) uint32
+	GetObjectInfos                        func(err error, packet nex.PacketInterface, callID uint32, dataIDs []uint64) (*nex.RMCMessage, uint32)
+	GetMetaByOwnerID                      func(err error, packet nex.PacketInterface, callID uint32, param *datastore_super_mario_maker_types.DataStoreGetMetaByOwnerIDParam) (*nex.RMCMessage, uint32)
+	CustomSearchObject                    func(err error, packet nex.PacketInterface, callID uint32, condition uint32, param *datastore_types.DataStoreSearchParam) (*nex.RMCMessage, uint32)
+	RateCustomRanking                     func(err error, packet nex.PacketInterface, callID uint32, params []*datastore_super_mario_maker_types.DataStoreRateCustomRankingParam) (*nex.RMCMessage, uint32)
+	GetCustomRanking                      func(err error, packet nex.PacketInterface, callID uint32, param *datastore_super_mario_maker_types.DataStoreGetCustomRankingParam) (*nex.RMCMessage, uint32)
+	GetCustomRankingByDataID              func(err error, packet nex.PacketInterface, callID uint32, param *datastore_super_mario_maker_types.DataStoreGetCustomRankingByDataIDParam) (*nex.RMCMessage, uint32)
+	DeleteCustomRanking                   func(err error, packet nex.PacketInterface, callID uint32, dataIDList []uint64) (*nex.RMCMessage, uint32)
+	AddToBufferQueue                      func(err error, packet nex.PacketInterface, callID uint32, param *datastore_super_mario_maker_types.BufferQueueParam, buffer []byte) (*nex.RMCMessage, uint32)
+	AddToBufferQueues                     func(err error, packet nex.PacketInterface, callID uint32, params []*datastore_super_mario_maker_types.BufferQueueParam, buffers [][]byte) (*nex.RMCMessage, uint32)
+	GetBufferQueue                        func(err error, packet nex.PacketInterface, callID uint32, param *datastore_super_mario_maker_types.BufferQueueParam) (*nex.RMCMessage, uint32)
+	GetBufferQueues                       func(err error, packet nex.PacketInterface, callID uint32, params []*datastore_super_mario_maker_types.BufferQueueParam) (*nex.RMCMessage, uint32)
+	ClearBufferQueues                     func(err error, packet nex.PacketInterface, callID uint32, params []*datastore_super_mario_maker_types.BufferQueueParam) (*nex.RMCMessage, uint32)
+	CompleteAttachFile                    func(err error, packet nex.PacketInterface, callID uint32, param *datastore_types.DataStoreCompletePostParam) (*nex.RMCMessage, uint32)
+	CompleteAttachFileV1                  func(err error, packet nex.PacketInterface, callID uint32, param *datastore_types.DataStoreCompletePostParamV1) (*nex.RMCMessage, uint32)
+	PrepareAttachFile                     func(err error, packet nex.PacketInterface, callID uint32, param *datastore_super_mario_maker_types.DataStoreAttachFileParam) (*nex.RMCMessage, uint32)
+	ConditionalSearchObject               func(err error, packet nex.PacketInterface, callID uint32, condition uint32, param *datastore_types.DataStoreSearchParam, extraData []string) (*nex.RMCMessage, uint32)
+	GetApplicationConfig                  func(err error, packet nex.PacketInterface, callID uint32, applicationID uint32) (*nex.RMCMessage, uint32)
+	SetApplicationConfig                  func(err error, packet nex.PacketInterface, callID uint32, applicationID uint32, key uint32, value int32) (*nex.RMCMessage, uint32)
+	DeleteApplicationConfig               func(err error, packet nex.PacketInterface, callID uint32, applicationID uint32, key uint32) (*nex.RMCMessage, uint32)
+	LatestCourseSearchObject              func(err error, packet nex.PacketInterface, callID uint32, param *datastore_types.DataStoreSearchParam, extraData []string) (*nex.RMCMessage, uint32)
+	FollowingsLatestCourseSearchObject    func(err error, packet nex.PacketInterface, callID uint32, param *datastore_types.DataStoreSearchParam, extraData []string) (*nex.RMCMessage, uint32)
+	RecommendedCourseSearchObject         func(err error, packet nex.PacketInterface, callID uint32, param *datastore_types.DataStoreSearchParam, extraData []string) (*nex.RMCMessage, uint32)
+	ScoreRangeCascadedSearchObject        func(err error, packet nex.PacketInterface, callID uint32, param *datastore_types.DataStoreSearchParam, extraData []string) (*nex.RMCMessage, uint32)
+	SuggestedCourseSearchObject           func(err error, packet nex.PacketInterface, callID uint32, param *datastore_types.DataStoreSearchParam, extraData []string) (*nex.RMCMessage, uint32)
+	PreparePostObjectWithOwnerIDAndDataID func(err error, packet nex.PacketInterface, callID uint32, ownerID uint32, dataID uint64, param *datastore_types.DataStorePreparePostParam) (*nex.RMCMessage, uint32)
+	CompletePostObjectWithOwnerID         func(err error, packet nex.PacketInterface, callID uint32, ownerID uint32, param *datastore_types.DataStoreCompletePostParam) (*nex.RMCMessage, uint32)
+	UploadCourseRecord                    func(err error, packet nex.PacketInterface, callID uint32, param *datastore_super_mario_maker_types.DataStoreUploadCourseRecordParam) (*nex.RMCMessage, uint32)
+	GetCourseRecord                       func(err error, packet nex.PacketInterface, callID uint32, param *datastore_super_mario_maker_types.DataStoreGetCourseRecordParam) (*nex.RMCMessage, uint32)
+	DeleteCourseRecord                    func(err error, packet nex.PacketInterface, callID uint32, param *datastore_super_mario_maker_types.DataStoreGetCourseRecordParam) (*nex.RMCMessage, uint32)
+	GetApplicationConfigString            func(err error, packet nex.PacketInterface, callID uint32, applicationID uint32) (*nex.RMCMessage, uint32)
+	SetApplicationConfigString            func(err error, packet nex.PacketInterface, callID uint32, applicationID uint32, key uint32, value string) (*nex.RMCMessage, uint32)
+	GetDeletionReason                     func(err error, packet nex.PacketInterface, callID uint32, dataIDLst []uint64) (*nex.RMCMessage, uint32)
+	SetDeletionReason                     func(err error, packet nex.PacketInterface, callID uint32, dataIDLst []uint64, deletionReason uint32) (*nex.RMCMessage, uint32)
+	GetMetasWithCourseRecord              func(err error, packet nex.PacketInterface, callID uint32, params []*datastore_super_mario_maker_types.DataStoreGetCourseRecordParam, metaParam *datastore_types.DataStoreGetMetaParam) (*nex.RMCMessage, uint32)
+	CheckRateCustomRankingCounter         func(err error, packet nex.PacketInterface, callID uint32, applicationID uint32) (*nex.RMCMessage, uint32)
+	ResetRateCustomRankingCounter         func(err error, packet nex.PacketInterface, callID uint32, applicationID uint32) (*nex.RMCMessage, uint32)
+	BestScoreRateCourseSearchObject       func(err error, packet nex.PacketInterface, callID uint32, param *datastore_types.DataStoreSearchParam, extraData []string) (*nex.RMCMessage, uint32)
+	CTRPickUpCourseSearchObject           func(err error, packet nex.PacketInterface, callID uint32, param *datastore_types.DataStoreSearchParam, extraData []string) (*nex.RMCMessage, uint32)
+	SetCachedRanking                      func(err error, packet nex.PacketInterface, callID uint32, rankingType string, rankingArgs []string, dataIDLst []uint64) (*nex.RMCMessage, uint32)
+	DeleteCachedRanking                   func(err error, packet nex.PacketInterface, callID uint32, rankingType string, rankingArgs []string) (*nex.RMCMessage, uint32)
+	ChangePlayablePlatform                func(err error, packet nex.PacketInterface, callID uint32, params []*datastore_super_mario_maker_types.DataStoreChangePlayablePlatformParam) (*nex.RMCMessage, uint32)
+	SearchUnknownPlatformObjects          func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) (*nex.RMCMessage, uint32)
+	ReportCourse                          func(err error, packet nex.PacketInterface, callID uint32, param *datastore_super_mario_maker_types.DataStoreReportCourseParam) (*nex.RMCMessage, uint32)
 }
 
 // Setup initializes the protocol

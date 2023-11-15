@@ -26,7 +26,7 @@ func (protocol *Protocol) handleGetFriendNotificationData(packet nex.PacketInter
 
 	uiType, err := parametersStream.ReadInt32LE()
 	if err != nil {
-		errorCode = protocol.GetFriendNotificationData(fmt.Errorf("Failed to read uiType from parameters. %s", err.Error()), packet, callID, 0)
+		_, errorCode = protocol.GetFriendNotificationData(fmt.Errorf("Failed to read uiType from parameters. %s", err.Error()), packet, callID, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -34,8 +34,11 @@ func (protocol *Protocol) handleGetFriendNotificationData(packet nex.PacketInter
 		return
 	}
 
-	errorCode = protocol.GetFriendNotificationData(nil, packet, callID, uiType)
+	rmcMessage, errorCode := protocol.GetFriendNotificationData(nil, packet, callID, uiType)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

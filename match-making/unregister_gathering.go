@@ -26,7 +26,7 @@ func (protocol *Protocol) handleUnregisterGathering(packet nex.PacketInterface) 
 
 	idGathering, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.UnregisterGathering(fmt.Errorf("Failed to read gatheringID from parameters. %s", err.Error()), packet, callID, 0)
+		_, errorCode = protocol.UnregisterGathering(fmt.Errorf("Failed to read gatheringID from parameters. %s", err.Error()), packet, callID, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -34,8 +34,11 @@ func (protocol *Protocol) handleUnregisterGathering(packet nex.PacketInterface) 
 		return
 	}
 
-	errorCode = protocol.UnregisterGathering(nil, packet, callID, idGathering)
+	rmcMessage, errorCode := protocol.UnregisterGathering(nil, packet, callID, idGathering)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

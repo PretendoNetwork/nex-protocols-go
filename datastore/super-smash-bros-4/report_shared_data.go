@@ -26,7 +26,7 @@ func (protocol *Protocol) handleReportSharedData(packet nex.PacketInterface) {
 
 	dataID, err := parametersStream.ReadUInt64LE()
 	if err != nil {
-		errorCode = protocol.ReportSharedData(fmt.Errorf("Failed to read dataID from parameters. %s", err.Error()), packet, callID, 0)
+		_, errorCode = protocol.ReportSharedData(fmt.Errorf("Failed to read dataID from parameters. %s", err.Error()), packet, callID, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -34,8 +34,11 @@ func (protocol *Protocol) handleReportSharedData(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.ReportSharedData(nil, packet, callID, dataID)
+	rmcMessage, errorCode := protocol.ReportSharedData(nil, packet, callID, dataID)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

@@ -27,7 +27,7 @@ func (protocol *Protocol) handleCompleteUpdateObject(packet nex.PacketInterface)
 
 	param, err := parametersStream.ReadStructure(datastore_types.NewDataStoreCompleteUpdateParam())
 	if err != nil {
-		errorCode = protocol.CompleteUpdateObject(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
+		_, errorCode = protocol.CompleteUpdateObject(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -35,8 +35,11 @@ func (protocol *Protocol) handleCompleteUpdateObject(packet nex.PacketInterface)
 		return
 	}
 
-	errorCode = protocol.CompleteUpdateObject(nil, packet, callID, param.(*datastore_types.DataStoreCompleteUpdateParam))
+	rmcMessage, errorCode := protocol.CompleteUpdateObject(nil, packet, callID, param.(*datastore_types.DataStoreCompleteUpdateParam))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

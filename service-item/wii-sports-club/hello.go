@@ -26,7 +26,7 @@ func (protocol *Protocol) handleHello(packet nex.PacketInterface) {
 
 	name, err := parametersStream.ReadString()
 	if err != nil {
-		errorCode = protocol.Hello(fmt.Errorf("Failed to read name from parameters. %s", err.Error()), packet, callID, "")
+		_, errorCode = protocol.Hello(fmt.Errorf("Failed to read name from parameters. %s", err.Error()), packet, callID, "")
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -34,8 +34,11 @@ func (protocol *Protocol) handleHello(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.Hello(nil, packet, callID, name)
+	rmcMessage, errorCode := protocol.Hello(nil, packet, callID, name)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

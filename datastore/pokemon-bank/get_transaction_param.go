@@ -26,7 +26,7 @@ func (protocol *Protocol) handleGetTransactionParam(packet nex.PacketInterface) 
 
 	slotID, err := parametersStream.ReadUInt16LE()
 	if err != nil {
-		errorCode = protocol.GetTransactionParam(fmt.Errorf("Failed to read slotID from parameters. %s", err.Error()), packet, callID, 0)
+		_, errorCode = protocol.GetTransactionParam(fmt.Errorf("Failed to read slotID from parameters. %s", err.Error()), packet, callID, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -34,8 +34,11 @@ func (protocol *Protocol) handleGetTransactionParam(packet nex.PacketInterface) 
 		return
 	}
 
-	errorCode = protocol.GetTransactionParam(nil, packet, callID, slotID)
+	rmcMessage, errorCode := protocol.GetTransactionParam(nil, packet, callID, slotID)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

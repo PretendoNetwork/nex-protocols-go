@@ -26,7 +26,7 @@ func (protocol *Protocol) handleUnregisterGatherings(packet nex.PacketInterface)
 
 	lstGatherings, err := parametersStream.ReadListUInt32LE()
 	if err != nil {
-		errorCode = protocol.UnregisterGatherings(fmt.Errorf("Failed to read lstGatherings from parameters. %s", err.Error()), packet, callID, nil)
+		_, errorCode = protocol.UnregisterGatherings(fmt.Errorf("Failed to read lstGatherings from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -34,8 +34,11 @@ func (protocol *Protocol) handleUnregisterGatherings(packet nex.PacketInterface)
 		return
 	}
 
-	errorCode = protocol.UnregisterGatherings(nil, packet, callID, lstGatherings)
+	rmcMessage, errorCode := protocol.UnregisterGatherings(nil, packet, callID, lstGatherings)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

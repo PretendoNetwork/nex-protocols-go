@@ -26,7 +26,7 @@ func (protocol *Protocol) handleRequestURLs(packet nex.PacketInterface) {
 
 	cidTarget, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.RequestURLs(fmt.Errorf("Failed to read cidTarget from parameters. %s", err.Error()), packet, callID, 0, nil)
+		_, errorCode = protocol.RequestURLs(fmt.Errorf("Failed to read cidTarget from parameters. %s", err.Error()), packet, callID, 0, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -36,7 +36,7 @@ func (protocol *Protocol) handleRequestURLs(packet nex.PacketInterface) {
 
 	pidTarget, err := parametersStream.ReadPID()
 	if err != nil {
-		errorCode = protocol.RequestURLs(fmt.Errorf("Failed to read pidTarget from parameters. %s", err.Error()), packet, callID, 0, nil)
+		_, errorCode = protocol.RequestURLs(fmt.Errorf("Failed to read pidTarget from parameters. %s", err.Error()), packet, callID, 0, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -44,8 +44,11 @@ func (protocol *Protocol) handleRequestURLs(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.RequestURLs(nil, packet, callID, cidTarget, pidTarget)
+	rmcMessage, errorCode := protocol.RequestURLs(nil, packet, callID, cidTarget, pidTarget)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

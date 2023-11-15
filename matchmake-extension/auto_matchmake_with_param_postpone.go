@@ -27,7 +27,7 @@ func (protocol *Protocol) handleAutoMatchmakeWithParamPostpone(packet nex.Packet
 
 	autoMatchmakeParam, err := parametersStream.ReadStructure(match_making_types.NewAutoMatchmakeParam())
 	if err != nil {
-		errorCode = protocol.AutoMatchmakeWithParamPostpone(fmt.Errorf("Failed to read autoMatchmakeParam from parameters. %s", err.Error()), packet, callID, nil)
+		_, errorCode = protocol.AutoMatchmakeWithParamPostpone(fmt.Errorf("Failed to read autoMatchmakeParam from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -35,8 +35,11 @@ func (protocol *Protocol) handleAutoMatchmakeWithParamPostpone(packet nex.Packet
 		return
 	}
 
-	errorCode = protocol.AutoMatchmakeWithParamPostpone(nil, packet, callID, autoMatchmakeParam.(*match_making_types.AutoMatchmakeParam))
+	rmcMessage, errorCode := protocol.AutoMatchmakeWithParamPostpone(nil, packet, callID, autoMatchmakeParam.(*match_making_types.AutoMatchmakeParam))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

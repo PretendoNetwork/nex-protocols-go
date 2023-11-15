@@ -26,7 +26,7 @@ func (protocol *Protocol) handleGetFriendRelationships(packet nex.PacketInterfac
 
 	pids, err := parametersStream.ReadListPID()
 	if err != nil {
-		errorCode = protocol.GetFriendRelationships(fmt.Errorf("Failed to read pids from parameters. %s", err.Error()), packet, callID, nil)
+		_, errorCode = protocol.GetFriendRelationships(fmt.Errorf("Failed to read pids from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -34,8 +34,11 @@ func (protocol *Protocol) handleGetFriendRelationships(packet nex.PacketInterfac
 		return
 	}
 
-	errorCode = protocol.GetFriendRelationships(nil, packet, callID, pids)
+	rmcMessage, errorCode := protocol.GetFriendRelationships(nil, packet, callID, pids)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

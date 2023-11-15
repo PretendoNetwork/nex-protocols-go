@@ -28,7 +28,7 @@ func (protocol *Protocol) handleReportNATTraversalResult(packet nex.PacketInterf
 
 	cid, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.ReportNATTraversalResult(fmt.Errorf("Failed to read cid from parameters. %s", err.Error()), packet, callID, 0, false, 0)
+		_, errorCode = protocol.ReportNATTraversalResult(fmt.Errorf("Failed to read cid from parameters. %s", err.Error()), packet, callID, 0, false, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -38,7 +38,7 @@ func (protocol *Protocol) handleReportNATTraversalResult(packet nex.PacketInterf
 
 	result, err := parametersStream.ReadBool()
 	if err != nil {
-		errorCode = protocol.ReportNATTraversalResult(fmt.Errorf("Failed to read result from parameters. %s", err.Error()), packet, callID, 0, false, 0)
+		_, errorCode = protocol.ReportNATTraversalResult(fmt.Errorf("Failed to read result from parameters. %s", err.Error()), packet, callID, 0, false, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -52,7 +52,7 @@ func (protocol *Protocol) handleReportNATTraversalResult(packet nex.PacketInterf
 	if natTraversalVersion.GreaterOrEqual("3.0.0") {
 		rtt, err = parametersStream.ReadUInt32LE()
 		if err != nil {
-			errorCode = protocol.ReportNATTraversalResult(fmt.Errorf("Failed to read rtt from parameters. %s", err.Error()), packet, callID, 0, false, 0)
+			_, errorCode = protocol.ReportNATTraversalResult(fmt.Errorf("Failed to read rtt from parameters. %s", err.Error()), packet, callID, 0, false, 0)
 			if errorCode != 0 {
 				globals.RespondError(packet, ProtocolID, errorCode)
 			}
@@ -61,8 +61,11 @@ func (protocol *Protocol) handleReportNATTraversalResult(packet nex.PacketInterf
 		}
 	}
 
-	errorCode = protocol.ReportNATTraversalResult(nil, packet, callID, cid, result, rtt)
+	rmcMessage, errorCode := protocol.ReportNATTraversalResult(nil, packet, callID, cid, result, rtt)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

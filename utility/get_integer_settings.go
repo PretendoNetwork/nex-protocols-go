@@ -27,7 +27,7 @@ func (protocol *Protocol) handleGetIntegerSettings(packet nex.PacketInterface) {
 
 	integerSettingIndex, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.GetIntegerSettings(fmt.Errorf("Failed to read integerSettingIndex from parameters. %s", err.Error()), packet, callID, 0)
+		_, errorCode = protocol.GetIntegerSettings(fmt.Errorf("Failed to read integerSettingIndex from parameters. %s", err.Error()), packet, callID, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -35,8 +35,11 @@ func (protocol *Protocol) handleGetIntegerSettings(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.GetIntegerSettings(nil, packet, callID, integerSettingIndex)
+	rmcMessage, errorCode := protocol.GetIntegerSettings(nil, packet, callID, integerSettingIndex)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

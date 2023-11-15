@@ -27,7 +27,7 @@ func (protocol *Protocol) handleUploadScore(packet nex.PacketInterface) {
 
 	scoreData, err := parametersStream.ReadStructure(ranking_types.NewRankingScoreData())
 	if err != nil {
-		errorCode = protocol.UploadScore(fmt.Errorf("Failed to read scoreData from parameters. %s", err.Error()), packet, callID, nil, 0)
+		_, errorCode = protocol.UploadScore(fmt.Errorf("Failed to read scoreData from parameters. %s", err.Error()), packet, callID, nil, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -37,7 +37,7 @@ func (protocol *Protocol) handleUploadScore(packet nex.PacketInterface) {
 
 	uniqueID, err := parametersStream.ReadUInt64LE()
 	if err != nil {
-		errorCode = protocol.UploadScore(fmt.Errorf("Failed to read uniqueID from parameters. %s", err.Error()), packet, callID, nil, 0)
+		_, errorCode = protocol.UploadScore(fmt.Errorf("Failed to read uniqueID from parameters. %s", err.Error()), packet, callID, nil, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -45,8 +45,11 @@ func (protocol *Protocol) handleUploadScore(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.UploadScore(nil, packet, callID, scoreData.(*ranking_types.RankingScoreData), uniqueID)
+	rmcMessage, errorCode := protocol.UploadScore(nil, packet, callID, scoreData.(*ranking_types.RankingScoreData), uniqueID)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

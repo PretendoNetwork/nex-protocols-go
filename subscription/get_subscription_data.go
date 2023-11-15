@@ -9,6 +9,8 @@ import (
 )
 
 func (protocol *Protocol) handleGetSubscriptionData(packet nex.PacketInterface) {
+	var errorCode uint32
+
 	if protocol.GetSubscriptionData == nil {
 		fmt.Println("[Warning] SubscriptionProtocol::GetSubscriptionData not implemented")
 		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
@@ -21,10 +23,22 @@ func (protocol *Protocol) handleGetSubscriptionData(packet nex.PacketInterface) 
 	parameters := request.Parameters
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+
 	pids, err := parametersStream.ReadListUInt32LE()
 	if err != nil {
-		go protocol.GetSubscriptionData(nil, packet, callID, nil)
+		_, errorCode = protocol.GetSubscriptionData(fmt.Errorf("Failed to read pids from parameters. %s", err.Error()), packet, callID, nil)
+		if errorCode != 0 {
+			globals.RespondError(packet, ProtocolID, errorCode)
+		}
+
+		return
 	}
 
-	go protocol.GetSubscriptionData(nil, packet, callID, pids)
+	rmcMessage, errorCode := protocol.GetSubscriptionData(nil, packet, callID, pids)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+		return
+	}
+
+	globals.Respond(packet, rmcMessage)
 }

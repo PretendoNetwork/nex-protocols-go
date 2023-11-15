@@ -26,7 +26,7 @@ func (protocol *Protocol) handleFindCommunityByGatheringID(packet nex.PacketInte
 
 	lstGID, err := parametersStream.ReadListUInt32LE()
 	if err != nil {
-		errorCode = protocol.FindCommunityByGatheringID(fmt.Errorf("Failed to read lstGID from parameters. %s", err.Error()), packet, callID, nil)
+		_, errorCode = protocol.FindCommunityByGatheringID(fmt.Errorf("Failed to read lstGID from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -34,8 +34,11 @@ func (protocol *Protocol) handleFindCommunityByGatheringID(packet nex.PacketInte
 		return
 	}
 
-	errorCode = protocol.FindCommunityByGatheringID(nil, packet, callID, lstGID)
+	rmcMessage, errorCode := protocol.FindCommunityByGatheringID(nil, packet, callID, lstGID)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

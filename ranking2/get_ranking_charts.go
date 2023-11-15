@@ -27,7 +27,7 @@ func (protocol *Protocol) handleGetRankingCharts(packet nex.PacketInterface) {
 
 	infoArray, err := parametersStream.ReadListStructure(ranking2_types.NewRanking2ChartInfoInput())
 	if err != nil {
-		errorCode = protocol.GetRankingCharts(fmt.Errorf("Failed to read infoArray from parameters. %s", err.Error()), packet, callID, nil)
+		_, errorCode = protocol.GetRankingCharts(fmt.Errorf("Failed to read infoArray from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -35,8 +35,11 @@ func (protocol *Protocol) handleGetRankingCharts(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.GetRankingCharts(nil, packet, callID, infoArray.([]*ranking2_types.Ranking2ChartInfoInput))
+	rmcMessage, errorCode := protocol.GetRankingCharts(nil, packet, callID, infoArray.([]*ranking2_types.Ranking2ChartInfoInput))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

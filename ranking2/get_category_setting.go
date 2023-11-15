@@ -26,7 +26,7 @@ func (protocol *Protocol) handleGetCategorySetting(packet nex.PacketInterface) {
 
 	category, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.GetCategorySetting(fmt.Errorf("Failed to read category from parameters. %s", err.Error()), packet, callID, 0)
+		_, errorCode = protocol.GetCategorySetting(fmt.Errorf("Failed to read category from parameters. %s", err.Error()), packet, callID, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -34,8 +34,11 @@ func (protocol *Protocol) handleGetCategorySetting(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.GetCategorySetting(nil, packet, callID, category)
+	rmcMessage, errorCode := protocol.GetCategorySetting(nil, packet, callID, category)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

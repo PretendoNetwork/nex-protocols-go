@@ -27,7 +27,7 @@ func (protocol *Protocol) handlePreparePostObjectWithOwnerIDAndDataID(packet nex
 
 	ownerID, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.PreparePostObjectWithOwnerIDAndDataID(fmt.Errorf("Failed to read ownerID from parameters. %s", err.Error()), packet, callID, 0, 0, nil)
+		_, errorCode = protocol.PreparePostObjectWithOwnerIDAndDataID(fmt.Errorf("Failed to read ownerID from parameters. %s", err.Error()), packet, callID, 0, 0, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -37,7 +37,7 @@ func (protocol *Protocol) handlePreparePostObjectWithOwnerIDAndDataID(packet nex
 
 	dataID, err := parametersStream.ReadUInt64LE()
 	if err != nil {
-		errorCode = protocol.PreparePostObjectWithOwnerIDAndDataID(fmt.Errorf("Failed to read dataID from parameters. %s", err.Error()), packet, callID, 0, 0, nil)
+		_, errorCode = protocol.PreparePostObjectWithOwnerIDAndDataID(fmt.Errorf("Failed to read dataID from parameters. %s", err.Error()), packet, callID, 0, 0, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -47,7 +47,7 @@ func (protocol *Protocol) handlePreparePostObjectWithOwnerIDAndDataID(packet nex
 
 	param, err := parametersStream.ReadStructure(datastore_types.NewDataStorePreparePostParam())
 	if err != nil {
-		errorCode = protocol.PreparePostObjectWithOwnerIDAndDataID(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, 0, 0, nil)
+		_, errorCode = protocol.PreparePostObjectWithOwnerIDAndDataID(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, 0, 0, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -55,8 +55,11 @@ func (protocol *Protocol) handlePreparePostObjectWithOwnerIDAndDataID(packet nex
 		return
 	}
 
-	errorCode = protocol.PreparePostObjectWithOwnerIDAndDataID(nil, packet, callID, ownerID, dataID, param.(*datastore_types.DataStorePreparePostParam))
+	rmcMessage, errorCode := protocol.PreparePostObjectWithOwnerIDAndDataID(nil, packet, callID, ownerID, dataID, param.(*datastore_types.DataStorePreparePostParam))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

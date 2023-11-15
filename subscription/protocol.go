@@ -61,14 +61,14 @@ const (
 // Protocol handles the Subscription nex protocol
 type Protocol struct {
 	Server                              nex.ServerInterface
-	CreateMySubscriptionData            func(err error, packet nex.PacketInterface, callID uint32, unk uint64, content []byte)
-	UpdateMySubscriptionData            func(err error, packet nex.PacketInterface, callID uint32, unk uint32, content []byte)
-	GetFriendSubscriptionData           func(err error, packet nex.PacketInterface, callID uint32)
-	GetTargetSubscriptionData           func(err error, packet nex.PacketInterface, callID uint32)
-	GetActivePlayerSubscriptionData     func(err error, packet nex.PacketInterface, callID uint32)
-	GetSubscriptionData                 func(err error, packet nex.PacketInterface, callID uint32, pids []uint32)
-	ReplaceTargetAndGetSubscriptionData func(err error, packet nex.PacketInterface, callID uint32)
-	GetPrivacyLevels                    func(err error, packet nex.PacketInterface, callID uint32)
+	CreateMySubscriptionData            func(err error, packet nex.PacketInterface, callID uint32, unk uint64, content []byte) (*nex.RMCMessage, uint32)
+	UpdateMySubscriptionData            func(err error, packet nex.PacketInterface, callID uint32, unk uint32, content []byte) (*nex.RMCMessage, uint32)
+	GetFriendSubscriptionData           func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, uint32)
+	GetTargetSubscriptionData           func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, uint32)
+	GetActivePlayerSubscriptionData     func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, uint32)
+	GetSubscriptionData                 func(err error, packet nex.PacketInterface, callID uint32, pids []uint32) (*nex.RMCMessage, uint32)
+	ReplaceTargetAndGetSubscriptionData func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, uint32)
+	GetPrivacyLevels                    func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, uint32)
 }
 
 // Setup initializes the protocol

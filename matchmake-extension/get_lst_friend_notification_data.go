@@ -26,7 +26,7 @@ func (protocol *Protocol) handleGetlstFriendNotificationData(packet nex.PacketIn
 
 	lstTypes, err := parametersStream.ReadListUInt32LE()
 	if err != nil {
-		errorCode = protocol.GetlstFriendNotificationData(fmt.Errorf("Failed to read lstTypes from parameters. %s", err.Error()), packet, callID, nil)
+		_, errorCode = protocol.GetlstFriendNotificationData(fmt.Errorf("Failed to read lstTypes from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -34,8 +34,11 @@ func (protocol *Protocol) handleGetlstFriendNotificationData(packet nex.PacketIn
 		return
 	}
 
-	errorCode = protocol.GetlstFriendNotificationData(nil, packet, callID, lstTypes)
+	rmcMessage, errorCode := protocol.GetlstFriendNotificationData(nil, packet, callID, lstTypes)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

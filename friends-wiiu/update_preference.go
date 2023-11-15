@@ -27,7 +27,7 @@ func (protocol *Protocol) handleUpdatePreference(packet nex.PacketInterface) {
 
 	principalPreference, err := parametersStream.ReadStructure(friends_wiiu_types.NewPrincipalPreference())
 	if err != nil {
-		errorCode = protocol.UpdatePreference(fmt.Errorf("Failed to read principalPreference from parameters. %s", err.Error()), packet, callID, nil)
+		_, errorCode = protocol.UpdatePreference(fmt.Errorf("Failed to read principalPreference from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -35,8 +35,11 @@ func (protocol *Protocol) handleUpdatePreference(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.UpdatePreference(nil, packet, callID, principalPreference.(*friends_wiiu_types.PrincipalPreference))
+	rmcMessage, errorCode := protocol.UpdatePreference(nil, packet, callID, principalPreference.(*friends_wiiu_types.PrincipalPreference))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

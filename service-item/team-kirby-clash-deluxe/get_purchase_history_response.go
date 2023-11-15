@@ -26,7 +26,7 @@ func (protocol *Protocol) handleGetPurchaseHistoryResponse(packet nex.PacketInte
 
 	requestID, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.GetPurchaseHistoryResponse(fmt.Errorf("Failed to read requestID from parameters. %s", err.Error()), packet, callID, 0)
+		_, errorCode = protocol.GetPurchaseHistoryResponse(fmt.Errorf("Failed to read requestID from parameters. %s", err.Error()), packet, callID, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -34,8 +34,11 @@ func (protocol *Protocol) handleGetPurchaseHistoryResponse(packet nex.PacketInte
 		return
 	}
 
-	errorCode = protocol.GetPurchaseHistoryResponse(nil, packet, callID, requestID)
+	rmcMessage, errorCode := protocol.GetPurchaseHistoryResponse(nil, packet, callID, requestID)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

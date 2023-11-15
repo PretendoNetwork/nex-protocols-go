@@ -19,5 +19,11 @@ func (protocol *Protocol) handleGetActivePlayerSubscriptionData(packet nex.Packe
 
 	callID := request.CallID
 
-	go protocol.GetActivePlayerSubscriptionData(nil, packet, callID)
+	rmcMessage, errorCode := protocol.GetActivePlayerSubscriptionData(nil, packet, callID)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+		return
+	}
+
+	globals.Respond(packet, rmcMessage)
 }

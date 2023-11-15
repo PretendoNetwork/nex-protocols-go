@@ -26,7 +26,7 @@ func (protocol *Protocol) handleUpdateMatchmakeSessionAttribute(packet nex.Packe
 
 	gid, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.UpdateMatchmakeSessionAttribute(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), packet, callID, 0, nil)
+		_, errorCode = protocol.UpdateMatchmakeSessionAttribute(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), packet, callID, 0, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -36,7 +36,7 @@ func (protocol *Protocol) handleUpdateMatchmakeSessionAttribute(packet nex.Packe
 
 	attribs, err := parametersStream.ReadListUInt32LE()
 	if err != nil {
-		errorCode = protocol.UpdateMatchmakeSessionAttribute(fmt.Errorf("Failed to read attribs from parameters. %s", err.Error()), packet, callID, 0, nil)
+		_, errorCode = protocol.UpdateMatchmakeSessionAttribute(fmt.Errorf("Failed to read attribs from parameters. %s", err.Error()), packet, callID, 0, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -44,8 +44,11 @@ func (protocol *Protocol) handleUpdateMatchmakeSessionAttribute(packet nex.Packe
 		return
 	}
 
-	errorCode = protocol.UpdateMatchmakeSessionAttribute(nil, packet, callID, gid, attribs)
+	rmcMessage, errorCode := protocol.UpdateMatchmakeSessionAttribute(nil, packet, callID, gid, attribs)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

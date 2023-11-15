@@ -21,8 +21,11 @@ func (protocol *Protocol) handleReportTournamentBotRoundResult(packet nex.Packet
 
 	callID := request.CallID
 
-	errorCode = protocol.ReportTournamentBotRoundResult(nil, packet, callID, packet.Payload())
+	rmcMessage, errorCode := protocol.ReportTournamentBotRoundResult(nil, packet, callID, packet.Payload())
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

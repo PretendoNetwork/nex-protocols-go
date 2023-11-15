@@ -55,19 +55,19 @@ const (
 // Protocol handles the Friends QRV protocol
 type Protocol struct {
 	Server                     nex.ServerInterface
-	AddFriend                  func(err error, packet nex.PacketInterface, callID uint32, uiPlayer uint32, uiDetails uint32, strMessage string) uint32
-	AddFriendByName            func(err error, packet nex.PacketInterface, callID uint32, strPlayerName string, uiDetails uint32, strMessage string) uint32
-	AddFriendWithDetails       func(err error, packet nex.PacketInterface, callID uint32, uiPlayer uint32, uiDetails uint32, strMessage string) uint32
-	AddFriendByNameWithDetails func(err error, packet nex.PacketInterface, callID uint32, uiPlayer uint32, uiDetails uint32, strMessage string) uint32 // TODO - Is this the right signature?
-	AcceptFriendship           func(err error, packet nex.PacketInterface, callID uint32, uiPlayer uint32) uint32
-	DeclineFriendship          func(err error, packet nex.PacketInterface, callID uint32, uiPlayer uint32) uint32
-	BlackList                  func(err error, packet nex.PacketInterface, callID uint32, uiPlayer uint32, uiDetails uint32) uint32
-	BlackListByName            func(err error, packet nex.PacketInterface, callID uint32, strPlayerName string, uiDetails uint32) uint32
-	ClearRelationship          func(err error, packet nex.PacketInterface, callID uint32, uiPlayer uint32) uint32
-	UpdateDetails              func(err error, packet nex.PacketInterface, callID uint32, uiPlayer uint32, uiDetails uint32) uint32
-	GetList                    func(err error, packet nex.PacketInterface, callID uint32, byRelationship uint8, bReversed bool) uint32
-	GetDetailedList            func(err error, packet nex.PacketInterface, callID uint32, byRelationship uint8, bReversed bool) uint32
-	GetRelationships           func(err error, packet nex.PacketInterface, callID uint32, resultRange *nex.ResultRange) uint32
+	AddFriend                  func(err error, packet nex.PacketInterface, callID uint32, uiPlayer uint32, uiDetails uint32, strMessage string) (*nex.RMCMessage, uint32)
+	AddFriendByName            func(err error, packet nex.PacketInterface, callID uint32, strPlayerName string, uiDetails uint32, strMessage string) (*nex.RMCMessage, uint32)
+	AddFriendWithDetails       func(err error, packet nex.PacketInterface, callID uint32, uiPlayer uint32, uiDetails uint32, strMessage string) (*nex.RMCMessage, uint32)
+	AddFriendByNameWithDetails func(err error, packet nex.PacketInterface, callID uint32, uiPlayer uint32, uiDetails uint32, strMessage string) (*nex.RMCMessage, uint32) // TODO - Is this the right signature?
+	AcceptFriendship           func(err error, packet nex.PacketInterface, callID uint32, uiPlayer uint32) (*nex.RMCMessage, uint32)
+	DeclineFriendship          func(err error, packet nex.PacketInterface, callID uint32, uiPlayer uint32) (*nex.RMCMessage, uint32)
+	BlackList                  func(err error, packet nex.PacketInterface, callID uint32, uiPlayer uint32, uiDetails uint32) (*nex.RMCMessage, uint32)
+	BlackListByName            func(err error, packet nex.PacketInterface, callID uint32, strPlayerName string, uiDetails uint32) (*nex.RMCMessage, uint32)
+	ClearRelationship          func(err error, packet nex.PacketInterface, callID uint32, uiPlayer uint32) (*nex.RMCMessage, uint32)
+	UpdateDetails              func(err error, packet nex.PacketInterface, callID uint32, uiPlayer uint32, uiDetails uint32) (*nex.RMCMessage, uint32)
+	GetList                    func(err error, packet nex.PacketInterface, callID uint32, byRelationship uint8, bReversed bool) (*nex.RMCMessage, uint32)
+	GetDetailedList            func(err error, packet nex.PacketInterface, callID uint32, byRelationship uint8, bReversed bool) (*nex.RMCMessage, uint32)
+	GetRelationships           func(err error, packet nex.PacketInterface, callID uint32, resultRange *nex.ResultRange) (*nex.RMCMessage, uint32)
 }
 
 // Setup initializes the protocol

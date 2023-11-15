@@ -41,14 +41,14 @@ const (
 // Protocol stores all the RMC method handlers for the Utility protocol and listens for requests
 type Protocol struct {
 	Server                                     nex.ServerInterface
-	AcquireNexUniqueID                         func(err error, packet nex.PacketInterface, callID uint32) uint32
-	AcquireNexUniqueIDWithPassword             func(err error, packet nex.PacketInterface, callID uint32) uint32
-	AssociateNexUniqueIDWithMyPrincipalID      func(err error, packet nex.PacketInterface, callID uint32, uniqueIDInfo *utility_types.UniqueIDInfo) uint32
-	AssociateNexUniqueIDsWithMyPrincipalID     func(err error, packet nex.PacketInterface, callID uint32, uniqueIDInfo []*utility_types.UniqueIDInfo) uint32
-	GetAssociatedNexUniqueIDWithMyPrincipalID  func(err error, packet nex.PacketInterface, callID uint32) uint32
-	GetAssociatedNexUniqueIDsWithMyPrincipalID func(err error, packet nex.PacketInterface, callID uint32) uint32
-	GetIntegerSettings                         func(err error, packet nex.PacketInterface, callID uint32, integerSettingIndex uint32) uint32
-	GetStringSettings                          func(err error, packet nex.PacketInterface, callID uint32, stringSettingIndex uint32) uint32
+	AcquireNexUniqueID                         func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, uint32)
+	AcquireNexUniqueIDWithPassword             func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, uint32)
+	AssociateNexUniqueIDWithMyPrincipalID      func(err error, packet nex.PacketInterface, callID uint32, uniqueIDInfo *utility_types.UniqueIDInfo) (*nex.RMCMessage, uint32)
+	AssociateNexUniqueIDsWithMyPrincipalID     func(err error, packet nex.PacketInterface, callID uint32, uniqueIDInfo []*utility_types.UniqueIDInfo) (*nex.RMCMessage, uint32)
+	GetAssociatedNexUniqueIDWithMyPrincipalID  func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, uint32)
+	GetAssociatedNexUniqueIDsWithMyPrincipalID func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, uint32)
+	GetIntegerSettings                         func(err error, packet nex.PacketInterface, callID uint32, integerSettingIndex uint32) (*nex.RMCMessage, uint32)
+	GetStringSettings                          func(err error, packet nex.PacketInterface, callID uint32, stringSettingIndex uint32) (*nex.RMCMessage, uint32)
 }
 
 // Setup initializes the protocol

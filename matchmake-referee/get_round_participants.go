@@ -26,7 +26,7 @@ func (protocol *Protocol) handleGetRoundParticipants(packet nex.PacketInterface)
 
 	roundID, err := parametersStream.ReadUInt64LE()
 	if err != nil {
-		errorCode = protocol.GetRoundParticipants(fmt.Errorf("Failed to read roundID from parameters. %s", err.Error()), packet, callID, 0)
+		_, errorCode = protocol.GetRoundParticipants(fmt.Errorf("Failed to read roundID from parameters. %s", err.Error()), packet, callID, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -34,8 +34,11 @@ func (protocol *Protocol) handleGetRoundParticipants(packet nex.PacketInterface)
 		return
 	}
 
-	errorCode = protocol.GetRoundParticipants(nil, packet, callID, roundID)
+	rmcMessage, errorCode := protocol.GetRoundParticipants(nil, packet, callID, roundID)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

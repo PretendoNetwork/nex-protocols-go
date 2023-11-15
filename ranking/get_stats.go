@@ -27,7 +27,7 @@ func (protocol *Protocol) handleGetStats(packet nex.PacketInterface) {
 
 	category, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.GetStats(fmt.Errorf("Failed to read category from parameters. %s", err.Error()), packet, callID, 0, nil, 0)
+		_, errorCode = protocol.GetStats(fmt.Errorf("Failed to read category from parameters. %s", err.Error()), packet, callID, 0, nil, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -37,7 +37,7 @@ func (protocol *Protocol) handleGetStats(packet nex.PacketInterface) {
 
 	orderParam, err := parametersStream.ReadStructure(ranking_types.NewRankingOrderParam())
 	if err != nil {
-		errorCode = protocol.GetStats(fmt.Errorf("Failed to read orderParam from parameters. %s", err.Error()), packet, callID, 0, nil, 0)
+		_, errorCode = protocol.GetStats(fmt.Errorf("Failed to read orderParam from parameters. %s", err.Error()), packet, callID, 0, nil, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -47,7 +47,7 @@ func (protocol *Protocol) handleGetStats(packet nex.PacketInterface) {
 
 	flags, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.GetStats(fmt.Errorf("Failed to read flags from parameters. %s", err.Error()), packet, callID, 0, nil, 0)
+		_, errorCode = protocol.GetStats(fmt.Errorf("Failed to read flags from parameters. %s", err.Error()), packet, callID, 0, nil, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -55,8 +55,11 @@ func (protocol *Protocol) handleGetStats(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.GetStats(nil, packet, callID, category, orderParam.(*ranking_types.RankingOrderParam), flags)
+	rmcMessage, errorCode := protocol.GetStats(nil, packet, callID, category, orderParam.(*ranking_types.RankingOrderParam), flags)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

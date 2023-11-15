@@ -26,7 +26,7 @@ func (protocol *Protocol) handleGetMultiplePublicData(packet nex.PacketInterface
 
 	lstPrincipals, err := parametersStream.ReadListPID()
 	if err != nil {
-		errorCode = protocol.GetMultiplePublicData(fmt.Errorf("Failed to read lstPrincipals from parameters. %s", err.Error()), packet, callID, nil)
+		_, errorCode = protocol.GetMultiplePublicData(fmt.Errorf("Failed to read lstPrincipals from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -34,8 +34,11 @@ func (protocol *Protocol) handleGetMultiplePublicData(packet nex.PacketInterface
 		return
 	}
 
-	errorCode = protocol.GetMultiplePublicData(nil, packet, callID, lstPrincipals)
+	rmcMessage, errorCode := protocol.GetMultiplePublicData(nil, packet, callID, lstPrincipals)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

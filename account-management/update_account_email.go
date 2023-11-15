@@ -26,7 +26,7 @@ func (protocol *Protocol) handleUpdateAccountEmail(packet nex.PacketInterface) {
 
 	strName, err := parametersStream.ReadString()
 	if err != nil {
-		errorCode = protocol.UpdateAccountEmail(fmt.Errorf("Failed to read strName from parameters. %s", err.Error()), packet, callID, "")
+		_, errorCode = protocol.UpdateAccountEmail(fmt.Errorf("Failed to read strName from parameters. %s", err.Error()), packet, callID, "")
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -34,8 +34,11 @@ func (protocol *Protocol) handleUpdateAccountEmail(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.UpdateAccountEmail(nil, packet, callID, strName)
+	rmcMessage, errorCode := protocol.UpdateAccountEmail(nil, packet, callID, strName)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

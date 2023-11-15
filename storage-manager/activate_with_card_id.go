@@ -26,7 +26,7 @@ func (protocol *Protocol) handleActivateWithCardID(packet nex.PacketInterface) {
 
 	unknown, err := parametersStream.ReadUInt8()
 	if err != nil {
-		errorCode = protocol.ActivateWithCardID(fmt.Errorf("Failed to read unknown from parameters. %s", err.Error()), packet, callID, 0, 0)
+		_, errorCode = protocol.ActivateWithCardID(fmt.Errorf("Failed to read unknown from parameters. %s", err.Error()), packet, callID, 0, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -36,7 +36,7 @@ func (protocol *Protocol) handleActivateWithCardID(packet nex.PacketInterface) {
 
 	cardID, err := parametersStream.ReadUInt64LE()
 	if err != nil {
-		errorCode = protocol.ActivateWithCardID(fmt.Errorf("Failed to read cardID from parameters. %s", err.Error()), packet, callID, 0, 0)
+		_, errorCode = protocol.ActivateWithCardID(fmt.Errorf("Failed to read cardID from parameters. %s", err.Error()), packet, callID, 0, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -44,8 +44,11 @@ func (protocol *Protocol) handleActivateWithCardID(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.ActivateWithCardID(nil, packet, callID, unknown, cardID)
+	rmcMessage, errorCode := protocol.ActivateWithCardID(nil, packet, callID, unknown, cardID)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

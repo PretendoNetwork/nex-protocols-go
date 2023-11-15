@@ -23,8 +23,11 @@ func (protocol *Protocol) handleGetSharedDataMeta(packet nex.PacketInterface) {
 
 	// TODO - THIS METHOD HAS AN UNKNOWN REQUEST/RESPONSE FORMAT
 
-	errorCode = protocol.GetSharedDataMeta(nil, packet, callID, packet.Payload())
+	rmcMessage, errorCode := protocol.GetSharedDataMeta(nil, packet, callID, packet.Payload())
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

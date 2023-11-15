@@ -21,8 +21,11 @@ func (protocol *Protocol) handleGetTournamentReplayIDs(packet nex.PacketInterfac
 
 	callID := request.CallID
 
-	errorCode = protocol.GetTournamentReplayIDs(nil, packet, callID, packet.Payload())
+	rmcMessage, errorCode := protocol.GetTournamentReplayIDs(nil, packet, callID, packet.Payload())
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

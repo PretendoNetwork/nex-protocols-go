@@ -26,7 +26,7 @@ func (protocol *Protocol) handleDeleteAllScores(packet nex.PacketInterface) {
 
 	uniqueID, err := parametersStream.ReadUInt64LE()
 	if err != nil {
-		errorCode = protocol.DeleteAllScores(fmt.Errorf("Failed to read uniqueID from parameters. %s", err.Error()), packet, callID, 0)
+		_, errorCode = protocol.DeleteAllScores(fmt.Errorf("Failed to read uniqueID from parameters. %s", err.Error()), packet, callID, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -34,8 +34,11 @@ func (protocol *Protocol) handleDeleteAllScores(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.DeleteAllScores(nil, packet, callID, uniqueID)
+	rmcMessage, errorCode := protocol.DeleteAllScores(nil, packet, callID, uniqueID)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

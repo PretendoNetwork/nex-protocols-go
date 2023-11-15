@@ -26,7 +26,7 @@ func (protocol *Protocol) handleGetRivToken(packet nex.PacketInterface) {
 
 	itemCode, err := parametersStream.ReadString()
 	if err != nil {
-		errorCode = protocol.GetRivToken(fmt.Errorf("Failed to read itemCode from parameters. %s", err.Error()), packet, callID, "", nil)
+		_, errorCode = protocol.GetRivToken(fmt.Errorf("Failed to read itemCode from parameters. %s", err.Error()), packet, callID, "", nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -36,7 +36,7 @@ func (protocol *Protocol) handleGetRivToken(packet nex.PacketInterface) {
 
 	referenceID, err := parametersStream.ReadQBuffer()
 	if err != nil {
-		errorCode = protocol.GetRivToken(fmt.Errorf("Failed to read referenceID from parameters. %s", err.Error()), packet, callID, "", nil)
+		_, errorCode = protocol.GetRivToken(fmt.Errorf("Failed to read referenceID from parameters. %s", err.Error()), packet, callID, "", nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -44,8 +44,11 @@ func (protocol *Protocol) handleGetRivToken(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.GetRivToken(nil, packet, callID, itemCode, referenceID)
+	rmcMessage, errorCode := protocol.GetRivToken(nil, packet, callID, itemCode, referenceID)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

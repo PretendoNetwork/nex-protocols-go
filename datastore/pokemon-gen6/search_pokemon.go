@@ -27,7 +27,7 @@ func (protocol *Protocol) handleSearchPokemon(packet nex.PacketInterface) {
 
 	param, err := parametersStream.ReadStructure(datastore_pokemon_gen6_types.NewGlobalTradeStationSearchPokemonParam())
 	if err != nil {
-		errorCode = protocol.SearchPokemon(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
+		_, errorCode = protocol.SearchPokemon(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -35,8 +35,11 @@ func (protocol *Protocol) handleSearchPokemon(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.SearchPokemon(nil, packet, callID, param.(*datastore_pokemon_gen6_types.GlobalTradeStationSearchPokemonParam))
+	rmcMessage, errorCode := protocol.SearchPokemon(nil, packet, callID, param.(*datastore_pokemon_gen6_types.GlobalTradeStationSearchPokemonParam))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

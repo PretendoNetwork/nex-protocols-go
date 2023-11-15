@@ -26,7 +26,7 @@ func (protocol *Protocol) handleCancelInvitation(packet nex.PacketInterface) {
 
 	idGathering, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.CancelInvitation(fmt.Errorf("Failed to read idGathering from parameters. %s", err.Error()), packet, callID, 0, nil, "")
+		_, errorCode = protocol.CancelInvitation(fmt.Errorf("Failed to read idGathering from parameters. %s", err.Error()), packet, callID, 0, nil, "")
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -36,7 +36,7 @@ func (protocol *Protocol) handleCancelInvitation(packet nex.PacketInterface) {
 
 	lstPrincipals, err := parametersStream.ReadListPID()
 	if err != nil {
-		errorCode = protocol.CancelInvitation(fmt.Errorf("Failed to read lstPrincipals from parameters. %s", err.Error()), packet, callID, 0, nil, "")
+		_, errorCode = protocol.CancelInvitation(fmt.Errorf("Failed to read lstPrincipals from parameters. %s", err.Error()), packet, callID, 0, nil, "")
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -46,7 +46,7 @@ func (protocol *Protocol) handleCancelInvitation(packet nex.PacketInterface) {
 
 	strMessage, err := parametersStream.ReadString()
 	if err != nil {
-		errorCode = protocol.CancelInvitation(fmt.Errorf("Failed to read strMessage from parameters. %s", err.Error()), packet, callID, 0, nil, "")
+		_, errorCode = protocol.CancelInvitation(fmt.Errorf("Failed to read strMessage from parameters. %s", err.Error()), packet, callID, 0, nil, "")
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -54,8 +54,11 @@ func (protocol *Protocol) handleCancelInvitation(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.CancelInvitation(nil, packet, callID, idGathering, lstPrincipals, strMessage)
+	rmcMessage, errorCode := protocol.CancelInvitation(nil, packet, callID, idGathering, lstPrincipals, strMessage)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

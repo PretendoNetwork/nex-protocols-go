@@ -27,7 +27,7 @@ func (protocol *Protocol) handleUpdateMii(packet nex.PacketInterface) {
 
 	mii, err := parametersStream.ReadStructure(friends_3ds_types.NewMii())
 	if err != nil {
-		errorCode = protocol.UpdateMii(fmt.Errorf("Failed to read mii from parameters. %s", err.Error()), packet, callID, nil)
+		_, errorCode = protocol.UpdateMii(fmt.Errorf("Failed to read mii from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -35,8 +35,11 @@ func (protocol *Protocol) handleUpdateMii(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.UpdateMii(nil, packet, callID, mii.(*friends_3ds_types.Mii))
+	rmcMessage, errorCode := protocol.UpdateMii(nil, packet, callID, mii.(*friends_3ds_types.Mii))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

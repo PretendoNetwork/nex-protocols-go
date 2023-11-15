@@ -27,7 +27,7 @@ func (protocol *Protocol) handleGetMetaByOwnerID(packet nex.PacketInterface) {
 
 	param, err := parametersStream.ReadStructure(datastore_super_mario_maker_types.NewDataStoreGetMetaByOwnerIDParam())
 	if err != nil {
-		errorCode = protocol.GetMetaByOwnerID(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
+		_, errorCode = protocol.GetMetaByOwnerID(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -35,8 +35,11 @@ func (protocol *Protocol) handleGetMetaByOwnerID(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.GetMetaByOwnerID(nil, packet, callID, param.(*datastore_super_mario_maker_types.DataStoreGetMetaByOwnerIDParam))
+	rmcMessage, errorCode := protocol.GetMetaByOwnerID(nil, packet, callID, param.(*datastore_super_mario_maker_types.DataStoreGetMetaByOwnerIDParam))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

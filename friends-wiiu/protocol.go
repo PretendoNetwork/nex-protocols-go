@@ -77,26 +77,26 @@ const (
 // Protocol stores all the RMC method handlers for the Friends (WiiU) protocol and listens for requests
 type Protocol struct {
 	Server                       nex.ServerInterface
-	UpdateAndGetAllInformation   func(err error, packet nex.PacketInterface, callID uint32, nnaInfo *friends_wiiu_types.NNAInfo, presence *friends_wiiu_types.NintendoPresenceV2, birthday *nex.DateTime) uint32
-	AddFriend                    func(err error, packet nex.PacketInterface, callID uint32, pid *nex.PID) uint32
-	AddFriendByName              func(err error, packet nex.PacketInterface, callID uint32, username string) uint32
-	RemoveFriend                 func(err error, packet nex.PacketInterface, callID uint32, pid *nex.PID) uint32
-	AddFriendRequest             func(err error, packet nex.PacketInterface, callID uint32, pid *nex.PID, unknown2 uint8, message string, unknown4 uint8, unknown5 string, gameKey *friends_wiiu_types.GameKey, unknown6 *nex.DateTime) uint32
-	CancelFriendRequest          func(err error, packet nex.PacketInterface, callID uint32, id uint64) uint32
-	AcceptFriendRequest          func(err error, packet nex.PacketInterface, callID uint32, id uint64) uint32
-	DeleteFriendRequest          func(err error, packet nex.PacketInterface, callID uint32, id uint64) uint32
-	DenyFriendRequest            func(err error, packet nex.PacketInterface, callID uint32, id uint64) uint32
-	MarkFriendRequestsAsReceived func(err error, packet nex.PacketInterface, callID uint32, ids []uint64) uint32
-	AddBlackList                 func(err error, packet nex.PacketInterface, callID uint32, blacklistedPrincipal *friends_wiiu_types.BlacklistedPrincipal) uint32
-	RemoveBlackList              func(err error, packet nex.PacketInterface, callID uint32, pid *nex.PID) uint32
-	UpdatePresence               func(err error, packet nex.PacketInterface, callID uint32, presence *friends_wiiu_types.NintendoPresenceV2) uint32
-	UpdateMii                    func(err error, packet nex.PacketInterface, callID uint32, mii *friends_wiiu_types.MiiV2) uint32
-	UpdateComment                func(err error, packet nex.PacketInterface, callID uint32, comment *friends_wiiu_types.Comment) uint32
-	UpdatePreference             func(err error, packet nex.PacketInterface, callID uint32, preference *friends_wiiu_types.PrincipalPreference) uint32
-	GetBasicInfo                 func(err error, packet nex.PacketInterface, callID uint32, pids []*nex.PID) uint32
-	DeletePersistentNotification func(err error, packet nex.PacketInterface, callID uint32, notifications []*friends_wiiu_types.PersistentNotification) uint32
-	CheckSettingStatus           func(err error, packet nex.PacketInterface, callID uint32) uint32
-	GetRequestBlockSettings      func(err error, packet nex.PacketInterface, callID uint32, pids []uint32) uint32
+	UpdateAndGetAllInformation   func(err error, packet nex.PacketInterface, callID uint32, nnaInfo *friends_wiiu_types.NNAInfo, presence *friends_wiiu_types.NintendoPresenceV2, birthday *nex.DateTime) (*nex.RMCMessage, uint32)
+	AddFriend                    func(err error, packet nex.PacketInterface, callID uint32, pid *nex.PID) (*nex.RMCMessage, uint32)
+	AddFriendByName              func(err error, packet nex.PacketInterface, callID uint32, username string) (*nex.RMCMessage, uint32)
+	RemoveFriend                 func(err error, packet nex.PacketInterface, callID uint32, pid *nex.PID) (*nex.RMCMessage, uint32)
+	AddFriendRequest             func(err error, packet nex.PacketInterface, callID uint32, pid *nex.PID, unknown2 uint8, message string, unknown4 uint8, unknown5 string, gameKey *friends_wiiu_types.GameKey, unknown6 *nex.DateTime) (*nex.RMCMessage, uint32)
+	CancelFriendRequest          func(err error, packet nex.PacketInterface, callID uint32, id uint64) (*nex.RMCMessage, uint32)
+	AcceptFriendRequest          func(err error, packet nex.PacketInterface, callID uint32, id uint64) (*nex.RMCMessage, uint32)
+	DeleteFriendRequest          func(err error, packet nex.PacketInterface, callID uint32, id uint64) (*nex.RMCMessage, uint32)
+	DenyFriendRequest            func(err error, packet nex.PacketInterface, callID uint32, id uint64) (*nex.RMCMessage, uint32)
+	MarkFriendRequestsAsReceived func(err error, packet nex.PacketInterface, callID uint32, ids []uint64) (*nex.RMCMessage, uint32)
+	AddBlackList                 func(err error, packet nex.PacketInterface, callID uint32, blacklistedPrincipal *friends_wiiu_types.BlacklistedPrincipal) (*nex.RMCMessage, uint32)
+	RemoveBlackList              func(err error, packet nex.PacketInterface, callID uint32, pid *nex.PID) (*nex.RMCMessage, uint32)
+	UpdatePresence               func(err error, packet nex.PacketInterface, callID uint32, presence *friends_wiiu_types.NintendoPresenceV2) (*nex.RMCMessage, uint32)
+	UpdateMii                    func(err error, packet nex.PacketInterface, callID uint32, mii *friends_wiiu_types.MiiV2) (*nex.RMCMessage, uint32)
+	UpdateComment                func(err error, packet nex.PacketInterface, callID uint32, comment *friends_wiiu_types.Comment) (*nex.RMCMessage, uint32)
+	UpdatePreference             func(err error, packet nex.PacketInterface, callID uint32, preference *friends_wiiu_types.PrincipalPreference) (*nex.RMCMessage, uint32)
+	GetBasicInfo                 func(err error, packet nex.PacketInterface, callID uint32, pids []*nex.PID) (*nex.RMCMessage, uint32)
+	DeletePersistentNotification func(err error, packet nex.PacketInterface, callID uint32, notifications []*friends_wiiu_types.PersistentNotification) (*nex.RMCMessage, uint32)
+	CheckSettingStatus           func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, uint32)
+	GetRequestBlockSettings      func(err error, packet nex.PacketInterface, callID uint32, pids []uint32) (*nex.RMCMessage, uint32)
 }
 
 // Setup initializes the protocol

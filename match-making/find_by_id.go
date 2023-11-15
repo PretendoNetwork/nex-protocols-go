@@ -26,7 +26,7 @@ func (protocol *Protocol) handleFindByID(packet nex.PacketInterface) {
 
 	lstID, err := parametersStream.ReadListUInt32LE()
 	if err != nil {
-		errorCode = protocol.FindByID(fmt.Errorf("Failed to read lstID from parameters. %s", err.Error()), packet, callID, nil)
+		_, errorCode = protocol.FindByID(fmt.Errorf("Failed to read lstID from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -34,8 +34,11 @@ func (protocol *Protocol) handleFindByID(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.FindByID(nil, packet, callID, lstID)
+	rmcMessage, errorCode := protocol.FindByID(nil, packet, callID, lstID)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

@@ -27,7 +27,7 @@ func (protocol *Protocol) handleRequestMatchmaking(packet nex.PacketInterface) {
 
 	autoMatchmakeParam, err := parametersStream.ReadStructure(match_making_types.NewAutoMatchmakeParam())
 	if err != nil {
-		errorCode = protocol.RequestMatchmaking(fmt.Errorf("Failed to read pid from parameters. %s", err.Error()), packet, callID, nil)
+		_, errorCode = protocol.RequestMatchmaking(fmt.Errorf("Failed to read pid from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -35,8 +35,11 @@ func (protocol *Protocol) handleRequestMatchmaking(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.RequestMatchmaking(nil, packet, callID, autoMatchmakeParam.(*match_making_types.AutoMatchmakeParam))
+	rmcMessage, errorCode := protocol.RequestMatchmaking(nil, packet, callID, autoMatchmakeParam.(*match_making_types.AutoMatchmakeParam))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

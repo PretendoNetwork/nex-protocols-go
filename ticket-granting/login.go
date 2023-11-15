@@ -26,7 +26,7 @@ func (protocol *Protocol) handleLogin(packet nex.PacketInterface) {
 
 	strUserName, err := parametersStream.ReadString()
 	if err != nil {
-		errorCode = protocol.Login(fmt.Errorf("Failed to read strUserName from parameters. %s", err.Error()), packet, callID, "")
+		_, errorCode = protocol.Login(fmt.Errorf("Failed to read strUserName from parameters. %s", err.Error()), packet, callID, "")
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -34,8 +34,11 @@ func (protocol *Protocol) handleLogin(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.Login(nil, packet, callID, strUserName)
+	rmcMessage, errorCode := protocol.Login(nil, packet, callID, strUserName)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

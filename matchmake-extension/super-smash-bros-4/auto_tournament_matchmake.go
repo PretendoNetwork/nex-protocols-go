@@ -21,8 +21,11 @@ func (protocol *Protocol) handleAutoTournamentMatchmake(packet nex.PacketInterfa
 
 	callID := request.CallID
 
-	errorCode = protocol.AutoTournamentMatchmake(nil, packet, callID, packet.Payload())
+	rmcMessage, errorCode := protocol.AutoTournamentMatchmake(nil, packet, callID, packet.Payload())
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

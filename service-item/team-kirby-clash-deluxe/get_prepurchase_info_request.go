@@ -27,7 +27,7 @@ func (protocol *Protocol) handleGetPrepurchaseInfoRequest(packet nex.PacketInter
 
 	getPrepurchaseInfoParam, err := parametersStream.ReadStructure(service_item_team_kirby_clash_deluxe_types.NewServiceItemGetPrepurchaseInfoParam())
 	if err != nil {
-		errorCode = protocol.GetPrepurchaseInfoRequest(fmt.Errorf("Failed to read getPrepurchaseInfoParam from parameters. %s", err.Error()), packet, callID, nil)
+		_, errorCode = protocol.GetPrepurchaseInfoRequest(fmt.Errorf("Failed to read getPrepurchaseInfoParam from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -35,8 +35,11 @@ func (protocol *Protocol) handleGetPrepurchaseInfoRequest(packet nex.PacketInter
 		return
 	}
 
-	errorCode = protocol.GetPrepurchaseInfoRequest(nil, packet, callID, getPrepurchaseInfoParam.(*service_item_team_kirby_clash_deluxe_types.ServiceItemGetPrepurchaseInfoParam))
+	rmcMessage, errorCode := protocol.GetPrepurchaseInfoRequest(nil, packet, callID, getPrepurchaseInfoParam.(*service_item_team_kirby_clash_deluxe_types.ServiceItemGetPrepurchaseInfoParam))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

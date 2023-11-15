@@ -19,8 +19,11 @@ func (protocol *Protocol) handleCheckSettingStatus(packet nex.PacketInterface) {
 
 	callID := request.CallID
 
-	errorCode = protocol.CheckSettingStatus(nil, packet, callID)
+	rmcMessage, errorCode := protocol.CheckSettingStatus(nil, packet, callID)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

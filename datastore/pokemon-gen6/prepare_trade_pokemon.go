@@ -27,7 +27,7 @@ func (protocol *Protocol) handlePrepareTradePokemon(packet nex.PacketInterface) 
 
 	param, err := parametersStream.ReadStructure(datastore_pokemon_gen6_types.NewGlobalTradeStationPrepareTradePokemonParam())
 	if err != nil {
-		errorCode = protocol.PrepareTradePokemon(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
+		_, errorCode = protocol.PrepareTradePokemon(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -35,8 +35,11 @@ func (protocol *Protocol) handlePrepareTradePokemon(packet nex.PacketInterface) 
 		return
 	}
 
-	errorCode = protocol.PrepareTradePokemon(nil, packet, callID, param.(*datastore_pokemon_gen6_types.GlobalTradeStationPrepareTradePokemonParam))
+	rmcMessage, errorCode := protocol.PrepareTradePokemon(nil, packet, callID, param.(*datastore_pokemon_gen6_types.GlobalTradeStationPrepareTradePokemonParam))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

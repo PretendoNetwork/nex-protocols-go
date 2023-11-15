@@ -26,7 +26,7 @@ func (protocol *Protocol) handleDeleteAccount(packet nex.PacketInterface) {
 
 	idPrincipal, err := parametersStream.ReadPID()
 	if err != nil {
-		errorCode = protocol.DeleteAccount(fmt.Errorf("Failed to read idPrincipal from parameters. %s", err.Error()), packet, callID, nil)
+		_, errorCode = protocol.DeleteAccount(fmt.Errorf("Failed to read idPrincipal from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -34,8 +34,11 @@ func (protocol *Protocol) handleDeleteAccount(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.DeleteAccount(nil, packet, callID, idPrincipal)
+	rmcMessage, errorCode := protocol.DeleteAccount(nil, packet, callID, idPrincipal)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

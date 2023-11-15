@@ -27,7 +27,7 @@ func (protocol *Protocol) handlePrepareAttachFile(packet nex.PacketInterface) {
 
 	param, err := parametersStream.ReadStructure(datastore_super_mario_maker_types.NewDataStoreAttachFileParam())
 	if err != nil {
-		errorCode = protocol.PrepareAttachFile(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
+		_, errorCode = protocol.PrepareAttachFile(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -35,8 +35,11 @@ func (protocol *Protocol) handlePrepareAttachFile(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.PrepareAttachFile(nil, packet, callID, param.(*datastore_super_mario_maker_types.DataStoreAttachFileParam))
+	rmcMessage, errorCode := protocol.PrepareAttachFile(nil, packet, callID, param.(*datastore_super_mario_maker_types.DataStoreAttachFileParam))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

@@ -27,7 +27,7 @@ func (protocol *Protocol) handleDeleteMessages(packet nex.PacketInterface) {
 
 	recipient, err := parametersStream.ReadStructure(messaging_types.NewMessageRecipient())
 	if err != nil {
-		errorCode = protocol.DeleteMessages(fmt.Errorf("Failed to read recipient from parameters. %s", err.Error()), packet, callID, nil, nil)
+		_, errorCode = protocol.DeleteMessages(fmt.Errorf("Failed to read recipient from parameters. %s", err.Error()), packet, callID, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -37,7 +37,7 @@ func (protocol *Protocol) handleDeleteMessages(packet nex.PacketInterface) {
 
 	lstMessagesToDelete, err := parametersStream.ReadListUInt32LE()
 	if err != nil {
-		errorCode = protocol.DeleteMessages(fmt.Errorf("Failed to read lstMessagesToDelete from parameters. %s", err.Error()), packet, callID, nil, nil)
+		_, errorCode = protocol.DeleteMessages(fmt.Errorf("Failed to read lstMessagesToDelete from parameters. %s", err.Error()), packet, callID, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -45,8 +45,11 @@ func (protocol *Protocol) handleDeleteMessages(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.DeleteMessages(nil, packet, callID, recipient.(*messaging_types.MessageRecipient), lstMessagesToDelete)
+	rmcMessage, errorCode := protocol.DeleteMessages(nil, packet, callID, recipient.(*messaging_types.MessageRecipient), lstMessagesToDelete)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

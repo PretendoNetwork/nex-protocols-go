@@ -27,7 +27,7 @@ func (protocol *Protocol) handleListServiceItemRequest(packet nex.PacketInterfac
 
 	listServiceItemParam, err := parametersStream.ReadStructure(service_item_wii_sports_club_types.NewServiceItemListServiceItemParam())
 	if err != nil {
-		errorCode = protocol.ListServiceItemRequest(fmt.Errorf("Failed to read listServiceItemParam from parameters. %s", err.Error()), packet, callID, nil)
+		_, errorCode = protocol.ListServiceItemRequest(fmt.Errorf("Failed to read listServiceItemParam from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -35,8 +35,11 @@ func (protocol *Protocol) handleListServiceItemRequest(packet nex.PacketInterfac
 		return
 	}
 
-	errorCode = protocol.ListServiceItemRequest(nil, packet, callID, listServiceItemParam.(*service_item_wii_sports_club_types.ServiceItemListServiceItemParam))
+	rmcMessage, errorCode := protocol.ListServiceItemRequest(nil, packet, callID, listServiceItemParam.(*service_item_wii_sports_club_types.ServiceItemListServiceItemParam))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

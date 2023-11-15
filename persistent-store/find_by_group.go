@@ -26,7 +26,7 @@ func (protocol *Protocol) handleFindByGroup(packet nex.PacketInterface) {
 
 	uiGroup, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.FindByGroup(fmt.Errorf("Failed to read uiGroup from parameters. %s", err.Error()), packet, callID, 0)
+		_, errorCode = protocol.FindByGroup(fmt.Errorf("Failed to read uiGroup from parameters. %s", err.Error()), packet, callID, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -34,8 +34,11 @@ func (protocol *Protocol) handleFindByGroup(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.FindByGroup(nil, packet, callID, uiGroup)
+	rmcMessage, errorCode := protocol.FindByGroup(nil, packet, callID, uiGroup)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

@@ -26,7 +26,7 @@ func (protocol *Protocol) handleCloseParticipation(packet nex.PacketInterface) {
 
 	gid, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.CloseParticipation(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), packet, callID, 0)
+		_, errorCode = protocol.CloseParticipation(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), packet, callID, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -34,8 +34,11 @@ func (protocol *Protocol) handleCloseParticipation(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.CloseParticipation(nil, packet, callID, gid)
+	rmcMessage, errorCode := protocol.CloseParticipation(nil, packet, callID, gid)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

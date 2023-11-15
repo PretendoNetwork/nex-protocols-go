@@ -23,8 +23,11 @@ func (protocol *Protocol) handleGetExcludeJoinedMatchmakeSession(packet nex.Pack
 
 	// TODO - THIS METHOD HAS AN UNKNOWN REQUEST/RESPONSE FORMAT
 
-	errorCode = protocol.GetExcludeJoinedMatchmakeSession(nil, packet, callID, packet.Payload())
+	rmcMessage, errorCode := protocol.GetExcludeJoinedMatchmakeSession(nil, packet, callID, packet.Payload())
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

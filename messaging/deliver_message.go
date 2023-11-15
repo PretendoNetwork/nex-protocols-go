@@ -26,7 +26,7 @@ func (protocol *Protocol) handleDeliverMessage(packet nex.PacketInterface) {
 
 	oUserMessage, err := parametersStream.ReadDataHolder()
 	if err != nil {
-		errorCode = protocol.DeleteMessages(fmt.Errorf("Failed to read oUserMessage from parameters. %s", err.Error()), packet, callID, nil, nil)
+		_, errorCode = protocol.DeleteMessages(fmt.Errorf("Failed to read oUserMessage from parameters. %s", err.Error()), packet, callID, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -34,8 +34,11 @@ func (protocol *Protocol) handleDeliverMessage(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.DeliverMessage(nil, packet, callID, oUserMessage)
+	rmcMessage, errorCode := protocol.DeliverMessage(nil, packet, callID, oUserMessage)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

@@ -19,8 +19,11 @@ func (protocol *Protocol) handleClearMyPreviouslyMatchedUserCache(packet nex.Pac
 
 	callID := request.CallID
 
-	errorCode = protocol.ClearMyPreviouslyMatchedUserCache(nil, packet, callID)
+	rmcMessage, errorCode := protocol.ClearMyPreviouslyMatchedUserCache(nil, packet, callID)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

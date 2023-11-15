@@ -27,7 +27,7 @@ func (protocol *Protocol) handleResetRating(packet nex.PacketInterface) {
 
 	target, err := parametersStream.ReadStructure(datastore_types.NewDataStoreRatingTarget())
 	if err != nil {
-		errorCode = protocol.ResetRating(fmt.Errorf("Failed to read target from parameters. %s", err.Error()), packet, callID, nil, 0)
+		_, errorCode = protocol.ResetRating(fmt.Errorf("Failed to read target from parameters. %s", err.Error()), packet, callID, nil, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -37,7 +37,7 @@ func (protocol *Protocol) handleResetRating(packet nex.PacketInterface) {
 
 	accessPassword, err := parametersStream.ReadUInt64LE()
 	if err != nil {
-		errorCode = protocol.ResetRating(fmt.Errorf("Failed to read accessPassword from parameters. %s", err.Error()), packet, callID, nil, 0)
+		_, errorCode = protocol.ResetRating(fmt.Errorf("Failed to read accessPassword from parameters. %s", err.Error()), packet, callID, nil, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -45,8 +45,11 @@ func (protocol *Protocol) handleResetRating(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.ResetRating(nil, packet, callID, target.(*datastore_types.DataStoreRatingTarget), accessPassword)
+	rmcMessage, errorCode := protocol.ResetRating(nil, packet, callID, target.(*datastore_types.DataStoreRatingTarget), accessPassword)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

@@ -26,7 +26,7 @@ func (protocol *Protocol) handleSetApplicationConfig(packet nex.PacketInterface)
 
 	applicationID, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.SetApplicationConfig(fmt.Errorf("Failed to read applicationID from parameters. %s", err.Error()), packet, callID, 0, 0, 0)
+		_, errorCode = protocol.SetApplicationConfig(fmt.Errorf("Failed to read applicationID from parameters. %s", err.Error()), packet, callID, 0, 0, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -36,7 +36,7 @@ func (protocol *Protocol) handleSetApplicationConfig(packet nex.PacketInterface)
 
 	key, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.SetApplicationConfig(fmt.Errorf("Failed to read key from parameters. %s", err.Error()), packet, callID, 0, 0, 0)
+		_, errorCode = protocol.SetApplicationConfig(fmt.Errorf("Failed to read key from parameters. %s", err.Error()), packet, callID, 0, 0, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -46,7 +46,7 @@ func (protocol *Protocol) handleSetApplicationConfig(packet nex.PacketInterface)
 
 	value, err := parametersStream.ReadInt32LE()
 	if err != nil {
-		errorCode = protocol.SetApplicationConfig(fmt.Errorf("Failed to read value from parameters. %s", err.Error()), packet, callID, 0, 0, 0)
+		_, errorCode = protocol.SetApplicationConfig(fmt.Errorf("Failed to read value from parameters. %s", err.Error()), packet, callID, 0, 0, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -54,8 +54,11 @@ func (protocol *Protocol) handleSetApplicationConfig(packet nex.PacketInterface)
 		return
 	}
 
-	errorCode = protocol.SetApplicationConfig(nil, packet, callID, applicationID, key, value)
+	rmcMessage, errorCode := protocol.SetApplicationConfig(nil, packet, callID, applicationID, key, value)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

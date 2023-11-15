@@ -19,8 +19,11 @@ func (protocol *Protocol) handleAcquireNexUniqueIDWithPassword(packet nex.Packet
 
 	callID := request.CallID
 
-	errorCode = protocol.AcquireNexUniqueIDWithPassword(nil, packet, callID)
+	rmcMessage, errorCode := protocol.AcquireNexUniqueIDWithPassword(nil, packet, callID)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

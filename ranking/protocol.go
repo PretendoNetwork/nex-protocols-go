@@ -62,21 +62,21 @@ const (
 // Protocol stores all the RMC method handlers for the Ranking protocol and listens for requests
 type Protocol struct {
 	Server                   nex.ServerInterface
-	UploadScore              func(err error, packet nex.PacketInterface, callID uint32, scoreData *ranking_types.RankingScoreData, uniqueID uint64) uint32
-	DeleteScore              func(err error, packet nex.PacketInterface, callID uint32, category uint32, uniqueID uint64) uint32
-	DeleteAllScores          func(err error, packet nex.PacketInterface, callID uint32, uniqueID uint64) uint32
-	UploadCommonData         func(err error, packet nex.PacketInterface, callID uint32, commonData []byte, uniqueID uint64) uint32
-	DeleteCommonData         func(err error, packet nex.PacketInterface, callID uint32, uniqueID uint64) uint32
-	GetCommonData            func(err error, packet nex.PacketInterface, callID uint32, uniqueID uint64) uint32
-	ChangeAttributes         func(err error, packet nex.PacketInterface, callID uint32, category uint32, changeParam *ranking_types.RankingChangeAttributesParam, uniqueID uint64) uint32
-	ChangeAllAttributes      func(err error, packet nex.PacketInterface, callID uint32, changeParam *ranking_types.RankingChangeAttributesParam, uniqueID uint64) uint32
-	GetRanking               func(err error, packet nex.PacketInterface, callID uint32, rankingMode uint8, category uint32, orderParam *ranking_types.RankingOrderParam, uniqueID uint64, principalID *nex.PID) uint32
-	GetApproxOrder           func(err error, packet nex.PacketInterface, callID uint32, category uint32, orderParam *ranking_types.RankingOrderParam, score uint32, uniqueID uint64, principalID *nex.PID) uint32
-	GetStats                 func(err error, packet nex.PacketInterface, callID uint32, category uint32, orderParam *ranking_types.RankingOrderParam, flags uint32) uint32
-	GetRankingByPIDList      func(err error, packet nex.PacketInterface, callID uint32, principalIDList []*nex.PID, rankingMode uint8, category uint32, orderParam *ranking_types.RankingOrderParam, uniqueID uint64) uint32
-	GetRankingByUniqueIDList func(err error, packet nex.PacketInterface, callID uint32, nexUniqueIDList []uint64, rankingMode uint8, category uint32, orderParam *ranking_types.RankingOrderParam, uniqueID uint64) uint32
-	GetCachedTopXRanking     func(err error, packet nex.PacketInterface, callID uint32, category uint32, orderParam *ranking_types.RankingOrderParam) uint32
-	GetCachedTopXRankings    func(err error, packet nex.PacketInterface, callID uint32, categories []uint32, orderParams []*ranking_types.RankingOrderParam) uint32
+	UploadScore              func(err error, packet nex.PacketInterface, callID uint32, scoreData *ranking_types.RankingScoreData, uniqueID uint64) (*nex.RMCMessage, uint32)
+	DeleteScore              func(err error, packet nex.PacketInterface, callID uint32, category uint32, uniqueID uint64) (*nex.RMCMessage, uint32)
+	DeleteAllScores          func(err error, packet nex.PacketInterface, callID uint32, uniqueID uint64) (*nex.RMCMessage, uint32)
+	UploadCommonData         func(err error, packet nex.PacketInterface, callID uint32, commonData []byte, uniqueID uint64) (*nex.RMCMessage, uint32)
+	DeleteCommonData         func(err error, packet nex.PacketInterface, callID uint32, uniqueID uint64) (*nex.RMCMessage, uint32)
+	GetCommonData            func(err error, packet nex.PacketInterface, callID uint32, uniqueID uint64) (*nex.RMCMessage, uint32)
+	ChangeAttributes         func(err error, packet nex.PacketInterface, callID uint32, category uint32, changeParam *ranking_types.RankingChangeAttributesParam, uniqueID uint64) (*nex.RMCMessage, uint32)
+	ChangeAllAttributes      func(err error, packet nex.PacketInterface, callID uint32, changeParam *ranking_types.RankingChangeAttributesParam, uniqueID uint64) (*nex.RMCMessage, uint32)
+	GetRanking               func(err error, packet nex.PacketInterface, callID uint32, rankingMode uint8, category uint32, orderParam *ranking_types.RankingOrderParam, uniqueID uint64, principalID *nex.PID) (*nex.RMCMessage, uint32)
+	GetApproxOrder           func(err error, packet nex.PacketInterface, callID uint32, category uint32, orderParam *ranking_types.RankingOrderParam, score uint32, uniqueID uint64, principalID *nex.PID) (*nex.RMCMessage, uint32)
+	GetStats                 func(err error, packet nex.PacketInterface, callID uint32, category uint32, orderParam *ranking_types.RankingOrderParam, flags uint32) (*nex.RMCMessage, uint32)
+	GetRankingByPIDList      func(err error, packet nex.PacketInterface, callID uint32, principalIDList []*nex.PID, rankingMode uint8, category uint32, orderParam *ranking_types.RankingOrderParam, uniqueID uint64) (*nex.RMCMessage, uint32)
+	GetRankingByUniqueIDList func(err error, packet nex.PacketInterface, callID uint32, nexUniqueIDList []uint64, rankingMode uint8, category uint32, orderParam *ranking_types.RankingOrderParam, uniqueID uint64) (*nex.RMCMessage, uint32)
+	GetCachedTopXRanking     func(err error, packet nex.PacketInterface, callID uint32, category uint32, orderParam *ranking_types.RankingOrderParam) (*nex.RMCMessage, uint32)
+	GetCachedTopXRankings    func(err error, packet nex.PacketInterface, callID uint32, categories []uint32, orderParams []*ranking_types.RankingOrderParam) (*nex.RMCMessage, uint32)
 }
 
 // Setup initializes the protocol

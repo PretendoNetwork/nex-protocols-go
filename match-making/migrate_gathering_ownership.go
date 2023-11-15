@@ -26,7 +26,7 @@ func (protocol *Protocol) handleMigrateGatheringOwnership(packet nex.PacketInter
 
 	gid, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.MigrateGatheringOwnership(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), packet, callID, 0, nil, false)
+		_, errorCode = protocol.MigrateGatheringOwnership(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), packet, callID, 0, nil, false)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -36,7 +36,7 @@ func (protocol *Protocol) handleMigrateGatheringOwnership(packet nex.PacketInter
 
 	lstPotentialNewOwnersID, err := parametersStream.ReadListPID()
 	if err != nil {
-		errorCode = protocol.MigrateGatheringOwnership(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), packet, callID, 0, nil, false)
+		_, errorCode = protocol.MigrateGatheringOwnership(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), packet, callID, 0, nil, false)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -46,7 +46,7 @@ func (protocol *Protocol) handleMigrateGatheringOwnership(packet nex.PacketInter
 
 	participantsOnly, err := parametersStream.ReadBool()
 	if err != nil {
-		errorCode = protocol.MigrateGatheringOwnership(fmt.Errorf("Failed to read participantsOnly from parameters. %s", err.Error()), packet, callID, 0, nil, false)
+		_, errorCode = protocol.MigrateGatheringOwnership(fmt.Errorf("Failed to read participantsOnly from parameters. %s", err.Error()), packet, callID, 0, nil, false)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -54,8 +54,11 @@ func (protocol *Protocol) handleMigrateGatheringOwnership(packet nex.PacketInter
 		return
 	}
 
-	errorCode = protocol.MigrateGatheringOwnership(nil, packet, callID, gid, lstPotentialNewOwnersID, participantsOnly)
+	rmcMessage, errorCode := protocol.MigrateGatheringOwnership(nil, packet, callID, gid, lstPotentialNewOwnersID, participantsOnly)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

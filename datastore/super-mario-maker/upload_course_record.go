@@ -27,7 +27,7 @@ func (protocol *Protocol) handleUploadCourseRecord(packet nex.PacketInterface) {
 
 	param, err := parametersStream.ReadStructure(datastore_super_mario_maker_types.NewDataStoreUploadCourseRecordParam())
 	if err != nil {
-		errorCode = protocol.UploadCourseRecord(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
+		_, errorCode = protocol.UploadCourseRecord(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -35,8 +35,11 @@ func (protocol *Protocol) handleUploadCourseRecord(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.UploadCourseRecord(nil, packet, callID, param.(*datastore_super_mario_maker_types.DataStoreUploadCourseRecordParam))
+	rmcMessage, errorCode := protocol.UploadCourseRecord(nil, packet, callID, param.(*datastore_super_mario_maker_types.DataStoreUploadCourseRecordParam))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

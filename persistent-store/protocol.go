@@ -37,13 +37,13 @@ const (
 // Protocol handles the Persistent Store protocol
 type Protocol struct {
 	Server              nex.ServerInterface
-	FindByGroup         func(err error, packet nex.PacketInterface, callID uint32, uiGroup uint32) uint32
-	InsertItem          func(err error, packet nex.PacketInterface, callID uint32, uiGroup uint32, strTag string, bufData []byte, bReplace bool) uint32
-	RemoveItem          func(err error, packet nex.PacketInterface, callID uint32, uiGroup uint32, strTag string) uint32
-	GetItem             func(err error, packet nex.PacketInterface, callID uint32, uiGroup uint32, strTag string) uint32
-	InsertCustomItem    func(err error, packet nex.PacketInterface, callID uint32, uiGroup uint32, strTag string, hData *nex.DataHolder, bReplace bool) uint32
-	GetCustomItem       func(err error, packet nex.PacketInterface, callID uint32, uiGroup uint32, strTag string) uint32
-	FindItemsBySQLQuery func(err error, packet nex.PacketInterface, callID uint32, uiGroup uint32, strTag string, strQuery string) uint32
+	FindByGroup         func(err error, packet nex.PacketInterface, callID uint32, uiGroup uint32) (*nex.RMCMessage, uint32)
+	InsertItem          func(err error, packet nex.PacketInterface, callID uint32, uiGroup uint32, strTag string, bufData []byte, bReplace bool) (*nex.RMCMessage, uint32)
+	RemoveItem          func(err error, packet nex.PacketInterface, callID uint32, uiGroup uint32, strTag string) (*nex.RMCMessage, uint32)
+	GetItem             func(err error, packet nex.PacketInterface, callID uint32, uiGroup uint32, strTag string) (*nex.RMCMessage, uint32)
+	InsertCustomItem    func(err error, packet nex.PacketInterface, callID uint32, uiGroup uint32, strTag string, hData *nex.DataHolder, bReplace bool) (*nex.RMCMessage, uint32)
+	GetCustomItem       func(err error, packet nex.PacketInterface, callID uint32, uiGroup uint32, strTag string) (*nex.RMCMessage, uint32)
+	FindItemsBySQLQuery func(err error, packet nex.PacketInterface, callID uint32, uiGroup uint32, strTag string, strQuery string) (*nex.RMCMessage, uint32)
 }
 
 // Setup initializes the protocol

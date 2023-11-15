@@ -21,8 +21,11 @@ func (protocol *Protocol) handleFindCommunityCompetitionsByParticipant(packet ne
 
 	callID := request.CallID
 
-	errorCode = protocol.FindCommunityCompetitionsByParticipant(nil, packet, callID, packet.Payload())
+	rmcMessage, errorCode := protocol.FindCommunityCompetitionsByParticipant(nil, packet, callID, packet.Payload())
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

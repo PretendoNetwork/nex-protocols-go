@@ -26,7 +26,7 @@ func (protocol *Protocol) handleSearchSimpleSearchObjectByObjectIDs(packet nex.P
 
 	objectIDs, err := parametersStream.ReadListUInt32LE()
 	if err != nil {
-		errorCode = protocol.SearchSimpleSearchObjectByObjectIDs(fmt.Errorf("Failed to read objectIDs from parameters. %s", err.Error()), packet, callID, nil)
+		_, errorCode = protocol.SearchSimpleSearchObjectByObjectIDs(fmt.Errorf("Failed to read objectIDs from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -34,8 +34,11 @@ func (protocol *Protocol) handleSearchSimpleSearchObjectByObjectIDs(packet nex.P
 		return
 	}
 
-	errorCode = protocol.SearchSimpleSearchObjectByObjectIDs(nil, packet, callID, objectIDs)
+	rmcMessage, errorCode := protocol.SearchSimpleSearchObjectByObjectIDs(nil, packet, callID, objectIDs)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

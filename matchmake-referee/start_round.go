@@ -27,7 +27,7 @@ func (protocol *Protocol) handleStartRound(packet nex.PacketInterface) {
 
 	param, err := parametersStream.ReadStructure(matchmake_referee_types.NewMatchmakeRefereeStartRoundParam())
 	if err != nil {
-		errorCode = protocol.StartRound(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
+		_, errorCode = protocol.StartRound(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -35,8 +35,11 @@ func (protocol *Protocol) handleStartRound(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.StartRound(nil, packet, callID, param.(*matchmake_referee_types.MatchmakeRefereeStartRoundParam))
+	rmcMessage, errorCode := protocol.StartRound(nil, packet, callID, param.(*matchmake_referee_types.MatchmakeRefereeStartRoundParam))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

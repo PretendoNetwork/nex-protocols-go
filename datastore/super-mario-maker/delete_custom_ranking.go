@@ -26,7 +26,7 @@ func (protocol *Protocol) handleDeleteCustomRanking(packet nex.PacketInterface) 
 
 	dataIDList, err := parametersStream.ReadListUInt64LE()
 	if err != nil {
-		errorCode = protocol.DeleteCustomRanking(fmt.Errorf("Failed to read dataIDList from parameters. %s", err.Error()), packet, callID, nil)
+		_, errorCode = protocol.DeleteCustomRanking(fmt.Errorf("Failed to read dataIDList from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -34,8 +34,11 @@ func (protocol *Protocol) handleDeleteCustomRanking(packet nex.PacketInterface) 
 		return
 	}
 
-	errorCode = protocol.DeleteCustomRanking(nil, packet, callID, dataIDList)
+	rmcMessage, errorCode := protocol.DeleteCustomRanking(nil, packet, callID, dataIDList)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

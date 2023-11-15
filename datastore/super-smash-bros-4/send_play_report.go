@@ -26,7 +26,7 @@ func (protocol *Protocol) handleSendPlayReport(packet nex.PacketInterface) {
 
 	playReport, err := parametersStream.ReadListInt32LE()
 	if err != nil {
-		errorCode = protocol.SendPlayReport(fmt.Errorf("Failed to read playReport from parameters. %s", err.Error()), packet, callID, nil)
+		_, errorCode = protocol.SendPlayReport(fmt.Errorf("Failed to read playReport from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -34,8 +34,11 @@ func (protocol *Protocol) handleSendPlayReport(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.SendPlayReport(nil, packet, callID, playReport)
+	rmcMessage, errorCode := protocol.SendPlayReport(nil, packet, callID, playReport)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

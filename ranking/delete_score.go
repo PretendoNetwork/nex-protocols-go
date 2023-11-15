@@ -26,7 +26,7 @@ func (protocol *Protocol) handleDeleteScore(packet nex.PacketInterface) {
 
 	category, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.DeleteScore(fmt.Errorf("Failed to read category from parameters. %s", err.Error()), packet, callID, 0, 0)
+		_, errorCode = protocol.DeleteScore(fmt.Errorf("Failed to read category from parameters. %s", err.Error()), packet, callID, 0, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -36,7 +36,7 @@ func (protocol *Protocol) handleDeleteScore(packet nex.PacketInterface) {
 
 	uniqueID, err := parametersStream.ReadUInt64LE()
 	if err != nil {
-		errorCode = protocol.DeleteScore(fmt.Errorf("Failed to read uniqueID from parameters. %s", err.Error()), packet, callID, 0, 0)
+		_, errorCode = protocol.DeleteScore(fmt.Errorf("Failed to read uniqueID from parameters. %s", err.Error()), packet, callID, 0, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -44,8 +44,11 @@ func (protocol *Protocol) handleDeleteScore(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.DeleteScore(nil, packet, callID, category, uniqueID)
+	rmcMessage, errorCode := protocol.DeleteScore(nil, packet, callID, category, uniqueID)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

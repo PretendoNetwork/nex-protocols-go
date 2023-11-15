@@ -26,7 +26,7 @@ func (protocol *Protocol) handleReportNATProperties(packet nex.PacketInterface) 
 
 	natmapping, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.ReportNATProperties(fmt.Errorf("Failed to read natmapping from parameters. %s", err.Error()), packet, callID, 0, 0, 0)
+		_, errorCode = protocol.ReportNATProperties(fmt.Errorf("Failed to read natmapping from parameters. %s", err.Error()), packet, callID, 0, 0, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -36,7 +36,7 @@ func (protocol *Protocol) handleReportNATProperties(packet nex.PacketInterface) 
 
 	natfiltering, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.ReportNATProperties(fmt.Errorf("Failed to read natfiltering from parameters. %s", err.Error()), packet, callID, 0, 0, 0)
+		_, errorCode = protocol.ReportNATProperties(fmt.Errorf("Failed to read natfiltering from parameters. %s", err.Error()), packet, callID, 0, 0, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -46,7 +46,7 @@ func (protocol *Protocol) handleReportNATProperties(packet nex.PacketInterface) 
 
 	rtt, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.ReportNATProperties(fmt.Errorf("Failed to read rtt from parameters. %s", err.Error()), packet, callID, 0, 0, 0)
+		_, errorCode = protocol.ReportNATProperties(fmt.Errorf("Failed to read rtt from parameters. %s", err.Error()), packet, callID, 0, 0, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -54,8 +54,11 @@ func (protocol *Protocol) handleReportNATProperties(packet nex.PacketInterface) 
 		return
 	}
 
-	errorCode = protocol.ReportNATProperties(nil, packet, callID, natmapping, natfiltering, rtt)
+	rmcMessage, errorCode := protocol.ReportNATProperties(nil, packet, callID, natmapping, natfiltering, rtt)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

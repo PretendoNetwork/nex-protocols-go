@@ -27,7 +27,7 @@ func (protocol *Protocol) handleCustomSearchObject(packet nex.PacketInterface) {
 
 	condition, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.CustomSearchObject(fmt.Errorf("Failed to read condition from parameters. %s", err.Error()), packet, callID, 0, nil)
+		_, errorCode = protocol.CustomSearchObject(fmt.Errorf("Failed to read condition from parameters. %s", err.Error()), packet, callID, 0, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -37,7 +37,7 @@ func (protocol *Protocol) handleCustomSearchObject(packet nex.PacketInterface) {
 
 	param, err := parametersStream.ReadStructure(datastore_types.NewDataStoreSearchParam())
 	if err != nil {
-		errorCode = protocol.CustomSearchObject(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, 0, nil)
+		_, errorCode = protocol.CustomSearchObject(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, 0, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -45,8 +45,11 @@ func (protocol *Protocol) handleCustomSearchObject(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.CustomSearchObject(nil, packet, callID, condition, param.(*datastore_types.DataStoreSearchParam))
+	rmcMessage, errorCode := protocol.CustomSearchObject(nil, packet, callID, condition, param.(*datastore_types.DataStoreSearchParam))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

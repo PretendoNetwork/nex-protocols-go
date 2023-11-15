@@ -27,7 +27,7 @@ func (protocol *Protocol) handleDownloadOtherPokemon(packet nex.PacketInterface)
 
 	param, err := parametersStream.ReadStructure(datastore_pokemon_gen6_types.NewGlobalTradeStationDownloadOtherPokemonParam())
 	if err != nil {
-		errorCode = protocol.DownloadOtherPokemon(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
+		_, errorCode = protocol.DownloadOtherPokemon(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -35,8 +35,11 @@ func (protocol *Protocol) handleDownloadOtherPokemon(packet nex.PacketInterface)
 		return
 	}
 
-	errorCode = protocol.DownloadOtherPokemon(nil, packet, callID, param.(*datastore_pokemon_gen6_types.GlobalTradeStationDownloadOtherPokemonParam))
+	rmcMessage, errorCode := protocol.DownloadOtherPokemon(nil, packet, callID, param.(*datastore_pokemon_gen6_types.GlobalTradeStationDownloadOtherPokemonParam))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

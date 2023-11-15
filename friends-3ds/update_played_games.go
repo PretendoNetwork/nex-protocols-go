@@ -27,7 +27,7 @@ func (protocol *Protocol) handleUpdatePlayedGames(packet nex.PacketInterface) {
 
 	playedGames, err := parametersStream.ReadListStructure(friends_3ds_types.NewPlayedGame())
 	if err != nil {
-		errorCode = protocol.UpdatePlayedGames(fmt.Errorf("Failed to read playedGames from parameters. %s", err.Error()), packet, callID, nil)
+		_, errorCode = protocol.UpdatePlayedGames(fmt.Errorf("Failed to read playedGames from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -35,8 +35,11 @@ func (protocol *Protocol) handleUpdatePlayedGames(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.UpdatePlayedGames(nil, packet, callID, playedGames.([]*friends_3ds_types.PlayedGame))
+	rmcMessage, errorCode := protocol.UpdatePlayedGames(nil, packet, callID, playedGames.([]*friends_3ds_types.PlayedGame))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

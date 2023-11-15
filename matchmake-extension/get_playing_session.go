@@ -26,7 +26,7 @@ func (protocol *Protocol) handleGetPlayingSession(packet nex.PacketInterface) {
 
 	lstPID, err := parametersStream.ReadListPID()
 	if err != nil {
-		errorCode = protocol.GetPlayingSession(fmt.Errorf("Failed to read lstPID from parameters. %s", err.Error()), packet, callID, nil)
+		_, errorCode = protocol.GetPlayingSession(fmt.Errorf("Failed to read lstPID from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -34,8 +34,11 @@ func (protocol *Protocol) handleGetPlayingSession(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.GetPlayingSession(nil, packet, callID, lstPID)
+	rmcMessage, errorCode := protocol.GetPlayingSession(nil, packet, callID, lstPID)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

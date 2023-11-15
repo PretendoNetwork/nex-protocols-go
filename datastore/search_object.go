@@ -27,7 +27,7 @@ func (protocol *Protocol) handleSearchObject(packet nex.PacketInterface) {
 
 	param, err := parametersStream.ReadStructure(datastore_types.NewDataStoreSearchParam())
 	if err != nil {
-		errorCode = protocol.SearchObject(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
+		_, errorCode = protocol.SearchObject(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -35,8 +35,11 @@ func (protocol *Protocol) handleSearchObject(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.SearchObject(nil, packet, callID, param.(*datastore_types.DataStoreSearchParam))
+	rmcMessage, errorCode := protocol.SearchObject(nil, packet, callID, param.(*datastore_types.DataStoreSearchParam))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

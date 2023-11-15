@@ -27,7 +27,7 @@ func (protocol *Protocol) handlePrepareGetObject(packet nex.PacketInterface) {
 
 	param, err := parametersStream.ReadStructure(datastore_types.NewDataStorePrepareGetParam())
 	if err != nil {
-		errorCode = protocol.PrepareGetObject(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
+		_, errorCode = protocol.PrepareGetObject(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -35,8 +35,11 @@ func (protocol *Protocol) handlePrepareGetObject(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.PrepareGetObject(nil, packet, callID, param.(*datastore_types.DataStorePrepareGetParam))
+	rmcMessage, errorCode := protocol.PrepareGetObject(nil, packet, callID, param.(*datastore_types.DataStorePrepareGetParam))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

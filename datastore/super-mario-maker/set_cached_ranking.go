@@ -26,7 +26,7 @@ func (protocol *Protocol) handleSetCachedRanking(packet nex.PacketInterface) {
 
 	rankingType, err := parametersStream.ReadString()
 	if err != nil {
-		errorCode = protocol.SetCachedRanking(fmt.Errorf("Failed to read rankingType from parameters. %s", err.Error()), packet, callID, "", nil, nil)
+		_, errorCode = protocol.SetCachedRanking(fmt.Errorf("Failed to read rankingType from parameters. %s", err.Error()), packet, callID, "", nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -36,7 +36,7 @@ func (protocol *Protocol) handleSetCachedRanking(packet nex.PacketInterface) {
 
 	rankingArgs, err := parametersStream.ReadListString()
 	if err != nil {
-		errorCode = protocol.SetCachedRanking(fmt.Errorf("Failed to read rankingArgs from parameters. %s", err.Error()), packet, callID, "", nil, nil)
+		_, errorCode = protocol.SetCachedRanking(fmt.Errorf("Failed to read rankingArgs from parameters. %s", err.Error()), packet, callID, "", nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -46,7 +46,7 @@ func (protocol *Protocol) handleSetCachedRanking(packet nex.PacketInterface) {
 
 	dataIDLst, err := parametersStream.ReadListUInt64LE()
 	if err != nil {
-		errorCode = protocol.SetCachedRanking(fmt.Errorf("Failed to read dataIDLst from parameters. %s", err.Error()), packet, callID, "", nil, nil)
+		_, errorCode = protocol.SetCachedRanking(fmt.Errorf("Failed to read dataIDLst from parameters. %s", err.Error()), packet, callID, "", nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -54,8 +54,11 @@ func (protocol *Protocol) handleSetCachedRanking(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.SetCachedRanking(nil, packet, callID, rankingType, rankingArgs, dataIDLst)
+	rmcMessage, errorCode := protocol.SetCachedRanking(nil, packet, callID, rankingType, rankingArgs, dataIDLst)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

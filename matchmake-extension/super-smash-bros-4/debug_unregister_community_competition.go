@@ -21,8 +21,11 @@ func (protocol *Protocol) handleDebugUnregisterCommunityCompetition(packet nex.P
 
 	callID := request.CallID
 
-	errorCode = protocol.DebugUnregisterCommunityCompetition(nil, packet, callID, packet.Payload())
+	rmcMessage, errorCode := protocol.DebugUnregisterCommunityCompetition(nil, packet, callID, packet.Payload())
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

@@ -26,7 +26,7 @@ func (protocol *Protocol) handleGetParticipants(packet nex.PacketInterface) {
 
 	idGathering, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.GetParticipants(fmt.Errorf("Failed to read idGathering from parameters. %s", err.Error()), packet, callID, 0, false)
+		_, errorCode = protocol.GetParticipants(fmt.Errorf("Failed to read idGathering from parameters. %s", err.Error()), packet, callID, 0, false)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -36,7 +36,7 @@ func (protocol *Protocol) handleGetParticipants(packet nex.PacketInterface) {
 
 	bOnlyActive, err := parametersStream.ReadBool()
 	if err != nil {
-		errorCode = protocol.GetParticipants(fmt.Errorf("Failed to read bOnlyActive from parameters. %s", err.Error()), packet, callID, 0, false)
+		_, errorCode = protocol.GetParticipants(fmt.Errorf("Failed to read bOnlyActive from parameters. %s", err.Error()), packet, callID, 0, false)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -44,8 +44,11 @@ func (protocol *Protocol) handleGetParticipants(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.GetParticipants(nil, packet, callID, idGathering, bOnlyActive)
+	rmcMessage, errorCode := protocol.GetParticipants(nil, packet, callID, idGathering, bOnlyActive)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

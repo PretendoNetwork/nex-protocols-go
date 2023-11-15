@@ -27,7 +27,7 @@ func (protocol *Protocol) handlePostFightingPowerScore(packet nex.PacketInterfac
 
 	params, err := parametersStream.ReadListStructure(datastore_super_smash_bros_4_types.NewDataStorePostFightingPowerScoreParam())
 	if err != nil {
-		errorCode = protocol.PostFightingPowerScore(fmt.Errorf("Failed to read params from parameters. %s", err.Error()), packet, callID, nil)
+		_, errorCode = protocol.PostFightingPowerScore(fmt.Errorf("Failed to read params from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -35,8 +35,11 @@ func (protocol *Protocol) handlePostFightingPowerScore(packet nex.PacketInterfac
 		return
 	}
 
-	errorCode = protocol.PostFightingPowerScore(nil, packet, callID, params.([]*datastore_super_smash_bros_4_types.DataStorePostFightingPowerScoreParam))
+	rmcMessage, errorCode := protocol.PostFightingPowerScore(nil, packet, callID, params.([]*datastore_super_smash_bros_4_types.DataStorePostFightingPowerScoreParam))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

@@ -26,7 +26,7 @@ func (protocol *Protocol) handleLog(packet nex.PacketInterface) {
 
 	strLine, err := parametersStream.ReadString()
 	if err != nil {
-		errorCode = protocol.Log(fmt.Errorf("Failed to read strLine from parameters. %s", err.Error()), packet, callID, "")
+		_, errorCode = protocol.Log(fmt.Errorf("Failed to read strLine from parameters. %s", err.Error()), packet, callID, "")
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -34,8 +34,11 @@ func (protocol *Protocol) handleLog(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.Log(nil, packet, callID, strLine)
+	rmcMessage, errorCode := protocol.Log(nil, packet, callID, strLine)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

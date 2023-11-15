@@ -26,7 +26,7 @@ func (protocol *Protocol) handleGetCommonData(packet nex.PacketInterface) {
 
 	optionFlags, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.GetCommonData(fmt.Errorf("Failed to read optionFlags from parameters. %s", err.Error()), packet, callID, 0, nil, 0)
+		_, errorCode = protocol.GetCommonData(fmt.Errorf("Failed to read optionFlags from parameters. %s", err.Error()), packet, callID, 0, nil, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -36,7 +36,7 @@ func (protocol *Protocol) handleGetCommonData(packet nex.PacketInterface) {
 
 	principalID, err := parametersStream.ReadPID()
 	if err != nil {
-		errorCode = protocol.GetCommonData(fmt.Errorf("Failed to read principalID from parameters. %s", err.Error()), packet, callID, 0, nil, 0)
+		_, errorCode = protocol.GetCommonData(fmt.Errorf("Failed to read principalID from parameters. %s", err.Error()), packet, callID, 0, nil, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -46,7 +46,7 @@ func (protocol *Protocol) handleGetCommonData(packet nex.PacketInterface) {
 
 	nexUniqueID, err := parametersStream.ReadUInt64LE()
 	if err != nil {
-		errorCode = protocol.GetCommonData(fmt.Errorf("Failed to read nexUniqueID from parameters. %s", err.Error()), packet, callID, 0, nil, 0)
+		_, errorCode = protocol.GetCommonData(fmt.Errorf("Failed to read nexUniqueID from parameters. %s", err.Error()), packet, callID, 0, nil, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -54,8 +54,11 @@ func (protocol *Protocol) handleGetCommonData(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.GetCommonData(nil, packet, callID, optionFlags, principalID, nexUniqueID)
+	rmcMessage, errorCode := protocol.GetCommonData(nil, packet, callID, optionFlags, principalID, nexUniqueID)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

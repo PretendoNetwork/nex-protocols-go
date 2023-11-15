@@ -19,5 +19,11 @@ func (protocol *Protocol) handleGetPrivacyLevels(packet nex.PacketInterface) {
 
 	callID := request.CallID
 
-	go protocol.GetPrivacyLevels(nil, packet, callID)
+	rmcMessage, errorCode := protocol.GetPrivacyLevels(nil, packet, callID)
+	if errorCode != 0 {
+		globals.RespondError(packet, ProtocolID, errorCode)
+		return
+	}
+
+	globals.Respond(packet, rmcMessage)
 }

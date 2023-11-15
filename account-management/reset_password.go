@@ -19,8 +19,11 @@ func (protocol *Protocol) handleResetPassword(packet nex.PacketInterface) {
 
 	callID := request.CallID
 
-	errorCode = protocol.ResetPassword(nil, packet, callID)
+	rmcMessage, errorCode := protocol.ResetPassword(nil, packet, callID)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

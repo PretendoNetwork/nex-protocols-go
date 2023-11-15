@@ -26,7 +26,7 @@ func (protocol *Protocol) handleUnregisterApplication(packet nex.PacketInterface
 
 	titleID, err := parametersStream.ReadUInt64LE()
 	if err != nil {
-		errorCode = protocol.UnregisterApplication(fmt.Errorf("Failed to read titleID from parameters. %s", err.Error()), packet, callID, 0)
+		_, errorCode = protocol.UnregisterApplication(fmt.Errorf("Failed to read titleID from parameters. %s", err.Error()), packet, callID, 0)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -34,8 +34,11 @@ func (protocol *Protocol) handleUnregisterApplication(packet nex.PacketInterface
 		return
 	}
 
-	errorCode = protocol.UnregisterApplication(nil, packet, callID, titleID)
+	rmcMessage, errorCode := protocol.UnregisterApplication(nil, packet, callID, titleID)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

@@ -40,14 +40,14 @@ const (
 // Protocol stores all the RMC method handlers for the Secure Connection protocol and listens for requests
 type Protocol struct {
 	Server                nex.ServerInterface
-	Register              func(err error, packet nex.PacketInterface, callID uint32, vecMyURLs []*nex.StationURL) uint32
-	RequestConnectionData func(err error, packet nex.PacketInterface, callID uint32, cidTarget uint32, pidTarget *nex.PID) uint32
-	RequestURLs           func(err error, packet nex.PacketInterface, callID uint32, cidTarget uint32, pidTarget *nex.PID) uint32
-	RegisterEx            func(err error, packet nex.PacketInterface, callID uint32, vecMyURLs []*nex.StationURL, hCustomData *nex.DataHolder) uint32
-	TestConnectivity      func(err error, packet nex.PacketInterface, callID uint32) uint32
-	UpdateURLs            func(err error, packet nex.PacketInterface, callID uint32, vecMyURLs []*nex.StationURL) uint32
-	ReplaceURL            func(err error, packet nex.PacketInterface, callID uint32, target *nex.StationURL, url *nex.StationURL) uint32
-	SendReport            func(err error, packet nex.PacketInterface, callID uint32, reportID uint32, reportData []byte) uint32
+	Register              func(err error, packet nex.PacketInterface, callID uint32, vecMyURLs []*nex.StationURL) (*nex.RMCMessage, uint32)
+	RequestConnectionData func(err error, packet nex.PacketInterface, callID uint32, cidTarget uint32, pidTarget *nex.PID) (*nex.RMCMessage, uint32)
+	RequestURLs           func(err error, packet nex.PacketInterface, callID uint32, cidTarget uint32, pidTarget *nex.PID) (*nex.RMCMessage, uint32)
+	RegisterEx            func(err error, packet nex.PacketInterface, callID uint32, vecMyURLs []*nex.StationURL, hCustomData *nex.DataHolder) (*nex.RMCMessage, uint32)
+	TestConnectivity      func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, uint32)
+	UpdateURLs            func(err error, packet nex.PacketInterface, callID uint32, vecMyURLs []*nex.StationURL) (*nex.RMCMessage, uint32)
+	ReplaceURL            func(err error, packet nex.PacketInterface, callID uint32, target *nex.StationURL, url *nex.StationURL) (*nex.RMCMessage, uint32)
+	SendReport            func(err error, packet nex.PacketInterface, callID uint32, reportID uint32, reportData []byte) (*nex.RMCMessage, uint32)
 }
 
 // Setup initializes the protocol

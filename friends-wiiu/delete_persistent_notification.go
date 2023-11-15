@@ -27,7 +27,7 @@ func (protocol *Protocol) handleDeletePersistentNotification(packet nex.PacketIn
 
 	persistentNotifications, err := parametersStream.ReadListStructure(friends_wiiu_types.NewPersistentNotification())
 	if err != nil {
-		errorCode = protocol.DeletePersistentNotification(fmt.Errorf("Failed to read persistentNotifications from parameters. %s", err.Error()), packet, callID, nil)
+		_, errorCode = protocol.DeletePersistentNotification(fmt.Errorf("Failed to read persistentNotifications from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -35,8 +35,11 @@ func (protocol *Protocol) handleDeletePersistentNotification(packet nex.PacketIn
 		return
 	}
 
-	errorCode = protocol.DeletePersistentNotification(nil, packet, callID, persistentNotifications.([]*friends_wiiu_types.PersistentNotification))
+	rmcMessage, errorCode := protocol.DeletePersistentNotification(nil, packet, callID, persistentNotifications.([]*friends_wiiu_types.PersistentNotification))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

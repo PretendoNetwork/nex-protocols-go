@@ -19,8 +19,11 @@ func (protocol *Protocol) handleGetInvitationsReceived(packet nex.PacketInterfac
 
 	callID := request.CallID
 
-	errorCode = protocol.GetInvitationsReceived(nil, packet, callID)
+	rmcMessage, errorCode := protocol.GetInvitationsReceived(nil, packet, callID)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

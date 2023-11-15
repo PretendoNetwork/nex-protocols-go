@@ -26,7 +26,7 @@ func (protocol *Protocol) handleGetProfiles(packet nex.PacketInterface) {
 
 	pidList, err := parametersStream.ReadListPID()
 	if err != nil {
-		errorCode = protocol.GetProfiles(fmt.Errorf("Failed to read pidList from parameters. %s", err.Error()), packet, callID, nil)
+		_, errorCode = protocol.GetProfiles(fmt.Errorf("Failed to read pidList from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -34,8 +34,11 @@ func (protocol *Protocol) handleGetProfiles(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.GetProfiles(nil, packet, callID, pidList)
+	rmcMessage, errorCode := protocol.GetProfiles(nil, packet, callID, pidList)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

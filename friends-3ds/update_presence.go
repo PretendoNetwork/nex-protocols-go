@@ -27,7 +27,7 @@ func (protocol *Protocol) handleUpdatePresence(packet nex.PacketInterface) {
 
 	nintendoPresence, err := parametersStream.ReadStructure(friends_3ds_types.NewNintendoPresence())
 	if err != nil {
-		errorCode = protocol.UpdatePresence(fmt.Errorf("Failed to read nintendoPresence from parameters. %s", err.Error()), packet, callID, nil, false)
+		_, errorCode = protocol.UpdatePresence(fmt.Errorf("Failed to read nintendoPresence from parameters. %s", err.Error()), packet, callID, nil, false)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -37,7 +37,7 @@ func (protocol *Protocol) handleUpdatePresence(packet nex.PacketInterface) {
 
 	showGame, err := parametersStream.ReadBool()
 	if err != nil {
-		errorCode = protocol.UpdatePresence(fmt.Errorf("Failed to read showGame from parameters. %s", err.Error()), packet, callID, nil, false)
+		_, errorCode = protocol.UpdatePresence(fmt.Errorf("Failed to read showGame from parameters. %s", err.Error()), packet, callID, nil, false)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -45,8 +45,11 @@ func (protocol *Protocol) handleUpdatePresence(packet nex.PacketInterface) {
 		return
 	}
 
-	errorCode = protocol.UpdatePresence(nil, packet, callID, nintendoPresence.(*friends_3ds_types.NintendoPresence), showGame)
+	rmcMessage, errorCode := protocol.UpdatePresence(nil, packet, callID, nintendoPresence.(*friends_3ds_types.NintendoPresence), showGame)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

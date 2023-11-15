@@ -26,7 +26,7 @@ func (protocol *Protocol) handleCancelParticipation(packet nex.PacketInterface) 
 
 	idGathering, err := parametersStream.ReadUInt32LE()
 	if err != nil {
-		errorCode = protocol.CancelParticipation(fmt.Errorf("Failed to read idGathering from parameters. %s", err.Error()), packet, callID, 0, "")
+		_, errorCode = protocol.CancelParticipation(fmt.Errorf("Failed to read idGathering from parameters. %s", err.Error()), packet, callID, 0, "")
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -36,7 +36,7 @@ func (protocol *Protocol) handleCancelParticipation(packet nex.PacketInterface) 
 
 	strMessage, err := parametersStream.ReadString()
 	if err != nil {
-		errorCode = protocol.CancelParticipation(fmt.Errorf("Failed to read strMessage from parameters. %s", err.Error()), packet, callID, 0, "")
+		_, errorCode = protocol.CancelParticipation(fmt.Errorf("Failed to read strMessage from parameters. %s", err.Error()), packet, callID, 0, "")
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -44,8 +44,11 @@ func (protocol *Protocol) handleCancelParticipation(packet nex.PacketInterface) 
 		return
 	}
 
-	errorCode = protocol.CancelParticipation(nil, packet, callID, idGathering, strMessage)
+	rmcMessage, errorCode := protocol.CancelParticipation(nil, packet, callID, idGathering, strMessage)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

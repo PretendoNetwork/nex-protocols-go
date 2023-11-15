@@ -106,8 +106,15 @@ func (gathering *Gathering) Copy() nex.StructureInterface {
 	copied.SetStructureVersion(gathering.StructureVersion())
 
 	copied.ID = gathering.ID
-	copied.OwnerPID = gathering.OwnerPID.Copy()
-	copied.HostPID = gathering.HostPID.Copy()
+
+	if copied.OwnerPID != nil {
+		copied.OwnerPID = gathering.OwnerPID.Copy()
+	}
+
+	if copied.HostPID != nil {
+		copied.HostPID = gathering.HostPID.Copy()
+	}
+
 	copied.MinimumParticipants = gathering.MinimumParticipants
 	copied.MaximumParticipants = gathering.MaximumParticipants
 	copied.ParticipationPolicy = gathering.ParticipationPolicy

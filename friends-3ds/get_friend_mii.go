@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	friends_3ds_types "github.com/PretendoNetwork/nex-protocols-go/friends-3ds/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
@@ -24,9 +25,9 @@ func (protocol *Protocol) handleGetFriendMii(packet nex.PacketInterface) {
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	pidList, err := parametersStream.ReadListUInt32LE()
+	friends, err := parametersStream.ReadListStructure(friends_3ds_types.NewFriendInfo())
 	if err != nil {
-		_, errorCode = protocol.GetFriendMii(fmt.Errorf("Failed to read pidList from parameters. %s", err.Error()), packet, callID, nil)
+		_, errorCode = protocol.GetFriendMii(fmt.Errorf("Failed to read friends from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -34,7 +35,7 @@ func (protocol *Protocol) handleGetFriendMii(packet nex.PacketInterface) {
 		return
 	}
 
-	rmcMessage, errorCode := protocol.GetFriendMii(nil, packet, callID, pidList)
+	rmcMessage, errorCode := protocol.GetFriendMii(nil, packet, callID, friends.([]*friends_3ds_types.FriendInfo))
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 		return

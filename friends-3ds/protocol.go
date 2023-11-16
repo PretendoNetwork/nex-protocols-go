@@ -100,7 +100,7 @@ type Protocol struct {
 	UpdateMiiList                   func(err error, packet nex.PacketInterface, callID uint32, miiList *friends_3ds_types.MiiList) (*nex.RMCMessage, uint32)
 	UpdatePlayedGames               func(err error, packet nex.PacketInterface, callID uint32, playedGames []*friends_3ds_types.PlayedGame) (*nex.RMCMessage, uint32)
 	UpdatePreference                func(err error, packet nex.PacketInterface, callID uint32, publicMode bool, showGame bool, showPlayedGame bool) (*nex.RMCMessage, uint32)
-	GetFriendMii                    func(err error, packet nex.PacketInterface, callID uint32, pidList []uint32) (*nex.RMCMessage, uint32)
+	GetFriendMii                    func(err error, packet nex.PacketInterface, callID uint32, friends []*friends_3ds_types.FriendInfo) (*nex.RMCMessage, uint32)
 	GetFriendMiiList                func(err error, packet nex.PacketInterface, callID uint32, friends []*friends_3ds_types.FriendInfo) (*nex.RMCMessage, uint32)
 	IsActiveGame                    func(err error, packet nex.PacketInterface, callID uint32, pids []*nex.PID, gameKey *friends_3ds_types.GameKey) (*nex.RMCMessage, uint32)
 	GetPrincipalIDByLocalFriendCode func(err error, packet nex.PacketInterface, callID uint32, lfc uint64, lfcList []uint64) (*nex.RMCMessage, uint32)

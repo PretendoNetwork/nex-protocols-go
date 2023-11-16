@@ -29,7 +29,10 @@ func (friendInfo *FriendInfo) Copy() nex.StructureInterface {
 
 	copied.SetStructureVersion(friendInfo.StructureVersion())
 
-	copied.PID = friendInfo.PID.Copy()
+	if friendInfo.PID != nil {
+		copied.PID = friendInfo.PID.Copy()
+	}
+
 	copied.Unknown = friendInfo.Unknown.Copy()
 
 	return copied

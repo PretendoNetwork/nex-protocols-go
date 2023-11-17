@@ -23,6 +23,22 @@ func (friendInfo *FriendInfo) Bytes(stream *nex.StreamOut) []byte {
 	return stream.Bytes()
 }
 
+func (friendInfo *FriendInfo) ExtractFromStream(stream *nex.StreamIn) error {
+	var err error
+
+	friendInfo.PID, err = stream.ReadPID()
+	if err != nil {
+		return fmt.Errorf("Failed to extract FriendInfo.PID. %s", err.Error())
+	}
+
+	friendInfo.Unknown, err = stream.ReadDateTime()
+	if err != nil {
+		return fmt.Errorf("Failed to extract FriendInfo.PID. %s", err.Error())
+	}
+
+	return nil
+}
+
 // Copy returns a new copied instance of FriendInfo
 func (friendInfo *FriendInfo) Copy() nex.StructureInterface {
 	copied := NewFriendInfo()
@@ -33,7 +49,9 @@ func (friendInfo *FriendInfo) Copy() nex.StructureInterface {
 		copied.PID = friendInfo.PID.Copy()
 	}
 
-	copied.Unknown = friendInfo.Unknown.Copy()
+	if friendInfo.Unknown != nil {
+		copied.Unknown = friendInfo.Unknown.Copy()
+	}
 
 	return copied
 }

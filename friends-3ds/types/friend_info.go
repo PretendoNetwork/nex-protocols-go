@@ -23,6 +23,7 @@ func (friendInfo *FriendInfo) Bytes(stream *nex.StreamOut) []byte {
 	return stream.Bytes()
 }
 
+// ExtractFromStream extracts a FriendInfo structure from a stream
 func (friendInfo *FriendInfo) ExtractFromStream(stream *nex.StreamIn) error {
 	var err error
 

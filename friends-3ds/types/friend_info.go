@@ -34,7 +34,7 @@ func (friendInfo *FriendInfo) ExtractFromStream(stream *nex.StreamIn) error {
 
 	friendInfo.Unknown, err = stream.ReadDateTime()
 	if err != nil {
-		return fmt.Errorf("Failed to extract FriendInfo.PID. %s", err.Error())
+		return fmt.Errorf("Failed to extract FriendInfo.Unknown. %s", err.Error())
 	}
 
 	return nil

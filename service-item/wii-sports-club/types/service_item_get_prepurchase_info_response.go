@@ -31,7 +31,7 @@ func (serviceItemGetPrepurchaseInfoResponse *ServiceItemGetPrepurchaseInfoRespon
 
 // Bytes encodes the ServiceItemGetPrepurchaseInfoResponse and returns a byte array
 func (serviceItemGetPrepurchaseInfoResponse *ServiceItemGetPrepurchaseInfoResponse) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteListStructure(serviceItemGetPrepurchaseInfoResponse.NullablePrepurchaseInfo)
+	nex.StreamWriteListStructure(stream, serviceItemGetPrepurchaseInfoResponse.NullablePrepurchaseInfo)
 
 	return stream.Bytes()
 }

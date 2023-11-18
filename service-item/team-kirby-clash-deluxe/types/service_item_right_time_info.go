@@ -31,7 +31,7 @@ func (serviceItemRightTimeInfo *ServiceItemRightTimeInfo) ExtractFromStream(stre
 
 // Bytes encodes the ServiceItemRightTimeInfo and returns a byte array
 func (serviceItemRightTimeInfo *ServiceItemRightTimeInfo) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteListStructure(serviceItemRightTimeInfo.AccountRights)
+	nex.StreamWriteListStructure(stream, serviceItemRightTimeInfo.AccountRights)
 
 	return stream.Bytes()
 }

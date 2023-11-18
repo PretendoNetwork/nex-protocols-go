@@ -42,7 +42,7 @@ func (dataStoreSearchResult *DataStoreSearchResult) ExtractFromStream(stream *ne
 // Bytes encodes the DataStoreSearchResult and returns a byte array
 func (dataStoreSearchResult *DataStoreSearchResult) Bytes(stream *nex.StreamOut) []byte {
 	stream.WriteUInt32LE(dataStoreSearchResult.TotalCount)
-	stream.WriteListStructure(dataStoreSearchResult.Result)
+	nex.StreamWriteListStructure(stream, dataStoreSearchResult.Result)
 	stream.WriteUInt8(dataStoreSearchResult.TotalCountType)
 
 	return stream.Bytes()

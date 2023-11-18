@@ -31,7 +31,7 @@ func (serviceItemGetServiceItemRightResponse *ServiceItemGetServiceItemRightResp
 
 // Bytes encodes the ServiceItemGetServiceItemRightResponse and returns a byte array
 func (serviceItemGetServiceItemRightResponse *ServiceItemGetServiceItemRightResponse) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteListStructure(serviceItemGetServiceItemRightResponse.NullableRightInfos)
+	nex.StreamWriteListStructure(stream, serviceItemGetServiceItemRightResponse.NullableRightInfos)
 
 	return stream.Bytes()
 }

@@ -65,7 +65,7 @@ func (serviceItemListItem *ServiceItemListItem) Bytes(stream *nex.StreamOut) []b
 	stream.WriteBool(serviceItemListItem.TaxExcluded)
 	stream.WriteBool(serviceItemListItem.InitialPurchaseOnly)
 	stream.WriteStructure(serviceItemListItem.Limitation)
-	stream.WriteListStructure(serviceItemListItem.Attributes)
+	nex.StreamWriteListStructure(stream, serviceItemListItem.Attributes)
 
 	return stream.Bytes()
 }

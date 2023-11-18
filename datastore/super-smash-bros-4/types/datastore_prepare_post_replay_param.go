@@ -104,7 +104,7 @@ func (dataStorePreparePostReplayParam *DataStorePreparePostReplayParam) Bytes(st
 	stream.WriteUInt8(dataStorePreparePostReplayParam.ReplayType)
 	stream.WriteUInt64LE(dataStorePreparePostReplayParam.CompetitionID)
 	stream.WriteInt32LE(dataStorePreparePostReplayParam.Score)
-	stream.WriteListStructure(dataStorePreparePostReplayParam.Players)
+	nex.StreamWriteListStructure(stream, dataStorePreparePostReplayParam.Players)
 	stream.WriteListUInt32LE(dataStorePreparePostReplayParam.Winners)
 	stream.WriteUInt16LE(dataStorePreparePostReplayParam.KeyVersion)
 	stream.WriteListString(dataStorePreparePostReplayParam.ExtraData)

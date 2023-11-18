@@ -101,7 +101,7 @@ func (dataStorePreparePostParamV1 *DataStorePreparePostParamV1) Bytes(stream *ne
 	stream.WriteUInt16LE(dataStorePreparePostParamV1.Period)
 	stream.WriteUInt32LE(dataStorePreparePostParamV1.ReferDataID)
 	stream.WriteListString(dataStorePreparePostParamV1.Tags)
-	stream.WriteListStructure(dataStorePreparePostParamV1.RatingInitParams)
+	nex.StreamWriteListStructure(stream, dataStorePreparePostParamV1.RatingInitParams)
 
 	return stream.Bytes()
 }

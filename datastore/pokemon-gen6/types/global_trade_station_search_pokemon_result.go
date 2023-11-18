@@ -43,7 +43,7 @@ func (globalTradeStationSearchPokemonResult *GlobalTradeStationSearchPokemonResu
 // Bytes encodes the GlobalTradeStationSearchPokemonResult and returns a byte array
 func (globalTradeStationSearchPokemonResult *GlobalTradeStationSearchPokemonResult) Bytes(stream *nex.StreamOut) []byte {
 	stream.WriteUInt32LE(globalTradeStationSearchPokemonResult.TotalCount)
-	stream.WriteListStructure(globalTradeStationSearchPokemonResult.Result)
+	nex.StreamWriteListStructure(stream, globalTradeStationSearchPokemonResult.Result)
 	stream.WriteUInt8(globalTradeStationSearchPokemonResult.TotalCountType)
 
 	return stream.Bytes()

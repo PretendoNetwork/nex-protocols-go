@@ -31,7 +31,7 @@ func (serviceItemGetPurchaseHistoryResponse *ServiceItemGetPurchaseHistoryRespon
 
 // Bytes encodes the ServiceItemGetPurchaseHistoryResponse and returns a byte array
 func (serviceItemGetPurchaseHistoryResponse *ServiceItemGetPurchaseHistoryResponse) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteListStructure(serviceItemGetPurchaseHistoryResponse.NullablePurchaseHistory)
+	nex.StreamWriteListStructure(stream, serviceItemGetPurchaseHistoryResponse.NullablePurchaseHistory)
 
 	return stream.Bytes()
 }

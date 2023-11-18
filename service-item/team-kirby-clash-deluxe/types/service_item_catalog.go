@@ -56,7 +56,7 @@ func (serviceItemCatalog *ServiceItemCatalog) ExtractFromStream(stream *nex.Stre
 func (serviceItemCatalog *ServiceItemCatalog) Bytes(stream *nex.StreamOut) []byte {
 	stream.WriteUInt32LE(serviceItemCatalog.TotalSize)
 	stream.WriteUInt32LE(serviceItemCatalog.Offset)
-	stream.WriteListStructure(serviceItemCatalog.ListItems)
+	nex.StreamWriteListStructure(stream, serviceItemCatalog.ListItems)
 	stream.WriteBool(serviceItemCatalog.IsBalanceAvailable)
 	stream.WriteStructure(serviceItemCatalog.Balance)
 

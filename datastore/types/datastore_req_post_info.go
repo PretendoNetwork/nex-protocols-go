@@ -23,8 +23,8 @@ type DataStoreReqPostInfo struct {
 func (dataStoreReqPostInfo *DataStoreReqPostInfo) Bytes(stream *nex.StreamOut) []byte {
 	stream.WriteUInt64LE(dataStoreReqPostInfo.DataID)
 	stream.WriteString(dataStoreReqPostInfo.URL)
-	stream.WriteListStructure(dataStoreReqPostInfo.RequestHeaders)
-	stream.WriteListStructure(dataStoreReqPostInfo.FormFields)
+	nex.StreamWriteListStructure(stream, dataStoreReqPostInfo.RequestHeaders)
+	nex.StreamWriteListStructure(stream, dataStoreReqPostInfo.FormFields)
 	stream.WriteBuffer(dataStoreReqPostInfo.RootCACert)
 
 	return stream.Bytes()

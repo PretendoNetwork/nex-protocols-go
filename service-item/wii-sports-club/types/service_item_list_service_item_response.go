@@ -31,7 +31,7 @@ func (serviceItemListServiceItemResponse *ServiceItemListServiceItemResponse) Ex
 
 // Bytes encodes the ServiceItemListServiceItemResponse and returns a byte array
 func (serviceItemListServiceItemResponse *ServiceItemListServiceItemResponse) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteListStructure(serviceItemListServiceItemResponse.NullableCatalog)
+	nex.StreamWriteListStructure(stream, serviceItemListServiceItemResponse.NullableCatalog)
 
 	return stream.Bytes()
 }

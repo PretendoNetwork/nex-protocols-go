@@ -48,7 +48,7 @@ func (ranking2Info *Ranking2Info) ExtractFromStream(stream *nex.StreamIn) error 
 
 // Bytes encodes the Ranking2Info and returns a byte array
 func (ranking2Info *Ranking2Info) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteListStructure(ranking2Info.RankDataList)
+	nex.StreamWriteListStructure(stream, ranking2Info.RankDataList)
 	stream.WriteUInt32LE(ranking2Info.LowestRank)
 	stream.WriteUInt32LE(ranking2Info.NumRankedIn)
 	stream.WriteInt32LE(ranking2Info.Season)

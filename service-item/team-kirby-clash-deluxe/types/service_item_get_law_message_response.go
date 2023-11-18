@@ -31,7 +31,7 @@ func (serviceItemGetLawMessageResponse *ServiceItemGetLawMessageResponse) Extrac
 
 // Bytes encodes the ServiceItemGetLawMessageResponse and returns a byte array
 func (serviceItemGetLawMessageResponse *ServiceItemGetLawMessageResponse) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteListStructure(serviceItemGetLawMessageResponse.NullableLawMessage)
+	nex.StreamWriteListStructure(stream, serviceItemGetLawMessageResponse.NullableLawMessage)
 
 	return stream.Bytes()
 }

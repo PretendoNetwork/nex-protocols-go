@@ -31,7 +31,7 @@ func (serviceItemPurchaseServiceItemResponse *ServiceItemPurchaseServiceItemResp
 
 // Bytes encodes the ServiceItemPurchaseServiceItemResponse and returns a byte array
 func (serviceItemPurchaseServiceItemResponse *ServiceItemPurchaseServiceItemResponse) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteListStructure(serviceItemPurchaseServiceItemResponse.NullablePurchaceInfo)
+	nex.StreamWriteListStructure(stream, serviceItemPurchaseServiceItemResponse.NullablePurchaceInfo)
 
 	return stream.Bytes()
 }

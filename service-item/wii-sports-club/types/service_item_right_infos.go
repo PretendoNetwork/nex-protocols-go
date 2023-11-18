@@ -30,7 +30,7 @@ func (serviceItemRightInfos *ServiceItemRightInfos) ExtractFromStream(stream *ne
 
 // Bytes encodes the ServiceItemRightInfos and returns a byte array
 func (serviceItemRightInfos *ServiceItemRightInfos) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteListStructure(serviceItemRightInfos.RightInfos)
+	nex.StreamWriteListStructure(stream, serviceItemRightInfos.RightInfos)
 
 	return stream.Bytes()
 }

@@ -62,7 +62,7 @@ func (simpleSearchParam *SimpleSearchParam) ExtractFromStream(stream *nex.Stream
 func (simpleSearchParam *SimpleSearchParam) Bytes(stream *nex.StreamOut) []byte {
 	stream.WriteUInt32LE(simpleSearchParam.Unknown)
 	stream.WritePID(simpleSearchParam.Unknown2)
-	stream.WriteListStructure(simpleSearchParam.Conditions)
+	nex.StreamWriteListStructure(stream, simpleSearchParam.Conditions)
 	stream.WriteString(simpleSearchParam.Unknown3)
 	stream.WriteStructure(simpleSearchParam.ResultRange)
 	stream.WriteDateTime(simpleSearchParam.Unknown4)

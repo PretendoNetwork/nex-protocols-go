@@ -19,7 +19,7 @@ type MatchmakeRefereeEndRoundParam struct {
 // Bytes encodes the MatchmakeRefereeEndRoundParam and returns a byte array
 func (matchmakeRefereeEndRoundParam *MatchmakeRefereeEndRoundParam) Bytes(stream *nex.StreamOut) []byte {
 	stream.WriteUInt64LE(matchmakeRefereeEndRoundParam.RoundID)
-	stream.WriteListStructure(matchmakeRefereeEndRoundParam.PersonalRoundResults)
+	nex.StreamWriteListStructure(stream, matchmakeRefereeEndRoundParam.PersonalRoundResults)
 
 	return stream.Bytes()
 }

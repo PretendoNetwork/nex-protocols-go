@@ -84,7 +84,7 @@ func (dataStoreReplayMetaInfo *DataStoreReplayMetaInfo) Bytes(stream *nex.Stream
 	stream.WriteUInt8(dataStoreReplayMetaInfo.Rule)
 	stream.WriteUInt8(dataStoreReplayMetaInfo.Stage)
 	stream.WriteUInt8(dataStoreReplayMetaInfo.ReplayType)
-	stream.WriteListStructure(dataStoreReplayMetaInfo.Players)
+	nex.StreamWriteListStructure(stream, dataStoreReplayMetaInfo.Players)
 	stream.WriteListUInt32LE(dataStoreReplayMetaInfo.Winners)
 
 	return stream.Bytes()

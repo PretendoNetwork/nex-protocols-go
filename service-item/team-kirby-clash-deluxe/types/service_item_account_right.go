@@ -44,7 +44,7 @@ func (serviceItemAccountRight *ServiceItemAccountRight) ExtractFromStream(stream
 func (serviceItemAccountRight *ServiceItemAccountRight) Bytes(stream *nex.StreamOut) []byte {
 	stream.WritePID(serviceItemAccountRight.PID)
 	stream.WriteStructure(serviceItemAccountRight.Limitation)
-	stream.WriteListStructure(serviceItemAccountRight.RightBinaries)
+	nex.StreamWriteListStructure(stream, serviceItemAccountRight.RightBinaries)
 
 	return stream.Bytes()
 }

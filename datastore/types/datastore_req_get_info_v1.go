@@ -49,7 +49,7 @@ func (dataStoreReqGetInfoV1 *DataStoreReqGetInfoV1) ExtractFromStream(stream *ne
 // Bytes encodes the DataStoreReqGetInfoV1 and returns a byte array
 func (dataStoreReqGetInfoV1 *DataStoreReqGetInfoV1) Bytes(stream *nex.StreamOut) []byte {
 	stream.WriteString(dataStoreReqGetInfoV1.URL)
-	stream.WriteListStructure(dataStoreReqGetInfoV1.RequestHeaders)
+	nex.StreamWriteListStructure(stream, dataStoreReqGetInfoV1.RequestHeaders)
 	stream.WriteUInt32LE(dataStoreReqGetInfoV1.Size)
 	stream.WriteBuffer(dataStoreReqGetInfoV1.RootCACert)
 

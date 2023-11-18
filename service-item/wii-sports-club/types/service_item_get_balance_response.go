@@ -31,7 +31,7 @@ func (serviceItemGetBalanceResponse *ServiceItemGetBalanceResponse) ExtractFromS
 
 // Bytes encodes the ServiceItemGetBalanceResponse and returns a byte array
 func (serviceItemGetBalanceResponse *ServiceItemGetBalanceResponse) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteListStructure(serviceItemGetBalanceResponse.NullableBalance)
+	nex.StreamWriteListStructure(stream, serviceItemGetBalanceResponse.NullableBalance)
 
 	return stream.Bytes()
 }

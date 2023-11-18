@@ -59,9 +59,9 @@ func (serviceItemRightInfos *ServiceItemRightInfos) ExtractFromStream(stream *ne
 // Bytes encodes the ServiceItemRightInfos and returns a byte array
 func (serviceItemRightInfos *ServiceItemRightInfos) Bytes(stream *nex.StreamOut) []byte {
 	stream.WriteString(serviceItemRightInfos.SupportID)
-	stream.WriteListStructure(serviceItemRightInfos.ConsumptionRightInfos)
-	stream.WriteListStructure(serviceItemRightInfos.AdditionalTimeRightInfos)
-	stream.WriteListStructure(serviceItemRightInfos.PermanentRightInfos)
+	nex.StreamWriteListStructure(stream, serviceItemRightInfos.ConsumptionRightInfos)
+	nex.StreamWriteListStructure(stream, serviceItemRightInfos.AdditionalTimeRightInfos)
+	nex.StreamWriteListStructure(stream, serviceItemRightInfos.PermanentRightInfos)
 	stream.WriteBool(serviceItemRightInfos.AlreadyPurchasedInitialOnlyItem)
 
 	return stream.Bytes()

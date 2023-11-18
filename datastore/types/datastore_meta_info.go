@@ -157,7 +157,7 @@ func (dataStoreMetaInfo *DataStoreMetaInfo) Bytes(stream *nex.StreamOut) []byte 
 	stream.WriteDateTime(dataStoreMetaInfo.ReferredTime)
 	stream.WriteDateTime(dataStoreMetaInfo.ExpireTime)
 	stream.WriteListString(dataStoreMetaInfo.Tags)
-	stream.WriteListStructure(dataStoreMetaInfo.Ratings)
+	nex.StreamWriteListStructure(stream, dataStoreMetaInfo.Ratings)
 
 	return stream.Bytes()
 }

@@ -44,7 +44,7 @@ func (serviceItemPurchaseHistory *ServiceItemPurchaseHistory) ExtractFromStream(
 func (serviceItemPurchaseHistory *ServiceItemPurchaseHistory) Bytes(stream *nex.StreamOut) []byte {
 	stream.WriteUInt32LE(serviceItemPurchaseHistory.TotalSize)
 	stream.WriteUInt32LE(serviceItemPurchaseHistory.Offset)
-	stream.WriteListStructure(serviceItemPurchaseHistory.Transactions)
+	nex.StreamWriteListStructure(stream, serviceItemPurchaseHistory.Transactions)
 
 	return stream.Bytes()
 }

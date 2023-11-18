@@ -25,7 +25,7 @@ func (matchmakeRefereeRound *MatchmakeRefereeRound) Bytes(stream *nex.StreamOut)
 	stream.WriteUInt32LE(matchmakeRefereeRound.GID)
 	stream.WriteUInt32LE(matchmakeRefereeRound.State)
 	stream.WriteUInt32LE(matchmakeRefereeRound.PersonalDataCategory)
-	stream.WriteListStructure(matchmakeRefereeRound.NormalizedPersonalRoundResults)
+	nex.StreamWriteListStructure(stream, matchmakeRefereeRound.NormalizedPersonalRoundResults)
 
 	return stream.Bytes()
 }

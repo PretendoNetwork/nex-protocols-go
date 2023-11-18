@@ -59,8 +59,8 @@ func (dataStoreReqPostInfoV1 *DataStoreReqPostInfoV1) ExtractFromStream(stream *
 func (dataStoreReqPostInfoV1 *DataStoreReqPostInfoV1) Bytes(stream *nex.StreamOut) []byte {
 	stream.WriteUInt32LE(dataStoreReqPostInfoV1.DataID)
 	stream.WriteString(dataStoreReqPostInfoV1.URL)
-	stream.WriteListStructure(dataStoreReqPostInfoV1.RequestHeaders)
-	stream.WriteListStructure(dataStoreReqPostInfoV1.FormFields)
+	nex.StreamWriteListStructure(stream, dataStoreReqPostInfoV1.RequestHeaders)
+	nex.StreamWriteListStructure(stream, dataStoreReqPostInfoV1.FormFields)
 	stream.WriteBuffer(dataStoreReqPostInfoV1.RootCACert)
 
 	return stream.Bytes()

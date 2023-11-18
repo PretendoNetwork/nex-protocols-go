@@ -42,7 +42,7 @@ func (rankingResult *RankingResult) ExtractFromStream(stream *nex.StreamIn) erro
 
 // Bytes encodes the RankingResult and returns a byte array
 func (rankingResult *RankingResult) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteListStructure(rankingResult.RankDataList)
+	nex.StreamWriteListStructure(stream, rankingResult.RankDataList)
 	stream.WriteUInt32LE(rankingResult.TotalCount)
 	stream.WriteDateTime(rankingResult.SinceTime)
 

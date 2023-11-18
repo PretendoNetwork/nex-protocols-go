@@ -28,7 +28,7 @@ func (matchmakeParam *MatchmakeParam) ExtractFromStream(stream *nex.StreamIn) er
 
 // Bytes extracts a MatchmakeParam structure from a stream
 func (matchmakeParam *MatchmakeParam) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteMap(matchmakeParam.Parameters)
+	nex.StreamWriteMap(stream, matchmakeParam.Parameters)
 
 	return stream.Bytes()
 }

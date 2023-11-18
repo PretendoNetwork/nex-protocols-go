@@ -31,7 +31,7 @@ func (serviceItemRightConsumptionInfo *ServiceItemRightConsumptionInfo) ExtractF
 
 // Bytes encodes the ServiceItemRightConsumptionInfo and returns a byte array
 func (serviceItemRightConsumptionInfo *ServiceItemRightConsumptionInfo) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteListStructure(serviceItemRightConsumptionInfo.AccountRights)
+	nex.StreamWriteListStructure(stream, serviceItemRightConsumptionInfo.AccountRights)
 
 	return stream.Bytes()
 }

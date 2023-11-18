@@ -37,7 +37,7 @@ func (dataStoreFightingPowerChart *DataStoreFightingPowerChart) ExtractFromStrea
 // Bytes encodes the DataStoreFightingPowerChart and returns a byte array
 func (dataStoreFightingPowerChart *DataStoreFightingPowerChart) Bytes(stream *nex.StreamOut) []byte {
 	stream.WriteUInt32LE(dataStoreFightingPowerChart.UserNum)
-	stream.WriteListStructure(dataStoreFightingPowerChart.Chart)
+	nex.StreamWriteListStructure(stream, dataStoreFightingPowerChart.Chart)
 
 	return stream.Bytes()
 }

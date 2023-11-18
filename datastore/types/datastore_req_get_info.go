@@ -24,7 +24,7 @@ func (dataStoreReqGetInfo *DataStoreReqGetInfo) Bytes(stream *nex.StreamOut) []b
 	datastoreVersion := stream.Server.DataStoreProtocolVersion()
 
 	stream.WriteString(dataStoreReqGetInfo.URL)
-	stream.WriteListStructure(dataStoreReqGetInfo.RequestHeaders)
+	nex.StreamWriteListStructure(stream, dataStoreReqGetInfo.RequestHeaders)
 	stream.WriteUInt32LE(dataStoreReqGetInfo.Size)
 	stream.WriteBuffer(dataStoreReqGetInfo.RootCACert)
 

@@ -79,8 +79,8 @@ func (dataStoreReqUpdateInfo *DataStoreReqUpdateInfo) Bytes(stream *nex.StreamOu
 	}
 
 	stream.WriteString(dataStoreReqUpdateInfo.URL)
-	stream.WriteListStructure(dataStoreReqUpdateInfo.RequestHeaders)
-	stream.WriteListStructure(dataStoreReqUpdateInfo.FormFields)
+	nex.StreamWriteListStructure(stream, dataStoreReqUpdateInfo.RequestHeaders)
+	nex.StreamWriteListStructure(stream, dataStoreReqUpdateInfo.FormFields)
 	stream.WriteBuffer(dataStoreReqUpdateInfo.RootCACert)
 
 	return stream.Bytes()

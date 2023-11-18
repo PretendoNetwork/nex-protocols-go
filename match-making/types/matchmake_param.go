@@ -19,19 +19,11 @@ type MatchmakeParam struct {
 
 // ExtractFromStream extracts a MatchmakeParam structure from a stream
 func (matchmakeParam *MatchmakeParam) ExtractFromStream(stream *nex.StreamIn) error {
-	parameters, err := stream.ReadMap(stream.ReadString, stream.ReadVariant)
+	var err error
 
-	if err != nil {
-		return err
-	}
+	matchmakeParam.Parameters, err = nex.StreamReadMap(stream, stream.ReadString, stream.ReadVariant)
 
-	matchmakeParam.Parameters = make(map[string]*nex.Variant, len(parameters))
-
-	for key, value := range parameters {
-		matchmakeParam.Parameters[key.(string)] = value.(*nex.Variant)
-	}
-
-	return nil
+	return err
 }
 
 // Bytes extracts a MatchmakeParam structure from a stream

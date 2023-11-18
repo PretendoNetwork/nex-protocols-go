@@ -25,7 +25,7 @@ func (protocol *Protocol) handleGetRatingWithLog(packet nex.PacketInterface) {
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	target, err := parametersStream.ReadStructure(datastore_types.NewDataStoreRatingTarget())
+	target, err := nex.StreamReadStructure(parametersStream, datastore_types.NewDataStoreRatingTarget())
 	if err != nil {
 		_, errorCode = protocol.GetRatingWithLog(fmt.Errorf("Failed to read target from parameters. %s", err.Error()), packet, callID, nil, 0)
 		if errorCode != 0 {
@@ -45,7 +45,7 @@ func (protocol *Protocol) handleGetRatingWithLog(packet nex.PacketInterface) {
 		return
 	}
 
-	rmcMessage, errorCode := protocol.GetRatingWithLog(nil, packet, callID, target.(*datastore_types.DataStoreRatingTarget), accessPassword)
+	rmcMessage, errorCode := protocol.GetRatingWithLog(nil, packet, callID, target, accessPassword)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 		return

@@ -25,7 +25,7 @@ func (protocol *Protocol) handleUpdateComment(packet nex.PacketInterface) {
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	comment, err := parametersStream.ReadStructure(friends_wiiu_types.NewComment())
+	comment, err := nex.StreamReadStructure(parametersStream, friends_wiiu_types.NewComment())
 	if err != nil {
 		_, errorCode = protocol.UpdateComment(fmt.Errorf("Failed to read comment from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
@@ -35,7 +35,7 @@ func (protocol *Protocol) handleUpdateComment(packet nex.PacketInterface) {
 		return
 	}
 
-	rmcMessage, errorCode := protocol.UpdateComment(nil, packet, callID, comment.(*friends_wiiu_types.Comment))
+	rmcMessage, errorCode := protocol.UpdateComment(nil, packet, callID, comment)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 		return

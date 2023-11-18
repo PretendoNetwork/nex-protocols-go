@@ -25,7 +25,7 @@ func (protocol *Protocol) handlePrepareGetObjectOrMetaBinary(packet nex.PacketIn
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	param, err := parametersStream.ReadStructure(datastore_types.NewDataStorePrepareGetParam())
+	param, err := nex.StreamReadStructure(parametersStream, datastore_types.NewDataStorePrepareGetParam())
 	if err != nil {
 		_, errorCode = protocol.PrepareGetObjectOrMetaBinary(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
@@ -35,7 +35,7 @@ func (protocol *Protocol) handlePrepareGetObjectOrMetaBinary(packet nex.PacketIn
 		return
 	}
 
-	rmcMessage, errorCode := protocol.PrepareGetObjectOrMetaBinary(nil, packet, callID, param.(*datastore_types.DataStorePrepareGetParam))
+	rmcMessage, errorCode := protocol.PrepareGetObjectOrMetaBinary(nil, packet, callID, param)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 		return

@@ -33,24 +33,22 @@ func (simpleSearchParam *SimpleSearchParam) ExtractFromStream(stream *nex.Stream
 		return fmt.Errorf("Failed to extract SimpleSearchParam.Unknown2 from stream. %s", err.Error())
 	}
 
-	conditions, err := stream.ReadListStructure(NewSimpleSearchCondition())
+	conditions, err := nex.StreamReadListStructure(stream, NewSimpleSearchCondition())
 	if err != nil {
 		return fmt.Errorf("Failed to extract SimpleSearchParam.Conditions from stream. %s", err.Error())
 	}
 
-	simpleSearchParam.Conditions = conditions.([]*SimpleSearchCondition)
+	simpleSearchParam.Conditions = conditions
 
 	simpleSearchParam.Unknown3, err = stream.ReadString()
 	if err != nil {
 		return fmt.Errorf("Failed to extract SimpleSearchParam.Unknown3 from stream. %s", err.Error())
 	}
 
-	resultRange, err := stream.ReadStructure(nex.NewResultRange())
+	simpleSearchParam.ResultRange, err = nex.StreamReadStructure(stream, nex.NewResultRange())
 	if err != nil {
 		return fmt.Errorf("Failed to extract SimpleSearchParam.ResultRange from stream. %s", err.Error())
 	}
-
-	simpleSearchParam.ResultRange = resultRange.(*nex.ResultRange)
 
 	simpleSearchParam.Unknown4, err = stream.ReadDateTime()
 	if err != nil {

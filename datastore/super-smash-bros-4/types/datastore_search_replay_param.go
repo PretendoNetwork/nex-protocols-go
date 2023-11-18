@@ -34,12 +34,10 @@ func (dataStoreSearchReplayParam *DataStoreSearchReplayParam) ExtractFromStream(
 		return fmt.Errorf("Failed to extract DataStoreSearchReplayParam.Fighter. %s", err.Error())
 	}
 
-	resultRange, err := stream.ReadStructure(nex.NewResultRange())
+	dataStoreSearchReplayParam.ResultRange, err = nex.StreamReadStructure(stream, nex.NewResultRange())
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreSearchReplayParam.ResultRange. %s", err.Error())
 	}
-
-	dataStoreSearchReplayParam.ResultRange = resultRange.(*nex.ResultRange)
 
 	return nil
 }

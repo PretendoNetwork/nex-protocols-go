@@ -25,7 +25,7 @@ func (protocol *Protocol) handleGetEstimateScoreRank(packet nex.PacketInterface)
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	input, err := parametersStream.ReadStructure(ranking2_types.NewRanking2EstimateScoreRankInput())
+	input, err := nex.StreamReadStructure(parametersStream, ranking2_types.NewRanking2EstimateScoreRankInput())
 	if err != nil {
 		_, errorCode = protocol.GetEstimateScoreRank(fmt.Errorf("Failed to read input from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
@@ -35,7 +35,7 @@ func (protocol *Protocol) handleGetEstimateScoreRank(packet nex.PacketInterface)
 		return
 	}
 
-	rmcMessage, errorCode := protocol.GetEstimateScoreRank(nil, packet, callID, input.(*ranking2_types.Ranking2EstimateScoreRankInput))
+	rmcMessage, errorCode := protocol.GetEstimateScoreRank(nil, packet, callID, input)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 		return

@@ -27,12 +27,10 @@ func (findMatchmakeSessionByParticipantResult *FindMatchmakeSessionByParticipant
 		return fmt.Errorf("Failed to extract FindMatchmakeSessionByParticipantResult.PrincipalID. %s", err.Error())
 	}
 
-	session, err := stream.ReadStructure(NewMatchmakeSession())
+	findMatchmakeSessionByParticipantResult.Session, err = nex.StreamReadStructure(stream, NewMatchmakeSession())
 	if err != nil {
 		return fmt.Errorf("Failed to extract FindMatchmakeSessionByParticipantResult.Session. %s", err.Error())
 	}
-
-	findMatchmakeSessionByParticipantResult.Session = session.(*MatchmakeSession)
 
 	return nil
 }

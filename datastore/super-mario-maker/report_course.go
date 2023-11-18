@@ -25,7 +25,7 @@ func (protocol *Protocol) handleReportCourse(packet nex.PacketInterface) {
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	param, err := parametersStream.ReadStructure(datastore_super_mario_maker_types.NewDataStoreReportCourseParam())
+	param, err := nex.StreamReadStructure(parametersStream, datastore_super_mario_maker_types.NewDataStoreReportCourseParam())
 	if err != nil {
 		_, errorCode = protocol.ReportCourse(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
@@ -35,7 +35,7 @@ func (protocol *Protocol) handleReportCourse(packet nex.PacketInterface) {
 		return
 	}
 
-	rmcMessage, errorCode := protocol.ReportCourse(nil, packet, callID, param.(*datastore_super_mario_maker_types.DataStoreReportCourseParam))
+	rmcMessage, errorCode := protocol.ReportCourse(nil, packet, callID, param)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 		return

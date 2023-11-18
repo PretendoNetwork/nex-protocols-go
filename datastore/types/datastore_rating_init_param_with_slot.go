@@ -24,12 +24,10 @@ func (dataStoreRatingInitParamWithSlot *DataStoreRatingInitParamWithSlot) Extrac
 		return fmt.Errorf("Failed to extract DataStoreRatingInitParamWithSlot.Slot. %s", err.Error())
 	}
 
-	param, err := stream.ReadStructure(NewDataStoreRatingInitParam())
+	dataStoreRatingInitParamWithSlot.Param, err = nex.StreamReadStructure(stream, NewDataStoreRatingInitParam())
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreRatingInitParamWithSlot.Param. %s", err.Error())
 	}
-
-	dataStoreRatingInitParamWithSlot.Param = param.(*DataStoreRatingInitParam)
 
 	return nil
 }

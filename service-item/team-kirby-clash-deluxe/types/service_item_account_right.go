@@ -25,19 +25,17 @@ func (serviceItemAccountRight *ServiceItemAccountRight) ExtractFromStream(stream
 		return fmt.Errorf("Failed to extract ServiceItemAccountRight.PID from stream. %s", err.Error())
 	}
 
-	limitation, err := stream.ReadStructure(NewServiceItemLimitation())
+	serviceItemAccountRight.Limitation, err = nex.StreamReadStructure(stream, NewServiceItemLimitation())
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemAccountRight.Limitation from stream. %s", err.Error())
 	}
 
-	serviceItemAccountRight.Limitation = limitation.(*ServiceItemLimitation)
-
-	rightBinaries, err := stream.ReadListStructure(NewServiceItemRightBinary())
+	rightBinaries, err := nex.StreamReadListStructure(stream, NewServiceItemRightBinary())
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemAccountRight.RightBinaries from stream. %s", err.Error())
 	}
 
-	serviceItemAccountRight.RightBinaries = rightBinaries.([]*ServiceItemRightBinary)
+	serviceItemAccountRight.RightBinaries = rightBinaries
 
 	return nil
 }

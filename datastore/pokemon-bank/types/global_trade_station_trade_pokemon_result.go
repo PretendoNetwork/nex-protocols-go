@@ -19,12 +19,10 @@ type GlobalTradeStationTradePokemonResult struct {
 func (globalTradeStationTradePokemonResult *GlobalTradeStationTradePokemonResult) ExtractFromStream(stream *nex.StreamIn) error {
 	var err error
 
-	result, err := stream.ReadStructure(NewGlobalTradeStationDownloadPokemonResult())
+	globalTradeStationTradePokemonResult.Result, err = nex.StreamReadStructure(stream, NewGlobalTradeStationDownloadPokemonResult())
 	if err != nil {
 		return fmt.Errorf("Failed to extract GlobalTradeStationTradePokemonResult.Result from stream. %s", err.Error())
 	}
-
-	globalTradeStationTradePokemonResult.Result = result.(*GlobalTradeStationDownloadPokemonResult)
 
 	globalTradeStationTradePokemonResult.MyDataID, err = stream.ReadUInt64LE()
 	if err != nil {

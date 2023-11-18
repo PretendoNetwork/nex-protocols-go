@@ -26,19 +26,15 @@ func (dataStoreCompletePostReplayParam *DataStoreCompletePostReplayParam) Extrac
 		return fmt.Errorf("Failed to extract DataStoreCompletePostReplayParam.ReplayID. %s", err.Error())
 	}
 
-	completeParam, err := stream.ReadStructure(datastore_types.NewDataStoreCompletePostParam())
+	dataStoreCompletePostReplayParam.CompleteParam, err = nex.StreamReadStructure(stream, datastore_types.NewDataStoreCompletePostParam())
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreCompletePostReplayParam.CompleteParam. %s", err.Error())
 	}
 
-	dataStoreCompletePostReplayParam.CompleteParam = completeParam.(*datastore_types.DataStoreCompletePostParam)
-
-	prepareParam, err := stream.ReadStructure(NewDataStorePreparePostReplayParam())
+	dataStoreCompletePostReplayParam.PrepareParam, err = nex.StreamReadStructure(stream, NewDataStorePreparePostReplayParam())
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreCompletePostReplayParam.PrepareParam. %s", err.Error())
 	}
-
-	dataStoreCompletePostReplayParam.PrepareParam = prepareParam.(*DataStorePreparePostReplayParam)
 
 	return nil
 }

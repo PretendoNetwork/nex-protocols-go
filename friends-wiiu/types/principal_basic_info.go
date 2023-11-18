@@ -42,12 +42,11 @@ func (principalInfo *PrincipalBasicInfo) ExtractFromStream(stream *nex.StreamIn)
 		return fmt.Errorf("Failed to extract PrincipalBasicInfo.NNID. %s", err.Error())
 	}
 
-	miiV2, err := stream.ReadStructure(NewMiiV2())
+	principalInfo.Mii, err = nex.StreamReadStructure(stream, NewMiiV2())
 	if err != nil {
 		return fmt.Errorf("Failed to extract PrincipalBasicInfo.Mii. %s", err.Error())
 	}
 
-	principalInfo.Mii = miiV2.(*MiiV2)
 	principalInfo.Unknown, err = stream.ReadUInt8()
 	if err != nil {
 		return fmt.Errorf("Failed to extract PrincipalBasicInfo.Unknown. %s", err.Error())

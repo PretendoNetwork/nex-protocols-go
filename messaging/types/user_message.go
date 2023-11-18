@@ -67,12 +67,10 @@ func (userMessage *UserMessage) ExtractFromStream(stream *nex.StreamIn) error {
 		return fmt.Errorf("Failed to extract UserMessage.StrSender from stream. %s", err.Error())
 	}
 
-	messageRecipient, err := stream.ReadStructure(NewMessageRecipient())
+	userMessage.MessageRecipient, err = nex.StreamReadStructure(stream, NewMessageRecipient())
 	if err != nil {
 		return fmt.Errorf("Failed to extract UserMessage.MessageRecipient from stream. %s", err.Error())
 	}
-
-	userMessage.MessageRecipient = messageRecipient.(*MessageRecipient)
 
 	return nil
 }

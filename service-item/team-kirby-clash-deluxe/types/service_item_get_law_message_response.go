@@ -19,12 +19,12 @@ type ServiceItemGetLawMessageResponse struct {
 func (serviceItemGetLawMessageResponse *ServiceItemGetLawMessageResponse) ExtractFromStream(stream *nex.StreamIn) error {
 	var err error
 
-	nullableLawMessage, err := stream.ReadListStructure(NewServiceItemLawMessage())
+	nullableLawMessage, err := nex.StreamReadListStructure(stream, NewServiceItemLawMessage())
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemGetLawMessageResponse.NullableLawMessage from stream. %s", err.Error())
 	}
 
-	serviceItemGetLawMessageResponse.NullableLawMessage = nullableLawMessage.([]*ServiceItemLawMessage)
+	serviceItemGetLawMessageResponse.NullableLawMessage = nullableLawMessage
 
 	return nil
 }

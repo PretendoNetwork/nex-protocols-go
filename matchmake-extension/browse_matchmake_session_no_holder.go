@@ -25,7 +25,7 @@ func (protocol *Protocol) handleBrowseMatchmakeSessionNoHolder(packet nex.Packet
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	searchCriteria, err := parametersStream.ReadStructure(match_making_types.NewMatchmakeSessionSearchCriteria())
+	searchCriteria, err := nex.StreamReadStructure(parametersStream, match_making_types.NewMatchmakeSessionSearchCriteria())
 	if err != nil {
 		_, errorCode = protocol.BrowseMatchmakeSessionNoHolder(fmt.Errorf("Failed to read searchCriteria from parameters. %s", err.Error()), packet, callID, nil, nil)
 		if errorCode != 0 {
@@ -35,7 +35,7 @@ func (protocol *Protocol) handleBrowseMatchmakeSessionNoHolder(packet nex.Packet
 		return
 	}
 
-	resultRange, err := parametersStream.ReadStructure(nex.NewResultRange())
+	resultRange, err := nex.StreamReadStructure(parametersStream, nex.NewResultRange())
 	if err != nil {
 		_, errorCode = protocol.BrowseMatchmakeSessionNoHolder(fmt.Errorf("Failed to read resultRange from parameters. %s", err.Error()), packet, callID, nil, nil)
 		if errorCode != 0 {
@@ -45,7 +45,7 @@ func (protocol *Protocol) handleBrowseMatchmakeSessionNoHolder(packet nex.Packet
 		return
 	}
 
-	rmcMessage, errorCode := protocol.BrowseMatchmakeSessionNoHolder(nil, packet, callID, searchCriteria.(*match_making_types.MatchmakeSessionSearchCriteria), resultRange.(*nex.ResultRange))
+	rmcMessage, errorCode := protocol.BrowseMatchmakeSessionNoHolder(nil, packet, callID, searchCriteria, resultRange)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 		return

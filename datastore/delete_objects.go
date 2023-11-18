@@ -25,7 +25,7 @@ func (protocol *Protocol) handleDeleteObjects(packet nex.PacketInterface) {
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	params, err := parametersStream.ReadListStructure(datastore_types.NewDataStoreDeleteParam())
+	params, err := nex.StreamReadListStructure(parametersStream, datastore_types.NewDataStoreDeleteParam())
 	if err != nil {
 		_, errorCode = protocol.DeleteObjects(fmt.Errorf("Failed to read params from parameters. %s", err.Error()), packet, callID, nil, false)
 		if errorCode != 0 {
@@ -45,7 +45,7 @@ func (protocol *Protocol) handleDeleteObjects(packet nex.PacketInterface) {
 		return
 	}
 
-	rmcMessage, errorCode := protocol.DeleteObjects(nil, packet, callID, params.([]*datastore_types.DataStoreDeleteParam), transactional)
+	rmcMessage, errorCode := protocol.DeleteObjects(nil, packet, callID, params, transactional)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 		return

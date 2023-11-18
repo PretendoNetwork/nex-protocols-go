@@ -24,12 +24,10 @@ func (competitionRankingInfoGetParam *CompetitionRankingInfoGetParam) ExtractFro
 		return fmt.Errorf("Failed to extract CompetitionRankingInfoGetParam.Unknown from stream. %s", err.Error())
 	}
 
-	result, err := stream.ReadStructure(nex.NewResultRange())
+	competitionRankingInfoGetParam.Result, err = nex.StreamReadStructure(stream, nex.NewResultRange())
 	if err != nil {
 		return fmt.Errorf("Failed to extract CompetitionRankingInfoGetParam.Result from stream. %s", err.Error())
 	}
-
-	competitionRankingInfoGetParam.Result = result.(*nex.ResultRange)
 
 	return nil
 }

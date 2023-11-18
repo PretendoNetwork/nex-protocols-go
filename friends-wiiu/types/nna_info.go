@@ -30,12 +30,11 @@ func (nnaInfo *NNAInfo) Bytes(stream *nex.StreamOut) []byte {
 func (nnaInfo *NNAInfo) ExtractFromStream(stream *nex.StreamIn) error {
 	var err error
 
-	principalBasicInfo, err := stream.ReadStructure(NewPrincipalBasicInfo())
+	nnaInfo.PrincipalBasicInfo, err = nex.StreamReadStructure(stream, NewPrincipalBasicInfo())
 	if err != nil {
 		return fmt.Errorf("Failed to extract NNAInfo.PrincipalBasicInfo. %s", err.Error())
 	}
 
-	nnaInfo.PrincipalBasicInfo = principalBasicInfo.(*PrincipalBasicInfo)
 	nnaInfo.Unknown1, err = stream.ReadUInt8()
 	if err != nil {
 		return fmt.Errorf("Failed to extract NNAInfo.Unknown1. %s", err.Error())

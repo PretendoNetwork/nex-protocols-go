@@ -25,12 +25,12 @@ func (globalTradeStationSearchPokemonResult *GlobalTradeStationSearchPokemonResu
 		return fmt.Errorf("Failed to extract GlobalTradeStationSearchPokemonResult.TotalCount from stream. %s", err.Error())
 	}
 
-	result, err := stream.ReadListStructure(NewGlobalTradeStationData())
+	result, err := nex.StreamReadListStructure(stream, NewGlobalTradeStationData())
 	if err != nil {
 		return fmt.Errorf("Failed to extract GlobalTradeStationSearchPokemonResult.Result from stream. %s", err.Error())
 	}
 
-	globalTradeStationSearchPokemonResult.Result = result.([]*GlobalTradeStationData)
+	globalTradeStationSearchPokemonResult.Result = result
 
 	globalTradeStationSearchPokemonResult.TotalCountType, err = stream.ReadUInt8()
 	if err != nil {

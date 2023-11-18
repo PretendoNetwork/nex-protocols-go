@@ -45,7 +45,7 @@ func (protocol *Protocol) handleGetRanking(packet nex.PacketInterface) {
 		return
 	}
 
-	orderParam, err := parametersStream.ReadStructure(ranking_types.NewRankingOrderParam())
+	orderParam, err := nex.StreamReadStructure(parametersStream, ranking_types.NewRankingOrderParam())
 	if err != nil {
 		_, errorCode = protocol.GetRanking(fmt.Errorf("Failed to read orderParam from parameters. %s", err.Error()), packet, callID, 0, 0, nil, 0, nil)
 		if errorCode != 0 {
@@ -75,7 +75,7 @@ func (protocol *Protocol) handleGetRanking(packet nex.PacketInterface) {
 		return
 	}
 
-	rmcMessage, errorCode := protocol.GetRanking(nil, packet, callID, rankingMode, category, orderParam.(*ranking_types.RankingOrderParam), uniqueID, principalID)
+	rmcMessage, errorCode := protocol.GetRanking(nil, packet, callID, rankingMode, category, orderParam, uniqueID, principalID)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 		return

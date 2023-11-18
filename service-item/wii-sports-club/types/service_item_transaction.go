@@ -51,12 +51,10 @@ func (serviceItemTransaction *ServiceItemTransaction) ExtractFromStream(stream *
 		return fmt.Errorf("Failed to extract ServiceItemTransaction.TransactionDescription from stream. %s", err.Error())
 	}
 
-	transactionAmount, err := stream.ReadStructure(NewServiceItemAmount())
+	serviceItemTransaction.TransactionAmount, err = nex.StreamReadStructure(stream, NewServiceItemAmount())
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemTransaction.TransactionAmount from stream. %s", err.Error())
 	}
-
-	serviceItemTransaction.TransactionAmount = transactionAmount.(*ServiceItemAmount)
 
 	serviceItemTransaction.ItemCode, err = stream.ReadString()
 	if err != nil {
@@ -68,12 +66,10 @@ func (serviceItemTransaction *ServiceItemTransaction) ExtractFromStream(stream *
 		return fmt.Errorf("Failed to extract ServiceItemTransaction.ReferenceID from stream. %s", err.Error())
 	}
 
-	limitation, err := stream.ReadStructure(NewServiceItemLimitation())
+	serviceItemTransaction.Limitation, err = nex.StreamReadStructure(stream, NewServiceItemLimitation())
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemTransaction.Limitation from stream. %s", err.Error())
 	}
-
-	serviceItemTransaction.Limitation = limitation.(*ServiceItemLimitation)
 
 	return nil
 }

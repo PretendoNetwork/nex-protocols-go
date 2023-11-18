@@ -24,12 +24,10 @@ func (serviceItemEndChallengeParam *ServiceItemEndChallengeParam) ExtractFromStr
 		return fmt.Errorf("Failed to extract ServiceItemEndChallengeParam.ChallengeScheduleID from stream. %s", err.Error())
 	}
 
-	userInfo, err := stream.ReadStructure(NewServiceItemUserInfo())
+	serviceItemEndChallengeParam.UserInfo, err = nex.StreamReadStructure(stream, NewServiceItemUserInfo())
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemEndChallengeParam.UserInfo from stream. %s", err.Error())
 	}
-
-	serviceItemEndChallengeParam.UserInfo = userInfo.(*ServiceItemUserInfo)
 
 	return nil
 }

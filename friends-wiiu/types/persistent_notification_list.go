@@ -17,12 +17,12 @@ type PersistentNotificationList struct {
 
 // ExtractFromStream extracts a PersistentNotificationList structure from a stream
 func (notificationList *PersistentNotificationList) ExtractFromStream(stream *nex.StreamIn) error {
-	notifications, err := stream.ReadListStructure(NewPersistentNotification())
+	notifications, err := nex.StreamReadListStructure(stream, NewPersistentNotification())
 	if err != nil {
 		return fmt.Errorf("Failed to extract PersistentNotificationList.Notifications. %s", err.Error())
 	}
 
-	notificationList.Notifications = notifications.([]*PersistentNotification)
+	notificationList.Notifications = notifications
 
 	return nil
 }

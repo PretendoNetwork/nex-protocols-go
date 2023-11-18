@@ -27,12 +27,12 @@ func (dataStoreReqGetInfoV1 *DataStoreReqGetInfoV1) ExtractFromStream(stream *ne
 		return fmt.Errorf("Failed to extract DataStoreReqGetInfoV1.URL. %s", err.Error())
 	}
 
-	requestHeaders, err := stream.ReadListStructure(NewDataStoreKeyValue())
+	requestHeaders, err := nex.StreamReadListStructure(stream, NewDataStoreKeyValue())
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreReqGetInfoV1.RequestHeaders. %s", err.Error())
 	}
 
-	dataStoreReqGetInfoV1.RequestHeaders = requestHeaders.([]*DataStoreKeyValue)
+	dataStoreReqGetInfoV1.RequestHeaders = requestHeaders
 	dataStoreReqGetInfoV1.Size, err = stream.ReadUInt32LE()
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreReqGetInfoV1.Size. %s", err.Error())

@@ -24,12 +24,10 @@ func (dataStoreRatingInfoWithSlot *DataStoreRatingInfoWithSlot) ExtractFromStrea
 		return fmt.Errorf("Failed to extract DataStoreRatingInfoWithSlot.Slot. %s", err.Error())
 	}
 
-	rating, err := stream.ReadStructure(NewDataStoreRatingInfo())
+	dataStoreRatingInfoWithSlot.Rating, err = nex.StreamReadStructure(stream, NewDataStoreRatingInfo())
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreRatingInfoWithSlot.Rating. %s", err.Error())
 	}
-
-	dataStoreRatingInfoWithSlot.Rating = rating.(*DataStoreRatingInfo)
 
 	return nil
 }

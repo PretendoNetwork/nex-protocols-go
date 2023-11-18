@@ -28,12 +28,11 @@ type AutoMatchmakeParam struct {
 func (autoMatchmakeParam *AutoMatchmakeParam) ExtractFromStream(stream *nex.StreamIn) error {
 	var err error
 
-	sourceMatchmakeSession, err := stream.ReadStructure(NewMatchmakeSession())
+	autoMatchmakeParam.SourceMatchmakeSession, err = nex.StreamReadStructure(stream, NewMatchmakeSession())
 	if err != nil {
 		return fmt.Errorf("Failed to extract AutoMatchmakeParam.SourceMatchmakeSession. %s", err.Error())
 	}
 
-	autoMatchmakeParam.SourceMatchmakeSession = sourceMatchmakeSession.(*MatchmakeSession)
 	autoMatchmakeParam.AdditionalParticipants, err = stream.ReadListPID()
 	if err != nil {
 		return fmt.Errorf("Failed to extract AutoMatchmakeParam.AdditionalParticipants. %s", err.Error())
@@ -59,12 +58,12 @@ func (autoMatchmakeParam *AutoMatchmakeParam) ExtractFromStream(stream *nex.Stre
 		return fmt.Errorf("Failed to extract AutoMatchmakeParam.ParticipationCount. %s", err.Error())
 	}
 
-	lstSearchCriteria, err := stream.ReadListStructure(NewMatchmakeSessionSearchCriteria())
+	lstSearchCriteria, err := nex.StreamReadListStructure(stream, NewMatchmakeSessionSearchCriteria())
 	if err != nil {
 		return fmt.Errorf("Failed to extract AutoMatchmakeParam.LstSearchCriteria. %s", err.Error())
 	}
 
-	autoMatchmakeParam.LstSearchCriteria = lstSearchCriteria.([]*MatchmakeSessionSearchCriteria)
+	autoMatchmakeParam.LstSearchCriteria = lstSearchCriteria
 	autoMatchmakeParam.TargetGIDs, err = stream.ReadListUInt32LE()
 	if err != nil {
 		return fmt.Errorf("Failed to extract AutoMatchmakeParam.TargetGIDs. %s", err.Error())

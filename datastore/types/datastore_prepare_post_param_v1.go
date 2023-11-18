@@ -49,19 +49,16 @@ func (dataStorePreparePostParamV1 *DataStorePreparePostParamV1) ExtractFromStrea
 		return fmt.Errorf("Failed to extract DataStorePreparePostParamV1.MetaBinary. %s", err.Error())
 	}
 
-	permission, err := stream.ReadStructure(NewDataStorePermission())
+	dataStorePreparePostParamV1.Permission, err = nex.StreamReadStructure(stream, NewDataStorePermission())
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStorePreparePostParamV1.Permission. %s", err.Error())
 	}
 
-	dataStorePreparePostParamV1.Permission = permission.(*DataStorePermission)
-
-	delPermission, err := stream.ReadStructure(NewDataStorePermission())
+	dataStorePreparePostParamV1.DelPermission, err = nex.StreamReadStructure(stream, NewDataStorePermission())
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStorePreparePostParamV1.DelPermission. %s", err.Error())
 	}
 
-	dataStorePreparePostParamV1.DelPermission = delPermission.(*DataStorePermission)
 	dataStorePreparePostParamV1.Flag, err = stream.ReadUInt32LE()
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStorePreparePostParamV1.Flag. %s", err.Error())
@@ -82,12 +79,12 @@ func (dataStorePreparePostParamV1 *DataStorePreparePostParamV1) ExtractFromStrea
 		return fmt.Errorf("Failed to extract DataStorePreparePostParamV1.Tags. %s", err.Error())
 	}
 
-	ratingInitParams, err := stream.ReadListStructure(NewDataStoreRatingInitParamWithSlot())
+	ratingInitParams, err := nex.StreamReadListStructure(stream, NewDataStoreRatingInitParamWithSlot())
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStorePreparePostParamV1.RatingInitParams. %s", err.Error())
 	}
 
-	dataStorePreparePostParamV1.RatingInitParams = ratingInitParams.([]*DataStoreRatingInitParamWithSlot)
+	dataStorePreparePostParamV1.RatingInitParams = ratingInitParams
 
 	return nil
 }

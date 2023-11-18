@@ -30,12 +30,12 @@ func (serviceItemPurchaseHistory *ServiceItemPurchaseHistory) ExtractFromStream(
 		return fmt.Errorf("Failed to extract ServiceItemPurchaseHistory.Offset from stream. %s", err.Error())
 	}
 
-	transactions, err := stream.ReadListStructure(NewServiceItemTransaction())
+	transactions, err := nex.StreamReadListStructure(stream, NewServiceItemTransaction())
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemPurchaseHistory.Transactions from stream. %s", err.Error())
 	}
 
-	serviceItemPurchaseHistory.Transactions = transactions.([]*ServiceItemTransaction)
+	serviceItemPurchaseHistory.Transactions = transactions
 
 	return nil
 }

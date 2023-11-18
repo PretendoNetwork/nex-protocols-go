@@ -54,12 +54,12 @@ func (matchmakeRefereeRound *MatchmakeRefereeRound) ExtractFromStream(stream *ne
 		return fmt.Errorf("Failed to extract MatchmakeRefereeRound.PersonalDataCategory. %s", err.Error())
 	}
 
-	resultList, err := stream.ReadListStructure(NewMatchmakeRefereePersonalRoundResult())
+	resultList, err := nex.StreamReadListStructure(stream, NewMatchmakeRefereePersonalRoundResult())
 	if err != nil {
 		return fmt.Errorf("Failed to extract MatchmakeRefereeRound.NormalizedPersonalRoundResults. %s", err.Error())
 	}
 
-	matchmakeRefereeRound.NormalizedPersonalRoundResults = resultList.([]*MatchmakeRefereePersonalRoundResult)
+	matchmakeRefereeRound.NormalizedPersonalRoundResults = resultList
 
 	return nil
 }

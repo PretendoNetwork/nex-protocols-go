@@ -26,19 +26,15 @@ func (dataStoreCompletePostSharedDataParam *DataStoreCompletePostSharedDataParam
 		return fmt.Errorf("Failed to extract DataStoreCompletePostSharedDataParam.DataID. %s", err.Error())
 	}
 
-	completeParam, err := stream.ReadStructure(datastore_types.NewDataStoreCompletePostParam())
+	dataStoreCompletePostSharedDataParam.CompleteParam, err = nex.StreamReadStructure(stream, datastore_types.NewDataStoreCompletePostParam())
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreCompletePostSharedDataParam.CompleteParam. %s", err.Error())
 	}
 
-	dataStoreCompletePostSharedDataParam.CompleteParam = completeParam.(*datastore_types.DataStoreCompletePostParam)
-
-	prepareParam, err := stream.ReadStructure(NewDataStorePreparePostSharedDataParam())
+	dataStoreCompletePostSharedDataParam.PrepareParam, err = nex.StreamReadStructure(stream, NewDataStorePreparePostSharedDataParam())
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreCompletePostSharedDataParam.PrepareParam. %s", err.Error())
 	}
-
-	dataStoreCompletePostSharedDataParam.PrepareParam = prepareParam.(*DataStorePreparePostSharedDataParam)
 
 	return nil
 }

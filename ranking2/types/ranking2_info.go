@@ -21,12 +21,12 @@ type Ranking2Info struct {
 func (ranking2Info *Ranking2Info) ExtractFromStream(stream *nex.StreamIn) error {
 	var err error
 
-	rankDataList, err := stream.ReadListStructure(NewRanking2RankData())
+	rankDataList, err := nex.StreamReadListStructure(stream, NewRanking2RankData())
 	if err != nil {
 		return fmt.Errorf("Failed to extract Ranking2Info.RankDataList from stream. %s", err.Error())
 	}
 
-	ranking2Info.RankDataList = rankDataList.([]*Ranking2RankData)
+	ranking2Info.RankDataList = rankDataList
 
 	ranking2Info.LowestRank, err = stream.ReadUInt32LE()
 	if err != nil {

@@ -19,12 +19,12 @@ type ServiceItemListServiceItemResponse struct {
 func (serviceItemListServiceItemResponse *ServiceItemListServiceItemResponse) ExtractFromStream(stream *nex.StreamIn) error {
 	var err error
 
-	nullableCatalog, err := stream.ReadListStructure(NewServiceItemCatalog())
+	nullableCatalog, err := nex.StreamReadListStructure(stream, NewServiceItemCatalog())
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemListServiceItemResponse.NullableCatalog from stream. %s", err.Error())
 	}
 
-	serviceItemListServiceItemResponse.NullableCatalog = nullableCatalog.([]*ServiceItemCatalog)
+	serviceItemListServiceItemResponse.NullableCatalog = nullableCatalog
 
 	return nil
 }

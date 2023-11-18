@@ -35,45 +35,35 @@ func (serviceItemPrepurchaseInfo *ServiceItemPrepurchaseInfo) ExtractFromStream(
 		return fmt.Errorf("Failed to extract ServiceItemPrepurchaseInfo.PriceID from stream. %s", err.Error())
 	}
 
-	regularPrice, err := stream.ReadStructure(NewServiceItemAmount())
+	serviceItemPrepurchaseInfo.RegularPrice, err = nex.StreamReadStructure(stream, NewServiceItemAmount())
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemPrepurchaseInfo.RegularPrice from stream. %s", err.Error())
 	}
-
-	serviceItemPrepurchaseInfo.RegularPrice = regularPrice.(*ServiceItemAmount)
 
 	serviceItemPrepurchaseInfo.IsTaxAvailable, err = stream.ReadBool()
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemPrepurchaseInfo.IsTaxAvailable from stream. %s", err.Error())
 	}
 
-	taxAmount, err := stream.ReadStructure(NewServiceItemAmount())
+	serviceItemPrepurchaseInfo.TaxAmount, err = nex.StreamReadStructure(stream, NewServiceItemAmount())
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemPrepurchaseInfo.TaxAmount from stream. %s", err.Error())
 	}
 
-	serviceItemPrepurchaseInfo.TaxAmount = taxAmount.(*ServiceItemAmount)
-
-	totalAmount, err := stream.ReadStructure(NewServiceItemAmount())
+	serviceItemPrepurchaseInfo.TotalAmount, err = nex.StreamReadStructure(stream, NewServiceItemAmount())
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemPrepurchaseInfo.TotalAmount from stream. %s", err.Error())
 	}
 
-	serviceItemPrepurchaseInfo.TotalAmount = totalAmount.(*ServiceItemAmount)
-
-	currentBalance, err := stream.ReadStructure(NewServiceItemAmount())
+	serviceItemPrepurchaseInfo.CurrentBalance, err = nex.StreamReadStructure(stream, NewServiceItemAmount())
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemPrepurchaseInfo.CurrentBalance from stream. %s", err.Error())
 	}
 
-	serviceItemPrepurchaseInfo.CurrentBalance = currentBalance.(*ServiceItemAmount)
-
-	postBalance, err := stream.ReadStructure(NewServiceItemAmount())
+	serviceItemPrepurchaseInfo.PostBalance, err = nex.StreamReadStructure(stream, NewServiceItemAmount())
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemPrepurchaseInfo.PostBalance from stream. %s", err.Error())
 	}
-
-	serviceItemPrepurchaseInfo.PostBalance = postBalance.(*ServiceItemAmount)
 
 	return nil
 }

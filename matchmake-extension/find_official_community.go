@@ -34,7 +34,7 @@ func (protocol *Protocol) handleFindOfficialCommunity(packet nex.PacketInterface
 		return
 	}
 
-	resultRange, err := parametersStream.ReadStructure(nex.NewResultRange())
+	resultRange, err := nex.StreamReadStructure(parametersStream, nex.NewResultRange())
 	if err != nil {
 		_, errorCode = protocol.FindOfficialCommunity(fmt.Errorf("Failed to read resultRange from parameters. %s", err.Error()), packet, callID, false, nil)
 		if errorCode != 0 {
@@ -44,7 +44,7 @@ func (protocol *Protocol) handleFindOfficialCommunity(packet nex.PacketInterface
 		return
 	}
 
-	rmcMessage, errorCode := protocol.FindOfficialCommunity(nil, packet, callID, isAvailableOnly, resultRange.(*nex.ResultRange))
+	rmcMessage, errorCode := protocol.FindOfficialCommunity(nil, packet, callID, isAvailableOnly, resultRange)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 		return

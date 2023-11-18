@@ -25,7 +25,7 @@ func (protocol *Protocol) handleGetContentMulti(packet nex.PacketInterface) {
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	params, err := parametersStream.ReadListStructure(subscriber_types.NewSubscriberGetContentParam())
+	params, err := nex.StreamReadListStructure(parametersStream, subscriber_types.NewSubscriberGetContentParam())
 	if err != nil {
 		_, errorCode = protocol.GetContentMulti(fmt.Errorf("Failed to read params from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
@@ -35,7 +35,7 @@ func (protocol *Protocol) handleGetContentMulti(packet nex.PacketInterface) {
 		return
 	}
 
-	rmcMessage, errorCode := protocol.GetContentMulti(nil, packet, callID, params.([]*subscriber_types.SubscriberGetContentParam))
+	rmcMessage, errorCode := protocol.GetContentMulti(nil, packet, callID, params)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 		return

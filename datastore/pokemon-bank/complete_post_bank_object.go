@@ -25,7 +25,7 @@ func (protocol *Protocol) handleCompletePostBankObject(packet nex.PacketInterfac
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	param, err := parametersStream.ReadStructure(datastore_types.NewDataStoreCompletePostParam())
+	param, err := nex.StreamReadStructure(parametersStream, datastore_types.NewDataStoreCompletePostParam())
 	if err != nil {
 		_, errorCode = protocol.CompletePostBankObject(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
@@ -35,7 +35,7 @@ func (protocol *Protocol) handleCompletePostBankObject(packet nex.PacketInterfac
 		return
 	}
 
-	rmcMessage, errorCode := protocol.CompletePostBankObject(nil, packet, callID, param.(*datastore_types.DataStoreCompletePostParam))
+	rmcMessage, errorCode := protocol.CompletePostBankObject(nil, packet, callID, param)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 		return

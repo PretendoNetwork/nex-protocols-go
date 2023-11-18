@@ -27,26 +27,26 @@ func (serviceItemRightInfos *ServiceItemRightInfos) ExtractFromStream(stream *ne
 		return fmt.Errorf("Failed to extract ServiceItemRightInfos.SupportID from stream. %s", err.Error())
 	}
 
-	consumptionRightInfos, err := stream.ReadListStructure(NewServiceItemRightConsumptionInfo())
+	consumptionRightInfos, err := nex.StreamReadListStructure(stream, NewServiceItemRightConsumptionInfo())
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemRightInfos.ConsumptionRightInfos from stream. %s", err.Error())
 	}
 
-	serviceItemRightInfos.ConsumptionRightInfos = consumptionRightInfos.([]*ServiceItemRightConsumptionInfo)
+	serviceItemRightInfos.ConsumptionRightInfos = consumptionRightInfos
 
-	additionalTimeRightInfos, err := stream.ReadListStructure(NewServiceItemRightTimeInfo())
+	additionalTimeRightInfos, err := nex.StreamReadListStructure(stream, NewServiceItemRightTimeInfo())
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemRightInfos.AdditionalTimeRightInfos from stream. %s", err.Error())
 	}
 
-	serviceItemRightInfos.AdditionalTimeRightInfos = additionalTimeRightInfos.([]*ServiceItemRightTimeInfo)
+	serviceItemRightInfos.AdditionalTimeRightInfos = additionalTimeRightInfos
 
-	permanentRightInfos, err := stream.ReadListStructure(NewServiceItemRightTimeInfo())
+	permanentRightInfos, err := nex.StreamReadListStructure(stream, NewServiceItemRightTimeInfo())
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemRightInfos.PermanentRightInfos from stream. %s", err.Error())
 	}
 
-	serviceItemRightInfos.PermanentRightInfos = permanentRightInfos.([]*ServiceItemRightTimeInfo)
+	serviceItemRightInfos.PermanentRightInfos = permanentRightInfos
 
 	serviceItemRightInfos.AlreadyPurchasedInitialOnlyItem, err = stream.ReadBool()
 	if err != nil {

@@ -25,7 +25,7 @@ func (protocol *Protocol) handlePostRightBinaryByAccount(packet nex.PacketInterf
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	postRightBinaryByAccountParam, err := parametersStream.ReadStructure(service_item_team_kirby_clash_deluxe_types.NewServiceItemPostRightBinaryByAccountParam())
+	postRightBinaryByAccountParam, err := nex.StreamReadStructure(parametersStream, service_item_team_kirby_clash_deluxe_types.NewServiceItemPostRightBinaryByAccountParam())
 	if err != nil {
 		_, errorCode = protocol.PostRightBinaryByAccount(fmt.Errorf("Failed to read postRightBinaryByAccountParam from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
@@ -35,7 +35,7 @@ func (protocol *Protocol) handlePostRightBinaryByAccount(packet nex.PacketInterf
 		return
 	}
 
-	rmcMessage, errorCode := protocol.PostRightBinaryByAccount(nil, packet, callID, postRightBinaryByAccountParam.(*service_item_team_kirby_clash_deluxe_types.ServiceItemPostRightBinaryByAccountParam))
+	rmcMessage, errorCode := protocol.PostRightBinaryByAccount(nil, packet, callID, postRightBinaryByAccountParam)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 		return

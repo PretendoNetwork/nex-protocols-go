@@ -25,7 +25,7 @@ func (protocol *Protocol) handleTouchObject(packet nex.PacketInterface) {
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	param, err := parametersStream.ReadStructure(datastore_types.NewDataStoreTouchObjectParam())
+	param, err := nex.StreamReadStructure(parametersStream, datastore_types.NewDataStoreTouchObjectParam())
 	if err != nil {
 		_, errorCode = protocol.TouchObject(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
@@ -35,7 +35,7 @@ func (protocol *Protocol) handleTouchObject(packet nex.PacketInterface) {
 		return
 	}
 
-	rmcMessage, errorCode := protocol.TouchObject(nil, packet, callID, param.(*datastore_types.DataStoreTouchObjectParam))
+	rmcMessage, errorCode := protocol.TouchObject(nil, packet, callID, param)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 		return

@@ -35,7 +35,7 @@ func (protocol *Protocol) handleReportStats(packet nex.PacketInterface) {
 		return
 	}
 
-	lstStats, err := parametersStream.ReadListStructure(match_making_types.NewGatheringStats())
+	lstStats, err := nex.StreamReadListStructure(parametersStream, match_making_types.NewGatheringStats())
 	if err != nil {
 		_, errorCode = protocol.ReportStats(fmt.Errorf("Failed to read lstStats from parameters. %s", err.Error()), packet, callID, 0, nil)
 		if errorCode != 0 {
@@ -45,7 +45,7 @@ func (protocol *Protocol) handleReportStats(packet nex.PacketInterface) {
 		return
 	}
 
-	rmcMessage, errorCode := protocol.ReportStats(nil, packet, callID, idGathering, lstStats.([]*match_making_types.GatheringStats))
+	rmcMessage, errorCode := protocol.ReportStats(nil, packet, callID, idGathering, lstStats)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 		return

@@ -32,12 +32,10 @@ func (serviceItemGetPrepurchaseInfoParam *ServiceItemGetPrepurchaseInfoParam) Ex
 		return fmt.Errorf("Failed to extract ServiceItemGetPrepurchaseInfoParam.ReferenceID from stream. %s", err.Error())
 	}
 
-	limitation, err := stream.ReadStructure(NewServiceItemLimitation())
+	serviceItemGetPrepurchaseInfoParam.Limitation, err = nex.StreamReadStructure(stream, NewServiceItemLimitation())
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemGetPrepurchaseInfoParam.Limitation from stream. %s", err.Error())
 	}
-
-	serviceItemGetPrepurchaseInfoParam.Limitation = limitation.(*ServiceItemLimitation)
 
 	serviceItemGetPrepurchaseInfoParam.Language, err = stream.ReadString()
 	if err != nil {

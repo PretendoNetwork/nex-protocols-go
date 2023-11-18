@@ -25,7 +25,7 @@ func (protocol *Protocol) handleGetCompetitionInfo(packet nex.PacketInterface) {
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	param, err := parametersStream.ReadStructure(ranking_mario_kart8_types.NewCompetitionRankingInfoGetParam())
+	param, err := nex.StreamReadStructure(parametersStream, ranking_mario_kart8_types.NewCompetitionRankingInfoGetParam())
 	if err != nil {
 		_, errorCode = protocol.GetCompetitionInfo(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
@@ -35,7 +35,7 @@ func (protocol *Protocol) handleGetCompetitionInfo(packet nex.PacketInterface) {
 		return
 	}
 
-	rmcMessage, errorCode := protocol.GetCompetitionInfo(nil, packet, callID, param.(*ranking_mario_kart8_types.CompetitionRankingInfoGetParam))
+	rmcMessage, errorCode := protocol.GetCompetitionInfo(nil, packet, callID, param)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 		return

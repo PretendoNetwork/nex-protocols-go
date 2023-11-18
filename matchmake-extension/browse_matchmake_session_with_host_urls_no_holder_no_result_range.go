@@ -25,7 +25,7 @@ func (protocol *Protocol) handleBrowseMatchmakeSessionWithHostURLsNoHolderNoResu
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	searchCriteria, err := parametersStream.ReadStructure(match_making_types.NewMatchmakeSessionSearchCriteria())
+	searchCriteria, err := nex.StreamReadStructure(parametersStream, match_making_types.NewMatchmakeSessionSearchCriteria())
 	if err != nil {
 		_, errorCode = protocol.BrowseMatchmakeSessionWithHostURLsNoHolderNoResultRange(fmt.Errorf("Failed to read searchCriteria from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
@@ -35,7 +35,7 @@ func (protocol *Protocol) handleBrowseMatchmakeSessionWithHostURLsNoHolderNoResu
 		return
 	}
 
-	rmcMessage, errorCode := protocol.BrowseMatchmakeSessionWithHostURLsNoHolderNoResultRange(nil, packet, callID, searchCriteria.(*match_making_types.MatchmakeSessionSearchCriteria))
+	rmcMessage, errorCode := protocol.BrowseMatchmakeSessionWithHostURLsNoHolderNoResultRange(nil, packet, callID, searchCriteria)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 		return

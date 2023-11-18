@@ -65,12 +65,11 @@ func (presence *NintendoPresenceV2) ExtractFromStream(stream *nex.StreamIn) erro
 		return fmt.Errorf("Failed to extract NintendoPresenceV2.Online. %s", err.Error())
 	}
 
-	gameKey, err := stream.ReadStructure(NewGameKey())
+	presence.GameKey, err = nex.StreamReadStructure(stream, NewGameKey())
 	if err != nil {
 		return fmt.Errorf("Failed to extract NintendoPresenceV2.GameKey. %s", err.Error())
 	}
 
-	presence.GameKey = gameKey.(*GameKey)
 	presence.Unknown1, err = stream.ReadUInt8()
 	if err != nil {
 		return fmt.Errorf("Failed to extract NintendoPresenceV2.Unknown1. %s", err.Error())

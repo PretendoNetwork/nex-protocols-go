@@ -54,12 +54,10 @@ func (dataStoreSearchSharedDataParam *DataStoreSearchSharedDataParam) ExtractFro
 		return fmt.Errorf("Failed to extract DataStoreSearchSharedDataParam.Fighter. %s", err.Error())
 	}
 
-	resultRange, err := stream.ReadStructure(nex.NewResultRange())
+	dataStoreSearchSharedDataParam.ResultRange, err = nex.StreamReadStructure(stream, nex.NewResultRange())
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreSearchSharedDataParam.ResultRange. %s", err.Error())
 	}
-
-	dataStoreSearchSharedDataParam.ResultRange = resultRange.(*nex.ResultRange)
 
 	return nil
 }

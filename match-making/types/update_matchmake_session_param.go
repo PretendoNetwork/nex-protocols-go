@@ -68,12 +68,11 @@ func (updateMatchmakeSessionParam *UpdateMatchmakeSessionParam) ExtractFromStrea
 		return fmt.Errorf("Failed to extract UpdateMatchmakeSessionParam.ProgressScore. %s", err.Error())
 	}
 
-	matchmakeParam, err := stream.ReadStructure(NewMatchmakeParam())
+	updateMatchmakeSessionParam.MatchmakeParam, err = nex.StreamReadStructure(stream, NewMatchmakeParam())
 	if err != nil {
 		return fmt.Errorf("Failed to extract UpdateMatchmakeSessionParam.MatchmakeParam. %s", err.Error())
 	}
 
-	updateMatchmakeSessionParam.MatchmakeParam = matchmakeParam.(*MatchmakeParam)
 	updateMatchmakeSessionParam.StartedTime, err = stream.ReadDateTime()
 	if err != nil {
 		return fmt.Errorf("Failed to extract UpdateMatchmakeSessionParam.StartedTime. %s", err.Error())

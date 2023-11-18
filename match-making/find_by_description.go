@@ -34,7 +34,7 @@ func (protocol *Protocol) handleFindByDescription(packet nex.PacketInterface) {
 		return
 	}
 
-	resultRange, err := parametersStream.ReadStructure(nex.NewResultRange())
+	resultRange, err := nex.StreamReadStructure(parametersStream, nex.NewResultRange())
 	if err != nil {
 		_, errorCode = protocol.FindByDescription(fmt.Errorf("Failed to read resultRange from parameters. %s", err.Error()), packet, callID, "", nil)
 		if errorCode != 0 {
@@ -44,7 +44,7 @@ func (protocol *Protocol) handleFindByDescription(packet nex.PacketInterface) {
 		return
 	}
 
-	rmcMessage, errorCode := protocol.FindByDescription(nil, packet, callID, strDescription, resultRange.(*nex.ResultRange))
+	rmcMessage, errorCode := protocol.FindByDescription(nil, packet, callID, strDescription, resultRange)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 		return

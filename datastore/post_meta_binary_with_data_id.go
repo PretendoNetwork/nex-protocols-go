@@ -35,7 +35,7 @@ func (protocol *Protocol) handlePostMetaBinaryWithDataID(packet nex.PacketInterf
 		return
 	}
 
-	param, err := parametersStream.ReadStructure(datastore_types.NewDataStorePreparePostParam())
+	param, err := nex.StreamReadStructure(parametersStream, datastore_types.NewDataStorePreparePostParam())
 	if err != nil {
 		_, errorCode = protocol.PostMetaBinaryWithDataID(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, 0, nil)
 		if errorCode != 0 {
@@ -45,7 +45,7 @@ func (protocol *Protocol) handlePostMetaBinaryWithDataID(packet nex.PacketInterf
 		return
 	}
 
-	rmcMessage, errorCode := protocol.PostMetaBinaryWithDataID(nil, packet, callID, dataID, param.(*datastore_types.DataStorePreparePostParam))
+	rmcMessage, errorCode := protocol.PostMetaBinaryWithDataID(nil, packet, callID, dataID, param)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 		return

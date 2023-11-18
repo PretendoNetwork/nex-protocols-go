@@ -48,12 +48,10 @@ func (ranking2RankData *Ranking2RankData) ExtractFromStream(stream *nex.StreamIn
 		return fmt.Errorf("Failed to extract Ranking2RankData.Score from stream. %s", err.Error())
 	}
 
-	commonData, err := stream.ReadStructure(NewRanking2CommonData())
+	ranking2RankData.CommonData, err = nex.StreamReadStructure(stream, NewRanking2CommonData())
 	if err != nil {
 		return fmt.Errorf("Failed to extract Ranking2RankData.CommonData from stream. %s", err.Error())
 	}
-
-	ranking2RankData.CommonData = commonData.(*Ranking2CommonData)
 
 	return nil
 }

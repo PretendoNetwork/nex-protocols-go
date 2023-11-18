@@ -35,7 +35,7 @@ func (protocol *Protocol) handleGetStats(packet nex.PacketInterface) {
 		return
 	}
 
-	orderParam, err := parametersStream.ReadStructure(ranking_types.NewRankingOrderParam())
+	orderParam, err := nex.StreamReadStructure(parametersStream, ranking_types.NewRankingOrderParam())
 	if err != nil {
 		_, errorCode = protocol.GetStats(fmt.Errorf("Failed to read orderParam from parameters. %s", err.Error()), packet, callID, 0, nil, 0)
 		if errorCode != 0 {
@@ -55,7 +55,7 @@ func (protocol *Protocol) handleGetStats(packet nex.PacketInterface) {
 		return
 	}
 
-	rmcMessage, errorCode := protocol.GetStats(nil, packet, callID, category, orderParam.(*ranking_types.RankingOrderParam), flags)
+	rmcMessage, errorCode := protocol.GetStats(nil, packet, callID, category, orderParam, flags)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 		return

@@ -69,12 +69,12 @@ func (dataStorePreparePostReplayParam *DataStorePreparePostReplayParam) ExtractF
 		return fmt.Errorf("Failed to extract DataStorePreparePostReplayParam.Score. %s", err.Error())
 	}
 
-	players, err := stream.ReadListStructure(NewDataStoreReplayPlayer())
+	players, err := nex.StreamReadListStructure(stream, NewDataStoreReplayPlayer())
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStorePreparePostReplayParam.Players. %s", err.Error())
 	}
 
-	dataStorePreparePostReplayParam.Players = players.([]*DataStoreReplayPlayer)
+	dataStorePreparePostReplayParam.Players = players
 
 	dataStorePreparePostReplayParam.Winners, err = stream.ReadListUInt32LE()
 	if err != nil {

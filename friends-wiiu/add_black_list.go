@@ -25,7 +25,7 @@ func (protocol *Protocol) handleAddBlackList(packet nex.PacketInterface) {
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	blacklistedPrincipal, err := parametersStream.ReadStructure(friends_wiiu_types.NewBlacklistedPrincipal())
+	blacklistedPrincipal, err := nex.StreamReadStructure(parametersStream, friends_wiiu_types.NewBlacklistedPrincipal())
 	if err != nil {
 		_, errorCode = protocol.AddBlackList(fmt.Errorf("Failed to read blacklistedPrincipal from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
@@ -35,7 +35,7 @@ func (protocol *Protocol) handleAddBlackList(packet nex.PacketInterface) {
 		return
 	}
 
-	rmcMessage, errorCode := protocol.AddBlackList(nil, packet, callID, blacklistedPrincipal.(*friends_wiiu_types.BlacklistedPrincipal))
+	rmcMessage, errorCode := protocol.AddBlackList(nil, packet, callID, blacklistedPrincipal)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 		return

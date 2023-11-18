@@ -75,7 +75,7 @@ func (protocol *Protocol) handleAddFriendRequest(packet nex.PacketInterface) {
 		return
 	}
 
-	gameKey, err := parametersStream.ReadStructure(friends_wiiu_types.NewGameKey())
+	gameKey, err := nex.StreamReadStructure(parametersStream, friends_wiiu_types.NewGameKey())
 	if err != nil {
 		_, errorCode = protocol.AddFriendRequest(fmt.Errorf("Failed to read gameKey from parameters. %s", err.Error()), packet, callID, nil, 0, "", 0, "", nil, nil)
 		if errorCode != 0 {
@@ -95,7 +95,7 @@ func (protocol *Protocol) handleAddFriendRequest(packet nex.PacketInterface) {
 		return
 	}
 
-	rmcMessage, errorCode := protocol.AddFriendRequest(nil, packet, callID, pid, unknown2, message, unknown4, unknown5, gameKey.(*friends_wiiu_types.GameKey), unknown6)
+	rmcMessage, errorCode := protocol.AddFriendRequest(nil, packet, callID, pid, unknown2, message, unknown4, unknown5, gameKey, unknown6)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 		return

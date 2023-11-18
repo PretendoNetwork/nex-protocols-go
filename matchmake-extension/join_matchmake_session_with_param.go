@@ -25,7 +25,7 @@ func (protocol *Protocol) handleJoinMatchmakeSessionWithParam(packet nex.PacketI
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	joinMatchmakeSessionParam, err := parametersStream.ReadStructure(match_making_types.NewJoinMatchmakeSessionParam())
+	joinMatchmakeSessionParam, err := nex.StreamReadStructure(parametersStream, match_making_types.NewJoinMatchmakeSessionParam())
 	if err != nil {
 		_, errorCode = protocol.JoinMatchmakeSessionWithParam(fmt.Errorf("Failed to read joinMatchmakeSessionParam from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
@@ -35,7 +35,7 @@ func (protocol *Protocol) handleJoinMatchmakeSessionWithParam(packet nex.PacketI
 		return
 	}
 
-	rmcMessage, errorCode := protocol.JoinMatchmakeSessionWithParam(nil, packet, callID, joinMatchmakeSessionParam.(*match_making_types.JoinMatchmakeSessionParam))
+	rmcMessage, errorCode := protocol.JoinMatchmakeSessionWithParam(nil, packet, callID, joinMatchmakeSessionParam)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 		return

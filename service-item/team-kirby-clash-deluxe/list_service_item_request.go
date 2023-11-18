@@ -25,7 +25,7 @@ func (protocol *Protocol) handleListServiceItemRequest(packet nex.PacketInterfac
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	listServiceItemParam, err := parametersStream.ReadStructure(service_item_team_kirby_clash_deluxe_types.NewServiceItemListServiceItemParam())
+	listServiceItemParam, err := nex.StreamReadStructure(parametersStream, service_item_team_kirby_clash_deluxe_types.NewServiceItemListServiceItemParam())
 	if err != nil {
 		_, errorCode = protocol.ListServiceItemRequest(fmt.Errorf("Failed to read listServiceItemParam from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
@@ -35,7 +35,7 @@ func (protocol *Protocol) handleListServiceItemRequest(packet nex.PacketInterfac
 		return
 	}
 
-	rmcMessage, errorCode := protocol.ListServiceItemRequest(nil, packet, callID, listServiceItemParam.(*service_item_team_kirby_clash_deluxe_types.ServiceItemListServiceItemParam))
+	rmcMessage, errorCode := protocol.ListServiceItemRequest(nil, packet, callID, listServiceItemParam)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 		return

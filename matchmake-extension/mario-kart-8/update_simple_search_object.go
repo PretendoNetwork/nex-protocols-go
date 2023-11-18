@@ -35,7 +35,7 @@ func (protocol *Protocol) handleUpdateSimpleSearchObject(packet nex.PacketInterf
 		return
 	}
 
-	newObject, err := parametersStream.ReadStructure(matchmake_extension_mario_kart8_types.NewSimpleSearchObject())
+	newObject, err := nex.StreamReadStructure(parametersStream, matchmake_extension_mario_kart8_types.NewSimpleSearchObject())
 	if err != nil {
 		_, errorCode = protocol.UpdateSimpleSearchObject(fmt.Errorf("Failed to read newObject from parameters. %s", err.Error()), packet, callID, 0, nil)
 		if errorCode != 0 {
@@ -45,7 +45,7 @@ func (protocol *Protocol) handleUpdateSimpleSearchObject(packet nex.PacketInterf
 		return
 	}
 
-	rmcMessage, errorCode := protocol.UpdateSimpleSearchObject(nil, packet, callID, objectID, newObject.(*matchmake_extension_mario_kart8_types.SimpleSearchObject))
+	rmcMessage, errorCode := protocol.UpdateSimpleSearchObject(nil, packet, callID, objectID, newObject)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 		return

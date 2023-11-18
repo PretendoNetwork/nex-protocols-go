@@ -25,7 +25,7 @@ func (protocol *Protocol) handleGetBalanceRequest(packet nex.PacketInterface) {
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	getBalanceParam, err := parametersStream.ReadStructure(service_item_wii_sports_club_types.NewServiceItemGetBalanceParam())
+	getBalanceParam, err := nex.StreamReadStructure(parametersStream, service_item_wii_sports_club_types.NewServiceItemGetBalanceParam())
 	if err != nil {
 		_, errorCode = protocol.GetBalanceRequest(fmt.Errorf("Failed to read getBalanceParam from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
@@ -35,7 +35,7 @@ func (protocol *Protocol) handleGetBalanceRequest(packet nex.PacketInterface) {
 		return
 	}
 
-	rmcMessage, errorCode := protocol.GetBalanceRequest(nil, packet, callID, getBalanceParam.(*service_item_wii_sports_club_types.ServiceItemGetBalanceParam))
+	rmcMessage, errorCode := protocol.GetBalanceRequest(nil, packet, callID, getBalanceParam)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 		return

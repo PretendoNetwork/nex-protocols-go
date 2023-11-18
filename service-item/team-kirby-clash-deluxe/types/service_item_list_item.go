@@ -28,12 +28,10 @@ func (serviceItemListItem *ServiceItemListItem) ExtractFromStream(stream *nex.St
 		return fmt.Errorf("Failed to extract ServiceItemListItem.ItemCode from stream. %s", err.Error())
 	}
 
-	regularPrice, err := stream.ReadStructure(NewServiceItemAmount())
+	serviceItemListItem.RegularPrice, err = nex.StreamReadStructure(stream, NewServiceItemAmount())
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemListItem.RegularPrice from stream. %s", err.Error())
 	}
-
-	serviceItemListItem.RegularPrice = regularPrice.(*ServiceItemAmount)
 
 	serviceItemListItem.TaxExcluded, err = stream.ReadBool()
 	if err != nil {
@@ -45,19 +43,17 @@ func (serviceItemListItem *ServiceItemListItem) ExtractFromStream(stream *nex.St
 		return fmt.Errorf("Failed to extract ServiceItemListItem.InitialPurchaseOnly from stream. %s", err.Error())
 	}
 
-	limitation, err := stream.ReadStructure(NewServiceItemLimitation())
+	serviceItemListItem.Limitation, err = nex.StreamReadStructure(stream, NewServiceItemLimitation())
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemListItem.Limitation from stream. %s", err.Error())
 	}
 
-	serviceItemListItem.Limitation = limitation.(*ServiceItemLimitation)
-
-	attributes, err := stream.ReadListStructure(NewServiceItemAttribute())
+	attributes, err := nex.StreamReadListStructure(stream, NewServiceItemAttribute())
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemListItem.Attributes from stream. %s", err.Error())
 	}
 
-	serviceItemListItem.Attributes = attributes.([]*ServiceItemAttribute)
+	serviceItemListItem.Attributes = attributes
 
 	return nil
 }

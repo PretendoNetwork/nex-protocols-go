@@ -30,12 +30,12 @@ func (serviceItemCatalog *ServiceItemCatalog) ExtractFromStream(stream *nex.Stre
 		return fmt.Errorf("Failed to extract ServiceItemCatalog.Offset from stream. %s", err.Error())
 	}
 
-	listItems, err := stream.ReadListStructure(NewServiceItemListItem())
+	listItems, err := nex.StreamReadListStructure(stream, NewServiceItemListItem())
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemCatalog.ListItems from stream. %s", err.Error())
 	}
 
-	serviceItemCatalog.ListItems = listItems.([]*ServiceItemListItem)
+	serviceItemCatalog.ListItems = listItems
 
 	return nil
 }

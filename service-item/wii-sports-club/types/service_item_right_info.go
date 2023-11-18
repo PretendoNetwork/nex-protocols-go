@@ -24,12 +24,12 @@ func (serviceItemRightInfo *ServiceItemRightInfo) ExtractFromStream(stream *nex.
 		return fmt.Errorf("Failed to extract ServiceItemRightInfo.ReferenceID from stream. %s", err.Error())
 	}
 
-	accountRights, err := stream.ReadListStructure(NewServiceItemAccountRight())
+	accountRights, err := nex.StreamReadListStructure(stream, NewServiceItemAccountRight())
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemRightInfo.AccountRights from stream. %s", err.Error())
 	}
 
-	serviceItemRightInfo.AccountRights = accountRights.([]*ServiceItemAccountRight)
+	serviceItemRightInfo.AccountRights = accountRights
 
 	return nil
 }

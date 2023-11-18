@@ -101,12 +101,11 @@ func (dataStoreSearchParam *DataStoreSearchParam) ExtractFromStream(stream *nex.
 		return fmt.Errorf("Failed to extract DataStoreSearchParam.ResultOrder. %s", err.Error())
 	}
 
-	resultRange, err := stream.ReadStructure(nex.NewResultRange())
+	dataStoreSearchParam.ResultRange, err = nex.StreamReadStructure(stream, nex.NewResultRange())
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreSearchParam.ResultRange. %s", err.Error())
 	}
 
-	dataStoreSearchParam.ResultRange = resultRange.(*nex.ResultRange)
 	dataStoreSearchParam.ResultOption, err = stream.ReadUInt8()
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreSearchParam.ResultOption. %s", err.Error())

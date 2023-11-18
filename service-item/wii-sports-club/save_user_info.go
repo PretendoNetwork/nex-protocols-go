@@ -25,7 +25,7 @@ func (protocol *Protocol) handleSaveUserInfo(packet nex.PacketInterface) {
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	userInfo, err := parametersStream.ReadStructure(service_item_wii_sports_club_types.NewServiceItemUserInfo())
+	userInfo, err := nex.StreamReadStructure(parametersStream, service_item_wii_sports_club_types.NewServiceItemUserInfo())
 	if err != nil {
 		_, errorCode = protocol.SaveUserInfo(fmt.Errorf("Failed to read userInfo from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
@@ -35,7 +35,7 @@ func (protocol *Protocol) handleSaveUserInfo(packet nex.PacketInterface) {
 		return
 	}
 
-	rmcMessage, errorCode := protocol.SaveUserInfo(nil, packet, callID, userInfo.(*service_item_wii_sports_club_types.ServiceItemUserInfo))
+	rmcMessage, errorCode := protocol.SaveUserInfo(nil, packet, callID, userInfo)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 		return

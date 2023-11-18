@@ -26,12 +26,11 @@ func (dataStoreGetMetaParam *DataStoreGetMetaParam) ExtractFromStream(stream *ne
 		return fmt.Errorf("Failed to extract DataStoreGetMetaParam.DataID. %s", err.Error())
 	}
 
-	persistenceTarget, err := stream.ReadStructure(NewDataStorePersistenceTarget())
+	dataStoreGetMetaParam.PersistenceTarget, err = nex.StreamReadStructure(stream, NewDataStorePersistenceTarget())
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreGetMetaParam.PersistenceTarget. %s", err.Error())
 	}
 
-	dataStoreGetMetaParam.PersistenceTarget = persistenceTarget.(*DataStorePersistenceTarget)
 	dataStoreGetMetaParam.ResultOption, err = stream.ReadUInt8()
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreGetMetaParam.ResultOption. %s", err.Error())

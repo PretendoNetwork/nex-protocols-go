@@ -25,7 +25,7 @@ func (protocol *Protocol) handleChangePlayablePlatform(packet nex.PacketInterfac
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	params, err := parametersStream.ReadListStructure(datastore_super_mario_maker_types.NewDataStoreChangePlayablePlatformParam())
+	params, err := nex.StreamReadListStructure(parametersStream, datastore_super_mario_maker_types.NewDataStoreChangePlayablePlatformParam())
 	if err != nil {
 		_, errorCode = protocol.ChangePlayablePlatform(fmt.Errorf("Failed to read params from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
@@ -35,7 +35,7 @@ func (protocol *Protocol) handleChangePlayablePlatform(packet nex.PacketInterfac
 		return
 	}
 
-	rmcMessage, errorCode := protocol.ChangePlayablePlatform(nil, packet, callID, params.([]*datastore_super_mario_maker_types.DataStoreChangePlayablePlatformParam))
+	rmcMessage, errorCode := protocol.ChangePlayablePlatform(nil, packet, callID, params)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 		return

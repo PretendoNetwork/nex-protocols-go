@@ -44,7 +44,7 @@ func (protocol *Protocol) handleFindByNameRegex(packet nex.PacketInterface) {
 		return
 	}
 
-	resultRange, err := parametersStream.ReadStructure(nex.NewResultRange())
+	resultRange, err := nex.StreamReadStructure(parametersStream, nex.NewResultRange())
 	if err != nil {
 		_, errorCode = protocol.FindByNameRegex(fmt.Errorf("Failed to read resultRange from parameters. %s", err.Error()), packet, callID, 0, "", nil)
 		if errorCode != 0 {
@@ -54,7 +54,7 @@ func (protocol *Protocol) handleFindByNameRegex(packet nex.PacketInterface) {
 		return
 	}
 
-	rmcMessage, errorCode := protocol.FindByNameRegex(nil, packet, callID, uiGroups, strRegex, resultRange.(*nex.ResultRange))
+	rmcMessage, errorCode := protocol.FindByNameRegex(nil, packet, callID, uiGroups, strRegex, resultRange)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 		return

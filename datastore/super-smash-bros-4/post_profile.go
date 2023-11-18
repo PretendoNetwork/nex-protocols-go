@@ -25,7 +25,7 @@ func (protocol *Protocol) handlePostProfile(packet nex.PacketInterface) {
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	param, err := parametersStream.ReadStructure(datastore_super_smash_bros_4_types.NewDataStorePostProfileParam())
+	param, err := nex.StreamReadStructure(parametersStream, datastore_super_smash_bros_4_types.NewDataStorePostProfileParam())
 	if err != nil {
 		_, errorCode = protocol.PostProfile(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
@@ -35,7 +35,7 @@ func (protocol *Protocol) handlePostProfile(packet nex.PacketInterface) {
 		return
 	}
 
-	rmcMessage, errorCode := protocol.PostProfile(nil, packet, callID, param.(*datastore_super_smash_bros_4_types.DataStorePostProfileParam))
+	rmcMessage, errorCode := protocol.PostProfile(nil, packet, callID, param)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 		return

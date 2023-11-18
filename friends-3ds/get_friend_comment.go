@@ -25,7 +25,7 @@ func (protocol *Protocol) handleGetFriendComment(packet nex.PacketInterface) {
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	friends, err := parametersStream.ReadListStructure(friends_3ds_types.NewFriendInfo())
+	friends, err := nex.StreamReadListStructure(parametersStream, friends_3ds_types.NewFriendInfo())
 	if err != nil {
 		_, errorCode = protocol.GetFriendComment(fmt.Errorf("Failed to read friends from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
@@ -35,7 +35,7 @@ func (protocol *Protocol) handleGetFriendComment(packet nex.PacketInterface) {
 		return
 	}
 
-	rmcMessage, errorCode := protocol.GetFriendComment(nil, packet, callID, friends.([]*friends_3ds_types.FriendInfo))
+	rmcMessage, errorCode := protocol.GetFriendComment(nil, packet, callID, friends)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 		return

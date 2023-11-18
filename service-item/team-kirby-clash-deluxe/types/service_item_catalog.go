@@ -32,24 +32,22 @@ func (serviceItemCatalog *ServiceItemCatalog) ExtractFromStream(stream *nex.Stre
 		return fmt.Errorf("Failed to extract ServiceItemCatalog.Offset from stream. %s", err.Error())
 	}
 
-	listItems, err := stream.ReadListStructure(NewServiceItemListItem())
+	listItems, err := nex.StreamReadListStructure(stream, NewServiceItemListItem())
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemCatalog.ListItems from stream. %s", err.Error())
 	}
 
-	serviceItemCatalog.ListItems = listItems.([]*ServiceItemListItem)
+	serviceItemCatalog.ListItems = listItems
 
 	serviceItemCatalog.IsBalanceAvailable, err = stream.ReadBool()
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemCatalog.IsBalanceAvailable from stream. %s", err.Error())
 	}
 
-	balance, err := stream.ReadStructure(NewServiceItemAmount())
+	serviceItemCatalog.Balance, err = nex.StreamReadStructure(stream, NewServiceItemAmount())
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemCatalog.Balance from stream. %s", err.Error())
 	}
-
-	serviceItemCatalog.Balance = balance.(*ServiceItemAmount)
 
 	return nil
 }

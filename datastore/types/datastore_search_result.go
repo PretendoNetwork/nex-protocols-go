@@ -25,12 +25,12 @@ func (dataStoreSearchResult *DataStoreSearchResult) ExtractFromStream(stream *ne
 		return fmt.Errorf("Failed to extract DataStoreSearchResult.TotalCount. %s", err.Error())
 	}
 
-	result, err := stream.ReadListStructure(NewDataStoreMetaInfo())
+	result, err := nex.StreamReadListStructure(stream, NewDataStoreMetaInfo())
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreSearchResult.Result. %s", err.Error())
 	}
 
-	dataStoreSearchResult.Result = result.([]*DataStoreMetaInfo)
+	dataStoreSearchResult.Result = result
 	dataStoreSearchResult.TotalCountType, err = stream.ReadUInt8()
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreSearchResult.TotalCountType. %s", err.Error())

@@ -25,7 +25,7 @@ func (protocol *Protocol) handleGetLawMessageRequest(packet nex.PacketInterface)
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	getLawMessageParam, err := parametersStream.ReadStructure(service_item_team_kirby_clash_deluxe_types.NewServiceItemGetLawMessageParam())
+	getLawMessageParam, err := nex.StreamReadStructure(parametersStream, service_item_team_kirby_clash_deluxe_types.NewServiceItemGetLawMessageParam())
 	if err != nil {
 		_, errorCode = protocol.GetLawMessageRequest(fmt.Errorf("Failed to read getLawMessageParam from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
@@ -35,7 +35,7 @@ func (protocol *Protocol) handleGetLawMessageRequest(packet nex.PacketInterface)
 		return
 	}
 
-	rmcMessage, errorCode := protocol.GetLawMessageRequest(nil, packet, callID, getLawMessageParam.(*service_item_team_kirby_clash_deluxe_types.ServiceItemGetLawMessageParam))
+	rmcMessage, errorCode := protocol.GetLawMessageRequest(nil, packet, callID, getLawMessageParam)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 		return

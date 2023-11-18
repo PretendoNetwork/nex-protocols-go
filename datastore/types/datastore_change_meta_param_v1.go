@@ -42,19 +42,16 @@ func (dataStoreChangeMetaParamV1 *DataStoreChangeMetaParamV1) ExtractFromStream(
 		return fmt.Errorf("Failed to extract DataStoreChangeMetaParamV1.Name. %s", err.Error())
 	}
 
-	permission, err := stream.ReadStructure(NewDataStorePermission())
+	dataStoreChangeMetaParamV1.Permission, err = nex.StreamReadStructure(stream, NewDataStorePermission())
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreChangeMetaParamV1.Permission. %s", err.Error())
 	}
 
-	dataStoreChangeMetaParamV1.Permission = permission.(*DataStorePermission)
-
-	delPermission, err := stream.ReadStructure(NewDataStorePermission())
+	dataStoreChangeMetaParamV1.DelPermission, err = nex.StreamReadStructure(stream, NewDataStorePermission())
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreChangeMetaParamV1.DelPermission. %s", err.Error())
 	}
 
-	dataStoreChangeMetaParamV1.DelPermission = delPermission.(*DataStorePermission)
 	dataStoreChangeMetaParamV1.Period, err = stream.ReadUInt16LE()
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreChangeMetaParamV1.Period. %s", err.Error())

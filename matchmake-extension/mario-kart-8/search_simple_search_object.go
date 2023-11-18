@@ -25,7 +25,7 @@ func (protocol *Protocol) handleSearchSimpleSearchObject(packet nex.PacketInterf
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	param, err := parametersStream.ReadStructure(matchmake_extension_mario_kart8_types.NewSimpleSearchParam())
+	param, err := nex.StreamReadStructure(parametersStream, matchmake_extension_mario_kart8_types.NewSimpleSearchParam())
 	if err != nil {
 		_, errorCode = protocol.SearchSimpleSearchObject(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
@@ -35,7 +35,7 @@ func (protocol *Protocol) handleSearchSimpleSearchObject(packet nex.PacketInterf
 		return
 	}
 
-	rmcMessage, errorCode := protocol.SearchSimpleSearchObject(nil, packet, callID, param.(*matchmake_extension_mario_kart8_types.SimpleSearchParam))
+	rmcMessage, errorCode := protocol.SearchSimpleSearchObject(nil, packet, callID, param)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 		return

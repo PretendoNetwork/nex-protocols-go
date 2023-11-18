@@ -25,7 +25,7 @@ func (protocol *Protocol) handleUpdateMii(packet nex.PacketInterface) {
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	miiV2, err := parametersStream.ReadStructure(friends_wiiu_types.NewMiiV2())
+	miiV2, err := nex.StreamReadStructure(parametersStream, friends_wiiu_types.NewMiiV2())
 	if err != nil {
 		_, errorCode = protocol.UpdateMii(fmt.Errorf("Failed to read miiV2 from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
@@ -35,7 +35,7 @@ func (protocol *Protocol) handleUpdateMii(packet nex.PacketInterface) {
 		return
 	}
 
-	rmcMessage, errorCode := protocol.UpdateMii(nil, packet, callID, miiV2.(*friends_wiiu_types.MiiV2))
+	rmcMessage, errorCode := protocol.UpdateMii(nil, packet, callID, miiV2)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 		return

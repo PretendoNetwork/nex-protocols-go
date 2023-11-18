@@ -19,12 +19,12 @@ type ServiceItemGetPrepurchaseInfoResponse struct {
 func (serviceItemGetPrepurchaseInfoResponse *ServiceItemGetPrepurchaseInfoResponse) ExtractFromStream(stream *nex.StreamIn) error {
 	var err error
 
-	nullablePrepurchaseInfo, err := stream.ReadListStructure(NewServiceItemPrepurchaseInfo())
+	nullablePrepurchaseInfo, err := nex.StreamReadListStructure(stream, NewServiceItemPrepurchaseInfo())
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemGetPrepurchaseInfoResponse.NullablePrepurchaseInfo from stream. %s", err.Error())
 	}
 
-	serviceItemGetPrepurchaseInfoResponse.NullablePrepurchaseInfo = nullablePrepurchaseInfo.([]*ServiceItemPrepurchaseInfo)
+	serviceItemGetPrepurchaseInfoResponse.NullablePrepurchaseInfo = nullablePrepurchaseInfo
 
 	return nil
 }

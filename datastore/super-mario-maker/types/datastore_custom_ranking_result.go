@@ -31,12 +31,10 @@ func (dataStoreCustomRankingResult *DataStoreCustomRankingResult) ExtractFromStr
 		return fmt.Errorf("Failed to extract DataStoreCustomRankingResult.Score from stream. %s", err.Error())
 	}
 
-	metaInfo, err := stream.ReadStructure(datastore_types.NewDataStoreMetaInfo())
+	dataStoreCustomRankingResult.MetaInfo, err = nex.StreamReadStructure(stream, datastore_types.NewDataStoreMetaInfo())
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreCustomRankingResult.MetaInfo from stream. %s", err.Error())
 	}
-
-	dataStoreCustomRankingResult.MetaInfo = metaInfo.(*datastore_types.DataStoreMetaInfo)
 
 	return nil
 }

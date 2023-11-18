@@ -25,7 +25,7 @@ func (protocol *Protocol) handleGetNewArrivedNotifications(packet nex.PacketInte
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	param, err := parametersStream.ReadStructure(datastore_types.NewDataStoreGetNewArrivedNotificationsParam())
+	param, err := nex.StreamReadStructure(parametersStream, datastore_types.NewDataStoreGetNewArrivedNotificationsParam())
 	if err != nil {
 		_, errorCode = protocol.GetNewArrivedNotifications(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
@@ -35,7 +35,7 @@ func (protocol *Protocol) handleGetNewArrivedNotifications(packet nex.PacketInte
 		return
 	}
 
-	rmcMessage, errorCode := protocol.GetNewArrivedNotifications(nil, packet, callID, param.(*datastore_types.DataStoreGetNewArrivedNotificationsParam))
+	rmcMessage, errorCode := protocol.GetNewArrivedNotifications(nil, packet, callID, param)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 		return

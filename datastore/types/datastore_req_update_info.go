@@ -46,19 +46,19 @@ func (dataStoreReqUpdateInfo *DataStoreReqUpdateInfo) ExtractFromStream(stream *
 		return fmt.Errorf("Failed to extract DataStoreReqUpdateInfo.URL. %s", err.Error())
 	}
 
-	requestHeaders, err := stream.ReadListStructure(NewDataStoreKeyValue())
+	requestHeaders, err := nex.StreamReadListStructure(stream, NewDataStoreKeyValue())
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreReqUpdateInfo.RequestHeaders. %s", err.Error())
 	}
 
-	dataStoreReqUpdateInfo.RequestHeaders = requestHeaders.([]*DataStoreKeyValue)
+	dataStoreReqUpdateInfo.RequestHeaders = requestHeaders
 
-	formFields, err := stream.ReadListStructure(NewDataStoreKeyValue())
+	formFields, err := nex.StreamReadListStructure(stream, NewDataStoreKeyValue())
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreReqUpdateInfo.FormFields. %s", err.Error())
 	}
 
-	dataStoreReqUpdateInfo.FormFields = formFields.([]*DataStoreKeyValue)
+	dataStoreReqUpdateInfo.FormFields = formFields
 
 	dataStoreReqUpdateInfo.RootCACert, err = stream.ReadBuffer()
 	if err != nil {

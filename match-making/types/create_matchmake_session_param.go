@@ -26,12 +26,11 @@ type CreateMatchmakeSessionParam struct {
 func (createMatchmakeSessionParam *CreateMatchmakeSessionParam) ExtractFromStream(stream *nex.StreamIn) error {
 	var err error
 
-	sourceMatchmakeSession, err := stream.ReadStructure(NewMatchmakeSession())
+	createMatchmakeSessionParam.SourceMatchmakeSession, err = nex.StreamReadStructure(stream, NewMatchmakeSession())
 	if err != nil {
 		return fmt.Errorf("Failed to extract CreateMatchmakeSessionParam.SourceMatchmakeSession. %s", err.Error())
 	}
 
-	createMatchmakeSessionParam.SourceMatchmakeSession = sourceMatchmakeSession.(*MatchmakeSession)
 	createMatchmakeSessionParam.AdditionalParticipants, err = stream.ReadListPID()
 	if err != nil {
 		return fmt.Errorf("Failed to extract CreateMatchmakeSessionParam.AdditionalParticipants. %s", err.Error())

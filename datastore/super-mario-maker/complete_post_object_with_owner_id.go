@@ -35,7 +35,7 @@ func (protocol *Protocol) handleCompletePostObjectWithOwnerID(packet nex.PacketI
 		return
 	}
 
-	param, err := parametersStream.ReadStructure(datastore_types.NewDataStoreCompletePostParam())
+	param, err := nex.StreamReadStructure(parametersStream, datastore_types.NewDataStoreCompletePostParam())
 	if err != nil {
 		_, errorCode = protocol.CompletePostObjectWithOwnerID(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, 0, nil)
 		if errorCode != 0 {
@@ -45,7 +45,7 @@ func (protocol *Protocol) handleCompletePostObjectWithOwnerID(packet nex.PacketI
 		return
 	}
 
-	rmcMessage, errorCode := protocol.CompletePostObjectWithOwnerID(nil, packet, callID, ownerID, param.(*datastore_types.DataStoreCompletePostParam))
+	rmcMessage, errorCode := protocol.CompletePostObjectWithOwnerID(nil, packet, callID, ownerID, param)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 		return

@@ -67,12 +67,10 @@ func (dataStoreSharedDataInfo *DataStoreSharedDataInfo) ExtractFromStream(stream
 		return fmt.Errorf("Failed to extract DataStoreSharedDataInfo.CreatedTime. %s", err.Error())
 	}
 
-	info, err := stream.ReadStructure(NewDataStoreFileServerObjectInfo())
+	dataStoreSharedDataInfo.Info, err = nex.StreamReadStructure(stream, NewDataStoreFileServerObjectInfo())
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreSharedDataInfo.Info. %s", err.Error())
 	}
-
-	dataStoreSharedDataInfo.Info = info.(*DataStoreFileServerObjectInfo)
 
 	return nil
 }

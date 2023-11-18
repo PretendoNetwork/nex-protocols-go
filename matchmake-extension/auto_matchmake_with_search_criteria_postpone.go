@@ -25,7 +25,7 @@ func (protocol *Protocol) handleAutoMatchmakeWithSearchCriteriaPostpone(packet n
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	lstSearchCriteria, err := parametersStream.ReadListStructure(match_making_types.NewMatchmakeSessionSearchCriteria())
+	lstSearchCriteria, err := nex.StreamReadListStructure(parametersStream, match_making_types.NewMatchmakeSessionSearchCriteria())
 	if err != nil {
 		_, errorCode = protocol.AutoMatchmakeWithSearchCriteriaPostpone(fmt.Errorf("Failed to read lstSearchCriteria from parameters. %s", err.Error()), packet, callID, nil, nil, "")
 		if errorCode != 0 {
@@ -55,7 +55,7 @@ func (protocol *Protocol) handleAutoMatchmakeWithSearchCriteriaPostpone(packet n
 		return
 	}
 
-	rmcMessage, errorCode := protocol.AutoMatchmakeWithSearchCriteriaPostpone(nil, packet, callID, lstSearchCriteria.([]*match_making_types.MatchmakeSessionSearchCriteria), anyGathering, strMessage)
+	rmcMessage, errorCode := protocol.AutoMatchmakeWithSearchCriteriaPostpone(nil, packet, callID, lstSearchCriteria, anyGathering, strMessage)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 		return

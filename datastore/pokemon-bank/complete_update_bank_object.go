@@ -35,7 +35,7 @@ func (protocol *Protocol) handleCompleteUpdateBankObject(packet nex.PacketInterf
 		return
 	}
 
-	transactionParam, err := parametersStream.ReadStructure(datastore_pokemon_bank_types.NewBankTransactionParam())
+	transactionParam, err := nex.StreamReadStructure(parametersStream, datastore_pokemon_bank_types.NewBankTransactionParam())
 	if err != nil {
 		_, errorCode = protocol.CompleteUpdateBankObject(fmt.Errorf("Failed to read transactionParam from parameters. %s", err.Error()), packet, callID, 0, nil, false)
 		if errorCode != 0 {
@@ -55,7 +55,7 @@ func (protocol *Protocol) handleCompleteUpdateBankObject(packet nex.PacketInterf
 		return
 	}
 
-	rmcMessage, errorCode := protocol.CompleteUpdateBankObject(nil, packet, callID, slotID, transactionParam.(*datastore_pokemon_bank_types.BankTransactionParam), isForce)
+	rmcMessage, errorCode := protocol.CompleteUpdateBankObject(nil, packet, callID, slotID, transactionParam, isForce)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 		return

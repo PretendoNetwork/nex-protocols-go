@@ -33,12 +33,12 @@ func (matchmakeRefereeEndRoundParam *MatchmakeRefereeEndRoundParam) ExtractFromS
 		return fmt.Errorf("Failed to extract MatchmakeRefereeEndRoundParam.RoundID. %s", err.Error())
 	}
 
-	resultList, err := stream.ReadListStructure(NewMatchmakeRefereePersonalRoundResult())
+	resultList, err := nex.StreamReadListStructure(stream, NewMatchmakeRefereePersonalRoundResult())
 	if err != nil {
 		return fmt.Errorf("Failed to extract MatchmakeRefereeEndRoundParam.PersonalRoundResults. %s", err.Error())
 	}
 
-	matchmakeRefereeEndRoundParam.PersonalRoundResults = resultList.([]*MatchmakeRefereePersonalRoundResult)
+	matchmakeRefereeEndRoundParam.PersonalRoundResults = resultList
 
 	return nil
 }

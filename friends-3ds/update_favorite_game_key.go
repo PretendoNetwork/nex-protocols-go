@@ -25,7 +25,7 @@ func (protocol *Protocol) handleUpdateFavoriteGameKey(packet nex.PacketInterface
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	gameKey, err := parametersStream.ReadStructure(friends_3ds_types.NewGameKey())
+	gameKey, err := nex.StreamReadStructure(parametersStream, friends_3ds_types.NewGameKey())
 	if err != nil {
 		_, errorCode = protocol.UpdateFavoriteGameKey(fmt.Errorf("Failed to read gameKey from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
@@ -35,7 +35,7 @@ func (protocol *Protocol) handleUpdateFavoriteGameKey(packet nex.PacketInterface
 		return
 	}
 
-	rmcMessage, errorCode := protocol.UpdateFavoriteGameKey(nil, packet, callID, gameKey.(*friends_3ds_types.GameKey))
+	rmcMessage, errorCode := protocol.UpdateFavoriteGameKey(nil, packet, callID, gameKey)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 		return

@@ -25,7 +25,7 @@ func (protocol *Protocol) handlePutCommonData(packet nex.PacketInterface) {
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	commonData, err := parametersStream.ReadStructure(ranking2_types.NewRanking2CommonData())
+	commonData, err := nex.StreamReadStructure(parametersStream, ranking2_types.NewRanking2CommonData())
 	if err != nil {
 		_, errorCode = protocol.PutCommonData(fmt.Errorf("Failed to read commonData from parameters. %s", err.Error()), packet, callID, nil, 0)
 		if errorCode != 0 {
@@ -45,7 +45,7 @@ func (protocol *Protocol) handlePutCommonData(packet nex.PacketInterface) {
 		return
 	}
 
-	rmcMessage, errorCode := protocol.PutCommonData(nil, packet, callID, commonData.(*ranking2_types.Ranking2CommonData), nexUniqueID)
+	rmcMessage, errorCode := protocol.PutCommonData(nil, packet, callID, commonData, nexUniqueID)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 		return

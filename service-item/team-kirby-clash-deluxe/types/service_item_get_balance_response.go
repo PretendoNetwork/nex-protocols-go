@@ -19,12 +19,12 @@ type ServiceItemGetBalanceResponse struct {
 func (serviceItemGetBalanceResponse *ServiceItemGetBalanceResponse) ExtractFromStream(stream *nex.StreamIn) error {
 	var err error
 
-	nullableBalance, err := stream.ReadListStructure(NewServiceItemAmount())
+	nullableBalance, err := nex.StreamReadListStructure(stream, NewServiceItemAmount())
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemGetBalanceResponse.NullableBalance from stream. %s", err.Error())
 	}
 
-	serviceItemGetBalanceResponse.NullableBalance = nullableBalance.([]*ServiceItemAmount)
+	serviceItemGetBalanceResponse.NullableBalance = nullableBalance
 
 	return nil
 }

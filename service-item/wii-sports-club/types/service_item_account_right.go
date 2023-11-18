@@ -24,12 +24,10 @@ func (serviceItemAccountRight *ServiceItemAccountRight) ExtractFromStream(stream
 		return fmt.Errorf("Failed to extract ServiceItemAccountRight.PID from stream. %s", err.Error())
 	}
 
-	limitation, err := stream.ReadStructure(NewServiceItemLimitation())
+	serviceItemAccountRight.Limitation, err = nex.StreamReadStructure(stream, NewServiceItemLimitation())
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemAccountRight.Limitation from stream. %s", err.Error())
 	}
-
-	serviceItemAccountRight.Limitation = limitation.(*ServiceItemLimitation)
 
 	return nil
 }

@@ -24,12 +24,12 @@ func (dataStoreFightingPowerChart *DataStoreFightingPowerChart) ExtractFromStrea
 		return fmt.Errorf("Failed to extract DataStoreFightingPowerChart.UserNum. %s", err.Error())
 	}
 
-	chart, err := stream.ReadListStructure(NewDataStoreFightingPowerScore())
+	chart, err := nex.StreamReadListStructure(stream, NewDataStoreFightingPowerScore())
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreFightingPowerChart.Chart. %s", err.Error())
 	}
 
-	dataStoreFightingPowerChart.Chart = chart.([]*DataStoreFightingPowerScore)
+	dataStoreFightingPowerChart.Chart = chart
 
 	return nil
 }

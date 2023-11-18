@@ -34,7 +34,7 @@ func (protocol *Protocol) handleFindCommunityByOwner(packet nex.PacketInterface)
 		return
 	}
 
-	resultRange, err := parametersStream.ReadStructure(nex.NewResultRange())
+	resultRange, err := nex.StreamReadStructure(parametersStream, nex.NewResultRange())
 	if err != nil {
 		_, errorCode = protocol.FindCommunityByOwner(fmt.Errorf("Failed to read resultRange from parameters. %s", err.Error()), packet, callID, 0, nil)
 		if errorCode != 0 {
@@ -44,7 +44,7 @@ func (protocol *Protocol) handleFindCommunityByOwner(packet nex.PacketInterface)
 		return
 	}
 
-	rmcMessage, errorCode := protocol.FindCommunityByOwner(nil, packet, callID, id, resultRange.(*nex.ResultRange))
+	rmcMessage, errorCode := protocol.FindCommunityByOwner(nil, packet, callID, id, resultRange)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 		return

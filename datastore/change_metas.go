@@ -35,7 +35,7 @@ func (protocol *Protocol) handleChangeMetas(packet nex.PacketInterface) {
 		return
 	}
 
-	params, err := parametersStream.ReadListStructure(datastore_types.NewDataStoreChangeMetaParam())
+	params, err := nex.StreamReadListStructure(parametersStream, datastore_types.NewDataStoreChangeMetaParam())
 	if err != nil {
 		_, errorCode = protocol.ChangeMetas(fmt.Errorf("Failed to read params from parameters. %s", err.Error()), packet, callID, nil, nil, false)
 		if errorCode != 0 {
@@ -55,7 +55,7 @@ func (protocol *Protocol) handleChangeMetas(packet nex.PacketInterface) {
 		return
 	}
 
-	rmcMessage, errorCode := protocol.ChangeMetas(nil, packet, callID, dataIDs, params.([]*datastore_types.DataStoreChangeMetaParam), transactional)
+	rmcMessage, errorCode := protocol.ChangeMetas(nil, packet, callID, dataIDs, params, transactional)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 		return

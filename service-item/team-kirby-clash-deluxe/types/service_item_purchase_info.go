@@ -36,12 +36,10 @@ func (serviceItemPurchaseInfo *ServiceItemPurchaseInfo) ExtractFromStream(stream
 		return fmt.Errorf("Failed to extract ServiceItemPurchaseInfo.ItemCode from stream. %s", err.Error())
 	}
 
-	postBalance, err := stream.ReadStructure(NewServiceItemAmount())
+	serviceItemPurchaseInfo.PostBalance, err = nex.StreamReadStructure(stream, NewServiceItemAmount())
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemPurchaseInfo.PostBalance from stream. %s", err.Error())
 	}
-
-	serviceItemPurchaseInfo.PostBalance = postBalance.(*ServiceItemAmount)
 
 	return nil
 }

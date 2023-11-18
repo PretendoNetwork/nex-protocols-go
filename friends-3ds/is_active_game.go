@@ -35,7 +35,7 @@ func (protocol *Protocol) handleIsActiveGame(packet nex.PacketInterface) {
 		return
 	}
 
-	gameKey, err := parametersStream.ReadStructure(friends_3ds_types.NewGameKey())
+	gameKey, err := nex.StreamReadStructure(parametersStream, friends_3ds_types.NewGameKey())
 	if err != nil {
 		_, errorCode = protocol.IsActiveGame(fmt.Errorf("Failed to read gameKey from parameters. %s", err.Error()), packet, callID, nil, nil)
 		if errorCode != 0 {
@@ -45,7 +45,7 @@ func (protocol *Protocol) handleIsActiveGame(packet nex.PacketInterface) {
 		return
 	}
 
-	rmcMessage, errorCode := protocol.IsActiveGame(nil, packet, callID, pids, gameKey.(*friends_3ds_types.GameKey))
+	rmcMessage, errorCode := protocol.IsActiveGame(nil, packet, callID, pids, gameKey)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 		return

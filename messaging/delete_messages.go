@@ -25,7 +25,7 @@ func (protocol *Protocol) handleDeleteMessages(packet nex.PacketInterface) {
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	recipient, err := parametersStream.ReadStructure(messaging_types.NewMessageRecipient())
+	recipient, err := nex.StreamReadStructure(parametersStream, messaging_types.NewMessageRecipient())
 	if err != nil {
 		_, errorCode = protocol.DeleteMessages(fmt.Errorf("Failed to read recipient from parameters. %s", err.Error()), packet, callID, nil, nil)
 		if errorCode != 0 {
@@ -45,7 +45,7 @@ func (protocol *Protocol) handleDeleteMessages(packet nex.PacketInterface) {
 		return
 	}
 
-	rmcMessage, errorCode := protocol.DeleteMessages(nil, packet, callID, recipient.(*messaging_types.MessageRecipient), lstMessagesToDelete)
+	rmcMessage, errorCode := protocol.DeleteMessages(nil, packet, callID, recipient, lstMessagesToDelete)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 		return

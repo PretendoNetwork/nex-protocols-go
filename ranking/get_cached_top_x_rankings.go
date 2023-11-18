@@ -35,7 +35,7 @@ func (protocol *Protocol) handleGetCachedTopXRankings(packet nex.PacketInterface
 		return
 	}
 
-	orderParams, err := parametersStream.ReadListStructure(ranking_types.NewRankingOrderParam())
+	orderParams, err := nex.StreamReadListStructure(parametersStream, ranking_types.NewRankingOrderParam())
 	if err != nil {
 		_, errorCode = protocol.GetCachedTopXRankings(fmt.Errorf("Failed to read orderParams from parameters. %s", err.Error()), packet, callID, nil, nil)
 		if errorCode != 0 {
@@ -45,7 +45,7 @@ func (protocol *Protocol) handleGetCachedTopXRankings(packet nex.PacketInterface
 		return
 	}
 
-	rmcMessage, errorCode := protocol.GetCachedTopXRankings(nil, packet, callID, categories, orderParams.([]*ranking_types.RankingOrderParam))
+	rmcMessage, errorCode := protocol.GetCachedTopXRankings(nil, packet, callID, categories, orderParams)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 		return

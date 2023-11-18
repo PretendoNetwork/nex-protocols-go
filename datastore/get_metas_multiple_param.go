@@ -25,7 +25,7 @@ func (protocol *Protocol) handleGetMetasMultipleParam(packet nex.PacketInterface
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	params, err := parametersStream.ReadListStructure(datastore_types.NewDataStoreGetMetaParam())
+	params, err := nex.StreamReadListStructure(parametersStream, datastore_types.NewDataStoreGetMetaParam())
 	if err != nil {
 		_, errorCode = protocol.GetMetasMultipleParam(fmt.Errorf("Failed to read params from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
@@ -35,7 +35,7 @@ func (protocol *Protocol) handleGetMetasMultipleParam(packet nex.PacketInterface
 		return
 	}
 
-	rmcMessage, errorCode := protocol.GetMetasMultipleParam(nil, packet, callID, params.([]*datastore_types.DataStoreGetMetaParam))
+	rmcMessage, errorCode := protocol.GetMetasMultipleParam(nil, packet, callID, params)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 		return

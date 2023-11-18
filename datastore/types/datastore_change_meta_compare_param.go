@@ -38,18 +38,16 @@ func (dataStoreChangeMetaCompareParam *DataStoreChangeMetaCompareParam) ExtractF
 		return fmt.Errorf("Failed to extract DataStoreChangeMetaCompareParam.Name. %s", err.Error())
 	}
 
-	permission, err := stream.ReadStructure(NewDataStorePermission())
+	dataStoreChangeMetaCompareParam.Permission, err = nex.StreamReadStructure(stream, NewDataStorePermission())
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreChangeMetaCompareParam.Permission. %s", err.Error())
 	}
 
-	dataStoreChangeMetaCompareParam.Permission = permission.(*DataStorePermission)
-	delPermission, err := stream.ReadStructure(NewDataStorePermission())
+	dataStoreChangeMetaCompareParam.DelPermission, err = nex.StreamReadStructure(stream, NewDataStorePermission())
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreChangeMetaCompareParam.DelPermission. %s", err.Error())
 	}
 
-	dataStoreChangeMetaCompareParam.DelPermission = delPermission.(*DataStorePermission)
 	dataStoreChangeMetaCompareParam.Period, err = stream.ReadUInt16LE()
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreChangeMetaCompareParam.Period. %s", err.Error())

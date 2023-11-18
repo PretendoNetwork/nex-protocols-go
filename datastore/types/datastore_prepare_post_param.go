@@ -53,19 +53,16 @@ func (dataStorePreparePostParam *DataStorePreparePostParam) ExtractFromStream(st
 		return fmt.Errorf("Failed to extract DataStorePreparePostParam.MetaBinary. %s", err.Error())
 	}
 
-	permission, err := stream.ReadStructure(NewDataStorePermission())
+	dataStorePreparePostParam.Permission, err = nex.StreamReadStructure(stream, NewDataStorePermission())
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStorePreparePostParam.Permission. %s", err.Error())
 	}
 
-	dataStorePreparePostParam.Permission = permission.(*DataStorePermission)
-
-	delPermission, err := stream.ReadStructure(NewDataStorePermission())
+	dataStorePreparePostParam.DelPermission, err = nex.StreamReadStructure(stream, NewDataStorePermission())
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStorePreparePostParam.DelPermission. %s", err.Error())
 	}
 
-	dataStorePreparePostParam.DelPermission = delPermission.(*DataStorePermission)
 	dataStorePreparePostParam.Flag, err = stream.ReadUInt32LE()
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStorePreparePostParam.Flag. %s", err.Error())
@@ -86,19 +83,17 @@ func (dataStorePreparePostParam *DataStorePreparePostParam) ExtractFromStream(st
 		return fmt.Errorf("Failed to extract DataStorePreparePostParam.Tags. %s", err.Error())
 	}
 
-	ratingInitParams, err := stream.ReadListStructure(NewDataStoreRatingInitParamWithSlot())
+	ratingInitParams, err := nex.StreamReadListStructure(stream, NewDataStoreRatingInitParamWithSlot())
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStorePreparePostParam.RatingInitParams. %s", err.Error())
 	}
 
-	dataStorePreparePostParam.RatingInitParams = ratingInitParams.([]*DataStoreRatingInitParamWithSlot)
+	dataStorePreparePostParam.RatingInitParams = ratingInitParams
 
-	persistenceInitParam, err := stream.ReadStructure(NewDataStorePersistenceInitParam())
+	dataStorePreparePostParam.PersistenceInitParam, err = nex.StreamReadStructure(stream, NewDataStorePersistenceInitParam())
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStorePreparePostParam.PersistenceInitParam. %s", err.Error())
 	}
-
-	dataStorePreparePostParam.PersistenceInitParam = persistenceInitParam.(*DataStorePersistenceInitParam)
 
 	if datastoreVersion.GreaterOrEqual("3.5.0") {
 		dataStorePreparePostParam.ExtraData, err = stream.ReadListString()

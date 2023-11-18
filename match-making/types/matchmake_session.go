@@ -92,12 +92,12 @@ func (matchmakeSession *MatchmakeSession) ExtractFromStream(stream *nex.StreamIn
 	}
 
 	if matchmakingVersion.GreaterOrEqual("3.6.0") {
-		matchmakeParam, err := stream.ReadStructure(NewMatchmakeParam())
+		matchmakeParam, err := nex.StreamReadStructure(stream, NewMatchmakeParam())
 		if err != nil {
 			return fmt.Errorf("Failed to extract MatchmakeSession.MatchmakeParam. %s", err.Error())
 		}
 
-		matchmakeSession.MatchmakeParam = matchmakeParam.(*MatchmakeParam)
+		matchmakeSession.MatchmakeParam = matchmakeParam
 		matchmakeSession.StartedTime, err = stream.ReadDateTime()
 		if err != nil {
 			return fmt.Errorf("Failed to extract MatchmakeSession.StartedTime. %s", err.Error())

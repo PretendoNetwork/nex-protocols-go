@@ -35,7 +35,7 @@ func (protocol *Protocol) handleConditionalSearchObject(packet nex.PacketInterfa
 		return
 	}
 
-	param, err := parametersStream.ReadStructure(datastore_types.NewDataStoreSearchParam())
+	param, err := nex.StreamReadStructure(parametersStream, datastore_types.NewDataStoreSearchParam())
 	if err != nil {
 		_, errorCode = protocol.ConditionalSearchObject(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, 0, nil, nil)
 		if errorCode != 0 {
@@ -55,7 +55,7 @@ func (protocol *Protocol) handleConditionalSearchObject(packet nex.PacketInterfa
 		return
 	}
 
-	rmcMessage, errorCode := protocol.ConditionalSearchObject(nil, packet, callID, condition, param.(*datastore_types.DataStoreSearchParam), extraData)
+	rmcMessage, errorCode := protocol.ConditionalSearchObject(nil, packet, callID, condition, param, extraData)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 		return

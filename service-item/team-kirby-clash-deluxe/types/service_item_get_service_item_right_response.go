@@ -19,12 +19,12 @@ type ServiceItemGetServiceItemRightResponse struct {
 func (serviceItemGetServiceItemRightResponse *ServiceItemGetServiceItemRightResponse) ExtractFromStream(stream *nex.StreamIn) error {
 	var err error
 
-	nullableRightInfos, err := stream.ReadListStructure(NewServiceItemRightInfos())
+	nullableRightInfos, err := nex.StreamReadListStructure(stream, NewServiceItemRightInfos())
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemGetServiceItemRightResponse.NullableRightInfos from stream. %s", err.Error())
 	}
 
-	serviceItemGetServiceItemRightResponse.NullableRightInfos = nullableRightInfos.([]*ServiceItemRightInfos)
+	serviceItemGetServiceItemRightResponse.NullableRightInfos = nullableRightInfos
 
 	return nil
 }

@@ -25,12 +25,10 @@ func (dataStoreFileServerObjectInfo *DataStoreFileServerObjectInfo) ExtractFromS
 		return fmt.Errorf("Failed to extract DataStoreFileServerObjectInfo.DataID. %s", err.Error())
 	}
 
-	getInfo, err := stream.ReadStructure(datastore_types.NewDataStoreReqGetInfo())
+	dataStoreFileServerObjectInfo.GetInfo, err = nex.StreamReadStructure(stream, datastore_types.NewDataStoreReqGetInfo())
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreFileServerObjectInfo.GetInfo. %s", err.Error())
 	}
-
-	dataStoreFileServerObjectInfo.GetInfo = getInfo.(*datastore_types.DataStoreReqGetInfo)
 
 	return nil
 }

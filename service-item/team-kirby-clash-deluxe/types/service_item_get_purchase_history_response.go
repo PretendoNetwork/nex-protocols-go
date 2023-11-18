@@ -19,12 +19,12 @@ type ServiceItemGetPurchaseHistoryResponse struct {
 func (serviceItemGetPurchaseHistoryResponse *ServiceItemGetPurchaseHistoryResponse) ExtractFromStream(stream *nex.StreamIn) error {
 	var err error
 
-	nullablePurchaseHistory, err := stream.ReadListStructure(NewServiceItemPurchaseHistory())
+	nullablePurchaseHistory, err := nex.StreamReadListStructure(stream, NewServiceItemPurchaseHistory())
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemGetPurchaseHistoryResponse.NullablePurchaseHistory from stream. %s", err.Error())
 	}
 
-	serviceItemGetPurchaseHistoryResponse.NullablePurchaseHistory = nullablePurchaseHistory.([]*ServiceItemPurchaseHistory)
+	serviceItemGetPurchaseHistoryResponse.NullablePurchaseHistory = nullablePurchaseHistory
 
 	return nil
 }

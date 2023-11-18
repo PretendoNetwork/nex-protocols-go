@@ -19,12 +19,12 @@ type ServiceItemUseServiceItemResponse struct {
 func (serviceItemUseServiceItemResponse *ServiceItemUseServiceItemResponse) ExtractFromStream(stream *nex.StreamIn) error {
 	var err error
 
-	nullableUsedInfo, err := stream.ReadListStructure(NewServiceItemUsedInfo())
+	nullableUsedInfo, err := nex.StreamReadListStructure(stream, NewServiceItemUsedInfo())
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemUseServiceItemResponse.NullableUsedInfo from stream. %s", err.Error())
 	}
 
-	serviceItemUseServiceItemResponse.NullableUsedInfo = nullableUsedInfo.([]*ServiceItemUsedInfo)
+	serviceItemUseServiceItemResponse.NullableUsedInfo = nullableUsedInfo
 
 	return nil
 }

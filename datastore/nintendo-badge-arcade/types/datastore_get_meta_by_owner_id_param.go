@@ -36,12 +36,10 @@ func (dataStoreGetMetaByOwnerIDParam *DataStoreGetMetaByOwnerIDParam) ExtractFro
 		return fmt.Errorf("Failed to extract DataStoreGetMetaByOwnerIDParam.ResultOption. %s", err.Error())
 	}
 
-	resultRange, err := stream.ReadStructure(nex.NewResultRange())
+	dataStoreGetMetaByOwnerIDParam.ResultRange, err = nex.StreamReadStructure(stream, nex.NewResultRange())
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreGetMetaByOwnerIDParam.ResultRange. %s", err.Error())
 	}
-
-	dataStoreGetMetaByOwnerIDParam.ResultRange = resultRange.(*nex.ResultRange)
 
 	return nil
 }

@@ -25,7 +25,7 @@ func (protocol *Protocol) handleUpdateFriendUserProfile(packet nex.PacketInterfa
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	param, err := parametersStream.ReadStructure(matchmake_extension_monster_hunter_xx_types.NewFriendUserParam())
+	param, err := nex.StreamReadStructure(parametersStream, matchmake_extension_monster_hunter_xx_types.NewFriendUserParam())
 	if err != nil {
 		_, errorCode = protocol.UpdateFriendUserProfile(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
@@ -35,7 +35,7 @@ func (protocol *Protocol) handleUpdateFriendUserProfile(packet nex.PacketInterfa
 		return
 	}
 
-	rmcMessage, errorCode := protocol.UpdateFriendUserProfile(nil, packet, callID, param.(*matchmake_extension_monster_hunter_xx_types.FriendUserParam))
+	rmcMessage, errorCode := protocol.UpdateFriendUserProfile(nil, packet, callID, param)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 		return

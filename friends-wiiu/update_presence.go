@@ -25,7 +25,7 @@ func (protocol *Protocol) handleUpdatePresence(packet nex.PacketInterface) {
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	nintendoPresenceV2, err := parametersStream.ReadStructure(friends_wiiu_types.NewNintendoPresenceV2())
+	nintendoPresenceV2, err := nex.StreamReadStructure(parametersStream, friends_wiiu_types.NewNintendoPresenceV2())
 	if err != nil {
 		_, errorCode = protocol.UpdatePresence(fmt.Errorf("Failed to read nintendoPresenceV2 from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
@@ -35,7 +35,7 @@ func (protocol *Protocol) handleUpdatePresence(packet nex.PacketInterface) {
 		return
 	}
 
-	rmcMessage, errorCode := protocol.UpdatePresence(nil, packet, callID, nintendoPresenceV2.(*friends_wiiu_types.NintendoPresenceV2))
+	rmcMessage, errorCode := protocol.UpdatePresence(nil, packet, callID, nintendoPresenceV2)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 		return

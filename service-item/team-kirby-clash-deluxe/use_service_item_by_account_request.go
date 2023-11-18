@@ -25,7 +25,7 @@ func (protocol *Protocol) handleUseServiceItemByAccountRequest(packet nex.Packet
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	useServiceItemByAccountParam, err := parametersStream.ReadStructure(service_item_team_kirby_clash_deluxe_types.NewServiceItemUseServiceItemByAccountParam())
+	useServiceItemByAccountParam, err := nex.StreamReadStructure(parametersStream, service_item_team_kirby_clash_deluxe_types.NewServiceItemUseServiceItemByAccountParam())
 	if err != nil {
 		_, errorCode = protocol.UseServiceItemByAccountRequest(fmt.Errorf("Failed to read useServiceItemByAccountParam from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
@@ -35,7 +35,7 @@ func (protocol *Protocol) handleUseServiceItemByAccountRequest(packet nex.Packet
 		return
 	}
 
-	rmcMessage, errorCode := protocol.UseServiceItemByAccountRequest(nil, packet, callID, useServiceItemByAccountParam.(*service_item_team_kirby_clash_deluxe_types.ServiceItemUseServiceItemByAccountParam))
+	rmcMessage, errorCode := protocol.UseServiceItemByAccountRequest(nil, packet, callID, useServiceItemByAccountParam)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 		return

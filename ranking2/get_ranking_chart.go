@@ -25,7 +25,7 @@ func (protocol *Protocol) handleGetRankingChart(packet nex.PacketInterface) {
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	info, err := parametersStream.ReadStructure(ranking2_types.NewRanking2ChartInfoInput())
+	info, err := nex.StreamReadStructure(parametersStream, ranking2_types.NewRanking2ChartInfoInput())
 	if err != nil {
 		_, errorCode = protocol.GetRankingChart(fmt.Errorf("Failed to read info from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
@@ -35,7 +35,7 @@ func (protocol *Protocol) handleGetRankingChart(packet nex.PacketInterface) {
 		return
 	}
 
-	rmcMessage, errorCode := protocol.GetRankingChart(nil, packet, callID, info.(*ranking2_types.Ranking2ChartInfoInput))
+	rmcMessage, errorCode := protocol.GetRankingChart(nil, packet, callID, info)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 		return

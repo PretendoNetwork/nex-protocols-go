@@ -23,12 +23,10 @@ type GlobalTradeStationUploadPokemonParam struct {
 func (globalTradeStationUploadPokemonParam *GlobalTradeStationUploadPokemonParam) ExtractFromStream(stream *nex.StreamIn) error {
 	var err error
 
-	prepareUploadKey, err := stream.ReadStructure(NewGlobalTradeStationRecordKey())
+	globalTradeStationUploadPokemonParam.PrepareUploadKey, err = nex.StreamReadStructure(stream, NewGlobalTradeStationRecordKey())
 	if err != nil {
 		return fmt.Errorf("Failed to extract GlobalTradeStationUploadPokemonParam.PrepareUploadKey from stream. %s", err.Error())
 	}
-
-	globalTradeStationUploadPokemonParam.PrepareUploadKey = prepareUploadKey.(*GlobalTradeStationRecordKey)
 
 	globalTradeStationUploadPokemonParam.Period, err = stream.ReadUInt16LE()
 	if err != nil {

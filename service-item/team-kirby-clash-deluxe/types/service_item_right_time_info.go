@@ -19,12 +19,12 @@ type ServiceItemRightTimeInfo struct {
 func (serviceItemRightTimeInfo *ServiceItemRightTimeInfo) ExtractFromStream(stream *nex.StreamIn) error {
 	var err error
 
-	accountRights, err := stream.ReadListStructure(NewServiceItemAccountRightTime())
+	accountRights, err := nex.StreamReadListStructure(stream, NewServiceItemAccountRightTime())
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemRightTimeInfo.AccountRights from stream. %s", err.Error())
 	}
 
-	serviceItemRightTimeInfo.AccountRights = accountRights.([]*ServiceItemAccountRightTime)
+	serviceItemRightTimeInfo.AccountRights = accountRights
 
 	return nil
 }

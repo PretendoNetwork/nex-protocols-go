@@ -47,18 +47,16 @@ func (dataStoreChangeMetaParam *DataStoreChangeMetaParam) ExtractFromStream(stre
 		return fmt.Errorf("Failed to extract DataStoreChangeMetaParam.Name. %s", err.Error())
 	}
 
-	permission, err := stream.ReadStructure(NewDataStorePermission())
+	dataStoreChangeMetaParam.Permission, err = nex.StreamReadStructure(stream, NewDataStorePermission())
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreChangeMetaParam.Permission. %s", err.Error())
 	}
 
-	dataStoreChangeMetaParam.Permission = permission.(*DataStorePermission)
-	delPermission, err := stream.ReadStructure(NewDataStorePermission())
+	dataStoreChangeMetaParam.DelPermission, err = nex.StreamReadStructure(stream, NewDataStorePermission())
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreChangeMetaParam.DelPermission. %s", err.Error())
 	}
 
-	dataStoreChangeMetaParam.DelPermission = delPermission.(*DataStorePermission)
 	dataStoreChangeMetaParam.Period, err = stream.ReadUInt16LE()
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreChangeMetaParam.Period. %s", err.Error())
@@ -94,20 +92,18 @@ func (dataStoreChangeMetaParam *DataStoreChangeMetaParam) ExtractFromStream(stre
 		return fmt.Errorf("Failed to extract DataStoreChangeMetaParam.Status. %s", err.Error())
 	}
 
-	compareParam, err := stream.ReadStructure(NewDataStoreChangeMetaCompareParam())
+	dataStoreChangeMetaParam.CompareParam, err = nex.StreamReadStructure(stream, NewDataStoreChangeMetaCompareParam())
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreChangeMetaParam.CompareParam. %s", err.Error())
 	}
 
-	dataStoreChangeMetaParam.CompareParam = compareParam.(*DataStoreChangeMetaCompareParam)
-
 	if dataStoreChangeMetaParam.StructureVersion() >= 1 {
-		persistenceTarget, err := stream.ReadStructure(NewDataStorePersistenceTarget())
+		persistenceTarget, err := nex.StreamReadStructure(stream, NewDataStorePersistenceTarget())
 		if err != nil {
 			return fmt.Errorf("Failed to extract DataStoreChangeMetaParam.PersistenceTarget. %s", err.Error())
 		}
 
-		dataStoreChangeMetaParam.PersistenceTarget = persistenceTarget.(*DataStorePersistenceTarget)
+		dataStoreChangeMetaParam.PersistenceTarget = persistenceTarget
 	}
 
 	return nil

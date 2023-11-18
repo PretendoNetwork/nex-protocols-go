@@ -25,7 +25,7 @@ func (protocol *Protocol) handlePostPlayLog(packet nex.PacketInterface) {
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	param, err := parametersStream.ReadStructure(shop_nintendo_badge_arcade_types.NewShopPostPlayLogParam())
+	param, err := nex.StreamReadStructure(parametersStream, shop_nintendo_badge_arcade_types.NewShopPostPlayLogParam())
 	if err != nil {
 		_, errorCode = protocol.PostPlayLog(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
@@ -35,7 +35,7 @@ func (protocol *Protocol) handlePostPlayLog(packet nex.PacketInterface) {
 		return
 	}
 
-	rmcMessage, errorCode := protocol.PostPlayLog(nil, packet, callID, param.(*shop_nintendo_badge_arcade_types.ShopPostPlayLogParam))
+	rmcMessage, errorCode := protocol.PostPlayLog(nil, packet, callID, param)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 		return

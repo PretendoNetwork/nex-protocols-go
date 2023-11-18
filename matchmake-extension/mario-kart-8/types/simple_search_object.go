@@ -55,12 +55,10 @@ func (simpleSearchObject *SimpleSearchObject) ExtractFromStream(stream *nex.Stre
 		return fmt.Errorf("Failed to extract SimpleSearchObject.CommunityCode from stream. %s", err.Error())
 	}
 
-	datetimeAttribute, err := stream.ReadStructure(NewSimpleSearchDateTimeAttribute())
+	simpleSearchObject.DatetimeAttribute, err = nex.StreamReadStructure(stream, NewSimpleSearchDateTimeAttribute())
 	if err != nil {
 		return fmt.Errorf("Failed to extract SimpleSearchObject.DatetimeAttribute from stream. %s", err.Error())
 	}
-
-	simpleSearchObject.DatetimeAttribute = datetimeAttribute.(*SimpleSearchDateTimeAttribute)
 
 	return nil
 }

@@ -25,7 +25,7 @@ func (protocol *Protocol) handleGetCustomRanking(packet nex.PacketInterface) {
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	param, err := parametersStream.ReadStructure(datastore_super_mario_maker_types.NewDataStoreGetCustomRankingParam())
+	param, err := nex.StreamReadStructure(parametersStream, datastore_super_mario_maker_types.NewDataStoreGetCustomRankingParam())
 	if err != nil {
 		_, errorCode = protocol.GetCustomRanking(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
@@ -35,7 +35,7 @@ func (protocol *Protocol) handleGetCustomRanking(packet nex.PacketInterface) {
 		return
 	}
 
-	rmcMessage, errorCode := protocol.GetCustomRanking(nil, packet, callID, param.(*datastore_super_mario_maker_types.DataStoreGetCustomRankingParam))
+	rmcMessage, errorCode := protocol.GetCustomRanking(nil, packet, callID, param)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 		return

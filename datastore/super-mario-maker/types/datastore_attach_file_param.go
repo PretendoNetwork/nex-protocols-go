@@ -21,12 +21,10 @@ type DataStoreAttachFileParam struct {
 func (dataStoreAttachFileParam *DataStoreAttachFileParam) ExtractFromStream(stream *nex.StreamIn) error {
 	var err error
 
-	postParam, err := stream.ReadStructure(datastore_types.NewDataStorePreparePostParam())
+	dataStoreAttachFileParam.PostParam, err = nex.StreamReadStructure(stream, datastore_types.NewDataStorePreparePostParam())
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreAttachFileParam.PostParam from stream. %s", err.Error())
 	}
-
-	dataStoreAttachFileParam.PostParam = postParam.(*datastore_types.DataStorePreparePostParam)
 
 	dataStoreAttachFileParam.ReferDataID, err = stream.ReadUInt64LE()
 	if err != nil {

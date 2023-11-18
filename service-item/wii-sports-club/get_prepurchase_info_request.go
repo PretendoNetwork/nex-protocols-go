@@ -25,7 +25,7 @@ func (protocol *Protocol) handleGetPrepurchaseInfoRequest(packet nex.PacketInter
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	getPrepurchaseInfoParam, err := parametersStream.ReadStructure(service_item_wii_sports_club_types.NewServiceItemGetPrepurchaseInfoParam())
+	getPrepurchaseInfoParam, err := nex.StreamReadStructure(parametersStream, service_item_wii_sports_club_types.NewServiceItemGetPrepurchaseInfoParam())
 	if err != nil {
 		_, errorCode = protocol.GetPrepurchaseInfoRequest(fmt.Errorf("Failed to read getPrepurchaseInfoParam from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
@@ -35,7 +35,7 @@ func (protocol *Protocol) handleGetPrepurchaseInfoRequest(packet nex.PacketInter
 		return
 	}
 
-	rmcMessage, errorCode := protocol.GetPrepurchaseInfoRequest(nil, packet, callID, getPrepurchaseInfoParam.(*service_item_wii_sports_club_types.ServiceItemGetPrepurchaseInfoParam))
+	rmcMessage, errorCode := protocol.GetPrepurchaseInfoRequest(nil, packet, callID, getPrepurchaseInfoParam)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 		return

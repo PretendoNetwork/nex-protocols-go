@@ -25,7 +25,7 @@ func (protocol *Protocol) handleGetSpecificMetaV1(packet nex.PacketInterface) {
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	param, err := parametersStream.ReadStructure(datastore_types.NewDataStoreGetSpecificMetaParamV1())
+	param, err := nex.StreamReadStructure(parametersStream, datastore_types.NewDataStoreGetSpecificMetaParamV1())
 	if err != nil {
 		_, errorCode = protocol.GetSpecificMetaV1(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
@@ -35,7 +35,7 @@ func (protocol *Protocol) handleGetSpecificMetaV1(packet nex.PacketInterface) {
 		return
 	}
 
-	rmcMessage, errorCode := protocol.GetSpecificMetaV1(nil, packet, callID, param.(*datastore_types.DataStoreGetSpecificMetaParamV1))
+	rmcMessage, errorCode := protocol.GetSpecificMetaV1(nil, packet, callID, param)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 		return

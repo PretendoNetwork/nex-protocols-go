@@ -25,7 +25,7 @@ func (protocol *Protocol) handleUpdateAndGetAllInformation(packet nex.PacketInte
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	nnaInfo, err := parametersStream.ReadStructure(friends_wiiu_types.NewNNAInfo())
+	nnaInfo, err := nex.StreamReadStructure(parametersStream, friends_wiiu_types.NewNNAInfo())
 	if err != nil {
 		_, errorCode = protocol.UpdateAndGetAllInformation(fmt.Errorf("Failed to read nnaInfo from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
 		if errorCode != 0 {
@@ -35,7 +35,7 @@ func (protocol *Protocol) handleUpdateAndGetAllInformation(packet nex.PacketInte
 		return
 	}
 
-	presence, err := parametersStream.ReadStructure(friends_wiiu_types.NewNintendoPresenceV2())
+	presence, err := nex.StreamReadStructure(parametersStream, friends_wiiu_types.NewNintendoPresenceV2())
 	if err != nil {
 		_, errorCode = protocol.UpdateAndGetAllInformation(fmt.Errorf("Failed to read presence from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
 		if errorCode != 0 {
@@ -55,7 +55,7 @@ func (protocol *Protocol) handleUpdateAndGetAllInformation(packet nex.PacketInte
 		return
 	}
 
-	rmcMessage, errorCode := protocol.UpdateAndGetAllInformation(nil, packet, callID, nnaInfo.(*friends_wiiu_types.NNAInfo), presence.(*friends_wiiu_types.NintendoPresenceV2), birthday)
+	rmcMessage, errorCode := protocol.UpdateAndGetAllInformation(nil, packet, callID, nnaInfo, presence, birthday)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 		return

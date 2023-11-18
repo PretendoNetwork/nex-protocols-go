@@ -93,12 +93,12 @@ func (matchmakeSessionSearchCriteria *MatchmakeSessionSearchCriteria) ExtractFro
 	}
 
 	if matchmakingVersion.GreaterOrEqual("3.6.0") {
-		matchmakeParam, err := stream.ReadStructure(NewMatchmakeParam())
+		matchmakeParam, err := nex.StreamReadStructure(stream, NewMatchmakeParam())
 		if err != nil {
 			return fmt.Errorf("Failed to extract MatchmakeSessionSearchCriteria.MatchmakeParam. %s", err.Error())
 		}
 
-		matchmakeSessionSearchCriteria.MatchmakeParam = matchmakeParam.(*MatchmakeParam)
+		matchmakeSessionSearchCriteria.MatchmakeParam = matchmakeParam
 	}
 
 	if matchmakingVersion.GreaterOrEqual("3.7.0") {
@@ -126,12 +126,12 @@ func (matchmakeSessionSearchCriteria *MatchmakeSessionSearchCriteria) ExtractFro
 			return fmt.Errorf("Failed to extract MatchmakeSessionSearchCriteria.CodeWord. %s", err.Error())
 		}
 
-		resultRange, err := stream.ReadStructure(nex.NewResultRange())
+		resultRange, err := nex.StreamReadStructure(stream, nex.NewResultRange())
 		if err != nil {
 			return fmt.Errorf("Failed to extract MatchmakeSessionSearchCriteria.ResultRange. %s", err.Error())
 		}
 
-		matchmakeSessionSearchCriteria.ResultRange = resultRange.(*nex.ResultRange)
+		matchmakeSessionSearchCriteria.ResultRange = resultRange
 	}
 
 	return nil

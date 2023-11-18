@@ -26,24 +26,20 @@ func (dataStoreGetCustomRankingParam *DataStoreGetCustomRankingParam) ExtractFro
 		return fmt.Errorf("Failed to extract DataStoreGetCustomRankingParam.ApplicationID from stream. %s", err.Error())
 	}
 
-	condition, err := stream.ReadStructure(NewDataStoreCustomRankingRatingCondition())
+	dataStoreGetCustomRankingParam.Condition, err = nex.StreamReadStructure(stream, NewDataStoreCustomRankingRatingCondition())
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreGetCustomRankingParam.Condition from stream. %s", err.Error())
 	}
-
-	dataStoreGetCustomRankingParam.Condition = condition.(*DataStoreCustomRankingRatingCondition)
 
 	dataStoreGetCustomRankingParam.ResultOption, err = stream.ReadUInt8()
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreGetCustomRankingParam.ResultOption from stream. %s", err.Error())
 	}
 
-	resultRange, err := stream.ReadStructure(nex.NewResultRange())
+	dataStoreGetCustomRankingParam.ResultRange, err = nex.StreamReadStructure(stream, nex.NewResultRange())
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreGetCustomRankingParam.ResultRange from stream. %s", err.Error())
 	}
-
-	dataStoreGetCustomRankingParam.ResultRange = resultRange.(*nex.ResultRange)
 
 	return nil
 }

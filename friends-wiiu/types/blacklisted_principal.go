@@ -30,18 +30,16 @@ func (blacklistedPrincipal *BlacklistedPrincipal) Bytes(stream *nex.StreamOut) [
 func (blacklistedPrincipal *BlacklistedPrincipal) ExtractFromStream(stream *nex.StreamIn) error {
 	var err error
 
-	principalBasicInfo, err := stream.ReadStructure(NewPrincipalBasicInfo())
+	blacklistedPrincipal.PrincipalBasicInfo, err = nex.StreamReadStructure(stream, NewPrincipalBasicInfo())
 	if err != nil {
 		return fmt.Errorf("Failed to extract BlacklistedPrincipal.PrincipalBasicInfo. %s", err.Error())
 	}
 
-	blacklistedPrincipal.PrincipalBasicInfo = principalBasicInfo.(*PrincipalBasicInfo)
-	gameKey, err := stream.ReadStructure(NewGameKey())
+	blacklistedPrincipal.GameKey, err = nex.StreamReadStructure(stream, NewGameKey())
 	if err != nil {
 		return fmt.Errorf("Failed to extract BlacklistedPrincipal.GameKey. %s", err.Error())
 	}
 
-	blacklistedPrincipal.GameKey = gameKey.(*GameKey)
 	blacklistedPrincipal.BlackListedSince, err = stream.ReadDateTime()
 	if err != nil {
 		return fmt.Errorf("Failed to extract BlacklistedPrincipal.BlackListedSince. %s", err.Error())

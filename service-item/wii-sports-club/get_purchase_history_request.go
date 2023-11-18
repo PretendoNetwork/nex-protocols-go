@@ -25,7 +25,7 @@ func (protocol *Protocol) handleGetPurchaseHistoryRequest(packet nex.PacketInter
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	getPurchaseHistoryParam, err := parametersStream.ReadStructure(service_item_wii_sports_club_types.NewServiceItemGetPurchaseHistoryParam())
+	getPurchaseHistoryParam, err := nex.StreamReadStructure(parametersStream, service_item_wii_sports_club_types.NewServiceItemGetPurchaseHistoryParam())
 	if err != nil {
 		_, errorCode = protocol.GetPurchaseHistoryRequest(fmt.Errorf("Failed to read getPurchaseHistoryParam from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
@@ -35,7 +35,7 @@ func (protocol *Protocol) handleGetPurchaseHistoryRequest(packet nex.PacketInter
 		return
 	}
 
-	rmcMessage, errorCode := protocol.GetPurchaseHistoryRequest(nil, packet, callID, getPurchaseHistoryParam.(*service_item_wii_sports_club_types.ServiceItemGetPurchaseHistoryParam))
+	rmcMessage, errorCode := protocol.GetPurchaseHistoryRequest(nil, packet, callID, getPurchaseHistoryParam)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 		return

@@ -25,7 +25,7 @@ func (protocol *Protocol) handlePurchaseServiceItemRequest(packet nex.PacketInte
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	purchaseServiceItemParam, err := parametersStream.ReadStructure(service_item_team_kirby_clash_deluxe_types.NewServiceItemPurchaseServiceItemParam())
+	purchaseServiceItemParam, err := nex.StreamReadStructure(parametersStream, service_item_team_kirby_clash_deluxe_types.NewServiceItemPurchaseServiceItemParam())
 	if err != nil {
 		_, errorCode = protocol.PurchaseServiceItemRequest(fmt.Errorf("Failed to read purchaseServiceItemParam from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
@@ -35,7 +35,7 @@ func (protocol *Protocol) handlePurchaseServiceItemRequest(packet nex.PacketInte
 		return
 	}
 
-	rmcMessage, errorCode := protocol.PurchaseServiceItemRequest(nil, packet, callID, purchaseServiceItemParam.(*service_item_team_kirby_clash_deluxe_types.ServiceItemPurchaseServiceItemParam))
+	rmcMessage, errorCode := protocol.PurchaseServiceItemRequest(nil, packet, callID, purchaseServiceItemParam)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 		return

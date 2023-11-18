@@ -25,7 +25,7 @@ func (protocol *Protocol) handleGetRanking(packet nex.PacketInterface) {
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	getParam, err := parametersStream.ReadStructure(ranking2_types.NewRanking2GetParam())
+	getParam, err := nex.StreamReadStructure(parametersStream, ranking2_types.NewRanking2GetParam())
 	if err != nil {
 		_, errorCode = protocol.GetRanking(fmt.Errorf("Failed to read getParam from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
@@ -35,7 +35,7 @@ func (protocol *Protocol) handleGetRanking(packet nex.PacketInterface) {
 		return
 	}
 
-	rmcMessage, errorCode := protocol.GetRanking(nil, packet, callID, getParam.(*ranking2_types.Ranking2GetParam))
+	rmcMessage, errorCode := protocol.GetRanking(nil, packet, callID, getParam)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 		return

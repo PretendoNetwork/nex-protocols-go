@@ -25,7 +25,7 @@ func (protocol *Protocol) handleEndChallenge(packet nex.PacketInterface) {
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	endChallengeParam, err := parametersStream.ReadStructure(service_item_wii_sports_club_types.NewServiceItemEndChallengeParam())
+	endChallengeParam, err := nex.StreamReadStructure(parametersStream, service_item_wii_sports_club_types.NewServiceItemEndChallengeParam())
 	if err != nil {
 		_, errorCode = protocol.EndChallenge(fmt.Errorf("Failed to read endChallengeParam from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
@@ -35,7 +35,7 @@ func (protocol *Protocol) handleEndChallenge(packet nex.PacketInterface) {
 		return
 	}
 
-	rmcMessage, errorCode := protocol.EndChallenge(nil, packet, callID, endChallengeParam.(*service_item_wii_sports_club_types.ServiceItemEndChallengeParam))
+	rmcMessage, errorCode := protocol.EndChallenge(nil, packet, callID, endChallengeParam)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 		return

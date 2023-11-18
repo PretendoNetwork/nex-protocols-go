@@ -25,7 +25,7 @@ func (protocol *Protocol) handleEndRound(packet nex.PacketInterface) {
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	endRoundParam, err := parametersStream.ReadStructure(matchmake_referee_types.NewMatchmakeRefereeEndRoundParam())
+	endRoundParam, err := nex.StreamReadStructure(parametersStream, matchmake_referee_types.NewMatchmakeRefereeEndRoundParam())
 	if err != nil {
 		_, errorCode = protocol.EndRound(fmt.Errorf("Failed to read endRoundParam from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
@@ -35,7 +35,7 @@ func (protocol *Protocol) handleEndRound(packet nex.PacketInterface) {
 		return
 	}
 
-	rmcMessage, errorCode := protocol.EndRound(nil, packet, callID, endRoundParam.(*matchmake_referee_types.MatchmakeRefereeEndRoundParam))
+	rmcMessage, errorCode := protocol.EndRound(nil, packet, callID, endRoundParam)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 		return

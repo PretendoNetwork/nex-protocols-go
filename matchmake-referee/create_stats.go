@@ -25,7 +25,7 @@ func (protocol *Protocol) handleCreateStats(packet nex.PacketInterface) {
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	param, err := parametersStream.ReadStructure(matchmake_referee_types.NewMatchmakeRefereeStatsInitParam())
+	param, err := nex.StreamReadStructure(parametersStream, matchmake_referee_types.NewMatchmakeRefereeStatsInitParam())
 	if err != nil {
 		_, errorCode = protocol.CreateStats(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
@@ -35,7 +35,7 @@ func (protocol *Protocol) handleCreateStats(packet nex.PacketInterface) {
 		return
 	}
 
-	rmcMessage, errorCode := protocol.CreateStats(nil, packet, callID, param.(*matchmake_referee_types.MatchmakeRefereeStatsInitParam))
+	rmcMessage, errorCode := protocol.CreateStats(nil, packet, callID, param)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 		return

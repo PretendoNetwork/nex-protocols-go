@@ -25,7 +25,7 @@ func (protocol *Protocol) handleRetrieveMessages(packet nex.PacketInterface) {
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	recipient, err := parametersStream.ReadStructure(messaging_types.NewMessageRecipient())
+	recipient, err := nex.StreamReadStructure(parametersStream, messaging_types.NewMessageRecipient())
 	if err != nil {
 		_, errorCode = protocol.RetrieveMessages(fmt.Errorf("Failed to read recipient from parameters. %s", err.Error()), packet, callID, nil, nil, false)
 		if errorCode != 0 {
@@ -55,7 +55,7 @@ func (protocol *Protocol) handleRetrieveMessages(packet nex.PacketInterface) {
 		return
 	}
 
-	rmcMessage, errorCode := protocol.RetrieveMessages(nil, packet, callID, recipient.(*messaging_types.MessageRecipient), lstMsgIDs, bLeaveOnServer)
+	rmcMessage, errorCode := protocol.RetrieveMessages(nil, packet, callID, recipient, lstMsgIDs, bLeaveOnServer)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 		return

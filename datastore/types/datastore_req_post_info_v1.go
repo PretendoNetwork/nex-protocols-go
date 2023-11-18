@@ -33,19 +33,19 @@ func (dataStoreReqPostInfoV1 *DataStoreReqPostInfoV1) ExtractFromStream(stream *
 		return fmt.Errorf("Failed to extract DataStoreReqPostInfoV1.URL. %s", err.Error())
 	}
 
-	requestHeaders, err := stream.ReadListStructure(NewDataStoreKeyValue())
+	requestHeaders, err := nex.StreamReadListStructure(stream, NewDataStoreKeyValue())
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreReqPostInfoV1.RequestHeaders. %s", err.Error())
 	}
 
-	dataStoreReqPostInfoV1.RequestHeaders = requestHeaders.([]*DataStoreKeyValue)
+	dataStoreReqPostInfoV1.RequestHeaders = requestHeaders
 
-	formFields, err := stream.ReadListStructure(NewDataStoreKeyValue())
+	formFields, err := nex.StreamReadListStructure(stream, NewDataStoreKeyValue())
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreReqPostInfoV1.FormFields. %s", err.Error())
 	}
 
-	dataStoreReqPostInfoV1.FormFields = formFields.([]*DataStoreKeyValue)
+	dataStoreReqPostInfoV1.FormFields = formFields
 
 	dataStoreReqPostInfoV1.RootCACert, err = stream.ReadBuffer()
 	if err != nil {

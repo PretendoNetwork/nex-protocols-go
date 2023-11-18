@@ -25,7 +25,7 @@ func (protocol *Protocol) handleUpdateMiiList(packet nex.PacketInterface) {
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	miiList, err := parametersStream.ReadStructure(friends_3ds_types.NewMiiList())
+	miiList, err := nex.StreamReadStructure(parametersStream, friends_3ds_types.NewMiiList())
 	if err != nil {
 		_, errorCode = protocol.UpdateMiiList(fmt.Errorf("Failed to read miiList from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
@@ -35,7 +35,7 @@ func (protocol *Protocol) handleUpdateMiiList(packet nex.PacketInterface) {
 		return
 	}
 
-	rmcMessage, errorCode := protocol.UpdateMiiList(nil, packet, callID, miiList.(*friends_3ds_types.MiiList))
+	rmcMessage, errorCode := protocol.UpdateMiiList(nil, packet, callID, miiList)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 		return

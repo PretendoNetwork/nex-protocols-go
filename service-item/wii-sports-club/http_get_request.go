@@ -25,7 +25,7 @@ func (protocol *Protocol) handleHTTPGetRequest(packet nex.PacketInterface) {
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	url, err := parametersStream.ReadStructure(service_item_wii_sports_club_types.NewServiceItemHTTPGetParam())
+	url, err := nex.StreamReadStructure(parametersStream, service_item_wii_sports_club_types.NewServiceItemHTTPGetParam())
 	if err != nil {
 		_, errorCode = protocol.HttpGetRequest(fmt.Errorf("Failed to read url from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
@@ -35,7 +35,7 @@ func (protocol *Protocol) handleHTTPGetRequest(packet nex.PacketInterface) {
 		return
 	}
 
-	rmcMessage, errorCode := protocol.HttpGetRequest(nil, packet, callID, url.(*service_item_wii_sports_club_types.ServiceItemHTTPGetParam))
+	rmcMessage, errorCode := protocol.HttpGetRequest(nil, packet, callID, url)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 		return

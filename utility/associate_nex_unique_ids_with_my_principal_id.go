@@ -25,7 +25,7 @@ func (protocol *Protocol) handleAssociateNexUniqueIDsWithMyPrincipalID(packet ne
 	parameters := request.Parameters
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
-	uniqueIDInfo, err := parametersStream.ReadListStructure(utility_types.NewUniqueIDInfo())
+	uniqueIDInfo, err := nex.StreamReadListStructure(parametersStream, utility_types.NewUniqueIDInfo())
 	if err != nil {
 		_, errorCode = protocol.AssociateNexUniqueIDsWithMyPrincipalID(fmt.Errorf("Failed to read uniqueIDInfo from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
@@ -35,7 +35,7 @@ func (protocol *Protocol) handleAssociateNexUniqueIDsWithMyPrincipalID(packet ne
 		return
 	}
 
-	rmcMessage, errorCode := protocol.AssociateNexUniqueIDsWithMyPrincipalID(nil, packet, callID, uniqueIDInfo.([]*utility_types.UniqueIDInfo))
+	rmcMessage, errorCode := protocol.AssociateNexUniqueIDsWithMyPrincipalID(nil, packet, callID, uniqueIDInfo)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 		return

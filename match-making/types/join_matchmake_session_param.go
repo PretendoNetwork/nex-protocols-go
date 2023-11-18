@@ -95,12 +95,12 @@ func (joinMatchmakeSessionParam *JoinMatchmakeSessionParam) ExtractFromStream(st
 	// * Assuming this to be 4.0.0
 	// * Not seen in Minecraft, which is 3.10.0
 	if matchmakingVersion.GreaterOrEqual("4.0.0") {
-		blockListParam, err := stream.ReadStructure(NewMatchmakeBlockListParam())
+		blockListParam, err := nex.StreamReadStructure(stream, NewMatchmakeBlockListParam())
 		if err != nil {
 			return fmt.Errorf("Failed to extract JoinMatchmakeSessionParam.BlockListParam. %s", err.Error())
 		}
 
-		joinMatchmakeSessionParam.BlockListParam = blockListParam.(*MatchmakeBlockListParam)
+		joinMatchmakeSessionParam.BlockListParam = blockListParam
 	}
 
 	return nil

@@ -34,12 +34,11 @@ func (dataStorePrepareGetParam *DataStorePrepareGetParam) ExtractFromStream(stre
 		return fmt.Errorf("Failed to extract DataStorePrepareGetParam.LockID. %s", err.Error())
 	}
 
-	persistenceTarget, err := stream.ReadStructure(NewDataStorePersistenceTarget())
+	dataStorePrepareGetParam.PersistenceTarget, err = nex.StreamReadStructure(stream, NewDataStorePersistenceTarget())
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStorePrepareGetParam.PersistenceTarget. %s", err.Error())
 	}
 
-	dataStorePrepareGetParam.PersistenceTarget = persistenceTarget.(*DataStorePersistenceTarget)
 	dataStorePrepareGetParam.AccessPassword, err = stream.ReadUInt64LE()
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStorePrepareGetParam.AccessPassword. %s", err.Error())

@@ -25,7 +25,7 @@ func (protocol *Protocol) handleRateObjectWithPosting(packet nex.PacketInterface
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	target, err := parametersStream.ReadStructure(datastore_types.NewDataStoreRatingTarget())
+	target, err := nex.StreamReadStructure(parametersStream, datastore_types.NewDataStoreRatingTarget())
 	if err != nil {
 		_, errorCode = protocol.RateObjectWithPosting(fmt.Errorf("Failed to read target from parameters. %s", err.Error()), packet, callID, nil, nil, nil, false)
 		if errorCode != 0 {
@@ -35,7 +35,7 @@ func (protocol *Protocol) handleRateObjectWithPosting(packet nex.PacketInterface
 		return
 	}
 
-	rateParam, err := parametersStream.ReadStructure(datastore_types.NewDataStoreRateObjectParam())
+	rateParam, err := nex.StreamReadStructure(parametersStream, datastore_types.NewDataStoreRateObjectParam())
 	if err != nil {
 		_, errorCode = protocol.RateObjectWithPosting(fmt.Errorf("Failed to read rateParam from parameters. %s", err.Error()), packet, callID, nil, nil, nil, false)
 		if errorCode != 0 {
@@ -45,7 +45,7 @@ func (protocol *Protocol) handleRateObjectWithPosting(packet nex.PacketInterface
 		return
 	}
 
-	postParam, err := parametersStream.ReadStructure(datastore_types.NewDataStorePreparePostParam())
+	postParam, err := nex.StreamReadStructure(parametersStream, datastore_types.NewDataStorePreparePostParam())
 	if err != nil {
 		_, errorCode = protocol.RateObjectWithPosting(fmt.Errorf("Failed to read postParam from parameters. %s", err.Error()), packet, callID, nil, nil, nil, false)
 		if errorCode != 0 {
@@ -65,7 +65,7 @@ func (protocol *Protocol) handleRateObjectWithPosting(packet nex.PacketInterface
 		return
 	}
 
-	rmcMessage, errorCode := protocol.RateObjectWithPosting(nil, packet, callID, target.(*datastore_types.DataStoreRatingTarget), rateParam.(*datastore_types.DataStoreRateObjectParam), postParam.(*datastore_types.DataStorePreparePostParam), fetchRatings)
+	rmcMessage, errorCode := protocol.RateObjectWithPosting(nil, packet, callID, target, rateParam, postParam, fetchRatings)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 		return

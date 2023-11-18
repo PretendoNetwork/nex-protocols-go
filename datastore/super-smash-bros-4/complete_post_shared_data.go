@@ -25,7 +25,7 @@ func (protocol *Protocol) handleCompletePostSharedData(packet nex.PacketInterfac
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	param, err := parametersStream.ReadStructure(datastore_super_smash_bros_4_types.NewDataStoreCompletePostSharedDataParam())
+	param, err := nex.StreamReadStructure(parametersStream, datastore_super_smash_bros_4_types.NewDataStoreCompletePostSharedDataParam())
 	if err != nil {
 		_, errorCode = protocol.CompletePostSharedData(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
@@ -35,7 +35,7 @@ func (protocol *Protocol) handleCompletePostSharedData(packet nex.PacketInterfac
 		return
 	}
 
-	rmcMessage, errorCode := protocol.CompletePostSharedData(nil, packet, callID, param.(*datastore_super_smash_bros_4_types.DataStoreCompletePostSharedDataParam))
+	rmcMessage, errorCode := protocol.CompletePostSharedData(nil, packet, callID, param)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 		return

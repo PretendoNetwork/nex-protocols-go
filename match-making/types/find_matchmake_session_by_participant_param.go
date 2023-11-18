@@ -33,12 +33,10 @@ func (findMatchmakeSessionByParticipantParam *FindMatchmakeSessionByParticipantP
 		return fmt.Errorf("Failed to extract FindMatchmakeSessionByParticipantParam.ResultOptions. %s", err.Error())
 	}
 
-	blockListParam, err := stream.ReadStructure(NewMatchmakeBlockListParam())
+	findMatchmakeSessionByParticipantParam.BlockListParam, err = nex.StreamReadStructure(stream, NewMatchmakeBlockListParam())
 	if err != nil {
 		return fmt.Errorf("Failed to extract FindMatchmakeSessionByParticipantParam.BlockListParam. %s", err.Error())
 	}
-
-	findMatchmakeSessionByParticipantParam.BlockListParam = blockListParam.(*MatchmakeBlockListParam)
 
 	return nil
 }

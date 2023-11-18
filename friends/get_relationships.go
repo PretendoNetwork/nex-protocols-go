@@ -24,7 +24,7 @@ func (protocol *Protocol) handleGetRelationships(packet nex.PacketInterface) {
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	resultRange, err := parametersStream.ReadStructure(nex.NewResultRange())
+	resultRange, err := nex.StreamReadStructure(parametersStream, nex.NewResultRange())
 	if err != nil {
 		_, errorCode = protocol.GetRelationships(fmt.Errorf("Failed to read resultRange from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
@@ -34,7 +34,7 @@ func (protocol *Protocol) handleGetRelationships(packet nex.PacketInterface) {
 		return
 	}
 
-	rmcMessage, errorCode := protocol.GetRelationships(nil, packet, callID, resultRange.(*nex.ResultRange))
+	rmcMessage, errorCode := protocol.GetRelationships(nil, packet, callID, resultRange)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 		return

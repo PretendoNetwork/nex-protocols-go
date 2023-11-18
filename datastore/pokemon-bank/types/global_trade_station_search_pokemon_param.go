@@ -24,12 +24,10 @@ type GlobalTradeStationSearchPokemonParam struct {
 func (globalTradeStationSearchPokemonParam *GlobalTradeStationSearchPokemonParam) ExtractFromStream(stream *nex.StreamIn) error {
 	var err error
 
-	prepareUploadKey, err := stream.ReadStructure(NewGlobalTradeStationRecordKey())
+	globalTradeStationSearchPokemonParam.PrepareUploadKey, err = nex.StreamReadStructure(stream, NewGlobalTradeStationRecordKey())
 	if err != nil {
 		return fmt.Errorf("Failed to extract GlobalTradeStationSearchPokemonParam.PrepareUploadKey from stream. %s", err.Error())
 	}
-
-	globalTradeStationSearchPokemonParam.PrepareUploadKey = prepareUploadKey.(*GlobalTradeStationRecordKey)
 
 	globalTradeStationSearchPokemonParam.Conditions, err = stream.ReadListUInt32LE()
 	if err != nil {
@@ -56,12 +54,10 @@ func (globalTradeStationSearchPokemonParam *GlobalTradeStationSearchPokemonParam
 		return fmt.Errorf("Failed to extract GlobalTradeStationSearchPokemonParam.UploadedBefore from stream. %s", err.Error())
 	}
 
-	resultRange, err := stream.ReadStructure(nex.NewResultRange())
+	globalTradeStationSearchPokemonParam.ResultRange, err = nex.StreamReadStructure(stream, nex.NewResultRange())
 	if err != nil {
 		return fmt.Errorf("Failed to extract GlobalTradeStationSearchPokemonParam.ResultRange from stream. %s", err.Error())
 	}
-
-	globalTradeStationSearchPokemonParam.ResultRange = resultRange.(*nex.ResultRange)
 
 	return nil
 }

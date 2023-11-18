@@ -25,7 +25,7 @@ func (protocol *Protocol) handleCreateCommunity(packet nex.PacketInterface) {
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	community, err := parametersStream.ReadStructure(match_making_types.NewPersistentGathering())
+	community, err := nex.StreamReadStructure(parametersStream, match_making_types.NewPersistentGathering())
 	if err != nil {
 		_, errorCode = protocol.CreateCommunity(fmt.Errorf("Failed to read community from parameters. %s", err.Error()), packet, callID, nil, "")
 		if errorCode != 0 {
@@ -45,7 +45,7 @@ func (protocol *Protocol) handleCreateCommunity(packet nex.PacketInterface) {
 		return
 	}
 
-	rmcMessage, errorCode := protocol.CreateCommunity(nil, packet, callID, community.(*match_making_types.PersistentGathering), strMessage)
+	rmcMessage, errorCode := protocol.CreateCommunity(nil, packet, callID, community, strMessage)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 		return

@@ -67,18 +67,16 @@ func (dataStoreMetaInfo *DataStoreMetaInfo) ExtractFromStream(stream *nex.Stream
 		return fmt.Errorf("Failed to extract DataStoreMetaInfo.MetaBinary. %s", err.Error())
 	}
 
-	permission, err := stream.ReadStructure(NewDataStorePermission())
+	dataStoreMetaInfo.Permission, err = nex.StreamReadStructure(stream, NewDataStorePermission())
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreMetaInfo.Permission. %s", err.Error())
 	}
 
-	dataStoreMetaInfo.Permission = permission.(*DataStorePermission)
-	delPermission, err := stream.ReadStructure(NewDataStorePermission())
+	dataStoreMetaInfo.DelPermission, err = nex.StreamReadStructure(stream, NewDataStorePermission())
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreMetaInfo.DelPermission. %s", err.Error())
 	}
 
-	dataStoreMetaInfo.DelPermission = delPermission.(*DataStorePermission)
 	dataStoreMetaInfo.CreatedTime, err = stream.ReadDateTime()
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreMetaInfo.CreatedTime. %s", err.Error())
@@ -129,12 +127,12 @@ func (dataStoreMetaInfo *DataStoreMetaInfo) ExtractFromStream(stream *nex.Stream
 		return fmt.Errorf("Failed to extract DataStoreMetaInfo.Tags. %s", err.Error())
 	}
 
-	ratings, err := stream.ReadListStructure(NewDataStoreRatingInfoWithSlot())
+	ratings, err := nex.StreamReadListStructure(stream, NewDataStoreRatingInfoWithSlot())
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreMetaInfo.Ratings. %s", err.Error())
 	}
 
-	dataStoreMetaInfo.Ratings = ratings.([]*DataStoreRatingInfoWithSlot)
+	dataStoreMetaInfo.Ratings = ratings
 
 	return nil
 }

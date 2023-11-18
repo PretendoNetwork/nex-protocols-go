@@ -25,7 +25,7 @@ func (protocol *Protocol) handleUploadScore(packet nex.PacketInterface) {
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	scoreData, err := parametersStream.ReadStructure(ranking_types.NewRankingScoreData())
+	scoreData, err := nex.StreamReadStructure(parametersStream, ranking_types.NewRankingScoreData())
 	if err != nil {
 		_, errorCode = protocol.UploadScore(fmt.Errorf("Failed to read scoreData from parameters. %s", err.Error()), packet, callID, nil, 0)
 		if errorCode != 0 {
@@ -45,7 +45,7 @@ func (protocol *Protocol) handleUploadScore(packet nex.PacketInterface) {
 		return
 	}
 
-	rmcMessage, errorCode := protocol.UploadScore(nil, packet, callID, scoreData.(*ranking_types.RankingScoreData), uniqueID)
+	rmcMessage, errorCode := protocol.UploadScore(nil, packet, callID, scoreData, uniqueID)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 		return

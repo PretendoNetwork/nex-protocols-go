@@ -61,12 +61,12 @@ func (dataStoreReplayMetaInfo *DataStoreReplayMetaInfo) ExtractFromStream(stream
 		return fmt.Errorf("Failed to extract DataStoreReplayMetaInfo.ReplayType. %s", err.Error())
 	}
 
-	players, err := stream.ReadListStructure(NewDataStoreReplayPlayer())
+	players, err := nex.StreamReadListStructure(stream, NewDataStoreReplayPlayer())
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreReplayMetaInfo.Players. %s", err.Error())
 	}
 
-	dataStoreReplayMetaInfo.Players = players.([]*DataStoreReplayPlayer)
+	dataStoreReplayMetaInfo.Players = players
 	dataStoreReplayMetaInfo.Winners, err = stream.ReadListUInt32LE()
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreReplayMetaInfo.Winners. %s", err.Error())

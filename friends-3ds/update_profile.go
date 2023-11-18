@@ -25,7 +25,7 @@ func (protocol *Protocol) handleUpdateProfile(packet nex.PacketInterface) {
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	profileData, err := parametersStream.ReadStructure(friends_3ds_types.NewMyProfile())
+	profileData, err := nex.StreamReadStructure(parametersStream, friends_3ds_types.NewMyProfile())
 	if err != nil {
 		_, errorCode = protocol.UpdateProfile(fmt.Errorf("Failed to read showGame from profileData. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
@@ -35,7 +35,7 @@ func (protocol *Protocol) handleUpdateProfile(packet nex.PacketInterface) {
 		return
 	}
 
-	rmcMessage, errorCode := protocol.UpdateProfile(nil, packet, callID, profileData.(*friends_3ds_types.MyProfile))
+	rmcMessage, errorCode := protocol.UpdateProfile(nil, packet, callID, profileData)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 		return

@@ -25,7 +25,7 @@ func (protocol *Protocol) handleChangeAllAttributes(packet nex.PacketInterface) 
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	changeParam, err := parametersStream.ReadStructure(ranking_types.NewRankingChangeAttributesParam())
+	changeParam, err := nex.StreamReadStructure(parametersStream, ranking_types.NewRankingChangeAttributesParam())
 	if err != nil {
 		_, errorCode = protocol.ChangeAllAttributes(fmt.Errorf("Failed to read changeParam from parameters. %s", err.Error()), packet, callID, nil, 0)
 		if errorCode != 0 {
@@ -45,7 +45,7 @@ func (protocol *Protocol) handleChangeAllAttributes(packet nex.PacketInterface) 
 		return
 	}
 
-	rmcMessage, errorCode := protocol.ChangeAllAttributes(nil, packet, callID, changeParam.(*ranking_types.RankingChangeAttributesParam), uniqueID)
+	rmcMessage, errorCode := protocol.ChangeAllAttributes(nil, packet, callID, changeParam, uniqueID)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 		return

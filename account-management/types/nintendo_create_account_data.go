@@ -22,12 +22,11 @@ type NintendoCreateAccountData struct {
 func (nintendoCreateAccountData *NintendoCreateAccountData) ExtractFromStream(stream *nex.StreamIn) error {
 	var err error
 
-	nnaInfo, err := stream.ReadStructure(friends_wiiu_types.NewNNAInfo())
+	nintendoCreateAccountData.NNAInfo, err = nex.StreamReadStructure(stream, friends_wiiu_types.NewNNAInfo())
 	if err != nil {
 		return fmt.Errorf("Failed to extract NintendoCreateAccountData.NNAInfo from stream. %s", err.Error())
 	}
 
-	nintendoCreateAccountData.NNAInfo = nnaInfo.(*friends_wiiu_types.NNAInfo)
 	nintendoCreateAccountData.Token, err = stream.ReadString()
 	if err != nil {
 		return fmt.Errorf("Failed to extract NintendoCreateAccountData.Token from stream. %s", err.Error())

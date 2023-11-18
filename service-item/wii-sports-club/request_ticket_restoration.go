@@ -25,7 +25,7 @@ func (protocol *Protocol) handleRequestTicketRestoration(packet nex.PacketInterf
 
 	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
 
-	requestTicketRestorationParam, err := parametersStream.ReadStructure(service_item_wii_sports_club_types.NewServiceItemRequestTicketRestorationParam())
+	requestTicketRestorationParam, err := nex.StreamReadStructure(parametersStream, service_item_wii_sports_club_types.NewServiceItemRequestTicketRestorationParam())
 	if err != nil {
 		_, errorCode = protocol.RequestTicketRestoration(fmt.Errorf("Failed to read requestTicketRestorationParam from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
@@ -35,7 +35,7 @@ func (protocol *Protocol) handleRequestTicketRestoration(packet nex.PacketInterf
 		return
 	}
 
-	rmcMessage, errorCode := protocol.RequestTicketRestoration(nil, packet, callID, requestTicketRestorationParam.(*service_item_wii_sports_club_types.ServiceItemRequestTicketRestorationParam))
+	rmcMessage, errorCode := protocol.RequestTicketRestoration(nil, packet, callID, requestTicketRestorationParam)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 		return

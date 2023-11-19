@@ -107,11 +107,11 @@ func (gathering *Gathering) Copy() nex.StructureInterface {
 
 	copied.ID = gathering.ID
 
-	if copied.OwnerPID != nil {
+	if gathering.OwnerPID != nil {
 		copied.OwnerPID = gathering.OwnerPID.Copy()
 	}
 
-	if copied.HostPID != nil {
+	if gathering.HostPID != nil {
 		copied.HostPID = gathering.HostPID.Copy()
 	}
 

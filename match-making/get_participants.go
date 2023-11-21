@@ -13,7 +13,7 @@ func (protocol *Protocol) handleGetParticipants(packet nex.PacketInterface) {
 
 	if protocol.GetParticipants == nil {
 		globals.Logger.Warning("MatchMaking::GetParticipants not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

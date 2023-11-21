@@ -11,7 +11,7 @@ func (protocol *Protocol) handleLoadUserInfo(packet nex.PacketInterface) {
 
 	if protocol.LoadUserInfo == nil {
 		globals.Logger.Warning("ServiceItemWiiSportsClub::LoadUserInfo not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

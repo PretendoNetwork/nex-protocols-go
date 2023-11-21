@@ -11,7 +11,7 @@ func (protocol *Protocol) handleResetPassword(packet nex.PacketInterface) {
 
 	if protocol.ResetPassword == nil {
 		globals.Logger.Warning("AccountManagement::ResetPassword not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

@@ -14,7 +14,7 @@ func (protocol *Protocol) handleCreateSimpleSearchObject(packet nex.PacketInterf
 
 	if protocol.CreateSimpleSearchObject == nil {
 		globals.Logger.Warning("MatchmakeExtensionMarioKart8::CreateSimpleSearchObject not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

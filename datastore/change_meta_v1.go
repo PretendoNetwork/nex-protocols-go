@@ -14,7 +14,7 @@ func (protocol *Protocol) handleChangeMetaV1(packet nex.PacketInterface) {
 
 	if protocol.ChangeMetaV1 == nil {
 		globals.Logger.Warning("DataStore::ChangeMetaV1 not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

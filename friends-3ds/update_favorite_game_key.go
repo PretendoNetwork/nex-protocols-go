@@ -14,7 +14,7 @@ func (protocol *Protocol) handleUpdateFavoriteGameKey(packet nex.PacketInterface
 
 	if protocol.UpdateFavoriteGameKey == nil {
 		globals.Logger.Warning("Friends3DS::UpdateFavoriteGameKey not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

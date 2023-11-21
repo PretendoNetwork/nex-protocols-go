@@ -13,7 +13,7 @@ func (protocol *Protocol) handlePerpetuateObject(packet nex.PacketInterface) {
 
 	if protocol.PerpetuateObject == nil {
 		globals.Logger.Warning("DataStore::PerpetuateObject not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

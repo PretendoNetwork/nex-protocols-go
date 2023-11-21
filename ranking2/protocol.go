@@ -87,7 +87,7 @@ func (protocol *Protocol) Setup() {
 			case MethodGetEstimateScoreRank:
 				protocol.handleGetEstimateScoreRank(packet)
 			default:
-				go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+				globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 				fmt.Printf("Unsupported Ranking2 method ID: %#v\n", message.MethodID)
 			}
 		}

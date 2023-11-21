@@ -14,7 +14,7 @@ func (protocol *Protocol) handleGetMetasMultipleParam(packet nex.PacketInterface
 
 	if protocol.GetMetasMultipleParam == nil {
 		globals.Logger.Warning("DataStore::GetMetasMultipleParam not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

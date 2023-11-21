@@ -13,7 +13,7 @@ func (protocol *Protocol) handleGetFriendPresence(packet nex.PacketInterface) {
 
 	if protocol.GetFriendPresence == nil {
 		globals.Logger.Warning("Friends3DS::GetFriendPresence not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

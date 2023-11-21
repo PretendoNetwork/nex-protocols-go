@@ -13,7 +13,7 @@ func (protocol *Protocol) handleDeleteSimpleSearchObject(packet nex.PacketInterf
 
 	if protocol.DeleteSimpleSearchObject == nil {
 		globals.Logger.Warning("MatchmakeExtensionMarioKart8::DeleteSimpleSearchObject not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

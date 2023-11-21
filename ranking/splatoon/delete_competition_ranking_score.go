@@ -11,7 +11,7 @@ func (protocol *Protocol) handleDeleteCompetitionRankingScore(packet nex.PacketI
 
 	if protocol.DeleteCompetitionRankingScore == nil {
 		globals.Logger.Warning("RankingSplatoon::DeleteCompetitionRankingScore not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

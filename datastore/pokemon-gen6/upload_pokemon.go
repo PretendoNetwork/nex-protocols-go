@@ -14,7 +14,7 @@ func (protocol *Protocol) handleUploadPokemon(packet nex.PacketInterface) {
 
 	if protocol.UploadPokemon == nil {
 		globals.Logger.Warning("DataStorePokemonGen6::UploadPokemon not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

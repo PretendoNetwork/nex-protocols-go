@@ -13,7 +13,7 @@ func (protocol *Protocol) handleUpdateAccountEffectiveDate(packet nex.PacketInte
 
 	if protocol.UpdateAccountEffectiveDate == nil {
 		globals.Logger.Warning("AccountManagement::UpdateAccountEffectiveDate not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

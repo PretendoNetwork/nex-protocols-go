@@ -14,7 +14,7 @@ func (protocol *Protocol) handleResetRating(packet nex.PacketInterface) {
 
 	if protocol.ResetRating == nil {
 		globals.Logger.Warning("DataStore::ResetRating not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

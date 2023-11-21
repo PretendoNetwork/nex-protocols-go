@@ -14,7 +14,7 @@ func (protocol *Protocol) handlePostMetaBinariesWithDataID(packet nex.PacketInte
 
 	if protocol.PostMetaBinariesWithDataID == nil {
 		globals.Logger.Warning("DataStore::PostMetaBinariesWithDataID not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

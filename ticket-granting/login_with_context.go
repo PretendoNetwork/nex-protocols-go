@@ -9,7 +9,7 @@ import (
 func (protocol *Protocol) handleLoginWithContext(packet nex.PacketInterface) {
 	if protocol.LoginWithContext == nil {
 		globals.Logger.Warning("TicketGranting::LoginWithContext not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

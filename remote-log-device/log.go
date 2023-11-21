@@ -13,7 +13,7 @@ func (protocol *Protocol) handleLog(packet nex.PacketInterface) {
 
 	if protocol.Log == nil {
 		globals.Logger.Warning("RemoteLogDevice::Log not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

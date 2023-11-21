@@ -14,7 +14,7 @@ func (protocol *Protocol) handleSuggestedCourseSearchObject(packet nex.PacketInt
 
 	if protocol.SuggestedCourseSearchObject == nil {
 		globals.Logger.Warning("DataStoreSuperMarioMaker::SuggestedCourseSearchObject not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

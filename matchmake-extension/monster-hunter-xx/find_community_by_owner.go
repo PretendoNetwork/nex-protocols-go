@@ -13,7 +13,7 @@ func (protocol *Protocol) handleFindCommunityByOwner(packet nex.PacketInterface)
 
 	if protocol.FindCommunityByOwner == nil {
 		globals.Logger.Warning("MatchmakeExtensionMonsterHunterXX::FindCommunityByOwner not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

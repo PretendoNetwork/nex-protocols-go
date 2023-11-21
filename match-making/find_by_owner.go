@@ -13,7 +13,7 @@ func (protocol *Protocol) handleFindByOwner(packet nex.PacketInterface) {
 
 	if protocol.FindByOwner == nil {
 		globals.Logger.Warning("MatchMaking::FindByOwner not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

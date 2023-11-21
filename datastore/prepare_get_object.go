@@ -14,7 +14,7 @@ func (protocol *Protocol) handlePrepareGetObject(packet nex.PacketInterface) {
 
 	if protocol.PrepareGetObject == nil {
 		globals.Logger.Warning("DataStore::PrepareGetObject not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

@@ -14,7 +14,7 @@ func (protocol *Protocol) handleGetContentMulti(packet nex.PacketInterface) {
 
 	if protocol.GetContentMulti == nil {
 		globals.Logger.Warning("Subscriber::GetContentMulti not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

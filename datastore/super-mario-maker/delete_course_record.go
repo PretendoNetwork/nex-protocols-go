@@ -14,7 +14,7 @@ func (protocol *Protocol) handleDeleteCourseRecord(packet nex.PacketInterface) {
 
 	if protocol.DeleteCourseRecord == nil {
 		globals.Logger.Warning("DataStoreSuperMarioMaker::DeleteCourseRecord not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

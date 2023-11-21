@@ -13,7 +13,7 @@ func (protocol *Protocol) handleDeleteContent(packet nex.PacketInterface) {
 
 	if protocol.DeleteContent == nil {
 		globals.Logger.Warning("Subscriber::DeleteContent not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

@@ -13,7 +13,7 @@ func (protocol *Protocol) handleDeleteGathering(packet nex.PacketInterface) {
 
 	if protocol.DeleteGathering == nil {
 		globals.Logger.Warning("MatchMaking::DeleteGathering not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

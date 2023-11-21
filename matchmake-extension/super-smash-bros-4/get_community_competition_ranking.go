@@ -11,7 +11,7 @@ func (protocol *Protocol) handleGetCommunityCompetitionRanking(packet nex.Packet
 
 	if protocol.GetCommunityCompetitionRanking == nil {
 		globals.Logger.Warning("MatchmakeExtensionSuperSmashBros4::GetCommunityCompetitionRanking not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

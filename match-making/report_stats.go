@@ -14,7 +14,7 @@ func (protocol *Protocol) handleReportStats(packet nex.PacketInterface) {
 
 	if protocol.ReportStats == nil {
 		globals.Logger.Warning("MatchMaking::ReportStats not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

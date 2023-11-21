@@ -13,7 +13,7 @@ func (protocol *Protocol) handleRequestTicket(packet nex.PacketInterface) {
 
 	if protocol.RequestTicket == nil {
 		globals.Logger.Warning("TicketGranting::RequestTicket not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

@@ -14,7 +14,7 @@ func (protocol *Protocol) handleGetBufferQueue(packet nex.PacketInterface) {
 
 	if protocol.GetBufferQueue == nil {
 		globals.Logger.Warning("DataStoreSuperMarioMaker::GetBufferQueue not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

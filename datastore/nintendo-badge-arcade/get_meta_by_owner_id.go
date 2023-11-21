@@ -14,7 +14,7 @@ func (protocol *Protocol) handleGetMetaByOwnerID(packet nex.PacketInterface) {
 
 	if protocol.GetMetaByOwnerID == nil {
 		globals.Logger.Warning("DataStoreBadgeArcade::GetMetaByOwnerID not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

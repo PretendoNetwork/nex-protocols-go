@@ -13,7 +13,7 @@ func (protocol *Protocol) handleRegister(packet nex.PacketInterface) {
 
 	if protocol.Register == nil {
 		globals.Logger.Warning("SecureConnection::Register not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

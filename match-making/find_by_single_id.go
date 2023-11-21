@@ -13,7 +13,7 @@ func (protocol *Protocol) handleFindBySingleID(packet nex.PacketInterface) {
 
 	if protocol.FindBySingleID == nil {
 		globals.Logger.Warning("MatchMaking::FindBySingleID not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

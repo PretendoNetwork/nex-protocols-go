@@ -13,7 +13,7 @@ func (protocol *Protocol) handleModifyCurrentGameAttribute(packet nex.PacketInte
 
 	if protocol.ModifyCurrentGameAttribute == nil {
 		globals.Logger.Warning("MatchmakeExtension::ModifyCurrentGameAttribute not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

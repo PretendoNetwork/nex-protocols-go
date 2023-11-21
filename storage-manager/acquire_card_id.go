@@ -11,7 +11,7 @@ func (protocol *Protocol) handleAcquireCardID(packet nex.PacketInterface) {
 
 	if protocol.AcquireCardID == nil {
 		globals.Logger.Warning("StorageManager::AcquireCardID not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

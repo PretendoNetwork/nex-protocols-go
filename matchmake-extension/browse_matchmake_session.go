@@ -14,7 +14,7 @@ func (protocol *Protocol) handleBrowseMatchmakeSession(packet nex.PacketInterfac
 
 	if protocol.BrowseMatchmakeSession == nil {
 		globals.Logger.Warning("MatchmakeExtension::BrowseMatchmakeSession not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

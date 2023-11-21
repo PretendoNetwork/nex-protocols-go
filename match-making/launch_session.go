@@ -13,7 +13,7 @@ func (protocol *Protocol) handleLaunchSession(packet nex.PacketInterface) {
 
 	if protocol.LaunchSession == nil {
 		globals.Logger.Warning("MatchMaking::LaunchSession not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

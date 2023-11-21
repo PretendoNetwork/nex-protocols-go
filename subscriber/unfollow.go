@@ -11,7 +11,7 @@ func (protocol *Protocol) handleUnfollow(packet nex.PacketInterface) {
 
 	if protocol.Unfollow == nil {
 		globals.Logger.Warning("Subscriber::Unfollow not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

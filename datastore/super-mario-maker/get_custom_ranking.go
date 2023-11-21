@@ -14,7 +14,7 @@ func (protocol *Protocol) handleGetCustomRanking(packet nex.PacketInterface) {
 
 	if protocol.GetCustomRanking == nil {
 		globals.Logger.Warning("DataStoreSuperMarioMaker::GetCustomRanking not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

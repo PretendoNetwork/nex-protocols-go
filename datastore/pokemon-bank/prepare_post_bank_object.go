@@ -13,7 +13,7 @@ func (protocol *Protocol) handlePreparePostBankObject(packet nex.PacketInterface
 
 	if protocol.PreparePostBankObject == nil {
 		globals.Logger.Warning("DataStorePokemonBank::PreparePostBankObject not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

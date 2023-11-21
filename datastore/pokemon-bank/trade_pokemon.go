@@ -14,7 +14,7 @@ func (protocol *Protocol) handleTradePokemon(packet nex.PacketInterface) {
 
 	if protocol.TradePokemon == nil {
 		globals.Logger.Warning("DataStorePokemonBank::TradePokemon not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

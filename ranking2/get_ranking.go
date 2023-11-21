@@ -14,7 +14,7 @@ func (protocol *Protocol) handleGetRanking(packet nex.PacketInterface) {
 
 	if protocol.GetRanking == nil {
 		globals.Logger.Warning("Ranking2::GetRanking not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

@@ -14,7 +14,7 @@ func (protocol *Protocol) handlePrepareUpdateObject(packet nex.PacketInterface) 
 
 	if protocol.PrepareUpdateObject == nil {
 		globals.Logger.Warning("DataStore::PrepareUpdateObject not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

@@ -14,7 +14,7 @@ func (protocol *Protocol) handlePrepareGetObjectOrMetaBinary(packet nex.PacketIn
 
 	if protocol.PrepareGetObjectOrMetaBinary == nil {
 		globals.Logger.Warning("DataStore::PrepareGetObjectOrMetaBinary not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

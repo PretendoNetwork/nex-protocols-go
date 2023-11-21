@@ -13,7 +13,7 @@ func (protocol *Protocol) handleGetState(packet nex.PacketInterface) {
 
 	if protocol.GetState == nil {
 		globals.Logger.Warning("MatchMaking::GetState not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

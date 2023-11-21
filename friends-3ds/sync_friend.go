@@ -13,7 +13,7 @@ func (protocol *Protocol) handleSyncFriend(packet nex.PacketInterface) {
 
 	if protocol.SyncFriend == nil {
 		globals.Logger.Warning("Friends3DS::SyncFriend not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

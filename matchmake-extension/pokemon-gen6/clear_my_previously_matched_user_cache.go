@@ -11,7 +11,7 @@ func (protocol *Protocol) handleClearMyPreviouslyMatchedUserCache(packet nex.Pac
 
 	if protocol.ClearMyPreviouslyMatchedUserCache == nil {
 		globals.Logger.Warning("MatchmakeExtension::ClearMyPreviouslyMatchedUserCache not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

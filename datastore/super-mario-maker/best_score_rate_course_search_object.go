@@ -14,7 +14,7 @@ func (protocol *Protocol) handleBestScoreRateCourseSearchObject(packet nex.Packe
 
 	if protocol.BestScoreRateCourseSearchObject == nil {
 		globals.Logger.Warning("DataStoreSuperMarioMaker::BestScoreRateCourseSearchObject not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

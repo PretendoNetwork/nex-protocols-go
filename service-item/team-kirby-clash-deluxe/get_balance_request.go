@@ -14,7 +14,7 @@ func (protocol *Protocol) handleGetBalanceRequest(packet nex.PacketInterface) {
 
 	if protocol.GetBalanceRequest == nil {
 		globals.Logger.Warning("ServiceItemTeamKirbyClashDeluxe::GetBalanceRequest not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

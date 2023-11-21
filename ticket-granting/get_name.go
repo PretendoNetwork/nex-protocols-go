@@ -13,7 +13,7 @@ func (protocol *Protocol) handleGetName(packet nex.PacketInterface) {
 
 	if protocol.GetName == nil {
 		globals.Logger.Warning("TicketGranting::GetName not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

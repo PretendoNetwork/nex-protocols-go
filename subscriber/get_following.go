@@ -11,7 +11,7 @@ func (protocol *Protocol) handleGetFollowing(packet nex.PacketInterface) {
 
 	if protocol.GetFollowing == nil {
 		globals.Logger.Warning("Subscriber::GetFollowing not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

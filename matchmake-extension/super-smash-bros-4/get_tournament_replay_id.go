@@ -11,7 +11,7 @@ func (protocol *Protocol) handleGetTournamentReplayID(packet nex.PacketInterface
 
 	if protocol.GetTournamentReplayID == nil {
 		globals.Logger.Warning("MatchmakeExtensionSuperSmashBros4::GetTournamentReplayID not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

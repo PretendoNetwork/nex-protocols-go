@@ -13,7 +13,7 @@ func (protocol *Protocol) handleDeleteCachedRanking(packet nex.PacketInterface) 
 
 	if protocol.DeleteCachedRanking == nil {
 		globals.Logger.Warning("DataStoreSuperMarioMaker::DeleteCachedRanking not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

@@ -68,7 +68,7 @@ func (protocol *Protocol) Setup() {
 			case MethodFindItemsBySQLQuery:
 				protocol.handleFindItemsBySQLQuery(packet)
 			default:
-				go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+				globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 				fmt.Printf("Unsupported Persistent Store method ID: %#v\n", message.MethodID)
 			}
 		}

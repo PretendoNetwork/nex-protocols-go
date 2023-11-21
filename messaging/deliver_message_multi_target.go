@@ -11,7 +11,7 @@ func (protocol *Protocol) handleDeliverMessageMultiTarget(packet nex.PacketInter
 
 	if protocol.DeliverMessageMultiTarget == nil {
 		globals.Logger.Warning("Messaging::DeliverMessageMultiTarget not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

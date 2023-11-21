@@ -13,7 +13,7 @@ func (protocol *Protocol) handleAutoMatchmakePostpone(packet nex.PacketInterface
 
 	if protocol.AutoMatchmakePostpone == nil {
 		globals.Logger.Warning("MatchmakeExtension::AutoMatchmakePostpone not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

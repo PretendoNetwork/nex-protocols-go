@@ -13,7 +13,7 @@ func (protocol *Protocol) handleMigrateGatheringOwnershipV1(packet nex.PacketInt
 
 	if protocol.MigrateGatheringOwnershipV1 == nil {
 		globals.Logger.Warning("MatchMaking::MigrateGatheringOwnershipV1 not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

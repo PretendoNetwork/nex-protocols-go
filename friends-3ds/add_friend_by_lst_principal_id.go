@@ -13,7 +13,7 @@ func (protocol *Protocol) handleAddFriendBylstPrincipalID(packet nex.PacketInter
 
 	if protocol.AddFriendBylstPrincipalID == nil {
 		globals.Logger.Warning("Friends3DS::AddFriendBylstPrincipalID not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

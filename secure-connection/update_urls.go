@@ -13,7 +13,7 @@ func (protocol *Protocol) handleUpdateURLs(packet nex.PacketInterface) {
 
 	if protocol.UpdateURLs == nil {
 		globals.Logger.Warning("SecureConnection::UpdateURLs not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

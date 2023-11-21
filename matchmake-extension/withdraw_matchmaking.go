@@ -13,7 +13,7 @@ func (protocol *Protocol) handleWithdrawMatchmaking(packet nex.PacketInterface) 
 
 	if protocol.WithdrawMatchmaking == nil {
 		globals.Logger.Warning("MatchmakeExtension::WithdrawMatchmaking not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

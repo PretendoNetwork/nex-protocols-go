@@ -14,7 +14,7 @@ func (protocol *Protocol) handleGetCompetitionInfo(packet nex.PacketInterface) {
 
 	if protocol.GetCompetitionInfo == nil {
 		globals.Logger.Warning("RankingMarioKart8::GetCompetitionInfo not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

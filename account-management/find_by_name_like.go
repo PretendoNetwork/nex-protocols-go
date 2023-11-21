@@ -13,7 +13,7 @@ func (protocol *Protocol) handleFindByNameLike(packet nex.PacketInterface) {
 
 	if protocol.FindByNameLike == nil {
 		globals.Logger.Warning("AccountManagement::FindByNameLike not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

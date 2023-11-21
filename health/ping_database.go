@@ -11,7 +11,7 @@ func (protocol *Protocol) handlePingDatabase(packet nex.PacketInterface) {
 
 	if protocol.PingDatabase == nil {
 		globals.Logger.Warning("Health::PingDatabase not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

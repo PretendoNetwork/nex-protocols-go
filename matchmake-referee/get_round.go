@@ -13,7 +13,7 @@ func (protocol *Protocol) handleGetRound(packet nex.PacketInterface) {
 
 	if protocol.GetRound == nil {
 		globals.Logger.Warning("MatchmakeReferee::GetRound not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

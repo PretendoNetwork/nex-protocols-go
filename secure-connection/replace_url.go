@@ -13,7 +13,7 @@ func (protocol *Protocol) handleReplaceURL(packet nex.PacketInterface) {
 
 	if protocol.ReplaceURL == nil {
 		globals.Logger.Warning("SecureConnection::ReplaceURL not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

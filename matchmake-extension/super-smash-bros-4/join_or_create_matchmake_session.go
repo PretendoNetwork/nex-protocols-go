@@ -11,7 +11,7 @@ func (protocol *Protocol) handleJoinOrCreateMatchmakeSession(packet nex.PacketIn
 
 	if protocol.JoinOrCreateMatchmakeSession == nil {
 		globals.Logger.Warning("MatchmakeExtensionSuperSmashBros4::JoinOrCreateMatchmakeSession not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

@@ -14,7 +14,7 @@ func (protocol *Protocol) handleGetSpecificMetaV1(packet nex.PacketInterface) {
 
 	if protocol.GetSpecificMetaV1 == nil {
 		globals.Logger.Warning("DataStore::GetSpecificMetaV1 not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

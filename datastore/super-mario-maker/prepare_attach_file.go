@@ -14,7 +14,7 @@ func (protocol *Protocol) handlePrepareAttachFile(packet nex.PacketInterface) {
 
 	if protocol.PrepareAttachFile == nil {
 		globals.Logger.Warning("DataStoreSuperMarioMaker::PrepareAttachFile not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

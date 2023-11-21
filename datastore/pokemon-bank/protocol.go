@@ -162,7 +162,7 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 	case MethodRequestMigration:
 		protocol.handleRequestMigration(packet)
 	default:
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		fmt.Printf("Unsupported DataStore (Pokemon Bank) method ID: %#v\n", request.MethodID)
 	}
 }

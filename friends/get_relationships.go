@@ -13,7 +13,7 @@ func (protocol *Protocol) handleGetRelationships(packet nex.PacketInterface) {
 
 	if protocol.GetRelationships == nil {
 		globals.Logger.Warning("Friends::GetRelationships not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

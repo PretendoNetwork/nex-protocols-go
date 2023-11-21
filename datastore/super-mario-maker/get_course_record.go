@@ -14,7 +14,7 @@ func (protocol *Protocol) handleGetCourseRecord(packet nex.PacketInterface) {
 
 	if protocol.GetCourseRecord == nil {
 		globals.Logger.Warning("DataStoreSuperMarioMaker::GetCourseRecord not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

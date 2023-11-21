@@ -360,7 +360,7 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 	case MethodFindCommunityByOwner:
 		protocol.handleFindCommunityByOwner(packet)
 	default:
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		fmt.Printf("Unsupported Matchmake Extension method ID: %#v\n", request.MethodID)
 	}
 }

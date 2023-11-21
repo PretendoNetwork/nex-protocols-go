@@ -13,7 +13,7 @@ func (protocol *Protocol) handleGetSimplePlayingSession(packet nex.PacketInterfa
 
 	if protocol.GetSimplePlayingSession == nil {
 		globals.Logger.Warning("MatchmakeExtension::GetSimplePlayingSession not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

@@ -13,7 +13,7 @@ func (protocol *Protocol) handleGetFriendRelationships(packet nex.PacketInterfac
 
 	if protocol.GetFriendRelationships == nil {
 		globals.Logger.Warning("Friends3DS::GetFriendRelationships not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

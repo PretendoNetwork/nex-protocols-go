@@ -13,7 +13,7 @@ func (protocol *Protocol) handleGetRequestBlockSettings(packet nex.PacketInterfa
 
 	if protocol.GetRequestBlockSettings == nil {
 		globals.Logger.Warning("FriendsWiiU::GetRequestBlockSettings not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

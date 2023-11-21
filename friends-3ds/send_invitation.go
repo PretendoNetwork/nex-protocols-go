@@ -13,7 +13,7 @@ func (protocol *Protocol) handleSendInvitation(packet nex.PacketInterface) {
 
 	if protocol.SendInvitation == nil {
 		globals.Logger.Warning("Friends3DS::SendInvitation not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

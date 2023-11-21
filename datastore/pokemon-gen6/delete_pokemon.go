@@ -14,7 +14,7 @@ func (protocol *Protocol) handleDeletePokemon(packet nex.PacketInterface) {
 
 	if protocol.DeletePokemon == nil {
 		globals.Logger.Warning("DataStorePokemonGen6::DeletePokemon not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

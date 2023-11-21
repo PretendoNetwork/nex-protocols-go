@@ -14,7 +14,7 @@ func (protocol *Protocol) handleSearchReplay(packet nex.PacketInterface) {
 
 	if protocol.SearchReplay == nil {
 		globals.Logger.Warning("DataStoreSuperSmashBros4::SearchReplay not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

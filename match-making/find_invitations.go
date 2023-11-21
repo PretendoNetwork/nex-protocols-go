@@ -13,7 +13,7 @@ func (protocol *Protocol) handleFindInvitations(packet nex.PacketInterface) {
 
 	if protocol.FindInvitations == nil {
 		globals.Logger.Warning("MatchMaking::FindInvitations not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

@@ -14,7 +14,7 @@ func (protocol *Protocol) handleGetCachedTopXRankings(packet nex.PacketInterface
 
 	if protocol.GetCachedTopXRankings == nil {
 		globals.Logger.Warning("Ranking::GetCachedTopXRankings not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

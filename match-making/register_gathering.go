@@ -13,7 +13,7 @@ func (protocol *Protocol) handleRegisterGathering(packet nex.PacketInterface) {
 
 	if protocol.RegisterGathering == nil {
 		globals.Logger.Warning("MatchMaking::RegisterGathering not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

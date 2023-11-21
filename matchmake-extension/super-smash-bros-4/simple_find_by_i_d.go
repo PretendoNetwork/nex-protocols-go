@@ -11,7 +11,7 @@ func (protocol *Protocol) handleSimpleFindByID(packet nex.PacketInterface) {
 
 	if protocol.SimpleFindByID == nil {
 		globals.Logger.Warning("MatchmakeExtensionSuperSmashBros4::SimpleFindByID not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

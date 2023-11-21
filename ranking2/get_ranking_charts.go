@@ -14,7 +14,7 @@ func (protocol *Protocol) handleGetRankingCharts(packet nex.PacketInterface) {
 
 	if protocol.GetRankingCharts == nil {
 		globals.Logger.Warning("Ranking2::GetRankingCharts not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

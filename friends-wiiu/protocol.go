@@ -156,7 +156,7 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 	case MethodGetRequestBlockSettings:
 		protocol.handleGetRequestBlockSettings(packet)
 	default:
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		fmt.Printf("Unsupported Friends (WiiU) method ID: %#v\n", request.MethodID)
 	}
 }

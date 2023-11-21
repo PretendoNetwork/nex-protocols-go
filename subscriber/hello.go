@@ -13,7 +13,7 @@ func (protocol *Protocol) handleHello(packet nex.PacketInterface) {
 
 	if protocol.Hello == nil {
 		globals.Logger.Warning("Subscriber::Hello not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

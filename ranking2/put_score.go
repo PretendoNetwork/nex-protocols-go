@@ -14,7 +14,7 @@ func (protocol *Protocol) handlePutScore(packet nex.PacketInterface) {
 
 	if protocol.PutScore == nil {
 		globals.Logger.Warning("Ranking2::PutScore not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

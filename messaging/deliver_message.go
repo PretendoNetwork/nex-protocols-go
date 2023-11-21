@@ -13,7 +13,7 @@ func (protocol *Protocol) handleDeliverMessage(packet nex.PacketInterface) {
 
 	if protocol.DeliverMessage == nil {
 		globals.Logger.Warning("Messaging::DeliverMessage not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

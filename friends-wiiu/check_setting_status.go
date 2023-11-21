@@ -11,7 +11,7 @@ func (protocol *Protocol) handleCheckSettingStatus(packet nex.PacketInterface) {
 
 	if protocol.CheckSettingStatus == nil {
 		globals.Logger.Warning("FriendsWiiU::CheckSettingStatus not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

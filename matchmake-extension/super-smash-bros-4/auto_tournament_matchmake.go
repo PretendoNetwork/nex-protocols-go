@@ -11,7 +11,7 @@ func (protocol *Protocol) handleAutoTournamentMatchmake(packet nex.PacketInterfa
 
 	if protocol.AutoTournamentMatchmake == nil {
 		globals.Logger.Warning("MatchmakeExtensionSuperSmashBros4::AutoTournamentMatchmake not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

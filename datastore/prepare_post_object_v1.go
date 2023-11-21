@@ -14,7 +14,7 @@ func (protocol *Protocol) handlePreparePostObjectV1(packet nex.PacketInterface) 
 
 	if protocol.PreparePostObjectV1 == nil {
 		globals.Logger.Warning("DataStore::PreparePostObjectV1 not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

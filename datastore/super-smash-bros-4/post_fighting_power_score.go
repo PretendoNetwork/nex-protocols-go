@@ -14,7 +14,7 @@ func (protocol *Protocol) handlePostFightingPowerScore(packet nex.PacketInterfac
 
 	if protocol.PostFightingPowerScore == nil {
 		globals.Logger.Warning("DataStoreSuperSmashBros4::PostFightingPowerScore not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

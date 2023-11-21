@@ -13,7 +13,7 @@ func (protocol *Protocol) handleGetMultiplePublicData(packet nex.PacketInterface
 
 	if protocol.GetMultiplePublicData == nil {
 		globals.Logger.Warning("AccountManagement::GetMultiplePublicData not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

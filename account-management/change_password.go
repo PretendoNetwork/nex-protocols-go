@@ -13,7 +13,7 @@ func (protocol *Protocol) handleChangePassword(packet nex.PacketInterface) {
 
 	if protocol.ChangePassword == nil {
 		globals.Logger.Warning("AccountManagement::ChangePassword not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

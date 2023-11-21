@@ -13,7 +13,7 @@ func (protocol *Protocol) handleGetFriendPersistentInfo(packet nex.PacketInterfa
 
 	if protocol.GetFriendPersistentInfo == nil {
 		globals.Logger.Warning("Friends3DS::GetFriendPersistentInfo not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

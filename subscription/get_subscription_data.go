@@ -13,7 +13,7 @@ func (protocol *Protocol) handleGetSubscriptionData(packet nex.PacketInterface) 
 
 	if protocol.GetSubscriptionData == nil {
 		fmt.Println("[Warning] SubscriptionProtocol::GetSubscriptionData not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

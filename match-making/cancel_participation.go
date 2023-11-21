@@ -13,7 +13,7 @@ func (protocol *Protocol) handleCancelParticipation(packet nex.PacketInterface) 
 
 	if protocol.CancelParticipation == nil {
 		globals.Logger.Warning("MatchMaking::CancelParticipation not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

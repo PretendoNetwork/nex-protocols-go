@@ -14,7 +14,7 @@ func (protocol *Protocol) handleRetrieveMessages(packet nex.PacketInterface) {
 
 	if protocol.RetrieveMessages == nil {
 		globals.Logger.Warning("Messaging::RetrieveMessages not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

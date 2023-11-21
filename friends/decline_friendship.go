@@ -13,7 +13,7 @@ func (protocol *Protocol) handleDeclineFriendship(packet nex.PacketInterface) {
 
 	if protocol.DeclineFriendship == nil {
 		globals.Logger.Warning("Friends::DeclineFriendship not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

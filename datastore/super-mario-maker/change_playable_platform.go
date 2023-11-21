@@ -14,7 +14,7 @@ func (protocol *Protocol) handleChangePlayablePlatform(packet nex.PacketInterfac
 
 	if protocol.ChangePlayablePlatform == nil {
 		globals.Logger.Warning("DataStoreSuperMarioMaker::ChangePlayablePlatform not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

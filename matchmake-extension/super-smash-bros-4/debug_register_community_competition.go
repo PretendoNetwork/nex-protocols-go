@@ -11,7 +11,7 @@ func (protocol *Protocol) handleDebugRegisterCommunityCompetition(packet nex.Pac
 
 	if protocol.DebugRegisterCommunityCompetition == nil {
 		globals.Logger.Warning("MatchmakeExtensionSuperSmashBros4::DebugRegisterCommunityCompetition not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

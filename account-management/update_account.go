@@ -13,7 +13,7 @@ func (protocol *Protocol) handleUpdateAccount(packet nex.PacketInterface) {
 
 	if protocol.UpdateAccount == nil {
 		globals.Logger.Warning("AccountManagement::UpdateAccount not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

@@ -13,7 +13,7 @@ func (protocol *Protocol) handleGetServiceItemRightResponse(packet nex.PacketInt
 
 	if protocol.GetServiceItemRightResponse == nil {
 		globals.Logger.Warning("ServiceItemTeamKirbyClashDeluxe::GetServiceItemRightResponse not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

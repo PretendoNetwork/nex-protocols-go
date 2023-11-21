@@ -13,7 +13,7 @@ func (protocol *Protocol) handleUpdateSessionHostV1(packet nex.PacketInterface) 
 
 	if protocol.UpdateSessionHostV1 == nil {
 		fmt.Println("[Warning] MatchMaking::UpdateSessionHostV1 not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

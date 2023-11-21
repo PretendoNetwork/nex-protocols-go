@@ -13,7 +13,7 @@ func (protocol *Protocol) handleGetObjectInfos(packet nex.PacketInterface) {
 
 	if protocol.GetObjectInfos == nil {
 		globals.Logger.Warning("DataStore::GetObjectInfos not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

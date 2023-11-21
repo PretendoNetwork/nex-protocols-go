@@ -13,7 +13,7 @@ func (protocol *Protocol) handleRemoveFriend(packet nex.PacketInterface) {
 
 	if protocol.RemoveFriend == nil {
 		globals.Logger.Warning("MatchmakeExtensionMonsterHunterXX::RemoveFriend not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

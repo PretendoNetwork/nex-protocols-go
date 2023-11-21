@@ -13,7 +13,7 @@ func (protocol *Protocol) handleInitiateProbe(packet nex.PacketInterface) {
 
 	if protocol.InitiateProbe == nil {
 		globals.Logger.Warning("NATTraversal::InitiateProbe not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

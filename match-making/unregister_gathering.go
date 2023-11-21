@@ -13,7 +13,7 @@ func (protocol *Protocol) handleUnregisterGathering(packet nex.PacketInterface) 
 
 	if protocol.UnregisterGathering == nil {
 		globals.Logger.Warning("MatchMaking::UnregisterGathering not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

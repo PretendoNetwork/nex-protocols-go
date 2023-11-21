@@ -13,7 +13,7 @@ func (protocol *Protocol) handleCheckRateCustomRankingCounter(packet nex.PacketI
 
 	if protocol.CheckRateCustomRankingCounter == nil {
 		globals.Logger.Warning("DataStoreSuperMarioMaker::CheckRateCustomRankingCounter not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

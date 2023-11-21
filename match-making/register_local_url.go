@@ -13,7 +13,7 @@ func (protocol *Protocol) handleRegisterLocalURL(packet nex.PacketInterface) {
 
 	if protocol.RegisterLocalURL == nil {
 		globals.Logger.Warning("MatchMaking::RegisterLocalURL not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

@@ -14,7 +14,7 @@ func (protocol *Protocol) handleRetrieveAllMessagesWithinRange(packet nex.Packet
 
 	if protocol.RetrieveAllMessagesWithinRange == nil {
 		globals.Logger.Warning("Messaging::RetrieveAllMessagesWithinRange not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

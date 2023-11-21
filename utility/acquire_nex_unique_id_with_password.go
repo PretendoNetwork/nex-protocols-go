@@ -11,7 +11,7 @@ func (protocol *Protocol) handleAcquireNexUniqueIDWithPassword(packet nex.Packet
 
 	if protocol.AcquireNexUniqueIDWithPassword == nil {
 		globals.Logger.Warning("Utility::AcquireNexUniqueIDWithPassword not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

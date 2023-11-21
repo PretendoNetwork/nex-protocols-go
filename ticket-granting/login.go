@@ -13,7 +13,7 @@ func (protocol *Protocol) handleLogin(packet nex.PacketInterface) {
 
 	if protocol.Login == nil {
 		globals.Logger.Warning("TicketGranting::Login not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

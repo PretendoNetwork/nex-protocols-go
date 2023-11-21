@@ -14,7 +14,7 @@ func (protocol *Protocol) handleCustomSearchObject(packet nex.PacketInterface) {
 
 	if protocol.CustomSearchObject == nil {
 		globals.Logger.Warning("DataStoreSuperMarioMaker::CustomSearchObject not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

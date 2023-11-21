@@ -14,7 +14,7 @@ func (protocol *Protocol) handleListServiceItemRequest(packet nex.PacketInterfac
 
 	if protocol.ListServiceItemRequest == nil {
 		globals.Logger.Warning("ServiceItemWiiSportsClub::ListServiceItemRequest not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

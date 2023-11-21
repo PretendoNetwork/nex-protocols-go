@@ -13,7 +13,7 @@ func (protocol *Protocol) handleGetPersistenceInfo(packet nex.PacketInterface) {
 
 	if protocol.GetPersistenceInfo == nil {
 		globals.Logger.Warning("DataStore::GetPersistenceInfo not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

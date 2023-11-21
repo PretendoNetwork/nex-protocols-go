@@ -13,7 +13,7 @@ func (protocol *Protocol) handleJoinCommunity(packet nex.PacketInterface) {
 
 	if protocol.JoinCommunity == nil {
 		globals.Logger.Warning("MatchmakeExtension::JoinCommunity not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

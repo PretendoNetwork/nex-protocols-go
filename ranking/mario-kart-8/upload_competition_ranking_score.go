@@ -14,7 +14,7 @@ func (protocol *Protocol) handleUploadCompetitionRankingScore(packet nex.PacketI
 
 	if protocol.UploadCompetitionRankingScore == nil {
 		globals.Logger.Warning("RankingMarioKart8::UploadCompetitionRankingScore not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

@@ -13,7 +13,7 @@ func (protocol *Protocol) handleCreateAccountWithCustomData(packet nex.PacketInt
 
 	if protocol.CreateAccountWithCustomData == nil {
 		globals.Logger.Warning("AccountManagement::CreateAccountWithCustomData not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

@@ -13,7 +13,7 @@ func (protocol *Protocol) handleDeleteApplicationConfig(packet nex.PacketInterfa
 
 	if protocol.DeleteApplicationConfig == nil {
 		globals.Logger.Warning("DataStoreSuperMarioMaker::DeleteApplicationConfig not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

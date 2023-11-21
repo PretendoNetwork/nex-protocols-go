@@ -13,7 +13,7 @@ func (protocol *Protocol) handleGetPurchaseHistoryResponse(packet nex.PacketInte
 
 	if protocol.GetPurchaseHistoryResponse == nil {
 		globals.Logger.Warning("ServiceItemWiiSportsClub::GetPurchaseHistoryResponse not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

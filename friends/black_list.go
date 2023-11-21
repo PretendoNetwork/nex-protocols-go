@@ -13,7 +13,7 @@ func (protocol *Protocol) handleBlackList(packet nex.PacketInterface) {
 
 	if protocol.BlackList == nil {
 		globals.Logger.Warning("Friends::BlackList not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

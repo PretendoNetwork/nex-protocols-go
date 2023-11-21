@@ -13,7 +13,7 @@ func (protocol *Protocol) handleClearRelationship(packet nex.PacketInterface) {
 
 	if protocol.ClearRelationship == nil {
 		globals.Logger.Warning("Friends::ClearRelationship not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

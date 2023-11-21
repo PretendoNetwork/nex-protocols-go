@@ -117,7 +117,7 @@ func (protocol *Protocol) Setup() {
 			case MethodGetUserStatuses:
 				protocol.handleGetUserStatuses(packet)
 			default:
-				go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+				globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 				fmt.Printf("Unsupported Subscriber method ID: %#v\n", message.MethodID)
 			}
 		}

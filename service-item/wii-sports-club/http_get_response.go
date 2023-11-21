@@ -13,7 +13,7 @@ func (protocol *Protocol) handleHTTPGetResponse(packet nex.PacketInterface) {
 
 	if protocol.HttpGetResponse == nil {
 		globals.Logger.Warning("ServiceItemWiiSportsClub::HTTPGetResponse not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

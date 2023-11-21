@@ -11,7 +11,7 @@ func (protocol *Protocol) handleSearchCommunityCompetition(packet nex.PacketInte
 
 	if protocol.SearchCommunityCompetition == nil {
 		globals.Logger.Warning("MatchmakeExtensionSuperSmashBros4::SearchCommunityCompetition not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

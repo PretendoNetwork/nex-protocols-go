@@ -192,7 +192,7 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 	case MethodSendInvitation:
 		protocol.handleSendInvitation(packet)
 	default:
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		fmt.Printf("Unsupported Friends (3DS) method ID: %#v\n", request.MethodID)
 	}
 }

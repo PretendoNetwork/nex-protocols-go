@@ -14,7 +14,7 @@ func (protocol *Protocol) handleGetStatsPrimaries(packet nex.PacketInterface) {
 
 	if protocol.GetStatsPrimaries == nil {
 		globals.Logger.Warning("MatchmakeReferee::GetStatsPrimaries not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

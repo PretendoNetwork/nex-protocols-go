@@ -11,7 +11,7 @@ func (protocol *Protocol) handleGetAPICallSummary(packet nex.PacketInterface) {
 
 	if protocol.GetAPICallSummary == nil {
 		globals.Logger.Warning("Debug::GetAPICallSummary not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

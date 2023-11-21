@@ -13,7 +13,7 @@ func (protocol *Protocol) handleGetList(packet nex.PacketInterface) {
 
 	if protocol.GetList == nil {
 		globals.Logger.Warning("Friends::GetList not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

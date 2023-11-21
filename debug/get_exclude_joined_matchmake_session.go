@@ -11,7 +11,7 @@ func (protocol *Protocol) handleGetExcludeJoinedMatchmakeSession(packet nex.Pack
 
 	if protocol.GetExcludeJoinedMatchmakeSession == nil {
 		globals.Logger.Warning("Debug::GetExcludeJoinedMatchmakeSession not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

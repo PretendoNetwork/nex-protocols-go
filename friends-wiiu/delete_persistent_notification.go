@@ -14,7 +14,7 @@ func (protocol *Protocol) handleDeletePersistentNotification(packet nex.PacketIn
 
 	if protocol.DeletePersistentNotification == nil {
 		globals.Logger.Warning("FriendsWiiU::DeletePersistentNotification not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

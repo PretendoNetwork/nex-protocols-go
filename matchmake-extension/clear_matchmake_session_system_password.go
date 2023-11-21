@@ -13,7 +13,7 @@ func (protocol *Protocol) handleClearMatchmakeSessionSystemPassword(packet nex.P
 
 	if protocol.ClearMatchmakeSessionSystemPassword == nil {
 		globals.Logger.Warning("MatchmakeExtension::ClearMatchmakeSessionSystemPassword not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

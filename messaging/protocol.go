@@ -84,7 +84,7 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 	case MethodDeliverMessageMultiTarget:
 		protocol.handleDeliverMessageMultiTarget(packet)
 	default:
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		fmt.Printf("Unsupported Messaging method ID: %#v\n", request.MethodID)
 	}
 }

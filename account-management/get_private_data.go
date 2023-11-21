@@ -11,7 +11,7 @@ func (protocol *Protocol) handleGetPrivateData(packet nex.PacketInterface) {
 
 	if protocol.GetPrivateData == nil {
 		globals.Logger.Warning("AccountManagement::GetPrivateData not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

@@ -14,7 +14,7 @@ func (protocol *Protocol) handlePrepareUpdateBankObject(packet nex.PacketInterfa
 
 	if protocol.PrepareUpdateBankObject == nil {
 		globals.Logger.Warning("DataStorePokemonBank::PrepareUpdateBankObject not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

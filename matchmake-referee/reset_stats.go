@@ -11,7 +11,7 @@ func (protocol *Protocol) handleResetStats(packet nex.PacketInterface) {
 
 	if protocol.ResetStats == nil {
 		globals.Logger.Warning("MatchmakeReferee::ResetStats not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

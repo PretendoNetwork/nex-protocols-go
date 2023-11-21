@@ -13,7 +13,7 @@ func (protocol *Protocol) handleUpdateCustomData(packet nex.PacketInterface) {
 
 	if protocol.UpdateCustomData == nil {
 		globals.Logger.Warning("AccountManagement::UpdateCustomData not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

@@ -14,7 +14,7 @@ func (protocol *Protocol) handleAddBlackList(packet nex.PacketInterface) {
 
 	if protocol.AddBlackList == nil {
 		globals.Logger.Warning("FriendsWiiU::AddBlackList not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

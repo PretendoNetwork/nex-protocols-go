@@ -300,7 +300,7 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 	case MethodMigrateGatheringOwnership:
 		protocol.handleMigrateGatheringOwnership(packet)
 	default:
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		fmt.Printf("Unsupported MatchMaking method ID: %#v\n", request.MethodID)
 	}
 }

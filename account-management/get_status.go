@@ -13,7 +13,7 @@ func (protocol *Protocol) handleGetStatus(packet nex.PacketInterface) {
 
 	if protocol.GetStatus == nil {
 		globals.Logger.Warning("AccountManagement::GetStatus not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

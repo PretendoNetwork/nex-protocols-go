@@ -13,7 +13,7 @@ func (protocol *Protocol) handleUpdatePrivacySetting(packet nex.PacketInterface)
 
 	if protocol.UpdatePrivacySetting == nil {
 		globals.Logger.Warning("MatchmakeExtension::UpdatePrivacySetting not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

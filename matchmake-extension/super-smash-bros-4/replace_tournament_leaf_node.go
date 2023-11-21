@@ -11,7 +11,7 @@ func (protocol *Protocol) handleReplaceTournamentLeafNode(packet nex.PacketInter
 
 	if protocol.ReplaceTournamentLeafNode == nil {
 		globals.Logger.Warning("MatchmakeExtensionSuperSmashBros4::ReplaceTournamentLeafNode not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

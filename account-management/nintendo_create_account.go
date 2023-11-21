@@ -13,7 +13,7 @@ func (protocol *Protocol) handleNintendoCreateAccount(packet nex.PacketInterface
 
 	if protocol.NintendoCreateAccount == nil {
 		globals.Logger.Warning("AccountManagement::NintendoCreateAccount not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

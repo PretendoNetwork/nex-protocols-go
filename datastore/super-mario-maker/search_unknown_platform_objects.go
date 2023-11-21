@@ -11,7 +11,7 @@ func (protocol *Protocol) handleSearchUnknownPlatformObjects(packet nex.PacketIn
 
 	if protocol.SearchUnknownPlatformObjects == nil {
 		globals.Logger.Warning("DataStoreSuperMarioMaker::SearchUnknownPlatformObjects not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

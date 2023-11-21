@@ -13,7 +13,7 @@ func (protocol *Protocol) handleGetPublicData(packet nex.PacketInterface) {
 
 	if protocol.GetPublicData == nil {
 		globals.Logger.Warning("AccountManagement::GetPublicData not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

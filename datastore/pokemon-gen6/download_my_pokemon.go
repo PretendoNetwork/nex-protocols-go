@@ -14,7 +14,7 @@ func (protocol *Protocol) handleDownloadMyPokemon(packet nex.PacketInterface) {
 
 	if protocol.DownloadMyPokemon == nil {
 		globals.Logger.Warning("DataStorePokemonGen6::DownloadMyPokemon not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

@@ -127,7 +127,7 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 		case MethodGetCachedTopXRankings:
 			protocol.handleGetCachedTopXRankings(packet)
 		default:
-			go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+			globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 			fmt.Printf("Unsupported Ranking method ID: %#v\n", request.MethodID)
 		}
 	}

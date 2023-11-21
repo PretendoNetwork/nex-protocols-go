@@ -105,7 +105,7 @@ func (protocol *Protocol) Setup() {
 			case MethodResetStats:
 				protocol.handleResetStats(packet)
 			default:
-				go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+				globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 				fmt.Printf("Unsupported MatchmakeReferee method ID: %#v\n", message.MethodID)
 			}
 		}

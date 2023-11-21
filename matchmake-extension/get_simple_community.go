@@ -13,7 +13,7 @@ func (protocol *Protocol) handleGetSimpleCommunity(packet nex.PacketInterface) {
 
 	if protocol.GetSimpleCommunity == nil {
 		globals.Logger.Warning("MatchmakeExtension::GetSimpleCommunity not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

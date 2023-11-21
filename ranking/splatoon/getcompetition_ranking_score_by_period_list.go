@@ -11,7 +11,7 @@ func (protocol *Protocol) handleGetcompetitionRankingScoreByPeriodList(packet ne
 
 	if protocol.GetcompetitionRankingScoreByPeriodList == nil {
 		globals.Logger.Warning("RankingSplatoon::GetcompetitionRankingScoreByPeriodList not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

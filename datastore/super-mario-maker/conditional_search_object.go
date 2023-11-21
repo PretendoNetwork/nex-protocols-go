@@ -14,7 +14,7 @@ func (protocol *Protocol) handleConditionalSearchObject(packet nex.PacketInterfa
 
 	if protocol.ConditionalSearchObject == nil {
 		globals.Logger.Warning("DataStoreSuperMarioMaker::ConditionalSearchObject not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

@@ -13,7 +13,7 @@ func (protocol *Protocol) handleRequestURLs(packet nex.PacketInterface) {
 
 	if protocol.RequestURLs == nil {
 		globals.Logger.Warning("SecureConnection::RequestURLs not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

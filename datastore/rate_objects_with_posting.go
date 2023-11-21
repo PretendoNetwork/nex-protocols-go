@@ -14,7 +14,7 @@ func (protocol *Protocol) handleRateObjectsWithPosting(packet nex.PacketInterfac
 
 	if protocol.RateObjectsWithPosting == nil {
 		globals.Logger.Warning("DataStore::RateObjectsWithPosting not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

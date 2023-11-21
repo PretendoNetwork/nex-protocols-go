@@ -11,7 +11,7 @@ func (protocol *Protocol) handleGetAllFriends(packet nex.PacketInterface) {
 
 	if protocol.GetAllFriends == nil {
 		globals.Logger.Warning("Friends3DS::GetAllFriends not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

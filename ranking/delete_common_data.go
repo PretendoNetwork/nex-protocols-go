@@ -13,7 +13,7 @@ func (protocol *Protocol) handleDeleteCommonData(packet nex.PacketInterface) {
 
 	if protocol.DeleteCommonData == nil {
 		globals.Logger.Warning("Ranking::DeleteCommonData not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

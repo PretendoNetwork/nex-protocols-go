@@ -13,7 +13,7 @@ func (protocol *Protocol) handleGetIntegerSettings(packet nex.PacketInterface) {
 
 	if protocol.GetIntegerSettings == nil {
 		globals.Logger.Warning("Utility::GetIntegerSettings not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

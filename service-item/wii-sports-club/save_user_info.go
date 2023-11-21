@@ -14,7 +14,7 @@ func (protocol *Protocol) handleSaveUserInfo(packet nex.PacketInterface) {
 
 	if protocol.SaveUserInfo == nil {
 		globals.Logger.Warning("ServiceItemWiiSportsClub::SaveUserInfo not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

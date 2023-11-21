@@ -11,7 +11,7 @@ func (protocol *Protocol) handleGetClusterMembers(packet nex.PacketInterface) {
 
 	if protocol.GetClusterMembers == nil {
 		globals.Logger.Warning("Monitoring::GetClusterMembers not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

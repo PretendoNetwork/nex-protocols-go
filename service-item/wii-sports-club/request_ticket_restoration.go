@@ -14,7 +14,7 @@ func (protocol *Protocol) handleRequestTicketRestoration(packet nex.PacketInterf
 
 	if protocol.RequestTicketRestoration == nil {
 		globals.Logger.Warning("ServiceItemWiiSportsClub::RequestTicketRestoration not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

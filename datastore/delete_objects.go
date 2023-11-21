@@ -14,7 +14,7 @@ func (protocol *Protocol) handleDeleteObjects(packet nex.PacketInterface) {
 
 	if protocol.DeleteObjects == nil {
 		globals.Logger.Warning("DataStore::DeleteObjects not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

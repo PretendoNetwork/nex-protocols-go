@@ -14,7 +14,7 @@ func (protocol *Protocol) handleUpdateFriendUserProfile(packet nex.PacketInterfa
 
 	if protocol.UpdateFriendUserProfile == nil {
 		globals.Logger.Warning("MatchmakeExtensionMonsterHunterXX::UpdateFriendUserProfile not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

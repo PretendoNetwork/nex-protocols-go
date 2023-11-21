@@ -13,7 +13,7 @@ func (protocol *Protocol) handleAddFriends(packet nex.PacketInterface) {
 
 	if protocol.AddFriends == nil {
 		globals.Logger.Warning("MatchmakeExtensionMonsterHunterXX::AddFriends not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

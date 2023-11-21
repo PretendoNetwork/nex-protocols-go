@@ -13,7 +13,7 @@ func (protocol *Protocol) handlePurchaseServiceItemResponse(packet nex.PacketInt
 
 	if protocol.PurchaseServiceItemResponse == nil {
 		globals.Logger.Warning("ServiceItemTeamKirbyClashDeluxe::PurchaseServiceItemResponse not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

@@ -13,7 +13,7 @@ func (protocol *Protocol) handleRemoveFromBlockList(packet nex.PacketInterface) 
 
 	if protocol.RemoveFromBlockList == nil {
 		globals.Logger.Warning("MatchmakeExtension::RemoveFromBlockList not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

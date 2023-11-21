@@ -13,7 +13,7 @@ func (protocol *Protocol) handleGetPendingDeletions(packet nex.PacketInterface) 
 
 	if protocol.GetPendingDeletions == nil {
 		globals.Logger.Warning("MatchMaking::GetPendingDeletions not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

@@ -13,7 +13,7 @@ func (protocol *Protocol) handleActivateWithCardID(packet nex.PacketInterface) {
 
 	if protocol.ActivateWithCardID == nil {
 		globals.Logger.Warning("StorageManager::ActivateWithCardID not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

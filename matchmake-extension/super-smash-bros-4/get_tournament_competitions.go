@@ -11,7 +11,7 @@ func (protocol *Protocol) handleGetTournamentCompetitions(packet nex.PacketInter
 
 	if protocol.GetTournamentCompetitions == nil {
 		globals.Logger.Warning("MatchmakeExtensionSuperSmashBros4::GetTournamentCompetitions not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

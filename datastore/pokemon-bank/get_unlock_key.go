@@ -13,7 +13,7 @@ func (protocol *Protocol) handleGetUnlockKey(packet nex.PacketInterface) {
 
 	if protocol.GetUnlockKey == nil {
 		globals.Logger.Warning("DataStorePokemonBank::GetUnlockKey not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

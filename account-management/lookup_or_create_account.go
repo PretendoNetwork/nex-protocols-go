@@ -13,7 +13,7 @@ func (protocol *Protocol) handleLookupOrCreateAccount(packet nex.PacketInterface
 
 	if protocol.LookupOrCreateAccount == nil {
 		globals.Logger.Warning("AccountManagement::LookupOrCreateAccount not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 

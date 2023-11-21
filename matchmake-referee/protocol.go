@@ -74,10 +74,10 @@ type Protocol struct {
 // Setup initializes the protocol
 func (protocol *Protocol) Setup() {
 	protocol.Server.OnData(func(packet nex.PacketInterface) {
-		request := packet.RMCMessage()
+		message := packet.RMCMessage()
 
-		if request.ProtocolID == ProtocolID {
-			switch request.MethodID {
+		if message.IsRequest && message.ProtocolID == ProtocolID {
+			switch message.MethodID {
 			case MethodStartRound:
 				protocol.handleStartRound(packet)
 			case MethodGetStartRoundParam:
@@ -106,7 +106,7 @@ func (protocol *Protocol) Setup() {
 				protocol.handleResetStats(packet)
 			default:
 				go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
-				fmt.Printf("Unsupported MatchmakeReferee method ID: %#v\n", request.MethodID)
+				fmt.Printf("Unsupported MatchmakeReferee method ID: %#v\n", message.MethodID)
 			}
 		}
 	})

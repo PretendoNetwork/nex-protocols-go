@@ -45,9 +45,9 @@ type Protocol struct {
 // Setup initializes the protocol
 func (protocol *Protocol) Setup() {
 	protocol.Server.OnData(func(packet nex.PacketInterface) {
-		request := packet.RMCMessage()
+		message := packet.RMCMessage()
 
-		if request.ProtocolID == ProtocolID {
+		if message.IsRequest && message.ProtocolID == ProtocolID {
 			protocol.HandlePacket(packet)
 		}
 	})

@@ -49,10 +49,10 @@ type Protocol struct {
 // Setup initializes the protocol
 func (protocol *Protocol) Setup() {
 	protocol.Server.OnData(func(packet nex.PacketInterface) {
-		request := packet.RMCMessage()
+		message := packet.RMCMessage()
 
-		if request.ProtocolID == ProtocolID {
-			switch request.MethodID {
+		if message.IsRequest && message.ProtocolID == ProtocolID {
+			switch message.MethodID {
 			case MethodFindByGroup:
 				protocol.handleFindByGroup(packet)
 			case MethodInsertItem:
@@ -69,7 +69,7 @@ func (protocol *Protocol) Setup() {
 				protocol.handleFindItemsBySQLQuery(packet)
 			default:
 				go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
-				fmt.Printf("Unsupported Persistent Store method ID: %#v\n", request.MethodID)
+				fmt.Printf("Unsupported Persistent Store method ID: %#v\n", message.MethodID)
 			}
 		}
 	})

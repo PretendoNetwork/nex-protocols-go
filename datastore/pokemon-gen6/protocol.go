@@ -66,10 +66,10 @@ type Protocol struct {
 // Setup initializes the protocol
 func (protocol *Protocol) Setup() {
 	protocol.Server.OnData(func(packet nex.PacketInterface) {
-		request := packet.RMCMessage()
+		message := packet.RMCMessage()
 
-		if request.ProtocolID == ProtocolID {
-			if slices.Contains(patchedMethods, request.MethodID) {
+		if message.IsRequest && message.ProtocolID == ProtocolID {
+			if slices.Contains(patchedMethods, message.MethodID) {
 				protocol.HandlePacket(packet)
 			} else {
 				protocol.dataStoreProtocol.HandlePacket(packet)

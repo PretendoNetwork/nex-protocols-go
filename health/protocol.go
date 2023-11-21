@@ -36,10 +36,10 @@ type Protocol struct {
 // Setup initializes the protocol
 func (protocol *Protocol) Setup() {
 	protocol.Server.OnData(func(packet nex.PacketInterface) {
-		request := packet.RMCMessage()
+		message := packet.RMCMessage()
 
-		if request.ProtocolID == ProtocolID {
-			switch request.MethodID {
+		if message.IsRequest && message.ProtocolID == ProtocolID {
+			switch message.MethodID {
 			case MethodPingDaemon:
 				protocol.handlePingDaemon(packet)
 			case MethodPingDatabase:
@@ -49,7 +49,7 @@ func (protocol *Protocol) Setup() {
 			case MethodFixSanityErrors:
 				protocol.handleFixSanityErrors(packet)
 			default:
-				fmt.Printf("Unsupported Health method ID: %#v\n", request.MethodID)
+				fmt.Printf("Unsupported Health method ID: %#v\n", message.MethodID)
 			}
 		}
 	})

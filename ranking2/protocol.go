@@ -62,10 +62,10 @@ type Protocol struct {
 // Setup initializes the protocol
 func (protocol *Protocol) Setup() {
 	protocol.Server.OnData(func(packet nex.PacketInterface) {
-		request := packet.RMCMessage()
+		message := packet.RMCMessage()
 
-		if request.ProtocolID == ProtocolID {
-			switch request.MethodID {
+		if message.IsRequest && message.ProtocolID == ProtocolID {
+			switch message.MethodID {
 			case MethodPutScore:
 				protocol.handlePutScore(packet)
 			case MethodGetCommonData:
@@ -88,7 +88,7 @@ func (protocol *Protocol) Setup() {
 				protocol.handleGetEstimateScoreRank(packet)
 			default:
 				go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
-				fmt.Printf("Unsupported Ranking2 method ID: %#v\n", request.MethodID)
+				fmt.Printf("Unsupported Ranking2 method ID: %#v\n", message.MethodID)
 			}
 		}
 	})

@@ -19,7 +19,11 @@ func Respond(packet nex.PacketInterface, message *nex.RMCMessage) {
 		}
 
 		prudpPacket.SetType(nex.DataPacket)
-		prudpPacket.AddFlag(nex.FlagReliable)
+
+		if packet.HasFlag(nex.FlagReliable) {
+			prudpPacket.AddFlag(nex.FlagReliable)
+		}
+
 		prudpPacket.AddFlag(nex.FlagNeedsAck)
 		prudpPacket.AddFlag(nex.FlagHasSize)
 		prudpPacket.SetSourceStreamType(packet.DestinationStreamType())

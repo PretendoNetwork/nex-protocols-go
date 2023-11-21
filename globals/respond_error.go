@@ -30,8 +30,12 @@ func RespondError(packet nex.PacketInterface, protocolID uint16, errorCode uint3
 		}
 
 		prudpPacket.SetType(nex.DataPacket)
+
+		if packet.HasFlag(nex.FlagReliable) {
+			prudpPacket.AddFlag(nex.FlagReliable)
+		}
+
 		prudpPacket.AddFlag(nex.FlagNeedsAck)
-		prudpPacket.AddFlag(nex.FlagReliable)
 		prudpPacket.SetSourceStreamType(packet.DestinationStreamType())
 		prudpPacket.SetSourcePort(packet.DestinationPort())
 		prudpPacket.SetDestinationStreamType(packet.SourceStreamType())

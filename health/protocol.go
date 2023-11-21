@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
 const (
@@ -49,6 +50,7 @@ func (protocol *Protocol) Setup() {
 			case MethodFixSanityErrors:
 				protocol.handleFixSanityErrors(packet)
 			default:
+				globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 				fmt.Printf("Unsupported Health method ID: %#v\n", message.MethodID)
 			}
 		}

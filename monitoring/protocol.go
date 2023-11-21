@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
 const (
@@ -46,6 +47,7 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 	case MethodGetClusterMembers:
 		protocol.handleGetClusterMembers(packet)
 	default:
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		fmt.Printf("Unsupported Monitoring method ID: %#v\n", request.MethodID)
 	}
 }

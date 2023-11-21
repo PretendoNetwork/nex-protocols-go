@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
 const (
@@ -76,6 +77,7 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 	case MethodGetAPICallSummary:
 		protocol.handleGetAPICallSummary(packet)
 	default:
+		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		fmt.Printf("Unsupported Debug method ID: %#v\n", request.MethodID)
 	}
 }

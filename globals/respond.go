@@ -9,7 +9,8 @@ func Respond(packet nex.PacketInterface, message *nex.RMCMessage) {
 
 	var responsePacket nex.PacketInterface
 
-	if packet, ok := packet.(nex.PRUDPPacketInterface); ok {
+	switch packet := packet.(type) {
+	case nex.PRUDPPacketInterface:
 		var prudpPacket nex.PRUDPPacketInterface
 
 		if packet.Version() == 1 {
@@ -33,9 +34,13 @@ func Respond(packet nex.PacketInterface, message *nex.RMCMessage) {
 		prudpPacket.SetSubstreamID(packet.SubstreamID())
 
 		responsePacket = prudpPacket
+		responsePacket.SetPayload(message.Bytes())
+	case *nex.HPPPacket:
+		// * We reuse the same packet from input and replace
+		// * the RMC message so that it can be delivered back
+		responsePacket = packet
+		responsePacket.SetRMCMessage(message)
 	}
-
-	responsePacket.SetPayload(message.Bytes())
 
 	client.Server().Send(responsePacket)
 }

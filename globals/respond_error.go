@@ -8,16 +8,15 @@ func RespondError(packet nex.PacketInterface, protocolID uint16, errorCode uint3
 	client := packet.Sender()
 	request := packet.RMCMessage()
 
+	rmcResponse := nex.NewRMCError(errorCode)
+	rmcResponse.ProtocolID = request.ProtocolID
+	rmcResponse.CallID = request.CallID
+
 	var responsePacket nex.PacketInterface
-	var rmcResponseBytes []byte
 
-	// TODO - Add HPP support back once nex-go supports it again
-	if packet, ok := packet.(nex.PRUDPPacketInterface); ok {
-		rmcResponse := nex.NewRMCError(errorCode)
-		rmcResponse.ProtocolID = request.ProtocolID
-		rmcResponse.CallID = request.CallID
-
-		rmcResponseBytes = rmcResponse.Bytes()
+	switch packet := packet.(type) {
+	case nex.PRUDPPacketInterface:
+		rmcResponseBytes := rmcResponse.Bytes()
 
 		// * Go won't type assert responsePacket in the version check below,
 		// * so to avoid a bunch of assertions just create a temp variable
@@ -42,9 +41,13 @@ func RespondError(packet nex.PacketInterface, protocolID uint16, errorCode uint3
 		prudpPacket.SetDestinationPort(packet.SourcePort())
 
 		responsePacket = prudpPacket
+		responsePacket.SetPayload(rmcResponseBytes)
+	case *nex.HPPPacket:
+		// * We reuse the same packet from input and replace
+		// * the RMC message so that it can be delivered back
+		responsePacket = packet
+		responsePacket.SetRMCMessage(rmcResponse)
 	}
-
-	responsePacket.SetPayload(rmcResponseBytes)
 
 	client.Server().Send(responsePacket)
 }

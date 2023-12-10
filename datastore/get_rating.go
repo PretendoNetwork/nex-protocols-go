@@ -23,7 +23,7 @@ func (protocol *Protocol) handleGetRating(packet nex.PacketInterface) {
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+	parametersStream := nex.NewStreamIn(parameters, protocol.server)
 
 	target, err := nex.StreamReadStructure(parametersStream, datastore_types.NewDataStoreRatingTarget())
 	if err != nil {

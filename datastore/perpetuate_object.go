@@ -22,7 +22,7 @@ func (protocol *Protocol) handlePerpetuateObject(packet nex.PacketInterface) {
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+	parametersStream := nex.NewStreamIn(parameters, protocol.server)
 
 	persistenceSlotID, err := parametersStream.ReadUInt16LE()
 	if err != nil {

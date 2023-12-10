@@ -23,7 +23,7 @@ func (protocol *Protocol) handleChangePlayablePlatform(packet nex.PacketInterfac
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+	parametersStream := nex.NewStreamIn(parameters, protocol.server)
 
 	params, err := nex.StreamReadListStructure(parametersStream, datastore_super_mario_maker_types.NewDataStoreChangePlayablePlatformParam())
 	if err != nil {

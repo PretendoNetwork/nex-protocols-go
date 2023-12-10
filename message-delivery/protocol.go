@@ -18,13 +18,35 @@ const (
 
 // Protocol stores all the RMC method handlers for the Message Delivery protocol and listens for requests
 type Protocol struct {
-	Server         nex.ServerInterface
+	server         nex.ServerInterface
 	DeliverMessage func(err error, packet nex.PacketInterface, callID uint32, oUserMessage *nex.DataHolder) (*nex.RMCMessage, uint32)
+}
+
+// Interface implements the methods present on the Message Deliver protocol struct
+type Interface interface {
+	Server() nex.ServerInterface
+	SetServer(server nex.ServerInterface)
+	SetHandlerDeliverMessage(handler func(err error, packet nex.PacketInterface, callID uint32, oUserMessage *nex.DataHolder) (*nex.RMCMessage, uint32))
+}
+
+// Server returns the server implementing the protocol
+func (protocol *Protocol) Server() nex.ServerInterface {
+	return protocol.server
+}
+
+// SetServer sets the server implementing the protocol
+func (protocol *Protocol) SetServer(server nex.ServerInterface) {
+	protocol.server = server
+}
+
+// SetHandlerDeliverMessage sets the handler for the DeliverMessage method
+func (protocol *Protocol) SetHandlerDeliverMessage(handler func(err error, packet nex.PacketInterface, callID uint32, oUserMessage *nex.DataHolder) (*nex.RMCMessage, uint32)) {
+	protocol.DeliverMessage = handler
 }
 
 // Setup initializes the protocol
 func (protocol *Protocol) Setup() {
-	protocol.Server.OnData(func(packet nex.PacketInterface) {
+	protocol.server.OnData(func(packet nex.PacketInterface) {
 		message := packet.RMCMessage()
 
 		if message.IsRequest && message.ProtocolID == ProtocolID {
@@ -48,7 +70,7 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 
 // NewProtocol returns a new Message Delivery protocol
 func NewProtocol(server nex.ServerInterface) *Protocol {
-	protocol := &Protocol{Server: server}
+	protocol := &Protocol{server: server}
 
 	protocol.Setup()
 

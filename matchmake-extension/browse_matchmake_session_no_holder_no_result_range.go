@@ -23,7 +23,7 @@ func (protocol *Protocol) handleBrowseMatchmakeSessionNoHolderNoResultRange(pack
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+	parametersStream := nex.NewStreamIn(parameters, protocol.server)
 
 	searchCriteria, err := nex.StreamReadStructure(parametersStream, match_making_types.NewMatchmakeSessionSearchCriteria())
 	if err != nil {

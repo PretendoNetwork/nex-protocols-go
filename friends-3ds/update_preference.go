@@ -22,7 +22,7 @@ func (protocol *Protocol) handleUpdatePreference(packet nex.PacketInterface) {
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+	parametersStream := nex.NewStreamIn(parameters, protocol.server)
 
 	publicMode, err := parametersStream.ReadBool()
 	if err != nil {

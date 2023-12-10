@@ -23,7 +23,7 @@ func (protocol *Protocol) handleGetEstimateScoreRank(packet nex.PacketInterface)
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+	parametersStream := nex.NewStreamIn(parameters, protocol.server)
 
 	input, err := nex.StreamReadStructure(parametersStream, ranking2_types.NewRanking2EstimateScoreRankInput())
 	if err != nil {

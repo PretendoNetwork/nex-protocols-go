@@ -112,7 +112,7 @@ type serviceItemProtocol = service_item.Protocol
 // Protocol stores all the RMC method handlers for the Service Item (Team Kirby Clash Deluxe) protocol and listens for requests
 // Embeds the Service Item protocol
 type Protocol struct {
-	Server nex.ServerInterface
+	server nex.ServerInterface
 	serviceItemProtocol
 	GetEnvironment                  func(err error, packet nex.PacketInterface, callID uint32, uniqueID string, platform uint8) (*nex.RMCMessage, uint32)
 	HttpGetRequest                  func(err error, packet nex.PacketInterface, callID uint32, url *service_item_team_kirby_clash_deluxe_types.ServiceItemHTTPGetParam) (*nex.RMCMessage, uint32)
@@ -140,7 +140,7 @@ type Protocol struct {
 
 // Setup initializes the protocol
 func (protocol *Protocol) Setup() {
-	protocol.Server.OnData(func(packet nex.PacketInterface) {
+	protocol.server.OnData(func(packet nex.PacketInterface) {
 		message := packet.RMCMessage()
 
 		if message.IsRequest && message.ProtocolID == ProtocolID {
@@ -210,8 +210,8 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 
 // NewProtocol returns a new ServiceItemTeamKirbyClashDeluxe protocol
 func NewProtocol(server nex.ServerInterface) *Protocol {
-	protocol := &Protocol{Server: server}
-	protocol.serviceItemProtocol.Server = server
+	protocol := &Protocol{server: server}
+	protocol.serviceItemProtocol.SetServer(server)
 
 	protocol.Setup()
 

@@ -22,7 +22,7 @@ func (protocol *Protocol) handleAddToBlockList(packet nex.PacketInterface) {
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+	parametersStream := nex.NewStreamIn(parameters, protocol.server)
 
 	lstPrincipalID, err := parametersStream.ReadListPID()
 	if err != nil {

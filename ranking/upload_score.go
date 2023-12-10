@@ -23,7 +23,7 @@ func (protocol *Protocol) handleUploadScore(packet nex.PacketInterface) {
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+	parametersStream := nex.NewStreamIn(parameters, protocol.server)
 
 	scoreData, err := nex.StreamReadStructure(parametersStream, ranking_types.NewRankingScoreData())
 	if err != nil {

@@ -23,7 +23,7 @@ func (protocol *Protocol) handleGetFriendComment(packet nex.PacketInterface) {
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+	parametersStream := nex.NewStreamIn(parameters, protocol.server)
 
 	friends, err := nex.StreamReadListStructure(parametersStream, friends_3ds_types.NewFriendInfo())
 	if err != nil {

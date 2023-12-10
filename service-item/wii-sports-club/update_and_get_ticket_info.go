@@ -22,7 +22,7 @@ func (protocol *Protocol) handleUpdateAndGetTicketInfo(packet nex.PacketInterfac
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+	parametersStream := nex.NewStreamIn(parameters, protocol.server)
 
 	forceRetrieveFromEShop, err := parametersStream.ReadBool()
 	if err != nil {

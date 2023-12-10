@@ -23,7 +23,7 @@ func (protocol *Protocol) handleUpdatePreference(packet nex.PacketInterface) {
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+	parametersStream := nex.NewStreamIn(parameters, protocol.server)
 
 	principalPreference, err := nex.StreamReadStructure(parametersStream, friends_wiiu_types.NewPrincipalPreference())
 	if err != nil {

@@ -24,7 +24,7 @@ func (protocol *Protocol) handleAssociateNexUniqueIDWithMyPrincipalID(packet nex
 
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+	parametersStream := nex.NewStreamIn(parameters, protocol.server)
 
 	uniqueIDInfo, err := nex.StreamReadStructure(parametersStream, utility_types.NewUniqueIDInfo())
 	if err != nil {

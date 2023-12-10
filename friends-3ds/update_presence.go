@@ -23,7 +23,7 @@ func (protocol *Protocol) handleUpdatePresence(packet nex.PacketInterface) {
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+	parametersStream := nex.NewStreamIn(parameters, protocol.server)
 
 	nintendoPresence, err := nex.StreamReadStructure(parametersStream, friends_3ds_types.NewNintendoPresence())
 	if err != nil {

@@ -1,5 +1,5 @@
-// Package subscription implements the Subscription NEX protocol
-package subscription
+// Package protocol implements the Subscription protocol
+package protocol
 
 import (
 	"fmt"

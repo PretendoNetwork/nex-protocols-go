@@ -33,7 +33,7 @@ const (
 
 // Protocol stores all the RMC method handlers for the Ticket Granting protocol and listens for requests
 type Protocol struct {
-	Server           nex.ServerInterface
+	server           nex.ServerInterface
 	Login            func(err error, packet nex.PacketInterface, callID uint32, strUserName string) (*nex.RMCMessage, uint32)
 	LoginEx          func(err error, packet nex.PacketInterface, callID uint32, strUserName string, oExtraData *nex.DataHolder) (*nex.RMCMessage, uint32)
 	RequestTicket    func(err error, packet nex.PacketInterface, callID uint32, idSource *nex.PID, idTarget *nex.PID) (*nex.RMCMessage, uint32)
@@ -42,9 +42,61 @@ type Protocol struct {
 	LoginWithContext func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, uint32)
 }
 
+// Interface implements the methods present on the Ticket Granting protocol struct
+type Interface interface {
+	Server() nex.ServerInterface
+	SetServer(server nex.ServerInterface)
+	SetHandlerLogin(handler func(err error, packet nex.PacketInterface, callID uint32, strUserName string) (*nex.RMCMessage, uint32))
+	SetHandlerLoginEx(handler func(err error, packet nex.PacketInterface, callID uint32, strUserName string, oExtraData *nex.DataHolder) (*nex.RMCMessage, uint32))
+	SetHandlerRequestTicket(handler func(err error, packet nex.PacketInterface, callID uint32, idSource *nex.PID, idTarget *nex.PID) (*nex.RMCMessage, uint32))
+	SetHandlerGetPID(handler func(err error, packet nex.PacketInterface, callID uint32, strUserName string) (*nex.RMCMessage, uint32))
+	SetHandlerGetName(handler func(err error, packet nex.PacketInterface, callID uint32, id *nex.PID) (*nex.RMCMessage, uint32))
+	SetHandlerLoginWithContext(handler func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, uint32))
+}
+
+// Server returns the server implementing the protocol
+func (protocol *Protocol) Server() nex.ServerInterface {
+	return protocol.server
+}
+
+// SetServer sets the server implementing the protocol
+func (protocol *Protocol) SetServer(server nex.ServerInterface) {
+	protocol.server = server
+}
+
+// SetHandlerLogin sets the handler for the Login method
+func (protocol *Protocol) SetHandlerLogin(handler func(err error, packet nex.PacketInterface, callID uint32, strUserName string) (*nex.RMCMessage, uint32)) {
+	protocol.Login = handler
+}
+
+// SetHandlerLoginEx sets the handler for the LoginEx method
+func (protocol *Protocol) SetHandlerLoginEx(handler func(err error, packet nex.PacketInterface, callID uint32, strUserName string, oExtraData *nex.DataHolder) (*nex.RMCMessage, uint32)) {
+	protocol.LoginEx = handler
+}
+
+// SetHandlerRequestTicket sets the handler for the RequestTicket method
+func (protocol *Protocol) SetHandlerRequestTicket(handler func(err error, packet nex.PacketInterface, callID uint32, idSource *nex.PID, idTarget *nex.PID) (*nex.RMCMessage, uint32)) {
+	protocol.RequestTicket = handler
+}
+
+// SetHandlerGetPID sets the handler for the GetPID method
+func (protocol *Protocol) SetHandlerGetPID(handler func(err error, packet nex.PacketInterface, callID uint32, strUserName string) (*nex.RMCMessage, uint32)) {
+	protocol.GetPID = handler
+}
+
+// SetHandlerGetName sets the handler for the GetName method
+func (protocol *Protocol) SetHandlerGetName(handler func(err error, packet nex.PacketInterface, callID uint32, id *nex.PID) (*nex.RMCMessage, uint32)) {
+	protocol.GetName = handler
+}
+
+// SetHandlerLoginWithContext sets the handler for the LoginWithContext method
+func (protocol *Protocol) SetHandlerLoginWithContext(handler func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, uint32)) {
+	protocol.LoginWithContext = handler
+}
+
 // Setup initializes the protocol
 func (protocol *Protocol) Setup() {
-	protocol.Server.OnData(func(packet nex.PacketInterface) {
+	protocol.server.OnData(func(packet nex.PacketInterface) {
 		message := packet.RMCMessage()
 
 		if message.IsRequest && message.ProtocolID == ProtocolID {
@@ -78,7 +130,7 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 
 // NewProtocol returns a new Ticket Granting protocol
 func NewProtocol(server nex.ServerInterface) *Protocol {
-	protocol := &Protocol{Server: server}
+	protocol := &Protocol{server: server}
 
 	protocol.Setup()
 

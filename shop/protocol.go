@@ -18,12 +18,22 @@ const (
 
 // Protocol stores all the RMC method handlers for the Shop protocol and listens for requests
 type Protocol struct {
-	Server nex.ServerInterface
+	server nex.ServerInterface
+}
+
+// Server returns the server implementing the protocol
+func (protocol *Protocol) Server() nex.ServerInterface {
+	return protocol.server
+}
+
+// SetServer sets the server implementing the protocol
+func (protocol *Protocol) SetServer(server nex.ServerInterface) {
+	protocol.server = server
 }
 
 // Setup initializes the protocol
 func (protocol *Protocol) Setup() {
-	protocol.Server.OnData(func(packet nex.PacketInterface) {
+	protocol.server.OnData(func(packet nex.PacketInterface) {
 		message := packet.RMCMessage()
 
 		if message.IsRequest && message.ProtocolID == ProtocolID {

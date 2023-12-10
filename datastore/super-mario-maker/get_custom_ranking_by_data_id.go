@@ -23,7 +23,7 @@ func (protocol *Protocol) handleGetCustomRankingByDataID(packet nex.PacketInterf
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+	parametersStream := nex.NewStreamIn(parameters, protocol.server)
 
 	param, err := nex.StreamReadStructure(parametersStream, datastore_super_mario_maker_types.NewDataStoreGetCustomRankingByDataIDParam())
 	if err != nil {

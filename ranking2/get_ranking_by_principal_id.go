@@ -23,7 +23,7 @@ func (protocol *Protocol) handleGetRankingByPrincipalID(packet nex.PacketInterfa
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+	parametersStream := nex.NewStreamIn(parameters, protocol.server)
 
 	getParam, err := nex.StreamReadStructure(parametersStream, ranking2_types.NewRanking2GetParam())
 	if err != nil {

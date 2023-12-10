@@ -23,7 +23,7 @@ func (protocol *Protocol) handleAddBlackList(packet nex.PacketInterface) {
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+	parametersStream := nex.NewStreamIn(parameters, protocol.server)
 
 	blacklistedPrincipal, err := nex.StreamReadStructure(parametersStream, friends_wiiu_types.NewBlacklistedPrincipal())
 	if err != nil {

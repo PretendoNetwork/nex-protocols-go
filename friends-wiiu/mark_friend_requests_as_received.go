@@ -22,7 +22,7 @@ func (protocol *Protocol) handleMarkFriendRequestsAsReceived(packet nex.PacketIn
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+	parametersStream := nex.NewStreamIn(parameters, protocol.server)
 
 	ids, err := parametersStream.ReadListUInt64LE()
 	if err != nil {

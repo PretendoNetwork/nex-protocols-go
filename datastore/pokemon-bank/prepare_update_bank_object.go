@@ -23,7 +23,7 @@ func (protocol *Protocol) handlePrepareUpdateBankObject(packet nex.PacketInterfa
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+	parametersStream := nex.NewStreamIn(parameters, protocol.server)
 
 	transactionParam, err := nex.StreamReadStructure(parametersStream, datastore_pokemon_bank_types.NewBankTransactionParam())
 	if err != nil {

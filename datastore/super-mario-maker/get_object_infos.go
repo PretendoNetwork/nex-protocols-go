@@ -22,7 +22,7 @@ func (protocol *Protocol) handleGetObjectInfos(packet nex.PacketInterface) {
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+	parametersStream := nex.NewStreamIn(parameters, protocol.server)
 
 	dataIDs, err := parametersStream.ReadListUInt64LE()
 	if err != nil {

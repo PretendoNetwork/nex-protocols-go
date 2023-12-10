@@ -22,7 +22,7 @@ func (protocol *Protocol) handleRemoveFriendByLocalFriendCode(packet nex.PacketI
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+	parametersStream := nex.NewStreamIn(parameters, protocol.server)
 
 	lfc, err := parametersStream.ReadUInt64LE()
 	if err != nil {

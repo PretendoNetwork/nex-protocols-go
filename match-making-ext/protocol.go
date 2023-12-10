@@ -33,7 +33,7 @@ const (
 
 // Protocol handles the MatchMakingExt protocol
 type Protocol struct {
-	Server                  nex.ServerInterface
+	server                  nex.ServerInterface
 	EndParticipation        func(err error, packet nex.PacketInterface, callID uint32, idGathering uint32, strMessage string) (*nex.RMCMessage, uint32)
 	GetParticipants         func(err error, packet nex.PacketInterface, callID uint32, idGathering uint32, bOnlyActive bool) (*nex.RMCMessage, uint32)
 	GetDetailedParticipants func(err error, packet nex.PacketInterface, callID uint32, idGathering uint32, bOnlyActive bool) (*nex.RMCMessage, uint32)
@@ -42,9 +42,61 @@ type Protocol struct {
 	DeleteFromDeletions     func(err error, packet nex.PacketInterface, callID uint32, lstDeletions []uint32, pid *nex.PID) (*nex.RMCMessage, uint32)
 }
 
+// Interface implements the methods present on the Match Making Ext protocol struct
+type Interface interface {
+	Server() nex.ServerInterface
+	SetServer(server nex.ServerInterface)
+	SetHandlerEndParticipation(handler func(err error, packet nex.PacketInterface, callID uint32, idGathering uint32, strMessage string) (*nex.RMCMessage, uint32))
+	SetHandlerGetParticipants(handler func(err error, packet nex.PacketInterface, callID uint32, idGathering uint32, bOnlyActive bool) (*nex.RMCMessage, uint32))
+	SetHandlerGetDetailedParticipants(handler func(err error, packet nex.PacketInterface, callID uint32, idGathering uint32, bOnlyActive bool) (*nex.RMCMessage, uint32))
+	SetHandlerGetParticipantsURLs(handler func(err error, packet nex.PacketInterface, callID uint32, lstGatherings []uint32) (*nex.RMCMessage, uint32))
+	SetHandlerGetGatheringRelations(handler func(err error, packet nex.PacketInterface, callID uint32, id uint32, descr string) (*nex.RMCMessage, uint32))
+	SetHandlerDeleteFromDeletions(handler func(err error, packet nex.PacketInterface, callID uint32, lstDeletions []uint32, pid *nex.PID) (*nex.RMCMessage, uint32))
+}
+
+// Server returns the server implementing the protocol
+func (protocol *Protocol) Server() nex.ServerInterface {
+	return protocol.server
+}
+
+// SetServer sets the server implementing the protocol
+func (protocol *Protocol) SetServer(server nex.ServerInterface) {
+	protocol.server = server
+}
+
+// SetHandlerEndParticipation sets the handler for the EndParticipation method
+func (protocol *Protocol) SetHandlerEndParticipation(handler func(err error, packet nex.PacketInterface, callID uint32, idGathering uint32, strMessage string) (*nex.RMCMessage, uint32)) {
+	protocol.EndParticipation = handler
+}
+
+// SetHandlerGetParticipants sets the handler for the GetParticipants method
+func (protocol *Protocol) SetHandlerGetParticipants(handler func(err error, packet nex.PacketInterface, callID uint32, idGathering uint32, bOnlyActive bool) (*nex.RMCMessage, uint32)) {
+	protocol.GetParticipants = handler
+}
+
+// SetHandlerGetDetailedParticipants sets the handler for the GetDetailedParticipants method
+func (protocol *Protocol) SetHandlerGetDetailedParticipants(handler func(err error, packet nex.PacketInterface, callID uint32, idGathering uint32, bOnlyActive bool) (*nex.RMCMessage, uint32)) {
+	protocol.GetDetailedParticipants = handler
+}
+
+// SetHandlerGetParticipantsURLs sets the handler for the GetParticipantsURLs method
+func (protocol *Protocol) SetHandlerGetParticipantsURLs(handler func(err error, packet nex.PacketInterface, callID uint32, lstGatherings []uint32) (*nex.RMCMessage, uint32)) {
+	protocol.GetParticipantsURLs = handler
+}
+
+// SetHandlerGetGatheringRelations sets the handler for the GetGatheringRelations method
+func (protocol *Protocol) SetHandlerGetGatheringRelations(handler func(err error, packet nex.PacketInterface, callID uint32, id uint32, descr string) (*nex.RMCMessage, uint32)) {
+	protocol.GetGatheringRelations = handler
+}
+
+// SetHandlerDeleteFromDeletions sets the handler for the DeleteFromDeletions method
+func (protocol *Protocol) SetHandlerDeleteFromDeletions(handler func(err error, packet nex.PacketInterface, callID uint32, lstDeletions []uint32, pid *nex.PID) (*nex.RMCMessage, uint32)) {
+	protocol.DeleteFromDeletions = handler
+}
+
 // Setup initializes the protocol
 func (protocol *Protocol) Setup() {
-	protocol.Server.OnData(func(packet nex.PacketInterface) {
+	protocol.server.OnData(func(packet nex.PacketInterface) {
 		message := packet.RMCMessage()
 
 		if message.IsRequest && message.ProtocolID == ProtocolID {
@@ -78,7 +130,7 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 
 // NewProtocol returns a new Match Making Ext protocol
 func NewProtocol(server nex.ServerInterface) *Protocol {
-	protocol := &Protocol{Server: server}
+	protocol := &Protocol{server: server}
 
 	protocol.Setup()
 

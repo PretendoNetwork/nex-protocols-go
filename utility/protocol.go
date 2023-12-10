@@ -40,7 +40,7 @@ const (
 
 // Protocol stores all the RMC method handlers for the Utility protocol and listens for requests
 type Protocol struct {
-	Server                                     nex.ServerInterface
+	server                                     nex.ServerInterface
 	AcquireNexUniqueID                         func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, uint32)
 	AcquireNexUniqueIDWithPassword             func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, uint32)
 	AssociateNexUniqueIDWithMyPrincipalID      func(err error, packet nex.PacketInterface, callID uint32, uniqueIDInfo *utility_types.UniqueIDInfo) (*nex.RMCMessage, uint32)
@@ -51,9 +51,73 @@ type Protocol struct {
 	GetStringSettings                          func(err error, packet nex.PacketInterface, callID uint32, stringSettingIndex uint32) (*nex.RMCMessage, uint32)
 }
 
+// Interface implements the methods present on the Utility protocol struct
+type Interface interface {
+	Server() nex.ServerInterface
+	SetServer(server nex.ServerInterface)
+	SetHandlerAcquireNexUniqueID(handler func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, uint32))
+	SetHandlerAcquireNexUniqueIDWithPassword(handler func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, uint32))
+	SetHandlerAssociateNexUniqueIDWithMyPrincipalID(handler func(err error, packet nex.PacketInterface, callID uint32, uniqueIDInfo *utility_types.UniqueIDInfo) (*nex.RMCMessage, uint32))
+	SetHandlerAssociateNexUniqueIDsWithMyPrincipalID(handler func(err error, packet nex.PacketInterface, callID uint32, uniqueIDInfo []*utility_types.UniqueIDInfo) (*nex.RMCMessage, uint32))
+	SetHandlerGetAssociatedNexUniqueIDWithMyPrincipalID(handler func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, uint32))
+	SetHandlerGetAssociatedNexUniqueIDsWithMyPrincipalID(handler func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, uint32))
+	SetHandlerGetIntegerSettings(handler func(err error, packet nex.PacketInterface, callID uint32, integerSettingIndex uint32) (*nex.RMCMessage, uint32))
+	SetHandlerGetStringSettings(handler func(err error, packet nex.PacketInterface, callID uint32, stringSettingIndex uint32) (*nex.RMCMessage, uint32))
+}
+
+// Server returns the server implementing the protocol
+func (protocol *Protocol) Server() nex.ServerInterface {
+	return protocol.server
+}
+
+// SetServer sets the server implementing the protocol
+func (protocol *Protocol) SetServer(server nex.ServerInterface) {
+	protocol.server = server
+}
+
+// SetHandlerAcquireNexUniqueID sets the handler for the AcquireNexUniqueID method
+func (protocol *Protocol) SetHandlerAcquireNexUniqueID(handler func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, uint32)) {
+	protocol.AcquireNexUniqueID = handler
+}
+
+// SetHandlerAcquireNexUniqueIDWithPassword sets the handler for the AcquireNexUniqueIDWithPassword method
+func (protocol *Protocol) SetHandlerAcquireNexUniqueIDWithPassword(handler func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, uint32)) {
+	protocol.AcquireNexUniqueIDWithPassword = handler
+}
+
+// SetHandlerAssociateNexUniqueIDWithMyPrincipalID sets the handler for the AssociateNexUniqueIDWithMyPrincipalID method
+func (protocol *Protocol) SetHandlerAssociateNexUniqueIDWithMyPrincipalID(handler func(err error, packet nex.PacketInterface, callID uint32, uniqueIDInfo *utility_types.UniqueIDInfo) (*nex.RMCMessage, uint32)) {
+	protocol.AssociateNexUniqueIDWithMyPrincipalID = handler
+}
+
+// SetHandlerAssociateNexUniqueIDsWithMyPrincipalID sets the handler for the AssociateNexUniqueIDsWithMyPrincipalID method
+func (protocol *Protocol) SetHandlerAssociateNexUniqueIDsWithMyPrincipalID(handler func(err error, packet nex.PacketInterface, callID uint32, uniqueIDInfo []*utility_types.UniqueIDInfo) (*nex.RMCMessage, uint32)) {
+	protocol.AssociateNexUniqueIDsWithMyPrincipalID = handler
+}
+
+// SetHandlerGetAssociatedNexUniqueIDWithMyPrincipalID sets the handler for the GetAssociatedNexUniqueIDWithMyPrincipalID method
+func (protocol *Protocol) SetHandlerGetAssociatedNexUniqueIDWithMyPrincipalID(handler func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, uint32)) {
+	protocol.GetAssociatedNexUniqueIDWithMyPrincipalID = handler
+}
+
+// SetHandlerGetAssociatedNexUniqueIDsWithMyPrincipalID sets the handler for the GetAssociatedNexUniqueIDsWithMyPrincipalID method
+func (protocol *Protocol) SetHandlerGetAssociatedNexUniqueIDsWithMyPrincipalID(handler func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, uint32)) {
+	protocol.GetAssociatedNexUniqueIDsWithMyPrincipalID = handler
+}
+
+// SetHandlerGetIntegerSettings sets the handler for the GetIntegerSettings method
+func (protocol *Protocol) SetHandlerGetIntegerSettings(handler func(err error, packet nex.PacketInterface, callID uint32, integerSettingIndex uint32) (*nex.RMCMessage, uint32)) {
+	protocol.GetIntegerSettings = handler
+}
+
+// SetHandlerGetStringSettings sets the handler for the GetStringSettings method
+func (protocol *Protocol) SetHandlerGetStringSettings(handler func(err error, packet nex.PacketInterface, callID uint32, stringSettingIndex uint32) (*nex.RMCMessage, uint32)) {
+	protocol.GetStringSettings = handler
+}
+
 // Setup initializes the protocol
 func (protocol *Protocol) Setup() {
-	protocol.Server.OnData(func(packet nex.PacketInterface) {
+	protocol.server.OnData(func(packet nex.PacketInterface) {
 		message := packet.RMCMessage()
 
 		if message.IsRequest && message.ProtocolID == ProtocolID {
@@ -84,7 +148,7 @@ func (protocol *Protocol) Setup() {
 
 // NewProtocol returns a new Utility protocol
 func NewProtocol(server nex.ServerInterface) *Protocol {
-	protocol := &Protocol{Server: server}
+	protocol := &Protocol{server: server}
 
 	protocol.Setup()
 

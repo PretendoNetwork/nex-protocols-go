@@ -23,7 +23,7 @@ func (protocol *Protocol) handleUpdateFriendUserProfile(packet nex.PacketInterfa
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+	parametersStream := nex.NewStreamIn(parameters, protocol.server)
 
 	param, err := nex.StreamReadStructure(parametersStream, matchmake_extension_monster_hunter_xx_types.NewFriendUserParam())
 	if err != nil {

@@ -103,7 +103,7 @@ type datastoreProtocol = datastore.Protocol
 // Protocol stores all the RMC method handlers for the DataStore (Super Smash Bros 4) protocol and listens for requests
 // Embeds the DataStore protocol
 type Protocol struct {
-	Server nex.ServerInterface
+	server nex.ServerInterface
 	datastoreProtocol
 	PostProfile              func(err error, packet nex.PacketInterface, callID uint32, param *datastore_super_smash_bros_4_types.DataStorePostProfileParam) (*nex.RMCMessage, uint32)
 	GetProfiles              func(err error, packet nex.PacketInterface, callID uint32, pidList []*nex.PID) (*nex.RMCMessage, uint32)
@@ -129,7 +129,7 @@ type Protocol struct {
 
 // Setup initializes the protocol
 func (protocol *Protocol) Setup() {
-	protocol.Server.OnData(func(packet nex.PacketInterface) {
+	protocol.server.OnData(func(packet nex.PacketInterface) {
 		message := packet.RMCMessage()
 
 		if message.IsRequest && message.ProtocolID == ProtocolID {
@@ -195,8 +195,8 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 
 // NewProtocol returns a new DataStore (Super Smash Bros 4) protocol
 func NewProtocol(server nex.ServerInterface) *Protocol {
-	protocol := &Protocol{Server: server}
-	protocol.datastoreProtocol.Server = server
+	protocol := &Protocol{server: server}
+	protocol.datastoreProtocol.SetServer(server)
 
 	protocol.Setup()
 

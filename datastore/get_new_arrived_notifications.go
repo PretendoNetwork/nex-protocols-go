@@ -23,7 +23,7 @@ func (protocol *Protocol) handleGetNewArrivedNotifications(packet nex.PacketInte
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+	parametersStream := nex.NewStreamIn(parameters, protocol.server)
 
 	param, err := nex.StreamReadStructure(parametersStream, datastore_types.NewDataStoreGetNewArrivedNotificationsParam())
 	if err != nil {

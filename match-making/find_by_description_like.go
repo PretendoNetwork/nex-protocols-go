@@ -22,7 +22,7 @@ func (protocol *Protocol) handleFindByDescriptionLike(packet nex.PacketInterface
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+	parametersStream := nex.NewStreamIn(parameters, protocol.server)
 
 	strDescriptionLike, err := parametersStream.ReadString()
 	if err != nil {

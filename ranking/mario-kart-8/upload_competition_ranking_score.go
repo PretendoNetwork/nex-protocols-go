@@ -23,7 +23,7 @@ func (protocol *Protocol) handleUploadCompetitionRankingScore(packet nex.PacketI
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+	parametersStream := nex.NewStreamIn(parameters, protocol.server)
 
 	param, err := nex.StreamReadStructure(parametersStream, ranking_mario_kart8_types.NewCompetitionRankingUploadScoreParam())
 	if err != nil {

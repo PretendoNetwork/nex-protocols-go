@@ -22,7 +22,7 @@ func (protocol *Protocol) handleGetFriendNotificationData(packet nex.PacketInter
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+	parametersStream := nex.NewStreamIn(parameters, protocol.server)
 
 	uiType, err := parametersStream.ReadInt32LE()
 	if err != nil {

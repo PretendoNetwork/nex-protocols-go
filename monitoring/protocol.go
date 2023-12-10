@@ -21,14 +21,42 @@ const (
 
 // Protocol handles the Monitoring protocol
 type Protocol struct {
-	Server            nex.ServerInterface
+	server            nex.ServerInterface
 	PingDaemon        func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, uint32)
 	GetClusterMembers func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, uint32)
 }
 
+// Interface implements the methods present on the Monitoring protocol struct
+type Interface interface {
+	Server() nex.ServerInterface
+	SetServer(server nex.ServerInterface)
+	SetHandlerPingDaemon(handler func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, uint32))
+	SetHandlerGetClusterMembers(handler func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, uint32))
+}
+
+// Server returns the server implementing the protocol
+func (protocol *Protocol) Server() nex.ServerInterface {
+	return protocol.server
+}
+
+// SetServer sets the server implementing the protocol
+func (protocol *Protocol) SetServer(server nex.ServerInterface) {
+	protocol.server = server
+}
+
+// SetHandlerPingDaemon sets the handler for the PingDaemon method
+func (protocol *Protocol) SetHandlerPingDaemon(handler func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, uint32)) {
+	protocol.PingDaemon = handler
+}
+
+// SetHandlerGetClusterMembers sets the handler for the GetClusterMembers method
+func (protocol *Protocol) SetHandlerGetClusterMembers(handler func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, uint32)) {
+	protocol.GetClusterMembers = handler
+}
+
 // Setup initializes the protocol
 func (protocol *Protocol) Setup() {
-	protocol.Server.OnData(func(packet nex.PacketInterface) {
+	protocol.server.OnData(func(packet nex.PacketInterface) {
 		message := packet.RMCMessage()
 
 		if message.IsRequest && message.ProtocolID == ProtocolID {
@@ -54,7 +82,7 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 
 // NewProtocol returns a new Monitoring protocol
 func NewProtocol(server nex.ServerInterface) *Protocol {
-	protocol := &Protocol{Server: server}
+	protocol := &Protocol{server: server}
 
 	protocol.Setup()
 

@@ -22,7 +22,7 @@ func (protocol *Protocol) handleUpdateNotificationData(packet nex.PacketInterfac
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+	parametersStream := nex.NewStreamIn(parameters, protocol.server)
 
 	uiType, err := parametersStream.ReadUInt32LE()
 	if err != nil {

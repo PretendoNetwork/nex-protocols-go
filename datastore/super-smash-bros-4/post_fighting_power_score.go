@@ -23,7 +23,7 @@ func (protocol *Protocol) handlePostFightingPowerScore(packet nex.PacketInterfac
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+	parametersStream := nex.NewStreamIn(parameters, protocol.server)
 
 	params, err := nex.StreamReadListStructure(parametersStream, datastore_super_smash_bros_4_types.NewDataStorePostFightingPowerScoreParam())
 	if err != nil {

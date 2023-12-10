@@ -23,7 +23,7 @@ func (protocol *Protocol) handleGetRankingByPIDList(packet nex.PacketInterface) 
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+	parametersStream := nex.NewStreamIn(parameters, protocol.server)
 
 	principalIDList, err := parametersStream.ReadListPID()
 	if err != nil {

@@ -23,7 +23,7 @@ func (protocol *Protocol) handleListServiceItemRequest(packet nex.PacketInterfac
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+	parametersStream := nex.NewStreamIn(parameters, protocol.server)
 
 	listServiceItemParam, err := nex.StreamReadStructure(parametersStream, service_item_wii_sports_club_types.NewServiceItemListServiceItemParam())
 	if err != nil {

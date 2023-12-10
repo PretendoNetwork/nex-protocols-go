@@ -23,7 +23,7 @@ func (protocol *Protocol) handleGetIntegerSettings(packet nex.PacketInterface) {
 
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+	parametersStream := nex.NewStreamIn(parameters, protocol.server)
 
 	integerSettingIndex, err := parametersStream.ReadUInt32LE()
 	if err != nil {

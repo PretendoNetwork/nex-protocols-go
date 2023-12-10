@@ -40,7 +40,7 @@ const (
 
 // Protocol stores all the RMC method handlers for the Messaging protocol and listens for requests
 type Protocol struct {
-	Server                         nex.ServerInterface
+	server                         nex.ServerInterface
 	DeliverMessage                 func(err error, packet nex.PacketInterface, callID uint32, oUserMessage *nex.DataHolder) (*nex.RMCMessage, uint32)
 	GetNumberOfMessages            func(err error, packet nex.PacketInterface, callID uint32, recipient *messaging_types.MessageRecipient) (*nex.RMCMessage, uint32)
 	GetMessagesHeaders             func(err error, packet nex.PacketInterface, callID uint32, recipient *messaging_types.MessageRecipient, resultRange *nex.ResultRange) (*nex.RMCMessage, uint32)
@@ -51,9 +51,73 @@ type Protocol struct {
 	DeliverMessageMultiTarget      func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) (*nex.RMCMessage, uint32) // TODO - Unknown request/response format
 }
 
+// Interface implements the methods present on the Messaging protocol struct
+type Interface interface {
+	Server() nex.ServerInterface
+	SetServer(server nex.ServerInterface)
+	SetHandlerDeliverMessage(handler func(err error, packet nex.PacketInterface, callID uint32, oUserMessage *nex.DataHolder) (*nex.RMCMessage, uint32))
+	SetHandlerGetNumberOfMessages(handler func(err error, packet nex.PacketInterface, callID uint32, recipient *messaging_types.MessageRecipient) (*nex.RMCMessage, uint32))
+	SetHandlerGetMessagesHeaders(handler func(err error, packet nex.PacketInterface, callID uint32, recipient *messaging_types.MessageRecipient, resultRange *nex.ResultRange) (*nex.RMCMessage, uint32))
+	SetHandlerRetrieveAllMessagesWithinRange(handler func(err error, packet nex.PacketInterface, callID uint32, recipient *messaging_types.MessageRecipient, resultRange *nex.ResultRange) (*nex.RMCMessage, uint32))
+	SetHandlerRetrieveMessages(handler func(err error, packet nex.PacketInterface, callID uint32, recipient *messaging_types.MessageRecipient, lstMsgIDs []uint32, bLeaveOnServer bool) (*nex.RMCMessage, uint32))
+	SetHandlerDeleteMessages(handler func(err error, packet nex.PacketInterface, callID uint32, recipient *messaging_types.MessageRecipient, lstMessagesToDelete []uint32) (*nex.RMCMessage, uint32))
+	SetHandlerDeleteAllMessages(handler func(err error, packet nex.PacketInterface, callID uint32, recipient *messaging_types.MessageRecipient) (*nex.RMCMessage, uint32))
+	SetHandlerDeliverMessageMultiTarget(handler func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) (*nex.RMCMessage, uint32))
+}
+
+// Server returns the server implementing the protocol
+func (protocol *Protocol) Server() nex.ServerInterface {
+	return protocol.server
+}
+
+// SetServer sets the server implementing the protocol
+func (protocol *Protocol) SetServer(server nex.ServerInterface) {
+	protocol.server = server
+}
+
+// SetHandlerDeliverMessage sets the handler for the DeliverMessage method
+func (protocol *Protocol) SetHandlerDeliverMessage(handler func(err error, packet nex.PacketInterface, callID uint32, oUserMessage *nex.DataHolder) (*nex.RMCMessage, uint32)) {
+	protocol.DeliverMessage = handler
+}
+
+// SetHandlerGetNumberOfMessages sets the handler for the GetNumberOfMessages method
+func (protocol *Protocol) SetHandlerGetNumberOfMessages(handler func(err error, packet nex.PacketInterface, callID uint32, recipient *messaging_types.MessageRecipient) (*nex.RMCMessage, uint32)) {
+	protocol.GetNumberOfMessages = handler
+}
+
+// SetHandlerGetMessagesHeaders sets the handler for the GetMessagesHeaders method
+func (protocol *Protocol) SetHandlerGetMessagesHeaders(handler func(err error, packet nex.PacketInterface, callID uint32, recipient *messaging_types.MessageRecipient, resultRange *nex.ResultRange) (*nex.RMCMessage, uint32)) {
+	protocol.GetMessagesHeaders = handler
+}
+
+// SetHandlerRetrieveAllMessagesWithinRange sets the handler for the RetrieveAllMessagesWithinRange method
+func (protocol *Protocol) SetHandlerRetrieveAllMessagesWithinRange(handler func(err error, packet nex.PacketInterface, callID uint32, recipient *messaging_types.MessageRecipient, resultRange *nex.ResultRange) (*nex.RMCMessage, uint32)) {
+	protocol.RetrieveAllMessagesWithinRange = handler
+}
+
+// SetHandlerRetrieveMessages sets the handler for the RetrieveMessages method
+func (protocol *Protocol) SetHandlerRetrieveMessages(handler func(err error, packet nex.PacketInterface, callID uint32, recipient *messaging_types.MessageRecipient, lstMsgIDs []uint32, bLeaveOnServer bool) (*nex.RMCMessage, uint32)) {
+	protocol.RetrieveMessages = handler
+}
+
+// SetHandlerDeleteMessages sets the handler for the DeleteMessages method
+func (protocol *Protocol) SetHandlerDeleteMessages(handler func(err error, packet nex.PacketInterface, callID uint32, recipient *messaging_types.MessageRecipient, lstMessagesToDelete []uint32) (*nex.RMCMessage, uint32)) {
+	protocol.DeleteMessages = handler
+}
+
+// SetHandlerDeleteAllMessages sets the handler for the DeleteAllMessages method
+func (protocol *Protocol) SetHandlerDeleteAllMessages(handler func(err error, packet nex.PacketInterface, callID uint32, recipient *messaging_types.MessageRecipient) (*nex.RMCMessage, uint32)) {
+	protocol.DeleteAllMessages = handler
+}
+
+// SetHandlerDeliverMessageMultiTarget sets the handler for the DeliverMessageMultiTarget method
+func (protocol *Protocol) SetHandlerDeliverMessageMultiTarget(handler func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) (*nex.RMCMessage, uint32)) {
+	protocol.DeliverMessageMultiTarget = handler
+}
+
 // Setup initializes the protocol
 func (protocol *Protocol) Setup() {
-	protocol.Server.OnData(func(packet nex.PacketInterface) {
+	protocol.server.OnData(func(packet nex.PacketInterface) {
 		message := packet.RMCMessage()
 
 		if message.IsRequest && message.ProtocolID == ProtocolID {
@@ -91,7 +155,7 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 
 // NewProtocol returns a new Messaging protocol
 func NewProtocol(server nex.ServerInterface) *Protocol {
-	protocol := &Protocol{Server: server}
+	protocol := &Protocol{server: server}
 
 	protocol.Setup()
 

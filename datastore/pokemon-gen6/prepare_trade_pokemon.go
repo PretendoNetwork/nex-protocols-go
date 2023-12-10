@@ -23,7 +23,7 @@ func (protocol *Protocol) handlePrepareTradePokemon(packet nex.PacketInterface) 
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+	parametersStream := nex.NewStreamIn(parameters, protocol.server)
 
 	param, err := nex.StreamReadStructure(parametersStream, datastore_pokemon_gen6_types.NewGlobalTradeStationPrepareTradePokemonParam())
 	if err != nil {

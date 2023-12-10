@@ -23,7 +23,7 @@ func (protocol *Protocol) handleIsActiveGame(packet nex.PacketInterface) {
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+	parametersStream := nex.NewStreamIn(parameters, protocol.server)
 
 	pids, err := parametersStream.ReadListPID()
 	if err != nil {

@@ -22,7 +22,7 @@ func (protocol *Protocol) handleDeleteCommonData(packet nex.PacketInterface) {
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+	parametersStream := nex.NewStreamIn(parameters, protocol.server)
 
 	uniqueID, err := parametersStream.ReadUInt64LE()
 	if err != nil {

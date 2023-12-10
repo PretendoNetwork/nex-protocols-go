@@ -22,7 +22,7 @@ func (protocol *Protocol) handleFindByDescriptionRegex(packet nex.PacketInterfac
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+	parametersStream := nex.NewStreamIn(parameters, protocol.server)
 
 	strDescriptionRegex, err := parametersStream.ReadString()
 	if err != nil {

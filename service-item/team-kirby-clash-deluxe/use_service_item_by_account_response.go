@@ -22,7 +22,7 @@ func (protocol *Protocol) handleUseServiceItemByAccountResponse(packet nex.Packe
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+	parametersStream := nex.NewStreamIn(parameters, protocol.server)
 
 	requestID, err := parametersStream.ReadUInt32LE()
 	if err != nil {

@@ -22,7 +22,7 @@ func (protocol *Protocol) handleGetLastConnectionStats(packet nex.PacketInterfac
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+	parametersStream := nex.NewStreamIn(parameters, protocol.server)
 
 	idPrincipal, err := parametersStream.ReadPID()
 	if err != nil {

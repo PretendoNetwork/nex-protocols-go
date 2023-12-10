@@ -23,7 +23,7 @@ func (protocol *Protocol) handleUpdateSimpleSearchObject(packet nex.PacketInterf
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+	parametersStream := nex.NewStreamIn(parameters, protocol.server)
 
 	objectID, err := parametersStream.ReadUInt32LE()
 	if err != nil {

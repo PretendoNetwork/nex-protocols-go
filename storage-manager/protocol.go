@@ -21,14 +21,42 @@ const (
 
 // Protocol stores all the RMC method handlers for the StorageManager protocol and listens for requests
 type Protocol struct {
-	Server             nex.ServerInterface
+	server             nex.ServerInterface
 	AcquireCardID      func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, uint32)
 	ActivateWithCardID func(err error, packet nex.PacketInterface, callID uint32, unknown uint8, cardID uint64) (*nex.RMCMessage, uint32)
 }
 
+// Interface implements the methods present on the StorageManager protocol struct
+type Interface interface {
+	Server() nex.ServerInterface
+	SetServer(server nex.ServerInterface)
+	SetHandlerAcquireCardID(handler func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, uint32))
+	SetHandlerActivateWithCardID(handler func(err error, packet nex.PacketInterface, callID uint32, unknown uint8, cardID uint64) (*nex.RMCMessage, uint32))
+}
+
+// Server returns the server implementing the protocol
+func (protocol *Protocol) Server() nex.ServerInterface {
+	return protocol.server
+}
+
+// SetServer sets the server implementing the protocol
+func (protocol *Protocol) SetServer(server nex.ServerInterface) {
+	protocol.server = server
+}
+
+// SetHandlerAcquireCardID sets the handler for the AcquireCardID method
+func (protocol *Protocol) SetHandlerAcquireCardID(handler func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, uint32)) {
+	protocol.AcquireCardID = handler
+}
+
+// SetHandlerActivateWithCardID sets the handler for the ActivateWithCardID method
+func (protocol *Protocol) SetHandlerActivateWithCardID(handler func(err error, packet nex.PacketInterface, callID uint32, unknown uint8, cardID uint64) (*nex.RMCMessage, uint32)) {
+	protocol.ActivateWithCardID = handler
+}
+
 // Setup initializes the protocol
 func (protocol *Protocol) Setup() {
-	protocol.Server.OnData(func(packet nex.PacketInterface) {
+	protocol.server.OnData(func(packet nex.PacketInterface) {
 		message := packet.RMCMessage()
 
 		if message.IsRequest && message.ProtocolID == ProtocolID {
@@ -47,7 +75,7 @@ func (protocol *Protocol) Setup() {
 
 // NewProtocol returns a new StorageManager protocol
 func NewProtocol(server nex.ServerInterface) *Protocol {
-	protocol := &Protocol{Server: server}
+	protocol := &Protocol{server: server}
 
 	protocol.Setup()
 

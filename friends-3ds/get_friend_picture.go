@@ -22,7 +22,7 @@ func (protocol *Protocol) handleGetFriendPicture(packet nex.PacketInterface) {
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+	parametersStream := nex.NewStreamIn(parameters, protocol.server)
 
 	unknown, err := parametersStream.ReadListUInt32LE()
 	if err != nil {

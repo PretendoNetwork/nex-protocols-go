@@ -23,7 +23,7 @@ func (protocol *Protocol) handleGetMessagesHeaders(packet nex.PacketInterface) {
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+	parametersStream := nex.NewStreamIn(parameters, protocol.server)
 
 	recipient, err := nex.StreamReadStructure(parametersStream, messaging_types.NewMessageRecipient())
 	if err != nil {

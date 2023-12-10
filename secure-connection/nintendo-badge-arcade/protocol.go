@@ -27,14 +27,14 @@ type secureConnectionProtocol = secure_connection.Protocol
 // Protocol stores all the RMC method handlers for the Secure Connection (Nintendo Badge Arcade) protocol and listens for requests
 // Embeds the SecureConnection Protocol
 type Protocol struct {
-	Server nex.ServerInterface
+	server nex.ServerInterface
 	secureConnectionProtocol
 	GetMaintenanceStatus func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, uint32)
 }
 
 // Setup initializes the protocol
 func (protocol *Protocol) Setup() {
-	protocol.Server.OnData(func(packet nex.PacketInterface) {
+	protocol.server.OnData(func(packet nex.PacketInterface) {
 		message := packet.RMCMessage()
 
 		if message.IsRequest && message.ProtocolID == ProtocolID {
@@ -62,8 +62,8 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 
 // NewProtocol returns a new Secure Connection (Nintendo Badge Arcade) protocol
 func NewProtocol(server nex.ServerInterface) *Protocol {
-	protocol := &Protocol{Server: server}
-	protocol.secureConnectionProtocol.Server = server
+	protocol := &Protocol{server: server}
+	protocol.secureConnectionProtocol.SetServer(server)
 
 	protocol.Setup()
 

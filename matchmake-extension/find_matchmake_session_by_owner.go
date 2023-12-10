@@ -22,7 +22,7 @@ func (protocol *Protocol) handleFindMatchmakeSessionByOwner(packet nex.PacketInt
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+	parametersStream := nex.NewStreamIn(parameters, protocol.server)
 
 	id, err := parametersStream.ReadUInt32LE()
 	if err != nil {

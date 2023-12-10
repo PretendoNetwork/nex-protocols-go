@@ -22,7 +22,7 @@ func (protocol *Protocol) handleUpdateAccountName(packet nex.PacketInterface) {
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+	parametersStream := nex.NewStreamIn(parameters, protocol.server)
 
 	strName, err := parametersStream.ReadString()
 	if err != nil {

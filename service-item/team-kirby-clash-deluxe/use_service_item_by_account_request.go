@@ -23,7 +23,7 @@ func (protocol *Protocol) handleUseServiceItemByAccountRequest(packet nex.Packet
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+	parametersStream := nex.NewStreamIn(parameters, protocol.server)
 
 	useServiceItemByAccountParam, err := nex.StreamReadStructure(parametersStream, service_item_team_kirby_clash_deluxe_types.NewServiceItemUseServiceItemByAccountParam())
 	if err != nil {

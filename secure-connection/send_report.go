@@ -22,7 +22,7 @@ func (protocol *Protocol) handleSendReport(packet nex.PacketInterface) {
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+	parametersStream := nex.NewStreamIn(parameters, protocol.server)
 
 	reportID, err := parametersStream.ReadUInt32LE()
 	if err != nil {

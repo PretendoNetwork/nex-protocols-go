@@ -23,7 +23,7 @@ func (protocol *Protocol) handleEndRound(packet nex.PacketInterface) {
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+	parametersStream := nex.NewStreamIn(parameters, protocol.server)
 
 	endRoundParam, err := nex.StreamReadStructure(parametersStream, matchmake_referee_types.NewMatchmakeRefereeEndRoundParam())
 	if err != nil {

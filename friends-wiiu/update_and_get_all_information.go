@@ -23,7 +23,7 @@ func (protocol *Protocol) handleUpdateAndGetAllInformation(packet nex.PacketInte
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+	parametersStream := nex.NewStreamIn(parameters, protocol.server)
 
 	nnaInfo, err := nex.StreamReadStructure(parametersStream, friends_wiiu_types.NewNNAInfo())
 	if err != nil {

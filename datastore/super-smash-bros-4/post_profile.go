@@ -23,7 +23,7 @@ func (protocol *Protocol) handlePostProfile(packet nex.PacketInterface) {
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+	parametersStream := nex.NewStreamIn(parameters, protocol.server)
 
 	param, err := nex.StreamReadStructure(parametersStream, datastore_super_smash_bros_4_types.NewDataStorePostProfileParam())
 	if err != nil {

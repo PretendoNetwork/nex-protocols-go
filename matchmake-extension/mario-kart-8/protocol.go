@@ -48,7 +48,7 @@ type matchmakeExtensionProtocol = matchmake_extension.Protocol
 // Protocol stores all the RMC method handlers for the Matchmake Extension (Mario Kart 8) protocol and listens for requests
 // Embeds the Matchmake Extension protocol
 type Protocol struct {
-	Server nex.ServerInterface
+	server nex.ServerInterface
 	matchmakeExtensionProtocol
 	CreateSimpleSearchObject                  func(err error, packet nex.PacketInterface, callID uint32, object *matchmake_extension_mario_kart8_types.SimpleSearchObject) (*nex.RMCMessage, uint32)
 	UpdateSimpleSearchObject                  func(err error, packet nex.PacketInterface, callID uint32, objectID uint32, newObject *matchmake_extension_mario_kart8_types.SimpleSearchObject) (*nex.RMCMessage, uint32)
@@ -60,7 +60,7 @@ type Protocol struct {
 
 // Setup initializes the protocol
 func (protocol *Protocol) Setup() {
-	protocol.Server.OnData(func(packet nex.PacketInterface) {
+	protocol.server.OnData(func(packet nex.PacketInterface) {
 		message := packet.RMCMessage()
 
 		if message.IsRequest && message.ProtocolID == ProtocolID {
@@ -98,8 +98,8 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 
 // NewProtocol returns a new MatchmakeExtensionMarioKart8 protocol
 func NewProtocol(server nex.ServerInterface) *Protocol {
-	protocol := &Protocol{Server: server}
-	protocol.matchmakeExtensionProtocol.Server = server
+	protocol := &Protocol{server: server}
+	protocol.matchmakeExtensionProtocol.SetServer(server)
 
 	protocol.Setup()
 

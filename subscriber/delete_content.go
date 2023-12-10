@@ -22,7 +22,7 @@ func (protocol *Protocol) handleDeleteContent(packet nex.PacketInterface) {
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+	parametersStream := nex.NewStreamIn(parameters, protocol.server)
 
 	unknown1, err := parametersStream.ReadListString()
 	if err != nil {

@@ -22,7 +22,7 @@ func (protocol *Protocol) handleDeleteCachedRanking(packet nex.PacketInterface) 
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+	parametersStream := nex.NewStreamIn(parameters, protocol.server)
 
 	rankingType, err := parametersStream.ReadString()
 	if err != nil {

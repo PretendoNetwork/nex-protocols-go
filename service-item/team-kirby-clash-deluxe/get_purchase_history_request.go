@@ -23,7 +23,7 @@ func (protocol *Protocol) handleGetPurchaseHistoryRequest(packet nex.PacketInter
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+	parametersStream := nex.NewStreamIn(parameters, protocol.server)
 
 	getPurchaseHistoryParam, err := nex.StreamReadStructure(parametersStream, service_item_team_kirby_clash_deluxe_types.NewServiceItemGetPurchaseHistoryParam())
 	if err != nil {

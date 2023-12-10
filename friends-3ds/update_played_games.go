@@ -23,7 +23,7 @@ func (protocol *Protocol) handleUpdatePlayedGames(packet nex.PacketInterface) {
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+	parametersStream := nex.NewStreamIn(parameters, protocol.server)
 
 	playedGames, err := nex.StreamReadListStructure(parametersStream, friends_3ds_types.NewPlayedGame())
 	if err != nil {

@@ -23,7 +23,7 @@ func (protocol *Protocol) handlePurchaseServiceItemRequest(packet nex.PacketInte
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+	parametersStream := nex.NewStreamIn(parameters, protocol.server)
 
 	purchaseServiceItemParam, err := nex.StreamReadStructure(parametersStream, service_item_team_kirby_clash_deluxe_types.NewServiceItemPurchaseServiceItemParam())
 	if err != nil {

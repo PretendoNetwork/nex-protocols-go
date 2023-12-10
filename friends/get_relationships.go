@@ -22,7 +22,7 @@ func (protocol *Protocol) handleGetRelationships(packet nex.PacketInterface) {
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+	parametersStream := nex.NewStreamIn(parameters, protocol.server)
 
 	resultRange, err := nex.StreamReadStructure(parametersStream, nex.NewResultRange())
 	if err != nil {

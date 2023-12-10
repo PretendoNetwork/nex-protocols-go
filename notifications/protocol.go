@@ -15,7 +15,17 @@ const (
 
 // Protocol handles the Notifications protocol
 type Protocol struct {
-	Server nex.ServerInterface
+	server nex.ServerInterface
+}
+
+// Server returns the server implementing the protocol
+func (protocol *Protocol) Server() nex.ServerInterface {
+	return protocol.server
+}
+
+// SetServer sets the server implementing the protocol
+func (protocol *Protocol) SetServer(server nex.ServerInterface) {
+	protocol.server = server
 }
 
 // Setup initializes the protocol
@@ -27,7 +37,7 @@ func (protocol *Protocol) Setup() {
 
 // NewProtocol returns a new Notifications protocol
 func NewProtocol(server nex.ServerInterface) *Protocol {
-	notificationsProtocol := &Protocol{Server: server}
+	notificationsProtocol := &Protocol{server: server}
 
 	notificationsProtocol.Setup()
 

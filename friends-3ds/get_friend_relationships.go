@@ -22,7 +22,7 @@ func (protocol *Protocol) handleGetFriendRelationships(packet nex.PacketInterfac
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+	parametersStream := nex.NewStreamIn(parameters, protocol.server)
 
 	pids, err := parametersStream.ReadListPID()
 	if err != nil {

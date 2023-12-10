@@ -54,7 +54,7 @@ const (
 
 // Protocol handles the Friends QRV protocol
 type Protocol struct {
-	Server                     nex.ServerInterface
+	server                     nex.ServerInterface
 	AddFriend                  func(err error, packet nex.PacketInterface, callID uint32, uiPlayer uint32, uiDetails uint32, strMessage string) (*nex.RMCMessage, uint32)
 	AddFriendByName            func(err error, packet nex.PacketInterface, callID uint32, strPlayerName string, uiDetails uint32, strMessage string) (*nex.RMCMessage, uint32)
 	AddFriendWithDetails       func(err error, packet nex.PacketInterface, callID uint32, uiPlayer uint32, uiDetails uint32, strMessage string) (*nex.RMCMessage, uint32)
@@ -70,9 +70,103 @@ type Protocol struct {
 	GetRelationships           func(err error, packet nex.PacketInterface, callID uint32, resultRange *nex.ResultRange) (*nex.RMCMessage, uint32)
 }
 
+// Interface implements the methods present on the Friends protocol struct
+type Interface interface {
+	Server() nex.ServerInterface
+	SetServer(server nex.ServerInterface)
+	SetHandlerAddFriend(handler func(err error, packet nex.PacketInterface, callID uint32, uiPlayer uint32, uiDetails uint32, strMessage string) (*nex.RMCMessage, uint32))
+	SetHandlerAddFriendByName(handler func(err error, packet nex.PacketInterface, callID uint32, strPlayerName string, uiDetails uint32, strMessage string) (*nex.RMCMessage, uint32))
+	SetHandlerAddFriendWithDetails(handler func(err error, packet nex.PacketInterface, callID uint32, uiPlayer uint32, uiDetails uint32, strMessage string) (*nex.RMCMessage, uint32))
+	SetHandlerAddFriendByNameWithDetails(handler func(err error, packet nex.PacketInterface, callID uint32, uiPlayer uint32, uiDetails uint32, strMessage string) (*nex.RMCMessage, uint32))
+	SetHandlerAcceptFriendship(handler func(err error, packet nex.PacketInterface, callID uint32, uiPlayer uint32) (*nex.RMCMessage, uint32))
+	SetHandlerDeclineFriendship(handler func(err error, packet nex.PacketInterface, callID uint32, uiPlayer uint32) (*nex.RMCMessage, uint32))
+	SetHandlerBlackList(handler func(err error, packet nex.PacketInterface, callID uint32, uiPlayer uint32, uiDetails uint32) (*nex.RMCMessage, uint32))
+	SetHandlerBlackListByName(handler func(err error, packet nex.PacketInterface, callID uint32, strPlayerName string, uiDetails uint32) (*nex.RMCMessage, uint32))
+	SetHandlerClearRelationship(handler func(err error, packet nex.PacketInterface, callID uint32, uiPlayer uint32) (*nex.RMCMessage, uint32))
+	SetHandlerUpdateDetails(handler func(err error, packet nex.PacketInterface, callID uint32, uiPlayer uint32, uiDetails uint32) (*nex.RMCMessage, uint32))
+	SetHandlerGetList(handler func(err error, packet nex.PacketInterface, callID uint32, byRelationship uint8, bReversed bool) (*nex.RMCMessage, uint32))
+	SetHandlerGetDetailedList(handler func(err error, packet nex.PacketInterface, callID uint32, byRelationship uint8, bReversed bool) (*nex.RMCMessage, uint32))
+	SetHandlerGetRelationships(handler func(err error, packet nex.PacketInterface, callID uint32, resultRange *nex.ResultRange) (*nex.RMCMessage, uint32))
+}
+
+// Server returns the server implementing the protocol
+func (protocol *Protocol) Server() nex.ServerInterface {
+	return protocol.server
+}
+
+// SetServer sets the server implementing the protocol
+func (protocol *Protocol) SetServer(server nex.ServerInterface) {
+	protocol.server = server
+}
+
+// SetHandlerAddFriend sets the handler for the AddFriend method
+func (protocol *Protocol) SetHandlerAddFriend(handler func(err error, packet nex.PacketInterface, callID uint32, uiPlayer uint32, uiDetails uint32, strMessage string) (*nex.RMCMessage, uint32)) {
+	protocol.AddFriend = handler
+}
+
+// SetHandlerAddFriendByName sets the handler for the AddFriendByName method
+func (protocol *Protocol) SetHandlerAddFriendByName(handler func(err error, packet nex.PacketInterface, callID uint32, strPlayerName string, uiDetails uint32, strMessage string) (*nex.RMCMessage, uint32)) {
+	protocol.AddFriendByName = handler
+}
+
+// SetHandlerAddFriendWithDetails sets the handler for the AddFriendWithDetails method
+func (protocol *Protocol) SetHandlerAddFriendWithDetails(handler func(err error, packet nex.PacketInterface, callID uint32, uiPlayer uint32, uiDetails uint32, strMessage string) (*nex.RMCMessage, uint32)) {
+	protocol.AddFriendWithDetails = handler
+}
+
+// SetHandlerAddFriendByNameWithDetails sets the handler for the AddFriendByNameWithDetails method
+func (protocol *Protocol) SetHandlerAddFriendByNameWithDetails(handler func(err error, packet nex.PacketInterface, callID uint32, uiPlayer uint32, uiDetails uint32, strMessage string) (*nex.RMCMessage, uint32)) {
+	protocol.AddFriendByNameWithDetails = handler
+}
+
+// SetHandlerAcceptFriendship sets the handler for the AcceptFriendship method
+func (protocol *Protocol) SetHandlerAcceptFriendship(handler func(err error, packet nex.PacketInterface, callID uint32, uiPlayer uint32) (*nex.RMCMessage, uint32)) {
+	protocol.AcceptFriendship = handler
+}
+
+// SetHandlerDeclineFriendship sets the handler for the DeclineFriendship method
+func (protocol *Protocol) SetHandlerDeclineFriendship(handler func(err error, packet nex.PacketInterface, callID uint32, uiPlayer uint32) (*nex.RMCMessage, uint32)) {
+	protocol.DeclineFriendship = handler
+}
+
+// SetHandlerBlackList sets the handler for the BlackList method
+func (protocol *Protocol) SetHandlerBlackList(handler func(err error, packet nex.PacketInterface, callID uint32, uiPlayer uint32, uiDetails uint32) (*nex.RMCMessage, uint32)) {
+	protocol.BlackList = handler
+}
+
+// SetHandlerBlackListByName sets the handler for the BlackListByName method
+func (protocol *Protocol) SetHandlerBlackListByName(handler func(err error, packet nex.PacketInterface, callID uint32, strPlayerName string, uiDetails uint32) (*nex.RMCMessage, uint32)) {
+	protocol.BlackListByName = handler
+}
+
+// SetHandlerClearRelationship sets the handler for the ClearRelationship method
+func (protocol *Protocol) SetHandlerClearRelationship(handler func(err error, packet nex.PacketInterface, callID uint32, uiPlayer uint32) (*nex.RMCMessage, uint32)) {
+	protocol.ClearRelationship = handler
+}
+
+// SetHandlerUpdateDetails sets the handler for the UpdateDetails method
+func (protocol *Protocol) SetHandlerUpdateDetails(handler func(err error, packet nex.PacketInterface, callID uint32, uiPlayer uint32, uiDetails uint32) (*nex.RMCMessage, uint32)) {
+	protocol.UpdateDetails = handler
+}
+
+// SetHandlerGetList sets the handler for the GetList method
+func (protocol *Protocol) SetHandlerGetList(handler func(err error, packet nex.PacketInterface, callID uint32, byRelationship uint8, bReversed bool) (*nex.RMCMessage, uint32)) {
+	protocol.GetList = handler
+}
+
+// SetHandlerGetDetailedList sets the handler for the GetDetailedList method
+func (protocol *Protocol) SetHandlerGetDetailedList(handler func(err error, packet nex.PacketInterface, callID uint32, byRelationship uint8, bReversed bool) (*nex.RMCMessage, uint32)) {
+	protocol.GetDetailedList = handler
+}
+
+// SetHandlerGetRelationships sets the handler for the GetRelationships method
+func (protocol *Protocol) SetHandlerGetRelationships(handler func(err error, packet nex.PacketInterface, callID uint32, resultRange *nex.ResultRange) (*nex.RMCMessage, uint32)) {
+	protocol.GetRelationships = handler
+}
+
 // Setup initializes the protocol
 func (protocol *Protocol) Setup() {
-	protocol.Server.OnData(func(packet nex.PacketInterface) {
+	protocol.server.OnData(func(packet nex.PacketInterface) {
 		message := packet.RMCMessage()
 
 		if message.IsRequest && message.ProtocolID == ProtocolID {
@@ -120,7 +214,7 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 
 // NewProtocol returns a new Friends protocol
 func NewProtocol(server nex.ServerInterface) *Protocol {
-	protocol := &Protocol{Server: server}
+	protocol := &Protocol{server: server}
 
 	protocol.Setup()
 

@@ -23,7 +23,7 @@ func (protocol *Protocol) handlePrepareAttachFile(packet nex.PacketInterface) {
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+	parametersStream := nex.NewStreamIn(parameters, protocol.server)
 
 	param, err := nex.StreamReadStructure(parametersStream, datastore_super_mario_maker_types.NewDataStoreAttachFileParam())
 	if err != nil {

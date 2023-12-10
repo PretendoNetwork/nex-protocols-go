@@ -22,7 +22,7 @@ func (protocol *Protocol) handleAutoMatchmakePostpone(packet nex.PacketInterface
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+	parametersStream := nex.NewStreamIn(parameters, protocol.server)
 
 	anyGathering, err := parametersStream.ReadDataHolder()
 	if err != nil {

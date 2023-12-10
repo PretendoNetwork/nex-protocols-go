@@ -76,7 +76,7 @@ const (
 
 // Protocol stores all the RMC method handlers for the Friends (WiiU) protocol and listens for requests
 type Protocol struct {
-	Server                       nex.ServerInterface
+	server                       nex.ServerInterface
 	UpdateAndGetAllInformation   func(err error, packet nex.PacketInterface, callID uint32, nnaInfo *friends_wiiu_types.NNAInfo, presence *friends_wiiu_types.NintendoPresenceV2, birthday *nex.DateTime) (*nex.RMCMessage, uint32)
 	AddFriend                    func(err error, packet nex.PacketInterface, callID uint32, pid *nex.PID) (*nex.RMCMessage, uint32)
 	AddFriendByName              func(err error, packet nex.PacketInterface, callID uint32, username string) (*nex.RMCMessage, uint32)
@@ -99,9 +99,145 @@ type Protocol struct {
 	GetRequestBlockSettings      func(err error, packet nex.PacketInterface, callID uint32, pids []uint32) (*nex.RMCMessage, uint32)
 }
 
+// Interface implements the methods present on the Friends WiiU protocol struct
+type Interface interface {
+	Server() nex.ServerInterface
+	SetServer(server nex.ServerInterface)
+	SetHandlerUpdateAndGetAllInformation(handler func(err error, packet nex.PacketInterface, callID uint32, nnaInfo *friends_wiiu_types.NNAInfo, presence *friends_wiiu_types.NintendoPresenceV2, birthday *nex.DateTime) (*nex.RMCMessage, uint32))
+	SetHandlerAddFriend(handler func(err error, packet nex.PacketInterface, callID uint32, pid *nex.PID) (*nex.RMCMessage, uint32))
+	SetHandlerAddFriendByName(handler func(err error, packet nex.PacketInterface, callID uint32, username string) (*nex.RMCMessage, uint32))
+	SetHandlerRemoveFriend(handler func(err error, packet nex.PacketInterface, callID uint32, pid *nex.PID) (*nex.RMCMessage, uint32))
+	SetHandlerAddFriendRequest(handler func(err error, packet nex.PacketInterface, callID uint32, pid *nex.PID, unknown2 uint8, message string, unknown4 uint8, unknown5 string, gameKey *friends_wiiu_types.GameKey, unknown6 *nex.DateTime) (*nex.RMCMessage, uint32))
+	SetHandlerCancelFriendRequest(handler func(err error, packet nex.PacketInterface, callID uint32, id uint64) (*nex.RMCMessage, uint32))
+	SetHandlerAcceptFriendRequest(handler func(err error, packet nex.PacketInterface, callID uint32, id uint64) (*nex.RMCMessage, uint32))
+	SetHandlerDeleteFriendRequest(handler func(err error, packet nex.PacketInterface, callID uint32, id uint64) (*nex.RMCMessage, uint32))
+	SetHandlerDenyFriendRequest(handler func(err error, packet nex.PacketInterface, callID uint32, id uint64) (*nex.RMCMessage, uint32))
+	SetHandlerMarkFriendRequestsAsReceived(handler func(err error, packet nex.PacketInterface, callID uint32, ids []uint64) (*nex.RMCMessage, uint32))
+	SetHandlerAddBlackList(handler func(err error, packet nex.PacketInterface, callID uint32, blacklistedPrincipal *friends_wiiu_types.BlacklistedPrincipal) (*nex.RMCMessage, uint32))
+	SetHandlerRemoveBlackList(handler func(err error, packet nex.PacketInterface, callID uint32, pid *nex.PID) (*nex.RMCMessage, uint32))
+	SetHandlerUpdatePresence(handler func(err error, packet nex.PacketInterface, callID uint32, presence *friends_wiiu_types.NintendoPresenceV2) (*nex.RMCMessage, uint32))
+	SetHandlerUpdateMii(handler func(err error, packet nex.PacketInterface, callID uint32, mii *friends_wiiu_types.MiiV2) (*nex.RMCMessage, uint32))
+	SetHandlerUpdateComment(handler func(err error, packet nex.PacketInterface, callID uint32, comment *friends_wiiu_types.Comment) (*nex.RMCMessage, uint32))
+	SetHandlerUpdatePreference(handler func(err error, packet nex.PacketInterface, callID uint32, preference *friends_wiiu_types.PrincipalPreference) (*nex.RMCMessage, uint32))
+	SetHandlerGetBasicInfo(handler func(err error, packet nex.PacketInterface, callID uint32, pids []*nex.PID) (*nex.RMCMessage, uint32))
+	SetHandlerDeletePersistentNotification(handler func(err error, packet nex.PacketInterface, callID uint32, notifications []*friends_wiiu_types.PersistentNotification) (*nex.RMCMessage, uint32))
+	SetHandlerCheckSettingStatus(handler func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, uint32))
+	SetHandlerGetRequestBlockSettings(handler func(err error, packet nex.PacketInterface, callID uint32, pids []uint32) (*nex.RMCMessage, uint32))
+}
+
+// Server returns the server implementing the protocol
+func (protocol *Protocol) Server() nex.ServerInterface {
+	return protocol.server
+}
+
+// SetServer sets the server implementing the protocol
+func (protocol *Protocol) SetServer(server nex.ServerInterface) {
+	protocol.server = server
+}
+
+// SetHandlerUpdateAndGetAllInformation sets the handler for the UpdateAndGetAllInformation method
+func (protocol *Protocol) SetHandlerUpdateAndGetAllInformation(handler func(err error, packet nex.PacketInterface, callID uint32, nnaInfo *friends_wiiu_types.NNAInfo, presence *friends_wiiu_types.NintendoPresenceV2, birthday *nex.DateTime) (*nex.RMCMessage, uint32)) {
+	protocol.UpdateAndGetAllInformation = handler
+}
+
+// SetHandlerAddFriend sets the handler for the AddFriend method
+func (protocol *Protocol) SetHandlerAddFriend(handler func(err error, packet nex.PacketInterface, callID uint32, pid *nex.PID) (*nex.RMCMessage, uint32)) {
+	protocol.AddFriend = handler
+}
+
+// SetHandlerAddFriendByName sets the handler for the AddFriendByName method
+func (protocol *Protocol) SetHandlerAddFriendByName(handler func(err error, packet nex.PacketInterface, callID uint32, username string) (*nex.RMCMessage, uint32)) {
+	protocol.AddFriendByName = handler
+}
+
+// SetHandlerRemoveFriend sets the handler for the RemoveFriend method
+func (protocol *Protocol) SetHandlerRemoveFriend(handler func(err error, packet nex.PacketInterface, callID uint32, pid *nex.PID) (*nex.RMCMessage, uint32)) {
+	protocol.RemoveFriend = handler
+}
+
+// SetHandlerAddFriendRequest sets the handler for the AddFriendRequest method
+func (protocol *Protocol) SetHandlerAddFriendRequest(handler func(err error, packet nex.PacketInterface, callID uint32, pid *nex.PID, unknown2 uint8, message string, unknown4 uint8, unknown5 string, gameKey *friends_wiiu_types.GameKey, unknown6 *nex.DateTime) (*nex.RMCMessage, uint32)) {
+	protocol.AddFriendRequest = handler
+}
+
+// SetHandlerCancelFriendRequest sets the handler for the CancelFriendRequest method
+func (protocol *Protocol) SetHandlerCancelFriendRequest(handler func(err error, packet nex.PacketInterface, callID uint32, id uint64) (*nex.RMCMessage, uint32)) {
+	protocol.CancelFriendRequest = handler
+}
+
+// SetHandlerAcceptFriendRequest sets the handler for the AcceptFriendRequest method
+func (protocol *Protocol) SetHandlerAcceptFriendRequest(handler func(err error, packet nex.PacketInterface, callID uint32, id uint64) (*nex.RMCMessage, uint32)) {
+	protocol.AcceptFriendRequest = handler
+}
+
+// SetHandlerDeleteFriendRequest sets the handler for the DeleteFriendRequest method
+func (protocol *Protocol) SetHandlerDeleteFriendRequest(handler func(err error, packet nex.PacketInterface, callID uint32, id uint64) (*nex.RMCMessage, uint32)) {
+	protocol.DeleteFriendRequest = handler
+}
+
+// SetHandlerDenyFriendRequest sets the handler for the DenyFriendRequest method
+func (protocol *Protocol) SetHandlerDenyFriendRequest(handler func(err error, packet nex.PacketInterface, callID uint32, id uint64) (*nex.RMCMessage, uint32)) {
+	protocol.DenyFriendRequest = handler
+}
+
+// SetHandlerMarkFriendRequestsAsReceived sets the handler for the MarkFriendRequestsAsReceived method
+func (protocol *Protocol) SetHandlerMarkFriendRequestsAsReceived(handler func(err error, packet nex.PacketInterface, callID uint32, ids []uint64) (*nex.RMCMessage, uint32)) {
+	protocol.MarkFriendRequestsAsReceived = handler
+}
+
+// SetHandlerAddBlackList sets the handler for the AddBlackList method
+func (protocol *Protocol) SetHandlerAddBlackList(handler func(err error, packet nex.PacketInterface, callID uint32, blacklistedPrincipal *friends_wiiu_types.BlacklistedPrincipal) (*nex.RMCMessage, uint32)) {
+	protocol.AddBlackList = handler
+}
+
+// SetHandlerRemoveBlackList sets the handler for the RemoveBlackList method
+func (protocol *Protocol) SetHandlerRemoveBlackList(handler func(err error, packet nex.PacketInterface, callID uint32, pid *nex.PID) (*nex.RMCMessage, uint32)) {
+	protocol.RemoveBlackList = handler
+}
+
+// SetHandlerUpdatePresence sets the handler for the UpdatePresence method
+func (protocol *Protocol) SetHandlerUpdatePresence(handler func(err error, packet nex.PacketInterface, callID uint32, presence *friends_wiiu_types.NintendoPresenceV2) (*nex.RMCMessage, uint32)) {
+	protocol.UpdatePresence = handler
+}
+
+// SetHandlerUpdateMii sets the handler for the UpdateMii method
+func (protocol *Protocol) SetHandlerUpdateMii(handler func(err error, packet nex.PacketInterface, callID uint32, mii *friends_wiiu_types.MiiV2) (*nex.RMCMessage, uint32)) {
+	protocol.UpdateMii = handler
+}
+
+// SetHandlerUpdateComment sets the handler for the UpdateComment method
+func (protocol *Protocol) SetHandlerUpdateComment(handler func(err error, packet nex.PacketInterface, callID uint32, comment *friends_wiiu_types.Comment) (*nex.RMCMessage, uint32)) {
+	protocol.UpdateComment = handler
+}
+
+// SetHandlerUpdatePreference sets the handler for the UpdatePreference method
+func (protocol *Protocol) SetHandlerUpdatePreference(handler func(err error, packet nex.PacketInterface, callID uint32, preference *friends_wiiu_types.PrincipalPreference) (*nex.RMCMessage, uint32)) {
+	protocol.UpdatePreference = handler
+}
+
+// SetHandlerGetBasicInfo sets the handler for the GetBasicInfo method
+func (protocol *Protocol) SetHandlerGetBasicInfo(handler func(err error, packet nex.PacketInterface, callID uint32, pids []*nex.PID) (*nex.RMCMessage, uint32)) {
+	protocol.GetBasicInfo = handler
+}
+
+// SetHandlerDeletePersistentNotification sets the handler for the DeletePersistentNotification method
+func (protocol *Protocol) SetHandlerDeletePersistentNotification(handler func(err error, packet nex.PacketInterface, callID uint32, notifications []*friends_wiiu_types.PersistentNotification) (*nex.RMCMessage, uint32)) {
+	protocol.DeletePersistentNotification = handler
+}
+
+// SetHandlerCheckSettingStatus sets the handler for the CheckSettingStatus method
+func (protocol *Protocol) SetHandlerCheckSettingStatus(handler func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, uint32)) {
+	protocol.CheckSettingStatus = handler
+}
+
+// SetHandlerGetRequestBlockSettings sets the handler for the GetRequestBlockSettings method
+func (protocol *Protocol) SetHandlerGetRequestBlockSettings(handler func(err error, packet nex.PacketInterface, callID uint32, pids []uint32) (*nex.RMCMessage, uint32)) {
+	protocol.GetRequestBlockSettings = handler
+}
+
 // Setup initializes the protocol
 func (protocol *Protocol) Setup() {
-	protocol.Server.OnData(func(packet nex.PacketInterface) {
+	protocol.server.OnData(func(packet nex.PacketInterface) {
 		message := packet.RMCMessage()
 
 		if message.IsRequest && message.ProtocolID == ProtocolID {
@@ -163,7 +299,7 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 
 // NewProtocol returns a new Friends (WiiU) protocol
 func NewProtocol(server nex.ServerInterface) *Protocol {
-	protocol := &Protocol{Server: server}
+	protocol := &Protocol{server: server}
 
 	protocol.Setup()
 

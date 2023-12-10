@@ -22,7 +22,7 @@ func (protocol *Protocol) handleGetFightingPowerChart(packet nex.PacketInterface
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+	parametersStream := nex.NewStreamIn(parameters, protocol.server)
 
 	mode, err := parametersStream.ReadUInt8()
 	if err != nil {

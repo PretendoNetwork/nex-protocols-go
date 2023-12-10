@@ -23,7 +23,7 @@ func (protocol *Protocol) handleCreateMatchmakeSessionWithParam(packet nex.Packe
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+	parametersStream := nex.NewStreamIn(parameters, protocol.server)
 
 	createMatchmakeSessionParam, err := nex.StreamReadStructure(parametersStream, match_making_types.NewCreateMatchmakeSessionParam())
 	if err != nil {

@@ -22,7 +22,7 @@ func (protocol *Protocol) handleUpdateComment(packet nex.PacketInterface) {
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+	parametersStream := nex.NewStreamIn(parameters, protocol.server)
 
 	comment, err := parametersStream.ReadString()
 	if err != nil {

@@ -23,7 +23,7 @@ func (protocol *Protocol) handleAutoMatchmakeWithSearchCriteriaPostpone(packet n
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+	parametersStream := nex.NewStreamIn(parameters, protocol.server)
 
 	lstSearchCriteria, err := nex.StreamReadListStructure(parametersStream, match_making_types.NewMatchmakeSessionSearchCriteria())
 	if err != nil {

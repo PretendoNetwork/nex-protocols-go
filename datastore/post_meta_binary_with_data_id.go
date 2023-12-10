@@ -23,7 +23,7 @@ func (protocol *Protocol) handlePostMetaBinaryWithDataID(packet nex.PacketInterf
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+	parametersStream := nex.NewStreamIn(parameters, protocol.server)
 
 	dataID, err := parametersStream.ReadUInt64LE()
 	if err != nil {

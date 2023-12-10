@@ -23,7 +23,7 @@ func (protocol *Protocol) handleFollowingsLatestCourseSearchObject(packet nex.Pa
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+	parametersStream := nex.NewStreamIn(parameters, protocol.server)
 
 	param, err := nex.StreamReadStructure(parametersStream, datastore_types.NewDataStoreSearchParam())
 	if err != nil {

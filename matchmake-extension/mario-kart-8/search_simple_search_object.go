@@ -23,7 +23,7 @@ func (protocol *Protocol) handleSearchSimpleSearchObject(packet nex.PacketInterf
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+	parametersStream := nex.NewStreamIn(parameters, protocol.server)
 
 	param, err := nex.StreamReadStructure(parametersStream, matchmake_extension_mario_kart8_types.NewSimpleSearchParam())
 	if err != nil {

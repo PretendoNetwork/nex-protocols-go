@@ -89,7 +89,7 @@ type dataStoreProtocol = datastore.Protocol
 // Protocol stores all the RMC method handlers for the DataStore (Pokemon Bank) protocol and listens for requests
 // Embeds the DataStore protocol
 type Protocol struct {
-	Server nex.ServerInterface
+	server nex.ServerInterface
 	dataStoreProtocol
 	UploadPokemon            func(err error, packet nex.PacketInterface, callID uint32, param *datastore_pokemon_bank_types.GlobalTradeStationUploadPokemonParam) (*nex.RMCMessage, uint32)
 	SearchPokemon            func(err error, packet nex.PacketInterface, callID uint32, param *datastore_pokemon_bank_types.GlobalTradeStationSearchPokemonParam) (*nex.RMCMessage, uint32)
@@ -111,7 +111,7 @@ type Protocol struct {
 
 // Setup initializes the protocol
 func (protocol *Protocol) Setup() {
-	protocol.Server.OnData(func(packet nex.PacketInterface) {
+	protocol.server.OnData(func(packet nex.PacketInterface) {
 		message := packet.RMCMessage()
 
 		if message.IsRequest && message.ProtocolID == ProtocolID {
@@ -169,8 +169,8 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 
 // NewProtocol returns a new DataStorePokemonBank protocol
 func NewProtocol(server nex.ServerInterface) *Protocol {
-	protocol := &Protocol{Server: server}
-	protocol.dataStoreProtocol.Server = server
+	protocol := &Protocol{server: server}
+	protocol.dataStoreProtocol.SetServer(server)
 
 	protocol.Setup()
 

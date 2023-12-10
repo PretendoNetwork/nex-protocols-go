@@ -23,7 +23,7 @@ func (protocol *Protocol) handleGetPrepurchaseInfoRequest(packet nex.PacketInter
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+	parametersStream := nex.NewStreamIn(parameters, protocol.server)
 
 	getPrepurchaseInfoParam, err := nex.StreamReadStructure(parametersStream, service_item_wii_sports_club_types.NewServiceItemGetPrepurchaseInfoParam())
 	if err != nil {

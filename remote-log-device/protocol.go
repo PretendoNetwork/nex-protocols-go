@@ -18,13 +18,35 @@ const (
 
 // Protocol handles the RemoteLogDevice protocol
 type Protocol struct {
-	Server nex.ServerInterface
+	server nex.ServerInterface
 	Log    func(err error, packet nex.PacketInterface, callID uint32, strLine string) (*nex.RMCMessage, uint32)
+}
+
+// Interface implements the methods present on the Remote Log Device protocol struct
+type Interface interface {
+	Server() nex.ServerInterface
+	SetServer(server nex.ServerInterface)
+	SetHandlerLog(handler func(err error, packet nex.PacketInterface, callID uint32, strLine string) (*nex.RMCMessage, uint32))
+}
+
+// Server returns the server implementing the protocol
+func (protocol *Protocol) Server() nex.ServerInterface {
+	return protocol.server
+}
+
+// SetServer sets the server implementing the protocol
+func (protocol *Protocol) SetServer(server nex.ServerInterface) {
+	protocol.server = server
+}
+
+// SetHandlerLog sets the handler for the Log method
+func (protocol *Protocol) SetHandlerLog(handler func(err error, packet nex.PacketInterface, callID uint32, strLine string) (*nex.RMCMessage, uint32)) {
+	protocol.Log = handler
 }
 
 // Setup initializes the protocol
 func (protocol *Protocol) Setup() {
-	protocol.Server.OnData(func(packet nex.PacketInterface) {
+	protocol.server.OnData(func(packet nex.PacketInterface) {
 		message := packet.RMCMessage()
 
 		if message.IsRequest && message.ProtocolID == ProtocolID {
@@ -48,7 +70,7 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 
 // NewProtocol returns a new Remote Log Device protocol
 func NewProtocol(server nex.ServerInterface) *Protocol {
-	protocol := &Protocol{Server: server}
+	protocol := &Protocol{server: server}
 
 	protocol.Setup()
 

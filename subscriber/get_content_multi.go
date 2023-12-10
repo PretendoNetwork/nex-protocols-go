@@ -23,7 +23,7 @@ func (protocol *Protocol) handleGetContentMulti(packet nex.PacketInterface) {
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+	parametersStream := nex.NewStreamIn(parameters, protocol.server)
 
 	params, err := nex.StreamReadListStructure(parametersStream, subscriber_types.NewSubscriberGetContentParam())
 	if err != nil {

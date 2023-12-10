@@ -23,7 +23,7 @@ func (protocol *Protocol) handleGetStatsAll(packet nex.PacketInterface) {
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+	parametersStream := nex.NewStreamIn(parameters, protocol.server)
 
 	target, err := nex.StreamReadStructure(parametersStream, matchmake_referee_types.NewMatchmakeRefereeStatsTarget())
 	if err != nil {

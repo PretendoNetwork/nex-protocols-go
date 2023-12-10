@@ -23,7 +23,7 @@ func (protocol *Protocol) handleRetrieveAllMessagesWithinRange(packet nex.Packet
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+	parametersStream := nex.NewStreamIn(parameters, protocol.server)
 
 	recipient, err := nex.StreamReadStructure(parametersStream, messaging_types.NewMessageRecipient())
 	if err != nil {

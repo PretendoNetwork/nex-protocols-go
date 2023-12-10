@@ -22,7 +22,7 @@ func (protocol *Protocol) handleRequestProbeInitiation(packet nex.PacketInterfac
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+	parametersStream := nex.NewStreamIn(parameters, protocol.server)
 
 	urlTargetList, err := parametersStream.ReadListStationURL()
 	if err != nil {

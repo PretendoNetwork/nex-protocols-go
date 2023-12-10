@@ -22,7 +22,7 @@ func (protocol *Protocol) handleUpdateApplicationBuffer(packet nex.PacketInterfa
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+	parametersStream := nex.NewStreamIn(parameters, protocol.server)
 
 	gid, err := parametersStream.ReadUInt32LE()
 	if err != nil {

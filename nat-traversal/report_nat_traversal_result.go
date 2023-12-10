@@ -17,14 +17,14 @@ func (protocol *Protocol) handleReportNATTraversalResult(packet nex.PacketInterf
 		return
 	}
 
-	natTraversalVersion := protocol.Server.NATTraversalProtocolVersion()
+	natTraversalVersion := protocol.server.NATTraversalProtocolVersion()
 
 	request := packet.RMCMessage()
 
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+	parametersStream := nex.NewStreamIn(parameters, protocol.server)
 
 	cid, err := parametersStream.ReadUInt32LE()
 	if err != nil {

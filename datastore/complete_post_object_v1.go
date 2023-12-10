@@ -23,7 +23,7 @@ func (protocol *Protocol) handleCompletePostObjectV1(packet nex.PacketInterface)
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+	parametersStream := nex.NewStreamIn(parameters, protocol.server)
 
 	param, err := nex.StreamReadStructure(parametersStream, datastore_types.NewDataStoreCompletePostParamV1())
 	if err != nil {

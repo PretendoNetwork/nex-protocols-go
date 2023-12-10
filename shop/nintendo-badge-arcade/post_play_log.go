@@ -23,7 +23,7 @@ func (protocol *Protocol) handlePostPlayLog(packet nex.PacketInterface) {
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+	parametersStream := nex.NewStreamIn(parameters, protocol.server)
 
 	param, err := nex.StreamReadStructure(parametersStream, shop_nintendo_badge_arcade_types.NewShopPostPlayLogParam())
 	if err != nil {

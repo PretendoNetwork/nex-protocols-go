@@ -23,7 +23,7 @@ func (protocol *Protocol) handleGetMetasMultipleParam(packet nex.PacketInterface
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+	parametersStream := nex.NewStreamIn(parameters, protocol.server)
 
 	params, err := nex.StreamReadListStructure(parametersStream, datastore_types.NewDataStoreGetMetaParam())
 	if err != nil {

@@ -22,7 +22,7 @@ func (protocol *Protocol) handleGetName(packet nex.PacketInterface) {
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+	parametersStream := nex.NewStreamIn(parameters, protocol.server)
 
 	id, err := parametersStream.ReadPID()
 	if err != nil {

@@ -23,7 +23,7 @@ func (protocol *Protocol) handleUpdateFavoriteGameKey(packet nex.PacketInterface
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+	parametersStream := nex.NewStreamIn(parameters, protocol.server)
 
 	gameKey, err := nex.StreamReadStructure(parametersStream, friends_3ds_types.NewGameKey())
 	if err != nil {

@@ -1,5 +1,5 @@
-// Package subscription implements the Subscription NEX protocol
-package subscription
+// Package protocol implements the Subscription protocol
+package protocol
 
 import (
 	"fmt"
@@ -60,7 +60,7 @@ const (
 
 // Protocol handles the Subscription nex protocol
 type Protocol struct {
-	Server                              nex.ServerInterface
+	server                              nex.ServerInterface
 	CreateMySubscriptionData            func(err error, packet nex.PacketInterface, callID uint32, unk uint64, content []byte) (*nex.RMCMessage, uint32)
 	UpdateMySubscriptionData            func(err error, packet nex.PacketInterface, callID uint32, unk uint32, content []byte) (*nex.RMCMessage, uint32)
 	GetFriendSubscriptionData           func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, uint32)
@@ -71,9 +71,73 @@ type Protocol struct {
 	GetPrivacyLevels                    func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, uint32)
 }
 
+// Interface implements the methods present on the Subscription protocol struct
+type Interface interface {
+	Server() nex.ServerInterface
+	SetServer(server nex.ServerInterface)
+	SetHandlerCreateMySubscriptionData(handler func(err error, packet nex.PacketInterface, callID uint32, unk uint64, content []byte) (*nex.RMCMessage, uint32))
+	SetHandlerUpdateMySubscriptionData(handler func(err error, packet nex.PacketInterface, callID uint32, unk uint32, content []byte) (*nex.RMCMessage, uint32))
+	SetHandlerGetFriendSubscriptionData(handler func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, uint32))
+	SetHandlerGetTargetSubscriptionData(handler func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, uint32))
+	SetHandlerGetActivePlayerSubscriptionData(handler func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, uint32))
+	SetHandlerGetSubscriptionData(handler func(err error, packet nex.PacketInterface, callID uint32, pids []uint32) (*nex.RMCMessage, uint32))
+	SetHandlerReplaceTargetAndGetSubscriptionData(handler func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, uint32))
+	SetHandlerGetPrivacyLevels(handler func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, uint32))
+}
+
+// Server returns the server implementing the protocol
+func (protocol *Protocol) Server() nex.ServerInterface {
+	return protocol.server
+}
+
+// SetServer sets the server implementing the protocol
+func (protocol *Protocol) SetServer(server nex.ServerInterface) {
+	protocol.server = server
+}
+
+// SetHandlerCreateMySubscriptionData sets the handler for the CreateMySubscriptionData method
+func (protocol *Protocol) SetHandlerCreateMySubscriptionData(handler func(err error, packet nex.PacketInterface, callID uint32, unk uint64, content []byte) (*nex.RMCMessage, uint32)) {
+	protocol.CreateMySubscriptionData = handler
+}
+
+// SetHandlerUpdateMySubscriptionData sets the handler for the UpdateMySubscriptionData method
+func (protocol *Protocol) SetHandlerUpdateMySubscriptionData(handler func(err error, packet nex.PacketInterface, callID uint32, unk uint32, content []byte) (*nex.RMCMessage, uint32)) {
+	protocol.UpdateMySubscriptionData = handler
+}
+
+// SetHandlerGetFriendSubscriptionData sets the handler for the GetFriendSubscriptionData method
+func (protocol *Protocol) SetHandlerGetFriendSubscriptionData(handler func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, uint32)) {
+	protocol.GetFriendSubscriptionData = handler
+}
+
+// SetHandlerGetTargetSubscriptionData sets the handler for the GetTargetSubscriptionData method
+func (protocol *Protocol) SetHandlerGetTargetSubscriptionData(handler func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, uint32)) {
+	protocol.GetTargetSubscriptionData = handler
+}
+
+// SetHandlerGetActivePlayerSubscriptionData sets the handler for the GetActivePlayerSubscriptionData method
+func (protocol *Protocol) SetHandlerGetActivePlayerSubscriptionData(handler func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, uint32)) {
+	protocol.GetActivePlayerSubscriptionData = handler
+}
+
+// SetHandlerGetSubscriptionData sets the handler for the GetSubscriptionData method
+func (protocol *Protocol) SetHandlerGetSubscriptionData(handler func(err error, packet nex.PacketInterface, callID uint32, pids []uint32) (*nex.RMCMessage, uint32)) {
+	protocol.GetSubscriptionData = handler
+}
+
+// SetHandlerReplaceTargetAndGetSubscriptionData sets the handler for the ReplaceTargetAndGetSubscriptionData method
+func (protocol *Protocol) SetHandlerReplaceTargetAndGetSubscriptionData(handler func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, uint32)) {
+	protocol.ReplaceTargetAndGetSubscriptionData = handler
+}
+
+// SetHandlerGetPrivacyLevels sets the handler for the GetPrivacyLevels method
+func (protocol *Protocol) SetHandlerGetPrivacyLevels(handler func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, uint32)) {
+	protocol.GetPrivacyLevels = handler
+}
+
 // Setup initializes the protocol
 func (protocol *Protocol) Setup() {
-	protocol.Server.OnData(func(packet nex.PacketInterface) {
+	protocol.server.OnData(func(packet nex.PacketInterface) {
 		request := packet.RMCMessage()
 
 		if ProtocolID == request.ProtocolID {
@@ -104,7 +168,7 @@ func (protocol *Protocol) Setup() {
 
 // NewProtocol returns a new Protocol
 func NewProtocol(server nex.ServerInterface) *Protocol {
-	protocol := &Protocol{Server: server}
+	protocol := &Protocol{server: server}
 
 	protocol.Setup()
 

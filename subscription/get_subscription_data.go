@@ -1,5 +1,5 @@
-// Package subscription implements the Subscription NEX protocol
-package subscription
+// Package protocol implements the Subscription protocol
+package protocol
 
 import (
 	"fmt"
@@ -22,7 +22,7 @@ func (protocol *Protocol) handleGetSubscriptionData(packet nex.PacketInterface) 
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+	parametersStream := nex.NewStreamIn(parameters, protocol.server)
 
 	pids, err := parametersStream.ReadListUInt32LE()
 	if err != nil {

@@ -9,7 +9,7 @@ import (
 )
 
 func (protocol *Protocol) handleCreateMatchmakeSession(packet nex.PacketInterface) {
-	matchmakingVersion := protocol.Server.MatchMakingProtocolVersion()
+	matchmakingVersion := protocol.server.MatchMakingProtocolVersion()
 
 	var errorCode uint32
 
@@ -24,7 +24,7 @@ func (protocol *Protocol) handleCreateMatchmakeSession(packet nex.PacketInterfac
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+	parametersStream := nex.NewStreamIn(parameters, protocol.server)
 
 	anyGathering, err := parametersStream.ReadDataHolder()
 	if err != nil {

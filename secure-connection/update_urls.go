@@ -22,7 +22,7 @@ func (protocol *Protocol) handleUpdateURLs(packet nex.PacketInterface) {
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+	parametersStream := nex.NewStreamIn(parameters, protocol.server)
 
 	vecMyURLs, err := parametersStream.ReadListStationURL()
 	if err != nil {

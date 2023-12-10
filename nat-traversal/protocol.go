@@ -133,8 +133,8 @@ func (protocol *Protocol) Setup() {
 	})
 }
 
-// NewNATTraversalProtocol returns a new NAT Traversal NEX protocol
-func NewNATTraversalProtocol(server nex.ServerInterface) *Protocol {
+// NewProtocol returns a new NAT Traversal NEX protocol
+func NewProtocol(server nex.ServerInterface) *Protocol {
 	protocol := &Protocol{server: server}
 
 	protocol.Setup()

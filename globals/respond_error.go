@@ -8,7 +8,7 @@ func RespondError(packet nex.PacketInterface, protocolID uint16, errorCode uint3
 	client := packet.Sender()
 	request := packet.RMCMessage()
 
-	rmcResponse := nex.NewRMCError(errorCode)
+	rmcResponse := nex.NewRMCError(client.Server(), errorCode)
 	rmcResponse.ProtocolID = request.ProtocolID
 	rmcResponse.CallID = request.CallID
 

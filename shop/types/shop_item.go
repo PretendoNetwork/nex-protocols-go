@@ -7,19 +7,20 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // ShopItem is a data structure used by the Shop protocol
 type ShopItem struct {
-	nex.Structure
-	ItemID      uint32
+	types.Structure
+	ItemID      *types.PrimitiveU32
 	ReferenceID []byte
 	ServiceName string
 	ItemCode    string
 }
 
-// ExtractFromStream extracts a ShopItem structure from a stream
-func (shopItem *ShopItem) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the ShopItem from the given readable
+func (shopItem *ShopItem) ExtractFrom(readable types.Readable) error {
 	itemID, err := stream.ReadUInt32LE()
 	if err != nil {
 		return fmt.Errorf("Failed to extract ShopItem.ItemID from stream. %s", err.Error())
@@ -48,21 +49,27 @@ func (shopItem *ShopItem) ExtractFromStream(stream *nex.StreamIn) error {
 	return nil
 }
 
-// Bytes encodes the ShopItem and returns a byte array
-func (shopItem *ShopItem) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt32LE(shopItem.ItemID)
-	stream.WriteQBuffer(shopItem.ReferenceID)
-	stream.WriteString(shopItem.ServiceName)
-	stream.WriteString(shopItem.ItemCode)
+// WriteTo writes the ShopItem to the given writable
+func (shopItem *ShopItem) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
 
-	return stream.Bytes()
+	shopItem.ItemID.WriteTo(contentWritable)
+	stream.WriteQBuffer(shopItem.ReferenceID)
+	shopItem.ServiceName.WriteTo(contentWritable)
+	shopItem.ItemCode.WriteTo(contentWritable)
+
+	content := contentWritable.Bytes()
+
+	shopItem.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // Copy returns a new copied instance of ShopItem
-func (shopItem *ShopItem) Copy() nex.StructureInterface {
+func (shopItem *ShopItem) Copy() types.RVType {
 	copied := NewShopItem()
 
-	copied.SetStructureVersion(shopItem.StructureVersion())
+	copied.StructureVersion = shopItem.StructureVersion
 
 	copied.ItemID = shopItem.ItemID
 	copied.ReferenceID = make([]byte, len(shopItem.ReferenceID))
@@ -76,26 +83,30 @@ func (shopItem *ShopItem) Copy() nex.StructureInterface {
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (shopItem *ShopItem) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*ShopItem)
-
-	if shopItem.StructureVersion() != other.StructureVersion() {
+func (shopItem *ShopItem) Equals(o types.RVType) bool {
+	if _, ok := o.(*ShopItem); !ok {
 		return false
 	}
 
-	if shopItem.ItemID != other.ItemID {
+	other := o.(*ShopItem)
+
+	if shopItem.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if !bytes.Equal(shopItem.ReferenceID, other.ReferenceID) {
+	if !shopItem.ItemID.Equals(other.ItemID) {
 		return false
 	}
 
-	if shopItem.ServiceName != other.ServiceName {
+	if !shopItem.ReferenceID.Equals(other.ReferenceID) {
 		return false
 	}
 
-	if shopItem.ItemCode != other.ItemCode {
+	if !shopItem.ServiceName.Equals(other.ServiceName) {
+		return false
+	}
+
+	if !shopItem.ItemCode.Equals(other.ItemCode) {
 		return false
 	}
 
@@ -115,7 +126,7 @@ func (shopItem *ShopItem) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("ShopItem{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, shopItem.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, shopItem.StructureVersion))
 	b.WriteString(fmt.Sprintf("%sItemID: %d,\n", indentationValues, shopItem.ItemID))
 	b.WriteString(fmt.Sprintf("%sReferenceID: %x,\n", indentationValues, shopItem.ReferenceID))
 	b.WriteString(fmt.Sprintf("%sServiceName: %q,\n", indentationValues, shopItem.ServiceName))

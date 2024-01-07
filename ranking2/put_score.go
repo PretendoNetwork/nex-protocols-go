@@ -5,11 +5,13 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 	ranking2_types "github.com/PretendoNetwork/nex-protocols-go/ranking2/types"
 )
 
 func (protocol *Protocol) handlePutScore(packet nex.PacketInterface) {
+	var err error
 	var errorCode uint32
 
 	if protocol.PutScore == nil {
@@ -23,7 +25,7 @@ func (protocol *Protocol) handlePutScore(packet nex.PacketInterface) {
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.server)
+	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	scoreDataList, err := nex.StreamReadListStructure(parametersStream, ranking2_types.NewRanking2ScoreData())
 	if err != nil {
@@ -35,7 +37,8 @@ func (protocol *Protocol) handlePutScore(packet nex.PacketInterface) {
 		return
 	}
 
-	nexUniqueID, err := parametersStream.ReadUInt64LE()
+	nexUniqueID := types.NewPrimitiveU64(0)
+	err = nexUniqueID.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.PutScore(fmt.Errorf("Failed to read nexUniqueID from parameters. %s", err.Error()), packet, callID, nil, 0)
 		if errorCode != 0 {

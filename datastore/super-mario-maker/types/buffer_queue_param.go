@@ -5,26 +5,30 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // BufferQueueParam holds data for the DataStore (Super Mario Maker) protocol
 type BufferQueueParam struct {
-	nex.Structure
-	DataID uint64
-	Slot   uint32
+	types.Structure
+	DataID *types.PrimitiveU64
+	Slot   *types.PrimitiveU32
 }
 
-// ExtractFromStream extracts a BufferQueueParam structure from a stream
-func (bufferQueueParam *BufferQueueParam) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the BufferQueueParam from the given readable
+func (bufferQueueParam *BufferQueueParam) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	bufferQueueParam.DataID, err = stream.ReadUInt64LE()
+	if err = bufferQueueParam.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read BufferQueueParam header. %s", err.Error())
+	}
+
+	err = bufferQueueParam.DataID.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract BufferQueueParam.DataID from stream. %s", err.Error())
 	}
 
-	bufferQueueParam.Slot, err = stream.ReadUInt32LE()
+	err = bufferQueueParam.Slot.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract BufferQueueParam.Slot from stream. %s", err.Error())
 	}
@@ -32,39 +36,49 @@ func (bufferQueueParam *BufferQueueParam) ExtractFromStream(stream *nex.StreamIn
 	return nil
 }
 
-// Bytes encodes the BufferQueueParam and returns a byte array
-func (bufferQueueParam *BufferQueueParam) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt64LE(bufferQueueParam.DataID)
-	stream.WriteUInt32LE(bufferQueueParam.Slot)
+// WriteTo writes the BufferQueueParam to the given writable
+func (bufferQueueParam *BufferQueueParam) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
 
-	return stream.Bytes()
+	bufferQueueParam.DataID.WriteTo(contentWritable)
+	bufferQueueParam.Slot.WriteTo(contentWritable)
+
+	content := contentWritable.Bytes()
+
+	bufferQueueParam.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // Copy returns a new copied instance of BufferQueueParam
-func (bufferQueueParam *BufferQueueParam) Copy() nex.StructureInterface {
+func (bufferQueueParam *BufferQueueParam) Copy() types.RVType {
 	copied := NewBufferQueueParam()
 
-	copied.SetStructureVersion(bufferQueueParam.StructureVersion())
+	copied.StructureVersion = bufferQueueParam.StructureVersion
 
-	copied.DataID = bufferQueueParam.DataID
-	copied.Slot = bufferQueueParam.Slot
+	copied.DataID = bufferQueueParam.DataID.Copy().(*types.PrimitiveU64)
+	copied.Slot = bufferQueueParam.Slot.Copy().(*types.PrimitiveU32)
 
 	return copied
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (bufferQueueParam *BufferQueueParam) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*BufferQueueParam)
-
-	if bufferQueueParam.StructureVersion() != other.StructureVersion() {
+func (bufferQueueParam *BufferQueueParam) Equals(o types.RVType) bool {
+	if _, ok := o.(*BufferQueueParam); !ok {
 		return false
 	}
 
-	if bufferQueueParam.DataID != other.DataID {
+	other := o.(*BufferQueueParam)
+
+	if bufferQueueParam.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if bufferQueueParam.Slot != other.Slot {
+	if !bufferQueueParam.DataID.Equals(other.DataID) {
+		return false
+	}
+
+	if !bufferQueueParam.Slot.Equals(other.Slot) {
 		return false
 	}
 
@@ -84,9 +98,9 @@ func (bufferQueueParam *BufferQueueParam) FormatToString(indentationLevel int) s
 	var b strings.Builder
 
 	b.WriteString("BufferQueueParam{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, bufferQueueParam.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sDataID: %d,\n", indentationValues, bufferQueueParam.DataID))
-	b.WriteString(fmt.Sprintf("%sSlot: %d,\n", indentationValues, bufferQueueParam.Slot))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, bufferQueueParam.StructureVersion))
+	b.WriteString(fmt.Sprintf("%sDataID: %s,\n", indentationValues, bufferQueueParam.DataID))
+	b.WriteString(fmt.Sprintf("%sSlot: %s,\n", indentationValues, bufferQueueParam.Slot))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -95,7 +109,7 @@ func (bufferQueueParam *BufferQueueParam) FormatToString(indentationLevel int) s
 // NewBufferQueueParam returns a new BufferQueueParam
 func NewBufferQueueParam() *BufferQueueParam {
 	return &BufferQueueParam{
-		DataID: 0,
-		Slot:   0,
+		DataID: types.NewPrimitiveU64(0),
+		Slot:   types.NewPrimitiveU32(0),
 	}
 }

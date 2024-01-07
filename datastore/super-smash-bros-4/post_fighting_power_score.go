@@ -5,11 +5,13 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 	datastore_super_smash_bros_4_types "github.com/PretendoNetwork/nex-protocols-go/datastore/super-smash-bros-4/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
 func (protocol *Protocol) handlePostFightingPowerScore(packet nex.PacketInterface) {
+	var err error
 	var errorCode uint32
 
 	if protocol.PostFightingPowerScore == nil {
@@ -23,7 +25,7 @@ func (protocol *Protocol) handlePostFightingPowerScore(packet nex.PacketInterfac
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.server)
+	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	params, err := nex.StreamReadListStructure(parametersStream, datastore_super_smash_bros_4_types.NewDataStorePostFightingPowerScoreParam())
 	if err != nil {

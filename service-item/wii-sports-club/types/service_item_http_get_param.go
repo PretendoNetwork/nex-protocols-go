@@ -6,19 +6,24 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // ServiceItemHTTPGetParam holds data for the Service Item (Wii Sports Club) protocol
 type ServiceItemHTTPGetParam struct {
-	nex.Structure
+	types.Structure
 	URL string
 }
 
-// ExtractFromStream extracts a ServiceItemHTTPGetParam structure from a stream
-func (serviceItemHTTPGetParam *ServiceItemHTTPGetParam) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the ServiceItemHTTPGetParam from the given readable
+func (serviceItemHTTPGetParam *ServiceItemHTTPGetParam) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	serviceItemHTTPGetParam.URL, err = stream.ReadString()
+	if err = serviceItemHTTPGetParam.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read ServiceItemHTTPGetParam header. %s", err.Error())
+	}
+
+	err = serviceItemHTTPGetParam.URL.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemHTTPGetParam.URL from stream. %s", err.Error())
 	}
@@ -26,18 +31,24 @@ func (serviceItemHTTPGetParam *ServiceItemHTTPGetParam) ExtractFromStream(stream
 	return nil
 }
 
-// Bytes encodes the ServiceItemHTTPGetParam and returns a byte array
-func (serviceItemHTTPGetParam *ServiceItemHTTPGetParam) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteString(serviceItemHTTPGetParam.URL)
+// WriteTo writes the ServiceItemHTTPGetParam to the given writable
+func (serviceItemHTTPGetParam *ServiceItemHTTPGetParam) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
 
-	return stream.Bytes()
+	serviceItemHTTPGetParam.URL.WriteTo(contentWritable)
+
+	content := contentWritable.Bytes()
+
+	serviceItemHTTPGetParam.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // Copy returns a new copied instance of ServiceItemHTTPGetParam
-func (serviceItemHTTPGetParam *ServiceItemHTTPGetParam) Copy() nex.StructureInterface {
+func (serviceItemHTTPGetParam *ServiceItemHTTPGetParam) Copy() types.RVType {
 	copied := NewServiceItemHTTPGetParam()
 
-	copied.SetStructureVersion(serviceItemHTTPGetParam.StructureVersion())
+	copied.StructureVersion = serviceItemHTTPGetParam.StructureVersion
 
 	copied.URL = serviceItemHTTPGetParam.URL
 
@@ -45,10 +56,14 @@ func (serviceItemHTTPGetParam *ServiceItemHTTPGetParam) Copy() nex.StructureInte
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (serviceItemHTTPGetParam *ServiceItemHTTPGetParam) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*ServiceItemHTTPGetParam)
+func (serviceItemHTTPGetParam *ServiceItemHTTPGetParam) Equals(o types.RVType) bool {
+	if _, ok := o.(*ServiceItemHTTPGetParam); !ok {
+		return false
+	}
 
-	if serviceItemHTTPGetParam.StructureVersion() != other.StructureVersion() {
+	other := o.(*ServiceItemHTTPGetParam)
+
+	if serviceItemHTTPGetParam.StructureVersion != other.StructureVersion {
 		return false
 	}
 
@@ -68,7 +83,7 @@ func (serviceItemHTTPGetParam *ServiceItemHTTPGetParam) FormatToString(indentati
 	var b strings.Builder
 
 	b.WriteString("ServiceItemHTTPGetParam{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, serviceItemHTTPGetParam.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, serviceItemHTTPGetParam.StructureVersion))
 	b.WriteString(fmt.Sprintf("%sURL: %q,\n", indentationValues, serviceItemHTTPGetParam.URL))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 

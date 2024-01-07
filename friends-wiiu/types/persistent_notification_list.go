@@ -6,17 +6,18 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // PersistentNotificationList contains unknown data
 type PersistentNotificationList struct {
-	nex.Structure
-	*nex.Data
+	types.Structure
+	*types.Data
 	Notifications []*PersistentNotification
 }
 
-// ExtractFromStream extracts a PersistentNotificationList structure from a stream
-func (notificationList *PersistentNotificationList) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the PersistentNotificationList from the given readable
+func (notificationList *PersistentNotificationList) ExtractFrom(readable types.Readable) error {
 	notifications, err := nex.StreamReadListStructure(stream, NewPersistentNotification())
 	if err != nil {
 		return fmt.Errorf("Failed to extract PersistentNotificationList.Notifications. %s", err.Error())
@@ -28,18 +29,12 @@ func (notificationList *PersistentNotificationList) ExtractFromStream(stream *ne
 }
 
 // Copy returns a new copied instance of PersistentNotificationList
-func (notificationList *PersistentNotificationList) Copy() nex.StructureInterface {
+func (notificationList *PersistentNotificationList) Copy() types.RVType {
 	copied := NewPersistentNotificationList()
 
-	copied.SetStructureVersion(notificationList.StructureVersion())
+	copied.StructureVersion = notificationList.StructureVersion
 
-	if notificationList.ParentType() != nil {
-		copied.Data = notificationList.ParentType().Copy().(*nex.Data)
-	} else {
-		copied.Data = nex.NewData()
-	}
-
-	copied.SetParentType(copied.Data)
+	copied.Data = notificationList.Data.Copy().(*types.Data)
 
 	copied.Notifications = make([]*PersistentNotification, len(notificationList.Notifications))
 
@@ -51,10 +46,14 @@ func (notificationList *PersistentNotificationList) Copy() nex.StructureInterfac
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (notificationList *PersistentNotificationList) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*PersistentNotificationList)
+func (notificationList *PersistentNotificationList) Equals(o types.RVType) bool {
+	if _, ok := o.(*PersistentNotificationList); !ok {
+		return false
+	}
 
-	if notificationList.StructureVersion() != other.StructureVersion() {
+	other := o.(*PersistentNotificationList)
+
+	if notificationList.StructureVersion != other.StructureVersion {
 		return false
 	}
 
@@ -89,7 +88,7 @@ func (notificationList *PersistentNotificationList) FormatToString(indentationLe
 	var b strings.Builder
 
 	b.WriteString("PersistentNotificationList{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, notificationList.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, notificationList.StructureVersion))
 
 	if len(notificationList.Notifications) == 0 {
 		b.WriteString(fmt.Sprintf("%sNotifications: [],\n", indentationValues))

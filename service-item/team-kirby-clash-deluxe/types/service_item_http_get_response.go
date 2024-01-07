@@ -7,17 +7,22 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // ServiceItemHTTPGetResponse holds data for the Service Item (Team Kirby Clash Deluxe) protocol
 type ServiceItemHTTPGetResponse struct {
-	nex.Structure
+	types.Structure
 	Response []byte
 }
 
-// ExtractFromStream extracts a ServiceItemHTTPGetResponse structure from a stream
-func (serviceItemHTTPGetResponse *ServiceItemHTTPGetResponse) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the ServiceItemHTTPGetResponse from the given readable
+func (serviceItemHTTPGetResponse *ServiceItemHTTPGetResponse) ExtractFrom(readable types.Readable) error {
 	var err error
+
+	if err = serviceItemHTTPGetResponse.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read ServiceItemHTTPGetResponse header. %s", err.Error())
+	}
 
 	serviceItemHTTPGetResponse.Response, err = stream.ReadQBuffer()
 	if err != nil {
@@ -27,18 +32,24 @@ func (serviceItemHTTPGetResponse *ServiceItemHTTPGetResponse) ExtractFromStream(
 	return nil
 }
 
-// Bytes encodes the ServiceItemHTTPGetResponse and returns a byte array
-func (serviceItemHTTPGetResponse *ServiceItemHTTPGetResponse) Bytes(stream *nex.StreamOut) []byte {
+// WriteTo writes the ServiceItemHTTPGetResponse to the given writable
+func (serviceItemHTTPGetResponse *ServiceItemHTTPGetResponse) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
+
 	stream.WriteQBuffer(serviceItemHTTPGetResponse.Response)
 
-	return stream.Bytes()
+	content := contentWritable.Bytes()
+
+	rvcd.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // Copy returns a new copied instance of ServiceItemHTTPGetResponse
-func (serviceItemHTTPGetResponse *ServiceItemHTTPGetResponse) Copy() nex.StructureInterface {
+func (serviceItemHTTPGetResponse *ServiceItemHTTPGetResponse) Copy() types.RVType {
 	copied := NewServiceItemHTTPGetResponse()
 
-	copied.SetStructureVersion(serviceItemHTTPGetResponse.StructureVersion())
+	copied.StructureVersion = serviceItemHTTPGetResponse.StructureVersion
 
 	copied.Response = serviceItemHTTPGetResponse.Response
 
@@ -46,10 +57,14 @@ func (serviceItemHTTPGetResponse *ServiceItemHTTPGetResponse) Copy() nex.Structu
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (serviceItemHTTPGetResponse *ServiceItemHTTPGetResponse) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*ServiceItemHTTPGetResponse)
+func (serviceItemHTTPGetResponse *ServiceItemHTTPGetResponse) Equals(o types.RVType) bool {
+	if _, ok := o.(*ServiceItemHTTPGetResponse); !ok {
+		return false
+	}
 
-	if serviceItemHTTPGetResponse.StructureVersion() != other.StructureVersion() {
+	other := o.(*ServiceItemHTTPGetResponse)
+
+	if serviceItemHTTPGetResponse.StructureVersion != other.StructureVersion {
 		return false
 	}
 
@@ -69,7 +84,7 @@ func (serviceItemHTTPGetResponse *ServiceItemHTTPGetResponse) FormatToString(ind
 	var b strings.Builder
 
 	b.WriteString("ServiceItemHTTPGetResponse{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, serviceItemHTTPGetResponse.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, serviceItemHTTPGetResponse.StructureVersion))
 	b.WriteString(fmt.Sprintf("%sResponse: %x,\n", indentationValues, serviceItemHTTPGetResponse.Response))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 

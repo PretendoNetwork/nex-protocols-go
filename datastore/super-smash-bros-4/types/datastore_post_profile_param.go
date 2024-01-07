@@ -2,24 +2,27 @@
 package types
 
 import (
-	"bytes"
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // DataStorePostProfileParam is a data structure used by the DataStore Super Smash Bros. 4 protocol
 type DataStorePostProfileParam struct {
-	nex.Structure
-	Profile []byte
+	types.Structure
+	Profile *types.QBuffer
 }
 
-// ExtractFromStream extracts a DataStorePostProfileParam structure from a stream
-func (dataStorePostProfileParam *DataStorePostProfileParam) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the DataStorePostProfileParam from the given readable
+func (dataStorePostProfileParam *DataStorePostProfileParam) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	dataStorePostProfileParam.Profile, err = stream.ReadQBuffer()
+	if err = dataStorePostProfileParam.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read DataStorePostProfileParam header. %s", err.Error())
+	}
+
+	err = dataStorePostProfileParam.Profile.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStorePostProfileParam.Profile. %s", err.Error())
 	}
@@ -27,35 +30,43 @@ func (dataStorePostProfileParam *DataStorePostProfileParam) ExtractFromStream(st
 	return nil
 }
 
-// Bytes encodes the DataStorePostProfileParam and returns a byte array
-func (dataStorePostProfileParam *DataStorePostProfileParam) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteQBuffer(dataStorePostProfileParam.Profile)
+// WriteTo writes the DataStorePostProfileParam to the given writable
+func (dataStorePostProfileParam *DataStorePostProfileParam) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
 
-	return stream.Bytes()
+	dataStorePostProfileParam.Profile.WriteTo(contentWritable)
+
+	content := contentWritable.Bytes()
+
+	dataStorePostProfileParam.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // Copy returns a new copied instance of DataStorePostProfileParam
-func (dataStorePostProfileParam *DataStorePostProfileParam) Copy() nex.StructureInterface {
+func (dataStorePostProfileParam *DataStorePostProfileParam) Copy() types.RVType {
 	copied := NewDataStorePostProfileParam()
 
-	copied.SetStructureVersion(dataStorePostProfileParam.StructureVersion())
+	copied.StructureVersion = dataStorePostProfileParam.StructureVersion
 
-	copied.Profile = make([]byte, len(dataStorePostProfileParam.Profile))
-
-	copy(copied.Profile, dataStorePostProfileParam.Profile)
+	copied.Profile = dataStorePostProfileParam.Profile.Copy().(*types.QBuffer)
 
 	return copied
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (dataStorePostProfileParam *DataStorePostProfileParam) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*DataStorePostProfileParam)
-
-	if dataStorePostProfileParam.StructureVersion() != other.StructureVersion() {
+func (dataStorePostProfileParam *DataStorePostProfileParam) Equals(o types.RVType) bool {
+	if _, ok := o.(*DataStorePostProfileParam); !ok {
 		return false
 	}
 
-	return bytes.Equal(dataStorePostProfileParam.Profile, other.Profile)
+	other := o.(*DataStorePostProfileParam)
+
+	if dataStorePostProfileParam.StructureVersion != other.StructureVersion {
+		return false
+	}
+
+	return dataStorePostProfileParam.Profile.Equals(other.Profile)
 }
 
 // String returns a string representation of the struct
@@ -71,8 +82,8 @@ func (dataStorePostProfileParam *DataStorePostProfileParam) FormatToString(inden
 	var b strings.Builder
 
 	b.WriteString("DataStorePostProfileParam{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, dataStorePostProfileParam.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sProfile: %x\n", indentationValues, dataStorePostProfileParam.Profile))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, dataStorePostProfileParam.StructureVersion))
+	b.WriteString(fmt.Sprintf("%sProfile: %s\n", indentationValues, dataStorePostProfileParam.Profile))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -80,5 +91,7 @@ func (dataStorePostProfileParam *DataStorePostProfileParam) FormatToString(inden
 
 // NewDataStorePostProfileParam returns a new DataStorePostProfileParam
 func NewDataStorePostProfileParam() *DataStorePostProfileParam {
-	return &DataStorePostProfileParam{}
+	return &DataStorePostProfileParam{
+		Profile: types.NewQBuffer(nil),
+	}
 }

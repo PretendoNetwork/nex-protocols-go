@@ -5,11 +5,13 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 	datastore_pokemon_bank_types "github.com/PretendoNetwork/nex-protocols-go/datastore/pokemon-bank/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
 func (protocol *Protocol) handleRollbackBankObject(packet nex.PacketInterface) {
+	var err error
 	var errorCode uint32
 
 	if protocol.RollbackBankObject == nil {
@@ -23,9 +25,10 @@ func (protocol *Protocol) handleRollbackBankObject(packet nex.PacketInterface) {
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.server)
+	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
-	slotID, err := parametersStream.ReadUInt16LE()
+	slotID := types.NewPrimitiveU16(0)
+	err = slotID.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.RollbackBankObject(fmt.Errorf("Failed to read slotID from parameters. %s", err.Error()), packet, callID, 0, nil, false)
 		if errorCode != 0 {
@@ -35,7 +38,8 @@ func (protocol *Protocol) handleRollbackBankObject(packet nex.PacketInterface) {
 		return
 	}
 
-	transactionParam, err := nex.StreamReadStructure(parametersStream, datastore_pokemon_bank_types.NewBankTransactionParam())
+	transactionParam := datastore_pokemon_bank_types.NewBankTransactionParam()
+	err = transactionParam.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.RollbackBankObject(fmt.Errorf("Failed to read transactionParam from parameters. %s", err.Error()), packet, callID, 0, nil, false)
 		if errorCode != 0 {
@@ -45,7 +49,8 @@ func (protocol *Protocol) handleRollbackBankObject(packet nex.PacketInterface) {
 		return
 	}
 
-	isForce, err := parametersStream.ReadBool()
+	isForce := types.NewPrimitiveBool(false)
+	err = isForce.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.RollbackBankObject(fmt.Errorf("Failed to read isForce from parameters. %s", err.Error()), packet, callID, 0, nil, false)
 		if errorCode != 0 {

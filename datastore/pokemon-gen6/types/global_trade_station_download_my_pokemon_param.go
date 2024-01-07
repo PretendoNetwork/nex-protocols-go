@@ -5,20 +5,24 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // GlobalTradeStationDownloadMyPokemonParam holds data for the DataStore (Pokemon Gen6) protocol
 type GlobalTradeStationDownloadMyPokemonParam struct {
-	nex.Structure
+	types.Structure
 	PrepareUploadKey *GlobalTradeStationRecordKey
 }
 
-// ExtractFromStream extracts a GlobalTradeStationDownloadMyPokemonParam structure from a stream
-func (globalTradeStationDownloadMyPokemonParam *GlobalTradeStationDownloadMyPokemonParam) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the GlobalTradeStationDownloadMyPokemonParam from the given readable
+func (globalTradeStationDownloadMyPokemonParam *GlobalTradeStationDownloadMyPokemonParam) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	globalTradeStationDownloadMyPokemonParam.PrepareUploadKey, err = nex.StreamReadStructure(stream, NewGlobalTradeStationRecordKey())
+	if err = globalTradeStationDownloadMyPokemonParam.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read GlobalTradeStationDownloadMyPokemonParam header. %s", err.Error())
+	}
+
+	err = globalTradeStationDownloadMyPokemonParam.PrepareUploadKey.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract GlobalTradeStationDownloadMyPokemonParam.PrepareUploadKey from stream. %s", err.Error())
 	}
@@ -26,18 +30,24 @@ func (globalTradeStationDownloadMyPokemonParam *GlobalTradeStationDownloadMyPoke
 	return nil
 }
 
-// Bytes encodes the GlobalTradeStationDownloadMyPokemonParam and returns a byte array
-func (globalTradeStationDownloadMyPokemonParam *GlobalTradeStationDownloadMyPokemonParam) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteStructure(globalTradeStationDownloadMyPokemonParam.PrepareUploadKey)
+// WriteTo writes the GlobalTradeStationDownloadMyPokemonParam to the given writable
+func (globalTradeStationDownloadMyPokemonParam *GlobalTradeStationDownloadMyPokemonParam) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
 
-	return stream.Bytes()
+	globalTradeStationDownloadMyPokemonParam.PrepareUploadKey.WriteTo(contentWritable)
+
+	content := contentWritable.Bytes()
+
+	globalTradeStationDownloadMyPokemonParam.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // Copy returns a new copied instance of GlobalTradeStationDownloadMyPokemonParam
-func (globalTradeStationDownloadMyPokemonParam *GlobalTradeStationDownloadMyPokemonParam) Copy() nex.StructureInterface {
+func (globalTradeStationDownloadMyPokemonParam *GlobalTradeStationDownloadMyPokemonParam) Copy() types.RVType {
 	copied := NewGlobalTradeStationDownloadMyPokemonParam()
 
-	copied.SetStructureVersion(globalTradeStationDownloadMyPokemonParam.StructureVersion())
+	copied.StructureVersion = globalTradeStationDownloadMyPokemonParam.StructureVersion
 
 	copied.PrepareUploadKey = globalTradeStationDownloadMyPokemonParam.PrepareUploadKey.Copy().(*GlobalTradeStationRecordKey)
 
@@ -45,10 +55,14 @@ func (globalTradeStationDownloadMyPokemonParam *GlobalTradeStationDownloadMyPoke
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (globalTradeStationDownloadMyPokemonParam *GlobalTradeStationDownloadMyPokemonParam) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*GlobalTradeStationDownloadMyPokemonParam)
+func (globalTradeStationDownloadMyPokemonParam *GlobalTradeStationDownloadMyPokemonParam) Equals(o types.RVType) bool {
+	if _, ok := o.(*GlobalTradeStationDownloadMyPokemonParam); !ok {
+		return false
+	}
 
-	if globalTradeStationDownloadMyPokemonParam.StructureVersion() != other.StructureVersion() {
+	other := o.(*GlobalTradeStationDownloadMyPokemonParam)
+
+	if globalTradeStationDownloadMyPokemonParam.StructureVersion != other.StructureVersion {
 		return false
 	}
 
@@ -68,14 +82,8 @@ func (globalTradeStationDownloadMyPokemonParam *GlobalTradeStationDownloadMyPoke
 	var b strings.Builder
 
 	b.WriteString("GlobalTradeStationDownloadMyPokemonParam{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, globalTradeStationDownloadMyPokemonParam.StructureVersion()))
-
-	if globalTradeStationDownloadMyPokemonParam.PrepareUploadKey != nil {
-		b.WriteString(fmt.Sprintf("%sPrepareUploadKey: %s\n", indentationValues, globalTradeStationDownloadMyPokemonParam.PrepareUploadKey.FormatToString(indentationLevel+1)))
-	} else {
-		b.WriteString(fmt.Sprintf("%sPrepareUploadKey: nil\n", indentationValues))
-	}
-
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, globalTradeStationDownloadMyPokemonParam.StructureVersion))
+	b.WriteString(fmt.Sprintf("%sPrepareUploadKey: %s\n", indentationValues, globalTradeStationDownloadMyPokemonParam.PrepareUploadKey.FormatToString(indentationLevel+1)))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -83,5 +91,7 @@ func (globalTradeStationDownloadMyPokemonParam *GlobalTradeStationDownloadMyPoke
 
 // NewGlobalTradeStationDownloadMyPokemonParam returns a new GlobalTradeStationDownloadMyPokemonParam
 func NewGlobalTradeStationDownloadMyPokemonParam() *GlobalTradeStationDownloadMyPokemonParam {
-	return &GlobalTradeStationDownloadMyPokemonParam{}
+	return &GlobalTradeStationDownloadMyPokemonParam{
+		PrepareUploadKey: NewGlobalTradeStationRecordKey(),
+	}
 }

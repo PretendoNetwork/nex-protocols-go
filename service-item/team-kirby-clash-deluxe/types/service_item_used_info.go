@@ -6,25 +6,30 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // ServiceItemUsedInfo holds data for the Service Item (Team Kirby Clash Deluxe) protocol
 type ServiceItemUsedInfo struct {
-	nex.Structure
-	AcquiredCount uint32
-	UsedCount     uint32
+	types.Structure
+	AcquiredCount *types.PrimitiveU32
+	UsedCount     *types.PrimitiveU32
 }
 
-// ExtractFromStream extracts a ServiceItemUsedInfo structure from a stream
-func (serviceItemUsedInfo *ServiceItemUsedInfo) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the ServiceItemUsedInfo from the given readable
+func (serviceItemUsedInfo *ServiceItemUsedInfo) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	serviceItemUsedInfo.AcquiredCount, err = stream.ReadUInt32LE()
+	if err = serviceItemUsedInfo.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read ServiceItemUsedInfo header. %s", err.Error())
+	}
+
+	err = serviceItemUsedInfo.AcquiredCount.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemUsedInfo.AcquiredCount from stream. %s", err.Error())
 	}
 
-	serviceItemUsedInfo.UsedCount, err = stream.ReadUInt32LE()
+	err = serviceItemUsedInfo.UsedCount.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemUsedInfo.UsedCount from stream. %s", err.Error())
 	}
@@ -32,19 +37,25 @@ func (serviceItemUsedInfo *ServiceItemUsedInfo) ExtractFromStream(stream *nex.St
 	return nil
 }
 
-// Bytes encodes the ServiceItemUsedInfo and returns a byte array
-func (serviceItemUsedInfo *ServiceItemUsedInfo) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt32LE(serviceItemUsedInfo.AcquiredCount)
-	stream.WriteUInt32LE(serviceItemUsedInfo.UsedCount)
+// WriteTo writes the ServiceItemUsedInfo to the given writable
+func (serviceItemUsedInfo *ServiceItemUsedInfo) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
 
-	return stream.Bytes()
+	serviceItemUsedInfo.AcquiredCount.WriteTo(contentWritable)
+	serviceItemUsedInfo.UsedCount.WriteTo(contentWritable)
+
+	content := contentWritable.Bytes()
+
+	serviceItemUsedInfo.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // Copy returns a new copied instance of ServiceItemUsedInfo
-func (serviceItemUsedInfo *ServiceItemUsedInfo) Copy() nex.StructureInterface {
+func (serviceItemUsedInfo *ServiceItemUsedInfo) Copy() types.RVType {
 	copied := NewServiceItemUsedInfo()
 
-	copied.SetStructureVersion(serviceItemUsedInfo.StructureVersion())
+	copied.StructureVersion = serviceItemUsedInfo.StructureVersion
 
 	copied.AcquiredCount = serviceItemUsedInfo.AcquiredCount
 	copied.UsedCount = serviceItemUsedInfo.UsedCount
@@ -53,18 +64,22 @@ func (serviceItemUsedInfo *ServiceItemUsedInfo) Copy() nex.StructureInterface {
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (serviceItemUsedInfo *ServiceItemUsedInfo) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*ServiceItemUsedInfo)
-
-	if serviceItemUsedInfo.StructureVersion() != other.StructureVersion() {
+func (serviceItemUsedInfo *ServiceItemUsedInfo) Equals(o types.RVType) bool {
+	if _, ok := o.(*ServiceItemUsedInfo); !ok {
 		return false
 	}
 
-	if serviceItemUsedInfo.AcquiredCount != other.AcquiredCount {
+	other := o.(*ServiceItemUsedInfo)
+
+	if serviceItemUsedInfo.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if serviceItemUsedInfo.UsedCount != other.UsedCount {
+	if !serviceItemUsedInfo.AcquiredCount.Equals(other.AcquiredCount) {
+		return false
+	}
+
+	if !serviceItemUsedInfo.UsedCount.Equals(other.UsedCount) {
 		return false
 	}
 
@@ -84,7 +99,7 @@ func (serviceItemUsedInfo *ServiceItemUsedInfo) FormatToString(indentationLevel 
 	var b strings.Builder
 
 	b.WriteString("ServiceItemUsedInfo{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, serviceItemUsedInfo.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, serviceItemUsedInfo.StructureVersion))
 	b.WriteString(fmt.Sprintf("%sAcquiredCount: %d,\n", indentationValues, serviceItemUsedInfo.AcquiredCount))
 	b.WriteString(fmt.Sprintf("%sUsedCount: %d,\n", indentationValues, serviceItemUsedInfo.UsedCount))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))

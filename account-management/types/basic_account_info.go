@@ -5,26 +5,44 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // BasicAccountInfo contains data for creating a new NNID on the network
 type BasicAccountInfo struct {
-	nex.Structure
-	PIDOwner *nex.PID
-	StrName  string
+	types.Structure
+	PIDOwner *types.PID
+	StrName  *types.String
 }
 
-// ExtractFromStream extracts a BasicAccountInfo structure from a stream
-func (basicAccountInfo *BasicAccountInfo) ExtractFromStream(stream *nex.StreamIn) error {
+// WriteTo writes the BasicAccountInfo to the given writable
+func (basicAccountInfo *BasicAccountInfo) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
+
+	basicAccountInfo.PIDOwner.WriteTo(contentWritable)
+	basicAccountInfo.StrName.WriteTo(contentWritable)
+
+	content := contentWritable.Bytes()
+
+	basicAccountInfo.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
+}
+
+// ExtractFrom extracts the BasicAccountInfo from the given readable
+func (basicAccountInfo *BasicAccountInfo) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	basicAccountInfo.PIDOwner, err = stream.ReadPID()
+	if err = basicAccountInfo.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read BasicAccountInfo header. %s", err.Error())
+	}
+
+	err = basicAccountInfo.PIDOwner.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract BasicAccountInfo.PIDOwner. %s", err.Error())
 	}
 
-	basicAccountInfo.StrName, err = stream.ReadString()
+	err = basicAccountInfo.StrName.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract BasicAccountInfo.StrName. %s", err.Error())
 	}
@@ -33,22 +51,26 @@ func (basicAccountInfo *BasicAccountInfo) ExtractFromStream(stream *nex.StreamIn
 }
 
 // Copy returns a new copied instance of BasicAccountInfo
-func (basicAccountInfo *BasicAccountInfo) Copy() nex.StructureInterface {
+func (basicAccountInfo *BasicAccountInfo) Copy() types.RVType {
 	copied := NewBasicAccountInfo()
 
-	copied.SetStructureVersion(basicAccountInfo.StructureVersion())
+	copied.StructureVersion = basicAccountInfo.StructureVersion
 
-	copied.PIDOwner = basicAccountInfo.PIDOwner.Copy()
-	copied.StrName = basicAccountInfo.StrName
+	copied.PIDOwner = basicAccountInfo.PIDOwner.Copy().(*types.PID)
+	copied.StrName = basicAccountInfo.StrName.Copy().(*types.String)
 
 	return copied
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (basicAccountInfo *BasicAccountInfo) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*BasicAccountInfo)
+func (basicAccountInfo *BasicAccountInfo) Equals(o types.RVType) bool {
+	if _, ok := o.(*BasicAccountInfo); !ok {
+		return false
+	}
 
-	if basicAccountInfo.StructureVersion() != other.StructureVersion() {
+	other := o.(*BasicAccountInfo)
+
+	if basicAccountInfo.StructureVersion != other.StructureVersion {
 		return false
 	}
 
@@ -56,7 +78,7 @@ func (basicAccountInfo *BasicAccountInfo) Equals(structure nex.StructureInterfac
 		return false
 	}
 
-	if basicAccountInfo.StrName != other.StrName {
+	if !basicAccountInfo.StrName.Equals(other.StrName) {
 		return false
 	}
 
@@ -76,9 +98,9 @@ func (basicAccountInfo *BasicAccountInfo) FormatToString(indentationLevel int) s
 	var b strings.Builder
 
 	b.WriteString("BasicAccountInfo{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, basicAccountInfo.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, basicAccountInfo.StructureVersion))
 	b.WriteString(fmt.Sprintf("%sPIDOwner: %s,\n", indentationValues, basicAccountInfo.PIDOwner.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sStrName: %q\n", indentationValues, basicAccountInfo.StrName))
+	b.WriteString(fmt.Sprintf("%sStrName: %s\n", indentationValues, basicAccountInfo.StrName))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -86,5 +108,8 @@ func (basicAccountInfo *BasicAccountInfo) FormatToString(indentationLevel int) s
 
 // NewBasicAccountInfo returns a new BasicAccountInfo
 func NewBasicAccountInfo() *BasicAccountInfo {
-	return &BasicAccountInfo{}
+	return &BasicAccountInfo{
+		PIDOwner: types.NewPID(0),
+		StrName: types.NewString(""),
+	}
 }

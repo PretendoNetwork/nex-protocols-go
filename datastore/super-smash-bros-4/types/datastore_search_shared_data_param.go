@@ -6,55 +6,60 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // DataStoreSearchSharedDataParam is a data structure used by the DataStore Super Smash Bros. 4 protocol
 type DataStoreSearchSharedDataParam struct {
-	nex.Structure
-	DataType    uint8
-	Owner       uint32
-	Region      uint8
-	Attribute1  uint8
-	Attribute2  uint8
-	Fighter     uint8
-	ResultRange *nex.ResultRange
+	types.Structure
+	DataType    *types.PrimitiveU8
+	Owner       *types.PrimitiveU32
+	Region      *types.PrimitiveU8
+	Attribute1  *types.PrimitiveU8
+	Attribute2  *types.PrimitiveU8
+	Fighter     *types.PrimitiveU8
+	ResultRange *types.ResultRange
 }
 
-// ExtractFromStream extracts a DataStoreSearchSharedDataParam structure from a stream
-func (dataStoreSearchSharedDataParam *DataStoreSearchSharedDataParam) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the DataStoreSearchSharedDataParam from the given readable
+func (dataStoreSearchSharedDataParam *DataStoreSearchSharedDataParam) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	dataStoreSearchSharedDataParam.DataType, err = stream.ReadUInt8()
+	if err = dataStoreSearchSharedDataParam.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read DataStoreSearchSharedDataParam header. %s", err.Error())
+	}
+
+	err = dataStoreSearchSharedDataParam.DataType.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreSearchSharedDataParam.DataType. %s", err.Error())
 	}
 
-	dataStoreSearchSharedDataParam.Owner, err = stream.ReadUInt32LE()
+	err = dataStoreSearchSharedDataParam.Owner.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreSearchSharedDataParam.Owner. %s", err.Error())
 	}
 
-	dataStoreSearchSharedDataParam.Region, err = stream.ReadUInt8()
+	err = dataStoreSearchSharedDataParam.Region.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreSearchSharedDataParam.Region. %s", err.Error())
 	}
 
-	dataStoreSearchSharedDataParam.Attribute1, err = stream.ReadUInt8()
+	err = dataStoreSearchSharedDataParam.Attribute1.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreSearchSharedDataParam.Attribute1. %s", err.Error())
 	}
 
-	dataStoreSearchSharedDataParam.Attribute2, err = stream.ReadUInt8()
+	err = dataStoreSearchSharedDataParam.Attribute2.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreSearchSharedDataParam.Attribute2. %s", err.Error())
 	}
 
-	dataStoreSearchSharedDataParam.Fighter, err = stream.ReadUInt8()
+	err = dataStoreSearchSharedDataParam.Fighter.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreSearchSharedDataParam.Fighter. %s", err.Error())
 	}
 
-	dataStoreSearchSharedDataParam.ResultRange, err = nex.StreamReadStructure(stream, nex.NewResultRange())
+	err = dataStoreSearchSharedDataParam.ResultRange.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreSearchSharedDataParam.ResultRange. %s", err.Error())
 	}
@@ -62,24 +67,30 @@ func (dataStoreSearchSharedDataParam *DataStoreSearchSharedDataParam) ExtractFro
 	return nil
 }
 
-// Bytes encodes the DataStoreSearchSharedDataParam and returns a byte array
-func (dataStoreSearchSharedDataParam *DataStoreSearchSharedDataParam) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt8(dataStoreSearchSharedDataParam.DataType)
-	stream.WriteUInt32LE(dataStoreSearchSharedDataParam.Owner)
-	stream.WriteUInt8(dataStoreSearchSharedDataParam.Region)
-	stream.WriteUInt8(dataStoreSearchSharedDataParam.Attribute1)
-	stream.WriteUInt8(dataStoreSearchSharedDataParam.Attribute2)
-	stream.WriteUInt8(dataStoreSearchSharedDataParam.Fighter)
-	stream.WriteStructure(dataStoreSearchSharedDataParam.ResultRange)
+// WriteTo writes the DataStoreSearchSharedDataParam to the given writable
+func (dataStoreSearchSharedDataParam *DataStoreSearchSharedDataParam) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
 
-	return stream.Bytes()
+	dataStoreSearchSharedDataParam.DataType.WriteTo(contentWritable)
+	dataStoreSearchSharedDataParam.Owner.WriteTo(contentWritable)
+	dataStoreSearchSharedDataParam.Region.WriteTo(contentWritable)
+	dataStoreSearchSharedDataParam.Attribute1.WriteTo(contentWritable)
+	dataStoreSearchSharedDataParam.Attribute2.WriteTo(contentWritable)
+	dataStoreSearchSharedDataParam.Fighter.WriteTo(contentWritable)
+	dataStoreSearchSharedDataParam.ResultRange.WriteTo(contentWritable)
+
+	content := contentWritable.Bytes()
+
+	dataStoreSearchSharedDataParam.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // Copy returns a new copied instance of DataStoreSearchSharedDataParam
-func (dataStoreSearchSharedDataParam *DataStoreSearchSharedDataParam) Copy() nex.StructureInterface {
+func (dataStoreSearchSharedDataParam *DataStoreSearchSharedDataParam) Copy() types.RVType {
 	copied := NewDataStoreSearchSharedDataParam()
 
-	copied.SetStructureVersion(dataStoreSearchSharedDataParam.StructureVersion())
+	copied.StructureVersion = dataStoreSearchSharedDataParam.StructureVersion
 
 	copied.DataType = dataStoreSearchSharedDataParam.DataType
 	copied.Owner = dataStoreSearchSharedDataParam.Owner
@@ -87,40 +98,44 @@ func (dataStoreSearchSharedDataParam *DataStoreSearchSharedDataParam) Copy() nex
 	copied.Attribute1 = dataStoreSearchSharedDataParam.Attribute1
 	copied.Attribute2 = dataStoreSearchSharedDataParam.Attribute2
 	copied.Fighter = dataStoreSearchSharedDataParam.Fighter
-	copied.ResultRange = dataStoreSearchSharedDataParam.ResultRange.Copy().(*nex.ResultRange)
+	copied.ResultRange = dataStoreSearchSharedDataParam.ResultRange.Copy().(*types.ResultRange)
 
 	return copied
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (dataStoreSearchSharedDataParam *DataStoreSearchSharedDataParam) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*DataStoreSearchSharedDataParam)
-
-	if dataStoreSearchSharedDataParam.StructureVersion() != other.StructureVersion() {
+func (dataStoreSearchSharedDataParam *DataStoreSearchSharedDataParam) Equals(o types.RVType) bool {
+	if _, ok := o.(*DataStoreSearchSharedDataParam); !ok {
 		return false
 	}
 
-	if dataStoreSearchSharedDataParam.DataType != other.DataType {
+	other := o.(*DataStoreSearchSharedDataParam)
+
+	if dataStoreSearchSharedDataParam.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if dataStoreSearchSharedDataParam.Owner != other.Owner {
+	if !dataStoreSearchSharedDataParam.DataType.Equals(other.DataType) {
 		return false
 	}
 
-	if dataStoreSearchSharedDataParam.Region != other.Region {
+	if !dataStoreSearchSharedDataParam.Owner.Equals(other.Owner) {
 		return false
 	}
 
-	if dataStoreSearchSharedDataParam.Attribute1 != other.Attribute1 {
+	if !dataStoreSearchSharedDataParam.Region.Equals(other.Region) {
 		return false
 	}
 
-	if dataStoreSearchSharedDataParam.Attribute2 != other.Attribute2 {
+	if !dataStoreSearchSharedDataParam.Attribute1.Equals(other.Attribute1) {
 		return false
 	}
 
-	if dataStoreSearchSharedDataParam.Fighter != other.Fighter {
+	if !dataStoreSearchSharedDataParam.Attribute2.Equals(other.Attribute2) {
+		return false
+	}
+
+	if !dataStoreSearchSharedDataParam.Fighter.Equals(other.Fighter) {
 		return false
 	}
 
@@ -144,7 +159,7 @@ func (dataStoreSearchSharedDataParam *DataStoreSearchSharedDataParam) FormatToSt
 	var b strings.Builder
 
 	b.WriteString("DataStoreSearchSharedDataParam{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, dataStoreSearchSharedDataParam.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, dataStoreSearchSharedDataParam.StructureVersion))
 	b.WriteString(fmt.Sprintf("%sDataType: %d,\n", indentationValues, dataStoreSearchSharedDataParam.DataType))
 	b.WriteString(fmt.Sprintf("%sOwner: %d,\n", indentationValues, dataStoreSearchSharedDataParam.Owner))
 	b.WriteString(fmt.Sprintf("%sRegion: %d,\n", indentationValues, dataStoreSearchSharedDataParam.Region))

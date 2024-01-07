@@ -5,32 +5,36 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // DataStoreGetCustomRankingByDataIDParam holds data for the DataStore (Super Mario Maker) protocol
 type DataStoreGetCustomRankingByDataIDParam struct {
-	nex.Structure
-	ApplicationID uint32
-	DataIDList    []uint64
-	ResultOption  uint8
+	types.Structure
+	ApplicationID *types.PrimitiveU32
+	DataIDList    *types.List[*types.PrimitiveU64]
+	ResultOption  *types.PrimitiveU8
 }
 
-// ExtractFromStream extracts a DataStoreGetCustomRankingByDataIDParam structure from a stream
-func (dataStoreGetCustomRankingByDataIDParam *DataStoreGetCustomRankingByDataIDParam) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the DataStoreGetCustomRankingByDataIDParam from the given readable
+func (dataStoreGetCustomRankingByDataIDParam *DataStoreGetCustomRankingByDataIDParam) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	dataStoreGetCustomRankingByDataIDParam.ApplicationID, err = stream.ReadUInt32LE()
+	if err = dataStoreGetCustomRankingByDataIDParam.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read DataStoreGetCustomRankingByDataIDParam header. %s", err.Error())
+	}
+
+	err = dataStoreGetCustomRankingByDataIDParam.ApplicationID.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreGetCustomRankingByDataIDParam.ApplicationID from stream. %s", err.Error())
 	}
 
-	dataStoreGetCustomRankingByDataIDParam.DataIDList, err = stream.ReadListUInt64LE()
+	err = dataStoreGetCustomRankingByDataIDParam.DataIDList.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreGetCustomRankingByDataIDParam.DataIDList from stream. %s", err.Error())
 	}
 
-	dataStoreGetCustomRankingByDataIDParam.ResultOption, err = stream.ReadUInt8()
+	err = dataStoreGetCustomRankingByDataIDParam.ResultOption.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreGetCustomRankingByDataIDParam.ResultOption from stream. %s", err.Error())
 	}
@@ -38,51 +42,52 @@ func (dataStoreGetCustomRankingByDataIDParam *DataStoreGetCustomRankingByDataIDP
 	return nil
 }
 
-// Bytes encodes the DataStoreGetCustomRankingByDataIDParam and returns a byte array
-func (dataStoreGetCustomRankingByDataIDParam *DataStoreGetCustomRankingByDataIDParam) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt32LE(dataStoreGetCustomRankingByDataIDParam.ApplicationID)
-	stream.WriteListUInt64LE(dataStoreGetCustomRankingByDataIDParam.DataIDList)
-	stream.WriteUInt8(dataStoreGetCustomRankingByDataIDParam.ResultOption)
+// WriteTo writes the DataStoreGetCustomRankingByDataIDParam to the given writable
+func (dataStoreGetCustomRankingByDataIDParam *DataStoreGetCustomRankingByDataIDParam) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
 
-	return stream.Bytes()
+	dataStoreGetCustomRankingByDataIDParam.ApplicationID.WriteTo(contentWritable)
+	dataStoreGetCustomRankingByDataIDParam.DataIDList.WriteTo(contentWritable)
+	dataStoreGetCustomRankingByDataIDParam.ResultOption.WriteTo(contentWritable)
+
+	content := contentWritable.Bytes()
+
+	dataStoreGetCustomRankingByDataIDParam.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // Copy returns a new copied instance of DataStoreGetCustomRankingByDataIDParam
-func (dataStoreGetCustomRankingByDataIDParam *DataStoreGetCustomRankingByDataIDParam) Copy() nex.StructureInterface {
+func (dataStoreGetCustomRankingByDataIDParam *DataStoreGetCustomRankingByDataIDParam) Copy() types.RVType {
 	copied := NewDataStoreGetCustomRankingByDataIDParam()
 
-	copied.SetStructureVersion(dataStoreGetCustomRankingByDataIDParam.StructureVersion())
+	copied.StructureVersion = dataStoreGetCustomRankingByDataIDParam.StructureVersion
 
-	copied.ApplicationID = dataStoreGetCustomRankingByDataIDParam.ApplicationID
-	copied.DataIDList = make([]uint64, len(dataStoreGetCustomRankingByDataIDParam.DataIDList))
-
-	copy(copied.DataIDList, dataStoreGetCustomRankingByDataIDParam.DataIDList)
-
-	copied.ResultOption = dataStoreGetCustomRankingByDataIDParam.ResultOption
+	copied.ApplicationID = dataStoreGetCustomRankingByDataIDParam.ApplicationID.Copy().(*types.PrimitiveU32)
+	copied.DataIDList = dataStoreGetCustomRankingByDataIDParam.DataIDList.Copy().(*types.List[*types.PrimitiveU64])
+	copied.ResultOption = dataStoreGetCustomRankingByDataIDParam.ResultOption.Copy().(*types.PrimitiveU8)
 
 	return copied
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (dataStoreGetCustomRankingByDataIDParam *DataStoreGetCustomRankingByDataIDParam) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*DataStoreGetCustomRankingByDataIDParam)
-
-	if dataStoreGetCustomRankingByDataIDParam.StructureVersion() != other.StructureVersion() {
+func (dataStoreGetCustomRankingByDataIDParam *DataStoreGetCustomRankingByDataIDParam) Equals(o types.RVType) bool {
+	if _, ok := o.(*DataStoreGetCustomRankingByDataIDParam); !ok {
 		return false
 	}
 
-	if dataStoreGetCustomRankingByDataIDParam.ApplicationID != other.ApplicationID {
+	other := o.(*DataStoreGetCustomRankingByDataIDParam)
+
+	if dataStoreGetCustomRankingByDataIDParam.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if len(dataStoreGetCustomRankingByDataIDParam.DataIDList) != len(other.DataIDList) {
+	if !dataStoreGetCustomRankingByDataIDParam.ApplicationID.Equals(other.ApplicationID) {
 		return false
 	}
 
-	for i := 0; i < len(dataStoreGetCustomRankingByDataIDParam.DataIDList); i++ {
-		if dataStoreGetCustomRankingByDataIDParam.DataIDList[i] != other.DataIDList[i] {
-			return false
-		}
+	if !dataStoreGetCustomRankingByDataIDParam.DataIDList.Equals(other.DataIDList) {
+		return false
 	}
 
 	return dataStoreGetCustomRankingByDataIDParam.ResultOption == other.ResultOption
@@ -101,10 +106,10 @@ func (dataStoreGetCustomRankingByDataIDParam *DataStoreGetCustomRankingByDataIDP
 	var b strings.Builder
 
 	b.WriteString("DataStoreGetCustomRankingByDataIDParam{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, dataStoreGetCustomRankingByDataIDParam.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sApplicationID: %d,\n", indentationValues, dataStoreGetCustomRankingByDataIDParam.ApplicationID))
-	b.WriteString(fmt.Sprintf("%sDataIDList: %v,\n", indentationValues, dataStoreGetCustomRankingByDataIDParam.DataIDList))
-	b.WriteString(fmt.Sprintf("%sResultOption: %d,\n", indentationValues, dataStoreGetCustomRankingByDataIDParam.ResultOption))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, dataStoreGetCustomRankingByDataIDParam.StructureVersion))
+	b.WriteString(fmt.Sprintf("%sApplicationID: %s,\n", indentationValues, dataStoreGetCustomRankingByDataIDParam.ApplicationID))
+	b.WriteString(fmt.Sprintf("%sDataIDList: %s,\n", indentationValues, dataStoreGetCustomRankingByDataIDParam.DataIDList))
+	b.WriteString(fmt.Sprintf("%sResultOption: %s,\n", indentationValues, dataStoreGetCustomRankingByDataIDParam.ResultOption))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -112,9 +117,13 @@ func (dataStoreGetCustomRankingByDataIDParam *DataStoreGetCustomRankingByDataIDP
 
 // NewDataStoreGetCustomRankingByDataIDParam returns a new DataStoreGetCustomRankingByDataIDParam
 func NewDataStoreGetCustomRankingByDataIDParam() *DataStoreGetCustomRankingByDataIDParam {
-	return &DataStoreGetCustomRankingByDataIDParam{
-		ApplicationID: 0,
-		DataIDList:    make([]uint64, 0),
-		ResultOption:  0,
+	dataStoreGetCustomRankingByDataIDParam := &DataStoreGetCustomRankingByDataIDParam{
+		ApplicationID: types.NewPrimitiveU32(0),
+		DataIDList:    types.NewList[*types.PrimitiveU64](),
+		ResultOption:  types.NewPrimitiveU8(0),
 	}
+
+	dataStoreGetCustomRankingByDataIDParam.DataIDList.Type = types.NewPrimitiveU64(0)
+
+	return dataStoreGetCustomRankingByDataIDParam
 }

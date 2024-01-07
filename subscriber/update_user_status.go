@@ -5,11 +5,13 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 	subscriber_types "github.com/PretendoNetwork/nex-protocols-go/subscriber/types"
 )
 
 func (protocol *Protocol) handleUpdateUserStatus(packet nex.PacketInterface) {
+	var err error
 	var errorCode uint32
 
 	if protocol.UpdateUserStatus == nil {
@@ -23,7 +25,7 @@ func (protocol *Protocol) handleUpdateUserStatus(packet nex.PacketInterface) {
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.server)
+	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	unknown1, err := nex.StreamReadListStructure(parametersStream, subscriber_types.NewUnknown())
 	if err != nil {
@@ -35,7 +37,9 @@ func (protocol *Protocol) handleUpdateUserStatus(packet nex.PacketInterface) {
 		return
 	}
 
-	unknown2, err := parametersStream.ReadListUInt8()
+	unknown2 := types.NewList[*types.PrimitiveU8]()
+	unknown2.Type = types.NewPrimitiveU8(0)
+	err = unknown2.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.UpdateUserStatus(fmt.Errorf("Failed to read unknown2 from parameters. %s", err.Error()), packet, callID, nil, nil)
 		if errorCode != 0 {

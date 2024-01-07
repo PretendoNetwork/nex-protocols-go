@@ -5,26 +5,44 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // DataStoreRateObjectParam is sent in the RateObjects method
 type DataStoreRateObjectParam struct {
-	nex.Structure
-	RatingValue    int32
-	AccessPassword uint64
+	types.Structure
+	RatingValue    *types.PrimitiveS32
+	AccessPassword *types.PrimitiveU64
 }
 
-// ExtractFromStream extracts a DataStoreRateObjectParam structure from a stream
-func (dataStoreRateObjectParam *DataStoreRateObjectParam) ExtractFromStream(stream *nex.StreamIn) error {
+// WriteTo writes the DataStoreRateObjectParam to the given writable
+func (dataStoreRateObjectParam *DataStoreRateObjectParam) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
+
+	dataStoreRateObjectParam.RatingValue.WriteTo(contentWritable)
+	dataStoreRateObjectParam.AccessPassword.WriteTo(contentWritable)
+
+	content := contentWritable.Bytes()
+
+	dataStoreRateObjectParam.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
+}
+
+// ExtractFrom extracts the DataStoreRateObjectParam from the given readable
+func (dataStoreRateObjectParam *DataStoreRateObjectParam) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	dataStoreRateObjectParam.RatingValue, err = stream.ReadInt32LE()
+	if err = dataStoreRateObjectParam.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read DataStoreRateObjectParam header. %s", err.Error())
+	}
+
+	err = dataStoreRateObjectParam.RatingValue.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreRateObjectParam.RatingValue. %s", err.Error())
 	}
 
-	dataStoreRateObjectParam.AccessPassword, err = stream.ReadUInt64LE()
+	err = dataStoreRateObjectParam.AccessPassword.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreRateObjectParam.AccessPassword. %s", err.Error())
 	}
@@ -33,30 +51,34 @@ func (dataStoreRateObjectParam *DataStoreRateObjectParam) ExtractFromStream(stre
 }
 
 // Copy returns a new copied instance of DataStoreRateObjectParam
-func (dataStoreRateObjectParam *DataStoreRateObjectParam) Copy() nex.StructureInterface {
+func (dataStoreRateObjectParam *DataStoreRateObjectParam) Copy() types.RVType {
 	copied := NewDataStoreRateObjectParam()
 
-	copied.SetStructureVersion(dataStoreRateObjectParam.StructureVersion())
+	copied.StructureVersion = dataStoreRateObjectParam.StructureVersion
 
-	copied.RatingValue = dataStoreRateObjectParam.RatingValue
-	copied.AccessPassword = dataStoreRateObjectParam.AccessPassword
+	copied.RatingValue = dataStoreRateObjectParam.RatingValue.Copy().(*types.PrimitiveS32)
+	copied.AccessPassword = dataStoreRateObjectParam.AccessPassword.Copy().(*types.PrimitiveU64)
 
 	return copied
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (dataStoreRateObjectParam *DataStoreRateObjectParam) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*DataStoreRateObjectParam)
-
-	if dataStoreRateObjectParam.StructureVersion() != other.StructureVersion() {
+func (dataStoreRateObjectParam *DataStoreRateObjectParam) Equals(o types.RVType) bool {
+	if _, ok := o.(*DataStoreRateObjectParam); !ok {
 		return false
 	}
 
-	if dataStoreRateObjectParam.RatingValue != other.RatingValue {
+	other := o.(*DataStoreRateObjectParam)
+
+	if dataStoreRateObjectParam.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if dataStoreRateObjectParam.AccessPassword != other.AccessPassword {
+	if !dataStoreRateObjectParam.RatingValue.Equals(other.RatingValue) {
+		return false
+	}
+
+	if !dataStoreRateObjectParam.AccessPassword.Equals(other.AccessPassword) {
 		return false
 	}
 
@@ -76,9 +98,9 @@ func (dataStoreRateObjectParam *DataStoreRateObjectParam) FormatToString(indenta
 	var b strings.Builder
 
 	b.WriteString("DataStoreRateObjectParam{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, dataStoreRateObjectParam.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sRatingValue: %d,\n", indentationValues, dataStoreRateObjectParam.RatingValue))
-	b.WriteString(fmt.Sprintf("%sAccessPassword: %d\n", indentationValues, dataStoreRateObjectParam.AccessPassword))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, dataStoreRateObjectParam.StructureVersion))
+	b.WriteString(fmt.Sprintf("%sRatingValue: %s,\n", indentationValues, dataStoreRateObjectParam.RatingValue))
+	b.WriteString(fmt.Sprintf("%sAccessPassword: %s\n", indentationValues, dataStoreRateObjectParam.AccessPassword))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -87,7 +109,7 @@ func (dataStoreRateObjectParam *DataStoreRateObjectParam) FormatToString(indenta
 // NewDataStoreRateObjectParam returns a new DataStoreRateObjectParam
 func NewDataStoreRateObjectParam() *DataStoreRateObjectParam {
 	return &DataStoreRateObjectParam{
-		RatingValue:    0,
-		AccessPassword: 0,
+		RatingValue:    types.NewPrimitiveS32(0),
+		AccessPassword: types.NewPrimitiveU64(0),
 	}
 }

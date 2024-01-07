@@ -6,68 +6,72 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // DataStoreReplayMetaInfo is a data structure used by the DataStore Super Smash Bros. 4 protocol
 type DataStoreReplayMetaInfo struct {
-	nex.Structure
-	ReplayID   uint64
-	Size       uint32
-	Mode       uint8
-	Style      uint8
-	Rule       uint8
-	Stage      uint8
-	ReplayType uint8
-	Players    []*DataStoreReplayPlayer
-	Winners    []uint32
+	types.Structure
+	ReplayID   *types.PrimitiveU64
+	Size       *types.PrimitiveU32
+	Mode       *types.PrimitiveU8
+	Style      *types.PrimitiveU8
+	Rule       *types.PrimitiveU8
+	Stage      *types.PrimitiveU8
+	ReplayType *types.PrimitiveU8
+	Players    *types.List[*DataStoreReplayPlayer]
+	Winners    *types.List[*types.PrimitiveU32]
 }
 
-// ExtractFromStream extracts a DataStoreReplayMetaInfo structure from a stream
-func (dataStoreReplayMetaInfo *DataStoreReplayMetaInfo) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the DataStoreReplayMetaInfo from the given readable
+func (dataStoreReplayMetaInfo *DataStoreReplayMetaInfo) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	dataStoreReplayMetaInfo.ReplayID, err = stream.ReadUInt64LE()
+	if err = dataStoreReplayMetaInfo.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read DataStoreReplayMetaInfo header. %s", err.Error())
+	}
+
+	err = dataStoreReplayMetaInfo.ReplayID.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreReplayMetaInfo.ReplayID. %s", err.Error())
 	}
 
-	dataStoreReplayMetaInfo.Size, err = stream.ReadUInt32LE()
+	err = dataStoreReplayMetaInfo.Size.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreReplayMetaInfo.Size. %s", err.Error())
 	}
 
-	dataStoreReplayMetaInfo.Mode, err = stream.ReadUInt8()
+	err = dataStoreReplayMetaInfo.Mode.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreReplayMetaInfo.Mode. %s", err.Error())
 	}
 
-	dataStoreReplayMetaInfo.Style, err = stream.ReadUInt8()
+	err = dataStoreReplayMetaInfo.Style.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreReplayMetaInfo.Style. %s", err.Error())
 	}
 
-	dataStoreReplayMetaInfo.Rule, err = stream.ReadUInt8()
+	err = dataStoreReplayMetaInfo.Rule.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreReplayMetaInfo.Rule. %s", err.Error())
 	}
 
-	dataStoreReplayMetaInfo.Stage, err = stream.ReadUInt8()
+	err = dataStoreReplayMetaInfo.Stage.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreReplayMetaInfo.Stage. %s", err.Error())
 	}
 
-	dataStoreReplayMetaInfo.ReplayType, err = stream.ReadUInt8()
+	err = dataStoreReplayMetaInfo.ReplayType.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreReplayMetaInfo.ReplayType. %s", err.Error())
 	}
 
-	players, err := nex.StreamReadListStructure(stream, NewDataStoreReplayPlayer())
+	err = dataStoreReplayMetaInfo.Players.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreReplayMetaInfo.Players. %s", err.Error())
 	}
 
-	dataStoreReplayMetaInfo.Players = players
-	dataStoreReplayMetaInfo.Winners, err = stream.ReadListUInt32LE()
+	err = dataStoreReplayMetaInfo.Winners.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreReplayMetaInfo.Winners. %s", err.Error())
 	}
@@ -75,101 +79,92 @@ func (dataStoreReplayMetaInfo *DataStoreReplayMetaInfo) ExtractFromStream(stream
 	return nil
 }
 
-// Bytes encodes the DataStoreReplayMetaInfo and returns a byte array
-func (dataStoreReplayMetaInfo *DataStoreReplayMetaInfo) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt64LE(dataStoreReplayMetaInfo.ReplayID)
-	stream.WriteUInt32LE(dataStoreReplayMetaInfo.Size)
-	stream.WriteUInt8(dataStoreReplayMetaInfo.Mode)
-	stream.WriteUInt8(dataStoreReplayMetaInfo.Style)
-	stream.WriteUInt8(dataStoreReplayMetaInfo.Rule)
-	stream.WriteUInt8(dataStoreReplayMetaInfo.Stage)
-	stream.WriteUInt8(dataStoreReplayMetaInfo.ReplayType)
-	nex.StreamWriteListStructure(stream, dataStoreReplayMetaInfo.Players)
-	stream.WriteListUInt32LE(dataStoreReplayMetaInfo.Winners)
+// WriteTo writes the DataStoreReplayMetaInfo to the given writable
+func (dataStoreReplayMetaInfo *DataStoreReplayMetaInfo) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
 
-	return stream.Bytes()
+	dataStoreReplayMetaInfo.ReplayID.WriteTo(contentWritable)
+	dataStoreReplayMetaInfo.Size.WriteTo(contentWritable)
+	dataStoreReplayMetaInfo.Mode.WriteTo(contentWritable)
+	dataStoreReplayMetaInfo.Style.WriteTo(contentWritable)
+	dataStoreReplayMetaInfo.Rule.WriteTo(contentWritable)
+	dataStoreReplayMetaInfo.Stage.WriteTo(contentWritable)
+	dataStoreReplayMetaInfo.ReplayType.WriteTo(contentWritable)
+	dataStoreReplayMetaInfo.Players.WriteTo(contentWritable)
+	dataStoreReplayMetaInfo.Winners.WriteTo(contentWritable)
+
+	content := contentWritable.Bytes()
+
+	dataStoreReplayMetaInfo.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // Copy returns a new copied instance of DataStoreReplayMetaInfo
-func (dataStoreReplayMetaInfo *DataStoreReplayMetaInfo) Copy() nex.StructureInterface {
+func (dataStoreReplayMetaInfo *DataStoreReplayMetaInfo) Copy() types.RVType {
 	copied := NewDataStoreReplayMetaInfo()
 
-	copied.SetStructureVersion(dataStoreReplayMetaInfo.StructureVersion())
+	copied.StructureVersion = dataStoreReplayMetaInfo.StructureVersion
 
-	copied.ReplayID = dataStoreReplayMetaInfo.ReplayID
-	copied.Size = dataStoreReplayMetaInfo.Size
-	copied.Mode = dataStoreReplayMetaInfo.Mode
-	copied.Style = dataStoreReplayMetaInfo.Style
-	copied.Rule = dataStoreReplayMetaInfo.Rule
-	copied.Stage = dataStoreReplayMetaInfo.Stage
-	copied.ReplayType = dataStoreReplayMetaInfo.ReplayType
-	copied.Players = make([]*DataStoreReplayPlayer, len(dataStoreReplayMetaInfo.Players))
-
-	for i := 0; i < len(dataStoreReplayMetaInfo.Players); i++ {
-		copied.Players[i] = dataStoreReplayMetaInfo.Players[i].Copy().(*DataStoreReplayPlayer)
-	}
-
-	copied.Winners = make([]uint32, len(dataStoreReplayMetaInfo.Winners))
-
-	copy(copied.Winners, dataStoreReplayMetaInfo.Winners)
+	copied.ReplayID = dataStoreReplayMetaInfo.ReplayID.Copy().(*types.PrimitiveU64)
+	copied.Size = dataStoreReplayMetaInfo.Size.Copy().(*types.PrimitiveU32)
+	copied.Mode = dataStoreReplayMetaInfo.Mode.Copy().(*types.PrimitiveU8)
+	copied.Style = dataStoreReplayMetaInfo.Style.Copy().(*types.PrimitiveU8)
+	copied.Rule = dataStoreReplayMetaInfo.Rule.Copy().(*types.PrimitiveU8)
+	copied.Stage = dataStoreReplayMetaInfo.Stage.Copy().(*types.PrimitiveU8)
+	copied.ReplayType = dataStoreReplayMetaInfo.ReplayType.Copy().(*types.PrimitiveU8)
+	copied.Players = dataStoreReplayMetaInfo.Players.Copy().(*types.List[*DataStoreReplayPlayer])
+	copied.Winners = dataStoreReplayMetaInfo.Winners.Copy().(*types.List[*types.PrimitiveU32])
 
 	return copied
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (dataStoreReplayMetaInfo *DataStoreReplayMetaInfo) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*DataStoreReplayMetaInfo)
-
-	if dataStoreReplayMetaInfo.StructureVersion() != other.StructureVersion() {
+func (dataStoreReplayMetaInfo *DataStoreReplayMetaInfo) Equals(o types.RVType) bool {
+	if _, ok := o.(*DataStoreReplayMetaInfo); !ok {
 		return false
 	}
 
-	if dataStoreReplayMetaInfo.ReplayID != other.ReplayID {
+	other := o.(*DataStoreReplayMetaInfo)
+
+	if dataStoreReplayMetaInfo.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if dataStoreReplayMetaInfo.Size != other.Size {
+	if !dataStoreReplayMetaInfo.ReplayID.Equals(other.ReplayID) {
 		return false
 	}
 
-	if dataStoreReplayMetaInfo.Mode != other.Mode {
+	if !dataStoreReplayMetaInfo.Size.Equals(other.Size) {
 		return false
 	}
 
-	if dataStoreReplayMetaInfo.Style != other.Style {
+	if !dataStoreReplayMetaInfo.Mode.Equals(other.Mode) {
 		return false
 	}
 
-	if dataStoreReplayMetaInfo.Rule != other.Rule {
+	if !dataStoreReplayMetaInfo.Style.Equals(other.Style) {
 		return false
 	}
 
-	if dataStoreReplayMetaInfo.Stage != other.Stage {
+	if !dataStoreReplayMetaInfo.Rule.Equals(other.Rule) {
 		return false
 	}
 
-	if dataStoreReplayMetaInfo.ReplayType != other.ReplayType {
+	if !dataStoreReplayMetaInfo.Stage.Equals(other.Stage) {
 		return false
 	}
 
-	if len(dataStoreReplayMetaInfo.Players) != len(other.Players) {
+	if !dataStoreReplayMetaInfo.ReplayType.Equals(other.ReplayType) {
 		return false
 	}
 
-	for i := 0; i < len(dataStoreReplayMetaInfo.Players); i++ {
-		if !dataStoreReplayMetaInfo.Players[i].Equals(other.Players[i]) {
-			return false
-		}
-	}
-
-	if len(dataStoreReplayMetaInfo.Winners) != len(other.Winners) {
+	if !dataStoreReplayMetaInfo.Players.Equals(other.Players) {
 		return false
 	}
 
-	for i := 0; i < len(dataStoreReplayMetaInfo.Winners); i++ {
-		if dataStoreReplayMetaInfo.Players[i] != other.Players[i] {
-			return false
-		}
+	if !dataStoreReplayMetaInfo.Winners.Equals(other.Winners) {
+		return false
 	}
 
 	return true
@@ -183,39 +178,21 @@ func (dataStoreReplayMetaInfo *DataStoreReplayMetaInfo) String() string {
 // FormatToString pretty-prints the struct data using the provided indentation level
 func (dataStoreReplayMetaInfo *DataStoreReplayMetaInfo) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
-	indentationListValues := strings.Repeat("\t", indentationLevel+2)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("DataStoreReplayMetaInfo{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, dataStoreReplayMetaInfo.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sReplayID: %d,\n", indentationValues, dataStoreReplayMetaInfo.ReplayID))
-	b.WriteString(fmt.Sprintf("%sSize: %d,\n", indentationValues, dataStoreReplayMetaInfo.Size))
-	b.WriteString(fmt.Sprintf("%sMode: %d,\n", indentationValues, dataStoreReplayMetaInfo.Mode))
-	b.WriteString(fmt.Sprintf("%sStyle: %d,\n", indentationValues, dataStoreReplayMetaInfo.Style))
-	b.WriteString(fmt.Sprintf("%sRule: %d,\n", indentationValues, dataStoreReplayMetaInfo.Rule))
-	b.WriteString(fmt.Sprintf("%sStage: %d,\n", indentationValues, dataStoreReplayMetaInfo.Stage))
-	b.WriteString(fmt.Sprintf("%sReplayType: %d,\n", indentationValues, dataStoreReplayMetaInfo.ReplayType))
-
-	if len(dataStoreReplayMetaInfo.Players) == 0 {
-		b.WriteString(fmt.Sprintf("%sPlayers: [],\n", indentationValues))
-	} else {
-		b.WriteString(fmt.Sprintf("%sPlayers: [\n", indentationValues))
-
-		for i := 0; i < len(dataStoreReplayMetaInfo.Players); i++ {
-			str := dataStoreReplayMetaInfo.Players[i].FormatToString(indentationLevel + 2)
-			if i == len(dataStoreReplayMetaInfo.Players)-1 {
-				b.WriteString(fmt.Sprintf("%s%s\n", indentationListValues, str))
-			} else {
-				b.WriteString(fmt.Sprintf("%s%s,\n", indentationListValues, str))
-			}
-		}
-
-		b.WriteString(fmt.Sprintf("%s]\n", indentationValues))
-	}
-
-	b.WriteString(fmt.Sprintf("%sWinners: %v\n", indentationValues, dataStoreReplayMetaInfo.Winners))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, dataStoreReplayMetaInfo.StructureVersion))
+	b.WriteString(fmt.Sprintf("%sReplayID: %s,\n", indentationValues, dataStoreReplayMetaInfo.ReplayID))
+	b.WriteString(fmt.Sprintf("%sSize: %s,\n", indentationValues, dataStoreReplayMetaInfo.Size))
+	b.WriteString(fmt.Sprintf("%sMode: %s,\n", indentationValues, dataStoreReplayMetaInfo.Mode))
+	b.WriteString(fmt.Sprintf("%sStyle: %s,\n", indentationValues, dataStoreReplayMetaInfo.Style))
+	b.WriteString(fmt.Sprintf("%sRule: %s,\n", indentationValues, dataStoreReplayMetaInfo.Rule))
+	b.WriteString(fmt.Sprintf("%sStage: %s,\n", indentationValues, dataStoreReplayMetaInfo.Stage))
+	b.WriteString(fmt.Sprintf("%sReplayType: %s,\n", indentationValues, dataStoreReplayMetaInfo.ReplayType))
+	b.WriteString(fmt.Sprintf("%sPlayers: %s,\n", indentationValues, dataStoreReplayMetaInfo.Players))
+	b.WriteString(fmt.Sprintf("%sWinners: %s\n", indentationValues, dataStoreReplayMetaInfo.Winners))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -223,5 +200,20 @@ func (dataStoreReplayMetaInfo *DataStoreReplayMetaInfo) FormatToString(indentati
 
 // NewDataStoreReplayMetaInfo returns a new DataStoreReplayMetaInfo
 func NewDataStoreReplayMetaInfo() *DataStoreReplayMetaInfo {
-	return &DataStoreReplayMetaInfo{}
+	dataStoreReplayMetaInfo := &DataStoreReplayMetaInfo{
+		ReplayID: types.NewPrimitiveU64(0),
+		Size: types.NewPrimitiveU32(0),
+		Mode: types.NewPrimitiveU8(0),
+		Style: types.NewPrimitiveU8(0),
+		Rule: types.NewPrimitiveU8(0),
+		Stage: types.NewPrimitiveU8(0),
+		ReplayType: types.NewPrimitiveU8(0),
+		Players: types.NewList[*DataStoreReplayPlayer](),
+		Winners: types.NewList[*types.PrimitiveU32](),
+	}
+
+	dataStoreReplayMetaInfo.Players.Type = NewDataStoreReplayPlayer()
+	dataStoreReplayMetaInfo.Winners.Type = types.NewPrimitiveU32(0)
+
+	return dataStoreReplayMetaInfo
 }

@@ -6,19 +6,24 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // NintendoLoginData holds a nex auth token
 type NintendoLoginData struct {
-	nex.Structure
+	types.Structure
 	Token string
 }
 
-// ExtractFromStream extracts a NintendoLoginData structure from a stream
-func (nintendoLoginData *NintendoLoginData) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the NintendoLoginData from the given readable
+func (nintendoLoginData *NintendoLoginData) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	nintendoLoginData.Token, err = stream.ReadString()
+	if err = nintendoLoginData.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read NintendoLoginData header. %s", err.Error())
+	}
+
+	err = nintendoLoginData.Token.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract NintendoLoginData.Token. %s", err.Error())
 	}
@@ -27,10 +32,10 @@ func (nintendoLoginData *NintendoLoginData) ExtractFromStream(stream *nex.Stream
 }
 
 // Copy returns a new copied instance of NintendoLoginData
-func (nintendoLoginData *NintendoLoginData) Copy() nex.StructureInterface {
+func (nintendoLoginData *NintendoLoginData) Copy() types.RVType {
 	copied := NewNintendoLoginData()
 
-	copied.SetStructureVersion(nintendoLoginData.StructureVersion())
+	copied.StructureVersion = nintendoLoginData.StructureVersion
 
 	copied.Token = nintendoLoginData.Token
 
@@ -38,10 +43,14 @@ func (nintendoLoginData *NintendoLoginData) Copy() nex.StructureInterface {
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (nintendoLoginData *NintendoLoginData) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*NintendoLoginData)
+func (nintendoLoginData *NintendoLoginData) Equals(o types.RVType) bool {
+	if _, ok := o.(*NintendoLoginData); !ok {
+		return false
+	}
 
-	if nintendoLoginData.StructureVersion() != other.StructureVersion() {
+	other := o.(*NintendoLoginData)
+
+	if nintendoLoginData.StructureVersion != other.StructureVersion {
 		return false
 	}
 
@@ -61,7 +70,7 @@ func (nintendoLoginData *NintendoLoginData) FormatToString(indentationLevel int)
 	var b strings.Builder
 
 	b.WriteString("NintendoLoginData{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, nintendoLoginData.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, nintendoLoginData.StructureVersion))
 	b.WriteString(fmt.Sprintf("%sToken: %s\n", indentationValues, nintendoLoginData.Token))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 

@@ -6,41 +6,51 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // ServiceItemAccountRightTime holds data for the Service Item (Team Kirby Clash Deluxe) protocol
 type ServiceItemAccountRightTime struct {
-	nex.Structure
+	types.Structure
 	*ServiceItemAccountRight
 }
 
-// ExtractFromStream extracts a ServiceItemAccountRightTime structure from a stream
-func (serviceItemAccountRightTime *ServiceItemAccountRightTime) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the ServiceItemAccountRightTime from the given readable
+func (serviceItemAccountRightTime *ServiceItemAccountRightTime) ExtractFrom(readable types.Readable) error {
 	return nil
 }
 
-// Bytes encodes the ServiceItemAccountRightTime and returns a byte array
-func (serviceItemAccountRightTime *ServiceItemAccountRightTime) Bytes(stream *nex.StreamOut) []byte {
-	return stream.Bytes()
+// WriteTo writes the ServiceItemAccountRightTime to the given writable
+func (serviceItemAccountRightTime *ServiceItemAccountRightTime) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
+
+	content := contentWritable.Bytes()
+
+	rvcd.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // Copy returns a new copied instance of ServiceItemAccountRightTime
-func (serviceItemAccountRightTime *ServiceItemAccountRightTime) Copy() nex.StructureInterface {
+func (serviceItemAccountRightTime *ServiceItemAccountRightTime) Copy() types.RVType {
 	copied := NewServiceItemAccountRightTime()
 
-	copied.SetStructureVersion(serviceItemAccountRightTime.StructureVersion())
+	copied.StructureVersion = serviceItemAccountRightTime.StructureVersion
 
 	copied.ServiceItemAccountRight = serviceItemAccountRightTime.ServiceItemAccountRight.Copy().(*ServiceItemAccountRight)
-	copied.SetParentType(copied.ServiceItemAccountRight)
 
 	return copied
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (serviceItemAccountRightTime *ServiceItemAccountRightTime) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*ServiceItemAccountRightTime)
+func (serviceItemAccountRightTime *ServiceItemAccountRightTime) Equals(o types.RVType) bool {
+	if _, ok := o.(*ServiceItemAccountRightTime); !ok {
+		return false
+	}
 
-	if serviceItemAccountRightTime.StructureVersion() != other.StructureVersion() {
+	other := o.(*ServiceItemAccountRightTime)
+
+	if serviceItemAccountRightTime.StructureVersion != other.StructureVersion {
 		return false
 	}
 
@@ -61,7 +71,7 @@ func (serviceItemAccountRightTime *ServiceItemAccountRightTime) FormatToString(i
 
 	b.WriteString("ServiceItemAccountRightTime{\n")
 	b.WriteString(fmt.Sprintf("%sParentType: %s,\n", indentationValues, serviceItemAccountRightTime.ParentType().FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, serviceItemAccountRightTime.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, serviceItemAccountRightTime.StructureVersion))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()

@@ -6,32 +6,37 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // ServiceItemAccountRightConsumption holds data for the Service Item (Team Kirby Clash Deluxe) protocol
 type ServiceItemAccountRightConsumption struct {
-	nex.Structure
+	types.Structure
 	*ServiceItemAccountRight
-	UsedCount    uint32
-	ExpiredCount uint32
-	ExpiryCounts []uint32
+	UsedCount    *types.PrimitiveU32
+	ExpiredCount *types.PrimitiveU32
+	ExpiryCounts *types.List[*types.PrimitiveU32]
 }
 
-// ExtractFromStream extracts a ServiceItemAccountRightConsumption structure from a stream
-func (serviceItemAccountRightConsumption *ServiceItemAccountRightConsumption) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the ServiceItemAccountRightConsumption from the given readable
+func (serviceItemAccountRightConsumption *ServiceItemAccountRightConsumption) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	serviceItemAccountRightConsumption.UsedCount, err = stream.ReadUInt32LE()
+	if err = serviceItemAccountRightConsumption.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read ServiceItemAccountRightConsumption header. %s", err.Error())
+	}
+
+	err = serviceItemAccountRightConsumption.UsedCount.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemAccountRightConsumption.UsedCount from stream. %s", err.Error())
 	}
 
-	serviceItemAccountRightConsumption.ExpiredCount, err = stream.ReadUInt32LE()
+	err = serviceItemAccountRightConsumption.ExpiredCount.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemAccountRightConsumption.ExpiredCount from stream. %s", err.Error())
 	}
 
-	serviceItemAccountRightConsumption.ExpiryCounts, err = stream.ReadListUInt32LE()
+	err = serviceItemAccountRightConsumption.ExpiryCounts.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemAccountRightConsumption.ExpiryCounts from stream. %s", err.Error())
 	}
@@ -39,27 +44,32 @@ func (serviceItemAccountRightConsumption *ServiceItemAccountRightConsumption) Ex
 	return nil
 }
 
-// Bytes encodes the ServiceItemAccountRightConsumption and returns a byte array
-func (serviceItemAccountRightConsumption *ServiceItemAccountRightConsumption) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt32LE(serviceItemAccountRightConsumption.UsedCount)
-	stream.WriteUInt32LE(serviceItemAccountRightConsumption.ExpiredCount)
-	stream.WriteListUInt32LE(serviceItemAccountRightConsumption.ExpiryCounts)
+// WriteTo writes the ServiceItemAccountRightConsumption to the given writable
+func (serviceItemAccountRightConsumption *ServiceItemAccountRightConsumption) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
 
-	return stream.Bytes()
+	serviceItemAccountRightConsumption.UsedCount.WriteTo(contentWritable)
+	serviceItemAccountRightConsumption.ExpiredCount.WriteTo(contentWritable)
+	serviceItemAccountRightConsumption.ExpiryCounts.WriteTo(contentWritable)
+
+	content := contentWritable.Bytes()
+
+	serviceItemAccountRightConsumption.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // Copy returns a new copied instance of ServiceItemAccountRightConsumption
-func (serviceItemAccountRightConsumption *ServiceItemAccountRightConsumption) Copy() nex.StructureInterface {
+func (serviceItemAccountRightConsumption *ServiceItemAccountRightConsumption) Copy() types.RVType {
 	copied := NewServiceItemAccountRightConsumption()
 
-	copied.SetStructureVersion(serviceItemAccountRightConsumption.StructureVersion())
+	copied.StructureVersion = serviceItemAccountRightConsumption.StructureVersion
 
 	copied.ServiceItemAccountRight = serviceItemAccountRightConsumption.ServiceItemAccountRight.Copy().(*ServiceItemAccountRight)
-	copied.SetParentType(copied.ServiceItemAccountRight)
 
 	copied.UsedCount = serviceItemAccountRightConsumption.UsedCount
 	copied.ExpiredCount = serviceItemAccountRightConsumption.ExpiredCount
-	copied.ExpiryCounts = make([]uint32, len(serviceItemAccountRightConsumption.ExpiryCounts))
+	copied.ExpiryCounts = make(*types.List[*types.PrimitiveU32], len(serviceItemAccountRightConsumption.ExpiryCounts))
 
 	copy(copied.ExpiryCounts, serviceItemAccountRightConsumption.ExpiryCounts)
 
@@ -67,10 +77,14 @@ func (serviceItemAccountRightConsumption *ServiceItemAccountRightConsumption) Co
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (serviceItemAccountRightConsumption *ServiceItemAccountRightConsumption) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*ServiceItemAccountRightConsumption)
+func (serviceItemAccountRightConsumption *ServiceItemAccountRightConsumption) Equals(o types.RVType) bool {
+	if _, ok := o.(*ServiceItemAccountRightConsumption); !ok {
+		return false
+	}
 
-	if serviceItemAccountRightConsumption.StructureVersion() != other.StructureVersion() {
+	other := o.(*ServiceItemAccountRightConsumption)
+
+	if serviceItemAccountRightConsumption.StructureVersion != other.StructureVersion {
 		return false
 	}
 
@@ -78,11 +92,11 @@ func (serviceItemAccountRightConsumption *ServiceItemAccountRightConsumption) Eq
 		return false
 	}
 
-	if serviceItemAccountRightConsumption.UsedCount != other.UsedCount {
+	if !serviceItemAccountRightConsumption.UsedCount.Equals(other.UsedCount) {
 		return false
 	}
 
-	if serviceItemAccountRightConsumption.ExpiredCount != other.ExpiredCount {
+	if !serviceItemAccountRightConsumption.ExpiredCount.Equals(other.ExpiredCount) {
 		return false
 	}
 
@@ -113,7 +127,7 @@ func (serviceItemAccountRightConsumption *ServiceItemAccountRightConsumption) Fo
 
 	b.WriteString("ServiceItemAccountRightConsumption{\n")
 	b.WriteString(fmt.Sprintf("%sParentType: %s,\n", indentationValues, serviceItemAccountRightConsumption.ParentType().FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, serviceItemAccountRightConsumption.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, serviceItemAccountRightConsumption.StructureVersion))
 	b.WriteString(fmt.Sprintf("%sUsedCount: %d,\n", indentationValues, serviceItemAccountRightConsumption.UsedCount))
 	b.WriteString(fmt.Sprintf("%sExpiredCount: %d,\n", indentationValues, serviceItemAccountRightConsumption.ExpiredCount))
 	b.WriteString(fmt.Sprintf("%sExpiryCounts: %v,\n", indentationValues, serviceItemAccountRightConsumption.ExpiryCounts))

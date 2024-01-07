@@ -5,11 +5,13 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 	friends_3ds_types "github.com/PretendoNetwork/nex-protocols-go/friends-3ds/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
 func (protocol *Protocol) handleGetFriendComment(packet nex.PacketInterface) {
+	var err error
 	var errorCode uint32
 
 	if protocol.GetFriendComment == nil {
@@ -23,7 +25,7 @@ func (protocol *Protocol) handleGetFriendComment(packet nex.PacketInterface) {
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.server)
+	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	friends, err := nex.StreamReadListStructure(parametersStream, friends_3ds_types.NewFriendInfo())
 	if err != nil {

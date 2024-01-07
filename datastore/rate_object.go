@@ -5,11 +5,13 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 	datastore_types "github.com/PretendoNetwork/nex-protocols-go/datastore/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
 func (protocol *Protocol) handleRateObject(packet nex.PacketInterface) {
+	var err error
 	var errorCode uint32
 
 	if protocol.RateObject == nil {
@@ -23,9 +25,10 @@ func (protocol *Protocol) handleRateObject(packet nex.PacketInterface) {
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.server)
+	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
-	target, err := nex.StreamReadStructure(parametersStream, datastore_types.NewDataStoreRatingTarget())
+	target := datastore_types.NewDataStoreRatingTarget()
+	err = target.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.RateObject(fmt.Errorf("Failed to read target from parameters. %s", err.Error()), packet, callID, nil, nil, false)
 		if errorCode != 0 {
@@ -35,7 +38,8 @@ func (protocol *Protocol) handleRateObject(packet nex.PacketInterface) {
 		return
 	}
 
-	param, err := nex.StreamReadStructure(parametersStream, datastore_types.NewDataStoreRateObjectParam())
+	param := datastore_types.NewDataStoreRateObjectParam()
+	err = param.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.RateObject(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil, nil, false)
 		if errorCode != 0 {
@@ -45,7 +49,8 @@ func (protocol *Protocol) handleRateObject(packet nex.PacketInterface) {
 		return
 	}
 
-	fetchRatings, err := parametersStream.ReadBool()
+	fetchRatings := types.NewPrimitiveBool(false)
+	err = fetchRatings.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.RateObject(fmt.Errorf("Failed to read fetchRatings from parameters. %s", err.Error()), packet, callID, nil, nil, false)
 		if errorCode != 0 {

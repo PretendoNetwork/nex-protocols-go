@@ -5,11 +5,13 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 	friends_wiiu_types "github.com/PretendoNetwork/nex-protocols-go/friends-wiiu/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
 func (protocol *Protocol) handleAddBlackList(packet nex.PacketInterface) {
+	var err error
 	var errorCode uint32
 
 	if protocol.AddBlackList == nil {
@@ -23,9 +25,10 @@ func (protocol *Protocol) handleAddBlackList(packet nex.PacketInterface) {
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.server)
+	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
-	blacklistedPrincipal, err := nex.StreamReadStructure(parametersStream, friends_wiiu_types.NewBlacklistedPrincipal())
+	blacklistedPrincipal := friends_wiiu_types.NewBlacklistedPrincipal()
+	err = blacklistedPrincipal.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.AddBlackList(fmt.Errorf("Failed to read blacklistedPrincipal from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {

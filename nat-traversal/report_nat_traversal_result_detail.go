@@ -5,10 +5,12 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
 func (protocol *Protocol) handleReportNATTraversalResultDetail(packet nex.PacketInterface) {
+	var err error
 	var errorCode uint32
 
 	if protocol.ReportNATTraversalResultDetail == nil {
@@ -25,9 +27,10 @@ func (protocol *Protocol) handleReportNATTraversalResultDetail(packet nex.Packet
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.server)
+	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
-	cid, err := parametersStream.ReadUInt32LE()
+	cid := types.NewPrimitiveU32(0)
+	err = cid.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.ReportNATTraversalResultDetail(fmt.Errorf("Failed to read cid from parameters. %s", err.Error()), packet, callID, 0, false, 0, 0)
 		if errorCode != 0 {
@@ -37,7 +40,8 @@ func (protocol *Protocol) handleReportNATTraversalResultDetail(packet nex.Packet
 		return
 	}
 
-	result, err := parametersStream.ReadBool()
+	result := types.NewPrimitiveBool(false)
+	err = result.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.ReportNATTraversalResultDetail(fmt.Errorf("Failed to read result from parameters. %s", err.Error()), packet, callID, 0, false, 0, 0)
 		if errorCode != 0 {
@@ -47,7 +51,8 @@ func (protocol *Protocol) handleReportNATTraversalResultDetail(packet nex.Packet
 		return
 	}
 
-	detail, err := parametersStream.ReadInt32LE()
+	detail := types.NewPrimitiveS32(0)
+	err = detail.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.ReportNATTraversalResultDetail(fmt.Errorf("Failed to read detail from parameters. %s", err.Error()), packet, callID, 0, false, 0, 0)
 		if errorCode != 0 {
@@ -57,7 +62,7 @@ func (protocol *Protocol) handleReportNATTraversalResultDetail(packet nex.Packet
 		return
 	}
 
-	var rtt uint32 = 0
+	var rtt *types.PrimitiveU32 = 0
 
 	// TODO - Is this the right version?
 	if matchmakingVersion.GreaterOrEqual("3.0.0") {

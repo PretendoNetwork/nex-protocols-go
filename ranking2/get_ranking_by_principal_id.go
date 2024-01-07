@@ -5,11 +5,13 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 	ranking2_types "github.com/PretendoNetwork/nex-protocols-go/ranking2/types"
 )
 
 func (protocol *Protocol) handleGetRankingByPrincipalID(packet nex.PacketInterface) {
+	var err error
 	var errorCode uint32
 
 	if protocol.GetRankingByPrincipalID == nil {
@@ -23,9 +25,10 @@ func (protocol *Protocol) handleGetRankingByPrincipalID(packet nex.PacketInterfa
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.server)
+	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
-	getParam, err := nex.StreamReadStructure(parametersStream, ranking2_types.NewRanking2GetParam())
+	getParam := ranking2_types.NewRanking2GetParam()
+	err = getParam.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.GetRankingByPrincipalID(fmt.Errorf("Failed to read getParam from parameters. %s", err.Error()), packet, callID, nil, nil)
 		if errorCode != 0 {
@@ -35,7 +38,9 @@ func (protocol *Protocol) handleGetRankingByPrincipalID(packet nex.PacketInterfa
 		return
 	}
 
-	principalIDList, err := parametersStream.ReadListPID()
+	principalIDList := types.NewList[*types.PID]()
+	principalIDList.Type = types.NewPID(0)
+	err = principalIDList.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.GetRankingByPrincipalID(fmt.Errorf("Failed to read principalIDList from parameters. %s", err.Error()), packet, callID, nil, nil)
 		if errorCode != 0 {

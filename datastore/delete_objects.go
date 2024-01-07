@@ -5,11 +5,13 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 	datastore_types "github.com/PretendoNetwork/nex-protocols-go/datastore/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
 func (protocol *Protocol) handleDeleteObjects(packet nex.PacketInterface) {
+	var err error
 	var errorCode uint32
 
 	if protocol.DeleteObjects == nil {
@@ -23,7 +25,7 @@ func (protocol *Protocol) handleDeleteObjects(packet nex.PacketInterface) {
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.server)
+	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	params, err := nex.StreamReadListStructure(parametersStream, datastore_types.NewDataStoreDeleteParam())
 	if err != nil {
@@ -35,7 +37,8 @@ func (protocol *Protocol) handleDeleteObjects(packet nex.PacketInterface) {
 		return
 	}
 
-	transactional, err := parametersStream.ReadBool()
+	transactional := types.NewPrimitiveBool(false)
+	err = transactional.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.DeleteObjects(fmt.Errorf("Failed to read transactional from parameters. %s", err.Error()), packet, callID, nil, false)
 		if errorCode != 0 {

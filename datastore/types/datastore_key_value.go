@@ -5,49 +5,80 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // DataStoreKeyValue is sent in the PrepareGetObject method
 type DataStoreKeyValue struct {
-	nex.Structure
-	Key   string
-	Value string
+	types.Structure
+	Key   *types.String
+	Value *types.String
 }
 
-// Bytes encodes the DataStoreKeyValue and returns a byte array
-func (dataStoreKeyValue *DataStoreKeyValue) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteString(dataStoreKeyValue.Key)
-	stream.WriteString(dataStoreKeyValue.Value)
+// WriteTo writes the DataStoreKeyValue to the given writable
+func (dataStoreKeyValue *DataStoreKeyValue) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
 
-	return stream.Bytes()
+	dataStoreKeyValue.Key.WriteTo(contentWritable)
+	dataStoreKeyValue.Value.WriteTo(contentWritable)
+
+	content := contentWritable.Bytes()
+
+	dataStoreKeyValue.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
+}
+
+// ExtractFrom extracts the DataStoreKeyValue from the given readable
+func (dataStoreKeyValue *DataStoreKeyValue) ExtractFrom(readable types.Readable) error {
+	var err error
+
+	if err = dataStoreKeyValue.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read DataStoreKeyValue header. %s", err.Error())
+	}
+
+	err = dataStoreKeyValue.Key.ExtractFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreKeyValue.Key. %s", err.Error())
+	}
+
+	err = dataStoreKeyValue.Value.ExtractFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreKeyValue.Value. %s", err.Error())
+	}
+
+	return nil
 }
 
 // Copy returns a new copied instance of DataStoreKeyValue
-func (dataStoreKeyValue *DataStoreKeyValue) Copy() nex.StructureInterface {
+func (dataStoreKeyValue *DataStoreKeyValue) Copy() types.RVType {
 	copied := NewDataStoreKeyValue()
 
-	copied.SetStructureVersion(dataStoreKeyValue.StructureVersion())
+	copied.StructureVersion = dataStoreKeyValue.StructureVersion
 
-	copied.Key = dataStoreKeyValue.Key
-	copied.Value = dataStoreKeyValue.Value
+	copied.Key = dataStoreKeyValue.Key.Copy().(*types.String)
+	copied.Value = dataStoreKeyValue.Value.Copy().(*types.String)
 
 	return copied
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (dataStoreKeyValue *DataStoreKeyValue) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*DataStoreKeyValue)
-
-	if dataStoreKeyValue.StructureVersion() != other.StructureVersion() {
+func (dataStoreKeyValue *DataStoreKeyValue) Equals(o types.RVType) bool {
+	if _, ok := o.(*DataStoreKeyValue); !ok {
 		return false
 	}
 
-	if dataStoreKeyValue.Key != other.Key {
+	other := o.(*DataStoreKeyValue)
+
+	if dataStoreKeyValue.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if dataStoreKeyValue.Value != other.Value {
+	if !dataStoreKeyValue.Key.Equals(other.Key) {
+		return false
+	}
+
+	if !dataStoreKeyValue.Value.Equals(other.Value) {
 		return false
 	}
 
@@ -67,9 +98,9 @@ func (dataStoreKeyValue *DataStoreKeyValue) FormatToString(indentationLevel int)
 	var b strings.Builder
 
 	b.WriteString("DataStoreKeyValue{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, dataStoreKeyValue.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sKey: %q,\n", indentationValues, dataStoreKeyValue.Key))
-	b.WriteString(fmt.Sprintf("%sValue: %q\n", indentationValues, dataStoreKeyValue.Value))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, dataStoreKeyValue.StructureVersion))
+	b.WriteString(fmt.Sprintf("%sKey: %s,\n", indentationValues, dataStoreKeyValue.Key))
+	b.WriteString(fmt.Sprintf("%sValue: %s\n", indentationValues, dataStoreKeyValue.Value))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -78,7 +109,7 @@ func (dataStoreKeyValue *DataStoreKeyValue) FormatToString(indentationLevel int)
 // NewDataStoreKeyValue returns a new DataStoreKeyValue
 func NewDataStoreKeyValue() *DataStoreKeyValue {
 	return &DataStoreKeyValue{
-		Key:   "",
-		Value: "",
+		Key:   types.NewString(""),
+		Value: types.NewString(""),
 	}
 }

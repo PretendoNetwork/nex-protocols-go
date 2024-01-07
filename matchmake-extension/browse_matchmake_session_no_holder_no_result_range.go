@@ -5,11 +5,13 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 	match_making_types "github.com/PretendoNetwork/nex-protocols-go/match-making/types"
 )
 
 func (protocol *Protocol) handleBrowseMatchmakeSessionNoHolderNoResultRange(packet nex.PacketInterface) {
+	var err error
 	var errorCode uint32
 
 	if protocol.BrowseMatchmakeSessionNoHolderNoResultRange == nil {
@@ -23,9 +25,10 @@ func (protocol *Protocol) handleBrowseMatchmakeSessionNoHolderNoResultRange(pack
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.server)
+	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
-	searchCriteria, err := nex.StreamReadStructure(parametersStream, match_making_types.NewMatchmakeSessionSearchCriteria())
+	searchCriteria := match_making_types.NewMatchmakeSessionSearchCriteria()
+	err = searchCriteria.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.BrowseMatchmakeSessionNoHolderNoResultRange(fmt.Errorf("Failed to read searchCriteria from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {

@@ -6,19 +6,24 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // RankingStats holds parameters for ordering rankings
 type RankingStats struct {
-	nex.Structure
-	StatsList []float64
+	types.Structure
+	StatsList *types.List[*types.PrimitiveF64]
 }
 
-// ExtractFromStream extracts a RankingStats structure from a stream
-func (rankingStats *RankingStats) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the RankingStats from the given readable
+func (rankingStats *RankingStats) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	rankingStats.StatsList, err = stream.ReadListFloat64LE()
+	if err = rankingStats.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read RankingStats header. %s", err.Error())
+	}
+
+	err = rankingStats.StatsList.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract RankingStats.StatsList from stream. %s", err.Error())
 	}
@@ -26,20 +31,26 @@ func (rankingStats *RankingStats) ExtractFromStream(stream *nex.StreamIn) error 
 	return nil
 }
 
-// Bytes encodes the RankingStats and returns a byte array
-func (rankingStats *RankingStats) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteListFloat64LE(rankingStats.StatsList)
+// WriteTo writes the RankingStats to the given writable
+func (rankingStats *RankingStats) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
 
-	return stream.Bytes()
+	rankingStats.StatsList.WriteTo(contentWritable)
+
+	content := contentWritable.Bytes()
+
+	rankingStats.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // Copy returns a new copied instance of RankingStats
-func (rankingStats *RankingStats) Copy() nex.StructureInterface {
+func (rankingStats *RankingStats) Copy() types.RVType {
 	copied := NewRankingStats()
 
-	copied.SetStructureVersion(rankingStats.StructureVersion())
+	copied.StructureVersion = rankingStats.StructureVersion
 
-	copied.StatsList = make([]float64, len(rankingStats.StatsList))
+	copied.StatsList = make(*types.List[*types.PrimitiveF64], len(rankingStats.StatsList))
 
 	copy(copied.StatsList, rankingStats.StatsList)
 
@@ -47,10 +58,14 @@ func (rankingStats *RankingStats) Copy() nex.StructureInterface {
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (rankingStats *RankingStats) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*RankingStats)
+func (rankingStats *RankingStats) Equals(o types.RVType) bool {
+	if _, ok := o.(*RankingStats); !ok {
+		return false
+	}
 
-	if rankingStats.StructureVersion() != other.StructureVersion() {
+	other := o.(*RankingStats)
+
+	if rankingStats.StructureVersion != other.StructureVersion {
 		return false
 	}
 
@@ -80,7 +95,7 @@ func (rankingStats *RankingStats) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("RankingStats{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, rankingStats.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, rankingStats.StructureVersion))
 	b.WriteString(fmt.Sprintf("%sStatsList: %v\n", indentationValues, rankingStats.StatsList))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 

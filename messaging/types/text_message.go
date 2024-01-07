@@ -6,27 +6,38 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // TextMessage is a data structure used by the Message Delivery protocol
 type TextMessage struct {
-	nex.Structure
+	types.Structure
 	*UserMessage
 	StrTextBody string
 }
 
-// Bytes encodes the TextMessage and returns a byte array
-func (textMessage *TextMessage) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteString(textMessage.StrTextBody)
+// WriteTo writes the TextMessage to the given writable
+func (textMessage *TextMessage) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
 
-	return stream.Bytes()
+	textMessage.StrTextBody.WriteTo(contentWritable)
+
+	content := contentWritable.Bytes()
+
+	textMessage.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
-// ExtractFromStream extracts a TextMessage structure from a stream
-func (textMessage *TextMessage) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the TextMessage from the given readable
+func (textMessage *TextMessage) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	textMessage.StrTextBody, err = stream.ReadString()
+	if err = textMessage.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read TextMessage header. %s", err.Error())
+	}
+
+	err = textMessage.StrTextBody.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract TextMessage.StrTextBody from stream. %s", err.Error())
 	}
@@ -35,13 +46,12 @@ func (textMessage *TextMessage) ExtractFromStream(stream *nex.StreamIn) error {
 }
 
 // Copy returns a new copied instance of TextMessage
-func (textMessage *TextMessage) Copy() nex.StructureInterface {
+func (textMessage *TextMessage) Copy() types.RVType {
 	copied := NewTextMessage()
 
-	copied.SetStructureVersion(textMessage.StructureVersion())
+	copied.StructureVersion = textMessage.StructureVersion
 
 	copied.UserMessage = textMessage.UserMessage.Copy().(*UserMessage)
-	copied.SetParentType(copied.UserMessage)
 
 	copied.StrTextBody = textMessage.StrTextBody
 
@@ -49,10 +59,14 @@ func (textMessage *TextMessage) Copy() nex.StructureInterface {
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (textMessage *TextMessage) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*TextMessage)
+func (textMessage *TextMessage) Equals(o types.RVType) bool {
+	if _, ok := o.(*TextMessage); !ok {
+		return false
+	}
 
-	if textMessage.StructureVersion() != other.StructureVersion() {
+	other := o.(*TextMessage)
+
+	if textMessage.StructureVersion != other.StructureVersion {
 		return false
 	}
 
@@ -60,7 +74,7 @@ func (textMessage *TextMessage) Equals(structure nex.StructureInterface) bool {
 		return false
 	}
 
-	if textMessage.StrTextBody != other.StrTextBody {
+	if !textMessage.StrTextBody.Equals(other.StrTextBody) {
 		return false
 	}
 
@@ -81,7 +95,7 @@ func (textMessage *TextMessage) FormatToString(indentationLevel int) string {
 
 	b.WriteString("TextMessage{\n")
 	b.WriteString(fmt.Sprintf("%sParentType: %s,\n", indentationValues, textMessage.ParentType().FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, textMessage.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, textMessage.StructureVersion))
 	b.WriteString(fmt.Sprintf("%sStrTextBody: %q\n", indentationValues, textMessage.StrTextBody))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 

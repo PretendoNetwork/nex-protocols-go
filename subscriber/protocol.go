@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 	subscriber_types "github.com/PretendoNetwork/nex-protocols-go/subscriber/types"
 )
@@ -72,11 +73,11 @@ type Protocol struct {
 	GetFollower           func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) (*nex.RMCMessage, uint32)
 	GetNumFollowers       func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) (*nex.RMCMessage, uint32)
 	GetTimeline           func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) (*nex.RMCMessage, uint32)
-	DeleteContent         func(err error, packet nex.PacketInterface, callID uint32, unknown1 []string, unknown2 uint64) (*nex.RMCMessage, uint32)
+	DeleteContent         func(err error, packet nex.PacketInterface, callID uint32, unknown1 *types.List[*types.String], unknown2 *types.PrimitiveU64) (*nex.RMCMessage, uint32)
 	GetContentMulti       func(err error, packet nex.PacketInterface, callID uint32, params []*subscriber_types.SubscriberGetContentParam) (*nex.RMCMessage, uint32)
-	UpdateUserStatus      func(err error, packet nex.PacketInterface, callID uint32, unknown1 []*subscriber_types.Unknown, unknown2 []uint8) (*nex.RMCMessage, uint32)
-	GetFriendUserStatuses func(err error, packet nex.PacketInterface, callID uint32, unknown []uint8) (*nex.RMCMessage, uint32)
-	GetUserStatuses       func(err error, packet nex.PacketInterface, callID uint32, pids []*nex.PID, unknown []uint8) (*nex.RMCMessage, uint32)
+	UpdateUserStatus      func(err error, packet nex.PacketInterface, callID uint32, unknown1 []*subscriber_types.Unknown, unknown2 *types.List[*types.PrimitiveU8]) (*nex.RMCMessage, uint32)
+	GetFriendUserStatuses func(err error, packet nex.PacketInterface, callID uint32, unknown *types.List[*types.PrimitiveU8]) (*nex.RMCMessage, uint32)
+	GetUserStatuses       func(err error, packet nex.PacketInterface, callID uint32, pids *types.List[*types.PID], unknown *types.List[*types.PrimitiveU8]) (*nex.RMCMessage, uint32)
 }
 
 // Interface implements the methods present on the Subscriber protocol struct
@@ -93,11 +94,11 @@ type Interface interface {
 	SetHandlerGetFollower(handler func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) (*nex.RMCMessage, uint32))
 	SetHandlerGetNumFollowers(handler func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) (*nex.RMCMessage, uint32))
 	SetHandlerGetTimeline(handler func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) (*nex.RMCMessage, uint32))
-	SetHandlerDeleteContent(handler func(err error, packet nex.PacketInterface, callID uint32, unknown1 []string, unknown2 uint64) (*nex.RMCMessage, uint32))
+	SetHandlerDeleteContent(handler func(err error, packet nex.PacketInterface, callID uint32, unknown1 *types.List[*types.String], unknown2 *types.PrimitiveU64) (*nex.RMCMessage, uint32))
 	SetHandlerGetContentMulti(handler func(err error, packet nex.PacketInterface, callID uint32, params []*subscriber_types.SubscriberGetContentParam) (*nex.RMCMessage, uint32))
-	SetHandlerUpdateUserStatus(handler func(err error, packet nex.PacketInterface, callID uint32, unknown1 []*subscriber_types.Unknown, unknown2 []uint8) (*nex.RMCMessage, uint32))
-	SetHandlerGetFriendUserStatuses(handler func(err error, packet nex.PacketInterface, callID uint32, unknown []uint8) (*nex.RMCMessage, uint32))
-	SetHandlerGetUserStatuses(handler func(err error, packet nex.PacketInterface, callID uint32, pids []*nex.PID, unknown []uint8) (*nex.RMCMessage, uint32))
+	SetHandlerUpdateUserStatus(handler func(err error, packet nex.PacketInterface, callID uint32, unknown1 []*subscriber_types.Unknown, unknown2 *types.List[*types.PrimitiveU8]) (*nex.RMCMessage, uint32))
+	SetHandlerGetFriendUserStatuses(handler func(err error, packet nex.PacketInterface, callID uint32, unknown *types.List[*types.PrimitiveU8]) (*nex.RMCMessage, uint32))
+	SetHandlerGetUserStatuses(handler func(err error, packet nex.PacketInterface, callID uint32, pids *types.List[*types.PID], unknown *types.List[*types.PrimitiveU8]) (*nex.RMCMessage, uint32))
 }
 
 // Server returns the server implementing the protocol
@@ -161,7 +162,7 @@ func (protocol *Protocol) SetHandlerGetTimeline(handler func(err error, packet n
 }
 
 // SetHandlerDeleteContent sets the handler for the DeleteContent method
-func (protocol *Protocol) SetHandlerDeleteContent(handler func(err error, packet nex.PacketInterface, callID uint32, unknown1 []string, unknown2 uint64) (*nex.RMCMessage, uint32)) {
+func (protocol *Protocol) SetHandlerDeleteContent(handler func(err error, packet nex.PacketInterface, callID uint32, unknown1 *types.List[*types.String], unknown2 *types.PrimitiveU64) (*nex.RMCMessage, uint32)) {
 	protocol.DeleteContent = handler
 }
 
@@ -171,17 +172,17 @@ func (protocol *Protocol) SetHandlerGetContentMulti(handler func(err error, pack
 }
 
 // SetHandlerUpdateUserStatus sets the handler for the UpdateUserStatus method
-func (protocol *Protocol) SetHandlerUpdateUserStatus(handler func(err error, packet nex.PacketInterface, callID uint32, unknown1 []*subscriber_types.Unknown, unknown2 []uint8) (*nex.RMCMessage, uint32)) {
+func (protocol *Protocol) SetHandlerUpdateUserStatus(handler func(err error, packet nex.PacketInterface, callID uint32, unknown1 []*subscriber_types.Unknown, unknown2 *types.List[*types.PrimitiveU8]) (*nex.RMCMessage, uint32)) {
 	protocol.UpdateUserStatus = handler
 }
 
 // SetHandlerGetFriendUserStatuses sets the handler for the GetFriendUserStatuses method
-func (protocol *Protocol) SetHandlerGetFriendUserStatuses(handler func(err error, packet nex.PacketInterface, callID uint32, unknown []uint8) (*nex.RMCMessage, uint32)) {
+func (protocol *Protocol) SetHandlerGetFriendUserStatuses(handler func(err error, packet nex.PacketInterface, callID uint32, unknown *types.List[*types.PrimitiveU8]) (*nex.RMCMessage, uint32)) {
 	protocol.GetFriendUserStatuses = handler
 }
 
 // SetHandlerGetUserStatuses sets the handler for the GetUserStatuses method
-func (protocol *Protocol) SetHandlerGetUserStatuses(handler func(err error, packet nex.PacketInterface, callID uint32, pids []*nex.PID, unknown []uint8) (*nex.RMCMessage, uint32)) {
+func (protocol *Protocol) SetHandlerGetUserStatuses(handler func(err error, packet nex.PacketInterface, callID uint32, pids *types.List[*types.PID], unknown *types.List[*types.PrimitiveU8]) (*nex.RMCMessage, uint32)) {
 	protocol.GetUserStatuses = handler
 }
 

@@ -5,45 +5,49 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // DataStoreCustomRankingRatingCondition holds data for the DataStore (Super Mario Maker) protocol
 type DataStoreCustomRankingRatingCondition struct {
-	nex.Structure
-	Slot     int8
-	MinValue int32
-	MaxValue int32
-	MinCount int32 // * Revision 1
-	MaxCount int32 // * Revision 1
+	types.Structure
+	Slot     *types.PrimitiveS8
+	MinValue *types.PrimitiveS32
+	MaxValue *types.PrimitiveS32
+	MinCount *types.PrimitiveS32 // * Revision 1
+	MaxCount *types.PrimitiveS32 // * Revision 1
 }
 
-// ExtractFromStream extracts a DataStoreCustomRankingRatingCondition structure from a stream
-func (dataStoreCustomRankingRatingCondition *DataStoreCustomRankingRatingCondition) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the DataStoreCustomRankingRatingCondition from the given readable
+func (dataStoreCustomRankingRatingCondition *DataStoreCustomRankingRatingCondition) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	dataStoreCustomRankingRatingCondition.Slot, err = stream.ReadInt8()
+	if err = dataStoreCustomRankingRatingCondition.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read DataStoreCustomRankingRatingCondition header. %s", err.Error())
+	}
+
+	err = dataStoreCustomRankingRatingCondition.Slot.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreCustomRankingRatingCondition.Slot from stream. %s", err.Error())
 	}
 
-	dataStoreCustomRankingRatingCondition.MinValue, err = stream.ReadInt32LE()
+	err = dataStoreCustomRankingRatingCondition.MinValue.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreCustomRankingRatingCondition.MinValue from stream. %s", err.Error())
 	}
 
-	dataStoreCustomRankingRatingCondition.MaxValue, err = stream.ReadInt32LE()
+	err = dataStoreCustomRankingRatingCondition.MaxValue.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreCustomRankingRatingCondition.MaxValue from stream. %s", err.Error())
 	}
 
-	if dataStoreCustomRankingRatingCondition.StructureVersion() >= 1 {
-		dataStoreCustomRankingRatingCondition.MaxCount, err = stream.ReadInt32LE()
+	if dataStoreCustomRankingRatingCondition.StructureVersion >= 1 {
+		err = dataStoreCustomRankingRatingCondition.MaxCount.ExtractFrom(readable)
 		if err != nil {
 			return fmt.Errorf("Failed to extract DataStoreCustomRankingRatingCondition.MaxCount from stream. %s", err.Error())
 		}
 
-		dataStoreCustomRankingRatingCondition.MaxCount, err = stream.ReadInt32LE()
+		err = dataStoreCustomRankingRatingCondition.MaxCount.ExtractFrom(readable)
 		if err != nil {
 			return fmt.Errorf("Failed to extract DataStoreCustomRankingRatingCondition.MaxCount from stream. %s", err.Error())
 		}
@@ -52,60 +56,70 @@ func (dataStoreCustomRankingRatingCondition *DataStoreCustomRankingRatingConditi
 	return nil
 }
 
-// Bytes encodes the DataStoreCustomRankingRatingCondition and returns a byte array
-func (dataStoreCustomRankingRatingCondition *DataStoreCustomRankingRatingCondition) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteInt8(dataStoreCustomRankingRatingCondition.Slot)
-	stream.WriteInt32LE(dataStoreCustomRankingRatingCondition.MinValue)
-	stream.WriteInt32LE(dataStoreCustomRankingRatingCondition.MaxValue)
+// WriteTo writes the DataStoreCustomRankingRatingCondition to the given writable
+func (dataStoreCustomRankingRatingCondition *DataStoreCustomRankingRatingCondition) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
 
-	if dataStoreCustomRankingRatingCondition.StructureVersion() >= 1 {
-		stream.WriteInt32LE(dataStoreCustomRankingRatingCondition.MinCount)
-		stream.WriteInt32LE(dataStoreCustomRankingRatingCondition.MaxCount)
+	dataStoreCustomRankingRatingCondition.Slot.WriteTo(contentWritable)
+	dataStoreCustomRankingRatingCondition.MinValue.WriteTo(contentWritable)
+	dataStoreCustomRankingRatingCondition.MaxValue.WriteTo(contentWritable)
+
+	if dataStoreCustomRankingRatingCondition.StructureVersion >= 1 {
+		dataStoreCustomRankingRatingCondition.MinCount.WriteTo(contentWritable)
+		dataStoreCustomRankingRatingCondition.MaxCount.WriteTo(contentWritable)
 	}
 
-	return stream.Bytes()
+	content := contentWritable.Bytes()
+
+	dataStoreCustomRankingRatingCondition.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // Copy returns a new copied instance of DataStoreCustomRankingRatingCondition
-func (dataStoreCustomRankingRatingCondition *DataStoreCustomRankingRatingCondition) Copy() nex.StructureInterface {
+func (dataStoreCustomRankingRatingCondition *DataStoreCustomRankingRatingCondition) Copy() types.RVType {
 	copied := NewDataStoreCustomRankingRatingCondition()
 
-	copied.SetStructureVersion(dataStoreCustomRankingRatingCondition.StructureVersion())
+	copied.StructureVersion = dataStoreCustomRankingRatingCondition.StructureVersion
 
-	copied.Slot = dataStoreCustomRankingRatingCondition.Slot
-	copied.MinValue = dataStoreCustomRankingRatingCondition.MinValue
-	copied.MaxValue = dataStoreCustomRankingRatingCondition.MaxValue
-	copied.MinCount = dataStoreCustomRankingRatingCondition.MinCount
-	copied.MaxCount = dataStoreCustomRankingRatingCondition.MaxCount
+	copied.Slot = dataStoreCustomRankingRatingCondition.Slot.Copy().(*types.PrimitiveS8)
+	copied.MinValue = dataStoreCustomRankingRatingCondition.MinValue.Copy().(*types.PrimitiveS32)
+	copied.MaxValue = dataStoreCustomRankingRatingCondition.MaxValue.Copy().(*types.PrimitiveS32)
+	copied.MinCount = dataStoreCustomRankingRatingCondition.MinCount.Copy().(*types.PrimitiveS32)
+	copied.MaxCount = dataStoreCustomRankingRatingCondition.MaxCount.Copy().(*types.PrimitiveS32)
 
 	return copied
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (dataStoreCustomRankingRatingCondition *DataStoreCustomRankingRatingCondition) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*DataStoreCustomRankingRatingCondition)
-
-	if dataStoreCustomRankingRatingCondition.StructureVersion() != other.StructureVersion() {
+func (dataStoreCustomRankingRatingCondition *DataStoreCustomRankingRatingCondition) Equals(o types.RVType) bool {
+	if _, ok := o.(*DataStoreCustomRankingRatingCondition); !ok {
 		return false
 	}
 
-	if dataStoreCustomRankingRatingCondition.Slot != other.Slot {
+	other := o.(*DataStoreCustomRankingRatingCondition)
+
+	if dataStoreCustomRankingRatingCondition.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if dataStoreCustomRankingRatingCondition.MinValue != other.MinValue {
+	if !dataStoreCustomRankingRatingCondition.Slot.Equals(other.Slot) {
 		return false
 	}
 
-	if dataStoreCustomRankingRatingCondition.MaxValue != other.MaxValue {
+	if !dataStoreCustomRankingRatingCondition.MinValue.Equals(other.MinValue) {
 		return false
 	}
 
-	if dataStoreCustomRankingRatingCondition.MinCount != other.MinCount {
+	if !dataStoreCustomRankingRatingCondition.MaxValue.Equals(other.MaxValue) {
 		return false
 	}
 
-	if dataStoreCustomRankingRatingCondition.MaxCount != other.MaxCount {
+	if !dataStoreCustomRankingRatingCondition.MinCount.Equals(other.MinCount) {
+		return false
+	}
+
+	if !dataStoreCustomRankingRatingCondition.MaxCount.Equals(other.MaxCount) {
 		return false
 	}
 
@@ -125,14 +139,14 @@ func (dataStoreCustomRankingRatingCondition *DataStoreCustomRankingRatingConditi
 	var b strings.Builder
 
 	b.WriteString("DataStoreCustomRankingRatingCondition{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, dataStoreCustomRankingRatingCondition.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sSlot: %d,\n", indentationValues, dataStoreCustomRankingRatingCondition.Slot))
-	b.WriteString(fmt.Sprintf("%sMinValue: %d,\n", indentationValues, dataStoreCustomRankingRatingCondition.MinValue))
-	b.WriteString(fmt.Sprintf("%sMaxValue: %d,\n", indentationValues, dataStoreCustomRankingRatingCondition.MaxValue))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, dataStoreCustomRankingRatingCondition.StructureVersion))
+	b.WriteString(fmt.Sprintf("%sSlot: %s,\n", indentationValues, dataStoreCustomRankingRatingCondition.Slot))
+	b.WriteString(fmt.Sprintf("%sMinValue: %s,\n", indentationValues, dataStoreCustomRankingRatingCondition.MinValue))
+	b.WriteString(fmt.Sprintf("%sMaxValue: %s,\n", indentationValues, dataStoreCustomRankingRatingCondition.MaxValue))
 
-	if dataStoreCustomRankingRatingCondition.StructureVersion() >= 1 {
-		b.WriteString(fmt.Sprintf("%sMinCount: %d,\n", indentationValues, dataStoreCustomRankingRatingCondition.MinCount))
-		b.WriteString(fmt.Sprintf("%sMaxCount: %d,\n", indentationValues, dataStoreCustomRankingRatingCondition.MaxCount))
+	if dataStoreCustomRankingRatingCondition.StructureVersion >= 1 {
+		b.WriteString(fmt.Sprintf("%sMinCount: %s,\n", indentationValues, dataStoreCustomRankingRatingCondition.MinCount))
+		b.WriteString(fmt.Sprintf("%sMaxCount: %s\n", indentationValues, dataStoreCustomRankingRatingCondition.MaxCount))
 	}
 
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
@@ -143,10 +157,10 @@ func (dataStoreCustomRankingRatingCondition *DataStoreCustomRankingRatingConditi
 // NewDataStoreCustomRankingRatingCondition returns a new DataStoreCustomRankingRatingCondition
 func NewDataStoreCustomRankingRatingCondition() *DataStoreCustomRankingRatingCondition {
 	return &DataStoreCustomRankingRatingCondition{
-		Slot:     0,
-		MinValue: 0,
-		MaxValue: 0,
-		MinCount: 0,
-		MaxCount: 0,
+		Slot:     types.NewPrimitiveS8(0),
+		MinValue: types.NewPrimitiveS32(0),
+		MaxValue: types.NewPrimitiveS32(0),
+		MinCount: types.NewPrimitiveS32(0),
+		MaxCount: types.NewPrimitiveS32(0),
 	}
 }

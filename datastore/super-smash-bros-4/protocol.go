@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 	datastore "github.com/PretendoNetwork/nex-protocols-go/datastore"
 	datastore_super_smash_bros_4_types "github.com/PretendoNetwork/nex-protocols-go/datastore/super-smash-bros-4/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
@@ -106,8 +107,8 @@ type Protocol struct {
 	server nex.ServerInterface
 	datastoreProtocol
 	PostProfile              func(err error, packet nex.PacketInterface, callID uint32, param *datastore_super_smash_bros_4_types.DataStorePostProfileParam) (*nex.RMCMessage, uint32)
-	GetProfiles              func(err error, packet nex.PacketInterface, callID uint32, pidList []*nex.PID) (*nex.RMCMessage, uint32)
-	SendPlayReport           func(err error, packet nex.PacketInterface, callID uint32, playReport []int32) (*nex.RMCMessage, uint32)
+	GetProfiles              func(err error, packet nex.PacketInterface, callID uint32, pidList *types.List[*types.PID]) (*nex.RMCMessage, uint32)
+	SendPlayReport           func(err error, packet nex.PacketInterface, callID uint32, playReport *types.List[*types.PrimitiveS32]) (*nex.RMCMessage, uint32)
 	GetWorldPlayReport       func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, uint32)
 	GetReplayMeta            func(err error, packet nex.PacketInterface, callID uint32, param *datastore_super_smash_bros_4_types.DataStoreGetReplayMetaParam) (*nex.RMCMessage, uint32)
 	PrepareGetReplay         func(err error, packet nex.PacketInterface, callID uint32, param *datastore_super_smash_bros_4_types.DataStorePrepareGetReplayParam) (*nex.RMCMessage, uint32)
@@ -118,12 +119,12 @@ type Protocol struct {
 	PreparePostSharedData    func(err error, packet nex.PacketInterface, callID uint32, param *datastore_super_smash_bros_4_types.DataStorePreparePostSharedDataParam) (*nex.RMCMessage, uint32)
 	CompletePostSharedData   func(err error, packet nex.PacketInterface, callID uint32, param *datastore_super_smash_bros_4_types.DataStoreCompletePostSharedDataParam) (*nex.RMCMessage, uint32)
 	SearchSharedData         func(err error, packet nex.PacketInterface, callID uint32, param *datastore_super_smash_bros_4_types.DataStoreSearchSharedDataParam) (*nex.RMCMessage, uint32)
-	GetApplicationConfig     func(err error, packet nex.PacketInterface, callID uint32, applicationID uint32) (*nex.RMCMessage, uint32)
+	GetApplicationConfig     func(err error, packet nex.PacketInterface, callID uint32, applicationID *types.PrimitiveU32) (*nex.RMCMessage, uint32)
 	SearchReplay             func(err error, packet nex.PacketInterface, callID uint32, param *datastore_super_smash_bros_4_types.DataStoreSearchReplayParam) (*nex.RMCMessage, uint32)
 	PostFightingPowerScore   func(err error, packet nex.PacketInterface, callID uint32, params []*datastore_super_smash_bros_4_types.DataStorePostFightingPowerScoreParam) (*nex.RMCMessage, uint32)
-	GetFightingPowerChart    func(err error, packet nex.PacketInterface, callID uint32, mode uint8) (*nex.RMCMessage, uint32)
+	GetFightingPowerChart    func(err error, packet nex.PacketInterface, callID uint32, mode *types.PrimitiveU8) (*nex.RMCMessage, uint32)
 	GetFightingPowerChartAll func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, uint32)
-	ReportSharedData         func(err error, packet nex.PacketInterface, callID uint32, dataID uint64) (*nex.RMCMessage, uint32)
+	ReportSharedData         func(err error, packet nex.PacketInterface, callID uint32, dataID *types.PrimitiveU64) (*nex.RMCMessage, uint32)
 	GetSharedDataMeta        func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) (*nex.RMCMessage, uint32)
 }
 

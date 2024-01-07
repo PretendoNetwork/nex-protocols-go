@@ -6,32 +6,37 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // RankingCachedResult holds the result of a Ranking get request
 type RankingCachedResult struct {
-	nex.Structure
+	types.Structure
 	*RankingResult
-	CreatedTime *nex.DateTime
-	ExpiredTime *nex.DateTime
-	MaxLength   uint8
+	CreatedTime *types.DateTime
+	ExpiredTime *types.DateTime
+	MaxLength   *types.PrimitiveU8
 }
 
-// ExtractFromStream extracts a RankingCachedResult structure from a stream
-func (rankingCachedResult *RankingCachedResult) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the RankingCachedResult from the given readable
+func (rankingCachedResult *RankingCachedResult) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	rankingCachedResult.CreatedTime, err = stream.ReadDateTime()
+	if err = rankingCachedResult.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read RankingCachedResult header. %s", err.Error())
+	}
+
+	err = rankingCachedResult.CreatedTime.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract RankingCachedResult.CreatedTime from stream. %s", err.Error())
 	}
 
-	rankingCachedResult.ExpiredTime, err = stream.ReadDateTime()
+	err = rankingCachedResult.ExpiredTime.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract RankingCachedResult.ExpiredTime from stream. %s", err.Error())
 	}
 
-	rankingCachedResult.MaxLength, err = stream.ReadUInt8()
+	err = rankingCachedResult.MaxLength.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract RankingCachedResult.MaxLength from stream. %s", err.Error())
 	}
@@ -39,31 +44,32 @@ func (rankingCachedResult *RankingCachedResult) ExtractFromStream(stream *nex.St
 	return nil
 }
 
-// Bytes encodes the RankingCachedResult and returns a byte array
-func (rankingCachedResult *RankingCachedResult) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteDateTime(rankingCachedResult.CreatedTime)
-	stream.WriteDateTime(rankingCachedResult.ExpiredTime)
-	stream.WriteUInt8(rankingCachedResult.MaxLength)
+// WriteTo writes the RankingCachedResult to the given writable
+func (rankingCachedResult *RankingCachedResult) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
 
-	return stream.Bytes()
+	rankingCachedResult.CreatedTime.WriteTo(contentWritable)
+	rankingCachedResult.ExpiredTime.WriteTo(contentWritable)
+	rankingCachedResult.MaxLength.WriteTo(contentWritable)
+
+	content := contentWritable.Bytes()
+
+	rankingCachedResult.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // Copy returns a new copied instance of RankingCachedResult
-func (rankingCachedResult *RankingCachedResult) Copy() nex.StructureInterface {
+func (rankingCachedResult *RankingCachedResult) Copy() types.RVType {
 	copied := NewRankingCachedResult()
 
-	copied.SetStructureVersion(rankingCachedResult.StructureVersion())
+	copied.StructureVersion = rankingCachedResult.StructureVersion
 
 	copied.RankingResult = rankingCachedResult.RankingResult.Copy().(*RankingResult)
-	copied.SetParentType(copied.RankingResult)
 
-	if rankingCachedResult.CreatedTime != nil {
-		copied.CreatedTime = rankingCachedResult.CreatedTime.Copy()
-	}
+	copied.CreatedTime = rankingCachedResult.CreatedTime.Copy()
 
-	if rankingCachedResult.ExpiredTime != nil {
-		copied.ExpiredTime = rankingCachedResult.ExpiredTime.Copy()
-	}
+	copied.ExpiredTime = rankingCachedResult.ExpiredTime.Copy()
 
 	copied.MaxLength = rankingCachedResult.MaxLength
 
@@ -71,42 +77,26 @@ func (rankingCachedResult *RankingCachedResult) Copy() nex.StructureInterface {
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (rankingCachedResult *RankingCachedResult) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*RankingCachedResult)
-
-	if rankingCachedResult.StructureVersion() != other.StructureVersion() {
+func (rankingCachedResult *RankingCachedResult) Equals(o types.RVType) bool {
+	if _, ok := o.(*RankingCachedResult); !ok {
 		return false
 	}
 
-	if rankingCachedResult.CreatedTime == nil && other.CreatedTime != nil {
+	other := o.(*RankingCachedResult)
+
+	if rankingCachedResult.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if rankingCachedResult.CreatedTime != nil && other.CreatedTime == nil {
+	if !rankingCachedResult.CreatedTime.Equals(other.CreatedTime) {
 		return false
 	}
 
-	if rankingCachedResult.CreatedTime != nil && other.CreatedTime != nil {
-		if !rankingCachedResult.CreatedTime.Equals(other.CreatedTime) {
-			return false
-		}
-	}
-
-	if rankingCachedResult.ExpiredTime == nil && other.ExpiredTime != nil {
+	if !rankingCachedResult.ExpiredTime.Equals(other.ExpiredTime) {
 		return false
 	}
 
-	if rankingCachedResult.ExpiredTime != nil && other.ExpiredTime == nil {
-		return false
-	}
-
-	if rankingCachedResult.ExpiredTime != nil && other.SinceTime != nil {
-		if !rankingCachedResult.ExpiredTime.Equals(other.ExpiredTime) {
-			return false
-		}
-	}
-
-	if rankingCachedResult.MaxLength != other.MaxLength {
+	if !rankingCachedResult.MaxLength.Equals(other.MaxLength) {
 		return false
 	}
 
@@ -127,7 +117,7 @@ func (rankingCachedResult *RankingCachedResult) FormatToString(indentationLevel 
 
 	b.WriteString("RankingCachedResult{\n")
 	b.WriteString(fmt.Sprintf("%sParentType: %s,\n", indentationValues, rankingCachedResult.ParentType().FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, rankingCachedResult.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, rankingCachedResult.StructureVersion))
 
 	if rankingCachedResult.CreatedTime != nil {
 		b.WriteString(fmt.Sprintf("%sCreatedTime: %s\n", indentationValues, rankingCachedResult.CreatedTime.FormatToString(indentationLevel+1)))

@@ -5,11 +5,13 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 	ranking2_types "github.com/PretendoNetwork/nex-protocols-go/ranking2/types"
 )
 
 func (protocol *Protocol) handleGetRankingChart(packet nex.PacketInterface) {
+	var err error
 	var errorCode uint32
 
 	if protocol.GetRankingChart == nil {
@@ -23,9 +25,10 @@ func (protocol *Protocol) handleGetRankingChart(packet nex.PacketInterface) {
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.server)
+	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
-	info, err := nex.StreamReadStructure(parametersStream, ranking2_types.NewRanking2ChartInfoInput())
+	info := ranking2_types.NewRanking2ChartInfoInput()
+	err = info.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.GetRankingChart(fmt.Errorf("Failed to read info from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {

@@ -5,10 +5,12 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
 func (protocol *Protocol) handleDeleteSimpleSearchObject(packet nex.PacketInterface) {
+	var err error
 	var errorCode uint32
 
 	if protocol.DeleteSimpleSearchObject == nil {
@@ -22,9 +24,10 @@ func (protocol *Protocol) handleDeleteSimpleSearchObject(packet nex.PacketInterf
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.server)
+	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
-	objectID, err := parametersStream.ReadUInt32LE()
+	objectID := types.NewPrimitiveU32(0)
+	err = objectID.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.DeleteSimpleSearchObject(fmt.Errorf("Failed to read objectID from parameters. %s", err.Error()), packet, callID, 0)
 		if errorCode != 0 {

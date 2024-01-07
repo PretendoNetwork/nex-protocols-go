@@ -5,11 +5,13 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 	ranking_types "github.com/PretendoNetwork/nex-protocols-go/ranking/types"
 )
 
 func (protocol *Protocol) handleGetRankingByUniqueIDList(packet nex.PacketInterface) {
+	var err error
 	var errorCode uint32
 
 	if protocol.GetRankingByUniqueIDList == nil {
@@ -23,9 +25,11 @@ func (protocol *Protocol) handleGetRankingByUniqueIDList(packet nex.PacketInterf
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.server)
+	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
-	nexUniqueIDList, err := parametersStream.ReadListUInt64LE()
+	nexUniqueIDList := types.NewList[*types.PrimitiveU64]()
+	nexUniqueIDList.Type = types.NewPrimitiveU64(0)
+	err = nexUniqueIDList.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.GetRankingByUniqueIDList(fmt.Errorf("Failed to read nexUniqueIDList from parameters. %s", err.Error()), packet, callID, nil, 0, 0, nil, 0)
 		if errorCode != 0 {
@@ -35,7 +39,8 @@ func (protocol *Protocol) handleGetRankingByUniqueIDList(packet nex.PacketInterf
 		return
 	}
 
-	rankingMode, err := parametersStream.ReadUInt8()
+	rankingMode := types.NewPrimitiveU8(0)
+	err = rankingMode.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.GetRankingByUniqueIDList(fmt.Errorf("Failed to read rankingMode from parameters. %s", err.Error()), packet, callID, nil, 0, 0, nil, 0)
 		if errorCode != 0 {
@@ -45,7 +50,8 @@ func (protocol *Protocol) handleGetRankingByUniqueIDList(packet nex.PacketInterf
 		return
 	}
 
-	category, err := parametersStream.ReadUInt32LE()
+	category := types.NewPrimitiveU32(0)
+	err = category.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.GetRankingByUniqueIDList(fmt.Errorf("Failed to read category from parameters. %s", err.Error()), packet, callID, nil, 0, 0, nil, 0)
 		if errorCode != 0 {
@@ -55,7 +61,8 @@ func (protocol *Protocol) handleGetRankingByUniqueIDList(packet nex.PacketInterf
 		return
 	}
 
-	orderParam, err := nex.StreamReadStructure(parametersStream, ranking_types.NewRankingOrderParam())
+	orderParam := ranking_types.NewRankingOrderParam()
+	err = orderParam.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.GetRankingByUniqueIDList(fmt.Errorf("Failed to read orderParam from parameters. %s", err.Error()), packet, callID, nil, 0, 0, nil, 0)
 		if errorCode != 0 {
@@ -65,7 +72,8 @@ func (protocol *Protocol) handleGetRankingByUniqueIDList(packet nex.PacketInterf
 		return
 	}
 
-	uniqueID, err := parametersStream.ReadUInt64LE()
+	uniqueID := types.NewPrimitiveU64(0)
+	err = uniqueID.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.GetRankingByUniqueIDList(fmt.Errorf("Failed to read uniqueID from parameters. %s", err.Error()), packet, callID, nil, 0, 0, nil, 0)
 		if errorCode != 0 {

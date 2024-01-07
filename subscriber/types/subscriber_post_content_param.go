@@ -7,26 +7,31 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // SubscriberPostContentParam is unknown
 type SubscriberPostContentParam struct {
-	nex.Structure
-	Unknown1 []string
+	types.Structure
+	Unknown1 *types.List[*types.String]
 	Unknown2 string
 	Unknown3 []byte
 }
 
-// ExtractFromStream extracts a SubscriberPostContentParam structure from a stream
-func (subscriberPostContentParam *SubscriberPostContentParam) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the SubscriberPostContentParam from the given readable
+func (subscriberPostContentParam *SubscriberPostContentParam) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	subscriberPostContentParam.Unknown1, err = stream.ReadListString()
+	if err = subscriberPostContentParam.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read SubscriberPostContentParam header. %s", err.Error())
+	}
+
+	err = subscriberPostContentParam.Unknown1.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract SubscriberPostContentParam.Unknown1 from stream. %s", err.Error())
 	}
 
-	subscriberPostContentParam.Unknown2, err = stream.ReadString()
+	err = subscriberPostContentParam.Unknown2.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract SubscriberPostContentParam.Unknown2 from stream. %s", err.Error())
 	}
@@ -39,22 +44,28 @@ func (subscriberPostContentParam *SubscriberPostContentParam) ExtractFromStream(
 	return nil
 }
 
-// Bytes encodes the SubscriberPostContentParam and returns a byte array
-func (subscriberPostContentParam *SubscriberPostContentParam) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteListString(subscriberPostContentParam.Unknown1)
-	stream.WriteString(subscriberPostContentParam.Unknown2)
+// WriteTo writes the SubscriberPostContentParam to the given writable
+func (subscriberPostContentParam *SubscriberPostContentParam) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
+
+	subscriberPostContentParam.Unknown1.WriteTo(contentWritable)
+	subscriberPostContentParam.Unknown2.WriteTo(contentWritable)
 	stream.WriteQBuffer(subscriberPostContentParam.Unknown3)
 
-	return stream.Bytes()
+	content := contentWritable.Bytes()
+
+	rvcd.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // Copy returns a new copied instance of SubscriberPostContentParam
-func (subscriberPostContentParam *SubscriberPostContentParam) Copy() nex.StructureInterface {
+func (subscriberPostContentParam *SubscriberPostContentParam) Copy() types.RVType {
 	copied := NewSubscriberPostContentParam()
 
-	copied.SetStructureVersion(subscriberPostContentParam.StructureVersion())
+	copied.StructureVersion = subscriberPostContentParam.StructureVersion
 
-	copied.Unknown1 = make([]string, len(subscriberPostContentParam.Unknown1))
+	copied.Unknown1 = make(*types.List[*types.String], len(subscriberPostContentParam.Unknown1))
 
 	copy(copied.Unknown1, subscriberPostContentParam.Unknown1)
 
@@ -67,10 +78,14 @@ func (subscriberPostContentParam *SubscriberPostContentParam) Copy() nex.Structu
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (subscriberPostContentParam *SubscriberPostContentParam) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*SubscriberPostContentParam)
+func (subscriberPostContentParam *SubscriberPostContentParam) Equals(o types.RVType) bool {
+	if _, ok := o.(*SubscriberPostContentParam); !ok {
+		return false
+	}
 
-	if subscriberPostContentParam.StructureVersion() != other.StructureVersion() {
+	other := o.(*SubscriberPostContentParam)
+
+	if subscriberPostContentParam.StructureVersion != other.StructureVersion {
 		return false
 	}
 
@@ -84,11 +99,11 @@ func (subscriberPostContentParam *SubscriberPostContentParam) Equals(structure n
 		}
 	}
 
-	if subscriberPostContentParam.Unknown2 != other.Unknown2 {
+	if !subscriberPostContentParam.Unknown2.Equals(other.Unknown2) {
 		return false
 	}
 
-	if !bytes.Equal(subscriberPostContentParam.Unknown3, other.Unknown3) {
+	if !subscriberPostContentParam.Unknown3.Equals(other.Unknown3) {
 		return false
 	}
 
@@ -108,7 +123,7 @@ func (subscriberPostContentParam *SubscriberPostContentParam) FormatToString(ind
 	var b strings.Builder
 
 	b.WriteString("SubscriberPostContentParam{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, subscriberPostContentParam.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, subscriberPostContentParam.StructureVersion))
 	b.WriteString(fmt.Sprintf("%sUnknown1: %v,\n", indentationValues, subscriberPostContentParam.Unknown1))
 	b.WriteString(fmt.Sprintf("%sUnknown2: %q,\n", indentationValues, subscriberPostContentParam.Unknown2))
 	b.WriteString(fmt.Sprintf("%sUnknown3: %x\n", indentationValues, subscriberPostContentParam.Unknown3))

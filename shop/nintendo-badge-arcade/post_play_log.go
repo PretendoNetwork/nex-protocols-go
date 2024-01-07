@@ -5,11 +5,13 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 	shop_nintendo_badge_arcade_types "github.com/PretendoNetwork/nex-protocols-go/shop/nintendo-badge-arcade/types"
 )
 
 func (protocol *Protocol) handlePostPlayLog(packet nex.PacketInterface) {
+	var err error
 	var errorCode uint32
 
 	if protocol.PostPlayLog == nil {
@@ -23,9 +25,10 @@ func (protocol *Protocol) handlePostPlayLog(packet nex.PacketInterface) {
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.server)
+	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
-	param, err := nex.StreamReadStructure(parametersStream, shop_nintendo_badge_arcade_types.NewShopPostPlayLogParam())
+	param := shop_nintendo_badge_arcade_types.NewShopPostPlayLogParam()
+	err = param.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.PostPlayLog(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {

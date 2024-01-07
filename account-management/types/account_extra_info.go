@@ -5,38 +5,58 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // AccountExtraInfo contains data for creating a new NNID on the network
 type AccountExtraInfo struct {
-	nex.Structure
-	Unknown  uint32
-	Unknown2 uint32
-	Unknown3 uint32
-	NEXToken string
+	types.Structure
+	Unknown  *types.PrimitiveU32
+	Unknown2 *types.PrimitiveU32
+	Unknown3 *types.PrimitiveU32
+	NEXToken *types.String
 }
 
-// ExtractFromStream extracts a AccountExtraInfo structure from a stream
-func (accountExtraInfo *AccountExtraInfo) ExtractFromStream(stream *nex.StreamIn) error {
+// WriteTo writes the AccountExtraInfo to the given writable
+func (accountExtraInfo *AccountExtraInfo) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
+
+	accountExtraInfo.Unknown.WriteTo(contentWritable)
+	accountExtraInfo.Unknown2.WriteTo(contentWritable)
+	accountExtraInfo.Unknown3.WriteTo(contentWritable)
+	accountExtraInfo.NEXToken.WriteTo(contentWritable)
+
+	content := contentWritable.Bytes()
+
+	accountExtraInfo.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
+}
+
+// ExtractFrom extracts the AccountExtraInfo from the given readable
+func (accountExtraInfo *AccountExtraInfo) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	accountExtraInfo.Unknown, err = stream.ReadUInt32LE()
+	if err = accountExtraInfo.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read AccountExtraInfo header. %s", err.Error())
+	}
+
+	err = accountExtraInfo.Unknown.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract AccountExtraInfo.Unknown. %s", err.Error())
 	}
 
-	accountExtraInfo.Unknown2, err = stream.ReadUInt32LE()
+	err = accountExtraInfo.Unknown2.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract AccountExtraInfo.Unknown2. %s", err.Error())
 	}
 
-	accountExtraInfo.Unknown3, err = stream.ReadUInt32LE()
+	err = accountExtraInfo.Unknown3.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract AccountExtraInfo.Unknown3. %s", err.Error())
 	}
 
-	accountExtraInfo.NEXToken, err = stream.ReadString()
+	err = accountExtraInfo.NEXToken.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract AccountExtraInfo.NEXToken. %s", err.Error())
 	}
@@ -45,40 +65,44 @@ func (accountExtraInfo *AccountExtraInfo) ExtractFromStream(stream *nex.StreamIn
 }
 
 // Copy returns a new copied instance of AccountExtraInfo
-func (accountExtraInfo *AccountExtraInfo) Copy() nex.StructureInterface {
+func (accountExtraInfo *AccountExtraInfo) Copy() types.RVType {
 	copied := NewAccountExtraInfo()
 
-	copied.SetStructureVersion(accountExtraInfo.StructureVersion())
+	copied.StructureVersion = accountExtraInfo.StructureVersion
 
-	copied.Unknown = accountExtraInfo.Unknown
-	copied.Unknown2 = accountExtraInfo.Unknown2
-	copied.Unknown3 = accountExtraInfo.Unknown3
-	copied.NEXToken = accountExtraInfo.NEXToken
+	copied.Unknown = accountExtraInfo.Unknown.Copy().(*types.PrimitiveU32)
+	copied.Unknown2 = accountExtraInfo.Unknown2.Copy().(*types.PrimitiveU32)
+	copied.Unknown3 = accountExtraInfo.Unknown3.Copy().(*types.PrimitiveU32)
+	copied.NEXToken = accountExtraInfo.NEXToken.Copy().(*types.String)
 
 	return copied
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (accountExtraInfo *AccountExtraInfo) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*AccountExtraInfo)
-
-	if accountExtraInfo.StructureVersion() != other.StructureVersion() {
+func (accountExtraInfo *AccountExtraInfo) Equals(o types.RVType) bool {
+	if _, ok := o.(*AccountExtraInfo); !ok {
 		return false
 	}
 
-	if accountExtraInfo.Unknown != other.Unknown {
+	other := o.(*AccountExtraInfo)
+
+	if accountExtraInfo.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if accountExtraInfo.Unknown2 != other.Unknown2 {
+	if !accountExtraInfo.Unknown.Equals(other.Unknown) {
 		return false
 	}
 
-	if accountExtraInfo.Unknown3 != other.Unknown3 {
+	if !accountExtraInfo.Unknown2.Equals(other.Unknown2) {
 		return false
 	}
 
-	if accountExtraInfo.NEXToken != other.NEXToken {
+	if !accountExtraInfo.Unknown3.Equals(other.Unknown3) {
+		return false
+	}
+
+	if !accountExtraInfo.NEXToken.Equals(other.NEXToken) {
 		return false
 	}
 
@@ -98,11 +122,11 @@ func (accountExtraInfo *AccountExtraInfo) FormatToString(indentationLevel int) s
 	var b strings.Builder
 
 	b.WriteString("AccountExtraInfo{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, accountExtraInfo.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sUnknown: %d,\n", indentationValues, accountExtraInfo.Unknown))
-	b.WriteString(fmt.Sprintf("%sUnknown2: %d,\n", indentationValues, accountExtraInfo.Unknown2))
-	b.WriteString(fmt.Sprintf("%sUnknown3: %d,\n", indentationValues, accountExtraInfo.Unknown3))
-	b.WriteString(fmt.Sprintf("%sNEXToken: %q\n", indentationValues, accountExtraInfo.NEXToken))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, accountExtraInfo.StructureVersion))
+	b.WriteString(fmt.Sprintf("%sUnknown: %s,\n", indentationValues, accountExtraInfo.Unknown))
+	b.WriteString(fmt.Sprintf("%sUnknown2: %s,\n", indentationValues, accountExtraInfo.Unknown2))
+	b.WriteString(fmt.Sprintf("%sUnknown3: %s,\n", indentationValues, accountExtraInfo.Unknown3))
+	b.WriteString(fmt.Sprintf("%sNEXToken: %s\n", indentationValues, accountExtraInfo.NEXToken))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -110,5 +134,10 @@ func (accountExtraInfo *AccountExtraInfo) FormatToString(indentationLevel int) s
 
 // NewAccountExtraInfo returns a new AccountExtraInfo
 func NewAccountExtraInfo() *AccountExtraInfo {
-	return &AccountExtraInfo{}
+	return &AccountExtraInfo{
+		Unknown: types.NewPrimitiveU32(0),
+		Unknown2: types.NewPrimitiveU32(0),
+		Unknown3: types.NewPrimitiveU32(0),
+		NEXToken: types.NewString(""),
+	}
 }

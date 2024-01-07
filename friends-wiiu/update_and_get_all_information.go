@@ -5,11 +5,13 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 	friends_wiiu_types "github.com/PretendoNetwork/nex-protocols-go/friends-wiiu/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
 func (protocol *Protocol) handleUpdateAndGetAllInformation(packet nex.PacketInterface) {
+	var err error
 	var errorCode uint32
 
 	if protocol.UpdateAndGetAllInformation == nil {
@@ -23,9 +25,10 @@ func (protocol *Protocol) handleUpdateAndGetAllInformation(packet nex.PacketInte
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.server)
+	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
-	nnaInfo, err := nex.StreamReadStructure(parametersStream, friends_wiiu_types.NewNNAInfo())
+	nnaInfo := friends_wiiu_types.NewNNAInfo()
+	err = nnaInfo.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.UpdateAndGetAllInformation(fmt.Errorf("Failed to read nnaInfo from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
 		if errorCode != 0 {
@@ -35,7 +38,8 @@ func (protocol *Protocol) handleUpdateAndGetAllInformation(packet nex.PacketInte
 		return
 	}
 
-	presence, err := nex.StreamReadStructure(parametersStream, friends_wiiu_types.NewNintendoPresenceV2())
+	presence := friends_wiiu_types.NewNintendoPresenceV2()
+	err = presence.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.UpdateAndGetAllInformation(fmt.Errorf("Failed to read presence from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
 		if errorCode != 0 {
@@ -45,7 +49,8 @@ func (protocol *Protocol) handleUpdateAndGetAllInformation(packet nex.PacketInte
 		return
 	}
 
-	birthday, err := parametersStream.ReadDateTime()
+	birthday := types.NewDateTime(0)
+	err = birthday.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.UpdateAndGetAllInformation(fmt.Errorf("Failed to read birthday from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
 		if errorCode != 0 {

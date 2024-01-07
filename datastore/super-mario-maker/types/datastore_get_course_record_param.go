@@ -5,26 +5,30 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // DataStoreGetCourseRecordParam holds data for the DataStore (Super Mario Maker) protocol
 type DataStoreGetCourseRecordParam struct {
-	nex.Structure
-	DataID uint64
-	Slot   uint8
+	types.Structure
+	DataID *types.PrimitiveU64
+	Slot   *types.PrimitiveU8
 }
 
-// ExtractFromStream extracts a DataStoreGetCourseRecordParam structure from a stream
-func (dataStoreGetCourseRecordParam *DataStoreGetCourseRecordParam) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the DataStoreGetCourseRecordParam from the given readable
+func (dataStoreGetCourseRecordParam *DataStoreGetCourseRecordParam) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	dataStoreGetCourseRecordParam.DataID, err = stream.ReadUInt64LE()
+	if err = dataStoreGetCourseRecordParam.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read DataStoreGetCourseRecordParam header. %s", err.Error())
+	}
+
+	err = dataStoreGetCourseRecordParam.DataID.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreGetCourseRecordParam.DataID from stream. %s", err.Error())
 	}
 
-	dataStoreGetCourseRecordParam.Slot, err = stream.ReadUInt8()
+	err = dataStoreGetCourseRecordParam.Slot.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreGetCourseRecordParam.Slot from stream. %s", err.Error())
 	}
@@ -32,39 +36,49 @@ func (dataStoreGetCourseRecordParam *DataStoreGetCourseRecordParam) ExtractFromS
 	return nil
 }
 
-// Bytes encodes the DataStoreGetCourseRecordParam and returns a byte array
-func (dataStoreGetCourseRecordParam *DataStoreGetCourseRecordParam) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt64LE(dataStoreGetCourseRecordParam.DataID)
-	stream.WriteUInt8(dataStoreGetCourseRecordParam.Slot)
+// WriteTo writes the DataStoreGetCourseRecordParam to the given writable
+func (dataStoreGetCourseRecordParam *DataStoreGetCourseRecordParam) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
 
-	return stream.Bytes()
+	dataStoreGetCourseRecordParam.DataID.WriteTo(contentWritable)
+	dataStoreGetCourseRecordParam.Slot.WriteTo(contentWritable)
+
+	content := contentWritable.Bytes()
+
+	dataStoreGetCourseRecordParam.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // Copy returns a new copied instance of DataStoreGetCourseRecordParam
-func (dataStoreGetCourseRecordParam *DataStoreGetCourseRecordParam) Copy() nex.StructureInterface {
+func (dataStoreGetCourseRecordParam *DataStoreGetCourseRecordParam) Copy() types.RVType {
 	copied := NewDataStoreGetCourseRecordParam()
 
-	copied.SetStructureVersion(dataStoreGetCourseRecordParam.StructureVersion())
+	copied.StructureVersion = dataStoreGetCourseRecordParam.StructureVersion
 
-	copied.DataID = dataStoreGetCourseRecordParam.DataID
-	copied.Slot = dataStoreGetCourseRecordParam.Slot
+	copied.DataID = dataStoreGetCourseRecordParam.DataID.Copy().(*types.PrimitiveU64)
+	copied.Slot = dataStoreGetCourseRecordParam.Slot.Copy().(*types.PrimitiveU8)
 
 	return copied
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (dataStoreGetCourseRecordParam *DataStoreGetCourseRecordParam) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*DataStoreGetCourseRecordParam)
-
-	if dataStoreGetCourseRecordParam.StructureVersion() != other.StructureVersion() {
+func (dataStoreGetCourseRecordParam *DataStoreGetCourseRecordParam) Equals(o types.RVType) bool {
+	if _, ok := o.(*DataStoreGetCourseRecordParam); !ok {
 		return false
 	}
 
-	if dataStoreGetCourseRecordParam.DataID != other.DataID {
+	other := o.(*DataStoreGetCourseRecordParam)
+
+	if dataStoreGetCourseRecordParam.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if dataStoreGetCourseRecordParam.Slot != other.Slot {
+	if !dataStoreGetCourseRecordParam.DataID.Equals(other.DataID) {
+		return false
+	}
+
+	if !dataStoreGetCourseRecordParam.Slot.Equals(other.Slot) {
 		return false
 	}
 
@@ -84,9 +98,9 @@ func (dataStoreGetCourseRecordParam *DataStoreGetCourseRecordParam) FormatToStri
 	var b strings.Builder
 
 	b.WriteString("DataStoreGetCourseRecordParam{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, dataStoreGetCourseRecordParam.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sDataID: %d,\n", indentationValues, dataStoreGetCourseRecordParam.DataID))
-	b.WriteString(fmt.Sprintf("%sSlot: %d,\n", indentationValues, dataStoreGetCourseRecordParam.Slot))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, dataStoreGetCourseRecordParam.StructureVersion))
+	b.WriteString(fmt.Sprintf("%sDataID: %s,\n", indentationValues, dataStoreGetCourseRecordParam.DataID))
+	b.WriteString(fmt.Sprintf("%sSlot: %s,\n", indentationValues, dataStoreGetCourseRecordParam.Slot))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -95,7 +109,7 @@ func (dataStoreGetCourseRecordParam *DataStoreGetCourseRecordParam) FormatToStri
 // NewDataStoreGetCourseRecordParam returns a new DataStoreGetCourseRecordParam
 func NewDataStoreGetCourseRecordParam() *DataStoreGetCourseRecordParam {
 	return &DataStoreGetCourseRecordParam{
-		DataID: 0,
-		Slot:   0,
+		DataID: types.NewPrimitiveU64(0),
+		Slot:   types.NewPrimitiveU8(0),
 	}
 }

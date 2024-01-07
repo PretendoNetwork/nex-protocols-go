@@ -9,17 +9,22 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // MatchmakeParam holds parameters for a matchmake session
 type MatchmakeParam struct {
-	nex.Structure
-	Parameters map[string]*nex.Variant
+	types.Structure
+	Parameters map[string]*types.Variant
 }
 
-// ExtractFromStream extracts a MatchmakeParam structure from a stream
-func (matchmakeParam *MatchmakeParam) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the MatchmakeParam from the given readable
+func (matchmakeParam *MatchmakeParam) ExtractFrom(readable types.Readable) error {
 	var err error
+
+	if err = matchmakeParam.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read MatchmakeParam header. %s", err.Error())
+	}
 
 	matchmakeParam.Parameters, err = nex.StreamReadMap(stream, stream.ReadString, stream.ReadVariant)
 
@@ -27,19 +32,25 @@ func (matchmakeParam *MatchmakeParam) ExtractFromStream(stream *nex.StreamIn) er
 }
 
 // Bytes extracts a MatchmakeParam structure from a stream
-func (matchmakeParam *MatchmakeParam) Bytes(stream *nex.StreamOut) []byte {
+func (matchmakeParam *MatchmakeParam) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
+
 	nex.StreamWriteMap(stream, matchmakeParam.Parameters)
 
-	return stream.Bytes()
+	content := contentWritable.Bytes()
+
+	rvcd.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // Copy returns a new copied instance of MatchmakeParam
-func (matchmakeParam *MatchmakeParam) Copy() nex.StructureInterface {
+func (matchmakeParam *MatchmakeParam) Copy() types.RVType {
 	copied := NewMatchmakeParam()
 
-	copied.SetStructureVersion(matchmakeParam.StructureVersion())
+	copied.StructureVersion = matchmakeParam.StructureVersion
 
-	copied.Parameters = make(map[string]*nex.Variant, len(matchmakeParam.Parameters))
+	copied.Parameters = make(map[string]*types.Variant, len(matchmakeParam.Parameters))
 
 	for key, value := range matchmakeParam.Parameters {
 		copied.Parameters[key] = value.Copy()
@@ -49,10 +60,14 @@ func (matchmakeParam *MatchmakeParam) Copy() nex.StructureInterface {
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (matchmakeParam *MatchmakeParam) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*MatchmakeParam)
+func (matchmakeParam *MatchmakeParam) Equals(o types.RVType) bool {
+	if _, ok := o.(*MatchmakeParam); !ok {
+		return false
+	}
 
-	if matchmakeParam.StructureVersion() != other.StructureVersion() {
+	other := o.(*MatchmakeParam)
+
+	if matchmakeParam.StructureVersion != other.StructureVersion {
 		return false
 	}
 
@@ -83,7 +98,7 @@ func (matchmakeParam *MatchmakeParam) FormatToString(indentationLevel int) strin
 	var b strings.Builder
 
 	b.WriteString("MatchmakeParam{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, matchmakeParam.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, matchmakeParam.StructureVersion))
 
 	if len(matchmakeParam.Parameters) == 0 {
 		b.WriteString(fmt.Sprintf("%sParameters: {}\n", indentationValues))

@@ -6,29 +6,40 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // MatchmakeRefereeEndRoundParam contains the results of a round
 type MatchmakeRefereeEndRoundParam struct {
-	nex.Structure
-	*nex.Data
-	RoundID              uint64
+	types.Structure
+	*types.Data
+	RoundID              *types.PrimitiveU64
 	PersonalRoundResults []*MatchmakeRefereePersonalRoundResult
 }
 
-// Bytes encodes the MatchmakeRefereeEndRoundParam and returns a byte array
-func (matchmakeRefereeEndRoundParam *MatchmakeRefereeEndRoundParam) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt64LE(matchmakeRefereeEndRoundParam.RoundID)
-	nex.StreamWriteListStructure(stream, matchmakeRefereeEndRoundParam.PersonalRoundResults)
+// WriteTo writes the MatchmakeRefereeEndRoundParam to the given writable
+func (matchmakeRefereeEndRoundParam *MatchmakeRefereeEndRoundParam) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
 
-	return stream.Bytes()
+	matchmakeRefereeEndRoundParam.RoundID.WriteTo(contentWritable)
+	matchmakeRefereeEndRoundParam.PersonalRoundResults.WriteTo(contentWritable)
+
+	content := contentWritable.Bytes()
+
+	matchmakeRefereeEndRoundParam.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
-// ExtractFromStream extracts a MatchmakeRefereeEndRoundParam structure from a stream
-func (matchmakeRefereeEndRoundParam *MatchmakeRefereeEndRoundParam) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the MatchmakeRefereeEndRoundParam from the given readable
+func (matchmakeRefereeEndRoundParam *MatchmakeRefereeEndRoundParam) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	matchmakeRefereeEndRoundParam.RoundID, err = stream.ReadUInt64LE()
+	if err = matchmakeRefereeEndRoundParam.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read MatchmakeRefereeEndRoundParam header. %s", err.Error())
+	}
+
+	err = matchmakeRefereeEndRoundParam.RoundID.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract MatchmakeRefereeEndRoundParam.RoundID. %s", err.Error())
 	}
@@ -44,13 +55,12 @@ func (matchmakeRefereeEndRoundParam *MatchmakeRefereeEndRoundParam) ExtractFromS
 }
 
 // Copy returns a new copied instance of MatchmakeRefereeEndRoundParam
-func (matchmakeRefereeEndRoundParam *MatchmakeRefereeEndRoundParam) Copy() nex.StructureInterface {
+func (matchmakeRefereeEndRoundParam *MatchmakeRefereeEndRoundParam) Copy() types.RVType {
 	copied := NewMatchmakeRefereeEndRoundParam()
 
-	copied.SetStructureVersion(matchmakeRefereeEndRoundParam.StructureVersion())
+	copied.StructureVersion = matchmakeRefereeEndRoundParam.StructureVersion
 
-	copied.Data = matchmakeRefereeEndRoundParam.ParentType().Copy().(*nex.Data)
-	copied.SetParentType(copied.Data)
+	copied.Data = matchmakeRefereeEndRoundParam.Data.Copy().(*types.Data)
 
 	copied.RoundID = matchmakeRefereeEndRoundParam.RoundID
 
@@ -63,10 +73,14 @@ func (matchmakeRefereeEndRoundParam *MatchmakeRefereeEndRoundParam) Copy() nex.S
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (matchmakeRefereeEndRoundParam *MatchmakeRefereeEndRoundParam) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*MatchmakeRefereeEndRoundParam)
+func (matchmakeRefereeEndRoundParam *MatchmakeRefereeEndRoundParam) Equals(o types.RVType) bool {
+	if _, ok := o.(*MatchmakeRefereeEndRoundParam); !ok {
+		return false
+	}
 
-	if matchmakeRefereeEndRoundParam.StructureVersion() != other.StructureVersion() {
+	other := o.(*MatchmakeRefereeEndRoundParam)
+
+	if matchmakeRefereeEndRoundParam.StructureVersion != other.StructureVersion {
 		return false
 	}
 
@@ -74,7 +88,7 @@ func (matchmakeRefereeEndRoundParam *MatchmakeRefereeEndRoundParam) Equals(struc
 		return false
 	}
 
-	if matchmakeRefereeEndRoundParam.RoundID != other.RoundID {
+	if !matchmakeRefereeEndRoundParam.RoundID.Equals(other.RoundID) {
 		return false
 	}
 
@@ -111,7 +125,7 @@ func (matchmakeRefereeEndRoundParam *MatchmakeRefereeEndRoundParam) FormatToStri
 	var b strings.Builder
 
 	b.WriteString("MatchmakeRefereeEndRoundParam{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, matchmakeRefereeEndRoundParam.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, matchmakeRefereeEndRoundParam.StructureVersion))
 	b.WriteString(fmt.Sprintf("%sRoundID: %d,\n", indentationValues, matchmakeRefereeEndRoundParam.RoundID))
 	if len(matchmakeRefereeEndRoundParam.PersonalRoundResults) == 0 {
 		b.WriteString(fmt.Sprintf("%sPersonalRoundResults: [],\n", indentationValues))

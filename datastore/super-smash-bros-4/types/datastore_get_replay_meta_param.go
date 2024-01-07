@@ -5,26 +5,30 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // DataStoreGetReplayMetaParam is a data structure used by the DataStore Super Smash Bros. 4 protocol
 type DataStoreGetReplayMetaParam struct {
-	nex.Structure
-	ReplayID uint64
-	MetaType uint8
+	types.Structure
+	ReplayID *types.PrimitiveU64
+	MetaType *types.PrimitiveU8
 }
 
-// ExtractFromStream extracts a DataStoreGetReplayMetaParam structure from a stream
-func (dataStoreGetReplayMetaParam *DataStoreGetReplayMetaParam) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the DataStoreGetReplayMetaParam from the given readable
+func (dataStoreGetReplayMetaParam *DataStoreGetReplayMetaParam) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	dataStoreGetReplayMetaParam.ReplayID, err = stream.ReadUInt64LE()
+	if err = dataStoreGetReplayMetaParam.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read DataStoreGetReplayMetaParam header. %s", err.Error())
+	}
+
+	err = dataStoreGetReplayMetaParam.ReplayID.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreGetReplayMetaParam.ReplayID. %s", err.Error())
 	}
 
-	dataStoreGetReplayMetaParam.MetaType, err = stream.ReadUInt8()
+	err = dataStoreGetReplayMetaParam.MetaType.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreGetReplayMetaParam.MetaType. %s", err.Error())
 	}
@@ -32,39 +36,49 @@ func (dataStoreGetReplayMetaParam *DataStoreGetReplayMetaParam) ExtractFromStrea
 	return nil
 }
 
-// Bytes encodes the DataStoreGetReplayMetaParam and returns a byte array
-func (dataStoreGetReplayMetaParam *DataStoreGetReplayMetaParam) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt64LE(dataStoreGetReplayMetaParam.ReplayID)
-	stream.WriteUInt8(dataStoreGetReplayMetaParam.MetaType)
+// WriteTo writes the DataStoreGetReplayMetaParam to the given writable
+func (dataStoreGetReplayMetaParam *DataStoreGetReplayMetaParam) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
 
-	return stream.Bytes()
+	dataStoreGetReplayMetaParam.ReplayID.WriteTo(contentWritable)
+	dataStoreGetReplayMetaParam.MetaType.WriteTo(contentWritable)
+
+	content := contentWritable.Bytes()
+
+	dataStoreGetReplayMetaParam.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // Copy returns a new copied instance of DataStoreGetReplayMetaParam
-func (dataStoreGetReplayMetaParam *DataStoreGetReplayMetaParam) Copy() nex.StructureInterface {
+func (dataStoreGetReplayMetaParam *DataStoreGetReplayMetaParam) Copy() types.RVType {
 	copied := NewDataStoreGetReplayMetaParam()
 
-	copied.SetStructureVersion(dataStoreGetReplayMetaParam.StructureVersion())
+	copied.StructureVersion = dataStoreGetReplayMetaParam.StructureVersion
 
-	copied.ReplayID = dataStoreGetReplayMetaParam.ReplayID
-	copied.MetaType = dataStoreGetReplayMetaParam.MetaType
+	copied.ReplayID = dataStoreGetReplayMetaParam.ReplayID.Copy().(*types.PrimitiveU64)
+	copied.MetaType = dataStoreGetReplayMetaParam.MetaType.Copy().(*types.PrimitiveU8)
 
 	return copied
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (dataStoreGetReplayMetaParam *DataStoreGetReplayMetaParam) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*DataStoreGetReplayMetaParam)
-
-	if dataStoreGetReplayMetaParam.StructureVersion() != other.StructureVersion() {
+func (dataStoreGetReplayMetaParam *DataStoreGetReplayMetaParam) Equals(o types.RVType) bool {
+	if _, ok := o.(*DataStoreGetReplayMetaParam); !ok {
 		return false
 	}
 
-	if dataStoreGetReplayMetaParam.ReplayID != other.ReplayID {
+	other := o.(*DataStoreGetReplayMetaParam)
+
+	if dataStoreGetReplayMetaParam.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if dataStoreGetReplayMetaParam.MetaType != other.MetaType {
+	if !dataStoreGetReplayMetaParam.ReplayID.Equals(other.ReplayID) {
+		return false
+	}
+
+	if !dataStoreGetReplayMetaParam.MetaType.Equals(other.MetaType) {
 		return false
 	}
 
@@ -84,9 +98,9 @@ func (dataStoreGetReplayMetaParam *DataStoreGetReplayMetaParam) FormatToString(i
 	var b strings.Builder
 
 	b.WriteString("DataStoreGetReplayMetaParam{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, dataStoreGetReplayMetaParam.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sReplayID: %d,\n", indentationValues, dataStoreGetReplayMetaParam.ReplayID))
-	b.WriteString(fmt.Sprintf("%sMetaType: %d\n", indentationValues, dataStoreGetReplayMetaParam.MetaType))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, dataStoreGetReplayMetaParam.StructureVersion))
+	b.WriteString(fmt.Sprintf("%sReplayID: %s,\n", indentationValues, dataStoreGetReplayMetaParam.ReplayID))
+	b.WriteString(fmt.Sprintf("%sMetaType: %s\n", indentationValues, dataStoreGetReplayMetaParam.MetaType))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -94,5 +108,8 @@ func (dataStoreGetReplayMetaParam *DataStoreGetReplayMetaParam) FormatToString(i
 
 // NewDataStoreGetReplayMetaParam returns a new DataStoreGetReplayMetaParam
 func NewDataStoreGetReplayMetaParam() *DataStoreGetReplayMetaParam {
-	return &DataStoreGetReplayMetaParam{}
+	return &DataStoreGetReplayMetaParam{
+		ReplayID: types.NewPrimitiveU64(0),
+		MetaType: types.NewPrimitiveU8(0),
+	}
 }

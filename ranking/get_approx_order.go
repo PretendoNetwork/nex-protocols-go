@@ -5,11 +5,13 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 	ranking_types "github.com/PretendoNetwork/nex-protocols-go/ranking/types"
 )
 
 func (protocol *Protocol) handleGetApproxOrder(packet nex.PacketInterface) {
+	var err error
 	var errorCode uint32
 
 	if protocol.GetApproxOrder == nil {
@@ -23,9 +25,10 @@ func (protocol *Protocol) handleGetApproxOrder(packet nex.PacketInterface) {
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.server)
+	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
-	category, err := parametersStream.ReadUInt32LE()
+	category := types.NewPrimitiveU32(0)
+	err = category.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.GetApproxOrder(fmt.Errorf("Failed to read category from parameters. %s", err.Error()), packet, callID, 0, nil, 0, 0, nil)
 		if errorCode != 0 {
@@ -35,7 +38,8 @@ func (protocol *Protocol) handleGetApproxOrder(packet nex.PacketInterface) {
 		return
 	}
 
-	orderParam, err := nex.StreamReadStructure(parametersStream, ranking_types.NewRankingOrderParam())
+	orderParam := ranking_types.NewRankingOrderParam()
+	err = orderParam.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.GetApproxOrder(fmt.Errorf("Failed to read orderParam from parameters. %s", err.Error()), packet, callID, 0, nil, 0, 0, nil)
 		if errorCode != 0 {
@@ -45,7 +49,8 @@ func (protocol *Protocol) handleGetApproxOrder(packet nex.PacketInterface) {
 		return
 	}
 
-	score, err := parametersStream.ReadUInt32LE()
+	score := types.NewPrimitiveU32(0)
+	err = score.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.GetApproxOrder(fmt.Errorf("Failed to read score from parameters. %s", err.Error()), packet, callID, 0, nil, 0, 0, nil)
 		if errorCode != 0 {
@@ -55,7 +60,8 @@ func (protocol *Protocol) handleGetApproxOrder(packet nex.PacketInterface) {
 		return
 	}
 
-	uniqueID, err := parametersStream.ReadUInt64LE()
+	uniqueID := types.NewPrimitiveU64(0)
+	err = uniqueID.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.GetApproxOrder(fmt.Errorf("Failed to read uniqueID from parameters. %s", err.Error()), packet, callID, 0, nil, 0, 0, nil)
 		if errorCode != 0 {
@@ -65,7 +71,8 @@ func (protocol *Protocol) handleGetApproxOrder(packet nex.PacketInterface) {
 		return
 	}
 
-	principalID, err := parametersStream.ReadPID()
+	principalID := types.NewPID(0)
+	err = principalID.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.GetApproxOrder(fmt.Errorf("Failed to read principalID from parameters. %s", err.Error()), packet, callID, 0, nil, 0, 0, nil)
 		if errorCode != 0 {

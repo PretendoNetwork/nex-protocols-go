@@ -7,31 +7,36 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // RankingChangeAttributesParam holds parameters for ordering rankings
 type RankingChangeAttributesParam struct {
-	nex.Structure
-	ModificationFlag uint8
-	Groups           []uint8
-	Param            uint64
+	types.Structure
+	ModificationFlag *types.PrimitiveU8
+	Groups           *types.List[*types.PrimitiveU8]
+	Param            *types.PrimitiveU64
 }
 
-// ExtractFromStream extracts a RankingChangeAttributesParam structure from a stream
-func (rankingChangeAttributesParam *RankingChangeAttributesParam) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the RankingChangeAttributesParam from the given readable
+func (rankingChangeAttributesParam *RankingChangeAttributesParam) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	rankingChangeAttributesParam.ModificationFlag, err = stream.ReadUInt8()
+	if err = rankingChangeAttributesParam.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read RankingChangeAttributesParam header. %s", err.Error())
+	}
+
+	err = rankingChangeAttributesParam.ModificationFlag.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract RankingChangeAttributesParam.ModificationFlag from stream. %s", err.Error())
 	}
 
-	rankingChangeAttributesParam.Groups, err = stream.ReadListUInt8()
+	err = rankingChangeAttributesParam.Groups.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract RankingChangeAttributesParam.Groups from stream. %s", err.Error())
 	}
 
-	rankingChangeAttributesParam.Param, err = stream.ReadUInt64LE()
+	err = rankingChangeAttributesParam.Param.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract RankingChangeAttributesParam.Param from stream. %s", err.Error())
 	}
@@ -39,23 +44,29 @@ func (rankingChangeAttributesParam *RankingChangeAttributesParam) ExtractFromStr
 	return nil
 }
 
-// Bytes encodes the RankingChangeAttributesParam and returns a byte array
-func (rankingChangeAttributesParam *RankingChangeAttributesParam) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt8(rankingChangeAttributesParam.ModificationFlag)
-	stream.WriteListUInt8(rankingChangeAttributesParam.Groups)
-	stream.WriteUInt64LE(rankingChangeAttributesParam.Param)
+// WriteTo writes the RankingChangeAttributesParam to the given writable
+func (rankingChangeAttributesParam *RankingChangeAttributesParam) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
 
-	return stream.Bytes()
+	rankingChangeAttributesParam.ModificationFlag.WriteTo(contentWritable)
+	rankingChangeAttributesParam.Groups.WriteTo(contentWritable)
+	rankingChangeAttributesParam.Param.WriteTo(contentWritable)
+
+	content := contentWritable.Bytes()
+
+	rankingChangeAttributesParam.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // Copy returns a new copied instance of RankingChangeAttributesParam
-func (rankingChangeAttributesParam *RankingChangeAttributesParam) Copy() nex.StructureInterface {
+func (rankingChangeAttributesParam *RankingChangeAttributesParam) Copy() types.RVType {
 	copied := NewRankingChangeAttributesParam()
 
-	copied.SetStructureVersion(rankingChangeAttributesParam.StructureVersion())
+	copied.StructureVersion = rankingChangeAttributesParam.StructureVersion
 
 	copied.ModificationFlag = rankingChangeAttributesParam.ModificationFlag
-	copied.Groups = make([]uint8, len(rankingChangeAttributesParam.Groups))
+	copied.Groups = make(*types.List[*types.PrimitiveU8], len(rankingChangeAttributesParam.Groups))
 
 	copy(copied.Groups, rankingChangeAttributesParam.Groups)
 
@@ -65,22 +76,26 @@ func (rankingChangeAttributesParam *RankingChangeAttributesParam) Copy() nex.Str
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (rankingChangeAttributesParam *RankingChangeAttributesParam) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*RankingChangeAttributesParam)
-
-	if rankingChangeAttributesParam.StructureVersion() != other.StructureVersion() {
+func (rankingChangeAttributesParam *RankingChangeAttributesParam) Equals(o types.RVType) bool {
+	if _, ok := o.(*RankingChangeAttributesParam); !ok {
 		return false
 	}
 
-	if rankingChangeAttributesParam.ModificationFlag != other.ModificationFlag {
+	other := o.(*RankingChangeAttributesParam)
+
+	if rankingChangeAttributesParam.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if !bytes.Equal(rankingChangeAttributesParam.Groups, other.Groups) {
+	if !rankingChangeAttributesParam.ModificationFlag.Equals(other.ModificationFlag) {
 		return false
 	}
 
-	if rankingChangeAttributesParam.Param != other.Param {
+	if !rankingChangeAttributesParam.Groups.Equals(other.Groups) {
+		return false
+	}
+
+	if !rankingChangeAttributesParam.Param.Equals(other.Param) {
 		return false
 	}
 
@@ -100,7 +115,7 @@ func (rankingChangeAttributesParam *RankingChangeAttributesParam) FormatToString
 	var b strings.Builder
 
 	b.WriteString("RankingChangeAttributesParam{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, rankingChangeAttributesParam.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, rankingChangeAttributesParam.StructureVersion))
 	b.WriteString(fmt.Sprintf("%sModificationFlag: %d,\n", indentationValues, rankingChangeAttributesParam.ModificationFlag))
 	b.WriteString(fmt.Sprintf("%sGroups: %v,\n", indentationValues, rankingChangeAttributesParam.Groups))
 	b.WriteString(fmt.Sprintf("%sParam: %d\n", indentationValues, rankingChangeAttributesParam.Param))

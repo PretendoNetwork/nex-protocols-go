@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
@@ -40,7 +41,7 @@ type Protocol struct {
 	EnableAPIRecorder                func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, uint32)
 	DisableAPIRecorder               func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, uint32)
 	IsAPIRecorderEnabled             func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, uint32)
-	GetAPICalls                      func(err error, packet nex.PacketInterface, callID uint32, pids []*nex.PID, unknown *nex.DateTime, unknown2 *nex.DateTime) (*nex.RMCMessage, uint32)
+	GetAPICalls                      func(err error, packet nex.PacketInterface, callID uint32, pids *types.List[*types.PID], unknown *types.DateTime, unknown2 *types.DateTime) (*nex.RMCMessage, uint32)
 	SetExcludeJoinedMatchmakeSession func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) (*nex.RMCMessage, uint32) // TODO - Unknown request/response format
 	GetExcludeJoinedMatchmakeSession func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) (*nex.RMCMessage, uint32) // TODO - Unknown request/response format
 	GetAPICallSummary                func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) (*nex.RMCMessage, uint32) // TODO - Unknown request/response format
@@ -53,7 +54,7 @@ type Interface interface {
 	SetHandlerEnableAPIRecorder(handler func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, uint32))
 	SetHandlerDisableAPIRecorder(handler func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, uint32))
 	SetHandlerIsAPIRecorderEnabled(handler func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, uint32))
-	SetHandlerGetAPICalls(handler func(err error, packet nex.PacketInterface, callID uint32, pids []*nex.PID, unknown *nex.DateTime, unknown2 *nex.DateTime) (*nex.RMCMessage, uint32))
+	SetHandlerGetAPICalls(handler func(err error, packet nex.PacketInterface, callID uint32, pids *types.List[*types.PID], unknown *types.DateTime, unknown2 *types.DateTime) (*nex.RMCMessage, uint32))
 	SetHandlerSetExcludeJoinedMatchmakeSession(handler func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) (*nex.RMCMessage, uint32))
 	SetHandlerGetExcludeJoinedMatchmakeSession(handler func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) (*nex.RMCMessage, uint32))
 	SetHandlerGetAPICallSummary(handler func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) (*nex.RMCMessage, uint32))
@@ -85,7 +86,7 @@ func (protocol *Protocol) SetHandlerIsAPIRecorderEnabled(handler func(err error,
 }
 
 // SetHandlerGetAPICalls sets the handler for the GetAPICalls method
-func (protocol *Protocol) SetHandlerGetAPICalls(handler func(err error, packet nex.PacketInterface, callID uint32, pids []*nex.PID, unknown *nex.DateTime, unknown2 *nex.DateTime) (*nex.RMCMessage, uint32)) {
+func (protocol *Protocol) SetHandlerGetAPICalls(handler func(err error, packet nex.PacketInterface, callID uint32, pids *types.List[*types.PID], unknown *types.DateTime, unknown2 *types.DateTime) (*nex.RMCMessage, uint32)) {
 	protocol.GetAPICalls = handler
 }
 

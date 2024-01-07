@@ -2,42 +2,45 @@
 package types
 
 import (
-	"bytes"
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // DataStoreReqGetAdditionalMeta is a data structure used by the DataStore protocol
 type DataStoreReqGetAdditionalMeta struct {
-	nex.Structure
-	OwnerID    *nex.PID
-	DataType   uint16
-	Version    uint16
-	MetaBinary []byte
+	types.Structure
+	OwnerID    *types.PID
+	DataType   *types.PrimitiveU16
+	Version    *types.PrimitiveU16
+	MetaBinary *types.QBuffer
 }
 
-// ExtractFromStream extracts a DataStoreReqGetAdditionalMeta structure from a stream
-func (d *DataStoreReqGetAdditionalMeta) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the DataStoreReqGetAdditionalMeta from the given readable
+func (d *DataStoreReqGetAdditionalMeta) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	d.OwnerID, err = stream.ReadPID()
+	if err = d.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read DataStoreReqGetAdditionalMeta header. %s", err.Error())
+	}
+
+	err = d.OwnerID.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreReqGetAdditionalMeta.OwnerID. %s", err.Error())
 	}
 
-	d.DataType, err = stream.ReadUInt16LE()
+	err = d.DataType.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreReqGetAdditionalMeta.DataType. %s", err.Error())
 	}
 
-	d.Version, err = stream.ReadUInt16LE()
+	err = d.Version.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreReqGetAdditionalMeta.Version. %s", err.Error())
 	}
 
-	d.MetaBinary, err = stream.ReadQBuffer()
+	err = d.MetaBinary.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreReqGetAdditionalMeta.MetaBinary. %s", err.Error())
 	}
@@ -45,37 +48,45 @@ func (d *DataStoreReqGetAdditionalMeta) ExtractFromStream(stream *nex.StreamIn) 
 	return nil
 }
 
-// Bytes encodes the DataStoreReqGetAdditionalMeta and returns a byte array
-func (d *DataStoreReqGetAdditionalMeta) Bytes(stream *nex.StreamOut) []byte {
-	stream.WritePID(d.OwnerID)
-	stream.WriteUInt16LE(d.DataType)
-	stream.WriteUInt16LE(d.Version)
-	stream.WriteQBuffer(d.MetaBinary)
+// WriteTo writes the DataStoreReqGetAdditionalMeta to the given writable
+func (d *DataStoreReqGetAdditionalMeta) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
 
-	return stream.Bytes()
+	d.OwnerID.WriteTo(contentWritable)
+	d.DataType.WriteTo(contentWritable)
+	d.Version.WriteTo(contentWritable)
+	d.MetaBinary.WriteTo(contentWritable)
+
+	content := contentWritable.Bytes()
+
+	d.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // Copy returns a new copied instance of DataStoreReqGetAdditionalMeta
-func (d *DataStoreReqGetAdditionalMeta) Copy() nex.StructureInterface {
+func (d *DataStoreReqGetAdditionalMeta) Copy() types.RVType {
 	copied := NewDataStoreReqGetAdditionalMeta()
 
-	copied.SetStructureVersion(d.StructureVersion())
+	copied.StructureVersion = d.StructureVersion
 
-	copied.OwnerID = d.OwnerID.Copy()
-	copied.DataType = d.DataType
-	copied.Version = d.Version
-	copied.MetaBinary = make([]byte, len(d.MetaBinary))
-
-	copy(copied.MetaBinary, d.MetaBinary)
+	copied.OwnerID = d.OwnerID.Copy().(*types.PID)
+	copied.DataType = d.DataType.Copy().(*types.PrimitiveU16)
+	copied.Version = d.Version.Copy().(*types.PrimitiveU16)
+	copied.MetaBinary = d.MetaBinary.Copy().(*types.QBuffer)
 
 	return copied
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (d *DataStoreReqGetAdditionalMeta) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*DataStoreReqGetAdditionalMeta)
+func (d *DataStoreReqGetAdditionalMeta) Equals(o types.RVType) bool {
+	if _, ok := o.(*DataStoreReqGetAdditionalMeta); !ok {
+		return false
+	}
 
-	if d.StructureVersion() != other.StructureVersion() {
+	other := o.(*DataStoreReqGetAdditionalMeta)
+
+	if d.StructureVersion != other.StructureVersion {
 		return false
 	}
 
@@ -83,15 +94,15 @@ func (d *DataStoreReqGetAdditionalMeta) Equals(structure nex.StructureInterface)
 		return false
 	}
 
-	if d.DataType != other.DataType {
+	if !d.DataType.Equals(other.DataType) {
 		return false
 	}
 
-	if d.Version != other.Version {
+	if !d.Version.Equals(other.Version) {
 		return false
 	}
 
-	if !bytes.Equal(d.MetaBinary, other.MetaBinary) {
+	if !d.MetaBinary.Equals(other.MetaBinary) {
 		return false
 	}
 
@@ -111,11 +122,11 @@ func (d *DataStoreReqGetAdditionalMeta) FormatToString(indentationLevel int) str
 	var b strings.Builder
 
 	b.WriteString("DataStoreReqGetAdditionalMeta{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, d.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sOwnerID: %d,\n", indentationValues, d.OwnerID))
-	b.WriteString(fmt.Sprintf("%sDataType: %d,\n", indentationValues, d.DataType))
-	b.WriteString(fmt.Sprintf("%sVersion: %d,\n", indentationValues, d.Version))
-	b.WriteString(fmt.Sprintf("%sMetaBinary: %x\n", indentationValues, d.MetaBinary))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, d.StructureVersion))
+	b.WriteString(fmt.Sprintf("%sOwnerID: %s,\n", indentationValues, d.OwnerID))
+	b.WriteString(fmt.Sprintf("%sDataType: %s,\n", indentationValues, d.DataType))
+	b.WriteString(fmt.Sprintf("%sVersion: %s,\n", indentationValues, d.Version))
+	b.WriteString(fmt.Sprintf("%sMetaBinary: %s\n", indentationValues, d.MetaBinary))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -124,9 +135,9 @@ func (d *DataStoreReqGetAdditionalMeta) FormatToString(indentationLevel int) str
 // NewDataStoreReqGetAdditionalMeta returns a new DataStoreReqGetAdditionalMeta
 func NewDataStoreReqGetAdditionalMeta() *DataStoreReqGetAdditionalMeta {
 	return &DataStoreReqGetAdditionalMeta{
-		OwnerID:    nex.NewPID[uint32](0),
-		DataType:   0,
-		Version:    0,
-		MetaBinary: make([]byte, 0),
+		OwnerID:    types.NewPID(0),
+		DataType:   types.NewPrimitiveU16(0),
+		Version:    types.NewPrimitiveU16(0),
+		MetaBinary: types.NewQBuffer(nil),
 	}
 }

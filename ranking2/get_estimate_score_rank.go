@@ -5,11 +5,13 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 	ranking2_types "github.com/PretendoNetwork/nex-protocols-go/ranking2/types"
 )
 
 func (protocol *Protocol) handleGetEstimateScoreRank(packet nex.PacketInterface) {
+	var err error
 	var errorCode uint32
 
 	if protocol.GetEstimateScoreRank == nil {
@@ -23,9 +25,10 @@ func (protocol *Protocol) handleGetEstimateScoreRank(packet nex.PacketInterface)
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.server)
+	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
-	input, err := nex.StreamReadStructure(parametersStream, ranking2_types.NewRanking2EstimateScoreRankInput())
+	input := ranking2_types.NewRanking2EstimateScoreRankInput()
+	err = input.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.GetEstimateScoreRank(fmt.Errorf("Failed to read input from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {

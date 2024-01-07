@@ -6,18 +6,23 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // ServiceItemGetBalanceResponse holds data for the Service Item (Wii Sports Club) protocol
 type ServiceItemGetBalanceResponse struct {
-	nex.Structure
+	types.Structure
 	*ServiceItemEShopResponse
 	NullableBalance []*ServiceItemAmount
 }
 
-// ExtractFromStream extracts a ServiceItemGetBalanceResponse structure from a stream
-func (serviceItemGetBalanceResponse *ServiceItemGetBalanceResponse) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the ServiceItemGetBalanceResponse from the given readable
+func (serviceItemGetBalanceResponse *ServiceItemGetBalanceResponse) ExtractFrom(readable types.Readable) error {
 	var err error
+
+	if err = serviceItemGetBalanceResponse.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read ServiceItemGetBalanceResponse header. %s", err.Error())
+	}
 
 	nullableBalance, err := nex.StreamReadListStructure(stream, NewServiceItemAmount())
 	if err != nil {
@@ -29,21 +34,26 @@ func (serviceItemGetBalanceResponse *ServiceItemGetBalanceResponse) ExtractFromS
 	return nil
 }
 
-// Bytes encodes the ServiceItemGetBalanceResponse and returns a byte array
-func (serviceItemGetBalanceResponse *ServiceItemGetBalanceResponse) Bytes(stream *nex.StreamOut) []byte {
-	nex.StreamWriteListStructure(stream, serviceItemGetBalanceResponse.NullableBalance)
+// WriteTo writes the ServiceItemGetBalanceResponse to the given writable
+func (serviceItemGetBalanceResponse *ServiceItemGetBalanceResponse) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
 
-	return stream.Bytes()
+	serviceItemGetBalanceResponse.NullableBalance.WriteTo(contentWritable)
+
+	content := contentWritable.Bytes()
+
+	serviceItemGetBalanceResponse.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // Copy returns a new copied instance of ServiceItemGetBalanceResponse
-func (serviceItemGetBalanceResponse *ServiceItemGetBalanceResponse) Copy() nex.StructureInterface {
+func (serviceItemGetBalanceResponse *ServiceItemGetBalanceResponse) Copy() types.RVType {
 	copied := NewServiceItemGetBalanceResponse()
 
-	copied.SetStructureVersion(serviceItemGetBalanceResponse.StructureVersion())
+	copied.StructureVersion = serviceItemGetBalanceResponse.StructureVersion
 
 	copied.ServiceItemEShopResponse = serviceItemGetBalanceResponse.ServiceItemEShopResponse.Copy().(*ServiceItemEShopResponse)
-	copied.SetParentType(copied.ServiceItemEShopResponse)
 
 	copied.NullableBalance = make([]*ServiceItemAmount, len(serviceItemGetBalanceResponse.NullableBalance))
 
@@ -55,10 +65,14 @@ func (serviceItemGetBalanceResponse *ServiceItemGetBalanceResponse) Copy() nex.S
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (serviceItemGetBalanceResponse *ServiceItemGetBalanceResponse) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*ServiceItemGetBalanceResponse)
+func (serviceItemGetBalanceResponse *ServiceItemGetBalanceResponse) Equals(o types.RVType) bool {
+	if _, ok := o.(*ServiceItemGetBalanceResponse); !ok {
+		return false
+	}
 
-	if serviceItemGetBalanceResponse.StructureVersion() != other.StructureVersion() {
+	other := o.(*ServiceItemGetBalanceResponse)
+
+	if serviceItemGetBalanceResponse.StructureVersion != other.StructureVersion {
 		return false
 	}
 
@@ -94,7 +108,7 @@ func (serviceItemGetBalanceResponse *ServiceItemGetBalanceResponse) FormatToStri
 
 	b.WriteString("ServiceItemGetBalanceResponse{\n")
 	b.WriteString(fmt.Sprintf("%sParentType: %s,\n", indentationValues, serviceItemGetBalanceResponse.ParentType().FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, serviceItemGetBalanceResponse.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, serviceItemGetBalanceResponse.StructureVersion))
 
 	if len(serviceItemGetBalanceResponse.NullableBalance) == 0 {
 		b.WriteString(fmt.Sprintf("%sNullableBalance: [],\n", indentationValues))

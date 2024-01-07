@@ -7,40 +7,45 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // ServiceItemNotice holds data for the Service Item (Team Kirby Clash Deluxe) protocol
 type ServiceItemNotice struct {
-	nex.Structure
-	ScheduleID   uint64
-	ScheduleType uint32
-	ParamInt     int32
+	types.Structure
+	ScheduleID   *types.PrimitiveU64
+	ScheduleType *types.PrimitiveU32
+	ParamInt     *types.PrimitiveS32
 	ParamString  string
 	ParamBinary  []byte
-	TimeBegin    *nex.DateTime
-	TimeEnd      *nex.DateTime
+	TimeBegin    *types.DateTime
+	TimeEnd      *types.DateTime
 }
 
-// ExtractFromStream extracts a ServiceItemNotice structure from a stream
-func (serviceItemNotice *ServiceItemNotice) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the ServiceItemNotice from the given readable
+func (serviceItemNotice *ServiceItemNotice) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	serviceItemNotice.ScheduleID, err = stream.ReadUInt64LE()
+	if err = serviceItemNotice.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read ServiceItemNotice header. %s", err.Error())
+	}
+
+	err = serviceItemNotice.ScheduleID.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemNotice.ScheduleID from stream. %s", err.Error())
 	}
 
-	serviceItemNotice.ScheduleType, err = stream.ReadUInt32LE()
+	err = serviceItemNotice.ScheduleType.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemNotice.ScheduleType from stream. %s", err.Error())
 	}
 
-	serviceItemNotice.ParamInt, err = stream.ReadInt32LE()
+	err = serviceItemNotice.ParamInt.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemNotice.ParamInt from stream. %s", err.Error())
 	}
 
-	serviceItemNotice.ParamString, err = stream.ReadString()
+	err = serviceItemNotice.ParamString.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemNotice.ParamString from stream. %s", err.Error())
 	}
@@ -50,12 +55,12 @@ func (serviceItemNotice *ServiceItemNotice) ExtractFromStream(stream *nex.Stream
 		return fmt.Errorf("Failed to extract ServiceItemNotice.ParamBinary from stream. %s", err.Error())
 	}
 
-	serviceItemNotice.TimeBegin, err = stream.ReadDateTime()
+	err = serviceItemNotice.TimeBegin.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemNotice.TimeBegin from stream. %s", err.Error())
 	}
 
-	serviceItemNotice.TimeEnd, err = stream.ReadDateTime()
+	err = serviceItemNotice.TimeEnd.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemNotice.TimeEnd from stream. %s", err.Error())
 	}
@@ -63,24 +68,30 @@ func (serviceItemNotice *ServiceItemNotice) ExtractFromStream(stream *nex.Stream
 	return nil
 }
 
-// Bytes encodes the ServiceItemNotice and returns a byte array
-func (serviceItemNotice *ServiceItemNotice) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt64LE(serviceItemNotice.ScheduleID)
-	stream.WriteUInt32LE(serviceItemNotice.ScheduleType)
-	stream.WriteInt32LE(serviceItemNotice.ParamInt)
-	stream.WriteString(serviceItemNotice.ParamString)
-	stream.WriteQBuffer(serviceItemNotice.ParamBinary)
-	stream.WriteDateTime(serviceItemNotice.TimeBegin)
-	stream.WriteDateTime(serviceItemNotice.TimeEnd)
+// WriteTo writes the ServiceItemNotice to the given writable
+func (serviceItemNotice *ServiceItemNotice) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
 
-	return stream.Bytes()
+	serviceItemNotice.ScheduleID.WriteTo(contentWritable)
+	serviceItemNotice.ScheduleType.WriteTo(contentWritable)
+	serviceItemNotice.ParamInt.WriteTo(contentWritable)
+	serviceItemNotice.ParamString.WriteTo(contentWritable)
+	stream.WriteQBuffer(serviceItemNotice.ParamBinary)
+	serviceItemNotice.TimeBegin.WriteTo(contentWritable)
+	serviceItemNotice.TimeEnd.WriteTo(contentWritable)
+
+	content := contentWritable.Bytes()
+
+	serviceItemNotice.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // Copy returns a new copied instance of ServiceItemNotice
-func (serviceItemNotice *ServiceItemNotice) Copy() nex.StructureInterface {
+func (serviceItemNotice *ServiceItemNotice) Copy() types.RVType {
 	copied := NewServiceItemNotice()
 
-	copied.SetStructureVersion(serviceItemNotice.StructureVersion())
+	copied.StructureVersion = serviceItemNotice.StructureVersion
 
 	copied.ScheduleID = serviceItemNotice.ScheduleID
 	copied.ScheduleType = serviceItemNotice.ScheduleType
@@ -94,30 +105,34 @@ func (serviceItemNotice *ServiceItemNotice) Copy() nex.StructureInterface {
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (serviceItemNotice *ServiceItemNotice) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*ServiceItemNotice)
-
-	if serviceItemNotice.StructureVersion() != other.StructureVersion() {
+func (serviceItemNotice *ServiceItemNotice) Equals(o types.RVType) bool {
+	if _, ok := o.(*ServiceItemNotice); !ok {
 		return false
 	}
 
-	if serviceItemNotice.ScheduleID != other.ScheduleID {
+	other := o.(*ServiceItemNotice)
+
+	if serviceItemNotice.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if serviceItemNotice.ScheduleType != other.ScheduleType {
+	if !serviceItemNotice.ScheduleID.Equals(other.ScheduleID) {
 		return false
 	}
 
-	if serviceItemNotice.ParamInt != other.ParamInt {
+	if !serviceItemNotice.ScheduleType.Equals(other.ScheduleType) {
 		return false
 	}
 
-	if serviceItemNotice.ParamString != other.ParamString {
+	if !serviceItemNotice.ParamInt.Equals(other.ParamInt) {
 		return false
 	}
 
-	if !bytes.Equal(serviceItemNotice.ParamBinary, other.ParamBinary) {
+	if !serviceItemNotice.ParamString.Equals(other.ParamString) {
+		return false
+	}
+
+	if !serviceItemNotice.ParamBinary.Equals(other.ParamBinary) {
 		return false
 	}
 
@@ -145,7 +160,7 @@ func (serviceItemNotice *ServiceItemNotice) FormatToString(indentationLevel int)
 	var b strings.Builder
 
 	b.WriteString("ServiceItemNotice{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, serviceItemNotice.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, serviceItemNotice.StructureVersion))
 	b.WriteString(fmt.Sprintf("%sScheduleID: %d,\n", indentationValues, serviceItemNotice.ScheduleID))
 	b.WriteString(fmt.Sprintf("%sScheduleType: %d,\n", indentationValues, serviceItemNotice.ScheduleType))
 	b.WriteString(fmt.Sprintf("%sParamInt: %d,\n", indentationValues, serviceItemNotice.ParamInt))

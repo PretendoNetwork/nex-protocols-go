@@ -6,25 +6,30 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // ServiceItemGetServiceItemRightParam holds data for the Service Item (Wii Sports Club) protocol
 type ServiceItemGetServiceItemRightParam struct {
-	nex.Structure
+	types.Structure
 	ReferenceID string
 	TitleID     string
 }
 
-// ExtractFromStream extracts a ServiceItemGetServiceItemRightParam structure from a stream
-func (serviceItemGetServiceItemRightParam *ServiceItemGetServiceItemRightParam) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the ServiceItemGetServiceItemRightParam from the given readable
+func (serviceItemGetServiceItemRightParam *ServiceItemGetServiceItemRightParam) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	serviceItemGetServiceItemRightParam.ReferenceID, err = stream.ReadString()
+	if err = serviceItemGetServiceItemRightParam.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read ServiceItemGetServiceItemRightParam header. %s", err.Error())
+	}
+
+	err = serviceItemGetServiceItemRightParam.ReferenceID.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemGetServiceItemRightParam.ReferenceID from stream. %s", err.Error())
 	}
 
-	serviceItemGetServiceItemRightParam.TitleID, err = stream.ReadString()
+	err = serviceItemGetServiceItemRightParam.TitleID.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemGetServiceItemRightParam.TitleID from stream. %s", err.Error())
 	}
@@ -32,19 +37,25 @@ func (serviceItemGetServiceItemRightParam *ServiceItemGetServiceItemRightParam) 
 	return nil
 }
 
-// Bytes encodes the ServiceItemGetServiceItemRightParam and returns a byte array
-func (serviceItemGetServiceItemRightParam *ServiceItemGetServiceItemRightParam) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteString(serviceItemGetServiceItemRightParam.ReferenceID)
-	stream.WriteString(serviceItemGetServiceItemRightParam.TitleID)
+// WriteTo writes the ServiceItemGetServiceItemRightParam to the given writable
+func (serviceItemGetServiceItemRightParam *ServiceItemGetServiceItemRightParam) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
 
-	return stream.Bytes()
+	serviceItemGetServiceItemRightParam.ReferenceID.WriteTo(contentWritable)
+	serviceItemGetServiceItemRightParam.TitleID.WriteTo(contentWritable)
+
+	content := contentWritable.Bytes()
+
+	serviceItemGetServiceItemRightParam.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // Copy returns a new copied instance of ServiceItemGetServiceItemRightParam
-func (serviceItemGetServiceItemRightParam *ServiceItemGetServiceItemRightParam) Copy() nex.StructureInterface {
+func (serviceItemGetServiceItemRightParam *ServiceItemGetServiceItemRightParam) Copy() types.RVType {
 	copied := NewServiceItemGetServiceItemRightParam()
 
-	copied.SetStructureVersion(serviceItemGetServiceItemRightParam.StructureVersion())
+	copied.StructureVersion = serviceItemGetServiceItemRightParam.StructureVersion
 
 	copied.ReferenceID = serviceItemGetServiceItemRightParam.ReferenceID
 	copied.TitleID = serviceItemGetServiceItemRightParam.TitleID
@@ -53,18 +64,22 @@ func (serviceItemGetServiceItemRightParam *ServiceItemGetServiceItemRightParam) 
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (serviceItemGetServiceItemRightParam *ServiceItemGetServiceItemRightParam) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*ServiceItemGetServiceItemRightParam)
-
-	if serviceItemGetServiceItemRightParam.StructureVersion() != other.StructureVersion() {
+func (serviceItemGetServiceItemRightParam *ServiceItemGetServiceItemRightParam) Equals(o types.RVType) bool {
+	if _, ok := o.(*ServiceItemGetServiceItemRightParam); !ok {
 		return false
 	}
 
-	if serviceItemGetServiceItemRightParam.ReferenceID != other.ReferenceID {
+	other := o.(*ServiceItemGetServiceItemRightParam)
+
+	if serviceItemGetServiceItemRightParam.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if serviceItemGetServiceItemRightParam.TitleID != other.TitleID {
+	if !serviceItemGetServiceItemRightParam.ReferenceID.Equals(other.ReferenceID) {
+		return false
+	}
+
+	if !serviceItemGetServiceItemRightParam.TitleID.Equals(other.TitleID) {
 		return false
 	}
 
@@ -84,7 +99,7 @@ func (serviceItemGetServiceItemRightParam *ServiceItemGetServiceItemRightParam) 
 	var b strings.Builder
 
 	b.WriteString("ServiceItemGetServiceItemRightParam{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, serviceItemGetServiceItemRightParam.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, serviceItemGetServiceItemRightParam.StructureVersion))
 	b.WriteString(fmt.Sprintf("%sReferenceID: %q,\n", indentationValues, serviceItemGetServiceItemRightParam.ReferenceID))
 	b.WriteString(fmt.Sprintf("%sTitleID: %q,\n", indentationValues, serviceItemGetServiceItemRightParam.TitleID))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))

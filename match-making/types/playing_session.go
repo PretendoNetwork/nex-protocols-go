@@ -9,25 +9,30 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // PlayingSession holds information for a session
 type PlayingSession struct {
-	nex.Structure
-	PrincipalID *nex.PID
-	Gathering   *nex.DataHolder
+	types.Structure
+	PrincipalID *types.PID
+	Gathering   *types.AnyDataHolder
 }
 
-// ExtractFromStream extracts a PlayingSession structure from a stream
-func (playingSession *PlayingSession) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the PlayingSession from the given readable
+func (playingSession *PlayingSession) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	playingSession.PrincipalID, err = stream.ReadPID()
+	if err = playingSession.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read PlayingSession header. %s", err.Error())
+	}
+
+	err = playingSession.PrincipalID.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract PlayingSession.PrincipalID. %s", err.Error())
 	}
 
-	playingSession.Gathering, err = stream.ReadDataHolder()
+	err = playingSession.Gathering.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract PlayingSession.Gathering. %s", err.Error())
 	}
@@ -35,34 +40,42 @@ func (playingSession *PlayingSession) ExtractFromStream(stream *nex.StreamIn) er
 	return nil
 }
 
-// Bytes encodes the PlayingSession and returns a byte array
-func (playingSession *PlayingSession) Bytes(stream *nex.StreamOut) []byte {
-	stream.WritePID(playingSession.PrincipalID)
-	stream.WriteDataHolder(playingSession.Gathering)
+// WriteTo writes the PlayingSession to the given writable
+func (playingSession *PlayingSession) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
 
-	return stream.Bytes()
+	playingSession.PrincipalID.WriteTo(contentWritable)
+	playingSession.Gathering.WriteTo(contentWritable)
+
+	content := contentWritable.Bytes()
+
+	playingSession.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // Copy returns a new copied instance of PlayingSession
-func (playingSession *PlayingSession) Copy() nex.StructureInterface {
+func (playingSession *PlayingSession) Copy() types.RVType {
 	copied := NewPlayingSession()
 
-	copied.SetStructureVersion(playingSession.StructureVersion())
+	copied.StructureVersion = playingSession.StructureVersion
 
 	copied.PrincipalID = playingSession.PrincipalID
 
-	if playingSession.Gathering != nil {
-		copied.Gathering = playingSession.Gathering.Copy()
-	}
+	copied.Gathering = playingSession.Gathering.Copy()
 
 	return copied
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (playingSession *PlayingSession) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*PlayingSession)
+func (playingSession *PlayingSession) Equals(o types.RVType) bool {
+	if _, ok := o.(*PlayingSession); !ok {
+		return false
+	}
 
-	if playingSession.StructureVersion() != other.StructureVersion() {
+	other := o.(*PlayingSession)
+
+	if playingSession.StructureVersion != other.StructureVersion {
 		return false
 	}
 
@@ -70,18 +83,8 @@ func (playingSession *PlayingSession) Equals(structure nex.StructureInterface) b
 		return false
 	}
 
-	if playingSession.Gathering != nil && other.Gathering == nil {
+	if !playingSession.Gathering.Equals(other.Gathering) {
 		return false
-	}
-
-	if playingSession.Gathering == nil && other.Gathering != nil {
-		return false
-	}
-
-	if playingSession.Gathering != nil && other.Gathering != nil {
-		if !playingSession.Gathering.Equals(other.Gathering) {
-			return false
-		}
 	}
 
 	return true
@@ -100,7 +103,7 @@ func (playingSession *PlayingSession) FormatToString(indentationLevel int) strin
 	var b strings.Builder
 
 	b.WriteString("PlayingSession{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, playingSession.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, playingSession.StructureVersion))
 	b.WriteString(fmt.Sprintf("%sPrincipalID: %s,\n", indentationValues, playingSession.PrincipalID.FormatToString(indentationLevel+1)))
 
 	if playingSession.Gathering != nil {

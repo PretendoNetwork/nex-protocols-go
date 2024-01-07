@@ -5,10 +5,12 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
 func (protocol *Protocol) handleGetSimpleCommunity(packet nex.PacketInterface) {
+	var err error
 	var errorCode uint32
 
 	if protocol.GetSimpleCommunity == nil {
@@ -22,9 +24,11 @@ func (protocol *Protocol) handleGetSimpleCommunity(packet nex.PacketInterface) {
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.server)
+	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
-	gatheringIDList, err := parametersStream.ReadListUInt32LE()
+	gatheringIDList := types.NewList[*types.PrimitiveU32]()
+	gatheringIDList.Type = types.NewPrimitiveU32(0)
+	err = gatheringIDList.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.GetSimpleCommunity(fmt.Errorf("Failed to read gatheringIDList from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {

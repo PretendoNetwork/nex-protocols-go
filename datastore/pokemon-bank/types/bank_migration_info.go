@@ -5,26 +5,30 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // BankMigrationInfo holds data for the DataStore (Pokemon Bank) protocol
 type BankMigrationInfo struct {
-	nex.Structure
-	MigrationStatus uint32
-	UpdatedTime     *nex.DateTime
+	types.Structure
+	MigrationStatus *types.PrimitiveU32
+	UpdatedTime     *types.DateTime
 }
 
-// ExtractFromStream extracts a BankMigrationInfo structure from a stream
-func (bankMigrationInfo *BankMigrationInfo) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the BankMigrationInfo from the given readable
+func (bankMigrationInfo *BankMigrationInfo) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	bankMigrationInfo.MigrationStatus, err = stream.ReadUInt32LE()
+	if err = bankMigrationInfo.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read BankMigrationInfo header. %s", err.Error())
+	}
+
+	err = bankMigrationInfo.MigrationStatus.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract BankMigrationInfo.MigrationStatus from stream. %s", err.Error())
 	}
 
-	bankMigrationInfo.UpdatedTime, err = stream.ReadDateTime()
+	err = bankMigrationInfo.UpdatedTime.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract BankMigrationInfo.UpdatedTime from stream. %s", err.Error())
 	}
@@ -32,35 +36,45 @@ func (bankMigrationInfo *BankMigrationInfo) ExtractFromStream(stream *nex.Stream
 	return nil
 }
 
-// Bytes encodes the BankMigrationInfo and returns a byte array
-func (bankMigrationInfo *BankMigrationInfo) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt32LE(bankMigrationInfo.MigrationStatus)
-	stream.WriteDateTime(bankMigrationInfo.UpdatedTime)
+// WriteTo writes the BankMigrationInfo to the given writable
+func (bankMigrationInfo *BankMigrationInfo) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
 
-	return stream.Bytes()
+	bankMigrationInfo.MigrationStatus.WriteTo(contentWritable)
+	bankMigrationInfo.UpdatedTime.WriteTo(contentWritable)
+
+	content := contentWritable.Bytes()
+
+	bankMigrationInfo.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // Copy returns a new copied instance of BankMigrationInfo
-func (bankMigrationInfo *BankMigrationInfo) Copy() nex.StructureInterface {
+func (bankMigrationInfo *BankMigrationInfo) Copy() types.RVType {
 	copied := NewBankMigrationInfo()
 
-	copied.SetStructureVersion(bankMigrationInfo.StructureVersion())
+	copied.StructureVersion = bankMigrationInfo.StructureVersion
 
-	copied.MigrationStatus = bankMigrationInfo.MigrationStatus
-	copied.UpdatedTime = bankMigrationInfo.UpdatedTime.Copy()
+	copied.MigrationStatus = bankMigrationInfo.MigrationStatus.Copy().(*types.PrimitiveU32)
+	copied.UpdatedTime = bankMigrationInfo.UpdatedTime.Copy().(*types.DateTime)
 
 	return copied
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (bankMigrationInfo *BankMigrationInfo) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*BankMigrationInfo)
-
-	if bankMigrationInfo.StructureVersion() != other.StructureVersion() {
+func (bankMigrationInfo *BankMigrationInfo) Equals(o types.RVType) bool {
+	if _, ok := o.(*BankMigrationInfo); !ok {
 		return false
 	}
 
-	if bankMigrationInfo.MigrationStatus != other.MigrationStatus {
+	other := o.(*BankMigrationInfo)
+
+	if bankMigrationInfo.StructureVersion != other.StructureVersion {
+		return false
+	}
+
+	if !bankMigrationInfo.MigrationStatus.Equals(other.MigrationStatus) {
 		return false
 	}
 
@@ -84,14 +98,9 @@ func (bankMigrationInfo *BankMigrationInfo) FormatToString(indentationLevel int)
 	var b strings.Builder
 
 	b.WriteString("BankMigrationInfo{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, bankMigrationInfo.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sMigrationStatus: %d,\n", indentationValues, bankMigrationInfo.MigrationStatus))
-
-	if bankMigrationInfo.UpdatedTime != nil {
-		b.WriteString(fmt.Sprintf("%sUpdatedTime: %s\n", indentationValues, bankMigrationInfo.UpdatedTime.FormatToString(indentationLevel+1)))
-	} else {
-		b.WriteString(fmt.Sprintf("%sUpdatedTime: nil\n", indentationValues))
-	}
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, bankMigrationInfo.StructureVersion))
+	b.WriteString(fmt.Sprintf("%sMigrationStatus: %s,\n", indentationValues, bankMigrationInfo.MigrationStatus))
+	b.WriteString(fmt.Sprintf("%sUpdatedTime: %s\n", indentationValues, bankMigrationInfo.UpdatedTime.FormatToString(indentationLevel+1)))
 
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
@@ -100,5 +109,8 @@ func (bankMigrationInfo *BankMigrationInfo) FormatToString(indentationLevel int)
 
 // NewBankMigrationInfo returns a new BankMigrationInfo
 func NewBankMigrationInfo() *BankMigrationInfo {
-	return &BankMigrationInfo{}
+	return &BankMigrationInfo{
+		MigrationStatus: types.NewPrimitiveU32(0),
+		UpdatedTime: types.NewDateTime(0),
+	}
 }

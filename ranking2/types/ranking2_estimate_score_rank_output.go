@@ -6,49 +6,54 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // Ranking2EstimateScoreRankOutput holds data for the Ranking 2  protocol
 type Ranking2EstimateScoreRankOutput struct {
-	nex.Structure
-	Rank         uint32
-	Length       uint32
-	Score        uint32
-	Category     uint32
-	Season       int32
-	SamplingRate uint8
+	types.Structure
+	Rank         *types.PrimitiveU32
+	Length       *types.PrimitiveU32
+	Score        *types.PrimitiveU32
+	Category     *types.PrimitiveU32
+	Season       *types.PrimitiveS32
+	SamplingRate *types.PrimitiveU8
 }
 
-// ExtractFromStream extracts a Ranking2EstimateScoreRankOutput structure from a stream
-func (ranking2EstimateScoreRankOutput *Ranking2EstimateScoreRankOutput) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the Ranking2EstimateScoreRankOutput from the given readable
+func (ranking2EstimateScoreRankOutput *Ranking2EstimateScoreRankOutput) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	ranking2EstimateScoreRankOutput.Rank, err = stream.ReadUInt32LE()
+	if err = ranking2EstimateScoreRankOutput.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read Ranking2EstimateScoreRankOutput header. %s", err.Error())
+	}
+
+	err = ranking2EstimateScoreRankOutput.Rank.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract Ranking2EstimateScoreRankOutput.Rank from stream. %s", err.Error())
 	}
 
-	ranking2EstimateScoreRankOutput.Length, err = stream.ReadUInt32LE()
+	err = ranking2EstimateScoreRankOutput.Length.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract Ranking2EstimateScoreRankOutput.Length from stream. %s", err.Error())
 	}
 
-	ranking2EstimateScoreRankOutput.Score, err = stream.ReadUInt32LE()
+	err = ranking2EstimateScoreRankOutput.Score.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract Ranking2EstimateScoreRankOutput.Score from stream. %s", err.Error())
 	}
 
-	ranking2EstimateScoreRankOutput.Category, err = stream.ReadUInt32LE()
+	err = ranking2EstimateScoreRankOutput.Category.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract Ranking2EstimateScoreRankOutput.Category from stream. %s", err.Error())
 	}
 
-	ranking2EstimateScoreRankOutput.Season, err = stream.ReadInt32LE()
+	err = ranking2EstimateScoreRankOutput.Season.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract Ranking2EstimateScoreRankOutput.Season from stream. %s", err.Error())
 	}
 
-	ranking2EstimateScoreRankOutput.SamplingRate, err = stream.ReadUInt8()
+	err = ranking2EstimateScoreRankOutput.SamplingRate.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract Ranking2EstimateScoreRankOutput.SamplingRate from stream. %s", err.Error())
 	}
@@ -56,23 +61,29 @@ func (ranking2EstimateScoreRankOutput *Ranking2EstimateScoreRankOutput) ExtractF
 	return nil
 }
 
-// Bytes encodes the Ranking2EstimateScoreRankOutput and returns a byte array
-func (ranking2EstimateScoreRankOutput *Ranking2EstimateScoreRankOutput) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt32LE(ranking2EstimateScoreRankOutput.Rank)
-	stream.WriteUInt32LE(ranking2EstimateScoreRankOutput.Length)
-	stream.WriteUInt32LE(ranking2EstimateScoreRankOutput.Score)
-	stream.WriteUInt32LE(ranking2EstimateScoreRankOutput.Category)
-	stream.WriteInt32LE(ranking2EstimateScoreRankOutput.Season)
-	stream.WriteUInt8(ranking2EstimateScoreRankOutput.SamplingRate)
+// WriteTo writes the Ranking2EstimateScoreRankOutput to the given writable
+func (ranking2EstimateScoreRankOutput *Ranking2EstimateScoreRankOutput) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
 
-	return stream.Bytes()
+	ranking2EstimateScoreRankOutput.Rank.WriteTo(contentWritable)
+	ranking2EstimateScoreRankOutput.Length.WriteTo(contentWritable)
+	ranking2EstimateScoreRankOutput.Score.WriteTo(contentWritable)
+	ranking2EstimateScoreRankOutput.Category.WriteTo(contentWritable)
+	ranking2EstimateScoreRankOutput.Season.WriteTo(contentWritable)
+	ranking2EstimateScoreRankOutput.SamplingRate.WriteTo(contentWritable)
+
+	content := contentWritable.Bytes()
+
+	ranking2EstimateScoreRankOutput.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // Copy returns a new copied instance of Ranking2EstimateScoreRankOutput
-func (ranking2EstimateScoreRankOutput *Ranking2EstimateScoreRankOutput) Copy() nex.StructureInterface {
+func (ranking2EstimateScoreRankOutput *Ranking2EstimateScoreRankOutput) Copy() types.RVType {
 	copied := NewRanking2EstimateScoreRankOutput()
 
-	copied.SetStructureVersion(ranking2EstimateScoreRankOutput.StructureVersion())
+	copied.StructureVersion = ranking2EstimateScoreRankOutput.StructureVersion
 
 	copied.Rank = ranking2EstimateScoreRankOutput.Rank
 	copied.Length = ranking2EstimateScoreRankOutput.Length
@@ -84,34 +95,38 @@ func (ranking2EstimateScoreRankOutput *Ranking2EstimateScoreRankOutput) Copy() n
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (ranking2EstimateScoreRankOutput *Ranking2EstimateScoreRankOutput) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*Ranking2EstimateScoreRankOutput)
-
-	if ranking2EstimateScoreRankOutput.StructureVersion() != other.StructureVersion() {
+func (ranking2EstimateScoreRankOutput *Ranking2EstimateScoreRankOutput) Equals(o types.RVType) bool {
+	if _, ok := o.(*Ranking2EstimateScoreRankOutput); !ok {
 		return false
 	}
 
-	if ranking2EstimateScoreRankOutput.Rank != other.Rank {
+	other := o.(*Ranking2EstimateScoreRankOutput)
+
+	if ranking2EstimateScoreRankOutput.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if ranking2EstimateScoreRankOutput.Length != other.Length {
+	if !ranking2EstimateScoreRankOutput.Rank.Equals(other.Rank) {
 		return false
 	}
 
-	if ranking2EstimateScoreRankOutput.Score != other.Score {
+	if !ranking2EstimateScoreRankOutput.Length.Equals(other.Length) {
 		return false
 	}
 
-	if ranking2EstimateScoreRankOutput.Category != other.Category {
+	if !ranking2EstimateScoreRankOutput.Score.Equals(other.Score) {
 		return false
 	}
 
-	if ranking2EstimateScoreRankOutput.Season != other.Season {
+	if !ranking2EstimateScoreRankOutput.Category.Equals(other.Category) {
 		return false
 	}
 
-	if ranking2EstimateScoreRankOutput.SamplingRate != other.SamplingRate {
+	if !ranking2EstimateScoreRankOutput.Season.Equals(other.Season) {
+		return false
+	}
+
+	if !ranking2EstimateScoreRankOutput.SamplingRate.Equals(other.SamplingRate) {
 		return false
 	}
 
@@ -131,7 +146,7 @@ func (ranking2EstimateScoreRankOutput *Ranking2EstimateScoreRankOutput) FormatTo
 	var b strings.Builder
 
 	b.WriteString("Ranking2EstimateScoreRankOutput{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, ranking2EstimateScoreRankOutput.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, ranking2EstimateScoreRankOutput.StructureVersion))
 	b.WriteString(fmt.Sprintf("%sRank: %d,\n", indentationValues, ranking2EstimateScoreRankOutput.Rank))
 	b.WriteString(fmt.Sprintf("%sLength: %d,\n", indentationValues, ranking2EstimateScoreRankOutput.Length))
 	b.WriteString(fmt.Sprintf("%sScore: %d,\n", indentationValues, ranking2EstimateScoreRankOutput.Score))

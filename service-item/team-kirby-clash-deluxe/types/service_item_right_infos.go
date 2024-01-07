@@ -6,23 +6,28 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // ServiceItemRightInfos holds data for the Service Item (Team Kirby Clash Deluxe) protocol
 type ServiceItemRightInfos struct {
-	nex.Structure
+	types.Structure
 	SupportID                       string
 	ConsumptionRightInfos           []*ServiceItemRightConsumptionInfo
 	AdditionalTimeRightInfos        []*ServiceItemRightTimeInfo
 	PermanentRightInfos             []*ServiceItemRightTimeInfo
-	AlreadyPurchasedInitialOnlyItem bool
+	AlreadyPurchasedInitialOnlyItem *types.PrimitiveBool
 }
 
-// ExtractFromStream extracts a ServiceItemRightInfos structure from a stream
-func (serviceItemRightInfos *ServiceItemRightInfos) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the ServiceItemRightInfos from the given readable
+func (serviceItemRightInfos *ServiceItemRightInfos) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	serviceItemRightInfos.SupportID, err = stream.ReadString()
+	if err = serviceItemRightInfos.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read ServiceItemRightInfos header. %s", err.Error())
+	}
+
+	err = serviceItemRightInfos.SupportID.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemRightInfos.SupportID from stream. %s", err.Error())
 	}
@@ -48,7 +53,7 @@ func (serviceItemRightInfos *ServiceItemRightInfos) ExtractFromStream(stream *ne
 
 	serviceItemRightInfos.PermanentRightInfos = permanentRightInfos
 
-	serviceItemRightInfos.AlreadyPurchasedInitialOnlyItem, err = stream.ReadBool()
+	err = serviceItemRightInfos.AlreadyPurchasedInitialOnlyItem.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemRightInfos.AlreadyPurchasedInitialOnlyItem from stream. %s", err.Error())
 	}
@@ -56,22 +61,28 @@ func (serviceItemRightInfos *ServiceItemRightInfos) ExtractFromStream(stream *ne
 	return nil
 }
 
-// Bytes encodes the ServiceItemRightInfos and returns a byte array
-func (serviceItemRightInfos *ServiceItemRightInfos) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteString(serviceItemRightInfos.SupportID)
-	nex.StreamWriteListStructure(stream, serviceItemRightInfos.ConsumptionRightInfos)
-	nex.StreamWriteListStructure(stream, serviceItemRightInfos.AdditionalTimeRightInfos)
-	nex.StreamWriteListStructure(stream, serviceItemRightInfos.PermanentRightInfos)
-	stream.WriteBool(serviceItemRightInfos.AlreadyPurchasedInitialOnlyItem)
+// WriteTo writes the ServiceItemRightInfos to the given writable
+func (serviceItemRightInfos *ServiceItemRightInfos) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
 
-	return stream.Bytes()
+	serviceItemRightInfos.SupportID.WriteTo(contentWritable)
+	serviceItemRightInfos.ConsumptionRightInfos.WriteTo(contentWritable)
+	serviceItemRightInfos.AdditionalTimeRightInfos.WriteTo(contentWritable)
+	serviceItemRightInfos.PermanentRightInfos.WriteTo(contentWritable)
+	serviceItemRightInfos.AlreadyPurchasedInitialOnlyItem.WriteTo(contentWritable)
+
+	content := contentWritable.Bytes()
+
+	serviceItemRightInfos.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // Copy returns a new copied instance of ServiceItemRightInfos
-func (serviceItemRightInfos *ServiceItemRightInfos) Copy() nex.StructureInterface {
+func (serviceItemRightInfos *ServiceItemRightInfos) Copy() types.RVType {
 	copied := NewServiceItemRightInfos()
 
-	copied.SetStructureVersion(serviceItemRightInfos.StructureVersion())
+	copied.StructureVersion = serviceItemRightInfos.StructureVersion
 
 	copied.SupportID = serviceItemRightInfos.SupportID
 	copied.ConsumptionRightInfos = make([]*ServiceItemRightConsumptionInfo, len(serviceItemRightInfos.ConsumptionRightInfos))
@@ -98,14 +109,18 @@ func (serviceItemRightInfos *ServiceItemRightInfos) Copy() nex.StructureInterfac
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (serviceItemRightInfos *ServiceItemRightInfos) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*ServiceItemRightInfos)
-
-	if serviceItemRightInfos.StructureVersion() != other.StructureVersion() {
+func (serviceItemRightInfos *ServiceItemRightInfos) Equals(o types.RVType) bool {
+	if _, ok := o.(*ServiceItemRightInfos); !ok {
 		return false
 	}
 
-	if serviceItemRightInfos.SupportID != other.SupportID {
+	other := o.(*ServiceItemRightInfos)
+
+	if serviceItemRightInfos.StructureVersion != other.StructureVersion {
+		return false
+	}
+
+	if !serviceItemRightInfos.SupportID.Equals(other.SupportID) {
 		return false
 	}
 
@@ -156,7 +171,7 @@ func (serviceItemRightInfos *ServiceItemRightInfos) FormatToString(indentationLe
 	var b strings.Builder
 
 	b.WriteString("ServiceItemRightInfos{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, serviceItemRightInfos.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, serviceItemRightInfos.StructureVersion))
 	b.WriteString(fmt.Sprintf("%sSupportID: %q,\n", indentationValues, serviceItemRightInfos.SupportID))
 
 	if len(serviceItemRightInfos.ConsumptionRightInfos) == 0 {

@@ -7,39 +7,40 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // FriendPicture is a data structure used by the Friends 3DS protocol to hold information about a friends PictureData
 type FriendPicture struct {
-	nex.Structure
-	*nex.Data
-	Unknown1    uint32
+	types.Structure
+	*types.Data
+	Unknown1    *types.PrimitiveU32
 	PictureData []byte
-	Unknown2    *nex.DateTime
+	Unknown2    *types.DateTime
 }
 
-// Bytes encodes the FriendPicture and returns a byte array
-func (friendPicture *FriendPicture) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt32LE(friendPicture.Unknown1)
-	stream.WriteBuffer(friendPicture.PictureData)
-	stream.WriteDateTime(friendPicture.Unknown2)
+// WriteTo writes the FriendPicture to the given writable
+func (friendPicture *FriendPicture) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
 
-	return stream.Bytes()
+	friendPicture.Unknown1.WriteTo(contentWritable)
+	stream.WriteBuffer(friendPicture.PictureData)
+	friendPicture.Unknown2.WriteTo(contentWritable)
+
+	content := contentWritable.Bytes()
+
+	friendPicture.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // Copy returns a new copied instance of FriendPicture
-func (friendPicture *FriendPicture) Copy() nex.StructureInterface {
+func (friendPicture *FriendPicture) Copy() types.RVType {
 	copied := NewFriendPicture()
 
-	copied.SetStructureVersion(friendPicture.StructureVersion())
+	copied.StructureVersion = friendPicture.StructureVersion
 
-	if friendPicture.ParentType() != nil {
-		copied.Data = friendPicture.ParentType().Copy().(*nex.Data)
-	} else {
-		copied.Data = nex.NewData()
-	}
-
-	copied.SetParentType(copied.Data)
+	copied.Data = friendPicture.Data.Copy().(*types.Data)
 
 	copied.Unknown1 = friendPicture.Unknown1
 	copied.PictureData = make([]byte, len(friendPicture.PictureData))
@@ -52,10 +53,14 @@ func (friendPicture *FriendPicture) Copy() nex.StructureInterface {
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (friendPicture *FriendPicture) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*FriendPicture)
+func (friendPicture *FriendPicture) Equals(o types.RVType) bool {
+	if _, ok := o.(*FriendPicture); !ok {
+		return false
+	}
 
-	if friendPicture.StructureVersion() != other.StructureVersion() {
+	other := o.(*FriendPicture)
+
+	if friendPicture.StructureVersion != other.StructureVersion {
 		return false
 	}
 
@@ -63,11 +68,11 @@ func (friendPicture *FriendPicture) Equals(structure nex.StructureInterface) boo
 		return false
 	}
 
-	if friendPicture.Unknown1 != other.Unknown1 {
+	if !friendPicture.Unknown1.Equals(other.Unknown1) {
 		return false
 	}
 
-	if !bytes.Equal(friendPicture.PictureData, other.PictureData) {
+	if !friendPicture.PictureData.Equals(other.PictureData) {
 		return false
 	}
 
@@ -91,7 +96,7 @@ func (friendPicture *FriendPicture) FormatToString(indentationLevel int) string 
 	var b strings.Builder
 
 	b.WriteString("FriendPicture{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, friendPicture.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, friendPicture.StructureVersion))
 	b.WriteString(fmt.Sprintf("%sUnknown1: %d,\n", indentationValues, friendPicture.Unknown1))
 	b.WriteString(fmt.Sprintf("%sPictureData: %x,\n", indentationValues, friendPicture.PictureData))
 

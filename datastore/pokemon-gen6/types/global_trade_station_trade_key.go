@@ -5,26 +5,30 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // GlobalTradeStationTradeKey holds data for the DataStore (Pokemon Gen6) protocol
 type GlobalTradeStationTradeKey struct {
-	nex.Structure
-	DataID  uint64
-	Version uint32
+	types.Structure
+	DataID  *types.PrimitiveU64
+	Version *types.PrimitiveU32
 }
 
-// ExtractFromStream extracts a GlobalTradeStationTradeKey structure from a stream
-func (globalTradeStationTradeKey *GlobalTradeStationTradeKey) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the GlobalTradeStationTradeKey from the given readable
+func (globalTradeStationTradeKey *GlobalTradeStationTradeKey) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	globalTradeStationTradeKey.DataID, err = stream.ReadUInt64LE()
+	if err = globalTradeStationTradeKey.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read GlobalTradeStationTradeKey header. %s", err.Error())
+	}
+
+	err = globalTradeStationTradeKey.DataID.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract GlobalTradeStationTradeKey.DataID from stream. %s", err.Error())
 	}
 
-	globalTradeStationTradeKey.Version, err = stream.ReadUInt32LE()
+	err = globalTradeStationTradeKey.Version.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract GlobalTradeStationTradeKey.Version from stream. %s", err.Error())
 	}
@@ -32,39 +36,49 @@ func (globalTradeStationTradeKey *GlobalTradeStationTradeKey) ExtractFromStream(
 	return nil
 }
 
-// Bytes encodes the GlobalTradeStationTradeKey and returns a byte array
-func (globalTradeStationTradeKey *GlobalTradeStationTradeKey) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt64LE(globalTradeStationTradeKey.DataID)
-	stream.WriteUInt32LE(globalTradeStationTradeKey.Version)
+// WriteTo writes the GlobalTradeStationTradeKey to the given writable
+func (globalTradeStationTradeKey *GlobalTradeStationTradeKey) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
 
-	return stream.Bytes()
+	globalTradeStationTradeKey.DataID.WriteTo(contentWritable)
+	globalTradeStationTradeKey.Version.WriteTo(contentWritable)
+
+	content := contentWritable.Bytes()
+
+	globalTradeStationTradeKey.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // Copy returns a new copied instance of GlobalTradeStationTradeKey
-func (globalTradeStationTradeKey *GlobalTradeStationTradeKey) Copy() nex.StructureInterface {
+func (globalTradeStationTradeKey *GlobalTradeStationTradeKey) Copy() types.RVType {
 	copied := NewGlobalTradeStationTradeKey()
 
-	copied.SetStructureVersion(globalTradeStationTradeKey.StructureVersion())
+	copied.StructureVersion = globalTradeStationTradeKey.StructureVersion
 
-	copied.DataID = globalTradeStationTradeKey.DataID
-	copied.Version = globalTradeStationTradeKey.Version
+	copied.DataID = globalTradeStationTradeKey.DataID.Copy().(*types.PrimitiveU64)
+	copied.Version = globalTradeStationTradeKey.Version.Copy().(*types.PrimitiveU32)
 
 	return copied
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (globalTradeStationTradeKey *GlobalTradeStationTradeKey) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*GlobalTradeStationTradeKey)
-
-	if globalTradeStationTradeKey.StructureVersion() != other.StructureVersion() {
+func (globalTradeStationTradeKey *GlobalTradeStationTradeKey) Equals(o types.RVType) bool {
+	if _, ok := o.(*GlobalTradeStationTradeKey); !ok {
 		return false
 	}
 
-	if globalTradeStationTradeKey.DataID != other.DataID {
+	other := o.(*GlobalTradeStationTradeKey)
+
+	if globalTradeStationTradeKey.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if globalTradeStationTradeKey.Version != other.Version {
+	if !globalTradeStationTradeKey.DataID.Equals(other.DataID) {
+		return false
+	}
+
+	if !globalTradeStationTradeKey.Version.Equals(other.Version) {
 		return false
 	}
 
@@ -84,9 +98,9 @@ func (globalTradeStationTradeKey *GlobalTradeStationTradeKey) FormatToString(ind
 	var b strings.Builder
 
 	b.WriteString("GlobalTradeStationTradeKey{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, globalTradeStationTradeKey.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sDataID: %d,\n", indentationValues, globalTradeStationTradeKey.DataID))
-	b.WriteString(fmt.Sprintf("%sVersion: %d,\n", indentationValues, globalTradeStationTradeKey.Version))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, globalTradeStationTradeKey.StructureVersion))
+	b.WriteString(fmt.Sprintf("%sDataID: %s,\n", indentationValues, globalTradeStationTradeKey.DataID))
+	b.WriteString(fmt.Sprintf("%sVersion: %s,\n", indentationValues, globalTradeStationTradeKey.Version))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -94,5 +108,8 @@ func (globalTradeStationTradeKey *GlobalTradeStationTradeKey) FormatToString(ind
 
 // NewGlobalTradeStationTradeKey returns a new GlobalTradeStationTradeKey
 func NewGlobalTradeStationTradeKey() *GlobalTradeStationTradeKey {
-	return &GlobalTradeStationTradeKey{}
+	return &GlobalTradeStationTradeKey{
+		DataID: types.NewPrimitiveU64(0),
+		Version: types.NewPrimitiveU32(0),
+	}
 }

@@ -7,56 +7,61 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // CompetitionRankingUploadScoreParam holds data for the Ranking (Mario Kart 8) protocol
 type CompetitionRankingUploadScoreParam struct {
-	nex.Structure
-	Unknown  uint32
-	Unknown2 uint32
-	Unknown3 uint32
-	Unknown4 uint32
-	Unknown5 uint8
-	Unknown6 uint32
-	Unknown7 bool
+	types.Structure
+	Unknown  *types.PrimitiveU32
+	Unknown2 *types.PrimitiveU32
+	Unknown3 *types.PrimitiveU32
+	Unknown4 *types.PrimitiveU32
+	Unknown5 *types.PrimitiveU8
+	Unknown6 *types.PrimitiveU32
+	Unknown7 *types.PrimitiveBool
 	Metadata []byte
 }
 
-// ExtractFromStream extracts a CompetitionRankingUploadScoreParam structure from a stream
-func (competitionRankingUploadScoreParam *CompetitionRankingUploadScoreParam) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the CompetitionRankingUploadScoreParam from the given readable
+func (competitionRankingUploadScoreParam *CompetitionRankingUploadScoreParam) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	competitionRankingUploadScoreParam.Unknown, err = stream.ReadUInt32LE()
+	if err = competitionRankingUploadScoreParam.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read CompetitionRankingUploadScoreParam header. %s", err.Error())
+	}
+
+	err = competitionRankingUploadScoreParam.Unknown.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract CompetitionRankingUploadScoreParam.Unknown from stream. %s", err.Error())
 	}
 
-	competitionRankingUploadScoreParam.Unknown2, err = stream.ReadUInt32LE()
+	err = competitionRankingUploadScoreParam.Unknown2.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract CompetitionRankingUploadScoreParam.Unknown2 from stream. %s", err.Error())
 	}
 
-	competitionRankingUploadScoreParam.Unknown3, err = stream.ReadUInt32LE()
+	err = competitionRankingUploadScoreParam.Unknown3.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract CompetitionRankingUploadScoreParam.Unknown3 from stream. %s", err.Error())
 	}
 
-	competitionRankingUploadScoreParam.Unknown4, err = stream.ReadUInt32LE()
+	err = competitionRankingUploadScoreParam.Unknown4.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract CompetitionRankingUploadScoreParam.Unknown4 from stream. %s", err.Error())
 	}
 
-	competitionRankingUploadScoreParam.Unknown5, err = stream.ReadUInt8()
+	err = competitionRankingUploadScoreParam.Unknown5.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract CompetitionRankingUploadScoreParam.Unknown5 from stream. %s", err.Error())
 	}
 
-	competitionRankingUploadScoreParam.Unknown6, err = stream.ReadUInt32LE()
+	err = competitionRankingUploadScoreParam.Unknown6.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract CompetitionRankingUploadScoreParam.Unknown6 from stream. %s", err.Error())
 	}
 
-	competitionRankingUploadScoreParam.Unknown7, err = stream.ReadBool()
+	err = competitionRankingUploadScoreParam.Unknown7.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract CompetitionRankingUploadScoreParam.Unknown7 from stream. %s", err.Error())
 	}
@@ -69,25 +74,31 @@ func (competitionRankingUploadScoreParam *CompetitionRankingUploadScoreParam) Ex
 	return nil
 }
 
-// Bytes encodes the CompetitionRankingUploadScoreParam and returns a byte array
-func (competitionRankingUploadScoreParam *CompetitionRankingUploadScoreParam) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt32LE(competitionRankingUploadScoreParam.Unknown)
-	stream.WriteUInt32LE(competitionRankingUploadScoreParam.Unknown2)
-	stream.WriteUInt32LE(competitionRankingUploadScoreParam.Unknown3)
-	stream.WriteUInt32LE(competitionRankingUploadScoreParam.Unknown4)
-	stream.WriteUInt8(competitionRankingUploadScoreParam.Unknown5)
-	stream.WriteUInt32LE(competitionRankingUploadScoreParam.Unknown6)
-	stream.WriteBool(competitionRankingUploadScoreParam.Unknown7)
+// WriteTo writes the CompetitionRankingUploadScoreParam to the given writable
+func (competitionRankingUploadScoreParam *CompetitionRankingUploadScoreParam) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
+
+	competitionRankingUploadScoreParam.Unknown.WriteTo(contentWritable)
+	competitionRankingUploadScoreParam.Unknown2.WriteTo(contentWritable)
+	competitionRankingUploadScoreParam.Unknown3.WriteTo(contentWritable)
+	competitionRankingUploadScoreParam.Unknown4.WriteTo(contentWritable)
+	competitionRankingUploadScoreParam.Unknown5.WriteTo(contentWritable)
+	competitionRankingUploadScoreParam.Unknown6.WriteTo(contentWritable)
+	competitionRankingUploadScoreParam.Unknown7.WriteTo(contentWritable)
 	stream.WriteQBuffer(competitionRankingUploadScoreParam.Metadata)
 
-	return stream.Bytes()
+	content := contentWritable.Bytes()
+
+	rvcd.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // Copy returns a new copied instance of CompetitionRankingUploadScoreParam
-func (competitionRankingUploadScoreParam *CompetitionRankingUploadScoreParam) Copy() nex.StructureInterface {
+func (competitionRankingUploadScoreParam *CompetitionRankingUploadScoreParam) Copy() types.RVType {
 	copied := NewCompetitionRankingUploadScoreParam()
 
-	copied.SetStructureVersion(competitionRankingUploadScoreParam.StructureVersion())
+	copied.StructureVersion = competitionRankingUploadScoreParam.StructureVersion
 
 	copied.Unknown = competitionRankingUploadScoreParam.Unknown
 	copied.Unknown2 = competitionRankingUploadScoreParam.Unknown2
@@ -102,42 +113,46 @@ func (competitionRankingUploadScoreParam *CompetitionRankingUploadScoreParam) Co
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (competitionRankingUploadScoreParam *CompetitionRankingUploadScoreParam) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*CompetitionRankingUploadScoreParam)
-
-	if competitionRankingUploadScoreParam.StructureVersion() != other.StructureVersion() {
+func (competitionRankingUploadScoreParam *CompetitionRankingUploadScoreParam) Equals(o types.RVType) bool {
+	if _, ok := o.(*CompetitionRankingUploadScoreParam); !ok {
 		return false
 	}
 
-	if competitionRankingUploadScoreParam.Unknown != other.Unknown {
+	other := o.(*CompetitionRankingUploadScoreParam)
+
+	if competitionRankingUploadScoreParam.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if competitionRankingUploadScoreParam.Unknown2 != other.Unknown2 {
+	if !competitionRankingUploadScoreParam.Unknown.Equals(other.Unknown) {
 		return false
 	}
 
-	if competitionRankingUploadScoreParam.Unknown3 != other.Unknown3 {
+	if !competitionRankingUploadScoreParam.Unknown2.Equals(other.Unknown2) {
 		return false
 	}
 
-	if competitionRankingUploadScoreParam.Unknown4 != other.Unknown4 {
+	if !competitionRankingUploadScoreParam.Unknown3.Equals(other.Unknown3) {
 		return false
 	}
 
-	if competitionRankingUploadScoreParam.Unknown5 != other.Unknown5 {
+	if !competitionRankingUploadScoreParam.Unknown4.Equals(other.Unknown4) {
 		return false
 	}
 
-	if competitionRankingUploadScoreParam.Unknown6 != other.Unknown6 {
+	if !competitionRankingUploadScoreParam.Unknown5.Equals(other.Unknown5) {
 		return false
 	}
 
-	if competitionRankingUploadScoreParam.Unknown7 != other.Unknown7 {
+	if !competitionRankingUploadScoreParam.Unknown6.Equals(other.Unknown6) {
 		return false
 	}
 
-	if !bytes.Equal(competitionRankingUploadScoreParam.Metadata, other.Metadata) {
+	if !competitionRankingUploadScoreParam.Unknown7.Equals(other.Unknown7) {
+		return false
+	}
+
+	if !competitionRankingUploadScoreParam.Metadata.Equals(other.Metadata) {
 		return false
 	}
 
@@ -157,7 +172,7 @@ func (competitionRankingUploadScoreParam *CompetitionRankingUploadScoreParam) Fo
 	var b strings.Builder
 
 	b.WriteString("CompetitionRankingUploadScoreParam{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, competitionRankingUploadScoreParam.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, competitionRankingUploadScoreParam.StructureVersion))
 	b.WriteString(fmt.Sprintf("%sUnknown: %d,\n", indentationValues, competitionRankingUploadScoreParam.Unknown))
 	b.WriteString(fmt.Sprintf("%sUnknown2: %d,\n", indentationValues, competitionRankingUploadScoreParam.Unknown2))
 	b.WriteString(fmt.Sprintf("%sUnknown3: %d,\n", indentationValues, competitionRankingUploadScoreParam.Unknown3))

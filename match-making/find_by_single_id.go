@@ -5,10 +5,12 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
 func (protocol *Protocol) handleFindBySingleID(packet nex.PacketInterface) {
+	var err error
 	var errorCode uint32
 
 	if protocol.FindBySingleID == nil {
@@ -22,9 +24,10 @@ func (protocol *Protocol) handleFindBySingleID(packet nex.PacketInterface) {
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.server)
+	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
-	id, err := parametersStream.ReadUInt32LE()
+	id := types.NewPrimitiveU32(0)
+	err = id.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.FindBySingleID(fmt.Errorf("Failed to read id from parameters. %s", err.Error()), packet, callID, 0)
 		if errorCode != 0 {

@@ -6,86 +6,91 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // Ranking2ChartInfo holds data for the Ranking 2  protocol
 type Ranking2ChartInfo struct {
-	nex.Structure
-	CreateTime           *nex.DateTime
-	Index                uint32
-	Category             uint32
-	Season               int32
-	BinsSize             uint8
-	SamplingRate         uint8
-	ScoreOrder           bool
-	EstimateLength       uint32
-	EstimateHighestScore uint32
-	EstimateLowestScore  uint32
-	EstimateMedianScore  uint32
-	EstimateAverageScore float64
-	HighestBinsScore     uint32
-	LowestBinsScore      uint32
-	BinsWidth            uint32
-	Attribute1           uint32
-	Attribute2           uint32
-	Quantities           []uint32
+	types.Structure
+	CreateTime           *types.DateTime
+	Index                *types.PrimitiveU32
+	Category             *types.PrimitiveU32
+	Season               *types.PrimitiveS32
+	BinsSize             *types.PrimitiveU8
+	SamplingRate         *types.PrimitiveU8
+	ScoreOrder           *types.PrimitiveBool
+	EstimateLength       *types.PrimitiveU32
+	EstimateHighestScore *types.PrimitiveU32
+	EstimateLowestScore  *types.PrimitiveU32
+	EstimateMedianScore  *types.PrimitiveU32
+	EstimateAverageScore *types.PrimitiveF64
+	HighestBinsScore     *types.PrimitiveU32
+	LowestBinsScore      *types.PrimitiveU32
+	BinsWidth            *types.PrimitiveU32
+	Attribute1           *types.PrimitiveU32
+	Attribute2           *types.PrimitiveU32
+	Quantities           *types.List[*types.PrimitiveU32]
 }
 
-// ExtractFromStream extracts a Ranking2ChartInfo structure from a stream
-func (ranking2ChartInfo *Ranking2ChartInfo) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the Ranking2ChartInfo from the given readable
+func (ranking2ChartInfo *Ranking2ChartInfo) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	ranking2ChartInfo.CreateTime, err = stream.ReadDateTime()
+	if err = ranking2ChartInfo.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read Ranking2ChartInfo header. %s", err.Error())
+	}
+
+	err = ranking2ChartInfo.CreateTime.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract Ranking2ChartInfo.CreateTime from stream. %s", err.Error())
 	}
 
-	ranking2ChartInfo.Index, err = stream.ReadUInt32LE()
+	err = ranking2ChartInfo.Index.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract Ranking2ChartInfo.Index from stream. %s", err.Error())
 	}
 
-	ranking2ChartInfo.Category, err = stream.ReadUInt32LE()
+	err = ranking2ChartInfo.Category.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract Ranking2ChartInfo.Category from stream. %s", err.Error())
 	}
 
-	ranking2ChartInfo.Season, err = stream.ReadInt32LE()
+	err = ranking2ChartInfo.Season.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract Ranking2ChartInfo.Season from stream. %s", err.Error())
 	}
 
-	ranking2ChartInfo.BinsSize, err = stream.ReadUInt8()
+	err = ranking2ChartInfo.BinsSize.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract Ranking2ChartInfo.BinsSize from stream. %s", err.Error())
 	}
 
-	ranking2ChartInfo.SamplingRate, err = stream.ReadUInt8()
+	err = ranking2ChartInfo.SamplingRate.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract Ranking2ChartInfo.SamplingRate from stream. %s", err.Error())
 	}
 
-	ranking2ChartInfo.ScoreOrder, err = stream.ReadBool()
+	err = ranking2ChartInfo.ScoreOrder.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract Ranking2ChartInfo.ScoreOrder from stream. %s", err.Error())
 	}
 
-	ranking2ChartInfo.EstimateLength, err = stream.ReadUInt32LE()
+	err = ranking2ChartInfo.EstimateLength.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract Ranking2ChartInfo.EstimateLength from stream. %s", err.Error())
 	}
 
-	ranking2ChartInfo.EstimateHighestScore, err = stream.ReadUInt32LE()
+	err = ranking2ChartInfo.EstimateHighestScore.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract Ranking2ChartInfo.EstimateHighestScore from stream. %s", err.Error())
 	}
 
-	ranking2ChartInfo.EstimateLowestScore, err = stream.ReadUInt32LE()
+	err = ranking2ChartInfo.EstimateLowestScore.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract Ranking2ChartInfo.EstimateLowestScore from stream. %s", err.Error())
 	}
 
-	ranking2ChartInfo.EstimateMedianScore, err = stream.ReadUInt32LE()
+	err = ranking2ChartInfo.EstimateMedianScore.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract Ranking2ChartInfo.EstimateMedianScore from stream. %s", err.Error())
 	}
@@ -95,32 +100,32 @@ func (ranking2ChartInfo *Ranking2ChartInfo) ExtractFromStream(stream *nex.Stream
 		return fmt.Errorf("Failed to extract Ranking2ChartInfo.EstimateAverageScore from stream. %s", err.Error())
 	}
 
-	ranking2ChartInfo.HighestBinsScore, err = stream.ReadUInt32LE()
+	err = ranking2ChartInfo.HighestBinsScore.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract Ranking2ChartInfo.HighestBinsScore from stream. %s", err.Error())
 	}
 
-	ranking2ChartInfo.LowestBinsScore, err = stream.ReadUInt32LE()
+	err = ranking2ChartInfo.LowestBinsScore.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract Ranking2ChartInfo.LowestBinsScore from stream. %s", err.Error())
 	}
 
-	ranking2ChartInfo.BinsWidth, err = stream.ReadUInt32LE()
+	err = ranking2ChartInfo.BinsWidth.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract Ranking2ChartInfo.BinsWidth from stream. %s", err.Error())
 	}
 
-	ranking2ChartInfo.Attribute1, err = stream.ReadUInt32LE()
+	err = ranking2ChartInfo.Attribute1.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract Ranking2ChartInfo.Attribute1 from stream. %s", err.Error())
 	}
 
-	ranking2ChartInfo.Attribute2, err = stream.ReadUInt32LE()
+	err = ranking2ChartInfo.Attribute2.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract Ranking2ChartInfo.Attribute2 from stream. %s", err.Error())
 	}
 
-	ranking2ChartInfo.Quantities, err = stream.ReadListUInt32LE()
+	err = ranking2ChartInfo.Quantities.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract Ranking2ChartInfo.Quantities from stream. %s", err.Error())
 	}
@@ -128,35 +133,41 @@ func (ranking2ChartInfo *Ranking2ChartInfo) ExtractFromStream(stream *nex.Stream
 	return nil
 }
 
-// Bytes encodes the Ranking2ChartInfo and returns a byte array
-func (ranking2ChartInfo *Ranking2ChartInfo) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteDateTime(ranking2ChartInfo.CreateTime)
-	stream.WriteUInt32LE(ranking2ChartInfo.Index)
-	stream.WriteUInt32LE(ranking2ChartInfo.Category)
-	stream.WriteInt32LE(ranking2ChartInfo.Season)
-	stream.WriteUInt8(ranking2ChartInfo.BinsSize)
-	stream.WriteUInt8(ranking2ChartInfo.SamplingRate)
-	stream.WriteBool(ranking2ChartInfo.ScoreOrder)
-	stream.WriteUInt32LE(ranking2ChartInfo.EstimateLength)
-	stream.WriteUInt32LE(ranking2ChartInfo.EstimateHighestScore)
-	stream.WriteUInt32LE(ranking2ChartInfo.EstimateLowestScore)
-	stream.WriteUInt32LE(ranking2ChartInfo.EstimateMedianScore)
-	stream.WriteFloat64LE(ranking2ChartInfo.EstimateAverageScore)
-	stream.WriteUInt32LE(ranking2ChartInfo.HighestBinsScore)
-	stream.WriteUInt32LE(ranking2ChartInfo.LowestBinsScore)
-	stream.WriteUInt32LE(ranking2ChartInfo.BinsWidth)
-	stream.WriteUInt32LE(ranking2ChartInfo.Attribute1)
-	stream.WriteUInt32LE(ranking2ChartInfo.Attribute2)
-	stream.WriteListUInt32LE(ranking2ChartInfo.Quantities)
+// WriteTo writes the Ranking2ChartInfo to the given writable
+func (ranking2ChartInfo *Ranking2ChartInfo) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
 
-	return stream.Bytes()
+	ranking2ChartInfo.CreateTime.WriteTo(contentWritable)
+	ranking2ChartInfo.Index.WriteTo(contentWritable)
+	ranking2ChartInfo.Category.WriteTo(contentWritable)
+	ranking2ChartInfo.Season.WriteTo(contentWritable)
+	ranking2ChartInfo.BinsSize.WriteTo(contentWritable)
+	ranking2ChartInfo.SamplingRate.WriteTo(contentWritable)
+	ranking2ChartInfo.ScoreOrder.WriteTo(contentWritable)
+	ranking2ChartInfo.EstimateLength.WriteTo(contentWritable)
+	ranking2ChartInfo.EstimateHighestScore.WriteTo(contentWritable)
+	ranking2ChartInfo.EstimateLowestScore.WriteTo(contentWritable)
+	ranking2ChartInfo.EstimateMedianScore.WriteTo(contentWritable)
+	ranking2ChartInfo.EstimateAverageScore.WriteTo(contentWritable)
+	ranking2ChartInfo.HighestBinsScore.WriteTo(contentWritable)
+	ranking2ChartInfo.LowestBinsScore.WriteTo(contentWritable)
+	ranking2ChartInfo.BinsWidth.WriteTo(contentWritable)
+	ranking2ChartInfo.Attribute1.WriteTo(contentWritable)
+	ranking2ChartInfo.Attribute2.WriteTo(contentWritable)
+	ranking2ChartInfo.Quantities.WriteTo(contentWritable)
+
+	content := contentWritable.Bytes()
+
+	ranking2ChartInfo.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // Copy returns a new copied instance of Ranking2ChartInfo
-func (ranking2ChartInfo *Ranking2ChartInfo) Copy() nex.StructureInterface {
+func (ranking2ChartInfo *Ranking2ChartInfo) Copy() types.RVType {
 	copied := NewRanking2ChartInfo()
 
-	copied.SetStructureVersion(ranking2ChartInfo.StructureVersion())
+	copied.StructureVersion = ranking2ChartInfo.StructureVersion
 
 	copied.CreateTime = ranking2ChartInfo.CreateTime.Copy()
 	copied.Index = ranking2ChartInfo.Index
@@ -175,7 +186,7 @@ func (ranking2ChartInfo *Ranking2ChartInfo) Copy() nex.StructureInterface {
 	copied.BinsWidth = ranking2ChartInfo.BinsWidth
 	copied.Attribute1 = ranking2ChartInfo.Attribute1
 	copied.Attribute2 = ranking2ChartInfo.Attribute2
-	copied.Quantities = make([]uint32, len(ranking2ChartInfo.Quantities))
+	copied.Quantities = make(*types.List[*types.PrimitiveU32], len(ranking2ChartInfo.Quantities))
 
 	copy(copied.Quantities, ranking2ChartInfo.Quantities)
 
@@ -183,10 +194,14 @@ func (ranking2ChartInfo *Ranking2ChartInfo) Copy() nex.StructureInterface {
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (ranking2ChartInfo *Ranking2ChartInfo) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*Ranking2ChartInfo)
+func (ranking2ChartInfo *Ranking2ChartInfo) Equals(o types.RVType) bool {
+	if _, ok := o.(*Ranking2ChartInfo); !ok {
+		return false
+	}
 
-	if ranking2ChartInfo.StructureVersion() != other.StructureVersion() {
+	other := o.(*Ranking2ChartInfo)
+
+	if ranking2ChartInfo.StructureVersion != other.StructureVersion {
 		return false
 	}
 
@@ -194,67 +209,67 @@ func (ranking2ChartInfo *Ranking2ChartInfo) Equals(structure nex.StructureInterf
 		return false
 	}
 
-	if ranking2ChartInfo.Index != other.Index {
+	if !ranking2ChartInfo.Index.Equals(other.Index) {
 		return false
 	}
 
-	if ranking2ChartInfo.Category != other.Category {
+	if !ranking2ChartInfo.Category.Equals(other.Category) {
 		return false
 	}
 
-	if ranking2ChartInfo.Season != other.Season {
+	if !ranking2ChartInfo.Season.Equals(other.Season) {
 		return false
 	}
 
-	if ranking2ChartInfo.BinsSize != other.BinsSize {
+	if !ranking2ChartInfo.BinsSize.Equals(other.BinsSize) {
 		return false
 	}
 
-	if ranking2ChartInfo.SamplingRate != other.SamplingRate {
+	if !ranking2ChartInfo.SamplingRate.Equals(other.SamplingRate) {
 		return false
 	}
 
-	if ranking2ChartInfo.ScoreOrder != other.ScoreOrder {
+	if !ranking2ChartInfo.ScoreOrder.Equals(other.ScoreOrder) {
 		return false
 	}
 
-	if ranking2ChartInfo.EstimateLength != other.EstimateLength {
+	if !ranking2ChartInfo.EstimateLength.Equals(other.EstimateLength) {
 		return false
 	}
 
-	if ranking2ChartInfo.EstimateHighestScore != other.EstimateHighestScore {
+	if !ranking2ChartInfo.EstimateHighestScore.Equals(other.EstimateHighestScore) {
 		return false
 	}
 
-	if ranking2ChartInfo.EstimateLowestScore != other.EstimateLowestScore {
+	if !ranking2ChartInfo.EstimateLowestScore.Equals(other.EstimateLowestScore) {
 		return false
 	}
 
-	if ranking2ChartInfo.EstimateMedianScore != other.EstimateMedianScore {
+	if !ranking2ChartInfo.EstimateMedianScore.Equals(other.EstimateMedianScore) {
 		return false
 	}
 
-	if ranking2ChartInfo.EstimateAverageScore != other.EstimateAverageScore {
+	if !ranking2ChartInfo.EstimateAverageScore.Equals(other.EstimateAverageScore) {
 		return false
 	}
 
-	if ranking2ChartInfo.HighestBinsScore != other.HighestBinsScore {
+	if !ranking2ChartInfo.HighestBinsScore.Equals(other.HighestBinsScore) {
 		return false
 	}
 
-	if ranking2ChartInfo.LowestBinsScore != other.LowestBinsScore {
+	if !ranking2ChartInfo.LowestBinsScore.Equals(other.LowestBinsScore) {
 		return false
 	}
 
-	if ranking2ChartInfo.BinsWidth != other.BinsWidth {
+	if !ranking2ChartInfo.BinsWidth.Equals(other.BinsWidth) {
 		return false
 	}
 
-	if ranking2ChartInfo.Attribute1 != other.Attribute1 {
+	if !ranking2ChartInfo.Attribute1.Equals(other.Attribute1) {
 		return false
 	}
 
-	if ranking2ChartInfo.Attribute2 != other.Attribute2 {
+	if !ranking2ChartInfo.Attribute2.Equals(other.Attribute2) {
 		return false
 	}
 
@@ -284,7 +299,7 @@ func (ranking2ChartInfo *Ranking2ChartInfo) FormatToString(indentationLevel int)
 	var b strings.Builder
 
 	b.WriteString("Ranking2ChartInfo{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, ranking2ChartInfo.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, ranking2ChartInfo.StructureVersion))
 
 	if ranking2ChartInfo.CreateTime != nil {
 		b.WriteString(fmt.Sprintf("%sCreateTime: %s\n", indentationValues, ranking2ChartInfo.CreateTime.FormatToString(indentationLevel+1)))

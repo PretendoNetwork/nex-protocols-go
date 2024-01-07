@@ -5,11 +5,13 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 	service_item_team_kirby_clash_deluxe_types "github.com/PretendoNetwork/nex-protocols-go/service-item/team-kirby-clash-deluxe/types"
 )
 
 func (protocol *Protocol) handleGetSupportID(packet nex.PacketInterface) {
+	var err error
 	var errorCode uint32
 
 	if protocol.GetSupportID == nil {
@@ -23,9 +25,10 @@ func (protocol *Protocol) handleGetSupportID(packet nex.PacketInterface) {
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.server)
+	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
-	getSuppordIDParam, err := nex.StreamReadStructure(parametersStream, service_item_team_kirby_clash_deluxe_types.NewServiceItemGetSupportIDParam())
+	getSuppordIDParam := service_item_team_kirby_clash_deluxe_types.NewServiceItemGetSupportIDParam()
+	err = getSuppordIDParam.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.GetSupportID(fmt.Errorf("Failed to read getSuppordIDParam from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {

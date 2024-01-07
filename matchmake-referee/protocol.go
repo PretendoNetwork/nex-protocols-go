@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 	matchmake_referee_types "github.com/PretendoNetwork/nex-protocols-go/matchmake-referee/types"
 )
@@ -57,12 +58,12 @@ const (
 type Protocol struct {
 	server                nex.ServerInterface
 	StartRound            func(err error, packet nex.PacketInterface, callID uint32, param *matchmake_referee_types.MatchmakeRefereeStartRoundParam) (*nex.RMCMessage, uint32)
-	GetStartRoundParam    func(err error, packet nex.PacketInterface, callID uint32, roundID uint64) (*nex.RMCMessage, uint32)
+	GetStartRoundParam    func(err error, packet nex.PacketInterface, callID uint32, roundID *types.PrimitiveU64) (*nex.RMCMessage, uint32)
 	EndRound              func(err error, packet nex.PacketInterface, callID uint32, endRoundParam *matchmake_referee_types.MatchmakeRefereeEndRoundParam) (*nex.RMCMessage, uint32)
-	EndRoundWithoutReport func(err error, packet nex.PacketInterface, callID uint32, roundID uint64) (*nex.RMCMessage, uint32)
-	GetRoundParticipants  func(err error, packet nex.PacketInterface, callID uint32, roundID uint64) (*nex.RMCMessage, uint32)
+	EndRoundWithoutReport func(err error, packet nex.PacketInterface, callID uint32, roundID *types.PrimitiveU64) (*nex.RMCMessage, uint32)
+	GetRoundParticipants  func(err error, packet nex.PacketInterface, callID uint32, roundID *types.PrimitiveU64) (*nex.RMCMessage, uint32)
 	GetNotSummarizedRound func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, uint32)
-	GetRound              func(err error, packet nex.PacketInterface, callID uint32, roundID uint64) (*nex.RMCMessage, uint32)
+	GetRound              func(err error, packet nex.PacketInterface, callID uint32, roundID *types.PrimitiveU64) (*nex.RMCMessage, uint32)
 	GetStatsPrimary       func(err error, packet nex.PacketInterface, callID uint32, target *matchmake_referee_types.MatchmakeRefereeStatsTarget) (*nex.RMCMessage, uint32)
 	GetStatsPrimaries     func(err error, packet nex.PacketInterface, callID uint32, targets []*matchmake_referee_types.MatchmakeRefereeStatsTarget) (*nex.RMCMessage, uint32)
 	GetStatsAll           func(err error, packet nex.PacketInterface, callID uint32, target *matchmake_referee_types.MatchmakeRefereeStatsTarget) (*nex.RMCMessage, uint32)
@@ -76,12 +77,12 @@ type Interface interface {
 	Server() nex.ServerInterface
 	SetServer(server nex.ServerInterface)
 	SetHandlerStartRound(handler func(err error, packet nex.PacketInterface, callID uint32, param *matchmake_referee_types.MatchmakeRefereeStartRoundParam) (*nex.RMCMessage, uint32))
-	SetHandlerGetStartRoundParam(handler func(err error, packet nex.PacketInterface, callID uint32, roundID uint64) (*nex.RMCMessage, uint32))
+	SetHandlerGetStartRoundParam(handler func(err error, packet nex.PacketInterface, callID uint32, roundID *types.PrimitiveU64) (*nex.RMCMessage, uint32))
 	SetHandlerEndRound(handler func(err error, packet nex.PacketInterface, callID uint32, endRoundParam *matchmake_referee_types.MatchmakeRefereeEndRoundParam) (*nex.RMCMessage, uint32))
-	SetHandlerEndRoundWithoutReport(handler func(err error, packet nex.PacketInterface, callID uint32, roundID uint64) (*nex.RMCMessage, uint32))
-	SetHandlerGetRoundParticipants(handler func(err error, packet nex.PacketInterface, callID uint32, roundID uint64) (*nex.RMCMessage, uint32))
+	SetHandlerEndRoundWithoutReport(handler func(err error, packet nex.PacketInterface, callID uint32, roundID *types.PrimitiveU64) (*nex.RMCMessage, uint32))
+	SetHandlerGetRoundParticipants(handler func(err error, packet nex.PacketInterface, callID uint32, roundID *types.PrimitiveU64) (*nex.RMCMessage, uint32))
 	SetHandlerGetNotSummarizedRound(handler func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, uint32))
-	SetHandlerGetRound(handler func(err error, packet nex.PacketInterface, callID uint32, roundID uint64) (*nex.RMCMessage, uint32))
+	SetHandlerGetRound(handler func(err error, packet nex.PacketInterface, callID uint32, roundID *types.PrimitiveU64) (*nex.RMCMessage, uint32))
 	SetHandlerGetStatsPrimary(handler func(err error, packet nex.PacketInterface, callID uint32, target *matchmake_referee_types.MatchmakeRefereeStatsTarget) (*nex.RMCMessage, uint32))
 	SetHandlerGetStatsPrimaries(handler func(err error, packet nex.PacketInterface, callID uint32, targets []*matchmake_referee_types.MatchmakeRefereeStatsTarget) (*nex.RMCMessage, uint32))
 	SetHandlerGetStatsAll(handler func(err error, packet nex.PacketInterface, callID uint32, target *matchmake_referee_types.MatchmakeRefereeStatsTarget) (*nex.RMCMessage, uint32))
@@ -106,7 +107,7 @@ func (protocol *Protocol) SetHandlerStartRound(handler func(err error, packet ne
 }
 
 // SetHandlerGetStartRoundParam sets the handler for the GetStartRoundParam method
-func (protocol *Protocol) SetHandlerGetStartRoundParam(handler func(err error, packet nex.PacketInterface, callID uint32, roundID uint64) (*nex.RMCMessage, uint32)) {
+func (protocol *Protocol) SetHandlerGetStartRoundParam(handler func(err error, packet nex.PacketInterface, callID uint32, roundID *types.PrimitiveU64) (*nex.RMCMessage, uint32)) {
 	protocol.GetStartRoundParam = handler
 }
 
@@ -116,12 +117,12 @@ func (protocol *Protocol) SetHandlerEndRound(handler func(err error, packet nex.
 }
 
 // SetHandlerEndRoundWithoutReport sets the handler for the EndRoundWithoutReport method
-func (protocol *Protocol) SetHandlerEndRoundWithoutReport(handler func(err error, packet nex.PacketInterface, callID uint32, roundID uint64) (*nex.RMCMessage, uint32)) {
+func (protocol *Protocol) SetHandlerEndRoundWithoutReport(handler func(err error, packet nex.PacketInterface, callID uint32, roundID *types.PrimitiveU64) (*nex.RMCMessage, uint32)) {
 	protocol.EndRoundWithoutReport = handler
 }
 
 // SetHandlerGetRoundParticipants sets the handler for the GetRoundParticipants method
-func (protocol *Protocol) SetHandlerGetRoundParticipants(handler func(err error, packet nex.PacketInterface, callID uint32, roundID uint64) (*nex.RMCMessage, uint32)) {
+func (protocol *Protocol) SetHandlerGetRoundParticipants(handler func(err error, packet nex.PacketInterface, callID uint32, roundID *types.PrimitiveU64) (*nex.RMCMessage, uint32)) {
 	protocol.GetRoundParticipants = handler
 }
 
@@ -131,7 +132,7 @@ func (protocol *Protocol) SetHandlerGetNotSummarizedRound(handler func(err error
 }
 
 // SetHandlerGetRound sets the handler for the GetRound method
-func (protocol *Protocol) SetHandlerGetRound(handler func(err error, packet nex.PacketInterface, callID uint32, roundID uint64) (*nex.RMCMessage, uint32)) {
+func (protocol *Protocol) SetHandlerGetRound(handler func(err error, packet nex.PacketInterface, callID uint32, roundID *types.PrimitiveU64) (*nex.RMCMessage, uint32)) {
 	protocol.GetRound = handler
 }
 

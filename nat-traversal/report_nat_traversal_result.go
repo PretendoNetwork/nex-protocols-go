@@ -5,10 +5,12 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
 func (protocol *Protocol) handleReportNATTraversalResult(packet nex.PacketInterface) {
+	var err error
 	var errorCode uint32
 
 	if protocol.ReportNATTraversalResult == nil {
@@ -24,9 +26,10 @@ func (protocol *Protocol) handleReportNATTraversalResult(packet nex.PacketInterf
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.server)
+	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
-	cid, err := parametersStream.ReadUInt32LE()
+	cid := types.NewPrimitiveU32(0)
+	err = cid.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.ReportNATTraversalResult(fmt.Errorf("Failed to read cid from parameters. %s", err.Error()), packet, callID, 0, false, 0)
 		if errorCode != 0 {
@@ -36,7 +39,8 @@ func (protocol *Protocol) handleReportNATTraversalResult(packet nex.PacketInterf
 		return
 	}
 
-	result, err := parametersStream.ReadBool()
+	result := types.NewPrimitiveBool(false)
+	err = result.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.ReportNATTraversalResult(fmt.Errorf("Failed to read result from parameters. %s", err.Error()), packet, callID, 0, false, 0)
 		if errorCode != 0 {
@@ -46,7 +50,7 @@ func (protocol *Protocol) handleReportNATTraversalResult(packet nex.PacketInterf
 		return
 	}
 
-	var rtt uint32 = 0
+	var rtt *types.PrimitiveU32 = 0
 
 	// TODO - Is this the right version?
 	if natTraversalVersion.GreaterOrEqual("3.0.0") {

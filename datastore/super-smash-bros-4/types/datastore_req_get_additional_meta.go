@@ -7,32 +7,37 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // DataStoreReqGetAdditionalMeta is a data structure used by the DataStore Super Smash Bros. 4 protocol
 type DataStoreReqGetAdditionalMeta struct {
-	nex.Structure
-	OwnerID    uint32
-	DataType   uint16
-	Version    uint16
+	types.Structure
+	OwnerID    *types.PrimitiveU32
+	DataType   *types.PrimitiveU16
+	Version    *types.PrimitiveU16
 	MetaBinary []byte
 }
 
-// ExtractFromStream extracts a DataStoreReqGetAdditionalMeta structure from a stream
-func (dataStoreReqGetAdditionalMeta *DataStoreReqGetAdditionalMeta) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the DataStoreReqGetAdditionalMeta from the given readable
+func (dataStoreReqGetAdditionalMeta *DataStoreReqGetAdditionalMeta) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	dataStoreReqGetAdditionalMeta.OwnerID, err = stream.ReadUInt32LE()
+	if err = dataStoreReqGetAdditionalMeta.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read DataStoreReqGetAdditionalMeta header. %s", err.Error())
+	}
+
+	err = dataStoreReqGetAdditionalMeta.OwnerID.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreReqGetAdditionalMeta.OwnerID. %s", err.Error())
 	}
 
-	dataStoreReqGetAdditionalMeta.DataType, err = stream.ReadUInt16LE()
+	err = dataStoreReqGetAdditionalMeta.DataType.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreReqGetAdditionalMeta.DataType. %s", err.Error())
 	}
 
-	dataStoreReqGetAdditionalMeta.Version, err = stream.ReadUInt16LE()
+	err = dataStoreReqGetAdditionalMeta.Version.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreReqGetAdditionalMeta.Version. %s", err.Error())
 	}
@@ -45,21 +50,27 @@ func (dataStoreReqGetAdditionalMeta *DataStoreReqGetAdditionalMeta) ExtractFromS
 	return nil
 }
 
-// Bytes encodes the DataStoreReqGetAdditionalMeta and returns a byte array
-func (dataStoreReqGetAdditionalMeta *DataStoreReqGetAdditionalMeta) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt32LE(dataStoreReqGetAdditionalMeta.OwnerID)
-	stream.WriteUInt16LE(dataStoreReqGetAdditionalMeta.DataType)
-	stream.WriteUInt16LE(dataStoreReqGetAdditionalMeta.Version)
+// WriteTo writes the DataStoreReqGetAdditionalMeta to the given writable
+func (dataStoreReqGetAdditionalMeta *DataStoreReqGetAdditionalMeta) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
+
+	dataStoreReqGetAdditionalMeta.OwnerID.WriteTo(contentWritable)
+	dataStoreReqGetAdditionalMeta.DataType.WriteTo(contentWritable)
+	dataStoreReqGetAdditionalMeta.Version.WriteTo(contentWritable)
 	stream.WriteQBuffer(dataStoreReqGetAdditionalMeta.MetaBinary)
 
-	return stream.Bytes()
+	content := contentWritable.Bytes()
+
+	rvcd.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // Copy returns a new copied instance of DataStoreReqGetAdditionalMeta
-func (dataStoreReqGetAdditionalMeta *DataStoreReqGetAdditionalMeta) Copy() nex.StructureInterface {
+func (dataStoreReqGetAdditionalMeta *DataStoreReqGetAdditionalMeta) Copy() types.RVType {
 	copied := NewDataStoreReqGetAdditionalMeta()
 
-	copied.SetStructureVersion(dataStoreReqGetAdditionalMeta.StructureVersion())
+	copied.StructureVersion = dataStoreReqGetAdditionalMeta.StructureVersion
 
 	copied.OwnerID = dataStoreReqGetAdditionalMeta.OwnerID
 	copied.DataType = dataStoreReqGetAdditionalMeta.DataType
@@ -72,26 +83,30 @@ func (dataStoreReqGetAdditionalMeta *DataStoreReqGetAdditionalMeta) Copy() nex.S
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (dataStoreReqGetAdditionalMeta *DataStoreReqGetAdditionalMeta) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*DataStoreReqGetAdditionalMeta)
-
-	if dataStoreReqGetAdditionalMeta.StructureVersion() != other.StructureVersion() {
+func (dataStoreReqGetAdditionalMeta *DataStoreReqGetAdditionalMeta) Equals(o types.RVType) bool {
+	if _, ok := o.(*DataStoreReqGetAdditionalMeta); !ok {
 		return false
 	}
 
-	if dataStoreReqGetAdditionalMeta.OwnerID != other.OwnerID {
+	other := o.(*DataStoreReqGetAdditionalMeta)
+
+	if dataStoreReqGetAdditionalMeta.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if dataStoreReqGetAdditionalMeta.DataType != other.DataType {
+	if !dataStoreReqGetAdditionalMeta.OwnerID.Equals(other.OwnerID) {
 		return false
 	}
 
-	if dataStoreReqGetAdditionalMeta.Version != other.Version {
+	if !dataStoreReqGetAdditionalMeta.DataType.Equals(other.DataType) {
 		return false
 	}
 
-	if !bytes.Equal(dataStoreReqGetAdditionalMeta.MetaBinary, other.MetaBinary) {
+	if !dataStoreReqGetAdditionalMeta.Version.Equals(other.Version) {
+		return false
+	}
+
+	if !dataStoreReqGetAdditionalMeta.MetaBinary.Equals(other.MetaBinary) {
 		return false
 	}
 
@@ -111,7 +126,7 @@ func (dataStoreReqGetAdditionalMeta *DataStoreReqGetAdditionalMeta) FormatToStri
 	var b strings.Builder
 
 	b.WriteString("DataStoreReqGetAdditionalMeta{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, dataStoreReqGetAdditionalMeta.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, dataStoreReqGetAdditionalMeta.StructureVersion))
 	b.WriteString(fmt.Sprintf("%sOwnerID: %d,\n", indentationValues, dataStoreReqGetAdditionalMeta.OwnerID))
 	b.WriteString(fmt.Sprintf("%sDataType: %d,\n", indentationValues, dataStoreReqGetAdditionalMeta.DataType))
 	b.WriteString(fmt.Sprintf("%sVersion: %d,\n", indentationValues, dataStoreReqGetAdditionalMeta.Version))

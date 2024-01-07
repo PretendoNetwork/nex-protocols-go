@@ -6,48 +6,59 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // PrincipalBasicInfo contains user account and Mii data
 type PrincipalBasicInfo struct {
-	nex.Structure
-	*nex.Data
-	PID     *nex.PID
+	types.Structure
+	*types.Data
+	PID     *types.PID
 	NNID    string
 	Mii     *MiiV2
-	Unknown uint8
+	Unknown *types.PrimitiveU8
 }
 
-// Bytes encodes the PrincipalBasicInfo and returns a byte array
-func (principalInfo *PrincipalBasicInfo) Bytes(stream *nex.StreamOut) []byte {
-	stream.WritePID(principalInfo.PID)
-	stream.WriteString(principalInfo.NNID)
-	stream.WriteStructure(principalInfo.Mii)
-	stream.WriteUInt8(principalInfo.Unknown)
+// WriteTo writes the PrincipalBasicInfo to the given writable
+func (principalInfo *PrincipalBasicInfo) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
 
-	return stream.Bytes()
+	principalInfo.PID.WriteTo(contentWritable)
+	principalInfo.NNID.WriteTo(contentWritable)
+	principalInfo.Mii.WriteTo(contentWritable)
+	principalInfo.Unknown.WriteTo(contentWritable)
+
+	content := contentWritable.Bytes()
+
+	principalInfo.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
-// ExtractFromStream extracts a PrincipalBasicInfo structure from a stream
-func (principalInfo *PrincipalBasicInfo) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the PrincipalBasicInfo from the given readable
+func (principalInfo *PrincipalBasicInfo) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	principalInfo.PID, err = stream.ReadPID()
+	if err = principalInfo.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read PrincipalBasicInfo header. %s", err.Error())
+	}
+
+	err = principalInfo.PID.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract PrincipalBasicInfo.PID. %s", err.Error())
 	}
 
-	principalInfo.NNID, err = stream.ReadString()
+	err = principalInfo.NNID.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract PrincipalBasicInfo.NNID. %s", err.Error())
 	}
 
-	principalInfo.Mii, err = nex.StreamReadStructure(stream, NewMiiV2())
+	err = principalInfo.Mii.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract PrincipalBasicInfo.Mii. %s", err.Error())
 	}
 
-	principalInfo.Unknown, err = stream.ReadUInt8()
+	err = principalInfo.Unknown.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract PrincipalBasicInfo.Unknown. %s", err.Error())
 	}
@@ -56,18 +67,12 @@ func (principalInfo *PrincipalBasicInfo) ExtractFromStream(stream *nex.StreamIn)
 }
 
 // Copy returns a new copied instance of PrincipalBasicInfo
-func (principalInfo *PrincipalBasicInfo) Copy() nex.StructureInterface {
+func (principalInfo *PrincipalBasicInfo) Copy() types.RVType {
 	copied := NewPrincipalBasicInfo()
 
-	copied.SetStructureVersion(principalInfo.StructureVersion())
+	copied.StructureVersion = principalInfo.StructureVersion
 
-	if principalInfo.ParentType() != nil {
-		copied.Data = principalInfo.ParentType().Copy().(*nex.Data)
-	} else {
-		copied.Data = nex.NewData()
-	}
-
-	copied.SetParentType(copied.Data)
+	copied.Data = principalInfo.Data.Copy().(*types.Data)
 
 	copied.PID = principalInfo.PID.Copy()
 	copied.NNID = principalInfo.NNID
@@ -78,10 +83,14 @@ func (principalInfo *PrincipalBasicInfo) Copy() nex.StructureInterface {
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (principalInfo *PrincipalBasicInfo) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*PrincipalBasicInfo)
+func (principalInfo *PrincipalBasicInfo) Equals(o types.RVType) bool {
+	if _, ok := o.(*PrincipalBasicInfo); !ok {
+		return false
+	}
 
-	if principalInfo.StructureVersion() != other.StructureVersion() {
+	other := o.(*PrincipalBasicInfo)
+
+	if principalInfo.StructureVersion != other.StructureVersion {
 		return false
 	}
 
@@ -93,7 +102,7 @@ func (principalInfo *PrincipalBasicInfo) Equals(structure nex.StructureInterface
 		return false
 	}
 
-	if principalInfo.NNID != other.NNID {
+	if !principalInfo.NNID.Equals(other.NNID) {
 		return false
 	}
 
@@ -101,7 +110,7 @@ func (principalInfo *PrincipalBasicInfo) Equals(structure nex.StructureInterface
 		return false
 	}
 
-	if principalInfo.Unknown != other.Unknown {
+	if !principalInfo.Unknown.Equals(other.Unknown) {
 		return false
 	}
 
@@ -121,7 +130,7 @@ func (principalInfo *PrincipalBasicInfo) FormatToString(indentationLevel int) st
 	var b strings.Builder
 
 	b.WriteString("PrincipalBasicInfo{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, principalInfo.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, principalInfo.StructureVersion))
 	b.WriteString(fmt.Sprintf("%sPID: %d,\n", indentationValues, principalInfo.PID))
 	b.WriteString(fmt.Sprintf("%sNNID: %q,\n", indentationValues, principalInfo.NNID))
 

@@ -6,28 +6,33 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // ServiceItemCatalog holds data for the Service Item (Team Kirby Clash Deluxe) protocol
 type ServiceItemCatalog struct {
-	nex.Structure
-	TotalSize          uint32
-	Offset             uint32
+	types.Structure
+	TotalSize          *types.PrimitiveU32
+	Offset             *types.PrimitiveU32
 	ListItems          []*ServiceItemListItem
-	IsBalanceAvailable bool
+	IsBalanceAvailable *types.PrimitiveBool
 	Balance            *ServiceItemAmount
 }
 
-// ExtractFromStream extracts a ServiceItemCatalog structure from a stream
-func (serviceItemCatalog *ServiceItemCatalog) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the ServiceItemCatalog from the given readable
+func (serviceItemCatalog *ServiceItemCatalog) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	serviceItemCatalog.TotalSize, err = stream.ReadUInt32LE()
+	if err = serviceItemCatalog.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read ServiceItemCatalog header. %s", err.Error())
+	}
+
+	err = serviceItemCatalog.TotalSize.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemCatalog.TotalSize from stream. %s", err.Error())
 	}
 
-	serviceItemCatalog.Offset, err = stream.ReadUInt32LE()
+	err = serviceItemCatalog.Offset.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemCatalog.Offset from stream. %s", err.Error())
 	}
@@ -39,12 +44,12 @@ func (serviceItemCatalog *ServiceItemCatalog) ExtractFromStream(stream *nex.Stre
 
 	serviceItemCatalog.ListItems = listItems
 
-	serviceItemCatalog.IsBalanceAvailable, err = stream.ReadBool()
+	err = serviceItemCatalog.IsBalanceAvailable.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemCatalog.IsBalanceAvailable from stream. %s", err.Error())
 	}
 
-	serviceItemCatalog.Balance, err = nex.StreamReadStructure(stream, NewServiceItemAmount())
+	err = serviceItemCatalog.Balance.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemCatalog.Balance from stream. %s", err.Error())
 	}
@@ -52,22 +57,28 @@ func (serviceItemCatalog *ServiceItemCatalog) ExtractFromStream(stream *nex.Stre
 	return nil
 }
 
-// Bytes encodes the ServiceItemCatalog and returns a byte array
-func (serviceItemCatalog *ServiceItemCatalog) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt32LE(serviceItemCatalog.TotalSize)
-	stream.WriteUInt32LE(serviceItemCatalog.Offset)
-	nex.StreamWriteListStructure(stream, serviceItemCatalog.ListItems)
-	stream.WriteBool(serviceItemCatalog.IsBalanceAvailable)
-	stream.WriteStructure(serviceItemCatalog.Balance)
+// WriteTo writes the ServiceItemCatalog to the given writable
+func (serviceItemCatalog *ServiceItemCatalog) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
 
-	return stream.Bytes()
+	serviceItemCatalog.TotalSize.WriteTo(contentWritable)
+	serviceItemCatalog.Offset.WriteTo(contentWritable)
+	serviceItemCatalog.ListItems.WriteTo(contentWritable)
+	serviceItemCatalog.IsBalanceAvailable.WriteTo(contentWritable)
+	serviceItemCatalog.Balance.WriteTo(contentWritable)
+
+	content := contentWritable.Bytes()
+
+	serviceItemCatalog.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // Copy returns a new copied instance of ServiceItemCatalog
-func (serviceItemCatalog *ServiceItemCatalog) Copy() nex.StructureInterface {
+func (serviceItemCatalog *ServiceItemCatalog) Copy() types.RVType {
 	copied := NewServiceItemCatalog()
 
-	copied.SetStructureVersion(serviceItemCatalog.StructureVersion())
+	copied.StructureVersion = serviceItemCatalog.StructureVersion
 
 	copied.TotalSize = serviceItemCatalog.TotalSize
 	copied.Offset = serviceItemCatalog.Offset
@@ -84,18 +95,22 @@ func (serviceItemCatalog *ServiceItemCatalog) Copy() nex.StructureInterface {
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (serviceItemCatalog *ServiceItemCatalog) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*ServiceItemCatalog)
-
-	if serviceItemCatalog.StructureVersion() != other.StructureVersion() {
+func (serviceItemCatalog *ServiceItemCatalog) Equals(o types.RVType) bool {
+	if _, ok := o.(*ServiceItemCatalog); !ok {
 		return false
 	}
 
-	if serviceItemCatalog.TotalSize != other.TotalSize {
+	other := o.(*ServiceItemCatalog)
+
+	if serviceItemCatalog.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if serviceItemCatalog.Offset != other.Offset {
+	if !serviceItemCatalog.TotalSize.Equals(other.TotalSize) {
+		return false
+	}
+
+	if !serviceItemCatalog.Offset.Equals(other.Offset) {
 		return false
 	}
 
@@ -109,7 +124,7 @@ func (serviceItemCatalog *ServiceItemCatalog) Equals(structure nex.StructureInte
 		}
 	}
 
-	if serviceItemCatalog.IsBalanceAvailable != other.IsBalanceAvailable {
+	if !serviceItemCatalog.IsBalanceAvailable.Equals(other.IsBalanceAvailable) {
 		return false
 	}
 
@@ -134,7 +149,7 @@ func (serviceItemCatalog *ServiceItemCatalog) FormatToString(indentationLevel in
 	var b strings.Builder
 
 	b.WriteString("ServiceItemCatalog{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, serviceItemCatalog.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, serviceItemCatalog.StructureVersion))
 	b.WriteString(fmt.Sprintf("%sTotalSize: %d,\n", indentationValues, serviceItemCatalog.TotalSize))
 	b.WriteString(fmt.Sprintf("%sOffset: %d,\n", indentationValues, serviceItemCatalog.Offset))
 

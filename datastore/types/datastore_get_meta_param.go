@@ -5,38 +5,58 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // DataStoreGetMetaParam is sent in the GetMeta method
 type DataStoreGetMetaParam struct {
-	nex.Structure
-	DataID            uint64
+	types.Structure
+	DataID            *types.PrimitiveU64
 	PersistenceTarget *DataStorePersistenceTarget
-	ResultOption      uint8
-	AccessPassword    uint64
+	ResultOption      *types.PrimitiveU8
+	AccessPassword    *types.PrimitiveU64
 }
 
-// ExtractFromStream extracts a DataStoreGetMetaParam structure from a stream
-func (dataStoreGetMetaParam *DataStoreGetMetaParam) ExtractFromStream(stream *nex.StreamIn) error {
+// WriteTo writes the DataStoreGetMetaParam to the given writable
+func (dataStoreGetMetaParam *DataStoreGetMetaParam) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
+
+	dataStoreGetMetaParam.DataID.WriteTo(contentWritable)
+	dataStoreGetMetaParam.PersistenceTarget.WriteTo(contentWritable)
+	dataStoreGetMetaParam.ResultOption.WriteTo(contentWritable)
+	dataStoreGetMetaParam.AccessPassword.WriteTo(contentWritable)
+
+	content := contentWritable.Bytes()
+
+	dataStoreGetMetaParam.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
+}
+
+// ExtractFrom extracts the DataStoreGetMetaParam from the given readable
+func (dataStoreGetMetaParam *DataStoreGetMetaParam) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	dataStoreGetMetaParam.DataID, err = stream.ReadUInt64LE()
+	if err = dataStoreGetMetaParam.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read DataStoreGetMetaParam header. %s", err.Error())
+	}
+
+	err = dataStoreGetMetaParam.DataID.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreGetMetaParam.DataID. %s", err.Error())
 	}
 
-	dataStoreGetMetaParam.PersistenceTarget, err = nex.StreamReadStructure(stream, NewDataStorePersistenceTarget())
+	err = dataStoreGetMetaParam.PersistenceTarget.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreGetMetaParam.PersistenceTarget. %s", err.Error())
 	}
 
-	dataStoreGetMetaParam.ResultOption, err = stream.ReadUInt8()
+	err = dataStoreGetMetaParam.ResultOption.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreGetMetaParam.ResultOption. %s", err.Error())
 	}
 
-	dataStoreGetMetaParam.AccessPassword, err = stream.ReadUInt64LE()
+	err = dataStoreGetMetaParam.AccessPassword.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreGetMetaParam.AccessPassword. %s", err.Error())
 	}
@@ -45,32 +65,34 @@ func (dataStoreGetMetaParam *DataStoreGetMetaParam) ExtractFromStream(stream *ne
 }
 
 // Copy returns a new copied instance of DataStoreGetMetaParam
-func (dataStoreGetMetaParam *DataStoreGetMetaParam) Copy() nex.StructureInterface {
+func (dataStoreGetMetaParam *DataStoreGetMetaParam) Copy() types.RVType {
 	copied := NewDataStoreGetMetaParam()
 
-	copied.SetStructureVersion(dataStoreGetMetaParam.StructureVersion())
+	copied.StructureVersion = dataStoreGetMetaParam.StructureVersion
 
-	copied.DataID = dataStoreGetMetaParam.DataID
+	copied.DataID = dataStoreGetMetaParam.DataID.Copy().(*types.PrimitiveU64)
 
-	if dataStoreGetMetaParam.PersistenceTarget != nil {
-		copied.PersistenceTarget = dataStoreGetMetaParam.PersistenceTarget.Copy().(*DataStorePersistenceTarget)
-	}
+	copied.PersistenceTarget = dataStoreGetMetaParam.PersistenceTarget.Copy().(*DataStorePersistenceTarget)
 
-	copied.ResultOption = dataStoreGetMetaParam.ResultOption
-	copied.AccessPassword = dataStoreGetMetaParam.AccessPassword
+	copied.ResultOption = dataStoreGetMetaParam.ResultOption.Copy().(*types.PrimitiveU8)
+	copied.AccessPassword = dataStoreGetMetaParam.AccessPassword.Copy().(*types.PrimitiveU64)
 
 	return copied
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (dataStoreGetMetaParam *DataStoreGetMetaParam) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*DataStoreGetMetaParam)
-
-	if dataStoreGetMetaParam.StructureVersion() != other.StructureVersion() {
+func (dataStoreGetMetaParam *DataStoreGetMetaParam) Equals(o types.RVType) bool {
+	if _, ok := o.(*DataStoreGetMetaParam); !ok {
 		return false
 	}
 
-	if dataStoreGetMetaParam.DataID != other.DataID {
+	other := o.(*DataStoreGetMetaParam)
+
+	if dataStoreGetMetaParam.StructureVersion != other.StructureVersion {
+		return false
+	}
+
+	if !dataStoreGetMetaParam.DataID.Equals(other.DataID) {
 		return false
 	}
 
@@ -78,11 +100,11 @@ func (dataStoreGetMetaParam *DataStoreGetMetaParam) Equals(structure nex.Structu
 		return false
 	}
 
-	if dataStoreGetMetaParam.ResultOption != other.ResultOption {
+	if !dataStoreGetMetaParam.ResultOption.Equals(other.ResultOption) {
 		return false
 	}
 
-	if dataStoreGetMetaParam.AccessPassword != other.AccessPassword {
+	if !dataStoreGetMetaParam.AccessPassword.Equals(other.AccessPassword) {
 		return false
 	}
 
@@ -102,17 +124,11 @@ func (dataStoreGetMetaParam *DataStoreGetMetaParam) FormatToString(indentationLe
 	var b strings.Builder
 
 	b.WriteString("DataStoreGetMetaParam{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, dataStoreGetMetaParam.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sDataID: %d,\n", indentationValues, dataStoreGetMetaParam.DataID))
-
-	if dataStoreGetMetaParam.PersistenceTarget != nil {
-		b.WriteString(fmt.Sprintf("%sPersistenceTarget: %s,\n", indentationValues, dataStoreGetMetaParam.PersistenceTarget.FormatToString(indentationLevel+1)))
-	} else {
-		b.WriteString(fmt.Sprintf("%sPersistenceTarget: nil,\n", indentationValues))
-	}
-
-	b.WriteString(fmt.Sprintf("%sResultOption: %d,\n", indentationValues, dataStoreGetMetaParam.ResultOption))
-	b.WriteString(fmt.Sprintf("%sAccessPassword: %d\n", indentationValues, dataStoreGetMetaParam.AccessPassword))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, dataStoreGetMetaParam.StructureVersion))
+	b.WriteString(fmt.Sprintf("%sDataID: %s,\n", indentationValues, dataStoreGetMetaParam.DataID))
+	b.WriteString(fmt.Sprintf("%sPersistenceTarget: %s,\n", indentationValues, dataStoreGetMetaParam.PersistenceTarget.FormatToString(indentationLevel+1)))
+	b.WriteString(fmt.Sprintf("%sResultOption: %s,\n", indentationValues, dataStoreGetMetaParam.ResultOption))
+	b.WriteString(fmt.Sprintf("%sAccessPassword: %s\n", indentationValues, dataStoreGetMetaParam.AccessPassword))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -121,9 +137,9 @@ func (dataStoreGetMetaParam *DataStoreGetMetaParam) FormatToString(indentationLe
 // NewDataStoreGetMetaParam returns a new DataStoreGetMetaParam
 func NewDataStoreGetMetaParam() *DataStoreGetMetaParam {
 	return &DataStoreGetMetaParam{
-		DataID:            0,
+		DataID:            types.NewPrimitiveU64(0),
 		PersistenceTarget: NewDataStorePersistenceTarget(),
-		ResultOption:      0,
-		AccessPassword:    0,
+		ResultOption:      types.NewPrimitiveU8(0),
+		AccessPassword:    types.NewPrimitiveU64(0),
 	}
 }

@@ -6,25 +6,30 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // ServiceItemLimitation holds data for the Service Item (Wii Sports Club) protocol
 type ServiceItemLimitation struct {
-	nex.Structure
-	LimitationType  uint32
-	LimitationValue uint32
+	types.Structure
+	LimitationType  *types.PrimitiveU32
+	LimitationValue *types.PrimitiveU32
 }
 
-// ExtractFromStream extracts a ServiceItemLimitation structure from a stream
-func (serviceItemLimitation *ServiceItemLimitation) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the ServiceItemLimitation from the given readable
+func (serviceItemLimitation *ServiceItemLimitation) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	serviceItemLimitation.LimitationType, err = stream.ReadUInt32LE()
+	if err = serviceItemLimitation.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read ServiceItemLimitation header. %s", err.Error())
+	}
+
+	err = serviceItemLimitation.LimitationType.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemLimitation.LimitationType from stream. %s", err.Error())
 	}
 
-	serviceItemLimitation.LimitationValue, err = stream.ReadUInt32LE()
+	err = serviceItemLimitation.LimitationValue.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemLimitation.LimitationValue from stream. %s", err.Error())
 	}
@@ -32,19 +37,25 @@ func (serviceItemLimitation *ServiceItemLimitation) ExtractFromStream(stream *ne
 	return nil
 }
 
-// Bytes encodes the ServiceItemLimitation and returns a byte array
-func (serviceItemLimitation *ServiceItemLimitation) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt32LE(serviceItemLimitation.LimitationType)
-	stream.WriteUInt32LE(serviceItemLimitation.LimitationValue)
+// WriteTo writes the ServiceItemLimitation to the given writable
+func (serviceItemLimitation *ServiceItemLimitation) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
 
-	return stream.Bytes()
+	serviceItemLimitation.LimitationType.WriteTo(contentWritable)
+	serviceItemLimitation.LimitationValue.WriteTo(contentWritable)
+
+	content := contentWritable.Bytes()
+
+	serviceItemLimitation.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // Copy returns a new copied instance of ServiceItemLimitation
-func (serviceItemLimitation *ServiceItemLimitation) Copy() nex.StructureInterface {
+func (serviceItemLimitation *ServiceItemLimitation) Copy() types.RVType {
 	copied := NewServiceItemLimitation()
 
-	copied.SetStructureVersion(serviceItemLimitation.StructureVersion())
+	copied.StructureVersion = serviceItemLimitation.StructureVersion
 
 	copied.LimitationType = serviceItemLimitation.LimitationType
 	copied.LimitationValue = serviceItemLimitation.LimitationValue
@@ -53,18 +64,22 @@ func (serviceItemLimitation *ServiceItemLimitation) Copy() nex.StructureInterfac
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (serviceItemLimitation *ServiceItemLimitation) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*ServiceItemLimitation)
-
-	if serviceItemLimitation.StructureVersion() != other.StructureVersion() {
+func (serviceItemLimitation *ServiceItemLimitation) Equals(o types.RVType) bool {
+	if _, ok := o.(*ServiceItemLimitation); !ok {
 		return false
 	}
 
-	if serviceItemLimitation.LimitationType != other.LimitationType {
+	other := o.(*ServiceItemLimitation)
+
+	if serviceItemLimitation.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if serviceItemLimitation.LimitationValue != other.LimitationValue {
+	if !serviceItemLimitation.LimitationType.Equals(other.LimitationType) {
+		return false
+	}
+
+	if !serviceItemLimitation.LimitationValue.Equals(other.LimitationValue) {
 		return false
 	}
 
@@ -84,7 +99,7 @@ func (serviceItemLimitation *ServiceItemLimitation) FormatToString(indentationLe
 	var b strings.Builder
 
 	b.WriteString("ServiceItemLimitation{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, serviceItemLimitation.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, serviceItemLimitation.StructureVersion))
 	b.WriteString(fmt.Sprintf("%sLimitationType: %d,\n", indentationValues, serviceItemLimitation.LimitationType))
 	b.WriteString(fmt.Sprintf("%sLimitationValue: %d,\n", indentationValues, serviceItemLimitation.LimitationValue))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))

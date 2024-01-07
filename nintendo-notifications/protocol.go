@@ -2,6 +2,7 @@
 package protocol
 
 import nex "github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 
 const (
 	// ProtocolID is the protocol ID for the Nintendo Notifications protocol

@@ -5,26 +5,30 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // GlobalTradeStationDeletePokemonParam holds data for the DataStore (Pokemon Bank) protocol
 type GlobalTradeStationDeletePokemonParam struct {
-	nex.Structure
+	types.Structure
 	PrepareUploadKey *GlobalTradeStationRecordKey
-	DeleteFlag       uint8
+	DeleteFlag       *types.PrimitiveU8
 }
 
-// ExtractFromStream extracts a GlobalTradeStationDeletePokemonParam structure from a stream
-func (globalTradeStationDeletePokemonParam *GlobalTradeStationDeletePokemonParam) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the GlobalTradeStationDeletePokemonParam from the given readable
+func (globalTradeStationDeletePokemonParam *GlobalTradeStationDeletePokemonParam) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	globalTradeStationDeletePokemonParam.PrepareUploadKey, err = nex.StreamReadStructure(stream, NewGlobalTradeStationRecordKey())
+	if err = globalTradeStationDeletePokemonParam.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read GlobalTradeStationDeletePokemonParam header. %s", err.Error())
+	}
+
+	err = globalTradeStationDeletePokemonParam.PrepareUploadKey.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract GlobalTradeStationDeletePokemonParam.PrepareUploadKey from stream. %s", err.Error())
 	}
 
-	globalTradeStationDeletePokemonParam.DeleteFlag, err = stream.ReadUInt8()
+	err = globalTradeStationDeletePokemonParam.DeleteFlag.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract GlobalTradeStationDeletePokemonParam.DeleteFlag from stream. %s", err.Error())
 	}
@@ -32,31 +36,41 @@ func (globalTradeStationDeletePokemonParam *GlobalTradeStationDeletePokemonParam
 	return nil
 }
 
-// Bytes encodes the GlobalTradeStationDeletePokemonParam and returns a byte array
-func (globalTradeStationDeletePokemonParam *GlobalTradeStationDeletePokemonParam) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteStructure(globalTradeStationDeletePokemonParam.PrepareUploadKey)
-	stream.WriteUInt8(globalTradeStationDeletePokemonParam.DeleteFlag)
+// WriteTo writes the GlobalTradeStationDeletePokemonParam to the given writable
+func (globalTradeStationDeletePokemonParam *GlobalTradeStationDeletePokemonParam) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
 
-	return stream.Bytes()
+	globalTradeStationDeletePokemonParam.PrepareUploadKey.WriteTo(contentWritable)
+	globalTradeStationDeletePokemonParam.DeleteFlag.WriteTo(contentWritable)
+
+	content := contentWritable.Bytes()
+
+	globalTradeStationDeletePokemonParam.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // Copy returns a new copied instance of GlobalTradeStationDeletePokemonParam
-func (globalTradeStationDeletePokemonParam *GlobalTradeStationDeletePokemonParam) Copy() nex.StructureInterface {
+func (globalTradeStationDeletePokemonParam *GlobalTradeStationDeletePokemonParam) Copy() types.RVType {
 	copied := NewGlobalTradeStationDeletePokemonParam()
 
-	copied.SetStructureVersion(globalTradeStationDeletePokemonParam.StructureVersion())
+	copied.StructureVersion = globalTradeStationDeletePokemonParam.StructureVersion
 
 	copied.PrepareUploadKey = globalTradeStationDeletePokemonParam.PrepareUploadKey.Copy().(*GlobalTradeStationRecordKey)
-	copied.DeleteFlag = globalTradeStationDeletePokemonParam.DeleteFlag
+	copied.DeleteFlag = globalTradeStationDeletePokemonParam.DeleteFlag.Copy().(*types.PrimitiveU8)
 
 	return copied
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (globalTradeStationDeletePokemonParam *GlobalTradeStationDeletePokemonParam) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*GlobalTradeStationDeletePokemonParam)
+func (globalTradeStationDeletePokemonParam *GlobalTradeStationDeletePokemonParam) Equals(o types.RVType) bool {
+	if _, ok := o.(*GlobalTradeStationDeletePokemonParam); !ok {
+		return false
+	}
 
-	if globalTradeStationDeletePokemonParam.StructureVersion() != other.StructureVersion() {
+	other := o.(*GlobalTradeStationDeletePokemonParam)
+
+	if globalTradeStationDeletePokemonParam.StructureVersion != other.StructureVersion {
 		return false
 	}
 
@@ -64,7 +78,7 @@ func (globalTradeStationDeletePokemonParam *GlobalTradeStationDeletePokemonParam
 		return false
 	}
 
-	if globalTradeStationDeletePokemonParam.DeleteFlag != other.DeleteFlag {
+	if !globalTradeStationDeletePokemonParam.DeleteFlag.Equals(other.DeleteFlag) {
 		return false
 	}
 
@@ -84,15 +98,9 @@ func (globalTradeStationDeletePokemonParam *GlobalTradeStationDeletePokemonParam
 	var b strings.Builder
 
 	b.WriteString("GlobalTradeStationDeletePokemonParam{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, globalTradeStationDeletePokemonParam.StructureVersion()))
-
-	if globalTradeStationDeletePokemonParam.PrepareUploadKey != nil {
-		b.WriteString(fmt.Sprintf("%sPrepareUploadKey: %s\n", indentationValues, globalTradeStationDeletePokemonParam.PrepareUploadKey.FormatToString(indentationLevel+1)))
-	} else {
-		b.WriteString(fmt.Sprintf("%sPrepareUploadKey: nil\n", indentationValues))
-	}
-
-	b.WriteString(fmt.Sprintf("%sDeleteFlag: %d,\n", indentationValues, globalTradeStationDeletePokemonParam.DeleteFlag))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, globalTradeStationDeletePokemonParam.StructureVersion))
+	b.WriteString(fmt.Sprintf("%sPrepareUploadKey: %s\n", indentationValues, globalTradeStationDeletePokemonParam.PrepareUploadKey.FormatToString(indentationLevel+1)))
+	b.WriteString(fmt.Sprintf("%sDeleteFlag: %s,\n", indentationValues, globalTradeStationDeletePokemonParam.DeleteFlag))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -100,5 +108,8 @@ func (globalTradeStationDeletePokemonParam *GlobalTradeStationDeletePokemonParam
 
 // NewGlobalTradeStationDeletePokemonParam returns a new GlobalTradeStationDeletePokemonParam
 func NewGlobalTradeStationDeletePokemonParam() *GlobalTradeStationDeletePokemonParam {
-	return &GlobalTradeStationDeletePokemonParam{}
+	return &GlobalTradeStationDeletePokemonParam{
+		PrepareUploadKey: NewGlobalTradeStationRecordKey(),
+		DeleteFlag: types.NewPrimitiveU8(0),
+	}
 }

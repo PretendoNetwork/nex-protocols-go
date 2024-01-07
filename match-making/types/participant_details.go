@@ -9,37 +9,42 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // ParticipantDetails holds information a participant
 type ParticipantDetails struct {
-	nex.Structure
-	IDParticipant  *nex.PID
+	types.Structure
+	IDParticipant  *types.PID
 	StrName        string
 	StrMessage     string
-	UIParticipants uint16
+	UIParticipants *types.PrimitiveU16
 }
 
-// ExtractFromStream extracts a ParticipantDetails structure from a stream
-func (participantDetails *ParticipantDetails) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the ParticipantDetails from the given readable
+func (participantDetails *ParticipantDetails) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	participantDetails.IDParticipant, err = stream.ReadPID()
+	if err = participantDetails.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read ParticipantDetails header. %s", err.Error())
+	}
+
+	err = participantDetails.IDParticipant.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract ParticipantDetails.IDParticipant. %s", err.Error())
 	}
 
-	participantDetails.StrName, err = stream.ReadString()
+	err = participantDetails.StrName.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract ParticipantDetails.StrName. %s", err.Error())
 	}
 
-	participantDetails.StrMessage, err = stream.ReadString()
+	err = participantDetails.StrMessage.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract ParticipantDetails.StrMessage. %s", err.Error())
 	}
 
-	participantDetails.UIParticipants, err = stream.ReadUInt16LE()
+	err = participantDetails.UIParticipants.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract ParticipantDetails.UIParticipants. %s", err.Error())
 	}
@@ -47,21 +52,27 @@ func (participantDetails *ParticipantDetails) ExtractFromStream(stream *nex.Stre
 	return nil
 }
 
-// Bytes encodes the ParticipantDetails and returns a byte array
-func (participantDetails *ParticipantDetails) Bytes(stream *nex.StreamOut) []byte {
-	stream.WritePID(participantDetails.IDParticipant)
-	stream.WriteString(participantDetails.StrName)
-	stream.WriteString(participantDetails.StrMessage)
-	stream.WriteUInt16LE(participantDetails.UIParticipants)
+// WriteTo writes the ParticipantDetails to the given writable
+func (participantDetails *ParticipantDetails) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
 
-	return stream.Bytes()
+	participantDetails.IDParticipant.WriteTo(contentWritable)
+	participantDetails.StrName.WriteTo(contentWritable)
+	participantDetails.StrMessage.WriteTo(contentWritable)
+	participantDetails.UIParticipants.WriteTo(contentWritable)
+
+	content := contentWritable.Bytes()
+
+	participantDetails.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // Copy returns a new copied instance of ParticipantDetails
-func (participantDetails *ParticipantDetails) Copy() nex.StructureInterface {
+func (participantDetails *ParticipantDetails) Copy() types.RVType {
 	copied := NewParticipantDetails()
 
-	copied.SetStructureVersion(participantDetails.StructureVersion())
+	copied.StructureVersion = participantDetails.StructureVersion
 
 	copied.IDParticipant = participantDetails.IDParticipant.Copy()
 	copied.StrName = participantDetails.StrName
@@ -72,10 +83,14 @@ func (participantDetails *ParticipantDetails) Copy() nex.StructureInterface {
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (participantDetails *ParticipantDetails) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*ParticipantDetails)
+func (participantDetails *ParticipantDetails) Equals(o types.RVType) bool {
+	if _, ok := o.(*ParticipantDetails); !ok {
+		return false
+	}
 
-	if participantDetails.StructureVersion() != other.StructureVersion() {
+	other := o.(*ParticipantDetails)
+
+	if participantDetails.StructureVersion != other.StructureVersion {
 		return false
 	}
 
@@ -83,15 +98,15 @@ func (participantDetails *ParticipantDetails) Equals(structure nex.StructureInte
 		return false
 	}
 
-	if participantDetails.StrName != other.StrName {
+	if !participantDetails.StrName.Equals(other.StrName) {
 		return false
 	}
 
-	if participantDetails.StrMessage != other.StrMessage {
+	if !participantDetails.StrMessage.Equals(other.StrMessage) {
 		return false
 	}
 
-	if participantDetails.UIParticipants != other.UIParticipants {
+	if !participantDetails.UIParticipants.Equals(other.UIParticipants) {
 		return false
 	}
 
@@ -111,7 +126,7 @@ func (participantDetails *ParticipantDetails) FormatToString(indentationLevel in
 	var b strings.Builder
 
 	b.WriteString("ParticipantDetails{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, participantDetails.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, participantDetails.StructureVersion))
 	b.WriteString(fmt.Sprintf("%sIDParticipant: %s,\n", indentationValues, participantDetails.IDParticipant.FormatToString(indentationLevel+1)))
 	b.WriteString(fmt.Sprintf("%sStrName: %q,\n", indentationValues, participantDetails.StrName))
 	b.WriteString(fmt.Sprintf("%sStrMessage: %q,\n", indentationValues, participantDetails.StrMessage))

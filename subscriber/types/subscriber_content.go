@@ -7,29 +7,34 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // SubscriberContent is unknown
 type SubscriberContent struct {
-	nex.Structure
-	Unknown1 uint64
+	types.Structure
+	Unknown1 *types.PrimitiveU64
 	Unknown2 string
 	Unknown3 []byte
-	Unknown4 uint64
-	Unknown5 []string
-	Unknown6 *nex.DateTime
+	Unknown4 *types.PrimitiveU64
+	Unknown5 *types.List[*types.String]
+	Unknown6 *types.DateTime
 }
 
-// ExtractFromStream extracts a SubscriberContent structure from a stream
-func (subscriberContent *SubscriberContent) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the SubscriberContent from the given readable
+func (subscriberContent *SubscriberContent) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	subscriberContent.Unknown1, err = stream.ReadUInt64LE()
+	if err = subscriberContent.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read SubscriberContent header. %s", err.Error())
+	}
+
+	err = subscriberContent.Unknown1.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract SubscriberContent.Unknown1 from stream. %s", err.Error())
 	}
 
-	subscriberContent.Unknown2, err = stream.ReadString()
+	err = subscriberContent.Unknown2.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract SubscriberContent.Unknown2 from stream. %s", err.Error())
 	}
@@ -39,17 +44,17 @@ func (subscriberContent *SubscriberContent) ExtractFromStream(stream *nex.Stream
 		return fmt.Errorf("Failed to extract SubscriberContent.Unknown3 from stream. %s", err.Error())
 	}
 
-	subscriberContent.Unknown4, err = stream.ReadUInt64LE()
+	err = subscriberContent.Unknown4.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract SubscriberContent.Unknown4 from stream. %s", err.Error())
 	}
 
-	subscriberContent.Unknown5, err = stream.ReadListString()
+	err = subscriberContent.Unknown5.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract SubscriberContent.Unknown5 from stream. %s", err.Error())
 	}
 
-	subscriberContent.Unknown6, err = stream.ReadDateTime()
+	err = subscriberContent.Unknown6.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract SubscriberContent.Unknown6 from stream. %s", err.Error())
 	}
@@ -57,23 +62,29 @@ func (subscriberContent *SubscriberContent) ExtractFromStream(stream *nex.Stream
 	return nil
 }
 
-// Bytes encodes the SubscriberContent and returns a byte array
-func (subscriberContent *SubscriberContent) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt64LE(subscriberContent.Unknown1)
-	stream.WriteString(subscriberContent.Unknown2)
-	stream.WriteQBuffer(subscriberContent.Unknown3)
-	stream.WriteUInt64LE(subscriberContent.Unknown4)
-	stream.WriteListString(subscriberContent.Unknown5)
-	stream.WriteDateTime(subscriberContent.Unknown6)
+// WriteTo writes the SubscriberContent to the given writable
+func (subscriberContent *SubscriberContent) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
 
-	return stream.Bytes()
+	subscriberContent.Unknown1.WriteTo(contentWritable)
+	subscriberContent.Unknown2.WriteTo(contentWritable)
+	stream.WriteQBuffer(subscriberContent.Unknown3)
+	subscriberContent.Unknown4.WriteTo(contentWritable)
+	subscriberContent.Unknown5.WriteTo(contentWritable)
+	subscriberContent.Unknown6.WriteTo(contentWritable)
+
+	content := contentWritable.Bytes()
+
+	subscriberContent.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // Copy returns a new copied instance of SubscriberContent
-func (subscriberContent *SubscriberContent) Copy() nex.StructureInterface {
+func (subscriberContent *SubscriberContent) Copy() types.RVType {
 	copied := NewSubscriberContent()
 
-	copied.SetStructureVersion(subscriberContent.StructureVersion())
+	copied.StructureVersion = subscriberContent.StructureVersion
 
 	copied.Unknown1 = subscriberContent.Unknown1
 	copied.Unknown2 = subscriberContent.Unknown2
@@ -82,38 +93,40 @@ func (subscriberContent *SubscriberContent) Copy() nex.StructureInterface {
 	copy(copied.Unknown3, subscriberContent.Unknown3)
 
 	copied.Unknown4 = subscriberContent.Unknown4
-	copied.Unknown5 = make([]string, len(subscriberContent.Unknown5))
+	copied.Unknown5 = make(*types.List[*types.String], len(subscriberContent.Unknown5))
 
 	copy(copied.Unknown5, subscriberContent.Unknown5)
 
-	if subscriberContent.Unknown6 != nil {
-		copied.Unknown6 = subscriberContent.Unknown6.Copy()
-	}
+	copied.Unknown6 = subscriberContent.Unknown6.Copy()
 
 	return copied
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (subscriberContent *SubscriberContent) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*SubscriberContent)
-
-	if subscriberContent.StructureVersion() != other.StructureVersion() {
+func (subscriberContent *SubscriberContent) Equals(o types.RVType) bool {
+	if _, ok := o.(*SubscriberContent); !ok {
 		return false
 	}
 
-	if subscriberContent.Unknown1 != other.Unknown1 {
+	other := o.(*SubscriberContent)
+
+	if subscriberContent.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if subscriberContent.Unknown2 != other.Unknown2 {
+	if !subscriberContent.Unknown1.Equals(other.Unknown1) {
 		return false
 	}
 
-	if !bytes.Equal(subscriberContent.Unknown3, other.Unknown3) {
+	if !subscriberContent.Unknown2.Equals(other.Unknown2) {
 		return false
 	}
 
-	if subscriberContent.Unknown4 != other.Unknown4 {
+	if !subscriberContent.Unknown3.Equals(other.Unknown3) {
+		return false
+	}
+
+	if !subscriberContent.Unknown4.Equals(other.Unknown4) {
 		return false
 	}
 
@@ -143,7 +156,7 @@ func (subscriberContent *SubscriberContent) FormatToString(indentationLevel int)
 	var b strings.Builder
 
 	b.WriteString("SubscriberContent{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, subscriberContent.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, subscriberContent.StructureVersion))
 	b.WriteString(fmt.Sprintf("%sUnknown1: %d,\n", indentationValues, subscriberContent.Unknown1))
 	b.WriteString(fmt.Sprintf("%sUnknown2: %q,\n", indentationValues, subscriberContent.Unknown2))
 	b.WriteString(fmt.Sprintf("%sUnknown3: %x,\n", indentationValues, subscriberContent.Unknown3))

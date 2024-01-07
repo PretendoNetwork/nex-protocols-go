@@ -5,10 +5,12 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
 func (protocol *Protocol) handleGetCategorySetting(packet nex.PacketInterface) {
+	var err error
 	var errorCode uint32
 
 	if protocol.GetCategorySetting == nil {
@@ -22,9 +24,10 @@ func (protocol *Protocol) handleGetCategorySetting(packet nex.PacketInterface) {
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.server)
+	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
-	category, err := parametersStream.ReadUInt32LE()
+	category := types.NewPrimitiveU32(0)
+	err = category.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.GetCategorySetting(fmt.Errorf("Failed to read category from parameters. %s", err.Error()), packet, callID, 0)
 		if errorCode != 0 {

@@ -5,11 +5,13 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 	messaging_types "github.com/PretendoNetwork/nex-protocols-go/messaging/types"
 )
 
 func (protocol *Protocol) handleRetrieveMessages(packet nex.PacketInterface) {
+	var err error
 	var errorCode uint32
 
 	if protocol.RetrieveMessages == nil {
@@ -23,9 +25,10 @@ func (protocol *Protocol) handleRetrieveMessages(packet nex.PacketInterface) {
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.server)
+	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
-	recipient, err := nex.StreamReadStructure(parametersStream, messaging_types.NewMessageRecipient())
+	recipient := messaging_types.NewMessageRecipient()
+	err = recipient.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.RetrieveMessages(fmt.Errorf("Failed to read recipient from parameters. %s", err.Error()), packet, callID, nil, nil, false)
 		if errorCode != 0 {
@@ -35,7 +38,9 @@ func (protocol *Protocol) handleRetrieveMessages(packet nex.PacketInterface) {
 		return
 	}
 
-	lstMsgIDs, err := parametersStream.ReadListUInt32LE()
+	lstMsgIDs := types.NewList[*types.PrimitiveU32]()
+	lstMsgIDs.Type = types.NewPrimitiveU32(0)
+	err = lstMsgIDs.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.RetrieveMessages(fmt.Errorf("Failed to read lstMsgIDs from parameters. %s", err.Error()), packet, callID, nil, nil, false)
 		if errorCode != 0 {
@@ -45,7 +50,8 @@ func (protocol *Protocol) handleRetrieveMessages(packet nex.PacketInterface) {
 		return
 	}
 
-	bLeaveOnServer, err := parametersStream.ReadBool()
+	bLeaveOnServer := types.NewPrimitiveBool(false)
+	err = bLeaveOnServer.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.RetrieveMessages(fmt.Errorf("Failed to read bLeaveOnServer from parameters. %s", err.Error()), packet, callID, nil, nil, false)
 		if errorCode != 0 {

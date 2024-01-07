@@ -9,51 +9,56 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // AutoMatchmakeParam holds parameters for a matchmake session
 type AutoMatchmakeParam struct {
-	nex.Structure
+	types.Structure
 	SourceMatchmakeSession   *MatchmakeSession
-	AdditionalParticipants   []*nex.PID
-	GIDForParticipationCheck uint32
-	AutoMatchmakeOption      uint32
+	AdditionalParticipants   *types.List[*types.PID]
+	GIDForParticipationCheck *types.PrimitiveU32
+	AutoMatchmakeOption      *types.PrimitiveU32
 	JoinMessage              string
-	ParticipationCount       uint16
+	ParticipationCount       *types.PrimitiveU16
 	LstSearchCriteria        []*MatchmakeSessionSearchCriteria
-	TargetGIDs               []uint32
+	TargetGIDs               *types.List[*types.PrimitiveU32]
 }
 
-// ExtractFromStream extracts a AutoMatchmakeParam structure from a stream
-func (autoMatchmakeParam *AutoMatchmakeParam) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the AutoMatchmakeParam from the given readable
+func (autoMatchmakeParam *AutoMatchmakeParam) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	autoMatchmakeParam.SourceMatchmakeSession, err = nex.StreamReadStructure(stream, NewMatchmakeSession())
+	if err = autoMatchmakeParam.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read AutoMatchmakeParam header. %s", err.Error())
+	}
+
+	err = autoMatchmakeParam.SourceMatchmakeSession.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract AutoMatchmakeParam.SourceMatchmakeSession. %s", err.Error())
 	}
 
-	autoMatchmakeParam.AdditionalParticipants, err = stream.ReadListPID()
+	err = autoMatchmakeParam.AdditionalParticipants.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract AutoMatchmakeParam.AdditionalParticipants. %s", err.Error())
 	}
 
-	autoMatchmakeParam.GIDForParticipationCheck, err = stream.ReadUInt32LE()
+	err = autoMatchmakeParam.GIDForParticipationCheck.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract AutoMatchmakeParam.GIDForParticipationCheck. %s", err.Error())
 	}
 
-	autoMatchmakeParam.AutoMatchmakeOption, err = stream.ReadUInt32LE()
+	err = autoMatchmakeParam.AutoMatchmakeOption.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract AutoMatchmakeParam.AutoMatchmakeOption. %s", err.Error())
 	}
 
-	autoMatchmakeParam.JoinMessage, err = stream.ReadString()
+	err = autoMatchmakeParam.JoinMessage.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract AutoMatchmakeParam.JoinMessage. %s", err.Error())
 	}
 
-	autoMatchmakeParam.ParticipationCount, err = stream.ReadUInt16LE()
+	err = autoMatchmakeParam.ParticipationCount.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract AutoMatchmakeParam.ParticipationCount. %s", err.Error())
 	}
@@ -64,7 +69,7 @@ func (autoMatchmakeParam *AutoMatchmakeParam) ExtractFromStream(stream *nex.Stre
 	}
 
 	autoMatchmakeParam.LstSearchCriteria = lstSearchCriteria
-	autoMatchmakeParam.TargetGIDs, err = stream.ReadListUInt32LE()
+	err = autoMatchmakeParam.TargetGIDs.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract AutoMatchmakeParam.TargetGIDs. %s", err.Error())
 	}
@@ -73,16 +78,14 @@ func (autoMatchmakeParam *AutoMatchmakeParam) ExtractFromStream(stream *nex.Stre
 }
 
 // Copy returns a new copied instance of AutoMatchmakeParam
-func (autoMatchmakeParam *AutoMatchmakeParam) Copy() nex.StructureInterface {
+func (autoMatchmakeParam *AutoMatchmakeParam) Copy() types.RVType {
 	copied := NewAutoMatchmakeParam()
 
-	copied.SetStructureVersion(autoMatchmakeParam.StructureVersion())
+	copied.StructureVersion = autoMatchmakeParam.StructureVersion
 
-	if autoMatchmakeParam.SourceMatchmakeSession != nil {
-		copied.SourceMatchmakeSession = autoMatchmakeParam.SourceMatchmakeSession.Copy().(*MatchmakeSession)
-	}
+	copied.SourceMatchmakeSession = autoMatchmakeParam.SourceMatchmakeSession.Copy().(*MatchmakeSession)
 
-	copied.AdditionalParticipants = make([]*nex.PID, len(autoMatchmakeParam.AdditionalParticipants))
+	copied.AdditionalParticipants = make(*types.List[*types.PID], len(autoMatchmakeParam.AdditionalParticipants))
 
 	for i := 0; i < len(autoMatchmakeParam.AdditionalParticipants); i++ {
 		copied.AdditionalParticipants[i] = autoMatchmakeParam.AdditionalParticipants[i].Copy()
@@ -98,7 +101,7 @@ func (autoMatchmakeParam *AutoMatchmakeParam) Copy() nex.StructureInterface {
 		copied.LstSearchCriteria[i] = autoMatchmakeParam.LstSearchCriteria[i].Copy().(*MatchmakeSessionSearchCriteria)
 	}
 
-	copied.TargetGIDs = make([]uint32, len(autoMatchmakeParam.TargetGIDs))
+	copied.TargetGIDs = make(*types.List[*types.PrimitiveU32], len(autoMatchmakeParam.TargetGIDs))
 
 	copy(copied.TargetGIDs, autoMatchmakeParam.TargetGIDs)
 
@@ -106,18 +109,14 @@ func (autoMatchmakeParam *AutoMatchmakeParam) Copy() nex.StructureInterface {
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (autoMatchmakeParam *AutoMatchmakeParam) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*AutoMatchmakeParam)
-
-	if autoMatchmakeParam.StructureVersion() != other.StructureVersion() {
+func (autoMatchmakeParam *AutoMatchmakeParam) Equals(o types.RVType) bool {
+	if _, ok := o.(*AutoMatchmakeParam); !ok {
 		return false
 	}
 
-	if autoMatchmakeParam.SourceMatchmakeSession != nil && other.SourceMatchmakeSession == nil {
-		return false
-	}
+	other := o.(*AutoMatchmakeParam)
 
-	if autoMatchmakeParam.SourceMatchmakeSession == nil && other.SourceMatchmakeSession != nil {
+	if autoMatchmakeParam.StructureVersion != other.StructureVersion {
 		return false
 	}
 
@@ -137,19 +136,19 @@ func (autoMatchmakeParam *AutoMatchmakeParam) Equals(structure nex.StructureInte
 		}
 	}
 
-	if autoMatchmakeParam.GIDForParticipationCheck != other.GIDForParticipationCheck {
+	if !autoMatchmakeParam.GIDForParticipationCheck.Equals(other.GIDForParticipationCheck) {
 		return false
 	}
 
-	if autoMatchmakeParam.AutoMatchmakeOption != other.AutoMatchmakeOption {
+	if !autoMatchmakeParam.AutoMatchmakeOption.Equals(other.AutoMatchmakeOption) {
 		return false
 	}
 
-	if autoMatchmakeParam.JoinMessage != other.JoinMessage {
+	if !autoMatchmakeParam.JoinMessage.Equals(other.JoinMessage) {
 		return false
 	}
 
-	if autoMatchmakeParam.ParticipationCount != other.ParticipationCount {
+	if !autoMatchmakeParam.ParticipationCount.Equals(other.ParticipationCount) {
 		return false
 	}
 
@@ -190,7 +189,7 @@ func (autoMatchmakeParam *AutoMatchmakeParam) FormatToString(indentationLevel in
 	var b strings.Builder
 
 	b.WriteString("AutoMatchmakeParam{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, autoMatchmakeParam.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, autoMatchmakeParam.StructureVersion))
 
 	if autoMatchmakeParam.SourceMatchmakeSession != nil {
 		b.WriteString(fmt.Sprintf("%sSourceMatchmakeSession: %s,\n", indentationValues, autoMatchmakeParam.SourceMatchmakeSession.FormatToString(indentationLevel+1)))

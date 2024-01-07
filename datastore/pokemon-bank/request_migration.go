@@ -5,10 +5,12 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
 func (protocol *Protocol) handleRequestMigration(packet nex.PacketInterface) {
+	var err error
 	var errorCode uint32
 
 	if protocol.RequestMigration == nil {
@@ -22,9 +24,10 @@ func (protocol *Protocol) handleRequestMigration(packet nex.PacketInterface) {
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.server)
+	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
-	oneTimePassword, err := parametersStream.ReadString()
+	oneTimePassword := types.NewString("")
+	err = oneTimePassword.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.RequestMigration(fmt.Errorf("Failed to read oneTimePassword from parameters. %s", err.Error()), packet, callID, "", nil)
 		if errorCode != 0 {
@@ -34,7 +37,9 @@ func (protocol *Protocol) handleRequestMigration(packet nex.PacketInterface) {
 		return
 	}
 
-	boxes, err := parametersStream.ReadListUInt32LE()
+	boxes := types.NewList[*types.PrimitiveU32]()
+	boxes.Type = types.NewPrimitiveU32(0)
+	err = boxes.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.RequestMigration(fmt.Errorf("Failed to read boxes from parameters. %s", err.Error()), packet, callID, "", nil)
 		if errorCode != 0 {

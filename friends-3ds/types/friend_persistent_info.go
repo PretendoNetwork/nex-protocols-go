@@ -6,55 +6,56 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // FriendPersistentInfo contains user settings
 type FriendPersistentInfo struct {
-	nex.Structure
-	*nex.Data
-	PID              *nex.PID
-	Region           uint8
-	Country          uint8
-	Area             uint8
-	Language         uint8
-	Platform         uint8
+	types.Structure
+	*types.Data
+	PID              *types.PID
+	Region           *types.PrimitiveU8
+	Country          *types.PrimitiveU8
+	Area             *types.PrimitiveU8
+	Language         *types.PrimitiveU8
+	Platform         *types.PrimitiveU8
 	GameKey          *GameKey
 	Message          string
-	MessageUpdatedAt *nex.DateTime
-	MiiModifiedAt    *nex.DateTime
-	LastOnline       *nex.DateTime
+	MessageUpdatedAt *types.DateTime
+	MiiModifiedAt    *types.DateTime
+	LastOnline       *types.DateTime
 }
 
-// Bytes encodes the FriendPersistentInfo and returns a byte array
-func (friendPersistentInfo *FriendPersistentInfo) Bytes(stream *nex.StreamOut) []byte {
-	stream.WritePID(friendPersistentInfo.PID)
-	stream.WriteUInt8(friendPersistentInfo.Region)
-	stream.WriteUInt8(friendPersistentInfo.Country)
-	stream.WriteUInt8(friendPersistentInfo.Area)
-	stream.WriteUInt8(friendPersistentInfo.Language)
-	stream.WriteUInt8(friendPersistentInfo.Platform)
-	stream.WriteStructure(friendPersistentInfo.GameKey)
-	stream.WriteString(friendPersistentInfo.Message)
-	stream.WriteDateTime(friendPersistentInfo.MessageUpdatedAt)
-	stream.WriteDateTime(friendPersistentInfo.MiiModifiedAt)
-	stream.WriteDateTime(friendPersistentInfo.LastOnline)
+// WriteTo writes the FriendPersistentInfo to the given writable
+func (friendPersistentInfo *FriendPersistentInfo) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
 
-	return stream.Bytes()
+	friendPersistentInfo.PID.WriteTo(contentWritable)
+	friendPersistentInfo.Region.WriteTo(contentWritable)
+	friendPersistentInfo.Country.WriteTo(contentWritable)
+	friendPersistentInfo.Area.WriteTo(contentWritable)
+	friendPersistentInfo.Language.WriteTo(contentWritable)
+	friendPersistentInfo.Platform.WriteTo(contentWritable)
+	friendPersistentInfo.GameKey.WriteTo(contentWritable)
+	friendPersistentInfo.Message.WriteTo(contentWritable)
+	friendPersistentInfo.MessageUpdatedAt.WriteTo(contentWritable)
+	friendPersistentInfo.MiiModifiedAt.WriteTo(contentWritable)
+	friendPersistentInfo.LastOnline.WriteTo(contentWritable)
+
+	content := contentWritable.Bytes()
+
+	friendPersistentInfo.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // Copy returns a new copied instance of FriendPersistentInfo
-func (friendPersistentInfo *FriendPersistentInfo) Copy() nex.StructureInterface {
+func (friendPersistentInfo *FriendPersistentInfo) Copy() types.RVType {
 	copied := NewFriendPersistentInfo()
 
-	copied.SetStructureVersion(friendPersistentInfo.StructureVersion())
+	copied.StructureVersion = friendPersistentInfo.StructureVersion
 
-	if friendPersistentInfo.ParentType() != nil {
-		copied.Data = friendPersistentInfo.ParentType().Copy().(*nex.Data)
-	} else {
-		copied.Data = nex.NewData()
-	}
-
-	copied.SetParentType(copied.Data)
+	copied.Data = friendPersistentInfo.Data.Copy().(*types.Data)
 
 	copied.PID = friendPersistentInfo.PID.Copy()
 	copied.Region = friendPersistentInfo.Region
@@ -72,10 +73,14 @@ func (friendPersistentInfo *FriendPersistentInfo) Copy() nex.StructureInterface 
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (friendPersistentInfo *FriendPersistentInfo) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*FriendPersistentInfo)
+func (friendPersistentInfo *FriendPersistentInfo) Equals(o types.RVType) bool {
+	if _, ok := o.(*FriendPersistentInfo); !ok {
+		return false
+	}
 
-	if friendPersistentInfo.StructureVersion() != other.StructureVersion() {
+	other := o.(*FriendPersistentInfo)
+
+	if friendPersistentInfo.StructureVersion != other.StructureVersion {
 		return false
 	}
 
@@ -87,23 +92,23 @@ func (friendPersistentInfo *FriendPersistentInfo) Equals(structure nex.Structure
 		return false
 	}
 
-	if friendPersistentInfo.Region != other.Region {
+	if !friendPersistentInfo.Region.Equals(other.Region) {
 		return false
 	}
 
-	if friendPersistentInfo.Country != other.Country {
+	if !friendPersistentInfo.Country.Equals(other.Country) {
 		return false
 	}
 
-	if friendPersistentInfo.Area != other.Area {
+	if !friendPersistentInfo.Area.Equals(other.Area) {
 		return false
 	}
 
-	if friendPersistentInfo.Language != other.Language {
+	if !friendPersistentInfo.Language.Equals(other.Language) {
 		return false
 	}
 
-	if friendPersistentInfo.Platform != other.Platform {
+	if !friendPersistentInfo.Platform.Equals(other.Platform) {
 		return false
 	}
 
@@ -111,7 +116,7 @@ func (friendPersistentInfo *FriendPersistentInfo) Equals(structure nex.Structure
 		return false
 	}
 
-	if friendPersistentInfo.Message != other.Message {
+	if !friendPersistentInfo.Message.Equals(other.Message) {
 		return false
 	}
 
@@ -143,7 +148,7 @@ func (friendPersistentInfo *FriendPersistentInfo) FormatToString(indentationLeve
 	var b strings.Builder
 
 	b.WriteString("FriendPersistentInfo{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, friendPersistentInfo.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, friendPersistentInfo.StructureVersion))
 	b.WriteString(fmt.Sprintf("%sPID: %s,\n", indentationValues, friendPersistentInfo.PID.FormatToString(indentationLevel+1)))
 	b.WriteString(fmt.Sprintf("%sRegion: %d,\n", indentationValues, friendPersistentInfo.Region))
 	b.WriteString(fmt.Sprintf("%sCountry: %d,\n", indentationValues, friendPersistentInfo.Country))

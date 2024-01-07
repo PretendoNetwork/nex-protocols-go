@@ -5,11 +5,13 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 	match_making_types "github.com/PretendoNetwork/nex-protocols-go/match-making/types"
 )
 
 func (protocol *Protocol) handleBrowseMatchmakeSession(packet nex.PacketInterface) {
+	var err error
 	var errorCode uint32
 
 	if protocol.BrowseMatchmakeSession == nil {
@@ -23,9 +25,10 @@ func (protocol *Protocol) handleBrowseMatchmakeSession(packet nex.PacketInterfac
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.server)
+	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
-	searchCriteria, err := nex.StreamReadStructure(parametersStream, match_making_types.NewMatchmakeSessionSearchCriteria())
+	searchCriteria := match_making_types.NewMatchmakeSessionSearchCriteria()
+	err = searchCriteria.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.BrowseMatchmakeSession(fmt.Errorf("Failed to read searchCriteria from parameters. %s", err.Error()), packet, callID, nil, nil)
 		if errorCode != 0 {
@@ -35,7 +38,8 @@ func (protocol *Protocol) handleBrowseMatchmakeSession(packet nex.PacketInterfac
 		return
 	}
 
-	resultRange, err := nex.StreamReadStructure(parametersStream, nex.NewResultRange())
+	resultRange := types.NewResultRange()
+	err = resultRange.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.BrowseMatchmakeSession(fmt.Errorf("Failed to read resultRange from parameters. %s", err.Error()), packet, callID, nil, nil)
 		if errorCode != 0 {

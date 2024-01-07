@@ -5,10 +5,12 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
 func (protocol *Protocol) handleGetStats(packet nex.PacketInterface) {
+	var err error
 	var errorCode uint32
 
 	if protocol.GetStats == nil {
@@ -22,9 +24,10 @@ func (protocol *Protocol) handleGetStats(packet nex.PacketInterface) {
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.server)
+	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
-	idGathering, err := parametersStream.ReadUInt32LE()
+	idGathering := types.NewPrimitiveU32(0)
+	err = idGathering.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.GetStats(fmt.Errorf("Failed to read idGathering from parameters. %s", err.Error()), packet, callID, 0, nil, nil)
 		if errorCode != 0 {
@@ -34,7 +37,9 @@ func (protocol *Protocol) handleGetStats(packet nex.PacketInterface) {
 		return
 	}
 
-	lstParticipants, err := parametersStream.ReadListPID()
+	lstParticipants := types.NewList[*types.PID]()
+	lstParticipants.Type = types.NewPID(0)
+	err = lstParticipants.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.GetStats(fmt.Errorf("Failed to read lstParticipants from parameters. %s", err.Error()), packet, callID, 0, nil, nil)
 		if errorCode != 0 {
@@ -44,7 +49,8 @@ func (protocol *Protocol) handleGetStats(packet nex.PacketInterface) {
 		return
 	}
 
-	lstColumns, err := parametersStream.ReadBuffer() // * This is documented as List<byte>, but that's justs a buffer so...
+	lstColumns := types.NewBuffer(nil)
+	err = lstColumns.ExtractFrom(parametersStream) // * This is documented as List<byte>, but that's justs a buffer so...
 	if err != nil {
 		_, errorCode = protocol.GetStats(fmt.Errorf("Failed to read lstColumns from parameters. %s", err.Error()), packet, callID, 0, nil, nil)
 		if errorCode != 0 {

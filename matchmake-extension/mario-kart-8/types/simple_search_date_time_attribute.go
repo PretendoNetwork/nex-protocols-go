@@ -6,49 +6,54 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // SimpleSearchDateTimeAttribute holds data for the Matchmake Extension (Mario Kart 8) protocol
 type SimpleSearchDateTimeAttribute struct {
-	nex.Structure
-	Unknown   uint32
-	Unknown2  uint32
-	Unknown3  uint32
-	Unknown4  uint32
-	StartTime *nex.DateTime
-	EndTime   *nex.DateTime
+	types.Structure
+	Unknown   *types.PrimitiveU32
+	Unknown2  *types.PrimitiveU32
+	Unknown3  *types.PrimitiveU32
+	Unknown4  *types.PrimitiveU32
+	StartTime *types.DateTime
+	EndTime   *types.DateTime
 }
 
-// ExtractFromStream extracts a SimpleSearchDateTimeAttribute structure from a stream
-func (simpleSearchDateTimeAttribute *SimpleSearchDateTimeAttribute) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the SimpleSearchDateTimeAttribute from the given readable
+func (simpleSearchDateTimeAttribute *SimpleSearchDateTimeAttribute) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	simpleSearchDateTimeAttribute.Unknown, err = stream.ReadUInt32LE()
+	if err = simpleSearchDateTimeAttribute.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read SimpleSearchDateTimeAttribute header. %s", err.Error())
+	}
+
+	err = simpleSearchDateTimeAttribute.Unknown.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract SimpleSearchDateTimeAttribute.Unknown from stream. %s", err.Error())
 	}
 
-	simpleSearchDateTimeAttribute.Unknown2, err = stream.ReadUInt32LE()
+	err = simpleSearchDateTimeAttribute.Unknown2.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract SimpleSearchDateTimeAttribute.Unknown2 from stream. %s", err.Error())
 	}
 
-	simpleSearchDateTimeAttribute.Unknown3, err = stream.ReadUInt32LE()
+	err = simpleSearchDateTimeAttribute.Unknown3.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract SimpleSearchDateTimeAttribute.Unknown3 from stream. %s", err.Error())
 	}
 
-	simpleSearchDateTimeAttribute.Unknown4, err = stream.ReadUInt32LE()
+	err = simpleSearchDateTimeAttribute.Unknown4.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract SimpleSearchDateTimeAttribute.Unknown4 from stream. %s", err.Error())
 	}
 
-	simpleSearchDateTimeAttribute.StartTime, err = stream.ReadDateTime()
+	err = simpleSearchDateTimeAttribute.StartTime.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract SimpleSearchDateTimeAttribute.StartTime from stream. %s", err.Error())
 	}
 
-	simpleSearchDateTimeAttribute.EndTime, err = stream.ReadDateTime()
+	err = simpleSearchDateTimeAttribute.EndTime.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract SimpleSearchDateTimeAttribute.EndTime from stream. %s", err.Error())
 	}
@@ -56,23 +61,29 @@ func (simpleSearchDateTimeAttribute *SimpleSearchDateTimeAttribute) ExtractFromS
 	return nil
 }
 
-// Bytes encodes the SimpleSearchDateTimeAttribute and returns a byte array
-func (simpleSearchDateTimeAttribute *SimpleSearchDateTimeAttribute) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt32LE(simpleSearchDateTimeAttribute.Unknown)
-	stream.WriteUInt32LE(simpleSearchDateTimeAttribute.Unknown2)
-	stream.WriteUInt32LE(simpleSearchDateTimeAttribute.Unknown3)
-	stream.WriteUInt32LE(simpleSearchDateTimeAttribute.Unknown4)
-	stream.WriteDateTime(simpleSearchDateTimeAttribute.StartTime)
-	stream.WriteDateTime(simpleSearchDateTimeAttribute.EndTime)
+// WriteTo writes the SimpleSearchDateTimeAttribute to the given writable
+func (simpleSearchDateTimeAttribute *SimpleSearchDateTimeAttribute) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
 
-	return stream.Bytes()
+	simpleSearchDateTimeAttribute.Unknown.WriteTo(contentWritable)
+	simpleSearchDateTimeAttribute.Unknown2.WriteTo(contentWritable)
+	simpleSearchDateTimeAttribute.Unknown3.WriteTo(contentWritable)
+	simpleSearchDateTimeAttribute.Unknown4.WriteTo(contentWritable)
+	simpleSearchDateTimeAttribute.StartTime.WriteTo(contentWritable)
+	simpleSearchDateTimeAttribute.EndTime.WriteTo(contentWritable)
+
+	content := contentWritable.Bytes()
+
+	simpleSearchDateTimeAttribute.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // Copy returns a new copied instance of SimpleSearchDateTimeAttribute
-func (simpleSearchDateTimeAttribute *SimpleSearchDateTimeAttribute) Copy() nex.StructureInterface {
+func (simpleSearchDateTimeAttribute *SimpleSearchDateTimeAttribute) Copy() types.RVType {
 	copied := NewSimpleSearchDateTimeAttribute()
 
-	copied.SetStructureVersion(simpleSearchDateTimeAttribute.StructureVersion())
+	copied.StructureVersion = simpleSearchDateTimeAttribute.StructureVersion
 
 	copied.Unknown = simpleSearchDateTimeAttribute.Unknown
 	copied.Unknown2 = simpleSearchDateTimeAttribute.Unknown2
@@ -85,26 +96,30 @@ func (simpleSearchDateTimeAttribute *SimpleSearchDateTimeAttribute) Copy() nex.S
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (simpleSearchDateTimeAttribute *SimpleSearchDateTimeAttribute) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*SimpleSearchDateTimeAttribute)
-
-	if simpleSearchDateTimeAttribute.StructureVersion() != other.StructureVersion() {
+func (simpleSearchDateTimeAttribute *SimpleSearchDateTimeAttribute) Equals(o types.RVType) bool {
+	if _, ok := o.(*SimpleSearchDateTimeAttribute); !ok {
 		return false
 	}
 
-	if simpleSearchDateTimeAttribute.Unknown != other.Unknown {
+	other := o.(*SimpleSearchDateTimeAttribute)
+
+	if simpleSearchDateTimeAttribute.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if simpleSearchDateTimeAttribute.Unknown2 != other.Unknown2 {
+	if !simpleSearchDateTimeAttribute.Unknown.Equals(other.Unknown) {
 		return false
 	}
 
-	if simpleSearchDateTimeAttribute.Unknown3 != other.Unknown3 {
+	if !simpleSearchDateTimeAttribute.Unknown2.Equals(other.Unknown2) {
 		return false
 	}
 
-	if simpleSearchDateTimeAttribute.Unknown4 != other.Unknown4 {
+	if !simpleSearchDateTimeAttribute.Unknown3.Equals(other.Unknown3) {
+		return false
+	}
+
+	if !simpleSearchDateTimeAttribute.Unknown4.Equals(other.Unknown4) {
 		return false
 	}
 
@@ -132,7 +147,7 @@ func (simpleSearchDateTimeAttribute *SimpleSearchDateTimeAttribute) FormatToStri
 	var b strings.Builder
 
 	b.WriteString("SimpleSearchDateTimeAttribute{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, simpleSearchDateTimeAttribute.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, simpleSearchDateTimeAttribute.StructureVersion))
 	b.WriteString(fmt.Sprintf("%sUnknown: %d,\n", indentationValues, simpleSearchDateTimeAttribute.Unknown))
 	b.WriteString(fmt.Sprintf("%sUnknown2: %d,\n", indentationValues, simpleSearchDateTimeAttribute.Unknown2))
 	b.WriteString(fmt.Sprintf("%sUnknown3: %d,\n", indentationValues, simpleSearchDateTimeAttribute.Unknown3))

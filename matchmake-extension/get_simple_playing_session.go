@@ -5,10 +5,12 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
 func (protocol *Protocol) handleGetSimplePlayingSession(packet nex.PacketInterface) {
+	var err error
 	var errorCode uint32
 
 	if protocol.GetSimplePlayingSession == nil {
@@ -22,9 +24,11 @@ func (protocol *Protocol) handleGetSimplePlayingSession(packet nex.PacketInterfa
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.server)
+	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
-	listPID, err := parametersStream.ReadListPID()
+	listPID := types.NewList[*types.PID]()
+	listPID.Type = types.NewPID(0)
+	err = listPID.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.GetSimplePlayingSession(fmt.Errorf("Failed to read listPID from parameters. %s", err.Error()), packet, callID, nil, false)
 		if errorCode != 0 {
@@ -34,7 +38,8 @@ func (protocol *Protocol) handleGetSimplePlayingSession(packet nex.PacketInterfa
 		return
 	}
 
-	includeLoginUser, err := parametersStream.ReadBool()
+	includeLoginUser := types.NewPrimitiveBool(false)
+	err = includeLoginUser.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.GetSimplePlayingSession(fmt.Errorf("Failed to read includeLoginUser from parameters. %s", err.Error()), packet, callID, nil, false)
 		if errorCode != 0 {

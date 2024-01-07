@@ -6,25 +6,30 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // ServiceItemLawMessage holds data for the Service Item (Team Kirby Clash Deluxe) protocol
 type ServiceItemLawMessage struct {
-	nex.Structure
-	IsMessageRequired bool
+	types.Structure
+	IsMessageRequired *types.PrimitiveBool
 	LawMessage        string
 }
 
-// ExtractFromStream extracts a ServiceItemLawMessage structure from a stream
-func (serviceItemLawMessage *ServiceItemLawMessage) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the ServiceItemLawMessage from the given readable
+func (serviceItemLawMessage *ServiceItemLawMessage) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	serviceItemLawMessage.IsMessageRequired, err = stream.ReadBool()
+	if err = serviceItemLawMessage.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read ServiceItemLawMessage header. %s", err.Error())
+	}
+
+	err = serviceItemLawMessage.IsMessageRequired.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemLawMessage.IsMessageRequired from stream. %s", err.Error())
 	}
 
-	serviceItemLawMessage.LawMessage, err = stream.ReadString()
+	err = serviceItemLawMessage.LawMessage.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemLawMessage.LawMessage from stream. %s", err.Error())
 	}
@@ -32,19 +37,25 @@ func (serviceItemLawMessage *ServiceItemLawMessage) ExtractFromStream(stream *ne
 	return nil
 }
 
-// Bytes encodes the ServiceItemLawMessage and returns a byte array
-func (serviceItemLawMessage *ServiceItemLawMessage) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteBool(serviceItemLawMessage.IsMessageRequired)
-	stream.WriteString(serviceItemLawMessage.LawMessage)
+// WriteTo writes the ServiceItemLawMessage to the given writable
+func (serviceItemLawMessage *ServiceItemLawMessage) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
 
-	return stream.Bytes()
+	serviceItemLawMessage.IsMessageRequired.WriteTo(contentWritable)
+	serviceItemLawMessage.LawMessage.WriteTo(contentWritable)
+
+	content := contentWritable.Bytes()
+
+	serviceItemLawMessage.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // Copy returns a new copied instance of ServiceItemLawMessage
-func (serviceItemLawMessage *ServiceItemLawMessage) Copy() nex.StructureInterface {
+func (serviceItemLawMessage *ServiceItemLawMessage) Copy() types.RVType {
 	copied := NewServiceItemLawMessage()
 
-	copied.SetStructureVersion(serviceItemLawMessage.StructureVersion())
+	copied.StructureVersion = serviceItemLawMessage.StructureVersion
 
 	copied.IsMessageRequired = serviceItemLawMessage.IsMessageRequired
 	copied.LawMessage = serviceItemLawMessage.LawMessage
@@ -53,18 +64,22 @@ func (serviceItemLawMessage *ServiceItemLawMessage) Copy() nex.StructureInterfac
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (serviceItemLawMessage *ServiceItemLawMessage) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*ServiceItemLawMessage)
-
-	if serviceItemLawMessage.StructureVersion() != other.StructureVersion() {
+func (serviceItemLawMessage *ServiceItemLawMessage) Equals(o types.RVType) bool {
+	if _, ok := o.(*ServiceItemLawMessage); !ok {
 		return false
 	}
 
-	if serviceItemLawMessage.IsMessageRequired != other.IsMessageRequired {
+	other := o.(*ServiceItemLawMessage)
+
+	if serviceItemLawMessage.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if serviceItemLawMessage.LawMessage != other.LawMessage {
+	if !serviceItemLawMessage.IsMessageRequired.Equals(other.IsMessageRequired) {
+		return false
+	}
+
+	if !serviceItemLawMessage.LawMessage.Equals(other.LawMessage) {
 		return false
 	}
 
@@ -84,7 +99,7 @@ func (serviceItemLawMessage *ServiceItemLawMessage) FormatToString(indentationLe
 	var b strings.Builder
 
 	b.WriteString("ServiceItemLawMessage{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, serviceItemLawMessage.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, serviceItemLawMessage.StructureVersion))
 	b.WriteString(fmt.Sprintf("%sIsMessageRequired: %t,\n", indentationValues, serviceItemLawMessage.IsMessageRequired))
 	b.WriteString(fmt.Sprintf("%sLawMessage: %q,\n", indentationValues, serviceItemLawMessage.LawMessage))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))

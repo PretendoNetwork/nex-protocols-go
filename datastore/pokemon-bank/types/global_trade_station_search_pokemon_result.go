@@ -5,34 +5,36 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // GlobalTradeStationSearchPokemonResult holds data for the DataStore (Pokemon Bank) protocol
 type GlobalTradeStationSearchPokemonResult struct {
-	nex.Structure
-	TotalCount     uint32
-	Result         []*GlobalTradeStationData
-	TotalCountType uint8
+	types.Structure
+	TotalCount     *types.PrimitiveU32
+	Result         *types.List[*GlobalTradeStationData]
+	TotalCountType *types.PrimitiveU8
 }
 
-// ExtractFromStream extracts a GlobalTradeStationSearchPokemonResult structure from a stream
-func (globalTradeStationSearchPokemonResult *GlobalTradeStationSearchPokemonResult) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the GlobalTradeStationSearchPokemonResult from the given readable
+func (globalTradeStationSearchPokemonResult *GlobalTradeStationSearchPokemonResult) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	globalTradeStationSearchPokemonResult.TotalCount, err = stream.ReadUInt32LE()
+	if err = globalTradeStationSearchPokemonResult.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read GlobalTradeStationSearchPokemonResult header. %s", err.Error())
+	}
+
+	err = globalTradeStationSearchPokemonResult.TotalCount.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract GlobalTradeStationSearchPokemonResult.TotalCount from stream. %s", err.Error())
 	}
 
-	result, err := nex.StreamReadListStructure(stream, NewGlobalTradeStationData())
+	err = globalTradeStationSearchPokemonResult.Result.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract GlobalTradeStationSearchPokemonResult.Result from stream. %s", err.Error())
 	}
 
-	globalTradeStationSearchPokemonResult.Result = result
-
-	globalTradeStationSearchPokemonResult.TotalCountType, err = stream.ReadUInt8()
+	err = globalTradeStationSearchPokemonResult.TotalCountType.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract GlobalTradeStationSearchPokemonResult.TotalCountType from stream. %s", err.Error())
 	}
@@ -40,56 +42,55 @@ func (globalTradeStationSearchPokemonResult *GlobalTradeStationSearchPokemonResu
 	return nil
 }
 
-// Bytes encodes the GlobalTradeStationSearchPokemonResult and returns a byte array
-func (globalTradeStationSearchPokemonResult *GlobalTradeStationSearchPokemonResult) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt32LE(globalTradeStationSearchPokemonResult.TotalCount)
-	nex.StreamWriteListStructure(stream, globalTradeStationSearchPokemonResult.Result)
-	stream.WriteUInt8(globalTradeStationSearchPokemonResult.TotalCountType)
+// WriteTo writes the GlobalTradeStationSearchPokemonResult to the given writable
+func (globalTradeStationSearchPokemonResult *GlobalTradeStationSearchPokemonResult) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
 
-	return stream.Bytes()
+	globalTradeStationSearchPokemonResult.TotalCount.WriteTo(contentWritable)
+	globalTradeStationSearchPokemonResult.Result.WriteTo(contentWritable)
+	globalTradeStationSearchPokemonResult.TotalCountType.WriteTo(contentWritable)
+
+	content := contentWritable.Bytes()
+
+	globalTradeStationSearchPokemonResult.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // Copy returns a new copied instance of GlobalTradeStationSearchPokemonResult
-func (globalTradeStationSearchPokemonResult *GlobalTradeStationSearchPokemonResult) Copy() nex.StructureInterface {
+func (globalTradeStationSearchPokemonResult *GlobalTradeStationSearchPokemonResult) Copy() types.RVType {
 	copied := NewGlobalTradeStationSearchPokemonResult()
 
-	copied.SetStructureVersion(globalTradeStationSearchPokemonResult.StructureVersion())
+	copied.StructureVersion = globalTradeStationSearchPokemonResult.StructureVersion
 
-	copied.TotalCount = globalTradeStationSearchPokemonResult.TotalCount
-	copied.Result = make([]*GlobalTradeStationData, len(globalTradeStationSearchPokemonResult.Result))
-
-	for i := 0; i < len(globalTradeStationSearchPokemonResult.Result); i++ {
-		copied.Result[i] = globalTradeStationSearchPokemonResult.Result[i].Copy().(*GlobalTradeStationData)
-	}
-
-	copied.TotalCountType = globalTradeStationSearchPokemonResult.TotalCountType
+	copied.TotalCount = globalTradeStationSearchPokemonResult.TotalCount.Copy().(*types.PrimitiveU32)
+	copied.Result = globalTradeStationSearchPokemonResult.Result.Copy().(*types.List[*GlobalTradeStationData])
+	copied.TotalCountType = globalTradeStationSearchPokemonResult.TotalCountType.Copy().(*types.PrimitiveU8)
 
 	return copied
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (globalTradeStationSearchPokemonResult *GlobalTradeStationSearchPokemonResult) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*GlobalTradeStationSearchPokemonResult)
-
-	if globalTradeStationSearchPokemonResult.StructureVersion() != other.StructureVersion() {
+func (globalTradeStationSearchPokemonResult *GlobalTradeStationSearchPokemonResult) Equals(o types.RVType) bool {
+	if _, ok := o.(*GlobalTradeStationSearchPokemonResult); !ok {
 		return false
 	}
 
-	if globalTradeStationSearchPokemonResult.TotalCount != other.TotalCount {
+	other := o.(*GlobalTradeStationSearchPokemonResult)
+
+	if globalTradeStationSearchPokemonResult.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if len(globalTradeStationSearchPokemonResult.Result) != len(other.Result) {
+	if !globalTradeStationSearchPokemonResult.TotalCount.Equals(other.TotalCount) {
 		return false
 	}
 
-	for i := 0; i < len(globalTradeStationSearchPokemonResult.Result); i++ {
-		if !globalTradeStationSearchPokemonResult.Result[i].Equals(other.Result[i]) {
-			return false
-		}
+	if !globalTradeStationSearchPokemonResult.Result.Equals(other.Result) {
+		return false
 	}
 
-	return globalTradeStationSearchPokemonResult.TotalCountType == other.TotalCountType
+	return globalTradeStationSearchPokemonResult.TotalCountType.Equals(other.TotalCountType)
 }
 
 // String returns a string representation of the struct
@@ -100,33 +101,15 @@ func (globalTradeStationSearchPokemonResult *GlobalTradeStationSearchPokemonResu
 // FormatToString pretty-prints the struct data using the provided indentation level
 func (globalTradeStationSearchPokemonResult *GlobalTradeStationSearchPokemonResult) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
-	indentationListValues := strings.Repeat("\t", indentationLevel+2)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("GlobalTradeStationSearchPokemonResult{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, globalTradeStationSearchPokemonResult.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sTotalCount: %d,\n", indentationValues, globalTradeStationSearchPokemonResult.TotalCount))
-
-	if len(globalTradeStationSearchPokemonResult.Result) == 0 {
-		b.WriteString(fmt.Sprintf("%sResult: [],\n", indentationValues))
-	} else {
-		b.WriteString(fmt.Sprintf("%sResult: [\n", indentationValues))
-
-		for i := 0; i < len(globalTradeStationSearchPokemonResult.Result); i++ {
-			str := globalTradeStationSearchPokemonResult.Result[i].FormatToString(indentationLevel + 2)
-			if i == len(globalTradeStationSearchPokemonResult.Result)-1 {
-				b.WriteString(fmt.Sprintf("%s%s\n", indentationListValues, str))
-			} else {
-				b.WriteString(fmt.Sprintf("%s%s,\n", indentationListValues, str))
-			}
-		}
-
-		b.WriteString(fmt.Sprintf("%s],\n", indentationValues))
-	}
-
-	b.WriteString(fmt.Sprintf("%sTotalCountType: %d,\n", indentationValues, globalTradeStationSearchPokemonResult.TotalCountType))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, globalTradeStationSearchPokemonResult.StructureVersion))
+	b.WriteString(fmt.Sprintf("%sTotalCount: %s,\n", indentationValues, globalTradeStationSearchPokemonResult.TotalCount))
+	b.WriteString(fmt.Sprintf("%sResult: %s,\n", indentationValues, globalTradeStationSearchPokemonResult.Result))
+	b.WriteString(fmt.Sprintf("%sTotalCountType: %s,\n", indentationValues, globalTradeStationSearchPokemonResult.TotalCountType))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -134,5 +117,13 @@ func (globalTradeStationSearchPokemonResult *GlobalTradeStationSearchPokemonResu
 
 // NewGlobalTradeStationSearchPokemonResult returns a new GlobalTradeStationSearchPokemonResult
 func NewGlobalTradeStationSearchPokemonResult() *GlobalTradeStationSearchPokemonResult {
-	return &GlobalTradeStationSearchPokemonResult{}
+	globalTradeStationSearchPokemonResult := &GlobalTradeStationSearchPokemonResult{
+		TotalCount: types.NewPrimitiveU32(0),
+		Result: types.NewList[*GlobalTradeStationData](),
+		TotalCountType: types.NewPrimitiveU8(0),
+	}
+
+	globalTradeStationSearchPokemonResult.Result.Type = NewGlobalTradeStationData()
+
+	return globalTradeStationSearchPokemonResult
 }

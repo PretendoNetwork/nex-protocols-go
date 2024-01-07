@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 	service_item "github.com/PretendoNetwork/nex-protocols-go/service-item"
 	service_item_wii_sports_club_types "github.com/PretendoNetwork/nex-protocols-go/service-item/wii-sports-club/types"
@@ -116,21 +117,21 @@ type Protocol struct {
 	serviceItemProtocol
 	Hello                       func(err error, packet nex.PacketInterface, callID uint32, name string) (*nex.RMCMessage, uint32)
 	HttpGetRequest              func(err error, packet nex.PacketInterface, callID uint32, url *service_item_wii_sports_club_types.ServiceItemHTTPGetParam) (*nex.RMCMessage, uint32)
-	HttpGetResponse             func(err error, packet nex.PacketInterface, callID uint32, requestID uint32) (*nex.RMCMessage, uint32)
+	HttpGetResponse             func(err error, packet nex.PacketInterface, callID uint32, requestID *types.PrimitiveU32) (*nex.RMCMessage, uint32)
 	PurchaseServiceItemRequest  func(err error, packet nex.PacketInterface, callID uint32, purchaseServiceItemParam *service_item_wii_sports_club_types.ServiceItemPurchaseServiceItemParam) (*nex.RMCMessage, uint32)
-	PurchaseServiceItemResponse func(err error, packet nex.PacketInterface, callID uint32, requestID uint32) (*nex.RMCMessage, uint32)
+	PurchaseServiceItemResponse func(err error, packet nex.PacketInterface, callID uint32, requestID *types.PrimitiveU32) (*nex.RMCMessage, uint32)
 	ListServiceItemRequest      func(err error, packet nex.PacketInterface, callID uint32, listServiceItemParam *service_item_wii_sports_club_types.ServiceItemListServiceItemParam) (*nex.RMCMessage, uint32)
-	ListServiceItemResponse     func(err error, packet nex.PacketInterface, callID uint32, requestID uint32) (*nex.RMCMessage, uint32)
+	ListServiceItemResponse     func(err error, packet nex.PacketInterface, callID uint32, requestID *types.PrimitiveU32) (*nex.RMCMessage, uint32)
 	GetBalanceRequest           func(err error, packet nex.PacketInterface, callID uint32, getBalanceParam *service_item_wii_sports_club_types.ServiceItemGetBalanceParam) (*nex.RMCMessage, uint32)
-	GetBalanceResponse          func(err error, packet nex.PacketInterface, callID uint32, requestID uint32) (*nex.RMCMessage, uint32)
+	GetBalanceResponse          func(err error, packet nex.PacketInterface, callID uint32, requestID *types.PrimitiveU32) (*nex.RMCMessage, uint32)
 	GetPrepurchaseInfoRequest   func(err error, packet nex.PacketInterface, callID uint32, getPrepurchaseInfoParam *service_item_wii_sports_club_types.ServiceItemGetPrepurchaseInfoParam) (*nex.RMCMessage, uint32)
-	GetPrepurchaseInfoResponse  func(err error, packet nex.PacketInterface, callID uint32, requestID uint32) (*nex.RMCMessage, uint32)
+	GetPrepurchaseInfoResponse  func(err error, packet nex.PacketInterface, callID uint32, requestID *types.PrimitiveU32) (*nex.RMCMessage, uint32)
 	GetServiceItemRightRequest  func(err error, packet nex.PacketInterface, callID uint32, getServiceItemRightParam *service_item_wii_sports_club_types.ServiceItemGetServiceItemRightParam) (*nex.RMCMessage, uint32)
-	GetServiceItemRightResponse func(err error, packet nex.PacketInterface, callID uint32, requestID uint32) (*nex.RMCMessage, uint32)
+	GetServiceItemRightResponse func(err error, packet nex.PacketInterface, callID uint32, requestID *types.PrimitiveU32) (*nex.RMCMessage, uint32)
 	GetPurchaseHistoryRequest   func(err error, packet nex.PacketInterface, callID uint32, getPurchaseHistoryParam *service_item_wii_sports_club_types.ServiceItemGetPurchaseHistoryParam) (*nex.RMCMessage, uint32)
-	GetPurchaseHistoryResponse  func(err error, packet nex.PacketInterface, callID uint32, requestID uint32) (*nex.RMCMessage, uint32)
+	GetPurchaseHistoryResponse  func(err error, packet nex.PacketInterface, callID uint32, requestID *types.PrimitiveU32) (*nex.RMCMessage, uint32)
 	GetNotice                   func(err error, packet nex.PacketInterface, callID uint32, getNoticeParam *service_item_wii_sports_club_types.ServiceItemGetNoticeParam) (*nex.RMCMessage, uint32)
-	UpdateAndGetTicketInfo      func(err error, packet nex.PacketInterface, callID uint32, forceRetrieveFromEShop bool) (*nex.RMCMessage, uint32)
+	UpdateAndGetTicketInfo      func(err error, packet nex.PacketInterface, callID uint32, forceRetrieveFromEShop *types.PrimitiveBool) (*nex.RMCMessage, uint32)
 	LoadUserInfo                func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, uint32)
 	SaveUserInfo                func(err error, packet nex.PacketInterface, callID uint32, userInfo *service_item_wii_sports_club_types.ServiceItemUserInfo) (*nex.RMCMessage, uint32)
 	StartChallenge              func(err error, packet nex.PacketInterface, callID uint32, startChallengeParam *service_item_wii_sports_club_types.ServiceItemStartChallengeParam) (*nex.RMCMessage, uint32)

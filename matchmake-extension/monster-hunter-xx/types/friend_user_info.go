@@ -6,31 +6,36 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // FriendUserInfo holds data for the Matchmake Extension (Monster Hunter XX) protocol
 type FriendUserInfo struct {
-	nex.Structure
-	PID      *nex.PID
+	types.Structure
+	PID      *types.PID
 	Name     string
-	Presence uint32
+	Presence *types.PrimitiveU32
 }
 
-// ExtractFromStream extracts a FriendUserInfo structure from a stream
-func (friendUserInfo *FriendUserInfo) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the FriendUserInfo from the given readable
+func (friendUserInfo *FriendUserInfo) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	friendUserInfo.PID, err = stream.ReadPID()
+	if err = friendUserInfo.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read FriendUserInfo header. %s", err.Error())
+	}
+
+	err = friendUserInfo.PID.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract FriendUserInfo.PID from stream. %s", err.Error())
 	}
 
-	friendUserInfo.Name, err = stream.ReadString()
+	err = friendUserInfo.Name.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract FriendUserInfo.Name from stream. %s", err.Error())
 	}
 
-	friendUserInfo.Presence, err = stream.ReadUInt32LE()
+	err = friendUserInfo.Presence.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract FriendUserInfo.Presence from stream. %s", err.Error())
 	}
@@ -38,20 +43,26 @@ func (friendUserInfo *FriendUserInfo) ExtractFromStream(stream *nex.StreamIn) er
 	return nil
 }
 
-// Bytes encodes the FriendUserInfo and returns a byte array
-func (friendUserInfo *FriendUserInfo) Bytes(stream *nex.StreamOut) []byte {
-	stream.WritePID(friendUserInfo.PID)
-	stream.WriteString(friendUserInfo.Name)
-	stream.WriteUInt32LE(friendUserInfo.Presence)
+// WriteTo writes the FriendUserInfo to the given writable
+func (friendUserInfo *FriendUserInfo) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
 
-	return stream.Bytes()
+	friendUserInfo.PID.WriteTo(contentWritable)
+	friendUserInfo.Name.WriteTo(contentWritable)
+	friendUserInfo.Presence.WriteTo(contentWritable)
+
+	content := contentWritable.Bytes()
+
+	friendUserInfo.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // Copy returns a new copied instance of FriendUserInfo
-func (friendUserInfo *FriendUserInfo) Copy() nex.StructureInterface {
+func (friendUserInfo *FriendUserInfo) Copy() types.RVType {
 	copied := NewFriendUserInfo()
 
-	copied.SetStructureVersion(friendUserInfo.StructureVersion())
+	copied.StructureVersion = friendUserInfo.StructureVersion
 
 	copied.PID = friendUserInfo.PID.Copy()
 	copied.Name = friendUserInfo.Name
@@ -61,10 +72,14 @@ func (friendUserInfo *FriendUserInfo) Copy() nex.StructureInterface {
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (friendUserInfo *FriendUserInfo) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*FriendUserInfo)
+func (friendUserInfo *FriendUserInfo) Equals(o types.RVType) bool {
+	if _, ok := o.(*FriendUserInfo); !ok {
+		return false
+	}
 
-	if friendUserInfo.StructureVersion() != other.StructureVersion() {
+	other := o.(*FriendUserInfo)
+
+	if friendUserInfo.StructureVersion != other.StructureVersion {
 		return false
 	}
 
@@ -72,11 +87,11 @@ func (friendUserInfo *FriendUserInfo) Equals(structure nex.StructureInterface) b
 		return false
 	}
 
-	if friendUserInfo.Name != other.Name {
+	if !friendUserInfo.Name.Equals(other.Name) {
 		return false
 	}
 
-	if friendUserInfo.Presence != other.Presence {
+	if !friendUserInfo.Presence.Equals(other.Presence) {
 		return false
 	}
 
@@ -96,7 +111,7 @@ func (friendUserInfo *FriendUserInfo) FormatToString(indentationLevel int) strin
 	var b strings.Builder
 
 	b.WriteString("FriendUserInfo{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, friendUserInfo.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, friendUserInfo.StructureVersion))
 	b.WriteString(fmt.Sprintf("%sPID: %s,\n", indentationValues, friendUserInfo.PID.FormatToString(indentationLevel+1)))
 	b.WriteString(fmt.Sprintf("%sName: %q,\n", indentationValues, friendUserInfo.Name))
 	b.WriteString(fmt.Sprintf("%sPresence: %d,\n", indentationValues, friendUserInfo.Presence))

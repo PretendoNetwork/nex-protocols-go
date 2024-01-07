@@ -6,31 +6,36 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // ServiceItemAmount holds data for the Service Item (Wii Sports Club) protocol
 type ServiceItemAmount struct {
-	nex.Structure
+	types.Structure
 	FormattedAmount string
 	Currency        string
 	RawValue        string
 }
 
-// ExtractFromStream extracts a ServiceItemAmount structure from a stream
-func (serviceItemAmount *ServiceItemAmount) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the ServiceItemAmount from the given readable
+func (serviceItemAmount *ServiceItemAmount) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	serviceItemAmount.FormattedAmount, err = stream.ReadString()
+	if err = serviceItemAmount.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read ServiceItemAmount header. %s", err.Error())
+	}
+
+	err = serviceItemAmount.FormattedAmount.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemAmount.FormattedAmount from stream. %s", err.Error())
 	}
 
-	serviceItemAmount.Currency, err = stream.ReadString()
+	err = serviceItemAmount.Currency.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemAmount.Currency from stream. %s", err.Error())
 	}
 
-	serviceItemAmount.RawValue, err = stream.ReadString()
+	err = serviceItemAmount.RawValue.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemAmount.RawValue from stream. %s", err.Error())
 	}
@@ -38,20 +43,26 @@ func (serviceItemAmount *ServiceItemAmount) ExtractFromStream(stream *nex.Stream
 	return nil
 }
 
-// Bytes encodes the ServiceItemAmount and returns a byte array
-func (serviceItemAmount *ServiceItemAmount) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteString(serviceItemAmount.FormattedAmount)
-	stream.WriteString(serviceItemAmount.Currency)
-	stream.WriteString(serviceItemAmount.RawValue)
+// WriteTo writes the ServiceItemAmount to the given writable
+func (serviceItemAmount *ServiceItemAmount) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
 
-	return stream.Bytes()
+	serviceItemAmount.FormattedAmount.WriteTo(contentWritable)
+	serviceItemAmount.Currency.WriteTo(contentWritable)
+	serviceItemAmount.RawValue.WriteTo(contentWritable)
+
+	content := contentWritable.Bytes()
+
+	serviceItemAmount.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // Copy returns a new copied instance of ServiceItemAmount
-func (serviceItemAmount *ServiceItemAmount) Copy() nex.StructureInterface {
+func (serviceItemAmount *ServiceItemAmount) Copy() types.RVType {
 	copied := NewServiceItemAmount()
 
-	copied.SetStructureVersion(serviceItemAmount.StructureVersion())
+	copied.StructureVersion = serviceItemAmount.StructureVersion
 
 	copied.FormattedAmount = serviceItemAmount.FormattedAmount
 	copied.Currency = serviceItemAmount.Currency
@@ -61,22 +72,26 @@ func (serviceItemAmount *ServiceItemAmount) Copy() nex.StructureInterface {
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (serviceItemAmount *ServiceItemAmount) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*ServiceItemAmount)
-
-	if serviceItemAmount.StructureVersion() != other.StructureVersion() {
+func (serviceItemAmount *ServiceItemAmount) Equals(o types.RVType) bool {
+	if _, ok := o.(*ServiceItemAmount); !ok {
 		return false
 	}
 
-	if serviceItemAmount.FormattedAmount != other.FormattedAmount {
+	other := o.(*ServiceItemAmount)
+
+	if serviceItemAmount.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if serviceItemAmount.Currency != other.Currency {
+	if !serviceItemAmount.FormattedAmount.Equals(other.FormattedAmount) {
 		return false
 	}
 
-	if serviceItemAmount.RawValue != other.RawValue {
+	if !serviceItemAmount.Currency.Equals(other.Currency) {
+		return false
+	}
+
+	if !serviceItemAmount.RawValue.Equals(other.RawValue) {
 		return false
 	}
 
@@ -96,7 +111,7 @@ func (serviceItemAmount *ServiceItemAmount) FormatToString(indentationLevel int)
 	var b strings.Builder
 
 	b.WriteString("ServiceItemAmount{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, serviceItemAmount.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, serviceItemAmount.StructureVersion))
 	b.WriteString(fmt.Sprintf("%sFormattedAmount: %q,\n", indentationValues, serviceItemAmount.FormattedAmount))
 	b.WriteString(fmt.Sprintf("%sCurrency: %q,\n", indentationValues, serviceItemAmount.Currency))
 	b.WriteString(fmt.Sprintf("%sRawValue: %q,\n", indentationValues, serviceItemAmount.RawValue))

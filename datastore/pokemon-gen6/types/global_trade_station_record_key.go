@@ -5,26 +5,30 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // GlobalTradeStationRecordKey holds data for the DataStore (Pokemon Gen6) protocol
 type GlobalTradeStationRecordKey struct {
-	nex.Structure
-	DataID   uint64
-	Password uint64
+	types.Structure
+	DataID   *types.PrimitiveU64
+	Password *types.PrimitiveU64
 }
 
-// ExtractFromStream extracts a GlobalTradeStationRecordKey structure from a stream
-func (globalTradeStationRecordKey *GlobalTradeStationRecordKey) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the GlobalTradeStationRecordKey from the given readable
+func (globalTradeStationRecordKey *GlobalTradeStationRecordKey) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	globalTradeStationRecordKey.DataID, err = stream.ReadUInt64LE()
+	if err = globalTradeStationRecordKey.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read GlobalTradeStationRecordKey header. %s", err.Error())
+	}
+
+	err = globalTradeStationRecordKey.DataID.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract GlobalTradeStationRecordKey.DataID from stream. %s", err.Error())
 	}
 
-	globalTradeStationRecordKey.Password, err = stream.ReadUInt64LE()
+	err = globalTradeStationRecordKey.Password.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract GlobalTradeStationRecordKey.Password from stream. %s", err.Error())
 	}
@@ -32,39 +36,49 @@ func (globalTradeStationRecordKey *GlobalTradeStationRecordKey) ExtractFromStrea
 	return nil
 }
 
-// Bytes encodes the GlobalTradeStationRecordKey and returns a byte array
-func (globalTradeStationRecordKey *GlobalTradeStationRecordKey) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt64LE(globalTradeStationRecordKey.DataID)
-	stream.WriteUInt64LE(globalTradeStationRecordKey.Password)
+// WriteTo writes the GlobalTradeStationRecordKey to the given writable
+func (globalTradeStationRecordKey *GlobalTradeStationRecordKey) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
 
-	return stream.Bytes()
+	globalTradeStationRecordKey.DataID.WriteTo(contentWritable)
+	globalTradeStationRecordKey.Password.WriteTo(contentWritable)
+
+	content := contentWritable.Bytes()
+
+	globalTradeStationRecordKey.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // Copy returns a new copied instance of GlobalTradeStationRecordKey
-func (globalTradeStationRecordKey *GlobalTradeStationRecordKey) Copy() nex.StructureInterface {
+func (globalTradeStationRecordKey *GlobalTradeStationRecordKey) Copy() types.RVType {
 	copied := NewGlobalTradeStationRecordKey()
 
-	copied.SetStructureVersion(globalTradeStationRecordKey.StructureVersion())
+	copied.StructureVersion = globalTradeStationRecordKey.StructureVersion
 
-	copied.DataID = globalTradeStationRecordKey.DataID
-	copied.Password = globalTradeStationRecordKey.Password
+	copied.DataID = globalTradeStationRecordKey.DataID.Copy().(*types.PrimitiveU64)
+	copied.Password = globalTradeStationRecordKey.Password.Copy().(*types.PrimitiveU64)
 
 	return copied
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (globalTradeStationRecordKey *GlobalTradeStationRecordKey) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*GlobalTradeStationRecordKey)
-
-	if globalTradeStationRecordKey.StructureVersion() != other.StructureVersion() {
+func (globalTradeStationRecordKey *GlobalTradeStationRecordKey) Equals(o types.RVType) bool {
+	if _, ok := o.(*GlobalTradeStationRecordKey); !ok {
 		return false
 	}
 
-	if globalTradeStationRecordKey.DataID != other.DataID {
+	other := o.(*GlobalTradeStationRecordKey)
+
+	if globalTradeStationRecordKey.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if globalTradeStationRecordKey.Password != other.Password {
+	if !globalTradeStationRecordKey.DataID.Equals(other.DataID) {
+		return false
+	}
+
+	if !globalTradeStationRecordKey.Password.Equals(other.Password) {
 		return false
 	}
 
@@ -84,9 +98,9 @@ func (globalTradeStationRecordKey *GlobalTradeStationRecordKey) FormatToString(i
 	var b strings.Builder
 
 	b.WriteString("GlobalTradeStationRecordKey{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, globalTradeStationRecordKey.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sDataID: %d,\n", indentationValues, globalTradeStationRecordKey.DataID))
-	b.WriteString(fmt.Sprintf("%sPassword: %d,\n", indentationValues, globalTradeStationRecordKey.Password))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, globalTradeStationRecordKey.StructureVersion))
+	b.WriteString(fmt.Sprintf("%sDataID: %s,\n", indentationValues, globalTradeStationRecordKey.DataID))
+	b.WriteString(fmt.Sprintf("%sPassword: %s,\n", indentationValues, globalTradeStationRecordKey.Password))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -94,5 +108,8 @@ func (globalTradeStationRecordKey *GlobalTradeStationRecordKey) FormatToString(i
 
 // NewGlobalTradeStationRecordKey returns a new GlobalTradeStationRecordKey
 func NewGlobalTradeStationRecordKey() *GlobalTradeStationRecordKey {
-	return &GlobalTradeStationRecordKey{}
+	return &GlobalTradeStationRecordKey{
+		DataID: types.NewPrimitiveU64(0),
+		Password: types.NewPrimitiveU64(0),
+	}
 }

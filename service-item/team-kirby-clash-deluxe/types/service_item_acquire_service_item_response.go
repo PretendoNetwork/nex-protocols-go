@@ -6,49 +6,54 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // ServiceItemAcquireServiceItemResponse holds data for the Service Item (Team Kirby Clash Deluxe) protocol
 type ServiceItemAcquireServiceItemResponse struct {
-	nex.Structure
-	LimitationType uint32
-	AcquiredCount  uint32
-	UsedCount      uint32
-	ExpiryDate     uint32
-	ExpiredCount   uint32
-	ExpiryCounts   []uint32
+	types.Structure
+	LimitationType *types.PrimitiveU32
+	AcquiredCount  *types.PrimitiveU32
+	UsedCount      *types.PrimitiveU32
+	ExpiryDate     *types.PrimitiveU32
+	ExpiredCount   *types.PrimitiveU32
+	ExpiryCounts   *types.List[*types.PrimitiveU32]
 }
 
-// ExtractFromStream extracts a ServiceItemAcquireServiceItemResponse structure from a stream
-func (serviceItemAcquireServiceItemResponse *ServiceItemAcquireServiceItemResponse) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the ServiceItemAcquireServiceItemResponse from the given readable
+func (serviceItemAcquireServiceItemResponse *ServiceItemAcquireServiceItemResponse) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	serviceItemAcquireServiceItemResponse.LimitationType, err = stream.ReadUInt32LE()
+	if err = serviceItemAcquireServiceItemResponse.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read ServiceItemAcquireServiceItemResponse header. %s", err.Error())
+	}
+
+	err = serviceItemAcquireServiceItemResponse.LimitationType.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemAcquireServiceItemResponse.LimitationType from stream. %s", err.Error())
 	}
 
-	serviceItemAcquireServiceItemResponse.AcquiredCount, err = stream.ReadUInt32LE()
+	err = serviceItemAcquireServiceItemResponse.AcquiredCount.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemAcquireServiceItemResponse.AcquiredCount from stream. %s", err.Error())
 	}
 
-	serviceItemAcquireServiceItemResponse.UsedCount, err = stream.ReadUInt32LE()
+	err = serviceItemAcquireServiceItemResponse.UsedCount.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemAcquireServiceItemResponse.UsedCount from stream. %s", err.Error())
 	}
 
-	serviceItemAcquireServiceItemResponse.ExpiryDate, err = stream.ReadUInt32LE()
+	err = serviceItemAcquireServiceItemResponse.ExpiryDate.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemAcquireServiceItemResponse.ExpiryDate from stream. %s", err.Error())
 	}
 
-	serviceItemAcquireServiceItemResponse.ExpiredCount, err = stream.ReadUInt32LE()
+	err = serviceItemAcquireServiceItemResponse.ExpiredCount.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemAcquireServiceItemResponse.ExpiredCount from stream. %s", err.Error())
 	}
 
-	serviceItemAcquireServiceItemResponse.ExpiryCounts, err = stream.ReadListUInt32LE()
+	err = serviceItemAcquireServiceItemResponse.ExpiryCounts.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemAcquireServiceItemResponse.ExpiryCounts from stream. %s", err.Error())
 	}
@@ -56,30 +61,36 @@ func (serviceItemAcquireServiceItemResponse *ServiceItemAcquireServiceItemRespon
 	return nil
 }
 
-// Bytes encodes the ServiceItemAcquireServiceItemResponse and returns a byte array
-func (serviceItemAcquireServiceItemResponse *ServiceItemAcquireServiceItemResponse) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt32LE(serviceItemAcquireServiceItemResponse.LimitationType)
-	stream.WriteUInt32LE(serviceItemAcquireServiceItemResponse.AcquiredCount)
-	stream.WriteUInt32LE(serviceItemAcquireServiceItemResponse.UsedCount)
-	stream.WriteUInt32LE(serviceItemAcquireServiceItemResponse.ExpiryDate)
-	stream.WriteUInt32LE(serviceItemAcquireServiceItemResponse.ExpiredCount)
-	stream.WriteListUInt32LE(serviceItemAcquireServiceItemResponse.ExpiryCounts)
+// WriteTo writes the ServiceItemAcquireServiceItemResponse to the given writable
+func (serviceItemAcquireServiceItemResponse *ServiceItemAcquireServiceItemResponse) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
 
-	return stream.Bytes()
+	serviceItemAcquireServiceItemResponse.LimitationType.WriteTo(contentWritable)
+	serviceItemAcquireServiceItemResponse.AcquiredCount.WriteTo(contentWritable)
+	serviceItemAcquireServiceItemResponse.UsedCount.WriteTo(contentWritable)
+	serviceItemAcquireServiceItemResponse.ExpiryDate.WriteTo(contentWritable)
+	serviceItemAcquireServiceItemResponse.ExpiredCount.WriteTo(contentWritable)
+	serviceItemAcquireServiceItemResponse.ExpiryCounts.WriteTo(contentWritable)
+
+	content := contentWritable.Bytes()
+
+	serviceItemAcquireServiceItemResponse.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // Copy returns a new copied instance of ServiceItemAcquireServiceItemResponse
-func (serviceItemAcquireServiceItemResponse *ServiceItemAcquireServiceItemResponse) Copy() nex.StructureInterface {
+func (serviceItemAcquireServiceItemResponse *ServiceItemAcquireServiceItemResponse) Copy() types.RVType {
 	copied := NewServiceItemAcquireServiceItemResponse()
 
-	copied.SetStructureVersion(serviceItemAcquireServiceItemResponse.StructureVersion())
+	copied.StructureVersion = serviceItemAcquireServiceItemResponse.StructureVersion
 
 	copied.LimitationType = serviceItemAcquireServiceItemResponse.LimitationType
 	copied.AcquiredCount = serviceItemAcquireServiceItemResponse.AcquiredCount
 	copied.UsedCount = serviceItemAcquireServiceItemResponse.UsedCount
 	copied.ExpiryDate = serviceItemAcquireServiceItemResponse.ExpiryDate
 	copied.ExpiredCount = serviceItemAcquireServiceItemResponse.ExpiredCount
-	copied.ExpiryCounts = make([]uint32, len(serviceItemAcquireServiceItemResponse.ExpiryCounts))
+	copied.ExpiryCounts = make(*types.List[*types.PrimitiveU32], len(serviceItemAcquireServiceItemResponse.ExpiryCounts))
 
 	copy(copied.ExpiryCounts, serviceItemAcquireServiceItemResponse.ExpiryCounts)
 
@@ -87,30 +98,34 @@ func (serviceItemAcquireServiceItemResponse *ServiceItemAcquireServiceItemRespon
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (serviceItemAcquireServiceItemResponse *ServiceItemAcquireServiceItemResponse) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*ServiceItemAcquireServiceItemResponse)
-
-	if serviceItemAcquireServiceItemResponse.StructureVersion() != other.StructureVersion() {
+func (serviceItemAcquireServiceItemResponse *ServiceItemAcquireServiceItemResponse) Equals(o types.RVType) bool {
+	if _, ok := o.(*ServiceItemAcquireServiceItemResponse); !ok {
 		return false
 	}
 
-	if serviceItemAcquireServiceItemResponse.LimitationType != other.LimitationType {
+	other := o.(*ServiceItemAcquireServiceItemResponse)
+
+	if serviceItemAcquireServiceItemResponse.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if serviceItemAcquireServiceItemResponse.AcquiredCount != other.AcquiredCount {
+	if !serviceItemAcquireServiceItemResponse.LimitationType.Equals(other.LimitationType) {
 		return false
 	}
 
-	if serviceItemAcquireServiceItemResponse.UsedCount != other.UsedCount {
+	if !serviceItemAcquireServiceItemResponse.AcquiredCount.Equals(other.AcquiredCount) {
 		return false
 	}
 
-	if serviceItemAcquireServiceItemResponse.ExpiryDate != other.ExpiryDate {
+	if !serviceItemAcquireServiceItemResponse.UsedCount.Equals(other.UsedCount) {
 		return false
 	}
 
-	if serviceItemAcquireServiceItemResponse.ExpiredCount != other.ExpiredCount {
+	if !serviceItemAcquireServiceItemResponse.ExpiryDate.Equals(other.ExpiryDate) {
+		return false
+	}
+
+	if !serviceItemAcquireServiceItemResponse.ExpiredCount.Equals(other.ExpiredCount) {
 		return false
 	}
 
@@ -140,7 +155,7 @@ func (serviceItemAcquireServiceItemResponse *ServiceItemAcquireServiceItemRespon
 	var b strings.Builder
 
 	b.WriteString("ServiceItemAcquireServiceItemResponse{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, serviceItemAcquireServiceItemResponse.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, serviceItemAcquireServiceItemResponse.StructureVersion))
 	b.WriteString(fmt.Sprintf("%sLimitationType: %d,\n", indentationValues, serviceItemAcquireServiceItemResponse.LimitationType))
 	b.WriteString(fmt.Sprintf("%sAcquiredCount: %d,\n", indentationValues, serviceItemAcquireServiceItemResponse.AcquiredCount))
 	b.WriteString(fmt.Sprintf("%sUsedCount: %d,\n", indentationValues, serviceItemAcquireServiceItemResponse.UsedCount))

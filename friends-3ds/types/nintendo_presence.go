@@ -7,85 +7,96 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // NintendoPresence contains information about a users online presence
 type NintendoPresence struct {
-	nex.Structure
-	*nex.Data
-	ChangedFlags      uint32
+	types.Structure
+	*types.Data
+	ChangedFlags      *types.PrimitiveU32
 	GameKey           *GameKey
 	Message           string
-	JoinAvailableFlag uint32
-	MatchmakeType     uint8
-	JoinGameID        uint32
-	JoinGameMode      uint32
-	OwnerPID          *nex.PID
-	JoinGroupID       uint32
+	JoinAvailableFlag *types.PrimitiveU32
+	MatchmakeType     *types.PrimitiveU8
+	JoinGameID        *types.PrimitiveU32
+	JoinGameMode      *types.PrimitiveU32
+	OwnerPID          *types.PID
+	JoinGroupID       *types.PrimitiveU32
 	ApplicationArg    []byte
 }
 
-// Bytes encodes the NintendoPresence and returns a byte array
-func (presence *NintendoPresence) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt32LE(presence.ChangedFlags)
-	stream.WriteStructure(presence.GameKey)
-	stream.WriteString(presence.Message)
-	stream.WriteUInt32LE(presence.JoinAvailableFlag)
-	stream.WriteUInt8(presence.MatchmakeType)
-	stream.WriteUInt32LE(presence.JoinGameID)
-	stream.WriteUInt32LE(presence.JoinGameMode)
-	stream.WritePID(presence.OwnerPID)
-	stream.WriteUInt32LE(presence.JoinGroupID)
+// WriteTo writes the NintendoPresence to the given writable
+func (presence *NintendoPresence) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
+
+	presence.ChangedFlags.WriteTo(contentWritable)
+	presence.GameKey.WriteTo(contentWritable)
+	presence.Message.WriteTo(contentWritable)
+	presence.JoinAvailableFlag.WriteTo(contentWritable)
+	presence.MatchmakeType.WriteTo(contentWritable)
+	presence.JoinGameID.WriteTo(contentWritable)
+	presence.JoinGameMode.WriteTo(contentWritable)
+	presence.OwnerPID.WriteTo(contentWritable)
+	presence.JoinGroupID.WriteTo(contentWritable)
 	stream.WriteBuffer(presence.ApplicationArg)
 
-	return stream.Bytes()
+	content := contentWritable.Bytes()
+
+	rvcd.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
-// ExtractFromStream extracts a NintendoPresence structure from a stream
-func (presence *NintendoPresence) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the NintendoPresence from the given readable
+func (presence *NintendoPresence) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	presence.ChangedFlags, err = stream.ReadUInt32LE()
+	if err = presence.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read NintendoPresence header. %s", err.Error())
+	}
+
+	err = presence.ChangedFlags.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract NintendoPresence.ChangedFlags. %s", err.Error())
 	}
 
-	presence.GameKey, err = nex.StreamReadStructure(stream, NewGameKey())
+	err = presence.GameKey.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract NintendoPresence.GameKey. %s", err.Error())
 	}
 
-	presence.Message, err = stream.ReadString()
+	err = presence.Message.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract NintendoPresence.Message. %s", err.Error())
 	}
 
-	presence.JoinAvailableFlag, err = stream.ReadUInt32LE()
+	err = presence.JoinAvailableFlag.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract NintendoPresence.JoinAvailableFlag. %s", err.Error())
 	}
 
-	presence.MatchmakeType, err = stream.ReadUInt8()
+	err = presence.MatchmakeType.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract NintendoPresence.MatchmakeType. %s", err.Error())
 	}
 
-	presence.JoinGameID, err = stream.ReadUInt32LE()
+	err = presence.JoinGameID.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract NintendoPresence.JoinGameID. %s", err.Error())
 	}
 
-	presence.JoinGameMode, err = stream.ReadUInt32LE()
+	err = presence.JoinGameMode.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract NintendoPresence.JoinGameMode. %s", err.Error())
 	}
 
-	presence.OwnerPID, err = stream.ReadPID()
+	err = presence.OwnerPID.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract NintendoPresence.OwnerPID. %s", err.Error())
 	}
 
-	presence.JoinGroupID, err = stream.ReadUInt32LE()
+	err = presence.JoinGroupID.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract NintendoPresence.JoinGroupID. %s", err.Error())
 	}
@@ -99,18 +110,12 @@ func (presence *NintendoPresence) ExtractFromStream(stream *nex.StreamIn) error 
 }
 
 // Copy returns a new copied instance of NintendoPresence
-func (presence *NintendoPresence) Copy() nex.StructureInterface {
+func (presence *NintendoPresence) Copy() types.RVType {
 	copied := NewNintendoPresence()
 
-	copied.SetStructureVersion(presence.StructureVersion())
+	copied.StructureVersion = presence.StructureVersion
 
-	if presence.ParentType() != nil {
-		copied.Data = presence.ParentType().Copy().(*nex.Data)
-	} else {
-		copied.Data = nex.NewData()
-	}
-
-	copied.SetParentType(copied.Data)
+	copied.Data = presence.Data.Copy().(*types.Data)
 
 	copied.ChangedFlags = presence.ChangedFlags
 	copied.GameKey = presence.GameKey.Copy().(*GameKey)
@@ -129,10 +134,14 @@ func (presence *NintendoPresence) Copy() nex.StructureInterface {
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (presence *NintendoPresence) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*NintendoPresence)
+func (presence *NintendoPresence) Equals(o types.RVType) bool {
+	if _, ok := o.(*NintendoPresence); !ok {
+		return false
+	}
 
-	if presence.StructureVersion() != other.StructureVersion() {
+	other := o.(*NintendoPresence)
+
+	if presence.StructureVersion != other.StructureVersion {
 		return false
 	}
 
@@ -140,7 +149,7 @@ func (presence *NintendoPresence) Equals(structure nex.StructureInterface) bool 
 		return false
 	}
 
-	if presence.ChangedFlags != other.ChangedFlags {
+	if !presence.ChangedFlags.Equals(other.ChangedFlags) {
 		return false
 	}
 
@@ -148,23 +157,23 @@ func (presence *NintendoPresence) Equals(structure nex.StructureInterface) bool 
 		return false
 	}
 
-	if presence.Message != other.Message {
+	if !presence.Message.Equals(other.Message) {
 		return false
 	}
 
-	if presence.JoinAvailableFlag != other.JoinAvailableFlag {
+	if !presence.JoinAvailableFlag.Equals(other.JoinAvailableFlag) {
 		return false
 	}
 
-	if presence.MatchmakeType != other.MatchmakeType {
+	if !presence.MatchmakeType.Equals(other.MatchmakeType) {
 		return false
 	}
 
-	if presence.JoinGameID != other.JoinGameID {
+	if !presence.JoinGameID.Equals(other.JoinGameID) {
 		return false
 	}
 
-	if presence.JoinGameMode != other.JoinGameMode {
+	if !presence.JoinGameMode.Equals(other.JoinGameMode) {
 		return false
 	}
 
@@ -172,11 +181,11 @@ func (presence *NintendoPresence) Equals(structure nex.StructureInterface) bool 
 		return false
 	}
 
-	if presence.JoinGroupID != other.JoinGroupID {
+	if !presence.JoinGroupID.Equals(other.JoinGroupID) {
 		return false
 	}
 
-	if !bytes.Equal(presence.ApplicationArg, other.ApplicationArg) {
+	if !presence.ApplicationArg.Equals(other.ApplicationArg) {
 		return false
 	}
 
@@ -196,7 +205,7 @@ func (presence *NintendoPresence) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("NintendoPresence{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, presence.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, presence.StructureVersion))
 	b.WriteString(fmt.Sprintf("%sChangedFlags: %d,\n", indentationValues, presence.ChangedFlags))
 
 	if presence.GameKey != nil {

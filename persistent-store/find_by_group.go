@@ -5,10 +5,12 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
 func (protocol *Protocol) handleFindByGroup(packet nex.PacketInterface) {
+	var err error
 	var errorCode uint32
 
 	if protocol.FindByGroup == nil {
@@ -22,9 +24,10 @@ func (protocol *Protocol) handleFindByGroup(packet nex.PacketInterface) {
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.server)
+	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
-	uiGroup, err := parametersStream.ReadUInt32LE()
+	uiGroup := types.NewPrimitiveU32(0)
+	err = uiGroup.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.FindByGroup(fmt.Errorf("Failed to read uiGroup from parameters. %s", err.Error()), packet, callID, 0)
 		if errorCode != 0 {

@@ -9,73 +9,78 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // Gathering holds information about a matchmake gathering
 type Gathering struct {
-	nex.Structure
-	ID                  uint32
-	OwnerPID            *nex.PID
-	HostPID             *nex.PID
-	MinimumParticipants uint16
-	MaximumParticipants uint16
-	ParticipationPolicy uint32
-	PolicyArgument      uint32
-	Flags               uint32
-	State               uint32
+	types.Structure
+	ID                  *types.PrimitiveU32
+	OwnerPID            *types.PID
+	HostPID             *types.PID
+	MinimumParticipants *types.PrimitiveU16
+	MaximumParticipants *types.PrimitiveU16
+	ParticipationPolicy *types.PrimitiveU32
+	PolicyArgument      *types.PrimitiveU32
+	Flags               *types.PrimitiveU32
+	State               *types.PrimitiveU32
 	Description         string
 }
 
-// ExtractFromStream extracts a Gathering structure from a stream
-func (gathering *Gathering) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the Gathering from the given readable
+func (gathering *Gathering) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	gathering.ID, err = stream.ReadUInt32LE()
+	if err = gathering.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read Gathering header. %s", err.Error())
+	}
+
+	err = gathering.ID.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract Gathering.ID. %s", err.Error())
 	}
 
-	gathering.OwnerPID, err = stream.ReadPID()
+	err = gathering.OwnerPID.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract Gathering.OwnerPID. %s", err.Error())
 	}
 
-	gathering.HostPID, err = stream.ReadPID()
+	err = gathering.HostPID.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract Gathering.HostPID. %s", err.Error())
 	}
 
-	gathering.MinimumParticipants, err = stream.ReadUInt16LE()
+	err = gathering.MinimumParticipants.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract Gathering.MinimumParticipants. %s", err.Error())
 	}
 
-	gathering.MaximumParticipants, err = stream.ReadUInt16LE()
+	err = gathering.MaximumParticipants.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract Gathering.MaximumParticipants. %s", err.Error())
 	}
 
-	gathering.ParticipationPolicy, err = stream.ReadUInt32LE()
+	err = gathering.ParticipationPolicy.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract Gathering.ParticipationPolicy. %s", err.Error())
 	}
 
-	gathering.PolicyArgument, err = stream.ReadUInt32LE()
+	err = gathering.PolicyArgument.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract Gathering.PolicyArgument. %s", err.Error())
 	}
 
-	gathering.Flags, err = stream.ReadUInt32LE()
+	err = gathering.Flags.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract Gathering.Flags. %s", err.Error())
 	}
 
-	gathering.State, err = stream.ReadUInt32LE()
+	err = gathering.State.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract Gathering.State. %s", err.Error())
 	}
 
-	gathering.Description, err = stream.ReadString()
+	err = gathering.Description.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract Gathering.Description. %s", err.Error())
 	}
@@ -83,37 +88,39 @@ func (gathering *Gathering) ExtractFromStream(stream *nex.StreamIn) error {
 	return nil
 }
 
-// Bytes encodes the Gathering and returns a byte array
-func (gathering *Gathering) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt32LE(gathering.ID)
-	stream.WritePID(gathering.OwnerPID)
-	stream.WritePID(gathering.HostPID)
-	stream.WriteUInt16LE(gathering.MinimumParticipants)
-	stream.WriteUInt16LE(gathering.MaximumParticipants)
-	stream.WriteUInt32LE(gathering.ParticipationPolicy)
-	stream.WriteUInt32LE(gathering.PolicyArgument)
-	stream.WriteUInt32LE(gathering.Flags)
-	stream.WriteUInt32LE(gathering.State)
-	stream.WriteString(gathering.Description)
+// WriteTo writes the Gathering to the given writable
+func (gathering *Gathering) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
 
-	return stream.Bytes()
+	gathering.ID.WriteTo(contentWritable)
+	gathering.OwnerPID.WriteTo(contentWritable)
+	gathering.HostPID.WriteTo(contentWritable)
+	gathering.MinimumParticipants.WriteTo(contentWritable)
+	gathering.MaximumParticipants.WriteTo(contentWritable)
+	gathering.ParticipationPolicy.WriteTo(contentWritable)
+	gathering.PolicyArgument.WriteTo(contentWritable)
+	gathering.Flags.WriteTo(contentWritable)
+	gathering.State.WriteTo(contentWritable)
+	gathering.Description.WriteTo(contentWritable)
+
+	content := contentWritable.Bytes()
+
+	gathering.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // Copy returns a new copied instance of Gathering
-func (gathering *Gathering) Copy() nex.StructureInterface {
+func (gathering *Gathering) Copy() types.RVType {
 	copied := NewGathering()
 
-	copied.SetStructureVersion(gathering.StructureVersion())
+	copied.StructureVersion = gathering.StructureVersion
 
 	copied.ID = gathering.ID
 
-	if gathering.OwnerPID != nil {
-		copied.OwnerPID = gathering.OwnerPID.Copy()
-	}
+	copied.OwnerPID = gathering.OwnerPID.Copy()
 
-	if gathering.HostPID != nil {
-		copied.HostPID = gathering.HostPID.Copy()
-	}
+	copied.HostPID = gathering.HostPID.Copy()
 
 	copied.MinimumParticipants = gathering.MinimumParticipants
 	copied.MaximumParticipants = gathering.MaximumParticipants
@@ -127,14 +134,18 @@ func (gathering *Gathering) Copy() nex.StructureInterface {
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (gathering *Gathering) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*Gathering)
-
-	if gathering.StructureVersion() != other.StructureVersion() {
+func (gathering *Gathering) Equals(o types.RVType) bool {
+	if _, ok := o.(*Gathering); !ok {
 		return false
 	}
 
-	if gathering.ID != other.ID {
+	other := o.(*Gathering)
+
+	if gathering.StructureVersion != other.StructureVersion {
+		return false
+	}
+
+	if !gathering.ID.Equals(other.ID) {
 		return false
 	}
 
@@ -146,31 +157,31 @@ func (gathering *Gathering) Equals(structure nex.StructureInterface) bool {
 		return false
 	}
 
-	if gathering.MinimumParticipants != other.MinimumParticipants {
+	if !gathering.MinimumParticipants.Equals(other.MinimumParticipants) {
 		return false
 	}
 
-	if gathering.MaximumParticipants != other.MaximumParticipants {
+	if !gathering.MaximumParticipants.Equals(other.MaximumParticipants) {
 		return false
 	}
 
-	if gathering.ParticipationPolicy != other.ParticipationPolicy {
+	if !gathering.ParticipationPolicy.Equals(other.ParticipationPolicy) {
 		return false
 	}
 
-	if gathering.PolicyArgument != other.PolicyArgument {
+	if !gathering.PolicyArgument.Equals(other.PolicyArgument) {
 		return false
 	}
 
-	if gathering.Flags != other.Flags {
+	if !gathering.Flags.Equals(other.Flags) {
 		return false
 	}
 
-	if gathering.State != other.State {
+	if !gathering.State.Equals(other.State) {
 		return false
 	}
 
-	if gathering.Description != other.Description {
+	if !gathering.Description.Equals(other.Description) {
 		return false
 	}
 
@@ -190,7 +201,7 @@ func (gathering *Gathering) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("Gathering{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, gathering.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, gathering.StructureVersion))
 	b.WriteString(fmt.Sprintf("%sID: %d,\n", indentationValues, gathering.ID))
 	b.WriteString(fmt.Sprintf("%sOwnerPID: %s,\n", indentationValues, gathering.OwnerPID.FormatToString(indentationLevel+1)))
 	b.WriteString(fmt.Sprintf("%sHostPID: %s,\n", indentationValues, gathering.HostPID.FormatToString(indentationLevel+1)))

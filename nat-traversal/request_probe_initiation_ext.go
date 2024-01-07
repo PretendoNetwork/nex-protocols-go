@@ -5,10 +5,12 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
 func (protocol *Protocol) handleRequestProbeInitiationExt(packet nex.PacketInterface) {
+	var err error
 	var errorCode uint32
 
 	if protocol.ReportNATProperties == nil {
@@ -22,9 +24,11 @@ func (protocol *Protocol) handleRequestProbeInitiationExt(packet nex.PacketInter
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.server)
+	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
-	targetList, err := parametersStream.ReadListString()
+	targetList := types.NewList[*types.String]()
+	targetList.Type = types.NewString("")
+	err = targetList.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.RequestProbeInitiationExt(fmt.Errorf("Failed to read targetList from parameters. %s", err.Error()), packet, callID, nil, "")
 		if errorCode != 0 {
@@ -34,7 +38,8 @@ func (protocol *Protocol) handleRequestProbeInitiationExt(packet nex.PacketInter
 		return
 	}
 
-	stationToProbe, err := parametersStream.ReadString()
+	stationToProbe := types.NewString("")
+	err = stationToProbe.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.RequestProbeInitiationExt(fmt.Errorf("Failed to read stationToProbe from parameters. %s", err.Error()), packet, callID, nil, "")
 		if errorCode != 0 {

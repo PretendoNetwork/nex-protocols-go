@@ -9,31 +9,36 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // Invitation holds an invitation a Gathering
 type Invitation struct {
-	nex.Structure
-	IDGathering uint32
-	IDGuest     uint32
+	types.Structure
+	IDGathering *types.PrimitiveU32
+	IDGuest     *types.PrimitiveU32
 	StrMessage  string
 }
 
-// ExtractFromStream extracts a Invitation structure from a stream
-func (invitation *Invitation) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the Invitation from the given readable
+func (invitation *Invitation) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	invitation.IDGathering, err = stream.ReadUInt32LE()
+	if err = invitation.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read Invitation header. %s", err.Error())
+	}
+
+	err = invitation.IDGathering.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract Invitation.IDGathering. %s", err.Error())
 	}
 
-	invitation.IDGuest, err = stream.ReadUInt32LE()
+	err = invitation.IDGuest.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract Invitation.IDGuest. %s", err.Error())
 	}
 
-	invitation.StrMessage, err = stream.ReadString()
+	err = invitation.StrMessage.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract Invitation.StrMessage. %s", err.Error())
 	}
@@ -41,20 +46,26 @@ func (invitation *Invitation) ExtractFromStream(stream *nex.StreamIn) error {
 	return nil
 }
 
-// Bytes encodes the Invitation and returns a byte array
-func (invitation *Invitation) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt32LE(invitation.IDGathering)
-	stream.WriteUInt32LE(invitation.IDGuest)
-	stream.WriteString(invitation.StrMessage)
+// WriteTo writes the Invitation to the given writable
+func (invitation *Invitation) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
 
-	return stream.Bytes()
+	invitation.IDGathering.WriteTo(contentWritable)
+	invitation.IDGuest.WriteTo(contentWritable)
+	invitation.StrMessage.WriteTo(contentWritable)
+
+	content := contentWritable.Bytes()
+
+	invitation.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // Copy returns a new copied instance of Invitation
-func (invitation *Invitation) Copy() nex.StructureInterface {
+func (invitation *Invitation) Copy() types.RVType {
 	copied := NewInvitation()
 
-	copied.SetStructureVersion(invitation.StructureVersion())
+	copied.StructureVersion = invitation.StructureVersion
 
 	copied.IDGathering = invitation.IDGathering
 	copied.IDGuest = invitation.IDGuest
@@ -64,22 +75,26 @@ func (invitation *Invitation) Copy() nex.StructureInterface {
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (invitation *Invitation) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*Invitation)
-
-	if invitation.StructureVersion() != other.StructureVersion() {
+func (invitation *Invitation) Equals(o types.RVType) bool {
+	if _, ok := o.(*Invitation); !ok {
 		return false
 	}
 
-	if invitation.IDGathering != other.IDGathering {
+	other := o.(*Invitation)
+
+	if invitation.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if invitation.IDGuest != other.IDGuest {
+	if !invitation.IDGathering.Equals(other.IDGathering) {
 		return false
 	}
 
-	if invitation.StrMessage != other.StrMessage {
+	if !invitation.IDGuest.Equals(other.IDGuest) {
+		return false
+	}
+
+	if !invitation.StrMessage.Equals(other.StrMessage) {
 		return false
 	}
 
@@ -99,7 +114,7 @@ func (invitation *Invitation) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("Invitation{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, invitation.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, invitation.StructureVersion))
 	b.WriteString(fmt.Sprintf("%sIDGathering: %d,\n", indentationValues, invitation.IDGathering))
 	b.WriteString(fmt.Sprintf("%sIDGuest: %d,\n", indentationValues, invitation.IDGuest))
 	b.WriteString(fmt.Sprintf("%sStrMessage: %q\n", indentationValues, invitation.StrMessage))

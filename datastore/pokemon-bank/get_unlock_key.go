@@ -5,10 +5,12 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
 func (protocol *Protocol) handleGetUnlockKey(packet nex.PacketInterface) {
+	var err error
 	var errorCode uint32
 
 	if protocol.GetUnlockKey == nil {
@@ -22,9 +24,10 @@ func (protocol *Protocol) handleGetUnlockKey(packet nex.PacketInterface) {
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.server)
+	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
-	challengeValue, err := parametersStream.ReadUInt32LE()
+	challengeValue := types.NewPrimitiveU32(0)
+	err = challengeValue.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.GetUnlockKey(fmt.Errorf("Failed to read challengeValue from parameters. %s", err.Error()), packet, callID, 0)
 		if errorCode != 0 {

@@ -5,10 +5,12 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
 func (protocol *Protocol) handleBlackListByName(packet nex.PacketInterface) {
+	var err error
 	var errorCode uint32
 
 	if protocol.BlackListByName == nil {
@@ -22,9 +24,10 @@ func (protocol *Protocol) handleBlackListByName(packet nex.PacketInterface) {
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.server)
+	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
-	strPlayerName, err := parametersStream.ReadString()
+	strPlayerName := types.NewString("")
+	err = strPlayerName.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.BlackListByName(fmt.Errorf("Failed to read strPlayerName from parameters. %s", err.Error()), packet, callID, "", 0)
 		if errorCode != 0 {
@@ -34,7 +37,8 @@ func (protocol *Protocol) handleBlackListByName(packet nex.PacketInterface) {
 		return
 	}
 
-	uiDetails, err := parametersStream.ReadUInt32LE()
+	uiDetails := types.NewPrimitiveU32(0)
+	err = uiDetails.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.BlackListByName(fmt.Errorf("Failed to read uiDetails from parameters. %s", err.Error()), packet, callID, "", 0)
 		if errorCode != 0 {

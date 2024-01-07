@@ -9,20 +9,25 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // GatheringURLs holds information about a matchmake gatheringURLs
 type GatheringURLs struct {
-	nex.Structure
-	GID            uint32
-	LstStationURLs []*nex.StationURL
+	types.Structure
+	GID            *types.PrimitiveU32
+	LstStationURLs *types.List[*types.StationURL]
 }
 
-// ExtractFromStream extracts a GatheringURLs structure from a stream
-func (gatheringURLs *GatheringURLs) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the GatheringURLs from the given readable
+func (gatheringURLs *GatheringURLs) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	gatheringURLs.GID, err = stream.ReadUInt32LE()
+	if err = gatheringURLs.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read GatheringURLs header. %s", err.Error())
+	}
+
+	err = gatheringURLs.GID.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract GatheringURLs.GID. %s", err.Error())
 	}
@@ -35,22 +40,28 @@ func (gatheringURLs *GatheringURLs) ExtractFromStream(stream *nex.StreamIn) erro
 	return nil
 }
 
-// Bytes encodes the GatheringURLs and returns a byte array
-func (gatheringURLs *GatheringURLs) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt32LE(gatheringURLs.GID)
+// WriteTo writes the GatheringURLs to the given writable
+func (gatheringURLs *GatheringURLs) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
+
+	gatheringURLs.GID.WriteTo(contentWritable)
 	stream.WriteListStationURL(gatheringURLs.LstStationURLs)
 
-	return stream.Bytes()
+	content := contentWritable.Bytes()
+
+	rvcd.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // Copy returns a new copied instance of GatheringURLs
-func (gatheringURLs *GatheringURLs) Copy() nex.StructureInterface {
+func (gatheringURLs *GatheringURLs) Copy() types.RVType {
 	copied := NewGatheringURLs()
 
-	copied.SetStructureVersion(gatheringURLs.StructureVersion())
+	copied.StructureVersion = gatheringURLs.StructureVersion
 
 	copied.GID = gatheringURLs.GID
-	copied.LstStationURLs = make([]*nex.StationURL, len(gatheringURLs.LstStationURLs))
+	copied.LstStationURLs = make(*types.List[*types.StationURL], len(gatheringURLs.LstStationURLs))
 
 	for i := 0; i < len(gatheringURLs.LstStationURLs); i++ {
 		copied.LstStationURLs[i] = gatheringURLs.LstStationURLs[i].Copy()
@@ -60,14 +71,18 @@ func (gatheringURLs *GatheringURLs) Copy() nex.StructureInterface {
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (gatheringURLs *GatheringURLs) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*GatheringURLs)
-
-	if gatheringURLs.StructureVersion() != other.StructureVersion() {
+func (gatheringURLs *GatheringURLs) Equals(o types.RVType) bool {
+	if _, ok := o.(*GatheringURLs); !ok {
 		return false
 	}
 
-	if gatheringURLs.GID != other.GID {
+	other := o.(*GatheringURLs)
+
+	if gatheringURLs.StructureVersion != other.StructureVersion {
+		return false
+	}
+
+	if !gatheringURLs.GID.Equals(other.GID) {
 		return false
 	}
 
@@ -98,7 +113,7 @@ func (gatheringURLs *GatheringURLs) FormatToString(indentationLevel int) string 
 	var b strings.Builder
 
 	b.WriteString("GatheringURLs{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, gatheringURLs.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, gatheringURLs.StructureVersion))
 	b.WriteString(fmt.Sprintf("%sGID: %d,\n", indentationValues, gatheringURLs.GID))
 
 	if len(gatheringURLs.LstStationURLs) == 0 {

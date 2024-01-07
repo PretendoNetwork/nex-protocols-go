@@ -7,25 +7,36 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // BinaryMessage is a data structure used by the Message Delivery protocol
 type BinaryMessage struct {
-	nex.Structure
+	types.Structure
 	*UserMessage
 	BinaryBody []byte
 }
 
-// Bytes encodes the BinaryMessage and returns a byte array
-func (binaryMessage *BinaryMessage) Bytes(stream *nex.StreamOut) []byte {
+// WriteTo writes the BinaryMessage to the given writable
+func (binaryMessage *BinaryMessage) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
+
 	stream.WriteQBuffer(binaryMessage.BinaryBody)
 
-	return stream.Bytes()
+	content := contentWritable.Bytes()
+
+	rvcd.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
-// ExtractFromStream extracts a BinaryMessage structure from a stream
-func (binaryMessage *BinaryMessage) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the BinaryMessage from the given readable
+func (binaryMessage *BinaryMessage) ExtractFrom(readable types.Readable) error {
 	var err error
+
+	if err = binaryMessage.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read BinaryMessage header. %s", err.Error())
+	}
 
 	binaryMessage.BinaryBody, err = stream.ReadQBuffer()
 	if err != nil {
@@ -36,13 +47,12 @@ func (binaryMessage *BinaryMessage) ExtractFromStream(stream *nex.StreamIn) erro
 }
 
 // Copy returns a new copied instance of BinaryMessage
-func (binaryMessage *BinaryMessage) Copy() nex.StructureInterface {
+func (binaryMessage *BinaryMessage) Copy() types.RVType {
 	copied := NewBinaryMessage()
 
-	copied.SetStructureVersion(binaryMessage.StructureVersion())
+	copied.StructureVersion = binaryMessage.StructureVersion
 
 	copied.UserMessage = binaryMessage.UserMessage.Copy().(*UserMessage)
-	copied.SetParentType(copied.UserMessage)
 
 	copied.BinaryBody = make([]byte, len(binaryMessage.BinaryBody))
 
@@ -52,10 +62,14 @@ func (binaryMessage *BinaryMessage) Copy() nex.StructureInterface {
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (binaryMessage *BinaryMessage) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*BinaryMessage)
+func (binaryMessage *BinaryMessage) Equals(o types.RVType) bool {
+	if _, ok := o.(*BinaryMessage); !ok {
+		return false
+	}
 
-	if binaryMessage.StructureVersion() != other.StructureVersion() {
+	other := o.(*BinaryMessage)
+
+	if binaryMessage.StructureVersion != other.StructureVersion {
 		return false
 	}
 
@@ -63,7 +77,7 @@ func (binaryMessage *BinaryMessage) Equals(structure nex.StructureInterface) boo
 		return false
 	}
 
-	if !bytes.Equal(binaryMessage.BinaryBody, other.BinaryBody) {
+	if !binaryMessage.BinaryBody.Equals(other.BinaryBody) {
 		return false
 	}
 
@@ -84,7 +98,7 @@ func (binaryMessage *BinaryMessage) FormatToString(indentationLevel int) string 
 
 	b.WriteString("BinaryMessage{\n")
 	b.WriteString(fmt.Sprintf("%sParentType: %s,\n", indentationValues, binaryMessage.ParentType().FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, binaryMessage.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, binaryMessage.StructureVersion))
 	b.WriteString(fmt.Sprintf("%sBinaryBody: %x\n", indentationValues, binaryMessage.BinaryBody))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 

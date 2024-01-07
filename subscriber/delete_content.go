@@ -5,10 +5,12 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
 func (protocol *Protocol) handleDeleteContent(packet nex.PacketInterface) {
+	var err error
 	var errorCode uint32
 
 	if protocol.DeleteContent == nil {
@@ -22,9 +24,11 @@ func (protocol *Protocol) handleDeleteContent(packet nex.PacketInterface) {
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.server)
+	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
-	unknown1, err := parametersStream.ReadListString()
+	unknown1 := types.NewList[*types.String]()
+	unknown1.Type = types.NewString("")
+	err = unknown1.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.DeleteContent(fmt.Errorf("Failed to read unknown1 from parameters. %s", err.Error()), packet, callID, nil, 0)
 		if errorCode != 0 {
@@ -34,7 +38,8 @@ func (protocol *Protocol) handleDeleteContent(packet nex.PacketInterface) {
 		return
 	}
 
-	unknown2, err := parametersStream.ReadUInt64LE()
+	unknown2 := types.NewPrimitiveU64(0)
+	err = unknown2.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.DeleteContent(fmt.Errorf("Failed to read unknown2 from parameters. %s", err.Error()), packet, callID, nil, 0)
 		if errorCode != 0 {

@@ -5,10 +5,12 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
 func (protocol *Protocol) handleDeleteApplicationConfig(packet nex.PacketInterface) {
+	var err error
 	var errorCode uint32
 
 	if protocol.DeleteApplicationConfig == nil {
@@ -22,9 +24,10 @@ func (protocol *Protocol) handleDeleteApplicationConfig(packet nex.PacketInterfa
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.server)
+	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
-	applicationID, err := parametersStream.ReadUInt32LE()
+	applicationID := types.NewPrimitiveU32(0)
+	err = applicationID.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.DeleteApplicationConfig(fmt.Errorf("Failed to read applicationID from parameters. %s", err.Error()), packet, callID, 0, 0)
 		if errorCode != 0 {
@@ -34,7 +37,8 @@ func (protocol *Protocol) handleDeleteApplicationConfig(packet nex.PacketInterfa
 		return
 	}
 
-	key, err := parametersStream.ReadUInt32LE()
+	key := types.NewPrimitiveU32(0)
+	err = key.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.DeleteApplicationConfig(fmt.Errorf("Failed to read key from parameters. %s", err.Error()), packet, callID, 0, 0)
 		if errorCode != 0 {

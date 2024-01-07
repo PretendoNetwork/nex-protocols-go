@@ -7,20 +7,25 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // SubscriberUserStatusInfo is unknown
 type SubscriberUserStatusInfo struct {
-	nex.Structure
-	PID     *nex.PID
+	types.Structure
+	PID     *types.PID
 	Unknown [][]byte
 }
 
-// ExtractFromStream extracts a SubscriberUserStatusInfo structure from a stream
-func (s *SubscriberUserStatusInfo) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the SubscriberUserStatusInfo from the given readable
+func (s *SubscriberUserStatusInfo) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	s.PID, err = stream.ReadPID()
+	if err = s.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read SubscriberUserStatusInfo header. %s", err.Error())
+	}
+
+	err = s.PID.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract SubscriberUserStatusInfo.PID from stream. %s", err.Error())
 	}
@@ -33,19 +38,25 @@ func (s *SubscriberUserStatusInfo) ExtractFromStream(stream *nex.StreamIn) error
 	return nil
 }
 
-// Bytes encodes the SubscriberUserStatusInfo and returns a byte array
-func (s *SubscriberUserStatusInfo) Bytes(stream *nex.StreamOut) []byte {
-	stream.WritePID(s.PID)
+// WriteTo writes the SubscriberUserStatusInfo to the given writable
+func (s *SubscriberUserStatusInfo) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
+
+	s.PID.WriteTo(contentWritable)
 	stream.WriteListQBuffer(s.Unknown)
 
-	return stream.Bytes()
+	content := contentWritable.Bytes()
+
+	rvcd.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // Copy returns a new copied instance of SubscriberUserStatusInfo
-func (s *SubscriberUserStatusInfo) Copy() nex.StructureInterface {
+func (s *SubscriberUserStatusInfo) Copy() types.RVType {
 	copied := NewSubscriberUserStatusInfo()
 
-	copied.SetStructureVersion(s.StructureVersion())
+	copied.StructureVersion = s.StructureVersion
 
 	copied.PID = s.PID.Copy()
 	copied.Unknown = make([][]byte, len(s.Unknown))
@@ -60,10 +71,14 @@ func (s *SubscriberUserStatusInfo) Copy() nex.StructureInterface {
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (s *SubscriberUserStatusInfo) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*SubscriberUserStatusInfo)
+func (s *SubscriberUserStatusInfo) Equals(o types.RVType) bool {
+	if _, ok := o.(*SubscriberUserStatusInfo); !ok {
+		return false
+	}
 
-	if s.StructureVersion() != other.StructureVersion() {
+	other := o.(*SubscriberUserStatusInfo)
+
+	if s.StructureVersion != other.StructureVersion {
 		return false
 	}
 
@@ -76,7 +91,7 @@ func (s *SubscriberUserStatusInfo) Equals(structure nex.StructureInterface) bool
 	}
 
 	for i := 0; i < len(s.Unknown); i++ {
-		if !bytes.Equal(s.Unknown[i], other.Unknown[i]) {
+		if !s.Unknown[i].Equals(other.Unknown[i]) {
 			return false
 		}
 	}

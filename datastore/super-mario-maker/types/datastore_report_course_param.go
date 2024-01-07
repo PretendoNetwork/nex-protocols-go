@@ -5,38 +5,42 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // DataStoreReportCourseParam holds data for the DataStore (Super Mario Maker) protocol
 type DataStoreReportCourseParam struct {
-	nex.Structure
-	DataID         uint64
-	MiiName        string
-	ReportCategory uint8
-	ReportReason   string
+	types.Structure
+	DataID         *types.PrimitiveU64
+	MiiName        *types.String
+	ReportCategory *types.PrimitiveU8
+	ReportReason   *types.String
 }
 
-// ExtractFromStream extracts a DataStoreReportCourseParam structure from a stream
-func (dataStoreReportCourseParam *DataStoreReportCourseParam) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the DataStoreReportCourseParam from the given readable
+func (dataStoreReportCourseParam *DataStoreReportCourseParam) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	dataStoreReportCourseParam.DataID, err = stream.ReadUInt64LE()
+	if err = dataStoreReportCourseParam.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read DataStoreReportCourseParam header. %s", err.Error())
+	}
+
+	err = dataStoreReportCourseParam.DataID.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreReportCourseParam.DataID from stream. %s", err.Error())
 	}
 
-	dataStoreReportCourseParam.MiiName, err = stream.ReadString()
+	err = dataStoreReportCourseParam.MiiName.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreReportCourseParam.MiiName from stream. %s", err.Error())
 	}
 
-	dataStoreReportCourseParam.ReportCategory, err = stream.ReadUInt8()
+	err = dataStoreReportCourseParam.ReportCategory.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreReportCourseParam.ReportCategory from stream. %s", err.Error())
 	}
 
-	dataStoreReportCourseParam.ReportReason, err = stream.ReadString()
+	err = dataStoreReportCourseParam.ReportReason.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreReportCourseParam.ReportReason from stream. %s", err.Error())
 	}
@@ -44,51 +48,61 @@ func (dataStoreReportCourseParam *DataStoreReportCourseParam) ExtractFromStream(
 	return nil
 }
 
-// Bytes encodes the DataStoreReportCourseParam and returns a byte array
-func (dataStoreReportCourseParam *DataStoreReportCourseParam) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt64LE(dataStoreReportCourseParam.DataID)
-	stream.WriteString(dataStoreReportCourseParam.MiiName)
-	stream.WriteUInt8(dataStoreReportCourseParam.ReportCategory)
-	stream.WriteString(dataStoreReportCourseParam.ReportReason)
+// WriteTo writes the DataStoreReportCourseParam to the given writable
+func (dataStoreReportCourseParam *DataStoreReportCourseParam) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
 
-	return stream.Bytes()
+	dataStoreReportCourseParam.DataID.WriteTo(contentWritable)
+	dataStoreReportCourseParam.MiiName.WriteTo(contentWritable)
+	dataStoreReportCourseParam.ReportCategory.WriteTo(contentWritable)
+	dataStoreReportCourseParam.ReportReason.WriteTo(contentWritable)
+
+	content := contentWritable.Bytes()
+
+	dataStoreReportCourseParam.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // Copy returns a new copied instance of DataStoreReportCourseParam
-func (dataStoreReportCourseParam *DataStoreReportCourseParam) Copy() nex.StructureInterface {
+func (dataStoreReportCourseParam *DataStoreReportCourseParam) Copy() types.RVType {
 	copied := NewDataStoreReportCourseParam()
 
-	copied.SetStructureVersion(dataStoreReportCourseParam.StructureVersion())
+	copied.StructureVersion = dataStoreReportCourseParam.StructureVersion
 
-	copied.DataID = dataStoreReportCourseParam.DataID
-	copied.MiiName = dataStoreReportCourseParam.MiiName
-	copied.ReportCategory = dataStoreReportCourseParam.ReportCategory
-	copied.ReportReason = dataStoreReportCourseParam.ReportReason
+	copied.DataID = dataStoreReportCourseParam.DataID.Copy().(*types.PrimitiveU64)
+	copied.MiiName = dataStoreReportCourseParam.MiiName.Copy().(*types.String)
+	copied.ReportCategory = dataStoreReportCourseParam.ReportCategory.Copy().(*types.PrimitiveU8)
+	copied.ReportReason = dataStoreReportCourseParam.ReportReason.Copy().(*types.String)
 
 	return copied
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (dataStoreReportCourseParam *DataStoreReportCourseParam) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*DataStoreReportCourseParam)
-
-	if dataStoreReportCourseParam.StructureVersion() != other.StructureVersion() {
+func (dataStoreReportCourseParam *DataStoreReportCourseParam) Equals(o types.RVType) bool {
+	if _, ok := o.(*DataStoreReportCourseParam); !ok {
 		return false
 	}
 
-	if dataStoreReportCourseParam.DataID != other.DataID {
+	other := o.(*DataStoreReportCourseParam)
+
+	if dataStoreReportCourseParam.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if dataStoreReportCourseParam.MiiName != other.MiiName {
+	if !dataStoreReportCourseParam.DataID.Equals(other.DataID) {
 		return false
 	}
 
-	if dataStoreReportCourseParam.ReportCategory != other.ReportCategory {
+	if !dataStoreReportCourseParam.MiiName.Equals(other.MiiName) {
 		return false
 	}
 
-	if dataStoreReportCourseParam.ReportReason != other.ReportReason {
+	if !dataStoreReportCourseParam.ReportCategory.Equals(other.ReportCategory) {
+		return false
+	}
+
+	if !dataStoreReportCourseParam.ReportReason.Equals(other.ReportReason) {
 		return false
 	}
 
@@ -108,11 +122,11 @@ func (dataStoreReportCourseParam *DataStoreReportCourseParam) FormatToString(ind
 	var b strings.Builder
 
 	b.WriteString("DataStoreReportCourseParam{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, dataStoreReportCourseParam.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sDataID: %d,\n", indentationValues, dataStoreReportCourseParam.DataID))
-	b.WriteString(fmt.Sprintf("%sMiiName: %q,\n", indentationValues, dataStoreReportCourseParam.MiiName))
-	b.WriteString(fmt.Sprintf("%sReportCategory: %d,\n", indentationValues, dataStoreReportCourseParam.ReportCategory))
-	b.WriteString(fmt.Sprintf("%sReportReason: %q,\n", indentationValues, dataStoreReportCourseParam.ReportReason))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, dataStoreReportCourseParam.StructureVersion))
+	b.WriteString(fmt.Sprintf("%sDataID: %s,\n", indentationValues, dataStoreReportCourseParam.DataID))
+	b.WriteString(fmt.Sprintf("%sMiiName: %s,\n", indentationValues, dataStoreReportCourseParam.MiiName))
+	b.WriteString(fmt.Sprintf("%sReportCategory: %s,\n", indentationValues, dataStoreReportCourseParam.ReportCategory))
+	b.WriteString(fmt.Sprintf("%sReportReason: %s,\n", indentationValues, dataStoreReportCourseParam.ReportReason))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -121,9 +135,9 @@ func (dataStoreReportCourseParam *DataStoreReportCourseParam) FormatToString(ind
 // NewDataStoreReportCourseParam returns a new DataStoreReportCourseParam
 func NewDataStoreReportCourseParam() *DataStoreReportCourseParam {
 	return &DataStoreReportCourseParam{
-		DataID:         0,
-		MiiName:        "",
-		ReportCategory: 0,
-		ReportReason:   "",
+		DataID:         types.NewPrimitiveU64(0),
+		MiiName:        types.NewString(""),
+		ReportCategory: types.NewPrimitiveU8(0),
+		ReportReason:   types.NewString(""),
 	}
 }

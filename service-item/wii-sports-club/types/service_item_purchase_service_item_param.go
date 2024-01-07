@@ -6,11 +6,12 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // ServiceItemPurchaseServiceItemParam holds data for the Service Item (Wii Sports Club) protocol
 type ServiceItemPurchaseServiceItemParam struct {
-	nex.Structure
+	types.Structure
 	ItemCode       string
 	PriceID        string
 	ReferenceID    string
@@ -21,46 +22,50 @@ type ServiceItemPurchaseServiceItemParam struct {
 	TitleID        string
 }
 
-// ExtractFromStream extracts a ServiceItemPurchaseServiceItemParam structure from a stream
-func (serviceItemPurchaseServiceItemParam *ServiceItemPurchaseServiceItemParam) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the ServiceItemPurchaseServiceItemParam from the given readable
+func (serviceItemPurchaseServiceItemParam *ServiceItemPurchaseServiceItemParam) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	serviceItemPurchaseServiceItemParam.ItemCode, err = stream.ReadString()
+	if err = serviceItemPurchaseServiceItemParam.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read ServiceItemPurchaseServiceItemParam header. %s", err.Error())
+	}
+
+	err = serviceItemPurchaseServiceItemParam.ItemCode.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemPurchaseServiceItemParam.ItemCode from stream. %s", err.Error())
 	}
 
-	serviceItemPurchaseServiceItemParam.PriceID, err = stream.ReadString()
+	err = serviceItemPurchaseServiceItemParam.PriceID.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemPurchaseServiceItemParam.PriceID from stream. %s", err.Error())
 	}
 
-	serviceItemPurchaseServiceItemParam.ReferenceID, err = stream.ReadString()
+	err = serviceItemPurchaseServiceItemParam.ReferenceID.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemPurchaseServiceItemParam.ReferenceID from stream. %s", err.Error())
 	}
 
-	serviceItemPurchaseServiceItemParam.Balance, err = stream.ReadString()
+	err = serviceItemPurchaseServiceItemParam.Balance.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemPurchaseServiceItemParam.Balance from stream. %s", err.Error())
 	}
 
-	serviceItemPurchaseServiceItemParam.ItemName, err = stream.ReadString()
+	err = serviceItemPurchaseServiceItemParam.ItemName.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemPurchaseServiceItemParam.ItemName from stream. %s", err.Error())
 	}
 
-	serviceItemPurchaseServiceItemParam.EcServiceToken, err = stream.ReadString()
+	err = serviceItemPurchaseServiceItemParam.EcServiceToken.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemPurchaseServiceItemParam.EcServiceToken from stream. %s", err.Error())
 	}
 
-	serviceItemPurchaseServiceItemParam.Language, err = stream.ReadString()
+	err = serviceItemPurchaseServiceItemParam.Language.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemPurchaseServiceItemParam.Language from stream. %s", err.Error())
 	}
 
-	serviceItemPurchaseServiceItemParam.TitleID, err = stream.ReadString()
+	err = serviceItemPurchaseServiceItemParam.TitleID.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemPurchaseServiceItemParam.TitleID from stream. %s", err.Error())
 	}
@@ -68,25 +73,31 @@ func (serviceItemPurchaseServiceItemParam *ServiceItemPurchaseServiceItemParam) 
 	return nil
 }
 
-// Bytes encodes the ServiceItemPurchaseServiceItemParam and returns a byte array
-func (serviceItemPurchaseServiceItemParam *ServiceItemPurchaseServiceItemParam) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteString(serviceItemPurchaseServiceItemParam.ItemCode)
-	stream.WriteString(serviceItemPurchaseServiceItemParam.PriceID)
-	stream.WriteString(serviceItemPurchaseServiceItemParam.ReferenceID)
-	stream.WriteString(serviceItemPurchaseServiceItemParam.Balance)
-	stream.WriteString(serviceItemPurchaseServiceItemParam.ItemName)
-	stream.WriteString(serviceItemPurchaseServiceItemParam.EcServiceToken)
-	stream.WriteString(serviceItemPurchaseServiceItemParam.Language)
-	stream.WriteString(serviceItemPurchaseServiceItemParam.TitleID)
+// WriteTo writes the ServiceItemPurchaseServiceItemParam to the given writable
+func (serviceItemPurchaseServiceItemParam *ServiceItemPurchaseServiceItemParam) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
 
-	return stream.Bytes()
+	serviceItemPurchaseServiceItemParam.ItemCode.WriteTo(contentWritable)
+	serviceItemPurchaseServiceItemParam.PriceID.WriteTo(contentWritable)
+	serviceItemPurchaseServiceItemParam.ReferenceID.WriteTo(contentWritable)
+	serviceItemPurchaseServiceItemParam.Balance.WriteTo(contentWritable)
+	serviceItemPurchaseServiceItemParam.ItemName.WriteTo(contentWritable)
+	serviceItemPurchaseServiceItemParam.EcServiceToken.WriteTo(contentWritable)
+	serviceItemPurchaseServiceItemParam.Language.WriteTo(contentWritable)
+	serviceItemPurchaseServiceItemParam.TitleID.WriteTo(contentWritable)
+
+	content := contentWritable.Bytes()
+
+	serviceItemPurchaseServiceItemParam.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // Copy returns a new copied instance of ServiceItemPurchaseServiceItemParam
-func (serviceItemPurchaseServiceItemParam *ServiceItemPurchaseServiceItemParam) Copy() nex.StructureInterface {
+func (serviceItemPurchaseServiceItemParam *ServiceItemPurchaseServiceItemParam) Copy() types.RVType {
 	copied := NewServiceItemPurchaseServiceItemParam()
 
-	copied.SetStructureVersion(serviceItemPurchaseServiceItemParam.StructureVersion())
+	copied.StructureVersion = serviceItemPurchaseServiceItemParam.StructureVersion
 
 	copied.ItemCode = serviceItemPurchaseServiceItemParam.ItemCode
 	copied.PriceID = serviceItemPurchaseServiceItemParam.PriceID
@@ -101,42 +112,46 @@ func (serviceItemPurchaseServiceItemParam *ServiceItemPurchaseServiceItemParam) 
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (serviceItemPurchaseServiceItemParam *ServiceItemPurchaseServiceItemParam) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*ServiceItemPurchaseServiceItemParam)
-
-	if serviceItemPurchaseServiceItemParam.StructureVersion() != other.StructureVersion() {
+func (serviceItemPurchaseServiceItemParam *ServiceItemPurchaseServiceItemParam) Equals(o types.RVType) bool {
+	if _, ok := o.(*ServiceItemPurchaseServiceItemParam); !ok {
 		return false
 	}
 
-	if serviceItemPurchaseServiceItemParam.ItemCode != other.ItemCode {
+	other := o.(*ServiceItemPurchaseServiceItemParam)
+
+	if serviceItemPurchaseServiceItemParam.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if serviceItemPurchaseServiceItemParam.PriceID != other.PriceID {
+	if !serviceItemPurchaseServiceItemParam.ItemCode.Equals(other.ItemCode) {
 		return false
 	}
 
-	if serviceItemPurchaseServiceItemParam.ReferenceID != other.ReferenceID {
+	if !serviceItemPurchaseServiceItemParam.PriceID.Equals(other.PriceID) {
 		return false
 	}
 
-	if serviceItemPurchaseServiceItemParam.Balance != other.Balance {
+	if !serviceItemPurchaseServiceItemParam.ReferenceID.Equals(other.ReferenceID) {
 		return false
 	}
 
-	if serviceItemPurchaseServiceItemParam.ItemName != other.ItemName {
+	if !serviceItemPurchaseServiceItemParam.Balance.Equals(other.Balance) {
 		return false
 	}
 
-	if serviceItemPurchaseServiceItemParam.EcServiceToken != other.EcServiceToken {
+	if !serviceItemPurchaseServiceItemParam.ItemName.Equals(other.ItemName) {
 		return false
 	}
 
-	if serviceItemPurchaseServiceItemParam.Language != other.Language {
+	if !serviceItemPurchaseServiceItemParam.EcServiceToken.Equals(other.EcServiceToken) {
 		return false
 	}
 
-	if serviceItemPurchaseServiceItemParam.TitleID != other.TitleID {
+	if !serviceItemPurchaseServiceItemParam.Language.Equals(other.Language) {
+		return false
+	}
+
+	if !serviceItemPurchaseServiceItemParam.TitleID.Equals(other.TitleID) {
 		return false
 	}
 
@@ -156,7 +171,7 @@ func (serviceItemPurchaseServiceItemParam *ServiceItemPurchaseServiceItemParam) 
 	var b strings.Builder
 
 	b.WriteString("ServiceItemPurchaseServiceItemParam{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, serviceItemPurchaseServiceItemParam.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, serviceItemPurchaseServiceItemParam.StructureVersion))
 	b.WriteString(fmt.Sprintf("%sItemCode: %q,\n", indentationValues, serviceItemPurchaseServiceItemParam.ItemCode))
 	b.WriteString(fmt.Sprintf("%sPriceID: %q,\n", indentationValues, serviceItemPurchaseServiceItemParam.PriceID))
 	b.WriteString(fmt.Sprintf("%sReferenceID: %q,\n", indentationValues, serviceItemPurchaseServiceItemParam.ReferenceID))

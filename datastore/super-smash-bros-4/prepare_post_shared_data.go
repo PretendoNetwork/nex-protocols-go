@@ -5,11 +5,13 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 	datastore_super_smash_bros_4_types "github.com/PretendoNetwork/nex-protocols-go/datastore/super-smash-bros-4/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
 func (protocol *Protocol) handlePreparePostSharedData(packet nex.PacketInterface) {
+	var err error
 	var errorCode uint32
 
 	if protocol.PreparePostSharedData == nil {
@@ -23,9 +25,10 @@ func (protocol *Protocol) handlePreparePostSharedData(packet nex.PacketInterface
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.server)
+	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
-	param, err := nex.StreamReadStructure(parametersStream, datastore_super_smash_bros_4_types.NewDataStorePreparePostSharedDataParam())
+	param := datastore_super_smash_bros_4_types.NewDataStorePreparePostSharedDataParam()
+	err = param.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.PreparePostSharedData(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {

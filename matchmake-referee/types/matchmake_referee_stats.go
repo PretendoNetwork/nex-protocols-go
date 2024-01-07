@@ -6,132 +6,143 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // MatchmakeRefereeStats contains the results of a round
 type MatchmakeRefereeStats struct {
-	nex.Structure
-	*nex.Data
-	UniqueID            uint64
-	Category            uint32
-	PID                 *nex.PID
-	RecentDisconnection uint32
-	RecentViolation     uint32
-	RecentMismatch      uint32
-	RecentWin           uint32
-	RecentLoss          uint32
-	RecentDraw          uint32
-	TotalDisconnect     uint32
-	TotalViolation      uint32
-	TotalMismatch       uint32
-	TotalWin            uint32
-	TotalLoss           uint32
-	TotalDraw           uint32
-	RatingValue         uint32
+	types.Structure
+	*types.Data
+	UniqueID            *types.PrimitiveU64
+	Category            *types.PrimitiveU32
+	PID                 *types.PID
+	RecentDisconnection *types.PrimitiveU32
+	RecentViolation     *types.PrimitiveU32
+	RecentMismatch      *types.PrimitiveU32
+	RecentWin           *types.PrimitiveU32
+	RecentLoss          *types.PrimitiveU32
+	RecentDraw          *types.PrimitiveU32
+	TotalDisconnect     *types.PrimitiveU32
+	TotalViolation      *types.PrimitiveU32
+	TotalMismatch       *types.PrimitiveU32
+	TotalWin            *types.PrimitiveU32
+	TotalLoss           *types.PrimitiveU32
+	TotalDraw           *types.PrimitiveU32
+	RatingValue         *types.PrimitiveU32
 }
 
-// Bytes encodes the MatchmakeRefereeStats and returns a byte array
-func (matchmakeRefereeStats *MatchmakeRefereeStats) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt64LE(matchmakeRefereeStats.UniqueID)
-	stream.WriteUInt32LE(matchmakeRefereeStats.Category)
-	stream.WritePID(matchmakeRefereeStats.PID)
-	stream.WriteUInt32LE(matchmakeRefereeStats.RecentDisconnection)
-	stream.WriteUInt32LE(matchmakeRefereeStats.RecentViolation)
-	stream.WriteUInt32LE(matchmakeRefereeStats.RecentMismatch)
-	stream.WriteUInt32LE(matchmakeRefereeStats.RecentWin)
-	stream.WriteUInt32LE(matchmakeRefereeStats.RecentLoss)
-	stream.WriteUInt32LE(matchmakeRefereeStats.RecentDraw)
-	stream.WriteUInt32LE(matchmakeRefereeStats.TotalDisconnect)
-	stream.WriteUInt32LE(matchmakeRefereeStats.TotalViolation)
-	stream.WriteUInt32LE(matchmakeRefereeStats.TotalMismatch)
-	stream.WriteUInt32LE(matchmakeRefereeStats.TotalWin)
-	stream.WriteUInt32LE(matchmakeRefereeStats.TotalLoss)
-	stream.WriteUInt32LE(matchmakeRefereeStats.TotalDraw)
-	stream.WriteUInt32LE(matchmakeRefereeStats.RatingValue)
+// WriteTo writes the MatchmakeRefereeStats to the given writable
+func (matchmakeRefereeStats *MatchmakeRefereeStats) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
 
-	return stream.Bytes()
+	matchmakeRefereeStats.UniqueID.WriteTo(contentWritable)
+	matchmakeRefereeStats.Category.WriteTo(contentWritable)
+	matchmakeRefereeStats.PID.WriteTo(contentWritable)
+	matchmakeRefereeStats.RecentDisconnection.WriteTo(contentWritable)
+	matchmakeRefereeStats.RecentViolation.WriteTo(contentWritable)
+	matchmakeRefereeStats.RecentMismatch.WriteTo(contentWritable)
+	matchmakeRefereeStats.RecentWin.WriteTo(contentWritable)
+	matchmakeRefereeStats.RecentLoss.WriteTo(contentWritable)
+	matchmakeRefereeStats.RecentDraw.WriteTo(contentWritable)
+	matchmakeRefereeStats.TotalDisconnect.WriteTo(contentWritable)
+	matchmakeRefereeStats.TotalViolation.WriteTo(contentWritable)
+	matchmakeRefereeStats.TotalMismatch.WriteTo(contentWritable)
+	matchmakeRefereeStats.TotalWin.WriteTo(contentWritable)
+	matchmakeRefereeStats.TotalLoss.WriteTo(contentWritable)
+	matchmakeRefereeStats.TotalDraw.WriteTo(contentWritable)
+	matchmakeRefereeStats.RatingValue.WriteTo(contentWritable)
+
+	content := contentWritable.Bytes()
+
+	matchmakeRefereeStats.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
-// ExtractFromStream extracts a MatchmakeRefereeStats structure from a stream
-func (matchmakeRefereeStats *MatchmakeRefereeStats) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the MatchmakeRefereeStats from the given readable
+func (matchmakeRefereeStats *MatchmakeRefereeStats) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	matchmakeRefereeStats.UniqueID, err = stream.ReadUInt64LE()
+	if err = matchmakeRefereeStats.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read MatchmakeRefereeStats header. %s", err.Error())
+	}
+
+	err = matchmakeRefereeStats.UniqueID.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract MatchmakeRefereeStats.UniqueID. %s", err.Error())
 	}
 
-	matchmakeRefereeStats.Category, err = stream.ReadUInt32LE()
+	err = matchmakeRefereeStats.Category.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract MatchmakeRefereeStats.Category. %s", err.Error())
 	}
 
-	matchmakeRefereeStats.PID, err = stream.ReadPID()
+	err = matchmakeRefereeStats.PID.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract MatchmakeRefereeStats.PID. %s", err.Error())
 	}
 
-	matchmakeRefereeStats.RecentDisconnection, err = stream.ReadUInt32LE()
+	err = matchmakeRefereeStats.RecentDisconnection.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract MatchmakeRefereeStats.RecentDisconnection. %s", err.Error())
 	}
 
-	matchmakeRefereeStats.RecentViolation, err = stream.ReadUInt32LE()
+	err = matchmakeRefereeStats.RecentViolation.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract MatchmakeRefereeStats.RecentViolation. %s", err.Error())
 	}
 
-	matchmakeRefereeStats.RecentMismatch, err = stream.ReadUInt32LE()
+	err = matchmakeRefereeStats.RecentMismatch.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract MatchmakeRefereeStats.RecentMismatch. %s", err.Error())
 	}
 
-	matchmakeRefereeStats.RecentWin, err = stream.ReadUInt32LE()
+	err = matchmakeRefereeStats.RecentWin.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract MatchmakeRefereeStats.RecentWin. %s", err.Error())
 	}
 
-	matchmakeRefereeStats.RecentLoss, err = stream.ReadUInt32LE()
+	err = matchmakeRefereeStats.RecentLoss.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract MatchmakeRefereeStats.RecentLoss. %s", err.Error())
 	}
 
-	matchmakeRefereeStats.RecentDraw, err = stream.ReadUInt32LE()
+	err = matchmakeRefereeStats.RecentDraw.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract MatchmakeRefereeStats.RecentDraw. %s", err.Error())
 	}
 
-	matchmakeRefereeStats.TotalDisconnect, err = stream.ReadUInt32LE()
+	err = matchmakeRefereeStats.TotalDisconnect.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract MatchmakeRefereeStats.TotalDisconnect. %s", err.Error())
 	}
 
-	matchmakeRefereeStats.TotalViolation, err = stream.ReadUInt32LE()
+	err = matchmakeRefereeStats.TotalViolation.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract MatchmakeRefereeStats.TotalViolation. %s", err.Error())
 	}
 
-	matchmakeRefereeStats.TotalMismatch, err = stream.ReadUInt32LE()
+	err = matchmakeRefereeStats.TotalMismatch.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract MatchmakeRefereeStats.TotalMismatch. %s", err.Error())
 	}
 
-	matchmakeRefereeStats.TotalWin, err = stream.ReadUInt32LE()
+	err = matchmakeRefereeStats.TotalWin.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract MatchmakeRefereeStats.TotalWin. %s", err.Error())
 	}
 
-	matchmakeRefereeStats.TotalLoss, err = stream.ReadUInt32LE()
+	err = matchmakeRefereeStats.TotalLoss.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract MatchmakeRefereeStats.TotalLoss. %s", err.Error())
 	}
 
-	matchmakeRefereeStats.TotalDraw, err = stream.ReadUInt32LE()
+	err = matchmakeRefereeStats.TotalDraw.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract MatchmakeRefereeStats.TotalDraw. %s", err.Error())
 	}
 
-	matchmakeRefereeStats.RatingValue, err = stream.ReadUInt32LE()
+	err = matchmakeRefereeStats.RatingValue.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract MatchmakeRefereeStats.RatingValue. %s", err.Error())
 	}
@@ -140,13 +151,12 @@ func (matchmakeRefereeStats *MatchmakeRefereeStats) ExtractFromStream(stream *ne
 }
 
 // Copy returns a new copied instance of MatchmakeRefereeStats
-func (matchmakeRefereeStats *MatchmakeRefereeStats) Copy() nex.StructureInterface {
+func (matchmakeRefereeStats *MatchmakeRefereeStats) Copy() types.RVType {
 	copied := NewMatchmakeRefereeStats()
 
-	copied.SetStructureVersion(matchmakeRefereeStats.StructureVersion())
+	copied.StructureVersion = matchmakeRefereeStats.StructureVersion
 
-	copied.Data = matchmakeRefereeStats.ParentType().Copy().(*nex.Data)
-	copied.SetParentType(copied.Data)
+	copied.Data = matchmakeRefereeStats.Data.Copy().(*types.Data)
 
 	copied.UniqueID = matchmakeRefereeStats.UniqueID
 	copied.Category = matchmakeRefereeStats.Category
@@ -169,10 +179,14 @@ func (matchmakeRefereeStats *MatchmakeRefereeStats) Copy() nex.StructureInterfac
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (matchmakeRefereeStats *MatchmakeRefereeStats) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*MatchmakeRefereeStats)
+func (matchmakeRefereeStats *MatchmakeRefereeStats) Equals(o types.RVType) bool {
+	if _, ok := o.(*MatchmakeRefereeStats); !ok {
+		return false
+	}
 
-	if matchmakeRefereeStats.StructureVersion() != other.StructureVersion() {
+	other := o.(*MatchmakeRefereeStats)
+
+	if matchmakeRefereeStats.StructureVersion != other.StructureVersion {
 		return false
 	}
 
@@ -180,11 +194,11 @@ func (matchmakeRefereeStats *MatchmakeRefereeStats) Equals(structure nex.Structu
 		return false
 	}
 
-	if matchmakeRefereeStats.UniqueID != other.UniqueID {
+	if !matchmakeRefereeStats.UniqueID.Equals(other.UniqueID) {
 		return false
 	}
 
-	if matchmakeRefereeStats.Category != other.Category {
+	if !matchmakeRefereeStats.Category.Equals(other.Category) {
 		return false
 	}
 
@@ -192,55 +206,55 @@ func (matchmakeRefereeStats *MatchmakeRefereeStats) Equals(structure nex.Structu
 		return false
 	}
 
-	if matchmakeRefereeStats.RecentDisconnection != other.RecentDisconnection {
+	if !matchmakeRefereeStats.RecentDisconnection.Equals(other.RecentDisconnection) {
 		return false
 	}
 
-	if matchmakeRefereeStats.RecentViolation != other.RecentViolation {
+	if !matchmakeRefereeStats.RecentViolation.Equals(other.RecentViolation) {
 		return false
 	}
 
-	if matchmakeRefereeStats.RecentMismatch != other.RecentMismatch {
+	if !matchmakeRefereeStats.RecentMismatch.Equals(other.RecentMismatch) {
 		return false
 	}
 
-	if matchmakeRefereeStats.RecentWin != other.RecentWin {
+	if !matchmakeRefereeStats.RecentWin.Equals(other.RecentWin) {
 		return false
 	}
 
-	if matchmakeRefereeStats.RecentLoss != other.RecentLoss {
+	if !matchmakeRefereeStats.RecentLoss.Equals(other.RecentLoss) {
 		return false
 	}
 
-	if matchmakeRefereeStats.RecentDraw != other.RecentDraw {
+	if !matchmakeRefereeStats.RecentDraw.Equals(other.RecentDraw) {
 		return false
 	}
 
-	if matchmakeRefereeStats.TotalDisconnect != other.TotalDisconnect {
+	if !matchmakeRefereeStats.TotalDisconnect.Equals(other.TotalDisconnect) {
 		return false
 	}
 
-	if matchmakeRefereeStats.TotalViolation != other.TotalViolation {
+	if !matchmakeRefereeStats.TotalViolation.Equals(other.TotalViolation) {
 		return false
 	}
 
-	if matchmakeRefereeStats.TotalMismatch != other.TotalMismatch {
+	if !matchmakeRefereeStats.TotalMismatch.Equals(other.TotalMismatch) {
 		return false
 	}
 
-	if matchmakeRefereeStats.TotalWin != other.TotalWin {
+	if !matchmakeRefereeStats.TotalWin.Equals(other.TotalWin) {
 		return false
 	}
 
-	if matchmakeRefereeStats.TotalLoss != other.TotalLoss {
+	if !matchmakeRefereeStats.TotalLoss.Equals(other.TotalLoss) {
 		return false
 	}
 
-	if matchmakeRefereeStats.TotalDraw != other.TotalDraw {
+	if !matchmakeRefereeStats.TotalDraw.Equals(other.TotalDraw) {
 		return false
 	}
 
-	if matchmakeRefereeStats.RatingValue != other.RatingValue {
+	if !matchmakeRefereeStats.RatingValue.Equals(other.RatingValue) {
 		return false
 	}
 
@@ -260,7 +274,7 @@ func (matchmakeRefereeStats *MatchmakeRefereeStats) FormatToString(indentationLe
 	var b strings.Builder
 
 	b.WriteString("MatchmakeRefereeStats{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, matchmakeRefereeStats.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, matchmakeRefereeStats.StructureVersion))
 	b.WriteString(fmt.Sprintf("%sUniqueID: %d,\n", indentationValues, matchmakeRefereeStats.UniqueID))
 	b.WriteString(fmt.Sprintf("%sCategory: %d,\n", indentationValues, matchmakeRefereeStats.Category))
 	b.WriteString(fmt.Sprintf("%sPID: %s,\n", indentationValues, matchmakeRefereeStats.PID.FormatToString(indentationLevel+1)))

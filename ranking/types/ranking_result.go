@@ -6,19 +6,24 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // RankingResult holds the result of a Ranking get request
 type RankingResult struct {
-	nex.Structure
+	types.Structure
 	RankDataList []*RankingRankData
-	TotalCount   uint32
-	SinceTime    *nex.DateTime
+	TotalCount   *types.PrimitiveU32
+	SinceTime    *types.DateTime
 }
 
-// ExtractFromStream extracts a RankingResult structure from a stream
-func (rankingResult *RankingResult) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the RankingResult from the given readable
+func (rankingResult *RankingResult) ExtractFrom(readable types.Readable) error {
 	var err error
+
+	if err = rankingResult.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read RankingResult header. %s", err.Error())
+	}
 
 	rankDataList, err := nex.StreamReadListStructure(stream, NewRankingRankData())
 	if err != nil {
@@ -27,12 +32,12 @@ func (rankingResult *RankingResult) ExtractFromStream(stream *nex.StreamIn) erro
 
 	rankingResult.RankDataList = rankDataList
 
-	rankingResult.TotalCount, err = stream.ReadUInt32LE()
+	err = rankingResult.TotalCount.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract RankingResult.TotalCount from stream. %s", err.Error())
 	}
 
-	rankingResult.SinceTime, err = stream.ReadDateTime()
+	err = rankingResult.SinceTime.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract RankingResult.SinceTime from stream. %s", err.Error())
 	}
@@ -40,20 +45,26 @@ func (rankingResult *RankingResult) ExtractFromStream(stream *nex.StreamIn) erro
 	return nil
 }
 
-// Bytes encodes the RankingResult and returns a byte array
-func (rankingResult *RankingResult) Bytes(stream *nex.StreamOut) []byte {
-	nex.StreamWriteListStructure(stream, rankingResult.RankDataList)
-	stream.WriteUInt32LE(rankingResult.TotalCount)
-	stream.WriteDateTime(rankingResult.SinceTime)
+// WriteTo writes the RankingResult to the given writable
+func (rankingResult *RankingResult) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
 
-	return stream.Bytes()
+	rankingResult.RankDataList.WriteTo(contentWritable)
+	rankingResult.TotalCount.WriteTo(contentWritable)
+	rankingResult.SinceTime.WriteTo(contentWritable)
+
+	content := contentWritable.Bytes()
+
+	rankingResult.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // Copy returns a new copied instance of RankingResult
-func (rankingResult *RankingResult) Copy() nex.StructureInterface {
+func (rankingResult *RankingResult) Copy() types.RVType {
 	copied := NewRankingResult()
 
-	copied.SetStructureVersion(rankingResult.StructureVersion())
+	copied.StructureVersion = rankingResult.StructureVersion
 
 	copied.RankDataList = make([]*RankingRankData, len(rankingResult.RankDataList))
 
@@ -63,18 +74,20 @@ func (rankingResult *RankingResult) Copy() nex.StructureInterface {
 
 	copied.TotalCount = rankingResult.TotalCount
 
-	if rankingResult.SinceTime != nil {
-		copied.SinceTime = rankingResult.SinceTime.Copy()
-	}
+	copied.SinceTime = rankingResult.SinceTime.Copy()
 
 	return copied
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (rankingResult *RankingResult) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*RankingResult)
+func (rankingResult *RankingResult) Equals(o types.RVType) bool {
+	if _, ok := o.(*RankingResult); !ok {
+		return false
+	}
 
-	if rankingResult.StructureVersion() != other.StructureVersion() {
+	other := o.(*RankingResult)
+
+	if rankingResult.StructureVersion != other.StructureVersion {
 		return false
 	}
 
@@ -88,22 +101,12 @@ func (rankingResult *RankingResult) Equals(structure nex.StructureInterface) boo
 		}
 	}
 
-	if rankingResult.TotalCount != other.TotalCount {
+	if !rankingResult.TotalCount.Equals(other.TotalCount) {
 		return false
 	}
 
-	if rankingResult.SinceTime == nil && other.SinceTime != nil {
+	if !rankingResult.SinceTime.Equals(other.SinceTime) {
 		return false
-	}
-
-	if rankingResult.SinceTime != nil && other.SinceTime == nil {
-		return false
-	}
-
-	if rankingResult.SinceTime != nil && other.SinceTime != nil {
-		if !rankingResult.SinceTime.Equals(other.SinceTime) {
-			return false
-		}
 	}
 
 	return true
@@ -123,7 +126,7 @@ func (rankingResult *RankingResult) FormatToString(indentationLevel int) string 
 	var b strings.Builder
 
 	b.WriteString("RankingResult{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, rankingResult.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, rankingResult.StructureVersion))
 
 	if len(rankingResult.RankDataList) == 0 {
 		b.WriteString(fmt.Sprintf("%sRankDataList: [],\n", indentationValues))

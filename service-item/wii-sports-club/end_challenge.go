@@ -5,11 +5,13 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 	service_item_wii_sports_club_types "github.com/PretendoNetwork/nex-protocols-go/service-item/wii-sports-club/types"
 )
 
 func (protocol *Protocol) handleEndChallenge(packet nex.PacketInterface) {
+	var err error
 	var errorCode uint32
 
 	if protocol.EndChallenge == nil {
@@ -23,9 +25,10 @@ func (protocol *Protocol) handleEndChallenge(packet nex.PacketInterface) {
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.server)
+	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
-	endChallengeParam, err := nex.StreamReadStructure(parametersStream, service_item_wii_sports_club_types.NewServiceItemEndChallengeParam())
+	endChallengeParam := service_item_wii_sports_club_types.NewServiceItemEndChallengeParam()
+	err = endChallengeParam.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.EndChallenge(fmt.Errorf("Failed to read endChallengeParam from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {

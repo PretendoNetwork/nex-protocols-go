@@ -5,10 +5,12 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
 func (protocol *Protocol) handleDeleteFromDeletions(packet nex.PacketInterface) {
+	var err error
 	var errorCode uint32
 
 	if protocol.DeleteFromDeletions == nil {
@@ -22,9 +24,11 @@ func (protocol *Protocol) handleDeleteFromDeletions(packet nex.PacketInterface) 
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.server)
+	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
-	lstDeletions, err := parametersStream.ReadListUInt32LE()
+	lstDeletions := types.NewList[*types.PrimitiveU32]()
+	lstDeletions.Type = types.NewPrimitiveU32(0)
+	err = lstDeletions.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.DeleteFromDeletions(fmt.Errorf("Failed to read lstDeletions from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {

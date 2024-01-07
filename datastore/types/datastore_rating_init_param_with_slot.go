@@ -5,26 +5,44 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // DataStoreRatingInitParamWithSlot is sent in the PreparePostObject method
 type DataStoreRatingInitParamWithSlot struct {
-	nex.Structure
-	Slot  int8
+	types.Structure
+	Slot  *types.PrimitiveS8
 	Param *DataStoreRatingInitParam
 }
 
-// ExtractFromStream extracts a DataStoreRatingInitParamWithSlot structure from a stream
-func (dataStoreRatingInitParamWithSlot *DataStoreRatingInitParamWithSlot) ExtractFromStream(stream *nex.StreamIn) error {
+// WriteTo writes the DataStoreRatingInitParamWithSlot to the given writable
+func (dataStoreRatingInitParamWithSlot *DataStoreRatingInitParamWithSlot) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
+
+	dataStoreRatingInitParamWithSlot.Slot.WriteTo(contentWritable)
+	dataStoreRatingInitParamWithSlot.Param.WriteTo(contentWritable)
+
+	content := contentWritable.Bytes()
+
+	dataStoreRatingInitParamWithSlot.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
+}
+
+// ExtractFrom extracts the DataStoreRatingInitParamWithSlot from the given readable
+func (dataStoreRatingInitParamWithSlot *DataStoreRatingInitParamWithSlot) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	dataStoreRatingInitParamWithSlot.Slot, err = stream.ReadInt8()
+	if err = dataStoreRatingInitParamWithSlot.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read DataStoreRatingInitParamWithSlot header. %s", err.Error())
+	}
+
+	err = dataStoreRatingInitParamWithSlot.Slot.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreRatingInitParamWithSlot.Slot. %s", err.Error())
 	}
 
-	dataStoreRatingInitParamWithSlot.Param, err = nex.StreamReadStructure(stream, NewDataStoreRatingInitParam())
+	err = dataStoreRatingInitParamWithSlot.Param.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreRatingInitParamWithSlot.Param. %s", err.Error())
 	}
@@ -33,29 +51,30 @@ func (dataStoreRatingInitParamWithSlot *DataStoreRatingInitParamWithSlot) Extrac
 }
 
 // Copy returns a new copied instance of DataStoreRatingInitParamWithSlot
-func (dataStoreRatingInitParamWithSlot *DataStoreRatingInitParamWithSlot) Copy() nex.StructureInterface {
+func (dataStoreRatingInitParamWithSlot *DataStoreRatingInitParamWithSlot) Copy() types.RVType {
 	copied := NewDataStoreRatingInitParamWithSlot()
 
-	copied.SetStructureVersion(dataStoreRatingInitParamWithSlot.StructureVersion())
+	copied.StructureVersion = dataStoreRatingInitParamWithSlot.StructureVersion
 
-	copied.Slot = dataStoreRatingInitParamWithSlot.Slot
-
-	if dataStoreRatingInitParamWithSlot.Param != nil {
-		copied.Param = dataStoreRatingInitParamWithSlot.Param.Copy().(*DataStoreRatingInitParam)
-	}
+	copied.Slot = dataStoreRatingInitParamWithSlot.Slot.Copy().(*types.PrimitiveS8)
+	copied.Param = dataStoreRatingInitParamWithSlot.Param.Copy().(*DataStoreRatingInitParam)
 
 	return copied
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (dataStoreRatingInitParamWithSlot *DataStoreRatingInitParamWithSlot) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*DataStoreRatingInitParamWithSlot)
-
-	if dataStoreRatingInitParamWithSlot.StructureVersion() != other.StructureVersion() {
+func (dataStoreRatingInitParamWithSlot *DataStoreRatingInitParamWithSlot) Equals(o types.RVType) bool {
+	if _, ok := o.(*DataStoreRatingInitParamWithSlot); !ok {
 		return false
 	}
 
-	if dataStoreRatingInitParamWithSlot.Slot != other.Slot {
+	other := o.(*DataStoreRatingInitParamWithSlot)
+
+	if dataStoreRatingInitParamWithSlot.StructureVersion != other.StructureVersion {
+		return false
+	}
+
+	if !dataStoreRatingInitParamWithSlot.Slot.Equals(other.Slot) {
 		return false
 	}
 
@@ -79,15 +98,9 @@ func (dataStoreRatingInitParamWithSlot *DataStoreRatingInitParamWithSlot) Format
 	var b strings.Builder
 
 	b.WriteString("DataStoreRatingInitParamWithSlot{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, dataStoreRatingInitParamWithSlot.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sSlot: %d,\n", indentationValues, dataStoreRatingInitParamWithSlot.Slot))
-
-	if dataStoreRatingInitParamWithSlot.Param != nil {
-		b.WriteString(fmt.Sprintf("%sParam: %s\n", indentationValues, dataStoreRatingInitParamWithSlot.Param.FormatToString(indentationLevel+1)))
-	} else {
-		b.WriteString(fmt.Sprintf("%sParam: nil\n", indentationValues))
-	}
-
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, dataStoreRatingInitParamWithSlot.StructureVersion))
+	b.WriteString(fmt.Sprintf("%sSlot: %s,\n", indentationValues, dataStoreRatingInitParamWithSlot.Slot))
+	b.WriteString(fmt.Sprintf("%sParam: %s\n", indentationValues, dataStoreRatingInitParamWithSlot.Param.FormatToString(indentationLevel+1)))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -96,7 +109,7 @@ func (dataStoreRatingInitParamWithSlot *DataStoreRatingInitParamWithSlot) Format
 // NewDataStoreRatingInitParamWithSlot returns a new DataStoreRatingInitParamWithSlot
 func NewDataStoreRatingInitParamWithSlot() *DataStoreRatingInitParamWithSlot {
 	return &DataStoreRatingInitParamWithSlot{
-		Slot:  0,
+		Slot:  types.NewPrimitiveS8(0),
 		Param: NewDataStoreRatingInitParam(),
 	}
 }

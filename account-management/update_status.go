@@ -5,10 +5,12 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
 func (protocol *Protocol) handleUpdateStatus(packet nex.PacketInterface) {
+	var err error
 	var errorCode uint32
 
 	if protocol.UpdateStatus == nil {
@@ -22,11 +24,12 @@ func (protocol *Protocol) handleUpdateStatus(packet nex.PacketInterface) {
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.server)
+	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
-	strStatus, err := parametersStream.ReadString()
+	strStatus := types.NewString("")
+	err = strStatus.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.UpdateStatus(fmt.Errorf("Failed to read strStatus from parameters. %s", err.Error()), packet, callID, "")
+		_, errorCode = protocol.UpdateStatus(fmt.Errorf("Failed to read strStatus from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}

@@ -5,26 +5,30 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // GlobalTradeStationPrepareTradePokemonResult holds data for the DataStore (Pokemon Bank) protocol
 type GlobalTradeStationPrepareTradePokemonResult struct {
-	nex.Structure
+	types.Structure
 	Result          *GlobalTradeStationDownloadPokemonResult
 	PrepareTradeKey *GlobalTradeStationRecordKey
 }
 
-// ExtractFromStream extracts a GlobalTradeStationPrepareTradePokemonResult structure from a stream
-func (globalTradeStationPrepareTradePokemonResult *GlobalTradeStationPrepareTradePokemonResult) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the GlobalTradeStationPrepareTradePokemonResult from the given readable
+func (globalTradeStationPrepareTradePokemonResult *GlobalTradeStationPrepareTradePokemonResult) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	globalTradeStationPrepareTradePokemonResult.Result, err = nex.StreamReadStructure(stream, NewGlobalTradeStationDownloadPokemonResult())
+	if err = globalTradeStationPrepareTradePokemonResult.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read GlobalTradeStationPrepareTradePokemonResult header. %s", err.Error())
+	}
+
+	err = globalTradeStationPrepareTradePokemonResult.Result.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract GlobalTradeStationPrepareTradePokemonResult.Result from stream. %s", err.Error())
 	}
 
-	globalTradeStationPrepareTradePokemonResult.PrepareTradeKey, err = nex.StreamReadStructure(stream, NewGlobalTradeStationRecordKey())
+	err = globalTradeStationPrepareTradePokemonResult.PrepareTradeKey.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract GlobalTradeStationPrepareTradePokemonResult.PrepareTradeKey from stream. %s", err.Error())
 	}
@@ -32,19 +36,25 @@ func (globalTradeStationPrepareTradePokemonResult *GlobalTradeStationPrepareTrad
 	return nil
 }
 
-// Bytes encodes the GlobalTradeStationPrepareTradePokemonResult and returns a byte array
-func (globalTradeStationPrepareTradePokemonResult *GlobalTradeStationPrepareTradePokemonResult) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteStructure(globalTradeStationPrepareTradePokemonResult.Result)
-	stream.WriteStructure(globalTradeStationPrepareTradePokemonResult.PrepareTradeKey)
+// WriteTo writes the GlobalTradeStationPrepareTradePokemonResult to the given writable
+func (globalTradeStationPrepareTradePokemonResult *GlobalTradeStationPrepareTradePokemonResult) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
 
-	return stream.Bytes()
+	globalTradeStationPrepareTradePokemonResult.Result.WriteTo(contentWritable)
+	globalTradeStationPrepareTradePokemonResult.PrepareTradeKey.WriteTo(contentWritable)
+
+	content := contentWritable.Bytes()
+
+	globalTradeStationPrepareTradePokemonResult.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // Copy returns a new copied instance of GlobalTradeStationPrepareTradePokemonResult
-func (globalTradeStationPrepareTradePokemonResult *GlobalTradeStationPrepareTradePokemonResult) Copy() nex.StructureInterface {
+func (globalTradeStationPrepareTradePokemonResult *GlobalTradeStationPrepareTradePokemonResult) Copy() types.RVType {
 	copied := NewGlobalTradeStationPrepareTradePokemonResult()
 
-	copied.SetStructureVersion(globalTradeStationPrepareTradePokemonResult.StructureVersion())
+	copied.StructureVersion = globalTradeStationPrepareTradePokemonResult.StructureVersion
 
 	copied.Result = globalTradeStationPrepareTradePokemonResult.Result.Copy().(*GlobalTradeStationDownloadPokemonResult)
 	copied.PrepareTradeKey = globalTradeStationPrepareTradePokemonResult.PrepareTradeKey.Copy().(*GlobalTradeStationRecordKey)
@@ -53,10 +63,14 @@ func (globalTradeStationPrepareTradePokemonResult *GlobalTradeStationPrepareTrad
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (globalTradeStationPrepareTradePokemonResult *GlobalTradeStationPrepareTradePokemonResult) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*GlobalTradeStationPrepareTradePokemonResult)
+func (globalTradeStationPrepareTradePokemonResult *GlobalTradeStationPrepareTradePokemonResult) Equals(o types.RVType) bool {
+	if _, ok := o.(*GlobalTradeStationPrepareTradePokemonResult); !ok {
+		return false
+	}
 
-	if globalTradeStationPrepareTradePokemonResult.StructureVersion() != other.StructureVersion() {
+	other := o.(*GlobalTradeStationPrepareTradePokemonResult)
+
+	if globalTradeStationPrepareTradePokemonResult.StructureVersion != other.StructureVersion {
 		return false
 	}
 
@@ -84,20 +98,9 @@ func (globalTradeStationPrepareTradePokemonResult *GlobalTradeStationPrepareTrad
 	var b strings.Builder
 
 	b.WriteString("GlobalTradeStationPrepareTradePokemonResult{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, globalTradeStationPrepareTradePokemonResult.StructureVersion()))
-
-	if globalTradeStationPrepareTradePokemonResult.Result != nil {
-		b.WriteString(fmt.Sprintf("%sResult: %s\n", indentationValues, globalTradeStationPrepareTradePokemonResult.Result.FormatToString(indentationLevel+1)))
-	} else {
-		b.WriteString(fmt.Sprintf("%sResult: nil\n", indentationValues))
-	}
-
-	if globalTradeStationPrepareTradePokemonResult.PrepareTradeKey != nil {
-		b.WriteString(fmt.Sprintf("%sPrepareTradeKey: %s\n", indentationValues, globalTradeStationPrepareTradePokemonResult.PrepareTradeKey.FormatToString(indentationLevel+1)))
-	} else {
-		b.WriteString(fmt.Sprintf("%sPrepareTradeKey: nil\n", indentationValues))
-	}
-
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, globalTradeStationPrepareTradePokemonResult.StructureVersion))
+	b.WriteString(fmt.Sprintf("%sResult: %s\n", indentationValues, globalTradeStationPrepareTradePokemonResult.Result.FormatToString(indentationLevel+1)))
+	b.WriteString(fmt.Sprintf("%sPrepareTradeKey: %s\n", indentationValues, globalTradeStationPrepareTradePokemonResult.PrepareTradeKey.FormatToString(indentationLevel+1)))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -105,5 +108,8 @@ func (globalTradeStationPrepareTradePokemonResult *GlobalTradeStationPrepareTrad
 
 // NewGlobalTradeStationPrepareTradePokemonResult returns a new GlobalTradeStationPrepareTradePokemonResult
 func NewGlobalTradeStationPrepareTradePokemonResult() *GlobalTradeStationPrepareTradePokemonResult {
-	return &GlobalTradeStationPrepareTradePokemonResult{}
+	return &GlobalTradeStationPrepareTradePokemonResult{
+		Result: NewGlobalTradeStationDownloadPokemonResult(),
+		PrepareTradeKey: NewGlobalTradeStationRecordKey(),
+	}
 }

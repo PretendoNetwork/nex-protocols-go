@@ -7,43 +7,54 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // Mii is a data structure used by the Friends 3DS protocol to hold information about a Mii
 type Mii struct {
-	nex.Structure
-	*nex.Data
+	types.Structure
+	*types.Data
 	Name     string
-	Unknown2 bool
-	Unknown3 uint8
+	Unknown2 *types.PrimitiveBool
+	Unknown3 *types.PrimitiveU8
 	MiiData  []byte
 }
 
-// Bytes encodes the Mii and returns a byte array
-func (mii *Mii) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteString(mii.Name)
-	stream.WriteBool(mii.Unknown2)
-	stream.WriteUInt8(mii.Unknown3)
+// WriteTo writes the Mii to the given writable
+func (mii *Mii) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
+
+	mii.Name.WriteTo(contentWritable)
+	mii.Unknown2.WriteTo(contentWritable)
+	mii.Unknown3.WriteTo(contentWritable)
 	stream.WriteBuffer(mii.MiiData)
 
-	return stream.Bytes()
+	content := contentWritable.Bytes()
+
+	rvcd.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // ExtractFromStream extracts a Mii from a stream
-func (mii *Mii) ExtractFromStream(stream *nex.StreamIn) error {
+func (mii *Mii) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	mii.Name, err = stream.ReadString()
+	if err = mii.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read Mii header. %s", err.Error())
+	}
+
+	err = mii.Name.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract Mii.Name. %s", err.Error())
 	}
 
-	mii.Unknown2, err = stream.ReadBool()
+	err = mii.Unknown2.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract Mii.Unknown2. %s", err.Error())
 	}
 
-	mii.Unknown3, err = stream.ReadUInt8()
+	err = mii.Unknown3.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract Mii.Unknown3. %s", err.Error())
 	}
@@ -57,18 +68,12 @@ func (mii *Mii) ExtractFromStream(stream *nex.StreamIn) error {
 }
 
 // Copy returns a new copied instance of Mii
-func (mii *Mii) Copy() nex.StructureInterface {
+func (mii *Mii) Copy() types.RVType {
 	copied := NewMii()
 
-	copied.SetStructureVersion(mii.StructureVersion())
+	copied.StructureVersion = mii.StructureVersion
 
-	if mii.ParentType() != nil {
-		copied.Data = mii.ParentType().Copy().(*nex.Data)
-	} else {
-		copied.Data = nex.NewData()
-	}
-
-	copied.SetParentType(copied.Data)
+	copied.Data = mii.Data.Copy().(*types.Data)
 
 	copied.Name = mii.Name
 	copied.Unknown2 = mii.Unknown2
@@ -81,10 +86,14 @@ func (mii *Mii) Copy() nex.StructureInterface {
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (mii *Mii) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*Mii)
+func (mii *Mii) Equals(o types.RVType) bool {
+	if _, ok := o.(*Mii); !ok {
+		return false
+	}
 
-	if mii.StructureVersion() != other.StructureVersion() {
+	other := o.(*Mii)
+
+	if mii.StructureVersion != other.StructureVersion {
 		return false
 	}
 
@@ -92,19 +101,19 @@ func (mii *Mii) Equals(structure nex.StructureInterface) bool {
 		return false
 	}
 
-	if mii.Name != other.Name {
+	if !mii.Name.Equals(other.Name) {
 		return false
 	}
 
-	if mii.Unknown2 != other.Unknown2 {
+	if !mii.Unknown2.Equals(other.Unknown2) {
 		return false
 	}
 
-	if mii.Unknown3 != other.Unknown3 {
+	if !mii.Unknown3.Equals(other.Unknown3) {
 		return false
 	}
 
-	if !bytes.Equal(mii.MiiData, other.MiiData) {
+	if !mii.MiiData.Equals(other.MiiData) {
 		return false
 	}
 
@@ -124,7 +133,7 @@ func (mii *Mii) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("Mii{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, mii.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, mii.StructureVersion))
 	b.WriteString(fmt.Sprintf("%sName: %q,\n", indentationValues, mii.Name))
 	b.WriteString(fmt.Sprintf("%sUnknown2: %t,\n", indentationValues, mii.Unknown2))
 	b.WriteString(fmt.Sprintf("%sUnknown3: %d,\n", indentationValues, mii.Unknown3))

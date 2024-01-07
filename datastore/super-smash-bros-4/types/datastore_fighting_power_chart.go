@@ -5,79 +5,81 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // DataStoreFightingPowerChart is a data structure used by the DataStore Super Smash Bros. 4 protocol
 type DataStoreFightingPowerChart struct {
-	nex.Structure
-	UserNum uint32
-	Chart   []*DataStoreFightingPowerScore
+	types.Structure
+	UserNum *types.PrimitiveU32
+	Chart   *types.List[*DataStoreFightingPowerScore]
 }
 
-// ExtractFromStream extracts a DataStoreFightingPowerChart structure from a stream
-func (dataStoreFightingPowerChart *DataStoreFightingPowerChart) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the DataStoreFightingPowerChart from the given readable
+func (dataStoreFightingPowerChart *DataStoreFightingPowerChart) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	dataStoreFightingPowerChart.UserNum, err = stream.ReadUInt32LE()
+	if err = dataStoreFightingPowerChart.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read DataStoreFightingPowerChart header. %s", err.Error())
+	}
+
+	err = dataStoreFightingPowerChart.UserNum.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreFightingPowerChart.UserNum. %s", err.Error())
 	}
 
-	chart, err := nex.StreamReadListStructure(stream, NewDataStoreFightingPowerScore())
+	err = dataStoreFightingPowerChart.Chart.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreFightingPowerChart.Chart. %s", err.Error())
 	}
 
-	dataStoreFightingPowerChart.Chart = chart
-
 	return nil
 }
 
-// Bytes encodes the DataStoreFightingPowerChart and returns a byte array
-func (dataStoreFightingPowerChart *DataStoreFightingPowerChart) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt32LE(dataStoreFightingPowerChart.UserNum)
-	nex.StreamWriteListStructure(stream, dataStoreFightingPowerChart.Chart)
+// WriteTo writes the DataStoreFightingPowerChart to the given writable
+func (dataStoreFightingPowerChart *DataStoreFightingPowerChart) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
 
-	return stream.Bytes()
+	dataStoreFightingPowerChart.UserNum.WriteTo(contentWritable)
+	dataStoreFightingPowerChart.Chart.WriteTo(contentWritable)
+
+	content := contentWritable.Bytes()
+
+	dataStoreFightingPowerChart.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // Copy returns a new copied instance of DataStoreFightingPowerChart
-func (dataStoreFightingPowerChart *DataStoreFightingPowerChart) Copy() nex.StructureInterface {
+func (dataStoreFightingPowerChart *DataStoreFightingPowerChart) Copy() types.RVType {
 	copied := NewDataStoreFightingPowerChart()
 
-	copied.SetStructureVersion(dataStoreFightingPowerChart.StructureVersion())
+	copied.StructureVersion = dataStoreFightingPowerChart.StructureVersion
 
-	copied.UserNum = dataStoreFightingPowerChart.UserNum
-	copied.Chart = make([]*DataStoreFightingPowerScore, len(dataStoreFightingPowerChart.Chart))
-
-	for i := 0; i < len(dataStoreFightingPowerChart.Chart); i++ {
-		copied.Chart[i] = dataStoreFightingPowerChart.Chart[i].Copy().(*DataStoreFightingPowerScore)
-	}
+	copied.UserNum = dataStoreFightingPowerChart.UserNum.Copy().(*types.PrimitiveU32)
+	copied.Chart = dataStoreFightingPowerChart.Chart.Copy().(*types.List[*DataStoreFightingPowerScore])
 
 	return copied
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (dataStoreFightingPowerChart *DataStoreFightingPowerChart) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*DataStoreFightingPowerChart)
-
-	if dataStoreFightingPowerChart.StructureVersion() != other.StructureVersion() {
+func (dataStoreFightingPowerChart *DataStoreFightingPowerChart) Equals(o types.RVType) bool {
+	if _, ok := o.(*DataStoreFightingPowerChart); !ok {
 		return false
 	}
 
-	if dataStoreFightingPowerChart.UserNum != other.UserNum {
+	other := o.(*DataStoreFightingPowerChart)
+
+	if dataStoreFightingPowerChart.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if len(dataStoreFightingPowerChart.Chart) != len(other.Chart) {
+	if !dataStoreFightingPowerChart.UserNum.Equals(other.UserNum) {
 		return false
 	}
 
-	for i := 0; i < len(dataStoreFightingPowerChart.Chart); i++ {
-		if !dataStoreFightingPowerChart.Chart[i].Equals(other.Chart[i]) {
-			return false
-		}
+	if !dataStoreFightingPowerChart.Chart.Equals(other.Chart) {
+		return false
 	}
 
 	return true
@@ -91,32 +93,14 @@ func (dataStoreFightingPowerChart *DataStoreFightingPowerChart) String() string 
 // FormatToString pretty-prints the struct data using the provided indentation level
 func (dataStoreFightingPowerChart *DataStoreFightingPowerChart) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
-	indentationListValues := strings.Repeat("\t", indentationLevel+2)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("DataStoreFightingPowerChart{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, dataStoreFightingPowerChart.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sUserNum: %d,\n", indentationValues, dataStoreFightingPowerChart.UserNum))
-
-	if len(dataStoreFightingPowerChart.Chart) == 0 {
-		b.WriteString(fmt.Sprintf("%sChart: [],\n", indentationValues))
-	} else {
-		b.WriteString(fmt.Sprintf("%sChart: [\n", indentationValues))
-
-		for i := 0; i < len(dataStoreFightingPowerChart.Chart); i++ {
-			str := dataStoreFightingPowerChart.Chart[i].FormatToString(indentationLevel + 2)
-			if i == len(dataStoreFightingPowerChart.Chart)-1 {
-				b.WriteString(fmt.Sprintf("%s%s\n", indentationListValues, str))
-			} else {
-				b.WriteString(fmt.Sprintf("%s%s,\n", indentationListValues, str))
-			}
-		}
-
-		b.WriteString(fmt.Sprintf("%s]\n", indentationValues))
-	}
-
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, dataStoreFightingPowerChart.StructureVersion))
+	b.WriteString(fmt.Sprintf("%sUserNum: %s,\n", indentationValues, dataStoreFightingPowerChart.UserNum))
+	b.WriteString(fmt.Sprintf("%sChart: %s\n", indentationValues, dataStoreFightingPowerChart.Chart))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -124,5 +108,12 @@ func (dataStoreFightingPowerChart *DataStoreFightingPowerChart) FormatToString(i
 
 // NewDataStoreFightingPowerChart returns a new DataStoreFightingPowerChart
 func NewDataStoreFightingPowerChart() *DataStoreFightingPowerChart {
-	return &DataStoreFightingPowerChart{}
+	dataStoreFightingPowerChart := &DataStoreFightingPowerChart{
+		UserNum: types.NewPrimitiveU32(0),
+		Chart: types.NewList[*DataStoreFightingPowerScore](),
+	}
+
+	dataStoreFightingPowerChart.Chart.Type = NewDataStoreFightingPowerScore()
+
+	return dataStoreFightingPowerChart
 }

@@ -5,32 +5,36 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // DataStorePasswordInfo is a data structure used by the DataStore protocol
 type DataStorePasswordInfo struct {
-	nex.Structure
-	DataID         uint64
-	AccessPassword uint64
-	UpdatePassword uint64
+	types.Structure
+	DataID         *types.PrimitiveU64
+	AccessPassword *types.PrimitiveU64
+	UpdatePassword *types.PrimitiveU64
 }
 
-// ExtractFromStream extracts a DataStorePasswordInfo structure from a stream
-func (dataStorePasswordInfo *DataStorePasswordInfo) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the DataStorePasswordInfo from the given readable
+func (dataStorePasswordInfo *DataStorePasswordInfo) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	dataStorePasswordInfo.DataID, err = stream.ReadUInt64LE()
+	if err = dataStorePasswordInfo.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read DataStorePasswordInfo header. %s", err.Error())
+	}
+
+	err = dataStorePasswordInfo.DataID.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStorePasswordInfo.DataID. %s", err.Error())
 	}
 
-	dataStorePasswordInfo.AccessPassword, err = stream.ReadUInt64LE()
+	err = dataStorePasswordInfo.AccessPassword.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStorePasswordInfo.AccessPassword. %s", err.Error())
 	}
 
-	dataStorePasswordInfo.UpdatePassword, err = stream.ReadUInt64LE()
+	err = dataStorePasswordInfo.UpdatePassword.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStorePasswordInfo.UpdatePassword. %s", err.Error())
 	}
@@ -38,45 +42,55 @@ func (dataStorePasswordInfo *DataStorePasswordInfo) ExtractFromStream(stream *ne
 	return nil
 }
 
-// Bytes encodes the DataStorePasswordInfo and returns a byte array
-func (dataStorePasswordInfo *DataStorePasswordInfo) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt64LE(dataStorePasswordInfo.DataID)
-	stream.WriteUInt64LE(dataStorePasswordInfo.AccessPassword)
-	stream.WriteUInt64LE(dataStorePasswordInfo.UpdatePassword)
+// WriteTo writes the DataStorePasswordInfo to the given writable
+func (dataStorePasswordInfo *DataStorePasswordInfo) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
 
-	return stream.Bytes()
+	dataStorePasswordInfo.DataID.WriteTo(contentWritable)
+	dataStorePasswordInfo.AccessPassword.WriteTo(contentWritable)
+	dataStorePasswordInfo.UpdatePassword.WriteTo(contentWritable)
+
+	content := contentWritable.Bytes()
+
+	dataStorePasswordInfo.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // Copy returns a new copied instance of DataStorePasswordInfo
-func (dataStorePasswordInfo *DataStorePasswordInfo) Copy() nex.StructureInterface {
+func (dataStorePasswordInfo *DataStorePasswordInfo) Copy() types.RVType {
 	copied := NewDataStorePasswordInfo()
 
-	copied.SetStructureVersion(dataStorePasswordInfo.StructureVersion())
+	copied.StructureVersion = dataStorePasswordInfo.StructureVersion
 
-	copied.DataID = dataStorePasswordInfo.DataID
-	copied.AccessPassword = dataStorePasswordInfo.AccessPassword
-	copied.UpdatePassword = dataStorePasswordInfo.UpdatePassword
+	copied.DataID = dataStorePasswordInfo.DataID.Copy().(*types.PrimitiveU64)
+	copied.AccessPassword = dataStorePasswordInfo.AccessPassword.Copy().(*types.PrimitiveU64)
+	copied.UpdatePassword = dataStorePasswordInfo.UpdatePassword.Copy().(*types.PrimitiveU64)
 
 	return copied
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (dataStorePasswordInfo *DataStorePasswordInfo) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*DataStorePasswordInfo)
-
-	if dataStorePasswordInfo.StructureVersion() != other.StructureVersion() {
+func (dataStorePasswordInfo *DataStorePasswordInfo) Equals(o types.RVType) bool {
+	if _, ok := o.(*DataStorePasswordInfo); !ok {
 		return false
 	}
 
-	if dataStorePasswordInfo.DataID != other.DataID {
+	other := o.(*DataStorePasswordInfo)
+
+	if dataStorePasswordInfo.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if dataStorePasswordInfo.AccessPassword != other.AccessPassword {
+	if !dataStorePasswordInfo.DataID.Equals(other.DataID) {
 		return false
 	}
 
-	if dataStorePasswordInfo.UpdatePassword != other.UpdatePassword {
+	if !dataStorePasswordInfo.AccessPassword.Equals(other.AccessPassword) {
+		return false
+	}
+
+	if !dataStorePasswordInfo.UpdatePassword.Equals(other.UpdatePassword) {
 		return false
 	}
 
@@ -96,10 +110,10 @@ func (dataStorePasswordInfo *DataStorePasswordInfo) FormatToString(indentationLe
 	var b strings.Builder
 
 	b.WriteString("DataStorePasswordInfo{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, dataStorePasswordInfo.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sDataID: %d,\n", indentationValues, dataStorePasswordInfo.DataID))
-	b.WriteString(fmt.Sprintf("%sAccessPassword: %d,\n", indentationValues, dataStorePasswordInfo.AccessPassword))
-	b.WriteString(fmt.Sprintf("%sUpdatePassword: %d\n", indentationValues, dataStorePasswordInfo.UpdatePassword))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, dataStorePasswordInfo.StructureVersion))
+	b.WriteString(fmt.Sprintf("%sDataID: %s,\n", indentationValues, dataStorePasswordInfo.DataID))
+	b.WriteString(fmt.Sprintf("%sAccessPassword: %s,\n", indentationValues, dataStorePasswordInfo.AccessPassword))
+	b.WriteString(fmt.Sprintf("%sUpdatePassword: %s\n", indentationValues, dataStorePasswordInfo.UpdatePassword))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -108,8 +122,8 @@ func (dataStorePasswordInfo *DataStorePasswordInfo) FormatToString(indentationLe
 // NewDataStorePasswordInfo returns a new DataStorePasswordInfo
 func NewDataStorePasswordInfo() *DataStorePasswordInfo {
 	return &DataStorePasswordInfo{
-		DataID:         0,
-		AccessPassword: 0,
-		UpdatePassword: 0,
+		DataID:         types.NewPrimitiveU64(0),
+		AccessPassword: types.NewPrimitiveU64(0),
+		UpdatePassword: types.NewPrimitiveU64(0),
 	}
 }

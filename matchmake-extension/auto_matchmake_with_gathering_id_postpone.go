@@ -5,10 +5,12 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
 func (protocol *Protocol) handleAutoMatchmakeWithGatheringIDPostpone(packet nex.PacketInterface) {
+	var err error
 	var errorCode uint32
 
 	if protocol.AutoMatchmakeWithGatheringIDPostpone == nil {
@@ -22,9 +24,11 @@ func (protocol *Protocol) handleAutoMatchmakeWithGatheringIDPostpone(packet nex.
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.server)
+	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
-	lstGID, err := parametersStream.ReadListUInt32LE()
+	lstGID := types.NewList[*types.PrimitiveU32]()
+	lstGID.Type = types.NewPrimitiveU32(0)
+	err = lstGID.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.AutoMatchmakeWithGatheringIDPostpone(fmt.Errorf("Failed to read lstGID from parameters. %s", err.Error()), packet, callID, nil, nil, "")
 		if errorCode != 0 {
@@ -34,7 +38,8 @@ func (protocol *Protocol) handleAutoMatchmakeWithGatheringIDPostpone(packet nex.
 		return
 	}
 
-	anyGathering, err := parametersStream.ReadDataHolder()
+	anyGathering := types.NewAnyDataHolder()
+	err = anyGathering.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.AutoMatchmakeWithGatheringIDPostpone(fmt.Errorf("Failed to read anyGathering from parameters. %s", err.Error()), packet, callID, nil, nil, "")
 		if errorCode != 0 {
@@ -44,7 +49,8 @@ func (protocol *Protocol) handleAutoMatchmakeWithGatheringIDPostpone(packet nex.
 		return
 	}
 
-	strMessage, err := parametersStream.ReadString()
+	strMessage := types.NewString("")
+	err = strMessage.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.AutoMatchmakeWithGatheringIDPostpone(fmt.Errorf("Failed to read strMessage from parameters. %s", err.Error()), packet, callID, nil, nil, "")
 		if errorCode != 0 {

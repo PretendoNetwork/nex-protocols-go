@@ -6,55 +6,61 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // DataStoreCompleteUpdateParam is a data structure used by the DataStore protocol
 type DataStoreCompleteUpdateParam struct {
-	nex.Structure
-	DataID    uint64
-	Version   uint32
-	IsSuccess bool
+	types.Structure
+	DataID    *types.PrimitiveU64
+	Version   *types.PrimitiveU32
+	IsSuccess *types.PrimitiveBool
 }
 
-// ExtractFromStream extracts a DataStoreCompleteUpdateParam structure from a stream
-func (dataStoreCompleteUpdateParam *DataStoreCompleteUpdateParam) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the DataStoreCompleteUpdateParam from the given readable
+func (dataStoreCompleteUpdateParam *DataStoreCompleteUpdateParam) ExtractFrom(readable types.Readable) error {
+	stream := readable.(*nex.ByteStreamIn)
 	datastoreVersion := stream.Server.DataStoreProtocolVersion()
 
 	var err error
 
+	if err = dataStoreCompleteUpdateParam.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read DataStoreCompleteUpdateParam header. %s", err.Error())
+	}
+
 	if datastoreVersion.GreaterOrEqual("3.0.0") {
-		dataID, err := stream.ReadUInt64LE()
+		dataID, err := readable.ReadPrimitiveUInt64LE()
 		if err != nil {
 			return fmt.Errorf("Failed to extract DataStoreCompleteUpdateParam.DataID. %s", err.Error())
 		}
 
-		dataStoreCompleteUpdateParam.DataID = dataID
+		dataStoreCompleteUpdateParam.DataID.Value = dataID
 	} else {
-		dataID, err := stream.ReadUInt32LE()
+		dataID, err := readable.ReadPrimitiveUInt32LE()
 		if err != nil {
 			return fmt.Errorf("Failed to extract DataStoreCompleteUpdateParam.DataID. %s", err.Error())
 		}
 
-		dataStoreCompleteUpdateParam.DataID = uint64(dataID)
+		dataStoreCompleteUpdateParam.DataID.Value = *types.PrimitiveU64(dataID)
 	}
 
 	if datastoreVersion.GreaterOrEqual("3.0.0") {
-		version, err := stream.ReadUInt32LE()
+		version, err := readable.ReadPrimitiveUInt32LE()
 		if err != nil {
 			return fmt.Errorf("Failed to extract DataStoreReqUpdateInfo.Version. %s", err.Error())
 		}
 
-		dataStoreCompleteUpdateParam.Version = version
+		dataStoreCompleteUpdateParam.Version.Value = version
 	} else {
-		version, err := stream.ReadUInt16LE()
+		version, err := readable.ReadPrimitiveUInt16LE()
 		if err != nil {
 			return fmt.Errorf("Failed to extract DataStoreReqUpdateInfo.Version. %s", err.Error())
 		}
 
-		dataStoreCompleteUpdateParam.Version = uint32(version)
+		dataStoreCompleteUpdateParam.Version.Value = *types.PrimitiveU32(version)
 	}
 
-	dataStoreCompleteUpdateParam.IsSuccess, err = stream.ReadBool()
+	err = dataStoreCompleteUpdateParam.IsSuccess.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreCompleteUpdateParam.IsSuccess. %s", err.Error())
 	}
@@ -62,57 +68,68 @@ func (dataStoreCompleteUpdateParam *DataStoreCompleteUpdateParam) ExtractFromStr
 	return nil
 }
 
-// Bytes encodes the DataStoreCompleteUpdateParam and returns a byte array
-func (dataStoreCompleteUpdateParam *DataStoreCompleteUpdateParam) Bytes(stream *nex.StreamOut) []byte {
+// WriteTo writes the DataStoreCompleteUpdateParam to the given writable
+func (dataStoreCompleteUpdateParam *DataStoreCompleteUpdateParam) WriteTo(writable types.Writable) {
+	stream := writable.(*nex.ByteStreamOut)
 	datastoreVersion := stream.Server.DataStoreProtocolVersion()
 
+	contentWritable := writable.CopyNew()
+
 	if datastoreVersion.GreaterOrEqual("3.0.0") {
-		stream.WriteUInt64LE(dataStoreCompleteUpdateParam.DataID)
+		contentWritable.WritePrimitiveUInt64LE(dataStoreCompleteUpdateParam.DataID.Value)
 	} else {
-		stream.WriteUInt32LE(uint32(dataStoreCompleteUpdateParam.DataID))
+		contentWritable.WritePrimitiveUInt32LE(*types.PrimitiveU32(dataStoreCompleteUpdateParam.DataID.Value))
 	}
 
 	if datastoreVersion.GreaterOrEqual("3.0.0") {
-		stream.WriteUInt32LE(dataStoreCompleteUpdateParam.Version)
+		contentWritable.WritePrimitiveUInt32LE(dataStoreCompleteUpdateParam.Version.Value)
 	} else {
-		stream.WriteUInt16LE(uint16(dataStoreCompleteUpdateParam.Version))
+		contentWritable.WritePrimitiveUInt16LE(*types.PrimitiveU16(dataStoreCompleteUpdateParam.Version.Value))
 	}
 
-	stream.WriteBool(dataStoreCompleteUpdateParam.IsSuccess)
+	dataStoreCompleteUpdateParam.IsSuccess.WriteTo(contentWritable)
 
-	return stream.Bytes()
+	content := contentWritable.Bytes()
+
+	dataStoreCompleteUpdateParam.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // Copy returns a new copied instance of DataStoreCompleteUpdateParam
-func (dataStoreCompleteUpdateParam *DataStoreCompleteUpdateParam) Copy() nex.StructureInterface {
+func (dataStoreCompleteUpdateParam *DataStoreCompleteUpdateParam) Copy() types.RVType {
 	copied := NewDataStoreCompleteUpdateParam()
 
-	copied.SetStructureVersion(dataStoreCompleteUpdateParam.StructureVersion())
+	copied.StructureVersion = dataStoreCompleteUpdateParam.StructureVersion
 
-	copied.DataID = dataStoreCompleteUpdateParam.DataID
-	copied.Version = dataStoreCompleteUpdateParam.Version
-	copied.IsSuccess = dataStoreCompleteUpdateParam.IsSuccess
+	copied.DataID = dataStoreCompleteUpdateParam.DataID.Copy().(*types.PrimitiveU64)
+	copied.Version = dataStoreCompleteUpdateParam.Version.Copy().(*types.PrimitiveU32)
+	copied.IsSuccess = dataStoreCompleteUpdateParam.IsSuccess.Copy().(*types.PrimitiveBool)
 
 	return copied
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (dataStoreCompleteUpdateParam *DataStoreCompleteUpdateParam) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*DataStoreCompleteUpdateParam)
-
-	if dataStoreCompleteUpdateParam.StructureVersion() != other.StructureVersion() {
+func (dataStoreCompleteUpdateParam *DataStoreCompleteUpdateParam) Equals(o types.RVType) bool {
+	if _, ok := o.(*DataStoreCompleteUpdateParam); !ok {
 		return false
 	}
 
-	if dataStoreCompleteUpdateParam.DataID != other.DataID {
+	other := o.(*DataStoreCompleteUpdateParam)
+
+	if dataStoreCompleteUpdateParam.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if dataStoreCompleteUpdateParam.Version != other.Version {
+	if !dataStoreCompleteUpdateParam.DataID.Equals(other.DataID) {
 		return false
 	}
 
-	if dataStoreCompleteUpdateParam.IsSuccess != other.IsSuccess {
+	if !dataStoreCompleteUpdateParam.Version.Equals(other.Version) {
+		return false
+	}
+
+	if !dataStoreCompleteUpdateParam.IsSuccess.Equals(other.IsSuccess) {
 		return false
 	}
 
@@ -132,10 +149,10 @@ func (dataStoreCompleteUpdateParam *DataStoreCompleteUpdateParam) FormatToString
 	var b strings.Builder
 
 	b.WriteString("DataStoreCompleteUpdateParam{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, dataStoreCompleteUpdateParam.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sDataID: %d,\n", indentationValues, dataStoreCompleteUpdateParam.DataID))
-	b.WriteString(fmt.Sprintf("%sVersion: %d,\n", indentationValues, dataStoreCompleteUpdateParam.Version))
-	b.WriteString(fmt.Sprintf("%sIsSuccess: %t\n", indentationValues, dataStoreCompleteUpdateParam.IsSuccess))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, dataStoreCompleteUpdateParam.StructureVersion))
+	b.WriteString(fmt.Sprintf("%sDataID: %s,\n", indentationValues, dataStoreCompleteUpdateParam.DataID))
+	b.WriteString(fmt.Sprintf("%sVersion: %s,\n", indentationValues, dataStoreCompleteUpdateParam.Version))
+	b.WriteString(fmt.Sprintf("%sIsSuccess: %s\n", indentationValues, dataStoreCompleteUpdateParam.IsSuccess))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -144,8 +161,8 @@ func (dataStoreCompleteUpdateParam *DataStoreCompleteUpdateParam) FormatToString
 // NewDataStoreCompleteUpdateParam returns a new DataStoreCompleteUpdateParam
 func NewDataStoreCompleteUpdateParam() *DataStoreCompleteUpdateParam {
 	return &DataStoreCompleteUpdateParam{
-		DataID:    0,
-		Version:   0,
-		IsSuccess: false,
+		DataID:    types.NewPrimitiveU64(0),
+		Version:   types.NewPrimitiveU32(0),
+		IsSuccess: types.NewPrimitiveBool(false),
 	}
 }

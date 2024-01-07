@@ -5,11 +5,13 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 	datastore_types "github.com/PretendoNetwork/nex-protocols-go/datastore/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
 func (protocol *Protocol) handlePrepareGetObjectOrMetaBinary(packet nex.PacketInterface) {
+	var err error
 	var errorCode uint32
 
 	if protocol.PrepareGetObjectOrMetaBinary == nil {
@@ -23,9 +25,10 @@ func (protocol *Protocol) handlePrepareGetObjectOrMetaBinary(packet nex.PacketIn
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.server)
+	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
-	param, err := nex.StreamReadStructure(parametersStream, datastore_types.NewDataStorePrepareGetParam())
+	param := datastore_types.NewDataStorePrepareGetParam()
+	err = param.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.PrepareGetObjectOrMetaBinary(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {

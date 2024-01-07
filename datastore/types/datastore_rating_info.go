@@ -5,32 +5,36 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // DataStoreRatingInfo is a data structure used by the DataStore protocol
 type DataStoreRatingInfo struct {
-	nex.Structure
-	TotalValue   int64
-	Count        uint32
-	InitialValue int64
+	types.Structure
+	TotalValue   *types.PrimitiveS64
+	Count        *types.PrimitiveU32
+	InitialValue *types.PrimitiveS64
 }
 
-// ExtractFromStream extracts a DataStoreRatingInfo structure from a stream
-func (dataStoreRatingInfo *DataStoreRatingInfo) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the DataStoreRatingInfo from the given readable
+func (dataStoreRatingInfo *DataStoreRatingInfo) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	dataStoreRatingInfo.TotalValue, err = stream.ReadInt64LE()
+	if err = dataStoreRatingInfo.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read DataStoreRatingInfo header. %s", err.Error())
+	}
+
+	err = dataStoreRatingInfo.TotalValue.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreRatingInfo.TotalValue. %s", err.Error())
 	}
 
-	dataStoreRatingInfo.Count, err = stream.ReadUInt32LE()
+	err = dataStoreRatingInfo.Count.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreRatingInfo.Count. %s", err.Error())
 	}
 
-	dataStoreRatingInfo.InitialValue, err = stream.ReadInt64LE()
+	err = dataStoreRatingInfo.InitialValue.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreRatingInfo.InitialValue. %s", err.Error())
 	}
@@ -38,45 +42,55 @@ func (dataStoreRatingInfo *DataStoreRatingInfo) ExtractFromStream(stream *nex.St
 	return nil
 }
 
-// Bytes encodes the DataStoreRatingInfo and returns a byte array
-func (dataStoreRatingInfo *DataStoreRatingInfo) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt64LE(uint64(dataStoreRatingInfo.TotalValue))
-	stream.WriteUInt32LE(dataStoreRatingInfo.Count)
-	stream.WriteUInt64LE(uint64(dataStoreRatingInfo.InitialValue))
+// WriteTo writes the DataStoreRatingInfo to the given writable
+func (dataStoreRatingInfo *DataStoreRatingInfo) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
 
-	return stream.Bytes()
+	dataStoreRatingInfo.TotalValue.WriteTo(contentWritable)
+	dataStoreRatingInfo.Count.WriteTo(contentWritable)
+	dataStoreRatingInfo.InitialValue.WriteTo(contentWritable)
+
+	content := contentWritable.Bytes()
+
+	dataStoreRatingInfo.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // Copy returns a new copied instance of DataStoreRatingInfo
-func (dataStoreRatingInfo *DataStoreRatingInfo) Copy() nex.StructureInterface {
+func (dataStoreRatingInfo *DataStoreRatingInfo) Copy() types.RVType {
 	copied := NewDataStoreRatingInfo()
 
-	copied.SetStructureVersion(dataStoreRatingInfo.StructureVersion())
+	copied.StructureVersion = dataStoreRatingInfo.StructureVersion
 
-	copied.TotalValue = dataStoreRatingInfo.TotalValue
-	copied.Count = dataStoreRatingInfo.Count
-	copied.InitialValue = dataStoreRatingInfo.InitialValue
+	copied.TotalValue = dataStoreRatingInfo.TotalValue.Copy().(*types.PrimitiveS64)
+	copied.Count = dataStoreRatingInfo.Count.Copy().(*types.PrimitiveU32)
+	copied.InitialValue = dataStoreRatingInfo.InitialValue.Copy().(*types.PrimitiveS64)
 
 	return copied
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (dataStoreRatingInfo *DataStoreRatingInfo) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*DataStoreRatingInfo)
-
-	if dataStoreRatingInfo.StructureVersion() != other.StructureVersion() {
+func (dataStoreRatingInfo *DataStoreRatingInfo) Equals(o types.RVType) bool {
+	if _, ok := o.(*DataStoreRatingInfo); !ok {
 		return false
 	}
 
-	if dataStoreRatingInfo.TotalValue != other.TotalValue {
+	other := o.(*DataStoreRatingInfo)
+
+	if dataStoreRatingInfo.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if dataStoreRatingInfo.Count != other.Count {
+	if !dataStoreRatingInfo.TotalValue.Equals(other.TotalValue) {
 		return false
 	}
 
-	if dataStoreRatingInfo.InitialValue != other.InitialValue {
+	if !dataStoreRatingInfo.Count.Equals(other.Count) {
+		return false
+	}
+
+	if !dataStoreRatingInfo.InitialValue.Equals(other.InitialValue) {
 		return false
 	}
 
@@ -96,10 +110,10 @@ func (dataStoreRatingInfo *DataStoreRatingInfo) FormatToString(indentationLevel 
 	var b strings.Builder
 
 	b.WriteString("DataStoreRatingInfo{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, dataStoreRatingInfo.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sTotalValue: %d,\n", indentationValues, dataStoreRatingInfo.TotalValue))
-	b.WriteString(fmt.Sprintf("%sCount: %d,\n", indentationValues, dataStoreRatingInfo.Count))
-	b.WriteString(fmt.Sprintf("%sInitialValue: %d\n", indentationValues, dataStoreRatingInfo.InitialValue))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, dataStoreRatingInfo.StructureVersion))
+	b.WriteString(fmt.Sprintf("%sTotalValue: %s,\n", indentationValues, dataStoreRatingInfo.TotalValue))
+	b.WriteString(fmt.Sprintf("%sCount: %s,\n", indentationValues, dataStoreRatingInfo.Count))
+	b.WriteString(fmt.Sprintf("%sInitialValue: %s\n", indentationValues, dataStoreRatingInfo.InitialValue))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -108,8 +122,8 @@ func (dataStoreRatingInfo *DataStoreRatingInfo) FormatToString(indentationLevel 
 // NewDataStoreRatingInfo returns a new DataStoreRatingInfo
 func NewDataStoreRatingInfo() *DataStoreRatingInfo {
 	return &DataStoreRatingInfo{
-		TotalValue:   0,
-		Count:        0,
-		InitialValue: 0,
+		TotalValue:   types.NewPrimitiveS64(0),
+		Count:        types.NewPrimitiveU32(0),
+		InitialValue: types.NewPrimitiveS64(0),
 	}
 }

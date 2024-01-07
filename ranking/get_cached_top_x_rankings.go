@@ -5,11 +5,13 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 	ranking_types "github.com/PretendoNetwork/nex-protocols-go/ranking/types"
 )
 
 func (protocol *Protocol) handleGetCachedTopXRankings(packet nex.PacketInterface) {
+	var err error
 	var errorCode uint32
 
 	if protocol.GetCachedTopXRankings == nil {
@@ -23,9 +25,11 @@ func (protocol *Protocol) handleGetCachedTopXRankings(packet nex.PacketInterface
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.server)
+	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
-	categories, err := parametersStream.ReadListUInt32LE()
+	categories := types.NewList[*types.PrimitiveU32]()
+	categories.Type = types.NewPrimitiveU32(0)
+	err = categories.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.GetCachedTopXRankings(fmt.Errorf("Failed to read categories from parameters. %s", err.Error()), packet, callID, nil, nil)
 		if errorCode != 0 {

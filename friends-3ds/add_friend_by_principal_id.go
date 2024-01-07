@@ -5,10 +5,12 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
 func (protocol *Protocol) handleAddFriendByPrincipalID(packet nex.PacketInterface) {
+	var err error
 	var errorCode uint32
 
 	if protocol.AddFriendByPrincipalID == nil {
@@ -22,9 +24,10 @@ func (protocol *Protocol) handleAddFriendByPrincipalID(packet nex.PacketInterfac
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.server)
+	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
-	lfc, err := parametersStream.ReadUInt64LE()
+	lfc := types.NewPrimitiveU64(0)
+	err = lfc.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.AddFriendByPrincipalID(fmt.Errorf("Failed to read lfc from parameters. %s", err.Error()), packet, callID, 0, nil)
 		if errorCode != 0 {
@@ -34,7 +37,8 @@ func (protocol *Protocol) handleAddFriendByPrincipalID(packet nex.PacketInterfac
 		return
 	}
 
-	pid, err := parametersStream.ReadPID()
+	pid := types.NewPID(0)
+	err = pid.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.AddFriendByPrincipalID(fmt.Errorf("Failed to read pid from parameters. %s", err.Error()), packet, callID, 0, nil)
 		if errorCode != 0 {

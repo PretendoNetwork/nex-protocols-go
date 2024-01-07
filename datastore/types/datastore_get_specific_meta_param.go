@@ -5,20 +5,24 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // DataStoreGetSpecificMetaParam is a data structure used by the DataStore protocol
 type DataStoreGetSpecificMetaParam struct {
-	nex.Structure
-	DataIDs []uint64
+	types.Structure
+	DataIDs *types.List[*types.PrimitiveU64]
 }
 
-// ExtractFromStream extracts a DataStoreGetSpecificMetaParam structure from a stream
-func (dataStoreGetSpecificMetaParam *DataStoreGetSpecificMetaParam) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the DataStoreGetSpecificMetaParam from the given readable
+func (dataStoreGetSpecificMetaParam *DataStoreGetSpecificMetaParam) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	dataStoreGetSpecificMetaParam.DataIDs, err = stream.ReadListUInt64LE()
+	if err = dataStoreGetSpecificMetaParam.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read DataStoreGetSpecificMetaParam header. %s", err.Error())
+	}
+
+	err = dataStoreGetSpecificMetaParam.DataIDs.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreGetSpecificMetaParam.DataIDs. %s", err.Error())
 	}
@@ -26,42 +30,44 @@ func (dataStoreGetSpecificMetaParam *DataStoreGetSpecificMetaParam) ExtractFromS
 	return nil
 }
 
-// Bytes encodes the DataStoreGetSpecificMetaParam and returns a byte array
-func (dataStoreGetSpecificMetaParam *DataStoreGetSpecificMetaParam) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteListUInt64LE(dataStoreGetSpecificMetaParam.DataIDs)
+// WriteTo writes the DataStoreGetSpecificMetaParam to the given writable
+func (dataStoreGetSpecificMetaParam *DataStoreGetSpecificMetaParam) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
 
-	return stream.Bytes()
+	dataStoreGetSpecificMetaParam.DataIDs.WriteTo(contentWritable)
+
+	content := contentWritable.Bytes()
+
+	dataStoreGetSpecificMetaParam.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // Copy returns a new copied instance of DataStoreGetSpecificMetaParam
-func (dataStoreGetSpecificMetaParam *DataStoreGetSpecificMetaParam) Copy() nex.StructureInterface {
+func (dataStoreGetSpecificMetaParam *DataStoreGetSpecificMetaParam) Copy() types.RVType {
 	copied := NewDataStoreGetSpecificMetaParam()
 
-	copied.SetStructureVersion(dataStoreGetSpecificMetaParam.StructureVersion())
+	copied.StructureVersion = dataStoreGetSpecificMetaParam.StructureVersion
 
-	copied.DataIDs = make([]uint64, len(dataStoreGetSpecificMetaParam.DataIDs))
-
-	copy(copied.DataIDs, dataStoreGetSpecificMetaParam.DataIDs)
+	copied.DataIDs = dataStoreGetSpecificMetaParam.DataIDs.Copy().(*types.List[*types.PrimitiveU64])
 
 	return copied
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (dataStoreGetSpecificMetaParam *DataStoreGetSpecificMetaParam) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*DataStoreGetSpecificMetaParam)
-
-	if dataStoreGetSpecificMetaParam.StructureVersion() != other.StructureVersion() {
+func (dataStoreGetSpecificMetaParam *DataStoreGetSpecificMetaParam) Equals(o types.RVType) bool {
+	if _, ok := o.(*DataStoreGetSpecificMetaParam); !ok {
 		return false
 	}
 
-	if len(dataStoreGetSpecificMetaParam.DataIDs) != len(other.DataIDs) {
+	other := o.(*DataStoreGetSpecificMetaParam)
+
+	if dataStoreGetSpecificMetaParam.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	for i := 0; i < len(dataStoreGetSpecificMetaParam.DataIDs); i++ {
-		if dataStoreGetSpecificMetaParam.DataIDs[i] != other.DataIDs[i] {
-			return false
-		}
+	if dataStoreGetSpecificMetaParam.DataIDs.Equals(other.DataIDs) {
+		return false
 	}
 
 	return true
@@ -80,8 +86,8 @@ func (dataStoreGetSpecificMetaParam *DataStoreGetSpecificMetaParam) FormatToStri
 	var b strings.Builder
 
 	b.WriteString("DataStoreGetSpecificMetaParam{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, dataStoreGetSpecificMetaParam.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sDataIDs: %v\n", indentationValues, dataStoreGetSpecificMetaParam.DataIDs))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, dataStoreGetSpecificMetaParam.StructureVersion))
+	b.WriteString(fmt.Sprintf("%sDataIDs: %s\n", indentationValues, dataStoreGetSpecificMetaParam.DataIDs))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -89,7 +95,11 @@ func (dataStoreGetSpecificMetaParam *DataStoreGetSpecificMetaParam) FormatToStri
 
 // NewDataStoreGetSpecificMetaParam returns a new DataStoreGetSpecificMetaParam
 func NewDataStoreGetSpecificMetaParam() *DataStoreGetSpecificMetaParam {
-	return &DataStoreGetSpecificMetaParam{
-		DataIDs: make([]uint64, 0),
+	dataStoreGetSpecificMetaParam := &DataStoreGetSpecificMetaParam{
+		DataIDs: types.NewList[*types.PrimitiveU64](),
 	}
+
+	dataStoreGetSpecificMetaParam.DataIDs.Type = types.NewPrimitiveU64(0)
+
+	return dataStoreGetSpecificMetaParam
 }

@@ -6,18 +6,23 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // ServiceItemGetLawMessageResponse holds data for the Service Item (Team Kirby Clash Deluxe) protocol
 type ServiceItemGetLawMessageResponse struct {
-	nex.Structure
+	types.Structure
 	*ServiceItemEShopResponse
 	NullableLawMessage []*ServiceItemLawMessage
 }
 
-// ExtractFromStream extracts a ServiceItemGetLawMessageResponse structure from a stream
-func (serviceItemGetLawMessageResponse *ServiceItemGetLawMessageResponse) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the ServiceItemGetLawMessageResponse from the given readable
+func (serviceItemGetLawMessageResponse *ServiceItemGetLawMessageResponse) ExtractFrom(readable types.Readable) error {
 	var err error
+
+	if err = serviceItemGetLawMessageResponse.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read ServiceItemGetLawMessageResponse header. %s", err.Error())
+	}
 
 	nullableLawMessage, err := nex.StreamReadListStructure(stream, NewServiceItemLawMessage())
 	if err != nil {
@@ -29,21 +34,26 @@ func (serviceItemGetLawMessageResponse *ServiceItemGetLawMessageResponse) Extrac
 	return nil
 }
 
-// Bytes encodes the ServiceItemGetLawMessageResponse and returns a byte array
-func (serviceItemGetLawMessageResponse *ServiceItemGetLawMessageResponse) Bytes(stream *nex.StreamOut) []byte {
-	nex.StreamWriteListStructure(stream, serviceItemGetLawMessageResponse.NullableLawMessage)
+// WriteTo writes the ServiceItemGetLawMessageResponse to the given writable
+func (serviceItemGetLawMessageResponse *ServiceItemGetLawMessageResponse) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
 
-	return stream.Bytes()
+	serviceItemGetLawMessageResponse.NullableLawMessage.WriteTo(contentWritable)
+
+	content := contentWritable.Bytes()
+
+	serviceItemGetLawMessageResponse.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // Copy returns a new copied instance of ServiceItemGetLawMessageResponse
-func (serviceItemGetLawMessageResponse *ServiceItemGetLawMessageResponse) Copy() nex.StructureInterface {
+func (serviceItemGetLawMessageResponse *ServiceItemGetLawMessageResponse) Copy() types.RVType {
 	copied := NewServiceItemGetLawMessageResponse()
 
-	copied.SetStructureVersion(serviceItemGetLawMessageResponse.StructureVersion())
+	copied.StructureVersion = serviceItemGetLawMessageResponse.StructureVersion
 
 	copied.ServiceItemEShopResponse = serviceItemGetLawMessageResponse.ServiceItemEShopResponse.Copy().(*ServiceItemEShopResponse)
-	copied.SetParentType(copied.ServiceItemEShopResponse)
 
 	copied.NullableLawMessage = make([]*ServiceItemLawMessage, len(serviceItemGetLawMessageResponse.NullableLawMessage))
 
@@ -55,10 +65,14 @@ func (serviceItemGetLawMessageResponse *ServiceItemGetLawMessageResponse) Copy()
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (serviceItemGetLawMessageResponse *ServiceItemGetLawMessageResponse) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*ServiceItemGetLawMessageResponse)
+func (serviceItemGetLawMessageResponse *ServiceItemGetLawMessageResponse) Equals(o types.RVType) bool {
+	if _, ok := o.(*ServiceItemGetLawMessageResponse); !ok {
+		return false
+	}
 
-	if serviceItemGetLawMessageResponse.StructureVersion() != other.StructureVersion() {
+	other := o.(*ServiceItemGetLawMessageResponse)
+
+	if serviceItemGetLawMessageResponse.StructureVersion != other.StructureVersion {
 		return false
 	}
 
@@ -94,7 +108,7 @@ func (serviceItemGetLawMessageResponse *ServiceItemGetLawMessageResponse) Format
 
 	b.WriteString("ServiceItemGetLawMessageResponse{\n")
 	b.WriteString(fmt.Sprintf("%sParentType: %s,\n", indentationValues, serviceItemGetLawMessageResponse.ParentType().FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, serviceItemGetLawMessageResponse.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, serviceItemGetLawMessageResponse.StructureVersion))
 
 	if len(serviceItemGetLawMessageResponse.NullableLawMessage) == 0 {
 		b.WriteString(fmt.Sprintf("%sNullableLawMessage: [],\n", indentationValues))

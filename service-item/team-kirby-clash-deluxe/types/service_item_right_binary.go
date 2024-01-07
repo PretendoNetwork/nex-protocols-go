@@ -7,20 +7,25 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // ServiceItemRightBinary holds data for the Service Item (Team Kirby Clash Deluxe) protocol
 type ServiceItemRightBinary struct {
-	nex.Structure
-	UseType     uint8
+	types.Structure
+	UseType     *types.PrimitiveU8
 	RightBinary []byte
 }
 
-// ExtractFromStream extracts a ServiceItemRightBinary structure from a stream
-func (serviceItemRightBinary *ServiceItemRightBinary) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the ServiceItemRightBinary from the given readable
+func (serviceItemRightBinary *ServiceItemRightBinary) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	serviceItemRightBinary.UseType, err = stream.ReadUInt8()
+	if err = serviceItemRightBinary.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read ServiceItemRightBinary header. %s", err.Error())
+	}
+
+	err = serviceItemRightBinary.UseType.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemRightBinary.UseType from stream. %s", err.Error())
 	}
@@ -33,19 +38,25 @@ func (serviceItemRightBinary *ServiceItemRightBinary) ExtractFromStream(stream *
 	return nil
 }
 
-// Bytes encodes the ServiceItemRightBinary and returns a byte array
-func (serviceItemRightBinary *ServiceItemRightBinary) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt8(serviceItemRightBinary.UseType)
+// WriteTo writes the ServiceItemRightBinary to the given writable
+func (serviceItemRightBinary *ServiceItemRightBinary) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
+
+	serviceItemRightBinary.UseType.WriteTo(contentWritable)
 	stream.WriteQBuffer(serviceItemRightBinary.RightBinary)
 
-	return stream.Bytes()
+	content := contentWritable.Bytes()
+
+	rvcd.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // Copy returns a new copied instance of ServiceItemRightBinary
-func (serviceItemRightBinary *ServiceItemRightBinary) Copy() nex.StructureInterface {
+func (serviceItemRightBinary *ServiceItemRightBinary) Copy() types.RVType {
 	copied := NewServiceItemRightBinary()
 
-	copied.SetStructureVersion(serviceItemRightBinary.StructureVersion())
+	copied.StructureVersion = serviceItemRightBinary.StructureVersion
 
 	copied.UseType = serviceItemRightBinary.UseType
 	copied.RightBinary = serviceItemRightBinary.RightBinary
@@ -54,18 +65,22 @@ func (serviceItemRightBinary *ServiceItemRightBinary) Copy() nex.StructureInterf
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (serviceItemRightBinary *ServiceItemRightBinary) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*ServiceItemRightBinary)
-
-	if serviceItemRightBinary.StructureVersion() != other.StructureVersion() {
+func (serviceItemRightBinary *ServiceItemRightBinary) Equals(o types.RVType) bool {
+	if _, ok := o.(*ServiceItemRightBinary); !ok {
 		return false
 	}
 
-	if serviceItemRightBinary.UseType != other.UseType {
+	other := o.(*ServiceItemRightBinary)
+
+	if serviceItemRightBinary.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if !bytes.Equal(serviceItemRightBinary.RightBinary, other.RightBinary) {
+	if !serviceItemRightBinary.UseType.Equals(other.UseType) {
+		return false
+	}
+
+	if !serviceItemRightBinary.RightBinary.Equals(other.RightBinary) {
 		return false
 	}
 
@@ -85,7 +100,7 @@ func (serviceItemRightBinary *ServiceItemRightBinary) FormatToString(indentation
 	var b strings.Builder
 
 	b.WriteString("ServiceItemRightBinary{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, serviceItemRightBinary.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, serviceItemRightBinary.StructureVersion))
 	b.WriteString(fmt.Sprintf("%sUseType: %d,\n", indentationValues, serviceItemRightBinary.UseType))
 	b.WriteString(fmt.Sprintf("%sRightBinary: %x,\n", indentationValues, serviceItemRightBinary.RightBinary))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))

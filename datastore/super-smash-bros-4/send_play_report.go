@@ -5,10 +5,12 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
 func (protocol *Protocol) handleSendPlayReport(packet nex.PacketInterface) {
+	var err error
 	var errorCode uint32
 
 	if protocol.SendPlayReport == nil {
@@ -22,9 +24,11 @@ func (protocol *Protocol) handleSendPlayReport(packet nex.PacketInterface) {
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.server)
+	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
-	playReport, err := parametersStream.ReadListInt32LE()
+	playReport := types.NewList[*types.PrimitiveS32]()
+	playReport.Type = types.NewPrimitiveS32(0)
+	err = playReport.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.SendPlayReport(fmt.Errorf("Failed to read playReport from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {

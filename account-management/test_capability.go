@@ -5,10 +5,12 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
 func (protocol *Protocol) handleTestCapability(packet nex.PacketInterface) {
+	var err error
 	var errorCode uint32
 
 	if protocol.TestCapability == nil {
@@ -22,11 +24,12 @@ func (protocol *Protocol) handleTestCapability(packet nex.PacketInterface) {
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.server)
+	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
-	uiCapability, err := parametersStream.ReadUInt32LE()
+	uiCapability := types.NewPrimitiveU32(0)
+	err = uiCapability.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.TestCapability(fmt.Errorf("Failed to read uiCapability from parameters. %s", err.Error()), packet, callID, 0)
+		_, errorCode = protocol.TestCapability(fmt.Errorf("Failed to read uiCapability from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}

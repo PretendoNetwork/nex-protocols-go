@@ -5,11 +5,13 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 	friends_3ds_types "github.com/PretendoNetwork/nex-protocols-go/friends-3ds/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
 func (protocol *Protocol) handleIsActiveGame(packet nex.PacketInterface) {
+	var err error
 	var errorCode uint32
 
 	if protocol.IsActiveGame == nil {
@@ -23,9 +25,11 @@ func (protocol *Protocol) handleIsActiveGame(packet nex.PacketInterface) {
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.server)
+	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
-	pids, err := parametersStream.ReadListPID()
+	pids := types.NewList[*types.PID]()
+	pids.Type = types.NewPID(0)
+	err = pids.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.IsActiveGame(fmt.Errorf("Failed to read pids from parameters. %s", err.Error()), packet, callID, nil, nil)
 		if errorCode != 0 {
@@ -35,7 +39,8 @@ func (protocol *Protocol) handleIsActiveGame(packet nex.PacketInterface) {
 		return
 	}
 
-	gameKey, err := nex.StreamReadStructure(parametersStream, friends_3ds_types.NewGameKey())
+	gameKey := friends_3ds_types.NewGameKey()
+	err = gameKey.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.IsActiveGame(fmt.Errorf("Failed to read gameKey from parameters. %s", err.Error()), packet, callID, nil, nil)
 		if errorCode != 0 {

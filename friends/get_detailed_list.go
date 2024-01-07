@@ -5,10 +5,12 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
 func (protocol *Protocol) handleGetDetailedList(packet nex.PacketInterface) {
+	var err error
 	var errorCode uint32
 
 	if protocol.GetDetailedList == nil {
@@ -22,9 +24,10 @@ func (protocol *Protocol) handleGetDetailedList(packet nex.PacketInterface) {
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.server)
+	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
-	byRelationship, err := parametersStream.ReadUInt8()
+	byRelationship := types.NewPrimitiveU8(0)
+	err = byRelationship.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.GetDetailedList(fmt.Errorf("Failed to read byRelationship from parameters. %s", err.Error()), packet, callID, 0, false)
 		if errorCode != 0 {
@@ -34,7 +37,8 @@ func (protocol *Protocol) handleGetDetailedList(packet nex.PacketInterface) {
 		return
 	}
 
-	bReversed, err := parametersStream.ReadBool()
+	bReversed := types.NewPrimitiveBool(false)
+	err = bReversed.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.GetDetailedList(fmt.Errorf("Failed to read bReversed from parameters. %s", err.Error()), packet, callID, 0, false)
 		if errorCode != 0 {

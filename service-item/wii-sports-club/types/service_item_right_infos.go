@@ -6,17 +6,22 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // ServiceItemRightInfos holds data for the Service Item (Wii Sports Club) protocol
 type ServiceItemRightInfos struct {
-	nex.Structure
+	types.Structure
 	RightInfos []*ServiceItemRightInfo
 }
 
-// ExtractFromStream extracts a ServiceItemRightInfos structure from a stream
-func (serviceItemRightInfos *ServiceItemRightInfos) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the ServiceItemRightInfos from the given readable
+func (serviceItemRightInfos *ServiceItemRightInfos) ExtractFrom(readable types.Readable) error {
 	var err error
+
+	if err = serviceItemRightInfos.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read ServiceItemRightInfos header. %s", err.Error())
+	}
 
 	rightInfos, err := nex.StreamReadListStructure(stream, NewServiceItemRightInfo())
 	if err != nil {
@@ -28,18 +33,24 @@ func (serviceItemRightInfos *ServiceItemRightInfos) ExtractFromStream(stream *ne
 	return nil
 }
 
-// Bytes encodes the ServiceItemRightInfos and returns a byte array
-func (serviceItemRightInfos *ServiceItemRightInfos) Bytes(stream *nex.StreamOut) []byte {
-	nex.StreamWriteListStructure(stream, serviceItemRightInfos.RightInfos)
+// WriteTo writes the ServiceItemRightInfos to the given writable
+func (serviceItemRightInfos *ServiceItemRightInfos) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
 
-	return stream.Bytes()
+	serviceItemRightInfos.RightInfos.WriteTo(contentWritable)
+
+	content := contentWritable.Bytes()
+
+	serviceItemRightInfos.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // Copy returns a new copied instance of ServiceItemRightInfos
-func (serviceItemRightInfos *ServiceItemRightInfos) Copy() nex.StructureInterface {
+func (serviceItemRightInfos *ServiceItemRightInfos) Copy() types.RVType {
 	copied := NewServiceItemRightInfos()
 
-	copied.SetStructureVersion(serviceItemRightInfos.StructureVersion())
+	copied.StructureVersion = serviceItemRightInfos.StructureVersion
 
 	copied.RightInfos = make([]*ServiceItemRightInfo, len(serviceItemRightInfos.RightInfos))
 
@@ -51,10 +62,14 @@ func (serviceItemRightInfos *ServiceItemRightInfos) Copy() nex.StructureInterfac
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (serviceItemRightInfos *ServiceItemRightInfos) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*ServiceItemRightInfos)
+func (serviceItemRightInfos *ServiceItemRightInfos) Equals(o types.RVType) bool {
+	if _, ok := o.(*ServiceItemRightInfos); !ok {
+		return false
+	}
 
-	if serviceItemRightInfos.StructureVersion() != other.StructureVersion() {
+	other := o.(*ServiceItemRightInfos)
+
+	if serviceItemRightInfos.StructureVersion != other.StructureVersion {
 		return false
 	}
 
@@ -85,7 +100,7 @@ func (serviceItemRightInfos *ServiceItemRightInfos) FormatToString(indentationLe
 	var b strings.Builder
 
 	b.WriteString("ServiceItemRightInfos{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, serviceItemRightInfos.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, serviceItemRightInfos.StructureVersion))
 
 	if len(serviceItemRightInfos.RightInfos) == 0 {
 		b.WriteString(fmt.Sprintf("%sRightInfos: [],\n", indentationValues))

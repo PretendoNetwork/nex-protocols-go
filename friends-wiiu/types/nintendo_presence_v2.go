@@ -7,105 +7,116 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // NintendoPresenceV2 contains information about a users online presence
 type NintendoPresenceV2 struct {
-	nex.Structure
-	*nex.Data
-	ChangedFlags    uint32
-	Online          bool
+	types.Structure
+	*types.Data
+	ChangedFlags    *types.PrimitiveU32
+	Online          *types.PrimitiveBool
 	GameKey         *GameKey
-	Unknown1        uint8
+	Unknown1        *types.PrimitiveU8
 	Message         string
-	Unknown2        uint32
-	Unknown3        uint8
-	GameServerID    uint32
-	Unknown4        uint32
-	PID             *nex.PID
-	GatheringID     uint32
+	Unknown2        *types.PrimitiveU32
+	Unknown3        *types.PrimitiveU8
+	GameServerID    *types.PrimitiveU32
+	Unknown4        *types.PrimitiveU32
+	PID             *types.PID
+	GatheringID     *types.PrimitiveU32
 	ApplicationData []byte
-	Unknown5        uint8
-	Unknown6        uint8
-	Unknown7        uint8
+	Unknown5        *types.PrimitiveU8
+	Unknown6        *types.PrimitiveU8
+	Unknown7        *types.PrimitiveU8
 }
 
-// Bytes encodes the NintendoPresenceV2 and returns a byte array
-func (presence *NintendoPresenceV2) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt32LE(presence.ChangedFlags)
-	stream.WriteBool(presence.Online)
-	stream.WriteStructure(presence.GameKey)
-	stream.WriteUInt8(presence.Unknown1)
-	stream.WriteString(presence.Message)
-	stream.WriteUInt32LE(presence.Unknown2)
-	stream.WriteUInt8(presence.Unknown3)
-	stream.WriteUInt32LE(presence.GameServerID)
-	stream.WriteUInt32LE(presence.Unknown4)
-	stream.WritePID(presence.PID)
-	stream.WriteUInt32LE(presence.GatheringID)
+// WriteTo writes the NintendoPresenceV2 to the given writable
+func (presence *NintendoPresenceV2) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
+
+	presence.ChangedFlags.WriteTo(contentWritable)
+	presence.Online.WriteTo(contentWritable)
+	presence.GameKey.WriteTo(contentWritable)
+	presence.Unknown1.WriteTo(contentWritable)
+	presence.Message.WriteTo(contentWritable)
+	presence.Unknown2.WriteTo(contentWritable)
+	presence.Unknown3.WriteTo(contentWritable)
+	presence.GameServerID.WriteTo(contentWritable)
+	presence.Unknown4.WriteTo(contentWritable)
+	presence.PID.WriteTo(contentWritable)
+	presence.GatheringID.WriteTo(contentWritable)
 	stream.WriteBuffer(presence.ApplicationData)
-	stream.WriteUInt8(presence.Unknown5)
-	stream.WriteUInt8(presence.Unknown6)
-	stream.WriteUInt8(presence.Unknown7)
+	presence.Unknown5.WriteTo(contentWritable)
+	presence.Unknown6.WriteTo(contentWritable)
+	presence.Unknown7.WriteTo(contentWritable)
 
-	return stream.Bytes()
+	content := contentWritable.Bytes()
+
+	presence.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
-// ExtractFromStream extracts a NintendoPresenceV2 structure from a stream
-func (presence *NintendoPresenceV2) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the NintendoPresenceV2 from the given readable
+func (presence *NintendoPresenceV2) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	presence.ChangedFlags, err = stream.ReadUInt32LE()
+	if err = presence.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read NintendoPresenceV2 header. %s", err.Error())
+	}
+
+	err = presence.ChangedFlags.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract NintendoPresenceV2.ChangedFlags. %s", err.Error())
 	}
 
-	presence.Online, err = stream.ReadBool()
+	err = presence.Online.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract NintendoPresenceV2.Online. %s", err.Error())
 	}
 
-	presence.GameKey, err = nex.StreamReadStructure(stream, NewGameKey())
+	err = presence.GameKey.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract NintendoPresenceV2.GameKey. %s", err.Error())
 	}
 
-	presence.Unknown1, err = stream.ReadUInt8()
+	err = presence.Unknown1.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract NintendoPresenceV2.Unknown1. %s", err.Error())
 	}
 
-	presence.Message, err = stream.ReadString()
+	err = presence.Message.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract NintendoPresenceV2.Message. %s", err.Error())
 	}
 
-	presence.Unknown2, err = stream.ReadUInt32LE()
+	err = presence.Unknown2.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract NintendoPresenceV2.Unknown2. %s", err.Error())
 	}
 
-	presence.Unknown3, err = stream.ReadUInt8()
+	err = presence.Unknown3.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract NintendoPresenceV2.Unknown3. %s", err.Error())
 	}
 
-	presence.GameServerID, err = stream.ReadUInt32LE()
+	err = presence.GameServerID.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract NintendoPresenceV2.GameServerID. %s", err.Error())
 	}
 
-	presence.Unknown4, err = stream.ReadUInt32LE()
+	err = presence.Unknown4.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract NintendoPresenceV2.Unknown4. %s", err.Error())
 	}
 
-	presence.PID, err = stream.ReadPID()
+	err = presence.PID.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract NintendoPresenceV2.PID. %s", err.Error())
 	}
 
-	presence.GatheringID, err = stream.ReadUInt32LE()
+	err = presence.GatheringID.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract NintendoPresenceV2.GatheringID. %s", err.Error())
 	}
@@ -115,17 +126,17 @@ func (presence *NintendoPresenceV2) ExtractFromStream(stream *nex.StreamIn) erro
 		return fmt.Errorf("Failed to extract NintendoPresenceV2.ApplicationData. %s", err.Error())
 	}
 
-	presence.Unknown5, err = stream.ReadUInt8()
+	err = presence.Unknown5.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract NintendoPresenceV2.Unknown5. %s", err.Error())
 	}
 
-	presence.Unknown6, err = stream.ReadUInt8()
+	err = presence.Unknown6.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract NintendoPresenceV2.Unknown6. %s", err.Error())
 	}
 
-	presence.Unknown7, err = stream.ReadUInt8()
+	err = presence.Unknown7.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract NintendoPresenceV2.Unknown7. %s", err.Error())
 	}
@@ -134,18 +145,12 @@ func (presence *NintendoPresenceV2) ExtractFromStream(stream *nex.StreamIn) erro
 }
 
 // Copy returns a new copied instance of NintendoPresenceV2
-func (presence *NintendoPresenceV2) Copy() nex.StructureInterface {
+func (presence *NintendoPresenceV2) Copy() types.RVType {
 	copied := NewNintendoPresenceV2()
 
-	copied.SetStructureVersion(presence.StructureVersion())
+	copied.StructureVersion = presence.StructureVersion
 
-	if presence.ParentType() != nil {
-		copied.Data = presence.ParentType().Copy().(*nex.Data)
-	} else {
-		copied.Data = nex.NewData()
-	}
-
-	copied.SetParentType(copied.Data)
+	copied.Data = presence.Data.Copy().(*types.Data)
 
 	copied.ChangedFlags = presence.ChangedFlags
 	copied.Online = presence.Online
@@ -170,10 +175,14 @@ func (presence *NintendoPresenceV2) Copy() nex.StructureInterface {
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (presence *NintendoPresenceV2) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*NintendoPresenceV2)
+func (presence *NintendoPresenceV2) Equals(o types.RVType) bool {
+	if _, ok := o.(*NintendoPresenceV2); !ok {
+		return false
+	}
 
-	if presence.StructureVersion() != other.StructureVersion() {
+	other := o.(*NintendoPresenceV2)
+
+	if presence.StructureVersion != other.StructureVersion {
 		return false
 	}
 
@@ -181,11 +190,11 @@ func (presence *NintendoPresenceV2) Equals(structure nex.StructureInterface) boo
 		return false
 	}
 
-	if presence.ChangedFlags != other.ChangedFlags {
+	if !presence.ChangedFlags.Equals(other.ChangedFlags) {
 		return false
 	}
 
-	if presence.Online != other.Online {
+	if !presence.Online.Equals(other.Online) {
 		return false
 	}
 
@@ -193,27 +202,27 @@ func (presence *NintendoPresenceV2) Equals(structure nex.StructureInterface) boo
 		return false
 	}
 
-	if presence.Unknown1 != other.Unknown1 {
+	if !presence.Unknown1.Equals(other.Unknown1) {
 		return false
 	}
 
-	if presence.Message != other.Message {
+	if !presence.Message.Equals(other.Message) {
 		return false
 	}
 
-	if presence.Unknown2 != other.Unknown2 {
+	if !presence.Unknown2.Equals(other.Unknown2) {
 		return false
 	}
 
-	if presence.Unknown3 != other.Unknown3 {
+	if !presence.Unknown3.Equals(other.Unknown3) {
 		return false
 	}
 
-	if presence.GameServerID != other.GameServerID {
+	if !presence.GameServerID.Equals(other.GameServerID) {
 		return false
 	}
 
-	if presence.Unknown4 != other.Unknown4 {
+	if !presence.Unknown4.Equals(other.Unknown4) {
 		return false
 	}
 
@@ -221,23 +230,23 @@ func (presence *NintendoPresenceV2) Equals(structure nex.StructureInterface) boo
 		return false
 	}
 
-	if presence.GatheringID != other.GatheringID {
+	if !presence.GatheringID.Equals(other.GatheringID) {
 		return false
 	}
 
-	if !bytes.Equal(presence.ApplicationData, other.ApplicationData) {
+	if !presence.ApplicationData.Equals(other.ApplicationData) {
 		return false
 	}
 
-	if presence.Unknown5 != other.Unknown5 {
+	if !presence.Unknown5.Equals(other.Unknown5) {
 		return false
 	}
 
-	if presence.Unknown6 != other.Unknown6 {
+	if !presence.Unknown6.Equals(other.Unknown6) {
 		return false
 	}
 
-	if presence.Unknown7 != other.Unknown7 {
+	if !presence.Unknown7.Equals(other.Unknown7) {
 		return false
 	}
 
@@ -257,7 +266,7 @@ func (presence *NintendoPresenceV2) FormatToString(indentationLevel int) string 
 	var b strings.Builder
 
 	b.WriteString("PrincipalBasicInfo{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, presence.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, presence.StructureVersion))
 	b.WriteString(fmt.Sprintf("%sChangedFlags: %d,\n", indentationValues, presence.ChangedFlags))
 	b.WriteString(fmt.Sprintf("%sOnline: %t,\n", indentationValues, presence.Online))
 

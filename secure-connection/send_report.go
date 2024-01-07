@@ -5,10 +5,12 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
 func (protocol *Protocol) handleSendReport(packet nex.PacketInterface) {
+	var err error
 	var errorCode uint32
 
 	if protocol.SendReport == nil {
@@ -22,9 +24,10 @@ func (protocol *Protocol) handleSendReport(packet nex.PacketInterface) {
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.server)
+	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
-	reportID, err := parametersStream.ReadUInt32LE()
+	reportID := types.NewPrimitiveU32(0)
+	err = reportID.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.SendReport(fmt.Errorf("Failed to read reportID from parameters. %s", err.Error()), packet, callID, 0, nil)
 		if errorCode != 0 {
@@ -34,7 +37,8 @@ func (protocol *Protocol) handleSendReport(packet nex.PacketInterface) {
 		return
 	}
 
-	reportData, err := parametersStream.ReadQBuffer()
+	reportData := types.NewQBuffer(nil)
+	err = reportData.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.SendReport(fmt.Errorf("Failed to read reportData from parameters. %s", err.Error()), packet, callID, 0, nil)
 		if errorCode != 0 {

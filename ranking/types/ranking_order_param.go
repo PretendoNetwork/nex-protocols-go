@@ -6,49 +6,54 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // RankingOrderParam holds parameters for ordering rankings
 type RankingOrderParam struct {
-	nex.Structure
-	OrderCalculation uint8
-	GroupIndex       uint8
-	GroupNum         uint8
-	TimeScope        uint8
-	Offset           uint32
-	Length           uint8
+	types.Structure
+	OrderCalculation *types.PrimitiveU8
+	GroupIndex       *types.PrimitiveU8
+	GroupNum         *types.PrimitiveU8
+	TimeScope        *types.PrimitiveU8
+	Offset           *types.PrimitiveU32
+	Length           *types.PrimitiveU8
 }
 
-// ExtractFromStream extracts a RankingOrderParam structure from a stream
-func (rankingOrderParam *RankingOrderParam) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the RankingOrderParam from the given readable
+func (rankingOrderParam *RankingOrderParam) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	rankingOrderParam.OrderCalculation, err = stream.ReadUInt8()
+	if err = rankingOrderParam.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read RankingOrderParam header. %s", err.Error())
+	}
+
+	err = rankingOrderParam.OrderCalculation.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract RankingOrderParam.OrderCalculation from stream. %s", err.Error())
 	}
 
-	rankingOrderParam.GroupIndex, err = stream.ReadUInt8()
+	err = rankingOrderParam.GroupIndex.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract RankingOrderParam.GroupIndex from stream. %s", err.Error())
 	}
 
-	rankingOrderParam.GroupNum, err = stream.ReadUInt8()
+	err = rankingOrderParam.GroupNum.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract RankingOrderParam.GroupNum from stream. %s", err.Error())
 	}
 
-	rankingOrderParam.TimeScope, err = stream.ReadUInt8()
+	err = rankingOrderParam.TimeScope.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract RankingOrderParam.TimeScope from stream. %s", err.Error())
 	}
 
-	rankingOrderParam.Offset, err = stream.ReadUInt32LE()
+	err = rankingOrderParam.Offset.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract RankingOrderParam.Offset from stream. %s", err.Error())
 	}
 
-	rankingOrderParam.Length, err = stream.ReadUInt8()
+	err = rankingOrderParam.Length.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract RankingOrderParam.Length from stream. %s", err.Error())
 	}
@@ -56,23 +61,29 @@ func (rankingOrderParam *RankingOrderParam) ExtractFromStream(stream *nex.Stream
 	return nil
 }
 
-// Bytes encodes the RankingOrderParam and returns a byte array
-func (rankingOrderParam *RankingOrderParam) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt8(rankingOrderParam.OrderCalculation)
-	stream.WriteUInt8(rankingOrderParam.GroupIndex)
-	stream.WriteUInt8(rankingOrderParam.GroupNum)
-	stream.WriteUInt8(rankingOrderParam.TimeScope)
-	stream.WriteUInt32LE(rankingOrderParam.Offset)
-	stream.WriteUInt8(rankingOrderParam.Length)
+// WriteTo writes the RankingOrderParam to the given writable
+func (rankingOrderParam *RankingOrderParam) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
 
-	return stream.Bytes()
+	rankingOrderParam.OrderCalculation.WriteTo(contentWritable)
+	rankingOrderParam.GroupIndex.WriteTo(contentWritable)
+	rankingOrderParam.GroupNum.WriteTo(contentWritable)
+	rankingOrderParam.TimeScope.WriteTo(contentWritable)
+	rankingOrderParam.Offset.WriteTo(contentWritable)
+	rankingOrderParam.Length.WriteTo(contentWritable)
+
+	content := contentWritable.Bytes()
+
+	rankingOrderParam.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // Copy returns a new copied instance of RankingOrderParam
-func (rankingOrderParam *RankingOrderParam) Copy() nex.StructureInterface {
+func (rankingOrderParam *RankingOrderParam) Copy() types.RVType {
 	copied := NewRankingOrderParam()
 
-	copied.SetStructureVersion(rankingOrderParam.StructureVersion())
+	copied.StructureVersion = rankingOrderParam.StructureVersion
 
 	copied.OrderCalculation = rankingOrderParam.OrderCalculation
 	copied.GroupIndex = rankingOrderParam.GroupIndex
@@ -85,30 +96,34 @@ func (rankingOrderParam *RankingOrderParam) Copy() nex.StructureInterface {
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (rankingOrderParam *RankingOrderParam) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*RankingOrderParam)
-
-	if rankingOrderParam.StructureVersion() != other.StructureVersion() {
+func (rankingOrderParam *RankingOrderParam) Equals(o types.RVType) bool {
+	if _, ok := o.(*RankingOrderParam); !ok {
 		return false
 	}
 
-	if rankingOrderParam.OrderCalculation != other.OrderCalculation {
+	other := o.(*RankingOrderParam)
+
+	if rankingOrderParam.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if rankingOrderParam.GroupIndex != other.GroupIndex {
+	if !rankingOrderParam.OrderCalculation.Equals(other.OrderCalculation) {
 		return false
 	}
 
-	if rankingOrderParam.GroupNum != other.GroupNum {
+	if !rankingOrderParam.GroupIndex.Equals(other.GroupIndex) {
 		return false
 	}
 
-	if rankingOrderParam.TimeScope != other.TimeScope {
+	if !rankingOrderParam.GroupNum.Equals(other.GroupNum) {
 		return false
 	}
 
-	if rankingOrderParam.Offset != other.Offset {
+	if !rankingOrderParam.TimeScope.Equals(other.TimeScope) {
+		return false
+	}
+
+	if !rankingOrderParam.Offset.Equals(other.Offset) {
 		return false
 	}
 
@@ -128,7 +143,7 @@ func (rankingOrderParam *RankingOrderParam) FormatToString(indentationLevel int)
 	var b strings.Builder
 
 	b.WriteString("RankingOrderParam{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, rankingOrderParam.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, rankingOrderParam.StructureVersion))
 	b.WriteString(fmt.Sprintf("%sOrderCalculation: %d,\n", indentationValues, rankingOrderParam.OrderCalculation))
 	b.WriteString(fmt.Sprintf("%sGroupIndex: %d,\n", indentationValues, rankingOrderParam.GroupIndex))
 	b.WriteString(fmt.Sprintf("%sGroupNum: %d,\n", indentationValues, rankingOrderParam.GroupNum))

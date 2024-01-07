@@ -5,11 +5,13 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 	service_item_wii_sports_club_types "github.com/PretendoNetwork/nex-protocols-go/service-item/wii-sports-club/types"
 )
 
 func (protocol *Protocol) handleGetNotice(packet nex.PacketInterface) {
+	var err error
 	var errorCode uint32
 
 	if protocol.GetNotice == nil {
@@ -23,9 +25,10 @@ func (protocol *Protocol) handleGetNotice(packet nex.PacketInterface) {
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.server)
+	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
-	getNoticeParam, err := nex.StreamReadStructure(parametersStream, service_item_wii_sports_club_types.NewServiceItemGetNoticeParam())
+	getNoticeParam := service_item_wii_sports_club_types.NewServiceItemGetNoticeParam()
+	err = getNoticeParam.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.GetNotice(fmt.Errorf("Failed to read getNoticeParam from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {

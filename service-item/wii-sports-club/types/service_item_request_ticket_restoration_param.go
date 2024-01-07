@@ -6,25 +6,30 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // ServiceItemRequestTicketRestorationParam holds data for the Service Item (Wii Sports Club) protocol
 type ServiceItemRequestTicketRestorationParam struct {
-	nex.Structure
-	TicketType uint32
-	NumTicket  uint32
+	types.Structure
+	TicketType *types.PrimitiveU32
+	NumTicket  *types.PrimitiveU32
 }
 
-// ExtractFromStream extracts a ServiceItemRequestTicketRestorationParam structure from a stream
-func (serviceItemRequestTicketRestorationParam *ServiceItemRequestTicketRestorationParam) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the ServiceItemRequestTicketRestorationParam from the given readable
+func (serviceItemRequestTicketRestorationParam *ServiceItemRequestTicketRestorationParam) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	serviceItemRequestTicketRestorationParam.TicketType, err = stream.ReadUInt32LE()
+	if err = serviceItemRequestTicketRestorationParam.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read ServiceItemRequestTicketRestorationParam header. %s", err.Error())
+	}
+
+	err = serviceItemRequestTicketRestorationParam.TicketType.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemRequestTicketRestorationParam.TicketType from stream. %s", err.Error())
 	}
 
-	serviceItemRequestTicketRestorationParam.NumTicket, err = stream.ReadUInt32LE()
+	err = serviceItemRequestTicketRestorationParam.NumTicket.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemRequestTicketRestorationParam.NumTicket from stream. %s", err.Error())
 	}
@@ -32,19 +37,25 @@ func (serviceItemRequestTicketRestorationParam *ServiceItemRequestTicketRestorat
 	return nil
 }
 
-// Bytes encodes the ServiceItemRequestTicketRestorationParam and returns a byte array
-func (serviceItemRequestTicketRestorationParam *ServiceItemRequestTicketRestorationParam) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt32LE(serviceItemRequestTicketRestorationParam.TicketType)
-	stream.WriteUInt32LE(serviceItemRequestTicketRestorationParam.NumTicket)
+// WriteTo writes the ServiceItemRequestTicketRestorationParam to the given writable
+func (serviceItemRequestTicketRestorationParam *ServiceItemRequestTicketRestorationParam) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
 
-	return stream.Bytes()
+	serviceItemRequestTicketRestorationParam.TicketType.WriteTo(contentWritable)
+	serviceItemRequestTicketRestorationParam.NumTicket.WriteTo(contentWritable)
+
+	content := contentWritable.Bytes()
+
+	serviceItemRequestTicketRestorationParam.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // Copy returns a new copied instance of ServiceItemRequestTicketRestorationParam
-func (serviceItemRequestTicketRestorationParam *ServiceItemRequestTicketRestorationParam) Copy() nex.StructureInterface {
+func (serviceItemRequestTicketRestorationParam *ServiceItemRequestTicketRestorationParam) Copy() types.RVType {
 	copied := NewServiceItemRequestTicketRestorationParam()
 
-	copied.SetStructureVersion(serviceItemRequestTicketRestorationParam.StructureVersion())
+	copied.StructureVersion = serviceItemRequestTicketRestorationParam.StructureVersion
 
 	copied.TicketType = serviceItemRequestTicketRestorationParam.TicketType
 	copied.NumTicket = serviceItemRequestTicketRestorationParam.NumTicket
@@ -53,18 +64,22 @@ func (serviceItemRequestTicketRestorationParam *ServiceItemRequestTicketRestorat
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (serviceItemRequestTicketRestorationParam *ServiceItemRequestTicketRestorationParam) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*ServiceItemRequestTicketRestorationParam)
-
-	if serviceItemRequestTicketRestorationParam.StructureVersion() != other.StructureVersion() {
+func (serviceItemRequestTicketRestorationParam *ServiceItemRequestTicketRestorationParam) Equals(o types.RVType) bool {
+	if _, ok := o.(*ServiceItemRequestTicketRestorationParam); !ok {
 		return false
 	}
 
-	if serviceItemRequestTicketRestorationParam.TicketType != other.TicketType {
+	other := o.(*ServiceItemRequestTicketRestorationParam)
+
+	if serviceItemRequestTicketRestorationParam.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if serviceItemRequestTicketRestorationParam.NumTicket != other.NumTicket {
+	if !serviceItemRequestTicketRestorationParam.TicketType.Equals(other.TicketType) {
+		return false
+	}
+
+	if !serviceItemRequestTicketRestorationParam.NumTicket.Equals(other.NumTicket) {
 		return false
 	}
 
@@ -84,7 +99,7 @@ func (serviceItemRequestTicketRestorationParam *ServiceItemRequestTicketRestorat
 	var b strings.Builder
 
 	b.WriteString("ServiceItemRequestTicketRestorationParam{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, serviceItemRequestTicketRestorationParam.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, serviceItemRequestTicketRestorationParam.StructureVersion))
 	b.WriteString(fmt.Sprintf("%sTicketType: %d,\n", indentationValues, serviceItemRequestTicketRestorationParam.TicketType))
 	b.WriteString(fmt.Sprintf("%sNumTicket: %d,\n", indentationValues, serviceItemRequestTicketRestorationParam.NumTicket))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))

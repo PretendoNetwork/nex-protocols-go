@@ -5,10 +5,12 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
 func (protocol *Protocol) handleGetFriendUserStatuses(packet nex.PacketInterface) {
+	var err error
 	var errorCode uint32
 
 	if protocol.GetFriendUserStatuses == nil {
@@ -22,9 +24,11 @@ func (protocol *Protocol) handleGetFriendUserStatuses(packet nex.PacketInterface
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.server)
+	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
-	unknown, err := parametersStream.ReadListUInt8()
+	unknown := types.NewList[*types.PrimitiveU8]()
+	unknown.Type = types.NewPrimitiveU8(0)
+	err = unknown.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.GetFriendUserStatuses(fmt.Errorf("Failed to read unknown from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {

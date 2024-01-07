@@ -5,10 +5,12 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
 func (protocol *Protocol) handleGetPlayingSession(packet nex.PacketInterface) {
+	var err error
 	var errorCode uint32
 
 	if protocol.GetPlayingSession == nil {
@@ -22,9 +24,11 @@ func (protocol *Protocol) handleGetPlayingSession(packet nex.PacketInterface) {
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.server)
+	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
-	lstPID, err := parametersStream.ReadListPID()
+	lstPID := types.NewList[*types.PID]()
+	lstPID.Type = types.NewPID(0)
+	err = lstPID.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.GetPlayingSession(fmt.Errorf("Failed to read lstPID from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {

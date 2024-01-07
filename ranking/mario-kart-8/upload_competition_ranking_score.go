@@ -5,11 +5,13 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 	ranking_mario_kart8_types "github.com/PretendoNetwork/nex-protocols-go/ranking/mario-kart-8/types"
 )
 
 func (protocol *Protocol) handleUploadCompetitionRankingScore(packet nex.PacketInterface) {
+	var err error
 	var errorCode uint32
 
 	if protocol.UploadCompetitionRankingScore == nil {
@@ -23,9 +25,10 @@ func (protocol *Protocol) handleUploadCompetitionRankingScore(packet nex.PacketI
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.server)
+	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
-	param, err := nex.StreamReadStructure(parametersStream, ranking_mario_kart8_types.NewCompetitionRankingUploadScoreParam())
+	param := ranking_mario_kart8_types.NewCompetitionRankingUploadScoreParam()
+	err = param.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.UploadCompetitionRankingScore(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {

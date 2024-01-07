@@ -2,30 +2,33 @@
 package types
 
 import (
-	"bytes"
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // DataStoreProfileInfo is a data structure used by the DataStore Super Smash Bros. 4 protocol
 type DataStoreProfileInfo struct {
-	nex.Structure
-	PID     *nex.PID
-	Profile []byte
+	types.Structure
+	PID     *types.PID
+	Profile *types.QBuffer
 }
 
-// ExtractFromStream extracts a DataStoreProfileInfo structure from a stream
-func (dataStoreProfileInfo *DataStoreProfileInfo) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the DataStoreProfileInfo from the given readable
+func (dataStoreProfileInfo *DataStoreProfileInfo) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	dataStoreProfileInfo.PID, err = stream.ReadPID()
+	if err = dataStoreProfileInfo.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read DataStoreProfileInfo header. %s", err.Error())
+	}
+
+	err = dataStoreProfileInfo.PID.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreProfileInfo.PID. %s", err.Error())
 	}
 
-	dataStoreProfileInfo.Profile, err = stream.ReadQBuffer()
+	err = dataStoreProfileInfo.Profile.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreProfileInfo.Profile. %s", err.Error())
 	}
@@ -33,33 +36,41 @@ func (dataStoreProfileInfo *DataStoreProfileInfo) ExtractFromStream(stream *nex.
 	return nil
 }
 
-// Bytes encodes the DataStoreProfileInfo and returns a byte array
-func (dataStoreProfileInfo *DataStoreProfileInfo) Bytes(stream *nex.StreamOut) []byte {
-	stream.WritePID(dataStoreProfileInfo.PID)
-	stream.WriteQBuffer(dataStoreProfileInfo.Profile)
+// WriteTo writes the DataStoreProfileInfo to the given writable
+func (dataStoreProfileInfo *DataStoreProfileInfo) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
 
-	return stream.Bytes()
+	dataStoreProfileInfo.PID.WriteTo(contentWritable)
+	dataStoreProfileInfo.Profile.WriteTo(contentWritable)
+
+	content := contentWritable.Bytes()
+
+	dataStoreProfileInfo.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // Copy returns a new copied instance of DataStoreProfileInfo
-func (dataStoreProfileInfo *DataStoreProfileInfo) Copy() nex.StructureInterface {
+func (dataStoreProfileInfo *DataStoreProfileInfo) Copy() types.RVType {
 	copied := NewDataStoreProfileInfo()
 
-	copied.SetStructureVersion(dataStoreProfileInfo.StructureVersion())
+	copied.StructureVersion = dataStoreProfileInfo.StructureVersion
 
-	copied.PID = dataStoreProfileInfo.PID.Copy()
-	copied.Profile = make([]byte, len(dataStoreProfileInfo.Profile))
-
-	copy(copied.Profile, dataStoreProfileInfo.Profile)
+	copied.PID = dataStoreProfileInfo.PID.Copy().(*types.PID)
+	copied.Profile = dataStoreProfileInfo.Profile.Copy().(*types.QBuffer)
 
 	return copied
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (dataStoreProfileInfo *DataStoreProfileInfo) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*DataStoreProfileInfo)
+func (dataStoreProfileInfo *DataStoreProfileInfo) Equals(o types.RVType) bool {
+	if _, ok := o.(*DataStoreProfileInfo); !ok {
+		return false
+	}
 
-	if dataStoreProfileInfo.StructureVersion() != other.StructureVersion() {
+	other := o.(*DataStoreProfileInfo)
+
+	if dataStoreProfileInfo.StructureVersion != other.StructureVersion {
 		return false
 	}
 
@@ -67,7 +78,7 @@ func (dataStoreProfileInfo *DataStoreProfileInfo) Equals(structure nex.Structure
 		return false
 	}
 
-	if !bytes.Equal(dataStoreProfileInfo.Profile, other.Profile) {
+	if !dataStoreProfileInfo.Profile.Equals(other.Profile) {
 		return false
 	}
 
@@ -87,9 +98,9 @@ func (dataStoreProfileInfo *DataStoreProfileInfo) FormatToString(indentationLeve
 	var b strings.Builder
 
 	b.WriteString("DataStoreProfileInfo{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, dataStoreProfileInfo.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, dataStoreProfileInfo.StructureVersion))
 	b.WriteString(fmt.Sprintf("%sPID: %s,\n", indentationValues, dataStoreProfileInfo.PID.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sProfile: %x\n", indentationValues, dataStoreProfileInfo.Profile))
+	b.WriteString(fmt.Sprintf("%sProfile: %s\n", indentationValues, dataStoreProfileInfo.Profile))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -97,5 +108,8 @@ func (dataStoreProfileInfo *DataStoreProfileInfo) FormatToString(indentationLeve
 
 // NewDataStoreProfileInfo returns a new DataStoreProfileInfo
 func NewDataStoreProfileInfo() *DataStoreProfileInfo {
-	return &DataStoreProfileInfo{}
+	return &DataStoreProfileInfo{
+		PID: types.NewPID(0),
+		Profile: types.NewQBuffer(nil),
+	}
 }

@@ -5,10 +5,12 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
 func (protocol *Protocol) handleJoinMatchmakeSessionWithExtraParticipants(packet nex.PacketInterface) {
+	var err error
 	var errorCode uint32
 
 	if protocol.JoinMatchmakeSessionWithExtraParticipants == nil {
@@ -22,9 +24,10 @@ func (protocol *Protocol) handleJoinMatchmakeSessionWithExtraParticipants(packet
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.server)
+	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
-	gid, err := parametersStream.ReadUInt32LE()
+	gid := types.NewPrimitiveU32(0)
+	err = gid.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.JoinMatchmakeSessionWithExtraParticipants(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), packet, callID, 0, "", false, 0, 0)
 		if errorCode != 0 {
@@ -34,7 +37,8 @@ func (protocol *Protocol) handleJoinMatchmakeSessionWithExtraParticipants(packet
 		return
 	}
 
-	joinMessage, err := parametersStream.ReadString()
+	joinMessage := types.NewString("")
+	err = joinMessage.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.JoinMatchmakeSessionWithExtraParticipants(fmt.Errorf("Failed to read joinMessage from parameters. %s", err.Error()), packet, callID, 0, "", false, 0, 0)
 		if errorCode != 0 {
@@ -44,7 +48,8 @@ func (protocol *Protocol) handleJoinMatchmakeSessionWithExtraParticipants(packet
 		return
 	}
 
-	ignoreBlacklist, err := parametersStream.ReadBool()
+	ignoreBlacklist := types.NewPrimitiveBool(false)
+	err = ignoreBlacklist.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.JoinMatchmakeSessionWithExtraParticipants(fmt.Errorf("Failed to read ignoreBlacklist from parameters. %s", err.Error()), packet, callID, 0, "", false, 0, 0)
 		if errorCode != 0 {
@@ -54,7 +59,8 @@ func (protocol *Protocol) handleJoinMatchmakeSessionWithExtraParticipants(packet
 		return
 	}
 
-	participationCount, err := parametersStream.ReadUInt16LE()
+	participationCount := types.NewPrimitiveU16(0)
+	err = participationCount.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.JoinMatchmakeSessionWithExtraParticipants(fmt.Errorf("Failed to read participationCount from parameters. %s", err.Error()), packet, callID, 0, "", false, 0, 0)
 		if errorCode != 0 {
@@ -64,7 +70,8 @@ func (protocol *Protocol) handleJoinMatchmakeSessionWithExtraParticipants(packet
 		return
 	}
 
-	extraParticipants, err := parametersStream.ReadUInt32LE()
+	extraParticipants := types.NewPrimitiveU32(0)
+	err = extraParticipants.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.JoinMatchmakeSessionWithExtraParticipants(fmt.Errorf("Failed to read extraParticipants from parameters. %s", err.Error()), packet, callID, 0, "", false, 0, 0)
 		if errorCode != 0 {

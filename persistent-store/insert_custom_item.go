@@ -5,10 +5,12 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
 func (protocol *Protocol) handleInsertCustomItem(packet nex.PacketInterface) {
+	var err error
 	var errorCode uint32
 
 	if protocol.InsertCustomItem == nil {
@@ -22,9 +24,10 @@ func (protocol *Protocol) handleInsertCustomItem(packet nex.PacketInterface) {
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.server)
+	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
-	uiGroup, err := parametersStream.ReadUInt32LE()
+	uiGroup := types.NewPrimitiveU32(0)
+	err = uiGroup.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.InsertCustomItem(fmt.Errorf("Failed to read uiGroup from parameters. %s", err.Error()), packet, callID, 0, "", nil, false)
 		if errorCode != 0 {
@@ -34,7 +37,8 @@ func (protocol *Protocol) handleInsertCustomItem(packet nex.PacketInterface) {
 		return
 	}
 
-	strTag, err := parametersStream.ReadString()
+	strTag := types.NewString("")
+	err = strTag.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.InsertCustomItem(fmt.Errorf("Failed to read strTag from parameters. %s", err.Error()), packet, callID, 0, "", nil, false)
 		if errorCode != 0 {
@@ -44,7 +48,8 @@ func (protocol *Protocol) handleInsertCustomItem(packet nex.PacketInterface) {
 		return
 	}
 
-	hData, err := parametersStream.ReadDataHolder()
+	hData := types.NewAnyDataHolder()
+	err = hData.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.InsertCustomItem(fmt.Errorf("Failed to read hData from parameters. %s", err.Error()), packet, callID, 0, "", nil, false)
 		if errorCode != 0 {
@@ -54,7 +59,8 @@ func (protocol *Protocol) handleInsertCustomItem(packet nex.PacketInterface) {
 		return
 	}
 
-	bReplace, err := parametersStream.ReadBool()
+	bReplace := types.NewPrimitiveBool(false)
+	err = bReplace.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.InsertCustomItem(fmt.Errorf("Failed to read bReplace from parameters. %s", err.Error()), packet, callID, 0, "", nil, false)
 		if errorCode != 0 {

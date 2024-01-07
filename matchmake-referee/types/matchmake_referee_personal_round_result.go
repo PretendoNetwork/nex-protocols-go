@@ -7,50 +7,61 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // MatchmakeRefereePersonalRoundResult contains the results of a round
 type MatchmakeRefereePersonalRoundResult struct {
-	nex.Structure
-	*nex.Data
-	PID                     *nex.PID
-	PersonalRoundResultFlag uint32
-	RoundWinLoss            uint32
-	RatingValueChange       int32
+	types.Structure
+	*types.Data
+	PID                     *types.PID
+	PersonalRoundResultFlag *types.PrimitiveU32
+	RoundWinLoss            *types.PrimitiveU32
+	RatingValueChange       *types.PrimitiveS32
 	Buffer                  []byte
 }
 
-// Bytes encodes the MatchmakeRefereePersonalRoundResult and returns a byte array
-func (matchmakeRefereePersonalRoundResult *MatchmakeRefereePersonalRoundResult) Bytes(stream *nex.StreamOut) []byte {
-	stream.WritePID(matchmakeRefereePersonalRoundResult.PID)
-	stream.WriteUInt32LE(matchmakeRefereePersonalRoundResult.PersonalRoundResultFlag)
-	stream.WriteUInt32LE(matchmakeRefereePersonalRoundResult.RoundWinLoss)
-	stream.WriteInt32LE(matchmakeRefereePersonalRoundResult.RatingValueChange)
+// WriteTo writes the MatchmakeRefereePersonalRoundResult to the given writable
+func (matchmakeRefereePersonalRoundResult *MatchmakeRefereePersonalRoundResult) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
+
+	matchmakeRefereePersonalRoundResult.PID.WriteTo(contentWritable)
+	matchmakeRefereePersonalRoundResult.PersonalRoundResultFlag.WriteTo(contentWritable)
+	matchmakeRefereePersonalRoundResult.RoundWinLoss.WriteTo(contentWritable)
+	matchmakeRefereePersonalRoundResult.RatingValueChange.WriteTo(contentWritable)
 	stream.WriteQBuffer(matchmakeRefereePersonalRoundResult.Buffer)
 
-	return stream.Bytes()
+	content := contentWritable.Bytes()
+
+	rvcd.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
-// ExtractFromStream extracts a MatchmakeRefereePersonalRoundResult structure from a stream
-func (matchmakeRefereePersonalRoundResult *MatchmakeRefereePersonalRoundResult) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the MatchmakeRefereePersonalRoundResult from the given readable
+func (matchmakeRefereePersonalRoundResult *MatchmakeRefereePersonalRoundResult) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	matchmakeRefereePersonalRoundResult.PID, err = stream.ReadPID()
+	if err = matchmakeRefereePersonalRoundResult.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read MatchmakeRefereePersonalRoundResult header. %s", err.Error())
+	}
+
+	err = matchmakeRefereePersonalRoundResult.PID.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract MatchmakeRefereePersonalRoundResult.PID. %s", err.Error())
 	}
 
-	matchmakeRefereePersonalRoundResult.PersonalRoundResultFlag, err = stream.ReadUInt32LE()
+	err = matchmakeRefereePersonalRoundResult.PersonalRoundResultFlag.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract MatchmakeRefereePersonalRoundResult.PersonalRoundResultFlag. %s", err.Error())
 	}
 
-	matchmakeRefereePersonalRoundResult.RoundWinLoss, err = stream.ReadUInt32LE()
+	err = matchmakeRefereePersonalRoundResult.RoundWinLoss.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract MatchmakeRefereePersonalRoundResult.RoundWinLoss. %s", err.Error())
 	}
 
-	matchmakeRefereePersonalRoundResult.RatingValueChange, err = stream.ReadInt32LE()
+	err = matchmakeRefereePersonalRoundResult.RatingValueChange.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract MatchmakeRefereePersonalRoundResult.RatingValueChange. %s", err.Error())
 	}
@@ -64,13 +75,12 @@ func (matchmakeRefereePersonalRoundResult *MatchmakeRefereePersonalRoundResult) 
 }
 
 // Copy returns a new copied instance of MatchmakeRefereePersonalRoundResult
-func (matchmakeRefereePersonalRoundResult *MatchmakeRefereePersonalRoundResult) Copy() nex.StructureInterface {
+func (matchmakeRefereePersonalRoundResult *MatchmakeRefereePersonalRoundResult) Copy() types.RVType {
 	copied := NewMatchmakeRefereePersonalRoundResult()
 
-	copied.SetStructureVersion(matchmakeRefereePersonalRoundResult.StructureVersion())
+	copied.StructureVersion = matchmakeRefereePersonalRoundResult.StructureVersion
 
-	copied.Data = matchmakeRefereePersonalRoundResult.ParentType().Copy().(*nex.Data)
-	copied.SetParentType(copied.Data)
+	copied.Data = matchmakeRefereePersonalRoundResult.Data.Copy().(*types.Data)
 
 	copied.PID = matchmakeRefereePersonalRoundResult.PID.Copy()
 	copied.PersonalRoundResultFlag = matchmakeRefereePersonalRoundResult.PersonalRoundResultFlag
@@ -83,10 +93,14 @@ func (matchmakeRefereePersonalRoundResult *MatchmakeRefereePersonalRoundResult) 
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (matchmakeRefereePersonalRoundResult *MatchmakeRefereePersonalRoundResult) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*MatchmakeRefereePersonalRoundResult)
+func (matchmakeRefereePersonalRoundResult *MatchmakeRefereePersonalRoundResult) Equals(o types.RVType) bool {
+	if _, ok := o.(*MatchmakeRefereePersonalRoundResult); !ok {
+		return false
+	}
 
-	if matchmakeRefereePersonalRoundResult.StructureVersion() != other.StructureVersion() {
+	other := o.(*MatchmakeRefereePersonalRoundResult)
+
+	if matchmakeRefereePersonalRoundResult.StructureVersion != other.StructureVersion {
 		return false
 	}
 
@@ -98,19 +112,19 @@ func (matchmakeRefereePersonalRoundResult *MatchmakeRefereePersonalRoundResult) 
 		return false
 	}
 
-	if matchmakeRefereePersonalRoundResult.PersonalRoundResultFlag != other.PersonalRoundResultFlag {
+	if !matchmakeRefereePersonalRoundResult.PersonalRoundResultFlag.Equals(other.PersonalRoundResultFlag) {
 		return false
 	}
 
-	if matchmakeRefereePersonalRoundResult.RoundWinLoss != other.RoundWinLoss {
+	if !matchmakeRefereePersonalRoundResult.RoundWinLoss.Equals(other.RoundWinLoss) {
 		return false
 	}
 
-	if matchmakeRefereePersonalRoundResult.RatingValueChange != other.RatingValueChange {
+	if !matchmakeRefereePersonalRoundResult.RatingValueChange.Equals(other.RatingValueChange) {
 		return false
 	}
 
-	if !bytes.Equal(matchmakeRefereePersonalRoundResult.Buffer, other.Buffer) {
+	if !matchmakeRefereePersonalRoundResult.Buffer.Equals(other.Buffer) {
 		return false
 	}
 
@@ -130,7 +144,7 @@ func (matchmakeRefereePersonalRoundResult *MatchmakeRefereePersonalRoundResult) 
 	var b strings.Builder
 
 	b.WriteString("MatchmakeRefereePersonalRoundResult{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, matchmakeRefereePersonalRoundResult.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, matchmakeRefereePersonalRoundResult.StructureVersion))
 	b.WriteString(fmt.Sprintf("%sPID: %d,\n", indentationValues, matchmakeRefereePersonalRoundResult.PID))
 	b.WriteString(fmt.Sprintf("%sPersonalRoundResultFlag: %d,\n", indentationValues, matchmakeRefereePersonalRoundResult.PersonalRoundResultFlag))
 	b.WriteString(fmt.Sprintf("%sRoundWinLoss: %d,\n", indentationValues, matchmakeRefereePersonalRoundResult.RoundWinLoss))

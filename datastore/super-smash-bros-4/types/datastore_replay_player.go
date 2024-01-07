@@ -5,68 +5,72 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // DataStoreReplayPlayer is a data structure used by the DataStore Super Smash Bros. 4 protocol
 type DataStoreReplayPlayer struct {
-	nex.Structure
-	Fighter     uint8
-	Health      uint8
-	WinningRate uint16
-	Color       uint8
-	Color2      uint8
-	PrincipalID uint32
-	Country     uint32
-	Region      uint8
-	Number      uint8
+	types.Structure
+	Fighter     *types.PrimitiveU8
+	Health      *types.PrimitiveU8
+	WinningRate *types.PrimitiveU16
+	Color       *types.PrimitiveU8
+	Color2      *types.PrimitiveU8
+	PrincipalID *types.PrimitiveU32
+	Country     *types.PrimitiveU32
+	Region      *types.PrimitiveU8
+	Number      *types.PrimitiveU8
 }
 
-// ExtractFromStream extracts a DataStoreReplayPlayer structure from a stream
-func (dataStoreReplayPlayer *DataStoreReplayPlayer) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the DataStoreReplayPlayer from the given readable
+func (dataStoreReplayPlayer *DataStoreReplayPlayer) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	dataStoreReplayPlayer.Fighter, err = stream.ReadUInt8()
+	if err = dataStoreReplayPlayer.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read DataStoreReplayPlayer header. %s", err.Error())
+	}
+
+	err = dataStoreReplayPlayer.Fighter.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreReplayPlayer.Fighter. %s", err.Error())
 	}
 
-	dataStoreReplayPlayer.Health, err = stream.ReadUInt8()
+	err = dataStoreReplayPlayer.Health.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreReplayPlayer.Health. %s", err.Error())
 	}
 
-	dataStoreReplayPlayer.WinningRate, err = stream.ReadUInt16LE()
+	err = dataStoreReplayPlayer.WinningRate.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreReplayPlayer.WinningRate. %s", err.Error())
 	}
 
-	dataStoreReplayPlayer.Color, err = stream.ReadUInt8()
+	err = dataStoreReplayPlayer.Color.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreReplayPlayer.Color. %s", err.Error())
 	}
 
-	dataStoreReplayPlayer.Color2, err = stream.ReadUInt8()
+	err = dataStoreReplayPlayer.Color2.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreReplayPlayer.Color2. %s", err.Error())
 	}
 
-	dataStoreReplayPlayer.PrincipalID, err = stream.ReadUInt32LE()
+	err = dataStoreReplayPlayer.PrincipalID.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreReplayPlayer.PrincipalID. %s", err.Error())
 	}
 
-	dataStoreReplayPlayer.Country, err = stream.ReadUInt32LE()
+	err = dataStoreReplayPlayer.Country.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreReplayPlayer.Country. %s", err.Error())
 	}
 
-	dataStoreReplayPlayer.Region, err = stream.ReadUInt8()
+	err = dataStoreReplayPlayer.Region.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreReplayPlayer.Region. %s", err.Error())
 	}
 
-	dataStoreReplayPlayer.Number, err = stream.ReadUInt8()
+	err = dataStoreReplayPlayer.Number.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreReplayPlayer.Number. %s", err.Error())
 	}
@@ -74,26 +78,32 @@ func (dataStoreReplayPlayer *DataStoreReplayPlayer) ExtractFromStream(stream *ne
 	return nil
 }
 
-// Bytes encodes the DataStoreReplayPlayer and returns a byte array
-func (dataStoreReplayPlayer *DataStoreReplayPlayer) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt8(dataStoreReplayPlayer.Fighter)
-	stream.WriteUInt8(dataStoreReplayPlayer.Health)
-	stream.WriteUInt16LE(dataStoreReplayPlayer.WinningRate)
-	stream.WriteUInt8(dataStoreReplayPlayer.Color)
-	stream.WriteUInt8(dataStoreReplayPlayer.Color2)
-	stream.WriteUInt32LE(dataStoreReplayPlayer.PrincipalID)
-	stream.WriteUInt32LE(dataStoreReplayPlayer.Country)
-	stream.WriteUInt8(dataStoreReplayPlayer.Region)
-	stream.WriteUInt8(dataStoreReplayPlayer.Number)
+// WriteTo writes the DataStoreReplayPlayer to the given writable
+func (dataStoreReplayPlayer *DataStoreReplayPlayer) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
 
-	return stream.Bytes()
+	dataStoreReplayPlayer.Fighter.WriteTo(contentWritable)
+	dataStoreReplayPlayer.Health.WriteTo(contentWritable)
+	dataStoreReplayPlayer.WinningRate.WriteTo(contentWritable)
+	dataStoreReplayPlayer.Color.WriteTo(contentWritable)
+	dataStoreReplayPlayer.Color2.WriteTo(contentWritable)
+	dataStoreReplayPlayer.PrincipalID.WriteTo(contentWritable)
+	dataStoreReplayPlayer.Country.WriteTo(contentWritable)
+	dataStoreReplayPlayer.Region.WriteTo(contentWritable)
+	dataStoreReplayPlayer.Number.WriteTo(contentWritable)
+
+	content := contentWritable.Bytes()
+
+	dataStoreReplayPlayer.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // Copy returns a new copied instance of DataStoreReplayPlayer
-func (dataStoreReplayPlayer *DataStoreReplayPlayer) Copy() nex.StructureInterface {
+func (dataStoreReplayPlayer *DataStoreReplayPlayer) Copy() types.RVType {
 	copied := NewDataStoreReplayPlayer()
 
-	copied.SetStructureVersion(dataStoreReplayPlayer.StructureVersion())
+	copied.StructureVersion = dataStoreReplayPlayer.StructureVersion
 
 	copied.Fighter = dataStoreReplayPlayer.Fighter
 	copied.Health = dataStoreReplayPlayer.Health
@@ -109,46 +119,50 @@ func (dataStoreReplayPlayer *DataStoreReplayPlayer) Copy() nex.StructureInterfac
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (dataStoreReplayPlayer *DataStoreReplayPlayer) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*DataStoreReplayPlayer)
-
-	if dataStoreReplayPlayer.StructureVersion() != other.StructureVersion() {
+func (dataStoreReplayPlayer *DataStoreReplayPlayer) Equals(o types.RVType) bool {
+	if _, ok := o.(*DataStoreReplayPlayer); !ok {
 		return false
 	}
 
-	if dataStoreReplayPlayer.Fighter != other.Fighter {
+	other := o.(*DataStoreReplayPlayer)
+
+	if dataStoreReplayPlayer.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if dataStoreReplayPlayer.Health != other.Health {
+	if !dataStoreReplayPlayer.Fighter.Equals(other.Fighter) {
 		return false
 	}
 
-	if dataStoreReplayPlayer.WinningRate != other.WinningRate {
+	if !dataStoreReplayPlayer.Health.Equals(other.Health) {
 		return false
 	}
 
-	if dataStoreReplayPlayer.Color != other.Color {
+	if !dataStoreReplayPlayer.WinningRate.Equals(other.WinningRate) {
 		return false
 	}
 
-	if dataStoreReplayPlayer.Color2 != other.Color2 {
+	if !dataStoreReplayPlayer.Color.Equals(other.Color) {
 		return false
 	}
 
-	if dataStoreReplayPlayer.PrincipalID != other.PrincipalID {
+	if !dataStoreReplayPlayer.Color2.Equals(other.Color2) {
 		return false
 	}
 
-	if dataStoreReplayPlayer.Country != other.Country {
+	if !dataStoreReplayPlayer.PrincipalID.Equals(other.PrincipalID) {
 		return false
 	}
 
-	if dataStoreReplayPlayer.Region != other.Region {
+	if !dataStoreReplayPlayer.Country.Equals(other.Country) {
 		return false
 	}
 
-	if dataStoreReplayPlayer.Number != other.Number {
+	if !dataStoreReplayPlayer.Region.Equals(other.Region) {
+		return false
+	}
+
+	if !dataStoreReplayPlayer.Number.Equals(other.Number) {
 		return false
 	}
 
@@ -168,7 +182,7 @@ func (dataStoreReplayPlayer *DataStoreReplayPlayer) FormatToString(indentationLe
 	var b strings.Builder
 
 	b.WriteString("DataStoreReplayPlayer{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, dataStoreReplayPlayer.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, dataStoreReplayPlayer.StructureVersion))
 	b.WriteString(fmt.Sprintf("%sFighter: %d,\n", indentationValues, dataStoreReplayPlayer.Fighter))
 	b.WriteString(fmt.Sprintf("%sHealth: %d,\n", indentationValues, dataStoreReplayPlayer.Health))
 	b.WriteString(fmt.Sprintf("%sWinningRate: %d,\n", indentationValues, dataStoreReplayPlayer.WinningRate))

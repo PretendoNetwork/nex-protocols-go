@@ -5,10 +5,12 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
 func (protocol *Protocol) handleRegisterEx(packet nex.PacketInterface) {
+	var err error
 	var errorCode uint32
 
 	if protocol.RegisterEx == nil {
@@ -22,9 +24,11 @@ func (protocol *Protocol) handleRegisterEx(packet nex.PacketInterface) {
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.server)
+	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
-	vecMyURLs, err := parametersStream.ReadListStationURL()
+	vecMyURLs := types.NewList[*types.StationURL]()
+	vecMyURLs.Type = types.NewStationURL("")
+	err = vecMyURLs.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.RegisterEx(fmt.Errorf("Failed to read vecMyURLs from parameters. %s", err.Error()), packet, callID, nil, nil)
 		if errorCode != 0 {
@@ -34,7 +38,8 @@ func (protocol *Protocol) handleRegisterEx(packet nex.PacketInterface) {
 		return
 	}
 
-	hCustomData, err := parametersStream.ReadDataHolder()
+	hCustomData := types.NewAnyDataHolder()
+	err = hCustomData.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.RegisterEx(fmt.Errorf("Failed to read hCustomData from parameters. %s", err.Error()), packet, callID, nil, nil)
 		if errorCode != 0 {

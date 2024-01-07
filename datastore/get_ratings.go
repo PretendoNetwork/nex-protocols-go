@@ -5,10 +5,12 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
 func (protocol *Protocol) handleGetRatings(packet nex.PacketInterface) {
+	var err error
 	var errorCode uint32
 
 	if protocol.GetRatings == nil {
@@ -22,9 +24,11 @@ func (protocol *Protocol) handleGetRatings(packet nex.PacketInterface) {
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.server)
+	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
-	dataIDs, err := parametersStream.ReadListUInt64LE()
+	dataIDs := types.NewList[*types.PrimitiveU64]()
+	dataIDs.Type = types.NewPrimitiveU64(0)
+	err = dataIDs.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.GetRatings(fmt.Errorf("Failed to read dataIDs from parameters. %s", err.Error()), packet, callID, nil, 0)
 		if errorCode != 0 {
@@ -34,7 +38,8 @@ func (protocol *Protocol) handleGetRatings(packet nex.PacketInterface) {
 		return
 	}
 
-	accessPassword, err := parametersStream.ReadUInt64LE()
+	accessPassword := types.NewPrimitiveU64(0)
+	err = accessPassword.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.GetRatings(fmt.Errorf("Failed to read accessPassword from parameters. %s", err.Error()), packet, callID, nil, 0)
 		if errorCode != 0 {

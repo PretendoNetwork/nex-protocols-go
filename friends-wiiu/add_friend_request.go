@@ -5,11 +5,13 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 	friends_wiiu_types "github.com/PretendoNetwork/nex-protocols-go/friends-wiiu/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
 func (protocol *Protocol) handleAddFriendRequest(packet nex.PacketInterface) {
+	var err error
 	var errorCode uint32
 
 	if protocol.AddFriendRequest == nil {
@@ -23,9 +25,10 @@ func (protocol *Protocol) handleAddFriendRequest(packet nex.PacketInterface) {
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.server)
+	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
-	pid, err := parametersStream.ReadPID()
+	pid := types.NewPID(0)
+	err = pid.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.AddFriendRequest(fmt.Errorf("Failed to read pid from parameters. %s", err.Error()), packet, callID, nil, 0, "", 0, "", nil, nil)
 		if errorCode != 0 {
@@ -35,7 +38,8 @@ func (protocol *Protocol) handleAddFriendRequest(packet nex.PacketInterface) {
 		return
 	}
 
-	unknown2, err := parametersStream.ReadUInt8()
+	unknown2 := types.NewPrimitiveU8(0)
+	err = unknown2.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.AddFriendRequest(fmt.Errorf("Failed to read unknown2 from parameters. %s", err.Error()), packet, callID, nil, 0, "", 0, "", nil, nil)
 		if errorCode != 0 {
@@ -45,7 +49,8 @@ func (protocol *Protocol) handleAddFriendRequest(packet nex.PacketInterface) {
 		return
 	}
 
-	message, err := parametersStream.ReadString()
+	message := types.NewString("")
+	err = message.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.AddFriendRequest(fmt.Errorf("Failed to read message from parameters. %s", err.Error()), packet, callID, nil, 0, "", 0, "", nil, nil)
 		if errorCode != 0 {
@@ -55,7 +60,8 @@ func (protocol *Protocol) handleAddFriendRequest(packet nex.PacketInterface) {
 		return
 	}
 
-	unknown4, err := parametersStream.ReadUInt8()
+	unknown4 := types.NewPrimitiveU8(0)
+	err = unknown4.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.AddFriendRequest(fmt.Errorf("Failed to read unknown4 from parameters. %s", err.Error()), packet, callID, nil, 0, "", 0, "", nil, nil)
 		if errorCode != 0 {
@@ -65,7 +71,8 @@ func (protocol *Protocol) handleAddFriendRequest(packet nex.PacketInterface) {
 		return
 	}
 
-	unknown5, err := parametersStream.ReadString()
+	unknown5 := types.NewString("")
+	err = unknown5.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.AddFriendRequest(fmt.Errorf("Failed to read unknown5 from parameters. %s", err.Error()), packet, callID, nil, 0, "", 0, "", nil, nil)
 		if errorCode != 0 {
@@ -75,7 +82,8 @@ func (protocol *Protocol) handleAddFriendRequest(packet nex.PacketInterface) {
 		return
 	}
 
-	gameKey, err := nex.StreamReadStructure(parametersStream, friends_wiiu_types.NewGameKey())
+	gameKey := friends_wiiu_types.NewGameKey()
+	err = gameKey.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.AddFriendRequest(fmt.Errorf("Failed to read gameKey from parameters. %s", err.Error()), packet, callID, nil, 0, "", 0, "", nil, nil)
 		if errorCode != 0 {
@@ -85,7 +93,8 @@ func (protocol *Protocol) handleAddFriendRequest(packet nex.PacketInterface) {
 		return
 	}
 
-	unknown6, err := parametersStream.ReadDateTime()
+	unknown6 := types.NewDateTime(0)
+	err = unknown6.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.AddFriendRequest(fmt.Errorf("Failed to read unknown6 from parameters. %s", err.Error()), packet, callID, nil, 0, "", 0, "", nil, nil)
 		if errorCode != 0 {

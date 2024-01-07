@@ -6,67 +6,72 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // Ranking2GetParam holds data for the Ranking 2  protocol
 type Ranking2GetParam struct {
-	nex.Structure
-	NexUniqueID        uint64
-	PrincipalID        *nex.PID
-	Category           uint32
-	Offset             uint32
-	Length             uint32
-	SortFlags          uint32
-	OptionFlags        uint32
-	Mode               uint8
-	NumSeasonsToGoBack uint8
+	types.Structure
+	NexUniqueID        *types.PrimitiveU64
+	PrincipalID        *types.PID
+	Category           *types.PrimitiveU32
+	Offset             *types.PrimitiveU32
+	Length             *types.PrimitiveU32
+	SortFlags          *types.PrimitiveU32
+	OptionFlags        *types.PrimitiveU32
+	Mode               *types.PrimitiveU8
+	NumSeasonsToGoBack *types.PrimitiveU8
 }
 
-// ExtractFromStream extracts a Ranking2GetParam structure from a stream
-func (ranking2GetParam *Ranking2GetParam) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the Ranking2GetParam from the given readable
+func (ranking2GetParam *Ranking2GetParam) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	ranking2GetParam.NexUniqueID, err = stream.ReadUInt64LE()
+	if err = ranking2GetParam.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read Ranking2GetParam header. %s", err.Error())
+	}
+
+	err = ranking2GetParam.NexUniqueID.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract Ranking2GetParam.NexUniqueID from stream. %s", err.Error())
 	}
 
-	ranking2GetParam.PrincipalID, err = stream.ReadPID()
+	err = ranking2GetParam.PrincipalID.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract Ranking2GetParam.PrincipalID from stream. %s", err.Error())
 	}
 
-	ranking2GetParam.Category, err = stream.ReadUInt32LE()
+	err = ranking2GetParam.Category.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract Ranking2GetParam.Category from stream. %s", err.Error())
 	}
 
-	ranking2GetParam.Offset, err = stream.ReadUInt32LE()
+	err = ranking2GetParam.Offset.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract Ranking2GetParam.Offset from stream. %s", err.Error())
 	}
 
-	ranking2GetParam.Length, err = stream.ReadUInt32LE()
+	err = ranking2GetParam.Length.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract Ranking2GetParam.Length from stream. %s", err.Error())
 	}
 
-	ranking2GetParam.SortFlags, err = stream.ReadUInt32LE()
+	err = ranking2GetParam.SortFlags.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract Ranking2GetParam.SortFlags from stream. %s", err.Error())
 	}
 
-	ranking2GetParam.OptionFlags, err = stream.ReadUInt32LE()
+	err = ranking2GetParam.OptionFlags.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract Ranking2GetParam.OptionFlags from stream. %s", err.Error())
 	}
 
-	ranking2GetParam.Mode, err = stream.ReadUInt8()
+	err = ranking2GetParam.Mode.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract Ranking2GetParam.Mode from stream. %s", err.Error())
 	}
 
-	ranking2GetParam.NumSeasonsToGoBack, err = stream.ReadUInt8()
+	err = ranking2GetParam.NumSeasonsToGoBack.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract Ranking2GetParam.NumSeasonsToGoBack from stream. %s", err.Error())
 	}
@@ -74,26 +79,32 @@ func (ranking2GetParam *Ranking2GetParam) ExtractFromStream(stream *nex.StreamIn
 	return nil
 }
 
-// Bytes encodes the Ranking2GetParam and returns a byte array
-func (ranking2GetParam *Ranking2GetParam) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt64LE(ranking2GetParam.NexUniqueID)
-	stream.WritePID(ranking2GetParam.PrincipalID)
-	stream.WriteUInt32LE(ranking2GetParam.Category)
-	stream.WriteUInt32LE(ranking2GetParam.Offset)
-	stream.WriteUInt32LE(ranking2GetParam.Length)
-	stream.WriteUInt32LE(ranking2GetParam.SortFlags)
-	stream.WriteUInt32LE(ranking2GetParam.OptionFlags)
-	stream.WriteUInt8(ranking2GetParam.Mode)
-	stream.WriteUInt8(ranking2GetParam.NumSeasonsToGoBack)
+// WriteTo writes the Ranking2GetParam to the given writable
+func (ranking2GetParam *Ranking2GetParam) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
 
-	return stream.Bytes()
+	ranking2GetParam.NexUniqueID.WriteTo(contentWritable)
+	ranking2GetParam.PrincipalID.WriteTo(contentWritable)
+	ranking2GetParam.Category.WriteTo(contentWritable)
+	ranking2GetParam.Offset.WriteTo(contentWritable)
+	ranking2GetParam.Length.WriteTo(contentWritable)
+	ranking2GetParam.SortFlags.WriteTo(contentWritable)
+	ranking2GetParam.OptionFlags.WriteTo(contentWritable)
+	ranking2GetParam.Mode.WriteTo(contentWritable)
+	ranking2GetParam.NumSeasonsToGoBack.WriteTo(contentWritable)
+
+	content := contentWritable.Bytes()
+
+	ranking2GetParam.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // Copy returns a new copied instance of Ranking2GetParam
-func (ranking2GetParam *Ranking2GetParam) Copy() nex.StructureInterface {
+func (ranking2GetParam *Ranking2GetParam) Copy() types.RVType {
 	copied := NewRanking2GetParam()
 
-	copied.SetStructureVersion(ranking2GetParam.StructureVersion())
+	copied.StructureVersion = ranking2GetParam.StructureVersion
 
 	copied.NexUniqueID = ranking2GetParam.NexUniqueID
 	copied.PrincipalID = ranking2GetParam.PrincipalID.Copy()
@@ -108,14 +119,18 @@ func (ranking2GetParam *Ranking2GetParam) Copy() nex.StructureInterface {
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (ranking2GetParam *Ranking2GetParam) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*Ranking2GetParam)
-
-	if ranking2GetParam.StructureVersion() != other.StructureVersion() {
+func (ranking2GetParam *Ranking2GetParam) Equals(o types.RVType) bool {
+	if _, ok := o.(*Ranking2GetParam); !ok {
 		return false
 	}
 
-	if ranking2GetParam.NexUniqueID != other.NexUniqueID {
+	other := o.(*Ranking2GetParam)
+
+	if ranking2GetParam.StructureVersion != other.StructureVersion {
+		return false
+	}
+
+	if !ranking2GetParam.NexUniqueID.Equals(other.NexUniqueID) {
 		return false
 	}
 
@@ -123,31 +138,31 @@ func (ranking2GetParam *Ranking2GetParam) Equals(structure nex.StructureInterfac
 		return false
 	}
 
-	if ranking2GetParam.Category != other.Category {
+	if !ranking2GetParam.Category.Equals(other.Category) {
 		return false
 	}
 
-	if ranking2GetParam.Offset != other.Offset {
+	if !ranking2GetParam.Offset.Equals(other.Offset) {
 		return false
 	}
 
-	if ranking2GetParam.Length != other.Length {
+	if !ranking2GetParam.Length.Equals(other.Length) {
 		return false
 	}
 
-	if ranking2GetParam.SortFlags != other.SortFlags {
+	if !ranking2GetParam.SortFlags.Equals(other.SortFlags) {
 		return false
 	}
 
-	if ranking2GetParam.OptionFlags != other.OptionFlags {
+	if !ranking2GetParam.OptionFlags.Equals(other.OptionFlags) {
 		return false
 	}
 
-	if ranking2GetParam.Mode != other.Mode {
+	if !ranking2GetParam.Mode.Equals(other.Mode) {
 		return false
 	}
 
-	if ranking2GetParam.NumSeasonsToGoBack != other.NumSeasonsToGoBack {
+	if !ranking2GetParam.NumSeasonsToGoBack.Equals(other.NumSeasonsToGoBack) {
 		return false
 	}
 
@@ -167,7 +182,7 @@ func (ranking2GetParam *Ranking2GetParam) FormatToString(indentationLevel int) s
 	var b strings.Builder
 
 	b.WriteString("Ranking2GetParam{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, ranking2GetParam.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, ranking2GetParam.StructureVersion))
 	b.WriteString(fmt.Sprintf("%sNexUniqueID: %d,\n", indentationValues, ranking2GetParam.NexUniqueID))
 	b.WriteString(fmt.Sprintf("%sPrincipalID: %s,\n", indentationValues, ranking2GetParam.PrincipalID.FormatToString(indentationLevel+1)))
 	b.WriteString(fmt.Sprintf("%sCategory: %d,\n", indentationValues, ranking2GetParam.Category))

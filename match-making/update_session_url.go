@@ -5,10 +5,12 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
 func (protocol *Protocol) handleUpdateSessionURL(packet nex.PacketInterface) {
+	var err error
 	var errorCode uint32
 
 	if protocol.UpdateSessionURL == nil {
@@ -22,9 +24,10 @@ func (protocol *Protocol) handleUpdateSessionURL(packet nex.PacketInterface) {
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.server)
+	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
-	idGathering, err := parametersStream.ReadUInt32LE()
+	idGathering := types.NewPrimitiveU32(0)
+	err = idGathering.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.UpdateSessionURL(fmt.Errorf("Failed to read idGathering from parameters. %s", err.Error()), packet, callID, 0, "")
 		if errorCode != 0 {
@@ -34,7 +37,8 @@ func (protocol *Protocol) handleUpdateSessionURL(packet nex.PacketInterface) {
 		return
 	}
 
-	strURL, err := parametersStream.ReadString()
+	strURL := types.NewString("")
+	err = strURL.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.UpdateSessionURL(fmt.Errorf("Failed to read strURL from parameters. %s", err.Error()), packet, callID, 0, "")
 		if errorCode != 0 {

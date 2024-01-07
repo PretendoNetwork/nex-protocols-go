@@ -6,68 +6,73 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // UserMessage is a data structure used by the Message Delivery protocol
 type UserMessage struct {
-	nex.Structure
-	*nex.Data
-	UIID             uint32
-	UIParentID       uint32
-	PIDSender        *nex.PID
-	Receptiontime    *nex.DateTime
-	UILifeTime       uint32
-	UIFlags          uint32
+	types.Structure
+	*types.Data
+	UIID             *types.PrimitiveU32
+	UIParentID       *types.PrimitiveU32
+	PIDSender        *types.PID
+	Receptiontime    *types.DateTime
+	UILifeTime       *types.PrimitiveU32
+	UIFlags          *types.PrimitiveU32
 	StrSubject       string
 	StrSender        string
 	MessageRecipient *MessageRecipient
 }
 
-// ExtractFromStream extracts a UserMessage structure from a stream
-func (userMessage *UserMessage) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the UserMessage from the given readable
+func (userMessage *UserMessage) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	userMessage.UIID, err = stream.ReadUInt32LE()
+	if err = userMessage.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read UserMessage header. %s", err.Error())
+	}
+
+	err = userMessage.UIID.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract UserMessage.UIID from stream. %s", err.Error())
 	}
 
-	userMessage.UIParentID, err = stream.ReadUInt32LE()
+	err = userMessage.UIParentID.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract UserMessage.UIParentID from stream. %s", err.Error())
 	}
 
-	userMessage.PIDSender, err = stream.ReadPID()
+	err = userMessage.PIDSender.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract UserMessage.PIDSender from stream. %s", err.Error())
 	}
 
-	userMessage.Receptiontime, err = stream.ReadDateTime()
+	err = userMessage.Receptiontime.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract UserMessage.Receptiontime from stream. %s", err.Error())
 	}
 
-	userMessage.UILifeTime, err = stream.ReadUInt32LE()
+	err = userMessage.UILifeTime.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract UserMessage.UILifeTime from stream. %s", err.Error())
 	}
 
-	userMessage.UIFlags, err = stream.ReadUInt32LE()
+	err = userMessage.UIFlags.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract UserMessage.UIFlags from stream. %s", err.Error())
 	}
 
-	userMessage.StrSubject, err = stream.ReadString()
+	err = userMessage.StrSubject.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract UserMessage.StrSubject from stream. %s", err.Error())
 	}
 
-	userMessage.StrSender, err = stream.ReadString()
+	err = userMessage.StrSender.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract UserMessage.StrSender from stream. %s", err.Error())
 	}
 
-	userMessage.MessageRecipient, err = nex.StreamReadStructure(stream, NewMessageRecipient())
+	err = userMessage.MessageRecipient.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract UserMessage.MessageRecipient from stream. %s", err.Error())
 	}
@@ -76,13 +81,12 @@ func (userMessage *UserMessage) ExtractFromStream(stream *nex.StreamIn) error {
 }
 
 // Copy returns a new copied instance of UserMessage
-func (userMessage *UserMessage) Copy() nex.StructureInterface {
+func (userMessage *UserMessage) Copy() types.RVType {
 	copied := NewUserMessage()
 
-	copied.SetStructureVersion(userMessage.StructureVersion())
+	copied.StructureVersion = userMessage.StructureVersion
 
-	copied.Data = userMessage.Data.Copy().(*nex.Data)
-	copied.SetParentType(copied.Data)
+	copied.Data = userMessage.Data.Copy().(*types.Data)
 
 	copied.UIID = userMessage.UIID
 	copied.UIParentID = userMessage.UIParentID
@@ -98,10 +102,14 @@ func (userMessage *UserMessage) Copy() nex.StructureInterface {
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (userMessage *UserMessage) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*UserMessage)
+func (userMessage *UserMessage) Equals(o types.RVType) bool {
+	if _, ok := o.(*UserMessage); !ok {
+		return false
+	}
 
-	if userMessage.StructureVersion() != other.StructureVersion() {
+	other := o.(*UserMessage)
+
+	if userMessage.StructureVersion != other.StructureVersion {
 		return false
 	}
 
@@ -109,11 +117,11 @@ func (userMessage *UserMessage) Equals(structure nex.StructureInterface) bool {
 		return false
 	}
 
-	if userMessage.UIID != other.UIID {
+	if !userMessage.UIID.Equals(other.UIID) {
 		return false
 	}
 
-	if userMessage.UIParentID != other.UIParentID {
+	if !userMessage.UIParentID.Equals(other.UIParentID) {
 		return false
 	}
 
@@ -125,19 +133,19 @@ func (userMessage *UserMessage) Equals(structure nex.StructureInterface) bool {
 		return false
 	}
 
-	if userMessage.UILifeTime != other.UILifeTime {
+	if !userMessage.UILifeTime.Equals(other.UILifeTime) {
 		return false
 	}
 
-	if userMessage.UIFlags != other.UIFlags {
+	if !userMessage.UIFlags.Equals(other.UIFlags) {
 		return false
 	}
 
-	if userMessage.StrSubject != other.StrSubject {
+	if !userMessage.StrSubject.Equals(other.StrSubject) {
 		return false
 	}
 
-	if userMessage.StrSender != other.StrSender {
+	if !userMessage.StrSender.Equals(other.StrSender) {
 		return false
 	}
 
@@ -162,7 +170,7 @@ func (userMessage *UserMessage) FormatToString(indentationLevel int) string {
 
 	b.WriteString("UserMessage{\n")
 	b.WriteString(fmt.Sprintf("%sParentType: %s,\n", indentationValues, userMessage.ParentType().FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, userMessage.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, userMessage.StructureVersion))
 	b.WriteString(fmt.Sprintf("%sUIID: %d,\n", indentationValues, userMessage.UIID))
 	b.WriteString(fmt.Sprintf("%sUIParentID: %d,\n", indentationValues, userMessage.UIParentID))
 	b.WriteString(fmt.Sprintf("%sPIDSender: %s,\n", indentationValues, userMessage.PIDSender.FormatToString(indentationLevel+1)))
@@ -192,7 +200,7 @@ func (userMessage *UserMessage) FormatToString(indentationLevel int) string {
 // NewUserMessage returns a new UserMessage
 func NewUserMessage() *UserMessage {
 	userMessage := &UserMessage{}
-	userMessage.Data = nex.NewData()
+	userMessage.Data = types.NewData()
 	userMessage.SetParentType(userMessage.Data)
 
 	return userMessage

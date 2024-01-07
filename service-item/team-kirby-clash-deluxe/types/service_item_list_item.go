@@ -6,44 +6,49 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // ServiceItemListItem holds data for the Service Item (Team Kirby Clash Deluxe) protocol
 type ServiceItemListItem struct {
-	nex.Structure
+	types.Structure
 	ItemCode            string
 	RegularPrice        *ServiceItemAmount
-	TaxExcluded         bool
-	InitialPurchaseOnly bool
+	TaxExcluded         *types.PrimitiveBool
+	InitialPurchaseOnly *types.PrimitiveBool
 	Limitation          *ServiceItemLimitation
 	Attributes          []*ServiceItemAttribute
 }
 
-// ExtractFromStream extracts a ServiceItemListItem structure from a stream
-func (serviceItemListItem *ServiceItemListItem) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the ServiceItemListItem from the given readable
+func (serviceItemListItem *ServiceItemListItem) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	serviceItemListItem.ItemCode, err = stream.ReadString()
+	if err = serviceItemListItem.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read ServiceItemListItem header. %s", err.Error())
+	}
+
+	err = serviceItemListItem.ItemCode.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemListItem.ItemCode from stream. %s", err.Error())
 	}
 
-	serviceItemListItem.RegularPrice, err = nex.StreamReadStructure(stream, NewServiceItemAmount())
+	err = serviceItemListItem.RegularPrice.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemListItem.RegularPrice from stream. %s", err.Error())
 	}
 
-	serviceItemListItem.TaxExcluded, err = stream.ReadBool()
+	err = serviceItemListItem.TaxExcluded.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemListItem.TaxExcluded from stream. %s", err.Error())
 	}
 
-	serviceItemListItem.InitialPurchaseOnly, err = stream.ReadBool()
+	err = serviceItemListItem.InitialPurchaseOnly.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemListItem.InitialPurchaseOnly from stream. %s", err.Error())
 	}
 
-	serviceItemListItem.Limitation, err = nex.StreamReadStructure(stream, NewServiceItemLimitation())
+	err = serviceItemListItem.Limitation.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemListItem.Limitation from stream. %s", err.Error())
 	}
@@ -58,23 +63,29 @@ func (serviceItemListItem *ServiceItemListItem) ExtractFromStream(stream *nex.St
 	return nil
 }
 
-// Bytes encodes the ServiceItemListItem and returns a byte array
-func (serviceItemListItem *ServiceItemListItem) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteString(serviceItemListItem.ItemCode)
-	stream.WriteStructure(serviceItemListItem.RegularPrice)
-	stream.WriteBool(serviceItemListItem.TaxExcluded)
-	stream.WriteBool(serviceItemListItem.InitialPurchaseOnly)
-	stream.WriteStructure(serviceItemListItem.Limitation)
-	nex.StreamWriteListStructure(stream, serviceItemListItem.Attributes)
+// WriteTo writes the ServiceItemListItem to the given writable
+func (serviceItemListItem *ServiceItemListItem) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
 
-	return stream.Bytes()
+	serviceItemListItem.ItemCode.WriteTo(contentWritable)
+	serviceItemListItem.RegularPrice.WriteTo(contentWritable)
+	serviceItemListItem.TaxExcluded.WriteTo(contentWritable)
+	serviceItemListItem.InitialPurchaseOnly.WriteTo(contentWritable)
+	serviceItemListItem.Limitation.WriteTo(contentWritable)
+	serviceItemListItem.Attributes.WriteTo(contentWritable)
+
+	content := contentWritable.Bytes()
+
+	serviceItemListItem.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // Copy returns a new copied instance of ServiceItemListItem
-func (serviceItemListItem *ServiceItemListItem) Copy() nex.StructureInterface {
+func (serviceItemListItem *ServiceItemListItem) Copy() types.RVType {
 	copied := NewServiceItemListItem()
 
-	copied.SetStructureVersion(serviceItemListItem.StructureVersion())
+	copied.StructureVersion = serviceItemListItem.StructureVersion
 
 	copied.ItemCode = serviceItemListItem.ItemCode
 	copied.RegularPrice = serviceItemListItem.RegularPrice.Copy().(*ServiceItemAmount)
@@ -91,14 +102,18 @@ func (serviceItemListItem *ServiceItemListItem) Copy() nex.StructureInterface {
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (serviceItemListItem *ServiceItemListItem) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*ServiceItemListItem)
-
-	if serviceItemListItem.StructureVersion() != other.StructureVersion() {
+func (serviceItemListItem *ServiceItemListItem) Equals(o types.RVType) bool {
+	if _, ok := o.(*ServiceItemListItem); !ok {
 		return false
 	}
 
-	if serviceItemListItem.ItemCode != other.ItemCode {
+	other := o.(*ServiceItemListItem)
+
+	if serviceItemListItem.StructureVersion != other.StructureVersion {
+		return false
+	}
+
+	if !serviceItemListItem.ItemCode.Equals(other.ItemCode) {
 		return false
 	}
 
@@ -106,11 +121,11 @@ func (serviceItemListItem *ServiceItemListItem) Equals(structure nex.StructureIn
 		return false
 	}
 
-	if serviceItemListItem.TaxExcluded != other.TaxExcluded {
+	if !serviceItemListItem.TaxExcluded.Equals(other.TaxExcluded) {
 		return false
 	}
 
-	if serviceItemListItem.InitialPurchaseOnly != other.InitialPurchaseOnly {
+	if !serviceItemListItem.InitialPurchaseOnly.Equals(other.InitialPurchaseOnly) {
 		return false
 	}
 
@@ -145,7 +160,7 @@ func (serviceItemListItem *ServiceItemListItem) FormatToString(indentationLevel 
 	var b strings.Builder
 
 	b.WriteString("ServiceItemListItem{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, serviceItemListItem.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, serviceItemListItem.StructureVersion))
 	b.WriteString(fmt.Sprintf("%sItemCode: %q,\n", indentationValues, serviceItemListItem.ItemCode))
 
 	if serviceItemListItem.RegularPrice != nil {

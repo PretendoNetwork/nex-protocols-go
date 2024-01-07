@@ -6,25 +6,30 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // ServiceItemGetBalanceParam holds data for the Service Item (Wii Sports Club) protocol
 type ServiceItemGetBalanceParam struct {
-	nex.Structure
+	types.Structure
 	Language string
 	TitleID  string
 }
 
-// ExtractFromStream extracts a ServiceItemGetBalanceParam structure from a stream
-func (serviceItemGetBalanceParam *ServiceItemGetBalanceParam) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the ServiceItemGetBalanceParam from the given readable
+func (serviceItemGetBalanceParam *ServiceItemGetBalanceParam) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	serviceItemGetBalanceParam.Language, err = stream.ReadString()
+	if err = serviceItemGetBalanceParam.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read ServiceItemGetBalanceParam header. %s", err.Error())
+	}
+
+	err = serviceItemGetBalanceParam.Language.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemGetBalanceParam.Language from stream. %s", err.Error())
 	}
 
-	serviceItemGetBalanceParam.TitleID, err = stream.ReadString()
+	err = serviceItemGetBalanceParam.TitleID.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemGetBalanceParam.TitleID from stream. %s", err.Error())
 	}
@@ -32,19 +37,25 @@ func (serviceItemGetBalanceParam *ServiceItemGetBalanceParam) ExtractFromStream(
 	return nil
 }
 
-// Bytes encodes the ServiceItemGetBalanceParam and returns a byte array
-func (serviceItemGetBalanceParam *ServiceItemGetBalanceParam) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteString(serviceItemGetBalanceParam.Language)
-	stream.WriteString(serviceItemGetBalanceParam.TitleID)
+// WriteTo writes the ServiceItemGetBalanceParam to the given writable
+func (serviceItemGetBalanceParam *ServiceItemGetBalanceParam) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
 
-	return stream.Bytes()
+	serviceItemGetBalanceParam.Language.WriteTo(contentWritable)
+	serviceItemGetBalanceParam.TitleID.WriteTo(contentWritable)
+
+	content := contentWritable.Bytes()
+
+	serviceItemGetBalanceParam.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // Copy returns a new copied instance of ServiceItemGetBalanceParam
-func (serviceItemGetBalanceParam *ServiceItemGetBalanceParam) Copy() nex.StructureInterface {
+func (serviceItemGetBalanceParam *ServiceItemGetBalanceParam) Copy() types.RVType {
 	copied := NewServiceItemGetBalanceParam()
 
-	copied.SetStructureVersion(serviceItemGetBalanceParam.StructureVersion())
+	copied.StructureVersion = serviceItemGetBalanceParam.StructureVersion
 
 	copied.Language = serviceItemGetBalanceParam.Language
 	copied.TitleID = serviceItemGetBalanceParam.TitleID
@@ -53,18 +64,22 @@ func (serviceItemGetBalanceParam *ServiceItemGetBalanceParam) Copy() nex.Structu
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (serviceItemGetBalanceParam *ServiceItemGetBalanceParam) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*ServiceItemGetBalanceParam)
-
-	if serviceItemGetBalanceParam.StructureVersion() != other.StructureVersion() {
+func (serviceItemGetBalanceParam *ServiceItemGetBalanceParam) Equals(o types.RVType) bool {
+	if _, ok := o.(*ServiceItemGetBalanceParam); !ok {
 		return false
 	}
 
-	if serviceItemGetBalanceParam.Language != other.Language {
+	other := o.(*ServiceItemGetBalanceParam)
+
+	if serviceItemGetBalanceParam.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if serviceItemGetBalanceParam.TitleID != other.TitleID {
+	if !serviceItemGetBalanceParam.Language.Equals(other.Language) {
+		return false
+	}
+
+	if !serviceItemGetBalanceParam.TitleID.Equals(other.TitleID) {
 		return false
 	}
 
@@ -84,7 +99,7 @@ func (serviceItemGetBalanceParam *ServiceItemGetBalanceParam) FormatToString(ind
 	var b strings.Builder
 
 	b.WriteString("ServiceItemGetBalanceParam{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, serviceItemGetBalanceParam.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, serviceItemGetBalanceParam.StructureVersion))
 	b.WriteString(fmt.Sprintf("%sLanguage: %q,\n", indentationValues, serviceItemGetBalanceParam.Language))
 	b.WriteString(fmt.Sprintf("%sTitleID: %q,\n", indentationValues, serviceItemGetBalanceParam.TitleID))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))

@@ -9,31 +9,36 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // DeletionEntry holds an entry for a deletion
 type DeletionEntry struct {
-	nex.Structure
-	IDGathering uint32
-	PID         *nex.PID
-	UIReason    uint32
+	types.Structure
+	IDGathering *types.PrimitiveU32
+	PID         *types.PID
+	UIReason    *types.PrimitiveU32
 }
 
-// ExtractFromStream extracts a DeletionEntry structure from a stream
-func (deletionEntry *DeletionEntry) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the DeletionEntry from the given readable
+func (deletionEntry *DeletionEntry) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	deletionEntry.IDGathering, err = stream.ReadUInt32LE()
+	if err = deletionEntry.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read DeletionEntry header. %s", err.Error())
+	}
+
+	err = deletionEntry.IDGathering.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DeletionEntry.IDGathering. %s", err.Error())
 	}
 
-	deletionEntry.PID, err = stream.ReadPID()
+	err = deletionEntry.PID.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DeletionEntry.PID. %s", err.Error())
 	}
 
-	deletionEntry.UIReason, err = stream.ReadUInt32LE()
+	err = deletionEntry.UIReason.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DeletionEntry.UIReason. %s", err.Error())
 	}
@@ -41,20 +46,26 @@ func (deletionEntry *DeletionEntry) ExtractFromStream(stream *nex.StreamIn) erro
 	return nil
 }
 
-// Bytes encodes the DeletionEntry and returns a byte array
-func (deletionEntry *DeletionEntry) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt32LE(deletionEntry.IDGathering)
-	stream.WritePID(deletionEntry.PID)
-	stream.WriteUInt32LE(deletionEntry.UIReason)
+// WriteTo writes the DeletionEntry to the given writable
+func (deletionEntry *DeletionEntry) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
 
-	return stream.Bytes()
+	deletionEntry.IDGathering.WriteTo(contentWritable)
+	deletionEntry.PID.WriteTo(contentWritable)
+	deletionEntry.UIReason.WriteTo(contentWritable)
+
+	content := contentWritable.Bytes()
+
+	deletionEntry.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // Copy returns a new copied instance of DeletionEntry
-func (deletionEntry *DeletionEntry) Copy() nex.StructureInterface {
+func (deletionEntry *DeletionEntry) Copy() types.RVType {
 	copied := NewDeletionEntry()
 
-	copied.SetStructureVersion(deletionEntry.StructureVersion())
+	copied.StructureVersion = deletionEntry.StructureVersion
 
 	copied.IDGathering = deletionEntry.IDGathering
 	copied.PID = deletionEntry.PID.Copy()
@@ -64,14 +75,18 @@ func (deletionEntry *DeletionEntry) Copy() nex.StructureInterface {
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (deletionEntry *DeletionEntry) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*DeletionEntry)
-
-	if deletionEntry.StructureVersion() != other.StructureVersion() {
+func (deletionEntry *DeletionEntry) Equals(o types.RVType) bool {
+	if _, ok := o.(*DeletionEntry); !ok {
 		return false
 	}
 
-	if deletionEntry.IDGathering != other.IDGathering {
+	other := o.(*DeletionEntry)
+
+	if deletionEntry.StructureVersion != other.StructureVersion {
+		return false
+	}
+
+	if !deletionEntry.IDGathering.Equals(other.IDGathering) {
 		return false
 	}
 
@@ -79,7 +94,7 @@ func (deletionEntry *DeletionEntry) Equals(structure nex.StructureInterface) boo
 		return false
 	}
 
-	if deletionEntry.UIReason != other.UIReason {
+	if !deletionEntry.UIReason.Equals(other.UIReason) {
 		return false
 	}
 
@@ -99,7 +114,7 @@ func (deletionEntry *DeletionEntry) FormatToString(indentationLevel int) string 
 	var b strings.Builder
 
 	b.WriteString("DeletionEntry{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, deletionEntry.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, deletionEntry.StructureVersion))
 	b.WriteString(fmt.Sprintf("%sIDGathering: %d,\n", indentationValues, deletionEntry.IDGathering))
 	b.WriteString(fmt.Sprintf("%sPID: %s,\n", indentationValues, deletionEntry.PID.FormatToString(indentationLevel+1)))
 	b.WriteString(fmt.Sprintf("%sUIReason: %d\n", indentationValues, deletionEntry.UIReason))

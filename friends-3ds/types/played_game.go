@@ -6,28 +6,35 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // PlayedGame is a data structure used by the Friends 3DS protocol to hold information about a friends Mii
 type PlayedGame struct {
-	nex.Structure
+	types.Structure
 	GameKey *GameKey
-	Unknown *nex.DateTime
+	Unknown *types.DateTime
 }
 
-// Bytes encodes the PlayedGame and returns a byte array
-func (playedGame *PlayedGame) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteStructure(playedGame.GameKey)
-	stream.WriteDateTime(playedGame.Unknown)
+// WriteTo writes the PlayedGame to the given writable
+func (playedGame *PlayedGame) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
 
-	return stream.Bytes()
+	playedGame.GameKey.WriteTo(contentWritable)
+	playedGame.Unknown.WriteTo(contentWritable)
+
+	content := contentWritable.Bytes()
+
+	playedGame.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // Copy returns a new copied instance of PlayedGame
-func (playedGame *PlayedGame) Copy() nex.StructureInterface {
+func (playedGame *PlayedGame) Copy() types.RVType {
 	copied := NewPlayedGame()
 
-	copied.SetStructureVersion(playedGame.StructureVersion())
+	copied.StructureVersion = playedGame.StructureVersion
 
 	copied.GameKey = playedGame.GameKey.Copy().(*GameKey)
 	copied.Unknown = playedGame.Unknown.Copy()
@@ -36,10 +43,14 @@ func (playedGame *PlayedGame) Copy() nex.StructureInterface {
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (playedGame *PlayedGame) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*PlayedGame)
+func (playedGame *PlayedGame) Equals(o types.RVType) bool {
+	if _, ok := o.(*PlayedGame); !ok {
+		return false
+	}
 
-	if playedGame.StructureVersion() != other.StructureVersion() {
+	other := o.(*PlayedGame)
+
+	if playedGame.StructureVersion != other.StructureVersion {
 		return false
 	}
 
@@ -67,7 +78,7 @@ func (playedGame *PlayedGame) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("PlayedGame{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, playedGame.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, playedGame.StructureVersion))
 
 	if playedGame.Unknown != nil {
 		b.WriteString(fmt.Sprintf("%sGameKey: %s\n", indentationValues, playedGame.GameKey.FormatToString(indentationLevel+1)))

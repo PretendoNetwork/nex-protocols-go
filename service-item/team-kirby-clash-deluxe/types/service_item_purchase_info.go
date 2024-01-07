@@ -6,37 +6,42 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // ServiceItemPurchaseInfo holds data for the Service Item (Team Kirby Clash Deluxe) protocol
 type ServiceItemPurchaseInfo struct {
-	nex.Structure
+	types.Structure
 	TransactionID    string
 	ExtTransactionID string
 	ItemCode         string
 	PostBalance      *ServiceItemAmount
 }
 
-// ExtractFromStream extracts a ServiceItemPurchaseInfo structure from a stream
-func (serviceItemPurchaseInfo *ServiceItemPurchaseInfo) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the ServiceItemPurchaseInfo from the given readable
+func (serviceItemPurchaseInfo *ServiceItemPurchaseInfo) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	serviceItemPurchaseInfo.TransactionID, err = stream.ReadString()
+	if err = serviceItemPurchaseInfo.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read ServiceItemPurchaseInfo header. %s", err.Error())
+	}
+
+	err = serviceItemPurchaseInfo.TransactionID.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemPurchaseInfo.TransactionID from stream. %s", err.Error())
 	}
 
-	serviceItemPurchaseInfo.ExtTransactionID, err = stream.ReadString()
+	err = serviceItemPurchaseInfo.ExtTransactionID.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemPurchaseInfo.ExtTransactionID from stream. %s", err.Error())
 	}
 
-	serviceItemPurchaseInfo.ItemCode, err = stream.ReadString()
+	err = serviceItemPurchaseInfo.ItemCode.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemPurchaseInfo.ItemCode from stream. %s", err.Error())
 	}
 
-	serviceItemPurchaseInfo.PostBalance, err = nex.StreamReadStructure(stream, NewServiceItemAmount())
+	err = serviceItemPurchaseInfo.PostBalance.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemPurchaseInfo.PostBalance from stream. %s", err.Error())
 	}
@@ -44,21 +49,27 @@ func (serviceItemPurchaseInfo *ServiceItemPurchaseInfo) ExtractFromStream(stream
 	return nil
 }
 
-// Bytes encodes the ServiceItemPurchaseInfo and returns a byte array
-func (serviceItemPurchaseInfo *ServiceItemPurchaseInfo) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteString(serviceItemPurchaseInfo.TransactionID)
-	stream.WriteString(serviceItemPurchaseInfo.ExtTransactionID)
-	stream.WriteString(serviceItemPurchaseInfo.ItemCode)
-	stream.WriteStructure(serviceItemPurchaseInfo.PostBalance)
+// WriteTo writes the ServiceItemPurchaseInfo to the given writable
+func (serviceItemPurchaseInfo *ServiceItemPurchaseInfo) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
 
-	return stream.Bytes()
+	serviceItemPurchaseInfo.TransactionID.WriteTo(contentWritable)
+	serviceItemPurchaseInfo.ExtTransactionID.WriteTo(contentWritable)
+	serviceItemPurchaseInfo.ItemCode.WriteTo(contentWritable)
+	serviceItemPurchaseInfo.PostBalance.WriteTo(contentWritable)
+
+	content := contentWritable.Bytes()
+
+	serviceItemPurchaseInfo.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // Copy returns a new copied instance of ServiceItemPurchaseInfo
-func (serviceItemPurchaseInfo *ServiceItemPurchaseInfo) Copy() nex.StructureInterface {
+func (serviceItemPurchaseInfo *ServiceItemPurchaseInfo) Copy() types.RVType {
 	copied := NewServiceItemPurchaseInfo()
 
-	copied.SetStructureVersion(serviceItemPurchaseInfo.StructureVersion())
+	copied.StructureVersion = serviceItemPurchaseInfo.StructureVersion
 
 	copied.TransactionID = serviceItemPurchaseInfo.TransactionID
 	copied.ExtTransactionID = serviceItemPurchaseInfo.ExtTransactionID
@@ -69,22 +80,26 @@ func (serviceItemPurchaseInfo *ServiceItemPurchaseInfo) Copy() nex.StructureInte
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (serviceItemPurchaseInfo *ServiceItemPurchaseInfo) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*ServiceItemPurchaseInfo)
-
-	if serviceItemPurchaseInfo.StructureVersion() != other.StructureVersion() {
+func (serviceItemPurchaseInfo *ServiceItemPurchaseInfo) Equals(o types.RVType) bool {
+	if _, ok := o.(*ServiceItemPurchaseInfo); !ok {
 		return false
 	}
 
-	if serviceItemPurchaseInfo.TransactionID != other.TransactionID {
+	other := o.(*ServiceItemPurchaseInfo)
+
+	if serviceItemPurchaseInfo.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if serviceItemPurchaseInfo.ExtTransactionID != other.ExtTransactionID {
+	if !serviceItemPurchaseInfo.TransactionID.Equals(other.TransactionID) {
 		return false
 	}
 
-	if serviceItemPurchaseInfo.ItemCode != other.ItemCode {
+	if !serviceItemPurchaseInfo.ExtTransactionID.Equals(other.ExtTransactionID) {
+		return false
+	}
+
+	if !serviceItemPurchaseInfo.ItemCode.Equals(other.ItemCode) {
 		return false
 	}
 
@@ -108,7 +123,7 @@ func (serviceItemPurchaseInfo *ServiceItemPurchaseInfo) FormatToString(indentati
 	var b strings.Builder
 
 	b.WriteString("ServiceItemPurchaseInfo{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, serviceItemPurchaseInfo.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, serviceItemPurchaseInfo.StructureVersion))
 	b.WriteString(fmt.Sprintf("%sTransactionID: %q,\n", indentationValues, serviceItemPurchaseInfo.TransactionID))
 	b.WriteString(fmt.Sprintf("%sExtTransactionID: %q,\n", indentationValues, serviceItemPurchaseInfo.ExtTransactionID))
 	b.WriteString(fmt.Sprintf("%sItemCode: %q,\n", indentationValues, serviceItemPurchaseInfo.ItemCode))

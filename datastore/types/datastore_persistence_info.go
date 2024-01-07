@@ -5,32 +5,36 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // DataStorePersistenceInfo is a data structure used by the DataStore protocol
 type DataStorePersistenceInfo struct {
-	nex.Structure
-	OwnerID           *nex.PID
-	PersistenceSlotID uint16
-	DataID            uint64
+	types.Structure
+	OwnerID           *types.PID
+	PersistenceSlotID *types.PrimitiveU16
+	DataID            *types.PrimitiveU64
 }
 
-// ExtractFromStream extracts a DataStorePersistenceInfo structure from a stream
-func (dataStorePersistenceInfo *DataStorePersistenceInfo) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the DataStorePersistenceInfo from the given readable
+func (dataStorePersistenceInfo *DataStorePersistenceInfo) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	dataStorePersistenceInfo.OwnerID, err = stream.ReadPID()
+	if err = dataStorePersistenceInfo.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read DataStorePersistenceInfo header. %s", err.Error())
+	}
+
+	err = dataStorePersistenceInfo.OwnerID.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStorePersistenceInfo.OwnerID. %s", err.Error())
 	}
 
-	dataStorePersistenceInfo.PersistenceSlotID, err = stream.ReadUInt16LE()
+	err = dataStorePersistenceInfo.PersistenceSlotID.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStorePersistenceInfo.PersistenceSlotID. %s", err.Error())
 	}
 
-	dataStorePersistenceInfo.DataID, err = stream.ReadUInt64LE()
+	err = dataStorePersistenceInfo.DataID.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStorePersistenceInfo.DataID. %s", err.Error())
 	}
@@ -38,33 +42,43 @@ func (dataStorePersistenceInfo *DataStorePersistenceInfo) ExtractFromStream(stre
 	return nil
 }
 
-// Bytes encodes the DataStorePersistenceInfo and returns a byte array
-func (dataStorePersistenceInfo *DataStorePersistenceInfo) Bytes(stream *nex.StreamOut) []byte {
-	stream.WritePID(dataStorePersistenceInfo.OwnerID)
-	stream.WriteUInt16LE(dataStorePersistenceInfo.PersistenceSlotID)
-	stream.WriteUInt64LE(dataStorePersistenceInfo.DataID)
+// WriteTo writes the DataStorePersistenceInfo to the given writable
+func (dataStorePersistenceInfo *DataStorePersistenceInfo) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
 
-	return stream.Bytes()
+	dataStorePersistenceInfo.OwnerID.WriteTo(contentWritable)
+	dataStorePersistenceInfo.PersistenceSlotID.WriteTo(contentWritable)
+	dataStorePersistenceInfo.DataID.WriteTo(contentWritable)
+
+	content := contentWritable.Bytes()
+
+	dataStorePersistenceInfo.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // Copy returns a new copied instance of DataStorePersistenceInfo
-func (dataStorePersistenceInfo *DataStorePersistenceInfo) Copy() nex.StructureInterface {
+func (dataStorePersistenceInfo *DataStorePersistenceInfo) Copy() types.RVType {
 	copied := NewDataStorePersistenceInfo()
 
-	copied.SetStructureVersion(dataStorePersistenceInfo.StructureVersion())
+	copied.StructureVersion = dataStorePersistenceInfo.StructureVersion
 
-	copied.OwnerID = dataStorePersistenceInfo.OwnerID.Copy()
-	copied.PersistenceSlotID = dataStorePersistenceInfo.PersistenceSlotID
-	copied.DataID = dataStorePersistenceInfo.DataID
+	copied.OwnerID = dataStorePersistenceInfo.OwnerID.Copy().(*types.PID)
+	copied.PersistenceSlotID = dataStorePersistenceInfo.PersistenceSlotID.Copy().(*types.PrimitiveU16)
+	copied.DataID = dataStorePersistenceInfo.DataID.Copy().(*types.PrimitiveU64)
 
 	return copied
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (dataStorePersistenceInfo *DataStorePersistenceInfo) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*DataStorePersistenceInfo)
+func (dataStorePersistenceInfo *DataStorePersistenceInfo) Equals(o types.RVType) bool {
+	if _, ok := o.(*DataStorePersistenceInfo); !ok {
+		return false
+	}
 
-	if dataStorePersistenceInfo.StructureVersion() != other.StructureVersion() {
+	other := o.(*DataStorePersistenceInfo)
+
+	if dataStorePersistenceInfo.StructureVersion != other.StructureVersion {
 		return false
 	}
 
@@ -72,11 +86,11 @@ func (dataStorePersistenceInfo *DataStorePersistenceInfo) Equals(structure nex.S
 		return false
 	}
 
-	if dataStorePersistenceInfo.PersistenceSlotID != other.PersistenceSlotID {
+	if !dataStorePersistenceInfo.PersistenceSlotID.Equals(other.PersistenceSlotID) {
 		return false
 	}
 
-	if dataStorePersistenceInfo.DataID != other.DataID {
+	if !dataStorePersistenceInfo.DataID.Equals(other.DataID) {
 		return false
 	}
 
@@ -96,10 +110,10 @@ func (dataStorePersistenceInfo *DataStorePersistenceInfo) FormatToString(indenta
 	var b strings.Builder
 
 	b.WriteString("DataStorePersistenceInfo{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, dataStorePersistenceInfo.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sOwnerID: %d,\n", indentationValues, dataStorePersistenceInfo.OwnerID))
-	b.WriteString(fmt.Sprintf("%sPersistenceSlotID: %d,\n", indentationValues, dataStorePersistenceInfo.PersistenceSlotID))
-	b.WriteString(fmt.Sprintf("%sDataID: %d\n", indentationValues, dataStorePersistenceInfo.DataID))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, dataStorePersistenceInfo.StructureVersion))
+	b.WriteString(fmt.Sprintf("%sOwnerID: %s,\n", indentationValues, dataStorePersistenceInfo.OwnerID))
+	b.WriteString(fmt.Sprintf("%sPersistenceSlotID: %s,\n", indentationValues, dataStorePersistenceInfo.PersistenceSlotID))
+	b.WriteString(fmt.Sprintf("%sDataID: %s\n", indentationValues, dataStorePersistenceInfo.DataID))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -108,8 +122,8 @@ func (dataStorePersistenceInfo *DataStorePersistenceInfo) FormatToString(indenta
 // NewDataStorePersistenceInfo returns a new DataStorePersistenceInfo
 func NewDataStorePersistenceInfo() *DataStorePersistenceInfo {
 	return &DataStorePersistenceInfo{
-		OwnerID:           nex.NewPID[uint32](0),
-		PersistenceSlotID: 0,
-		DataID:            0,
+		OwnerID:           types.NewPID(0),
+		PersistenceSlotID: types.NewPrimitiveU16(0),
+		DataID:            types.NewPrimitiveU64(0),
 	}
 }

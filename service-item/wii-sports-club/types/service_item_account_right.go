@@ -6,25 +6,30 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // ServiceItemAccountRight holds data for the Service Item (Wii Sports Club) protocol
 type ServiceItemAccountRight struct {
-	nex.Structure
-	PID        *nex.PID
+	types.Structure
+	PID        *types.PID
 	Limitation *ServiceItemLimitation
 }
 
-// ExtractFromStream extracts a ServiceItemAccountRight structure from a stream
-func (serviceItemAccountRight *ServiceItemAccountRight) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the ServiceItemAccountRight from the given readable
+func (serviceItemAccountRight *ServiceItemAccountRight) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	serviceItemAccountRight.PID, err = stream.ReadPID()
+	if err = serviceItemAccountRight.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read ServiceItemAccountRight header. %s", err.Error())
+	}
+
+	err = serviceItemAccountRight.PID.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemAccountRight.PID from stream. %s", err.Error())
 	}
 
-	serviceItemAccountRight.Limitation, err = nex.StreamReadStructure(stream, NewServiceItemLimitation())
+	err = serviceItemAccountRight.Limitation.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemAccountRight.Limitation from stream. %s", err.Error())
 	}
@@ -32,19 +37,25 @@ func (serviceItemAccountRight *ServiceItemAccountRight) ExtractFromStream(stream
 	return nil
 }
 
-// Bytes encodes the ServiceItemAccountRight and returns a byte array
-func (serviceItemAccountRight *ServiceItemAccountRight) Bytes(stream *nex.StreamOut) []byte {
-	stream.WritePID(serviceItemAccountRight.PID)
-	stream.WriteStructure(serviceItemAccountRight.Limitation)
+// WriteTo writes the ServiceItemAccountRight to the given writable
+func (serviceItemAccountRight *ServiceItemAccountRight) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
 
-	return stream.Bytes()
+	serviceItemAccountRight.PID.WriteTo(contentWritable)
+	serviceItemAccountRight.Limitation.WriteTo(contentWritable)
+
+	content := contentWritable.Bytes()
+
+	serviceItemAccountRight.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // Copy returns a new copied instance of ServiceItemAccountRight
-func (serviceItemAccountRight *ServiceItemAccountRight) Copy() nex.StructureInterface {
+func (serviceItemAccountRight *ServiceItemAccountRight) Copy() types.RVType {
 	copied := NewServiceItemAccountRight()
 
-	copied.SetStructureVersion(serviceItemAccountRight.StructureVersion())
+	copied.StructureVersion = serviceItemAccountRight.StructureVersion
 
 	copied.PID = serviceItemAccountRight.PID.Copy()
 	copied.Limitation = serviceItemAccountRight.Limitation.Copy().(*ServiceItemLimitation)
@@ -53,10 +64,14 @@ func (serviceItemAccountRight *ServiceItemAccountRight) Copy() nex.StructureInte
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (serviceItemAccountRight *ServiceItemAccountRight) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*ServiceItemAccountRight)
+func (serviceItemAccountRight *ServiceItemAccountRight) Equals(o types.RVType) bool {
+	if _, ok := o.(*ServiceItemAccountRight); !ok {
+		return false
+	}
 
-	if serviceItemAccountRight.StructureVersion() != other.StructureVersion() {
+	other := o.(*ServiceItemAccountRight)
+
+	if serviceItemAccountRight.StructureVersion != other.StructureVersion {
 		return false
 	}
 
@@ -84,7 +99,7 @@ func (serviceItemAccountRight *ServiceItemAccountRight) FormatToString(indentati
 	var b strings.Builder
 
 	b.WriteString("ServiceItemAccountRight{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, serviceItemAccountRight.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, serviceItemAccountRight.StructureVersion))
 	b.WriteString(fmt.Sprintf("%sPID: %s,\n", indentationValues, serviceItemAccountRight.PID.FormatToString(indentationLevel+1)))
 
 	if serviceItemAccountRight.Limitation != nil {

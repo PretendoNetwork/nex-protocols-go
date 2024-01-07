@@ -2,72 +2,75 @@
 package types
 
 import (
-	"bytes"
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // DataStorePreparePostSharedDataParam is a data structure used by the DataStore Super Smash Bros. 4 protocol
 type DataStorePreparePostSharedDataParam struct {
-	nex.Structure
-	DataType   uint8
-	Region     uint8
-	Attribute1 uint8
-	Attribute2 uint8
-	Fighter    []byte
-	Size       uint32
-	Comment    string
-	MetaBinary []byte
-	ExtraData  []string
+	types.Structure
+	DataType   *types.PrimitiveU8
+	Region     *types.PrimitiveU8
+	Attribute1 *types.PrimitiveU8
+	Attribute2 *types.PrimitiveU8
+	Fighter    *types.Buffer
+	Size       *types.PrimitiveU32
+	Comment    *types.String
+	MetaBinary *types.QBuffer
+	ExtraData  *types.List[*types.String]
 }
 
-// ExtractFromStream extracts a DataStorePreparePostSharedDataParam structure from a stream
-func (dataStorePreparePostSharedDataParam *DataStorePreparePostSharedDataParam) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the DataStorePreparePostSharedDataParam from the given readable
+func (dataStorePreparePostSharedDataParam *DataStorePreparePostSharedDataParam) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	dataStorePreparePostSharedDataParam.DataType, err = stream.ReadUInt8()
+	if err = dataStorePreparePostSharedDataParam.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read DataStorePreparePostSharedDataParam header. %s", err.Error())
+	}
+
+	err = dataStorePreparePostSharedDataParam.DataType.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStorePreparePostSharedDataParam.DataType. %s", err.Error())
 	}
 
-	dataStorePreparePostSharedDataParam.Region, err = stream.ReadUInt8()
+	err = dataStorePreparePostSharedDataParam.Region.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStorePreparePostSharedDataParam.Region. %s", err.Error())
 	}
 
-	dataStorePreparePostSharedDataParam.Attribute1, err = stream.ReadUInt8()
+	err = dataStorePreparePostSharedDataParam.Attribute1.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStorePreparePostSharedDataParam.Attribute1. %s", err.Error())
 	}
 
-	dataStorePreparePostSharedDataParam.Attribute2, err = stream.ReadUInt8()
+	err = dataStorePreparePostSharedDataParam.Attribute2.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStorePreparePostSharedDataParam.Attribute2. %s", err.Error())
 	}
 
-	dataStorePreparePostSharedDataParam.Fighter, err = stream.ReadBuffer()
+	err = dataStorePreparePostSharedDataParam.Fighter.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStorePreparePostSharedDataParam.Fighter. %s", err.Error())
 	}
 
-	dataStorePreparePostSharedDataParam.Size, err = stream.ReadUInt32LE()
+	err = dataStorePreparePostSharedDataParam.Size.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStorePreparePostSharedDataParam.Size. %s", err.Error())
 	}
 
-	dataStorePreparePostSharedDataParam.Comment, err = stream.ReadString()
+	err = dataStorePreparePostSharedDataParam.Comment.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStorePreparePostSharedDataParam.Comment. %s", err.Error())
 	}
 
-	dataStorePreparePostSharedDataParam.MetaBinary, err = stream.ReadQBuffer()
+	err = dataStorePreparePostSharedDataParam.MetaBinary.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStorePreparePostSharedDataParam.MetaBinary. %s", err.Error())
 	}
 
-	dataStorePreparePostSharedDataParam.ExtraData, err = stream.ReadListString()
+	err = dataStorePreparePostSharedDataParam.ExtraData.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStorePreparePostSharedDataParam.ExtraData. %s", err.Error())
 	}
@@ -75,96 +78,92 @@ func (dataStorePreparePostSharedDataParam *DataStorePreparePostSharedDataParam) 
 	return nil
 }
 
-// Bytes encodes the DataStorePreparePostSharedDataParam and returns a byte array
-func (dataStorePreparePostSharedDataParam *DataStorePreparePostSharedDataParam) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt8(dataStorePreparePostSharedDataParam.DataType)
-	stream.WriteUInt8(dataStorePreparePostSharedDataParam.Region)
-	stream.WriteUInt8(dataStorePreparePostSharedDataParam.Attribute1)
-	stream.WriteUInt8(dataStorePreparePostSharedDataParam.Attribute2)
-	stream.WriteBuffer(dataStorePreparePostSharedDataParam.Fighter)
-	stream.WriteUInt32LE(dataStorePreparePostSharedDataParam.Size)
-	stream.WriteString(dataStorePreparePostSharedDataParam.Comment)
-	stream.WriteQBuffer(dataStorePreparePostSharedDataParam.MetaBinary)
-	stream.WriteListString(dataStorePreparePostSharedDataParam.ExtraData)
+// WriteTo writes the DataStorePreparePostSharedDataParam to the given writable
+func (dataStorePreparePostSharedDataParam *DataStorePreparePostSharedDataParam) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
 
-	return stream.Bytes()
+	dataStorePreparePostSharedDataParam.DataType.WriteTo(contentWritable)
+	dataStorePreparePostSharedDataParam.Region.WriteTo(contentWritable)
+	dataStorePreparePostSharedDataParam.Attribute1.WriteTo(contentWritable)
+	dataStorePreparePostSharedDataParam.Attribute2.WriteTo(contentWritable)
+	dataStorePreparePostSharedDataParam.Fighter.WriteTo(contentWritable)
+	dataStorePreparePostSharedDataParam.Size.WriteTo(contentWritable)
+	dataStorePreparePostSharedDataParam.Comment.WriteTo(contentWritable)
+	dataStorePreparePostSharedDataParam.MetaBinary.WriteTo(contentWritable)
+	dataStorePreparePostSharedDataParam.ExtraData.WriteTo(contentWritable)
+
+	content := contentWritable.Bytes()
+
+	dataStorePreparePostSharedDataParam.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // Copy returns a new copied instance of DataStorePreparePostSharedDataParam
-func (dataStorePreparePostSharedDataParam *DataStorePreparePostSharedDataParam) Copy() nex.StructureInterface {
+func (dataStorePreparePostSharedDataParam *DataStorePreparePostSharedDataParam) Copy() types.RVType {
 	copied := NewDataStorePreparePostSharedDataParam()
 
-	copied.SetStructureVersion(dataStorePreparePostSharedDataParam.StructureVersion())
+	copied.StructureVersion = dataStorePreparePostSharedDataParam.StructureVersion
 
-	copied.DataType = dataStorePreparePostSharedDataParam.DataType
-	copied.Region = dataStorePreparePostSharedDataParam.Region
-	copied.Attribute1 = dataStorePreparePostSharedDataParam.Attribute1
-	copied.Attribute2 = dataStorePreparePostSharedDataParam.Attribute2
-	copied.Fighter = make([]byte, len(dataStorePreparePostSharedDataParam.Fighter))
-
-	copy(copied.Fighter, dataStorePreparePostSharedDataParam.Fighter)
-
-	copied.Size = dataStorePreparePostSharedDataParam.Size
-	copied.Comment = dataStorePreparePostSharedDataParam.Comment
-	copied.MetaBinary = make([]byte, len(dataStorePreparePostSharedDataParam.MetaBinary))
-
-	copy(copied.MetaBinary, dataStorePreparePostSharedDataParam.MetaBinary)
-
-	copied.ExtraData = make([]string, len(dataStorePreparePostSharedDataParam.ExtraData))
-
-	copy(copied.ExtraData, dataStorePreparePostSharedDataParam.ExtraData)
+	copied.DataType = dataStorePreparePostSharedDataParam.DataType.Copy().(*types.PrimitiveU8)
+	copied.Region = dataStorePreparePostSharedDataParam.Region.Copy().(*types.PrimitiveU8)
+	copied.Attribute1 = dataStorePreparePostSharedDataParam.Attribute1.Copy().(*types.PrimitiveU8)
+	copied.Attribute2 = dataStorePreparePostSharedDataParam.Attribute2.Copy().(*types.PrimitiveU8)
+	copied.Fighter = dataStorePreparePostSharedDataParam.Fighter.Copy().(*types.Buffer)
+	copied.Size = dataStorePreparePostSharedDataParam.Size.Copy().(*types.PrimitiveU32)
+	copied.Comment = dataStorePreparePostSharedDataParam.Comment.Copy().(*types.String)
+	copied.MetaBinary = dataStorePreparePostSharedDataParam.MetaBinary.Copy().(*types.QBuffer)
+	copied.ExtraData = dataStorePreparePostSharedDataParam.ExtraData.Copy().(*types.List[*types.String])
 
 	return copied
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (dataStorePreparePostSharedDataParam *DataStorePreparePostSharedDataParam) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*DataStorePreparePostSharedDataParam)
-
-	if dataStorePreparePostSharedDataParam.StructureVersion() != other.StructureVersion() {
+func (dataStorePreparePostSharedDataParam *DataStorePreparePostSharedDataParam) Equals(o types.RVType) bool {
+	if _, ok := o.(*DataStorePreparePostSharedDataParam); !ok {
 		return false
 	}
 
-	if dataStorePreparePostSharedDataParam.DataType != other.DataType {
+	other := o.(*DataStorePreparePostSharedDataParam)
+
+	if dataStorePreparePostSharedDataParam.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if dataStorePreparePostSharedDataParam.Region != other.Region {
+	if !dataStorePreparePostSharedDataParam.DataType.Equals(other.DataType) {
 		return false
 	}
 
-	if dataStorePreparePostSharedDataParam.Attribute1 != other.Attribute1 {
+	if !dataStorePreparePostSharedDataParam.Region.Equals(other.Region) {
 		return false
 	}
 
-	if dataStorePreparePostSharedDataParam.Attribute2 != other.Attribute2 {
+	if !dataStorePreparePostSharedDataParam.Attribute1.Equals(other.Attribute1) {
 		return false
 	}
 
-	if !bytes.Equal(dataStorePreparePostSharedDataParam.Fighter, other.Fighter) {
+	if !dataStorePreparePostSharedDataParam.Attribute2.Equals(other.Attribute2) {
 		return false
 	}
 
-	if dataStorePreparePostSharedDataParam.Size != other.Size {
+	if !dataStorePreparePostSharedDataParam.Fighter.Equals(other.Fighter) {
 		return false
 	}
 
-	if dataStorePreparePostSharedDataParam.Comment != other.Comment {
+	if !dataStorePreparePostSharedDataParam.Size.Equals(other.Size) {
 		return false
 	}
 
-	if !bytes.Equal(dataStorePreparePostSharedDataParam.MetaBinary, other.MetaBinary) {
+	if !dataStorePreparePostSharedDataParam.Comment.Equals(other.Comment) {
 		return false
 	}
 
-	if len(dataStorePreparePostSharedDataParam.ExtraData) != len(other.ExtraData) {
+	if !dataStorePreparePostSharedDataParam.MetaBinary.Equals(other.MetaBinary) {
 		return false
 	}
 
-	for i := 0; i < len(dataStorePreparePostSharedDataParam.ExtraData); i++ {
-		if dataStorePreparePostSharedDataParam.ExtraData[i] != other.ExtraData[i] {
-			return false
-		}
+	if !dataStorePreparePostSharedDataParam.ExtraData.Equals(other.ExtraData) {
+		return false
 	}
 
 	return true
@@ -183,16 +182,16 @@ func (dataStorePreparePostSharedDataParam *DataStorePreparePostSharedDataParam) 
 	var b strings.Builder
 
 	b.WriteString("DataStorePreparePostSharedDataParam{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, dataStorePreparePostSharedDataParam.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sDataType: %d,\n", indentationValues, dataStorePreparePostSharedDataParam.DataType))
-	b.WriteString(fmt.Sprintf("%sRegion: %d,\n", indentationValues, dataStorePreparePostSharedDataParam.Region))
-	b.WriteString(fmt.Sprintf("%sAttribute1: %d,\n", indentationValues, dataStorePreparePostSharedDataParam.Attribute1))
-	b.WriteString(fmt.Sprintf("%sAttribute2: %d,\n", indentationValues, dataStorePreparePostSharedDataParam.Attribute2))
-	b.WriteString(fmt.Sprintf("%sFighter: %x,\n", indentationValues, dataStorePreparePostSharedDataParam.Fighter))
-	b.WriteString(fmt.Sprintf("%sSize: %d,\n", indentationValues, dataStorePreparePostSharedDataParam.Size))
-	b.WriteString(fmt.Sprintf("%sComment: %q,\n", indentationValues, dataStorePreparePostSharedDataParam.Comment))
-	b.WriteString(fmt.Sprintf("%sMetaBinary: %x,\n", indentationValues, dataStorePreparePostSharedDataParam.MetaBinary))
-	b.WriteString(fmt.Sprintf("%sExtraData: %v\n", indentationValues, dataStorePreparePostSharedDataParam.ExtraData))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, dataStorePreparePostSharedDataParam.StructureVersion))
+	b.WriteString(fmt.Sprintf("%sDataType: %s,\n", indentationValues, dataStorePreparePostSharedDataParam.DataType))
+	b.WriteString(fmt.Sprintf("%sRegion: %s,\n", indentationValues, dataStorePreparePostSharedDataParam.Region))
+	b.WriteString(fmt.Sprintf("%sAttribute1: %s,\n", indentationValues, dataStorePreparePostSharedDataParam.Attribute1))
+	b.WriteString(fmt.Sprintf("%sAttribute2: %s,\n", indentationValues, dataStorePreparePostSharedDataParam.Attribute2))
+	b.WriteString(fmt.Sprintf("%sFighter: %s,\n", indentationValues, dataStorePreparePostSharedDataParam.Fighter))
+	b.WriteString(fmt.Sprintf("%sSize: %s,\n", indentationValues, dataStorePreparePostSharedDataParam.Size))
+	b.WriteString(fmt.Sprintf("%sComment: %s,\n", indentationValues, dataStorePreparePostSharedDataParam.Comment))
+	b.WriteString(fmt.Sprintf("%sMetaBinary: %s,\n", indentationValues, dataStorePreparePostSharedDataParam.MetaBinary))
+	b.WriteString(fmt.Sprintf("%sExtraData: %s\n", indentationValues, dataStorePreparePostSharedDataParam.ExtraData))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -200,5 +199,19 @@ func (dataStorePreparePostSharedDataParam *DataStorePreparePostSharedDataParam) 
 
 // NewDataStorePreparePostSharedDataParam returns a new DataStorePreparePostSharedDataParam
 func NewDataStorePreparePostSharedDataParam() *DataStorePreparePostSharedDataParam {
-	return &DataStorePreparePostSharedDataParam{}
+	dataStorePreparePostSharedDataParam := &DataStorePreparePostSharedDataParam{
+		DataType: types.NewPrimitiveU8(0),
+		Region: types.NewPrimitiveU8(0),
+		Attribute1: types.NewPrimitiveU8(0),
+		Attribute2: types.NewPrimitiveU8(0),
+		Fighter: types.NewBuffer(nil),
+		Size: types.NewPrimitiveU32(0),
+		Comment: types.NewString(""),
+		MetaBinary: types.NewQBuffer(nil),
+		ExtraData: types.NewList[*types.String](),
+	}
+
+	dataStorePreparePostSharedDataParam.ExtraData.Type = types.NewString("")
+
+	return dataStorePreparePostSharedDataParam
 }

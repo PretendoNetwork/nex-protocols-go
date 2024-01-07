@@ -5,11 +5,13 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 	friends_wiiu_types "github.com/PretendoNetwork/nex-protocols-go/friends-wiiu/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
 func (protocol *Protocol) handleUpdateMii(packet nex.PacketInterface) {
+	var err error
 	var errorCode uint32
 
 	if protocol.UpdateMii == nil {
@@ -23,9 +25,10 @@ func (protocol *Protocol) handleUpdateMii(packet nex.PacketInterface) {
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.server)
+	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
-	miiV2, err := nex.StreamReadStructure(parametersStream, friends_wiiu_types.NewMiiV2())
+	miiV2 := friends_wiiu_types.NewMiiV2()
+	err = miiV2.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.UpdateMii(fmt.Errorf("Failed to read miiV2 from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {

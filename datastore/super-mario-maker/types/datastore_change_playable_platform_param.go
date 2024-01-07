@@ -5,26 +5,30 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // DataStoreChangePlayablePlatformParam holds data for the DataStore (Super Mario Maker) protocol
 type DataStoreChangePlayablePlatformParam struct {
-	nex.Structure
-	DataID           uint64
-	PlayablePlatform uint32
+	types.Structure
+	DataID           *types.PrimitiveU64
+	PlayablePlatform *types.PrimitiveU32
 }
 
-// ExtractFromStream extracts a DataStoreChangePlayablePlatformParam structure from a stream
-func (dataStoreChangePlayablePlatformParam *DataStoreChangePlayablePlatformParam) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the DataStoreChangePlayablePlatformParam from the given readable
+func (dataStoreChangePlayablePlatformParam *DataStoreChangePlayablePlatformParam) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	dataStoreChangePlayablePlatformParam.DataID, err = stream.ReadUInt64LE()
+	if err = dataStoreChangePlayablePlatformParam.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read DataStoreChangePlayablePlatformParam header. %s", err.Error())
+	}
+
+	err = dataStoreChangePlayablePlatformParam.DataID.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreChangePlayablePlatformParam.DataID from stream. %s", err.Error())
 	}
 
-	dataStoreChangePlayablePlatformParam.PlayablePlatform, err = stream.ReadUInt32LE()
+	err = dataStoreChangePlayablePlatformParam.PlayablePlatform.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreChangePlayablePlatformParam.PlayablePlatform from stream. %s", err.Error())
 	}
@@ -32,39 +36,49 @@ func (dataStoreChangePlayablePlatformParam *DataStoreChangePlayablePlatformParam
 	return nil
 }
 
-// Bytes encodes the DataStoreChangePlayablePlatformParam and returns a byte array
-func (dataStoreChangePlayablePlatformParam *DataStoreChangePlayablePlatformParam) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt64LE(dataStoreChangePlayablePlatformParam.DataID)
-	stream.WriteUInt32LE(dataStoreChangePlayablePlatformParam.PlayablePlatform)
+// WriteTo writes the DataStoreChangePlayablePlatformParam to the given writable
+func (dataStoreChangePlayablePlatformParam *DataStoreChangePlayablePlatformParam) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
 
-	return stream.Bytes()
+	dataStoreChangePlayablePlatformParam.DataID.WriteTo(contentWritable)
+	dataStoreChangePlayablePlatformParam.PlayablePlatform.WriteTo(contentWritable)
+
+	content := contentWritable.Bytes()
+
+	dataStoreChangePlayablePlatformParam.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // Copy returns a new copied instance of DataStoreChangePlayablePlatformParam
-func (dataStoreChangePlayablePlatformParam *DataStoreChangePlayablePlatformParam) Copy() nex.StructureInterface {
+func (dataStoreChangePlayablePlatformParam *DataStoreChangePlayablePlatformParam) Copy() types.RVType {
 	copied := NewDataStoreChangePlayablePlatformParam()
 
-	copied.SetStructureVersion(dataStoreChangePlayablePlatformParam.StructureVersion())
+	copied.StructureVersion = dataStoreChangePlayablePlatformParam.StructureVersion
 
-	copied.DataID = dataStoreChangePlayablePlatformParam.DataID
-	copied.PlayablePlatform = dataStoreChangePlayablePlatformParam.PlayablePlatform
+	copied.DataID = dataStoreChangePlayablePlatformParam.DataID.Copy().(*types.PrimitiveU64)
+	copied.PlayablePlatform = dataStoreChangePlayablePlatformParam.PlayablePlatform.Copy().(*types.PrimitiveU32)
 
 	return copied
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (dataStoreChangePlayablePlatformParam *DataStoreChangePlayablePlatformParam) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*DataStoreChangePlayablePlatformParam)
-
-	if dataStoreChangePlayablePlatformParam.StructureVersion() != other.StructureVersion() {
+func (dataStoreChangePlayablePlatformParam *DataStoreChangePlayablePlatformParam) Equals(o types.RVType) bool {
+	if _, ok := o.(*DataStoreChangePlayablePlatformParam); !ok {
 		return false
 	}
 
-	if dataStoreChangePlayablePlatformParam.DataID != other.DataID {
+	other := o.(*DataStoreChangePlayablePlatformParam)
+
+	if dataStoreChangePlayablePlatformParam.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if dataStoreChangePlayablePlatformParam.PlayablePlatform != other.PlayablePlatform {
+	if !dataStoreChangePlayablePlatformParam.DataID.Equals(other.DataID) {
+		return false
+	}
+
+	if !dataStoreChangePlayablePlatformParam.PlayablePlatform.Equals(other.PlayablePlatform) {
 		return false
 	}
 
@@ -84,9 +98,9 @@ func (dataStoreChangePlayablePlatformParam *DataStoreChangePlayablePlatformParam
 	var b strings.Builder
 
 	b.WriteString("DataStoreChangePlayablePlatformParam{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, dataStoreChangePlayablePlatformParam.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sDataID: %d,\n", indentationValues, dataStoreChangePlayablePlatformParam.DataID))
-	b.WriteString(fmt.Sprintf("%sPlayablePlatform: %d,\n", indentationValues, dataStoreChangePlayablePlatformParam.PlayablePlatform))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, dataStoreChangePlayablePlatformParam.StructureVersion))
+	b.WriteString(fmt.Sprintf("%sDataID: %s,\n", indentationValues, dataStoreChangePlayablePlatformParam.DataID))
+	b.WriteString(fmt.Sprintf("%sPlayablePlatform: %s,\n", indentationValues, dataStoreChangePlayablePlatformParam.PlayablePlatform))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -95,7 +109,7 @@ func (dataStoreChangePlayablePlatformParam *DataStoreChangePlayablePlatformParam
 // NewDataStoreChangePlayablePlatformParam returns a new DataStoreChangePlayablePlatformParam
 func NewDataStoreChangePlayablePlatformParam() *DataStoreChangePlayablePlatformParam {
 	return &DataStoreChangePlayablePlatformParam{
-		DataID:           0,
-		PlayablePlatform: 0,
+		DataID:           types.NewPrimitiveU64(0),
+		PlayablePlatform: types.NewPrimitiveU32(0),
 	}
 }

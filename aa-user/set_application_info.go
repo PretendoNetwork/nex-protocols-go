@@ -5,11 +5,13 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 	aauser_types "github.com/PretendoNetwork/nex-protocols-go/aa-user/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
 func (protocol *Protocol) handleSetApplicationInfo(packet nex.PacketInterface) {
+	var err error
 	var errorCode uint32
 
 	if protocol.SetApplicationInfo == nil {
@@ -23,9 +25,11 @@ func (protocol *Protocol) handleSetApplicationInfo(packet nex.PacketInterface) {
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.server)
+	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
-	applicationInfo, err := nex.StreamReadListStructure(parametersStream, aauser_types.NewApplicationInfo())
+	applicationInfo := types.NewList[*aauser_types.ApplicationInfo]()
+	applicationInfo.Type = aauser_types.NewApplicationInfo()
+	err = applicationInfo.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.SetApplicationInfo(fmt.Errorf("Failed to read applicationInfo from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {

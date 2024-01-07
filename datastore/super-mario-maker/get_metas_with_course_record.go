@@ -5,12 +5,14 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 	datastore_super_mario_maker_types "github.com/PretendoNetwork/nex-protocols-go/datastore/super-mario-maker/types"
 	datastore_types "github.com/PretendoNetwork/nex-protocols-go/datastore/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
 func (protocol *Protocol) handleGetMetasWithCourseRecord(packet nex.PacketInterface) {
+	var err error
 	var errorCode uint32
 
 	if protocol.GetMetasWithCourseRecord == nil {
@@ -24,7 +26,7 @@ func (protocol *Protocol) handleGetMetasWithCourseRecord(packet nex.PacketInterf
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.server)
+	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	params, err := nex.StreamReadListStructure(parametersStream, datastore_super_mario_maker_types.NewDataStoreGetCourseRecordParam())
 	if err != nil {
@@ -36,7 +38,8 @@ func (protocol *Protocol) handleGetMetasWithCourseRecord(packet nex.PacketInterf
 		return
 	}
 
-	metaParam, err := nex.StreamReadStructure(parametersStream, datastore_types.NewDataStoreGetMetaParam())
+	metaParam := datastore_types.NewDataStoreGetMetaParam()
+	err = metaParam.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.GetMetasWithCourseRecord(fmt.Errorf("Failed to read metaParam from parameters. %s", err.Error()), packet, callID, nil, nil)
 		if errorCode != 0 {

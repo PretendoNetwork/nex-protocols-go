@@ -7,20 +7,25 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // ServiceItemUserInfo holds data for the Service Item (Wii Sports Club) protocol
 type ServiceItemUserInfo struct {
-	nex.Structure
-	NumTotalEntryTicket uint32
+	types.Structure
+	NumTotalEntryTicket *types.PrimitiveU32
 	ApplicationBuffer   []byte
 }
 
-// ExtractFromStream extracts a ServiceItemUserInfo structure from a stream
-func (serviceItemUserInfo *ServiceItemUserInfo) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the ServiceItemUserInfo from the given readable
+func (serviceItemUserInfo *ServiceItemUserInfo) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	serviceItemUserInfo.NumTotalEntryTicket, err = stream.ReadUInt32LE()
+	if err = serviceItemUserInfo.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read ServiceItemUserInfo header. %s", err.Error())
+	}
+
+	err = serviceItemUserInfo.NumTotalEntryTicket.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemUserInfo.NumTotalEntryTicket from stream. %s", err.Error())
 	}
@@ -33,19 +38,25 @@ func (serviceItemUserInfo *ServiceItemUserInfo) ExtractFromStream(stream *nex.St
 	return nil
 }
 
-// Bytes encodes the ServiceItemUserInfo and returns a byte array
-func (serviceItemUserInfo *ServiceItemUserInfo) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt32LE(serviceItemUserInfo.NumTotalEntryTicket)
+// WriteTo writes the ServiceItemUserInfo to the given writable
+func (serviceItemUserInfo *ServiceItemUserInfo) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
+
+	serviceItemUserInfo.NumTotalEntryTicket.WriteTo(contentWritable)
 	stream.WriteQBuffer(serviceItemUserInfo.ApplicationBuffer)
 
-	return stream.Bytes()
+	content := contentWritable.Bytes()
+
+	rvcd.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // Copy returns a new copied instance of ServiceItemUserInfo
-func (serviceItemUserInfo *ServiceItemUserInfo) Copy() nex.StructureInterface {
+func (serviceItemUserInfo *ServiceItemUserInfo) Copy() types.RVType {
 	copied := NewServiceItemUserInfo()
 
-	copied.SetStructureVersion(serviceItemUserInfo.StructureVersion())
+	copied.StructureVersion = serviceItemUserInfo.StructureVersion
 
 	copied.NumTotalEntryTicket = serviceItemUserInfo.NumTotalEntryTicket
 	copied.ApplicationBuffer = serviceItemUserInfo.ApplicationBuffer
@@ -54,18 +65,22 @@ func (serviceItemUserInfo *ServiceItemUserInfo) Copy() nex.StructureInterface {
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (serviceItemUserInfo *ServiceItemUserInfo) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*ServiceItemUserInfo)
-
-	if serviceItemUserInfo.StructureVersion() != other.StructureVersion() {
+func (serviceItemUserInfo *ServiceItemUserInfo) Equals(o types.RVType) bool {
+	if _, ok := o.(*ServiceItemUserInfo); !ok {
 		return false
 	}
 
-	if serviceItemUserInfo.NumTotalEntryTicket != other.NumTotalEntryTicket {
+	other := o.(*ServiceItemUserInfo)
+
+	if serviceItemUserInfo.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if !bytes.Equal(serviceItemUserInfo.ApplicationBuffer, other.ApplicationBuffer) {
+	if !serviceItemUserInfo.NumTotalEntryTicket.Equals(other.NumTotalEntryTicket) {
+		return false
+	}
+
+	if !serviceItemUserInfo.ApplicationBuffer.Equals(other.ApplicationBuffer) {
 		return false
 	}
 
@@ -85,7 +100,7 @@ func (serviceItemUserInfo *ServiceItemUserInfo) FormatToString(indentationLevel 
 	var b strings.Builder
 
 	b.WriteString("ServiceItemUserInfo{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, serviceItemUserInfo.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, serviceItemUserInfo.StructureVersion))
 	b.WriteString(fmt.Sprintf("%sNumTotalEntryTicket: %d,\n", indentationValues, serviceItemUserInfo.NumTotalEntryTicket))
 	b.WriteString(fmt.Sprintf("%sApplicationBuffer: %x,\n", indentationValues, serviceItemUserInfo.ApplicationBuffer))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))

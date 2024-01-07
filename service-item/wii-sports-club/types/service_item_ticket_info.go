@@ -6,25 +6,30 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // ServiceItemTicketInfo holds data for the Service Item (Wii Sports Club) protocol
 type ServiceItemTicketInfo struct {
-	nex.Structure
-	TicketType uint32
-	NumTotal   uint32
+	types.Structure
+	TicketType *types.PrimitiveU32
+	NumTotal   *types.PrimitiveU32
 }
 
-// ExtractFromStream extracts a ServiceItemTicketInfo structure from a stream
-func (serviceItemTicketInfo *ServiceItemTicketInfo) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the ServiceItemTicketInfo from the given readable
+func (serviceItemTicketInfo *ServiceItemTicketInfo) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	serviceItemTicketInfo.TicketType, err = stream.ReadUInt32LE()
+	if err = serviceItemTicketInfo.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read ServiceItemTicketInfo header. %s", err.Error())
+	}
+
+	err = serviceItemTicketInfo.TicketType.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemTicketInfo.TicketType from stream. %s", err.Error())
 	}
 
-	serviceItemTicketInfo.NumTotal, err = stream.ReadUInt32LE()
+	err = serviceItemTicketInfo.NumTotal.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemTicketInfo.NumTotal from stream. %s", err.Error())
 	}
@@ -32,19 +37,25 @@ func (serviceItemTicketInfo *ServiceItemTicketInfo) ExtractFromStream(stream *ne
 	return nil
 }
 
-// Bytes encodes the ServiceItemTicketInfo and returns a byte array
-func (serviceItemTicketInfo *ServiceItemTicketInfo) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt32LE(serviceItemTicketInfo.TicketType)
-	stream.WriteUInt32LE(serviceItemTicketInfo.NumTotal)
+// WriteTo writes the ServiceItemTicketInfo to the given writable
+func (serviceItemTicketInfo *ServiceItemTicketInfo) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
 
-	return stream.Bytes()
+	serviceItemTicketInfo.TicketType.WriteTo(contentWritable)
+	serviceItemTicketInfo.NumTotal.WriteTo(contentWritable)
+
+	content := contentWritable.Bytes()
+
+	serviceItemTicketInfo.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // Copy returns a new copied instance of ServiceItemTicketInfo
-func (serviceItemTicketInfo *ServiceItemTicketInfo) Copy() nex.StructureInterface {
+func (serviceItemTicketInfo *ServiceItemTicketInfo) Copy() types.RVType {
 	copied := NewServiceItemTicketInfo()
 
-	copied.SetStructureVersion(serviceItemTicketInfo.StructureVersion())
+	copied.StructureVersion = serviceItemTicketInfo.StructureVersion
 
 	copied.TicketType = serviceItemTicketInfo.TicketType
 	copied.NumTotal = serviceItemTicketInfo.NumTotal
@@ -53,18 +64,22 @@ func (serviceItemTicketInfo *ServiceItemTicketInfo) Copy() nex.StructureInterfac
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (serviceItemTicketInfo *ServiceItemTicketInfo) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*ServiceItemTicketInfo)
-
-	if serviceItemTicketInfo.StructureVersion() != other.StructureVersion() {
+func (serviceItemTicketInfo *ServiceItemTicketInfo) Equals(o types.RVType) bool {
+	if _, ok := o.(*ServiceItemTicketInfo); !ok {
 		return false
 	}
 
-	if serviceItemTicketInfo.TicketType != other.TicketType {
+	other := o.(*ServiceItemTicketInfo)
+
+	if serviceItemTicketInfo.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if serviceItemTicketInfo.NumTotal != other.NumTotal {
+	if !serviceItemTicketInfo.TicketType.Equals(other.TicketType) {
+		return false
+	}
+
+	if !serviceItemTicketInfo.NumTotal.Equals(other.NumTotal) {
 		return false
 	}
 
@@ -84,7 +99,7 @@ func (serviceItemTicketInfo *ServiceItemTicketInfo) FormatToString(indentationLe
 	var b strings.Builder
 
 	b.WriteString("ServiceItemTicketInfo{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, serviceItemTicketInfo.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, serviceItemTicketInfo.StructureVersion))
 	b.WriteString(fmt.Sprintf("%sTicketType: %d,\n", indentationValues, serviceItemTicketInfo.TicketType))
 	b.WriteString(fmt.Sprintf("%sNumTotal: %d,\n", indentationValues, serviceItemTicketInfo.NumTotal))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))

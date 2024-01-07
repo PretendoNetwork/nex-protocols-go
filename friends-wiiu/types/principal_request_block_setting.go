@@ -6,37 +6,38 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // PrincipalRequestBlockSetting contains unknow data
 type PrincipalRequestBlockSetting struct {
-	nex.Structure
-	*nex.Data
-	PID       uint32
-	IsBlocked bool
+	types.Structure
+	*types.Data
+	PID       *types.PrimitiveU32
+	IsBlocked *types.PrimitiveBool
 }
 
-// Bytes encodes the PrincipalRequestBlockSetting and returns a byte array
-func (principalRequestBlockSetting *PrincipalRequestBlockSetting) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt32LE(principalRequestBlockSetting.PID)
-	stream.WriteBool(principalRequestBlockSetting.IsBlocked)
+// WriteTo writes the PrincipalRequestBlockSetting to the given writable
+func (principalRequestBlockSetting *PrincipalRequestBlockSetting) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
 
-	return stream.Bytes()
+	principalRequestBlockSetting.PID.WriteTo(contentWritable)
+	principalRequestBlockSetting.IsBlocked.WriteTo(contentWritable)
+
+	content := contentWritable.Bytes()
+
+	principalRequestBlockSetting.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // Copy returns a new copied instance of PrincipalRequestBlockSetting
-func (principalRequestBlockSetting *PrincipalRequestBlockSetting) Copy() nex.StructureInterface {
+func (principalRequestBlockSetting *PrincipalRequestBlockSetting) Copy() types.RVType {
 	copied := NewPrincipalRequestBlockSetting()
 
-	copied.SetStructureVersion(principalRequestBlockSetting.StructureVersion())
+	copied.StructureVersion = principalRequestBlockSetting.StructureVersion
 
-	if principalRequestBlockSetting.ParentType() != nil {
-		copied.Data = principalRequestBlockSetting.ParentType().Copy().(*nex.Data)
-	} else {
-		copied.Data = nex.NewData()
-	}
-
-	copied.SetParentType(copied.Data)
+	copied.Data = principalRequestBlockSetting.Data.Copy().(*types.Data)
 
 	copied.PID = principalRequestBlockSetting.PID
 	copied.IsBlocked = principalRequestBlockSetting.IsBlocked
@@ -45,10 +46,14 @@ func (principalRequestBlockSetting *PrincipalRequestBlockSetting) Copy() nex.Str
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (principalRequestBlockSetting *PrincipalRequestBlockSetting) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*PrincipalRequestBlockSetting)
+func (principalRequestBlockSetting *PrincipalRequestBlockSetting) Equals(o types.RVType) bool {
+	if _, ok := o.(*PrincipalRequestBlockSetting); !ok {
+		return false
+	}
 
-	if principalRequestBlockSetting.StructureVersion() != other.StructureVersion() {
+	other := o.(*PrincipalRequestBlockSetting)
+
+	if principalRequestBlockSetting.StructureVersion != other.StructureVersion {
 		return false
 	}
 
@@ -56,11 +61,11 @@ func (principalRequestBlockSetting *PrincipalRequestBlockSetting) Equals(structu
 		return false
 	}
 
-	if principalRequestBlockSetting.PID != other.PID {
+	if !principalRequestBlockSetting.PID.Equals(other.PID) {
 		return false
 	}
 
-	if principalRequestBlockSetting.IsBlocked != other.IsBlocked {
+	if !principalRequestBlockSetting.IsBlocked.Equals(other.IsBlocked) {
 		return false
 	}
 
@@ -80,7 +85,7 @@ func (principalRequestBlockSetting *PrincipalRequestBlockSetting) FormatToString
 	var b strings.Builder
 
 	b.WriteString("PrincipalRequestBlockSetting{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, principalRequestBlockSetting.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, principalRequestBlockSetting.StructureVersion))
 	b.WriteString(fmt.Sprintf("%sPID: %d,\n", indentationValues, principalRequestBlockSetting.PID))
 	b.WriteString(fmt.Sprintf("%sIsBlocked: %t\n", indentationValues, principalRequestBlockSetting.IsBlocked))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))

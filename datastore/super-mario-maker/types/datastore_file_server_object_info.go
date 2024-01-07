@@ -5,27 +5,31 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 	datastore_types "github.com/PretendoNetwork/nex-protocols-go/datastore/types"
 )
 
 // DataStoreFileServerObjectInfo holds data for the DataStore (Super Mario Maker) protocol
 type DataStoreFileServerObjectInfo struct {
-	nex.Structure
-	DataID  uint64
+	types.Structure
+	DataID  *types.PrimitiveU64
 	GetInfo *datastore_types.DataStoreReqGetInfo
 }
 
-// ExtractFromStream extracts a DataStoreFileServerObjectInfo structure from a stream
-func (dataStoreFileServerObjectInfo *DataStoreFileServerObjectInfo) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the DataStoreFileServerObjectInfo from the given readable
+func (dataStoreFileServerObjectInfo *DataStoreFileServerObjectInfo) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	dataStoreFileServerObjectInfo.DataID, err = stream.ReadUInt64LE()
+	if err = dataStoreFileServerObjectInfo.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read DataStoreFileServerObjectInfo header. %s", err.Error())
+	}
+
+	err = dataStoreFileServerObjectInfo.DataID.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreFileServerObjectInfo.DataID from stream. %s", err.Error())
 	}
 
-	dataStoreFileServerObjectInfo.GetInfo, err = nex.StreamReadStructure(stream, datastore_types.NewDataStoreReqGetInfo())
+	err = dataStoreFileServerObjectInfo.GetInfo.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreFileServerObjectInfo.GetInfo from stream. %s", err.Error())
 	}
@@ -33,19 +37,25 @@ func (dataStoreFileServerObjectInfo *DataStoreFileServerObjectInfo) ExtractFromS
 	return nil
 }
 
-// Bytes encodes the DataStoreFileServerObjectInfo and returns a byte array
-func (dataStoreFileServerObjectInfo *DataStoreFileServerObjectInfo) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt64LE(dataStoreFileServerObjectInfo.DataID)
-	stream.WriteStructure(dataStoreFileServerObjectInfo.GetInfo)
+// WriteTo writes the DataStoreFileServerObjectInfo to the given writable
+func (dataStoreFileServerObjectInfo *DataStoreFileServerObjectInfo) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
 
-	return stream.Bytes()
+	dataStoreFileServerObjectInfo.DataID.WriteTo(contentWritable)
+	dataStoreFileServerObjectInfo.GetInfo.WriteTo(contentWritable)
+
+	content := contentWritable.Bytes()
+
+	dataStoreFileServerObjectInfo.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // Copy returns a new copied instance of DataStoreFileServerObjectInfo
-func (dataStoreFileServerObjectInfo *DataStoreFileServerObjectInfo) Copy() nex.StructureInterface {
+func (dataStoreFileServerObjectInfo *DataStoreFileServerObjectInfo) Copy() types.RVType {
 	copied := NewDataStoreFileServerObjectInfo()
 
-	copied.SetStructureVersion(dataStoreFileServerObjectInfo.StructureVersion())
+	copied.StructureVersion = dataStoreFileServerObjectInfo.StructureVersion
 
 	copied.DataID = dataStoreFileServerObjectInfo.DataID
 	copied.GetInfo = dataStoreFileServerObjectInfo.GetInfo.Copy().(*datastore_types.DataStoreReqGetInfo)
@@ -54,14 +64,18 @@ func (dataStoreFileServerObjectInfo *DataStoreFileServerObjectInfo) Copy() nex.S
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (dataStoreFileServerObjectInfo *DataStoreFileServerObjectInfo) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*DataStoreFileServerObjectInfo)
-
-	if dataStoreFileServerObjectInfo.StructureVersion() != other.StructureVersion() {
+func (dataStoreFileServerObjectInfo *DataStoreFileServerObjectInfo) Equals(o types.RVType) bool {
+	if _, ok := o.(*DataStoreFileServerObjectInfo); !ok {
 		return false
 	}
 
-	if dataStoreFileServerObjectInfo.DataID != other.DataID {
+	other := o.(*DataStoreFileServerObjectInfo)
+
+	if dataStoreFileServerObjectInfo.StructureVersion != other.StructureVersion {
+		return false
+	}
+
+	if !dataStoreFileServerObjectInfo.DataID.Equals(other.DataID) {
 		return false
 	}
 
@@ -85,15 +99,9 @@ func (dataStoreFileServerObjectInfo *DataStoreFileServerObjectInfo) FormatToStri
 	var b strings.Builder
 
 	b.WriteString("DataStoreFileServerObjectInfo{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, dataStoreFileServerObjectInfo.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sDataID: %d,\n", indentationValues, dataStoreFileServerObjectInfo.DataID))
-
-	if dataStoreFileServerObjectInfo.GetInfo != nil {
-		b.WriteString(fmt.Sprintf("%sGetInfo: %s\n", indentationValues, dataStoreFileServerObjectInfo.GetInfo.FormatToString(indentationLevel+1)))
-	} else {
-		b.WriteString(fmt.Sprintf("%sGetInfo: nil\n", indentationValues))
-	}
-
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, dataStoreFileServerObjectInfo.StructureVersion))
+	b.WriteString(fmt.Sprintf("%sDataID: %s,\n", indentationValues, dataStoreFileServerObjectInfo.DataID))
+	b.WriteString(fmt.Sprintf("%sGetInfo: %s\n", indentationValues, dataStoreFileServerObjectInfo.GetInfo.FormatToString(indentationLevel+1)))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -102,7 +110,7 @@ func (dataStoreFileServerObjectInfo *DataStoreFileServerObjectInfo) FormatToStri
 // NewDataStoreFileServerObjectInfo returns a new DataStoreFileServerObjectInfo
 func NewDataStoreFileServerObjectInfo() *DataStoreFileServerObjectInfo {
 	return &DataStoreFileServerObjectInfo{
-		DataID:  0,
+		DataID:  types.NewPrimitiveU64(0),
 		GetInfo: datastore_types.NewDataStoreReqGetInfo(),
 	}
 }

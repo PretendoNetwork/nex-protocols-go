@@ -5,26 +5,30 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // DataStorePrepareGetReplayParam is a data structure used by the DataStore Super Smash Bros. 4 protocol
 type DataStorePrepareGetReplayParam struct {
-	nex.Structure
-	ReplayID  uint64
-	ExtraData []string
+	types.Structure
+	ReplayID  *types.PrimitiveU64
+	ExtraData *types.List[*types.String]
 }
 
-// ExtractFromStream extracts a DataStorePrepareGetReplayParam structure from a stream
-func (dataStorePrepareGetReplayParam *DataStorePrepareGetReplayParam) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the DataStorePrepareGetReplayParam from the given readable
+func (dataStorePrepareGetReplayParam *DataStorePrepareGetReplayParam) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	dataStorePrepareGetReplayParam.ReplayID, err = stream.ReadUInt64LE()
+	if err = dataStorePrepareGetReplayParam.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read DataStorePrepareGetReplayParam header. %s", err.Error())
+	}
+
+	err = dataStorePrepareGetReplayParam.ReplayID.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStorePrepareGetReplayParam.ReplayID. %s", err.Error())
 	}
 
-	dataStorePrepareGetReplayParam.ExtraData, err = stream.ReadListString()
+	err = dataStorePrepareGetReplayParam.ExtraData.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStorePrepareGetReplayParam.ExtraData. %s", err.Error())
 	}
@@ -32,48 +36,50 @@ func (dataStorePrepareGetReplayParam *DataStorePrepareGetReplayParam) ExtractFro
 	return nil
 }
 
-// Bytes encodes the DataStorePrepareGetReplayParam and returns a byte array
-func (dataStorePrepareGetReplayParam *DataStorePrepareGetReplayParam) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt64LE(dataStorePrepareGetReplayParam.ReplayID)
-	stream.WriteListString(dataStorePrepareGetReplayParam.ExtraData)
+// WriteTo writes the DataStorePrepareGetReplayParam to the given writable
+func (dataStorePrepareGetReplayParam *DataStorePrepareGetReplayParam) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
 
-	return stream.Bytes()
+	dataStorePrepareGetReplayParam.ReplayID.WriteTo(contentWritable)
+	dataStorePrepareGetReplayParam.ExtraData.WriteTo(contentWritable)
+
+	content := contentWritable.Bytes()
+
+	dataStorePrepareGetReplayParam.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // Copy returns a new copied instance of DataStorePrepareGetReplayParam
-func (dataStorePrepareGetReplayParam *DataStorePrepareGetReplayParam) Copy() nex.StructureInterface {
+func (dataStorePrepareGetReplayParam *DataStorePrepareGetReplayParam) Copy() types.RVType {
 	copied := NewDataStorePrepareGetReplayParam()
 
-	copied.SetStructureVersion(dataStorePrepareGetReplayParam.StructureVersion())
+	copied.StructureVersion = dataStorePrepareGetReplayParam.StructureVersion
 
-	copied.ReplayID = dataStorePrepareGetReplayParam.ReplayID
-	copied.ExtraData = make([]string, len(dataStorePrepareGetReplayParam.ExtraData))
-
-	copy(copied.ExtraData, dataStorePrepareGetReplayParam.ExtraData)
+	copied.ReplayID = dataStorePrepareGetReplayParam.ReplayID.Copy().(*types.PrimitiveU64)
+	copied.ExtraData = dataStorePrepareGetReplayParam.ExtraData.Copy().(*types.List[*types.String])
 
 	return copied
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (dataStorePrepareGetReplayParam *DataStorePrepareGetReplayParam) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*DataStorePrepareGetReplayParam)
-
-	if dataStorePrepareGetReplayParam.StructureVersion() != other.StructureVersion() {
+func (dataStorePrepareGetReplayParam *DataStorePrepareGetReplayParam) Equals(o types.RVType) bool {
+	if _, ok := o.(*DataStorePrepareGetReplayParam); !ok {
 		return false
 	}
 
-	if dataStorePrepareGetReplayParam.ReplayID != other.ReplayID {
+	other := o.(*DataStorePrepareGetReplayParam)
+
+	if dataStorePrepareGetReplayParam.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if len(dataStorePrepareGetReplayParam.ExtraData) != len(other.ExtraData) {
+	if !dataStorePrepareGetReplayParam.ReplayID.Equals(other.ReplayID) {
 		return false
 	}
 
-	for i := 0; i < len(dataStorePrepareGetReplayParam.ExtraData); i++ {
-		if dataStorePrepareGetReplayParam.ExtraData[i] != other.ExtraData[i] {
-			return false
-		}
+	if !dataStorePrepareGetReplayParam.ExtraData.Equals(other.ExtraData) {
+		return false
 	}
 
 	return true
@@ -92,9 +98,9 @@ func (dataStorePrepareGetReplayParam *DataStorePrepareGetReplayParam) FormatToSt
 	var b strings.Builder
 
 	b.WriteString("DataStorePrepareGetReplayParam{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, dataStorePrepareGetReplayParam.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sReplayID: %d,\n", indentationValues, dataStorePrepareGetReplayParam.ReplayID))
-	b.WriteString(fmt.Sprintf("%sExtraData: %v\n", indentationValues, dataStorePrepareGetReplayParam.ExtraData))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, dataStorePrepareGetReplayParam.StructureVersion))
+	b.WriteString(fmt.Sprintf("%sReplayID: %s,\n", indentationValues, dataStorePrepareGetReplayParam.ReplayID))
+	b.WriteString(fmt.Sprintf("%sExtraData: %s\n", indentationValues, dataStorePrepareGetReplayParam.ExtraData))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -102,5 +108,12 @@ func (dataStorePrepareGetReplayParam *DataStorePrepareGetReplayParam) FormatToSt
 
 // NewDataStorePrepareGetReplayParam returns a new DataStorePrepareGetReplayParam
 func NewDataStorePrepareGetReplayParam() *DataStorePrepareGetReplayParam {
-	return &DataStorePrepareGetReplayParam{}
+	dataStorePrepareGetReplayParam := &DataStorePrepareGetReplayParam{
+		ReplayID: types.NewPrimitiveU64(0),
+		ExtraData: types.NewList[*types.String](),
+	}
+
+	dataStorePrepareGetReplayParam.ExtraData.Type = types.NewString("")
+
+	return dataStorePrepareGetReplayParam
 }

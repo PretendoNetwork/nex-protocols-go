@@ -6,37 +6,42 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // ServiceItemGetPurchaseHistoryParam holds data for the Service Item (Wii Sports Club) protocol
 type ServiceItemGetPurchaseHistoryParam struct {
-	nex.Structure
+	types.Structure
 	Language string
-	Offset   uint32
-	Size     uint32
+	Offset   *types.PrimitiveU32
+	Size     *types.PrimitiveU32
 	TitleID  string
 }
 
-// ExtractFromStream extracts a ServiceItemGetPurchaseHistoryParam structure from a stream
-func (serviceItemGetPurchaseHistoryParam *ServiceItemGetPurchaseHistoryParam) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the ServiceItemGetPurchaseHistoryParam from the given readable
+func (serviceItemGetPurchaseHistoryParam *ServiceItemGetPurchaseHistoryParam) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	serviceItemGetPurchaseHistoryParam.Language, err = stream.ReadString()
+	if err = serviceItemGetPurchaseHistoryParam.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read ServiceItemGetPurchaseHistoryParam header. %s", err.Error())
+	}
+
+	err = serviceItemGetPurchaseHistoryParam.Language.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemGetPurchaseHistoryParam.Language from stream. %s", err.Error())
 	}
 
-	serviceItemGetPurchaseHistoryParam.Offset, err = stream.ReadUInt32LE()
+	err = serviceItemGetPurchaseHistoryParam.Offset.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemGetPurchaseHistoryParam.Offset from stream. %s", err.Error())
 	}
 
-	serviceItemGetPurchaseHistoryParam.Size, err = stream.ReadUInt32LE()
+	err = serviceItemGetPurchaseHistoryParam.Size.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemGetPurchaseHistoryParam.Size from stream. %s", err.Error())
 	}
 
-	serviceItemGetPurchaseHistoryParam.TitleID, err = stream.ReadString()
+	err = serviceItemGetPurchaseHistoryParam.TitleID.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemGetPurchaseHistoryParam.TitleID from stream. %s", err.Error())
 	}
@@ -44,21 +49,27 @@ func (serviceItemGetPurchaseHistoryParam *ServiceItemGetPurchaseHistoryParam) Ex
 	return nil
 }
 
-// Bytes encodes the ServiceItemGetPurchaseHistoryParam and returns a byte array
-func (serviceItemGetPurchaseHistoryParam *ServiceItemGetPurchaseHistoryParam) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteString(serviceItemGetPurchaseHistoryParam.Language)
-	stream.WriteUInt32LE(serviceItemGetPurchaseHistoryParam.Offset)
-	stream.WriteUInt32LE(serviceItemGetPurchaseHistoryParam.Size)
-	stream.WriteString(serviceItemGetPurchaseHistoryParam.TitleID)
+// WriteTo writes the ServiceItemGetPurchaseHistoryParam to the given writable
+func (serviceItemGetPurchaseHistoryParam *ServiceItemGetPurchaseHistoryParam) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
 
-	return stream.Bytes()
+	serviceItemGetPurchaseHistoryParam.Language.WriteTo(contentWritable)
+	serviceItemGetPurchaseHistoryParam.Offset.WriteTo(contentWritable)
+	serviceItemGetPurchaseHistoryParam.Size.WriteTo(contentWritable)
+	serviceItemGetPurchaseHistoryParam.TitleID.WriteTo(contentWritable)
+
+	content := contentWritable.Bytes()
+
+	serviceItemGetPurchaseHistoryParam.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // Copy returns a new copied instance of ServiceItemGetPurchaseHistoryParam
-func (serviceItemGetPurchaseHistoryParam *ServiceItemGetPurchaseHistoryParam) Copy() nex.StructureInterface {
+func (serviceItemGetPurchaseHistoryParam *ServiceItemGetPurchaseHistoryParam) Copy() types.RVType {
 	copied := NewServiceItemGetPurchaseHistoryParam()
 
-	copied.SetStructureVersion(serviceItemGetPurchaseHistoryParam.StructureVersion())
+	copied.StructureVersion = serviceItemGetPurchaseHistoryParam.StructureVersion
 
 	copied.Language = serviceItemGetPurchaseHistoryParam.Language
 	copied.Offset = serviceItemGetPurchaseHistoryParam.Offset
@@ -69,26 +80,30 @@ func (serviceItemGetPurchaseHistoryParam *ServiceItemGetPurchaseHistoryParam) Co
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (serviceItemGetPurchaseHistoryParam *ServiceItemGetPurchaseHistoryParam) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*ServiceItemGetPurchaseHistoryParam)
-
-	if serviceItemGetPurchaseHistoryParam.StructureVersion() != other.StructureVersion() {
+func (serviceItemGetPurchaseHistoryParam *ServiceItemGetPurchaseHistoryParam) Equals(o types.RVType) bool {
+	if _, ok := o.(*ServiceItemGetPurchaseHistoryParam); !ok {
 		return false
 	}
 
-	if serviceItemGetPurchaseHistoryParam.Language != other.Language {
+	other := o.(*ServiceItemGetPurchaseHistoryParam)
+
+	if serviceItemGetPurchaseHistoryParam.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if serviceItemGetPurchaseHistoryParam.Offset != other.Offset {
+	if !serviceItemGetPurchaseHistoryParam.Language.Equals(other.Language) {
 		return false
 	}
 
-	if serviceItemGetPurchaseHistoryParam.Size != other.Size {
+	if !serviceItemGetPurchaseHistoryParam.Offset.Equals(other.Offset) {
 		return false
 	}
 
-	if serviceItemGetPurchaseHistoryParam.TitleID != other.TitleID {
+	if !serviceItemGetPurchaseHistoryParam.Size.Equals(other.Size) {
+		return false
+	}
+
+	if !serviceItemGetPurchaseHistoryParam.TitleID.Equals(other.TitleID) {
 		return false
 	}
 
@@ -108,7 +123,7 @@ func (serviceItemGetPurchaseHistoryParam *ServiceItemGetPurchaseHistoryParam) Fo
 	var b strings.Builder
 
 	b.WriteString("ServiceItemGetPurchaseHistoryParam{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, serviceItemGetPurchaseHistoryParam.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, serviceItemGetPurchaseHistoryParam.StructureVersion))
 	b.WriteString(fmt.Sprintf("%sLanguage: %q,\n", indentationValues, serviceItemGetPurchaseHistoryParam.Language))
 	b.WriteString(fmt.Sprintf("%sOffset: %d,\n", indentationValues, serviceItemGetPurchaseHistoryParam.Offset))
 	b.WriteString(fmt.Sprintf("%sSize: %d,\n", indentationValues, serviceItemGetPurchaseHistoryParam.Size))

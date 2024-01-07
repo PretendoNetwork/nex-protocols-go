@@ -6,41 +6,48 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // NotificationEvent holds general purpose notification data
 type NotificationEvent struct {
-	nex.Structure
-	PIDSource *nex.PID
-	Type      uint32
-	Param1    uint32
-	Param2    uint32
+	types.Structure
+	PIDSource *types.PID
+	Type      *types.PrimitiveU32
+	Param1    *types.PrimitiveU32
+	Param2    *types.PrimitiveU32
 	StrParam  string
-	Param3    uint32
+	Param3    *types.PrimitiveU32
 }
 
-// Bytes encodes the NotificationEvent and returns a byte array
-func (notificationEvent *NotificationEvent) Bytes(stream *nex.StreamOut) []byte {
+// WriteTo writes the NotificationEvent to the given writable
+func (notificationEvent *NotificationEvent) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
+
 	nexVersion := stream.Server.LibraryVersion()
 
-	stream.WritePID(notificationEvent.PIDSource)
-	stream.WriteUInt32LE(notificationEvent.Type)
-	stream.WriteUInt32LE(notificationEvent.Param1)
-	stream.WriteUInt32LE(notificationEvent.Param2)
-	stream.WriteString(notificationEvent.StrParam)
+	notificationEvent.PIDSource.WriteTo(contentWritable)
+	notificationEvent.Type.WriteTo(contentWritable)
+	notificationEvent.Param1.WriteTo(contentWritable)
+	notificationEvent.Param2.WriteTo(contentWritable)
+	notificationEvent.StrParam.WriteTo(contentWritable)
 
 	if nexVersion.GreaterOrEqual("3.4.0") {
-		stream.WriteUInt32LE(notificationEvent.Param3)
+		notificationEvent.Param3.WriteTo(contentWritable)
 	}
 
-	return stream.Bytes()
+	content := contentWritable.Bytes()
+
+	rvcd.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // Copy returns a new copied instance of NotificationEvent
-func (notificationEvent *NotificationEvent) Copy() nex.StructureInterface {
+func (notificationEvent *NotificationEvent) Copy() types.RVType {
 	copied := NewNotificationEvent()
 
-	copied.SetStructureVersion(notificationEvent.StructureVersion())
+	copied.StructureVersion = notificationEvent.StructureVersion
 
 	copied.PIDSource = notificationEvent.PIDSource.Copy()
 	copied.Type = notificationEvent.Type
@@ -53,10 +60,14 @@ func (notificationEvent *NotificationEvent) Copy() nex.StructureInterface {
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (notificationEvent *NotificationEvent) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*NotificationEvent)
+func (notificationEvent *NotificationEvent) Equals(o types.RVType) bool {
+	if _, ok := o.(*NotificationEvent); !ok {
+		return false
+	}
 
-	if notificationEvent.StructureVersion() != other.StructureVersion() {
+	other := o.(*NotificationEvent)
+
+	if notificationEvent.StructureVersion != other.StructureVersion {
 		return false
 	}
 
@@ -64,23 +75,23 @@ func (notificationEvent *NotificationEvent) Equals(structure nex.StructureInterf
 		return false
 	}
 
-	if notificationEvent.Type != other.Type {
+	if !notificationEvent.Type.Equals(other.Type) {
 		return false
 	}
 
-	if notificationEvent.Param1 != other.Param1 {
+	if !notificationEvent.Param1.Equals(other.Param1) {
 		return false
 	}
 
-	if notificationEvent.Param2 != other.Param2 {
+	if !notificationEvent.Param2.Equals(other.Param2) {
 		return false
 	}
 
-	if notificationEvent.StrParam != other.StrParam {
+	if !notificationEvent.StrParam.Equals(other.StrParam) {
 		return false
 	}
 
-	if notificationEvent.Param3 != other.Param3 {
+	if !notificationEvent.Param3.Equals(other.Param3) {
 		return false
 	}
 
@@ -100,7 +111,7 @@ func (notificationEvent *NotificationEvent) FormatToString(indentationLevel int)
 	var b strings.Builder
 
 	b.WriteString("NotificationEvent{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, notificationEvent.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, notificationEvent.StructureVersion))
 	b.WriteString(fmt.Sprintf("%sPIDSource: %s,\n", indentationValues, notificationEvent.PIDSource.FormatToString(indentationLevel+1)))
 	b.WriteString(fmt.Sprintf("%sType: %d,\n", indentationValues, notificationEvent.Type))
 	b.WriteString(fmt.Sprintf("%sParam1: %d,\n", indentationValues, notificationEvent.Param1))

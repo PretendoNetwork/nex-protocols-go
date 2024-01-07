@@ -6,32 +6,37 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // ServiceItemGetLawMessageParam holds data for the Service Item (Team Kirby Clash Deluxe) protocol
 type ServiceItemGetLawMessageParam struct {
-	nex.Structure
+	types.Structure
 	Language string
-	UniqueID uint32
-	Platform uint8 // * Revision 1
+	UniqueID *types.PrimitiveU32
+	Platform *types.PrimitiveU8 // * Revision 1
 }
 
-// ExtractFromStream extracts a ServiceItemGetLawMessageParam structure from a stream
-func (serviceItemGetLawMessageParam *ServiceItemGetLawMessageParam) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the ServiceItemGetLawMessageParam from the given readable
+func (serviceItemGetLawMessageParam *ServiceItemGetLawMessageParam) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	serviceItemGetLawMessageParam.Language, err = stream.ReadString()
+	if err = serviceItemGetLawMessageParam.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read ServiceItemGetLawMessageParam header. %s", err.Error())
+	}
+
+	err = serviceItemGetLawMessageParam.Language.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemGetLawMessageParam.Language from stream. %s", err.Error())
 	}
 
-	serviceItemGetLawMessageParam.UniqueID, err = stream.ReadUInt32LE()
+	err = serviceItemGetLawMessageParam.UniqueID.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemGetLawMessageParam.UniqueID from stream. %s", err.Error())
 	}
 
-	if serviceItemGetLawMessageParam.StructureVersion() >= 1 {
-		serviceItemGetLawMessageParam.Platform, err = stream.ReadUInt8()
+	if serviceItemGetLawMessageParam.StructureVersion >= 1 {
+	err = 	serviceItemGetLawMessageParam.Platform.ExtractFrom(readable)
 		if err != nil {
 			return fmt.Errorf("Failed to extract ServiceItemGetLawMessageParam.Platform from stream. %s", err.Error())
 		}
@@ -40,23 +45,29 @@ func (serviceItemGetLawMessageParam *ServiceItemGetLawMessageParam) ExtractFromS
 	return nil
 }
 
-// Bytes encodes the ServiceItemGetLawMessageParam and returns a byte array
-func (serviceItemGetLawMessageParam *ServiceItemGetLawMessageParam) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteString(serviceItemGetLawMessageParam.Language)
-	stream.WriteUInt32LE(serviceItemGetLawMessageParam.UniqueID)
+// WriteTo writes the ServiceItemGetLawMessageParam to the given writable
+func (serviceItemGetLawMessageParam *ServiceItemGetLawMessageParam) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
 
-	if serviceItemGetLawMessageParam.StructureVersion() >= 1 {
-		stream.WriteUInt8(serviceItemGetLawMessageParam.Platform)
+	serviceItemGetLawMessageParam.Language.WriteTo(contentWritable)
+	serviceItemGetLawMessageParam.UniqueID.WriteTo(contentWritable)
+
+	if serviceItemGetLawMessageParam.StructureVersion >= 1 {
+		serviceItemGetLawMessageParam.Platform.WriteTo(contentWritable)
 	}
 
-	return stream.Bytes()
+	content := contentWritable.Bytes()
+
+	rvcd.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // Copy returns a new copied instance of ServiceItemGetLawMessageParam
-func (serviceItemGetLawMessageParam *ServiceItemGetLawMessageParam) Copy() nex.StructureInterface {
+func (serviceItemGetLawMessageParam *ServiceItemGetLawMessageParam) Copy() types.RVType {
 	copied := NewServiceItemGetLawMessageParam()
 
-	copied.SetStructureVersion(serviceItemGetLawMessageParam.StructureVersion())
+	copied.StructureVersion = serviceItemGetLawMessageParam.StructureVersion
 
 	copied.Language = serviceItemGetLawMessageParam.Language
 	copied.UniqueID = serviceItemGetLawMessageParam.UniqueID
@@ -66,22 +77,26 @@ func (serviceItemGetLawMessageParam *ServiceItemGetLawMessageParam) Copy() nex.S
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (serviceItemGetLawMessageParam *ServiceItemGetLawMessageParam) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*ServiceItemGetLawMessageParam)
-
-	if serviceItemGetLawMessageParam.StructureVersion() != other.StructureVersion() {
+func (serviceItemGetLawMessageParam *ServiceItemGetLawMessageParam) Equals(o types.RVType) bool {
+	if _, ok := o.(*ServiceItemGetLawMessageParam); !ok {
 		return false
 	}
 
-	if serviceItemGetLawMessageParam.Language != other.Language {
+	other := o.(*ServiceItemGetLawMessageParam)
+
+	if serviceItemGetLawMessageParam.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if serviceItemGetLawMessageParam.UniqueID != other.UniqueID {
+	if !serviceItemGetLawMessageParam.Language.Equals(other.Language) {
 		return false
 	}
 
-	if serviceItemGetLawMessageParam.Platform != other.Platform {
+	if !serviceItemGetLawMessageParam.UniqueID.Equals(other.UniqueID) {
+		return false
+	}
+
+	if !serviceItemGetLawMessageParam.Platform.Equals(other.Platform) {
 		return false
 	}
 
@@ -101,11 +116,11 @@ func (serviceItemGetLawMessageParam *ServiceItemGetLawMessageParam) FormatToStri
 	var b strings.Builder
 
 	b.WriteString("ServiceItemGetLawMessageParam{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, serviceItemGetLawMessageParam.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, serviceItemGetLawMessageParam.StructureVersion))
 	b.WriteString(fmt.Sprintf("%sLanguage: %q,\n", indentationValues, serviceItemGetLawMessageParam.Language))
 	b.WriteString(fmt.Sprintf("%sUniqueID: %d,\n", indentationValues, serviceItemGetLawMessageParam.UniqueID))
 
-	if serviceItemGetLawMessageParam.StructureVersion() >= 1 {
+	if serviceItemGetLawMessageParam.StructureVersion >= 1 {
 		b.WriteString(fmt.Sprintf("%sPlatform: %d,\n", indentationValues, serviceItemGetLawMessageParam.Platform))
 	}
 

@@ -6,50 +6,61 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // MatchmakeRefereeRound contains the results of a round
 type MatchmakeRefereeRound struct {
-	nex.Structure
-	*nex.Data
-	RoundID                        uint64
-	GID                            uint32
-	State                          uint32
-	PersonalDataCategory           uint32
+	types.Structure
+	*types.Data
+	RoundID                        *types.PrimitiveU64
+	GID                            *types.PrimitiveU32
+	State                          *types.PrimitiveU32
+	PersonalDataCategory           *types.PrimitiveU32
 	NormalizedPersonalRoundResults []*MatchmakeRefereePersonalRoundResult
 }
 
-// Bytes encodes the MatchmakeRefereeRound and returns a byte array
-func (matchmakeRefereeRound *MatchmakeRefereeRound) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt64LE(matchmakeRefereeRound.RoundID)
-	stream.WriteUInt32LE(matchmakeRefereeRound.GID)
-	stream.WriteUInt32LE(matchmakeRefereeRound.State)
-	stream.WriteUInt32LE(matchmakeRefereeRound.PersonalDataCategory)
-	nex.StreamWriteListStructure(stream, matchmakeRefereeRound.NormalizedPersonalRoundResults)
+// WriteTo writes the MatchmakeRefereeRound to the given writable
+func (matchmakeRefereeRound *MatchmakeRefereeRound) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
 
-	return stream.Bytes()
+	matchmakeRefereeRound.RoundID.WriteTo(contentWritable)
+	matchmakeRefereeRound.GID.WriteTo(contentWritable)
+	matchmakeRefereeRound.State.WriteTo(contentWritable)
+	matchmakeRefereeRound.PersonalDataCategory.WriteTo(contentWritable)
+	matchmakeRefereeRound.NormalizedPersonalRoundResults.WriteTo(contentWritable)
+
+	content := contentWritable.Bytes()
+
+	matchmakeRefereeRound.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
-// ExtractFromStream extracts a MatchmakeRefereeRound structure from a stream
-func (matchmakeRefereeRound *MatchmakeRefereeRound) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the MatchmakeRefereeRound from the given readable
+func (matchmakeRefereeRound *MatchmakeRefereeRound) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	matchmakeRefereeRound.RoundID, err = stream.ReadUInt64LE()
+	if err = matchmakeRefereeRound.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read MatchmakeRefereeRound header. %s", err.Error())
+	}
+
+	err = matchmakeRefereeRound.RoundID.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract MatchmakeRefereeRound.RoundID. %s", err.Error())
 	}
 
-	matchmakeRefereeRound.GID, err = stream.ReadUInt32LE()
+	err = matchmakeRefereeRound.GID.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract MatchmakeRefereeRound.GID. %s", err.Error())
 	}
 
-	matchmakeRefereeRound.State, err = stream.ReadUInt32LE()
+	err = matchmakeRefereeRound.State.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract MatchmakeRefereeRound.State. %s", err.Error())
 	}
 
-	matchmakeRefereeRound.PersonalDataCategory, err = stream.ReadUInt32LE()
+	err = matchmakeRefereeRound.PersonalDataCategory.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract MatchmakeRefereeRound.PersonalDataCategory. %s", err.Error())
 	}
@@ -65,13 +76,12 @@ func (matchmakeRefereeRound *MatchmakeRefereeRound) ExtractFromStream(stream *ne
 }
 
 // Copy returns a new copied instance of MatchmakeRefereeRound
-func (matchmakeRefereeRound *MatchmakeRefereeRound) Copy() nex.StructureInterface {
+func (matchmakeRefereeRound *MatchmakeRefereeRound) Copy() types.RVType {
 	copied := NewMatchmakeRefereeRound()
 
-	copied.SetStructureVersion(matchmakeRefereeRound.StructureVersion())
+	copied.StructureVersion = matchmakeRefereeRound.StructureVersion
 
-	copied.Data = matchmakeRefereeRound.ParentType().Copy().(*nex.Data)
-	copied.SetParentType(copied.Data)
+	copied.Data = matchmakeRefereeRound.Data.Copy().(*types.Data)
 
 	copied.RoundID = matchmakeRefereeRound.RoundID
 	copied.GID = matchmakeRefereeRound.GID
@@ -87,10 +97,14 @@ func (matchmakeRefereeRound *MatchmakeRefereeRound) Copy() nex.StructureInterfac
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (matchmakeRefereeRound *MatchmakeRefereeRound) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*MatchmakeRefereeRound)
+func (matchmakeRefereeRound *MatchmakeRefereeRound) Equals(o types.RVType) bool {
+	if _, ok := o.(*MatchmakeRefereeRound); !ok {
+		return false
+	}
 
-	if matchmakeRefereeRound.StructureVersion() != other.StructureVersion() {
+	other := o.(*MatchmakeRefereeRound)
+
+	if matchmakeRefereeRound.StructureVersion != other.StructureVersion {
 		return false
 	}
 
@@ -98,19 +112,19 @@ func (matchmakeRefereeRound *MatchmakeRefereeRound) Equals(structure nex.Structu
 		return false
 	}
 
-	if matchmakeRefereeRound.RoundID != other.RoundID {
+	if !matchmakeRefereeRound.RoundID.Equals(other.RoundID) {
 		return false
 	}
 
-	if matchmakeRefereeRound.GID != other.GID {
+	if !matchmakeRefereeRound.GID.Equals(other.GID) {
 		return false
 	}
 
-	if matchmakeRefereeRound.State != other.State {
+	if !matchmakeRefereeRound.State.Equals(other.State) {
 		return false
 	}
 
-	if matchmakeRefereeRound.PersonalDataCategory != other.PersonalDataCategory {
+	if !matchmakeRefereeRound.PersonalDataCategory.Equals(other.PersonalDataCategory) {
 		return false
 	}
 
@@ -147,7 +161,7 @@ func (matchmakeRefereeRound *MatchmakeRefereeRound) FormatToString(indentationLe
 	var b strings.Builder
 
 	b.WriteString("MatchmakeRefereeRound{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, matchmakeRefereeRound.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, matchmakeRefereeRound.StructureVersion))
 	b.WriteString(fmt.Sprintf("%sRoundID: %d,\n", indentationValues, matchmakeRefereeRound.RoundID))
 	b.WriteString(fmt.Sprintf("%sGID: %d,\n", indentationValues, matchmakeRefereeRound.GID))
 	b.WriteString(fmt.Sprintf("%sState: %d,\n", indentationValues, matchmakeRefereeRound.State))

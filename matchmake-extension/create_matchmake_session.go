@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
@@ -24,9 +25,10 @@ func (protocol *Protocol) handleCreateMatchmakeSession(packet nex.PacketInterfac
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.server)
+	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
-	anyGathering, err := parametersStream.ReadDataHolder()
+	anyGathering := types.NewAnyDataHolder()
+	err = anyGathering.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.CreateMatchmakeSession(fmt.Errorf("Failed to read anyGathering from parameters. %s", err.Error()), packet, callID, nil, "", 0)
 		if errorCode != 0 {
@@ -36,7 +38,8 @@ func (protocol *Protocol) handleCreateMatchmakeSession(packet nex.PacketInterfac
 		return
 	}
 
-	message, err := parametersStream.ReadString()
+	message := types.NewString("")
+	err = message.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.CreateMatchmakeSession(fmt.Errorf("Failed to read message from parameters. %s", err.Error()), packet, callID, nil, "", 0)
 		if errorCode != 0 {
@@ -46,7 +49,7 @@ func (protocol *Protocol) handleCreateMatchmakeSession(packet nex.PacketInterfac
 		return
 	}
 
-	var participationCount uint16 = 0
+	var participationCount *types.PrimitiveU16 = 0
 
 	if matchmakingVersion.GreaterOrEqual("3.4.0") {
 		participationCount, err = parametersStream.ReadUInt16LE()

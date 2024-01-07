@@ -5,10 +5,12 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
 func (protocol *Protocol) handleReportViolation(packet nex.PacketInterface) {
+	var err error
 	var errorCode uint32
 
 	if protocol.ReportViolation == nil {
@@ -22,9 +24,10 @@ func (protocol *Protocol) handleReportViolation(packet nex.PacketInterface) {
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.server)
+	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
-	pid, err := parametersStream.ReadPID()
+	pid := types.NewPID(0)
+	err = pid.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.ReportViolation(fmt.Errorf("Failed to read pid from parameters. %s", err.Error()), packet, callID, nil, "", 0)
 		if errorCode != 0 {
@@ -34,7 +37,8 @@ func (protocol *Protocol) handleReportViolation(packet nex.PacketInterface) {
 		return
 	}
 
-	userName, err := parametersStream.ReadString()
+	userName := types.NewString("")
+	err = userName.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.ReportViolation(fmt.Errorf("Failed to read userName from parameters. %s", err.Error()), packet, callID, nil, "", 0)
 		if errorCode != 0 {
@@ -44,7 +48,8 @@ func (protocol *Protocol) handleReportViolation(packet nex.PacketInterface) {
 		return
 	}
 
-	violationCode, err := parametersStream.ReadUInt32LE()
+	violationCode := types.NewPrimitiveU32(0)
+	err = violationCode.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.ReportViolation(fmt.Errorf("Failed to read violationCode from parameters. %s", err.Error()), packet, callID, nil, "", 0)
 		if errorCode != 0 {

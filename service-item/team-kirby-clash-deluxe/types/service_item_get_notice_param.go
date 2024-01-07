@@ -6,19 +6,24 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // ServiceItemGetNoticeParam holds data for the Service Item (Team Kirby Clash Deluxe) protocol
 type ServiceItemGetNoticeParam struct {
-	nex.Structure
-	ScheduleType uint32
+	types.Structure
+	ScheduleType *types.PrimitiveU32
 }
 
-// ExtractFromStream extracts a ServiceItemGetNoticeParam structure from a stream
-func (serviceItemGetNoticeParam *ServiceItemGetNoticeParam) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the ServiceItemGetNoticeParam from the given readable
+func (serviceItemGetNoticeParam *ServiceItemGetNoticeParam) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	serviceItemGetNoticeParam.ScheduleType, err = stream.ReadUInt32LE()
+	if err = serviceItemGetNoticeParam.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read ServiceItemGetNoticeParam header. %s", err.Error())
+	}
+
+	err = serviceItemGetNoticeParam.ScheduleType.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemGetNoticeParam.ScheduleType from stream. %s", err.Error())
 	}
@@ -26,18 +31,24 @@ func (serviceItemGetNoticeParam *ServiceItemGetNoticeParam) ExtractFromStream(st
 	return nil
 }
 
-// Bytes encodes the ServiceItemGetNoticeParam and returns a byte array
-func (serviceItemGetNoticeParam *ServiceItemGetNoticeParam) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt32LE(serviceItemGetNoticeParam.ScheduleType)
+// WriteTo writes the ServiceItemGetNoticeParam to the given writable
+func (serviceItemGetNoticeParam *ServiceItemGetNoticeParam) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
 
-	return stream.Bytes()
+	serviceItemGetNoticeParam.ScheduleType.WriteTo(contentWritable)
+
+	content := contentWritable.Bytes()
+
+	serviceItemGetNoticeParam.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // Copy returns a new copied instance of ServiceItemGetNoticeParam
-func (serviceItemGetNoticeParam *ServiceItemGetNoticeParam) Copy() nex.StructureInterface {
+func (serviceItemGetNoticeParam *ServiceItemGetNoticeParam) Copy() types.RVType {
 	copied := NewServiceItemGetNoticeParam()
 
-	copied.SetStructureVersion(serviceItemGetNoticeParam.StructureVersion())
+	copied.StructureVersion = serviceItemGetNoticeParam.StructureVersion
 
 	copied.ScheduleType = serviceItemGetNoticeParam.ScheduleType
 
@@ -45,10 +56,14 @@ func (serviceItemGetNoticeParam *ServiceItemGetNoticeParam) Copy() nex.Structure
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (serviceItemGetNoticeParam *ServiceItemGetNoticeParam) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*ServiceItemGetNoticeParam)
+func (serviceItemGetNoticeParam *ServiceItemGetNoticeParam) Equals(o types.RVType) bool {
+	if _, ok := o.(*ServiceItemGetNoticeParam); !ok {
+		return false
+	}
 
-	if serviceItemGetNoticeParam.StructureVersion() != other.StructureVersion() {
+	other := o.(*ServiceItemGetNoticeParam)
+
+	if serviceItemGetNoticeParam.StructureVersion != other.StructureVersion {
 		return false
 	}
 
@@ -68,7 +83,7 @@ func (serviceItemGetNoticeParam *ServiceItemGetNoticeParam) FormatToString(inden
 	var b strings.Builder
 
 	b.WriteString("ServiceItemGetNoticeParam{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, serviceItemGetNoticeParam.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, serviceItemGetNoticeParam.StructureVersion))
 	b.WriteString(fmt.Sprintf("%sScheduleType: %d,\n", indentationValues, serviceItemGetNoticeParam.ScheduleType))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 

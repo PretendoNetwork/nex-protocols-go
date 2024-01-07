@@ -6,18 +6,23 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // ServiceItemListServiceItemResponse holds data for the Service Item (Wii Sports Club) protocol
 type ServiceItemListServiceItemResponse struct {
-	nex.Structure
+	types.Structure
 	*ServiceItemEShopResponse
 	NullableCatalog []*ServiceItemCatalog
 }
 
-// ExtractFromStream extracts a ServiceItemListServiceItemResponse structure from a stream
-func (serviceItemListServiceItemResponse *ServiceItemListServiceItemResponse) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the ServiceItemListServiceItemResponse from the given readable
+func (serviceItemListServiceItemResponse *ServiceItemListServiceItemResponse) ExtractFrom(readable types.Readable) error {
 	var err error
+
+	if err = serviceItemListServiceItemResponse.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read ServiceItemListServiceItemResponse header. %s", err.Error())
+	}
 
 	nullableCatalog, err := nex.StreamReadListStructure(stream, NewServiceItemCatalog())
 	if err != nil {
@@ -29,21 +34,26 @@ func (serviceItemListServiceItemResponse *ServiceItemListServiceItemResponse) Ex
 	return nil
 }
 
-// Bytes encodes the ServiceItemListServiceItemResponse and returns a byte array
-func (serviceItemListServiceItemResponse *ServiceItemListServiceItemResponse) Bytes(stream *nex.StreamOut) []byte {
-	nex.StreamWriteListStructure(stream, serviceItemListServiceItemResponse.NullableCatalog)
+// WriteTo writes the ServiceItemListServiceItemResponse to the given writable
+func (serviceItemListServiceItemResponse *ServiceItemListServiceItemResponse) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
 
-	return stream.Bytes()
+	serviceItemListServiceItemResponse.NullableCatalog.WriteTo(contentWritable)
+
+	content := contentWritable.Bytes()
+
+	serviceItemListServiceItemResponse.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // Copy returns a new copied instance of ServiceItemListServiceItemResponse
-func (serviceItemListServiceItemResponse *ServiceItemListServiceItemResponse) Copy() nex.StructureInterface {
+func (serviceItemListServiceItemResponse *ServiceItemListServiceItemResponse) Copy() types.RVType {
 	copied := NewServiceItemListServiceItemResponse()
 
-	copied.SetStructureVersion(serviceItemListServiceItemResponse.StructureVersion())
+	copied.StructureVersion = serviceItemListServiceItemResponse.StructureVersion
 
 	copied.ServiceItemEShopResponse = serviceItemListServiceItemResponse.ServiceItemEShopResponse.Copy().(*ServiceItemEShopResponse)
-	copied.SetParentType(copied.ServiceItemEShopResponse)
 
 	copied.NullableCatalog = make([]*ServiceItemCatalog, len(serviceItemListServiceItemResponse.NullableCatalog))
 
@@ -55,10 +65,14 @@ func (serviceItemListServiceItemResponse *ServiceItemListServiceItemResponse) Co
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (serviceItemListServiceItemResponse *ServiceItemListServiceItemResponse) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*ServiceItemListServiceItemResponse)
+func (serviceItemListServiceItemResponse *ServiceItemListServiceItemResponse) Equals(o types.RVType) bool {
+	if _, ok := o.(*ServiceItemListServiceItemResponse); !ok {
+		return false
+	}
 
-	if serviceItemListServiceItemResponse.StructureVersion() != other.StructureVersion() {
+	other := o.(*ServiceItemListServiceItemResponse)
+
+	if serviceItemListServiceItemResponse.StructureVersion != other.StructureVersion {
 		return false
 	}
 
@@ -94,7 +108,7 @@ func (serviceItemListServiceItemResponse *ServiceItemListServiceItemResponse) Fo
 
 	b.WriteString("ServiceItemListServiceItemResponse{\n")
 	b.WriteString(fmt.Sprintf("%sParentType: %s,\n", indentationValues, serviceItemListServiceItemResponse.ParentType().FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, serviceItemListServiceItemResponse.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, serviceItemListServiceItemResponse.StructureVersion))
 
 	if len(serviceItemListServiceItemResponse.NullableCatalog) == 0 {
 		b.WriteString(fmt.Sprintf("%sNullableCatalog: [],\n", indentationValues))

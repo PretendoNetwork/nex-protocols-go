@@ -5,10 +5,12 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
 func (protocol *Protocol) handleRequestConnectionData(packet nex.PacketInterface) {
+	var err error
 	var errorCode uint32
 
 	if protocol.RequestConnectionData == nil {
@@ -22,9 +24,10 @@ func (protocol *Protocol) handleRequestConnectionData(packet nex.PacketInterface
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.server)
+	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
-	cidTarget, err := parametersStream.ReadUInt32LE()
+	cidTarget := types.NewPrimitiveU32(0)
+	err = cidTarget.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.RequestConnectionData(fmt.Errorf("Failed to read cidTarget from parameters. %s", err.Error()), packet, callID, 0, nil)
 		if errorCode != 0 {
@@ -34,7 +37,8 @@ func (protocol *Protocol) handleRequestConnectionData(packet nex.PacketInterface
 		return
 	}
 
-	pidTarget, err := parametersStream.ReadPID()
+	pidTarget := types.NewPID(0)
+	err = pidTarget.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.RequestConnectionData(fmt.Errorf("Failed to read pidTarget from parameters. %s", err.Error()), packet, callID, 0, nil)
 		if errorCode != 0 {

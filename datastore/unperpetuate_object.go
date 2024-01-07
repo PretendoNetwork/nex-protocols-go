@@ -5,10 +5,12 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
 func (protocol *Protocol) handleUnperpetuateObject(packet nex.PacketInterface) {
+	var err error
 	var errorCode uint32
 
 	if protocol.UnperpetuateObject == nil {
@@ -22,9 +24,10 @@ func (protocol *Protocol) handleUnperpetuateObject(packet nex.PacketInterface) {
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.server)
+	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
-	persistenceSlotID, err := parametersStream.ReadUInt16LE()
+	persistenceSlotID := types.NewPrimitiveU16(0)
+	err = persistenceSlotID.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.UnperpetuateObject(fmt.Errorf("Failed to read persistenceSlotID from parameters. %s", err.Error()), packet, callID, 0, false)
 		if errorCode != 0 {
@@ -34,7 +37,8 @@ func (protocol *Protocol) handleUnperpetuateObject(packet nex.PacketInterface) {
 		return
 	}
 
-	deleteLastObject, err := parametersStream.ReadBool()
+	deleteLastObject := types.NewPrimitiveBool(false)
+	err = deleteLastObject.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.UnperpetuateObject(fmt.Errorf("Failed to read deleteLastObject from parameters. %s", err.Error()), packet, callID, 0, false)
 		if errorCode != 0 {

@@ -6,41 +6,52 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // BlacklistedPrincipal contains information about a blocked user
 type BlacklistedPrincipal struct {
-	nex.Structure
-	*nex.Data
+	types.Structure
+	*types.Data
 	PrincipalBasicInfo *PrincipalBasicInfo
 	GameKey            *GameKey
-	BlackListedSince   *nex.DateTime
+	BlackListedSince   *types.DateTime
 }
 
-// Bytes encodes the BlacklistedPrincipal and returns a byte array
-func (blacklistedPrincipal *BlacklistedPrincipal) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteStructure(blacklistedPrincipal.PrincipalBasicInfo)
-	stream.WriteStructure(blacklistedPrincipal.GameKey)
-	stream.WriteDateTime(blacklistedPrincipal.BlackListedSince)
+// WriteTo writes the BlacklistedPrincipal to the given writable
+func (blacklistedPrincipal *BlacklistedPrincipal) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
 
-	return stream.Bytes()
+	blacklistedPrincipal.PrincipalBasicInfo.WriteTo(contentWritable)
+	blacklistedPrincipal.GameKey.WriteTo(contentWritable)
+	blacklistedPrincipal.BlackListedSince.WriteTo(contentWritable)
+
+	content := contentWritable.Bytes()
+
+	blacklistedPrincipal.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
-// ExtractFromStream extracts a BlacklistedPrincipal structure from a stream
-func (blacklistedPrincipal *BlacklistedPrincipal) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the BlacklistedPrincipal from the given readable
+func (blacklistedPrincipal *BlacklistedPrincipal) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	blacklistedPrincipal.PrincipalBasicInfo, err = nex.StreamReadStructure(stream, NewPrincipalBasicInfo())
+	if err = blacklistedPrincipal.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read BlacklistedPrincipal header. %s", err.Error())
+	}
+
+	err = blacklistedPrincipal.PrincipalBasicInfo.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract BlacklistedPrincipal.PrincipalBasicInfo. %s", err.Error())
 	}
 
-	blacklistedPrincipal.GameKey, err = nex.StreamReadStructure(stream, NewGameKey())
+	err = blacklistedPrincipal.GameKey.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract BlacklistedPrincipal.GameKey. %s", err.Error())
 	}
 
-	blacklistedPrincipal.BlackListedSince, err = stream.ReadDateTime()
+	err = blacklistedPrincipal.BlackListedSince.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract BlacklistedPrincipal.BlackListedSince. %s", err.Error())
 	}
@@ -49,18 +60,12 @@ func (blacklistedPrincipal *BlacklistedPrincipal) ExtractFromStream(stream *nex.
 }
 
 // Copy returns a new copied instance of BlacklistedPrincipal
-func (blacklistedPrincipal *BlacklistedPrincipal) Copy() nex.StructureInterface {
+func (blacklistedPrincipal *BlacklistedPrincipal) Copy() types.RVType {
 	copied := NewBlacklistedPrincipal()
 
-	copied.SetStructureVersion(blacklistedPrincipal.StructureVersion())
+	copied.StructureVersion = blacklistedPrincipal.StructureVersion
 
-	if blacklistedPrincipal.ParentType() != nil {
-		copied.Data = blacklistedPrincipal.ParentType().Copy().(*nex.Data)
-	} else {
-		copied.Data = nex.NewData()
-	}
-
-	copied.SetParentType(copied.Data)
+	copied.Data = blacklistedPrincipal.Data.Copy().(*types.Data)
 
 	copied.PrincipalBasicInfo = blacklistedPrincipal.PrincipalBasicInfo.Copy().(*PrincipalBasicInfo)
 	copied.GameKey = blacklistedPrincipal.GameKey.Copy().(*GameKey)
@@ -70,10 +75,14 @@ func (blacklistedPrincipal *BlacklistedPrincipal) Copy() nex.StructureInterface 
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (blacklistedPrincipal *BlacklistedPrincipal) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*BlacklistedPrincipal)
+func (blacklistedPrincipal *BlacklistedPrincipal) Equals(o types.RVType) bool {
+	if _, ok := o.(*BlacklistedPrincipal); !ok {
+		return false
+	}
 
-	if blacklistedPrincipal.StructureVersion() != other.StructureVersion() {
+	other := o.(*BlacklistedPrincipal)
+
+	if blacklistedPrincipal.StructureVersion != other.StructureVersion {
 		return false
 	}
 
@@ -109,7 +118,7 @@ func (blacklistedPrincipal *BlacklistedPrincipal) FormatToString(indentationLeve
 	var b strings.Builder
 
 	b.WriteString("BlacklistedPrincipal{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, blacklistedPrincipal.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, blacklistedPrincipal.StructureVersion))
 
 	if blacklistedPrincipal.PrincipalBasicInfo != nil {
 		b.WriteString(fmt.Sprintf("%sPrincipalBasicInfo: %s,\n", indentationValues, blacklistedPrincipal.PrincipalBasicInfo.FormatToString(indentationLevel+1)))

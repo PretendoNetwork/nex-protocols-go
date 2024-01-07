@@ -5,10 +5,12 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
 func (protocol *Protocol) handleUpdatePreference(packet nex.PacketInterface) {
+	var err error
 	var errorCode uint32
 
 	if protocol.UpdatePreference == nil {
@@ -22,9 +24,10 @@ func (protocol *Protocol) handleUpdatePreference(packet nex.PacketInterface) {
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.server)
+	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
-	publicMode, err := parametersStream.ReadBool()
+	publicMode := types.NewPrimitiveBool(false)
+	err = publicMode.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.UpdatePreference(fmt.Errorf("Failed to read publicMode from parameters. %s", err.Error()), packet, callID, false, false, false)
 		if errorCode != 0 {
@@ -34,7 +37,8 @@ func (protocol *Protocol) handleUpdatePreference(packet nex.PacketInterface) {
 		return
 	}
 
-	showGame, err := parametersStream.ReadBool()
+	showGame := types.NewPrimitiveBool(false)
+	err = showGame.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.UpdatePreference(fmt.Errorf("Failed to read showGame from parameters. %s", err.Error()), packet, callID, false, false, false)
 		if errorCode != 0 {
@@ -44,7 +48,8 @@ func (protocol *Protocol) handleUpdatePreference(packet nex.PacketInterface) {
 		return
 	}
 
-	showPlayedGame, err := parametersStream.ReadBool()
+	showPlayedGame := types.NewPrimitiveBool(false)
+	err = showPlayedGame.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.UpdatePreference(fmt.Errorf("Failed to read showPlayedGame from parameters. %s", err.Error()), packet, callID, false, false, false)
 		if errorCode != 0 {

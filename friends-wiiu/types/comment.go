@@ -6,41 +6,52 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // Comment contains data about a text comment
 type Comment struct {
-	nex.Structure
-	*nex.Data
-	Unknown     uint8
+	types.Structure
+	*types.Data
+	Unknown     *types.PrimitiveU8
 	Contents    string
-	LastChanged *nex.DateTime
+	LastChanged *types.DateTime
 }
 
-// Bytes encodes the Comment and returns a byte array
-func (comment *Comment) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt8(comment.Unknown)
-	stream.WriteString(comment.Contents)
-	stream.WriteDateTime(comment.LastChanged)
+// WriteTo writes the Comment to the given writable
+func (comment *Comment) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
 
-	return stream.Bytes()
+	comment.Unknown.WriteTo(contentWritable)
+	comment.Contents.WriteTo(contentWritable)
+	comment.LastChanged.WriteTo(contentWritable)
+
+	content := contentWritable.Bytes()
+
+	comment.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
-// ExtractFromStream extracts a Comment structure from a stream
-func (comment *Comment) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the Comment from the given readable
+func (comment *Comment) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	comment.Unknown, err = stream.ReadUInt8()
+	if err = comment.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read Comment header. %s", err.Error())
+	}
+
+	err = comment.Unknown.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract Comment.Unknown. %s", err.Error())
 	}
 
-	comment.Contents, err = stream.ReadString()
+	err = comment.Contents.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract Comment.Contents. %s", err.Error())
 	}
 
-	comment.LastChanged, err = stream.ReadDateTime()
+	err = comment.LastChanged.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract Comment.LastChanged. %s", err.Error())
 	}
@@ -49,18 +60,12 @@ func (comment *Comment) ExtractFromStream(stream *nex.StreamIn) error {
 }
 
 // Copy returns a new copied instance of Comment
-func (comment *Comment) Copy() nex.StructureInterface {
+func (comment *Comment) Copy() types.RVType {
 	copied := NewComment()
 
-	copied.SetStructureVersion(comment.StructureVersion())
+	copied.StructureVersion = comment.StructureVersion
 
-	if comment.ParentType() != nil {
-		copied.Data = comment.ParentType().Copy().(*nex.Data)
-	} else {
-		copied.Data = nex.NewData()
-	}
-
-	copied.SetParentType(copied.Data)
+	copied.Data = comment.Data.Copy().(*types.Data)
 
 	copied.Unknown = comment.Unknown
 	copied.Contents = comment.Contents
@@ -70,10 +75,14 @@ func (comment *Comment) Copy() nex.StructureInterface {
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (comment *Comment) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*Comment)
+func (comment *Comment) Equals(o types.RVType) bool {
+	if _, ok := o.(*Comment); !ok {
+		return false
+	}
 
-	if comment.StructureVersion() != other.StructureVersion() {
+	other := o.(*Comment)
+
+	if comment.StructureVersion != other.StructureVersion {
 		return false
 	}
 
@@ -81,11 +90,11 @@ func (comment *Comment) Equals(structure nex.StructureInterface) bool {
 		return false
 	}
 
-	if comment.Unknown != other.Unknown {
+	if !comment.Unknown.Equals(other.Unknown) {
 		return false
 	}
 
-	if comment.Contents != other.Contents {
+	if !comment.Contents.Equals(other.Contents) {
 		return false
 	}
 
@@ -109,7 +118,7 @@ func (comment *Comment) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("Comment{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, comment.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, comment.StructureVersion))
 	b.WriteString(fmt.Sprintf("%sUnknown: %d\n", indentationValues, comment.Unknown))
 	b.WriteString(fmt.Sprintf("%sContents: %q\n", indentationValues, comment.Contents))
 

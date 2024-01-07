@@ -5,11 +5,13 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 	datastore_types "github.com/PretendoNetwork/nex-protocols-go/datastore/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
 func (protocol *Protocol) handleRateObjectsWithPosting(packet nex.PacketInterface) {
+	var err error
 	var errorCode uint32
 
 	if protocol.RateObjectsWithPosting == nil {
@@ -23,7 +25,7 @@ func (protocol *Protocol) handleRateObjectsWithPosting(packet nex.PacketInterfac
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.server)
+	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	targets, err := nex.StreamReadListStructure(parametersStream, datastore_types.NewDataStoreRatingTarget())
 	if err != nil {
@@ -55,7 +57,8 @@ func (protocol *Protocol) handleRateObjectsWithPosting(packet nex.PacketInterfac
 		return
 	}
 
-	transactional, err := parametersStream.ReadBool()
+	transactional := types.NewPrimitiveBool(false)
+	err = transactional.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.RateObjectsWithPosting(fmt.Errorf("Failed to read transactional from parameters. %s", err.Error()), packet, callID, nil, nil, nil, false, false)
 		if errorCode != 0 {
@@ -65,7 +68,8 @@ func (protocol *Protocol) handleRateObjectsWithPosting(packet nex.PacketInterfac
 		return
 	}
 
-	fetchRatings, err := parametersStream.ReadBool()
+	fetchRatings := types.NewPrimitiveBool(false)
+	err = fetchRatings.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.RateObjectsWithPosting(fmt.Errorf("Failed to read fetchRatings from parameters. %s", err.Error()), packet, callID, nil, nil, nil, false, false)
 		if errorCode != 0 {

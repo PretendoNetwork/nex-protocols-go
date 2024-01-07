@@ -5,11 +5,13 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 	datastore_types "github.com/PretendoNetwork/nex-protocols-go/datastore/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
 func (protocol *Protocol) handleGetMetasMultipleParam(packet nex.PacketInterface) {
+	var err error
 	var errorCode uint32
 
 	if protocol.GetMetasMultipleParam == nil {
@@ -23,7 +25,7 @@ func (protocol *Protocol) handleGetMetasMultipleParam(packet nex.PacketInterface
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.server)
+	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	params, err := nex.StreamReadListStructure(parametersStream, datastore_types.NewDataStoreGetMetaParam())
 	if err != nil {

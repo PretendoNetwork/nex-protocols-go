@@ -5,10 +5,12 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
 func (protocol *Protocol) handleRequestProbeInitiation(packet nex.PacketInterface) {
+	var err error
 	var errorCode uint32
 
 	if protocol.RequestProbeInitiation == nil {
@@ -22,9 +24,11 @@ func (protocol *Protocol) handleRequestProbeInitiation(packet nex.PacketInterfac
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.server)
+	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
-	urlTargetList, err := parametersStream.ReadListStationURL()
+	urlTargetList := types.NewList[*types.StationURL]()
+	urlTargetList.Type = types.NewStationURL("")
+	err = urlTargetList.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.RequestProbeInitiation(fmt.Errorf("Failed to read urlTargetList from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {

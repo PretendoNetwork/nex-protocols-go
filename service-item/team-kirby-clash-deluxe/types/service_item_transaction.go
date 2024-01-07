@@ -6,15 +6,16 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // ServiceItemTransaction holds data for the Service Item (Team Kirby Clash Deluxe) protocol
 type ServiceItemTransaction struct {
-	nex.Structure
+	types.Structure
 	TransactionID          string
 	ExtTransactionID       string
-	Time                   *nex.DateTime
-	TransactionType        uint32
+	Time                   *types.DateTime
+	TransactionType        *types.PrimitiveU32
 	TransactionDescription string
 	TransactionAmount      *ServiceItemAmount
 	ItemCode               string
@@ -22,51 +23,55 @@ type ServiceItemTransaction struct {
 	Limitation             *ServiceItemLimitation
 }
 
-// ExtractFromStream extracts a ServiceItemTransaction structure from a stream
-func (serviceItemTransaction *ServiceItemTransaction) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the ServiceItemTransaction from the given readable
+func (serviceItemTransaction *ServiceItemTransaction) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	serviceItemTransaction.TransactionID, err = stream.ReadString()
+	if err = serviceItemTransaction.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read ServiceItemTransaction header. %s", err.Error())
+	}
+
+	err = serviceItemTransaction.TransactionID.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemTransaction.TransactionID from stream. %s", err.Error())
 	}
 
-	serviceItemTransaction.ExtTransactionID, err = stream.ReadString()
+	err = serviceItemTransaction.ExtTransactionID.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemTransaction.ExtTransactionID from stream. %s", err.Error())
 	}
 
-	serviceItemTransaction.Time, err = stream.ReadDateTime()
+	err = serviceItemTransaction.Time.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemTransaction.Time from stream. %s", err.Error())
 	}
 
-	serviceItemTransaction.TransactionType, err = stream.ReadUInt32LE()
+	err = serviceItemTransaction.TransactionType.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemTransaction.TransactionType from stream. %s", err.Error())
 	}
 
-	serviceItemTransaction.TransactionDescription, err = stream.ReadString()
+	err = serviceItemTransaction.TransactionDescription.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemTransaction.TransactionDescription from stream. %s", err.Error())
 	}
 
-	serviceItemTransaction.TransactionAmount, err = nex.StreamReadStructure(stream, NewServiceItemAmount())
+	err = serviceItemTransaction.TransactionAmount.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemTransaction.TransactionAmount from stream. %s", err.Error())
 	}
 
-	serviceItemTransaction.ItemCode, err = stream.ReadString()
+	err = serviceItemTransaction.ItemCode.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemTransaction.ItemCode from stream. %s", err.Error())
 	}
 
-	serviceItemTransaction.ReferenceID, err = stream.ReadString()
+	err = serviceItemTransaction.ReferenceID.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemTransaction.ReferenceID from stream. %s", err.Error())
 	}
 
-	serviceItemTransaction.Limitation, err = nex.StreamReadStructure(stream, NewServiceItemLimitation())
+	err = serviceItemTransaction.Limitation.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemTransaction.Limitation from stream. %s", err.Error())
 	}
@@ -74,26 +79,32 @@ func (serviceItemTransaction *ServiceItemTransaction) ExtractFromStream(stream *
 	return nil
 }
 
-// Bytes encodes the ServiceItemTransaction and returns a byte array
-func (serviceItemTransaction *ServiceItemTransaction) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteString(serviceItemTransaction.TransactionID)
-	stream.WriteString(serviceItemTransaction.ExtTransactionID)
-	stream.WriteDateTime(serviceItemTransaction.Time)
-	stream.WriteUInt32LE(serviceItemTransaction.TransactionType)
-	stream.WriteString(serviceItemTransaction.TransactionDescription)
-	stream.WriteStructure(serviceItemTransaction.TransactionAmount)
-	stream.WriteString(serviceItemTransaction.ItemCode)
-	stream.WriteString(serviceItemTransaction.ReferenceID)
-	stream.WriteStructure(serviceItemTransaction.Limitation)
+// WriteTo writes the ServiceItemTransaction to the given writable
+func (serviceItemTransaction *ServiceItemTransaction) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
 
-	return stream.Bytes()
+	serviceItemTransaction.TransactionID.WriteTo(contentWritable)
+	serviceItemTransaction.ExtTransactionID.WriteTo(contentWritable)
+	serviceItemTransaction.Time.WriteTo(contentWritable)
+	serviceItemTransaction.TransactionType.WriteTo(contentWritable)
+	serviceItemTransaction.TransactionDescription.WriteTo(contentWritable)
+	serviceItemTransaction.TransactionAmount.WriteTo(contentWritable)
+	serviceItemTransaction.ItemCode.WriteTo(contentWritable)
+	serviceItemTransaction.ReferenceID.WriteTo(contentWritable)
+	serviceItemTransaction.Limitation.WriteTo(contentWritable)
+
+	content := contentWritable.Bytes()
+
+	serviceItemTransaction.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // Copy returns a new copied instance of ServiceItemTransaction
-func (serviceItemTransaction *ServiceItemTransaction) Copy() nex.StructureInterface {
+func (serviceItemTransaction *ServiceItemTransaction) Copy() types.RVType {
 	copied := NewServiceItemTransaction()
 
-	copied.SetStructureVersion(serviceItemTransaction.StructureVersion())
+	copied.StructureVersion = serviceItemTransaction.StructureVersion
 
 	copied.TransactionID = serviceItemTransaction.TransactionID
 	copied.ExtTransactionID = serviceItemTransaction.ExtTransactionID
@@ -109,18 +120,22 @@ func (serviceItemTransaction *ServiceItemTransaction) Copy() nex.StructureInterf
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (serviceItemTransaction *ServiceItemTransaction) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*ServiceItemTransaction)
-
-	if serviceItemTransaction.StructureVersion() != other.StructureVersion() {
+func (serviceItemTransaction *ServiceItemTransaction) Equals(o types.RVType) bool {
+	if _, ok := o.(*ServiceItemTransaction); !ok {
 		return false
 	}
 
-	if serviceItemTransaction.TransactionID != other.TransactionID {
+	other := o.(*ServiceItemTransaction)
+
+	if serviceItemTransaction.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if serviceItemTransaction.ExtTransactionID != other.ExtTransactionID {
+	if !serviceItemTransaction.TransactionID.Equals(other.TransactionID) {
+		return false
+	}
+
+	if !serviceItemTransaction.ExtTransactionID.Equals(other.ExtTransactionID) {
 		return false
 	}
 
@@ -128,11 +143,11 @@ func (serviceItemTransaction *ServiceItemTransaction) Equals(structure nex.Struc
 		return false
 	}
 
-	if serviceItemTransaction.TransactionType != other.TransactionType {
+	if !serviceItemTransaction.TransactionType.Equals(other.TransactionType) {
 		return false
 	}
 
-	if serviceItemTransaction.TransactionDescription != other.TransactionDescription {
+	if !serviceItemTransaction.TransactionDescription.Equals(other.TransactionDescription) {
 		return false
 	}
 
@@ -140,11 +155,11 @@ func (serviceItemTransaction *ServiceItemTransaction) Equals(structure nex.Struc
 		return false
 	}
 
-	if serviceItemTransaction.ItemCode != other.ItemCode {
+	if !serviceItemTransaction.ItemCode.Equals(other.ItemCode) {
 		return false
 	}
 
-	if serviceItemTransaction.ReferenceID != other.ReferenceID {
+	if !serviceItemTransaction.ReferenceID.Equals(other.ReferenceID) {
 		return false
 	}
 
@@ -168,7 +183,7 @@ func (serviceItemTransaction *ServiceItemTransaction) FormatToString(indentation
 	var b strings.Builder
 
 	b.WriteString("ServiceItemTransaction{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, serviceItemTransaction.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, serviceItemTransaction.StructureVersion))
 	b.WriteString(fmt.Sprintf("%sTransactionID: %q,\n", indentationValues, serviceItemTransaction.TransactionID))
 	b.WriteString(fmt.Sprintf("%sExtTransactionID: %q,\n", indentationValues, serviceItemTransaction.ExtTransactionID))
 

@@ -3,10 +3,12 @@ package protocol
 
 import (
 	nex "github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
 func (protocol *Protocol) handleDebugUnregisterCommunityCompetition(packet nex.PacketInterface) {
+	var err error
 	var errorCode uint32
 
 	if protocol.DebugUnregisterCommunityCompetition == nil {

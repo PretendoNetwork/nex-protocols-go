@@ -5,11 +5,13 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 	friends_wiiu_types "github.com/PretendoNetwork/nex-protocols-go/friends-wiiu/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
 func (protocol *Protocol) handleDeletePersistentNotification(packet nex.PacketInterface) {
+	var err error
 	var errorCode uint32
 
 	if protocol.DeletePersistentNotification == nil {
@@ -23,7 +25,7 @@ func (protocol *Protocol) handleDeletePersistentNotification(packet nex.PacketIn
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.server)
+	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	persistentNotifications, err := nex.StreamReadListStructure(parametersStream, friends_wiiu_types.NewPersistentNotification())
 	if err != nil {

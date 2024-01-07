@@ -6,41 +6,52 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // NNAInfo contains information about a Nintendo Network Account
 type NNAInfo struct {
-	nex.Structure
-	*nex.Data
+	types.Structure
+	*types.Data
 	PrincipalBasicInfo *PrincipalBasicInfo
-	Unknown1           uint8
-	Unknown2           uint8
+	Unknown1           *types.PrimitiveU8
+	Unknown2           *types.PrimitiveU8
 }
 
-// Bytes encodes the NNAInfo and returns a byte array
-func (nnaInfo *NNAInfo) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteStructure(nnaInfo.PrincipalBasicInfo)
-	stream.WriteUInt8(nnaInfo.Unknown1)
-	stream.WriteUInt8(nnaInfo.Unknown2)
+// WriteTo writes the NNAInfo to the given writable
+func (nnaInfo *NNAInfo) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
 
-	return stream.Bytes()
+	nnaInfo.PrincipalBasicInfo.WriteTo(contentWritable)
+	nnaInfo.Unknown1.WriteTo(contentWritable)
+	nnaInfo.Unknown2.WriteTo(contentWritable)
+
+	content := contentWritable.Bytes()
+
+	nnaInfo.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
-// ExtractFromStream extracts a NNAInfo structure from a stream
-func (nnaInfo *NNAInfo) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the NNAInfo from the given readable
+func (nnaInfo *NNAInfo) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	nnaInfo.PrincipalBasicInfo, err = nex.StreamReadStructure(stream, NewPrincipalBasicInfo())
+	if err = nnaInfo.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read NNAInfo header. %s", err.Error())
+	}
+
+	err = nnaInfo.PrincipalBasicInfo.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract NNAInfo.PrincipalBasicInfo. %s", err.Error())
 	}
 
-	nnaInfo.Unknown1, err = stream.ReadUInt8()
+	err = nnaInfo.Unknown1.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract NNAInfo.Unknown1. %s", err.Error())
 	}
 
-	nnaInfo.Unknown2, err = stream.ReadUInt8()
+	err = nnaInfo.Unknown2.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract NNAInfo.Unknown2. %s", err.Error())
 	}
@@ -49,18 +60,12 @@ func (nnaInfo *NNAInfo) ExtractFromStream(stream *nex.StreamIn) error {
 }
 
 // Copy returns a new copied instance of NNAInfo
-func (nnaInfo *NNAInfo) Copy() nex.StructureInterface {
+func (nnaInfo *NNAInfo) Copy() types.RVType {
 	copied := NewNNAInfo()
 
-	copied.SetStructureVersion(nnaInfo.StructureVersion())
+	copied.StructureVersion = nnaInfo.StructureVersion
 
-	if nnaInfo.ParentType() != nil {
-		copied.Data = nnaInfo.ParentType().Copy().(*nex.Data)
-	} else {
-		copied.Data = nex.NewData()
-	}
-
-	copied.SetParentType(copied.Data)
+	copied.Data = nnaInfo.Data.Copy().(*types.Data)
 
 	copied.PrincipalBasicInfo = nnaInfo.PrincipalBasicInfo.Copy().(*PrincipalBasicInfo)
 	copied.Unknown1 = nnaInfo.Unknown1
@@ -70,10 +75,14 @@ func (nnaInfo *NNAInfo) Copy() nex.StructureInterface {
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (nnaInfo *NNAInfo) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*NNAInfo)
+func (nnaInfo *NNAInfo) Equals(o types.RVType) bool {
+	if _, ok := o.(*NNAInfo); !ok {
+		return false
+	}
 
-	if nnaInfo.StructureVersion() != other.StructureVersion() {
+	other := o.(*NNAInfo)
+
+	if nnaInfo.StructureVersion != other.StructureVersion {
 		return false
 	}
 
@@ -85,11 +94,11 @@ func (nnaInfo *NNAInfo) Equals(structure nex.StructureInterface) bool {
 		return false
 	}
 
-	if nnaInfo.Unknown1 != other.Unknown1 {
+	if !nnaInfo.Unknown1.Equals(other.Unknown1) {
 		return false
 	}
 
-	if nnaInfo.Unknown2 != other.Unknown2 {
+	if !nnaInfo.Unknown2.Equals(other.Unknown2) {
 		return false
 	}
 
@@ -109,7 +118,7 @@ func (nnaInfo *NNAInfo) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("NNAInfo{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, nnaInfo.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, nnaInfo.StructureVersion))
 
 	if nnaInfo.PrincipalBasicInfo != nil {
 		b.WriteString(fmt.Sprintf("%sPrincipalBasicInfo: %s,\n", indentationValues, nnaInfo.PrincipalBasicInfo.FormatToString(indentationLevel+1)))

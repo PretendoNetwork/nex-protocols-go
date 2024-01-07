@@ -5,10 +5,12 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
 func (protocol *Protocol) handleUpdateAccountExpiryDate(packet nex.PacketInterface) {
+	var err error
 	var errorCode uint32
 
 	if protocol.UpdateAccountExpiryDate == nil {
@@ -22,11 +24,12 @@ func (protocol *Protocol) handleUpdateAccountExpiryDate(packet nex.PacketInterfa
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.server)
+	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
-	idPrincipal, err := parametersStream.ReadPID()
+	idPrincipal := types.NewPID(0)
+	err = idPrincipal.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.UpdateAccountExpiryDate(fmt.Errorf("Failed to read idPrincipal from parameters. %s", err.Error()), packet, callID, nil, nil, "")
+		_, errorCode = protocol.UpdateAccountExpiryDate(fmt.Errorf("Failed to read idPrincipal from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -34,9 +37,10 @@ func (protocol *Protocol) handleUpdateAccountExpiryDate(packet nex.PacketInterfa
 		return
 	}
 
-	dtExpiry, err := parametersStream.ReadDateTime()
+	dtExpiry := types.NewDateTime(0)
+	err = dtExpiry.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.UpdateAccountExpiryDate(fmt.Errorf("Failed to read dtExpiry from parameters. %s", err.Error()), packet, callID, nil, nil, "")
+		_, errorCode = protocol.UpdateAccountExpiryDate(fmt.Errorf("Failed to read dtExpiry from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -44,9 +48,10 @@ func (protocol *Protocol) handleUpdateAccountExpiryDate(packet nex.PacketInterfa
 		return
 	}
 
-	strExpiredMessage, err := parametersStream.ReadString()
+	strExpiredMessage := types.NewString("")
+	err = strExpiredMessage.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.UpdateAccountExpiryDate(fmt.Errorf("Failed to read strExpiredMessage from parameters. %s", err.Error()), packet, callID, nil, nil, "")
+		_, errorCode = protocol.UpdateAccountExpiryDate(fmt.Errorf("Failed to read strExpiredMessage from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}

@@ -6,18 +6,23 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // ServiceItemGetServiceItemRightResponse holds data for the Service Item (Team Kirby Clash Deluxe) protocol
 type ServiceItemGetServiceItemRightResponse struct {
-	nex.Structure
+	types.Structure
 	*ServiceItemEShopResponse
 	NullableRightInfos []*ServiceItemRightInfos
 }
 
-// ExtractFromStream extracts a ServiceItemGetServiceItemRightResponse structure from a stream
-func (serviceItemGetServiceItemRightResponse *ServiceItemGetServiceItemRightResponse) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the ServiceItemGetServiceItemRightResponse from the given readable
+func (serviceItemGetServiceItemRightResponse *ServiceItemGetServiceItemRightResponse) ExtractFrom(readable types.Readable) error {
 	var err error
+
+	if err = serviceItemGetServiceItemRightResponse.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read ServiceItemGetServiceItemRightResponse header. %s", err.Error())
+	}
 
 	nullableRightInfos, err := nex.StreamReadListStructure(stream, NewServiceItemRightInfos())
 	if err != nil {
@@ -29,21 +34,26 @@ func (serviceItemGetServiceItemRightResponse *ServiceItemGetServiceItemRightResp
 	return nil
 }
 
-// Bytes encodes the ServiceItemGetServiceItemRightResponse and returns a byte array
-func (serviceItemGetServiceItemRightResponse *ServiceItemGetServiceItemRightResponse) Bytes(stream *nex.StreamOut) []byte {
-	nex.StreamWriteListStructure(stream, serviceItemGetServiceItemRightResponse.NullableRightInfos)
+// WriteTo writes the ServiceItemGetServiceItemRightResponse to the given writable
+func (serviceItemGetServiceItemRightResponse *ServiceItemGetServiceItemRightResponse) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
 
-	return stream.Bytes()
+	serviceItemGetServiceItemRightResponse.NullableRightInfos.WriteTo(contentWritable)
+
+	content := contentWritable.Bytes()
+
+	serviceItemGetServiceItemRightResponse.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // Copy returns a new copied instance of ServiceItemGetServiceItemRightResponse
-func (serviceItemGetServiceItemRightResponse *ServiceItemGetServiceItemRightResponse) Copy() nex.StructureInterface {
+func (serviceItemGetServiceItemRightResponse *ServiceItemGetServiceItemRightResponse) Copy() types.RVType {
 	copied := NewServiceItemGetServiceItemRightResponse()
 
-	copied.SetStructureVersion(serviceItemGetServiceItemRightResponse.StructureVersion())
+	copied.StructureVersion = serviceItemGetServiceItemRightResponse.StructureVersion
 
 	copied.ServiceItemEShopResponse = serviceItemGetServiceItemRightResponse.ServiceItemEShopResponse.Copy().(*ServiceItemEShopResponse)
-	copied.SetParentType(copied.ServiceItemEShopResponse)
 
 	copied.NullableRightInfos = make([]*ServiceItemRightInfos, len(serviceItemGetServiceItemRightResponse.NullableRightInfos))
 
@@ -55,10 +65,14 @@ func (serviceItemGetServiceItemRightResponse *ServiceItemGetServiceItemRightResp
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (serviceItemGetServiceItemRightResponse *ServiceItemGetServiceItemRightResponse) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*ServiceItemGetServiceItemRightResponse)
+func (serviceItemGetServiceItemRightResponse *ServiceItemGetServiceItemRightResponse) Equals(o types.RVType) bool {
+	if _, ok := o.(*ServiceItemGetServiceItemRightResponse); !ok {
+		return false
+	}
 
-	if serviceItemGetServiceItemRightResponse.StructureVersion() != other.StructureVersion() {
+	other := o.(*ServiceItemGetServiceItemRightResponse)
+
+	if serviceItemGetServiceItemRightResponse.StructureVersion != other.StructureVersion {
 		return false
 	}
 
@@ -94,7 +108,7 @@ func (serviceItemGetServiceItemRightResponse *ServiceItemGetServiceItemRightResp
 
 	b.WriteString("ServiceItemGetServiceItemRightResponse{\n")
 	b.WriteString(fmt.Sprintf("%sParentType: %s,\n", indentationValues, serviceItemGetServiceItemRightResponse.ParentType().FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, serviceItemGetServiceItemRightResponse.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, serviceItemGetServiceItemRightResponse.StructureVersion))
 
 	if len(serviceItemGetServiceItemRightResponse.NullableRightInfos) == 0 {
 		b.WriteString(fmt.Sprintf("%sNullableRightInfos: [],\n", indentationValues))

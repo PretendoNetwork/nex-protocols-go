@@ -7,43 +7,54 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // MiiList is a data structure used by the Friends 3DS protocol to hold information about a MiiList
 type MiiList struct {
-	nex.Structure
-	*nex.Data
+	types.Structure
+	*types.Data
 	Unknown1    string
-	Unknown2    bool
-	Unknown3    uint8
+	Unknown2    *types.PrimitiveBool
+	Unknown3    *types.PrimitiveU8
 	MiiDataList [][]byte
 }
 
-// Bytes encodes the MiiList and returns a byte array
-func (miiList *MiiList) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteString(miiList.Unknown1)
-	stream.WriteBool(miiList.Unknown2)
-	stream.WriteUInt8(miiList.Unknown3)
+// WriteTo writes the MiiList to the given writable
+func (miiList *MiiList) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
+
+	miiList.Unknown1.WriteTo(contentWritable)
+	miiList.Unknown2.WriteTo(contentWritable)
+	miiList.Unknown3.WriteTo(contentWritable)
 	stream.WriteListBuffer(miiList.MiiDataList)
 
-	return stream.Bytes()
+	content := contentWritable.Bytes()
+
+	rvcd.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // ExtractFromStream extracts a MiiList from a stream
-func (miiList *MiiList) ExtractFromStream(stream *nex.StreamIn) error {
+func (miiList *MiiList) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	miiList.Unknown1, err = stream.ReadString()
+	if err = miiList.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read MiiList header. %s", err.Error())
+	}
+
+	err = miiList.Unknown1.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract MiiList.Unknown1. %s", err.Error())
 	}
 
-	miiList.Unknown2, err = stream.ReadBool()
+	err = miiList.Unknown2.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract MiiList.Unknown2. %s", err.Error())
 	}
 
-	miiList.Unknown3, err = stream.ReadUInt8()
+	err = miiList.Unknown3.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract MiiList.Unknown3. %s", err.Error())
 	}
@@ -57,18 +68,12 @@ func (miiList *MiiList) ExtractFromStream(stream *nex.StreamIn) error {
 }
 
 // Copy returns a new copied instance of MiiList
-func (miiList *MiiList) Copy() nex.StructureInterface {
+func (miiList *MiiList) Copy() types.RVType {
 	copied := NewMiiList()
 
-	copied.SetStructureVersion(miiList.StructureVersion())
+	copied.StructureVersion = miiList.StructureVersion
 
-	if miiList.ParentType() != nil {
-		copied.Data = miiList.ParentType().Copy().(*nex.Data)
-	} else {
-		copied.Data = nex.NewData()
-	}
-
-	copied.SetParentType(copied.Data)
+	copied.Data = miiList.Data.Copy().(*types.Data)
 
 	copied.Unknown1 = miiList.Unknown1
 	copied.Unknown2 = miiList.Unknown2
@@ -85,10 +90,14 @@ func (miiList *MiiList) Copy() nex.StructureInterface {
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (miiList *MiiList) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*MiiList)
+func (miiList *MiiList) Equals(o types.RVType) bool {
+	if _, ok := o.(*MiiList); !ok {
+		return false
+	}
 
-	if miiList.StructureVersion() != other.StructureVersion() {
+	other := o.(*MiiList)
+
+	if miiList.StructureVersion != other.StructureVersion {
 		return false
 	}
 
@@ -96,15 +105,15 @@ func (miiList *MiiList) Equals(structure nex.StructureInterface) bool {
 		return false
 	}
 
-	if miiList.Unknown1 != other.Unknown1 {
+	if !miiList.Unknown1.Equals(other.Unknown1) {
 		return false
 	}
 
-	if miiList.Unknown2 != other.Unknown2 {
+	if !miiList.Unknown2.Equals(other.Unknown2) {
 		return false
 	}
 
-	if miiList.Unknown3 != other.Unknown3 {
+	if !miiList.Unknown3.Equals(other.Unknown3) {
 		return false
 	}
 
@@ -113,7 +122,7 @@ func (miiList *MiiList) Equals(structure nex.StructureInterface) bool {
 	}
 
 	for i := 0; i < len(miiList.MiiDataList); i++ {
-		if !bytes.Equal(miiList.MiiDataList[i], other.MiiDataList[i]) {
+		if !miiList.MiiDataList[i].Equals(other.MiiDataList[i]) {
 			return false
 		}
 	}
@@ -134,7 +143,7 @@ func (miiList *MiiList) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("MiiList{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, miiList.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, miiList.StructureVersion))
 	b.WriteString(fmt.Sprintf("%sUnknown1: %q,\n", indentationValues, miiList.Unknown1))
 	b.WriteString(fmt.Sprintf("%sUnknown2: %t,\n", indentationValues, miiList.Unknown2))
 	b.WriteString(fmt.Sprintf("%sUnknown3: %d,\n", indentationValues, miiList.Unknown3))

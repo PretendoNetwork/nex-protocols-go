@@ -5,11 +5,13 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 	match_making_types "github.com/PretendoNetwork/nex-protocols-go/match-making/types"
 )
 
 func (protocol *Protocol) handleFindMatchmakeSessionByParticipant(packet nex.PacketInterface) {
+	var err error
 	var errorCode uint32
 
 	if protocol.FindMatchmakeSessionByParticipant == nil {
@@ -23,9 +25,10 @@ func (protocol *Protocol) handleFindMatchmakeSessionByParticipant(packet nex.Pac
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.server)
+	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
-	param, err := nex.StreamReadStructure(parametersStream, match_making_types.NewFindMatchmakeSessionByParticipantParam())
+	param := match_making_types.NewFindMatchmakeSessionByParticipantParam()
+	err = param.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.FindMatchmakeSessionByParticipant(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {

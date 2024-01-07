@@ -6,18 +6,23 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // ServiceItemRightConsumptionInfo holds data for the Service Item (Team Kirby Clash Deluxe) protocol
 type ServiceItemRightConsumptionInfo struct {
-	nex.Structure
+	types.Structure
 	*ServiceItemRightInfo
 	AccountRights []*ServiceItemAccountRightConsumption
 }
 
-// ExtractFromStream extracts a ServiceItemRightConsumptionInfo structure from a stream
-func (serviceItemRightConsumptionInfo *ServiceItemRightConsumptionInfo) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the ServiceItemRightConsumptionInfo from the given readable
+func (serviceItemRightConsumptionInfo *ServiceItemRightConsumptionInfo) ExtractFrom(readable types.Readable) error {
 	var err error
+
+	if err = serviceItemRightConsumptionInfo.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read ServiceItemRightConsumptionInfo header. %s", err.Error())
+	}
 
 	accountRights, err := nex.StreamReadListStructure(stream, NewServiceItemAccountRightConsumption())
 	if err != nil {
@@ -29,21 +34,26 @@ func (serviceItemRightConsumptionInfo *ServiceItemRightConsumptionInfo) ExtractF
 	return nil
 }
 
-// Bytes encodes the ServiceItemRightConsumptionInfo and returns a byte array
-func (serviceItemRightConsumptionInfo *ServiceItemRightConsumptionInfo) Bytes(stream *nex.StreamOut) []byte {
-	nex.StreamWriteListStructure(stream, serviceItemRightConsumptionInfo.AccountRights)
+// WriteTo writes the ServiceItemRightConsumptionInfo to the given writable
+func (serviceItemRightConsumptionInfo *ServiceItemRightConsumptionInfo) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
 
-	return stream.Bytes()
+	serviceItemRightConsumptionInfo.AccountRights.WriteTo(contentWritable)
+
+	content := contentWritable.Bytes()
+
+	serviceItemRightConsumptionInfo.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // Copy returns a new copied instance of ServiceItemRightConsumptionInfo
-func (serviceItemRightConsumptionInfo *ServiceItemRightConsumptionInfo) Copy() nex.StructureInterface {
+func (serviceItemRightConsumptionInfo *ServiceItemRightConsumptionInfo) Copy() types.RVType {
 	copied := NewServiceItemRightConsumptionInfo()
 
-	copied.SetStructureVersion(serviceItemRightConsumptionInfo.StructureVersion())
+	copied.StructureVersion = serviceItemRightConsumptionInfo.StructureVersion
 
 	copied.ServiceItemRightInfo = serviceItemRightConsumptionInfo.ServiceItemRightInfo.Copy().(*ServiceItemRightInfo)
-	copied.SetParentType(copied.ServiceItemRightInfo)
 
 	copied.AccountRights = make([]*ServiceItemAccountRightConsumption, len(serviceItemRightConsumptionInfo.AccountRights))
 
@@ -55,10 +65,14 @@ func (serviceItemRightConsumptionInfo *ServiceItemRightConsumptionInfo) Copy() n
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (serviceItemRightConsumptionInfo *ServiceItemRightConsumptionInfo) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*ServiceItemRightConsumptionInfo)
+func (serviceItemRightConsumptionInfo *ServiceItemRightConsumptionInfo) Equals(o types.RVType) bool {
+	if _, ok := o.(*ServiceItemRightConsumptionInfo); !ok {
+		return false
+	}
 
-	if serviceItemRightConsumptionInfo.StructureVersion() != other.StructureVersion() {
+	other := o.(*ServiceItemRightConsumptionInfo)
+
+	if serviceItemRightConsumptionInfo.StructureVersion != other.StructureVersion {
 		return false
 	}
 
@@ -94,7 +108,7 @@ func (serviceItemRightConsumptionInfo *ServiceItemRightConsumptionInfo) FormatTo
 
 	b.WriteString("ServiceItemRightConsumptionInfo{\n")
 	b.WriteString(fmt.Sprintf("%sParentType: %s,\n", indentationValues, serviceItemRightConsumptionInfo.ParentType().FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, serviceItemRightConsumptionInfo.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, serviceItemRightConsumptionInfo.StructureVersion))
 
 	if len(serviceItemRightConsumptionInfo.AccountRights) == 0 {
 		b.WriteString(fmt.Sprintf("%sAccountRights: [],\n", indentationValues))

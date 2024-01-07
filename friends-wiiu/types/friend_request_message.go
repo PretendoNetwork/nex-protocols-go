@@ -6,51 +6,52 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // FriendRequestMessage contains message data for a FriendRequest
 type FriendRequestMessage struct {
-	nex.Structure
-	*nex.Data
-	FriendRequestID uint64
-	Received        bool
-	Unknown2        uint8
+	types.Structure
+	*types.Data
+	FriendRequestID *types.PrimitiveU64
+	Received        *types.PrimitiveBool
+	Unknown2        *types.PrimitiveU8
 	Message         string
-	Unknown3        uint8
+	Unknown3        *types.PrimitiveU8
 	Unknown4        string
 	GameKey         *GameKey
-	Unknown5        *nex.DateTime
-	ExpiresOn       *nex.DateTime
+	Unknown5        *types.DateTime
+	ExpiresOn       *types.DateTime
 }
 
-// Bytes encodes the FriendRequestMessage and returns a byte array
-func (friendRequestMessage *FriendRequestMessage) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt64LE(friendRequestMessage.FriendRequestID)
-	stream.WriteBool(friendRequestMessage.Received)
-	stream.WriteUInt8(friendRequestMessage.Unknown2)
-	stream.WriteString(friendRequestMessage.Message)
-	stream.WriteUInt8(friendRequestMessage.Unknown3)
-	stream.WriteString(friendRequestMessage.Unknown4)
-	stream.WriteStructure(friendRequestMessage.GameKey)
-	stream.WriteDateTime(friendRequestMessage.Unknown5)
-	stream.WriteDateTime(friendRequestMessage.ExpiresOn)
+// WriteTo writes the FriendRequestMessage to the given writable
+func (friendRequestMessage *FriendRequestMessage) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
 
-	return stream.Bytes()
+	friendRequestMessage.FriendRequestID.WriteTo(contentWritable)
+	friendRequestMessage.Received.WriteTo(contentWritable)
+	friendRequestMessage.Unknown2.WriteTo(contentWritable)
+	friendRequestMessage.Message.WriteTo(contentWritable)
+	friendRequestMessage.Unknown3.WriteTo(contentWritable)
+	friendRequestMessage.Unknown4.WriteTo(contentWritable)
+	friendRequestMessage.GameKey.WriteTo(contentWritable)
+	friendRequestMessage.Unknown5.WriteTo(contentWritable)
+	friendRequestMessage.ExpiresOn.WriteTo(contentWritable)
+
+	content := contentWritable.Bytes()
+
+	friendRequestMessage.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // Copy returns a new copied instance of FriendRequestMessage
-func (friendRequestMessage *FriendRequestMessage) Copy() nex.StructureInterface {
+func (friendRequestMessage *FriendRequestMessage) Copy() types.RVType {
 	copied := NewFriendRequestMessage()
 
-	copied.SetStructureVersion(friendRequestMessage.StructureVersion())
+	copied.StructureVersion = friendRequestMessage.StructureVersion
 
-	if friendRequestMessage.ParentType() != nil {
-		copied.Data = friendRequestMessage.ParentType().Copy().(*nex.Data)
-	} else {
-		copied.Data = nex.NewData()
-	}
-
-	copied.SetParentType(copied.Data)
+	copied.Data = friendRequestMessage.Data.Copy().(*types.Data)
 
 	copied.FriendRequestID = friendRequestMessage.FriendRequestID
 	copied.Received = friendRequestMessage.Received
@@ -66,10 +67,14 @@ func (friendRequestMessage *FriendRequestMessage) Copy() nex.StructureInterface 
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (friendRequestMessage *FriendRequestMessage) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*FriendRequestMessage)
+func (friendRequestMessage *FriendRequestMessage) Equals(o types.RVType) bool {
+	if _, ok := o.(*FriendRequestMessage); !ok {
+		return false
+	}
 
-	if friendRequestMessage.StructureVersion() != other.StructureVersion() {
+	other := o.(*FriendRequestMessage)
+
+	if friendRequestMessage.StructureVersion != other.StructureVersion {
 		return false
 	}
 
@@ -77,27 +82,27 @@ func (friendRequestMessage *FriendRequestMessage) Equals(structure nex.Structure
 		return false
 	}
 
-	if friendRequestMessage.FriendRequestID != other.FriendRequestID {
+	if !friendRequestMessage.FriendRequestID.Equals(other.FriendRequestID) {
 		return false
 	}
 
-	if friendRequestMessage.Received != other.Received {
+	if !friendRequestMessage.Received.Equals(other.Received) {
 		return false
 	}
 
-	if friendRequestMessage.Unknown2 != other.Unknown2 {
+	if !friendRequestMessage.Unknown2.Equals(other.Unknown2) {
 		return false
 	}
 
-	if friendRequestMessage.Message != other.Message {
+	if !friendRequestMessage.Message.Equals(other.Message) {
 		return false
 	}
 
-	if friendRequestMessage.Unknown3 != other.Unknown3 {
+	if !friendRequestMessage.Unknown3.Equals(other.Unknown3) {
 		return false
 	}
 
-	if friendRequestMessage.Unknown4 != other.Unknown4 {
+	if !friendRequestMessage.Unknown4.Equals(other.Unknown4) {
 		return false
 	}
 
@@ -129,7 +134,7 @@ func (friendRequestMessage *FriendRequestMessage) FormatToString(indentationLeve
 	var b strings.Builder
 
 	b.WriteString("FriendRequestMessage{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, friendRequestMessage.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, friendRequestMessage.StructureVersion))
 	b.WriteString(fmt.Sprintf("%sFriendRequestID: %d,\n", indentationValues, friendRequestMessage.FriendRequestID))
 	b.WriteString(fmt.Sprintf("%sReceived: %t,\n", indentationValues, friendRequestMessage.Received))
 	b.WriteString(fmt.Sprintf("%sUnknown2: %d,\n", indentationValues, friendRequestMessage.Unknown2))

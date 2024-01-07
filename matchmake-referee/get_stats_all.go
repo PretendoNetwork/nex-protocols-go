@@ -5,11 +5,13 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 	matchmake_referee_types "github.com/PretendoNetwork/nex-protocols-go/matchmake-referee/types"
 )
 
 func (protocol *Protocol) handleGetStatsAll(packet nex.PacketInterface) {
+	var err error
 	var errorCode uint32
 
 	if protocol.GetStatsAll == nil {
@@ -23,9 +25,10 @@ func (protocol *Protocol) handleGetStatsAll(packet nex.PacketInterface) {
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.server)
+	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
-	target, err := nex.StreamReadStructure(parametersStream, matchmake_referee_types.NewMatchmakeRefereeStatsTarget())
+	target := matchmake_referee_types.NewMatchmakeRefereeStatsTarget()
+	err = target.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.GetStatsAll(fmt.Errorf("Failed to read target from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {

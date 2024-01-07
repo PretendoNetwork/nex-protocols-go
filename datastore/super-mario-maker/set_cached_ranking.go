@@ -5,10 +5,12 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
 func (protocol *Protocol) handleSetCachedRanking(packet nex.PacketInterface) {
+	var err error
 	var errorCode uint32
 
 	if protocol.SetCachedRanking == nil {
@@ -22,9 +24,10 @@ func (protocol *Protocol) handleSetCachedRanking(packet nex.PacketInterface) {
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.server)
+	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
-	rankingType, err := parametersStream.ReadString()
+	rankingType := types.NewString("")
+	err = rankingType.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.SetCachedRanking(fmt.Errorf("Failed to read rankingType from parameters. %s", err.Error()), packet, callID, "", nil, nil)
 		if errorCode != 0 {
@@ -34,7 +37,9 @@ func (protocol *Protocol) handleSetCachedRanking(packet nex.PacketInterface) {
 		return
 	}
 
-	rankingArgs, err := parametersStream.ReadListString()
+	rankingArgs := types.NewList[*types.String]()
+	rankingArgs.Type = types.NewString("")
+	err = rankingArgs.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.SetCachedRanking(fmt.Errorf("Failed to read rankingArgs from parameters. %s", err.Error()), packet, callID, "", nil, nil)
 		if errorCode != 0 {
@@ -44,7 +49,9 @@ func (protocol *Protocol) handleSetCachedRanking(packet nex.PacketInterface) {
 		return
 	}
 
-	dataIDLst, err := parametersStream.ReadListUInt64LE()
+	dataIDLst := types.NewList[*types.PrimitiveU64]()
+	dataIDLst.Type = types.NewPrimitiveU64(0)
+	err = dataIDLst.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.SetCachedRanking(fmt.Errorf("Failed to read dataIDLst from parameters. %s", err.Error()), packet, callID, "", nil, nil)
 		if errorCode != 0 {

@@ -5,10 +5,12 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
 func (protocol *Protocol) handleUpdateAccountEffectiveDate(packet nex.PacketInterface) {
+	var err error
 	var errorCode uint32
 
 	if protocol.UpdateAccountEffectiveDate == nil {
@@ -22,11 +24,12 @@ func (protocol *Protocol) handleUpdateAccountEffectiveDate(packet nex.PacketInte
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.server)
+	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
-	idPrincipal, err := parametersStream.ReadPID()
+	idPrincipal := types.NewPID(0)
+	err = idPrincipal.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.UpdateAccountEffectiveDate(fmt.Errorf("Failed to read idPrincipal from parameters. %s", err.Error()), packet, callID, nil, nil, "")
+		_, errorCode = protocol.UpdateAccountEffectiveDate(fmt.Errorf("Failed to read idPrincipal from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -34,9 +37,10 @@ func (protocol *Protocol) handleUpdateAccountEffectiveDate(packet nex.PacketInte
 		return
 	}
 
-	dtEffectiveFrom, err := parametersStream.ReadDateTime()
+	dtEffectiveFrom := types.NewDateTime(0)
+	err = dtEffectiveFrom.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.UpdateAccountEffectiveDate(fmt.Errorf("Failed to read dtEffectiveFrom from parameters. %s", err.Error()), packet, callID, nil, nil, "")
+		_, errorCode = protocol.UpdateAccountEffectiveDate(fmt.Errorf("Failed to read dtEffectiveFrom from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -44,9 +48,10 @@ func (protocol *Protocol) handleUpdateAccountEffectiveDate(packet nex.PacketInte
 		return
 	}
 
-	strNotEffectiveMessage, err := parametersStream.ReadString()
+	strNotEffectiveMessage := types.NewString("")
+	err = strNotEffectiveMessage.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.UpdateAccountEffectiveDate(fmt.Errorf("Failed to read strNotEffectiveMessage from parameters. %s", err.Error()), packet, callID, nil, nil, "")
+		_, errorCode = protocol.UpdateAccountEffectiveDate(fmt.Errorf("Failed to read strNotEffectiveMessage from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}

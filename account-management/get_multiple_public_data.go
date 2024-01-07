@@ -5,10 +5,12 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
 func (protocol *Protocol) handleGetMultiplePublicData(packet nex.PacketInterface) {
+	var err error
 	var errorCode uint32
 
 	if protocol.GetMultiplePublicData == nil {
@@ -22,9 +24,11 @@ func (protocol *Protocol) handleGetMultiplePublicData(packet nex.PacketInterface
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.server)
+	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
-	lstPrincipals, err := parametersStream.ReadListPID()
+	lstPrincipals := types.NewList[*types.PID]()
+	lstPrincipals.Type = types.NewPID(0)
+	err = lstPrincipals.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.GetMultiplePublicData(fmt.Errorf("Failed to read lstPrincipals from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {

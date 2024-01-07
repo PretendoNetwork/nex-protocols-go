@@ -5,10 +5,12 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
 func (protocol *Protocol) handleAddFriendByName(packet nex.PacketInterface) {
+	var err error
 	var errorCode uint32
 
 	if protocol.AddFriendByName == nil {
@@ -22,9 +24,10 @@ func (protocol *Protocol) handleAddFriendByName(packet nex.PacketInterface) {
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.server)
+	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
-	username, err := parametersStream.ReadString()
+	username := types.NewString("")
+	err = username.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.AddFriendByName(fmt.Errorf("Failed to read username from parameters. %s", err.Error()), packet, callID, "")
 		if errorCode != 0 {

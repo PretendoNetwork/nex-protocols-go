@@ -9,49 +9,54 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // CreateMatchmakeSessionParam holds parameters for a matchmake session
 type CreateMatchmakeSessionParam struct {
-	nex.Structure
+	types.Structure
 	SourceMatchmakeSession       *MatchmakeSession
-	AdditionalParticipants       []*nex.PID
-	GIDForParticipationCheck     uint32
-	CreateMatchmakeSessionOption uint32
+	AdditionalParticipants       *types.List[*types.PID]
+	GIDForParticipationCheck     *types.PrimitiveU32
+	CreateMatchmakeSessionOption *types.PrimitiveU32
 	JoinMessage                  string
-	ParticipationCount           uint16
+	ParticipationCount           *types.PrimitiveU16
 }
 
-// ExtractFromStream extracts a CreateMatchmakeSessionParam structure from a stream
-func (createMatchmakeSessionParam *CreateMatchmakeSessionParam) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the CreateMatchmakeSessionParam from the given readable
+func (createMatchmakeSessionParam *CreateMatchmakeSessionParam) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	createMatchmakeSessionParam.SourceMatchmakeSession, err = nex.StreamReadStructure(stream, NewMatchmakeSession())
+	if err = createMatchmakeSessionParam.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read CreateMatchmakeSessionParam header. %s", err.Error())
+	}
+
+	err = createMatchmakeSessionParam.SourceMatchmakeSession.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract CreateMatchmakeSessionParam.SourceMatchmakeSession. %s", err.Error())
 	}
 
-	createMatchmakeSessionParam.AdditionalParticipants, err = stream.ReadListPID()
+	err = createMatchmakeSessionParam.AdditionalParticipants.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract CreateMatchmakeSessionParam.AdditionalParticipants. %s", err.Error())
 	}
 
-	createMatchmakeSessionParam.GIDForParticipationCheck, err = stream.ReadUInt32LE()
+	err = createMatchmakeSessionParam.GIDForParticipationCheck.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract CreateMatchmakeSessionParam.GIDForParticipationCheck. %s", err.Error())
 	}
 
-	createMatchmakeSessionParam.CreateMatchmakeSessionOption, err = stream.ReadUInt32LE()
+	err = createMatchmakeSessionParam.CreateMatchmakeSessionOption.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract CreateMatchmakeSessionParam.CreateMatchmakeSessionOption. %s", err.Error())
 	}
 
-	createMatchmakeSessionParam.JoinMessage, err = stream.ReadString()
+	err = createMatchmakeSessionParam.JoinMessage.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract CreateMatchmakeSessionParam.JoinMessage. %s", err.Error())
 	}
 
-	createMatchmakeSessionParam.ParticipationCount, err = stream.ReadUInt16LE()
+	err = createMatchmakeSessionParam.ParticipationCount.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract CreateMatchmakeSessionParam.ParticipationCount. %s", err.Error())
 	}
@@ -60,16 +65,14 @@ func (createMatchmakeSessionParam *CreateMatchmakeSessionParam) ExtractFromStrea
 }
 
 // Copy returns a new copied instance of CreateMatchmakeSessionParam
-func (createMatchmakeSessionParam *CreateMatchmakeSessionParam) Copy() nex.StructureInterface {
+func (createMatchmakeSessionParam *CreateMatchmakeSessionParam) Copy() types.RVType {
 	copied := NewCreateMatchmakeSessionParam()
 
-	copied.SetStructureVersion(createMatchmakeSessionParam.StructureVersion())
+	copied.StructureVersion = createMatchmakeSessionParam.StructureVersion
 
-	if createMatchmakeSessionParam.SourceMatchmakeSession != nil {
-		copied.SourceMatchmakeSession = createMatchmakeSessionParam.SourceMatchmakeSession.Copy().(*MatchmakeSession)
-	}
+	copied.SourceMatchmakeSession = createMatchmakeSessionParam.SourceMatchmakeSession.Copy().(*MatchmakeSession)
 
-	copied.AdditionalParticipants = make([]*nex.PID, len(createMatchmakeSessionParam.AdditionalParticipants))
+	copied.AdditionalParticipants = make(*types.List[*types.PID], len(createMatchmakeSessionParam.AdditionalParticipants))
 
 	for i := 0; i < len(createMatchmakeSessionParam.AdditionalParticipants); i++ {
 		copied.AdditionalParticipants[i] = createMatchmakeSessionParam.AdditionalParticipants[i].Copy()
@@ -84,25 +87,19 @@ func (createMatchmakeSessionParam *CreateMatchmakeSessionParam) Copy() nex.Struc
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (createMatchmakeSessionParam *CreateMatchmakeSessionParam) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*CreateMatchmakeSessionParam)
-
-	if createMatchmakeSessionParam.StructureVersion() != other.StructureVersion() {
+func (createMatchmakeSessionParam *CreateMatchmakeSessionParam) Equals(o types.RVType) bool {
+	if _, ok := o.(*CreateMatchmakeSessionParam); !ok {
 		return false
 	}
 
-	if createMatchmakeSessionParam.SourceMatchmakeSession != nil && other.SourceMatchmakeSession == nil {
+	other := o.(*CreateMatchmakeSessionParam)
+
+	if createMatchmakeSessionParam.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if createMatchmakeSessionParam.SourceMatchmakeSession == nil && other.SourceMatchmakeSession != nil {
+	if !createMatchmakeSessionParam.SourceMatchmakeSession.Equals(other.SourceMatchmakeSession) {
 		return false
-	}
-
-	if createMatchmakeSessionParam.SourceMatchmakeSession != nil && other.SourceMatchmakeSession != nil {
-		if !createMatchmakeSessionParam.SourceMatchmakeSession.Equals(other.SourceMatchmakeSession) {
-			return false
-		}
 	}
 
 	if len(createMatchmakeSessionParam.AdditionalParticipants) != len(other.AdditionalParticipants) {
@@ -115,19 +112,19 @@ func (createMatchmakeSessionParam *CreateMatchmakeSessionParam) Equals(structure
 		}
 	}
 
-	if createMatchmakeSessionParam.GIDForParticipationCheck != other.GIDForParticipationCheck {
+	if !createMatchmakeSessionParam.GIDForParticipationCheck.Equals(other.GIDForParticipationCheck) {
 		return false
 	}
 
-	if createMatchmakeSessionParam.CreateMatchmakeSessionOption != other.CreateMatchmakeSessionOption {
+	if !createMatchmakeSessionParam.CreateMatchmakeSessionOption.Equals(other.CreateMatchmakeSessionOption) {
 		return false
 	}
 
-	if createMatchmakeSessionParam.JoinMessage != other.JoinMessage {
+	if !createMatchmakeSessionParam.JoinMessage.Equals(other.JoinMessage) {
 		return false
 	}
 
-	if createMatchmakeSessionParam.ParticipationCount != other.ParticipationCount {
+	if !createMatchmakeSessionParam.ParticipationCount.Equals(other.ParticipationCount) {
 		return false
 	}
 
@@ -147,7 +144,7 @@ func (createMatchmakeSessionParam *CreateMatchmakeSessionParam) FormatToString(i
 	var b strings.Builder
 
 	b.WriteString("CreateMatchmakeSessionParam{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, createMatchmakeSessionParam.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, createMatchmakeSessionParam.StructureVersion))
 
 	if createMatchmakeSessionParam.SourceMatchmakeSession != nil {
 		b.WriteString(fmt.Sprintf("%sSourceMatchmakeSession: %s,\n", indentationValues, createMatchmakeSessionParam.SourceMatchmakeSession.FormatToString(indentationLevel+1)))

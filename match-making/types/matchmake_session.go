@@ -10,52 +10,53 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // MatchmakeSession holds information about a matchmake session
 type MatchmakeSession struct {
-	nex.Structure
+	types.Structure
 	*Gathering
-	GameMode              uint32
-	Attributes            []uint32
-	OpenParticipation     bool
-	MatchmakeSystemType   uint32
+	GameMode              *types.PrimitiveU32
+	Attributes            *types.List[*types.PrimitiveU32]
+	OpenParticipation     *types.PrimitiveBool
+	MatchmakeSystemType   *types.PrimitiveU32
 	ApplicationData       []byte
-	ParticipationCount    uint32
-	ProgressScore         uint8           // NEX v3.4.0+
+	ParticipationCount    *types.PrimitiveU32
+	ProgressScore         *types.PrimitiveU8           // NEX v3.4.0+
 	SessionKey            []byte          // NEX v3.0.0+
-	Option                uint32          // NEX v3.5.0+
+	Option                *types.PrimitiveU32          // NEX v3.5.0+
 	MatchmakeParam        *MatchmakeParam // NEX v3.6.0+
-	StartedTime           *nex.DateTime   // NEX v3.6.0+
+	StartedTime           *types.DateTime   // NEX v3.6.0+
 	UserPassword          string          // NEX v3.7.0+
-	ReferGID              uint32          // NEX v3.8.0+
-	UserPasswordEnabled   bool            // NEX v3.8.0+
-	SystemPasswordEnabled bool            // NEX v3.8.0+
+	ReferGID              *types.PrimitiveU32          // NEX v3.8.0+
+	UserPasswordEnabled   *types.PrimitiveBool            // NEX v3.8.0+
+	SystemPasswordEnabled *types.PrimitiveBool            // NEX v3.8.0+
 	CodeWord              string          // NEX v4.0.0+
 }
 
-// ExtractFromStream extracts a MatchmakeSession structure from a stream
-func (matchmakeSession *MatchmakeSession) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the MatchmakeSession from the given readable
+func (matchmakeSession *MatchmakeSession) ExtractFrom(readable types.Readable) error {
 	matchmakingVersion := stream.Server.MatchMakingProtocolVersion()
 
 	var err error
 
-	matchmakeSession.GameMode, err = stream.ReadUInt32LE()
+	err = matchmakeSession.GameMode.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract MatchmakeSession.GameMode. %s", err.Error())
 	}
 
-	matchmakeSession.Attributes, err = stream.ReadListUInt32LE()
+	err = matchmakeSession.Attributes.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract MatchmakeSession.Attributes. %s", err.Error())
 	}
 
-	matchmakeSession.OpenParticipation, err = stream.ReadBool()
+	err = matchmakeSession.OpenParticipation.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract MatchmakeSession.OpenParticipation. %s", err.Error())
 	}
 
-	matchmakeSession.MatchmakeSystemType, err = stream.ReadUInt32LE()
+	err = matchmakeSession.MatchmakeSystemType.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract MatchmakeSession.MatchmakeSystemType. %s", err.Error())
 	}
@@ -65,13 +66,13 @@ func (matchmakeSession *MatchmakeSession) ExtractFromStream(stream *nex.StreamIn
 		return fmt.Errorf("Failed to extract MatchmakeSession.ApplicationData. %s", err.Error())
 	}
 
-	matchmakeSession.ParticipationCount, err = stream.ReadUInt32LE()
+	err = matchmakeSession.ParticipationCount.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract MatchmakeSession.ParticipationCount. %s", err.Error())
 	}
 
 	if matchmakingVersion.GreaterOrEqual("3.4.0") {
-		matchmakeSession.ProgressScore, err = stream.ReadUInt8()
+	err = 	matchmakeSession.ProgressScore.ExtractFrom(readable)
 		if err != nil {
 			return fmt.Errorf("Failed to extract MatchmakeSession.ProgressScore. %s", err.Error())
 		}
@@ -85,7 +86,7 @@ func (matchmakeSession *MatchmakeSession) ExtractFromStream(stream *nex.StreamIn
 	}
 
 	if matchmakingVersion.GreaterOrEqual("3.5.0") {
-		matchmakeSession.Option, err = stream.ReadUInt32LE()
+	err = 	matchmakeSession.Option.ExtractFrom(readable)
 		if err != nil {
 			return fmt.Errorf("Failed to extract MatchmakeSession.Option. %s", err.Error())
 		}
@@ -98,38 +99,38 @@ func (matchmakeSession *MatchmakeSession) ExtractFromStream(stream *nex.StreamIn
 		}
 
 		matchmakeSession.MatchmakeParam = matchmakeParam
-		matchmakeSession.StartedTime, err = stream.ReadDateTime()
+	err = 	matchmakeSession.StartedTime.ExtractFrom(readable)
 		if err != nil {
 			return fmt.Errorf("Failed to extract MatchmakeSession.StartedTime. %s", err.Error())
 		}
 	}
 
 	if matchmakingVersion.GreaterOrEqual("3.7.0") {
-		matchmakeSession.UserPassword, err = stream.ReadString()
+	err = 	matchmakeSession.UserPassword.ExtractFrom(readable)
 		if err != nil {
 			return fmt.Errorf("Failed to extract MatchmakeSession.UserPassword. %s", err.Error())
 		}
 	}
 
 	if matchmakingVersion.GreaterOrEqual("3.8.0") {
-		matchmakeSession.ReferGID, err = stream.ReadUInt32LE()
+	err = 	matchmakeSession.ReferGID.ExtractFrom(readable)
 		if err != nil {
 			return fmt.Errorf("Failed to extract MatchmakeSession.ReferGID. %s", err.Error())
 		}
 
-		matchmakeSession.UserPasswordEnabled, err = stream.ReadBool()
+	err = 	matchmakeSession.UserPasswordEnabled.ExtractFrom(readable)
 		if err != nil {
 			return fmt.Errorf("Failed to extract MatchmakeSession.UserPasswordEnabled. %s", err.Error())
 		}
 
-		matchmakeSession.SystemPasswordEnabled, err = stream.ReadBool()
+	err = 	matchmakeSession.SystemPasswordEnabled.ExtractFrom(readable)
 		if err != nil {
 			return fmt.Errorf("Failed to extract MatchmakeSession.SystemPasswordEnabled. %s", err.Error())
 		}
 	}
 
 	if matchmakingVersion.GreaterOrEqual("4.0.0") {
-		matchmakeSession.CodeWord, err = stream.ReadString()
+	err = 	matchmakeSession.CodeWord.ExtractFrom(readable)
 		if err != nil {
 			return fmt.Errorf("Failed to extract MatchmakeSession.CodeWord. %s", err.Error())
 		}
@@ -139,19 +140,21 @@ func (matchmakeSession *MatchmakeSession) ExtractFromStream(stream *nex.StreamIn
 }
 
 // Bytes extracts a MatchmakeSession structure from a stream
-func (matchmakeSession *MatchmakeSession) Bytes(stream *nex.StreamOut) []byte {
+func (matchmakeSession *MatchmakeSession) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
+
 	matchmakingVersion := stream.Server.MatchMakingProtocolVersion()
 
-	stream.WriteUInt32LE(matchmakeSession.GameMode)
-	stream.WriteListUInt32LE(matchmakeSession.Attributes)
-	stream.WriteBool(matchmakeSession.OpenParticipation)
-	stream.WriteUInt32LE(matchmakeSession.MatchmakeSystemType)
+	matchmakeSession.GameMode.WriteTo(contentWritable)
+	matchmakeSession.Attributes.WriteTo(contentWritable)
+	matchmakeSession.OpenParticipation.WriteTo(contentWritable)
+	matchmakeSession.MatchmakeSystemType.WriteTo(contentWritable)
 	stream.WriteBuffer(matchmakeSession.ApplicationData)
 
-	stream.WriteUInt32LE(matchmakeSession.ParticipationCount)
+	matchmakeSession.ParticipationCount.WriteTo(contentWritable)
 
 	if matchmakingVersion.GreaterOrEqual("3.4.0") {
-		stream.WriteUInt8(matchmakeSession.ProgressScore)
+		matchmakeSession.ProgressScore.WriteTo(contentWritable)
 	}
 
 	if matchmakingVersion.GreaterOrEqual("3.0.0") {
@@ -159,41 +162,44 @@ func (matchmakeSession *MatchmakeSession) Bytes(stream *nex.StreamOut) []byte {
 	}
 
 	if matchmakingVersion.GreaterOrEqual("3.5.0") {
-		stream.WriteUInt32LE(matchmakeSession.Option)
+		matchmakeSession.Option.WriteTo(contentWritable)
 	}
 
 	if matchmakingVersion.GreaterOrEqual("3.6.0") {
-		stream.WriteStructure(matchmakeSession.MatchmakeParam)
-		stream.WriteDateTime(matchmakeSession.StartedTime)
+		matchmakeSession.MatchmakeParam.WriteTo(contentWritable)
+		matchmakeSession.StartedTime.WriteTo(contentWritable)
 	}
 
 	if matchmakingVersion.GreaterOrEqual("3.7.0") {
-		stream.WriteString(matchmakeSession.UserPassword)
+		matchmakeSession.UserPassword.WriteTo(contentWritable)
 	}
 
 	if matchmakingVersion.GreaterOrEqual("3.7.0") {
-		stream.WriteUInt32LE(matchmakeSession.ReferGID)
-		stream.WriteBool(matchmakeSession.UserPasswordEnabled)
-		stream.WriteBool(matchmakeSession.SystemPasswordEnabled)
+		matchmakeSession.ReferGID.WriteTo(contentWritable)
+		matchmakeSession.UserPasswordEnabled.WriteTo(contentWritable)
+		matchmakeSession.SystemPasswordEnabled.WriteTo(contentWritable)
 	}
 
 	if matchmakingVersion.GreaterOrEqual("4.0.0") {
-		stream.WriteString(matchmakeSession.CodeWord)
+		matchmakeSession.CodeWord.WriteTo(contentWritable)
 	}
 
-	return stream.Bytes()
+	content := contentWritable.Bytes()
+
+	rvcd.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // Copy returns a new copied instance of MatchmakeSession
-func (matchmakeSession *MatchmakeSession) Copy() nex.StructureInterface {
+func (matchmakeSession *MatchmakeSession) Copy() types.RVType {
 	copied := NewMatchmakeSession()
 
-	copied.SetStructureVersion(matchmakeSession.StructureVersion())
+	copied.StructureVersion = matchmakeSession.StructureVersion
 
 	copied.Gathering = matchmakeSession.Gathering.Copy().(*Gathering)
-	copied.SetParentType(copied.Gathering)
 	copied.GameMode = matchmakeSession.GameMode
-	copied.Attributes = make([]uint32, len(matchmakeSession.Attributes))
+	copied.Attributes = make(*types.List[*types.PrimitiveU32], len(matchmakeSession.Attributes))
 
 	copy(copied.Attributes, matchmakeSession.Attributes)
 
@@ -211,13 +217,9 @@ func (matchmakeSession *MatchmakeSession) Copy() nex.StructureInterface {
 
 	copied.Option = matchmakeSession.Option
 
-	if matchmakeSession.MatchmakeParam != nil {
-		copied.MatchmakeParam = matchmakeSession.MatchmakeParam.Copy().(*MatchmakeParam)
-	}
+	copied.MatchmakeParam = matchmakeSession.MatchmakeParam.Copy().(*MatchmakeParam)
 
-	if matchmakeSession.StartedTime != nil {
-		copied.StartedTime = matchmakeSession.StartedTime.Copy()
-	}
+	copied.StartedTime = matchmakeSession.StartedTime.Copy()
 
 	copied.UserPassword = matchmakeSession.UserPassword
 	copied.ReferGID = matchmakeSession.ReferGID
@@ -229,10 +231,14 @@ func (matchmakeSession *MatchmakeSession) Copy() nex.StructureInterface {
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (matchmakeSession *MatchmakeSession) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*MatchmakeSession)
+func (matchmakeSession *MatchmakeSession) Equals(o types.RVType) bool {
+	if _, ok := o.(*MatchmakeSession); !ok {
+		return false
+	}
 
-	if matchmakeSession.StructureVersion() != other.StructureVersion() {
+	other := o.(*MatchmakeSession)
+
+	if matchmakeSession.StructureVersion != other.StructureVersion {
 		return false
 	}
 
@@ -240,7 +246,7 @@ func (matchmakeSession *MatchmakeSession) Equals(structure nex.StructureInterfac
 		return false
 	}
 
-	if matchmakeSession.GameMode != other.GameMode {
+	if !matchmakeSession.GameMode.Equals(other.GameMode) {
 		return false
 	}
 
@@ -254,79 +260,59 @@ func (matchmakeSession *MatchmakeSession) Equals(structure nex.StructureInterfac
 		}
 	}
 
-	if matchmakeSession.OpenParticipation != other.OpenParticipation {
+	if !matchmakeSession.OpenParticipation.Equals(other.OpenParticipation) {
 		return false
 	}
 
-	if matchmakeSession.MatchmakeSystemType != other.MatchmakeSystemType {
+	if !matchmakeSession.MatchmakeSystemType.Equals(other.MatchmakeSystemType) {
 		return false
 	}
 
-	if !bytes.Equal(matchmakeSession.ApplicationData, other.ApplicationData) {
+	if !matchmakeSession.ApplicationData.Equals(other.ApplicationData) {
 		return false
 	}
 
-	if matchmakeSession.ParticipationCount != other.ParticipationCount {
+	if !matchmakeSession.ParticipationCount.Equals(other.ParticipationCount) {
 		return false
 	}
 
-	if matchmakeSession.ProgressScore != other.ProgressScore {
+	if !matchmakeSession.ProgressScore.Equals(other.ProgressScore) {
 		return false
 	}
 
-	if !bytes.Equal(matchmakeSession.SessionKey, other.SessionKey) {
+	if !matchmakeSession.SessionKey.Equals(other.SessionKey) {
 		return false
 	}
 
-	if matchmakeSession.Option != other.Option {
+	if !matchmakeSession.Option.Equals(other.Option) {
 		return false
 	}
 
-	if matchmakeSession.MatchmakeParam != nil && other.MatchmakeParam == nil {
+	if !matchmakeSession.MatchmakeParam.Equals(other.MatchmakeParam) {
 		return false
 	}
 
-	if matchmakeSession.MatchmakeParam == nil && other.MatchmakeParam != nil {
+	if !matchmakeSession.StartedTime.Equals(other.StartedTime) {
 		return false
 	}
 
-	if matchmakeSession.MatchmakeParam != nil && other.MatchmakeParam != nil {
-		if !matchmakeSession.MatchmakeParam.Equals(other.MatchmakeParam) {
-			return false
-		}
-	}
-
-	if matchmakeSession.StartedTime != nil && other.StartedTime == nil {
+	if !matchmakeSession.UserPassword.Equals(other.UserPassword) {
 		return false
 	}
 
-	if matchmakeSession.StartedTime == nil && other.StartedTime != nil {
+	if !matchmakeSession.ReferGID.Equals(other.ReferGID) {
 		return false
 	}
 
-	if matchmakeSession.StartedTime != nil && other.StartedTime != nil {
-		if !matchmakeSession.StartedTime.Equals(other.StartedTime) {
-			return false
-		}
-	}
-
-	if matchmakeSession.UserPassword != other.UserPassword {
+	if !matchmakeSession.UserPasswordEnabled.Equals(other.UserPasswordEnabled) {
 		return false
 	}
 
-	if matchmakeSession.ReferGID != other.ReferGID {
+	if !matchmakeSession.SystemPasswordEnabled.Equals(other.SystemPasswordEnabled) {
 		return false
 	}
 
-	if matchmakeSession.UserPasswordEnabled != other.UserPasswordEnabled {
-		return false
-	}
-
-	if matchmakeSession.SystemPasswordEnabled != other.SystemPasswordEnabled {
-		return false
-	}
-
-	if matchmakeSession.CodeWord != other.CodeWord {
+	if !matchmakeSession.CodeWord.Equals(other.CodeWord) {
 		return false
 	}
 
@@ -347,7 +333,7 @@ func (matchmakeSession *MatchmakeSession) FormatToString(indentationLevel int) s
 
 	b.WriteString("MatchmakeSession{\n")
 	b.WriteString(fmt.Sprintf("%sParentType: %s,\n", indentationValues, matchmakeSession.ParentType().FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, matchmakeSession.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, matchmakeSession.StructureVersion))
 	b.WriteString(fmt.Sprintf("%sGameMode: %d,\n", indentationValues, matchmakeSession.GameMode))
 	b.WriteString(fmt.Sprintf("%sAttributes: %v,\n", indentationValues, matchmakeSession.Attributes))
 	b.WriteString(fmt.Sprintf("%sOpenParticipation: %t,\n", indentationValues, matchmakeSession.OpenParticipation))

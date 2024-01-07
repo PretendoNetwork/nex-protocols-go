@@ -5,11 +5,13 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 	subscriber_types "github.com/PretendoNetwork/nex-protocols-go/subscriber/types"
 )
 
 func (protocol *Protocol) handleGetContentMulti(packet nex.PacketInterface) {
+	var err error
 	var errorCode uint32
 
 	if protocol.GetContentMulti == nil {
@@ -23,7 +25,7 @@ func (protocol *Protocol) handleGetContentMulti(packet nex.PacketInterface) {
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.server)
+	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	params, err := nex.StreamReadListStructure(parametersStream, subscriber_types.NewSubscriberGetContentParam())
 	if err != nil {

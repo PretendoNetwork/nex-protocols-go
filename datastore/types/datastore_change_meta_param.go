@@ -2,163 +2,190 @@
 package types
 
 import (
-	"bytes"
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // DataStoreChangeMetaParam is sent in the ChangeMeta method
 type DataStoreChangeMetaParam struct {
-	nex.Structure
-	DataID            uint64
-	ModifiesFlag      uint32
-	Name              string
+	types.Structure
+	DataID            *types.PrimitiveU64
+	ModifiesFlag      *types.PrimitiveU32
+	Name              *types.String
 	Permission        *DataStorePermission
 	DelPermission     *DataStorePermission
-	Period            uint16
-	MetaBinary        []byte
-	Tags              []string
-	UpdatePassword    uint64
-	ReferredCnt       uint32
-	DataType          uint16
-	Status            uint8
+	Period            *types.PrimitiveU16
+	MetaBinary        *types.QBuffer
+	Tags              *types.List[*types.String]
+	UpdatePassword    *types.PrimitiveU64
+	ReferredCnt       *types.PrimitiveU32
+	DataType          *types.PrimitiveU16
+	Status            *types.PrimitiveU8
 	CompareParam      *DataStoreChangeMetaCompareParam
 	PersistenceTarget *DataStorePersistenceTarget
 }
 
-// ExtractFromStream extracts a DataStoreChangeMetaParam structure from a stream
-func (dataStoreChangeMetaParam *DataStoreChangeMetaParam) ExtractFromStream(stream *nex.StreamIn) error {
+// WriteTo writes the DataStoreChangeMetaParam to the given writable
+func (dataStoreChangeMetaParam *DataStoreChangeMetaParam) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
+
+	dataStoreChangeMetaParam.DataID.WriteTo(contentWritable)
+	dataStoreChangeMetaParam.ModifiesFlag.WriteTo(contentWritable)
+	dataStoreChangeMetaParam.Name.WriteTo(contentWritable)
+	dataStoreChangeMetaParam.Permission.WriteTo(contentWritable)
+	dataStoreChangeMetaParam.DelPermission.WriteTo(contentWritable)
+	dataStoreChangeMetaParam.Period.WriteTo(contentWritable)
+	dataStoreChangeMetaParam.MetaBinary.WriteTo(contentWritable)
+	dataStoreChangeMetaParam.Tags.WriteTo(contentWritable)
+	dataStoreChangeMetaParam.ReferredCnt.WriteTo(contentWritable)
+	dataStoreChangeMetaParam.DataType.WriteTo(contentWritable)
+	dataStoreChangeMetaParam.Status.WriteTo(contentWritable)
+	dataStoreChangeMetaParam.CompareParam.WriteTo(contentWritable)
+
+	if dataStoreChangeMetaParam.StructureVersion >= 1 {
+		dataStoreChangeMetaParam.PersistenceTarget.WriteTo(contentWritable)
+	}
+
+	content := contentWritable.Bytes()
+
+	dataStoreChangeMetaParam.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
+}
+
+// ExtractFrom extracts the DataStoreChangeMetaParam from the given readable
+func (dataStoreChangeMetaParam *DataStoreChangeMetaParam) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	dataStoreChangeMetaParam.DataID, err = stream.ReadUInt64LE()
+	if err = dataStoreChangeMetaParam.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read DataStoreChangeMetaParam header. %s", err.Error())
+	}
+
+	err = dataStoreChangeMetaParam.DataID.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreChangeMetaParam.DataID. %s", err.Error())
 	}
 
-	dataStoreChangeMetaParam.ModifiesFlag, err = stream.ReadUInt32LE()
+	err = dataStoreChangeMetaParam.ModifiesFlag.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreChangeMetaParam.ModifiesFlag. %s", err.Error())
 	}
 
-	dataStoreChangeMetaParam.Name, err = stream.ReadString()
+	err = dataStoreChangeMetaParam.Name.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreChangeMetaParam.Name. %s", err.Error())
 	}
 
-	dataStoreChangeMetaParam.Permission, err = nex.StreamReadStructure(stream, NewDataStorePermission())
+	err = dataStoreChangeMetaParam.Permission.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreChangeMetaParam.Permission. %s", err.Error())
 	}
 
-	dataStoreChangeMetaParam.DelPermission, err = nex.StreamReadStructure(stream, NewDataStorePermission())
+	err = dataStoreChangeMetaParam.DelPermission.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreChangeMetaParam.DelPermission. %s", err.Error())
 	}
 
-	dataStoreChangeMetaParam.Period, err = stream.ReadUInt16LE()
+	err = dataStoreChangeMetaParam.Period.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreChangeMetaParam.Period. %s", err.Error())
 	}
 
-	dataStoreChangeMetaParam.MetaBinary, err = stream.ReadQBuffer()
+	err = dataStoreChangeMetaParam.MetaBinary.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreChangeMetaParam.MetaBinary. %s", err.Error())
 	}
 
-	dataStoreChangeMetaParam.Tags, err = stream.ReadListString()
+	err = dataStoreChangeMetaParam.Tags.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreChangeMetaParam.Tags. %s", err.Error())
 	}
 
-	dataStoreChangeMetaParam.UpdatePassword, err = stream.ReadUInt64LE()
+	err = dataStoreChangeMetaParam.UpdatePassword.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreChangeMetaParam.UpdatePassword. %s", err.Error())
 	}
 
-	dataStoreChangeMetaParam.ReferredCnt, err = stream.ReadUInt32LE()
+	err = dataStoreChangeMetaParam.ReferredCnt.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreChangeMetaParam.ReferredCnt. %s", err.Error())
 	}
 
-	dataStoreChangeMetaParam.DataType, err = stream.ReadUInt16LE()
+	err = dataStoreChangeMetaParam.DataType.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreChangeMetaParam.DataType. %s", err.Error())
 	}
 
-	dataStoreChangeMetaParam.Status, err = stream.ReadUInt8()
+	err = dataStoreChangeMetaParam.Status.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreChangeMetaParam.Status. %s", err.Error())
 	}
 
-	dataStoreChangeMetaParam.CompareParam, err = nex.StreamReadStructure(stream, NewDataStoreChangeMetaCompareParam())
+	err = dataStoreChangeMetaParam.CompareParam.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreChangeMetaParam.CompareParam. %s", err.Error())
 	}
 
-	if dataStoreChangeMetaParam.StructureVersion() >= 1 {
-		persistenceTarget, err := nex.StreamReadStructure(stream, NewDataStorePersistenceTarget())
+	if dataStoreChangeMetaParam.StructureVersion >= 1 {
+		err = dataStoreChangeMetaParam.PersistenceTarget.ExtractFrom(readable)
 		if err != nil {
 			return fmt.Errorf("Failed to extract DataStoreChangeMetaParam.PersistenceTarget. %s", err.Error())
 		}
-
-		dataStoreChangeMetaParam.PersistenceTarget = persistenceTarget
 	}
 
 	return nil
 }
 
 // Copy returns a new copied instance of DataStoreChangeMetaParam
-func (dataStoreChangeMetaParam *DataStoreChangeMetaParam) Copy() nex.StructureInterface {
+func (dataStoreChangeMetaParam *DataStoreChangeMetaParam) Copy() types.RVType {
 	copied := NewDataStoreChangeMetaParam()
 
-	copied.SetStructureVersion(dataStoreChangeMetaParam.StructureVersion())
+	copied.StructureVersion = dataStoreChangeMetaParam.StructureVersion
 
-	copied.DataID = dataStoreChangeMetaParam.DataID
-	copied.ModifiesFlag = dataStoreChangeMetaParam.ModifiesFlag
-	copied.Name = dataStoreChangeMetaParam.Name
+	copied.DataID = dataStoreChangeMetaParam.DataID.Copy().(*types.PrimitiveU64)
+	copied.ModifiesFlag = dataStoreChangeMetaParam.ModifiesFlag.Copy().(*types.PrimitiveU32)
+	copied.Name = dataStoreChangeMetaParam.Name.Copy().(*types.String)
 	copied.Permission = dataStoreChangeMetaParam.Permission.Copy().(*DataStorePermission)
 	copied.DelPermission = dataStoreChangeMetaParam.DelPermission.Copy().(*DataStorePermission)
-	copied.Period = dataStoreChangeMetaParam.Period
-	copied.MetaBinary = make([]byte, len(dataStoreChangeMetaParam.MetaBinary))
+	copied.Period = dataStoreChangeMetaParam.Period.Copy().(*types.PrimitiveU16)
+	copied.MetaBinary = dataStoreChangeMetaParam.MetaBinary.Copy().(*types.QBuffer)
 
-	copy(copied.MetaBinary, dataStoreChangeMetaParam.MetaBinary)
+	copied.Tags = dataStoreChangeMetaParam.Tags.Copy().(*types.List[*types.String])
 
-	copied.Tags = make([]string, len(dataStoreChangeMetaParam.Tags))
-
-	copy(copied.Tags, dataStoreChangeMetaParam.Tags)
-
-	copied.UpdatePassword = dataStoreChangeMetaParam.UpdatePassword
-	copied.ReferredCnt = dataStoreChangeMetaParam.ReferredCnt
-	copied.DataType = dataStoreChangeMetaParam.DataType
-	copied.Status = dataStoreChangeMetaParam.Status
+	copied.UpdatePassword = dataStoreChangeMetaParam.UpdatePassword.Copy().(*types.PrimitiveU64)
+	copied.ReferredCnt = dataStoreChangeMetaParam.ReferredCnt.Copy().(*types.PrimitiveU32)
+	copied.DataType = dataStoreChangeMetaParam.DataType.Copy().(*types.PrimitiveU16)
+	copied.Status = dataStoreChangeMetaParam.Status.Copy().(*types.PrimitiveU8)
 	copied.CompareParam = dataStoreChangeMetaParam.CompareParam.Copy().(*DataStoreChangeMetaCompareParam)
 
-	if dataStoreChangeMetaParam.PersistenceTarget != nil {
-		copied.PersistenceTarget = dataStoreChangeMetaParam.PersistenceTarget.Copy().(*DataStorePersistenceTarget)
-	}
+	copied.PersistenceTarget = dataStoreChangeMetaParam.PersistenceTarget.Copy().(*DataStorePersistenceTarget)
 
 	return copied
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (dataStoreChangeMetaParam *DataStoreChangeMetaParam) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*DataStoreChangeMetaParam)
-
-	if dataStoreChangeMetaParam.StructureVersion() != other.StructureVersion() {
+func (dataStoreChangeMetaParam *DataStoreChangeMetaParam) Equals(o types.RVType) bool {
+	if _, ok := o.(*DataStoreChangeMetaParam); !ok {
 		return false
 	}
 
-	if dataStoreChangeMetaParam.DataID != other.DataID {
+	other := o.(*DataStoreChangeMetaParam)
+
+	if dataStoreChangeMetaParam.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if dataStoreChangeMetaParam.ModifiesFlag != other.ModifiesFlag {
+	if !dataStoreChangeMetaParam.DataID.Equals(other.DataID) {
 		return false
 	}
 
-	if dataStoreChangeMetaParam.Name != other.Name {
+	if !dataStoreChangeMetaParam.ModifiesFlag.Equals(other.ModifiesFlag) {
+		return false
+	}
+
+	if !dataStoreChangeMetaParam.Name.Equals(other.Name) {
 		return false
 	}
 
@@ -170,37 +197,31 @@ func (dataStoreChangeMetaParam *DataStoreChangeMetaParam) Equals(structure nex.S
 		return false
 	}
 
-	if dataStoreChangeMetaParam.Period != other.Period {
+	if !dataStoreChangeMetaParam.Period.Equals(other.Period) {
 		return false
 	}
 
-	if !bytes.Equal(dataStoreChangeMetaParam.MetaBinary, other.MetaBinary) {
+	if !dataStoreChangeMetaParam.MetaBinary.Equals(other.MetaBinary) {
 		return false
 	}
 
-	if len(dataStoreChangeMetaParam.Tags) != len(other.Tags) {
+	if !dataStoreChangeMetaParam.Tags.Equals(other.Tags) {
 		return false
 	}
 
-	for i := 0; i < len(dataStoreChangeMetaParam.Tags); i++ {
-		if dataStoreChangeMetaParam.Tags[i] != other.Tags[i] {
-			return false
-		}
-	}
-
-	if dataStoreChangeMetaParam.UpdatePassword != other.UpdatePassword {
+	if !dataStoreChangeMetaParam.UpdatePassword.Equals(other.UpdatePassword) {
 		return false
 	}
 
-	if dataStoreChangeMetaParam.ReferredCnt != other.ReferredCnt {
+	if !dataStoreChangeMetaParam.ReferredCnt.Equals(other.ReferredCnt) {
 		return false
 	}
 
-	if dataStoreChangeMetaParam.DataType != other.DataType {
+	if !dataStoreChangeMetaParam.DataType.Equals(other.DataType) {
 		return false
 	}
 
-	if dataStoreChangeMetaParam.Status != other.Status {
+	if !dataStoreChangeMetaParam.Status.Equals(other.Status) {
 		return false
 	}
 
@@ -208,18 +229,8 @@ func (dataStoreChangeMetaParam *DataStoreChangeMetaParam) Equals(structure nex.S
 		return false
 	}
 
-	if dataStoreChangeMetaParam.PersistenceTarget != nil && other.PersistenceTarget == nil {
+	if !dataStoreChangeMetaParam.PersistenceTarget.Equals(other.PersistenceTarget) {
 		return false
-	}
-
-	if dataStoreChangeMetaParam.PersistenceTarget == nil && other.PersistenceTarget != nil {
-		return false
-	}
-
-	if dataStoreChangeMetaParam.PersistenceTarget != nil && other.PersistenceTarget != nil {
-		if !dataStoreChangeMetaParam.PersistenceTarget.Equals(other.PersistenceTarget) {
-			return false
-		}
 	}
 
 	return true
@@ -238,43 +249,21 @@ func (dataStoreChangeMetaParam *DataStoreChangeMetaParam) FormatToString(indenta
 	var b strings.Builder
 
 	b.WriteString("DataStoreChangeMetaParam{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, dataStoreChangeMetaParam.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sDataID: %d,\n", indentationValues, dataStoreChangeMetaParam.DataID))
-	b.WriteString(fmt.Sprintf("%sModifiesFlag: %d,\n", indentationValues, dataStoreChangeMetaParam.ModifiesFlag))
-	b.WriteString(fmt.Sprintf("%sName: %q,\n", indentationValues, dataStoreChangeMetaParam.Name))
-
-	if dataStoreChangeMetaParam.Permission != nil {
-		b.WriteString(fmt.Sprintf("%sPermission: %s,\n", indentationValues, dataStoreChangeMetaParam.Permission.FormatToString(indentationLevel+1)))
-	} else {
-		b.WriteString(fmt.Sprintf("%sPermission: nil,\n", indentationValues))
-	}
-
-	if dataStoreChangeMetaParam.DelPermission != nil {
-		b.WriteString(fmt.Sprintf("%sDelPermission: %s,\n", indentationValues, dataStoreChangeMetaParam.DelPermission.FormatToString(indentationLevel+1)))
-	} else {
-		b.WriteString(fmt.Sprintf("%sDelPermission: nil,\n", indentationValues))
-	}
-
-	b.WriteString(fmt.Sprintf("%sPeriod: %d,\n", indentationValues, dataStoreChangeMetaParam.Period))
-	b.WriteString(fmt.Sprintf("%sMetaBinary: %x,\n", indentationValues, dataStoreChangeMetaParam.MetaBinary))
-	b.WriteString(fmt.Sprintf("%sTags: %v,\n", indentationValues, dataStoreChangeMetaParam.Tags))
-	b.WriteString(fmt.Sprintf("%sUpdatePassword: %d,\n", indentationValues, dataStoreChangeMetaParam.UpdatePassword))
-	b.WriteString(fmt.Sprintf("%sReferredCnt: %d,\n", indentationValues, dataStoreChangeMetaParam.ReferredCnt))
-	b.WriteString(fmt.Sprintf("%sDataType: %d,\n", indentationValues, dataStoreChangeMetaParam.DataType))
-	b.WriteString(fmt.Sprintf("%sStatus: %d,\n", indentationValues, dataStoreChangeMetaParam.Status))
-
-	if dataStoreChangeMetaParam.CompareParam != nil {
-		b.WriteString(fmt.Sprintf("%sCompareParam: %s,\n", indentationValues, dataStoreChangeMetaParam.CompareParam.FormatToString(indentationLevel+1)))
-	} else {
-		b.WriteString(fmt.Sprintf("%sCompareParam: nil,\n", indentationValues))
-	}
-
-	if dataStoreChangeMetaParam.PersistenceTarget != nil {
-		b.WriteString(fmt.Sprintf("%sPersistenceTarget: %s\n", indentationValues, dataStoreChangeMetaParam.PersistenceTarget.FormatToString(indentationLevel+1)))
-	} else {
-		b.WriteString(fmt.Sprintf("%sPersistenceTarget: nil\n", indentationValues))
-	}
-
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, dataStoreChangeMetaParam.StructureVersion))
+	b.WriteString(fmt.Sprintf("%sDataID: %s,\n", indentationValues, dataStoreChangeMetaParam.DataID))
+	b.WriteString(fmt.Sprintf("%sModifiesFlag: %s,\n", indentationValues, dataStoreChangeMetaParam.ModifiesFlag))
+	b.WriteString(fmt.Sprintf("%sName: %s,\n", indentationValues, dataStoreChangeMetaParam.Name))
+	b.WriteString(fmt.Sprintf("%sPermission: %s,\n", indentationValues, dataStoreChangeMetaParam.Permission.FormatToString(indentationLevel+1)))
+	b.WriteString(fmt.Sprintf("%sDelPermission: %s,\n", indentationValues, dataStoreChangeMetaParam.DelPermission.FormatToString(indentationLevel+1)))
+	b.WriteString(fmt.Sprintf("%sPeriod: %s,\n", indentationValues, dataStoreChangeMetaParam.Period))
+	b.WriteString(fmt.Sprintf("%sMetaBinary: %s,\n", indentationValues, dataStoreChangeMetaParam.MetaBinary))
+	b.WriteString(fmt.Sprintf("%sTags: %s,\n", indentationValues, dataStoreChangeMetaParam.Tags))
+	b.WriteString(fmt.Sprintf("%sUpdatePassword: %s,\n", indentationValues, dataStoreChangeMetaParam.UpdatePassword))
+	b.WriteString(fmt.Sprintf("%sReferredCnt: %s,\n", indentationValues, dataStoreChangeMetaParam.ReferredCnt))
+	b.WriteString(fmt.Sprintf("%sDataType: %s,\n", indentationValues, dataStoreChangeMetaParam.DataType))
+	b.WriteString(fmt.Sprintf("%sStatus: %s,\n", indentationValues, dataStoreChangeMetaParam.Status))
+	b.WriteString(fmt.Sprintf("%sCompareParam: %s,\n", indentationValues, dataStoreChangeMetaParam.CompareParam.FormatToString(indentationLevel+1)))
+	b.WriteString(fmt.Sprintf("%sPersistenceTarget: %s\n", indentationValues, dataStoreChangeMetaParam.PersistenceTarget.FormatToString(indentationLevel+1)))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -282,20 +271,24 @@ func (dataStoreChangeMetaParam *DataStoreChangeMetaParam) FormatToString(indenta
 
 // NewDataStoreChangeMetaParam returns a new DataStoreChangeMetaParam
 func NewDataStoreChangeMetaParam() *DataStoreChangeMetaParam {
-	return &DataStoreChangeMetaParam{
-		DataID:            0,
-		ModifiesFlag:      0,
-		Name:              "",
+	dataStoreChangeMetaParam := &DataStoreChangeMetaParam{
+		DataID:            types.NewPrimitiveU64(0),
+		ModifiesFlag:      types.NewPrimitiveU32(0),
+		Name:              types.NewString(""),
 		Permission:        NewDataStorePermission(),
 		DelPermission:     NewDataStorePermission(),
-		Period:            0,
-		MetaBinary:        make([]byte, 0),
-		Tags:              make([]string, 0),
-		UpdatePassword:    0,
-		ReferredCnt:       0,
-		DataType:          0,
-		Status:            0,
+		Period:            types.NewPrimitiveU16(0),
+		MetaBinary:        types.NewQBuffer(nil),
+		Tags:              types.NewList[*types.String](),
+		UpdatePassword:    types.NewPrimitiveU64(0),
+		ReferredCnt:       types.NewPrimitiveU32(0),
+		DataType:          types.NewPrimitiveU16(0),
+		Status:            types.NewPrimitiveU8(0),
 		CompareParam:      NewDataStoreChangeMetaCompareParam(),
 		PersistenceTarget: NewDataStorePersistenceTarget(),
 	}
+
+	dataStoreChangeMetaParam.Tags.Type = types.NewString("")
+
+	return dataStoreChangeMetaParam
 }

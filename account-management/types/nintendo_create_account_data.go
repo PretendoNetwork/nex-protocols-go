@@ -5,39 +5,59 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 	friends_wiiu_types "github.com/PretendoNetwork/nex-protocols-go/friends-wiiu/types"
 )
 
 // NintendoCreateAccountData contains data for creating a new NNID on the network
 type NintendoCreateAccountData struct {
-	nex.Structure
+	types.Structure
 	NNAInfo  *friends_wiiu_types.NNAInfo
-	Token    string
-	Birthday *nex.DateTime
-	Unknown  uint64
+	Token    *types.String
+	Birthday *types.DateTime
+	Unknown  *types.PrimitiveU64
 }
 
-// ExtractFromStream extracts a NintendoCreateAccountData structure from a stream
-func (nintendoCreateAccountData *NintendoCreateAccountData) ExtractFromStream(stream *nex.StreamIn) error {
+// WriteTo writes the NintendoCreateAccountData to the given writable
+func (nintendoCreateAccountData *NintendoCreateAccountData) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
+
+	nintendoCreateAccountData.NNAInfo.WriteTo(contentWritable)
+	nintendoCreateAccountData.Token.WriteTo(contentWritable)
+	nintendoCreateAccountData.Birthday.WriteTo(contentWritable)
+	nintendoCreateAccountData.Unknown.WriteTo(contentWritable)
+
+	content := contentWritable.Bytes()
+
+	nintendoCreateAccountData.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
+}
+
+// ExtractFrom extracts the NintendoCreateAccountData from the given readable
+func (nintendoCreateAccountData *NintendoCreateAccountData) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	nintendoCreateAccountData.NNAInfo, err = nex.StreamReadStructure(stream, friends_wiiu_types.NewNNAInfo())
+	if err = nintendoCreateAccountData.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read NintendoCreateAccountData header. %s", err.Error())
+	}
+
+	err = nintendoCreateAccountData.NNAInfo.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract NintendoCreateAccountData.NNAInfo from stream. %s", err.Error())
 	}
 
-	nintendoCreateAccountData.Token, err = stream.ReadString()
+	err = nintendoCreateAccountData.Token.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract NintendoCreateAccountData.Token from stream. %s", err.Error())
 	}
 
-	nintendoCreateAccountData.Birthday, err = stream.ReadDateTime()
+	err = nintendoCreateAccountData.Birthday.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract NintendoCreateAccountData.Birthday from stream. %s", err.Error())
 	}
 
-	nintendoCreateAccountData.Unknown, err = stream.ReadUInt64LE()
+	err = nintendoCreateAccountData.Unknown.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract NintendoCreateAccountData.Unknown from stream. %s", err.Error())
 	}
@@ -46,39 +66,31 @@ func (nintendoCreateAccountData *NintendoCreateAccountData) ExtractFromStream(st
 }
 
 // Copy returns a new copied instance of NintendoCreateAccountData
-func (nintendoCreateAccountData *NintendoCreateAccountData) Copy() nex.StructureInterface {
+func (nintendoCreateAccountData *NintendoCreateAccountData) Copy() types.RVType {
 	copied := NewNintendoCreateAccountData()
 
-	copied.SetStructureVersion(nintendoCreateAccountData.StructureVersion())
+	copied.StructureVersion = nintendoCreateAccountData.StructureVersion
 
-	if nintendoCreateAccountData.NNAInfo != nil {
-		copied.NNAInfo = nintendoCreateAccountData.NNAInfo.Copy().(*friends_wiiu_types.NNAInfo)
-	}
+	copied.NNAInfo = nintendoCreateAccountData.NNAInfo.Copy().(*friends_wiiu_types.NNAInfo)
 
-	copied.Token = nintendoCreateAccountData.Token
+	copied.Token = nintendoCreateAccountData.Token.Copy().(*types.String)
 
-	if nintendoCreateAccountData.Birthday != nil {
-		copied.Birthday = nintendoCreateAccountData.Birthday.Copy()
-	}
+	copied.Birthday = nintendoCreateAccountData.Birthday.Copy().(*types.DateTime)
 
-	copied.Unknown = nintendoCreateAccountData.Unknown
+	copied.Unknown = nintendoCreateAccountData.Unknown.Copy().(*types.PrimitiveU64)
 
 	return copied
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (nintendoCreateAccountData *NintendoCreateAccountData) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*NintendoCreateAccountData)
-
-	if nintendoCreateAccountData.StructureVersion() != other.StructureVersion() {
+func (nintendoCreateAccountData *NintendoCreateAccountData) Equals(o types.RVType) bool {
+	if _, ok := o.(*NintendoCreateAccountData); !ok {
 		return false
 	}
 
-	if nintendoCreateAccountData.NNAInfo == nil && other.NNAInfo != nil {
-		return false
-	}
+	other := o.(*NintendoCreateAccountData)
 
-	if nintendoCreateAccountData.NNAInfo != nil && other.NNAInfo == nil {
+	if nintendoCreateAccountData.StructureVersion != other.StructureVersion {
 		return false
 	}
 
@@ -86,15 +98,7 @@ func (nintendoCreateAccountData *NintendoCreateAccountData) Equals(structure nex
 		return false
 	}
 
-	if nintendoCreateAccountData.Token != other.Token {
-		return false
-	}
-
-	if nintendoCreateAccountData.Birthday == nil && other.Birthday != nil {
-		return false
-	}
-
-	if nintendoCreateAccountData.Birthday != nil && other.Birthday == nil {
+	if !nintendoCreateAccountData.Token.Equals(other.Token) {
 		return false
 	}
 
@@ -102,7 +106,7 @@ func (nintendoCreateAccountData *NintendoCreateAccountData) Equals(structure nex
 		return false
 	}
 
-	if nintendoCreateAccountData.Unknown != other.Unknown {
+	if !nintendoCreateAccountData.Unknown.Equals(other.Unknown) {
 		return false
 	}
 
@@ -122,23 +126,11 @@ func (nintendoCreateAccountData *NintendoCreateAccountData) FormatToString(inden
 	var b strings.Builder
 
 	b.WriteString("NintendoCreateAccountData{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, nintendoCreateAccountData.StructureVersion()))
-
-	if nintendoCreateAccountData.NNAInfo != nil {
-		b.WriteString(fmt.Sprintf("%sNNAInfo: %s,\n", indentationValues, nintendoCreateAccountData.NNAInfo.FormatToString(indentationLevel+1)))
-	} else {
-		b.WriteString(fmt.Sprintf("%sNNAInfo: nil,\n", indentationValues))
-	}
-
-	b.WriteString(fmt.Sprintf("%sToken: %s,\n", indentationValues, nintendoCreateAccountData.Token))
-
-	if nintendoCreateAccountData.Birthday != nil {
-		b.WriteString(fmt.Sprintf("%sBirthday: %s,\n", indentationValues, nintendoCreateAccountData.Birthday.FormatToString(indentationLevel+1)))
-	} else {
-		b.WriteString(fmt.Sprintf("%sBirthday: nil,\n", indentationValues))
-	}
-
-	b.WriteString(fmt.Sprintf("%sUnknown: %d\n", indentationValues, nintendoCreateAccountData.Unknown))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, nintendoCreateAccountData.StructureVersion))
+	b.WriteString(fmt.Sprintf("%sNNAInfo: %s,\n", indentationValues, nintendoCreateAccountData.NNAInfo.FormatToString(indentationLevel+1)))
+	b.WriteString(fmt.Sprintf("%sToken: %s,\n", indentationValues, nintendoCreateAccountData.Token.Value))
+	b.WriteString(fmt.Sprintf("%sBirthday: %s,\n", indentationValues, nintendoCreateAccountData.Birthday.FormatToString(indentationLevel+1)))
+	b.WriteString(fmt.Sprintf("%sUnknown: %s\n", indentationValues, nintendoCreateAccountData.Unknown))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -146,5 +138,10 @@ func (nintendoCreateAccountData *NintendoCreateAccountData) FormatToString(inden
 
 // NewNintendoCreateAccountData returns a new NintendoCreateAccountData
 func NewNintendoCreateAccountData() *NintendoCreateAccountData {
-	return &NintendoCreateAccountData{}
+	return &NintendoCreateAccountData{
+		NNAInfo: friends_wiiu_types.NewNNAInfo(),
+		Token: types.NewString(""),
+		Birthday: types.NewDateTime(0),
+		Unknown: types.NewPrimitiveU64(0),
+	}
 }

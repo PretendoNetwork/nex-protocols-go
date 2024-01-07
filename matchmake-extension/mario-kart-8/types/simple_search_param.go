@@ -6,29 +6,34 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // SimpleSearchParam holds data for the Matchmake Extension (Mario Kart 8) protocol
 type SimpleSearchParam struct {
-	nex.Structure
-	Unknown     uint32
-	Unknown2    *nex.PID
+	types.Structure
+	Unknown     *types.PrimitiveU32
+	Unknown2    *types.PID
 	Conditions  []*SimpleSearchCondition
 	Unknown3    string
-	ResultRange *nex.ResultRange
-	Unknown4    *nex.DateTime
+	ResultRange *types.ResultRange
+	Unknown4    *types.DateTime
 }
 
-// ExtractFromStream extracts a SimpleSearchParam structure from a stream
-func (simpleSearchParam *SimpleSearchParam) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the SimpleSearchParam from the given readable
+func (simpleSearchParam *SimpleSearchParam) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	simpleSearchParam.Unknown, err = stream.ReadUInt32LE()
+	if err = simpleSearchParam.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read SimpleSearchParam header. %s", err.Error())
+	}
+
+	err = simpleSearchParam.Unknown.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract SimpleSearchParam.Unknown from stream. %s", err.Error())
 	}
 
-	simpleSearchParam.Unknown2, err = stream.ReadPID()
+	err = simpleSearchParam.Unknown2.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract SimpleSearchParam.Unknown2 from stream. %s", err.Error())
 	}
@@ -40,17 +45,17 @@ func (simpleSearchParam *SimpleSearchParam) ExtractFromStream(stream *nex.Stream
 
 	simpleSearchParam.Conditions = conditions
 
-	simpleSearchParam.Unknown3, err = stream.ReadString()
+	err = simpleSearchParam.Unknown3.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract SimpleSearchParam.Unknown3 from stream. %s", err.Error())
 	}
 
-	simpleSearchParam.ResultRange, err = nex.StreamReadStructure(stream, nex.NewResultRange())
+	err = simpleSearchParam.ResultRange.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract SimpleSearchParam.ResultRange from stream. %s", err.Error())
 	}
 
-	simpleSearchParam.Unknown4, err = stream.ReadDateTime()
+	err = simpleSearchParam.Unknown4.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract SimpleSearchParam.Unknown4 from stream. %s", err.Error())
 	}
@@ -58,23 +63,29 @@ func (simpleSearchParam *SimpleSearchParam) ExtractFromStream(stream *nex.Stream
 	return nil
 }
 
-// Bytes encodes the SimpleSearchParam and returns a byte array
-func (simpleSearchParam *SimpleSearchParam) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt32LE(simpleSearchParam.Unknown)
-	stream.WritePID(simpleSearchParam.Unknown2)
-	nex.StreamWriteListStructure(stream, simpleSearchParam.Conditions)
-	stream.WriteString(simpleSearchParam.Unknown3)
-	stream.WriteStructure(simpleSearchParam.ResultRange)
-	stream.WriteDateTime(simpleSearchParam.Unknown4)
+// WriteTo writes the SimpleSearchParam to the given writable
+func (simpleSearchParam *SimpleSearchParam) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
 
-	return stream.Bytes()
+	simpleSearchParam.Unknown.WriteTo(contentWritable)
+	simpleSearchParam.Unknown2.WriteTo(contentWritable)
+	simpleSearchParam.Conditions.WriteTo(contentWritable)
+	simpleSearchParam.Unknown3.WriteTo(contentWritable)
+	simpleSearchParam.ResultRange.WriteTo(contentWritable)
+	simpleSearchParam.Unknown4.WriteTo(contentWritable)
+
+	content := contentWritable.Bytes()
+
+	simpleSearchParam.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // Copy returns a new copied instance of SimpleSearchParam
-func (simpleSearchParam *SimpleSearchParam) Copy() nex.StructureInterface {
+func (simpleSearchParam *SimpleSearchParam) Copy() types.RVType {
 	copied := NewSimpleSearchParam()
 
-	copied.SetStructureVersion(simpleSearchParam.StructureVersion())
+	copied.StructureVersion = simpleSearchParam.StructureVersion
 
 	copied.Unknown = simpleSearchParam.Unknown
 	copied.Unknown2 = simpleSearchParam.Unknown2.Copy()
@@ -85,21 +96,25 @@ func (simpleSearchParam *SimpleSearchParam) Copy() nex.StructureInterface {
 	}
 
 	copied.Unknown3 = simpleSearchParam.Unknown3
-	copied.ResultRange = simpleSearchParam.ResultRange.Copy().(*nex.ResultRange)
+	copied.ResultRange = simpleSearchParam.ResultRange.Copy().(*types.ResultRange)
 	copied.Unknown4 = simpleSearchParam.Unknown4.Copy()
 
 	return copied
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (simpleSearchParam *SimpleSearchParam) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*SimpleSearchParam)
-
-	if simpleSearchParam.StructureVersion() != other.StructureVersion() {
+func (simpleSearchParam *SimpleSearchParam) Equals(o types.RVType) bool {
+	if _, ok := o.(*SimpleSearchParam); !ok {
 		return false
 	}
 
-	if simpleSearchParam.Unknown != other.Unknown {
+	other := o.(*SimpleSearchParam)
+
+	if simpleSearchParam.StructureVersion != other.StructureVersion {
+		return false
+	}
+
+	if !simpleSearchParam.Unknown.Equals(other.Unknown) {
 		return false
 	}
 
@@ -117,7 +132,7 @@ func (simpleSearchParam *SimpleSearchParam) Equals(structure nex.StructureInterf
 		}
 	}
 
-	if simpleSearchParam.Unknown3 != other.Unknown3 {
+	if !simpleSearchParam.Unknown3.Equals(other.Unknown3) {
 		return false
 	}
 
@@ -146,7 +161,7 @@ func (simpleSearchParam *SimpleSearchParam) FormatToString(indentationLevel int)
 	var b strings.Builder
 
 	b.WriteString("SimpleSearchParam{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, simpleSearchParam.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, simpleSearchParam.StructureVersion))
 	b.WriteString(fmt.Sprintf("%sUnknown: %d,\n", indentationValues, simpleSearchParam.Unknown))
 	b.WriteString(fmt.Sprintf("%sUnknown2: %s,\n", indentationValues, simpleSearchParam.Unknown2.FormatToString(indentationLevel+1)))
 

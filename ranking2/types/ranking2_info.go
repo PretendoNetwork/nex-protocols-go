@@ -6,20 +6,25 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // Ranking2Info holds data for the Ranking 2  protocol
 type Ranking2Info struct {
-	nex.Structure
+	types.Structure
 	RankDataList []*Ranking2RankData
-	LowestRank   uint32
-	NumRankedIn  uint32
-	Season       int32
+	LowestRank   *types.PrimitiveU32
+	NumRankedIn  *types.PrimitiveU32
+	Season       *types.PrimitiveS32
 }
 
-// ExtractFromStream extracts a Ranking2Info structure from a stream
-func (ranking2Info *Ranking2Info) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the Ranking2Info from the given readable
+func (ranking2Info *Ranking2Info) ExtractFrom(readable types.Readable) error {
 	var err error
+
+	if err = ranking2Info.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read Ranking2Info header. %s", err.Error())
+	}
 
 	rankDataList, err := nex.StreamReadListStructure(stream, NewRanking2RankData())
 	if err != nil {
@@ -28,17 +33,17 @@ func (ranking2Info *Ranking2Info) ExtractFromStream(stream *nex.StreamIn) error 
 
 	ranking2Info.RankDataList = rankDataList
 
-	ranking2Info.LowestRank, err = stream.ReadUInt32LE()
+	err = ranking2Info.LowestRank.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract Ranking2Info.LowestRank from stream. %s", err.Error())
 	}
 
-	ranking2Info.NumRankedIn, err = stream.ReadUInt32LE()
+	err = ranking2Info.NumRankedIn.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract Ranking2Info.NumRankedIn from stream. %s", err.Error())
 	}
 
-	ranking2Info.Season, err = stream.ReadInt32LE()
+	err = ranking2Info.Season.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract Ranking2Info.Season from stream. %s", err.Error())
 	}
@@ -46,21 +51,27 @@ func (ranking2Info *Ranking2Info) ExtractFromStream(stream *nex.StreamIn) error 
 	return nil
 }
 
-// Bytes encodes the Ranking2Info and returns a byte array
-func (ranking2Info *Ranking2Info) Bytes(stream *nex.StreamOut) []byte {
-	nex.StreamWriteListStructure(stream, ranking2Info.RankDataList)
-	stream.WriteUInt32LE(ranking2Info.LowestRank)
-	stream.WriteUInt32LE(ranking2Info.NumRankedIn)
-	stream.WriteInt32LE(ranking2Info.Season)
+// WriteTo writes the Ranking2Info to the given writable
+func (ranking2Info *Ranking2Info) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
 
-	return stream.Bytes()
+	ranking2Info.RankDataList.WriteTo(contentWritable)
+	ranking2Info.LowestRank.WriteTo(contentWritable)
+	ranking2Info.NumRankedIn.WriteTo(contentWritable)
+	ranking2Info.Season.WriteTo(contentWritable)
+
+	content := contentWritable.Bytes()
+
+	ranking2Info.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // Copy returns a new copied instance of Ranking2Info
-func (ranking2Info *Ranking2Info) Copy() nex.StructureInterface {
+func (ranking2Info *Ranking2Info) Copy() types.RVType {
 	copied := NewRanking2Info()
 
-	copied.SetStructureVersion(ranking2Info.StructureVersion())
+	copied.StructureVersion = ranking2Info.StructureVersion
 
 	copied.RankDataList = make([]*Ranking2RankData, len(ranking2Info.RankDataList))
 
@@ -75,10 +86,14 @@ func (ranking2Info *Ranking2Info) Copy() nex.StructureInterface {
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (ranking2Info *Ranking2Info) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*Ranking2Info)
+func (ranking2Info *Ranking2Info) Equals(o types.RVType) bool {
+	if _, ok := o.(*Ranking2Info); !ok {
+		return false
+	}
 
-	if ranking2Info.StructureVersion() != other.StructureVersion() {
+	other := o.(*Ranking2Info)
+
+	if ranking2Info.StructureVersion != other.StructureVersion {
 		return false
 	}
 
@@ -92,15 +107,15 @@ func (ranking2Info *Ranking2Info) Equals(structure nex.StructureInterface) bool 
 		}
 	}
 
-	if ranking2Info.LowestRank != other.LowestRank {
+	if !ranking2Info.LowestRank.Equals(other.LowestRank) {
 		return false
 	}
 
-	if ranking2Info.NumRankedIn != other.NumRankedIn {
+	if !ranking2Info.NumRankedIn.Equals(other.NumRankedIn) {
 		return false
 	}
 
-	if ranking2Info.Season != other.Season {
+	if !ranking2Info.Season.Equals(other.Season) {
 		return false
 	}
 
@@ -121,7 +136,7 @@ func (ranking2Info *Ranking2Info) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("Ranking2Info{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, ranking2Info.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, ranking2Info.StructureVersion))
 
 	if len(ranking2Info.RankDataList) == 0 {
 		b.WriteString(fmt.Sprintf("%sRankDataList: [],\n", indentationValues))

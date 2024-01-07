@@ -5,26 +5,30 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // DataStorePrepareGetParamV1 is a data structure used by the DataStore protocol
 type DataStorePrepareGetParamV1 struct {
-	nex.Structure
-	DataID uint32
-	LockID uint32
+	types.Structure
+	DataID *types.PrimitiveU32
+	LockID *types.PrimitiveU32
 }
 
-// ExtractFromStream extracts a DataStorePrepareGetParamV1 structure from a stream
-func (dataStorePrepareGetParamV1 *DataStorePrepareGetParamV1) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the DataStorePrepareGetParamV1 from the given readable
+func (dataStorePrepareGetParamV1 *DataStorePrepareGetParamV1) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	dataStorePrepareGetParamV1.DataID, err = stream.ReadUInt32LE()
+	if err = dataStorePrepareGetParamV1.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read DataStorePrepareGetParamV1 header. %s", err.Error())
+	}
+
+	err = dataStorePrepareGetParamV1.DataID.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStorePrepareGetParamV1.DataID. %s", err.Error())
 	}
 
-	dataStorePrepareGetParamV1.LockID, err = stream.ReadUInt32LE()
+	err = dataStorePrepareGetParamV1.LockID.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStorePrepareGetParamV1.LockID. %s", err.Error())
 	}
@@ -32,39 +36,49 @@ func (dataStorePrepareGetParamV1 *DataStorePrepareGetParamV1) ExtractFromStream(
 	return nil
 }
 
-// Bytes encodes the DataStorePrepareGetParamV1 and returns a byte array
-func (dataStorePrepareGetParamV1 *DataStorePrepareGetParamV1) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt32LE(dataStorePrepareGetParamV1.DataID)
-	stream.WriteUInt32LE(dataStorePrepareGetParamV1.LockID)
+// WriteTo writes the DataStorePrepareGetParamV1 to the given writable
+func (dataStorePrepareGetParamV1 *DataStorePrepareGetParamV1) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
 
-	return stream.Bytes()
+	dataStorePrepareGetParamV1.DataID.WriteTo(contentWritable)
+	dataStorePrepareGetParamV1.LockID.WriteTo(contentWritable)
+
+	content := contentWritable.Bytes()
+
+	dataStorePrepareGetParamV1.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // Copy returns a new copied instance of DataStorePrepareGetParamV1
-func (dataStorePrepareGetParamV1 *DataStorePrepareGetParamV1) Copy() nex.StructureInterface {
+func (dataStorePrepareGetParamV1 *DataStorePrepareGetParamV1) Copy() types.RVType {
 	copied := NewDataStorePrepareGetParamV1()
 
-	copied.SetStructureVersion(dataStorePrepareGetParamV1.StructureVersion())
+	copied.StructureVersion = dataStorePrepareGetParamV1.StructureVersion
 
-	copied.DataID = dataStorePrepareGetParamV1.DataID
-	copied.LockID = dataStorePrepareGetParamV1.LockID
+	copied.DataID = dataStorePrepareGetParamV1.DataID.Copy().(*types.PrimitiveU32)
+	copied.LockID = dataStorePrepareGetParamV1.LockID.Copy().(*types.PrimitiveU32)
 
 	return copied
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (dataStorePrepareGetParamV1 *DataStorePrepareGetParamV1) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*DataStorePrepareGetParamV1)
-
-	if dataStorePrepareGetParamV1.StructureVersion() != other.StructureVersion() {
+func (dataStorePrepareGetParamV1 *DataStorePrepareGetParamV1) Equals(o types.RVType) bool {
+	if _, ok := o.(*DataStorePrepareGetParamV1); !ok {
 		return false
 	}
 
-	if dataStorePrepareGetParamV1.DataID != other.DataID {
+	other := o.(*DataStorePrepareGetParamV1)
+
+	if dataStorePrepareGetParamV1.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if dataStorePrepareGetParamV1.LockID != other.LockID {
+	if !dataStorePrepareGetParamV1.DataID.Equals(other.DataID) {
+		return false
+	}
+
+	if !dataStorePrepareGetParamV1.LockID.Equals(other.LockID) {
 		return false
 	}
 
@@ -84,9 +98,9 @@ func (dataStorePrepareGetParamV1 *DataStorePrepareGetParamV1) FormatToString(ind
 	var b strings.Builder
 
 	b.WriteString("DataStorePrepareGetParamV1{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, dataStorePrepareGetParamV1.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sDataID: %d,\n", indentationValues, dataStorePrepareGetParamV1.DataID))
-	b.WriteString(fmt.Sprintf("%sLockID: %d\n", indentationValues, dataStorePrepareGetParamV1.LockID))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, dataStorePrepareGetParamV1.StructureVersion))
+	b.WriteString(fmt.Sprintf("%sDataID: %s,\n", indentationValues, dataStorePrepareGetParamV1.DataID))
+	b.WriteString(fmt.Sprintf("%sLockID: %s\n", indentationValues, dataStorePrepareGetParamV1.LockID))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -95,7 +109,7 @@ func (dataStorePrepareGetParamV1 *DataStorePrepareGetParamV1) FormatToString(ind
 // NewDataStorePrepareGetParamV1 returns a new DataStorePrepareGetParamV1
 func NewDataStorePrepareGetParamV1() *DataStorePrepareGetParamV1 {
 	return &DataStorePrepareGetParamV1{
-		DataID: 0,
-		LockID: 0,
+		DataID: types.NewPrimitiveU32(0),
+		LockID: types.NewPrimitiveU32(0),
 	}
 }

@@ -5,10 +5,12 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
 func (protocol *Protocol) handleGetPersistenceInfos(packet nex.PacketInterface) {
+	var err error
 	var errorCode uint32
 
 	if protocol.GetPersistenceInfos == nil {
@@ -22,9 +24,10 @@ func (protocol *Protocol) handleGetPersistenceInfos(packet nex.PacketInterface) 
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.server)
+	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
-	ownerID, err := parametersStream.ReadPID()
+	ownerID := types.NewPID(0)
+	err = ownerID.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.GetPersistenceInfos(fmt.Errorf("Failed to read ownerID from parameters. %s", err.Error()), packet, callID, nil, nil)
 		if errorCode != 0 {
@@ -34,7 +37,9 @@ func (protocol *Protocol) handleGetPersistenceInfos(packet nex.PacketInterface) 
 		return
 	}
 
-	persistenceSlotIDs, err := parametersStream.ReadListUInt16LE()
+	persistenceSlotIDs := types.NewList[*types.PrimitiveU16]()
+	persistenceSlotIDs.Type = types.NewPrimitiveU16(0)
+	err = persistenceSlotIDs.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.GetPersistenceInfos(fmt.Errorf("Failed to read persistenceSlotIDs from parameters. %s", err.Error()), packet, callID, nil, nil)
 		if errorCode != 0 {

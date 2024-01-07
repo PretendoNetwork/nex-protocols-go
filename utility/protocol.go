@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 	utility_types "github.com/PretendoNetwork/nex-protocols-go/utility/types"
 )
@@ -47,8 +48,8 @@ type Protocol struct {
 	AssociateNexUniqueIDsWithMyPrincipalID     func(err error, packet nex.PacketInterface, callID uint32, uniqueIDInfo []*utility_types.UniqueIDInfo) (*nex.RMCMessage, uint32)
 	GetAssociatedNexUniqueIDWithMyPrincipalID  func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, uint32)
 	GetAssociatedNexUniqueIDsWithMyPrincipalID func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, uint32)
-	GetIntegerSettings                         func(err error, packet nex.PacketInterface, callID uint32, integerSettingIndex uint32) (*nex.RMCMessage, uint32)
-	GetStringSettings                          func(err error, packet nex.PacketInterface, callID uint32, stringSettingIndex uint32) (*nex.RMCMessage, uint32)
+	GetIntegerSettings                         func(err error, packet nex.PacketInterface, callID uint32, integerSettingIndex *types.PrimitiveU32) (*nex.RMCMessage, uint32)
+	GetStringSettings                          func(err error, packet nex.PacketInterface, callID uint32, stringSettingIndex *types.PrimitiveU32) (*nex.RMCMessage, uint32)
 }
 
 // Interface implements the methods present on the Utility protocol struct
@@ -61,8 +62,8 @@ type Interface interface {
 	SetHandlerAssociateNexUniqueIDsWithMyPrincipalID(handler func(err error, packet nex.PacketInterface, callID uint32, uniqueIDInfo []*utility_types.UniqueIDInfo) (*nex.RMCMessage, uint32))
 	SetHandlerGetAssociatedNexUniqueIDWithMyPrincipalID(handler func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, uint32))
 	SetHandlerGetAssociatedNexUniqueIDsWithMyPrincipalID(handler func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, uint32))
-	SetHandlerGetIntegerSettings(handler func(err error, packet nex.PacketInterface, callID uint32, integerSettingIndex uint32) (*nex.RMCMessage, uint32))
-	SetHandlerGetStringSettings(handler func(err error, packet nex.PacketInterface, callID uint32, stringSettingIndex uint32) (*nex.RMCMessage, uint32))
+	SetHandlerGetIntegerSettings(handler func(err error, packet nex.PacketInterface, callID uint32, integerSettingIndex *types.PrimitiveU32) (*nex.RMCMessage, uint32))
+	SetHandlerGetStringSettings(handler func(err error, packet nex.PacketInterface, callID uint32, stringSettingIndex *types.PrimitiveU32) (*nex.RMCMessage, uint32))
 }
 
 // Server returns the server implementing the protocol
@@ -106,12 +107,12 @@ func (protocol *Protocol) SetHandlerGetAssociatedNexUniqueIDsWithMyPrincipalID(h
 }
 
 // SetHandlerGetIntegerSettings sets the handler for the GetIntegerSettings method
-func (protocol *Protocol) SetHandlerGetIntegerSettings(handler func(err error, packet nex.PacketInterface, callID uint32, integerSettingIndex uint32) (*nex.RMCMessage, uint32)) {
+func (protocol *Protocol) SetHandlerGetIntegerSettings(handler func(err error, packet nex.PacketInterface, callID uint32, integerSettingIndex *types.PrimitiveU32) (*nex.RMCMessage, uint32)) {
 	protocol.GetIntegerSettings = handler
 }
 
 // SetHandlerGetStringSettings sets the handler for the GetStringSettings method
-func (protocol *Protocol) SetHandlerGetStringSettings(handler func(err error, packet nex.PacketInterface, callID uint32, stringSettingIndex uint32) (*nex.RMCMessage, uint32)) {
+func (protocol *Protocol) SetHandlerGetStringSettings(handler func(err error, packet nex.PacketInterface, callID uint32, stringSettingIndex *types.PrimitiveU32) (*nex.RMCMessage, uint32)) {
 	protocol.GetStringSettings = handler
 }
 

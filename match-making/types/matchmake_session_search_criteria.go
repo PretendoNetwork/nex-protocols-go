@@ -9,84 +9,85 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // MatchmakeSessionSearchCriteria holds information about a matchmaking search
 type MatchmakeSessionSearchCriteria struct {
-	nex.Structure
-	Attribs                  []string
+	types.Structure
+	Attribs                  *types.List[*types.String]
 	GameMode                 string
 	MinParticipants          string
 	MaxParticipants          string
 	MatchmakeSystemType      string
-	VacantOnly               bool
-	ExcludeLocked            bool
-	ExcludeNonHostPID        bool
-	SelectionMethod          uint32           // NEX v3.0.0+
-	VacantParticipants       uint16           // NEX v3.4.0+
+	VacantOnly               *types.PrimitiveBool
+	ExcludeLocked            *types.PrimitiveBool
+	ExcludeNonHostPID        *types.PrimitiveBool
+	SelectionMethod          *types.PrimitiveU32           // NEX v3.0.0+
+	VacantParticipants       *types.PrimitiveU16           // NEX v3.4.0+
 	MatchmakeParam           *MatchmakeParam  // NEX v3.6.0+
-	ExcludeUserPasswordSet   bool             // NEX v3.7.0+
-	ExcludeSystemPasswordSet bool             // NEX v3.7.0+
-	ReferGID                 uint32           // NEX v3.8.0+
+	ExcludeUserPasswordSet   *types.PrimitiveBool             // NEX v3.7.0+
+	ExcludeSystemPasswordSet *types.PrimitiveBool             // NEX v3.7.0+
+	ReferGID                 *types.PrimitiveU32           // NEX v3.8.0+
 	CodeWord                 string           // NEX v4.0.0+
-	ResultRange              *nex.ResultRange // NEX v4.0.0+
+	ResultRange              *types.ResultRange // NEX v4.0.0+
 }
 
-// ExtractFromStream extracts a Gathering structure from a stream
-func (matchmakeSessionSearchCriteria *MatchmakeSessionSearchCriteria) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the Gathering from the given readable
+func (matchmakeSessionSearchCriteria *MatchmakeSessionSearchCriteria) ExtractFrom(readable types.Readable) error {
 	matchmakingVersion := stream.Server.MatchMakingProtocolVersion()
 
 	var err error
 
-	matchmakeSessionSearchCriteria.Attribs, err = stream.ReadListString()
+	err = matchmakeSessionSearchCriteria.Attribs.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract MatchmakeSessionSearchCriteria.Attribs. %s", err.Error())
 	}
 
-	matchmakeSessionSearchCriteria.GameMode, err = stream.ReadString()
+	err = matchmakeSessionSearchCriteria.GameMode.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract MatchmakeSessionSearchCriteria.GameMode. %s", err.Error())
 	}
 
-	matchmakeSessionSearchCriteria.MinParticipants, err = stream.ReadString()
+	err = matchmakeSessionSearchCriteria.MinParticipants.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract MatchmakeSessionSearchCriteria.MinParticipants. %s", err.Error())
 	}
 
-	matchmakeSessionSearchCriteria.MaxParticipants, err = stream.ReadString()
+	err = matchmakeSessionSearchCriteria.MaxParticipants.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract MatchmakeSessionSearchCriteria.MaxParticipants. %s", err.Error())
 	}
 
-	matchmakeSessionSearchCriteria.MatchmakeSystemType, err = stream.ReadString()
+	err = matchmakeSessionSearchCriteria.MatchmakeSystemType.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract MatchmakeSessionSearchCriteria.MatchmakeSystemType. %s", err.Error())
 	}
 
-	matchmakeSessionSearchCriteria.VacantOnly, err = stream.ReadBool()
+	err = matchmakeSessionSearchCriteria.VacantOnly.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract MatchmakeSessionSearchCriteria.VacantOnly. %s", err.Error())
 	}
 
-	matchmakeSessionSearchCriteria.ExcludeLocked, err = stream.ReadBool()
+	err = matchmakeSessionSearchCriteria.ExcludeLocked.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract MatchmakeSessionSearchCriteria.ExcludeLocked. %s", err.Error())
 	}
 
-	matchmakeSessionSearchCriteria.ExcludeNonHostPID, err = stream.ReadBool()
+	err = matchmakeSessionSearchCriteria.ExcludeNonHostPID.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract MatchmakeSessionSearchCriteria.ExcludeNonHostPID. %s", err.Error())
 	}
 
 	if matchmakingVersion.GreaterOrEqual("3.0.0") {
-		matchmakeSessionSearchCriteria.SelectionMethod, err = stream.ReadUInt32LE()
+	err = 	matchmakeSessionSearchCriteria.SelectionMethod.ExtractFrom(readable)
 		if err != nil {
 			return fmt.Errorf("Failed to extract MatchmakeSessionSearchCriteria.SelectionMethod. %s", err.Error())
 		}
 	}
 
 	if matchmakingVersion.GreaterOrEqual("3.4.0") {
-		matchmakeSessionSearchCriteria.VacantParticipants, err = stream.ReadUInt16LE()
+	err = 	matchmakeSessionSearchCriteria.VacantParticipants.ExtractFrom(readable)
 		if err != nil {
 			return fmt.Errorf("Failed to extract MatchmakeSessionSearchCriteria.VacantParticipants. %s", err.Error())
 		}
@@ -102,31 +103,31 @@ func (matchmakeSessionSearchCriteria *MatchmakeSessionSearchCriteria) ExtractFro
 	}
 
 	if matchmakingVersion.GreaterOrEqual("3.7.0") {
-		matchmakeSessionSearchCriteria.ExcludeUserPasswordSet, err = stream.ReadBool()
+	err = 	matchmakeSessionSearchCriteria.ExcludeUserPasswordSet.ExtractFrom(readable)
 		if err != nil {
 			return fmt.Errorf("Failed to extract MatchmakeSessionSearchCriteria.ExcludeUserPasswordSet. %s", err.Error())
 		}
 
-		matchmakeSessionSearchCriteria.ExcludeSystemPasswordSet, err = stream.ReadBool()
+	err = 	matchmakeSessionSearchCriteria.ExcludeSystemPasswordSet.ExtractFrom(readable)
 		if err != nil {
 			return fmt.Errorf("Failed to extract MatchmakeSessionSearchCriteria.ExcludeSystemPasswordSet. %s", err.Error())
 		}
 	}
 
 	if matchmakingVersion.GreaterOrEqual("3.8.0") {
-		matchmakeSessionSearchCriteria.ReferGID, err = stream.ReadUInt32LE()
+	err = 	matchmakeSessionSearchCriteria.ReferGID.ExtractFrom(readable)
 		if err != nil {
 			return fmt.Errorf("Failed to extract MatchmakeSessionSearchCriteria.ReferGID. %s", err.Error())
 		}
 	}
 
 	if matchmakingVersion.GreaterOrEqual("4.0.0") {
-		matchmakeSessionSearchCriteria.CodeWord, err = stream.ReadString()
+	err = 	matchmakeSessionSearchCriteria.CodeWord.ExtractFrom(readable)
 		if err != nil {
 			return fmt.Errorf("Failed to extract MatchmakeSessionSearchCriteria.CodeWord. %s", err.Error())
 		}
 
-		resultRange, err := nex.StreamReadStructure(stream, nex.NewResultRange())
+		resultRange, err := nex.StreamReadStructure(stream, types.NewResultRange())
 		if err != nil {
 			return fmt.Errorf("Failed to extract MatchmakeSessionSearchCriteria.ResultRange. %s", err.Error())
 		}
@@ -137,55 +138,61 @@ func (matchmakeSessionSearchCriteria *MatchmakeSessionSearchCriteria) ExtractFro
 	return nil
 }
 
-// Bytes encodes the Gathering and returns a byte array
-func (matchmakeSessionSearchCriteria *MatchmakeSessionSearchCriteria) Bytes(stream *nex.StreamOut) []byte {
+// WriteTo writes the Gathering to the given writable
+func (matchmakeSessionSearchCriteria *MatchmakeSessionSearchCriteria) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
+
 	matchmakingVersion := stream.Server.MatchMakingProtocolVersion()
 
-	stream.WriteListString(matchmakeSessionSearchCriteria.Attribs)
-	stream.WriteString(matchmakeSessionSearchCriteria.GameMode)
-	stream.WriteString(matchmakeSessionSearchCriteria.MinParticipants)
-	stream.WriteString(matchmakeSessionSearchCriteria.MaxParticipants)
-	stream.WriteString(matchmakeSessionSearchCriteria.MatchmakeSystemType)
-	stream.WriteBool(matchmakeSessionSearchCriteria.VacantOnly)
-	stream.WriteBool(matchmakeSessionSearchCriteria.ExcludeLocked)
-	stream.WriteBool(matchmakeSessionSearchCriteria.ExcludeNonHostPID)
+	matchmakeSessionSearchCriteria.Attribs.WriteTo(contentWritable)
+	matchmakeSessionSearchCriteria.GameMode.WriteTo(contentWritable)
+	matchmakeSessionSearchCriteria.MinParticipants.WriteTo(contentWritable)
+	matchmakeSessionSearchCriteria.MaxParticipants.WriteTo(contentWritable)
+	matchmakeSessionSearchCriteria.MatchmakeSystemType.WriteTo(contentWritable)
+	matchmakeSessionSearchCriteria.VacantOnly.WriteTo(contentWritable)
+	matchmakeSessionSearchCriteria.ExcludeLocked.WriteTo(contentWritable)
+	matchmakeSessionSearchCriteria.ExcludeNonHostPID.WriteTo(contentWritable)
 
 	if matchmakingVersion.GreaterOrEqual("3.0.0") {
-		stream.WriteUInt32LE(matchmakeSessionSearchCriteria.SelectionMethod)
+		matchmakeSessionSearchCriteria.SelectionMethod.WriteTo(contentWritable)
 	}
 
 	if matchmakingVersion.GreaterOrEqual("3.4.0") {
-		stream.WriteUInt16LE(matchmakeSessionSearchCriteria.VacantParticipants)
+		matchmakeSessionSearchCriteria.VacantParticipants.WriteTo(contentWritable)
 	}
 
 	if matchmakingVersion.GreaterOrEqual("3.6.0") {
-		stream.WriteStructure(matchmakeSessionSearchCriteria.MatchmakeParam)
+		matchmakeSessionSearchCriteria.MatchmakeParam.WriteTo(contentWritable)
 	}
 
 	if matchmakingVersion.GreaterOrEqual("3.7.0") {
-		stream.WriteBool(matchmakeSessionSearchCriteria.ExcludeUserPasswordSet)
-		stream.WriteBool(matchmakeSessionSearchCriteria.ExcludeSystemPasswordSet)
+		matchmakeSessionSearchCriteria.ExcludeUserPasswordSet.WriteTo(contentWritable)
+		matchmakeSessionSearchCriteria.ExcludeSystemPasswordSet.WriteTo(contentWritable)
 	}
 
 	if matchmakingVersion.GreaterOrEqual("3.8.0") {
-		stream.WriteUInt32LE(matchmakeSessionSearchCriteria.ReferGID)
+		matchmakeSessionSearchCriteria.ReferGID.WriteTo(contentWritable)
 	}
 
 	if matchmakingVersion.GreaterOrEqual("4.0.0") {
-		stream.WriteString(matchmakeSessionSearchCriteria.CodeWord)
-		stream.WriteStructure(matchmakeSessionSearchCriteria.ResultRange)
+		matchmakeSessionSearchCriteria.CodeWord.WriteTo(contentWritable)
+		matchmakeSessionSearchCriteria.ResultRange.WriteTo(contentWritable)
 	}
 
-	return stream.Bytes()
+	content := contentWritable.Bytes()
+
+	rvcd.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // Copy returns a new copied instance of Gathering
-func (matchmakeSessionSearchCriteria *MatchmakeSessionSearchCriteria) Copy() nex.StructureInterface {
+func (matchmakeSessionSearchCriteria *MatchmakeSessionSearchCriteria) Copy() types.RVType {
 	copied := NewMatchmakeSessionSearchCriteria()
 
-	copied.SetStructureVersion(matchmakeSessionSearchCriteria.StructureVersion())
+	copied.StructureVersion = matchmakeSessionSearchCriteria.StructureVersion
 
-	copied.Attribs = make([]string, len(matchmakeSessionSearchCriteria.Attribs))
+	copied.Attribs = make(*types.List[*types.String], len(matchmakeSessionSearchCriteria.Attribs))
 
 	copy(copied.Attribs, matchmakeSessionSearchCriteria.Attribs)
 
@@ -199,27 +206,27 @@ func (matchmakeSessionSearchCriteria *MatchmakeSessionSearchCriteria) Copy() nex
 	copied.SelectionMethod = matchmakeSessionSearchCriteria.SelectionMethod
 	copied.VacantParticipants = matchmakeSessionSearchCriteria.VacantParticipants
 
-	if matchmakeSessionSearchCriteria.MatchmakeParam != nil {
-		copied.MatchmakeParam = matchmakeSessionSearchCriteria.MatchmakeParam.Copy().(*MatchmakeParam)
-	}
+	copied.MatchmakeParam = matchmakeSessionSearchCriteria.MatchmakeParam.Copy().(*MatchmakeParam)
 
 	copied.ExcludeUserPasswordSet = matchmakeSessionSearchCriteria.ExcludeUserPasswordSet
 	copied.ExcludeSystemPasswordSet = matchmakeSessionSearchCriteria.ExcludeSystemPasswordSet
 	copied.ReferGID = matchmakeSessionSearchCriteria.ReferGID
 	copied.CodeWord = matchmakeSessionSearchCriteria.CodeWord
 
-	if matchmakeSessionSearchCriteria.ResultRange != nil {
-		copied.ResultRange = matchmakeSessionSearchCriteria.ResultRange.Copy().(*nex.ResultRange)
-	}
+	copied.ResultRange = matchmakeSessionSearchCriteria.ResultRange.Copy().(*types.ResultRange)
 
 	return copied
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (matchmakeSessionSearchCriteria *MatchmakeSessionSearchCriteria) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*MatchmakeSessionSearchCriteria)
+func (matchmakeSessionSearchCriteria *MatchmakeSessionSearchCriteria) Equals(o types.RVType) bool {
+	if _, ok := o.(*MatchmakeSessionSearchCriteria); !ok {
+		return false
+	}
 
-	if matchmakeSessionSearchCriteria.StructureVersion() != other.StructureVersion() {
+	other := o.(*MatchmakeSessionSearchCriteria)
+
+	if matchmakeSessionSearchCriteria.StructureVersion != other.StructureVersion {
 		return false
 	}
 
@@ -233,84 +240,64 @@ func (matchmakeSessionSearchCriteria *MatchmakeSessionSearchCriteria) Equals(str
 		}
 	}
 
-	if matchmakeSessionSearchCriteria.GameMode != other.GameMode {
+	if !matchmakeSessionSearchCriteria.GameMode.Equals(other.GameMode) {
 		return false
 	}
 
-	if matchmakeSessionSearchCriteria.MinParticipants != other.MinParticipants {
+	if !matchmakeSessionSearchCriteria.MinParticipants.Equals(other.MinParticipants) {
 		return false
 	}
 
-	if matchmakeSessionSearchCriteria.MaxParticipants != other.MaxParticipants {
+	if !matchmakeSessionSearchCriteria.MaxParticipants.Equals(other.MaxParticipants) {
 		return false
 	}
 
-	if matchmakeSessionSearchCriteria.MatchmakeSystemType != other.MatchmakeSystemType {
+	if !matchmakeSessionSearchCriteria.MatchmakeSystemType.Equals(other.MatchmakeSystemType) {
 		return false
 	}
 
-	if matchmakeSessionSearchCriteria.VacantOnly != other.VacantOnly {
+	if !matchmakeSessionSearchCriteria.VacantOnly.Equals(other.VacantOnly) {
 		return false
 	}
 
-	if matchmakeSessionSearchCriteria.ExcludeLocked != other.ExcludeLocked {
+	if !matchmakeSessionSearchCriteria.ExcludeLocked.Equals(other.ExcludeLocked) {
 		return false
 	}
 
-	if matchmakeSessionSearchCriteria.ExcludeNonHostPID != other.ExcludeNonHostPID {
+	if !matchmakeSessionSearchCriteria.ExcludeNonHostPID.Equals(other.ExcludeNonHostPID) {
 		return false
 	}
 
-	if matchmakeSessionSearchCriteria.SelectionMethod != other.SelectionMethod {
+	if !matchmakeSessionSearchCriteria.SelectionMethod.Equals(other.SelectionMethod) {
 		return false
 	}
 
-	if matchmakeSessionSearchCriteria.VacantParticipants != other.VacantParticipants {
+	if !matchmakeSessionSearchCriteria.VacantParticipants.Equals(other.VacantParticipants) {
 		return false
 	}
 
-	if matchmakeSessionSearchCriteria.MatchmakeParam != nil && other.MatchmakeParam == nil {
+	if !matchmakeSessionSearchCriteria.MatchmakeParam.Equals(other.MatchmakeParam) {
 		return false
 	}
 
-	if matchmakeSessionSearchCriteria.MatchmakeParam == nil && other.MatchmakeParam != nil {
+	if !matchmakeSessionSearchCriteria.ExcludeUserPasswordSet.Equals(other.ExcludeUserPasswordSet) {
 		return false
 	}
 
-	if matchmakeSessionSearchCriteria.MatchmakeParam != nil && other.MatchmakeParam != nil {
-		if !matchmakeSessionSearchCriteria.MatchmakeParam.Equals(other.MatchmakeParam) {
-			return false
-		}
-	}
-
-	if matchmakeSessionSearchCriteria.ExcludeUserPasswordSet != other.ExcludeUserPasswordSet {
+	if !matchmakeSessionSearchCriteria.ExcludeSystemPasswordSet.Equals(other.ExcludeSystemPasswordSet) {
 		return false
 	}
 
-	if matchmakeSessionSearchCriteria.ExcludeSystemPasswordSet != other.ExcludeSystemPasswordSet {
+	if !matchmakeSessionSearchCriteria.ReferGID.Equals(other.ReferGID) {
 		return false
 	}
 
-	if matchmakeSessionSearchCriteria.ReferGID != other.ReferGID {
+	if !matchmakeSessionSearchCriteria.CodeWord.Equals(other.CodeWord) {
 		return false
 	}
 
-	if matchmakeSessionSearchCriteria.CodeWord != other.CodeWord {
+	if !matchmakeSessionSearchCriteria.ResultRange.Equals(other.ResultRange) {
 		return false
-	}
-
-	if matchmakeSessionSearchCriteria.ResultRange != nil && other.ResultRange == nil {
-		return false
-	}
-
-	if matchmakeSessionSearchCriteria.ResultRange == nil && other.ResultRange != nil {
-		return false
-	}
-
-	if matchmakeSessionSearchCriteria.ResultRange != nil && other.ResultRange != nil {
-		if !matchmakeSessionSearchCriteria.ResultRange.Equals(other.ResultRange) {
-			return false
-		}
 	}
 
 	return true
@@ -329,7 +316,7 @@ func (matchmakeSessionSearchCriteria *MatchmakeSessionSearchCriteria) FormatToSt
 	var b strings.Builder
 
 	b.WriteString("MatchmakeSessionSearchCriteria{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, matchmakeSessionSearchCriteria.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, matchmakeSessionSearchCriteria.StructureVersion))
 	b.WriteString(fmt.Sprintf("%sAttribs: %v,\n", indentationValues, matchmakeSessionSearchCriteria.Attribs))
 	b.WriteString(fmt.Sprintf("%sGameMode: %q,\n", indentationValues, matchmakeSessionSearchCriteria.GameMode))
 	b.WriteString(fmt.Sprintf("%sMinParticipants: %q,\n", indentationValues, matchmakeSessionSearchCriteria.MinParticipants))

@@ -9,19 +9,24 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // MatchmakeBlockListParam holds parameters for a matchmake session
 type MatchmakeBlockListParam struct {
-	nex.Structure
-	OptionFlag uint32
+	types.Structure
+	OptionFlag *types.PrimitiveU32
 }
 
-// ExtractFromStream extracts a MatchmakeBlockListParam structure from a stream
-func (matchmakeBlockListParam *MatchmakeBlockListParam) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the MatchmakeBlockListParam from the given readable
+func (matchmakeBlockListParam *MatchmakeBlockListParam) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	matchmakeBlockListParam.OptionFlag, err = stream.ReadUInt32LE()
+	if err = matchmakeBlockListParam.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read MatchmakeBlockListParam header. %s", err.Error())
+	}
+
+	err = matchmakeBlockListParam.OptionFlag.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract MatchmakeBlockListParam.OptionFlag. %s", err.Error())
 	}
@@ -30,10 +35,10 @@ func (matchmakeBlockListParam *MatchmakeBlockListParam) ExtractFromStream(stream
 }
 
 // Copy returns a new copied instance of MatchmakeBlockListParam
-func (matchmakeBlockListParam *MatchmakeBlockListParam) Copy() nex.StructureInterface {
+func (matchmakeBlockListParam *MatchmakeBlockListParam) Copy() types.RVType {
 	copied := NewMatchmakeBlockListParam()
 
-	copied.SetStructureVersion(matchmakeBlockListParam.StructureVersion())
+	copied.StructureVersion = matchmakeBlockListParam.StructureVersion
 
 	copied.OptionFlag = matchmakeBlockListParam.OptionFlag
 
@@ -41,10 +46,14 @@ func (matchmakeBlockListParam *MatchmakeBlockListParam) Copy() nex.StructureInte
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (matchmakeBlockListParam *MatchmakeBlockListParam) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*MatchmakeBlockListParam)
+func (matchmakeBlockListParam *MatchmakeBlockListParam) Equals(o types.RVType) bool {
+	if _, ok := o.(*MatchmakeBlockListParam); !ok {
+		return false
+	}
 
-	if matchmakeBlockListParam.StructureVersion() != other.StructureVersion() {
+	other := o.(*MatchmakeBlockListParam)
+
+	if matchmakeBlockListParam.StructureVersion != other.StructureVersion {
 		return false
 	}
 
@@ -64,7 +73,7 @@ func (matchmakeBlockListParam *MatchmakeBlockListParam) FormatToString(indentati
 	var b strings.Builder
 
 	b.WriteString("MatchmakeBlockListParam{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, matchmakeBlockListParam.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, matchmakeBlockListParam.StructureVersion))
 	b.WriteString(fmt.Sprintf("%sOptionFlag: %d\n", indentationValues, matchmakeBlockListParam.OptionFlag))
 
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))

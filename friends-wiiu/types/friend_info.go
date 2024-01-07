@@ -6,45 +6,46 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // FriendInfo contains information about a friend
 type FriendInfo struct {
-	nex.Structure
-	*nex.Data
+	types.Structure
+	*types.Data
 	NNAInfo      *NNAInfo
 	Presence     *NintendoPresenceV2
 	Status       *Comment
-	BecameFriend *nex.DateTime
-	LastOnline   *nex.DateTime
-	Unknown      uint64
+	BecameFriend *types.DateTime
+	LastOnline   *types.DateTime
+	Unknown      *types.PrimitiveU64
 }
 
-// Bytes encodes the FriendInfo and returns a byte array
-func (friendInfo *FriendInfo) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteStructure(friendInfo.NNAInfo)
-	stream.WriteStructure(friendInfo.Presence)
-	stream.WriteStructure(friendInfo.Status)
-	stream.WriteDateTime(friendInfo.BecameFriend)
-	stream.WriteDateTime(friendInfo.LastOnline)
-	stream.WriteUInt64LE(friendInfo.Unknown)
+// WriteTo writes the FriendInfo to the given writable
+func (friendInfo *FriendInfo) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
 
-	return stream.Bytes()
+	friendInfo.NNAInfo.WriteTo(contentWritable)
+	friendInfo.Presence.WriteTo(contentWritable)
+	friendInfo.Status.WriteTo(contentWritable)
+	friendInfo.BecameFriend.WriteTo(contentWritable)
+	friendInfo.LastOnline.WriteTo(contentWritable)
+	friendInfo.Unknown.WriteTo(contentWritable)
+
+	content := contentWritable.Bytes()
+
+	friendInfo.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // Copy returns a new copied instance of FriendInfo
-func (friendInfo *FriendInfo) Copy() nex.StructureInterface {
+func (friendInfo *FriendInfo) Copy() types.RVType {
 	copied := NewFriendInfo()
 
-	copied.SetStructureVersion(friendInfo.StructureVersion())
+	copied.StructureVersion = friendInfo.StructureVersion
 
-	if friendInfo.ParentType() != nil {
-		copied.Data = friendInfo.ParentType().Copy().(*nex.Data)
-	} else {
-		copied.Data = nex.NewData()
-	}
-
-	copied.SetParentType(copied.Data)
+	copied.Data = friendInfo.Data.Copy().(*types.Data)
 
 	copied.NNAInfo = friendInfo.NNAInfo.Copy().(*NNAInfo)
 	copied.Presence = friendInfo.Presence.Copy().(*NintendoPresenceV2)
@@ -57,10 +58,14 @@ func (friendInfo *FriendInfo) Copy() nex.StructureInterface {
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (friendInfo *FriendInfo) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*FriendInfo)
+func (friendInfo *FriendInfo) Equals(o types.RVType) bool {
+	if _, ok := o.(*FriendInfo); !ok {
+		return false
+	}
 
-	if friendInfo.StructureVersion() != other.StructureVersion() {
+	other := o.(*FriendInfo)
+
+	if friendInfo.StructureVersion != other.StructureVersion {
 		return false
 	}
 
@@ -88,7 +93,7 @@ func (friendInfo *FriendInfo) Equals(structure nex.StructureInterface) bool {
 		return false
 	}
 
-	if friendInfo.Unknown != other.Unknown {
+	if !friendInfo.Unknown.Equals(other.Unknown) {
 		return false
 	}
 
@@ -108,7 +113,7 @@ func (friendInfo *FriendInfo) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("FriendInfo{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, friendInfo.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, friendInfo.StructureVersion))
 
 	if friendInfo.NNAInfo != nil {
 		b.WriteString(fmt.Sprintf("%sNNAInfo: %s,\n", indentationValues, friendInfo.NNAInfo.FormatToString(indentationLevel+1)))

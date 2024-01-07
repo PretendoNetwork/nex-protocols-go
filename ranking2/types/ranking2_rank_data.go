@@ -6,49 +6,54 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // Ranking2RankData holds data for the Ranking 2  protocol
 type Ranking2RankData struct {
-	nex.Structure
-	Misc        uint64
-	NexUniqueID uint64
-	PrincipalID *nex.PID
-	Rank        uint32
-	Score       uint32
+	types.Structure
+	Misc        *types.PrimitiveU64
+	NexUniqueID *types.PrimitiveU64
+	PrincipalID *types.PID
+	Rank        *types.PrimitiveU32
+	Score       *types.PrimitiveU32
 	CommonData  *Ranking2CommonData
 }
 
-// ExtractFromStream extracts a Ranking2RankData structure from a stream
-func (ranking2RankData *Ranking2RankData) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the Ranking2RankData from the given readable
+func (ranking2RankData *Ranking2RankData) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	ranking2RankData.Misc, err = stream.ReadUInt64LE()
+	if err = ranking2RankData.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read Ranking2RankData header. %s", err.Error())
+	}
+
+	err = ranking2RankData.Misc.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract Ranking2RankData.Misc from stream. %s", err.Error())
 	}
 
-	ranking2RankData.NexUniqueID, err = stream.ReadUInt64LE()
+	err = ranking2RankData.NexUniqueID.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract Ranking2RankData.NexUniqueID from stream. %s", err.Error())
 	}
 
-	ranking2RankData.PrincipalID, err = stream.ReadPID()
+	err = ranking2RankData.PrincipalID.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract Ranking2RankData.PrincipalID from stream. %s", err.Error())
 	}
 
-	ranking2RankData.Rank, err = stream.ReadUInt32LE()
+	err = ranking2RankData.Rank.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract Ranking2RankData.Rank from stream. %s", err.Error())
 	}
 
-	ranking2RankData.Score, err = stream.ReadUInt32LE()
+	err = ranking2RankData.Score.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract Ranking2RankData.Score from stream. %s", err.Error())
 	}
 
-	ranking2RankData.CommonData, err = nex.StreamReadStructure(stream, NewRanking2CommonData())
+	err = ranking2RankData.CommonData.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract Ranking2RankData.CommonData from stream. %s", err.Error())
 	}
@@ -56,23 +61,29 @@ func (ranking2RankData *Ranking2RankData) ExtractFromStream(stream *nex.StreamIn
 	return nil
 }
 
-// Bytes encodes the Ranking2RankData and returns a byte array
-func (ranking2RankData *Ranking2RankData) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt64LE(ranking2RankData.Misc)
-	stream.WriteUInt64LE(ranking2RankData.NexUniqueID)
-	stream.WritePID(ranking2RankData.PrincipalID)
-	stream.WriteUInt32LE(ranking2RankData.Rank)
-	stream.WriteUInt32LE(ranking2RankData.Score)
-	stream.WriteStructure(ranking2RankData.CommonData)
+// WriteTo writes the Ranking2RankData to the given writable
+func (ranking2RankData *Ranking2RankData) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
 
-	return stream.Bytes()
+	ranking2RankData.Misc.WriteTo(contentWritable)
+	ranking2RankData.NexUniqueID.WriteTo(contentWritable)
+	ranking2RankData.PrincipalID.WriteTo(contentWritable)
+	ranking2RankData.Rank.WriteTo(contentWritable)
+	ranking2RankData.Score.WriteTo(contentWritable)
+	ranking2RankData.CommonData.WriteTo(contentWritable)
+
+	content := contentWritable.Bytes()
+
+	ranking2RankData.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // Copy returns a new copied instance of Ranking2RankData
-func (ranking2RankData *Ranking2RankData) Copy() nex.StructureInterface {
+func (ranking2RankData *Ranking2RankData) Copy() types.RVType {
 	copied := NewRanking2RankData()
 
-	copied.SetStructureVersion(ranking2RankData.StructureVersion())
+	copied.StructureVersion = ranking2RankData.StructureVersion
 
 	copied.Misc = ranking2RankData.Misc
 	copied.NexUniqueID = ranking2RankData.NexUniqueID
@@ -84,18 +95,22 @@ func (ranking2RankData *Ranking2RankData) Copy() nex.StructureInterface {
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (ranking2RankData *Ranking2RankData) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*Ranking2RankData)
-
-	if ranking2RankData.StructureVersion() != other.StructureVersion() {
+func (ranking2RankData *Ranking2RankData) Equals(o types.RVType) bool {
+	if _, ok := o.(*Ranking2RankData); !ok {
 		return false
 	}
 
-	if ranking2RankData.Misc != other.Misc {
+	other := o.(*Ranking2RankData)
+
+	if ranking2RankData.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if ranking2RankData.NexUniqueID != other.NexUniqueID {
+	if !ranking2RankData.Misc.Equals(other.Misc) {
+		return false
+	}
+
+	if !ranking2RankData.NexUniqueID.Equals(other.NexUniqueID) {
 		return false
 	}
 
@@ -103,11 +118,11 @@ func (ranking2RankData *Ranking2RankData) Equals(structure nex.StructureInterfac
 		return false
 	}
 
-	if ranking2RankData.Rank != other.Rank {
+	if !ranking2RankData.Rank.Equals(other.Rank) {
 		return false
 	}
 
-	if ranking2RankData.Score != other.Score {
+	if !ranking2RankData.Score.Equals(other.Score) {
 		return false
 	}
 
@@ -131,7 +146,7 @@ func (ranking2RankData *Ranking2RankData) FormatToString(indentationLevel int) s
 	var b strings.Builder
 
 	b.WriteString("Ranking2RankData{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, ranking2RankData.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, ranking2RankData.StructureVersion))
 	b.WriteString(fmt.Sprintf("%sMisc: %d,\n", indentationValues, ranking2RankData.Misc))
 	b.WriteString(fmt.Sprintf("%sNexUniqueID: %d,\n", indentationValues, ranking2RankData.NexUniqueID))
 	b.WriteString(fmt.Sprintf("%sPrincipalID: %s,\n", indentationValues, ranking2RankData.PrincipalID.FormatToString(indentationLevel+1)))

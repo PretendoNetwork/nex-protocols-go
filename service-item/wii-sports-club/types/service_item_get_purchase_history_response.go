@@ -6,18 +6,23 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // ServiceItemGetPurchaseHistoryResponse holds data for the Service Item (Wii Sports Club) protocol
 type ServiceItemGetPurchaseHistoryResponse struct {
-	nex.Structure
+	types.Structure
 	*ServiceItemEShopResponse
 	NullablePurchaseHistory []*ServiceItemPurchaseHistory
 }
 
-// ExtractFromStream extracts a ServiceItemGetPurchaseHistoryResponse structure from a stream
-func (serviceItemGetPurchaseHistoryResponse *ServiceItemGetPurchaseHistoryResponse) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the ServiceItemGetPurchaseHistoryResponse from the given readable
+func (serviceItemGetPurchaseHistoryResponse *ServiceItemGetPurchaseHistoryResponse) ExtractFrom(readable types.Readable) error {
 	var err error
+
+	if err = serviceItemGetPurchaseHistoryResponse.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read ServiceItemGetPurchaseHistoryResponse header. %s", err.Error())
+	}
 
 	nullablePurchaseHistory, err := nex.StreamReadListStructure(stream, NewServiceItemPurchaseHistory())
 	if err != nil {
@@ -29,21 +34,26 @@ func (serviceItemGetPurchaseHistoryResponse *ServiceItemGetPurchaseHistoryRespon
 	return nil
 }
 
-// Bytes encodes the ServiceItemGetPurchaseHistoryResponse and returns a byte array
-func (serviceItemGetPurchaseHistoryResponse *ServiceItemGetPurchaseHistoryResponse) Bytes(stream *nex.StreamOut) []byte {
-	nex.StreamWriteListStructure(stream, serviceItemGetPurchaseHistoryResponse.NullablePurchaseHistory)
+// WriteTo writes the ServiceItemGetPurchaseHistoryResponse to the given writable
+func (serviceItemGetPurchaseHistoryResponse *ServiceItemGetPurchaseHistoryResponse) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
 
-	return stream.Bytes()
+	serviceItemGetPurchaseHistoryResponse.NullablePurchaseHistory.WriteTo(contentWritable)
+
+	content := contentWritable.Bytes()
+
+	serviceItemGetPurchaseHistoryResponse.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // Copy returns a new copied instance of ServiceItemGetPurchaseHistoryResponse
-func (serviceItemGetPurchaseHistoryResponse *ServiceItemGetPurchaseHistoryResponse) Copy() nex.StructureInterface {
+func (serviceItemGetPurchaseHistoryResponse *ServiceItemGetPurchaseHistoryResponse) Copy() types.RVType {
 	copied := NewServiceItemGetPurchaseHistoryResponse()
 
-	copied.SetStructureVersion(serviceItemGetPurchaseHistoryResponse.StructureVersion())
+	copied.StructureVersion = serviceItemGetPurchaseHistoryResponse.StructureVersion
 
 	copied.ServiceItemEShopResponse = serviceItemGetPurchaseHistoryResponse.ServiceItemEShopResponse.Copy().(*ServiceItemEShopResponse)
-	copied.SetParentType(copied.ServiceItemEShopResponse)
 
 	copied.NullablePurchaseHistory = make([]*ServiceItemPurchaseHistory, len(serviceItemGetPurchaseHistoryResponse.NullablePurchaseHistory))
 
@@ -55,10 +65,14 @@ func (serviceItemGetPurchaseHistoryResponse *ServiceItemGetPurchaseHistoryRespon
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (serviceItemGetPurchaseHistoryResponse *ServiceItemGetPurchaseHistoryResponse) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*ServiceItemGetPurchaseHistoryResponse)
+func (serviceItemGetPurchaseHistoryResponse *ServiceItemGetPurchaseHistoryResponse) Equals(o types.RVType) bool {
+	if _, ok := o.(*ServiceItemGetPurchaseHistoryResponse); !ok {
+		return false
+	}
 
-	if serviceItemGetPurchaseHistoryResponse.StructureVersion() != other.StructureVersion() {
+	other := o.(*ServiceItemGetPurchaseHistoryResponse)
+
+	if serviceItemGetPurchaseHistoryResponse.StructureVersion != other.StructureVersion {
 		return false
 	}
 
@@ -94,7 +108,7 @@ func (serviceItemGetPurchaseHistoryResponse *ServiceItemGetPurchaseHistoryRespon
 
 	b.WriteString("ServiceItemGetPurchaseHistoryResponse{\n")
 	b.WriteString(fmt.Sprintf("%sParentType: %s,\n", indentationValues, serviceItemGetPurchaseHistoryResponse.ParentType().FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, serviceItemGetPurchaseHistoryResponse.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, serviceItemGetPurchaseHistoryResponse.StructureVersion))
 
 	if len(serviceItemGetPurchaseHistoryResponse.NullablePurchaseHistory) == 0 {
 		b.WriteString(fmt.Sprintf("%sNullablePurchaseHistory: [],\n", indentationValues))

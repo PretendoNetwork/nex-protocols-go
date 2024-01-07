@@ -5,11 +5,13 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 	matchmake_extension_mario_kart8_types "github.com/PretendoNetwork/nex-protocols-go/matchmake-extension/mario-kart-8/types"
 )
 
 func (protocol *Protocol) handleSearchSimpleSearchObject(packet nex.PacketInterface) {
+	var err error
 	var errorCode uint32
 
 	if protocol.SearchSimpleSearchObject == nil {
@@ -23,9 +25,10 @@ func (protocol *Protocol) handleSearchSimpleSearchObject(packet nex.PacketInterf
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.server)
+	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
-	param, err := nex.StreamReadStructure(parametersStream, matchmake_extension_mario_kart8_types.NewSimpleSearchParam())
+	param := matchmake_extension_mario_kart8_types.NewSimpleSearchParam()
+	err = param.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.SearchSimpleSearchObject(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {

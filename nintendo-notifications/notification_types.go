@@ -2,29 +2,29 @@
 package protocol
 
 type notificationTypes struct {
-	FriendPresenceUpdated3DS               uint32
-	FriendFavoriteGameUpdated3DS           uint32
-	FriendCommentUpdated3DS                uint32
-	FriendMiiChanged3DS                    uint32
-	FriendshipCompleted3DS                 uint32
-	FriendOffline                          uint32
-	FriendMiiChanged                       uint32
-	Unknown1MiiRelated                     uint32
-	FriendPreferencesChanged               uint32
-	FriendStartedTitle                     uint32
-	Unknown2FriendRequestRelated           uint32
-	FriendRemoved                          uint32 // * These 2 are the same event. Split them into 2 for cleaner naming
-	FriendRequestCanceled                  uint32 // * These 2 are the same event. Split them into 2 for cleaner naming
-	FriendRequestReceived                  uint32
-	Unknown3FriendRequestRelated           uint32
-	Unknown4BlacklistRelated               uint32
-	FriendRequestAccepted                  uint32
-	Unknown5BlacklistRelated               uint32
-	Unknown6BlacklistRelated               uint32
-	FriendStatusMessageChanged             uint32
-	Unknown7                               uint32
-	Unknown8FriendshipRelated              uint32
-	Unknown9PersistentNotificationsRelated uint32
+	FriendPresenceUpdated3DS               *types.PrimitiveU32
+	FriendFavoriteGameUpdated3DS           *types.PrimitiveU32
+	FriendCommentUpdated3DS                *types.PrimitiveU32
+	FriendMiiChanged3DS                    *types.PrimitiveU32
+	FriendshipCompleted3DS                 *types.PrimitiveU32
+	FriendOffline                          *types.PrimitiveU32
+	FriendMiiChanged                       *types.PrimitiveU32
+	Unknown1MiiRelated                     *types.PrimitiveU32
+	FriendPreferencesChanged               *types.PrimitiveU32
+	FriendStartedTitle                     *types.PrimitiveU32
+	Unknown2FriendRequestRelated           *types.PrimitiveU32
+	FriendRemoved                          *types.PrimitiveU32 // * These 2 are the same event. Split them into 2 for cleaner naming
+	FriendRequestCanceled                  *types.PrimitiveU32 // * These 2 are the same event. Split them into 2 for cleaner naming
+	FriendRequestReceived                  *types.PrimitiveU32
+	Unknown3FriendRequestRelated           *types.PrimitiveU32
+	Unknown4BlacklistRelated               *types.PrimitiveU32
+	FriendRequestAccepted                  *types.PrimitiveU32
+	Unknown5BlacklistRelated               *types.PrimitiveU32
+	Unknown6BlacklistRelated               *types.PrimitiveU32
+	FriendStatusMessageChanged             *types.PrimitiveU32
+	Unknown7                               *types.PrimitiveU32
+	Unknown8FriendshipRelated              *types.PrimitiveU32
+	Unknown9PersistentNotificationsRelated *types.PrimitiveU32
 }
 
 // NotificationTypes is an enum of all the types a notification can be in the NintendoNotifications protocol

@@ -5,33 +5,37 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 	datastore_types "github.com/PretendoNetwork/nex-protocols-go/datastore/types"
 )
 
 // DataStoreCustomRankingResult holds data for the DataStore (Super Mario Maker) protocol
 type DataStoreCustomRankingResult struct {
-	nex.Structure
-	Order    uint32
-	Score    uint32
+	types.Structure
+	Order    *types.PrimitiveU32
+	Score    *types.PrimitiveU32
 	MetaInfo *datastore_types.DataStoreMetaInfo
 }
 
-// ExtractFromStream extracts a DataStoreCustomRankingResult structure from a stream
-func (dataStoreCustomRankingResult *DataStoreCustomRankingResult) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the DataStoreCustomRankingResult from the given readable
+func (dataStoreCustomRankingResult *DataStoreCustomRankingResult) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	dataStoreCustomRankingResult.Order, err = stream.ReadUInt32LE()
+	if err = dataStoreCustomRankingResult.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read DataStoreCustomRankingResult header. %s", err.Error())
+	}
+
+	err = dataStoreCustomRankingResult.Order.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreCustomRankingResult.Order from stream. %s", err.Error())
 	}
 
-	dataStoreCustomRankingResult.Score, err = stream.ReadUInt32LE()
+	err = dataStoreCustomRankingResult.Score.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreCustomRankingResult.Score from stream. %s", err.Error())
 	}
 
-	dataStoreCustomRankingResult.MetaInfo, err = nex.StreamReadStructure(stream, datastore_types.NewDataStoreMetaInfo())
+	err = dataStoreCustomRankingResult.MetaInfo.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreCustomRankingResult.MetaInfo from stream. %s", err.Error())
 	}
@@ -39,41 +43,51 @@ func (dataStoreCustomRankingResult *DataStoreCustomRankingResult) ExtractFromStr
 	return nil
 }
 
-// Bytes encodes the DataStoreCustomRankingResult and returns a byte array
-func (dataStoreCustomRankingResult *DataStoreCustomRankingResult) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt32LE(dataStoreCustomRankingResult.Order)
-	stream.WriteUInt32LE(dataStoreCustomRankingResult.Score)
-	stream.WriteStructure(dataStoreCustomRankingResult.MetaInfo)
+// WriteTo writes the DataStoreCustomRankingResult to the given writable
+func (dataStoreCustomRankingResult *DataStoreCustomRankingResult) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
 
-	return stream.Bytes()
+	dataStoreCustomRankingResult.Order.WriteTo(contentWritable)
+	dataStoreCustomRankingResult.Score.WriteTo(contentWritable)
+	dataStoreCustomRankingResult.MetaInfo.WriteTo(contentWritable)
+
+	content := contentWritable.Bytes()
+
+	dataStoreCustomRankingResult.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // Copy returns a new copied instance of DataStoreCustomRankingResult
-func (dataStoreCustomRankingResult *DataStoreCustomRankingResult) Copy() nex.StructureInterface {
+func (dataStoreCustomRankingResult *DataStoreCustomRankingResult) Copy() types.RVType {
 	copied := NewDataStoreCustomRankingResult()
 
-	copied.SetStructureVersion(dataStoreCustomRankingResult.StructureVersion())
+	copied.StructureVersion = dataStoreCustomRankingResult.StructureVersion
 
-	copied.Order = dataStoreCustomRankingResult.Order
-	copied.Score = dataStoreCustomRankingResult.Score
+	copied.Order = dataStoreCustomRankingResult.Order.Copy().(*types.PrimitiveU32)
+	copied.Score = dataStoreCustomRankingResult.Score.Copy().(*types.PrimitiveU32)
 	copied.MetaInfo = dataStoreCustomRankingResult.MetaInfo.Copy().(*datastore_types.DataStoreMetaInfo)
 
 	return copied
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (dataStoreCustomRankingResult *DataStoreCustomRankingResult) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*DataStoreCustomRankingResult)
-
-	if dataStoreCustomRankingResult.StructureVersion() != other.StructureVersion() {
+func (dataStoreCustomRankingResult *DataStoreCustomRankingResult) Equals(o types.RVType) bool {
+	if _, ok := o.(*DataStoreCustomRankingResult); !ok {
 		return false
 	}
 
-	if dataStoreCustomRankingResult.Order != other.Order {
+	other := o.(*DataStoreCustomRankingResult)
+
+	if dataStoreCustomRankingResult.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if dataStoreCustomRankingResult.Score != other.Score {
+	if !dataStoreCustomRankingResult.Order.Equals(other.Order) {
+		return false
+	}
+
+	if !dataStoreCustomRankingResult.Score.Equals(other.Score) {
 		return false
 	}
 
@@ -97,16 +111,10 @@ func (dataStoreCustomRankingResult *DataStoreCustomRankingResult) FormatToString
 	var b strings.Builder
 
 	b.WriteString("DataStoreCustomRankingResult{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, dataStoreCustomRankingResult.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sOrder: %d,\n", indentationValues, dataStoreCustomRankingResult.Order))
-	b.WriteString(fmt.Sprintf("%sScore: %d,\n", indentationValues, dataStoreCustomRankingResult.Score))
-
-	if dataStoreCustomRankingResult.MetaInfo != nil {
-		b.WriteString(fmt.Sprintf("%sMetaInfo: %s\n", indentationValues, dataStoreCustomRankingResult.MetaInfo.FormatToString(indentationLevel+1)))
-	} else {
-		b.WriteString(fmt.Sprintf("%sMetaInfo: nil\n", indentationValues))
-	}
-
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, dataStoreCustomRankingResult.StructureVersion))
+	b.WriteString(fmt.Sprintf("%sOrder: %s,\n", indentationValues, dataStoreCustomRankingResult.Order))
+	b.WriteString(fmt.Sprintf("%sScore: %s,\n", indentationValues, dataStoreCustomRankingResult.Score))
+	b.WriteString(fmt.Sprintf("%sMetaInfo: %s\n", indentationValues, dataStoreCustomRankingResult.MetaInfo.FormatToString(indentationLevel+1)))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -115,8 +123,8 @@ func (dataStoreCustomRankingResult *DataStoreCustomRankingResult) FormatToString
 // NewDataStoreCustomRankingResult returns a new DataStoreCustomRankingResult
 func NewDataStoreCustomRankingResult() *DataStoreCustomRankingResult {
 	return &DataStoreCustomRankingResult{
-		Order:    0,
-		Score:    0,
+		Order:    types.NewPrimitiveU32(0),
+		Score:    types.NewPrimitiveU32(0),
 		MetaInfo: datastore_types.NewDataStoreMetaInfo(),
 	}
 }

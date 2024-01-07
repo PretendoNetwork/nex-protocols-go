@@ -6,25 +6,30 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // CompetitionRankingInfoGetParam holds data for the Ranking (Mario Kart 8) protocol
 type CompetitionRankingInfoGetParam struct {
-	nex.Structure
-	Unknown uint8
-	Result  *nex.ResultRange
+	types.Structure
+	Unknown *types.PrimitiveU8
+	Result  *types.ResultRange
 }
 
-// ExtractFromStream extracts a CompetitionRankingInfoGetParam structure from a stream
-func (competitionRankingInfoGetParam *CompetitionRankingInfoGetParam) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the CompetitionRankingInfoGetParam from the given readable
+func (competitionRankingInfoGetParam *CompetitionRankingInfoGetParam) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	competitionRankingInfoGetParam.Unknown, err = stream.ReadUInt8()
+	if err = competitionRankingInfoGetParam.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read CompetitionRankingInfoGetParam header. %s", err.Error())
+	}
+
+	err = competitionRankingInfoGetParam.Unknown.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract CompetitionRankingInfoGetParam.Unknown from stream. %s", err.Error())
 	}
 
-	competitionRankingInfoGetParam.Result, err = nex.StreamReadStructure(stream, nex.NewResultRange())
+	err = competitionRankingInfoGetParam.Result.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract CompetitionRankingInfoGetParam.Result from stream. %s", err.Error())
 	}
@@ -32,35 +37,45 @@ func (competitionRankingInfoGetParam *CompetitionRankingInfoGetParam) ExtractFro
 	return nil
 }
 
-// Bytes encodes the CompetitionRankingInfoGetParam and returns a byte array
-func (competitionRankingInfoGetParam *CompetitionRankingInfoGetParam) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt8(competitionRankingInfoGetParam.Unknown)
-	stream.WriteStructure(competitionRankingInfoGetParam.Result)
+// WriteTo writes the CompetitionRankingInfoGetParam to the given writable
+func (competitionRankingInfoGetParam *CompetitionRankingInfoGetParam) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
 
-	return stream.Bytes()
+	competitionRankingInfoGetParam.Unknown.WriteTo(contentWritable)
+	competitionRankingInfoGetParam.Result.WriteTo(contentWritable)
+
+	content := contentWritable.Bytes()
+
+	competitionRankingInfoGetParam.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // Copy returns a new copied instance of CompetitionRankingInfoGetParam
-func (competitionRankingInfoGetParam *CompetitionRankingInfoGetParam) Copy() nex.StructureInterface {
+func (competitionRankingInfoGetParam *CompetitionRankingInfoGetParam) Copy() types.RVType {
 	copied := NewCompetitionRankingInfoGetParam()
 
-	copied.SetStructureVersion(competitionRankingInfoGetParam.StructureVersion())
+	copied.StructureVersion = competitionRankingInfoGetParam.StructureVersion
 
 	copied.Unknown = competitionRankingInfoGetParam.Unknown
-	copied.Result = competitionRankingInfoGetParam.Result.Copy().(*nex.ResultRange)
+	copied.Result = competitionRankingInfoGetParam.Result.Copy().(*types.ResultRange)
 
 	return copied
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (competitionRankingInfoGetParam *CompetitionRankingInfoGetParam) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*CompetitionRankingInfoGetParam)
-
-	if competitionRankingInfoGetParam.StructureVersion() != other.StructureVersion() {
+func (competitionRankingInfoGetParam *CompetitionRankingInfoGetParam) Equals(o types.RVType) bool {
+	if _, ok := o.(*CompetitionRankingInfoGetParam); !ok {
 		return false
 	}
 
-	if competitionRankingInfoGetParam.Unknown != other.Unknown {
+	other := o.(*CompetitionRankingInfoGetParam)
+
+	if competitionRankingInfoGetParam.StructureVersion != other.StructureVersion {
+		return false
+	}
+
+	if !competitionRankingInfoGetParam.Unknown.Equals(other.Unknown) {
 		return false
 	}
 
@@ -84,7 +99,7 @@ func (competitionRankingInfoGetParam *CompetitionRankingInfoGetParam) FormatToSt
 	var b strings.Builder
 
 	b.WriteString("CompetitionRankingInfoGetParam{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, competitionRankingInfoGetParam.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, competitionRankingInfoGetParam.StructureVersion))
 	b.WriteString(fmt.Sprintf("%sUnknown: %d,\n", indentationValues, competitionRankingInfoGetParam.Unknown))
 
 	if competitionRankingInfoGetParam.Result != nil {

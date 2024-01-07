@@ -6,44 +6,49 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // PersistentNotification contains unknown data
 type PersistentNotification struct {
-	nex.Structure
-	*nex.Data
-	Unknown1 uint64
-	Unknown2 uint32
-	Unknown3 uint32
-	Unknown4 uint32
+	types.Structure
+	*types.Data
+	Unknown1 *types.PrimitiveU64
+	Unknown2 *types.PrimitiveU32
+	Unknown3 *types.PrimitiveU32
+	Unknown4 *types.PrimitiveU32
 	Unknown5 string
 }
 
-// ExtractFromStream extracts a PersistentNotification structure from a stream
-func (notification *PersistentNotification) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the PersistentNotification from the given readable
+func (notification *PersistentNotification) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	notification.Unknown1, err = stream.ReadUInt64LE()
+	if err = notification.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read PersistentNotification header. %s", err.Error())
+	}
+
+	err = notification.Unknown1.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract PersistentNotification.Unknown1. %s", err.Error())
 	}
 
-	notification.Unknown2, err = stream.ReadUInt32LE()
+	err = notification.Unknown2.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract PersistentNotification.Unknown2. %s", err.Error())
 	}
 
-	notification.Unknown3, err = stream.ReadUInt32LE()
+	err = notification.Unknown3.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract PersistentNotification.Unknown3. %s", err.Error())
 	}
 
-	notification.Unknown4, err = stream.ReadUInt32LE()
+	err = notification.Unknown4.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract PersistentNotification.Unknown4. %s", err.Error())
 	}
 
-	notification.Unknown5, err = stream.ReadString()
+	err = notification.Unknown5.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract PersistentNotification.Unknown5. %s", err.Error())
 	}
@@ -52,18 +57,12 @@ func (notification *PersistentNotification) ExtractFromStream(stream *nex.Stream
 }
 
 // Copy returns a new copied instance of PersistentNotification
-func (notification *PersistentNotification) Copy() nex.StructureInterface {
+func (notification *PersistentNotification) Copy() types.RVType {
 	copied := NewPersistentNotification()
 
-	copied.SetStructureVersion(notification.StructureVersion())
+	copied.StructureVersion = notification.StructureVersion
 
-	if notification.ParentType() != nil {
-		copied.Data = notification.ParentType().Copy().(*nex.Data)
-	} else {
-		copied.Data = nex.NewData()
-	}
-
-	copied.SetParentType(copied.Data)
+	copied.Data = notification.Data.Copy().(*types.Data)
 
 	copied.Unknown1 = notification.Unknown1
 	copied.Unknown2 = notification.Unknown2
@@ -75,10 +74,14 @@ func (notification *PersistentNotification) Copy() nex.StructureInterface {
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (notification *PersistentNotification) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*PersistentNotification)
+func (notification *PersistentNotification) Equals(o types.RVType) bool {
+	if _, ok := o.(*PersistentNotification); !ok {
+		return false
+	}
 
-	if notification.StructureVersion() != other.StructureVersion() {
+	other := o.(*PersistentNotification)
+
+	if notification.StructureVersion != other.StructureVersion {
 		return false
 	}
 
@@ -86,23 +89,23 @@ func (notification *PersistentNotification) Equals(structure nex.StructureInterf
 		return false
 	}
 
-	if notification.Unknown1 != other.Unknown1 {
+	if !notification.Unknown1.Equals(other.Unknown1) {
 		return false
 	}
 
-	if notification.Unknown2 != other.Unknown2 {
+	if !notification.Unknown2.Equals(other.Unknown2) {
 		return false
 	}
 
-	if notification.Unknown3 != other.Unknown3 {
+	if !notification.Unknown3.Equals(other.Unknown3) {
 		return false
 	}
 
-	if notification.Unknown4 != other.Unknown4 {
+	if !notification.Unknown4.Equals(other.Unknown4) {
 		return false
 	}
 
-	if notification.Unknown5 != other.Unknown5 {
+	if !notification.Unknown5.Equals(other.Unknown5) {
 		return false
 	}
 
@@ -122,7 +125,7 @@ func (notification *PersistentNotification) FormatToString(indentationLevel int)
 	var b strings.Builder
 
 	b.WriteString("PersistentNotification{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, notification.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, notification.StructureVersion))
 	b.WriteString(fmt.Sprintf("%sUnknown1: %d,\n", indentationValues, notification.Unknown1))
 	b.WriteString(fmt.Sprintf("%sUnknown2: %d,\n", indentationValues, notification.Unknown2))
 	b.WriteString(fmt.Sprintf("%sUnknown3: %d,\n", indentationValues, notification.Unknown3))

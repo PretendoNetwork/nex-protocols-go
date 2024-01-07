@@ -2,65 +2,66 @@
 package types
 
 import (
-	"bytes"
 	"fmt"
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // DataStoreReqUpdateInfo is a data structure used by the DataStore protocol
 type DataStoreReqUpdateInfo struct {
-	nex.Structure
-	Version        uint32
-	URL            string
-	RequestHeaders []*DataStoreKeyValue
-	FormFields     []*DataStoreKeyValue
-	RootCACert     []byte
+	types.Structure
+	Version        *types.PrimitiveU32
+	URL            *types.String
+	RequestHeaders *types.List[*DataStoreKeyValue]
+	FormFields     *types.List[*DataStoreKeyValue]
+	RootCACert     *types.Buffer
 }
 
-// ExtractFromStream extracts a DataStoreReqUpdateInfo structure from a stream
-func (dataStoreReqUpdateInfo *DataStoreReqUpdateInfo) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the DataStoreReqUpdateInfo from the given readable
+func (dataStoreReqUpdateInfo *DataStoreReqUpdateInfo) ExtractFrom(readable types.Readable) error {
+	stream := readable.(*nex.ByteStreamIn)
 	datastoreVersion := stream.Server.DataStoreProtocolVersion()
 
 	var err error
 
-	if datastoreVersion.GreaterOrEqual("3.0.0") {
-		version, err := stream.ReadUInt32LE()
-		if err != nil {
-			return fmt.Errorf("Failed to extract DataStoreReqUpdateInfo.Version. %s", err.Error())
-		}
-
-		dataStoreReqUpdateInfo.Version = version
-	} else {
-		version, err := stream.ReadUInt16LE()
-		if err != nil {
-			return fmt.Errorf("Failed to extract DataStoreReqUpdateInfo.Version. %s", err.Error())
-		}
-
-		dataStoreReqUpdateInfo.Version = uint32(version)
+	if err = dataStoreReqUpdateInfo.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read DataStoreReqUpdateInfo header. %s", err.Error())
 	}
 
-	dataStoreReqUpdateInfo.URL, err = stream.ReadString()
+	if datastoreVersion.GreaterOrEqual("3.0.0") {
+		version, err := readable.ReadPrimitiveUInt32LE()
+		if err != nil {
+			return fmt.Errorf("Failed to extract DataStoreReqUpdateInfo.Version. %s", err.Error())
+		}
+
+		dataStoreReqUpdateInfo.Version.Value = version
+	} else {
+		version, err := readable.ReadPrimitiveUInt16LE()
+		if err != nil {
+			return fmt.Errorf("Failed to extract DataStoreReqUpdateInfo.Version. %s", err.Error())
+		}
+
+		dataStoreReqUpdateInfo.Version.Value = *types.PrimitiveU32(version)
+	}
+
+	err = dataStoreReqUpdateInfo.URL.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreReqUpdateInfo.URL. %s", err.Error())
 	}
 
-	requestHeaders, err := nex.StreamReadListStructure(stream, NewDataStoreKeyValue())
+	err = dataStoreReqUpdateInfo.RequestHeaders.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreReqUpdateInfo.RequestHeaders. %s", err.Error())
 	}
 
-	dataStoreReqUpdateInfo.RequestHeaders = requestHeaders
-
-	formFields, err := nex.StreamReadListStructure(stream, NewDataStoreKeyValue())
+	err = dataStoreReqUpdateInfo.FormFields.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreReqUpdateInfo.FormFields. %s", err.Error())
 	}
 
-	dataStoreReqUpdateInfo.FormFields = formFields
-
-	dataStoreReqUpdateInfo.RootCACert, err = stream.ReadBuffer()
+	err = dataStoreReqUpdateInfo.RootCACert.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreReqUpdateInfo.RootCACert. %s", err.Error())
 	}
@@ -68,88 +69,75 @@ func (dataStoreReqUpdateInfo *DataStoreReqUpdateInfo) ExtractFromStream(stream *
 	return nil
 }
 
-// Bytes encodes the DataStoreReqUpdateInfo and returns a byte array
-func (dataStoreReqUpdateInfo *DataStoreReqUpdateInfo) Bytes(stream *nex.StreamOut) []byte {
+// WriteTo writes the DataStoreReqUpdateInfo to the given writable
+func (dataStoreReqUpdateInfo *DataStoreReqUpdateInfo) WriteTo(writable types.Writable) {
+	stream := writable.(*nex.ByteStreamOut)
+	contentWritable := writable.CopyNew()
+
 	datastoreVersion := stream.Server.DataStoreProtocolVersion()
 
 	if datastoreVersion.GreaterOrEqual("3.0.0") {
-		stream.WriteUInt32LE(dataStoreReqUpdateInfo.Version)
+		contentWritable.WritePrimitiveUInt32LE(dataStoreReqUpdateInfo.Version.Value)
 	} else {
-		stream.WriteUInt16LE(uint16(dataStoreReqUpdateInfo.Version))
+		contentWritable.WritePrimitiveUInt16LE(*types.PrimitiveU16(dataStoreReqUpdateInfo.Version.Value))
 	}
 
-	stream.WriteString(dataStoreReqUpdateInfo.URL)
-	nex.StreamWriteListStructure(stream, dataStoreReqUpdateInfo.RequestHeaders)
-	nex.StreamWriteListStructure(stream, dataStoreReqUpdateInfo.FormFields)
-	stream.WriteBuffer(dataStoreReqUpdateInfo.RootCACert)
+	dataStoreReqUpdateInfo.URL.WriteTo(contentWritable)
+	dataStoreReqUpdateInfo.RequestHeaders.WriteTo(contentWritable)
+	dataStoreReqUpdateInfo.FormFields.WriteTo(contentWritable)
+	dataStoreReqUpdateInfo.RootCACert.WriteTo(contentWritable)
 
-	return stream.Bytes()
+	content := contentWritable.Bytes()
+
+	dataStoreReqUpdateInfo.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // Copy returns a new copied instance of DataStoreReqUpdateInfo
-func (dataStoreReqUpdateInfo *DataStoreReqUpdateInfo) Copy() nex.StructureInterface {
+func (dataStoreReqUpdateInfo *DataStoreReqUpdateInfo) Copy() types.RVType {
 	copied := NewDataStoreReqUpdateInfo()
 
-	copied.SetStructureVersion(dataStoreReqUpdateInfo.StructureVersion())
+	copied.StructureVersion = dataStoreReqUpdateInfo.StructureVersion
 
-	copied.Version = dataStoreReqUpdateInfo.Version
-	copied.URL = dataStoreReqUpdateInfo.URL
-	copied.RequestHeaders = make([]*DataStoreKeyValue, len(dataStoreReqUpdateInfo.RequestHeaders))
-
-	for i := 0; i < len(dataStoreReqUpdateInfo.RequestHeaders); i++ {
-		copied.RequestHeaders[i] = dataStoreReqUpdateInfo.RequestHeaders[i].Copy().(*DataStoreKeyValue)
-	}
-
-	copied.FormFields = make([]*DataStoreKeyValue, len(dataStoreReqUpdateInfo.FormFields))
-
-	for i := 0; i < len(dataStoreReqUpdateInfo.FormFields); i++ {
-		copied.FormFields[i] = dataStoreReqUpdateInfo.FormFields[i].Copy().(*DataStoreKeyValue)
-	}
-
-	copied.RootCACert = make([]byte, len(dataStoreReqUpdateInfo.RootCACert))
-
-	copy(copied.RootCACert, dataStoreReqUpdateInfo.RootCACert)
+	copied.Version = dataStoreReqUpdateInfo.Version.Copy().(*types.PrimitiveU32)
+	copied.URL = dataStoreReqUpdateInfo.URL.Copy().(*types.String)
+	copied.RequestHeaders = dataStoreReqUpdateInfo.RequestHeaders.Copy().(*types.List[*DataStoreKeyValue])
+	copied.FormFields = dataStoreReqUpdateInfo.FormFields.Copy().(*types.List[*DataStoreKeyValue])
+	copied.RootCACert = dataStoreReqUpdateInfo.RootCACert.Copy().(*types.Buffer)
 
 	return copied
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (dataStoreReqUpdateInfo *DataStoreReqUpdateInfo) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*DataStoreReqUpdateInfo)
-
-	if dataStoreReqUpdateInfo.StructureVersion() != other.StructureVersion() {
+func (dataStoreReqUpdateInfo *DataStoreReqUpdateInfo) Equals(o types.RVType) bool {
+	if _, ok := o.(*DataStoreReqUpdateInfo); !ok {
 		return false
 	}
 
-	if dataStoreReqUpdateInfo.Version != other.Version {
+	other := o.(*DataStoreReqUpdateInfo)
+
+	if dataStoreReqUpdateInfo.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if dataStoreReqUpdateInfo.URL != other.URL {
+	if !dataStoreReqUpdateInfo.Version.Equals(other.Version) {
 		return false
 	}
 
-	if len(dataStoreReqUpdateInfo.RequestHeaders) != len(other.RequestHeaders) {
+	if !dataStoreReqUpdateInfo.URL.Equals(other.URL) {
 		return false
 	}
 
-	for i := 0; i < len(dataStoreReqUpdateInfo.RequestHeaders); i++ {
-		if dataStoreReqUpdateInfo.RequestHeaders[i] != other.RequestHeaders[i] {
-			return false
-		}
-	}
-
-	if len(dataStoreReqUpdateInfo.FormFields) != len(other.FormFields) {
+	if !dataStoreReqUpdateInfo.RequestHeaders.Equals(other.RequestHeaders) {
 		return false
 	}
 
-	for i := 0; i < len(dataStoreReqUpdateInfo.FormFields); i++ {
-		if dataStoreReqUpdateInfo.FormFields[i] != other.FormFields[i] {
-			return false
-		}
+	if !dataStoreReqUpdateInfo.FormFields.Equals(other.FormFields) {
+		return false
 	}
 
-	return bytes.Equal(dataStoreReqUpdateInfo.RootCACert, other.RootCACert)
+	return dataStoreReqUpdateInfo.RootCACert.Equals(other.RootCACert)
 }
 
 // String returns a string representation of the struct
@@ -160,50 +148,17 @@ func (dataStoreReqUpdateInfo *DataStoreReqUpdateInfo) String() string {
 // FormatToString pretty-prints the struct data using the provided indentation level
 func (dataStoreReqUpdateInfo *DataStoreReqUpdateInfo) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
-	indentationListValues := strings.Repeat("\t", indentationLevel+2)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("DataStoreReqUpdateInfo{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, dataStoreReqUpdateInfo.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sURL: %q,\n", indentationValues, dataStoreReqUpdateInfo.URL))
-
-	if len(dataStoreReqUpdateInfo.RequestHeaders) == 0 {
-		b.WriteString(fmt.Sprintf("%sRequestHeaders: [],\n", indentationValues))
-	} else {
-		b.WriteString(fmt.Sprintf("%sRequestHeaders: [\n", indentationValues))
-
-		for i := 0; i < len(dataStoreReqUpdateInfo.RequestHeaders); i++ {
-			str := dataStoreReqUpdateInfo.RequestHeaders[i].FormatToString(indentationLevel + 2)
-			if i == len(dataStoreReqUpdateInfo.RequestHeaders)-1 {
-				b.WriteString(fmt.Sprintf("%s%s\n", indentationListValues, str))
-			} else {
-				b.WriteString(fmt.Sprintf("%s%s,\n", indentationListValues, str))
-			}
-		}
-
-		b.WriteString(fmt.Sprintf("%s],\n", indentationValues))
-	}
-
-	if len(dataStoreReqUpdateInfo.FormFields) == 0 {
-		b.WriteString(fmt.Sprintf("%sFormFields: [],\n", indentationValues))
-	} else {
-		b.WriteString(fmt.Sprintf("%sFormFields: [\n", indentationValues))
-
-		for i := 0; i < len(dataStoreReqUpdateInfo.FormFields); i++ {
-			str := dataStoreReqUpdateInfo.FormFields[i].FormatToString(indentationLevel + 2)
-			if i == len(dataStoreReqUpdateInfo.FormFields)-1 {
-				b.WriteString(fmt.Sprintf("%s%s\n", indentationListValues, str))
-			} else {
-				b.WriteString(fmt.Sprintf("%s%s,\n", indentationListValues, str))
-			}
-		}
-
-		b.WriteString(fmt.Sprintf("%s],\n", indentationValues))
-	}
-
-	b.WriteString(fmt.Sprintf("%sRootCACert: %x\n", indentationValues, dataStoreReqUpdateInfo.RootCACert))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, dataStoreReqUpdateInfo.StructureVersion))
+	b.WriteString(fmt.Sprintf("%sVersion: %s,\n", indentationValues, dataStoreReqUpdateInfo.Version))
+	b.WriteString(fmt.Sprintf("%sURL: %s,\n", indentationValues, dataStoreReqUpdateInfo.URL))
+	b.WriteString(fmt.Sprintf("%sRequestHeaders: %s,\n", indentationValues, dataStoreReqUpdateInfo.RequestHeaders))
+	b.WriteString(fmt.Sprintf("%sFormFields: %s,\n", indentationValues, dataStoreReqUpdateInfo.FormFields))
+	b.WriteString(fmt.Sprintf("%sRootCACert: %s\n", indentationValues, dataStoreReqUpdateInfo.RootCACert))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -211,11 +166,16 @@ func (dataStoreReqUpdateInfo *DataStoreReqUpdateInfo) FormatToString(indentation
 
 // NewDataStoreReqUpdateInfo returns a new DataStoreReqUpdateInfo
 func NewDataStoreReqUpdateInfo() *DataStoreReqUpdateInfo {
-	return &DataStoreReqUpdateInfo{
-		Version:        0,
-		URL:            "",
-		RequestHeaders: make([]*DataStoreKeyValue, 0),
-		FormFields:     make([]*DataStoreKeyValue, 0),
-		RootCACert:     make([]byte, 0),
+	dataStoreReqUpdateInfo := &DataStoreReqUpdateInfo{
+		Version:        types.NewPrimitiveU32(0),
+		URL:            types.NewString(""),
+		RequestHeaders: types.NewList[*DataStoreKeyValue](),
+		FormFields:     types.NewList[*DataStoreKeyValue](),
+		RootCACert:     types.NewBuffer(nil),
 	}
+
+	dataStoreReqUpdateInfo.RequestHeaders.Type = NewDataStoreKeyValue()
+	dataStoreReqUpdateInfo.FormFields.Type = NewDataStoreKeyValue()
+
+	return dataStoreReqUpdateInfo
 }

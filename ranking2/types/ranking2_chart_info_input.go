@@ -6,25 +6,30 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // Ranking2ChartInfoInput holds data for the Ranking 2  protocol
 type Ranking2ChartInfoInput struct {
-	nex.Structure
-	ChartIndex         uint32
-	NumSeasonsToGoBack uint8
+	types.Structure
+	ChartIndex         *types.PrimitiveU32
+	NumSeasonsToGoBack *types.PrimitiveU8
 }
 
-// ExtractFromStream extracts a Ranking2ChartInfoInput structure from a stream
-func (ranking2ChartInfoInput *Ranking2ChartInfoInput) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the Ranking2ChartInfoInput from the given readable
+func (ranking2ChartInfoInput *Ranking2ChartInfoInput) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	ranking2ChartInfoInput.ChartIndex, err = stream.ReadUInt32LE()
+	if err = ranking2ChartInfoInput.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read Ranking2ChartInfoInput header. %s", err.Error())
+	}
+
+	err = ranking2ChartInfoInput.ChartIndex.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract Ranking2ChartInfoInput.ChartIndex from stream. %s", err.Error())
 	}
 
-	ranking2ChartInfoInput.NumSeasonsToGoBack, err = stream.ReadUInt8()
+	err = ranking2ChartInfoInput.NumSeasonsToGoBack.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract Ranking2ChartInfoInput.NumSeasonsToGoBack from stream. %s", err.Error())
 	}
@@ -32,19 +37,25 @@ func (ranking2ChartInfoInput *Ranking2ChartInfoInput) ExtractFromStream(stream *
 	return nil
 }
 
-// Bytes encodes the Ranking2ChartInfoInput and returns a byte array
-func (ranking2ChartInfoInput *Ranking2ChartInfoInput) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt32LE(ranking2ChartInfoInput.ChartIndex)
-	stream.WriteUInt8(ranking2ChartInfoInput.NumSeasonsToGoBack)
+// WriteTo writes the Ranking2ChartInfoInput to the given writable
+func (ranking2ChartInfoInput *Ranking2ChartInfoInput) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
 
-	return stream.Bytes()
+	ranking2ChartInfoInput.ChartIndex.WriteTo(contentWritable)
+	ranking2ChartInfoInput.NumSeasonsToGoBack.WriteTo(contentWritable)
+
+	content := contentWritable.Bytes()
+
+	ranking2ChartInfoInput.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // Copy returns a new copied instance of Ranking2ChartInfoInput
-func (ranking2ChartInfoInput *Ranking2ChartInfoInput) Copy() nex.StructureInterface {
+func (ranking2ChartInfoInput *Ranking2ChartInfoInput) Copy() types.RVType {
 	copied := NewRanking2ChartInfoInput()
 
-	copied.SetStructureVersion(ranking2ChartInfoInput.StructureVersion())
+	copied.StructureVersion = ranking2ChartInfoInput.StructureVersion
 
 	copied.ChartIndex = ranking2ChartInfoInput.ChartIndex
 	copied.NumSeasonsToGoBack = ranking2ChartInfoInput.NumSeasonsToGoBack
@@ -52,18 +63,22 @@ func (ranking2ChartInfoInput *Ranking2ChartInfoInput) Copy() nex.StructureInterf
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (ranking2ChartInfoInput *Ranking2ChartInfoInput) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*Ranking2ChartInfoInput)
-
-	if ranking2ChartInfoInput.StructureVersion() != other.StructureVersion() {
+func (ranking2ChartInfoInput *Ranking2ChartInfoInput) Equals(o types.RVType) bool {
+	if _, ok := o.(*Ranking2ChartInfoInput); !ok {
 		return false
 	}
 
-	if ranking2ChartInfoInput.ChartIndex != other.ChartIndex {
+	other := o.(*Ranking2ChartInfoInput)
+
+	if ranking2ChartInfoInput.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if ranking2ChartInfoInput.NumSeasonsToGoBack != other.NumSeasonsToGoBack {
+	if !ranking2ChartInfoInput.ChartIndex.Equals(other.ChartIndex) {
+		return false
+	}
+
+	if !ranking2ChartInfoInput.NumSeasonsToGoBack.Equals(other.NumSeasonsToGoBack) {
 		return false
 	}
 
@@ -83,7 +98,7 @@ func (ranking2ChartInfoInput *Ranking2ChartInfoInput) FormatToString(indentation
 	var b strings.Builder
 
 	b.WriteString("Ranking2ChartInfoInput{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, ranking2ChartInfoInput.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, ranking2ChartInfoInput.StructureVersion))
 	b.WriteString(fmt.Sprintf("%sChartIndex: %d,\n", indentationValues, ranking2ChartInfoInput.ChartIndex))
 	b.WriteString(fmt.Sprintf("%sNumSeasonsToGoBack: %d,\n", indentationValues, ranking2ChartInfoInput.NumSeasonsToGoBack))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))

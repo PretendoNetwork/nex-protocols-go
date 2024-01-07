@@ -6,39 +6,40 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // FriendRelationship contains information about a users relationship with another PID
 type FriendRelationship struct {
-	nex.Structure
-	*nex.Data
-	PID              *nex.PID
-	LFC              uint64
-	RelationshipType uint8
+	types.Structure
+	*types.Data
+	PID              *types.PID
+	LFC              *types.PrimitiveU64
+	RelationshipType *types.PrimitiveU8
 }
 
-// Bytes encodes the FriendRelationship and returns a byte array
-func (relationship *FriendRelationship) Bytes(stream *nex.StreamOut) []byte {
-	stream.WritePID(relationship.PID)
-	stream.WriteUInt64LE(relationship.LFC)
-	stream.WriteUInt8(relationship.RelationshipType)
+// WriteTo writes the FriendRelationship to the given writable
+func (relationship *FriendRelationship) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
 
-	return stream.Bytes()
+	relationship.PID.WriteTo(contentWritable)
+	relationship.LFC.WriteTo(contentWritable)
+	relationship.RelationshipType.WriteTo(contentWritable)
+
+	content := contentWritable.Bytes()
+
+	relationship.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // Copy returns a new copied instance of FriendRelationship
-func (relationship *FriendRelationship) Copy() nex.StructureInterface {
+func (relationship *FriendRelationship) Copy() types.RVType {
 	copied := NewFriendRelationship()
 
-	copied.SetStructureVersion(relationship.StructureVersion())
+	copied.StructureVersion = relationship.StructureVersion
 
-	if relationship.ParentType() != nil {
-		copied.Data = relationship.ParentType().Copy().(*nex.Data)
-	} else {
-		copied.Data = nex.NewData()
-	}
-
-	copied.SetParentType(copied.Data)
+	copied.Data = relationship.Data.Copy().(*types.Data)
 
 	copied.PID = relationship.PID.Copy()
 	copied.LFC = relationship.LFC
@@ -48,10 +49,14 @@ func (relationship *FriendRelationship) Copy() nex.StructureInterface {
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (relationship *FriendRelationship) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*FriendRelationship)
+func (relationship *FriendRelationship) Equals(o types.RVType) bool {
+	if _, ok := o.(*FriendRelationship); !ok {
+		return false
+	}
 
-	if relationship.StructureVersion() != other.StructureVersion() {
+	other := o.(*FriendRelationship)
+
+	if relationship.StructureVersion != other.StructureVersion {
 		return false
 	}
 
@@ -63,11 +68,11 @@ func (relationship *FriendRelationship) Equals(structure nex.StructureInterface)
 		return false
 	}
 
-	if relationship.LFC != other.LFC {
+	if !relationship.LFC.Equals(other.LFC) {
 		return false
 	}
 
-	if relationship.RelationshipType != other.RelationshipType {
+	if !relationship.RelationshipType.Equals(other.RelationshipType) {
 		return false
 	}
 
@@ -87,7 +92,7 @@ func (relationship *FriendRelationship) FormatToString(indentationLevel int) str
 	var b strings.Builder
 
 	b.WriteString("FriendRelationship{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, relationship.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, relationship.StructureVersion))
 	b.WriteString(fmt.Sprintf("%sPID: %s,\n", indentationValues, relationship.PID.FormatToString(indentationLevel+1)))
 	b.WriteString(fmt.Sprintf("%sLFC: %d,\n", indentationValues, relationship.LFC))
 	b.WriteString(fmt.Sprintf("%sRelationshipType: %d\n", indentationValues, relationship.RelationshipType))

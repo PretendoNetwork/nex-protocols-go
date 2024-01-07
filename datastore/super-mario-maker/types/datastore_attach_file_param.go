@@ -5,33 +5,37 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 	datastore_types "github.com/PretendoNetwork/nex-protocols-go/datastore/types"
 )
 
 // DataStoreAttachFileParam holds data for the DataStore (Super Mario Maker) protocol
 type DataStoreAttachFileParam struct {
-	nex.Structure
+	types.Structure
 	PostParam   *datastore_types.DataStorePreparePostParam
-	ReferDataID uint64
-	ContentType string
+	ReferDataID *types.PrimitiveU64
+	ContentType *types.String
 }
 
-// ExtractFromStream extracts a DataStoreAttachFileParam structure from a stream
-func (dataStoreAttachFileParam *DataStoreAttachFileParam) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the DataStoreAttachFileParam from the given readable
+func (dataStoreAttachFileParam *DataStoreAttachFileParam) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	dataStoreAttachFileParam.PostParam, err = nex.StreamReadStructure(stream, datastore_types.NewDataStorePreparePostParam())
+	if err = dataStoreAttachFileParam.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read DataStoreAttachFileParam header. %s", err.Error())
+	}
+
+	err = dataStoreAttachFileParam.PostParam.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreAttachFileParam.PostParam from stream. %s", err.Error())
 	}
 
-	dataStoreAttachFileParam.ReferDataID, err = stream.ReadUInt64LE()
+	err = dataStoreAttachFileParam.ReferDataID.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreAttachFileParam.ReferDataID from stream. %s", err.Error())
 	}
 
-	dataStoreAttachFileParam.ContentType, err = stream.ReadString()
+	err = dataStoreAttachFileParam.ContentType.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreAttachFileParam.ContentType from stream. %s", err.Error())
 	}
@@ -39,33 +43,43 @@ func (dataStoreAttachFileParam *DataStoreAttachFileParam) ExtractFromStream(stre
 	return nil
 }
 
-// Bytes encodes the DataStoreAttachFileParam and returns a byte array
-func (dataStoreAttachFileParam *DataStoreAttachFileParam) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteStructure(dataStoreAttachFileParam.PostParam)
-	stream.WriteUInt64LE(dataStoreAttachFileParam.ReferDataID)
-	stream.WriteString(dataStoreAttachFileParam.ContentType)
+// WriteTo writes the DataStoreAttachFileParam to the given writable
+func (dataStoreAttachFileParam *DataStoreAttachFileParam) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
 
-	return stream.Bytes()
+	dataStoreAttachFileParam.PostParam.WriteTo(contentWritable)
+	dataStoreAttachFileParam.ReferDataID.WriteTo(contentWritable)
+	dataStoreAttachFileParam.ContentType.WriteTo(contentWritable)
+
+	content := contentWritable.Bytes()
+
+	dataStoreAttachFileParam.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // Copy returns a new copied instance of DataStoreAttachFileParam
-func (dataStoreAttachFileParam *DataStoreAttachFileParam) Copy() nex.StructureInterface {
+func (dataStoreAttachFileParam *DataStoreAttachFileParam) Copy() types.RVType {
 	copied := NewDataStoreAttachFileParam()
 
-	copied.SetStructureVersion(dataStoreAttachFileParam.StructureVersion())
+	copied.StructureVersion = dataStoreAttachFileParam.StructureVersion
 
 	copied.PostParam = dataStoreAttachFileParam.PostParam.Copy().(*datastore_types.DataStorePreparePostParam)
-	copied.ReferDataID = dataStoreAttachFileParam.ReferDataID
-	copied.ContentType = dataStoreAttachFileParam.ContentType
+	copied.ReferDataID = dataStoreAttachFileParam.ReferDataID.Copy().(*types.PrimitiveU64)
+	copied.ContentType = dataStoreAttachFileParam.ContentType.Copy().(*types.String)
 
 	return copied
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (dataStoreAttachFileParam *DataStoreAttachFileParam) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*DataStoreAttachFileParam)
+func (dataStoreAttachFileParam *DataStoreAttachFileParam) Equals(o types.RVType) bool {
+	if _, ok := o.(*DataStoreAttachFileParam); !ok {
+		return false
+	}
 
-	if dataStoreAttachFileParam.StructureVersion() != other.StructureVersion() {
+	other := o.(*DataStoreAttachFileParam)
+
+	if dataStoreAttachFileParam.StructureVersion != other.StructureVersion {
 		return false
 	}
 
@@ -73,11 +87,11 @@ func (dataStoreAttachFileParam *DataStoreAttachFileParam) Equals(structure nex.S
 		return false
 	}
 
-	if dataStoreAttachFileParam.ReferDataID != other.ReferDataID {
+	if !dataStoreAttachFileParam.ReferDataID.Equals(other.ReferDataID) {
 		return false
 	}
 
-	if dataStoreAttachFileParam.ContentType != other.ContentType {
+	if !dataStoreAttachFileParam.ContentType.Equals(other.ContentType) {
 		return false
 	}
 
@@ -97,16 +111,10 @@ func (dataStoreAttachFileParam *DataStoreAttachFileParam) FormatToString(indenta
 	var b strings.Builder
 
 	b.WriteString("DataStoreAttachFileParam{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, dataStoreAttachFileParam.StructureVersion()))
-
-	if dataStoreAttachFileParam.PostParam != nil {
-		b.WriteString(fmt.Sprintf("%sPostParam: %s\n", indentationValues, dataStoreAttachFileParam.PostParam.FormatToString(indentationLevel+1)))
-	} else {
-		b.WriteString(fmt.Sprintf("%sPostParam: nil\n", indentationValues))
-	}
-
-	b.WriteString(fmt.Sprintf("%sReferDataID: %d,\n", indentationValues, dataStoreAttachFileParam.ReferDataID))
-	b.WriteString(fmt.Sprintf("%sContentType: %q,\n", indentationValues, dataStoreAttachFileParam.ContentType))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, dataStoreAttachFileParam.StructureVersion))
+	b.WriteString(fmt.Sprintf("%sPostParam: %s\n", indentationValues, dataStoreAttachFileParam.PostParam.FormatToString(indentationLevel+1)))
+	b.WriteString(fmt.Sprintf("%sReferDataID: %s,\n", indentationValues, dataStoreAttachFileParam.ReferDataID))
+	b.WriteString(fmt.Sprintf("%sContentType: %s,\n", indentationValues, dataStoreAttachFileParam.ContentType))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -116,7 +124,7 @@ func (dataStoreAttachFileParam *DataStoreAttachFileParam) FormatToString(indenta
 func NewDataStoreAttachFileParam() *DataStoreAttachFileParam {
 	return &DataStoreAttachFileParam{
 		PostParam:   datastore_types.NewDataStorePreparePostParam(),
-		ReferDataID: 0,
-		ContentType: "",
+		ReferDataID: types.NewPrimitiveU64(0),
+		ContentType: types.NewString(""),
 	}
 }

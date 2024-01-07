@@ -5,10 +5,12 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
 func (protocol *Protocol) handleUnregisterGatherings(packet nex.PacketInterface) {
+	var err error
 	var errorCode uint32
 
 	if protocol.UnregisterGatherings == nil {
@@ -22,9 +24,11 @@ func (protocol *Protocol) handleUnregisterGatherings(packet nex.PacketInterface)
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.server)
+	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
-	lstGatherings, err := parametersStream.ReadListUInt32LE()
+	lstGatherings := types.NewList[*types.PrimitiveU32]()
+	lstGatherings.Type = types.NewPrimitiveU32(0)
+	err = lstGatherings.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.UnregisterGatherings(fmt.Errorf("Failed to read lstGatherings from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {

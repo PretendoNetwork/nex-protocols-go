@@ -16,51 +16,51 @@ type notificationSubTypes struct {
 }
 
 type notificationParticipationSubTypes struct {
-	None           uint32
-	NewParticipant uint32
-	Cancelled      uint32
-	Disconnected   uint32
-	Ended          uint32
+	None           *types.PrimitiveU32
+	NewParticipant *types.PrimitiveU32
+	Cancelled      *types.PrimitiveU32
+	Disconnected   *types.PrimitiveU32
+	Ended          *types.PrimitiveU32
 }
 
 type notificationsOwnershipChangedSubTypes struct {
-	None uint32
+	None *types.PrimitiveU32
 }
 
 type notificationsRequestJoinGatheringSubTypes struct {
-	None uint32
+	None *types.PrimitiveU32
 }
 
 type notificationsEndGatheringSubTypes struct {
-	None uint32
+	None *types.PrimitiveU32
 }
 
 type notificationsGatheringUnregisteredSubTypes struct {
-	None uint32
+	None *types.PrimitiveU32
 }
 
 type notificationsHostChangedSubTypes struct {
-	None uint32
+	None *types.PrimitiveU32
 }
 
 type notificationsServiceItemRequestCompletedSubTypes struct {
-	None uint32
+	None *types.PrimitiveU32
 }
 
 type notificationsMatchmakeRefereeRoundStartedSubTypes struct {
-	None uint32
+	None *types.PrimitiveU32
 }
 
 type notificationsSystemPasswordChangedSubTypes struct {
-	None uint32
+	None *types.PrimitiveU32
 }
 
 type notificationsSystemPasswordClearedSubTypes struct {
-	None uint32
+	None *types.PrimitiveU32
 }
 
 type notificationsSwitchGatheringSubTypes struct {
-	None uint32
+	None *types.PrimitiveU32
 }
 
 // NotificationSubTypes is a list of all the subtypes a notification can be in a given category of the Notifications protocol

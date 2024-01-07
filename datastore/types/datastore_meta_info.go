@@ -2,214 +2,217 @@
 package types
 
 import (
-	"bytes"
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // DataStoreMetaInfo contains DataStore meta information
 type DataStoreMetaInfo struct {
-	nex.Structure
-	DataID        uint64
-	OwnerID       *nex.PID
-	Size          uint32
-	DataType      uint16
-	Name          string
-	MetaBinary    []byte
+	types.Structure
+	DataID        *types.PrimitiveU64
+	OwnerID       *types.PID
+	Size          *types.PrimitiveU32
+	DataType      *types.PrimitiveU16
+	Name          *types.String
+	MetaBinary    *types.QBuffer
 	Permission    *DataStorePermission
 	DelPermission *DataStorePermission
-	CreatedTime   *nex.DateTime
-	UpdatedTime   *nex.DateTime
-	Period        uint16
-	Status        uint8
-	ReferredCnt   uint32
-	ReferDataID   uint32
-	Flag          uint32
-	ReferredTime  *nex.DateTime
-	ExpireTime    *nex.DateTime
-	Tags          []string
-	Ratings       []*DataStoreRatingInfoWithSlot
+	CreatedTime   *types.DateTime
+	UpdatedTime   *types.DateTime
+	Period        *types.PrimitiveU16
+	Status        *types.PrimitiveU8
+	ReferredCnt   *types.PrimitiveU32
+	ReferDataID   *types.PrimitiveU32
+	Flag          *types.PrimitiveU32
+	ReferredTime  *types.DateTime
+	ExpireTime    *types.DateTime
+	Tags          *types.List[*types.String]
+	Ratings       *types.List[*DataStoreRatingInfoWithSlot]
 }
 
-// ExtractFromStream extracts a DataStoreMetaInfo structure from a stream
-func (dataStoreMetaInfo *DataStoreMetaInfo) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the DataStoreMetaInfo from the given readable
+func (dataStoreMetaInfo *DataStoreMetaInfo) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	dataStoreMetaInfo.DataID, err = stream.ReadUInt64LE()
+	if err = dataStoreMetaInfo.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read DataStoreMetaInfo header. %s", err.Error())
+	}
+
+	err = dataStoreMetaInfo.DataID.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreMetaInfo.DataID. %s", err.Error())
 	}
 
-	dataStoreMetaInfo.OwnerID, err = stream.ReadPID()
+	err = dataStoreMetaInfo.OwnerID.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreMetaInfo.OwnerID. %s", err.Error())
 	}
 
-	dataStoreMetaInfo.Size, err = stream.ReadUInt32LE()
+	err = dataStoreMetaInfo.Size.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreMetaInfo.Size. %s", err.Error())
 	}
 
-	dataStoreMetaInfo.Name, err = stream.ReadString()
+	err = dataStoreMetaInfo.Name.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreMetaInfo.Name. %s", err.Error())
 	}
 
-	dataStoreMetaInfo.DataType, err = stream.ReadUInt16LE()
+	err = dataStoreMetaInfo.DataType.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreMetaInfo.DataType. %s", err.Error())
 	}
 
-	dataStoreMetaInfo.MetaBinary, err = stream.ReadQBuffer()
+	err = dataStoreMetaInfo.MetaBinary.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreMetaInfo.MetaBinary. %s", err.Error())
 	}
 
-	dataStoreMetaInfo.Permission, err = nex.StreamReadStructure(stream, NewDataStorePermission())
+	err = dataStoreMetaInfo.Permission.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreMetaInfo.Permission. %s", err.Error())
 	}
 
-	dataStoreMetaInfo.DelPermission, err = nex.StreamReadStructure(stream, NewDataStorePermission())
+	err = dataStoreMetaInfo.DelPermission.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreMetaInfo.DelPermission. %s", err.Error())
 	}
 
-	dataStoreMetaInfo.CreatedTime, err = stream.ReadDateTime()
+	err = dataStoreMetaInfo.CreatedTime.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreMetaInfo.CreatedTime. %s", err.Error())
 	}
 
-	dataStoreMetaInfo.UpdatedTime, err = stream.ReadDateTime()
+	err = dataStoreMetaInfo.UpdatedTime.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreMetaInfo.UpdatedTime. %s", err.Error())
 	}
 
-	dataStoreMetaInfo.Period, err = stream.ReadUInt16LE()
+	err = dataStoreMetaInfo.Period.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreMetaInfo.Period. %s", err.Error())
 	}
 
-	dataStoreMetaInfo.Status, err = stream.ReadUInt8()
+	err = dataStoreMetaInfo.Status.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreMetaInfo.Status. %s", err.Error())
 	}
 
-	dataStoreMetaInfo.ReferredCnt, err = stream.ReadUInt32LE()
+	err = dataStoreMetaInfo.ReferredCnt.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreMetaInfo.ReferredCnt. %s", err.Error())
 	}
 
-	dataStoreMetaInfo.ReferDataID, err = stream.ReadUInt32LE()
+	err = dataStoreMetaInfo.ReferDataID.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreMetaInfo.ReferDataID. %s", err.Error())
 	}
 
-	dataStoreMetaInfo.Flag, err = stream.ReadUInt32LE()
+	err = dataStoreMetaInfo.Flag.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreMetaInfo.Flag. %s", err.Error())
 	}
 
-	dataStoreMetaInfo.ReferredTime, err = stream.ReadDateTime()
+	err = dataStoreMetaInfo.ReferredTime.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreMetaInfo.ReferredTime. %s", err.Error())
 	}
 
-	dataStoreMetaInfo.ExpireTime, err = stream.ReadDateTime()
+	err = dataStoreMetaInfo.ExpireTime.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreMetaInfo.ExpireTime. %s", err.Error())
 	}
 
-	dataStoreMetaInfo.Tags, err = stream.ReadListString()
+	err = dataStoreMetaInfo.Tags.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreMetaInfo.Tags. %s", err.Error())
 	}
 
-	ratings, err := nex.StreamReadListStructure(stream, NewDataStoreRatingInfoWithSlot())
+	err = dataStoreMetaInfo.Ratings.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreMetaInfo.Ratings. %s", err.Error())
 	}
 
-	dataStoreMetaInfo.Ratings = ratings
-
 	return nil
 }
 
-// Bytes encodes the DataStoreMetaInfo and returns a byte array
-func (dataStoreMetaInfo *DataStoreMetaInfo) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt64LE(dataStoreMetaInfo.DataID)
-	stream.WritePID(dataStoreMetaInfo.OwnerID)
-	stream.WriteUInt32LE(dataStoreMetaInfo.Size)
-	stream.WriteString(dataStoreMetaInfo.Name)
-	stream.WriteUInt16LE(dataStoreMetaInfo.DataType)
-	stream.WriteQBuffer(dataStoreMetaInfo.MetaBinary)
-	stream.WriteStructure(dataStoreMetaInfo.Permission)
-	stream.WriteStructure(dataStoreMetaInfo.DelPermission)
-	stream.WriteDateTime(dataStoreMetaInfo.CreatedTime)
-	stream.WriteDateTime(dataStoreMetaInfo.UpdatedTime)
-	stream.WriteUInt16LE(dataStoreMetaInfo.Period)
-	stream.WriteUInt8(dataStoreMetaInfo.Status)
-	stream.WriteUInt32LE(dataStoreMetaInfo.ReferredCnt)
-	stream.WriteUInt32LE(dataStoreMetaInfo.ReferDataID)
-	stream.WriteUInt32LE(dataStoreMetaInfo.Flag)
-	stream.WriteDateTime(dataStoreMetaInfo.ReferredTime)
-	stream.WriteDateTime(dataStoreMetaInfo.ExpireTime)
-	stream.WriteListString(dataStoreMetaInfo.Tags)
-	nex.StreamWriteListStructure(stream, dataStoreMetaInfo.Ratings)
+// WriteTo writes the DataStoreMetaInfo to the given writable
+func (dataStoreMetaInfo *DataStoreMetaInfo) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
 
-	return stream.Bytes()
+	dataStoreMetaInfo.DataID.WriteTo(contentWritable)
+	dataStoreMetaInfo.OwnerID.WriteTo(contentWritable)
+	dataStoreMetaInfo.Size.WriteTo(contentWritable)
+	dataStoreMetaInfo.Name.WriteTo(contentWritable)
+	dataStoreMetaInfo.DataType.WriteTo(contentWritable)
+	dataStoreMetaInfo.MetaBinary.WriteTo(contentWritable)
+	dataStoreMetaInfo.Permission.WriteTo(contentWritable)
+	dataStoreMetaInfo.DelPermission.WriteTo(contentWritable)
+	dataStoreMetaInfo.CreatedTime.WriteTo(contentWritable)
+	dataStoreMetaInfo.UpdatedTime.WriteTo(contentWritable)
+	dataStoreMetaInfo.Period.WriteTo(contentWritable)
+	dataStoreMetaInfo.Status.WriteTo(contentWritable)
+	dataStoreMetaInfo.ReferredCnt.WriteTo(contentWritable)
+	dataStoreMetaInfo.ReferDataID.WriteTo(contentWritable)
+	dataStoreMetaInfo.Flag.WriteTo(contentWritable)
+	dataStoreMetaInfo.ReferredTime.WriteTo(contentWritable)
+	dataStoreMetaInfo.ExpireTime.WriteTo(contentWritable)
+	dataStoreMetaInfo.Tags.WriteTo(contentWritable)
+	dataStoreMetaInfo.Ratings.WriteTo(contentWritable)
+
+	content := contentWritable.Bytes()
+
+	dataStoreMetaInfo.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // Copy returns a new copied instance of DataStoreMetaInfo
-func (dataStoreMetaInfo *DataStoreMetaInfo) Copy() nex.StructureInterface {
+func (dataStoreMetaInfo *DataStoreMetaInfo) Copy() types.RVType {
 	copied := NewDataStoreMetaInfo()
 
-	copied.SetStructureVersion(dataStoreMetaInfo.StructureVersion())
+	copied.StructureVersion = dataStoreMetaInfo.StructureVersion
 
-	copied.DataID = dataStoreMetaInfo.DataID
-	copied.OwnerID = dataStoreMetaInfo.OwnerID.Copy()
-	copied.Size = dataStoreMetaInfo.Size
-	copied.DataType = dataStoreMetaInfo.DataType
-	copied.Name = dataStoreMetaInfo.Name
-	copied.MetaBinary = make([]byte, len(dataStoreMetaInfo.MetaBinary))
-
-	copy(copied.MetaBinary, dataStoreMetaInfo.MetaBinary)
+	copied.DataID = dataStoreMetaInfo.DataID.Copy().(*types.PrimitiveU64)
+	copied.OwnerID = dataStoreMetaInfo.OwnerID.Copy().(*types.PID)
+	copied.Size = dataStoreMetaInfo.Size.Copy().(*types.PrimitiveU32)
+	copied.DataType = dataStoreMetaInfo.DataType.Copy().(*types.PrimitiveU16)
+	copied.Name = dataStoreMetaInfo.Name.Copy().(*types.String)
+	copied.MetaBinary = dataStoreMetaInfo.MetaBinary.Copy().(*types.QBuffer)
 
 	copied.Permission = dataStoreMetaInfo.Permission.Copy().(*DataStorePermission)
 	copied.DelPermission = dataStoreMetaInfo.DelPermission.Copy().(*DataStorePermission)
-	copied.CreatedTime = dataStoreMetaInfo.CreatedTime.Copy()
-	copied.UpdatedTime = dataStoreMetaInfo.UpdatedTime.Copy()
-	copied.Period = dataStoreMetaInfo.Period
-	copied.Status = dataStoreMetaInfo.Status
-	copied.ReferredCnt = dataStoreMetaInfo.ReferredCnt
-	copied.ReferDataID = dataStoreMetaInfo.ReferDataID
-	copied.Flag = dataStoreMetaInfo.Flag
-	copied.ReferredTime = dataStoreMetaInfo.ReferredTime.Copy()
-	copied.ExpireTime = dataStoreMetaInfo.ExpireTime.Copy()
-	copied.Tags = make([]string, len(dataStoreMetaInfo.Tags))
+	copied.CreatedTime = dataStoreMetaInfo.CreatedTime.Copy().(*types.DateTime)
+	copied.UpdatedTime = dataStoreMetaInfo.UpdatedTime.Copy().(*types.DateTime)
+	copied.Period = dataStoreMetaInfo.Period.Copy().(*types.PrimitiveU16)
+	copied.Status = dataStoreMetaInfo.Status.Copy().(*types.PrimitiveU8)
+	copied.ReferredCnt = dataStoreMetaInfo.ReferredCnt.Copy().(*types.PrimitiveU32)
+	copied.ReferDataID = dataStoreMetaInfo.ReferDataID.Copy().(*types.PrimitiveU32)
+	copied.Flag = dataStoreMetaInfo.Flag.Copy().(*types.PrimitiveU32)
+	copied.ReferredTime = dataStoreMetaInfo.ReferredTime.Copy().(*types.DateTime)
+	copied.ExpireTime = dataStoreMetaInfo.ExpireTime.Copy().(*types.DateTime)
+	copied.Tags = dataStoreMetaInfo.Tags.Copy().(*types.List[*types.String])
 
-	copy(copied.Tags, dataStoreMetaInfo.Tags)
-
-	copied.Ratings = make([]*DataStoreRatingInfoWithSlot, len(dataStoreMetaInfo.Ratings))
-
-	for i := 0; i < len(dataStoreMetaInfo.Ratings); i++ {
-		copied.Ratings[i] = dataStoreMetaInfo.Ratings[i].Copy().(*DataStoreRatingInfoWithSlot)
-	}
+	copied.Ratings = dataStoreMetaInfo.Ratings.Copy().(*types.List[*DataStoreRatingInfoWithSlot])
 
 	return copied
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (dataStoreMetaInfo *DataStoreMetaInfo) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*DataStoreMetaInfo)
-
-	if dataStoreMetaInfo.StructureVersion() != other.StructureVersion() {
+func (dataStoreMetaInfo *DataStoreMetaInfo) Equals(o types.RVType) bool {
+	if _, ok := o.(*DataStoreMetaInfo); !ok {
 		return false
 	}
 
-	if dataStoreMetaInfo.DataID != other.DataID {
+	other := o.(*DataStoreMetaInfo)
+
+	if dataStoreMetaInfo.StructureVersion != other.StructureVersion {
+		return false
+	}
+
+	if !dataStoreMetaInfo.DataID.Equals(other.DataID) {
 		return false
 	}
 
@@ -217,19 +220,19 @@ func (dataStoreMetaInfo *DataStoreMetaInfo) Equals(structure nex.StructureInterf
 		return false
 	}
 
-	if dataStoreMetaInfo.Size != other.Size {
+	if !dataStoreMetaInfo.Size.Equals(other.Size) {
 		return false
 	}
 
-	if dataStoreMetaInfo.DataType != other.DataType {
+	if !dataStoreMetaInfo.DataType.Equals(other.DataType) {
 		return false
 	}
 
-	if dataStoreMetaInfo.Name != other.Name {
+	if !dataStoreMetaInfo.Name.Equals(other.Name) {
 		return false
 	}
 
-	if !bytes.Equal(dataStoreMetaInfo.MetaBinary, other.MetaBinary) {
+	if !dataStoreMetaInfo.MetaBinary.Equals(other.MetaBinary) {
 		return false
 	}
 
@@ -249,23 +252,23 @@ func (dataStoreMetaInfo *DataStoreMetaInfo) Equals(structure nex.StructureInterf
 		return false
 	}
 
-	if dataStoreMetaInfo.Period != other.Period {
+	if !dataStoreMetaInfo.Period.Equals(other.Period) {
 		return false
 	}
 
-	if dataStoreMetaInfo.Status != other.Status {
+	if !dataStoreMetaInfo.Status.Equals(other.Status) {
 		return false
 	}
 
-	if dataStoreMetaInfo.ReferredCnt != other.ReferredCnt {
+	if !dataStoreMetaInfo.ReferredCnt.Equals(other.ReferredCnt) {
 		return false
 	}
 
-	if dataStoreMetaInfo.ReferDataID != other.ReferDataID {
+	if !dataStoreMetaInfo.ReferDataID.Equals(other.ReferDataID) {
 		return false
 	}
 
-	if dataStoreMetaInfo.Flag != other.Flag {
+	if !dataStoreMetaInfo.Flag.Equals(other.Flag) {
 		return false
 	}
 
@@ -277,24 +280,12 @@ func (dataStoreMetaInfo *DataStoreMetaInfo) Equals(structure nex.StructureInterf
 		return false
 	}
 
-	if len(dataStoreMetaInfo.Tags) != len(other.Tags) {
+	if !dataStoreMetaInfo.Tags.Equals(other.Tags) {
 		return false
 	}
 
-	for i := 0; i < len(dataStoreMetaInfo.Tags); i++ {
-		if dataStoreMetaInfo.Tags[i] != other.Tags[i] {
-			return false
-		}
-	}
-
-	if len(dataStoreMetaInfo.Tags) != len(other.Tags) {
+	if !dataStoreMetaInfo.Ratings.Equals(other.Ratings) {
 		return false
-	}
-
-	for i := 0; i < len(dataStoreMetaInfo.Ratings); i++ {
-		if !dataStoreMetaInfo.Ratings[i].Equals(other.Ratings[i]) {
-			return false
-		}
 	}
 
 	return true
@@ -308,88 +299,38 @@ func (dataStoreMetaInfo *DataStoreMetaInfo) String() string {
 // FormatToString pretty-prints the struct data using the provided indentation level
 func (dataStoreMetaInfo *DataStoreMetaInfo) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
-	indentationListValues := strings.Repeat("\t", indentationLevel+2)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("DataStoreMetaInfo{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, dataStoreMetaInfo.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sDataID: %d,\n", indentationValues, dataStoreMetaInfo.DataID))
-	b.WriteString(fmt.Sprintf("%sOwnerID: %d,\n", indentationValues, dataStoreMetaInfo.OwnerID))
-	b.WriteString(fmt.Sprintf("%sSize: %d,\n", indentationValues, dataStoreMetaInfo.Size))
-	b.WriteString(fmt.Sprintf("%sDataType: %d,\n", indentationValues, dataStoreMetaInfo.DataType))
-	b.WriteString(fmt.Sprintf("%sName: %q,\n", indentationValues, dataStoreMetaInfo.Name))
-	b.WriteString(fmt.Sprintf("%sMetaBinary: %x,\n", indentationValues, dataStoreMetaInfo.MetaBinary))
-
-	if dataStoreMetaInfo.Permission != nil {
-		b.WriteString(fmt.Sprintf("%sPermission: %s,\n", indentationValues, dataStoreMetaInfo.Permission.FormatToString(indentationLevel+1)))
-	} else {
-		b.WriteString(fmt.Sprintf("%sPermission: nil,\n", indentationValues))
-	}
-
-	if dataStoreMetaInfo.DelPermission != nil {
-		b.WriteString(fmt.Sprintf("%sDelPermission: %s,\n", indentationValues, dataStoreMetaInfo.DelPermission.FormatToString(indentationLevel+1)))
-	} else {
-		b.WriteString(fmt.Sprintf("%sDelPermission: nil,\n", indentationValues))
-	}
-
-	if dataStoreMetaInfo.CreatedTime != nil {
-		b.WriteString(fmt.Sprintf("%sCreatedTime: %s,\n", indentationValues, dataStoreMetaInfo.CreatedTime.FormatToString(indentationLevel+1)))
-	} else {
-		b.WriteString(fmt.Sprintf("%sCreatedTime: nil,\n", indentationValues))
-	}
-
-	if dataStoreMetaInfo.UpdatedTime != nil {
-		b.WriteString(fmt.Sprintf("%sUpdatedTime: %s,\n", indentationValues, dataStoreMetaInfo.UpdatedTime.FormatToString(indentationLevel+1)))
-	} else {
-		b.WriteString(fmt.Sprintf("%sUpdatedTime: nil,\n", indentationValues))
-	}
-
-	b.WriteString(fmt.Sprintf("%sPeriod: %d,\n", indentationValues, dataStoreMetaInfo.Period))
-	b.WriteString(fmt.Sprintf("%sStatus: %d,\n", indentationValues, dataStoreMetaInfo.Status))
-	b.WriteString(fmt.Sprintf("%sReferredCnt: %d,\n", indentationValues, dataStoreMetaInfo.ReferredCnt))
-	b.WriteString(fmt.Sprintf("%sReferDataID: %d,\n", indentationValues, dataStoreMetaInfo.ReferDataID))
-	b.WriteString(fmt.Sprintf("%sFlag: %d,\n", indentationValues, dataStoreMetaInfo.Flag))
-
-	if dataStoreMetaInfo.ReferredTime != nil {
-		b.WriteString(fmt.Sprintf("%sReferredTime: %s,\n", indentationValues, dataStoreMetaInfo.ReferredTime.FormatToString(indentationLevel+1)))
-	} else {
-		b.WriteString(fmt.Sprintf("%sReferredTime: nil,\n", indentationValues))
-	}
-
-	if dataStoreMetaInfo.ExpireTime != nil {
-		b.WriteString(fmt.Sprintf("%sExpireTime: %s,\n", indentationValues, dataStoreMetaInfo.ExpireTime.FormatToString(indentationLevel+1)))
-	} else {
-		b.WriteString(fmt.Sprintf("%sExpireTime: nil,\n", indentationValues))
-	}
-
-	b.WriteString(fmt.Sprintf("%sTags: %v,\n", indentationValues, dataStoreMetaInfo.Tags))
-
-	if len(dataStoreMetaInfo.Ratings) == 0 {
-		b.WriteString(fmt.Sprintf("%sRatings: [],\n", indentationValues))
-	} else {
-		b.WriteString(fmt.Sprintf("%sRatings: [\n", indentationValues))
-
-		for i := 0; i < len(dataStoreMetaInfo.Ratings); i++ {
-			str := dataStoreMetaInfo.Ratings[i].FormatToString(indentationLevel + 2)
-			if i == len(dataStoreMetaInfo.Ratings)-1 {
-				b.WriteString(fmt.Sprintf("%s%s\n", indentationListValues, str))
-			} else {
-				b.WriteString(fmt.Sprintf("%s%s,\n", indentationListValues, str))
-			}
-		}
-
-		b.WriteString(fmt.Sprintf("%s]\n", indentationValues))
-	}
-
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, dataStoreMetaInfo.StructureVersion))
+	b.WriteString(fmt.Sprintf("%sDataID: %s,\n", indentationValues, dataStoreMetaInfo.DataID))
+	b.WriteString(fmt.Sprintf("%sOwnerID: %s,\n", indentationValues, dataStoreMetaInfo.OwnerID))
+	b.WriteString(fmt.Sprintf("%sSize: %s,\n", indentationValues, dataStoreMetaInfo.Size))
+	b.WriteString(fmt.Sprintf("%sDataType: %s,\n", indentationValues, dataStoreMetaInfo.DataType))
+	b.WriteString(fmt.Sprintf("%sName: %s,\n", indentationValues, dataStoreMetaInfo.Name))
+	b.WriteString(fmt.Sprintf("%sMetaBinary: %s,\n", indentationValues, dataStoreMetaInfo.MetaBinary))
+	b.WriteString(fmt.Sprintf("%sPermission: %s,\n", indentationValues, dataStoreMetaInfo.Permission.FormatToString(indentationLevel+1)))
+	b.WriteString(fmt.Sprintf("%sDelPermission: %s,\n", indentationValues, dataStoreMetaInfo.DelPermission.FormatToString(indentationLevel+1)))
+	b.WriteString(fmt.Sprintf("%sCreatedTime: %s,\n", indentationValues, dataStoreMetaInfo.CreatedTime.FormatToString(indentationLevel+1)))
+	b.WriteString(fmt.Sprintf("%sUpdatedTime: %s,\n", indentationValues, dataStoreMetaInfo.UpdatedTime.FormatToString(indentationLevel+1)))
+	b.WriteString(fmt.Sprintf("%sPeriod: %s,\n", indentationValues, dataStoreMetaInfo.Period))
+	b.WriteString(fmt.Sprintf("%sStatus: %s,\n", indentationValues, dataStoreMetaInfo.Status))
+	b.WriteString(fmt.Sprintf("%sReferredCnt: %s,\n", indentationValues, dataStoreMetaInfo.ReferredCnt))
+	b.WriteString(fmt.Sprintf("%sReferDataID: %s,\n", indentationValues, dataStoreMetaInfo.ReferDataID))
+	b.WriteString(fmt.Sprintf("%sFlag: %s,\n", indentationValues, dataStoreMetaInfo.Flag))
+	b.WriteString(fmt.Sprintf("%sReferredTime: %s,\n", indentationValues, dataStoreMetaInfo.ReferredTime.FormatToString(indentationLevel+1)))
+	b.WriteString(fmt.Sprintf("%sExpireTime: %s,\n", indentationValues, dataStoreMetaInfo.ExpireTime.FormatToString(indentationLevel+1)))
+	b.WriteString(fmt.Sprintf("%sTags: %s,\n", indentationValues, dataStoreMetaInfo.Tags))
+	b.WriteString(fmt.Sprintf("%sRatings: %s,\n", indentationValues, dataStoreMetaInfo.Ratings))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
 }
 
 // FilterPropertiesByResultOption zeroes out certain struct properties based on the input flags
-func (dataStoreMetaInfo *DataStoreMetaInfo) FilterPropertiesByResultOption(resultOption uint8) {
+func (dataStoreMetaInfo *DataStoreMetaInfo) FilterPropertiesByResultOption(resultOption *types.PrimitiveU8) {
 	// * This is kind of backwards
 	// *
 	// * This method assumes all struct data exists
@@ -400,39 +341,46 @@ func (dataStoreMetaInfo *DataStoreMetaInfo) FilterPropertiesByResultOption(resul
 	// * it's used to conditionally REMOVE them
 
 	if resultOption&0x1 == 0 {
-		dataStoreMetaInfo.Tags = make([]string, 0)
+		dataStoreMetaInfo.Tags = types.NewList[*types.String]()
+		dataStoreMetaInfo.Tags.Type = types.NewString("")
 	}
 
 	if resultOption&0x2 == 0 {
-		dataStoreMetaInfo.Ratings = make([]*DataStoreRatingInfoWithSlot, 0)
+		dataStoreMetaInfo.Ratings = types.NewList[*DataStoreRatingInfoWithSlot]()
+		dataStoreMetaInfo.Ratings.Type = NewDataStoreRatingInfoWithSlot()
 	}
 
 	if resultOption&0x4 == 0 {
-		dataStoreMetaInfo.MetaBinary = make([]byte, 0)
+		dataStoreMetaInfo.MetaBinary = types.NewQBuffer(nil)
 	}
 }
 
 // NewDataStoreMetaInfo returns a new DataStoreMetaInfo
 func NewDataStoreMetaInfo() *DataStoreMetaInfo {
-	return &DataStoreMetaInfo{
-		DataID:        0,
-		OwnerID:       nex.NewPID[uint32](0),
-		Size:          0,
-		DataType:      0,
-		Name:          "",
-		MetaBinary:    make([]byte, 0),
+	dataStoreMetaInfo := &DataStoreMetaInfo{
+		DataID:        types.NewPrimitiveU64(0),
+		OwnerID:       types.NewPID(0),
+		Size:          types.NewPrimitiveU32(0),
+		DataType:      types.NewPrimitiveU16(0),
+		Name:          types.NewString(""),
+		MetaBinary:    types.NewQBuffer(nil),
 		Permission:    NewDataStorePermission(),
 		DelPermission: NewDataStorePermission(),
-		CreatedTime:   nex.NewDateTime(0),
-		UpdatedTime:   nex.NewDateTime(0),
-		Period:        0,
-		Status:        0,
-		ReferredCnt:   0,
-		ReferDataID:   0,
-		Flag:          0,
-		ReferredTime:  nex.NewDateTime(0),
-		ExpireTime:    nex.NewDateTime(0),
-		Tags:          make([]string, 0),
-		Ratings:       make([]*DataStoreRatingInfoWithSlot, 0),
+		CreatedTime:   types.NewDateTime(0),
+		UpdatedTime:   types.NewDateTime(0),
+		Period:        types.NewPrimitiveU16(0),
+		Status:        types.NewPrimitiveU8(0),
+		ReferredCnt:   types.NewPrimitiveU32(0),
+		ReferDataID:   types.NewPrimitiveU32(0),
+		Flag:          types.NewPrimitiveU32(0),
+		ReferredTime:  types.NewDateTime(0),
+		ExpireTime:    types.NewDateTime(0),
+		Tags:          types.NewList[*types.String](),
+		Ratings:       types.NewList[*DataStoreRatingInfoWithSlot](),
 	}
+
+	dataStoreMetaInfo.Tags.Type = types.NewString("")
+	dataStoreMetaInfo.Ratings.Type = NewDataStoreRatingInfoWithSlot()
+
+	return dataStoreMetaInfo
 }

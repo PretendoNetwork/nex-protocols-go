@@ -5,11 +5,13 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 	messaging_types "github.com/PretendoNetwork/nex-protocols-go/messaging/types"
 )
 
 func (protocol *Protocol) handleDeleteMessages(packet nex.PacketInterface) {
+	var err error
 	var errorCode uint32
 
 	if protocol.DeleteMessages == nil {
@@ -23,9 +25,10 @@ func (protocol *Protocol) handleDeleteMessages(packet nex.PacketInterface) {
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.server)
+	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
-	recipient, err := nex.StreamReadStructure(parametersStream, messaging_types.NewMessageRecipient())
+	recipient := messaging_types.NewMessageRecipient()
+	err = recipient.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.DeleteMessages(fmt.Errorf("Failed to read recipient from parameters. %s", err.Error()), packet, callID, nil, nil)
 		if errorCode != 0 {
@@ -35,7 +38,9 @@ func (protocol *Protocol) handleDeleteMessages(packet nex.PacketInterface) {
 		return
 	}
 
-	lstMessagesToDelete, err := parametersStream.ReadListUInt32LE()
+	lstMessagesToDelete := types.NewList[*types.PrimitiveU32]()
+	lstMessagesToDelete.Type = types.NewPrimitiveU32(0)
+	err = lstMessagesToDelete.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.DeleteMessages(fmt.Errorf("Failed to read lstMessagesToDelete from parameters. %s", err.Error()), packet, callID, nil, nil)
 		if errorCode != 0 {

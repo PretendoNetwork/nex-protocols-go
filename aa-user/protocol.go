@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 	aauser_types "github.com/PretendoNetwork/nex-protocols-go/aa-user/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
@@ -29,9 +30,9 @@ const (
 // Protocol stores all the RMC method handlers for the AAUser protocol and listens for requests
 type Protocol struct {
 	server                nex.ServerInterface
-	RegisterApplication   func(err error, packet nex.PacketInterface, callID uint32, titleID uint64) (*nex.RMCMessage, uint32)
-	UnregisterApplication func(err error, packet nex.PacketInterface, callID uint32, titleID uint64) (*nex.RMCMessage, uint32)
-	SetApplicationInfo    func(err error, packet nex.PacketInterface, callID uint32, applicationInfo []*aauser_types.ApplicationInfo) (*nex.RMCMessage, uint32)
+	RegisterApplication   func(err error, packet nex.PacketInterface, callID uint32, titleID *types.PrimitiveU64) (*nex.RMCMessage, uint32)
+	UnregisterApplication func(err error, packet nex.PacketInterface, callID uint32, titleID *types.PrimitiveU64) (*nex.RMCMessage, uint32)
+	SetApplicationInfo    func(err error, packet nex.PacketInterface, callID uint32, applicationInfo *types.List[*aauser_types.ApplicationInfo]) (*nex.RMCMessage, uint32)
 	GetApplicationInfo    func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, uint32)
 }
 
@@ -39,9 +40,9 @@ type Protocol struct {
 type Interface interface {
 	Server() nex.ServerInterface
 	SetServer(server nex.ServerInterface)
-	SetHandlerRegisterApplication(handler func(err error, packet nex.PacketInterface, callID uint32, titleID uint64) (*nex.RMCMessage, uint32))
-	SetHandlerUnregisterApplication(handler func(err error, packet nex.PacketInterface, callID uint32, titleID uint64) (*nex.RMCMessage, uint32))
-	SetHandlerSetApplicationInfo(handler func(err error, packet nex.PacketInterface, callID uint32, applicationInfo []*aauser_types.ApplicationInfo) (*nex.RMCMessage, uint32))
+	SetHandlerRegisterApplication(handler func(err error, packet nex.PacketInterface, callID uint32, titleID *types.PrimitiveU64) (*nex.RMCMessage, uint32))
+	SetHandlerUnregisterApplication(handler func(err error, packet nex.PacketInterface, callID uint32, titleID *types.PrimitiveU64) (*nex.RMCMessage, uint32))
+	SetHandlerSetApplicationInfo(handler func(err error, packet nex.PacketInterface, callID uint32, applicationInfo *types.List[*aauser_types.ApplicationInfo]) (*nex.RMCMessage, uint32))
 	SetHandlerGetApplicationInfo(handler func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, uint32))
 }
 
@@ -56,17 +57,17 @@ func (protocol *Protocol) SetServer(server nex.ServerInterface) {
 }
 
 // SetHandlerRegisterApplication sets the handler for the RegisterApplication method
-func (protocol *Protocol) SetHandlerRegisterApplication(handler func(err error, packet nex.PacketInterface, callID uint32, titleID uint64) (*nex.RMCMessage, uint32)) {
+func (protocol *Protocol) SetHandlerRegisterApplication(handler func(err error, packet nex.PacketInterface, callID uint32, titleID *types.PrimitiveU64) (*nex.RMCMessage, uint32)) {
 	protocol.RegisterApplication = handler
 }
 
 // SetHandlerUnregisterApplication sets the handler for the UnregisterApplication method
-func (protocol *Protocol) SetHandlerUnregisterApplication(handler func(err error, packet nex.PacketInterface, callID uint32, titleID uint64) (*nex.RMCMessage, uint32)) {
+func (protocol *Protocol) SetHandlerUnregisterApplication(handler func(err error, packet nex.PacketInterface, callID uint32, titleID *types.PrimitiveU64) (*nex.RMCMessage, uint32)) {
 	protocol.UnregisterApplication = handler
 }
 
 // SetHandlerSetApplicationInfo sets the handler for the SetApplicationInfo method
-func (protocol *Protocol) SetHandlerSetApplicationInfo(handler func(err error, packet nex.PacketInterface, callID uint32, applicationInfo []*aauser_types.ApplicationInfo) (*nex.RMCMessage, uint32)) {
+func (protocol *Protocol) SetHandlerSetApplicationInfo(handler func(err error, packet nex.PacketInterface, callID uint32, applicationInfo *types.List[*aauser_types.ApplicationInfo]) (*nex.RMCMessage, uint32)) {
 	protocol.SetApplicationInfo = handler
 }
 

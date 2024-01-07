@@ -5,10 +5,12 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
 func (protocol *Protocol) handleDebugNotifyEvent(packet nex.PacketInterface) {
+	var err error
 	var errorCode uint32
 
 	if protocol.DebugNotifyEvent == nil {
@@ -22,9 +24,10 @@ func (protocol *Protocol) handleDebugNotifyEvent(packet nex.PacketInterface) {
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.server)
+	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
-	pid, err := parametersStream.ReadPID()
+	pid := types.NewPID(0)
+	err = pid.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.DebugNotifyEvent(fmt.Errorf("Failed to read pid from parameters. %s", err.Error()), packet, callID, nil, 0, 0, 0, 0, "")
 		if errorCode != 0 {
@@ -34,7 +37,8 @@ func (protocol *Protocol) handleDebugNotifyEvent(packet nex.PacketInterface) {
 		return
 	}
 
-	mainType, err := parametersStream.ReadUInt32LE()
+	mainType := types.NewPrimitiveU32(0)
+	err = mainType.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.DebugNotifyEvent(fmt.Errorf("Failed to read mainType from parameters. %s", err.Error()), packet, callID, nil, 0, 0, 0, 0, "")
 		if errorCode != 0 {
@@ -44,7 +48,8 @@ func (protocol *Protocol) handleDebugNotifyEvent(packet nex.PacketInterface) {
 		return
 	}
 
-	subType, err := parametersStream.ReadUInt32LE()
+	subType := types.NewPrimitiveU32(0)
+	err = subType.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.DebugNotifyEvent(fmt.Errorf("Failed to read subType from parameters. %s", err.Error()), packet, callID, nil, 0, 0, 0, 0, "")
 		if errorCode != 0 {
@@ -54,7 +59,8 @@ func (protocol *Protocol) handleDebugNotifyEvent(packet nex.PacketInterface) {
 		return
 	}
 
-	param1, err := parametersStream.ReadUInt64LE()
+	param1 := types.NewPrimitiveU64(0)
+	err = param1.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.DebugNotifyEvent(fmt.Errorf("Failed to read param1 from parameters. %s", err.Error()), packet, callID, nil, 0, 0, 0, 0, "")
 		if errorCode != 0 {
@@ -64,7 +70,8 @@ func (protocol *Protocol) handleDebugNotifyEvent(packet nex.PacketInterface) {
 		return
 	}
 
-	param2, err := parametersStream.ReadUInt64LE()
+	param2 := types.NewPrimitiveU64(0)
+	err = param2.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.DebugNotifyEvent(fmt.Errorf("Failed to read param2 from parameters. %s", err.Error()), packet, callID, nil, 0, 0, 0, 0, "")
 		if errorCode != 0 {
@@ -74,7 +81,8 @@ func (protocol *Protocol) handleDebugNotifyEvent(packet nex.PacketInterface) {
 		return
 	}
 
-	stringParam, err := parametersStream.ReadString()
+	stringParam := types.NewString("")
+	err = stringParam.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.DebugNotifyEvent(fmt.Errorf("Failed to read stringParam from parameters. %s", err.Error()), packet, callID, nil, 0, 0, 0, 0, "")
 		if errorCode != 0 {

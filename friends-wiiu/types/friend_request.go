@@ -6,39 +6,40 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // FriendRequest contains information about a friend request
 type FriendRequest struct {
-	nex.Structure
-	*nex.Data
+	types.Structure
+	*types.Data
 	PrincipalInfo *PrincipalBasicInfo
 	Message       *FriendRequestMessage
-	SentOn        *nex.DateTime
+	SentOn        *types.DateTime
 }
 
-// Bytes encodes the FriendRequest and returns a byte array
-func (friendRequest *FriendRequest) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteStructure(friendRequest.PrincipalInfo)
-	stream.WriteStructure(friendRequest.Message)
-	stream.WriteDateTime(friendRequest.SentOn)
+// WriteTo writes the FriendRequest to the given writable
+func (friendRequest *FriendRequest) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
 
-	return stream.Bytes()
+	friendRequest.PrincipalInfo.WriteTo(contentWritable)
+	friendRequest.Message.WriteTo(contentWritable)
+	friendRequest.SentOn.WriteTo(contentWritable)
+
+	content := contentWritable.Bytes()
+
+	friendRequest.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // Copy returns a new copied instance of FriendRequest
-func (friendRequest *FriendRequest) Copy() nex.StructureInterface {
+func (friendRequest *FriendRequest) Copy() types.RVType {
 	copied := NewFriendRequest()
 
-	copied.SetStructureVersion(friendRequest.StructureVersion())
+	copied.StructureVersion = friendRequest.StructureVersion
 
-	if friendRequest.ParentType() != nil {
-		copied.Data = friendRequest.ParentType().Copy().(*nex.Data)
-	} else {
-		copied.Data = nex.NewData()
-	}
-
-	copied.SetParentType(copied.Data)
+	copied.Data = friendRequest.Data.Copy().(*types.Data)
 
 	copied.PrincipalInfo = friendRequest.PrincipalInfo.Copy().(*PrincipalBasicInfo)
 	copied.Message = friendRequest.Message.Copy().(*FriendRequestMessage)
@@ -48,10 +49,14 @@ func (friendRequest *FriendRequest) Copy() nex.StructureInterface {
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (friendRequest *FriendRequest) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*FriendRequest)
+func (friendRequest *FriendRequest) Equals(o types.RVType) bool {
+	if _, ok := o.(*FriendRequest); !ok {
+		return false
+	}
 
-	if friendRequest.StructureVersion() != other.StructureVersion() {
+	other := o.(*FriendRequest)
+
+	if friendRequest.StructureVersion != other.StructureVersion {
 		return false
 	}
 
@@ -87,7 +92,7 @@ func (friendRequest *FriendRequest) FormatToString(indentationLevel int) string 
 	var b strings.Builder
 
 	b.WriteString("FriendRequest{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, friendRequest.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, friendRequest.StructureVersion))
 
 	if friendRequest.PrincipalInfo != nil {
 		b.WriteString(fmt.Sprintf("%sPrincipalInfo: %s,\n", indentationValues, friendRequest.PrincipalInfo.FormatToString(indentationLevel+1)))

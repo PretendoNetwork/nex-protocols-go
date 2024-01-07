@@ -6,19 +6,24 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // FriendUserParam holds data for the Matchmake Extension (Monster Hunter XX) protocol
 type FriendUserParam struct {
-	nex.Structure
+	types.Structure
 	Name string
 }
 
-// ExtractFromStream extracts a FriendUserParam structure from a stream
-func (friendUserParam *FriendUserParam) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the FriendUserParam from the given readable
+func (friendUserParam *FriendUserParam) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	friendUserParam.Name, err = stream.ReadString()
+	if err = friendUserParam.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read FriendUserParam header. %s", err.Error())
+	}
+
+	err = friendUserParam.Name.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract FriendUserParam.Name from stream. %s", err.Error())
 	}
@@ -26,18 +31,24 @@ func (friendUserParam *FriendUserParam) ExtractFromStream(stream *nex.StreamIn) 
 	return nil
 }
 
-// Bytes encodes the FriendUserParam and returns a byte array
-func (friendUserParam *FriendUserParam) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteString(friendUserParam.Name)
+// WriteTo writes the FriendUserParam to the given writable
+func (friendUserParam *FriendUserParam) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
 
-	return stream.Bytes()
+	friendUserParam.Name.WriteTo(contentWritable)
+
+	content := contentWritable.Bytes()
+
+	friendUserParam.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // Copy returns a new copied instance of FriendUserParam
-func (friendUserParam *FriendUserParam) Copy() nex.StructureInterface {
+func (friendUserParam *FriendUserParam) Copy() types.RVType {
 	copied := NewFriendUserParam()
 
-	copied.SetStructureVersion(friendUserParam.StructureVersion())
+	copied.StructureVersion = friendUserParam.StructureVersion
 
 	copied.Name = friendUserParam.Name
 
@@ -45,10 +56,14 @@ func (friendUserParam *FriendUserParam) Copy() nex.StructureInterface {
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (friendUserParam *FriendUserParam) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*FriendUserParam)
+func (friendUserParam *FriendUserParam) Equals(o types.RVType) bool {
+	if _, ok := o.(*FriendUserParam); !ok {
+		return false
+	}
 
-	if friendUserParam.StructureVersion() != other.StructureVersion() {
+	other := o.(*FriendUserParam)
+
+	if friendUserParam.StructureVersion != other.StructureVersion {
 		return false
 	}
 
@@ -68,7 +83,7 @@ func (friendUserParam *FriendUserParam) FormatToString(indentationLevel int) str
 	var b strings.Builder
 
 	b.WriteString("FriendUserParam{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, friendUserParam.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, friendUserParam.StructureVersion))
 	b.WriteString(fmt.Sprintf("%sName: %q,\n", indentationValues, friendUserParam.Name))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 

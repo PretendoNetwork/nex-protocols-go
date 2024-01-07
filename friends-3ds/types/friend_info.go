@@ -6,33 +6,44 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // FriendInfo is a data structure used by the Friends 3DS protocol to hold information about a friends Mii
 type FriendInfo struct {
-	nex.Structure
-	PID     *nex.PID
-	Unknown *nex.DateTime
+	types.Structure
+	PID     *types.PID
+	Unknown *types.DateTime
 }
 
-// Bytes encodes the FriendInfo and returns a byte array
-func (friendInfo *FriendInfo) Bytes(stream *nex.StreamOut) []byte {
-	stream.WritePID(friendInfo.PID)
-	stream.WriteDateTime(friendInfo.Unknown)
+// WriteTo writes the FriendInfo to the given writable
+func (friendInfo *FriendInfo) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
 
-	return stream.Bytes()
+	friendInfo.PID.WriteTo(contentWritable)
+	friendInfo.Unknown.WriteTo(contentWritable)
+
+	content := contentWritable.Bytes()
+
+	friendInfo.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
-// ExtractFromStream extracts a FriendInfo structure from a stream
-func (friendInfo *FriendInfo) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the FriendInfo from the given readable
+func (friendInfo *FriendInfo) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	friendInfo.PID, err = stream.ReadPID()
+	if err = friendInfo.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read FriendInfo header. %s", err.Error())
+	}
+
+	err = friendInfo.PID.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract FriendInfo.PID. %s", err.Error())
 	}
 
-	friendInfo.Unknown, err = stream.ReadDateTime()
+	err = friendInfo.Unknown.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract FriendInfo.Unknown. %s", err.Error())
 	}
@@ -41,27 +52,27 @@ func (friendInfo *FriendInfo) ExtractFromStream(stream *nex.StreamIn) error {
 }
 
 // Copy returns a new copied instance of FriendInfo
-func (friendInfo *FriendInfo) Copy() nex.StructureInterface {
+func (friendInfo *FriendInfo) Copy() types.RVType {
 	copied := NewFriendInfo()
 
-	copied.SetStructureVersion(friendInfo.StructureVersion())
+	copied.StructureVersion = friendInfo.StructureVersion
 
-	if friendInfo.PID != nil {
-		copied.PID = friendInfo.PID.Copy()
-	}
+	copied.PID = friendInfo.PID.Copy()
 
-	if friendInfo.Unknown != nil {
-		copied.Unknown = friendInfo.Unknown.Copy()
-	}
+	copied.Unknown = friendInfo.Unknown.Copy()
 
 	return copied
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (friendInfo *FriendInfo) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*FriendInfo)
+func (friendInfo *FriendInfo) Equals(o types.RVType) bool {
+	if _, ok := o.(*FriendInfo); !ok {
+		return false
+	}
 
-	if friendInfo.StructureVersion() != other.StructureVersion() {
+	other := o.(*FriendInfo)
+
+	if friendInfo.StructureVersion != other.StructureVersion {
 		return false
 	}
 
@@ -89,7 +100,7 @@ func (friendInfo *FriendInfo) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("FriendInfo{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, friendInfo.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, friendInfo.StructureVersion))
 	b.WriteString(fmt.Sprintf("%sPID: %s,\n", indentationValues, friendInfo.PID.FormatToString(indentationLevel+1)))
 
 	if friendInfo.Unknown != nil {

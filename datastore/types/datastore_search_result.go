@@ -5,33 +5,36 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // DataStoreSearchResult is a data structure used by the DataStore protocol
 type DataStoreSearchResult struct {
-	nex.Structure
-	TotalCount     uint32
-	Result         []*DataStoreMetaInfo
-	TotalCountType uint8
+	types.Structure
+	TotalCount     *types.PrimitiveU32
+	Result         *types.List[*DataStoreMetaInfo]
+	TotalCountType *types.PrimitiveU8
 }
 
-// ExtractFromStream extracts a DataStoreSearchResult structure from a stream
-func (dataStoreSearchResult *DataStoreSearchResult) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the DataStoreSearchResult from the given readable
+func (dataStoreSearchResult *DataStoreSearchResult) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	dataStoreSearchResult.TotalCount, err = stream.ReadUInt32LE()
+	if err = dataStoreSearchResult.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read DataStoreSearchResult header. %s", err.Error())
+	}
+
+	err = dataStoreSearchResult.TotalCount.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreSearchResult.TotalCount. %s", err.Error())
 	}
 
-	result, err := nex.StreamReadListStructure(stream, NewDataStoreMetaInfo())
+	err = dataStoreSearchResult.Result.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreSearchResult.Result. %s", err.Error())
 	}
 
-	dataStoreSearchResult.Result = result
-	dataStoreSearchResult.TotalCountType, err = stream.ReadUInt8()
+	err = dataStoreSearchResult.TotalCountType.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreSearchResult.TotalCountType. %s", err.Error())
 	}
@@ -39,56 +42,55 @@ func (dataStoreSearchResult *DataStoreSearchResult) ExtractFromStream(stream *ne
 	return nil
 }
 
-// Bytes encodes the DataStoreSearchResult and returns a byte array
-func (dataStoreSearchResult *DataStoreSearchResult) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt32LE(dataStoreSearchResult.TotalCount)
-	nex.StreamWriteListStructure(stream, dataStoreSearchResult.Result)
-	stream.WriteUInt8(dataStoreSearchResult.TotalCountType)
+// WriteTo writes the DataStoreSearchResult to the given writable
+func (dataStoreSearchResult *DataStoreSearchResult) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
 
-	return stream.Bytes()
+	dataStoreSearchResult.TotalCount.WriteTo(contentWritable)
+	dataStoreSearchResult.Result.WriteTo(contentWritable)
+	dataStoreSearchResult.TotalCountType.WriteTo(contentWritable)
+
+	content := contentWritable.Bytes()
+
+	dataStoreSearchResult.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // Copy returns a new copied instance of DataStoreSearchResult
-func (dataStoreSearchResult *DataStoreSearchResult) Copy() nex.StructureInterface {
+func (dataStoreSearchResult *DataStoreSearchResult) Copy() types.RVType {
 	copied := NewDataStoreSearchResult()
 
-	copied.SetStructureVersion(dataStoreSearchResult.StructureVersion())
+	copied.StructureVersion = dataStoreSearchResult.StructureVersion
 
-	copied.TotalCount = dataStoreSearchResult.TotalCount
-	copied.Result = make([]*DataStoreMetaInfo, len(dataStoreSearchResult.Result))
-
-	for i := 0; i < len(dataStoreSearchResult.Result); i++ {
-		copied.Result[i] = dataStoreSearchResult.Result[i].Copy().(*DataStoreMetaInfo)
-	}
-
-	copied.TotalCountType = dataStoreSearchResult.TotalCountType
+	copied.TotalCount = dataStoreSearchResult.TotalCount.Copy().(*types.PrimitiveU32)
+	copied.Result = dataStoreSearchResult.Result.Copy().(*types.List[*DataStoreMetaInfo])
+	copied.TotalCountType = dataStoreSearchResult.TotalCountType.Copy().(*types.PrimitiveU8)
 
 	return copied
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (dataStoreSearchResult *DataStoreSearchResult) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*DataStoreSearchResult)
-
-	if dataStoreSearchResult.StructureVersion() != other.StructureVersion() {
+func (dataStoreSearchResult *DataStoreSearchResult) Equals(o types.RVType) bool {
+	if _, ok := o.(*DataStoreSearchResult); !ok {
 		return false
 	}
 
-	if dataStoreSearchResult.TotalCount != other.TotalCount {
+	other := o.(*DataStoreSearchResult)
+
+	if dataStoreSearchResult.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if len(dataStoreSearchResult.Result) != len(other.Result) {
+	if !dataStoreSearchResult.TotalCount.Equals(other.TotalCount) {
 		return false
 	}
 
-	for i := 0; i < len(dataStoreSearchResult.Result); i++ {
-		if dataStoreSearchResult.Result[i] != other.Result[i] {
-			return false
-		}
+	if !dataStoreSearchResult.Result.Equals(other.Result) {
+		return false
 	}
 
-	return dataStoreSearchResult.TotalCountType == other.TotalCountType
+	return dataStoreSearchResult.TotalCountType.Equals(other.TotalCountType)
 }
 
 // String returns a string representation of the struct
@@ -99,33 +101,15 @@ func (dataStoreSearchResult *DataStoreSearchResult) String() string {
 // FormatToString pretty-prints the struct data using the provided indentation level
 func (dataStoreSearchResult *DataStoreSearchResult) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
-	indentationListValues := strings.Repeat("\t", indentationLevel+2)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("DataStoreSearchResult{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, dataStoreSearchResult.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sTotalCount: %d,\n", indentationValues, dataStoreSearchResult.TotalCount))
-
-	if len(dataStoreSearchResult.Result) == 0 {
-		b.WriteString(fmt.Sprintf("%sResult: [],\n", indentationValues))
-	} else {
-		b.WriteString(fmt.Sprintf("%sResult: [\n", indentationValues))
-
-		for i := 0; i < len(dataStoreSearchResult.Result); i++ {
-			str := dataStoreSearchResult.Result[i].FormatToString(indentationLevel + 2)
-			if i == len(dataStoreSearchResult.Result)-1 {
-				b.WriteString(fmt.Sprintf("%s%s\n", indentationListValues, str))
-			} else {
-				b.WriteString(fmt.Sprintf("%s%s,\n", indentationListValues, str))
-			}
-		}
-
-		b.WriteString(fmt.Sprintf("%s],\n", indentationValues))
-	}
-
-	b.WriteString(fmt.Sprintf("%sTotalCountType: %d\n", indentationValues, dataStoreSearchResult.TotalCountType))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, dataStoreSearchResult.StructureVersion))
+	b.WriteString(fmt.Sprintf("%sTotalCount: %s,\n", indentationValues, dataStoreSearchResult.TotalCount))
+	b.WriteString(fmt.Sprintf("%sResult: %s,\n", indentationValues, dataStoreSearchResult.Result))
+	b.WriteString(fmt.Sprintf("%sTotalCountType: %s\n", indentationValues, dataStoreSearchResult.TotalCountType))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -133,9 +117,13 @@ func (dataStoreSearchResult *DataStoreSearchResult) FormatToString(indentationLe
 
 // NewDataStoreSearchResult returns a new DataStoreSearchResult
 func NewDataStoreSearchResult() *DataStoreSearchResult {
-	return &DataStoreSearchResult{
-		TotalCount:     0,
-		Result:         make([]*DataStoreMetaInfo, 0),
-		TotalCountType: 0,
+	dataStoreSearchResult := &DataStoreSearchResult{
+		TotalCount:     types.NewPrimitiveU32(0),
+		Result:         types.NewList[*DataStoreMetaInfo](),
+		TotalCountType: types.NewPrimitiveU8(0),
 	}
+
+	dataStoreSearchResult.Result.Type = NewDataStoreMetaInfo()
+
+	return dataStoreSearchResult
 }

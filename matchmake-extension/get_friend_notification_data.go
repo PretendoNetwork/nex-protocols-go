@@ -5,10 +5,12 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
 func (protocol *Protocol) handleGetFriendNotificationData(packet nex.PacketInterface) {
+	var err error
 	var errorCode uint32
 
 	if protocol.GetFriendNotificationData == nil {
@@ -22,9 +24,10 @@ func (protocol *Protocol) handleGetFriendNotificationData(packet nex.PacketInter
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.server)
+	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
-	uiType, err := parametersStream.ReadInt32LE()
+	uiType := types.NewPrimitiveS32(0)
+	err = uiType.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.GetFriendNotificationData(fmt.Errorf("Failed to read uiType from parameters. %s", err.Error()), packet, callID, 0)
 		if errorCode != 0 {

@@ -5,10 +5,12 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
 func (protocol *Protocol) handleMarkFriendRequestsAsReceived(packet nex.PacketInterface) {
+	var err error
 	var errorCode uint32
 
 	if protocol.MarkFriendRequestsAsReceived == nil {
@@ -22,9 +24,11 @@ func (protocol *Protocol) handleMarkFriendRequestsAsReceived(packet nex.PacketIn
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.server)
+	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
-	ids, err := parametersStream.ReadListUInt64LE()
+	ids := types.NewList[*types.PrimitiveU64]()
+	ids.Type = types.NewPrimitiveU64(0)
+	err = ids.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.GetRequestBlockSettings(fmt.Errorf("Failed to read ids from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {

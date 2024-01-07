@@ -6,20 +6,25 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // ServiceItemRightInfo holds data for the Service Item (Wii Sports Club) protocol
 type ServiceItemRightInfo struct {
-	nex.Structure
+	types.Structure
 	ReferenceID   string
 	AccountRights []*ServiceItemAccountRight
 }
 
-// ExtractFromStream extracts a ServiceItemRightInfo structure from a stream
-func (serviceItemRightInfo *ServiceItemRightInfo) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the ServiceItemRightInfo from the given readable
+func (serviceItemRightInfo *ServiceItemRightInfo) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	serviceItemRightInfo.ReferenceID, err = stream.ReadString()
+	if err = serviceItemRightInfo.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read ServiceItemRightInfo header. %s", err.Error())
+	}
+
+	err = serviceItemRightInfo.ReferenceID.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemRightInfo.ReferenceID from stream. %s", err.Error())
 	}
@@ -34,19 +39,25 @@ func (serviceItemRightInfo *ServiceItemRightInfo) ExtractFromStream(stream *nex.
 	return nil
 }
 
-// Bytes encodes the ServiceItemRightInfo and returns a byte array
-func (serviceItemRightInfo *ServiceItemRightInfo) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteString(serviceItemRightInfo.ReferenceID)
-	nex.StreamWriteListStructure(stream, serviceItemRightInfo.AccountRights)
+// WriteTo writes the ServiceItemRightInfo to the given writable
+func (serviceItemRightInfo *ServiceItemRightInfo) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
 
-	return stream.Bytes()
+	serviceItemRightInfo.ReferenceID.WriteTo(contentWritable)
+	serviceItemRightInfo.AccountRights.WriteTo(contentWritable)
+
+	content := contentWritable.Bytes()
+
+	serviceItemRightInfo.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // Copy returns a new copied instance of ServiceItemRightInfo
-func (serviceItemRightInfo *ServiceItemRightInfo) Copy() nex.StructureInterface {
+func (serviceItemRightInfo *ServiceItemRightInfo) Copy() types.RVType {
 	copied := NewServiceItemRightInfo()
 
-	copied.SetStructureVersion(serviceItemRightInfo.StructureVersion())
+	copied.StructureVersion = serviceItemRightInfo.StructureVersion
 
 	copied.ReferenceID = serviceItemRightInfo.ReferenceID
 	copied.AccountRights = make([]*ServiceItemAccountRight, len(serviceItemRightInfo.AccountRights))
@@ -59,14 +70,18 @@ func (serviceItemRightInfo *ServiceItemRightInfo) Copy() nex.StructureInterface 
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (serviceItemRightInfo *ServiceItemRightInfo) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*ServiceItemRightInfo)
-
-	if serviceItemRightInfo.StructureVersion() != other.StructureVersion() {
+func (serviceItemRightInfo *ServiceItemRightInfo) Equals(o types.RVType) bool {
+	if _, ok := o.(*ServiceItemRightInfo); !ok {
 		return false
 	}
 
-	if serviceItemRightInfo.ReferenceID != other.ReferenceID {
+	other := o.(*ServiceItemRightInfo)
+
+	if serviceItemRightInfo.StructureVersion != other.StructureVersion {
+		return false
+	}
+
+	if !serviceItemRightInfo.ReferenceID.Equals(other.ReferenceID) {
 		return false
 	}
 
@@ -97,7 +112,7 @@ func (serviceItemRightInfo *ServiceItemRightInfo) FormatToString(indentationLeve
 	var b strings.Builder
 
 	b.WriteString("ServiceItemRightInfo{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, serviceItemRightInfo.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, serviceItemRightInfo.StructureVersion))
 	b.WriteString(fmt.Sprintf("%sReferenceID: %q,\n", indentationValues, serviceItemRightInfo.ReferenceID))
 
 	if len(serviceItemRightInfo.AccountRights) == 0 {

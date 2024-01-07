@@ -5,10 +5,12 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
 func (protocol *Protocol) handleMigrateGatheringOwnership(packet nex.PacketInterface) {
+	var err error
 	var errorCode uint32
 
 	if protocol.MigrateGatheringOwnership == nil {
@@ -22,9 +24,10 @@ func (protocol *Protocol) handleMigrateGatheringOwnership(packet nex.PacketInter
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.server)
+	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
-	gid, err := parametersStream.ReadUInt32LE()
+	gid := types.NewPrimitiveU32(0)
+	err = gid.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.MigrateGatheringOwnership(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), packet, callID, 0, nil, false)
 		if errorCode != 0 {
@@ -34,7 +37,9 @@ func (protocol *Protocol) handleMigrateGatheringOwnership(packet nex.PacketInter
 		return
 	}
 
-	lstPotentialNewOwnersID, err := parametersStream.ReadListPID()
+	lstPotentialNewOwnersID := types.NewList[*types.PID]()
+	lstPotentialNewOwnersID.Type = types.NewPID(0)
+	err = lstPotentialNewOwnersID.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.MigrateGatheringOwnership(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), packet, callID, 0, nil, false)
 		if errorCode != 0 {
@@ -44,7 +49,8 @@ func (protocol *Protocol) handleMigrateGatheringOwnership(packet nex.PacketInter
 		return
 	}
 
-	participantsOnly, err := parametersStream.ReadBool()
+	participantsOnly := types.NewPrimitiveBool(false)
+	err = participantsOnly.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.MigrateGatheringOwnership(fmt.Errorf("Failed to read participantsOnly from parameters. %s", err.Error()), packet, callID, 0, nil, false)
 		if errorCode != 0 {

@@ -6,18 +6,23 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // ServiceItemUseServiceItemResponse holds data for the Service Item (Team Kirby Clash Deluxe) protocol
 type ServiceItemUseServiceItemResponse struct {
-	nex.Structure
+	types.Structure
 	*ServiceItemEShopResponse
 	NullableUsedInfo []*ServiceItemUsedInfo
 }
 
-// ExtractFromStream extracts a ServiceItemUseServiceItemResponse structure from a stream
-func (serviceItemUseServiceItemResponse *ServiceItemUseServiceItemResponse) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the ServiceItemUseServiceItemResponse from the given readable
+func (serviceItemUseServiceItemResponse *ServiceItemUseServiceItemResponse) ExtractFrom(readable types.Readable) error {
 	var err error
+
+	if err = serviceItemUseServiceItemResponse.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read ServiceItemUseServiceItemResponse header. %s", err.Error())
+	}
 
 	nullableUsedInfo, err := nex.StreamReadListStructure(stream, NewServiceItemUsedInfo())
 	if err != nil {
@@ -29,21 +34,26 @@ func (serviceItemUseServiceItemResponse *ServiceItemUseServiceItemResponse) Extr
 	return nil
 }
 
-// Bytes encodes the ServiceItemUseServiceItemResponse and returns a byte array
-func (serviceItemUseServiceItemResponse *ServiceItemUseServiceItemResponse) Bytes(stream *nex.StreamOut) []byte {
-	nex.StreamWriteListStructure(stream, serviceItemUseServiceItemResponse.NullableUsedInfo)
+// WriteTo writes the ServiceItemUseServiceItemResponse to the given writable
+func (serviceItemUseServiceItemResponse *ServiceItemUseServiceItemResponse) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
 
-	return stream.Bytes()
+	serviceItemUseServiceItemResponse.NullableUsedInfo.WriteTo(contentWritable)
+
+	content := contentWritable.Bytes()
+
+	serviceItemUseServiceItemResponse.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // Copy returns a new copied instance of ServiceItemUseServiceItemResponse
-func (serviceItemUseServiceItemResponse *ServiceItemUseServiceItemResponse) Copy() nex.StructureInterface {
+func (serviceItemUseServiceItemResponse *ServiceItemUseServiceItemResponse) Copy() types.RVType {
 	copied := NewServiceItemUseServiceItemResponse()
 
-	copied.SetStructureVersion(serviceItemUseServiceItemResponse.StructureVersion())
+	copied.StructureVersion = serviceItemUseServiceItemResponse.StructureVersion
 
 	copied.ServiceItemEShopResponse = serviceItemUseServiceItemResponse.ServiceItemEShopResponse.Copy().(*ServiceItemEShopResponse)
-	copied.SetParentType(copied.ServiceItemEShopResponse)
 
 	copied.NullableUsedInfo = make([]*ServiceItemUsedInfo, len(serviceItemUseServiceItemResponse.NullableUsedInfo))
 
@@ -55,10 +65,14 @@ func (serviceItemUseServiceItemResponse *ServiceItemUseServiceItemResponse) Copy
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (serviceItemUseServiceItemResponse *ServiceItemUseServiceItemResponse) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*ServiceItemUseServiceItemResponse)
+func (serviceItemUseServiceItemResponse *ServiceItemUseServiceItemResponse) Equals(o types.RVType) bool {
+	if _, ok := o.(*ServiceItemUseServiceItemResponse); !ok {
+		return false
+	}
 
-	if serviceItemUseServiceItemResponse.StructureVersion() != other.StructureVersion() {
+	other := o.(*ServiceItemUseServiceItemResponse)
+
+	if serviceItemUseServiceItemResponse.StructureVersion != other.StructureVersion {
 		return false
 	}
 
@@ -94,7 +108,7 @@ func (serviceItemUseServiceItemResponse *ServiceItemUseServiceItemResponse) Form
 
 	b.WriteString("ServiceItemUseServiceItemResponse{\n")
 	b.WriteString(fmt.Sprintf("%sParentType: %s,\n", indentationValues, serviceItemUseServiceItemResponse.ParentType().FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, serviceItemUseServiceItemResponse.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, serviceItemUseServiceItemResponse.StructureVersion))
 
 	if len(serviceItemUseServiceItemResponse.NullableUsedInfo) == 0 {
 		b.WriteString(fmt.Sprintf("%sNullableUsedInfo: [],\n", indentationValues))

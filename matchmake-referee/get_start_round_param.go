@@ -5,10 +5,12 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
 func (protocol *Protocol) handleGetStartRoundParam(packet nex.PacketInterface) {
+	var err error
 	var errorCode uint32
 
 	if protocol.GetStartRoundParam == nil {
@@ -22,9 +24,10 @@ func (protocol *Protocol) handleGetStartRoundParam(packet nex.PacketInterface) {
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.server)
+	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
-	roundID, err := parametersStream.ReadUInt64LE()
+	roundID := types.NewPrimitiveU64(0)
+	err = roundID.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.GetStartRoundParam(fmt.Errorf("Failed to read roundID from parameters. %s", err.Error()), packet, callID, 0)
 		if errorCode != 0 {

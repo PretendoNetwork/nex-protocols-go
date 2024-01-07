@@ -6,39 +6,40 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // FriendMii is a data structure used by the Friends 3DS protocol to hold information about a friends Mii
 type FriendMii struct {
-	nex.Structure
-	*nex.Data
-	PID        *nex.PID
+	types.Structure
+	*types.Data
+	PID        *types.PID
 	Mii        *Mii
-	ModifiedAt *nex.DateTime
+	ModifiedAt *types.DateTime
 }
 
-// Bytes encodes the Mii and returns a byte array
-func (friendMii *FriendMii) Bytes(stream *nex.StreamOut) []byte {
-	stream.WritePID(friendMii.PID)
-	stream.WriteStructure(friendMii.Mii)
-	stream.WriteDateTime(friendMii.ModifiedAt)
+// WriteTo writes the Mii to the given writable
+func (friendMii *FriendMii) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
 
-	return stream.Bytes()
+	friendMii.PID.WriteTo(contentWritable)
+	friendMii.Mii.WriteTo(contentWritable)
+	friendMii.ModifiedAt.WriteTo(contentWritable)
+
+	content := contentWritable.Bytes()
+
+	friendMii.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // Copy returns a new copied instance of FriendMii
-func (friendMii *FriendMii) Copy() nex.StructureInterface {
+func (friendMii *FriendMii) Copy() types.RVType {
 	copied := NewFriendMii()
 
-	copied.SetStructureVersion(friendMii.StructureVersion())
+	copied.StructureVersion = friendMii.StructureVersion
 
-	if friendMii.ParentType() != nil {
-		copied.Data = friendMii.ParentType().Copy().(*nex.Data)
-	} else {
-		copied.Data = nex.NewData()
-	}
-
-	copied.SetParentType(copied.Data)
+	copied.Data = friendMii.Data.Copy().(*types.Data)
 
 	copied.PID = friendMii.PID.Copy()
 	copied.Mii = friendMii.Mii.Copy().(*Mii)
@@ -48,10 +49,14 @@ func (friendMii *FriendMii) Copy() nex.StructureInterface {
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (friendMii *FriendMii) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*FriendMii)
+func (friendMii *FriendMii) Equals(o types.RVType) bool {
+	if _, ok := o.(*FriendMii); !ok {
+		return false
+	}
 
-	if friendMii.StructureVersion() != other.StructureVersion() {
+	other := o.(*FriendMii)
+
+	if friendMii.StructureVersion != other.StructureVersion {
 		return false
 	}
 
@@ -87,7 +92,7 @@ func (friendMii *FriendMii) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("FriendMii{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, friendMii.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, friendMii.StructureVersion))
 	b.WriteString(fmt.Sprintf("%sPID: %s,\n", indentationValues, friendMii.PID.FormatToString(indentationLevel+1)))
 
 	if friendMii.Mii != nil {

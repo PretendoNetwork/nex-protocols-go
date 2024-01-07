@@ -6,37 +6,38 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // FriendPresence contains information about a users online presence
 type FriendPresence struct {
-	nex.Structure
-	*nex.Data
-	PID      *nex.PID
+	types.Structure
+	*types.Data
+	PID      *types.PID
 	Presence *NintendoPresence
 }
 
-// Bytes encodes the FriendPresence and returns a byte array
-func (presence *FriendPresence) Bytes(stream *nex.StreamOut) []byte {
-	stream.WritePID(presence.PID)
-	stream.WriteStructure(presence.Presence)
+// WriteTo writes the FriendPresence to the given writable
+func (presence *FriendPresence) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
 
-	return stream.Bytes()
+	presence.PID.WriteTo(contentWritable)
+	presence.Presence.WriteTo(contentWritable)
+
+	content := contentWritable.Bytes()
+
+	presence.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // Copy returns a new copied instance of FriendPresence
-func (presence *FriendPresence) Copy() nex.StructureInterface {
+func (presence *FriendPresence) Copy() types.RVType {
 	copied := NewFriendPresence()
 
-	copied.SetStructureVersion(presence.StructureVersion())
+	copied.StructureVersion = presence.StructureVersion
 
-	if presence.ParentType() != nil {
-		copied.Data = presence.ParentType().Copy().(*nex.Data)
-	} else {
-		copied.Data = nex.NewData()
-	}
-
-	copied.SetParentType(copied.Data)
+	copied.Data = presence.Data.Copy().(*types.Data)
 
 	copied.PID = presence.PID.Copy()
 	copied.Presence = presence.Presence.Copy().(*NintendoPresence)
@@ -45,10 +46,14 @@ func (presence *FriendPresence) Copy() nex.StructureInterface {
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (presence *FriendPresence) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*FriendPresence)
+func (presence *FriendPresence) Equals(o types.RVType) bool {
+	if _, ok := o.(*FriendPresence); !ok {
+		return false
+	}
 
-	if presence.StructureVersion() != other.StructureVersion() {
+	other := o.(*FriendPresence)
+
+	if presence.StructureVersion != other.StructureVersion {
 		return false
 	}
 
@@ -80,7 +85,7 @@ func (presence *FriendPresence) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("FriendPresence{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, presence.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, presence.StructureVersion))
 	b.WriteString(fmt.Sprintf("%sPID: %s,\n", indentationValues, presence.PID.FormatToString(indentationLevel+1)))
 
 	if presence.Presence != nil {

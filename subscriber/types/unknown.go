@@ -7,17 +7,22 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // Unknown is unknown
 type Unknown struct {
-	nex.Structure
+	types.Structure
 	Unknown []byte
 }
 
-// ExtractFromStream extracts a Unknown structure from a stream
-func (subscriberPostContentParam *Unknown) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the Unknown from the given readable
+func (subscriberPostContentParam *Unknown) ExtractFrom(readable types.Readable) error {
 	var err error
+
+	if err = subscriberPostContentParam.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read Unknown header. %s", err.Error())
+	}
 
 	subscriberPostContentParam.Unknown, err = stream.ReadQBuffer()
 	if err != nil {
@@ -27,18 +32,24 @@ func (subscriberPostContentParam *Unknown) ExtractFromStream(stream *nex.StreamI
 	return nil
 }
 
-// Bytes encodes the Unknown and returns a byte array
-func (subscriberPostContentParam *Unknown) Bytes(stream *nex.StreamOut) []byte {
+// WriteTo writes the Unknown to the given writable
+func (subscriberPostContentParam *Unknown) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
+
 	stream.WriteQBuffer(subscriberPostContentParam.Unknown)
 
-	return stream.Bytes()
+	content := contentWritable.Bytes()
+
+	rvcd.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // Copy returns a new copied instance of Unknown
-func (subscriberPostContentParam *Unknown) Copy() nex.StructureInterface {
+func (subscriberPostContentParam *Unknown) Copy() types.RVType {
 	copied := NewUnknown()
 
-	copied.SetStructureVersion(subscriberPostContentParam.StructureVersion())
+	copied.StructureVersion = subscriberPostContentParam.StructureVersion
 
 	copied.Unknown = make([]byte, len(subscriberPostContentParam.Unknown))
 
@@ -48,10 +59,14 @@ func (subscriberPostContentParam *Unknown) Copy() nex.StructureInterface {
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (subscriberPostContentParam *Unknown) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*Unknown)
+func (subscriberPostContentParam *Unknown) Equals(o types.RVType) bool {
+	if _, ok := o.(*Unknown); !ok {
+		return false
+	}
 
-	if subscriberPostContentParam.StructureVersion() != other.StructureVersion() {
+	other := o.(*Unknown)
+
+	if subscriberPostContentParam.StructureVersion != other.StructureVersion {
 		return false
 	}
 

@@ -6,25 +6,32 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // UniqueIDInfo holds parameters for a matchmake session
 type UniqueIDInfo struct {
-	nex.Structure
-	NexUniqueID         uint64
-	NexUniqueIDPassword uint64
+	types.Structure
+	NexUniqueID         *types.PrimitiveU64
+	NexUniqueIDPassword *types.PrimitiveU64
 }
 
-// Bytes encodes the UniqueIDInfo and returns a byte array
-func (uniqueIDInfo *UniqueIDInfo) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt64LE(uniqueIDInfo.NexUniqueID)
-	stream.WriteUInt64LE(uniqueIDInfo.NexUniqueIDPassword)
+// WriteTo writes the UniqueIDInfo to the given writable
+func (uniqueIDInfo *UniqueIDInfo) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
 
-	return stream.Bytes()
+	uniqueIDInfo.NexUniqueID.WriteTo(contentWritable)
+	uniqueIDInfo.NexUniqueIDPassword.WriteTo(contentWritable)
+
+	content := contentWritable.Bytes()
+
+	uniqueIDInfo.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
-// ExtractFromStream extracts a UniqueIDInfo structure from a stream
-func (uniqueIDInfo *UniqueIDInfo) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the UniqueIDInfo from the given readable
+func (uniqueIDInfo *UniqueIDInfo) ExtractFrom(readable types.Readable) error {
 	nexUniqueID, err := stream.ReadUInt64LE()
 	if err != nil {
 		return fmt.Errorf("Failed to extract UniqueIDInfo.NexUniqueID from stream. %s", err.Error())
@@ -42,10 +49,10 @@ func (uniqueIDInfo *UniqueIDInfo) ExtractFromStream(stream *nex.StreamIn) error 
 }
 
 // Copy returns a new copied instance of UniqueIDInfo
-func (uniqueIDInfo *UniqueIDInfo) Copy() nex.StructureInterface {
+func (uniqueIDInfo *UniqueIDInfo) Copy() types.RVType {
 	copied := NewUniqueIDInfo()
 
-	copied.SetStructureVersion(uniqueIDInfo.StructureVersion())
+	copied.StructureVersion = uniqueIDInfo.StructureVersion
 
 	copied.NexUniqueID = uniqueIDInfo.NexUniqueID
 	copied.NexUniqueIDPassword = uniqueIDInfo.NexUniqueIDPassword
@@ -54,18 +61,22 @@ func (uniqueIDInfo *UniqueIDInfo) Copy() nex.StructureInterface {
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (uniqueIDInfo *UniqueIDInfo) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*UniqueIDInfo)
-
-	if uniqueIDInfo.StructureVersion() != other.StructureVersion() {
+func (uniqueIDInfo *UniqueIDInfo) Equals(o types.RVType) bool {
+	if _, ok := o.(*UniqueIDInfo); !ok {
 		return false
 	}
 
-	if uniqueIDInfo.NexUniqueID != other.NexUniqueID {
+	other := o.(*UniqueIDInfo)
+
+	if uniqueIDInfo.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if uniqueIDInfo.NexUniqueIDPassword != other.NexUniqueIDPassword {
+	if !uniqueIDInfo.NexUniqueID.Equals(other.NexUniqueID) {
+		return false
+	}
+
+	if !uniqueIDInfo.NexUniqueIDPassword.Equals(other.NexUniqueIDPassword) {
 		return false
 	}
 
@@ -85,7 +96,7 @@ func (uniqueIDInfo *UniqueIDInfo) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("UniqueIDInfo{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, uniqueIDInfo.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, uniqueIDInfo.StructureVersion))
 	b.WriteString(fmt.Sprintf("%sNexUniqueID: %d,\n", indentationValues, uniqueIDInfo.NexUniqueID))
 	b.WriteString(fmt.Sprintf("%sNexUniqueIDPassword: %d\n", indentationValues, uniqueIDInfo.NexUniqueIDPassword))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))

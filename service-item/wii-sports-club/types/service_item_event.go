@@ -7,36 +7,41 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // ServiceItemEvent holds data for the Service Item (Wii Sports Club) protocol
 type ServiceItemEvent struct {
-	nex.Structure
-	EventID           uint64
-	ParamInt          int32
+	types.Structure
+	EventID           *types.PrimitiveU64
+	ParamInt          *types.PrimitiveS32
 	ParamString       string
 	ParamBinary       []byte
-	PresentTicketType uint32
-	PresentTicketNum  uint32
-	TimeBegin         *nex.DateTime
-	TimeEnd           *nex.DateTime
+	PresentTicketType *types.PrimitiveU32
+	PresentTicketNum  *types.PrimitiveU32
+	TimeBegin         *types.DateTime
+	TimeEnd           *types.DateTime
 }
 
-// ExtractFromStream extracts a ServiceItemEvent structure from a stream
-func (serviceItemEvent *ServiceItemEvent) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the ServiceItemEvent from the given readable
+func (serviceItemEvent *ServiceItemEvent) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	serviceItemEvent.EventID, err = stream.ReadUInt64LE()
+	if err = serviceItemEvent.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read ServiceItemEvent header. %s", err.Error())
+	}
+
+	err = serviceItemEvent.EventID.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemEvent.EventID from stream. %s", err.Error())
 	}
 
-	serviceItemEvent.ParamInt, err = stream.ReadInt32LE()
+	err = serviceItemEvent.ParamInt.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemEvent.ParamInt from stream. %s", err.Error())
 	}
 
-	serviceItemEvent.ParamString, err = stream.ReadString()
+	err = serviceItemEvent.ParamString.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemEvent.ParamString from stream. %s", err.Error())
 	}
@@ -46,22 +51,22 @@ func (serviceItemEvent *ServiceItemEvent) ExtractFromStream(stream *nex.StreamIn
 		return fmt.Errorf("Failed to extract ServiceItemEvent.ParamBinary from stream. %s", err.Error())
 	}
 
-	serviceItemEvent.PresentTicketType, err = stream.ReadUInt32LE()
+	err = serviceItemEvent.PresentTicketType.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemEvent.PresentTicketType from stream. %s", err.Error())
 	}
 
-	serviceItemEvent.PresentTicketNum, err = stream.ReadUInt32LE()
+	err = serviceItemEvent.PresentTicketNum.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemEvent.PresentTicketNum from stream. %s", err.Error())
 	}
 
-	serviceItemEvent.TimeBegin, err = stream.ReadDateTime()
+	err = serviceItemEvent.TimeBegin.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemEvent.TimeBegin from stream. %s", err.Error())
 	}
 
-	serviceItemEvent.TimeEnd, err = stream.ReadDateTime()
+	err = serviceItemEvent.TimeEnd.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemEvent.TimeEnd from stream. %s", err.Error())
 	}
@@ -69,25 +74,31 @@ func (serviceItemEvent *ServiceItemEvent) ExtractFromStream(stream *nex.StreamIn
 	return nil
 }
 
-// Bytes encodes the ServiceItemEvent and returns a byte array
-func (serviceItemEvent *ServiceItemEvent) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt64LE(serviceItemEvent.EventID)
-	stream.WriteInt32LE(serviceItemEvent.ParamInt)
-	stream.WriteString(serviceItemEvent.ParamString)
-	stream.WriteQBuffer(serviceItemEvent.ParamBinary)
-	stream.WriteUInt32LE(serviceItemEvent.PresentTicketType)
-	stream.WriteUInt32LE(serviceItemEvent.PresentTicketNum)
-	stream.WriteDateTime(serviceItemEvent.TimeBegin)
-	stream.WriteDateTime(serviceItemEvent.TimeEnd)
+// WriteTo writes the ServiceItemEvent to the given writable
+func (serviceItemEvent *ServiceItemEvent) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
 
-	return stream.Bytes()
+	serviceItemEvent.EventID.WriteTo(contentWritable)
+	serviceItemEvent.ParamInt.WriteTo(contentWritable)
+	serviceItemEvent.ParamString.WriteTo(contentWritable)
+	stream.WriteQBuffer(serviceItemEvent.ParamBinary)
+	serviceItemEvent.PresentTicketType.WriteTo(contentWritable)
+	serviceItemEvent.PresentTicketNum.WriteTo(contentWritable)
+	serviceItemEvent.TimeBegin.WriteTo(contentWritable)
+	serviceItemEvent.TimeEnd.WriteTo(contentWritable)
+
+	content := contentWritable.Bytes()
+
+	serviceItemEvent.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // Copy returns a new copied instance of ServiceItemEvent
-func (serviceItemEvent *ServiceItemEvent) Copy() nex.StructureInterface {
+func (serviceItemEvent *ServiceItemEvent) Copy() types.RVType {
 	copied := NewServiceItemEvent()
 
-	copied.SetStructureVersion(serviceItemEvent.StructureVersion())
+	copied.StructureVersion = serviceItemEvent.StructureVersion
 
 	copied.EventID = serviceItemEvent.EventID
 	copied.ParamInt = serviceItemEvent.ParamInt
@@ -102,34 +113,38 @@ func (serviceItemEvent *ServiceItemEvent) Copy() nex.StructureInterface {
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (serviceItemEvent *ServiceItemEvent) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*ServiceItemEvent)
-
-	if serviceItemEvent.StructureVersion() != other.StructureVersion() {
+func (serviceItemEvent *ServiceItemEvent) Equals(o types.RVType) bool {
+	if _, ok := o.(*ServiceItemEvent); !ok {
 		return false
 	}
 
-	if serviceItemEvent.EventID != other.EventID {
+	other := o.(*ServiceItemEvent)
+
+	if serviceItemEvent.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if serviceItemEvent.ParamInt != other.ParamInt {
+	if !serviceItemEvent.EventID.Equals(other.EventID) {
 		return false
 	}
 
-	if serviceItemEvent.ParamString != other.ParamString {
+	if !serviceItemEvent.ParamInt.Equals(other.ParamInt) {
 		return false
 	}
 
-	if !bytes.Equal(serviceItemEvent.ParamBinary, other.ParamBinary) {
+	if !serviceItemEvent.ParamString.Equals(other.ParamString) {
 		return false
 	}
 
-	if serviceItemEvent.PresentTicketType != other.PresentTicketType {
+	if !serviceItemEvent.ParamBinary.Equals(other.ParamBinary) {
 		return false
 	}
 
-	if serviceItemEvent.PresentTicketNum != other.PresentTicketNum {
+	if !serviceItemEvent.PresentTicketType.Equals(other.PresentTicketType) {
+		return false
+	}
+
+	if !serviceItemEvent.PresentTicketNum.Equals(other.PresentTicketNum) {
 		return false
 	}
 
@@ -157,7 +172,7 @@ func (serviceItemEvent *ServiceItemEvent) FormatToString(indentationLevel int) s
 	var b strings.Builder
 
 	b.WriteString("ServiceItemEvent{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, serviceItemEvent.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, serviceItemEvent.StructureVersion))
 	b.WriteString(fmt.Sprintf("%sEventID: %d,\n", indentationValues, serviceItemEvent.EventID))
 	b.WriteString(fmt.Sprintf("%sParamInt: %d,\n", indentationValues, serviceItemEvent.ParamInt))
 	b.WriteString(fmt.Sprintf("%sParamString: %q,\n", indentationValues, serviceItemEvent.ParamString))

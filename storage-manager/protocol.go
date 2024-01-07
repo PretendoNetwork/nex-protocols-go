@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
@@ -23,7 +24,7 @@ const (
 type Protocol struct {
 	server             nex.ServerInterface
 	AcquireCardID      func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, uint32)
-	ActivateWithCardID func(err error, packet nex.PacketInterface, callID uint32, unknown uint8, cardID uint64) (*nex.RMCMessage, uint32)
+	ActivateWithCardID func(err error, packet nex.PacketInterface, callID uint32, unknown *types.PrimitiveU8, cardID *types.PrimitiveU64) (*nex.RMCMessage, uint32)
 }
 
 // Interface implements the methods present on the StorageManager protocol struct
@@ -31,7 +32,7 @@ type Interface interface {
 	Server() nex.ServerInterface
 	SetServer(server nex.ServerInterface)
 	SetHandlerAcquireCardID(handler func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, uint32))
-	SetHandlerActivateWithCardID(handler func(err error, packet nex.PacketInterface, callID uint32, unknown uint8, cardID uint64) (*nex.RMCMessage, uint32))
+	SetHandlerActivateWithCardID(handler func(err error, packet nex.PacketInterface, callID uint32, unknown *types.PrimitiveU8, cardID *types.PrimitiveU64) (*nex.RMCMessage, uint32))
 }
 
 // Server returns the server implementing the protocol
@@ -50,7 +51,7 @@ func (protocol *Protocol) SetHandlerAcquireCardID(handler func(err error, packet
 }
 
 // SetHandlerActivateWithCardID sets the handler for the ActivateWithCardID method
-func (protocol *Protocol) SetHandlerActivateWithCardID(handler func(err error, packet nex.PacketInterface, callID uint32, unknown uint8, cardID uint64) (*nex.RMCMessage, uint32)) {
+func (protocol *Protocol) SetHandlerActivateWithCardID(handler func(err error, packet nex.PacketInterface, callID uint32, unknown *types.PrimitiveU8, cardID *types.PrimitiveU64) (*nex.RMCMessage, uint32)) {
 	protocol.ActivateWithCardID = handler
 }
 

@@ -6,15 +6,16 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // ServiceItemPrepurchaseInfo holds data for the Service Item (Team Kirby Clash Deluxe) protocol
 type ServiceItemPrepurchaseInfo struct {
-	nex.Structure
+	types.Structure
 	ItemCode         string
 	PriceID          string
 	RegularPrice     *ServiceItemAmount
-	IsTaxAvailable   bool
+	IsTaxAvailable   *types.PrimitiveBool
 	TaxAmount        *ServiceItemAmount
 	TotalAmount      *ServiceItemAmount
 	CurrentBalance   *ServiceItemAmount
@@ -23,56 +24,60 @@ type ServiceItemPrepurchaseInfo struct {
 	PostRightInfo    *ServiceItemPrepurchaseRightInfo
 }
 
-// ExtractFromStream extracts a ServiceItemPrepurchaseInfo structure from a stream
-func (serviceItemPrepurchaseInfo *ServiceItemPrepurchaseInfo) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the ServiceItemPrepurchaseInfo from the given readable
+func (serviceItemPrepurchaseInfo *ServiceItemPrepurchaseInfo) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	serviceItemPrepurchaseInfo.ItemCode, err = stream.ReadString()
+	if err = serviceItemPrepurchaseInfo.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read ServiceItemPrepurchaseInfo header. %s", err.Error())
+	}
+
+	err = serviceItemPrepurchaseInfo.ItemCode.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemPrepurchaseInfo.ItemCode from stream. %s", err.Error())
 	}
 
-	serviceItemPrepurchaseInfo.PriceID, err = stream.ReadString()
+	err = serviceItemPrepurchaseInfo.PriceID.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemPrepurchaseInfo.PriceID from stream. %s", err.Error())
 	}
 
-	serviceItemPrepurchaseInfo.RegularPrice, err = nex.StreamReadStructure(stream, NewServiceItemAmount())
+	err = serviceItemPrepurchaseInfo.RegularPrice.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemPrepurchaseInfo.RegularPrice from stream. %s", err.Error())
 	}
 
-	serviceItemPrepurchaseInfo.IsTaxAvailable, err = stream.ReadBool()
+	err = serviceItemPrepurchaseInfo.IsTaxAvailable.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemPrepurchaseInfo.IsTaxAvailable from stream. %s", err.Error())
 	}
 
-	serviceItemPrepurchaseInfo.TaxAmount, err = nex.StreamReadStructure(stream, NewServiceItemAmount())
+	err = serviceItemPrepurchaseInfo.TaxAmount.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemPrepurchaseInfo.TaxAmount from stream. %s", err.Error())
 	}
 
-	serviceItemPrepurchaseInfo.TotalAmount, err = nex.StreamReadStructure(stream, NewServiceItemAmount())
+	err = serviceItemPrepurchaseInfo.TotalAmount.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemPrepurchaseInfo.TotalAmount from stream. %s", err.Error())
 	}
 
-	serviceItemPrepurchaseInfo.CurrentBalance, err = nex.StreamReadStructure(stream, NewServiceItemAmount())
+	err = serviceItemPrepurchaseInfo.CurrentBalance.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemPrepurchaseInfo.CurrentBalance from stream. %s", err.Error())
 	}
 
-	serviceItemPrepurchaseInfo.PostBalance, err = nex.StreamReadStructure(stream, NewServiceItemAmount())
+	err = serviceItemPrepurchaseInfo.PostBalance.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemPrepurchaseInfo.PostBalance from stream. %s", err.Error())
 	}
 
-	serviceItemPrepurchaseInfo.CurrentRightInfo, err = nex.StreamReadStructure(stream, NewServiceItemPrepurchaseRightInfo())
+	err = serviceItemPrepurchaseInfo.CurrentRightInfo.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemPrepurchaseInfo.CurrentRightInfo from stream. %s", err.Error())
 	}
 
-	serviceItemPrepurchaseInfo.PostRightInfo, err = nex.StreamReadStructure(stream, NewServiceItemPrepurchaseRightInfo())
+	err = serviceItemPrepurchaseInfo.PostRightInfo.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemPrepurchaseInfo.PostRightInfo from stream. %s", err.Error())
 	}
@@ -80,27 +85,33 @@ func (serviceItemPrepurchaseInfo *ServiceItemPrepurchaseInfo) ExtractFromStream(
 	return nil
 }
 
-// Bytes encodes the ServiceItemPrepurchaseInfo and returns a byte array
-func (serviceItemPrepurchaseInfo *ServiceItemPrepurchaseInfo) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteString(serviceItemPrepurchaseInfo.ItemCode)
-	stream.WriteString(serviceItemPrepurchaseInfo.PriceID)
-	stream.WriteStructure(serviceItemPrepurchaseInfo.RegularPrice)
-	stream.WriteBool(serviceItemPrepurchaseInfo.IsTaxAvailable)
-	stream.WriteStructure(serviceItemPrepurchaseInfo.TaxAmount)
-	stream.WriteStructure(serviceItemPrepurchaseInfo.TotalAmount)
-	stream.WriteStructure(serviceItemPrepurchaseInfo.CurrentBalance)
-	stream.WriteStructure(serviceItemPrepurchaseInfo.PostBalance)
-	stream.WriteStructure(serviceItemPrepurchaseInfo.CurrentRightInfo)
-	stream.WriteStructure(serviceItemPrepurchaseInfo.PostRightInfo)
+// WriteTo writes the ServiceItemPrepurchaseInfo to the given writable
+func (serviceItemPrepurchaseInfo *ServiceItemPrepurchaseInfo) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
 
-	return stream.Bytes()
+	serviceItemPrepurchaseInfo.ItemCode.WriteTo(contentWritable)
+	serviceItemPrepurchaseInfo.PriceID.WriteTo(contentWritable)
+	serviceItemPrepurchaseInfo.RegularPrice.WriteTo(contentWritable)
+	serviceItemPrepurchaseInfo.IsTaxAvailable.WriteTo(contentWritable)
+	serviceItemPrepurchaseInfo.TaxAmount.WriteTo(contentWritable)
+	serviceItemPrepurchaseInfo.TotalAmount.WriteTo(contentWritable)
+	serviceItemPrepurchaseInfo.CurrentBalance.WriteTo(contentWritable)
+	serviceItemPrepurchaseInfo.PostBalance.WriteTo(contentWritable)
+	serviceItemPrepurchaseInfo.CurrentRightInfo.WriteTo(contentWritable)
+	serviceItemPrepurchaseInfo.PostRightInfo.WriteTo(contentWritable)
+
+	content := contentWritable.Bytes()
+
+	serviceItemPrepurchaseInfo.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // Copy returns a new copied instance of ServiceItemPrepurchaseInfo
-func (serviceItemPrepurchaseInfo *ServiceItemPrepurchaseInfo) Copy() nex.StructureInterface {
+func (serviceItemPrepurchaseInfo *ServiceItemPrepurchaseInfo) Copy() types.RVType {
 	copied := NewServiceItemPrepurchaseInfo()
 
-	copied.SetStructureVersion(serviceItemPrepurchaseInfo.StructureVersion())
+	copied.StructureVersion = serviceItemPrepurchaseInfo.StructureVersion
 
 	copied.ItemCode = serviceItemPrepurchaseInfo.ItemCode
 	copied.PriceID = serviceItemPrepurchaseInfo.PriceID
@@ -117,18 +128,22 @@ func (serviceItemPrepurchaseInfo *ServiceItemPrepurchaseInfo) Copy() nex.Structu
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (serviceItemPrepurchaseInfo *ServiceItemPrepurchaseInfo) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*ServiceItemPrepurchaseInfo)
-
-	if serviceItemPrepurchaseInfo.StructureVersion() != other.StructureVersion() {
+func (serviceItemPrepurchaseInfo *ServiceItemPrepurchaseInfo) Equals(o types.RVType) bool {
+	if _, ok := o.(*ServiceItemPrepurchaseInfo); !ok {
 		return false
 	}
 
-	if serviceItemPrepurchaseInfo.ItemCode != other.ItemCode {
+	other := o.(*ServiceItemPrepurchaseInfo)
+
+	if serviceItemPrepurchaseInfo.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if serviceItemPrepurchaseInfo.PriceID != other.PriceID {
+	if !serviceItemPrepurchaseInfo.ItemCode.Equals(other.ItemCode) {
+		return false
+	}
+
+	if !serviceItemPrepurchaseInfo.PriceID.Equals(other.PriceID) {
 		return false
 	}
 
@@ -136,7 +151,7 @@ func (serviceItemPrepurchaseInfo *ServiceItemPrepurchaseInfo) Equals(structure n
 		return false
 	}
 
-	if serviceItemPrepurchaseInfo.IsTaxAvailable != other.IsTaxAvailable {
+	if !serviceItemPrepurchaseInfo.IsTaxAvailable.Equals(other.IsTaxAvailable) {
 		return false
 	}
 
@@ -180,7 +195,7 @@ func (serviceItemPrepurchaseInfo *ServiceItemPrepurchaseInfo) FormatToString(ind
 	var b strings.Builder
 
 	b.WriteString("ServiceItemPrepurchaseInfo{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, serviceItemPrepurchaseInfo.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, serviceItemPrepurchaseInfo.StructureVersion))
 	b.WriteString(fmt.Sprintf("%sItemCode: %q,\n", indentationValues, serviceItemPrepurchaseInfo.ItemCode))
 	b.WriteString(fmt.Sprintf("%sPriceID: %q,\n", indentationValues, serviceItemPrepurchaseInfo.PriceID))
 

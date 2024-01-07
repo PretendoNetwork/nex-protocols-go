@@ -5,11 +5,13 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 	matchmake_referee_types "github.com/PretendoNetwork/nex-protocols-go/matchmake-referee/types"
 )
 
 func (protocol *Protocol) handleStartRound(packet nex.PacketInterface) {
+	var err error
 	var errorCode uint32
 
 	if protocol.StartRound == nil {
@@ -23,9 +25,10 @@ func (protocol *Protocol) handleStartRound(packet nex.PacketInterface) {
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.server)
+	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
-	param, err := nex.StreamReadStructure(parametersStream, matchmake_referee_types.NewMatchmakeRefereeStartRoundParam())
+	param := matchmake_referee_types.NewMatchmakeRefereeStartRoundParam()
+	err = param.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.StartRound(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {

@@ -6,50 +6,55 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // ServiceItemListServiceItemParam holds data for the Service Item (Team Kirby Clash Deluxe) protocol
 type ServiceItemListServiceItemParam struct {
-	nex.Structure
+	types.Structure
 	Language           string
-	Offset             uint32
-	Size               uint32
-	IsBalanceAvailable bool
-	UniqueID           uint32
-	Platform           uint8 // * Revision 1
+	Offset             *types.PrimitiveU32
+	Size               *types.PrimitiveU32
+	IsBalanceAvailable *types.PrimitiveBool
+	UniqueID           *types.PrimitiveU32
+	Platform           *types.PrimitiveU8 // * Revision 1
 }
 
-// ExtractFromStream extracts a ServiceItemListServiceItemParam structure from a stream
-func (serviceItemListServiceItemParam *ServiceItemListServiceItemParam) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the ServiceItemListServiceItemParam from the given readable
+func (serviceItemListServiceItemParam *ServiceItemListServiceItemParam) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	serviceItemListServiceItemParam.Language, err = stream.ReadString()
+	if err = serviceItemListServiceItemParam.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read ServiceItemListServiceItemParam header. %s", err.Error())
+	}
+
+	err = serviceItemListServiceItemParam.Language.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemListServiceItemParam.Language from stream. %s", err.Error())
 	}
 
-	serviceItemListServiceItemParam.Offset, err = stream.ReadUInt32LE()
+	err = serviceItemListServiceItemParam.Offset.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemListServiceItemParam.Offset from stream. %s", err.Error())
 	}
 
-	serviceItemListServiceItemParam.Size, err = stream.ReadUInt32LE()
+	err = serviceItemListServiceItemParam.Size.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemListServiceItemParam.Size from stream. %s", err.Error())
 	}
 
-	serviceItemListServiceItemParam.IsBalanceAvailable, err = stream.ReadBool()
+	err = serviceItemListServiceItemParam.IsBalanceAvailable.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemListServiceItemParam.IsBalanceAvailable from stream. %s", err.Error())
 	}
 
-	serviceItemListServiceItemParam.UniqueID, err = stream.ReadUInt32LE()
+	err = serviceItemListServiceItemParam.UniqueID.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemListServiceItemParam.UniqueID from stream. %s", err.Error())
 	}
 
-	if serviceItemListServiceItemParam.StructureVersion() >= 1 {
-		serviceItemListServiceItemParam.Platform, err = stream.ReadUInt8()
+	if serviceItemListServiceItemParam.StructureVersion >= 1 {
+	err = 	serviceItemListServiceItemParam.Platform.ExtractFrom(readable)
 		if err != nil {
 			return fmt.Errorf("Failed to extract ServiceItemListServiceItemParam.Platform from stream. %s", err.Error())
 		}
@@ -58,26 +63,32 @@ func (serviceItemListServiceItemParam *ServiceItemListServiceItemParam) ExtractF
 	return nil
 }
 
-// Bytes encodes the ServiceItemListServiceItemParam and returns a byte array
-func (serviceItemListServiceItemParam *ServiceItemListServiceItemParam) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteString(serviceItemListServiceItemParam.Language)
-	stream.WriteUInt32LE(serviceItemListServiceItemParam.Offset)
-	stream.WriteUInt32LE(serviceItemListServiceItemParam.Size)
-	stream.WriteBool(serviceItemListServiceItemParam.IsBalanceAvailable)
-	stream.WriteUInt32LE(serviceItemListServiceItemParam.UniqueID)
+// WriteTo writes the ServiceItemListServiceItemParam to the given writable
+func (serviceItemListServiceItemParam *ServiceItemListServiceItemParam) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
 
-	if serviceItemListServiceItemParam.StructureVersion() >= 1 {
-		stream.WriteUInt8(serviceItemListServiceItemParam.Platform)
+	serviceItemListServiceItemParam.Language.WriteTo(contentWritable)
+	serviceItemListServiceItemParam.Offset.WriteTo(contentWritable)
+	serviceItemListServiceItemParam.Size.WriteTo(contentWritable)
+	serviceItemListServiceItemParam.IsBalanceAvailable.WriteTo(contentWritable)
+	serviceItemListServiceItemParam.UniqueID.WriteTo(contentWritable)
+
+	if serviceItemListServiceItemParam.StructureVersion >= 1 {
+		serviceItemListServiceItemParam.Platform.WriteTo(contentWritable)
 	}
 
-	return stream.Bytes()
+	content := contentWritable.Bytes()
+
+	rvcd.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // Copy returns a new copied instance of ServiceItemListServiceItemParam
-func (serviceItemListServiceItemParam *ServiceItemListServiceItemParam) Copy() nex.StructureInterface {
+func (serviceItemListServiceItemParam *ServiceItemListServiceItemParam) Copy() types.RVType {
 	copied := NewServiceItemListServiceItemParam()
 
-	copied.SetStructureVersion(serviceItemListServiceItemParam.StructureVersion())
+	copied.StructureVersion = serviceItemListServiceItemParam.StructureVersion
 
 	copied.Language = serviceItemListServiceItemParam.Language
 	copied.Offset = serviceItemListServiceItemParam.Offset
@@ -90,34 +101,38 @@ func (serviceItemListServiceItemParam *ServiceItemListServiceItemParam) Copy() n
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (serviceItemListServiceItemParam *ServiceItemListServiceItemParam) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*ServiceItemListServiceItemParam)
-
-	if serviceItemListServiceItemParam.StructureVersion() != other.StructureVersion() {
+func (serviceItemListServiceItemParam *ServiceItemListServiceItemParam) Equals(o types.RVType) bool {
+	if _, ok := o.(*ServiceItemListServiceItemParam); !ok {
 		return false
 	}
 
-	if serviceItemListServiceItemParam.Language != other.Language {
+	other := o.(*ServiceItemListServiceItemParam)
+
+	if serviceItemListServiceItemParam.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if serviceItemListServiceItemParam.Offset != other.Offset {
+	if !serviceItemListServiceItemParam.Language.Equals(other.Language) {
 		return false
 	}
 
-	if serviceItemListServiceItemParam.Size != other.Size {
+	if !serviceItemListServiceItemParam.Offset.Equals(other.Offset) {
 		return false
 	}
 
-	if serviceItemListServiceItemParam.IsBalanceAvailable != other.IsBalanceAvailable {
+	if !serviceItemListServiceItemParam.Size.Equals(other.Size) {
 		return false
 	}
 
-	if serviceItemListServiceItemParam.UniqueID != other.UniqueID {
+	if !serviceItemListServiceItemParam.IsBalanceAvailable.Equals(other.IsBalanceAvailable) {
 		return false
 	}
 
-	if serviceItemListServiceItemParam.Platform != other.Platform {
+	if !serviceItemListServiceItemParam.UniqueID.Equals(other.UniqueID) {
+		return false
+	}
+
+	if !serviceItemListServiceItemParam.Platform.Equals(other.Platform) {
 		return false
 	}
 
@@ -137,14 +152,14 @@ func (serviceItemListServiceItemParam *ServiceItemListServiceItemParam) FormatTo
 	var b strings.Builder
 
 	b.WriteString("ServiceItemListServiceItemParam{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, serviceItemListServiceItemParam.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, serviceItemListServiceItemParam.StructureVersion))
 	b.WriteString(fmt.Sprintf("%sLanguage: %q,\n", indentationValues, serviceItemListServiceItemParam.Language))
 	b.WriteString(fmt.Sprintf("%sOffset: %d,\n", indentationValues, serviceItemListServiceItemParam.Offset))
 	b.WriteString(fmt.Sprintf("%sSize: %d,\n", indentationValues, serviceItemListServiceItemParam.Size))
 	b.WriteString(fmt.Sprintf("%sIsBalanceAvailable: %t,\n", indentationValues, serviceItemListServiceItemParam.IsBalanceAvailable))
 	b.WriteString(fmt.Sprintf("%sUniqueID: %d,\n", indentationValues, serviceItemListServiceItemParam.UniqueID))
 
-	if serviceItemListServiceItemParam.StructureVersion() >= 1 {
+	if serviceItemListServiceItemParam.StructureVersion >= 1 {
 		b.WriteString(fmt.Sprintf("%sPlatform: %d,\n", indentationValues, serviceItemListServiceItemParam.Platform))
 	}
 

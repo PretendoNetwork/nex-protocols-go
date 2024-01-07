@@ -5,10 +5,12 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
 func (protocol *Protocol) handleGetStringSettings(packet nex.PacketInterface) {
+	var err error
 	var errorCode uint32
 
 	if protocol.GetStringSettings == nil {
@@ -23,9 +25,10 @@ func (protocol *Protocol) handleGetStringSettings(packet nex.PacketInterface) {
 
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.server)
+	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
-	stringSettingIndex, err := parametersStream.ReadUInt32LE()
+	stringSettingIndex := types.NewPrimitiveU32(0)
+	err = stringSettingIndex.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.GetStringSettings(fmt.Errorf("Failed to read stringSettingIndex from parameters. %s", err.Error()), packet, callID, 0)
 		if errorCode != 0 {

@@ -6,31 +6,36 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // ShopPostPlayLogParam is a data structure used by the Nintendo Badge Arcade Shop protocol
 type ShopPostPlayLogParam struct {
-	nex.Structure
-	Unknown1  []uint32
-	Timestamp *nex.DateTime
+	types.Structure
+	Unknown1  *types.List[*types.PrimitiveU32]
+	Timestamp *types.DateTime
 	Unknown2  string
 }
 
-// ExtractFromStream extracts a ShopPostPlayLogParam structure from a stream
-func (shopPostPlayLogParam *ShopPostPlayLogParam) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the ShopPostPlayLogParam from the given readable
+func (shopPostPlayLogParam *ShopPostPlayLogParam) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	shopPostPlayLogParam.Unknown1, err = stream.ReadListUInt32LE()
+	if err = shopPostPlayLogParam.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read ShopPostPlayLogParam header. %s", err.Error())
+	}
+
+	err = shopPostPlayLogParam.Unknown1.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract ShopPostPlayLogParam.Unknown1 from stream. %s", err.Error())
 	}
 
-	shopPostPlayLogParam.Timestamp, err = stream.ReadDateTime()
+	err = shopPostPlayLogParam.Timestamp.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract ShopPostPlayLogParam.Timestamp from stream. %s", err.Error())
 	}
 
-	shopPostPlayLogParam.Unknown2, err = stream.ReadString()
+	err = shopPostPlayLogParam.Unknown2.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract ShopPostPlayLogParam.Unknown2 from stream. %s", err.Error())
 	}
@@ -38,22 +43,28 @@ func (shopPostPlayLogParam *ShopPostPlayLogParam) ExtractFromStream(stream *nex.
 	return nil
 }
 
-// Bytes encodes the ShopPostPlayLogParam and returns a byte array
-func (shopPostPlayLogParam *ShopPostPlayLogParam) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteListUInt32LE(shopPostPlayLogParam.Unknown1)
-	stream.WriteDateTime(shopPostPlayLogParam.Timestamp)
-	stream.WriteString(shopPostPlayLogParam.Unknown2)
+// WriteTo writes the ShopPostPlayLogParam to the given writable
+func (shopPostPlayLogParam *ShopPostPlayLogParam) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
 
-	return stream.Bytes()
+	shopPostPlayLogParam.Unknown1.WriteTo(contentWritable)
+	shopPostPlayLogParam.Timestamp.WriteTo(contentWritable)
+	shopPostPlayLogParam.Unknown2.WriteTo(contentWritable)
+
+	content := contentWritable.Bytes()
+
+	shopPostPlayLogParam.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // Copy returns a new copied instance of ShopPostPlayLogParam
-func (shopPostPlayLogParam *ShopPostPlayLogParam) Copy() nex.StructureInterface {
+func (shopPostPlayLogParam *ShopPostPlayLogParam) Copy() types.RVType {
 	copied := NewShopPostPlayLogParam()
 
-	copied.SetStructureVersion(shopPostPlayLogParam.StructureVersion())
+	copied.StructureVersion = shopPostPlayLogParam.StructureVersion
 
-	copied.Unknown1 = make([]uint32, len(shopPostPlayLogParam.Unknown1))
+	copied.Unknown1 = make(*types.List[*types.PrimitiveU32], len(shopPostPlayLogParam.Unknown1))
 
 	copy(copied.Unknown1, shopPostPlayLogParam.Unknown1)
 
@@ -64,10 +75,14 @@ func (shopPostPlayLogParam *ShopPostPlayLogParam) Copy() nex.StructureInterface 
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (shopPostPlayLogParam *ShopPostPlayLogParam) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*ShopPostPlayLogParam)
+func (shopPostPlayLogParam *ShopPostPlayLogParam) Equals(o types.RVType) bool {
+	if _, ok := o.(*ShopPostPlayLogParam); !ok {
+		return false
+	}
 
-	if shopPostPlayLogParam.StructureVersion() != other.StructureVersion() {
+	other := o.(*ShopPostPlayLogParam)
+
+	if shopPostPlayLogParam.StructureVersion != other.StructureVersion {
 		return false
 	}
 
@@ -85,7 +100,7 @@ func (shopPostPlayLogParam *ShopPostPlayLogParam) Equals(structure nex.Structure
 		return false
 	}
 
-	if shopPostPlayLogParam.Unknown2 != other.Unknown2 {
+	if !shopPostPlayLogParam.Unknown2.Equals(other.Unknown2) {
 		return false
 	}
 
@@ -105,7 +120,7 @@ func (shopPostPlayLogParam *ShopPostPlayLogParam) FormatToString(indentationLeve
 	var b strings.Builder
 
 	b.WriteString("ShopPostPlayLogParam{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, shopPostPlayLogParam.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, shopPostPlayLogParam.StructureVersion))
 	b.WriteString(fmt.Sprintf("%sUnknown1: %v,\n", indentationValues, shopPostPlayLogParam.Unknown1))
 
 	if shopPostPlayLogParam.Timestamp != nil {

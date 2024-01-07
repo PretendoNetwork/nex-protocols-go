@@ -6,18 +6,23 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // ServiceItemGetPrepurchaseInfoResponse holds data for the Service Item (Team Kirby Clash Deluxe) protocol
 type ServiceItemGetPrepurchaseInfoResponse struct {
-	nex.Structure
+	types.Structure
 	*ServiceItemEShopResponse
 	NullablePrepurchaseInfo []*ServiceItemPrepurchaseInfo
 }
 
-// ExtractFromStream extracts a ServiceItemGetPrepurchaseInfoResponse structure from a stream
-func (serviceItemGetPrepurchaseInfoResponse *ServiceItemGetPrepurchaseInfoResponse) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the ServiceItemGetPrepurchaseInfoResponse from the given readable
+func (serviceItemGetPrepurchaseInfoResponse *ServiceItemGetPrepurchaseInfoResponse) ExtractFrom(readable types.Readable) error {
 	var err error
+
+	if err = serviceItemGetPrepurchaseInfoResponse.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read ServiceItemGetPrepurchaseInfoResponse header. %s", err.Error())
+	}
 
 	nullablePrepurchaseInfo, err := nex.StreamReadListStructure(stream, NewServiceItemPrepurchaseInfo())
 	if err != nil {
@@ -29,21 +34,26 @@ func (serviceItemGetPrepurchaseInfoResponse *ServiceItemGetPrepurchaseInfoRespon
 	return nil
 }
 
-// Bytes encodes the ServiceItemGetPrepurchaseInfoResponse and returns a byte array
-func (serviceItemGetPrepurchaseInfoResponse *ServiceItemGetPrepurchaseInfoResponse) Bytes(stream *nex.StreamOut) []byte {
-	nex.StreamWriteListStructure(stream, serviceItemGetPrepurchaseInfoResponse.NullablePrepurchaseInfo)
+// WriteTo writes the ServiceItemGetPrepurchaseInfoResponse to the given writable
+func (serviceItemGetPrepurchaseInfoResponse *ServiceItemGetPrepurchaseInfoResponse) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
 
-	return stream.Bytes()
+	serviceItemGetPrepurchaseInfoResponse.NullablePrepurchaseInfo.WriteTo(contentWritable)
+
+	content := contentWritable.Bytes()
+
+	serviceItemGetPrepurchaseInfoResponse.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // Copy returns a new copied instance of ServiceItemGetPrepurchaseInfoResponse
-func (serviceItemGetPrepurchaseInfoResponse *ServiceItemGetPrepurchaseInfoResponse) Copy() nex.StructureInterface {
+func (serviceItemGetPrepurchaseInfoResponse *ServiceItemGetPrepurchaseInfoResponse) Copy() types.RVType {
 	copied := NewServiceItemGetPrepurchaseInfoResponse()
 
-	copied.SetStructureVersion(serviceItemGetPrepurchaseInfoResponse.StructureVersion())
+	copied.StructureVersion = serviceItemGetPrepurchaseInfoResponse.StructureVersion
 
 	copied.ServiceItemEShopResponse = serviceItemGetPrepurchaseInfoResponse.ServiceItemEShopResponse.Copy().(*ServiceItemEShopResponse)
-	copied.SetParentType(copied.ServiceItemEShopResponse)
 
 	copied.NullablePrepurchaseInfo = make([]*ServiceItemPrepurchaseInfo, len(serviceItemGetPrepurchaseInfoResponse.NullablePrepurchaseInfo))
 
@@ -55,10 +65,14 @@ func (serviceItemGetPrepurchaseInfoResponse *ServiceItemGetPrepurchaseInfoRespon
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (serviceItemGetPrepurchaseInfoResponse *ServiceItemGetPrepurchaseInfoResponse) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*ServiceItemGetPrepurchaseInfoResponse)
+func (serviceItemGetPrepurchaseInfoResponse *ServiceItemGetPrepurchaseInfoResponse) Equals(o types.RVType) bool {
+	if _, ok := o.(*ServiceItemGetPrepurchaseInfoResponse); !ok {
+		return false
+	}
 
-	if serviceItemGetPrepurchaseInfoResponse.StructureVersion() != other.StructureVersion() {
+	other := o.(*ServiceItemGetPrepurchaseInfoResponse)
+
+	if serviceItemGetPrepurchaseInfoResponse.StructureVersion != other.StructureVersion {
 		return false
 	}
 
@@ -94,7 +108,7 @@ func (serviceItemGetPrepurchaseInfoResponse *ServiceItemGetPrepurchaseInfoRespon
 
 	b.WriteString("ServiceItemGetPrepurchaseInfoResponse{\n")
 	b.WriteString(fmt.Sprintf("%sParentType: %s,\n", indentationValues, serviceItemGetPrepurchaseInfoResponse.ParentType().FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, serviceItemGetPrepurchaseInfoResponse.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, serviceItemGetPrepurchaseInfoResponse.StructureVersion))
 
 	if len(serviceItemGetPrepurchaseInfoResponse.NullablePrepurchaseInfo) == 0 {
 		b.WriteString(fmt.Sprintf("%sNullablePrepurchaseInfo: [],\n", indentationValues))

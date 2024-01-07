@@ -6,43 +6,48 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // RelationshipData contains data relating to a friend
 type RelationshipData struct {
-	nex.Structure
-	PID            uint32
+	types.Structure
+	PID            *types.PrimitiveU32
 	StrName        string
-	ByRelationship uint8
-	UIDetails      uint32
-	ByStatus       uint8
+	ByRelationship *types.PrimitiveU8
+	UIDetails      *types.PrimitiveU32
+	ByStatus       *types.PrimitiveU8
 }
 
-// ExtractFromStream extracts a RelationshipData structure from a stream
-func (relationshipData *RelationshipData) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the RelationshipData from the given readable
+func (relationshipData *RelationshipData) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	relationshipData.PID, err = stream.ReadUInt32LE()
+	if err = relationshipData.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read RelationshipData header. %s", err.Error())
+	}
+
+	err = relationshipData.PID.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract RelationshipData.PID. %s", err.Error())
 	}
 
-	relationshipData.StrName, err = stream.ReadString()
+	err = relationshipData.StrName.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract RelationshipData.StrName. %s", err.Error())
 	}
 
-	relationshipData.ByRelationship, err = stream.ReadUInt8()
+	err = relationshipData.ByRelationship.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract RelationshipData.ByRelationship. %s", err.Error())
 	}
 
-	relationshipData.UIDetails, err = stream.ReadUInt32LE()
+	err = relationshipData.UIDetails.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract RelationshipData.UIDetails. %s", err.Error())
 	}
 
-	relationshipData.ByStatus, err = stream.ReadUInt8()
+	err = relationshipData.ByStatus.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract RelationshipData.ByStatus. %s", err.Error())
 	}
@@ -51,10 +56,10 @@ func (relationshipData *RelationshipData) ExtractFromStream(stream *nex.StreamIn
 }
 
 // Copy returns a new copied instance of RelationshipData
-func (relationshipData *RelationshipData) Copy() nex.StructureInterface {
+func (relationshipData *RelationshipData) Copy() types.RVType {
 	copied := NewRelationshipData()
 
-	copied.SetStructureVersion(relationshipData.StructureVersion())
+	copied.StructureVersion = relationshipData.StructureVersion
 
 	copied.PID = relationshipData.PID
 	copied.StrName = relationshipData.StrName
@@ -66,30 +71,34 @@ func (relationshipData *RelationshipData) Copy() nex.StructureInterface {
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (relationshipData *RelationshipData) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*RelationshipData)
-
-	if relationshipData.StructureVersion() != other.StructureVersion() {
+func (relationshipData *RelationshipData) Equals(o types.RVType) bool {
+	if _, ok := o.(*RelationshipData); !ok {
 		return false
 	}
 
-	if relationshipData.PID != other.PID {
+	other := o.(*RelationshipData)
+
+	if relationshipData.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if relationshipData.StrName != other.StrName {
+	if !relationshipData.PID.Equals(other.PID) {
 		return false
 	}
 
-	if relationshipData.ByRelationship != other.ByRelationship {
+	if !relationshipData.StrName.Equals(other.StrName) {
 		return false
 	}
 
-	if relationshipData.UIDetails != other.UIDetails {
+	if !relationshipData.ByRelationship.Equals(other.ByRelationship) {
 		return false
 	}
 
-	if relationshipData.ByStatus != other.ByStatus {
+	if !relationshipData.UIDetails.Equals(other.UIDetails) {
+		return false
+	}
+
+	if !relationshipData.ByStatus.Equals(other.ByStatus) {
 		return false
 	}
 
@@ -109,7 +118,7 @@ func (relationshipData *RelationshipData) FormatToString(indentationLevel int) s
 	var b strings.Builder
 
 	b.WriteString("RelationshipData{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, relationshipData.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, relationshipData.StructureVersion))
 	b.WriteString(fmt.Sprintf("%sPID: %d,\n", indentationValues, relationshipData.PID))
 	b.WriteString(fmt.Sprintf("%sStrName: %q,\n", indentationValues, relationshipData.StrName))
 	b.WriteString(fmt.Sprintf("%sByRelationship: %d,\n", indentationValues, relationshipData.ByRelationship))

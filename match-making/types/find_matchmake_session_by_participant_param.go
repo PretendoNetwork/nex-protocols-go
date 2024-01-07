@@ -9,31 +9,36 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // FindMatchmakeSessionByParticipantParam holds parameters for a matchmake session
 type FindMatchmakeSessionByParticipantParam struct {
-	nex.Structure
-	PrincipalIDList []*nex.PID
-	ResultOptions   uint32
+	types.Structure
+	PrincipalIDList *types.List[*types.PID]
+	ResultOptions   *types.PrimitiveU32
 	BlockListParam  *MatchmakeBlockListParam
 }
 
-// ExtractFromStream extracts a FindMatchmakeSessionByParticipantParam structure from a stream
-func (findMatchmakeSessionByParticipantParam *FindMatchmakeSessionByParticipantParam) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the FindMatchmakeSessionByParticipantParam from the given readable
+func (findMatchmakeSessionByParticipantParam *FindMatchmakeSessionByParticipantParam) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	findMatchmakeSessionByParticipantParam.PrincipalIDList, err = stream.ReadListPID()
+	if err = findMatchmakeSessionByParticipantParam.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read FindMatchmakeSessionByParticipantParam header. %s", err.Error())
+	}
+
+	err = findMatchmakeSessionByParticipantParam.PrincipalIDList.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract FindMatchmakeSessionByParticipantParam.PrincipalIDList. %s", err.Error())
 	}
 
-	findMatchmakeSessionByParticipantParam.ResultOptions, err = stream.ReadUInt32LE()
+	err = findMatchmakeSessionByParticipantParam.ResultOptions.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract FindMatchmakeSessionByParticipantParam.ResultOptions. %s", err.Error())
 	}
 
-	findMatchmakeSessionByParticipantParam.BlockListParam, err = nex.StreamReadStructure(stream, NewMatchmakeBlockListParam())
+	err = findMatchmakeSessionByParticipantParam.BlockListParam.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract FindMatchmakeSessionByParticipantParam.BlockListParam. %s", err.Error())
 	}
@@ -42,12 +47,12 @@ func (findMatchmakeSessionByParticipantParam *FindMatchmakeSessionByParticipantP
 }
 
 // Copy returns a new copied instance of FindMatchmakeSessionByParticipantParam
-func (findMatchmakeSessionByParticipantParam *FindMatchmakeSessionByParticipantParam) Copy() nex.StructureInterface {
+func (findMatchmakeSessionByParticipantParam *FindMatchmakeSessionByParticipantParam) Copy() types.RVType {
 	copied := NewFindMatchmakeSessionByParticipantParam()
 
-	copied.SetStructureVersion(findMatchmakeSessionByParticipantParam.StructureVersion())
+	copied.StructureVersion = findMatchmakeSessionByParticipantParam.StructureVersion
 
-	copied.PrincipalIDList = make([]*nex.PID, len(findMatchmakeSessionByParticipantParam.PrincipalIDList))
+	copied.PrincipalIDList = make(*types.List[*types.PID], len(findMatchmakeSessionByParticipantParam.PrincipalIDList))
 
 	for i := 0; i < len(findMatchmakeSessionByParticipantParam.PrincipalIDList); i++ {
 		copied.PrincipalIDList[i] = findMatchmakeSessionByParticipantParam.PrincipalIDList[i].Copy()
@@ -55,18 +60,20 @@ func (findMatchmakeSessionByParticipantParam *FindMatchmakeSessionByParticipantP
 
 	copied.ResultOptions = findMatchmakeSessionByParticipantParam.ResultOptions
 
-	if findMatchmakeSessionByParticipantParam.BlockListParam != nil {
-		copied.BlockListParam = findMatchmakeSessionByParticipantParam.BlockListParam.Copy().(*MatchmakeBlockListParam)
-	}
+	copied.BlockListParam = findMatchmakeSessionByParticipantParam.BlockListParam.Copy().(*MatchmakeBlockListParam)
 
 	return copied
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (findMatchmakeSessionByParticipantParam *FindMatchmakeSessionByParticipantParam) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*FindMatchmakeSessionByParticipantParam)
+func (findMatchmakeSessionByParticipantParam *FindMatchmakeSessionByParticipantParam) Equals(o types.RVType) bool {
+	if _, ok := o.(*FindMatchmakeSessionByParticipantParam); !ok {
+		return false
+	}
 
-	if findMatchmakeSessionByParticipantParam.StructureVersion() != other.StructureVersion() {
+	other := o.(*FindMatchmakeSessionByParticipantParam)
+
+	if findMatchmakeSessionByParticipantParam.StructureVersion != other.StructureVersion {
 		return false
 	}
 
@@ -80,15 +87,7 @@ func (findMatchmakeSessionByParticipantParam *FindMatchmakeSessionByParticipantP
 		}
 	}
 
-	if findMatchmakeSessionByParticipantParam.ResultOptions != other.ResultOptions {
-		return false
-	}
-
-	if findMatchmakeSessionByParticipantParam.BlockListParam != nil && other.BlockListParam == nil {
-		return false
-	}
-
-	if findMatchmakeSessionByParticipantParam.BlockListParam == nil && other.BlockListParam != nil {
+	if !findMatchmakeSessionByParticipantParam.ResultOptions.Equals(other.ResultOptions) {
 		return false
 	}
 
@@ -114,7 +113,7 @@ func (findMatchmakeSessionByParticipantParam *FindMatchmakeSessionByParticipantP
 	var b strings.Builder
 
 	b.WriteString("FindMatchmakeSessionByParticipantParam{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, findMatchmakeSessionByParticipantParam.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, findMatchmakeSessionByParticipantParam.StructureVersion))
 	b.WriteString(fmt.Sprintf("%sPrincipalIDList: %v,\n", indentationValues, findMatchmakeSessionByParticipantParam.PrincipalIDList))
 	b.WriteString(fmt.Sprintf("%sResultOptions: %d,\n", indentationValues, findMatchmakeSessionByParticipantParam.ResultOptions))
 

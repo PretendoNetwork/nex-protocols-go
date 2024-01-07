@@ -5,10 +5,12 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
 func (protocol *Protocol) handleModifyCurrentGameAttribute(packet nex.PacketInterface) {
+	var err error
 	var errorCode uint32
 
 	if protocol.ModifyCurrentGameAttribute == nil {
@@ -22,9 +24,10 @@ func (protocol *Protocol) handleModifyCurrentGameAttribute(packet nex.PacketInte
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.server)
+	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
-	gid, err := parametersStream.ReadUInt32LE()
+	gid := types.NewPrimitiveU32(0)
+	err = gid.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.ModifyCurrentGameAttribute(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), packet, callID, 0, 0, 0)
 		if errorCode != 0 {
@@ -34,7 +37,8 @@ func (protocol *Protocol) handleModifyCurrentGameAttribute(packet nex.PacketInte
 		return
 	}
 
-	attribIndex, err := parametersStream.ReadUInt32LE()
+	attribIndex := types.NewPrimitiveU32(0)
+	err = attribIndex.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.ModifyCurrentGameAttribute(fmt.Errorf("Failed to read attribIndex from parameters. %s", err.Error()), packet, callID, 0, 0, 0)
 		if errorCode != 0 {
@@ -44,7 +48,8 @@ func (protocol *Protocol) handleModifyCurrentGameAttribute(packet nex.PacketInte
 		return
 	}
 
-	newValue, err := parametersStream.ReadUInt32LE()
+	newValue := types.NewPrimitiveU32(0)
+	err = newValue.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.ModifyCurrentGameAttribute(fmt.Errorf("Failed to read newValue from parameters. %s", err.Error()), packet, callID, 0, 0, 0)
 		if errorCode != 0 {

@@ -5,10 +5,12 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
 func (protocol *Protocol) handleAddFriendWithDetails(packet nex.PacketInterface) {
+	var err error
 	var errorCode uint32
 
 	if protocol.AddFriendWithDetails == nil {
@@ -22,9 +24,10 @@ func (protocol *Protocol) handleAddFriendWithDetails(packet nex.PacketInterface)
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.server)
+	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
-	uiPlayer, err := parametersStream.ReadUInt32LE()
+	uiPlayer := types.NewPrimitiveU32(0)
+	err = uiPlayer.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.AddFriendWithDetails(fmt.Errorf("Failed to read uiPlayer from parameters. %s", err.Error()), packet, callID, 0, 0, "")
 		if errorCode != 0 {
@@ -34,7 +37,8 @@ func (protocol *Protocol) handleAddFriendWithDetails(packet nex.PacketInterface)
 		return
 	}
 
-	uiDetails, err := parametersStream.ReadUInt32LE()
+	uiDetails := types.NewPrimitiveU32(0)
+	err = uiDetails.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.AddFriendWithDetails(fmt.Errorf("Failed to read uiDetails from parameters. %s", err.Error()), packet, callID, 0, 0, "")
 		if errorCode != 0 {
@@ -44,7 +48,8 @@ func (protocol *Protocol) handleAddFriendWithDetails(packet nex.PacketInterface)
 		return
 	}
 
-	strMessage, err := parametersStream.ReadString()
+	strMessage := types.NewString("")
+	err = strMessage.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.AddFriendWithDetails(fmt.Errorf("Failed to read strMessage from parameters. %s", err.Error()), packet, callID, 0, 0, "")
 		if errorCode != 0 {

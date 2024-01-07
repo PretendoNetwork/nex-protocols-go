@@ -7,47 +7,52 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // ServiceItemAcquireServiceItemByAccountParam holds data for the Service Item (Team Kirby Clash Deluxe) protocol
 type ServiceItemAcquireServiceItemByAccountParam struct {
-	nex.Structure
+	types.Structure
 	ReferenceIDForAcquisition string
 	ReferenceIDForRightBinary string
-	UseType                   uint8
-	LimitationType            uint32
-	LimitationValue           uint32
+	UseType                   *types.PrimitiveU8
+	LimitationType            *types.PrimitiveU32
+	LimitationValue           *types.PrimitiveU32
 	RightBinary               []byte
 	LogMessage                string
-	UniqueID                  uint32
-	Platform                  uint8
+	UniqueID                  *types.PrimitiveU32
+	Platform                  *types.PrimitiveU8
 }
 
-// ExtractFromStream extracts a ServiceItemAcquireServiceItemByAccountParam structure from a stream
-func (serviceItemAcquireServiceItemByAccountParam *ServiceItemAcquireServiceItemByAccountParam) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the ServiceItemAcquireServiceItemByAccountParam from the given readable
+func (serviceItemAcquireServiceItemByAccountParam *ServiceItemAcquireServiceItemByAccountParam) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	serviceItemAcquireServiceItemByAccountParam.ReferenceIDForAcquisition, err = stream.ReadString()
+	if err = serviceItemAcquireServiceItemByAccountParam.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read ServiceItemAcquireServiceItemByAccountParam header. %s", err.Error())
+	}
+
+	err = serviceItemAcquireServiceItemByAccountParam.ReferenceIDForAcquisition.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemAcquireServiceItemByAccountParam.ReferenceIDForAcquisition from stream. %s", err.Error())
 	}
 
-	serviceItemAcquireServiceItemByAccountParam.ReferenceIDForRightBinary, err = stream.ReadString()
+	err = serviceItemAcquireServiceItemByAccountParam.ReferenceIDForRightBinary.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemAcquireServiceItemByAccountParam.ReferenceIDForRightBinary from stream. %s", err.Error())
 	}
 
-	serviceItemAcquireServiceItemByAccountParam.UseType, err = stream.ReadUInt8()
+	err = serviceItemAcquireServiceItemByAccountParam.UseType.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemAcquireServiceItemByAccountParam.UseType from stream. %s", err.Error())
 	}
 
-	serviceItemAcquireServiceItemByAccountParam.LimitationType, err = stream.ReadUInt32LE()
+	err = serviceItemAcquireServiceItemByAccountParam.LimitationType.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemAcquireServiceItemByAccountParam.LimitationType from stream. %s", err.Error())
 	}
 
-	serviceItemAcquireServiceItemByAccountParam.LimitationValue, err = stream.ReadUInt32LE()
+	err = serviceItemAcquireServiceItemByAccountParam.LimitationValue.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemAcquireServiceItemByAccountParam.LimitationValue from stream. %s", err.Error())
 	}
@@ -57,18 +62,18 @@ func (serviceItemAcquireServiceItemByAccountParam *ServiceItemAcquireServiceItem
 		return fmt.Errorf("Failed to extract ServiceItemAcquireServiceItemByAccountParam.RightBinary from stream. %s", err.Error())
 	}
 
-	serviceItemAcquireServiceItemByAccountParam.LogMessage, err = stream.ReadString()
+	err = serviceItemAcquireServiceItemByAccountParam.LogMessage.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemAcquireServiceItemByAccountParam.LogMessage from stream. %s", err.Error())
 	}
 
-	serviceItemAcquireServiceItemByAccountParam.UniqueID, err = stream.ReadUInt32LE()
+	err = serviceItemAcquireServiceItemByAccountParam.UniqueID.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemAcquireServiceItemByAccountParam.UniqueID from stream. %s", err.Error())
 	}
 
-	if serviceItemAcquireServiceItemByAccountParam.StructureVersion() >= 1 {
-		serviceItemAcquireServiceItemByAccountParam.Platform, err = stream.ReadUInt8()
+	if serviceItemAcquireServiceItemByAccountParam.StructureVersion >= 1 {
+	err = 	serviceItemAcquireServiceItemByAccountParam.Platform.ExtractFrom(readable)
 		if err != nil {
 			return fmt.Errorf("Failed to extract ServiceItemAcquireServiceItemByAccountParam.Platform from stream. %s", err.Error())
 		}
@@ -77,29 +82,35 @@ func (serviceItemAcquireServiceItemByAccountParam *ServiceItemAcquireServiceItem
 	return nil
 }
 
-// Bytes encodes the ServiceItemAcquireServiceItemByAccountParam and returns a byte array
-func (serviceItemAcquireServiceItemByAccountParam *ServiceItemAcquireServiceItemByAccountParam) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteString(serviceItemAcquireServiceItemByAccountParam.ReferenceIDForAcquisition)
-	stream.WriteString(serviceItemAcquireServiceItemByAccountParam.ReferenceIDForRightBinary)
-	stream.WriteUInt8(serviceItemAcquireServiceItemByAccountParam.UseType)
-	stream.WriteUInt32LE(serviceItemAcquireServiceItemByAccountParam.LimitationType)
-	stream.WriteUInt32LE(serviceItemAcquireServiceItemByAccountParam.LimitationValue)
-	stream.WriteQBuffer(serviceItemAcquireServiceItemByAccountParam.RightBinary)
-	stream.WriteString(serviceItemAcquireServiceItemByAccountParam.LogMessage)
-	stream.WriteUInt32LE(serviceItemAcquireServiceItemByAccountParam.UniqueID)
+// WriteTo writes the ServiceItemAcquireServiceItemByAccountParam to the given writable
+func (serviceItemAcquireServiceItemByAccountParam *ServiceItemAcquireServiceItemByAccountParam) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
 
-	if serviceItemAcquireServiceItemByAccountParam.StructureVersion() >= 1 {
-		stream.WriteUInt8(serviceItemAcquireServiceItemByAccountParam.Platform)
+	serviceItemAcquireServiceItemByAccountParam.ReferenceIDForAcquisition.WriteTo(contentWritable)
+	serviceItemAcquireServiceItemByAccountParam.ReferenceIDForRightBinary.WriteTo(contentWritable)
+	serviceItemAcquireServiceItemByAccountParam.UseType.WriteTo(contentWritable)
+	serviceItemAcquireServiceItemByAccountParam.LimitationType.WriteTo(contentWritable)
+	serviceItemAcquireServiceItemByAccountParam.LimitationValue.WriteTo(contentWritable)
+	stream.WriteQBuffer(serviceItemAcquireServiceItemByAccountParam.RightBinary)
+	serviceItemAcquireServiceItemByAccountParam.LogMessage.WriteTo(contentWritable)
+	serviceItemAcquireServiceItemByAccountParam.UniqueID.WriteTo(contentWritable)
+
+	if serviceItemAcquireServiceItemByAccountParam.StructureVersion >= 1 {
+		serviceItemAcquireServiceItemByAccountParam.Platform.WriteTo(contentWritable)
 	}
 
-	return stream.Bytes()
+	content := contentWritable.Bytes()
+
+	rvcd.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // Copy returns a new copied instance of ServiceItemAcquireServiceItemByAccountParam
-func (serviceItemAcquireServiceItemByAccountParam *ServiceItemAcquireServiceItemByAccountParam) Copy() nex.StructureInterface {
+func (serviceItemAcquireServiceItemByAccountParam *ServiceItemAcquireServiceItemByAccountParam) Copy() types.RVType {
 	copied := NewServiceItemAcquireServiceItemByAccountParam()
 
-	copied.SetStructureVersion(serviceItemAcquireServiceItemByAccountParam.StructureVersion())
+	copied.StructureVersion = serviceItemAcquireServiceItemByAccountParam.StructureVersion
 
 	copied.ReferenceIDForAcquisition = serviceItemAcquireServiceItemByAccountParam.ReferenceIDForAcquisition
 	copied.ReferenceIDForRightBinary = serviceItemAcquireServiceItemByAccountParam.ReferenceIDForRightBinary
@@ -115,46 +126,50 @@ func (serviceItemAcquireServiceItemByAccountParam *ServiceItemAcquireServiceItem
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (serviceItemAcquireServiceItemByAccountParam *ServiceItemAcquireServiceItemByAccountParam) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*ServiceItemAcquireServiceItemByAccountParam)
-
-	if serviceItemAcquireServiceItemByAccountParam.StructureVersion() != other.StructureVersion() {
+func (serviceItemAcquireServiceItemByAccountParam *ServiceItemAcquireServiceItemByAccountParam) Equals(o types.RVType) bool {
+	if _, ok := o.(*ServiceItemAcquireServiceItemByAccountParam); !ok {
 		return false
 	}
 
-	if serviceItemAcquireServiceItemByAccountParam.ReferenceIDForAcquisition != other.ReferenceIDForAcquisition {
+	other := o.(*ServiceItemAcquireServiceItemByAccountParam)
+
+	if serviceItemAcquireServiceItemByAccountParam.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if serviceItemAcquireServiceItemByAccountParam.ReferenceIDForRightBinary != other.ReferenceIDForRightBinary {
+	if !serviceItemAcquireServiceItemByAccountParam.ReferenceIDForAcquisition.Equals(other.ReferenceIDForAcquisition) {
 		return false
 	}
 
-	if serviceItemAcquireServiceItemByAccountParam.UseType != other.UseType {
+	if !serviceItemAcquireServiceItemByAccountParam.ReferenceIDForRightBinary.Equals(other.ReferenceIDForRightBinary) {
 		return false
 	}
 
-	if serviceItemAcquireServiceItemByAccountParam.LimitationType != other.LimitationType {
+	if !serviceItemAcquireServiceItemByAccountParam.UseType.Equals(other.UseType) {
 		return false
 	}
 
-	if serviceItemAcquireServiceItemByAccountParam.LimitationValue != other.LimitationValue {
+	if !serviceItemAcquireServiceItemByAccountParam.LimitationType.Equals(other.LimitationType) {
 		return false
 	}
 
-	if !bytes.Equal(serviceItemAcquireServiceItemByAccountParam.RightBinary, other.RightBinary) {
+	if !serviceItemAcquireServiceItemByAccountParam.LimitationValue.Equals(other.LimitationValue) {
 		return false
 	}
 
-	if serviceItemAcquireServiceItemByAccountParam.LogMessage != other.LogMessage {
+	if !serviceItemAcquireServiceItemByAccountParam.RightBinary.Equals(other.RightBinary) {
 		return false
 	}
 
-	if serviceItemAcquireServiceItemByAccountParam.UniqueID != other.UniqueID {
+	if !serviceItemAcquireServiceItemByAccountParam.LogMessage.Equals(other.LogMessage) {
 		return false
 	}
 
-	if serviceItemAcquireServiceItemByAccountParam.Platform != other.Platform {
+	if !serviceItemAcquireServiceItemByAccountParam.UniqueID.Equals(other.UniqueID) {
+		return false
+	}
+
+	if !serviceItemAcquireServiceItemByAccountParam.Platform.Equals(other.Platform) {
 		return false
 	}
 
@@ -174,7 +189,7 @@ func (serviceItemAcquireServiceItemByAccountParam *ServiceItemAcquireServiceItem
 	var b strings.Builder
 
 	b.WriteString("ServiceItemAcquireServiceItemByAccountParam{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, serviceItemAcquireServiceItemByAccountParam.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, serviceItemAcquireServiceItemByAccountParam.StructureVersion))
 	b.WriteString(fmt.Sprintf("%sReferenceIDForAcquisition: %q,\n", indentationValues, serviceItemAcquireServiceItemByAccountParam.ReferenceIDForAcquisition))
 	b.WriteString(fmt.Sprintf("%sReferenceIDForRightBinary: %q,\n", indentationValues, serviceItemAcquireServiceItemByAccountParam.ReferenceIDForRightBinary))
 	b.WriteString(fmt.Sprintf("%sUseType: %d,\n", indentationValues, serviceItemAcquireServiceItemByAccountParam.UseType))
@@ -184,7 +199,7 @@ func (serviceItemAcquireServiceItemByAccountParam *ServiceItemAcquireServiceItem
 	b.WriteString(fmt.Sprintf("%sLogMessage: %q,\n", indentationValues, serviceItemAcquireServiceItemByAccountParam.LogMessage))
 	b.WriteString(fmt.Sprintf("%sUniqueID: %d,\n", indentationValues, serviceItemAcquireServiceItemByAccountParam.UniqueID))
 
-	if serviceItemAcquireServiceItemByAccountParam.StructureVersion() >= 1 {
+	if serviceItemAcquireServiceItemByAccountParam.StructureVersion >= 1 {
 		b.WriteString(fmt.Sprintf("%sPlatform: %d,\n", indentationValues, serviceItemAcquireServiceItemByAccountParam.Platform))
 	}
 

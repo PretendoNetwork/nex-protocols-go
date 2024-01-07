@@ -5,32 +5,36 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // DataStoreTouchObjectParam is a data structure used by the DataStore protocol
 type DataStoreTouchObjectParam struct {
-	nex.Structure
-	DataID         uint64
-	LockID         uint32
-	AccessPassword uint64
+	types.Structure
+	DataID         *types.PrimitiveU64
+	LockID         *types.PrimitiveU32
+	AccessPassword *types.PrimitiveU64
 }
 
-// ExtractFromStream extracts a DataStoreTouchObjectParam structure from a stream
-func (dataStoreTouchObjectParam *DataStoreTouchObjectParam) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the DataStoreTouchObjectParam from the given readable
+func (dataStoreTouchObjectParam *DataStoreTouchObjectParam) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	dataStoreTouchObjectParam.DataID, err = stream.ReadUInt64LE()
+	if err = dataStoreTouchObjectParam.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read DataStoreTouchObjectParam header. %s", err.Error())
+	}
+
+	err = dataStoreTouchObjectParam.DataID.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreTouchObjectParam.DataID. %s", err.Error())
 	}
 
-	dataStoreTouchObjectParam.LockID, err = stream.ReadUInt32LE()
+	err = dataStoreTouchObjectParam.LockID.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreTouchObjectParam.LockID. %s", err.Error())
 	}
 
-	dataStoreTouchObjectParam.AccessPassword, err = stream.ReadUInt64LE()
+	err = dataStoreTouchObjectParam.AccessPassword.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreTouchObjectParam.AccessPassword. %s", err.Error())
 	}
@@ -38,45 +42,55 @@ func (dataStoreTouchObjectParam *DataStoreTouchObjectParam) ExtractFromStream(st
 	return nil
 }
 
-// Bytes encodes the DataStoreTouchObjectParam and returns a byte array
-func (dataStoreTouchObjectParam *DataStoreTouchObjectParam) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt64LE(dataStoreTouchObjectParam.DataID)
-	stream.WriteUInt32LE(dataStoreTouchObjectParam.LockID)
-	stream.WriteUInt64LE(dataStoreTouchObjectParam.AccessPassword)
+// WriteTo writes the DataStoreTouchObjectParam to the given writable
+func (dataStoreTouchObjectParam *DataStoreTouchObjectParam) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
 
-	return stream.Bytes()
+	dataStoreTouchObjectParam.DataID.WriteTo(contentWritable)
+	dataStoreTouchObjectParam.LockID.WriteTo(contentWritable)
+	dataStoreTouchObjectParam.AccessPassword.WriteTo(contentWritable)
+
+	content := contentWritable.Bytes()
+
+	dataStoreTouchObjectParam.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // Copy returns a new copied instance of DataStoreTouchObjectParam
-func (dataStoreTouchObjectParam *DataStoreTouchObjectParam) Copy() nex.StructureInterface {
+func (dataStoreTouchObjectParam *DataStoreTouchObjectParam) Copy() types.RVType {
 	copied := NewDataStoreTouchObjectParam()
 
-	copied.SetStructureVersion(dataStoreTouchObjectParam.StructureVersion())
+	copied.StructureVersion = dataStoreTouchObjectParam.StructureVersion
 
-	copied.DataID = dataStoreTouchObjectParam.DataID
-	copied.LockID = dataStoreTouchObjectParam.LockID
-	copied.AccessPassword = dataStoreTouchObjectParam.AccessPassword
+	copied.DataID = dataStoreTouchObjectParam.DataID.Copy().(*types.PrimitiveU64)
+	copied.LockID = dataStoreTouchObjectParam.LockID.Copy().(*types.PrimitiveU32)
+	copied.AccessPassword = dataStoreTouchObjectParam.AccessPassword.Copy().(*types.PrimitiveU64)
 
 	return copied
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (dataStoreTouchObjectParam *DataStoreTouchObjectParam) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*DataStoreTouchObjectParam)
-
-	if dataStoreTouchObjectParam.StructureVersion() != other.StructureVersion() {
+func (dataStoreTouchObjectParam *DataStoreTouchObjectParam) Equals(o types.RVType) bool {
+	if _, ok := o.(*DataStoreTouchObjectParam); !ok {
 		return false
 	}
 
-	if dataStoreTouchObjectParam.DataID != other.DataID {
+	other := o.(*DataStoreTouchObjectParam)
+
+	if dataStoreTouchObjectParam.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if dataStoreTouchObjectParam.LockID != other.LockID {
+	if !dataStoreTouchObjectParam.DataID.Equals(other.DataID) {
 		return false
 	}
 
-	if dataStoreTouchObjectParam.AccessPassword != other.AccessPassword {
+	if !dataStoreTouchObjectParam.LockID.Equals(other.LockID) {
+		return false
+	}
+
+	if !dataStoreTouchObjectParam.AccessPassword.Equals(other.AccessPassword) {
 		return false
 	}
 
@@ -96,10 +110,10 @@ func (dataStoreTouchObjectParam *DataStoreTouchObjectParam) FormatToString(inden
 	var b strings.Builder
 
 	b.WriteString("DataStoreTouchObjectParam{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, dataStoreTouchObjectParam.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sDataID: %d,\n", indentationValues, dataStoreTouchObjectParam.DataID))
-	b.WriteString(fmt.Sprintf("%sLockID: %d,\n", indentationValues, dataStoreTouchObjectParam.LockID))
-	b.WriteString(fmt.Sprintf("%sAccessPassword: %d\n", indentationValues, dataStoreTouchObjectParam.AccessPassword))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, dataStoreTouchObjectParam.StructureVersion))
+	b.WriteString(fmt.Sprintf("%sDataID: %s,\n", indentationValues, dataStoreTouchObjectParam.DataID))
+	b.WriteString(fmt.Sprintf("%sLockID: %s,\n", indentationValues, dataStoreTouchObjectParam.LockID))
+	b.WriteString(fmt.Sprintf("%sAccessPassword: %s\n", indentationValues, dataStoreTouchObjectParam.AccessPassword))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -108,8 +122,8 @@ func (dataStoreTouchObjectParam *DataStoreTouchObjectParam) FormatToString(inden
 // NewDataStoreTouchObjectParam returns a new DataStoreTouchObjectParam
 func NewDataStoreTouchObjectParam() *DataStoreTouchObjectParam {
 	return &DataStoreTouchObjectParam{
-		DataID:         0,
-		LockID:         0,
-		AccessPassword: 0,
+		DataID:         types.NewPrimitiveU64(0),
+		LockID:         types.NewPrimitiveU32(0),
+		AccessPassword: types.NewPrimitiveU64(0),
 	}
 }

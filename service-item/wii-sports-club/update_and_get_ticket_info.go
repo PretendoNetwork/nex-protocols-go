@@ -5,10 +5,12 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
 func (protocol *Protocol) handleUpdateAndGetTicketInfo(packet nex.PacketInterface) {
+	var err error
 	var errorCode uint32
 
 	if protocol.UpdateAndGetTicketInfo == nil {
@@ -22,9 +24,10 @@ func (protocol *Protocol) handleUpdateAndGetTicketInfo(packet nex.PacketInterfac
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.server)
+	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
-	forceRetrieveFromEShop, err := parametersStream.ReadBool()
+	forceRetrieveFromEShop := types.NewPrimitiveBool(false)
+	err = forceRetrieveFromEShop.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.UpdateAndGetTicketInfo(fmt.Errorf("Failed to read forceRetrieveFromEShop from parameters. %s", err.Error()), packet, callID, false)
 		if errorCode != 0 {

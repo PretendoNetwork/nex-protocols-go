@@ -6,39 +6,44 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // AuthenticationInfo holds information about an authentication request
 type AuthenticationInfo struct {
-	nex.Structure
-	*nex.Data
+	types.Structure
+	*types.Data
 	Token         string
-	NGSVersion    uint32
-	TokenType     uint8
-	ServerVersion uint32
+	NGSVersion    *types.PrimitiveU32
+	TokenType     *types.PrimitiveU8
+	ServerVersion *types.PrimitiveU32
 }
 
-// ExtractFromStream extracts a AuthenticationInfo structure from a stream
-func (authenticationInfo *AuthenticationInfo) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the AuthenticationInfo from the given readable
+func (authenticationInfo *AuthenticationInfo) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	authenticationInfo.Token, err = stream.ReadString()
+	if err = authenticationInfo.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read AuthenticationInfo header. %s", err.Error())
+	}
+
+	err = authenticationInfo.Token.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract AccountExtraInfo.Token. %s", err.Error())
 	}
 
-	authenticationInfo.NGSVersion, err = stream.ReadUInt32LE()
+	err = authenticationInfo.NGSVersion.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract AccountExtraInfo.NGSVersion. %s", err.Error())
 	}
 
 	if authenticationInfo.NGSVersion > 2 {
-		authenticationInfo.TokenType, err = stream.ReadUInt8()
+	err = 	authenticationInfo.TokenType.ExtractFrom(readable)
 		if err != nil {
 			return fmt.Errorf("Failed to extract AccountExtraInfo.TokenType. %s", err.Error())
 		}
 
-		authenticationInfo.ServerVersion, err = stream.ReadUInt32LE()
+	err = 	authenticationInfo.ServerVersion.ExtractFrom(readable)
 		if err != nil {
 			return fmt.Errorf("Failed to extract AccountExtraInfo.ServerVersion. %s", err.Error())
 		}
@@ -48,13 +53,12 @@ func (authenticationInfo *AuthenticationInfo) ExtractFromStream(stream *nex.Stre
 }
 
 // Copy returns a new copied instance of AuthenticationInfo
-func (authenticationInfo *AuthenticationInfo) Copy() nex.StructureInterface {
+func (authenticationInfo *AuthenticationInfo) Copy() types.RVType {
 	copied := NewAuthenticationInfo()
 
-	copied.SetStructureVersion(authenticationInfo.StructureVersion())
+	copied.StructureVersion = authenticationInfo.StructureVersion
 
-	copied.Data = authenticationInfo.Data.Copy().(*nex.Data)
-	copied.SetParentType(copied.Data)
+	copied.Data = authenticationInfo.Data.Copy().(*types.Data)
 	copied.Token = authenticationInfo.Token
 	copied.TokenType = authenticationInfo.TokenType
 	copied.NGSVersion = authenticationInfo.NGSVersion
@@ -64,10 +68,14 @@ func (authenticationInfo *AuthenticationInfo) Copy() nex.StructureInterface {
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (authenticationInfo *AuthenticationInfo) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*AuthenticationInfo)
+func (authenticationInfo *AuthenticationInfo) Equals(o types.RVType) bool {
+	if _, ok := o.(*AuthenticationInfo); !ok {
+		return false
+	}
 
-	if authenticationInfo.StructureVersion() != other.StructureVersion() {
+	other := o.(*AuthenticationInfo)
+
+	if authenticationInfo.StructureVersion != other.StructureVersion {
 		return false
 	}
 
@@ -75,19 +83,19 @@ func (authenticationInfo *AuthenticationInfo) Equals(structure nex.StructureInte
 		return false
 	}
 
-	if authenticationInfo.Token != other.Token {
+	if !authenticationInfo.Token.Equals(other.Token) {
 		return false
 	}
 
-	if authenticationInfo.TokenType != other.TokenType {
+	if !authenticationInfo.TokenType.Equals(other.TokenType) {
 		return false
 	}
 
-	if authenticationInfo.NGSVersion != other.NGSVersion {
+	if !authenticationInfo.NGSVersion.Equals(other.NGSVersion) {
 		return false
 	}
 
-	if authenticationInfo.ServerVersion != other.ServerVersion {
+	if !authenticationInfo.ServerVersion.Equals(other.ServerVersion) {
 		return false
 	}
 
@@ -108,7 +116,7 @@ func (authenticationInfo *AuthenticationInfo) FormatToString(indentationLevel in
 
 	b.WriteString("AuthenticationInfo{\n")
 	b.WriteString(fmt.Sprintf("%sParentType: %s,\n", indentationValues, authenticationInfo.ParentType().FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, authenticationInfo.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, authenticationInfo.StructureVersion))
 	b.WriteString(fmt.Sprintf("%sToken: %s,\n", indentationValues, authenticationInfo.Token))
 	b.WriteString(fmt.Sprintf("%sTokenType: %d,\n", indentationValues, authenticationInfo.TokenType))
 	b.WriteString(fmt.Sprintf("%sNGSVersion: %d,\n", indentationValues, authenticationInfo.NGSVersion))
@@ -121,7 +129,7 @@ func (authenticationInfo *AuthenticationInfo) FormatToString(indentationLevel in
 // NewAuthenticationInfo returns a new AuthenticationInfo
 func NewAuthenticationInfo() *AuthenticationInfo {
 	authenticationInfo := &AuthenticationInfo{}
-	authenticationInfo.Data = nex.NewData()
+	authenticationInfo.Data = types.NewData()
 	authenticationInfo.SetParentType(authenticationInfo.Data)
 
 	return authenticationInfo

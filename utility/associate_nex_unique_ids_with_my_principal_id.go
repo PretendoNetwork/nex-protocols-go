@@ -5,11 +5,13 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 	utility_types "github.com/PretendoNetwork/nex-protocols-go/utility/types"
 )
 
 func (protocol *Protocol) handleAssociateNexUniqueIDsWithMyPrincipalID(packet nex.PacketInterface) {
+	var err error
 	var errorCode uint32
 
 	if protocol.GetAssociatedNexUniqueIDWithMyPrincipalID == nil {
@@ -24,7 +26,7 @@ func (protocol *Protocol) handleAssociateNexUniqueIDsWithMyPrincipalID(packet ne
 
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.server)
+	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 	uniqueIDInfo, err := nex.StreamReadListStructure(parametersStream, utility_types.NewUniqueIDInfo())
 	if err != nil {
 		_, errorCode = protocol.AssociateNexUniqueIDsWithMyPrincipalID(fmt.Errorf("Failed to read uniqueIDInfo from parameters. %s", err.Error()), packet, callID, nil)

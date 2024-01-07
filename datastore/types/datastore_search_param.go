@@ -5,133 +5,177 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // DataStoreSearchParam is sent in DataStore search methods
 type DataStoreSearchParam struct {
-	nex.Structure
-	SearchTarget           uint8
-	OwnerIDs               []*nex.PID
-	OwnerType              uint8
-	DestinationIDs         []uint64
-	DataType               uint16
-	CreatedAfter           *nex.DateTime
-	CreatedBefore          *nex.DateTime
-	UpdatedAfter           *nex.DateTime
-	UpdatedBefore          *nex.DateTime
-	ReferDataID            uint32
-	Tags                   []string
-	ResultOrderColumn      uint8
-	ResultOrder            uint8
-	ResultRange            *nex.ResultRange
-	ResultOption           uint8
-	MinimalRatingFrequency uint32
-	UseCache               bool
-	TotalCountEnabled      bool
-	DataTypes              []uint16
+	types.Structure
+	SearchTarget           *types.PrimitiveU8
+	OwnerIDs               *types.List[*types.PID]
+	OwnerType              *types.PrimitiveU8
+	DestinationIDs         *types.List[*types.PID]
+	DataType               *types.PrimitiveU16
+	CreatedAfter           *types.DateTime
+	CreatedBefore          *types.DateTime
+	UpdatedAfter           *types.DateTime
+	UpdatedBefore          *types.DateTime
+	ReferDataID            *types.PrimitiveU32
+	Tags                   *types.List[*types.String]
+	ResultOrderColumn      *types.PrimitiveU8
+	ResultOrder            *types.PrimitiveU8
+	ResultRange            *types.ResultRange
+	ResultOption           *types.PrimitiveU8
+	MinimalRatingFrequency *types.PrimitiveU32
+	UseCache               *types.PrimitiveBool
+	TotalCountEnabled      *types.PrimitiveBool
+	DataTypes              *types.List[*types.PrimitiveU16]
 }
 
-// ExtractFromStream extracts a DataStoreSearchParam structure from a stream
-func (dataStoreSearchParam *DataStoreSearchParam) ExtractFromStream(stream *nex.StreamIn) error {
+// WriteTo writes the DataStoreSearchParam to the given writable
+func (dataStoreSearchParam *DataStoreSearchParam) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
+
+	dataStoreSearchParam.SearchTarget.WriteTo(contentWritable)
+	dataStoreSearchParam.OwnerIDs.WriteTo(contentWritable)
+	dataStoreSearchParam.OwnerType.WriteTo(contentWritable)
+	dataStoreSearchParam.DestinationIDs.WriteTo(contentWritable)
+	dataStoreSearchParam.DataType.WriteTo(contentWritable)
+	dataStoreSearchParam.CreatedAfter.WriteTo(contentWritable)
+	dataStoreSearchParam.CreatedBefore.WriteTo(contentWritable)
+	dataStoreSearchParam.UpdatedAfter.WriteTo(contentWritable)
+	dataStoreSearchParam.UpdatedBefore.WriteTo(contentWritable)
+	dataStoreSearchParam.ReferDataID.WriteTo(contentWritable)
+	dataStoreSearchParam.Tags.WriteTo(contentWritable)
+	dataStoreSearchParam.ResultOrderColumn.WriteTo(contentWritable)
+	dataStoreSearchParam.ResultOrder.WriteTo(contentWritable)
+	dataStoreSearchParam.ResultRange.WriteTo(contentWritable)
+	dataStoreSearchParam.ResultOption.WriteTo(contentWritable)
+	dataStoreSearchParam.MinimalRatingFrequency.WriteTo(contentWritable)
+
+	if dataStoreSearchParam.StructureVersion >= 1 {
+		dataStoreSearchParam.UseCache.WriteTo(contentWritable)
+	}
+
+	if dataStoreSearchParam.StructureVersion >= 3 {
+		dataStoreSearchParam.TotalCountEnabled.WriteTo(contentWritable)
+	}
+
+	if dataStoreSearchParam.StructureVersion >= 2 {
+		dataStoreSearchParam.DataTypes.WriteTo(contentWritable)
+	}
+
+	content := contentWritable.Bytes()
+
+	dataStoreSearchParam.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
+}
+
+// ExtractFrom extracts the DataStoreSearchParam from the given readable
+func (dataStoreSearchParam *DataStoreSearchParam) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	dataStoreSearchParam.SearchTarget, err = stream.ReadUInt8()
+	if err = dataStoreSearchParam.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read DataStoreSearchParam header. %s", err.Error())
+	}
+
+	err = dataStoreSearchParam.SearchTarget.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreSearchParam.SearchTarget. %s", err.Error())
 	}
 
-	dataStoreSearchParam.OwnerIDs, err = stream.ReadListPID()
+	err = dataStoreSearchParam.OwnerIDs.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreSearchParam.OwnerIDs. %s", err.Error())
 	}
 
-	dataStoreSearchParam.OwnerType, err = stream.ReadUInt8()
+	err = dataStoreSearchParam.OwnerType.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreSearchParam.OwnerType. %s", err.Error())
 	}
 
-	dataStoreSearchParam.DestinationIDs, err = stream.ReadListUInt64LE()
+	err = dataStoreSearchParam.DestinationIDs.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreSearchParam.DestinationIDs. %s", err.Error())
 	}
 
-	dataStoreSearchParam.DataType, err = stream.ReadUInt16LE()
+	err = dataStoreSearchParam.DataType.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreSearchParam.DataType. %s", err.Error())
 	}
 
-	dataStoreSearchParam.CreatedAfter, err = stream.ReadDateTime()
+	err = dataStoreSearchParam.CreatedAfter.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreSearchParam.CreatedAfter. %s", err.Error())
 	}
 
-	dataStoreSearchParam.CreatedBefore, err = stream.ReadDateTime()
+	err = dataStoreSearchParam.CreatedBefore.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreSearchParam.CreatedBefore. %s", err.Error())
 	}
 
-	dataStoreSearchParam.UpdatedAfter, err = stream.ReadDateTime()
+	err = dataStoreSearchParam.UpdatedAfter.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreSearchParam.UpdatedAfter. %s", err.Error())
 	}
 
-	dataStoreSearchParam.UpdatedBefore, err = stream.ReadDateTime()
+	err = dataStoreSearchParam.UpdatedBefore.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreSearchParam.UpdatedBefore. %s", err.Error())
 	}
 
-	dataStoreSearchParam.ReferDataID, err = stream.ReadUInt32LE()
+	err = dataStoreSearchParam.ReferDataID.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreSearchParam.ReferDataID. %s", err.Error())
 	}
 
-	dataStoreSearchParam.Tags, err = stream.ReadListString()
+	err = dataStoreSearchParam.Tags.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreSearchParam.Tags. %s", err.Error())
 	}
 
-	dataStoreSearchParam.ResultOrderColumn, err = stream.ReadUInt8()
+	err = dataStoreSearchParam.ResultOrderColumn.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreSearchParam.ResultOrderColumn. %s", err.Error())
 	}
 
-	dataStoreSearchParam.ResultOrder, err = stream.ReadUInt8()
+	err = dataStoreSearchParam.ResultOrder.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreSearchParam.ResultOrder. %s", err.Error())
 	}
 
-	dataStoreSearchParam.ResultRange, err = nex.StreamReadStructure(stream, nex.NewResultRange())
+	err = dataStoreSearchParam.ResultRange.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreSearchParam.ResultRange. %s", err.Error())
 	}
 
-	dataStoreSearchParam.ResultOption, err = stream.ReadUInt8()
+	err = dataStoreSearchParam.ResultOption.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreSearchParam.ResultOption. %s", err.Error())
 	}
 
-	dataStoreSearchParam.MinimalRatingFrequency, err = stream.ReadUInt32LE()
+	err = dataStoreSearchParam.MinimalRatingFrequency.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreSearchParam.MinimalRatingFrequency. %s", err.Error())
 	}
 
-	if dataStoreSearchParam.StructureVersion() >= 1 {
-		dataStoreSearchParam.UseCache, err = stream.ReadBool()
+	if dataStoreSearchParam.StructureVersion >= 1 {
+		err = dataStoreSearchParam.UseCache.ExtractFrom(readable)
 		if err != nil {
 			return fmt.Errorf("Failed to extract DataStoreSearchParam.UseCache. %s", err.Error())
 		}
 	}
 
-	if dataStoreSearchParam.StructureVersion() >= 3 {
-		dataStoreSearchParam.TotalCountEnabled, err = stream.ReadBool()
+	if dataStoreSearchParam.StructureVersion >= 3 {
+		err = dataStoreSearchParam.TotalCountEnabled.ExtractFrom(readable)
 		if err != nil {
 			return fmt.Errorf("Failed to extract DataStoreSearchParam.TotalCountEnabled. %s", err.Error())
 		}
 	}
 
-	if dataStoreSearchParam.StructureVersion() >= 2 {
-		dataStoreSearchParam.DataTypes, err = stream.ReadListUInt16LE()
+	if dataStoreSearchParam.StructureVersion >= 2 {
+		err = dataStoreSearchParam.DataTypes.ExtractFrom(readable)
 		if err != nil {
 			return fmt.Errorf("Failed to extract DataStoreSearchParam.DataTypes. %s", err.Error())
 		}
@@ -141,80 +185,61 @@ func (dataStoreSearchParam *DataStoreSearchParam) ExtractFromStream(stream *nex.
 }
 
 // Copy returns a new copied instance of DataStoreSearchParam
-func (dataStoreSearchParam *DataStoreSearchParam) Copy() nex.StructureInterface {
+func (dataStoreSearchParam *DataStoreSearchParam) Copy() types.RVType {
 	copied := NewDataStoreSearchParam()
 
-	copied.SetStructureVersion(dataStoreSearchParam.StructureVersion())
+	copied.StructureVersion = dataStoreSearchParam.StructureVersion
 
-	copied.SearchTarget = dataStoreSearchParam.SearchTarget
-	copied.OwnerIDs = make([]*nex.PID, len(dataStoreSearchParam.OwnerIDs))
-
-	for i := 0; i < len(dataStoreSearchParam.OwnerIDs); i++ {
-		copied.OwnerIDs[i] = dataStoreSearchParam.OwnerIDs[i].Copy()
-	}
-
-	copied.OwnerType = dataStoreSearchParam.OwnerType
-	copied.DestinationIDs = make([]uint64, len(dataStoreSearchParam.DestinationIDs))
-
-	copy(copied.DestinationIDs, dataStoreSearchParam.DestinationIDs)
-
-	copied.DataType = dataStoreSearchParam.DataType
-	copied.CreatedAfter = dataStoreSearchParam.CreatedAfter.Copy()
-	copied.CreatedBefore = dataStoreSearchParam.CreatedBefore.Copy()
-	copied.UpdatedAfter = dataStoreSearchParam.UpdatedAfter.Copy()
-	copied.UpdatedBefore = dataStoreSearchParam.UpdatedBefore.Copy()
-	copied.ReferDataID = dataStoreSearchParam.ReferDataID
-	copied.Tags = make([]string, len(dataStoreSearchParam.Tags))
-
-	copy(copied.Tags, dataStoreSearchParam.Tags)
-
-	copied.ResultOrderColumn = dataStoreSearchParam.ResultOrderColumn
-	copied.ResultOrder = dataStoreSearchParam.ResultOrder
-	copied.ResultRange = dataStoreSearchParam.ResultRange.Copy().(*nex.ResultRange)
-	copied.ResultOption = dataStoreSearchParam.ResultOption
-	copied.MinimalRatingFrequency = dataStoreSearchParam.MinimalRatingFrequency
-	copied.UseCache = dataStoreSearchParam.UseCache
+	copied.SearchTarget = dataStoreSearchParam.SearchTarget.Copy().(*types.PrimitiveU8)
+	copied.OwnerIDs = dataStoreSearchParam.OwnerIDs.Copy().(*types.List[*types.PID])
+	copied.OwnerType = dataStoreSearchParam.OwnerType.Copy().(*types.PrimitiveU8)
+	copied.DestinationIDs = dataStoreSearchParam.DestinationIDs.Copy().(*types.List[*types.PID])
+	copied.DataType = dataStoreSearchParam.DataType.Copy().(*types.PrimitiveU16)
+	copied.CreatedAfter = dataStoreSearchParam.CreatedAfter.Copy().(*types.DateTime)
+	copied.CreatedBefore = dataStoreSearchParam.CreatedBefore.Copy().(*types.DateTime)
+	copied.UpdatedAfter = dataStoreSearchParam.UpdatedAfter.Copy().(*types.DateTime)
+	copied.UpdatedBefore = dataStoreSearchParam.UpdatedBefore.Copy().(*types.DateTime)
+	copied.ReferDataID = dataStoreSearchParam.ReferDataID.Copy().(*types.PrimitiveU32)
+	copied.Tags = dataStoreSearchParam.Tags.Copy().(*types.List[*types.String])
+	copied.ResultOrderColumn = dataStoreSearchParam.ResultOrderColumn.Copy().(*types.PrimitiveU8)
+	copied.ResultOrder = dataStoreSearchParam.ResultOrder.Copy().(*types.PrimitiveU8)
+	copied.ResultRange = dataStoreSearchParam.ResultRange.Copy().(*types.ResultRange)
+	copied.ResultOption = dataStoreSearchParam.ResultOption.Copy().(*types.PrimitiveU8)
+	copied.MinimalRatingFrequency = dataStoreSearchParam.MinimalRatingFrequency.Copy().(*types.PrimitiveU32)
+	copied.UseCache = dataStoreSearchParam.UseCache.Copy().(*types.PrimitiveBool)
 
 	return copied
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (dataStoreSearchParam *DataStoreSearchParam) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*DataStoreSearchParam)
-
-	if dataStoreSearchParam.StructureVersion() != other.StructureVersion() {
+func (dataStoreSearchParam *DataStoreSearchParam) Equals(o types.RVType) bool {
+	if _, ok := o.(*DataStoreSearchParam); !ok {
 		return false
 	}
 
-	if dataStoreSearchParam.SearchTarget != other.SearchTarget {
+	other := o.(*DataStoreSearchParam)
+
+	if dataStoreSearchParam.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if len(dataStoreSearchParam.OwnerIDs) != len(other.OwnerIDs) {
+	if !dataStoreSearchParam.SearchTarget.Equals(other.SearchTarget) {
 		return false
 	}
 
-	for i := 0; i < len(dataStoreSearchParam.OwnerIDs); i++ {
-		if !dataStoreSearchParam.OwnerIDs[i].Equals(other.OwnerIDs[i]) {
-			return false
-		}
-	}
-
-	if dataStoreSearchParam.OwnerType != other.OwnerType {
+	if !dataStoreSearchParam.OwnerIDs.Equals(other.OwnerIDs) {
 		return false
 	}
 
-	if len(dataStoreSearchParam.DestinationIDs) != len(other.DestinationIDs) {
+	if !dataStoreSearchParam.OwnerType.Equals(other.OwnerType) {
 		return false
 	}
 
-	for i := 0; i < len(dataStoreSearchParam.DestinationIDs); i++ {
-		if dataStoreSearchParam.DestinationIDs[i] != other.DestinationIDs[i] {
-			return false
-		}
+	if !dataStoreSearchParam.DestinationIDs.Equals(other.DestinationIDs) {
+		return false
 	}
 
-	if dataStoreSearchParam.DataType != other.DataType {
+	if !dataStoreSearchParam.DataType.Equals(other.DataType) {
 		return false
 	}
 
@@ -234,25 +259,19 @@ func (dataStoreSearchParam *DataStoreSearchParam) Equals(structure nex.Structure
 		return false
 	}
 
-	if dataStoreSearchParam.ReferDataID != other.ReferDataID {
+	if !dataStoreSearchParam.ReferDataID.Equals(other.ReferDataID) {
 		return false
 	}
 
-	if len(dataStoreSearchParam.Tags) != len(other.Tags) {
+	if !dataStoreSearchParam.Tags.Equals(other.Tags) {
 		return false
 	}
 
-	for i := 0; i < len(dataStoreSearchParam.Tags); i++ {
-		if dataStoreSearchParam.Tags[i] != other.Tags[i] {
-			return false
-		}
-	}
-
-	if dataStoreSearchParam.ResultOrderColumn != other.ResultOrderColumn {
+	if !dataStoreSearchParam.ResultOrderColumn.Equals(other.ResultOrderColumn) {
 		return false
 	}
 
-	if dataStoreSearchParam.ResultOrder != other.ResultOrder {
+	if !dataStoreSearchParam.ResultOrder.Equals(other.ResultOrder) {
 		return false
 	}
 
@@ -260,15 +279,15 @@ func (dataStoreSearchParam *DataStoreSearchParam) Equals(structure nex.Structure
 		return false
 	}
 
-	if dataStoreSearchParam.ResultOption != other.ResultOption {
+	if !dataStoreSearchParam.ResultOption.Equals(other.ResultOption) {
 		return false
 	}
 
-	if dataStoreSearchParam.MinimalRatingFrequency != other.MinimalRatingFrequency {
+	if !dataStoreSearchParam.MinimalRatingFrequency.Equals(other.MinimalRatingFrequency) {
 		return false
 	}
 
-	if dataStoreSearchParam.UseCache != other.UseCache {
+	if !dataStoreSearchParam.UseCache.Equals(other.UseCache) {
 		return false
 	}
 
@@ -288,53 +307,26 @@ func (dataStoreSearchParam *DataStoreSearchParam) FormatToString(indentationLeve
 	var b strings.Builder
 
 	b.WriteString("DataStoreSearchParam{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, dataStoreSearchParam.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sSearchTarget: %d,\n", indentationValues, dataStoreSearchParam.SearchTarget))
-	b.WriteString(fmt.Sprintf("%sOwnerIDs: %v,\n", indentationValues, dataStoreSearchParam.OwnerIDs))
-	b.WriteString(fmt.Sprintf("%sOwnerType: %d,\n", indentationValues, dataStoreSearchParam.OwnerType))
-	b.WriteString(fmt.Sprintf("%sDestinationIDs: %v,\n", indentationValues, dataStoreSearchParam.DestinationIDs))
-	b.WriteString(fmt.Sprintf("%sDataType: %d,\n", indentationValues, dataStoreSearchParam.DataType))
-
-	if dataStoreSearchParam.CreatedAfter != nil {
-		b.WriteString(fmt.Sprintf("%sCreatedAfter: %s,\n", indentationValues, dataStoreSearchParam.CreatedAfter.FormatToString(indentationLevel+1)))
-	} else {
-		b.WriteString(fmt.Sprintf("%sCreatedAfter: nil,\n", indentationValues))
-	}
-
-	if dataStoreSearchParam.CreatedBefore != nil {
-		b.WriteString(fmt.Sprintf("%sCreatedBefore: %s,\n", indentationValues, dataStoreSearchParam.CreatedBefore.FormatToString(indentationLevel+1)))
-	} else {
-		b.WriteString(fmt.Sprintf("%sCreatedBefore: nil,\n", indentationValues))
-	}
-
-	if dataStoreSearchParam.UpdatedAfter != nil {
-		b.WriteString(fmt.Sprintf("%sUpdatedAfter: %s,\n", indentationValues, dataStoreSearchParam.UpdatedAfter.FormatToString(indentationLevel+1)))
-	} else {
-		b.WriteString(fmt.Sprintf("%sUpdatedAfter: nil,\n", indentationValues))
-	}
-
-	if dataStoreSearchParam.UpdatedBefore != nil {
-		b.WriteString(fmt.Sprintf("%sUpdatedBefore: %s,\n", indentationValues, dataStoreSearchParam.UpdatedBefore.FormatToString(indentationLevel+1)))
-	} else {
-		b.WriteString(fmt.Sprintf("%sUpdatedBefore: nil,\n", indentationValues))
-	}
-
-	b.WriteString(fmt.Sprintf("%sReferDataID: %d,\n", indentationValues, dataStoreSearchParam.ReferDataID))
-	b.WriteString(fmt.Sprintf("%sTags: %v,\n", indentationValues, dataStoreSearchParam.Tags))
-	b.WriteString(fmt.Sprintf("%sResultOrderColumn: %d,\n", indentationValues, dataStoreSearchParam.ResultOrderColumn))
-	b.WriteString(fmt.Sprintf("%sResultOrder: %d,\n", indentationValues, dataStoreSearchParam.ResultOrder))
-
-	if dataStoreSearchParam.ResultRange != nil {
-		b.WriteString(fmt.Sprintf("%sResultRange: %s,\n", indentationValues, dataStoreSearchParam.ResultRange.FormatToString(indentationLevel+1)))
-	} else {
-		b.WriteString(fmt.Sprintf("%sResultRange: nil,\n", indentationValues))
-	}
-
-	b.WriteString(fmt.Sprintf("%sResultOption: %d,\n", indentationValues, dataStoreSearchParam.ResultOption))
-	b.WriteString(fmt.Sprintf("%sMinimalRatingFrequency: %v,\n", indentationValues, dataStoreSearchParam.MinimalRatingFrequency))
-	b.WriteString(fmt.Sprintf("%sUseCache: %t,\n", indentationValues, dataStoreSearchParam.UseCache))
-	b.WriteString(fmt.Sprintf("%sTotalCountEnabled: %t,\n", indentationValues, dataStoreSearchParam.TotalCountEnabled))
-	b.WriteString(fmt.Sprintf("%sDataTypes: %v\n", indentationValues, dataStoreSearchParam.DataTypes))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, dataStoreSearchParam.StructureVersion))
+	b.WriteString(fmt.Sprintf("%sSearchTarget: %s,\n", indentationValues, dataStoreSearchParam.SearchTarget))
+	b.WriteString(fmt.Sprintf("%sOwnerIDs: %s,\n", indentationValues, dataStoreSearchParam.OwnerIDs))
+	b.WriteString(fmt.Sprintf("%sOwnerType: %s,\n", indentationValues, dataStoreSearchParam.OwnerType))
+	b.WriteString(fmt.Sprintf("%sDestinationIDs: %s,\n", indentationValues, dataStoreSearchParam.DestinationIDs))
+	b.WriteString(fmt.Sprintf("%sDataType: %s,\n", indentationValues, dataStoreSearchParam.DataType))
+	b.WriteString(fmt.Sprintf("%sCreatedAfter: %s,\n", indentationValues, dataStoreSearchParam.CreatedAfter.FormatToString(indentationLevel+1)))
+	b.WriteString(fmt.Sprintf("%sCreatedBefore: %s,\n", indentationValues, dataStoreSearchParam.CreatedBefore.FormatToString(indentationLevel+1)))
+	b.WriteString(fmt.Sprintf("%sUpdatedAfter: %s,\n", indentationValues, dataStoreSearchParam.UpdatedAfter.FormatToString(indentationLevel+1)))
+	b.WriteString(fmt.Sprintf("%sUpdatedBefore: %s,\n", indentationValues, dataStoreSearchParam.UpdatedBefore.FormatToString(indentationLevel+1)))
+	b.WriteString(fmt.Sprintf("%sReferDataID: %s,\n", indentationValues, dataStoreSearchParam.ReferDataID))
+	b.WriteString(fmt.Sprintf("%sTags: %s,\n", indentationValues, dataStoreSearchParam.Tags))
+	b.WriteString(fmt.Sprintf("%sResultOrderColumn: %s,\n", indentationValues, dataStoreSearchParam.ResultOrderColumn))
+	b.WriteString(fmt.Sprintf("%sResultOrder: %s,\n", indentationValues, dataStoreSearchParam.ResultOrder))
+	b.WriteString(fmt.Sprintf("%sResultRange: %s,\n", indentationValues, dataStoreSearchParam.ResultRange.FormatToString(indentationLevel+1)))
+	b.WriteString(fmt.Sprintf("%sResultOption: %s,\n", indentationValues, dataStoreSearchParam.ResultOption))
+	b.WriteString(fmt.Sprintf("%sMinimalRatingFrequency: %s,\n", indentationValues, dataStoreSearchParam.MinimalRatingFrequency))
+	b.WriteString(fmt.Sprintf("%sUseCache: %s,\n", indentationValues, dataStoreSearchParam.UseCache))
+	b.WriteString(fmt.Sprintf("%sTotalCountEnabled: %s,\n", indentationValues, dataStoreSearchParam.TotalCountEnabled))
+	b.WriteString(fmt.Sprintf("%sDataTypes: %s\n", indentationValues, dataStoreSearchParam.DataTypes))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -342,25 +334,32 @@ func (dataStoreSearchParam *DataStoreSearchParam) FormatToString(indentationLeve
 
 // NewDataStoreSearchParam returns a new DataStoreSearchParam
 func NewDataStoreSearchParam() *DataStoreSearchParam {
-	return &DataStoreSearchParam{
-		SearchTarget:           0,
-		OwnerIDs:               make([]*nex.PID, 0),
-		OwnerType:              0,
-		DestinationIDs:         make([]uint64, 0),
-		DataType:               0,
-		CreatedAfter:           nex.NewDateTime(0),
-		CreatedBefore:          nex.NewDateTime(0),
-		UpdatedAfter:           nex.NewDateTime(0),
-		UpdatedBefore:          nex.NewDateTime(0),
-		ReferDataID:            0,
-		Tags:                   make([]string, 0),
-		ResultOrderColumn:      0,
-		ResultOrder:            0,
-		ResultRange:            nex.NewResultRange(),
-		ResultOption:           0,
-		MinimalRatingFrequency: 0,
-		UseCache:               false,
-		TotalCountEnabled:      false,
-		DataTypes:              make([]uint16, 0),
+	dataStoreSearchParam := &DataStoreSearchParam{
+		SearchTarget:           types.NewPrimitiveU8(0),
+		OwnerIDs:               types.NewList[*types.PID](),
+		OwnerType:              types.NewPrimitiveU8(0),
+		DestinationIDs:         types.NewList[*types.PID](),
+		DataType:               types.NewPrimitiveU16(0),
+		CreatedAfter:           types.NewDateTime(0),
+		CreatedBefore:          types.NewDateTime(0),
+		UpdatedAfter:           types.NewDateTime(0),
+		UpdatedBefore:          types.NewDateTime(0),
+		ReferDataID:            types.NewPrimitiveU32(0),
+		Tags:                   types.NewList[*types.String](),
+		ResultOrderColumn:      types.NewPrimitiveU8(0),
+		ResultOrder:            types.NewPrimitiveU8(0),
+		ResultRange:            types.NewResultRange(),
+		ResultOption:           types.NewPrimitiveU8(0),
+		MinimalRatingFrequency: types.NewPrimitiveU32(0),
+		UseCache:               types.NewPrimitiveBool(false),
+		TotalCountEnabled:      types.NewPrimitiveBool(false),
+		DataTypes:              types.NewList[*types.PrimitiveU16](),
 	}
+
+	dataStoreSearchParam.OwnerIDs.Type = types.NewPID(0)
+	dataStoreSearchParam.DestinationIDs.Type = types.NewPID(0)
+	dataStoreSearchParam.Tags.Type = types.NewString("")
+	dataStoreSearchParam.DataTypes.Type = types.NewPrimitiveU16(0)
+
+	return dataStoreSearchParam
 }

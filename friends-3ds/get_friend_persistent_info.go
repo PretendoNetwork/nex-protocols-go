@@ -5,10 +5,12 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
 func (protocol *Protocol) handleGetFriendPersistentInfo(packet nex.PacketInterface) {
+	var err error
 	var errorCode uint32
 
 	if protocol.GetFriendPersistentInfo == nil {
@@ -22,9 +24,11 @@ func (protocol *Protocol) handleGetFriendPersistentInfo(packet nex.PacketInterfa
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.server)
+	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
-	pidList, err := parametersStream.ReadListPID()
+	pidList := types.NewList[*types.PID]()
+	pidList.Type = types.NewPID(0)
+	err = pidList.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.GetFriendPersistentInfo(fmt.Errorf("Failed to read pidList from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {

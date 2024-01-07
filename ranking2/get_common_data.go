@@ -5,10 +5,12 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
 func (protocol *Protocol) handleGetCommonData(packet nex.PacketInterface) {
+	var err error
 	var errorCode uint32
 
 	if protocol.GetCommonData == nil {
@@ -22,9 +24,10 @@ func (protocol *Protocol) handleGetCommonData(packet nex.PacketInterface) {
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.server)
+	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
-	optionFlags, err := parametersStream.ReadUInt32LE()
+	optionFlags := types.NewPrimitiveU32(0)
+	err = optionFlags.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.GetCommonData(fmt.Errorf("Failed to read optionFlags from parameters. %s", err.Error()), packet, callID, 0, nil, 0)
 		if errorCode != 0 {
@@ -34,7 +37,8 @@ func (protocol *Protocol) handleGetCommonData(packet nex.PacketInterface) {
 		return
 	}
 
-	principalID, err := parametersStream.ReadPID()
+	principalID := types.NewPID(0)
+	err = principalID.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.GetCommonData(fmt.Errorf("Failed to read principalID from parameters. %s", err.Error()), packet, callID, 0, nil, 0)
 		if errorCode != 0 {
@@ -44,7 +48,8 @@ func (protocol *Protocol) handleGetCommonData(packet nex.PacketInterface) {
 		return
 	}
 
-	nexUniqueID, err := parametersStream.ReadUInt64LE()
+	nexUniqueID := types.NewPrimitiveU64(0)
+	err = nexUniqueID.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.GetCommonData(fmt.Errorf("Failed to read nexUniqueID from parameters. %s", err.Error()), packet, callID, 0, nil, 0)
 		if errorCode != 0 {

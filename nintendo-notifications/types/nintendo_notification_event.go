@@ -6,30 +6,37 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // NintendoNotificationEvent is used to send data about a notification event to a client
 type NintendoNotificationEvent struct {
-	nex.Structure
-	Type       uint32
-	SenderPID  *nex.PID
-	DataHolder *nex.DataHolder
+	types.Structure
+	Type       *types.PrimitiveU32
+	SenderPID  *types.PID
+	DataHolder *types.AnyDataHolder
 }
 
-// Bytes encodes the NintendoNotificationEvent and returns a byte array
-func (nintendoNotificationEvent *NintendoNotificationEvent) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt32LE(nintendoNotificationEvent.Type)
-	stream.WritePID(nintendoNotificationEvent.SenderPID)
-	stream.WriteDataHolder(nintendoNotificationEvent.DataHolder)
+// WriteTo writes the NintendoNotificationEvent to the given writable
+func (nintendoNotificationEvent *NintendoNotificationEvent) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
 
-	return stream.Bytes()
+	nintendoNotificationEvent.Type.WriteTo(contentWritable)
+	nintendoNotificationEvent.SenderPID.WriteTo(contentWritable)
+	nintendoNotificationEvent.DataHolder.WriteTo(contentWritable)
+
+	content := contentWritable.Bytes()
+
+	nintendoNotificationEvent.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // Copy returns a new copied instance of NintendoNotificationEvent
-func (nintendoNotificationEvent *NintendoNotificationEvent) Copy() nex.StructureInterface {
+func (nintendoNotificationEvent *NintendoNotificationEvent) Copy() types.RVType {
 	copied := NewNintendoNotificationEvent()
 
-	copied.SetStructureVersion(nintendoNotificationEvent.StructureVersion())
+	copied.StructureVersion = nintendoNotificationEvent.StructureVersion
 
 	copied.Type = nintendoNotificationEvent.Type
 	copied.SenderPID = nintendoNotificationEvent.SenderPID.Copy()
@@ -39,14 +46,18 @@ func (nintendoNotificationEvent *NintendoNotificationEvent) Copy() nex.Structure
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (nintendoNotificationEvent *NintendoNotificationEvent) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*NintendoNotificationEvent)
-
-	if nintendoNotificationEvent.StructureVersion() != other.StructureVersion() {
+func (nintendoNotificationEvent *NintendoNotificationEvent) Equals(o types.RVType) bool {
+	if _, ok := o.(*NintendoNotificationEvent); !ok {
 		return false
 	}
 
-	if nintendoNotificationEvent.Type != other.Type {
+	other := o.(*NintendoNotificationEvent)
+
+	if nintendoNotificationEvent.StructureVersion != other.StructureVersion {
+		return false
+	}
+
+	if !nintendoNotificationEvent.Type.Equals(other.Type) {
 		return false
 	}
 
@@ -74,7 +85,7 @@ func (nintendoNotificationEvent *NintendoNotificationEvent) FormatToString(inden
 	var b strings.Builder
 
 	b.WriteString("NintendoNotificationEvent{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, nintendoNotificationEvent.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, nintendoNotificationEvent.StructureVersion))
 	b.WriteString(fmt.Sprintf("%sType: %d,\n", indentationValues, nintendoNotificationEvent.Type))
 	b.WriteString(fmt.Sprintf("%sSenderPID: %s,\n", indentationValues, nintendoNotificationEvent.SenderPID.FormatToString(indentationLevel+1)))
 

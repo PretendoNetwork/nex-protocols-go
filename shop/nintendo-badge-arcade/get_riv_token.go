@@ -5,10 +5,12 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
 func (protocol *Protocol) handleGetRivToken(packet nex.PacketInterface) {
+	var err error
 	var errorCode uint32
 
 	if protocol.GetRivToken == nil {
@@ -22,9 +24,10 @@ func (protocol *Protocol) handleGetRivToken(packet nex.PacketInterface) {
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.server)
+	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
-	itemCode, err := parametersStream.ReadString()
+	itemCode := types.NewString("")
+	err = itemCode.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.GetRivToken(fmt.Errorf("Failed to read itemCode from parameters. %s", err.Error()), packet, callID, "", nil)
 		if errorCode != 0 {
@@ -34,7 +37,8 @@ func (protocol *Protocol) handleGetRivToken(packet nex.PacketInterface) {
 		return
 	}
 
-	referenceID, err := parametersStream.ReadQBuffer()
+	referenceID := types.NewQBuffer(nil)
+	err = referenceID.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.GetRivToken(fmt.Errorf("Failed to read referenceID from parameters. %s", err.Error()), packet, callID, "", nil)
 		if errorCode != 0 {

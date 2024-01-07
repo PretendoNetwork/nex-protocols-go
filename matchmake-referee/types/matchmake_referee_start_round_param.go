@@ -6,41 +6,52 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // MatchmakeRefereeStartRoundParam contains the results of a round
 type MatchmakeRefereeStartRoundParam struct {
-	nex.Structure
-	*nex.Data
-	PersonalDataCategory uint32
-	GID                  uint32
-	PIDs                 []*nex.PID
+	types.Structure
+	*types.Data
+	PersonalDataCategory *types.PrimitiveU32
+	GID                  *types.PrimitiveU32
+	PIDs                 *types.List[*types.PID]
 }
 
-// Bytes encodes the MatchmakeRefereeStartRoundParam and returns a byte array
-func (matchmakeRefereeStartRoundParam *MatchmakeRefereeStartRoundParam) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt32LE(matchmakeRefereeStartRoundParam.PersonalDataCategory)
-	stream.WriteUInt32LE(matchmakeRefereeStartRoundParam.GID)
-	stream.WriteListPID(matchmakeRefereeStartRoundParam.PIDs)
+// WriteTo writes the MatchmakeRefereeStartRoundParam to the given writable
+func (matchmakeRefereeStartRoundParam *MatchmakeRefereeStartRoundParam) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
 
-	return stream.Bytes()
+	matchmakeRefereeStartRoundParam.PersonalDataCategory.WriteTo(contentWritable)
+	matchmakeRefereeStartRoundParam.GID.WriteTo(contentWritable)
+	matchmakeRefereeStartRoundParam.PIDs.WriteTo(contentWritable)
+
+	content := contentWritable.Bytes()
+
+	matchmakeRefereeStartRoundParam.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
-// ExtractFromStream extracts a MatchmakeRefereeStartRoundParam structure from a stream
-func (matchmakeRefereeStartRoundParam *MatchmakeRefereeStartRoundParam) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the MatchmakeRefereeStartRoundParam from the given readable
+func (matchmakeRefereeStartRoundParam *MatchmakeRefereeStartRoundParam) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	matchmakeRefereeStartRoundParam.PersonalDataCategory, err = stream.ReadUInt32LE()
+	if err = matchmakeRefereeStartRoundParam.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read MatchmakeRefereeStartRoundParam header. %s", err.Error())
+	}
+
+	err = matchmakeRefereeStartRoundParam.PersonalDataCategory.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract MatchmakeRefereeStartRoundParam.PersonalDataCategory. %s", err.Error())
 	}
 
-	matchmakeRefereeStartRoundParam.GID, err = stream.ReadUInt32LE()
+	err = matchmakeRefereeStartRoundParam.GID.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract MatchmakeRefereeStartRoundParam.GID. %s", err.Error())
 	}
 
-	matchmakeRefereeStartRoundParam.PIDs, err = stream.ReadListPID()
+	err = matchmakeRefereeStartRoundParam.PIDs.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract MatchmakeRefereeStartRoundParam.PIDs. %s", err.Error())
 	}
@@ -49,17 +60,16 @@ func (matchmakeRefereeStartRoundParam *MatchmakeRefereeStartRoundParam) ExtractF
 }
 
 // Copy returns a new copied instance of MatchmakeRefereeStartRoundParam
-func (matchmakeRefereeStartRoundParam *MatchmakeRefereeStartRoundParam) Copy() nex.StructureInterface {
+func (matchmakeRefereeStartRoundParam *MatchmakeRefereeStartRoundParam) Copy() types.RVType {
 	copied := NewMatchmakeRefereeStartRoundParam()
 
-	copied.SetStructureVersion(matchmakeRefereeStartRoundParam.StructureVersion())
+	copied.StructureVersion = matchmakeRefereeStartRoundParam.StructureVersion
 
-	copied.Data = matchmakeRefereeStartRoundParam.ParentType().Copy().(*nex.Data)
-	copied.SetParentType(copied.Data)
+	copied.Data = matchmakeRefereeStartRoundParam.Data.Copy().(*types.Data)
 
 	copied.PersonalDataCategory = matchmakeRefereeStartRoundParam.PersonalDataCategory
 	copied.GID = matchmakeRefereeStartRoundParam.GID
-	copied.PIDs = make([]*nex.PID, len(matchmakeRefereeStartRoundParam.PIDs))
+	copied.PIDs = make(*types.List[*types.PID], len(matchmakeRefereeStartRoundParam.PIDs))
 
 	for i := 0; i < len(matchmakeRefereeStartRoundParam.PIDs); i++ {
 		copied.PIDs[i] = matchmakeRefereeStartRoundParam.PIDs[i].Copy()
@@ -69,10 +79,14 @@ func (matchmakeRefereeStartRoundParam *MatchmakeRefereeStartRoundParam) Copy() n
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (matchmakeRefereeStartRoundParam *MatchmakeRefereeStartRoundParam) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*MatchmakeRefereeStartRoundParam)
+func (matchmakeRefereeStartRoundParam *MatchmakeRefereeStartRoundParam) Equals(o types.RVType) bool {
+	if _, ok := o.(*MatchmakeRefereeStartRoundParam); !ok {
+		return false
+	}
 
-	if matchmakeRefereeStartRoundParam.StructureVersion() != other.StructureVersion() {
+	other := o.(*MatchmakeRefereeStartRoundParam)
+
+	if matchmakeRefereeStartRoundParam.StructureVersion != other.StructureVersion {
 		return false
 	}
 
@@ -80,11 +94,11 @@ func (matchmakeRefereeStartRoundParam *MatchmakeRefereeStartRoundParam) Equals(s
 		return false
 	}
 
-	if matchmakeRefereeStartRoundParam.PersonalDataCategory != other.PersonalDataCategory {
+	if !matchmakeRefereeStartRoundParam.PersonalDataCategory.Equals(other.PersonalDataCategory) {
 		return false
 	}
 
-	if matchmakeRefereeStartRoundParam.GID != other.GID {
+	if !matchmakeRefereeStartRoundParam.GID.Equals(other.GID) {
 		return false
 	}
 
@@ -115,7 +129,7 @@ func (matchmakeRefereeStartRoundParam *MatchmakeRefereeStartRoundParam) FormatTo
 	var b strings.Builder
 
 	b.WriteString("MatchmakeRefereeStartRoundParam{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, matchmakeRefereeStartRoundParam.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, matchmakeRefereeStartRoundParam.StructureVersion))
 	b.WriteString(fmt.Sprintf("%sPID: %d,\n", indentationValues, matchmakeRefereeStartRoundParam.PersonalDataCategory))
 	b.WriteString(fmt.Sprintf("%sPersonalRoundResultFlag: %d,\n", indentationValues, matchmakeRefereeStartRoundParam.GID))
 	if len(matchmakeRefereeStartRoundParam.PIDs) == 0 {

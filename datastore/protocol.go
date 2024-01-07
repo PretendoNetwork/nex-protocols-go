@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 	datastore_types "github.com/PretendoNetwork/nex-protocols-go/datastore/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
@@ -159,47 +160,47 @@ type Protocol struct {
 	PreparePostObjectV1          func(err error, packet nex.PacketInterface, callID uint32, param *datastore_types.DataStorePreparePostParamV1) (*nex.RMCMessage, uint32)
 	CompletePostObjectV1         func(err error, packet nex.PacketInterface, callID uint32, param *datastore_types.DataStoreCompletePostParamV1) (*nex.RMCMessage, uint32)
 	DeleteObject                 func(err error, packet nex.PacketInterface, callID uint32, param *datastore_types.DataStoreDeleteParam) (*nex.RMCMessage, uint32)
-	DeleteObjects                func(err error, packet nex.PacketInterface, callID uint32, params []*datastore_types.DataStoreDeleteParam, transactional bool) (*nex.RMCMessage, uint32)
+	DeleteObjects                func(err error, packet nex.PacketInterface, callID uint32, params []*datastore_types.DataStoreDeleteParam, transactional *types.PrimitiveBool) (*nex.RMCMessage, uint32)
 	ChangeMetaV1                 func(err error, packet nex.PacketInterface, callID uint32, param *datastore_types.DataStoreChangeMetaParamV1) (*nex.RMCMessage, uint32)
-	ChangeMetasV1                func(err error, packet nex.PacketInterface, callID uint32, dataIDs []uint64, params []*datastore_types.DataStoreChangeMetaParamV1, transactional bool) (*nex.RMCMessage, uint32)
+	ChangeMetasV1                func(err error, packet nex.PacketInterface, callID uint32, dataIDs *types.List[*types.PrimitiveU64], params []*datastore_types.DataStoreChangeMetaParamV1, transactional *types.PrimitiveBool) (*nex.RMCMessage, uint32)
 	GetMeta                      func(err error, packet nex.PacketInterface, callID uint32, param *datastore_types.DataStoreGetMetaParam) (*nex.RMCMessage, uint32)
-	GetMetas                     func(err error, packet nex.PacketInterface, callID uint32, dataIDs []uint64, param *datastore_types.DataStoreGetMetaParam) (*nex.RMCMessage, uint32)
+	GetMetas                     func(err error, packet nex.PacketInterface, callID uint32, dataIDs *types.List[*types.PrimitiveU64], param *datastore_types.DataStoreGetMetaParam) (*nex.RMCMessage, uint32)
 	PrepareUpdateObject          func(err error, packet nex.PacketInterface, callID uint32, param *datastore_types.DataStorePrepareUpdateParam) (*nex.RMCMessage, uint32)
 	CompleteUpdateObject         func(err error, packet nex.PacketInterface, callID uint32, param *datastore_types.DataStoreCompleteUpdateParam) (*nex.RMCMessage, uint32)
 	SearchObject                 func(err error, packet nex.PacketInterface, callID uint32, param *datastore_types.DataStoreSearchParam) (*nex.RMCMessage, uint32)
 	GetNotificationURL           func(err error, packet nex.PacketInterface, callID uint32, param *datastore_types.DataStoreGetNotificationURLParam) (*nex.RMCMessage, uint32)
 	GetNewArrivedNotificationsV1 func(err error, packet nex.PacketInterface, callID uint32, param *datastore_types.DataStoreGetNewArrivedNotificationsParam) (*nex.RMCMessage, uint32)
-	RateObject                   func(err error, packet nex.PacketInterface, callID uint32, target *datastore_types.DataStoreRatingTarget, param *datastore_types.DataStoreRateObjectParam, fetchRatings bool) (*nex.RMCMessage, uint32)
-	GetRating                    func(err error, packet nex.PacketInterface, callID uint32, target *datastore_types.DataStoreRatingTarget, accessPassword uint64) (*nex.RMCMessage, uint32)
-	GetRatings                   func(err error, packet nex.PacketInterface, callID uint32, dataIDs []uint64, accessPassword uint64) (*nex.RMCMessage, uint32)
-	ResetRating                  func(err error, packet nex.PacketInterface, callID uint32, target *datastore_types.DataStoreRatingTarget, accessPassword uint64) (*nex.RMCMessage, uint32)
-	ResetRatings                 func(err error, packet nex.PacketInterface, callID uint32, target *datastore_types.DataStoreRatingTarget, transactional bool) (*nex.RMCMessage, uint32)
+	RateObject                   func(err error, packet nex.PacketInterface, callID uint32, target *datastore_types.DataStoreRatingTarget, param *datastore_types.DataStoreRateObjectParam, fetchRatings *types.PrimitiveBool) (*nex.RMCMessage, uint32)
+	GetRating                    func(err error, packet nex.PacketInterface, callID uint32, target *datastore_types.DataStoreRatingTarget, accessPassword *types.PrimitiveU64) (*nex.RMCMessage, uint32)
+	GetRatings                   func(err error, packet nex.PacketInterface, callID uint32, dataIDs *types.List[*types.PrimitiveU64], accessPassword *types.PrimitiveU64) (*nex.RMCMessage, uint32)
+	ResetRating                  func(err error, packet nex.PacketInterface, callID uint32, target *datastore_types.DataStoreRatingTarget, accessPassword *types.PrimitiveU64) (*nex.RMCMessage, uint32)
+	ResetRatings                 func(err error, packet nex.PacketInterface, callID uint32, target *datastore_types.DataStoreRatingTarget, transactional *types.PrimitiveBool) (*nex.RMCMessage, uint32)
 	GetSpecificMetaV1            func(err error, packet nex.PacketInterface, callID uint32, param *datastore_types.DataStoreGetSpecificMetaParamV1) (*nex.RMCMessage, uint32)
 	PostMetaBinary               func(err error, packet nex.PacketInterface, callID uint32, param *datastore_types.DataStorePreparePostParam) (*nex.RMCMessage, uint32)
 	TouchObject                  func(err error, packet nex.PacketInterface, callID uint32, param *datastore_types.DataStoreTouchObjectParam) (*nex.RMCMessage, uint32)
-	GetRatingWithLog             func(err error, packet nex.PacketInterface, callID uint32, target *datastore_types.DataStoreRatingTarget, accessPassword uint64) (*nex.RMCMessage, uint32)
+	GetRatingWithLog             func(err error, packet nex.PacketInterface, callID uint32, target *datastore_types.DataStoreRatingTarget, accessPassword *types.PrimitiveU64) (*nex.RMCMessage, uint32)
 	PreparePostObject            func(err error, packet nex.PacketInterface, callID uint32, param *datastore_types.DataStorePreparePostParam) (*nex.RMCMessage, uint32)
 	PrepareGetObject             func(err error, packet nex.PacketInterface, callID uint32, param *datastore_types.DataStorePrepareGetParam) (*nex.RMCMessage, uint32)
 	CompletePostObject           func(err error, packet nex.PacketInterface, callID uint32, param *datastore_types.DataStoreCompletePostParam) (*nex.RMCMessage, uint32)
 	GetNewArrivedNotifications   func(err error, packet nex.PacketInterface, callID uint32, param *datastore_types.DataStoreGetNewArrivedNotificationsParam) (*nex.RMCMessage, uint32)
 	GetSpecificMeta              func(err error, packet nex.PacketInterface, callID uint32, param *datastore_types.DataStoreGetSpecificMetaParam) (*nex.RMCMessage, uint32)
-	GetPersistenceInfo           func(err error, packet nex.PacketInterface, callID uint32, ownerID *nex.PID, persistenceSlotID uint16) (*nex.RMCMessage, uint32)
-	GetPersistenceInfos          func(err error, packet nex.PacketInterface, callID uint32, ownerID *nex.PID, persistenceSlotIDs []uint16) (*nex.RMCMessage, uint32)
-	PerpetuateObject             func(err error, packet nex.PacketInterface, callID uint32, persistenceSlotID uint16, dataID uint64, deleteLastObject bool) (*nex.RMCMessage, uint32)
-	UnperpetuateObject           func(err error, packet nex.PacketInterface, callID uint32, persistenceSlotID uint16, deleteLastObject bool) (*nex.RMCMessage, uint32)
+	GetPersistenceInfo           func(err error, packet nex.PacketInterface, callID uint32, ownerID *types.PID, persistenceSlotID *types.PrimitiveU16) (*nex.RMCMessage, uint32)
+	GetPersistenceInfos          func(err error, packet nex.PacketInterface, callID uint32, ownerID *types.PID, persistenceSlotIDs *types.List[*types.PrimitiveU16]) (*nex.RMCMessage, uint32)
+	PerpetuateObject             func(err error, packet nex.PacketInterface, callID uint32, persistenceSlotID *types.PrimitiveU16, dataID *types.PrimitiveU64, deleteLastObject *types.PrimitiveBool) (*nex.RMCMessage, uint32)
+	UnperpetuateObject           func(err error, packet nex.PacketInterface, callID uint32, persistenceSlotID *types.PrimitiveU16, deleteLastObject *types.PrimitiveBool) (*nex.RMCMessage, uint32)
 	PrepareGetObjectOrMetaBinary func(err error, packet nex.PacketInterface, callID uint32, param *datastore_types.DataStorePrepareGetParam) (*nex.RMCMessage, uint32)
-	GetPasswordInfo              func(err error, packet nex.PacketInterface, callID uint32, dataID uint64) (*nex.RMCMessage, uint32)
-	GetPasswordInfos             func(err error, packet nex.PacketInterface, callID uint32, dataIDs []uint64) (*nex.RMCMessage, uint32)
+	GetPasswordInfo              func(err error, packet nex.PacketInterface, callID uint32, dataID *types.PrimitiveU64) (*nex.RMCMessage, uint32)
+	GetPasswordInfos             func(err error, packet nex.PacketInterface, callID uint32, dataIDs *types.List[*types.PrimitiveU64]) (*nex.RMCMessage, uint32)
 	GetMetasMultipleParam        func(err error, packet nex.PacketInterface, callID uint32, params []*datastore_types.DataStoreGetMetaParam) (*nex.RMCMessage, uint32)
-	CompletePostObjects          func(err error, packet nex.PacketInterface, callID uint32, dataIDs []uint64) (*nex.RMCMessage, uint32)
+	CompletePostObjects          func(err error, packet nex.PacketInterface, callID uint32, dataIDs *types.List[*types.PrimitiveU64]) (*nex.RMCMessage, uint32)
 	ChangeMeta                   func(err error, packet nex.PacketInterface, callID uint32, param *datastore_types.DataStoreChangeMetaParam) (*nex.RMCMessage, uint32)
-	ChangeMetas                  func(err error, packet nex.PacketInterface, callID uint32, dataIDs []uint64, params []*datastore_types.DataStoreChangeMetaParam, transactional bool) (*nex.RMCMessage, uint32)
-	RateObjects                  func(err error, packet nex.PacketInterface, callID uint32, targets []*datastore_types.DataStoreRatingTarget, params []*datastore_types.DataStoreRateObjectParam, transactional bool, fetchRatings bool) (*nex.RMCMessage, uint32)
-	PostMetaBinaryWithDataID     func(err error, packet nex.PacketInterface, callID uint32, dataID uint64, param *datastore_types.DataStorePreparePostParam) (*nex.RMCMessage, uint32)
-	PostMetaBinariesWithDataID   func(err error, packet nex.PacketInterface, callID uint32, dataIDs []uint64, params []*datastore_types.DataStorePreparePostParam, transactional bool) (*nex.RMCMessage, uint32)
-	RateObjectWithPosting        func(err error, packet nex.PacketInterface, callID uint32, target *datastore_types.DataStoreRatingTarget, rateParam *datastore_types.DataStoreRateObjectParam, postParam *datastore_types.DataStorePreparePostParam, fetchRatings bool) (*nex.RMCMessage, uint32)
-	RateObjectsWithPosting       func(err error, packet nex.PacketInterface, callID uint32, targets []*datastore_types.DataStoreRatingTarget, rateParams []*datastore_types.DataStoreRateObjectParam, postParams []*datastore_types.DataStorePreparePostParam, transactional bool, fetchRatings bool) (*nex.RMCMessage, uint32)
-	GetObjectInfos               func(err error, packet nex.PacketInterface, callID uint32, dataIDs uint64) (*nex.RMCMessage, uint32)
+	ChangeMetas                  func(err error, packet nex.PacketInterface, callID uint32, dataIDs *types.List[*types.PrimitiveU64], params []*datastore_types.DataStoreChangeMetaParam, transactional *types.PrimitiveBool) (*nex.RMCMessage, uint32)
+	RateObjects                  func(err error, packet nex.PacketInterface, callID uint32, targets []*datastore_types.DataStoreRatingTarget, params []*datastore_types.DataStoreRateObjectParam, transactional *types.PrimitiveBool, fetchRatings *types.PrimitiveBool) (*nex.RMCMessage, uint32)
+	PostMetaBinaryWithDataID     func(err error, packet nex.PacketInterface, callID uint32, dataID *types.PrimitiveU64, param *datastore_types.DataStorePreparePostParam) (*nex.RMCMessage, uint32)
+	PostMetaBinariesWithDataID   func(err error, packet nex.PacketInterface, callID uint32, dataIDs *types.List[*types.PrimitiveU64], params []*datastore_types.DataStorePreparePostParam, transactional *types.PrimitiveBool) (*nex.RMCMessage, uint32)
+	RateObjectWithPosting        func(err error, packet nex.PacketInterface, callID uint32, target *datastore_types.DataStoreRatingTarget, rateParam *datastore_types.DataStoreRateObjectParam, postParam *datastore_types.DataStorePreparePostParam, fetchRatings *types.PrimitiveBool) (*nex.RMCMessage, uint32)
+	RateObjectsWithPosting       func(err error, packet nex.PacketInterface, callID uint32, targets []*datastore_types.DataStoreRatingTarget, rateParams []*datastore_types.DataStoreRateObjectParam, postParams []*datastore_types.DataStorePreparePostParam, transactional *types.PrimitiveBool, fetchRatings *types.PrimitiveBool) (*nex.RMCMessage, uint32)
+	GetObjectInfos               func(err error, packet nex.PacketInterface, callID uint32, dataIDs *types.PrimitiveU64) (*nex.RMCMessage, uint32)
 	SearchObjectLight            func(err error, packet nex.PacketInterface, callID uint32, param *datastore_types.DataStoreSearchParam) (*nex.RMCMessage, uint32)
 }
 
@@ -211,47 +212,47 @@ type Interface interface {
 	SetHandlerPreparePostObjectV1(handler func(err error, packet nex.PacketInterface, callID uint32, param *datastore_types.DataStorePreparePostParamV1) (*nex.RMCMessage, uint32))
 	SetHandlerCompletePostObjectV1(handler func(err error, packet nex.PacketInterface, callID uint32, param *datastore_types.DataStoreCompletePostParamV1) (*nex.RMCMessage, uint32))
 	SetHandlerDeleteObject(handler func(err error, packet nex.PacketInterface, callID uint32, param *datastore_types.DataStoreDeleteParam) (*nex.RMCMessage, uint32))
-	SetHandlerDeleteObjects(handler func(err error, packet nex.PacketInterface, callID uint32, params []*datastore_types.DataStoreDeleteParam, transactional bool) (*nex.RMCMessage, uint32))
+	SetHandlerDeleteObjects(handler func(err error, packet nex.PacketInterface, callID uint32, params []*datastore_types.DataStoreDeleteParam, transactional *types.PrimitiveBool) (*nex.RMCMessage, uint32))
 	SetHandlerChangeMetaV1(handler func(err error, packet nex.PacketInterface, callID uint32, param *datastore_types.DataStoreChangeMetaParamV1) (*nex.RMCMessage, uint32))
-	SetHandlerChangeMetasV1(handler func(err error, packet nex.PacketInterface, callID uint32, dataIDs []uint64, params []*datastore_types.DataStoreChangeMetaParamV1, transactional bool) (*nex.RMCMessage, uint32))
+	SetHandlerChangeMetasV1(handler func(err error, packet nex.PacketInterface, callID uint32, dataIDs *types.List[*types.PrimitiveU64], params []*datastore_types.DataStoreChangeMetaParamV1, transactional *types.PrimitiveBool) (*nex.RMCMessage, uint32))
 	SetHandlerGetMeta(handler func(err error, packet nex.PacketInterface, callID uint32, param *datastore_types.DataStoreGetMetaParam) (*nex.RMCMessage, uint32))
-	SetHandlerGetMetas(handler func(err error, packet nex.PacketInterface, callID uint32, dataIDs []uint64, param *datastore_types.DataStoreGetMetaParam) (*nex.RMCMessage, uint32))
+	SetHandlerGetMetas(handler func(err error, packet nex.PacketInterface, callID uint32, dataIDs *types.List[*types.PrimitiveU64], param *datastore_types.DataStoreGetMetaParam) (*nex.RMCMessage, uint32))
 	SetHandlerPrepareUpdateObject(handler func(err error, packet nex.PacketInterface, callID uint32, param *datastore_types.DataStorePrepareUpdateParam) (*nex.RMCMessage, uint32))
 	SetHandlerCompleteUpdateObject(handler func(err error, packet nex.PacketInterface, callID uint32, param *datastore_types.DataStoreCompleteUpdateParam) (*nex.RMCMessage, uint32))
 	SetHandlerSearchObject(handler func(err error, packet nex.PacketInterface, callID uint32, param *datastore_types.DataStoreSearchParam) (*nex.RMCMessage, uint32))
 	SetHandlerGetNotificationURL(handler func(err error, packet nex.PacketInterface, callID uint32, param *datastore_types.DataStoreGetNotificationURLParam) (*nex.RMCMessage, uint32))
 	SetHandlerGetNewArrivedNotificationsV1(handler func(err error, packet nex.PacketInterface, callID uint32, param *datastore_types.DataStoreGetNewArrivedNotificationsParam) (*nex.RMCMessage, uint32))
-	SetHandlerRateObject(handler func(err error, packet nex.PacketInterface, callID uint32, target *datastore_types.DataStoreRatingTarget, param *datastore_types.DataStoreRateObjectParam, fetchRatings bool) (*nex.RMCMessage, uint32))
-	SetHandlerGetRating(handler func(err error, packet nex.PacketInterface, callID uint32, target *datastore_types.DataStoreRatingTarget, accessPassword uint64) (*nex.RMCMessage, uint32))
-	SetHandlerGetRatings(handler func(err error, packet nex.PacketInterface, callID uint32, dataIDs []uint64, accessPassword uint64) (*nex.RMCMessage, uint32))
-	SetHandlerResetRating(handler func(err error, packet nex.PacketInterface, callID uint32, target *datastore_types.DataStoreRatingTarget, accessPassword uint64) (*nex.RMCMessage, uint32))
-	SetHandlerResetRatings(handler func(err error, packet nex.PacketInterface, callID uint32, target *datastore_types.DataStoreRatingTarget, transactional bool) (*nex.RMCMessage, uint32))
+	SetHandlerRateObject(handler func(err error, packet nex.PacketInterface, callID uint32, target *datastore_types.DataStoreRatingTarget, param *datastore_types.DataStoreRateObjectParam, fetchRatings *types.PrimitiveBool) (*nex.RMCMessage, uint32))
+	SetHandlerGetRating(handler func(err error, packet nex.PacketInterface, callID uint32, target *datastore_types.DataStoreRatingTarget, accessPassword *types.PrimitiveU64) (*nex.RMCMessage, uint32))
+	SetHandlerGetRatings(handler func(err error, packet nex.PacketInterface, callID uint32, dataIDs *types.List[*types.PrimitiveU64], accessPassword *types.PrimitiveU64) (*nex.RMCMessage, uint32))
+	SetHandlerResetRating(handler func(err error, packet nex.PacketInterface, callID uint32, target *datastore_types.DataStoreRatingTarget, accessPassword *types.PrimitiveU64) (*nex.RMCMessage, uint32))
+	SetHandlerResetRatings(handler func(err error, packet nex.PacketInterface, callID uint32, target *datastore_types.DataStoreRatingTarget, transactional *types.PrimitiveBool) (*nex.RMCMessage, uint32))
 	SetHandlerGetSpecificMetaV1(handler func(err error, packet nex.PacketInterface, callID uint32, param *datastore_types.DataStoreGetSpecificMetaParamV1) (*nex.RMCMessage, uint32))
 	SetHandlerPostMetaBinary(handler func(err error, packet nex.PacketInterface, callID uint32, param *datastore_types.DataStorePreparePostParam) (*nex.RMCMessage, uint32))
 	SetHandlerTouchObject(handler func(err error, packet nex.PacketInterface, callID uint32, param *datastore_types.DataStoreTouchObjectParam) (*nex.RMCMessage, uint32))
-	SetHandlerGetRatingWithLog(handler func(err error, packet nex.PacketInterface, callID uint32, target *datastore_types.DataStoreRatingTarget, accessPassword uint64) (*nex.RMCMessage, uint32))
+	SetHandlerGetRatingWithLog(handler func(err error, packet nex.PacketInterface, callID uint32, target *datastore_types.DataStoreRatingTarget, accessPassword *types.PrimitiveU64) (*nex.RMCMessage, uint32))
 	SetHandlerPreparePostObject(handler func(err error, packet nex.PacketInterface, callID uint32, param *datastore_types.DataStorePreparePostParam) (*nex.RMCMessage, uint32))
 	SetHandlerPrepareGetObject(handler func(err error, packet nex.PacketInterface, callID uint32, param *datastore_types.DataStorePrepareGetParam) (*nex.RMCMessage, uint32))
 	SetHandlerCompletePostObject(handler func(err error, packet nex.PacketInterface, callID uint32, param *datastore_types.DataStoreCompletePostParam) (*nex.RMCMessage, uint32))
 	SetHandlerGetNewArrivedNotifications(handler func(err error, packet nex.PacketInterface, callID uint32, param *datastore_types.DataStoreGetNewArrivedNotificationsParam) (*nex.RMCMessage, uint32))
 	SetHandlerGetSpecificMeta(handler func(err error, packet nex.PacketInterface, callID uint32, param *datastore_types.DataStoreGetSpecificMetaParam) (*nex.RMCMessage, uint32))
-	SetHandlerGetPersistenceInfo(handler func(err error, packet nex.PacketInterface, callID uint32, ownerID *nex.PID, persistenceSlotID uint16) (*nex.RMCMessage, uint32))
-	SetHandlerGetPersistenceInfos(handler func(err error, packet nex.PacketInterface, callID uint32, ownerID *nex.PID, persistenceSlotIDs []uint16) (*nex.RMCMessage, uint32))
-	SetHandlerPerpetuateObject(handler func(err error, packet nex.PacketInterface, callID uint32, persistenceSlotID uint16, dataID uint64, deleteLastObject bool) (*nex.RMCMessage, uint32))
-	SetHandlerUnperpetuateObject(handler func(err error, packet nex.PacketInterface, callID uint32, persistenceSlotID uint16, deleteLastObject bool) (*nex.RMCMessage, uint32))
+	SetHandlerGetPersistenceInfo(handler func(err error, packet nex.PacketInterface, callID uint32, ownerID *types.PID, persistenceSlotID *types.PrimitiveU16) (*nex.RMCMessage, uint32))
+	SetHandlerGetPersistenceInfos(handler func(err error, packet nex.PacketInterface, callID uint32, ownerID *types.PID, persistenceSlotIDs *types.List[*types.PrimitiveU16]) (*nex.RMCMessage, uint32))
+	SetHandlerPerpetuateObject(handler func(err error, packet nex.PacketInterface, callID uint32, persistenceSlotID *types.PrimitiveU16, dataID *types.PrimitiveU64, deleteLastObject *types.PrimitiveBool) (*nex.RMCMessage, uint32))
+	SetHandlerUnperpetuateObject(handler func(err error, packet nex.PacketInterface, callID uint32, persistenceSlotID *types.PrimitiveU16, deleteLastObject *types.PrimitiveBool) (*nex.RMCMessage, uint32))
 	SetHandlerPrepareGetObjectOrMetaBinary(handler func(err error, packet nex.PacketInterface, callID uint32, param *datastore_types.DataStorePrepareGetParam) (*nex.RMCMessage, uint32))
-	SetHandlerGetPasswordInfo(handler func(err error, packet nex.PacketInterface, callID uint32, dataID uint64) (*nex.RMCMessage, uint32))
-	SetHandlerGetPasswordInfos(handler func(err error, packet nex.PacketInterface, callID uint32, dataIDs []uint64) (*nex.RMCMessage, uint32))
+	SetHandlerGetPasswordInfo(handler func(err error, packet nex.PacketInterface, callID uint32, dataID *types.PrimitiveU64) (*nex.RMCMessage, uint32))
+	SetHandlerGetPasswordInfos(handler func(err error, packet nex.PacketInterface, callID uint32, dataIDs *types.List[*types.PrimitiveU64]) (*nex.RMCMessage, uint32))
 	SetHandlerGetMetasMultipleParam(handler func(err error, packet nex.PacketInterface, callID uint32, params []*datastore_types.DataStoreGetMetaParam) (*nex.RMCMessage, uint32))
-	SetHandlerCompletePostObjects(handler func(err error, packet nex.PacketInterface, callID uint32, dataIDs []uint64) (*nex.RMCMessage, uint32))
+	SetHandlerCompletePostObjects(handler func(err error, packet nex.PacketInterface, callID uint32, dataIDs *types.List[*types.PrimitiveU64]) (*nex.RMCMessage, uint32))
 	SetHandlerChangeMeta(handler func(err error, packet nex.PacketInterface, callID uint32, param *datastore_types.DataStoreChangeMetaParam) (*nex.RMCMessage, uint32))
-	SetHandlerChangeMetas(handler func(err error, packet nex.PacketInterface, callID uint32, dataIDs []uint64, params []*datastore_types.DataStoreChangeMetaParam, transactional bool) (*nex.RMCMessage, uint32))
-	SetHandlerRateObjects(handler func(err error, packet nex.PacketInterface, callID uint32, targets []*datastore_types.DataStoreRatingTarget, params []*datastore_types.DataStoreRateObjectParam, transactional bool, fetchRatings bool) (*nex.RMCMessage, uint32))
-	SetHandlerPostMetaBinaryWithDataID(handler func(err error, packet nex.PacketInterface, callID uint32, dataID uint64, param *datastore_types.DataStorePreparePostParam) (*nex.RMCMessage, uint32))
-	SetHandlerPostMetaBinariesWithDataID(handler func(err error, packet nex.PacketInterface, callID uint32, dataIDs []uint64, params []*datastore_types.DataStorePreparePostParam, transactional bool) (*nex.RMCMessage, uint32))
-	SetHandlerRateObjectWithPosting(handler func(err error, packet nex.PacketInterface, callID uint32, target *datastore_types.DataStoreRatingTarget, rateParam *datastore_types.DataStoreRateObjectParam, postParam *datastore_types.DataStorePreparePostParam, fetchRatings bool) (*nex.RMCMessage, uint32))
-	SetHandlerRateObjectsWithPosting(handler func(err error, packet nex.PacketInterface, callID uint32, targets []*datastore_types.DataStoreRatingTarget, rateParams []*datastore_types.DataStoreRateObjectParam, postParams []*datastore_types.DataStorePreparePostParam, transactional bool, fetchRatings bool) (*nex.RMCMessage, uint32))
-	SetHandlerGetObjectInfos(handler func(err error, packet nex.PacketInterface, callID uint32, dataIDs uint64) (*nex.RMCMessage, uint32))
+	SetHandlerChangeMetas(handler func(err error, packet nex.PacketInterface, callID uint32, dataIDs *types.List[*types.PrimitiveU64], params []*datastore_types.DataStoreChangeMetaParam, transactional *types.PrimitiveBool) (*nex.RMCMessage, uint32))
+	SetHandlerRateObjects(handler func(err error, packet nex.PacketInterface, callID uint32, targets []*datastore_types.DataStoreRatingTarget, params []*datastore_types.DataStoreRateObjectParam, transactional *types.PrimitiveBool, fetchRatings *types.PrimitiveBool) (*nex.RMCMessage, uint32))
+	SetHandlerPostMetaBinaryWithDataID(handler func(err error, packet nex.PacketInterface, callID uint32, dataID *types.PrimitiveU64, param *datastore_types.DataStorePreparePostParam) (*nex.RMCMessage, uint32))
+	SetHandlerPostMetaBinariesWithDataID(handler func(err error, packet nex.PacketInterface, callID uint32, dataIDs *types.List[*types.PrimitiveU64], params []*datastore_types.DataStorePreparePostParam, transactional *types.PrimitiveBool) (*nex.RMCMessage, uint32))
+	SetHandlerRateObjectWithPosting(handler func(err error, packet nex.PacketInterface, callID uint32, target *datastore_types.DataStoreRatingTarget, rateParam *datastore_types.DataStoreRateObjectParam, postParam *datastore_types.DataStorePreparePostParam, fetchRatings *types.PrimitiveBool) (*nex.RMCMessage, uint32))
+	SetHandlerRateObjectsWithPosting(handler func(err error, packet nex.PacketInterface, callID uint32, targets []*datastore_types.DataStoreRatingTarget, rateParams []*datastore_types.DataStoreRateObjectParam, postParams []*datastore_types.DataStorePreparePostParam, transactional *types.PrimitiveBool, fetchRatings *types.PrimitiveBool) (*nex.RMCMessage, uint32))
+	SetHandlerGetObjectInfos(handler func(err error, packet nex.PacketInterface, callID uint32, dataIDs *types.PrimitiveU64) (*nex.RMCMessage, uint32))
 	SetHandlerSearchObjectLight(handler func(err error, packet nex.PacketInterface, callID uint32, param *datastore_types.DataStoreSearchParam) (*nex.RMCMessage, uint32))
 }
 
@@ -286,7 +287,7 @@ func (protocol *Protocol) SetHandlerDeleteObject(handler func(err error, packet 
 }
 
 // SetHandlerDeleteObjects sets the handler for the DeleteObjects method
-func (protocol *Protocol) SetHandlerDeleteObjects(handler func(err error, packet nex.PacketInterface, callID uint32, params []*datastore_types.DataStoreDeleteParam, transactional bool) (*nex.RMCMessage, uint32)) {
+func (protocol *Protocol) SetHandlerDeleteObjects(handler func(err error, packet nex.PacketInterface, callID uint32, params []*datastore_types.DataStoreDeleteParam, transactional *types.PrimitiveBool) (*nex.RMCMessage, uint32)) {
 	protocol.DeleteObjects = handler
 }
 
@@ -296,7 +297,7 @@ func (protocol *Protocol) SetHandlerChangeMetaV1(handler func(err error, packet 
 }
 
 // SetHandlerChangeMetasV1 sets the handler for the ChangeMetasV1 method
-func (protocol *Protocol) SetHandlerChangeMetasV1(handler func(err error, packet nex.PacketInterface, callID uint32, dataIDs []uint64, params []*datastore_types.DataStoreChangeMetaParamV1, transactional bool) (*nex.RMCMessage, uint32)) {
+func (protocol *Protocol) SetHandlerChangeMetasV1(handler func(err error, packet nex.PacketInterface, callID uint32, dataIDs *types.List[*types.PrimitiveU64], params []*datastore_types.DataStoreChangeMetaParamV1, transactional *types.PrimitiveBool) (*nex.RMCMessage, uint32)) {
 	protocol.ChangeMetasV1 = handler
 }
 
@@ -306,7 +307,7 @@ func (protocol *Protocol) SetHandlerGetMeta(handler func(err error, packet nex.P
 }
 
 // SetHandlerGetMetas sets the handler for the GetMetas method
-func (protocol *Protocol) SetHandlerGetMetas(handler func(err error, packet nex.PacketInterface, callID uint32, dataIDs []uint64, param *datastore_types.DataStoreGetMetaParam) (*nex.RMCMessage, uint32)) {
+func (protocol *Protocol) SetHandlerGetMetas(handler func(err error, packet nex.PacketInterface, callID uint32, dataIDs *types.List[*types.PrimitiveU64], param *datastore_types.DataStoreGetMetaParam) (*nex.RMCMessage, uint32)) {
 	protocol.GetMetas = handler
 }
 
@@ -336,27 +337,27 @@ func (protocol *Protocol) SetHandlerGetNewArrivedNotificationsV1(handler func(er
 }
 
 // SetHandlerRateObject sets the handler for the RateObject method
-func (protocol *Protocol) SetHandlerRateObject(handler func(err error, packet nex.PacketInterface, callID uint32, target *datastore_types.DataStoreRatingTarget, param *datastore_types.DataStoreRateObjectParam, fetchRatings bool) (*nex.RMCMessage, uint32)) {
+func (protocol *Protocol) SetHandlerRateObject(handler func(err error, packet nex.PacketInterface, callID uint32, target *datastore_types.DataStoreRatingTarget, param *datastore_types.DataStoreRateObjectParam, fetchRatings *types.PrimitiveBool) (*nex.RMCMessage, uint32)) {
 	protocol.RateObject = handler
 }
 
 // SetHandlerGetRating sets the handler for the GetRating method
-func (protocol *Protocol) SetHandlerGetRating(handler func(err error, packet nex.PacketInterface, callID uint32, target *datastore_types.DataStoreRatingTarget, accessPassword uint64) (*nex.RMCMessage, uint32)) {
+func (protocol *Protocol) SetHandlerGetRating(handler func(err error, packet nex.PacketInterface, callID uint32, target *datastore_types.DataStoreRatingTarget, accessPassword *types.PrimitiveU64) (*nex.RMCMessage, uint32)) {
 	protocol.GetRating = handler
 }
 
 // SetHandlerGetRatings sets the handler for the GetRatings method
-func (protocol *Protocol) SetHandlerGetRatings(handler func(err error, packet nex.PacketInterface, callID uint32, dataIDs []uint64, accessPassword uint64) (*nex.RMCMessage, uint32)) {
+func (protocol *Protocol) SetHandlerGetRatings(handler func(err error, packet nex.PacketInterface, callID uint32, dataIDs *types.List[*types.PrimitiveU64], accessPassword *types.PrimitiveU64) (*nex.RMCMessage, uint32)) {
 	protocol.GetRatings = handler
 }
 
 // SetHandlerResetRating sets the handler for the ResetRating method
-func (protocol *Protocol) SetHandlerResetRating(handler func(err error, packet nex.PacketInterface, callID uint32, target *datastore_types.DataStoreRatingTarget, accessPassword uint64) (*nex.RMCMessage, uint32)) {
+func (protocol *Protocol) SetHandlerResetRating(handler func(err error, packet nex.PacketInterface, callID uint32, target *datastore_types.DataStoreRatingTarget, accessPassword *types.PrimitiveU64) (*nex.RMCMessage, uint32)) {
 	protocol.ResetRating = handler
 }
 
 // SetHandlerResetRatings sets the handler for the ResetRatings method
-func (protocol *Protocol) SetHandlerResetRatings(handler func(err error, packet nex.PacketInterface, callID uint32, target *datastore_types.DataStoreRatingTarget, transactional bool) (*nex.RMCMessage, uint32)) {
+func (protocol *Protocol) SetHandlerResetRatings(handler func(err error, packet nex.PacketInterface, callID uint32, target *datastore_types.DataStoreRatingTarget, transactional *types.PrimitiveBool) (*nex.RMCMessage, uint32)) {
 	protocol.ResetRatings = handler
 }
 
@@ -376,7 +377,7 @@ func (protocol *Protocol) SetHandlerTouchObject(handler func(err error, packet n
 }
 
 // SetHandlerGetRatingWithLog sets the handler for the GetRatingWithLog method
-func (protocol *Protocol) SetHandlerGetRatingWithLog(handler func(err error, packet nex.PacketInterface, callID uint32, target *datastore_types.DataStoreRatingTarget, accessPassword uint64) (*nex.RMCMessage, uint32)) {
+func (protocol *Protocol) SetHandlerGetRatingWithLog(handler func(err error, packet nex.PacketInterface, callID uint32, target *datastore_types.DataStoreRatingTarget, accessPassword *types.PrimitiveU64) (*nex.RMCMessage, uint32)) {
 	protocol.GetRatingWithLog = handler
 }
 
@@ -406,22 +407,22 @@ func (protocol *Protocol) SetHandlerGetSpecificMeta(handler func(err error, pack
 }
 
 // SetHandlerGetPersistenceInfo sets the handler for the GetPersistenceInfo method
-func (protocol *Protocol) SetHandlerGetPersistenceInfo(handler func(err error, packet nex.PacketInterface, callID uint32, ownerID *nex.PID, persistenceSlotID uint16) (*nex.RMCMessage, uint32)) {
+func (protocol *Protocol) SetHandlerGetPersistenceInfo(handler func(err error, packet nex.PacketInterface, callID uint32, ownerID *types.PID, persistenceSlotID *types.PrimitiveU16) (*nex.RMCMessage, uint32)) {
 	protocol.GetPersistenceInfo = handler
 }
 
 // SetHandlerGetPersistenceInfos sets the handler for the GetPersistenceInfos method
-func (protocol *Protocol) SetHandlerGetPersistenceInfos(handler func(err error, packet nex.PacketInterface, callID uint32, ownerID *nex.PID, persistenceSlotIDs []uint16) (*nex.RMCMessage, uint32)) {
+func (protocol *Protocol) SetHandlerGetPersistenceInfos(handler func(err error, packet nex.PacketInterface, callID uint32, ownerID *types.PID, persistenceSlotIDs *types.List[*types.PrimitiveU16]) (*nex.RMCMessage, uint32)) {
 	protocol.GetPersistenceInfos = handler
 }
 
 // SetHandlerPerpetuateObject sets the handler for the PerpetuateObject method
-func (protocol *Protocol) SetHandlerPerpetuateObject(handler func(err error, packet nex.PacketInterface, callID uint32, persistenceSlotID uint16, dataID uint64, deleteLastObject bool) (*nex.RMCMessage, uint32)) {
+func (protocol *Protocol) SetHandlerPerpetuateObject(handler func(err error, packet nex.PacketInterface, callID uint32, persistenceSlotID *types.PrimitiveU16, dataID *types.PrimitiveU64, deleteLastObject *types.PrimitiveBool) (*nex.RMCMessage, uint32)) {
 	protocol.PerpetuateObject = handler
 }
 
 // SetHandlerUnperpetuateObject sets the handler for the UnperpetuateObject method
-func (protocol *Protocol) SetHandlerUnperpetuateObject(handler func(err error, packet nex.PacketInterface, callID uint32, persistenceSlotID uint16, deleteLastObject bool) (*nex.RMCMessage, uint32)) {
+func (protocol *Protocol) SetHandlerUnperpetuateObject(handler func(err error, packet nex.PacketInterface, callID uint32, persistenceSlotID *types.PrimitiveU16, deleteLastObject *types.PrimitiveBool) (*nex.RMCMessage, uint32)) {
 	protocol.UnperpetuateObject = handler
 }
 
@@ -431,12 +432,12 @@ func (protocol *Protocol) SetHandlerPrepareGetObjectOrMetaBinary(handler func(er
 }
 
 // SetHandlerGetPasswordInfo sets the handler for the GetPasswordInfo method
-func (protocol *Protocol) SetHandlerGetPasswordInfo(handler func(err error, packet nex.PacketInterface, callID uint32, dataID uint64) (*nex.RMCMessage, uint32)) {
+func (protocol *Protocol) SetHandlerGetPasswordInfo(handler func(err error, packet nex.PacketInterface, callID uint32, dataID *types.PrimitiveU64) (*nex.RMCMessage, uint32)) {
 	protocol.GetPasswordInfo = handler
 }
 
 // SetHandlerGetPasswordInfos sets the handler for the GetPasswordInfos method
-func (protocol *Protocol) SetHandlerGetPasswordInfos(handler func(err error, packet nex.PacketInterface, callID uint32, dataIDs []uint64) (*nex.RMCMessage, uint32)) {
+func (protocol *Protocol) SetHandlerGetPasswordInfos(handler func(err error, packet nex.PacketInterface, callID uint32, dataIDs *types.List[*types.PrimitiveU64]) (*nex.RMCMessage, uint32)) {
 	protocol.GetPasswordInfos = handler
 }
 
@@ -446,7 +447,7 @@ func (protocol *Protocol) SetHandlerGetMetasMultipleParam(handler func(err error
 }
 
 // SetHandlerCompletePostObjects sets the handler for the CompletePostObjects method
-func (protocol *Protocol) SetHandlerCompletePostObjects(handler func(err error, packet nex.PacketInterface, callID uint32, dataIDs []uint64) (*nex.RMCMessage, uint32)) {
+func (protocol *Protocol) SetHandlerCompletePostObjects(handler func(err error, packet nex.PacketInterface, callID uint32, dataIDs *types.List[*types.PrimitiveU64]) (*nex.RMCMessage, uint32)) {
 	protocol.CompletePostObjects = handler
 }
 
@@ -456,37 +457,37 @@ func (protocol *Protocol) SetHandlerChangeMeta(handler func(err error, packet ne
 }
 
 // SetHandlerChangeMetas sets the handler for the ChangeMetas method
-func (protocol *Protocol) SetHandlerChangeMetas(handler func(err error, packet nex.PacketInterface, callID uint32, dataIDs []uint64, params []*datastore_types.DataStoreChangeMetaParam, transactional bool) (*nex.RMCMessage, uint32)) {
+func (protocol *Protocol) SetHandlerChangeMetas(handler func(err error, packet nex.PacketInterface, callID uint32, dataIDs *types.List[*types.PrimitiveU64], params []*datastore_types.DataStoreChangeMetaParam, transactional *types.PrimitiveBool) (*nex.RMCMessage, uint32)) {
 	protocol.ChangeMetas = handler
 }
 
 // SetHandlerRateObjects sets the handler for the RateObjects method
-func (protocol *Protocol) SetHandlerRateObjects(handler func(err error, packet nex.PacketInterface, callID uint32, targets []*datastore_types.DataStoreRatingTarget, params []*datastore_types.DataStoreRateObjectParam, transactional bool, fetchRatings bool) (*nex.RMCMessage, uint32)) {
+func (protocol *Protocol) SetHandlerRateObjects(handler func(err error, packet nex.PacketInterface, callID uint32, targets []*datastore_types.DataStoreRatingTarget, params []*datastore_types.DataStoreRateObjectParam, transactional *types.PrimitiveBool, fetchRatings *types.PrimitiveBool) (*nex.RMCMessage, uint32)) {
 	protocol.RateObjects = handler
 }
 
 // SetHandlerPostMetaBinaryWithDataID sets the handler for the PostMetaBinaryWithDataID method
-func (protocol *Protocol) SetHandlerPostMetaBinaryWithDataID(handler func(err error, packet nex.PacketInterface, callID uint32, dataID uint64, param *datastore_types.DataStorePreparePostParam) (*nex.RMCMessage, uint32)) {
+func (protocol *Protocol) SetHandlerPostMetaBinaryWithDataID(handler func(err error, packet nex.PacketInterface, callID uint32, dataID *types.PrimitiveU64, param *datastore_types.DataStorePreparePostParam) (*nex.RMCMessage, uint32)) {
 	protocol.PostMetaBinaryWithDataID = handler
 }
 
 // SetHandlerPostMetaBinariesWithDataID sets the handler for the PostMetaBinariesWithDataID method
-func (protocol *Protocol) SetHandlerPostMetaBinariesWithDataID(handler func(err error, packet nex.PacketInterface, callID uint32, dataIDs []uint64, params []*datastore_types.DataStorePreparePostParam, transactional bool) (*nex.RMCMessage, uint32)) {
+func (protocol *Protocol) SetHandlerPostMetaBinariesWithDataID(handler func(err error, packet nex.PacketInterface, callID uint32, dataIDs *types.List[*types.PrimitiveU64], params []*datastore_types.DataStorePreparePostParam, transactional *types.PrimitiveBool) (*nex.RMCMessage, uint32)) {
 	protocol.PostMetaBinariesWithDataID = handler
 }
 
 // SetHandlerRateObjectWithPosting sets the handler for the RateObjectWithPosting method
-func (protocol *Protocol) SetHandlerRateObjectWithPosting(handler func(err error, packet nex.PacketInterface, callID uint32, target *datastore_types.DataStoreRatingTarget, rateParam *datastore_types.DataStoreRateObjectParam, postParam *datastore_types.DataStorePreparePostParam, fetchRatings bool) (*nex.RMCMessage, uint32)) {
+func (protocol *Protocol) SetHandlerRateObjectWithPosting(handler func(err error, packet nex.PacketInterface, callID uint32, target *datastore_types.DataStoreRatingTarget, rateParam *datastore_types.DataStoreRateObjectParam, postParam *datastore_types.DataStorePreparePostParam, fetchRatings *types.PrimitiveBool) (*nex.RMCMessage, uint32)) {
 	protocol.RateObjectWithPosting = handler
 }
 
 // SetHandlerRateObjectsWithPosting sets the handler for the RateObjectsWithPosting method
-func (protocol *Protocol) SetHandlerRateObjectsWithPosting(handler func(err error, packet nex.PacketInterface, callID uint32, targets []*datastore_types.DataStoreRatingTarget, rateParams []*datastore_types.DataStoreRateObjectParam, postParams []*datastore_types.DataStorePreparePostParam, transactional bool, fetchRatings bool) (*nex.RMCMessage, uint32)) {
+func (protocol *Protocol) SetHandlerRateObjectsWithPosting(handler func(err error, packet nex.PacketInterface, callID uint32, targets []*datastore_types.DataStoreRatingTarget, rateParams []*datastore_types.DataStoreRateObjectParam, postParams []*datastore_types.DataStorePreparePostParam, transactional *types.PrimitiveBool, fetchRatings *types.PrimitiveBool) (*nex.RMCMessage, uint32)) {
 	protocol.RateObjectsWithPosting = handler
 }
 
 // SetHandlerGetObjectInfos sets the handler for the GetObjectInfos method
-func (protocol *Protocol) SetHandlerGetObjectInfos(handler func(err error, packet nex.PacketInterface, callID uint32, dataIDs uint64) (*nex.RMCMessage, uint32)) {
+func (protocol *Protocol) SetHandlerGetObjectInfos(handler func(err error, packet nex.PacketInterface, callID uint32, dataIDs *types.PrimitiveU64) (*nex.RMCMessage, uint32)) {
 	protocol.GetObjectInfos = handler
 }
 

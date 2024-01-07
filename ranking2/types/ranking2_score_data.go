@@ -6,31 +6,36 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // Ranking2ScoreData holds data for the Ranking 2  protocol
 type Ranking2ScoreData struct {
-	nex.Structure
-	Misc     uint64
-	Category uint32
-	Score    uint32
+	types.Structure
+	Misc     *types.PrimitiveU64
+	Category *types.PrimitiveU32
+	Score    *types.PrimitiveU32
 }
 
-// ExtractFromStream extracts a Ranking2ScoreData structure from a stream
-func (ranking2ScoreData *Ranking2ScoreData) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the Ranking2ScoreData from the given readable
+func (ranking2ScoreData *Ranking2ScoreData) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	ranking2ScoreData.Misc, err = stream.ReadUInt64LE()
+	if err = ranking2ScoreData.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read Ranking2ScoreData header. %s", err.Error())
+	}
+
+	err = ranking2ScoreData.Misc.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract Ranking2ScoreData.Misc from stream. %s", err.Error())
 	}
 
-	ranking2ScoreData.Category, err = stream.ReadUInt32LE()
+	err = ranking2ScoreData.Category.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract Ranking2ScoreData.Category from stream. %s", err.Error())
 	}
 
-	ranking2ScoreData.Score, err = stream.ReadUInt32LE()
+	err = ranking2ScoreData.Score.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract Ranking2ScoreData.Score from stream. %s", err.Error())
 	}
@@ -38,20 +43,26 @@ func (ranking2ScoreData *Ranking2ScoreData) ExtractFromStream(stream *nex.Stream
 	return nil
 }
 
-// Bytes encodes the Ranking2ScoreData and returns a byte array
-func (ranking2ScoreData *Ranking2ScoreData) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt64LE(ranking2ScoreData.Misc)
-	stream.WriteUInt32LE(ranking2ScoreData.Category)
-	stream.WriteUInt32LE(ranking2ScoreData.Score)
+// WriteTo writes the Ranking2ScoreData to the given writable
+func (ranking2ScoreData *Ranking2ScoreData) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
 
-	return stream.Bytes()
+	ranking2ScoreData.Misc.WriteTo(contentWritable)
+	ranking2ScoreData.Category.WriteTo(contentWritable)
+	ranking2ScoreData.Score.WriteTo(contentWritable)
+
+	content := contentWritable.Bytes()
+
+	ranking2ScoreData.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // Copy returns a new copied instance of Ranking2ScoreData
-func (ranking2ScoreData *Ranking2ScoreData) Copy() nex.StructureInterface {
+func (ranking2ScoreData *Ranking2ScoreData) Copy() types.RVType {
 	copied := NewRanking2ScoreData()
 
-	copied.SetStructureVersion(ranking2ScoreData.StructureVersion())
+	copied.StructureVersion = ranking2ScoreData.StructureVersion
 
 	copied.Misc = ranking2ScoreData.Misc
 	copied.Category = ranking2ScoreData.Category
@@ -60,22 +71,26 @@ func (ranking2ScoreData *Ranking2ScoreData) Copy() nex.StructureInterface {
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (ranking2ScoreData *Ranking2ScoreData) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*Ranking2ScoreData)
-
-	if ranking2ScoreData.StructureVersion() != other.StructureVersion() {
+func (ranking2ScoreData *Ranking2ScoreData) Equals(o types.RVType) bool {
+	if _, ok := o.(*Ranking2ScoreData); !ok {
 		return false
 	}
 
-	if ranking2ScoreData.Misc != other.Misc {
+	other := o.(*Ranking2ScoreData)
+
+	if ranking2ScoreData.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if ranking2ScoreData.Category != other.Category {
+	if !ranking2ScoreData.Misc.Equals(other.Misc) {
 		return false
 	}
 
-	if ranking2ScoreData.Score != other.Score {
+	if !ranking2ScoreData.Category.Equals(other.Category) {
+		return false
+	}
+
+	if !ranking2ScoreData.Score.Equals(other.Score) {
 		return false
 	}
 
@@ -95,7 +110,7 @@ func (ranking2ScoreData *Ranking2ScoreData) FormatToString(indentationLevel int)
 	var b strings.Builder
 
 	b.WriteString("Ranking2ScoreData{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, ranking2ScoreData.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, ranking2ScoreData.StructureVersion))
 	b.WriteString(fmt.Sprintf("%sMisc: %d,\n", indentationValues, ranking2ScoreData.Misc))
 	b.WriteString(fmt.Sprintf("%sCategory: %d,\n", indentationValues, ranking2ScoreData.Category))
 	b.WriteString(fmt.Sprintf("%sScore: %d,\n", indentationValues, ranking2ScoreData.Score))

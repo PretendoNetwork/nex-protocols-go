@@ -6,26 +6,31 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // ServiceItemGetSupportIDParam holds data for the Service Item (Team Kirby Clash Deluxe) protocol
 type ServiceItemGetSupportIDParam struct {
-	nex.Structure
-	UniqueID uint32
-	Platform uint8
+	types.Structure
+	UniqueID *types.PrimitiveU32
+	Platform *types.PrimitiveU8
 }
 
-// ExtractFromStream extracts a ServiceItemGetSupportIDParam structure from a stream
-func (serviceItemGetSupportIDParam *ServiceItemGetSupportIDParam) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the ServiceItemGetSupportIDParam from the given readable
+func (serviceItemGetSupportIDParam *ServiceItemGetSupportIDParam) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	serviceItemGetSupportIDParam.UniqueID, err = stream.ReadUInt32LE()
+	if err = serviceItemGetSupportIDParam.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read ServiceItemGetSupportIDParam header. %s", err.Error())
+	}
+
+	err = serviceItemGetSupportIDParam.UniqueID.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemGetSupportIDParam.UniqueID from stream. %s", err.Error())
 	}
 
-	if serviceItemGetSupportIDParam.StructureVersion() >= 1 {
-		serviceItemGetSupportIDParam.Platform, err = stream.ReadUInt8()
+	if serviceItemGetSupportIDParam.StructureVersion >= 1 {
+	err = 	serviceItemGetSupportIDParam.Platform.ExtractFrom(readable)
 		if err != nil {
 			return fmt.Errorf("Failed to extract ServiceItemGetSupportIDParam.Platform from stream. %s", err.Error())
 		}
@@ -34,22 +39,28 @@ func (serviceItemGetSupportIDParam *ServiceItemGetSupportIDParam) ExtractFromStr
 	return nil
 }
 
-// Bytes encodes the ServiceItemGetSupportIDParam and returns a byte array
-func (serviceItemGetSupportIDParam *ServiceItemGetSupportIDParam) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt32LE(serviceItemGetSupportIDParam.UniqueID)
+// WriteTo writes the ServiceItemGetSupportIDParam to the given writable
+func (serviceItemGetSupportIDParam *ServiceItemGetSupportIDParam) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
 
-	if serviceItemGetSupportIDParam.StructureVersion() >= 1 {
-		stream.WriteUInt8(serviceItemGetSupportIDParam.Platform)
+	serviceItemGetSupportIDParam.UniqueID.WriteTo(contentWritable)
+
+	if serviceItemGetSupportIDParam.StructureVersion >= 1 {
+		serviceItemGetSupportIDParam.Platform.WriteTo(contentWritable)
 	}
 
-	return stream.Bytes()
+	content := contentWritable.Bytes()
+
+	rvcd.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // Copy returns a new copied instance of ServiceItemGetSupportIDParam
-func (serviceItemGetSupportIDParam *ServiceItemGetSupportIDParam) Copy() nex.StructureInterface {
+func (serviceItemGetSupportIDParam *ServiceItemGetSupportIDParam) Copy() types.RVType {
 	copied := NewServiceItemGetSupportIDParam()
 
-	copied.SetStructureVersion(serviceItemGetSupportIDParam.StructureVersion())
+	copied.StructureVersion = serviceItemGetSupportIDParam.StructureVersion
 
 	copied.UniqueID = serviceItemGetSupportIDParam.UniqueID
 	copied.Platform = serviceItemGetSupportIDParam.Platform
@@ -58,14 +69,18 @@ func (serviceItemGetSupportIDParam *ServiceItemGetSupportIDParam) Copy() nex.Str
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (serviceItemGetSupportIDParam *ServiceItemGetSupportIDParam) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*ServiceItemGetSupportIDParam)
-
-	if serviceItemGetSupportIDParam.StructureVersion() != other.StructureVersion() {
+func (serviceItemGetSupportIDParam *ServiceItemGetSupportIDParam) Equals(o types.RVType) bool {
+	if _, ok := o.(*ServiceItemGetSupportIDParam); !ok {
 		return false
 	}
 
-	if serviceItemGetSupportIDParam.UniqueID != other.UniqueID {
+	other := o.(*ServiceItemGetSupportIDParam)
+
+	if serviceItemGetSupportIDParam.StructureVersion != other.StructureVersion {
+		return false
+	}
+
+	if !serviceItemGetSupportIDParam.UniqueID.Equals(other.UniqueID) {
 		return false
 	}
 
@@ -85,10 +100,10 @@ func (serviceItemGetSupportIDParam *ServiceItemGetSupportIDParam) FormatToString
 	var b strings.Builder
 
 	b.WriteString("ServiceItemGetSupportIDParam{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, serviceItemGetSupportIDParam.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, serviceItemGetSupportIDParam.StructureVersion))
 	b.WriteString(fmt.Sprintf("%sUniqueID: %d,\n", indentationValues, serviceItemGetSupportIDParam.UniqueID))
 
-	if serviceItemGetSupportIDParam.StructureVersion() >= 1 {
+	if serviceItemGetSupportIDParam.StructureVersion >= 1 {
 		b.WriteString(fmt.Sprintf("%sPlatform: %d,\n", indentationValues, serviceItemGetSupportIDParam.Platform))
 	}
 

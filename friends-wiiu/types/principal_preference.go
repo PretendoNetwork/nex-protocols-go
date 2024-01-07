@@ -6,41 +6,52 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // PrincipalPreference contains unknown data
 type PrincipalPreference struct {
-	nex.Structure
-	*nex.Data
-	ShowOnlinePresence  bool
-	ShowCurrentTitle    bool
-	BlockFriendRequests bool
+	types.Structure
+	*types.Data
+	ShowOnlinePresence  *types.PrimitiveBool
+	ShowCurrentTitle    *types.PrimitiveBool
+	BlockFriendRequests *types.PrimitiveBool
 }
 
-// Bytes encodes the PrincipalPreference and returns a byte array
-func (principalPreference *PrincipalPreference) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteBool(principalPreference.ShowOnlinePresence)
-	stream.WriteBool(principalPreference.ShowCurrentTitle)
-	stream.WriteBool(principalPreference.BlockFriendRequests)
+// WriteTo writes the PrincipalPreference to the given writable
+func (principalPreference *PrincipalPreference) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
 
-	return stream.Bytes()
+	principalPreference.ShowOnlinePresence.WriteTo(contentWritable)
+	principalPreference.ShowCurrentTitle.WriteTo(contentWritable)
+	principalPreference.BlockFriendRequests.WriteTo(contentWritable)
+
+	content := contentWritable.Bytes()
+
+	principalPreference.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
-// ExtractFromStream extracts a PrincipalPreference structure from a stream
-func (principalPreference *PrincipalPreference) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the PrincipalPreference from the given readable
+func (principalPreference *PrincipalPreference) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	principalPreference.ShowOnlinePresence, err = stream.ReadBool()
+	if err = principalPreference.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read PrincipalPreference header. %s", err.Error())
+	}
+
+	err = principalPreference.ShowOnlinePresence.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract PrincipalPreference.ShowOnlinePresence. %s", err.Error())
 	}
 
-	principalPreference.ShowCurrentTitle, err = stream.ReadBool()
+	err = principalPreference.ShowCurrentTitle.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract PrincipalPreference.ShowCurrentTitle. %s", err.Error())
 	}
 
-	principalPreference.BlockFriendRequests, err = stream.ReadBool()
+	err = principalPreference.BlockFriendRequests.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract PrincipalPreference.BlockFriendRequests. %s", err.Error())
 	}
@@ -49,18 +60,12 @@ func (principalPreference *PrincipalPreference) ExtractFromStream(stream *nex.St
 }
 
 // Copy returns a new copied instance of PrincipalPreference
-func (principalPreference *PrincipalPreference) Copy() nex.StructureInterface {
+func (principalPreference *PrincipalPreference) Copy() types.RVType {
 	copied := NewPrincipalPreference()
 
-	copied.SetStructureVersion(principalPreference.StructureVersion())
+	copied.StructureVersion = principalPreference.StructureVersion
 
-	if principalPreference.ParentType() != nil {
-		copied.Data = principalPreference.ParentType().Copy().(*nex.Data)
-	} else {
-		copied.Data = nex.NewData()
-	}
-
-	copied.SetParentType(copied.Data)
+	copied.Data = principalPreference.Data.Copy().(*types.Data)
 
 	copied.ShowOnlinePresence = principalPreference.ShowOnlinePresence
 	copied.ShowCurrentTitle = principalPreference.ShowCurrentTitle
@@ -70,10 +75,14 @@ func (principalPreference *PrincipalPreference) Copy() nex.StructureInterface {
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (principalPreference *PrincipalPreference) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*PrincipalPreference)
+func (principalPreference *PrincipalPreference) Equals(o types.RVType) bool {
+	if _, ok := o.(*PrincipalPreference); !ok {
+		return false
+	}
 
-	if principalPreference.StructureVersion() != other.StructureVersion() {
+	other := o.(*PrincipalPreference)
+
+	if principalPreference.StructureVersion != other.StructureVersion {
 		return false
 	}
 
@@ -81,15 +90,15 @@ func (principalPreference *PrincipalPreference) Equals(structure nex.StructureIn
 		return false
 	}
 
-	if principalPreference.ShowOnlinePresence != other.ShowOnlinePresence {
+	if !principalPreference.ShowOnlinePresence.Equals(other.ShowOnlinePresence) {
 		return false
 	}
 
-	if principalPreference.ShowCurrentTitle != other.ShowCurrentTitle {
+	if !principalPreference.ShowCurrentTitle.Equals(other.ShowCurrentTitle) {
 		return false
 	}
 
-	if principalPreference.BlockFriendRequests != other.BlockFriendRequests {
+	if !principalPreference.BlockFriendRequests.Equals(other.BlockFriendRequests) {
 		return false
 	}
 
@@ -109,7 +118,7 @@ func (principalPreference *PrincipalPreference) FormatToString(indentationLevel 
 	var b strings.Builder
 
 	b.WriteString("PrincipalPreference{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, principalPreference.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, principalPreference.StructureVersion))
 	b.WriteString(fmt.Sprintf("%sShowOnlinePresence: %t,\n", indentationValues, principalPreference.ShowOnlinePresence))
 	b.WriteString(fmt.Sprintf("%sShowCurrentTitle: %t,\n", indentationValues, principalPreference.ShowCurrentTitle))
 	b.WriteString(fmt.Sprintf("%sBlockFriendRequests: %t\n", indentationValues, principalPreference.BlockFriendRequests))

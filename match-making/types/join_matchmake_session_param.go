@@ -9,71 +9,72 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // JoinMatchmakeSessionParam holds parameters for a matchmake session
 type JoinMatchmakeSessionParam struct {
-	nex.Structure
-	GID                          uint32
-	AdditionalParticipants       []*nex.PID
-	GIDForParticipationCheck     uint32
-	JoinMatchmakeSessionOption   uint32
-	JoinMatchmakeSessionBehavior uint8
+	types.Structure
+	GID                          *types.PrimitiveU32
+	AdditionalParticipants       *types.List[*types.PID]
+	GIDForParticipationCheck     *types.PrimitiveU32
+	JoinMatchmakeSessionOption   *types.PrimitiveU32
+	JoinMatchmakeSessionBehavior *types.PrimitiveU8
 	StrUserPassword              string
 	StrSystemPassword            string
 	JoinMessage                  string
-	ParticipationCount           uint16
-	ExtraParticipants            uint16
+	ParticipationCount           *types.PrimitiveU16
+	ExtraParticipants            *types.PrimitiveU16
 	BlockListParam               *MatchmakeBlockListParam // * NEX 4.0+ ? Not seen in Minecraft, which is 3.10.0
 }
 
-// ExtractFromStream extracts a JoinMatchmakeSessionParam structure from a stream
-func (joinMatchmakeSessionParam *JoinMatchmakeSessionParam) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the JoinMatchmakeSessionParam from the given readable
+func (joinMatchmakeSessionParam *JoinMatchmakeSessionParam) ExtractFrom(readable types.Readable) error {
 	matchmakingVersion := stream.Server.MatchMakingProtocolVersion()
 
 	var err error
 
-	joinMatchmakeSessionParam.GID, err = stream.ReadUInt32LE()
+	err = joinMatchmakeSessionParam.GID.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract JoinMatchmakeSessionParam.GID. %s", err.Error())
 	}
 
-	joinMatchmakeSessionParam.AdditionalParticipants, err = stream.ReadListPID()
+	err = joinMatchmakeSessionParam.AdditionalParticipants.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract JoinMatchmakeSessionParam.AdditionalParticipants. %s", err.Error())
 	}
 
-	joinMatchmakeSessionParam.GIDForParticipationCheck, err = stream.ReadUInt32LE()
+	err = joinMatchmakeSessionParam.GIDForParticipationCheck.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract JoinMatchmakeSessionParam.GIDForParticipationCheck. %s", err.Error())
 	}
 
-	joinMatchmakeSessionParam.JoinMatchmakeSessionOption, err = stream.ReadUInt32LE()
+	err = joinMatchmakeSessionParam.JoinMatchmakeSessionOption.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract JoinMatchmakeSessionParam.JoinMatchmakeSessionOption. %s", err.Error())
 	}
 
-	joinMatchmakeSessionParam.JoinMatchmakeSessionBehavior, err = stream.ReadUInt8()
+	err = joinMatchmakeSessionParam.JoinMatchmakeSessionBehavior.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract JoinMatchmakeSessionParam.JoinMatchmakeSessionBehavior. %s", err.Error())
 	}
 
-	joinMatchmakeSessionParam.StrUserPassword, err = stream.ReadString()
+	err = joinMatchmakeSessionParam.StrUserPassword.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract JoinMatchmakeSessionParam.StrUserPassword. %s", err.Error())
 	}
 
-	joinMatchmakeSessionParam.StrSystemPassword, err = stream.ReadString()
+	err = joinMatchmakeSessionParam.StrSystemPassword.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract JoinMatchmakeSessionParam.StrSystemPassword. %s", err.Error())
 	}
 
-	joinMatchmakeSessionParam.JoinMessage, err = stream.ReadString()
+	err = joinMatchmakeSessionParam.JoinMessage.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract JoinMatchmakeSessionParam.JoinMessage. %s", err.Error())
 	}
 
-	joinMatchmakeSessionParam.ParticipationCount, err = stream.ReadUInt16LE()
+	err = joinMatchmakeSessionParam.ParticipationCount.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract JoinMatchmakeSessionParam.ParticipationCount. %s", err.Error())
 	}
@@ -86,7 +87,7 @@ func (joinMatchmakeSessionParam *JoinMatchmakeSessionParam) ExtractFromStream(st
 	// * Assuming this to be 3.10.0
 	// * Not seen in Terraria, which is 3.8.3
 	if matchmakingVersion.GreaterOrEqual("3.10.0") {
-		joinMatchmakeSessionParam.ExtraParticipants, err = stream.ReadUInt16LE()
+	err = 	joinMatchmakeSessionParam.ExtraParticipants.ExtractFrom(readable)
 		if err != nil {
 			return fmt.Errorf("Failed to extract JoinMatchmakeSessionParam.ExtraParticipants. %s", err.Error())
 		}
@@ -107,13 +108,13 @@ func (joinMatchmakeSessionParam *JoinMatchmakeSessionParam) ExtractFromStream(st
 }
 
 // Copy returns a new copied instance of JoinMatchmakeSessionParam
-func (joinMatchmakeSessionParam *JoinMatchmakeSessionParam) Copy() nex.StructureInterface {
+func (joinMatchmakeSessionParam *JoinMatchmakeSessionParam) Copy() types.RVType {
 	copied := NewJoinMatchmakeSessionParam()
 
-	copied.SetStructureVersion(joinMatchmakeSessionParam.StructureVersion())
+	copied.StructureVersion = joinMatchmakeSessionParam.StructureVersion
 
 	copied.GID = joinMatchmakeSessionParam.GID
-	copied.AdditionalParticipants = make([]*nex.PID, len(joinMatchmakeSessionParam.AdditionalParticipants))
+	copied.AdditionalParticipants = make(*types.List[*types.PID], len(joinMatchmakeSessionParam.AdditionalParticipants))
 
 	for i := 0; i < len(joinMatchmakeSessionParam.AdditionalParticipants); i++ {
 		copied.AdditionalParticipants[i] = joinMatchmakeSessionParam.AdditionalParticipants[i].Copy()
@@ -128,22 +129,24 @@ func (joinMatchmakeSessionParam *JoinMatchmakeSessionParam) Copy() nex.Structure
 	copied.ParticipationCount = joinMatchmakeSessionParam.ParticipationCount
 	copied.ExtraParticipants = joinMatchmakeSessionParam.ExtraParticipants
 
-	if joinMatchmakeSessionParam.BlockListParam != nil {
-		copied.BlockListParam = joinMatchmakeSessionParam.BlockListParam.Copy().(*MatchmakeBlockListParam)
-	}
+	copied.BlockListParam = joinMatchmakeSessionParam.BlockListParam.Copy().(*MatchmakeBlockListParam)
 
 	return copied
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (joinMatchmakeSessionParam *JoinMatchmakeSessionParam) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*JoinMatchmakeSessionParam)
-
-	if joinMatchmakeSessionParam.StructureVersion() != other.StructureVersion() {
+func (joinMatchmakeSessionParam *JoinMatchmakeSessionParam) Equals(o types.RVType) bool {
+	if _, ok := o.(*JoinMatchmakeSessionParam); !ok {
 		return false
 	}
 
-	if joinMatchmakeSessionParam.GID != other.GID {
+	other := o.(*JoinMatchmakeSessionParam)
+
+	if joinMatchmakeSessionParam.StructureVersion != other.StructureVersion {
+		return false
+	}
+
+	if !joinMatchmakeSessionParam.GID.Equals(other.GID) {
 		return false
 	}
 
@@ -157,35 +160,35 @@ func (joinMatchmakeSessionParam *JoinMatchmakeSessionParam) Equals(structure nex
 		}
 	}
 
-	if joinMatchmakeSessionParam.GIDForParticipationCheck != other.GIDForParticipationCheck {
+	if !joinMatchmakeSessionParam.GIDForParticipationCheck.Equals(other.GIDForParticipationCheck) {
 		return false
 	}
 
-	if joinMatchmakeSessionParam.JoinMatchmakeSessionOption != other.JoinMatchmakeSessionOption {
+	if !joinMatchmakeSessionParam.JoinMatchmakeSessionOption.Equals(other.JoinMatchmakeSessionOption) {
 		return false
 	}
 
-	if joinMatchmakeSessionParam.JoinMatchmakeSessionBehavior != other.JoinMatchmakeSessionBehavior {
+	if !joinMatchmakeSessionParam.JoinMatchmakeSessionBehavior.Equals(other.JoinMatchmakeSessionBehavior) {
 		return false
 	}
 
-	if joinMatchmakeSessionParam.StrUserPassword != other.StrUserPassword {
+	if !joinMatchmakeSessionParam.StrUserPassword.Equals(other.StrUserPassword) {
 		return false
 	}
 
-	if joinMatchmakeSessionParam.StrSystemPassword != other.StrSystemPassword {
+	if !joinMatchmakeSessionParam.StrSystemPassword.Equals(other.StrSystemPassword) {
 		return false
 	}
 
-	if joinMatchmakeSessionParam.JoinMessage != other.JoinMessage {
+	if !joinMatchmakeSessionParam.JoinMessage.Equals(other.JoinMessage) {
 		return false
 	}
 
-	if joinMatchmakeSessionParam.ParticipationCount != other.ParticipationCount {
+	if !joinMatchmakeSessionParam.ParticipationCount.Equals(other.ParticipationCount) {
 		return false
 	}
 
-	if joinMatchmakeSessionParam.ExtraParticipants != other.ExtraParticipants {
+	if !joinMatchmakeSessionParam.ExtraParticipants.Equals(other.ExtraParticipants) {
 		return false
 	}
 
@@ -209,7 +212,7 @@ func (joinMatchmakeSessionParam *JoinMatchmakeSessionParam) FormatToString(inden
 	var b strings.Builder
 
 	b.WriteString("JoinMatchmakeSessionParam{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, joinMatchmakeSessionParam.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, joinMatchmakeSessionParam.StructureVersion))
 	b.WriteString(fmt.Sprintf("%sGID: %d,\n", indentationValues, joinMatchmakeSessionParam.GID))
 	b.WriteString(fmt.Sprintf("%sAdditionalParticipants: %v,\n", indentationValues, joinMatchmakeSessionParam.AdditionalParticipants))
 	b.WriteString(fmt.Sprintf("%sGIDForParticipationCheck: %d,\n", indentationValues, joinMatchmakeSessionParam.GIDForParticipationCheck))

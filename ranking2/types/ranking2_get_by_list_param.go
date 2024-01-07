@@ -6,49 +6,54 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // Ranking2GetByListParam holds data for the Ranking 2  protocol
 type Ranking2GetByListParam struct {
-	nex.Structure
-	Category           uint32
-	Offset             uint32
-	Length             uint32
-	SortFlags          uint32
-	OptionFlags        uint32
-	NumSeasonsToGoBack uint8
+	types.Structure
+	Category           *types.PrimitiveU32
+	Offset             *types.PrimitiveU32
+	Length             *types.PrimitiveU32
+	SortFlags          *types.PrimitiveU32
+	OptionFlags        *types.PrimitiveU32
+	NumSeasonsToGoBack *types.PrimitiveU8
 }
 
-// ExtractFromStream extracts a Ranking2GetByListParam structure from a stream
-func (ranking2GetByListParam *Ranking2GetByListParam) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the Ranking2GetByListParam from the given readable
+func (ranking2GetByListParam *Ranking2GetByListParam) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	ranking2GetByListParam.Category, err = stream.ReadUInt32LE()
+	if err = ranking2GetByListParam.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read Ranking2GetByListParam header. %s", err.Error())
+	}
+
+	err = ranking2GetByListParam.Category.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract Ranking2GetByListParam.Category from stream. %s", err.Error())
 	}
 
-	ranking2GetByListParam.Offset, err = stream.ReadUInt32LE()
+	err = ranking2GetByListParam.Offset.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract Ranking2GetByListParam.Offset from stream. %s", err.Error())
 	}
 
-	ranking2GetByListParam.Length, err = stream.ReadUInt32LE()
+	err = ranking2GetByListParam.Length.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract Ranking2GetByListParam.Length from stream. %s", err.Error())
 	}
 
-	ranking2GetByListParam.SortFlags, err = stream.ReadUInt32LE()
+	err = ranking2GetByListParam.SortFlags.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract Ranking2GetByListParam.SortFlags from stream. %s", err.Error())
 	}
 
-	ranking2GetByListParam.OptionFlags, err = stream.ReadUInt32LE()
+	err = ranking2GetByListParam.OptionFlags.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract Ranking2GetByListParam.OptionFlags from stream. %s", err.Error())
 	}
 
-	ranking2GetByListParam.NumSeasonsToGoBack, err = stream.ReadUInt8()
+	err = ranking2GetByListParam.NumSeasonsToGoBack.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract Ranking2GetByListParam.NumSeasonsToGoBack from stream. %s", err.Error())
 	}
@@ -56,23 +61,29 @@ func (ranking2GetByListParam *Ranking2GetByListParam) ExtractFromStream(stream *
 	return nil
 }
 
-// Bytes encodes the Ranking2GetByListParam and returns a byte array
-func (ranking2GetByListParam *Ranking2GetByListParam) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt32LE(ranking2GetByListParam.Category)
-	stream.WriteUInt32LE(ranking2GetByListParam.Offset)
-	stream.WriteUInt32LE(ranking2GetByListParam.Length)
-	stream.WriteUInt32LE(ranking2GetByListParam.SortFlags)
-	stream.WriteUInt32LE(ranking2GetByListParam.OptionFlags)
-	stream.WriteUInt8(ranking2GetByListParam.NumSeasonsToGoBack)
+// WriteTo writes the Ranking2GetByListParam to the given writable
+func (ranking2GetByListParam *Ranking2GetByListParam) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
 
-	return stream.Bytes()
+	ranking2GetByListParam.Category.WriteTo(contentWritable)
+	ranking2GetByListParam.Offset.WriteTo(contentWritable)
+	ranking2GetByListParam.Length.WriteTo(contentWritable)
+	ranking2GetByListParam.SortFlags.WriteTo(contentWritable)
+	ranking2GetByListParam.OptionFlags.WriteTo(contentWritable)
+	ranking2GetByListParam.NumSeasonsToGoBack.WriteTo(contentWritable)
+
+	content := contentWritable.Bytes()
+
+	ranking2GetByListParam.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // Copy returns a new copied instance of Ranking2GetByListParam
-func (ranking2GetByListParam *Ranking2GetByListParam) Copy() nex.StructureInterface {
+func (ranking2GetByListParam *Ranking2GetByListParam) Copy() types.RVType {
 	copied := NewRanking2GetByListParam()
 
-	copied.SetStructureVersion(ranking2GetByListParam.StructureVersion())
+	copied.StructureVersion = ranking2GetByListParam.StructureVersion
 
 	copied.Category = ranking2GetByListParam.Category
 	copied.Offset = ranking2GetByListParam.Offset
@@ -84,34 +95,38 @@ func (ranking2GetByListParam *Ranking2GetByListParam) Copy() nex.StructureInterf
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (ranking2GetByListParam *Ranking2GetByListParam) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*Ranking2GetByListParam)
-
-	if ranking2GetByListParam.StructureVersion() != other.StructureVersion() {
+func (ranking2GetByListParam *Ranking2GetByListParam) Equals(o types.RVType) bool {
+	if _, ok := o.(*Ranking2GetByListParam); !ok {
 		return false
 	}
 
-	if ranking2GetByListParam.Category != other.Category {
+	other := o.(*Ranking2GetByListParam)
+
+	if ranking2GetByListParam.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if ranking2GetByListParam.Offset != other.Offset {
+	if !ranking2GetByListParam.Category.Equals(other.Category) {
 		return false
 	}
 
-	if ranking2GetByListParam.Length != other.Length {
+	if !ranking2GetByListParam.Offset.Equals(other.Offset) {
 		return false
 	}
 
-	if ranking2GetByListParam.SortFlags != other.SortFlags {
+	if !ranking2GetByListParam.Length.Equals(other.Length) {
 		return false
 	}
 
-	if ranking2GetByListParam.OptionFlags != other.OptionFlags {
+	if !ranking2GetByListParam.SortFlags.Equals(other.SortFlags) {
 		return false
 	}
 
-	if ranking2GetByListParam.NumSeasonsToGoBack != other.NumSeasonsToGoBack {
+	if !ranking2GetByListParam.OptionFlags.Equals(other.OptionFlags) {
+		return false
+	}
+
+	if !ranking2GetByListParam.NumSeasonsToGoBack.Equals(other.NumSeasonsToGoBack) {
 		return false
 	}
 
@@ -131,7 +146,7 @@ func (ranking2GetByListParam *Ranking2GetByListParam) FormatToString(indentation
 	var b strings.Builder
 
 	b.WriteString("Ranking2GetByListParam{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, ranking2GetByListParam.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, ranking2GetByListParam.StructureVersion))
 	b.WriteString(fmt.Sprintf("%sCategory: %d,\n", indentationValues, ranking2GetByListParam.Category))
 	b.WriteString(fmt.Sprintf("%sOffset: %d,\n", indentationValues, ranking2GetByListParam.Offset))
 	b.WriteString(fmt.Sprintf("%sLength: %d,\n", indentationValues, ranking2GetByListParam.Length))

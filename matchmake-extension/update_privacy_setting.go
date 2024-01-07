@@ -5,10 +5,12 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
 func (protocol *Protocol) handleUpdatePrivacySetting(packet nex.PacketInterface) {
+	var err error
 	var errorCode uint32
 
 	if protocol.UpdatePrivacySetting == nil {
@@ -22,9 +24,10 @@ func (protocol *Protocol) handleUpdatePrivacySetting(packet nex.PacketInterface)
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.server)
+	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
-	onlineStatus, err := parametersStream.ReadBool()
+	onlineStatus := types.NewPrimitiveBool(false)
+	err = onlineStatus.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.UpdatePrivacySetting(fmt.Errorf("Failed to read onlineStatus from parameters. %s", err.Error()), packet, callID, false, false)
 		if errorCode != 0 {
@@ -34,7 +37,8 @@ func (protocol *Protocol) handleUpdatePrivacySetting(packet nex.PacketInterface)
 		return
 	}
 
-	participationCommunity, err := parametersStream.ReadBool()
+	participationCommunity := types.NewPrimitiveBool(false)
+	err = participationCommunity.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.UpdatePrivacySetting(fmt.Errorf("Failed to read participationCommunity from parameters. %s", err.Error()), packet, callID, false, false)
 		if errorCode != 0 {

@@ -5,11 +5,13 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 	service_item_wii_sports_club_types "github.com/PretendoNetwork/nex-protocols-go/service-item/wii-sports-club/types"
 )
 
 func (protocol *Protocol) handleGetPurchaseHistoryRequest(packet nex.PacketInterface) {
+	var err error
 	var errorCode uint32
 
 	if protocol.GetPurchaseHistoryRequest == nil {
@@ -23,9 +25,10 @@ func (protocol *Protocol) handleGetPurchaseHistoryRequest(packet nex.PacketInter
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.server)
+	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
-	getPurchaseHistoryParam, err := nex.StreamReadStructure(parametersStream, service_item_wii_sports_club_types.NewServiceItemGetPurchaseHistoryParam())
+	getPurchaseHistoryParam := service_item_wii_sports_club_types.NewServiceItemGetPurchaseHistoryParam()
+	err = getPurchaseHistoryParam.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.GetPurchaseHistoryRequest(fmt.Errorf("Failed to read getPurchaseHistoryParam from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {

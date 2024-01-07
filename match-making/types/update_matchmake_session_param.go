@@ -10,50 +10,55 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // UpdateMatchmakeSessionParam holds parameters for a matchmake session
 type UpdateMatchmakeSessionParam struct {
-	nex.Structure
-	GID                 uint32
-	ModificationFlag    uint32
-	Attributes          []uint32
-	OpenParticipation   bool
+	types.Structure
+	GID                 *types.PrimitiveU32
+	ModificationFlag    *types.PrimitiveU32
+	Attributes          *types.List[*types.PrimitiveU32]
+	OpenParticipation   *types.PrimitiveBool
 	ApplicationBuffer   []byte
-	ProgressScore       uint8
+	ProgressScore       *types.PrimitiveU8
 	MatchmakeParam      *MatchmakeParam
-	StartedTime         *nex.DateTime
+	StartedTime         *types.DateTime
 	UserPassword        string
-	GameMode            uint32
+	GameMode            *types.PrimitiveU32
 	Description         string
-	MinParticipants     uint16
-	MaxParticipants     uint16
-	MatchmakeSystemType uint32
-	ParticipationPolicy uint32
-	PolicyArgument      uint32
+	MinParticipants     *types.PrimitiveU16
+	MaxParticipants     *types.PrimitiveU16
+	MatchmakeSystemType *types.PrimitiveU32
+	ParticipationPolicy *types.PrimitiveU32
+	PolicyArgument      *types.PrimitiveU32
 	Codeword            string
 }
 
-// ExtractFromStream extracts a UpdateMatchmakeSessionParam structure from a stream
-func (updateMatchmakeSessionParam *UpdateMatchmakeSessionParam) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the UpdateMatchmakeSessionParam from the given readable
+func (updateMatchmakeSessionParam *UpdateMatchmakeSessionParam) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	updateMatchmakeSessionParam.GID, err = stream.ReadUInt32LE()
+	if err = updateMatchmakeSessionParam.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read UpdateMatchmakeSessionParam header. %s", err.Error())
+	}
+
+	err = updateMatchmakeSessionParam.GID.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract UpdateMatchmakeSessionParam.GID. %s", err.Error())
 	}
 
-	updateMatchmakeSessionParam.ModificationFlag, err = stream.ReadUInt32LE()
+	err = updateMatchmakeSessionParam.ModificationFlag.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract UpdateMatchmakeSessionParam.ModificationFlag. %s", err.Error())
 	}
 
-	updateMatchmakeSessionParam.Attributes, err = stream.ReadListUInt32LE()
+	err = updateMatchmakeSessionParam.Attributes.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract UpdateMatchmakeSessionParam.Attributes. %s", err.Error())
 	}
 
-	updateMatchmakeSessionParam.OpenParticipation, err = stream.ReadBool()
+	err = updateMatchmakeSessionParam.OpenParticipation.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract UpdateMatchmakeSessionParam.OpenParticipation. %s", err.Error())
 	}
@@ -63,62 +68,62 @@ func (updateMatchmakeSessionParam *UpdateMatchmakeSessionParam) ExtractFromStrea
 		return fmt.Errorf("Failed to extract UpdateMatchmakeSessionParam.ApplicationBuffer. %s", err.Error())
 	}
 
-	updateMatchmakeSessionParam.ProgressScore, err = stream.ReadUInt8()
+	err = updateMatchmakeSessionParam.ProgressScore.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract UpdateMatchmakeSessionParam.ProgressScore. %s", err.Error())
 	}
 
-	updateMatchmakeSessionParam.MatchmakeParam, err = nex.StreamReadStructure(stream, NewMatchmakeParam())
+	err = updateMatchmakeSessionParam.MatchmakeParam.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract UpdateMatchmakeSessionParam.MatchmakeParam. %s", err.Error())
 	}
 
-	updateMatchmakeSessionParam.StartedTime, err = stream.ReadDateTime()
+	err = updateMatchmakeSessionParam.StartedTime.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract UpdateMatchmakeSessionParam.StartedTime. %s", err.Error())
 	}
 
-	updateMatchmakeSessionParam.UserPassword, err = stream.ReadString()
+	err = updateMatchmakeSessionParam.UserPassword.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract UpdateMatchmakeSessionParam.UserPassword. %s", err.Error())
 	}
 
-	updateMatchmakeSessionParam.GameMode, err = stream.ReadUInt32LE()
+	err = updateMatchmakeSessionParam.GameMode.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract UpdateMatchmakeSessionParam.GameMode. %s", err.Error())
 	}
 
-	updateMatchmakeSessionParam.Description, err = stream.ReadString()
+	err = updateMatchmakeSessionParam.Description.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract UpdateMatchmakeSessionParam.Description. %s", err.Error())
 	}
 
-	updateMatchmakeSessionParam.MinParticipants, err = stream.ReadUInt16LE()
+	err = updateMatchmakeSessionParam.MinParticipants.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract UpdateMatchmakeSessionParam.MinParticipants. %s", err.Error())
 	}
 
-	updateMatchmakeSessionParam.MaxParticipants, err = stream.ReadUInt16LE()
+	err = updateMatchmakeSessionParam.MaxParticipants.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract UpdateMatchmakeSessionParam.MaxParticipants. %s", err.Error())
 	}
 
-	updateMatchmakeSessionParam.MatchmakeSystemType, err = stream.ReadUInt32LE()
+	err = updateMatchmakeSessionParam.MatchmakeSystemType.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract UpdateMatchmakeSessionParam.MatchmakeSystemType. %s", err.Error())
 	}
 
-	updateMatchmakeSessionParam.ParticipationPolicy, err = stream.ReadUInt32LE()
+	err = updateMatchmakeSessionParam.ParticipationPolicy.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract UpdateMatchmakeSessionParam.ParticipationPolicy. %s", err.Error())
 	}
 
-	updateMatchmakeSessionParam.PolicyArgument, err = stream.ReadUInt32LE()
+	err = updateMatchmakeSessionParam.PolicyArgument.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract UpdateMatchmakeSessionParam.PolicyArgument. %s", err.Error())
 	}
 
-	updateMatchmakeSessionParam.Codeword, err = stream.ReadString()
+	err = updateMatchmakeSessionParam.Codeword.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract UpdateMatchmakeSessionParam.Codeword. %s", err.Error())
 	}
@@ -127,14 +132,14 @@ func (updateMatchmakeSessionParam *UpdateMatchmakeSessionParam) ExtractFromStrea
 }
 
 // Copy returns a new copied instance of UpdateMatchmakeSessionParam
-func (updateMatchmakeSessionParam *UpdateMatchmakeSessionParam) Copy() nex.StructureInterface {
+func (updateMatchmakeSessionParam *UpdateMatchmakeSessionParam) Copy() types.RVType {
 	copied := NewUpdateMatchmakeSessionParam()
 
-	copied.SetStructureVersion(updateMatchmakeSessionParam.StructureVersion())
+	copied.StructureVersion = updateMatchmakeSessionParam.StructureVersion
 
 	copied.GID = updateMatchmakeSessionParam.GID
 	copied.ModificationFlag = updateMatchmakeSessionParam.ModificationFlag
-	copied.Attributes = make([]uint32, len(updateMatchmakeSessionParam.Attributes))
+	copied.Attributes = make(*types.List[*types.PrimitiveU32], len(updateMatchmakeSessionParam.Attributes))
 
 	copy(copied.Attributes, updateMatchmakeSessionParam.Attributes)
 
@@ -145,13 +150,9 @@ func (updateMatchmakeSessionParam *UpdateMatchmakeSessionParam) Copy() nex.Struc
 
 	copied.ProgressScore = updateMatchmakeSessionParam.ProgressScore
 
-	if updateMatchmakeSessionParam.MatchmakeParam != nil {
-		copied.MatchmakeParam = updateMatchmakeSessionParam.MatchmakeParam.Copy().(*MatchmakeParam)
-	}
+	copied.MatchmakeParam = updateMatchmakeSessionParam.MatchmakeParam.Copy().(*MatchmakeParam)
 
-	if updateMatchmakeSessionParam.StartedTime != nil {
-		copied.StartedTime = updateMatchmakeSessionParam.StartedTime.Copy()
-	}
+	copied.StartedTime = updateMatchmakeSessionParam.StartedTime.Copy()
 
 	copied.UserPassword = updateMatchmakeSessionParam.UserPassword
 	copied.GameMode = updateMatchmakeSessionParam.GameMode
@@ -167,18 +168,22 @@ func (updateMatchmakeSessionParam *UpdateMatchmakeSessionParam) Copy() nex.Struc
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (updateMatchmakeSessionParam *UpdateMatchmakeSessionParam) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*UpdateMatchmakeSessionParam)
-
-	if updateMatchmakeSessionParam.StructureVersion() != other.StructureVersion() {
+func (updateMatchmakeSessionParam *UpdateMatchmakeSessionParam) Equals(o types.RVType) bool {
+	if _, ok := o.(*UpdateMatchmakeSessionParam); !ok {
 		return false
 	}
 
-	if updateMatchmakeSessionParam.GID != other.GID {
+	other := o.(*UpdateMatchmakeSessionParam)
+
+	if updateMatchmakeSessionParam.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if updateMatchmakeSessionParam.ModificationFlag != other.ModificationFlag {
+	if !updateMatchmakeSessionParam.GID.Equals(other.GID) {
+		return false
+	}
+
+	if !updateMatchmakeSessionParam.ModificationFlag.Equals(other.ModificationFlag) {
 		return false
 	}
 
@@ -192,23 +197,15 @@ func (updateMatchmakeSessionParam *UpdateMatchmakeSessionParam) Equals(structure
 		}
 	}
 
-	if updateMatchmakeSessionParam.OpenParticipation != other.OpenParticipation {
+	if !updateMatchmakeSessionParam.OpenParticipation.Equals(other.OpenParticipation) {
 		return false
 	}
 
-	if !bytes.Equal(updateMatchmakeSessionParam.ApplicationBuffer, other.ApplicationBuffer) {
+	if !updateMatchmakeSessionParam.ApplicationBuffer.Equals(other.ApplicationBuffer) {
 		return false
 	}
 
-	if updateMatchmakeSessionParam.ProgressScore != other.ProgressScore {
-		return false
-	}
-
-	if updateMatchmakeSessionParam.MatchmakeParam != nil && other.MatchmakeParam == nil {
-		return false
-	}
-
-	if updateMatchmakeSessionParam.MatchmakeParam == nil && other.MatchmakeParam != nil {
+	if !updateMatchmakeSessionParam.ProgressScore.Equals(other.ProgressScore) {
 		return false
 	}
 
@@ -218,43 +215,43 @@ func (updateMatchmakeSessionParam *UpdateMatchmakeSessionParam) Equals(structure
 		}
 	}
 
-	if updateMatchmakeSessionParam.StartedTime != other.StartedTime {
+	if !updateMatchmakeSessionParam.StartedTime.Equals(other.StartedTime) {
 		return false
 	}
 
-	if updateMatchmakeSessionParam.UserPassword != other.UserPassword {
+	if !updateMatchmakeSessionParam.UserPassword.Equals(other.UserPassword) {
 		return false
 	}
 
-	if updateMatchmakeSessionParam.GameMode != other.GameMode {
+	if !updateMatchmakeSessionParam.GameMode.Equals(other.GameMode) {
 		return false
 	}
 
-	if updateMatchmakeSessionParam.Description != other.Description {
+	if !updateMatchmakeSessionParam.Description.Equals(other.Description) {
 		return false
 	}
 
-	if updateMatchmakeSessionParam.MinParticipants != other.MinParticipants {
+	if !updateMatchmakeSessionParam.MinParticipants.Equals(other.MinParticipants) {
 		return false
 	}
 
-	if updateMatchmakeSessionParam.MaxParticipants != other.MaxParticipants {
+	if !updateMatchmakeSessionParam.MaxParticipants.Equals(other.MaxParticipants) {
 		return false
 	}
 
-	if updateMatchmakeSessionParam.MatchmakeSystemType != other.MatchmakeSystemType {
+	if !updateMatchmakeSessionParam.MatchmakeSystemType.Equals(other.MatchmakeSystemType) {
 		return false
 	}
 
-	if updateMatchmakeSessionParam.ParticipationPolicy != other.ParticipationPolicy {
+	if !updateMatchmakeSessionParam.ParticipationPolicy.Equals(other.ParticipationPolicy) {
 		return false
 	}
 
-	if updateMatchmakeSessionParam.PolicyArgument != other.PolicyArgument {
+	if !updateMatchmakeSessionParam.PolicyArgument.Equals(other.PolicyArgument) {
 		return false
 	}
 
-	if updateMatchmakeSessionParam.Codeword != other.Codeword {
+	if !updateMatchmakeSessionParam.Codeword.Equals(other.Codeword) {
 		return false
 	}
 
@@ -274,7 +271,7 @@ func (updateMatchmakeSessionParam *UpdateMatchmakeSessionParam) FormatToString(i
 	var b strings.Builder
 
 	b.WriteString("UpdateMatchmakeSessionParam{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, updateMatchmakeSessionParam.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, updateMatchmakeSessionParam.StructureVersion))
 	b.WriteString(fmt.Sprintf("%sGID: %d,\n", indentationValues, updateMatchmakeSessionParam.GID))
 	b.WriteString(fmt.Sprintf("%sModificationFlag: %d,\n", indentationValues, updateMatchmakeSessionParam.ModificationFlag))
 	b.WriteString(fmt.Sprintf("%sAttributes: %v,\n", indentationValues, updateMatchmakeSessionParam.Attributes))

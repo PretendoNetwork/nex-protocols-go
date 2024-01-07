@@ -10,37 +10,42 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // PersistentGathering holds parameters for a matchmake session
 type PersistentGathering struct {
-	nex.Structure
+	types.Structure
 	*Gathering
-	CommunityType          uint32
+	CommunityType          *types.PrimitiveU32
 	Password               string
-	Attribs                []uint32
+	Attribs                *types.List[*types.PrimitiveU32]
 	ApplicationBuffer      []byte
-	ParticipationStartDate *nex.DateTime
-	ParticipationEndDate   *nex.DateTime
-	MatchmakeSessionCount  uint32
-	ParticipationCount     uint32
+	ParticipationStartDate *types.DateTime
+	ParticipationEndDate   *types.DateTime
+	MatchmakeSessionCount  *types.PrimitiveU32
+	ParticipationCount     *types.PrimitiveU32
 }
 
-// ExtractFromStream extracts a PersistentGathering structure from a stream
-func (persistentGathering *PersistentGathering) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the PersistentGathering from the given readable
+func (persistentGathering *PersistentGathering) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	persistentGathering.CommunityType, err = stream.ReadUInt32LE()
+	if err = persistentGathering.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read PersistentGathering header. %s", err.Error())
+	}
+
+	err = persistentGathering.CommunityType.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract PersistentGathering.CommunityType. %s", err.Error())
 	}
 
-	persistentGathering.Password, err = stream.ReadString()
+	err = persistentGathering.Password.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract PersistentGathering.Password. %s", err.Error())
 	}
 
-	persistentGathering.Attribs, err = stream.ReadListUInt32LE()
+	err = persistentGathering.Attribs.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract PersistentGathering.Attribs. %s", err.Error())
 	}
@@ -50,22 +55,22 @@ func (persistentGathering *PersistentGathering) ExtractFromStream(stream *nex.St
 		return fmt.Errorf("Failed to extract PersistentGathering.ApplicationBuffer. %s", err.Error())
 	}
 
-	persistentGathering.ParticipationStartDate, err = stream.ReadDateTime()
+	err = persistentGathering.ParticipationStartDate.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract PersistentGathering.ParticipationStartDate. %s", err.Error())
 	}
 
-	persistentGathering.ParticipationEndDate, err = stream.ReadDateTime()
+	err = persistentGathering.ParticipationEndDate.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract PersistentGathering.ParticipationEndDate. %s", err.Error())
 	}
 
-	persistentGathering.MatchmakeSessionCount, err = stream.ReadUInt32LE()
+	err = persistentGathering.MatchmakeSessionCount.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract PersistentGathering.MatchmakeSessionCount. %s", err.Error())
 	}
 
-	persistentGathering.ParticipationCount, err = stream.ReadUInt32LE()
+	err = persistentGathering.ParticipationCount.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract PersistentGathering.ParticipationCount. %s", err.Error())
 	}
@@ -74,16 +79,15 @@ func (persistentGathering *PersistentGathering) ExtractFromStream(stream *nex.St
 }
 
 // Copy returns a new copied instance of PersistentGathering
-func (persistentGathering *PersistentGathering) Copy() nex.StructureInterface {
+func (persistentGathering *PersistentGathering) Copy() types.RVType {
 	copied := NewPersistentGathering()
 
-	copied.SetStructureVersion(persistentGathering.StructureVersion())
+	copied.StructureVersion = persistentGathering.StructureVersion
 
 	copied.Gathering = persistentGathering.Gathering.Copy().(*Gathering)
-	copied.SetParentType(copied.Gathering)
 	copied.CommunityType = persistentGathering.CommunityType
 	copied.Password = persistentGathering.Password
-	copied.Attribs = make([]uint32, len(persistentGathering.Attribs))
+	copied.Attribs = make(*types.List[*types.PrimitiveU32], len(persistentGathering.Attribs))
 
 	copy(copied.Attribs, persistentGathering.Attribs)
 
@@ -91,13 +95,9 @@ func (persistentGathering *PersistentGathering) Copy() nex.StructureInterface {
 
 	copy(copied.ApplicationBuffer, persistentGathering.ApplicationBuffer)
 
-	if persistentGathering.ParticipationStartDate != nil {
-		copied.ParticipationStartDate = persistentGathering.ParticipationStartDate.Copy()
-	}
+	copied.ParticipationStartDate = persistentGathering.ParticipationStartDate.Copy()
 
-	if persistentGathering.ParticipationEndDate != nil {
-		copied.ParticipationEndDate = persistentGathering.ParticipationEndDate.Copy()
-	}
+	copied.ParticipationEndDate = persistentGathering.ParticipationEndDate.Copy()
 
 	copied.MatchmakeSessionCount = persistentGathering.MatchmakeSessionCount
 	copied.ParticipationCount = persistentGathering.ParticipationCount
@@ -106,10 +106,14 @@ func (persistentGathering *PersistentGathering) Copy() nex.StructureInterface {
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (persistentGathering *PersistentGathering) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*PersistentGathering)
+func (persistentGathering *PersistentGathering) Equals(o types.RVType) bool {
+	if _, ok := o.(*PersistentGathering); !ok {
+		return false
+	}
 
-	if persistentGathering.StructureVersion() != other.StructureVersion() {
+	other := o.(*PersistentGathering)
+
+	if persistentGathering.StructureVersion != other.StructureVersion {
 		return false
 	}
 
@@ -117,11 +121,11 @@ func (persistentGathering *PersistentGathering) Equals(structure nex.StructureIn
 		return false
 	}
 
-	if persistentGathering.CommunityType != other.CommunityType {
+	if !persistentGathering.CommunityType.Equals(other.CommunityType) {
 		return false
 	}
 
-	if persistentGathering.Password != other.Password {
+	if !persistentGathering.Password.Equals(other.Password) {
 		return false
 	}
 
@@ -135,15 +139,7 @@ func (persistentGathering *PersistentGathering) Equals(structure nex.StructureIn
 		}
 	}
 
-	if !bytes.Equal(persistentGathering.ApplicationBuffer, other.ApplicationBuffer) {
-		return false
-	}
-
-	if persistentGathering.ParticipationStartDate != nil && other.ParticipationStartDate == nil {
-		return false
-	}
-
-	if persistentGathering.ParticipationStartDate == nil && other.ParticipationStartDate != nil {
+	if !persistentGathering.ApplicationBuffer.Equals(other.ApplicationBuffer) {
 		return false
 	}
 
@@ -153,25 +149,17 @@ func (persistentGathering *PersistentGathering) Equals(structure nex.StructureIn
 		}
 	}
 
-	if persistentGathering.ParticipationEndDate != nil && other.ParticipationEndDate == nil {
-		return false
-	}
-
-	if persistentGathering.ParticipationEndDate == nil && other.ParticipationEndDate != nil {
-		return false
-	}
-
 	if persistentGathering.ParticipationEndDate != nil && other.ParticipationEndDate != nil {
 		if persistentGathering.ParticipationEndDate.Equals(other.ParticipationEndDate) {
 			return false
 		}
 	}
 
-	if persistentGathering.MatchmakeSessionCount != other.MatchmakeSessionCount {
+	if !persistentGathering.MatchmakeSessionCount.Equals(other.MatchmakeSessionCount) {
 		return false
 	}
 
-	if persistentGathering.ParticipationCount != other.ParticipationCount {
+	if !persistentGathering.ParticipationCount.Equals(other.ParticipationCount) {
 		return false
 	}
 
@@ -192,7 +180,7 @@ func (persistentGathering *PersistentGathering) FormatToString(indentationLevel 
 
 	b.WriteString("PersistentGathering{\n")
 	b.WriteString(fmt.Sprintf("%sParentType: %s,\n", indentationValues, persistentGathering.ParentType().FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, persistentGathering.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, persistentGathering.StructureVersion))
 	b.WriteString(fmt.Sprintf("%sCommunityType: %d,\n", indentationValues, persistentGathering.CommunityType))
 	b.WriteString(fmt.Sprintf("%sPassword: %q,\n", indentationValues, persistentGathering.Password))
 	b.WriteString(fmt.Sprintf("%sAttribs: %v,\n", indentationValues, persistentGathering.Attribs))

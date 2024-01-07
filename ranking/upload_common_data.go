@@ -5,10 +5,12 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
 func (protocol *Protocol) handleUploadCommonData(packet nex.PacketInterface) {
+	var err error
 	var errorCode uint32
 
 	if protocol.UploadCommonData == nil {
@@ -22,9 +24,10 @@ func (protocol *Protocol) handleUploadCommonData(packet nex.PacketInterface) {
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.server)
+	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
-	commonData, err := parametersStream.ReadBuffer()
+	commonData := types.NewBuffer(nil)
+	err = commonData.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.UploadCommonData(fmt.Errorf("Failed to read commonData from parameters. %s", err.Error()), packet, callID, nil, 0)
 		if errorCode != 0 {
@@ -34,7 +37,8 @@ func (protocol *Protocol) handleUploadCommonData(packet nex.PacketInterface) {
 		return
 	}
 
-	uniqueID, err := parametersStream.ReadUInt64LE()
+	uniqueID := types.NewPrimitiveU64(0)
+	err = uniqueID.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.UploadCommonData(fmt.Errorf("Failed to read uniqueID from parameters. %s", err.Error()), packet, callID, nil, 0)
 		if errorCode != 0 {

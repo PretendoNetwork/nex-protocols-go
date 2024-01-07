@@ -5,26 +5,30 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // DataStoreFightingPowerScore is a data structure used by the DataStore Super Smash Bros. 4 protocol
 type DataStoreFightingPowerScore struct {
-	nex.Structure
-	Score uint32
-	Rank  uint32
+	types.Structure
+	Score *types.PrimitiveU32
+	Rank  *types.PrimitiveU32
 }
 
-// ExtractFromStream extracts a DataStoreFightingPowerScore structure from a stream
-func (dataStoreFightingPowerScore *DataStoreFightingPowerScore) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the DataStoreFightingPowerScore from the given readable
+func (dataStoreFightingPowerScore *DataStoreFightingPowerScore) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	dataStoreFightingPowerScore.Score, err = stream.ReadUInt32LE()
+	if err = dataStoreFightingPowerScore.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read DataStoreFightingPowerScore header. %s", err.Error())
+	}
+
+	err = dataStoreFightingPowerScore.Score.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreFightingPowerScore.Score. %s", err.Error())
 	}
 
-	dataStoreFightingPowerScore.Rank, err = stream.ReadUInt32LE()
+	err = dataStoreFightingPowerScore.Rank.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreFightingPowerScore.Rank. %s", err.Error())
 	}
@@ -32,39 +36,49 @@ func (dataStoreFightingPowerScore *DataStoreFightingPowerScore) ExtractFromStrea
 	return nil
 }
 
-// Bytes encodes the DataStoreFightingPowerScore and returns a byte array
-func (dataStoreFightingPowerScore *DataStoreFightingPowerScore) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt32LE(dataStoreFightingPowerScore.Score)
-	stream.WriteUInt32LE(dataStoreFightingPowerScore.Rank)
+// WriteTo writes the DataStoreFightingPowerScore to the given writable
+func (dataStoreFightingPowerScore *DataStoreFightingPowerScore) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
 
-	return stream.Bytes()
+	dataStoreFightingPowerScore.Score.WriteTo(contentWritable)
+	dataStoreFightingPowerScore.Rank.WriteTo(contentWritable)
+
+	content := contentWritable.Bytes()
+
+	dataStoreFightingPowerScore.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // Copy returns a new copied instance of DataStoreFightingPowerScore
-func (dataStoreFightingPowerScore *DataStoreFightingPowerScore) Copy() nex.StructureInterface {
+func (dataStoreFightingPowerScore *DataStoreFightingPowerScore) Copy() types.RVType {
 	copied := NewDataStoreFightingPowerScore()
 
-	copied.SetStructureVersion(dataStoreFightingPowerScore.StructureVersion())
+	copied.StructureVersion = dataStoreFightingPowerScore.StructureVersion
 
-	copied.Score = dataStoreFightingPowerScore.Score
-	copied.Rank = dataStoreFightingPowerScore.Rank
+	copied.Score = dataStoreFightingPowerScore.Score.Copy().(*types.PrimitiveU32)
+	copied.Rank = dataStoreFightingPowerScore.Rank.Copy().(*types.PrimitiveU32)
 
 	return copied
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (dataStoreFightingPowerScore *DataStoreFightingPowerScore) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*DataStoreFightingPowerScore)
-
-	if dataStoreFightingPowerScore.StructureVersion() != other.StructureVersion() {
+func (dataStoreFightingPowerScore *DataStoreFightingPowerScore) Equals(o types.RVType) bool {
+	if _, ok := o.(*DataStoreFightingPowerScore); !ok {
 		return false
 	}
 
-	if dataStoreFightingPowerScore.Score != other.Score {
+	other := o.(*DataStoreFightingPowerScore)
+
+	if dataStoreFightingPowerScore.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if dataStoreFightingPowerScore.Rank != other.Rank {
+	if !dataStoreFightingPowerScore.Score.Equals(other.Score) {
+		return false
+	}
+
+	if !dataStoreFightingPowerScore.Rank.Equals(other.Rank) {
 		return false
 	}
 
@@ -84,9 +98,9 @@ func (dataStoreFightingPowerScore *DataStoreFightingPowerScore) FormatToString(i
 	var b strings.Builder
 
 	b.WriteString("DataStoreFightingPowerScore{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, dataStoreFightingPowerScore.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sScore: %d,\n", indentationValues, dataStoreFightingPowerScore.Score))
-	b.WriteString(fmt.Sprintf("%sRank: %d\n", indentationValues, dataStoreFightingPowerScore.Rank))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, dataStoreFightingPowerScore.StructureVersion))
+	b.WriteString(fmt.Sprintf("%sScore: %s,\n", indentationValues, dataStoreFightingPowerScore.Score))
+	b.WriteString(fmt.Sprintf("%sRank: %s\n", indentationValues, dataStoreFightingPowerScore.Rank))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -94,5 +108,8 @@ func (dataStoreFightingPowerScore *DataStoreFightingPowerScore) FormatToString(i
 
 // NewDataStoreFightingPowerScore returns a new DataStoreFightingPowerScore
 func NewDataStoreFightingPowerScore() *DataStoreFightingPowerScore {
-	return &DataStoreFightingPowerScore{}
+	return &DataStoreFightingPowerScore{
+		Score: types.NewPrimitiveU32(0),
+		Rank: types.NewPrimitiveU32(0),
+	}
 }

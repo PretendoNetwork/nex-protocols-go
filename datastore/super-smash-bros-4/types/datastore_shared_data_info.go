@@ -7,42 +7,47 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // DataStoreSharedDataInfo is a data structure used by the DataStore Super Smash Bros. 4 protocol
 type DataStoreSharedDataInfo struct {
-	nex.Structure
-	DataID      uint64
-	OwnerID     uint32
-	DataType    uint8
+	types.Structure
+	DataID      *types.PrimitiveU64
+	OwnerID     *types.PrimitiveU32
+	DataType    *types.PrimitiveU8
 	Comment     string
 	MetaBinary  []byte
 	Profile     []byte
-	Rating      int64
-	CreatedTime *nex.DateTime
+	Rating      *types.PrimitiveS64
+	CreatedTime *types.DateTime
 	Info        *DataStoreFileServerObjectInfo
 }
 
-// ExtractFromStream extracts a DataStoreSharedDataInfo structure from a stream
-func (dataStoreSharedDataInfo *DataStoreSharedDataInfo) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the DataStoreSharedDataInfo from the given readable
+func (dataStoreSharedDataInfo *DataStoreSharedDataInfo) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	dataStoreSharedDataInfo.DataID, err = stream.ReadUInt64LE()
+	if err = dataStoreSharedDataInfo.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read DataStoreSharedDataInfo header. %s", err.Error())
+	}
+
+	err = dataStoreSharedDataInfo.DataID.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreSharedDataInfo.DataID. %s", err.Error())
 	}
 
-	dataStoreSharedDataInfo.OwnerID, err = stream.ReadUInt32LE()
+	err = dataStoreSharedDataInfo.OwnerID.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreSharedDataInfo.OwnerID. %s", err.Error())
 	}
 
-	dataStoreSharedDataInfo.DataType, err = stream.ReadUInt8()
+	err = dataStoreSharedDataInfo.DataType.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreSharedDataInfo.DataType. %s", err.Error())
 	}
 
-	dataStoreSharedDataInfo.Comment, err = stream.ReadString()
+	err = dataStoreSharedDataInfo.Comment.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreSharedDataInfo.Comment. %s", err.Error())
 	}
@@ -57,17 +62,17 @@ func (dataStoreSharedDataInfo *DataStoreSharedDataInfo) ExtractFromStream(stream
 		return fmt.Errorf("Failed to extract DataStoreSharedDataInfo.MetaBinary. %s", err.Error())
 	}
 
-	dataStoreSharedDataInfo.Rating, err = stream.ReadInt64LE()
+	err = dataStoreSharedDataInfo.Rating.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreSharedDataInfo.Rating. %s", err.Error())
 	}
 
-	dataStoreSharedDataInfo.CreatedTime, err = stream.ReadDateTime()
+	err = dataStoreSharedDataInfo.CreatedTime.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreSharedDataInfo.CreatedTime. %s", err.Error())
 	}
 
-	dataStoreSharedDataInfo.Info, err = nex.StreamReadStructure(stream, NewDataStoreFileServerObjectInfo())
+	err = dataStoreSharedDataInfo.Info.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreSharedDataInfo.Info. %s", err.Error())
 	}
@@ -75,26 +80,32 @@ func (dataStoreSharedDataInfo *DataStoreSharedDataInfo) ExtractFromStream(stream
 	return nil
 }
 
-// Bytes encodes the DataStoreSharedDataInfo and returns a byte array
-func (dataStoreSharedDataInfo *DataStoreSharedDataInfo) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt64LE(dataStoreSharedDataInfo.DataID)
-	stream.WriteUInt32LE(dataStoreSharedDataInfo.OwnerID)
-	stream.WriteUInt8(dataStoreSharedDataInfo.DataType)
-	stream.WriteString(dataStoreSharedDataInfo.Comment)
+// WriteTo writes the DataStoreSharedDataInfo to the given writable
+func (dataStoreSharedDataInfo *DataStoreSharedDataInfo) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
+
+	dataStoreSharedDataInfo.DataID.WriteTo(contentWritable)
+	dataStoreSharedDataInfo.OwnerID.WriteTo(contentWritable)
+	dataStoreSharedDataInfo.DataType.WriteTo(contentWritable)
+	dataStoreSharedDataInfo.Comment.WriteTo(contentWritable)
 	stream.WriteQBuffer(dataStoreSharedDataInfo.MetaBinary)
 	stream.WriteQBuffer(dataStoreSharedDataInfo.Profile)
-	stream.WriteInt64LE(dataStoreSharedDataInfo.Rating)
-	stream.WriteDateTime(dataStoreSharedDataInfo.CreatedTime)
-	stream.WriteStructure(dataStoreSharedDataInfo.Info)
+	dataStoreSharedDataInfo.Rating.WriteTo(contentWritable)
+	dataStoreSharedDataInfo.CreatedTime.WriteTo(contentWritable)
+	dataStoreSharedDataInfo.Info.WriteTo(contentWritable)
 
-	return stream.Bytes()
+	content := contentWritable.Bytes()
+
+	dataStoreSharedDataInfo.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // Copy returns a new copied instance of DataStoreSharedDataInfo
-func (dataStoreSharedDataInfo *DataStoreSharedDataInfo) Copy() nex.StructureInterface {
+func (dataStoreSharedDataInfo *DataStoreSharedDataInfo) Copy() types.RVType {
 	copied := NewDataStoreSharedDataInfo()
 
-	copied.SetStructureVersion(dataStoreSharedDataInfo.StructureVersion())
+	copied.StructureVersion = dataStoreSharedDataInfo.StructureVersion
 
 	copied.DataID = dataStoreSharedDataInfo.DataID
 	copied.OwnerID = dataStoreSharedDataInfo.OwnerID
@@ -116,42 +127,46 @@ func (dataStoreSharedDataInfo *DataStoreSharedDataInfo) Copy() nex.StructureInte
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (dataStoreSharedDataInfo *DataStoreSharedDataInfo) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*DataStoreSharedDataInfo)
-
-	if dataStoreSharedDataInfo.StructureVersion() != other.StructureVersion() {
+func (dataStoreSharedDataInfo *DataStoreSharedDataInfo) Equals(o types.RVType) bool {
+	if _, ok := o.(*DataStoreSharedDataInfo); !ok {
 		return false
 	}
 
-	if dataStoreSharedDataInfo.DataType != other.DataType {
+	other := o.(*DataStoreSharedDataInfo)
+
+	if dataStoreSharedDataInfo.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if dataStoreSharedDataInfo.DataID != other.DataID {
+	if !dataStoreSharedDataInfo.DataType.Equals(other.DataType) {
 		return false
 	}
 
-	if dataStoreSharedDataInfo.OwnerID != other.OwnerID {
+	if !dataStoreSharedDataInfo.DataID.Equals(other.DataID) {
 		return false
 	}
 
-	if dataStoreSharedDataInfo.DataType != other.DataType {
+	if !dataStoreSharedDataInfo.OwnerID.Equals(other.OwnerID) {
 		return false
 	}
 
-	if dataStoreSharedDataInfo.Comment != other.Comment {
+	if !dataStoreSharedDataInfo.DataType.Equals(other.DataType) {
 		return false
 	}
 
-	if !bytes.Equal(dataStoreSharedDataInfo.MetaBinary, other.MetaBinary) {
+	if !dataStoreSharedDataInfo.Comment.Equals(other.Comment) {
 		return false
 	}
 
-	if !bytes.Equal(dataStoreSharedDataInfo.Profile, other.Profile) {
+	if !dataStoreSharedDataInfo.MetaBinary.Equals(other.MetaBinary) {
 		return false
 	}
 
-	if dataStoreSharedDataInfo.Rating != other.Rating {
+	if !dataStoreSharedDataInfo.Profile.Equals(other.Profile) {
+		return false
+	}
+
+	if !dataStoreSharedDataInfo.Rating.Equals(other.Rating) {
 		return false
 	}
 
@@ -179,7 +194,7 @@ func (dataStoreSharedDataInfo *DataStoreSharedDataInfo) FormatToString(indentati
 	var b strings.Builder
 
 	b.WriteString("DataStoreSharedDataInfo{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, dataStoreSharedDataInfo.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, dataStoreSharedDataInfo.StructureVersion))
 	b.WriteString(fmt.Sprintf("%sDataID: %d,\n", indentationValues, dataStoreSharedDataInfo.DataID))
 	b.WriteString(fmt.Sprintf("%sOwnerID: %d,\n", indentationValues, dataStoreSharedDataInfo.OwnerID))
 	b.WriteString(fmt.Sprintf("%sDataType: %d,\n", indentationValues, dataStoreSharedDataInfo.DataType))

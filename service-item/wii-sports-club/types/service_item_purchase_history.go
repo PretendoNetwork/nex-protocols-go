@@ -6,26 +6,31 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // ServiceItemPurchaseHistory holds data for the Service Item (Wii Sports Club) protocol
 type ServiceItemPurchaseHistory struct {
-	nex.Structure
-	TotalSize    uint32
-	Offset       uint32
+	types.Structure
+	TotalSize    *types.PrimitiveU32
+	Offset       *types.PrimitiveU32
 	Transactions []*ServiceItemTransaction
 }
 
-// ExtractFromStream extracts a ServiceItemPurchaseHistory structure from a stream
-func (serviceItemPurchaseHistory *ServiceItemPurchaseHistory) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the ServiceItemPurchaseHistory from the given readable
+func (serviceItemPurchaseHistory *ServiceItemPurchaseHistory) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	serviceItemPurchaseHistory.TotalSize, err = stream.ReadUInt32LE()
+	if err = serviceItemPurchaseHistory.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read ServiceItemPurchaseHistory header. %s", err.Error())
+	}
+
+	err = serviceItemPurchaseHistory.TotalSize.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemPurchaseHistory.TotalSize from stream. %s", err.Error())
 	}
 
-	serviceItemPurchaseHistory.Offset, err = stream.ReadUInt32LE()
+	err = serviceItemPurchaseHistory.Offset.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemPurchaseHistory.Offset from stream. %s", err.Error())
 	}
@@ -40,20 +45,26 @@ func (serviceItemPurchaseHistory *ServiceItemPurchaseHistory) ExtractFromStream(
 	return nil
 }
 
-// Bytes encodes the ServiceItemPurchaseHistory and returns a byte array
-func (serviceItemPurchaseHistory *ServiceItemPurchaseHistory) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt32LE(serviceItemPurchaseHistory.TotalSize)
-	stream.WriteUInt32LE(serviceItemPurchaseHistory.Offset)
-	nex.StreamWriteListStructure(stream, serviceItemPurchaseHistory.Transactions)
+// WriteTo writes the ServiceItemPurchaseHistory to the given writable
+func (serviceItemPurchaseHistory *ServiceItemPurchaseHistory) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
 
-	return stream.Bytes()
+	serviceItemPurchaseHistory.TotalSize.WriteTo(contentWritable)
+	serviceItemPurchaseHistory.Offset.WriteTo(contentWritable)
+	serviceItemPurchaseHistory.Transactions.WriteTo(contentWritable)
+
+	content := contentWritable.Bytes()
+
+	serviceItemPurchaseHistory.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // Copy returns a new copied instance of ServiceItemPurchaseHistory
-func (serviceItemPurchaseHistory *ServiceItemPurchaseHistory) Copy() nex.StructureInterface {
+func (serviceItemPurchaseHistory *ServiceItemPurchaseHistory) Copy() types.RVType {
 	copied := NewServiceItemPurchaseHistory()
 
-	copied.SetStructureVersion(serviceItemPurchaseHistory.StructureVersion())
+	copied.StructureVersion = serviceItemPurchaseHistory.StructureVersion
 
 	copied.TotalSize = serviceItemPurchaseHistory.TotalSize
 	copied.Offset = serviceItemPurchaseHistory.Offset
@@ -67,18 +78,22 @@ func (serviceItemPurchaseHistory *ServiceItemPurchaseHistory) Copy() nex.Structu
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (serviceItemPurchaseHistory *ServiceItemPurchaseHistory) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*ServiceItemPurchaseHistory)
-
-	if serviceItemPurchaseHistory.StructureVersion() != other.StructureVersion() {
+func (serviceItemPurchaseHistory *ServiceItemPurchaseHistory) Equals(o types.RVType) bool {
+	if _, ok := o.(*ServiceItemPurchaseHistory); !ok {
 		return false
 	}
 
-	if serviceItemPurchaseHistory.TotalSize != other.TotalSize {
+	other := o.(*ServiceItemPurchaseHistory)
+
+	if serviceItemPurchaseHistory.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if serviceItemPurchaseHistory.Offset != other.Offset {
+	if !serviceItemPurchaseHistory.TotalSize.Equals(other.TotalSize) {
+		return false
+	}
+
+	if !serviceItemPurchaseHistory.Offset.Equals(other.Offset) {
 		return false
 	}
 
@@ -109,7 +124,7 @@ func (serviceItemPurchaseHistory *ServiceItemPurchaseHistory) FormatToString(ind
 	var b strings.Builder
 
 	b.WriteString("ServiceItemPurchaseHistory{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, serviceItemPurchaseHistory.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, serviceItemPurchaseHistory.StructureVersion))
 	b.WriteString(fmt.Sprintf("%sTotalSize: %d,\n", indentationValues, serviceItemPurchaseHistory.TotalSize))
 	b.WriteString(fmt.Sprintf("%sOffset: %d,\n", indentationValues, serviceItemPurchaseHistory.Offset))
 

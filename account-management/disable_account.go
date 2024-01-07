@@ -5,10 +5,12 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
 func (protocol *Protocol) handleDisableAccount(packet nex.PacketInterface) {
+	var err error
 	var errorCode uint32
 
 	if protocol.DisableAccount == nil {
@@ -22,11 +24,12 @@ func (protocol *Protocol) handleDisableAccount(packet nex.PacketInterface) {
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.server)
+	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
-	idPrincipal, err := parametersStream.ReadPID()
+	idPrincipal := types.NewPID(0)
+	err = idPrincipal.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.DisableAccount(fmt.Errorf("Failed to read idPrincipal from parameters. %s", err.Error()), packet, callID, nil, nil, "")
+		_, errorCode = protocol.DisableAccount(fmt.Errorf("Failed to read idPrincipal from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -34,9 +37,10 @@ func (protocol *Protocol) handleDisableAccount(packet nex.PacketInterface) {
 		return
 	}
 
-	dtUntil, err := parametersStream.ReadDateTime()
+	dtUntil := types.NewDateTime(0)
+	err = dtUntil.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.DisableAccount(fmt.Errorf("Failed to read dtUntil from parameters. %s", err.Error()), packet, callID, nil, nil, "")
+		_, errorCode = protocol.DisableAccount(fmt.Errorf("Failed to read dtUntil from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -44,9 +48,10 @@ func (protocol *Protocol) handleDisableAccount(packet nex.PacketInterface) {
 		return
 	}
 
-	strMessage, err := parametersStream.ReadString()
+	strMessage := types.NewString("")
+	err = strMessage.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.DisableAccount(fmt.Errorf("Failed to read strMessage from parameters. %s", err.Error()), packet, callID, nil, nil, "")
+		_, errorCode = protocol.DisableAccount(fmt.Errorf("Failed to read strMessage from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}

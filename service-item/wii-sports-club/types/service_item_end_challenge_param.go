@@ -6,25 +6,30 @@ import (
 	"strings"
 
 	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 )
 
 // ServiceItemEndChallengeParam holds data for the Service Item (Wii Sports Club) protocol
 type ServiceItemEndChallengeParam struct {
-	nex.Structure
-	ChallengeScheduleID uint32
+	types.Structure
+	ChallengeScheduleID *types.PrimitiveU32
 	UserInfo            *ServiceItemUserInfo
 }
 
-// ExtractFromStream extracts a ServiceItemEndChallengeParam structure from a stream
-func (serviceItemEndChallengeParam *ServiceItemEndChallengeParam) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the ServiceItemEndChallengeParam from the given readable
+func (serviceItemEndChallengeParam *ServiceItemEndChallengeParam) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	serviceItemEndChallengeParam.ChallengeScheduleID, err = stream.ReadUInt32LE()
+	if err = serviceItemEndChallengeParam.ExtractHeaderFrom(readable); err != nil {
+		return fmt.Errorf("Failed to read ServiceItemEndChallengeParam header. %s", err.Error())
+	}
+
+	err = serviceItemEndChallengeParam.ChallengeScheduleID.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemEndChallengeParam.ChallengeScheduleID from stream. %s", err.Error())
 	}
 
-	serviceItemEndChallengeParam.UserInfo, err = nex.StreamReadStructure(stream, NewServiceItemUserInfo())
+	err = serviceItemEndChallengeParam.UserInfo.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract ServiceItemEndChallengeParam.UserInfo from stream. %s", err.Error())
 	}
@@ -32,19 +37,25 @@ func (serviceItemEndChallengeParam *ServiceItemEndChallengeParam) ExtractFromStr
 	return nil
 }
 
-// Bytes encodes the ServiceItemEndChallengeParam and returns a byte array
-func (serviceItemEndChallengeParam *ServiceItemEndChallengeParam) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt32LE(serviceItemEndChallengeParam.ChallengeScheduleID)
-	stream.WriteStructure(serviceItemEndChallengeParam.UserInfo)
+// WriteTo writes the ServiceItemEndChallengeParam to the given writable
+func (serviceItemEndChallengeParam *ServiceItemEndChallengeParam) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
 
-	return stream.Bytes()
+	serviceItemEndChallengeParam.ChallengeScheduleID.WriteTo(contentWritable)
+	serviceItemEndChallengeParam.UserInfo.WriteTo(contentWritable)
+
+	content := contentWritable.Bytes()
+
+	serviceItemEndChallengeParam.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // Copy returns a new copied instance of ServiceItemEndChallengeParam
-func (serviceItemEndChallengeParam *ServiceItemEndChallengeParam) Copy() nex.StructureInterface {
+func (serviceItemEndChallengeParam *ServiceItemEndChallengeParam) Copy() types.RVType {
 	copied := NewServiceItemEndChallengeParam()
 
-	copied.SetStructureVersion(serviceItemEndChallengeParam.StructureVersion())
+	copied.StructureVersion = serviceItemEndChallengeParam.StructureVersion
 
 	copied.ChallengeScheduleID = serviceItemEndChallengeParam.ChallengeScheduleID
 	copied.UserInfo = serviceItemEndChallengeParam.UserInfo.Copy().(*ServiceItemUserInfo)
@@ -53,14 +64,18 @@ func (serviceItemEndChallengeParam *ServiceItemEndChallengeParam) Copy() nex.Str
 }
 
 // Equals checks if the passed Structure contains the same data as the current instance
-func (serviceItemEndChallengeParam *ServiceItemEndChallengeParam) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*ServiceItemEndChallengeParam)
-
-	if serviceItemEndChallengeParam.StructureVersion() != other.StructureVersion() {
+func (serviceItemEndChallengeParam *ServiceItemEndChallengeParam) Equals(o types.RVType) bool {
+	if _, ok := o.(*ServiceItemEndChallengeParam); !ok {
 		return false
 	}
 
-	if serviceItemEndChallengeParam.ChallengeScheduleID != other.ChallengeScheduleID {
+	other := o.(*ServiceItemEndChallengeParam)
+
+	if serviceItemEndChallengeParam.StructureVersion != other.StructureVersion {
+		return false
+	}
+
+	if !serviceItemEndChallengeParam.ChallengeScheduleID.Equals(other.ChallengeScheduleID) {
 		return false
 	}
 
@@ -84,7 +99,7 @@ func (serviceItemEndChallengeParam *ServiceItemEndChallengeParam) FormatToString
 	var b strings.Builder
 
 	b.WriteString("ServiceItemEndChallengeParam{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, serviceItemEndChallengeParam.StructureVersion()))
+	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, serviceItemEndChallengeParam.StructureVersion))
 	b.WriteString(fmt.Sprintf("%sChallengeScheduleID: %d,\n", indentationValues, serviceItemEndChallengeParam.ChallengeScheduleID))
 
 	if serviceItemEndChallengeParam.UserInfo != nil {

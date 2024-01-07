@@ -5,10 +5,12 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
 func (protocol *Protocol) handleUpdateSessionHost(packet nex.PacketInterface) {
+	var err error
 	var errorCode uint32
 
 	if protocol.UpdateSessionHost == nil {
@@ -22,9 +24,10 @@ func (protocol *Protocol) handleUpdateSessionHost(packet nex.PacketInterface) {
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.server)
+	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
-	gid, err := parametersStream.ReadUInt32LE()
+	gid := types.NewPrimitiveU32(0)
+	err = gid.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.UpdateSessionHost(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), packet, callID, 0, false)
 		if errorCode != 0 {
@@ -34,7 +37,8 @@ func (protocol *Protocol) handleUpdateSessionHost(packet nex.PacketInterface) {
 		return
 	}
 
-	isMigrateOwner, err := parametersStream.ReadBool()
+	isMigrateOwner := types.NewPrimitiveBool(false)
+	err = isMigrateOwner.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.UpdateSessionHost(fmt.Errorf("Failed to read isMigrateOwner from parameters. %s", err.Error()), packet, callID, 0, false)
 		if errorCode != 0 {

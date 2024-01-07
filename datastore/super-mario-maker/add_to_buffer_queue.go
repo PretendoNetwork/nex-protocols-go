@@ -5,11 +5,13 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 	datastore_super_mario_maker_types "github.com/PretendoNetwork/nex-protocols-go/datastore/super-mario-maker/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
 func (protocol *Protocol) handleAddToBufferQueue(packet nex.PacketInterface) {
+	var err error
 	var errorCode uint32
 
 	if protocol.AddToBufferQueue == nil {
@@ -23,9 +25,10 @@ func (protocol *Protocol) handleAddToBufferQueue(packet nex.PacketInterface) {
 	callID := request.CallID
 	parameters := request.Parameters
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.server)
+	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
-	param, err := nex.StreamReadStructure(parametersStream, datastore_super_mario_maker_types.NewBufferQueueParam())
+	param := datastore_super_mario_maker_types.NewBufferQueueParam()
+	err = param.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.AddToBufferQueue(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil, nil)
 		if errorCode != 0 {
@@ -35,7 +38,8 @@ func (protocol *Protocol) handleAddToBufferQueue(packet nex.PacketInterface) {
 		return
 	}
 
-	buffer, err := parametersStream.ReadQBuffer()
+	buffer := types.NewQBuffer(nil)
+	err = buffer.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.AddToBufferQueue(fmt.Errorf("Failed to read buffer from parameters. %s", err.Error()), packet, callID, nil, nil)
 		if errorCode != 0 {

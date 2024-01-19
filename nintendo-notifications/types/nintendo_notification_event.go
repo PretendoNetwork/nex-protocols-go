@@ -1,15 +1,14 @@
-// Package types implements all the types used by the Nintendo Notifications protocol
+// Package types implements all the types used by the NintendoNotifications protocol
 package types
 
 import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-go/types"
 )
 
-// NintendoNotificationEvent is used to send data about a notification event to a client
+// NintendoNotificationEvent is a type within the NintendoNotifications protocol
 type NintendoNotificationEvent struct {
 	types.Structure
 	Type       *types.PrimitiveU32
@@ -18,83 +17,98 @@ type NintendoNotificationEvent struct {
 }
 
 // WriteTo writes the NintendoNotificationEvent to the given writable
-func (nintendoNotificationEvent *NintendoNotificationEvent) WriteTo(writable types.Writable) {
+func (nne *NintendoNotificationEvent) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	nintendoNotificationEvent.Type.WriteTo(contentWritable)
-	nintendoNotificationEvent.SenderPID.WriteTo(contentWritable)
-	nintendoNotificationEvent.DataHolder.WriteTo(contentWritable)
+	nne.Type.WriteTo(writable)
+	nne.SenderPID.WriteTo(writable)
+	nne.DataHolder.WriteTo(writable)
 
 	content := contentWritable.Bytes()
 
-	nintendoNotificationEvent.WriteHeaderTo(writable, uint32(len(content)))
+	nne.WriteHeaderTo(writable, uint32(len(content)))
 
 	writable.Write(content)
 }
 
+// ExtractFrom extracts the NintendoNotificationEvent from the given readable
+func (nne *NintendoNotificationEvent) ExtractFrom(readable types.Readable) error {
+	var err error
+
+	err = nne.ExtractHeaderFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract NintendoNotificationEvent header. %s", err.Error())
+	}
+
+	err = nne.Type.ExtractFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract NintendoNotificationEvent.Type. %s", err.Error())
+	}
+
+	err = nne.SenderPID.ExtractFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract NintendoNotificationEvent.SenderPID. %s", err.Error())
+	}
+
+	err = nne.DataHolder.ExtractFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract NintendoNotificationEvent.DataHolder. %s", err.Error())
+	}
+
+	return nil
+}
+
 // Copy returns a new copied instance of NintendoNotificationEvent
-func (nintendoNotificationEvent *NintendoNotificationEvent) Copy() types.RVType {
+func (nne *NintendoNotificationEvent) Copy() types.RVType {
 	copied := NewNintendoNotificationEvent()
 
-	copied.StructureVersion = nintendoNotificationEvent.StructureVersion
-
-	copied.Type = nintendoNotificationEvent.Type
-	copied.SenderPID = nintendoNotificationEvent.SenderPID.Copy()
-	copied.DataHolder = nintendoNotificationEvent.DataHolder.Copy()
+	copied.StructureVersion = nne.StructureVersion
+	copied.Type = nne.Type.Copy().(*types.PrimitiveU32)
+	copied.SenderPID = nne.SenderPID.Copy().(*types.PID)
+	copied.DataHolder = nne.DataHolder.Copy().(*types.AnyDataHolder)
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (nintendoNotificationEvent *NintendoNotificationEvent) Equals(o types.RVType) bool {
+// Equals checks if the given NintendoNotificationEvent contains the same data as the current NintendoNotificationEvent
+func (nne *NintendoNotificationEvent) Equals(o types.RVType) bool {
 	if _, ok := o.(*NintendoNotificationEvent); !ok {
 		return false
 	}
 
 	other := o.(*NintendoNotificationEvent)
 
-	if nintendoNotificationEvent.StructureVersion != other.StructureVersion {
+	if nne.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if !nintendoNotificationEvent.Type.Equals(other.Type) {
+	if !nne.Type.Equals(other.Type) {
 		return false
 	}
 
-	if !nintendoNotificationEvent.SenderPID.Equals(other.SenderPID) {
+	if !nne.SenderPID.Equals(other.SenderPID) {
 		return false
 	}
 
-	if !nintendoNotificationEvent.DataHolder.Equals(other.DataHolder) {
-		return false
-	}
-
-	return true
+	return nne.DataHolder.Equals(other.DataHolder)
 }
 
-// String returns a string representation of the struct
-func (nintendoNotificationEvent *NintendoNotificationEvent) String() string {
-	return nintendoNotificationEvent.FormatToString(0)
+// String returns the string representation of the NintendoNotificationEvent
+func (nne *NintendoNotificationEvent) String() string {
+	return nne.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (nintendoNotificationEvent *NintendoNotificationEvent) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the NintendoNotificationEvent using the provided indentation level
+func (nne *NintendoNotificationEvent) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("NintendoNotificationEvent{\n")
-	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, nintendoNotificationEvent.StructureVersion))
-	b.WriteString(fmt.Sprintf("%sType: %d,\n", indentationValues, nintendoNotificationEvent.Type))
-	b.WriteString(fmt.Sprintf("%sSenderPID: %s,\n", indentationValues, nintendoNotificationEvent.SenderPID.FormatToString(indentationLevel+1)))
-
-	if nintendoNotificationEvent.DataHolder != nil {
-		b.WriteString(fmt.Sprintf("%sDataHolder: %s\n", indentationValues, nintendoNotificationEvent.DataHolder.FormatToString(indentationLevel+1)))
-	} else {
-		b.WriteString(fmt.Sprintf("%sDataHolder: nil\n", indentationValues))
-	}
-
+	b.WriteString(fmt.Sprintf("%sType: %s,\n", indentationValues, nne.Type))
+	b.WriteString(fmt.Sprintf("%sSenderPID: %s,\n", indentationValues, nne.SenderPID.FormatToString(indentationLevel+1)))
+	b.WriteString(fmt.Sprintf("%sDataHolder: %s,\n", indentationValues, nne.DataHolder.FormatToString(indentationLevel+1)))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -102,5 +116,11 @@ func (nintendoNotificationEvent *NintendoNotificationEvent) FormatToString(inden
 
 // NewNintendoNotificationEvent returns a new NintendoNotificationEvent
 func NewNintendoNotificationEvent() *NintendoNotificationEvent {
-	return &NintendoNotificationEvent{}
+	nne := &NintendoNotificationEvent{
+		Type:       types.NewPrimitiveU32(0),
+		SenderPID:  types.NewPID(0),
+		DataHolder: types.NewAnyDataHolder(),
+	}
+
+	return nne
 }

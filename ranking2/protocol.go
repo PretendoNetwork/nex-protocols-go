@@ -48,7 +48,7 @@ const (
 // Protocol stores all the RMC method handlers for the Ranking2 protocol and listens for requests
 type Protocol struct {
 	server                  nex.ServerInterface
-	PutScore                func(err error, packet nex.PacketInterface, callID uint32, scoreDataList []*ranking2_types.Ranking2ScoreData, nexUniqueID *types.PrimitiveU64) (*nex.RMCMessage, uint32)
+	PutScore                func(err error, packet nex.PacketInterface, callID uint32, scoreDataList *types.List[*ranking2_types.Ranking2ScoreData], nexUniqueID *types.PrimitiveU64) (*nex.RMCMessage, uint32)
 	GetCommonData           func(err error, packet nex.PacketInterface, callID uint32, optionFlags *types.PrimitiveU32, principalID *types.PID, nexUniqueID *types.PrimitiveU64) (*nex.RMCMessage, uint32)
 	PutCommonData           func(err error, packet nex.PacketInterface, callID uint32, commonData *ranking2_types.Ranking2CommonData, nexUniqueID *types.PrimitiveU64) (*nex.RMCMessage, uint32)
 	DeleteCommonData        func(err error, packet nex.PacketInterface, callID uint32, nexUniqueID *types.PrimitiveU64) (*nex.RMCMessage, uint32)
@@ -56,7 +56,7 @@ type Protocol struct {
 	GetRankingByPrincipalID func(err error, packet nex.PacketInterface, callID uint32, getParam *ranking2_types.Ranking2GetParam, principalIDList *types.List[*types.PID]) (*nex.RMCMessage, uint32)
 	GetCategorySetting      func(err error, packet nex.PacketInterface, callID uint32, category *types.PrimitiveU32) (*nex.RMCMessage, uint32)
 	GetRankingChart         func(err error, packet nex.PacketInterface, callID uint32, info *ranking2_types.Ranking2ChartInfoInput) (*nex.RMCMessage, uint32)
-	GetRankingCharts        func(err error, packet nex.PacketInterface, callID uint32, infoArray []*ranking2_types.Ranking2ChartInfoInput) (*nex.RMCMessage, uint32)
+	GetRankingCharts        func(err error, packet nex.PacketInterface, callID uint32, infoArray *types.List[*ranking2_types.Ranking2ChartInfoInput]) (*nex.RMCMessage, uint32)
 	GetEstimateScoreRank    func(err error, packet nex.PacketInterface, callID uint32, input *ranking2_types.Ranking2EstimateScoreRankInput) (*nex.RMCMessage, uint32)
 }
 
@@ -64,7 +64,7 @@ type Protocol struct {
 type Interface interface {
 	Server() nex.ServerInterface
 	SetServer(server nex.ServerInterface)
-	SetHandlerPutScore(handler func(err error, packet nex.PacketInterface, callID uint32, scoreDataList []*ranking2_types.Ranking2ScoreData, nexUniqueID *types.PrimitiveU64) (*nex.RMCMessage, uint32))
+	SetHandlerPutScore(handler func(err error, packet nex.PacketInterface, callID uint32, scoreDataList *types.List[*ranking2_types.Ranking2ScoreData], nexUniqueID *types.PrimitiveU64) (*nex.RMCMessage, uint32))
 	SetHandlerGetCommonData(handler func(err error, packet nex.PacketInterface, callID uint32, optionFlags *types.PrimitiveU32, principalID *types.PID, nexUniqueID *types.PrimitiveU64) (*nex.RMCMessage, uint32))
 	SetHandlerPutCommonData(handler func(err error, packet nex.PacketInterface, callID uint32, commonData *ranking2_types.Ranking2CommonData, nexUniqueID *types.PrimitiveU64) (*nex.RMCMessage, uint32))
 	SetHandlerDeleteCommonData(handler func(err error, packet nex.PacketInterface, callID uint32, nexUniqueID *types.PrimitiveU64) (*nex.RMCMessage, uint32))
@@ -72,7 +72,7 @@ type Interface interface {
 	SetHandlerGetRankingByPrincipalID(handler func(err error, packet nex.PacketInterface, callID uint32, getParam *ranking2_types.Ranking2GetParam, principalIDList *types.List[*types.PID]) (*nex.RMCMessage, uint32))
 	SetHandlerGetCategorySetting(handler func(err error, packet nex.PacketInterface, callID uint32, category *types.PrimitiveU32) (*nex.RMCMessage, uint32))
 	SetHandlerGetRankingChart(handler func(err error, packet nex.PacketInterface, callID uint32, info *ranking2_types.Ranking2ChartInfoInput) (*nex.RMCMessage, uint32))
-	SetHandlerGetRankingCharts(handler func(err error, packet nex.PacketInterface, callID uint32, infoArray []*ranking2_types.Ranking2ChartInfoInput) (*nex.RMCMessage, uint32))
+	SetHandlerGetRankingCharts(handler func(err error, packet nex.PacketInterface, callID uint32, infoArray *types.List[*ranking2_types.Ranking2ChartInfoInput]) (*nex.RMCMessage, uint32))
 	SetHandlerGetEstimateScoreRank(handler func(err error, packet nex.PacketInterface, callID uint32, input *ranking2_types.Ranking2EstimateScoreRankInput) (*nex.RMCMessage, uint32))
 }
 
@@ -87,7 +87,7 @@ func (protocol *Protocol) SetServer(server nex.ServerInterface) {
 }
 
 // SetHandlerPutScore sets the handler for the PutScore method
-func (protocol *Protocol) SetHandlerPutScore(handler func(err error, packet nex.PacketInterface, callID uint32, scoreDataList []*ranking2_types.Ranking2ScoreData, nexUniqueID *types.PrimitiveU64) (*nex.RMCMessage, uint32)) {
+func (protocol *Protocol) SetHandlerPutScore(handler func(err error, packet nex.PacketInterface, callID uint32, scoreDataList *types.List[*ranking2_types.Ranking2ScoreData], nexUniqueID *types.PrimitiveU64) (*nex.RMCMessage, uint32)) {
 	protocol.PutScore = handler
 }
 
@@ -127,7 +127,7 @@ func (protocol *Protocol) SetHandlerGetRankingChart(handler func(err error, pack
 }
 
 // SetHandlerGetRankingCharts sets the handler for the GetRankingCharts method
-func (protocol *Protocol) SetHandlerGetRankingCharts(handler func(err error, packet nex.PacketInterface, callID uint32, infoArray []*ranking2_types.Ranking2ChartInfoInput) (*nex.RMCMessage, uint32)) {
+func (protocol *Protocol) SetHandlerGetRankingCharts(handler func(err error, packet nex.PacketInterface, callID uint32, infoArray *types.List[*ranking2_types.Ranking2ChartInfoInput]) (*nex.RMCMessage, uint32)) {
 	protocol.GetRankingCharts = handler
 }
 

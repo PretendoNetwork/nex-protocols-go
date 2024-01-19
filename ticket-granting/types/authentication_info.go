@@ -1,126 +1,141 @@
-// Package types implements all the types used by the Ticket Granting protocol
+// Package types implements all the types used by the TicketGranting protocol
 package types
 
 import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-go/types"
 )
 
-// AuthenticationInfo holds information about an authentication request
+// AuthenticationInfo is a type within the TicketGranting protocol
 type AuthenticationInfo struct {
 	types.Structure
 	*types.Data
-	Token         string
+	Token         *types.String
 	NGSVersion    *types.PrimitiveU32
 	TokenType     *types.PrimitiveU8
 	ServerVersion *types.PrimitiveU32
 }
 
+// WriteTo writes the AuthenticationInfo to the given writable
+func (ai *AuthenticationInfo) WriteTo(writable types.Writable) {
+	ai.Data.WriteTo(writable)
+
+	contentWritable := writable.CopyNew()
+
+	ai.Token.WriteTo(writable)
+	ai.NGSVersion.WriteTo(writable)
+	ai.TokenType.WriteTo(writable)
+	ai.ServerVersion.WriteTo(writable)
+
+	content := contentWritable.Bytes()
+
+	ai.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
+}
+
 // ExtractFrom extracts the AuthenticationInfo from the given readable
-func (authenticationInfo *AuthenticationInfo) ExtractFrom(readable types.Readable) error {
+func (ai *AuthenticationInfo) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	if err = authenticationInfo.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to read AuthenticationInfo header. %s", err.Error())
-	}
-
-	err = authenticationInfo.Token.ExtractFrom(readable)
+	err = ai.Data.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract AccountExtraInfo.Token. %s", err.Error())
+		return fmt.Errorf("Failed to extract AuthenticationInfo.Data. %s", err.Error())
 	}
 
-	err = authenticationInfo.NGSVersion.ExtractFrom(readable)
+	err = ai.ExtractHeaderFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract AccountExtraInfo.NGSVersion. %s", err.Error())
+		return fmt.Errorf("Failed to extract AuthenticationInfo header. %s", err.Error())
 	}
 
-	if authenticationInfo.NGSVersion > 2 {
-	err = 	authenticationInfo.TokenType.ExtractFrom(readable)
-		if err != nil {
-			return fmt.Errorf("Failed to extract AccountExtraInfo.TokenType. %s", err.Error())
-		}
+	err = ai.Token.ExtractFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract AuthenticationInfo.Token. %s", err.Error())
+	}
 
-	err = 	authenticationInfo.ServerVersion.ExtractFrom(readable)
-		if err != nil {
-			return fmt.Errorf("Failed to extract AccountExtraInfo.ServerVersion. %s", err.Error())
-		}
+	err = ai.NGSVersion.ExtractFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract AuthenticationInfo.NGSVersion. %s", err.Error())
+	}
+
+	err = ai.TokenType.ExtractFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract AuthenticationInfo.TokenType. %s", err.Error())
+	}
+
+	err = ai.ServerVersion.ExtractFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract AuthenticationInfo.ServerVersion. %s", err.Error())
 	}
 
 	return nil
 }
 
 // Copy returns a new copied instance of AuthenticationInfo
-func (authenticationInfo *AuthenticationInfo) Copy() types.RVType {
+func (ai *AuthenticationInfo) Copy() types.RVType {
 	copied := NewAuthenticationInfo()
 
-	copied.StructureVersion = authenticationInfo.StructureVersion
-
-	copied.Data = authenticationInfo.Data.Copy().(*types.Data)
-	copied.Token = authenticationInfo.Token
-	copied.TokenType = authenticationInfo.TokenType
-	copied.NGSVersion = authenticationInfo.NGSVersion
-	copied.ServerVersion = authenticationInfo.ServerVersion
+	copied.StructureVersion = ai.StructureVersion
+	copied.Data = ai.Data.Copy().(*types.Data)
+	copied.Token = ai.Token.Copy().(*types.String)
+	copied.NGSVersion = ai.NGSVersion.Copy().(*types.PrimitiveU32)
+	copied.TokenType = ai.TokenType.Copy().(*types.PrimitiveU8)
+	copied.ServerVersion = ai.ServerVersion.Copy().(*types.PrimitiveU32)
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (authenticationInfo *AuthenticationInfo) Equals(o types.RVType) bool {
+// Equals checks if the given AuthenticationInfo contains the same data as the current AuthenticationInfo
+func (ai *AuthenticationInfo) Equals(o types.RVType) bool {
 	if _, ok := o.(*AuthenticationInfo); !ok {
 		return false
 	}
 
 	other := o.(*AuthenticationInfo)
 
-	if authenticationInfo.StructureVersion != other.StructureVersion {
+	if ai.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if !authenticationInfo.ParentType().Equals(other.ParentType()) {
+	if !ai.Data.Equals(other.Data) {
 		return false
 	}
 
-	if !authenticationInfo.Token.Equals(other.Token) {
+	if !ai.Token.Equals(other.Token) {
 		return false
 	}
 
-	if !authenticationInfo.TokenType.Equals(other.TokenType) {
+	if !ai.NGSVersion.Equals(other.NGSVersion) {
 		return false
 	}
 
-	if !authenticationInfo.NGSVersion.Equals(other.NGSVersion) {
+	if !ai.TokenType.Equals(other.TokenType) {
 		return false
 	}
 
-	if !authenticationInfo.ServerVersion.Equals(other.ServerVersion) {
-		return false
-	}
-
-	return true
+	return ai.ServerVersion.Equals(other.ServerVersion)
 }
 
-// String returns a string representation of the struct
-func (authenticationInfo *AuthenticationInfo) String() string {
-	return authenticationInfo.FormatToString(0)
+// String returns the string representation of the AuthenticationInfo
+func (ai *AuthenticationInfo) String() string {
+	return ai.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (authenticationInfo *AuthenticationInfo) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the AuthenticationInfo using the provided indentation level
+func (ai *AuthenticationInfo) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("AuthenticationInfo{\n")
-	b.WriteString(fmt.Sprintf("%sParentType: %s,\n", indentationValues, authenticationInfo.ParentType().FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, authenticationInfo.StructureVersion))
-	b.WriteString(fmt.Sprintf("%sToken: %s,\n", indentationValues, authenticationInfo.Token))
-	b.WriteString(fmt.Sprintf("%sTokenType: %d,\n", indentationValues, authenticationInfo.TokenType))
-	b.WriteString(fmt.Sprintf("%sNGSVersion: %d,\n", indentationValues, authenticationInfo.NGSVersion))
-	b.WriteString(fmt.Sprintf("%sServerVersion: %d\n", indentationValues, authenticationInfo.ServerVersion))
+	b.WriteString(fmt.Sprintf("%sData (parent): %s,\n", indentationValues, ai.Data.FormatToString(indentationLevel+1)))
+	b.WriteString(fmt.Sprintf("%sToken: %s,\n", indentationValues, ai.Token))
+	b.WriteString(fmt.Sprintf("%sNGSVersion: %s,\n", indentationValues, ai.NGSVersion))
+	b.WriteString(fmt.Sprintf("%sTokenType: %s,\n", indentationValues, ai.TokenType))
+	b.WriteString(fmt.Sprintf("%sServerVersion: %s,\n", indentationValues, ai.ServerVersion))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -128,9 +143,13 @@ func (authenticationInfo *AuthenticationInfo) FormatToString(indentationLevel in
 
 // NewAuthenticationInfo returns a new AuthenticationInfo
 func NewAuthenticationInfo() *AuthenticationInfo {
-	authenticationInfo := &AuthenticationInfo{}
-	authenticationInfo.Data = types.NewData()
-	authenticationInfo.SetParentType(authenticationInfo.Data)
+	ai := &AuthenticationInfo{
+		Data          : types.NewData(),
+		Token:         types.NewString(""),
+		NGSVersion:    types.NewPrimitiveU32(0),
+		TokenType:     types.NewPrimitiveU8(0),
+		ServerVersion: types.NewPrimitiveU32(0),
+	}
 
-	return authenticationInfo
+	return ai
 }

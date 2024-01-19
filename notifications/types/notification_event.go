@@ -5,119 +5,149 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-go/types"
 )
 
-// NotificationEvent holds general purpose notification data
+// NotificationEvent is a type within the Notifications protocol
 type NotificationEvent struct {
 	types.Structure
 	PIDSource *types.PID
 	Type      *types.PrimitiveU32
 	Param1    *types.PrimitiveU32
 	Param2    *types.PrimitiveU32
-	StrParam  string
+	StrParam  *types.String
 	Param3    *types.PrimitiveU32
 }
 
 // WriteTo writes the NotificationEvent to the given writable
-func (notificationEvent *NotificationEvent) WriteTo(writable types.Writable) {
+func (ne *NotificationEvent) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	nexVersion := stream.Server.LibraryVersion()
-
-	notificationEvent.PIDSource.WriteTo(contentWritable)
-	notificationEvent.Type.WriteTo(contentWritable)
-	notificationEvent.Param1.WriteTo(contentWritable)
-	notificationEvent.Param2.WriteTo(contentWritable)
-	notificationEvent.StrParam.WriteTo(contentWritable)
-
-	if nexVersion.GreaterOrEqual("3.4.0") {
-		notificationEvent.Param3.WriteTo(contentWritable)
-	}
+	ne.PIDSource.WriteTo(writable)
+	ne.Type.WriteTo(writable)
+	ne.Param1.WriteTo(writable)
+	ne.Param2.WriteTo(writable)
+	ne.StrParam.WriteTo(writable)
+	ne.Param3.WriteTo(writable)
 
 	content := contentWritable.Bytes()
 
-	rvcd.WriteHeaderTo(writable, uint32(len(content)))
+	ne.WriteHeaderTo(writable, uint32(len(content)))
 
 	writable.Write(content)
 }
 
+// ExtractFrom extracts the NotificationEvent from the given readable
+func (ne *NotificationEvent) ExtractFrom(readable types.Readable) error {
+	var err error
+
+	err = ne.ExtractHeaderFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract NotificationEvent header. %s", err.Error())
+	}
+
+	err = ne.PIDSource.ExtractFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract NotificationEvent.PIDSource. %s", err.Error())
+	}
+
+	err = ne.Type.ExtractFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract NotificationEvent.Type. %s", err.Error())
+	}
+
+	err = ne.Param1.ExtractFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract NotificationEvent.Param1. %s", err.Error())
+	}
+
+	err = ne.Param2.ExtractFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract NotificationEvent.Param2. %s", err.Error())
+	}
+
+	err = ne.StrParam.ExtractFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract NotificationEvent.StrParam. %s", err.Error())
+	}
+
+	err = ne.Param3.ExtractFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract NotificationEvent.Param3. %s", err.Error())
+	}
+
+	return nil
+}
+
 // Copy returns a new copied instance of NotificationEvent
-func (notificationEvent *NotificationEvent) Copy() types.RVType {
+func (ne *NotificationEvent) Copy() types.RVType {
 	copied := NewNotificationEvent()
 
-	copied.StructureVersion = notificationEvent.StructureVersion
-
-	copied.PIDSource = notificationEvent.PIDSource.Copy()
-	copied.Type = notificationEvent.Type
-	copied.Param1 = notificationEvent.Param1
-	copied.Param2 = notificationEvent.Param2
-	copied.StrParam = notificationEvent.StrParam
-	copied.Param3 = notificationEvent.Param3
+	copied.StructureVersion = ne.StructureVersion
+	copied.PIDSource = ne.PIDSource.Copy().(*types.PID)
+	copied.Type = ne.Type.Copy().(*types.PrimitiveU32)
+	copied.Param1 = ne.Param1.Copy().(*types.PrimitiveU32)
+	copied.Param2 = ne.Param2.Copy().(*types.PrimitiveU32)
+	copied.StrParam = ne.StrParam.Copy().(*types.String)
+	copied.Param3 = ne.Param3.Copy().(*types.PrimitiveU32)
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (notificationEvent *NotificationEvent) Equals(o types.RVType) bool {
+// Equals checks if the given NotificationEvent contains the same data as the current NotificationEvent
+func (ne *NotificationEvent) Equals(o types.RVType) bool {
 	if _, ok := o.(*NotificationEvent); !ok {
 		return false
 	}
 
 	other := o.(*NotificationEvent)
 
-	if notificationEvent.StructureVersion != other.StructureVersion {
+	if ne.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if !notificationEvent.PIDSource.Equals(other.PIDSource) {
+	if !ne.PIDSource.Equals(other.PIDSource) {
 		return false
 	}
 
-	if !notificationEvent.Type.Equals(other.Type) {
+	if !ne.Type.Equals(other.Type) {
 		return false
 	}
 
-	if !notificationEvent.Param1.Equals(other.Param1) {
+	if !ne.Param1.Equals(other.Param1) {
 		return false
 	}
 
-	if !notificationEvent.Param2.Equals(other.Param2) {
+	if !ne.Param2.Equals(other.Param2) {
 		return false
 	}
 
-	if !notificationEvent.StrParam.Equals(other.StrParam) {
+	if !ne.StrParam.Equals(other.StrParam) {
 		return false
 	}
 
-	if !notificationEvent.Param3.Equals(other.Param3) {
-		return false
-	}
-
-	return true
+	return ne.Param3.Equals(other.Param3)
 }
 
-// String returns a string representation of the struct
-func (notificationEvent *NotificationEvent) String() string {
-	return notificationEvent.FormatToString(0)
+// String returns the string representation of the NotificationEvent
+func (ne *NotificationEvent) String() string {
+	return ne.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (notificationEvent *NotificationEvent) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the NotificationEvent using the provided indentation level
+func (ne *NotificationEvent) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("NotificationEvent{\n")
-	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, notificationEvent.StructureVersion))
-	b.WriteString(fmt.Sprintf("%sPIDSource: %s,\n", indentationValues, notificationEvent.PIDSource.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sType: %d,\n", indentationValues, notificationEvent.Type))
-	b.WriteString(fmt.Sprintf("%sParam1: %d,\n", indentationValues, notificationEvent.Param1))
-	b.WriteString(fmt.Sprintf("%sParam2: %d,\n", indentationValues, notificationEvent.Param2))
-	b.WriteString(fmt.Sprintf("%sStrParam: %q,\n", indentationValues, notificationEvent.StrParam))
-	b.WriteString(fmt.Sprintf("%sParam3: %d\n", indentationValues, notificationEvent.Param3))
+	b.WriteString(fmt.Sprintf("%sPIDSource: %s,\n", indentationValues, ne.PIDSource.FormatToString(indentationLevel+1)))
+	b.WriteString(fmt.Sprintf("%sType: %s,\n", indentationValues, ne.Type))
+	b.WriteString(fmt.Sprintf("%sParam1: %s,\n", indentationValues, ne.Param1))
+	b.WriteString(fmt.Sprintf("%sParam2: %s,\n", indentationValues, ne.Param2))
+	b.WriteString(fmt.Sprintf("%sStrParam: %s,\n", indentationValues, ne.StrParam))
+	b.WriteString(fmt.Sprintf("%sParam3: %s,\n", indentationValues, ne.Param3))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -125,5 +155,14 @@ func (notificationEvent *NotificationEvent) FormatToString(indentationLevel int)
 
 // NewNotificationEvent returns a new NotificationEvent
 func NewNotificationEvent() *NotificationEvent {
-	return &NotificationEvent{}
+	ne := &NotificationEvent{
+		PIDSource: types.NewPID(0),
+		Type:      types.NewPrimitiveU32(0),
+		Param1:    types.NewPrimitiveU32(0),
+		Param2:    types.NewPrimitiveU32(0),
+		StrParam:  types.NewString(""),
+		Param3:    types.NewPrimitiveU32(0),
+	}
+
+	return ne
 }

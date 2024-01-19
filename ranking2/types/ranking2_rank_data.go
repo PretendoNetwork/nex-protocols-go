@@ -1,15 +1,14 @@
-// Package types implements all the types used by the Ranking 2  protocol
+// Package types implements all the types used by the Ranking2 protocol
 package types
 
 import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-go/types"
 )
 
-// Ranking2RankData holds data for the Ranking 2  protocol
+// Ranking2RankData is a type within the Ranking2 protocol
 type Ranking2RankData struct {
 	types.Structure
 	Misc        *types.PrimitiveU64
@@ -20,145 +19,135 @@ type Ranking2RankData struct {
 	CommonData  *Ranking2CommonData
 }
 
+// WriteTo writes the Ranking2RankData to the given writable
+func (rrd *Ranking2RankData) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
+
+	rrd.Misc.WriteTo(writable)
+	rrd.NexUniqueID.WriteTo(writable)
+	rrd.PrincipalID.WriteTo(writable)
+	rrd.Rank.WriteTo(writable)
+	rrd.Score.WriteTo(writable)
+	rrd.CommonData.WriteTo(writable)
+
+	content := contentWritable.Bytes()
+
+	rrd.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
+}
+
 // ExtractFrom extracts the Ranking2RankData from the given readable
-func (ranking2RankData *Ranking2RankData) ExtractFrom(readable types.Readable) error {
+func (rrd *Ranking2RankData) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	if err = ranking2RankData.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to read Ranking2RankData header. %s", err.Error())
+	err = rrd.ExtractHeaderFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract Ranking2RankData header. %s", err.Error())
 	}
 
-	err = ranking2RankData.Misc.ExtractFrom(readable)
+	err = rrd.Misc.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract Ranking2RankData.Misc from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract Ranking2RankData.Misc. %s", err.Error())
 	}
 
-	err = ranking2RankData.NexUniqueID.ExtractFrom(readable)
+	err = rrd.NexUniqueID.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract Ranking2RankData.NexUniqueID from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract Ranking2RankData.NexUniqueID. %s", err.Error())
 	}
 
-	err = ranking2RankData.PrincipalID.ExtractFrom(readable)
+	err = rrd.PrincipalID.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract Ranking2RankData.PrincipalID from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract Ranking2RankData.PrincipalID. %s", err.Error())
 	}
 
-	err = ranking2RankData.Rank.ExtractFrom(readable)
+	err = rrd.Rank.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract Ranking2RankData.Rank from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract Ranking2RankData.Rank. %s", err.Error())
 	}
 
-	err = ranking2RankData.Score.ExtractFrom(readable)
+	err = rrd.Score.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract Ranking2RankData.Score from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract Ranking2RankData.Score. %s", err.Error())
 	}
 
-	err = ranking2RankData.CommonData.ExtractFrom(readable)
+	err = rrd.CommonData.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract Ranking2RankData.CommonData from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract Ranking2RankData.CommonData. %s", err.Error())
 	}
 
 	return nil
 }
 
-// WriteTo writes the Ranking2RankData to the given writable
-func (ranking2RankData *Ranking2RankData) WriteTo(writable types.Writable) {
-	contentWritable := writable.CopyNew()
-
-	ranking2RankData.Misc.WriteTo(contentWritable)
-	ranking2RankData.NexUniqueID.WriteTo(contentWritable)
-	ranking2RankData.PrincipalID.WriteTo(contentWritable)
-	ranking2RankData.Rank.WriteTo(contentWritable)
-	ranking2RankData.Score.WriteTo(contentWritable)
-	ranking2RankData.CommonData.WriteTo(contentWritable)
-
-	content := contentWritable.Bytes()
-
-	ranking2RankData.WriteHeaderTo(writable, uint32(len(content)))
-
-	writable.Write(content)
-}
-
 // Copy returns a new copied instance of Ranking2RankData
-func (ranking2RankData *Ranking2RankData) Copy() types.RVType {
+func (rrd *Ranking2RankData) Copy() types.RVType {
 	copied := NewRanking2RankData()
 
-	copied.StructureVersion = ranking2RankData.StructureVersion
+	copied.StructureVersion = rrd.StructureVersion
+	copied.Misc = rrd.Misc.Copy().(*types.PrimitiveU64)
+	copied.NexUniqueID = rrd.NexUniqueID.Copy().(*types.PrimitiveU64)
+	copied.PrincipalID = rrd.PrincipalID.Copy().(*types.PID)
+	copied.Rank = rrd.Rank.Copy().(*types.PrimitiveU32)
+	copied.Score = rrd.Score.Copy().(*types.PrimitiveU32)
+	copied.CommonData = rrd.CommonData.Copy().(*Ranking2CommonData)
 
-	copied.Misc = ranking2RankData.Misc
-	copied.NexUniqueID = ranking2RankData.NexUniqueID
-	copied.PrincipalID = ranking2RankData.PrincipalID.Copy()
-	copied.Rank = ranking2RankData.Rank
-	copied.Score = ranking2RankData.Score
-	copied.CommonData = ranking2RankData.CommonData.Copy().(*Ranking2CommonData)
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (ranking2RankData *Ranking2RankData) Equals(o types.RVType) bool {
+// Equals checks if the given Ranking2RankData contains the same data as the current Ranking2RankData
+func (rrd *Ranking2RankData) Equals(o types.RVType) bool {
 	if _, ok := o.(*Ranking2RankData); !ok {
 		return false
 	}
 
 	other := o.(*Ranking2RankData)
 
-	if ranking2RankData.StructureVersion != other.StructureVersion {
+	if rrd.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if !ranking2RankData.Misc.Equals(other.Misc) {
+	if !rrd.Misc.Equals(other.Misc) {
 		return false
 	}
 
-	if !ranking2RankData.NexUniqueID.Equals(other.NexUniqueID) {
+	if !rrd.NexUniqueID.Equals(other.NexUniqueID) {
 		return false
 	}
 
-	if !ranking2RankData.PrincipalID.Equals(other.PrincipalID) {
+	if !rrd.PrincipalID.Equals(other.PrincipalID) {
 		return false
 	}
 
-	if !ranking2RankData.Rank.Equals(other.Rank) {
+	if !rrd.Rank.Equals(other.Rank) {
 		return false
 	}
 
-	if !ranking2RankData.Score.Equals(other.Score) {
+	if !rrd.Score.Equals(other.Score) {
 		return false
 	}
 
-	if !ranking2RankData.CommonData.Equals(other.CommonData) {
-		return false
-	}
-
-	return true
+	return rrd.CommonData.Equals(other.CommonData)
 }
 
-// String returns a string representation of the struct
-func (ranking2RankData *Ranking2RankData) String() string {
-	return ranking2RankData.FormatToString(0)
+// String returns the string representation of the Ranking2RankData
+func (rrd *Ranking2RankData) String() string {
+	return rrd.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (ranking2RankData *Ranking2RankData) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the Ranking2RankData using the provided indentation level
+func (rrd *Ranking2RankData) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("Ranking2RankData{\n")
-	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, ranking2RankData.StructureVersion))
-	b.WriteString(fmt.Sprintf("%sMisc: %d,\n", indentationValues, ranking2RankData.Misc))
-	b.WriteString(fmt.Sprintf("%sNexUniqueID: %d,\n", indentationValues, ranking2RankData.NexUniqueID))
-	b.WriteString(fmt.Sprintf("%sPrincipalID: %s,\n", indentationValues, ranking2RankData.PrincipalID.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sRank: %d,\n", indentationValues, ranking2RankData.Rank))
-	b.WriteString(fmt.Sprintf("%sScore: %d,\n", indentationValues, ranking2RankData.Score))
-
-	if ranking2RankData.CommonData != nil {
-		b.WriteString(fmt.Sprintf("%sCommonData: %s\n", indentationValues, ranking2RankData.CommonData.FormatToString(indentationLevel+1)))
-	} else {
-		b.WriteString(fmt.Sprintf("%sCommonData: nil\n", indentationValues))
-	}
-
+	b.WriteString(fmt.Sprintf("%sMisc: %s,\n", indentationValues, rrd.Misc))
+	b.WriteString(fmt.Sprintf("%sNexUniqueID: %s,\n", indentationValues, rrd.NexUniqueID))
+	b.WriteString(fmt.Sprintf("%sPrincipalID: %s,\n", indentationValues, rrd.PrincipalID.FormatToString(indentationLevel+1)))
+	b.WriteString(fmt.Sprintf("%sRank: %s,\n", indentationValues, rrd.Rank))
+	b.WriteString(fmt.Sprintf("%sScore: %s,\n", indentationValues, rrd.Score))
+	b.WriteString(fmt.Sprintf("%sCommonData: %s,\n", indentationValues, rrd.CommonData.FormatToString(indentationLevel+1)))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -166,5 +155,14 @@ func (ranking2RankData *Ranking2RankData) FormatToString(indentationLevel int) s
 
 // NewRanking2RankData returns a new Ranking2RankData
 func NewRanking2RankData() *Ranking2RankData {
-	return &Ranking2RankData{}
+	rrd := &Ranking2RankData{
+		Misc:        types.NewPrimitiveU64(0),
+		NexUniqueID: types.NewPrimitiveU64(0),
+		PrincipalID: types.NewPID(0),
+		Rank:        types.NewPrimitiveU32(0),
+		Score:       types.NewPrimitiveU32(0),
+		CommonData:  NewRanking2CommonData(),
+	}
+
+	return rrd
 }

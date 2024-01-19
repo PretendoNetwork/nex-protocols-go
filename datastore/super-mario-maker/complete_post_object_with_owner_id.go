@@ -30,7 +30,7 @@ func (protocol *Protocol) handleCompletePostObjectWithOwnerID(packet nex.PacketI
 	ownerID := types.NewPrimitiveU32(0)
 	err = ownerID.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.CompletePostObjectWithOwnerID(fmt.Errorf("Failed to read ownerID from parameters. %s", err.Error()), packet, callID, 0, nil)
+		_, errorCode = protocol.CompletePostObjectWithOwnerID(fmt.Errorf("Failed to read ownerID from parameters. %s", err.Error()), packet, callID, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -41,7 +41,7 @@ func (protocol *Protocol) handleCompletePostObjectWithOwnerID(packet nex.PacketI
 	param := datastore_types.NewDataStoreCompletePostParam()
 	err = param.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.CompletePostObjectWithOwnerID(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, 0, nil)
+		_, errorCode = protocol.CompletePostObjectWithOwnerID(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}

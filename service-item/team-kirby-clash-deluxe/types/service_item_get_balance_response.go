@@ -1,132 +1,102 @@
-// Package types implements all the types used by the Service Item (Team Kirby Clash Deluxe) protocol
+// Package types implements all the types used by the ServiceItem protocol
 package types
 
 import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-go/types"
 )
 
-// ServiceItemGetBalanceResponse holds data for the Service Item (Team Kirby Clash Deluxe) protocol
+// ServiceItemGetBalanceResponse is a type within the ServiceItem protocol
 type ServiceItemGetBalanceResponse struct {
 	types.Structure
 	*ServiceItemEShopResponse
-	NullableBalance []*ServiceItemAmount
-}
-
-// ExtractFrom extracts the ServiceItemGetBalanceResponse from the given readable
-func (serviceItemGetBalanceResponse *ServiceItemGetBalanceResponse) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	if err = serviceItemGetBalanceResponse.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to read ServiceItemGetBalanceResponse header. %s", err.Error())
-	}
-
-	nullableBalance, err := nex.StreamReadListStructure(stream, NewServiceItemAmount())
-	if err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemGetBalanceResponse.NullableBalance from stream. %s", err.Error())
-	}
-
-	serviceItemGetBalanceResponse.NullableBalance = nullableBalance
-
-	return nil
+	NullableBalance *types.List[*ServiceItemAmount]
 }
 
 // WriteTo writes the ServiceItemGetBalanceResponse to the given writable
-func (serviceItemGetBalanceResponse *ServiceItemGetBalanceResponse) WriteTo(writable types.Writable) {
+func (sigbr *ServiceItemGetBalanceResponse) WriteTo(writable types.Writable) {
+	sigbr.ServiceItemEShopResponse.WriteTo(writable)
+
 	contentWritable := writable.CopyNew()
 
-	serviceItemGetBalanceResponse.NullableBalance.WriteTo(contentWritable)
+	sigbr.NullableBalance.WriteTo(writable)
 
 	content := contentWritable.Bytes()
 
-	serviceItemGetBalanceResponse.WriteHeaderTo(writable, uint32(len(content)))
+	sigbr.WriteHeaderTo(writable, uint32(len(content)))
 
 	writable.Write(content)
 }
 
+// ExtractFrom extracts the ServiceItemGetBalanceResponse from the given readable
+func (sigbr *ServiceItemGetBalanceResponse) ExtractFrom(readable types.Readable) error {
+	var err error
+
+	err = sigbr.ServiceItemEShopResponse.ExtractFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract ServiceItemGetBalanceResponse.ServiceItemEShopResponse. %s", err.Error())
+	}
+
+	err = sigbr.ExtractHeaderFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract ServiceItemGetBalanceResponse header. %s", err.Error())
+	}
+
+	err = sigbr.NullableBalance.ExtractFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract ServiceItemGetBalanceResponse.NullableBalance. %s", err.Error())
+	}
+
+	return nil
+}
+
 // Copy returns a new copied instance of ServiceItemGetBalanceResponse
-func (serviceItemGetBalanceResponse *ServiceItemGetBalanceResponse) Copy() types.RVType {
+func (sigbr *ServiceItemGetBalanceResponse) Copy() types.RVType {
 	copied := NewServiceItemGetBalanceResponse()
 
-	copied.StructureVersion = serviceItemGetBalanceResponse.StructureVersion
-
-	copied.ServiceItemEShopResponse = serviceItemGetBalanceResponse.ServiceItemEShopResponse.Copy().(*ServiceItemEShopResponse)
-
-	copied.NullableBalance = make([]*ServiceItemAmount, len(serviceItemGetBalanceResponse.NullableBalance))
-
-	for i := 0; i < len(serviceItemGetBalanceResponse.NullableBalance); i++ {
-		copied.NullableBalance[i] = serviceItemGetBalanceResponse.NullableBalance[i].Copy().(*ServiceItemAmount)
-	}
+	copied.StructureVersion = sigbr.StructureVersion
+	copied.ServiceItemEShopResponse = sigbr.ServiceItemEShopResponse.Copy().(*ServiceItemEShopResponse)
+	copied.NullableBalance = sigbr.NullableBalance.Copy().(*types.List[*ServiceItemAmount])
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (serviceItemGetBalanceResponse *ServiceItemGetBalanceResponse) Equals(o types.RVType) bool {
+// Equals checks if the given ServiceItemGetBalanceResponse contains the same data as the current ServiceItemGetBalanceResponse
+func (sigbr *ServiceItemGetBalanceResponse) Equals(o types.RVType) bool {
 	if _, ok := o.(*ServiceItemGetBalanceResponse); !ok {
 		return false
 	}
 
 	other := o.(*ServiceItemGetBalanceResponse)
 
-	if serviceItemGetBalanceResponse.StructureVersion != other.StructureVersion {
+	if sigbr.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if !serviceItemGetBalanceResponse.ParentType().Equals(other.ParentType()) {
+	if !sigbr.ServiceItemEShopResponse.Equals(other.ServiceItemEShopResponse) {
 		return false
 	}
 
-	if len(serviceItemGetBalanceResponse.NullableBalance) != len(other.NullableBalance) {
-		return false
-	}
-
-	for i := 0; i < len(serviceItemGetBalanceResponse.NullableBalance); i++ {
-		if !serviceItemGetBalanceResponse.NullableBalance[i].Equals(other.NullableBalance[i]) {
-			return false
-		}
-	}
-
-	return true
+	return sigbr.NullableBalance.Equals(other.NullableBalance)
 }
 
-// String returns a string representation of the struct
-func (serviceItemGetBalanceResponse *ServiceItemGetBalanceResponse) String() string {
-	return serviceItemGetBalanceResponse.FormatToString(0)
+// String returns the string representation of the ServiceItemGetBalanceResponse
+func (sigbr *ServiceItemGetBalanceResponse) String() string {
+	return sigbr.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (serviceItemGetBalanceResponse *ServiceItemGetBalanceResponse) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the ServiceItemGetBalanceResponse using the provided indentation level
+func (sigbr *ServiceItemGetBalanceResponse) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
-	indentationListValues := strings.Repeat("\t", indentationLevel+2)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("ServiceItemGetBalanceResponse{\n")
-	b.WriteString(fmt.Sprintf("%sParentType: %s,\n", indentationValues, serviceItemGetBalanceResponse.ParentType().FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, serviceItemGetBalanceResponse.StructureVersion))
-
-	if len(serviceItemGetBalanceResponse.NullableBalance) == 0 {
-		b.WriteString(fmt.Sprintf("%sNullableBalance: [],\n", indentationValues))
-	} else {
-		b.WriteString(fmt.Sprintf("%sNullableBalance: [\n", indentationValues))
-
-		for i := 0; i < len(serviceItemGetBalanceResponse.NullableBalance); i++ {
-			str := serviceItemGetBalanceResponse.NullableBalance[i].FormatToString(indentationLevel + 2)
-			if i == len(serviceItemGetBalanceResponse.NullableBalance)-1 {
-				b.WriteString(fmt.Sprintf("%s%s\n", indentationListValues, str))
-			} else {
-				b.WriteString(fmt.Sprintf("%s%s,\n", indentationListValues, str))
-			}
-		}
-
-		b.WriteString(fmt.Sprintf("%s],\n", indentationValues))
-	}
-
+	b.WriteString(fmt.Sprintf("%sServiceItemEShopResponse (parent): %s,\n", indentationValues, sigbr.ServiceItemEShopResponse.FormatToString(indentationLevel+1)))
+	b.WriteString(fmt.Sprintf("%sNullableBalance: %s,\n", indentationValues, sigbr.NullableBalance))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -134,10 +104,12 @@ func (serviceItemGetBalanceResponse *ServiceItemGetBalanceResponse) FormatToStri
 
 // NewServiceItemGetBalanceResponse returns a new ServiceItemGetBalanceResponse
 func NewServiceItemGetBalanceResponse() *ServiceItemGetBalanceResponse {
-	serviceItemGetBalanceResponse := &ServiceItemGetBalanceResponse{}
+	sigbr := &ServiceItemGetBalanceResponse{
+		ServiceItemEShopResponse: NewServiceItemEShopResponse(),
+		NullableBalance: types.NewList[*ServiceItemAmount](),
+	}
 
-	serviceItemGetBalanceResponse.ServiceItemEShopResponse = NewServiceItemEShopResponse()
-	serviceItemGetBalanceResponse.SetParentType(serviceItemGetBalanceResponse.ServiceItemEShopResponse)
+	sigbr.NullableBalance.Type = NewServiceItemAmount()
 
-	return serviceItemGetBalanceResponse
+	return sigbr
 }

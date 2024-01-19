@@ -7,8 +7,6 @@ import (
 )
 
 func (protocol *Protocol) handleGetAccountData(packet nex.PacketInterface) {
-	var errorCode uint32
-
 	if protocol.GetAccountData == nil {
 		globals.Logger.Warning("AccountManagement::GetAccountData not implemented")
 		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)

@@ -8,7 +8,7 @@ import (
 	"github.com/PretendoNetwork/nex-go/types"
 )
 
-// DataStoreSpecificMetaInfoV1 is a data structure used by the DataStore protocol
+// DataStoreSpecificMetaInfoV1 is a type within the DataStore protocol
 type DataStoreSpecificMetaInfoV1 struct {
 	types.Structure
 	DataID   *types.PrimitiveU32
@@ -18,35 +18,53 @@ type DataStoreSpecificMetaInfoV1 struct {
 	Version  *types.PrimitiveU16
 }
 
+// WriteTo writes the DataStoreSpecificMetaInfoV1 to the given writable
+func (dssmiv *DataStoreSpecificMetaInfoV1) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
+
+	dssmiv.DataID.WriteTo(writable)
+	dssmiv.OwnerID.WriteTo(writable)
+	dssmiv.Size.WriteTo(writable)
+	dssmiv.DataType.WriteTo(writable)
+	dssmiv.Version.WriteTo(writable)
+
+	content := contentWritable.Bytes()
+
+	dssmiv.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
+}
+
 // ExtractFrom extracts the DataStoreSpecificMetaInfoV1 from the given readable
-func (d *DataStoreSpecificMetaInfoV1) ExtractFrom(readable types.Readable) error {
+func (dssmiv *DataStoreSpecificMetaInfoV1) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	if err = d.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to read DataStoreSpecificMetaInfoV1 header. %s", err.Error())
+	err = dssmiv.ExtractHeaderFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreSpecificMetaInfoV1 header. %s", err.Error())
 	}
 
-	err = d.DataID.ExtractFrom(readable)
+	err = dssmiv.DataID.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreSpecificMetaInfoV1.DataID. %s", err.Error())
 	}
 
-	err = d.OwnerID.ExtractFrom(readable)
+	err = dssmiv.OwnerID.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreSpecificMetaInfoV1.OwnerID. %s", err.Error())
 	}
 
-	err = d.Size.ExtractFrom(readable)
+	err = dssmiv.Size.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreSpecificMetaInfoV1.Size. %s", err.Error())
 	}
 
-	err = d.DataType.ExtractFrom(readable)
+	err = dssmiv.DataType.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreSpecificMetaInfoV1.DataType. %s", err.Error())
 	}
 
-	err = d.Version.ExtractFrom(readable)
+	err = dssmiv.Version.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreSpecificMetaInfoV1.Version. %s", err.Error())
 	}
@@ -54,92 +72,69 @@ func (d *DataStoreSpecificMetaInfoV1) ExtractFrom(readable types.Readable) error
 	return nil
 }
 
-// WriteTo writes the DataStoreSpecificMetaInfoV1 to the given writable
-func (d *DataStoreSpecificMetaInfoV1) WriteTo(writable types.Writable) {
-	contentWritable := writable.CopyNew()
-
-	d.DataID.WriteTo(contentWritable)
-	d.OwnerID.WriteTo(contentWritable)
-	d.Size.WriteTo(contentWritable)
-	d.DataType.WriteTo(contentWritable)
-	d.Version.WriteTo(contentWritable)
-
-	content := contentWritable.Bytes()
-
-	d.WriteHeaderTo(writable, uint32(len(content)))
-
-	writable.Write(content)
-}
-
 // Copy returns a new copied instance of DataStoreSpecificMetaInfoV1
-func (d *DataStoreSpecificMetaInfoV1) Copy() types.RVType {
+func (dssmiv *DataStoreSpecificMetaInfoV1) Copy() types.RVType {
 	copied := NewDataStoreSpecificMetaInfoV1()
 
-	copied.StructureVersion = d.StructureVersion
-
-	copied.DataID = d.DataID.Copy().(*types.PrimitiveU32)
-	copied.OwnerID = d.OwnerID.Copy().(*types.PID)
-	copied.Size = d.Size.Copy().(*types.PrimitiveU32)
-	copied.DataType = d.DataType.Copy().(*types.PrimitiveU16)
-	copied.Version = d.Version.Copy().(*types.PrimitiveU16)
+	copied.StructureVersion = dssmiv.StructureVersion
+	copied.DataID = dssmiv.DataID.Copy().(*types.PrimitiveU32)
+	copied.OwnerID = dssmiv.OwnerID.Copy().(*types.PID)
+	copied.Size = dssmiv.Size.Copy().(*types.PrimitiveU32)
+	copied.DataType = dssmiv.DataType.Copy().(*types.PrimitiveU16)
+	copied.Version = dssmiv.Version.Copy().(*types.PrimitiveU16)
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (d *DataStoreSpecificMetaInfoV1) Equals(o types.RVType) bool {
+// Equals checks if the given DataStoreSpecificMetaInfoV1 contains the same data as the current DataStoreSpecificMetaInfoV1
+func (dssmiv *DataStoreSpecificMetaInfoV1) Equals(o types.RVType) bool {
 	if _, ok := o.(*DataStoreSpecificMetaInfoV1); !ok {
 		return false
 	}
 
 	other := o.(*DataStoreSpecificMetaInfoV1)
 
-	if d.StructureVersion != other.StructureVersion {
+	if dssmiv.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if !d.DataID.Equals(other.DataID) {
+	if !dssmiv.DataID.Equals(other.DataID) {
 		return false
 	}
 
-	if !d.OwnerID.Equals(other.OwnerID) {
+	if !dssmiv.OwnerID.Equals(other.OwnerID) {
 		return false
 	}
 
-	if !d.Size.Equals(other.Size) {
+	if !dssmiv.Size.Equals(other.Size) {
 		return false
 	}
 
-	if !d.DataType.Equals(other.DataType) {
+	if !dssmiv.DataType.Equals(other.DataType) {
 		return false
 	}
 
-	if !d.Version.Equals(other.Version) {
-		return false
-	}
-
-	return true
+	return dssmiv.Version.Equals(other.Version)
 }
 
-// String returns a string representation of the struct
-func (d *DataStoreSpecificMetaInfoV1) String() string {
-	return d.FormatToString(0)
+// String returns the string representation of the DataStoreSpecificMetaInfoV1
+func (dssmiv *DataStoreSpecificMetaInfoV1) String() string {
+	return dssmiv.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (d *DataStoreSpecificMetaInfoV1) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the DataStoreSpecificMetaInfoV1 using the provided indentation level
+func (dssmiv *DataStoreSpecificMetaInfoV1) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("DataStoreSpecificMetaInfoV1{\n")
-	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, d.StructureVersion))
-	b.WriteString(fmt.Sprintf("%sDataID: %s,\n", indentationValues, d.DataID))
-	b.WriteString(fmt.Sprintf("%sOwnerID: %s,\n", indentationValues, d.OwnerID))
-	b.WriteString(fmt.Sprintf("%sSize: %s,\n", indentationValues, d.Size))
-	b.WriteString(fmt.Sprintf("%sDataType: %s,\n", indentationValues, d.DataType))
-	b.WriteString(fmt.Sprintf("%sVersion: %s\n", indentationValues, d.Version))
+	b.WriteString(fmt.Sprintf("%sDataID: %s,\n", indentationValues, dssmiv.DataID))
+	b.WriteString(fmt.Sprintf("%sOwnerID: %s,\n", indentationValues, dssmiv.OwnerID.FormatToString(indentationLevel+1)))
+	b.WriteString(fmt.Sprintf("%sSize: %s,\n", indentationValues, dssmiv.Size))
+	b.WriteString(fmt.Sprintf("%sDataType: %s,\n", indentationValues, dssmiv.DataType))
+	b.WriteString(fmt.Sprintf("%sVersion: %s,\n", indentationValues, dssmiv.Version))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -147,11 +142,13 @@ func (d *DataStoreSpecificMetaInfoV1) FormatToString(indentationLevel int) strin
 
 // NewDataStoreSpecificMetaInfoV1 returns a new DataStoreSpecificMetaInfoV1
 func NewDataStoreSpecificMetaInfoV1() *DataStoreSpecificMetaInfoV1 {
-	return &DataStoreSpecificMetaInfoV1{
+	dssmiv := &DataStoreSpecificMetaInfoV1{
 		DataID:   types.NewPrimitiveU32(0),
 		OwnerID:  types.NewPID(0),
 		Size:     types.NewPrimitiveU32(0),
 		DataType: types.NewPrimitiveU16(0),
 		Version:  types.NewPrimitiveU16(0),
 	}
+
+	return dssmiv
 }

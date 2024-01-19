@@ -2,173 +2,152 @@
 package types
 
 import (
-	"bytes"
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-go/types"
 )
 
-// SubscriberContent is unknown
+// SubscriberContent is a type within the Shop protocol
 type SubscriberContent struct {
 	types.Structure
 	Unknown1 *types.PrimitiveU64
-	Unknown2 string
-	Unknown3 []byte
+	Unknown2 *types.String
+	Unknown3 *types.Buffer
 	Unknown4 *types.PrimitiveU64
 	Unknown5 *types.List[*types.String]
 	Unknown6 *types.DateTime
 }
 
+// WriteTo writes the SubscriberContent to the given writable
+func (sc *SubscriberContent) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
+
+	sc.Unknown1.WriteTo(writable)
+	sc.Unknown2.WriteTo(writable)
+	sc.Unknown3.WriteTo(writable)
+	sc.Unknown4.WriteTo(writable)
+	sc.Unknown5.WriteTo(writable)
+	sc.Unknown6.WriteTo(writable)
+
+	content := contentWritable.Bytes()
+
+	sc.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
+}
+
 // ExtractFrom extracts the SubscriberContent from the given readable
-func (subscriberContent *SubscriberContent) ExtractFrom(readable types.Readable) error {
+func (sc *SubscriberContent) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	if err = subscriberContent.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to read SubscriberContent header. %s", err.Error())
+	err = sc.ExtractHeaderFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract SubscriberContent header. %s", err.Error())
 	}
 
-	err = subscriberContent.Unknown1.ExtractFrom(readable)
+	err = sc.Unknown1.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract SubscriberContent.Unknown1 from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract SubscriberContent.Unknown1. %s", err.Error())
 	}
 
-	err = subscriberContent.Unknown2.ExtractFrom(readable)
+	err = sc.Unknown2.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract SubscriberContent.Unknown2 from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract SubscriberContent.Unknown2. %s", err.Error())
 	}
 
-	subscriberContent.Unknown3, err = stream.ReadQBuffer()
+	err = sc.Unknown3.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract SubscriberContent.Unknown3 from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract SubscriberContent.Unknown3. %s", err.Error())
 	}
 
-	err = subscriberContent.Unknown4.ExtractFrom(readable)
+	err = sc.Unknown4.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract SubscriberContent.Unknown4 from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract SubscriberContent.Unknown4. %s", err.Error())
 	}
 
-	err = subscriberContent.Unknown5.ExtractFrom(readable)
+	err = sc.Unknown5.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract SubscriberContent.Unknown5 from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract SubscriberContent.Unknown5. %s", err.Error())
 	}
 
-	err = subscriberContent.Unknown6.ExtractFrom(readable)
+	err = sc.Unknown6.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract SubscriberContent.Unknown6 from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract SubscriberContent.Unknown6. %s", err.Error())
 	}
 
 	return nil
 }
 
-// WriteTo writes the SubscriberContent to the given writable
-func (subscriberContent *SubscriberContent) WriteTo(writable types.Writable) {
-	contentWritable := writable.CopyNew()
-
-	subscriberContent.Unknown1.WriteTo(contentWritable)
-	subscriberContent.Unknown2.WriteTo(contentWritable)
-	stream.WriteQBuffer(subscriberContent.Unknown3)
-	subscriberContent.Unknown4.WriteTo(contentWritable)
-	subscriberContent.Unknown5.WriteTo(contentWritable)
-	subscriberContent.Unknown6.WriteTo(contentWritable)
-
-	content := contentWritable.Bytes()
-
-	subscriberContent.WriteHeaderTo(writable, uint32(len(content)))
-
-	writable.Write(content)
-}
-
 // Copy returns a new copied instance of SubscriberContent
-func (subscriberContent *SubscriberContent) Copy() types.RVType {
+func (sc *SubscriberContent) Copy() types.RVType {
 	copied := NewSubscriberContent()
 
-	copied.StructureVersion = subscriberContent.StructureVersion
-
-	copied.Unknown1 = subscriberContent.Unknown1
-	copied.Unknown2 = subscriberContent.Unknown2
-	copied.Unknown3 = make([]byte, len(subscriberContent.Unknown3))
-
-	copy(copied.Unknown3, subscriberContent.Unknown3)
-
-	copied.Unknown4 = subscriberContent.Unknown4
-	copied.Unknown5 = make(*types.List[*types.String], len(subscriberContent.Unknown5))
-
-	copy(copied.Unknown5, subscriberContent.Unknown5)
-
-	copied.Unknown6 = subscriberContent.Unknown6.Copy()
+	copied.StructureVersion = sc.StructureVersion
+	copied.Unknown1 = sc.Unknown1.Copy().(*types.PrimitiveU64)
+	copied.Unknown2 = sc.Unknown2.Copy().(*types.String)
+	copied.Unknown3 = sc.Unknown3.Copy().(*types.Buffer)
+	copied.Unknown4 = sc.Unknown4.Copy().(*types.PrimitiveU64)
+	copied.Unknown5 = sc.Unknown5.Copy().(*types.List[*types.String])
+	copied.Unknown6 = sc.Unknown6.Copy().(*types.DateTime)
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (subscriberContent *SubscriberContent) Equals(o types.RVType) bool {
+// Equals checks if the given SubscriberContent contains the same data as the current SubscriberContent
+func (sc *SubscriberContent) Equals(o types.RVType) bool {
 	if _, ok := o.(*SubscriberContent); !ok {
 		return false
 	}
 
 	other := o.(*SubscriberContent)
 
-	if subscriberContent.StructureVersion != other.StructureVersion {
+	if sc.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if !subscriberContent.Unknown1.Equals(other.Unknown1) {
+	if !sc.Unknown1.Equals(other.Unknown1) {
 		return false
 	}
 
-	if !subscriberContent.Unknown2.Equals(other.Unknown2) {
+	if !sc.Unknown2.Equals(other.Unknown2) {
 		return false
 	}
 
-	if !subscriberContent.Unknown3.Equals(other.Unknown3) {
+	if !sc.Unknown3.Equals(other.Unknown3) {
 		return false
 	}
 
-	if !subscriberContent.Unknown4.Equals(other.Unknown4) {
+	if !sc.Unknown4.Equals(other.Unknown4) {
 		return false
 	}
 
-	if len(subscriberContent.Unknown5) != len(other.Unknown5) {
+	if !sc.Unknown5.Equals(other.Unknown5) {
 		return false
 	}
 
-	for i := 0; i < len(subscriberContent.Unknown5); i++ {
-		if subscriberContent.Unknown5[i] != other.Unknown5[i] {
-			return false
-		}
-	}
-
-	return subscriberContent.Unknown6.Equals(other.Unknown6)
+	return sc.Unknown6.Equals(other.Unknown6)
 }
 
-// String returns a string representation of the struct
-func (subscriberContent *SubscriberContent) String() string {
-	return subscriberContent.FormatToString(0)
+// String returns the string representation of the SubscriberContent
+func (sc *SubscriberContent) String() string {
+	return sc.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (subscriberContent *SubscriberContent) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the SubscriberContent using the provided indentation level
+func (sc *SubscriberContent) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("SubscriberContent{\n")
-	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, subscriberContent.StructureVersion))
-	b.WriteString(fmt.Sprintf("%sUnknown1: %d,\n", indentationValues, subscriberContent.Unknown1))
-	b.WriteString(fmt.Sprintf("%sUnknown2: %q,\n", indentationValues, subscriberContent.Unknown2))
-	b.WriteString(fmt.Sprintf("%sUnknown3: %x,\n", indentationValues, subscriberContent.Unknown3))
-	b.WriteString(fmt.Sprintf("%sUnknown4: %d,\n", indentationValues, subscriberContent.Unknown4))
-	b.WriteString(fmt.Sprintf("%sUnknown5: %v,\n", indentationValues, subscriberContent.Unknown5))
-
-	if subscriberContent.Unknown6 != nil {
-		b.WriteString(fmt.Sprintf("%sUnknown6: %s\n", indentationValues, subscriberContent.Unknown6.FormatToString(indentationLevel+1)))
-	} else {
-		b.WriteString(fmt.Sprintf("%sUnknown6: nil\n", indentationValues))
-	}
-
+	b.WriteString(fmt.Sprintf("%sUnknown1: %s,\n", indentationValues, sc.Unknown1))
+	b.WriteString(fmt.Sprintf("%sUnknown2: %s,\n", indentationValues, sc.Unknown2))
+	b.WriteString(fmt.Sprintf("%sUnknown3: %s,\n", indentationValues, sc.Unknown3))
+	b.WriteString(fmt.Sprintf("%sUnknown4: %s,\n", indentationValues, sc.Unknown4))
+	b.WriteString(fmt.Sprintf("%sUnknown5: %s,\n", indentationValues, sc.Unknown5))
+	b.WriteString(fmt.Sprintf("%sUnknown6: %s,\n", indentationValues, sc.Unknown6.FormatToString(indentationLevel+1)))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -176,5 +155,16 @@ func (subscriberContent *SubscriberContent) FormatToString(indentationLevel int)
 
 // NewSubscriberContent returns a new SubscriberContent
 func NewSubscriberContent() *SubscriberContent {
-	return &SubscriberContent{}
+	sc := &SubscriberContent{
+		Unknown1: types.NewPrimitiveU64(0),
+		Unknown2: types.NewString(""),
+		Unknown3: types.NewBuffer(nil),
+		Unknown4: types.NewPrimitiveU64(0),
+		Unknown5: types.NewList[*types.String](),
+		Unknown6: types.NewDateTime(0),
+	}
+
+	sc.Unknown5.Type = types.NewString("")
+
+	return sc
 }

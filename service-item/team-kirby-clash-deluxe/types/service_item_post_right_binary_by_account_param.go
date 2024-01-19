@@ -1,169 +1,153 @@
-// Package types implements all the types used by the Service Item (Team Kirby Clash Deluxe) protocol
+// Package types implements all the types used by the ServiceItem protocol
 package types
 
 import (
-	"bytes"
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-go/types"
 )
 
-// ServiceItemPostRightBinaryByAccountParam holds data for the Service Item (Team Kirby Clash Deluxe) protocol
+// ServiceItemPostRightBinaryByAccountParam is a type within the ServiceItem protocol
 type ServiceItemPostRightBinaryByAccountParam struct {
 	types.Structure
-	ReferenceID string
+	ReferenceID *types.String
 	UseType     *types.PrimitiveU8
-	RightBinary []byte
-	LogMessage  string
+	RightBinary *types.QBuffer
+	LogMessage  *types.String
 	UniqueID    *types.PrimitiveU32
 	Platform    *types.PrimitiveU8
 }
 
+// WriteTo writes the ServiceItemPostRightBinaryByAccountParam to the given writable
+func (siprbbap *ServiceItemPostRightBinaryByAccountParam) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
+
+	siprbbap.ReferenceID.WriteTo(writable)
+	siprbbap.UseType.WriteTo(writable)
+	siprbbap.RightBinary.WriteTo(writable)
+	siprbbap.LogMessage.WriteTo(writable)
+	siprbbap.UniqueID.WriteTo(writable)
+	siprbbap.Platform.WriteTo(writable)
+
+	content := contentWritable.Bytes()
+
+	siprbbap.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
+}
+
 // ExtractFrom extracts the ServiceItemPostRightBinaryByAccountParam from the given readable
-func (serviceItemPostRightBinaryByAccountParam *ServiceItemPostRightBinaryByAccountParam) ExtractFrom(readable types.Readable) error {
+func (siprbbap *ServiceItemPostRightBinaryByAccountParam) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	if err = serviceItemPostRightBinaryByAccountParam.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to read ServiceItemPostRightBinaryByAccountParam header. %s", err.Error())
-	}
-
-	err = serviceItemPostRightBinaryByAccountParam.ReferenceID.ExtractFrom(readable)
+	err = siprbbap.ExtractHeaderFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemPostRightBinaryByAccountParam.ReferenceID from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract ServiceItemPostRightBinaryByAccountParam header. %s", err.Error())
 	}
 
-	err = serviceItemPostRightBinaryByAccountParam.UseType.ExtractFrom(readable)
+	err = siprbbap.ReferenceID.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemPostRightBinaryByAccountParam.UseType from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract ServiceItemPostRightBinaryByAccountParam.ReferenceID. %s", err.Error())
 	}
 
-	serviceItemPostRightBinaryByAccountParam.RightBinary, err = stream.ReadQBuffer()
+	err = siprbbap.UseType.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemPostRightBinaryByAccountParam.RightBinary from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract ServiceItemPostRightBinaryByAccountParam.UseType. %s", err.Error())
 	}
 
-	err = serviceItemPostRightBinaryByAccountParam.LogMessage.ExtractFrom(readable)
+	err = siprbbap.RightBinary.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemPostRightBinaryByAccountParam.LogMessage from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract ServiceItemPostRightBinaryByAccountParam.RightBinary. %s", err.Error())
 	}
 
-	err = serviceItemPostRightBinaryByAccountParam.UniqueID.ExtractFrom(readable)
+	err = siprbbap.LogMessage.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemPostRightBinaryByAccountParam.UniqueID from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract ServiceItemPostRightBinaryByAccountParam.LogMessage. %s", err.Error())
 	}
 
-	if serviceItemPostRightBinaryByAccountParam.StructureVersion >= 1 {
-	err = 	serviceItemPostRightBinaryByAccountParam.Platform.ExtractFrom(readable)
-		if err != nil {
-			return fmt.Errorf("Failed to extract ServiceItemPostRightBinaryByAccountParam.Platform from stream. %s", err.Error())
-		}
+	err = siprbbap.UniqueID.ExtractFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract ServiceItemPostRightBinaryByAccountParam.UniqueID. %s", err.Error())
+	}
+
+	err = siprbbap.Platform.ExtractFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract ServiceItemPostRightBinaryByAccountParam.Platform. %s", err.Error())
 	}
 
 	return nil
 }
 
-// WriteTo writes the ServiceItemPostRightBinaryByAccountParam to the given writable
-func (serviceItemPostRightBinaryByAccountParam *ServiceItemPostRightBinaryByAccountParam) WriteTo(writable types.Writable) {
-	contentWritable := writable.CopyNew()
-
-	serviceItemPostRightBinaryByAccountParam.ReferenceID.WriteTo(contentWritable)
-	serviceItemPostRightBinaryByAccountParam.UseType.WriteTo(contentWritable)
-	stream.WriteQBuffer(serviceItemPostRightBinaryByAccountParam.RightBinary)
-	serviceItemPostRightBinaryByAccountParam.LogMessage.WriteTo(contentWritable)
-	serviceItemPostRightBinaryByAccountParam.UniqueID.WriteTo(contentWritable)
-
-	if serviceItemPostRightBinaryByAccountParam.StructureVersion >= 1 {
-		serviceItemPostRightBinaryByAccountParam.Platform.WriteTo(contentWritable)
-	}
-
-	content := contentWritable.Bytes()
-
-	rvcd.WriteHeaderTo(writable, uint32(len(content)))
-
-	writable.Write(content)
-}
-
 // Copy returns a new copied instance of ServiceItemPostRightBinaryByAccountParam
-func (serviceItemPostRightBinaryByAccountParam *ServiceItemPostRightBinaryByAccountParam) Copy() types.RVType {
+func (siprbbap *ServiceItemPostRightBinaryByAccountParam) Copy() types.RVType {
 	copied := NewServiceItemPostRightBinaryByAccountParam()
 
-	copied.StructureVersion = serviceItemPostRightBinaryByAccountParam.StructureVersion
-
-	copied.ReferenceID = serviceItemPostRightBinaryByAccountParam.ReferenceID
-	copied.UseType = serviceItemPostRightBinaryByAccountParam.UseType
-	copied.RightBinary = serviceItemPostRightBinaryByAccountParam.RightBinary
-	copied.LogMessage = serviceItemPostRightBinaryByAccountParam.LogMessage
-	copied.UniqueID = serviceItemPostRightBinaryByAccountParam.UniqueID
-	copied.Platform = serviceItemPostRightBinaryByAccountParam.Platform
+	copied.StructureVersion = siprbbap.StructureVersion
+	copied.ReferenceID = siprbbap.ReferenceID.Copy().(*types.String)
+	copied.UseType = siprbbap.UseType.Copy().(*types.PrimitiveU8)
+	copied.RightBinary = siprbbap.RightBinary.Copy().(*types.QBuffer)
+	copied.LogMessage = siprbbap.LogMessage.Copy().(*types.String)
+	copied.UniqueID = siprbbap.UniqueID.Copy().(*types.PrimitiveU32)
+	copied.Platform = siprbbap.Platform.Copy().(*types.PrimitiveU8)
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (serviceItemPostRightBinaryByAccountParam *ServiceItemPostRightBinaryByAccountParam) Equals(o types.RVType) bool {
+// Equals checks if the given ServiceItemPostRightBinaryByAccountParam contains the same data as the current ServiceItemPostRightBinaryByAccountParam
+func (siprbbap *ServiceItemPostRightBinaryByAccountParam) Equals(o types.RVType) bool {
 	if _, ok := o.(*ServiceItemPostRightBinaryByAccountParam); !ok {
 		return false
 	}
 
 	other := o.(*ServiceItemPostRightBinaryByAccountParam)
 
-	if serviceItemPostRightBinaryByAccountParam.StructureVersion != other.StructureVersion {
+	if siprbbap.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if !serviceItemPostRightBinaryByAccountParam.ReferenceID.Equals(other.ReferenceID) {
+	if !siprbbap.ReferenceID.Equals(other.ReferenceID) {
 		return false
 	}
 
-	if !serviceItemPostRightBinaryByAccountParam.UseType.Equals(other.UseType) {
+	if !siprbbap.UseType.Equals(other.UseType) {
 		return false
 	}
 
-	if !serviceItemPostRightBinaryByAccountParam.RightBinary.Equals(other.RightBinary) {
+	if !siprbbap.RightBinary.Equals(other.RightBinary) {
 		return false
 	}
 
-	if !serviceItemPostRightBinaryByAccountParam.LogMessage.Equals(other.LogMessage) {
+	if !siprbbap.LogMessage.Equals(other.LogMessage) {
 		return false
 	}
 
-	if !serviceItemPostRightBinaryByAccountParam.UniqueID.Equals(other.UniqueID) {
+	if !siprbbap.UniqueID.Equals(other.UniqueID) {
 		return false
 	}
 
-	if !serviceItemPostRightBinaryByAccountParam.Platform.Equals(other.Platform) {
-		return false
-	}
-
-	return true
+	return siprbbap.Platform.Equals(other.Platform)
 }
 
-// String returns a string representation of the struct
-func (serviceItemPostRightBinaryByAccountParam *ServiceItemPostRightBinaryByAccountParam) String() string {
-	return serviceItemPostRightBinaryByAccountParam.FormatToString(0)
+// String returns the string representation of the ServiceItemPostRightBinaryByAccountParam
+func (siprbbap *ServiceItemPostRightBinaryByAccountParam) String() string {
+	return siprbbap.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (serviceItemPostRightBinaryByAccountParam *ServiceItemPostRightBinaryByAccountParam) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the ServiceItemPostRightBinaryByAccountParam using the provided indentation level
+func (siprbbap *ServiceItemPostRightBinaryByAccountParam) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("ServiceItemPostRightBinaryByAccountParam{\n")
-	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, serviceItemPostRightBinaryByAccountParam.StructureVersion))
-	b.WriteString(fmt.Sprintf("%sReferenceID: %q,\n", indentationValues, serviceItemPostRightBinaryByAccountParam.ReferenceID))
-	b.WriteString(fmt.Sprintf("%sUseType: %d,\n", indentationValues, serviceItemPostRightBinaryByAccountParam.UseType))
-	b.WriteString(fmt.Sprintf("%sRightBinary: %x,\n", indentationValues, serviceItemPostRightBinaryByAccountParam.RightBinary))
-	b.WriteString(fmt.Sprintf("%sLogMessage: %q,\n", indentationValues, serviceItemPostRightBinaryByAccountParam.LogMessage))
-	b.WriteString(fmt.Sprintf("%sUniqueID: %d,\n", indentationValues, serviceItemPostRightBinaryByAccountParam.UniqueID))
-
-	if serviceItemPostRightBinaryByAccountParam.StructureVersion >= 1 {
-		b.WriteString(fmt.Sprintf("%sPlatform: %d,\n", indentationValues, serviceItemPostRightBinaryByAccountParam.Platform))
-	}
-
+	b.WriteString(fmt.Sprintf("%sReferenceID: %s,\n", indentationValues, siprbbap.ReferenceID))
+	b.WriteString(fmt.Sprintf("%sUseType: %s,\n", indentationValues, siprbbap.UseType))
+	b.WriteString(fmt.Sprintf("%sRightBinary: %s,\n", indentationValues, siprbbap.RightBinary))
+	b.WriteString(fmt.Sprintf("%sLogMessage: %s,\n", indentationValues, siprbbap.LogMessage))
+	b.WriteString(fmt.Sprintf("%sUniqueID: %s,\n", indentationValues, siprbbap.UniqueID))
+	b.WriteString(fmt.Sprintf("%sPlatform: %s,\n", indentationValues, siprbbap.Platform))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -171,5 +155,14 @@ func (serviceItemPostRightBinaryByAccountParam *ServiceItemPostRightBinaryByAcco
 
 // NewServiceItemPostRightBinaryByAccountParam returns a new ServiceItemPostRightBinaryByAccountParam
 func NewServiceItemPostRightBinaryByAccountParam() *ServiceItemPostRightBinaryByAccountParam {
-	return &ServiceItemPostRightBinaryByAccountParam{}
+	siprbbap := &ServiceItemPostRightBinaryByAccountParam{
+		ReferenceID: types.NewString(""),
+		UseType:     types.NewPrimitiveU8(0),
+		RightBinary: types.NewQBuffer(nil),
+		LogMessage:  types.NewString(""),
+		UniqueID:    types.NewPrimitiveU32(0),
+		Platform:    types.NewPrimitiveU8(0),
+	}
+
+	return siprbbap
 }

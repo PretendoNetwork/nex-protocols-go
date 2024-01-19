@@ -29,7 +29,7 @@ func (protocol *Protocol) handleFindByGroup(packet nex.PacketInterface) {
 	uiGroup := types.NewPrimitiveU32(0)
 	err = uiGroup.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.FindByGroup(fmt.Errorf("Failed to read uiGroup from parameters. %s", err.Error()), packet, callID, 0)
+		_, errorCode = protocol.FindByGroup(fmt.Errorf("Failed to read uiGroup from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}

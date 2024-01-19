@@ -121,7 +121,7 @@ type Protocol struct {
 	SearchSharedData         func(err error, packet nex.PacketInterface, callID uint32, param *datastore_super_smash_bros_4_types.DataStoreSearchSharedDataParam) (*nex.RMCMessage, uint32)
 	GetApplicationConfig     func(err error, packet nex.PacketInterface, callID uint32, applicationID *types.PrimitiveU32) (*nex.RMCMessage, uint32)
 	SearchReplay             func(err error, packet nex.PacketInterface, callID uint32, param *datastore_super_smash_bros_4_types.DataStoreSearchReplayParam) (*nex.RMCMessage, uint32)
-	PostFightingPowerScore   func(err error, packet nex.PacketInterface, callID uint32, params []*datastore_super_smash_bros_4_types.DataStorePostFightingPowerScoreParam) (*nex.RMCMessage, uint32)
+	PostFightingPowerScore   func(err error, packet nex.PacketInterface, callID uint32, params *types.List[*datastore_super_smash_bros_4_types.DataStorePostFightingPowerScoreParam]) (*nex.RMCMessage, uint32)
 	GetFightingPowerChart    func(err error, packet nex.PacketInterface, callID uint32, mode *types.PrimitiveU8) (*nex.RMCMessage, uint32)
 	GetFightingPowerChartAll func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, uint32)
 	ReportSharedData         func(err error, packet nex.PacketInterface, callID uint32, dataID *types.PrimitiveU64) (*nex.RMCMessage, uint32)

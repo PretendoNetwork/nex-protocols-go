@@ -29,7 +29,7 @@ func (protocol *Protocol) handleListServiceItemResponse(packet nex.PacketInterfa
 	requestID := types.NewPrimitiveU32(0)
 	err = requestID.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.ListServiceItemResponse(fmt.Errorf("Failed to read requestID from parameters. %s", err.Error()), packet, callID, 0)
+		_, errorCode = protocol.ListServiceItemResponse(fmt.Errorf("Failed to read requestID from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}

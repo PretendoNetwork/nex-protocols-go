@@ -29,7 +29,7 @@ func (protocol *Protocol) handleLoginEx(packet nex.PacketInterface) {
 	strUserName := types.NewString("")
 	err = strUserName.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.LoginEx(fmt.Errorf("Failed to read strUserName from parameters. %s", err.Error()), packet, callID, "", nil)
+		_, errorCode = protocol.LoginEx(fmt.Errorf("Failed to read strUserName from parameters. %s", err.Error()), packet, callID, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -40,7 +40,7 @@ func (protocol *Protocol) handleLoginEx(packet nex.PacketInterface) {
 	oExtraData := types.NewAnyDataHolder()
 	err = oExtraData.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.LoginEx(fmt.Errorf("Failed to read oExtraData from parameters. %s", err.Error()), packet, callID, "", nil)
+		_, errorCode = protocol.LoginEx(fmt.Errorf("Failed to read oExtraData from parameters. %s", err.Error()), packet, callID, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}

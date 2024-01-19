@@ -8,7 +8,7 @@ import (
 	"github.com/PretendoNetwork/nex-go/types"
 )
 
-// DataStoreReqGetNotificationURLInfo is a data structure used by the DataStore protocol
+// DataStoreReqGetNotificationURLInfo is a type within the DataStore protocol
 type DataStoreReqGetNotificationURLInfo struct {
 	types.Structure
 	URL        *types.String
@@ -17,30 +17,47 @@ type DataStoreReqGetNotificationURLInfo struct {
 	RootCACert *types.Buffer
 }
 
+// WriteTo writes the DataStoreReqGetNotificationURLInfo to the given writable
+func (dsrgnurli *DataStoreReqGetNotificationURLInfo) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
+
+	dsrgnurli.URL.WriteTo(writable)
+	dsrgnurli.Key.WriteTo(writable)
+	dsrgnurli.Query.WriteTo(writable)
+	dsrgnurli.RootCACert.WriteTo(writable)
+
+	content := contentWritable.Bytes()
+
+	dsrgnurli.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
+}
+
 // ExtractFrom extracts the DataStoreReqGetNotificationURLInfo from the given readable
-func (dataStoreReqGetNotificationURLInfo *DataStoreReqGetNotificationURLInfo) ExtractFrom(readable types.Readable) error {
+func (dsrgnurli *DataStoreReqGetNotificationURLInfo) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	if err = dataStoreReqGetNotificationURLInfo.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to read DataStoreReqGetNotificationURLInfo header. %s", err.Error())
+	err = dsrgnurli.ExtractHeaderFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreReqGetNotificationURLInfo header. %s", err.Error())
 	}
 
-	err = dataStoreReqGetNotificationURLInfo.URL.ExtractFrom(readable)
+	err = dsrgnurli.URL.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreReqGetNotificationURLInfo.URL. %s", err.Error())
 	}
 
-	err = dataStoreReqGetNotificationURLInfo.Key.ExtractFrom(readable)
+	err = dsrgnurli.Key.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreReqGetNotificationURLInfo.Key. %s", err.Error())
 	}
 
-	err = dataStoreReqGetNotificationURLInfo.Query.ExtractFrom(readable)
+	err = dsrgnurli.Query.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreReqGetNotificationURLInfo.Query. %s", err.Error())
 	}
 
-	err = dataStoreReqGetNotificationURLInfo.RootCACert.ExtractFrom(readable)
+	err = dsrgnurli.RootCACert.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreReqGetNotificationURLInfo.RootCACert. %s", err.Error())
 	}
@@ -48,85 +65,63 @@ func (dataStoreReqGetNotificationURLInfo *DataStoreReqGetNotificationURLInfo) Ex
 	return nil
 }
 
-// WriteTo writes the DataStoreReqGetNotificationURLInfo to the given writable
-func (dataStoreReqGetNotificationURLInfo *DataStoreReqGetNotificationURLInfo) WriteTo(writable types.Writable) {
-	contentWritable := writable.CopyNew()
-
-	dataStoreReqGetNotificationURLInfo.URL.WriteTo(contentWritable)
-	dataStoreReqGetNotificationURLInfo.Key.WriteTo(contentWritable)
-	dataStoreReqGetNotificationURLInfo.Query.WriteTo(contentWritable)
-	dataStoreReqGetNotificationURLInfo.RootCACert.WriteTo(contentWritable)
-
-	content := contentWritable.Bytes()
-
-	dataStoreReqGetNotificationURLInfo.WriteHeaderTo(writable, uint32(len(content)))
-
-	writable.Write(content)
-}
-
 // Copy returns a new copied instance of DataStoreReqGetNotificationURLInfo
-func (dataStoreReqGetNotificationURLInfo *DataStoreReqGetNotificationURLInfo) Copy() types.RVType {
+func (dsrgnurli *DataStoreReqGetNotificationURLInfo) Copy() types.RVType {
 	copied := NewDataStoreReqGetNotificationURLInfo()
 
-	copied.StructureVersion = dataStoreReqGetNotificationURLInfo.StructureVersion
-
-	copied.URL = dataStoreReqGetNotificationURLInfo.URL.Copy().(*types.String)
-	copied.Key = dataStoreReqGetNotificationURLInfo.Key.Copy().(*types.String)
-	copied.Query = dataStoreReqGetNotificationURLInfo.Query.Copy().(*types.String)
-	copied.RootCACert = dataStoreReqGetNotificationURLInfo.RootCACert.Copy().(*types.Buffer)
+	copied.StructureVersion = dsrgnurli.StructureVersion
+	copied.URL = dsrgnurli.URL.Copy().(*types.String)
+	copied.Key = dsrgnurli.Key.Copy().(*types.String)
+	copied.Query = dsrgnurli.Query.Copy().(*types.String)
+	copied.RootCACert = dsrgnurli.RootCACert.Copy().(*types.Buffer)
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (dataStoreReqGetNotificationURLInfo *DataStoreReqGetNotificationURLInfo) Equals(o types.RVType) bool {
+// Equals checks if the given DataStoreReqGetNotificationURLInfo contains the same data as the current DataStoreReqGetNotificationURLInfo
+func (dsrgnurli *DataStoreReqGetNotificationURLInfo) Equals(o types.RVType) bool {
 	if _, ok := o.(*DataStoreReqGetNotificationURLInfo); !ok {
 		return false
 	}
 
 	other := o.(*DataStoreReqGetNotificationURLInfo)
 
-	if dataStoreReqGetNotificationURLInfo.StructureVersion != other.StructureVersion {
+	if dsrgnurli.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if !dataStoreReqGetNotificationURLInfo.URL.Equals(other.URL) {
+	if !dsrgnurli.URL.Equals(other.URL) {
 		return false
 	}
 
-	if !dataStoreReqGetNotificationURLInfo.Key.Equals(other.Key) {
+	if !dsrgnurli.Key.Equals(other.Key) {
 		return false
 	}
 
-	if !dataStoreReqGetNotificationURLInfo.Query.Equals(other.Query) {
+	if !dsrgnurli.Query.Equals(other.Query) {
 		return false
 	}
 
-	if !dataStoreReqGetNotificationURLInfo.RootCACert.Equals(other.RootCACert) {
-		return false
-	}
-
-	return true
+	return dsrgnurli.RootCACert.Equals(other.RootCACert)
 }
 
-// String returns a string representation of the struct
-func (dataStoreReqGetNotificationURLInfo *DataStoreReqGetNotificationURLInfo) String() string {
-	return dataStoreReqGetNotificationURLInfo.FormatToString(0)
+// String returns the string representation of the DataStoreReqGetNotificationURLInfo
+func (dsrgnurli *DataStoreReqGetNotificationURLInfo) String() string {
+	return dsrgnurli.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (dataStoreReqGetNotificationURLInfo *DataStoreReqGetNotificationURLInfo) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the DataStoreReqGetNotificationURLInfo using the provided indentation level
+func (dsrgnurli *DataStoreReqGetNotificationURLInfo) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("DataStoreReqGetNotificationURLInfo{\n")
-	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, dataStoreReqGetNotificationURLInfo.StructureVersion))
-	b.WriteString(fmt.Sprintf("%sURL: %s,\n", indentationValues, dataStoreReqGetNotificationURLInfo.URL))
-	b.WriteString(fmt.Sprintf("%sKey: %s,\n", indentationValues, dataStoreReqGetNotificationURLInfo.Key))
-	b.WriteString(fmt.Sprintf("%sQuery: %s,\n", indentationValues, dataStoreReqGetNotificationURLInfo.Query))
-	b.WriteString(fmt.Sprintf("%sRootCACert: %s\n", indentationValues, dataStoreReqGetNotificationURLInfo.RootCACert))
+	b.WriteString(fmt.Sprintf("%sURL: %s,\n", indentationValues, dsrgnurli.URL))
+	b.WriteString(fmt.Sprintf("%sKey: %s,\n", indentationValues, dsrgnurli.Key))
+	b.WriteString(fmt.Sprintf("%sQuery: %s,\n", indentationValues, dsrgnurli.Query))
+	b.WriteString(fmt.Sprintf("%sRootCACert: %s,\n", indentationValues, dsrgnurli.RootCACert))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -134,10 +129,12 @@ func (dataStoreReqGetNotificationURLInfo *DataStoreReqGetNotificationURLInfo) Fo
 
 // NewDataStoreReqGetNotificationURLInfo returns a new DataStoreReqGetNotificationURLInfo
 func NewDataStoreReqGetNotificationURLInfo() *DataStoreReqGetNotificationURLInfo {
-	return &DataStoreReqGetNotificationURLInfo{
+	dsrgnurli := &DataStoreReqGetNotificationURLInfo{
 		URL:        types.NewString(""),
 		Key:        types.NewString(""),
 		Query:      types.NewString(""),
 		RootCACert: types.NewBuffer(nil),
 	}
+
+	return dsrgnurli
 }

@@ -1,132 +1,102 @@
-// Package types implements all the types used by the Service Item (Team Kirby Clash Deluxe) protocol
+// Package types implements all the types used by the ServiceItem protocol
 package types
 
 import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-go/types"
 )
 
-// ServiceItemGetServiceItemRightResponse holds data for the Service Item (Team Kirby Clash Deluxe) protocol
+// ServiceItemGetServiceItemRightResponse is a type within the ServiceItem protocol
 type ServiceItemGetServiceItemRightResponse struct {
 	types.Structure
 	*ServiceItemEShopResponse
-	NullableRightInfos []*ServiceItemRightInfos
-}
-
-// ExtractFrom extracts the ServiceItemGetServiceItemRightResponse from the given readable
-func (serviceItemGetServiceItemRightResponse *ServiceItemGetServiceItemRightResponse) ExtractFrom(readable types.Readable) error {
-	var err error
-
-	if err = serviceItemGetServiceItemRightResponse.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to read ServiceItemGetServiceItemRightResponse header. %s", err.Error())
-	}
-
-	nullableRightInfos, err := nex.StreamReadListStructure(stream, NewServiceItemRightInfos())
-	if err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemGetServiceItemRightResponse.NullableRightInfos from stream. %s", err.Error())
-	}
-
-	serviceItemGetServiceItemRightResponse.NullableRightInfos = nullableRightInfos
-
-	return nil
+	NullableRightInfos *types.List[*ServiceItemRightInfos]
 }
 
 // WriteTo writes the ServiceItemGetServiceItemRightResponse to the given writable
-func (serviceItemGetServiceItemRightResponse *ServiceItemGetServiceItemRightResponse) WriteTo(writable types.Writable) {
+func (sigsirr *ServiceItemGetServiceItemRightResponse) WriteTo(writable types.Writable) {
+	sigsirr.ServiceItemEShopResponse.WriteTo(writable)
+
 	contentWritable := writable.CopyNew()
 
-	serviceItemGetServiceItemRightResponse.NullableRightInfos.WriteTo(contentWritable)
+	sigsirr.NullableRightInfos.WriteTo(writable)
 
 	content := contentWritable.Bytes()
 
-	serviceItemGetServiceItemRightResponse.WriteHeaderTo(writable, uint32(len(content)))
+	sigsirr.WriteHeaderTo(writable, uint32(len(content)))
 
 	writable.Write(content)
 }
 
+// ExtractFrom extracts the ServiceItemGetServiceItemRightResponse from the given readable
+func (sigsirr *ServiceItemGetServiceItemRightResponse) ExtractFrom(readable types.Readable) error {
+	var err error
+
+	err = sigsirr.ServiceItemEShopResponse.ExtractFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract ServiceItemGetServiceItemRightResponse.ServiceItemEShopResponse. %s", err.Error())
+	}
+
+	err = sigsirr.ExtractHeaderFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract ServiceItemGetServiceItemRightResponse header. %s", err.Error())
+	}
+
+	err = sigsirr.NullableRightInfos.ExtractFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract ServiceItemGetServiceItemRightResponse.NullableRightInfos. %s", err.Error())
+	}
+
+	return nil
+}
+
 // Copy returns a new copied instance of ServiceItemGetServiceItemRightResponse
-func (serviceItemGetServiceItemRightResponse *ServiceItemGetServiceItemRightResponse) Copy() types.RVType {
+func (sigsirr *ServiceItemGetServiceItemRightResponse) Copy() types.RVType {
 	copied := NewServiceItemGetServiceItemRightResponse()
 
-	copied.StructureVersion = serviceItemGetServiceItemRightResponse.StructureVersion
-
-	copied.ServiceItemEShopResponse = serviceItemGetServiceItemRightResponse.ServiceItemEShopResponse.Copy().(*ServiceItemEShopResponse)
-
-	copied.NullableRightInfos = make([]*ServiceItemRightInfos, len(serviceItemGetServiceItemRightResponse.NullableRightInfos))
-
-	for i := 0; i < len(serviceItemGetServiceItemRightResponse.NullableRightInfos); i++ {
-		copied.NullableRightInfos[i] = serviceItemGetServiceItemRightResponse.NullableRightInfos[i].Copy().(*ServiceItemRightInfos)
-	}
+	copied.StructureVersion = sigsirr.StructureVersion
+	copied.ServiceItemEShopResponse = sigsirr.ServiceItemEShopResponse.Copy().(*ServiceItemEShopResponse)
+	copied.NullableRightInfos = sigsirr.NullableRightInfos.Copy().(*types.List[*ServiceItemRightInfos])
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (serviceItemGetServiceItemRightResponse *ServiceItemGetServiceItemRightResponse) Equals(o types.RVType) bool {
+// Equals checks if the given ServiceItemGetServiceItemRightResponse contains the same data as the current ServiceItemGetServiceItemRightResponse
+func (sigsirr *ServiceItemGetServiceItemRightResponse) Equals(o types.RVType) bool {
 	if _, ok := o.(*ServiceItemGetServiceItemRightResponse); !ok {
 		return false
 	}
 
 	other := o.(*ServiceItemGetServiceItemRightResponse)
 
-	if serviceItemGetServiceItemRightResponse.StructureVersion != other.StructureVersion {
+	if sigsirr.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if !serviceItemGetServiceItemRightResponse.ParentType().Equals(other.ParentType()) {
+	if !sigsirr.ServiceItemEShopResponse.Equals(other.ServiceItemEShopResponse) {
 		return false
 	}
 
-	if len(serviceItemGetServiceItemRightResponse.NullableRightInfos) != len(other.NullableRightInfos) {
-		return false
-	}
-
-	for i := 0; i < len(serviceItemGetServiceItemRightResponse.NullableRightInfos); i++ {
-		if !serviceItemGetServiceItemRightResponse.NullableRightInfos[i].Equals(other.NullableRightInfos[i]) {
-			return false
-		}
-	}
-
-	return true
+	return sigsirr.NullableRightInfos.Equals(other.NullableRightInfos)
 }
 
-// String returns a string representation of the struct
-func (serviceItemGetServiceItemRightResponse *ServiceItemGetServiceItemRightResponse) String() string {
-	return serviceItemGetServiceItemRightResponse.FormatToString(0)
+// String returns the string representation of the ServiceItemGetServiceItemRightResponse
+func (sigsirr *ServiceItemGetServiceItemRightResponse) String() string {
+	return sigsirr.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (serviceItemGetServiceItemRightResponse *ServiceItemGetServiceItemRightResponse) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the ServiceItemGetServiceItemRightResponse using the provided indentation level
+func (sigsirr *ServiceItemGetServiceItemRightResponse) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
-	indentationListValues := strings.Repeat("\t", indentationLevel+2)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("ServiceItemGetServiceItemRightResponse{\n")
-	b.WriteString(fmt.Sprintf("%sParentType: %s,\n", indentationValues, serviceItemGetServiceItemRightResponse.ParentType().FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, serviceItemGetServiceItemRightResponse.StructureVersion))
-
-	if len(serviceItemGetServiceItemRightResponse.NullableRightInfos) == 0 {
-		b.WriteString(fmt.Sprintf("%sNullableRightInfos: [],\n", indentationValues))
-	} else {
-		b.WriteString(fmt.Sprintf("%sNullableRightInfos: [\n", indentationValues))
-
-		for i := 0; i < len(serviceItemGetServiceItemRightResponse.NullableRightInfos); i++ {
-			str := serviceItemGetServiceItemRightResponse.NullableRightInfos[i].FormatToString(indentationLevel + 2)
-			if i == len(serviceItemGetServiceItemRightResponse.NullableRightInfos)-1 {
-				b.WriteString(fmt.Sprintf("%s%s\n", indentationListValues, str))
-			} else {
-				b.WriteString(fmt.Sprintf("%s%s,\n", indentationListValues, str))
-			}
-		}
-
-		b.WriteString(fmt.Sprintf("%s],\n", indentationValues))
-	}
-
+	b.WriteString(fmt.Sprintf("%sServiceItemEShopResponse (parent): %s,\n", indentationValues, sigsirr.ServiceItemEShopResponse.FormatToString(indentationLevel+1)))
+	b.WriteString(fmt.Sprintf("%sNullableRightInfos: %s,\n", indentationValues, sigsirr.NullableRightInfos))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -134,10 +104,12 @@ func (serviceItemGetServiceItemRightResponse *ServiceItemGetServiceItemRightResp
 
 // NewServiceItemGetServiceItemRightResponse returns a new ServiceItemGetServiceItemRightResponse
 func NewServiceItemGetServiceItemRightResponse() *ServiceItemGetServiceItemRightResponse {
-	serviceItemGetServiceItemRightResponse := &ServiceItemGetServiceItemRightResponse{}
+	sigsirr := &ServiceItemGetServiceItemRightResponse{
+		ServiceItemEShopResponse: NewServiceItemEShopResponse(),
+		NullableRightInfos: types.NewList[*ServiceItemRightInfos](),
+	}
 
-	serviceItemGetServiceItemRightResponse.ServiceItemEShopResponse = NewServiceItemEShopResponse()
-	serviceItemGetServiceItemRightResponse.SetParentType(serviceItemGetServiceItemRightResponse.ServiceItemEShopResponse)
+	sigsirr.NullableRightInfos.Type = NewServiceItemRightInfos()
 
-	return serviceItemGetServiceItemRightResponse
+	return sigsirr
 }

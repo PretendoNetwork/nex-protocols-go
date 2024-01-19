@@ -48,7 +48,7 @@ type Protocol struct {
 	TestConnectivity      func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, uint32)
 	UpdateURLs            func(err error, packet nex.PacketInterface, callID uint32, vecMyURLs *types.List[*types.StationURL]) (*nex.RMCMessage, uint32)
 	ReplaceURL            func(err error, packet nex.PacketInterface, callID uint32, target *types.StationURL, url *types.StationURL) (*nex.RMCMessage, uint32)
-	SendReport            func(err error, packet nex.PacketInterface, callID uint32, reportID *types.PrimitiveU32, reportData []byte) (*nex.RMCMessage, uint32)
+	SendReport            func(err error, packet nex.PacketInterface, callID uint32, reportID *types.PrimitiveU32, reportData *types.QBuffer) (*nex.RMCMessage, uint32)
 }
 
 // Interface implements the methods present on the Secure Connection protocol struct
@@ -62,7 +62,7 @@ type Interface interface {
 	SetHandlerTestConnectivity(handler func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, uint32))
 	SetHandlerUpdateURLs(handler func(err error, packet nex.PacketInterface, callID uint32, vecMyURLs *types.List[*types.StationURL]) (*nex.RMCMessage, uint32))
 	SetHandlerReplaceURL(handler func(err error, packet nex.PacketInterface, callID uint32, target *types.StationURL, url *types.StationURL) (*nex.RMCMessage, uint32))
-	SetHandlerSendReport(handler func(err error, packet nex.PacketInterface, callID uint32, reportID *types.PrimitiveU32, reportData []byte) (*nex.RMCMessage, uint32))
+	SetHandlerSendReport(handler func(err error, packet nex.PacketInterface, callID uint32, reportID *types.PrimitiveU32, reportData *types.Buffer) (*nex.RMCMessage, uint32))
 }
 
 // Server returns the server implementing the protocol
@@ -111,7 +111,7 @@ func (protocol *Protocol) SetHandlerReplaceURL(handler func(err error, packet ne
 }
 
 // SetHandlerSendReport sets the handler for the SendReport method
-func (protocol *Protocol) SetHandlerSendReport(handler func(err error, packet nex.PacketInterface, callID uint32, reportID *types.PrimitiveU32, reportData []byte) (*nex.RMCMessage, uint32)) {
+func (protocol *Protocol) SetHandlerSendReport(handler func(err error, packet nex.PacketInterface, callID uint32, reportID *types.PrimitiveU32, reportData *types.QBuffer) (*nex.RMCMessage, uint32)) {
 	protocol.SendReport = handler
 }
 

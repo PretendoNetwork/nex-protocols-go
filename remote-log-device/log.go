@@ -29,7 +29,7 @@ func (protocol *Protocol) handleLog(packet nex.PacketInterface) {
 	strLine := types.NewString("")
 	err = strLine.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.Log(fmt.Errorf("Failed to read strLine from parameters. %s", err.Error()), packet, callID, "")
+		_, errorCode = protocol.Log(fmt.Errorf("Failed to read strLine from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}

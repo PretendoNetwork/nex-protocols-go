@@ -29,7 +29,7 @@ func (protocol *Protocol) handleSetApplicationConfig(packet nex.PacketInterface)
 	applicationID := types.NewPrimitiveU32(0)
 	err = applicationID.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.SetApplicationConfig(fmt.Errorf("Failed to read applicationID from parameters. %s", err.Error()), packet, callID, 0, 0, 0)
+		_, errorCode = protocol.SetApplicationConfig(fmt.Errorf("Failed to read applicationID from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -40,7 +40,7 @@ func (protocol *Protocol) handleSetApplicationConfig(packet nex.PacketInterface)
 	key := types.NewPrimitiveU32(0)
 	err = key.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.SetApplicationConfig(fmt.Errorf("Failed to read key from parameters. %s", err.Error()), packet, callID, 0, 0, 0)
+		_, errorCode = protocol.SetApplicationConfig(fmt.Errorf("Failed to read key from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -51,7 +51,7 @@ func (protocol *Protocol) handleSetApplicationConfig(packet nex.PacketInterface)
 	value := types.NewPrimitiveS32(0)
 	err = value.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.SetApplicationConfig(fmt.Errorf("Failed to read value from parameters. %s", err.Error()), packet, callID, 0, 0, 0)
+		_, errorCode = protocol.SetApplicationConfig(fmt.Errorf("Failed to read value from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}

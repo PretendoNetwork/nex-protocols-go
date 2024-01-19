@@ -1,90 +1,88 @@
-// Package types implements all the types used by the Service Item (Wii Sports Club) protocol
+// Package types implements all the types used by the ServiceItem protocol
 package types
 
 import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-go/types"
 )
 
-// ServiceItemGetNoticeParam holds data for the Service Item (Wii Sports Club) protocol
+// ServiceItemGetNoticeParam is a type within the ServiceItem protocol
 type ServiceItemGetNoticeParam struct {
 	types.Structure
 	NoticeType *types.PrimitiveU32
 }
 
+// WriteTo writes the ServiceItemGetNoticeParam to the given writable
+func (signp *ServiceItemGetNoticeParam) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
+
+	signp.NoticeType.WriteTo(writable)
+
+	content := contentWritable.Bytes()
+
+	signp.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
+}
+
 // ExtractFrom extracts the ServiceItemGetNoticeParam from the given readable
-func (serviceItemGetNoticeParam *ServiceItemGetNoticeParam) ExtractFrom(readable types.Readable) error {
+func (signp *ServiceItemGetNoticeParam) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	if err = serviceItemGetNoticeParam.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to read ServiceItemGetNoticeParam header. %s", err.Error())
+	err = signp.ExtractHeaderFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract ServiceItemGetNoticeParam header. %s", err.Error())
 	}
 
-	err = serviceItemGetNoticeParam.NoticeType.ExtractFrom(readable)
+	err = signp.NoticeType.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemGetNoticeParam.NoticeType from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract ServiceItemGetNoticeParam.NoticeType. %s", err.Error())
 	}
 
 	return nil
 }
 
-// WriteTo writes the ServiceItemGetNoticeParam to the given writable
-func (serviceItemGetNoticeParam *ServiceItemGetNoticeParam) WriteTo(writable types.Writable) {
-	contentWritable := writable.CopyNew()
-
-	serviceItemGetNoticeParam.NoticeType.WriteTo(contentWritable)
-
-	content := contentWritable.Bytes()
-
-	serviceItemGetNoticeParam.WriteHeaderTo(writable, uint32(len(content)))
-
-	writable.Write(content)
-}
-
 // Copy returns a new copied instance of ServiceItemGetNoticeParam
-func (serviceItemGetNoticeParam *ServiceItemGetNoticeParam) Copy() types.RVType {
+func (signp *ServiceItemGetNoticeParam) Copy() types.RVType {
 	copied := NewServiceItemGetNoticeParam()
 
-	copied.StructureVersion = serviceItemGetNoticeParam.StructureVersion
-
-	copied.NoticeType = serviceItemGetNoticeParam.NoticeType
+	copied.StructureVersion = signp.StructureVersion
+	copied.NoticeType = signp.NoticeType.Copy().(*types.PrimitiveU32)
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (serviceItemGetNoticeParam *ServiceItemGetNoticeParam) Equals(o types.RVType) bool {
+// Equals checks if the given ServiceItemGetNoticeParam contains the same data as the current ServiceItemGetNoticeParam
+func (signp *ServiceItemGetNoticeParam) Equals(o types.RVType) bool {
 	if _, ok := o.(*ServiceItemGetNoticeParam); !ok {
 		return false
 	}
 
 	other := o.(*ServiceItemGetNoticeParam)
 
-	if serviceItemGetNoticeParam.StructureVersion != other.StructureVersion {
+	if signp.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	return serviceItemGetNoticeParam.NoticeType == other.NoticeType
+	return signp.NoticeType.Equals(other.NoticeType)
 }
 
-// String returns a string representation of the struct
-func (serviceItemGetNoticeParam *ServiceItemGetNoticeParam) String() string {
-	return serviceItemGetNoticeParam.FormatToString(0)
+// String returns the string representation of the ServiceItemGetNoticeParam
+func (signp *ServiceItemGetNoticeParam) String() string {
+	return signp.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (serviceItemGetNoticeParam *ServiceItemGetNoticeParam) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the ServiceItemGetNoticeParam using the provided indentation level
+func (signp *ServiceItemGetNoticeParam) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("ServiceItemGetNoticeParam{\n")
-	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, serviceItemGetNoticeParam.StructureVersion))
-	b.WriteString(fmt.Sprintf("%sNoticeType: %d,\n", indentationValues, serviceItemGetNoticeParam.NoticeType))
+	b.WriteString(fmt.Sprintf("%sNoticeType: %s,\n", indentationValues, signp.NoticeType))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -92,5 +90,9 @@ func (serviceItemGetNoticeParam *ServiceItemGetNoticeParam) FormatToString(inden
 
 // NewServiceItemGetNoticeParam returns a new ServiceItemGetNoticeParam
 func NewServiceItemGetNoticeParam() *ServiceItemGetNoticeParam {
-	return &ServiceItemGetNoticeParam{}
+	signp := &ServiceItemGetNoticeParam{
+		NoticeType: types.NewPrimitiveU32(0),
+	}
+
+	return signp
 }

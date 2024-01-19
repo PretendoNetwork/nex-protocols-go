@@ -1,90 +1,88 @@
-// Package types implements all the types used by the Matchmake Extension (Monster Hunter XX) protocol
+// Package types implements all the types used by the MatchmakeExtension protocol
 package types
 
 import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-go/types"
 )
 
-// FriendUserParam holds data for the Matchmake Extension (Monster Hunter XX) protocol
+// FriendUserParam is a type within the MatchmakeExtension protocol
 type FriendUserParam struct {
 	types.Structure
-	Name string
+	Name *types.String
+}
+
+// WriteTo writes the FriendUserParam to the given writable
+func (fup *FriendUserParam) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
+
+	fup.Name.WriteTo(writable)
+
+	content := contentWritable.Bytes()
+
+	fup.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // ExtractFrom extracts the FriendUserParam from the given readable
-func (friendUserParam *FriendUserParam) ExtractFrom(readable types.Readable) error {
+func (fup *FriendUserParam) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	if err = friendUserParam.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to read FriendUserParam header. %s", err.Error())
+	err = fup.ExtractHeaderFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract FriendUserParam header. %s", err.Error())
 	}
 
-	err = friendUserParam.Name.ExtractFrom(readable)
+	err = fup.Name.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract FriendUserParam.Name from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract FriendUserParam.Name. %s", err.Error())
 	}
 
 	return nil
 }
 
-// WriteTo writes the FriendUserParam to the given writable
-func (friendUserParam *FriendUserParam) WriteTo(writable types.Writable) {
-	contentWritable := writable.CopyNew()
-
-	friendUserParam.Name.WriteTo(contentWritable)
-
-	content := contentWritable.Bytes()
-
-	friendUserParam.WriteHeaderTo(writable, uint32(len(content)))
-
-	writable.Write(content)
-}
-
 // Copy returns a new copied instance of FriendUserParam
-func (friendUserParam *FriendUserParam) Copy() types.RVType {
+func (fup *FriendUserParam) Copy() types.RVType {
 	copied := NewFriendUserParam()
 
-	copied.StructureVersion = friendUserParam.StructureVersion
-
-	copied.Name = friendUserParam.Name
+	copied.StructureVersion = fup.StructureVersion
+	copied.Name = fup.Name.Copy().(*types.String)
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (friendUserParam *FriendUserParam) Equals(o types.RVType) bool {
+// Equals checks if the given FriendUserParam contains the same data as the current FriendUserParam
+func (fup *FriendUserParam) Equals(o types.RVType) bool {
 	if _, ok := o.(*FriendUserParam); !ok {
 		return false
 	}
 
 	other := o.(*FriendUserParam)
 
-	if friendUserParam.StructureVersion != other.StructureVersion {
+	if fup.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	return friendUserParam.Name == other.Name
+	return fup.Name.Equals(other.Name)
 }
 
-// String returns a string representation of the struct
-func (friendUserParam *FriendUserParam) String() string {
-	return friendUserParam.FormatToString(0)
+// String returns the string representation of the FriendUserParam
+func (fup *FriendUserParam) String() string {
+	return fup.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (friendUserParam *FriendUserParam) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the FriendUserParam using the provided indentation level
+func (fup *FriendUserParam) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("FriendUserParam{\n")
-	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, friendUserParam.StructureVersion))
-	b.WriteString(fmt.Sprintf("%sName: %q,\n", indentationValues, friendUserParam.Name))
+	b.WriteString(fmt.Sprintf("%sName: %s,\n", indentationValues, fup.Name))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -92,5 +90,9 @@ func (friendUserParam *FriendUserParam) FormatToString(indentationLevel int) str
 
 // NewFriendUserParam returns a new FriendUserParam
 func NewFriendUserParam() *FriendUserParam {
-	return &FriendUserParam{}
+	fup := &FriendUserParam{
+		Name: types.NewString(""),
+	}
+
+	return fup
 }

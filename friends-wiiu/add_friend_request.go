@@ -30,7 +30,7 @@ func (protocol *Protocol) handleAddFriendRequest(packet nex.PacketInterface) {
 	pid := types.NewPID(0)
 	err = pid.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.AddFriendRequest(fmt.Errorf("Failed to read pid from parameters. %s", err.Error()), packet, callID, nil, 0, "", 0, "", nil, nil)
+		_, errorCode = protocol.AddFriendRequest(fmt.Errorf("Failed to read pid from parameters. %s", err.Error()), packet, callID, nil, nil, nil, nil, nil, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -41,7 +41,7 @@ func (protocol *Protocol) handleAddFriendRequest(packet nex.PacketInterface) {
 	unknown2 := types.NewPrimitiveU8(0)
 	err = unknown2.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.AddFriendRequest(fmt.Errorf("Failed to read unknown2 from parameters. %s", err.Error()), packet, callID, nil, 0, "", 0, "", nil, nil)
+		_, errorCode = protocol.AddFriendRequest(fmt.Errorf("Failed to read unknown2 from parameters. %s", err.Error()), packet, callID, nil, nil, nil, nil, nil, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -52,7 +52,7 @@ func (protocol *Protocol) handleAddFriendRequest(packet nex.PacketInterface) {
 	message := types.NewString("")
 	err = message.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.AddFriendRequest(fmt.Errorf("Failed to read message from parameters. %s", err.Error()), packet, callID, nil, 0, "", 0, "", nil, nil)
+		_, errorCode = protocol.AddFriendRequest(fmt.Errorf("Failed to read message from parameters. %s", err.Error()), packet, callID, nil, nil, nil, nil, nil, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -63,7 +63,7 @@ func (protocol *Protocol) handleAddFriendRequest(packet nex.PacketInterface) {
 	unknown4 := types.NewPrimitiveU8(0)
 	err = unknown4.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.AddFriendRequest(fmt.Errorf("Failed to read unknown4 from parameters. %s", err.Error()), packet, callID, nil, 0, "", 0, "", nil, nil)
+		_, errorCode = protocol.AddFriendRequest(fmt.Errorf("Failed to read unknown4 from parameters. %s", err.Error()), packet, callID, nil, nil, nil, nil, nil, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -74,7 +74,7 @@ func (protocol *Protocol) handleAddFriendRequest(packet nex.PacketInterface) {
 	unknown5 := types.NewString("")
 	err = unknown5.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.AddFriendRequest(fmt.Errorf("Failed to read unknown5 from parameters. %s", err.Error()), packet, callID, nil, 0, "", 0, "", nil, nil)
+		_, errorCode = protocol.AddFriendRequest(fmt.Errorf("Failed to read unknown5 from parameters. %s", err.Error()), packet, callID, nil, nil, nil, nil, nil, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -85,7 +85,7 @@ func (protocol *Protocol) handleAddFriendRequest(packet nex.PacketInterface) {
 	gameKey := friends_wiiu_types.NewGameKey()
 	err = gameKey.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.AddFriendRequest(fmt.Errorf("Failed to read gameKey from parameters. %s", err.Error()), packet, callID, nil, 0, "", 0, "", nil, nil)
+		_, errorCode = protocol.AddFriendRequest(fmt.Errorf("Failed to read gameKey from parameters. %s", err.Error()), packet, callID, nil, nil, nil, nil, nil, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -96,7 +96,7 @@ func (protocol *Protocol) handleAddFriendRequest(packet nex.PacketInterface) {
 	unknown6 := types.NewDateTime(0)
 	err = unknown6.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.AddFriendRequest(fmt.Errorf("Failed to read unknown6 from parameters. %s", err.Error()), packet, callID, nil, 0, "", 0, "", nil, nil)
+		_, errorCode = protocol.AddFriendRequest(fmt.Errorf("Failed to read unknown6 from parameters. %s", err.Error()), packet, callID, nil, nil, nil, nil, nil, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}

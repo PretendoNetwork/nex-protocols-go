@@ -29,7 +29,7 @@ func (protocol *Protocol) handleHello(packet nex.PacketInterface) {
 	unknown := types.NewString("")
 	err = unknown.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.Hello(fmt.Errorf("Failed to read unknown from parameters. %s", err.Error()), packet, callID, "")
+		_, errorCode = protocol.Hello(fmt.Errorf("Failed to read unknown from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}

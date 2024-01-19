@@ -27,7 +27,9 @@ func (protocol *Protocol) handleGetFriendMii(packet nex.PacketInterface) {
 
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
-	friends, err := nex.StreamReadListStructure(parametersStream, friends_3ds_types.NewFriendInfo())
+	friends := types.NewList[*friends_3ds_types.FriendInfo]()
+	friends.Type = friends_3ds_types.NewFriendInfo()
+	err = friends.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.GetFriendMii(fmt.Errorf("Failed to read friends from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {

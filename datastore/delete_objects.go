@@ -27,9 +27,11 @@ func (protocol *Protocol) handleDeleteObjects(packet nex.PacketInterface) {
 
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
-	params, err := nex.StreamReadListStructure(parametersStream, datastore_types.NewDataStoreDeleteParam())
+	params := types.NewList[*datastore_types.DataStoreDeleteParam]()
+	params.Type = datastore_types.NewDataStoreDeleteParam()
+	err = params.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.DeleteObjects(fmt.Errorf("Failed to read params from parameters. %s", err.Error()), packet, callID, nil, false)
+		_, errorCode = protocol.DeleteObjects(fmt.Errorf("Failed to read params from parameters. %s", err.Error()), packet, callID, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -40,7 +42,7 @@ func (protocol *Protocol) handleDeleteObjects(packet nex.PacketInterface) {
 	transactional := types.NewPrimitiveBool(false)
 	err = transactional.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.DeleteObjects(fmt.Errorf("Failed to read transactional from parameters. %s", err.Error()), packet, callID, nil, false)
+		_, errorCode = protocol.DeleteObjects(fmt.Errorf("Failed to read transactional from parameters. %s", err.Error()), packet, callID, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}

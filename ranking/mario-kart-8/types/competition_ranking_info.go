@@ -1,15 +1,14 @@
-// Package types implements all the types used by the Ranking (Mario Kart 8) protocol
+// Package types implements all the types used by the Ranking protocol
 package types
 
 import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-go/types"
 )
 
-// CompetitionRankingInfo holds data for the Ranking (Mario Kart 8) protocol
+// CompetitionRankingInfo is a type within the Ranking protocol
 type CompetitionRankingInfo struct {
 	types.Structure
 	Unknown  *types.PrimitiveU32
@@ -17,112 +16,99 @@ type CompetitionRankingInfo struct {
 	Unknown3 *types.List[*types.PrimitiveU32]
 }
 
+// WriteTo writes the CompetitionRankingInfo to the given writable
+func (cri *CompetitionRankingInfo) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
+
+	cri.Unknown.WriteTo(writable)
+	cri.Unknown2.WriteTo(writable)
+	cri.Unknown3.WriteTo(writable)
+
+	content := contentWritable.Bytes()
+
+	cri.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
+}
+
 // ExtractFrom extracts the CompetitionRankingInfo from the given readable
-func (competitionRankingInfo *CompetitionRankingInfo) ExtractFrom(readable types.Readable) error {
+func (cri *CompetitionRankingInfo) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	if err = competitionRankingInfo.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to read CompetitionRankingInfo header. %s", err.Error())
+	err = cri.ExtractHeaderFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract CompetitionRankingInfo header. %s", err.Error())
 	}
 
-	err = competitionRankingInfo.Unknown.ExtractFrom(readable)
+	err = cri.Unknown.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract CompetitionRankingInfo.Unknown from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract CompetitionRankingInfo.Unknown. %s", err.Error())
 	}
 
-	err = competitionRankingInfo.Unknown2.ExtractFrom(readable)
+	err = cri.Unknown2.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract CompetitionRankingInfo.Unknown2 from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract CompetitionRankingInfo.Unknown2. %s", err.Error())
 	}
 
-	err = competitionRankingInfo.Unknown3.ExtractFrom(readable)
+	err = cri.Unknown3.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract CompetitionRankingInfo.Unknown3 from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract CompetitionRankingInfo.Unknown3. %s", err.Error())
 	}
 
 	return nil
 }
 
-// WriteTo writes the CompetitionRankingInfo to the given writable
-func (competitionRankingInfo *CompetitionRankingInfo) WriteTo(writable types.Writable) {
-	contentWritable := writable.CopyNew()
-
-	competitionRankingInfo.Unknown.WriteTo(contentWritable)
-	competitionRankingInfo.Unknown2.WriteTo(contentWritable)
-	competitionRankingInfo.Unknown3.WriteTo(contentWritable)
-
-	content := contentWritable.Bytes()
-
-	competitionRankingInfo.WriteHeaderTo(writable, uint32(len(content)))
-
-	writable.Write(content)
-}
-
 // Copy returns a new copied instance of CompetitionRankingInfo
-func (competitionRankingInfo *CompetitionRankingInfo) Copy() types.RVType {
+func (cri *CompetitionRankingInfo) Copy() types.RVType {
 	copied := NewCompetitionRankingInfo()
 
-	copied.StructureVersion = competitionRankingInfo.StructureVersion
-
-	copied.Unknown = competitionRankingInfo.Unknown
-	copied.Unknown2 = competitionRankingInfo.Unknown2
-	copied.Unknown3 = make(*types.List[*types.PrimitiveU32], len(competitionRankingInfo.Unknown3))
-
-	copy(copied.Unknown3, competitionRankingInfo.Unknown3)
+	copied.StructureVersion = cri.StructureVersion
+	copied.Unknown = cri.Unknown.Copy().(*types.PrimitiveU32)
+	copied.Unknown2 = cri.Unknown2.Copy().(*types.PrimitiveU32)
+	copied.Unknown3 = cri.Unknown3.Copy().(*types.List[*types.PrimitiveU32])
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (competitionRankingInfo *CompetitionRankingInfo) Equals(o types.RVType) bool {
+// Equals checks if the given CompetitionRankingInfo contains the same data as the current CompetitionRankingInfo
+func (cri *CompetitionRankingInfo) Equals(o types.RVType) bool {
 	if _, ok := o.(*CompetitionRankingInfo); !ok {
 		return false
 	}
 
 	other := o.(*CompetitionRankingInfo)
 
-	if competitionRankingInfo.StructureVersion != other.StructureVersion {
+	if cri.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if !competitionRankingInfo.Unknown.Equals(other.Unknown) {
+	if !cri.Unknown.Equals(other.Unknown) {
 		return false
 	}
 
-	if !competitionRankingInfo.Unknown2.Equals(other.Unknown2) {
+	if !cri.Unknown2.Equals(other.Unknown2) {
 		return false
 	}
 
-	if len(competitionRankingInfo.Unknown3) != len(other.Unknown3) {
-		return false
-	}
-
-	for i := 0; i < len(competitionRankingInfo.Unknown3); i++ {
-		if competitionRankingInfo.Unknown3[i] != other.Unknown3[i] {
-			return false
-		}
-	}
-
-	return true
+	return cri.Unknown3.Equals(other.Unknown3)
 }
 
-// String returns a string representation of the struct
-func (competitionRankingInfo *CompetitionRankingInfo) String() string {
-	return competitionRankingInfo.FormatToString(0)
+// String returns the string representation of the CompetitionRankingInfo
+func (cri *CompetitionRankingInfo) String() string {
+	return cri.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (competitionRankingInfo *CompetitionRankingInfo) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the CompetitionRankingInfo using the provided indentation level
+func (cri *CompetitionRankingInfo) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("CompetitionRankingInfo{\n")
-	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, competitionRankingInfo.StructureVersion))
-	b.WriteString(fmt.Sprintf("%sUnknown: %d,\n", indentationValues, competitionRankingInfo.Unknown))
-	b.WriteString(fmt.Sprintf("%sUnknown2: %d,\n", indentationValues, competitionRankingInfo.Unknown2))
-	b.WriteString(fmt.Sprintf("%sUnknown3: %v,\n", indentationValues, competitionRankingInfo.Unknown3))
+	b.WriteString(fmt.Sprintf("%sUnknown: %s,\n", indentationValues, cri.Unknown))
+	b.WriteString(fmt.Sprintf("%sUnknown2: %s,\n", indentationValues, cri.Unknown2))
+	b.WriteString(fmt.Sprintf("%sUnknown3: %s,\n", indentationValues, cri.Unknown3))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -130,5 +116,13 @@ func (competitionRankingInfo *CompetitionRankingInfo) FormatToString(indentation
 
 // NewCompetitionRankingInfo returns a new CompetitionRankingInfo
 func NewCompetitionRankingInfo() *CompetitionRankingInfo {
-	return &CompetitionRankingInfo{}
+	cri := &CompetitionRankingInfo{
+		Unknown:  types.NewPrimitiveU32(0),
+		Unknown2: types.NewPrimitiveU32(0),
+		Unknown3: types.NewList[*types.PrimitiveU32](),
+	}
+
+	cri.Unknown3.Type = types.NewPrimitiveU32(0)
+
+	return cri
 }

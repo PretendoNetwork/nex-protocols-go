@@ -1,64 +1,71 @@
-// Package types implements all the types used by the Friends WiiU protocol
+// Package types implements all the types used by the FriendsWiiU protocol
 package types
 
 import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-go/types"
 )
 
-// PrincipalBasicInfo contains user account and Mii data
+// PrincipalBasicInfo is a type within the FriendsWiiU protocol
 type PrincipalBasicInfo struct {
 	types.Structure
 	*types.Data
 	PID     *types.PID
-	NNID    string
+	NNID    *types.String
 	Mii     *MiiV2
 	Unknown *types.PrimitiveU8
 }
 
 // WriteTo writes the PrincipalBasicInfo to the given writable
-func (principalInfo *PrincipalBasicInfo) WriteTo(writable types.Writable) {
+func (pbi *PrincipalBasicInfo) WriteTo(writable types.Writable) {
+	pbi.Data.WriteTo(writable)
+
 	contentWritable := writable.CopyNew()
 
-	principalInfo.PID.WriteTo(contentWritable)
-	principalInfo.NNID.WriteTo(contentWritable)
-	principalInfo.Mii.WriteTo(contentWritable)
-	principalInfo.Unknown.WriteTo(contentWritable)
+	pbi.PID.WriteTo(writable)
+	pbi.NNID.WriteTo(writable)
+	pbi.Mii.WriteTo(writable)
+	pbi.Unknown.WriteTo(writable)
 
 	content := contentWritable.Bytes()
 
-	principalInfo.WriteHeaderTo(writable, uint32(len(content)))
+	pbi.WriteHeaderTo(writable, uint32(len(content)))
 
 	writable.Write(content)
 }
 
 // ExtractFrom extracts the PrincipalBasicInfo from the given readable
-func (principalInfo *PrincipalBasicInfo) ExtractFrom(readable types.Readable) error {
+func (pbi *PrincipalBasicInfo) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	if err = principalInfo.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to read PrincipalBasicInfo header. %s", err.Error())
+	err = pbi.Data.ExtractFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract PrincipalBasicInfo.Data. %s", err.Error())
 	}
 
-	err = principalInfo.PID.ExtractFrom(readable)
+	err = pbi.ExtractHeaderFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract PrincipalBasicInfo header. %s", err.Error())
+	}
+
+	err = pbi.PID.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract PrincipalBasicInfo.PID. %s", err.Error())
 	}
 
-	err = principalInfo.NNID.ExtractFrom(readable)
+	err = pbi.NNID.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract PrincipalBasicInfo.NNID. %s", err.Error())
 	}
 
-	err = principalInfo.Mii.ExtractFrom(readable)
+	err = pbi.Mii.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract PrincipalBasicInfo.Mii. %s", err.Error())
 	}
 
-	err = principalInfo.Unknown.ExtractFrom(readable)
+	err = pbi.Unknown.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract PrincipalBasicInfo.Unknown. %s", err.Error())
 	}
@@ -67,80 +74,68 @@ func (principalInfo *PrincipalBasicInfo) ExtractFrom(readable types.Readable) er
 }
 
 // Copy returns a new copied instance of PrincipalBasicInfo
-func (principalInfo *PrincipalBasicInfo) Copy() types.RVType {
+func (pbi *PrincipalBasicInfo) Copy() types.RVType {
 	copied := NewPrincipalBasicInfo()
 
-	copied.StructureVersion = principalInfo.StructureVersion
-
-	copied.Data = principalInfo.Data.Copy().(*types.Data)
-
-	copied.PID = principalInfo.PID.Copy()
-	copied.NNID = principalInfo.NNID
-	copied.Mii = principalInfo.Mii.Copy().(*MiiV2)
-	copied.Unknown = principalInfo.Unknown
+	copied.StructureVersion = pbi.StructureVersion
+	copied.Data = pbi.Data.Copy().(*types.Data)
+	copied.PID = pbi.PID.Copy().(*types.PID)
+	copied.NNID = pbi.NNID.Copy().(*types.String)
+	copied.Mii = pbi.Mii.Copy().(*MiiV2)
+	copied.Unknown = pbi.Unknown.Copy().(*types.PrimitiveU8)
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (principalInfo *PrincipalBasicInfo) Equals(o types.RVType) bool {
+// Equals checks if the given PrincipalBasicInfo contains the same data as the current PrincipalBasicInfo
+func (pbi *PrincipalBasicInfo) Equals(o types.RVType) bool {
 	if _, ok := o.(*PrincipalBasicInfo); !ok {
 		return false
 	}
 
 	other := o.(*PrincipalBasicInfo)
 
-	if principalInfo.StructureVersion != other.StructureVersion {
+	if pbi.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if !principalInfo.ParentType().Equals(other.ParentType()) {
+	if !pbi.Data.Equals(other.Data) {
 		return false
 	}
 
-	if !principalInfo.PID.Equals(other.PID) {
+	if !pbi.PID.Equals(other.PID) {
 		return false
 	}
 
-	if !principalInfo.NNID.Equals(other.NNID) {
+	if !pbi.NNID.Equals(other.NNID) {
 		return false
 	}
 
-	if !principalInfo.Mii.Equals(other.Mii) {
+	if !pbi.Mii.Equals(other.Mii) {
 		return false
 	}
 
-	if !principalInfo.Unknown.Equals(other.Unknown) {
-		return false
-	}
-
-	return true
+	return pbi.Unknown.Equals(other.Unknown)
 }
 
-// String returns a string representation of the struct
-func (principalInfo *PrincipalBasicInfo) String() string {
-	return principalInfo.FormatToString(0)
+// String returns the string representation of the PrincipalBasicInfo
+func (pbi *PrincipalBasicInfo) String() string {
+	return pbi.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (principalInfo *PrincipalBasicInfo) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the PrincipalBasicInfo using the provided indentation level
+func (pbi *PrincipalBasicInfo) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("PrincipalBasicInfo{\n")
-	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, principalInfo.StructureVersion))
-	b.WriteString(fmt.Sprintf("%sPID: %d,\n", indentationValues, principalInfo.PID))
-	b.WriteString(fmt.Sprintf("%sNNID: %q,\n", indentationValues, principalInfo.NNID))
-
-	if principalInfo.Mii != nil {
-		b.WriteString(fmt.Sprintf("%sMii: %s,\n", indentationValues, principalInfo.Mii.FormatToString(indentationLevel+1)))
-	} else {
-		b.WriteString(fmt.Sprintf("%sMii: nil,\n", indentationValues))
-	}
-
-	b.WriteString(fmt.Sprintf("%sUnknown: %d\n", indentationValues, principalInfo.Unknown))
+	b.WriteString(fmt.Sprintf("%sData (parent): %s,\n", indentationValues, pbi.Data.FormatToString(indentationLevel+1)))
+	b.WriteString(fmt.Sprintf("%sPID: %s,\n", indentationValues, pbi.PID.FormatToString(indentationLevel+1)))
+	b.WriteString(fmt.Sprintf("%sNNID: %s,\n", indentationValues, pbi.NNID))
+	b.WriteString(fmt.Sprintf("%sMii: %s,\n", indentationValues, pbi.Mii.FormatToString(indentationLevel+1)))
+	b.WriteString(fmt.Sprintf("%sUnknown: %s,\n", indentationValues, pbi.Unknown))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -148,5 +143,13 @@ func (principalInfo *PrincipalBasicInfo) FormatToString(indentationLevel int) st
 
 // NewPrincipalBasicInfo returns a new PrincipalBasicInfo
 func NewPrincipalBasicInfo() *PrincipalBasicInfo {
-	return &PrincipalBasicInfo{}
+	pbi := &PrincipalBasicInfo{
+		Data    : types.NewData(),
+		PID:     types.NewPID(0),
+		NNID:    types.NewString(""),
+		Mii:     NewMiiV2(),
+		Unknown: types.NewPrimitiveU8(0),
+	}
+
+	return pbi
 }

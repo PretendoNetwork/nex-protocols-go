@@ -1,91 +1,88 @@
-// Package types implements all the types used by the Service Item (Team Kirby Clash Deluxe) protocol
+// Package types implements all the types used by the ServiceItem protocol
 package types
 
 import (
-	"bytes"
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-go/types"
 )
 
-// ServiceItemUserInfo holds data for the Service Item (Team Kirby Clash Deluxe) protocol
+// ServiceItemUserInfo is a type within the ServiceItem protocol
 type ServiceItemUserInfo struct {
 	types.Structure
-	ApplicationBuffer []byte
+	ApplicationBuffer *types.QBuffer
+}
+
+// WriteTo writes the ServiceItemUserInfo to the given writable
+func (siui *ServiceItemUserInfo) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
+
+	siui.ApplicationBuffer.WriteTo(writable)
+
+	content := contentWritable.Bytes()
+
+	siui.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // ExtractFrom extracts the ServiceItemUserInfo from the given readable
-func (serviceItemUserInfo *ServiceItemUserInfo) ExtractFrom(readable types.Readable) error {
+func (siui *ServiceItemUserInfo) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	if err = serviceItemUserInfo.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to read ServiceItemUserInfo header. %s", err.Error())
+	err = siui.ExtractHeaderFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract ServiceItemUserInfo header. %s", err.Error())
 	}
 
-	serviceItemUserInfo.ApplicationBuffer, err = stream.ReadQBuffer()
+	err = siui.ApplicationBuffer.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemUserInfo.ApplicationBuffer from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract ServiceItemUserInfo.ApplicationBuffer. %s", err.Error())
 	}
 
 	return nil
 }
 
-// WriteTo writes the ServiceItemUserInfo to the given writable
-func (serviceItemUserInfo *ServiceItemUserInfo) WriteTo(writable types.Writable) {
-	contentWritable := writable.CopyNew()
-
-	stream.WriteQBuffer(serviceItemUserInfo.ApplicationBuffer)
-
-	content := contentWritable.Bytes()
-
-	rvcd.WriteHeaderTo(writable, uint32(len(content)))
-
-	writable.Write(content)
-}
-
 // Copy returns a new copied instance of ServiceItemUserInfo
-func (serviceItemUserInfo *ServiceItemUserInfo) Copy() types.RVType {
+func (siui *ServiceItemUserInfo) Copy() types.RVType {
 	copied := NewServiceItemUserInfo()
 
-	copied.StructureVersion = serviceItemUserInfo.StructureVersion
-
-	copied.ApplicationBuffer = serviceItemUserInfo.ApplicationBuffer
+	copied.StructureVersion = siui.StructureVersion
+	copied.ApplicationBuffer = siui.ApplicationBuffer.Copy().(*types.QBuffer)
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (serviceItemUserInfo *ServiceItemUserInfo) Equals(o types.RVType) bool {
+// Equals checks if the given ServiceItemUserInfo contains the same data as the current ServiceItemUserInfo
+func (siui *ServiceItemUserInfo) Equals(o types.RVType) bool {
 	if _, ok := o.(*ServiceItemUserInfo); !ok {
 		return false
 	}
 
 	other := o.(*ServiceItemUserInfo)
 
-	if serviceItemUserInfo.StructureVersion != other.StructureVersion {
+	if siui.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	return bytes.Equal(serviceItemUserInfo.ApplicationBuffer, other.ApplicationBuffer)
+	return siui.ApplicationBuffer.Equals(other.ApplicationBuffer)
 }
 
-// String returns a string representation of the struct
-func (serviceItemUserInfo *ServiceItemUserInfo) String() string {
-	return serviceItemUserInfo.FormatToString(0)
+// String returns the string representation of the ServiceItemUserInfo
+func (siui *ServiceItemUserInfo) String() string {
+	return siui.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (serviceItemUserInfo *ServiceItemUserInfo) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the ServiceItemUserInfo using the provided indentation level
+func (siui *ServiceItemUserInfo) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("ServiceItemUserInfo{\n")
-	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, serviceItemUserInfo.StructureVersion))
-	b.WriteString(fmt.Sprintf("%sApplicationBuffer: %x,\n", indentationValues, serviceItemUserInfo.ApplicationBuffer))
+	b.WriteString(fmt.Sprintf("%sApplicationBuffer: %s,\n", indentationValues, siui.ApplicationBuffer))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -93,5 +90,9 @@ func (serviceItemUserInfo *ServiceItemUserInfo) FormatToString(indentationLevel 
 
 // NewServiceItemUserInfo returns a new ServiceItemUserInfo
 func NewServiceItemUserInfo() *ServiceItemUserInfo {
-	return &ServiceItemUserInfo{}
+	siui := &ServiceItemUserInfo{
+		ApplicationBuffer: types.NewQBuffer(nil),
+	}
+
+	return siui
 }

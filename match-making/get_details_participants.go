@@ -29,7 +29,7 @@ func (protocol *Protocol) handleGetDetailedParticipants(packet nex.PacketInterfa
 	idGathering := types.NewPrimitiveU32(0)
 	err = idGathering.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.GetDetailedParticipants(fmt.Errorf("Failed to read gatheringID from parameters. %s", err.Error()), packet, callID, 0)
+		_, errorCode = protocol.GetDetailedParticipants(fmt.Errorf("Failed to read gatheringID from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}

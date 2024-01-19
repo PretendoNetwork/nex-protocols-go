@@ -29,7 +29,7 @@ func (protocol *Protocol) handleAddFriendByName(packet nex.PacketInterface) {
 	username := types.NewString("")
 	err = username.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.AddFriendByName(fmt.Errorf("Failed to read username from parameters. %s", err.Error()), packet, callID, "")
+		_, errorCode = protocol.AddFriendByName(fmt.Errorf("Failed to read username from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}

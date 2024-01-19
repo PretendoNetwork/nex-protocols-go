@@ -30,7 +30,7 @@ func (protocol *Protocol) handleUpdatePresence(packet nex.PacketInterface) {
 	nintendoPresence := friends_3ds_types.NewNintendoPresence()
 	err = nintendoPresence.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.UpdatePresence(fmt.Errorf("Failed to read nintendoPresence from parameters. %s", err.Error()), packet, callID, nil, false)
+		_, errorCode = protocol.UpdatePresence(fmt.Errorf("Failed to read nintendoPresence from parameters. %s", err.Error()), packet, callID, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -41,7 +41,7 @@ func (protocol *Protocol) handleUpdatePresence(packet nex.PacketInterface) {
 	showGame := types.NewPrimitiveBool(false)
 	err = showGame.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.UpdatePresence(fmt.Errorf("Failed to read showGame from parameters. %s", err.Error()), packet, callID, nil, false)
+		_, errorCode = protocol.UpdatePresence(fmt.Errorf("Failed to read showGame from parameters. %s", err.Error()), packet, callID, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}

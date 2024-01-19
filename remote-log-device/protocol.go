@@ -20,14 +20,14 @@ const (
 // Protocol handles the RemoteLogDevice protocol
 type Protocol struct {
 	server nex.ServerInterface
-	Log    func(err error, packet nex.PacketInterface, callID uint32, strLine string) (*nex.RMCMessage, uint32)
+	Log    func(err error, packet nex.PacketInterface, callID uint32, strLine *types.String) (*nex.RMCMessage, uint32)
 }
 
 // Interface implements the methods present on the Remote Log Device protocol struct
 type Interface interface {
 	Server() nex.ServerInterface
 	SetServer(server nex.ServerInterface)
-	SetHandlerLog(handler func(err error, packet nex.PacketInterface, callID uint32, strLine string) (*nex.RMCMessage, uint32))
+	SetHandlerLog(handler func(err error, packet nex.PacketInterface, callID uint32, strLine *types.String) (*nex.RMCMessage, uint32))
 }
 
 // Server returns the server implementing the protocol
@@ -41,7 +41,7 @@ func (protocol *Protocol) SetServer(server nex.ServerInterface) {
 }
 
 // SetHandlerLog sets the handler for the Log method
-func (protocol *Protocol) SetHandlerLog(handler func(err error, packet nex.PacketInterface, callID uint32, strLine string) (*nex.RMCMessage, uint32)) {
+func (protocol *Protocol) SetHandlerLog(handler func(err error, packet nex.PacketInterface, callID uint32, strLine *types.String) (*nex.RMCMessage, uint32)) {
 	protocol.Log = handler
 }
 

@@ -27,7 +27,9 @@ func (protocol *Protocol) handleUpdatePlayedGames(packet nex.PacketInterface) {
 
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
-	playedGames, err := nex.StreamReadListStructure(parametersStream, friends_3ds_types.NewPlayedGame())
+	playedGames := types.NewList[*friends_3ds_types.PlayedGame]()
+	playedGames.Type = friends_3ds_types.NewPlayedGame()
+	err = playedGames.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.UpdatePlayedGames(fmt.Errorf("Failed to read playedGames from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {

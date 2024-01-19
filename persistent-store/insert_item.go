@@ -29,7 +29,7 @@ func (protocol *Protocol) handleInsertItem(packet nex.PacketInterface) {
 	uiGroup := types.NewPrimitiveU32(0)
 	err = uiGroup.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.InsertItem(fmt.Errorf("Failed to read uiGroup from parameters. %s", err.Error()), packet, callID, 0, "", nil, false)
+		_, errorCode = protocol.InsertItem(fmt.Errorf("Failed to read uiGroup from parameters. %s", err.Error()), packet, callID, nil, nil, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -40,7 +40,7 @@ func (protocol *Protocol) handleInsertItem(packet nex.PacketInterface) {
 	strTag := types.NewString("")
 	err = strTag.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.InsertItem(fmt.Errorf("Failed to read strTag from parameters. %s", err.Error()), packet, callID, 0, "", nil, false)
+		_, errorCode = protocol.InsertItem(fmt.Errorf("Failed to read strTag from parameters. %s", err.Error()), packet, callID, nil, nil, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -51,7 +51,7 @@ func (protocol *Protocol) handleInsertItem(packet nex.PacketInterface) {
 	bufData := types.NewBuffer(nil)
 	err = bufData.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.InsertItem(fmt.Errorf("Failed to read bufData from parameters. %s", err.Error()), packet, callID, 0, "", nil, false)
+		_, errorCode = protocol.InsertItem(fmt.Errorf("Failed to read bufData from parameters. %s", err.Error()), packet, callID, nil, nil, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -62,7 +62,7 @@ func (protocol *Protocol) handleInsertItem(packet nex.PacketInterface) {
 	bReplace := types.NewPrimitiveBool(false)
 	err = bReplace.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.InsertItem(fmt.Errorf("Failed to read bReplace from parameters. %s", err.Error()), packet, callID, 0, "", nil, false)
+		_, errorCode = protocol.InsertItem(fmt.Errorf("Failed to read bReplace from parameters. %s", err.Error()), packet, callID, nil, nil, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}

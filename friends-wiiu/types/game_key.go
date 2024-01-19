@@ -1,15 +1,14 @@
-// Package types implements all the types used by the Friends WiiU protocol
+// Package types implements all the types used by the FriendsWiiU protocol
 package types
 
 import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-go/types"
 )
 
-// GameKey contains the title ID and version for a title
+// GameKey is a type within the FriendsWiiU protocol
 type GameKey struct {
 	types.Structure
 	*types.Data
@@ -18,33 +17,41 @@ type GameKey struct {
 }
 
 // WriteTo writes the GameKey to the given writable
-func (gameKey *GameKey) WriteTo(writable types.Writable) {
+func (gk *GameKey) WriteTo(writable types.Writable) {
+	gk.Data.WriteTo(writable)
+
 	contentWritable := writable.CopyNew()
 
-	gameKey.TitleID.WriteTo(contentWritable)
-	gameKey.TitleVersion.WriteTo(contentWritable)
+	gk.TitleID.WriteTo(writable)
+	gk.TitleVersion.WriteTo(writable)
 
 	content := contentWritable.Bytes()
 
-	gameKey.WriteHeaderTo(writable, uint32(len(content)))
+	gk.WriteHeaderTo(writable, uint32(len(content)))
 
 	writable.Write(content)
 }
 
 // ExtractFrom extracts the GameKey from the given readable
-func (gameKey *GameKey) ExtractFrom(readable types.Readable) error {
+func (gk *GameKey) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	if err = gameKey.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to read GameKey header. %s", err.Error())
+	err = gk.Data.ExtractFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract GameKey.Data. %s", err.Error())
 	}
 
-	err = gameKey.TitleID.ExtractFrom(readable)
+	err = gk.ExtractHeaderFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract GameKey header. %s", err.Error())
+	}
+
+	err = gk.TitleID.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract GameKey.TitleID. %s", err.Error())
 	}
 
-	err = gameKey.TitleVersion.ExtractFrom(readable)
+	err = gk.TitleVersion.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract GameKey.TitleVersion. %s", err.Error())
 	}
@@ -53,62 +60,56 @@ func (gameKey *GameKey) ExtractFrom(readable types.Readable) error {
 }
 
 // Copy returns a new copied instance of GameKey
-func (gameKey *GameKey) Copy() types.RVType {
+func (gk *GameKey) Copy() types.RVType {
 	copied := NewGameKey()
 
-	copied.StructureVersion = gameKey.StructureVersion
-
-	copied.Data = gameKey.Data.Copy().(*types.Data)
-
-	copied.TitleID = gameKey.TitleID
-	copied.TitleVersion = gameKey.TitleVersion
+	copied.StructureVersion = gk.StructureVersion
+	copied.Data = gk.Data.Copy().(*types.Data)
+	copied.TitleID = gk.TitleID.Copy().(*types.PrimitiveU64)
+	copied.TitleVersion = gk.TitleVersion.Copy().(*types.PrimitiveU16)
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (gameKey *GameKey) Equals(o types.RVType) bool {
+// Equals checks if the given GameKey contains the same data as the current GameKey
+func (gk *GameKey) Equals(o types.RVType) bool {
 	if _, ok := o.(*GameKey); !ok {
 		return false
 	}
 
 	other := o.(*GameKey)
 
-	if gameKey.StructureVersion != other.StructureVersion {
+	if gk.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if !gameKey.ParentType().Equals(other.ParentType()) {
+	if !gk.Data.Equals(other.Data) {
 		return false
 	}
 
-	if !gameKey.TitleID.Equals(other.TitleID) {
+	if !gk.TitleID.Equals(other.TitleID) {
 		return false
 	}
 
-	if !gameKey.TitleVersion.Equals(other.TitleVersion) {
-		return false
-	}
-
-	return true
+	return gk.TitleVersion.Equals(other.TitleVersion)
 }
 
-// String returns a string representation of the struct
-func (gameKey *GameKey) String() string {
-	return gameKey.FormatToString(0)
+// String returns the string representation of the GameKey
+func (gk *GameKey) String() string {
+	return gk.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (gameKey *GameKey) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the GameKey using the provided indentation level
+func (gk *GameKey) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("GameKey{\n")
-	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, gameKey.StructureVersion))
-	b.WriteString(fmt.Sprintf("%sTitleID: %d,\n", indentationValues, gameKey.TitleID))
-	b.WriteString(fmt.Sprintf("%sTitleVersion: %d\n", indentationValues, gameKey.TitleVersion))
+	b.WriteString(fmt.Sprintf("%sData (parent): %s,\n", indentationValues, gk.Data.FormatToString(indentationLevel+1)))
+	b.WriteString(fmt.Sprintf("%sTitleID: %s,\n", indentationValues, gk.TitleID))
+	b.WriteString(fmt.Sprintf("%sTitleVersion: %s,\n", indentationValues, gk.TitleVersion))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -116,5 +117,11 @@ func (gameKey *GameKey) FormatToString(indentationLevel int) string {
 
 // NewGameKey returns a new GameKey
 func NewGameKey() *GameKey {
-	return &GameKey{}
+	gk := &GameKey{
+		Data         : types.NewData(),
+		TitleID:      types.NewPrimitiveU64(0),
+		TitleVersion: types.NewPrimitiveU16(0),
+	}
+
+	return gk
 }

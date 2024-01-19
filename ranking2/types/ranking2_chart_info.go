@@ -1,15 +1,14 @@
-// Package types implements all the types used by the Ranking 2  protocol
+// Package types implements all the types used by the Ranking2 protocol
 package types
 
 import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-go/types"
 )
 
-// Ranking2ChartInfo holds data for the Ranking 2  protocol
+// Ranking2ChartInfo is a type within the Ranking2 protocol
 type Ranking2ChartInfo struct {
 	types.Structure
 	CreateTime           *types.DateTime
@@ -32,298 +31,279 @@ type Ranking2ChartInfo struct {
 	Quantities           *types.List[*types.PrimitiveU32]
 }
 
+// WriteTo writes the Ranking2ChartInfo to the given writable
+func (rci *Ranking2ChartInfo) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
+
+	rci.CreateTime.WriteTo(writable)
+	rci.Index.WriteTo(writable)
+	rci.Category.WriteTo(writable)
+	rci.Season.WriteTo(writable)
+	rci.BinsSize.WriteTo(writable)
+	rci.SamplingRate.WriteTo(writable)
+	rci.ScoreOrder.WriteTo(writable)
+	rci.EstimateLength.WriteTo(writable)
+	rci.EstimateHighestScore.WriteTo(writable)
+	rci.EstimateLowestScore.WriteTo(writable)
+	rci.EstimateMedianScore.WriteTo(writable)
+	rci.EstimateAverageScore.WriteTo(writable)
+	rci.HighestBinsScore.WriteTo(writable)
+	rci.LowestBinsScore.WriteTo(writable)
+	rci.BinsWidth.WriteTo(writable)
+	rci.Attribute1.WriteTo(writable)
+	rci.Attribute2.WriteTo(writable)
+	rci.Quantities.WriteTo(writable)
+
+	content := contentWritable.Bytes()
+
+	rci.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
+}
+
 // ExtractFrom extracts the Ranking2ChartInfo from the given readable
-func (ranking2ChartInfo *Ranking2ChartInfo) ExtractFrom(readable types.Readable) error {
+func (rci *Ranking2ChartInfo) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	if err = ranking2ChartInfo.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to read Ranking2ChartInfo header. %s", err.Error())
+	err = rci.ExtractHeaderFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract Ranking2ChartInfo header. %s", err.Error())
 	}
 
-	err = ranking2ChartInfo.CreateTime.ExtractFrom(readable)
+	err = rci.CreateTime.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract Ranking2ChartInfo.CreateTime from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract Ranking2ChartInfo.CreateTime. %s", err.Error())
 	}
 
-	err = ranking2ChartInfo.Index.ExtractFrom(readable)
+	err = rci.Index.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract Ranking2ChartInfo.Index from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract Ranking2ChartInfo.Index. %s", err.Error())
 	}
 
-	err = ranking2ChartInfo.Category.ExtractFrom(readable)
+	err = rci.Category.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract Ranking2ChartInfo.Category from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract Ranking2ChartInfo.Category. %s", err.Error())
 	}
 
-	err = ranking2ChartInfo.Season.ExtractFrom(readable)
+	err = rci.Season.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract Ranking2ChartInfo.Season from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract Ranking2ChartInfo.Season. %s", err.Error())
 	}
 
-	err = ranking2ChartInfo.BinsSize.ExtractFrom(readable)
+	err = rci.BinsSize.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract Ranking2ChartInfo.BinsSize from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract Ranking2ChartInfo.BinsSize. %s", err.Error())
 	}
 
-	err = ranking2ChartInfo.SamplingRate.ExtractFrom(readable)
+	err = rci.SamplingRate.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract Ranking2ChartInfo.SamplingRate from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract Ranking2ChartInfo.SamplingRate. %s", err.Error())
 	}
 
-	err = ranking2ChartInfo.ScoreOrder.ExtractFrom(readable)
+	err = rci.ScoreOrder.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract Ranking2ChartInfo.ScoreOrder from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract Ranking2ChartInfo.ScoreOrder. %s", err.Error())
 	}
 
-	err = ranking2ChartInfo.EstimateLength.ExtractFrom(readable)
+	err = rci.EstimateLength.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract Ranking2ChartInfo.EstimateLength from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract Ranking2ChartInfo.EstimateLength. %s", err.Error())
 	}
 
-	err = ranking2ChartInfo.EstimateHighestScore.ExtractFrom(readable)
+	err = rci.EstimateHighestScore.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract Ranking2ChartInfo.EstimateHighestScore from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract Ranking2ChartInfo.EstimateHighestScore. %s", err.Error())
 	}
 
-	err = ranking2ChartInfo.EstimateLowestScore.ExtractFrom(readable)
+	err = rci.EstimateLowestScore.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract Ranking2ChartInfo.EstimateLowestScore from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract Ranking2ChartInfo.EstimateLowestScore. %s", err.Error())
 	}
 
-	err = ranking2ChartInfo.EstimateMedianScore.ExtractFrom(readable)
+	err = rci.EstimateMedianScore.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract Ranking2ChartInfo.EstimateMedianScore from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract Ranking2ChartInfo.EstimateMedianScore. %s", err.Error())
 	}
 
-	ranking2ChartInfo.EstimateAverageScore, err = stream.ReadFloat64LE()
+	err = rci.EstimateAverageScore.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract Ranking2ChartInfo.EstimateAverageScore from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract Ranking2ChartInfo.EstimateAverageScore. %s", err.Error())
 	}
 
-	err = ranking2ChartInfo.HighestBinsScore.ExtractFrom(readable)
+	err = rci.HighestBinsScore.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract Ranking2ChartInfo.HighestBinsScore from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract Ranking2ChartInfo.HighestBinsScore. %s", err.Error())
 	}
 
-	err = ranking2ChartInfo.LowestBinsScore.ExtractFrom(readable)
+	err = rci.LowestBinsScore.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract Ranking2ChartInfo.LowestBinsScore from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract Ranking2ChartInfo.LowestBinsScore. %s", err.Error())
 	}
 
-	err = ranking2ChartInfo.BinsWidth.ExtractFrom(readable)
+	err = rci.BinsWidth.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract Ranking2ChartInfo.BinsWidth from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract Ranking2ChartInfo.BinsWidth. %s", err.Error())
 	}
 
-	err = ranking2ChartInfo.Attribute1.ExtractFrom(readable)
+	err = rci.Attribute1.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract Ranking2ChartInfo.Attribute1 from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract Ranking2ChartInfo.Attribute1. %s", err.Error())
 	}
 
-	err = ranking2ChartInfo.Attribute2.ExtractFrom(readable)
+	err = rci.Attribute2.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract Ranking2ChartInfo.Attribute2 from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract Ranking2ChartInfo.Attribute2. %s", err.Error())
 	}
 
-	err = ranking2ChartInfo.Quantities.ExtractFrom(readable)
+	err = rci.Quantities.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract Ranking2ChartInfo.Quantities from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract Ranking2ChartInfo.Quantities. %s", err.Error())
 	}
 
 	return nil
 }
 
-// WriteTo writes the Ranking2ChartInfo to the given writable
-func (ranking2ChartInfo *Ranking2ChartInfo) WriteTo(writable types.Writable) {
-	contentWritable := writable.CopyNew()
-
-	ranking2ChartInfo.CreateTime.WriteTo(contentWritable)
-	ranking2ChartInfo.Index.WriteTo(contentWritable)
-	ranking2ChartInfo.Category.WriteTo(contentWritable)
-	ranking2ChartInfo.Season.WriteTo(contentWritable)
-	ranking2ChartInfo.BinsSize.WriteTo(contentWritable)
-	ranking2ChartInfo.SamplingRate.WriteTo(contentWritable)
-	ranking2ChartInfo.ScoreOrder.WriteTo(contentWritable)
-	ranking2ChartInfo.EstimateLength.WriteTo(contentWritable)
-	ranking2ChartInfo.EstimateHighestScore.WriteTo(contentWritable)
-	ranking2ChartInfo.EstimateLowestScore.WriteTo(contentWritable)
-	ranking2ChartInfo.EstimateMedianScore.WriteTo(contentWritable)
-	ranking2ChartInfo.EstimateAverageScore.WriteTo(contentWritable)
-	ranking2ChartInfo.HighestBinsScore.WriteTo(contentWritable)
-	ranking2ChartInfo.LowestBinsScore.WriteTo(contentWritable)
-	ranking2ChartInfo.BinsWidth.WriteTo(contentWritable)
-	ranking2ChartInfo.Attribute1.WriteTo(contentWritable)
-	ranking2ChartInfo.Attribute2.WriteTo(contentWritable)
-	ranking2ChartInfo.Quantities.WriteTo(contentWritable)
-
-	content := contentWritable.Bytes()
-
-	ranking2ChartInfo.WriteHeaderTo(writable, uint32(len(content)))
-
-	writable.Write(content)
-}
-
 // Copy returns a new copied instance of Ranking2ChartInfo
-func (ranking2ChartInfo *Ranking2ChartInfo) Copy() types.RVType {
+func (rci *Ranking2ChartInfo) Copy() types.RVType {
 	copied := NewRanking2ChartInfo()
 
-	copied.StructureVersion = ranking2ChartInfo.StructureVersion
-
-	copied.CreateTime = ranking2ChartInfo.CreateTime.Copy()
-	copied.Index = ranking2ChartInfo.Index
-	copied.Category = ranking2ChartInfo.Category
-	copied.Season = ranking2ChartInfo.Season
-	copied.BinsSize = ranking2ChartInfo.BinsSize
-	copied.SamplingRate = ranking2ChartInfo.SamplingRate
-	copied.ScoreOrder = ranking2ChartInfo.ScoreOrder
-	copied.EstimateLength = ranking2ChartInfo.EstimateLength
-	copied.EstimateHighestScore = ranking2ChartInfo.EstimateHighestScore
-	copied.EstimateLowestScore = ranking2ChartInfo.EstimateLowestScore
-	copied.EstimateMedianScore = ranking2ChartInfo.EstimateMedianScore
-	copied.EstimateAverageScore = ranking2ChartInfo.EstimateAverageScore
-	copied.HighestBinsScore = ranking2ChartInfo.HighestBinsScore
-	copied.LowestBinsScore = ranking2ChartInfo.LowestBinsScore
-	copied.BinsWidth = ranking2ChartInfo.BinsWidth
-	copied.Attribute1 = ranking2ChartInfo.Attribute1
-	copied.Attribute2 = ranking2ChartInfo.Attribute2
-	copied.Quantities = make(*types.List[*types.PrimitiveU32], len(ranking2ChartInfo.Quantities))
-
-	copy(copied.Quantities, ranking2ChartInfo.Quantities)
+	copied.StructureVersion = rci.StructureVersion
+	copied.CreateTime = rci.CreateTime.Copy().(*types.DateTime)
+	copied.Index = rci.Index.Copy().(*types.PrimitiveU32)
+	copied.Category = rci.Category.Copy().(*types.PrimitiveU32)
+	copied.Season = rci.Season.Copy().(*types.PrimitiveS32)
+	copied.BinsSize = rci.BinsSize.Copy().(*types.PrimitiveU8)
+	copied.SamplingRate = rci.SamplingRate.Copy().(*types.PrimitiveU8)
+	copied.ScoreOrder = rci.ScoreOrder.Copy().(*types.PrimitiveBool)
+	copied.EstimateLength = rci.EstimateLength.Copy().(*types.PrimitiveU32)
+	copied.EstimateHighestScore = rci.EstimateHighestScore.Copy().(*types.PrimitiveU32)
+	copied.EstimateLowestScore = rci.EstimateLowestScore.Copy().(*types.PrimitiveU32)
+	copied.EstimateMedianScore = rci.EstimateMedianScore.Copy().(*types.PrimitiveU32)
+	copied.EstimateAverageScore = rci.EstimateAverageScore.Copy().(*types.PrimitiveF64)
+	copied.HighestBinsScore = rci.HighestBinsScore.Copy().(*types.PrimitiveU32)
+	copied.LowestBinsScore = rci.LowestBinsScore.Copy().(*types.PrimitiveU32)
+	copied.BinsWidth = rci.BinsWidth.Copy().(*types.PrimitiveU32)
+	copied.Attribute1 = rci.Attribute1.Copy().(*types.PrimitiveU32)
+	copied.Attribute2 = rci.Attribute2.Copy().(*types.PrimitiveU32)
+	copied.Quantities = rci.Quantities.Copy().(*types.List[*types.PrimitiveU32])
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (ranking2ChartInfo *Ranking2ChartInfo) Equals(o types.RVType) bool {
+// Equals checks if the given Ranking2ChartInfo contains the same data as the current Ranking2ChartInfo
+func (rci *Ranking2ChartInfo) Equals(o types.RVType) bool {
 	if _, ok := o.(*Ranking2ChartInfo); !ok {
 		return false
 	}
 
 	other := o.(*Ranking2ChartInfo)
 
-	if ranking2ChartInfo.StructureVersion != other.StructureVersion {
+	if rci.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if !ranking2ChartInfo.CreateTime.Equals(other.CreateTime) {
+	if !rci.CreateTime.Equals(other.CreateTime) {
 		return false
 	}
 
-	if !ranking2ChartInfo.Index.Equals(other.Index) {
+	if !rci.Index.Equals(other.Index) {
 		return false
 	}
 
-	if !ranking2ChartInfo.Category.Equals(other.Category) {
+	if !rci.Category.Equals(other.Category) {
 		return false
 	}
 
-	if !ranking2ChartInfo.Season.Equals(other.Season) {
+	if !rci.Season.Equals(other.Season) {
 		return false
 	}
 
-	if !ranking2ChartInfo.BinsSize.Equals(other.BinsSize) {
+	if !rci.BinsSize.Equals(other.BinsSize) {
 		return false
 	}
 
-	if !ranking2ChartInfo.SamplingRate.Equals(other.SamplingRate) {
+	if !rci.SamplingRate.Equals(other.SamplingRate) {
 		return false
 	}
 
-	if !ranking2ChartInfo.ScoreOrder.Equals(other.ScoreOrder) {
+	if !rci.ScoreOrder.Equals(other.ScoreOrder) {
 		return false
 	}
 
-	if !ranking2ChartInfo.EstimateLength.Equals(other.EstimateLength) {
+	if !rci.EstimateLength.Equals(other.EstimateLength) {
 		return false
 	}
 
-	if !ranking2ChartInfo.EstimateHighestScore.Equals(other.EstimateHighestScore) {
+	if !rci.EstimateHighestScore.Equals(other.EstimateHighestScore) {
 		return false
 	}
 
-	if !ranking2ChartInfo.EstimateLowestScore.Equals(other.EstimateLowestScore) {
+	if !rci.EstimateLowestScore.Equals(other.EstimateLowestScore) {
 		return false
 	}
 
-	if !ranking2ChartInfo.EstimateMedianScore.Equals(other.EstimateMedianScore) {
+	if !rci.EstimateMedianScore.Equals(other.EstimateMedianScore) {
 		return false
 	}
 
-	if !ranking2ChartInfo.EstimateAverageScore.Equals(other.EstimateAverageScore) {
+	if !rci.EstimateAverageScore.Equals(other.EstimateAverageScore) {
 		return false
 	}
 
-	if !ranking2ChartInfo.HighestBinsScore.Equals(other.HighestBinsScore) {
+	if !rci.HighestBinsScore.Equals(other.HighestBinsScore) {
 		return false
 	}
 
-	if !ranking2ChartInfo.LowestBinsScore.Equals(other.LowestBinsScore) {
+	if !rci.LowestBinsScore.Equals(other.LowestBinsScore) {
 		return false
 	}
 
-	if !ranking2ChartInfo.BinsWidth.Equals(other.BinsWidth) {
+	if !rci.BinsWidth.Equals(other.BinsWidth) {
 		return false
 	}
 
-	if !ranking2ChartInfo.Attribute1.Equals(other.Attribute1) {
+	if !rci.Attribute1.Equals(other.Attribute1) {
 		return false
 	}
 
-	if !ranking2ChartInfo.Attribute2.Equals(other.Attribute2) {
+	if !rci.Attribute2.Equals(other.Attribute2) {
 		return false
 	}
 
-	if len(ranking2ChartInfo.Quantities) != len(other.Quantities) {
-		return false
-	}
-
-	for i := 0; i < len(ranking2ChartInfo.Quantities); i++ {
-		if ranking2ChartInfo.Quantities[i] != other.Quantities[i] {
-			return false
-		}
-	}
-
-	return true
+	return rci.Quantities.Equals(other.Quantities)
 }
 
-// String returns a string representation of the struct
-func (ranking2ChartInfo *Ranking2ChartInfo) String() string {
-	return ranking2ChartInfo.FormatToString(0)
+// String returns the string representation of the Ranking2ChartInfo
+func (rci *Ranking2ChartInfo) String() string {
+	return rci.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (ranking2ChartInfo *Ranking2ChartInfo) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the Ranking2ChartInfo using the provided indentation level
+func (rci *Ranking2ChartInfo) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("Ranking2ChartInfo{\n")
-	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, ranking2ChartInfo.StructureVersion))
-
-	if ranking2ChartInfo.CreateTime != nil {
-		b.WriteString(fmt.Sprintf("%sCreateTime: %s\n", indentationValues, ranking2ChartInfo.CreateTime.FormatToString(indentationLevel+1)))
-	} else {
-		b.WriteString(fmt.Sprintf("%sCreateTime: nil\n", indentationValues))
-	}
-
-	b.WriteString(fmt.Sprintf("%sIndex: %d,\n", indentationValues, ranking2ChartInfo.Index))
-	b.WriteString(fmt.Sprintf("%sCategory: %d,\n", indentationValues, ranking2ChartInfo.Category))
-	b.WriteString(fmt.Sprintf("%sSeason: %d,\n", indentationValues, ranking2ChartInfo.Season))
-	b.WriteString(fmt.Sprintf("%sBinsSize: %d,\n", indentationValues, ranking2ChartInfo.BinsSize))
-	b.WriteString(fmt.Sprintf("%sSamplingRate: %d,\n", indentationValues, ranking2ChartInfo.SamplingRate))
-	b.WriteString(fmt.Sprintf("%sScoreOrder: %t,\n", indentationValues, ranking2ChartInfo.ScoreOrder))
-	b.WriteString(fmt.Sprintf("%sEstimateLength: %d,\n", indentationValues, ranking2ChartInfo.EstimateLength))
-	b.WriteString(fmt.Sprintf("%sEstimateHighestScore: %d,\n", indentationValues, ranking2ChartInfo.EstimateHighestScore))
-	b.WriteString(fmt.Sprintf("%sEstimateLowestScore: %d,\n", indentationValues, ranking2ChartInfo.EstimateLowestScore))
-	b.WriteString(fmt.Sprintf("%sEstimateMedianScore: %d,\n", indentationValues, ranking2ChartInfo.EstimateMedianScore))
-	b.WriteString(fmt.Sprintf("%sEstimateAverageScore: %f,\n", indentationValues, ranking2ChartInfo.EstimateAverageScore))
-	b.WriteString(fmt.Sprintf("%sHighestBinsScore: %d,\n", indentationValues, ranking2ChartInfo.HighestBinsScore))
-	b.WriteString(fmt.Sprintf("%sLowestBinsScore: %d,\n", indentationValues, ranking2ChartInfo.LowestBinsScore))
-	b.WriteString(fmt.Sprintf("%sBinsWidth: %d,\n", indentationValues, ranking2ChartInfo.BinsWidth))
-	b.WriteString(fmt.Sprintf("%sAttribute1: %d,\n", indentationValues, ranking2ChartInfo.Attribute1))
-	b.WriteString(fmt.Sprintf("%sAttribute2: %d,\n", indentationValues, ranking2ChartInfo.Attribute2))
-	b.WriteString(fmt.Sprintf("%sQuantities: %v,\n", indentationValues, ranking2ChartInfo.Quantities))
+	b.WriteString(fmt.Sprintf("%sCreateTime: %s,\n", indentationValues, rci.CreateTime.FormatToString(indentationLevel+1)))
+	b.WriteString(fmt.Sprintf("%sIndex: %s,\n", indentationValues, rci.Index))
+	b.WriteString(fmt.Sprintf("%sCategory: %s,\n", indentationValues, rci.Category))
+	b.WriteString(fmt.Sprintf("%sSeason: %s,\n", indentationValues, rci.Season))
+	b.WriteString(fmt.Sprintf("%sBinsSize: %s,\n", indentationValues, rci.BinsSize))
+	b.WriteString(fmt.Sprintf("%sSamplingRate: %s,\n", indentationValues, rci.SamplingRate))
+	b.WriteString(fmt.Sprintf("%sScoreOrder: %s,\n", indentationValues, rci.ScoreOrder))
+	b.WriteString(fmt.Sprintf("%sEstimateLength: %s,\n", indentationValues, rci.EstimateLength))
+	b.WriteString(fmt.Sprintf("%sEstimateHighestScore: %s,\n", indentationValues, rci.EstimateHighestScore))
+	b.WriteString(fmt.Sprintf("%sEstimateLowestScore: %s,\n", indentationValues, rci.EstimateLowestScore))
+	b.WriteString(fmt.Sprintf("%sEstimateMedianScore: %s,\n", indentationValues, rci.EstimateMedianScore))
+	b.WriteString(fmt.Sprintf("%sEstimateAverageScore: %s,\n", indentationValues, rci.EstimateAverageScore))
+	b.WriteString(fmt.Sprintf("%sHighestBinsScore: %s,\n", indentationValues, rci.HighestBinsScore))
+	b.WriteString(fmt.Sprintf("%sLowestBinsScore: %s,\n", indentationValues, rci.LowestBinsScore))
+	b.WriteString(fmt.Sprintf("%sBinsWidth: %s,\n", indentationValues, rci.BinsWidth))
+	b.WriteString(fmt.Sprintf("%sAttribute1: %s,\n", indentationValues, rci.Attribute1))
+	b.WriteString(fmt.Sprintf("%sAttribute2: %s,\n", indentationValues, rci.Attribute2))
+	b.WriteString(fmt.Sprintf("%sQuantities: %s,\n", indentationValues, rci.Quantities))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -331,5 +311,28 @@ func (ranking2ChartInfo *Ranking2ChartInfo) FormatToString(indentationLevel int)
 
 // NewRanking2ChartInfo returns a new Ranking2ChartInfo
 func NewRanking2ChartInfo() *Ranking2ChartInfo {
-	return &Ranking2ChartInfo{}
+	rci := &Ranking2ChartInfo{
+		CreateTime:           types.NewDateTime(0),
+		Index:                types.NewPrimitiveU32(0),
+		Category:             types.NewPrimitiveU32(0),
+		Season:               types.NewPrimitiveS32(0),
+		BinsSize:             types.NewPrimitiveU8(0),
+		SamplingRate:         types.NewPrimitiveU8(0),
+		ScoreOrder:           types.NewPrimitiveBool(false),
+		EstimateLength:       types.NewPrimitiveU32(0),
+		EstimateHighestScore: types.NewPrimitiveU32(0),
+		EstimateLowestScore:  types.NewPrimitiveU32(0),
+		EstimateMedianScore:  types.NewPrimitiveU32(0),
+		EstimateAverageScore: types.NewPrimitiveF64(0),
+		HighestBinsScore:     types.NewPrimitiveU32(0),
+		LowestBinsScore:      types.NewPrimitiveU32(0),
+		BinsWidth:            types.NewPrimitiveU32(0),
+		Attribute1:           types.NewPrimitiveU32(0),
+		Attribute2:           types.NewPrimitiveU32(0),
+		Quantities:           types.NewList[*types.PrimitiveU32](),
+	}
+
+	rci.Quantities.Type = types.NewPrimitiveU32(0)
+
+	return rci
 }

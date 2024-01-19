@@ -1,77 +1,93 @@
-// Package types implements all the types used by the Service Item (Team Kirby Clash Deluxe) protocol
+// Package types implements all the types used by the ServiceItem protocol
 package types
 
 import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-go/types"
 )
 
-// ServiceItemAccountRightTime holds data for the Service Item (Team Kirby Clash Deluxe) protocol
+// ServiceItemAccountRightTime is a type within the ServiceItem protocol
 type ServiceItemAccountRightTime struct {
 	types.Structure
 	*ServiceItemAccountRight
 }
 
-// ExtractFrom extracts the ServiceItemAccountRightTime from the given readable
-func (serviceItemAccountRightTime *ServiceItemAccountRightTime) ExtractFrom(readable types.Readable) error {
-	return nil
-}
-
 // WriteTo writes the ServiceItemAccountRightTime to the given writable
-func (serviceItemAccountRightTime *ServiceItemAccountRightTime) WriteTo(writable types.Writable) {
+func (siart *ServiceItemAccountRightTime) WriteTo(writable types.Writable) {
+	siart.ServiceItemAccountRight.WriteTo(writable)
+
 	contentWritable := writable.CopyNew()
+
 
 	content := contentWritable.Bytes()
 
-	rvcd.WriteHeaderTo(writable, uint32(len(content)))
+	siart.WriteHeaderTo(writable, uint32(len(content)))
 
 	writable.Write(content)
 }
 
+// ExtractFrom extracts the ServiceItemAccountRightTime from the given readable
+func (siart *ServiceItemAccountRightTime) ExtractFrom(readable types.Readable) error {
+	var err error
+
+	err = siart.ServiceItemAccountRight.ExtractFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract ServiceItemAccountRightTime.ServiceItemAccountRight. %s", err.Error())
+	}
+
+	err = siart.ExtractHeaderFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract ServiceItemAccountRightTime header. %s", err.Error())
+	}
+
+	return nil
+}
+
 // Copy returns a new copied instance of ServiceItemAccountRightTime
-func (serviceItemAccountRightTime *ServiceItemAccountRightTime) Copy() types.RVType {
+func (siart *ServiceItemAccountRightTime) Copy() types.RVType {
 	copied := NewServiceItemAccountRightTime()
 
-	copied.StructureVersion = serviceItemAccountRightTime.StructureVersion
-
-	copied.ServiceItemAccountRight = serviceItemAccountRightTime.ServiceItemAccountRight.Copy().(*ServiceItemAccountRight)
+	copied.StructureVersion = siart.StructureVersion
+	copied.ServiceItemAccountRight = siart.ServiceItemAccountRight.Copy().(*ServiceItemAccountRight)
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (serviceItemAccountRightTime *ServiceItemAccountRightTime) Equals(o types.RVType) bool {
+// Equals checks if the given ServiceItemAccountRightTime contains the same data as the current ServiceItemAccountRightTime
+func (siart *ServiceItemAccountRightTime) Equals(o types.RVType) bool {
 	if _, ok := o.(*ServiceItemAccountRightTime); !ok {
 		return false
 	}
 
 	other := o.(*ServiceItemAccountRightTime)
 
-	if serviceItemAccountRightTime.StructureVersion != other.StructureVersion {
+	if siart.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	return serviceItemAccountRightTime.ParentType().Equals(other.ParentType())
+	if !siart.ServiceItemAccountRight.Equals(other.ServiceItemAccountRight) {
+		return false
+	}
+
+	return true
 }
 
-// String returns a string representation of the struct
-func (serviceItemAccountRightTime *ServiceItemAccountRightTime) String() string {
-	return serviceItemAccountRightTime.FormatToString(0)
+// String returns the string representation of the ServiceItemAccountRightTime
+func (siart *ServiceItemAccountRightTime) String() string {
+	return siart.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (serviceItemAccountRightTime *ServiceItemAccountRightTime) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the ServiceItemAccountRightTime using the provided indentation level
+func (siart *ServiceItemAccountRightTime) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("ServiceItemAccountRightTime{\n")
-	b.WriteString(fmt.Sprintf("%sParentType: %s,\n", indentationValues, serviceItemAccountRightTime.ParentType().FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, serviceItemAccountRightTime.StructureVersion))
+	b.WriteString(fmt.Sprintf("%sServiceItemAccountRight (parent): %s,\n", indentationValues, siart.ServiceItemAccountRight.FormatToString(indentationLevel+1)))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -79,10 +95,9 @@ func (serviceItemAccountRightTime *ServiceItemAccountRightTime) FormatToString(i
 
 // NewServiceItemAccountRightTime returns a new ServiceItemAccountRightTime
 func NewServiceItemAccountRightTime() *ServiceItemAccountRightTime {
-	serviceItemAccountRightTime := &ServiceItemAccountRightTime{}
+	siart := &ServiceItemAccountRightTime{
+		ServiceItemAccountRight: NewServiceItemAccountRight(),
+	}
 
-	serviceItemAccountRightTime.ServiceItemAccountRight = NewServiceItemAccountRight()
-	serviceItemAccountRightTime.SetParentType(serviceItemAccountRightTime.ServiceItemAccountRight)
-
-	return serviceItemAccountRightTime
+	return siart
 }

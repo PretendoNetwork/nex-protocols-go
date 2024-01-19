@@ -29,7 +29,7 @@ func (protocol *Protocol) handleActivateWithCardID(packet nex.PacketInterface) {
 	unknown := types.NewPrimitiveU8(0)
 	err = unknown.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.ActivateWithCardID(fmt.Errorf("Failed to read unknown from parameters. %s", err.Error()), packet, callID, 0, 0)
+		_, errorCode = protocol.ActivateWithCardID(fmt.Errorf("Failed to read unknown from parameters. %s", err.Error()), packet, callID, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -40,7 +40,7 @@ func (protocol *Protocol) handleActivateWithCardID(packet nex.PacketInterface) {
 	cardID := types.NewPrimitiveU64(0)
 	err = cardID.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.ActivateWithCardID(fmt.Errorf("Failed to read cardID from parameters. %s", err.Error()), packet, callID, 0, 0)
+		_, errorCode = protocol.ActivateWithCardID(fmt.Errorf("Failed to read cardID from parameters. %s", err.Error()), packet, callID, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}

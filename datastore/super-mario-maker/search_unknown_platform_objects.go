@@ -3,14 +3,10 @@ package protocol
 
 import (
 	nex "github.com/PretendoNetwork/nex-go"
-	"github.com/PretendoNetwork/nex-go/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
 func (protocol *Protocol) handleSearchUnknownPlatformObjects(packet nex.PacketInterface) {
-	var err error
-	var errorCode uint32
-
 	if protocol.SearchUnknownPlatformObjects == nil {
 		globals.Logger.Warning("DataStoreSuperMarioMaker::SearchUnknownPlatformObjects not implemented")
 		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)

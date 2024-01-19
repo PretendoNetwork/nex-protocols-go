@@ -29,7 +29,7 @@ func (protocol *Protocol) handleFindCommunityByOwner(packet nex.PacketInterface)
 	id := types.NewPrimitiveU64(0)
 	err = id.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.FindCommunityByOwner(fmt.Errorf("Failed to read id from parameters. %s", err.Error()), packet, callID, 0, nil)
+		_, errorCode = protocol.FindCommunityByOwner(fmt.Errorf("Failed to read id from parameters. %s", err.Error()), packet, callID, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -40,7 +40,7 @@ func (protocol *Protocol) handleFindCommunityByOwner(packet nex.PacketInterface)
 	resultRange := types.NewResultRange()
 	err = resultRange.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.FindCommunityByOwner(fmt.Errorf("Failed to read resultRange from parameters. %s", err.Error()), packet, callID, 0, nil)
+		_, errorCode = protocol.FindCommunityByOwner(fmt.Errorf("Failed to read resultRange from parameters. %s", err.Error()), packet, callID, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}

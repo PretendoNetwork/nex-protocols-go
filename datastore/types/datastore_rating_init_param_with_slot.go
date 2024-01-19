@@ -8,7 +8,7 @@ import (
 	"github.com/PretendoNetwork/nex-go/types"
 )
 
-// DataStoreRatingInitParamWithSlot is sent in the PreparePostObject method
+// DataStoreRatingInitParamWithSlot is a type within the DataStore protocol
 type DataStoreRatingInitParamWithSlot struct {
 	types.Structure
 	Slot  *types.PrimitiveS8
@@ -16,33 +16,34 @@ type DataStoreRatingInitParamWithSlot struct {
 }
 
 // WriteTo writes the DataStoreRatingInitParamWithSlot to the given writable
-func (dataStoreRatingInitParamWithSlot *DataStoreRatingInitParamWithSlot) WriteTo(writable types.Writable) {
+func (dsripws *DataStoreRatingInitParamWithSlot) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	dataStoreRatingInitParamWithSlot.Slot.WriteTo(contentWritable)
-	dataStoreRatingInitParamWithSlot.Param.WriteTo(contentWritable)
+	dsripws.Slot.WriteTo(writable)
+	dsripws.Param.WriteTo(writable)
 
 	content := contentWritable.Bytes()
 
-	dataStoreRatingInitParamWithSlot.WriteHeaderTo(writable, uint32(len(content)))
+	dsripws.WriteHeaderTo(writable, uint32(len(content)))
 
 	writable.Write(content)
 }
 
 // ExtractFrom extracts the DataStoreRatingInitParamWithSlot from the given readable
-func (dataStoreRatingInitParamWithSlot *DataStoreRatingInitParamWithSlot) ExtractFrom(readable types.Readable) error {
+func (dsripws *DataStoreRatingInitParamWithSlot) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	if err = dataStoreRatingInitParamWithSlot.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to read DataStoreRatingInitParamWithSlot header. %s", err.Error())
+	err = dsripws.ExtractHeaderFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreRatingInitParamWithSlot header. %s", err.Error())
 	}
 
-	err = dataStoreRatingInitParamWithSlot.Slot.ExtractFrom(readable)
+	err = dsripws.Slot.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreRatingInitParamWithSlot.Slot. %s", err.Error())
 	}
 
-	err = dataStoreRatingInitParamWithSlot.Param.ExtractFrom(readable)
+	err = dsripws.Param.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreRatingInitParamWithSlot.Param. %s", err.Error())
 	}
@@ -51,56 +52,50 @@ func (dataStoreRatingInitParamWithSlot *DataStoreRatingInitParamWithSlot) Extrac
 }
 
 // Copy returns a new copied instance of DataStoreRatingInitParamWithSlot
-func (dataStoreRatingInitParamWithSlot *DataStoreRatingInitParamWithSlot) Copy() types.RVType {
+func (dsripws *DataStoreRatingInitParamWithSlot) Copy() types.RVType {
 	copied := NewDataStoreRatingInitParamWithSlot()
 
-	copied.StructureVersion = dataStoreRatingInitParamWithSlot.StructureVersion
-
-	copied.Slot = dataStoreRatingInitParamWithSlot.Slot.Copy().(*types.PrimitiveS8)
-	copied.Param = dataStoreRatingInitParamWithSlot.Param.Copy().(*DataStoreRatingInitParam)
+	copied.StructureVersion = dsripws.StructureVersion
+	copied.Slot = dsripws.Slot.Copy().(*types.PrimitiveS8)
+	copied.Param = dsripws.Param.Copy().(*DataStoreRatingInitParam)
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (dataStoreRatingInitParamWithSlot *DataStoreRatingInitParamWithSlot) Equals(o types.RVType) bool {
+// Equals checks if the given DataStoreRatingInitParamWithSlot contains the same data as the current DataStoreRatingInitParamWithSlot
+func (dsripws *DataStoreRatingInitParamWithSlot) Equals(o types.RVType) bool {
 	if _, ok := o.(*DataStoreRatingInitParamWithSlot); !ok {
 		return false
 	}
 
 	other := o.(*DataStoreRatingInitParamWithSlot)
 
-	if dataStoreRatingInitParamWithSlot.StructureVersion != other.StructureVersion {
+	if dsripws.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if !dataStoreRatingInitParamWithSlot.Slot.Equals(other.Slot) {
+	if !dsripws.Slot.Equals(other.Slot) {
 		return false
 	}
 
-	if !dataStoreRatingInitParamWithSlot.Param.Equals(other.Param) {
-		return false
-	}
-
-	return true
+	return dsripws.Param.Equals(other.Param)
 }
 
-// String returns a string representation of the struct
-func (dataStoreRatingInitParamWithSlot *DataStoreRatingInitParamWithSlot) String() string {
-	return dataStoreRatingInitParamWithSlot.FormatToString(0)
+// String returns the string representation of the DataStoreRatingInitParamWithSlot
+func (dsripws *DataStoreRatingInitParamWithSlot) String() string {
+	return dsripws.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (dataStoreRatingInitParamWithSlot *DataStoreRatingInitParamWithSlot) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the DataStoreRatingInitParamWithSlot using the provided indentation level
+func (dsripws *DataStoreRatingInitParamWithSlot) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("DataStoreRatingInitParamWithSlot{\n")
-	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, dataStoreRatingInitParamWithSlot.StructureVersion))
-	b.WriteString(fmt.Sprintf("%sSlot: %s,\n", indentationValues, dataStoreRatingInitParamWithSlot.Slot))
-	b.WriteString(fmt.Sprintf("%sParam: %s\n", indentationValues, dataStoreRatingInitParamWithSlot.Param.FormatToString(indentationLevel+1)))
+	b.WriteString(fmt.Sprintf("%sSlot: %s,\n", indentationValues, dsripws.Slot))
+	b.WriteString(fmt.Sprintf("%sParam: %s,\n", indentationValues, dsripws.Param.FormatToString(indentationLevel+1)))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -108,8 +103,10 @@ func (dataStoreRatingInitParamWithSlot *DataStoreRatingInitParamWithSlot) Format
 
 // NewDataStoreRatingInitParamWithSlot returns a new DataStoreRatingInitParamWithSlot
 func NewDataStoreRatingInitParamWithSlot() *DataStoreRatingInitParamWithSlot {
-	return &DataStoreRatingInitParamWithSlot{
+	dsripws := &DataStoreRatingInitParamWithSlot{
 		Slot:  types.NewPrimitiveS8(0),
 		Param: NewDataStoreRatingInitParam(),
 	}
+
+	return dsripws
 }

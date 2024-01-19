@@ -29,7 +29,7 @@ func (protocol *Protocol) handleUpdateProgressScore(packet nex.PacketInterface) 
 	gid := types.NewPrimitiveU32(0)
 	err = gid.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.UpdateProgressScore(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), packet, callID, 0, 0)
+		_, errorCode = protocol.UpdateProgressScore(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), packet, callID, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -40,7 +40,7 @@ func (protocol *Protocol) handleUpdateProgressScore(packet nex.PacketInterface) 
 	progressScore := types.NewPrimitiveU8(0)
 	err = progressScore.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.UpdateProgressScore(fmt.Errorf("Failed to read progressScore from parameters. %s", err.Error()), packet, callID, 0, 0)
+		_, errorCode = protocol.UpdateProgressScore(fmt.Errorf("Failed to read progressScore from parameters. %s", err.Error()), packet, callID, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}

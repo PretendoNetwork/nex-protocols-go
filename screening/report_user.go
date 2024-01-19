@@ -3,14 +3,10 @@ package protocol
 
 import (
 	nex "github.com/PretendoNetwork/nex-go"
-	"github.com/PretendoNetwork/nex-go/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
 func (protocol *Protocol) handleReportUser(packet nex.PacketInterface) {
-	var err error
-	var errorCode uint32
-
 	if protocol.ReportUser == nil {
 		globals.Logger.Warning("Screening::ReportUser not implemented")
 		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)

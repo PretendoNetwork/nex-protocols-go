@@ -1,15 +1,14 @@
-// Package types implements all the types used by the Ranking 2  protocol
+// Package types implements all the types used by the Ranking2 protocol
 package types
 
 import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-go/types"
 )
 
-// Ranking2GetParam holds data for the Ranking 2  protocol
+// Ranking2GetParam is a type within the Ranking2 protocol
 type Ranking2GetParam struct {
 	types.Structure
 	NexUniqueID        *types.PrimitiveU64
@@ -23,175 +22,171 @@ type Ranking2GetParam struct {
 	NumSeasonsToGoBack *types.PrimitiveU8
 }
 
+// WriteTo writes the Ranking2GetParam to the given writable
+func (rgp *Ranking2GetParam) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
+
+	rgp.NexUniqueID.WriteTo(writable)
+	rgp.PrincipalID.WriteTo(writable)
+	rgp.Category.WriteTo(writable)
+	rgp.Offset.WriteTo(writable)
+	rgp.Length.WriteTo(writable)
+	rgp.SortFlags.WriteTo(writable)
+	rgp.OptionFlags.WriteTo(writable)
+	rgp.Mode.WriteTo(writable)
+	rgp.NumSeasonsToGoBack.WriteTo(writable)
+
+	content := contentWritable.Bytes()
+
+	rgp.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
+}
+
 // ExtractFrom extracts the Ranking2GetParam from the given readable
-func (ranking2GetParam *Ranking2GetParam) ExtractFrom(readable types.Readable) error {
+func (rgp *Ranking2GetParam) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	if err = ranking2GetParam.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to read Ranking2GetParam header. %s", err.Error())
+	err = rgp.ExtractHeaderFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract Ranking2GetParam header. %s", err.Error())
 	}
 
-	err = ranking2GetParam.NexUniqueID.ExtractFrom(readable)
+	err = rgp.NexUniqueID.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract Ranking2GetParam.NexUniqueID from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract Ranking2GetParam.NexUniqueID. %s", err.Error())
 	}
 
-	err = ranking2GetParam.PrincipalID.ExtractFrom(readable)
+	err = rgp.PrincipalID.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract Ranking2GetParam.PrincipalID from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract Ranking2GetParam.PrincipalID. %s", err.Error())
 	}
 
-	err = ranking2GetParam.Category.ExtractFrom(readable)
+	err = rgp.Category.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract Ranking2GetParam.Category from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract Ranking2GetParam.Category. %s", err.Error())
 	}
 
-	err = ranking2GetParam.Offset.ExtractFrom(readable)
+	err = rgp.Offset.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract Ranking2GetParam.Offset from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract Ranking2GetParam.Offset. %s", err.Error())
 	}
 
-	err = ranking2GetParam.Length.ExtractFrom(readable)
+	err = rgp.Length.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract Ranking2GetParam.Length from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract Ranking2GetParam.Length. %s", err.Error())
 	}
 
-	err = ranking2GetParam.SortFlags.ExtractFrom(readable)
+	err = rgp.SortFlags.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract Ranking2GetParam.SortFlags from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract Ranking2GetParam.SortFlags. %s", err.Error())
 	}
 
-	err = ranking2GetParam.OptionFlags.ExtractFrom(readable)
+	err = rgp.OptionFlags.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract Ranking2GetParam.OptionFlags from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract Ranking2GetParam.OptionFlags. %s", err.Error())
 	}
 
-	err = ranking2GetParam.Mode.ExtractFrom(readable)
+	err = rgp.Mode.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract Ranking2GetParam.Mode from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract Ranking2GetParam.Mode. %s", err.Error())
 	}
 
-	err = ranking2GetParam.NumSeasonsToGoBack.ExtractFrom(readable)
+	err = rgp.NumSeasonsToGoBack.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract Ranking2GetParam.NumSeasonsToGoBack from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract Ranking2GetParam.NumSeasonsToGoBack. %s", err.Error())
 	}
 
 	return nil
 }
 
-// WriteTo writes the Ranking2GetParam to the given writable
-func (ranking2GetParam *Ranking2GetParam) WriteTo(writable types.Writable) {
-	contentWritable := writable.CopyNew()
-
-	ranking2GetParam.NexUniqueID.WriteTo(contentWritable)
-	ranking2GetParam.PrincipalID.WriteTo(contentWritable)
-	ranking2GetParam.Category.WriteTo(contentWritable)
-	ranking2GetParam.Offset.WriteTo(contentWritable)
-	ranking2GetParam.Length.WriteTo(contentWritable)
-	ranking2GetParam.SortFlags.WriteTo(contentWritable)
-	ranking2GetParam.OptionFlags.WriteTo(contentWritable)
-	ranking2GetParam.Mode.WriteTo(contentWritable)
-	ranking2GetParam.NumSeasonsToGoBack.WriteTo(contentWritable)
-
-	content := contentWritable.Bytes()
-
-	ranking2GetParam.WriteHeaderTo(writable, uint32(len(content)))
-
-	writable.Write(content)
-}
-
 // Copy returns a new copied instance of Ranking2GetParam
-func (ranking2GetParam *Ranking2GetParam) Copy() types.RVType {
+func (rgp *Ranking2GetParam) Copy() types.RVType {
 	copied := NewRanking2GetParam()
 
-	copied.StructureVersion = ranking2GetParam.StructureVersion
+	copied.StructureVersion = rgp.StructureVersion
+	copied.NexUniqueID = rgp.NexUniqueID.Copy().(*types.PrimitiveU64)
+	copied.PrincipalID = rgp.PrincipalID.Copy().(*types.PID)
+	copied.Category = rgp.Category.Copy().(*types.PrimitiveU32)
+	copied.Offset = rgp.Offset.Copy().(*types.PrimitiveU32)
+	copied.Length = rgp.Length.Copy().(*types.PrimitiveU32)
+	copied.SortFlags = rgp.SortFlags.Copy().(*types.PrimitiveU32)
+	copied.OptionFlags = rgp.OptionFlags.Copy().(*types.PrimitiveU32)
+	copied.Mode = rgp.Mode.Copy().(*types.PrimitiveU8)
+	copied.NumSeasonsToGoBack = rgp.NumSeasonsToGoBack.Copy().(*types.PrimitiveU8)
 
-	copied.NexUniqueID = ranking2GetParam.NexUniqueID
-	copied.PrincipalID = ranking2GetParam.PrincipalID.Copy()
-	copied.Category = ranking2GetParam.Category
-	copied.Offset = ranking2GetParam.Offset
-	copied.Length = ranking2GetParam.Length
-	copied.SortFlags = ranking2GetParam.SortFlags
-	copied.OptionFlags = ranking2GetParam.OptionFlags
-	copied.Mode = ranking2GetParam.Mode
-	copied.NumSeasonsToGoBack = ranking2GetParam.NumSeasonsToGoBack
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (ranking2GetParam *Ranking2GetParam) Equals(o types.RVType) bool {
+// Equals checks if the given Ranking2GetParam contains the same data as the current Ranking2GetParam
+func (rgp *Ranking2GetParam) Equals(o types.RVType) bool {
 	if _, ok := o.(*Ranking2GetParam); !ok {
 		return false
 	}
 
 	other := o.(*Ranking2GetParam)
 
-	if ranking2GetParam.StructureVersion != other.StructureVersion {
+	if rgp.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if !ranking2GetParam.NexUniqueID.Equals(other.NexUniqueID) {
+	if !rgp.NexUniqueID.Equals(other.NexUniqueID) {
 		return false
 	}
 
-	if !ranking2GetParam.PrincipalID.Equals(other.PrincipalID) {
+	if !rgp.PrincipalID.Equals(other.PrincipalID) {
 		return false
 	}
 
-	if !ranking2GetParam.Category.Equals(other.Category) {
+	if !rgp.Category.Equals(other.Category) {
 		return false
 	}
 
-	if !ranking2GetParam.Offset.Equals(other.Offset) {
+	if !rgp.Offset.Equals(other.Offset) {
 		return false
 	}
 
-	if !ranking2GetParam.Length.Equals(other.Length) {
+	if !rgp.Length.Equals(other.Length) {
 		return false
 	}
 
-	if !ranking2GetParam.SortFlags.Equals(other.SortFlags) {
+	if !rgp.SortFlags.Equals(other.SortFlags) {
 		return false
 	}
 
-	if !ranking2GetParam.OptionFlags.Equals(other.OptionFlags) {
+	if !rgp.OptionFlags.Equals(other.OptionFlags) {
 		return false
 	}
 
-	if !ranking2GetParam.Mode.Equals(other.Mode) {
+	if !rgp.Mode.Equals(other.Mode) {
 		return false
 	}
 
-	if !ranking2GetParam.NumSeasonsToGoBack.Equals(other.NumSeasonsToGoBack) {
-		return false
-	}
-
-	return true
+	return rgp.NumSeasonsToGoBack.Equals(other.NumSeasonsToGoBack)
 }
 
-// String returns a string representation of the struct
-func (ranking2GetParam *Ranking2GetParam) String() string {
-	return ranking2GetParam.FormatToString(0)
+// String returns the string representation of the Ranking2GetParam
+func (rgp *Ranking2GetParam) String() string {
+	return rgp.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (ranking2GetParam *Ranking2GetParam) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the Ranking2GetParam using the provided indentation level
+func (rgp *Ranking2GetParam) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("Ranking2GetParam{\n")
-	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, ranking2GetParam.StructureVersion))
-	b.WriteString(fmt.Sprintf("%sNexUniqueID: %d,\n", indentationValues, ranking2GetParam.NexUniqueID))
-	b.WriteString(fmt.Sprintf("%sPrincipalID: %s,\n", indentationValues, ranking2GetParam.PrincipalID.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sCategory: %d,\n", indentationValues, ranking2GetParam.Category))
-	b.WriteString(fmt.Sprintf("%sOffset: %d,\n", indentationValues, ranking2GetParam.Offset))
-	b.WriteString(fmt.Sprintf("%sLength: %d,\n", indentationValues, ranking2GetParam.Length))
-	b.WriteString(fmt.Sprintf("%sSortFlags: %d,\n", indentationValues, ranking2GetParam.SortFlags))
-	b.WriteString(fmt.Sprintf("%sOptionFlags: %d,\n", indentationValues, ranking2GetParam.OptionFlags))
-	b.WriteString(fmt.Sprintf("%sMode: %d,\n", indentationValues, ranking2GetParam.Mode))
-	b.WriteString(fmt.Sprintf("%sNumSeasonsToGoBack: %d,\n", indentationValues, ranking2GetParam.NumSeasonsToGoBack))
+	b.WriteString(fmt.Sprintf("%sNexUniqueID: %s,\n", indentationValues, rgp.NexUniqueID))
+	b.WriteString(fmt.Sprintf("%sPrincipalID: %s,\n", indentationValues, rgp.PrincipalID.FormatToString(indentationLevel+1)))
+	b.WriteString(fmt.Sprintf("%sCategory: %s,\n", indentationValues, rgp.Category))
+	b.WriteString(fmt.Sprintf("%sOffset: %s,\n", indentationValues, rgp.Offset))
+	b.WriteString(fmt.Sprintf("%sLength: %s,\n", indentationValues, rgp.Length))
+	b.WriteString(fmt.Sprintf("%sSortFlags: %s,\n", indentationValues, rgp.SortFlags))
+	b.WriteString(fmt.Sprintf("%sOptionFlags: %s,\n", indentationValues, rgp.OptionFlags))
+	b.WriteString(fmt.Sprintf("%sMode: %s,\n", indentationValues, rgp.Mode))
+	b.WriteString(fmt.Sprintf("%sNumSeasonsToGoBack: %s,\n", indentationValues, rgp.NumSeasonsToGoBack))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -199,5 +194,17 @@ func (ranking2GetParam *Ranking2GetParam) FormatToString(indentationLevel int) s
 
 // NewRanking2GetParam returns a new Ranking2GetParam
 func NewRanking2GetParam() *Ranking2GetParam {
-	return &Ranking2GetParam{}
+	rgp := &Ranking2GetParam{
+		NexUniqueID:        types.NewPrimitiveU64(0),
+		PrincipalID:        types.NewPID(0),
+		Category:           types.NewPrimitiveU32(0),
+		Offset:             types.NewPrimitiveU32(0),
+		Length:             types.NewPrimitiveU32(0),
+		SortFlags:          types.NewPrimitiveU32(0),
+		OptionFlags:        types.NewPrimitiveU32(0),
+		Mode:               types.NewPrimitiveU8(0),
+		NumSeasonsToGoBack: types.NewPrimitiveU8(0),
+	}
+
+	return rgp
 }

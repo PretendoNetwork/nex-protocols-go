@@ -1,15 +1,14 @@
-// Package types implements all the types used by the Friends WiiU protocol
+// Package types implements all the types used by the FriendsWiiU protocol
 package types
 
 import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-go/types"
 )
 
-// PrincipalRequestBlockSetting contains unknow data
+// PrincipalRequestBlockSetting is a type within the FriendsWiiU protocol
 type PrincipalRequestBlockSetting struct {
 	types.Structure
 	*types.Data
@@ -18,76 +17,99 @@ type PrincipalRequestBlockSetting struct {
 }
 
 // WriteTo writes the PrincipalRequestBlockSetting to the given writable
-func (principalRequestBlockSetting *PrincipalRequestBlockSetting) WriteTo(writable types.Writable) {
+func (prbs *PrincipalRequestBlockSetting) WriteTo(writable types.Writable) {
+	prbs.Data.WriteTo(writable)
+
 	contentWritable := writable.CopyNew()
 
-	principalRequestBlockSetting.PID.WriteTo(contentWritable)
-	principalRequestBlockSetting.IsBlocked.WriteTo(contentWritable)
+	prbs.PID.WriteTo(writable)
+	prbs.IsBlocked.WriteTo(writable)
 
 	content := contentWritable.Bytes()
 
-	principalRequestBlockSetting.WriteHeaderTo(writable, uint32(len(content)))
+	prbs.WriteHeaderTo(writable, uint32(len(content)))
 
 	writable.Write(content)
 }
 
+// ExtractFrom extracts the PrincipalRequestBlockSetting from the given readable
+func (prbs *PrincipalRequestBlockSetting) ExtractFrom(readable types.Readable) error {
+	var err error
+
+	err = prbs.Data.ExtractFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract PrincipalRequestBlockSetting.Data. %s", err.Error())
+	}
+
+	err = prbs.ExtractHeaderFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract PrincipalRequestBlockSetting header. %s", err.Error())
+	}
+
+	err = prbs.PID.ExtractFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract PrincipalRequestBlockSetting.PID. %s", err.Error())
+	}
+
+	err = prbs.IsBlocked.ExtractFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract PrincipalRequestBlockSetting.IsBlocked. %s", err.Error())
+	}
+
+	return nil
+}
+
 // Copy returns a new copied instance of PrincipalRequestBlockSetting
-func (principalRequestBlockSetting *PrincipalRequestBlockSetting) Copy() types.RVType {
+func (prbs *PrincipalRequestBlockSetting) Copy() types.RVType {
 	copied := NewPrincipalRequestBlockSetting()
 
-	copied.StructureVersion = principalRequestBlockSetting.StructureVersion
-
-	copied.Data = principalRequestBlockSetting.Data.Copy().(*types.Data)
-
-	copied.PID = principalRequestBlockSetting.PID
-	copied.IsBlocked = principalRequestBlockSetting.IsBlocked
+	copied.StructureVersion = prbs.StructureVersion
+	copied.Data = prbs.Data.Copy().(*types.Data)
+	copied.PID = prbs.PID.Copy().(*types.PrimitiveU32)
+	copied.IsBlocked = prbs.IsBlocked.Copy().(*types.PrimitiveBool)
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (principalRequestBlockSetting *PrincipalRequestBlockSetting) Equals(o types.RVType) bool {
+// Equals checks if the given PrincipalRequestBlockSetting contains the same data as the current PrincipalRequestBlockSetting
+func (prbs *PrincipalRequestBlockSetting) Equals(o types.RVType) bool {
 	if _, ok := o.(*PrincipalRequestBlockSetting); !ok {
 		return false
 	}
 
 	other := o.(*PrincipalRequestBlockSetting)
 
-	if principalRequestBlockSetting.StructureVersion != other.StructureVersion {
+	if prbs.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if !principalRequestBlockSetting.ParentType().Equals(other.ParentType()) {
+	if !prbs.Data.Equals(other.Data) {
 		return false
 	}
 
-	if !principalRequestBlockSetting.PID.Equals(other.PID) {
+	if !prbs.PID.Equals(other.PID) {
 		return false
 	}
 
-	if !principalRequestBlockSetting.IsBlocked.Equals(other.IsBlocked) {
-		return false
-	}
-
-	return true
+	return prbs.IsBlocked.Equals(other.IsBlocked)
 }
 
-// String returns a string representation of the struct
-func (principalRequestBlockSetting *PrincipalRequestBlockSetting) String() string {
-	return principalRequestBlockSetting.FormatToString(0)
+// String returns the string representation of the PrincipalRequestBlockSetting
+func (prbs *PrincipalRequestBlockSetting) String() string {
+	return prbs.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (principalRequestBlockSetting *PrincipalRequestBlockSetting) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the PrincipalRequestBlockSetting using the provided indentation level
+func (prbs *PrincipalRequestBlockSetting) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("PrincipalRequestBlockSetting{\n")
-	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, principalRequestBlockSetting.StructureVersion))
-	b.WriteString(fmt.Sprintf("%sPID: %d,\n", indentationValues, principalRequestBlockSetting.PID))
-	b.WriteString(fmt.Sprintf("%sIsBlocked: %t\n", indentationValues, principalRequestBlockSetting.IsBlocked))
+	b.WriteString(fmt.Sprintf("%sData (parent): %s,\n", indentationValues, prbs.Data.FormatToString(indentationLevel+1)))
+	b.WriteString(fmt.Sprintf("%sPID: %s,\n", indentationValues, prbs.PID))
+	b.WriteString(fmt.Sprintf("%sIsBlocked: %s,\n", indentationValues, prbs.IsBlocked))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -95,5 +117,11 @@ func (principalRequestBlockSetting *PrincipalRequestBlockSetting) FormatToString
 
 // NewPrincipalRequestBlockSetting returns a new PrincipalRequestBlockSetting
 func NewPrincipalRequestBlockSetting() *PrincipalRequestBlockSetting {
-	return &PrincipalRequestBlockSetting{}
+	prbs := &PrincipalRequestBlockSetting{
+		Data      : types.NewData(),
+		PID:       types.NewPrimitiveU32(0),
+		IsBlocked: types.NewPrimitiveBool(false),
+	}
+
+	return prbs
 }

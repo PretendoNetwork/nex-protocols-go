@@ -115,7 +115,7 @@ type serviceItemProtocol = service_item.Protocol
 type Protocol struct {
 	server nex.ServerInterface
 	serviceItemProtocol
-	Hello                       func(err error, packet nex.PacketInterface, callID uint32, name string) (*nex.RMCMessage, uint32)
+	Hello                       func(err error, packet nex.PacketInterface, callID uint32, name *types.String) (*nex.RMCMessage, uint32)
 	HttpGetRequest              func(err error, packet nex.PacketInterface, callID uint32, url *service_item_wii_sports_club_types.ServiceItemHTTPGetParam) (*nex.RMCMessage, uint32)
 	HttpGetResponse             func(err error, packet nex.PacketInterface, callID uint32, requestID *types.PrimitiveU32) (*nex.RMCMessage, uint32)
 	PurchaseServiceItemRequest  func(err error, packet nex.PacketInterface, callID uint32, purchaseServiceItemParam *service_item_wii_sports_club_types.ServiceItemPurchaseServiceItemParam) (*nex.RMCMessage, uint32)

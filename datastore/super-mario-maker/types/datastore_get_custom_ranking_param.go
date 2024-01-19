@@ -1,4 +1,4 @@
-// Package types implements all the types used by the DataStore (Super Mario Maker) protocol
+// Package types implements all the types used by the DataStore protocol
 package types
 
 import (
@@ -8,7 +8,7 @@ import (
 	"github.com/PretendoNetwork/nex-go/types"
 )
 
-// DataStoreGetCustomRankingParam holds data for the DataStore (Super Mario Maker) protocol
+// DataStoreGetCustomRankingParam is a type within the DataStore protocol
 type DataStoreGetCustomRankingParam struct {
 	types.Structure
 	ApplicationID *types.PrimitiveU32
@@ -17,116 +17,111 @@ type DataStoreGetCustomRankingParam struct {
 	ResultRange   *types.ResultRange
 }
 
+// WriteTo writes the DataStoreGetCustomRankingParam to the given writable
+func (dsgcrp *DataStoreGetCustomRankingParam) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
+
+	dsgcrp.ApplicationID.WriteTo(writable)
+	dsgcrp.Condition.WriteTo(writable)
+	dsgcrp.ResultOption.WriteTo(writable)
+	dsgcrp.ResultRange.WriteTo(writable)
+
+	content := contentWritable.Bytes()
+
+	dsgcrp.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
+}
+
 // ExtractFrom extracts the DataStoreGetCustomRankingParam from the given readable
-func (dataStoreGetCustomRankingParam *DataStoreGetCustomRankingParam) ExtractFrom(readable types.Readable) error {
+func (dsgcrp *DataStoreGetCustomRankingParam) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	if err = dataStoreGetCustomRankingParam.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to read DataStoreGetCustomRankingParam header. %s", err.Error())
+	err = dsgcrp.ExtractHeaderFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreGetCustomRankingParam header. %s", err.Error())
 	}
 
-	err = dataStoreGetCustomRankingParam.ApplicationID.ExtractFrom(readable)
+	err = dsgcrp.ApplicationID.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract DataStoreGetCustomRankingParam.ApplicationID from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract DataStoreGetCustomRankingParam.ApplicationID. %s", err.Error())
 	}
 
-	err = dataStoreGetCustomRankingParam.Condition.ExtractFrom(readable)
+	err = dsgcrp.Condition.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract DataStoreGetCustomRankingParam.Condition from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract DataStoreGetCustomRankingParam.Condition. %s", err.Error())
 	}
 
-	err = dataStoreGetCustomRankingParam.ResultOption.ExtractFrom(readable)
+	err = dsgcrp.ResultOption.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract DataStoreGetCustomRankingParam.ResultOption from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract DataStoreGetCustomRankingParam.ResultOption. %s", err.Error())
 	}
 
-	err = dataStoreGetCustomRankingParam.ResultRange.ExtractFrom(readable)
+	err = dsgcrp.ResultRange.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract DataStoreGetCustomRankingParam.ResultRange from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract DataStoreGetCustomRankingParam.ResultRange. %s", err.Error())
 	}
 
 	return nil
 }
 
-// WriteTo writes the DataStoreGetCustomRankingParam to the given writable
-func (dataStoreGetCustomRankingParam *DataStoreGetCustomRankingParam) WriteTo(writable types.Writable) {
-	contentWritable := writable.CopyNew()
-
-	dataStoreGetCustomRankingParam.ApplicationID.WriteTo(contentWritable)
-	dataStoreGetCustomRankingParam.Condition.WriteTo(contentWritable)
-	dataStoreGetCustomRankingParam.ResultOption.WriteTo(contentWritable)
-	dataStoreGetCustomRankingParam.ResultRange.WriteTo(contentWritable)
-
-	content := contentWritable.Bytes()
-
-	dataStoreGetCustomRankingParam.WriteHeaderTo(writable, uint32(len(content)))
-
-	writable.Write(content)
-}
-
 // Copy returns a new copied instance of DataStoreGetCustomRankingParam
-func (dataStoreGetCustomRankingParam *DataStoreGetCustomRankingParam) Copy() types.RVType {
+func (dsgcrp *DataStoreGetCustomRankingParam) Copy() types.RVType {
 	copied := NewDataStoreGetCustomRankingParam()
 
-	copied.StructureVersion = dataStoreGetCustomRankingParam.StructureVersion
-
-	copied.ApplicationID = dataStoreGetCustomRankingParam.ApplicationID.Copy().(*types.PrimitiveU32)
-	copied.Condition = dataStoreGetCustomRankingParam.Condition.Copy().(*DataStoreCustomRankingRatingCondition)
-	copied.ResultOption = dataStoreGetCustomRankingParam.ResultOption.Copy().(*types.PrimitiveU8)
-	copied.ResultRange = dataStoreGetCustomRankingParam.ResultRange.Copy().(*types.ResultRange)
+	copied.StructureVersion = dsgcrp.StructureVersion
+	copied.ApplicationID = dsgcrp.ApplicationID.Copy().(*types.PrimitiveU32)
+	copied.Condition = dsgcrp.Condition.Copy().(*DataStoreCustomRankingRatingCondition)
+	copied.ResultOption = dsgcrp.ResultOption.Copy().(*types.PrimitiveU8)
+	copied.ResultRange = dsgcrp.ResultRange.Copy().(*types.ResultRange)
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (dataStoreGetCustomRankingParam *DataStoreGetCustomRankingParam) Equals(o types.RVType) bool {
+// Equals checks if the given DataStoreGetCustomRankingParam contains the same data as the current DataStoreGetCustomRankingParam
+func (dsgcrp *DataStoreGetCustomRankingParam) Equals(o types.RVType) bool {
 	if _, ok := o.(*DataStoreGetCustomRankingParam); !ok {
 		return false
 	}
 
 	other := o.(*DataStoreGetCustomRankingParam)
 
-	if dataStoreGetCustomRankingParam.StructureVersion != other.StructureVersion {
+	if dsgcrp.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if !dataStoreGetCustomRankingParam.ApplicationID.Equals(other.ApplicationID) {
+	if !dsgcrp.ApplicationID.Equals(other.ApplicationID) {
 		return false
 	}
 
-	if !dataStoreGetCustomRankingParam.Condition.Equals(other.Condition) {
+	if !dsgcrp.Condition.Equals(other.Condition) {
 		return false
 	}
 
-	if !dataStoreGetCustomRankingParam.ResultOption.Equals(other.ResultOption) {
+	if !dsgcrp.ResultOption.Equals(other.ResultOption) {
 		return false
 	}
 
-	if !dataStoreGetCustomRankingParam.ResultRange.Equals(other.ResultRange) {
-		return false
-	}
-
-	return true
+	return dsgcrp.ResultRange.Equals(other.ResultRange)
 }
 
-// String returns a string representation of the struct
-func (dataStoreGetCustomRankingParam *DataStoreGetCustomRankingParam) String() string {
-	return dataStoreGetCustomRankingParam.FormatToString(0)
+// String returns the string representation of the DataStoreGetCustomRankingParam
+func (dsgcrp *DataStoreGetCustomRankingParam) String() string {
+	return dsgcrp.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (dataStoreGetCustomRankingParam *DataStoreGetCustomRankingParam) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the DataStoreGetCustomRankingParam using the provided indentation level
+func (dsgcrp *DataStoreGetCustomRankingParam) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("DataStoreGetCustomRankingParam{\n")
-	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, dataStoreGetCustomRankingParam.StructureVersion))
-	b.WriteString(fmt.Sprintf("%sApplicationID: %s,\n", indentationValues, dataStoreGetCustomRankingParam.ApplicationID))
-	b.WriteString(fmt.Sprintf("%sCondition: %s\n", indentationValues, dataStoreGetCustomRankingParam.Condition.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sResultOption: %s,\n", indentationValues, dataStoreGetCustomRankingParam.ResultOption))
-	b.WriteString(fmt.Sprintf("%sResultRange: %s\n", indentationValues, dataStoreGetCustomRankingParam.ResultRange.FormatToString(indentationLevel+1)))
+	b.WriteString(fmt.Sprintf("%sApplicationID: %s,\n", indentationValues, dsgcrp.ApplicationID))
+	b.WriteString(fmt.Sprintf("%sCondition: %s,\n", indentationValues, dsgcrp.Condition.FormatToString(indentationLevel+1)))
+	b.WriteString(fmt.Sprintf("%sResultOption: %s,\n", indentationValues, dsgcrp.ResultOption))
+	b.WriteString(fmt.Sprintf("%sResultRange: %s,\n", indentationValues, dsgcrp.ResultRange.FormatToString(indentationLevel+1)))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -134,10 +129,12 @@ func (dataStoreGetCustomRankingParam *DataStoreGetCustomRankingParam) FormatToSt
 
 // NewDataStoreGetCustomRankingParam returns a new DataStoreGetCustomRankingParam
 func NewDataStoreGetCustomRankingParam() *DataStoreGetCustomRankingParam {
-	return &DataStoreGetCustomRankingParam{
+	dsgcrp := &DataStoreGetCustomRankingParam{
 		ApplicationID: types.NewPrimitiveU32(0),
 		Condition:     NewDataStoreCustomRankingRatingCondition(),
 		ResultOption:  types.NewPrimitiveU8(0),
 		ResultRange:   types.NewResultRange(),
 	}
+
+	return dsgcrp
 }

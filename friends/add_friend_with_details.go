@@ -29,7 +29,7 @@ func (protocol *Protocol) handleAddFriendByNameWithDetails(packet nex.PacketInte
 	uiPlayer := types.NewPrimitiveU32(0)
 	err = uiPlayer.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.AddFriendByNameWithDetails(fmt.Errorf("Failed to read uiPlayer from parameters. %s", err.Error()), packet, callID, 0, 0, "")
+		_, errorCode = protocol.AddFriendByNameWithDetails(fmt.Errorf("Failed to read uiPlayer from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -40,7 +40,7 @@ func (protocol *Protocol) handleAddFriendByNameWithDetails(packet nex.PacketInte
 	uiDetails := types.NewPrimitiveU32(0)
 	err = uiDetails.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.AddFriendByNameWithDetails(fmt.Errorf("Failed to read uiDetails from parameters. %s", err.Error()), packet, callID, 0, 0, "")
+		_, errorCode = protocol.AddFriendByNameWithDetails(fmt.Errorf("Failed to read uiDetails from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -51,7 +51,7 @@ func (protocol *Protocol) handleAddFriendByNameWithDetails(packet nex.PacketInte
 	strMessage := types.NewString("")
 	err = strMessage.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.AddFriendByNameWithDetails(fmt.Errorf("Failed to read strMessage from parameters. %s", err.Error()), packet, callID, 0, 0, "")
+		_, errorCode = protocol.AddFriendByNameWithDetails(fmt.Errorf("Failed to read strMessage from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}

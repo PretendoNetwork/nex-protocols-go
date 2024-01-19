@@ -8,7 +8,7 @@ import (
 	"github.com/PretendoNetwork/nex-go/types"
 )
 
-// DataStoreKeyValue is sent in the PrepareGetObject method
+// DataStoreKeyValue is a type within the DataStore protocol
 type DataStoreKeyValue struct {
 	types.Structure
 	Key   *types.String
@@ -16,33 +16,34 @@ type DataStoreKeyValue struct {
 }
 
 // WriteTo writes the DataStoreKeyValue to the given writable
-func (dataStoreKeyValue *DataStoreKeyValue) WriteTo(writable types.Writable) {
+func (dskv *DataStoreKeyValue) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	dataStoreKeyValue.Key.WriteTo(contentWritable)
-	dataStoreKeyValue.Value.WriteTo(contentWritable)
+	dskv.Key.WriteTo(writable)
+	dskv.Value.WriteTo(writable)
 
 	content := contentWritable.Bytes()
 
-	dataStoreKeyValue.WriteHeaderTo(writable, uint32(len(content)))
+	dskv.WriteHeaderTo(writable, uint32(len(content)))
 
 	writable.Write(content)
 }
 
 // ExtractFrom extracts the DataStoreKeyValue from the given readable
-func (dataStoreKeyValue *DataStoreKeyValue) ExtractFrom(readable types.Readable) error {
+func (dskv *DataStoreKeyValue) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	if err = dataStoreKeyValue.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to read DataStoreKeyValue header. %s", err.Error())
+	err = dskv.ExtractHeaderFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreKeyValue header. %s", err.Error())
 	}
 
-	err = dataStoreKeyValue.Key.ExtractFrom(readable)
+	err = dskv.Key.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreKeyValue.Key. %s", err.Error())
 	}
 
-	err = dataStoreKeyValue.Value.ExtractFrom(readable)
+	err = dskv.Value.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreKeyValue.Value. %s", err.Error())
 	}
@@ -51,56 +52,50 @@ func (dataStoreKeyValue *DataStoreKeyValue) ExtractFrom(readable types.Readable)
 }
 
 // Copy returns a new copied instance of DataStoreKeyValue
-func (dataStoreKeyValue *DataStoreKeyValue) Copy() types.RVType {
+func (dskv *DataStoreKeyValue) Copy() types.RVType {
 	copied := NewDataStoreKeyValue()
 
-	copied.StructureVersion = dataStoreKeyValue.StructureVersion
-
-	copied.Key = dataStoreKeyValue.Key.Copy().(*types.String)
-	copied.Value = dataStoreKeyValue.Value.Copy().(*types.String)
+	copied.StructureVersion = dskv.StructureVersion
+	copied.Key = dskv.Key.Copy().(*types.String)
+	copied.Value = dskv.Value.Copy().(*types.String)
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (dataStoreKeyValue *DataStoreKeyValue) Equals(o types.RVType) bool {
+// Equals checks if the given DataStoreKeyValue contains the same data as the current DataStoreKeyValue
+func (dskv *DataStoreKeyValue) Equals(o types.RVType) bool {
 	if _, ok := o.(*DataStoreKeyValue); !ok {
 		return false
 	}
 
 	other := o.(*DataStoreKeyValue)
 
-	if dataStoreKeyValue.StructureVersion != other.StructureVersion {
+	if dskv.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if !dataStoreKeyValue.Key.Equals(other.Key) {
+	if !dskv.Key.Equals(other.Key) {
 		return false
 	}
 
-	if !dataStoreKeyValue.Value.Equals(other.Value) {
-		return false
-	}
-
-	return true
+	return dskv.Value.Equals(other.Value)
 }
 
-// String returns a string representation of the struct
-func (dataStoreKeyValue *DataStoreKeyValue) String() string {
-	return dataStoreKeyValue.FormatToString(0)
+// String returns the string representation of the DataStoreKeyValue
+func (dskv *DataStoreKeyValue) String() string {
+	return dskv.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (dataStoreKeyValue *DataStoreKeyValue) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the DataStoreKeyValue using the provided indentation level
+func (dskv *DataStoreKeyValue) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("DataStoreKeyValue{\n")
-	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, dataStoreKeyValue.StructureVersion))
-	b.WriteString(fmt.Sprintf("%sKey: %s,\n", indentationValues, dataStoreKeyValue.Key))
-	b.WriteString(fmt.Sprintf("%sValue: %s\n", indentationValues, dataStoreKeyValue.Value))
+	b.WriteString(fmt.Sprintf("%sKey: %s,\n", indentationValues, dskv.Key))
+	b.WriteString(fmt.Sprintf("%sValue: %s,\n", indentationValues, dskv.Value))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -108,8 +103,10 @@ func (dataStoreKeyValue *DataStoreKeyValue) FormatToString(indentationLevel int)
 
 // NewDataStoreKeyValue returns a new DataStoreKeyValue
 func NewDataStoreKeyValue() *DataStoreKeyValue {
-	return &DataStoreKeyValue{
+	dskv := &DataStoreKeyValue{
 		Key:   types.NewString(""),
 		Value: types.NewString(""),
 	}
+
+	return dskv
 }

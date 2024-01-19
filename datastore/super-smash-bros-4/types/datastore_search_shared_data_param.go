@@ -1,15 +1,14 @@
-// Package types implements all the types used by the DataStore Super Smash Bros. 4 protocol
+// Package types implements all the types used by the DataStoreSuperSmashBros.4 protocol
 package types
 
 import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-go/types"
 )
 
-// DataStoreSearchSharedDataParam is a data structure used by the DataStore Super Smash Bros. 4 protocol
+// DataStoreSearchSharedDataParam is a type within the DataStoreSuperSmashBros.4 protocol
 type DataStoreSearchSharedDataParam struct {
 	types.Structure
 	DataType    *types.PrimitiveU8
@@ -21,45 +20,65 @@ type DataStoreSearchSharedDataParam struct {
 	ResultRange *types.ResultRange
 }
 
+// WriteTo writes the DataStoreSearchSharedDataParam to the given writable
+func (dsssdp *DataStoreSearchSharedDataParam) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
+
+	dsssdp.DataType.WriteTo(writable)
+	dsssdp.Owner.WriteTo(writable)
+	dsssdp.Region.WriteTo(writable)
+	dsssdp.Attribute1.WriteTo(writable)
+	dsssdp.Attribute2.WriteTo(writable)
+	dsssdp.Fighter.WriteTo(writable)
+	dsssdp.ResultRange.WriteTo(writable)
+
+	content := contentWritable.Bytes()
+
+	dsssdp.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
+}
+
 // ExtractFrom extracts the DataStoreSearchSharedDataParam from the given readable
-func (dataStoreSearchSharedDataParam *DataStoreSearchSharedDataParam) ExtractFrom(readable types.Readable) error {
+func (dsssdp *DataStoreSearchSharedDataParam) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	if err = dataStoreSearchSharedDataParam.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to read DataStoreSearchSharedDataParam header. %s", err.Error())
+	err = dsssdp.ExtractHeaderFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreSearchSharedDataParam header. %s", err.Error())
 	}
 
-	err = dataStoreSearchSharedDataParam.DataType.ExtractFrom(readable)
+	err = dsssdp.DataType.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreSearchSharedDataParam.DataType. %s", err.Error())
 	}
 
-	err = dataStoreSearchSharedDataParam.Owner.ExtractFrom(readable)
+	err = dsssdp.Owner.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreSearchSharedDataParam.Owner. %s", err.Error())
 	}
 
-	err = dataStoreSearchSharedDataParam.Region.ExtractFrom(readable)
+	err = dsssdp.Region.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreSearchSharedDataParam.Region. %s", err.Error())
 	}
 
-	err = dataStoreSearchSharedDataParam.Attribute1.ExtractFrom(readable)
+	err = dsssdp.Attribute1.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreSearchSharedDataParam.Attribute1. %s", err.Error())
 	}
 
-	err = dataStoreSearchSharedDataParam.Attribute2.ExtractFrom(readable)
+	err = dsssdp.Attribute2.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreSearchSharedDataParam.Attribute2. %s", err.Error())
 	}
 
-	err = dataStoreSearchSharedDataParam.Fighter.ExtractFrom(readable)
+	err = dsssdp.Fighter.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreSearchSharedDataParam.Fighter. %s", err.Error())
 	}
 
-	err = dataStoreSearchSharedDataParam.ResultRange.ExtractFrom(readable)
+	err = dsssdp.ResultRange.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreSearchSharedDataParam.ResultRange. %s", err.Error())
 	}
@@ -67,112 +86,81 @@ func (dataStoreSearchSharedDataParam *DataStoreSearchSharedDataParam) ExtractFro
 	return nil
 }
 
-// WriteTo writes the DataStoreSearchSharedDataParam to the given writable
-func (dataStoreSearchSharedDataParam *DataStoreSearchSharedDataParam) WriteTo(writable types.Writable) {
-	contentWritable := writable.CopyNew()
-
-	dataStoreSearchSharedDataParam.DataType.WriteTo(contentWritable)
-	dataStoreSearchSharedDataParam.Owner.WriteTo(contentWritable)
-	dataStoreSearchSharedDataParam.Region.WriteTo(contentWritable)
-	dataStoreSearchSharedDataParam.Attribute1.WriteTo(contentWritable)
-	dataStoreSearchSharedDataParam.Attribute2.WriteTo(contentWritable)
-	dataStoreSearchSharedDataParam.Fighter.WriteTo(contentWritable)
-	dataStoreSearchSharedDataParam.ResultRange.WriteTo(contentWritable)
-
-	content := contentWritable.Bytes()
-
-	dataStoreSearchSharedDataParam.WriteHeaderTo(writable, uint32(len(content)))
-
-	writable.Write(content)
-}
-
 // Copy returns a new copied instance of DataStoreSearchSharedDataParam
-func (dataStoreSearchSharedDataParam *DataStoreSearchSharedDataParam) Copy() types.RVType {
+func (dsssdp *DataStoreSearchSharedDataParam) Copy() types.RVType {
 	copied := NewDataStoreSearchSharedDataParam()
 
-	copied.StructureVersion = dataStoreSearchSharedDataParam.StructureVersion
-
-	copied.DataType = dataStoreSearchSharedDataParam.DataType
-	copied.Owner = dataStoreSearchSharedDataParam.Owner
-	copied.Region = dataStoreSearchSharedDataParam.Region
-	copied.Attribute1 = dataStoreSearchSharedDataParam.Attribute1
-	copied.Attribute2 = dataStoreSearchSharedDataParam.Attribute2
-	copied.Fighter = dataStoreSearchSharedDataParam.Fighter
-	copied.ResultRange = dataStoreSearchSharedDataParam.ResultRange.Copy().(*types.ResultRange)
+	copied.StructureVersion = dsssdp.StructureVersion
+	copied.DataType = dsssdp.DataType.Copy().(*types.PrimitiveU8)
+	copied.Owner = dsssdp.Owner.Copy().(*types.PrimitiveU32)
+	copied.Region = dsssdp.Region.Copy().(*types.PrimitiveU8)
+	copied.Attribute1 = dsssdp.Attribute1.Copy().(*types.PrimitiveU8)
+	copied.Attribute2 = dsssdp.Attribute2.Copy().(*types.PrimitiveU8)
+	copied.Fighter = dsssdp.Fighter.Copy().(*types.PrimitiveU8)
+	copied.ResultRange = dsssdp.ResultRange.Copy().(*types.ResultRange)
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (dataStoreSearchSharedDataParam *DataStoreSearchSharedDataParam) Equals(o types.RVType) bool {
+// Equals checks if the given DataStoreSearchSharedDataParam contains the same data as the current DataStoreSearchSharedDataParam
+func (dsssdp *DataStoreSearchSharedDataParam) Equals(o types.RVType) bool {
 	if _, ok := o.(*DataStoreSearchSharedDataParam); !ok {
 		return false
 	}
 
 	other := o.(*DataStoreSearchSharedDataParam)
 
-	if dataStoreSearchSharedDataParam.StructureVersion != other.StructureVersion {
+	if dsssdp.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if !dataStoreSearchSharedDataParam.DataType.Equals(other.DataType) {
+	if !dsssdp.DataType.Equals(other.DataType) {
 		return false
 	}
 
-	if !dataStoreSearchSharedDataParam.Owner.Equals(other.Owner) {
+	if !dsssdp.Owner.Equals(other.Owner) {
 		return false
 	}
 
-	if !dataStoreSearchSharedDataParam.Region.Equals(other.Region) {
+	if !dsssdp.Region.Equals(other.Region) {
 		return false
 	}
 
-	if !dataStoreSearchSharedDataParam.Attribute1.Equals(other.Attribute1) {
+	if !dsssdp.Attribute1.Equals(other.Attribute1) {
 		return false
 	}
 
-	if !dataStoreSearchSharedDataParam.Attribute2.Equals(other.Attribute2) {
+	if !dsssdp.Attribute2.Equals(other.Attribute2) {
 		return false
 	}
 
-	if !dataStoreSearchSharedDataParam.Fighter.Equals(other.Fighter) {
+	if !dsssdp.Fighter.Equals(other.Fighter) {
 		return false
 	}
 
-	if !dataStoreSearchSharedDataParam.ResultRange.Equals(other.ResultRange) {
-		return false
-	}
-
-	return true
+	return dsssdp.ResultRange.Equals(other.ResultRange)
 }
 
-// String returns a string representation of the struct
-func (dataStoreSearchSharedDataParam *DataStoreSearchSharedDataParam) String() string {
-	return dataStoreSearchSharedDataParam.FormatToString(0)
+// String returns the string representation of the DataStoreSearchSharedDataParam
+func (dsssdp *DataStoreSearchSharedDataParam) String() string {
+	return dsssdp.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (dataStoreSearchSharedDataParam *DataStoreSearchSharedDataParam) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the DataStoreSearchSharedDataParam using the provided indentation level
+func (dsssdp *DataStoreSearchSharedDataParam) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("DataStoreSearchSharedDataParam{\n")
-	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, dataStoreSearchSharedDataParam.StructureVersion))
-	b.WriteString(fmt.Sprintf("%sDataType: %d,\n", indentationValues, dataStoreSearchSharedDataParam.DataType))
-	b.WriteString(fmt.Sprintf("%sOwner: %d,\n", indentationValues, dataStoreSearchSharedDataParam.Owner))
-	b.WriteString(fmt.Sprintf("%sRegion: %d,\n", indentationValues, dataStoreSearchSharedDataParam.Region))
-	b.WriteString(fmt.Sprintf("%sAttribute1: %d,\n", indentationValues, dataStoreSearchSharedDataParam.Attribute1))
-	b.WriteString(fmt.Sprintf("%sAttribute2: %d,\n", indentationValues, dataStoreSearchSharedDataParam.Attribute2))
-	b.WriteString(fmt.Sprintf("%sFighter: %d,\n", indentationValues, dataStoreSearchSharedDataParam.Fighter))
-
-	if dataStoreSearchSharedDataParam.ResultRange != nil {
-		b.WriteString(fmt.Sprintf("%sResultRange: %s\n", indentationValues, dataStoreSearchSharedDataParam.ResultRange.FormatToString(indentationLevel+1)))
-	} else {
-		b.WriteString(fmt.Sprintf("%sResultRange: nil\n", indentationValues))
-	}
-
+	b.WriteString(fmt.Sprintf("%sDataType: %s,\n", indentationValues, dsssdp.DataType))
+	b.WriteString(fmt.Sprintf("%sOwner: %s,\n", indentationValues, dsssdp.Owner))
+	b.WriteString(fmt.Sprintf("%sRegion: %s,\n", indentationValues, dsssdp.Region))
+	b.WriteString(fmt.Sprintf("%sAttribute1: %s,\n", indentationValues, dsssdp.Attribute1))
+	b.WriteString(fmt.Sprintf("%sAttribute2: %s,\n", indentationValues, dsssdp.Attribute2))
+	b.WriteString(fmt.Sprintf("%sFighter: %s,\n", indentationValues, dsssdp.Fighter))
+	b.WriteString(fmt.Sprintf("%sResultRange: %s,\n", indentationValues, dsssdp.ResultRange.FormatToString(indentationLevel+1)))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -180,5 +168,15 @@ func (dataStoreSearchSharedDataParam *DataStoreSearchSharedDataParam) FormatToSt
 
 // NewDataStoreSearchSharedDataParam returns a new DataStoreSearchSharedDataParam
 func NewDataStoreSearchSharedDataParam() *DataStoreSearchSharedDataParam {
-	return &DataStoreSearchSharedDataParam{}
+	dsssdp := &DataStoreSearchSharedDataParam{
+		DataType:    types.NewPrimitiveU8(0),
+		Owner:       types.NewPrimitiveU32(0),
+		Region:      types.NewPrimitiveU8(0),
+		Attribute1:  types.NewPrimitiveU8(0),
+		Attribute2:  types.NewPrimitiveU8(0),
+		Fighter:     types.NewPrimitiveU8(0),
+		ResultRange: types.NewResultRange(),
+	}
+
+	return dsssdp
 }

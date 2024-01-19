@@ -1,15 +1,14 @@
-// Package types implements all the types used by the Friends WiiU protocol
+// Package types implements all the types used by the FriendsWiiU protocol
 package types
 
 import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-go/types"
 )
 
-// PrincipalPreference contains unknown data
+// PrincipalPreference is a type within the FriendsWiiU protocol
 type PrincipalPreference struct {
 	types.Structure
 	*types.Data
@@ -19,39 +18,47 @@ type PrincipalPreference struct {
 }
 
 // WriteTo writes the PrincipalPreference to the given writable
-func (principalPreference *PrincipalPreference) WriteTo(writable types.Writable) {
+func (pp *PrincipalPreference) WriteTo(writable types.Writable) {
+	pp.Data.WriteTo(writable)
+
 	contentWritable := writable.CopyNew()
 
-	principalPreference.ShowOnlinePresence.WriteTo(contentWritable)
-	principalPreference.ShowCurrentTitle.WriteTo(contentWritable)
-	principalPreference.BlockFriendRequests.WriteTo(contentWritable)
+	pp.ShowOnlinePresence.WriteTo(writable)
+	pp.ShowCurrentTitle.WriteTo(writable)
+	pp.BlockFriendRequests.WriteTo(writable)
 
 	content := contentWritable.Bytes()
 
-	principalPreference.WriteHeaderTo(writable, uint32(len(content)))
+	pp.WriteHeaderTo(writable, uint32(len(content)))
 
 	writable.Write(content)
 }
 
 // ExtractFrom extracts the PrincipalPreference from the given readable
-func (principalPreference *PrincipalPreference) ExtractFrom(readable types.Readable) error {
+func (pp *PrincipalPreference) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	if err = principalPreference.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to read PrincipalPreference header. %s", err.Error())
+	err = pp.Data.ExtractFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract PrincipalPreference.Data. %s", err.Error())
 	}
 
-	err = principalPreference.ShowOnlinePresence.ExtractFrom(readable)
+	err = pp.ExtractHeaderFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract PrincipalPreference header. %s", err.Error())
+	}
+
+	err = pp.ShowOnlinePresence.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract PrincipalPreference.ShowOnlinePresence. %s", err.Error())
 	}
 
-	err = principalPreference.ShowCurrentTitle.ExtractFrom(readable)
+	err = pp.ShowCurrentTitle.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract PrincipalPreference.ShowCurrentTitle. %s", err.Error())
 	}
 
-	err = principalPreference.BlockFriendRequests.ExtractFrom(readable)
+	err = pp.BlockFriendRequests.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract PrincipalPreference.BlockFriendRequests. %s", err.Error())
 	}
@@ -60,68 +67,62 @@ func (principalPreference *PrincipalPreference) ExtractFrom(readable types.Reada
 }
 
 // Copy returns a new copied instance of PrincipalPreference
-func (principalPreference *PrincipalPreference) Copy() types.RVType {
+func (pp *PrincipalPreference) Copy() types.RVType {
 	copied := NewPrincipalPreference()
 
-	copied.StructureVersion = principalPreference.StructureVersion
-
-	copied.Data = principalPreference.Data.Copy().(*types.Data)
-
-	copied.ShowOnlinePresence = principalPreference.ShowOnlinePresence
-	copied.ShowCurrentTitle = principalPreference.ShowCurrentTitle
-	copied.BlockFriendRequests = principalPreference.BlockFriendRequests
+	copied.StructureVersion = pp.StructureVersion
+	copied.Data = pp.Data.Copy().(*types.Data)
+	copied.ShowOnlinePresence = pp.ShowOnlinePresence.Copy().(*types.PrimitiveBool)
+	copied.ShowCurrentTitle = pp.ShowCurrentTitle.Copy().(*types.PrimitiveBool)
+	copied.BlockFriendRequests = pp.BlockFriendRequests.Copy().(*types.PrimitiveBool)
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (principalPreference *PrincipalPreference) Equals(o types.RVType) bool {
+// Equals checks if the given PrincipalPreference contains the same data as the current PrincipalPreference
+func (pp *PrincipalPreference) Equals(o types.RVType) bool {
 	if _, ok := o.(*PrincipalPreference); !ok {
 		return false
 	}
 
 	other := o.(*PrincipalPreference)
 
-	if principalPreference.StructureVersion != other.StructureVersion {
+	if pp.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if !principalPreference.ParentType().Equals(other.ParentType()) {
+	if !pp.Data.Equals(other.Data) {
 		return false
 	}
 
-	if !principalPreference.ShowOnlinePresence.Equals(other.ShowOnlinePresence) {
+	if !pp.ShowOnlinePresence.Equals(other.ShowOnlinePresence) {
 		return false
 	}
 
-	if !principalPreference.ShowCurrentTitle.Equals(other.ShowCurrentTitle) {
+	if !pp.ShowCurrentTitle.Equals(other.ShowCurrentTitle) {
 		return false
 	}
 
-	if !principalPreference.BlockFriendRequests.Equals(other.BlockFriendRequests) {
-		return false
-	}
-
-	return true
+	return pp.BlockFriendRequests.Equals(other.BlockFriendRequests)
 }
 
-// String returns a string representation of the struct
-func (principalPreference *PrincipalPreference) String() string {
-	return principalPreference.FormatToString(0)
+// String returns the string representation of the PrincipalPreference
+func (pp *PrincipalPreference) String() string {
+	return pp.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (principalPreference *PrincipalPreference) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the PrincipalPreference using the provided indentation level
+func (pp *PrincipalPreference) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("PrincipalPreference{\n")
-	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, principalPreference.StructureVersion))
-	b.WriteString(fmt.Sprintf("%sShowOnlinePresence: %t,\n", indentationValues, principalPreference.ShowOnlinePresence))
-	b.WriteString(fmt.Sprintf("%sShowCurrentTitle: %t,\n", indentationValues, principalPreference.ShowCurrentTitle))
-	b.WriteString(fmt.Sprintf("%sBlockFriendRequests: %t\n", indentationValues, principalPreference.BlockFriendRequests))
+	b.WriteString(fmt.Sprintf("%sData (parent): %s,\n", indentationValues, pp.Data.FormatToString(indentationLevel+1)))
+	b.WriteString(fmt.Sprintf("%sShowOnlinePresence: %s,\n", indentationValues, pp.ShowOnlinePresence))
+	b.WriteString(fmt.Sprintf("%sShowCurrentTitle: %s,\n", indentationValues, pp.ShowCurrentTitle))
+	b.WriteString(fmt.Sprintf("%sBlockFriendRequests: %s,\n", indentationValues, pp.BlockFriendRequests))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -129,5 +130,12 @@ func (principalPreference *PrincipalPreference) FormatToString(indentationLevel 
 
 // NewPrincipalPreference returns a new PrincipalPreference
 func NewPrincipalPreference() *PrincipalPreference {
-	return &PrincipalPreference{}
+	pp := &PrincipalPreference{
+		Data                : types.NewData(),
+		ShowOnlinePresence:  types.NewPrimitiveBool(false),
+		ShowCurrentTitle:    types.NewPrimitiveBool(false),
+		BlockFriendRequests: types.NewPrimitiveBool(false),
+	}
+
+	return pp
 }

@@ -1,65 +1,71 @@
-// Package types implements all the types used by the Friends 3DS protocol
+// Package types implements all the types used by the Friends3DS protocol
 package types
 
 import (
-	"bytes"
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-go/types"
 )
 
-// Mii is a data structure used by the Friends 3DS protocol to hold information about a Mii
+// Mii is a type within the Friends3DS protocol
 type Mii struct {
 	types.Structure
 	*types.Data
-	Name     string
+	Name     *types.String
 	Unknown2 *types.PrimitiveBool
 	Unknown3 *types.PrimitiveU8
-	MiiData  []byte
+	MiiData  *types.Buffer
 }
 
 // WriteTo writes the Mii to the given writable
-func (mii *Mii) WriteTo(writable types.Writable) {
+func (m *Mii) WriteTo(writable types.Writable) {
+	m.Data.WriteTo(writable)
+
 	contentWritable := writable.CopyNew()
 
-	mii.Name.WriteTo(contentWritable)
-	mii.Unknown2.WriteTo(contentWritable)
-	mii.Unknown3.WriteTo(contentWritable)
-	stream.WriteBuffer(mii.MiiData)
+	m.Name.WriteTo(writable)
+	m.Unknown2.WriteTo(writable)
+	m.Unknown3.WriteTo(writable)
+	m.MiiData.WriteTo(writable)
 
 	content := contentWritable.Bytes()
 
-	rvcd.WriteHeaderTo(writable, uint32(len(content)))
+	m.WriteHeaderTo(writable, uint32(len(content)))
 
 	writable.Write(content)
 }
 
-// ExtractFromStream extracts a Mii from a stream
-func (mii *Mii) ExtractFrom(readable types.Readable) error {
+// ExtractFrom extracts the Mii from the given readable
+func (m *Mii) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	if err = mii.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to read Mii header. %s", err.Error())
+	err = m.Data.ExtractFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract Mii.Data. %s", err.Error())
 	}
 
-	err = mii.Name.ExtractFrom(readable)
+	err = m.ExtractHeaderFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract Mii header. %s", err.Error())
+	}
+
+	err = m.Name.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract Mii.Name. %s", err.Error())
 	}
 
-	err = mii.Unknown2.ExtractFrom(readable)
+	err = m.Unknown2.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract Mii.Unknown2. %s", err.Error())
 	}
 
-	err = mii.Unknown3.ExtractFrom(readable)
+	err = m.Unknown3.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract Mii.Unknown3. %s", err.Error())
 	}
 
-	mii.MiiData, err = stream.ReadBuffer()
+	err = m.MiiData.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract Mii.MiiData. %s", err.Error())
 	}
@@ -68,76 +74,68 @@ func (mii *Mii) ExtractFrom(readable types.Readable) error {
 }
 
 // Copy returns a new copied instance of Mii
-func (mii *Mii) Copy() types.RVType {
+func (m *Mii) Copy() types.RVType {
 	copied := NewMii()
 
-	copied.StructureVersion = mii.StructureVersion
-
-	copied.Data = mii.Data.Copy().(*types.Data)
-
-	copied.Name = mii.Name
-	copied.Unknown2 = mii.Unknown2
-	copied.Unknown3 = mii.Unknown3
-	copied.MiiData = make([]byte, len(mii.MiiData))
-
-	copy(copied.MiiData, mii.MiiData)
+	copied.StructureVersion = m.StructureVersion
+	copied.Data = m.Data.Copy().(*types.Data)
+	copied.Name = m.Name.Copy().(*types.String)
+	copied.Unknown2 = m.Unknown2.Copy().(*types.PrimitiveBool)
+	copied.Unknown3 = m.Unknown3.Copy().(*types.PrimitiveU8)
+	copied.MiiData = m.MiiData.Copy().(*types.Buffer)
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (mii *Mii) Equals(o types.RVType) bool {
+// Equals checks if the given Mii contains the same data as the current Mii
+func (m *Mii) Equals(o types.RVType) bool {
 	if _, ok := o.(*Mii); !ok {
 		return false
 	}
 
 	other := o.(*Mii)
 
-	if mii.StructureVersion != other.StructureVersion {
+	if m.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if !mii.ParentType().Equals(other.ParentType()) {
+	if !m.Data.Equals(other.Data) {
 		return false
 	}
 
-	if !mii.Name.Equals(other.Name) {
+	if !m.Name.Equals(other.Name) {
 		return false
 	}
 
-	if !mii.Unknown2.Equals(other.Unknown2) {
+	if !m.Unknown2.Equals(other.Unknown2) {
 		return false
 	}
 
-	if !mii.Unknown3.Equals(other.Unknown3) {
+	if !m.Unknown3.Equals(other.Unknown3) {
 		return false
 	}
 
-	if !mii.MiiData.Equals(other.MiiData) {
-		return false
-	}
-
-	return true
+	return m.MiiData.Equals(other.MiiData)
 }
 
-// String returns a string representation of the struct
-func (mii *Mii) String() string {
-	return mii.FormatToString(0)
+// String returns the string representation of the Mii
+func (m *Mii) String() string {
+	return m.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (mii *Mii) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the Mii using the provided indentation level
+func (m *Mii) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("Mii{\n")
-	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, mii.StructureVersion))
-	b.WriteString(fmt.Sprintf("%sName: %q,\n", indentationValues, mii.Name))
-	b.WriteString(fmt.Sprintf("%sUnknown2: %t,\n", indentationValues, mii.Unknown2))
-	b.WriteString(fmt.Sprintf("%sUnknown3: %d,\n", indentationValues, mii.Unknown3))
-	b.WriteString(fmt.Sprintf("%sMiiData: %x\n", indentationValues, mii.MiiData))
+	b.WriteString(fmt.Sprintf("%sData (parent): %s,\n", indentationValues, m.Data.FormatToString(indentationLevel+1)))
+	b.WriteString(fmt.Sprintf("%sName: %s,\n", indentationValues, m.Name))
+	b.WriteString(fmt.Sprintf("%sUnknown2: %s,\n", indentationValues, m.Unknown2))
+	b.WriteString(fmt.Sprintf("%sUnknown3: %s,\n", indentationValues, m.Unknown3))
+	b.WriteString(fmt.Sprintf("%sMiiData: %s,\n", indentationValues, m.MiiData))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -145,5 +143,13 @@ func (mii *Mii) FormatToString(indentationLevel int) string {
 
 // NewMii returns a new Mii
 func NewMii() *Mii {
-	return &Mii{}
+	m := &Mii{
+		Data     : types.NewData(),
+		Name:     types.NewString(""),
+		Unknown2: types.NewPrimitiveBool(false),
+		Unknown3: types.NewPrimitiveU8(0),
+		MiiData:  types.NewBuffer(nil),
+	}
+
+	return m
 }

@@ -29,7 +29,7 @@ func (protocol *Protocol) handleGetEnvironment(packet nex.PacketInterface) {
 	uniqueID := types.NewString("")
 	err = uniqueID.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.GetEnvironment(fmt.Errorf("Failed to read uniqueID from parameters. %s", err.Error()), packet, callID, "", 0)
+		_, errorCode = protocol.GetEnvironment(fmt.Errorf("Failed to read uniqueID from parameters. %s", err.Error()), packet, callID, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -40,7 +40,7 @@ func (protocol *Protocol) handleGetEnvironment(packet nex.PacketInterface) {
 	platform := types.NewPrimitiveU8(0)
 	err = platform.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.GetEnvironment(fmt.Errorf("Failed to read platform from parameters. %s", err.Error()), packet, callID, "", 0)
+		_, errorCode = protocol.GetEnvironment(fmt.Errorf("Failed to read platform from parameters. %s", err.Error()), packet, callID, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}

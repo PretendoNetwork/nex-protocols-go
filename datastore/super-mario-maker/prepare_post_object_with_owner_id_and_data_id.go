@@ -30,7 +30,7 @@ func (protocol *Protocol) handlePreparePostObjectWithOwnerIDAndDataID(packet nex
 	ownerID := types.NewPrimitiveU32(0)
 	err = ownerID.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.PreparePostObjectWithOwnerIDAndDataID(fmt.Errorf("Failed to read ownerID from parameters. %s", err.Error()), packet, callID, 0, 0, nil)
+		_, errorCode = protocol.PreparePostObjectWithOwnerIDAndDataID(fmt.Errorf("Failed to read ownerID from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -41,7 +41,7 @@ func (protocol *Protocol) handlePreparePostObjectWithOwnerIDAndDataID(packet nex
 	dataID := types.NewPrimitiveU64(0)
 	err = dataID.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.PreparePostObjectWithOwnerIDAndDataID(fmt.Errorf("Failed to read dataID from parameters. %s", err.Error()), packet, callID, 0, 0, nil)
+		_, errorCode = protocol.PreparePostObjectWithOwnerIDAndDataID(fmt.Errorf("Failed to read dataID from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -52,7 +52,7 @@ func (protocol *Protocol) handlePreparePostObjectWithOwnerIDAndDataID(packet nex
 	param := datastore_types.NewDataStorePreparePostParam()
 	err = param.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.PreparePostObjectWithOwnerIDAndDataID(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, 0, 0, nil)
+		_, errorCode = protocol.PreparePostObjectWithOwnerIDAndDataID(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}

@@ -80,9 +80,9 @@ type Protocol struct {
 	server                       nex.ServerInterface
 	UpdateAndGetAllInformation   func(err error, packet nex.PacketInterface, callID uint32, nnaInfo *friends_wiiu_types.NNAInfo, presence *friends_wiiu_types.NintendoPresenceV2, birthday *types.DateTime) (*nex.RMCMessage, uint32)
 	AddFriend                    func(err error, packet nex.PacketInterface, callID uint32, pid *types.PID) (*nex.RMCMessage, uint32)
-	AddFriendByName              func(err error, packet nex.PacketInterface, callID uint32, username string) (*nex.RMCMessage, uint32)
+	AddFriendByName              func(err error, packet nex.PacketInterface, callID uint32, username *types.String) (*nex.RMCMessage, uint32)
 	RemoveFriend                 func(err error, packet nex.PacketInterface, callID uint32, pid *types.PID) (*nex.RMCMessage, uint32)
-	AddFriendRequest             func(err error, packet nex.PacketInterface, callID uint32, pid *types.PID, unknown2 *types.PrimitiveU8, message string, unknown4 *types.PrimitiveU8, unknown5 string, gameKey *friends_wiiu_types.GameKey, unknown6 *types.DateTime) (*nex.RMCMessage, uint32)
+	AddFriendRequest             func(err error, packet nex.PacketInterface, callID uint32, pid *types.PID, unknown2 *types.PrimitiveU8, message *types.String, unknown4 *types.PrimitiveU8, unknown5 *types.String, gameKey *friends_wiiu_types.GameKey, unknown6 *types.DateTime) (*nex.RMCMessage, uint32)
 	CancelFriendRequest          func(err error, packet nex.PacketInterface, callID uint32, id *types.PrimitiveU64) (*nex.RMCMessage, uint32)
 	AcceptFriendRequest          func(err error, packet nex.PacketInterface, callID uint32, id *types.PrimitiveU64) (*nex.RMCMessage, uint32)
 	DeleteFriendRequest          func(err error, packet nex.PacketInterface, callID uint32, id *types.PrimitiveU64) (*nex.RMCMessage, uint32)
@@ -95,7 +95,7 @@ type Protocol struct {
 	UpdateComment                func(err error, packet nex.PacketInterface, callID uint32, comment *friends_wiiu_types.Comment) (*nex.RMCMessage, uint32)
 	UpdatePreference             func(err error, packet nex.PacketInterface, callID uint32, preference *friends_wiiu_types.PrincipalPreference) (*nex.RMCMessage, uint32)
 	GetBasicInfo                 func(err error, packet nex.PacketInterface, callID uint32, pids *types.List[*types.PID]) (*nex.RMCMessage, uint32)
-	DeletePersistentNotification func(err error, packet nex.PacketInterface, callID uint32, notifications []*friends_wiiu_types.PersistentNotification) (*nex.RMCMessage, uint32)
+	DeletePersistentNotification func(err error, packet nex.PacketInterface, callID uint32, notifications *types.List[*friends_wiiu_types.PersistentNotification]) (*nex.RMCMessage, uint32)
 	CheckSettingStatus           func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, uint32)
 	GetRequestBlockSettings      func(err error, packet nex.PacketInterface, callID uint32, pids *types.List[*types.PrimitiveU32]) (*nex.RMCMessage, uint32)
 }
@@ -106,9 +106,9 @@ type Interface interface {
 	SetServer(server nex.ServerInterface)
 	SetHandlerUpdateAndGetAllInformation(handler func(err error, packet nex.PacketInterface, callID uint32, nnaInfo *friends_wiiu_types.NNAInfo, presence *friends_wiiu_types.NintendoPresenceV2, birthday *types.DateTime) (*nex.RMCMessage, uint32))
 	SetHandlerAddFriend(handler func(err error, packet nex.PacketInterface, callID uint32, pid *types.PID) (*nex.RMCMessage, uint32))
-	SetHandlerAddFriendByName(handler func(err error, packet nex.PacketInterface, callID uint32, username string) (*nex.RMCMessage, uint32))
+	SetHandlerAddFriendByName(handler func(err error, packet nex.PacketInterface, callID uint32, username *types.String) (*nex.RMCMessage, uint32))
 	SetHandlerRemoveFriend(handler func(err error, packet nex.PacketInterface, callID uint32, pid *types.PID) (*nex.RMCMessage, uint32))
-	SetHandlerAddFriendRequest(handler func(err error, packet nex.PacketInterface, callID uint32, pid *types.PID, unknown2 *types.PrimitiveU8, message string, unknown4 *types.PrimitiveU8, unknown5 string, gameKey *friends_wiiu_types.GameKey, unknown6 *types.DateTime) (*nex.RMCMessage, uint32))
+	SetHandlerAddFriendRequest(handler func(err error, packet nex.PacketInterface, callID uint32, pid *types.PID, unknown2 *types.PrimitiveU8, message *types.String, unknown4 *types.PrimitiveU8, unknown5 *types.String, gameKey *friends_wiiu_types.GameKey, unknown6 *types.DateTime) (*nex.RMCMessage, uint32))
 	SetHandlerCancelFriendRequest(handler func(err error, packet nex.PacketInterface, callID uint32, id *types.PrimitiveU64) (*nex.RMCMessage, uint32))
 	SetHandlerAcceptFriendRequest(handler func(err error, packet nex.PacketInterface, callID uint32, id *types.PrimitiveU64) (*nex.RMCMessage, uint32))
 	SetHandlerDeleteFriendRequest(handler func(err error, packet nex.PacketInterface, callID uint32, id *types.PrimitiveU64) (*nex.RMCMessage, uint32))
@@ -121,7 +121,7 @@ type Interface interface {
 	SetHandlerUpdateComment(handler func(err error, packet nex.PacketInterface, callID uint32, comment *friends_wiiu_types.Comment) (*nex.RMCMessage, uint32))
 	SetHandlerUpdatePreference(handler func(err error, packet nex.PacketInterface, callID uint32, preference *friends_wiiu_types.PrincipalPreference) (*nex.RMCMessage, uint32))
 	SetHandlerGetBasicInfo(handler func(err error, packet nex.PacketInterface, callID uint32, pids *types.List[*types.PID]) (*nex.RMCMessage, uint32))
-	SetHandlerDeletePersistentNotification(handler func(err error, packet nex.PacketInterface, callID uint32, notifications []*friends_wiiu_types.PersistentNotification) (*nex.RMCMessage, uint32))
+	SetHandlerDeletePersistentNotification(handler func(err error, packet nex.PacketInterface, callID uint32, notifications *types.List[*friends_wiiu_types.PersistentNotification]) (*nex.RMCMessage, uint32))
 	SetHandlerCheckSettingStatus(handler func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, uint32))
 	SetHandlerGetRequestBlockSettings(handler func(err error, packet nex.PacketInterface, callID uint32, pids *types.List[*types.PrimitiveU32]) (*nex.RMCMessage, uint32))
 }
@@ -147,7 +147,7 @@ func (protocol *Protocol) SetHandlerAddFriend(handler func(err error, packet nex
 }
 
 // SetHandlerAddFriendByName sets the handler for the AddFriendByName method
-func (protocol *Protocol) SetHandlerAddFriendByName(handler func(err error, packet nex.PacketInterface, callID uint32, username string) (*nex.RMCMessage, uint32)) {
+func (protocol *Protocol) SetHandlerAddFriendByName(handler func(err error, packet nex.PacketInterface, callID uint32, username *types.String) (*nex.RMCMessage, uint32)) {
 	protocol.AddFriendByName = handler
 }
 
@@ -157,7 +157,7 @@ func (protocol *Protocol) SetHandlerRemoveFriend(handler func(err error, packet 
 }
 
 // SetHandlerAddFriendRequest sets the handler for the AddFriendRequest method
-func (protocol *Protocol) SetHandlerAddFriendRequest(handler func(err error, packet nex.PacketInterface, callID uint32, pid *types.PID, unknown2 *types.PrimitiveU8, message string, unknown4 *types.PrimitiveU8, unknown5 string, gameKey *friends_wiiu_types.GameKey, unknown6 *types.DateTime) (*nex.RMCMessage, uint32)) {
+func (protocol *Protocol) SetHandlerAddFriendRequest(handler func(err error, packet nex.PacketInterface, callID uint32, pid *types.PID, unknown2 *types.PrimitiveU8, message *types.String, unknown4 *types.PrimitiveU8, unknown5 *types.String, gameKey *friends_wiiu_types.GameKey, unknown6 *types.DateTime) (*nex.RMCMessage, uint32)) {
 	protocol.AddFriendRequest = handler
 }
 
@@ -222,7 +222,7 @@ func (protocol *Protocol) SetHandlerGetBasicInfo(handler func(err error, packet 
 }
 
 // SetHandlerDeletePersistentNotification sets the handler for the DeletePersistentNotification method
-func (protocol *Protocol) SetHandlerDeletePersistentNotification(handler func(err error, packet nex.PacketInterface, callID uint32, notifications []*friends_wiiu_types.PersistentNotification) (*nex.RMCMessage, uint32)) {
+func (protocol *Protocol) SetHandlerDeletePersistentNotification(handler func(err error, packet nex.PacketInterface, callID uint32, notifications *types.List[*friends_wiiu_types.PersistentNotification]) (*nex.RMCMessage, uint32)) {
 	protocol.DeletePersistentNotification = handler
 }
 

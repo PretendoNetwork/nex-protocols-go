@@ -29,7 +29,7 @@ func (protocol *Protocol) handleGetSessionURL(packet nex.PacketInterface) {
 	idGathering := types.NewPrimitiveU32(0)
 	err = idGathering.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.GetSessionURL(fmt.Errorf("Failed to read idGathering from parameters. %s", err.Error()), packet, callID, 0)
+		_, errorCode = protocol.GetSessionURL(fmt.Errorf("Failed to read idGathering from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}

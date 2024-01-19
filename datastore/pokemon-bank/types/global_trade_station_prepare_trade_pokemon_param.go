@@ -1,4 +1,4 @@
-// Package types implements all the types used by the DataStore (Pokemon Bank) protocol
+// Package types implements all the types used by the DataStore protocol
 package types
 
 import (
@@ -8,99 +8,94 @@ import (
 	"github.com/PretendoNetwork/nex-go/types"
 )
 
-// GlobalTradeStationPrepareTradePokemonParam holds data for the DataStore (Pokemon Bank) protocol
+// GlobalTradeStationPrepareTradePokemonParam is a type within the DataStore protocol
 type GlobalTradeStationPrepareTradePokemonParam struct {
 	types.Structure
 	TradeKey         *GlobalTradeStationTradeKey
 	PrepareUploadKey *GlobalTradeStationRecordKey
 }
 
+// WriteTo writes the GlobalTradeStationPrepareTradePokemonParam to the given writable
+func (gtsptpp *GlobalTradeStationPrepareTradePokemonParam) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
+
+	gtsptpp.TradeKey.WriteTo(writable)
+	gtsptpp.PrepareUploadKey.WriteTo(writable)
+
+	content := contentWritable.Bytes()
+
+	gtsptpp.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
+}
+
 // ExtractFrom extracts the GlobalTradeStationPrepareTradePokemonParam from the given readable
-func (globalTradeStationPrepareTradePokemonParam *GlobalTradeStationPrepareTradePokemonParam) ExtractFrom(readable types.Readable) error {
+func (gtsptpp *GlobalTradeStationPrepareTradePokemonParam) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	if err = globalTradeStationPrepareTradePokemonParam.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to read GlobalTradeStationPrepareTradePokemonParam header. %s", err.Error())
+	err = gtsptpp.ExtractHeaderFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract GlobalTradeStationPrepareTradePokemonParam header. %s", err.Error())
 	}
 
-	err = globalTradeStationPrepareTradePokemonParam.TradeKey.ExtractFrom(readable)
+	err = gtsptpp.TradeKey.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract GlobalTradeStationPrepareTradePokemonParam.TradeKey from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract GlobalTradeStationPrepareTradePokemonParam.TradeKey. %s", err.Error())
 	}
 
-	err = globalTradeStationPrepareTradePokemonParam.PrepareUploadKey.ExtractFrom(readable)
+	err = gtsptpp.PrepareUploadKey.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract GlobalTradeStationPrepareTradePokemonParam.PrepareUploadKey from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract GlobalTradeStationPrepareTradePokemonParam.PrepareUploadKey. %s", err.Error())
 	}
 
 	return nil
 }
 
-// WriteTo writes the GlobalTradeStationPrepareTradePokemonParam to the given writable
-func (globalTradeStationPrepareTradePokemonParam *GlobalTradeStationPrepareTradePokemonParam) WriteTo(writable types.Writable) {
-	contentWritable := writable.CopyNew()
-
-	globalTradeStationPrepareTradePokemonParam.TradeKey.WriteTo(contentWritable)
-	globalTradeStationPrepareTradePokemonParam.PrepareUploadKey.WriteTo(contentWritable)
-
-	content := contentWritable.Bytes()
-
-	globalTradeStationPrepareTradePokemonParam.WriteHeaderTo(writable, uint32(len(content)))
-
-	writable.Write(content)
-}
-
 // Copy returns a new copied instance of GlobalTradeStationPrepareTradePokemonParam
-func (globalTradeStationPrepareTradePokemonParam *GlobalTradeStationPrepareTradePokemonParam) Copy() types.RVType {
+func (gtsptpp *GlobalTradeStationPrepareTradePokemonParam) Copy() types.RVType {
 	copied := NewGlobalTradeStationPrepareTradePokemonParam()
 
-	copied.StructureVersion = globalTradeStationPrepareTradePokemonParam.StructureVersion
-
-	copied.TradeKey = globalTradeStationPrepareTradePokemonParam.TradeKey.Copy().(*GlobalTradeStationTradeKey)
-	copied.PrepareUploadKey = globalTradeStationPrepareTradePokemonParam.PrepareUploadKey.Copy().(*GlobalTradeStationRecordKey)
+	copied.StructureVersion = gtsptpp.StructureVersion
+	copied.TradeKey = gtsptpp.TradeKey.Copy().(*GlobalTradeStationTradeKey)
+	copied.PrepareUploadKey = gtsptpp.PrepareUploadKey.Copy().(*GlobalTradeStationRecordKey)
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (globalTradeStationPrepareTradePokemonParam *GlobalTradeStationPrepareTradePokemonParam) Equals(o types.RVType) bool {
+// Equals checks if the given GlobalTradeStationPrepareTradePokemonParam contains the same data as the current GlobalTradeStationPrepareTradePokemonParam
+func (gtsptpp *GlobalTradeStationPrepareTradePokemonParam) Equals(o types.RVType) bool {
 	if _, ok := o.(*GlobalTradeStationPrepareTradePokemonParam); !ok {
 		return false
 	}
 
 	other := o.(*GlobalTradeStationPrepareTradePokemonParam)
 
-	if globalTradeStationPrepareTradePokemonParam.StructureVersion != other.StructureVersion {
+	if gtsptpp.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if !globalTradeStationPrepareTradePokemonParam.TradeKey.Equals(other.TradeKey) {
+	if !gtsptpp.TradeKey.Equals(other.TradeKey) {
 		return false
 	}
 
-	if !globalTradeStationPrepareTradePokemonParam.PrepareUploadKey.Equals(other.PrepareUploadKey) {
-		return false
-	}
-
-	return true
+	return gtsptpp.PrepareUploadKey.Equals(other.PrepareUploadKey)
 }
 
-// String returns a string representation of the struct
-func (globalTradeStationPrepareTradePokemonParam *GlobalTradeStationPrepareTradePokemonParam) String() string {
-	return globalTradeStationPrepareTradePokemonParam.FormatToString(0)
+// String returns the string representation of the GlobalTradeStationPrepareTradePokemonParam
+func (gtsptpp *GlobalTradeStationPrepareTradePokemonParam) String() string {
+	return gtsptpp.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (globalTradeStationPrepareTradePokemonParam *GlobalTradeStationPrepareTradePokemonParam) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the GlobalTradeStationPrepareTradePokemonParam using the provided indentation level
+func (gtsptpp *GlobalTradeStationPrepareTradePokemonParam) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("GlobalTradeStationPrepareTradePokemonParam{\n")
-	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, globalTradeStationPrepareTradePokemonParam.StructureVersion))
-	b.WriteString(fmt.Sprintf("%sTradeKey: %s\n", indentationValues, globalTradeStationPrepareTradePokemonParam.TradeKey.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sPrepareUploadKey: %s\n", indentationValues, globalTradeStationPrepareTradePokemonParam.PrepareUploadKey.FormatToString(indentationLevel+1)))
+	b.WriteString(fmt.Sprintf("%sTradeKey: %s,\n", indentationValues, gtsptpp.TradeKey.FormatToString(indentationLevel+1)))
+	b.WriteString(fmt.Sprintf("%sPrepareUploadKey: %s,\n", indentationValues, gtsptpp.PrepareUploadKey.FormatToString(indentationLevel+1)))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -108,8 +103,10 @@ func (globalTradeStationPrepareTradePokemonParam *GlobalTradeStationPrepareTrade
 
 // NewGlobalTradeStationPrepareTradePokemonParam returns a new GlobalTradeStationPrepareTradePokemonParam
 func NewGlobalTradeStationPrepareTradePokemonParam() *GlobalTradeStationPrepareTradePokemonParam {
-	return &GlobalTradeStationPrepareTradePokemonParam{
-		TradeKey: NewGlobalTradeStationTradeKey(),
+	gtsptpp := &GlobalTradeStationPrepareTradePokemonParam{
+		TradeKey:         NewGlobalTradeStationTradeKey(),
 		PrepareUploadKey: NewGlobalTradeStationRecordKey(),
 	}
+
+	return gtsptpp
 }

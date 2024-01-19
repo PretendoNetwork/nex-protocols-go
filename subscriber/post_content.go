@@ -5,7 +5,6 @@ import (
 	"fmt"
 
 	nex "github.com/PretendoNetwork/nex-go"
-	"github.com/PretendoNetwork/nex-go/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 	subscriber_types "github.com/PretendoNetwork/nex-protocols-go/subscriber/types"
 )

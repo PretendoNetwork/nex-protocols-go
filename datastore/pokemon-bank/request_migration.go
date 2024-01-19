@@ -29,7 +29,7 @@ func (protocol *Protocol) handleRequestMigration(packet nex.PacketInterface) {
 	oneTimePassword := types.NewString("")
 	err = oneTimePassword.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.RequestMigration(fmt.Errorf("Failed to read oneTimePassword from parameters. %s", err.Error()), packet, callID, "", nil)
+		_, errorCode = protocol.RequestMigration(fmt.Errorf("Failed to read oneTimePassword from parameters. %s", err.Error()), packet, callID, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -41,7 +41,7 @@ func (protocol *Protocol) handleRequestMigration(packet nex.PacketInterface) {
 	boxes.Type = types.NewPrimitiveU32(0)
 	err = boxes.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.RequestMigration(fmt.Errorf("Failed to read boxes from parameters. %s", err.Error()), packet, callID, "", nil)
+		_, errorCode = protocol.RequestMigration(fmt.Errorf("Failed to read boxes from parameters. %s", err.Error()), packet, callID, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}

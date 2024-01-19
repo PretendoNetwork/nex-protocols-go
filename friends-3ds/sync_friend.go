@@ -29,7 +29,7 @@ func (protocol *Protocol) handleSyncFriend(packet nex.PacketInterface) {
 	lfc := types.NewPrimitiveU64(0)
 	err = lfc.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.SyncFriend(fmt.Errorf("Failed to read lfc from parameters. %s", err.Error()), packet, callID, 0, nil, nil)
+		_, errorCode = protocol.SyncFriend(fmt.Errorf("Failed to read lfc from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -41,7 +41,7 @@ func (protocol *Protocol) handleSyncFriend(packet nex.PacketInterface) {
 	pids.Type = types.NewPID(0)
 	err = pids.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.SyncFriend(fmt.Errorf("Failed to read pids from parameters. %s", err.Error()), packet, callID, 0, nil, nil)
+		_, errorCode = protocol.SyncFriend(fmt.Errorf("Failed to read pids from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -53,7 +53,7 @@ func (protocol *Protocol) handleSyncFriend(packet nex.PacketInterface) {
 	lfcList.Type = types.NewPrimitiveU64(0)
 	err = lfcList.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.SyncFriend(fmt.Errorf("Failed to read lfcList from parameters. %s", err.Error()), packet, callID, 0, nil, nil)
+		_, errorCode = protocol.SyncFriend(fmt.Errorf("Failed to read lfcList from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}

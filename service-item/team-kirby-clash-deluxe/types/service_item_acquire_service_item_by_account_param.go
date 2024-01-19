@@ -1,208 +1,192 @@
-// Package types implements all the types used by the Service Item (Team Kirby Clash Deluxe) protocol
+// Package types implements all the types used by the ServiceItem protocol
 package types
 
 import (
-	"bytes"
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-go/types"
 )
 
-// ServiceItemAcquireServiceItemByAccountParam holds data for the Service Item (Team Kirby Clash Deluxe) protocol
+// ServiceItemAcquireServiceItemByAccountParam is a type within the ServiceItem protocol
 type ServiceItemAcquireServiceItemByAccountParam struct {
 	types.Structure
-	ReferenceIDForAcquisition string
-	ReferenceIDForRightBinary string
+	ReferenceIDForAcquisition *types.String
+	ReferenceIDForRightBinary *types.String
 	UseType                   *types.PrimitiveU8
 	LimitationType            *types.PrimitiveU32
 	LimitationValue           *types.PrimitiveU32
-	RightBinary               []byte
-	LogMessage                string
+	RightBinary               *types.QBuffer
+	LogMessage                *types.String
 	UniqueID                  *types.PrimitiveU32
 	Platform                  *types.PrimitiveU8
 }
 
+// WriteTo writes the ServiceItemAcquireServiceItemByAccountParam to the given writable
+func (siasibap *ServiceItemAcquireServiceItemByAccountParam) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
+
+	siasibap.ReferenceIDForAcquisition.WriteTo(writable)
+	siasibap.ReferenceIDForRightBinary.WriteTo(writable)
+	siasibap.UseType.WriteTo(writable)
+	siasibap.LimitationType.WriteTo(writable)
+	siasibap.LimitationValue.WriteTo(writable)
+	siasibap.RightBinary.WriteTo(writable)
+	siasibap.LogMessage.WriteTo(writable)
+	siasibap.UniqueID.WriteTo(writable)
+	siasibap.Platform.WriteTo(writable)
+
+	content := contentWritable.Bytes()
+
+	siasibap.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
+}
+
 // ExtractFrom extracts the ServiceItemAcquireServiceItemByAccountParam from the given readable
-func (serviceItemAcquireServiceItemByAccountParam *ServiceItemAcquireServiceItemByAccountParam) ExtractFrom(readable types.Readable) error {
+func (siasibap *ServiceItemAcquireServiceItemByAccountParam) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	if err = serviceItemAcquireServiceItemByAccountParam.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to read ServiceItemAcquireServiceItemByAccountParam header. %s", err.Error())
-	}
-
-	err = serviceItemAcquireServiceItemByAccountParam.ReferenceIDForAcquisition.ExtractFrom(readable)
+	err = siasibap.ExtractHeaderFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemAcquireServiceItemByAccountParam.ReferenceIDForAcquisition from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract ServiceItemAcquireServiceItemByAccountParam header. %s", err.Error())
 	}
 
-	err = serviceItemAcquireServiceItemByAccountParam.ReferenceIDForRightBinary.ExtractFrom(readable)
+	err = siasibap.ReferenceIDForAcquisition.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemAcquireServiceItemByAccountParam.ReferenceIDForRightBinary from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract ServiceItemAcquireServiceItemByAccountParam.ReferenceIDForAcquisition. %s", err.Error())
 	}
 
-	err = serviceItemAcquireServiceItemByAccountParam.UseType.ExtractFrom(readable)
+	err = siasibap.ReferenceIDForRightBinary.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemAcquireServiceItemByAccountParam.UseType from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract ServiceItemAcquireServiceItemByAccountParam.ReferenceIDForRightBinary. %s", err.Error())
 	}
 
-	err = serviceItemAcquireServiceItemByAccountParam.LimitationType.ExtractFrom(readable)
+	err = siasibap.UseType.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemAcquireServiceItemByAccountParam.LimitationType from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract ServiceItemAcquireServiceItemByAccountParam.UseType. %s", err.Error())
 	}
 
-	err = serviceItemAcquireServiceItemByAccountParam.LimitationValue.ExtractFrom(readable)
+	err = siasibap.LimitationType.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemAcquireServiceItemByAccountParam.LimitationValue from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract ServiceItemAcquireServiceItemByAccountParam.LimitationType. %s", err.Error())
 	}
 
-	serviceItemAcquireServiceItemByAccountParam.RightBinary, err = stream.ReadQBuffer()
+	err = siasibap.LimitationValue.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemAcquireServiceItemByAccountParam.RightBinary from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract ServiceItemAcquireServiceItemByAccountParam.LimitationValue. %s", err.Error())
 	}
 
-	err = serviceItemAcquireServiceItemByAccountParam.LogMessage.ExtractFrom(readable)
+	err = siasibap.RightBinary.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemAcquireServiceItemByAccountParam.LogMessage from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract ServiceItemAcquireServiceItemByAccountParam.RightBinary. %s", err.Error())
 	}
 
-	err = serviceItemAcquireServiceItemByAccountParam.UniqueID.ExtractFrom(readable)
+	err = siasibap.LogMessage.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemAcquireServiceItemByAccountParam.UniqueID from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract ServiceItemAcquireServiceItemByAccountParam.LogMessage. %s", err.Error())
 	}
 
-	if serviceItemAcquireServiceItemByAccountParam.StructureVersion >= 1 {
-	err = 	serviceItemAcquireServiceItemByAccountParam.Platform.ExtractFrom(readable)
-		if err != nil {
-			return fmt.Errorf("Failed to extract ServiceItemAcquireServiceItemByAccountParam.Platform from stream. %s", err.Error())
-		}
+	err = siasibap.UniqueID.ExtractFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract ServiceItemAcquireServiceItemByAccountParam.UniqueID. %s", err.Error())
+	}
+
+	err = siasibap.Platform.ExtractFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract ServiceItemAcquireServiceItemByAccountParam.Platform. %s", err.Error())
 	}
 
 	return nil
 }
 
-// WriteTo writes the ServiceItemAcquireServiceItemByAccountParam to the given writable
-func (serviceItemAcquireServiceItemByAccountParam *ServiceItemAcquireServiceItemByAccountParam) WriteTo(writable types.Writable) {
-	contentWritable := writable.CopyNew()
-
-	serviceItemAcquireServiceItemByAccountParam.ReferenceIDForAcquisition.WriteTo(contentWritable)
-	serviceItemAcquireServiceItemByAccountParam.ReferenceIDForRightBinary.WriteTo(contentWritable)
-	serviceItemAcquireServiceItemByAccountParam.UseType.WriteTo(contentWritable)
-	serviceItemAcquireServiceItemByAccountParam.LimitationType.WriteTo(contentWritable)
-	serviceItemAcquireServiceItemByAccountParam.LimitationValue.WriteTo(contentWritable)
-	stream.WriteQBuffer(serviceItemAcquireServiceItemByAccountParam.RightBinary)
-	serviceItemAcquireServiceItemByAccountParam.LogMessage.WriteTo(contentWritable)
-	serviceItemAcquireServiceItemByAccountParam.UniqueID.WriteTo(contentWritable)
-
-	if serviceItemAcquireServiceItemByAccountParam.StructureVersion >= 1 {
-		serviceItemAcquireServiceItemByAccountParam.Platform.WriteTo(contentWritable)
-	}
-
-	content := contentWritable.Bytes()
-
-	rvcd.WriteHeaderTo(writable, uint32(len(content)))
-
-	writable.Write(content)
-}
-
 // Copy returns a new copied instance of ServiceItemAcquireServiceItemByAccountParam
-func (serviceItemAcquireServiceItemByAccountParam *ServiceItemAcquireServiceItemByAccountParam) Copy() types.RVType {
+func (siasibap *ServiceItemAcquireServiceItemByAccountParam) Copy() types.RVType {
 	copied := NewServiceItemAcquireServiceItemByAccountParam()
 
-	copied.StructureVersion = serviceItemAcquireServiceItemByAccountParam.StructureVersion
-
-	copied.ReferenceIDForAcquisition = serviceItemAcquireServiceItemByAccountParam.ReferenceIDForAcquisition
-	copied.ReferenceIDForRightBinary = serviceItemAcquireServiceItemByAccountParam.ReferenceIDForRightBinary
-	copied.UseType = serviceItemAcquireServiceItemByAccountParam.UseType
-	copied.LimitationType = serviceItemAcquireServiceItemByAccountParam.LimitationType
-	copied.LimitationValue = serviceItemAcquireServiceItemByAccountParam.LimitationValue
-	copied.RightBinary = serviceItemAcquireServiceItemByAccountParam.RightBinary
-	copied.LogMessage = serviceItemAcquireServiceItemByAccountParam.LogMessage
-	copied.UniqueID = serviceItemAcquireServiceItemByAccountParam.UniqueID
-	copied.Platform = serviceItemAcquireServiceItemByAccountParam.Platform
+	copied.StructureVersion = siasibap.StructureVersion
+	copied.ReferenceIDForAcquisition = siasibap.ReferenceIDForAcquisition.Copy().(*types.String)
+	copied.ReferenceIDForRightBinary = siasibap.ReferenceIDForRightBinary.Copy().(*types.String)
+	copied.UseType = siasibap.UseType.Copy().(*types.PrimitiveU8)
+	copied.LimitationType = siasibap.LimitationType.Copy().(*types.PrimitiveU32)
+	copied.LimitationValue = siasibap.LimitationValue.Copy().(*types.PrimitiveU32)
+	copied.RightBinary = siasibap.RightBinary.Copy().(*types.QBuffer)
+	copied.LogMessage = siasibap.LogMessage.Copy().(*types.String)
+	copied.UniqueID = siasibap.UniqueID.Copy().(*types.PrimitiveU32)
+	copied.Platform = siasibap.Platform.Copy().(*types.PrimitiveU8)
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (serviceItemAcquireServiceItemByAccountParam *ServiceItemAcquireServiceItemByAccountParam) Equals(o types.RVType) bool {
+// Equals checks if the given ServiceItemAcquireServiceItemByAccountParam contains the same data as the current ServiceItemAcquireServiceItemByAccountParam
+func (siasibap *ServiceItemAcquireServiceItemByAccountParam) Equals(o types.RVType) bool {
 	if _, ok := o.(*ServiceItemAcquireServiceItemByAccountParam); !ok {
 		return false
 	}
 
 	other := o.(*ServiceItemAcquireServiceItemByAccountParam)
 
-	if serviceItemAcquireServiceItemByAccountParam.StructureVersion != other.StructureVersion {
+	if siasibap.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if !serviceItemAcquireServiceItemByAccountParam.ReferenceIDForAcquisition.Equals(other.ReferenceIDForAcquisition) {
+	if !siasibap.ReferenceIDForAcquisition.Equals(other.ReferenceIDForAcquisition) {
 		return false
 	}
 
-	if !serviceItemAcquireServiceItemByAccountParam.ReferenceIDForRightBinary.Equals(other.ReferenceIDForRightBinary) {
+	if !siasibap.ReferenceIDForRightBinary.Equals(other.ReferenceIDForRightBinary) {
 		return false
 	}
 
-	if !serviceItemAcquireServiceItemByAccountParam.UseType.Equals(other.UseType) {
+	if !siasibap.UseType.Equals(other.UseType) {
 		return false
 	}
 
-	if !serviceItemAcquireServiceItemByAccountParam.LimitationType.Equals(other.LimitationType) {
+	if !siasibap.LimitationType.Equals(other.LimitationType) {
 		return false
 	}
 
-	if !serviceItemAcquireServiceItemByAccountParam.LimitationValue.Equals(other.LimitationValue) {
+	if !siasibap.LimitationValue.Equals(other.LimitationValue) {
 		return false
 	}
 
-	if !serviceItemAcquireServiceItemByAccountParam.RightBinary.Equals(other.RightBinary) {
+	if !siasibap.RightBinary.Equals(other.RightBinary) {
 		return false
 	}
 
-	if !serviceItemAcquireServiceItemByAccountParam.LogMessage.Equals(other.LogMessage) {
+	if !siasibap.LogMessage.Equals(other.LogMessage) {
 		return false
 	}
 
-	if !serviceItemAcquireServiceItemByAccountParam.UniqueID.Equals(other.UniqueID) {
+	if !siasibap.UniqueID.Equals(other.UniqueID) {
 		return false
 	}
 
-	if !serviceItemAcquireServiceItemByAccountParam.Platform.Equals(other.Platform) {
-		return false
-	}
-
-	return true
+	return siasibap.Platform.Equals(other.Platform)
 }
 
-// String returns a string representation of the struct
-func (serviceItemAcquireServiceItemByAccountParam *ServiceItemAcquireServiceItemByAccountParam) String() string {
-	return serviceItemAcquireServiceItemByAccountParam.FormatToString(0)
+// String returns the string representation of the ServiceItemAcquireServiceItemByAccountParam
+func (siasibap *ServiceItemAcquireServiceItemByAccountParam) String() string {
+	return siasibap.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (serviceItemAcquireServiceItemByAccountParam *ServiceItemAcquireServiceItemByAccountParam) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the ServiceItemAcquireServiceItemByAccountParam using the provided indentation level
+func (siasibap *ServiceItemAcquireServiceItemByAccountParam) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("ServiceItemAcquireServiceItemByAccountParam{\n")
-	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, serviceItemAcquireServiceItemByAccountParam.StructureVersion))
-	b.WriteString(fmt.Sprintf("%sReferenceIDForAcquisition: %q,\n", indentationValues, serviceItemAcquireServiceItemByAccountParam.ReferenceIDForAcquisition))
-	b.WriteString(fmt.Sprintf("%sReferenceIDForRightBinary: %q,\n", indentationValues, serviceItemAcquireServiceItemByAccountParam.ReferenceIDForRightBinary))
-	b.WriteString(fmt.Sprintf("%sUseType: %d,\n", indentationValues, serviceItemAcquireServiceItemByAccountParam.UseType))
-	b.WriteString(fmt.Sprintf("%sLimitationType: %d,\n", indentationValues, serviceItemAcquireServiceItemByAccountParam.LimitationType))
-	b.WriteString(fmt.Sprintf("%sLimitationValue: %d,\n", indentationValues, serviceItemAcquireServiceItemByAccountParam.LimitationValue))
-	b.WriteString(fmt.Sprintf("%sRightBinary: %x,\n", indentationValues, serviceItemAcquireServiceItemByAccountParam.RightBinary))
-	b.WriteString(fmt.Sprintf("%sLogMessage: %q,\n", indentationValues, serviceItemAcquireServiceItemByAccountParam.LogMessage))
-	b.WriteString(fmt.Sprintf("%sUniqueID: %d,\n", indentationValues, serviceItemAcquireServiceItemByAccountParam.UniqueID))
-
-	if serviceItemAcquireServiceItemByAccountParam.StructureVersion >= 1 {
-		b.WriteString(fmt.Sprintf("%sPlatform: %d,\n", indentationValues, serviceItemAcquireServiceItemByAccountParam.Platform))
-	}
-
+	b.WriteString(fmt.Sprintf("%sReferenceIDForAcquisition: %s,\n", indentationValues, siasibap.ReferenceIDForAcquisition))
+	b.WriteString(fmt.Sprintf("%sReferenceIDForRightBinary: %s,\n", indentationValues, siasibap.ReferenceIDForRightBinary))
+	b.WriteString(fmt.Sprintf("%sUseType: %s,\n", indentationValues, siasibap.UseType))
+	b.WriteString(fmt.Sprintf("%sLimitationType: %s,\n", indentationValues, siasibap.LimitationType))
+	b.WriteString(fmt.Sprintf("%sLimitationValue: %s,\n", indentationValues, siasibap.LimitationValue))
+	b.WriteString(fmt.Sprintf("%sRightBinary: %s,\n", indentationValues, siasibap.RightBinary))
+	b.WriteString(fmt.Sprintf("%sLogMessage: %s,\n", indentationValues, siasibap.LogMessage))
+	b.WriteString(fmt.Sprintf("%sUniqueID: %s,\n", indentationValues, siasibap.UniqueID))
+	b.WriteString(fmt.Sprintf("%sPlatform: %s,\n", indentationValues, siasibap.Platform))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -210,5 +194,17 @@ func (serviceItemAcquireServiceItemByAccountParam *ServiceItemAcquireServiceItem
 
 // NewServiceItemAcquireServiceItemByAccountParam returns a new ServiceItemAcquireServiceItemByAccountParam
 func NewServiceItemAcquireServiceItemByAccountParam() *ServiceItemAcquireServiceItemByAccountParam {
-	return &ServiceItemAcquireServiceItemByAccountParam{}
+	siasibap := &ServiceItemAcquireServiceItemByAccountParam{
+		ReferenceIDForAcquisition: types.NewString(""),
+		ReferenceIDForRightBinary: types.NewString(""),
+		UseType:                   types.NewPrimitiveU8(0),
+		LimitationType:            types.NewPrimitiveU32(0),
+		LimitationValue:           types.NewPrimitiveU32(0),
+		RightBinary:               types.NewQBuffer(nil),
+		LogMessage:                types.NewString(""),
+		UniqueID:                  types.NewPrimitiveU32(0),
+		Platform:                  types.NewPrimitiveU8(0),
+	}
+
+	return siasibap
 }

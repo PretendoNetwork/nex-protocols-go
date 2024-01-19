@@ -5,10 +5,10 @@ import "github.com/PretendoNetwork/nex-go"
 
 // RespondError sends the client a given error code
 func RespondError(packet nex.PacketInterface, protocolID uint16, errorCode uint32) {
-	client := packet.Sender()
+	sender := packet.Sender()
 	request := packet.RMCMessage()
 
-	rmcResponse := nex.NewRMCError(client.Server(), errorCode)
+	rmcResponse := nex.NewRMCError(sender.Server(), errorCode)
 	rmcResponse.ProtocolID = request.ProtocolID
 	rmcResponse.CallID = request.CallID
 
@@ -23,9 +23,9 @@ func RespondError(packet nex.PacketInterface, protocolID uint16, errorCode uint3
 		var prudpPacket nex.PRUDPPacketInterface
 
 		if packet.Version() == 1 {
-			prudpPacket, _ = nex.NewPRUDPPacketV1(client.(*nex.PRUDPClient), nil)
+			prudpPacket, _ = nex.NewPRUDPPacketV1(sender.(*nex.PRUDPConnection), nil)
 		} else {
-			prudpPacket, _ = nex.NewPRUDPPacketV0(client.(*nex.PRUDPClient), nil)
+			prudpPacket, _ = nex.NewPRUDPPacketV0(sender.(*nex.PRUDPConnection), nil)
 		}
 
 		prudpPacket.SetType(nex.DataPacket)
@@ -35,10 +35,10 @@ func RespondError(packet nex.PacketInterface, protocolID uint16, errorCode uint3
 		}
 
 		prudpPacket.AddFlag(nex.FlagNeedsAck)
-		prudpPacket.SetSourceStreamType(packet.DestinationStreamType())
-		prudpPacket.SetSourcePort(packet.DestinationPort())
-		prudpPacket.SetDestinationStreamType(packet.SourceStreamType())
-		prudpPacket.SetDestinationPort(packet.SourcePort())
+		prudpPacket.SetSourceVirtualPortStreamType(packet.DestinationVirtualPortStreamType())
+		prudpPacket.SetSourceVirtualPortStreamID(packet.DestinationVirtualPortStreamID())
+		prudpPacket.SetDestinationVirtualPortStreamType(packet.SourceVirtualPortStreamType())
+		prudpPacket.SetDestinationVirtualPortStreamID(packet.SourceVirtualPortStreamID())
 
 		responsePacket = prudpPacket
 		responsePacket.SetPayload(rmcResponseBytes)
@@ -49,5 +49,5 @@ func RespondError(packet nex.PacketInterface, protocolID uint16, errorCode uint3
 		responsePacket.SetRMCMessage(rmcResponse)
 	}
 
-	client.Server().Send(responsePacket)
+	sender.Server().Send(responsePacket)
 }

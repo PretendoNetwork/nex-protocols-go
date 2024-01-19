@@ -30,7 +30,7 @@ func (protocol *Protocol) handleReportStats(packet nex.PacketInterface) {
 	idGathering := types.NewPrimitiveU32(0)
 	err = idGathering.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.ReportStats(fmt.Errorf("Failed to read idGathering from parameters. %s", err.Error()), packet, callID, 0, nil)
+		_, errorCode = protocol.ReportStats(fmt.Errorf("Failed to read idGathering from parameters. %s", err.Error()), packet, callID, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -38,9 +38,11 @@ func (protocol *Protocol) handleReportStats(packet nex.PacketInterface) {
 		return
 	}
 
-	lstStats, err := nex.StreamReadListStructure(parametersStream, match_making_types.NewGatheringStats())
+	lstStats := types.NewList[*match_making_types.GatheringStats]()
+	lstStats.Type = match_making_types.NewGatheringStats()
+	err = lstStats.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.ReportStats(fmt.Errorf("Failed to read lstStats from parameters. %s", err.Error()), packet, callID, 0, nil)
+		_, errorCode = protocol.ReportStats(fmt.Errorf("Failed to read lstStats from parameters. %s", err.Error()), packet, callID, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}

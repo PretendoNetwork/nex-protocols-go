@@ -1,57 +1,64 @@
-// Package types implements all the types used by the Friends WiiU protocol
+// Package types implements all the types used by the FriendsWiiU protocol
 package types
 
 import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-go/types"
 )
 
-// Comment contains data about a text comment
+// Comment is a type within the FriendsWiiU protocol
 type Comment struct {
 	types.Structure
 	*types.Data
 	Unknown     *types.PrimitiveU8
-	Contents    string
+	Contents    *types.String
 	LastChanged *types.DateTime
 }
 
 // WriteTo writes the Comment to the given writable
-func (comment *Comment) WriteTo(writable types.Writable) {
+func (c *Comment) WriteTo(writable types.Writable) {
+	c.Data.WriteTo(writable)
+
 	contentWritable := writable.CopyNew()
 
-	comment.Unknown.WriteTo(contentWritable)
-	comment.Contents.WriteTo(contentWritable)
-	comment.LastChanged.WriteTo(contentWritable)
+	c.Unknown.WriteTo(writable)
+	c.Contents.WriteTo(writable)
+	c.LastChanged.WriteTo(writable)
 
 	content := contentWritable.Bytes()
 
-	comment.WriteHeaderTo(writable, uint32(len(content)))
+	c.WriteHeaderTo(writable, uint32(len(content)))
 
 	writable.Write(content)
 }
 
 // ExtractFrom extracts the Comment from the given readable
-func (comment *Comment) ExtractFrom(readable types.Readable) error {
+func (c *Comment) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	if err = comment.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to read Comment header. %s", err.Error())
+	err = c.Data.ExtractFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract Comment.Data. %s", err.Error())
 	}
 
-	err = comment.Unknown.ExtractFrom(readable)
+	err = c.ExtractHeaderFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract Comment header. %s", err.Error())
+	}
+
+	err = c.Unknown.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract Comment.Unknown. %s", err.Error())
 	}
 
-	err = comment.Contents.ExtractFrom(readable)
+	err = c.Contents.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract Comment.Contents. %s", err.Error())
 	}
 
-	err = comment.LastChanged.ExtractFrom(readable)
+	err = c.LastChanged.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract Comment.LastChanged. %s", err.Error())
 	}
@@ -60,74 +67,62 @@ func (comment *Comment) ExtractFrom(readable types.Readable) error {
 }
 
 // Copy returns a new copied instance of Comment
-func (comment *Comment) Copy() types.RVType {
+func (c *Comment) Copy() types.RVType {
 	copied := NewComment()
 
-	copied.StructureVersion = comment.StructureVersion
-
-	copied.Data = comment.Data.Copy().(*types.Data)
-
-	copied.Unknown = comment.Unknown
-	copied.Contents = comment.Contents
-	copied.LastChanged = comment.LastChanged.Copy()
+	copied.StructureVersion = c.StructureVersion
+	copied.Data = c.Data.Copy().(*types.Data)
+	copied.Unknown = c.Unknown.Copy().(*types.PrimitiveU8)
+	copied.Contents = c.Contents.Copy().(*types.String)
+	copied.LastChanged = c.LastChanged.Copy().(*types.DateTime)
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (comment *Comment) Equals(o types.RVType) bool {
+// Equals checks if the given Comment contains the same data as the current Comment
+func (c *Comment) Equals(o types.RVType) bool {
 	if _, ok := o.(*Comment); !ok {
 		return false
 	}
 
 	other := o.(*Comment)
 
-	if comment.StructureVersion != other.StructureVersion {
+	if c.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if !comment.ParentType().Equals(other.ParentType()) {
+	if !c.Data.Equals(other.Data) {
 		return false
 	}
 
-	if !comment.Unknown.Equals(other.Unknown) {
+	if !c.Unknown.Equals(other.Unknown) {
 		return false
 	}
 
-	if !comment.Contents.Equals(other.Contents) {
+	if !c.Contents.Equals(other.Contents) {
 		return false
 	}
 
-	if !comment.LastChanged.Equals(other.LastChanged) {
-		return false
-	}
-
-	return true
+	return c.LastChanged.Equals(other.LastChanged)
 }
 
-// String returns a string representation of the struct
-func (comment *Comment) String() string {
-	return comment.FormatToString(0)
+// String returns the string representation of the Comment
+func (c *Comment) String() string {
+	return c.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (comment *Comment) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the Comment using the provided indentation level
+func (c *Comment) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("Comment{\n")
-	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, comment.StructureVersion))
-	b.WriteString(fmt.Sprintf("%sUnknown: %d\n", indentationValues, comment.Unknown))
-	b.WriteString(fmt.Sprintf("%sContents: %q\n", indentationValues, comment.Contents))
-
-	if comment.LastChanged != nil {
-		b.WriteString(fmt.Sprintf("%sLastChanged: %s\n", indentationValues, comment.LastChanged.FormatToString(indentationLevel+1)))
-	} else {
-		b.WriteString(fmt.Sprintf("%sLastChanged: nil\n", indentationValues))
-	}
-
+	b.WriteString(fmt.Sprintf("%sData (parent): %s,\n", indentationValues, c.Data.FormatToString(indentationLevel+1)))
+	b.WriteString(fmt.Sprintf("%sUnknown: %s,\n", indentationValues, c.Unknown))
+	b.WriteString(fmt.Sprintf("%sContents: %s,\n", indentationValues, c.Contents))
+	b.WriteString(fmt.Sprintf("%sLastChanged: %s,\n", indentationValues, c.LastChanged.FormatToString(indentationLevel+1)))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -135,5 +130,12 @@ func (comment *Comment) FormatToString(indentationLevel int) string {
 
 // NewComment returns a new Comment
 func NewComment() *Comment {
-	return &Comment{}
+	c := &Comment{
+		Data        : types.NewData(),
+		Unknown:     types.NewPrimitiveU8(0),
+		Contents:    types.NewString(""),
+		LastChanged: types.NewDateTime(0),
+	}
+
+	return c
 }

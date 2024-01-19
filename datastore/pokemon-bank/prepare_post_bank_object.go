@@ -29,7 +29,7 @@ func (protocol *Protocol) handlePreparePostBankObject(packet nex.PacketInterface
 	slotID := types.NewPrimitiveU16(0)
 	err = slotID.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.PreparePostBankObject(fmt.Errorf("Failed to read slotID from parameters. %s", err.Error()), packet, callID, 0, 0)
+		_, errorCode = protocol.PreparePostBankObject(fmt.Errorf("Failed to read slotID from parameters. %s", err.Error()), packet, callID, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -40,7 +40,7 @@ func (protocol *Protocol) handlePreparePostBankObject(packet nex.PacketInterface
 	size := types.NewPrimitiveU32(0)
 	err = size.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.PreparePostBankObject(fmt.Errorf("Failed to read size from parameters. %s", err.Error()), packet, callID, 0, 0)
+		_, errorCode = protocol.PreparePostBankObject(fmt.Errorf("Failed to read size from parameters. %s", err.Error()), packet, callID, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}

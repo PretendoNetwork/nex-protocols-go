@@ -29,7 +29,7 @@ func (protocol *Protocol) handleGetBalanceResponse(packet nex.PacketInterface) {
 	requestID := types.NewPrimitiveU32(0)
 	err = requestID.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.GetBalanceResponse(fmt.Errorf("Failed to read requestID from parameters. %s", err.Error()), packet, callID, 0)
+		_, errorCode = protocol.GetBalanceResponse(fmt.Errorf("Failed to read requestID from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}

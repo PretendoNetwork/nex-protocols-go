@@ -30,7 +30,7 @@ func (protocol *Protocol) handleDeleteContent(packet nex.PacketInterface) {
 	unknown1.Type = types.NewString("")
 	err = unknown1.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.DeleteContent(fmt.Errorf("Failed to read unknown1 from parameters. %s", err.Error()), packet, callID, nil, 0)
+		_, errorCode = protocol.DeleteContent(fmt.Errorf("Failed to read unknown1 from parameters. %s", err.Error()), packet, callID, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -41,7 +41,7 @@ func (protocol *Protocol) handleDeleteContent(packet nex.PacketInterface) {
 	unknown2 := types.NewPrimitiveU64(0)
 	err = unknown2.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.DeleteContent(fmt.Errorf("Failed to read unknown2 from parameters. %s", err.Error()), packet, callID, nil, 0)
+		_, errorCode = protocol.DeleteContent(fmt.Errorf("Failed to read unknown2 from parameters. %s", err.Error()), packet, callID, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}

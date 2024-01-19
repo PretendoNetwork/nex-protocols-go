@@ -5,11 +5,10 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-go/types"
 )
 
-// RankingCachedResult holds the result of a Ranking get request
+// RankingCachedResult is a type within the Ranking protocol
 type RankingCachedResult struct {
 	types.Structure
 	*RankingResult
@@ -18,120 +17,112 @@ type RankingCachedResult struct {
 	MaxLength   *types.PrimitiveU8
 }
 
+// WriteTo writes the RankingCachedResult to the given writable
+func (rcr *RankingCachedResult) WriteTo(writable types.Writable) {
+	rcr.RankingResult.WriteTo(writable)
+
+	contentWritable := writable.CopyNew()
+
+	rcr.CreatedTime.WriteTo(writable)
+	rcr.ExpiredTime.WriteTo(writable)
+	rcr.MaxLength.WriteTo(writable)
+
+	content := contentWritable.Bytes()
+
+	rcr.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
+}
+
 // ExtractFrom extracts the RankingCachedResult from the given readable
-func (rankingCachedResult *RankingCachedResult) ExtractFrom(readable types.Readable) error {
+func (rcr *RankingCachedResult) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	if err = rankingCachedResult.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to read RankingCachedResult header. %s", err.Error())
+	err = rcr.RankingResult.ExtractFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract RankingCachedResult.RankingResult. %s", err.Error())
 	}
 
-	err = rankingCachedResult.CreatedTime.ExtractFrom(readable)
+	err = rcr.ExtractHeaderFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract RankingCachedResult.CreatedTime from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract RankingCachedResult header. %s", err.Error())
 	}
 
-	err = rankingCachedResult.ExpiredTime.ExtractFrom(readable)
+	err = rcr.CreatedTime.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract RankingCachedResult.ExpiredTime from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract RankingCachedResult.CreatedTime. %s", err.Error())
 	}
 
-	err = rankingCachedResult.MaxLength.ExtractFrom(readable)
+	err = rcr.ExpiredTime.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract RankingCachedResult.MaxLength from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract RankingCachedResult.ExpiredTime. %s", err.Error())
+	}
+
+	err = rcr.MaxLength.ExtractFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract RankingCachedResult.MaxLength. %s", err.Error())
 	}
 
 	return nil
 }
 
-// WriteTo writes the RankingCachedResult to the given writable
-func (rankingCachedResult *RankingCachedResult) WriteTo(writable types.Writable) {
-	contentWritable := writable.CopyNew()
-
-	rankingCachedResult.CreatedTime.WriteTo(contentWritable)
-	rankingCachedResult.ExpiredTime.WriteTo(contentWritable)
-	rankingCachedResult.MaxLength.WriteTo(contentWritable)
-
-	content := contentWritable.Bytes()
-
-	rankingCachedResult.WriteHeaderTo(writable, uint32(len(content)))
-
-	writable.Write(content)
-}
-
 // Copy returns a new copied instance of RankingCachedResult
-func (rankingCachedResult *RankingCachedResult) Copy() types.RVType {
+func (rcr *RankingCachedResult) Copy() types.RVType {
 	copied := NewRankingCachedResult()
 
-	copied.StructureVersion = rankingCachedResult.StructureVersion
-
-	copied.RankingResult = rankingCachedResult.RankingResult.Copy().(*RankingResult)
-
-	copied.CreatedTime = rankingCachedResult.CreatedTime.Copy()
-
-	copied.ExpiredTime = rankingCachedResult.ExpiredTime.Copy()
-
-	copied.MaxLength = rankingCachedResult.MaxLength
+	copied.StructureVersion = rcr.StructureVersion
+	copied.RankingResult = rcr.RankingResult.Copy().(*RankingResult)
+	copied.CreatedTime = rcr.CreatedTime.Copy().(*types.DateTime)
+	copied.ExpiredTime = rcr.ExpiredTime.Copy().(*types.DateTime)
+	copied.MaxLength = rcr.MaxLength.Copy().(*types.PrimitiveU8)
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (rankingCachedResult *RankingCachedResult) Equals(o types.RVType) bool {
+// Equals checks if the given RankingCachedResult contains the same data as the current RankingCachedResult
+func (rcr *RankingCachedResult) Equals(o types.RVType) bool {
 	if _, ok := o.(*RankingCachedResult); !ok {
 		return false
 	}
 
 	other := o.(*RankingCachedResult)
 
-	if rankingCachedResult.StructureVersion != other.StructureVersion {
+	if rcr.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if !rankingCachedResult.CreatedTime.Equals(other.CreatedTime) {
+	if !rcr.RankingResult.Equals(other.RankingResult) {
 		return false
 	}
 
-	if !rankingCachedResult.ExpiredTime.Equals(other.ExpiredTime) {
+	if !rcr.CreatedTime.Equals(other.CreatedTime) {
 		return false
 	}
 
-	if !rankingCachedResult.MaxLength.Equals(other.MaxLength) {
+	if !rcr.ExpiredTime.Equals(other.ExpiredTime) {
 		return false
 	}
 
-	return true
+	return rcr.MaxLength.Equals(other.MaxLength)
 }
 
-// String returns a string representation of the struct
-func (rankingCachedResult *RankingCachedResult) String() string {
-	return rankingCachedResult.FormatToString(0)
+// String returns the string representation of the RankingCachedResult
+func (rcr *RankingCachedResult) String() string {
+	return rcr.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (rankingCachedResult *RankingCachedResult) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the RankingCachedResult using the provided indentation level
+func (rcr *RankingCachedResult) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("RankingCachedResult{\n")
-	b.WriteString(fmt.Sprintf("%sParentType: %s,\n", indentationValues, rankingCachedResult.ParentType().FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, rankingCachedResult.StructureVersion))
-
-	if rankingCachedResult.CreatedTime != nil {
-		b.WriteString(fmt.Sprintf("%sCreatedTime: %s\n", indentationValues, rankingCachedResult.CreatedTime.FormatToString(indentationLevel+1)))
-	} else {
-		b.WriteString(fmt.Sprintf("%sCreatedTime: nil\n", indentationValues))
-	}
-
-	if rankingCachedResult.ExpiredTime != nil {
-		b.WriteString(fmt.Sprintf("%sExpiredTime: %s\n", indentationValues, rankingCachedResult.ExpiredTime.FormatToString(indentationLevel+1)))
-	} else {
-		b.WriteString(fmt.Sprintf("%sExpiredTime: nil\n", indentationValues))
-	}
-
-	b.WriteString(fmt.Sprintf("%sMaxLength: %d\n", indentationValues, rankingCachedResult.MaxLength))
+	b.WriteString(fmt.Sprintf("%sRankingResult (parent): %s,\n", indentationValues, rcr.RankingResult.FormatToString(indentationLevel+1)))
+	b.WriteString(fmt.Sprintf("%sCreatedTime: %s,\n", indentationValues, rcr.CreatedTime.FormatToString(indentationLevel+1)))
+	b.WriteString(fmt.Sprintf("%sExpiredTime: %s,\n", indentationValues, rcr.ExpiredTime.FormatToString(indentationLevel+1)))
+	b.WriteString(fmt.Sprintf("%sMaxLength: %s,\n", indentationValues, rcr.MaxLength))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -139,5 +130,12 @@ func (rankingCachedResult *RankingCachedResult) FormatToString(indentationLevel 
 
 // NewRankingCachedResult returns a new RankingCachedResult
 func NewRankingCachedResult() *RankingCachedResult {
-	return &RankingCachedResult{}
+	rcr := &RankingCachedResult{
+		RankingResult: NewRankingResult(),
+		CreatedTime: types.NewDateTime(0),
+		ExpiredTime: types.NewDateTime(0),
+		MaxLength:   types.NewPrimitiveU8(0),
+	}
+
+	return rcr
 }

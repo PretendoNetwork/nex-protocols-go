@@ -1,18 +1,14 @@
-// Package types implements all the types used by the Matchmaking protocols.
-//
-// Since there are multiple match making related protocols, and they all share types
-// all types used by all match making protocols is defined here
+// Package types implements all the types used by the Matchmaking protocol
 package types
 
 import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-go/types"
 )
 
-// GatheringStats holds stats about a Gathering
+// GatheringStats is a type within the Matchmaking protocol
 type GatheringStats struct {
 	types.Structure
 	PIDParticipant *types.PID
@@ -20,25 +16,41 @@ type GatheringStats struct {
 	LstValues      *types.List[*types.PrimitiveF32]
 }
 
+// WriteTo writes the GatheringStats to the given writable
+func (gs *GatheringStats) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
+
+	gs.PIDParticipant.WriteTo(writable)
+	gs.UIFlags.WriteTo(writable)
+	gs.LstValues.WriteTo(writable)
+
+	content := contentWritable.Bytes()
+
+	gs.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
+}
+
 // ExtractFrom extracts the GatheringStats from the given readable
-func (gatheringStats *GatheringStats) ExtractFrom(readable types.Readable) error {
+func (gs *GatheringStats) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	if err = gatheringStats.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to read GatheringStats header. %s", err.Error())
+	err = gs.ExtractHeaderFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract GatheringStats header. %s", err.Error())
 	}
 
-	err = gatheringStats.PIDParticipant.ExtractFrom(readable)
+	err = gs.PIDParticipant.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract GatheringStats.PIDParticipant. %s", err.Error())
 	}
 
-	err = gatheringStats.UIFlags.ExtractFrom(readable)
+	err = gs.UIFlags.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract GatheringStats.UIFlags. %s", err.Error())
 	}
 
-	err = gatheringStats.LstValues.ExtractFrom(readable)
+	err = gs.LstValues.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract GatheringStats.LstValues. %s", err.Error())
 	}
@@ -46,86 +58,57 @@ func (gatheringStats *GatheringStats) ExtractFrom(readable types.Readable) error
 	return nil
 }
 
-// WriteTo writes the GatheringStats to the given writable
-func (gatheringStats *GatheringStats) WriteTo(writable types.Writable) {
-	contentWritable := writable.CopyNew()
-
-	gatheringStats.PIDParticipant.WriteTo(contentWritable)
-	gatheringStats.UIFlags.WriteTo(contentWritable)
-	gatheringStats.LstValues.WriteTo(contentWritable)
-
-	content := contentWritable.Bytes()
-
-	gatheringStats.WriteHeaderTo(writable, uint32(len(content)))
-
-	writable.Write(content)
-}
-
 // Copy returns a new copied instance of GatheringStats
-func (gatheringStats *GatheringStats) Copy() types.RVType {
+func (gs *GatheringStats) Copy() types.RVType {
 	copied := NewGatheringStats()
 
-	copied.StructureVersion = gatheringStats.StructureVersion
-
-	copied.PIDParticipant = gatheringStats.PIDParticipant.Copy()
-	copied.UIFlags = gatheringStats.UIFlags
-	copied.LstValues = make(*types.List[*types.PrimitiveF32], len(gatheringStats.LstValues))
-
-	copy(copied.LstValues, gatheringStats.LstValues)
+	copied.StructureVersion = gs.StructureVersion
+	copied.PIDParticipant = gs.PIDParticipant.Copy().(*types.PID)
+	copied.UIFlags = gs.UIFlags.Copy().(*types.PrimitiveU32)
+	copied.LstValues = gs.LstValues.Copy().(*types.List[*types.PrimitiveF32])
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (gatheringStats *GatheringStats) Equals(o types.RVType) bool {
+// Equals checks if the given GatheringStats contains the same data as the current GatheringStats
+func (gs *GatheringStats) Equals(o types.RVType) bool {
 	if _, ok := o.(*GatheringStats); !ok {
 		return false
 	}
 
 	other := o.(*GatheringStats)
 
-	if gatheringStats.StructureVersion != other.StructureVersion {
+	if gs.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if !gatheringStats.PIDParticipant.Equals(other.PIDParticipant) {
+	if !gs.PIDParticipant.Equals(other.PIDParticipant) {
 		return false
 	}
 
-	if !gatheringStats.UIFlags.Equals(other.UIFlags) {
+	if !gs.UIFlags.Equals(other.UIFlags) {
 		return false
 	}
 
-	if len(gatheringStats.LstValues) != len(other.LstValues) {
-		return false
-	}
-
-	for i := 0; i < len(gatheringStats.LstValues); i++ {
-		if gatheringStats.LstValues[i] != other.LstValues[i] {
-			return false
-		}
-	}
-
-	return true
+	return gs.LstValues.Equals(other.LstValues)
 }
 
-// String returns a string representation of the struct
-func (gatheringStats *GatheringStats) String() string {
-	return gatheringStats.FormatToString(0)
+// String returns the string representation of the GatheringStats
+func (gs *GatheringStats) String() string {
+	return gs.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (gatheringStats *GatheringStats) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the GatheringStats using the provided indentation level
+func (gs *GatheringStats) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("GatheringStats{\n")
-	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, gatheringStats.StructureVersion))
-	b.WriteString(fmt.Sprintf("%sPIDParticipant: %s,\n", indentationValues, gatheringStats.PIDParticipant.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sUIFlags: %d,\n", indentationValues, gatheringStats.UIFlags))
-	b.WriteString(fmt.Sprintf("%sLstValues: %v\n", indentationValues, gatheringStats.LstValues))
+	b.WriteString(fmt.Sprintf("%sPIDParticipant: %s,\n", indentationValues, gs.PIDParticipant.FormatToString(indentationLevel+1)))
+	b.WriteString(fmt.Sprintf("%sUIFlags: %s,\n", indentationValues, gs.UIFlags))
+	b.WriteString(fmt.Sprintf("%sLstValues: %s,\n", indentationValues, gs.LstValues))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -133,5 +116,13 @@ func (gatheringStats *GatheringStats) FormatToString(indentationLevel int) strin
 
 // NewGatheringStats returns a new GatheringStats
 func NewGatheringStats() *GatheringStats {
-	return &GatheringStats{}
+	gs := &GatheringStats{
+		PIDParticipant: types.NewPID(0),
+		UIFlags:        types.NewPrimitiveU32(0),
+		LstValues:      types.NewList[*types.PrimitiveF32](),
+	}
+
+	gs.LstValues.Type = types.NewPrimitiveF32(0)
+
+	return gs
 }

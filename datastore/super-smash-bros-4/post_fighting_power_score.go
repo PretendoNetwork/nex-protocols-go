@@ -27,7 +27,9 @@ func (protocol *Protocol) handlePostFightingPowerScore(packet nex.PacketInterfac
 
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
-	params, err := nex.StreamReadListStructure(parametersStream, datastore_super_smash_bros_4_types.NewDataStorePostFightingPowerScoreParam())
+	params := types.NewList[*datastore_super_smash_bros_4_types.DataStorePostFightingPowerScoreParam]()
+	params.Type = datastore_super_smash_bros_4_types.NewDataStorePostFightingPowerScoreParam()
+	err = params.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.PostFightingPowerScore(fmt.Errorf("Failed to read params from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {

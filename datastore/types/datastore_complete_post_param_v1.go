@@ -8,27 +8,42 @@ import (
 	"github.com/PretendoNetwork/nex-go/types"
 )
 
-// DataStoreCompletePostParamV1 is a data structure used by the DataStore protocol
+// DataStoreCompletePostParamV1 is a type within the DataStore protocol
 type DataStoreCompletePostParamV1 struct {
 	types.Structure
 	DataID    *types.PrimitiveU32
 	IsSuccess *types.PrimitiveBool
 }
 
+// WriteTo writes the DataStoreCompletePostParamV1 to the given writable
+func (dscppv *DataStoreCompletePostParamV1) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
+
+	dscppv.DataID.WriteTo(writable)
+	dscppv.IsSuccess.WriteTo(writable)
+
+	content := contentWritable.Bytes()
+
+	dscppv.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
+}
+
 // ExtractFrom extracts the DataStoreCompletePostParamV1 from the given readable
-func (dataStoreCompletePostParamV1 *DataStoreCompletePostParamV1) ExtractFrom(readable types.Readable) error {
+func (dscppv *DataStoreCompletePostParamV1) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	if err = dataStoreCompletePostParamV1.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to read DataStoreCompletePostParamV1 header. %s", err.Error())
+	err = dscppv.ExtractHeaderFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreCompletePostParamV1 header. %s", err.Error())
 	}
 
-	err = dataStoreCompletePostParamV1.DataID.ExtractFrom(readable)
+	err = dscppv.DataID.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreCompletePostParamV1.DataID. %s", err.Error())
 	}
 
-	err = dataStoreCompletePostParamV1.IsSuccess.ExtractFrom(readable)
+	err = dscppv.IsSuccess.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreCompletePostParamV1.IsSuccess. %s", err.Error())
 	}
@@ -36,71 +51,51 @@ func (dataStoreCompletePostParamV1 *DataStoreCompletePostParamV1) ExtractFrom(re
 	return nil
 }
 
-// WriteTo writes the DataStoreCompletePostParamV1 to the given writable
-func (dataStoreCompletePostParamV1 *DataStoreCompletePostParamV1) WriteTo(writable types.Writable) {
-	contentWritable := writable.CopyNew()
-
-	dataStoreCompletePostParamV1.DataID.WriteTo(contentWritable)
-	dataStoreCompletePostParamV1.IsSuccess.WriteTo(contentWritable)
-
-	content := contentWritable.Bytes()
-
-	dataStoreCompletePostParamV1.WriteHeaderTo(writable, uint32(len(content)))
-
-	writable.Write(content)
-}
-
 // Copy returns a new copied instance of DataStoreCompletePostParamV1
-func (dataStoreCompletePostParamV1 *DataStoreCompletePostParamV1) Copy() types.RVType {
+func (dscppv *DataStoreCompletePostParamV1) Copy() types.RVType {
 	copied := NewDataStoreCompletePostParamV1()
 
-	copied.StructureVersion = dataStoreCompletePostParamV1.StructureVersion
-
-	copied.DataID = dataStoreCompletePostParamV1.DataID.Copy().(*types.PrimitiveU32)
-	copied.IsSuccess = dataStoreCompletePostParamV1.IsSuccess.Copy().(*types.PrimitiveBool)
+	copied.StructureVersion = dscppv.StructureVersion
+	copied.DataID = dscppv.DataID.Copy().(*types.PrimitiveU32)
+	copied.IsSuccess = dscppv.IsSuccess.Copy().(*types.PrimitiveBool)
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (dataStoreCompletePostParamV1 *DataStoreCompletePostParamV1) Equals(o types.RVType) bool {
+// Equals checks if the given DataStoreCompletePostParamV1 contains the same data as the current DataStoreCompletePostParamV1
+func (dscppv *DataStoreCompletePostParamV1) Equals(o types.RVType) bool {
 	if _, ok := o.(*DataStoreCompletePostParamV1); !ok {
 		return false
 	}
 
 	other := o.(*DataStoreCompletePostParamV1)
 
-	if dataStoreCompletePostParamV1.StructureVersion != other.StructureVersion {
+	if dscppv.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if !dataStoreCompletePostParamV1.DataID.Equals(other.DataID) {
+	if !dscppv.DataID.Equals(other.DataID) {
 		return false
 	}
 
-	if !dataStoreCompletePostParamV1.IsSuccess.Equals(other.IsSuccess) {
-		return false
-	}
-
-	return true
+	return dscppv.IsSuccess.Equals(other.IsSuccess)
 }
 
-// String returns a string representation of the struct
-func (dataStoreCompletePostParamV1 *DataStoreCompletePostParamV1) String() string {
-	return dataStoreCompletePostParamV1.FormatToString(0)
+// String returns the string representation of the DataStoreCompletePostParamV1
+func (dscppv *DataStoreCompletePostParamV1) String() string {
+	return dscppv.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (dataStoreCompletePostParamV1 *DataStoreCompletePostParamV1) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the DataStoreCompletePostParamV1 using the provided indentation level
+func (dscppv *DataStoreCompletePostParamV1) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("DataStoreCompletePostParamV1{\n")
-	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, dataStoreCompletePostParamV1.StructureVersion))
-	b.WriteString(fmt.Sprintf("%sDataID: %s,\n", indentationValues, dataStoreCompletePostParamV1.DataID))
-	b.WriteString(fmt.Sprintf("%sIsSuccess: %s\n", indentationValues, dataStoreCompletePostParamV1.IsSuccess))
+	b.WriteString(fmt.Sprintf("%sDataID: %s,\n", indentationValues, dscppv.DataID))
+	b.WriteString(fmt.Sprintf("%sIsSuccess: %s,\n", indentationValues, dscppv.IsSuccess))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -108,8 +103,10 @@ func (dataStoreCompletePostParamV1 *DataStoreCompletePostParamV1) FormatToString
 
 // NewDataStoreCompletePostParamV1 returns a new DataStoreCompletePostParamV1
 func NewDataStoreCompletePostParamV1() *DataStoreCompletePostParamV1 {
-	return &DataStoreCompletePostParamV1{
+	dscppv := &DataStoreCompletePostParamV1{
 		DataID:    types.NewPrimitiveU32(0),
 		IsSuccess: types.NewPrimitiveBool(false),
 	}
+
+	return dscppv
 }

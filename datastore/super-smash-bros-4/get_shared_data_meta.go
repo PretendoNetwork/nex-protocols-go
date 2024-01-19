@@ -3,14 +3,10 @@ package protocol
 
 import (
 	nex "github.com/PretendoNetwork/nex-go"
-	"github.com/PretendoNetwork/nex-go/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
 func (protocol *Protocol) handleGetSharedDataMeta(packet nex.PacketInterface) {
-	var err error
-	var errorCode uint32
-
 	if protocol.GetSharedDataMeta == nil {
 		globals.Logger.Warning("DataStoreSuperSmashBros4::GetSharedDataMeta not implemented")
 		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)

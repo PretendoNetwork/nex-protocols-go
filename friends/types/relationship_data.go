@@ -5,49 +5,66 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-go/types"
 )
 
-// RelationshipData contains data relating to a friend
+// RelationshipData is a type within the Friends protocol
 type RelationshipData struct {
 	types.Structure
 	PID            *types.PrimitiveU32
-	StrName        string
+	StrName        *types.String
 	ByRelationship *types.PrimitiveU8
 	UIDetails      *types.PrimitiveU32
 	ByStatus       *types.PrimitiveU8
 }
 
+// WriteTo writes the RelationshipData to the given writable
+func (rd *RelationshipData) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
+
+	rd.PID.WriteTo(writable)
+	rd.StrName.WriteTo(writable)
+	rd.ByRelationship.WriteTo(writable)
+	rd.UIDetails.WriteTo(writable)
+	rd.ByStatus.WriteTo(writable)
+
+	content := contentWritable.Bytes()
+
+	rd.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
+}
+
 // ExtractFrom extracts the RelationshipData from the given readable
-func (relationshipData *RelationshipData) ExtractFrom(readable types.Readable) error {
+func (rd *RelationshipData) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	if err = relationshipData.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to read RelationshipData header. %s", err.Error())
+	err = rd.ExtractHeaderFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract RelationshipData header. %s", err.Error())
 	}
 
-	err = relationshipData.PID.ExtractFrom(readable)
+	err = rd.PID.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract RelationshipData.PID. %s", err.Error())
 	}
 
-	err = relationshipData.StrName.ExtractFrom(readable)
+	err = rd.StrName.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract RelationshipData.StrName. %s", err.Error())
 	}
 
-	err = relationshipData.ByRelationship.ExtractFrom(readable)
+	err = rd.ByRelationship.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract RelationshipData.ByRelationship. %s", err.Error())
 	}
 
-	err = relationshipData.UIDetails.ExtractFrom(readable)
+	err = rd.UIDetails.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract RelationshipData.UIDetails. %s", err.Error())
 	}
 
-	err = relationshipData.ByStatus.ExtractFrom(readable)
+	err = rd.ByStatus.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract RelationshipData.ByStatus. %s", err.Error())
 	}
@@ -56,74 +73,68 @@ func (relationshipData *RelationshipData) ExtractFrom(readable types.Readable) e
 }
 
 // Copy returns a new copied instance of RelationshipData
-func (relationshipData *RelationshipData) Copy() types.RVType {
+func (rd *RelationshipData) Copy() types.RVType {
 	copied := NewRelationshipData()
 
-	copied.StructureVersion = relationshipData.StructureVersion
-
-	copied.PID = relationshipData.PID
-	copied.StrName = relationshipData.StrName
-	copied.ByRelationship = relationshipData.ByRelationship
-	copied.UIDetails = relationshipData.UIDetails
-	copied.ByStatus = relationshipData.ByStatus
+	copied.StructureVersion = rd.StructureVersion
+	copied.PID = rd.PID.Copy().(*types.PrimitiveU32)
+	copied.StrName = rd.StrName.Copy().(*types.String)
+	copied.ByRelationship = rd.ByRelationship.Copy().(*types.PrimitiveU8)
+	copied.UIDetails = rd.UIDetails.Copy().(*types.PrimitiveU32)
+	copied.ByStatus = rd.ByStatus.Copy().(*types.PrimitiveU8)
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (relationshipData *RelationshipData) Equals(o types.RVType) bool {
+// Equals checks if the given RelationshipData contains the same data as the current RelationshipData
+func (rd *RelationshipData) Equals(o types.RVType) bool {
 	if _, ok := o.(*RelationshipData); !ok {
 		return false
 	}
 
 	other := o.(*RelationshipData)
 
-	if relationshipData.StructureVersion != other.StructureVersion {
+	if rd.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if !relationshipData.PID.Equals(other.PID) {
+	if !rd.PID.Equals(other.PID) {
 		return false
 	}
 
-	if !relationshipData.StrName.Equals(other.StrName) {
+	if !rd.StrName.Equals(other.StrName) {
 		return false
 	}
 
-	if !relationshipData.ByRelationship.Equals(other.ByRelationship) {
+	if !rd.ByRelationship.Equals(other.ByRelationship) {
 		return false
 	}
 
-	if !relationshipData.UIDetails.Equals(other.UIDetails) {
+	if !rd.UIDetails.Equals(other.UIDetails) {
 		return false
 	}
 
-	if !relationshipData.ByStatus.Equals(other.ByStatus) {
-		return false
-	}
-
-	return true
+	return rd.ByStatus.Equals(other.ByStatus)
 }
 
-// String returns a string representation of the struct
-func (relationshipData *RelationshipData) String() string {
-	return relationshipData.FormatToString(0)
+// String returns the string representation of the RelationshipData
+func (rd *RelationshipData) String() string {
+	return rd.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (relationshipData *RelationshipData) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the RelationshipData using the provided indentation level
+func (rd *RelationshipData) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("RelationshipData{\n")
-	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, relationshipData.StructureVersion))
-	b.WriteString(fmt.Sprintf("%sPID: %d,\n", indentationValues, relationshipData.PID))
-	b.WriteString(fmt.Sprintf("%sStrName: %q,\n", indentationValues, relationshipData.StrName))
-	b.WriteString(fmt.Sprintf("%sByRelationship: %d,\n", indentationValues, relationshipData.ByRelationship))
-	b.WriteString(fmt.Sprintf("%sUIDetails: %d,\n", indentationValues, relationshipData.UIDetails))
-	b.WriteString(fmt.Sprintf("%sByStatus: %q\n", indentationValues, relationshipData.ByStatus))
+	b.WriteString(fmt.Sprintf("%sPID: %s,\n", indentationValues, rd.PID))
+	b.WriteString(fmt.Sprintf("%sStrName: %s,\n", indentationValues, rd.StrName))
+	b.WriteString(fmt.Sprintf("%sByRelationship: %s,\n", indentationValues, rd.ByRelationship))
+	b.WriteString(fmt.Sprintf("%sUIDetails: %s,\n", indentationValues, rd.UIDetails))
+	b.WriteString(fmt.Sprintf("%sByStatus: %s,\n", indentationValues, rd.ByStatus))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -131,5 +142,13 @@ func (relationshipData *RelationshipData) FormatToString(indentationLevel int) s
 
 // NewRelationshipData returns a new RelationshipData
 func NewRelationshipData() *RelationshipData {
-	return &RelationshipData{}
+	rd := &RelationshipData{
+		PID:            types.NewPrimitiveU32(0),
+		StrName:        types.NewString(""),
+		ByRelationship: types.NewPrimitiveU8(0),
+		UIDetails:      types.NewPrimitiveU32(0),
+		ByStatus:       types.NewPrimitiveU8(0),
+	}
+
+	return rd
 }

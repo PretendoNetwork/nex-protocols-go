@@ -2,15 +2,13 @@
 package types
 
 import (
-	"bytes"
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-go/types"
 )
 
-// RankingChangeAttributesParam holds parameters for ordering rankings
+// RankingChangeAttributesParam is a type within the Ranking protocol
 type RankingChangeAttributesParam struct {
 	types.Structure
 	ModificationFlag *types.PrimitiveU8
@@ -18,107 +16,99 @@ type RankingChangeAttributesParam struct {
 	Param            *types.PrimitiveU64
 }
 
+// WriteTo writes the RankingChangeAttributesParam to the given writable
+func (rcap *RankingChangeAttributesParam) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
+
+	rcap.ModificationFlag.WriteTo(writable)
+	rcap.Groups.WriteTo(writable)
+	rcap.Param.WriteTo(writable)
+
+	content := contentWritable.Bytes()
+
+	rcap.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
+}
+
 // ExtractFrom extracts the RankingChangeAttributesParam from the given readable
-func (rankingChangeAttributesParam *RankingChangeAttributesParam) ExtractFrom(readable types.Readable) error {
+func (rcap *RankingChangeAttributesParam) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	if err = rankingChangeAttributesParam.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to read RankingChangeAttributesParam header. %s", err.Error())
+	err = rcap.ExtractHeaderFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract RankingChangeAttributesParam header. %s", err.Error())
 	}
 
-	err = rankingChangeAttributesParam.ModificationFlag.ExtractFrom(readable)
+	err = rcap.ModificationFlag.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract RankingChangeAttributesParam.ModificationFlag from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract RankingChangeAttributesParam.ModificationFlag. %s", err.Error())
 	}
 
-	err = rankingChangeAttributesParam.Groups.ExtractFrom(readable)
+	err = rcap.Groups.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract RankingChangeAttributesParam.Groups from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract RankingChangeAttributesParam.Groups. %s", err.Error())
 	}
 
-	err = rankingChangeAttributesParam.Param.ExtractFrom(readable)
+	err = rcap.Param.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract RankingChangeAttributesParam.Param from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract RankingChangeAttributesParam.Param. %s", err.Error())
 	}
 
 	return nil
 }
 
-// WriteTo writes the RankingChangeAttributesParam to the given writable
-func (rankingChangeAttributesParam *RankingChangeAttributesParam) WriteTo(writable types.Writable) {
-	contentWritable := writable.CopyNew()
-
-	rankingChangeAttributesParam.ModificationFlag.WriteTo(contentWritable)
-	rankingChangeAttributesParam.Groups.WriteTo(contentWritable)
-	rankingChangeAttributesParam.Param.WriteTo(contentWritable)
-
-	content := contentWritable.Bytes()
-
-	rankingChangeAttributesParam.WriteHeaderTo(writable, uint32(len(content)))
-
-	writable.Write(content)
-}
-
 // Copy returns a new copied instance of RankingChangeAttributesParam
-func (rankingChangeAttributesParam *RankingChangeAttributesParam) Copy() types.RVType {
+func (rcap *RankingChangeAttributesParam) Copy() types.RVType {
 	copied := NewRankingChangeAttributesParam()
 
-	copied.StructureVersion = rankingChangeAttributesParam.StructureVersion
-
-	copied.ModificationFlag = rankingChangeAttributesParam.ModificationFlag
-	copied.Groups = make(*types.List[*types.PrimitiveU8], len(rankingChangeAttributesParam.Groups))
-
-	copy(copied.Groups, rankingChangeAttributesParam.Groups)
-
-	copied.Param = rankingChangeAttributesParam.Param
+	copied.StructureVersion = rcap.StructureVersion
+	copied.ModificationFlag = rcap.ModificationFlag.Copy().(*types.PrimitiveU8)
+	copied.Groups = rcap.Groups.Copy().(*types.List[*types.PrimitiveU8])
+	copied.Param = rcap.Param.Copy().(*types.PrimitiveU64)
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (rankingChangeAttributesParam *RankingChangeAttributesParam) Equals(o types.RVType) bool {
+// Equals checks if the given RankingChangeAttributesParam contains the same data as the current RankingChangeAttributesParam
+func (rcap *RankingChangeAttributesParam) Equals(o types.RVType) bool {
 	if _, ok := o.(*RankingChangeAttributesParam); !ok {
 		return false
 	}
 
 	other := o.(*RankingChangeAttributesParam)
 
-	if rankingChangeAttributesParam.StructureVersion != other.StructureVersion {
+	if rcap.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if !rankingChangeAttributesParam.ModificationFlag.Equals(other.ModificationFlag) {
+	if !rcap.ModificationFlag.Equals(other.ModificationFlag) {
 		return false
 	}
 
-	if !rankingChangeAttributesParam.Groups.Equals(other.Groups) {
+	if !rcap.Groups.Equals(other.Groups) {
 		return false
 	}
 
-	if !rankingChangeAttributesParam.Param.Equals(other.Param) {
-		return false
-	}
-
-	return true
+	return rcap.Param.Equals(other.Param)
 }
 
-// String returns a string representation of the struct
-func (rankingChangeAttributesParam *RankingChangeAttributesParam) String() string {
-	return rankingChangeAttributesParam.FormatToString(0)
+// String returns the string representation of the RankingChangeAttributesParam
+func (rcap *RankingChangeAttributesParam) String() string {
+	return rcap.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (rankingChangeAttributesParam *RankingChangeAttributesParam) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the RankingChangeAttributesParam using the provided indentation level
+func (rcap *RankingChangeAttributesParam) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("RankingChangeAttributesParam{\n")
-	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, rankingChangeAttributesParam.StructureVersion))
-	b.WriteString(fmt.Sprintf("%sModificationFlag: %d,\n", indentationValues, rankingChangeAttributesParam.ModificationFlag))
-	b.WriteString(fmt.Sprintf("%sGroups: %v,\n", indentationValues, rankingChangeAttributesParam.Groups))
-	b.WriteString(fmt.Sprintf("%sParam: %d\n", indentationValues, rankingChangeAttributesParam.Param))
+	b.WriteString(fmt.Sprintf("%sModificationFlag: %s,\n", indentationValues, rcap.ModificationFlag))
+	b.WriteString(fmt.Sprintf("%sGroups: %s,\n", indentationValues, rcap.Groups))
+	b.WriteString(fmt.Sprintf("%sParam: %s,\n", indentationValues, rcap.Param))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -126,5 +116,13 @@ func (rankingChangeAttributesParam *RankingChangeAttributesParam) FormatToString
 
 // NewRankingChangeAttributesParam returns a new RankingChangeAttributesParam
 func NewRankingChangeAttributesParam() *RankingChangeAttributesParam {
-	return &RankingChangeAttributesParam{}
+	rcap := &RankingChangeAttributesParam{
+		ModificationFlag: types.NewPrimitiveU8(0),
+		Groups:           types.NewList[*types.PrimitiveU8](),
+		Param:            types.NewPrimitiveU64(0),
+	}
+
+	rcap.Groups.Type = types.NewPrimitiveU8(0)
+
+	return rcap
 }

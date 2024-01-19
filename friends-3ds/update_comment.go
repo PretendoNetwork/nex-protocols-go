@@ -29,7 +29,7 @@ func (protocol *Protocol) handleUpdateComment(packet nex.PacketInterface) {
 	comment := types.NewString("")
 	err = comment.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.UpdateComment(fmt.Errorf("Failed to read comment from parameters. %s", err.Error()), packet, callID, "")
+		_, errorCode = protocol.UpdateComment(fmt.Errorf("Failed to read comment from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}

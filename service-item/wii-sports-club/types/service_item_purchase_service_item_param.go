@@ -1,185 +1,179 @@
-// Package types implements all the types used by the Service Item (Wii Sports Club) protocol
+// Package types implements all the types used by the ServiceItem protocol
 package types
 
 import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-go/types"
 )
 
-// ServiceItemPurchaseServiceItemParam holds data for the Service Item (Wii Sports Club) protocol
+// ServiceItemPurchaseServiceItemParam is a type within the ServiceItem protocol
 type ServiceItemPurchaseServiceItemParam struct {
 	types.Structure
-	ItemCode       string
-	PriceID        string
-	ReferenceID    string
-	Balance        string
-	ItemName       string
-	EcServiceToken string
-	Language       string
-	TitleID        string
+	ItemCode       *types.String
+	PriceID        *types.String
+	ReferenceID    *types.String
+	Balance        *types.String
+	ItemName       *types.String
+	EcServiceToken *types.String
+	Language       *types.String
+	TitleID        *types.String
+}
+
+// WriteTo writes the ServiceItemPurchaseServiceItemParam to the given writable
+func (sipsip *ServiceItemPurchaseServiceItemParam) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
+
+	sipsip.ItemCode.WriteTo(writable)
+	sipsip.PriceID.WriteTo(writable)
+	sipsip.ReferenceID.WriteTo(writable)
+	sipsip.Balance.WriteTo(writable)
+	sipsip.ItemName.WriteTo(writable)
+	sipsip.EcServiceToken.WriteTo(writable)
+	sipsip.Language.WriteTo(writable)
+	sipsip.TitleID.WriteTo(writable)
+
+	content := contentWritable.Bytes()
+
+	sipsip.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // ExtractFrom extracts the ServiceItemPurchaseServiceItemParam from the given readable
-func (serviceItemPurchaseServiceItemParam *ServiceItemPurchaseServiceItemParam) ExtractFrom(readable types.Readable) error {
+func (sipsip *ServiceItemPurchaseServiceItemParam) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	if err = serviceItemPurchaseServiceItemParam.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to read ServiceItemPurchaseServiceItemParam header. %s", err.Error())
+	err = sipsip.ExtractHeaderFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract ServiceItemPurchaseServiceItemParam header. %s", err.Error())
 	}
 
-	err = serviceItemPurchaseServiceItemParam.ItemCode.ExtractFrom(readable)
+	err = sipsip.ItemCode.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemPurchaseServiceItemParam.ItemCode from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract ServiceItemPurchaseServiceItemParam.ItemCode. %s", err.Error())
 	}
 
-	err = serviceItemPurchaseServiceItemParam.PriceID.ExtractFrom(readable)
+	err = sipsip.PriceID.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemPurchaseServiceItemParam.PriceID from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract ServiceItemPurchaseServiceItemParam.PriceID. %s", err.Error())
 	}
 
-	err = serviceItemPurchaseServiceItemParam.ReferenceID.ExtractFrom(readable)
+	err = sipsip.ReferenceID.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemPurchaseServiceItemParam.ReferenceID from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract ServiceItemPurchaseServiceItemParam.ReferenceID. %s", err.Error())
 	}
 
-	err = serviceItemPurchaseServiceItemParam.Balance.ExtractFrom(readable)
+	err = sipsip.Balance.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemPurchaseServiceItemParam.Balance from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract ServiceItemPurchaseServiceItemParam.Balance. %s", err.Error())
 	}
 
-	err = serviceItemPurchaseServiceItemParam.ItemName.ExtractFrom(readable)
+	err = sipsip.ItemName.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemPurchaseServiceItemParam.ItemName from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract ServiceItemPurchaseServiceItemParam.ItemName. %s", err.Error())
 	}
 
-	err = serviceItemPurchaseServiceItemParam.EcServiceToken.ExtractFrom(readable)
+	err = sipsip.EcServiceToken.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemPurchaseServiceItemParam.EcServiceToken from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract ServiceItemPurchaseServiceItemParam.EcServiceToken. %s", err.Error())
 	}
 
-	err = serviceItemPurchaseServiceItemParam.Language.ExtractFrom(readable)
+	err = sipsip.Language.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemPurchaseServiceItemParam.Language from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract ServiceItemPurchaseServiceItemParam.Language. %s", err.Error())
 	}
 
-	err = serviceItemPurchaseServiceItemParam.TitleID.ExtractFrom(readable)
+	err = sipsip.TitleID.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemPurchaseServiceItemParam.TitleID from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract ServiceItemPurchaseServiceItemParam.TitleID. %s", err.Error())
 	}
 
 	return nil
 }
 
-// WriteTo writes the ServiceItemPurchaseServiceItemParam to the given writable
-func (serviceItemPurchaseServiceItemParam *ServiceItemPurchaseServiceItemParam) WriteTo(writable types.Writable) {
-	contentWritable := writable.CopyNew()
-
-	serviceItemPurchaseServiceItemParam.ItemCode.WriteTo(contentWritable)
-	serviceItemPurchaseServiceItemParam.PriceID.WriteTo(contentWritable)
-	serviceItemPurchaseServiceItemParam.ReferenceID.WriteTo(contentWritable)
-	serviceItemPurchaseServiceItemParam.Balance.WriteTo(contentWritable)
-	serviceItemPurchaseServiceItemParam.ItemName.WriteTo(contentWritable)
-	serviceItemPurchaseServiceItemParam.EcServiceToken.WriteTo(contentWritable)
-	serviceItemPurchaseServiceItemParam.Language.WriteTo(contentWritable)
-	serviceItemPurchaseServiceItemParam.TitleID.WriteTo(contentWritable)
-
-	content := contentWritable.Bytes()
-
-	serviceItemPurchaseServiceItemParam.WriteHeaderTo(writable, uint32(len(content)))
-
-	writable.Write(content)
-}
-
 // Copy returns a new copied instance of ServiceItemPurchaseServiceItemParam
-func (serviceItemPurchaseServiceItemParam *ServiceItemPurchaseServiceItemParam) Copy() types.RVType {
+func (sipsip *ServiceItemPurchaseServiceItemParam) Copy() types.RVType {
 	copied := NewServiceItemPurchaseServiceItemParam()
 
-	copied.StructureVersion = serviceItemPurchaseServiceItemParam.StructureVersion
-
-	copied.ItemCode = serviceItemPurchaseServiceItemParam.ItemCode
-	copied.PriceID = serviceItemPurchaseServiceItemParam.PriceID
-	copied.ReferenceID = serviceItemPurchaseServiceItemParam.ReferenceID
-	copied.Balance = serviceItemPurchaseServiceItemParam.Balance
-	copied.ItemName = serviceItemPurchaseServiceItemParam.ItemName
-	copied.EcServiceToken = serviceItemPurchaseServiceItemParam.EcServiceToken
-	copied.Language = serviceItemPurchaseServiceItemParam.Language
-	copied.TitleID = serviceItemPurchaseServiceItemParam.TitleID
+	copied.StructureVersion = sipsip.StructureVersion
+	copied.ItemCode = sipsip.ItemCode.Copy().(*types.String)
+	copied.PriceID = sipsip.PriceID.Copy().(*types.String)
+	copied.ReferenceID = sipsip.ReferenceID.Copy().(*types.String)
+	copied.Balance = sipsip.Balance.Copy().(*types.String)
+	copied.ItemName = sipsip.ItemName.Copy().(*types.String)
+	copied.EcServiceToken = sipsip.EcServiceToken.Copy().(*types.String)
+	copied.Language = sipsip.Language.Copy().(*types.String)
+	copied.TitleID = sipsip.TitleID.Copy().(*types.String)
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (serviceItemPurchaseServiceItemParam *ServiceItemPurchaseServiceItemParam) Equals(o types.RVType) bool {
+// Equals checks if the given ServiceItemPurchaseServiceItemParam contains the same data as the current ServiceItemPurchaseServiceItemParam
+func (sipsip *ServiceItemPurchaseServiceItemParam) Equals(o types.RVType) bool {
 	if _, ok := o.(*ServiceItemPurchaseServiceItemParam); !ok {
 		return false
 	}
 
 	other := o.(*ServiceItemPurchaseServiceItemParam)
 
-	if serviceItemPurchaseServiceItemParam.StructureVersion != other.StructureVersion {
+	if sipsip.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if !serviceItemPurchaseServiceItemParam.ItemCode.Equals(other.ItemCode) {
+	if !sipsip.ItemCode.Equals(other.ItemCode) {
 		return false
 	}
 
-	if !serviceItemPurchaseServiceItemParam.PriceID.Equals(other.PriceID) {
+	if !sipsip.PriceID.Equals(other.PriceID) {
 		return false
 	}
 
-	if !serviceItemPurchaseServiceItemParam.ReferenceID.Equals(other.ReferenceID) {
+	if !sipsip.ReferenceID.Equals(other.ReferenceID) {
 		return false
 	}
 
-	if !serviceItemPurchaseServiceItemParam.Balance.Equals(other.Balance) {
+	if !sipsip.Balance.Equals(other.Balance) {
 		return false
 	}
 
-	if !serviceItemPurchaseServiceItemParam.ItemName.Equals(other.ItemName) {
+	if !sipsip.ItemName.Equals(other.ItemName) {
 		return false
 	}
 
-	if !serviceItemPurchaseServiceItemParam.EcServiceToken.Equals(other.EcServiceToken) {
+	if !sipsip.EcServiceToken.Equals(other.EcServiceToken) {
 		return false
 	}
 
-	if !serviceItemPurchaseServiceItemParam.Language.Equals(other.Language) {
+	if !sipsip.Language.Equals(other.Language) {
 		return false
 	}
 
-	if !serviceItemPurchaseServiceItemParam.TitleID.Equals(other.TitleID) {
-		return false
-	}
-
-	return true
+	return sipsip.TitleID.Equals(other.TitleID)
 }
 
-// String returns a string representation of the struct
-func (serviceItemPurchaseServiceItemParam *ServiceItemPurchaseServiceItemParam) String() string {
-	return serviceItemPurchaseServiceItemParam.FormatToString(0)
+// String returns the string representation of the ServiceItemPurchaseServiceItemParam
+func (sipsip *ServiceItemPurchaseServiceItemParam) String() string {
+	return sipsip.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (serviceItemPurchaseServiceItemParam *ServiceItemPurchaseServiceItemParam) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the ServiceItemPurchaseServiceItemParam using the provided indentation level
+func (sipsip *ServiceItemPurchaseServiceItemParam) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("ServiceItemPurchaseServiceItemParam{\n")
-	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, serviceItemPurchaseServiceItemParam.StructureVersion))
-	b.WriteString(fmt.Sprintf("%sItemCode: %q,\n", indentationValues, serviceItemPurchaseServiceItemParam.ItemCode))
-	b.WriteString(fmt.Sprintf("%sPriceID: %q,\n", indentationValues, serviceItemPurchaseServiceItemParam.PriceID))
-	b.WriteString(fmt.Sprintf("%sReferenceID: %q,\n", indentationValues, serviceItemPurchaseServiceItemParam.ReferenceID))
-	b.WriteString(fmt.Sprintf("%sBalance: %q,\n", indentationValues, serviceItemPurchaseServiceItemParam.Balance))
-	b.WriteString(fmt.Sprintf("%sItemName: %q,\n", indentationValues, serviceItemPurchaseServiceItemParam.ItemName))
-	b.WriteString(fmt.Sprintf("%sEcServiceToken: %q,\n", indentationValues, serviceItemPurchaseServiceItemParam.EcServiceToken))
-	b.WriteString(fmt.Sprintf("%sLanguage: %q,\n", indentationValues, serviceItemPurchaseServiceItemParam.Language))
-	b.WriteString(fmt.Sprintf("%sTitleID: %q,\n", indentationValues, serviceItemPurchaseServiceItemParam.TitleID))
+	b.WriteString(fmt.Sprintf("%sItemCode: %s,\n", indentationValues, sipsip.ItemCode))
+	b.WriteString(fmt.Sprintf("%sPriceID: %s,\n", indentationValues, sipsip.PriceID))
+	b.WriteString(fmt.Sprintf("%sReferenceID: %s,\n", indentationValues, sipsip.ReferenceID))
+	b.WriteString(fmt.Sprintf("%sBalance: %s,\n", indentationValues, sipsip.Balance))
+	b.WriteString(fmt.Sprintf("%sItemName: %s,\n", indentationValues, sipsip.ItemName))
+	b.WriteString(fmt.Sprintf("%sEcServiceToken: %s,\n", indentationValues, sipsip.EcServiceToken))
+	b.WriteString(fmt.Sprintf("%sLanguage: %s,\n", indentationValues, sipsip.Language))
+	b.WriteString(fmt.Sprintf("%sTitleID: %s,\n", indentationValues, sipsip.TitleID))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -187,5 +181,16 @@ func (serviceItemPurchaseServiceItemParam *ServiceItemPurchaseServiceItemParam) 
 
 // NewServiceItemPurchaseServiceItemParam returns a new ServiceItemPurchaseServiceItemParam
 func NewServiceItemPurchaseServiceItemParam() *ServiceItemPurchaseServiceItemParam {
-	return &ServiceItemPurchaseServiceItemParam{}
+	sipsip := &ServiceItemPurchaseServiceItemParam{
+		ItemCode:       types.NewString(""),
+		PriceID:        types.NewString(""),
+		ReferenceID:    types.NewString(""),
+		Balance:        types.NewString(""),
+		ItemName:       types.NewString(""),
+		EcServiceToken: types.NewString(""),
+		Language:       types.NewString(""),
+		TitleID:        types.NewString(""),
+	}
+
+	return sipsip
 }

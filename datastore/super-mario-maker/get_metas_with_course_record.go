@@ -28,7 +28,9 @@ func (protocol *Protocol) handleGetMetasWithCourseRecord(packet nex.PacketInterf
 
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
-	params, err := nex.StreamReadListStructure(parametersStream, datastore_super_mario_maker_types.NewDataStoreGetCourseRecordParam())
+	params := types.NewList[*datastore_super_mario_maker_types.DataStoreGetCourseRecordParam]()
+	params.Type = datastore_super_mario_maker_types.NewDataStoreGetCourseRecordParam()
+	err = params.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.GetMetasWithCourseRecord(fmt.Errorf("Failed to read params from parameters. %s", err.Error()), packet, callID, nil, nil)
 		if errorCode != 0 {

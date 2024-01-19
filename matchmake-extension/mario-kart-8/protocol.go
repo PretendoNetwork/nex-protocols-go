@@ -55,7 +55,7 @@ type Protocol struct {
 	UpdateSimpleSearchObject                  func(err error, packet nex.PacketInterface, callID uint32, objectID *types.PrimitiveU32, newObject *matchmake_extension_mario_kart8_types.SimpleSearchObject) (*nex.RMCMessage, uint32)
 	DeleteSimpleSearchObject                  func(err error, packet nex.PacketInterface, callID uint32, objectID *types.PrimitiveU32) (*nex.RMCMessage, uint32)
 	SearchSimpleSearchObject                  func(err error, packet nex.PacketInterface, callID uint32, param *matchmake_extension_mario_kart8_types.SimpleSearchParam) (*nex.RMCMessage, uint32)
-	JoinMatchmakeSessionWithExtraParticipants func(err error, packet nex.PacketInterface, callID uint32, gid *types.PrimitiveU32, joinMessage string, ignoreBlacklist *types.PrimitiveBool, participationCount *types.PrimitiveU16, extraParticipants *types.PrimitiveU32) (*nex.RMCMessage, uint32)
+	JoinMatchmakeSessionWithExtraParticipants func(err error, packet nex.PacketInterface, callID uint32, gid *types.PrimitiveU32, joinMessage *types.String, ignoreBlacklist *types.PrimitiveBool, participationCount *types.PrimitiveU16, extraParticipants *types.PrimitiveU32) (*nex.RMCMessage, uint32)
 	SearchSimpleSearchObjectByObjectIDs       func(err error, packet nex.PacketInterface, callID uint32, objectIDs *types.List[*types.PrimitiveU32]) (*nex.RMCMessage, uint32)
 }
 

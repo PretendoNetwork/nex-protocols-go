@@ -1,15 +1,14 @@
-// Package types implements all the types used by the Ranking 2  protocol
+// Package types implements all the types used by the Ranking2 protocol
 package types
 
 import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-go/types"
 )
 
-// Ranking2EstimateScoreRankInput holds data for the Ranking 2  protocol
+// Ranking2EstimateScoreRankInput is a type within the Ranking2 protocol
 type Ranking2EstimateScoreRankInput struct {
 	types.Structure
 	Category           *types.PrimitiveU32
@@ -17,103 +16,99 @@ type Ranking2EstimateScoreRankInput struct {
 	Score              *types.PrimitiveU32
 }
 
+// WriteTo writes the Ranking2EstimateScoreRankInput to the given writable
+func (resri *Ranking2EstimateScoreRankInput) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
+
+	resri.Category.WriteTo(writable)
+	resri.NumSeasonsToGoBack.WriteTo(writable)
+	resri.Score.WriteTo(writable)
+
+	content := contentWritable.Bytes()
+
+	resri.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
+}
+
 // ExtractFrom extracts the Ranking2EstimateScoreRankInput from the given readable
-func (ranking2EstimateScoreRankInput *Ranking2EstimateScoreRankInput) ExtractFrom(readable types.Readable) error {
+func (resri *Ranking2EstimateScoreRankInput) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	if err = ranking2EstimateScoreRankInput.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to read Ranking2EstimateScoreRankInput header. %s", err.Error())
+	err = resri.ExtractHeaderFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract Ranking2EstimateScoreRankInput header. %s", err.Error())
 	}
 
-	err = ranking2EstimateScoreRankInput.Category.ExtractFrom(readable)
+	err = resri.Category.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract Ranking2EstimateScoreRankInput.Category from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract Ranking2EstimateScoreRankInput.Category. %s", err.Error())
 	}
 
-	err = ranking2EstimateScoreRankInput.NumSeasonsToGoBack.ExtractFrom(readable)
+	err = resri.NumSeasonsToGoBack.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract Ranking2EstimateScoreRankInput.NumSeasonsToGoBack from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract Ranking2EstimateScoreRankInput.NumSeasonsToGoBack. %s", err.Error())
 	}
 
-	err = ranking2EstimateScoreRankInput.Score.ExtractFrom(readable)
+	err = resri.Score.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract Ranking2EstimateScoreRankInput.Score from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract Ranking2EstimateScoreRankInput.Score. %s", err.Error())
 	}
 
 	return nil
 }
 
-// WriteTo writes the Ranking2EstimateScoreRankInput to the given writable
-func (ranking2EstimateScoreRankInput *Ranking2EstimateScoreRankInput) WriteTo(writable types.Writable) {
-	contentWritable := writable.CopyNew()
-
-	ranking2EstimateScoreRankInput.Category.WriteTo(contentWritable)
-	ranking2EstimateScoreRankInput.NumSeasonsToGoBack.WriteTo(contentWritable)
-	ranking2EstimateScoreRankInput.Score.WriteTo(contentWritable)
-
-	content := contentWritable.Bytes()
-
-	ranking2EstimateScoreRankInput.WriteHeaderTo(writable, uint32(len(content)))
-
-	writable.Write(content)
-}
-
 // Copy returns a new copied instance of Ranking2EstimateScoreRankInput
-func (ranking2EstimateScoreRankInput *Ranking2EstimateScoreRankInput) Copy() types.RVType {
+func (resri *Ranking2EstimateScoreRankInput) Copy() types.RVType {
 	copied := NewRanking2EstimateScoreRankInput()
 
-	copied.StructureVersion = ranking2EstimateScoreRankInput.StructureVersion
+	copied.StructureVersion = resri.StructureVersion
+	copied.Category = resri.Category.Copy().(*types.PrimitiveU32)
+	copied.NumSeasonsToGoBack = resri.NumSeasonsToGoBack.Copy().(*types.PrimitiveU8)
+	copied.Score = resri.Score.Copy().(*types.PrimitiveU32)
 
-	copied.Category = ranking2EstimateScoreRankInput.Category
-	copied.NumSeasonsToGoBack = ranking2EstimateScoreRankInput.NumSeasonsToGoBack
-	copied.Score = ranking2EstimateScoreRankInput.Score
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (ranking2EstimateScoreRankInput *Ranking2EstimateScoreRankInput) Equals(o types.RVType) bool {
+// Equals checks if the given Ranking2EstimateScoreRankInput contains the same data as the current Ranking2EstimateScoreRankInput
+func (resri *Ranking2EstimateScoreRankInput) Equals(o types.RVType) bool {
 	if _, ok := o.(*Ranking2EstimateScoreRankInput); !ok {
 		return false
 	}
 
 	other := o.(*Ranking2EstimateScoreRankInput)
 
-	if ranking2EstimateScoreRankInput.StructureVersion != other.StructureVersion {
+	if resri.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if !ranking2EstimateScoreRankInput.Category.Equals(other.Category) {
+	if !resri.Category.Equals(other.Category) {
 		return false
 	}
 
-	if !ranking2EstimateScoreRankInput.NumSeasonsToGoBack.Equals(other.NumSeasonsToGoBack) {
+	if !resri.NumSeasonsToGoBack.Equals(other.NumSeasonsToGoBack) {
 		return false
 	}
 
-	if !ranking2EstimateScoreRankInput.Score.Equals(other.Score) {
-		return false
-	}
-
-	return true
+	return resri.Score.Equals(other.Score)
 }
 
-// String returns a string representation of the struct
-func (ranking2EstimateScoreRankInput *Ranking2EstimateScoreRankInput) String() string {
-	return ranking2EstimateScoreRankInput.FormatToString(0)
+// String returns the string representation of the Ranking2EstimateScoreRankInput
+func (resri *Ranking2EstimateScoreRankInput) String() string {
+	return resri.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (ranking2EstimateScoreRankInput *Ranking2EstimateScoreRankInput) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the Ranking2EstimateScoreRankInput using the provided indentation level
+func (resri *Ranking2EstimateScoreRankInput) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("Ranking2EstimateScoreRankInput{\n")
-	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, ranking2EstimateScoreRankInput.StructureVersion))
-	b.WriteString(fmt.Sprintf("%sCategory: %d,\n", indentationValues, ranking2EstimateScoreRankInput.Category))
-	b.WriteString(fmt.Sprintf("%sNumSeasonsToGoBack: %d,\n", indentationValues, ranking2EstimateScoreRankInput.NumSeasonsToGoBack))
-	b.WriteString(fmt.Sprintf("%sScore: %d,\n", indentationValues, ranking2EstimateScoreRankInput.Score))
+	b.WriteString(fmt.Sprintf("%sCategory: %s,\n", indentationValues, resri.Category))
+	b.WriteString(fmt.Sprintf("%sNumSeasonsToGoBack: %s,\n", indentationValues, resri.NumSeasonsToGoBack))
+	b.WriteString(fmt.Sprintf("%sScore: %s,\n", indentationValues, resri.Score))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -121,5 +116,11 @@ func (ranking2EstimateScoreRankInput *Ranking2EstimateScoreRankInput) FormatToSt
 
 // NewRanking2EstimateScoreRankInput returns a new Ranking2EstimateScoreRankInput
 func NewRanking2EstimateScoreRankInput() *Ranking2EstimateScoreRankInput {
-	return &Ranking2EstimateScoreRankInput{}
+	resri := &Ranking2EstimateScoreRankInput{
+		Category:           types.NewPrimitiveU32(0),
+		NumSeasonsToGoBack: types.NewPrimitiveU8(0),
+		Score:              types.NewPrimitiveU32(0),
+	}
+
+	return resri
 }

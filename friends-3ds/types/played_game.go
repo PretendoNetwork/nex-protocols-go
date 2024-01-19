@@ -1,15 +1,14 @@
-// Package types implements all the types used by the Friends 3DS protocol
+// Package types implements all the types used by the Friends3DS protocol
 package types
 
 import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-go/types"
 )
 
-// PlayedGame is a data structure used by the Friends 3DS protocol to hold information about a friends Mii
+// PlayedGame is a type within the Friends3DS protocol
 type PlayedGame struct {
 	types.Structure
 	GameKey *GameKey
@@ -17,81 +16,86 @@ type PlayedGame struct {
 }
 
 // WriteTo writes the PlayedGame to the given writable
-func (playedGame *PlayedGame) WriteTo(writable types.Writable) {
+func (pg *PlayedGame) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	playedGame.GameKey.WriteTo(contentWritable)
-	playedGame.Unknown.WriteTo(contentWritable)
+	pg.GameKey.WriteTo(writable)
+	pg.Unknown.WriteTo(writable)
 
 	content := contentWritable.Bytes()
 
-	playedGame.WriteHeaderTo(writable, uint32(len(content)))
+	pg.WriteHeaderTo(writable, uint32(len(content)))
 
 	writable.Write(content)
 }
 
+// ExtractFrom extracts the PlayedGame from the given readable
+func (pg *PlayedGame) ExtractFrom(readable types.Readable) error {
+	var err error
+
+	err = pg.ExtractHeaderFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract PlayedGame header. %s", err.Error())
+	}
+
+	err = pg.GameKey.ExtractFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract PlayedGame.GameKey. %s", err.Error())
+	}
+
+	err = pg.Unknown.ExtractFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract PlayedGame.Unknown. %s", err.Error())
+	}
+
+	return nil
+}
+
 // Copy returns a new copied instance of PlayedGame
-func (playedGame *PlayedGame) Copy() types.RVType {
+func (pg *PlayedGame) Copy() types.RVType {
 	copied := NewPlayedGame()
 
-	copied.StructureVersion = playedGame.StructureVersion
-
-	copied.GameKey = playedGame.GameKey.Copy().(*GameKey)
-	copied.Unknown = playedGame.Unknown.Copy()
+	copied.StructureVersion = pg.StructureVersion
+	copied.GameKey = pg.GameKey.Copy().(*GameKey)
+	copied.Unknown = pg.Unknown.Copy().(*types.DateTime)
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (playedGame *PlayedGame) Equals(o types.RVType) bool {
+// Equals checks if the given PlayedGame contains the same data as the current PlayedGame
+func (pg *PlayedGame) Equals(o types.RVType) bool {
 	if _, ok := o.(*PlayedGame); !ok {
 		return false
 	}
 
 	other := o.(*PlayedGame)
 
-	if playedGame.StructureVersion != other.StructureVersion {
+	if pg.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if !playedGame.GameKey.Equals(other.GameKey) {
+	if !pg.GameKey.Equals(other.GameKey) {
 		return false
 	}
 
-	if !playedGame.Unknown.Equals(other.Unknown) {
-		return false
-	}
-
-	return true
+	return pg.Unknown.Equals(other.Unknown)
 }
 
-// String returns a string representation of the struct
-func (playedGame *PlayedGame) String() string {
-	return playedGame.FormatToString(0)
+// String returns the string representation of the PlayedGame
+func (pg *PlayedGame) String() string {
+	return pg.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (playedGame *PlayedGame) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the PlayedGame using the provided indentation level
+func (pg *PlayedGame) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("PlayedGame{\n")
-	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, playedGame.StructureVersion))
-
-	if playedGame.Unknown != nil {
-		b.WriteString(fmt.Sprintf("%sGameKey: %s\n", indentationValues, playedGame.GameKey.FormatToString(indentationLevel+1)))
-	} else {
-		b.WriteString(fmt.Sprintf("%sGameKey: nil\n", indentationValues))
-	}
-
-	if playedGame.Unknown != nil {
-		b.WriteString(fmt.Sprintf("%sUnknown: %s\n", indentationValues, playedGame.Unknown.FormatToString(indentationLevel+1)))
-	} else {
-		b.WriteString(fmt.Sprintf("%sUnknown: nil\n", indentationValues))
-	}
-
+	b.WriteString(fmt.Sprintf("%sGameKey: %s,\n", indentationValues, pg.GameKey.FormatToString(indentationLevel+1)))
+	b.WriteString(fmt.Sprintf("%sUnknown: %s,\n", indentationValues, pg.Unknown.FormatToString(indentationLevel+1)))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -99,5 +103,10 @@ func (playedGame *PlayedGame) FormatToString(indentationLevel int) string {
 
 // NewPlayedGame returns a new PlayedGame
 func NewPlayedGame() *PlayedGame {
-	return &PlayedGame{}
+	pg := &PlayedGame{
+		GameKey: NewGameKey(),
+		Unknown: types.NewDateTime(0),
+	}
+
+	return pg
 }

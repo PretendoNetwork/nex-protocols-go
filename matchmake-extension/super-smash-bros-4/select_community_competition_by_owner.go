@@ -3,14 +3,10 @@ package protocol
 
 import (
 	nex "github.com/PretendoNetwork/nex-go"
-	"github.com/PretendoNetwork/nex-go/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
 func (protocol *Protocol) handleSelectCommunityCompetitionByOwner(packet nex.PacketInterface) {
-	var err error
-	var errorCode uint32
-
 	if protocol.SelectCommunityCompetitionByOwner == nil {
 		globals.Logger.Warning("MatchmakeExtensionSuperSmashBros4::SelectCommunityCompetitionByOwner not implemented")
 		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)

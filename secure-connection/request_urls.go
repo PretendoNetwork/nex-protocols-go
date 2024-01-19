@@ -29,7 +29,7 @@ func (protocol *Protocol) handleRequestURLs(packet nex.PacketInterface) {
 	cidTarget := types.NewPrimitiveU32(0)
 	err = cidTarget.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.RequestURLs(fmt.Errorf("Failed to read cidTarget from parameters. %s", err.Error()), packet, callID, 0, nil)
+		_, errorCode = protocol.RequestURLs(fmt.Errorf("Failed to read cidTarget from parameters. %s", err.Error()), packet, callID, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -40,7 +40,7 @@ func (protocol *Protocol) handleRequestURLs(packet nex.PacketInterface) {
 	pidTarget := types.NewPID(0)
 	err = pidTarget.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.RequestURLs(fmt.Errorf("Failed to read pidTarget from parameters. %s", err.Error()), packet, callID, 0, nil)
+		_, errorCode = protocol.RequestURLs(fmt.Errorf("Failed to read pidTarget from parameters. %s", err.Error()), packet, callID, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}

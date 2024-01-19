@@ -3,14 +3,10 @@ package protocol
 
 import (
 	nex "github.com/PretendoNetwork/nex-go"
-	"github.com/PretendoNetwork/nex-go/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
 func (protocol *Protocol) handleUnfollow(packet nex.PacketInterface) {
-	var err error
-	var errorCode uint32
-
 	if protocol.Unfollow == nil {
 		globals.Logger.Warning("Subscriber::Unfollow not implemented")
 		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)

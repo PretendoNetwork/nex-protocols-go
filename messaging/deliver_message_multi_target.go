@@ -3,14 +3,10 @@ package protocol
 
 import (
 	nex "github.com/PretendoNetwork/nex-go"
-	"github.com/PretendoNetwork/nex-go/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
 func (protocol *Protocol) handleDeliverMessageMultiTarget(packet nex.PacketInterface) {
-	var err error
-	var errorCode uint32
-
 	if protocol.DeliverMessageMultiTarget == nil {
 		globals.Logger.Warning("Messaging::DeliverMessageMultiTarget not implemented")
 		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)

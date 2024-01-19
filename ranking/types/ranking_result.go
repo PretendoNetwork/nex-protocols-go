@@ -5,154 +5,110 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-go/types"
 )
 
-// RankingResult holds the result of a Ranking get request
+// RankingResult is a type within the Ranking protocol
 type RankingResult struct {
 	types.Structure
-	RankDataList []*RankingRankData
+	RankDataList *types.List[*RankingRankData]
 	TotalCount   *types.PrimitiveU32
 	SinceTime    *types.DateTime
 }
 
+// WriteTo writes the RankingResult to the given writable
+func (rr *RankingResult) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
+
+	rr.RankDataList.WriteTo(writable)
+	rr.TotalCount.WriteTo(writable)
+	rr.SinceTime.WriteTo(writable)
+
+	content := contentWritable.Bytes()
+
+	rr.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
+}
+
 // ExtractFrom extracts the RankingResult from the given readable
-func (rankingResult *RankingResult) ExtractFrom(readable types.Readable) error {
+func (rr *RankingResult) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	if err = rankingResult.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to read RankingResult header. %s", err.Error())
+	err = rr.ExtractHeaderFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract RankingResult header. %s", err.Error())
 	}
 
-	rankDataList, err := nex.StreamReadListStructure(stream, NewRankingRankData())
+	err = rr.RankDataList.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract RankingResult.RankDataList from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract RankingResult.RankDataList. %s", err.Error())
 	}
 
-	rankingResult.RankDataList = rankDataList
-
-	err = rankingResult.TotalCount.ExtractFrom(readable)
+	err = rr.TotalCount.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract RankingResult.TotalCount from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract RankingResult.TotalCount. %s", err.Error())
 	}
 
-	err = rankingResult.SinceTime.ExtractFrom(readable)
+	err = rr.SinceTime.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract RankingResult.SinceTime from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract RankingResult.SinceTime. %s", err.Error())
 	}
 
 	return nil
 }
 
-// WriteTo writes the RankingResult to the given writable
-func (rankingResult *RankingResult) WriteTo(writable types.Writable) {
-	contentWritable := writable.CopyNew()
-
-	rankingResult.RankDataList.WriteTo(contentWritable)
-	rankingResult.TotalCount.WriteTo(contentWritable)
-	rankingResult.SinceTime.WriteTo(contentWritable)
-
-	content := contentWritable.Bytes()
-
-	rankingResult.WriteHeaderTo(writable, uint32(len(content)))
-
-	writable.Write(content)
-}
-
 // Copy returns a new copied instance of RankingResult
-func (rankingResult *RankingResult) Copy() types.RVType {
+func (rr *RankingResult) Copy() types.RVType {
 	copied := NewRankingResult()
 
-	copied.StructureVersion = rankingResult.StructureVersion
-
-	copied.RankDataList = make([]*RankingRankData, len(rankingResult.RankDataList))
-
-	for i := 0; i < len(rankingResult.RankDataList); i++ {
-		copied.RankDataList[i] = rankingResult.RankDataList[i].Copy().(*RankingRankData)
-	}
-
-	copied.TotalCount = rankingResult.TotalCount
-
-	copied.SinceTime = rankingResult.SinceTime.Copy()
+	copied.StructureVersion = rr.StructureVersion
+	copied.RankDataList = rr.RankDataList.Copy().(*types.List[*RankingRankData])
+	copied.TotalCount = rr.TotalCount.Copy().(*types.PrimitiveU32)
+	copied.SinceTime = rr.SinceTime.Copy().(*types.DateTime)
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (rankingResult *RankingResult) Equals(o types.RVType) bool {
+// Equals checks if the given RankingResult contains the same data as the current RankingResult
+func (rr *RankingResult) Equals(o types.RVType) bool {
 	if _, ok := o.(*RankingResult); !ok {
 		return false
 	}
 
 	other := o.(*RankingResult)
 
-	if rankingResult.StructureVersion != other.StructureVersion {
+	if rr.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if len(rankingResult.RankDataList) != len(other.RankDataList) {
+	if !rr.RankDataList.Equals(other.RankDataList) {
 		return false
 	}
 
-	for i := 0; i < len(rankingResult.RankDataList); i++ {
-		if !rankingResult.RankDataList[i].Equals(other.RankDataList[i]) {
-			return false
-		}
-	}
-
-	if !rankingResult.TotalCount.Equals(other.TotalCount) {
+	if !rr.TotalCount.Equals(other.TotalCount) {
 		return false
 	}
 
-	if !rankingResult.SinceTime.Equals(other.SinceTime) {
-		return false
-	}
-
-	return true
+	return rr.SinceTime.Equals(other.SinceTime)
 }
 
-// String returns a string representation of the struct
-func (rankingResult *RankingResult) String() string {
-	return rankingResult.FormatToString(0)
+// String returns the string representation of the RankingResult
+func (rr *RankingResult) String() string {
+	return rr.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (rankingResult *RankingResult) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the RankingResult using the provided indentation level
+func (rr *RankingResult) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
-	indentationListValues := strings.Repeat("\t", indentationLevel+2)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("RankingResult{\n")
-	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, rankingResult.StructureVersion))
-
-	if len(rankingResult.RankDataList) == 0 {
-		b.WriteString(fmt.Sprintf("%sRankDataList: [],\n", indentationValues))
-	} else {
-		b.WriteString(fmt.Sprintf("%sRankDataList: [\n", indentationValues))
-
-		for i := 0; i < len(rankingResult.RankDataList); i++ {
-			str := rankingResult.RankDataList[i].FormatToString(indentationLevel + 2)
-			if i == len(rankingResult.RankDataList)-1 {
-				b.WriteString(fmt.Sprintf("%s%s\n", indentationListValues, str))
-			} else {
-				b.WriteString(fmt.Sprintf("%s%s,\n", indentationListValues, str))
-			}
-		}
-
-		b.WriteString(fmt.Sprintf("%s],\n", indentationValues))
-	}
-
-	b.WriteString(fmt.Sprintf("%sTotalCount: %d,\n", indentationValues, rankingResult.TotalCount))
-
-	if rankingResult.SinceTime != nil {
-		b.WriteString(fmt.Sprintf("%sSinceTime: %s\n", indentationValues, rankingResult.SinceTime.FormatToString(indentationLevel+1)))
-	} else {
-		b.WriteString(fmt.Sprintf("%sSinceTime: nil\n", indentationValues))
-	}
-
+	b.WriteString(fmt.Sprintf("%sRankDataList: %s,\n", indentationValues, rr.RankDataList))
+	b.WriteString(fmt.Sprintf("%sTotalCount: %s,\n", indentationValues, rr.TotalCount))
+	b.WriteString(fmt.Sprintf("%sSinceTime: %s,\n", indentationValues, rr.SinceTime.FormatToString(indentationLevel+1)))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -160,5 +116,13 @@ func (rankingResult *RankingResult) FormatToString(indentationLevel int) string 
 
 // NewRankingResult returns a new RankingResult
 func NewRankingResult() *RankingResult {
-	return &RankingResult{}
+	rr := &RankingResult{
+		RankDataList: types.NewList[*RankingRankData](),
+		TotalCount:   types.NewPrimitiveU32(0),
+		SinceTime:    types.NewDateTime(0),
+	}
+
+	rr.RankDataList.Type = NewRankingRankData()
+
+	return rr
 }

@@ -29,7 +29,7 @@ func (protocol *Protocol) handleGetDetailedList(packet nex.PacketInterface) {
 	byRelationship := types.NewPrimitiveU8(0)
 	err = byRelationship.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.GetDetailedList(fmt.Errorf("Failed to read byRelationship from parameters. %s", err.Error()), packet, callID, 0, false)
+		_, errorCode = protocol.GetDetailedList(fmt.Errorf("Failed to read byRelationship from parameters. %s", err.Error()), packet, callID, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -40,7 +40,7 @@ func (protocol *Protocol) handleGetDetailedList(packet nex.PacketInterface) {
 	bReversed := types.NewPrimitiveBool(false)
 	err = bReversed.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.GetDetailedList(fmt.Errorf("Failed to read bReversed from parameters. %s", err.Error()), packet, callID, 0, false)
+		_, errorCode = protocol.GetDetailedList(fmt.Errorf("Failed to read bReversed from parameters. %s", err.Error()), packet, callID, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}

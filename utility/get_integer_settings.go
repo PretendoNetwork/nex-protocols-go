@@ -30,7 +30,7 @@ func (protocol *Protocol) handleGetIntegerSettings(packet nex.PacketInterface) {
 	integerSettingIndex := types.NewPrimitiveU32(0)
 	err = integerSettingIndex.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.GetIntegerSettings(fmt.Errorf("Failed to read integerSettingIndex from parameters. %s", err.Error()), packet, callID, 0)
+		_, errorCode = protocol.GetIntegerSettings(fmt.Errorf("Failed to read integerSettingIndex from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}

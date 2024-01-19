@@ -1,108 +1,101 @@
-// Package types implements all the types used by the Service Item (Team Kirby Clash Deluxe) protocol
+// Package types implements all the types used by the ServiceItem protocol
 package types
 
 import (
-	"bytes"
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-go/types"
 )
 
-// ServiceItemRightBinary holds data for the Service Item (Team Kirby Clash Deluxe) protocol
+// ServiceItemRightBinary is a type within the ServiceItem protocol
 type ServiceItemRightBinary struct {
 	types.Structure
 	UseType     *types.PrimitiveU8
-	RightBinary []byte
+	RightBinary *types.QBuffer
+}
+
+// WriteTo writes the ServiceItemRightBinary to the given writable
+func (sirb *ServiceItemRightBinary) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
+
+	sirb.UseType.WriteTo(writable)
+	sirb.RightBinary.WriteTo(writable)
+
+	content := contentWritable.Bytes()
+
+	sirb.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // ExtractFrom extracts the ServiceItemRightBinary from the given readable
-func (serviceItemRightBinary *ServiceItemRightBinary) ExtractFrom(readable types.Readable) error {
+func (sirb *ServiceItemRightBinary) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	if err = serviceItemRightBinary.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to read ServiceItemRightBinary header. %s", err.Error())
+	err = sirb.ExtractHeaderFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract ServiceItemRightBinary header. %s", err.Error())
 	}
 
-	err = serviceItemRightBinary.UseType.ExtractFrom(readable)
+	err = sirb.UseType.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemRightBinary.UseType from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract ServiceItemRightBinary.UseType. %s", err.Error())
 	}
 
-	serviceItemRightBinary.RightBinary, err = stream.ReadQBuffer()
+	err = sirb.RightBinary.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemRightBinary.RightBinary from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract ServiceItemRightBinary.RightBinary. %s", err.Error())
 	}
 
 	return nil
 }
 
-// WriteTo writes the ServiceItemRightBinary to the given writable
-func (serviceItemRightBinary *ServiceItemRightBinary) WriteTo(writable types.Writable) {
-	contentWritable := writable.CopyNew()
-
-	serviceItemRightBinary.UseType.WriteTo(contentWritable)
-	stream.WriteQBuffer(serviceItemRightBinary.RightBinary)
-
-	content := contentWritable.Bytes()
-
-	rvcd.WriteHeaderTo(writable, uint32(len(content)))
-
-	writable.Write(content)
-}
-
 // Copy returns a new copied instance of ServiceItemRightBinary
-func (serviceItemRightBinary *ServiceItemRightBinary) Copy() types.RVType {
+func (sirb *ServiceItemRightBinary) Copy() types.RVType {
 	copied := NewServiceItemRightBinary()
 
-	copied.StructureVersion = serviceItemRightBinary.StructureVersion
-
-	copied.UseType = serviceItemRightBinary.UseType
-	copied.RightBinary = serviceItemRightBinary.RightBinary
+	copied.StructureVersion = sirb.StructureVersion
+	copied.UseType = sirb.UseType.Copy().(*types.PrimitiveU8)
+	copied.RightBinary = sirb.RightBinary.Copy().(*types.QBuffer)
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (serviceItemRightBinary *ServiceItemRightBinary) Equals(o types.RVType) bool {
+// Equals checks if the given ServiceItemRightBinary contains the same data as the current ServiceItemRightBinary
+func (sirb *ServiceItemRightBinary) Equals(o types.RVType) bool {
 	if _, ok := o.(*ServiceItemRightBinary); !ok {
 		return false
 	}
 
 	other := o.(*ServiceItemRightBinary)
 
-	if serviceItemRightBinary.StructureVersion != other.StructureVersion {
+	if sirb.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if !serviceItemRightBinary.UseType.Equals(other.UseType) {
+	if !sirb.UseType.Equals(other.UseType) {
 		return false
 	}
 
-	if !serviceItemRightBinary.RightBinary.Equals(other.RightBinary) {
-		return false
-	}
-
-	return true
+	return sirb.RightBinary.Equals(other.RightBinary)
 }
 
-// String returns a string representation of the struct
-func (serviceItemRightBinary *ServiceItemRightBinary) String() string {
-	return serviceItemRightBinary.FormatToString(0)
+// String returns the string representation of the ServiceItemRightBinary
+func (sirb *ServiceItemRightBinary) String() string {
+	return sirb.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (serviceItemRightBinary *ServiceItemRightBinary) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the ServiceItemRightBinary using the provided indentation level
+func (sirb *ServiceItemRightBinary) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("ServiceItemRightBinary{\n")
-	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, serviceItemRightBinary.StructureVersion))
-	b.WriteString(fmt.Sprintf("%sUseType: %d,\n", indentationValues, serviceItemRightBinary.UseType))
-	b.WriteString(fmt.Sprintf("%sRightBinary: %x,\n", indentationValues, serviceItemRightBinary.RightBinary))
+	b.WriteString(fmt.Sprintf("%sUseType: %s,\n", indentationValues, sirb.UseType))
+	b.WriteString(fmt.Sprintf("%sRightBinary: %s,\n", indentationValues, sirb.RightBinary))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -110,5 +103,10 @@ func (serviceItemRightBinary *ServiceItemRightBinary) FormatToString(indentation
 
 // NewServiceItemRightBinary returns a new ServiceItemRightBinary
 func NewServiceItemRightBinary() *ServiceItemRightBinary {
-	return &ServiceItemRightBinary{}
+	sirb := &ServiceItemRightBinary{
+		UseType:     types.NewPrimitiveU8(0),
+		RightBinary: types.NewQBuffer(nil),
+	}
+
+	return sirb
 }

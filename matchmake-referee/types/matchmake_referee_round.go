@@ -1,15 +1,14 @@
-// Package types implements all the types used by the Matchmake Referee protocol
+// Package types implements all the types used by the MatchmakeReferee protocol
 package types
 
 import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-go/types"
 )
 
-// MatchmakeRefereeRound contains the results of a round
+// MatchmakeRefereeRound is a type within the MatchmakeReferee protocol
 type MatchmakeRefereeRound struct {
 	types.Structure
 	*types.Data
@@ -17,171 +16,139 @@ type MatchmakeRefereeRound struct {
 	GID                            *types.PrimitiveU32
 	State                          *types.PrimitiveU32
 	PersonalDataCategory           *types.PrimitiveU32
-	NormalizedPersonalRoundResults []*MatchmakeRefereePersonalRoundResult
+	NormalizedPersonalRoundResults *types.List[*MatchmakeRefereePersonalRoundResult]
 }
 
 // WriteTo writes the MatchmakeRefereeRound to the given writable
-func (matchmakeRefereeRound *MatchmakeRefereeRound) WriteTo(writable types.Writable) {
+func (mrr *MatchmakeRefereeRound) WriteTo(writable types.Writable) {
+	mrr.Data.WriteTo(writable)
+
 	contentWritable := writable.CopyNew()
 
-	matchmakeRefereeRound.RoundID.WriteTo(contentWritable)
-	matchmakeRefereeRound.GID.WriteTo(contentWritable)
-	matchmakeRefereeRound.State.WriteTo(contentWritable)
-	matchmakeRefereeRound.PersonalDataCategory.WriteTo(contentWritable)
-	matchmakeRefereeRound.NormalizedPersonalRoundResults.WriteTo(contentWritable)
+	mrr.RoundID.WriteTo(writable)
+	mrr.GID.WriteTo(writable)
+	mrr.State.WriteTo(writable)
+	mrr.PersonalDataCategory.WriteTo(writable)
+	mrr.NormalizedPersonalRoundResults.WriteTo(writable)
 
 	content := contentWritable.Bytes()
 
-	matchmakeRefereeRound.WriteHeaderTo(writable, uint32(len(content)))
+	mrr.WriteHeaderTo(writable, uint32(len(content)))
 
 	writable.Write(content)
 }
 
 // ExtractFrom extracts the MatchmakeRefereeRound from the given readable
-func (matchmakeRefereeRound *MatchmakeRefereeRound) ExtractFrom(readable types.Readable) error {
+func (mrr *MatchmakeRefereeRound) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	if err = matchmakeRefereeRound.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to read MatchmakeRefereeRound header. %s", err.Error())
+	err = mrr.Data.ExtractFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract MatchmakeRefereeRound.Data. %s", err.Error())
 	}
 
-	err = matchmakeRefereeRound.RoundID.ExtractFrom(readable)
+	err = mrr.ExtractHeaderFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract MatchmakeRefereeRound header. %s", err.Error())
+	}
+
+	err = mrr.RoundID.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract MatchmakeRefereeRound.RoundID. %s", err.Error())
 	}
 
-	err = matchmakeRefereeRound.GID.ExtractFrom(readable)
+	err = mrr.GID.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract MatchmakeRefereeRound.GID. %s", err.Error())
 	}
 
-	err = matchmakeRefereeRound.State.ExtractFrom(readable)
+	err = mrr.State.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract MatchmakeRefereeRound.State. %s", err.Error())
 	}
 
-	err = matchmakeRefereeRound.PersonalDataCategory.ExtractFrom(readable)
+	err = mrr.PersonalDataCategory.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract MatchmakeRefereeRound.PersonalDataCategory. %s", err.Error())
 	}
 
-	resultList, err := nex.StreamReadListStructure(stream, NewMatchmakeRefereePersonalRoundResult())
+	err = mrr.NormalizedPersonalRoundResults.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract MatchmakeRefereeRound.NormalizedPersonalRoundResults. %s", err.Error())
 	}
-
-	matchmakeRefereeRound.NormalizedPersonalRoundResults = resultList
 
 	return nil
 }
 
 // Copy returns a new copied instance of MatchmakeRefereeRound
-func (matchmakeRefereeRound *MatchmakeRefereeRound) Copy() types.RVType {
+func (mrr *MatchmakeRefereeRound) Copy() types.RVType {
 	copied := NewMatchmakeRefereeRound()
 
-	copied.StructureVersion = matchmakeRefereeRound.StructureVersion
-
-	copied.Data = matchmakeRefereeRound.Data.Copy().(*types.Data)
-
-	copied.RoundID = matchmakeRefereeRound.RoundID
-	copied.GID = matchmakeRefereeRound.GID
-	copied.State = matchmakeRefereeRound.State
-	copied.PersonalDataCategory = matchmakeRefereeRound.PersonalDataCategory
-
-	copied.NormalizedPersonalRoundResults = make([]*MatchmakeRefereePersonalRoundResult, len(matchmakeRefereeRound.NormalizedPersonalRoundResults))
-	for i := 0; i < len(matchmakeRefereeRound.NormalizedPersonalRoundResults); i++ {
-		copied.NormalizedPersonalRoundResults[i] = matchmakeRefereeRound.NormalizedPersonalRoundResults[i].Copy().(*MatchmakeRefereePersonalRoundResult)
-	}
+	copied.StructureVersion = mrr.StructureVersion
+	copied.Data = mrr.Data.Copy().(*types.Data)
+	copied.RoundID = mrr.RoundID.Copy().(*types.PrimitiveU64)
+	copied.GID = mrr.GID.Copy().(*types.PrimitiveU32)
+	copied.State = mrr.State.Copy().(*types.PrimitiveU32)
+	copied.PersonalDataCategory = mrr.PersonalDataCategory.Copy().(*types.PrimitiveU32)
+	copied.NormalizedPersonalRoundResults = mrr.NormalizedPersonalRoundResults.Copy().(*types.List[*MatchmakeRefereePersonalRoundResult])
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (matchmakeRefereeRound *MatchmakeRefereeRound) Equals(o types.RVType) bool {
+// Equals checks if the given MatchmakeRefereeRound contains the same data as the current MatchmakeRefereeRound
+func (mrr *MatchmakeRefereeRound) Equals(o types.RVType) bool {
 	if _, ok := o.(*MatchmakeRefereeRound); !ok {
 		return false
 	}
 
 	other := o.(*MatchmakeRefereeRound)
 
-	if matchmakeRefereeRound.StructureVersion != other.StructureVersion {
+	if mrr.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if !matchmakeRefereeRound.ParentType().Equals(other.ParentType()) {
+	if !mrr.Data.Equals(other.Data) {
 		return false
 	}
 
-	if !matchmakeRefereeRound.RoundID.Equals(other.RoundID) {
+	if !mrr.RoundID.Equals(other.RoundID) {
 		return false
 	}
 
-	if !matchmakeRefereeRound.GID.Equals(other.GID) {
+	if !mrr.GID.Equals(other.GID) {
 		return false
 	}
 
-	if !matchmakeRefereeRound.State.Equals(other.State) {
+	if !mrr.State.Equals(other.State) {
 		return false
 	}
 
-	if !matchmakeRefereeRound.PersonalDataCategory.Equals(other.PersonalDataCategory) {
+	if !mrr.PersonalDataCategory.Equals(other.PersonalDataCategory) {
 		return false
 	}
 
-	if matchmakeRefereeRound.NormalizedPersonalRoundResults != nil && other.NormalizedPersonalRoundResults != nil {
-		if len(matchmakeRefereeRound.NormalizedPersonalRoundResults) != len(other.NormalizedPersonalRoundResults) {
-			return false
-		}
-
-		for i := 0; i < len(matchmakeRefereeRound.NormalizedPersonalRoundResults); i++ {
-			if !matchmakeRefereeRound.NormalizedPersonalRoundResults[i].Equals(other.NormalizedPersonalRoundResults[i]) {
-				return false
-			}
-		}
-	} else if matchmakeRefereeRound.NormalizedPersonalRoundResults == nil {
-		return false
-	} else if other.NormalizedPersonalRoundResults == nil {
-		return false
-	}
-
-	return true
+	return mrr.NormalizedPersonalRoundResults.Equals(other.NormalizedPersonalRoundResults)
 }
 
-// String returns a string representation of the struct
-func (matchmakeRefereeRound *MatchmakeRefereeRound) String() string {
-	return matchmakeRefereeRound.FormatToString(0)
+// String returns the string representation of the MatchmakeRefereeRound
+func (mrr *MatchmakeRefereeRound) String() string {
+	return mrr.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (matchmakeRefereeRound *MatchmakeRefereeRound) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the MatchmakeRefereeRound using the provided indentation level
+func (mrr *MatchmakeRefereeRound) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
-	indentationListValues := strings.Repeat("\t", indentationLevel+2)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("MatchmakeRefereeRound{\n")
-	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, matchmakeRefereeRound.StructureVersion))
-	b.WriteString(fmt.Sprintf("%sRoundID: %d,\n", indentationValues, matchmakeRefereeRound.RoundID))
-	b.WriteString(fmt.Sprintf("%sGID: %d,\n", indentationValues, matchmakeRefereeRound.GID))
-	b.WriteString(fmt.Sprintf("%sState: %d,\n", indentationValues, matchmakeRefereeRound.State))
-	b.WriteString(fmt.Sprintf("%sPersonalDataCategory: %d,\n", indentationValues, matchmakeRefereeRound.PersonalDataCategory))
-	if len(matchmakeRefereeRound.NormalizedPersonalRoundResults) == 0 {
-		b.WriteString(fmt.Sprintf("%sPersonalRoundResults: [],\n", indentationValues))
-	} else {
-		b.WriteString(fmt.Sprintf("%sPersonalRoundResults: [\n", indentationValues))
-
-		for i := 0; i < len(matchmakeRefereeRound.NormalizedPersonalRoundResults); i++ {
-			str := matchmakeRefereeRound.NormalizedPersonalRoundResults[i].FormatToString(indentationLevel + 2)
-			if i == len(matchmakeRefereeRound.NormalizedPersonalRoundResults)-1 {
-				b.WriteString(fmt.Sprintf("%s%s\n", indentationListValues, str))
-			} else {
-				b.WriteString(fmt.Sprintf("%s%s,\n", indentationListValues, str))
-			}
-		}
-
-		b.WriteString(fmt.Sprintf("%s]\n", indentationValues))
-	}
+	b.WriteString(fmt.Sprintf("%sData (parent): %s,\n", indentationValues, mrr.Data.FormatToString(indentationLevel+1)))
+	b.WriteString(fmt.Sprintf("%sRoundID: %s,\n", indentationValues, mrr.RoundID))
+	b.WriteString(fmt.Sprintf("%sGID: %s,\n", indentationValues, mrr.GID))
+	b.WriteString(fmt.Sprintf("%sState: %s,\n", indentationValues, mrr.State))
+	b.WriteString(fmt.Sprintf("%sPersonalDataCategory: %s,\n", indentationValues, mrr.PersonalDataCategory))
+	b.WriteString(fmt.Sprintf("%sNormalizedPersonalRoundResults: %s,\n", indentationValues, mrr.NormalizedPersonalRoundResults))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -189,5 +156,16 @@ func (matchmakeRefereeRound *MatchmakeRefereeRound) FormatToString(indentationLe
 
 // NewMatchmakeRefereeRound returns a new MatchmakeRefereeRound
 func NewMatchmakeRefereeRound() *MatchmakeRefereeRound {
-	return &MatchmakeRefereeRound{}
+	mrr := &MatchmakeRefereeRound{
+		Data                           : types.NewData(),
+		RoundID:                        types.NewPrimitiveU64(0),
+		GID:                            types.NewPrimitiveU32(0),
+		State:                          types.NewPrimitiveU32(0),
+		PersonalDataCategory:           types.NewPrimitiveU32(0),
+		NormalizedPersonalRoundResults: types.NewList[*MatchmakeRefereePersonalRoundResult](),
+	}
+
+	mrr.NormalizedPersonalRoundResults.Type = NewMatchmakeRefereePersonalRoundResult()
+
+	return mrr
 }

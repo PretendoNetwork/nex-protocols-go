@@ -2,17 +2,17 @@
 package protocol
 
 type notificationCategories struct {
-	Participation                *types.PrimitiveU32
-	OwnershipChanged             *types.PrimitiveU32
-	RequestJoinGathering         *types.PrimitiveU32 // * This is what these mean in WiiU Chat, unclear if this is the real use
-	EndGathering                 *types.PrimitiveU32 // * This is what these mean in WiiU Chat, unclear if this is the real use
-	GatheringUnregistered        *types.PrimitiveU32
-	HostChanged                  *types.PrimitiveU32
-	ServiceItemRequestCompleted  *types.PrimitiveU32
-	MatchmakeRefereeRoundStarted *types.PrimitiveU32
-	SystemPasswordChanged        *types.PrimitiveU32
-	SystemPasswordCleared        *types.PrimitiveU32
-	SwitchGathering              *types.PrimitiveU32
+	Participation                uint32
+	OwnershipChanged             uint32
+	RequestJoinGathering         uint32 // * This is what these mean in WiiU Chat, unclear if this is the real use
+	EndGathering                 uint32 // * This is what these mean in WiiU Chat, unclear if this is the real use
+	GatheringUnregistered        uint32
+	HostChanged                  uint32
+	ServiceItemRequestCompleted  uint32
+	MatchmakeRefereeRoundStarted uint32
+	SystemPasswordChanged        uint32
+	SystemPasswordCleared        uint32
+	SwitchGathering              uint32
 }
 
 // NotificationCategories is a list of all the categories a notification can be in the Notifications protocol

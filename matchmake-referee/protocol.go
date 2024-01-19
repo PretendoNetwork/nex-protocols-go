@@ -65,7 +65,7 @@ type Protocol struct {
 	GetNotSummarizedRound func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, uint32)
 	GetRound              func(err error, packet nex.PacketInterface, callID uint32, roundID *types.PrimitiveU64) (*nex.RMCMessage, uint32)
 	GetStatsPrimary       func(err error, packet nex.PacketInterface, callID uint32, target *matchmake_referee_types.MatchmakeRefereeStatsTarget) (*nex.RMCMessage, uint32)
-	GetStatsPrimaries     func(err error, packet nex.PacketInterface, callID uint32, targets []*matchmake_referee_types.MatchmakeRefereeStatsTarget) (*nex.RMCMessage, uint32)
+	GetStatsPrimaries     func(err error, packet nex.PacketInterface, callID uint32, targets *types.List[*matchmake_referee_types.MatchmakeRefereeStatsTarget]) (*nex.RMCMessage, uint32)
 	GetStatsAll           func(err error, packet nex.PacketInterface, callID uint32, target *matchmake_referee_types.MatchmakeRefereeStatsTarget) (*nex.RMCMessage, uint32)
 	CreateStats           func(err error, packet nex.PacketInterface, callID uint32, param *matchmake_referee_types.MatchmakeRefereeStatsInitParam) (*nex.RMCMessage, uint32)
 	GetOrCreateStats      func(err error, packet nex.PacketInterface, callID uint32, param *matchmake_referee_types.MatchmakeRefereeStatsInitParam) (*nex.RMCMessage, uint32)
@@ -84,7 +84,7 @@ type Interface interface {
 	SetHandlerGetNotSummarizedRound(handler func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, uint32))
 	SetHandlerGetRound(handler func(err error, packet nex.PacketInterface, callID uint32, roundID *types.PrimitiveU64) (*nex.RMCMessage, uint32))
 	SetHandlerGetStatsPrimary(handler func(err error, packet nex.PacketInterface, callID uint32, target *matchmake_referee_types.MatchmakeRefereeStatsTarget) (*nex.RMCMessage, uint32))
-	SetHandlerGetStatsPrimaries(handler func(err error, packet nex.PacketInterface, callID uint32, targets []*matchmake_referee_types.MatchmakeRefereeStatsTarget) (*nex.RMCMessage, uint32))
+	SetHandlerGetStatsPrimaries(handler func(err error, packet nex.PacketInterface, callID uint32, targets *types.List[*matchmake_referee_types.MatchmakeRefereeStatsTarget]) (*nex.RMCMessage, uint32))
 	SetHandlerGetStatsAll(handler func(err error, packet nex.PacketInterface, callID uint32, target *matchmake_referee_types.MatchmakeRefereeStatsTarget) (*nex.RMCMessage, uint32))
 	SetHandlerCreateStats(handler func(err error, packet nex.PacketInterface, callID uint32, param *matchmake_referee_types.MatchmakeRefereeStatsInitParam) (*nex.RMCMessage, uint32))
 	SetHandlerGetOrCreateStats(handler func(err error, packet nex.PacketInterface, callID uint32, param *matchmake_referee_types.MatchmakeRefereeStatsInitParam) (*nex.RMCMessage, uint32))
@@ -142,7 +142,7 @@ func (protocol *Protocol) SetHandlerGetStatsPrimary(handler func(err error, pack
 }
 
 // SetHandlerGetStatsPrimaries sets the handler for the GetStatsPrimaries method
-func (protocol *Protocol) SetHandlerGetStatsPrimaries(handler func(err error, packet nex.PacketInterface, callID uint32, targets []*matchmake_referee_types.MatchmakeRefereeStatsTarget) (*nex.RMCMessage, uint32)) {
+func (protocol *Protocol) SetHandlerGetStatsPrimaries(handler func(err error, packet nex.PacketInterface, callID uint32, targets *types.List[*matchmake_referee_types.MatchmakeRefereeStatsTarget]) (*nex.RMCMessage, uint32)) {
 	protocol.GetStatsPrimaries = handler
 }
 

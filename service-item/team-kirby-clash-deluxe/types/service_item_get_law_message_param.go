@@ -1,129 +1,119 @@
-// Package types implements all the types used by the Service Item (Team Kirby Clash Deluxe) protocol
+// Package types implements all the types used by the ServiceItem protocol
 package types
 
 import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-go/types"
 )
 
-// ServiceItemGetLawMessageParam holds data for the Service Item (Team Kirby Clash Deluxe) protocol
+// ServiceItemGetLawMessageParam is a type within the ServiceItem protocol
 type ServiceItemGetLawMessageParam struct {
 	types.Structure
-	Language string
+	Language *types.String
 	UniqueID *types.PrimitiveU32
-	Platform *types.PrimitiveU8 // * Revision 1
+	Platform *types.PrimitiveU8  // * Revision 1
+}
+
+// WriteTo writes the ServiceItemGetLawMessageParam to the given writable
+func (siglmp *ServiceItemGetLawMessageParam) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
+
+	siglmp.Language.WriteTo(writable)
+	siglmp.UniqueID.WriteTo(writable)
+
+	if siglmp.StructureVersion >= 1 {
+		siglmp.Platform.WriteTo(writable)
+	}
+
+	content := contentWritable.Bytes()
+
+	siglmp.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // ExtractFrom extracts the ServiceItemGetLawMessageParam from the given readable
-func (serviceItemGetLawMessageParam *ServiceItemGetLawMessageParam) ExtractFrom(readable types.Readable) error {
+func (siglmp *ServiceItemGetLawMessageParam) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	if err = serviceItemGetLawMessageParam.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to read ServiceItemGetLawMessageParam header. %s", err.Error())
-	}
-
-	err = serviceItemGetLawMessageParam.Language.ExtractFrom(readable)
+	err = siglmp.ExtractHeaderFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemGetLawMessageParam.Language from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract ServiceItemGetLawMessageParam header. %s", err.Error())
 	}
 
-	err = serviceItemGetLawMessageParam.UniqueID.ExtractFrom(readable)
+	err = siglmp.Language.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemGetLawMessageParam.UniqueID from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract ServiceItemGetLawMessageParam.Language. %s", err.Error())
 	}
 
-	if serviceItemGetLawMessageParam.StructureVersion >= 1 {
-	err = 	serviceItemGetLawMessageParam.Platform.ExtractFrom(readable)
+	err = siglmp.UniqueID.ExtractFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract ServiceItemGetLawMessageParam.UniqueID. %s", err.Error())
+	}
+
+	if siglmp.StructureVersion >= 1 {
+		err = siglmp.Platform.ExtractFrom(readable)
 		if err != nil {
-			return fmt.Errorf("Failed to extract ServiceItemGetLawMessageParam.Platform from stream. %s", err.Error())
+			return fmt.Errorf("Failed to extract ServiceItemGetLawMessageParam.Platform. %s", err.Error())
 		}
 	}
 
 	return nil
 }
 
-// WriteTo writes the ServiceItemGetLawMessageParam to the given writable
-func (serviceItemGetLawMessageParam *ServiceItemGetLawMessageParam) WriteTo(writable types.Writable) {
-	contentWritable := writable.CopyNew()
-
-	serviceItemGetLawMessageParam.Language.WriteTo(contentWritable)
-	serviceItemGetLawMessageParam.UniqueID.WriteTo(contentWritable)
-
-	if serviceItemGetLawMessageParam.StructureVersion >= 1 {
-		serviceItemGetLawMessageParam.Platform.WriteTo(contentWritable)
-	}
-
-	content := contentWritable.Bytes()
-
-	rvcd.WriteHeaderTo(writable, uint32(len(content)))
-
-	writable.Write(content)
-}
-
 // Copy returns a new copied instance of ServiceItemGetLawMessageParam
-func (serviceItemGetLawMessageParam *ServiceItemGetLawMessageParam) Copy() types.RVType {
+func (siglmp *ServiceItemGetLawMessageParam) Copy() types.RVType {
 	copied := NewServiceItemGetLawMessageParam()
 
-	copied.StructureVersion = serviceItemGetLawMessageParam.StructureVersion
-
-	copied.Language = serviceItemGetLawMessageParam.Language
-	copied.UniqueID = serviceItemGetLawMessageParam.UniqueID
-	copied.Platform = serviceItemGetLawMessageParam.Platform
+	copied.StructureVersion = siglmp.StructureVersion
+	copied.Language = siglmp.Language.Copy().(*types.String)
+	copied.UniqueID = siglmp.UniqueID.Copy().(*types.PrimitiveU32)
+	copied.Platform = siglmp.Platform.Copy().(*types.PrimitiveU8)
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (serviceItemGetLawMessageParam *ServiceItemGetLawMessageParam) Equals(o types.RVType) bool {
+// Equals checks if the given ServiceItemGetLawMessageParam contains the same data as the current ServiceItemGetLawMessageParam
+func (siglmp *ServiceItemGetLawMessageParam) Equals(o types.RVType) bool {
 	if _, ok := o.(*ServiceItemGetLawMessageParam); !ok {
 		return false
 	}
 
 	other := o.(*ServiceItemGetLawMessageParam)
 
-	if serviceItemGetLawMessageParam.StructureVersion != other.StructureVersion {
+	if siglmp.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if !serviceItemGetLawMessageParam.Language.Equals(other.Language) {
+	if !siglmp.Language.Equals(other.Language) {
 		return false
 	}
 
-	if !serviceItemGetLawMessageParam.UniqueID.Equals(other.UniqueID) {
+	if !siglmp.UniqueID.Equals(other.UniqueID) {
 		return false
 	}
 
-	if !serviceItemGetLawMessageParam.Platform.Equals(other.Platform) {
-		return false
-	}
-
-	return true
+	return siglmp.Platform.Equals(other.Platform)
 }
 
-// String returns a string representation of the struct
-func (serviceItemGetLawMessageParam *ServiceItemGetLawMessageParam) String() string {
-	return serviceItemGetLawMessageParam.FormatToString(0)
+// String returns the string representation of the ServiceItemGetLawMessageParam
+func (siglmp *ServiceItemGetLawMessageParam) String() string {
+	return siglmp.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (serviceItemGetLawMessageParam *ServiceItemGetLawMessageParam) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the ServiceItemGetLawMessageParam using the provided indentation level
+func (siglmp *ServiceItemGetLawMessageParam) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("ServiceItemGetLawMessageParam{\n")
-	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, serviceItemGetLawMessageParam.StructureVersion))
-	b.WriteString(fmt.Sprintf("%sLanguage: %q,\n", indentationValues, serviceItemGetLawMessageParam.Language))
-	b.WriteString(fmt.Sprintf("%sUniqueID: %d,\n", indentationValues, serviceItemGetLawMessageParam.UniqueID))
-
-	if serviceItemGetLawMessageParam.StructureVersion >= 1 {
-		b.WriteString(fmt.Sprintf("%sPlatform: %d,\n", indentationValues, serviceItemGetLawMessageParam.Platform))
-	}
-
+	b.WriteString(fmt.Sprintf("%sLanguage: %s,\n", indentationValues, siglmp.Language))
+	b.WriteString(fmt.Sprintf("%sUniqueID: %s,\n", indentationValues, siglmp.UniqueID))
+	b.WriteString(fmt.Sprintf("%sPlatform: %s,\n", indentationValues, siglmp.Platform))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -131,5 +121,11 @@ func (serviceItemGetLawMessageParam *ServiceItemGetLawMessageParam) FormatToStri
 
 // NewServiceItemGetLawMessageParam returns a new ServiceItemGetLawMessageParam
 func NewServiceItemGetLawMessageParam() *ServiceItemGetLawMessageParam {
-	return &ServiceItemGetLawMessageParam{}
+	siglmp := &ServiceItemGetLawMessageParam{
+		Language: types.NewString(""),
+		UniqueID: types.NewPrimitiveU32(0),
+		Platform: types.NewPrimitiveU8(0),
+	}
+
+	return siglmp
 }

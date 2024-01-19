@@ -27,7 +27,9 @@ func (protocol *Protocol) handleClearBufferQueues(packet nex.PacketInterface) {
 
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
-	params, err := nex.StreamReadListStructure(parametersStream, datastore_super_mario_maker_types.NewBufferQueueParam())
+	params := types.NewList[*datastore_super_mario_maker_types.BufferQueueParam]()
+	params.Type = datastore_super_mario_maker_types.NewBufferQueueParam()
+	err = params.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.ClearBufferQueues(fmt.Errorf("Failed to read params from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {

@@ -29,7 +29,7 @@ func (protocol *Protocol) handleUpdateMySubscriptionData(packet nex.PacketInterf
 	unk := types.NewPrimitiveU32(0)
 	err = unk.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.UpdateMySubscriptionData(fmt.Errorf("Failed to read unk from parameters. %s", err.Error()), packet, callID, 0, nil)
+		_, errorCode = protocol.UpdateMySubscriptionData(fmt.Errorf("Failed to read unk from parameters. %s", err.Error()), packet, callID, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}

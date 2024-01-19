@@ -27,7 +27,9 @@ func (protocol *Protocol) handleUpdateUserStatus(packet nex.PacketInterface) {
 
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
-	unknown1, err := nex.StreamReadListStructure(parametersStream, subscriber_types.NewUnknown())
+	unknown1 := types.NewList[*subscriber_types.Unknown]()
+	unknown1.Type = subscriber_types.NewUnknown()
+	err = unknown1.ExtractFrom(parametersStream)
 	if err != nil {
 		_, errorCode = protocol.UpdateUserStatus(fmt.Errorf("Failed to read unknown1 from parameters. %s", err.Error()), packet, callID, nil, nil)
 		if errorCode != 0 {

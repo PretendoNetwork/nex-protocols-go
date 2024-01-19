@@ -1,107 +1,113 @@
-// Package types implements all the types used by the Friends 3DS protocol
+// Package types implements all the types used by the Friends3DS protocol
 package types
 
 import (
-	"bytes"
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-go/types"
 )
 
-// NintendoPresence contains information about a users online presence
+// NintendoPresence is a type within the Friends3DS protocol
 type NintendoPresence struct {
 	types.Structure
 	*types.Data
 	ChangedFlags      *types.PrimitiveU32
 	GameKey           *GameKey
-	Message           string
+	Message           *types.String
 	JoinAvailableFlag *types.PrimitiveU32
 	MatchmakeType     *types.PrimitiveU8
 	JoinGameID        *types.PrimitiveU32
 	JoinGameMode      *types.PrimitiveU32
 	OwnerPID          *types.PID
 	JoinGroupID       *types.PrimitiveU32
-	ApplicationArg    []byte
+	ApplicationArg    *types.Buffer
 }
 
 // WriteTo writes the NintendoPresence to the given writable
-func (presence *NintendoPresence) WriteTo(writable types.Writable) {
+func (np *NintendoPresence) WriteTo(writable types.Writable) {
+	np.Data.WriteTo(writable)
+
 	contentWritable := writable.CopyNew()
 
-	presence.ChangedFlags.WriteTo(contentWritable)
-	presence.GameKey.WriteTo(contentWritable)
-	presence.Message.WriteTo(contentWritable)
-	presence.JoinAvailableFlag.WriteTo(contentWritable)
-	presence.MatchmakeType.WriteTo(contentWritable)
-	presence.JoinGameID.WriteTo(contentWritable)
-	presence.JoinGameMode.WriteTo(contentWritable)
-	presence.OwnerPID.WriteTo(contentWritable)
-	presence.JoinGroupID.WriteTo(contentWritable)
-	stream.WriteBuffer(presence.ApplicationArg)
+	np.ChangedFlags.WriteTo(writable)
+	np.GameKey.WriteTo(writable)
+	np.Message.WriteTo(writable)
+	np.JoinAvailableFlag.WriteTo(writable)
+	np.MatchmakeType.WriteTo(writable)
+	np.JoinGameID.WriteTo(writable)
+	np.JoinGameMode.WriteTo(writable)
+	np.OwnerPID.WriteTo(writable)
+	np.JoinGroupID.WriteTo(writable)
+	np.ApplicationArg.WriteTo(writable)
 
 	content := contentWritable.Bytes()
 
-	rvcd.WriteHeaderTo(writable, uint32(len(content)))
+	np.WriteHeaderTo(writable, uint32(len(content)))
 
 	writable.Write(content)
 }
 
 // ExtractFrom extracts the NintendoPresence from the given readable
-func (presence *NintendoPresence) ExtractFrom(readable types.Readable) error {
+func (np *NintendoPresence) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	if err = presence.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to read NintendoPresence header. %s", err.Error())
+	err = np.Data.ExtractFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract NintendoPresence.Data. %s", err.Error())
 	}
 
-	err = presence.ChangedFlags.ExtractFrom(readable)
+	err = np.ExtractHeaderFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract NintendoPresence header. %s", err.Error())
+	}
+
+	err = np.ChangedFlags.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract NintendoPresence.ChangedFlags. %s", err.Error())
 	}
 
-	err = presence.GameKey.ExtractFrom(readable)
+	err = np.GameKey.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract NintendoPresence.GameKey. %s", err.Error())
 	}
 
-	err = presence.Message.ExtractFrom(readable)
+	err = np.Message.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract NintendoPresence.Message. %s", err.Error())
 	}
 
-	err = presence.JoinAvailableFlag.ExtractFrom(readable)
+	err = np.JoinAvailableFlag.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract NintendoPresence.JoinAvailableFlag. %s", err.Error())
 	}
 
-	err = presence.MatchmakeType.ExtractFrom(readable)
+	err = np.MatchmakeType.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract NintendoPresence.MatchmakeType. %s", err.Error())
 	}
 
-	err = presence.JoinGameID.ExtractFrom(readable)
+	err = np.JoinGameID.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract NintendoPresence.JoinGameID. %s", err.Error())
 	}
 
-	err = presence.JoinGameMode.ExtractFrom(readable)
+	err = np.JoinGameMode.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract NintendoPresence.JoinGameMode. %s", err.Error())
 	}
 
-	err = presence.OwnerPID.ExtractFrom(readable)
+	err = np.OwnerPID.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract NintendoPresence.OwnerPID. %s", err.Error())
 	}
 
-	err = presence.JoinGroupID.ExtractFrom(readable)
+	err = np.JoinGroupID.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract NintendoPresence.JoinGroupID. %s", err.Error())
 	}
 
-	presence.ApplicationArg, err = stream.ReadBuffer()
+	err = np.ApplicationArg.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract NintendoPresence.ApplicationArg. %s", err.Error())
 	}
@@ -110,118 +116,104 @@ func (presence *NintendoPresence) ExtractFrom(readable types.Readable) error {
 }
 
 // Copy returns a new copied instance of NintendoPresence
-func (presence *NintendoPresence) Copy() types.RVType {
+func (np *NintendoPresence) Copy() types.RVType {
 	copied := NewNintendoPresence()
 
-	copied.StructureVersion = presence.StructureVersion
-
-	copied.Data = presence.Data.Copy().(*types.Data)
-
-	copied.ChangedFlags = presence.ChangedFlags
-	copied.GameKey = presence.GameKey.Copy().(*GameKey)
-	copied.Message = presence.Message
-	copied.JoinAvailableFlag = presence.JoinAvailableFlag
-	copied.MatchmakeType = presence.MatchmakeType
-	copied.JoinGameID = presence.JoinGameID
-	copied.JoinGameMode = presence.JoinGameMode
-	copied.OwnerPID = presence.OwnerPID.Copy()
-	copied.JoinGroupID = presence.JoinGroupID
-	copied.ApplicationArg = make([]byte, len(presence.ApplicationArg))
-
-	copy(copied.ApplicationArg, presence.ApplicationArg)
+	copied.StructureVersion = np.StructureVersion
+	copied.Data = np.Data.Copy().(*types.Data)
+	copied.ChangedFlags = np.ChangedFlags.Copy().(*types.PrimitiveU32)
+	copied.GameKey = np.GameKey.Copy().(*GameKey)
+	copied.Message = np.Message.Copy().(*types.String)
+	copied.JoinAvailableFlag = np.JoinAvailableFlag.Copy().(*types.PrimitiveU32)
+	copied.MatchmakeType = np.MatchmakeType.Copy().(*types.PrimitiveU8)
+	copied.JoinGameID = np.JoinGameID.Copy().(*types.PrimitiveU32)
+	copied.JoinGameMode = np.JoinGameMode.Copy().(*types.PrimitiveU32)
+	copied.OwnerPID = np.OwnerPID.Copy().(*types.PID)
+	copied.JoinGroupID = np.JoinGroupID.Copy().(*types.PrimitiveU32)
+	copied.ApplicationArg = np.ApplicationArg.Copy().(*types.Buffer)
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (presence *NintendoPresence) Equals(o types.RVType) bool {
+// Equals checks if the given NintendoPresence contains the same data as the current NintendoPresence
+func (np *NintendoPresence) Equals(o types.RVType) bool {
 	if _, ok := o.(*NintendoPresence); !ok {
 		return false
 	}
 
 	other := o.(*NintendoPresence)
 
-	if presence.StructureVersion != other.StructureVersion {
+	if np.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if !presence.ParentType().Equals(other.ParentType()) {
+	if !np.Data.Equals(other.Data) {
 		return false
 	}
 
-	if !presence.ChangedFlags.Equals(other.ChangedFlags) {
+	if !np.ChangedFlags.Equals(other.ChangedFlags) {
 		return false
 	}
 
-	if !presence.GameKey.Equals(other.GameKey) {
+	if !np.GameKey.Equals(other.GameKey) {
 		return false
 	}
 
-	if !presence.Message.Equals(other.Message) {
+	if !np.Message.Equals(other.Message) {
 		return false
 	}
 
-	if !presence.JoinAvailableFlag.Equals(other.JoinAvailableFlag) {
+	if !np.JoinAvailableFlag.Equals(other.JoinAvailableFlag) {
 		return false
 	}
 
-	if !presence.MatchmakeType.Equals(other.MatchmakeType) {
+	if !np.MatchmakeType.Equals(other.MatchmakeType) {
 		return false
 	}
 
-	if !presence.JoinGameID.Equals(other.JoinGameID) {
+	if !np.JoinGameID.Equals(other.JoinGameID) {
 		return false
 	}
 
-	if !presence.JoinGameMode.Equals(other.JoinGameMode) {
+	if !np.JoinGameMode.Equals(other.JoinGameMode) {
 		return false
 	}
 
-	if !presence.OwnerPID.Equals(other.OwnerPID) {
+	if !np.OwnerPID.Equals(other.OwnerPID) {
 		return false
 	}
 
-	if !presence.JoinGroupID.Equals(other.JoinGroupID) {
+	if !np.JoinGroupID.Equals(other.JoinGroupID) {
 		return false
 	}
 
-	if !presence.ApplicationArg.Equals(other.ApplicationArg) {
-		return false
-	}
-
-	return true
+	return np.ApplicationArg.Equals(other.ApplicationArg)
 }
 
-// String returns a string representation of the struct
-func (presence *NintendoPresence) String() string {
-	return presence.FormatToString(0)
+// String returns the string representation of the NintendoPresence
+func (np *NintendoPresence) String() string {
+	return np.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (presence *NintendoPresence) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the NintendoPresence using the provided indentation level
+func (np *NintendoPresence) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("NintendoPresence{\n")
-	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, presence.StructureVersion))
-	b.WriteString(fmt.Sprintf("%sChangedFlags: %d,\n", indentationValues, presence.ChangedFlags))
-
-	if presence.GameKey != nil {
-		b.WriteString(fmt.Sprintf("%sGameKey: %s,\n", indentationValues, presence.GameKey.FormatToString(indentationLevel+1)))
-	} else {
-		b.WriteString(fmt.Sprintf("%sGameKey: nil,\n", indentationValues))
-	}
-
-	b.WriteString(fmt.Sprintf("%sMessage: %q,\n", indentationValues, presence.Message))
-	b.WriteString(fmt.Sprintf("%sJoinAvailableFlag: %d,\n", indentationValues, presence.JoinAvailableFlag))
-	b.WriteString(fmt.Sprintf("%sMatchmakeType: %d,\n", indentationValues, presence.MatchmakeType))
-	b.WriteString(fmt.Sprintf("%sJoinGameID: %d,\n", indentationValues, presence.JoinGameID))
-	b.WriteString(fmt.Sprintf("%sJoinGameMode: %d,\n", indentationValues, presence.JoinGameMode))
-	b.WriteString(fmt.Sprintf("%sOwnerPID: %s,\n", indentationValues, presence.OwnerPID.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sJoinGroupID: %d,\n", indentationValues, presence.JoinGroupID))
-	b.WriteString(fmt.Sprintf("%sApplicationArg: %x\n", indentationValues, presence.ApplicationArg))
+	b.WriteString(fmt.Sprintf("%sData (parent): %s,\n", indentationValues, np.Data.FormatToString(indentationLevel+1)))
+	b.WriteString(fmt.Sprintf("%sChangedFlags: %s,\n", indentationValues, np.ChangedFlags))
+	b.WriteString(fmt.Sprintf("%sGameKey: %s,\n", indentationValues, np.GameKey.FormatToString(indentationLevel+1)))
+	b.WriteString(fmt.Sprintf("%sMessage: %s,\n", indentationValues, np.Message))
+	b.WriteString(fmt.Sprintf("%sJoinAvailableFlag: %s,\n", indentationValues, np.JoinAvailableFlag))
+	b.WriteString(fmt.Sprintf("%sMatchmakeType: %s,\n", indentationValues, np.MatchmakeType))
+	b.WriteString(fmt.Sprintf("%sJoinGameID: %s,\n", indentationValues, np.JoinGameID))
+	b.WriteString(fmt.Sprintf("%sJoinGameMode: %s,\n", indentationValues, np.JoinGameMode))
+	b.WriteString(fmt.Sprintf("%sOwnerPID: %s,\n", indentationValues, np.OwnerPID.FormatToString(indentationLevel+1)))
+	b.WriteString(fmt.Sprintf("%sJoinGroupID: %s,\n", indentationValues, np.JoinGroupID))
+	b.WriteString(fmt.Sprintf("%sApplicationArg: %s,\n", indentationValues, np.ApplicationArg))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -229,5 +221,19 @@ func (presence *NintendoPresence) FormatToString(indentationLevel int) string {
 
 // NewNintendoPresence returns a new NintendoPresence
 func NewNintendoPresence() *NintendoPresence {
-	return &NintendoPresence{}
+	np := &NintendoPresence{
+		Data              : types.NewData(),
+		ChangedFlags:      types.NewPrimitiveU32(0),
+		GameKey:           NewGameKey(),
+		Message:           types.NewString(""),
+		JoinAvailableFlag: types.NewPrimitiveU32(0),
+		MatchmakeType:     types.NewPrimitiveU8(0),
+		JoinGameID:        types.NewPrimitiveU32(0),
+		JoinGameMode:      types.NewPrimitiveU32(0),
+		OwnerPID:          types.NewPID(0),
+		JoinGroupID:       types.NewPrimitiveU32(0),
+		ApplicationArg:    types.NewBuffer(nil),
+	}
+
+	return np
 }

@@ -115,7 +115,7 @@ type serviceItemProtocol = service_item.Protocol
 type Protocol struct {
 	server nex.ServerInterface
 	serviceItemProtocol
-	GetEnvironment                  func(err error, packet nex.PacketInterface, callID uint32, uniqueID string, platform *types.PrimitiveU8) (*nex.RMCMessage, uint32)
+	GetEnvironment                  func(err error, packet nex.PacketInterface, callID uint32, uniqueID *types.String, platform *types.PrimitiveU8) (*nex.RMCMessage, uint32)
 	HttpGetRequest                  func(err error, packet nex.PacketInterface, callID uint32, url *service_item_team_kirby_clash_deluxe_types.ServiceItemHTTPGetParam) (*nex.RMCMessage, uint32)
 	HttpGetResponse                 func(err error, packet nex.PacketInterface, callID uint32, requestID *types.PrimitiveU32) (*nex.RMCMessage, uint32)
 	PurchaseServiceItemRequest      func(err error, packet nex.PacketInterface, callID uint32, purchaseServiceItemParam *service_item_team_kirby_clash_deluxe_types.ServiceItemPurchaseServiceItemParam) (*nex.RMCMessage, uint32)

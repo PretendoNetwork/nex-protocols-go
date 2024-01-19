@@ -8,7 +8,7 @@ import (
 	"github.com/PretendoNetwork/nex-go/types"
 )
 
-// DataStorePasswordInfo is a data structure used by the DataStore protocol
+// DataStorePasswordInfo is a type within the DataStore protocol
 type DataStorePasswordInfo struct {
 	types.Structure
 	DataID         *types.PrimitiveU64
@@ -16,25 +16,41 @@ type DataStorePasswordInfo struct {
 	UpdatePassword *types.PrimitiveU64
 }
 
+// WriteTo writes the DataStorePasswordInfo to the given writable
+func (dspi *DataStorePasswordInfo) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
+
+	dspi.DataID.WriteTo(writable)
+	dspi.AccessPassword.WriteTo(writable)
+	dspi.UpdatePassword.WriteTo(writable)
+
+	content := contentWritable.Bytes()
+
+	dspi.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
+}
+
 // ExtractFrom extracts the DataStorePasswordInfo from the given readable
-func (dataStorePasswordInfo *DataStorePasswordInfo) ExtractFrom(readable types.Readable) error {
+func (dspi *DataStorePasswordInfo) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	if err = dataStorePasswordInfo.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to read DataStorePasswordInfo header. %s", err.Error())
+	err = dspi.ExtractHeaderFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStorePasswordInfo header. %s", err.Error())
 	}
 
-	err = dataStorePasswordInfo.DataID.ExtractFrom(readable)
+	err = dspi.DataID.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStorePasswordInfo.DataID. %s", err.Error())
 	}
 
-	err = dataStorePasswordInfo.AccessPassword.ExtractFrom(readable)
+	err = dspi.AccessPassword.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStorePasswordInfo.AccessPassword. %s", err.Error())
 	}
 
-	err = dataStorePasswordInfo.UpdatePassword.ExtractFrom(readable)
+	err = dspi.UpdatePassword.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStorePasswordInfo.UpdatePassword. %s", err.Error())
 	}
@@ -42,78 +58,57 @@ func (dataStorePasswordInfo *DataStorePasswordInfo) ExtractFrom(readable types.R
 	return nil
 }
 
-// WriteTo writes the DataStorePasswordInfo to the given writable
-func (dataStorePasswordInfo *DataStorePasswordInfo) WriteTo(writable types.Writable) {
-	contentWritable := writable.CopyNew()
-
-	dataStorePasswordInfo.DataID.WriteTo(contentWritable)
-	dataStorePasswordInfo.AccessPassword.WriteTo(contentWritable)
-	dataStorePasswordInfo.UpdatePassword.WriteTo(contentWritable)
-
-	content := contentWritable.Bytes()
-
-	dataStorePasswordInfo.WriteHeaderTo(writable, uint32(len(content)))
-
-	writable.Write(content)
-}
-
 // Copy returns a new copied instance of DataStorePasswordInfo
-func (dataStorePasswordInfo *DataStorePasswordInfo) Copy() types.RVType {
+func (dspi *DataStorePasswordInfo) Copy() types.RVType {
 	copied := NewDataStorePasswordInfo()
 
-	copied.StructureVersion = dataStorePasswordInfo.StructureVersion
-
-	copied.DataID = dataStorePasswordInfo.DataID.Copy().(*types.PrimitiveU64)
-	copied.AccessPassword = dataStorePasswordInfo.AccessPassword.Copy().(*types.PrimitiveU64)
-	copied.UpdatePassword = dataStorePasswordInfo.UpdatePassword.Copy().(*types.PrimitiveU64)
+	copied.StructureVersion = dspi.StructureVersion
+	copied.DataID = dspi.DataID.Copy().(*types.PrimitiveU64)
+	copied.AccessPassword = dspi.AccessPassword.Copy().(*types.PrimitiveU64)
+	copied.UpdatePassword = dspi.UpdatePassword.Copy().(*types.PrimitiveU64)
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (dataStorePasswordInfo *DataStorePasswordInfo) Equals(o types.RVType) bool {
+// Equals checks if the given DataStorePasswordInfo contains the same data as the current DataStorePasswordInfo
+func (dspi *DataStorePasswordInfo) Equals(o types.RVType) bool {
 	if _, ok := o.(*DataStorePasswordInfo); !ok {
 		return false
 	}
 
 	other := o.(*DataStorePasswordInfo)
 
-	if dataStorePasswordInfo.StructureVersion != other.StructureVersion {
+	if dspi.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if !dataStorePasswordInfo.DataID.Equals(other.DataID) {
+	if !dspi.DataID.Equals(other.DataID) {
 		return false
 	}
 
-	if !dataStorePasswordInfo.AccessPassword.Equals(other.AccessPassword) {
+	if !dspi.AccessPassword.Equals(other.AccessPassword) {
 		return false
 	}
 
-	if !dataStorePasswordInfo.UpdatePassword.Equals(other.UpdatePassword) {
-		return false
-	}
-
-	return true
+	return dspi.UpdatePassword.Equals(other.UpdatePassword)
 }
 
-// String returns a string representation of the struct
-func (dataStorePasswordInfo *DataStorePasswordInfo) String() string {
-	return dataStorePasswordInfo.FormatToString(0)
+// String returns the string representation of the DataStorePasswordInfo
+func (dspi *DataStorePasswordInfo) String() string {
+	return dspi.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (dataStorePasswordInfo *DataStorePasswordInfo) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the DataStorePasswordInfo using the provided indentation level
+func (dspi *DataStorePasswordInfo) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("DataStorePasswordInfo{\n")
-	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, dataStorePasswordInfo.StructureVersion))
-	b.WriteString(fmt.Sprintf("%sDataID: %s,\n", indentationValues, dataStorePasswordInfo.DataID))
-	b.WriteString(fmt.Sprintf("%sAccessPassword: %s,\n", indentationValues, dataStorePasswordInfo.AccessPassword))
-	b.WriteString(fmt.Sprintf("%sUpdatePassword: %s\n", indentationValues, dataStorePasswordInfo.UpdatePassword))
+	b.WriteString(fmt.Sprintf("%sDataID: %s,\n", indentationValues, dspi.DataID))
+	b.WriteString(fmt.Sprintf("%sAccessPassword: %s,\n", indentationValues, dspi.AccessPassword))
+	b.WriteString(fmt.Sprintf("%sUpdatePassword: %s,\n", indentationValues, dspi.UpdatePassword))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -121,9 +116,11 @@ func (dataStorePasswordInfo *DataStorePasswordInfo) FormatToString(indentationLe
 
 // NewDataStorePasswordInfo returns a new DataStorePasswordInfo
 func NewDataStorePasswordInfo() *DataStorePasswordInfo {
-	return &DataStorePasswordInfo{
+	dspi := &DataStorePasswordInfo{
 		DataID:         types.NewPrimitiveU64(0),
 		AccessPassword: types.NewPrimitiveU64(0),
 		UpdatePassword: types.NewPrimitiveU64(0),
 	}
+
+	return dspi
 }

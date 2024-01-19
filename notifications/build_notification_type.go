@@ -2,6 +2,6 @@
 package protocol
 
 // BuildNotificationType builds a combined type for NotificationEvents using a category and subtype
-func BuildNotificationType(category, subtype *types.PrimitiveU32) *types.PrimitiveU32 {
+func BuildNotificationType(category, subtype uint32) uint32 {
 	return (category * 1000) + subtype
 }

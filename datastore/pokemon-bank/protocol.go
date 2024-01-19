@@ -107,7 +107,7 @@ type Protocol struct {
 	CompleteUpdateBankObject func(err error, packet nex.PacketInterface, callID uint32, slotID *types.PrimitiveU16, transactionParam *datastore_pokemon_bank_types.BankTransactionParam, isForce *types.PrimitiveBool) (*nex.RMCMessage, uint32)
 	RollbackBankObject       func(err error, packet nex.PacketInterface, callID uint32, slotID *types.PrimitiveU16, transactionParam *datastore_pokemon_bank_types.BankTransactionParam, isForce *types.PrimitiveBool) (*nex.RMCMessage, uint32)
 	GetUnlockKey             func(err error, packet nex.PacketInterface, callID uint32, challengeValue *types.PrimitiveU32) (*nex.RMCMessage, uint32)
-	RequestMigration         func(err error, packet nex.PacketInterface, callID uint32, oneTimePassword string, boxes *types.List[*types.PrimitiveU32]) (*nex.RMCMessage, uint32)
+	RequestMigration         func(err error, packet nex.PacketInterface, callID uint32, oneTimePassword *types.String, boxes *types.List[*types.PrimitiveU32]) (*nex.RMCMessage, uint32)
 }
 
 // Setup initializes the protocol

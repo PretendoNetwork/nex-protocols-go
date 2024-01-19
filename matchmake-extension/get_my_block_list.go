@@ -3,14 +3,10 @@ package protocol
 
 import (
 	nex "github.com/PretendoNetwork/nex-go"
-	"github.com/PretendoNetwork/nex-go/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
 func (protocol *Protocol) handleGetMyBlockList(packet nex.PacketInterface) {
-	var err error
-	var errorCode uint32
-
 	if protocol.GetMyBlockList == nil {
 		globals.Logger.Warning("MatchmakeExtension::GetMyBlockList not implemented")
 		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)

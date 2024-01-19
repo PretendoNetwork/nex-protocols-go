@@ -1,15 +1,14 @@
-// Package types implements all the types used by the Friends WiiU protocol
+// Package types implements all the types used by the FriendsWiiU protocol
 package types
 
 import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-go/types"
 )
 
-// PersistentNotification contains unknown data
+// PersistentNotification is a type within the FriendsWiiU protocol
 type PersistentNotification struct {
 	types.Structure
 	*types.Data
@@ -17,38 +16,63 @@ type PersistentNotification struct {
 	Unknown2 *types.PrimitiveU32
 	Unknown3 *types.PrimitiveU32
 	Unknown4 *types.PrimitiveU32
-	Unknown5 string
+	Unknown5 *types.String
+}
+
+// WriteTo writes the PersistentNotification to the given writable
+func (pn *PersistentNotification) WriteTo(writable types.Writable) {
+	pn.Data.WriteTo(writable)
+
+	contentWritable := writable.CopyNew()
+
+	pn.Unknown1.WriteTo(writable)
+	pn.Unknown2.WriteTo(writable)
+	pn.Unknown3.WriteTo(writable)
+	pn.Unknown4.WriteTo(writable)
+	pn.Unknown5.WriteTo(writable)
+
+	content := contentWritable.Bytes()
+
+	pn.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // ExtractFrom extracts the PersistentNotification from the given readable
-func (notification *PersistentNotification) ExtractFrom(readable types.Readable) error {
+func (pn *PersistentNotification) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	if err = notification.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to read PersistentNotification header. %s", err.Error())
+	err = pn.Data.ExtractFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract PersistentNotification.Data. %s", err.Error())
 	}
 
-	err = notification.Unknown1.ExtractFrom(readable)
+	err = pn.ExtractHeaderFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract PersistentNotification header. %s", err.Error())
+	}
+
+	err = pn.Unknown1.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract PersistentNotification.Unknown1. %s", err.Error())
 	}
 
-	err = notification.Unknown2.ExtractFrom(readable)
+	err = pn.Unknown2.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract PersistentNotification.Unknown2. %s", err.Error())
 	}
 
-	err = notification.Unknown3.ExtractFrom(readable)
+	err = pn.Unknown3.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract PersistentNotification.Unknown3. %s", err.Error())
 	}
 
-	err = notification.Unknown4.ExtractFrom(readable)
+	err = pn.Unknown4.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract PersistentNotification.Unknown4. %s", err.Error())
 	}
 
-	err = notification.Unknown5.ExtractFrom(readable)
+	err = pn.Unknown5.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract PersistentNotification.Unknown5. %s", err.Error())
 	}
@@ -57,80 +81,74 @@ func (notification *PersistentNotification) ExtractFrom(readable types.Readable)
 }
 
 // Copy returns a new copied instance of PersistentNotification
-func (notification *PersistentNotification) Copy() types.RVType {
+func (pn *PersistentNotification) Copy() types.RVType {
 	copied := NewPersistentNotification()
 
-	copied.StructureVersion = notification.StructureVersion
-
-	copied.Data = notification.Data.Copy().(*types.Data)
-
-	copied.Unknown1 = notification.Unknown1
-	copied.Unknown2 = notification.Unknown2
-	copied.Unknown3 = notification.Unknown3
-	copied.Unknown4 = notification.Unknown4
-	copied.Unknown5 = notification.Unknown5
+	copied.StructureVersion = pn.StructureVersion
+	copied.Data = pn.Data.Copy().(*types.Data)
+	copied.Unknown1 = pn.Unknown1.Copy().(*types.PrimitiveU64)
+	copied.Unknown2 = pn.Unknown2.Copy().(*types.PrimitiveU32)
+	copied.Unknown3 = pn.Unknown3.Copy().(*types.PrimitiveU32)
+	copied.Unknown4 = pn.Unknown4.Copy().(*types.PrimitiveU32)
+	copied.Unknown5 = pn.Unknown5.Copy().(*types.String)
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (notification *PersistentNotification) Equals(o types.RVType) bool {
+// Equals checks if the given PersistentNotification contains the same data as the current PersistentNotification
+func (pn *PersistentNotification) Equals(o types.RVType) bool {
 	if _, ok := o.(*PersistentNotification); !ok {
 		return false
 	}
 
 	other := o.(*PersistentNotification)
 
-	if notification.StructureVersion != other.StructureVersion {
+	if pn.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if !notification.ParentType().Equals(other.ParentType()) {
+	if !pn.Data.Equals(other.Data) {
 		return false
 	}
 
-	if !notification.Unknown1.Equals(other.Unknown1) {
+	if !pn.Unknown1.Equals(other.Unknown1) {
 		return false
 	}
 
-	if !notification.Unknown2.Equals(other.Unknown2) {
+	if !pn.Unknown2.Equals(other.Unknown2) {
 		return false
 	}
 
-	if !notification.Unknown3.Equals(other.Unknown3) {
+	if !pn.Unknown3.Equals(other.Unknown3) {
 		return false
 	}
 
-	if !notification.Unknown4.Equals(other.Unknown4) {
+	if !pn.Unknown4.Equals(other.Unknown4) {
 		return false
 	}
 
-	if !notification.Unknown5.Equals(other.Unknown5) {
-		return false
-	}
-
-	return true
+	return pn.Unknown5.Equals(other.Unknown5)
 }
 
-// String returns a string representation of the struct
-func (notification *PersistentNotification) String() string {
-	return notification.FormatToString(0)
+// String returns the string representation of the PersistentNotification
+func (pn *PersistentNotification) String() string {
+	return pn.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (notification *PersistentNotification) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the PersistentNotification using the provided indentation level
+func (pn *PersistentNotification) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("PersistentNotification{\n")
-	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, notification.StructureVersion))
-	b.WriteString(fmt.Sprintf("%sUnknown1: %d,\n", indentationValues, notification.Unknown1))
-	b.WriteString(fmt.Sprintf("%sUnknown2: %d,\n", indentationValues, notification.Unknown2))
-	b.WriteString(fmt.Sprintf("%sUnknown3: %d,\n", indentationValues, notification.Unknown3))
-	b.WriteString(fmt.Sprintf("%sUnknown4: %d,\n", indentationValues, notification.Unknown4))
-	b.WriteString(fmt.Sprintf("%sUnknown5: %q\n", indentationValues, notification.Unknown5))
+	b.WriteString(fmt.Sprintf("%sData (parent): %s,\n", indentationValues, pn.Data.FormatToString(indentationLevel+1)))
+	b.WriteString(fmt.Sprintf("%sUnknown1: %s,\n", indentationValues, pn.Unknown1))
+	b.WriteString(fmt.Sprintf("%sUnknown2: %s,\n", indentationValues, pn.Unknown2))
+	b.WriteString(fmt.Sprintf("%sUnknown3: %s,\n", indentationValues, pn.Unknown3))
+	b.WriteString(fmt.Sprintf("%sUnknown4: %s,\n", indentationValues, pn.Unknown4))
+	b.WriteString(fmt.Sprintf("%sUnknown5: %s,\n", indentationValues, pn.Unknown5))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -138,5 +156,14 @@ func (notification *PersistentNotification) FormatToString(indentationLevel int)
 
 // NewPersistentNotification returns a new PersistentNotification
 func NewPersistentNotification() *PersistentNotification {
-	return &PersistentNotification{}
+	pn := &PersistentNotification{
+		Data     : types.NewData(),
+		Unknown1: types.NewPrimitiveU64(0),
+		Unknown2: types.NewPrimitiveU32(0),
+		Unknown3: types.NewPrimitiveU32(0),
+		Unknown4: types.NewPrimitiveU32(0),
+		Unknown5: types.NewString(""),
+	}
+
+	return pn
 }

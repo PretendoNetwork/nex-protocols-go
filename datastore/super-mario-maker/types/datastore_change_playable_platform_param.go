@@ -1,4 +1,4 @@
-// Package types implements all the types used by the DataStore (Super Mario Maker) protocol
+// Package types implements all the types used by the DataStore protocol
 package types
 
 import (
@@ -8,99 +8,94 @@ import (
 	"github.com/PretendoNetwork/nex-go/types"
 )
 
-// DataStoreChangePlayablePlatformParam holds data for the DataStore (Super Mario Maker) protocol
+// DataStoreChangePlayablePlatformParam is a type within the DataStore protocol
 type DataStoreChangePlayablePlatformParam struct {
 	types.Structure
 	DataID           *types.PrimitiveU64
 	PlayablePlatform *types.PrimitiveU32
 }
 
+// WriteTo writes the DataStoreChangePlayablePlatformParam to the given writable
+func (dscppp *DataStoreChangePlayablePlatformParam) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
+
+	dscppp.DataID.WriteTo(writable)
+	dscppp.PlayablePlatform.WriteTo(writable)
+
+	content := contentWritable.Bytes()
+
+	dscppp.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
+}
+
 // ExtractFrom extracts the DataStoreChangePlayablePlatformParam from the given readable
-func (dataStoreChangePlayablePlatformParam *DataStoreChangePlayablePlatformParam) ExtractFrom(readable types.Readable) error {
+func (dscppp *DataStoreChangePlayablePlatformParam) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	if err = dataStoreChangePlayablePlatformParam.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to read DataStoreChangePlayablePlatformParam header. %s", err.Error())
+	err = dscppp.ExtractHeaderFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreChangePlayablePlatformParam header. %s", err.Error())
 	}
 
-	err = dataStoreChangePlayablePlatformParam.DataID.ExtractFrom(readable)
+	err = dscppp.DataID.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract DataStoreChangePlayablePlatformParam.DataID from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract DataStoreChangePlayablePlatformParam.DataID. %s", err.Error())
 	}
 
-	err = dataStoreChangePlayablePlatformParam.PlayablePlatform.ExtractFrom(readable)
+	err = dscppp.PlayablePlatform.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract DataStoreChangePlayablePlatformParam.PlayablePlatform from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract DataStoreChangePlayablePlatformParam.PlayablePlatform. %s", err.Error())
 	}
 
 	return nil
 }
 
-// WriteTo writes the DataStoreChangePlayablePlatformParam to the given writable
-func (dataStoreChangePlayablePlatformParam *DataStoreChangePlayablePlatformParam) WriteTo(writable types.Writable) {
-	contentWritable := writable.CopyNew()
-
-	dataStoreChangePlayablePlatformParam.DataID.WriteTo(contentWritable)
-	dataStoreChangePlayablePlatformParam.PlayablePlatform.WriteTo(contentWritable)
-
-	content := contentWritable.Bytes()
-
-	dataStoreChangePlayablePlatformParam.WriteHeaderTo(writable, uint32(len(content)))
-
-	writable.Write(content)
-}
-
 // Copy returns a new copied instance of DataStoreChangePlayablePlatformParam
-func (dataStoreChangePlayablePlatformParam *DataStoreChangePlayablePlatformParam) Copy() types.RVType {
+func (dscppp *DataStoreChangePlayablePlatformParam) Copy() types.RVType {
 	copied := NewDataStoreChangePlayablePlatformParam()
 
-	copied.StructureVersion = dataStoreChangePlayablePlatformParam.StructureVersion
-
-	copied.DataID = dataStoreChangePlayablePlatformParam.DataID.Copy().(*types.PrimitiveU64)
-	copied.PlayablePlatform = dataStoreChangePlayablePlatformParam.PlayablePlatform.Copy().(*types.PrimitiveU32)
+	copied.StructureVersion = dscppp.StructureVersion
+	copied.DataID = dscppp.DataID.Copy().(*types.PrimitiveU64)
+	copied.PlayablePlatform = dscppp.PlayablePlatform.Copy().(*types.PrimitiveU32)
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (dataStoreChangePlayablePlatformParam *DataStoreChangePlayablePlatformParam) Equals(o types.RVType) bool {
+// Equals checks if the given DataStoreChangePlayablePlatformParam contains the same data as the current DataStoreChangePlayablePlatformParam
+func (dscppp *DataStoreChangePlayablePlatformParam) Equals(o types.RVType) bool {
 	if _, ok := o.(*DataStoreChangePlayablePlatformParam); !ok {
 		return false
 	}
 
 	other := o.(*DataStoreChangePlayablePlatformParam)
 
-	if dataStoreChangePlayablePlatformParam.StructureVersion != other.StructureVersion {
+	if dscppp.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if !dataStoreChangePlayablePlatformParam.DataID.Equals(other.DataID) {
+	if !dscppp.DataID.Equals(other.DataID) {
 		return false
 	}
 
-	if !dataStoreChangePlayablePlatformParam.PlayablePlatform.Equals(other.PlayablePlatform) {
-		return false
-	}
-
-	return true
+	return dscppp.PlayablePlatform.Equals(other.PlayablePlatform)
 }
 
-// String returns a string representation of the struct
-func (dataStoreChangePlayablePlatformParam *DataStoreChangePlayablePlatformParam) String() string {
-	return dataStoreChangePlayablePlatformParam.FormatToString(0)
+// String returns the string representation of the DataStoreChangePlayablePlatformParam
+func (dscppp *DataStoreChangePlayablePlatformParam) String() string {
+	return dscppp.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (dataStoreChangePlayablePlatformParam *DataStoreChangePlayablePlatformParam) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the DataStoreChangePlayablePlatformParam using the provided indentation level
+func (dscppp *DataStoreChangePlayablePlatformParam) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("DataStoreChangePlayablePlatformParam{\n")
-	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, dataStoreChangePlayablePlatformParam.StructureVersion))
-	b.WriteString(fmt.Sprintf("%sDataID: %s,\n", indentationValues, dataStoreChangePlayablePlatformParam.DataID))
-	b.WriteString(fmt.Sprintf("%sPlayablePlatform: %s,\n", indentationValues, dataStoreChangePlayablePlatformParam.PlayablePlatform))
+	b.WriteString(fmt.Sprintf("%sDataID: %s,\n", indentationValues, dscppp.DataID))
+	b.WriteString(fmt.Sprintf("%sPlayablePlatform: %s,\n", indentationValues, dscppp.PlayablePlatform))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -108,8 +103,10 @@ func (dataStoreChangePlayablePlatformParam *DataStoreChangePlayablePlatformParam
 
 // NewDataStoreChangePlayablePlatformParam returns a new DataStoreChangePlayablePlatformParam
 func NewDataStoreChangePlayablePlatformParam() *DataStoreChangePlayablePlatformParam {
-	return &DataStoreChangePlayablePlatformParam{
+	dscppp := &DataStoreChangePlayablePlatformParam{
 		DataID:           types.NewPrimitiveU64(0),
 		PlayablePlatform: types.NewPrimitiveU32(0),
 	}
+
+	return dscppp
 }

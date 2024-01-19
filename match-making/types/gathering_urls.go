@@ -1,38 +1,49 @@
-// Package types implements all the types used by the Matchmaking protocols.
-//
-// Since there are multiple match making related protocols, and they all share types
-// all types used by all match making protocols is defined here
+// Package types implements all the types used by the Matchmaking protocol
 package types
 
 import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-go/types"
 )
 
-// GatheringURLs holds information about a matchmake gatheringURLs
+// GatheringURLs is a type within the Matchmaking protocol
 type GatheringURLs struct {
 	types.Structure
 	GID            *types.PrimitiveU32
 	LstStationURLs *types.List[*types.StationURL]
 }
 
+// WriteTo writes the GatheringURLs to the given writable
+func (gurl *GatheringURLs) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
+
+	gurl.GID.WriteTo(writable)
+	gurl.LstStationURLs.WriteTo(writable)
+
+	content := contentWritable.Bytes()
+
+	gurl.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
+}
+
 // ExtractFrom extracts the GatheringURLs from the given readable
-func (gatheringURLs *GatheringURLs) ExtractFrom(readable types.Readable) error {
+func (gurl *GatheringURLs) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	if err = gatheringURLs.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to read GatheringURLs header. %s", err.Error())
+	err = gurl.ExtractHeaderFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract GatheringURLs header. %s", err.Error())
 	}
 
-	err = gatheringURLs.GID.ExtractFrom(readable)
+	err = gurl.GID.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract GatheringURLs.GID. %s", err.Error())
 	}
 
-	gatheringURLs.LstStationURLs, err = stream.ReadListStationURL()
+	err = gurl.LstStationURLs.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract GatheringURLs.LstStationURLs. %s", err.Error())
 	}
@@ -40,98 +51,51 @@ func (gatheringURLs *GatheringURLs) ExtractFrom(readable types.Readable) error {
 	return nil
 }
 
-// WriteTo writes the GatheringURLs to the given writable
-func (gatheringURLs *GatheringURLs) WriteTo(writable types.Writable) {
-	contentWritable := writable.CopyNew()
-
-	gatheringURLs.GID.WriteTo(contentWritable)
-	stream.WriteListStationURL(gatheringURLs.LstStationURLs)
-
-	content := contentWritable.Bytes()
-
-	rvcd.WriteHeaderTo(writable, uint32(len(content)))
-
-	writable.Write(content)
-}
-
 // Copy returns a new copied instance of GatheringURLs
-func (gatheringURLs *GatheringURLs) Copy() types.RVType {
+func (gurl *GatheringURLs) Copy() types.RVType {
 	copied := NewGatheringURLs()
 
-	copied.StructureVersion = gatheringURLs.StructureVersion
-
-	copied.GID = gatheringURLs.GID
-	copied.LstStationURLs = make(*types.List[*types.StationURL], len(gatheringURLs.LstStationURLs))
-
-	for i := 0; i < len(gatheringURLs.LstStationURLs); i++ {
-		copied.LstStationURLs[i] = gatheringURLs.LstStationURLs[i].Copy()
-	}
+	copied.StructureVersion = gurl.StructureVersion
+	copied.GID = gurl.GID.Copy().(*types.PrimitiveU32)
+	copied.LstStationURLs = gurl.LstStationURLs.Copy().(*types.List[*types.StationURL])
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (gatheringURLs *GatheringURLs) Equals(o types.RVType) bool {
+// Equals checks if the given GatheringURLs contains the same data as the current GatheringURLs
+func (gurl *GatheringURLs) Equals(o types.RVType) bool {
 	if _, ok := o.(*GatheringURLs); !ok {
 		return false
 	}
 
 	other := o.(*GatheringURLs)
 
-	if gatheringURLs.StructureVersion != other.StructureVersion {
+	if gurl.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if !gatheringURLs.GID.Equals(other.GID) {
+	if !gurl.GID.Equals(other.GID) {
 		return false
 	}
 
-	if len(gatheringURLs.LstStationURLs) != len(other.LstStationURLs) {
-		return false
-	}
-
-	for i := 0; i < len(gatheringURLs.LstStationURLs); i++ {
-		if !gatheringURLs.LstStationURLs[i].Equals(other.LstStationURLs[i]) {
-			return false
-		}
-	}
-
-	return true
+	return gurl.LstStationURLs.Equals(other.LstStationURLs)
 }
 
-// String returns a string representation of the struct
-func (gatheringURLs *GatheringURLs) String() string {
-	return gatheringURLs.FormatToString(0)
+// String returns the string representation of the GatheringURLs
+func (gurl *GatheringURLs) String() string {
+	return gurl.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (gatheringURLs *GatheringURLs) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the GatheringURLs using the provided indentation level
+func (gurl *GatheringURLs) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
-	indentationListValues := strings.Repeat("\t", indentationLevel+2)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("GatheringURLs{\n")
-	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, gatheringURLs.StructureVersion))
-	b.WriteString(fmt.Sprintf("%sGID: %d,\n", indentationValues, gatheringURLs.GID))
-
-	if len(gatheringURLs.LstStationURLs) == 0 {
-		b.WriteString(fmt.Sprintf("%sLstStationURLs: []\n", indentationValues))
-	} else {
-		b.WriteString(fmt.Sprintf("%sLstStationURLs: [\n", indentationValues))
-
-		for i := 0; i < len(gatheringURLs.LstStationURLs); i++ {
-			str := gatheringURLs.LstStationURLs[i].FormatToString(indentationLevel + 2)
-			if i == len(gatheringURLs.LstStationURLs)-1 {
-				b.WriteString(fmt.Sprintf("%s%s\n", indentationListValues, str))
-			} else {
-				b.WriteString(fmt.Sprintf("%s%s,\n", indentationListValues, str))
-			}
-		}
-
-		b.WriteString(fmt.Sprintf("%s]\n", indentationValues))
-	}
+	b.WriteString(fmt.Sprintf("%sGID: %s,\n", indentationValues, gurl.GID))
+	b.WriteString(fmt.Sprintf("%sLstStationURLs: %s,\n", indentationValues, gurl.LstStationURLs))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -139,5 +103,12 @@ func (gatheringURLs *GatheringURLs) FormatToString(indentationLevel int) string 
 
 // NewGatheringURLs returns a new GatheringURLs
 func NewGatheringURLs() *GatheringURLs {
-	return &GatheringURLs{}
+	gurl := &GatheringURLs{
+		GID:            types.NewPrimitiveU32(0),
+		LstStationURLs: types.NewList[*types.StationURL](),
+	}
+
+	gurl.LstStationURLs.Type = types.NewStationURL("")
+
+	return gurl
 }

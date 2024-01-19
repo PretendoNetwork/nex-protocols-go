@@ -29,7 +29,7 @@ func (protocol *Protocol) handleFindByDescription(packet nex.PacketInterface) {
 	strDescription := types.NewString("")
 	err = strDescription.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.FindByDescription(fmt.Errorf("Failed to read strDescription from parameters. %s", err.Error()), packet, callID, "", nil)
+		_, errorCode = protocol.FindByDescription(fmt.Errorf("Failed to read strDescription from parameters. %s", err.Error()), packet, callID, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -40,7 +40,7 @@ func (protocol *Protocol) handleFindByDescription(packet nex.PacketInterface) {
 	resultRange := types.NewResultRange()
 	err = resultRange.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.FindByDescription(fmt.Errorf("Failed to read resultRange from parameters. %s", err.Error()), packet, callID, "", nil)
+		_, errorCode = protocol.FindByDescription(fmt.Errorf("Failed to read resultRange from parameters. %s", err.Error()), packet, callID, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}

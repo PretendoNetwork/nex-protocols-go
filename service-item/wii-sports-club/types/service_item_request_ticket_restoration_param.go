@@ -1,107 +1,101 @@
-// Package types implements all the types used by the Service Item (Wii Sports Club) protocol
+// Package types implements all the types used by the ServiceItem protocol
 package types
 
 import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-go/types"
 )
 
-// ServiceItemRequestTicketRestorationParam holds data for the Service Item (Wii Sports Club) protocol
+// ServiceItemRequestTicketRestorationParam is a type within the ServiceItem protocol
 type ServiceItemRequestTicketRestorationParam struct {
 	types.Structure
 	TicketType *types.PrimitiveU32
 	NumTicket  *types.PrimitiveU32
 }
 
+// WriteTo writes the ServiceItemRequestTicketRestorationParam to the given writable
+func (sirtrp *ServiceItemRequestTicketRestorationParam) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
+
+	sirtrp.TicketType.WriteTo(writable)
+	sirtrp.NumTicket.WriteTo(writable)
+
+	content := contentWritable.Bytes()
+
+	sirtrp.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
+}
+
 // ExtractFrom extracts the ServiceItemRequestTicketRestorationParam from the given readable
-func (serviceItemRequestTicketRestorationParam *ServiceItemRequestTicketRestorationParam) ExtractFrom(readable types.Readable) error {
+func (sirtrp *ServiceItemRequestTicketRestorationParam) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	if err = serviceItemRequestTicketRestorationParam.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to read ServiceItemRequestTicketRestorationParam header. %s", err.Error())
+	err = sirtrp.ExtractHeaderFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract ServiceItemRequestTicketRestorationParam header. %s", err.Error())
 	}
 
-	err = serviceItemRequestTicketRestorationParam.TicketType.ExtractFrom(readable)
+	err = sirtrp.TicketType.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemRequestTicketRestorationParam.TicketType from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract ServiceItemRequestTicketRestorationParam.TicketType. %s", err.Error())
 	}
 
-	err = serviceItemRequestTicketRestorationParam.NumTicket.ExtractFrom(readable)
+	err = sirtrp.NumTicket.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemRequestTicketRestorationParam.NumTicket from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract ServiceItemRequestTicketRestorationParam.NumTicket. %s", err.Error())
 	}
 
 	return nil
 }
 
-// WriteTo writes the ServiceItemRequestTicketRestorationParam to the given writable
-func (serviceItemRequestTicketRestorationParam *ServiceItemRequestTicketRestorationParam) WriteTo(writable types.Writable) {
-	contentWritable := writable.CopyNew()
-
-	serviceItemRequestTicketRestorationParam.TicketType.WriteTo(contentWritable)
-	serviceItemRequestTicketRestorationParam.NumTicket.WriteTo(contentWritable)
-
-	content := contentWritable.Bytes()
-
-	serviceItemRequestTicketRestorationParam.WriteHeaderTo(writable, uint32(len(content)))
-
-	writable.Write(content)
-}
-
 // Copy returns a new copied instance of ServiceItemRequestTicketRestorationParam
-func (serviceItemRequestTicketRestorationParam *ServiceItemRequestTicketRestorationParam) Copy() types.RVType {
+func (sirtrp *ServiceItemRequestTicketRestorationParam) Copy() types.RVType {
 	copied := NewServiceItemRequestTicketRestorationParam()
 
-	copied.StructureVersion = serviceItemRequestTicketRestorationParam.StructureVersion
-
-	copied.TicketType = serviceItemRequestTicketRestorationParam.TicketType
-	copied.NumTicket = serviceItemRequestTicketRestorationParam.NumTicket
+	copied.StructureVersion = sirtrp.StructureVersion
+	copied.TicketType = sirtrp.TicketType.Copy().(*types.PrimitiveU32)
+	copied.NumTicket = sirtrp.NumTicket.Copy().(*types.PrimitiveU32)
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (serviceItemRequestTicketRestorationParam *ServiceItemRequestTicketRestorationParam) Equals(o types.RVType) bool {
+// Equals checks if the given ServiceItemRequestTicketRestorationParam contains the same data as the current ServiceItemRequestTicketRestorationParam
+func (sirtrp *ServiceItemRequestTicketRestorationParam) Equals(o types.RVType) bool {
 	if _, ok := o.(*ServiceItemRequestTicketRestorationParam); !ok {
 		return false
 	}
 
 	other := o.(*ServiceItemRequestTicketRestorationParam)
 
-	if serviceItemRequestTicketRestorationParam.StructureVersion != other.StructureVersion {
+	if sirtrp.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if !serviceItemRequestTicketRestorationParam.TicketType.Equals(other.TicketType) {
+	if !sirtrp.TicketType.Equals(other.TicketType) {
 		return false
 	}
 
-	if !serviceItemRequestTicketRestorationParam.NumTicket.Equals(other.NumTicket) {
-		return false
-	}
-
-	return true
+	return sirtrp.NumTicket.Equals(other.NumTicket)
 }
 
-// String returns a string representation of the struct
-func (serviceItemRequestTicketRestorationParam *ServiceItemRequestTicketRestorationParam) String() string {
-	return serviceItemRequestTicketRestorationParam.FormatToString(0)
+// String returns the string representation of the ServiceItemRequestTicketRestorationParam
+func (sirtrp *ServiceItemRequestTicketRestorationParam) String() string {
+	return sirtrp.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (serviceItemRequestTicketRestorationParam *ServiceItemRequestTicketRestorationParam) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the ServiceItemRequestTicketRestorationParam using the provided indentation level
+func (sirtrp *ServiceItemRequestTicketRestorationParam) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("ServiceItemRequestTicketRestorationParam{\n")
-	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, serviceItemRequestTicketRestorationParam.StructureVersion))
-	b.WriteString(fmt.Sprintf("%sTicketType: %d,\n", indentationValues, serviceItemRequestTicketRestorationParam.TicketType))
-	b.WriteString(fmt.Sprintf("%sNumTicket: %d,\n", indentationValues, serviceItemRequestTicketRestorationParam.NumTicket))
+	b.WriteString(fmt.Sprintf("%sTicketType: %s,\n", indentationValues, sirtrp.TicketType))
+	b.WriteString(fmt.Sprintf("%sNumTicket: %s,\n", indentationValues, sirtrp.NumTicket))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -109,5 +103,10 @@ func (serviceItemRequestTicketRestorationParam *ServiceItemRequestTicketRestorat
 
 // NewServiceItemRequestTicketRestorationParam returns a new ServiceItemRequestTicketRestorationParam
 func NewServiceItemRequestTicketRestorationParam() *ServiceItemRequestTicketRestorationParam {
-	return &ServiceItemRequestTicketRestorationParam{}
+	sirtrp := &ServiceItemRequestTicketRestorationParam{
+		TicketType: types.NewPrimitiveU32(0),
+		NumTicket:  types.NewPrimitiveU32(0),
+	}
+
+	return sirtrp
 }

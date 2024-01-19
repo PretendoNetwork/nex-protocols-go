@@ -1,4 +1,4 @@
-// Package types implements all the types used by the DataStore (Super Mario Maker) protocol
+// Package types implements all the types used by the DataStore protocol
 package types
 
 import (
@@ -9,99 +9,94 @@ import (
 	datastore_types "github.com/PretendoNetwork/nex-protocols-go/datastore/types"
 )
 
-// DataStoreFileServerObjectInfo holds data for the DataStore (Super Mario Maker) protocol
+// DataStoreFileServerObjectInfo is a type within the DataStore protocol
 type DataStoreFileServerObjectInfo struct {
 	types.Structure
 	DataID  *types.PrimitiveU64
 	GetInfo *datastore_types.DataStoreReqGetInfo
 }
 
+// WriteTo writes the DataStoreFileServerObjectInfo to the given writable
+func (dsfsoi *DataStoreFileServerObjectInfo) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
+
+	dsfsoi.DataID.WriteTo(writable)
+	dsfsoi.GetInfo.WriteTo(writable)
+
+	content := contentWritable.Bytes()
+
+	dsfsoi.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
+}
+
 // ExtractFrom extracts the DataStoreFileServerObjectInfo from the given readable
-func (dataStoreFileServerObjectInfo *DataStoreFileServerObjectInfo) ExtractFrom(readable types.Readable) error {
+func (dsfsoi *DataStoreFileServerObjectInfo) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	if err = dataStoreFileServerObjectInfo.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to read DataStoreFileServerObjectInfo header. %s", err.Error())
+	err = dsfsoi.ExtractHeaderFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreFileServerObjectInfo header. %s", err.Error())
 	}
 
-	err = dataStoreFileServerObjectInfo.DataID.ExtractFrom(readable)
+	err = dsfsoi.DataID.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract DataStoreFileServerObjectInfo.DataID from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract DataStoreFileServerObjectInfo.DataID. %s", err.Error())
 	}
 
-	err = dataStoreFileServerObjectInfo.GetInfo.ExtractFrom(readable)
+	err = dsfsoi.GetInfo.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract DataStoreFileServerObjectInfo.GetInfo from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract DataStoreFileServerObjectInfo.GetInfo. %s", err.Error())
 	}
 
 	return nil
 }
 
-// WriteTo writes the DataStoreFileServerObjectInfo to the given writable
-func (dataStoreFileServerObjectInfo *DataStoreFileServerObjectInfo) WriteTo(writable types.Writable) {
-	contentWritable := writable.CopyNew()
-
-	dataStoreFileServerObjectInfo.DataID.WriteTo(contentWritable)
-	dataStoreFileServerObjectInfo.GetInfo.WriteTo(contentWritable)
-
-	content := contentWritable.Bytes()
-
-	dataStoreFileServerObjectInfo.WriteHeaderTo(writable, uint32(len(content)))
-
-	writable.Write(content)
-}
-
 // Copy returns a new copied instance of DataStoreFileServerObjectInfo
-func (dataStoreFileServerObjectInfo *DataStoreFileServerObjectInfo) Copy() types.RVType {
+func (dsfsoi *DataStoreFileServerObjectInfo) Copy() types.RVType {
 	copied := NewDataStoreFileServerObjectInfo()
 
-	copied.StructureVersion = dataStoreFileServerObjectInfo.StructureVersion
-
-	copied.DataID = dataStoreFileServerObjectInfo.DataID
-	copied.GetInfo = dataStoreFileServerObjectInfo.GetInfo.Copy().(*datastore_types.DataStoreReqGetInfo)
+	copied.StructureVersion = dsfsoi.StructureVersion
+	copied.DataID = dsfsoi.DataID.Copy().(*types.PrimitiveU64)
+	copied.GetInfo = dsfsoi.GetInfo.Copy().(*datastore_types.DataStoreReqGetInfo)
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (dataStoreFileServerObjectInfo *DataStoreFileServerObjectInfo) Equals(o types.RVType) bool {
+// Equals checks if the given DataStoreFileServerObjectInfo contains the same data as the current DataStoreFileServerObjectInfo
+func (dsfsoi *DataStoreFileServerObjectInfo) Equals(o types.RVType) bool {
 	if _, ok := o.(*DataStoreFileServerObjectInfo); !ok {
 		return false
 	}
 
 	other := o.(*DataStoreFileServerObjectInfo)
 
-	if dataStoreFileServerObjectInfo.StructureVersion != other.StructureVersion {
+	if dsfsoi.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if !dataStoreFileServerObjectInfo.DataID.Equals(other.DataID) {
+	if !dsfsoi.DataID.Equals(other.DataID) {
 		return false
 	}
 
-	if !dataStoreFileServerObjectInfo.GetInfo.Equals(other.GetInfo) {
-		return false
-	}
-
-	return true
+	return dsfsoi.GetInfo.Equals(other.GetInfo)
 }
 
-// String returns a string representation of the struct
-func (dataStoreFileServerObjectInfo *DataStoreFileServerObjectInfo) String() string {
-	return dataStoreFileServerObjectInfo.FormatToString(0)
+// String returns the string representation of the DataStoreFileServerObjectInfo
+func (dsfsoi *DataStoreFileServerObjectInfo) String() string {
+	return dsfsoi.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (dataStoreFileServerObjectInfo *DataStoreFileServerObjectInfo) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the DataStoreFileServerObjectInfo using the provided indentation level
+func (dsfsoi *DataStoreFileServerObjectInfo) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("DataStoreFileServerObjectInfo{\n")
-	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, dataStoreFileServerObjectInfo.StructureVersion))
-	b.WriteString(fmt.Sprintf("%sDataID: %s,\n", indentationValues, dataStoreFileServerObjectInfo.DataID))
-	b.WriteString(fmt.Sprintf("%sGetInfo: %s\n", indentationValues, dataStoreFileServerObjectInfo.GetInfo.FormatToString(indentationLevel+1)))
+	b.WriteString(fmt.Sprintf("%sDataID: %s,\n", indentationValues, dsfsoi.DataID))
+	b.WriteString(fmt.Sprintf("%sGetInfo: %s,\n", indentationValues, dsfsoi.GetInfo.FormatToString(indentationLevel+1)))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -109,8 +104,10 @@ func (dataStoreFileServerObjectInfo *DataStoreFileServerObjectInfo) FormatToStri
 
 // NewDataStoreFileServerObjectInfo returns a new DataStoreFileServerObjectInfo
 func NewDataStoreFileServerObjectInfo() *DataStoreFileServerObjectInfo {
-	return &DataStoreFileServerObjectInfo{
+	dsfsoi := &DataStoreFileServerObjectInfo{
 		DataID:  types.NewPrimitiveU64(0),
 		GetInfo: datastore_types.NewDataStoreReqGetInfo(),
 	}
+
+	return dsfsoi
 }

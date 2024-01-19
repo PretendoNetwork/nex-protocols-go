@@ -1,155 +1,145 @@
-// Package types implements all the types used by the Service Item (Team Kirby Clash Deluxe) protocol
+// Package types implements all the types used by the ServiceItem protocol
 package types
 
 import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-go/types"
 )
 
-// ServiceItemGetServiceItemRightParam holds data for the Service Item (Team Kirby Clash Deluxe) protocol
+// ServiceItemGetServiceItemRightParam is a type within the ServiceItem protocol
 type ServiceItemGetServiceItemRightParam struct {
 	types.Structure
-	ReferenceID string
-	DeviceID    string
+	ReferenceID *types.String
+	DeviceID    *types.String
 	UniqueID    *types.PrimitiveU32
 	ItemGroup   *types.PrimitiveU8
-	Platform    *types.PrimitiveU8 // * Revision 1
+	Platform    *types.PrimitiveU8  // * Revision 1
+}
+
+// WriteTo writes the ServiceItemGetServiceItemRightParam to the given writable
+func (sigsirp *ServiceItemGetServiceItemRightParam) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
+
+	sigsirp.ReferenceID.WriteTo(writable)
+	sigsirp.DeviceID.WriteTo(writable)
+	sigsirp.UniqueID.WriteTo(writable)
+	sigsirp.ItemGroup.WriteTo(writable)
+
+	if sigsirp.StructureVersion >= 1 {
+		sigsirp.Platform.WriteTo(writable)
+	}
+
+	content := contentWritable.Bytes()
+
+	sigsirp.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // ExtractFrom extracts the ServiceItemGetServiceItemRightParam from the given readable
-func (serviceItemGetServiceItemRightParam *ServiceItemGetServiceItemRightParam) ExtractFrom(readable types.Readable) error {
+func (sigsirp *ServiceItemGetServiceItemRightParam) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	if err = serviceItemGetServiceItemRightParam.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to read ServiceItemGetServiceItemRightParam header. %s", err.Error())
-	}
-
-	err = serviceItemGetServiceItemRightParam.ReferenceID.ExtractFrom(readable)
+	err = sigsirp.ExtractHeaderFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemGetServiceItemRightParam.ReferenceID from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract ServiceItemGetServiceItemRightParam header. %s", err.Error())
 	}
 
-	err = serviceItemGetServiceItemRightParam.DeviceID.ExtractFrom(readable)
+	err = sigsirp.ReferenceID.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemGetServiceItemRightParam.DeviceID from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract ServiceItemGetServiceItemRightParam.ReferenceID. %s", err.Error())
 	}
 
-	err = serviceItemGetServiceItemRightParam.UniqueID.ExtractFrom(readable)
+	err = sigsirp.DeviceID.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemGetServiceItemRightParam.UniqueID from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract ServiceItemGetServiceItemRightParam.DeviceID. %s", err.Error())
 	}
 
-	err = serviceItemGetServiceItemRightParam.ItemGroup.ExtractFrom(readable)
+	err = sigsirp.UniqueID.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemGetServiceItemRightParam.ItemGroup from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract ServiceItemGetServiceItemRightParam.UniqueID. %s", err.Error())
 	}
 
-	if serviceItemGetServiceItemRightParam.StructureVersion >= 1 {
-	err = 	serviceItemGetServiceItemRightParam.Platform.ExtractFrom(readable)
+	err = sigsirp.ItemGroup.ExtractFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract ServiceItemGetServiceItemRightParam.ItemGroup. %s", err.Error())
+	}
+
+	if sigsirp.StructureVersion >= 1 {
+		err = sigsirp.Platform.ExtractFrom(readable)
 		if err != nil {
-			return fmt.Errorf("Failed to extract ServiceItemGetServiceItemRightParam.Platform from stream. %s", err.Error())
+			return fmt.Errorf("Failed to extract ServiceItemGetServiceItemRightParam.Platform. %s", err.Error())
 		}
 	}
 
 	return nil
 }
 
-// WriteTo writes the ServiceItemGetServiceItemRightParam to the given writable
-func (serviceItemGetServiceItemRightParam *ServiceItemGetServiceItemRightParam) WriteTo(writable types.Writable) {
-	contentWritable := writable.CopyNew()
-
-	serviceItemGetServiceItemRightParam.ReferenceID.WriteTo(contentWritable)
-	serviceItemGetServiceItemRightParam.DeviceID.WriteTo(contentWritable)
-	serviceItemGetServiceItemRightParam.UniqueID.WriteTo(contentWritable)
-	serviceItemGetServiceItemRightParam.ItemGroup.WriteTo(contentWritable)
-
-	if serviceItemGetServiceItemRightParam.StructureVersion >= 1 {
-		serviceItemGetServiceItemRightParam.Platform.WriteTo(contentWritable)
-	}
-
-	content := contentWritable.Bytes()
-
-	rvcd.WriteHeaderTo(writable, uint32(len(content)))
-
-	writable.Write(content)
-}
-
 // Copy returns a new copied instance of ServiceItemGetServiceItemRightParam
-func (serviceItemGetServiceItemRightParam *ServiceItemGetServiceItemRightParam) Copy() types.RVType {
+func (sigsirp *ServiceItemGetServiceItemRightParam) Copy() types.RVType {
 	copied := NewServiceItemGetServiceItemRightParam()
 
-	copied.StructureVersion = serviceItemGetServiceItemRightParam.StructureVersion
-
-	copied.ReferenceID = serviceItemGetServiceItemRightParam.ReferenceID
-	copied.DeviceID = serviceItemGetServiceItemRightParam.DeviceID
-	copied.UniqueID = serviceItemGetServiceItemRightParam.UniqueID
-	copied.ItemGroup = serviceItemGetServiceItemRightParam.ItemGroup
-	copied.Platform = serviceItemGetServiceItemRightParam.Platform
+	copied.StructureVersion = sigsirp.StructureVersion
+	copied.ReferenceID = sigsirp.ReferenceID.Copy().(*types.String)
+	copied.DeviceID = sigsirp.DeviceID.Copy().(*types.String)
+	copied.UniqueID = sigsirp.UniqueID.Copy().(*types.PrimitiveU32)
+	copied.ItemGroup = sigsirp.ItemGroup.Copy().(*types.PrimitiveU8)
+	copied.Platform = sigsirp.Platform.Copy().(*types.PrimitiveU8)
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (serviceItemGetServiceItemRightParam *ServiceItemGetServiceItemRightParam) Equals(o types.RVType) bool {
+// Equals checks if the given ServiceItemGetServiceItemRightParam contains the same data as the current ServiceItemGetServiceItemRightParam
+func (sigsirp *ServiceItemGetServiceItemRightParam) Equals(o types.RVType) bool {
 	if _, ok := o.(*ServiceItemGetServiceItemRightParam); !ok {
 		return false
 	}
 
 	other := o.(*ServiceItemGetServiceItemRightParam)
 
-	if serviceItemGetServiceItemRightParam.StructureVersion != other.StructureVersion {
+	if sigsirp.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if !serviceItemGetServiceItemRightParam.ReferenceID.Equals(other.ReferenceID) {
+	if !sigsirp.ReferenceID.Equals(other.ReferenceID) {
 		return false
 	}
 
-	if !serviceItemGetServiceItemRightParam.DeviceID.Equals(other.DeviceID) {
+	if !sigsirp.DeviceID.Equals(other.DeviceID) {
 		return false
 	}
 
-	if !serviceItemGetServiceItemRightParam.UniqueID.Equals(other.UniqueID) {
+	if !sigsirp.UniqueID.Equals(other.UniqueID) {
 		return false
 	}
 
-	if !serviceItemGetServiceItemRightParam.ItemGroup.Equals(other.ItemGroup) {
+	if !sigsirp.ItemGroup.Equals(other.ItemGroup) {
 		return false
 	}
 
-	if !serviceItemGetServiceItemRightParam.Platform.Equals(other.Platform) {
-		return false
-	}
-
-	return true
+	return sigsirp.Platform.Equals(other.Platform)
 }
 
-// String returns a string representation of the struct
-func (serviceItemGetServiceItemRightParam *ServiceItemGetServiceItemRightParam) String() string {
-	return serviceItemGetServiceItemRightParam.FormatToString(0)
+// String returns the string representation of the ServiceItemGetServiceItemRightParam
+func (sigsirp *ServiceItemGetServiceItemRightParam) String() string {
+	return sigsirp.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (serviceItemGetServiceItemRightParam *ServiceItemGetServiceItemRightParam) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the ServiceItemGetServiceItemRightParam using the provided indentation level
+func (sigsirp *ServiceItemGetServiceItemRightParam) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("ServiceItemGetServiceItemRightParam{\n")
-	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, serviceItemGetServiceItemRightParam.StructureVersion))
-	b.WriteString(fmt.Sprintf("%sReferenceID: %q,\n", indentationValues, serviceItemGetServiceItemRightParam.ReferenceID))
-	b.WriteString(fmt.Sprintf("%sDeviceID: %q,\n", indentationValues, serviceItemGetServiceItemRightParam.DeviceID))
-	b.WriteString(fmt.Sprintf("%sUniqueID: %d,\n", indentationValues, serviceItemGetServiceItemRightParam.UniqueID))
-	b.WriteString(fmt.Sprintf("%sItemGroup: %d,\n", indentationValues, serviceItemGetServiceItemRightParam.ItemGroup))
-
-	if serviceItemGetServiceItemRightParam.StructureVersion >= 1 {
-		b.WriteString(fmt.Sprintf("%sPlatform: %d,\n", indentationValues, serviceItemGetServiceItemRightParam.Platform))
-	}
-
+	b.WriteString(fmt.Sprintf("%sReferenceID: %s,\n", indentationValues, sigsirp.ReferenceID))
+	b.WriteString(fmt.Sprintf("%sDeviceID: %s,\n", indentationValues, sigsirp.DeviceID))
+	b.WriteString(fmt.Sprintf("%sUniqueID: %s,\n", indentationValues, sigsirp.UniqueID))
+	b.WriteString(fmt.Sprintf("%sItemGroup: %s,\n", indentationValues, sigsirp.ItemGroup))
+	b.WriteString(fmt.Sprintf("%sPlatform: %s,\n", indentationValues, sigsirp.Platform))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -157,5 +147,13 @@ func (serviceItemGetServiceItemRightParam *ServiceItemGetServiceItemRightParam) 
 
 // NewServiceItemGetServiceItemRightParam returns a new ServiceItemGetServiceItemRightParam
 func NewServiceItemGetServiceItemRightParam() *ServiceItemGetServiceItemRightParam {
-	return &ServiceItemGetServiceItemRightParam{}
+	sigsirp := &ServiceItemGetServiceItemRightParam{
+		ReferenceID: types.NewString(""),
+		DeviceID:    types.NewString(""),
+		UniqueID:    types.NewPrimitiveU32(0),
+		ItemGroup:   types.NewPrimitiveU8(0),
+		Platform:    types.NewPrimitiveU8(0),
+	}
+
+	return sigsirp
 }

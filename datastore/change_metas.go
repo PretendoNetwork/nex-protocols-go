@@ -31,7 +31,7 @@ func (protocol *Protocol) handleChangeMetas(packet nex.PacketInterface) {
 	dataIDs.Type = types.NewPrimitiveU64(0)
 	err = dataIDs.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.ChangeMetas(fmt.Errorf("Failed to read dataIDs from parameters. %s", err.Error()), packet, callID, nil, nil, false)
+		_, errorCode = protocol.ChangeMetas(fmt.Errorf("Failed to read dataIDs from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -39,9 +39,11 @@ func (protocol *Protocol) handleChangeMetas(packet nex.PacketInterface) {
 		return
 	}
 
-	params, err := nex.StreamReadListStructure(parametersStream, datastore_types.NewDataStoreChangeMetaParam())
+	params := types.NewList[*datastore_types.DataStoreChangeMetaParam]()
+	params.Type = datastore_types.NewDataStoreChangeMetaParam()
+	err = params.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.ChangeMetas(fmt.Errorf("Failed to read params from parameters. %s", err.Error()), packet, callID, nil, nil, false)
+		_, errorCode = protocol.ChangeMetas(fmt.Errorf("Failed to read params from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -52,7 +54,7 @@ func (protocol *Protocol) handleChangeMetas(packet nex.PacketInterface) {
 	transactional := types.NewPrimitiveBool(false)
 	err = transactional.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.ChangeMetas(fmt.Errorf("Failed to read transactional from parameters. %s", err.Error()), packet, callID, nil, nil, false)
+		_, errorCode = protocol.ChangeMetas(fmt.Errorf("Failed to read transactional from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}

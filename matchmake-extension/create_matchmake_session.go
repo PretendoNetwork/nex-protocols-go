@@ -28,9 +28,9 @@ func (protocol *Protocol) handleCreateMatchmakeSession(packet nex.PacketInterfac
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	anyGathering := types.NewAnyDataHolder()
-	err = anyGathering.ExtractFrom(parametersStream)
+	err := anyGathering.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.CreateMatchmakeSession(fmt.Errorf("Failed to read anyGathering from parameters. %s", err.Error()), packet, callID, nil, "", 0)
+		_, errorCode = protocol.CreateMatchmakeSession(fmt.Errorf("Failed to read anyGathering from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -41,7 +41,7 @@ func (protocol *Protocol) handleCreateMatchmakeSession(packet nex.PacketInterfac
 	message := types.NewString("")
 	err = message.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.CreateMatchmakeSession(fmt.Errorf("Failed to read message from parameters. %s", err.Error()), packet, callID, nil, "", 0)
+		_, errorCode = protocol.CreateMatchmakeSession(fmt.Errorf("Failed to read message from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -49,18 +49,20 @@ func (protocol *Protocol) handleCreateMatchmakeSession(packet nex.PacketInterfac
 		return
 	}
 
-	var participationCount *types.PrimitiveU16 = 0
+	participationCount := types.NewPrimitiveU16(0)
 
 	if matchmakingVersion.GreaterOrEqual("3.4.0") {
-		participationCount, err = parametersStream.ReadUInt16LE()
+		participationCountU16, err := parametersStream.ReadPrimitiveUInt16LE()
 		if err != nil {
-			_, errorCode = protocol.CreateMatchmakeSession(fmt.Errorf("Failed to read message from participationCount. %s", err.Error()), packet, callID, nil, "", 0)
+			_, errorCode = protocol.CreateMatchmakeSession(fmt.Errorf("Failed to read message from participationCount. %s", err.Error()), packet, callID, nil, nil, nil)
 			if errorCode != 0 {
 				globals.RespondError(packet, ProtocolID, errorCode)
 			}
 
 			return
 		}
+
+		participationCount = types.NewPrimitiveU16(participationCountU16)
 	}
 
 	rmcMessage, errorCode := protocol.CreateMatchmakeSession(nil, packet, callID, anyGathering, message, participationCount)

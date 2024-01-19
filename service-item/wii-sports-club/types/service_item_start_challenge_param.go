@@ -1,15 +1,14 @@
-// Package types implements all the types used by the Service Item (Wii Sports Club) protocol
+// Package types implements all the types used by the ServiceItem protocol
 package types
 
 import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-go/types"
 )
 
-// ServiceItemStartChallengeParam holds data for the Service Item (Wii Sports Club) protocol
+// ServiceItemStartChallengeParam is a type within the ServiceItem protocol
 type ServiceItemStartChallengeParam struct {
 	types.Structure
 	ChallengeScheduleID *types.PrimitiveU32
@@ -17,104 +16,99 @@ type ServiceItemStartChallengeParam struct {
 	NumTicket           *types.PrimitiveU32
 }
 
+// WriteTo writes the ServiceItemStartChallengeParam to the given writable
+func (siscp *ServiceItemStartChallengeParam) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
+
+	siscp.ChallengeScheduleID.WriteTo(writable)
+	siscp.TicketType.WriteTo(writable)
+	siscp.NumTicket.WriteTo(writable)
+
+	content := contentWritable.Bytes()
+
+	siscp.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
+}
+
 // ExtractFrom extracts the ServiceItemStartChallengeParam from the given readable
-func (serviceItemStartChallengeParam *ServiceItemStartChallengeParam) ExtractFrom(readable types.Readable) error {
+func (siscp *ServiceItemStartChallengeParam) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	if err = serviceItemStartChallengeParam.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to read ServiceItemStartChallengeParam header. %s", err.Error())
+	err = siscp.ExtractHeaderFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract ServiceItemStartChallengeParam header. %s", err.Error())
 	}
 
-	err = serviceItemStartChallengeParam.ChallengeScheduleID.ExtractFrom(readable)
+	err = siscp.ChallengeScheduleID.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemStartChallengeParam.ChallengeScheduleID from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract ServiceItemStartChallengeParam.ChallengeScheduleID. %s", err.Error())
 	}
 
-	err = serviceItemStartChallengeParam.TicketType.ExtractFrom(readable)
+	err = siscp.TicketType.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemStartChallengeParam.TicketType from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract ServiceItemStartChallengeParam.TicketType. %s", err.Error())
 	}
 
-	err = serviceItemStartChallengeParam.NumTicket.ExtractFrom(readable)
+	err = siscp.NumTicket.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemStartChallengeParam.NumTicket from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract ServiceItemStartChallengeParam.NumTicket. %s", err.Error())
 	}
 
 	return nil
 }
 
-// WriteTo writes the ServiceItemStartChallengeParam to the given writable
-func (serviceItemStartChallengeParam *ServiceItemStartChallengeParam) WriteTo(writable types.Writable) {
-	contentWritable := writable.CopyNew()
-
-	serviceItemStartChallengeParam.ChallengeScheduleID.WriteTo(contentWritable)
-	serviceItemStartChallengeParam.TicketType.WriteTo(contentWritable)
-	serviceItemStartChallengeParam.NumTicket.WriteTo(contentWritable)
-
-	content := contentWritable.Bytes()
-
-	serviceItemStartChallengeParam.WriteHeaderTo(writable, uint32(len(content)))
-
-	writable.Write(content)
-}
-
 // Copy returns a new copied instance of ServiceItemStartChallengeParam
-func (serviceItemStartChallengeParam *ServiceItemStartChallengeParam) Copy() types.RVType {
+func (siscp *ServiceItemStartChallengeParam) Copy() types.RVType {
 	copied := NewServiceItemStartChallengeParam()
 
-	copied.StructureVersion = serviceItemStartChallengeParam.StructureVersion
-
-	copied.ChallengeScheduleID = serviceItemStartChallengeParam.ChallengeScheduleID
-	copied.TicketType = serviceItemStartChallengeParam.TicketType
-	copied.NumTicket = serviceItemStartChallengeParam.NumTicket
+	copied.StructureVersion = siscp.StructureVersion
+	copied.ChallengeScheduleID = siscp.ChallengeScheduleID.Copy().(*types.PrimitiveU32)
+	copied.TicketType = siscp.TicketType.Copy().(*types.PrimitiveU32)
+	copied.NumTicket = siscp.NumTicket.Copy().(*types.PrimitiveU32)
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (serviceItemStartChallengeParam *ServiceItemStartChallengeParam) Equals(o types.RVType) bool {
+// Equals checks if the given ServiceItemStartChallengeParam contains the same data as the current ServiceItemStartChallengeParam
+func (siscp *ServiceItemStartChallengeParam) Equals(o types.RVType) bool {
 	if _, ok := o.(*ServiceItemStartChallengeParam); !ok {
 		return false
 	}
 
 	other := o.(*ServiceItemStartChallengeParam)
 
-	if serviceItemStartChallengeParam.StructureVersion != other.StructureVersion {
+	if siscp.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if !serviceItemStartChallengeParam.ChallengeScheduleID.Equals(other.ChallengeScheduleID) {
+	if !siscp.ChallengeScheduleID.Equals(other.ChallengeScheduleID) {
 		return false
 	}
 
-	if !serviceItemStartChallengeParam.TicketType.Equals(other.TicketType) {
+	if !siscp.TicketType.Equals(other.TicketType) {
 		return false
 	}
 
-	if !serviceItemStartChallengeParam.NumTicket.Equals(other.NumTicket) {
-		return false
-	}
-
-	return true
+	return siscp.NumTicket.Equals(other.NumTicket)
 }
 
-// String returns a string representation of the struct
-func (serviceItemStartChallengeParam *ServiceItemStartChallengeParam) String() string {
-	return serviceItemStartChallengeParam.FormatToString(0)
+// String returns the string representation of the ServiceItemStartChallengeParam
+func (siscp *ServiceItemStartChallengeParam) String() string {
+	return siscp.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (serviceItemStartChallengeParam *ServiceItemStartChallengeParam) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the ServiceItemStartChallengeParam using the provided indentation level
+func (siscp *ServiceItemStartChallengeParam) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("ServiceItemStartChallengeParam{\n")
-	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, serviceItemStartChallengeParam.StructureVersion))
-	b.WriteString(fmt.Sprintf("%sChallengeScheduleID: %d,\n", indentationValues, serviceItemStartChallengeParam.ChallengeScheduleID))
-	b.WriteString(fmt.Sprintf("%sTicketType: %d,\n", indentationValues, serviceItemStartChallengeParam.TicketType))
-	b.WriteString(fmt.Sprintf("%sNumTicket: %d,\n", indentationValues, serviceItemStartChallengeParam.NumTicket))
+	b.WriteString(fmt.Sprintf("%sChallengeScheduleID: %s,\n", indentationValues, siscp.ChallengeScheduleID))
+	b.WriteString(fmt.Sprintf("%sTicketType: %s,\n", indentationValues, siscp.TicketType))
+	b.WriteString(fmt.Sprintf("%sNumTicket: %s,\n", indentationValues, siscp.NumTicket))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -122,5 +116,11 @@ func (serviceItemStartChallengeParam *ServiceItemStartChallengeParam) FormatToSt
 
 // NewServiceItemStartChallengeParam returns a new ServiceItemStartChallengeParam
 func NewServiceItemStartChallengeParam() *ServiceItemStartChallengeParam {
-	return &ServiceItemStartChallengeParam{}
+	siscp := &ServiceItemStartChallengeParam{
+		ChallengeScheduleID: types.NewPrimitiveU32(0),
+		TicketType:          types.NewPrimitiveU32(0),
+		NumTicket:           types.NewPrimitiveU32(0),
+	}
+
+	return siscp
 }

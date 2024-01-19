@@ -1,15 +1,14 @@
-// Package types implements all the types used by the Message Delivery protocol
+// Package types implements all the types used by the MessageDelivery protocol
 package types
 
 import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-go/types"
 )
 
-// UserMessage is a data structure used by the Message Delivery protocol
+// UserMessage is a type within the MessageDelivery protocol
 type UserMessage struct {
 	types.Structure
 	*types.Data
@@ -19,179 +18,189 @@ type UserMessage struct {
 	Receptiontime    *types.DateTime
 	UILifeTime       *types.PrimitiveU32
 	UIFlags          *types.PrimitiveU32
-	StrSubject       string
-	StrSender        string
+	StrSubject       *types.String
+	StrSender        *types.String
 	MessageRecipient *MessageRecipient
 }
 
+// WriteTo writes the UserMessage to the given writable
+func (um *UserMessage) WriteTo(writable types.Writable) {
+	um.Data.WriteTo(writable)
+
+	contentWritable := writable.CopyNew()
+
+	um.UIID.WriteTo(writable)
+	um.UIParentID.WriteTo(writable)
+	um.PIDSender.WriteTo(writable)
+	um.Receptiontime.WriteTo(writable)
+	um.UILifeTime.WriteTo(writable)
+	um.UIFlags.WriteTo(writable)
+	um.StrSubject.WriteTo(writable)
+	um.StrSender.WriteTo(writable)
+	um.MessageRecipient.WriteTo(writable)
+
+	content := contentWritable.Bytes()
+
+	um.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
+}
+
 // ExtractFrom extracts the UserMessage from the given readable
-func (userMessage *UserMessage) ExtractFrom(readable types.Readable) error {
+func (um *UserMessage) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	if err = userMessage.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to read UserMessage header. %s", err.Error())
+	err = um.Data.ExtractFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract UserMessage.Data. %s", err.Error())
 	}
 
-	err = userMessage.UIID.ExtractFrom(readable)
+	err = um.ExtractHeaderFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract UserMessage.UIID from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract UserMessage header. %s", err.Error())
 	}
 
-	err = userMessage.UIParentID.ExtractFrom(readable)
+	err = um.UIID.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract UserMessage.UIParentID from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract UserMessage.UIID. %s", err.Error())
 	}
 
-	err = userMessage.PIDSender.ExtractFrom(readable)
+	err = um.UIParentID.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract UserMessage.PIDSender from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract UserMessage.UIParentID. %s", err.Error())
 	}
 
-	err = userMessage.Receptiontime.ExtractFrom(readable)
+	err = um.PIDSender.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract UserMessage.Receptiontime from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract UserMessage.PIDSender. %s", err.Error())
 	}
 
-	err = userMessage.UILifeTime.ExtractFrom(readable)
+	err = um.Receptiontime.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract UserMessage.UILifeTime from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract UserMessage.Receptiontime. %s", err.Error())
 	}
 
-	err = userMessage.UIFlags.ExtractFrom(readable)
+	err = um.UILifeTime.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract UserMessage.UIFlags from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract UserMessage.UILifeTime. %s", err.Error())
 	}
 
-	err = userMessage.StrSubject.ExtractFrom(readable)
+	err = um.UIFlags.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract UserMessage.StrSubject from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract UserMessage.UIFlags. %s", err.Error())
 	}
 
-	err = userMessage.StrSender.ExtractFrom(readable)
+	err = um.StrSubject.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract UserMessage.StrSender from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract UserMessage.StrSubject. %s", err.Error())
 	}
 
-	err = userMessage.MessageRecipient.ExtractFrom(readable)
+	err = um.StrSender.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract UserMessage.MessageRecipient from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract UserMessage.StrSender. %s", err.Error())
+	}
+
+	err = um.MessageRecipient.ExtractFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract UserMessage.MessageRecipient. %s", err.Error())
 	}
 
 	return nil
 }
 
 // Copy returns a new copied instance of UserMessage
-func (userMessage *UserMessage) Copy() types.RVType {
+func (um *UserMessage) Copy() types.RVType {
 	copied := NewUserMessage()
 
-	copied.StructureVersion = userMessage.StructureVersion
-
-	copied.Data = userMessage.Data.Copy().(*types.Data)
-
-	copied.UIID = userMessage.UIID
-	copied.UIParentID = userMessage.UIParentID
-	copied.PIDSender = userMessage.PIDSender.Copy()
-	copied.Receptiontime = userMessage.Receptiontime.Copy()
-	copied.UILifeTime = userMessage.UILifeTime
-	copied.UIFlags = userMessage.UIFlags
-	copied.StrSubject = userMessage.StrSubject
-	copied.StrSender = userMessage.StrSender
-	copied.MessageRecipient = userMessage.MessageRecipient.Copy().(*MessageRecipient)
+	copied.StructureVersion = um.StructureVersion
+	copied.Data = um.Data.Copy().(*types.Data)
+	copied.UIID = um.UIID.Copy().(*types.PrimitiveU32)
+	copied.UIParentID = um.UIParentID.Copy().(*types.PrimitiveU32)
+	copied.PIDSender = um.PIDSender.Copy().(*types.PID)
+	copied.Receptiontime = um.Receptiontime.Copy().(*types.DateTime)
+	copied.UILifeTime = um.UILifeTime.Copy().(*types.PrimitiveU32)
+	copied.UIFlags = um.UIFlags.Copy().(*types.PrimitiveU32)
+	copied.StrSubject = um.StrSubject.Copy().(*types.String)
+	copied.StrSender = um.StrSender.Copy().(*types.String)
+	copied.MessageRecipient = um.MessageRecipient.Copy().(*MessageRecipient)
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (userMessage *UserMessage) Equals(o types.RVType) bool {
+// Equals checks if the given UserMessage contains the same data as the current UserMessage
+func (um *UserMessage) Equals(o types.RVType) bool {
 	if _, ok := o.(*UserMessage); !ok {
 		return false
 	}
 
 	other := o.(*UserMessage)
 
-	if userMessage.StructureVersion != other.StructureVersion {
+	if um.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if !userMessage.ParentType().Equals(other.ParentType()) {
+	if !um.Data.Equals(other.Data) {
 		return false
 	}
 
-	if !userMessage.UIID.Equals(other.UIID) {
+	if !um.UIID.Equals(other.UIID) {
 		return false
 	}
 
-	if !userMessage.UIParentID.Equals(other.UIParentID) {
+	if !um.UIParentID.Equals(other.UIParentID) {
 		return false
 	}
 
-	if !userMessage.PIDSender.Equals(other.PIDSender) {
+	if !um.PIDSender.Equals(other.PIDSender) {
 		return false
 	}
 
-	if !userMessage.Receptiontime.Equals(other.Receptiontime) {
+	if !um.Receptiontime.Equals(other.Receptiontime) {
 		return false
 	}
 
-	if !userMessage.UILifeTime.Equals(other.UILifeTime) {
+	if !um.UILifeTime.Equals(other.UILifeTime) {
 		return false
 	}
 
-	if !userMessage.UIFlags.Equals(other.UIFlags) {
+	if !um.UIFlags.Equals(other.UIFlags) {
 		return false
 	}
 
-	if !userMessage.StrSubject.Equals(other.StrSubject) {
+	if !um.StrSubject.Equals(other.StrSubject) {
 		return false
 	}
 
-	if !userMessage.StrSender.Equals(other.StrSender) {
+	if !um.StrSender.Equals(other.StrSender) {
 		return false
 	}
 
-	if !userMessage.MessageRecipient.Equals(other.MessageRecipient) {
-		return false
-	}
-
-	return true
+	return um.MessageRecipient.Equals(other.MessageRecipient)
 }
 
-// String returns a string representation of the struct
-func (userMessage *UserMessage) String() string {
-	return userMessage.FormatToString(0)
+// String returns the string representation of the UserMessage
+func (um *UserMessage) String() string {
+	return um.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (userMessage *UserMessage) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the UserMessage using the provided indentation level
+func (um *UserMessage) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("UserMessage{\n")
-	b.WriteString(fmt.Sprintf("%sParentType: %s,\n", indentationValues, userMessage.ParentType().FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, userMessage.StructureVersion))
-	b.WriteString(fmt.Sprintf("%sUIID: %d,\n", indentationValues, userMessage.UIID))
-	b.WriteString(fmt.Sprintf("%sUIParentID: %d,\n", indentationValues, userMessage.UIParentID))
-	b.WriteString(fmt.Sprintf("%sPIDSender: %s,\n", indentationValues, userMessage.PIDSender.FormatToString(indentationLevel+1)))
-
-	if userMessage.Receptiontime != nil {
-		b.WriteString(fmt.Sprintf("%sReceptiontime: %s,\n", indentationValues, userMessage.Receptiontime))
-	} else {
-		b.WriteString(fmt.Sprintf("%sReceptiontime: nil,\n", indentationValues))
-	}
-
-	b.WriteString(fmt.Sprintf("%sUILifeTime: %d,\n", indentationValues, userMessage.UILifeTime))
-	b.WriteString(fmt.Sprintf("%sUIFlags: %d,\n", indentationValues, userMessage.UIFlags))
-	b.WriteString(fmt.Sprintf("%sStrSubject: %q,\n", indentationValues, userMessage.StrSubject))
-	b.WriteString(fmt.Sprintf("%sStrSender: %q,\n", indentationValues, userMessage.StrSender))
-
-	if userMessage.MessageRecipient != nil {
-		b.WriteString(fmt.Sprintf("%sMessageRecipient: %s,\n", indentationValues, userMessage.MessageRecipient))
-	} else {
-		b.WriteString(fmt.Sprintf("%sMessageRecipient: nil,\n", indentationValues))
-	}
-
+	b.WriteString(fmt.Sprintf("%sData (parent): %s,\n", indentationValues, um.Data.FormatToString(indentationLevel+1)))
+	b.WriteString(fmt.Sprintf("%sUIID: %s,\n", indentationValues, um.UIID))
+	b.WriteString(fmt.Sprintf("%sUIParentID: %s,\n", indentationValues, um.UIParentID))
+	b.WriteString(fmt.Sprintf("%sPIDSender: %s,\n", indentationValues, um.PIDSender.FormatToString(indentationLevel+1)))
+	b.WriteString(fmt.Sprintf("%sReceptiontime: %s,\n", indentationValues, um.Receptiontime.FormatToString(indentationLevel+1)))
+	b.WriteString(fmt.Sprintf("%sUILifeTime: %s,\n", indentationValues, um.UILifeTime))
+	b.WriteString(fmt.Sprintf("%sUIFlags: %s,\n", indentationValues, um.UIFlags))
+	b.WriteString(fmt.Sprintf("%sStrSubject: %s,\n", indentationValues, um.StrSubject))
+	b.WriteString(fmt.Sprintf("%sStrSender: %s,\n", indentationValues, um.StrSender))
+	b.WriteString(fmt.Sprintf("%sMessageRecipient: %s,\n", indentationValues, um.MessageRecipient.FormatToString(indentationLevel+1)))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -199,9 +208,18 @@ func (userMessage *UserMessage) FormatToString(indentationLevel int) string {
 
 // NewUserMessage returns a new UserMessage
 func NewUserMessage() *UserMessage {
-	userMessage := &UserMessage{}
-	userMessage.Data = types.NewData()
-	userMessage.SetParentType(userMessage.Data)
+	um := &UserMessage{
+		Data             : types.NewData(),
+		UIID:             types.NewPrimitiveU32(0),
+		UIParentID:       types.NewPrimitiveU32(0),
+		PIDSender:        types.NewPID(0),
+		Receptiontime:    types.NewDateTime(0),
+		UILifeTime:       types.NewPrimitiveU32(0),
+		UIFlags:          types.NewPrimitiveU32(0),
+		StrSubject:       types.NewString(""),
+		StrSender:        types.NewString(""),
+		MessageRecipient: NewMessageRecipient(),
+	}
 
-	return userMessage
+	return um
 }

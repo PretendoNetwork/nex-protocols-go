@@ -1,4 +1,4 @@
-// Package types implements all the types used by the DataStore Super Smash Bros. 4 protocol
+// Package types implements all the types used by the DataStoreSuperSmashBros.4 protocol
 package types
 
 import (
@@ -8,7 +8,7 @@ import (
 	"github.com/PretendoNetwork/nex-go/types"
 )
 
-// DataStorePreparePostReplayParam is a data structure used by the DataStore Super Smash Bros. 4 protocol
+// DataStorePreparePostReplayParam is a type within the DataStoreSuperSmashBros.4 protocol
 type DataStorePreparePostReplayParam struct {
 	types.Structure
 	Size          *types.PrimitiveU32
@@ -25,70 +25,95 @@ type DataStorePreparePostReplayParam struct {
 	ExtraData     *types.List[*types.String]
 }
 
+// WriteTo writes the DataStorePreparePostReplayParam to the given writable
+func (dspprp *DataStorePreparePostReplayParam) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
+
+	dspprp.Size.WriteTo(writable)
+	dspprp.Mode.WriteTo(writable)
+	dspprp.Style.WriteTo(writable)
+	dspprp.Rule.WriteTo(writable)
+	dspprp.Stage.WriteTo(writable)
+	dspprp.ReplayType.WriteTo(writable)
+	dspprp.CompetitionID.WriteTo(writable)
+	dspprp.Score.WriteTo(writable)
+	dspprp.Players.WriteTo(writable)
+	dspprp.Winners.WriteTo(writable)
+	dspprp.KeyVersion.WriteTo(writable)
+	dspprp.ExtraData.WriteTo(writable)
+
+	content := contentWritable.Bytes()
+
+	dspprp.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
+}
+
 // ExtractFrom extracts the DataStorePreparePostReplayParam from the given readable
-func (dataStorePreparePostReplayParam *DataStorePreparePostReplayParam) ExtractFrom(readable types.Readable) error {
+func (dspprp *DataStorePreparePostReplayParam) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	if err = dataStorePreparePostReplayParam.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to read DataStorePreparePostReplayParam header. %s", err.Error())
+	err = dspprp.ExtractHeaderFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStorePreparePostReplayParam header. %s", err.Error())
 	}
 
-	err = dataStorePreparePostReplayParam.Size.ExtractFrom(readable)
+	err = dspprp.Size.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStorePreparePostReplayParam.Size. %s", err.Error())
 	}
 
-	err = dataStorePreparePostReplayParam.Mode.ExtractFrom(readable)
+	err = dspprp.Mode.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStorePreparePostReplayParam.Mode. %s", err.Error())
 	}
 
-	err = dataStorePreparePostReplayParam.Style.ExtractFrom(readable)
+	err = dspprp.Style.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStorePreparePostReplayParam.Style. %s", err.Error())
 	}
 
-	err = dataStorePreparePostReplayParam.Rule.ExtractFrom(readable)
+	err = dspprp.Rule.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStorePreparePostReplayParam.Rule. %s", err.Error())
 	}
 
-	err = dataStorePreparePostReplayParam.Stage.ExtractFrom(readable)
+	err = dspprp.Stage.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStorePreparePostReplayParam.Stage. %s", err.Error())
 	}
 
-	err = dataStorePreparePostReplayParam.ReplayType.ExtractFrom(readable)
+	err = dspprp.ReplayType.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStorePreparePostReplayParam.ReplayType. %s", err.Error())
 	}
 
-	err = dataStorePreparePostReplayParam.CompetitionID.ExtractFrom(readable)
+	err = dspprp.CompetitionID.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStorePreparePostReplayParam.CompetitionID. %s", err.Error())
 	}
 
-	err = dataStorePreparePostReplayParam.Score.ExtractFrom(readable)
+	err = dspprp.Score.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStorePreparePostReplayParam.Score. %s", err.Error())
 	}
 
-	err = dataStorePreparePostReplayParam.Players.ExtractFrom(readable)
+	err = dspprp.Players.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStorePreparePostReplayParam.Players. %s", err.Error())
 	}
 
-	err = dataStorePreparePostReplayParam.Winners.ExtractFrom(readable)
+	err = dspprp.Winners.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStorePreparePostReplayParam.Winners. %s", err.Error())
 	}
 
-	err = dataStorePreparePostReplayParam.KeyVersion.ExtractFrom(readable)
+	err = dspprp.KeyVersion.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStorePreparePostReplayParam.KeyVersion. %s", err.Error())
 	}
 
-	err = dataStorePreparePostReplayParam.ExtraData.ExtractFrom(readable)
+	err = dspprp.ExtraData.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStorePreparePostReplayParam.ExtraData. %s", err.Error())
 	}
@@ -96,141 +121,111 @@ func (dataStorePreparePostReplayParam *DataStorePreparePostReplayParam) ExtractF
 	return nil
 }
 
-// WriteTo writes the DataStorePreparePostReplayParam to the given writable
-func (dataStorePreparePostReplayParam *DataStorePreparePostReplayParam) WriteTo(writable types.Writable) {
-	contentWritable := writable.CopyNew()
-
-	dataStorePreparePostReplayParam.Size.WriteTo(contentWritable)
-	dataStorePreparePostReplayParam.Mode.WriteTo(contentWritable)
-	dataStorePreparePostReplayParam.Style.WriteTo(contentWritable)
-	dataStorePreparePostReplayParam.Rule.WriteTo(contentWritable)
-	dataStorePreparePostReplayParam.Stage.WriteTo(contentWritable)
-	dataStorePreparePostReplayParam.ReplayType.WriteTo(contentWritable)
-	dataStorePreparePostReplayParam.CompetitionID.WriteTo(contentWritable)
-	dataStorePreparePostReplayParam.Score.WriteTo(contentWritable)
-	dataStorePreparePostReplayParam.Players.WriteTo(contentWritable)
-	dataStorePreparePostReplayParam.Winners.WriteTo(contentWritable)
-	dataStorePreparePostReplayParam.KeyVersion.WriteTo(contentWritable)
-	dataStorePreparePostReplayParam.ExtraData.WriteTo(contentWritable)
-
-	content := contentWritable.Bytes()
-
-	dataStorePreparePostReplayParam.WriteHeaderTo(writable, uint32(len(content)))
-
-	writable.Write(content)
-}
-
 // Copy returns a new copied instance of DataStorePreparePostReplayParam
-func (dataStorePreparePostReplayParam *DataStorePreparePostReplayParam) Copy() types.RVType {
+func (dspprp *DataStorePreparePostReplayParam) Copy() types.RVType {
 	copied := NewDataStorePreparePostReplayParam()
 
-	copied.StructureVersion = dataStorePreparePostReplayParam.StructureVersion
-
-	copied.Size = dataStorePreparePostReplayParam.Size.Copy().(*types.PrimitiveU32)
-	copied.Mode = dataStorePreparePostReplayParam.Mode.Copy().(*types.PrimitiveU8)
-	copied.Style = dataStorePreparePostReplayParam.Style.Copy().(*types.PrimitiveU8)
-	copied.Rule = dataStorePreparePostReplayParam.Rule.Copy().(*types.PrimitiveU8)
-	copied.Stage = dataStorePreparePostReplayParam.Stage.Copy().(*types.PrimitiveU8)
-	copied.ReplayType = dataStorePreparePostReplayParam.ReplayType.Copy().(*types.PrimitiveU8)
-	copied.CompetitionID = dataStorePreparePostReplayParam.CompetitionID.Copy().(*types.PrimitiveU64)
-	copied.Score = dataStorePreparePostReplayParam.Score.Copy().(*types.PrimitiveS32)
-	copied.Players = dataStorePreparePostReplayParam.Players.Copy().(*types.List[*DataStoreReplayPlayer])
-	copied.Winners = dataStorePreparePostReplayParam.Winners.Copy().(*types.List[*types.PrimitiveU32])
-	copied.KeyVersion = dataStorePreparePostReplayParam.KeyVersion.Copy().(*types.PrimitiveU16)
-	copied.ExtraData = dataStorePreparePostReplayParam.ExtraData.Copy().(*types.List[*types.String])
+	copied.StructureVersion = dspprp.StructureVersion
+	copied.Size = dspprp.Size.Copy().(*types.PrimitiveU32)
+	copied.Mode = dspprp.Mode.Copy().(*types.PrimitiveU8)
+	copied.Style = dspprp.Style.Copy().(*types.PrimitiveU8)
+	copied.Rule = dspprp.Rule.Copy().(*types.PrimitiveU8)
+	copied.Stage = dspprp.Stage.Copy().(*types.PrimitiveU8)
+	copied.ReplayType = dspprp.ReplayType.Copy().(*types.PrimitiveU8)
+	copied.CompetitionID = dspprp.CompetitionID.Copy().(*types.PrimitiveU64)
+	copied.Score = dspprp.Score.Copy().(*types.PrimitiveS32)
+	copied.Players = dspprp.Players.Copy().(*types.List[*DataStoreReplayPlayer])
+	copied.Winners = dspprp.Winners.Copy().(*types.List[*types.PrimitiveU32])
+	copied.KeyVersion = dspprp.KeyVersion.Copy().(*types.PrimitiveU16)
+	copied.ExtraData = dspprp.ExtraData.Copy().(*types.List[*types.String])
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (dataStorePreparePostReplayParam *DataStorePreparePostReplayParam) Equals(o types.RVType) bool {
+// Equals checks if the given DataStorePreparePostReplayParam contains the same data as the current DataStorePreparePostReplayParam
+func (dspprp *DataStorePreparePostReplayParam) Equals(o types.RVType) bool {
 	if _, ok := o.(*DataStorePreparePostReplayParam); !ok {
 		return false
 	}
 
 	other := o.(*DataStorePreparePostReplayParam)
 
-	if dataStorePreparePostReplayParam.StructureVersion != other.StructureVersion {
+	if dspprp.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if !dataStorePreparePostReplayParam.Size.Equals(other.Size) {
+	if !dspprp.Size.Equals(other.Size) {
 		return false
 	}
 
-	if !dataStorePreparePostReplayParam.Mode.Equals(other.Mode) {
+	if !dspprp.Mode.Equals(other.Mode) {
 		return false
 	}
 
-	if !dataStorePreparePostReplayParam.Style.Equals(other.Style) {
+	if !dspprp.Style.Equals(other.Style) {
 		return false
 	}
 
-	if !dataStorePreparePostReplayParam.Rule.Equals(other.Rule) {
+	if !dspprp.Rule.Equals(other.Rule) {
 		return false
 	}
 
-	if !dataStorePreparePostReplayParam.Stage.Equals(other.Stage) {
+	if !dspprp.Stage.Equals(other.Stage) {
 		return false
 	}
 
-	if !dataStorePreparePostReplayParam.ReplayType.Equals(other.ReplayType) {
+	if !dspprp.ReplayType.Equals(other.ReplayType) {
 		return false
 	}
 
-	if !dataStorePreparePostReplayParam.CompetitionID.Equals(other.CompetitionID) {
+	if !dspprp.CompetitionID.Equals(other.CompetitionID) {
 		return false
 	}
 
-	if !dataStorePreparePostReplayParam.Score.Equals(other.Score) {
+	if !dspprp.Score.Equals(other.Score) {
 		return false
 	}
 
-	if !dataStorePreparePostReplayParam.Players.Equals(other.Players) {
+	if !dspprp.Players.Equals(other.Players) {
 		return false
 	}
 
-	if !dataStorePreparePostReplayParam.Winners.Equals(other.Winners) {
+	if !dspprp.Winners.Equals(other.Winners) {
 		return false
 	}
 
-	if !dataStorePreparePostReplayParam.KeyVersion.Equals(other.KeyVersion) {
+	if !dspprp.KeyVersion.Equals(other.KeyVersion) {
 		return false
 	}
 
-	if !dataStorePreparePostReplayParam.ExtraData.Equals(other.ExtraData) {
-		return false
-	}
-
-	return true
+	return dspprp.ExtraData.Equals(other.ExtraData)
 }
 
-// String returns a string representation of the struct
-func (dataStorePreparePostReplayParam *DataStorePreparePostReplayParam) String() string {
-	return dataStorePreparePostReplayParam.FormatToString(0)
+// String returns the string representation of the DataStorePreparePostReplayParam
+func (dspprp *DataStorePreparePostReplayParam) String() string {
+	return dspprp.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (dataStorePreparePostReplayParam *DataStorePreparePostReplayParam) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the DataStorePreparePostReplayParam using the provided indentation level
+func (dspprp *DataStorePreparePostReplayParam) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("DataStorePreparePostReplayParam{\n")
-	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, dataStorePreparePostReplayParam.StructureVersion))
-	b.WriteString(fmt.Sprintf("%sSize: %s,\n", indentationValues, dataStorePreparePostReplayParam.Size))
-	b.WriteString(fmt.Sprintf("%sMode: %s,\n", indentationValues, dataStorePreparePostReplayParam.Mode))
-	b.WriteString(fmt.Sprintf("%sStyle: %s,\n", indentationValues, dataStorePreparePostReplayParam.Style))
-	b.WriteString(fmt.Sprintf("%sRule: %s,\n", indentationValues, dataStorePreparePostReplayParam.Rule))
-	b.WriteString(fmt.Sprintf("%sStage: %s,\n", indentationValues, dataStorePreparePostReplayParam.Stage))
-	b.WriteString(fmt.Sprintf("%sReplayType: %s,\n", indentationValues, dataStorePreparePostReplayParam.ReplayType))
-	b.WriteString(fmt.Sprintf("%sCompetitionID: %s,\n", indentationValues, dataStorePreparePostReplayParam.CompetitionID))
-	b.WriteString(fmt.Sprintf("%sScore: %s,\n", indentationValues, dataStorePreparePostReplayParam.Score))
-	b.WriteString(fmt.Sprintf("%sPlayers: %s,\n", indentationValues, dataStorePreparePostReplayParam.Players))
-	b.WriteString(fmt.Sprintf("%sWinners: %s,\n", indentationValues, dataStorePreparePostReplayParam.Winners))
-	b.WriteString(fmt.Sprintf("%sKeyVersion: %s,\n", indentationValues, dataStorePreparePostReplayParam.KeyVersion))
-	b.WriteString(fmt.Sprintf("%sExtraData: %s\n", indentationValues, dataStorePreparePostReplayParam.ExtraData))
+	b.WriteString(fmt.Sprintf("%sSize: %s,\n", indentationValues, dspprp.Size))
+	b.WriteString(fmt.Sprintf("%sMode: %s,\n", indentationValues, dspprp.Mode))
+	b.WriteString(fmt.Sprintf("%sStyle: %s,\n", indentationValues, dspprp.Style))
+	b.WriteString(fmt.Sprintf("%sRule: %s,\n", indentationValues, dspprp.Rule))
+	b.WriteString(fmt.Sprintf("%sStage: %s,\n", indentationValues, dspprp.Stage))
+	b.WriteString(fmt.Sprintf("%sReplayType: %s,\n", indentationValues, dspprp.ReplayType))
+	b.WriteString(fmt.Sprintf("%sCompetitionID: %s,\n", indentationValues, dspprp.CompetitionID))
+	b.WriteString(fmt.Sprintf("%sScore: %s,\n", indentationValues, dspprp.Score))
+	b.WriteString(fmt.Sprintf("%sPlayers: %s,\n", indentationValues, dspprp.Players))
+	b.WriteString(fmt.Sprintf("%sWinners: %s,\n", indentationValues, dspprp.Winners))
+	b.WriteString(fmt.Sprintf("%sKeyVersion: %s,\n", indentationValues, dspprp.KeyVersion))
+	b.WriteString(fmt.Sprintf("%sExtraData: %s,\n", indentationValues, dspprp.ExtraData))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -238,24 +233,24 @@ func (dataStorePreparePostReplayParam *DataStorePreparePostReplayParam) FormatTo
 
 // NewDataStorePreparePostReplayParam returns a new DataStorePreparePostReplayParam
 func NewDataStorePreparePostReplayParam() *DataStorePreparePostReplayParam {
-	dataStorePreparePostReplayParam := &DataStorePreparePostReplayParam{
-		Size: types.NewPrimitiveU32(0),
-		Mode: types.NewPrimitiveU8(0),
-		Style: types.NewPrimitiveU8(0),
-		Rule: types.NewPrimitiveU8(0),
-		Stage: types.NewPrimitiveU8(0),
-		ReplayType: types.NewPrimitiveU8(0),
+	dspprp := &DataStorePreparePostReplayParam{
+		Size:          types.NewPrimitiveU32(0),
+		Mode:          types.NewPrimitiveU8(0),
+		Style:         types.NewPrimitiveU8(0),
+		Rule:          types.NewPrimitiveU8(0),
+		Stage:         types.NewPrimitiveU8(0),
+		ReplayType:    types.NewPrimitiveU8(0),
 		CompetitionID: types.NewPrimitiveU64(0),
-		Score: types.NewPrimitiveS32(0),
-		Players: types.NewList[*DataStoreReplayPlayer](),
-		Winners: types.NewList[*types.PrimitiveU32](),
-		KeyVersion: types.NewPrimitiveU16(0),
-		ExtraData: types.NewList[*types.String](),
+		Score:         types.NewPrimitiveS32(0),
+		Players:       types.NewList[*DataStoreReplayPlayer](),
+		Winners:       types.NewList[*types.PrimitiveU32](),
+		KeyVersion:    types.NewPrimitiveU16(0),
+		ExtraData:     types.NewList[*types.String](),
 	}
 
-	dataStorePreparePostReplayParam.Players.Type = NewDataStoreReplayPlayer()
-	dataStorePreparePostReplayParam.Winners.Type = types.NewPrimitiveU32(0)
-	dataStorePreparePostReplayParam.ExtraData.Type = types.NewString("")
+	dspprp.Players.Type = NewDataStoreReplayPlayer()
+	dspprp.Winners.Type = types.NewPrimitiveU32(0)
+	dspprp.ExtraData.Type = types.NewString("")
 
-	return dataStorePreparePostReplayParam
+	return dspprp
 }

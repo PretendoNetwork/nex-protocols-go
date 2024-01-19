@@ -29,7 +29,7 @@ func (protocol *Protocol) handleDeleteSimpleSearchObject(packet nex.PacketInterf
 	objectID := types.NewPrimitiveU32(0)
 	err = objectID.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.DeleteSimpleSearchObject(fmt.Errorf("Failed to read objectID from parameters. %s", err.Error()), packet, callID, 0)
+		_, errorCode = protocol.DeleteSimpleSearchObject(fmt.Errorf("Failed to read objectID from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}

@@ -1,120 +1,114 @@
-// Package types implements all the types used by the Matchmake Extension (Monster Hunter XX) protocol
+// Package types implements all the types used by the MatchmakeExtension protocol
 package types
 
 import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-go/types"
 )
 
-// FriendUserInfo holds data for the Matchmake Extension (Monster Hunter XX) protocol
+// FriendUserInfo is a type within the MatchmakeExtension protocol
 type FriendUserInfo struct {
 	types.Structure
 	PID      *types.PID
-	Name     string
+	Name     *types.String
 	Presence *types.PrimitiveU32
 }
 
+// WriteTo writes the FriendUserInfo to the given writable
+func (fui *FriendUserInfo) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
+
+	fui.PID.WriteTo(writable)
+	fui.Name.WriteTo(writable)
+	fui.Presence.WriteTo(writable)
+
+	content := contentWritable.Bytes()
+
+	fui.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
+}
+
 // ExtractFrom extracts the FriendUserInfo from the given readable
-func (friendUserInfo *FriendUserInfo) ExtractFrom(readable types.Readable) error {
+func (fui *FriendUserInfo) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	if err = friendUserInfo.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to read FriendUserInfo header. %s", err.Error())
+	err = fui.ExtractHeaderFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract FriendUserInfo header. %s", err.Error())
 	}
 
-	err = friendUserInfo.PID.ExtractFrom(readable)
+	err = fui.PID.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract FriendUserInfo.PID from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract FriendUserInfo.PID. %s", err.Error())
 	}
 
-	err = friendUserInfo.Name.ExtractFrom(readable)
+	err = fui.Name.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract FriendUserInfo.Name from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract FriendUserInfo.Name. %s", err.Error())
 	}
 
-	err = friendUserInfo.Presence.ExtractFrom(readable)
+	err = fui.Presence.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract FriendUserInfo.Presence from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract FriendUserInfo.Presence. %s", err.Error())
 	}
 
 	return nil
 }
 
-// WriteTo writes the FriendUserInfo to the given writable
-func (friendUserInfo *FriendUserInfo) WriteTo(writable types.Writable) {
-	contentWritable := writable.CopyNew()
-
-	friendUserInfo.PID.WriteTo(contentWritable)
-	friendUserInfo.Name.WriteTo(contentWritable)
-	friendUserInfo.Presence.WriteTo(contentWritable)
-
-	content := contentWritable.Bytes()
-
-	friendUserInfo.WriteHeaderTo(writable, uint32(len(content)))
-
-	writable.Write(content)
-}
-
 // Copy returns a new copied instance of FriendUserInfo
-func (friendUserInfo *FriendUserInfo) Copy() types.RVType {
+func (fui *FriendUserInfo) Copy() types.RVType {
 	copied := NewFriendUserInfo()
 
-	copied.StructureVersion = friendUserInfo.StructureVersion
-
-	copied.PID = friendUserInfo.PID.Copy()
-	copied.Name = friendUserInfo.Name
-	copied.Presence = friendUserInfo.Presence
+	copied.StructureVersion = fui.StructureVersion
+	copied.PID = fui.PID.Copy().(*types.PID)
+	copied.Name = fui.Name.Copy().(*types.String)
+	copied.Presence = fui.Presence.Copy().(*types.PrimitiveU32)
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (friendUserInfo *FriendUserInfo) Equals(o types.RVType) bool {
+// Equals checks if the given FriendUserInfo contains the same data as the current FriendUserInfo
+func (fui *FriendUserInfo) Equals(o types.RVType) bool {
 	if _, ok := o.(*FriendUserInfo); !ok {
 		return false
 	}
 
 	other := o.(*FriendUserInfo)
 
-	if friendUserInfo.StructureVersion != other.StructureVersion {
+	if fui.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if friendUserInfo.PID.Equals(other.PID) {
+	if !fui.PID.Equals(other.PID) {
 		return false
 	}
 
-	if !friendUserInfo.Name.Equals(other.Name) {
+	if !fui.Name.Equals(other.Name) {
 		return false
 	}
 
-	if !friendUserInfo.Presence.Equals(other.Presence) {
-		return false
-	}
-
-	return true
+	return fui.Presence.Equals(other.Presence)
 }
 
-// String returns a string representation of the struct
-func (friendUserInfo *FriendUserInfo) String() string {
-	return friendUserInfo.FormatToString(0)
+// String returns the string representation of the FriendUserInfo
+func (fui *FriendUserInfo) String() string {
+	return fui.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (friendUserInfo *FriendUserInfo) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the FriendUserInfo using the provided indentation level
+func (fui *FriendUserInfo) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("FriendUserInfo{\n")
-	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, friendUserInfo.StructureVersion))
-	b.WriteString(fmt.Sprintf("%sPID: %s,\n", indentationValues, friendUserInfo.PID.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sName: %q,\n", indentationValues, friendUserInfo.Name))
-	b.WriteString(fmt.Sprintf("%sPresence: %d,\n", indentationValues, friendUserInfo.Presence))
+	b.WriteString(fmt.Sprintf("%sPID: %s,\n", indentationValues, fui.PID.FormatToString(indentationLevel+1)))
+	b.WriteString(fmt.Sprintf("%sName: %s,\n", indentationValues, fui.Name))
+	b.WriteString(fmt.Sprintf("%sPresence: %s,\n", indentationValues, fui.Presence))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -122,5 +116,11 @@ func (friendUserInfo *FriendUserInfo) FormatToString(indentationLevel int) strin
 
 // NewFriendUserInfo returns a new FriendUserInfo
 func NewFriendUserInfo() *FriendUserInfo {
-	return &FriendUserInfo{}
+	fui := &FriendUserInfo{
+		PID:      types.NewPID(0),
+		Name:     types.NewString(""),
+		Presence: types.NewPrimitiveU32(0),
+	}
+
+	return fui
 }

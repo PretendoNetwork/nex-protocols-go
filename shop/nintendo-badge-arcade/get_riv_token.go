@@ -29,7 +29,7 @@ func (protocol *Protocol) handleGetRivToken(packet nex.PacketInterface) {
 	itemCode := types.NewString("")
 	err = itemCode.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.GetRivToken(fmt.Errorf("Failed to read itemCode from parameters. %s", err.Error()), packet, callID, "", nil)
+		_, errorCode = protocol.GetRivToken(fmt.Errorf("Failed to read itemCode from parameters. %s", err.Error()), packet, callID, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -40,7 +40,7 @@ func (protocol *Protocol) handleGetRivToken(packet nex.PacketInterface) {
 	referenceID := types.NewQBuffer(nil)
 	err = referenceID.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.GetRivToken(fmt.Errorf("Failed to read referenceID from parameters. %s", err.Error()), packet, callID, "", nil)
+		_, errorCode = protocol.GetRivToken(fmt.Errorf("Failed to read referenceID from parameters. %s", err.Error()), packet, callID, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}

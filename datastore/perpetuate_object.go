@@ -29,7 +29,7 @@ func (protocol *Protocol) handlePerpetuateObject(packet nex.PacketInterface) {
 	persistenceSlotID := types.NewPrimitiveU16(0)
 	err = persistenceSlotID.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.PerpetuateObject(fmt.Errorf("Failed to read persistenceSlotID from parameters. %s", err.Error()), packet, callID, 0, 0, false)
+		_, errorCode = protocol.PerpetuateObject(fmt.Errorf("Failed to read persistenceSlotID from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -40,7 +40,7 @@ func (protocol *Protocol) handlePerpetuateObject(packet nex.PacketInterface) {
 	dataID := types.NewPrimitiveU64(0)
 	err = dataID.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.PerpetuateObject(fmt.Errorf("Failed to read dataID from parameters. %s", err.Error()), packet, callID, 0, 0, false)
+		_, errorCode = protocol.PerpetuateObject(fmt.Errorf("Failed to read dataID from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -51,7 +51,7 @@ func (protocol *Protocol) handlePerpetuateObject(packet nex.PacketInterface) {
 	deleteLastObject := types.NewPrimitiveBool(false)
 	err = deleteLastObject.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.PerpetuateObject(fmt.Errorf("Failed to read deleteLastObject from parameters. %s", err.Error()), packet, callID, 0, 0, false)
+		_, errorCode = protocol.PerpetuateObject(fmt.Errorf("Failed to read deleteLastObject from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}

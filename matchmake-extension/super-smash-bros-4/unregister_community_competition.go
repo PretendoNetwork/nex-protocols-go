@@ -3,14 +3,10 @@ package protocol
 
 import (
 	nex "github.com/PretendoNetwork/nex-go"
-	"github.com/PretendoNetwork/nex-go/types"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
 func (protocol *Protocol) handleUnregisterCommunityCompetition(packet nex.PacketInterface) {
-	var err error
-	var errorCode uint32
-
 	if protocol.UnregisterCommunityCompetition == nil {
 		globals.Logger.Warning("MatchmakeExtensionSuperSmashBros4::UnregisterCommunityCompetition not implemented")
 		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)

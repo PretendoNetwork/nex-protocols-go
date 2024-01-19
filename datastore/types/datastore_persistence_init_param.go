@@ -8,7 +8,7 @@ import (
 	"github.com/PretendoNetwork/nex-go/types"
 )
 
-// DataStorePersistenceInitParam is sent in the PreparePostObject method
+// DataStorePersistenceInitParam is a type within the DataStore protocol
 type DataStorePersistenceInitParam struct {
 	types.Structure
 	PersistenceSlotID *types.PrimitiveU16
@@ -16,33 +16,34 @@ type DataStorePersistenceInitParam struct {
 }
 
 // WriteTo writes the DataStorePersistenceInitParam to the given writable
-func (dataStorePersistenceInitParam *DataStorePersistenceInitParam) WriteTo(writable types.Writable) {
+func (dspip *DataStorePersistenceInitParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	dataStorePersistenceInitParam.PersistenceSlotID.WriteTo(contentWritable)
-	dataStorePersistenceInitParam.DeleteLastObject.WriteTo(contentWritable)
+	dspip.PersistenceSlotID.WriteTo(writable)
+	dspip.DeleteLastObject.WriteTo(writable)
 
 	content := contentWritable.Bytes()
 
-	dataStorePersistenceInitParam.WriteHeaderTo(writable, uint32(len(content)))
+	dspip.WriteHeaderTo(writable, uint32(len(content)))
 
 	writable.Write(content)
 }
 
 // ExtractFrom extracts the DataStorePersistenceInitParam from the given readable
-func (dataStorePersistenceInitParam *DataStorePersistenceInitParam) ExtractFrom(readable types.Readable) error {
+func (dspip *DataStorePersistenceInitParam) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	if err = dataStorePersistenceInitParam.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to read DataStorePersistenceInitParam header. %s", err.Error())
+	err = dspip.ExtractHeaderFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStorePersistenceInitParam header. %s", err.Error())
 	}
 
-	err = dataStorePersistenceInitParam.PersistenceSlotID.ExtractFrom(readable)
+	err = dspip.PersistenceSlotID.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStorePersistenceInitParam.PersistenceSlotID. %s", err.Error())
 	}
 
-	err = dataStorePersistenceInitParam.DeleteLastObject.ExtractFrom(readable)
+	err = dspip.DeleteLastObject.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStorePersistenceInitParam.DeleteLastObject. %s", err.Error())
 	}
@@ -51,56 +52,50 @@ func (dataStorePersistenceInitParam *DataStorePersistenceInitParam) ExtractFrom(
 }
 
 // Copy returns a new copied instance of DataStorePersistenceInitParam
-func (dataStorePersistenceInitParam *DataStorePersistenceInitParam) Copy() types.RVType {
+func (dspip *DataStorePersistenceInitParam) Copy() types.RVType {
 	copied := NewDataStorePersistenceInitParam()
 
-	copied.StructureVersion = dataStorePersistenceInitParam.StructureVersion
-
-	copied.PersistenceSlotID = dataStorePersistenceInitParam.PersistenceSlotID.Copy().(*types.PrimitiveU16)
-	copied.DeleteLastObject = dataStorePersistenceInitParam.DeleteLastObject.Copy().(*types.PrimitiveBool)
+	copied.StructureVersion = dspip.StructureVersion
+	copied.PersistenceSlotID = dspip.PersistenceSlotID.Copy().(*types.PrimitiveU16)
+	copied.DeleteLastObject = dspip.DeleteLastObject.Copy().(*types.PrimitiveBool)
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (dataStorePersistenceInitParam *DataStorePersistenceInitParam) Equals(o types.RVType) bool {
+// Equals checks if the given DataStorePersistenceInitParam contains the same data as the current DataStorePersistenceInitParam
+func (dspip *DataStorePersistenceInitParam) Equals(o types.RVType) bool {
 	if _, ok := o.(*DataStorePersistenceInitParam); !ok {
 		return false
 	}
 
 	other := o.(*DataStorePersistenceInitParam)
 
-	if dataStorePersistenceInitParam.StructureVersion != other.StructureVersion {
+	if dspip.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if !dataStorePersistenceInitParam.PersistenceSlotID.Equals(other.PersistenceSlotID) {
+	if !dspip.PersistenceSlotID.Equals(other.PersistenceSlotID) {
 		return false
 	}
 
-	if !dataStorePersistenceInitParam.DeleteLastObject.Equals(other.DeleteLastObject) {
-		return false
-	}
-
-	return true
+	return dspip.DeleteLastObject.Equals(other.DeleteLastObject)
 }
 
-// String returns a string representation of the struct
-func (dataStorePersistenceInitParam *DataStorePersistenceInitParam) String() string {
-	return dataStorePersistenceInitParam.FormatToString(0)
+// String returns the string representation of the DataStorePersistenceInitParam
+func (dspip *DataStorePersistenceInitParam) String() string {
+	return dspip.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (dataStorePersistenceInitParam *DataStorePersistenceInitParam) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the DataStorePersistenceInitParam using the provided indentation level
+func (dspip *DataStorePersistenceInitParam) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("DataStorePersistenceInitParam{\n")
-	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, dataStorePersistenceInitParam.StructureVersion))
-	b.WriteString(fmt.Sprintf("%sPersistenceSlotID: %s,\n", indentationValues, dataStorePersistenceInitParam.PersistenceSlotID))
-	b.WriteString(fmt.Sprintf("%sDeleteLastObject: %s\n", indentationValues, dataStorePersistenceInitParam.DeleteLastObject))
+	b.WriteString(fmt.Sprintf("%sPersistenceSlotID: %s,\n", indentationValues, dspip.PersistenceSlotID))
+	b.WriteString(fmt.Sprintf("%sDeleteLastObject: %s,\n", indentationValues, dspip.DeleteLastObject))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -108,8 +103,10 @@ func (dataStorePersistenceInitParam *DataStorePersistenceInitParam) FormatToStri
 
 // NewDataStorePersistenceInitParam returns a new DataStorePersistenceInitParam
 func NewDataStorePersistenceInitParam() *DataStorePersistenceInitParam {
-	return &DataStorePersistenceInitParam{
+	dspip := &DataStorePersistenceInitParam{
 		PersistenceSlotID: types.NewPrimitiveU16(0),
 		DeleteLastObject:  types.NewPrimitiveBool(false),
 	}
+
+	return dspip
 }

@@ -27,9 +27,11 @@ func (protocol *Protocol) handlePutScore(packet nex.PacketInterface) {
 
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
-	scoreDataList, err := nex.StreamReadListStructure(parametersStream, ranking2_types.NewRanking2ScoreData())
+	scoreDataList := types.NewList[*ranking2_types.Ranking2ScoreData]()
+	scoreDataList.Type = ranking2_types.NewRanking2ScoreData()
+	err = scoreDataList.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.PutScore(fmt.Errorf("Failed to read scoreDataList from parameters. %s", err.Error()), packet, callID, nil, 0)
+		_, errorCode = protocol.PutScore(fmt.Errorf("Failed to read scoreDataList from parameters. %s", err.Error()), packet, callID, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -40,7 +42,7 @@ func (protocol *Protocol) handlePutScore(packet nex.PacketInterface) {
 	nexUniqueID := types.NewPrimitiveU64(0)
 	err = nexUniqueID.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.PutScore(fmt.Errorf("Failed to read nexUniqueID from parameters. %s", err.Error()), packet, callID, nil, 0)
+		_, errorCode = protocol.PutScore(fmt.Errorf("Failed to read nexUniqueID from parameters. %s", err.Error()), packet, callID, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}

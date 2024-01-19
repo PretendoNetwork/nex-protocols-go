@@ -1,4 +1,4 @@
-// Package types implements all the types used by the DataStore Super Smash Bros. 4 protocol
+// Package types implements all the types used by the DataStoreSuperSmashBros.4 protocol
 package types
 
 import (
@@ -9,7 +9,7 @@ import (
 	datastore_types "github.com/PretendoNetwork/nex-protocols-go/datastore/types"
 )
 
-// DataStoreCompletePostSharedDataParam is a data structure used by the DataStore Super Smash Bros. 4 protocol
+// DataStoreCompletePostSharedDataParam is a type within the DataStoreSuperSmashBros.4 protocol
 type DataStoreCompletePostSharedDataParam struct {
 	types.Structure
 	DataID        *types.PrimitiveU64
@@ -17,25 +17,41 @@ type DataStoreCompletePostSharedDataParam struct {
 	PrepareParam  *DataStorePreparePostSharedDataParam
 }
 
+// WriteTo writes the DataStoreCompletePostSharedDataParam to the given writable
+func (dscpsdp *DataStoreCompletePostSharedDataParam) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
+
+	dscpsdp.DataID.WriteTo(writable)
+	dscpsdp.CompleteParam.WriteTo(writable)
+	dscpsdp.PrepareParam.WriteTo(writable)
+
+	content := contentWritable.Bytes()
+
+	dscpsdp.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
+}
+
 // ExtractFrom extracts the DataStoreCompletePostSharedDataParam from the given readable
-func (dataStoreCompletePostSharedDataParam *DataStoreCompletePostSharedDataParam) ExtractFrom(readable types.Readable) error {
+func (dscpsdp *DataStoreCompletePostSharedDataParam) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	if err = dataStoreCompletePostSharedDataParam.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to read DataStoreCompletePostSharedDataParam header. %s", err.Error())
+	err = dscpsdp.ExtractHeaderFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreCompletePostSharedDataParam header. %s", err.Error())
 	}
 
-	err = dataStoreCompletePostSharedDataParam.DataID.ExtractFrom(readable)
+	err = dscpsdp.DataID.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreCompletePostSharedDataParam.DataID. %s", err.Error())
 	}
 
-	err = dataStoreCompletePostSharedDataParam.CompleteParam.ExtractFrom(readable)
+	err = dscpsdp.CompleteParam.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreCompletePostSharedDataParam.CompleteParam. %s", err.Error())
 	}
 
-	err = dataStoreCompletePostSharedDataParam.PrepareParam.ExtractFrom(readable)
+	err = dscpsdp.PrepareParam.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreCompletePostSharedDataParam.PrepareParam. %s", err.Error())
 	}
@@ -43,78 +59,57 @@ func (dataStoreCompletePostSharedDataParam *DataStoreCompletePostSharedDataParam
 	return nil
 }
 
-// WriteTo writes the DataStoreCompletePostSharedDataParam to the given writable
-func (dataStoreCompletePostSharedDataParam *DataStoreCompletePostSharedDataParam) WriteTo(writable types.Writable) {
-	contentWritable := writable.CopyNew()
-
-	dataStoreCompletePostSharedDataParam.DataID.WriteTo(contentWritable)
-	dataStoreCompletePostSharedDataParam.CompleteParam.WriteTo(contentWritable)
-	dataStoreCompletePostSharedDataParam.PrepareParam.WriteTo(contentWritable)
-
-	content := contentWritable.Bytes()
-
-	dataStoreCompletePostSharedDataParam.WriteHeaderTo(writable, uint32(len(content)))
-
-	writable.Write(content)
-}
-
 // Copy returns a new copied instance of DataStoreCompletePostSharedDataParam
-func (dataStoreCompletePostSharedDataParam *DataStoreCompletePostSharedDataParam) Copy() types.RVType {
+func (dscpsdp *DataStoreCompletePostSharedDataParam) Copy() types.RVType {
 	copied := NewDataStoreCompletePostSharedDataParam()
 
-	copied.StructureVersion = dataStoreCompletePostSharedDataParam.StructureVersion
-
-	copied.DataID = dataStoreCompletePostSharedDataParam.DataID.Copy().(*types.PrimitiveU64)
-	copied.CompleteParam = dataStoreCompletePostSharedDataParam.CompleteParam.Copy().(*datastore_types.DataStoreCompletePostParam)
-	copied.PrepareParam = dataStoreCompletePostSharedDataParam.PrepareParam.Copy().(*DataStorePreparePostSharedDataParam)
+	copied.StructureVersion = dscpsdp.StructureVersion
+	copied.DataID = dscpsdp.DataID.Copy().(*types.PrimitiveU64)
+	copied.CompleteParam = dscpsdp.CompleteParam.Copy().(*datastore_types.DataStoreCompletePostParam)
+	copied.PrepareParam = dscpsdp.PrepareParam.Copy().(*DataStorePreparePostSharedDataParam)
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (dataStoreCompletePostSharedDataParam *DataStoreCompletePostSharedDataParam) Equals(o types.RVType) bool {
+// Equals checks if the given DataStoreCompletePostSharedDataParam contains the same data as the current DataStoreCompletePostSharedDataParam
+func (dscpsdp *DataStoreCompletePostSharedDataParam) Equals(o types.RVType) bool {
 	if _, ok := o.(*DataStoreCompletePostSharedDataParam); !ok {
 		return false
 	}
 
 	other := o.(*DataStoreCompletePostSharedDataParam)
 
-	if dataStoreCompletePostSharedDataParam.StructureVersion != other.StructureVersion {
+	if dscpsdp.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if !dataStoreCompletePostSharedDataParam.DataID.Equals(other.DataID) {
+	if !dscpsdp.DataID.Equals(other.DataID) {
 		return false
 	}
 
-	if !dataStoreCompletePostSharedDataParam.CompleteParam.Equals(other.CompleteParam) {
+	if !dscpsdp.CompleteParam.Equals(other.CompleteParam) {
 		return false
 	}
 
-	if !dataStoreCompletePostSharedDataParam.PrepareParam.Equals(other.PrepareParam) {
-		return false
-	}
-
-	return true
+	return dscpsdp.PrepareParam.Equals(other.PrepareParam)
 }
 
-// String returns a string representation of the struct
-func (dataStoreCompletePostSharedDataParam *DataStoreCompletePostSharedDataParam) String() string {
-	return dataStoreCompletePostSharedDataParam.FormatToString(0)
+// String returns the string representation of the DataStoreCompletePostSharedDataParam
+func (dscpsdp *DataStoreCompletePostSharedDataParam) String() string {
+	return dscpsdp.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (dataStoreCompletePostSharedDataParam *DataStoreCompletePostSharedDataParam) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the DataStoreCompletePostSharedDataParam using the provided indentation level
+func (dscpsdp *DataStoreCompletePostSharedDataParam) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("DataStoreCompletePostSharedDataParam{\n")
-	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, dataStoreCompletePostSharedDataParam.StructureVersion))
-	b.WriteString(fmt.Sprintf("%sDataID: %s,\n", indentationValues, dataStoreCompletePostSharedDataParam.DataID))
-	b.WriteString(fmt.Sprintf("%sCompleteParam: %s,\n", indentationValues, dataStoreCompletePostSharedDataParam.CompleteParam.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sPrepareParam: %s\n", indentationValues, dataStoreCompletePostSharedDataParam.PrepareParam.FormatToString(indentationLevel+1)))
+	b.WriteString(fmt.Sprintf("%sDataID: %s,\n", indentationValues, dscpsdp.DataID))
+	b.WriteString(fmt.Sprintf("%sCompleteParam: %s,\n", indentationValues, dscpsdp.CompleteParam.FormatToString(indentationLevel+1)))
+	b.WriteString(fmt.Sprintf("%sPrepareParam: %s,\n", indentationValues, dscpsdp.PrepareParam.FormatToString(indentationLevel+1)))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -122,9 +117,11 @@ func (dataStoreCompletePostSharedDataParam *DataStoreCompletePostSharedDataParam
 
 // NewDataStoreCompletePostSharedDataParam returns a new DataStoreCompletePostSharedDataParam
 func NewDataStoreCompletePostSharedDataParam() *DataStoreCompletePostSharedDataParam {
-	return &DataStoreCompletePostSharedDataParam{
-		DataID: types.NewPrimitiveU64(0),
+	dscpsdp := &DataStoreCompletePostSharedDataParam{
+		DataID:        types.NewPrimitiveU64(0),
 		CompleteParam: datastore_types.NewDataStoreCompletePostParam(),
-		PrepareParam: NewDataStorePreparePostSharedDataParam(),
+		PrepareParam:  NewDataStorePreparePostSharedDataParam(),
 	}
+
+	return dscpsdp
 }

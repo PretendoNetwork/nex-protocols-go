@@ -1,4 +1,4 @@
-// Package types implements all the types used by the DataStore Super Smash Bros. 4 protocol
+// Package types implements all the types used by the DataStoreSuperSmashBros.4 protocol
 package types
 
 import (
@@ -8,27 +8,42 @@ import (
 	"github.com/PretendoNetwork/nex-go/types"
 )
 
-// DataStoreProfileInfo is a data structure used by the DataStore Super Smash Bros. 4 protocol
+// DataStoreProfileInfo is a type within the DataStoreSuperSmashBros.4 protocol
 type DataStoreProfileInfo struct {
 	types.Structure
 	PID     *types.PID
 	Profile *types.QBuffer
 }
 
+// WriteTo writes the DataStoreProfileInfo to the given writable
+func (dspi *DataStoreProfileInfo) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
+
+	dspi.PID.WriteTo(writable)
+	dspi.Profile.WriteTo(writable)
+
+	content := contentWritable.Bytes()
+
+	dspi.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
+}
+
 // ExtractFrom extracts the DataStoreProfileInfo from the given readable
-func (dataStoreProfileInfo *DataStoreProfileInfo) ExtractFrom(readable types.Readable) error {
+func (dspi *DataStoreProfileInfo) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	if err = dataStoreProfileInfo.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to read DataStoreProfileInfo header. %s", err.Error())
+	err = dspi.ExtractHeaderFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreProfileInfo header. %s", err.Error())
 	}
 
-	err = dataStoreProfileInfo.PID.ExtractFrom(readable)
+	err = dspi.PID.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreProfileInfo.PID. %s", err.Error())
 	}
 
-	err = dataStoreProfileInfo.Profile.ExtractFrom(readable)
+	err = dspi.Profile.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreProfileInfo.Profile. %s", err.Error())
 	}
@@ -36,71 +51,51 @@ func (dataStoreProfileInfo *DataStoreProfileInfo) ExtractFrom(readable types.Rea
 	return nil
 }
 
-// WriteTo writes the DataStoreProfileInfo to the given writable
-func (dataStoreProfileInfo *DataStoreProfileInfo) WriteTo(writable types.Writable) {
-	contentWritable := writable.CopyNew()
-
-	dataStoreProfileInfo.PID.WriteTo(contentWritable)
-	dataStoreProfileInfo.Profile.WriteTo(contentWritable)
-
-	content := contentWritable.Bytes()
-
-	dataStoreProfileInfo.WriteHeaderTo(writable, uint32(len(content)))
-
-	writable.Write(content)
-}
-
 // Copy returns a new copied instance of DataStoreProfileInfo
-func (dataStoreProfileInfo *DataStoreProfileInfo) Copy() types.RVType {
+func (dspi *DataStoreProfileInfo) Copy() types.RVType {
 	copied := NewDataStoreProfileInfo()
 
-	copied.StructureVersion = dataStoreProfileInfo.StructureVersion
-
-	copied.PID = dataStoreProfileInfo.PID.Copy().(*types.PID)
-	copied.Profile = dataStoreProfileInfo.Profile.Copy().(*types.QBuffer)
+	copied.StructureVersion = dspi.StructureVersion
+	copied.PID = dspi.PID.Copy().(*types.PID)
+	copied.Profile = dspi.Profile.Copy().(*types.QBuffer)
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (dataStoreProfileInfo *DataStoreProfileInfo) Equals(o types.RVType) bool {
+// Equals checks if the given DataStoreProfileInfo contains the same data as the current DataStoreProfileInfo
+func (dspi *DataStoreProfileInfo) Equals(o types.RVType) bool {
 	if _, ok := o.(*DataStoreProfileInfo); !ok {
 		return false
 	}
 
 	other := o.(*DataStoreProfileInfo)
 
-	if dataStoreProfileInfo.StructureVersion != other.StructureVersion {
+	if dspi.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if !dataStoreProfileInfo.PID.Equals(other.PID) {
+	if !dspi.PID.Equals(other.PID) {
 		return false
 	}
 
-	if !dataStoreProfileInfo.Profile.Equals(other.Profile) {
-		return false
-	}
-
-	return true
+	return dspi.Profile.Equals(other.Profile)
 }
 
-// String returns a string representation of the struct
-func (dataStoreProfileInfo *DataStoreProfileInfo) String() string {
-	return dataStoreProfileInfo.FormatToString(0)
+// String returns the string representation of the DataStoreProfileInfo
+func (dspi *DataStoreProfileInfo) String() string {
+	return dspi.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (dataStoreProfileInfo *DataStoreProfileInfo) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the DataStoreProfileInfo using the provided indentation level
+func (dspi *DataStoreProfileInfo) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("DataStoreProfileInfo{\n")
-	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, dataStoreProfileInfo.StructureVersion))
-	b.WriteString(fmt.Sprintf("%sPID: %s,\n", indentationValues, dataStoreProfileInfo.PID.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sProfile: %s\n", indentationValues, dataStoreProfileInfo.Profile))
+	b.WriteString(fmt.Sprintf("%sPID: %s,\n", indentationValues, dspi.PID.FormatToString(indentationLevel+1)))
+	b.WriteString(fmt.Sprintf("%sProfile: %s,\n", indentationValues, dspi.Profile))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -108,8 +103,10 @@ func (dataStoreProfileInfo *DataStoreProfileInfo) FormatToString(indentationLeve
 
 // NewDataStoreProfileInfo returns a new DataStoreProfileInfo
 func NewDataStoreProfileInfo() *DataStoreProfileInfo {
-	return &DataStoreProfileInfo{
-		PID: types.NewPID(0),
+	dspi := &DataStoreProfileInfo{
+		PID:     types.NewPID(0),
 		Profile: types.NewQBuffer(nil),
 	}
+
+	return dspi
 }

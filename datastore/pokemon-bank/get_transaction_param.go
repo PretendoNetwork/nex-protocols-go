@@ -29,7 +29,7 @@ func (protocol *Protocol) handleGetTransactionParam(packet nex.PacketInterface) 
 	slotID := types.NewPrimitiveU16(0)
 	err = slotID.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.GetTransactionParam(fmt.Errorf("Failed to read slotID from parameters. %s", err.Error()), packet, callID, 0)
+		_, errorCode = protocol.GetTransactionParam(fmt.Errorf("Failed to read slotID from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}

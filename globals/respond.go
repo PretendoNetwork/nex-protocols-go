@@ -5,7 +5,7 @@ import "github.com/PretendoNetwork/nex-go"
 
 // Respond sends the client a given RMC message
 func Respond(packet nex.PacketInterface, message *nex.RMCMessage) {
-	client := packet.Sender()
+	sender := packet.Sender()
 
 	var responsePacket nex.PacketInterface
 
@@ -14,9 +14,9 @@ func Respond(packet nex.PacketInterface, message *nex.RMCMessage) {
 		var prudpPacket nex.PRUDPPacketInterface
 
 		if packet.Version() == 1 {
-			prudpPacket, _ = nex.NewPRUDPPacketV1(client.(*nex.PRUDPClient), nil)
+			prudpPacket, _ = nex.NewPRUDPPacketV1(sender.(*nex.PRUDPConnection), nil)
 		} else {
-			prudpPacket, _ = nex.NewPRUDPPacketV0(client.(*nex.PRUDPClient), nil)
+			prudpPacket, _ = nex.NewPRUDPPacketV0(sender.(*nex.PRUDPConnection), nil)
 		}
 
 		prudpPacket.SetType(nex.DataPacket)
@@ -27,10 +27,10 @@ func Respond(packet nex.PacketInterface, message *nex.RMCMessage) {
 
 		prudpPacket.AddFlag(nex.FlagNeedsAck)
 		prudpPacket.AddFlag(nex.FlagHasSize)
-		prudpPacket.SetSourceStreamType(packet.DestinationStreamType())
-		prudpPacket.SetSourcePort(packet.DestinationPort())
-		prudpPacket.SetDestinationStreamType(packet.SourceStreamType())
-		prudpPacket.SetDestinationPort(packet.SourcePort())
+		prudpPacket.SetSourceVirtualPortStreamType(packet.DestinationVirtualPortStreamType())
+		prudpPacket.SetSourceVirtualPortStreamID(packet.DestinationVirtualPortStreamID())
+		prudpPacket.SetDestinationVirtualPortStreamType(packet.SourceVirtualPortStreamType())
+		prudpPacket.SetDestinationVirtualPortStreamID(packet.SourceVirtualPortStreamID())
 		prudpPacket.SetSubstreamID(packet.SubstreamID())
 
 		responsePacket = prudpPacket
@@ -42,5 +42,5 @@ func Respond(packet nex.PacketInterface, message *nex.RMCMessage) {
 		responsePacket.SetRMCMessage(message)
 	}
 
-	client.Server().Send(responsePacket)
+	sender.Server().Send(responsePacket)
 }

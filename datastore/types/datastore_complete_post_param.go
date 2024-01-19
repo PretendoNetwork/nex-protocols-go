@@ -8,7 +8,7 @@ import (
 	"github.com/PretendoNetwork/nex-go/types"
 )
 
-// DataStoreCompletePostParam is sent in the CompletePostObject method
+// DataStoreCompletePostParam is a type within the DataStore protocol
 type DataStoreCompletePostParam struct {
 	types.Structure
 	DataID    *types.PrimitiveU64
@@ -16,33 +16,34 @@ type DataStoreCompletePostParam struct {
 }
 
 // WriteTo writes the DataStoreCompletePostParam to the given writable
-func (dataStoreCompletePostParam *DataStoreCompletePostParam) WriteTo(writable types.Writable) {
+func (dscpp *DataStoreCompletePostParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	dataStoreCompletePostParam.DataID.WriteTo(contentWritable)
-	dataStoreCompletePostParam.IsSuccess.WriteTo(contentWritable)
+	dscpp.DataID.WriteTo(writable)
+	dscpp.IsSuccess.WriteTo(writable)
 
 	content := contentWritable.Bytes()
 
-	dataStoreCompletePostParam.WriteHeaderTo(writable, uint32(len(content)))
+	dscpp.WriteHeaderTo(writable, uint32(len(content)))
 
 	writable.Write(content)
 }
 
 // ExtractFrom extracts the DataStoreCompletePostParam from the given readable
-func (dataStoreCompletePostParam *DataStoreCompletePostParam) ExtractFrom(readable types.Readable) error {
+func (dscpp *DataStoreCompletePostParam) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	if err = dataStoreCompletePostParam.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to read DataStoreCompletePostParam header. %s", err.Error())
+	err = dscpp.ExtractHeaderFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreCompletePostParam header. %s", err.Error())
 	}
 
-	err = dataStoreCompletePostParam.DataID.ExtractFrom(readable)
+	err = dscpp.DataID.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreCompletePostParam.DataID. %s", err.Error())
 	}
 
-	err = dataStoreCompletePostParam.IsSuccess.ExtractFrom(readable)
+	err = dscpp.IsSuccess.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreCompletePostParam.IsSuccess. %s", err.Error())
 	}
@@ -51,56 +52,50 @@ func (dataStoreCompletePostParam *DataStoreCompletePostParam) ExtractFrom(readab
 }
 
 // Copy returns a new copied instance of DataStoreCompletePostParam
-func (dataStoreCompletePostParam *DataStoreCompletePostParam) Copy() types.RVType {
+func (dscpp *DataStoreCompletePostParam) Copy() types.RVType {
 	copied := NewDataStoreCompletePostParam()
 
-	copied.StructureVersion = dataStoreCompletePostParam.StructureVersion
-
-	copied.DataID = dataStoreCompletePostParam.DataID.Copy().(*types.PrimitiveU64)
-	copied.IsSuccess = dataStoreCompletePostParam.IsSuccess.Copy().(*types.PrimitiveBool)
+	copied.StructureVersion = dscpp.StructureVersion
+	copied.DataID = dscpp.DataID.Copy().(*types.PrimitiveU64)
+	copied.IsSuccess = dscpp.IsSuccess.Copy().(*types.PrimitiveBool)
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (dataStoreCompletePostParam *DataStoreCompletePostParam) Equals(o types.RVType) bool {
+// Equals checks if the given DataStoreCompletePostParam contains the same data as the current DataStoreCompletePostParam
+func (dscpp *DataStoreCompletePostParam) Equals(o types.RVType) bool {
 	if _, ok := o.(*DataStoreCompletePostParam); !ok {
 		return false
 	}
 
 	other := o.(*DataStoreCompletePostParam)
 
-	if dataStoreCompletePostParam.StructureVersion != other.StructureVersion {
+	if dscpp.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if !dataStoreCompletePostParam.DataID.Equals(other.DataID) {
+	if !dscpp.DataID.Equals(other.DataID) {
 		return false
 	}
 
-	if !dataStoreCompletePostParam.IsSuccess.Equals(other.IsSuccess) {
-		return false
-	}
-
-	return true
+	return dscpp.IsSuccess.Equals(other.IsSuccess)
 }
 
-// String returns a string representation of the struct
-func (dataStoreCompletePostParam *DataStoreCompletePostParam) String() string {
-	return dataStoreCompletePostParam.FormatToString(0)
+// String returns the string representation of the DataStoreCompletePostParam
+func (dscpp *DataStoreCompletePostParam) String() string {
+	return dscpp.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (dataStoreCompletePostParam *DataStoreCompletePostParam) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the DataStoreCompletePostParam using the provided indentation level
+func (dscpp *DataStoreCompletePostParam) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("DataStoreCompletePostParam{\n")
-	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, dataStoreCompletePostParam.StructureVersion))
-	b.WriteString(fmt.Sprintf("%sDataID: %s,\n", indentationValues, dataStoreCompletePostParam.DataID))
-	b.WriteString(fmt.Sprintf("%sIsSuccess: %s\n", indentationValues, dataStoreCompletePostParam.IsSuccess))
+	b.WriteString(fmt.Sprintf("%sDataID: %s,\n", indentationValues, dscpp.DataID))
+	b.WriteString(fmt.Sprintf("%sIsSuccess: %s,\n", indentationValues, dscpp.IsSuccess))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -108,8 +103,10 @@ func (dataStoreCompletePostParam *DataStoreCompletePostParam) FormatToString(ind
 
 // NewDataStoreCompletePostParam returns a new DataStoreCompletePostParam
 func NewDataStoreCompletePostParam() *DataStoreCompletePostParam {
-	return &DataStoreCompletePostParam{
+	dscpp := &DataStoreCompletePostParam{
 		DataID:    types.NewPrimitiveU64(0),
 		IsSuccess: types.NewPrimitiveBool(false),
 	}
+
+	return dscpp
 }

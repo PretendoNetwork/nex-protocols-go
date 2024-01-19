@@ -1,107 +1,101 @@
-// Package types implements all the types used by the Service Item (Team Kirby Clash Deluxe) protocol
+// Package types implements all the types used by the ServiceItem protocol
 package types
 
 import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-go/types"
 )
 
-// ServiceItemLawMessage holds data for the Service Item (Team Kirby Clash Deluxe) protocol
+// ServiceItemLawMessage is a type within the ServiceItem protocol
 type ServiceItemLawMessage struct {
 	types.Structure
 	IsMessageRequired *types.PrimitiveBool
-	LawMessage        string
+	LawMessage        *types.String
+}
+
+// WriteTo writes the ServiceItemLawMessage to the given writable
+func (silm *ServiceItemLawMessage) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
+
+	silm.IsMessageRequired.WriteTo(writable)
+	silm.LawMessage.WriteTo(writable)
+
+	content := contentWritable.Bytes()
+
+	silm.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // ExtractFrom extracts the ServiceItemLawMessage from the given readable
-func (serviceItemLawMessage *ServiceItemLawMessage) ExtractFrom(readable types.Readable) error {
+func (silm *ServiceItemLawMessage) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	if err = serviceItemLawMessage.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to read ServiceItemLawMessage header. %s", err.Error())
+	err = silm.ExtractHeaderFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract ServiceItemLawMessage header. %s", err.Error())
 	}
 
-	err = serviceItemLawMessage.IsMessageRequired.ExtractFrom(readable)
+	err = silm.IsMessageRequired.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemLawMessage.IsMessageRequired from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract ServiceItemLawMessage.IsMessageRequired. %s", err.Error())
 	}
 
-	err = serviceItemLawMessage.LawMessage.ExtractFrom(readable)
+	err = silm.LawMessage.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemLawMessage.LawMessage from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract ServiceItemLawMessage.LawMessage. %s", err.Error())
 	}
 
 	return nil
 }
 
-// WriteTo writes the ServiceItemLawMessage to the given writable
-func (serviceItemLawMessage *ServiceItemLawMessage) WriteTo(writable types.Writable) {
-	contentWritable := writable.CopyNew()
-
-	serviceItemLawMessage.IsMessageRequired.WriteTo(contentWritable)
-	serviceItemLawMessage.LawMessage.WriteTo(contentWritable)
-
-	content := contentWritable.Bytes()
-
-	serviceItemLawMessage.WriteHeaderTo(writable, uint32(len(content)))
-
-	writable.Write(content)
-}
-
 // Copy returns a new copied instance of ServiceItemLawMessage
-func (serviceItemLawMessage *ServiceItemLawMessage) Copy() types.RVType {
+func (silm *ServiceItemLawMessage) Copy() types.RVType {
 	copied := NewServiceItemLawMessage()
 
-	copied.StructureVersion = serviceItemLawMessage.StructureVersion
-
-	copied.IsMessageRequired = serviceItemLawMessage.IsMessageRequired
-	copied.LawMessage = serviceItemLawMessage.LawMessage
+	copied.StructureVersion = silm.StructureVersion
+	copied.IsMessageRequired = silm.IsMessageRequired.Copy().(*types.PrimitiveBool)
+	copied.LawMessage = silm.LawMessage.Copy().(*types.String)
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (serviceItemLawMessage *ServiceItemLawMessage) Equals(o types.RVType) bool {
+// Equals checks if the given ServiceItemLawMessage contains the same data as the current ServiceItemLawMessage
+func (silm *ServiceItemLawMessage) Equals(o types.RVType) bool {
 	if _, ok := o.(*ServiceItemLawMessage); !ok {
 		return false
 	}
 
 	other := o.(*ServiceItemLawMessage)
 
-	if serviceItemLawMessage.StructureVersion != other.StructureVersion {
+	if silm.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if !serviceItemLawMessage.IsMessageRequired.Equals(other.IsMessageRequired) {
+	if !silm.IsMessageRequired.Equals(other.IsMessageRequired) {
 		return false
 	}
 
-	if !serviceItemLawMessage.LawMessage.Equals(other.LawMessage) {
-		return false
-	}
-
-	return true
+	return silm.LawMessage.Equals(other.LawMessage)
 }
 
-// String returns a string representation of the struct
-func (serviceItemLawMessage *ServiceItemLawMessage) String() string {
-	return serviceItemLawMessage.FormatToString(0)
+// String returns the string representation of the ServiceItemLawMessage
+func (silm *ServiceItemLawMessage) String() string {
+	return silm.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (serviceItemLawMessage *ServiceItemLawMessage) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the ServiceItemLawMessage using the provided indentation level
+func (silm *ServiceItemLawMessage) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("ServiceItemLawMessage{\n")
-	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, serviceItemLawMessage.StructureVersion))
-	b.WriteString(fmt.Sprintf("%sIsMessageRequired: %t,\n", indentationValues, serviceItemLawMessage.IsMessageRequired))
-	b.WriteString(fmt.Sprintf("%sLawMessage: %q,\n", indentationValues, serviceItemLawMessage.LawMessage))
+	b.WriteString(fmt.Sprintf("%sIsMessageRequired: %s,\n", indentationValues, silm.IsMessageRequired))
+	b.WriteString(fmt.Sprintf("%sLawMessage: %s,\n", indentationValues, silm.LawMessage))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -109,5 +103,10 @@ func (serviceItemLawMessage *ServiceItemLawMessage) FormatToString(indentationLe
 
 // NewServiceItemLawMessage returns a new ServiceItemLawMessage
 func NewServiceItemLawMessage() *ServiceItemLawMessage {
-	return &ServiceItemLawMessage{}
+	silm := &ServiceItemLawMessage{
+		IsMessageRequired: types.NewPrimitiveBool(false),
+		LawMessage:        types.NewString(""),
+	}
+
+	return silm
 }

@@ -7,8 +7,6 @@ import (
 )
 
 func (protocol *Protocol) handleGetApplicationInfo(packet nex.PacketInterface) {
-	var errorCode uint32
-
 	if protocol.GetApplicationInfo == nil {
 		globals.Logger.Warning("AAUser::GetApplicationInfo not implemented")
 		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)

@@ -29,7 +29,7 @@ func (protocol *Protocol) handleGenerateMatchmakeSessionSystemPassword(packet ne
 	gid := types.NewPrimitiveU32(0)
 	err = gid.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.GenerateMatchmakeSessionSystemPassword(fmt.Errorf("Failed to read GID from parameters. %s", err.Error()), packet, callID, 0)
+		_, errorCode = protocol.GenerateMatchmakeSessionSystemPassword(fmt.Errorf("Failed to read GID from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}

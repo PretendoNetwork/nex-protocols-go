@@ -29,7 +29,7 @@ func (protocol *Protocol) handleSendReport(packet nex.PacketInterface) {
 	reportID := types.NewPrimitiveU32(0)
 	err = reportID.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.SendReport(fmt.Errorf("Failed to read reportID from parameters. %s", err.Error()), packet, callID, 0, nil)
+		_, errorCode = protocol.SendReport(fmt.Errorf("Failed to read reportID from parameters. %s", err.Error()), packet, callID, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -40,7 +40,7 @@ func (protocol *Protocol) handleSendReport(packet nex.PacketInterface) {
 	reportData := types.NewQBuffer(nil)
 	err = reportData.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.SendReport(fmt.Errorf("Failed to read reportData from parameters. %s", err.Error()), packet, callID, 0, nil)
+		_, errorCode = protocol.SendReport(fmt.Errorf("Failed to read reportData from parameters. %s", err.Error()), packet, callID, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}

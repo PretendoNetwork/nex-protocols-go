@@ -29,7 +29,7 @@ func (protocol *Protocol) handleLogin(packet nex.PacketInterface) {
 	strUserName := types.NewString("")
 	err = strUserName.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.Login(fmt.Errorf("Failed to read strUserName from parameters. %s", err.Error()), packet, callID, "")
+		_, errorCode = protocol.Login(fmt.Errorf("Failed to read strUserName from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}

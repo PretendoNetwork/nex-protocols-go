@@ -1,4 +1,4 @@
-// Package types implements all the types used by the DataStore (Pokemon Bank) protocol
+// Package types implements all the types used by the DataStore protocol
 package types
 
 import (
@@ -8,7 +8,7 @@ import (
 	"github.com/PretendoNetwork/nex-go/types"
 )
 
-// GlobalTradeStationTradePokemonParam holds data for the DataStore (Pokemon Bank) protocol
+// GlobalTradeStationTradePokemonParam is a type within the DataStore protocol
 type GlobalTradeStationTradePokemonParam struct {
 	types.Structure
 	TradeKey         *GlobalTradeStationTradeKey
@@ -21,164 +21,159 @@ type GlobalTradeStationTradePokemonParam struct {
 	NeedData         *types.PrimitiveBool
 }
 
+// WriteTo writes the GlobalTradeStationTradePokemonParam to the given writable
+func (gtstpp *GlobalTradeStationTradePokemonParam) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
+
+	gtstpp.TradeKey.WriteTo(writable)
+	gtstpp.PrepareTradeKey.WriteTo(writable)
+	gtstpp.PrepareUploadKey.WriteTo(writable)
+	gtstpp.Period.WriteTo(writable)
+	gtstpp.IndexData.WriteTo(writable)
+	gtstpp.PokemonData.WriteTo(writable)
+	gtstpp.Signature.WriteTo(writable)
+	gtstpp.NeedData.WriteTo(writable)
+
+	content := contentWritable.Bytes()
+
+	gtstpp.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
+}
+
 // ExtractFrom extracts the GlobalTradeStationTradePokemonParam from the given readable
-func (globalTradeStationTradePokemonParam *GlobalTradeStationTradePokemonParam) ExtractFrom(readable types.Readable) error {
+func (gtstpp *GlobalTradeStationTradePokemonParam) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	if err = globalTradeStationTradePokemonParam.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to read GlobalTradeStationTradePokemonParam header. %s", err.Error())
+	err = gtstpp.ExtractHeaderFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract GlobalTradeStationTradePokemonParam header. %s", err.Error())
 	}
 
-	err = globalTradeStationTradePokemonParam.TradeKey.ExtractFrom(readable)
+	err = gtstpp.TradeKey.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract GlobalTradeStationTradePokemonParam.TradeKey from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract GlobalTradeStationTradePokemonParam.TradeKey. %s", err.Error())
 	}
 
-	err = globalTradeStationTradePokemonParam.PrepareTradeKey.ExtractFrom(readable)
+	err = gtstpp.PrepareTradeKey.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract GlobalTradeStationTradePokemonParam.PrepareTradeKey from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract GlobalTradeStationTradePokemonParam.PrepareTradeKey. %s", err.Error())
 	}
 
-	err = globalTradeStationTradePokemonParam.PrepareUploadKey.ExtractFrom(readable)
+	err = gtstpp.PrepareUploadKey.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract GlobalTradeStationTradePokemonParam.PrepareUploadKey from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract GlobalTradeStationTradePokemonParam.PrepareUploadKey. %s", err.Error())
 	}
 
-	err = globalTradeStationTradePokemonParam.Period.ExtractFrom(readable)
+	err = gtstpp.Period.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract GlobalTradeStationTradePokemonParam.Period from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract GlobalTradeStationTradePokemonParam.Period. %s", err.Error())
 	}
 
-	err = globalTradeStationTradePokemonParam.IndexData.ExtractFrom(readable)
+	err = gtstpp.IndexData.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract GlobalTradeStationTradePokemonParam.IndexData from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract GlobalTradeStationTradePokemonParam.IndexData. %s", err.Error())
 	}
 
-	err = globalTradeStationTradePokemonParam.PokemonData.ExtractFrom(readable)
+	err = gtstpp.PokemonData.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract GlobalTradeStationTradePokemonParam.PokemonData from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract GlobalTradeStationTradePokemonParam.PokemonData. %s", err.Error())
 	}
 
-	err = globalTradeStationTradePokemonParam.Signature.ExtractFrom(readable)
+	err = gtstpp.Signature.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract GlobalTradeStationTradePokemonParam.Signature from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract GlobalTradeStationTradePokemonParam.Signature. %s", err.Error())
 	}
 
-	err = globalTradeStationTradePokemonParam.NeedData.ExtractFrom(readable)
+	err = gtstpp.NeedData.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract GlobalTradeStationTradePokemonParam.NeedData from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract GlobalTradeStationTradePokemonParam.NeedData. %s", err.Error())
 	}
 
 	return nil
 }
 
-// WriteTo writes the GlobalTradeStationTradePokemonParam to the given writable
-func (globalTradeStationTradePokemonParam *GlobalTradeStationTradePokemonParam) WriteTo(writable types.Writable) {
-	contentWritable := writable.CopyNew()
-
-	globalTradeStationTradePokemonParam.TradeKey.WriteTo(contentWritable)
-	globalTradeStationTradePokemonParam.PrepareTradeKey.WriteTo(contentWritable)
-	globalTradeStationTradePokemonParam.PrepareUploadKey.WriteTo(contentWritable)
-	globalTradeStationTradePokemonParam.Period.WriteTo(contentWritable)
-	globalTradeStationTradePokemonParam.IndexData.WriteTo(contentWritable)
-	globalTradeStationTradePokemonParam.PokemonData.WriteTo(contentWritable)
-	globalTradeStationTradePokemonParam.Signature.WriteTo(contentWritable)
-	globalTradeStationTradePokemonParam.NeedData.WriteTo(contentWritable)
-
-	content := contentWritable.Bytes()
-
-	globalTradeStationTradePokemonParam.WriteHeaderTo(writable, uint32(len(content)))
-
-	writable.Write(content)
-}
-
 // Copy returns a new copied instance of GlobalTradeStationTradePokemonParam
-func (globalTradeStationTradePokemonParam *GlobalTradeStationTradePokemonParam) Copy() types.RVType {
+func (gtstpp *GlobalTradeStationTradePokemonParam) Copy() types.RVType {
 	copied := NewGlobalTradeStationTradePokemonParam()
 
-	copied.StructureVersion = globalTradeStationTradePokemonParam.StructureVersion
-
-	copied.TradeKey = globalTradeStationTradePokemonParam.TradeKey.Copy().(*GlobalTradeStationTradeKey)
-	copied.PrepareTradeKey = globalTradeStationTradePokemonParam.PrepareTradeKey.Copy().(*GlobalTradeStationRecordKey)
-	copied.PrepareUploadKey = globalTradeStationTradePokemonParam.PrepareUploadKey.Copy().(*GlobalTradeStationRecordKey)
-	copied.Period = globalTradeStationTradePokemonParam.Period.Copy().(*types.PrimitiveU16)
-	copied.IndexData = globalTradeStationTradePokemonParam.IndexData.Copy().(*types.QBuffer)
-	copied.PokemonData = globalTradeStationTradePokemonParam.PokemonData.Copy().(*types.QBuffer)
-	copied.Signature = globalTradeStationTradePokemonParam.Signature.Copy().(*types.QBuffer)
-	copied.NeedData = globalTradeStationTradePokemonParam.NeedData.Copy().(*types.PrimitiveBool)
+	copied.StructureVersion = gtstpp.StructureVersion
+	copied.TradeKey = gtstpp.TradeKey.Copy().(*GlobalTradeStationTradeKey)
+	copied.PrepareTradeKey = gtstpp.PrepareTradeKey.Copy().(*GlobalTradeStationRecordKey)
+	copied.PrepareUploadKey = gtstpp.PrepareUploadKey.Copy().(*GlobalTradeStationRecordKey)
+	copied.Period = gtstpp.Period.Copy().(*types.PrimitiveU16)
+	copied.IndexData = gtstpp.IndexData.Copy().(*types.QBuffer)
+	copied.PokemonData = gtstpp.PokemonData.Copy().(*types.QBuffer)
+	copied.Signature = gtstpp.Signature.Copy().(*types.QBuffer)
+	copied.NeedData = gtstpp.NeedData.Copy().(*types.PrimitiveBool)
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (globalTradeStationTradePokemonParam *GlobalTradeStationTradePokemonParam) Equals(o types.RVType) bool {
+// Equals checks if the given GlobalTradeStationTradePokemonParam contains the same data as the current GlobalTradeStationTradePokemonParam
+func (gtstpp *GlobalTradeStationTradePokemonParam) Equals(o types.RVType) bool {
 	if _, ok := o.(*GlobalTradeStationTradePokemonParam); !ok {
 		return false
 	}
 
 	other := o.(*GlobalTradeStationTradePokemonParam)
 
-	if globalTradeStationTradePokemonParam.StructureVersion != other.StructureVersion {
+	if gtstpp.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if !globalTradeStationTradePokemonParam.TradeKey.Equals(other.TradeKey) {
+	if !gtstpp.TradeKey.Equals(other.TradeKey) {
 		return false
 	}
 
-	if !globalTradeStationTradePokemonParam.PrepareTradeKey.Equals(other.PrepareTradeKey) {
+	if !gtstpp.PrepareTradeKey.Equals(other.PrepareTradeKey) {
 		return false
 	}
 
-	if !globalTradeStationTradePokemonParam.PrepareUploadKey.Equals(other.PrepareUploadKey) {
+	if !gtstpp.PrepareUploadKey.Equals(other.PrepareUploadKey) {
 		return false
 	}
 
-	if !globalTradeStationTradePokemonParam.Period.Equals(other.Period) {
+	if !gtstpp.Period.Equals(other.Period) {
 		return false
 	}
 
-	if !globalTradeStationTradePokemonParam.IndexData.Equals(other.IndexData) {
+	if !gtstpp.IndexData.Equals(other.IndexData) {
 		return false
 	}
 
-	if !globalTradeStationTradePokemonParam.PokemonData.Equals(other.PokemonData) {
+	if !gtstpp.PokemonData.Equals(other.PokemonData) {
 		return false
 	}
 
-	if !globalTradeStationTradePokemonParam.Signature.Equals(other.Signature) {
+	if !gtstpp.Signature.Equals(other.Signature) {
 		return false
 	}
 
-	if !globalTradeStationTradePokemonParam.NeedData.Equals(other.NeedData) {
-		return false
-	}
-
-	return true
+	return gtstpp.NeedData.Equals(other.NeedData)
 }
 
-// String returns a string representation of the struct
-func (globalTradeStationTradePokemonParam *GlobalTradeStationTradePokemonParam) String() string {
-	return globalTradeStationTradePokemonParam.FormatToString(0)
+// String returns the string representation of the GlobalTradeStationTradePokemonParam
+func (gtstpp *GlobalTradeStationTradePokemonParam) String() string {
+	return gtstpp.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (globalTradeStationTradePokemonParam *GlobalTradeStationTradePokemonParam) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the GlobalTradeStationTradePokemonParam using the provided indentation level
+func (gtstpp *GlobalTradeStationTradePokemonParam) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("GlobalTradeStationTradePokemonParam{\n")
-	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, globalTradeStationTradePokemonParam.StructureVersion))
-	b.WriteString(fmt.Sprintf("%sTradeKey: %s\n", indentationValues, globalTradeStationTradePokemonParam.TradeKey.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sPrepareTradeKey: %s\n", indentationValues, globalTradeStationTradePokemonParam.PrepareTradeKey.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sPrepareUploadKey: %s\n", indentationValues, globalTradeStationTradePokemonParam.PrepareUploadKey.FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sPeriod: %s,\n", indentationValues, globalTradeStationTradePokemonParam.Period))
-	b.WriteString(fmt.Sprintf("%sIndexData: %s,\n", indentationValues, globalTradeStationTradePokemonParam.IndexData))
-	b.WriteString(fmt.Sprintf("%sPokemonData: %s,\n", indentationValues, globalTradeStationTradePokemonParam.PokemonData))
-	b.WriteString(fmt.Sprintf("%sSignature: %s,\n", indentationValues, globalTradeStationTradePokemonParam.Signature))
-	b.WriteString(fmt.Sprintf("%sNeedData: %s,\n", indentationValues, globalTradeStationTradePokemonParam.NeedData))
+	b.WriteString(fmt.Sprintf("%sTradeKey: %s,\n", indentationValues, gtstpp.TradeKey.FormatToString(indentationLevel+1)))
+	b.WriteString(fmt.Sprintf("%sPrepareTradeKey: %s,\n", indentationValues, gtstpp.PrepareTradeKey.FormatToString(indentationLevel+1)))
+	b.WriteString(fmt.Sprintf("%sPrepareUploadKey: %s,\n", indentationValues, gtstpp.PrepareUploadKey.FormatToString(indentationLevel+1)))
+	b.WriteString(fmt.Sprintf("%sPeriod: %s,\n", indentationValues, gtstpp.Period))
+	b.WriteString(fmt.Sprintf("%sIndexData: %s,\n", indentationValues, gtstpp.IndexData))
+	b.WriteString(fmt.Sprintf("%sPokemonData: %s,\n", indentationValues, gtstpp.PokemonData))
+	b.WriteString(fmt.Sprintf("%sSignature: %s,\n", indentationValues, gtstpp.Signature))
+	b.WriteString(fmt.Sprintf("%sNeedData: %s,\n", indentationValues, gtstpp.NeedData))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -186,14 +181,16 @@ func (globalTradeStationTradePokemonParam *GlobalTradeStationTradePokemonParam) 
 
 // NewGlobalTradeStationTradePokemonParam returns a new GlobalTradeStationTradePokemonParam
 func NewGlobalTradeStationTradePokemonParam() *GlobalTradeStationTradePokemonParam {
-	return &GlobalTradeStationTradePokemonParam{
-		TradeKey: NewGlobalTradeStationTradeKey(),
-		PrepareTradeKey: NewGlobalTradeStationRecordKey(),
+	gtstpp := &GlobalTradeStationTradePokemonParam{
+		TradeKey:         NewGlobalTradeStationTradeKey(),
+		PrepareTradeKey:  NewGlobalTradeStationRecordKey(),
 		PrepareUploadKey: NewGlobalTradeStationRecordKey(),
-		Period: types.NewPrimitiveU16(0),
-		IndexData: types.NewQBuffer(nil),
-		PokemonData: types.NewQBuffer(nil),
-		Signature: types.NewQBuffer(nil),
-		NeedData: types.NewPrimitiveBool(false),
+		Period:           types.NewPrimitiveU16(0),
+		IndexData:        types.NewQBuffer(nil),
+		PokemonData:      types.NewQBuffer(nil),
+		Signature:        types.NewQBuffer(nil),
+		NeedData:         types.NewPrimitiveBool(false),
 	}
+
+	return gtstpp
 }

@@ -7,8 +7,6 @@ import (
 )
 
 func (protocol *Protocol) handleGetPrivateData(packet nex.PacketInterface) {
-	var errorCode uint32
-
 	if protocol.GetPrivateData == nil {
 		globals.Logger.Warning("AccountManagement::GetPrivateData not implemented")
 		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)

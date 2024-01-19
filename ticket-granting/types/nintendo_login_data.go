@@ -1,29 +1,42 @@
-// Package types implements all the types used by the Ticket Granting protocol
+// Package types implements all the types used by the TicketGranting protocol
 package types
 
 import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-go/types"
 )
 
-// NintendoLoginData holds a nex auth token
+// NintendoLoginData is a type within the TicketGranting protocol
 type NintendoLoginData struct {
 	types.Structure
-	Token string
+	Token *types.String
+}
+
+// WriteTo writes the NintendoLoginData to the given writable
+func (nld *NintendoLoginData) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
+
+	nld.Token.WriteTo(writable)
+
+	content := contentWritable.Bytes()
+
+	nld.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
 // ExtractFrom extracts the NintendoLoginData from the given readable
-func (nintendoLoginData *NintendoLoginData) ExtractFrom(readable types.Readable) error {
+func (nld *NintendoLoginData) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	if err = nintendoLoginData.ExtractHeaderFrom(readable); err != nil {
-		return fmt.Errorf("Failed to read NintendoLoginData header. %s", err.Error())
+	err = nld.ExtractHeaderFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract NintendoLoginData header. %s", err.Error())
 	}
 
-	err = nintendoLoginData.Token.ExtractFrom(readable)
+	err = nld.Token.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract NintendoLoginData.Token. %s", err.Error())
 	}
@@ -32,46 +45,44 @@ func (nintendoLoginData *NintendoLoginData) ExtractFrom(readable types.Readable)
 }
 
 // Copy returns a new copied instance of NintendoLoginData
-func (nintendoLoginData *NintendoLoginData) Copy() types.RVType {
+func (nld *NintendoLoginData) Copy() types.RVType {
 	copied := NewNintendoLoginData()
 
-	copied.StructureVersion = nintendoLoginData.StructureVersion
-
-	copied.Token = nintendoLoginData.Token
+	copied.StructureVersion = nld.StructureVersion
+	copied.Token = nld.Token.Copy().(*types.String)
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (nintendoLoginData *NintendoLoginData) Equals(o types.RVType) bool {
+// Equals checks if the given NintendoLoginData contains the same data as the current NintendoLoginData
+func (nld *NintendoLoginData) Equals(o types.RVType) bool {
 	if _, ok := o.(*NintendoLoginData); !ok {
 		return false
 	}
 
 	other := o.(*NintendoLoginData)
 
-	if nintendoLoginData.StructureVersion != other.StructureVersion {
+	if nld.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	return nintendoLoginData.Token == other.Token
+	return nld.Token.Equals(other.Token)
 }
 
-// String returns a string representation of the struct
-func (nintendoLoginData *NintendoLoginData) String() string {
-	return nintendoLoginData.FormatToString(0)
+// String returns the string representation of the NintendoLoginData
+func (nld *NintendoLoginData) String() string {
+	return nld.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (nintendoLoginData *NintendoLoginData) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the NintendoLoginData using the provided indentation level
+func (nld *NintendoLoginData) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("NintendoLoginData{\n")
-	b.WriteString(fmt.Sprintf("%sStructureVersion: %d,\n", indentationValues, nintendoLoginData.StructureVersion))
-	b.WriteString(fmt.Sprintf("%sToken: %s\n", indentationValues, nintendoLoginData.Token))
+	b.WriteString(fmt.Sprintf("%sToken: %s,\n", indentationValues, nld.Token))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -79,5 +90,9 @@ func (nintendoLoginData *NintendoLoginData) FormatToString(indentationLevel int)
 
 // NewNintendoLoginData returns a new NintendoLoginData
 func NewNintendoLoginData() *NintendoLoginData {
-	return &NintendoLoginData{}
+	nld := &NintendoLoginData{
+		Token: types.NewString(""),
+	}
+
+	return nld
 }

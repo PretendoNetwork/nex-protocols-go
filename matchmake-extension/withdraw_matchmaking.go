@@ -29,7 +29,7 @@ func (protocol *Protocol) handleWithdrawMatchmaking(packet nex.PacketInterface) 
 	requestID := types.NewPrimitiveU64(0)
 	err = requestID.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.UpdateProgressScore(fmt.Errorf("Failed to read requestID from parameters. %s", err.Error()), packet, callID, 0, 0)
+		_, errorCode = protocol.UpdateProgressScore(fmt.Errorf("Failed to read requestID from parameters. %s", err.Error()), packet, callID, nil, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}

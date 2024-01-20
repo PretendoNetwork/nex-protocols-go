@@ -333,19 +333,17 @@ func (dsmi *DataStoreMetaInfo) FilterPropertiesByResultOption(resultOption *type
 	// * flags being used to conditionally ADD properties,
 	// * it's used to conditionally REMOVE them
 
-	flags := resultOption.Value
-
-	if flags&0x1 == 0 {
+	if resultOption.PAND(0x1) == 0 {
 		dsmi.Tags = types.NewList[*types.String]()
 		dsmi.Tags.Type = types.NewString("")
 	}
 
-	if flags&0x2 == 0 {
+	if resultOption.PAND(0x2) == 0 {
 		dsmi.Ratings = types.NewList[*DataStoreRatingInfoWithSlot]()
 		dsmi.Ratings.Type = NewDataStoreRatingInfoWithSlot()
 	}
 
-	if flags&0x4 == 0 {
+	if resultOption.PAND(0x4) == 0 {
 		dsmi.MetaBinary = types.NewQBuffer(nil)
 	}
 }

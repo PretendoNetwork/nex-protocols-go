@@ -13,7 +13,7 @@ func (protocol *Protocol) handleHTTPGetRequest(packet nex.PacketInterface) {
 	var err error
 	var errorCode uint32
 
-	if protocol.HttpGetRequest == nil {
+	if protocol.HTTPGetRequest == nil {
 		globals.Logger.Warning("ServiceItemTeamKirbyClashDeluxe::HTTPGetRequest not implemented")
 		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
@@ -29,7 +29,7 @@ func (protocol *Protocol) handleHTTPGetRequest(packet nex.PacketInterface) {
 	url := service_item_team_kirby_clash_deluxe_types.NewServiceItemHTTPGetParam()
 	err = url.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.HttpGetRequest(fmt.Errorf("Failed to read url from parameters. %s", err.Error()), packet, callID, nil)
+		_, errorCode = protocol.HTTPGetRequest(fmt.Errorf("Failed to read url from parameters. %s", err.Error()), packet, callID, nil)
 		if errorCode != 0 {
 			globals.RespondError(packet, ProtocolID, errorCode)
 		}
@@ -37,7 +37,7 @@ func (protocol *Protocol) handleHTTPGetRequest(packet nex.PacketInterface) {
 		return
 	}
 
-	rmcMessage, errorCode := protocol.HttpGetRequest(nil, packet, callID, url)
+	rmcMessage, errorCode := protocol.HTTPGetRequest(nil, packet, callID, url)
 	if errorCode != 0 {
 		globals.RespondError(packet, ProtocolID, errorCode)
 		return

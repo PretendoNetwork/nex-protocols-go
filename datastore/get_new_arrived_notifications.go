@@ -15,7 +15,7 @@ func (protocol *Protocol) handleGetNewArrivedNotifications(packet nex.PacketInte
 
 	if protocol.GetNewArrivedNotifications == nil {
 		globals.Logger.Warning("DataStore::GetNewArrivedNotifications not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

@@ -9,7 +9,7 @@ import (
 func (protocol *Protocol) handleGetAssociatedNexUniqueIDsWithMyPrincipalID(packet nex.PacketInterface) {
 	if protocol.GetAssociatedNexUniqueIDsWithMyPrincipalID == nil {
 		globals.Logger.Warning("Utility::GetAssociatedNexUniqueIDsWithMyPrincipalID not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

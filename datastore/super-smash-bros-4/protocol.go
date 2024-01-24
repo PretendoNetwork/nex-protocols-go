@@ -99,13 +99,13 @@ var patchedMethods = []uint32{
 	MethodReportSharedData,
 }
 
-type datastoreProtocol = datastore.Protocol
+type dataStoreProtocol = datastore.Protocol
 
 // Protocol stores all the RMC method handlers for the DataStore (Super Smash Bros 4) protocol and listens for requests
 // Embeds the DataStore protocol
 type Protocol struct {
 	server nex.ServerInterface
-	datastoreProtocol
+	dataStoreProtocol
 	PostProfile              func(err error, packet nex.PacketInterface, callID uint32, param *datastore_super_smash_bros_4_types.DataStorePostProfileParam) (*nex.RMCMessage, uint32)
 	GetProfiles              func(err error, packet nex.PacketInterface, callID uint32, pidList *types.List[*types.PID]) (*nex.RMCMessage, uint32)
 	SendPlayReport           func(err error, packet nex.PacketInterface, callID uint32, playReport *types.List[*types.PrimitiveS32]) (*nex.RMCMessage, uint32)
@@ -128,26 +128,20 @@ type Protocol struct {
 	GetSharedDataMeta        func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) (*nex.RMCMessage, uint32)
 }
 
-// Setup initializes the protocol
-func (protocol *Protocol) Setup() {
-	protocol.server.OnData(func(packet nex.PacketInterface) {
-		message := packet.RMCMessage()
-
-		if message.IsRequest && message.ProtocolID == ProtocolID {
-			if slices.Contains(patchedMethods, message.MethodID) {
-				protocol.HandlePacket(packet)
-			} else {
-				protocol.datastoreProtocol.HandlePacket(packet)
-			}
-		}
-	})
-}
-
 // HandlePacket sends the packet to the correct RMC method handler
 func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
-	request := packet.RMCMessage()
+	message := packet.RMCMessage()
 
-	switch request.MethodID {
+	if !message.IsRequest || message.ProtocolID != ProtocolID {
+		return
+	}
+
+	if !slices.Contains(patchedMethods, message.MethodID) {
+		protocol.dataStoreProtocol.HandlePacket(packet)
+		return
+	}
+
+	switch message.MethodID {
 	case MethodPostProfile:
 		protocol.handlePostProfile(packet)
 	case MethodGetProfiles:
@@ -189,17 +183,15 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 	case MethodGetSharedDataMeta:
 		protocol.handleGetSharedDataMeta(packet)
 	default:
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
-		fmt.Printf("Unsupported DataStoreSuperSmashBros4 method ID: %#v\n", request.MethodID)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		fmt.Printf("Unsupported DataStoreSuperSmashBros4 method ID: %#v\n", message.MethodID)
 	}
 }
 
 // NewProtocol returns a new DataStore (Super Smash Bros 4) protocol
 func NewProtocol(server nex.ServerInterface) *Protocol {
 	protocol := &Protocol{server: server}
-	protocol.datastoreProtocol.SetServer(server)
-
-	protocol.Setup()
+	protocol.dataStoreProtocol.SetServer(server)
 
 	return protocol
 }

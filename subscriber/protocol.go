@@ -186,56 +186,52 @@ func (protocol *Protocol) SetHandlerGetUserStatuses(handler func(err error, pack
 	protocol.GetUserStatuses = handler
 }
 
-// Setup initializes the protocol
-func (protocol *Protocol) Setup() {
-	protocol.server.OnData(func(packet nex.PacketInterface) {
-		message := packet.RMCMessage()
+// HandlePacket sends the packet to the correct RMC method handler
+func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
+	message := packet.RMCMessage()
 
-		if message.IsRequest && message.ProtocolID == ProtocolID {
-			switch message.MethodID {
-			case MethodHello:
-				protocol.handleHello(packet)
-			case MethodPostContent:
-				protocol.handlePostContent(packet)
-			case MethodGetContent:
-				protocol.handleGetContent(packet)
-			case MethodFollow:
-				protocol.handleFollow(packet)
-			case MethodUnfollowAllAndFollow:
-				protocol.handleUnfollowAllAndFollow(packet)
-			case MethodUnfollow:
-				protocol.handleUnfollow(packet)
-			case MethodGetFollowing:
-				protocol.handleGetFollowing(packet)
-			case MethodGetFollower:
-				protocol.handleGetFollower(packet)
-			case MethodGetNumFollowers:
-				protocol.handleGetNumFollowers(packet)
-			case MethodGetTimeline:
-				protocol.handleGetTimeline(packet)
-			case MethodDeleteContent:
-				protocol.handleDeleteContent(packet)
-			case MethodGetContentMulti:
-				protocol.handleGetContentMulti(packet)
-			case MethodUpdateUserStatus:
-				protocol.handleUpdateUserStatus(packet)
-			case MethodGetFriendUserStatuses:
-				protocol.handleGetFriendUserStatuses(packet)
-			case MethodGetUserStatuses:
-				protocol.handleGetUserStatuses(packet)
-			default:
-				globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
-				fmt.Printf("Unsupported Subscriber method ID: %#v\n", message.MethodID)
-			}
-		}
-	})
+	if !message.IsRequest || message.ProtocolID != ProtocolID {
+		return
+	}
+
+	switch message.MethodID {
+	case MethodHello:
+		protocol.handleHello(packet)
+	case MethodPostContent:
+		protocol.handlePostContent(packet)
+	case MethodGetContent:
+		protocol.handleGetContent(packet)
+	case MethodFollow:
+		protocol.handleFollow(packet)
+	case MethodUnfollowAllAndFollow:
+		protocol.handleUnfollowAllAndFollow(packet)
+	case MethodUnfollow:
+		protocol.handleUnfollow(packet)
+	case MethodGetFollowing:
+		protocol.handleGetFollowing(packet)
+	case MethodGetFollower:
+		protocol.handleGetFollower(packet)
+	case MethodGetNumFollowers:
+		protocol.handleGetNumFollowers(packet)
+	case MethodGetTimeline:
+		protocol.handleGetTimeline(packet)
+	case MethodDeleteContent:
+		protocol.handleDeleteContent(packet)
+	case MethodGetContentMulti:
+		protocol.handleGetContentMulti(packet)
+	case MethodUpdateUserStatus:
+		protocol.handleUpdateUserStatus(packet)
+	case MethodGetFriendUserStatuses:
+		protocol.handleGetFriendUserStatuses(packet)
+	case MethodGetUserStatuses:
+		protocol.handleGetUserStatuses(packet)
+	default:
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		fmt.Printf("Unsupported Subscriber method ID: %#v\n", message.MethodID)
+	}
 }
 
 // NewProtocol returns a new Subscriber protocol
 func NewProtocol(server nex.ServerInterface) *Protocol {
-	protocol := &Protocol{server: server}
-
-	protocol.Setup()
-
-	return protocol
+	return &Protocol{server: server}
 }

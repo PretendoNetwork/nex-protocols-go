@@ -9,7 +9,7 @@ import (
 func (protocol *Protocol) handleReplaceTournamentLeafNode(packet nex.PacketInterface) {
 	if protocol.ReplaceTournamentLeafNode == nil {
 		globals.Logger.Warning("MatchmakeExtensionSuperSmashBros4::ReplaceTournamentLeafNode not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

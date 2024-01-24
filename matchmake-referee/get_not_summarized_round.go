@@ -9,7 +9,7 @@ import (
 func (protocol *Protocol) handleGetNotSummarizedRound(packet nex.PacketInterface) {
 	if protocol.GetNotSummarizedRound == nil {
 		globals.Logger.Warning("MatchmakeReferee::GetNotSummarizedRound not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

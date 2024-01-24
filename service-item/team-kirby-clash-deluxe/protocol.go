@@ -139,26 +139,20 @@ type Protocol struct {
 	GetLawMessageResponse           func(err error, packet nex.PacketInterface, callID uint32, requestID *types.PrimitiveU32) (*nex.RMCMessage, uint32)
 }
 
-// Setup initializes the protocol
-func (protocol *Protocol) Setup() {
-	protocol.server.OnData(func(packet nex.PacketInterface) {
-		message := packet.RMCMessage()
-
-		if message.IsRequest && message.ProtocolID == ProtocolID {
-			if slices.Contains(patchedMethods, message.MethodID) {
-				protocol.HandlePacket(packet)
-			} else {
-				protocol.serviceItemProtocol.HandlePacket(packet)
-			}
-		}
-	})
-}
-
 // HandlePacket sends the packet to the correct RMC method handler
 func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
-	request := packet.RMCMessage()
+	message := packet.RMCMessage()
 
-	switch request.MethodID {
+	if !message.IsRequest || message.ProtocolID != ProtocolID {
+		return
+	}
+
+	if !slices.Contains(patchedMethods, message.MethodID) {
+		protocol.serviceItemProtocol.HandlePacket(packet)
+		return
+	}
+
+	switch message.MethodID {
 	case MethodGetEnvironment:
 		protocol.handleGetEnvironment(packet)
 	case MethodHTTPGetRequest:
@@ -204,8 +198,8 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 	case MethodGetLawMessageResponse:
 		protocol.handleGetLawMessageResponse(packet)
 	default:
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
-		fmt.Printf("Unsupported Service Item (Team Kirby Clash Deluxe) method ID: %#v\n", request.MethodID)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		fmt.Printf("Unsupported Service Item (Team Kirby Clash Deluxe) method ID: %#v\n", message.MethodID)
 	}
 }
 
@@ -213,8 +207,6 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 func NewProtocol(server nex.ServerInterface) *Protocol {
 	protocol := &Protocol{server: server}
 	protocol.serviceItemProtocol.SetServer(server)
-
-	protocol.Setup()
 
 	return protocol
 }

@@ -9,7 +9,7 @@ import (
 func (protocol *Protocol) handlePingDaemon(packet nex.PacketInterface) {
 	if protocol.PingDaemon == nil {
 		globals.Logger.Warning("Health::PingDaemon not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

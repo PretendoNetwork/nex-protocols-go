@@ -15,7 +15,7 @@ func (protocol *Protocol) handleUseServiceItemByAccountResponse(packet nex.Packe
 
 	if protocol.UseServiceItemByAccountResponse == nil {
 		globals.Logger.Warning("ServiceItemTeamKirbyClashDeluxe::UseServiceItemByAccountResponse not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

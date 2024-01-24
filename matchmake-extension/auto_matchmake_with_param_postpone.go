@@ -15,7 +15,7 @@ func (protocol *Protocol) handleAutoMatchmakeWithParamPostpone(packet nex.Packet
 
 	if protocol.AutoMatchmakeWithParamPostpone == nil {
 		globals.Logger.Warning("MatchmakeExtension::AutoMatchmakeWithParamPostpone not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

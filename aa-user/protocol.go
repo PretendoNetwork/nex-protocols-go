@@ -76,34 +76,32 @@ func (protocol *Protocol) SetHandlerGetApplicationInfo(handler func(err error, p
 	protocol.GetApplicationInfo = handler
 }
 
-// Setup initializes the protocol
-func (protocol *Protocol) Setup() {
-	protocol.server.OnData(func(packet nex.PacketInterface) {
-		message := packet.RMCMessage()
+// HandlePacket sends the packet to the correct RMC method handler
+func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
+	message := packet.RMCMessage()
 
-		if message.IsRequest && message.ProtocolID == ProtocolID {
-			switch message.MethodID {
-			case MethodRegisterApplication:
-				protocol.handleRegisterApplication(packet)
-			case MethodUnregisterApplication:
-				protocol.handleUnregisterApplication(packet)
-			case MethodSetApplicationInfo:
-				protocol.handleSetApplicationInfo(packet)
-			case MethodGetApplicationInfo:
-				protocol.handleGetApplicationInfo(packet)
-			default:
-				globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
-				fmt.Printf("Unsupported AAUser method ID: %#v\n", message.MethodID)
-			}
+	if !message.IsRequest || message.ProtocolID != ProtocolID {
+		return
+	}
+
+	if message.IsRequest && message.ProtocolID == ProtocolID {
+		switch message.MethodID {
+		case MethodRegisterApplication:
+			protocol.handleRegisterApplication(packet)
+		case MethodUnregisterApplication:
+			protocol.handleUnregisterApplication(packet)
+		case MethodSetApplicationInfo:
+			protocol.handleSetApplicationInfo(packet)
+		case MethodGetApplicationInfo:
+			protocol.handleGetApplicationInfo(packet)
+		default:
+			globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+			fmt.Printf("Unsupported AAUser method ID: %#v\n", message.MethodID)
 		}
-	})
+	}
 }
 
 // NewProtocol returns a new AAUser protocol
 func NewProtocol(server nex.ServerInterface) *Protocol {
-	protocol := &Protocol{server: server}
-
-	protocol.Setup()
-
-	return protocol
+	return &Protocol{server: server}
 }

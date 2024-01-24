@@ -9,7 +9,7 @@ import (
 func (protocol *Protocol) handleIsAPIRecorderEnabled(packet nex.PacketInterface) {
 	if protocol.IsAPIRecorderEnabled == nil {
 		globals.Logger.Warning("Debug::IsAPIRecorderEnabled not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

@@ -15,7 +15,7 @@ func (protocol *Protocol) handlePreparePostReplay(packet nex.PacketInterface) {
 
 	if protocol.PreparePostReplay == nil {
 		globals.Logger.Warning("DataStoreSuperSmashBros4::PreparePostReplay not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

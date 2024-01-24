@@ -15,7 +15,7 @@ func (protocol *Protocol) handleStartChallenge(packet nex.PacketInterface) {
 
 	if protocol.StartChallenge == nil {
 		globals.Logger.Warning("ServiceItemWiiSportsClub::StartChallenge not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

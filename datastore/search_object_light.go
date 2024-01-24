@@ -15,7 +15,7 @@ func (protocol *Protocol) handleSearchObjectLight(packet nex.PacketInterface) {
 
 	if protocol.SearchObjectLight == nil {
 		globals.Logger.Warning("DataStore::SearchObjectLight not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

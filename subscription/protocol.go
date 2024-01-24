@@ -136,42 +136,38 @@ func (protocol *Protocol) SetHandlerGetPrivacyLevels(handler func(err error, pac
 	protocol.GetPrivacyLevels = handler
 }
 
-// Setup initializes the protocol
-func (protocol *Protocol) Setup() {
-	protocol.server.OnData(func(packet nex.PacketInterface) {
-		request := packet.RMCMessage()
+// HandlePacket sends the packet to the correct RMC method handler
+func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
+	message := packet.RMCMessage()
 
-		if ProtocolID == request.ProtocolID {
-			switch request.MethodID {
-			case MethodCreateMySubscriptionData:
-				protocol.handleCreateMySubscriptionData(packet)
-			case MethodUpdateMySubscriptionData:
-				protocol.handleUpdateMySubscriptionData(packet)
-			case MethodGetFriendSubscriptionData:
-				protocol.handleGetFriendSubscriptionData(packet)
-			case MethodGetTargetSubscriptionData:
-				protocol.handleGetTargetSubscriptionData(packet)
-			case MethodGetActivePlayerSubscriptionData:
-				protocol.handleGetActivePlayerSubscriptionData(packet)
-			case MethodGetSubscriptionData:
-				protocol.handleGetSubscriptionData(packet)
-			case MethodReplaceTargetAndGetSubscriptionData:
-				protocol.handleReplaceTargetAndGetSubscriptionData(packet)
-			case MethodGetPrivacyLevels:
-				protocol.handleGetPrivacyLevels(packet)
-			default:
-				globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
-				fmt.Printf("Unsupported Subscription method ID: %#v\n", request.MethodID)
-			}
-		}
-	})
+	if !message.IsRequest || message.ProtocolID != ProtocolID {
+		return
+	}
+
+	switch message.MethodID {
+	case MethodCreateMySubscriptionData:
+		protocol.handleCreateMySubscriptionData(packet)
+	case MethodUpdateMySubscriptionData:
+		protocol.handleUpdateMySubscriptionData(packet)
+	case MethodGetFriendSubscriptionData:
+		protocol.handleGetFriendSubscriptionData(packet)
+	case MethodGetTargetSubscriptionData:
+		protocol.handleGetTargetSubscriptionData(packet)
+	case MethodGetActivePlayerSubscriptionData:
+		protocol.handleGetActivePlayerSubscriptionData(packet)
+	case MethodGetSubscriptionData:
+		protocol.handleGetSubscriptionData(packet)
+	case MethodReplaceTargetAndGetSubscriptionData:
+		protocol.handleReplaceTargetAndGetSubscriptionData(packet)
+	case MethodGetPrivacyLevels:
+		protocol.handleGetPrivacyLevels(packet)
+	default:
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		fmt.Printf("Unsupported Subscription method ID: %#v\n", message.MethodID)
+	}
 }
 
 // NewProtocol returns a new Protocol
 func NewProtocol(server nex.ServerInterface) *Protocol {
-	protocol := &Protocol{server: server}
-
-	protocol.Setup()
-
-	return protocol
+	return &Protocol{server: server}
 }

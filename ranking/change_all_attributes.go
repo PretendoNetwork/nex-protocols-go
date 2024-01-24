@@ -16,7 +16,7 @@ func (protocol *Protocol) handleChangeAllAttributes(packet nex.PacketInterface) 
 
 	if protocol.ChangeAllAttributes == nil {
 		globals.Logger.Warning("Ranking::ChangeAllAttributes not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

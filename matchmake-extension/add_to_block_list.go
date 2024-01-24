@@ -15,7 +15,7 @@ func (protocol *Protocol) handleAddToBlockList(packet nex.PacketInterface) {
 
 	if protocol.AddToBlockList == nil {
 		globals.Logger.Warning("MatchmakeExtension::AddToBlockList not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

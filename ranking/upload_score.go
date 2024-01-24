@@ -16,7 +16,7 @@ func (protocol *Protocol) handleUploadScore(packet nex.PacketInterface) {
 
 	if protocol.UploadScore == nil {
 		globals.Logger.Warning("Ranking::UploadScore not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

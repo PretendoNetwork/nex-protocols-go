@@ -15,7 +15,7 @@ func (protocol *Protocol) handleAcceptFriendship(packet nex.PacketInterface) {
 
 	if protocol.AcceptFriendship == nil {
 		globals.Logger.Warning("Friends::AcceptFriendship not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

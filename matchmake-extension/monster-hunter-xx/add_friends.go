@@ -15,7 +15,7 @@ func (protocol *Protocol) handleAddFriends(packet nex.PacketInterface) {
 
 	if protocol.AddFriends == nil {
 		globals.Logger.Warning("MatchmakeExtensionMonsterHunterXX::AddFriends not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

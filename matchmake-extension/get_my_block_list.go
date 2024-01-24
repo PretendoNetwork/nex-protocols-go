@@ -9,7 +9,7 @@ import (
 func (protocol *Protocol) handleGetMyBlockList(packet nex.PacketInterface) {
 	if protocol.GetMyBlockList == nil {
 		globals.Logger.Warning("MatchmakeExtension::GetMyBlockList not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

@@ -15,7 +15,7 @@ func (protocol *Protocol) handleUpdatePresence(packet nex.PacketInterface) {
 
 	if protocol.UpdatePresence == nil {
 		globals.Logger.Warning("FriendsWiiU::UpdatePresence not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

@@ -15,7 +15,7 @@ func (protocol *Protocol) handleGetGatheringRelations(packet nex.PacketInterface
 
 	if protocol.GetGatheringRelations == nil {
 		globals.Logger.Warning("MatchMakingExt::GetGatheringRelations not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

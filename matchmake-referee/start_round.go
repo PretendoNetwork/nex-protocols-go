@@ -15,7 +15,7 @@ func (protocol *Protocol) handleStartRound(packet nex.PacketInterface) {
 
 	if protocol.StartRound == nil {
 		globals.Logger.Warning("MatchmakeReferee::StartRound not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

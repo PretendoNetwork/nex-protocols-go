@@ -15,7 +15,7 @@ func (protocol *Protocol) handleUpdateStatus(packet nex.PacketInterface) {
 
 	if protocol.UpdateStatus == nil {
 		globals.Logger.Warning("AccountManagement::UpdateStatus not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

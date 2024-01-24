@@ -15,7 +15,7 @@ func (protocol *Protocol) handleBrowseMatchmakeSessionWithHostURLsNoHolderNoResu
 
 	if protocol.BrowseMatchmakeSessionWithHostURLsNoHolderNoResultRange == nil {
 		globals.Logger.Warning("MatchmakeExtension::BrowseMatchmakeSessionWithHostURLsNoHolderNoResultRange not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

@@ -15,7 +15,7 @@ func (protocol *Protocol) handleUpdatePicture(packet nex.PacketInterface) {
 
 	if protocol.UpdatePicture == nil {
 		globals.Logger.Warning("Friends3DS::UpdatePicture not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

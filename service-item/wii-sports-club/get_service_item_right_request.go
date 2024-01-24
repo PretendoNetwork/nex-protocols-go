@@ -15,7 +15,7 @@ func (protocol *Protocol) handleGetServiceItemRightRequest(packet nex.PacketInte
 
 	if protocol.GetServiceItemRightRequest == nil {
 		globals.Logger.Warning("ServiceItemWiiSportsClub::GetServiceItemRightRequest not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

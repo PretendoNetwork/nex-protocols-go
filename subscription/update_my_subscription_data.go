@@ -15,7 +15,7 @@ func (protocol *Protocol) handleUpdateMySubscriptionData(packet nex.PacketInterf
 
 	if protocol.UpdateMySubscriptionData == nil {
 		fmt.Println("[Warning] SubscriptionProtocol::UpdateMySubscriptionData not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

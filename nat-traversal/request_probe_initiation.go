@@ -15,7 +15,7 @@ func (protocol *Protocol) handleRequestProbeInitiation(packet nex.PacketInterfac
 
 	if protocol.RequestProbeInitiation == nil {
 		globals.Logger.Warning("NATTraversal::RequestProbeInitiation not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

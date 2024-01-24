@@ -15,7 +15,7 @@ func (protocol *Protocol) handleFindByNameRegex(packet nex.PacketInterface) {
 
 	if protocol.FindByNameRegex == nil {
 		globals.Logger.Warning("AccountManagement::FindByNameRegex not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

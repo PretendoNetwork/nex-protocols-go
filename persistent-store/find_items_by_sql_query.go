@@ -15,7 +15,7 @@ func (protocol *Protocol) handleFindItemsBySQLQuery(packet nex.PacketInterface) 
 
 	if protocol.FindItemsBySQLQuery == nil {
 		globals.Logger.Warning("PersistentStore::FindItemsBySQLQuery not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

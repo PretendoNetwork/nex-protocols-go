@@ -15,7 +15,7 @@ func (protocol *Protocol) handleFindMatchmakeSessionByGatheringID(packet nex.Pac
 
 	if protocol.FindMatchmakeSessionByGatheringID == nil {
 		globals.Logger.Warning("MatchmakeExtension::FindMatchmakeSessionByGatheringID not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

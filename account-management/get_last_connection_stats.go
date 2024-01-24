@@ -15,7 +15,7 @@ func (protocol *Protocol) handleGetLastConnectionStats(packet nex.PacketInterfac
 
 	if protocol.GetLastConnectionStats == nil {
 		globals.Logger.Warning("AccountManagement::GetLastConnectionStats not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

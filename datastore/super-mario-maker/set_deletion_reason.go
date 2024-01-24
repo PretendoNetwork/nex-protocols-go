@@ -15,7 +15,7 @@ func (protocol *Protocol) handleSetDeletionReason(packet nex.PacketInterface) {
 
 	if protocol.SetDeletionReason == nil {
 		globals.Logger.Warning("DataStoreSuperMarioMaker::SetDeletionReason not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

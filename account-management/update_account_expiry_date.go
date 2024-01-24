@@ -15,7 +15,7 @@ func (protocol *Protocol) handleUpdateAccountExpiryDate(packet nex.PacketInterfa
 
 	if protocol.UpdateAccountExpiryDate == nil {
 		globals.Logger.Warning("AccountManagement::UpdateAccountExpiryDate not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

@@ -15,7 +15,7 @@ func (protocol *Protocol) handleGetBasicInfo(packet nex.PacketInterface) {
 
 	if protocol.GetBasicInfo == nil {
 		globals.Logger.Warning("FriendsWiiU::GetBasicInfo not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

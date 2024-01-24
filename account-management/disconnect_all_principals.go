@@ -9,7 +9,7 @@ import (
 func (protocol *Protocol) handleDisconnectAllPrincipals(packet nex.PacketInterface) {
 	if protocol.DisconnectAllPrincipals == nil {
 		globals.Logger.Warning("AccountManagement::DisconnectAllPrincipals not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

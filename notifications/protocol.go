@@ -28,18 +28,7 @@ func (protocol *Protocol) SetServer(server nex.ServerInterface) {
 	protocol.server = server
 }
 
-// Setup initializes the protocol
-func (protocol *Protocol) Setup() {
-	// TODO: Do something
-	// This protocol doesn't seem to get requests from the client, it only sends them
-	// So no handling is done for in-coming requests at the moment
-}
-
 // NewProtocol returns a new Notifications protocol
 func NewProtocol(server nex.ServerInterface) *Protocol {
-	notificationsProtocol := &Protocol{server: server}
-
-	notificationsProtocol.Setup()
-
-	return notificationsProtocol
+	return &Protocol{server: server}
 }

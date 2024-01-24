@@ -16,7 +16,7 @@ func (protocol *Protocol) handleCreateCommunity(packet nex.PacketInterface) {
 
 	if protocol.CreateCommunity == nil {
 		globals.Logger.Warning("MatchmakeExtension::CreateCommunity not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

@@ -15,7 +15,7 @@ func (protocol *Protocol) handleGetStatsAll(packet nex.PacketInterface) {
 
 	if protocol.GetStatsAll == nil {
 		globals.Logger.Warning("MatchmakeReferee::GetStatsAll not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

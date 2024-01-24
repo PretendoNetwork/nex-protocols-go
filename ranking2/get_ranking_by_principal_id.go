@@ -16,7 +16,7 @@ func (protocol *Protocol) handleGetRankingByPrincipalID(packet nex.PacketInterfa
 
 	if protocol.GetRankingByPrincipalID == nil {
 		globals.Logger.Warning("Ranking2::GetRankingByPrincipalID not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

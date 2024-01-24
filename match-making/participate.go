@@ -15,7 +15,7 @@ func (protocol *Protocol) handleParticipate(packet nex.PacketInterface) {
 
 	if protocol.Participate == nil {
 		globals.Logger.Warning("MatchMaking::Participate not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

@@ -9,7 +9,7 @@ import (
 func (protocol *Protocol) handleGetInvitationsReceived(packet nex.PacketInterface) {
 	if protocol.GetInvitationsReceived == nil {
 		globals.Logger.Warning("MatchMaking::GetInvitationsReceived not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

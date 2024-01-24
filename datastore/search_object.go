@@ -15,7 +15,7 @@ func (protocol *Protocol) handleSearchObject(packet nex.PacketInterface) {
 
 	if protocol.SearchObject == nil {
 		globals.Logger.Warning("DataStore::SearchObject not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

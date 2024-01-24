@@ -16,7 +16,7 @@ func (protocol *Protocol) handleGetRating(packet nex.PacketInterface) {
 
 	if protocol.GetRating == nil {
 		globals.Logger.Warning("DataStore::GetRating not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

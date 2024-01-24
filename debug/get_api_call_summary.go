@@ -9,7 +9,7 @@ import (
 func (protocol *Protocol) handleGetAPICallSummary(packet nex.PacketInterface) {
 	if protocol.GetAPICallSummary == nil {
 		globals.Logger.Warning("Debug::GetAPICallSummary not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

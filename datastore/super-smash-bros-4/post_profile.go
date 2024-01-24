@@ -15,7 +15,7 @@ func (protocol *Protocol) handlePostProfile(packet nex.PacketInterface) {
 
 	if protocol.PostProfile == nil {
 		globals.Logger.Warning("DataStoreSuperSmashBros4::PostProfile not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

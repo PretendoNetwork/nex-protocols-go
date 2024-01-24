@@ -15,7 +15,7 @@ func (protocol *Protocol) handleUpdateBlackList(packet nex.PacketInterface) {
 
 	if protocol.UpdateBlackList == nil {
 		globals.Logger.Warning("Friends3DS::UpdateBlackList not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

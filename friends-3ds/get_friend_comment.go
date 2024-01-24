@@ -16,7 +16,7 @@ func (protocol *Protocol) handleGetFriendComment(packet nex.PacketInterface) {
 
 	if protocol.GetFriendComment == nil {
 		globals.Logger.Warning("Friends3DS::GetFriendComment not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

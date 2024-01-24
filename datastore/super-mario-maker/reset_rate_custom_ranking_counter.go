@@ -15,7 +15,7 @@ func (protocol *Protocol) handleResetRateCustomRankingCounter(packet nex.PacketI
 
 	if protocol.ResetRateCustomRankingCounter == nil {
 		globals.Logger.Warning("DataStoreSuperMarioMaker::ResetRateCustomRankingCounter not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

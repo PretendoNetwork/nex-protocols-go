@@ -9,7 +9,7 @@ import (
 func (protocol *Protocol) handleReportDataStoreContent(packet nex.PacketInterface) {
 	if protocol.ReportDataStoreContent == nil {
 		globals.Logger.Warning("Screening::ReportDataStoreContent not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

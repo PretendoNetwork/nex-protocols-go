@@ -15,7 +15,7 @@ func (protocol *Protocol) handleGetPasswordInfo(packet nex.PacketInterface) {
 
 	if protocol.GetPasswordInfo == nil {
 		globals.Logger.Warning("DataStore::GetPasswordInfo not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

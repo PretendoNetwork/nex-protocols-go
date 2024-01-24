@@ -186,65 +186,52 @@ func (protocol *Protocol) SetHandlerGetCachedTopXRankings(handler func(err error
 	protocol.GetCachedTopXRankings = handler
 }
 
-// Setup initializes the protocol
-func (protocol *Protocol) Setup() {
-	protocol.server.OnData(func(packet nex.PacketInterface) {
-		message := packet.RMCMessage()
-
-		if message.IsRequest && message.ProtocolID == ProtocolID {
-			protocol.HandlePacket(packet)
-		}
-	})
-}
-
 // HandlePacket sends the packet to the correct RMC method handler
 func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
-	request := packet.RMCMessage()
+	message := packet.RMCMessage()
 
-	if request.ProtocolID == ProtocolID {
-		switch request.MethodID {
-		case MethodUploadScore:
-			protocol.handleUploadScore(packet)
-		case MethodDeleteScore:
-			protocol.handleDeleteScore(packet)
-		case MethodDeleteAllScores:
-			protocol.handleDeleteAllScores(packet)
-		case MethodUploadCommonData:
-			protocol.handleUploadCommonData(packet)
-		case MethodDeleteCommonData:
-			protocol.handleDeleteCommonData(packet)
-		case MethodGetCommonData:
-			protocol.handleGetCommonData(packet)
-		case MethodChangeAttributes:
-			protocol.handleChangeAttributes(packet)
-		case MethodChangeAllAttributes:
-			protocol.handleChangeAllAttributes(packet)
-		case MethodGetRanking:
-			protocol.handleGetRanking(packet)
-		case MethodGetApproxOrder:
-			protocol.handleGetApproxOrder(packet)
-		case MethodGetStats:
-			protocol.handleGetStats(packet)
-		case MethodGetRankingByPIDList:
-			protocol.handleGetRankingByPIDList(packet)
-		case MethodGetRankingByUniqueIDList:
-			protocol.handleGetRankingByUniqueIDList(packet)
-		case MethodGetCachedTopXRanking:
-			protocol.handleGetCachedTopXRanking(packet)
-		case MethodGetCachedTopXRankings:
-			protocol.handleGetCachedTopXRankings(packet)
-		default:
-			globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
-			fmt.Printf("Unsupported Ranking method ID: %#v\n", request.MethodID)
-		}
+	if !message.IsRequest || message.ProtocolID != ProtocolID {
+		return
+	}
+
+	switch message.MethodID {
+	case MethodUploadScore:
+		protocol.handleUploadScore(packet)
+	case MethodDeleteScore:
+		protocol.handleDeleteScore(packet)
+	case MethodDeleteAllScores:
+		protocol.handleDeleteAllScores(packet)
+	case MethodUploadCommonData:
+		protocol.handleUploadCommonData(packet)
+	case MethodDeleteCommonData:
+		protocol.handleDeleteCommonData(packet)
+	case MethodGetCommonData:
+		protocol.handleGetCommonData(packet)
+	case MethodChangeAttributes:
+		protocol.handleChangeAttributes(packet)
+	case MethodChangeAllAttributes:
+		protocol.handleChangeAllAttributes(packet)
+	case MethodGetRanking:
+		protocol.handleGetRanking(packet)
+	case MethodGetApproxOrder:
+		protocol.handleGetApproxOrder(packet)
+	case MethodGetStats:
+		protocol.handleGetStats(packet)
+	case MethodGetRankingByPIDList:
+		protocol.handleGetRankingByPIDList(packet)
+	case MethodGetRankingByUniqueIDList:
+		protocol.handleGetRankingByUniqueIDList(packet)
+	case MethodGetCachedTopXRanking:
+		protocol.handleGetCachedTopXRanking(packet)
+	case MethodGetCachedTopXRankings:
+		protocol.handleGetCachedTopXRankings(packet)
+	default:
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		fmt.Printf("Unsupported Ranking method ID: %#v\n", message.MethodID)
 	}
 }
 
 // NewProtocol returns a new Ranking protocol
 func NewProtocol(server nex.ServerInterface) *Protocol {
-	protocol := &Protocol{server: server}
-
-	protocol.Setup()
-
-	return protocol
+	return &Protocol{server: server}
 }

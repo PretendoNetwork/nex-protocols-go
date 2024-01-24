@@ -15,7 +15,7 @@ func (protocol *Protocol) handleGetAPICalls(packet nex.PacketInterface) {
 
 	if protocol.GetAPICalls == nil {
 		globals.Logger.Warning("Debug::GetAPICalls not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

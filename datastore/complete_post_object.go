@@ -15,7 +15,7 @@ func (protocol *Protocol) handleCompletePostObject(packet nex.PacketInterface) {
 
 	if protocol.CompletePostObject == nil {
 		globals.Logger.Warning("DataStore::CompletePostObject not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

@@ -15,7 +15,7 @@ func (protocol *Protocol) handleDeclineInvitation(packet nex.PacketInterface) {
 
 	if protocol.DeclineInvitation == nil {
 		globals.Logger.Warning("MatchMaking::DeclineInvitation not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

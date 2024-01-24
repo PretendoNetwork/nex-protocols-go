@@ -15,7 +15,7 @@ func (protocol *Protocol) handlePreparePostSharedData(packet nex.PacketInterface
 
 	if protocol.PreparePostSharedData == nil {
 		globals.Logger.Warning("DataStoreSuperSmashBros4::PreparePostSharedData not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

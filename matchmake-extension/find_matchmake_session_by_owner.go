@@ -15,7 +15,7 @@ func (protocol *Protocol) handleFindMatchmakeSessionByOwner(packet nex.PacketInt
 
 	if protocol.FindMatchmakeSessionByOwner == nil {
 		globals.Logger.Warning("MatchmakeExtension::FindMatchmakeSessionByOwner not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

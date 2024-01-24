@@ -15,7 +15,7 @@ func (protocol *Protocol) handleGetProfiles(packet nex.PacketInterface) {
 
 	if protocol.GetProfiles == nil {
 		globals.Logger.Warning("DataStoreSuperSmashBros4::GetProfiles not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

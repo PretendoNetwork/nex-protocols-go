@@ -15,7 +15,7 @@ func (protocol *Protocol) handleFindByDescription(packet nex.PacketInterface) {
 
 	if protocol.FindByDescription == nil {
 		globals.Logger.Warning("MatchMaking::FindByDescription not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

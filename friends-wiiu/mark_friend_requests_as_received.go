@@ -15,7 +15,7 @@ func (protocol *Protocol) handleMarkFriendRequestsAsReceived(packet nex.PacketIn
 
 	if protocol.MarkFriendRequestsAsReceived == nil {
 		globals.Logger.Warning("FriendsWiiU::MarkFriendRequestsAsReceived not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

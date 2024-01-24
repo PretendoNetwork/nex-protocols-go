@@ -9,7 +9,7 @@ import (
 func (protocol *Protocol) handleReportUser(packet nex.PacketInterface) {
 	if protocol.ReportUser == nil {
 		globals.Logger.Warning("Screening::ReportUser not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

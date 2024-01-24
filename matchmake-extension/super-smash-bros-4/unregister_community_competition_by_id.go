@@ -9,7 +9,7 @@ import (
 func (protocol *Protocol) handleUnregisterCommunityCompetitionByID(packet nex.PacketInterface) {
 	if protocol.UnregisterCommunityCompetitionByID == nil {
 		globals.Logger.Warning("MatchmakeExtensionSuperSmashBros4::UnregisterCommunityCompetitionByID not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

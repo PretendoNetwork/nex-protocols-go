@@ -15,7 +15,7 @@ func (protocol *Protocol) handleDeleteFriendRequest(packet nex.PacketInterface) 
 
 	if protocol.DeleteFriendRequest == nil {
 		globals.Logger.Warning("FriendsWiiU::DeleteFriendRequest not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

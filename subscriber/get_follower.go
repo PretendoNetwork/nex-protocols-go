@@ -9,7 +9,7 @@ import (
 func (protocol *Protocol) handleGetFollower(packet nex.PacketInterface) {
 	if protocol.GetFollower == nil {
 		globals.Logger.Warning("Subscriber::GetFollower not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

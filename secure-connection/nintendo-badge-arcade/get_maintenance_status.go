@@ -9,7 +9,7 @@ import (
 func (protocol *Protocol) handleGetMaintenanceStatus(packet nex.PacketInterface) {
 	if protocol.GetMaintenanceStatus == nil {
 		globals.Logger.Warning("SecureConnectionNintendoBadgeArcade::GetMaintenanceStatus not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

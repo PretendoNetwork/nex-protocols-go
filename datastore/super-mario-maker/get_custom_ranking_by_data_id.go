@@ -15,7 +15,7 @@ func (protocol *Protocol) handleGetCustomRankingByDataID(packet nex.PacketInterf
 
 	if protocol.GetCustomRankingByDataID == nil {
 		globals.Logger.Warning("DataStoreSuperMarioMaker::GetCustomRankingByDataID not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

@@ -74,34 +74,30 @@ func (protocol *Protocol) SetHandlerFixSanityErrors(handler func(err error, pack
 	protocol.FixSanityErrors = handler
 }
 
-// Setup initializes the protocol
-func (protocol *Protocol) Setup() {
-	protocol.server.OnData(func(packet nex.PacketInterface) {
-		message := packet.RMCMessage()
+// HandlePacket sends the packet to the correct RMC method handler
+func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
+	message := packet.RMCMessage()
 
-		if message.IsRequest && message.ProtocolID == ProtocolID {
-			switch message.MethodID {
-			case MethodPingDaemon:
-				protocol.handlePingDaemon(packet)
-			case MethodPingDatabase:
-				protocol.handlePingDatabase(packet)
-			case MethodRunSanityCheck:
-				protocol.handleRunSanityCheck(packet)
-			case MethodFixSanityErrors:
-				protocol.handleFixSanityErrors(packet)
-			default:
-				globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
-				fmt.Printf("Unsupported Health method ID: %#v\n", message.MethodID)
-			}
-		}
-	})
+	if !message.IsRequest || message.ProtocolID != ProtocolID {
+		return
+	}
+
+	switch message.MethodID {
+	case MethodPingDaemon:
+		protocol.handlePingDaemon(packet)
+	case MethodPingDatabase:
+		protocol.handlePingDatabase(packet)
+	case MethodRunSanityCheck:
+		protocol.handleRunSanityCheck(packet)
+	case MethodFixSanityErrors:
+		protocol.handleFixSanityErrors(packet)
+	default:
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		fmt.Printf("Unsupported Health method ID: %#v\n", message.MethodID)
+	}
 }
 
 // NewProtocol returns a new Health protocol
 func NewProtocol(server nex.ServerInterface) *Protocol {
-	protocol := &Protocol{server: server}
-
-	protocol.Setup()
-
-	return protocol
+	return &Protocol{server: server}
 }

@@ -9,7 +9,7 @@ import (
 func (protocol *Protocol) handleFixSanityErrors(packet nex.PacketInterface) {
 	if protocol.FixSanityErrors == nil {
 		globals.Logger.Warning("Health::FixSanityErrors not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

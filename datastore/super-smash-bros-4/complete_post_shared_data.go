@@ -15,7 +15,7 @@ func (protocol *Protocol) handleCompletePostSharedData(packet nex.PacketInterfac
 
 	if protocol.CompletePostSharedData == nil {
 		globals.Logger.Warning("DataStoreSuperSmashBros4::CompletePostSharedData not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

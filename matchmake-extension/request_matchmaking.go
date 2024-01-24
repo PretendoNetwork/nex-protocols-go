@@ -15,7 +15,7 @@ func (protocol *Protocol) handleRequestMatchmaking(packet nex.PacketInterface) {
 
 	if protocol.RequestMatchmaking == nil {
 		globals.Logger.Warning("MatchmakeExtension::RequestMatchmaking not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

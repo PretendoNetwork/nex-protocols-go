@@ -9,7 +9,7 @@ import (
 func (protocol *Protocol) handleRunSanityCheck(packet nex.PacketInterface) {
 	if protocol.RunSanityCheck == nil {
 		globals.Logger.Warning("Health::RunSanityCheck not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

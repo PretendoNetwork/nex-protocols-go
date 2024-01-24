@@ -9,7 +9,7 @@ import (
 func (protocol *Protocol) handleLoadUserInfo(packet nex.PacketInterface) {
 	if protocol.LoadUserInfo == nil {
 		globals.Logger.Warning("ServiceItemWiiSportsClub::LoadUserInfo not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

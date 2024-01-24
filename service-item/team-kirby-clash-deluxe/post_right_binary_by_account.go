@@ -15,7 +15,7 @@ func (protocol *Protocol) handlePostRightBinaryByAccount(packet nex.PacketInterf
 
 	if protocol.PostRightBinaryByAccount == nil {
 		globals.Logger.Warning("ServiceItemTeamKirbyClashDeluxe::PostRightBinaryByAccount not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

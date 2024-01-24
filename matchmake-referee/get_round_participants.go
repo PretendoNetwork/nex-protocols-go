@@ -15,7 +15,7 @@ func (protocol *Protocol) handleGetRoundParticipants(packet nex.PacketInterface)
 
 	if protocol.GetRoundParticipants == nil {
 		globals.Logger.Warning("MatchmakeReferee::GetRoundParticipants not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

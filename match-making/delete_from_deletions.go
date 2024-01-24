@@ -15,7 +15,7 @@ func (protocol *Protocol) handleDeleteFromDeletions(packet nex.PacketInterface) 
 
 	if protocol.DeleteFromDeletions == nil {
 		globals.Logger.Warning("MatchMaking::DeleteFromDeletions not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

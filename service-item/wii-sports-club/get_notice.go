@@ -15,7 +15,7 @@ func (protocol *Protocol) handleGetNotice(packet nex.PacketInterface) {
 
 	if protocol.GetNotice == nil {
 		globals.Logger.Warning("ServiceItemWiiSportsClub::GetNotice not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

@@ -16,7 +16,7 @@ func (protocol *Protocol) handleLatestCourseSearchObject(packet nex.PacketInterf
 
 	if protocol.LatestCourseSearchObject == nil {
 		globals.Logger.Warning("DataStoreSuperMarioMaker::LatestCourseSearchObject not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

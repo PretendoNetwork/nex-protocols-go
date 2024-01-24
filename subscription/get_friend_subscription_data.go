@@ -11,7 +11,7 @@ import (
 func (protocol *Protocol) handleGetFriendSubscriptionData(packet nex.PacketInterface) {
 	if protocol.GetFriendSubscriptionData == nil {
 		fmt.Println("[Warning] SubscriptionProtocol::GetFriendSubscriptionData not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

@@ -15,7 +15,7 @@ func (protocol *Protocol) handleFindByID(packet nex.PacketInterface) {
 
 	if protocol.FindByID == nil {
 		globals.Logger.Warning("MatchMaking::FindByID not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

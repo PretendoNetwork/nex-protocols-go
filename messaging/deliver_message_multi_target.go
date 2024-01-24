@@ -9,7 +9,7 @@ import (
 func (protocol *Protocol) handleDeliverMessageMultiTarget(packet nex.PacketInterface) {
 	if protocol.DeliverMessageMultiTarget == nil {
 		globals.Logger.Warning("Messaging::DeliverMessageMultiTarget not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

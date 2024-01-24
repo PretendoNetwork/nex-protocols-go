@@ -15,7 +15,7 @@ func (protocol *Protocol) handleGetPurchaseHistoryResponse(packet nex.PacketInte
 
 	if protocol.GetPurchaseHistoryResponse == nil {
 		globals.Logger.Warning("ServiceItemTeamKirbyClashDeluxe::GetPurchaseHistoryResponse not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

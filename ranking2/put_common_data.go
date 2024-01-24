@@ -16,7 +16,7 @@ func (protocol *Protocol) handlePutCommonData(packet nex.PacketInterface) {
 
 	if protocol.PutCommonData == nil {
 		globals.Logger.Warning("Ranking2::PutCommonData not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

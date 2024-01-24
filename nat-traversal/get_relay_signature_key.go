@@ -9,7 +9,7 @@ import (
 func (protocol *Protocol) handleGetRelaySignatureKey(packet nex.PacketInterface) {
 	if protocol.GetRelaySignatureKey == nil {
 		globals.Logger.Warning("NATTraversal::GetRelaySignatureKey not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

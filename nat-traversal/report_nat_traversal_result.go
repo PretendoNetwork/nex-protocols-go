@@ -15,7 +15,7 @@ func (protocol *Protocol) handleReportNATTraversalResult(packet nex.PacketInterf
 
 	if protocol.ReportNATTraversalResult == nil {
 		globals.Logger.Warning("NATTraversal::ReportNATTraversalResult not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

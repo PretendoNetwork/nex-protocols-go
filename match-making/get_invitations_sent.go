@@ -15,7 +15,7 @@ func (protocol *Protocol) handleGetInvitationsSent(packet nex.PacketInterface) {
 
 	if protocol.GetInvitationsSent == nil {
 		globals.Logger.Warning("MatchMaking::GetInvitationsSent not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

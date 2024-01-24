@@ -15,7 +15,7 @@ func (protocol *Protocol) handleRequestMigration(packet nex.PacketInterface) {
 
 	if protocol.RequestMigration == nil {
 		globals.Logger.Warning("DataStorePokemonBank::RequestMigration not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

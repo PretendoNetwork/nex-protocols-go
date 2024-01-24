@@ -15,7 +15,7 @@ func (protocol *Protocol) handleGetNotificationURL(packet nex.PacketInterface) {
 
 	if protocol.GetNotificationURL == nil {
 		globals.Logger.Warning("DataStore::GetNotificationURL not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

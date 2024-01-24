@@ -16,7 +16,7 @@ func (protocol *Protocol) handleCTRPickUpCourseSearchObject(packet nex.PacketInt
 
 	if protocol.CTRPickUpCourseSearchObject == nil {
 		globals.Logger.Warning("DataStoreSuperMarioMaker::CTRPickUpCourseSearchObject not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

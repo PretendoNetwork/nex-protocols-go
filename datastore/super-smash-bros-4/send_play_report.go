@@ -15,7 +15,7 @@ func (protocol *Protocol) handleSendPlayReport(packet nex.PacketInterface) {
 
 	if protocol.SendPlayReport == nil {
 		globals.Logger.Warning("DataStoreSuperSmashBros4::SendPlayReport not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

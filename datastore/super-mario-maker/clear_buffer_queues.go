@@ -16,7 +16,7 @@ func (protocol *Protocol) handleClearBufferQueues(packet nex.PacketInterface) {
 
 	if protocol.ClearBufferQueues == nil {
 		globals.Logger.Warning("DataStoreSuperMarioMaker::ClearBufferQueues not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

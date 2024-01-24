@@ -15,7 +15,7 @@ func (protocol *Protocol) handleAddFriendWithDetails(packet nex.PacketInterface)
 
 	if protocol.AddFriendWithDetails == nil {
 		globals.Logger.Warning("Friends::AddFriendWithDetails not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

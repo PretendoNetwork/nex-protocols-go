@@ -15,7 +15,7 @@ func (protocol *Protocol) handleCompletePostBankObject(packet nex.PacketInterfac
 
 	if protocol.CompletePostBankObject == nil {
 		globals.Logger.Warning("DataStorePokemonBank::CompletePostBankObject not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

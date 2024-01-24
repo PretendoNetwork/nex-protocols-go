@@ -9,7 +9,7 @@ import (
 func (protocol *Protocol) handleAcquireNexUniqueIDWithPassword(packet nex.PacketInterface) {
 	if protocol.AcquireNexUniqueIDWithPassword == nil {
 		globals.Logger.Warning("Utility::AcquireNexUniqueIDWithPassword not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

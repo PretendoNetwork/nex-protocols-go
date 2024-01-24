@@ -15,7 +15,7 @@ func (protocol *Protocol) handleGetParticipants(packet nex.PacketInterface) {
 
 	if protocol.GetParticipants == nil {
 		globals.Logger.Warning("MatchMakingExt::GetParticipants not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

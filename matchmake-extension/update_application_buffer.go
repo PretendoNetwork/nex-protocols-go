@@ -15,7 +15,7 @@ func (protocol *Protocol) handleUpdateApplicationBuffer(packet nex.PacketInterfa
 
 	if protocol.UpdateApplicationBuffer == nil {
 		globals.Logger.Warning("MatchmakeExtension::UpdateApplicationBuffer not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

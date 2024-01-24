@@ -110,26 +110,20 @@ type Protocol struct {
 	RequestMigration         func(err error, packet nex.PacketInterface, callID uint32, oneTimePassword *types.String, boxes *types.List[*types.PrimitiveU32]) (*nex.RMCMessage, uint32)
 }
 
-// Setup initializes the protocol
-func (protocol *Protocol) Setup() {
-	protocol.server.OnData(func(packet nex.PacketInterface) {
-		message := packet.RMCMessage()
-
-		if message.IsRequest && message.ProtocolID == ProtocolID {
-			if slices.Contains(patchedMethods, message.MethodID) {
-				protocol.HandlePacket(packet)
-			} else {
-				protocol.dataStoreProtocol.HandlePacket(packet)
-			}
-		}
-	})
-}
-
 // HandlePacket sends the packet to the correct RMC method handler
 func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
-	request := packet.RMCMessage()
+	message := packet.RMCMessage()
 
-	switch request.MethodID {
+	if !message.IsRequest || message.ProtocolID != ProtocolID {
+		return
+	}
+
+	if !slices.Contains(patchedMethods, message.MethodID) {
+		protocol.dataStoreProtocol.HandlePacket(packet)
+		return
+	}
+
+	switch message.MethodID {
 	case MethodUploadPokemon:
 		protocol.handleUploadPokemon(packet)
 	case MethodSearchPokemon:
@@ -163,8 +157,8 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 	case MethodRequestMigration:
 		protocol.handleRequestMigration(packet)
 	default:
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
-		fmt.Printf("Unsupported DataStore (Pokemon Bank) method ID: %#v\n", request.MethodID)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		fmt.Printf("Unsupported DataStore (Pokemon Bank) method ID: %#v\n", message.MethodID)
 	}
 }
 
@@ -172,8 +166,6 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 func NewProtocol(server nex.ServerInterface) *Protocol {
 	protocol := &Protocol{server: server}
 	protocol.dataStoreProtocol.SetServer(server)
-
-	protocol.Setup()
 
 	return protocol
 }

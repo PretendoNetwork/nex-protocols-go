@@ -15,7 +15,7 @@ func (protocol *Protocol) handleSearchPokemon(packet nex.PacketInterface) {
 
 	if protocol.SearchPokemon == nil {
 		globals.Logger.Warning("DataStorePokemonGen6::SearchPokemon not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

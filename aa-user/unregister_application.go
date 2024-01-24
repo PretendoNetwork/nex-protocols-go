@@ -15,7 +15,7 @@ func (protocol *Protocol) handleUnregisterApplication(packet nex.PacketInterface
 
 	if protocol.UnregisterApplication == nil {
 		globals.Logger.Warning("AAUser::UnregisterApplication not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

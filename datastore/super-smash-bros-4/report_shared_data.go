@@ -15,7 +15,7 @@ func (protocol *Protocol) handleReportSharedData(packet nex.PacketInterface) {
 
 	if protocol.ReportSharedData == nil {
 		globals.Logger.Warning("DataStoreSuperSmashBros4::ReportSharedData not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

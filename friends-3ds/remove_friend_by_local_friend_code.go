@@ -15,7 +15,7 @@ func (protocol *Protocol) handleRemoveFriendByLocalFriendCode(packet nex.PacketI
 
 	if protocol.RemoveFriendByLocalFriendCode == nil {
 		globals.Logger.Warning("Friends3DS::RemoveFriendByLocalFriendCode not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

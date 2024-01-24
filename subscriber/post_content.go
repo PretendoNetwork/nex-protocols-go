@@ -15,7 +15,7 @@ func (protocol *Protocol) handlePostContent(packet nex.PacketInterface) {
 
 	if protocol.PostContent == nil {
 		globals.Logger.Warning("Subscriber::PostContent not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

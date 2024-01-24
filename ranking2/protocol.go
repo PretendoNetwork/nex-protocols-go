@@ -136,46 +136,42 @@ func (protocol *Protocol) SetHandlerGetEstimateScoreRank(handler func(err error,
 	protocol.GetEstimateScoreRank = handler
 }
 
-// Setup initializes the protocol
-func (protocol *Protocol) Setup() {
-	protocol.server.OnData(func(packet nex.PacketInterface) {
-		message := packet.RMCMessage()
+// HandlePacket sends the packet to the correct RMC method handler
+func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
+	message := packet.RMCMessage()
 
-		if message.IsRequest && message.ProtocolID == ProtocolID {
-			switch message.MethodID {
-			case MethodPutScore:
-				protocol.handlePutScore(packet)
-			case MethodGetCommonData:
-				protocol.handleGetCommonData(packet)
-			case MethodPutCommonData:
-				protocol.handlePutCommonData(packet)
-			case MethodDeleteCommonData:
-				protocol.handleDeleteCommonData(packet)
-			case MethodGetRanking:
-				protocol.handleGetRanking(packet)
-			case MethodGetRankingByPrincipalID:
-				protocol.handleGetRankingByPrincipalID(packet)
-			case MethodGetCategorySetting:
-				protocol.handleGetCategorySetting(packet)
-			case MethodGetRankingChart:
-				protocol.handleGetRankingChart(packet)
-			case MethodGetRankingCharts:
-				protocol.handleGetRankingCharts(packet)
-			case MethodGetEstimateScoreRank:
-				protocol.handleGetEstimateScoreRank(packet)
-			default:
-				globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
-				fmt.Printf("Unsupported Ranking2 method ID: %#v\n", message.MethodID)
-			}
-		}
-	})
+	if !message.IsRequest || message.ProtocolID != ProtocolID {
+		return
+	}
+
+	switch message.MethodID {
+	case MethodPutScore:
+		protocol.handlePutScore(packet)
+	case MethodGetCommonData:
+		protocol.handleGetCommonData(packet)
+	case MethodPutCommonData:
+		protocol.handlePutCommonData(packet)
+	case MethodDeleteCommonData:
+		protocol.handleDeleteCommonData(packet)
+	case MethodGetRanking:
+		protocol.handleGetRanking(packet)
+	case MethodGetRankingByPrincipalID:
+		protocol.handleGetRankingByPrincipalID(packet)
+	case MethodGetCategorySetting:
+		protocol.handleGetCategorySetting(packet)
+	case MethodGetRankingChart:
+		protocol.handleGetRankingChart(packet)
+	case MethodGetRankingCharts:
+		protocol.handleGetRankingCharts(packet)
+	case MethodGetEstimateScoreRank:
+		protocol.handleGetEstimateScoreRank(packet)
+	default:
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		fmt.Printf("Unsupported Ranking2 method ID: %#v\n", message.MethodID)
+	}
 }
 
 // NewProtocol returns a new Ranking2 protocol
 func NewProtocol(server nex.ServerInterface) *Protocol {
-	protocol := &Protocol{server: server}
-
-	protocol.Setup()
-
-	return protocol
+	return &Protocol{server: server}
 }

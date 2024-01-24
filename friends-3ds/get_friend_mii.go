@@ -16,7 +16,7 @@ func (protocol *Protocol) handleGetFriendMii(packet nex.PacketInterface) {
 
 	if protocol.GetFriendMii == nil {
 		globals.Logger.Warning("Friends3DS::GetFriendMii not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

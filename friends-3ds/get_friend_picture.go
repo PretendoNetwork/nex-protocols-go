@@ -15,7 +15,7 @@ func (protocol *Protocol) handleGetFriendPicture(packet nex.PacketInterface) {
 
 	if protocol.GetFriendPicture == nil {
 		globals.Logger.Warning("Friends3DS::GetFriendPicture not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

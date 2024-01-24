@@ -15,7 +15,7 @@ func (protocol *Protocol) handleDeleteCustomRanking(packet nex.PacketInterface) 
 
 	if protocol.DeleteCustomRanking == nil {
 		globals.Logger.Warning("DataStoreSuperMarioMaker::DeleteCustomRanking not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

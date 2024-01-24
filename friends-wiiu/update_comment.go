@@ -15,7 +15,7 @@ func (protocol *Protocol) handleUpdateComment(packet nex.PacketInterface) {
 
 	if protocol.UpdateComment == nil {
 		globals.Logger.Warning("FriendsWiiU::UpdateComment not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

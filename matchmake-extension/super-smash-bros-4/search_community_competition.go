@@ -9,7 +9,7 @@ import (
 func (protocol *Protocol) handleSearchCommunityCompetition(packet nex.PacketInterface) {
 	if protocol.SearchCommunityCompetition == nil {
 		globals.Logger.Warning("MatchmakeExtensionSuperSmashBros4::SearchCommunityCompetition not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

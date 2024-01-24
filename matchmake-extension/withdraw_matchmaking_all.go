@@ -9,7 +9,7 @@ import (
 func (protocol *Protocol) handleWithdrawMatchmakingAll(packet nex.PacketInterface) {
 	if protocol.WithdrawMatchmakingAll == nil {
 		globals.Logger.Warning("MatchmakeExtension::WithdrawMatchmakingAll not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

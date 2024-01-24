@@ -9,7 +9,7 @@ import (
 func (protocol *Protocol) handleGetSharedDataMeta(packet nex.PacketInterface) {
 	if protocol.GetSharedDataMeta == nil {
 		globals.Logger.Warning("DataStoreSuperSmashBros4::GetSharedDataMeta not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

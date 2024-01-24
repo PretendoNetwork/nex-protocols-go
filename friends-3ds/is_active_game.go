@@ -16,7 +16,7 @@ func (protocol *Protocol) handleIsActiveGame(packet nex.PacketInterface) {
 
 	if protocol.IsActiveGame == nil {
 		globals.Logger.Warning("Friends3DS::IsActiveGame not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

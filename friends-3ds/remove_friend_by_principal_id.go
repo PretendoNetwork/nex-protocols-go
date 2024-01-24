@@ -15,7 +15,7 @@ func (protocol *Protocol) handleRemoveFriendByPrincipalID(packet nex.PacketInter
 
 	if protocol.RemoveFriendByPrincipalID == nil {
 		globals.Logger.Warning("Friends3DS::RemoveFriendByPrincipalID not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

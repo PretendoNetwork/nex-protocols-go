@@ -15,7 +15,7 @@ func (protocol *Protocol) handleUpdateProgressScore(packet nex.PacketInterface) 
 
 	if protocol.UpdateProgressScore == nil {
 		globals.Logger.Warning("MatchmakeExtension::UpdateProgressScore not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

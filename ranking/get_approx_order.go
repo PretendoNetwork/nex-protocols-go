@@ -16,7 +16,7 @@ func (protocol *Protocol) handleGetApproxOrder(packet nex.PacketInterface) {
 
 	if protocol.GetApproxOrder == nil {
 		globals.Logger.Warning("Ranking::GetApproxOrder not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

@@ -15,7 +15,7 @@ func (protocol *Protocol) handleFindBySQLQuery(packet nex.PacketInterface) {
 
 	if protocol.FindBySQLQuery == nil {
 		globals.Logger.Warning("MatchMaking::FindBySQLQuery not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

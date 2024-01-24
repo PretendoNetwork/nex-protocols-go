@@ -15,7 +15,7 @@ func (protocol *Protocol) handleGetSessionURLs(packet nex.PacketInterface) {
 
 	if protocol.GetSessionURLs == nil {
 		globals.Logger.Warning("MatchMaking::GetSessionURLs not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

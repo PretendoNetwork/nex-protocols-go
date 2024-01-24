@@ -166,52 +166,48 @@ func (protocol *Protocol) SetHandlerResetStats(handler func(err error, packet ne
 	protocol.ResetStats = handler
 }
 
-// Setup initializes the protocol
-func (protocol *Protocol) Setup() {
-	protocol.server.OnData(func(packet nex.PacketInterface) {
-		message := packet.RMCMessage()
+// HandlePacket sends the packet to the correct RMC method handler
+func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
+	message := packet.RMCMessage()
 
-		if message.IsRequest && message.ProtocolID == ProtocolID {
-			switch message.MethodID {
-			case MethodStartRound:
-				protocol.handleStartRound(packet)
-			case MethodGetStartRoundParam:
-				protocol.handleGetStartRoundParam(packet)
-			case MethodEndRound:
-				protocol.handleEndRound(packet)
-			case MethodEndRoundWithoutReport:
-				protocol.handleEndRoundWithoutReport(packet)
-			case MethodGetRoundParticipants:
-				protocol.handleGetRoundParticipants(packet)
-			case MethodGetNotSummarizedRound:
-				protocol.handleGetNotSummarizedRound(packet)
-			case MethodGetRound:
-				protocol.handleGetRound(packet)
-			case MethodGetStatsPrimary:
-				protocol.handleGetStatsPrimary(packet)
-			case MethodGetStatsPrimaries:
-				protocol.handleGetStatsPrimaries(packet)
-			case MethodGetStatsAll:
-				protocol.handleGetStatsAll(packet)
-			case MethodCreateStats:
-				protocol.handleCreateStats(packet)
-			case MethodGetOrCreateStats:
-				protocol.handleGetOrCreateStats(packet)
-			case MethodResetStats:
-				protocol.handleResetStats(packet)
-			default:
-				globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
-				fmt.Printf("Unsupported MatchmakeReferee method ID: %#v\n", message.MethodID)
-			}
-		}
-	})
+	if !message.IsRequest || message.ProtocolID != ProtocolID {
+		return
+	}
+
+	switch message.MethodID {
+	case MethodStartRound:
+		protocol.handleStartRound(packet)
+	case MethodGetStartRoundParam:
+		protocol.handleGetStartRoundParam(packet)
+	case MethodEndRound:
+		protocol.handleEndRound(packet)
+	case MethodEndRoundWithoutReport:
+		protocol.handleEndRoundWithoutReport(packet)
+	case MethodGetRoundParticipants:
+		protocol.handleGetRoundParticipants(packet)
+	case MethodGetNotSummarizedRound:
+		protocol.handleGetNotSummarizedRound(packet)
+	case MethodGetRound:
+		protocol.handleGetRound(packet)
+	case MethodGetStatsPrimary:
+		protocol.handleGetStatsPrimary(packet)
+	case MethodGetStatsPrimaries:
+		protocol.handleGetStatsPrimaries(packet)
+	case MethodGetStatsAll:
+		protocol.handleGetStatsAll(packet)
+	case MethodCreateStats:
+		protocol.handleCreateStats(packet)
+	case MethodGetOrCreateStats:
+		protocol.handleGetOrCreateStats(packet)
+	case MethodResetStats:
+		protocol.handleResetStats(packet)
+	default:
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		fmt.Printf("Unsupported MatchmakeReferee method ID: %#v\n", message.MethodID)
+	}
 }
 
 // NewProtocol returns a new Matchmake Referee protocol
 func NewProtocol(server nex.ServerInterface) *Protocol {
-	protocol := &Protocol{server: server}
-
-	protocol.Setup()
-
-	return protocol
+	return &Protocol{server: server}
 }

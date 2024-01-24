@@ -15,7 +15,7 @@ func (protocol *Protocol) handleSearchSharedData(packet nex.PacketInterface) {
 
 	if protocol.SearchSharedData == nil {
 		globals.Logger.Warning("DataStoreSuperSmashBros4::SearchSharedData not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

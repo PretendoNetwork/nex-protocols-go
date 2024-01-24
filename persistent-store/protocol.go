@@ -105,40 +105,36 @@ func (protocol *Protocol) SetHandlerFindItemsBySQLQuery(handler func(err error, 
 	protocol.FindItemsBySQLQuery = handler
 }
 
-// Setup initializes the protocol
-func (protocol *Protocol) Setup() {
-	protocol.server.OnData(func(packet nex.PacketInterface) {
-		message := packet.RMCMessage()
+// HandlePacket sends the packet to the correct RMC method handler
+func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
+	message := packet.RMCMessage()
 
-		if message.IsRequest && message.ProtocolID == ProtocolID {
-			switch message.MethodID {
-			case MethodFindByGroup:
-				protocol.handleFindByGroup(packet)
-			case MethodInsertItem:
-				protocol.handleInsertItem(packet)
-			case MethodRemoveItem:
-				protocol.handleRemoveItem(packet)
-			case MethodGetItem:
-				protocol.handleGetItem(packet)
-			case MethodInsertCustomItem:
-				protocol.handleInsertCustomItem(packet)
-			case MethodGetCustomItem:
-				protocol.handleGetCustomItem(packet)
-			case MethodFindItemsBySQLQuery:
-				protocol.handleFindItemsBySQLQuery(packet)
-			default:
-				globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
-				fmt.Printf("Unsupported Persistent Store method ID: %#v\n", message.MethodID)
-			}
-		}
-	})
+	if !message.IsRequest || message.ProtocolID != ProtocolID {
+		return
+	}
+
+	switch message.MethodID {
+	case MethodFindByGroup:
+		protocol.handleFindByGroup(packet)
+	case MethodInsertItem:
+		protocol.handleInsertItem(packet)
+	case MethodRemoveItem:
+		protocol.handleRemoveItem(packet)
+	case MethodGetItem:
+		protocol.handleGetItem(packet)
+	case MethodInsertCustomItem:
+		protocol.handleInsertCustomItem(packet)
+	case MethodGetCustomItem:
+		protocol.handleGetCustomItem(packet)
+	case MethodFindItemsBySQLQuery:
+		protocol.handleFindItemsBySQLQuery(packet)
+	default:
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		fmt.Printf("Unsupported Persistent Store method ID: %#v\n", message.MethodID)
+	}
 }
 
 // NewProtocol returns a new Persistent Store protocol
 func NewProtocol(server nex.ServerInterface) *Protocol {
-	persistentStoreProtocol := &Protocol{server: server}
-
-	persistentStoreProtocol.Setup()
-
-	return persistentStoreProtocol
+	return &Protocol{server: server}
 }

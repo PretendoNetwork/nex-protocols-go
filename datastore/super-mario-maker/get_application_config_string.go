@@ -15,7 +15,7 @@ func (protocol *Protocol) handleGetApplicationConfigString(packet nex.PacketInte
 
 	if protocol.GetApplicationConfigString == nil {
 		globals.Logger.Warning("DataStoreSuperMarioMaker::GetApplicationConfigString not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

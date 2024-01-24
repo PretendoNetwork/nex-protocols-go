@@ -15,7 +15,7 @@ func (protocol *Protocol) handleGetTransactionParam(packet nex.PacketInterface) 
 
 	if protocol.GetTransactionParam == nil {
 		globals.Logger.Warning("DataStorePokemonBank::GetTransactionParam not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

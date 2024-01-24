@@ -15,7 +15,7 @@ func (protocol *Protocol) handleGetContent(packet nex.PacketInterface) {
 
 	if protocol.GetContent == nil {
 		globals.Logger.Warning("Subscriber::GetContent not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

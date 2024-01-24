@@ -16,7 +16,7 @@ func (protocol *Protocol) handleGetMetas(packet nex.PacketInterface) {
 
 	if protocol.GetMetas == nil {
 		globals.Logger.Warning("DataStore::GetMetas not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

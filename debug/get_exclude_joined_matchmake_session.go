@@ -9,7 +9,7 @@ import (
 func (protocol *Protocol) handleGetExcludeJoinedMatchmakeSession(packet nex.PacketInterface) {
 	if protocol.GetExcludeJoinedMatchmakeSession == nil {
 		globals.Logger.Warning("Debug::GetExcludeJoinedMatchmakeSession not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

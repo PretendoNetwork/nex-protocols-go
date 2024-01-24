@@ -15,7 +15,7 @@ func (protocol *Protocol) handleUpdateAccountEmail(packet nex.PacketInterface) {
 
 	if protocol.UpdateAccountEmail == nil {
 		globals.Logger.Warning("AccountManagement::UpdateAccountEmail not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

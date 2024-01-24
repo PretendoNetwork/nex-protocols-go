@@ -9,7 +9,7 @@ import (
 func (protocol *Protocol) handleGetCompetitionRankingScore(packet nex.PacketInterface) {
 	if protocol.GetCompetitionRankingScore == nil {
 		globals.Logger.Warning("RankingSplatoon::GetCompetitionRankingScore not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

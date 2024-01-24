@@ -15,7 +15,7 @@ func (protocol *Protocol) handleReportViolation(packet nex.PacketInterface) {
 
 	if protocol.ReportViolation == nil {
 		globals.Logger.Warning("MatchmakeExtension::ReportViolation not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

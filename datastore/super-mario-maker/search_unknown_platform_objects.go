@@ -9,7 +9,7 @@ import (
 func (protocol *Protocol) handleSearchUnknownPlatformObjects(packet nex.PacketInterface) {
 	if protocol.SearchUnknownPlatformObjects == nil {
 		globals.Logger.Warning("DataStoreSuperMarioMaker::SearchUnknownPlatformObjects not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

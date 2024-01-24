@@ -15,7 +15,7 @@ func (protocol *Protocol) handleJoinMatchmakeSessionEx(packet nex.PacketInterfac
 
 	if protocol.JoinMatchmakeSessionEx == nil {
 		globals.Logger.Warning("MatchmakeExtension::JoinMatchmakeSessionEx not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

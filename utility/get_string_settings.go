@@ -15,7 +15,7 @@ func (protocol *Protocol) handleGetStringSettings(packet nex.PacketInterface) {
 
 	if protocol.GetStringSettings == nil {
 		globals.Logger.Warning("Utility::GetStringSettings not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

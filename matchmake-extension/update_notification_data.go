@@ -15,7 +15,7 @@ func (protocol *Protocol) handleUpdateNotificationData(packet nex.PacketInterfac
 
 	if protocol.UpdateNotificationData == nil {
 		globals.Logger.Warning("MatchmakeExtension::UpdateNotificationData not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

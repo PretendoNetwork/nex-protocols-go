@@ -16,7 +16,7 @@ func (protocol *Protocol) handleUpdatePlayedGames(packet nex.PacketInterface) {
 
 	if protocol.UpdatePlayedGames == nil {
 		globals.Logger.Warning("Friends3DS::UpdatePlayedGames not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

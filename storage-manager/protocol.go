@@ -55,30 +55,26 @@ func (protocol *Protocol) SetHandlerActivateWithCardID(handler func(err error, p
 	protocol.ActivateWithCardID = handler
 }
 
-// Setup initializes the protocol
-func (protocol *Protocol) Setup() {
-	protocol.server.OnData(func(packet nex.PacketInterface) {
-		message := packet.RMCMessage()
+// HandlePacket sends the packet to the correct RMC method handler
+func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
+	message := packet.RMCMessage()
 
-		if message.IsRequest && message.ProtocolID == ProtocolID {
-			switch message.MethodID {
-			case MethodAcquireCardID:
-				protocol.handleAcquireCardID(packet)
-			case MethodActivateWithCardID:
-				protocol.handleActivateWithCardID(packet)
-			default:
-				globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
-				fmt.Printf("Unsupported StorageManager method ID: %#v\n", message.MethodID)
-			}
-		}
-	})
+	if !message.IsRequest || message.ProtocolID != ProtocolID {
+		return
+	}
+
+	switch message.MethodID {
+	case MethodAcquireCardID:
+		protocol.handleAcquireCardID(packet)
+	case MethodActivateWithCardID:
+		protocol.handleActivateWithCardID(packet)
+	default:
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		fmt.Printf("Unsupported StorageManager method ID: %#v\n", message.MethodID)
+	}
 }
 
 // NewProtocol returns a new StorageManager protocol
 func NewProtocol(server nex.ServerInterface) *Protocol {
-	protocol := &Protocol{server: server}
-
-	protocol.Setup()
-
-	return protocol
+	return &Protocol{server: server}
 }

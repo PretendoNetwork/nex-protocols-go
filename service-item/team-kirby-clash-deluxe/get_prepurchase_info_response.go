@@ -15,7 +15,7 @@ func (protocol *Protocol) handleGetPrepurchaseInfoResponse(packet nex.PacketInte
 
 	if protocol.GetPrepurchaseInfoResponse == nil {
 		globals.Logger.Warning("ServiceItemTeamKirbyClashDeluxe::GetPrepurchaseInfoResponse not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

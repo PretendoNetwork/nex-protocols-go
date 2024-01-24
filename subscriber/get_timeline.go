@@ -9,7 +9,7 @@ import (
 func (protocol *Protocol) handleGetTimeline(packet nex.PacketInterface) {
 	if protocol.GetTimeline == nil {
 		globals.Logger.Warning("Subscriber::GetTimeline not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

@@ -15,7 +15,7 @@ func (protocol *Protocol) handleGetRivToken(packet nex.PacketInterface) {
 
 	if protocol.GetRivToken == nil {
 		globals.Logger.Warning("ShopNintendoBadgeArcade::GetRivToken not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

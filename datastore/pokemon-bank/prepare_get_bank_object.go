@@ -15,7 +15,7 @@ func (protocol *Protocol) handlePrepareGetBankObject(packet nex.PacketInterface)
 
 	if protocol.PrepareGetBankObject == nil {
 		globals.Logger.Warning("DataStorePokemonBank::PrepareGetBankObject not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

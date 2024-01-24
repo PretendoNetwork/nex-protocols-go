@@ -15,7 +15,7 @@ func (protocol *Protocol) handleSearchSimpleSearchObjectByObjectIDs(packet nex.P
 
 	if protocol.SearchSimpleSearchObjectByObjectIDs == nil {
 		globals.Logger.Warning("MatchmakeExtensionMarioKart8::SearchSimpleSearchObjectByObjectIDs not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

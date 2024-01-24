@@ -15,7 +15,7 @@ func (protocol *Protocol) handleEndRoundWithoutReport(packet nex.PacketInterface
 
 	if protocol.EndRoundWithoutReport == nil {
 		globals.Logger.Warning("MatchmakeReferee::EndRoundWithoutReport not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

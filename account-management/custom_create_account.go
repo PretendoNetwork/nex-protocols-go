@@ -15,7 +15,7 @@ func (protocol *Protocol) handleCustomCreateAccount(packet nex.PacketInterface) 
 
 	if protocol.CustomCreateAccount == nil {
 		globals.Logger.Warning("AccountManagement::CustomCreateAccount not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

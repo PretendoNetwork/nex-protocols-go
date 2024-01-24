@@ -15,7 +15,7 @@ func (protocol *Protocol) handleGetBalanceRequest(packet nex.PacketInterface) {
 
 	if protocol.GetBalanceRequest == nil {
 		globals.Logger.Warning("ServiceItemWiiSportsClub::GetBalanceRequest not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

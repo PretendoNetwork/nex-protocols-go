@@ -15,7 +15,7 @@ func (protocol *Protocol) handleUpdateAndGetTicketInfo(packet nex.PacketInterfac
 
 	if protocol.UpdateAndGetTicketInfo == nil {
 		globals.Logger.Warning("ServiceItemWiiSportsClub::UpdateAndGetTicketInfo not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

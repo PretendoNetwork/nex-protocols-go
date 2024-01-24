@@ -335,22 +335,15 @@ func (protocol *Protocol) SetHandlerDisconnectAllPrincipals(handler func(err err
 	protocol.DisconnectAllPrincipals = handler
 }
 
-// Setup initializes the protocol
-func (protocol *Protocol) Setup() {
-	protocol.server.OnData(func(packet nex.PacketInterface) {
-		message := packet.RMCMessage()
-
-		if message.IsRequest && message.ProtocolID == ProtocolID {
-			protocol.HandlePacket(packet)
-		}
-	})
-}
-
 // HandlePacket sends the packet to the correct RMC method handler
 func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
-	request := packet.RMCMessage()
+	message := packet.RMCMessage()
 
-	switch request.MethodID {
+	if !message.IsRequest || message.ProtocolID != ProtocolID {
+		return
+	}
+
+	switch message.MethodID {
 	case MethodCreateAccount:
 		protocol.handleCreateAccount(packet)
 	case MethodDeleteAccount:
@@ -412,16 +405,12 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 	case MethodDisconnectAllPrincipals:
 		protocol.handleDisconnectAllPrincipals(packet)
 	default:
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
-		fmt.Printf("Unsupported AccountManagement method ID: %#v\n", request.MethodID)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		fmt.Printf("Unsupported AccountManagement method ID: %#v\n", message.MethodID)
 	}
 }
 
 // NewProtocol returns a new Account Management protocol
 func NewProtocol(server nex.ServerInterface) *Protocol {
-	protocol := &Protocol{server: server}
-
-	protocol.Setup()
-
-	return protocol
+	return &Protocol{server: server}
 }

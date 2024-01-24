@@ -15,7 +15,7 @@ func (protocol *Protocol) handleGetFriendUserStatuses(packet nex.PacketInterface
 
 	if protocol.GetFriendUserStatuses == nil {
 		globals.Logger.Warning("Subscriber::GetFriendUserStatuses not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

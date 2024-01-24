@@ -31,24 +31,17 @@ func (protocol *Protocol) SetServer(server nex.ServerInterface) {
 	protocol.server = server
 }
 
-// Setup initializes the protocol
-func (protocol *Protocol) Setup() {
-	protocol.server.OnData(func(packet nex.PacketInterface) {
-		message := packet.RMCMessage()
-
-		if message.IsRequest && message.ProtocolID == ProtocolID {
-			protocol.HandlePacket(packet)
-		}
-	})
-}
-
 // HandlePacket sends the packet to the correct RMC method handler
 func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
-	request := packet.RMCMessage()
+	message := packet.RMCMessage()
 
-	switch request.MethodID {
+	if !message.IsRequest || message.ProtocolID != ProtocolID {
+		return
+	}
+
+	switch message.MethodID {
 	default:
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
-		fmt.Printf("Shop method ID: %#v\n", request.MethodID)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		fmt.Printf("Shop method ID: %#v\n", message.MethodID)
 	}
 }

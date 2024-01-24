@@ -9,7 +9,7 @@ import (
 func (protocol *Protocol) handleTestConnectivity(packet nex.PacketInterface) {
 	if protocol.TestConnectivity == nil {
 		globals.Logger.Warning("SecureConnection::TestConnectivity not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

@@ -15,7 +15,7 @@ func (protocol *Protocol) handleRemoveItem(packet nex.PacketInterface) {
 
 	if protocol.RemoveItem == nil {
 		globals.Logger.Warning("PersistentStore::RemoveItem not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

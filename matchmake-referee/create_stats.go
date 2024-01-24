@@ -15,7 +15,7 @@ func (protocol *Protocol) handleCreateStats(packet nex.PacketInterface) {
 
 	if protocol.CreateStats == nil {
 		globals.Logger.Warning("MatchmakeReferee::CreateStats not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

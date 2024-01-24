@@ -15,7 +15,7 @@ func (protocol *Protocol) handlePurchaseServiceItemRequest(packet nex.PacketInte
 
 	if protocol.PurchaseServiceItemRequest == nil {
 		globals.Logger.Warning("ServiceItemWiiSportsClub::PurchaseServiceItemRequest not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

@@ -15,7 +15,7 @@ func (protocol *Protocol) handleRemoveFriend(packet nex.PacketInterface) {
 
 	if protocol.RemoveFriend == nil {
 		globals.Logger.Warning("FriendsWiiU::RemoveFriend not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

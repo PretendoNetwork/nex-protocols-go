@@ -15,7 +15,7 @@ func (protocol *Protocol) handleDeleteAccount(packet nex.PacketInterface) {
 
 	if protocol.DeleteAccount == nil {
 		globals.Logger.Warning("AccountManagement::DeleteAccount not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

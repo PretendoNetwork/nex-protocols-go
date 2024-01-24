@@ -15,7 +15,7 @@ func (protocol *Protocol) handleFindByGroup(packet nex.PacketInterface) {
 
 	if protocol.FindByGroup == nil {
 		globals.Logger.Warning("PersistentStore::FindByGroup not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

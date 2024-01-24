@@ -15,7 +15,7 @@ func (protocol *Protocol) handleGetLawMessageResponse(packet nex.PacketInterface
 
 	if protocol.GetLawMessageResponse == nil {
 		globals.Logger.Warning("ServiceItemTeamKirbyClashDeluxe::GetLawMessageResponse not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

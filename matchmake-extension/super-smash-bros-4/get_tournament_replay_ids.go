@@ -9,7 +9,7 @@ import (
 func (protocol *Protocol) handleGetTournamentReplayIDs(packet nex.PacketInterface) {
 	if protocol.GetTournamentReplayIDs == nil {
 		globals.Logger.Warning("MatchmakeExtensionSuperSmashBros4::GetTournamentReplayIDs not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

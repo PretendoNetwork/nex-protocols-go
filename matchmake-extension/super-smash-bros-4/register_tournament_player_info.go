@@ -9,7 +9,7 @@ import (
 func (protocol *Protocol) handleRegisterTournamentPlayerInfo(packet nex.PacketInterface) {
 	if protocol.RegisterTournamentPlayerInfo == nil {
 		globals.Logger.Warning("MatchmakeExtensionSuperSmashBros4::RegisterTournamentPlayerInfo not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

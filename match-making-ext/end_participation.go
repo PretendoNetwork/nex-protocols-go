@@ -15,7 +15,7 @@ func (protocol *Protocol) handleEndParticipation(packet nex.PacketInterface) {
 
 	if protocol.EndParticipation == nil {
 		globals.Logger.Warning("MatchMakingExt::EndParticipation not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

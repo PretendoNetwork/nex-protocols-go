@@ -15,7 +15,7 @@ func (protocol *Protocol) handleUpdateDetails(packet nex.PacketInterface) {
 
 	if protocol.UpdateDetails == nil {
 		globals.Logger.Warning("Friends::UpdateDetails not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

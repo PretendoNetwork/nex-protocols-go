@@ -15,7 +15,7 @@ func (protocol *Protocol) handleGetUserStatuses(packet nex.PacketInterface) {
 
 	if protocol.GetUserStatuses == nil {
 		globals.Logger.Warning("Subscriber::GetUserStatuses not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

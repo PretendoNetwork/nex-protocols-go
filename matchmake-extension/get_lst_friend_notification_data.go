@@ -15,7 +15,7 @@ func (protocol *Protocol) handleGetlstFriendNotificationData(packet nex.PacketIn
 
 	if protocol.GetlstFriendNotificationData == nil {
 		globals.Logger.Warning("MatchmakeExtension::GetlstFriendNotificationData not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

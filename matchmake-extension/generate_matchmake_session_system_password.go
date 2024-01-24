@@ -15,7 +15,7 @@ func (protocol *Protocol) handleGenerateMatchmakeSessionSystemPassword(packet ne
 
 	if protocol.GenerateMatchmakeSessionSystemPassword == nil {
 		globals.Logger.Warning("MatchmakeExtension::GenerateMatchmakeSessionSystemPassword not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

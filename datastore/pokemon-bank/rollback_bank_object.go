@@ -16,7 +16,7 @@ func (protocol *Protocol) handleRollbackBankObject(packet nex.PacketInterface) {
 
 	if protocol.RollbackBankObject == nil {
 		globals.Logger.Warning("DataStorePokemonBank::RollbackBankObject not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

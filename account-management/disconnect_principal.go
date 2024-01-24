@@ -15,7 +15,7 @@ func (protocol *Protocol) handleDisconnectPrincipal(packet nex.PacketInterface) 
 
 	if protocol.DisconnectPrincipal == nil {
 		globals.Logger.Warning("AccountManagement::DisconnectPrincipal not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

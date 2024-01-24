@@ -15,7 +15,7 @@ func (protocol *Protocol) handleInsertCustomItem(packet nex.PacketInterface) {
 
 	if protocol.InsertCustomItem == nil {
 		globals.Logger.Warning("PersistentStore::InsertCustomItem not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

@@ -15,7 +15,7 @@ func (protocol *Protocol) handlePostPlayLog(packet nex.PacketInterface) {
 
 	if protocol.PostPlayLog == nil {
 		globals.Logger.Warning("ShopNintendoBadgeArcade::PostPlayLog not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

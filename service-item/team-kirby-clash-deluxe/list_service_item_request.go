@@ -15,7 +15,7 @@ func (protocol *Protocol) handleListServiceItemRequest(packet nex.PacketInterfac
 
 	if protocol.ListServiceItemRequest == nil {
 		globals.Logger.Warning("ServiceItemTeamKirbyClashDeluxe::ListServiceItemRequest not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

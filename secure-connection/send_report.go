@@ -15,7 +15,7 @@ func (protocol *Protocol) handleSendReport(packet nex.PacketInterface) {
 
 	if protocol.SendReport == nil {
 		globals.Logger.Warning("SecureConnection::SendReport not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

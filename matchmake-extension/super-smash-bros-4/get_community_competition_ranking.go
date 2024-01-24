@@ -9,7 +9,7 @@ import (
 func (protocol *Protocol) handleGetCommunityCompetitionRanking(packet nex.PacketInterface) {
 	if protocol.GetCommunityCompetitionRanking == nil {
 		globals.Logger.Warning("MatchmakeExtensionSuperSmashBros4::GetCommunityCompetitionRanking not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

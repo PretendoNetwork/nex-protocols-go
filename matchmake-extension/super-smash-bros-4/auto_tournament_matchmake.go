@@ -9,7 +9,7 @@ import (
 func (protocol *Protocol) handleAutoTournamentMatchmake(packet nex.PacketInterface) {
 	if protocol.AutoTournamentMatchmake == nil {
 		globals.Logger.Warning("MatchmakeExtensionSuperSmashBros4::AutoTournamentMatchmake not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

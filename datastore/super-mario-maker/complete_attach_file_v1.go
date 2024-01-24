@@ -15,7 +15,7 @@ func (protocol *Protocol) handleCompleteAttachFileV1(packet nex.PacketInterface)
 
 	if protocol.CompleteAttachFileV1 == nil {
 		globals.Logger.Warning("DataStoreSuperMarioMaker::CompleteAttachFileV1 not implemented")
-		globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
 		return
 	}
 

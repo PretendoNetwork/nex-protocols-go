@@ -116,42 +116,38 @@ func (protocol *Protocol) SetHandlerGetStringSettings(handler func(err error, pa
 	protocol.GetStringSettings = handler
 }
 
-// Setup initializes the protocol
-func (protocol *Protocol) Setup() {
-	protocol.server.OnData(func(packet nex.PacketInterface) {
-		message := packet.RMCMessage()
+// HandlePacket sends the packet to the correct RMC method handler
+func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
+	message := packet.RMCMessage()
 
-		if message.IsRequest && message.ProtocolID == ProtocolID {
-			switch message.MethodID {
-			case MethodAcquireNexUniqueID:
-				protocol.handleAcquireNexUniqueID(packet)
-			case MethodAcquireNexUniqueIDWithPassword:
-				protocol.handleAcquireNexUniqueIDWithPassword(packet)
-			case MethodAssociateNexUniqueIDWithMyPrincipalID:
-				protocol.handleAssociateNexUniqueIDWithMyPrincipalID(packet)
-			case MethodAssociateNexUniqueIDsWithMyPrincipalID:
-				protocol.handleAssociateNexUniqueIDsWithMyPrincipalID(packet)
-			case MethodGetAssociatedNexUniqueIDWithMyPrincipalID:
-				protocol.handleGetAssociatedNexUniqueIDWithMyPrincipalID(packet)
-			case MethodGetAssociatedNexUniqueIDsWithMyPrincipalID:
-				protocol.handleGetAssociatedNexUniqueIDsWithMyPrincipalID(packet)
-			case MethodGetIntegerSettings:
-				protocol.handleGetIntegerSettings(packet)
-			case MethodGetStringSettings:
-				protocol.handleGetStringSettings(packet)
-			default:
-				globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
-				fmt.Printf("Unsupported Utility method ID: %#v\n", message.MethodID)
-			}
-		}
-	})
+	if !message.IsRequest || message.ProtocolID != ProtocolID {
+		return
+	}
+
+	switch message.MethodID {
+	case MethodAcquireNexUniqueID:
+		protocol.handleAcquireNexUniqueID(packet)
+	case MethodAcquireNexUniqueIDWithPassword:
+		protocol.handleAcquireNexUniqueIDWithPassword(packet)
+	case MethodAssociateNexUniqueIDWithMyPrincipalID:
+		protocol.handleAssociateNexUniqueIDWithMyPrincipalID(packet)
+	case MethodAssociateNexUniqueIDsWithMyPrincipalID:
+		protocol.handleAssociateNexUniqueIDsWithMyPrincipalID(packet)
+	case MethodGetAssociatedNexUniqueIDWithMyPrincipalID:
+		protocol.handleGetAssociatedNexUniqueIDWithMyPrincipalID(packet)
+	case MethodGetAssociatedNexUniqueIDsWithMyPrincipalID:
+		protocol.handleGetAssociatedNexUniqueIDsWithMyPrincipalID(packet)
+	case MethodGetIntegerSettings:
+		protocol.handleGetIntegerSettings(packet)
+	case MethodGetStringSettings:
+		protocol.handleGetStringSettings(packet)
+	default:
+		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		fmt.Printf("Unsupported Utility method ID: %#v\n", message.MethodID)
+	}
 }
 
 // NewProtocol returns a new Utility protocol
 func NewProtocol(server nex.ServerInterface) *Protocol {
-	protocol := &Protocol{server: server}
-
-	protocol.Setup()
-
-	return protocol
+	return &Protocol{server: server}
 }

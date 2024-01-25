@@ -62,7 +62,7 @@ type Interface interface {
 	SetHandlerTestConnectivity(handler func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, uint32))
 	SetHandlerUpdateURLs(handler func(err error, packet nex.PacketInterface, callID uint32, vecMyURLs *types.List[*types.StationURL]) (*nex.RMCMessage, uint32))
 	SetHandlerReplaceURL(handler func(err error, packet nex.PacketInterface, callID uint32, target *types.StationURL, url *types.StationURL) (*nex.RMCMessage, uint32))
-	SetHandlerSendReport(handler func(err error, packet nex.PacketInterface, callID uint32, reportID *types.PrimitiveU32, reportData *types.Buffer) (*nex.RMCMessage, uint32))
+	SetHandlerSendReport(handler func(err error, packet nex.PacketInterface, callID uint32, reportID *types.PrimitiveU32, reportData *types.QBuffer) (*nex.RMCMessage, uint32))
 }
 
 // Server returns the server implementing the protocol

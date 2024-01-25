@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-go/types"
 )
 
@@ -20,14 +21,20 @@ type AuthenticationInfo struct {
 
 // WriteTo writes the AuthenticationInfo to the given writable
 func (ai *AuthenticationInfo) WriteTo(writable types.Writable) {
+	stream := writable.(*nex.ByteStreamOut)
+	libraryVersion := stream.Server.LibraryVersion()
+
 	ai.Data.WriteTo(writable)
 
 	contentWritable := writable.CopyNew()
 
 	ai.Token.WriteTo(writable)
 	ai.NGSVersion.WriteTo(writable)
-	ai.TokenType.WriteTo(writable)
-	ai.ServerVersion.WriteTo(writable)
+
+	if libraryVersion.GreaterOrEqual("3.0.0") {
+		ai.TokenType.WriteTo(writable)
+		ai.ServerVersion.WriteTo(writable)
+	}
 
 	content := contentWritable.Bytes()
 
@@ -38,6 +45,9 @@ func (ai *AuthenticationInfo) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the AuthenticationInfo from the given readable
 func (ai *AuthenticationInfo) ExtractFrom(readable types.Readable) error {
+	stream := readable.(*nex.ByteStreamIn)
+	libraryVersion := stream.Server.LibraryVersion()
+
 	var err error
 
 	err = ai.Data.ExtractFrom(readable)
@@ -60,14 +70,16 @@ func (ai *AuthenticationInfo) ExtractFrom(readable types.Readable) error {
 		return fmt.Errorf("Failed to extract AuthenticationInfo.NGSVersion. %s", err.Error())
 	}
 
-	err = ai.TokenType.ExtractFrom(readable)
-	if err != nil {
-		return fmt.Errorf("Failed to extract AuthenticationInfo.TokenType. %s", err.Error())
-	}
+	if libraryVersion.GreaterOrEqual("3.0.0") {
+		err = ai.TokenType.ExtractFrom(readable)
+		if err != nil {
+			return fmt.Errorf("Failed to extract AuthenticationInfo.TokenType. %s", err.Error())
+		}
 
-	err = ai.ServerVersion.ExtractFrom(readable)
-	if err != nil {
-		return fmt.Errorf("Failed to extract AuthenticationInfo.ServerVersion. %s", err.Error())
+		err = ai.ServerVersion.ExtractFrom(readable)
+		if err != nil {
+			return fmt.Errorf("Failed to extract AuthenticationInfo.ServerVersion. %s", err.Error())
+		}
 	}
 
 	return nil

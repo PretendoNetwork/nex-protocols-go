@@ -17,7 +17,6 @@ func (protocol *Protocol) handlePingDaemon(packet nex.PacketInterface) {
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 
 	rmcMessage, rmcError := protocol.PingDaemon(nil, packet, callID)

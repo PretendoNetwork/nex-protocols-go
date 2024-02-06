@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handleListServiceItemRequest(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.ListServiceItemRequest == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "ServiceItemTeamKirbyClashDeluxe::ListServiceItemRequest not implemented")
 
@@ -22,14 +20,13 @@ func (protocol *Protocol) handleListServiceItemRequest(packet nex.PacketInterfac
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	listServiceItemParam := service_item_team_kirby_clash_deluxe_types.NewServiceItemListServiceItemParam()
-	err = listServiceItemParam.ExtractFrom(parametersStream)
+
+	err := listServiceItemParam.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.ListServiceItemRequest(fmt.Errorf("Failed to read listServiceItemParam from parameters. %s", err.Error()), packet, callID, nil)
 		if rmcError != nil {

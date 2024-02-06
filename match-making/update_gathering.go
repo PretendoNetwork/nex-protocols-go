@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handleUpdateGathering(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.UpdateGathering == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "MatchMaking::UpdateGathering not implemented")
 
@@ -22,14 +20,13 @@ func (protocol *Protocol) handleUpdateGathering(packet nex.PacketInterface) {
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	anyGathering := types.NewAnyDataHolder()
-	err = anyGathering.ExtractFrom(parametersStream)
+
+	err := anyGathering.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.UpdateGathering(fmt.Errorf("Failed to read anyGathering from parameters. %s", err.Error()), packet, callID, nil)
 		if rmcError != nil {

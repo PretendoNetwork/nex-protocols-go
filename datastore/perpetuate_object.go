@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handlePerpetuateObject(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.PerpetuateObject == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "DataStore::PerpetuateObject not implemented")
 
@@ -22,13 +20,16 @@ func (protocol *Protocol) handlePerpetuateObject(packet nex.PacketInterface) {
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	persistenceSlotID := types.NewPrimitiveU16(0)
+	dataID := types.NewPrimitiveU64(0)
+	deleteLastObject := types.NewPrimitiveBool(false)
+
+	var err error
+
 	err = persistenceSlotID.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.PerpetuateObject(fmt.Errorf("Failed to read persistenceSlotID from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
@@ -39,7 +40,6 @@ func (protocol *Protocol) handlePerpetuateObject(packet nex.PacketInterface) {
 		return
 	}
 
-	dataID := types.NewPrimitiveU64(0)
 	err = dataID.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.PerpetuateObject(fmt.Errorf("Failed to read dataID from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
@@ -50,7 +50,6 @@ func (protocol *Protocol) handlePerpetuateObject(packet nex.PacketInterface) {
 		return
 	}
 
-	deleteLastObject := types.NewPrimitiveBool(false)
 	err = deleteLastObject.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.PerpetuateObject(fmt.Errorf("Failed to read deleteLastObject from parameters. %s", err.Error()), packet, callID, nil, nil, nil)

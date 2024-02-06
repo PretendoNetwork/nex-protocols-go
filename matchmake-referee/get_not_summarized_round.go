@@ -17,7 +17,6 @@ func (protocol *Protocol) handleGetNotSummarizedRound(packet nex.PacketInterface
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 
 	rmcMessage, rmcError := protocol.GetNotSummarizedRound(nil, packet, callID)

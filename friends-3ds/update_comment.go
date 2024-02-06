@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handleUpdateComment(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.UpdateComment == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "Friends3DS::UpdateComment not implemented")
 
@@ -22,14 +20,13 @@ func (protocol *Protocol) handleUpdateComment(packet nex.PacketInterface) {
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	comment := types.NewString("")
-	err = comment.ExtractFrom(parametersStream)
+
+	err := comment.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.UpdateComment(fmt.Errorf("Failed to read comment from parameters. %s", err.Error()), packet, callID, nil)
 		if rmcError != nil {

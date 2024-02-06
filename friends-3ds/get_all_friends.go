@@ -17,7 +17,6 @@ func (protocol *Protocol) handleGetAllFriends(packet nex.PacketInterface) {
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 
 	rmcMessage, rmcError := protocol.GetAllFriends(nil, packet, callID)

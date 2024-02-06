@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handleRequestMatchmaking(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.RequestMatchmaking == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "MatchmakeExtension::RequestMatchmaking not implemented")
 
@@ -22,16 +20,15 @@ func (protocol *Protocol) handleRequestMatchmaking(packet nex.PacketInterface) {
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	autoMatchmakeParam := match_making_types.NewAutoMatchmakeParam()
-	err = autoMatchmakeParam.ExtractFrom(parametersStream)
+
+	err := autoMatchmakeParam.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.RequestMatchmaking(fmt.Errorf("Failed to read pid from parameters. %s", err.Error()), packet, callID, nil)
+		_, rmcError := protocol.RequestMatchmaking(fmt.Errorf("Failed to read autoMatchmakeParam from parameters. %s", err.Error()), packet, callID, nil)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

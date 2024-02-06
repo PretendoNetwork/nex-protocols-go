@@ -17,7 +17,6 @@ func (protocol *Protocol) handleClearMyBlockList(packet nex.PacketInterface) {
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 
 	rmcMessage, rmcError := protocol.ClearMyBlockList(nil, packet, callID)

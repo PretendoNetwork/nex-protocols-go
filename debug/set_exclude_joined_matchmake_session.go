@@ -19,10 +19,7 @@ func (protocol *Protocol) handleSetExcludeJoinedMatchmakeSession(packet nex.Pack
 	globals.Logger.Warning("Debug::SetExcludeJoinedMatchmakeSession STUBBED")
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
-
-	// TODO - THIS METHOD HAS AN UNKNOWN REQUEST/RESPONSE FORMAT
 
 	rmcMessage, rmcError := protocol.SetExcludeJoinedMatchmakeSession(nil, packet, callID, packet.Payload())
 	if rmcError != nil {

@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handleFindCommunityByParticipant(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.FindCommunityByParticipant == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "MatchmakeExtension::FindCommunityByParticipant not implemented")
 
@@ -22,13 +20,15 @@ func (protocol *Protocol) handleFindCommunityByParticipant(packet nex.PacketInte
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	pid := types.NewPID(0)
+	resultRange := types.NewResultRange()
+
+	var err error
+
 	err = pid.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.FindCommunityByParticipant(fmt.Errorf("Failed to read pid from parameters. %s", err.Error()), packet, callID, nil, nil)
@@ -39,7 +39,6 @@ func (protocol *Protocol) handleFindCommunityByParticipant(packet nex.PacketInte
 		return
 	}
 
-	resultRange := types.NewResultRange()
 	err = resultRange.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.FindCommunityByParticipant(fmt.Errorf("Failed to read resultRange from parameters. %s", err.Error()), packet, callID, nil, nil)

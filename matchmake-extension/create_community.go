@@ -11,8 +11,6 @@ import (
 )
 
 func (protocol *Protocol) handleCreateCommunity(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.CreateCommunity == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "MatchmakeExtension::CreateCommunity not implemented")
 
@@ -23,13 +21,15 @@ func (protocol *Protocol) handleCreateCommunity(packet nex.PacketInterface) {
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	community := match_making_types.NewPersistentGathering()
+	strMessage := types.NewString("")
+
+	var err error
+
 	err = community.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.CreateCommunity(fmt.Errorf("Failed to read community from parameters. %s", err.Error()), packet, callID, nil, nil)
@@ -40,7 +40,6 @@ func (protocol *Protocol) handleCreateCommunity(packet nex.PacketInterface) {
 		return
 	}
 
-	strMessage := types.NewString("")
 	err = strMessage.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.CreateCommunity(fmt.Errorf("Failed to read strMessage from parameters. %s", err.Error()), packet, callID, nil, nil)

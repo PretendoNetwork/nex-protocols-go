@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handleUpdateURLs(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.UpdateURLs == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "SecureConnection::UpdateURLs not implemented")
 
@@ -22,15 +20,14 @@ func (protocol *Protocol) handleUpdateURLs(packet nex.PacketInterface) {
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	vecMyURLs := types.NewList[*types.StationURL]()
 	vecMyURLs.Type = types.NewStationURL("")
-	err = vecMyURLs.ExtractFrom(parametersStream)
+
+	err := vecMyURLs.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.UpdateURLs(fmt.Errorf("Failed to read vecMyURLs from parameters. %s", err.Error()), packet, callID, nil)
 		if rmcError != nil {

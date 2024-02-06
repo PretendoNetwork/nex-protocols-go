@@ -11,8 +11,6 @@ import (
 )
 
 func (protocol *Protocol) handleAddToBufferQueue(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.AddToBufferQueue == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "DataStoreSuperMarioMaker::AddToBufferQueue not implemented")
 
@@ -23,13 +21,15 @@ func (protocol *Protocol) handleAddToBufferQueue(packet nex.PacketInterface) {
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	param := datastore_super_mario_maker_types.NewBufferQueueParam()
+	buffer := types.NewQBuffer(nil)
+
+	var err error
+
 	err = param.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.AddToBufferQueue(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil, nil)
@@ -40,7 +40,6 @@ func (protocol *Protocol) handleAddToBufferQueue(packet nex.PacketInterface) {
 		return
 	}
 
-	buffer := types.NewQBuffer(nil)
 	err = buffer.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.AddToBufferQueue(fmt.Errorf("Failed to read buffer from parameters. %s", err.Error()), packet, callID, nil, nil)

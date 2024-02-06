@@ -11,8 +11,6 @@ import (
 )
 
 func (protocol *Protocol) handleConditionalSearchObject(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.ConditionalSearchObject == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "DataStoreSuperMarioMaker::ConditionalSearchObject not implemented")
 
@@ -23,13 +21,17 @@ func (protocol *Protocol) handleConditionalSearchObject(packet nex.PacketInterfa
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	condition := types.NewPrimitiveU32(0)
+	param := datastore_types.NewDataStoreSearchParam()
+	extraData := types.NewList[*types.String]()
+	extraData.Type = types.NewString("")
+
+	var err error
+
 	err = condition.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.ConditionalSearchObject(fmt.Errorf("Failed to read condition from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
@@ -40,7 +42,6 @@ func (protocol *Protocol) handleConditionalSearchObject(packet nex.PacketInterfa
 		return
 	}
 
-	param := datastore_types.NewDataStoreSearchParam()
 	err = param.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.ConditionalSearchObject(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
@@ -51,8 +52,6 @@ func (protocol *Protocol) handleConditionalSearchObject(packet nex.PacketInterfa
 		return
 	}
 
-	extraData := types.NewList[*types.String]()
-	extraData.Type = types.NewString("")
 	err = extraData.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.ConditionalSearchObject(fmt.Errorf("Failed to read extraData from parameters. %s", err.Error()), packet, callID, nil, nil, nil)

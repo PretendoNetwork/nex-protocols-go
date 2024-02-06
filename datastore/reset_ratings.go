@@ -11,8 +11,6 @@ import (
 )
 
 func (protocol *Protocol) handleResetRatings(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.ResetRatings == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "DataStore::ResetRatings not implemented")
 
@@ -23,13 +21,15 @@ func (protocol *Protocol) handleResetRatings(packet nex.PacketInterface) {
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	target := datastore_types.NewDataStoreRatingTarget()
+	transactional := types.NewPrimitiveBool(false)
+
+	var err error
+
 	err = target.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.ResetRatings(fmt.Errorf("Failed to read target from parameters. %s", err.Error()), packet, callID, nil, nil)
@@ -40,7 +40,6 @@ func (protocol *Protocol) handleResetRatings(packet nex.PacketInterface) {
 		return
 	}
 
-	transactional := types.NewPrimitiveBool(false)
 	err = transactional.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.ResetRatings(fmt.Errorf("Failed to read transactional from parameters. %s", err.Error()), packet, callID, nil, nil)

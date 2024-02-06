@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handleGetApplicationConfig(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.GetApplicationConfig == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "DataStoreSuperSmashBros4::GetApplicationConfig not implemented")
 
@@ -22,14 +20,13 @@ func (protocol *Protocol) handleGetApplicationConfig(packet nex.PacketInterface)
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	applicationID := types.NewPrimitiveU32(0)
-	err = applicationID.ExtractFrom(parametersStream)
+
+	err := applicationID.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.GetApplicationConfig(fmt.Errorf("Failed to read applicationID from parameters. %s", err.Error()), packet, callID, nil)
 		if rmcError != nil {

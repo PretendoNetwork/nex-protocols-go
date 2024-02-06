@@ -19,7 +19,6 @@ func (protocol *Protocol) handleRegisterTournamentBot(packet nex.PacketInterface
 	globals.Logger.Warning("MatchmakeExtensionSuperSmashBros4::RegisterTournamentBot STUBBED")
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 
 	rmcMessage, rmcError := protocol.RegisterTournamentBot(nil, packet, callID, packet.Payload())

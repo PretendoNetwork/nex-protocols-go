@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handleDeleteSimpleSearchObject(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.DeleteSimpleSearchObject == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "MatchmakeExtensionMarioKart8::DeleteSimpleSearchObject not implemented")
 
@@ -22,14 +20,13 @@ func (protocol *Protocol) handleDeleteSimpleSearchObject(packet nex.PacketInterf
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	objectID := types.NewPrimitiveU32(0)
-	err = objectID.ExtractFrom(parametersStream)
+
+	err := objectID.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.DeleteSimpleSearchObject(fmt.Errorf("Failed to read objectID from parameters. %s", err.Error()), packet, callID, nil)
 		if rmcError != nil {

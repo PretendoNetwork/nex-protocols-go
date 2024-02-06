@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handleUpdateProgressScore(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.UpdateProgressScore == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "MatchmakeExtension::UpdateProgressScore not implemented")
 
@@ -22,13 +20,15 @@ func (protocol *Protocol) handleUpdateProgressScore(packet nex.PacketInterface) 
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	gid := types.NewPrimitiveU32(0)
+	progressScore := types.NewPrimitiveU8(0)
+
+	var err error
+
 	err = gid.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.UpdateProgressScore(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), packet, callID, nil, nil)
@@ -39,7 +39,6 @@ func (protocol *Protocol) handleUpdateProgressScore(packet nex.PacketInterface) 
 		return
 	}
 
-	progressScore := types.NewPrimitiveU8(0)
 	err = progressScore.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.UpdateProgressScore(fmt.Errorf("Failed to read progressScore from parameters. %s", err.Error()), packet, callID, nil, nil)

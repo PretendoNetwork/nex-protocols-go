@@ -11,8 +11,6 @@ import (
 )
 
 func (protocol *Protocol) handleRateObjectWithPosting(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.RateObjectWithPosting == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "DataStore::RateObjectWithPosting not implemented")
 
@@ -23,13 +21,17 @@ func (protocol *Protocol) handleRateObjectWithPosting(packet nex.PacketInterface
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	target := datastore_types.NewDataStoreRatingTarget()
+	rateParam := datastore_types.NewDataStoreRateObjectParam()
+	postParam := datastore_types.NewDataStorePreparePostParam()
+	fetchRatings := types.NewPrimitiveBool(false)
+
+	var err error
+
 	err = target.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.RateObjectWithPosting(fmt.Errorf("Failed to read target from parameters. %s", err.Error()), packet, callID, nil, nil, nil, nil)
@@ -40,7 +42,6 @@ func (protocol *Protocol) handleRateObjectWithPosting(packet nex.PacketInterface
 		return
 	}
 
-	rateParam := datastore_types.NewDataStoreRateObjectParam()
 	err = rateParam.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.RateObjectWithPosting(fmt.Errorf("Failed to read rateParam from parameters. %s", err.Error()), packet, callID, nil, nil, nil, nil)
@@ -51,7 +52,6 @@ func (protocol *Protocol) handleRateObjectWithPosting(packet nex.PacketInterface
 		return
 	}
 
-	postParam := datastore_types.NewDataStorePreparePostParam()
 	err = postParam.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.RateObjectWithPosting(fmt.Errorf("Failed to read postParam from parameters. %s", err.Error()), packet, callID, nil, nil, nil, nil)
@@ -62,7 +62,6 @@ func (protocol *Protocol) handleRateObjectWithPosting(packet nex.PacketInterface
 		return
 	}
 
-	fetchRatings := types.NewPrimitiveBool(false)
 	err = fetchRatings.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.RateObjectWithPosting(fmt.Errorf("Failed to read fetchRatings from parameters. %s", err.Error()), packet, callID, nil, nil, nil, nil)

@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handleJoinMatchmakeSessionWithExtraParticipants(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.JoinMatchmakeSessionWithExtraParticipants == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "MatchmakeExtensionMarioKart8::JoinMatchmakeSessionWithExtraParticipants not implemented")
 
@@ -22,13 +20,18 @@ func (protocol *Protocol) handleJoinMatchmakeSessionWithExtraParticipants(packet
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	gid := types.NewPrimitiveU32(0)
+	joinMessage := types.NewString("")
+	ignoreBlacklist := types.NewPrimitiveBool(false)
+	participationCount := types.NewPrimitiveU16(0)
+	extraParticipants := types.NewPrimitiveU32(0)
+
+	var err error
+
 	err = gid.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.JoinMatchmakeSessionWithExtraParticipants(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), packet, callID, nil, nil, nil, nil, nil)
@@ -39,7 +42,6 @@ func (protocol *Protocol) handleJoinMatchmakeSessionWithExtraParticipants(packet
 		return
 	}
 
-	joinMessage := types.NewString("")
 	err = joinMessage.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.JoinMatchmakeSessionWithExtraParticipants(fmt.Errorf("Failed to read joinMessage from parameters. %s", err.Error()), packet, callID, nil, nil, nil, nil, nil)
@@ -50,7 +52,6 @@ func (protocol *Protocol) handleJoinMatchmakeSessionWithExtraParticipants(packet
 		return
 	}
 
-	ignoreBlacklist := types.NewPrimitiveBool(false)
 	err = ignoreBlacklist.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.JoinMatchmakeSessionWithExtraParticipants(fmt.Errorf("Failed to read ignoreBlacklist from parameters. %s", err.Error()), packet, callID, nil, nil, nil, nil, nil)
@@ -61,7 +62,6 @@ func (protocol *Protocol) handleJoinMatchmakeSessionWithExtraParticipants(packet
 		return
 	}
 
-	participationCount := types.NewPrimitiveU16(0)
 	err = participationCount.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.JoinMatchmakeSessionWithExtraParticipants(fmt.Errorf("Failed to read participationCount from parameters. %s", err.Error()), packet, callID, nil, nil, nil, nil, nil)
@@ -72,7 +72,6 @@ func (protocol *Protocol) handleJoinMatchmakeSessionWithExtraParticipants(packet
 		return
 	}
 
-	extraParticipants := types.NewPrimitiveU32(0)
 	err = extraParticipants.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.JoinMatchmakeSessionWithExtraParticipants(fmt.Errorf("Failed to read extraParticipants from parameters. %s", err.Error()), packet, callID, nil, nil, nil, nil, nil)

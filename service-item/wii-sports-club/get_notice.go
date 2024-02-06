@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handleGetNotice(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.GetNotice == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "ServiceItemWiiSportsClub::GetNotice not implemented")
 
@@ -22,14 +20,13 @@ func (protocol *Protocol) handleGetNotice(packet nex.PacketInterface) {
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	getNoticeParam := service_item_wii_sports_club_types.NewServiceItemGetNoticeParam()
-	err = getNoticeParam.ExtractFrom(parametersStream)
+
+	err := getNoticeParam.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.GetNotice(fmt.Errorf("Failed to read getNoticeParam from parameters. %s", err.Error()), packet, callID, nil)
 		if rmcError != nil {

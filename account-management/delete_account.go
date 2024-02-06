@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handleDeleteAccount(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.DeleteAccount == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "AccountManagement::DeleteAccount not implemented")
 
@@ -22,14 +20,13 @@ func (protocol *Protocol) handleDeleteAccount(packet nex.PacketInterface) {
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	idPrincipal := types.NewPID(0)
-	err = idPrincipal.ExtractFrom(parametersStream)
+
+	err := idPrincipal.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.DeleteAccount(fmt.Errorf("Failed to read idPrincipal from parameters. %s", err.Error()), packet, callID, nil)
 		if rmcError != nil {

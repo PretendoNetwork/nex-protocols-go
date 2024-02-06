@@ -19,10 +19,7 @@ func (protocol *Protocol) handleGetSharedDataMeta(packet nex.PacketInterface) {
 	globals.Logger.Warning("DataStoreSuperSmashBros4::GetSharedDataMeta STUBBED")
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
-
-	// TODO - THIS METHOD HAS AN UNKNOWN REQUEST/RESPONSE FORMAT
 
 	rmcMessage, rmcError := protocol.GetSharedDataMeta(nil, packet, callID, packet.Payload())
 	if rmcError != nil {

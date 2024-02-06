@@ -17,7 +17,6 @@ func (protocol *Protocol) handleGetFightingPowerChartAll(packet nex.PacketInterf
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 
 	rmcMessage, rmcError := protocol.GetFightingPowerChartAll(nil, packet, callID)

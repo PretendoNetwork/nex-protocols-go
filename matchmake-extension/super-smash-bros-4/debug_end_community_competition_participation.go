@@ -19,7 +19,6 @@ func (protocol *Protocol) handleDebugEndCommunityCompetitionParticipation(packet
 	globals.Logger.Warning("MatchmakeExtensionSuperSmashBros4::DebugEndCommunityCompetitionParticipation STUBBED")
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 
 	rmcMessage, rmcError := protocol.DebugEndCommunityCompetitionParticipation(nil, packet, callID, packet.Payload())

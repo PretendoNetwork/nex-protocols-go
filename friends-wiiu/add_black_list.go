@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handleAddBlackList(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.AddBlackList == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "FriendsWiiU::AddBlackList not implemented")
 
@@ -22,14 +20,13 @@ func (protocol *Protocol) handleAddBlackList(packet nex.PacketInterface) {
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	blacklistedPrincipal := friends_wiiu_types.NewBlacklistedPrincipal()
-	err = blacklistedPrincipal.ExtractFrom(parametersStream)
+
+	err := blacklistedPrincipal.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.AddBlackList(fmt.Errorf("Failed to read blacklistedPrincipal from parameters. %s", err.Error()), packet, callID, nil)
 		if rmcError != nil {

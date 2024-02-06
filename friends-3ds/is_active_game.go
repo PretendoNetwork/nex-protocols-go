@@ -11,8 +11,6 @@ import (
 )
 
 func (protocol *Protocol) handleIsActiveGame(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.IsActiveGame == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "Friends3DS::IsActiveGame not implemented")
 
@@ -23,14 +21,16 @@ func (protocol *Protocol) handleIsActiveGame(packet nex.PacketInterface) {
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	pids := types.NewList[*types.PID]()
 	pids.Type = types.NewPID(0)
+	gameKey := friends_3ds_types.NewGameKey()
+
+	var err error
+
 	err = pids.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.IsActiveGame(fmt.Errorf("Failed to read pids from parameters. %s", err.Error()), packet, callID, nil, nil)
@@ -41,7 +41,6 @@ func (protocol *Protocol) handleIsActiveGame(packet nex.PacketInterface) {
 		return
 	}
 
-	gameKey := friends_3ds_types.NewGameKey()
 	err = gameKey.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.IsActiveGame(fmt.Errorf("Failed to read gameKey from parameters. %s", err.Error()), packet, callID, nil, nil)

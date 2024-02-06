@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handleReportViolation(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.ReportViolation == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "MatchmakeExtension::ReportViolation not implemented")
 
@@ -22,13 +20,16 @@ func (protocol *Protocol) handleReportViolation(packet nex.PacketInterface) {
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	pid := types.NewPID(0)
+	userName := types.NewString("")
+	violationCode := types.NewPrimitiveU32(0)
+
+	var err error
+
 	err = pid.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.ReportViolation(fmt.Errorf("Failed to read pid from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
@@ -39,7 +40,6 @@ func (protocol *Protocol) handleReportViolation(packet nex.PacketInterface) {
 		return
 	}
 
-	userName := types.NewString("")
 	err = userName.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.ReportViolation(fmt.Errorf("Failed to read userName from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
@@ -50,7 +50,6 @@ func (protocol *Protocol) handleReportViolation(packet nex.PacketInterface) {
 		return
 	}
 
-	violationCode := types.NewPrimitiveU32(0)
 	err = violationCode.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.ReportViolation(fmt.Errorf("Failed to read violationCode from parameters. %s", err.Error()), packet, callID, nil, nil, nil)

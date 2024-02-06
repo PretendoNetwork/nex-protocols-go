@@ -17,7 +17,6 @@ func (protocol *Protocol) handleGetWorldPlayReport(packet nex.PacketInterface) {
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 
 	rmcMessage, rmcError := protocol.GetWorldPlayReport(nil, packet, callID)

@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handleDeleteCachedRanking(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.DeleteCachedRanking == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "DataStoreSuperMarioMaker::DeleteCachedRanking not implemented")
 
@@ -22,13 +20,16 @@ func (protocol *Protocol) handleDeleteCachedRanking(packet nex.PacketInterface) 
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	rankingType := types.NewString("")
+	rankingArgs := types.NewList[*types.String]()
+	rankingArgs.Type = types.NewString("")
+
+	var err error
+
 	err = rankingType.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.DeleteCachedRanking(fmt.Errorf("Failed to read rankingType from parameters. %s", err.Error()), packet, callID, nil, nil)
@@ -39,8 +40,6 @@ func (protocol *Protocol) handleDeleteCachedRanking(packet nex.PacketInterface) 
 		return
 	}
 
-	rankingArgs := types.NewList[*types.String]()
-	rankingArgs.Type = types.NewString("")
 	err = rankingArgs.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.DeleteCachedRanking(fmt.Errorf("Failed to read rankingArgs from parameters. %s", err.Error()), packet, callID, nil, nil)

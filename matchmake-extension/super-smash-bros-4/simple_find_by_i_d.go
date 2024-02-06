@@ -19,7 +19,6 @@ func (protocol *Protocol) handleSimpleFindByID(packet nex.PacketInterface) {
 	globals.Logger.Warning("MatchmakeExtensionSuperSmashBros4::SimpleFindByID STUBBED")
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 
 	rmcMessage, rmcError := protocol.SimpleFindByID(nil, packet, callID, packet.Payload())

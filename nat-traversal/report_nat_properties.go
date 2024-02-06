@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handleReportNATProperties(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.ReportNATProperties == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "NATTraversal::ReportNATProperties not implemented")
 
@@ -22,13 +20,16 @@ func (protocol *Protocol) handleReportNATProperties(packet nex.PacketInterface) 
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	natmapping := types.NewPrimitiveU32(0)
+	natfiltering := types.NewPrimitiveU32(0)
+	rtt := types.NewPrimitiveU32(0)
+
+	var err error
+
 	err = natmapping.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.ReportNATProperties(fmt.Errorf("Failed to read natmapping from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
@@ -39,7 +40,6 @@ func (protocol *Protocol) handleReportNATProperties(packet nex.PacketInterface) 
 		return
 	}
 
-	natfiltering := types.NewPrimitiveU32(0)
 	err = natfiltering.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.ReportNATProperties(fmt.Errorf("Failed to read natfiltering from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
@@ -50,7 +50,6 @@ func (protocol *Protocol) handleReportNATProperties(packet nex.PacketInterface) 
 		return
 	}
 
-	rtt := types.NewPrimitiveU32(0)
 	err = rtt.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.ReportNATProperties(fmt.Errorf("Failed to read rtt from parameters. %s", err.Error()), packet, callID, nil, nil, nil)

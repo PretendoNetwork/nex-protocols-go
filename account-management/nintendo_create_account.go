@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handleNintendoCreateAccount(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.NintendoCreateAccount == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "AccountManagement::NintendoCreateAccount not implemented")
 
@@ -22,13 +20,18 @@ func (protocol *Protocol) handleNintendoCreateAccount(packet nex.PacketInterface
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	strPrincipalName := types.NewString("")
+	strKey := types.NewString("")
+	uiGroups := types.NewPrimitiveU32(0)
+	strEmail := types.NewString("")
+	oAuthData := types.NewAnyDataHolder()
+
+	var err error
+
 	err = strPrincipalName.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.NintendoCreateAccount(fmt.Errorf("Failed to read strPrincipalName from parameters. %s", err.Error()), packet, callID, nil, nil, nil, nil, nil)
@@ -39,7 +42,6 @@ func (protocol *Protocol) handleNintendoCreateAccount(packet nex.PacketInterface
 		return
 	}
 
-	strKey := types.NewString("")
 	err = strKey.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.NintendoCreateAccount(fmt.Errorf("Failed to read strKey from parameters. %s", err.Error()), packet, callID, nil, nil, nil, nil, nil)
@@ -50,7 +52,6 @@ func (protocol *Protocol) handleNintendoCreateAccount(packet nex.PacketInterface
 		return
 	}
 
-	uiGroups := types.NewPrimitiveU32(0)
 	err = uiGroups.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.NintendoCreateAccount(fmt.Errorf("Failed to read uiGroups from parameters. %s", err.Error()), packet, callID, nil, nil, nil, nil, nil)
@@ -61,7 +62,6 @@ func (protocol *Protocol) handleNintendoCreateAccount(packet nex.PacketInterface
 		return
 	}
 
-	strEmail := types.NewString("")
 	err = strEmail.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.NintendoCreateAccount(fmt.Errorf("Failed to read strEmail from parameters. %s", err.Error()), packet, callID, nil, nil, nil, nil, nil)
@@ -72,7 +72,6 @@ func (protocol *Protocol) handleNintendoCreateAccount(packet nex.PacketInterface
 		return
 	}
 
-	oAuthData := types.NewAnyDataHolder()
 	err = oAuthData.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.NintendoCreateAccount(fmt.Errorf("Failed to read oAuthData from parameters. %s", err.Error()), packet, callID, nil, nil, nil, nil, nil)

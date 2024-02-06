@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handleGetNewArrivedNotifications(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.GetNewArrivedNotifications == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "DataStore::GetNewArrivedNotifications not implemented")
 
@@ -22,14 +20,13 @@ func (protocol *Protocol) handleGetNewArrivedNotifications(packet nex.PacketInte
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	param := datastore_types.NewDataStoreGetNewArrivedNotificationsParam()
-	err = param.ExtractFrom(parametersStream)
+
+	err := param.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.GetNewArrivedNotifications(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
 		if rmcError != nil {

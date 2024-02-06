@@ -11,8 +11,6 @@ import (
 )
 
 func (protocol *Protocol) handleGetCachedTopXRankings(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.GetCachedTopXRankings == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "Ranking::GetCachedTopXRankings not implemented")
 
@@ -23,14 +21,17 @@ func (protocol *Protocol) handleGetCachedTopXRankings(packet nex.PacketInterface
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	categories := types.NewList[*types.PrimitiveU32]()
 	categories.Type = types.NewPrimitiveU32(0)
+	orderParams := types.NewList[*ranking_types.RankingOrderParam]()
+	orderParams.Type = ranking_types.NewRankingOrderParam()
+
+	var err error
+
 	err = categories.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.GetCachedTopXRankings(fmt.Errorf("Failed to read categories from parameters. %s", err.Error()), packet, callID, nil, nil)
@@ -41,8 +42,6 @@ func (protocol *Protocol) handleGetCachedTopXRankings(packet nex.PacketInterface
 		return
 	}
 
-	orderParams := types.NewList[*ranking_types.RankingOrderParam]()
-	orderParams.Type = ranking_types.NewRankingOrderParam()
 	err = orderParams.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.GetCachedTopXRankings(fmt.Errorf("Failed to read orderParams from parameters. %s", err.Error()), packet, callID, nil, nil)

@@ -11,8 +11,6 @@ import (
 )
 
 func (protocol *Protocol) handleCompletePostObjectWithOwnerID(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.CompletePostObjectWithOwnerID == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "DataStoreSuperMarioMaker::CompletePostObjectWithOwnerID not implemented")
 
@@ -23,13 +21,15 @@ func (protocol *Protocol) handleCompletePostObjectWithOwnerID(packet nex.PacketI
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	ownerID := types.NewPrimitiveU32(0)
+	param := datastore_types.NewDataStoreCompletePostParam()
+
+	var err error
+
 	err = ownerID.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.CompletePostObjectWithOwnerID(fmt.Errorf("Failed to read ownerID from parameters. %s", err.Error()), packet, callID, nil, nil)
@@ -40,7 +40,6 @@ func (protocol *Protocol) handleCompletePostObjectWithOwnerID(packet nex.PacketI
 		return
 	}
 
-	param := datastore_types.NewDataStoreCompletePostParam()
 	err = param.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.CompletePostObjectWithOwnerID(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil, nil)

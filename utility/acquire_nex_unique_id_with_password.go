@@ -17,7 +17,6 @@ func (protocol *Protocol) handleAcquireNexUniqueIDWithPassword(packet nex.Packet
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 
 	rmcMessage, rmcError := protocol.AcquireNexUniqueIDWithPassword(nil, packet, callID)

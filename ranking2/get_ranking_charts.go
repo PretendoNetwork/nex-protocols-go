@@ -11,8 +11,6 @@ import (
 )
 
 func (protocol *Protocol) handleGetRankingCharts(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.GetRankingCharts == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "Ranking2::GetRankingCharts not implemented")
 
@@ -23,15 +21,14 @@ func (protocol *Protocol) handleGetRankingCharts(packet nex.PacketInterface) {
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	infoArray := types.NewList[*ranking2_types.Ranking2ChartInfoInput]()
 	infoArray.Type = ranking2_types.NewRanking2ChartInfoInput()
-	err = infoArray.ExtractFrom(parametersStream)
+
+	err := infoArray.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.GetRankingCharts(fmt.Errorf("Failed to read infoArray from parameters. %s", err.Error()), packet, callID, nil)
 		if rmcError != nil {

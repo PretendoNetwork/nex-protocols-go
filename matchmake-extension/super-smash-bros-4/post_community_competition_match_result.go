@@ -19,7 +19,6 @@ func (protocol *Protocol) handlePostCommunityCompetitionMatchResult(packet nex.P
 	globals.Logger.Warning("MatchmakeExtensionSuperSmashBros4::PostCommunityCompetitionMatchResult STUBBED")
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 
 	rmcMessage, rmcError := protocol.PostCommunityCompetitionMatchResult(nil, packet, callID, packet.Payload())

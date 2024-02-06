@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handleGetStats(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.GetStats == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "MatchMaking::GetStats not implemented")
 
@@ -22,13 +20,17 @@ func (protocol *Protocol) handleGetStats(packet nex.PacketInterface) {
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	idGathering := types.NewPrimitiveU32(0)
+	lstParticipants := types.NewList[*types.PID]()
+	lstParticipants.Type = types.NewPID(0)
+	lstColumns := types.NewBuffer(nil)
+
+	var err error
+
 	err = idGathering.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.GetStats(fmt.Errorf("Failed to read idGathering from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
@@ -39,8 +41,6 @@ func (protocol *Protocol) handleGetStats(packet nex.PacketInterface) {
 		return
 	}
 
-	lstParticipants := types.NewList[*types.PID]()
-	lstParticipants.Type = types.NewPID(0)
 	err = lstParticipants.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.GetStats(fmt.Errorf("Failed to read lstParticipants from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
@@ -51,8 +51,7 @@ func (protocol *Protocol) handleGetStats(packet nex.PacketInterface) {
 		return
 	}
 
-	lstColumns := types.NewBuffer(nil)
-	err = lstColumns.ExtractFrom(parametersStream) // * This is documented as List<byte>, but that's justs a buffer so...
+	err = lstColumns.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.GetStats(fmt.Errorf("Failed to read lstColumns from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
 		if rmcError != nil {

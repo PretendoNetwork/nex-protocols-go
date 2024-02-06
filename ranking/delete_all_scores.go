@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handleDeleteAllScores(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.DeleteAllScores == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "Ranking::DeleteAllScores not implemented")
 
@@ -22,14 +20,13 @@ func (protocol *Protocol) handleDeleteAllScores(packet nex.PacketInterface) {
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	uniqueID := types.NewPrimitiveU64(0)
-	err = uniqueID.ExtractFrom(parametersStream)
+
+	err := uniqueID.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.DeleteAllScores(fmt.Errorf("Failed to read uniqueID from parameters. %s", err.Error()), packet, callID, nil)
 		if rmcError != nil {

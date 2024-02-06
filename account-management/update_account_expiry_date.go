@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handleUpdateAccountExpiryDate(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.UpdateAccountExpiryDate == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "AccountManagement::UpdateAccountExpiryDate not implemented")
 
@@ -22,13 +20,16 @@ func (protocol *Protocol) handleUpdateAccountExpiryDate(packet nex.PacketInterfa
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	idPrincipal := types.NewPID(0)
+	dtExpiry := types.NewDateTime(0)
+	strExpiredMessage := types.NewString("")
+
+	var err error
+
 	err = idPrincipal.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.UpdateAccountExpiryDate(fmt.Errorf("Failed to read idPrincipal from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
@@ -39,7 +40,6 @@ func (protocol *Protocol) handleUpdateAccountExpiryDate(packet nex.PacketInterfa
 		return
 	}
 
-	dtExpiry := types.NewDateTime(0)
 	err = dtExpiry.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.UpdateAccountExpiryDate(fmt.Errorf("Failed to read dtExpiry from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
@@ -50,7 +50,6 @@ func (protocol *Protocol) handleUpdateAccountExpiryDate(packet nex.PacketInterfa
 		return
 	}
 
-	strExpiredMessage := types.NewString("")
 	err = strExpiredMessage.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.UpdateAccountExpiryDate(fmt.Errorf("Failed to read strExpiredMessage from parameters. %s", err.Error()), packet, callID, nil, nil, nil)

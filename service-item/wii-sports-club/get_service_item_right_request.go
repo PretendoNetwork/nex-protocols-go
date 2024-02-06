@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handleGetServiceItemRightRequest(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.GetServiceItemRightRequest == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "ServiceItemWiiSportsClub::GetServiceItemRightRequest not implemented")
 
@@ -22,14 +20,13 @@ func (protocol *Protocol) handleGetServiceItemRightRequest(packet nex.PacketInte
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	getServiceItemRightParam := service_item_wii_sports_club_types.NewServiceItemGetServiceItemRightParam()
-	err = getServiceItemRightParam.ExtractFrom(parametersStream)
+
+	err := getServiceItemRightParam.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.GetServiceItemRightRequest(fmt.Errorf("Failed to read getServiceItemRightParam from parameters. %s", err.Error()), packet, callID, nil)
 		if rmcError != nil {

@@ -17,7 +17,6 @@ func (protocol *Protocol) handleFixSanityErrors(packet nex.PacketInterface) {
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 
 	rmcMessage, rmcError := protocol.FixSanityErrors(nil, packet, callID)

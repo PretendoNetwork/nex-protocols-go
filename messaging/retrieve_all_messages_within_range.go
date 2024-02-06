@@ -11,8 +11,6 @@ import (
 )
 
 func (protocol *Protocol) handleRetrieveAllMessagesWithinRange(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.RetrieveAllMessagesWithinRange == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "Messaging::RetrieveAllMessagesWithinRange not implemented")
 
@@ -23,13 +21,15 @@ func (protocol *Protocol) handleRetrieveAllMessagesWithinRange(packet nex.Packet
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	recipient := messaging_types.NewMessageRecipient()
+	resultRange := types.NewResultRange()
+
+	var err error
+
 	err = recipient.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.RetrieveAllMessagesWithinRange(fmt.Errorf("Failed to read recipient from parameters. %s", err.Error()), packet, callID, nil, nil)
@@ -40,7 +40,6 @@ func (protocol *Protocol) handleRetrieveAllMessagesWithinRange(packet nex.Packet
 		return
 	}
 
-	resultRange := types.NewResultRange()
 	err = resultRange.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.RetrieveAllMessagesWithinRange(fmt.Errorf("Failed to read resultRange from parameters. %s", err.Error()), packet, callID, nil, nil)

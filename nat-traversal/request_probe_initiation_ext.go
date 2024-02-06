@@ -10,9 +10,7 @@ import (
 )
 
 func (protocol *Protocol) handleRequestProbeInitiationExt(packet nex.PacketInterface) {
-	var err error
-
-	if protocol.ReportNATProperties == nil {
+	if protocol.RequestProbeInitiationExt == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "NATTraversal::RequestProbeInitiationExt not implemented")
 
 		globals.Logger.Warning(err.Message)
@@ -22,14 +20,16 @@ func (protocol *Protocol) handleRequestProbeInitiationExt(packet nex.PacketInter
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	targetList := types.NewList[*types.String]()
 	targetList.Type = types.NewString("")
+	stationToProbe := types.NewString("")
+
+	var err error
+
 	err = targetList.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.RequestProbeInitiationExt(fmt.Errorf("Failed to read targetList from parameters. %s", err.Error()), packet, callID, nil, nil)
@@ -40,7 +40,6 @@ func (protocol *Protocol) handleRequestProbeInitiationExt(packet nex.PacketInter
 		return
 	}
 
-	stationToProbe := types.NewString("")
 	err = stationToProbe.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.RequestProbeInitiationExt(fmt.Errorf("Failed to read stationToProbe from parameters. %s", err.Error()), packet, callID, nil, nil)

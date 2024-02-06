@@ -17,7 +17,6 @@ func (protocol *Protocol) handleLoadUserInfo(packet nex.PacketInterface) {
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 
 	rmcMessage, rmcError := protocol.LoadUserInfo(nil, packet, callID)

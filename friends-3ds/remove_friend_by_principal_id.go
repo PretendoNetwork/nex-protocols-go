@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handleRemoveFriendByPrincipalID(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.RemoveFriendByPrincipalID == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "Friends3DS::RemoveFriendByPrincipalID not implemented")
 
@@ -22,14 +20,13 @@ func (protocol *Protocol) handleRemoveFriendByPrincipalID(packet nex.PacketInter
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	pid := types.NewPID(0)
-	err = pid.ExtractFrom(parametersStream)
+
+	err := pid.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.RemoveFriendByPrincipalID(fmt.Errorf("Failed to read pid from parameters. %s", err.Error()), packet, callID, nil)
 		if rmcError != nil {

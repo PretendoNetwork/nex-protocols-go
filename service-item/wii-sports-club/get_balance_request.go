@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handleGetBalanceRequest(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.GetBalanceRequest == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "ServiceItemWiiSportsClub::GetBalanceRequest not implemented")
 
@@ -22,14 +20,13 @@ func (protocol *Protocol) handleGetBalanceRequest(packet nex.PacketInterface) {
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	getBalanceParam := service_item_wii_sports_club_types.NewServiceItemGetBalanceParam()
-	err = getBalanceParam.ExtractFrom(parametersStream)
+
+	err := getBalanceParam.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.GetBalanceRequest(fmt.Errorf("Failed to read getBalanceParam from parameters. %s", err.Error()), packet, callID, nil)
 		if rmcError != nil {

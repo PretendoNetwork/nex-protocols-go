@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handleDeleteCommonData(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.DeleteCommonData == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "Ranking2::DeleteCommonData not implemented")
 
@@ -22,14 +20,13 @@ func (protocol *Protocol) handleDeleteCommonData(packet nex.PacketInterface) {
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	nexUniqueID := types.NewPrimitiveU64(0)
-	err = nexUniqueID.ExtractFrom(parametersStream)
+
+	err := nexUniqueID.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.DeleteCommonData(fmt.Errorf("Failed to read nexUniqueID from parameters. %s", err.Error()), packet, callID, nil)
 		if rmcError != nil {

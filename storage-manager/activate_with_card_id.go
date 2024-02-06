@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handleActivateWithCardID(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.ActivateWithCardID == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "StorageManager::ActivateWithCardID not implemented")
 
@@ -22,13 +20,15 @@ func (protocol *Protocol) handleActivateWithCardID(packet nex.PacketInterface) {
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	unknown := types.NewPrimitiveU8(0)
+	cardID := types.NewPrimitiveU64(0)
+
+	var err error
+
 	err = unknown.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.ActivateWithCardID(fmt.Errorf("Failed to read unknown from parameters. %s", err.Error()), packet, callID, nil, nil)
@@ -39,7 +39,6 @@ func (protocol *Protocol) handleActivateWithCardID(packet nex.PacketInterface) {
 		return
 	}
 
-	cardID := types.NewPrimitiveU64(0)
 	err = cardID.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.ActivateWithCardID(fmt.Errorf("Failed to read cardID from parameters. %s", err.Error()), packet, callID, nil, nil)

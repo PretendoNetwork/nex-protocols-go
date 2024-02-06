@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handleJoinCommunity(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.JoinCommunity == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "MatchmakeExtension::JoinCommunity not implemented")
 
@@ -22,13 +20,16 @@ func (protocol *Protocol) handleJoinCommunity(packet nex.PacketInterface) {
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	gid := types.NewPrimitiveU32(0)
+	strMessage := types.NewString("")
+	strPassword := types.NewString("")
+
+	var err error
+
 	err = gid.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.JoinCommunity(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
@@ -39,7 +40,6 @@ func (protocol *Protocol) handleJoinCommunity(packet nex.PacketInterface) {
 		return
 	}
 
-	strMessage := types.NewString("")
 	err = strMessage.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.JoinCommunity(fmt.Errorf("Failed to read strMessage from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
@@ -50,7 +50,6 @@ func (protocol *Protocol) handleJoinCommunity(packet nex.PacketInterface) {
 		return
 	}
 
-	strPassword := types.NewString("")
 	err = strPassword.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.JoinCommunity(fmt.Errorf("Failed to read strPassword from parameters. %s", err.Error()), packet, callID, nil, nil, nil)

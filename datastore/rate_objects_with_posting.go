@@ -11,8 +11,6 @@ import (
 )
 
 func (protocol *Protocol) handleRateObjectsWithPosting(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.RateObjectsWithPosting == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "DataStore::RateObjectsWithPosting not implemented")
 
@@ -23,14 +21,21 @@ func (protocol *Protocol) handleRateObjectsWithPosting(packet nex.PacketInterfac
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	targets := types.NewList[*datastore_types.DataStoreRatingTarget]()
 	targets.Type = datastore_types.NewDataStoreRatingTarget()
+	rateParams := types.NewList[*datastore_types.DataStoreRateObjectParam]()
+	rateParams.Type = datastore_types.NewDataStoreRateObjectParam()
+	postParams := types.NewList[*datastore_types.DataStorePreparePostParam]()
+	postParams.Type = datastore_types.NewDataStorePreparePostParam()
+	transactional := types.NewPrimitiveBool(false)
+	fetchRatings := types.NewPrimitiveBool(false)
+
+	var err error
+
 	err = targets.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.RateObjectsWithPosting(fmt.Errorf("Failed to read targets from parameters. %s", err.Error()), packet, callID, nil, nil, nil, nil, nil)
@@ -41,8 +46,6 @@ func (protocol *Protocol) handleRateObjectsWithPosting(packet nex.PacketInterfac
 		return
 	}
 
-	rateParams := types.NewList[*datastore_types.DataStoreRateObjectParam]()
-	rateParams.Type = datastore_types.NewDataStoreRateObjectParam()
 	err = rateParams.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.RateObjectsWithPosting(fmt.Errorf("Failed to read rateParams from parameters. %s", err.Error()), packet, callID, nil, nil, nil, nil, nil)
@@ -53,8 +56,6 @@ func (protocol *Protocol) handleRateObjectsWithPosting(packet nex.PacketInterfac
 		return
 	}
 
-	postParams := types.NewList[*datastore_types.DataStorePreparePostParam]()
-	postParams.Type = datastore_types.NewDataStorePreparePostParam()
 	err = postParams.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.RateObjectsWithPosting(fmt.Errorf("Failed to read postParams from parameters. %s", err.Error()), packet, callID, nil, nil, nil, nil, nil)
@@ -65,7 +66,6 @@ func (protocol *Protocol) handleRateObjectsWithPosting(packet nex.PacketInterfac
 		return
 	}
 
-	transactional := types.NewPrimitiveBool(false)
 	err = transactional.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.RateObjectsWithPosting(fmt.Errorf("Failed to read transactional from parameters. %s", err.Error()), packet, callID, nil, nil, nil, nil, nil)
@@ -76,7 +76,6 @@ func (protocol *Protocol) handleRateObjectsWithPosting(packet nex.PacketInterfac
 		return
 	}
 
-	fetchRatings := types.NewPrimitiveBool(false)
 	err = fetchRatings.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.RateObjectsWithPosting(fmt.Errorf("Failed to read fetchRatings from parameters. %s", err.Error()), packet, callID, nil, nil, nil, nil, nil)

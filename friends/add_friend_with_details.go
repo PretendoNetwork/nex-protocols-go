@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handleAddFriendByNameWithDetails(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.AddFriendByNameWithDetails == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "Friends::AddFriendByNameWithDetails not implemented")
 
@@ -22,13 +20,16 @@ func (protocol *Protocol) handleAddFriendByNameWithDetails(packet nex.PacketInte
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	uiPlayer := types.NewPrimitiveU32(0)
+	uiDetails := types.NewPrimitiveU32(0)
+	strMessage := types.NewString("")
+
+	var err error
+
 	err = uiPlayer.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.AddFriendByNameWithDetails(fmt.Errorf("Failed to read uiPlayer from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
@@ -39,7 +40,6 @@ func (protocol *Protocol) handleAddFriendByNameWithDetails(packet nex.PacketInte
 		return
 	}
 
-	uiDetails := types.NewPrimitiveU32(0)
 	err = uiDetails.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.AddFriendByNameWithDetails(fmt.Errorf("Failed to read uiDetails from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
@@ -50,7 +50,6 @@ func (protocol *Protocol) handleAddFriendByNameWithDetails(packet nex.PacketInte
 		return
 	}
 
-	strMessage := types.NewString("")
 	err = strMessage.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.AddFriendByNameWithDetails(fmt.Errorf("Failed to read strMessage from parameters. %s", err.Error()), packet, callID, nil, nil, nil)

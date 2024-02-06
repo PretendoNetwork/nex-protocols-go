@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handlePrepareGetBankObject(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.PrepareGetBankObject == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "DataStorePokemonBank::PrepareGetBankObject not implemented")
 
@@ -22,13 +20,15 @@ func (protocol *Protocol) handlePrepareGetBankObject(packet nex.PacketInterface)
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	slotID := types.NewPrimitiveU16(0)
+	applicationID := types.NewPrimitiveU16(0)
+
+	var err error
+
 	err = slotID.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.PrepareGetBankObject(fmt.Errorf("Failed to read slotID from parameters. %s", err.Error()), packet, callID, nil, nil)
@@ -39,7 +39,6 @@ func (protocol *Protocol) handlePrepareGetBankObject(packet nex.PacketInterface)
 		return
 	}
 
-	applicationID := types.NewPrimitiveU16(0)
 	err = applicationID.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.PrepareGetBankObject(fmt.Errorf("Failed to read applicationID from parameters. %s", err.Error()), packet, callID, nil, nil)

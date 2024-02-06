@@ -19,7 +19,6 @@ func (protocol *Protocol) handleUnregisterCommunityCompetitionByID(packet nex.Pa
 	globals.Logger.Warning("MatchmakeExtensionSuperSmashBros4::UnregisterCommunityCompetitionByID STUBBED")
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 
 	rmcMessage, rmcError := protocol.UnregisterCommunityCompetitionByID(nil, packet, callID, packet.Payload())

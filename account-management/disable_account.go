@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handleDisableAccount(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.DisableAccount == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "AccountManagement::DisableAccount not implemented")
 
@@ -22,13 +20,16 @@ func (protocol *Protocol) handleDisableAccount(packet nex.PacketInterface) {
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	idPrincipal := types.NewPID(0)
+	dtUntil := types.NewDateTime(0)
+	strMessage := types.NewString("")
+
+	var err error
+
 	err = idPrincipal.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.DisableAccount(fmt.Errorf("Failed to read idPrincipal from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
@@ -39,7 +40,6 @@ func (protocol *Protocol) handleDisableAccount(packet nex.PacketInterface) {
 		return
 	}
 
-	dtUntil := types.NewDateTime(0)
 	err = dtUntil.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.DisableAccount(fmt.Errorf("Failed to read dtUntil from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
@@ -50,7 +50,6 @@ func (protocol *Protocol) handleDisableAccount(packet nex.PacketInterface) {
 		return
 	}
 
-	strMessage := types.NewString("")
 	err = strMessage.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.DisableAccount(fmt.Errorf("Failed to read strMessage from parameters. %s", err.Error()), packet, callID, nil, nil, nil)

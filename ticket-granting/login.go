@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handleLogin(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.Login == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "TicketGranting::Login not implemented")
 
@@ -22,14 +20,13 @@ func (protocol *Protocol) handleLogin(packet nex.PacketInterface) {
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	strUserName := types.NewString("")
-	err = strUserName.ExtractFrom(parametersStream)
+
+	err := strUserName.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.Login(fmt.Errorf("Failed to read strUserName from parameters. %s", err.Error()), packet, callID, nil)
 		if rmcError != nil {

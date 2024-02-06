@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handleStartChallenge(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.StartChallenge == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "ServiceItemWiiSportsClub::StartChallenge not implemented")
 
@@ -22,14 +20,13 @@ func (protocol *Protocol) handleStartChallenge(packet nex.PacketInterface) {
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	startChallengeParam := service_item_wii_sports_club_types.NewServiceItemStartChallengeParam()
-	err = startChallengeParam.ExtractFrom(parametersStream)
+
+	err := startChallengeParam.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.StartChallenge(fmt.Errorf("Failed to read startChallengeParam from parameters. %s", err.Error()), packet, callID, nil)
 		if rmcError != nil {

@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handleGetFriendUserProfiles(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.GetFriendUserProfiles == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "MatchmakeExtensionMonsterHunterXX::GetFriendUserProfiles not implemented")
 
@@ -22,15 +20,14 @@ func (protocol *Protocol) handleGetFriendUserProfiles(packet nex.PacketInterface
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	pids := types.NewList[*types.PID]()
 	pids.Type = types.NewPID(0)
-	err = pids.ExtractFrom(parametersStream)
+
+	err := pids.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.GetFriendUserProfiles(fmt.Errorf("Failed to read pids from parameters. %s", err.Error()), packet, callID, nil)
 		if rmcError != nil {

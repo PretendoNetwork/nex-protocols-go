@@ -11,8 +11,6 @@ import (
 )
 
 func (protocol *Protocol) handleGetFriendComment(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.GetFriendComment == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "Friends3DS::GetFriendComment not implemented")
 
@@ -23,15 +21,14 @@ func (protocol *Protocol) handleGetFriendComment(packet nex.PacketInterface) {
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	friends := types.NewList[*friends_3ds_types.FriendInfo]()
 	friends.Type = friends_3ds_types.NewFriendInfo()
-	err = friends.ExtractFrom(parametersStream)
+
+	err := friends.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.GetFriendComment(fmt.Errorf("Failed to read friends from parameters. %s", err.Error()), packet, callID, nil)
 		if rmcError != nil {

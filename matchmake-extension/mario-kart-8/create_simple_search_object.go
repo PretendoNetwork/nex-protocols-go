@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handleCreateSimpleSearchObject(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.CreateSimpleSearchObject == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "MatchmakeExtensionMarioKart8::CreateSimpleSearchObject not implemented")
 
@@ -22,14 +20,13 @@ func (protocol *Protocol) handleCreateSimpleSearchObject(packet nex.PacketInterf
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	object := matchmake_extension_mario_kart8_types.NewSimpleSearchObject()
-	err = object.ExtractFrom(parametersStream)
+
+	err := object.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.CreateSimpleSearchObject(fmt.Errorf("Failed to read object from parameters. %s", err.Error()), packet, callID, nil)
 		if rmcError != nil {

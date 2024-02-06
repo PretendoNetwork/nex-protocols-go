@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handleUpdateCommunity(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.UpdateCommunity == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "MatchmakeExtension::UpdateCommunity not implemented")
 
@@ -22,14 +20,13 @@ func (protocol *Protocol) handleUpdateCommunity(packet nex.PacketInterface) {
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	community := match_making_types.NewPersistentGathering()
-	err = community.ExtractFrom(parametersStream)
+
+	err := community.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.UpdateCommunity(fmt.Errorf("Failed to read community from parameters. %s", err.Error()), packet, callID, nil)
 		if rmcError != nil {

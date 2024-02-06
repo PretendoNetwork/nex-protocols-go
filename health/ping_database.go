@@ -17,7 +17,6 @@ func (protocol *Protocol) handlePingDatabase(packet nex.PacketInterface) {
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 
 	rmcMessage, rmcError := protocol.PingDatabase(nil, packet, callID)

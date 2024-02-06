@@ -19,7 +19,6 @@ func (protocol *Protocol) handleReplaceTournamentLeafNode(packet nex.PacketInter
 	globals.Logger.Warning("MatchmakeExtensionSuperSmashBros4::ReplaceTournamentLeafNode STUBBED")
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 
 	rmcMessage, rmcError := protocol.ReplaceTournamentLeafNode(nil, packet, callID, packet.Payload())

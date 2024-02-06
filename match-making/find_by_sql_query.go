@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handleFindBySQLQuery(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.FindBySQLQuery == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "MatchMaking::FindBySQLQuery not implemented")
 
@@ -22,13 +20,15 @@ func (protocol *Protocol) handleFindBySQLQuery(packet nex.PacketInterface) {
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	strQuery := types.NewString("")
+	resultRange := types.NewResultRange()
+
+	var err error
+
 	err = strQuery.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.FindBySQLQuery(fmt.Errorf("Failed to read strQuery from parameters. %s", err.Error()), packet, callID, nil, nil)
@@ -39,7 +39,6 @@ func (protocol *Protocol) handleFindBySQLQuery(packet nex.PacketInterface) {
 		return
 	}
 
-	resultRange := types.NewResultRange()
 	err = resultRange.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.FindBySQLQuery(fmt.Errorf("Failed to read resultRange from parameters. %s", err.Error()), packet, callID, nil, nil)

@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handleSetApplicationConfig(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.SetApplicationConfig == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "DataStoreSuperMarioMaker::SetApplicationConfig not implemented")
 
@@ -22,13 +20,16 @@ func (protocol *Protocol) handleSetApplicationConfig(packet nex.PacketInterface)
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	applicationID := types.NewPrimitiveU32(0)
+	key := types.NewPrimitiveU32(0)
+	value := types.NewPrimitiveS32(0)
+
+	var err error
+
 	err = applicationID.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.SetApplicationConfig(fmt.Errorf("Failed to read applicationID from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
@@ -39,7 +40,6 @@ func (protocol *Protocol) handleSetApplicationConfig(packet nex.PacketInterface)
 		return
 	}
 
-	key := types.NewPrimitiveU32(0)
 	err = key.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.SetApplicationConfig(fmt.Errorf("Failed to read key from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
@@ -50,7 +50,6 @@ func (protocol *Protocol) handleSetApplicationConfig(packet nex.PacketInterface)
 		return
 	}
 
-	value := types.NewPrimitiveS32(0)
 	err = value.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.SetApplicationConfig(fmt.Errorf("Failed to read value from parameters. %s", err.Error()), packet, callID, nil, nil, nil)

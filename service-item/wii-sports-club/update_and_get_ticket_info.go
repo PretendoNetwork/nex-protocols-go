@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handleUpdateAndGetTicketInfo(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.UpdateAndGetTicketInfo == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "ServiceItemWiiSportsClub::UpdateAndGetTicketInfo not implemented")
 
@@ -22,14 +20,13 @@ func (protocol *Protocol) handleUpdateAndGetTicketInfo(packet nex.PacketInterfac
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	forceRetrieveFromEShop := types.NewPrimitiveBool(false)
-	err = forceRetrieveFromEShop.ExtractFrom(parametersStream)
+
+	err := forceRetrieveFromEShop.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.UpdateAndGetTicketInfo(fmt.Errorf("Failed to read forceRetrieveFromEShop from parameters. %s", err.Error()), packet, callID, nil)
 		if rmcError != nil {

@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handleFindInvitations(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.FindInvitations == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "MatchMaking::FindInvitations not implemented")
 
@@ -22,14 +20,13 @@ func (protocol *Protocol) handleFindInvitations(packet nex.PacketInterface) {
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	resultRange := types.NewResultRange()
-	err = resultRange.ExtractFrom(parametersStream)
+
+	err := resultRange.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.FindInvitations(fmt.Errorf("Failed to read resultRange from parameters. %s", err.Error()), packet, callID, nil)
 		if rmcError != nil {

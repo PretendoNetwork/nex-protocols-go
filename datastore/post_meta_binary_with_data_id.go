@@ -11,8 +11,6 @@ import (
 )
 
 func (protocol *Protocol) handlePostMetaBinaryWithDataID(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.PostMetaBinaryWithDataID == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "DataStore::PostMetaBinaryWithDataID not implemented")
 
@@ -23,13 +21,15 @@ func (protocol *Protocol) handlePostMetaBinaryWithDataID(packet nex.PacketInterf
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	dataID := types.NewPrimitiveU64(0)
+	param := datastore_types.NewDataStorePreparePostParam()
+
+	var err error
+
 	err = dataID.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.PostMetaBinaryWithDataID(fmt.Errorf("Failed to read dataID from parameters. %s", err.Error()), packet, callID, nil, nil)
@@ -40,7 +40,6 @@ func (protocol *Protocol) handlePostMetaBinaryWithDataID(packet nex.PacketInterf
 		return
 	}
 
-	param := datastore_types.NewDataStorePreparePostParam()
 	err = param.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.PostMetaBinaryWithDataID(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil, nil)

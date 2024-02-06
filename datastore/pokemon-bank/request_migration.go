@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handleRequestMigration(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.RequestMigration == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "DataStorePokemonBank::RequestMigration not implemented")
 
@@ -22,13 +20,16 @@ func (protocol *Protocol) handleRequestMigration(packet nex.PacketInterface) {
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	oneTimePassword := types.NewString("")
+	boxes := types.NewList[*types.PrimitiveU32]()
+	boxes.Type = types.NewPrimitiveU32(0)
+
+	var err error
+
 	err = oneTimePassword.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.RequestMigration(fmt.Errorf("Failed to read oneTimePassword from parameters. %s", err.Error()), packet, callID, nil, nil)
@@ -39,8 +40,6 @@ func (protocol *Protocol) handleRequestMigration(packet nex.PacketInterface) {
 		return
 	}
 
-	boxes := types.NewList[*types.PrimitiveU32]()
-	boxes.Type = types.NewPrimitiveU32(0)
 	err = boxes.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.RequestMigration(fmt.Errorf("Failed to read boxes from parameters. %s", err.Error()), packet, callID, nil, nil)

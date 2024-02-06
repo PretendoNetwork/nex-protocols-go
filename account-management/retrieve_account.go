@@ -17,7 +17,6 @@ func (protocol *Protocol) handleRetrieveAccount(packet nex.PacketInterface) {
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 
 	rmcMessage, rmcError := protocol.RetrieveAccount(nil, packet, callID)

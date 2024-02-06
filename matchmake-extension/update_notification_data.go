@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handleUpdateNotificationData(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.UpdateNotificationData == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "MatchmakeExtension::UpdateNotificationData not implemented")
 
@@ -22,13 +20,17 @@ func (protocol *Protocol) handleUpdateNotificationData(packet nex.PacketInterfac
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	uiType := types.NewPrimitiveU32(0)
+	uiParam1 := types.NewPrimitiveU32(0)
+	uiParam2 := types.NewPrimitiveU32(0)
+	strParam := types.NewString("")
+
+	var err error
+
 	err = uiType.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.UpdateNotificationData(fmt.Errorf("Failed to read uiType from parameters. %s", err.Error()), packet, callID, nil, nil, nil, nil)
@@ -39,7 +41,6 @@ func (protocol *Protocol) handleUpdateNotificationData(packet nex.PacketInterfac
 		return
 	}
 
-	uiParam1 := types.NewPrimitiveU32(0)
 	err = uiParam1.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.UpdateNotificationData(fmt.Errorf("Failed to read uiParam1 from parameters. %s", err.Error()), packet, callID, nil, nil, nil, nil)
@@ -50,7 +51,6 @@ func (protocol *Protocol) handleUpdateNotificationData(packet nex.PacketInterfac
 		return
 	}
 
-	uiParam2 := types.NewPrimitiveU32(0)
 	err = uiParam2.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.UpdateNotificationData(fmt.Errorf("Failed to read uiParam2 from parameters. %s", err.Error()), packet, callID, nil, nil, nil, nil)
@@ -61,7 +61,6 @@ func (protocol *Protocol) handleUpdateNotificationData(packet nex.PacketInterfac
 		return
 	}
 
-	strParam := types.NewString("")
 	err = strParam.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.UpdateNotificationData(fmt.Errorf("Failed to read strParam from parameters. %s", err.Error()), packet, callID, nil, nil, nil, nil)

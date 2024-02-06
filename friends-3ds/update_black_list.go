@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handleUpdateBlackList(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.UpdateBlackList == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "Friends3DS::UpdateBlackList not implemented")
 
@@ -22,15 +20,14 @@ func (protocol *Protocol) handleUpdateBlackList(packet nex.PacketInterface) {
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	unknown := types.NewList[*types.PrimitiveU32]()
 	unknown.Type = types.NewPrimitiveU32(0)
-	err = unknown.ExtractFrom(parametersStream)
+
+	err := unknown.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.UpdateBlackList(fmt.Errorf("Failed to read unknown from parameters. %s", err.Error()), packet, callID, nil)
 		if rmcError != nil {

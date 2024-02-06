@@ -17,7 +17,6 @@ func (protocol *Protocol) handleGetMaintenanceStatus(packet nex.PacketInterface)
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 
 	rmcMessage, rmcError := protocol.GetMaintenanceStatus(nil, packet, callID)

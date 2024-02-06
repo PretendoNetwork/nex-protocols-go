@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handleAddFriendByName(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.AddFriendByName == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "FriendsWiiU::AddFriendByName not implemented")
 
@@ -22,14 +20,13 @@ func (protocol *Protocol) handleAddFriendByName(packet nex.PacketInterface) {
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	username := types.NewString("")
-	err = username.ExtractFrom(parametersStream)
+
+	err := username.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.AddFriendByName(fmt.Errorf("Failed to read username from parameters. %s", err.Error()), packet, callID, nil)
 		if rmcError != nil {

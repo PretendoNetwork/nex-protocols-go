@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handleGetSessionURL(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.GetSessionURL == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "MatchMaking::GetSessionURL not implemented")
 
@@ -22,14 +20,13 @@ func (protocol *Protocol) handleGetSessionURL(packet nex.PacketInterface) {
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	idGathering := types.NewPrimitiveU32(0)
-	err = idGathering.ExtractFrom(parametersStream)
+
+	err := idGathering.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.GetSessionURL(fmt.Errorf("Failed to read idGathering from parameters. %s", err.Error()), packet, callID, nil)
 		if rmcError != nil {

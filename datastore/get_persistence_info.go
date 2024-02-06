@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handleGetPersistenceInfo(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.GetPersistenceInfo == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "DataStore::GetPersistenceInfo not implemented")
 
@@ -22,13 +20,15 @@ func (protocol *Protocol) handleGetPersistenceInfo(packet nex.PacketInterface) {
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	ownerID := types.NewPID(0)
+	persistenceSlotID := types.NewPrimitiveU16(0)
+
+	var err error
+
 	err = ownerID.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.GetPersistenceInfo(fmt.Errorf("Failed to read ownerID from parameters. %s", err.Error()), packet, callID, nil, nil)
@@ -39,7 +39,6 @@ func (protocol *Protocol) handleGetPersistenceInfo(packet nex.PacketInterface) {
 		return
 	}
 
-	persistenceSlotID := types.NewPrimitiveU16(0)
 	err = persistenceSlotID.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.GetPersistenceInfo(fmt.Errorf("Failed to read persistenceSlotID from parameters. %s", err.Error()), packet, callID, nil, nil)

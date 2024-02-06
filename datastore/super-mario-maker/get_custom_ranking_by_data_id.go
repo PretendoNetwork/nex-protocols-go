@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handleGetCustomRankingByDataID(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.GetCustomRankingByDataID == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "DataStoreSuperMarioMaker::GetCustomRankingByDataID not implemented")
 
@@ -22,14 +20,13 @@ func (protocol *Protocol) handleGetCustomRankingByDataID(packet nex.PacketInterf
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	param := datastore_super_mario_maker_types.NewDataStoreGetCustomRankingByDataIDParam()
-	err = param.ExtractFrom(parametersStream)
+
+	err := param.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.GetCustomRankingByDataID(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
 		if rmcError != nil {

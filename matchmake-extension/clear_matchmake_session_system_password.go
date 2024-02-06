@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handleClearMatchmakeSessionSystemPassword(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.ClearMatchmakeSessionSystemPassword == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "MatchmakeExtension::ClearMatchmakeSessionSystemPassword not implemented")
 
@@ -22,14 +20,13 @@ func (protocol *Protocol) handleClearMatchmakeSessionSystemPassword(packet nex.P
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	gid := types.NewPrimitiveU32(0)
-	err = gid.ExtractFrom(parametersStream)
+
+	err := gid.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.ClearMatchmakeSessionSystemPassword(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), packet, callID, nil)
 		if rmcError != nil {

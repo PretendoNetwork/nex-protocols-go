@@ -17,7 +17,6 @@ func (protocol *Protocol) handleGetFriendSubscriptionData(packet nex.PacketInter
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 
 	rmcMessage, rmcError := protocol.GetFriendSubscriptionData(nil, packet, callID)

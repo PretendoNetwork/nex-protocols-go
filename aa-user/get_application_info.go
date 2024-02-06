@@ -17,7 +17,6 @@ func (protocol *Protocol) handleGetApplicationInfo(packet nex.PacketInterface) {
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 
 	rmcMessage, rmcError := protocol.GetApplicationInfo(nil, packet, callID)

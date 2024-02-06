@@ -11,8 +11,6 @@ import (
 )
 
 func (protocol *Protocol) handleGetStats(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.GetStats == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "Ranking::GetStats not implemented")
 
@@ -23,13 +21,16 @@ func (protocol *Protocol) handleGetStats(packet nex.PacketInterface) {
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	category := types.NewPrimitiveU32(0)
+	orderParam := ranking_types.NewRankingOrderParam()
+	flags := types.NewPrimitiveU32(0)
+
+	var err error
+
 	err = category.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.GetStats(fmt.Errorf("Failed to read category from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
@@ -40,7 +41,6 @@ func (protocol *Protocol) handleGetStats(packet nex.PacketInterface) {
 		return
 	}
 
-	orderParam := ranking_types.NewRankingOrderParam()
 	err = orderParam.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.GetStats(fmt.Errorf("Failed to read orderParam from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
@@ -51,7 +51,6 @@ func (protocol *Protocol) handleGetStats(packet nex.PacketInterface) {
 		return
 	}
 
-	flags := types.NewPrimitiveU32(0)
 	err = flags.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.GetStats(fmt.Errorf("Failed to read flags from parameters. %s", err.Error()), packet, callID, nil, nil, nil)

@@ -17,7 +17,6 @@ func (protocol *Protocol) handleGetNextReplay(packet nex.PacketInterface) {
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 
 	rmcMessage, rmcError := protocol.GetNextReplay(nil, packet, callID)

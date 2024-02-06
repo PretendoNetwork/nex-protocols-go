@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handleRegisterApplication(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.RegisterApplication == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "AAUser::RegisterApplication not implemented")
 
@@ -22,14 +20,13 @@ func (protocol *Protocol) handleRegisterApplication(packet nex.PacketInterface) 
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	titleID := types.NewPrimitiveU64(0)
-	err = titleID.ExtractFrom(parametersStream)
+
+	err := titleID.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.RegisterApplication(fmt.Errorf("Failed to read titleID from parameters. %s", err.Error()), packet, callID, nil)
 		if rmcError != nil {

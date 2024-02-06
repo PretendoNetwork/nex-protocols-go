@@ -19,10 +19,7 @@ func (protocol *Protocol) handleReportDataStoreContent(packet nex.PacketInterfac
 	globals.Logger.Warning("Screening::ReportDataStoreContent STUBBED")
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
-
-	// TODO - THIS METHOD HAS AN UNKNOWN REQUEST/RESPONSE FORMAT
 
 	rmcMessage, rmcError := protocol.ReportDataStoreContent(nil, packet, callID, packet.Payload())
 	if rmcError != nil {

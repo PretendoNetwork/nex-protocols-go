@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handleUpdatePreference(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.UpdatePreference == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "FriendsWiiU::UpdatePreference not implemented")
 
@@ -22,14 +20,13 @@ func (protocol *Protocol) handleUpdatePreference(packet nex.PacketInterface) {
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	principalPreference := friends_wiiu_types.NewPrincipalPreference()
-	err = principalPreference.ExtractFrom(parametersStream)
+
+	err := principalPreference.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.UpdatePreference(fmt.Errorf("Failed to read principalPreference from parameters. %s", err.Error()), packet, callID, nil)
 		if rmcError != nil {

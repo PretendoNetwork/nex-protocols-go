@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handleRequestTicket(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.RequestTicket == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "TicketGranting::RequestTicket not implemented")
 
@@ -22,13 +20,15 @@ func (protocol *Protocol) handleRequestTicket(packet nex.PacketInterface) {
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	idSource := types.NewPID(0)
+	idTarget := types.NewPID(0)
+
+	var err error
+
 	err = idSource.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.RequestTicket(fmt.Errorf("Failed to read idSource from parameters. %s", err.Error()), packet, callID, nil, nil)
@@ -39,7 +39,6 @@ func (protocol *Protocol) handleRequestTicket(packet nex.PacketInterface) {
 		return
 	}
 
-	idTarget := types.NewPID(0)
 	err = idTarget.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.RequestTicket(fmt.Errorf("Failed to read idTarget from parameters. %s", err.Error()), packet, callID, nil, nil)

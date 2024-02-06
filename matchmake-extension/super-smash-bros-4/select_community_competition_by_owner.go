@@ -19,7 +19,6 @@ func (protocol *Protocol) handleSelectCommunityCompetitionByOwner(packet nex.Pac
 	globals.Logger.Warning("MatchmakeExtensionSuperSmashBros4::SelectCommunityCompetitionByOwner STUBBED")
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 
 	rmcMessage, rmcError := protocol.SelectCommunityCompetitionByOwner(nil, packet, callID, packet.Payload())

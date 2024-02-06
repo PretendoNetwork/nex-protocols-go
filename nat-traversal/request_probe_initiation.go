@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handleRequestProbeInitiation(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.RequestProbeInitiation == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "NATTraversal::RequestProbeInitiation not implemented")
 
@@ -22,15 +20,14 @@ func (protocol *Protocol) handleRequestProbeInitiation(packet nex.PacketInterfac
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	urlTargetList := types.NewList[*types.StationURL]()
 	urlTargetList.Type = types.NewStationURL("")
-	err = urlTargetList.ExtractFrom(parametersStream)
+
+	err := urlTargetList.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.RequestProbeInitiation(fmt.Errorf("Failed to read urlTargetList from parameters. %s", err.Error()), packet, callID, nil)
 		if rmcError != nil {

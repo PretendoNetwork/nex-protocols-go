@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handleSendReport(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.SendReport == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "SecureConnection::SendReport not implemented")
 
@@ -22,13 +20,15 @@ func (protocol *Protocol) handleSendReport(packet nex.PacketInterface) {
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	reportID := types.NewPrimitiveU32(0)
+	reportData := types.NewQBuffer(nil)
+
+	var err error
+
 	err = reportID.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.SendReport(fmt.Errorf("Failed to read reportID from parameters. %s", err.Error()), packet, callID, nil, nil)
@@ -39,7 +39,6 @@ func (protocol *Protocol) handleSendReport(packet nex.PacketInterface) {
 		return
 	}
 
-	reportData := types.NewQBuffer(nil)
 	err = reportData.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.SendReport(fmt.Errorf("Failed to read reportData from parameters. %s", err.Error()), packet, callID, nil, nil)

@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handleUpdateApplicationBuffer(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.UpdateApplicationBuffer == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "MatchmakeExtension::UpdateApplicationBuffer not implemented")
 
@@ -22,13 +20,15 @@ func (protocol *Protocol) handleUpdateApplicationBuffer(packet nex.PacketInterfa
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	gid := types.NewPrimitiveU32(0)
+	applicationBuffer := types.NewBuffer(nil)
+
+	var err error
+
 	err = gid.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.UpdateApplicationBuffer(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), packet, callID, nil, nil)
@@ -39,7 +39,6 @@ func (protocol *Protocol) handleUpdateApplicationBuffer(packet nex.PacketInterfa
 		return
 	}
 
-	applicationBuffer := types.NewBuffer(nil)
 	err = applicationBuffer.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.UpdateApplicationBuffer(fmt.Errorf("Failed to read applicationBuffer from parameters. %s", err.Error()), packet, callID, nil, nil)

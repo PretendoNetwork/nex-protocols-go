@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handleGetRanking(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.GetRanking == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "Ranking2::GetRanking not implemented")
 
@@ -22,14 +20,13 @@ func (protocol *Protocol) handleGetRanking(packet nex.PacketInterface) {
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	getParam := ranking2_types.NewRanking2GetParam()
-	err = getParam.ExtractFrom(parametersStream)
+
+	err := getParam.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.GetRanking(fmt.Errorf("Failed to read getParam from parameters. %s", err.Error()), packet, callID, nil)
 		if rmcError != nil {

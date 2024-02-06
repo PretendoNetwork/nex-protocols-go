@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handleRegisterGathering(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.RegisterGathering == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "MatchMaking::RegisterGathering not implemented")
 
@@ -22,14 +20,13 @@ func (protocol *Protocol) handleRegisterGathering(packet nex.PacketInterface) {
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	anyGathering := types.NewAnyDataHolder()
-	err = anyGathering.ExtractFrom(parametersStream)
+
+	err := anyGathering.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.RegisterGathering(fmt.Errorf("Failed to read anyGathering from parameters. %s", err.Error()), packet, callID, nil)
 		if rmcError != nil {

@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handleFindByDescriptionRegex(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.FindByDescriptionRegex == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "MatchMaking::FindByDescriptionRegex not implemented")
 
@@ -22,13 +20,15 @@ func (protocol *Protocol) handleFindByDescriptionRegex(packet nex.PacketInterfac
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	strDescriptionRegex := types.NewString("")
+	resultRange := types.NewResultRange()
+
+	var err error
+
 	err = strDescriptionRegex.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.FindByDescriptionRegex(fmt.Errorf("Failed to read strDescriptionRegex from parameters. %s", err.Error()), packet, callID, nil, nil)
@@ -39,7 +39,6 @@ func (protocol *Protocol) handleFindByDescriptionRegex(packet nex.PacketInterfac
 		return
 	}
 
-	resultRange := types.NewResultRange()
 	err = resultRange.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.FindByDescriptionRegex(fmt.Errorf("Failed to read resultRange from parameters. %s", err.Error()), packet, callID, nil, nil)

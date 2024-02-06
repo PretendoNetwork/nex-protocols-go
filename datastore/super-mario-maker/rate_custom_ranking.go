@@ -11,8 +11,6 @@ import (
 )
 
 func (protocol *Protocol) handleRateCustomRanking(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.RateCustomRanking == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "DataStoreSuperMarioMaker::RateCustomRanking not implemented")
 
@@ -23,15 +21,14 @@ func (protocol *Protocol) handleRateCustomRanking(packet nex.PacketInterface) {
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	params := types.NewList[*datastore_super_mario_maker_types.DataStoreRateCustomRankingParam]()
 	params.Type = datastore_super_mario_maker_types.NewDataStoreRateCustomRankingParam()
-	err = params.ExtractFrom(parametersStream)
+
+	err := params.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.RateCustomRanking(fmt.Errorf("Failed to read params from parameters. %s", err.Error()), packet, callID, nil)
 		if rmcError != nil {

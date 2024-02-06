@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handleGetLawMessageRequest(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.GetLawMessageRequest == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "ServiceItemTeamKirbyClashDeluxe::GetLawMessageRequest not implemented")
 
@@ -22,14 +20,13 @@ func (protocol *Protocol) handleGetLawMessageRequest(packet nex.PacketInterface)
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	getLawMessageParam := service_item_team_kirby_clash_deluxe_types.NewServiceItemGetLawMessageParam()
-	err = getLawMessageParam.ExtractFrom(parametersStream)
+
+	err := getLawMessageParam.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.GetLawMessageRequest(fmt.Errorf("Failed to read getLawMessageParam from parameters. %s", err.Error()), packet, callID, nil)
 		if rmcError != nil {

@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handleHello(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.Hello == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "Subscriber::Hello not implemented")
 
@@ -22,14 +20,13 @@ func (protocol *Protocol) handleHello(packet nex.PacketInterface) {
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	unknown := types.NewString("")
-	err = unknown.ExtractFrom(parametersStream)
+
+	err := unknown.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.Hello(fmt.Errorf("Failed to read unknown from parameters. %s", err.Error()), packet, callID, nil)
 		if rmcError != nil {

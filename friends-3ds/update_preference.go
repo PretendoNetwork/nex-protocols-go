@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handleUpdatePreference(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.UpdatePreference == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "Friends3DS::UpdatePreference not implemented")
 
@@ -22,13 +20,16 @@ func (protocol *Protocol) handleUpdatePreference(packet nex.PacketInterface) {
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	publicMode := types.NewPrimitiveBool(false)
+	showGame := types.NewPrimitiveBool(false)
+	showPlayedGame := types.NewPrimitiveBool(false)
+
+	var err error
+
 	err = publicMode.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.UpdatePreference(fmt.Errorf("Failed to read publicMode from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
@@ -39,7 +40,6 @@ func (protocol *Protocol) handleUpdatePreference(packet nex.PacketInterface) {
 		return
 	}
 
-	showGame := types.NewPrimitiveBool(false)
 	err = showGame.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.UpdatePreference(fmt.Errorf("Failed to read showGame from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
@@ -50,7 +50,6 @@ func (protocol *Protocol) handleUpdatePreference(packet nex.PacketInterface) {
 		return
 	}
 
-	showPlayedGame := types.NewPrimitiveBool(false)
 	err = showPlayedGame.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.UpdatePreference(fmt.Errorf("Failed to read showPlayedGame from parameters. %s", err.Error()), packet, callID, nil, nil, nil)

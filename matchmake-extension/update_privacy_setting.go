@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handleUpdatePrivacySetting(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.UpdatePrivacySetting == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "MatchmakeExtension::UpdatePrivacySetting not implemented")
 
@@ -22,13 +20,15 @@ func (protocol *Protocol) handleUpdatePrivacySetting(packet nex.PacketInterface)
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	onlineStatus := types.NewPrimitiveBool(false)
+	participationCommunity := types.NewPrimitiveBool(false)
+
+	var err error
+
 	err = onlineStatus.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.UpdatePrivacySetting(fmt.Errorf("Failed to read onlineStatus from parameters. %s", err.Error()), packet, callID, nil, nil)
@@ -39,7 +39,6 @@ func (protocol *Protocol) handleUpdatePrivacySetting(packet nex.PacketInterface)
 		return
 	}
 
-	participationCommunity := types.NewPrimitiveBool(false)
 	err = participationCommunity.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.UpdatePrivacySetting(fmt.Errorf("Failed to read participationCommunity from parameters. %s", err.Error()), packet, callID, nil, nil)

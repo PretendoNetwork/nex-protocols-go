@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handleAssociateNexUniqueIDWithMyPrincipalID(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.AssociateNexUniqueIDWithMyPrincipalID == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "Utility::AssociateNexUniqueIDWithMyPrincipalID not implemented")
 
@@ -22,15 +20,13 @@ func (protocol *Protocol) handleAssociateNexUniqueIDWithMyPrincipalID(packet nex
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
-
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	uniqueIDInfo := utility_types.NewUniqueIDInfo()
-	err = uniqueIDInfo.ExtractFrom(parametersStream)
+
+	err := uniqueIDInfo.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.AssociateNexUniqueIDWithMyPrincipalID(fmt.Errorf("Failed to read uniqueIDInfo from parameters. %s", err.Error()), packet, callID, nil)
 		if rmcError != nil {

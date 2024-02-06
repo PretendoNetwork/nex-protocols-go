@@ -11,8 +11,6 @@ import (
 )
 
 func (protocol *Protocol) handleChangeMetas(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.ChangeMetas == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "DataStore::ChangeMetas not implemented")
 
@@ -23,14 +21,18 @@ func (protocol *Protocol) handleChangeMetas(packet nex.PacketInterface) {
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	dataIDs := types.NewList[*types.PrimitiveU64]()
 	dataIDs.Type = types.NewPrimitiveU64(0)
+	params := types.NewList[*datastore_types.DataStoreChangeMetaParam]()
+	params.Type = datastore_types.NewDataStoreChangeMetaParam()
+	transactional := types.NewPrimitiveBool(false)
+
+	var err error
+
 	err = dataIDs.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.ChangeMetas(fmt.Errorf("Failed to read dataIDs from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
@@ -41,8 +43,6 @@ func (protocol *Protocol) handleChangeMetas(packet nex.PacketInterface) {
 		return
 	}
 
-	params := types.NewList[*datastore_types.DataStoreChangeMetaParam]()
-	params.Type = datastore_types.NewDataStoreChangeMetaParam()
 	err = params.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.ChangeMetas(fmt.Errorf("Failed to read params from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
@@ -53,7 +53,6 @@ func (protocol *Protocol) handleChangeMetas(packet nex.PacketInterface) {
 		return
 	}
 
-	transactional := types.NewPrimitiveBool(false)
 	err = transactional.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.ChangeMetas(fmt.Errorf("Failed to read transactional from parameters. %s", err.Error()), packet, callID, nil, nil, nil)

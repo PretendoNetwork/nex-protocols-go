@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handleEndRoundWithoutReport(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.EndRoundWithoutReport == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "MatchmakeReferee::EndRoundWithoutReport not implemented")
 
@@ -22,14 +20,13 @@ func (protocol *Protocol) handleEndRoundWithoutReport(packet nex.PacketInterface
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	roundID := types.NewPrimitiveU64(0)
-	err = roundID.ExtractFrom(parametersStream)
+
+	err := roundID.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.EndRoundWithoutReport(fmt.Errorf("Failed to read roundID from parameters. %s", err.Error()), packet, callID, nil)
 		if rmcError != nil {

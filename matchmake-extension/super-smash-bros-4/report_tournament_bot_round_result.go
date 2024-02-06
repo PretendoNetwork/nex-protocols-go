@@ -19,7 +19,6 @@ func (protocol *Protocol) handleReportTournamentBotRoundResult(packet nex.Packet
 	globals.Logger.Warning("MatchmakeExtensionSuperSmashBros4::ReportTournamentBotRoundResult STUBBED")
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 
 	rmcMessage, rmcError := protocol.ReportTournamentBotRoundResult(nil, packet, callID, packet.Payload())

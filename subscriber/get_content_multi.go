@@ -11,8 +11,6 @@ import (
 )
 
 func (protocol *Protocol) handleGetContentMulti(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.GetContentMulti == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "Subscriber::GetContentMulti not implemented")
 
@@ -23,15 +21,14 @@ func (protocol *Protocol) handleGetContentMulti(packet nex.PacketInterface) {
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	params := types.NewList[*subscriber_types.SubscriberGetContentParam]()
 	params.Type = subscriber_types.NewSubscriberGetContentParam()
-	err = params.ExtractFrom(parametersStream)
+
+	err := params.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.GetContentMulti(fmt.Errorf("Failed to read params from parameters. %s", err.Error()), packet, callID, nil)
 		if rmcError != nil {

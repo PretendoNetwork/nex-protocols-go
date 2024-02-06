@@ -19,7 +19,6 @@ func (protocol *Protocol) handleUnfollow(packet nex.PacketInterface) {
 	globals.Logger.Warning("Subscriber::Unfollow STUBBED")
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 
 	rmcMessage, rmcError := protocol.Unfollow(nil, packet, callID, packet.Payload())

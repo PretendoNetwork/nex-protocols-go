@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handleReportNATTraversalResult(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.ReportNATTraversalResult == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "NATTraversal::ReportNATTraversalResult not implemented")
 
@@ -24,13 +22,16 @@ func (protocol *Protocol) handleReportNATTraversalResult(packet nex.PacketInterf
 	natTraversalVersion := protocol.server.NATTraversalProtocolVersion()
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	cid := types.NewPrimitiveU32(0)
+	result := types.NewPrimitiveBool(false)
+	rtt := types.NewPrimitiveU32(0)
+
+	var err error
+
 	err = cid.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.ReportNATTraversalResult(fmt.Errorf("Failed to read cid from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
@@ -41,7 +42,6 @@ func (protocol *Protocol) handleReportNATTraversalResult(packet nex.PacketInterf
 		return
 	}
 
-	result := types.NewPrimitiveBool(false)
 	err = result.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.ReportNATTraversalResult(fmt.Errorf("Failed to read result from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
@@ -52,11 +52,9 @@ func (protocol *Protocol) handleReportNATTraversalResult(packet nex.PacketInterf
 		return
 	}
 
-	rtt := types.NewPrimitiveU32(0)
-
 	// TODO - Is this the right version?
 	if natTraversalVersion.GreaterOrEqual("3.0.0") {
-		rttU32, err := parametersStream.ReadPrimitiveUInt32LE()
+		err = rtt.ExtractFrom(parametersStream)
 		if err != nil {
 			_, rmcError := protocol.ReportNATTraversalResult(fmt.Errorf("Failed to read rtt from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
 			if rmcError != nil {
@@ -65,8 +63,6 @@ func (protocol *Protocol) handleReportNATTraversalResult(packet nex.PacketInterf
 
 			return
 		}
-
-		rtt = types.NewPrimitiveU32(rttU32)
 	}
 
 	rmcMessage, rmcError := protocol.ReportNATTraversalResult(nil, packet, callID, cid, result, rtt)

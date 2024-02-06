@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handleGetIntegerSettings(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.GetIntegerSettings == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "Utility::GetIntegerSettings not implemented")
 
@@ -22,15 +20,13 @@ func (protocol *Protocol) handleGetIntegerSettings(packet nex.PacketInterface) {
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
-
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	integerSettingIndex := types.NewPrimitiveU32(0)
-	err = integerSettingIndex.ExtractFrom(parametersStream)
+
+	err := integerSettingIndex.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.GetIntegerSettings(fmt.Errorf("Failed to read integerSettingIndex from parameters. %s", err.Error()), packet, callID, nil)
 		if rmcError != nil {

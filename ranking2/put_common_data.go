@@ -11,8 +11,6 @@ import (
 )
 
 func (protocol *Protocol) handlePutCommonData(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.PutCommonData == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "Ranking2::PutCommonData not implemented")
 
@@ -23,13 +21,15 @@ func (protocol *Protocol) handlePutCommonData(packet nex.PacketInterface) {
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	commonData := ranking2_types.NewRanking2CommonData()
+	nexUniqueID := types.NewPrimitiveU64(0)
+
+	var err error
+
 	err = commonData.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.PutCommonData(fmt.Errorf("Failed to read commonData from parameters. %s", err.Error()), packet, callID, nil, nil)
@@ -40,7 +40,6 @@ func (protocol *Protocol) handlePutCommonData(packet nex.PacketInterface) {
 		return
 	}
 
-	nexUniqueID := types.NewPrimitiveU64(0)
 	err = nexUniqueID.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.PutCommonData(fmt.Errorf("Failed to read nexUniqueID from parameters. %s", err.Error()), packet, callID, nil, nil)

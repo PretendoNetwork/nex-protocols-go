@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handleInvite(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.Invite == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "MatchMaking::Invite not implemented")
 
@@ -22,13 +20,17 @@ func (protocol *Protocol) handleInvite(packet nex.PacketInterface) {
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	idGathering := types.NewPrimitiveU32(0)
+	lstPrincipals := types.NewList[*types.PID]()
+	lstPrincipals.Type = types.NewPID(0)
+	strMessage := types.NewString("")
+
+	var err error
+
 	err = idGathering.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.Invite(fmt.Errorf("Failed to read idGathering from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
@@ -39,8 +41,6 @@ func (protocol *Protocol) handleInvite(packet nex.PacketInterface) {
 		return
 	}
 
-	lstPrincipals := types.NewList[*types.PID]()
-	lstPrincipals.Type = types.NewPID(0)
 	err = lstPrincipals.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.Invite(fmt.Errorf("Failed to read lstPrincipals from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
@@ -51,7 +51,6 @@ func (protocol *Protocol) handleInvite(packet nex.PacketInterface) {
 		return
 	}
 
-	strMessage := types.NewString("")
 	err = strMessage.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.Invite(fmt.Errorf("Failed to read strMessage from parameters. %s", err.Error()), packet, callID, nil, nil, nil)

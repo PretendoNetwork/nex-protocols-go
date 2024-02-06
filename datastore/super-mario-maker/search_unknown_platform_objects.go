@@ -19,7 +19,6 @@ func (protocol *Protocol) handleSearchUnknownPlatformObjects(packet nex.PacketIn
 	globals.Logger.Warning("DataStoreSuperMarioMaker::SearchUnknownPlatformObjects STUBBED")
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 
 	rmcMessage, rmcError := protocol.SearchUnknownPlatformObjects(nil, packet, callID, packet.Payload())

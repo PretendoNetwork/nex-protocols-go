@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handleGetCommonData(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.GetCommonData == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "Ranking2::GetCommonData not implemented")
 
@@ -22,13 +20,16 @@ func (protocol *Protocol) handleGetCommonData(packet nex.PacketInterface) {
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	optionFlags := types.NewPrimitiveU32(0)
+	principalID := types.NewPID(0)
+	nexUniqueID := types.NewPrimitiveU64(0)
+
+	var err error
+
 	err = optionFlags.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.GetCommonData(fmt.Errorf("Failed to read optionFlags from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
@@ -39,7 +40,6 @@ func (protocol *Protocol) handleGetCommonData(packet nex.PacketInterface) {
 		return
 	}
 
-	principalID := types.NewPID(0)
 	err = principalID.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.GetCommonData(fmt.Errorf("Failed to read principalID from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
@@ -50,7 +50,6 @@ func (protocol *Protocol) handleGetCommonData(packet nex.PacketInterface) {
 		return
 	}
 
-	nexUniqueID := types.NewPrimitiveU64(0)
 	err = nexUniqueID.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.GetCommonData(fmt.Errorf("Failed to read nexUniqueID from parameters. %s", err.Error()), packet, callID, nil, nil, nil)

@@ -17,7 +17,6 @@ func (protocol *Protocol) handleClearMyPreviouslyMatchedUserCache(packet nex.Pac
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 
 	rmcMessage, rmcError := protocol.ClearMyPreviouslyMatchedUserCache(nil, packet, callID)

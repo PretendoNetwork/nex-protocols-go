@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handleUpdateStatus(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.UpdateStatus == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "AccountManagement::UpdateStatus not implemented")
 
@@ -22,14 +20,13 @@ func (protocol *Protocol) handleUpdateStatus(packet nex.PacketInterface) {
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	strStatus := types.NewString("")
-	err = strStatus.ExtractFrom(parametersStream)
+
+	err := strStatus.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.UpdateStatus(fmt.Errorf("Failed to read strStatus from parameters. %s", err.Error()), packet, callID, nil)
 		if rmcError != nil {

@@ -19,10 +19,7 @@ func (protocol *Protocol) handleReportUser(packet nex.PacketInterface) {
 	globals.Logger.Warning("Screening::ReportUser STUBBED")
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
-
-	// TODO - THIS METHOD HAS AN UNKNOWN REQUEST/RESPONSE FORMAT
 
 	rmcMessage, rmcError := protocol.ReportUser(nil, packet, callID, packet.Payload())
 	if rmcError != nil {

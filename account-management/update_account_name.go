@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handleUpdateAccountName(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.UpdateAccountName == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "AccountManagement::UpdateAccountName not implemented")
 
@@ -22,14 +20,13 @@ func (protocol *Protocol) handleUpdateAccountName(packet nex.PacketInterface) {
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	strName := types.NewString("")
-	err = strName.ExtractFrom(parametersStream)
+
+	err := strName.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.UpdateAccountName(fmt.Errorf("Failed to read strName from parameters. %s", err.Error()), packet, callID, nil)
 		if rmcError != nil {

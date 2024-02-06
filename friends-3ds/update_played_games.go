@@ -11,8 +11,6 @@ import (
 )
 
 func (protocol *Protocol) handleUpdatePlayedGames(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.UpdatePlayedGames == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "Friends3DS::UpdatePlayedGames not implemented")
 
@@ -23,15 +21,14 @@ func (protocol *Protocol) handleUpdatePlayedGames(packet nex.PacketInterface) {
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	playedGames := types.NewList[*friends_3ds_types.PlayedGame]()
 	playedGames.Type = friends_3ds_types.NewPlayedGame()
-	err = playedGames.ExtractFrom(parametersStream)
+
+	err := playedGames.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.UpdatePlayedGames(fmt.Errorf("Failed to read playedGames from parameters. %s", err.Error()), packet, callID, nil)
 		if rmcError != nil {

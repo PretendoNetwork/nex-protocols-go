@@ -17,7 +17,6 @@ func (protocol *Protocol) handleGetActivePlayerSubscriptionData(packet nex.Packe
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 
 	rmcMessage, rmcError := protocol.GetActivePlayerSubscriptionData(nil, packet, callID)

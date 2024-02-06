@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handleEndRound(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.EndRound == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "MatchmakeReferee::EndRound not implemented")
 
@@ -22,14 +20,13 @@ func (protocol *Protocol) handleEndRound(packet nex.PacketInterface) {
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	endRoundParam := matchmake_referee_types.NewMatchmakeRefereeEndRoundParam()
-	err = endRoundParam.ExtractFrom(parametersStream)
+
+	err := endRoundParam.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.EndRound(fmt.Errorf("Failed to read endRoundParam from parameters. %s", err.Error()), packet, callID, nil)
 		if rmcError != nil {

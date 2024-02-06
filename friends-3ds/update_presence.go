@@ -11,8 +11,6 @@ import (
 )
 
 func (protocol *Protocol) handleUpdatePresence(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.UpdatePresence == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "Friends3DS::UpdatePresence not implemented")
 
@@ -23,13 +21,15 @@ func (protocol *Protocol) handleUpdatePresence(packet nex.PacketInterface) {
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	nintendoPresence := friends_3ds_types.NewNintendoPresence()
+	showGame := types.NewPrimitiveBool(false)
+
+	var err error
+
 	err = nintendoPresence.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.UpdatePresence(fmt.Errorf("Failed to read nintendoPresence from parameters. %s", err.Error()), packet, callID, nil, nil)
@@ -40,7 +40,6 @@ func (protocol *Protocol) handleUpdatePresence(packet nex.PacketInterface) {
 		return
 	}
 
-	showGame := types.NewPrimitiveBool(false)
 	err = showGame.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.UpdatePresence(fmt.Errorf("Failed to read showGame from parameters. %s", err.Error()), packet, callID, nil, nil)

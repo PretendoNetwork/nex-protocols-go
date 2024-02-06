@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handleGetFriendNotificationData(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.GetFriendNotificationData == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "MatchmakeExtension::GetFriendNotificationData not implemented")
 
@@ -22,14 +20,13 @@ func (protocol *Protocol) handleGetFriendNotificationData(packet nex.PacketInter
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	uiType := types.NewPrimitiveS32(0)
-	err = uiType.ExtractFrom(parametersStream)
+
+	err := uiType.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.GetFriendNotificationData(fmt.Errorf("Failed to read uiType from parameters. %s", err.Error()), packet, callID, nil)
 		if rmcError != nil {

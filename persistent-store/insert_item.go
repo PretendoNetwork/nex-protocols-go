@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handleInsertItem(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.InsertItem == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "PersistentStore::InsertItem not implemented")
 
@@ -22,13 +20,17 @@ func (protocol *Protocol) handleInsertItem(packet nex.PacketInterface) {
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	uiGroup := types.NewPrimitiveU32(0)
+	strTag := types.NewString("")
+	bufData := types.NewBuffer(nil)
+	bReplace := types.NewPrimitiveBool(false)
+
+	var err error
+
 	err = uiGroup.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.InsertItem(fmt.Errorf("Failed to read uiGroup from parameters. %s", err.Error()), packet, callID, nil, nil, nil, nil)
@@ -39,7 +41,6 @@ func (protocol *Protocol) handleInsertItem(packet nex.PacketInterface) {
 		return
 	}
 
-	strTag := types.NewString("")
 	err = strTag.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.InsertItem(fmt.Errorf("Failed to read strTag from parameters. %s", err.Error()), packet, callID, nil, nil, nil, nil)
@@ -50,7 +51,6 @@ func (protocol *Protocol) handleInsertItem(packet nex.PacketInterface) {
 		return
 	}
 
-	bufData := types.NewBuffer(nil)
 	err = bufData.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.InsertItem(fmt.Errorf("Failed to read bufData from parameters. %s", err.Error()), packet, callID, nil, nil, nil, nil)
@@ -61,7 +61,6 @@ func (protocol *Protocol) handleInsertItem(packet nex.PacketInterface) {
 		return
 	}
 
-	bReplace := types.NewPrimitiveBool(false)
 	err = bReplace.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.InsertItem(fmt.Errorf("Failed to read bReplace from parameters. %s", err.Error()), packet, callID, nil, nil, nil, nil)

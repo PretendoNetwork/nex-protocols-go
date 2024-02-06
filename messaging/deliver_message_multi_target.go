@@ -19,10 +19,7 @@ func (protocol *Protocol) handleDeliverMessageMultiTarget(packet nex.PacketInter
 	globals.Logger.Warning("Messaging::DeliverMessageMultiTarget STUBBED")
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
-
-	// TODO - THIS METHOD HAS AN UNKNOWN REQUEST/RESPONSE FORMAT
 
 	rmcMessage, rmcError := protocol.DeliverMessageMultiTarget(nil, packet, callID, packet.Payload())
 	if rmcError != nil {

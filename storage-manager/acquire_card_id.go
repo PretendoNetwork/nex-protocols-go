@@ -17,7 +17,6 @@ func (protocol *Protocol) handleAcquireCardID(packet nex.PacketInterface) {
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 
 	rmcMessage, rmcError := protocol.AcquireCardID(nil, packet, callID)

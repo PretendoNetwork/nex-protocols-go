@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handleCreateMatchmakeSession(packet nex.PacketInterface) {
-	matchmakingVersion := protocol.server.MatchMakingProtocolVersion()
-
 	if protocol.CreateMatchmakeSession == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "MatchmakeExtension::CreateMatchmakeSession not implemented")
 
@@ -21,15 +19,20 @@ func (protocol *Protocol) handleCreateMatchmakeSession(packet nex.PacketInterfac
 		return
 	}
 
-	request := packet.RMCMessage()
+	matchmakingVersion := protocol.server.MatchMakingProtocolVersion()
 
+	request := packet.RMCMessage()
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	anyGathering := types.NewAnyDataHolder()
-	err := anyGathering.ExtractFrom(parametersStream)
+	strMessage := types.NewString("")
+	participationCount := types.NewPrimitiveU16(0)
+
+	var err error
+
+	err = anyGathering.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.CreateMatchmakeSession(fmt.Errorf("Failed to read anyGathering from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
 		if rmcError != nil {
@@ -39,10 +42,9 @@ func (protocol *Protocol) handleCreateMatchmakeSession(packet nex.PacketInterfac
 		return
 	}
 
-	message := types.NewString("")
-	err = message.ExtractFrom(parametersStream)
+	err = strMessage.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.CreateMatchmakeSession(fmt.Errorf("Failed to read message from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		_, rmcError := protocol.CreateMatchmakeSession(fmt.Errorf("Failed to read strMessage from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -50,23 +52,19 @@ func (protocol *Protocol) handleCreateMatchmakeSession(packet nex.PacketInterfac
 		return
 	}
 
-	participationCount := types.NewPrimitiveU16(0)
-
 	if matchmakingVersion.GreaterOrEqual("3.4.0") {
-		participationCountU16, err := parametersStream.ReadPrimitiveUInt16LE()
+		err = participationCount.ExtractFrom(parametersStream)
 		if err != nil {
-			_, rmcError := protocol.CreateMatchmakeSession(fmt.Errorf("Failed to read message from participationCount. %s", err.Error()), packet, callID, nil, nil, nil)
+			_, rmcError := protocol.CreateMatchmakeSession(fmt.Errorf("Failed to read participationCount from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
 			if rmcError != nil {
 				globals.RespondError(packet, ProtocolID, rmcError)
 			}
 
 			return
 		}
-
-		participationCount = types.NewPrimitiveU16(participationCountU16)
 	}
 
-	rmcMessage, rmcError := protocol.CreateMatchmakeSession(nil, packet, callID, anyGathering, message, participationCount)
+	rmcMessage, rmcError := protocol.CreateMatchmakeSession(nil, packet, callID, anyGathering, strMessage, participationCount)
 	if rmcError != nil {
 		globals.RespondError(packet, ProtocolID, rmcError)
 		return

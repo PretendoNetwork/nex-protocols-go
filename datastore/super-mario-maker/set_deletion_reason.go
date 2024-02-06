@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handleSetDeletionReason(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.SetDeletionReason == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "DataStoreSuperMarioMaker::SetDeletionReason not implemented")
 
@@ -22,14 +20,16 @@ func (protocol *Protocol) handleSetDeletionReason(packet nex.PacketInterface) {
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	dataIDLst := types.NewList[*types.PrimitiveU64]()
 	dataIDLst.Type = types.NewPrimitiveU64(0)
+	deletionReason := types.NewPrimitiveU32(0)
+
+	var err error
+
 	err = dataIDLst.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.SetDeletionReason(fmt.Errorf("Failed to read dataIDLst from parameters. %s", err.Error()), packet, callID, nil, nil)
@@ -40,7 +40,6 @@ func (protocol *Protocol) handleSetDeletionReason(packet nex.PacketInterface) {
 		return
 	}
 
-	deletionReason := types.NewPrimitiveU32(0)
 	err = deletionReason.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.SetDeletionReason(fmt.Errorf("Failed to read deletionReason from parameters. %s", err.Error()), packet, callID, nil, nil)

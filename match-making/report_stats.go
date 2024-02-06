@@ -11,8 +11,6 @@ import (
 )
 
 func (protocol *Protocol) handleReportStats(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.ReportStats == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "MatchMaking::ReportStats not implemented")
 
@@ -23,13 +21,16 @@ func (protocol *Protocol) handleReportStats(packet nex.PacketInterface) {
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	idGathering := types.NewPrimitiveU32(0)
+	lstStats := types.NewList[*match_making_types.GatheringStats]()
+	lstStats.Type = match_making_types.NewGatheringStats()
+
+	var err error
+
 	err = idGathering.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.ReportStats(fmt.Errorf("Failed to read idGathering from parameters. %s", err.Error()), packet, callID, nil, nil)
@@ -40,8 +41,6 @@ func (protocol *Protocol) handleReportStats(packet nex.PacketInterface) {
 		return
 	}
 
-	lstStats := types.NewList[*match_making_types.GatheringStats]()
-	lstStats.Type = match_making_types.NewGatheringStats()
 	err = lstStats.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.ReportStats(fmt.Errorf("Failed to read lstStats from parameters. %s", err.Error()), packet, callID, nil, nil)

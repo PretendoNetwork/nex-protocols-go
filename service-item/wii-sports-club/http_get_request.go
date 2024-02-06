@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handleHTTPGetRequest(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.HTTPGetRequest == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "ServiceItemWiiSportsClub::HTTPGetRequest not implemented")
 
@@ -22,14 +20,13 @@ func (protocol *Protocol) handleHTTPGetRequest(packet nex.PacketInterface) {
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	url := service_item_wii_sports_club_types.NewServiceItemHTTPGetParam()
-	err = url.ExtractFrom(parametersStream)
+
+	err := url.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.HTTPGetRequest(fmt.Errorf("Failed to read url from parameters. %s", err.Error()), packet, callID, nil)
 		if rmcError != nil {

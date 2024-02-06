@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handleSaveUserInfo(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.SaveUserInfo == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "ServiceItemWiiSportsClub::SaveUserInfo not implemented")
 
@@ -22,14 +20,13 @@ func (protocol *Protocol) handleSaveUserInfo(packet nex.PacketInterface) {
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	userInfo := service_item_wii_sports_club_types.NewServiceItemUserInfo()
-	err = userInfo.ExtractFrom(parametersStream)
+
+	err := userInfo.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.SaveUserInfo(fmt.Errorf("Failed to read userInfo from parameters. %s", err.Error()), packet, callID, nil)
 		if rmcError != nil {

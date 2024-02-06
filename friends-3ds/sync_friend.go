@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handleSyncFriend(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.SyncFriend == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "Friends3DS::SyncFriend not implemented")
 
@@ -22,13 +20,18 @@ func (protocol *Protocol) handleSyncFriend(packet nex.PacketInterface) {
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	lfc := types.NewPrimitiveU64(0)
+	pids := types.NewList[*types.PID]()
+	pids.Type = types.NewPID(0)
+	lfcList := types.NewList[*types.PrimitiveU64]()
+	lfcList.Type = types.NewPrimitiveU64(0)
+
+	var err error
+
 	err = lfc.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.SyncFriend(fmt.Errorf("Failed to read lfc from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
@@ -39,8 +42,6 @@ func (protocol *Protocol) handleSyncFriend(packet nex.PacketInterface) {
 		return
 	}
 
-	pids := types.NewList[*types.PID]()
-	pids.Type = types.NewPID(0)
 	err = pids.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.SyncFriend(fmt.Errorf("Failed to read pids from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
@@ -51,8 +52,6 @@ func (protocol *Protocol) handleSyncFriend(packet nex.PacketInterface) {
 		return
 	}
 
-	lfcList := types.NewList[*types.PrimitiveU64]()
-	lfcList.Type = types.NewPrimitiveU64(0)
 	err = lfcList.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.SyncFriend(fmt.Errorf("Failed to read lfcList from parameters. %s", err.Error()), packet, callID, nil, nil, nil)

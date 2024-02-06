@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handleFindByOwner(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.FindByOwner == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "MatchMaking::FindByOwner not implemented")
 
@@ -22,13 +20,15 @@ func (protocol *Protocol) handleFindByOwner(packet nex.PacketInterface) {
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	id := types.NewPID(0)
+	resultRange := types.NewResultRange()
+
+	var err error
+
 	err = id.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.FindByOwner(fmt.Errorf("Failed to read id from parameters. %s", err.Error()), packet, callID, nil, nil)
@@ -39,7 +39,6 @@ func (protocol *Protocol) handleFindByOwner(packet nex.PacketInterface) {
 		return
 	}
 
-	resultRange := types.NewResultRange()
 	err = resultRange.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.FindByOwner(fmt.Errorf("Failed to read resultRange from parameters. %s", err.Error()), packet, callID, nil, nil)

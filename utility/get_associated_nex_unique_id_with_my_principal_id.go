@@ -17,7 +17,6 @@ func (protocol *Protocol) handleGetAssociatedNexUniqueIDWithMyPrincipalID(packet
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 
 	rmcMessage, rmcError := protocol.GetAssociatedNexUniqueIDWithMyPrincipalID(nil, packet, callID)

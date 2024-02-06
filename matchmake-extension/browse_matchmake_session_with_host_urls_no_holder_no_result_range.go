@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handleBrowseMatchmakeSessionWithHostURLsNoHolderNoResultRange(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.BrowseMatchmakeSessionWithHostURLsNoHolderNoResultRange == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "MatchmakeExtension::BrowseMatchmakeSessionWithHostURLsNoHolderNoResultRange not implemented")
 
@@ -22,14 +20,13 @@ func (protocol *Protocol) handleBrowseMatchmakeSessionWithHostURLsNoHolderNoResu
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	searchCriteria := match_making_types.NewMatchmakeSessionSearchCriteria()
-	err = searchCriteria.ExtractFrom(parametersStream)
+
+	err := searchCriteria.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.BrowseMatchmakeSessionWithHostURLsNoHolderNoResultRange(fmt.Errorf("Failed to read searchCriteria from parameters. %s", err.Error()), packet, callID, nil)
 		if rmcError != nil {

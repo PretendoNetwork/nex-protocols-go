@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handleUpdateFriendUserProfile(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.UpdateFriendUserProfile == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "MatchmakeExtensionMonsterHunterXX::UpdateFriendUserProfile not implemented")
 
@@ -22,14 +20,13 @@ func (protocol *Protocol) handleUpdateFriendUserProfile(packet nex.PacketInterfa
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	param := matchmake_extension_monster_hunter_xx_types.NewFriendUserParam()
-	err = param.ExtractFrom(parametersStream)
+
+	err := param.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.UpdateFriendUserProfile(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
 		if rmcError != nil {

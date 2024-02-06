@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handleGetSimplePlayingSession(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.GetSimplePlayingSession == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "MatchmakeExtension::GetSimplePlayingSession not implemented")
 
@@ -22,14 +20,16 @@ func (protocol *Protocol) handleGetSimplePlayingSession(packet nex.PacketInterfa
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	listPID := types.NewList[*types.PID]()
 	listPID.Type = types.NewPID(0)
+	includeLoginUser := types.NewPrimitiveBool(false)
+
+	var err error
+
 	err = listPID.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.GetSimplePlayingSession(fmt.Errorf("Failed to read listPID from parameters. %s", err.Error()), packet, callID, nil, nil)
@@ -40,7 +40,6 @@ func (protocol *Protocol) handleGetSimplePlayingSession(packet nex.PacketInterfa
 		return
 	}
 
-	includeLoginUser := types.NewPrimitiveBool(false)
 	err = includeLoginUser.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.GetSimplePlayingSession(fmt.Errorf("Failed to read includeLoginUser from parameters. %s", err.Error()), packet, callID, nil, nil)

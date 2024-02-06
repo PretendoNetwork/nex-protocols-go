@@ -11,8 +11,6 @@ import (
 )
 
 func (protocol *Protocol) handleGetMetasMultipleParam(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.GetMetasMultipleParam == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "DataStore::GetMetasMultipleParam not implemented")
 
@@ -23,15 +21,14 @@ func (protocol *Protocol) handleGetMetasMultipleParam(packet nex.PacketInterface
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	params := types.NewList[*datastore_types.DataStoreGetMetaParam]()
 	params.Type = datastore_types.NewDataStoreGetMetaParam()
-	err = params.ExtractFrom(parametersStream)
+
+	err := params.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.GetMetasMultipleParam(fmt.Errorf("Failed to read params from parameters. %s", err.Error()), packet, callID, nil)
 		if rmcError != nil {

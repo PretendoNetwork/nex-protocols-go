@@ -11,8 +11,6 @@ import (
 )
 
 func (protocol *Protocol) handleUpdateAndGetAllInformation(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.UpdateAndGetAllInformation == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "FriendsWiiU::UpdateAndGetAllInformation not implemented")
 
@@ -23,13 +21,16 @@ func (protocol *Protocol) handleUpdateAndGetAllInformation(packet nex.PacketInte
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	nnaInfo := friends_wiiu_types.NewNNAInfo()
+	presence := friends_wiiu_types.NewNintendoPresenceV2()
+	birthday := types.NewDateTime(0)
+
+	var err error
+
 	err = nnaInfo.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.UpdateAndGetAllInformation(fmt.Errorf("Failed to read nnaInfo from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
@@ -40,7 +41,6 @@ func (protocol *Protocol) handleUpdateAndGetAllInformation(packet nex.PacketInte
 		return
 	}
 
-	presence := friends_wiiu_types.NewNintendoPresenceV2()
 	err = presence.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.UpdateAndGetAllInformation(fmt.Errorf("Failed to read presence from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
@@ -51,7 +51,6 @@ func (protocol *Protocol) handleUpdateAndGetAllInformation(packet nex.PacketInte
 		return
 	}
 
-	birthday := types.NewDateTime(0)
 	err = birthday.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.UpdateAndGetAllInformation(fmt.Errorf("Failed to read birthday from parameters. %s", err.Error()), packet, callID, nil, nil, nil)

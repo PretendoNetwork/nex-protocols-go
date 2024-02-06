@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handleLog(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.Log == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "RemoteLogDevice::Log not implemented")
 
@@ -22,14 +20,13 @@ func (protocol *Protocol) handleLog(packet nex.PacketInterface) {
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	strLine := types.NewString("")
-	err = strLine.ExtractFrom(parametersStream)
+
+	err := strLine.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.Log(fmt.Errorf("Failed to read strLine from parameters. %s", err.Error()), packet, callID, nil)
 		if rmcError != nil {

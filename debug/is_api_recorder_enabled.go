@@ -17,7 +17,6 @@ func (protocol *Protocol) handleIsAPIRecorderEnabled(packet nex.PacketInterface)
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 
 	rmcMessage, rmcError := protocol.IsAPIRecorderEnabled(nil, packet, callID)

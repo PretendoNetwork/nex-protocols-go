@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handleRemoveFriendByLocalFriendCode(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.RemoveFriendByLocalFriendCode == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "Friends3DS::RemoveFriendByLocalFriendCode not implemented")
 
@@ -22,14 +20,13 @@ func (protocol *Protocol) handleRemoveFriendByLocalFriendCode(packet nex.PacketI
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	lfc := types.NewPrimitiveU64(0)
-	err = lfc.ExtractFrom(parametersStream)
+
+	err := lfc.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.RemoveFriendByLocalFriendCode(fmt.Errorf("Failed to read lfc from parameters. %s", err.Error()), packet, callID, nil)
 		if rmcError != nil {

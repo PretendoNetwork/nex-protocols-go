@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handleUpdatePresence(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.UpdatePresence == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "FriendsWiiU::UpdatePresence not implemented")
 
@@ -22,14 +20,13 @@ func (protocol *Protocol) handleUpdatePresence(packet nex.PacketInterface) {
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	nintendoPresenceV2 := friends_wiiu_types.NewNintendoPresenceV2()
-	err = nintendoPresenceV2.ExtractFrom(parametersStream)
+
+	err := nintendoPresenceV2.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.UpdatePresence(fmt.Errorf("Failed to read nintendoPresenceV2 from parameters. %s", err.Error()), packet, callID, nil)
 		if rmcError != nil {

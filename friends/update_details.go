@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handleUpdateDetails(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.UpdateDetails == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "Friends::UpdateDetails not implemented")
 
@@ -22,13 +20,15 @@ func (protocol *Protocol) handleUpdateDetails(packet nex.PacketInterface) {
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	uiPlayer := types.NewPrimitiveU32(0)
+	uiDetails := types.NewPrimitiveU32(0)
+
+	var err error
+
 	err = uiPlayer.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.UpdateDetails(fmt.Errorf("Failed to read uiPlayer from parameters. %s", err.Error()), packet, callID, nil, nil)
@@ -39,7 +39,6 @@ func (protocol *Protocol) handleUpdateDetails(packet nex.PacketInterface) {
 		return
 	}
 
-	uiDetails := types.NewPrimitiveU32(0)
 	err = uiDetails.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.UpdateDetails(fmt.Errorf("Failed to read uiDetails from parameters. %s", err.Error()), packet, callID, nil, nil)

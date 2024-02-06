@@ -19,7 +19,6 @@ func (protocol *Protocol) handleAutoTournamentMatchmake(packet nex.PacketInterfa
 	globals.Logger.Warning("MatchmakeExtensionSuperSmashBros4::AutoTournamentMatchmake STUBBED")
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 
 	rmcMessage, rmcError := protocol.AutoTournamentMatchmake(nil, packet, callID, packet.Payload())

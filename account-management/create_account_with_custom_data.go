@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handleCreateAccountWithCustomData(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.CreateAccountWithCustomData == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "AccountManagement::CreateAccountWithCustomData not implemented")
 
@@ -22,13 +20,19 @@ func (protocol *Protocol) handleCreateAccountWithCustomData(packet nex.PacketInt
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	strPrincipalName := types.NewString("")
+	strKey := types.NewString("")
+	uiGroups := types.NewPrimitiveU32(0)
+	strEmail := types.NewString("")
+	oPublicData := types.NewAnyDataHolder()
+	oPrivateData := types.NewAnyDataHolder()
+
+	var err error
+
 	err = strPrincipalName.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.CreateAccountWithCustomData(fmt.Errorf("Failed to read strPrincipalName from parameters. %s", err.Error()), packet, callID, nil, nil, nil, nil, nil, nil)
@@ -39,7 +43,6 @@ func (protocol *Protocol) handleCreateAccountWithCustomData(packet nex.PacketInt
 		return
 	}
 
-	strKey := types.NewString("")
 	err = strKey.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.CreateAccountWithCustomData(fmt.Errorf("Failed to read strKey from parameters. %s", err.Error()), packet, callID, nil, nil, nil, nil, nil, nil)
@@ -50,7 +53,6 @@ func (protocol *Protocol) handleCreateAccountWithCustomData(packet nex.PacketInt
 		return
 	}
 
-	uiGroups := types.NewPrimitiveU32(0)
 	err = uiGroups.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.CreateAccountWithCustomData(fmt.Errorf("Failed to read uiGroups from parameters. %s", err.Error()), packet, callID, nil, nil, nil, nil, nil, nil)
@@ -61,7 +63,6 @@ func (protocol *Protocol) handleCreateAccountWithCustomData(packet nex.PacketInt
 		return
 	}
 
-	strEmail := types.NewString("")
 	err = strEmail.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.CreateAccountWithCustomData(fmt.Errorf("Failed to read strEmail from parameters. %s", err.Error()), packet, callID, nil, nil, nil, nil, nil, nil)
@@ -72,7 +73,6 @@ func (protocol *Protocol) handleCreateAccountWithCustomData(packet nex.PacketInt
 		return
 	}
 
-	oPublicData := types.NewAnyDataHolder()
 	err = oPublicData.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.CreateAccountWithCustomData(fmt.Errorf("Failed to read oPublicData from parameters. %s", err.Error()), packet, callID, nil, nil, nil, nil, nil, nil)
@@ -83,7 +83,6 @@ func (protocol *Protocol) handleCreateAccountWithCustomData(packet nex.PacketInt
 		return
 	}
 
-	oPrivateData := types.NewAnyDataHolder()
 	err = oPrivateData.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.CreateAccountWithCustomData(fmt.Errorf("Failed to read oPrivateData from parameters. %s", err.Error()), packet, callID, nil, nil, nil, nil, nil, nil)

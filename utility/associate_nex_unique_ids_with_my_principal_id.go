@@ -11,9 +11,7 @@ import (
 )
 
 func (protocol *Protocol) handleAssociateNexUniqueIDsWithMyPrincipalID(packet nex.PacketInterface) {
-	var err error
-
-	if protocol.GetAssociatedNexUniqueIDWithMyPrincipalID == nil {
+	if protocol.AssociateNexUniqueIDsWithMyPrincipalID == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "Utility::AssociateNexUniqueIDsWithMyPrincipalID not implemented")
 
 		globals.Logger.Warning(err.Message)
@@ -23,15 +21,14 @@ func (protocol *Protocol) handleAssociateNexUniqueIDsWithMyPrincipalID(packet ne
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
-
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
+
 	uniqueIDInfo := types.NewList[*utility_types.UniqueIDInfo]()
 	uniqueIDInfo.Type = utility_types.NewUniqueIDInfo()
-	err = uniqueIDInfo.ExtractFrom(parametersStream)
+
+	err := uniqueIDInfo.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.AssociateNexUniqueIDsWithMyPrincipalID(fmt.Errorf("Failed to read uniqueIDInfo from parameters. %s", err.Error()), packet, callID, nil)
 		if rmcError != nil {

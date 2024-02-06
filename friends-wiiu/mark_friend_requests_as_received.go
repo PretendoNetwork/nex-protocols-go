@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handleMarkFriendRequestsAsReceived(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.MarkFriendRequestsAsReceived == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "FriendsWiiU::MarkFriendRequestsAsReceived not implemented")
 
@@ -22,17 +20,16 @@ func (protocol *Protocol) handleMarkFriendRequestsAsReceived(packet nex.PacketIn
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	ids := types.NewList[*types.PrimitiveU64]()
 	ids.Type = types.NewPrimitiveU64(0)
-	err = ids.ExtractFrom(parametersStream)
+
+	err := ids.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.GetRequestBlockSettings(fmt.Errorf("Failed to read ids from parameters. %s", err.Error()), packet, callID, nil)
+		_, rmcError := protocol.MarkFriendRequestsAsReceived(fmt.Errorf("Failed to read ids from parameters. %s", err.Error()), packet, callID, nil)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}

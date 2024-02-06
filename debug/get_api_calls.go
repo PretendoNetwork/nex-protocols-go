@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handleGetAPICalls(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.GetAPICalls == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "Debug::GetAPICalls not implemented")
 
@@ -22,14 +20,17 @@ func (protocol *Protocol) handleGetAPICalls(packet nex.PacketInterface) {
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	pids := types.NewList[*types.PID]()
 	pids.Type = types.NewPID(0)
+	unknown := types.NewDateTime(0)
+	unknown2 := types.NewDateTime(0)
+
+	var err error
+
 	err = pids.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.GetAPICalls(fmt.Errorf("Failed to read pids from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
@@ -40,7 +41,6 @@ func (protocol *Protocol) handleGetAPICalls(packet nex.PacketInterface) {
 		return
 	}
 
-	unknown := types.NewDateTime(0)
 	err = unknown.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.GetAPICalls(fmt.Errorf("Failed to read unknown from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
@@ -51,7 +51,6 @@ func (protocol *Protocol) handleGetAPICalls(packet nex.PacketInterface) {
 		return
 	}
 
-	unknown2 := types.NewDateTime(0)
 	err = unknown2.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.GetAPICalls(fmt.Errorf("Failed to read unknown2 from parameters. %s", err.Error()), packet, callID, nil, nil, nil)

@@ -17,7 +17,6 @@ func (protocol *Protocol) handleRunSanityCheck(packet nex.PacketInterface) {
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 
 	rmcMessage, rmcError := protocol.RunSanityCheck(nil, packet, callID)

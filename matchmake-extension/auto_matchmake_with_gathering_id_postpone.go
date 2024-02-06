@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handleAutoMatchmakeWithGatheringIDPostpone(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.AutoMatchmakeWithGatheringIDPostpone == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "MatchmakeExtension::AutoMatchmakeWithGatheringIDPostpone not implemented")
 
@@ -22,14 +20,17 @@ func (protocol *Protocol) handleAutoMatchmakeWithGatheringIDPostpone(packet nex.
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	lstGID := types.NewList[*types.PrimitiveU32]()
 	lstGID.Type = types.NewPrimitiveU32(0)
+	anyGathering := types.NewAnyDataHolder()
+	strMessage := types.NewString("")
+
+	var err error
+
 	err = lstGID.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.AutoMatchmakeWithGatheringIDPostpone(fmt.Errorf("Failed to read lstGID from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
@@ -40,7 +41,6 @@ func (protocol *Protocol) handleAutoMatchmakeWithGatheringIDPostpone(packet nex.
 		return
 	}
 
-	anyGathering := types.NewAnyDataHolder()
 	err = anyGathering.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.AutoMatchmakeWithGatheringIDPostpone(fmt.Errorf("Failed to read anyGathering from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
@@ -51,7 +51,6 @@ func (protocol *Protocol) handleAutoMatchmakeWithGatheringIDPostpone(packet nex.
 		return
 	}
 
-	strMessage := types.NewString("")
 	err = strMessage.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.AutoMatchmakeWithGatheringIDPostpone(fmt.Errorf("Failed to read strMessage from parameters. %s", err.Error()), packet, callID, nil, nil, nil)

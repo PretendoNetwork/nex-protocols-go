@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handleUpdateMiiList(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.UpdateMiiList == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "Friends3DS::UpdateMiiList not implemented")
 
@@ -22,14 +20,13 @@ func (protocol *Protocol) handleUpdateMiiList(packet nex.PacketInterface) {
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	miiList := friends_3ds_types.NewMiiList()
-	err = miiList.ExtractFrom(parametersStream)
+
+	err := miiList.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.UpdateMiiList(fmt.Errorf("Failed to read miiList from parameters. %s", err.Error()), packet, callID, nil)
 		if rmcError != nil {

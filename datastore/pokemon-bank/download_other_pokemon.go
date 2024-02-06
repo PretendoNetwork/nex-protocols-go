@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handleDownloadOtherPokemon(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.DownloadOtherPokemon == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "DataStorePokemonBank::DownloadOtherPokemon not implemented")
 
@@ -22,14 +20,13 @@ func (protocol *Protocol) handleDownloadOtherPokemon(packet nex.PacketInterface)
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	param := datastore_pokemon_bank_types.NewGlobalTradeStationDownloadOtherPokemonParam()
-	err = param.ExtractFrom(parametersStream)
+
+	err := param.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.DownloadOtherPokemon(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
 		if rmcError != nil {

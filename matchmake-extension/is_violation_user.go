@@ -17,7 +17,6 @@ func (protocol *Protocol) handleIsViolationUser(packet nex.PacketInterface) {
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 
 	rmcMessage, rmcError := protocol.IsViolationUser(nil, packet, callID)

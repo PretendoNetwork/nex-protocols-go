@@ -19,7 +19,6 @@ func (protocol *Protocol) handleFollow(packet nex.PacketInterface) {
 	globals.Logger.Warning("Subscriber::Follow STUBBED")
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 
 	rmcMessage, rmcError := protocol.Follow(nil, packet, callID, packet.Payload())

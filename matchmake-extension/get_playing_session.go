@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handleGetPlayingSession(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.GetPlayingSession == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "MatchmakeExtension::GetPlayingSession not implemented")
 
@@ -22,15 +20,14 @@ func (protocol *Protocol) handleGetPlayingSession(packet nex.PacketInterface) {
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	lstPID := types.NewList[*types.PID]()
 	lstPID.Type = types.NewPID(0)
-	err = lstPID.ExtractFrom(parametersStream)
+
+	err := lstPID.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.GetPlayingSession(fmt.Errorf("Failed to read lstPID from parameters. %s", err.Error()), packet, callID, nil)
 		if rmcError != nil {

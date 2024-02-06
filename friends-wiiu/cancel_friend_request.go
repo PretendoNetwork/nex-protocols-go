@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handleCancelFriendRequest(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.CancelFriendRequest == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "FriendsWiiU::CancelFriendRequest not implemented")
 
@@ -22,14 +20,13 @@ func (protocol *Protocol) handleCancelFriendRequest(packet nex.PacketInterface) 
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	id := types.NewPrimitiveU64(0)
-	err = id.ExtractFrom(parametersStream)
+
+	err := id.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.CancelFriendRequest(fmt.Errorf("Failed to read id from parameters. %s", err.Error()), packet, callID, nil)
 		if rmcError != nil {

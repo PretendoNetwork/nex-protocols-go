@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handleJoinMatchmakeSessionWithParam(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.JoinMatchmakeSessionWithParam == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "MatchmakeExtension::JoinMatchmakeSessionWithParam not implemented")
 
@@ -22,14 +20,13 @@ func (protocol *Protocol) handleJoinMatchmakeSessionWithParam(packet nex.PacketI
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	joinMatchmakeSessionParam := match_making_types.NewJoinMatchmakeSessionParam()
-	err = joinMatchmakeSessionParam.ExtractFrom(parametersStream)
+
+	err := joinMatchmakeSessionParam.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.JoinMatchmakeSessionWithParam(fmt.Errorf("Failed to read joinMatchmakeSessionParam from parameters. %s", err.Error()), packet, callID, nil)
 		if rmcError != nil {

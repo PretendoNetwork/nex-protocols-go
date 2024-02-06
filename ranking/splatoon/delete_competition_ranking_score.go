@@ -19,7 +19,6 @@ func (protocol *Protocol) handleDeleteCompetitionRankingScore(packet nex.PacketI
 	globals.Logger.Warning("RankingSplatoon::DeleteCompetitionRankingScore STUBBED")
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 
 	rmcMessage, rmcError := protocol.DeleteCompetitionRankingScore(nil, packet, callID, packet.Payload())

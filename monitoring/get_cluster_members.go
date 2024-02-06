@@ -17,7 +17,6 @@ func (protocol *Protocol) handleGetClusterMembers(packet nex.PacketInterface) {
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 
 	rmcMessage, rmcError := protocol.GetClusterMembers(nil, packet, callID)

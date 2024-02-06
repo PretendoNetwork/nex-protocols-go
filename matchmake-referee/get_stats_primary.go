@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handleGetStatsPrimary(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.GetStatsPrimary == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "MatchmakeReferee::GetStatsPrimary not implemented")
 
@@ -22,14 +20,13 @@ func (protocol *Protocol) handleGetStatsPrimary(packet nex.PacketInterface) {
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	target := matchmake_referee_types.NewMatchmakeRefereeStatsTarget()
-	err = target.ExtractFrom(parametersStream)
+
+	err := target.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.GetStatsPrimary(fmt.Errorf("Failed to read target from parameters. %s", err.Error()), packet, callID, nil)
 		if rmcError != nil {

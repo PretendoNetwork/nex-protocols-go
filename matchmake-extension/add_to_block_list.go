@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handleAddToBlockList(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.AddToBlockList == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "MatchmakeExtension::AddToBlockList not implemented")
 
@@ -22,15 +20,14 @@ func (protocol *Protocol) handleAddToBlockList(packet nex.PacketInterface) {
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	lstPrincipalID := types.NewList[*types.PID]()
 	lstPrincipalID.Type = types.NewPID(0)
-	err = lstPrincipalID.ExtractFrom(parametersStream)
+
+	err := lstPrincipalID.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.AddToBlockList(fmt.Errorf("Failed to read lstPrincipalID from parameters. %s", err.Error()), packet, callID, nil)
 		if rmcError != nil {

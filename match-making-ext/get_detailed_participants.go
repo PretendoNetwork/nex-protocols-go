@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handleGetDetailedParticipants(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.GetDetailedParticipants == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "MatchMakingExt::GetDetailedParticipants not implemented")
 
@@ -22,13 +20,15 @@ func (protocol *Protocol) handleGetDetailedParticipants(packet nex.PacketInterfa
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	idGathering := types.NewPrimitiveU32(0)
+	bOnlyActive := types.NewPrimitiveBool(false)
+
+	var err error
+
 	err = idGathering.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.GetDetailedParticipants(fmt.Errorf("Failed to read idGathering from parameters. %s", err.Error()), packet, callID, nil, nil)
@@ -39,7 +39,6 @@ func (protocol *Protocol) handleGetDetailedParticipants(packet nex.PacketInterfa
 		return
 	}
 
-	bOnlyActive := types.NewPrimitiveBool(false)
 	err = bOnlyActive.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.GetDetailedParticipants(fmt.Errorf("Failed to read bOnlyActive from parameters. %s", err.Error()), packet, callID, nil, nil)

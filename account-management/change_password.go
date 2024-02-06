@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handleChangePassword(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.ChangePassword == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "AccountManagement::ChangePassword not implemented")
 
@@ -22,14 +20,13 @@ func (protocol *Protocol) handleChangePassword(packet nex.PacketInterface) {
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	strNewKey := types.NewString("")
-	err = strNewKey.ExtractFrom(parametersStream)
+
+	err := strNewKey.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.ChangePassword(fmt.Errorf("Failed to read strNewKey from parameters. %s", err.Error()), packet, callID, nil)
 		if rmcError != nil {

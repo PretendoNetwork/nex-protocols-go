@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handleRegisterEx(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.RegisterEx == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "SecureConnection::RegisterEx not implemented")
 
@@ -22,14 +20,16 @@ func (protocol *Protocol) handleRegisterEx(packet nex.PacketInterface) {
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	vecMyURLs := types.NewList[*types.StationURL]()
 	vecMyURLs.Type = types.NewStationURL("")
+	hCustomData := types.NewAnyDataHolder()
+
+	var err error
+
 	err = vecMyURLs.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.RegisterEx(fmt.Errorf("Failed to read vecMyURLs from parameters. %s", err.Error()), packet, callID, nil, nil)
@@ -40,7 +40,6 @@ func (protocol *Protocol) handleRegisterEx(packet nex.PacketInterface) {
 		return
 	}
 
-	hCustomData := types.NewAnyDataHolder()
 	err = hCustomData.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.RegisterEx(fmt.Errorf("Failed to read hCustomData from parameters. %s", err.Error()), packet, callID, nil, nil)

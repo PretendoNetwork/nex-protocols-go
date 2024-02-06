@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handleCloseParticipation(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.CloseParticipation == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "MatchmakeExtension::CloseParticipation not implemented")
 
@@ -22,14 +20,13 @@ func (protocol *Protocol) handleCloseParticipation(packet nex.PacketInterface) {
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	gid := types.NewPrimitiveU32(0)
-	err = gid.ExtractFrom(parametersStream)
+
+	err := gid.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.CloseParticipation(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), packet, callID, nil)
 		if rmcError != nil {

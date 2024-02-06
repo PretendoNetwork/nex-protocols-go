@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handleUpdateCustomData(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.UpdateCustomData == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "AccountManagement::UpdateCustomData not implemented")
 
@@ -22,13 +20,15 @@ func (protocol *Protocol) handleUpdateCustomData(packet nex.PacketInterface) {
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	oPublicData := types.NewAnyDataHolder()
+	oPrivateData := types.NewAnyDataHolder()
+
+	var err error
+
 	err = oPublicData.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.UpdateCustomData(fmt.Errorf("Failed to read oPublicData from parameters. %s", err.Error()), packet, callID, nil, nil)
@@ -39,7 +39,6 @@ func (protocol *Protocol) handleUpdateCustomData(packet nex.PacketInterface) {
 		return
 	}
 
-	oPrivateData := types.NewAnyDataHolder()
 	err = oPrivateData.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.UpdateCustomData(fmt.Errorf("Failed to read oPrivateData from parameters. %s", err.Error()), packet, callID, nil, nil)

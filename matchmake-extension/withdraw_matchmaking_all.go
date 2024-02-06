@@ -17,7 +17,6 @@ func (protocol *Protocol) handleWithdrawMatchmakingAll(packet nex.PacketInterfac
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 
 	rmcMessage, rmcError := protocol.WithdrawMatchmakingAll(nil, packet, callID)

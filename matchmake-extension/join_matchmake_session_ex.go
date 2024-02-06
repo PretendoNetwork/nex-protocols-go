@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handleJoinMatchmakeSessionEx(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.JoinMatchmakeSessionEx == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "MatchmakeExtension::JoinMatchmakeSessionEx not implemented")
 
@@ -22,13 +20,17 @@ func (protocol *Protocol) handleJoinMatchmakeSessionEx(packet nex.PacketInterfac
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	gid := types.NewPrimitiveU32(0)
+	strMessage := types.NewString("")
+	dontCareMyBlockList := types.NewPrimitiveBool(false)
+	participationCount := types.NewPrimitiveU16(0)
+
+	var err error
+
 	err = gid.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.JoinMatchmakeSessionEx(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), packet, callID, nil, nil, nil, nil)
@@ -39,7 +41,6 @@ func (protocol *Protocol) handleJoinMatchmakeSessionEx(packet nex.PacketInterfac
 		return
 	}
 
-	strMessage := types.NewString("")
 	err = strMessage.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.JoinMatchmakeSessionEx(fmt.Errorf("Failed to read strMessage from parameters. %s", err.Error()), packet, callID, nil, nil, nil, nil)
@@ -50,7 +51,6 @@ func (protocol *Protocol) handleJoinMatchmakeSessionEx(packet nex.PacketInterfac
 		return
 	}
 
-	dontCareMyBlockList := types.NewPrimitiveBool(false)
 	err = dontCareMyBlockList.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.JoinMatchmakeSessionEx(fmt.Errorf("Failed to read dontCareMyBlockList from parameters. %s", err.Error()), packet, callID, nil, nil, nil, nil)
@@ -61,7 +61,6 @@ func (protocol *Protocol) handleJoinMatchmakeSessionEx(packet nex.PacketInterfac
 		return
 	}
 
-	participationCount := types.NewPrimitiveU16(0)
 	err = participationCount.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.JoinMatchmakeSessionEx(fmt.Errorf("Failed to read participationCount from parameters. %s", err.Error()), packet, callID, nil, nil, nil, nil)

@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handleUpdateFavoriteGameKey(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.UpdateFavoriteGameKey == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "Friends3DS::UpdateFavoriteGameKey not implemented")
 
@@ -22,14 +20,13 @@ func (protocol *Protocol) handleUpdateFavoriteGameKey(packet nex.PacketInterface
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	gameKey := friends_3ds_types.NewGameKey()
-	err = gameKey.ExtractFrom(parametersStream)
+
+	err := gameKey.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.UpdateFavoriteGameKey(fmt.Errorf("Failed to read gameKey from parameters. %s", err.Error()), packet, callID, nil)
 		if rmcError != nil {

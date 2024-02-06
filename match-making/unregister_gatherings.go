@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handleUnregisterGatherings(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.UnregisterGatherings == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "MatchMaking::UnregisterGatherings not implemented")
 
@@ -22,15 +20,14 @@ func (protocol *Protocol) handleUnregisterGatherings(packet nex.PacketInterface)
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	lstGatherings := types.NewList[*types.PrimitiveU32]()
 	lstGatherings.Type = types.NewPrimitiveU32(0)
-	err = lstGatherings.ExtractFrom(parametersStream)
+
+	err := lstGatherings.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.UnregisterGatherings(fmt.Errorf("Failed to read lstGatherings from parameters. %s", err.Error()), packet, callID, nil)
 		if rmcError != nil {

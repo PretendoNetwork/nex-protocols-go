@@ -12,8 +12,6 @@ import (
 )
 
 func (protocol *Protocol) handleGetMetasWithCourseRecord(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.GetMetasWithCourseRecord == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "DataStoreSuperMarioMaker::GetMetasWithCourseRecord not implemented")
 
@@ -24,14 +22,16 @@ func (protocol *Protocol) handleGetMetasWithCourseRecord(packet nex.PacketInterf
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	params := types.NewList[*datastore_super_mario_maker_types.DataStoreGetCourseRecordParam]()
 	params.Type = datastore_super_mario_maker_types.NewDataStoreGetCourseRecordParam()
+	metaParam := datastore_types.NewDataStoreGetMetaParam()
+
+	var err error
+
 	err = params.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.GetMetasWithCourseRecord(fmt.Errorf("Failed to read params from parameters. %s", err.Error()), packet, callID, nil, nil)
@@ -42,7 +42,6 @@ func (protocol *Protocol) handleGetMetasWithCourseRecord(packet nex.PacketInterf
 		return
 	}
 
-	metaParam := datastore_types.NewDataStoreGetMetaParam()
 	err = metaParam.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.GetMetasWithCourseRecord(fmt.Errorf("Failed to read metaParam from parameters. %s", err.Error()), packet, callID, nil, nil)

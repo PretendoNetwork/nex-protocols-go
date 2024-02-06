@@ -17,7 +17,6 @@ func (protocol *Protocol) handleGetTargetSubscriptionData(packet nex.PacketInter
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 
 	rmcMessage, rmcError := protocol.GetTargetSubscriptionData(nil, packet, callID)

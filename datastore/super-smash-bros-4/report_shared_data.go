@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handleReportSharedData(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.ReportSharedData == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "DataStoreSuperSmashBros4::ReportSharedData not implemented")
 
@@ -22,14 +20,13 @@ func (protocol *Protocol) handleReportSharedData(packet nex.PacketInterface) {
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	dataID := types.NewPrimitiveU64(0)
-	err = dataID.ExtractFrom(parametersStream)
+
+	err := dataID.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.ReportSharedData(fmt.Errorf("Failed to read dataID from parameters. %s", err.Error()), packet, callID, nil)
 		if rmcError != nil {

@@ -17,7 +17,6 @@ func (protocol *Protocol) handleCheckSettingStatus(packet nex.PacketInterface) {
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 
 	rmcMessage, rmcError := protocol.CheckSettingStatus(nil, packet, callID)

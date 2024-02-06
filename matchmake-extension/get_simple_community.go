@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handleGetSimpleCommunity(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.GetSimpleCommunity == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "MatchmakeExtension::GetSimpleCommunity not implemented")
 
@@ -22,15 +20,14 @@ func (protocol *Protocol) handleGetSimpleCommunity(packet nex.PacketInterface) {
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	gatheringIDList := types.NewList[*types.PrimitiveU32]()
 	gatheringIDList.Type = types.NewPrimitiveU32(0)
-	err = gatheringIDList.ExtractFrom(parametersStream)
+
+	err := gatheringIDList.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.GetSimpleCommunity(fmt.Errorf("Failed to read gatheringIDList from parameters. %s", err.Error()), packet, callID, nil)
 		if rmcError != nil {

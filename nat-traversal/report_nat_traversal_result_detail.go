@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handleReportNATTraversalResultDetail(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.ReportNATTraversalResultDetail == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "NATTraversal::ReportNATTraversalResultDetail not implemented")
 
@@ -21,17 +19,20 @@ func (protocol *Protocol) handleReportNATTraversalResultDetail(packet nex.Packet
 		return
 	}
 
-	// TODO - The NEX server should add a NATTraversalProtocolVersion method
-	matchmakingVersion := protocol.server.MatchMakingProtocolVersion()
+	natTraversalVersion := protocol.server.NATTraversalProtocolVersion()
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	cid := types.NewPrimitiveU32(0)
+	result := types.NewPrimitiveBool(false)
+	detail := types.NewPrimitiveS32(0)
+	rtt := types.NewPrimitiveU32(0)
+
+	var err error
+
 	err = cid.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.ReportNATTraversalResultDetail(fmt.Errorf("Failed to read cid from parameters. %s", err.Error()), packet, callID, nil, nil, nil, nil)
@@ -42,7 +43,6 @@ func (protocol *Protocol) handleReportNATTraversalResultDetail(packet nex.Packet
 		return
 	}
 
-	result := types.NewPrimitiveBool(false)
 	err = result.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.ReportNATTraversalResultDetail(fmt.Errorf("Failed to read result from parameters. %s", err.Error()), packet, callID, nil, nil, nil, nil)
@@ -53,7 +53,6 @@ func (protocol *Protocol) handleReportNATTraversalResultDetail(packet nex.Packet
 		return
 	}
 
-	detail := types.NewPrimitiveS32(0)
 	err = detail.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.ReportNATTraversalResultDetail(fmt.Errorf("Failed to read detail from parameters. %s", err.Error()), packet, callID, nil, nil, nil, nil)
@@ -64,21 +63,17 @@ func (protocol *Protocol) handleReportNATTraversalResultDetail(packet nex.Packet
 		return
 	}
 
-	rtt := types.NewPrimitiveU32(0)
-
 	// TODO - Is this the right version?
-	if matchmakingVersion.GreaterOrEqual("3.0.0") {
-		rttU32, err := parametersStream.ReadPrimitiveUInt32LE()
+	if natTraversalVersion.GreaterOrEqual("3.0.0") {
+		err = rtt.ExtractFrom(parametersStream)
 		if err != nil {
-			_, rmcError := protocol.ReportNATTraversalResultDetail(fmt.Errorf("Failed to read rtt from parameters. %s", err.Error()), packet, callID, nil, nil, nil, nil)
+			_, rmcError := protocol.ReportNATTraversalResult(fmt.Errorf("Failed to read rtt from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
 			if rmcError != nil {
 				globals.RespondError(packet, ProtocolID, rmcError)
 			}
 
 			return
 		}
-
-		rtt = types.NewPrimitiveU32(rttU32)
 	}
 
 	rmcMessage, rmcError := protocol.ReportNATTraversalResultDetail(nil, packet, callID, cid, result, detail, rtt)

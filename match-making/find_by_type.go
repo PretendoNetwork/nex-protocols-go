@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handleFindByType(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.FindByType == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "MatchMaking::FindByType not implemented")
 
@@ -22,13 +20,15 @@ func (protocol *Protocol) handleFindByType(packet nex.PacketInterface) {
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	strType := types.NewString("")
+	resultRange := types.NewResultRange()
+
+	var err error
+
 	err = strType.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.FindByType(fmt.Errorf("Failed to read strType from parameters. %s", err.Error()), packet, callID, nil, nil)
@@ -39,7 +39,6 @@ func (protocol *Protocol) handleFindByType(packet nex.PacketInterface) {
 		return
 	}
 
-	resultRange := types.NewResultRange()
 	err = resultRange.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.FindByType(fmt.Errorf("Failed to read resultRange from parameters. %s", err.Error()), packet, callID, nil, nil)

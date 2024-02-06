@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handleDeleteContent(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.DeleteContent == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "Subscriber::DeleteContent not implemented")
 
@@ -22,14 +20,16 @@ func (protocol *Protocol) handleDeleteContent(packet nex.PacketInterface) {
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	unknown1 := types.NewList[*types.String]()
 	unknown1.Type = types.NewString("")
+	unknown2 := types.NewPrimitiveU64(0)
+
+	var err error
+
 	err = unknown1.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.DeleteContent(fmt.Errorf("Failed to read unknown1 from parameters. %s", err.Error()), packet, callID, nil, nil)
@@ -40,7 +40,6 @@ func (protocol *Protocol) handleDeleteContent(packet nex.PacketInterface) {
 		return
 	}
 
-	unknown2 := types.NewPrimitiveU64(0)
 	err = unknown2.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.DeleteContent(fmt.Errorf("Failed to read unknown2 from parameters. %s", err.Error()), packet, callID, nil, nil)

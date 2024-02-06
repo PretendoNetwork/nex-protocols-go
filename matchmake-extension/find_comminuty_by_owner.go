@@ -19,10 +19,7 @@ func (protocol *Protocol) handleFindCommunityByOwner(packet nex.PacketInterface)
 	globals.Logger.Warning("MatchmakeExtension::FindCommunityByOwner STUBBED")
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
-
-	// TODO - THIS METHOD HAS AN UNKNOWN REQUEST/RESPONSE FORMAT
 
 	rmcMessage, rmcError := protocol.FindCommunityByOwner(nil, packet, callID, packet.Payload())
 	if rmcError != nil {

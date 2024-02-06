@@ -11,8 +11,6 @@ import (
 )
 
 func (protocol *Protocol) handleDeleteObjects(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.DeleteObjects == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "DataStore::DeleteObjects not implemented")
 
@@ -23,14 +21,16 @@ func (protocol *Protocol) handleDeleteObjects(packet nex.PacketInterface) {
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	params := types.NewList[*datastore_types.DataStoreDeleteParam]()
 	params.Type = datastore_types.NewDataStoreDeleteParam()
+	transactional := types.NewPrimitiveBool(false)
+
+	var err error
+
 	err = params.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.DeleteObjects(fmt.Errorf("Failed to read params from parameters. %s", err.Error()), packet, callID, nil, nil)
@@ -41,7 +41,6 @@ func (protocol *Protocol) handleDeleteObjects(packet nex.PacketInterface) {
 		return
 	}
 
-	transactional := types.NewPrimitiveBool(false)
 	err = transactional.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.DeleteObjects(fmt.Errorf("Failed to read transactional from parameters. %s", err.Error()), packet, callID, nil, nil)

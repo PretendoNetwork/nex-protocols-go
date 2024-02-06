@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handleFindItemsBySQLQuery(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.FindItemsBySQLQuery == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "PersistentStore::FindItemsBySQLQuery not implemented")
 
@@ -22,13 +20,16 @@ func (protocol *Protocol) handleFindItemsBySQLQuery(packet nex.PacketInterface) 
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	uiGroup := types.NewPrimitiveU32(0)
+	strTag := types.NewString("")
+	strQuery := types.NewString("")
+
+	var err error
+
 	err = uiGroup.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.FindItemsBySQLQuery(fmt.Errorf("Failed to read uiGroup from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
@@ -39,7 +40,6 @@ func (protocol *Protocol) handleFindItemsBySQLQuery(packet nex.PacketInterface) 
 		return
 	}
 
-	strTag := types.NewString("")
 	err = strTag.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.FindItemsBySQLQuery(fmt.Errorf("Failed to read strTag from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
@@ -50,7 +50,6 @@ func (protocol *Protocol) handleFindItemsBySQLQuery(packet nex.PacketInterface) 
 		return
 	}
 
-	strQuery := types.NewString("")
 	err = strQuery.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.FindItemsBySQLQuery(fmt.Errorf("Failed to read strQuery from parameters. %s", err.Error()), packet, callID, nil, nil, nil)

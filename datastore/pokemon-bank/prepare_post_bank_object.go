@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handlePreparePostBankObject(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.PreparePostBankObject == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "DataStorePokemonBank::PreparePostBankObject not implemented")
 
@@ -22,13 +20,15 @@ func (protocol *Protocol) handlePreparePostBankObject(packet nex.PacketInterface
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	slotID := types.NewPrimitiveU16(0)
+	size := types.NewPrimitiveU32(0)
+
+	var err error
+
 	err = slotID.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.PreparePostBankObject(fmt.Errorf("Failed to read slotID from parameters. %s", err.Error()), packet, callID, nil, nil)
@@ -39,7 +39,6 @@ func (protocol *Protocol) handlePreparePostBankObject(packet nex.PacketInterface
 		return
 	}
 
-	size := types.NewPrimitiveU32(0)
 	err = size.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.PreparePostBankObject(fmt.Errorf("Failed to read size from parameters. %s", err.Error()), packet, callID, nil, nil)

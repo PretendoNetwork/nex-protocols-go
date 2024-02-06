@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handleGetSpecificMetaV1(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.GetSpecificMetaV1 == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "DataStore::GetSpecificMetaV1 not implemented")
 
@@ -22,14 +20,13 @@ func (protocol *Protocol) handleGetSpecificMetaV1(packet nex.PacketInterface) {
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	param := datastore_types.NewDataStoreGetSpecificMetaParamV1()
-	err = param.ExtractFrom(parametersStream)
+
+	err := param.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.GetSpecificMetaV1(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
 		if rmcError != nil {

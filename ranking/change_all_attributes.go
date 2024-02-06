@@ -11,8 +11,6 @@ import (
 )
 
 func (protocol *Protocol) handleChangeAllAttributes(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.ChangeAllAttributes == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "Ranking::ChangeAllAttributes not implemented")
 
@@ -23,13 +21,15 @@ func (protocol *Protocol) handleChangeAllAttributes(packet nex.PacketInterface) 
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	changeParam := ranking_types.NewRankingChangeAttributesParam()
+	uniqueID := types.NewPrimitiveU64(0)
+
+	var err error
+
 	err = changeParam.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.ChangeAllAttributes(fmt.Errorf("Failed to read changeParam from parameters. %s", err.Error()), packet, callID, nil, nil)
@@ -40,7 +40,6 @@ func (protocol *Protocol) handleChangeAllAttributes(packet nex.PacketInterface) 
 		return
 	}
 
-	uniqueID := types.NewPrimitiveU64(0)
 	err = uniqueID.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.ChangeAllAttributes(fmt.Errorf("Failed to read uniqueID from parameters. %s", err.Error()), packet, callID, nil, nil)

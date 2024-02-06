@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handleGetlstFriendNotificationData(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.GetlstFriendNotificationData == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "MatchmakeExtension::GetlstFriendNotificationData not implemented")
 
@@ -22,15 +20,14 @@ func (protocol *Protocol) handleGetlstFriendNotificationData(packet nex.PacketIn
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	lstTypes := types.NewList[*types.PrimitiveU32]()
 	lstTypes.Type = types.NewPrimitiveU32(0)
-	err = lstTypes.ExtractFrom(parametersStream)
+
+	err := lstTypes.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.GetlstFriendNotificationData(fmt.Errorf("Failed to read lstTypes from parameters. %s", err.Error()), packet, callID, nil)
 		if rmcError != nil {

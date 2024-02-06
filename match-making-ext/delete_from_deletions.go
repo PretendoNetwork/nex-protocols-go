@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handleDeleteFromDeletions(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.DeleteFromDeletions == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "MatchMakingExt::DeleteFromDeletions not implemented")
 
@@ -22,17 +20,19 @@ func (protocol *Protocol) handleDeleteFromDeletions(packet nex.PacketInterface) 
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	lstDeletions := types.NewList[*types.PrimitiveU32]()
 	lstDeletions.Type = types.NewPrimitiveU32(0)
+	pid := types.NewPID(0)
+
+	var err error
+
 	err = lstDeletions.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.DeleteFromDeletions(fmt.Errorf("Failed to read lstDeletionsCount from parameters. %s", err.Error()), packet, callID, nil, nil)
+		_, rmcError := protocol.DeleteFromDeletions(fmt.Errorf("Failed to read lstDeletions from parameters. %s", err.Error()), packet, callID, nil, nil)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -40,7 +40,6 @@ func (protocol *Protocol) handleDeleteFromDeletions(packet nex.PacketInterface) 
 		return
 	}
 
-	pid := types.NewPID(0)
 	err = pid.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.DeleteFromDeletions(fmt.Errorf("Failed to read pid from parameters. %s", err.Error()), packet, callID, nil, nil)

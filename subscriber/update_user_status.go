@@ -11,8 +11,6 @@ import (
 )
 
 func (protocol *Protocol) handleUpdateUserStatus(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.UpdateUserStatus == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "Subscriber::UpdateUserStatus not implemented")
 
@@ -23,14 +21,17 @@ func (protocol *Protocol) handleUpdateUserStatus(packet nex.PacketInterface) {
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	unknown1 := types.NewList[*subscriber_types.Unknown]()
 	unknown1.Type = subscriber_types.NewUnknown()
+	unknown2 := types.NewList[*types.PrimitiveU8]()
+	unknown2.Type = types.NewPrimitiveU8(0)
+
+	var err error
+
 	err = unknown1.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.UpdateUserStatus(fmt.Errorf("Failed to read unknown1 from parameters. %s", err.Error()), packet, callID, nil, nil)
@@ -41,8 +42,6 @@ func (protocol *Protocol) handleUpdateUserStatus(packet nex.PacketInterface) {
 		return
 	}
 
-	unknown2 := types.NewList[*types.PrimitiveU8]()
-	unknown2.Type = types.NewPrimitiveU8(0)
 	err = unknown2.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.UpdateUserStatus(fmt.Errorf("Failed to read unknown2 from parameters. %s", err.Error()), packet, callID, nil, nil)

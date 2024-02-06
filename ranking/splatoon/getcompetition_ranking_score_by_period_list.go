@@ -19,7 +19,6 @@ func (protocol *Protocol) handleGetcompetitionRankingScoreByPeriodList(packet ne
 	globals.Logger.Warning("RankingSplatoon::GetcompetitionRankingScoreByPeriodList STUBBED")
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 
 	rmcMessage, rmcError := protocol.GetcompetitionRankingScoreByPeriodList(nil, packet, callID, packet.Payload())

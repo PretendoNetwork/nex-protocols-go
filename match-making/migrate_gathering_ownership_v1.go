@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handleMigrateGatheringOwnershipV1(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.MigrateGatheringOwnershipV1 == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "MatchMaking::MigrateGatheringOwnershipV1 not implemented")
 
@@ -22,13 +20,16 @@ func (protocol *Protocol) handleMigrateGatheringOwnershipV1(packet nex.PacketInt
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	gid := types.NewPrimitiveU32(0)
+	lstPotentialNewOwnersID := types.NewList[*types.PID]()
+	lstPotentialNewOwnersID.Type = types.NewPID(0)
+
+	var err error
+
 	err = gid.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.MigrateGatheringOwnershipV1(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), packet, callID, nil, nil)
@@ -39,8 +40,6 @@ func (protocol *Protocol) handleMigrateGatheringOwnershipV1(packet nex.PacketInt
 		return
 	}
 
-	lstPotentialNewOwnersID := types.NewList[*types.PID]()
-	lstPotentialNewOwnersID.Type = types.NewPID(0)
 	err = lstPotentialNewOwnersID.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.MigrateGatheringOwnershipV1(fmt.Errorf("Failed to read lstPotentialNewOwnersID from parameters. %s", err.Error()), packet, callID, nil, nil)

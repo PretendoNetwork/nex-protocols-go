@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handleUploadCommonData(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.UploadCommonData == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "Ranking::UploadCommonData not implemented")
 
@@ -22,13 +20,15 @@ func (protocol *Protocol) handleUploadCommonData(packet nex.PacketInterface) {
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	commonData := types.NewBuffer(nil)
+	uniqueID := types.NewPrimitiveU64(0)
+
+	var err error
+
 	err = commonData.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.UploadCommonData(fmt.Errorf("Failed to read commonData from parameters. %s", err.Error()), packet, callID, nil, nil)
@@ -39,7 +39,6 @@ func (protocol *Protocol) handleUploadCommonData(packet nex.PacketInterface) {
 		return
 	}
 
-	uniqueID := types.NewPrimitiveU64(0)
 	err = uniqueID.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.UploadCommonData(fmt.Errorf("Failed to read uniqueID from parameters. %s", err.Error()), packet, callID, nil, nil)

@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handleFindMatchmakeSessionByOwner(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.FindMatchmakeSessionByOwner == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "MatchmakeExtension::FindMatchmakeSessionByOwner not implemented")
 
@@ -22,13 +20,15 @@ func (protocol *Protocol) handleFindMatchmakeSessionByOwner(packet nex.PacketInt
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	id := types.NewPrimitiveU32(0)
+	resultRange := types.NewResultRange()
+
+	var err error
+
 	err = id.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.FindMatchmakeSessionByOwner(fmt.Errorf("Failed to read id from parameters. %s", err.Error()), packet, callID, nil, nil)
@@ -39,7 +39,6 @@ func (protocol *Protocol) handleFindMatchmakeSessionByOwner(packet nex.PacketInt
 		return
 	}
 
-	resultRange := types.NewResultRange()
 	err = resultRange.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.FindMatchmakeSessionByOwner(fmt.Errorf("Failed to read resultRange from parameters. %s", err.Error()), packet, callID, nil, nil)

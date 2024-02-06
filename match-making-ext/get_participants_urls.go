@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handleGetParticipantsURLs(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.GetParticipantsURLs == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "MatchMakingExt::GetParticipantsURLs not implemented")
 
@@ -22,15 +20,14 @@ func (protocol *Protocol) handleGetParticipantsURLs(packet nex.PacketInterface) 
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	lstGatherings := types.NewList[*types.PrimitiveU32]()
 	lstGatherings.Type = types.NewPrimitiveU32(0)
-	err = lstGatherings.ExtractFrom(parametersStream)
+
+	err := lstGatherings.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.GetParticipantsURLs(fmt.Errorf("Failed to read lstGatherings from parameters. %s", err.Error()), packet, callID, nil)
 		if rmcError != nil {

@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handleGetRelationships(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.GetRelationships == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "Friends::GetRelationships not implemented")
 
@@ -22,14 +20,13 @@ func (protocol *Protocol) handleGetRelationships(packet nex.PacketInterface) {
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	resultRange := types.NewResultRange()
-	err = resultRange.ExtractFrom(parametersStream)
+
+	err := resultRange.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.GetRelationships(fmt.Errorf("Failed to read resultRange from parameters. %s", err.Error()), packet, callID, nil)
 		if rmcError != nil {

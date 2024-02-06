@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handlePurchaseServiceItemRequest(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.PurchaseServiceItemRequest == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "ServiceItemWiiSportsClub::PurchaseServiceItemRequest not implemented")
 
@@ -22,14 +20,13 @@ func (protocol *Protocol) handlePurchaseServiceItemRequest(packet nex.PacketInte
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	purchaseServiceItemParam := service_item_wii_sports_club_types.NewServiceItemPurchaseServiceItemParam()
-	err = purchaseServiceItemParam.ExtractFrom(parametersStream)
+
+	err := purchaseServiceItemParam.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.PurchaseServiceItemRequest(fmt.Errorf("Failed to read purchaseServiceItemParam from parameters. %s", err.Error()), packet, callID, nil)
 		if rmcError != nil {

@@ -11,8 +11,6 @@ import (
 )
 
 func (protocol *Protocol) handleCustomSearchObject(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.CustomSearchObject == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "DataStoreSuperMarioMaker::CustomSearchObject not implemented")
 
@@ -23,13 +21,15 @@ func (protocol *Protocol) handleCustomSearchObject(packet nex.PacketInterface) {
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	condition := types.NewPrimitiveU32(0)
+	param := datastore_types.NewDataStoreSearchParam()
+
+	var err error
+
 	err = condition.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.CustomSearchObject(fmt.Errorf("Failed to read condition from parameters. %s", err.Error()), packet, callID, nil, nil)
@@ -40,7 +40,6 @@ func (protocol *Protocol) handleCustomSearchObject(packet nex.PacketInterface) {
 		return
 	}
 
-	param := datastore_types.NewDataStoreSearchParam()
 	err = param.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.CustomSearchObject(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil, nil)

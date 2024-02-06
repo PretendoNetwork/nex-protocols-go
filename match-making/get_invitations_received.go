@@ -17,7 +17,6 @@ func (protocol *Protocol) handleGetInvitationsReceived(packet nex.PacketInterfac
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 
 	rmcMessage, rmcError := protocol.GetInvitationsReceived(nil, packet, callID)

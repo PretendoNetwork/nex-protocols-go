@@ -19,10 +19,7 @@ func (protocol *Protocol) handleGetAPICallSummary(packet nex.PacketInterface) {
 	globals.Logger.Warning("Debug::GetAPICallSummary STUBBED")
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
-
-	// TODO - THIS METHOD HAS AN UNKNOWN REQUEST/RESPONSE FORMAT
 
 	rmcMessage, rmcError := protocol.GetAPICallSummary(nil, packet, callID, packet.Payload())
 	if rmcError != nil {

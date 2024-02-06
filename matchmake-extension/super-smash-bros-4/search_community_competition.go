@@ -19,7 +19,6 @@ func (protocol *Protocol) handleSearchCommunityCompetition(packet nex.PacketInte
 	globals.Logger.Warning("MatchmakeExtensionSuperSmashBros4::SearchCommunityCompetition STUBBED")
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 
 	rmcMessage, rmcError := protocol.SearchCommunityCompetition(nil, packet, callID, packet.Payload())

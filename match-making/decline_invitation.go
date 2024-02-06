@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handleDeclineInvitation(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.DeclineInvitation == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "MatchMaking::DeclineInvitation not implemented")
 
@@ -22,13 +20,15 @@ func (protocol *Protocol) handleDeclineInvitation(packet nex.PacketInterface) {
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	idGathering := types.NewPrimitiveU32(0)
+	strMessage := types.NewString("")
+
+	var err error
+
 	err = idGathering.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.DeclineInvitation(fmt.Errorf("Failed to read idGathering from parameters. %s", err.Error()), packet, callID, nil, nil)
@@ -39,7 +39,6 @@ func (protocol *Protocol) handleDeclineInvitation(packet nex.PacketInterface) {
 		return
 	}
 
-	strMessage := types.NewString("")
 	err = strMessage.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.DeclineInvitation(fmt.Errorf("Failed to read strMessage from parameters. %s", err.Error()), packet, callID, nil, nil)

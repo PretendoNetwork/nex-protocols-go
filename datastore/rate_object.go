@@ -11,8 +11,6 @@ import (
 )
 
 func (protocol *Protocol) handleRateObject(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.RateObject == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "DataStore::RateObject not implemented")
 
@@ -23,13 +21,16 @@ func (protocol *Protocol) handleRateObject(packet nex.PacketInterface) {
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	target := datastore_types.NewDataStoreRatingTarget()
+	param := datastore_types.NewDataStoreRateObjectParam()
+	fetchRatings := types.NewPrimitiveBool(false)
+
+	var err error
+
 	err = target.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.RateObject(fmt.Errorf("Failed to read target from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
@@ -40,7 +41,6 @@ func (protocol *Protocol) handleRateObject(packet nex.PacketInterface) {
 		return
 	}
 
-	param := datastore_types.NewDataStoreRateObjectParam()
 	err = param.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.RateObject(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
@@ -51,7 +51,6 @@ func (protocol *Protocol) handleRateObject(packet nex.PacketInterface) {
 		return
 	}
 
-	fetchRatings := types.NewPrimitiveBool(false)
 	err = fetchRatings.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.RateObject(fmt.Errorf("Failed to read fetchRatings from parameters. %s", err.Error()), packet, callID, nil, nil, nil)

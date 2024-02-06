@@ -17,7 +17,6 @@ func (protocol *Protocol) handleDisconnectAllPrincipals(packet nex.PacketInterfa
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 
 	rmcMessage, rmcError := protocol.DisconnectAllPrincipals(nil, packet, callID)

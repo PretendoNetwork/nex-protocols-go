@@ -17,7 +17,6 @@ func (protocol *Protocol) handleGetRelaySignatureKey(packet nex.PacketInterface)
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 
 	rmcMessage, rmcError := protocol.GetRelaySignatureKey(nil, packet, callID)

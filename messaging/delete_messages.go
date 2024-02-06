@@ -11,8 +11,6 @@ import (
 )
 
 func (protocol *Protocol) handleDeleteMessages(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.DeleteMessages == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "Messaging::DeleteMessages not implemented")
 
@@ -23,13 +21,16 @@ func (protocol *Protocol) handleDeleteMessages(packet nex.PacketInterface) {
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	recipient := messaging_types.NewMessageRecipient()
+	lstMessagesToDelete := types.NewList[*types.PrimitiveU32]()
+	lstMessagesToDelete.Type = types.NewPrimitiveU32(0)
+
+	var err error
+
 	err = recipient.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.DeleteMessages(fmt.Errorf("Failed to read recipient from parameters. %s", err.Error()), packet, callID, nil, nil)
@@ -40,8 +41,6 @@ func (protocol *Protocol) handleDeleteMessages(packet nex.PacketInterface) {
 		return
 	}
 
-	lstMessagesToDelete := types.NewList[*types.PrimitiveU32]()
-	lstMessagesToDelete.Type = types.NewPrimitiveU32(0)
 	err = lstMessagesToDelete.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.DeleteMessages(fmt.Errorf("Failed to read lstMessagesToDelete from parameters. %s", err.Error()), packet, callID, nil, nil)

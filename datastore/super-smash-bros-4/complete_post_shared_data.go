@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handleCompletePostSharedData(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.CompletePostSharedData == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "DataStoreSuperSmashBros4::CompletePostSharedData not implemented")
 
@@ -22,14 +20,13 @@ func (protocol *Protocol) handleCompletePostSharedData(packet nex.PacketInterfac
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	param := datastore_super_smash_bros_4_types.NewDataStoreCompletePostSharedDataParam()
-	err = param.ExtractFrom(parametersStream)
+
+	err := param.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.CompletePostSharedData(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
 		if rmcError != nil {

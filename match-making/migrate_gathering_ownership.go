@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handleMigrateGatheringOwnership(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.MigrateGatheringOwnership == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "MatchMaking::MigrateGatheringOwnership not implemented")
 
@@ -22,13 +20,17 @@ func (protocol *Protocol) handleMigrateGatheringOwnership(packet nex.PacketInter
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	gid := types.NewPrimitiveU32(0)
+	lstPotentialNewOwnersID := types.NewList[*types.PID]()
+	lstPotentialNewOwnersID.Type = types.NewPID(0)
+	participantsOnly := types.NewPrimitiveBool(false)
+
+	var err error
+
 	err = gid.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.MigrateGatheringOwnership(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
@@ -39,11 +41,9 @@ func (protocol *Protocol) handleMigrateGatheringOwnership(packet nex.PacketInter
 		return
 	}
 
-	lstPotentialNewOwnersID := types.NewList[*types.PID]()
-	lstPotentialNewOwnersID.Type = types.NewPID(0)
 	err = lstPotentialNewOwnersID.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.MigrateGatheringOwnership(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		_, rmcError := protocol.MigrateGatheringOwnership(fmt.Errorf("Failed to read lstPotentialNewOwnersID from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -51,7 +51,6 @@ func (protocol *Protocol) handleMigrateGatheringOwnership(packet nex.PacketInter
 		return
 	}
 
-	participantsOnly := types.NewPrimitiveBool(false)
 	err = participantsOnly.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.MigrateGatheringOwnership(fmt.Errorf("Failed to read participantsOnly from parameters. %s", err.Error()), packet, callID, nil, nil, nil)

@@ -11,8 +11,6 @@ import (
 )
 
 func (protocol *Protocol) handleBrowseMatchmakeSessionWithHostURLs(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.BrowseMatchmakeSessionWithHostURLs == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "MatchmakeExtension::BrowseMatchmakeSessionWithHostURLs not implemented")
 
@@ -23,13 +21,15 @@ func (protocol *Protocol) handleBrowseMatchmakeSessionWithHostURLs(packet nex.Pa
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	searchCriteria := match_making_types.NewMatchmakeSessionSearchCriteria()
+	resultRange := types.NewResultRange()
+
+	var err error
+
 	err = searchCriteria.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.BrowseMatchmakeSessionWithHostURLs(fmt.Errorf("Failed to read searchCriteria from parameters. %s", err.Error()), packet, callID, nil, nil)
@@ -40,7 +40,6 @@ func (protocol *Protocol) handleBrowseMatchmakeSessionWithHostURLs(packet nex.Pa
 		return
 	}
 
-	resultRange := types.NewResultRange()
 	err = resultRange.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.BrowseMatchmakeSessionWithHostURLs(fmt.Errorf("Failed to read resultRange from parameters. %s", err.Error()), packet, callID, nil, nil)

@@ -11,8 +11,6 @@ import (
 )
 
 func (protocol *Protocol) handleCompleteUpdateBankObject(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.CompleteUpdateBankObject == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "DataStorePokemonBank::CompleteUpdateBankObject not implemented")
 
@@ -23,13 +21,16 @@ func (protocol *Protocol) handleCompleteUpdateBankObject(packet nex.PacketInterf
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	slotID := types.NewPrimitiveU16(0)
+	transactionParam := datastore_pokemon_bank_types.NewBankTransactionParam()
+	isForce := types.NewPrimitiveBool(false)
+
+	var err error
+
 	err = slotID.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.CompleteUpdateBankObject(fmt.Errorf("Failed to read slotID from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
@@ -40,7 +41,6 @@ func (protocol *Protocol) handleCompleteUpdateBankObject(packet nex.PacketInterf
 		return
 	}
 
-	transactionParam := datastore_pokemon_bank_types.NewBankTransactionParam()
 	err = transactionParam.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.CompleteUpdateBankObject(fmt.Errorf("Failed to read transactionParam from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
@@ -51,7 +51,6 @@ func (protocol *Protocol) handleCompleteUpdateBankObject(packet nex.PacketInterf
 		return
 	}
 
-	isForce := types.NewPrimitiveBool(false)
 	err = isForce.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.CompleteUpdateBankObject(fmt.Errorf("Failed to read isForce from parameters. %s", err.Error()), packet, callID, nil, nil, nil)

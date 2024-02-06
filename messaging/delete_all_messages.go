@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handleDeleteAllMessages(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.DeleteAllMessages == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "Messaging::DeleteAllMessages not implemented")
 
@@ -22,14 +20,13 @@ func (protocol *Protocol) handleDeleteAllMessages(packet nex.PacketInterface) {
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	recipient := messaging_types.NewMessageRecipient()
-	err = recipient.ExtractFrom(parametersStream)
+
+	err := recipient.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.DeleteAllMessages(fmt.Errorf("Failed to read recipient from parameters. %s", err.Error()), packet, callID, nil)
 		if rmcError != nil {

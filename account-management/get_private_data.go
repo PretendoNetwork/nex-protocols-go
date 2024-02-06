@@ -17,7 +17,6 @@ func (protocol *Protocol) handleGetPrivateData(packet nex.PacketInterface) {
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 
 	rmcMessage, rmcError := protocol.GetPrivateData(nil, packet, callID)

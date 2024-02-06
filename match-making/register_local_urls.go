@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handleRegisterLocalURLs(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.RegisterLocalURLs == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "MatchMaking::RegisterLocalURLs not implemented")
 
@@ -22,13 +20,16 @@ func (protocol *Protocol) handleRegisterLocalURLs(packet nex.PacketInterface) {
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	gid := types.NewPrimitiveU32(0)
+	lstURLs := types.NewList[*types.StationURL]()
+	lstURLs.Type = types.NewStationURL("")
+
+	var err error
+
 	err = gid.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.RegisterLocalURLs(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), packet, callID, nil, nil)
@@ -39,8 +40,6 @@ func (protocol *Protocol) handleRegisterLocalURLs(packet nex.PacketInterface) {
 		return
 	}
 
-	lstURLs := types.NewList[*types.StationURL]()
-	lstURLs.Type = types.NewStationURL("")
 	err = lstURLs.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.RegisterLocalURLs(fmt.Errorf("Failed to read lstURLs from parameters. %s", err.Error()), packet, callID, nil, nil)

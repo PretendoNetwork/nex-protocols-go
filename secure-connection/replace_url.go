@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handleReplaceURL(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.ReplaceURL == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "SecureConnection::ReplaceURL not implemented")
 
@@ -22,13 +20,15 @@ func (protocol *Protocol) handleReplaceURL(packet nex.PacketInterface) {
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	target := types.NewStationURL("")
+	url := types.NewStationURL("")
+
+	var err error
+
 	err = target.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.ReplaceURL(fmt.Errorf("Failed to read target from parameters. %s", err.Error()), packet, callID, nil, nil)
@@ -39,7 +39,6 @@ func (protocol *Protocol) handleReplaceURL(packet nex.PacketInterface) {
 		return
 	}
 
-	url := types.NewStationURL("")
 	err = url.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.ReplaceURL(fmt.Errorf("Failed to read url from parameters. %s", err.Error()), packet, callID, nil, nil)

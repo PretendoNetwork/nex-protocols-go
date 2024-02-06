@@ -17,7 +17,6 @@ func (protocol *Protocol) handleResetPassword(packet nex.PacketInterface) {
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 
 	rmcMessage, rmcError := protocol.ResetPassword(nil, packet, callID)

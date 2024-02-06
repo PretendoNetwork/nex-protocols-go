@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handleGetPrepurchaseInfoRequest(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.GetPrepurchaseInfoRequest == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "ServiceItemTeamKirbyClashDeluxe::GetPrepurchaseInfoRequest not implemented")
 
@@ -22,14 +20,13 @@ func (protocol *Protocol) handleGetPrepurchaseInfoRequest(packet nex.PacketInter
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	getPrepurchaseInfoParam := service_item_team_kirby_clash_deluxe_types.NewServiceItemGetPrepurchaseInfoParam()
-	err = getPrepurchaseInfoParam.ExtractFrom(parametersStream)
+
+	err := getPrepurchaseInfoParam.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.GetPrepurchaseInfoRequest(fmt.Errorf("Failed to read getPrepurchaseInfoParam from parameters. %s", err.Error()), packet, callID, nil)
 		if rmcError != nil {

@@ -17,7 +17,6 @@ func (protocol *Protocol) handleResetStats(packet nex.PacketInterface) {
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 
 	rmcMessage, rmcError := protocol.ResetStats(nil, packet, callID)

@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handleGetStringSettings(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.GetStringSettings == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "Utility::GetStringSettings not implemented")
 
@@ -22,15 +20,13 @@ func (protocol *Protocol) handleGetStringSettings(packet nex.PacketInterface) {
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
-
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	stringSettingIndex := types.NewPrimitiveU32(0)
-	err = stringSettingIndex.ExtractFrom(parametersStream)
+
+	err := stringSettingIndex.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.GetStringSettings(fmt.Errorf("Failed to read stringSettingIndex from parameters. %s", err.Error()), packet, callID, nil)
 		if rmcError != nil {

@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handlePrepareUpdateBankObject(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.PrepareUpdateBankObject == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "DataStorePokemonBank::PrepareUpdateBankObject not implemented")
 
@@ -22,14 +20,13 @@ func (protocol *Protocol) handlePrepareUpdateBankObject(packet nex.PacketInterfa
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	transactionParam := datastore_pokemon_bank_types.NewBankTransactionParam()
-	err = transactionParam.ExtractFrom(parametersStream)
+
+	err := transactionParam.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.PrepareUpdateBankObject(fmt.Errorf("Failed to read transactionParam from parameters. %s", err.Error()), packet, callID, nil)
 		if rmcError != nil {

@@ -16,5 +16,14 @@ func (protocol *Protocol) handleLoginWithContext(packet nex.PacketInterface) {
 		return
 	}
 
-	// * Unsure what data is sent here, or how to trigger the console to send it
+	request := packet.RMCMessage()
+	callID := request.CallID
+
+	rmcMessage, rmcError := protocol.LoginWithContext(nil, packet, callID)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
+		return
+	}
+
+	globals.Respond(packet, rmcMessage)
 }

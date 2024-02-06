@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handleFindByNameLike(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.FindByNameLike == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "AccountManagement::FindByNameLike not implemented")
 
@@ -22,13 +20,16 @@ func (protocol *Protocol) handleFindByNameLike(packet nex.PacketInterface) {
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	uiGroups := types.NewPrimitiveU32(0)
+	strLike := types.NewString("")
+	resultRange := types.NewResultRange()
+
+	var err error
+
 	err = uiGroups.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.FindByNameLike(fmt.Errorf("Failed to read uiGroups from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
@@ -39,7 +40,6 @@ func (protocol *Protocol) handleFindByNameLike(packet nex.PacketInterface) {
 		return
 	}
 
-	strLike := types.NewString("")
 	err = strLike.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.FindByNameLike(fmt.Errorf("Failed to read strLike from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
@@ -50,7 +50,6 @@ func (protocol *Protocol) handleFindByNameLike(packet nex.PacketInterface) {
 		return
 	}
 
-	resultRange := types.NewResultRange()
 	err = resultRange.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.FindByNameLike(fmt.Errorf("Failed to read resultRange from parameters. %s", err.Error()), packet, callID, nil, nil, nil)

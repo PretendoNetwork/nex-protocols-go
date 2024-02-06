@@ -19,7 +19,6 @@ func (protocol *Protocol) handleJoinOrCreateMatchmakeSession(packet nex.PacketIn
 	globals.Logger.Warning("MatchmakeExtensionSuperSmashBros4::JoinOrCreateMatchmakeSession STUBBED")
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 
 	rmcMessage, rmcError := protocol.JoinOrCreateMatchmakeSession(nil, packet, callID, packet.Payload())

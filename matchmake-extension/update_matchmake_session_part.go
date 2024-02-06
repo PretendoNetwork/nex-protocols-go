@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handleUpdateMatchmakeSessionPart(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.UpdateMatchmakeSessionPart == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "MatchmakeExtension::UpdateMatchmakeSessionPart not implemented")
 
@@ -22,14 +20,13 @@ func (protocol *Protocol) handleUpdateMatchmakeSessionPart(packet nex.PacketInte
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	updateMatchmakeSessionParam := match_making_types.NewUpdateMatchmakeSessionParam()
-	err = updateMatchmakeSessionParam.ExtractFrom(parametersStream)
+
+	err := updateMatchmakeSessionParam.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.UpdateMatchmakeSessionPart(fmt.Errorf("Failed to read updateMatchmakeSessionParam from parameters. %s", err.Error()), packet, callID, nil)
 		if rmcError != nil {

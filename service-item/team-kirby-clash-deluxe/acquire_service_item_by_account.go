@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handleAcquireServiceItemByAccount(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.AcquireServiceItemByAccount == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "ServiceItemTeamKirbyClashDeluxe::AcquireServiceItemByAccount not implemented")
 
@@ -22,14 +20,13 @@ func (protocol *Protocol) handleAcquireServiceItemByAccount(packet nex.PacketInt
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	acquireServiceItemByAccountParam := service_item_team_kirby_clash_deluxe_types.NewServiceItemAcquireServiceItemByAccountParam()
-	err = acquireServiceItemByAccountParam.ExtractFrom(parametersStream)
+
+	err := acquireServiceItemByAccountParam.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.AcquireServiceItemByAccount(fmt.Errorf("Failed to read acquireServiceItemByAccountParam from parameters. %s", err.Error()), packet, callID, nil)
 		if rmcError != nil {

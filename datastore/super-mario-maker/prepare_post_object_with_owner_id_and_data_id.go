@@ -11,8 +11,6 @@ import (
 )
 
 func (protocol *Protocol) handlePreparePostObjectWithOwnerIDAndDataID(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.PreparePostObjectWithOwnerIDAndDataID == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "DataStoreSuperMarioMaker::PreparePostObjectWithOwnerIDAndDataID not implemented")
 
@@ -23,13 +21,16 @@ func (protocol *Protocol) handlePreparePostObjectWithOwnerIDAndDataID(packet nex
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	ownerID := types.NewPrimitiveU32(0)
+	dataID := types.NewPrimitiveU64(0)
+	param := datastore_types.NewDataStorePreparePostParam()
+
+	var err error
+
 	err = ownerID.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.PreparePostObjectWithOwnerIDAndDataID(fmt.Errorf("Failed to read ownerID from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
@@ -40,7 +41,6 @@ func (protocol *Protocol) handlePreparePostObjectWithOwnerIDAndDataID(packet nex
 		return
 	}
 
-	dataID := types.NewPrimitiveU64(0)
 	err = dataID.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.PreparePostObjectWithOwnerIDAndDataID(fmt.Errorf("Failed to read dataID from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
@@ -51,7 +51,6 @@ func (protocol *Protocol) handlePreparePostObjectWithOwnerIDAndDataID(packet nex
 		return
 	}
 
-	param := datastore_types.NewDataStorePreparePostParam()
 	err = param.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.PreparePostObjectWithOwnerIDAndDataID(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil, nil, nil)

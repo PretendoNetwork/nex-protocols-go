@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handleGetList(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.GetList == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "Friends::GetList not implemented")
 
@@ -22,13 +20,15 @@ func (protocol *Protocol) handleGetList(packet nex.PacketInterface) {
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	byRelationship := types.NewPrimitiveU8(0)
+	bReversed := types.NewPrimitiveBool(false)
+
+	var err error
+
 	err = byRelationship.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.GetList(fmt.Errorf("Failed to read byRelationship from parameters. %s", err.Error()), packet, callID, nil, nil)
@@ -39,7 +39,6 @@ func (protocol *Protocol) handleGetList(packet nex.PacketInterface) {
 		return
 	}
 
-	bReversed := types.NewPrimitiveBool(false)
 	err = bReversed.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.GetList(fmt.Errorf("Failed to read bReversed from parameters. %s", err.Error()), packet, callID, nil, nil)

@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handleLaunchSession(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.LaunchSession == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "MatchMaking::LaunchSession not implemented")
 
@@ -22,13 +20,15 @@ func (protocol *Protocol) handleLaunchSession(packet nex.PacketInterface) {
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	idGathering := types.NewPrimitiveU32(0)
+	strURL := types.NewString("")
+
+	var err error
+
 	err = idGathering.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.LaunchSession(fmt.Errorf("Failed to read idGathering from parameters. %s", err.Error()), packet, callID, nil, nil)
@@ -39,7 +39,6 @@ func (protocol *Protocol) handleLaunchSession(packet nex.PacketInterface) {
 		return
 	}
 
-	strURL := types.NewString("")
 	err = strURL.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.LaunchSession(fmt.Errorf("Failed to read strURL from parameters. %s", err.Error()), packet, callID, nil, nil)

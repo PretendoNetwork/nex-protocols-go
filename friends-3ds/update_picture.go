@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handleUpdatePicture(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.UpdatePicture == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "Friends3DS::UpdatePicture not implemented")
 
@@ -22,13 +20,15 @@ func (protocol *Protocol) handleUpdatePicture(packet nex.PacketInterface) {
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	unknown := types.NewPrimitiveU32(0)
+	picture := types.NewBuffer(nil)
+
+	var err error
+
 	err = unknown.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.UpdatePicture(fmt.Errorf("Failed to read unknown from parameters. %s", err.Error()), packet, callID, nil, nil)
@@ -39,7 +39,6 @@ func (protocol *Protocol) handleUpdatePicture(packet nex.PacketInterface) {
 		return
 	}
 
-	picture := types.NewBuffer(nil)
 	err = picture.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.UpdatePicture(fmt.Errorf("Failed to read picture from parameters. %s", err.Error()), packet, callID, nil, nil)

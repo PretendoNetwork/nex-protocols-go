@@ -10,8 +10,6 @@ import (
 )
 
 func (protocol *Protocol) handleAddFriendBylstPrincipalID(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.AddFriendBylstPrincipalID == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "Friends3DS::AddFriendBylstPrincipalID not implemented")
 
@@ -22,13 +20,16 @@ func (protocol *Protocol) handleAddFriendBylstPrincipalID(packet nex.PacketInter
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	lfc := types.NewPrimitiveU64(0)
+	pids := types.NewList[*types.PID]()
+	pids.Type = types.NewPID(0)
+
+	var err error
+
 	err = lfc.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.AddFriendBylstPrincipalID(fmt.Errorf("Failed to read lfc from parameters. %s", err.Error()), packet, callID, nil, nil)
@@ -39,8 +40,6 @@ func (protocol *Protocol) handleAddFriendBylstPrincipalID(packet nex.PacketInter
 		return
 	}
 
-	pids := types.NewList[*types.PID]()
-	pids.Type = types.NewPID(0)
 	err = pids.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.AddFriendBylstPrincipalID(fmt.Errorf("Failed to read pids from parameters. %s", err.Error()), packet, callID, nil, nil)

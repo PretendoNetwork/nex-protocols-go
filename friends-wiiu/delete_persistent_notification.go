@@ -11,8 +11,6 @@ import (
 )
 
 func (protocol *Protocol) handleDeletePersistentNotification(packet nex.PacketInterface) {
-	var err error
-
 	if protocol.DeletePersistentNotification == nil {
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "FriendsWiiU::DeletePersistentNotification not implemented")
 
@@ -23,15 +21,14 @@ func (protocol *Protocol) handleDeletePersistentNotification(packet nex.PacketIn
 	}
 
 	request := packet.RMCMessage()
-
 	callID := request.CallID
 	parameters := request.Parameters
-
 	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
 
 	persistentNotifications := types.NewList[*friends_wiiu_types.PersistentNotification]()
 	persistentNotifications.Type = friends_wiiu_types.NewPersistentNotification()
-	err = persistentNotifications.ExtractFrom(parametersStream)
+
+	err := persistentNotifications.ExtractFrom(parametersStream)
 	if err != nil {
 		_, rmcError := protocol.DeletePersistentNotification(fmt.Errorf("Failed to read persistentNotifications from parameters. %s", err.Error()), packet, callID, nil)
 		if rmcError != nil {

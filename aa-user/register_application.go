@@ -11,11 +11,13 @@ import (
 
 func (protocol *Protocol) handleRegisterApplication(packet nex.PacketInterface) {
 	var err error
-	var errorCode uint32
 
 	if protocol.RegisterApplication == nil {
-		globals.Logger.Warning("AAUser::RegisterApplication not implemented")
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "AAUser::RegisterApplication not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
@@ -29,17 +31,17 @@ func (protocol *Protocol) handleRegisterApplication(packet nex.PacketInterface) 
 	titleID := types.NewPrimitiveU64(0)
 	err = titleID.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.RegisterApplication(fmt.Errorf("Failed to read titleID from parameters. %s", err.Error()), packet, callID, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.RegisterApplication(fmt.Errorf("Failed to read titleID from parameters. %s", err.Error()), packet, callID, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	rmcMessage, errorCode := protocol.RegisterApplication(nil, packet, callID, titleID)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.RegisterApplication(nil, packet, callID, titleID)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
 		return
 	}
 

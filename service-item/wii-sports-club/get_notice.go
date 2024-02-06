@@ -11,11 +11,13 @@ import (
 
 func (protocol *Protocol) handleGetNotice(packet nex.PacketInterface) {
 	var err error
-	var errorCode uint32
 
 	if protocol.GetNotice == nil {
-		globals.Logger.Warning("ServiceItemWiiSportsClub::GetNotice not implemented")
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "ServiceItemWiiSportsClub::GetNotice not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
@@ -29,17 +31,17 @@ func (protocol *Protocol) handleGetNotice(packet nex.PacketInterface) {
 	getNoticeParam := service_item_wii_sports_club_types.NewServiceItemGetNoticeParam()
 	err = getNoticeParam.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.GetNotice(fmt.Errorf("Failed to read getNoticeParam from parameters. %s", err.Error()), packet, callID, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.GetNotice(fmt.Errorf("Failed to read getNoticeParam from parameters. %s", err.Error()), packet, callID, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	rmcMessage, errorCode := protocol.GetNotice(nil, packet, callID, getNoticeParam)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.GetNotice(nil, packet, callID, getNoticeParam)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
 		return
 	}
 

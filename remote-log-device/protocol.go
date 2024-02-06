@@ -20,14 +20,14 @@ const (
 // Protocol handles the RemoteLogDevice protocol
 type Protocol struct {
 	server nex.ServerInterface
-	Log    func(err error, packet nex.PacketInterface, callID uint32, strLine *types.String) (*nex.RMCMessage, uint32)
+	Log    func(err error, packet nex.PacketInterface, callID uint32, strLine *types.String) (*nex.RMCMessage, *nex.Error)
 }
 
 // Interface implements the methods present on the Remote Log Device protocol struct
 type Interface interface {
 	Server() nex.ServerInterface
 	SetServer(server nex.ServerInterface)
-	SetHandlerLog(handler func(err error, packet nex.PacketInterface, callID uint32, strLine *types.String) (*nex.RMCMessage, uint32))
+	SetHandlerLog(handler func(err error, packet nex.PacketInterface, callID uint32, strLine *types.String) (*nex.RMCMessage, *nex.Error))
 }
 
 // Server returns the server implementing the protocol
@@ -41,7 +41,7 @@ func (protocol *Protocol) SetServer(server nex.ServerInterface) {
 }
 
 // SetHandlerLog sets the handler for the Log method
-func (protocol *Protocol) SetHandlerLog(handler func(err error, packet nex.PacketInterface, callID uint32, strLine *types.String) (*nex.RMCMessage, uint32)) {
+func (protocol *Protocol) SetHandlerLog(handler func(err error, packet nex.PacketInterface, callID uint32, strLine *types.String) (*nex.RMCMessage, *nex.Error)) {
 	protocol.Log = handler
 }
 
@@ -57,8 +57,11 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 	case MethodLog:
 		protocol.handleLog(packet)
 	default:
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
-		fmt.Printf("Unsupported RemoteLogDevice method ID: %#v\n", message.MethodID)
+		errMessage := fmt.Sprintf("Unsupported RemoteLogDevice method ID: %#v\n", message.MethodID)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, errMessage)
+
+		globals.RespondError(packet, ProtocolID, err)
+		globals.Logger.Warning(err.Message)
 	}
 }
 

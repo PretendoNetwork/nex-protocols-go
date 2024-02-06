@@ -11,11 +11,13 @@ import (
 
 func (protocol *Protocol) handleUpdateGathering(packet nex.PacketInterface) {
 	var err error
-	var errorCode uint32
 
 	if protocol.UpdateGathering == nil {
-		globals.Logger.Warning("MatchMaking::UpdateGathering not implemented")
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "MatchMaking::UpdateGathering not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
@@ -29,17 +31,17 @@ func (protocol *Protocol) handleUpdateGathering(packet nex.PacketInterface) {
 	anyGathering := types.NewAnyDataHolder()
 	err = anyGathering.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.UpdateGathering(fmt.Errorf("Failed to read anyGathering from parameters. %s", err.Error()), packet, callID, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.UpdateGathering(fmt.Errorf("Failed to read anyGathering from parameters. %s", err.Error()), packet, callID, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	rmcMessage, errorCode := protocol.UpdateGathering(nil, packet, callID, anyGathering)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.UpdateGathering(nil, packet, callID, anyGathering)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
 		return
 	}
 

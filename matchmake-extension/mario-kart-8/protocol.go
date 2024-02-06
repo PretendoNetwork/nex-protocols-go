@@ -51,12 +51,12 @@ type matchmakeExtensionProtocol = matchmake_extension.Protocol
 type Protocol struct {
 	server nex.ServerInterface
 	matchmakeExtensionProtocol
-	CreateSimpleSearchObject                  func(err error, packet nex.PacketInterface, callID uint32, object *matchmake_extension_mario_kart8_types.SimpleSearchObject) (*nex.RMCMessage, uint32)
-	UpdateSimpleSearchObject                  func(err error, packet nex.PacketInterface, callID uint32, objectID *types.PrimitiveU32, newObject *matchmake_extension_mario_kart8_types.SimpleSearchObject) (*nex.RMCMessage, uint32)
-	DeleteSimpleSearchObject                  func(err error, packet nex.PacketInterface, callID uint32, objectID *types.PrimitiveU32) (*nex.RMCMessage, uint32)
-	SearchSimpleSearchObject                  func(err error, packet nex.PacketInterface, callID uint32, param *matchmake_extension_mario_kart8_types.SimpleSearchParam) (*nex.RMCMessage, uint32)
-	JoinMatchmakeSessionWithExtraParticipants func(err error, packet nex.PacketInterface, callID uint32, gid *types.PrimitiveU32, joinMessage *types.String, ignoreBlacklist *types.PrimitiveBool, participationCount *types.PrimitiveU16, extraParticipants *types.PrimitiveU32) (*nex.RMCMessage, uint32)
-	SearchSimpleSearchObjectByObjectIDs       func(err error, packet nex.PacketInterface, callID uint32, objectIDs *types.List[*types.PrimitiveU32]) (*nex.RMCMessage, uint32)
+	CreateSimpleSearchObject                  func(err error, packet nex.PacketInterface, callID uint32, object *matchmake_extension_mario_kart8_types.SimpleSearchObject) (*nex.RMCMessage, *nex.Error)
+	UpdateSimpleSearchObject                  func(err error, packet nex.PacketInterface, callID uint32, objectID *types.PrimitiveU32, newObject *matchmake_extension_mario_kart8_types.SimpleSearchObject) (*nex.RMCMessage, *nex.Error)
+	DeleteSimpleSearchObject                  func(err error, packet nex.PacketInterface, callID uint32, objectID *types.PrimitiveU32) (*nex.RMCMessage, *nex.Error)
+	SearchSimpleSearchObject                  func(err error, packet nex.PacketInterface, callID uint32, param *matchmake_extension_mario_kart8_types.SimpleSearchParam) (*nex.RMCMessage, *nex.Error)
+	JoinMatchmakeSessionWithExtraParticipants func(err error, packet nex.PacketInterface, callID uint32, gid *types.PrimitiveU32, joinMessage *types.String, ignoreBlacklist *types.PrimitiveBool, participationCount *types.PrimitiveU16, extraParticipants *types.PrimitiveU32) (*nex.RMCMessage, *nex.Error)
+	SearchSimpleSearchObjectByObjectIDs       func(err error, packet nex.PacketInterface, callID uint32, objectIDs *types.List[*types.PrimitiveU32]) (*nex.RMCMessage, *nex.Error)
 }
 
 // HandlePacket sends the packet to the correct RMC method handler
@@ -86,8 +86,11 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 	case MethodSearchSimpleSearchObjectByObjectIDs:
 		protocol.handleSearchSimpleSearchObjectByObjectIDs(packet)
 	default:
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
-		fmt.Printf("Unsupported Matchmake Extension (Mario Kart 8) method ID: %#v\n", message.MethodID)
+		errMessage := fmt.Sprintf("Unsupported Matchmake Extension (Mario Kart 8) method ID: %#v\n", message.MethodID)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, errMessage)
+
+		globals.RespondError(packet, ProtocolID, err)
+		globals.Logger.Warning(err.Message)
 	}
 }
 

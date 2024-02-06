@@ -11,11 +11,13 @@ import (
 
 func (protocol *Protocol) handleCreateSimpleSearchObject(packet nex.PacketInterface) {
 	var err error
-	var errorCode uint32
 
 	if protocol.CreateSimpleSearchObject == nil {
-		globals.Logger.Warning("MatchmakeExtensionMarioKart8::CreateSimpleSearchObject not implemented")
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "MatchmakeExtensionMarioKart8::CreateSimpleSearchObject not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
@@ -29,17 +31,17 @@ func (protocol *Protocol) handleCreateSimpleSearchObject(packet nex.PacketInterf
 	object := matchmake_extension_mario_kart8_types.NewSimpleSearchObject()
 	err = object.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.CreateSimpleSearchObject(fmt.Errorf("Failed to read object from parameters. %s", err.Error()), packet, callID, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.CreateSimpleSearchObject(fmt.Errorf("Failed to read object from parameters. %s", err.Error()), packet, callID, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	rmcMessage, errorCode := protocol.CreateSimpleSearchObject(nil, packet, callID, object)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.CreateSimpleSearchObject(nil, packet, callID, object)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
 		return
 	}
 

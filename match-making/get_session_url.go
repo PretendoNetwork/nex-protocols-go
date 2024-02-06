@@ -11,11 +11,13 @@ import (
 
 func (protocol *Protocol) handleGetSessionURL(packet nex.PacketInterface) {
 	var err error
-	var errorCode uint32
 
 	if protocol.GetSessionURL == nil {
-		globals.Logger.Warning("MatchMaking::GetSessionURL not implemented")
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "MatchMaking::GetSessionURL not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
@@ -29,17 +31,17 @@ func (protocol *Protocol) handleGetSessionURL(packet nex.PacketInterface) {
 	idGathering := types.NewPrimitiveU32(0)
 	err = idGathering.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.GetSessionURL(fmt.Errorf("Failed to read idGathering from parameters. %s", err.Error()), packet, callID, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.GetSessionURL(fmt.Errorf("Failed to read idGathering from parameters. %s", err.Error()), packet, callID, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	rmcMessage, errorCode := protocol.GetSessionURL(nil, packet, callID, idGathering)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.GetSessionURL(nil, packet, callID, idGathering)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
 		return
 	}
 

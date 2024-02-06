@@ -12,11 +12,13 @@ import (
 
 func (protocol *Protocol) handleReportStats(packet nex.PacketInterface) {
 	var err error
-	var errorCode uint32
 
 	if protocol.ReportStats == nil {
-		globals.Logger.Warning("MatchMaking::ReportStats not implemented")
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "MatchMaking::ReportStats not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
@@ -30,9 +32,9 @@ func (protocol *Protocol) handleReportStats(packet nex.PacketInterface) {
 	idGathering := types.NewPrimitiveU32(0)
 	err = idGathering.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.ReportStats(fmt.Errorf("Failed to read idGathering from parameters. %s", err.Error()), packet, callID, nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.ReportStats(fmt.Errorf("Failed to read idGathering from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
@@ -42,17 +44,17 @@ func (protocol *Protocol) handleReportStats(packet nex.PacketInterface) {
 	lstStats.Type = match_making_types.NewGatheringStats()
 	err = lstStats.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.ReportStats(fmt.Errorf("Failed to read lstStats from parameters. %s", err.Error()), packet, callID, nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.ReportStats(fmt.Errorf("Failed to read lstStats from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	rmcMessage, errorCode := protocol.ReportStats(nil, packet, callID, idGathering, lstStats)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.ReportStats(nil, packet, callID, idGathering, lstStats)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
 		return
 	}
 

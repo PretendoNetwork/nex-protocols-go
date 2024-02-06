@@ -12,11 +12,13 @@ import (
 
 func (protocol *Protocol) handleDeleteObjects(packet nex.PacketInterface) {
 	var err error
-	var errorCode uint32
 
 	if protocol.DeleteObjects == nil {
-		globals.Logger.Warning("DataStore::DeleteObjects not implemented")
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "DataStore::DeleteObjects not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
@@ -31,9 +33,9 @@ func (protocol *Protocol) handleDeleteObjects(packet nex.PacketInterface) {
 	params.Type = datastore_types.NewDataStoreDeleteParam()
 	err = params.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.DeleteObjects(fmt.Errorf("Failed to read params from parameters. %s", err.Error()), packet, callID, nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.DeleteObjects(fmt.Errorf("Failed to read params from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
@@ -42,17 +44,17 @@ func (protocol *Protocol) handleDeleteObjects(packet nex.PacketInterface) {
 	transactional := types.NewPrimitiveBool(false)
 	err = transactional.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.DeleteObjects(fmt.Errorf("Failed to read transactional from parameters. %s", err.Error()), packet, callID, nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.DeleteObjects(fmt.Errorf("Failed to read transactional from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	rmcMessage, errorCode := protocol.DeleteObjects(nil, packet, callID, params, transactional)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.DeleteObjects(nil, packet, callID, params, transactional)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
 		return
 	}
 

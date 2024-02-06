@@ -11,11 +11,13 @@ import (
 
 func (protocol *Protocol) handleSetApplicationConfig(packet nex.PacketInterface) {
 	var err error
-	var errorCode uint32
 
 	if protocol.SetApplicationConfig == nil {
-		globals.Logger.Warning("DataStoreSuperMarioMaker::SetApplicationConfig not implemented")
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "DataStoreSuperMarioMaker::SetApplicationConfig not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
@@ -29,9 +31,9 @@ func (protocol *Protocol) handleSetApplicationConfig(packet nex.PacketInterface)
 	applicationID := types.NewPrimitiveU32(0)
 	err = applicationID.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.SetApplicationConfig(fmt.Errorf("Failed to read applicationID from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.SetApplicationConfig(fmt.Errorf("Failed to read applicationID from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
@@ -40,9 +42,9 @@ func (protocol *Protocol) handleSetApplicationConfig(packet nex.PacketInterface)
 	key := types.NewPrimitiveU32(0)
 	err = key.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.SetApplicationConfig(fmt.Errorf("Failed to read key from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.SetApplicationConfig(fmt.Errorf("Failed to read key from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
@@ -51,17 +53,17 @@ func (protocol *Protocol) handleSetApplicationConfig(packet nex.PacketInterface)
 	value := types.NewPrimitiveS32(0)
 	err = value.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.SetApplicationConfig(fmt.Errorf("Failed to read value from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.SetApplicationConfig(fmt.Errorf("Failed to read value from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	rmcMessage, errorCode := protocol.SetApplicationConfig(nil, packet, callID, applicationID, key, value)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.SetApplicationConfig(nil, packet, callID, applicationID, key, value)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
 		return
 	}
 

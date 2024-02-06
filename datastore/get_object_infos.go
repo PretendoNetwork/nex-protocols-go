@@ -11,11 +11,13 @@ import (
 
 func (protocol *Protocol) handleGetObjectInfos(packet nex.PacketInterface) {
 	var err error
-	var errorCode uint32
 
 	if protocol.GetObjectInfos == nil {
-		globals.Logger.Warning("DataStore::GetObjectInfos not implemented")
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "DataStore::GetObjectInfos not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
@@ -29,17 +31,17 @@ func (protocol *Protocol) handleGetObjectInfos(packet nex.PacketInterface) {
 	dataIDs := types.NewPrimitiveU64(0)
 	err = dataIDs.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.GetObjectInfos(fmt.Errorf("Failed to read dataIDs from parameters. %s", err.Error()), packet, callID, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.GetObjectInfos(fmt.Errorf("Failed to read dataIDs from parameters. %s", err.Error()), packet, callID, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	rmcMessage, errorCode := protocol.GetObjectInfos(nil, packet, callID, dataIDs)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.GetObjectInfos(nil, packet, callID, dataIDs)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
 		return
 	}
 

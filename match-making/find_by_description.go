@@ -11,11 +11,13 @@ import (
 
 func (protocol *Protocol) handleFindByDescription(packet nex.PacketInterface) {
 	var err error
-	var errorCode uint32
 
 	if protocol.FindByDescription == nil {
-		globals.Logger.Warning("MatchMaking::FindByDescription not implemented")
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "MatchMaking::FindByDescription not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
@@ -29,9 +31,9 @@ func (protocol *Protocol) handleFindByDescription(packet nex.PacketInterface) {
 	strDescription := types.NewString("")
 	err = strDescription.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.FindByDescription(fmt.Errorf("Failed to read strDescription from parameters. %s", err.Error()), packet, callID, nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.FindByDescription(fmt.Errorf("Failed to read strDescription from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
@@ -40,17 +42,17 @@ func (protocol *Protocol) handleFindByDescription(packet nex.PacketInterface) {
 	resultRange := types.NewResultRange()
 	err = resultRange.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.FindByDescription(fmt.Errorf("Failed to read resultRange from parameters. %s", err.Error()), packet, callID, nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.FindByDescription(fmt.Errorf("Failed to read resultRange from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	rmcMessage, errorCode := protocol.FindByDescription(nil, packet, callID, strDescription, resultRange)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.FindByDescription(nil, packet, callID, strDescription, resultRange)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
 		return
 	}
 

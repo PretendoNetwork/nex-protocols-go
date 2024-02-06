@@ -12,11 +12,13 @@ import (
 
 func (protocol *Protocol) handleRollbackBankObject(packet nex.PacketInterface) {
 	var err error
-	var errorCode uint32
 
 	if protocol.RollbackBankObject == nil {
-		globals.Logger.Warning("DataStorePokemonBank::RollbackBankObject not implemented")
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "DataStorePokemonBank::RollbackBankObject not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
@@ -30,9 +32,9 @@ func (protocol *Protocol) handleRollbackBankObject(packet nex.PacketInterface) {
 	slotID := types.NewPrimitiveU16(0)
 	err = slotID.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.RollbackBankObject(fmt.Errorf("Failed to read slotID from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.RollbackBankObject(fmt.Errorf("Failed to read slotID from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
@@ -41,9 +43,9 @@ func (protocol *Protocol) handleRollbackBankObject(packet nex.PacketInterface) {
 	transactionParam := datastore_pokemon_bank_types.NewBankTransactionParam()
 	err = transactionParam.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.RollbackBankObject(fmt.Errorf("Failed to read transactionParam from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.RollbackBankObject(fmt.Errorf("Failed to read transactionParam from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
@@ -52,17 +54,17 @@ func (protocol *Protocol) handleRollbackBankObject(packet nex.PacketInterface) {
 	isForce := types.NewPrimitiveBool(false)
 	err = isForce.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.RollbackBankObject(fmt.Errorf("Failed to read isForce from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.RollbackBankObject(fmt.Errorf("Failed to read isForce from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	rmcMessage, errorCode := protocol.RollbackBankObject(nil, packet, callID, slotID, transactionParam, isForce)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.RollbackBankObject(nil, packet, callID, slotID, transactionParam, isForce)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
 		return
 	}
 

@@ -11,11 +11,13 @@ import (
 
 func (protocol *Protocol) handleUpdatePrivacySetting(packet nex.PacketInterface) {
 	var err error
-	var errorCode uint32
 
 	if protocol.UpdatePrivacySetting == nil {
-		globals.Logger.Warning("MatchmakeExtension::UpdatePrivacySetting not implemented")
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "MatchmakeExtension::UpdatePrivacySetting not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
@@ -29,9 +31,9 @@ func (protocol *Protocol) handleUpdatePrivacySetting(packet nex.PacketInterface)
 	onlineStatus := types.NewPrimitiveBool(false)
 	err = onlineStatus.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.UpdatePrivacySetting(fmt.Errorf("Failed to read onlineStatus from parameters. %s", err.Error()), packet, callID, nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.UpdatePrivacySetting(fmt.Errorf("Failed to read onlineStatus from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
@@ -40,17 +42,17 @@ func (protocol *Protocol) handleUpdatePrivacySetting(packet nex.PacketInterface)
 	participationCommunity := types.NewPrimitiveBool(false)
 	err = participationCommunity.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.UpdatePrivacySetting(fmt.Errorf("Failed to read participationCommunity from parameters. %s", err.Error()), packet, callID, nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.UpdatePrivacySetting(fmt.Errorf("Failed to read participationCommunity from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	rmcMessage, errorCode := protocol.UpdatePrivacySetting(nil, packet, callID, onlineStatus, participationCommunity)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.UpdatePrivacySetting(nil, packet, callID, onlineStatus, participationCommunity)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
 		return
 	}
 

@@ -11,11 +11,13 @@ import (
 
 func (protocol *Protocol) handleRemoveFriendByPrincipalID(packet nex.PacketInterface) {
 	var err error
-	var errorCode uint32
 
 	if protocol.RemoveFriendByPrincipalID == nil {
-		globals.Logger.Warning("Friends3DS::RemoveFriendByPrincipalID not implemented")
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "Friends3DS::RemoveFriendByPrincipalID not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
@@ -29,17 +31,17 @@ func (protocol *Protocol) handleRemoveFriendByPrincipalID(packet nex.PacketInter
 	pid := types.NewPID(0)
 	err = pid.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.RemoveFriendByPrincipalID(fmt.Errorf("Failed to read pid from parameters. %s", err.Error()), packet, callID, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.RemoveFriendByPrincipalID(fmt.Errorf("Failed to read pid from parameters. %s", err.Error()), packet, callID, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	rmcMessage, errorCode := protocol.RemoveFriendByPrincipalID(nil, packet, callID, pid)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.RemoveFriendByPrincipalID(nil, packet, callID, pid)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
 		return
 	}
 

@@ -12,11 +12,13 @@ import (
 
 func (protocol *Protocol) handleCustomSearchObject(packet nex.PacketInterface) {
 	var err error
-	var errorCode uint32
 
 	if protocol.CustomSearchObject == nil {
-		globals.Logger.Warning("DataStoreSuperMarioMaker::CustomSearchObject not implemented")
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "DataStoreSuperMarioMaker::CustomSearchObject not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
@@ -30,9 +32,9 @@ func (protocol *Protocol) handleCustomSearchObject(packet nex.PacketInterface) {
 	condition := types.NewPrimitiveU32(0)
 	err = condition.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.CustomSearchObject(fmt.Errorf("Failed to read condition from parameters. %s", err.Error()), packet, callID, nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.CustomSearchObject(fmt.Errorf("Failed to read condition from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
@@ -41,17 +43,17 @@ func (protocol *Protocol) handleCustomSearchObject(packet nex.PacketInterface) {
 	param := datastore_types.NewDataStoreSearchParam()
 	err = param.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.CustomSearchObject(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.CustomSearchObject(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	rmcMessage, errorCode := protocol.CustomSearchObject(nil, packet, callID, condition, param)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.CustomSearchObject(nil, packet, callID, condition, param)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
 		return
 	}
 

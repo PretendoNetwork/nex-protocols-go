@@ -12,11 +12,13 @@ import (
 
 func (protocol *Protocol) handleBrowseMatchmakeSession(packet nex.PacketInterface) {
 	var err error
-	var errorCode uint32
 
 	if protocol.BrowseMatchmakeSession == nil {
-		globals.Logger.Warning("MatchmakeExtension::BrowseMatchmakeSession not implemented")
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "MatchmakeExtension::BrowseMatchmakeSession not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
@@ -30,9 +32,9 @@ func (protocol *Protocol) handleBrowseMatchmakeSession(packet nex.PacketInterfac
 	searchCriteria := match_making_types.NewMatchmakeSessionSearchCriteria()
 	err = searchCriteria.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.BrowseMatchmakeSession(fmt.Errorf("Failed to read searchCriteria from parameters. %s", err.Error()), packet, callID, nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.BrowseMatchmakeSession(fmt.Errorf("Failed to read searchCriteria from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
@@ -41,17 +43,17 @@ func (protocol *Protocol) handleBrowseMatchmakeSession(packet nex.PacketInterfac
 	resultRange := types.NewResultRange()
 	err = resultRange.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.BrowseMatchmakeSession(fmt.Errorf("Failed to read resultRange from parameters. %s", err.Error()), packet, callID, nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.BrowseMatchmakeSession(fmt.Errorf("Failed to read resultRange from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	rmcMessage, errorCode := protocol.BrowseMatchmakeSession(nil, packet, callID, searchCriteria, resultRange)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.BrowseMatchmakeSession(nil, packet, callID, searchCriteria, resultRange)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
 		return
 	}
 

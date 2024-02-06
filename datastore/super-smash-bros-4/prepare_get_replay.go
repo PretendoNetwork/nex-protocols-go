@@ -11,11 +11,13 @@ import (
 
 func (protocol *Protocol) handlePrepareGetReplay(packet nex.PacketInterface) {
 	var err error
-	var errorCode uint32
 
 	if protocol.PrepareGetReplay == nil {
-		globals.Logger.Warning("DataStoreSuperSmashBros4::PrepareGetReplay not implemented")
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "DataStoreSuperSmashBros4::PrepareGetReplay not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
@@ -29,17 +31,17 @@ func (protocol *Protocol) handlePrepareGetReplay(packet nex.PacketInterface) {
 	param := datastore_super_smash_bros_4_types.NewDataStorePrepareGetReplayParam()
 	err = param.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.PrepareGetReplay(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.PrepareGetReplay(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	rmcMessage, errorCode := protocol.PrepareGetReplay(nil, packet, callID, param)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.PrepareGetReplay(nil, packet, callID, param)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
 		return
 	}
 

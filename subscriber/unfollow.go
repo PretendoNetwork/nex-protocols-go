@@ -8,8 +8,11 @@ import (
 
 func (protocol *Protocol) handleUnfollow(packet nex.PacketInterface) {
 	if protocol.Unfollow == nil {
-		globals.Logger.Warning("Subscriber::Unfollow not implemented")
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "Subscriber::Unfollow not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
@@ -19,9 +22,9 @@ func (protocol *Protocol) handleUnfollow(packet nex.PacketInterface) {
 
 	callID := request.CallID
 
-	rmcMessage, errorCode := protocol.Unfollow(nil, packet, callID, packet.Payload())
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.Unfollow(nil, packet, callID, packet.Payload())
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
 		return
 	}
 

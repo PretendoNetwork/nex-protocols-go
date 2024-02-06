@@ -11,11 +11,13 @@ import (
 
 func (protocol *Protocol) handleGetDeletionReason(packet nex.PacketInterface) {
 	var err error
-	var errorCode uint32
 
 	if protocol.GetDeletionReason == nil {
-		globals.Logger.Warning("DataStoreSuperMarioMaker::GetDeletionReason not implemented")
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "DataStoreSuperMarioMaker::GetDeletionReason not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
@@ -30,17 +32,17 @@ func (protocol *Protocol) handleGetDeletionReason(packet nex.PacketInterface) {
 	dataIDLst.Type = types.NewPrimitiveU64(0)
 	err = dataIDLst.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.GetDeletionReason(fmt.Errorf("Failed to read dataIDLst from parameters. %s", err.Error()), packet, callID, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.GetDeletionReason(fmt.Errorf("Failed to read dataIDLst from parameters. %s", err.Error()), packet, callID, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	rmcMessage, errorCode := protocol.GetDeletionReason(nil, packet, callID, dataIDLst)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.GetDeletionReason(nil, packet, callID, dataIDLst)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
 		return
 	}
 

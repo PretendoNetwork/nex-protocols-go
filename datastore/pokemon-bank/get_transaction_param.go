@@ -11,11 +11,13 @@ import (
 
 func (protocol *Protocol) handleGetTransactionParam(packet nex.PacketInterface) {
 	var err error
-	var errorCode uint32
 
 	if protocol.GetTransactionParam == nil {
-		globals.Logger.Warning("DataStorePokemonBank::GetTransactionParam not implemented")
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "DataStorePokemonBank::GetTransactionParam not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
@@ -29,17 +31,17 @@ func (protocol *Protocol) handleGetTransactionParam(packet nex.PacketInterface) 
 	slotID := types.NewPrimitiveU16(0)
 	err = slotID.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.GetTransactionParam(fmt.Errorf("Failed to read slotID from parameters. %s", err.Error()), packet, callID, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.GetTransactionParam(fmt.Errorf("Failed to read slotID from parameters. %s", err.Error()), packet, callID, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	rmcMessage, errorCode := protocol.GetTransactionParam(nil, packet, callID, slotID)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.GetTransactionParam(nil, packet, callID, slotID)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
 		return
 	}
 

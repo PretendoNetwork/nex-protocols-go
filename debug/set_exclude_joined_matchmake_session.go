@@ -8,8 +8,11 @@ import (
 
 func (protocol *Protocol) handleSetExcludeJoinedMatchmakeSession(packet nex.PacketInterface) {
 	if protocol.SetExcludeJoinedMatchmakeSession == nil {
-		globals.Logger.Warning("Debug::SetExcludeJoinedMatchmakeSession not implemented")
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "Debug::SetExcludeJoinedMatchmakeSession not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
@@ -21,9 +24,9 @@ func (protocol *Protocol) handleSetExcludeJoinedMatchmakeSession(packet nex.Pack
 
 	// TODO - THIS METHOD HAS AN UNKNOWN REQUEST/RESPONSE FORMAT
 
-	rmcMessage, errorCode := protocol.SetExcludeJoinedMatchmakeSession(nil, packet, callID, packet.Payload())
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.SetExcludeJoinedMatchmakeSession(nil, packet, callID, packet.Payload())
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
 		return
 	}
 

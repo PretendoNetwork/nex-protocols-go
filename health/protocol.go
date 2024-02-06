@@ -28,20 +28,20 @@ const (
 // Protocol handles the Health protocol
 type Protocol struct {
 	server          nex.ServerInterface
-	PingDaemon      func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, uint32)
-	PingDatabase    func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, uint32)
-	RunSanityCheck  func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, uint32)
-	FixSanityErrors func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, uint32)
+	PingDaemon      func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, *nex.Error)
+	PingDatabase    func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, *nex.Error)
+	RunSanityCheck  func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, *nex.Error)
+	FixSanityErrors func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, *nex.Error)
 }
 
 // Interface implements the methods present on the Health protocol struct
 type Interface interface {
 	Server() nex.ServerInterface
 	SetServer(server nex.ServerInterface)
-	SetHandlerPingDaemon(handler func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, uint32))
-	SetHandlerPingDatabase(handler func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, uint32))
-	SetHandlerRunSanityCheck(handler func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, uint32))
-	SetHandlerFixSanityErrors(handler func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, uint32))
+	SetHandlerPingDaemon(handler func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, *nex.Error))
+	SetHandlerPingDatabase(handler func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, *nex.Error))
+	SetHandlerRunSanityCheck(handler func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, *nex.Error))
+	SetHandlerFixSanityErrors(handler func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, *nex.Error))
 }
 
 // Server returns the server implementing the protocol
@@ -55,22 +55,22 @@ func (protocol *Protocol) SetServer(server nex.ServerInterface) {
 }
 
 // SetHandlerPingDaemon sets the handler for the PingDaemon method
-func (protocol *Protocol) SetHandlerPingDaemon(handler func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, uint32)) {
+func (protocol *Protocol) SetHandlerPingDaemon(handler func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, *nex.Error)) {
 	protocol.PingDaemon = handler
 }
 
 // SetHandlerPingDatabase sets the handler for the PingDatabase method
-func (protocol *Protocol) SetHandlerPingDatabase(handler func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, uint32)) {
+func (protocol *Protocol) SetHandlerPingDatabase(handler func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, *nex.Error)) {
 	protocol.PingDatabase = handler
 }
 
 // SetHandlerRunSanityCheck sets the handler for the RunSanityCheck method
-func (protocol *Protocol) SetHandlerRunSanityCheck(handler func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, uint32)) {
+func (protocol *Protocol) SetHandlerRunSanityCheck(handler func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, *nex.Error)) {
 	protocol.RunSanityCheck = handler
 }
 
 // SetHandlerFixSanityErrors sets the handler for the FixSanityErrors method
-func (protocol *Protocol) SetHandlerFixSanityErrors(handler func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, uint32)) {
+func (protocol *Protocol) SetHandlerFixSanityErrors(handler func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, *nex.Error)) {
 	protocol.FixSanityErrors = handler
 }
 
@@ -92,8 +92,11 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 	case MethodFixSanityErrors:
 		protocol.handleFixSanityErrors(packet)
 	default:
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
-		fmt.Printf("Unsupported Health method ID: %#v\n", message.MethodID)
+		errMessage := fmt.Sprintf("Unsupported Health method ID: %#v\n", message.MethodID)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, errMessage)
+
+		globals.RespondError(packet, ProtocolID, err)
+		globals.Logger.Warning(err.Message)
 	}
 }
 

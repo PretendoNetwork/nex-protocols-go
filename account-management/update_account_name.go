@@ -11,11 +11,13 @@ import (
 
 func (protocol *Protocol) handleUpdateAccountName(packet nex.PacketInterface) {
 	var err error
-	var errorCode uint32
 
 	if protocol.UpdateAccountName == nil {
-		globals.Logger.Warning("AccountManagement::UpdateAccountName not implemented")
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "AccountManagement::UpdateAccountName not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
@@ -29,17 +31,17 @@ func (protocol *Protocol) handleUpdateAccountName(packet nex.PacketInterface) {
 	strName := types.NewString("")
 	err = strName.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.UpdateAccountName(fmt.Errorf("Failed to read strName from parameters. %s", err.Error()), packet, callID, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.UpdateAccountName(fmt.Errorf("Failed to read strName from parameters. %s", err.Error()), packet, callID, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	rmcMessage, errorCode := protocol.UpdateAccountName(nil, packet, callID, strName)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.UpdateAccountName(nil, packet, callID, strName)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
 		return
 	}
 

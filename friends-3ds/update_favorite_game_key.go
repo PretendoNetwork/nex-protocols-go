@@ -11,11 +11,13 @@ import (
 
 func (protocol *Protocol) handleUpdateFavoriteGameKey(packet nex.PacketInterface) {
 	var err error
-	var errorCode uint32
 
 	if protocol.UpdateFavoriteGameKey == nil {
-		globals.Logger.Warning("Friends3DS::UpdateFavoriteGameKey not implemented")
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "Friends3DS::UpdateFavoriteGameKey not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
@@ -29,17 +31,17 @@ func (protocol *Protocol) handleUpdateFavoriteGameKey(packet nex.PacketInterface
 	gameKey := friends_3ds_types.NewGameKey()
 	err = gameKey.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.UpdateFavoriteGameKey(fmt.Errorf("Failed to read gameKey from parameters. %s", err.Error()), packet, callID, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.UpdateFavoriteGameKey(fmt.Errorf("Failed to read gameKey from parameters. %s", err.Error()), packet, callID, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	rmcMessage, errorCode := protocol.UpdateFavoriteGameKey(nil, packet, callID, gameKey)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.UpdateFavoriteGameKey(nil, packet, callID, gameKey)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
 		return
 	}
 

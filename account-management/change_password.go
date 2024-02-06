@@ -11,11 +11,13 @@ import (
 
 func (protocol *Protocol) handleChangePassword(packet nex.PacketInterface) {
 	var err error
-	var errorCode uint32
 
 	if protocol.ChangePassword == nil {
-		globals.Logger.Warning("AccountManagement::ChangePassword not implemented")
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "AccountManagement::ChangePassword not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
@@ -29,17 +31,17 @@ func (protocol *Protocol) handleChangePassword(packet nex.PacketInterface) {
 	strNewKey := types.NewString("")
 	err = strNewKey.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.ChangePassword(fmt.Errorf("Failed to read strNewKey from parameters. %s", err.Error()), packet, callID, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.ChangePassword(fmt.Errorf("Failed to read strNewKey from parameters. %s", err.Error()), packet, callID, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	rmcMessage, errorCode := protocol.ChangePassword(nil, packet, callID, strNewKey)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.ChangePassword(nil, packet, callID, strNewKey)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
 		return
 	}
 

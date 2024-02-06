@@ -12,11 +12,13 @@ import (
 
 func (protocol *Protocol) handleGetCachedTopXRanking(packet nex.PacketInterface) {
 	var err error
-	var errorCode uint32
 
 	if protocol.GetCachedTopXRanking == nil {
-		globals.Logger.Warning("Ranking::GetCachedTopXRanking not implemented")
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "Ranking::GetCachedTopXRanking not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
@@ -30,9 +32,9 @@ func (protocol *Protocol) handleGetCachedTopXRanking(packet nex.PacketInterface)
 	category := types.NewPrimitiveU32(0)
 	err = category.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.GetCachedTopXRanking(fmt.Errorf("Failed to read category from parameters. %s", err.Error()), packet, callID, nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.GetCachedTopXRanking(fmt.Errorf("Failed to read category from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
@@ -41,17 +43,17 @@ func (protocol *Protocol) handleGetCachedTopXRanking(packet nex.PacketInterface)
 	orderParam := ranking_types.NewRankingOrderParam()
 	err = orderParam.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.GetCachedTopXRanking(fmt.Errorf("Failed to read orderParam from parameters. %s", err.Error()), packet, callID, nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.GetCachedTopXRanking(fmt.Errorf("Failed to read orderParam from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	rmcMessage, errorCode := protocol.GetCachedTopXRanking(nil, packet, callID, category, orderParam)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.GetCachedTopXRanking(nil, packet, callID, category, orderParam)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
 		return
 	}
 

@@ -11,11 +11,13 @@ import (
 
 func (protocol *Protocol) handleEndChallenge(packet nex.PacketInterface) {
 	var err error
-	var errorCode uint32
 
 	if protocol.EndChallenge == nil {
-		globals.Logger.Warning("ServiceItemWiiSportsClub::EndChallenge not implemented")
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "ServiceItemWiiSportsClub::EndChallenge not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
@@ -29,17 +31,17 @@ func (protocol *Protocol) handleEndChallenge(packet nex.PacketInterface) {
 	endChallengeParam := service_item_wii_sports_club_types.NewServiceItemEndChallengeParam()
 	err = endChallengeParam.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.EndChallenge(fmt.Errorf("Failed to read endChallengeParam from parameters. %s", err.Error()), packet, callID, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.EndChallenge(fmt.Errorf("Failed to read endChallengeParam from parameters. %s", err.Error()), packet, callID, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	rmcMessage, errorCode := protocol.EndChallenge(nil, packet, callID, endChallengeParam)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.EndChallenge(nil, packet, callID, endChallengeParam)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
 		return
 	}
 

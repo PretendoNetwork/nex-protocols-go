@@ -11,11 +11,13 @@ import (
 
 func (protocol *Protocol) handleAutoMatchmakePostpone(packet nex.PacketInterface) {
 	var err error
-	var errorCode uint32
 
 	if protocol.AutoMatchmakePostpone == nil {
-		globals.Logger.Warning("MatchmakeExtension::AutoMatchmakePostpone not implemented")
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "MatchmakeExtension::AutoMatchmakePostpone not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
@@ -29,9 +31,9 @@ func (protocol *Protocol) handleAutoMatchmakePostpone(packet nex.PacketInterface
 	anyGathering := types.NewAnyDataHolder()
 	err = anyGathering.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.AutoMatchmakePostpone(fmt.Errorf("Failed to read anyGathering from parameters. %s", err.Error()), packet, callID, nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.AutoMatchmakePostpone(fmt.Errorf("Failed to read anyGathering from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
@@ -40,17 +42,17 @@ func (protocol *Protocol) handleAutoMatchmakePostpone(packet nex.PacketInterface
 	strMessage := types.NewString("")
 	err = strMessage.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.AutoMatchmakePostpone(fmt.Errorf("Failed to read strMessage from parameters. %s", err.Error()), packet, callID, nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.AutoMatchmakePostpone(fmt.Errorf("Failed to read strMessage from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	rmcMessage, errorCode := protocol.AutoMatchmakePostpone(nil, packet, callID, anyGathering, strMessage)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.AutoMatchmakePostpone(nil, packet, callID, anyGathering, strMessage)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
 		return
 	}
 

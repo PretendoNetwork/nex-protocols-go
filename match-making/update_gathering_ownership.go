@@ -11,11 +11,13 @@ import (
 
 func (protocol *Protocol) handleUpdateGatheringOwnership(packet nex.PacketInterface) {
 	var err error
-	var errorCode uint32
 
 	if protocol.UpdateGatheringOwnership == nil {
-		globals.Logger.Warning("MatchMaking::UpdateGatheringOwnership not implemented")
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "MatchMaking::UpdateGatheringOwnership not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
@@ -29,9 +31,9 @@ func (protocol *Protocol) handleUpdateGatheringOwnership(packet nex.PacketInterf
 	gid := types.NewPrimitiveU32(0)
 	err = gid.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.UpdateGatheringOwnership(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), packet, callID, nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.UpdateGatheringOwnership(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
@@ -40,17 +42,17 @@ func (protocol *Protocol) handleUpdateGatheringOwnership(packet nex.PacketInterf
 	participantsOnly := types.NewPrimitiveBool(false)
 	err = participantsOnly.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.UpdateGatheringOwnership(fmt.Errorf("Failed to read participantsOnly from parameters. %s", err.Error()), packet, callID, nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.UpdateGatheringOwnership(fmt.Errorf("Failed to read participantsOnly from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	rmcMessage, errorCode := protocol.UpdateGatheringOwnership(nil, packet, callID, gid, participantsOnly)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.UpdateGatheringOwnership(nil, packet, callID, gid, participantsOnly)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
 		return
 	}
 

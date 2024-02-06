@@ -11,11 +11,13 @@ import (
 
 func (protocol *Protocol) handleCreateMySubscriptionData(packet nex.PacketInterface) {
 	var err error
-	var errorCode uint32
 
 	if protocol.CreateMySubscriptionData == nil {
-		fmt.Println("[Warning] SubscriptionProtocol::CreateMySubscriptionData not implemented")
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "SubscriptionProtocol::CreateMySubscriptionData not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
@@ -29,9 +31,9 @@ func (protocol *Protocol) handleCreateMySubscriptionData(packet nex.PacketInterf
 	unk := types.NewPrimitiveU64(0)
 	err = unk.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.CreateMySubscriptionData(fmt.Errorf("Failed to read unk from parameters. %s", err.Error()), packet, callID, nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.CreateMySubscriptionData(fmt.Errorf("Failed to read unk from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
@@ -39,9 +41,9 @@ func (protocol *Protocol) handleCreateMySubscriptionData(packet nex.PacketInterf
 
 	// * This is done since the server doesn't need to care about the data here (it's game-specific)
 	// * so we just pass it along to store however the handler wants
-	rmcMessage, errorCode := protocol.CreateMySubscriptionData(nil, packet, callID, unk, parametersStream.ReadRemaining())
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.CreateMySubscriptionData(nil, packet, callID, unk, parametersStream.ReadRemaining())
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
 		return
 	}
 

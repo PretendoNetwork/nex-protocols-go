@@ -11,11 +11,13 @@ import (
 
 func (protocol *Protocol) handleCheckRateCustomRankingCounter(packet nex.PacketInterface) {
 	var err error
-	var errorCode uint32
 
 	if protocol.CheckRateCustomRankingCounter == nil {
-		globals.Logger.Warning("DataStoreSuperMarioMaker::CheckRateCustomRankingCounter not implemented")
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "DataStoreSuperMarioMaker::CheckRateCustomRankingCounter not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
@@ -29,17 +31,17 @@ func (protocol *Protocol) handleCheckRateCustomRankingCounter(packet nex.PacketI
 	applicationID := types.NewPrimitiveU32(0)
 	err = applicationID.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.CheckRateCustomRankingCounter(fmt.Errorf("Failed to read applicationID from parameters. %s", err.Error()), packet, callID, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.CheckRateCustomRankingCounter(fmt.Errorf("Failed to read applicationID from parameters. %s", err.Error()), packet, callID, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	rmcMessage, errorCode := protocol.CheckRateCustomRankingCounter(nil, packet, callID, applicationID)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.CheckRateCustomRankingCounter(nil, packet, callID, applicationID)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
 		return
 	}
 

@@ -11,11 +11,13 @@ import (
 
 func (protocol *Protocol) handleRequestTicketRestoration(packet nex.PacketInterface) {
 	var err error
-	var errorCode uint32
 
 	if protocol.RequestTicketRestoration == nil {
-		globals.Logger.Warning("ServiceItemWiiSportsClub::RequestTicketRestoration not implemented")
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "ServiceItemWiiSportsClub::RequestTicketRestoration not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
@@ -29,17 +31,17 @@ func (protocol *Protocol) handleRequestTicketRestoration(packet nex.PacketInterf
 	requestTicketRestorationParam := service_item_wii_sports_club_types.NewServiceItemRequestTicketRestorationParam()
 	err = requestTicketRestorationParam.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.RequestTicketRestoration(fmt.Errorf("Failed to read requestTicketRestorationParam from parameters. %s", err.Error()), packet, callID, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.RequestTicketRestoration(fmt.Errorf("Failed to read requestTicketRestorationParam from parameters. %s", err.Error()), packet, callID, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	rmcMessage, errorCode := protocol.RequestTicketRestoration(nil, packet, callID, requestTicketRestorationParam)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.RequestTicketRestoration(nil, packet, callID, requestTicketRestorationParam)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
 		return
 	}
 

@@ -11,11 +11,13 @@ import (
 
 func (protocol *Protocol) handleAddFriendBylstPrincipalID(packet nex.PacketInterface) {
 	var err error
-	var errorCode uint32
 
 	if protocol.AddFriendBylstPrincipalID == nil {
-		globals.Logger.Warning("Friends3DS::AddFriendBylstPrincipalID not implemented")
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "Friends3DS::AddFriendBylstPrincipalID not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
@@ -29,9 +31,9 @@ func (protocol *Protocol) handleAddFriendBylstPrincipalID(packet nex.PacketInter
 	lfc := types.NewPrimitiveU64(0)
 	err = lfc.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.AddFriendBylstPrincipalID(fmt.Errorf("Failed to read lfc from parameters. %s", err.Error()), packet, callID, nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.AddFriendBylstPrincipalID(fmt.Errorf("Failed to read lfc from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
@@ -41,17 +43,17 @@ func (protocol *Protocol) handleAddFriendBylstPrincipalID(packet nex.PacketInter
 	pids.Type = types.NewPID(0)
 	err = pids.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.AddFriendBylstPrincipalID(fmt.Errorf("Failed to read pids from parameters. %s", err.Error()), packet, callID, nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.AddFriendBylstPrincipalID(fmt.Errorf("Failed to read pids from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	rmcMessage, errorCode := protocol.AddFriendBylstPrincipalID(nil, packet, callID, lfc, pids)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.AddFriendBylstPrincipalID(nil, packet, callID, lfc, pids)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
 		return
 	}
 

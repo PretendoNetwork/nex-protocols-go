@@ -11,11 +11,13 @@ import (
 
 func (protocol *Protocol) handleGetBufferQueue(packet nex.PacketInterface) {
 	var err error
-	var errorCode uint32
 
 	if protocol.GetBufferQueue == nil {
-		globals.Logger.Warning("DataStoreSuperMarioMaker::GetBufferQueue not implemented")
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "DataStoreSuperMarioMaker::GetBufferQueue not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
@@ -29,17 +31,17 @@ func (protocol *Protocol) handleGetBufferQueue(packet nex.PacketInterface) {
 	param := datastore_super_mario_maker_types.NewBufferQueueParam()
 	err = param.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.GetBufferQueue(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.GetBufferQueue(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	rmcMessage, errorCode := protocol.GetBufferQueue(nil, packet, callID, param)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.GetBufferQueue(nil, packet, callID, param)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
 		return
 	}
 

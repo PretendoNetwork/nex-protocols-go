@@ -12,11 +12,13 @@ import (
 
 func (protocol *Protocol) handleSetApplicationInfo(packet nex.PacketInterface) {
 	var err error
-	var errorCode uint32
 
 	if protocol.SetApplicationInfo == nil {
-		globals.Logger.Warning("AAUser::SetApplicationInfo not implemented")
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "AAUser::SetApplicationInfo not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
@@ -31,17 +33,17 @@ func (protocol *Protocol) handleSetApplicationInfo(packet nex.PacketInterface) {
 	applicationInfo.Type = aauser_types.NewApplicationInfo()
 	err = applicationInfo.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.SetApplicationInfo(fmt.Errorf("Failed to read applicationInfo from parameters. %s", err.Error()), packet, callID, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.SetApplicationInfo(fmt.Errorf("Failed to read applicationInfo from parameters. %s", err.Error()), packet, callID, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	rmcMessage, errorCode := protocol.SetApplicationInfo(nil, packet, callID, applicationInfo)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.SetApplicationInfo(nil, packet, callID, applicationInfo)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
 		return
 	}
 

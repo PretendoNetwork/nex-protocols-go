@@ -12,11 +12,13 @@ import (
 
 func (protocol *Protocol) handleFollowingsLatestCourseSearchObject(packet nex.PacketInterface) {
 	var err error
-	var errorCode uint32
 
 	if protocol.FollowingsLatestCourseSearchObject == nil {
-		globals.Logger.Warning("DataStoreSuperMarioMaker::FollowingsLatestCourseSearchObject not implemented")
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "DataStoreSuperMarioMaker::FollowingsLatestCourseSearchObject not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
@@ -30,9 +32,9 @@ func (protocol *Protocol) handleFollowingsLatestCourseSearchObject(packet nex.Pa
 	param := datastore_types.NewDataStoreSearchParam()
 	err = param.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.FollowingsLatestCourseSearchObject(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.FollowingsLatestCourseSearchObject(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
@@ -42,17 +44,17 @@ func (protocol *Protocol) handleFollowingsLatestCourseSearchObject(packet nex.Pa
 	extraData.Type = types.NewString("")
 	err = extraData.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.FollowingsLatestCourseSearchObject(fmt.Errorf("Failed to read extraData from parameters. %s", err.Error()), packet, callID, nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.FollowingsLatestCourseSearchObject(fmt.Errorf("Failed to read extraData from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	rmcMessage, errorCode := protocol.FollowingsLatestCourseSearchObject(nil, packet, callID, param, extraData)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.FollowingsLatestCourseSearchObject(nil, packet, callID, param, extraData)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
 		return
 	}
 

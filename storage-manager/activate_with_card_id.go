@@ -11,11 +11,13 @@ import (
 
 func (protocol *Protocol) handleActivateWithCardID(packet nex.PacketInterface) {
 	var err error
-	var errorCode uint32
 
 	if protocol.ActivateWithCardID == nil {
-		globals.Logger.Warning("StorageManager::ActivateWithCardID not implemented")
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "StorageManager::ActivateWithCardID not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
@@ -29,9 +31,9 @@ func (protocol *Protocol) handleActivateWithCardID(packet nex.PacketInterface) {
 	unknown := types.NewPrimitiveU8(0)
 	err = unknown.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.ActivateWithCardID(fmt.Errorf("Failed to read unknown from parameters. %s", err.Error()), packet, callID, nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.ActivateWithCardID(fmt.Errorf("Failed to read unknown from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
@@ -40,17 +42,17 @@ func (protocol *Protocol) handleActivateWithCardID(packet nex.PacketInterface) {
 	cardID := types.NewPrimitiveU64(0)
 	err = cardID.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.ActivateWithCardID(fmt.Errorf("Failed to read cardID from parameters. %s", err.Error()), packet, callID, nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.ActivateWithCardID(fmt.Errorf("Failed to read cardID from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	rmcMessage, errorCode := protocol.ActivateWithCardID(nil, packet, callID, unknown, cardID)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.ActivateWithCardID(nil, packet, callID, unknown, cardID)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
 		return
 	}
 

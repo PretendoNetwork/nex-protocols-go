@@ -11,11 +11,13 @@ import (
 
 func (protocol *Protocol) handleGetFriendUserStatuses(packet nex.PacketInterface) {
 	var err error
-	var errorCode uint32
 
 	if protocol.GetFriendUserStatuses == nil {
-		globals.Logger.Warning("Subscriber::GetFriendUserStatuses not implemented")
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "Subscriber::GetFriendUserStatuses not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
@@ -30,17 +32,17 @@ func (protocol *Protocol) handleGetFriendUserStatuses(packet nex.PacketInterface
 	unknown.Type = types.NewPrimitiveU8(0)
 	err = unknown.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.GetFriendUserStatuses(fmt.Errorf("Failed to read unknown from parameters. %s", err.Error()), packet, callID, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.GetFriendUserStatuses(fmt.Errorf("Failed to read unknown from parameters. %s", err.Error()), packet, callID, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	rmcMessage, errorCode := protocol.GetFriendUserStatuses(nil, packet, callID, unknown)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.GetFriendUserStatuses(nil, packet, callID, unknown)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
 		return
 	}
 

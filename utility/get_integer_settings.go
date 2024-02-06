@@ -11,11 +11,13 @@ import (
 
 func (protocol *Protocol) handleGetIntegerSettings(packet nex.PacketInterface) {
 	var err error
-	var errorCode uint32
 
 	if protocol.GetIntegerSettings == nil {
-		globals.Logger.Warning("Utility::GetIntegerSettings not implemented")
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "Utility::GetIntegerSettings not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
@@ -30,17 +32,17 @@ func (protocol *Protocol) handleGetIntegerSettings(packet nex.PacketInterface) {
 	integerSettingIndex := types.NewPrimitiveU32(0)
 	err = integerSettingIndex.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.GetIntegerSettings(fmt.Errorf("Failed to read integerSettingIndex from parameters. %s", err.Error()), packet, callID, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.GetIntegerSettings(fmt.Errorf("Failed to read integerSettingIndex from parameters. %s", err.Error()), packet, callID, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	rmcMessage, errorCode := protocol.GetIntegerSettings(nil, packet, callID, integerSettingIndex)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.GetIntegerSettings(nil, packet, callID, integerSettingIndex)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
 		return
 	}
 

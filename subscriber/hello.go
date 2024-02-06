@@ -11,11 +11,13 @@ import (
 
 func (protocol *Protocol) handleHello(packet nex.PacketInterface) {
 	var err error
-	var errorCode uint32
 
 	if protocol.Hello == nil {
-		globals.Logger.Warning("Subscriber::Hello not implemented")
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "Subscriber::Hello not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
@@ -29,17 +31,17 @@ func (protocol *Protocol) handleHello(packet nex.PacketInterface) {
 	unknown := types.NewString("")
 	err = unknown.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.Hello(fmt.Errorf("Failed to read unknown from parameters. %s", err.Error()), packet, callID, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.Hello(fmt.Errorf("Failed to read unknown from parameters. %s", err.Error()), packet, callID, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	rmcMessage, errorCode := protocol.Hello(nil, packet, callID, unknown)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.Hello(nil, packet, callID, unknown)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
 		return
 	}
 

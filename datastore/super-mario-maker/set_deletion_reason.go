@@ -11,11 +11,13 @@ import (
 
 func (protocol *Protocol) handleSetDeletionReason(packet nex.PacketInterface) {
 	var err error
-	var errorCode uint32
 
 	if protocol.SetDeletionReason == nil {
-		globals.Logger.Warning("DataStoreSuperMarioMaker::SetDeletionReason not implemented")
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "DataStoreSuperMarioMaker::SetDeletionReason not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
@@ -30,9 +32,9 @@ func (protocol *Protocol) handleSetDeletionReason(packet nex.PacketInterface) {
 	dataIDLst.Type = types.NewPrimitiveU64(0)
 	err = dataIDLst.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.SetDeletionReason(fmt.Errorf("Failed to read dataIDLst from parameters. %s", err.Error()), packet, callID, nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.SetDeletionReason(fmt.Errorf("Failed to read dataIDLst from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
@@ -41,17 +43,17 @@ func (protocol *Protocol) handleSetDeletionReason(packet nex.PacketInterface) {
 	deletionReason := types.NewPrimitiveU32(0)
 	err = deletionReason.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.SetDeletionReason(fmt.Errorf("Failed to read deletionReason from parameters. %s", err.Error()), packet, callID, nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.SetDeletionReason(fmt.Errorf("Failed to read deletionReason from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	rmcMessage, errorCode := protocol.SetDeletionReason(nil, packet, callID, dataIDLst, deletionReason)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.SetDeletionReason(nil, packet, callID, dataIDLst, deletionReason)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
 		return
 	}
 

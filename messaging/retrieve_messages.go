@@ -12,11 +12,13 @@ import (
 
 func (protocol *Protocol) handleRetrieveMessages(packet nex.PacketInterface) {
 	var err error
-	var errorCode uint32
 
 	if protocol.RetrieveMessages == nil {
-		globals.Logger.Warning("Messaging::RetrieveMessages not implemented")
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "Messaging::RetrieveMessages not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
@@ -30,9 +32,9 @@ func (protocol *Protocol) handleRetrieveMessages(packet nex.PacketInterface) {
 	recipient := messaging_types.NewMessageRecipient()
 	err = recipient.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.RetrieveMessages(fmt.Errorf("Failed to read recipient from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.RetrieveMessages(fmt.Errorf("Failed to read recipient from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
@@ -42,9 +44,9 @@ func (protocol *Protocol) handleRetrieveMessages(packet nex.PacketInterface) {
 	lstMsgIDs.Type = types.NewPrimitiveU32(0)
 	err = lstMsgIDs.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.RetrieveMessages(fmt.Errorf("Failed to read lstMsgIDs from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.RetrieveMessages(fmt.Errorf("Failed to read lstMsgIDs from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
@@ -53,17 +55,17 @@ func (protocol *Protocol) handleRetrieveMessages(packet nex.PacketInterface) {
 	bLeaveOnServer := types.NewPrimitiveBool(false)
 	err = bLeaveOnServer.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.RetrieveMessages(fmt.Errorf("Failed to read bLeaveOnServer from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.RetrieveMessages(fmt.Errorf("Failed to read bLeaveOnServer from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	rmcMessage, errorCode := protocol.RetrieveMessages(nil, packet, callID, recipient, lstMsgIDs, bLeaveOnServer)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.RetrieveMessages(nil, packet, callID, recipient, lstMsgIDs, bLeaveOnServer)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
 		return
 	}
 

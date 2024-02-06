@@ -11,11 +11,13 @@ import (
 
 func (protocol *Protocol) handleGetPendingDeletions(packet nex.PacketInterface) {
 	var err error
-	var errorCode uint32
 
 	if protocol.GetPendingDeletions == nil {
-		globals.Logger.Warning("MatchMaking::GetPendingDeletions not implemented")
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "MatchMaking::GetPendingDeletions not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
@@ -29,9 +31,9 @@ func (protocol *Protocol) handleGetPendingDeletions(packet nex.PacketInterface) 
 	uiReason := types.NewPrimitiveU32(0)
 	err = uiReason.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.GetPendingDeletions(fmt.Errorf("Failed to read uiReason from parameters. %s", err.Error()), packet, callID, nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.GetPendingDeletions(fmt.Errorf("Failed to read uiReason from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
@@ -40,17 +42,17 @@ func (protocol *Protocol) handleGetPendingDeletions(packet nex.PacketInterface) 
 	resultRange := types.NewResultRange()
 	err = resultRange.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.GetPendingDeletions(fmt.Errorf("Failed to read resultRange from parameters. %s", err.Error()), packet, callID, nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.GetPendingDeletions(fmt.Errorf("Failed to read resultRange from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	rmcMessage, errorCode := protocol.GetPendingDeletions(nil, packet, callID, uiReason, resultRange)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.GetPendingDeletions(nil, packet, callID, uiReason, resultRange)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
 		return
 	}
 

@@ -11,11 +11,13 @@ import (
 
 func (protocol *Protocol) handleSendPlayReport(packet nex.PacketInterface) {
 	var err error
-	var errorCode uint32
 
 	if protocol.SendPlayReport == nil {
-		globals.Logger.Warning("DataStoreSuperSmashBros4::SendPlayReport not implemented")
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "DataStoreSuperSmashBros4::SendPlayReport not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
@@ -30,17 +32,17 @@ func (protocol *Protocol) handleSendPlayReport(packet nex.PacketInterface) {
 	playReport.Type = types.NewPrimitiveS32(0)
 	err = playReport.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.SendPlayReport(fmt.Errorf("Failed to read playReport from parameters. %s", err.Error()), packet, callID, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.SendPlayReport(fmt.Errorf("Failed to read playReport from parameters. %s", err.Error()), packet, callID, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	rmcMessage, errorCode := protocol.SendPlayReport(nil, packet, callID, playReport)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.SendPlayReport(nil, packet, callID, playReport)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
 		return
 	}
 

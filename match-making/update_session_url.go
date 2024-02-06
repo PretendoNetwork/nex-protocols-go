@@ -11,11 +11,13 @@ import (
 
 func (protocol *Protocol) handleUpdateSessionURL(packet nex.PacketInterface) {
 	var err error
-	var errorCode uint32
 
 	if protocol.UpdateSessionURL == nil {
-		globals.Logger.Warning("MatchMaking::UpdateSessionURL not implemented")
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "MatchMaking::UpdateSessionURL not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
@@ -29,9 +31,9 @@ func (protocol *Protocol) handleUpdateSessionURL(packet nex.PacketInterface) {
 	idGathering := types.NewPrimitiveU32(0)
 	err = idGathering.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.UpdateSessionURL(fmt.Errorf("Failed to read idGathering from parameters. %s", err.Error()), packet, callID, nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.UpdateSessionURL(fmt.Errorf("Failed to read idGathering from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
@@ -40,17 +42,17 @@ func (protocol *Protocol) handleUpdateSessionURL(packet nex.PacketInterface) {
 	strURL := types.NewString("")
 	err = strURL.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.UpdateSessionURL(fmt.Errorf("Failed to read strURL from parameters. %s", err.Error()), packet, callID, nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.UpdateSessionURL(fmt.Errorf("Failed to read strURL from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	rmcMessage, errorCode := protocol.UpdateSessionURL(nil, packet, callID, idGathering, strURL)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.UpdateSessionURL(nil, packet, callID, idGathering, strURL)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
 		return
 	}
 

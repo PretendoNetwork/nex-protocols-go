@@ -8,8 +8,11 @@ import (
 
 func (protocol *Protocol) handleGetCompetitionRankingScore(packet nex.PacketInterface) {
 	if protocol.GetCompetitionRankingScore == nil {
-		globals.Logger.Warning("RankingMarioKart8::GetCompetitionRankingScore not implemented")
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "RankingMarioKart8::GetCompetitionRankingScore not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
@@ -19,9 +22,9 @@ func (protocol *Protocol) handleGetCompetitionRankingScore(packet nex.PacketInte
 
 	callID := request.CallID
 
-	rmcMessage, errorCode := protocol.GetCompetitionRankingScore(nil, packet, callID, packet.Payload())
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.GetCompetitionRankingScore(nil, packet, callID, packet.Payload())
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
 		return
 	}
 

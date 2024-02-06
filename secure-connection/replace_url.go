@@ -11,11 +11,13 @@ import (
 
 func (protocol *Protocol) handleReplaceURL(packet nex.PacketInterface) {
 	var err error
-	var errorCode uint32
 
 	if protocol.ReplaceURL == nil {
-		globals.Logger.Warning("SecureConnection::ReplaceURL not implemented")
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "SecureConnection::ReplaceURL not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
@@ -29,9 +31,9 @@ func (protocol *Protocol) handleReplaceURL(packet nex.PacketInterface) {
 	target := types.NewStationURL("")
 	err = target.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.ReplaceURL(fmt.Errorf("Failed to read target from parameters. %s", err.Error()), packet, callID, nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.ReplaceURL(fmt.Errorf("Failed to read target from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
@@ -40,17 +42,17 @@ func (protocol *Protocol) handleReplaceURL(packet nex.PacketInterface) {
 	url := types.NewStationURL("")
 	err = url.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.ReplaceURL(fmt.Errorf("Failed to read url from parameters. %s", err.Error()), packet, callID, nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.ReplaceURL(fmt.Errorf("Failed to read url from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	rmcMessage, errorCode := protocol.ReplaceURL(nil, packet, callID, target, url)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.ReplaceURL(nil, packet, callID, target, url)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
 		return
 	}
 

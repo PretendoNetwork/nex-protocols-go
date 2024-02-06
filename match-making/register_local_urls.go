@@ -11,11 +11,13 @@ import (
 
 func (protocol *Protocol) handleRegisterLocalURLs(packet nex.PacketInterface) {
 	var err error
-	var errorCode uint32
 
 	if protocol.RegisterLocalURLs == nil {
-		globals.Logger.Warning("MatchMaking::RegisterLocalURLs not implemented")
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "MatchMaking::RegisterLocalURLs not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
@@ -29,9 +31,9 @@ func (protocol *Protocol) handleRegisterLocalURLs(packet nex.PacketInterface) {
 	gid := types.NewPrimitiveU32(0)
 	err = gid.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.RegisterLocalURLs(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), packet, callID, nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.RegisterLocalURLs(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
@@ -41,17 +43,17 @@ func (protocol *Protocol) handleRegisterLocalURLs(packet nex.PacketInterface) {
 	lstURLs.Type = types.NewStationURL("")
 	err = lstURLs.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.RegisterLocalURLs(fmt.Errorf("Failed to read lstURLs from parameters. %s", err.Error()), packet, callID, nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.RegisterLocalURLs(fmt.Errorf("Failed to read lstURLs from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	rmcMessage, errorCode := protocol.RegisterLocalURLs(nil, packet, callID, gid, lstURLs)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.RegisterLocalURLs(nil, packet, callID, gid, lstURLs)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
 		return
 	}
 

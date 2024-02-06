@@ -12,11 +12,13 @@ import (
 
 func (protocol *Protocol) handleGetRankingCharts(packet nex.PacketInterface) {
 	var err error
-	var errorCode uint32
 
 	if protocol.GetRankingCharts == nil {
-		globals.Logger.Warning("Ranking2::GetRankingCharts not implemented")
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "Ranking2::GetRankingCharts not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
@@ -31,17 +33,17 @@ func (protocol *Protocol) handleGetRankingCharts(packet nex.PacketInterface) {
 	infoArray.Type = ranking2_types.NewRanking2ChartInfoInput()
 	err = infoArray.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.GetRankingCharts(fmt.Errorf("Failed to read infoArray from parameters. %s", err.Error()), packet, callID, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.GetRankingCharts(fmt.Errorf("Failed to read infoArray from parameters. %s", err.Error()), packet, callID, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	rmcMessage, errorCode := protocol.GetRankingCharts(nil, packet, callID, infoArray)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.GetRankingCharts(nil, packet, callID, infoArray)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
 		return
 	}
 

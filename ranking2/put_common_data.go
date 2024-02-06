@@ -12,11 +12,13 @@ import (
 
 func (protocol *Protocol) handlePutCommonData(packet nex.PacketInterface) {
 	var err error
-	var errorCode uint32
 
 	if protocol.PutCommonData == nil {
-		globals.Logger.Warning("Ranking2::PutCommonData not implemented")
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "Ranking2::PutCommonData not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
@@ -30,9 +32,9 @@ func (protocol *Protocol) handlePutCommonData(packet nex.PacketInterface) {
 	commonData := ranking2_types.NewRanking2CommonData()
 	err = commonData.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.PutCommonData(fmt.Errorf("Failed to read commonData from parameters. %s", err.Error()), packet, callID, nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.PutCommonData(fmt.Errorf("Failed to read commonData from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
@@ -41,17 +43,17 @@ func (protocol *Protocol) handlePutCommonData(packet nex.PacketInterface) {
 	nexUniqueID := types.NewPrimitiveU64(0)
 	err = nexUniqueID.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.PutCommonData(fmt.Errorf("Failed to read nexUniqueID from parameters. %s", err.Error()), packet, callID, nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.PutCommonData(fmt.Errorf("Failed to read nexUniqueID from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	rmcMessage, errorCode := protocol.PutCommonData(nil, packet, callID, commonData, nexUniqueID)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.PutCommonData(nil, packet, callID, commonData, nexUniqueID)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
 		return
 	}
 

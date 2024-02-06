@@ -11,11 +11,13 @@ import (
 
 func (protocol *Protocol) handleLog(packet nex.PacketInterface) {
 	var err error
-	var errorCode uint32
 
 	if protocol.Log == nil {
-		globals.Logger.Warning("RemoteLogDevice::Log not implemented")
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "RemoteLogDevice::Log not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
@@ -29,17 +31,17 @@ func (protocol *Protocol) handleLog(packet nex.PacketInterface) {
 	strLine := types.NewString("")
 	err = strLine.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.Log(fmt.Errorf("Failed to read strLine from parameters. %s", err.Error()), packet, callID, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.Log(fmt.Errorf("Failed to read strLine from parameters. %s", err.Error()), packet, callID, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	rmcMessage, errorCode := protocol.Log(nil, packet, callID, strLine)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.Log(nil, packet, callID, strLine)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
 		return
 	}
 

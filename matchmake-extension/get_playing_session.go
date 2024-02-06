@@ -11,11 +11,13 @@ import (
 
 func (protocol *Protocol) handleGetPlayingSession(packet nex.PacketInterface) {
 	var err error
-	var errorCode uint32
 
 	if protocol.GetPlayingSession == nil {
-		globals.Logger.Warning("MatchmakeExtension::GetPlayingSession not implemented")
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "MatchmakeExtension::GetPlayingSession not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
@@ -30,17 +32,17 @@ func (protocol *Protocol) handleGetPlayingSession(packet nex.PacketInterface) {
 	lstPID.Type = types.NewPID(0)
 	err = lstPID.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.GetPlayingSession(fmt.Errorf("Failed to read lstPID from parameters. %s", err.Error()), packet, callID, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.GetPlayingSession(fmt.Errorf("Failed to read lstPID from parameters. %s", err.Error()), packet, callID, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	rmcMessage, errorCode := protocol.GetPlayingSession(nil, packet, callID, lstPID)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.GetPlayingSession(nil, packet, callID, lstPID)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
 		return
 	}
 

@@ -11,11 +11,13 @@ import (
 
 func (protocol *Protocol) handleFindCommunityByGatheringID(packet nex.PacketInterface) {
 	var err error
-	var errorCode uint32
 
 	if protocol.FindCommunityByGatheringID == nil {
-		globals.Logger.Warning("MatchmakeExtension::FindCommunityByGatheringID not implemented")
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "MatchmakeExtension::FindCommunityByGatheringID not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
@@ -30,17 +32,17 @@ func (protocol *Protocol) handleFindCommunityByGatheringID(packet nex.PacketInte
 	lstGID.Type = types.NewPrimitiveU32(0)
 	err = lstGID.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.FindCommunityByGatheringID(fmt.Errorf("Failed to read lstGID from parameters. %s", err.Error()), packet, callID, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.FindCommunityByGatheringID(fmt.Errorf("Failed to read lstGID from parameters. %s", err.Error()), packet, callID, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	rmcMessage, errorCode := protocol.FindCommunityByGatheringID(nil, packet, callID, lstGID)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.FindCommunityByGatheringID(nil, packet, callID, lstGID)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
 		return
 	}
 

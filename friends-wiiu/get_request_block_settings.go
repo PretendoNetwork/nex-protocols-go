@@ -11,11 +11,13 @@ import (
 
 func (protocol *Protocol) handleGetRequestBlockSettings(packet nex.PacketInterface) {
 	var err error
-	var errorCode uint32
 
 	if protocol.GetRequestBlockSettings == nil {
-		globals.Logger.Warning("FriendsWiiU::GetRequestBlockSettings not implemented")
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "FriendsWiiU::GetRequestBlockSettings not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
@@ -30,17 +32,17 @@ func (protocol *Protocol) handleGetRequestBlockSettings(packet nex.PacketInterfa
 	pids.Type = types.NewPrimitiveU32(0)
 	err = pids.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.GetRequestBlockSettings(fmt.Errorf("Failed to read pids from parameters. %s", err.Error()), packet, callID, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.GetRequestBlockSettings(fmt.Errorf("Failed to read pids from parameters. %s", err.Error()), packet, callID, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	rmcMessage, errorCode := protocol.GetRequestBlockSettings(nil, packet, callID, pids)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.GetRequestBlockSettings(nil, packet, callID, pids)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
 		return
 	}
 

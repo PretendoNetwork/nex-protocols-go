@@ -11,11 +11,13 @@ import (
 
 func (protocol *Protocol) handleGetLastConnectionStats(packet nex.PacketInterface) {
 	var err error
-	var errorCode uint32
 
 	if protocol.GetLastConnectionStats == nil {
-		globals.Logger.Warning("AccountManagement::GetLastConnectionStats not implemented")
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "AccountManagement::GetLastConnectionStats not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
@@ -29,17 +31,17 @@ func (protocol *Protocol) handleGetLastConnectionStats(packet nex.PacketInterfac
 	idPrincipal := types.NewPID(0)
 	err = idPrincipal.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.GetLastConnectionStats(fmt.Errorf("Failed to read idPrincipal from parameters. %s", err.Error()), packet, callID, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.GetLastConnectionStats(fmt.Errorf("Failed to read idPrincipal from parameters. %s", err.Error()), packet, callID, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	rmcMessage, errorCode := protocol.GetLastConnectionStats(nil, packet, callID, idPrincipal)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.GetLastConnectionStats(nil, packet, callID, idPrincipal)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
 		return
 	}
 

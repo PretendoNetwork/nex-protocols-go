@@ -11,11 +11,13 @@ import (
 
 func (protocol *Protocol) handleGetRivToken(packet nex.PacketInterface) {
 	var err error
-	var errorCode uint32
 
 	if protocol.GetRivToken == nil {
-		globals.Logger.Warning("ShopNintendoBadgeArcade::GetRivToken not implemented")
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "ShopNintendoBadgeArcade::GetRivToken not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
@@ -29,9 +31,9 @@ func (protocol *Protocol) handleGetRivToken(packet nex.PacketInterface) {
 	itemCode := types.NewString("")
 	err = itemCode.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.GetRivToken(fmt.Errorf("Failed to read itemCode from parameters. %s", err.Error()), packet, callID, nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.GetRivToken(fmt.Errorf("Failed to read itemCode from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
@@ -40,17 +42,17 @@ func (protocol *Protocol) handleGetRivToken(packet nex.PacketInterface) {
 	referenceID := types.NewQBuffer(nil)
 	err = referenceID.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.GetRivToken(fmt.Errorf("Failed to read referenceID from parameters. %s", err.Error()), packet, callID, nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.GetRivToken(fmt.Errorf("Failed to read referenceID from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	rmcMessage, errorCode := protocol.GetRivToken(nil, packet, callID, itemCode, referenceID)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.GetRivToken(nil, packet, callID, itemCode, referenceID)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
 		return
 	}
 

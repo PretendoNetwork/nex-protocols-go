@@ -11,11 +11,13 @@ import (
 
 func (protocol *Protocol) handleRequestProbeInitiation(packet nex.PacketInterface) {
 	var err error
-	var errorCode uint32
 
 	if protocol.RequestProbeInitiation == nil {
-		globals.Logger.Warning("NATTraversal::RequestProbeInitiation not implemented")
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "NATTraversal::RequestProbeInitiation not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
@@ -30,17 +32,17 @@ func (protocol *Protocol) handleRequestProbeInitiation(packet nex.PacketInterfac
 	urlTargetList.Type = types.NewStationURL("")
 	err = urlTargetList.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.RequestProbeInitiation(fmt.Errorf("Failed to read urlTargetList from parameters. %s", err.Error()), packet, callID, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.RequestProbeInitiation(fmt.Errorf("Failed to read urlTargetList from parameters. %s", err.Error()), packet, callID, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	rmcMessage, errorCode := protocol.RequestProbeInitiation(nil, packet, callID, urlTargetList)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.RequestProbeInitiation(nil, packet, callID, urlTargetList)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
 		return
 	}
 

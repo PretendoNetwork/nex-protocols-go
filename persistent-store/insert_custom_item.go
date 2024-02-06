@@ -11,11 +11,13 @@ import (
 
 func (protocol *Protocol) handleInsertCustomItem(packet nex.PacketInterface) {
 	var err error
-	var errorCode uint32
 
 	if protocol.InsertCustomItem == nil {
-		globals.Logger.Warning("PersistentStore::InsertCustomItem not implemented")
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "PersistentStore::InsertCustomItem not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
@@ -29,9 +31,9 @@ func (protocol *Protocol) handleInsertCustomItem(packet nex.PacketInterface) {
 	uiGroup := types.NewPrimitiveU32(0)
 	err = uiGroup.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.InsertCustomItem(fmt.Errorf("Failed to read uiGroup from parameters. %s", err.Error()), packet, callID, nil, nil, nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.InsertCustomItem(fmt.Errorf("Failed to read uiGroup from parameters. %s", err.Error()), packet, callID, nil, nil, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
@@ -40,9 +42,9 @@ func (protocol *Protocol) handleInsertCustomItem(packet nex.PacketInterface) {
 	strTag := types.NewString("")
 	err = strTag.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.InsertCustomItem(fmt.Errorf("Failed to read strTag from parameters. %s", err.Error()), packet, callID, nil, nil, nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.InsertCustomItem(fmt.Errorf("Failed to read strTag from parameters. %s", err.Error()), packet, callID, nil, nil, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
@@ -51,9 +53,9 @@ func (protocol *Protocol) handleInsertCustomItem(packet nex.PacketInterface) {
 	hData := types.NewAnyDataHolder()
 	err = hData.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.InsertCustomItem(fmt.Errorf("Failed to read hData from parameters. %s", err.Error()), packet, callID, nil, nil, nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.InsertCustomItem(fmt.Errorf("Failed to read hData from parameters. %s", err.Error()), packet, callID, nil, nil, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
@@ -62,17 +64,17 @@ func (protocol *Protocol) handleInsertCustomItem(packet nex.PacketInterface) {
 	bReplace := types.NewPrimitiveBool(false)
 	err = bReplace.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.InsertCustomItem(fmt.Errorf("Failed to read bReplace from parameters. %s", err.Error()), packet, callID, nil, nil, nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.InsertCustomItem(fmt.Errorf("Failed to read bReplace from parameters. %s", err.Error()), packet, callID, nil, nil, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	rmcMessage, errorCode := protocol.InsertCustomItem(nil, packet, callID, uiGroup, strTag, hData, bReplace)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.InsertCustomItem(nil, packet, callID, uiGroup, strTag, hData, bReplace)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
 		return
 	}
 

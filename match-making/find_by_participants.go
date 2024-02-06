@@ -11,11 +11,13 @@ import (
 
 func (protocol *Protocol) handleFindByParticipants(packet nex.PacketInterface) {
 	var err error
-	var errorCode uint32
 
 	if protocol.FindByParticipants == nil {
-		globals.Logger.Warning("MatchMaking::FindByParticipants not implemented")
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "MatchMaking::FindByParticipants not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
@@ -30,17 +32,17 @@ func (protocol *Protocol) handleFindByParticipants(packet nex.PacketInterface) {
 	pid.Type = types.NewPID(0)
 	err = pid.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.FindByParticipants(fmt.Errorf("Failed to read pid from parameters. %s", err.Error()), packet, callID, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.FindByParticipants(fmt.Errorf("Failed to read pid from parameters. %s", err.Error()), packet, callID, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	rmcMessage, errorCode := protocol.FindByParticipants(nil, packet, callID, pid)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.FindByParticipants(nil, packet, callID, pid)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
 		return
 	}
 

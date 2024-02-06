@@ -12,11 +12,13 @@ import (
 
 func (protocol *Protocol) handleGetContentMulti(packet nex.PacketInterface) {
 	var err error
-	var errorCode uint32
 
 	if protocol.GetContentMulti == nil {
-		globals.Logger.Warning("Subscriber::GetContentMulti not implemented")
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "Subscriber::GetContentMulti not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
@@ -31,17 +33,17 @@ func (protocol *Protocol) handleGetContentMulti(packet nex.PacketInterface) {
 	params.Type = subscriber_types.NewSubscriberGetContentParam()
 	err = params.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.GetContentMulti(fmt.Errorf("Failed to read params from parameters. %s", err.Error()), packet, callID, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.GetContentMulti(fmt.Errorf("Failed to read params from parameters. %s", err.Error()), packet, callID, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	rmcMessage, errorCode := protocol.GetContentMulti(nil, packet, callID, params)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.GetContentMulti(nil, packet, callID, params)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
 		return
 	}
 

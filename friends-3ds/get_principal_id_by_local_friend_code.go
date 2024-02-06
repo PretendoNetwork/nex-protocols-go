@@ -11,11 +11,13 @@ import (
 
 func (protocol *Protocol) handleGetPrincipalIDByLocalFriendCode(packet nex.PacketInterface) {
 	var err error
-	var errorCode uint32
 
 	if protocol.GetPrincipalIDByLocalFriendCode == nil {
-		globals.Logger.Warning("Friends3DS::GetPrincipalIDByLocalFriendCode not implemented")
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "Friends3DS::GetPrincipalIDByLocalFriendCode not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
@@ -29,9 +31,9 @@ func (protocol *Protocol) handleGetPrincipalIDByLocalFriendCode(packet nex.Packe
 	lfc := types.NewPrimitiveU64(0)
 	err = lfc.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.GetPrincipalIDByLocalFriendCode(fmt.Errorf("Failed to read lfc from parameters. %s", err.Error()), packet, callID, nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.GetPrincipalIDByLocalFriendCode(fmt.Errorf("Failed to read lfc from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
@@ -41,17 +43,17 @@ func (protocol *Protocol) handleGetPrincipalIDByLocalFriendCode(packet nex.Packe
 	lfcList.Type = types.NewPrimitiveU64(0)
 	err = lfcList.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.GetPrincipalIDByLocalFriendCode(fmt.Errorf("Failed to read lfcList from parameters. %s", err.Error()), packet, callID, nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.GetPrincipalIDByLocalFriendCode(fmt.Errorf("Failed to read lfcList from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	rmcMessage, errorCode := protocol.GetPrincipalIDByLocalFriendCode(nil, packet, callID, lfc, lfcList)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.GetPrincipalIDByLocalFriendCode(nil, packet, callID, lfc, lfcList)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
 		return
 	}
 

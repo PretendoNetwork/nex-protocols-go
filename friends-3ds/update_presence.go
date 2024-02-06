@@ -12,11 +12,13 @@ import (
 
 func (protocol *Protocol) handleUpdatePresence(packet nex.PacketInterface) {
 	var err error
-	var errorCode uint32
 
 	if protocol.UpdatePresence == nil {
-		globals.Logger.Warning("Friends3DS::UpdatePresence not implemented")
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "Friends3DS::UpdatePresence not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
@@ -30,9 +32,9 @@ func (protocol *Protocol) handleUpdatePresence(packet nex.PacketInterface) {
 	nintendoPresence := friends_3ds_types.NewNintendoPresence()
 	err = nintendoPresence.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.UpdatePresence(fmt.Errorf("Failed to read nintendoPresence from parameters. %s", err.Error()), packet, callID, nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.UpdatePresence(fmt.Errorf("Failed to read nintendoPresence from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
@@ -41,17 +43,17 @@ func (protocol *Protocol) handleUpdatePresence(packet nex.PacketInterface) {
 	showGame := types.NewPrimitiveBool(false)
 	err = showGame.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.UpdatePresence(fmt.Errorf("Failed to read showGame from parameters. %s", err.Error()), packet, callID, nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.UpdatePresence(fmt.Errorf("Failed to read showGame from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	rmcMessage, errorCode := protocol.UpdatePresence(nil, packet, callID, nintendoPresence, showGame)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.UpdatePresence(nil, packet, callID, nintendoPresence, showGame)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
 		return
 	}
 

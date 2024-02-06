@@ -8,8 +8,11 @@ import (
 
 func (protocol *Protocol) handleLoginWithContext(packet nex.PacketInterface) {
 	if protocol.LoginWithContext == nil {
-		globals.Logger.Warning("TicketGranting::LoginWithContext not implemented")
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "TicketGranting::LoginWithContext not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 

@@ -11,11 +11,13 @@ import (
 
 func (protocol *Protocol) handleSendReport(packet nex.PacketInterface) {
 	var err error
-	var errorCode uint32
 
 	if protocol.SendReport == nil {
-		globals.Logger.Warning("SecureConnection::SendReport not implemented")
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "SecureConnection::SendReport not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
@@ -29,9 +31,9 @@ func (protocol *Protocol) handleSendReport(packet nex.PacketInterface) {
 	reportID := types.NewPrimitiveU32(0)
 	err = reportID.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.SendReport(fmt.Errorf("Failed to read reportID from parameters. %s", err.Error()), packet, callID, nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.SendReport(fmt.Errorf("Failed to read reportID from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
@@ -40,17 +42,17 @@ func (protocol *Protocol) handleSendReport(packet nex.PacketInterface) {
 	reportData := types.NewQBuffer(nil)
 	err = reportData.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.SendReport(fmt.Errorf("Failed to read reportData from parameters. %s", err.Error()), packet, callID, nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.SendReport(fmt.Errorf("Failed to read reportData from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	rmcMessage, errorCode := protocol.SendReport(nil, packet, callID, reportID, reportData)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.SendReport(nil, packet, callID, reportID, reportData)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
 		return
 	}
 

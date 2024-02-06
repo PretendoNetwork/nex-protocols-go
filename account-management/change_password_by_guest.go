@@ -11,11 +11,13 @@ import (
 
 func (protocol *Protocol) handleChangePasswordByGuest(packet nex.PacketInterface) {
 	var err error
-	var errorCode uint32
 
 	if protocol.ChangePasswordByGuest == nil {
-		globals.Logger.Warning("AccountManagement::ChangePasswordByGuest not implemented")
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "AccountManagement::ChangePasswordByGuest not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
@@ -29,9 +31,9 @@ func (protocol *Protocol) handleChangePasswordByGuest(packet nex.PacketInterface
 	strPrincipalName := types.NewString("")
 	err = strPrincipalName.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.ChangePasswordByGuest(fmt.Errorf("Failed to read strPrincipalName from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.ChangePasswordByGuest(fmt.Errorf("Failed to read strPrincipalName from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
@@ -40,9 +42,9 @@ func (protocol *Protocol) handleChangePasswordByGuest(packet nex.PacketInterface
 	strKey := types.NewString("")
 	err = strKey.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.ChangePasswordByGuest(fmt.Errorf("Failed to read strKey from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.ChangePasswordByGuest(fmt.Errorf("Failed to read strKey from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
@@ -51,17 +53,17 @@ func (protocol *Protocol) handleChangePasswordByGuest(packet nex.PacketInterface
 	strEmail := types.NewString("")
 	err = strEmail.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.ChangePasswordByGuest(fmt.Errorf("Failed to read strEmail from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.ChangePasswordByGuest(fmt.Errorf("Failed to read strEmail from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	rmcMessage, errorCode := protocol.ChangePasswordByGuest(nil, packet, callID, strPrincipalName, strKey, strEmail)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.ChangePasswordByGuest(nil, packet, callID, strPrincipalName, strKey, strEmail)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
 		return
 	}
 

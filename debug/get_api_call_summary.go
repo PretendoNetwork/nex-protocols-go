@@ -8,8 +8,11 @@ import (
 
 func (protocol *Protocol) handleGetAPICallSummary(packet nex.PacketInterface) {
 	if protocol.GetAPICallSummary == nil {
-		globals.Logger.Warning("Debug::GetAPICallSummary not implemented")
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "Debug::GetAPICallSummary not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
@@ -21,9 +24,9 @@ func (protocol *Protocol) handleGetAPICallSummary(packet nex.PacketInterface) {
 
 	// TODO - THIS METHOD HAS AN UNKNOWN REQUEST/RESPONSE FORMAT
 
-	rmcMessage, errorCode := protocol.GetAPICallSummary(nil, packet, callID, packet.Payload())
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.GetAPICallSummary(nil, packet, callID, packet.Payload())
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
 		return
 	}
 

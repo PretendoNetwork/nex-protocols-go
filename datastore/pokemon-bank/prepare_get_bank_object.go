@@ -11,11 +11,13 @@ import (
 
 func (protocol *Protocol) handlePrepareGetBankObject(packet nex.PacketInterface) {
 	var err error
-	var errorCode uint32
 
 	if protocol.PrepareGetBankObject == nil {
-		globals.Logger.Warning("DataStorePokemonBank::PrepareGetBankObject not implemented")
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "DataStorePokemonBank::PrepareGetBankObject not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
@@ -29,9 +31,9 @@ func (protocol *Protocol) handlePrepareGetBankObject(packet nex.PacketInterface)
 	slotID := types.NewPrimitiveU16(0)
 	err = slotID.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.PrepareGetBankObject(fmt.Errorf("Failed to read slotID from parameters. %s", err.Error()), packet, callID, nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.PrepareGetBankObject(fmt.Errorf("Failed to read slotID from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
@@ -40,17 +42,17 @@ func (protocol *Protocol) handlePrepareGetBankObject(packet nex.PacketInterface)
 	applicationID := types.NewPrimitiveU16(0)
 	err = applicationID.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.PrepareGetBankObject(fmt.Errorf("Failed to read applicationID from parameters. %s", err.Error()), packet, callID, nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.PrepareGetBankObject(fmt.Errorf("Failed to read applicationID from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	rmcMessage, errorCode := protocol.PrepareGetBankObject(nil, packet, callID, slotID, applicationID)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.PrepareGetBankObject(nil, packet, callID, slotID, applicationID)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
 		return
 	}
 

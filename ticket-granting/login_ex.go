@@ -11,11 +11,13 @@ import (
 
 func (protocol *Protocol) handleLoginEx(packet nex.PacketInterface) {
 	var err error
-	var errorCode uint32
 
 	if protocol.LoginEx == nil {
-		globals.Logger.Warning("TicketGranting::LoginEx not implemented")
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "TicketGranting::LoginEx not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
@@ -29,9 +31,9 @@ func (protocol *Protocol) handleLoginEx(packet nex.PacketInterface) {
 	strUserName := types.NewString("")
 	err = strUserName.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.LoginEx(fmt.Errorf("Failed to read strUserName from parameters. %s", err.Error()), packet, callID, nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.LoginEx(fmt.Errorf("Failed to read strUserName from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
@@ -40,17 +42,17 @@ func (protocol *Protocol) handleLoginEx(packet nex.PacketInterface) {
 	oExtraData := types.NewAnyDataHolder()
 	err = oExtraData.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.LoginEx(fmt.Errorf("Failed to read oExtraData from parameters. %s", err.Error()), packet, callID, nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.LoginEx(fmt.Errorf("Failed to read oExtraData from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	rmcMessage, errorCode := protocol.LoginEx(nil, packet, callID, strUserName, oExtraData)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.LoginEx(nil, packet, callID, strUserName, oExtraData)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
 		return
 	}
 

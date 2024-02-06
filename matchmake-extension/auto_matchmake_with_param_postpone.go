@@ -11,11 +11,13 @@ import (
 
 func (protocol *Protocol) handleAutoMatchmakeWithParamPostpone(packet nex.PacketInterface) {
 	var err error
-	var errorCode uint32
 
 	if protocol.AutoMatchmakeWithParamPostpone == nil {
-		globals.Logger.Warning("MatchmakeExtension::AutoMatchmakeWithParamPostpone not implemented")
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "MatchmakeExtension::AutoMatchmakeWithParamPostpone not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
@@ -29,17 +31,17 @@ func (protocol *Protocol) handleAutoMatchmakeWithParamPostpone(packet nex.Packet
 	autoMatchmakeParam := match_making_types.NewAutoMatchmakeParam()
 	err = autoMatchmakeParam.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.AutoMatchmakeWithParamPostpone(fmt.Errorf("Failed to read autoMatchmakeParam from parameters. %s", err.Error()), packet, callID, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.AutoMatchmakeWithParamPostpone(fmt.Errorf("Failed to read autoMatchmakeParam from parameters. %s", err.Error()), packet, callID, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	rmcMessage, errorCode := protocol.AutoMatchmakeWithParamPostpone(nil, packet, callID, autoMatchmakeParam)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.AutoMatchmakeWithParamPostpone(nil, packet, callID, autoMatchmakeParam)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
 		return
 	}
 

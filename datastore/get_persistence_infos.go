@@ -11,11 +11,13 @@ import (
 
 func (protocol *Protocol) handleGetPersistenceInfos(packet nex.PacketInterface) {
 	var err error
-	var errorCode uint32
 
 	if protocol.GetPersistenceInfos == nil {
-		globals.Logger.Warning("DataStore::GetPersistenceInfos not implemented")
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "DataStore::GetPersistenceInfos not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
@@ -29,9 +31,9 @@ func (protocol *Protocol) handleGetPersistenceInfos(packet nex.PacketInterface) 
 	ownerID := types.NewPID(0)
 	err = ownerID.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.GetPersistenceInfos(fmt.Errorf("Failed to read ownerID from parameters. %s", err.Error()), packet, callID, nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.GetPersistenceInfos(fmt.Errorf("Failed to read ownerID from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
@@ -41,17 +43,17 @@ func (protocol *Protocol) handleGetPersistenceInfos(packet nex.PacketInterface) 
 	persistenceSlotIDs.Type = types.NewPrimitiveU16(0)
 	err = persistenceSlotIDs.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.GetPersistenceInfos(fmt.Errorf("Failed to read persistenceSlotIDs from parameters. %s", err.Error()), packet, callID, nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.GetPersistenceInfos(fmt.Errorf("Failed to read persistenceSlotIDs from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	rmcMessage, errorCode := protocol.GetPersistenceInfos(nil, packet, callID, ownerID, persistenceSlotIDs)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.GetPersistenceInfos(nil, packet, callID, ownerID, persistenceSlotIDs)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
 		return
 	}
 

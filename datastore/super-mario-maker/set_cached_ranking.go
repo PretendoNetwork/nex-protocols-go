@@ -11,11 +11,13 @@ import (
 
 func (protocol *Protocol) handleSetCachedRanking(packet nex.PacketInterface) {
 	var err error
-	var errorCode uint32
 
 	if protocol.SetCachedRanking == nil {
-		globals.Logger.Warning("DataStoreSuperMarioMaker::SetCachedRanking not implemented")
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "DataStoreSuperMarioMaker::SetCachedRanking not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
@@ -29,9 +31,9 @@ func (protocol *Protocol) handleSetCachedRanking(packet nex.PacketInterface) {
 	rankingType := types.NewString("")
 	err = rankingType.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.SetCachedRanking(fmt.Errorf("Failed to read rankingType from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.SetCachedRanking(fmt.Errorf("Failed to read rankingType from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
@@ -41,9 +43,9 @@ func (protocol *Protocol) handleSetCachedRanking(packet nex.PacketInterface) {
 	rankingArgs.Type = types.NewString("")
 	err = rankingArgs.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.SetCachedRanking(fmt.Errorf("Failed to read rankingArgs from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.SetCachedRanking(fmt.Errorf("Failed to read rankingArgs from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
@@ -53,17 +55,17 @@ func (protocol *Protocol) handleSetCachedRanking(packet nex.PacketInterface) {
 	dataIDLst.Type = types.NewPrimitiveU64(0)
 	err = dataIDLst.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.SetCachedRanking(fmt.Errorf("Failed to read dataIDLst from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.SetCachedRanking(fmt.Errorf("Failed to read dataIDLst from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	rmcMessage, errorCode := protocol.SetCachedRanking(nil, packet, callID, rankingType, rankingArgs, dataIDLst)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.SetCachedRanking(nil, packet, callID, rankingType, rankingArgs, dataIDLst)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
 		return
 	}
 

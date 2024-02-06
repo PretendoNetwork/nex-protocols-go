@@ -12,11 +12,13 @@ import (
 
 func (protocol *Protocol) handleUpdatePlayedGames(packet nex.PacketInterface) {
 	var err error
-	var errorCode uint32
 
 	if protocol.UpdatePlayedGames == nil {
-		globals.Logger.Warning("Friends3DS::UpdatePlayedGames not implemented")
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "Friends3DS::UpdatePlayedGames not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
@@ -31,17 +33,17 @@ func (protocol *Protocol) handleUpdatePlayedGames(packet nex.PacketInterface) {
 	playedGames.Type = friends_3ds_types.NewPlayedGame()
 	err = playedGames.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.UpdatePlayedGames(fmt.Errorf("Failed to read playedGames from parameters. %s", err.Error()), packet, callID, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.UpdatePlayedGames(fmt.Errorf("Failed to read playedGames from parameters. %s", err.Error()), packet, callID, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	rmcMessage, errorCode := protocol.UpdatePlayedGames(nil, packet, callID, playedGames)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.UpdatePlayedGames(nil, packet, callID, playedGames)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
 		return
 	}
 

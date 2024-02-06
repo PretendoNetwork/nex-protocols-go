@@ -11,11 +11,13 @@ import (
 
 func (protocol *Protocol) handleGetSubscriptionData(packet nex.PacketInterface) {
 	var err error
-	var errorCode uint32
 
 	if protocol.GetSubscriptionData == nil {
-		fmt.Println("[Warning] SubscriptionProtocol::GetSubscriptionData not implemented")
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "SubscriptionProtocol::GetSubscriptionData not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
@@ -30,17 +32,17 @@ func (protocol *Protocol) handleGetSubscriptionData(packet nex.PacketInterface) 
 	pids.Type = types.NewPrimitiveU32(0)
 	err = pids.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.GetSubscriptionData(fmt.Errorf("Failed to read pids from parameters. %s", err.Error()), packet, callID, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.GetSubscriptionData(fmt.Errorf("Failed to read pids from parameters. %s", err.Error()), packet, callID, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	rmcMessage, errorCode := protocol.GetSubscriptionData(nil, packet, callID, pids)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.GetSubscriptionData(nil, packet, callID, pids)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
 		return
 	}
 

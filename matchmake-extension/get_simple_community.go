@@ -11,11 +11,13 @@ import (
 
 func (protocol *Protocol) handleGetSimpleCommunity(packet nex.PacketInterface) {
 	var err error
-	var errorCode uint32
 
 	if protocol.GetSimpleCommunity == nil {
-		globals.Logger.Warning("MatchmakeExtension::GetSimpleCommunity not implemented")
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "MatchmakeExtension::GetSimpleCommunity not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
@@ -30,17 +32,17 @@ func (protocol *Protocol) handleGetSimpleCommunity(packet nex.PacketInterface) {
 	gatheringIDList.Type = types.NewPrimitiveU32(0)
 	err = gatheringIDList.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.GetSimpleCommunity(fmt.Errorf("Failed to read gatheringIDList from parameters. %s", err.Error()), packet, callID, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.GetSimpleCommunity(fmt.Errorf("Failed to read gatheringIDList from parameters. %s", err.Error()), packet, callID, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	rmcMessage, errorCode := protocol.GetSimpleCommunity(nil, packet, callID, gatheringIDList)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.GetSimpleCommunity(nil, packet, callID, gatheringIDList)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
 		return
 	}
 

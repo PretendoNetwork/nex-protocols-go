@@ -8,8 +8,11 @@ import (
 
 func (protocol *Protocol) handleAcquireNexUniqueIDWithPassword(packet nex.PacketInterface) {
 	if protocol.AcquireNexUniqueIDWithPassword == nil {
-		globals.Logger.Warning("Utility::AcquireNexUniqueIDWithPassword not implemented")
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "Utility::AcquireNexUniqueIDWithPassword not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
@@ -17,9 +20,9 @@ func (protocol *Protocol) handleAcquireNexUniqueIDWithPassword(packet nex.Packet
 
 	callID := request.CallID
 
-	rmcMessage, errorCode := protocol.AcquireNexUniqueIDWithPassword(nil, packet, callID)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.AcquireNexUniqueIDWithPassword(nil, packet, callID)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
 		return
 	}
 

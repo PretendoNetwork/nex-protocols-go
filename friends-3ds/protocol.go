@@ -96,64 +96,64 @@ const (
 // Protocol stores all the RMC method handlers for the Friends (3DS) protocol and listens for requests
 type Protocol struct {
 	server                          nex.ServerInterface
-	UpdateProfile                   func(err error, packet nex.PacketInterface, callID uint32, profileData *friends_3ds_types.MyProfile) (*nex.RMCMessage, uint32)
-	UpdateMii                       func(err error, packet nex.PacketInterface, callID uint32, mii *friends_3ds_types.Mii) (*nex.RMCMessage, uint32)
-	UpdateMiiList                   func(err error, packet nex.PacketInterface, callID uint32, miiList *friends_3ds_types.MiiList) (*nex.RMCMessage, uint32)
-	UpdatePlayedGames               func(err error, packet nex.PacketInterface, callID uint32, playedGames *types.List[*friends_3ds_types.PlayedGame]) (*nex.RMCMessage, uint32)
-	UpdatePreference                func(err error, packet nex.PacketInterface, callID uint32, publicMode *types.PrimitiveBool, showGame *types.PrimitiveBool, showPlayedGame *types.PrimitiveBool) (*nex.RMCMessage, uint32)
-	GetFriendMii                    func(err error, packet nex.PacketInterface, callID uint32, friends *types.List[*friends_3ds_types.FriendInfo]) (*nex.RMCMessage, uint32)
-	GetFriendMiiList                func(err error, packet nex.PacketInterface, callID uint32, friends *types.List[*friends_3ds_types.FriendInfo]) (*nex.RMCMessage, uint32)
-	IsActiveGame                    func(err error, packet nex.PacketInterface, callID uint32, pids *types.List[*types.PID], gameKey *friends_3ds_types.GameKey) (*nex.RMCMessage, uint32)
-	GetPrincipalIDByLocalFriendCode func(err error, packet nex.PacketInterface, callID uint32, lfc *types.PrimitiveU64, lfcList *types.List[*types.PrimitiveU64]) (*nex.RMCMessage, uint32)
-	GetFriendRelationships          func(err error, packet nex.PacketInterface, callID uint32, pids *types.List[*types.PID]) (*nex.RMCMessage, uint32)
-	AddFriendByPrincipalID          func(err error, packet nex.PacketInterface, callID uint32, lfc *types.PrimitiveU64, pid *types.PID) (*nex.RMCMessage, uint32)
-	AddFriendBylstPrincipalID       func(err error, packet nex.PacketInterface, callID uint32, lfc *types.PrimitiveU64, pids *types.List[*types.PID]) (*nex.RMCMessage, uint32)
-	RemoveFriendByLocalFriendCode   func(err error, packet nex.PacketInterface, callID uint32, lfc *types.PrimitiveU64) (*nex.RMCMessage, uint32)
-	RemoveFriendByPrincipalID       func(err error, packet nex.PacketInterface, callID uint32, pid *types.PID) (*nex.RMCMessage, uint32)
-	GetAllFriends                   func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, uint32)
-	UpdateBlackList                 func(err error, packet nex.PacketInterface, callID uint32, unknown *types.List[*types.PrimitiveU32]) (*nex.RMCMessage, uint32)
-	SyncFriend                      func(err error, packet nex.PacketInterface, callID uint32, lfc *types.PrimitiveU64, pids *types.List[*types.PID], lfcList *types.List[*types.PrimitiveU64]) (*nex.RMCMessage, uint32)
-	UpdatePresence                  func(err error, packet nex.PacketInterface, callID uint32, presence *friends_3ds_types.NintendoPresence, showGame *types.PrimitiveBool) (*nex.RMCMessage, uint32)
-	UpdateFavoriteGameKey           func(err error, packet nex.PacketInterface, callID uint32, gameKey *friends_3ds_types.GameKey) (*nex.RMCMessage, uint32)
-	UpdateComment                   func(err error, packet nex.PacketInterface, callID uint32, comment *types.String) (*nex.RMCMessage, uint32)
-	UpdatePicture                   func(err error, packet nex.PacketInterface, callID uint32, unknown *types.PrimitiveU32, picture *types.Buffer) (*nex.RMCMessage, uint32)
-	GetFriendPresence               func(err error, packet nex.PacketInterface, callID uint32, pidList *types.List[*types.PID]) (*nex.RMCMessage, uint32)
-	GetFriendComment                func(err error, packet nex.PacketInterface, callID uint32, friends *types.List[*friends_3ds_types.FriendInfo]) (*nex.RMCMessage, uint32)
-	GetFriendPicture                func(err error, packet nex.PacketInterface, callID uint32, unknown *types.List[*types.PrimitiveU32]) (*nex.RMCMessage, uint32)
-	GetFriendPersistentInfo         func(err error, packet nex.PacketInterface, callID uint32, pidList *types.List[*types.PID]) (*nex.RMCMessage, uint32)
-	SendInvitation                  func(err error, packet nex.PacketInterface, callID uint32, pids *types.List[*types.PID]) (*nex.RMCMessage, uint32)
+	UpdateProfile                   func(err error, packet nex.PacketInterface, callID uint32, profileData *friends_3ds_types.MyProfile) (*nex.RMCMessage, *nex.Error)
+	UpdateMii                       func(err error, packet nex.PacketInterface, callID uint32, mii *friends_3ds_types.Mii) (*nex.RMCMessage, *nex.Error)
+	UpdateMiiList                   func(err error, packet nex.PacketInterface, callID uint32, miiList *friends_3ds_types.MiiList) (*nex.RMCMessage, *nex.Error)
+	UpdatePlayedGames               func(err error, packet nex.PacketInterface, callID uint32, playedGames *types.List[*friends_3ds_types.PlayedGame]) (*nex.RMCMessage, *nex.Error)
+	UpdatePreference                func(err error, packet nex.PacketInterface, callID uint32, publicMode *types.PrimitiveBool, showGame *types.PrimitiveBool, showPlayedGame *types.PrimitiveBool) (*nex.RMCMessage, *nex.Error)
+	GetFriendMii                    func(err error, packet nex.PacketInterface, callID uint32, friends *types.List[*friends_3ds_types.FriendInfo]) (*nex.RMCMessage, *nex.Error)
+	GetFriendMiiList                func(err error, packet nex.PacketInterface, callID uint32, friends *types.List[*friends_3ds_types.FriendInfo]) (*nex.RMCMessage, *nex.Error)
+	IsActiveGame                    func(err error, packet nex.PacketInterface, callID uint32, pids *types.List[*types.PID], gameKey *friends_3ds_types.GameKey) (*nex.RMCMessage, *nex.Error)
+	GetPrincipalIDByLocalFriendCode func(err error, packet nex.PacketInterface, callID uint32, lfc *types.PrimitiveU64, lfcList *types.List[*types.PrimitiveU64]) (*nex.RMCMessage, *nex.Error)
+	GetFriendRelationships          func(err error, packet nex.PacketInterface, callID uint32, pids *types.List[*types.PID]) (*nex.RMCMessage, *nex.Error)
+	AddFriendByPrincipalID          func(err error, packet nex.PacketInterface, callID uint32, lfc *types.PrimitiveU64, pid *types.PID) (*nex.RMCMessage, *nex.Error)
+	AddFriendBylstPrincipalID       func(err error, packet nex.PacketInterface, callID uint32, lfc *types.PrimitiveU64, pids *types.List[*types.PID]) (*nex.RMCMessage, *nex.Error)
+	RemoveFriendByLocalFriendCode   func(err error, packet nex.PacketInterface, callID uint32, lfc *types.PrimitiveU64) (*nex.RMCMessage, *nex.Error)
+	RemoveFriendByPrincipalID       func(err error, packet nex.PacketInterface, callID uint32, pid *types.PID) (*nex.RMCMessage, *nex.Error)
+	GetAllFriends                   func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, *nex.Error)
+	UpdateBlackList                 func(err error, packet nex.PacketInterface, callID uint32, unknown *types.List[*types.PrimitiveU32]) (*nex.RMCMessage, *nex.Error)
+	SyncFriend                      func(err error, packet nex.PacketInterface, callID uint32, lfc *types.PrimitiveU64, pids *types.List[*types.PID], lfcList *types.List[*types.PrimitiveU64]) (*nex.RMCMessage, *nex.Error)
+	UpdatePresence                  func(err error, packet nex.PacketInterface, callID uint32, presence *friends_3ds_types.NintendoPresence, showGame *types.PrimitiveBool) (*nex.RMCMessage, *nex.Error)
+	UpdateFavoriteGameKey           func(err error, packet nex.PacketInterface, callID uint32, gameKey *friends_3ds_types.GameKey) (*nex.RMCMessage, *nex.Error)
+	UpdateComment                   func(err error, packet nex.PacketInterface, callID uint32, comment *types.String) (*nex.RMCMessage, *nex.Error)
+	UpdatePicture                   func(err error, packet nex.PacketInterface, callID uint32, unknown *types.PrimitiveU32, picture *types.Buffer) (*nex.RMCMessage, *nex.Error)
+	GetFriendPresence               func(err error, packet nex.PacketInterface, callID uint32, pidList *types.List[*types.PID]) (*nex.RMCMessage, *nex.Error)
+	GetFriendComment                func(err error, packet nex.PacketInterface, callID uint32, friends *types.List[*friends_3ds_types.FriendInfo]) (*nex.RMCMessage, *nex.Error)
+	GetFriendPicture                func(err error, packet nex.PacketInterface, callID uint32, unknown *types.List[*types.PrimitiveU32]) (*nex.RMCMessage, *nex.Error)
+	GetFriendPersistentInfo         func(err error, packet nex.PacketInterface, callID uint32, pidList *types.List[*types.PID]) (*nex.RMCMessage, *nex.Error)
+	SendInvitation                  func(err error, packet nex.PacketInterface, callID uint32, pids *types.List[*types.PID]) (*nex.RMCMessage, *nex.Error)
 }
 
 // Interface implements the methods present on the Friends (3DS) protocol struct
 type Interface interface {
 	Server() nex.ServerInterface
 	SetServer(server nex.ServerInterface)
-	SetHandlerUpdateProfile(handler func(err error, packet nex.PacketInterface, callID uint32, profileData *friends_3ds_types.MyProfile) (*nex.RMCMessage, uint32))
-	SetHandlerUpdateMii(handler func(err error, packet nex.PacketInterface, callID uint32, mii *friends_3ds_types.Mii) (*nex.RMCMessage, uint32))
-	SetHandlerUpdateMiiList(handler func(err error, packet nex.PacketInterface, callID uint32, miiList *friends_3ds_types.MiiList) (*nex.RMCMessage, uint32))
-	SetHandlerUpdatePlayedGames(handler func(err error, packet nex.PacketInterface, callID uint32, playedGames *types.List[*friends_3ds_types.PlayedGame]) (*nex.RMCMessage, uint32))
-	SetHandlerUpdatePreference(handler func(err error, packet nex.PacketInterface, callID uint32, publicMode *types.PrimitiveBool, showGame *types.PrimitiveBool, showPlayedGame *types.PrimitiveBool) (*nex.RMCMessage, uint32))
-	SetHandlerGetFriendMii(handler func(err error, packet nex.PacketInterface, callID uint32, friends *types.List[*friends_3ds_types.FriendInfo]) (*nex.RMCMessage, uint32))
-	SetHandlerGetFriendMiiList(handler func(err error, packet nex.PacketInterface, callID uint32, friends *types.List[*friends_3ds_types.FriendInfo]) (*nex.RMCMessage, uint32))
-	SetHandlerIsActiveGame(handler func(err error, packet nex.PacketInterface, callID uint32, pids *types.List[*types.PID], gameKey *friends_3ds_types.GameKey) (*nex.RMCMessage, uint32))
-	SetHandlerGetPrincipalIDByLocalFriendCode(handler func(err error, packet nex.PacketInterface, callID uint32, lfc *types.PrimitiveU64, lfcList *types.List[*types.PrimitiveU64]) (*nex.RMCMessage, uint32))
-	SetHandlerGetFriendRelationships(handler func(err error, packet nex.PacketInterface, callID uint32, pids *types.List[*types.PID]) (*nex.RMCMessage, uint32))
-	SetHandlerAddFriendByPrincipalID(handler func(err error, packet nex.PacketInterface, callID uint32, lfc *types.PrimitiveU64, pid *types.PID) (*nex.RMCMessage, uint32))
-	SetHandlerAddFriendBylstPrincipalID(handler func(err error, packet nex.PacketInterface, callID uint32, lfc *types.PrimitiveU64, pids *types.List[*types.PID]) (*nex.RMCMessage, uint32))
-	SetHandlerRemoveFriendByLocalFriendCode(handler func(err error, packet nex.PacketInterface, callID uint32, lfc *types.PrimitiveU64) (*nex.RMCMessage, uint32))
-	SetHandlerRemoveFriendByPrincipalID(handler func(err error, packet nex.PacketInterface, callID uint32, pid *types.PID) (*nex.RMCMessage, uint32))
-	SetHandlerGetAllFriends(handler func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, uint32))
-	SetHandlerUpdateBlackList(handler func(err error, packet nex.PacketInterface, callID uint32, unknown *types.List[*types.PrimitiveU32]) (*nex.RMCMessage, uint32))
-	SetHandlerSyncFriend(handler func(err error, packet nex.PacketInterface, callID uint32, lfc *types.PrimitiveU64, pids *types.List[*types.PID], lfcList *types.List[*types.PrimitiveU64]) (*nex.RMCMessage, uint32))
-	SetHandlerUpdatePresence(handler func(err error, packet nex.PacketInterface, callID uint32, presence *friends_3ds_types.NintendoPresence, showGame *types.PrimitiveBool) (*nex.RMCMessage, uint32))
-	SetHandlerUpdateFavoriteGameKey(handler func(err error, packet nex.PacketInterface, callID uint32, gameKey *friends_3ds_types.GameKey) (*nex.RMCMessage, uint32))
-	SetHandlerUpdateComment(handler func(err error, packet nex.PacketInterface, callID uint32, comment *types.String) (*nex.RMCMessage, uint32))
-	SetHandlerUpdatePicture(handler func(err error, packet nex.PacketInterface, callID uint32, unknown *types.PrimitiveU32, picture *types.Buffer) (*nex.RMCMessage, uint32))
-	SetHandlerGetFriendPresence(handler func(err error, packet nex.PacketInterface, callID uint32, pidList *types.List[*types.PID]) (*nex.RMCMessage, uint32))
-	SetHandlerGetFriendComment(handler func(err error, packet nex.PacketInterface, callID uint32, friends *types.List[*friends_3ds_types.FriendInfo]) (*nex.RMCMessage, uint32))
-	SetHandlerGetFriendPicture(handler func(err error, packet nex.PacketInterface, callID uint32, unknown *types.List[*types.PrimitiveU32]) (*nex.RMCMessage, uint32))
-	SetHandlerGetFriendPersistentInfo(handler func(err error, packet nex.PacketInterface, callID uint32, pidList *types.List[*types.PID]) (*nex.RMCMessage, uint32))
-	SetHandlerSendInvitation(handler func(err error, packet nex.PacketInterface, callID uint32, pids *types.List[*types.PID]) (*nex.RMCMessage, uint32))
+	SetHandlerUpdateProfile(handler func(err error, packet nex.PacketInterface, callID uint32, profileData *friends_3ds_types.MyProfile) (*nex.RMCMessage, *nex.Error))
+	SetHandlerUpdateMii(handler func(err error, packet nex.PacketInterface, callID uint32, mii *friends_3ds_types.Mii) (*nex.RMCMessage, *nex.Error))
+	SetHandlerUpdateMiiList(handler func(err error, packet nex.PacketInterface, callID uint32, miiList *friends_3ds_types.MiiList) (*nex.RMCMessage, *nex.Error))
+	SetHandlerUpdatePlayedGames(handler func(err error, packet nex.PacketInterface, callID uint32, playedGames *types.List[*friends_3ds_types.PlayedGame]) (*nex.RMCMessage, *nex.Error))
+	SetHandlerUpdatePreference(handler func(err error, packet nex.PacketInterface, callID uint32, publicMode *types.PrimitiveBool, showGame *types.PrimitiveBool, showPlayedGame *types.PrimitiveBool) (*nex.RMCMessage, *nex.Error))
+	SetHandlerGetFriendMii(handler func(err error, packet nex.PacketInterface, callID uint32, friends *types.List[*friends_3ds_types.FriendInfo]) (*nex.RMCMessage, *nex.Error))
+	SetHandlerGetFriendMiiList(handler func(err error, packet nex.PacketInterface, callID uint32, friends *types.List[*friends_3ds_types.FriendInfo]) (*nex.RMCMessage, *nex.Error))
+	SetHandlerIsActiveGame(handler func(err error, packet nex.PacketInterface, callID uint32, pids *types.List[*types.PID], gameKey *friends_3ds_types.GameKey) (*nex.RMCMessage, *nex.Error))
+	SetHandlerGetPrincipalIDByLocalFriendCode(handler func(err error, packet nex.PacketInterface, callID uint32, lfc *types.PrimitiveU64, lfcList *types.List[*types.PrimitiveU64]) (*nex.RMCMessage, *nex.Error))
+	SetHandlerGetFriendRelationships(handler func(err error, packet nex.PacketInterface, callID uint32, pids *types.List[*types.PID]) (*nex.RMCMessage, *nex.Error))
+	SetHandlerAddFriendByPrincipalID(handler func(err error, packet nex.PacketInterface, callID uint32, lfc *types.PrimitiveU64, pid *types.PID) (*nex.RMCMessage, *nex.Error))
+	SetHandlerAddFriendBylstPrincipalID(handler func(err error, packet nex.PacketInterface, callID uint32, lfc *types.PrimitiveU64, pids *types.List[*types.PID]) (*nex.RMCMessage, *nex.Error))
+	SetHandlerRemoveFriendByLocalFriendCode(handler func(err error, packet nex.PacketInterface, callID uint32, lfc *types.PrimitiveU64) (*nex.RMCMessage, *nex.Error))
+	SetHandlerRemoveFriendByPrincipalID(handler func(err error, packet nex.PacketInterface, callID uint32, pid *types.PID) (*nex.RMCMessage, *nex.Error))
+	SetHandlerGetAllFriends(handler func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, *nex.Error))
+	SetHandlerUpdateBlackList(handler func(err error, packet nex.PacketInterface, callID uint32, unknown *types.List[*types.PrimitiveU32]) (*nex.RMCMessage, *nex.Error))
+	SetHandlerSyncFriend(handler func(err error, packet nex.PacketInterface, callID uint32, lfc *types.PrimitiveU64, pids *types.List[*types.PID], lfcList *types.List[*types.PrimitiveU64]) (*nex.RMCMessage, *nex.Error))
+	SetHandlerUpdatePresence(handler func(err error, packet nex.PacketInterface, callID uint32, presence *friends_3ds_types.NintendoPresence, showGame *types.PrimitiveBool) (*nex.RMCMessage, *nex.Error))
+	SetHandlerUpdateFavoriteGameKey(handler func(err error, packet nex.PacketInterface, callID uint32, gameKey *friends_3ds_types.GameKey) (*nex.RMCMessage, *nex.Error))
+	SetHandlerUpdateComment(handler func(err error, packet nex.PacketInterface, callID uint32, comment *types.String) (*nex.RMCMessage, *nex.Error))
+	SetHandlerUpdatePicture(handler func(err error, packet nex.PacketInterface, callID uint32, unknown *types.PrimitiveU32, picture *types.Buffer) (*nex.RMCMessage, *nex.Error))
+	SetHandlerGetFriendPresence(handler func(err error, packet nex.PacketInterface, callID uint32, pidList *types.List[*types.PID]) (*nex.RMCMessage, *nex.Error))
+	SetHandlerGetFriendComment(handler func(err error, packet nex.PacketInterface, callID uint32, friends *types.List[*friends_3ds_types.FriendInfo]) (*nex.RMCMessage, *nex.Error))
+	SetHandlerGetFriendPicture(handler func(err error, packet nex.PacketInterface, callID uint32, unknown *types.List[*types.PrimitiveU32]) (*nex.RMCMessage, *nex.Error))
+	SetHandlerGetFriendPersistentInfo(handler func(err error, packet nex.PacketInterface, callID uint32, pidList *types.List[*types.PID]) (*nex.RMCMessage, *nex.Error))
+	SetHandlerSendInvitation(handler func(err error, packet nex.PacketInterface, callID uint32, pids *types.List[*types.PID]) (*nex.RMCMessage, *nex.Error))
 }
 
 // Server returns the server implementing the protocol
@@ -167,132 +167,132 @@ func (protocol *Protocol) SetServer(server nex.ServerInterface) {
 }
 
 // SetHandlerUpdateProfile sets the handler for the UpdateProfile method
-func (protocol *Protocol) SetHandlerUpdateProfile(handler func(err error, packet nex.PacketInterface, callID uint32, profileData *friends_3ds_types.MyProfile) (*nex.RMCMessage, uint32)) {
+func (protocol *Protocol) SetHandlerUpdateProfile(handler func(err error, packet nex.PacketInterface, callID uint32, profileData *friends_3ds_types.MyProfile) (*nex.RMCMessage, *nex.Error)) {
 	protocol.UpdateProfile = handler
 }
 
 // SetHandlerUpdateMii sets the handler for the UpdateMii method
-func (protocol *Protocol) SetHandlerUpdateMii(handler func(err error, packet nex.PacketInterface, callID uint32, mii *friends_3ds_types.Mii) (*nex.RMCMessage, uint32)) {
+func (protocol *Protocol) SetHandlerUpdateMii(handler func(err error, packet nex.PacketInterface, callID uint32, mii *friends_3ds_types.Mii) (*nex.RMCMessage, *nex.Error)) {
 	protocol.UpdateMii = handler
 }
 
 // SetHandlerUpdateMiiList sets the handler for the UpdateMiiList method
-func (protocol *Protocol) SetHandlerUpdateMiiList(handler func(err error, packet nex.PacketInterface, callID uint32, miiList *friends_3ds_types.MiiList) (*nex.RMCMessage, uint32)) {
+func (protocol *Protocol) SetHandlerUpdateMiiList(handler func(err error, packet nex.PacketInterface, callID uint32, miiList *friends_3ds_types.MiiList) (*nex.RMCMessage, *nex.Error)) {
 	protocol.UpdateMiiList = handler
 }
 
 // SetHandlerUpdatePlayedGames sets the handler for the UpdatePlayedGames method
-func (protocol *Protocol) SetHandlerUpdatePlayedGames(handler func(err error, packet nex.PacketInterface, callID uint32, playedGames *types.List[*friends_3ds_types.PlayedGame]) (*nex.RMCMessage, uint32)) {
+func (protocol *Protocol) SetHandlerUpdatePlayedGames(handler func(err error, packet nex.PacketInterface, callID uint32, playedGames *types.List[*friends_3ds_types.PlayedGame]) (*nex.RMCMessage, *nex.Error)) {
 	protocol.UpdatePlayedGames = handler
 }
 
 // SetHandlerUpdatePreference sets the handler for the UpdatePreference method
-func (protocol *Protocol) SetHandlerUpdatePreference(handler func(err error, packet nex.PacketInterface, callID uint32, publicMode *types.PrimitiveBool, showGame *types.PrimitiveBool, showPlayedGame *types.PrimitiveBool) (*nex.RMCMessage, uint32)) {
+func (protocol *Protocol) SetHandlerUpdatePreference(handler func(err error, packet nex.PacketInterface, callID uint32, publicMode *types.PrimitiveBool, showGame *types.PrimitiveBool, showPlayedGame *types.PrimitiveBool) (*nex.RMCMessage, *nex.Error)) {
 	protocol.UpdatePreference = handler
 }
 
 // SetHandlerGetFriendMii sets the handler for the GetFriendMii method
-func (protocol *Protocol) SetHandlerGetFriendMii(handler func(err error, packet nex.PacketInterface, callID uint32, friends *types.List[*friends_3ds_types.FriendInfo]) (*nex.RMCMessage, uint32)) {
+func (protocol *Protocol) SetHandlerGetFriendMii(handler func(err error, packet nex.PacketInterface, callID uint32, friends *types.List[*friends_3ds_types.FriendInfo]) (*nex.RMCMessage, *nex.Error)) {
 	protocol.GetFriendMii = handler
 }
 
 // SetHandlerGetFriendMiiList sets the handler for the GetFriendMiiList method
-func (protocol *Protocol) SetHandlerGetFriendMiiList(handler func(err error, packet nex.PacketInterface, callID uint32, friends *types.List[*friends_3ds_types.FriendInfo]) (*nex.RMCMessage, uint32)) {
+func (protocol *Protocol) SetHandlerGetFriendMiiList(handler func(err error, packet nex.PacketInterface, callID uint32, friends *types.List[*friends_3ds_types.FriendInfo]) (*nex.RMCMessage, *nex.Error)) {
 	protocol.GetFriendMiiList = handler
 }
 
 // SetHandlerIsActiveGame sets the handler for the IsActiveGame method
-func (protocol *Protocol) SetHandlerIsActiveGame(handler func(err error, packet nex.PacketInterface, callID uint32, pids *types.List[*types.PID], gameKey *friends_3ds_types.GameKey) (*nex.RMCMessage, uint32)) {
+func (protocol *Protocol) SetHandlerIsActiveGame(handler func(err error, packet nex.PacketInterface, callID uint32, pids *types.List[*types.PID], gameKey *friends_3ds_types.GameKey) (*nex.RMCMessage, *nex.Error)) {
 	protocol.IsActiveGame = handler
 }
 
 // SetHandlerGetPrincipalIDByLocalFriendCode sets the handler for the GetPrincipalIDByLocalFriendCode method
-func (protocol *Protocol) SetHandlerGetPrincipalIDByLocalFriendCode(handler func(err error, packet nex.PacketInterface, callID uint32, lfc *types.PrimitiveU64, lfcList *types.List[*types.PrimitiveU64]) (*nex.RMCMessage, uint32)) {
+func (protocol *Protocol) SetHandlerGetPrincipalIDByLocalFriendCode(handler func(err error, packet nex.PacketInterface, callID uint32, lfc *types.PrimitiveU64, lfcList *types.List[*types.PrimitiveU64]) (*nex.RMCMessage, *nex.Error)) {
 	protocol.GetPrincipalIDByLocalFriendCode = handler
 }
 
 // SetHandlerGetFriendRelationships sets the handler for the GetFriendRelationships method
-func (protocol *Protocol) SetHandlerGetFriendRelationships(handler func(err error, packet nex.PacketInterface, callID uint32, pids *types.List[*types.PID]) (*nex.RMCMessage, uint32)) {
+func (protocol *Protocol) SetHandlerGetFriendRelationships(handler func(err error, packet nex.PacketInterface, callID uint32, pids *types.List[*types.PID]) (*nex.RMCMessage, *nex.Error)) {
 	protocol.GetFriendRelationships = handler
 }
 
 // SetHandlerAddFriendByPrincipalID sets the handler for the AddFriendByPrincipalID method
-func (protocol *Protocol) SetHandlerAddFriendByPrincipalID(handler func(err error, packet nex.PacketInterface, callID uint32, lfc *types.PrimitiveU64, pid *types.PID) (*nex.RMCMessage, uint32)) {
+func (protocol *Protocol) SetHandlerAddFriendByPrincipalID(handler func(err error, packet nex.PacketInterface, callID uint32, lfc *types.PrimitiveU64, pid *types.PID) (*nex.RMCMessage, *nex.Error)) {
 	protocol.AddFriendByPrincipalID = handler
 }
 
 // SetHandlerAddFriendBylstPrincipalID sets the handler for the AddFriendBylstPrincipalID method
-func (protocol *Protocol) SetHandlerAddFriendBylstPrincipalID(handler func(err error, packet nex.PacketInterface, callID uint32, lfc *types.PrimitiveU64, pids *types.List[*types.PID]) (*nex.RMCMessage, uint32)) {
+func (protocol *Protocol) SetHandlerAddFriendBylstPrincipalID(handler func(err error, packet nex.PacketInterface, callID uint32, lfc *types.PrimitiveU64, pids *types.List[*types.PID]) (*nex.RMCMessage, *nex.Error)) {
 	protocol.AddFriendBylstPrincipalID = handler
 }
 
 // SetHandlerRemoveFriendByLocalFriendCode sets the handler for the RemoveFriendByLocalFriendCode method
-func (protocol *Protocol) SetHandlerRemoveFriendByLocalFriendCode(handler func(err error, packet nex.PacketInterface, callID uint32, lfc *types.PrimitiveU64) (*nex.RMCMessage, uint32)) {
+func (protocol *Protocol) SetHandlerRemoveFriendByLocalFriendCode(handler func(err error, packet nex.PacketInterface, callID uint32, lfc *types.PrimitiveU64) (*nex.RMCMessage, *nex.Error)) {
 	protocol.RemoveFriendByLocalFriendCode = handler
 }
 
 // SetHandlerRemoveFriendByPrincipalID sets the handler for the RemoveFriendByPrincipalID method
-func (protocol *Protocol) SetHandlerRemoveFriendByPrincipalID(handler func(err error, packet nex.PacketInterface, callID uint32, pid *types.PID) (*nex.RMCMessage, uint32)) {
+func (protocol *Protocol) SetHandlerRemoveFriendByPrincipalID(handler func(err error, packet nex.PacketInterface, callID uint32, pid *types.PID) (*nex.RMCMessage, *nex.Error)) {
 	protocol.RemoveFriendByPrincipalID = handler
 }
 
 // SetHandlerGetAllFriends sets the handler for the GetAllFriends method
-func (protocol *Protocol) SetHandlerGetAllFriends(handler func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, uint32)) {
+func (protocol *Protocol) SetHandlerGetAllFriends(handler func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, *nex.Error)) {
 	protocol.GetAllFriends = handler
 }
 
 // SetHandlerUpdateBlackList sets the handler for the UpdateBlackList method
-func (protocol *Protocol) SetHandlerUpdateBlackList(handler func(err error, packet nex.PacketInterface, callID uint32, unknown *types.List[*types.PrimitiveU32]) (*nex.RMCMessage, uint32)) {
+func (protocol *Protocol) SetHandlerUpdateBlackList(handler func(err error, packet nex.PacketInterface, callID uint32, unknown *types.List[*types.PrimitiveU32]) (*nex.RMCMessage, *nex.Error)) {
 	protocol.UpdateBlackList = handler
 }
 
 // SetHandlerSyncFriend sets the handler for the SyncFriend method
-func (protocol *Protocol) SetHandlerSyncFriend(handler func(err error, packet nex.PacketInterface, callID uint32, lfc *types.PrimitiveU64, pids *types.List[*types.PID], lfcList *types.List[*types.PrimitiveU64]) (*nex.RMCMessage, uint32)) {
+func (protocol *Protocol) SetHandlerSyncFriend(handler func(err error, packet nex.PacketInterface, callID uint32, lfc *types.PrimitiveU64, pids *types.List[*types.PID], lfcList *types.List[*types.PrimitiveU64]) (*nex.RMCMessage, *nex.Error)) {
 	protocol.SyncFriend = handler
 }
 
 // SetHandlerUpdatePresence sets the handler for the UpdatePresence method
-func (protocol *Protocol) SetHandlerUpdatePresence(handler func(err error, packet nex.PacketInterface, callID uint32, presence *friends_3ds_types.NintendoPresence, showGame *types.PrimitiveBool) (*nex.RMCMessage, uint32)) {
+func (protocol *Protocol) SetHandlerUpdatePresence(handler func(err error, packet nex.PacketInterface, callID uint32, presence *friends_3ds_types.NintendoPresence, showGame *types.PrimitiveBool) (*nex.RMCMessage, *nex.Error)) {
 	protocol.UpdatePresence = handler
 }
 
 // SetHandlerUpdateFavoriteGameKey sets the handler for the UpdateFavoriteGameKey method
-func (protocol *Protocol) SetHandlerUpdateFavoriteGameKey(handler func(err error, packet nex.PacketInterface, callID uint32, gameKey *friends_3ds_types.GameKey) (*nex.RMCMessage, uint32)) {
+func (protocol *Protocol) SetHandlerUpdateFavoriteGameKey(handler func(err error, packet nex.PacketInterface, callID uint32, gameKey *friends_3ds_types.GameKey) (*nex.RMCMessage, *nex.Error)) {
 	protocol.UpdateFavoriteGameKey = handler
 }
 
 // SetHandlerUpdateComment sets the handler for the UpdateComment method
-func (protocol *Protocol) SetHandlerUpdateComment(handler func(err error, packet nex.PacketInterface, callID uint32, comment *types.String) (*nex.RMCMessage, uint32)) {
+func (protocol *Protocol) SetHandlerUpdateComment(handler func(err error, packet nex.PacketInterface, callID uint32, comment *types.String) (*nex.RMCMessage, *nex.Error)) {
 	protocol.UpdateComment = handler
 }
 
 // SetHandlerUpdatePicture sets the handler for the UpdatePicture method
-func (protocol *Protocol) SetHandlerUpdatePicture(handler func(err error, packet nex.PacketInterface, callID uint32, unknown *types.PrimitiveU32, picture *types.Buffer) (*nex.RMCMessage, uint32)) {
+func (protocol *Protocol) SetHandlerUpdatePicture(handler func(err error, packet nex.PacketInterface, callID uint32, unknown *types.PrimitiveU32, picture *types.Buffer) (*nex.RMCMessage, *nex.Error)) {
 	protocol.UpdatePicture = handler
 }
 
 // SetHandlerGetFriendPresence sets the handler for the GetFriendPresence method
-func (protocol *Protocol) SetHandlerGetFriendPresence(handler func(err error, packet nex.PacketInterface, callID uint32, pidList *types.List[*types.PID]) (*nex.RMCMessage, uint32)) {
+func (protocol *Protocol) SetHandlerGetFriendPresence(handler func(err error, packet nex.PacketInterface, callID uint32, pidList *types.List[*types.PID]) (*nex.RMCMessage, *nex.Error)) {
 	protocol.GetFriendPresence = handler
 }
 
 // SetHandlerGetFriendComment sets the handler for the GetFriendComment method
-func (protocol *Protocol) SetHandlerGetFriendComment(handler func(err error, packet nex.PacketInterface, callID uint32, friends *types.List[*friends_3ds_types.FriendInfo]) (*nex.RMCMessage, uint32)) {
+func (protocol *Protocol) SetHandlerGetFriendComment(handler func(err error, packet nex.PacketInterface, callID uint32, friends *types.List[*friends_3ds_types.FriendInfo]) (*nex.RMCMessage, *nex.Error)) {
 	protocol.GetFriendComment = handler
 }
 
 // SetHandlerGetFriendPicture sets the handler for the GetFriendPicture method
-func (protocol *Protocol) SetHandlerGetFriendPicture(handler func(err error, packet nex.PacketInterface, callID uint32, unknown *types.List[*types.PrimitiveU32]) (*nex.RMCMessage, uint32)) {
+func (protocol *Protocol) SetHandlerGetFriendPicture(handler func(err error, packet nex.PacketInterface, callID uint32, unknown *types.List[*types.PrimitiveU32]) (*nex.RMCMessage, *nex.Error)) {
 	protocol.GetFriendPicture = handler
 }
 
 // SetHandlerGetFriendPersistentInfo sets the handler for the GetFriendPersistentInfo method
-func (protocol *Protocol) SetHandlerGetFriendPersistentInfo(handler func(err error, packet nex.PacketInterface, callID uint32, pidList *types.List[*types.PID]) (*nex.RMCMessage, uint32)) {
+func (protocol *Protocol) SetHandlerGetFriendPersistentInfo(handler func(err error, packet nex.PacketInterface, callID uint32, pidList *types.List[*types.PID]) (*nex.RMCMessage, *nex.Error)) {
 	protocol.GetFriendPersistentInfo = handler
 }
 
 // SetHandlerSendInvitation sets the handler for the SendInvitation method
-func (protocol *Protocol) SetHandlerSendInvitation(handler func(err error, packet nex.PacketInterface, callID uint32, pids *types.List[*types.PID]) (*nex.RMCMessage, uint32)) {
+func (protocol *Protocol) SetHandlerSendInvitation(handler func(err error, packet nex.PacketInterface, callID uint32, pids *types.List[*types.PID]) (*nex.RMCMessage, *nex.Error)) {
 	protocol.SendInvitation = handler
 }
 
@@ -358,8 +358,11 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 	case MethodSendInvitation:
 		protocol.handleSendInvitation(packet)
 	default:
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
-		fmt.Printf("Unsupported Friends (3DS) method ID: %#v\n", message.MethodID)
+		errMessage := fmt.Sprintf("Unsupported Friends (3DS) method ID: %#v\n", message.MethodID)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, errMessage)
+
+		globals.RespondError(packet, ProtocolID, err)
+		globals.Logger.Warning(err.Message)
 	}
 }
 

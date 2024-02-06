@@ -11,11 +11,13 @@ import (
 
 func (protocol *Protocol) handleGetLawMessageRequest(packet nex.PacketInterface) {
 	var err error
-	var errorCode uint32
 
 	if protocol.GetLawMessageRequest == nil {
-		globals.Logger.Warning("ServiceItemTeamKirbyClashDeluxe::GetLawMessageRequest not implemented")
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "ServiceItemTeamKirbyClashDeluxe::GetLawMessageRequest not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
@@ -29,17 +31,17 @@ func (protocol *Protocol) handleGetLawMessageRequest(packet nex.PacketInterface)
 	getLawMessageParam := service_item_team_kirby_clash_deluxe_types.NewServiceItemGetLawMessageParam()
 	err = getLawMessageParam.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.GetLawMessageRequest(fmt.Errorf("Failed to read getLawMessageParam from parameters. %s", err.Error()), packet, callID, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.GetLawMessageRequest(fmt.Errorf("Failed to read getLawMessageParam from parameters. %s", err.Error()), packet, callID, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	rmcMessage, errorCode := protocol.GetLawMessageRequest(nil, packet, callID, getLawMessageParam)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.GetLawMessageRequest(nil, packet, callID, getLawMessageParam)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
 		return
 	}
 

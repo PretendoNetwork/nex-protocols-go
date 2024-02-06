@@ -8,8 +8,11 @@ import (
 
 func (protocol *Protocol) handleIsAPIRecorderEnabled(packet nex.PacketInterface) {
 	if protocol.IsAPIRecorderEnabled == nil {
-		globals.Logger.Warning("Debug::IsAPIRecorderEnabled not implemented")
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "Debug::IsAPIRecorderEnabled not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
@@ -17,9 +20,9 @@ func (protocol *Protocol) handleIsAPIRecorderEnabled(packet nex.PacketInterface)
 
 	callID := request.CallID
 
-	rmcMessage, errorCode := protocol.IsAPIRecorderEnabled(nil, packet, callID)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.IsAPIRecorderEnabled(nil, packet, callID)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
 		return
 	}
 

@@ -11,11 +11,13 @@ import (
 
 func (protocol *Protocol) handlePrepareUpdateBankObject(packet nex.PacketInterface) {
 	var err error
-	var errorCode uint32
 
 	if protocol.PrepareUpdateBankObject == nil {
-		globals.Logger.Warning("DataStorePokemonBank::PrepareUpdateBankObject not implemented")
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "DataStorePokemonBank::PrepareUpdateBankObject not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
@@ -29,17 +31,17 @@ func (protocol *Protocol) handlePrepareUpdateBankObject(packet nex.PacketInterfa
 	transactionParam := datastore_pokemon_bank_types.NewBankTransactionParam()
 	err = transactionParam.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.PrepareUpdateBankObject(fmt.Errorf("Failed to read transactionParam from parameters. %s", err.Error()), packet, callID, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.PrepareUpdateBankObject(fmt.Errorf("Failed to read transactionParam from parameters. %s", err.Error()), packet, callID, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	rmcMessage, errorCode := protocol.PrepareUpdateBankObject(nil, packet, callID, transactionParam)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.PrepareUpdateBankObject(nil, packet, callID, transactionParam)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
 		return
 	}
 

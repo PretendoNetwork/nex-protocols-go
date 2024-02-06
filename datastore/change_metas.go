@@ -12,11 +12,13 @@ import (
 
 func (protocol *Protocol) handleChangeMetas(packet nex.PacketInterface) {
 	var err error
-	var errorCode uint32
 
 	if protocol.ChangeMetas == nil {
-		globals.Logger.Warning("DataStore::ChangeMetas not implemented")
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "DataStore::ChangeMetas not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
@@ -31,9 +33,9 @@ func (protocol *Protocol) handleChangeMetas(packet nex.PacketInterface) {
 	dataIDs.Type = types.NewPrimitiveU64(0)
 	err = dataIDs.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.ChangeMetas(fmt.Errorf("Failed to read dataIDs from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.ChangeMetas(fmt.Errorf("Failed to read dataIDs from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
@@ -43,9 +45,9 @@ func (protocol *Protocol) handleChangeMetas(packet nex.PacketInterface) {
 	params.Type = datastore_types.NewDataStoreChangeMetaParam()
 	err = params.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.ChangeMetas(fmt.Errorf("Failed to read params from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.ChangeMetas(fmt.Errorf("Failed to read params from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
@@ -54,17 +56,17 @@ func (protocol *Protocol) handleChangeMetas(packet nex.PacketInterface) {
 	transactional := types.NewPrimitiveBool(false)
 	err = transactional.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.ChangeMetas(fmt.Errorf("Failed to read transactional from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.ChangeMetas(fmt.Errorf("Failed to read transactional from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	rmcMessage, errorCode := protocol.ChangeMetas(nil, packet, callID, dataIDs, params, transactional)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.ChangeMetas(nil, packet, callID, dataIDs, params, transactional)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
 		return
 	}
 

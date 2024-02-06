@@ -11,11 +11,13 @@ import (
 
 func (protocol *Protocol) handleGetPID(packet nex.PacketInterface) {
 	var err error
-	var errorCode uint32
 
 	if protocol.GetPID == nil {
-		globals.Logger.Warning("TicketGranting::GetPID not implemented")
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "TicketGranting::GetPID not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
@@ -29,17 +31,17 @@ func (protocol *Protocol) handleGetPID(packet nex.PacketInterface) {
 	strUserName := types.NewString("")
 	err = strUserName.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.GetPID(fmt.Errorf("Failed to read strUserName from parameters. %s", err.Error()), packet, callID, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.GetPID(fmt.Errorf("Failed to read strUserName from parameters. %s", err.Error()), packet, callID, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	rmcMessage, errorCode := protocol.GetPID(nil, packet, callID, strUserName)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.GetPID(nil, packet, callID, strUserName)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
 		return
 	}
 

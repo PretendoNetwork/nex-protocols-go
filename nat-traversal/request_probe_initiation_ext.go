@@ -11,11 +11,13 @@ import (
 
 func (protocol *Protocol) handleRequestProbeInitiationExt(packet nex.PacketInterface) {
 	var err error
-	var errorCode uint32
 
 	if protocol.ReportNATProperties == nil {
-		globals.Logger.Warning("NATTraversal::RequestProbeInitiationExt not implemented")
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "NATTraversal::RequestProbeInitiationExt not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
@@ -30,9 +32,9 @@ func (protocol *Protocol) handleRequestProbeInitiationExt(packet nex.PacketInter
 	targetList.Type = types.NewString("")
 	err = targetList.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.RequestProbeInitiationExt(fmt.Errorf("Failed to read targetList from parameters. %s", err.Error()), packet, callID, nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.RequestProbeInitiationExt(fmt.Errorf("Failed to read targetList from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
@@ -41,17 +43,17 @@ func (protocol *Protocol) handleRequestProbeInitiationExt(packet nex.PacketInter
 	stationToProbe := types.NewString("")
 	err = stationToProbe.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.RequestProbeInitiationExt(fmt.Errorf("Failed to read stationToProbe from parameters. %s", err.Error()), packet, callID, nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.RequestProbeInitiationExt(fmt.Errorf("Failed to read stationToProbe from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	rmcMessage, errorCode := protocol.RequestProbeInitiationExt(nil, packet, callID, targetList, stationToProbe)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.RequestProbeInitiationExt(nil, packet, callID, targetList, stationToProbe)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
 		return
 	}
 

@@ -11,11 +11,13 @@ import (
 
 func (protocol *Protocol) handleInsertItem(packet nex.PacketInterface) {
 	var err error
-	var errorCode uint32
 
 	if protocol.InsertItem == nil {
-		globals.Logger.Warning("PersistentStore::InsertItem not implemented")
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "PersistentStore::InsertItem not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
@@ -29,9 +31,9 @@ func (protocol *Protocol) handleInsertItem(packet nex.PacketInterface) {
 	uiGroup := types.NewPrimitiveU32(0)
 	err = uiGroup.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.InsertItem(fmt.Errorf("Failed to read uiGroup from parameters. %s", err.Error()), packet, callID, nil, nil, nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.InsertItem(fmt.Errorf("Failed to read uiGroup from parameters. %s", err.Error()), packet, callID, nil, nil, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
@@ -40,9 +42,9 @@ func (protocol *Protocol) handleInsertItem(packet nex.PacketInterface) {
 	strTag := types.NewString("")
 	err = strTag.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.InsertItem(fmt.Errorf("Failed to read strTag from parameters. %s", err.Error()), packet, callID, nil, nil, nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.InsertItem(fmt.Errorf("Failed to read strTag from parameters. %s", err.Error()), packet, callID, nil, nil, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
@@ -51,9 +53,9 @@ func (protocol *Protocol) handleInsertItem(packet nex.PacketInterface) {
 	bufData := types.NewBuffer(nil)
 	err = bufData.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.InsertItem(fmt.Errorf("Failed to read bufData from parameters. %s", err.Error()), packet, callID, nil, nil, nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.InsertItem(fmt.Errorf("Failed to read bufData from parameters. %s", err.Error()), packet, callID, nil, nil, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
@@ -62,17 +64,17 @@ func (protocol *Protocol) handleInsertItem(packet nex.PacketInterface) {
 	bReplace := types.NewPrimitiveBool(false)
 	err = bReplace.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.InsertItem(fmt.Errorf("Failed to read bReplace from parameters. %s", err.Error()), packet, callID, nil, nil, nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.InsertItem(fmt.Errorf("Failed to read bReplace from parameters. %s", err.Error()), packet, callID, nil, nil, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	rmcMessage, errorCode := protocol.InsertItem(nil, packet, callID, uiGroup, strTag, bufData, bReplace)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.InsertItem(nil, packet, callID, uiGroup, strTag, bufData, bReplace)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
 		return
 	}
 

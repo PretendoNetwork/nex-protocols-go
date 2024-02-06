@@ -11,11 +11,13 @@ import (
 
 func (protocol *Protocol) handleRegisterEx(packet nex.PacketInterface) {
 	var err error
-	var errorCode uint32
 
 	if protocol.RegisterEx == nil {
-		globals.Logger.Warning("SecureConnection::RegisterEx not implemented")
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "SecureConnection::RegisterEx not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
@@ -30,9 +32,9 @@ func (protocol *Protocol) handleRegisterEx(packet nex.PacketInterface) {
 	vecMyURLs.Type = types.NewStationURL("")
 	err = vecMyURLs.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.RegisterEx(fmt.Errorf("Failed to read vecMyURLs from parameters. %s", err.Error()), packet, callID, nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.RegisterEx(fmt.Errorf("Failed to read vecMyURLs from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
@@ -41,17 +43,17 @@ func (protocol *Protocol) handleRegisterEx(packet nex.PacketInterface) {
 	hCustomData := types.NewAnyDataHolder()
 	err = hCustomData.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.RegisterEx(fmt.Errorf("Failed to read hCustomData from parameters. %s", err.Error()), packet, callID, nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.RegisterEx(fmt.Errorf("Failed to read hCustomData from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	rmcMessage, errorCode := protocol.RegisterEx(nil, packet, callID, vecMyURLs, hCustomData)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.RegisterEx(nil, packet, callID, vecMyURLs, hCustomData)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
 		return
 	}
 

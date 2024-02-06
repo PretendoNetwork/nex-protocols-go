@@ -11,11 +11,13 @@ import (
 
 func (protocol *Protocol) handleGetEstimateScoreRank(packet nex.PacketInterface) {
 	var err error
-	var errorCode uint32
 
 	if protocol.GetEstimateScoreRank == nil {
-		globals.Logger.Warning("Ranking2::GetEstimateScoreRank not implemented")
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "Ranking2::GetEstimateScoreRank not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
@@ -29,17 +31,17 @@ func (protocol *Protocol) handleGetEstimateScoreRank(packet nex.PacketInterface)
 	input := ranking2_types.NewRanking2EstimateScoreRankInput()
 	err = input.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.GetEstimateScoreRank(fmt.Errorf("Failed to read input from parameters. %s", err.Error()), packet, callID, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.GetEstimateScoreRank(fmt.Errorf("Failed to read input from parameters. %s", err.Error()), packet, callID, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	rmcMessage, errorCode := protocol.GetEstimateScoreRank(nil, packet, callID, input)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.GetEstimateScoreRank(nil, packet, callID, input)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
 		return
 	}
 

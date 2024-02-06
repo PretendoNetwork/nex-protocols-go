@@ -11,11 +11,13 @@ import (
 
 func (protocol *Protocol) handleGetRound(packet nex.PacketInterface) {
 	var err error
-	var errorCode uint32
 
 	if protocol.GetRound == nil {
-		globals.Logger.Warning("MatchmakeReferee::GetRound not implemented")
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "MatchmakeReferee::GetRound not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
@@ -29,17 +31,17 @@ func (protocol *Protocol) handleGetRound(packet nex.PacketInterface) {
 	roundID := types.NewPrimitiveU64(0)
 	err = roundID.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.GetRound(fmt.Errorf("Failed to read roundID from parameters. %s", err.Error()), packet, callID, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.GetRound(fmt.Errorf("Failed to read roundID from parameters. %s", err.Error()), packet, callID, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	rmcMessage, errorCode := protocol.GetRound(nil, packet, callID, roundID)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.GetRound(nil, packet, callID, roundID)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
 		return
 	}
 

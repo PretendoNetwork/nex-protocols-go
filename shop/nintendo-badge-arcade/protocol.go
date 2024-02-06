@@ -35,8 +35,8 @@ type shopProtocol = shop.Protocol
 type Protocol struct {
 	server nex.ServerInterface
 	shopProtocol
-	GetRivToken func(err error, packet nex.PacketInterface, callID uint32, itemCode *types.String, referenceID *types.QBuffer) (*nex.RMCMessage, uint32)
-	PostPlayLog func(err error, packet nex.PacketInterface, callID uint32, param *shop_nintendo_badge_arcade_types.ShopPostPlayLogParam) (*nex.RMCMessage, uint32)
+	GetRivToken func(err error, packet nex.PacketInterface, callID uint32, itemCode *types.String, referenceID *types.QBuffer) (*nex.RMCMessage, *nex.Error)
+	PostPlayLog func(err error, packet nex.PacketInterface, callID uint32, param *shop_nintendo_badge_arcade_types.ShopPostPlayLogParam) (*nex.RMCMessage, *nex.Error)
 }
 
 // HandlePacket sends the packet to the correct RMC method handler
@@ -58,8 +58,11 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 	case MethodPostPlayLog:
 		protocol.handlePostPlayLog(packet)
 	default:
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
-		fmt.Printf("Unsupported ShopNintendoBadgeArcade method ID: %#v\n", message.MethodID)
+		errMessage := fmt.Sprintf("Unsupported ShopNintendoBadgeArcade method ID: %#v\n", message.MethodID)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, errMessage)
+
+		globals.RespondError(packet, ProtocolID, err)
+		globals.Logger.Warning(err.Message)
 	}
 }
 

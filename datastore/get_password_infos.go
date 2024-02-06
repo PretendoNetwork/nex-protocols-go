@@ -11,11 +11,13 @@ import (
 
 func (protocol *Protocol) handleGetPasswordInfos(packet nex.PacketInterface) {
 	var err error
-	var errorCode uint32
 
 	if protocol.GetPasswordInfos == nil {
-		globals.Logger.Warning("DataStore::GetPasswordInfos not implemented")
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "DataStore::GetPasswordInfos not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
@@ -30,17 +32,17 @@ func (protocol *Protocol) handleGetPasswordInfos(packet nex.PacketInterface) {
 	dataIDs.Type = types.NewPrimitiveU64(0)
 	err = dataIDs.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.GetPasswordInfos(fmt.Errorf("Failed to read dataIDs from parameters. %s", err.Error()), packet, callID, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.GetPasswordInfos(fmt.Errorf("Failed to read dataIDs from parameters. %s", err.Error()), packet, callID, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	rmcMessage, errorCode := protocol.GetPasswordInfos(nil, packet, callID, dataIDs)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.GetPasswordInfos(nil, packet, callID, dataIDs)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
 		return
 	}
 

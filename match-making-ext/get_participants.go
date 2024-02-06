@@ -11,11 +11,13 @@ import (
 
 func (protocol *Protocol) handleGetParticipants(packet nex.PacketInterface) {
 	var err error
-	var errorCode uint32
 
 	if protocol.GetParticipants == nil {
-		globals.Logger.Warning("MatchMakingExt::GetParticipants not implemented")
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "MatchMakingExt::GetParticipants not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
@@ -29,9 +31,9 @@ func (protocol *Protocol) handleGetParticipants(packet nex.PacketInterface) {
 	idGathering := types.NewPrimitiveU32(0)
 	err = idGathering.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.GetParticipants(fmt.Errorf("Failed to read idGathering from parameters. %s", err.Error()), packet, callID, nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.GetParticipants(fmt.Errorf("Failed to read idGathering from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
@@ -40,17 +42,17 @@ func (protocol *Protocol) handleGetParticipants(packet nex.PacketInterface) {
 	bOnlyActive := types.NewPrimitiveBool(false)
 	err = bOnlyActive.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.GetParticipants(fmt.Errorf("Failed to read bOnlyActive from parameters. %s", err.Error()), packet, callID, nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.GetParticipants(fmt.Errorf("Failed to read bOnlyActive from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	rmcMessage, errorCode := protocol.GetParticipants(nil, packet, callID, idGathering, bOnlyActive)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.GetParticipants(nil, packet, callID, idGathering, bOnlyActive)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
 		return
 	}
 

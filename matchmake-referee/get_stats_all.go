@@ -11,11 +11,13 @@ import (
 
 func (protocol *Protocol) handleGetStatsAll(packet nex.PacketInterface) {
 	var err error
-	var errorCode uint32
 
 	if protocol.GetStatsAll == nil {
-		globals.Logger.Warning("MatchmakeReferee::GetStatsAll not implemented")
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "MatchmakeReferee::GetStatsAll not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
@@ -29,17 +31,17 @@ func (protocol *Protocol) handleGetStatsAll(packet nex.PacketInterface) {
 	target := matchmake_referee_types.NewMatchmakeRefereeStatsTarget()
 	err = target.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.GetStatsAll(fmt.Errorf("Failed to read target from parameters. %s", err.Error()), packet, callID, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.GetStatsAll(fmt.Errorf("Failed to read target from parameters. %s", err.Error()), packet, callID, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	rmcMessage, errorCode := protocol.GetStatsAll(nil, packet, callID, target)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.GetStatsAll(nil, packet, callID, target)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
 		return
 	}
 

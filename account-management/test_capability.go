@@ -11,11 +11,13 @@ import (
 
 func (protocol *Protocol) handleTestCapability(packet nex.PacketInterface) {
 	var err error
-	var errorCode uint32
 
 	if protocol.TestCapability == nil {
-		globals.Logger.Warning("AccountManagement::TestCapability not implemented")
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "AccountManagement::TestCapability not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
@@ -29,17 +31,17 @@ func (protocol *Protocol) handleTestCapability(packet nex.PacketInterface) {
 	uiCapability := types.NewPrimitiveU32(0)
 	err = uiCapability.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.TestCapability(fmt.Errorf("Failed to read uiCapability from parameters. %s", err.Error()), packet, callID, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.TestCapability(fmt.Errorf("Failed to read uiCapability from parameters. %s", err.Error()), packet, callID, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	rmcMessage, errorCode := protocol.TestCapability(nil, packet, callID, uiCapability)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.TestCapability(nil, packet, callID, uiCapability)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
 		return
 	}
 

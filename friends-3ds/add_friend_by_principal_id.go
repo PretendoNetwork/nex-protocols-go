@@ -11,11 +11,13 @@ import (
 
 func (protocol *Protocol) handleAddFriendByPrincipalID(packet nex.PacketInterface) {
 	var err error
-	var errorCode uint32
 
 	if protocol.AddFriendByPrincipalID == nil {
-		globals.Logger.Warning("Friends3DS::AddFriendByPrincipalID not implemented")
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "Friends3DS::AddFriendByPrincipalID not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
@@ -29,9 +31,9 @@ func (protocol *Protocol) handleAddFriendByPrincipalID(packet nex.PacketInterfac
 	lfc := types.NewPrimitiveU64(0)
 	err = lfc.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.AddFriendByPrincipalID(fmt.Errorf("Failed to read lfc from parameters. %s", err.Error()), packet, callID, nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.AddFriendByPrincipalID(fmt.Errorf("Failed to read lfc from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
@@ -40,17 +42,17 @@ func (protocol *Protocol) handleAddFriendByPrincipalID(packet nex.PacketInterfac
 	pid := types.NewPID(0)
 	err = pid.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.AddFriendByPrincipalID(fmt.Errorf("Failed to read pid from parameters. %s", err.Error()), packet, callID, nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.AddFriendByPrincipalID(fmt.Errorf("Failed to read pid from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	rmcMessage, errorCode := protocol.AddFriendByPrincipalID(nil, packet, callID, lfc, pid)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.AddFriendByPrincipalID(nil, packet, callID, lfc, pid)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
 		return
 	}
 

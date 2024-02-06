@@ -2,16 +2,17 @@
 package protocol
 
 import (
-	"fmt"
-
 	nex "github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
 func (protocol *Protocol) handleGetActivePlayerSubscriptionData(packet nex.PacketInterface) {
 	if protocol.GetActivePlayerSubscriptionData == nil {
-		fmt.Println("[Warning] SubscriptionProtocol::GetActivePlayerSubscriptionData not implemented")
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "SubscriptionProtocol::GetActivePlayerSubscriptionData not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
@@ -19,9 +20,9 @@ func (protocol *Protocol) handleGetActivePlayerSubscriptionData(packet nex.Packe
 
 	callID := request.CallID
 
-	rmcMessage, errorCode := protocol.GetActivePlayerSubscriptionData(nil, packet, callID)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.GetActivePlayerSubscriptionData(nil, packet, callID)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
 		return
 	}
 

@@ -12,11 +12,13 @@ import (
 
 func (protocol *Protocol) handleGetMetas(packet nex.PacketInterface) {
 	var err error
-	var errorCode uint32
 
 	if protocol.GetMetas == nil {
-		globals.Logger.Warning("DataStore::GetMetas not implemented")
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "DataStore::GetMetas not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
@@ -31,9 +33,9 @@ func (protocol *Protocol) handleGetMetas(packet nex.PacketInterface) {
 	dataIDs.Type = types.NewPrimitiveU64(0)
 	err = dataIDs.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.GetMetas(fmt.Errorf("Failed to read dataIDs from parameters. %s", err.Error()), packet, callID, nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.GetMetas(fmt.Errorf("Failed to read dataIDs from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
@@ -42,17 +44,17 @@ func (protocol *Protocol) handleGetMetas(packet nex.PacketInterface) {
 	param := datastore_types.NewDataStoreGetMetaParam()
 	err = param.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.GetMetas(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.GetMetas(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	rmcMessage, errorCode := protocol.GetMetas(nil, packet, callID, dataIDs, param)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.GetMetas(nil, packet, callID, dataIDs, param)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
 		return
 	}
 

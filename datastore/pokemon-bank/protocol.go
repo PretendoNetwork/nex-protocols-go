@@ -92,22 +92,22 @@ type dataStoreProtocol = datastore.Protocol
 type Protocol struct {
 	server nex.ServerInterface
 	dataStoreProtocol
-	UploadPokemon            func(err error, packet nex.PacketInterface, callID uint32, param *datastore_pokemon_bank_types.GlobalTradeStationUploadPokemonParam) (*nex.RMCMessage, uint32)
-	SearchPokemon            func(err error, packet nex.PacketInterface, callID uint32, param *datastore_pokemon_bank_types.GlobalTradeStationSearchPokemonParam) (*nex.RMCMessage, uint32)
-	PrepareTradePokemon      func(err error, packet nex.PacketInterface, callID uint32, param *datastore_pokemon_bank_types.GlobalTradeStationPrepareTradePokemonParam) (*nex.RMCMessage, uint32)
-	TradePokemon             func(err error, packet nex.PacketInterface, callID uint32, param *datastore_pokemon_bank_types.GlobalTradeStationTradePokemonParam) (*nex.RMCMessage, uint32)
-	DownloadOtherPokemon     func(err error, packet nex.PacketInterface, callID uint32, param *datastore_pokemon_bank_types.GlobalTradeStationDownloadOtherPokemonParam) (*nex.RMCMessage, uint32)
-	DownloadMyPokemon        func(err error, packet nex.PacketInterface, callID uint32, param *datastore_pokemon_bank_types.GlobalTradeStationDownloadMyPokemonParam) (*nex.RMCMessage, uint32)
-	DeletePokemon            func(err error, packet nex.PacketInterface, callID uint32, param *datastore_pokemon_bank_types.GlobalTradeStationDeletePokemonParam) (*nex.RMCMessage, uint32)
-	GetTransactionParam      func(err error, packet nex.PacketInterface, callID uint32, slotID *types.PrimitiveU16) (*nex.RMCMessage, uint32)
-	PreparePostBankObject    func(err error, packet nex.PacketInterface, callID uint32, slotID *types.PrimitiveU16, size *types.PrimitiveU32) (*nex.RMCMessage, uint32)
-	CompletePostBankObject   func(err error, packet nex.PacketInterface, callID uint32, param *datastore_types.DataStoreCompletePostParam) (*nex.RMCMessage, uint32)
-	PrepareGetBankObject     func(err error, packet nex.PacketInterface, callID uint32, slotID *types.PrimitiveU16, applicationID *types.PrimitiveU16) (*nex.RMCMessage, uint32)
-	PrepareUpdateBankObject  func(err error, packet nex.PacketInterface, callID uint32, transactionParam *datastore_pokemon_bank_types.BankTransactionParam) (*nex.RMCMessage, uint32)
-	CompleteUpdateBankObject func(err error, packet nex.PacketInterface, callID uint32, slotID *types.PrimitiveU16, transactionParam *datastore_pokemon_bank_types.BankTransactionParam, isForce *types.PrimitiveBool) (*nex.RMCMessage, uint32)
-	RollbackBankObject       func(err error, packet nex.PacketInterface, callID uint32, slotID *types.PrimitiveU16, transactionParam *datastore_pokemon_bank_types.BankTransactionParam, isForce *types.PrimitiveBool) (*nex.RMCMessage, uint32)
-	GetUnlockKey             func(err error, packet nex.PacketInterface, callID uint32, challengeValue *types.PrimitiveU32) (*nex.RMCMessage, uint32)
-	RequestMigration         func(err error, packet nex.PacketInterface, callID uint32, oneTimePassword *types.String, boxes *types.List[*types.PrimitiveU32]) (*nex.RMCMessage, uint32)
+	UploadPokemon            func(err error, packet nex.PacketInterface, callID uint32, param *datastore_pokemon_bank_types.GlobalTradeStationUploadPokemonParam) (*nex.RMCMessage, *nex.Error)
+	SearchPokemon            func(err error, packet nex.PacketInterface, callID uint32, param *datastore_pokemon_bank_types.GlobalTradeStationSearchPokemonParam) (*nex.RMCMessage, *nex.Error)
+	PrepareTradePokemon      func(err error, packet nex.PacketInterface, callID uint32, param *datastore_pokemon_bank_types.GlobalTradeStationPrepareTradePokemonParam) (*nex.RMCMessage, *nex.Error)
+	TradePokemon             func(err error, packet nex.PacketInterface, callID uint32, param *datastore_pokemon_bank_types.GlobalTradeStationTradePokemonParam) (*nex.RMCMessage, *nex.Error)
+	DownloadOtherPokemon     func(err error, packet nex.PacketInterface, callID uint32, param *datastore_pokemon_bank_types.GlobalTradeStationDownloadOtherPokemonParam) (*nex.RMCMessage, *nex.Error)
+	DownloadMyPokemon        func(err error, packet nex.PacketInterface, callID uint32, param *datastore_pokemon_bank_types.GlobalTradeStationDownloadMyPokemonParam) (*nex.RMCMessage, *nex.Error)
+	DeletePokemon            func(err error, packet nex.PacketInterface, callID uint32, param *datastore_pokemon_bank_types.GlobalTradeStationDeletePokemonParam) (*nex.RMCMessage, *nex.Error)
+	GetTransactionParam      func(err error, packet nex.PacketInterface, callID uint32, slotID *types.PrimitiveU16) (*nex.RMCMessage, *nex.Error)
+	PreparePostBankObject    func(err error, packet nex.PacketInterface, callID uint32, slotID *types.PrimitiveU16, size *types.PrimitiveU32) (*nex.RMCMessage, *nex.Error)
+	CompletePostBankObject   func(err error, packet nex.PacketInterface, callID uint32, param *datastore_types.DataStoreCompletePostParam) (*nex.RMCMessage, *nex.Error)
+	PrepareGetBankObject     func(err error, packet nex.PacketInterface, callID uint32, slotID *types.PrimitiveU16, applicationID *types.PrimitiveU16) (*nex.RMCMessage, *nex.Error)
+	PrepareUpdateBankObject  func(err error, packet nex.PacketInterface, callID uint32, transactionParam *datastore_pokemon_bank_types.BankTransactionParam) (*nex.RMCMessage, *nex.Error)
+	CompleteUpdateBankObject func(err error, packet nex.PacketInterface, callID uint32, slotID *types.PrimitiveU16, transactionParam *datastore_pokemon_bank_types.BankTransactionParam, isForce *types.PrimitiveBool) (*nex.RMCMessage, *nex.Error)
+	RollbackBankObject       func(err error, packet nex.PacketInterface, callID uint32, slotID *types.PrimitiveU16, transactionParam *datastore_pokemon_bank_types.BankTransactionParam, isForce *types.PrimitiveBool) (*nex.RMCMessage, *nex.Error)
+	GetUnlockKey             func(err error, packet nex.PacketInterface, callID uint32, challengeValue *types.PrimitiveU32) (*nex.RMCMessage, *nex.Error)
+	RequestMigration         func(err error, packet nex.PacketInterface, callID uint32, oneTimePassword *types.String, boxes *types.List[*types.PrimitiveU32]) (*nex.RMCMessage, *nex.Error)
 }
 
 // HandlePacket sends the packet to the correct RMC method handler
@@ -157,8 +157,11 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 	case MethodRequestMigration:
 		protocol.handleRequestMigration(packet)
 	default:
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
-		fmt.Printf("Unsupported DataStore (Pokemon Bank) method ID: %#v\n", message.MethodID)
+		errMessage := fmt.Sprintf("Unsupported DataStore (Pokemon Bank) method ID: %#v\n", message.MethodID)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, errMessage)
+
+		globals.RespondError(packet, ProtocolID, err)
+		globals.Logger.Warning(err.Message)
 	}
 }
 

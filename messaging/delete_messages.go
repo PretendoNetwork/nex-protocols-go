@@ -12,11 +12,13 @@ import (
 
 func (protocol *Protocol) handleDeleteMessages(packet nex.PacketInterface) {
 	var err error
-	var errorCode uint32
 
 	if protocol.DeleteMessages == nil {
-		globals.Logger.Warning("Messaging::DeleteMessages not implemented")
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "Messaging::DeleteMessages not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
@@ -30,9 +32,9 @@ func (protocol *Protocol) handleDeleteMessages(packet nex.PacketInterface) {
 	recipient := messaging_types.NewMessageRecipient()
 	err = recipient.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.DeleteMessages(fmt.Errorf("Failed to read recipient from parameters. %s", err.Error()), packet, callID, nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.DeleteMessages(fmt.Errorf("Failed to read recipient from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
@@ -42,17 +44,17 @@ func (protocol *Protocol) handleDeleteMessages(packet nex.PacketInterface) {
 	lstMessagesToDelete.Type = types.NewPrimitiveU32(0)
 	err = lstMessagesToDelete.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.DeleteMessages(fmt.Errorf("Failed to read lstMessagesToDelete from parameters. %s", err.Error()), packet, callID, nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.DeleteMessages(fmt.Errorf("Failed to read lstMessagesToDelete from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	rmcMessage, errorCode := protocol.DeleteMessages(nil, packet, callID, recipient, lstMessagesToDelete)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.DeleteMessages(nil, packet, callID, recipient, lstMessagesToDelete)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
 		return
 	}
 

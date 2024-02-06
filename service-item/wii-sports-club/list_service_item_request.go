@@ -11,11 +11,13 @@ import (
 
 func (protocol *Protocol) handleListServiceItemRequest(packet nex.PacketInterface) {
 	var err error
-	var errorCode uint32
 
 	if protocol.ListServiceItemRequest == nil {
-		globals.Logger.Warning("ServiceItemWiiSportsClub::ListServiceItemRequest not implemented")
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "ServiceItemWiiSportsClub::ListServiceItemRequest not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
@@ -29,17 +31,17 @@ func (protocol *Protocol) handleListServiceItemRequest(packet nex.PacketInterfac
 	listServiceItemParam := service_item_wii_sports_club_types.NewServiceItemListServiceItemParam()
 	err = listServiceItemParam.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.ListServiceItemRequest(fmt.Errorf("Failed to read listServiceItemParam from parameters. %s", err.Error()), packet, callID, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.ListServiceItemRequest(fmt.Errorf("Failed to read listServiceItemParam from parameters. %s", err.Error()), packet, callID, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	rmcMessage, errorCode := protocol.ListServiceItemRequest(nil, packet, callID, listServiceItemParam)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.ListServiceItemRequest(nil, packet, callID, listServiceItemParam)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
 		return
 	}
 

@@ -11,11 +11,13 @@ import (
 
 func (protocol *Protocol) handleUpdateMatchmakeSessionAttribute(packet nex.PacketInterface) {
 	var err error
-	var errorCode uint32
 
 	if protocol.UpdateMatchmakeSessionAttribute == nil {
-		globals.Logger.Warning("MatchmakeExtension::UpdateMatchmakeSessionAttribute not implemented")
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "MatchmakeExtension::UpdateMatchmakeSessionAttribute not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
@@ -29,9 +31,9 @@ func (protocol *Protocol) handleUpdateMatchmakeSessionAttribute(packet nex.Packe
 	gid := types.NewPrimitiveU32(0)
 	err = gid.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.UpdateMatchmakeSessionAttribute(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), packet, callID, nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.UpdateMatchmakeSessionAttribute(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
@@ -41,17 +43,17 @@ func (protocol *Protocol) handleUpdateMatchmakeSessionAttribute(packet nex.Packe
 	attribs.Type = types.NewPrimitiveU32(0)
 	err = attribs.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.UpdateMatchmakeSessionAttribute(fmt.Errorf("Failed to read attribs from parameters. %s", err.Error()), packet, callID, nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.UpdateMatchmakeSessionAttribute(fmt.Errorf("Failed to read attribs from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	rmcMessage, errorCode := protocol.UpdateMatchmakeSessionAttribute(nil, packet, callID, gid, attribs)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.UpdateMatchmakeSessionAttribute(nil, packet, callID, gid, attribs)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
 		return
 	}
 

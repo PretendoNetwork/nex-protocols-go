@@ -11,11 +11,13 @@ import (
 
 func (protocol *Protocol) handleUpdatePresence(packet nex.PacketInterface) {
 	var err error
-	var errorCode uint32
 
 	if protocol.UpdatePresence == nil {
-		globals.Logger.Warning("FriendsWiiU::UpdatePresence not implemented")
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "FriendsWiiU::UpdatePresence not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
@@ -29,17 +31,17 @@ func (protocol *Protocol) handleUpdatePresence(packet nex.PacketInterface) {
 	nintendoPresenceV2 := friends_wiiu_types.NewNintendoPresenceV2()
 	err = nintendoPresenceV2.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.UpdatePresence(fmt.Errorf("Failed to read nintendoPresenceV2 from parameters. %s", err.Error()), packet, callID, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.UpdatePresence(fmt.Errorf("Failed to read nintendoPresenceV2 from parameters. %s", err.Error()), packet, callID, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	rmcMessage, errorCode := protocol.UpdatePresence(nil, packet, callID, nintendoPresenceV2)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.UpdatePresence(nil, packet, callID, nintendoPresenceV2)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
 		return
 	}
 

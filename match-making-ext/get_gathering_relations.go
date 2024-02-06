@@ -11,11 +11,13 @@ import (
 
 func (protocol *Protocol) handleGetGatheringRelations(packet nex.PacketInterface) {
 	var err error
-	var errorCode uint32
 
 	if protocol.GetGatheringRelations == nil {
-		globals.Logger.Warning("MatchMakingExt::GetGatheringRelations not implemented")
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "MatchMakingExt::GetGatheringRelations not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
@@ -29,9 +31,9 @@ func (protocol *Protocol) handleGetGatheringRelations(packet nex.PacketInterface
 	id := types.NewPrimitiveU32(0)
 	err = id.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.GetGatheringRelations(fmt.Errorf("Failed to read id from parameters. %s", err.Error()), packet, callID, nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.GetGatheringRelations(fmt.Errorf("Failed to read id from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
@@ -40,17 +42,17 @@ func (protocol *Protocol) handleGetGatheringRelations(packet nex.PacketInterface
 	descr := types.NewString("")
 	err = descr.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.GetGatheringRelations(fmt.Errorf("Failed to read descr from parameters. %s", err.Error()), packet, callID, nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.GetGatheringRelations(fmt.Errorf("Failed to read descr from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	rmcMessage, errorCode := protocol.GetGatheringRelations(nil, packet, callID, id, descr)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.GetGatheringRelations(nil, packet, callID, id, descr)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
 		return
 	}
 

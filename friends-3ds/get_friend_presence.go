@@ -11,11 +11,13 @@ import (
 
 func (protocol *Protocol) handleGetFriendPresence(packet nex.PacketInterface) {
 	var err error
-	var errorCode uint32
 
 	if protocol.GetFriendPresence == nil {
-		globals.Logger.Warning("Friends3DS::GetFriendPresence not implemented")
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "Friends3DS::GetFriendPresence not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
@@ -30,17 +32,17 @@ func (protocol *Protocol) handleGetFriendPresence(packet nex.PacketInterface) {
 	pidList.Type = types.NewPID(0)
 	err = pidList.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.GetFriendPresence(fmt.Errorf("Failed to read pidList from parameters. %s", err.Error()), packet, callID, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.GetFriendPresence(fmt.Errorf("Failed to read pidList from parameters. %s", err.Error()), packet, callID, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	rmcMessage, errorCode := protocol.GetFriendPresence(nil, packet, callID, pidList)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.GetFriendPresence(nil, packet, callID, pidList)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
 		return
 	}
 

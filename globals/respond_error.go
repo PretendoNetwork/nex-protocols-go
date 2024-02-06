@@ -4,9 +4,14 @@ package globals
 import "github.com/PretendoNetwork/nex-go"
 
 // RespondError sends the client a given error code
-func RespondError(packet nex.PacketInterface, protocolID uint16, errorCode uint32) {
+func RespondError(packet nex.PacketInterface, protocolID uint16, err error) {
 	sender := packet.Sender()
 	request := packet.RMCMessage()
+	errorCode := nex.ResultCodes.Core.Unknown
+
+	if err, ok := err.(*nex.Error); ok {
+		errorCode = err.ResultCode
+	}
 
 	rmcResponse := nex.NewRMCError(sender.Server(), errorCode)
 	rmcResponse.ProtocolID = request.ProtocolID

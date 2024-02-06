@@ -11,11 +11,13 @@ import (
 
 func (protocol *Protocol) handleUnregisterGatherings(packet nex.PacketInterface) {
 	var err error
-	var errorCode uint32
 
 	if protocol.UnregisterGatherings == nil {
-		globals.Logger.Warning("MatchMaking::UnregisterGatherings not implemented")
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "MatchMaking::UnregisterGatherings not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
@@ -30,17 +32,17 @@ func (protocol *Protocol) handleUnregisterGatherings(packet nex.PacketInterface)
 	lstGatherings.Type = types.NewPrimitiveU32(0)
 	err = lstGatherings.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.UnregisterGatherings(fmt.Errorf("Failed to read lstGatherings from parameters. %s", err.Error()), packet, callID, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.UnregisterGatherings(fmt.Errorf("Failed to read lstGatherings from parameters. %s", err.Error()), packet, callID, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	rmcMessage, errorCode := protocol.UnregisterGatherings(nil, packet, callID, lstGatherings)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.UnregisterGatherings(nil, packet, callID, lstGatherings)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
 		return
 	}
 

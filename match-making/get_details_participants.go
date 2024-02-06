@@ -11,11 +11,13 @@ import (
 
 func (protocol *Protocol) handleGetDetailedParticipants(packet nex.PacketInterface) {
 	var err error
-	var errorCode uint32
 
 	if protocol.GetDetailedParticipants == nil {
-		globals.Logger.Warning("MatchMaking::GetDetailedParticipants not implemented")
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "MatchMaking::GetDetailedParticipants not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
@@ -29,17 +31,17 @@ func (protocol *Protocol) handleGetDetailedParticipants(packet nex.PacketInterfa
 	idGathering := types.NewPrimitiveU32(0)
 	err = idGathering.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.GetDetailedParticipants(fmt.Errorf("Failed to read gatheringID from parameters. %s", err.Error()), packet, callID, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.GetDetailedParticipants(fmt.Errorf("Failed to read gatheringID from parameters. %s", err.Error()), packet, callID, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	rmcMessage, errorCode := protocol.GetDetailedParticipants(nil, packet, callID, idGathering)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.GetDetailedParticipants(nil, packet, callID, idGathering)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
 		return
 	}
 

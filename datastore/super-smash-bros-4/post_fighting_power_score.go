@@ -12,11 +12,13 @@ import (
 
 func (protocol *Protocol) handlePostFightingPowerScore(packet nex.PacketInterface) {
 	var err error
-	var errorCode uint32
 
 	if protocol.PostFightingPowerScore == nil {
-		globals.Logger.Warning("DataStoreSuperSmashBros4::PostFightingPowerScore not implemented")
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "DataStoreSuperSmashBros4::PostFightingPowerScore not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
@@ -31,17 +33,17 @@ func (protocol *Protocol) handlePostFightingPowerScore(packet nex.PacketInterfac
 	params.Type = datastore_super_smash_bros_4_types.NewDataStorePostFightingPowerScoreParam()
 	err = params.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.PostFightingPowerScore(fmt.Errorf("Failed to read params from parameters. %s", err.Error()), packet, callID, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.PostFightingPowerScore(fmt.Errorf("Failed to read params from parameters. %s", err.Error()), packet, callID, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	rmcMessage, errorCode := protocol.PostFightingPowerScore(nil, packet, callID, params)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.PostFightingPowerScore(nil, packet, callID, params)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
 		return
 	}
 

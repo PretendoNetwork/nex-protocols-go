@@ -11,11 +11,13 @@ import (
 
 func (protocol *Protocol) handleFindByDescriptionRegex(packet nex.PacketInterface) {
 	var err error
-	var errorCode uint32
 
 	if protocol.FindByDescriptionRegex == nil {
-		globals.Logger.Warning("MatchMaking::FindByDescriptionRegex not implemented")
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "MatchMaking::FindByDescriptionRegex not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
@@ -29,9 +31,9 @@ func (protocol *Protocol) handleFindByDescriptionRegex(packet nex.PacketInterfac
 	strDescriptionRegex := types.NewString("")
 	err = strDescriptionRegex.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.FindByDescriptionRegex(fmt.Errorf("Failed to read strDescriptionRegex from parameters. %s", err.Error()), packet, callID, nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.FindByDescriptionRegex(fmt.Errorf("Failed to read strDescriptionRegex from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
@@ -40,17 +42,17 @@ func (protocol *Protocol) handleFindByDescriptionRegex(packet nex.PacketInterfac
 	resultRange := types.NewResultRange()
 	err = resultRange.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.FindByDescriptionRegex(fmt.Errorf("Failed to read resultRange from parameters. %s", err.Error()), packet, callID, nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.FindByDescriptionRegex(fmt.Errorf("Failed to read resultRange from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	rmcMessage, errorCode := protocol.FindByDescriptionRegex(nil, packet, callID, strDescriptionRegex, resultRange)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.FindByDescriptionRegex(nil, packet, callID, strDescriptionRegex, resultRange)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
 		return
 	}
 

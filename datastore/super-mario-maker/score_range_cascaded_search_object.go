@@ -12,11 +12,13 @@ import (
 
 func (protocol *Protocol) handleScoreRangeCascadedSearchObject(packet nex.PacketInterface) {
 	var err error
-	var errorCode uint32
 
 	if protocol.ScoreRangeCascadedSearchObject == nil {
-		globals.Logger.Warning("DataStoreSuperMarioMaker::ScoreRangeCascadedSearchObject not implemented")
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "DataStoreSuperMarioMaker::ScoreRangeCascadedSearchObject not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
@@ -30,9 +32,9 @@ func (protocol *Protocol) handleScoreRangeCascadedSearchObject(packet nex.Packet
 	param := datastore_types.NewDataStoreSearchParam()
 	err = param.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.ScoreRangeCascadedSearchObject(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.ScoreRangeCascadedSearchObject(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
@@ -42,17 +44,17 @@ func (protocol *Protocol) handleScoreRangeCascadedSearchObject(packet nex.Packet
 	extraData.Type = types.NewString("")
 	err = extraData.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.ScoreRangeCascadedSearchObject(fmt.Errorf("Failed to read extraData from parameters. %s", err.Error()), packet, callID, nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.ScoreRangeCascadedSearchObject(fmt.Errorf("Failed to read extraData from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	rmcMessage, errorCode := protocol.ScoreRangeCascadedSearchObject(nil, packet, callID, param, extraData)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.ScoreRangeCascadedSearchObject(nil, packet, callID, param, extraData)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
 		return
 	}
 

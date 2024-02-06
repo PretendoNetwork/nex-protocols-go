@@ -11,11 +11,13 @@ import (
 
 func (protocol *Protocol) handleDeleteFromDeletions(packet nex.PacketInterface) {
 	var err error
-	var errorCode uint32
 
 	if protocol.DeleteFromDeletions == nil {
-		globals.Logger.Warning("MatchMakingExt::DeleteFromDeletions not implemented")
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "MatchMakingExt::DeleteFromDeletions not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
@@ -30,9 +32,9 @@ func (protocol *Protocol) handleDeleteFromDeletions(packet nex.PacketInterface) 
 	lstDeletions.Type = types.NewPrimitiveU32(0)
 	err = lstDeletions.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.DeleteFromDeletions(fmt.Errorf("Failed to read lstDeletionsCount from parameters. %s", err.Error()), packet, callID, nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.DeleteFromDeletions(fmt.Errorf("Failed to read lstDeletionsCount from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
@@ -41,17 +43,17 @@ func (protocol *Protocol) handleDeleteFromDeletions(packet nex.PacketInterface) 
 	pid := types.NewPID(0)
 	err = pid.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.DeleteFromDeletions(fmt.Errorf("Failed to read pid from parameters. %s", err.Error()), packet, callID, nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.DeleteFromDeletions(fmt.Errorf("Failed to read pid from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	rmcMessage, errorCode := protocol.DeleteFromDeletions(nil, packet, callID, lstDeletions, pid)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.DeleteFromDeletions(nil, packet, callID, lstDeletions, pid)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
 		return
 	}
 

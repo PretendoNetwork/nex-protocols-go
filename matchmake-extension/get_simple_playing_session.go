@@ -11,11 +11,13 @@ import (
 
 func (protocol *Protocol) handleGetSimplePlayingSession(packet nex.PacketInterface) {
 	var err error
-	var errorCode uint32
 
 	if protocol.GetSimplePlayingSession == nil {
-		globals.Logger.Warning("MatchmakeExtension::GetSimplePlayingSession not implemented")
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "MatchmakeExtension::GetSimplePlayingSession not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
@@ -30,9 +32,9 @@ func (protocol *Protocol) handleGetSimplePlayingSession(packet nex.PacketInterfa
 	listPID.Type = types.NewPID(0)
 	err = listPID.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.GetSimplePlayingSession(fmt.Errorf("Failed to read listPID from parameters. %s", err.Error()), packet, callID, nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.GetSimplePlayingSession(fmt.Errorf("Failed to read listPID from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
@@ -41,17 +43,17 @@ func (protocol *Protocol) handleGetSimplePlayingSession(packet nex.PacketInterfa
 	includeLoginUser := types.NewPrimitiveBool(false)
 	err = includeLoginUser.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.GetSimplePlayingSession(fmt.Errorf("Failed to read includeLoginUser from parameters. %s", err.Error()), packet, callID, nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.GetSimplePlayingSession(fmt.Errorf("Failed to read includeLoginUser from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	rmcMessage, errorCode := protocol.GetSimplePlayingSession(nil, packet, callID, listPID, includeLoginUser)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.GetSimplePlayingSession(nil, packet, callID, listPID, includeLoginUser)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
 		return
 	}
 

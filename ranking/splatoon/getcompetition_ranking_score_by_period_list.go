@@ -8,8 +8,11 @@ import (
 
 func (protocol *Protocol) handleGetcompetitionRankingScoreByPeriodList(packet nex.PacketInterface) {
 	if protocol.GetcompetitionRankingScoreByPeriodList == nil {
-		globals.Logger.Warning("RankingSplatoon::GetcompetitionRankingScoreByPeriodList not implemented")
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "RankingSplatoon::GetcompetitionRankingScoreByPeriodList not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
@@ -19,9 +22,9 @@ func (protocol *Protocol) handleGetcompetitionRankingScoreByPeriodList(packet ne
 
 	callID := request.CallID
 
-	rmcMessage, errorCode := protocol.GetcompetitionRankingScoreByPeriodList(nil, packet, callID, packet.Payload())
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.GetcompetitionRankingScoreByPeriodList(nil, packet, callID, packet.Payload())
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
 		return
 	}
 

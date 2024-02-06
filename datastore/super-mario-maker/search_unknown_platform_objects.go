@@ -8,8 +8,11 @@ import (
 
 func (protocol *Protocol) handleSearchUnknownPlatformObjects(packet nex.PacketInterface) {
 	if protocol.SearchUnknownPlatformObjects == nil {
-		globals.Logger.Warning("DataStoreSuperMarioMaker::SearchUnknownPlatformObjects not implemented")
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "DataStoreSuperMarioMaker::SearchUnknownPlatformObjects not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
@@ -19,9 +22,9 @@ func (protocol *Protocol) handleSearchUnknownPlatformObjects(packet nex.PacketIn
 
 	callID := request.CallID
 
-	rmcMessage, errorCode := protocol.SearchUnknownPlatformObjects(nil, packet, callID, packet.Payload())
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.SearchUnknownPlatformObjects(nil, packet, callID, packet.Payload())
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
 		return
 	}
 

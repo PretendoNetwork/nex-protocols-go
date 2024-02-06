@@ -11,11 +11,13 @@ import (
 
 func (protocol *Protocol) handleGetCategorySetting(packet nex.PacketInterface) {
 	var err error
-	var errorCode uint32
 
 	if protocol.GetCategorySetting == nil {
-		globals.Logger.Warning("Ranking2::GetCategorySetting not implemented")
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "Ranking2::GetCategorySetting not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
@@ -29,17 +31,17 @@ func (protocol *Protocol) handleGetCategorySetting(packet nex.PacketInterface) {
 	category := types.NewPrimitiveU32(0)
 	err = category.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.GetCategorySetting(fmt.Errorf("Failed to read category from parameters. %s", err.Error()), packet, callID, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.GetCategorySetting(fmt.Errorf("Failed to read category from parameters. %s", err.Error()), packet, callID, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	rmcMessage, errorCode := protocol.GetCategorySetting(nil, packet, callID, category)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.GetCategorySetting(nil, packet, callID, category)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
 		return
 	}
 

@@ -11,11 +11,13 @@ import (
 
 func (protocol *Protocol) handleDeleteContent(packet nex.PacketInterface) {
 	var err error
-	var errorCode uint32
 
 	if protocol.DeleteContent == nil {
-		globals.Logger.Warning("Subscriber::DeleteContent not implemented")
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "Subscriber::DeleteContent not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
@@ -30,9 +32,9 @@ func (protocol *Protocol) handleDeleteContent(packet nex.PacketInterface) {
 	unknown1.Type = types.NewString("")
 	err = unknown1.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.DeleteContent(fmt.Errorf("Failed to read unknown1 from parameters. %s", err.Error()), packet, callID, nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.DeleteContent(fmt.Errorf("Failed to read unknown1 from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
@@ -41,17 +43,17 @@ func (protocol *Protocol) handleDeleteContent(packet nex.PacketInterface) {
 	unknown2 := types.NewPrimitiveU64(0)
 	err = unknown2.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.DeleteContent(fmt.Errorf("Failed to read unknown2 from parameters. %s", err.Error()), packet, callID, nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.DeleteContent(fmt.Errorf("Failed to read unknown2 from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	rmcMessage, errorCode := protocol.DeleteContent(nil, packet, callID, unknown1, unknown2)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.DeleteContent(nil, packet, callID, unknown1, unknown2)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
 		return
 	}
 

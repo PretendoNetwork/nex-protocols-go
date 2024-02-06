@@ -8,8 +8,11 @@ import (
 
 func (protocol *Protocol) handleGetCommunityCompetitionByID(packet nex.PacketInterface) {
 	if protocol.GetCommunityCompetitionByID == nil {
-		globals.Logger.Warning("MatchmakeExtensionSuperSmashBros4::GetCommunityCompetitionByID not implemented")
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "MatchmakeExtensionSuperSmashBros4::GetCommunityCompetitionByID not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
@@ -19,9 +22,9 @@ func (protocol *Protocol) handleGetCommunityCompetitionByID(packet nex.PacketInt
 
 	callID := request.CallID
 
-	rmcMessage, errorCode := protocol.GetCommunityCompetitionByID(nil, packet, callID, packet.Payload())
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.GetCommunityCompetitionByID(nil, packet, callID, packet.Payload())
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
 		return
 	}
 

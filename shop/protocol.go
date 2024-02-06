@@ -41,7 +41,10 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 
 	switch message.MethodID {
 	default:
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
-		fmt.Printf("Shop method ID: %#v\n", message.MethodID)
+		errMessage := fmt.Sprintf("Shop method ID: %#v\n", message.MethodID)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, errMessage)
+
+		globals.RespondError(packet, ProtocolID, err)
+		globals.Logger.Warning(err.Message)
 	}
 }

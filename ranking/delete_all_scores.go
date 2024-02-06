@@ -11,11 +11,13 @@ import (
 
 func (protocol *Protocol) handleDeleteAllScores(packet nex.PacketInterface) {
 	var err error
-	var errorCode uint32
 
 	if protocol.DeleteAllScores == nil {
-		globals.Logger.Warning("Ranking::DeleteAllScores not implemented")
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "Ranking::DeleteAllScores not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
@@ -29,17 +31,17 @@ func (protocol *Protocol) handleDeleteAllScores(packet nex.PacketInterface) {
 	uniqueID := types.NewPrimitiveU64(0)
 	err = uniqueID.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.DeleteAllScores(fmt.Errorf("Failed to read uniqueID from parameters. %s", err.Error()), packet, callID, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.DeleteAllScores(fmt.Errorf("Failed to read uniqueID from parameters. %s", err.Error()), packet, callID, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	rmcMessage, errorCode := protocol.DeleteAllScores(nil, packet, callID, uniqueID)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.DeleteAllScores(nil, packet, callID, uniqueID)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
 		return
 	}
 

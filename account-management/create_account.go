@@ -11,11 +11,13 @@ import (
 
 func (protocol *Protocol) handleCreateAccount(packet nex.PacketInterface) {
 	var err error
-	var errorCode uint32
 
 	if protocol.CreateAccount == nil {
-		globals.Logger.Warning("AccountManagement::CreateAccount not implemented")
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "AccountManagement::CreateAccount not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
@@ -29,9 +31,9 @@ func (protocol *Protocol) handleCreateAccount(packet nex.PacketInterface) {
 	strPrincipalName := types.NewString("")
 	err = strPrincipalName.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.CreateAccount(fmt.Errorf("Failed to read strPrincipalName from parameters. %s", err.Error()), packet, callID, nil, nil, nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.CreateAccount(fmt.Errorf("Failed to read strPrincipalName from parameters. %s", err.Error()), packet, callID, nil, nil, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
@@ -40,9 +42,9 @@ func (protocol *Protocol) handleCreateAccount(packet nex.PacketInterface) {
 	strKey := types.NewString("")
 	err = strKey.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.CreateAccount(fmt.Errorf("Failed to read strKey from parameters. %s", err.Error()), packet, callID, nil, nil, nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.CreateAccount(fmt.Errorf("Failed to read strKey from parameters. %s", err.Error()), packet, callID, nil, nil, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
@@ -51,9 +53,9 @@ func (protocol *Protocol) handleCreateAccount(packet nex.PacketInterface) {
 	uiGroups := types.NewPrimitiveU32(0)
 	err = uiGroups.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.CreateAccount(fmt.Errorf("Failed to read uiGroups from parameters. %s", err.Error()), packet, callID, nil, nil, nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.CreateAccount(fmt.Errorf("Failed to read uiGroups from parameters. %s", err.Error()), packet, callID, nil, nil, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
@@ -62,17 +64,17 @@ func (protocol *Protocol) handleCreateAccount(packet nex.PacketInterface) {
 	strEmail := types.NewString("")
 	err = strEmail.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.CreateAccount(fmt.Errorf("Failed to read strEmail from parameters. %s", err.Error()), packet, callID, nil, nil, nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.CreateAccount(fmt.Errorf("Failed to read strEmail from parameters. %s", err.Error()), packet, callID, nil, nil, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	rmcMessage, errorCode := protocol.CreateAccount(nil, packet, callID, strPrincipalName, strKey, uiGroups, strEmail)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.CreateAccount(nil, packet, callID, strPrincipalName, strKey, uiGroups, strEmail)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
 		return
 	}
 

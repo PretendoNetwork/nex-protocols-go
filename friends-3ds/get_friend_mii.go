@@ -12,11 +12,13 @@ import (
 
 func (protocol *Protocol) handleGetFriendMii(packet nex.PacketInterface) {
 	var err error
-	var errorCode uint32
 
 	if protocol.GetFriendMii == nil {
-		globals.Logger.Warning("Friends3DS::GetFriendMii not implemented")
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "Friends3DS::GetFriendMii not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
@@ -31,17 +33,17 @@ func (protocol *Protocol) handleGetFriendMii(packet nex.PacketInterface) {
 	friends.Type = friends_3ds_types.NewFriendInfo()
 	err = friends.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.GetFriendMii(fmt.Errorf("Failed to read friends from parameters. %s", err.Error()), packet, callID, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.GetFriendMii(fmt.Errorf("Failed to read friends from parameters. %s", err.Error()), packet, callID, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	rmcMessage, errorCode := protocol.GetFriendMii(nil, packet, callID, friends)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.GetFriendMii(nil, packet, callID, friends)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
 		return
 	}
 

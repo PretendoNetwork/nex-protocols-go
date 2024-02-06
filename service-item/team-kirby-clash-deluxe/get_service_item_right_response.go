@@ -11,11 +11,13 @@ import (
 
 func (protocol *Protocol) handleGetServiceItemRightResponse(packet nex.PacketInterface) {
 	var err error
-	var errorCode uint32
 
 	if protocol.GetServiceItemRightResponse == nil {
-		globals.Logger.Warning("ServiceItemTeamKirbyClashDeluxe::GetServiceItemRightResponse not implemented")
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "ServiceItemTeamKirbyClashDeluxe::GetServiceItemRightResponse not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
@@ -29,17 +31,17 @@ func (protocol *Protocol) handleGetServiceItemRightResponse(packet nex.PacketInt
 	requestID := types.NewPrimitiveU32(0)
 	err = requestID.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.GetServiceItemRightResponse(fmt.Errorf("Failed to read requestID from parameters. %s", err.Error()), packet, callID, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.GetServiceItemRightResponse(fmt.Errorf("Failed to read requestID from parameters. %s", err.Error()), packet, callID, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	rmcMessage, errorCode := protocol.GetServiceItemRightResponse(nil, packet, callID, requestID)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.GetServiceItemRightResponse(nil, packet, callID, requestID)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
 		return
 	}
 

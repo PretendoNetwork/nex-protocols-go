@@ -30,7 +30,7 @@ type dataStoreProtocol = datastore.Protocol
 type Protocol struct {
 	server nex.ServerInterface
 	dataStoreProtocol
-	GetMetaByOwnerID func(err error, packet nex.PacketInterface, callID uint32, param *datastore_nintendo_badge_arcade_types.DataStoreGetMetaByOwnerIDParam) (*nex.RMCMessage, uint32)
+	GetMetaByOwnerID func(err error, packet nex.PacketInterface, callID uint32, param *datastore_nintendo_badge_arcade_types.DataStoreGetMetaByOwnerIDParam) (*nex.RMCMessage, *nex.Error)
 }
 
 // HandlePacket sends the packet to the correct RMC method handler
@@ -50,8 +50,11 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 	case MethodGetMetaByOwnerID:
 		protocol.handleGetMetaByOwnerID(packet)
 	default:
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
-		fmt.Printf("Unsupported DataStoreBadgeArcade method ID: %#v\n", message.MethodID)
+		errMessage := fmt.Sprintf("Unsupported DataStoreBadgeArcade method ID: %#v\n", message.MethodID)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, errMessage)
+
+		globals.RespondError(packet, ProtocolID, err)
+		globals.Logger.Warning(err.Message)
 	}
 }
 

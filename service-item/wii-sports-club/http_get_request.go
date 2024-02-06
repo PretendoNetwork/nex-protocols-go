@@ -11,11 +11,13 @@ import (
 
 func (protocol *Protocol) handleHTTPGetRequest(packet nex.PacketInterface) {
 	var err error
-	var errorCode uint32
 
 	if protocol.HTTPGetRequest == nil {
-		globals.Logger.Warning("ServiceItemWiiSportsClub::HTTPGetRequest not implemented")
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "ServiceItemWiiSportsClub::HTTPGetRequest not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
@@ -29,17 +31,17 @@ func (protocol *Protocol) handleHTTPGetRequest(packet nex.PacketInterface) {
 	url := service_item_wii_sports_club_types.NewServiceItemHTTPGetParam()
 	err = url.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.HTTPGetRequest(fmt.Errorf("Failed to read url from parameters. %s", err.Error()), packet, callID, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.HTTPGetRequest(fmt.Errorf("Failed to read url from parameters. %s", err.Error()), packet, callID, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	rmcMessage, errorCode := protocol.HTTPGetRequest(nil, packet, callID, url)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.HTTPGetRequest(nil, packet, callID, url)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
 		return
 	}
 

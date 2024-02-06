@@ -11,11 +11,13 @@ import (
 
 func (protocol *Protocol) handleGetSupportID(packet nex.PacketInterface) {
 	var err error
-	var errorCode uint32
 
 	if protocol.GetSupportID == nil {
-		globals.Logger.Warning("ServiceItemTeamKirbyClashDeluxe::GetSupportID not implemented")
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "ServiceItemTeamKirbyClashDeluxe::GetSupportID not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
@@ -29,17 +31,17 @@ func (protocol *Protocol) handleGetSupportID(packet nex.PacketInterface) {
 	getSuppordIDParam := service_item_team_kirby_clash_deluxe_types.NewServiceItemGetSupportIDParam()
 	err = getSuppordIDParam.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.GetSupportID(fmt.Errorf("Failed to read getSuppordIDParam from parameters. %s", err.Error()), packet, callID, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.GetSupportID(fmt.Errorf("Failed to read getSuppordIDParam from parameters. %s", err.Error()), packet, callID, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	rmcMessage, errorCode := protocol.GetSupportID(nil, packet, callID, getSuppordIDParam)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.GetSupportID(nil, packet, callID, getSuppordIDParam)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
 		return
 	}
 

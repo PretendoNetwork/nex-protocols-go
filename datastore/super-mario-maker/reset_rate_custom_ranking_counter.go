@@ -11,11 +11,13 @@ import (
 
 func (protocol *Protocol) handleResetRateCustomRankingCounter(packet nex.PacketInterface) {
 	var err error
-	var errorCode uint32
 
 	if protocol.ResetRateCustomRankingCounter == nil {
-		globals.Logger.Warning("DataStoreSuperMarioMaker::ResetRateCustomRankingCounter not implemented")
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "DataStoreSuperMarioMaker::ResetRateCustomRankingCounter not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
@@ -29,17 +31,17 @@ func (protocol *Protocol) handleResetRateCustomRankingCounter(packet nex.PacketI
 	applicationID := types.NewPrimitiveU32(0)
 	err = applicationID.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.ResetRateCustomRankingCounter(fmt.Errorf("Failed to read applicationID from parameters. %s", err.Error()), packet, callID, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.ResetRateCustomRankingCounter(fmt.Errorf("Failed to read applicationID from parameters. %s", err.Error()), packet, callID, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	rmcMessage, errorCode := protocol.ResetRateCustomRankingCounter(nil, packet, callID, applicationID)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.ResetRateCustomRankingCounter(nil, packet, callID, applicationID)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
 		return
 	}
 

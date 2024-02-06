@@ -12,11 +12,13 @@ import (
 
 func (protocol *Protocol) handleGetMetasMultipleParam(packet nex.PacketInterface) {
 	var err error
-	var errorCode uint32
 
 	if protocol.GetMetasMultipleParam == nil {
-		globals.Logger.Warning("DataStore::GetMetasMultipleParam not implemented")
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "DataStore::GetMetasMultipleParam not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
@@ -31,17 +33,17 @@ func (protocol *Protocol) handleGetMetasMultipleParam(packet nex.PacketInterface
 	params.Type = datastore_types.NewDataStoreGetMetaParam()
 	err = params.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.GetMetasMultipleParam(fmt.Errorf("Failed to read params from parameters. %s", err.Error()), packet, callID, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.GetMetasMultipleParam(fmt.Errorf("Failed to read params from parameters. %s", err.Error()), packet, callID, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	rmcMessage, errorCode := protocol.GetMetasMultipleParam(nil, packet, callID, params)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.GetMetasMultipleParam(nil, packet, callID, params)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
 		return
 	}
 

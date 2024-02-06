@@ -11,11 +11,13 @@ import (
 
 func (protocol *Protocol) handleAddBlackList(packet nex.PacketInterface) {
 	var err error
-	var errorCode uint32
 
 	if protocol.AddBlackList == nil {
-		globals.Logger.Warning("FriendsWiiU::AddBlackList not implemented")
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "FriendsWiiU::AddBlackList not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
@@ -29,17 +31,17 @@ func (protocol *Protocol) handleAddBlackList(packet nex.PacketInterface) {
 	blacklistedPrincipal := friends_wiiu_types.NewBlacklistedPrincipal()
 	err = blacklistedPrincipal.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.AddBlackList(fmt.Errorf("Failed to read blacklistedPrincipal from parameters. %s", err.Error()), packet, callID, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.AddBlackList(fmt.Errorf("Failed to read blacklistedPrincipal from parameters. %s", err.Error()), packet, callID, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	rmcMessage, errorCode := protocol.AddBlackList(nil, packet, callID, blacklistedPrincipal)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.AddBlackList(nil, packet, callID, blacklistedPrincipal)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
 		return
 	}
 

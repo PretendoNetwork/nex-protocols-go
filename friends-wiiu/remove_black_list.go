@@ -11,11 +11,13 @@ import (
 
 func (protocol *Protocol) handleRemoveBlackList(packet nex.PacketInterface) {
 	var err error
-	var errorCode uint32
 
 	if protocol.RemoveBlackList == nil {
-		globals.Logger.Warning("FriendsWiiU::RemoveBlackList not implemented")
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "FriendsWiiU::RemoveBlackList not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
@@ -29,17 +31,17 @@ func (protocol *Protocol) handleRemoveBlackList(packet nex.PacketInterface) {
 	pid := types.NewPID(0)
 	err = pid.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.RemoveBlackList(fmt.Errorf("Failed to read pid from parameters. %s", err.Error()), packet, callID, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.RemoveBlackList(fmt.Errorf("Failed to read pid from parameters. %s", err.Error()), packet, callID, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	rmcMessage, errorCode := protocol.RemoveBlackList(nil, packet, callID, pid)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.RemoveBlackList(nil, packet, callID, pid)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
 		return
 	}
 

@@ -8,8 +8,11 @@ import (
 
 func (protocol *Protocol) handleDisconnectAllPrincipals(packet nex.PacketInterface) {
 	if protocol.DisconnectAllPrincipals == nil {
-		globals.Logger.Warning("AccountManagement::DisconnectAllPrincipals not implemented")
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "AccountManagement::DisconnectAllPrincipals not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
@@ -17,9 +20,9 @@ func (protocol *Protocol) handleDisconnectAllPrincipals(packet nex.PacketInterfa
 
 	callID := request.CallID
 
-	rmcMessage, errorCode := protocol.DisconnectAllPrincipals(nil, packet, callID)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.DisconnectAllPrincipals(nil, packet, callID)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
 		return
 	}
 

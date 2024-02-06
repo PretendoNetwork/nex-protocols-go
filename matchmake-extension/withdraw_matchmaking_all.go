@@ -8,8 +8,11 @@ import (
 
 func (protocol *Protocol) handleWithdrawMatchmakingAll(packet nex.PacketInterface) {
 	if protocol.WithdrawMatchmakingAll == nil {
-		globals.Logger.Warning("MatchmakeExtension::WithdrawMatchmakingAll not implemented")
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "MatchmakeExtension::WithdrawMatchmakingAll not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
@@ -17,9 +20,9 @@ func (protocol *Protocol) handleWithdrawMatchmakingAll(packet nex.PacketInterfac
 
 	callID := request.CallID
 
-	rmcMessage, errorCode := protocol.WithdrawMatchmakingAll(nil, packet, callID)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.WithdrawMatchmakingAll(nil, packet, callID)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
 		return
 	}
 

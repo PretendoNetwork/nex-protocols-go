@@ -12,11 +12,13 @@ import (
 
 func (protocol *Protocol) handleGetServiceItemRightRequest(packet nex.PacketInterface) {
 	var err error
-	var errorCode uint32
 
 	if protocol.GetServiceItemRightRequest == nil {
-		globals.Logger.Warning("ServiceItemTeamKirbyClashDeluxe::GetServiceItemRightRequest not implemented")
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "ServiceItemTeamKirbyClashDeluxe::GetServiceItemRightRequest not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
@@ -30,9 +32,9 @@ func (protocol *Protocol) handleGetServiceItemRightRequest(packet nex.PacketInte
 	getServiceItemRightParam := service_item_team_kirby_clash_deluxe_types.NewServiceItemGetServiceItemRightParam()
 	err = getServiceItemRightParam.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.GetServiceItemRightRequest(fmt.Errorf("Failed to read getServiceItemRightParam from parameters. %s", err.Error()), packet, callID, nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.GetServiceItemRightRequest(fmt.Errorf("Failed to read getServiceItemRightParam from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
@@ -41,17 +43,17 @@ func (protocol *Protocol) handleGetServiceItemRightRequest(packet nex.PacketInte
 	withoutRightBinary := types.NewPrimitiveBool(false)
 	err = withoutRightBinary.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.GetServiceItemRightRequest(fmt.Errorf("Failed to read withoutRightBinary from parameters. %s", err.Error()), packet, callID, nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.GetServiceItemRightRequest(fmt.Errorf("Failed to read withoutRightBinary from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	rmcMessage, errorCode := protocol.GetServiceItemRightRequest(nil, packet, callID, getServiceItemRightParam, withoutRightBinary)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.GetServiceItemRightRequest(nil, packet, callID, getServiceItemRightParam, withoutRightBinary)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
 		return
 	}
 

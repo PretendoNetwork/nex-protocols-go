@@ -11,11 +11,13 @@ import (
 
 func (protocol *Protocol) handleEndRound(packet nex.PacketInterface) {
 	var err error
-	var errorCode uint32
 
 	if protocol.EndRound == nil {
-		globals.Logger.Warning("MatchmakeReferee::EndRound not implemented")
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "MatchmakeReferee::EndRound not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
@@ -29,17 +31,17 @@ func (protocol *Protocol) handleEndRound(packet nex.PacketInterface) {
 	endRoundParam := matchmake_referee_types.NewMatchmakeRefereeEndRoundParam()
 	err = endRoundParam.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.EndRound(fmt.Errorf("Failed to read endRoundParam from parameters. %s", err.Error()), packet, callID, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.EndRound(fmt.Errorf("Failed to read endRoundParam from parameters. %s", err.Error()), packet, callID, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	rmcMessage, errorCode := protocol.EndRound(nil, packet, callID, endRoundParam)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.EndRound(nil, packet, callID, endRoundParam)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
 		return
 	}
 

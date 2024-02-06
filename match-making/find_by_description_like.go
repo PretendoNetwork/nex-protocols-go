@@ -11,11 +11,13 @@ import (
 
 func (protocol *Protocol) handleFindByDescriptionLike(packet nex.PacketInterface) {
 	var err error
-	var errorCode uint32
 
 	if protocol.FindByDescriptionLike == nil {
-		globals.Logger.Warning("MatchMaking::FindByDescriptionLike not implemented")
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "MatchMaking::FindByDescriptionLike not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
@@ -29,9 +31,9 @@ func (protocol *Protocol) handleFindByDescriptionLike(packet nex.PacketInterface
 	strDescriptionLike := types.NewString("")
 	err = strDescriptionLike.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.FindByDescriptionLike(fmt.Errorf("Failed to read strDescriptionLike from parameters. %s", err.Error()), packet, callID, nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.FindByDescriptionLike(fmt.Errorf("Failed to read strDescriptionLike from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
@@ -40,17 +42,17 @@ func (protocol *Protocol) handleFindByDescriptionLike(packet nex.PacketInterface
 	resultRange := types.NewResultRange()
 	err = resultRange.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.FindByDescriptionLike(fmt.Errorf("Failed to read resultRange from parameters. %s", err.Error()), packet, callID, nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.FindByDescriptionLike(fmt.Errorf("Failed to read resultRange from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	rmcMessage, errorCode := protocol.FindByDescriptionLike(nil, packet, callID, strDescriptionLike, resultRange)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.FindByDescriptionLike(nil, packet, callID, strDescriptionLike, resultRange)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
 		return
 	}
 

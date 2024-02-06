@@ -8,8 +8,11 @@ import (
 
 func (protocol *Protocol) handleGetWorldPlayReport(packet nex.PacketInterface) {
 	if protocol.GetWorldPlayReport == nil {
-		globals.Logger.Warning("DataStoreSuperSmashBros4::GetWorldPlayReport not implemented")
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "DataStoreSuperSmashBros4::GetWorldPlayReport not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
@@ -17,9 +20,9 @@ func (protocol *Protocol) handleGetWorldPlayReport(packet nex.PacketInterface) {
 
 	callID := request.CallID
 
-	rmcMessage, errorCode := protocol.GetWorldPlayReport(nil, packet, callID)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.GetWorldPlayReport(nil, packet, callID)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
 		return
 	}
 

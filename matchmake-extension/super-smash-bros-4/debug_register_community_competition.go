@@ -8,8 +8,11 @@ import (
 
 func (protocol *Protocol) handleDebugRegisterCommunityCompetition(packet nex.PacketInterface) {
 	if protocol.DebugRegisterCommunityCompetition == nil {
-		globals.Logger.Warning("MatchmakeExtensionSuperSmashBros4::DebugRegisterCommunityCompetition not implemented")
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "MatchmakeExtensionSuperSmashBros4::DebugRegisterCommunityCompetition not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
@@ -19,9 +22,9 @@ func (protocol *Protocol) handleDebugRegisterCommunityCompetition(packet nex.Pac
 
 	callID := request.CallID
 
-	rmcMessage, errorCode := protocol.DebugRegisterCommunityCompetition(nil, packet, callID, packet.Payload())
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.DebugRegisterCommunityCompetition(nil, packet, callID, packet.Payload())
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
 		return
 	}
 

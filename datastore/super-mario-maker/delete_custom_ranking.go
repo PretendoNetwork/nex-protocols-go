@@ -11,11 +11,13 @@ import (
 
 func (protocol *Protocol) handleDeleteCustomRanking(packet nex.PacketInterface) {
 	var err error
-	var errorCode uint32
 
 	if protocol.DeleteCustomRanking == nil {
-		globals.Logger.Warning("DataStoreSuperMarioMaker::DeleteCustomRanking not implemented")
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "DataStoreSuperMarioMaker::DeleteCustomRanking not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
@@ -30,17 +32,17 @@ func (protocol *Protocol) handleDeleteCustomRanking(packet nex.PacketInterface) 
 	dataIDList.Type = types.NewPrimitiveU64(0)
 	err = dataIDList.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.DeleteCustomRanking(fmt.Errorf("Failed to read dataIDList from parameters. %s", err.Error()), packet, callID, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.DeleteCustomRanking(fmt.Errorf("Failed to read dataIDList from parameters. %s", err.Error()), packet, callID, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	rmcMessage, errorCode := protocol.DeleteCustomRanking(nil, packet, callID, dataIDList)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.DeleteCustomRanking(nil, packet, callID, dataIDList)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
 		return
 	}
 

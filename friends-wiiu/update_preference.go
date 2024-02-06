@@ -11,11 +11,13 @@ import (
 
 func (protocol *Protocol) handleUpdatePreference(packet nex.PacketInterface) {
 	var err error
-	var errorCode uint32
 
 	if protocol.UpdatePreference == nil {
-		globals.Logger.Warning("FriendsWiiU::UpdatePreference not implemented")
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "FriendsWiiU::UpdatePreference not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
@@ -29,17 +31,17 @@ func (protocol *Protocol) handleUpdatePreference(packet nex.PacketInterface) {
 	principalPreference := friends_wiiu_types.NewPrincipalPreference()
 	err = principalPreference.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.UpdatePreference(fmt.Errorf("Failed to read principalPreference from parameters. %s", err.Error()), packet, callID, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.UpdatePreference(fmt.Errorf("Failed to read principalPreference from parameters. %s", err.Error()), packet, callID, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	rmcMessage, errorCode := protocol.UpdatePreference(nil, packet, callID, principalPreference)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.UpdatePreference(nil, packet, callID, principalPreference)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
 		return
 	}
 

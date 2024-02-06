@@ -11,11 +11,13 @@ import (
 
 func (protocol *Protocol) handleCompletePostObjects(packet nex.PacketInterface) {
 	var err error
-	var errorCode uint32
 
 	if protocol.CompletePostObjects == nil {
-		globals.Logger.Warning("DataStore::CompletePostObjects not implemented")
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "DataStore::CompletePostObjects not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
@@ -30,17 +32,17 @@ func (protocol *Protocol) handleCompletePostObjects(packet nex.PacketInterface) 
 	dataIDs.Type = types.NewPrimitiveU64(0)
 	err = dataIDs.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.CompletePostObjects(fmt.Errorf("Failed to read dataIDs from parameters. %s", err.Error()), packet, callID, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.CompletePostObjects(fmt.Errorf("Failed to read dataIDs from parameters. %s", err.Error()), packet, callID, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	rmcMessage, errorCode := protocol.CompletePostObjects(nil, packet, callID, dataIDs)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.CompletePostObjects(nil, packet, callID, dataIDs)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
 		return
 	}
 

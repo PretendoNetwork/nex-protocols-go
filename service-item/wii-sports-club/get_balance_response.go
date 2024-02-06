@@ -11,11 +11,13 @@ import (
 
 func (protocol *Protocol) handleGetBalanceResponse(packet nex.PacketInterface) {
 	var err error
-	var errorCode uint32
 
 	if protocol.GetBalanceResponse == nil {
-		globals.Logger.Warning("ServiceItemWiiSportsClub::GetBalanceResponse not implemented")
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "ServiceItemWiiSportsClub::GetBalanceResponse not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
@@ -29,17 +31,17 @@ func (protocol *Protocol) handleGetBalanceResponse(packet nex.PacketInterface) {
 	requestID := types.NewPrimitiveU32(0)
 	err = requestID.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.GetBalanceResponse(fmt.Errorf("Failed to read requestID from parameters. %s", err.Error()), packet, callID, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.GetBalanceResponse(fmt.Errorf("Failed to read requestID from parameters. %s", err.Error()), packet, callID, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	rmcMessage, errorCode := protocol.GetBalanceResponse(nil, packet, callID, requestID)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.GetBalanceResponse(nil, packet, callID, requestID)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
 		return
 	}
 

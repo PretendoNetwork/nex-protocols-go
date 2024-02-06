@@ -11,11 +11,13 @@ import (
 
 func (protocol *Protocol) handleRequestMigration(packet nex.PacketInterface) {
 	var err error
-	var errorCode uint32
 
 	if protocol.RequestMigration == nil {
-		globals.Logger.Warning("DataStorePokemonBank::RequestMigration not implemented")
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "DataStorePokemonBank::RequestMigration not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
@@ -29,9 +31,9 @@ func (protocol *Protocol) handleRequestMigration(packet nex.PacketInterface) {
 	oneTimePassword := types.NewString("")
 	err = oneTimePassword.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.RequestMigration(fmt.Errorf("Failed to read oneTimePassword from parameters. %s", err.Error()), packet, callID, nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.RequestMigration(fmt.Errorf("Failed to read oneTimePassword from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
@@ -41,17 +43,17 @@ func (protocol *Protocol) handleRequestMigration(packet nex.PacketInterface) {
 	boxes.Type = types.NewPrimitiveU32(0)
 	err = boxes.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.RequestMigration(fmt.Errorf("Failed to read boxes from parameters. %s", err.Error()), packet, callID, nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.RequestMigration(fmt.Errorf("Failed to read boxes from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	rmcMessage, errorCode := protocol.RequestMigration(nil, packet, callID, oneTimePassword, boxes)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.RequestMigration(nil, packet, callID, oneTimePassword, boxes)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
 		return
 	}
 

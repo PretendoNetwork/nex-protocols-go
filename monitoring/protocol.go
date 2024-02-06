@@ -22,16 +22,16 @@ const (
 // Protocol handles the Monitoring protocol
 type Protocol struct {
 	server            nex.ServerInterface
-	PingDaemon        func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, uint32)
-	GetClusterMembers func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, uint32)
+	PingDaemon        func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, *nex.Error)
+	GetClusterMembers func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, *nex.Error)
 }
 
 // Interface implements the methods present on the Monitoring protocol struct
 type Interface interface {
 	Server() nex.ServerInterface
 	SetServer(server nex.ServerInterface)
-	SetHandlerPingDaemon(handler func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, uint32))
-	SetHandlerGetClusterMembers(handler func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, uint32))
+	SetHandlerPingDaemon(handler func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, *nex.Error))
+	SetHandlerGetClusterMembers(handler func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, *nex.Error))
 }
 
 // Server returns the server implementing the protocol
@@ -45,12 +45,12 @@ func (protocol *Protocol) SetServer(server nex.ServerInterface) {
 }
 
 // SetHandlerPingDaemon sets the handler for the PingDaemon method
-func (protocol *Protocol) SetHandlerPingDaemon(handler func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, uint32)) {
+func (protocol *Protocol) SetHandlerPingDaemon(handler func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, *nex.Error)) {
 	protocol.PingDaemon = handler
 }
 
 // SetHandlerGetClusterMembers sets the handler for the GetClusterMembers method
-func (protocol *Protocol) SetHandlerGetClusterMembers(handler func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, uint32)) {
+func (protocol *Protocol) SetHandlerGetClusterMembers(handler func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, *nex.Error)) {
 	protocol.GetClusterMembers = handler
 }
 
@@ -68,8 +68,11 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 	case MethodGetClusterMembers:
 		protocol.handleGetClusterMembers(packet)
 	default:
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
-		fmt.Printf("Unsupported Monitoring method ID: %#v\n", message.MethodID)
+		errMessage := fmt.Sprintf("Unsupported Monitoring method ID: %#v\n", message.MethodID)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, errMessage)
+
+		globals.RespondError(packet, ProtocolID, err)
+		globals.Logger.Warning(err.Message)
 	}
 }
 

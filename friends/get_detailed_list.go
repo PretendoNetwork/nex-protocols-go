@@ -11,11 +11,13 @@ import (
 
 func (protocol *Protocol) handleGetDetailedList(packet nex.PacketInterface) {
 	var err error
-	var errorCode uint32
 
 	if protocol.GetDetailedList == nil {
-		globals.Logger.Warning("Friends::GetDetailedList not implemented")
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "Friends::GetDetailedList not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
@@ -29,9 +31,9 @@ func (protocol *Protocol) handleGetDetailedList(packet nex.PacketInterface) {
 	byRelationship := types.NewPrimitiveU8(0)
 	err = byRelationship.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.GetDetailedList(fmt.Errorf("Failed to read byRelationship from parameters. %s", err.Error()), packet, callID, nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.GetDetailedList(fmt.Errorf("Failed to read byRelationship from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
@@ -40,17 +42,17 @@ func (protocol *Protocol) handleGetDetailedList(packet nex.PacketInterface) {
 	bReversed := types.NewPrimitiveBool(false)
 	err = bReversed.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.GetDetailedList(fmt.Errorf("Failed to read bReversed from parameters. %s", err.Error()), packet, callID, nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.GetDetailedList(fmt.Errorf("Failed to read bReversed from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	rmcMessage, errorCode := protocol.GetDetailedList(nil, packet, callID, byRelationship, bReversed)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.GetDetailedList(nil, packet, callID, byRelationship, bReversed)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
 		return
 	}
 

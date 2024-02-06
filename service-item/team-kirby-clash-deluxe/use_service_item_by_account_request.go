@@ -11,11 +11,13 @@ import (
 
 func (protocol *Protocol) handleUseServiceItemByAccountRequest(packet nex.PacketInterface) {
 	var err error
-	var errorCode uint32
 
 	if protocol.UseServiceItemByAccountRequest == nil {
-		globals.Logger.Warning("ServiceItemTeamKirbyClashDeluxe::UseServiceItemByAccountRequest not implemented")
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "ServiceItemTeamKirbyClashDeluxe::UseServiceItemByAccountRequest not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
@@ -29,17 +31,17 @@ func (protocol *Protocol) handleUseServiceItemByAccountRequest(packet nex.Packet
 	useServiceItemByAccountParam := service_item_team_kirby_clash_deluxe_types.NewServiceItemUseServiceItemByAccountParam()
 	err = useServiceItemByAccountParam.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.UseServiceItemByAccountRequest(fmt.Errorf("Failed to read useServiceItemByAccountParam from parameters. %s", err.Error()), packet, callID, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.UseServiceItemByAccountRequest(fmt.Errorf("Failed to read useServiceItemByAccountParam from parameters. %s", err.Error()), packet, callID, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	rmcMessage, errorCode := protocol.UseServiceItemByAccountRequest(nil, packet, callID, useServiceItemByAccountParam)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.UseServiceItemByAccountRequest(nil, packet, callID, useServiceItemByAccountParam)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
 		return
 	}
 

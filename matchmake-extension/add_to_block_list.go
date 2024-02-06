@@ -11,11 +11,13 @@ import (
 
 func (protocol *Protocol) handleAddToBlockList(packet nex.PacketInterface) {
 	var err error
-	var errorCode uint32
 
 	if protocol.AddToBlockList == nil {
-		globals.Logger.Warning("MatchmakeExtension::AddToBlockList not implemented")
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "MatchmakeExtension::AddToBlockList not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
@@ -30,17 +32,17 @@ func (protocol *Protocol) handleAddToBlockList(packet nex.PacketInterface) {
 	lstPrincipalID.Type = types.NewPID(0)
 	err = lstPrincipalID.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.AddToBlockList(fmt.Errorf("Failed to read lstPrincipalID from parameters. %s", err.Error()), packet, callID, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.AddToBlockList(fmt.Errorf("Failed to read lstPrincipalID from parameters. %s", err.Error()), packet, callID, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	rmcMessage, errorCode := protocol.AddToBlockList(nil, packet, callID, lstPrincipalID)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.AddToBlockList(nil, packet, callID, lstPrincipalID)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
 		return
 	}
 

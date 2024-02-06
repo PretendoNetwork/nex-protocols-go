@@ -11,11 +11,13 @@ import (
 
 func (protocol *Protocol) handleGetFriendNotificationData(packet nex.PacketInterface) {
 	var err error
-	var errorCode uint32
 
 	if protocol.GetFriendNotificationData == nil {
-		globals.Logger.Warning("MatchmakeExtension::GetFriendNotificationData not implemented")
-		globals.RespondError(packet, ProtocolID, nex.ResultCodes.Core.NotImplemented)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "MatchmakeExtension::GetFriendNotificationData not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
@@ -29,17 +31,17 @@ func (protocol *Protocol) handleGetFriendNotificationData(packet nex.PacketInter
 	uiType := types.NewPrimitiveS32(0)
 	err = uiType.ExtractFrom(parametersStream)
 	if err != nil {
-		_, errorCode = protocol.GetFriendNotificationData(fmt.Errorf("Failed to read uiType from parameters. %s", err.Error()), packet, callID, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.GetFriendNotificationData(fmt.Errorf("Failed to read uiType from parameters. %s", err.Error()), packet, callID, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	rmcMessage, errorCode := protocol.GetFriendNotificationData(nil, packet, callID, uiType)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.GetFriendNotificationData(nil, packet, callID, uiType)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
 		return
 	}
 

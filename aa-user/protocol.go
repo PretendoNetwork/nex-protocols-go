@@ -29,7 +29,7 @@ const (
 
 // Protocol stores all the RMC method handlers for the AAUser protocol and listens for requests
 type Protocol struct {
-	server                nex.ServerInterface
+	endpoint              nex.EndpointInterface
 	RegisterApplication   func(err error, packet nex.PacketInterface, callID uint32, titleID *types.PrimitiveU64) (*nex.RMCMessage, *nex.Error)
 	UnregisterApplication func(err error, packet nex.PacketInterface, callID uint32, titleID *types.PrimitiveU64) (*nex.RMCMessage, *nex.Error)
 	SetApplicationInfo    func(err error, packet nex.PacketInterface, callID uint32, applicationInfo *types.List[*aauser_types.ApplicationInfo]) (*nex.RMCMessage, *nex.Error)
@@ -38,22 +38,22 @@ type Protocol struct {
 
 // Interface implements the methods present on the AAUser Protocol struct
 type Interface interface {
-	Server() nex.ServerInterface
-	SetServer(server nex.ServerInterface)
+	Endpoint() nex.EndpointInterface
+	SetEndpoint(endpoint nex.EndpointInterface)
 	SetHandlerRegisterApplication(handler func(err error, packet nex.PacketInterface, callID uint32, titleID *types.PrimitiveU64) (*nex.RMCMessage, *nex.Error))
 	SetHandlerUnregisterApplication(handler func(err error, packet nex.PacketInterface, callID uint32, titleID *types.PrimitiveU64) (*nex.RMCMessage, *nex.Error))
 	SetHandlerSetApplicationInfo(handler func(err error, packet nex.PacketInterface, callID uint32, applicationInfo *types.List[*aauser_types.ApplicationInfo]) (*nex.RMCMessage, *nex.Error))
 	SetHandlerGetApplicationInfo(handler func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, *nex.Error))
 }
 
-// Server returns the server implementing the protocol
-func (protocol *Protocol) Server() nex.ServerInterface {
-	return protocol.server
+// Endpoint returns the endpoint implementing the protocol
+func (protocol *Protocol) Endpoint() nex.EndpointInterface {
+	return protocol.endpoint
 }
 
-// SetServer sets the server implementing the protocol
-func (protocol *Protocol) SetServer(server nex.ServerInterface) {
-	protocol.server = server
+// SetEndpoint sets the endpoint implementing the protocol
+func (protocol *Protocol) SetEndpoint(endpoint nex.EndpointInterface) {
+	protocol.endpoint = endpoint
 }
 
 // SetHandlerRegisterApplication sets the handler for the RegisterApplication method
@@ -105,6 +105,6 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 }
 
 // NewProtocol returns a new AAUser protocol
-func NewProtocol(server nex.ServerInterface) *Protocol {
-	return &Protocol{server: server}
+func NewProtocol(endpoint nex.EndpointInterface) *Protocol {
+	return &Protocol{endpoint: endpoint}
 }

@@ -22,7 +22,7 @@ type DataStoreReqUpdateInfo struct {
 // WriteTo writes the DataStoreReqUpdateInfo to the given writable
 func (dsrui *DataStoreReqUpdateInfo) WriteTo(writable types.Writable) {
 	stream := writable.(*nex.ByteStreamOut)
-	libraryVersion := stream.Server.DataStoreProtocolVersion()
+	libraryVersion := stream.LibraryVersions.DataStore
 
 	contentWritable := writable.CopyNew()
 
@@ -47,7 +47,7 @@ func (dsrui *DataStoreReqUpdateInfo) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the DataStoreReqUpdateInfo from the given readable
 func (dsrui *DataStoreReqUpdateInfo) ExtractFrom(readable types.Readable) error {
 	stream := readable.(*nex.ByteStreamIn)
-	libraryVersion := stream.Server.DataStoreProtocolVersion()
+	libraryVersion := stream.LibraryVersions.DataStore
 
 	var err error
 

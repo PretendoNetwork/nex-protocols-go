@@ -22,7 +22,8 @@ func (protocol *Protocol) handleJoinMatchmakeSessionWithParam(packet nex.PacketI
 	request := packet.RMCMessage()
 	callID := request.CallID
 	parameters := request.Parameters
-	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
+	endpoint := packet.Sender().Endpoint()
+	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
 	joinMatchmakeSessionParam := match_making_types.NewJoinMatchmakeSessionParam()
 

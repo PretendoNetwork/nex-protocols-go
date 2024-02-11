@@ -22,7 +22,7 @@ type AuthenticationInfo struct {
 // WriteTo writes the AuthenticationInfo to the given writable
 func (ai *AuthenticationInfo) WriteTo(writable types.Writable) {
 	stream := writable.(*nex.ByteStreamOut)
-	libraryVersion := stream.Server.LibraryVersion()
+	libraryVersion := stream.LibraryVersions.Main
 
 	ai.Data.WriteTo(writable)
 
@@ -46,7 +46,7 @@ func (ai *AuthenticationInfo) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the AuthenticationInfo from the given readable
 func (ai *AuthenticationInfo) ExtractFrom(readable types.Readable) error {
 	stream := readable.(*nex.ByteStreamIn)
-	libraryVersion := stream.Server.LibraryVersion()
+	libraryVersion := stream.LibraryVersions.Main
 
 	var err error
 

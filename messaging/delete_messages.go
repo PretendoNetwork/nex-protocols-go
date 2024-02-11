@@ -23,7 +23,8 @@ func (protocol *Protocol) handleDeleteMessages(packet nex.PacketInterface) {
 	request := packet.RMCMessage()
 	callID := request.CallID
 	parameters := request.Parameters
-	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
+	endpoint := packet.Sender().Endpoint()
+	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
 	recipient := messaging_types.NewMessageRecipient()
 	lstMessagesToDelete := types.NewList[*types.PrimitiveU32]()

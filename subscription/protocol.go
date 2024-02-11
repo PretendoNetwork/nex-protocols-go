@@ -61,7 +61,7 @@ const (
 
 // Protocol handles the Subscription nex protocol
 type Protocol struct {
-	server                              nex.ServerInterface
+	endpoint                            nex.EndpointInterface
 	CreateMySubscriptionData            func(err error, packet nex.PacketInterface, callID uint32, unk *types.PrimitiveU64, content []byte) (*nex.RMCMessage, *nex.Error)
 	UpdateMySubscriptionData            func(err error, packet nex.PacketInterface, callID uint32, unk *types.PrimitiveU32, content []byte) (*nex.RMCMessage, *nex.Error)
 	GetFriendSubscriptionData           func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, *nex.Error)
@@ -74,8 +74,8 @@ type Protocol struct {
 
 // Interface implements the methods present on the Subscription protocol struct
 type Interface interface {
-	Server() nex.ServerInterface
-	SetServer(server nex.ServerInterface)
+	Endpoint() nex.EndpointInterface
+	SetEndpoint(endpoint nex.EndpointInterface)
 	SetHandlerCreateMySubscriptionData(handler func(err error, packet nex.PacketInterface, callID uint32, unk *types.PrimitiveU64, content []byte) (*nex.RMCMessage, *nex.Error))
 	SetHandlerUpdateMySubscriptionData(handler func(err error, packet nex.PacketInterface, callID uint32, unk *types.PrimitiveU32, content []byte) (*nex.RMCMessage, *nex.Error))
 	SetHandlerGetFriendSubscriptionData(handler func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, *nex.Error))
@@ -86,14 +86,14 @@ type Interface interface {
 	SetHandlerGetPrivacyLevels(handler func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, *nex.Error))
 }
 
-// Server returns the server implementing the protocol
-func (protocol *Protocol) Server() nex.ServerInterface {
-	return protocol.server
+// Endpoint returns the endpoint implementing the protocol
+func (protocol *Protocol) Endpoint() nex.EndpointInterface {
+	return protocol.endpoint
 }
 
-// SetServer sets the server implementing the protocol
-func (protocol *Protocol) SetServer(server nex.ServerInterface) {
-	protocol.server = server
+// SetEndpoint sets the endpoint implementing the protocol
+func (protocol *Protocol) SetEndpoint(endpoint nex.EndpointInterface) {
+	protocol.endpoint = endpoint
 }
 
 // SetHandlerCreateMySubscriptionData sets the handler for the CreateMySubscriptionData method
@@ -171,6 +171,6 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 }
 
 // NewProtocol returns a new Protocol
-func NewProtocol(server nex.ServerInterface) *Protocol {
-	return &Protocol{server: server}
+func NewProtocol(endpoint nex.EndpointInterface) *Protocol {
+	return &Protocol{endpoint: endpoint}
 }

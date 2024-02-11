@@ -40,7 +40,7 @@ const (
 
 // Protocol stores all the RMC method handlers for the Secure Connection protocol and listens for requests
 type Protocol struct {
-	server                nex.ServerInterface
+	endpoint              nex.EndpointInterface
 	Register              func(err error, packet nex.PacketInterface, callID uint32, vecMyURLs *types.List[*types.StationURL]) (*nex.RMCMessage, *nex.Error)
 	RequestConnectionData func(err error, packet nex.PacketInterface, callID uint32, cidTarget *types.PrimitiveU32, pidTarget *types.PID) (*nex.RMCMessage, *nex.Error)
 	RequestURLs           func(err error, packet nex.PacketInterface, callID uint32, cidTarget *types.PrimitiveU32, pidTarget *types.PID) (*nex.RMCMessage, *nex.Error)
@@ -53,8 +53,8 @@ type Protocol struct {
 
 // Interface implements the methods present on the Secure Connection protocol struct
 type Interface interface {
-	Server() nex.ServerInterface
-	SetServer(server nex.ServerInterface)
+	Endpoint() nex.EndpointInterface
+	SetEndpoint(endpoint nex.EndpointInterface)
 	SetHandlerRegister(handler func(err error, packet nex.PacketInterface, callID uint32, vecMyURLs *types.List[*types.StationURL]) (*nex.RMCMessage, *nex.Error))
 	SetHandlerRequestConnectionData(handler func(err error, packet nex.PacketInterface, callID uint32, cidTarget *types.PrimitiveU32, pidTarget *types.PID) (*nex.RMCMessage, *nex.Error))
 	SetHandlerRequestURLs(handler func(err error, packet nex.PacketInterface, callID uint32, cidTarget *types.PrimitiveU32, pidTarget *types.PID) (*nex.RMCMessage, *nex.Error))
@@ -65,14 +65,14 @@ type Interface interface {
 	SetHandlerSendReport(handler func(err error, packet nex.PacketInterface, callID uint32, reportID *types.PrimitiveU32, reportData *types.QBuffer) (*nex.RMCMessage, *nex.Error))
 }
 
-// Server returns the server implementing the protocol
-func (protocol *Protocol) Server() nex.ServerInterface {
-	return protocol.server
+// Endpoint returns the endpoint implementing the protocol
+func (protocol *Protocol) Endpoint() nex.EndpointInterface {
+	return protocol.endpoint
 }
 
-// SetServer sets the server implementing the protocol
-func (protocol *Protocol) SetServer(server nex.ServerInterface) {
-	protocol.server = server
+// SetEndpoint sets the endpoint implementing the protocol
+func (protocol *Protocol) SetEndpoint(endpoint nex.EndpointInterface) {
+	protocol.endpoint = endpoint
 }
 
 // SetHandlerRegister sets the handler for the Register method
@@ -150,6 +150,6 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 }
 
 // NewProtocol returns a new Secure Connection protocol
-func NewProtocol(server nex.ServerInterface) *Protocol {
-	return &Protocol{server: server}
+func NewProtocol(endpoint nex.EndpointInterface) *Protocol {
+	return &Protocol{endpoint: endpoint}
 }

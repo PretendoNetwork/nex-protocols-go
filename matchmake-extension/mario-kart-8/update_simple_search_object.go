@@ -23,7 +23,8 @@ func (protocol *Protocol) handleUpdateSimpleSearchObject(packet nex.PacketInterf
 	request := packet.RMCMessage()
 	callID := request.CallID
 	parameters := request.Parameters
-	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
+	endpoint := packet.Sender().Endpoint()
+	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
 	objectID := types.NewPrimitiveU32(0)
 	newObject := matchmake_extension_mario_kart8_types.NewSimpleSearchObject()

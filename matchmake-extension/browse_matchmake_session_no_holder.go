@@ -23,7 +23,8 @@ func (protocol *Protocol) handleBrowseMatchmakeSessionNoHolder(packet nex.Packet
 	request := packet.RMCMessage()
 	callID := request.CallID
 	parameters := request.Parameters
-	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
+	endpoint := packet.Sender().Endpoint()
+	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
 	searchCriteria := match_making_types.NewMatchmakeSessionSearchCriteria()
 	resultRange := types.NewResultRange()

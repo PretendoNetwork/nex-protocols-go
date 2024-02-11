@@ -37,7 +37,7 @@ const (
 
 // Protocol handles the Persistent Store protocol
 type Protocol struct {
-	server              nex.ServerInterface
+	endpoint            nex.EndpointInterface
 	FindByGroup         func(err error, packet nex.PacketInterface, callID uint32, uiGroup *types.PrimitiveU32) (*nex.RMCMessage, *nex.Error)
 	InsertItem          func(err error, packet nex.PacketInterface, callID uint32, uiGroup *types.PrimitiveU32, strTag *types.String, bufData *types.Buffer, bReplace *types.PrimitiveBool) (*nex.RMCMessage, *nex.Error)
 	RemoveItem          func(err error, packet nex.PacketInterface, callID uint32, uiGroup *types.PrimitiveU32, strTag *types.String) (*nex.RMCMessage, *nex.Error)
@@ -49,8 +49,8 @@ type Protocol struct {
 
 // Interface implements the methods present on the Persistent Store protocol struct
 type Interface interface {
-	Server() nex.ServerInterface
-	SetServer(server nex.ServerInterface)
+	Endpoint() nex.EndpointInterface
+	SetEndpoint(endpoint nex.EndpointInterface)
 	SetHandlerFindByGroup(handler func(err error, packet nex.PacketInterface, callID uint32, uiGroup *types.PrimitiveU32) (*nex.RMCMessage, *nex.Error))
 	SetHandlerInsertItem(handler func(err error, packet nex.PacketInterface, callID uint32, uiGroup *types.PrimitiveU32, strTag *types.String, bufData *types.Buffer, bReplace *types.PrimitiveBool) (*nex.RMCMessage, *nex.Error))
 	SetHandlerRemoveItem(handler func(err error, packet nex.PacketInterface, callID uint32, uiGroup *types.PrimitiveU32, strTag *types.String) (*nex.RMCMessage, *nex.Error))
@@ -60,14 +60,14 @@ type Interface interface {
 	SetHandlerFindItemsBySQLQuery(handler func(err error, packet nex.PacketInterface, callID uint32, uiGroup *types.PrimitiveU32, strTag *types.String, strQuery *types.String) (*nex.RMCMessage, *nex.Error))
 }
 
-// Server returns the server implementing the protocol
-func (protocol *Protocol) Server() nex.ServerInterface {
-	return protocol.server
+// Endpoint returns the endpoint implementing the protocol
+func (protocol *Protocol) Endpoint() nex.EndpointInterface {
+	return protocol.endpoint
 }
 
-// SetServer sets the server implementing the protocol
-func (protocol *Protocol) SetServer(server nex.ServerInterface) {
-	protocol.server = server
+// SetEndpoint sets the endpoint implementing the protocol
+func (protocol *Protocol) SetEndpoint(endpoint nex.EndpointInterface) {
+	protocol.endpoint = endpoint
 }
 
 // SetHandlerFindByGroup sets the handler for the FindByGroup method
@@ -138,6 +138,6 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 }
 
 // NewProtocol returns a new Persistent Store protocol
-func NewProtocol(server nex.ServerInterface) *Protocol {
-	return &Protocol{server: server}
+func NewProtocol(endpoint nex.EndpointInterface) *Protocol {
+	return &Protocol{endpoint: endpoint}
 }

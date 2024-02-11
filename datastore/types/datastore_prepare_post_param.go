@@ -30,7 +30,7 @@ type DataStorePreparePostParam struct {
 // WriteTo writes the DataStorePreparePostParam to the given writable
 func (dsppp *DataStorePreparePostParam) WriteTo(writable types.Writable) {
 	stream := writable.(*nex.ByteStreamOut)
-	libraryVersion := stream.Server.DataStoreProtocolVersion()
+	libraryVersion := stream.LibraryVersions.DataStore
 
 	contentWritable := writable.CopyNew()
 
@@ -61,7 +61,7 @@ func (dsppp *DataStorePreparePostParam) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the DataStorePreparePostParam from the given readable
 func (dsppp *DataStorePreparePostParam) ExtractFrom(readable types.Readable) error {
 	stream := readable.(*nex.ByteStreamIn)
-	libraryVersion := stream.Server.DataStoreProtocolVersion()
+	libraryVersion := stream.LibraryVersions.DataStore
 
 	var err error
 

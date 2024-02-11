@@ -22,7 +22,8 @@ func (protocol *Protocol) handleUpdateURLs(packet nex.PacketInterface) {
 	request := packet.RMCMessage()
 	callID := request.CallID
 	parameters := request.Parameters
-	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
+	endpoint := packet.Sender().Endpoint()
+	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
 	vecMyURLs := types.NewList[*types.StationURL]()
 	vecMyURLs.Type = types.NewStationURL("")

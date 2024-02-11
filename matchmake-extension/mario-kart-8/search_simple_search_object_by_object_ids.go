@@ -22,7 +22,8 @@ func (protocol *Protocol) handleSearchSimpleSearchObjectByObjectIDs(packet nex.P
 	request := packet.RMCMessage()
 	callID := request.CallID
 	parameters := request.Parameters
-	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
+	endpoint := packet.Sender().Endpoint()
+	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
 	objectIDs := types.NewList[*types.PrimitiveU32]()
 	objectIDs.Type = types.NewPrimitiveU32(0)

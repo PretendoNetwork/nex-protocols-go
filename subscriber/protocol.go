@@ -62,7 +62,7 @@ const (
 
 // Protocol stores all the RMC method handlers for the Subscriber protocol and listens for requests
 type Protocol struct {
-	server                nex.ServerInterface
+	endpoint              nex.EndpointInterface
 	Hello                 func(err error, packet nex.PacketInterface, callID uint32, unknown *types.String) (*nex.RMCMessage, *nex.Error)
 	PostContent           func(err error, packet nex.PacketInterface, callID uint32, param *subscriber_types.SubscriberPostContentParam) (*nex.RMCMessage, *nex.Error)
 	GetContent            func(err error, packet nex.PacketInterface, callID uint32, param *subscriber_types.SubscriberGetContentParam) (*nex.RMCMessage, *nex.Error)
@@ -82,8 +82,8 @@ type Protocol struct {
 
 // Interface implements the methods present on the Subscriber protocol struct
 type Interface interface {
-	Server() nex.ServerInterface
-	SetServer(server nex.ServerInterface)
+	Endpoint() nex.EndpointInterface
+	SetEndpoint(endpoint nex.EndpointInterface)
 	SetHandlerHello(handler func(err error, packet nex.PacketInterface, callID uint32, unknown *types.String) (*nex.RMCMessage, *nex.Error))
 	SetHandlerPostContent(handler func(err error, packet nex.PacketInterface, callID uint32, param *subscriber_types.SubscriberPostContentParam) (*nex.RMCMessage, *nex.Error))
 	SetHandlerGetContent(handler func(err error, packet nex.PacketInterface, callID uint32, param *subscriber_types.SubscriberGetContentParam) (*nex.RMCMessage, *nex.Error))
@@ -101,14 +101,14 @@ type Interface interface {
 	SetHandlerGetUserStatuses(handler func(err error, packet nex.PacketInterface, callID uint32, pids *types.List[*types.PID], unknown *types.List[*types.PrimitiveU8]) (*nex.RMCMessage, *nex.Error))
 }
 
-// Server returns the server implementing the protocol
-func (protocol *Protocol) Server() nex.ServerInterface {
-	return protocol.server
+// Endpoint returns the endpoint implementing the protocol
+func (protocol *Protocol) Endpoint() nex.EndpointInterface {
+	return protocol.endpoint
 }
 
-// SetServer sets the server implementing the protocol
-func (protocol *Protocol) SetServer(server nex.ServerInterface) {
-	protocol.server = server
+// SetEndpoint sets the endpoint implementing the protocol
+func (protocol *Protocol) SetEndpoint(endpoint nex.EndpointInterface) {
+	protocol.endpoint = endpoint
 }
 
 // SetHandlerHello sets the handler for the Hello method
@@ -235,6 +235,6 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 }
 
 // NewProtocol returns a new Subscriber protocol
-func NewProtocol(server nex.ServerInterface) *Protocol {
-	return &Protocol{server: server}
+func NewProtocol(endpoint nex.EndpointInterface) *Protocol {
+	return &Protocol{endpoint: endpoint}
 }

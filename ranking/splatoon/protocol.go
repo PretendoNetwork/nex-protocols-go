@@ -39,7 +39,7 @@ type rankingProtocol = ranking.Protocol
 // Protocol stores all the RMC method handlers for the Ranking (Splatoon) protocol and listens for requests
 // Embeds the Ranking protocol
 type Protocol struct {
-	server nex.ServerInterface
+	endpoint nex.EndpointInterface
 	rankingProtocol
 	GetCompetitionRankingScore             func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) (*nex.RMCMessage, *nex.Error)
 	GetcompetitionRankingScoreByPeriodList func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) (*nex.RMCMessage, *nex.Error)
@@ -79,9 +79,9 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 }
 
 // NewProtocol returns a new RankingSplatoon protocol
-func NewProtocol(server nex.ServerInterface) *Protocol {
-	protocol := &Protocol{server: server}
-	protocol.rankingProtocol.SetServer(server)
+func NewProtocol(endpoint nex.EndpointInterface) *Protocol {
+	protocol := &Protocol{endpoint: endpoint}
+	protocol.rankingProtocol.SetEndpoint(endpoint)
 
 	return protocol
 }

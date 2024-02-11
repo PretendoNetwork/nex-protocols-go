@@ -28,7 +28,7 @@ type dataStoreProtocol = datastore.Protocol
 // Protocol stores all the RMC method handlers for the DataStore (Nintendo Badge Arcade) protocol and listens for requests
 // Embeds the DataStore protocol
 type Protocol struct {
-	server nex.ServerInterface
+	endpoint nex.EndpointInterface
 	dataStoreProtocol
 	GetMetaByOwnerID func(err error, packet nex.PacketInterface, callID uint32, param *datastore_nintendo_badge_arcade_types.DataStoreGetMetaByOwnerIDParam) (*nex.RMCMessage, *nex.Error)
 }
@@ -59,9 +59,9 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 }
 
 // NewProtocol returns a new DataStore (Nintendo Badge Arcade) protocol
-func NewProtocol(server nex.ServerInterface) *Protocol {
-	protocol := &Protocol{server: server}
-	protocol.dataStoreProtocol.SetServer(server)
+func NewProtocol(endpoint nex.EndpointInterface) *Protocol {
+	protocol := &Protocol{endpoint: endpoint}
+	protocol.dataStoreProtocol.SetEndpoint(endpoint)
 
 	return protocol
 }

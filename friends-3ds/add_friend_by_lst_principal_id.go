@@ -22,7 +22,8 @@ func (protocol *Protocol) handleAddFriendBylstPrincipalID(packet nex.PacketInter
 	request := packet.RMCMessage()
 	callID := request.CallID
 	parameters := request.Parameters
-	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
+	endpoint := packet.Sender().Endpoint()
+	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
 	lfc := types.NewPrimitiveU64(0)
 	pids := types.NewList[*types.PID]()

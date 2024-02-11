@@ -45,7 +45,7 @@ type matchmakeExtensionProtocol = matchmake_extension.Protocol
 // Protocol stores all the RMC method handlers for the Matchmake Extension (Monster Hunter XX) protocol and listens for requests
 // Embeds the Matchmake Extension protocol
 type Protocol struct {
-	server nex.ServerInterface
+	endpoint nex.EndpointInterface
 	matchmakeExtensionProtocol
 	UpdateFriendUserProfile func(err error, packet nex.PacketInterface, callID uint32, param *matchmake_extension_monster_hunter_x_x_types.FriendUserParam) (*nex.RMCMessage, *nex.Error)
 	GetFriendUserProfiles   func(err error, packet nex.PacketInterface, callID uint32, pids *types.List[*types.PID]) (*nex.RMCMessage, *nex.Error)
@@ -88,9 +88,9 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 }
 
 // NewProtocol returns a new MatchmakeExtensionMonsterHunterXX protocol
-func NewProtocol(server nex.ServerInterface) *Protocol {
-	protocol := &Protocol{server: server}
-	protocol.matchmakeExtensionProtocol.SetServer(server)
+func NewProtocol(endpoint nex.EndpointInterface) *Protocol {
+	protocol := &Protocol{endpoint: endpoint}
+	protocol.matchmakeExtensionProtocol.SetEndpoint(endpoint)
 
 	return protocol
 }

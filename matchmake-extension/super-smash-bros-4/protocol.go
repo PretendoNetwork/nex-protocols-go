@@ -167,7 +167,7 @@ type matchmakeExtensionProtocol = matchmake_extension.Protocol
 // Protocol stores all the RMC method handlers for the Matchmake Extension (Super Smash Bros. 4) protocol and listens for requests
 // Embeds the Matchmake Extension protocol
 type Protocol struct {
-	server nex.ServerInterface
+	endpoint nex.EndpointInterface
 	matchmakeExtensionProtocol
 	GetTournament                                     func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) (*nex.RMCMessage, *nex.Error)
 	GetTournamentReplayID                             func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) (*nex.RMCMessage, *nex.Error)
@@ -303,9 +303,9 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 }
 
 // NewProtocol returns a new MatchmakeExtensionSuperSmashBros4 protocol
-func NewProtocol(server nex.ServerInterface) *Protocol {
-	protocol := &Protocol{server: server}
-	protocol.matchmakeExtensionProtocol.SetServer(server)
+func NewProtocol(endpoint nex.EndpointInterface) *Protocol {
+	protocol := &Protocol{endpoint: endpoint}
+	protocol.matchmakeExtensionProtocol.SetEndpoint(endpoint)
 
 	return protocol
 }

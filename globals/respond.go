@@ -13,10 +13,12 @@ func Respond(packet nex.PacketInterface, message *nex.RMCMessage) {
 	case nex.PRUDPPacketInterface:
 		var prudpPacket nex.PRUDPPacketInterface
 
+		endpoint := sender.(*nex.PRUDPConnection).Endpoint()
+		server := endpoint.(*nex.PRUDPEndPoint).Server
 		if packet.Version() == 1 {
-			prudpPacket, _ = nex.NewPRUDPPacketV1(sender.(*nex.PRUDPConnection), nil)
+			prudpPacket, _ = nex.NewPRUDPPacketV1(server, sender.(*nex.PRUDPConnection), nil)
 		} else {
-			prudpPacket, _ = nex.NewPRUDPPacketV0(sender.(*nex.PRUDPConnection), nil)
+			prudpPacket, _ = nex.NewPRUDPPacketV0(server, sender.(*nex.PRUDPConnection), nil)
 		}
 
 		prudpPacket.SetType(nex.DataPacket)
@@ -42,5 +44,5 @@ func Respond(packet nex.PacketInterface, message *nex.RMCMessage) {
 		responsePacket.SetRMCMessage(message)
 	}
 
-	sender.Server().Send(responsePacket)
+	sender.Endpoint().Send(responsePacket)
 }

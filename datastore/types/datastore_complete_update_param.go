@@ -20,7 +20,7 @@ type DataStoreCompleteUpdateParam struct {
 // WriteTo writes the DataStoreCompleteUpdateParam to the given writable
 func (dscup *DataStoreCompleteUpdateParam) WriteTo(writable types.Writable) {
 	stream := writable.(*nex.ByteStreamOut)
-	libraryVersion := stream.Server.DataStoreProtocolVersion()
+	libraryVersion := stream.LibraryVersions.DataStore
 
 	contentWritable := writable.CopyNew()
 
@@ -48,7 +48,7 @@ func (dscup *DataStoreCompleteUpdateParam) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the DataStoreCompleteUpdateParam from the given readable
 func (dscup *DataStoreCompleteUpdateParam) ExtractFrom(readable types.Readable) error {
 	stream := readable.(*nex.ByteStreamIn)
-	libraryVersion := stream.Server.DataStoreProtocolVersion()
+	libraryVersion := stream.LibraryVersions.DataStore
 
 	var err error
 

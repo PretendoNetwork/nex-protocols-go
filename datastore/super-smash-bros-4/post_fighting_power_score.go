@@ -23,7 +23,8 @@ func (protocol *Protocol) handlePostFightingPowerScore(packet nex.PacketInterfac
 	request := packet.RMCMessage()
 	callID := request.CallID
 	parameters := request.Parameters
-	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
+	endpoint := packet.Sender().Endpoint()
+	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
 	params := types.NewList[*datastore_super_smash_bros_4_types.DataStorePostFightingPowerScoreParam]()
 	params.Type = datastore_super_smash_bros_4_types.NewDataStorePostFightingPowerScoreParam()

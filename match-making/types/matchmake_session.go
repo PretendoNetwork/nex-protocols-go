@@ -34,7 +34,7 @@ type MatchmakeSession struct {
 // WriteTo writes the MatchmakeSession to the given writable
 func (ms *MatchmakeSession) WriteTo(writable types.Writable) {
 	stream := writable.(*nex.ByteStreamOut)
-	libraryVersion := stream.Server.MatchMakingProtocolVersion()
+	libraryVersion := stream.LibraryVersions.MatchMaking
 
 	ms.Gathering.WriteTo(writable)
 
@@ -97,7 +97,7 @@ func (ms *MatchmakeSession) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the MatchmakeSession from the given readable
 func (ms *MatchmakeSession) ExtractFrom(readable types.Readable) error {
 	stream := readable.(*nex.ByteStreamIn)
-	libraryVersion := stream.Server.MatchMakingProtocolVersion()
+	libraryVersion := stream.LibraryVersions.MatchMaking
 
 	var err error
 

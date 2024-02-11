@@ -26,7 +26,7 @@ type RankingRankData struct {
 // WriteTo writes the RankingRankData to the given writable
 func (rrd *RankingRankData) WriteTo(writable types.Writable) {
 	stream := writable.(*nex.ByteStreamOut)
-	libraryVersion := stream.Server.RankingProtocolVersion()
+	libraryVersion := stream.LibraryVersions.Ranking
 
 	contentWritable := writable.CopyNew()
 
@@ -53,7 +53,7 @@ func (rrd *RankingRankData) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the RankingRankData from the given readable
 func (rrd *RankingRankData) ExtractFrom(readable types.Readable) error {
 	stream := readable.(*nex.ByteStreamIn)
-	libraryVersion := stream.Server.RankingProtocolVersion()
+	libraryVersion := stream.LibraryVersions.Ranking
 
 	var err error
 

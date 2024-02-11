@@ -33,7 +33,7 @@ type shopProtocol = shop.Protocol
 // Protocol stores all the RMC method handlers for the Shop (Nintendo Badge Arcade) protocol and listens for requests
 // Embeds the Shop protocol
 type Protocol struct {
-	server nex.ServerInterface
+	endpoint nex.EndpointInterface
 	shopProtocol
 	GetRivToken func(err error, packet nex.PacketInterface, callID uint32, itemCode *types.String, referenceID *types.QBuffer) (*nex.RMCMessage, *nex.Error)
 	PostPlayLog func(err error, packet nex.PacketInterface, callID uint32, param *shop_nintendo_badge_arcade_types.ShopPostPlayLogParam) (*nex.RMCMessage, *nex.Error)
@@ -67,9 +67,9 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 }
 
 // NewProtocol returns a new Shop (Nintendo Badge Arcade)
-func NewProtocol(server nex.ServerInterface) *Protocol {
-	protocol := &Protocol{server: server}
-	protocol.shopProtocol.SetServer(server)
+func NewProtocol(endpoint nex.EndpointInterface) *Protocol {
+	protocol := &Protocol{endpoint: endpoint}
+	protocol.shopProtocol.SetEndpoint(endpoint)
 
 	return protocol
 }

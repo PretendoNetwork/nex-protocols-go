@@ -22,7 +22,8 @@ func (protocol *Protocol) handlePostPlayLog(packet nex.PacketInterface) {
 	request := packet.RMCMessage()
 	callID := request.CallID
 	parameters := request.Parameters
-	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
+	endpoint := packet.Sender().Endpoint()
+	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
 	param := shop_nintendo_badge_arcade_types.NewShopPostPlayLogParam()
 

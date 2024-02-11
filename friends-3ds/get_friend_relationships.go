@@ -22,7 +22,8 @@ func (protocol *Protocol) handleGetFriendRelationships(packet nex.PacketInterfac
 	request := packet.RMCMessage()
 	callID := request.CallID
 	parameters := request.Parameters
-	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
+	endpoint := packet.Sender().Endpoint()
+	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
 	pids := types.NewList[*types.PID]()
 	pids.Type = types.NewPID(0)

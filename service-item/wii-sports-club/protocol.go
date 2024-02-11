@@ -113,7 +113,7 @@ type serviceItemProtocol = service_item.Protocol
 // Protocol stores all the RMC method handlers for the Service Item (Wii Sports Club) protocol and listens for requests
 // Embeds the Service Item protocol
 type Protocol struct {
-	server nex.ServerInterface
+	endpoint nex.EndpointInterface
 	serviceItemProtocol
 	Hello                       func(err error, packet nex.PacketInterface, callID uint32, name *types.String) (*nex.RMCMessage, *nex.Error)
 	HTTPGetRequest              func(err error, packet nex.PacketInterface, callID uint32, url *service_item_wii_sports_club_types.ServiceItemHTTPGetParam) (*nex.RMCMessage, *nex.Error)
@@ -207,9 +207,9 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 }
 
 // NewProtocol returns a new ServiceItemWiiSportsClub protocol
-func NewProtocol(server nex.ServerInterface) *Protocol {
-	protocol := &Protocol{server: server}
-	protocol.serviceItemProtocol.SetServer(server)
+func NewProtocol(endpoint nex.EndpointInterface) *Protocol {
+	protocol := &Protocol{endpoint: endpoint}
+	protocol.serviceItemProtocol.SetEndpoint(endpoint)
 
 	return protocol
 }

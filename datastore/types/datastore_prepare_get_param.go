@@ -22,7 +22,7 @@ type DataStorePrepareGetParam struct {
 // WriteTo writes the DataStorePrepareGetParam to the given writable
 func (dspgp *DataStorePrepareGetParam) WriteTo(writable types.Writable) {
 	stream := writable.(*nex.ByteStreamOut)
-	libraryVersion := stream.Server.DataStoreProtocolVersion()
+	libraryVersion := stream.LibraryVersions.DataStore
 
 	contentWritable := writable.CopyNew()
 
@@ -45,7 +45,7 @@ func (dspgp *DataStorePrepareGetParam) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the DataStorePrepareGetParam from the given readable
 func (dspgp *DataStorePrepareGetParam) ExtractFrom(readable types.Readable) error {
 	stream := readable.(*nex.ByteStreamIn)
-	libraryVersion := stream.Server.DataStoreProtocolVersion()
+	libraryVersion := stream.LibraryVersions.DataStore
 
 	var err error
 

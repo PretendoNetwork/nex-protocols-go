@@ -23,7 +23,8 @@ func (protocol *Protocol) handleChangePlayablePlatform(packet nex.PacketInterfac
 	request := packet.RMCMessage()
 	callID := request.CallID
 	parameters := request.Parameters
-	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
+	endpoint := packet.Sender().Endpoint()
+	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
 	params := types.NewList[*datastore_super_mario_maker_types.DataStoreChangePlayablePlatformParam]()
 	params.Type = datastore_super_mario_maker_types.NewDataStoreChangePlayablePlatformParam()

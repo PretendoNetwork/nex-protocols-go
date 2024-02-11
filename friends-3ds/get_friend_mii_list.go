@@ -23,7 +23,8 @@ func (protocol *Protocol) handleGetFriendMiiList(packet nex.PacketInterface) {
 	request := packet.RMCMessage()
 	callID := request.CallID
 	parameters := request.Parameters
-	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
+	endpoint := packet.Sender().Endpoint()
+	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
 	friends := types.NewList[*friends_3ds_types.FriendInfo]()
 	friends.Type = friends_3ds_types.NewFriendInfo()

@@ -198,7 +198,7 @@ type dataStoreProtocol = datastore.Protocol
 // Protocol stores all the RMC method handlers for the DataStore (Super Mario Maker) protocol and listens for requests
 // Embeds the DataStore protocol
 type Protocol struct {
-	server nex.ServerInterface
+	endpoint nex.EndpointInterface
 	dataStoreProtocol
 	GetObjectInfos                        func(err error, packet nex.PacketInterface, callID uint32, dataIDs *types.List[*types.PrimitiveU64]) (*nex.RMCMessage, *nex.Error)
 	GetMetaByOwnerID                      func(err error, packet nex.PacketInterface, callID uint32, param *datastore_super_mario_maker_types.DataStoreGetMetaByOwnerIDParam) (*nex.RMCMessage, *nex.Error)
@@ -355,9 +355,9 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 }
 
 // NewProtocol returns a new DataStoreSuperMarioMaker protocol
-func NewProtocol(server nex.ServerInterface) *Protocol {
-	protocol := &Protocol{server: server}
-	protocol.dataStoreProtocol.SetServer(server)
+func NewProtocol(endpoint nex.EndpointInterface) *Protocol {
+	protocol := &Protocol{endpoint: endpoint}
+	protocol.dataStoreProtocol.SetEndpoint(endpoint)
 
 	return protocol
 }

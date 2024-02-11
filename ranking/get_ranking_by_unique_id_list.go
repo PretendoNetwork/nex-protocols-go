@@ -23,7 +23,8 @@ func (protocol *Protocol) handleGetRankingByUniqueIDList(packet nex.PacketInterf
 	request := packet.RMCMessage()
 	callID := request.CallID
 	parameters := request.Parameters
-	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
+	endpoint := packet.Sender().Endpoint()
+	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
 	nexUniqueIDList := types.NewList[*types.PrimitiveU64]()
 	nexUniqueIDList.Type = types.NewPrimitiveU64(0)

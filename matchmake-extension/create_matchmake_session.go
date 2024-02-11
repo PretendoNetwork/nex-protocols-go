@@ -19,12 +19,13 @@ func (protocol *Protocol) handleCreateMatchmakeSession(packet nex.PacketInterfac
 		return
 	}
 
-	matchmakingVersion := protocol.server.MatchMakingProtocolVersion()
+	endpoint := packet.Sender().Endpoint()
+	matchmakingVersion := endpoint.LibraryVersions().MatchMaking
 
 	request := packet.RMCMessage()
 	callID := request.CallID
 	parameters := request.Parameters
-	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
+	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
 	anyGathering := types.NewAnyDataHolder()
 	strMessage := types.NewString("")

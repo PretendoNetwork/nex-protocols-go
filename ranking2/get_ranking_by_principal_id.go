@@ -23,7 +23,8 @@ func (protocol *Protocol) handleGetRankingByPrincipalID(packet nex.PacketInterfa
 	request := packet.RMCMessage()
 	callID := request.CallID
 	parameters := request.Parameters
-	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
+	endpoint := packet.Sender().Endpoint()
+	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
 	getParam := ranking2_types.NewRanking2GetParam()
 	principalIDList := types.NewList[*types.PID]()

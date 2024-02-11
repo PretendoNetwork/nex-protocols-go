@@ -47,7 +47,7 @@ const (
 
 // Protocol stores all the RMC method handlers for the Ranking2 protocol and listens for requests
 type Protocol struct {
-	server                  nex.ServerInterface
+	endpoint                nex.EndpointInterface
 	PutScore                func(err error, packet nex.PacketInterface, callID uint32, scoreDataList *types.List[*ranking2_types.Ranking2ScoreData], nexUniqueID *types.PrimitiveU64) (*nex.RMCMessage, *nex.Error)
 	GetCommonData           func(err error, packet nex.PacketInterface, callID uint32, optionFlags *types.PrimitiveU32, principalID *types.PID, nexUniqueID *types.PrimitiveU64) (*nex.RMCMessage, *nex.Error)
 	PutCommonData           func(err error, packet nex.PacketInterface, callID uint32, commonData *ranking2_types.Ranking2CommonData, nexUniqueID *types.PrimitiveU64) (*nex.RMCMessage, *nex.Error)
@@ -62,8 +62,8 @@ type Protocol struct {
 
 // Interface implements the methods present on the Ranking2 protocol struct
 type Interface interface {
-	Server() nex.ServerInterface
-	SetServer(server nex.ServerInterface)
+	Endpoint() nex.EndpointInterface
+	SetEndpoint(endpoint nex.EndpointInterface)
 	SetHandlerPutScore(handler func(err error, packet nex.PacketInterface, callID uint32, scoreDataList *types.List[*ranking2_types.Ranking2ScoreData], nexUniqueID *types.PrimitiveU64) (*nex.RMCMessage, *nex.Error))
 	SetHandlerGetCommonData(handler func(err error, packet nex.PacketInterface, callID uint32, optionFlags *types.PrimitiveU32, principalID *types.PID, nexUniqueID *types.PrimitiveU64) (*nex.RMCMessage, *nex.Error))
 	SetHandlerPutCommonData(handler func(err error, packet nex.PacketInterface, callID uint32, commonData *ranking2_types.Ranking2CommonData, nexUniqueID *types.PrimitiveU64) (*nex.RMCMessage, *nex.Error))
@@ -76,14 +76,14 @@ type Interface interface {
 	SetHandlerGetEstimateScoreRank(handler func(err error, packet nex.PacketInterface, callID uint32, input *ranking2_types.Ranking2EstimateScoreRankInput) (*nex.RMCMessage, *nex.Error))
 }
 
-// Server returns the server implementing the protocol
-func (protocol *Protocol) Server() nex.ServerInterface {
-	return protocol.server
+// Endpoint returns the endpoint implementing the protocol
+func (protocol *Protocol) Endpoint() nex.EndpointInterface {
+	return protocol.endpoint
 }
 
-// SetServer sets the server implementing the protocol
-func (protocol *Protocol) SetServer(server nex.ServerInterface) {
-	protocol.server = server
+// SetEndpoint sets the endpoint implementing the protocol
+func (protocol *Protocol) SetEndpoint(endpoint nex.EndpointInterface) {
+	protocol.endpoint = endpoint
 }
 
 // SetHandlerPutScore sets the handler for the PutScore method
@@ -175,6 +175,6 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 }
 
 // NewProtocol returns a new Ranking2 protocol
-func NewProtocol(server nex.ServerInterface) *Protocol {
-	return &Protocol{server: server}
+func NewProtocol(endpoint nex.EndpointInterface) *Protocol {
+	return &Protocol{endpoint: endpoint}
 }

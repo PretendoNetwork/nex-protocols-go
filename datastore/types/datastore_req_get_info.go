@@ -22,7 +22,7 @@ type DataStoreReqGetInfo struct {
 // WriteTo writes the DataStoreReqGetInfo to the given writable
 func (dsrgi *DataStoreReqGetInfo) WriteTo(writable types.Writable) {
 	stream := writable.(*nex.ByteStreamOut)
-	libraryVersion := stream.Server.DataStoreProtocolVersion()
+	libraryVersion := stream.LibraryVersions.DataStore
 
 	contentWritable := writable.CopyNew()
 
@@ -45,7 +45,7 @@ func (dsrgi *DataStoreReqGetInfo) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the DataStoreReqGetInfo from the given readable
 func (dsrgi *DataStoreReqGetInfo) ExtractFrom(readable types.Readable) error {
 	stream := readable.(*nex.ByteStreamIn)
-	libraryVersion := stream.Server.DataStoreProtocolVersion()
+	libraryVersion := stream.LibraryVersions.DataStore
 
 	var err error
 

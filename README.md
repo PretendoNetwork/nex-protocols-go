@@ -31,20 +31,28 @@ var nexServer *nex.PRUDPServer
 
 func main() {
 	nexServer := nex.NewPRUDPServer()
-	nexServer.PRUDPVersion = 0
-	nexServer.SetFragmentSize(962)
-	nexServer.SetDefaultLibraryVersion(nex.NewLibraryVersion(1, 1, 0))
-	nexServer.SetKerberosPassword([]byte("password"))
-	nexServer.SetKerberosKeySize(16)
-	nexServer.SetAccessKey("ridfebb9")
 
-	authenticationServer := ticket_granting.NewProtocol(nexServer)
+	endpoint := nex.NewPRUDPEndPoint(1)
+	endpoint.ServerAccount = nex.NewAccount(types.NewPID(1), "Quazal Authentication", "password"))
+	endpoint.AccountDetailsByPID = accountDetailsByPID
+	endpoint.AccountDetailsByUsername = accountDetailsByUsername
+
+	nexServer.BindPRUDPEndPoint(endpoint)
+	nexServer.SetFragmentSize(962)
+	nexServer.LibraryVersions.SetDefault(nex.NewLibraryVersion(1, 1, 0))
+	nexServer.SessionKeyLength = 16
+	nexServer.AccessKey = "ridfebb9"
+
+	ticketGrantingProtocol := ticket_granting.NewProtocol(endpoint)
 
 	// Handle Login RMC method
-	authenticationServer.Login = login
+	ticketGrantingProtocol.Login = login
 
 	// Handle RequestTicket RMC method
-	authenticationServer.RequestTicket = requestTicket
+	ticketGrantingProtocol.RequestTicket = requestTicket
+
+	// Register the protocol on the endpoint
+	endpoint.RegisterServiceProtocol(ticketGrantingProtocol)
 
 	nexServer.Listen(60000)
 }

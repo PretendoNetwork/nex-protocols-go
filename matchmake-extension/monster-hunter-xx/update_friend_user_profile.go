@@ -22,7 +22,8 @@ func (protocol *Protocol) handleUpdateFriendUserProfile(packet nex.PacketInterfa
 	request := packet.RMCMessage()
 	callID := request.CallID
 	parameters := request.Parameters
-	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
+	endpoint := packet.Sender().Endpoint()
+	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
 	param := matchmake_extension_monster_hunter_xx_types.NewFriendUserParam()
 

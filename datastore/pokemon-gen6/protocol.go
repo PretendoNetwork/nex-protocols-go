@@ -52,7 +52,7 @@ type dataStoreProtocol = datastore.Protocol
 // Protocol stores all the RMC method handlers for the DataStore (Pokemon Gen6) protocol and listens for requests
 // Embeds the DataStore protocol
 type Protocol struct {
-	server nex.ServerInterface
+	endpoint nex.EndpointInterface
 	dataStoreProtocol
 	UploadPokemon        func(err error, packet nex.PacketInterface, callID uint32, param *datastore_pokemon_gen6_types.GlobalTradeStationUploadPokemonParam) (*nex.RMCMessage, *nex.Error)
 	SearchPokemon        func(err error, packet nex.PacketInterface, callID uint32, param *datastore_pokemon_gen6_types.GlobalTradeStationSearchPokemonParam) (*nex.RMCMessage, *nex.Error)
@@ -101,9 +101,9 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 }
 
 // NewProtocol returns a new DataStorePokemonGen6 protocol
-func NewProtocol(server nex.ServerInterface) *Protocol {
-	protocol := &Protocol{server: server}
-	protocol.dataStoreProtocol.SetServer(server)
+func NewProtocol(endpoint nex.EndpointInterface) *Protocol {
+	protocol := &Protocol{endpoint: endpoint}
+	protocol.dataStoreProtocol.SetEndpoint(endpoint)
 
 	return protocol
 }

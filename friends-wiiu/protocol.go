@@ -77,7 +77,7 @@ const (
 
 // Protocol stores all the RMC method handlers for the Friends (WiiU) protocol and listens for requests
 type Protocol struct {
-	server                       nex.ServerInterface
+	endpoint                     nex.EndpointInterface
 	UpdateAndGetAllInformation   func(err error, packet nex.PacketInterface, callID uint32, nnaInfo *friends_wiiu_types.NNAInfo, presence *friends_wiiu_types.NintendoPresenceV2, birthday *types.DateTime) (*nex.RMCMessage, *nex.Error)
 	AddFriend                    func(err error, packet nex.PacketInterface, callID uint32, pid *types.PID) (*nex.RMCMessage, *nex.Error)
 	AddFriendByName              func(err error, packet nex.PacketInterface, callID uint32, username *types.String) (*nex.RMCMessage, *nex.Error)
@@ -102,8 +102,8 @@ type Protocol struct {
 
 // Interface implements the methods present on the Friends WiiU protocol struct
 type Interface interface {
-	Server() nex.ServerInterface
-	SetServer(server nex.ServerInterface)
+	Endpoint() nex.EndpointInterface
+	SetEndpoint(endpoint nex.EndpointInterface)
 	SetHandlerUpdateAndGetAllInformation(handler func(err error, packet nex.PacketInterface, callID uint32, nnaInfo *friends_wiiu_types.NNAInfo, presence *friends_wiiu_types.NintendoPresenceV2, birthday *types.DateTime) (*nex.RMCMessage, *nex.Error))
 	SetHandlerAddFriend(handler func(err error, packet nex.PacketInterface, callID uint32, pid *types.PID) (*nex.RMCMessage, *nex.Error))
 	SetHandlerAddFriendByName(handler func(err error, packet nex.PacketInterface, callID uint32, username *types.String) (*nex.RMCMessage, *nex.Error))
@@ -126,14 +126,14 @@ type Interface interface {
 	SetHandlerGetRequestBlockSettings(handler func(err error, packet nex.PacketInterface, callID uint32, pids *types.List[*types.PrimitiveU32]) (*nex.RMCMessage, *nex.Error))
 }
 
-// Server returns the server implementing the protocol
-func (protocol *Protocol) Server() nex.ServerInterface {
-	return protocol.server
+// Endpoint returns the endpoint implementing the protocol
+func (protocol *Protocol) Endpoint() nex.EndpointInterface {
+	return protocol.endpoint
 }
 
-// SetServer sets the server implementing the protocol
-func (protocol *Protocol) SetServer(server nex.ServerInterface) {
-	protocol.server = server
+// SetEndpoint sets the endpoint implementing the protocol
+func (protocol *Protocol) SetEndpoint(endpoint nex.EndpointInterface) {
+	protocol.endpoint = endpoint
 }
 
 // SetHandlerUpdateAndGetAllInformation sets the handler for the UpdateAndGetAllInformation method
@@ -295,6 +295,6 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 }
 
 // NewProtocol returns a new Friends (WiiU) protocol
-func NewProtocol(server nex.ServerInterface) *Protocol {
-	return &Protocol{server: server}
+func NewProtocol(endpoint nex.EndpointInterface) *Protocol {
+	return &Protocol{endpoint: endpoint}
 }

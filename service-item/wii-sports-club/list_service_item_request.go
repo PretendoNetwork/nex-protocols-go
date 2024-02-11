@@ -22,7 +22,8 @@ func (protocol *Protocol) handleListServiceItemRequest(packet nex.PacketInterfac
 	request := packet.RMCMessage()
 	callID := request.CallID
 	parameters := request.Parameters
-	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
+	endpoint := packet.Sender().Endpoint()
+	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
 	listServiceItemParam := service_item_wii_sports_club_types.NewServiceItemListServiceItemParam()
 

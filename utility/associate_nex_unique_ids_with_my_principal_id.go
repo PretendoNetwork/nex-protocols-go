@@ -23,7 +23,8 @@ func (protocol *Protocol) handleAssociateNexUniqueIDsWithMyPrincipalID(packet ne
 	request := packet.RMCMessage()
 	callID := request.CallID
 	parameters := request.Parameters
-	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
+	endpoint := packet.Sender().Endpoint()
+	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
 	uniqueIDInfo := types.NewList[*utility_types.UniqueIDInfo]()
 	uniqueIDInfo.Type = utility_types.NewUniqueIDInfo()

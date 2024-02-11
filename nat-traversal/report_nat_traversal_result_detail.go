@@ -19,12 +19,13 @@ func (protocol *Protocol) handleReportNATTraversalResultDetail(packet nex.Packet
 		return
 	}
 
-	natTraversalVersion := protocol.server.NATTraversalProtocolVersion()
+	endpoint := packet.Sender().Endpoint()
+	natTraversalVersion := endpoint.LibraryVersions().NATTraversal
 
 	request := packet.RMCMessage()
 	callID := request.CallID
 	parameters := request.Parameters
-	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
+	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
 	cid := types.NewPrimitiveU32(0)
 	result := types.NewPrimitiveBool(false)

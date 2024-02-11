@@ -22,7 +22,8 @@ func (protocol *Protocol) handleGetSupportID(packet nex.PacketInterface) {
 	request := packet.RMCMessage()
 	callID := request.CallID
 	parameters := request.Parameters
-	parametersStream := nex.NewByteStreamIn(parameters, protocol.server)
+	endpoint := packet.Sender().Endpoint()
+	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
 	getSuppordIDParam := service_item_team_kirby_clash_deluxe_types.NewServiceItemGetSupportIDParam()
 

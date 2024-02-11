@@ -18,17 +18,17 @@ const (
 
 // Protocol stores all the RMC method handlers for the Shop protocol and listens for requests
 type Protocol struct {
-	server nex.ServerInterface
+	endpoint nex.EndpointInterface
 }
 
-// Server returns the server implementing the protocol
-func (protocol *Protocol) Server() nex.ServerInterface {
-	return protocol.server
+// Endpoint returns the endpoint implementing the protocol
+func (protocol *Protocol) Endpoint() nex.EndpointInterface {
+	return protocol.endpoint
 }
 
-// SetServer sets the server implementing the protocol
-func (protocol *Protocol) SetServer(server nex.ServerInterface) {
-	protocol.server = server
+// SetEndpoint sets the endpoint implementing the protocol
+func (protocol *Protocol) SetEndpoint(endpoint nex.EndpointInterface) {
+	protocol.endpoint = endpoint
 }
 
 // HandlePacket sends the packet to the correct RMC method handler

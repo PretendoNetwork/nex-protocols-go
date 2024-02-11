@@ -28,7 +28,7 @@ type JoinMatchmakeSessionParam struct {
 // WriteTo writes the JoinMatchmakeSessionParam to the given writable
 func (jmsp *JoinMatchmakeSessionParam) WriteTo(writable types.Writable) {
 	stream := writable.(*nex.ByteStreamOut)
-	libraryVersion := stream.Server.MatchMakingProtocolVersion()
+	libraryVersion := stream.LibraryVersions.MatchMaking
 
 	contentWritable := writable.CopyNew()
 
@@ -57,7 +57,7 @@ func (jmsp *JoinMatchmakeSessionParam) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the JoinMatchmakeSessionParam from the given readable
 func (jmsp *JoinMatchmakeSessionParam) ExtractFrom(readable types.Readable) error {
 	stream := readable.(*nex.ByteStreamIn)
-	libraryVersion := stream.Server.MatchMakingProtocolVersion()
+	libraryVersion := stream.LibraryVersions.MatchMaking
 
 	var err error
 

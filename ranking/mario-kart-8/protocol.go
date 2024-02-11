@@ -36,7 +36,7 @@ type rankingProtocol = ranking.Protocol
 // Protocol stores all the RMC method handlers for the Ranking (Mario Kart 8) protocol and listens for requests
 // Embeds the Ranking protocol
 type Protocol struct {
-	server nex.ServerInterface
+	endpoint nex.EndpointInterface
 	rankingProtocol
 	GetCompetitionRankingScore    func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) (*nex.RMCMessage, *nex.Error)
 	UploadCompetitionRankingScore func(err error, packet nex.PacketInterface, callID uint32, param *ranking_mario_kart8_types.CompetitionRankingUploadScoreParam) (*nex.RMCMessage, *nex.Error)
@@ -73,9 +73,9 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 }
 
 // NewProtocol returns a new RankingMarioKart8 protocol
-func NewProtocol(server nex.ServerInterface) *Protocol {
-	protocol := &Protocol{server: server}
-	protocol.rankingProtocol.SetServer(server)
+func NewProtocol(endpoint nex.EndpointInterface) *Protocol {
+	protocol := &Protocol{endpoint: endpoint}
+	protocol.rankingProtocol.SetEndpoint(endpoint)
 
 	return protocol
 }

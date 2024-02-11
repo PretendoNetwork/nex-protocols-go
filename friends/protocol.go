@@ -55,7 +55,7 @@ const (
 
 // Protocol handles the Friends QRV protocol
 type Protocol struct {
-	server                     nex.ServerInterface
+	endpoint                   nex.EndpointInterface
 	AddFriend                  func(err error, packet nex.PacketInterface, callID uint32, uiPlayer *types.PrimitiveU32, uiDetails *types.PrimitiveU32, strMessage *types.String) (*nex.RMCMessage, *nex.Error)
 	AddFriendByName            func(err error, packet nex.PacketInterface, callID uint32, strPlayerName *types.String, uiDetails *types.PrimitiveU32, strMessage *types.String) (*nex.RMCMessage, *nex.Error)
 	AddFriendWithDetails       func(err error, packet nex.PacketInterface, callID uint32, uiPlayer *types.PrimitiveU32, uiDetails *types.PrimitiveU32, strMessage *types.String) (*nex.RMCMessage, *nex.Error)
@@ -73,8 +73,8 @@ type Protocol struct {
 
 // Interface implements the methods present on the Friends protocol struct
 type Interface interface {
-	Server() nex.ServerInterface
-	SetServer(server nex.ServerInterface)
+	Endpoint() nex.EndpointInterface
+	SetEndpoint(endpoint nex.EndpointInterface)
 	SetHandlerAddFriend(handler func(err error, packet nex.PacketInterface, callID uint32, uiPlayer *types.PrimitiveU32, uiDetails *types.PrimitiveU32, strMessage *types.String) (*nex.RMCMessage, *nex.Error))
 	SetHandlerAddFriendByName(handler func(err error, packet nex.PacketInterface, callID uint32, strPlayerName *types.String, uiDetails *types.PrimitiveU32, strMessage *types.String) (*nex.RMCMessage, *nex.Error))
 	SetHandlerAddFriendWithDetails(handler func(err error, packet nex.PacketInterface, callID uint32, uiPlayer *types.PrimitiveU32, uiDetails *types.PrimitiveU32, strMessage *types.String) (*nex.RMCMessage, *nex.Error))
@@ -90,14 +90,14 @@ type Interface interface {
 	SetHandlerGetRelationships(handler func(err error, packet nex.PacketInterface, callID uint32, resultRange *types.ResultRange) (*nex.RMCMessage, *nex.Error))
 }
 
-// Server returns the server implementing the protocol
-func (protocol *Protocol) Server() nex.ServerInterface {
-	return protocol.server
+// Endpoint returns the endpoint implementing the protocol
+func (protocol *Protocol) Endpoint() nex.EndpointInterface {
+	return protocol.endpoint
 }
 
-// SetServer sets the server implementing the protocol
-func (protocol *Protocol) SetServer(server nex.ServerInterface) {
-	protocol.server = server
+// SetEndpoint sets the endpoint implementing the protocol
+func (protocol *Protocol) SetEndpoint(endpoint nex.EndpointInterface) {
+	protocol.endpoint = endpoint
 }
 
 // SetHandlerAddFriend sets the handler for the AddFriend method
@@ -210,6 +210,6 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 }
 
 // NewProtocol returns a new Friends protocol
-func NewProtocol(server nex.ServerInterface) *Protocol {
-	return &Protocol{server: server}
+func NewProtocol(endpoint nex.EndpointInterface) *Protocol {
+	return &Protocol{endpoint: endpoint}
 }

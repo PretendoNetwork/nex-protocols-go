@@ -34,7 +34,7 @@ const (
 
 // Protocol handles the MatchMakingExt protocol
 type Protocol struct {
-	server                  nex.ServerInterface
+	endpoint                nex.EndpointInterface
 	EndParticipation        func(err error, packet nex.PacketInterface, callID uint32, idGathering *types.PrimitiveU32, strMessage *types.String) (*nex.RMCMessage, *nex.Error)
 	GetParticipants         func(err error, packet nex.PacketInterface, callID uint32, idGathering *types.PrimitiveU32, bOnlyActive *types.PrimitiveBool) (*nex.RMCMessage, *nex.Error)
 	GetDetailedParticipants func(err error, packet nex.PacketInterface, callID uint32, idGathering *types.PrimitiveU32, bOnlyActive *types.PrimitiveBool) (*nex.RMCMessage, *nex.Error)
@@ -45,8 +45,8 @@ type Protocol struct {
 
 // Interface implements the methods present on the Match Making Ext protocol struct
 type Interface interface {
-	Server() nex.ServerInterface
-	SetServer(server nex.ServerInterface)
+	Endpoint() nex.EndpointInterface
+	SetEndpoint(endpoint nex.EndpointInterface)
 	SetHandlerEndParticipation(handler func(err error, packet nex.PacketInterface, callID uint32, idGathering *types.PrimitiveU32, strMessage *types.String) (*nex.RMCMessage, *nex.Error))
 	SetHandlerGetParticipants(handler func(err error, packet nex.PacketInterface, callID uint32, idGathering *types.PrimitiveU32, bOnlyActive *types.PrimitiveBool) (*nex.RMCMessage, *nex.Error))
 	SetHandlerGetDetailedParticipants(handler func(err error, packet nex.PacketInterface, callID uint32, idGathering *types.PrimitiveU32, bOnlyActive *types.PrimitiveBool) (*nex.RMCMessage, *nex.Error))
@@ -55,14 +55,14 @@ type Interface interface {
 	SetHandlerDeleteFromDeletions(handler func(err error, packet nex.PacketInterface, callID uint32, lstDeletions *types.List[*types.PrimitiveU32], pid *types.PID) (*nex.RMCMessage, *nex.Error))
 }
 
-// Server returns the server implementing the protocol
-func (protocol *Protocol) Server() nex.ServerInterface {
-	return protocol.server
+// Endpoint returns the endpoint implementing the protocol
+func (protocol *Protocol) Endpoint() nex.EndpointInterface {
+	return protocol.endpoint
 }
 
-// SetServer sets the server implementing the protocol
-func (protocol *Protocol) SetServer(server nex.ServerInterface) {
-	protocol.server = server
+// SetEndpoint sets the endpoint implementing the protocol
+func (protocol *Protocol) SetEndpoint(endpoint nex.EndpointInterface) {
+	protocol.endpoint = endpoint
 }
 
 // SetHandlerEndParticipation sets the handler for the EndParticipation method
@@ -126,6 +126,6 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 }
 
 // NewProtocol returns a new Match Making Ext protocol
-func NewProtocol(server nex.ServerInterface) *Protocol {
-	return &Protocol{server: server}
+func NewProtocol(endpoint nex.EndpointInterface) *Protocol {
+	return &Protocol{endpoint: endpoint}
 }

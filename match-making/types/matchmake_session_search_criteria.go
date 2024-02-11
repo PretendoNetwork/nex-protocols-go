@@ -33,7 +33,7 @@ type MatchmakeSessionSearchCriteria struct {
 // WriteTo writes the MatchmakeSessionSearchCriteria to the given writable
 func (mssc *MatchmakeSessionSearchCriteria) WriteTo(writable types.Writable) {
 	stream := writable.(*nex.ByteStreamOut)
-	libraryVersion := stream.Server.MatchMakingProtocolVersion()
+	libraryVersion := stream.LibraryVersions.MatchMaking
 
 	contentWritable := writable.CopyNew()
 
@@ -88,7 +88,7 @@ func (mssc *MatchmakeSessionSearchCriteria) WriteTo(writable types.Writable) {
 // ExtractFrom extracts the MatchmakeSessionSearchCriteria from the given readable
 func (mssc *MatchmakeSessionSearchCriteria) ExtractFrom(readable types.Readable) error {
 	stream := readable.(*nex.ByteStreamIn)
-	libraryVersion := stream.Server.MatchMakingProtocolVersion()
+	libraryVersion := stream.LibraryVersions.MatchMaking
 
 	var err error
 

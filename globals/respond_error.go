@@ -13,7 +13,7 @@ func RespondError(packet nex.PacketInterface, protocolID uint16, err error) {
 		errorCode = err.ResultCode
 	}
 
-	rmcResponse := nex.NewRMCError(sender.Server(), errorCode)
+	rmcResponse := nex.NewRMCError(sender.Endpoint(), errorCode)
 	rmcResponse.ProtocolID = request.ProtocolID
 	rmcResponse.CallID = request.CallID
 
@@ -27,10 +27,12 @@ func RespondError(packet nex.PacketInterface, protocolID uint16, err error) {
 		// * so to avoid a bunch of assertions just create a temp variable
 		var prudpPacket nex.PRUDPPacketInterface
 
+		endpoint := sender.(*nex.PRUDPConnection).Endpoint()
+		server := endpoint.(*nex.PRUDPEndPoint).Server
 		if packet.Version() == 1 {
-			prudpPacket, _ = nex.NewPRUDPPacketV1(sender.(*nex.PRUDPConnection), nil)
+			prudpPacket, _ = nex.NewPRUDPPacketV1(server, sender.(*nex.PRUDPConnection), nil)
 		} else {
-			prudpPacket, _ = nex.NewPRUDPPacketV0(sender.(*nex.PRUDPConnection), nil)
+			prudpPacket, _ = nex.NewPRUDPPacketV0(server, sender.(*nex.PRUDPConnection), nil)
 		}
 
 		prudpPacket.SetType(nex.DataPacket)
@@ -54,5 +56,5 @@ func RespondError(packet nex.PacketInterface, protocolID uint16, err error) {
 		responsePacket.SetRMCMessage(rmcResponse)
 	}
 
-	sender.Server().Send(responsePacket)
+	sender.Endpoint().Send(responsePacket)
 }

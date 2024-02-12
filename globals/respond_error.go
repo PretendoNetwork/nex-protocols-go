@@ -11,6 +11,9 @@ func RespondError(packet nex.PacketInterface, protocolID uint16, err error) {
 
 	if err, ok := err.(*nex.Error); ok {
 		errorCode = err.ResultCode
+		err.Packet = packet
+
+		packet.Sender().Endpoint().EmitError(err)
 	}
 
 	rmcResponse := nex.NewRMCError(sender.Endpoint(), errorCode)

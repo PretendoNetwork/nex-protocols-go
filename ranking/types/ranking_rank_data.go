@@ -20,7 +20,7 @@ type RankingRankData struct {
 	Groups      *types.Buffer
 	Param       *types.PrimitiveU64
 	CommonData  *types.Buffer
-	UpdateTime  *types.DateTime     // * NEX v3.6.0
+	UpdateTime  *types.DateTime // * NEX v3.6.0
 }
 
 // WriteTo writes the RankingRankData to the given writable

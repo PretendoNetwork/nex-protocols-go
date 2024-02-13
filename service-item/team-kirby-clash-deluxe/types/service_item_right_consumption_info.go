@@ -106,7 +106,7 @@ func (sirci *ServiceItemRightConsumptionInfo) FormatToString(indentationLevel in
 func NewServiceItemRightConsumptionInfo() *ServiceItemRightConsumptionInfo {
 	sirci := &ServiceItemRightConsumptionInfo{
 		ServiceItemRightInfo: NewServiceItemRightInfo(),
-		AccountRights: types.NewList[*ServiceItemAccountRightConsumption](),
+		AccountRights:        types.NewList[*ServiceItemAccountRightConsumption](),
 	}
 
 	sirci.AccountRights.Type = NewServiceItemAccountRightConsumption()

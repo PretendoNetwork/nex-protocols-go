@@ -131,7 +131,7 @@ func (fm *FriendMii) FormatToString(indentationLevel int) string {
 // NewFriendMii returns a new FriendMii
 func NewFriendMii() *FriendMii {
 	fm := &FriendMii{
-		Data       : types.NewData(),
+		Data:       types.NewData(),
 		PID:        types.NewPID(0),
 		Mii:        NewMii(),
 		ModifiedAt: types.NewDateTime(0),

@@ -131,7 +131,7 @@ func (fr *FriendRequest) FormatToString(indentationLevel int) string {
 // NewFriendRequest returns a new FriendRequest
 func NewFriendRequest() *FriendRequest {
 	fr := &FriendRequest{
-		Data          : types.NewData(),
+		Data:          types.NewData(),
 		PrincipalInfo: NewPrincipalBasicInfo(),
 		Message:       NewFriendRequestMessage(),
 		SentOn:        types.NewDateTime(0),

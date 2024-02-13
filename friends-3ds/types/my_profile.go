@@ -196,7 +196,7 @@ func (mp *MyProfile) FormatToString(indentationLevel int) string {
 // NewMyProfile returns a new MyProfile
 func NewMyProfile() *MyProfile {
 	mp := &MyProfile{
-		Data     : types.NewData(),
+		Data:     types.NewData(),
 		Region:   types.NewPrimitiveU8(0),
 		Country:  types.NewPrimitiveU8(0),
 		Area:     types.NewPrimitiveU8(0),

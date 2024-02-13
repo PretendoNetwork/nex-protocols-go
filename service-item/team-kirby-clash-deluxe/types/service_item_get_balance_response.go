@@ -106,7 +106,7 @@ func (sigbr *ServiceItemGetBalanceResponse) FormatToString(indentationLevel int)
 func NewServiceItemGetBalanceResponse() *ServiceItemGetBalanceResponse {
 	sigbr := &ServiceItemGetBalanceResponse{
 		ServiceItemEShopResponse: NewServiceItemEShopResponse(),
-		NullableBalance: types.NewList[*ServiceItemAmount](),
+		NullableBalance:          types.NewList[*ServiceItemAmount](),
 	}
 
 	sigbr.NullableBalance.Type = NewServiceItemAmount()

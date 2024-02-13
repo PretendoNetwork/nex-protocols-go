@@ -105,7 +105,7 @@ func (tm *TextMessage) FormatToString(indentationLevel int) string {
 // NewTextMessage returns a new TextMessage
 func NewTextMessage() *TextMessage {
 	tm := &TextMessage{
-		UserMessage : NewUserMessage(),
+		UserMessage: NewUserMessage(),
 		StrTextBody: types.NewString(""),
 	}
 

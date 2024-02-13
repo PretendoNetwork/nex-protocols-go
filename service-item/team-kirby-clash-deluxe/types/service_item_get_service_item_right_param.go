@@ -15,7 +15,7 @@ type ServiceItemGetServiceItemRightParam struct {
 	DeviceID    *types.String
 	UniqueID    *types.PrimitiveU32
 	ItemGroup   *types.PrimitiveU8
-	Platform    *types.PrimitiveU8  // * Revision 1
+	Platform    *types.PrimitiveU8 // * Revision 1
 }
 
 // WriteTo writes the ServiceItemGetServiceItemRightParam to the given writable

@@ -157,7 +157,7 @@ func (mrr *MatchmakeRefereeRound) FormatToString(indentationLevel int) string {
 // NewMatchmakeRefereeRound returns a new MatchmakeRefereeRound
 func NewMatchmakeRefereeRound() *MatchmakeRefereeRound {
 	mrr := &MatchmakeRefereeRound{
-		Data                           : types.NewData(),
+		Data:                           types.NewData(),
 		RoundID:                        types.NewPrimitiveU64(0),
 		GID:                            types.NewPrimitiveU32(0),
 		State:                          types.NewPrimitiveU32(0),

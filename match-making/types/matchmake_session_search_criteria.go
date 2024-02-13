@@ -20,14 +20,14 @@ type MatchmakeSessionSearchCriteria struct {
 	VacantOnly               *types.PrimitiveBool
 	ExcludeLocked            *types.PrimitiveBool
 	ExcludeNonHostPID        *types.PrimitiveBool
-	SelectionMethod          *types.PrimitiveU32        // * NEX v3.0.0
-	VacantParticipants       *types.PrimitiveU16        // * NEX v3.4.0
-	MatchmakeParam           *MatchmakeParam            // * NEX v3.6.0
-	ExcludeUserPasswordSet   *types.PrimitiveBool       // * NEX v3.7.0
-	ExcludeSystemPasswordSet *types.PrimitiveBool       // * NEX v3.7.0
-	ReferGID                 *types.PrimitiveU32        // * NEX v3.8.0
-	CodeWord                 *types.String              // * NEX v4.0.0
-	ResultRange              *types.ResultRange         // * NEX v4.0.0
+	SelectionMethod          *types.PrimitiveU32  // * NEX v3.0.0
+	VacantParticipants       *types.PrimitiveU16  // * NEX v3.4.0
+	MatchmakeParam           *MatchmakeParam      // * NEX v3.6.0
+	ExcludeUserPasswordSet   *types.PrimitiveBool // * NEX v3.7.0
+	ExcludeSystemPasswordSet *types.PrimitiveBool // * NEX v3.7.0
+	ReferGID                 *types.PrimitiveU32  // * NEX v3.8.0
+	CodeWord                 *types.String        // * NEX v4.0.0
+	ResultRange              *types.ResultRange   // * NEX v4.0.0
 }
 
 // WriteTo writes the MatchmakeSessionSearchCriteria to the given writable

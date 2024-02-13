@@ -118,7 +118,7 @@ func (ai *ApplicationInfo) FormatToString(indentationLevel int) string {
 // NewApplicationInfo returns a new ApplicationInfo
 func NewApplicationInfo() *ApplicationInfo {
 	ai := &ApplicationInfo{
-		Data         : types.NewData(),
+		Data:         types.NewData(),
 		TitleID:      types.NewPrimitiveU64(0),
 		TitleVersion: types.NewPrimitiveU16(0),
 	}

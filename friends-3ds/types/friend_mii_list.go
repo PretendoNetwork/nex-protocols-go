@@ -131,7 +131,7 @@ func (fml *FriendMiiList) FormatToString(indentationLevel int) string {
 // NewFriendMiiList returns a new FriendMiiList
 func NewFriendMiiList() *FriendMiiList {
 	fml := &FriendMiiList{
-		Data     : types.NewData(),
+		Data:     types.NewData(),
 		Unknown1: types.NewPrimitiveU32(0),
 		MiiList:  NewMiiList(),
 		Unknown2: types.NewDateTime(0),

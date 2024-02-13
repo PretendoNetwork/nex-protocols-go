@@ -131,7 +131,7 @@ func (fr *FriendRelationship) FormatToString(indentationLevel int) string {
 // NewFriendRelationship returns a new FriendRelationship
 func NewFriendRelationship() *FriendRelationship {
 	fr := &FriendRelationship{
-		Data             : types.NewData(),
+		Data:             types.NewData(),
 		PID:              types.NewPID(0),
 		LFC:              types.NewPrimitiveU64(0),
 		RelationshipType: types.NewPrimitiveU8(0),

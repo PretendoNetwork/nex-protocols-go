@@ -13,7 +13,7 @@ type ServiceItemGetLawMessageParam struct {
 	types.Structure
 	Language *types.String
 	UniqueID *types.PrimitiveU32
-	Platform *types.PrimitiveU8  // * Revision 1
+	Platform *types.PrimitiveU8 // * Revision 1
 }
 
 // WriteTo writes the ServiceItemGetLawMessageParam to the given writable

@@ -118,7 +118,7 @@ func (mrerp *MatchmakeRefereeEndRoundParam) FormatToString(indentationLevel int)
 // NewMatchmakeRefereeEndRoundParam returns a new MatchmakeRefereeEndRoundParam
 func NewMatchmakeRefereeEndRoundParam() *MatchmakeRefereeEndRoundParam {
 	mrerp := &MatchmakeRefereeEndRoundParam{
-		Data                 : types.NewData(),
+		Data:                 types.NewData(),
 		RoundID:              types.NewPrimitiveU64(0),
 		PersonalRoundResults: types.NewList[*MatchmakeRefereePersonalRoundResult](),
 	}

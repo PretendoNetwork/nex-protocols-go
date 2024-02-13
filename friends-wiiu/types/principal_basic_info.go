@@ -144,7 +144,7 @@ func (pbi *PrincipalBasicInfo) FormatToString(indentationLevel int) string {
 // NewPrincipalBasicInfo returns a new PrincipalBasicInfo
 func NewPrincipalBasicInfo() *PrincipalBasicInfo {
 	pbi := &PrincipalBasicInfo{
-		Data    : types.NewData(),
+		Data:    types.NewData(),
 		PID:     types.NewPID(0),
 		NNID:    types.NewString(""),
 		Mii:     NewMiiV2(),

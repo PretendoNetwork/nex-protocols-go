@@ -118,7 +118,7 @@ func (fp *FriendPresence) FormatToString(indentationLevel int) string {
 // NewFriendPresence returns a new FriendPresence
 func NewFriendPresence() *FriendPresence {
 	fp := &FriendPresence{
-		Data     : types.NewData(),
+		Data:     types.NewData(),
 		PID:      types.NewPID(0),
 		Presence: NewNintendoPresence(),
 	}

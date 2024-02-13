@@ -106,7 +106,7 @@ func (sigsirr *ServiceItemGetServiceItemRightResponse) FormatToString(indentatio
 func NewServiceItemGetServiceItemRightResponse() *ServiceItemGetServiceItemRightResponse {
 	sigsirr := &ServiceItemGetServiceItemRightResponse{
 		ServiceItemEShopResponse: NewServiceItemEShopResponse(),
-		NullableRightInfos: types.NewList[*ServiceItemRightInfos](),
+		NullableRightInfos:       types.NewList[*ServiceItemRightInfos](),
 	}
 
 	sigsirr.NullableRightInfos.Type = NewServiceItemRightInfos()

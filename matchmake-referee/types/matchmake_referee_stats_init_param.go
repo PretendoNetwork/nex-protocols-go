@@ -118,7 +118,7 @@ func (mrsip *MatchmakeRefereeStatsInitParam) FormatToString(indentationLevel int
 // NewMatchmakeRefereeStatsInitParam returns a new MatchmakeRefereeStatsInitParam
 func NewMatchmakeRefereeStatsInitParam() *MatchmakeRefereeStatsInitParam {
 	mrsip := &MatchmakeRefereeStatsInitParam{
-		Data               : types.NewData(),
+		Data:               types.NewData(),
 		Category:           types.NewPrimitiveU32(0),
 		InitialRatingValue: types.NewPrimitiveU32(0),
 	}

@@ -131,7 +131,7 @@ func (c *Comment) FormatToString(indentationLevel int) string {
 // NewComment returns a new Comment
 func NewComment() *Comment {
 	c := &Comment{
-		Data        : types.NewData(),
+		Data:        types.NewData(),
 		Unknown:     types.NewPrimitiveU8(0),
 		Contents:    types.NewString(""),
 		LastChanged: types.NewDateTime(0),

@@ -106,7 +106,7 @@ func (siglmr *ServiceItemGetLawMessageResponse) FormatToString(indentationLevel 
 func NewServiceItemGetLawMessageResponse() *ServiceItemGetLawMessageResponse {
 	siglmr := &ServiceItemGetLawMessageResponse{
 		ServiceItemEShopResponse: NewServiceItemEShopResponse(),
-		NullableLawMessage: types.NewList[*ServiceItemLawMessage](),
+		NullableLawMessage:       types.NewList[*ServiceItemLawMessage](),
 	}
 
 	siglmr.NullableLawMessage.Type = NewServiceItemLawMessage()

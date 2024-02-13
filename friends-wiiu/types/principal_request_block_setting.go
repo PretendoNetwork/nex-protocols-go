@@ -118,7 +118,7 @@ func (prbs *PrincipalRequestBlockSetting) FormatToString(indentationLevel int) s
 // NewPrincipalRequestBlockSetting returns a new PrincipalRequestBlockSetting
 func NewPrincipalRequestBlockSetting() *PrincipalRequestBlockSetting {
 	prbs := &PrincipalRequestBlockSetting{
-		Data      : types.NewData(),
+		Data:      types.NewData(),
 		PID:       types.NewPrimitiveU32(0),
 		IsBlocked: types.NewPrimitiveBool(false),
 	}

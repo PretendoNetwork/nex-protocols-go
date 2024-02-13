@@ -157,7 +157,7 @@ func (pn *PersistentNotification) FormatToString(indentationLevel int) string {
 // NewPersistentNotification returns a new PersistentNotification
 func NewPersistentNotification() *PersistentNotification {
 	pn := &PersistentNotification{
-		Data     : types.NewData(),
+		Data:     types.NewData(),
 		Unknown1: types.NewPrimitiveU64(0),
 		Unknown2: types.NewPrimitiveU32(0),
 		Unknown3: types.NewPrimitiveU32(0),

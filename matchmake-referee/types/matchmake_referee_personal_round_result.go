@@ -157,7 +157,7 @@ func (mrprr *MatchmakeRefereePersonalRoundResult) FormatToString(indentationLeve
 // NewMatchmakeRefereePersonalRoundResult returns a new MatchmakeRefereePersonalRoundResult
 func NewMatchmakeRefereePersonalRoundResult() *MatchmakeRefereePersonalRoundResult {
 	mrprr := &MatchmakeRefereePersonalRoundResult{
-		Data                    : types.NewData(),
+		Data:                    types.NewData(),
 		PID:                     types.NewPID(0),
 		PersonalRoundResultFlag: types.NewPrimitiveU32(0),
 		RoundWinLoss:            types.NewPrimitiveU32(0),

@@ -209,7 +209,7 @@ func (um *UserMessage) FormatToString(indentationLevel int) string {
 // NewUserMessage returns a new UserMessage
 func NewUserMessage() *UserMessage {
 	um := &UserMessage{
-		Data             : types.NewData(),
+		Data:             types.NewData(),
 		UIID:             types.NewPrimitiveU32(0),
 		UIParentID:       types.NewPrimitiveU32(0),
 		PIDSender:        types.NewPID(0),

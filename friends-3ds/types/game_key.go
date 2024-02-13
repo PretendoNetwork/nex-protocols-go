@@ -118,7 +118,7 @@ func (gk *GameKey) FormatToString(indentationLevel int) string {
 // NewGameKey returns a new GameKey
 func NewGameKey() *GameKey {
 	gk := &GameKey{
-		Data         : types.NewData(),
+		Data:         types.NewData(),
 		TitleID:      types.NewPrimitiveU64(0),
 		TitleVersion: types.NewPrimitiveU16(0),
 	}

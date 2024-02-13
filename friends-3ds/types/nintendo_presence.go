@@ -222,7 +222,7 @@ func (np *NintendoPresence) FormatToString(indentationLevel int) string {
 // NewNintendoPresence returns a new NintendoPresence
 func NewNintendoPresence() *NintendoPresence {
 	np := &NintendoPresence{
-		Data              : types.NewData(),
+		Data:              types.NewData(),
 		ChangedFlags:      types.NewPrimitiveU32(0),
 		GameKey:           NewGameKey(),
 		Message:           types.NewString(""),

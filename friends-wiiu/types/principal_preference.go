@@ -131,7 +131,7 @@ func (pp *PrincipalPreference) FormatToString(indentationLevel int) string {
 // NewPrincipalPreference returns a new PrincipalPreference
 func NewPrincipalPreference() *PrincipalPreference {
 	pp := &PrincipalPreference{
-		Data                : types.NewData(),
+		Data:                types.NewData(),
 		ShowOnlinePresence:  types.NewPrimitiveBool(false),
 		ShowCurrentTitle:    types.NewPrimitiveBool(false),
 		BlockFriendRequests: types.NewPrimitiveBool(false),

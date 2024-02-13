@@ -132,9 +132,9 @@ func (siarc *ServiceItemAccountRightConsumption) FormatToString(indentationLevel
 func NewServiceItemAccountRightConsumption() *ServiceItemAccountRightConsumption {
 	siarc := &ServiceItemAccountRightConsumption{
 		ServiceItemAccountRight: NewServiceItemAccountRight(),
-		UsedCount:    types.NewPrimitiveU32(0),
-		ExpiredCount: types.NewPrimitiveU32(0),
-		ExpiryCounts: types.NewList[*types.PrimitiveU32](),
+		UsedCount:               types.NewPrimitiveU32(0),
+		ExpiredCount:            types.NewPrimitiveU32(0),
+		ExpiryCounts:            types.NewList[*types.PrimitiveU32](),
 	}
 
 	siarc.ExpiryCounts.Type = types.NewPrimitiveU32(0)

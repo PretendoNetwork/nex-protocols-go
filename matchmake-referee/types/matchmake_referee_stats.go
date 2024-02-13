@@ -300,7 +300,7 @@ func (mrs *MatchmakeRefereeStats) FormatToString(indentationLevel int) string {
 // NewMatchmakeRefereeStats returns a new MatchmakeRefereeStats
 func NewMatchmakeRefereeStats() *MatchmakeRefereeStats {
 	mrs := &MatchmakeRefereeStats{
-		Data                : types.NewData(),
+		Data:                types.NewData(),
 		UniqueID:            types.NewPrimitiveU64(0),
 		Category:            types.NewPrimitiveU32(0),
 		PID:                 types.NewPID(0),

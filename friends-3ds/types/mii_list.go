@@ -144,7 +144,7 @@ func (ml *MiiList) FormatToString(indentationLevel int) string {
 // NewMiiList returns a new MiiList
 func NewMiiList() *MiiList {
 	ml := &MiiList{
-		Data        : types.NewData(),
+		Data:        types.NewData(),
 		Unknown1:    types.NewString(""),
 		Unknown2:    types.NewPrimitiveBool(false),
 		Unknown3:    types.NewPrimitiveU8(0),

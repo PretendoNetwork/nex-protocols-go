@@ -106,7 +106,7 @@ func (sipsir *ServiceItemPurchaseServiceItemResponse) FormatToString(indentation
 func NewServiceItemPurchaseServiceItemResponse() *ServiceItemPurchaseServiceItemResponse {
 	sipsir := &ServiceItemPurchaseServiceItemResponse{
 		ServiceItemEShopResponse: NewServiceItemEShopResponse(),
-		NullablePurchaceInfo: types.NewList[*ServiceItemPurchaceInfo](),
+		NullablePurchaceInfo:     types.NewList[*ServiceItemPurchaceInfo](),
 	}
 
 	sipsir.NullablePurchaceInfo.Type = NewServiceItemPurchaceInfo()

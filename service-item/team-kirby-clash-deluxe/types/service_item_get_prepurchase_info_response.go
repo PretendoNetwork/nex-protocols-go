@@ -106,7 +106,7 @@ func (sigpir *ServiceItemGetPrepurchaseInfoResponse) FormatToString(indentationL
 func NewServiceItemGetPrepurchaseInfoResponse() *ServiceItemGetPrepurchaseInfoResponse {
 	sigpir := &ServiceItemGetPrepurchaseInfoResponse{
 		ServiceItemEShopResponse: NewServiceItemEShopResponse(),
-		NullablePrepurchaseInfo: types.NewList[*ServiceItemPrepurchaseInfo](),
+		NullablePrepurchaseInfo:  types.NewList[*ServiceItemPrepurchaseInfo](),
 	}
 
 	sigpir.NullablePrepurchaseInfo.Type = NewServiceItemPrepurchaseInfo()

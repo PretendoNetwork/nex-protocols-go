@@ -106,7 +106,7 @@ func (siusir *ServiceItemUseServiceItemResponse) FormatToString(indentationLevel
 func NewServiceItemUseServiceItemResponse() *ServiceItemUseServiceItemResponse {
 	siusir := &ServiceItemUseServiceItemResponse{
 		ServiceItemEShopResponse: NewServiceItemEShopResponse(),
-		NullableUsedInfo: types.NewList[*ServiceItemUsedInfo](),
+		NullableUsedInfo:         types.NewList[*ServiceItemUsedInfo](),
 	}
 
 	siusir.NullableUsedInfo.Type = NewServiceItemUsedInfo()

@@ -235,7 +235,7 @@ func (fpi *FriendPersistentInfo) FormatToString(indentationLevel int) string {
 // NewFriendPersistentInfo returns a new FriendPersistentInfo
 func NewFriendPersistentInfo() *FriendPersistentInfo {
 	fpi := &FriendPersistentInfo{
-		Data             : types.NewData(),
+		Data:             types.NewData(),
 		PID:              types.NewPID(0),
 		Region:           types.NewPrimitiveU8(0),
 		Country:          types.NewPrimitiveU8(0),

@@ -16,7 +16,7 @@ type ServiceItemListServiceItemParam struct {
 	Size               *types.PrimitiveU32
 	IsBalanceAvailable *types.PrimitiveBool
 	UniqueID           *types.PrimitiveU32
-	Platform           *types.PrimitiveU8   // * Revision 1
+	Platform           *types.PrimitiveU8 // * Revision 1
 }
 
 // WriteTo writes the ServiceItemListServiceItemParam to the given writable

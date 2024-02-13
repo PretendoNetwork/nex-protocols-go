@@ -131,7 +131,7 @@ func (fp *FriendPicture) FormatToString(indentationLevel int) string {
 // NewFriendPicture returns a new FriendPicture
 func NewFriendPicture() *FriendPicture {
 	fp := &FriendPicture{
-		Data        : types.NewData(),
+		Data:        types.NewData(),
 		Unknown1:    types.NewPrimitiveU32(0),
 		PictureData: types.NewBuffer(nil),
 		Unknown2:    types.NewDateTime(0),

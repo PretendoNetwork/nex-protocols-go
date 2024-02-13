@@ -16,7 +16,7 @@ type DataStorePrepareGetParam struct {
 	LockID            *types.PrimitiveU32
 	PersistenceTarget *DataStorePersistenceTarget
 	AccessPassword    *types.PrimitiveU64
-	ExtraData         *types.List[*types.String]  // * NEX v3.5.0
+	ExtraData         *types.List[*types.String] // * NEX v3.5.0
 }
 
 // WriteTo writes the DataStorePrepareGetParam to the given writable

@@ -170,7 +170,7 @@ func (fi *FriendInfo) FormatToString(indentationLevel int) string {
 // NewFriendInfo returns a new FriendInfo
 func NewFriendInfo() *FriendInfo {
 	fi := &FriendInfo{
-		Data         : types.NewData(),
+		Data:         types.NewData(),
 		NNAInfo:      NewNNAInfo(),
 		Presence:     NewNintendoPresenceV2(),
 		Status:       NewComment(),

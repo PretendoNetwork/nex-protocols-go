@@ -20,7 +20,7 @@ const (
 // Protocol handles the RemoteLogDevice protocol
 type Protocol struct {
 	endpoint nex.EndpointInterface
-	Log    func(err error, packet nex.PacketInterface, callID uint32, strLine *types.String) (*nex.RMCMessage, *nex.Error)
+	Log      func(err error, packet nex.PacketInterface, callID uint32, strLine *types.String) (*nex.RMCMessage, *nex.Error)
 }
 
 // Interface implements the methods present on the Remote Log Device protocol struct

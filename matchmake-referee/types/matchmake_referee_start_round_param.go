@@ -131,7 +131,7 @@ func (mrsrp *MatchmakeRefereeStartRoundParam) FormatToString(indentationLevel in
 // NewMatchmakeRefereeStartRoundParam returns a new MatchmakeRefereeStartRoundParam
 func NewMatchmakeRefereeStartRoundParam() *MatchmakeRefereeStartRoundParam {
 	mrsrp := &MatchmakeRefereeStartRoundParam{
-		Data                 : types.NewData(),
+		Data:                 types.NewData(),
 		PersonalDataCategory: types.NewPrimitiveU32(0),
 		GID:                  types.NewPrimitiveU32(0),
 		PIDs:                 types.NewList[*types.PID](),

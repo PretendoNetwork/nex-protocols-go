@@ -196,7 +196,7 @@ func (pg *PersistentGathering) FormatToString(indentationLevel int) string {
 // NewPersistentGathering returns a new PersistentGathering
 func NewPersistentGathering() *PersistentGathering {
 	pg := &PersistentGathering{
-		Gathering              : NewGathering(),
+		Gathering:              NewGathering(),
 		CommunityType:          types.NewPrimitiveU32(0),
 		Password:               types.NewString(""),
 		Attribs:                types.NewList[*types.PrimitiveU32](),

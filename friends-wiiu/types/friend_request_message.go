@@ -209,7 +209,7 @@ func (frm *FriendRequestMessage) FormatToString(indentationLevel int) string {
 // NewFriendRequestMessage returns a new FriendRequestMessage
 func NewFriendRequestMessage() *FriendRequestMessage {
 	frm := &FriendRequestMessage{
-		Data            : types.NewData(),
+		Data:            types.NewData(),
 		FriendRequestID: types.NewPrimitiveU64(0),
 		Received:        types.NewPrimitiveBool(false),
 		Unknown2:        types.NewPrimitiveU8(0),

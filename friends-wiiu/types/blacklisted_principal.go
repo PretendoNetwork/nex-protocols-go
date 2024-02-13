@@ -131,7 +131,7 @@ func (bp *BlacklistedPrincipal) FormatToString(indentationLevel int) string {
 // NewBlacklistedPrincipal returns a new BlacklistedPrincipal
 func NewBlacklistedPrincipal() *BlacklistedPrincipal {
 	bp := &BlacklistedPrincipal{
-		Data               : types.NewData(),
+		Data:               types.NewData(),
 		PrincipalBasicInfo: NewPrincipalBasicInfo(),
 		GameKey:            NewGameKey(),
 		BlackListedSince:   types.NewDateTime(0),

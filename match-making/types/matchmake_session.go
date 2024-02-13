@@ -19,16 +19,16 @@ type MatchmakeSession struct {
 	MatchmakeSystemType   *types.PrimitiveU32
 	ApplicationBuffer     *types.Buffer
 	ParticipationCount    *types.PrimitiveU32
-	ProgressScore         *types.PrimitiveU8               // * NEX v3.4.0
-	SessionKey            *types.Buffer                    // * NEX v3.0.0
-	Option                *types.PrimitiveU32              // * NEX v3.5.0
-	MatchmakeParam        *MatchmakeParam                  // * NEX v3.6.0
-	StartedTime           *types.DateTime                  // * NEX v3.6.0
-	UserPassword          *types.String                    // * NEX v3.7.0
-	ReferGID              *types.PrimitiveU32              // * NEX v3.8.0
-	UserPasswordEnabled   *types.PrimitiveBool             // * NEX v3.8.0
-	SystemPasswordEnabled *types.PrimitiveBool             // * NEX v3.8.0
-	CodeWord              *types.String                    // * NEX v4.0.0
+	ProgressScore         *types.PrimitiveU8   // * NEX v3.4.0
+	SessionKey            *types.Buffer        // * NEX v3.0.0
+	Option                *types.PrimitiveU32  // * NEX v3.5.0
+	MatchmakeParam        *MatchmakeParam      // * NEX v3.6.0
+	StartedTime           *types.DateTime      // * NEX v3.6.0
+	UserPassword          *types.String        // * NEX v3.7.0
+	ReferGID              *types.PrimitiveU32  // * NEX v3.8.0
+	UserPasswordEnabled   *types.PrimitiveBool // * NEX v3.8.0
+	SystemPasswordEnabled *types.PrimitiveBool // * NEX v3.8.0
+	CodeWord              *types.String        // * NEX v4.0.0
 }
 
 // WriteTo writes the MatchmakeSession to the given writable
@@ -357,7 +357,7 @@ func (ms *MatchmakeSession) FormatToString(indentationLevel int) string {
 // NewMatchmakeSession returns a new MatchmakeSession
 func NewMatchmakeSession() *MatchmakeSession {
 	ms := &MatchmakeSession{
-		Gathering             : NewGathering(),
+		Gathering:             NewGathering(),
 		GameMode:              types.NewPrimitiveU32(0),
 		Attributes:            types.NewList[*types.PrimitiveU32](),
 		OpenParticipation:     types.NewPrimitiveBool(false),

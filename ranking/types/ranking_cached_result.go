@@ -132,9 +132,9 @@ func (rcr *RankingCachedResult) FormatToString(indentationLevel int) string {
 func NewRankingCachedResult() *RankingCachedResult {
 	rcr := &RankingCachedResult{
 		RankingResult: NewRankingResult(),
-		CreatedTime: types.NewDateTime(0),
-		ExpiredTime: types.NewDateTime(0),
-		MaxLength:   types.NewPrimitiveU8(0),
+		CreatedTime:   types.NewDateTime(0),
+		ExpiredTime:   types.NewDateTime(0),
+		MaxLength:     types.NewPrimitiveU8(0),
 	}
 
 	return rcr

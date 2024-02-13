@@ -106,7 +106,7 @@ func (bm *BinaryMessage) FormatToString(indentationLevel int) string {
 func NewBinaryMessage() *BinaryMessage {
 	bm := &BinaryMessage{
 		UserMessage: NewUserMessage(),
-		BinaryBody: types.NewQBuffer(nil),
+		BinaryBody:  types.NewQBuffer(nil),
 	}
 
 	return bm

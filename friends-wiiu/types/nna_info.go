@@ -131,7 +131,7 @@ func (nnai *NNAInfo) FormatToString(indentationLevel int) string {
 // NewNNAInfo returns a new NNAInfo
 func NewNNAInfo() *NNAInfo {
 	nnai := &NNAInfo{
-		Data               : types.NewData(),
+		Data:               types.NewData(),
 		PrincipalBasicInfo: NewPrincipalBasicInfo(),
 		Unknown1:           types.NewPrimitiveU8(0),
 		Unknown2:           types.NewPrimitiveU8(0),

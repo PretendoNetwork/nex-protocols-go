@@ -105,7 +105,7 @@ func (pnl *PersistentNotificationList) FormatToString(indentationLevel int) stri
 // NewPersistentNotificationList returns a new PersistentNotificationList
 func NewPersistentNotificationList() *PersistentNotificationList {
 	pnl := &PersistentNotificationList{
-		Data          : types.NewData(),
+		Data:          types.NewData(),
 		Notifications: types.NewList[*PersistentNotification](),
 	}
 

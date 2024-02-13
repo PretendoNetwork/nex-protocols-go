@@ -157,7 +157,7 @@ func (mv *MiiV2) FormatToString(indentationLevel int) string {
 // NewMiiV2 returns a new MiiV2
 func NewMiiV2() *MiiV2 {
 	mv := &MiiV2{
-		Data     : types.NewData(),
+		Data:     types.NewData(),
 		Name:     types.NewString(""),
 		Unknown1: types.NewPrimitiveU8(0),
 		Unknown2: types.NewPrimitiveU8(0),

@@ -156,7 +156,7 @@ func (ai *AuthenticationInfo) FormatToString(indentationLevel int) string {
 // NewAuthenticationInfo returns a new AuthenticationInfo
 func NewAuthenticationInfo() *AuthenticationInfo {
 	ai := &AuthenticationInfo{
-		Data          : types.NewData(),
+		Data:          types.NewData(),
 		Token:         types.NewString(""),
 		NGSVersion:    types.NewPrimitiveU32(0),
 		TokenType:     types.NewPrimitiveU8(0),

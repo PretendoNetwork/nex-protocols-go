@@ -106,7 +106,7 @@ func (sirti *ServiceItemRightTimeInfo) FormatToString(indentationLevel int) stri
 func NewServiceItemRightTimeInfo() *ServiceItemRightTimeInfo {
 	sirti := &ServiceItemRightTimeInfo{
 		ServiceItemRightInfo: NewServiceItemRightInfo(),
-		AccountRights: types.NewList[*ServiceItemAccountRightTime](),
+		AccountRights:        types.NewList[*ServiceItemAccountRightTime](),
 	}
 
 	sirti.AccountRights.Type = NewServiceItemAccountRightTime()

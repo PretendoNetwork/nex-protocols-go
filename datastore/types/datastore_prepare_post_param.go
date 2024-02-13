@@ -24,7 +24,7 @@ type DataStorePreparePostParam struct {
 	Tags                 *types.List[*types.String]
 	RatingInitParams     *types.List[*DataStoreRatingInitParamWithSlot]
 	PersistenceInitParam *DataStorePersistenceInitParam
-	ExtraData            *types.List[*types.String]                     // * NEX v3.5.0
+	ExtraData            *types.List[*types.String] // * NEX v3.5.0
 }
 
 // WriteTo writes the DataStorePreparePostParam to the given writable

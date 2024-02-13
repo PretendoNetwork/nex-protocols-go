@@ -106,7 +106,7 @@ func (sigphr *ServiceItemGetPurchaseHistoryResponse) FormatToString(indentationL
 func NewServiceItemGetPurchaseHistoryResponse() *ServiceItemGetPurchaseHistoryResponse {
 	sigphr := &ServiceItemGetPurchaseHistoryResponse{
 		ServiceItemEShopResponse: NewServiceItemEShopResponse(),
-		NullablePurchaseHistory: types.NewList[*ServiceItemPurchaseHistory](),
+		NullablePurchaseHistory:  types.NewList[*ServiceItemPurchaseHistory](),
 	}
 
 	sigphr.NullablePurchaseHistory.Type = NewServiceItemPurchaseHistory()

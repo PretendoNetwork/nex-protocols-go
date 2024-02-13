@@ -19,7 +19,7 @@ type ServiceItemPurchaseServiceItemParam struct {
 	EcServiceToken *types.String
 	Language       *types.String
 	UniqueID       *types.PrimitiveU32
-	Platform       *types.PrimitiveU8  // * Revision 1
+	Platform       *types.PrimitiveU8 // * Revision 1
 }
 
 // WriteTo writes the ServiceItemPurchaseServiceItemParam to the given writable

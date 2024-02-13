@@ -287,7 +287,7 @@ func (npv *NintendoPresenceV2) FormatToString(indentationLevel int) string {
 // NewNintendoPresenceV2 returns a new NintendoPresenceV2
 func NewNintendoPresenceV2() *NintendoPresenceV2 {
 	npv := &NintendoPresenceV2{
-		Data            : types.NewData(),
+		Data:            types.NewData(),
 		ChangedFlags:    types.NewPrimitiveU32(0),
 		Online:          types.NewPrimitiveBool(false),
 		GameKey:         NewGameKey(),

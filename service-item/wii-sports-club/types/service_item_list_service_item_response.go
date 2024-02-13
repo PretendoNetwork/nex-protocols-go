@@ -106,7 +106,7 @@ func (silsir *ServiceItemListServiceItemResponse) FormatToString(indentationLeve
 func NewServiceItemListServiceItemResponse() *ServiceItemListServiceItemResponse {
 	silsir := &ServiceItemListServiceItemResponse{
 		ServiceItemEShopResponse: NewServiceItemEShopResponse(),
-		NullableCatalog: types.NewList[*ServiceItemCatalog](),
+		NullableCatalog:          types.NewList[*ServiceItemCatalog](),
 	}
 
 	silsir.NullableCatalog.Type = NewServiceItemCatalog()

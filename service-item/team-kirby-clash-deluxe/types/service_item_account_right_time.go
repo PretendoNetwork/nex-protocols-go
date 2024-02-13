@@ -20,7 +20,6 @@ func (siart *ServiceItemAccountRightTime) WriteTo(writable types.Writable) {
 
 	contentWritable := writable.CopyNew()
 
-
 	content := contentWritable.Bytes()
 
 	siart.WriteHeaderTo(writable, uint32(len(content)))

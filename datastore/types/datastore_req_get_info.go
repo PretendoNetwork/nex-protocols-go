@@ -16,7 +16,7 @@ type DataStoreReqGetInfo struct {
 	RequestHeaders *types.List[*DataStoreKeyValue]
 	Size           *types.PrimitiveU32
 	RootCACert     *types.Buffer
-	DataID         *types.PrimitiveU64             // * NEX v3.5.0
+	DataID         *types.PrimitiveU64 // * NEX v3.5.0
 }
 
 // WriteTo writes the DataStoreReqGetInfo to the given writable

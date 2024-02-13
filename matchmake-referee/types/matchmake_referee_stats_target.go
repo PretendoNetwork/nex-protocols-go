@@ -118,7 +118,7 @@ func (mrst *MatchmakeRefereeStatsTarget) FormatToString(indentationLevel int) st
 // NewMatchmakeRefereeStatsTarget returns a new MatchmakeRefereeStatsTarget
 func NewMatchmakeRefereeStatsTarget() *MatchmakeRefereeStatsTarget {
 	mrst := &MatchmakeRefereeStatsTarget{
-		Data     : types.NewData(),
+		Data:     types.NewData(),
 		PID:      types.NewPID(0),
 		Category: types.NewPrimitiveU32(0),
 	}

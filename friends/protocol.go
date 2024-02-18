@@ -3,6 +3,7 @@ package protocol
 
 import (
 	"fmt"
+	"slices"
 
 	nex "github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-go/types"
@@ -69,6 +70,8 @@ type Protocol struct {
 	GetList                    func(err error, packet nex.PacketInterface, callID uint32, byRelationship *types.PrimitiveU8, bReversed *types.PrimitiveBool) (*nex.RMCMessage, *nex.Error)
 	GetDetailedList            func(err error, packet nex.PacketInterface, callID uint32, byRelationship *types.PrimitiveU8, bReversed *types.PrimitiveBool) (*nex.RMCMessage, *nex.Error)
 	GetRelationships           func(err error, packet nex.PacketInterface, callID uint32, resultRange *types.ResultRange) (*nex.RMCMessage, *nex.Error)
+	Patches                    nex.ServiceProtocol
+	PatchedMethods             []uint32
 }
 
 // Interface implements the methods present on the Friends protocol struct
@@ -170,6 +173,11 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 	message := packet.RMCMessage()
 
 	if !message.IsRequest || message.ProtocolID != ProtocolID {
+		return
+	}
+
+	if protocol.Patches != nil && slices.Contains(protocol.PatchedMethods, message.MethodID) {
+		protocol.Patches.HandlePacket(packet)
 		return
 	}
 

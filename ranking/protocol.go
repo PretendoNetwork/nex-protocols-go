@@ -3,6 +3,7 @@ package protocol
 
 import (
 	"fmt"
+	"slices"
 
 	nex "github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-go/types"
@@ -78,6 +79,8 @@ type Protocol struct {
 	GetRankingByUniqueIDList func(err error, packet nex.PacketInterface, callID uint32, nexUniqueIDList *types.List[*types.PrimitiveU64], rankingMode *types.PrimitiveU8, category *types.PrimitiveU32, orderParam *ranking_types.RankingOrderParam, uniqueID *types.PrimitiveU64) (*nex.RMCMessage, *nex.Error)
 	GetCachedTopXRanking     func(err error, packet nex.PacketInterface, callID uint32, category *types.PrimitiveU32, orderParam *ranking_types.RankingOrderParam) (*nex.RMCMessage, *nex.Error)
 	GetCachedTopXRankings    func(err error, packet nex.PacketInterface, callID uint32, categories *types.List[*types.PrimitiveU32], orderParams *types.List[*ranking_types.RankingOrderParam]) (*nex.RMCMessage, *nex.Error)
+	Patches                  nex.ServiceProtocol
+	PatchedMethods           []uint32
 }
 
 // Interface implements the methods present on the Ranking protocol struct
@@ -191,6 +194,11 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 	message := packet.RMCMessage()
 
 	if !message.IsRequest || message.ProtocolID != ProtocolID {
+		return
+	}
+
+	if protocol.Patches != nil && slices.Contains(protocol.PatchedMethods, message.MethodID) {
+		protocol.Patches.HandlePacket(packet)
 		return
 	}
 

@@ -3,6 +3,7 @@ package protocol
 
 import (
 	"fmt"
+	"slices"
 
 	nex "github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-go/types"
@@ -98,6 +99,8 @@ type Protocol struct {
 	DeletePersistentNotification func(err error, packet nex.PacketInterface, callID uint32, notifications *types.List[*friends_wiiu_types.PersistentNotification]) (*nex.RMCMessage, *nex.Error)
 	CheckSettingStatus           func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, *nex.Error)
 	GetRequestBlockSettings      func(err error, packet nex.PacketInterface, callID uint32, pids *types.List[*types.PrimitiveU32]) (*nex.RMCMessage, *nex.Error)
+	Patches                      nex.ServiceProtocol
+	PatchedMethods               []uint32
 }
 
 // Interface implements the methods present on the Friends WiiU protocol struct
@@ -241,6 +244,11 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 	message := packet.RMCMessage()
 
 	if !message.IsRequest || message.ProtocolID != ProtocolID {
+		return
+	}
+
+	if protocol.Patches != nil && slices.Contains(protocol.PatchedMethods, message.MethodID) {
+		protocol.Patches.HandlePacket(packet)
 		return
 	}
 

@@ -3,6 +3,7 @@ package protocol
 
 import (
 	"fmt"
+	"slices"
 
 	nex "github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-go/types"
@@ -21,6 +22,8 @@ const (
 type Protocol struct {
 	endpoint       nex.EndpointInterface
 	DeliverMessage func(err error, packet nex.PacketInterface, callID uint32, oUserMessage *types.AnyDataHolder) (*nex.RMCMessage, *nex.Error)
+	Patches        nex.ServiceProtocol
+	PatchedMethods []uint32
 }
 
 // Interface implements the methods present on the Message Deliver protocol struct
@@ -50,6 +53,11 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 	message := packet.RMCMessage()
 
 	if !message.IsRequest || message.ProtocolID != ProtocolID {
+		return
+	}
+
+	if protocol.Patches != nil && slices.Contains(protocol.PatchedMethods, message.MethodID) {
+		protocol.Patches.HandlePacket(packet)
 		return
 	}
 

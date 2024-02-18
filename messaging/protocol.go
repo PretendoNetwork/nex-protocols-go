@@ -3,6 +3,7 @@ package protocol
 
 import (
 	"fmt"
+	"slices"
 
 	nex "github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-go/types"
@@ -50,6 +51,8 @@ type Protocol struct {
 	DeleteMessages                 func(err error, packet nex.PacketInterface, callID uint32, recipient *messaging_types.MessageRecipient, lstMessagesToDelete *types.List[*types.PrimitiveU32]) (*nex.RMCMessage, *nex.Error)
 	DeleteAllMessages              func(err error, packet nex.PacketInterface, callID uint32, recipient *messaging_types.MessageRecipient) (*nex.RMCMessage, *nex.Error)
 	DeliverMessageMultiTarget      func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) (*nex.RMCMessage, *nex.Error) // TODO - Unknown request/response format
+	Patches                        nex.ServiceProtocol
+	PatchedMethods                 []uint32
 }
 
 // Interface implements the methods present on the Messaging protocol struct
@@ -121,6 +124,11 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 	message := packet.RMCMessage()
 
 	if !message.IsRequest || message.ProtocolID != ProtocolID {
+		return
+	}
+
+	if protocol.Patches != nil && slices.Contains(protocol.PatchedMethods, message.MethodID) {
+		protocol.Patches.HandlePacket(packet)
 		return
 	}
 

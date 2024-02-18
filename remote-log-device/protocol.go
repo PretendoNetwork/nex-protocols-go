@@ -3,6 +3,7 @@ package protocol
 
 import (
 	"fmt"
+	"slices"
 
 	nex "github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-go/types"
@@ -19,8 +20,10 @@ const (
 
 // Protocol handles the RemoteLogDevice protocol
 type Protocol struct {
-	endpoint nex.EndpointInterface
-	Log      func(err error, packet nex.PacketInterface, callID uint32, strLine *types.String) (*nex.RMCMessage, *nex.Error)
+	endpoint       nex.EndpointInterface
+	Log            func(err error, packet nex.PacketInterface, callID uint32, strLine *types.String) (*nex.RMCMessage, *nex.Error)
+	Patches        nex.ServiceProtocol
+	PatchedMethods []uint32
 }
 
 // Interface implements the methods present on the Remote Log Device protocol struct
@@ -50,6 +53,11 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 	message := packet.RMCMessage()
 
 	if !message.IsRequest || message.ProtocolID != ProtocolID {
+		return
+	}
+
+	if protocol.Patches != nil && slices.Contains(protocol.PatchedMethods, message.MethodID) {
+		protocol.Patches.HandlePacket(packet)
 		return
 	}
 

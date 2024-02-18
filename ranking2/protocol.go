@@ -3,6 +3,7 @@ package protocol
 
 import (
 	"fmt"
+	"slices"
 
 	nex "github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-go/types"
@@ -58,6 +59,8 @@ type Protocol struct {
 	GetRankingChart         func(err error, packet nex.PacketInterface, callID uint32, info *ranking2_types.Ranking2ChartInfoInput) (*nex.RMCMessage, *nex.Error)
 	GetRankingCharts        func(err error, packet nex.PacketInterface, callID uint32, infoArray *types.List[*ranking2_types.Ranking2ChartInfoInput]) (*nex.RMCMessage, *nex.Error)
 	GetEstimateScoreRank    func(err error, packet nex.PacketInterface, callID uint32, input *ranking2_types.Ranking2EstimateScoreRankInput) (*nex.RMCMessage, *nex.Error)
+	Patches                 nex.ServiceProtocol
+	PatchedMethods          []uint32
 }
 
 // Interface implements the methods present on the Ranking2 protocol struct
@@ -141,6 +144,11 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 	message := packet.RMCMessage()
 
 	if !message.IsRequest || message.ProtocolID != ProtocolID {
+		return
+	}
+
+	if protocol.Patches != nil && slices.Contains(protocol.PatchedMethods, message.MethodID) {
+		protocol.Patches.HandlePacket(packet)
 		return
 	}
 

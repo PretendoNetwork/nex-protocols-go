@@ -6,6 +6,7 @@ package protocol
 
 import (
 	"fmt"
+	"slices"
 
 	"github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
@@ -18,7 +19,9 @@ const (
 
 // Protocol stores all the RMC method handlers for the Shop protocol and listens for requests
 type Protocol struct {
-	endpoint nex.EndpointInterface
+	endpoint       nex.EndpointInterface
+	Patches        nex.ServiceProtocol
+	PatchedMethods []uint32
 }
 
 // Endpoint returns the endpoint implementing the protocol
@@ -36,6 +39,11 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 	message := packet.RMCMessage()
 
 	if !message.IsRequest || message.ProtocolID != ProtocolID {
+		return
+	}
+
+	if protocol.Patches != nil && slices.Contains(protocol.PatchedMethods, message.MethodID) {
+		protocol.Patches.HandlePacket(packet)
 		return
 	}
 

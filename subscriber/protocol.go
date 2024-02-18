@@ -3,6 +3,7 @@ package protocol
 
 import (
 	"fmt"
+	"slices"
 
 	nex "github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-go/types"
@@ -78,6 +79,8 @@ type Protocol struct {
 	UpdateUserStatus      func(err error, packet nex.PacketInterface, callID uint32, unknown1 *types.List[*subscriber_types.Unknown], unknown2 *types.List[*types.PrimitiveU8]) (*nex.RMCMessage, *nex.Error)
 	GetFriendUserStatuses func(err error, packet nex.PacketInterface, callID uint32, unknown *types.List[*types.PrimitiveU8]) (*nex.RMCMessage, *nex.Error)
 	GetUserStatuses       func(err error, packet nex.PacketInterface, callID uint32, pids *types.List[*types.PID], unknown *types.List[*types.PrimitiveU8]) (*nex.RMCMessage, *nex.Error)
+	Patches               nex.ServiceProtocol
+	PatchedMethods        []uint32
 }
 
 // Interface implements the methods present on the Subscriber protocol struct
@@ -191,6 +194,11 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 	message := packet.RMCMessage()
 
 	if !message.IsRequest || message.ProtocolID != ProtocolID {
+		return
+	}
+
+	if protocol.Patches != nil && slices.Contains(protocol.PatchedMethods, message.MethodID) {
+		protocol.Patches.HandlePacket(packet)
 		return
 	}
 

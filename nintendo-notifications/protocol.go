@@ -16,7 +16,9 @@ const (
 
 // Protocol handles the NintendoNotifications protocol
 type Protocol struct {
-	endpoint nex.EndpointInterface
+	endpoint       nex.EndpointInterface
+	Patches        nex.ServiceProtocol
+	PatchedMethods []uint32
 }
 
 // Endpoint returns the endpoint implementing the protocol

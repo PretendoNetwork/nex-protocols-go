@@ -3,6 +3,7 @@ package protocol
 
 import (
 	"fmt"
+	"slices"
 
 	nex "github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-go/types"
@@ -137,6 +138,8 @@ type Protocol struct {
 	LookupOrCreateAccount       func(err error, packet nex.PacketInterface, callID uint32, strPrincipalName *types.String, strKey *types.String, uiGroups *types.PrimitiveU32, strEmail *types.String, oAuthData *types.AnyDataHolder) (*nex.RMCMessage, *nex.Error)
 	DisconnectPrincipal         func(err error, packet nex.PacketInterface, callID uint32, idPrincipal *types.PID) (*nex.RMCMessage, *nex.Error)
 	DisconnectAllPrincipals     func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, *nex.Error)
+	Patches                     nex.ServiceProtocol
+	PatchedMethods              []uint32
 }
 
 // Interface implements the methods present on the Account Management Protocol struct
@@ -340,6 +343,11 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 	message := packet.RMCMessage()
 
 	if !message.IsRequest || message.ProtocolID != ProtocolID {
+		return
+	}
+
+	if protocol.Patches != nil && slices.Contains(protocol.PatchedMethods, message.MethodID) {
+		protocol.Patches.HandlePacket(packet)
 		return
 	}
 

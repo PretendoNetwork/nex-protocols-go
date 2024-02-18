@@ -3,6 +3,7 @@ package protocol
 
 import (
 	"fmt"
+	"slices"
 
 	nex "github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-go/types"
@@ -202,6 +203,8 @@ type Protocol struct {
 	RateObjectsWithPosting       func(err error, packet nex.PacketInterface, callID uint32, targets *types.List[*datastore_types.DataStoreRatingTarget], rateParams *types.List[*datastore_types.DataStoreRateObjectParam], postParams *types.List[*datastore_types.DataStorePreparePostParam], transactional *types.PrimitiveBool, fetchRatings *types.PrimitiveBool) (*nex.RMCMessage, *nex.Error)
 	GetObjectInfos               func(err error, packet nex.PacketInterface, callID uint32, dataIDs *types.PrimitiveU64) (*nex.RMCMessage, *nex.Error)
 	SearchObjectLight            func(err error, packet nex.PacketInterface, callID uint32, param *datastore_types.DataStoreSearchParam) (*nex.RMCMessage, *nex.Error)
+	Patches                      nex.ServiceProtocol
+	PatchedMethods               []uint32
 }
 
 // Interface implements the methods present on the DataStore Protocol struct
@@ -501,6 +504,11 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 	message := packet.RMCMessage()
 
 	if !message.IsRequest || message.ProtocolID != ProtocolID {
+		return
+	}
+
+	if protocol.Patches != nil && slices.Contains(protocol.PatchedMethods, message.MethodID) {
+		protocol.Patches.HandlePacket(packet)
 		return
 	}
 

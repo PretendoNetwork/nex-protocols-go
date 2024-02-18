@@ -3,6 +3,7 @@ package protocol
 
 import (
 	"fmt"
+	"slices"
 
 	nex "github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-go/types"
@@ -34,6 +35,8 @@ type Protocol struct {
 	UnregisterApplication func(err error, packet nex.PacketInterface, callID uint32, titleID *types.PrimitiveU64) (*nex.RMCMessage, *nex.Error)
 	SetApplicationInfo    func(err error, packet nex.PacketInterface, callID uint32, applicationInfo *types.List[*aauser_types.ApplicationInfo]) (*nex.RMCMessage, *nex.Error)
 	GetApplicationInfo    func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, *nex.Error)
+	Patches               nex.ServiceProtocol
+	PatchedMethods        []uint32
 }
 
 // Interface implements the methods present on the AAUser Protocol struct
@@ -81,6 +84,11 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 	message := packet.RMCMessage()
 
 	if !message.IsRequest || message.ProtocolID != ProtocolID {
+		return
+	}
+
+	if protocol.Patches != nil && slices.Contains(protocol.PatchedMethods, message.MethodID) {
+		protocol.Patches.HandlePacket(packet)
 		return
 	}
 

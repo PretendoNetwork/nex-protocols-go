@@ -3,6 +3,7 @@ package protocol
 
 import (
 	"fmt"
+	"slices"
 
 	nex "github.com/PretendoNetwork/nex-go"
 	"github.com/PretendoNetwork/nex-go/types"
@@ -41,6 +42,8 @@ type Protocol struct {
 	GetParticipantsURLs     func(err error, packet nex.PacketInterface, callID uint32, lstGatherings *types.List[*types.PrimitiveU32]) (*nex.RMCMessage, *nex.Error)
 	GetGatheringRelations   func(err error, packet nex.PacketInterface, callID uint32, id *types.PrimitiveU32, descr *types.String) (*nex.RMCMessage, *nex.Error)
 	DeleteFromDeletions     func(err error, packet nex.PacketInterface, callID uint32, lstDeletions *types.List[*types.PrimitiveU32], pid *types.PID) (*nex.RMCMessage, *nex.Error)
+	Patches                 nex.ServiceProtocol
+	PatchedMethods          []uint32
 }
 
 // Interface implements the methods present on the Match Making Ext protocol struct
@@ -100,6 +103,11 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 	message := packet.RMCMessage()
 
 	if !message.IsRequest || message.ProtocolID != ProtocolID {
+		return
+	}
+
+	if protocol.Patches != nil && slices.Contains(protocol.PatchedMethods, message.MethodID) {
+		protocol.Patches.HandlePacket(packet)
 		return
 	}
 

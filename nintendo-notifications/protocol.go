@@ -32,6 +32,6 @@ func (protocol *Protocol) SetEndpoint(endpoint nex.EndpointInterface) {
 }
 
 // NewProtocol returns a new Nintendo Notifications protocol
-func NewProtocol(endpoint nex.EndpointInterface) *Protocol {
-	return &Protocol{endpoint: endpoint}
+func NewProtocol() *Protocol {
+	return &Protocol{}
 }

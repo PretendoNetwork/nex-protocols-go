@@ -146,6 +146,6 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 }
 
 // NewProtocol returns a new Persistent Store protocol
-func NewProtocol(endpoint nex.EndpointInterface) *Protocol {
-	return &Protocol{endpoint: endpoint}
+func NewProtocol() *Protocol {
+	return &Protocol{}
 }

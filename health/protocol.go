@@ -109,6 +109,6 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 }
 
 // NewProtocol returns a new Health protocol
-func NewProtocol(endpoint nex.EndpointInterface) *Protocol {
-	return &Protocol{endpoint: endpoint}
+func NewProtocol() *Protocol {
+	return &Protocol{}
 }

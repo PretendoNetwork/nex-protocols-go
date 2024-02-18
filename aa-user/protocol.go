@@ -92,23 +92,21 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 		return
 	}
 
-	if message.IsRequest && message.ProtocolID == ProtocolID {
-		switch message.MethodID {
-		case MethodRegisterApplication:
-			protocol.handleRegisterApplication(packet)
-		case MethodUnregisterApplication:
-			protocol.handleUnregisterApplication(packet)
-		case MethodSetApplicationInfo:
-			protocol.handleSetApplicationInfo(packet)
-		case MethodGetApplicationInfo:
-			protocol.handleGetApplicationInfo(packet)
-		default:
-			errMessage := fmt.Sprintf("Unsupported AAUser method ID: %#v\n", message.MethodID)
-			err := nex.NewError(nex.ResultCodes.Core.NotImplemented, errMessage)
+	switch message.MethodID {
+	case MethodRegisterApplication:
+		protocol.handleRegisterApplication(packet)
+	case MethodUnregisterApplication:
+		protocol.handleUnregisterApplication(packet)
+	case MethodSetApplicationInfo:
+		protocol.handleSetApplicationInfo(packet)
+	case MethodGetApplicationInfo:
+		protocol.handleGetApplicationInfo(packet)
+	default:
+		errMessage := fmt.Sprintf("Unsupported AAUser method ID: %#v\n", message.MethodID)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, errMessage)
 
-			globals.RespondError(packet, ProtocolID, err)
-			globals.Logger.Warning(err.Message)
-		}
+		globals.RespondError(packet, ProtocolID, err)
+		globals.Logger.Warning(err.Message)
 	}
 }
 

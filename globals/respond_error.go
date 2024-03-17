@@ -1,7 +1,10 @@
 // Package globals implements variables and functions used by all protocol packages
 package globals
 
-import "github.com/PretendoNetwork/nex-go"
+import (
+	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/constants"
+)
 
 // RespondError sends the client a given error code
 func RespondError(packet nex.PacketInterface, protocolID uint16, err error) {
@@ -38,13 +41,13 @@ func RespondError(packet nex.PacketInterface, protocolID uint16, err error) {
 			prudpPacket, _ = nex.NewPRUDPPacketV0(server, sender.(*nex.PRUDPConnection), nil)
 		}
 
-		prudpPacket.SetType(nex.DataPacket)
+		prudpPacket.SetType(constants.DataPacket)
 
-		if packet.HasFlag(nex.FlagReliable) {
-			prudpPacket.AddFlag(nex.FlagReliable)
+		if packet.HasFlag(constants.PacketFlagReliable) {
+			prudpPacket.AddFlag(constants.PacketFlagReliable)
 		}
 
-		prudpPacket.AddFlag(nex.FlagNeedsAck)
+		prudpPacket.AddFlag(constants.PacketFlagNeedsAck)
 		prudpPacket.SetSourceVirtualPortStreamType(packet.DestinationVirtualPortStreamType())
 		prudpPacket.SetSourceVirtualPortStreamID(packet.DestinationVirtualPortStreamID())
 		prudpPacket.SetDestinationVirtualPortStreamType(packet.SourceVirtualPortStreamType())

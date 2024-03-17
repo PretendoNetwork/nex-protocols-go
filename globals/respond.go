@@ -1,7 +1,10 @@
 // Package globals implements variables and functions used by all protocol packages
 package globals
 
-import "github.com/PretendoNetwork/nex-go"
+import (
+	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/constants"
+)
 
 // Respond sends the client a given RMC message
 func Respond(packet nex.PacketInterface, message *nex.RMCMessage) {
@@ -21,14 +24,13 @@ func Respond(packet nex.PacketInterface, message *nex.RMCMessage) {
 			prudpPacket, _ = nex.NewPRUDPPacketV0(server, sender.(*nex.PRUDPConnection), nil)
 		}
 
-		prudpPacket.SetType(nex.DataPacket)
+		prudpPacket.SetType(constants.DataPacket)
 
-		if packet.HasFlag(nex.FlagReliable) {
-			prudpPacket.AddFlag(nex.FlagReliable)
+		if packet.HasFlag(constants.PacketFlagReliable) {
+			prudpPacket.AddFlag(constants.PacketFlagReliable)
 		}
 
-		prudpPacket.AddFlag(nex.FlagNeedsAck)
-		prudpPacket.AddFlag(nex.FlagHasSize)
+		prudpPacket.AddFlag(constants.PacketFlagNeedsAck)
 		prudpPacket.SetSourceVirtualPortStreamType(packet.DestinationVirtualPortStreamType())
 		prudpPacket.SetSourceVirtualPortStreamID(packet.DestinationVirtualPortStreamID())
 		prudpPacket.SetDestinationVirtualPortStreamType(packet.SourceVirtualPortStreamType())

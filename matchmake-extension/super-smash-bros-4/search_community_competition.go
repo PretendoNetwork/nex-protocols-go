@@ -6,28 +6,26 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// SearchCommunityCompetition sets the SearchCommunityCompetition handler function
-func (protocol *Protocol) SearchCommunityCompetition(handler func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) uint32) {
-	protocol.searchCommunityCompetitionHandler = handler
-}
-
 func (protocol *Protocol) handleSearchCommunityCompetition(packet nex.PacketInterface) {
-	var errorCode uint32
+	if protocol.SearchCommunityCompetition == nil {
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "MatchmakeExtensionSuperSmashBros4::SearchCommunityCompetition not implemented")
 
-	if protocol.searchCommunityCompetitionHandler == nil {
-		globals.Logger.Warning("MatchmakeExtensionSuperSmashBros4::SearchCommunityCompetition not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
 	globals.Logger.Warning("MatchmakeExtensionSuperSmashBros4::SearchCommunityCompetition STUBBED")
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
+	callID := request.CallID
 
-	callID := request.CallID()
-
-	errorCode = protocol.searchCommunityCompetitionHandler(nil, packet, callID, packet.Payload())
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.SearchCommunityCompetition(nil, packet, callID, packet.Payload())
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

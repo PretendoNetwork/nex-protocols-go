@@ -5,17 +5,17 @@
 package nexproto
 
 import (
-	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/types"
 	account_management_types "github.com/PretendoNetwork/nex-protocols-go/account-management/types"
 	match_making_types "github.com/PretendoNetwork/nex-protocols-go/match-making/types"
 	ticket_granting_types "github.com/PretendoNetwork/nex-protocols-go/ticket-granting/types"
 )
 
 func init() {
-	nex.RegisterDataHolderType("NintendoCreateAccountData", account_management_types.NewNintendoCreateAccountData())
-	nex.RegisterDataHolderType("AccountExtraInfo", account_management_types.NewAccountExtraInfo())
-	nex.RegisterDataHolderType("NintendoLoginData", ticket_granting_types.NewNintendoLoginData())
-	nex.RegisterDataHolderType("AuthenticationInfo", ticket_granting_types.NewAuthenticationInfo())
-	nex.RegisterDataHolderType("Gathering", match_making_types.NewGathering())
-	nex.RegisterDataHolderType("MatchmakeSession", match_making_types.NewMatchmakeSession())
+	types.RegisterDataHolderType("NintendoCreateAccountData", account_management_types.NewNintendoCreateAccountData())
+	types.RegisterDataHolderType("AccountExtraInfo", account_management_types.NewAccountExtraInfo())
+	types.RegisterDataHolderType("NintendoLoginData", ticket_granting_types.NewNintendoLoginData())
+	types.RegisterDataHolderType("AuthenticationInfo", ticket_granting_types.NewAuthenticationInfo())
+	types.RegisterDataHolderType("Gathering", match_making_types.NewGathering())
+	types.RegisterDataHolderType("MatchmakeSession", match_making_types.NewMatchmakeSession())
 }

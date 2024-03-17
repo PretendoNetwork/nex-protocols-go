@@ -6,26 +6,24 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// GetRelaySignatureKey sets the GetRelaySignatureKey handler function
-func (protocol *Protocol) GetRelaySignatureKey(handler func(err error, packet nex.PacketInterface, callID uint32) uint32) {
-	protocol.getRelaySignatureKeyHandler = handler
-}
-
 func (protocol *Protocol) handleGetRelaySignatureKey(packet nex.PacketInterface) {
-	var errorCode uint32
+	if protocol.GetRelaySignatureKey == nil {
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "NATTraversal::GetRelaySignatureKey not implemented")
 
-	if protocol.getRelaySignatureKeyHandler == nil {
-		globals.Logger.Warning("NATTraversal::GetRelaySignatureKey not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
+	callID := request.CallID
 
-	callID := request.CallID()
-
-	errorCode = protocol.getRelaySignatureKeyHandler(nil, packet, callID)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.GetRelaySignatureKey(nil, packet, callID)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

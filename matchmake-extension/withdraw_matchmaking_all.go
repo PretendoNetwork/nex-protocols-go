@@ -6,26 +6,24 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// WithdrawMatchmakingAll sets the WithdrawMatchmakingAll handler function
-func (protocol *Protocol) WithdrawMatchmakingAll(handler func(err error, packet nex.PacketInterface, callID uint32) uint32) {
-	protocol.withdrawMatchmakingAllHandler = handler
-}
-
 func (protocol *Protocol) handleWithdrawMatchmakingAll(packet nex.PacketInterface) {
-	var errorCode uint32
+	if protocol.WithdrawMatchmakingAll == nil {
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "MatchmakeExtension::WithdrawMatchmakingAll not implemented")
 
-	if protocol.withdrawMatchmakingAllHandler == nil {
-		globals.Logger.Warning("MatchmakeExtension::WithdrawMatchmakingAll not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
+	callID := request.CallID
 
-	callID := request.CallID()
-
-	errorCode = protocol.withdrawMatchmakingAllHandler(nil, packet, callID)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.WithdrawMatchmakingAll(nil, packet, callID)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

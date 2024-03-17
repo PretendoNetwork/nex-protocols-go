@@ -23,51 +23,45 @@ var patchedMethods = []uint32{
 	MethodGetMetaByOwnerID,
 }
 
-type datastoreProtocol = datastore.Protocol
+type dataStoreProtocol = datastore.Protocol
 
 // Protocol stores all the RMC method handlers for the DataStore (Nintendo Badge Arcade) protocol and listens for requests
 // Embeds the DataStore protocol
 type Protocol struct {
-	Server *nex.Server
-	datastoreProtocol
-	getMetaByOwnerIDHandler func(err error, packet nex.PacketInterface, callID uint32, param *datastore_nintendo_badge_arcade_types.DataStoreGetMetaByOwnerIDParam) uint32
-}
-
-// Setup initializes the protocol
-func (protocol *Protocol) Setup() {
-
-	protocol.Server.On("Data", func(packet nex.PacketInterface) {
-		request := packet.RMCRequest()
-
-		if request.ProtocolID() == ProtocolID {
-			if slices.Contains(patchedMethods, request.MethodID()) {
-				protocol.HandlePacket(packet)
-			} else {
-				protocol.datastoreProtocol.HandlePacket(packet)
-			}
-		}
-	})
+	endpoint nex.EndpointInterface
+	dataStoreProtocol
+	GetMetaByOwnerID func(err error, packet nex.PacketInterface, callID uint32, param *datastore_nintendo_badge_arcade_types.DataStoreGetMetaByOwnerIDParam) (*nex.RMCMessage, *nex.Error)
 }
 
 // HandlePacket sends the packet to the correct RMC method handler
 func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
-	request := packet.RMCRequest()
+	message := packet.RMCMessage()
 
-	switch request.MethodID() {
+	if !message.IsRequest || message.ProtocolID != ProtocolID {
+		return
+	}
+
+	if !slices.Contains(patchedMethods, message.MethodID) {
+		protocol.dataStoreProtocol.HandlePacket(packet)
+		return
+	}
+
+	switch message.MethodID {
 	case MethodGetMetaByOwnerID:
-		go protocol.handleGetMetaByOwnerID(packet)
+		protocol.handleGetMetaByOwnerID(packet)
 	default:
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
-		fmt.Printf("Unsupported DataStoreBadgeArcade method ID: %#v\n", request.MethodID())
+		errMessage := fmt.Sprintf("Unsupported DataStoreBadgeArcade method ID: %#v\n", message.MethodID)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, errMessage)
+
+		globals.RespondError(packet, ProtocolID, err)
+		globals.Logger.Warning(err.Message)
 	}
 }
 
 // NewProtocol returns a new DataStore (Nintendo Badge Arcade) protocol
-func NewProtocol(server *nex.Server) *Protocol {
-	protocol := &Protocol{Server: server}
-	protocol.datastoreProtocol.Server = server
-
-	protocol.Setup()
+func NewProtocol(endpoint nex.EndpointInterface) *Protocol {
+	protocol := &Protocol{endpoint: endpoint}
+	protocol.dataStoreProtocol.SetEndpoint(endpoint)
 
 	return protocol
 }

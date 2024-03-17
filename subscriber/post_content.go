@@ -9,39 +9,39 @@ import (
 	subscriber_types "github.com/PretendoNetwork/nex-protocols-go/subscriber/types"
 )
 
-// PostContent sets the PostContent handler function
-func (protocol *Protocol) PostContent(handler func(err error, packet nex.PacketInterface, callID uint32, param *subscriber_types.SubscriberPostContentParam) uint32) {
-	protocol.postContentHandler = handler
-}
-
 func (protocol *Protocol) handlePostContent(packet nex.PacketInterface) {
-	var errorCode uint32
+	if protocol.PostContent == nil {
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "Subscriber::PostContent not implemented")
 
-	if protocol.postContentHandler == nil {
-		globals.Logger.Warning("Subscriber::PostContent not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
+	callID := request.CallID
+	parameters := request.Parameters
+	endpoint := packet.Sender().Endpoint()
+	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	callID := request.CallID()
-	parameters := request.Parameters()
+	param := subscriber_types.NewSubscriberPostContentParam()
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
-
-	param, err := parametersStream.ReadStructure(subscriber_types.NewSubscriberPostContentParam())
+	err := param.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.postContentHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.PostContent(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	errorCode = protocol.postContentHandler(nil, packet, callID, param.(*subscriber_types.SubscriberPostContentParam))
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.PostContent(nil, packet, callID, param)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

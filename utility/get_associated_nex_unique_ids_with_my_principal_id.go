@@ -6,26 +6,24 @@ import (
 	"github.com/PretendoNetwork/nex-protocols-go/globals"
 )
 
-// GetAssociatedNexUniqueIDsWithMyPrincipalID sets the GetAssociatedNexUniqueIDsWithMyPrincipalID handler function
-func (protocol *Protocol) GetAssociatedNexUniqueIDsWithMyPrincipalID(handler func(err error, packet nex.PacketInterface, callID uint32) uint32) {
-	protocol.getAssociatedNexUniqueIDsWithMyPrincipalIDHandler = handler
-}
-
 func (protocol *Protocol) handleGetAssociatedNexUniqueIDsWithMyPrincipalID(packet nex.PacketInterface) {
-	var errorCode uint32
+	if protocol.GetAssociatedNexUniqueIDsWithMyPrincipalID == nil {
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "Utility::GetAssociatedNexUniqueIDsWithMyPrincipalID not implemented")
 
-	if protocol.getAssociatedNexUniqueIDsWithMyPrincipalIDHandler == nil {
-		globals.Logger.Warning("Utility::GetAssociatedNexUniqueIDsWithMyPrincipalID not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
+	callID := request.CallID
 
-	callID := request.CallID()
-
-	errorCode = protocol.getAssociatedNexUniqueIDsWithMyPrincipalIDHandler(nil, packet, callID)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.GetAssociatedNexUniqueIDsWithMyPrincipalID(nil, packet, callID)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

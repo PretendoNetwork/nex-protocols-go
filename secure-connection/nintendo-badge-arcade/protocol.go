@@ -4,9 +4,9 @@ package protocol
 import (
 	"fmt"
 
-	nex "github.com/PretendoNetwork/nex-go"
-	"github.com/PretendoNetwork/nex-protocols-go/globals"
-	secure_connection "github.com/PretendoNetwork/nex-protocols-go/secure-connection"
+	nex "github.com/PretendoNetwork/nex-go/v2"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
+	secure_connection "github.com/PretendoNetwork/nex-protocols-go/v2/secure-connection"
 	"golang.org/x/exp/slices"
 )
 

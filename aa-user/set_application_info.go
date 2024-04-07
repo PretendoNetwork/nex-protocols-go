@@ -4,10 +4,10 @@ package protocol
 import (
 	"fmt"
 
-	nex "github.com/PretendoNetwork/nex-go"
-	"github.com/PretendoNetwork/nex-go/types"
-	aauser_types "github.com/PretendoNetwork/nex-protocols-go/aa-user/types"
-	"github.com/PretendoNetwork/nex-protocols-go/globals"
+	nex "github.com/PretendoNetwork/nex-go/v2"
+	"github.com/PretendoNetwork/nex-go/v2/types"
+	aauser_types "github.com/PretendoNetwork/nex-protocols-go/v2/aa-user/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
 )
 
 func (protocol *Protocol) handleSetApplicationInfo(packet nex.PacketInterface) {

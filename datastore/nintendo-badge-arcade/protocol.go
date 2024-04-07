@@ -4,10 +4,10 @@ package protocol
 import (
 	"fmt"
 
-	nex "github.com/PretendoNetwork/nex-go"
-	datastore "github.com/PretendoNetwork/nex-protocols-go/datastore"
-	datastore_nintendo_badge_arcade_types "github.com/PretendoNetwork/nex-protocols-go/datastore/nintendo-badge-arcade/types"
-	"github.com/PretendoNetwork/nex-protocols-go/globals"
+	nex "github.com/PretendoNetwork/nex-go/v2"
+	datastore "github.com/PretendoNetwork/nex-protocols-go/v2/datastore"
+	datastore_nintendo_badge_arcade_types "github.com/PretendoNetwork/nex-protocols-go/v2/datastore/nintendo-badge-arcade/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
 	"golang.org/x/exp/slices"
 )
 

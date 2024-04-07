@@ -1,7 +1,7 @@
 // Package protocol implements the Nintendo Notfications protocol
 package protocol
 
-import nex "github.com/PretendoNetwork/nex-go"
+import nex "github.com/PretendoNetwork/nex-go/v2"
 
 const (
 	// ProtocolID is the protocol ID for the Nintendo Notifications protocol

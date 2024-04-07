@@ -4,9 +4,9 @@ package protocol
 import (
 	"fmt"
 
-	nex "github.com/PretendoNetwork/nex-go"
-	datastore_nintendo_badge_arcade_types "github.com/PretendoNetwork/nex-protocols-go/datastore/nintendo-badge-arcade/types"
-	"github.com/PretendoNetwork/nex-protocols-go/globals"
+	nex "github.com/PretendoNetwork/nex-go/v2"
+	datastore_nintendo_badge_arcade_types "github.com/PretendoNetwork/nex-protocols-go/v2/datastore/nintendo-badge-arcade/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
 )
 
 func (protocol *Protocol) handleGetMetaByOwnerID(packet nex.PacketInterface) {

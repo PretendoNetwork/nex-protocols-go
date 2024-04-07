@@ -4,9 +4,9 @@ package protocol
 import (
 	"fmt"
 
-	nex "github.com/PretendoNetwork/nex-go"
-	"github.com/PretendoNetwork/nex-protocols-go/globals"
-	matchmake_extension_monster_hunter_xx_types "github.com/PretendoNetwork/nex-protocols-go/matchmake-extension/monster-hunter-xx/types"
+	nex "github.com/PretendoNetwork/nex-go/v2"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
+	matchmake_extension_monster_hunter_xx_types "github.com/PretendoNetwork/nex-protocols-go/v2/matchmake-extension/monster-hunter-xx/types"
 )
 
 func (protocol *Protocol) handleUpdateFriendUserProfile(packet nex.PacketInterface) {

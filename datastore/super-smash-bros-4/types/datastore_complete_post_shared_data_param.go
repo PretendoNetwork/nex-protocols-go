@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go/types"
-	datastore_types "github.com/PretendoNetwork/nex-protocols-go/datastore/types"
+	"github.com/PretendoNetwork/nex-go/v2/types"
+	datastore_types "github.com/PretendoNetwork/nex-protocols-go/v2/datastore/types"
 )
 
 // DataStoreCompletePostSharedDataParam is a type within the DataStoreSuperSmashBros.4 protocol

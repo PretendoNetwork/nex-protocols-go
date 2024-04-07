@@ -4,11 +4,11 @@ package protocol
 import (
 	"fmt"
 
-	nex "github.com/PretendoNetwork/nex-go"
-	"github.com/PretendoNetwork/nex-go/types"
-	"github.com/PretendoNetwork/nex-protocols-go/globals"
-	service_item "github.com/PretendoNetwork/nex-protocols-go/service-item"
-	service_item_wii_sports_club_types "github.com/PretendoNetwork/nex-protocols-go/service-item/wii-sports-club/types"
+	nex "github.com/PretendoNetwork/nex-go/v2"
+	"github.com/PretendoNetwork/nex-go/v2/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
+	service_item "github.com/PretendoNetwork/nex-protocols-go/v2/service-item"
+	service_item_wii_sports_club_types "github.com/PretendoNetwork/nex-protocols-go/v2/service-item/wii-sports-club/types"
 	"golang.org/x/exp/slices"
 )
 

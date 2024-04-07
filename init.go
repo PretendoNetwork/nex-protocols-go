@@ -5,10 +5,10 @@
 package nexproto
 
 import (
-	"github.com/PretendoNetwork/nex-go/types"
-	account_management_types "github.com/PretendoNetwork/nex-protocols-go/account-management/types"
-	match_making_types "github.com/PretendoNetwork/nex-protocols-go/match-making/types"
-	ticket_granting_types "github.com/PretendoNetwork/nex-protocols-go/ticket-granting/types"
+	"github.com/PretendoNetwork/nex-go/v2/types"
+	account_management_types "github.com/PretendoNetwork/nex-protocols-go/v2/account-management/types"
+	match_making_types "github.com/PretendoNetwork/nex-protocols-go/v2/match-making/types"
+	ticket_granting_types "github.com/PretendoNetwork/nex-protocols-go/v2/ticket-granting/types"
 )
 
 func init() {

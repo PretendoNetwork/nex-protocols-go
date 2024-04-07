@@ -5,10 +5,10 @@ import (
 	"fmt"
 	"slices"
 
-	nex "github.com/PretendoNetwork/nex-go"
-	"github.com/PretendoNetwork/nex-go/types"
-	"github.com/PretendoNetwork/nex-protocols-go/globals"
-	subscriber_types "github.com/PretendoNetwork/nex-protocols-go/subscriber/types"
+	nex "github.com/PretendoNetwork/nex-go/v2"
+	"github.com/PretendoNetwork/nex-go/v2/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
+	subscriber_types "github.com/PretendoNetwork/nex-protocols-go/v2/subscriber/types"
 )
 
 const (

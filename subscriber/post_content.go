@@ -4,9 +4,9 @@ package protocol
 import (
 	"fmt"
 
-	nex "github.com/PretendoNetwork/nex-go"
-	"github.com/PretendoNetwork/nex-protocols-go/globals"
-	subscriber_types "github.com/PretendoNetwork/nex-protocols-go/subscriber/types"
+	nex "github.com/PretendoNetwork/nex-go/v2"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
+	subscriber_types "github.com/PretendoNetwork/nex-protocols-go/v2/subscriber/types"
 )
 
 func (protocol *Protocol) handlePostContent(packet nex.PacketInterface) {

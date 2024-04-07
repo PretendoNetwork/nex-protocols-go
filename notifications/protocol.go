@@ -2,7 +2,7 @@
 package protocol
 
 import (
-	nex "github.com/PretendoNetwork/nex-go"
+	nex "github.com/PretendoNetwork/nex-go/v2"
 )
 
 const (

@@ -4,43 +4,45 @@ package protocol
 import (
 	"fmt"
 
-	nex "github.com/PretendoNetwork/nex-go"
-	"github.com/PretendoNetwork/nex-protocols-go/globals"
+	nex "github.com/PretendoNetwork/nex-go/v2"
+	"github.com/PretendoNetwork/nex-go/v2/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
 )
 
-// CompletePostObjects sets the CompletePostObjects handler function
-func (protocol *Protocol) CompletePostObjects(handler func(err error, packet nex.PacketInterface, callID uint32, dataIDs []uint64) uint32) {
-	protocol.completePostObjectsHandler = handler
-}
-
 func (protocol *Protocol) handleCompletePostObjects(packet nex.PacketInterface) {
-	var errorCode uint32
+	if protocol.CompletePostObjects == nil {
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "DataStore::CompletePostObjects not implemented")
 
-	if protocol.completePostObjectsHandler == nil {
-		globals.Logger.Warning("DataStore::CompletePostObjects not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
+	callID := request.CallID
+	parameters := request.Parameters
+	endpoint := packet.Sender().Endpoint()
+	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	callID := request.CallID()
-	parameters := request.Parameters()
+	dataIDs := types.NewList[*types.PrimitiveU64]()
+	dataIDs.Type = types.NewPrimitiveU64(0)
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
-
-	dataIDs, err := parametersStream.ReadListUInt64LE()
+	err := dataIDs.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.completePostObjectsHandler(fmt.Errorf("Failed to read dataIDs from parameters. %s", err.Error()), packet, callID, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.CompletePostObjects(fmt.Errorf("Failed to read dataIDs from parameters. %s", err.Error()), packet, callID, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	errorCode = protocol.completePostObjectsHandler(nil, packet, callID, dataIDs)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.CompletePostObjects(nil, packet, callID, dataIDs)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

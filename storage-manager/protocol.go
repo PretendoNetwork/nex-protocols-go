@@ -3,9 +3,11 @@ package protocol
 
 import (
 	"fmt"
+	"slices"
 
-	nex "github.com/PretendoNetwork/nex-go"
-	"github.com/PretendoNetwork/nex-protocols-go/globals"
+	nex "github.com/PretendoNetwork/nex-go/v2"
+	"github.com/PretendoNetwork/nex-go/v2/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
 )
 
 const (
@@ -21,35 +23,69 @@ const (
 
 // Protocol stores all the RMC method handlers for the StorageManager protocol and listens for requests
 type Protocol struct {
-	Server                    *nex.Server
-	acquireCardIDHandler      func(err error, packet nex.PacketInterface, callID uint32) uint32
-	activateWithCardIDHandler func(err error, packet nex.PacketInterface, callID uint32, unknown uint8, cardID uint64) uint32
+	endpoint           nex.EndpointInterface
+	AcquireCardID      func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, *nex.Error)
+	ActivateWithCardID func(err error, packet nex.PacketInterface, callID uint32, unknown *types.PrimitiveU8, cardID *types.PrimitiveU64) (*nex.RMCMessage, *nex.Error)
+	Patches            nex.ServiceProtocol
+	PatchedMethods     []uint32
 }
 
-// Setup initializes the protocol
-func (protocol *Protocol) Setup() {
-	protocol.Server.On("Data", func(packet nex.PacketInterface) {
-		request := packet.RMCRequest()
+// Interface implements the methods present on the StorageManager protocol struct
+type Interface interface {
+	Endpoint() nex.EndpointInterface
+	SetEndpoint(endpoint nex.EndpointInterface)
+	SetHandlerAcquireCardID(handler func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, *nex.Error))
+	SetHandlerActivateWithCardID(handler func(err error, packet nex.PacketInterface, callID uint32, unknown *types.PrimitiveU8, cardID *types.PrimitiveU64) (*nex.RMCMessage, *nex.Error))
+}
 
-		if request.ProtocolID() == ProtocolID {
-			switch request.MethodID() {
-			case MethodAcquireCardID:
-				go protocol.handleAcquireCardID(packet)
-			case MethodActivateWithCardID:
-				go protocol.handleActivateWithCardID(packet)
-			default:
-				go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
-				fmt.Printf("Unsupported StorageManager method ID: %#v\n", request.MethodID())
-			}
-		}
-	})
+// Endpoint returns the endpoint implementing the protocol
+func (protocol *Protocol) Endpoint() nex.EndpointInterface {
+	return protocol.endpoint
+}
+
+// SetEndpoint sets the endpoint implementing the protocol
+func (protocol *Protocol) SetEndpoint(endpoint nex.EndpointInterface) {
+	protocol.endpoint = endpoint
+}
+
+// SetHandlerAcquireCardID sets the handler for the AcquireCardID method
+func (protocol *Protocol) SetHandlerAcquireCardID(handler func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, *nex.Error)) {
+	protocol.AcquireCardID = handler
+}
+
+// SetHandlerActivateWithCardID sets the handler for the ActivateWithCardID method
+func (protocol *Protocol) SetHandlerActivateWithCardID(handler func(err error, packet nex.PacketInterface, callID uint32, unknown *types.PrimitiveU8, cardID *types.PrimitiveU64) (*nex.RMCMessage, *nex.Error)) {
+	protocol.ActivateWithCardID = handler
+}
+
+// HandlePacket sends the packet to the correct RMC method handler
+func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
+	message := packet.RMCMessage()
+
+	if !message.IsRequest || message.ProtocolID != ProtocolID {
+		return
+	}
+
+	if protocol.Patches != nil && slices.Contains(protocol.PatchedMethods, message.MethodID) {
+		protocol.Patches.HandlePacket(packet)
+		return
+	}
+
+	switch message.MethodID {
+	case MethodAcquireCardID:
+		protocol.handleAcquireCardID(packet)
+	case MethodActivateWithCardID:
+		protocol.handleActivateWithCardID(packet)
+	default:
+		errMessage := fmt.Sprintf("Unsupported StorageManager method ID: %#v\n", message.MethodID)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, errMessage)
+
+		globals.RespondError(packet, ProtocolID, err)
+		globals.Logger.Warning(err.Message)
+	}
 }
 
 // NewProtocol returns a new StorageManager protocol
-func NewProtocol(server *nex.Server) *Protocol {
-	protocol := &Protocol{Server: server}
-
-	protocol.Setup()
-
-	return protocol
+func NewProtocol() *Protocol {
+	return &Protocol{}
 }

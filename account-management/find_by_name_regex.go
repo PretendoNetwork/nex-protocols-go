@@ -4,63 +4,68 @@ package protocol
 import (
 	"fmt"
 
-	nex "github.com/PretendoNetwork/nex-go"
-	"github.com/PretendoNetwork/nex-protocols-go/globals"
+	nex "github.com/PretendoNetwork/nex-go/v2"
+	"github.com/PretendoNetwork/nex-go/v2/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
 )
 
-// FindByNameRegex sets the FindByNameRegex handler function
-func (protocol *Protocol) FindByNameRegex(handler func(err error, packet nex.PacketInterface, callID uint32, uiGroups uint32, strRegex string, resultRange *nex.ResultRange) uint32) {
-	protocol.findByNameRegexHandler = handler
-}
-
 func (protocol *Protocol) handleFindByNameRegex(packet nex.PacketInterface) {
-	var errorCode uint32
+	if protocol.FindByNameRegex == nil {
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "AccountManagement::FindByNameRegex not implemented")
 
-	if protocol.findByNameRegexHandler == nil {
-		globals.Logger.Warning("AccountManagement::FindByNameRegex not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
+	callID := request.CallID
+	parameters := request.Parameters
+	endpoint := packet.Sender().Endpoint()
+	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	callID := request.CallID()
-	parameters := request.Parameters()
+	uiGroups := types.NewPrimitiveU32(0)
+	strRegex := types.NewString("")
+	resultRange := types.NewResultRange()
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+	var err error
 
-	uiGroups, err := parametersStream.ReadUInt32LE()
+	err = uiGroups.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.findByNameRegexHandler(fmt.Errorf("Failed to read uiGroups from parameters. %s", err.Error()), packet, callID, 0, "", nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.FindByNameRegex(fmt.Errorf("Failed to read uiGroups from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	strRegex, err := parametersStream.ReadString()
+	err = strRegex.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.findByNameRegexHandler(fmt.Errorf("Failed to read strRegex from parameters. %s", err.Error()), packet, callID, 0, "", nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.FindByNameRegex(fmt.Errorf("Failed to read strRegex from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	resultRange, err := parametersStream.ReadStructure(nex.NewResultRange())
+	err = resultRange.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.findByNameRegexHandler(fmt.Errorf("Failed to read resultRange from parameters. %s", err.Error()), packet, callID, 0, "", nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.FindByNameRegex(fmt.Errorf("Failed to read resultRange from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	errorCode = protocol.findByNameRegexHandler(nil, packet, callID, uiGroups, strRegex, resultRange.(*nex.ResultRange))
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.FindByNameRegex(nil, packet, callID, uiGroups, strRegex, resultRange)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

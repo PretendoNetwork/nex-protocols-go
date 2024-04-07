@@ -4,55 +4,60 @@ package protocol
 import (
 	"fmt"
 
-	nex "github.com/PretendoNetwork/nex-go"
-	datastore_super_mario_maker_types "github.com/PretendoNetwork/nex-protocols-go/datastore/super-mario-maker/types"
-	datastore_types "github.com/PretendoNetwork/nex-protocols-go/datastore/types"
-	"github.com/PretendoNetwork/nex-protocols-go/globals"
+	nex "github.com/PretendoNetwork/nex-go/v2"
+	"github.com/PretendoNetwork/nex-go/v2/types"
+	datastore_super_mario_maker_types "github.com/PretendoNetwork/nex-protocols-go/v2/datastore/super-mario-maker/types"
+	datastore_types "github.com/PretendoNetwork/nex-protocols-go/v2/datastore/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
 )
 
-// GetMetasWithCourseRecord sets the GetMetasWithCourseRecord handler function
-func (protocol *Protocol) GetMetasWithCourseRecord(handler func(err error, packet nex.PacketInterface, callID uint32, params []*datastore_super_mario_maker_types.DataStoreGetCourseRecordParam, metaParam *datastore_types.DataStoreGetMetaParam) uint32) {
-	protocol.getMetasWithCourseRecordHandler = handler
-}
-
 func (protocol *Protocol) handleGetMetasWithCourseRecord(packet nex.PacketInterface) {
-	var errorCode uint32
+	if protocol.GetMetasWithCourseRecord == nil {
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "DataStoreSuperMarioMaker::GetMetasWithCourseRecord not implemented")
 
-	if protocol.getMetasWithCourseRecordHandler == nil {
-		globals.Logger.Warning("DataStoreSuperMarioMaker::GetMetasWithCourseRecord not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
+	callID := request.CallID
+	parameters := request.Parameters
+	endpoint := packet.Sender().Endpoint()
+	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	callID := request.CallID()
-	parameters := request.Parameters()
+	params := types.NewList[*datastore_super_mario_maker_types.DataStoreGetCourseRecordParam]()
+	params.Type = datastore_super_mario_maker_types.NewDataStoreGetCourseRecordParam()
+	metaParam := datastore_types.NewDataStoreGetMetaParam()
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+	var err error
 
-	params, err := parametersStream.ReadListStructure(datastore_super_mario_maker_types.NewDataStoreGetCourseRecordParam())
+	err = params.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.getMetasWithCourseRecordHandler(fmt.Errorf("Failed to read params from parameters. %s", err.Error()), packet, callID, nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.GetMetasWithCourseRecord(fmt.Errorf("Failed to read params from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	metaParam, err := parametersStream.ReadStructure(datastore_types.NewDataStoreGetMetaParam())
+	err = metaParam.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.getMetasWithCourseRecordHandler(fmt.Errorf("Failed to read metaParam from parameters. %s", err.Error()), packet, callID, nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.GetMetasWithCourseRecord(fmt.Errorf("Failed to read metaParam from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	errorCode = protocol.getMetasWithCourseRecordHandler(nil, packet, callID, params.([]*datastore_super_mario_maker_types.DataStoreGetCourseRecordParam), metaParam.(*datastore_types.DataStoreGetMetaParam))
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.GetMetasWithCourseRecord(nil, packet, callID, params, metaParam)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

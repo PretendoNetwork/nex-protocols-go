@@ -4,53 +4,58 @@ package protocol
 import (
 	"fmt"
 
-	nex "github.com/PretendoNetwork/nex-go"
-	"github.com/PretendoNetwork/nex-protocols-go/globals"
+	nex "github.com/PretendoNetwork/nex-go/v2"
+	"github.com/PretendoNetwork/nex-go/v2/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
 )
 
-// DeleteContent sets the DeleteContent handler function
-func (protocol *Protocol) DeleteContent(handler func(err error, packet nex.PacketInterface, callID uint32, unknown1 []string, unknown2 uint64) uint32) {
-	protocol.deleteContentHandler = handler
-}
-
 func (protocol *Protocol) handleDeleteContent(packet nex.PacketInterface) {
-	var errorCode uint32
+	if protocol.DeleteContent == nil {
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "Subscriber::DeleteContent not implemented")
 
-	if protocol.deleteContentHandler == nil {
-		globals.Logger.Warning("Subscriber::DeleteContent not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
+	callID := request.CallID
+	parameters := request.Parameters
+	endpoint := packet.Sender().Endpoint()
+	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	callID := request.CallID()
-	parameters := request.Parameters()
+	unknown1 := types.NewList[*types.String]()
+	unknown1.Type = types.NewString("")
+	unknown2 := types.NewPrimitiveU64(0)
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+	var err error
 
-	unknown1, err := parametersStream.ReadListString()
+	err = unknown1.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.deleteContentHandler(fmt.Errorf("Failed to read unknown1 from parameters. %s", err.Error()), packet, callID, nil, 0)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.DeleteContent(fmt.Errorf("Failed to read unknown1 from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	unknown2, err := parametersStream.ReadUInt64LE()
+	err = unknown2.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.deleteContentHandler(fmt.Errorf("Failed to read unknown2 from parameters. %s", err.Error()), packet, callID, nil, 0)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.DeleteContent(fmt.Errorf("Failed to read unknown2 from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	errorCode = protocol.deleteContentHandler(nil, packet, callID, unknown1, unknown2)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.DeleteContent(nil, packet, callID, unknown1, unknown2)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

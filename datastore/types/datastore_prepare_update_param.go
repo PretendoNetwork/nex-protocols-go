@@ -5,52 +5,89 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/v2"
+	"github.com/PretendoNetwork/nex-go/v2/types"
 )
 
-// DataStorePrepareUpdateParam is a data structure used by the DataStore protocol
+// DataStorePrepareUpdateParam is a type within the DataStore protocol
 type DataStorePrepareUpdateParam struct {
-	nex.Structure
-	DataID         uint64
-	Size           uint32
-	UpdatePassword uint64   // NEX 3.0.0+
-	ExtraData      []string // NEX 3.5.0+
+	types.Structure
+	DataID         *types.PrimitiveU64
+	Size           *types.PrimitiveU32
+	UpdatePassword *types.PrimitiveU64        // * NEX v3.0.0
+	ExtraData      *types.List[*types.String] // * NEX v3.5.0
 }
 
-// ExtractFromStream extracts a DataStorePrepareUpdateParam structure from a stream
-func (dataStorePrepareUpdateParam *DataStorePrepareUpdateParam) ExtractFromStream(stream *nex.StreamIn) error {
-	datastoreVersion := stream.Server.DataStoreProtocolVersion()
+// WriteTo writes the DataStorePrepareUpdateParam to the given writable
+func (dspup *DataStorePrepareUpdateParam) WriteTo(writable types.Writable) {
+	stream := writable.(*nex.ByteStreamOut)
+	libraryVersion := stream.LibraryVersions.DataStore
+
+	contentWritable := writable.CopyNew()
+
+	if libraryVersion.GreaterOrEqual("3.0.0") {
+		dspup.DataID.WriteTo(contentWritable)
+	} else {
+		contentWritable.WritePrimitiveUInt32LE(uint32(dspup.DataID.Value))
+	}
+
+	dspup.Size.WriteTo(writable)
+
+	if libraryVersion.GreaterOrEqual("3.0.0") {
+		dspup.UpdatePassword.WriteTo(writable)
+	}
+
+	if libraryVersion.GreaterOrEqual("3.5.0") {
+		dspup.ExtraData.WriteTo(writable)
+	}
+
+	content := contentWritable.Bytes()
+
+	dspup.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
+}
+
+// ExtractFrom extracts the DataStorePrepareUpdateParam from the given readable
+func (dspup *DataStorePrepareUpdateParam) ExtractFrom(readable types.Readable) error {
+	stream := readable.(*nex.ByteStreamIn)
+	libraryVersion := stream.LibraryVersions.DataStore
 
 	var err error
 
-	if datastoreVersion.GreaterOrEqual("3.0.0") {
-		dataID, err := stream.ReadUInt64LE()
-		if err != nil {
-			return fmt.Errorf("Failed to extract DataStorePrepareUpdateParam.DataID. %s", err.Error())
-		}
-
-		dataStorePrepareUpdateParam.DataID = dataID
-	} else {
-		dataID, err := stream.ReadUInt32LE()
-		if err != nil {
-			return fmt.Errorf("Failed to extract DataStorePrepareUpdateParam.DataID. %s", err.Error())
-		}
-
-		dataStorePrepareUpdateParam.DataID = uint64(dataID)
+	err = dspup.ExtractHeaderFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStorePrepareUpdateParam header. %s", err.Error())
 	}
 
-	dataStorePrepareUpdateParam.Size, err = stream.ReadUInt32LE()
+	if libraryVersion.GreaterOrEqual("3.0.0") {
+		err = dspup.DataID.ExtractFrom(readable)
+		if err != nil {
+			return fmt.Errorf("Failed to extract DataStoreCompleteUpdateParam.DataID. %s", err.Error())
+		}
+	} else {
+		dataID, err := readable.ReadPrimitiveUInt32LE()
+		if err != nil {
+			return fmt.Errorf("Failed to extract DataStoreCompleteUpdateParam.DataID. %s", err.Error())
+		}
+
+		dspup.DataID.Value = uint64(dataID)
+	}
+
+	err = dspup.Size.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStorePrepareUpdateParam.Size. %s", err.Error())
 	}
 
-	dataStorePrepareUpdateParam.UpdatePassword, err = stream.ReadUInt64LE()
-	if err != nil {
-		return fmt.Errorf("Failed to extract DataStorePrepareUpdateParam.UpdatePassword. %s", err.Error())
+	if libraryVersion.GreaterOrEqual("3.0.0") {
+		err = dspup.UpdatePassword.ExtractFrom(readable)
+		if err != nil {
+			return fmt.Errorf("Failed to extract DataStorePrepareUpdateParam.UpdatePassword. %s", err.Error())
+		}
 	}
 
-	if datastoreVersion.GreaterOrEqual("3.5.0") {
-		dataStorePrepareUpdateParam.ExtraData, err = stream.ReadListString()
+	if libraryVersion.GreaterOrEqual("3.5.0") {
+		err = dspup.ExtraData.ExtractFrom(readable)
 		if err != nil {
 			return fmt.Errorf("Failed to extract DataStorePrepareUpdateParam.ExtraData. %s", err.Error())
 		}
@@ -59,96 +96,63 @@ func (dataStorePrepareUpdateParam *DataStorePrepareUpdateParam) ExtractFromStrea
 	return nil
 }
 
-// Bytes encodes the DataStorePrepareUpdateParam and returns a byte array
-func (dataStorePrepareUpdateParam *DataStorePrepareUpdateParam) Bytes(stream *nex.StreamOut) []byte {
-	datastoreVersion := stream.Server.DataStoreProtocolVersion()
-
-	if datastoreVersion.GreaterOrEqual("3.0.0") {
-		stream.WriteUInt64LE(dataStorePrepareUpdateParam.DataID)
-	} else {
-		stream.WriteUInt32LE(uint32(dataStorePrepareUpdateParam.DataID))
-	}
-
-	stream.WriteUInt32LE(dataStorePrepareUpdateParam.Size)
-
-	if datastoreVersion.GreaterOrEqual("3.0.0") {
-		stream.WriteUInt64LE(dataStorePrepareUpdateParam.UpdatePassword)
-	}
-
-	if datastoreVersion.GreaterOrEqual("3.5.0") {
-		stream.WriteListString(dataStorePrepareUpdateParam.ExtraData)
-	}
-
-	return stream.Bytes()
-}
-
 // Copy returns a new copied instance of DataStorePrepareUpdateParam
-func (dataStorePrepareUpdateParam *DataStorePrepareUpdateParam) Copy() nex.StructureInterface {
+func (dspup *DataStorePrepareUpdateParam) Copy() types.RVType {
 	copied := NewDataStorePrepareUpdateParam()
 
-	copied.SetStructureVersion(dataStorePrepareUpdateParam.StructureVersion())
-
-	copied.DataID = dataStorePrepareUpdateParam.DataID
-	copied.Size = dataStorePrepareUpdateParam.Size
-	copied.UpdatePassword = dataStorePrepareUpdateParam.UpdatePassword
-	copied.ExtraData = make([]string, len(dataStorePrepareUpdateParam.ExtraData))
-
-	copy(copied.ExtraData, dataStorePrepareUpdateParam.ExtraData)
+	copied.StructureVersion = dspup.StructureVersion
+	copied.DataID = dspup.DataID.Copy().(*types.PrimitiveU64)
+	copied.Size = dspup.Size.Copy().(*types.PrimitiveU32)
+	copied.UpdatePassword = dspup.UpdatePassword.Copy().(*types.PrimitiveU64)
+	copied.ExtraData = dspup.ExtraData.Copy().(*types.List[*types.String])
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (dataStorePrepareUpdateParam *DataStorePrepareUpdateParam) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*DataStorePrepareUpdateParam)
-
-	if dataStorePrepareUpdateParam.StructureVersion() != other.StructureVersion() {
+// Equals checks if the given DataStorePrepareUpdateParam contains the same data as the current DataStorePrepareUpdateParam
+func (dspup *DataStorePrepareUpdateParam) Equals(o types.RVType) bool {
+	if _, ok := o.(*DataStorePrepareUpdateParam); !ok {
 		return false
 	}
 
-	if dataStorePrepareUpdateParam.DataID != other.DataID {
+	other := o.(*DataStorePrepareUpdateParam)
+
+	if dspup.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if dataStorePrepareUpdateParam.Size != other.Size {
+	if !dspup.DataID.Equals(other.DataID) {
 		return false
 	}
 
-	if dataStorePrepareUpdateParam.UpdatePassword != other.UpdatePassword {
+	if !dspup.Size.Equals(other.Size) {
 		return false
 	}
 
-	if len(dataStorePrepareUpdateParam.ExtraData) != len(other.ExtraData) {
+	if !dspup.UpdatePassword.Equals(other.UpdatePassword) {
 		return false
 	}
 
-	for i := 0; i < len(dataStorePrepareUpdateParam.ExtraData); i++ {
-		if dataStorePrepareUpdateParam.ExtraData[i] != other.ExtraData[i] {
-			return false
-		}
-	}
-
-	return true
+	return dspup.ExtraData.Equals(other.ExtraData)
 }
 
-// String returns a string representation of the struct
-func (dataStorePrepareUpdateParam *DataStorePrepareUpdateParam) String() string {
-	return dataStorePrepareUpdateParam.FormatToString(0)
+// String returns the string representation of the DataStorePrepareUpdateParam
+func (dspup *DataStorePrepareUpdateParam) String() string {
+	return dspup.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (dataStorePrepareUpdateParam *DataStorePrepareUpdateParam) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the DataStorePrepareUpdateParam using the provided indentation level
+func (dspup *DataStorePrepareUpdateParam) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("DataStorePrepareUpdateParam{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, dataStorePrepareUpdateParam.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sDataID: %d,\n", indentationValues, dataStorePrepareUpdateParam.DataID))
-	b.WriteString(fmt.Sprintf("%sSize: %d,\n", indentationValues, dataStorePrepareUpdateParam.Size))
-	b.WriteString(fmt.Sprintf("%sUpdatePassword: %d,\n", indentationValues, dataStorePrepareUpdateParam.UpdatePassword))
-	b.WriteString(fmt.Sprintf("%sExtraData: %v\n", indentationValues, dataStorePrepareUpdateParam.ExtraData))
+	b.WriteString(fmt.Sprintf("%sDataID: %s,\n", indentationValues, dspup.DataID))
+	b.WriteString(fmt.Sprintf("%sSize: %s,\n", indentationValues, dspup.Size))
+	b.WriteString(fmt.Sprintf("%sUpdatePassword: %s,\n", indentationValues, dspup.UpdatePassword))
+	b.WriteString(fmt.Sprintf("%sExtraData: %s,\n", indentationValues, dspup.ExtraData))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -156,10 +160,14 @@ func (dataStorePrepareUpdateParam *DataStorePrepareUpdateParam) FormatToString(i
 
 // NewDataStorePrepareUpdateParam returns a new DataStorePrepareUpdateParam
 func NewDataStorePrepareUpdateParam() *DataStorePrepareUpdateParam {
-	return &DataStorePrepareUpdateParam{
-		DataID:         0,
-		Size:           0,
-		UpdatePassword: 0,
-		ExtraData:      make([]string, 0),
+	dspup := &DataStorePrepareUpdateParam{
+		DataID:         types.NewPrimitiveU64(0),
+		Size:           types.NewPrimitiveU32(0),
+		UpdatePassword: types.NewPrimitiveU64(0),
+		ExtraData:      types.NewList[*types.String](),
 	}
+
+	dspup.ExtraData.Type = types.NewString("")
+
+	return dspup
 }

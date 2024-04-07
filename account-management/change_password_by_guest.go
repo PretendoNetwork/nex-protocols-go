@@ -4,63 +4,68 @@ package protocol
 import (
 	"fmt"
 
-	nex "github.com/PretendoNetwork/nex-go"
-	"github.com/PretendoNetwork/nex-protocols-go/globals"
+	nex "github.com/PretendoNetwork/nex-go/v2"
+	"github.com/PretendoNetwork/nex-go/v2/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
 )
 
-// ChangePasswordByGuest sets the ChangePasswordByGuest handler function
-func (protocol *Protocol) ChangePasswordByGuest(handler func(err error, packet nex.PacketInterface, callID uint32, strPrincipalName string, strKey string, strEmail string) uint32) {
-	protocol.changePasswordByGuestHandler = handler
-}
-
 func (protocol *Protocol) handleChangePasswordByGuest(packet nex.PacketInterface) {
-	var errorCode uint32
+	if protocol.ChangePasswordByGuest == nil {
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "AccountManagement::ChangePasswordByGuest not implemented")
 
-	if protocol.changePasswordByGuestHandler == nil {
-		globals.Logger.Warning("AccountManagement::ChangePasswordByGuest not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
+	callID := request.CallID
+	parameters := request.Parameters
+	endpoint := packet.Sender().Endpoint()
+	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	callID := request.CallID()
-	parameters := request.Parameters()
+	strPrincipalName := types.NewString("")
+	strKey := types.NewString("")
+	strEmail := types.NewString("")
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+	var err error
 
-	strPrincipalName, err := parametersStream.ReadString()
+	err = strPrincipalName.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.changePasswordByGuestHandler(fmt.Errorf("Failed to read strPrincipalName from parameters. %s", err.Error()), packet, callID, "", "", "")
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.ChangePasswordByGuest(fmt.Errorf("Failed to read strPrincipalName from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	strKey, err := parametersStream.ReadString()
+	err = strKey.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.changePasswordByGuestHandler(fmt.Errorf("Failed to read strKey from parameters. %s", err.Error()), packet, callID, "", "", "")
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.ChangePasswordByGuest(fmt.Errorf("Failed to read strKey from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	strEmail, err := parametersStream.ReadString()
+	err = strEmail.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.changePasswordByGuestHandler(fmt.Errorf("Failed to read strEmail from parameters. %s", err.Error()), packet, callID, "", "", "")
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.ChangePasswordByGuest(fmt.Errorf("Failed to read strEmail from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	errorCode = protocol.changePasswordByGuestHandler(nil, packet, callID, strPrincipalName, strKey, strEmail)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.ChangePasswordByGuest(nil, packet, callID, strPrincipalName, strKey, strEmail)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

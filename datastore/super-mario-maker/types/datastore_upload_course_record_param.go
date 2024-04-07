@@ -1,105 +1,114 @@
-// Package types implements all the types used by the DataStore (Super Mario Maker) protocol
+// Package types implements all the types used by the DataStore protocol
 package types
 
 import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/v2/types"
 )
 
-// DataStoreUploadCourseRecordParam holds data for the DataStore (Super Mario Maker) protocol
+// DataStoreUploadCourseRecordParam is a type within the DataStore protocol
 type DataStoreUploadCourseRecordParam struct {
-	nex.Structure
-	DataID uint64
-	Slot   uint8
-	Score  int32
+	types.Structure
+	DataID *types.PrimitiveU64
+	Slot   *types.PrimitiveU8
+	Score  *types.PrimitiveS32
 }
 
-// ExtractFromStream extracts a DataStoreUploadCourseRecordParam structure from a stream
-func (dataStoreUploadCourseRecordParam *DataStoreUploadCourseRecordParam) ExtractFromStream(stream *nex.StreamIn) error {
+// WriteTo writes the DataStoreUploadCourseRecordParam to the given writable
+func (dsucrp *DataStoreUploadCourseRecordParam) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
+
+	dsucrp.DataID.WriteTo(writable)
+	dsucrp.Slot.WriteTo(writable)
+	dsucrp.Score.WriteTo(writable)
+
+	content := contentWritable.Bytes()
+
+	dsucrp.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
+}
+
+// ExtractFrom extracts the DataStoreUploadCourseRecordParam from the given readable
+func (dsucrp *DataStoreUploadCourseRecordParam) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	dataStoreUploadCourseRecordParam.DataID, err = stream.ReadUInt64LE()
+	err = dsucrp.ExtractHeaderFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract DataStoreUploadCourseRecordParam.DataID from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract DataStoreUploadCourseRecordParam header. %s", err.Error())
 	}
 
-	dataStoreUploadCourseRecordParam.Slot, err = stream.ReadUInt8()
+	err = dsucrp.DataID.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract DataStoreUploadCourseRecordParam.Slot from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract DataStoreUploadCourseRecordParam.DataID. %s", err.Error())
 	}
 
-	dataStoreUploadCourseRecordParam.Score, err = stream.ReadInt32LE()
+	err = dsucrp.Slot.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract DataStoreUploadCourseRecordParam.Score from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract DataStoreUploadCourseRecordParam.Slot. %s", err.Error())
+	}
+
+	err = dsucrp.Score.ExtractFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreUploadCourseRecordParam.Score. %s", err.Error())
 	}
 
 	return nil
 }
 
-// Bytes encodes the DataStoreUploadCourseRecordParam and returns a byte array
-func (dataStoreUploadCourseRecordParam *DataStoreUploadCourseRecordParam) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt64LE(dataStoreUploadCourseRecordParam.DataID)
-	stream.WriteUInt8(dataStoreUploadCourseRecordParam.Slot)
-	stream.WriteInt32LE(dataStoreUploadCourseRecordParam.Score)
-
-	return stream.Bytes()
-}
-
 // Copy returns a new copied instance of DataStoreUploadCourseRecordParam
-func (dataStoreUploadCourseRecordParam *DataStoreUploadCourseRecordParam) Copy() nex.StructureInterface {
+func (dsucrp *DataStoreUploadCourseRecordParam) Copy() types.RVType {
 	copied := NewDataStoreUploadCourseRecordParam()
 
-	copied.SetStructureVersion(dataStoreUploadCourseRecordParam.StructureVersion())
-
-	copied.DataID = dataStoreUploadCourseRecordParam.DataID
-	copied.Slot = dataStoreUploadCourseRecordParam.Slot
-	copied.Score = dataStoreUploadCourseRecordParam.Score
+	copied.StructureVersion = dsucrp.StructureVersion
+	copied.DataID = dsucrp.DataID.Copy().(*types.PrimitiveU64)
+	copied.Slot = dsucrp.Slot.Copy().(*types.PrimitiveU8)
+	copied.Score = dsucrp.Score.Copy().(*types.PrimitiveS32)
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (dataStoreUploadCourseRecordParam *DataStoreUploadCourseRecordParam) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*DataStoreUploadCourseRecordParam)
-
-	if dataStoreUploadCourseRecordParam.StructureVersion() != other.StructureVersion() {
+// Equals checks if the given DataStoreUploadCourseRecordParam contains the same data as the current DataStoreUploadCourseRecordParam
+func (dsucrp *DataStoreUploadCourseRecordParam) Equals(o types.RVType) bool {
+	if _, ok := o.(*DataStoreUploadCourseRecordParam); !ok {
 		return false
 	}
 
-	if dataStoreUploadCourseRecordParam.DataID != other.DataID {
+	other := o.(*DataStoreUploadCourseRecordParam)
+
+	if dsucrp.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if dataStoreUploadCourseRecordParam.Slot != other.Slot {
+	if !dsucrp.DataID.Equals(other.DataID) {
 		return false
 	}
 
-	if dataStoreUploadCourseRecordParam.Score != other.Score {
+	if !dsucrp.Slot.Equals(other.Slot) {
 		return false
 	}
 
-	return true
+	return dsucrp.Score.Equals(other.Score)
 }
 
-// String returns a string representation of the struct
-func (dataStoreUploadCourseRecordParam *DataStoreUploadCourseRecordParam) String() string {
-	return dataStoreUploadCourseRecordParam.FormatToString(0)
+// String returns the string representation of the DataStoreUploadCourseRecordParam
+func (dsucrp *DataStoreUploadCourseRecordParam) String() string {
+	return dsucrp.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (dataStoreUploadCourseRecordParam *DataStoreUploadCourseRecordParam) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the DataStoreUploadCourseRecordParam using the provided indentation level
+func (dsucrp *DataStoreUploadCourseRecordParam) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("DataStoreUploadCourseRecordParam{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, dataStoreUploadCourseRecordParam.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sDataID: %d,\n", indentationValues, dataStoreUploadCourseRecordParam.DataID))
-	b.WriteString(fmt.Sprintf("%sSlot: %d,\n", indentationValues, dataStoreUploadCourseRecordParam.Slot))
-	b.WriteString(fmt.Sprintf("%sScore: %d,\n", indentationValues, dataStoreUploadCourseRecordParam.Score))
+	b.WriteString(fmt.Sprintf("%sDataID: %s,\n", indentationValues, dsucrp.DataID))
+	b.WriteString(fmt.Sprintf("%sSlot: %s,\n", indentationValues, dsucrp.Slot))
+	b.WriteString(fmt.Sprintf("%sScore: %s,\n", indentationValues, dsucrp.Score))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -107,9 +116,11 @@ func (dataStoreUploadCourseRecordParam *DataStoreUploadCourseRecordParam) Format
 
 // NewDataStoreUploadCourseRecordParam returns a new DataStoreUploadCourseRecordParam
 func NewDataStoreUploadCourseRecordParam() *DataStoreUploadCourseRecordParam {
-	return &DataStoreUploadCourseRecordParam{
-		DataID: 0,
-		Slot:   0,
-		Score:  0,
+	dsucrp := &DataStoreUploadCourseRecordParam{
+		DataID: types.NewPrimitiveU64(0),
+		Slot:   types.NewPrimitiveU8(0),
+		Score:  types.NewPrimitiveS32(0),
 	}
+
+	return dsucrp
 }

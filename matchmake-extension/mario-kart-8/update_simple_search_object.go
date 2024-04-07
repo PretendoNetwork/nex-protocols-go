@@ -4,54 +4,58 @@ package protocol
 import (
 	"fmt"
 
-	nex "github.com/PretendoNetwork/nex-go"
-	"github.com/PretendoNetwork/nex-protocols-go/globals"
-	matchmake_extension_mario_kart8_types "github.com/PretendoNetwork/nex-protocols-go/matchmake-extension/mario-kart-8/types"
+	nex "github.com/PretendoNetwork/nex-go/v2"
+	"github.com/PretendoNetwork/nex-go/v2/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
+	matchmake_extension_mario_kart8_types "github.com/PretendoNetwork/nex-protocols-go/v2/matchmake-extension/mario-kart-8/types"
 )
 
-// UpdateSimpleSearchObject sets the UpdateSimpleSearchObject handler function
-func (protocol *Protocol) UpdateSimpleSearchObject(handler func(err error, packet nex.PacketInterface, callID uint32, objectID uint32, newObject *matchmake_extension_mario_kart8_types.SimpleSearchObject) uint32) {
-	protocol.updateSimpleSearchObjectHandler = handler
-}
-
 func (protocol *Protocol) handleUpdateSimpleSearchObject(packet nex.PacketInterface) {
-	var errorCode uint32
+	if protocol.UpdateSimpleSearchObject == nil {
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "MatchmakeExtensionMarioKart8::UpdateSimpleSearchObject not implemented")
 
-	if protocol.updateSimpleSearchObjectHandler == nil {
-		globals.Logger.Warning("MatchmakeExtensionMarioKart8::UpdateSimpleSearchObject not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
+	callID := request.CallID
+	parameters := request.Parameters
+	endpoint := packet.Sender().Endpoint()
+	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	callID := request.CallID()
-	parameters := request.Parameters()
+	objectID := types.NewPrimitiveU32(0)
+	newObject := matchmake_extension_mario_kart8_types.NewSimpleSearchObject()
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+	var err error
 
-	objectID, err := parametersStream.ReadUInt32LE()
+	err = objectID.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.updateSimpleSearchObjectHandler(fmt.Errorf("Failed to read objectID from parameters. %s", err.Error()), packet, callID, 0, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.UpdateSimpleSearchObject(fmt.Errorf("Failed to read objectID from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	newObject, err := parametersStream.ReadStructure(matchmake_extension_mario_kart8_types.NewSimpleSearchObject())
+	err = newObject.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.updateSimpleSearchObjectHandler(fmt.Errorf("Failed to read newObject from parameters. %s", err.Error()), packet, callID, 0, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.UpdateSimpleSearchObject(fmt.Errorf("Failed to read newObject from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	errorCode = protocol.updateSimpleSearchObjectHandler(nil, packet, callID, objectID, newObject.(*matchmake_extension_mario_kart8_types.SimpleSearchObject))
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.UpdateSimpleSearchObject(nil, packet, callID, objectID, newObject)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

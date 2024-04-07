@@ -4,43 +4,45 @@ package protocol
 import (
 	"fmt"
 
-	nex "github.com/PretendoNetwork/nex-go"
-	"github.com/PretendoNetwork/nex-protocols-go/globals"
+	nex "github.com/PretendoNetwork/nex-go/v2"
+	"github.com/PretendoNetwork/nex-go/v2/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
 )
 
-// SendPlayReport sets the SendPlayReport handler function
-func (protocol *Protocol) SendPlayReport(handler func(err error, packet nex.PacketInterface, callID uint32, playReport []int32) uint32) {
-	protocol.sendPlayReportHandler = handler
-}
-
 func (protocol *Protocol) handleSendPlayReport(packet nex.PacketInterface) {
-	var errorCode uint32
+	if protocol.SendPlayReport == nil {
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "DataStoreSuperSmashBros4::SendPlayReport not implemented")
 
-	if protocol.sendPlayReportHandler == nil {
-		globals.Logger.Warning("DataStoreSuperSmashBros4::SendPlayReport not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
+	callID := request.CallID
+	parameters := request.Parameters
+	endpoint := packet.Sender().Endpoint()
+	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	callID := request.CallID()
-	parameters := request.Parameters()
+	playReport := types.NewList[*types.PrimitiveS32]()
+	playReport.Type = types.NewPrimitiveS32(0)
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
-
-	playReport, err := parametersStream.ReadListInt32LE()
+	err := playReport.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.sendPlayReportHandler(fmt.Errorf("Failed to read playReport from parameters. %s", err.Error()), packet, callID, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.SendPlayReport(fmt.Errorf("Failed to read playReport from parameters. %s", err.Error()), packet, callID, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	errorCode = protocol.sendPlayReportHandler(nil, packet, callID, playReport)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.SendPlayReport(nil, packet, callID, playReport)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

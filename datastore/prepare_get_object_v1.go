@@ -4,44 +4,44 @@ package protocol
 import (
 	"fmt"
 
-	nex "github.com/PretendoNetwork/nex-go"
-	datastore_types "github.com/PretendoNetwork/nex-protocols-go/datastore/types"
-	"github.com/PretendoNetwork/nex-protocols-go/globals"
+	nex "github.com/PretendoNetwork/nex-go/v2"
+	datastore_types "github.com/PretendoNetwork/nex-protocols-go/v2/datastore/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
 )
 
-// PrepareGetObjectV1 sets the PrepareGetObjectV1 handler function
-func (protocol *Protocol) PrepareGetObjectV1(handler func(err error, packet nex.PacketInterface, callID uint32, param *datastore_types.DataStorePrepareGetParamV1) uint32) {
-	protocol.prepareGetObjectV1Handler = handler
-}
-
 func (protocol *Protocol) handlePrepareGetObjectV1(packet nex.PacketInterface) {
-	var errorCode uint32
+	if protocol.PrepareGetObjectV1 == nil {
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "DataStore::PrepareGetObjectV1 not implemented")
 
-	if protocol.prepareGetObjectV1Handler == nil {
-		globals.Logger.Warning("DataStore::PrepareGetObjectV1 not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
+	callID := request.CallID
+	parameters := request.Parameters
+	endpoint := packet.Sender().Endpoint()
+	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	callID := request.CallID()
-	parameters := request.Parameters()
+	param := datastore_types.NewDataStorePrepareGetParamV1()
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
-
-	param, err := parametersStream.ReadStructure(datastore_types.NewDataStorePrepareGetParamV1())
+	err := param.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.prepareGetObjectV1Handler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.PrepareGetObjectV1(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	errorCode = protocol.prepareGetObjectV1Handler(nil, packet, callID, param.(*datastore_types.DataStorePrepareGetParamV1))
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.PrepareGetObjectV1(nil, packet, callID, param)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

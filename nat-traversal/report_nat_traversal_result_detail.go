@@ -4,81 +4,84 @@ package protocol
 import (
 	"fmt"
 
-	nex "github.com/PretendoNetwork/nex-go"
-	"github.com/PretendoNetwork/nex-protocols-go/globals"
+	nex "github.com/PretendoNetwork/nex-go/v2"
+	"github.com/PretendoNetwork/nex-go/v2/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
 )
 
-// ReportNATTraversalResultDetail sets the ReportNATTraversalResultDetail handler function
-func (protocol *Protocol) ReportNATTraversalResultDetail(handler func(err error, packet nex.PacketInterface, callID uint32, cid uint32, result bool, detail int32, rtt uint32) uint32) {
-	protocol.reportNATTraversalResultDetailHandler = handler
-}
-
 func (protocol *Protocol) handleReportNATTraversalResultDetail(packet nex.PacketInterface) {
-	var errorCode uint32
+	if protocol.ReportNATTraversalResultDetail == nil {
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "NATTraversal::ReportNATTraversalResultDetail not implemented")
 
-	if protocol.reportNATTraversalResultDetailHandler == nil {
-		globals.Logger.Warning("NATTraversal::ReportNATTraversalResultDetail not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
-	// TODO - The NEX server should add a NATTraversalProtocolVersion method
-	matchmakingVersion := protocol.Server.MatchMakingProtocolVersion()
+	endpoint := packet.Sender().Endpoint()
+	natTraversalVersion := endpoint.LibraryVersions().NATTraversal
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
+	callID := request.CallID
+	parameters := request.Parameters
+	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	callID := request.CallID()
-	parameters := request.Parameters()
+	cid := types.NewPrimitiveU32(0)
+	result := types.NewPrimitiveBool(false)
+	detail := types.NewPrimitiveS32(0)
+	rtt := types.NewPrimitiveU32(0)
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+	var err error
 
-	cid, err := parametersStream.ReadUInt32LE()
+	err = cid.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.reportNATTraversalResultDetailHandler(fmt.Errorf("Failed to read cid from parameters. %s", err.Error()), packet, callID, 0, false, 0, 0)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.ReportNATTraversalResultDetail(fmt.Errorf("Failed to read cid from parameters. %s", err.Error()), packet, callID, nil, nil, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	result, err := parametersStream.ReadBool()
+	err = result.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.reportNATTraversalResultDetailHandler(fmt.Errorf("Failed to read result from parameters. %s", err.Error()), packet, callID, 0, false, 0, 0)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.ReportNATTraversalResultDetail(fmt.Errorf("Failed to read result from parameters. %s", err.Error()), packet, callID, nil, nil, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	detail, err := parametersStream.ReadInt32LE()
+	err = detail.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.reportNATTraversalResultDetailHandler(fmt.Errorf("Failed to read detail from parameters. %s", err.Error()), packet, callID, 0, false, 0, 0)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.ReportNATTraversalResultDetail(fmt.Errorf("Failed to read detail from parameters. %s", err.Error()), packet, callID, nil, nil, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
-
-	var rtt uint32 = 0
 
 	// TODO - Is this the right version?
-	if matchmakingVersion.GreaterOrEqual("3.0.0") {
-		rtt, err = parametersStream.ReadUInt32LE()
+	if natTraversalVersion.GreaterOrEqual("3.0.0") {
+		err = rtt.ExtractFrom(parametersStream)
 		if err != nil {
-			errorCode = protocol.reportNATTraversalResultDetailHandler(fmt.Errorf("Failed to read rtt from parameters. %s", err.Error()), packet, callID, 0, false, 0, 0)
-			if errorCode != 0 {
-				globals.RespondError(packet, ProtocolID, errorCode)
+			_, rmcError := protocol.ReportNATTraversalResult(fmt.Errorf("Failed to read rtt from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+			if rmcError != nil {
+				globals.RespondError(packet, ProtocolID, rmcError)
 			}
 
 			return
 		}
 	}
 
-	errorCode = protocol.reportNATTraversalResultDetailHandler(nil, packet, callID, cid, result, detail, rtt)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.ReportNATTraversalResultDetail(nil, packet, callID, cid, result, detail, rtt)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

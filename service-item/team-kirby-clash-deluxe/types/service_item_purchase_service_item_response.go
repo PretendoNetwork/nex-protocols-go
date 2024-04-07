@@ -1,118 +1,102 @@
-// Package types implements all the types used by the Service Item (Team Kirby Clash Deluxe) protocol
+// Package types implements all the types used by the ServiceItem protocol
 package types
 
 import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/v2/types"
 )
 
-// ServiceItemPurchaseServiceItemResponse holds data for the Service Item (Team Kirby Clash Deluxe) protocol
+// ServiceItemPurchaseServiceItemResponse is a type within the ServiceItem protocol
 type ServiceItemPurchaseServiceItemResponse struct {
-	nex.Structure
+	types.Structure
 	*ServiceItemEShopResponse
-	NullablePurchaseInfo []*ServiceItemPurchaseInfo
+	NullablePurchaseInfo *types.List[*ServiceItemPurchaseInfo]
 }
 
-// ExtractFromStream extracts a ServiceItemPurchaseServiceItemResponse structure from a stream
-func (serviceItemPurchaseServiceItemResponse *ServiceItemPurchaseServiceItemResponse) ExtractFromStream(stream *nex.StreamIn) error {
+// WriteTo writes the ServiceItemPurchaseServiceItemResponse to the given writable
+func (sipsir *ServiceItemPurchaseServiceItemResponse) WriteTo(writable types.Writable) {
+	sipsir.ServiceItemEShopResponse.WriteTo(writable)
+
+	contentWritable := writable.CopyNew()
+
+	sipsir.NullablePurchaseInfo.WriteTo(writable)
+
+	content := contentWritable.Bytes()
+
+	sipsir.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
+}
+
+// ExtractFrom extracts the ServiceItemPurchaseServiceItemResponse from the given readable
+func (sipsir *ServiceItemPurchaseServiceItemResponse) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	nullablePurchaseInfo, err := stream.ReadListStructure(NewServiceItemPurchaseInfo())
+	err = sipsir.ServiceItemEShopResponse.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemPurchaseServiceItemResponse.NullablePurchaseInfo from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract ServiceItemPurchaseServiceItemResponse.ServiceItemEShopResponse. %s", err.Error())
 	}
 
-	serviceItemPurchaseServiceItemResponse.NullablePurchaseInfo = nullablePurchaseInfo.([]*ServiceItemPurchaseInfo)
+	err = sipsir.ExtractHeaderFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract ServiceItemPurchaseServiceItemResponse header. %s", err.Error())
+	}
+
+	err = sipsir.NullablePurchaseInfo.ExtractFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract ServiceItemPurchaseServiceItemResponse.NullablePurchaseInfo. %s", err.Error())
+	}
 
 	return nil
 }
 
-// Bytes encodes the ServiceItemPurchaseServiceItemResponse and returns a byte array
-func (serviceItemPurchaseServiceItemResponse *ServiceItemPurchaseServiceItemResponse) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteListStructure(serviceItemPurchaseServiceItemResponse.NullablePurchaseInfo)
-
-	return stream.Bytes()
-}
-
 // Copy returns a new copied instance of ServiceItemPurchaseServiceItemResponse
-func (serviceItemPurchaseServiceItemResponse *ServiceItemPurchaseServiceItemResponse) Copy() nex.StructureInterface {
+func (sipsir *ServiceItemPurchaseServiceItemResponse) Copy() types.RVType {
 	copied := NewServiceItemPurchaseServiceItemResponse()
 
-	copied.SetStructureVersion(serviceItemPurchaseServiceItemResponse.StructureVersion())
-
-	copied.ServiceItemEShopResponse = serviceItemPurchaseServiceItemResponse.ServiceItemEShopResponse.Copy().(*ServiceItemEShopResponse)
-	copied.SetParentType(copied.ServiceItemEShopResponse)
-
-	copied.NullablePurchaseInfo = make([]*ServiceItemPurchaseInfo, len(serviceItemPurchaseServiceItemResponse.NullablePurchaseInfo))
-
-	for i := 0; i < len(serviceItemPurchaseServiceItemResponse.NullablePurchaseInfo); i++ {
-		copied.NullablePurchaseInfo[i] = serviceItemPurchaseServiceItemResponse.NullablePurchaseInfo[i].Copy().(*ServiceItemPurchaseInfo)
-	}
+	copied.StructureVersion = sipsir.StructureVersion
+	copied.ServiceItemEShopResponse = sipsir.ServiceItemEShopResponse.Copy().(*ServiceItemEShopResponse)
+	copied.NullablePurchaseInfo = sipsir.NullablePurchaseInfo.Copy().(*types.List[*ServiceItemPurchaseInfo])
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (serviceItemPurchaseServiceItemResponse *ServiceItemPurchaseServiceItemResponse) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*ServiceItemPurchaseServiceItemResponse)
-
-	if serviceItemPurchaseServiceItemResponse.StructureVersion() != other.StructureVersion() {
+// Equals checks if the given ServiceItemPurchaseServiceItemResponse contains the same data as the current ServiceItemPurchaseServiceItemResponse
+func (sipsir *ServiceItemPurchaseServiceItemResponse) Equals(o types.RVType) bool {
+	if _, ok := o.(*ServiceItemPurchaseServiceItemResponse); !ok {
 		return false
 	}
 
-	if !serviceItemPurchaseServiceItemResponse.ParentType().Equals(other.ParentType()) {
+	other := o.(*ServiceItemPurchaseServiceItemResponse)
+
+	if sipsir.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if len(serviceItemPurchaseServiceItemResponse.NullablePurchaseInfo) != len(other.NullablePurchaseInfo) {
+	if !sipsir.ServiceItemEShopResponse.Equals(other.ServiceItemEShopResponse) {
 		return false
 	}
 
-	for i := 0; i < len(serviceItemPurchaseServiceItemResponse.NullablePurchaseInfo); i++ {
-		if !serviceItemPurchaseServiceItemResponse.NullablePurchaseInfo[i].Equals(other.NullablePurchaseInfo[i]) {
-			return false
-		}
-	}
-
-	return true
+	return sipsir.NullablePurchaseInfo.Equals(other.NullablePurchaseInfo)
 }
 
-// String returns a string representation of the struct
-func (serviceItemPurchaseServiceItemResponse *ServiceItemPurchaseServiceItemResponse) String() string {
-	return serviceItemPurchaseServiceItemResponse.FormatToString(0)
+// String returns the string representation of the ServiceItemPurchaseServiceItemResponse
+func (sipsir *ServiceItemPurchaseServiceItemResponse) String() string {
+	return sipsir.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (serviceItemPurchaseServiceItemResponse *ServiceItemPurchaseServiceItemResponse) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the ServiceItemPurchaseServiceItemResponse using the provided indentation level
+func (sipsir *ServiceItemPurchaseServiceItemResponse) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
-	indentationListValues := strings.Repeat("\t", indentationLevel+2)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("ServiceItemPurchaseServiceItemResponse{\n")
-	b.WriteString(fmt.Sprintf("%sParentType: %s,\n", indentationValues, serviceItemPurchaseServiceItemResponse.ParentType().FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, serviceItemPurchaseServiceItemResponse.StructureVersion()))
-
-	if len(serviceItemPurchaseServiceItemResponse.NullablePurchaseInfo) == 0 {
-		b.WriteString(fmt.Sprintf("%sNullablePurchaseInfo: [],\n", indentationValues))
-	} else {
-		b.WriteString(fmt.Sprintf("%sNullablePurchaseInfo: [\n", indentationValues))
-
-		for i := 0; i < len(serviceItemPurchaseServiceItemResponse.NullablePurchaseInfo); i++ {
-			str := serviceItemPurchaseServiceItemResponse.NullablePurchaseInfo[i].FormatToString(indentationLevel + 2)
-			if i == len(serviceItemPurchaseServiceItemResponse.NullablePurchaseInfo)-1 {
-				b.WriteString(fmt.Sprintf("%s%s\n", indentationListValues, str))
-			} else {
-				b.WriteString(fmt.Sprintf("%s%s,\n", indentationListValues, str))
-			}
-		}
-
-		b.WriteString(fmt.Sprintf("%s],\n", indentationValues))
-	}
-
+	b.WriteString(fmt.Sprintf("%sServiceItemEShopResponse (parent): %s,\n", indentationValues, sipsir.ServiceItemEShopResponse.FormatToString(indentationLevel+1)))
+	b.WriteString(fmt.Sprintf("%sNullablePurchaseInfo: %s,\n", indentationValues, sipsir.NullablePurchaseInfo))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -120,10 +104,12 @@ func (serviceItemPurchaseServiceItemResponse *ServiceItemPurchaseServiceItemResp
 
 // NewServiceItemPurchaseServiceItemResponse returns a new ServiceItemPurchaseServiceItemResponse
 func NewServiceItemPurchaseServiceItemResponse() *ServiceItemPurchaseServiceItemResponse {
-	serviceItemPurchaseServiceItemResponse := &ServiceItemPurchaseServiceItemResponse{}
+	sipsir := &ServiceItemPurchaseServiceItemResponse{
+		ServiceItemEShopResponse: NewServiceItemEShopResponse(),
+		NullablePurchaseInfo:     types.NewList[*ServiceItemPurchaseInfo](),
+	}
 
-	serviceItemPurchaseServiceItemResponse.ServiceItemEShopResponse = NewServiceItemEShopResponse()
-	serviceItemPurchaseServiceItemResponse.SetParentType(serviceItemPurchaseServiceItemResponse.ServiceItemEShopResponse)
+	sipsir.NullablePurchaseInfo.Type = NewServiceItemPurchaseInfo()
 
-	return serviceItemPurchaseServiceItemResponse
+	return sipsir
 }

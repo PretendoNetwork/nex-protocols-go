@@ -4,53 +4,58 @@ package protocol
 import (
 	"fmt"
 
-	nex "github.com/PretendoNetwork/nex-go"
-	"github.com/PretendoNetwork/nex-protocols-go/globals"
+	nex "github.com/PretendoNetwork/nex-go/v2"
+	"github.com/PretendoNetwork/nex-go/v2/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
 )
 
-// DeleteFromDeletions sets the DeleteFromDeletions handler function
-func (protocol *Protocol) DeleteFromDeletions(handler func(err error, packet nex.PacketInterface, callID uint32, lstDeletions []uint32, pid uint32) uint32) {
-	protocol.deleteFromDeletionsHandler = handler
-}
-
 func (protocol *Protocol) handleDeleteFromDeletions(packet nex.PacketInterface) {
-	var errorCode uint32
+	if protocol.DeleteFromDeletions == nil {
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "MatchMakingExt::DeleteFromDeletions not implemented")
 
-	if protocol.deleteFromDeletionsHandler == nil {
-		globals.Logger.Warning("MatchMakingExt::DeleteFromDeletions not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
+	callID := request.CallID
+	parameters := request.Parameters
+	endpoint := packet.Sender().Endpoint()
+	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	callID := request.CallID()
-	parameters := request.Parameters()
+	lstDeletions := types.NewList[*types.PrimitiveU32]()
+	lstDeletions.Type = types.NewPrimitiveU32(0)
+	pid := types.NewPID(0)
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+	var err error
 
-	lstDeletions, err := parametersStream.ReadListUInt32LE()
+	err = lstDeletions.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.deleteFromDeletionsHandler(fmt.Errorf("Failed to read lstDeletionsCount from parameters. %s", err.Error()), packet, callID, nil, 0)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.DeleteFromDeletions(fmt.Errorf("Failed to read lstDeletions from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	pid, err := parametersStream.ReadUInt32LE()
+	err = pid.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.deleteFromDeletionsHandler(fmt.Errorf("Failed to read pid from parameters. %s", err.Error()), packet, callID, nil, 0)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.DeleteFromDeletions(fmt.Errorf("Failed to read pid from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	errorCode = protocol.deleteFromDeletionsHandler(nil, packet, callID, lstDeletions, pid)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.DeleteFromDeletions(nil, packet, callID, lstDeletions, pid)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

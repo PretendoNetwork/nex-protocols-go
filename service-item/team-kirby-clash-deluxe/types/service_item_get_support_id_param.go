@@ -1,97 +1,101 @@
-// Package types implements all the types used by the Service Item (Team Kirby Clash Deluxe) protocol
+// Package types implements all the types used by the ServiceItem protocol
 package types
 
 import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/v2/types"
 )
 
-// ServiceItemGetSupportIDParam holds data for the Service Item (Team Kirby Clash Deluxe) protocol
+// ServiceItemGetSupportIDParam is a type within the ServiceItem protocol
 type ServiceItemGetSupportIDParam struct {
-	nex.Structure
-	UniqueID uint32
-	Platform uint8
+	types.Structure
+	UniqueID *types.PrimitiveU32
+	Platform *types.PrimitiveU8
 }
 
-// ExtractFromStream extracts a ServiceItemGetSupportIDParam structure from a stream
-func (serviceItemGetSupportIDParam *ServiceItemGetSupportIDParam) ExtractFromStream(stream *nex.StreamIn) error {
+// WriteTo writes the ServiceItemGetSupportIDParam to the given writable
+func (sigsidp *ServiceItemGetSupportIDParam) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
+
+	sigsidp.UniqueID.WriteTo(writable)
+	sigsidp.Platform.WriteTo(writable)
+
+	content := contentWritable.Bytes()
+
+	sigsidp.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
+}
+
+// ExtractFrom extracts the ServiceItemGetSupportIDParam from the given readable
+func (sigsidp *ServiceItemGetSupportIDParam) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	serviceItemGetSupportIDParam.UniqueID, err = stream.ReadUInt32LE()
+	err = sigsidp.ExtractHeaderFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemGetSupportIDParam.UniqueID from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract ServiceItemGetSupportIDParam header. %s", err.Error())
 	}
 
-	if serviceItemGetSupportIDParam.StructureVersion() >= 1 {
-		serviceItemGetSupportIDParam.Platform, err = stream.ReadUInt8()
-		if err != nil {
-			return fmt.Errorf("Failed to extract ServiceItemGetSupportIDParam.Platform from stream. %s", err.Error())
-		}
+	err = sigsidp.UniqueID.ExtractFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract ServiceItemGetSupportIDParam.UniqueID. %s", err.Error())
+	}
+
+	err = sigsidp.Platform.ExtractFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract ServiceItemGetSupportIDParam.Platform. %s", err.Error())
 	}
 
 	return nil
 }
 
-// Bytes encodes the ServiceItemGetSupportIDParam and returns a byte array
-func (serviceItemGetSupportIDParam *ServiceItemGetSupportIDParam) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt32LE(serviceItemGetSupportIDParam.UniqueID)
-
-	if serviceItemGetSupportIDParam.StructureVersion() >= 1 {
-		stream.WriteUInt8(serviceItemGetSupportIDParam.Platform)
-	}
-
-	return stream.Bytes()
-}
-
 // Copy returns a new copied instance of ServiceItemGetSupportIDParam
-func (serviceItemGetSupportIDParam *ServiceItemGetSupportIDParam) Copy() nex.StructureInterface {
+func (sigsidp *ServiceItemGetSupportIDParam) Copy() types.RVType {
 	copied := NewServiceItemGetSupportIDParam()
 
-	copied.SetStructureVersion(serviceItemGetSupportIDParam.StructureVersion())
-
-	copied.UniqueID = serviceItemGetSupportIDParam.UniqueID
-	copied.Platform = serviceItemGetSupportIDParam.Platform
+	copied.StructureVersion = sigsidp.StructureVersion
+	copied.UniqueID = sigsidp.UniqueID.Copy().(*types.PrimitiveU32)
+	copied.Platform = sigsidp.Platform.Copy().(*types.PrimitiveU8)
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (serviceItemGetSupportIDParam *ServiceItemGetSupportIDParam) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*ServiceItemGetSupportIDParam)
-
-	if serviceItemGetSupportIDParam.StructureVersion() != other.StructureVersion() {
+// Equals checks if the given ServiceItemGetSupportIDParam contains the same data as the current ServiceItemGetSupportIDParam
+func (sigsidp *ServiceItemGetSupportIDParam) Equals(o types.RVType) bool {
+	if _, ok := o.(*ServiceItemGetSupportIDParam); !ok {
 		return false
 	}
 
-	if serviceItemGetSupportIDParam.UniqueID != other.UniqueID {
+	other := o.(*ServiceItemGetSupportIDParam)
+
+	if sigsidp.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	return serviceItemGetSupportIDParam.Platform == other.Platform
+	if !sigsidp.UniqueID.Equals(other.UniqueID) {
+		return false
+	}
+
+	return sigsidp.Platform.Equals(other.Platform)
 }
 
-// String returns a string representation of the struct
-func (serviceItemGetSupportIDParam *ServiceItemGetSupportIDParam) String() string {
-	return serviceItemGetSupportIDParam.FormatToString(0)
+// String returns the string representation of the ServiceItemGetSupportIDParam
+func (sigsidp *ServiceItemGetSupportIDParam) String() string {
+	return sigsidp.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (serviceItemGetSupportIDParam *ServiceItemGetSupportIDParam) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the ServiceItemGetSupportIDParam using the provided indentation level
+func (sigsidp *ServiceItemGetSupportIDParam) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("ServiceItemGetSupportIDParam{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, serviceItemGetSupportIDParam.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sUniqueID: %d,\n", indentationValues, serviceItemGetSupportIDParam.UniqueID))
-
-	if serviceItemGetSupportIDParam.StructureVersion() >= 1 {
-		b.WriteString(fmt.Sprintf("%sPlatform: %d,\n", indentationValues, serviceItemGetSupportIDParam.Platform))
-	}
-
+	b.WriteString(fmt.Sprintf("%sUniqueID: %s,\n", indentationValues, sigsidp.UniqueID))
+	b.WriteString(fmt.Sprintf("%sPlatform: %s,\n", indentationValues, sigsidp.Platform))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -99,5 +103,10 @@ func (serviceItemGetSupportIDParam *ServiceItemGetSupportIDParam) FormatToString
 
 // NewServiceItemGetSupportIDParam returns a new ServiceItemGetSupportIDParam
 func NewServiceItemGetSupportIDParam() *ServiceItemGetSupportIDParam {
-	return &ServiceItemGetSupportIDParam{}
+	sigsidp := &ServiceItemGetSupportIDParam{
+		UniqueID: types.NewPrimitiveU32(0),
+		Platform: types.NewPrimitiveU8(0),
+	}
+
+	return sigsidp
 }

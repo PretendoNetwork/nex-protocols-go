@@ -4,44 +4,44 @@ package protocol
 import (
 	"fmt"
 
-	nex "github.com/PretendoNetwork/nex-go"
-	"github.com/PretendoNetwork/nex-protocols-go/globals"
-	ranking2_types "github.com/PretendoNetwork/nex-protocols-go/ranking2/types"
+	nex "github.com/PretendoNetwork/nex-go/v2"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
+	ranking2_types "github.com/PretendoNetwork/nex-protocols-go/v2/ranking2/types"
 )
 
-// GetEstimateScoreRank sets the GetEstimateScoreRank handler function
-func (protocol *Protocol) GetEstimateScoreRank(handler func(err error, packet nex.PacketInterface, callID uint32, input *ranking2_types.Ranking2EstimateScoreRankInput) uint32) {
-	protocol.getEstimateScoreRankHandler = handler
-}
-
 func (protocol *Protocol) handleGetEstimateScoreRank(packet nex.PacketInterface) {
-	var errorCode uint32
+	if protocol.GetEstimateScoreRank == nil {
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "Ranking2::GetEstimateScoreRank not implemented")
 
-	if protocol.getEstimateScoreRankHandler == nil {
-		globals.Logger.Warning("Ranking2::GetEstimateScoreRank not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
+	callID := request.CallID
+	parameters := request.Parameters
+	endpoint := packet.Sender().Endpoint()
+	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	callID := request.CallID()
-	parameters := request.Parameters()
+	input := ranking2_types.NewRanking2EstimateScoreRankInput()
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
-
-	input, err := parametersStream.ReadStructure(ranking2_types.NewRanking2EstimateScoreRankInput())
+	err := input.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.getEstimateScoreRankHandler(fmt.Errorf("Failed to read input from parameters. %s", err.Error()), packet, callID, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.GetEstimateScoreRank(fmt.Errorf("Failed to read input from parameters. %s", err.Error()), packet, callID, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	errorCode = protocol.getEstimateScoreRankHandler(nil, packet, callID, input.(*ranking2_types.Ranking2EstimateScoreRankInput))
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.GetEstimateScoreRank(nil, packet, callID, input)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

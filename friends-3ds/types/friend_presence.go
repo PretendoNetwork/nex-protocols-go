@@ -1,94 +1,115 @@
-// Package types implements all the types used by the Friends 3DS protocol
+// Package types implements all the types used by the Friends3DS protocol
 package types
 
 import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/v2/types"
 )
 
-// FriendPresence contains information about a users online presence
+// FriendPresence is a type within the Friends3DS protocol
 type FriendPresence struct {
-	nex.Structure
-	*nex.Data
-	PID      uint32
+	types.Structure
+	*types.Data
+	PID      *types.PID
 	Presence *NintendoPresence
 }
 
-// Bytes encodes the FriendPresence and returns a byte array
-func (presence *FriendPresence) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt32LE(presence.PID)
-	stream.WriteStructure(presence.Presence)
+// WriteTo writes the FriendPresence to the given writable
+func (fp *FriendPresence) WriteTo(writable types.Writable) {
+	fp.Data.WriteTo(writable)
 
-	return stream.Bytes()
+	contentWritable := writable.CopyNew()
+
+	fp.PID.WriteTo(writable)
+	fp.Presence.WriteTo(writable)
+
+	content := contentWritable.Bytes()
+
+	fp.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
+}
+
+// ExtractFrom extracts the FriendPresence from the given readable
+func (fp *FriendPresence) ExtractFrom(readable types.Readable) error {
+	var err error
+
+	err = fp.Data.ExtractFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract FriendPresence.Data. %s", err.Error())
+	}
+
+	err = fp.ExtractHeaderFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract FriendPresence header. %s", err.Error())
+	}
+
+	err = fp.PID.ExtractFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract FriendPresence.PID. %s", err.Error())
+	}
+
+	err = fp.Presence.ExtractFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract FriendPresence.Presence. %s", err.Error())
+	}
+
+	return nil
 }
 
 // Copy returns a new copied instance of FriendPresence
-func (presence *FriendPresence) Copy() nex.StructureInterface {
+func (fp *FriendPresence) Copy() types.RVType {
 	copied := NewFriendPresence()
 
-	copied.SetStructureVersion(presence.StructureVersion())
-
-	if presence.ParentType() != nil {
-		copied.Data = presence.ParentType().Copy().(*nex.Data)
-	} else {
-		copied.Data = nex.NewData()
-	}
-
-	copied.SetParentType(copied.Data)
-
-	copied.PID = presence.PID
-	copied.Presence = presence.Presence.Copy().(*NintendoPresence)
+	copied.StructureVersion = fp.StructureVersion
+	copied.Data = fp.Data.Copy().(*types.Data)
+	copied.PID = fp.PID.Copy().(*types.PID)
+	copied.Presence = fp.Presence.Copy().(*NintendoPresence)
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (presence *FriendPresence) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*FriendPresence)
-
-	if presence.StructureVersion() != other.StructureVersion() {
+// Equals checks if the given FriendPresence contains the same data as the current FriendPresence
+func (fp *FriendPresence) Equals(o types.RVType) bool {
+	if _, ok := o.(*FriendPresence); !ok {
 		return false
 	}
 
-	if !presence.ParentType().Equals(other.ParentType()) {
+	other := o.(*FriendPresence)
+
+	if fp.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if presence.PID != other.PID {
+	if !fp.Data.Equals(other.Data) {
 		return false
 	}
 
-	if !presence.Presence.Equals(other.Presence) {
+	if !fp.PID.Equals(other.PID) {
 		return false
 	}
 
-	return true
+	return fp.Presence.Equals(other.Presence)
 }
 
-// String returns a string representation of the struct
-func (presence *FriendPresence) String() string {
-	return presence.FormatToString(0)
+// String returns the string representation of the FriendPresence
+func (fp *FriendPresence) String() string {
+	return fp.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (presence *FriendPresence) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the FriendPresence using the provided indentation level
+func (fp *FriendPresence) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("FriendPresence{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, presence.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sPID: %d,\n", indentationValues, presence.PID))
-
-	if presence.Presence != nil {
-		b.WriteString(fmt.Sprintf("%sPresence: %s\n", indentationValues, presence.Presence.FormatToString(indentationLevel+1)))
-	} else {
-		b.WriteString(fmt.Sprintf("%sPresence: nil\n", indentationValues))
-	}
-
+	b.WriteString(fmt.Sprintf("%sData (parent): %s,\n", indentationValues, fp.Data.FormatToString(indentationLevel+1)))
+	b.WriteString(fmt.Sprintf("%sPID: %s,\n", indentationValues, fp.PID.FormatToString(indentationLevel+1)))
+	b.WriteString(fmt.Sprintf("%sPresence: %s,\n", indentationValues, fp.Presence.FormatToString(indentationLevel+1)))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -96,5 +117,11 @@ func (presence *FriendPresence) FormatToString(indentationLevel int) string {
 
 // NewFriendPresence returns a new FriendPresence
 func NewFriendPresence() *FriendPresence {
-	return &FriendPresence{}
+	fp := &FriendPresence{
+		Data:     types.NewData(),
+		PID:      types.NewPID(0),
+		Presence: NewNintendoPresence(),
+	}
+
+	return fp
 }

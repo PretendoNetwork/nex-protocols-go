@@ -1,46 +1,64 @@
-// Package types implements all the types used by the Friends WiiU protocol
+// Package types implements all the types used by the FriendsWiiU protocol
 package types
 
 import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/v2/types"
 )
 
-// Comment contains data about a text comment
+// Comment is a type within the FriendsWiiU protocol
 type Comment struct {
-	nex.Structure
-	*nex.Data
-	Unknown     uint8
-	Contents    string
-	LastChanged *nex.DateTime
+	types.Structure
+	*types.Data
+	Unknown     *types.PrimitiveU8
+	Contents    *types.String
+	LastChanged *types.DateTime
 }
 
-// Bytes encodes the Comment and returns a byte array
-func (comment *Comment) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt8(comment.Unknown)
-	stream.WriteString(comment.Contents)
-	stream.WriteDateTime(comment.LastChanged)
+// WriteTo writes the Comment to the given writable
+func (c *Comment) WriteTo(writable types.Writable) {
+	c.Data.WriteTo(writable)
 
-	return stream.Bytes()
+	contentWritable := writable.CopyNew()
+
+	c.Unknown.WriteTo(writable)
+	c.Contents.WriteTo(writable)
+	c.LastChanged.WriteTo(writable)
+
+	content := contentWritable.Bytes()
+
+	c.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
-// ExtractFromStream extracts a Comment structure from a stream
-func (comment *Comment) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the Comment from the given readable
+func (c *Comment) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	comment.Unknown, err = stream.ReadUInt8()
+	err = c.Data.ExtractFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract Comment.Data. %s", err.Error())
+	}
+
+	err = c.ExtractHeaderFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract Comment header. %s", err.Error())
+	}
+
+	err = c.Unknown.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract Comment.Unknown. %s", err.Error())
 	}
 
-	comment.Contents, err = stream.ReadString()
+	err = c.Contents.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract Comment.Contents. %s", err.Error())
 	}
 
-	comment.LastChanged, err = stream.ReadDateTime()
+	err = c.LastChanged.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract Comment.LastChanged. %s", err.Error())
 	}
@@ -49,76 +67,62 @@ func (comment *Comment) ExtractFromStream(stream *nex.StreamIn) error {
 }
 
 // Copy returns a new copied instance of Comment
-func (comment *Comment) Copy() nex.StructureInterface {
+func (c *Comment) Copy() types.RVType {
 	copied := NewComment()
 
-	copied.SetStructureVersion(comment.StructureVersion())
-
-	if comment.ParentType() != nil {
-		copied.Data = comment.ParentType().Copy().(*nex.Data)
-	} else {
-		copied.Data = nex.NewData()
-	}
-
-	copied.SetParentType(copied.Data)
-
-	copied.Unknown = comment.Unknown
-	copied.Contents = comment.Contents
-	copied.LastChanged = comment.LastChanged.Copy()
+	copied.StructureVersion = c.StructureVersion
+	copied.Data = c.Data.Copy().(*types.Data)
+	copied.Unknown = c.Unknown.Copy().(*types.PrimitiveU8)
+	copied.Contents = c.Contents.Copy().(*types.String)
+	copied.LastChanged = c.LastChanged.Copy().(*types.DateTime)
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (comment *Comment) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*Comment)
-
-	if comment.StructureVersion() != other.StructureVersion() {
+// Equals checks if the given Comment contains the same data as the current Comment
+func (c *Comment) Equals(o types.RVType) bool {
+	if _, ok := o.(*Comment); !ok {
 		return false
 	}
 
-	if !comment.ParentType().Equals(other.ParentType()) {
+	other := o.(*Comment)
+
+	if c.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if comment.Unknown != other.Unknown {
+	if !c.Data.Equals(other.Data) {
 		return false
 	}
 
-	if comment.Contents != other.Contents {
+	if !c.Unknown.Equals(other.Unknown) {
 		return false
 	}
 
-	if !comment.LastChanged.Equals(other.LastChanged) {
+	if !c.Contents.Equals(other.Contents) {
 		return false
 	}
 
-	return true
+	return c.LastChanged.Equals(other.LastChanged)
 }
 
-// String returns a string representation of the struct
-func (comment *Comment) String() string {
-	return comment.FormatToString(0)
+// String returns the string representation of the Comment
+func (c *Comment) String() string {
+	return c.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (comment *Comment) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the Comment using the provided indentation level
+func (c *Comment) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("Comment{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, comment.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sUnknown: %d\n", indentationValues, comment.Unknown))
-	b.WriteString(fmt.Sprintf("%sContents: %q\n", indentationValues, comment.Contents))
-
-	if comment.LastChanged != nil {
-		b.WriteString(fmt.Sprintf("%sLastChanged: %s\n", indentationValues, comment.LastChanged.FormatToString(indentationLevel+1)))
-	} else {
-		b.WriteString(fmt.Sprintf("%sLastChanged: nil\n", indentationValues))
-	}
-
+	b.WriteString(fmt.Sprintf("%sData (parent): %s,\n", indentationValues, c.Data.FormatToString(indentationLevel+1)))
+	b.WriteString(fmt.Sprintf("%sUnknown: %s,\n", indentationValues, c.Unknown))
+	b.WriteString(fmt.Sprintf("%sContents: %s,\n", indentationValues, c.Contents))
+	b.WriteString(fmt.Sprintf("%sLastChanged: %s,\n", indentationValues, c.LastChanged.FormatToString(indentationLevel+1)))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -126,5 +130,12 @@ func (comment *Comment) FormatToString(indentationLevel int) string {
 
 // NewComment returns a new Comment
 func NewComment() *Comment {
-	return &Comment{}
+	c := &Comment{
+		Data:        types.NewData(),
+		Unknown:     types.NewPrimitiveU8(0),
+		Contents:    types.NewString(""),
+		LastChanged: types.NewDateTime(0),
+	}
+
+	return c
 }

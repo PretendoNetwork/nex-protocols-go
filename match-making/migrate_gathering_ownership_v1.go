@@ -4,53 +4,58 @@ package protocol
 import (
 	"fmt"
 
-	nex "github.com/PretendoNetwork/nex-go"
-	"github.com/PretendoNetwork/nex-protocols-go/globals"
+	nex "github.com/PretendoNetwork/nex-go/v2"
+	"github.com/PretendoNetwork/nex-go/v2/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
 )
 
-// MigrateGatheringOwnershipV1 sets the MigrateGatheringOwnershipV1 handler function
-func (protocol *Protocol) MigrateGatheringOwnershipV1(handler func(err error, packet nex.PacketInterface, callID uint32, gid uint32, lstPotentialNewOwnersID []uint32) uint32) {
-	protocol.migrateGatheringOwnershipV1Handler = handler
-}
-
 func (protocol *Protocol) handleMigrateGatheringOwnershipV1(packet nex.PacketInterface) {
-	var errorCode uint32
+	if protocol.MigrateGatheringOwnershipV1 == nil {
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "MatchMaking::MigrateGatheringOwnershipV1 not implemented")
 
-	if protocol.migrateGatheringOwnershipV1Handler == nil {
-		globals.Logger.Warning("MatchMaking::MigrateGatheringOwnershipV1 not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
+	callID := request.CallID
+	parameters := request.Parameters
+	endpoint := packet.Sender().Endpoint()
+	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	callID := request.CallID()
-	parameters := request.Parameters()
+	gid := types.NewPrimitiveU32(0)
+	lstPotentialNewOwnersID := types.NewList[*types.PID]()
+	lstPotentialNewOwnersID.Type = types.NewPID(0)
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+	var err error
 
-	gid, err := parametersStream.ReadUInt32LE()
+	err = gid.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.migrateGatheringOwnershipV1Handler(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), packet, callID, 0, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.MigrateGatheringOwnershipV1(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	lstPotentialNewOwnersID, err := parametersStream.ReadListUInt32LE()
+	err = lstPotentialNewOwnersID.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.migrateGatheringOwnershipV1Handler(fmt.Errorf("Failed to read lstPotentialNewOwnersID from parameters. %s", err.Error()), packet, callID, 0, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.MigrateGatheringOwnershipV1(fmt.Errorf("Failed to read lstPotentialNewOwnersID from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	errorCode = protocol.migrateGatheringOwnershipV1Handler(nil, packet, callID, gid, lstPotentialNewOwnersID)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.MigrateGatheringOwnershipV1(nil, packet, callID, gid, lstPotentialNewOwnersID)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

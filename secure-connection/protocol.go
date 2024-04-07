@@ -3,9 +3,11 @@ package protocol
 
 import (
 	"fmt"
+	"slices"
 
-	nex "github.com/PretendoNetwork/nex-go"
-	"github.com/PretendoNetwork/nex-protocols-go/globals"
+	nex "github.com/PretendoNetwork/nex-go/v2"
+	"github.com/PretendoNetwork/nex-go/v2/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
 )
 
 const (
@@ -39,60 +41,123 @@ const (
 
 // Protocol stores all the RMC method handlers for the Secure Connection protocol and listens for requests
 type Protocol struct {
-	Server                       *nex.Server
-	registerHandler              func(err error, packet nex.PacketInterface, callID uint32, vecMyURLs []*nex.StationURL) uint32
-	requestConnectionDataHandler func(err error, packet nex.PacketInterface, callID uint32, cidTarget uint32, pidTarget uint32) uint32
-	requestURLsHandler           func(err error, packet nex.PacketInterface, callID uint32, cidTarget uint32, pidTarget uint32) uint32
-	registerExHandler            func(err error, packet nex.PacketInterface, callID uint32, vecMyURLs []*nex.StationURL, hCustomData *nex.DataHolder) uint32
-	testConnectivityHandler      func(err error, packet nex.PacketInterface, callID uint32) uint32
-	updateURLsHandler            func(err error, packet nex.PacketInterface, callID uint32, vecMyURLs []*nex.StationURL) uint32
-	replaceURLHandler            func(err error, packet nex.PacketInterface, callID uint32, target *nex.StationURL, url *nex.StationURL) uint32
-	sendReportHandler            func(err error, packet nex.PacketInterface, callID uint32, reportID uint32, reportData []byte) uint32
+	endpoint              nex.EndpointInterface
+	Register              func(err error, packet nex.PacketInterface, callID uint32, vecMyURLs *types.List[*types.StationURL]) (*nex.RMCMessage, *nex.Error)
+	RequestConnectionData func(err error, packet nex.PacketInterface, callID uint32, cidTarget *types.PrimitiveU32, pidTarget *types.PID) (*nex.RMCMessage, *nex.Error)
+	RequestURLs           func(err error, packet nex.PacketInterface, callID uint32, cidTarget *types.PrimitiveU32, pidTarget *types.PID) (*nex.RMCMessage, *nex.Error)
+	RegisterEx            func(err error, packet nex.PacketInterface, callID uint32, vecMyURLs *types.List[*types.StationURL], hCustomData *types.AnyDataHolder) (*nex.RMCMessage, *nex.Error)
+	TestConnectivity      func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, *nex.Error)
+	UpdateURLs            func(err error, packet nex.PacketInterface, callID uint32, vecMyURLs *types.List[*types.StationURL]) (*nex.RMCMessage, *nex.Error)
+	ReplaceURL            func(err error, packet nex.PacketInterface, callID uint32, target *types.StationURL, url *types.StationURL) (*nex.RMCMessage, *nex.Error)
+	SendReport            func(err error, packet nex.PacketInterface, callID uint32, reportID *types.PrimitiveU32, reportData *types.QBuffer) (*nex.RMCMessage, *nex.Error)
+	Patches               nex.ServiceProtocol
+	PatchedMethods        []uint32
 }
 
-// Setup initializes the protocol
-func (protocol *Protocol) Setup() {
-	protocol.Server.On("Data", func(packet nex.PacketInterface) {
-		request := packet.RMCRequest()
+// Interface implements the methods present on the Secure Connection protocol struct
+type Interface interface {
+	Endpoint() nex.EndpointInterface
+	SetEndpoint(endpoint nex.EndpointInterface)
+	SetHandlerRegister(handler func(err error, packet nex.PacketInterface, callID uint32, vecMyURLs *types.List[*types.StationURL]) (*nex.RMCMessage, *nex.Error))
+	SetHandlerRequestConnectionData(handler func(err error, packet nex.PacketInterface, callID uint32, cidTarget *types.PrimitiveU32, pidTarget *types.PID) (*nex.RMCMessage, *nex.Error))
+	SetHandlerRequestURLs(handler func(err error, packet nex.PacketInterface, callID uint32, cidTarget *types.PrimitiveU32, pidTarget *types.PID) (*nex.RMCMessage, *nex.Error))
+	SetHandlerRegisterEx(handler func(err error, packet nex.PacketInterface, callID uint32, vecMyURLs *types.List[*types.StationURL], hCustomData *types.AnyDataHolder) (*nex.RMCMessage, *nex.Error))
+	SetHandlerTestConnectivity(handler func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, *nex.Error))
+	SetHandlerUpdateURLs(handler func(err error, packet nex.PacketInterface, callID uint32, vecMyURLs *types.List[*types.StationURL]) (*nex.RMCMessage, *nex.Error))
+	SetHandlerReplaceURL(handler func(err error, packet nex.PacketInterface, callID uint32, target *types.StationURL, url *types.StationURL) (*nex.RMCMessage, *nex.Error))
+	SetHandlerSendReport(handler func(err error, packet nex.PacketInterface, callID uint32, reportID *types.PrimitiveU32, reportData *types.QBuffer) (*nex.RMCMessage, *nex.Error))
+}
 
-		if request.ProtocolID() == ProtocolID {
-			protocol.HandlePacket(packet)
-		}
-	})
+// Endpoint returns the endpoint implementing the protocol
+func (protocol *Protocol) Endpoint() nex.EndpointInterface {
+	return protocol.endpoint
+}
+
+// SetEndpoint sets the endpoint implementing the protocol
+func (protocol *Protocol) SetEndpoint(endpoint nex.EndpointInterface) {
+	protocol.endpoint = endpoint
+}
+
+// SetHandlerRegister sets the handler for the Register method
+func (protocol *Protocol) SetHandlerRegister(handler func(err error, packet nex.PacketInterface, callID uint32, vecMyURLs *types.List[*types.StationURL]) (*nex.RMCMessage, *nex.Error)) {
+	protocol.Register = handler
+}
+
+// SetHandlerRequestConnectionData sets the handler for the RequestConnectionData method
+func (protocol *Protocol) SetHandlerRequestConnectionData(handler func(err error, packet nex.PacketInterface, callID uint32, cidTarget *types.PrimitiveU32, pidTarget *types.PID) (*nex.RMCMessage, *nex.Error)) {
+	protocol.RequestConnectionData = handler
+}
+
+// SetHandlerRequestURLs sets the handler for the RequestURLs method
+func (protocol *Protocol) SetHandlerRequestURLs(handler func(err error, packet nex.PacketInterface, callID uint32, cidTarget *types.PrimitiveU32, pidTarget *types.PID) (*nex.RMCMessage, *nex.Error)) {
+	protocol.RequestURLs = handler
+}
+
+// SetHandlerRegisterEx sets the handler for the RegisterEx method
+func (protocol *Protocol) SetHandlerRegisterEx(handler func(err error, packet nex.PacketInterface, callID uint32, vecMyURLs *types.List[*types.StationURL], hCustomData *types.AnyDataHolder) (*nex.RMCMessage, *nex.Error)) {
+	protocol.RegisterEx = handler
+}
+
+// SetHandlerTestConnectivity sets the handler for the TestConnectivity method
+func (protocol *Protocol) SetHandlerTestConnectivity(handler func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, *nex.Error)) {
+	protocol.TestConnectivity = handler
+}
+
+// SetHandlerUpdateURLs sets the handler for the UpdateURLs method
+func (protocol *Protocol) SetHandlerUpdateURLs(handler func(err error, packet nex.PacketInterface, callID uint32, vecMyURLs *types.List[*types.StationURL]) (*nex.RMCMessage, *nex.Error)) {
+	protocol.UpdateURLs = handler
+}
+
+// SetHandlerReplaceURL sets the handler for the ReplaceURL method
+func (protocol *Protocol) SetHandlerReplaceURL(handler func(err error, packet nex.PacketInterface, callID uint32, target *types.StationURL, url *types.StationURL) (*nex.RMCMessage, *nex.Error)) {
+	protocol.ReplaceURL = handler
+}
+
+// SetHandlerSendReport sets the handler for the SendReport method
+func (protocol *Protocol) SetHandlerSendReport(handler func(err error, packet nex.PacketInterface, callID uint32, reportID *types.PrimitiveU32, reportData *types.QBuffer) (*nex.RMCMessage, *nex.Error)) {
+	protocol.SendReport = handler
 }
 
 // HandlePacket sends the packet to the correct RMC method handler
 func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
-	request := packet.RMCRequest()
+	message := packet.RMCMessage()
 
-	switch request.MethodID() {
+	if !message.IsRequest || message.ProtocolID != ProtocolID {
+		return
+	}
+
+	if protocol.Patches != nil && slices.Contains(protocol.PatchedMethods, message.MethodID) {
+		protocol.Patches.HandlePacket(packet)
+		return
+	}
+
+	switch message.MethodID {
 	case MethodRegister:
-		go protocol.handleRegister(packet)
+		protocol.handleRegister(packet)
 	case MethodRequestConnectionData:
-		go protocol.handleRequestConnectionData(packet)
+		protocol.handleRequestConnectionData(packet)
 	case MethodRequestURLs:
-		go protocol.handleRequestURLs(packet)
+		protocol.handleRequestURLs(packet)
 	case MethodRegisterEx:
-		go protocol.handleRegisterEx(packet)
+		protocol.handleRegisterEx(packet)
 	case MethodTestConnectivity:
-		go protocol.handleTestConnectivity(packet)
+		protocol.handleTestConnectivity(packet)
 	case MethodUpdateURLs:
-		go protocol.handleUpdateURLs(packet)
+		protocol.handleUpdateURLs(packet)
 	case MethodReplaceURL:
-		go protocol.handleReplaceURL(packet)
+		protocol.handleReplaceURL(packet)
 	case MethodSendReport:
-		go protocol.handleSendReport(packet)
+		protocol.handleSendReport(packet)
 	default:
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
-		fmt.Printf("Unsupported SecureConnection method ID: %#v\n", request.MethodID())
+		errMessage := fmt.Sprintf("Unsupported SecureConnection method ID: %#v\n", message.MethodID)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, errMessage)
+
+		globals.RespondError(packet, ProtocolID, err)
+		globals.Logger.Warning(err.Message)
 	}
 }
 
 // NewProtocol returns a new Secure Connection protocol
-func NewProtocol(server *nex.Server) *Protocol {
-	protocol := &Protocol{Server: server}
-
-	protocol.Setup()
-
-	return protocol
+func NewProtocol() *Protocol {
+	return &Protocol{}
 }

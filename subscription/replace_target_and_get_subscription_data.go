@@ -1,28 +1,29 @@
-// Package subscription implements the Subscription NEX protocol
-package subscription
+// Package protocol implements the Subscription protocol
+package protocol
 
 import (
-	"fmt"
-
-	nex "github.com/PretendoNetwork/nex-go"
-	"github.com/PretendoNetwork/nex-protocols-go/globals"
+	nex "github.com/PretendoNetwork/nex-go/v2"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
 )
 
-// ReplaceTargetAndGetSubscriptionData sets the ReplaceTargetAndGetSubscriptionData handler function
-func (protocol *SubscriptionProtocol) ReplaceTargetAndGetSubscriptionData(handler func(err error, packet nex.PacketInterface, callID uint32)) {
-	protocol.replaceTargetAndGetSubscriptionDataHandler = handler
-}
+func (protocol *Protocol) handleReplaceTargetAndGetSubscriptionData(packet nex.PacketInterface) {
+	if protocol.ReplaceTargetAndGetSubscriptionData == nil {
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "SubscriptionProtocol::ReplaceTargetAndGetSubscriptionData not implemented")
 
-func (protocol *SubscriptionProtocol) handleReplaceTargetAndGetSubscriptionData(packet nex.PacketInterface) {
-	if protocol.replaceTargetAndGetSubscriptionDataHandler == nil {
-		fmt.Println("[Warning] SubscriptionProtocol::ReplaceTargetAndGetSubscriptionData not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
+	callID := request.CallID
 
-	callID := request.CallID()
+	rmcMessage, rmcError := protocol.ReplaceTargetAndGetSubscriptionData(nil, packet, callID)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
+		return
+	}
 
-	go protocol.replaceTargetAndGetSubscriptionDataHandler(nil, packet, callID)
+	globals.Respond(packet, rmcMessage)
 }

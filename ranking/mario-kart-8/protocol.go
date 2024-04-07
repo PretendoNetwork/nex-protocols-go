@@ -4,10 +4,10 @@ package protocol
 import (
 	"fmt"
 
-	nex "github.com/PretendoNetwork/nex-go"
-	"github.com/PretendoNetwork/nex-protocols-go/globals"
-	ranking "github.com/PretendoNetwork/nex-protocols-go/ranking"
-	ranking_mario_kart8_types "github.com/PretendoNetwork/nex-protocols-go/ranking/mario-kart-8/types"
+	nex "github.com/PretendoNetwork/nex-go/v2"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
+	ranking "github.com/PretendoNetwork/nex-protocols-go/v2/ranking"
+	ranking_mario_kart8_types "github.com/PretendoNetwork/nex-protocols-go/v2/ranking/mario-kart-8/types"
 	"golang.org/x/exp/slices"
 )
 
@@ -36,51 +36,46 @@ type rankingProtocol = ranking.Protocol
 // Protocol stores all the RMC method handlers for the Ranking (Mario Kart 8) protocol and listens for requests
 // Embeds the Ranking protocol
 type Protocol struct {
-	Server *nex.Server
+	endpoint nex.EndpointInterface
 	rankingProtocol
-	getCompetitionRankingScoreHandler    func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) uint32
-	uploadCompetitionRankingScoreHandler func(err error, packet nex.PacketInterface, callID uint32, param *ranking_mario_kart8_types.CompetitionRankingUploadScoreParam) uint32
-	getCompetitionInfoHandler            func(err error, packet nex.PacketInterface, callID uint32, param *ranking_mario_kart8_types.CompetitionRankingInfoGetParam) uint32
-}
-
-// Setup initializes the protocol
-func (protocol *Protocol) Setup() {
-	protocol.Server.On("Data", func(packet nex.PacketInterface) {
-		request := packet.RMCRequest()
-
-		if request.ProtocolID() == ProtocolID {
-			if slices.Contains(patchedMethods, request.MethodID()) {
-				protocol.HandlePacket(packet)
-			} else {
-				protocol.rankingProtocol.HandlePacket(packet)
-			}
-		}
-	})
+	GetCompetitionRankingScore    func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) (*nex.RMCMessage, *nex.Error)
+	UploadCompetitionRankingScore func(err error, packet nex.PacketInterface, callID uint32, param *ranking_mario_kart8_types.CompetitionRankingUploadScoreParam) (*nex.RMCMessage, *nex.Error)
+	GetCompetitionInfo            func(err error, packet nex.PacketInterface, callID uint32, param *ranking_mario_kart8_types.CompetitionRankingInfoGetParam) (*nex.RMCMessage, *nex.Error)
 }
 
 // HandlePacket sends the packet to the correct RMC method handler
 func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
-	request := packet.RMCRequest()
+	message := packet.RMCMessage()
 
-	switch request.MethodID() {
+	if !message.IsRequest || message.ProtocolID != ProtocolID {
+		return
+	}
+
+	if !slices.Contains(patchedMethods, message.MethodID) {
+		protocol.rankingProtocol.HandlePacket(packet)
+		return
+	}
+
+	switch message.MethodID {
 	case MethodGetCompetitionRankingScore:
-		go protocol.handleGetCompetitionRankingScore(packet)
+		protocol.handleGetCompetitionRankingScore(packet)
 	case MethodUploadCompetitionRankingScore:
-		go protocol.handleUploadCompetitionRankingScore(packet)
+		protocol.handleUploadCompetitionRankingScore(packet)
 	case MethodGetCompetitionInfo:
-		go protocol.handleGetCompetitionInfo(packet)
+		protocol.handleGetCompetitionInfo(packet)
 	default:
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
-		fmt.Printf("Unsupported Ranking (Mario Kart 8) method ID: %#v\n", request.MethodID())
+		errMessage := fmt.Sprintf("Unsupported Ranking (Mario Kart 8) method ID: %#v\n", message.MethodID)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, errMessage)
+
+		globals.RespondError(packet, ProtocolID, err)
+		globals.Logger.Warning(err.Message)
 	}
 }
 
 // NewProtocol returns a new RankingMarioKart8 protocol
-func NewProtocol(server *nex.Server) *Protocol {
-	protocol := &Protocol{Server: server}
-	protocol.rankingProtocol.Server = server
-
-	protocol.Setup()
+func NewProtocol(endpoint nex.EndpointInterface) *Protocol {
+	protocol := &Protocol{endpoint: endpoint}
+	protocol.rankingProtocol.SetEndpoint(endpoint)
 
 	return protocol
 }

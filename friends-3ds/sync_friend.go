@@ -4,63 +4,70 @@ package protocol
 import (
 	"fmt"
 
-	nex "github.com/PretendoNetwork/nex-go"
-	"github.com/PretendoNetwork/nex-protocols-go/globals"
+	nex "github.com/PretendoNetwork/nex-go/v2"
+	"github.com/PretendoNetwork/nex-go/v2/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
 )
 
-// SyncFriend sets the SyncFriend handler function
-func (protocol *Protocol) SyncFriend(handler func(err error, packet nex.PacketInterface, callID uint32, lfc uint64, pids []uint32, lfcList []uint64) uint32) {
-	protocol.syncFriendHandler = handler
-}
-
 func (protocol *Protocol) handleSyncFriend(packet nex.PacketInterface) {
-	var errorCode uint32
+	if protocol.SyncFriend == nil {
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "Friends3DS::SyncFriend not implemented")
 
-	if protocol.syncFriendHandler == nil {
-		globals.Logger.Warning("Friends3DS::SyncFriend not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
+	callID := request.CallID
+	parameters := request.Parameters
+	endpoint := packet.Sender().Endpoint()
+	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	callID := request.CallID()
-	parameters := request.Parameters()
+	lfc := types.NewPrimitiveU64(0)
+	pids := types.NewList[*types.PID]()
+	pids.Type = types.NewPID(0)
+	lfcList := types.NewList[*types.PrimitiveU64]()
+	lfcList.Type = types.NewPrimitiveU64(0)
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+	var err error
 
-	lfc, err := parametersStream.ReadUInt64LE()
+	err = lfc.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.syncFriendHandler(fmt.Errorf("Failed to read lfc from parameters. %s", err.Error()), packet, callID, 0, nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.SyncFriend(fmt.Errorf("Failed to read lfc from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	pids, err := parametersStream.ReadListUInt32LE()
+	err = pids.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.syncFriendHandler(fmt.Errorf("Failed to read pids from parameters. %s", err.Error()), packet, callID, 0, nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.SyncFriend(fmt.Errorf("Failed to read pids from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	lfcList, err := parametersStream.ReadListUInt64LE()
+	err = lfcList.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.syncFriendHandler(fmt.Errorf("Failed to read lfcList from parameters. %s", err.Error()), packet, callID, 0, nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.SyncFriend(fmt.Errorf("Failed to read lfcList from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	errorCode = protocol.syncFriendHandler(nil, packet, callID, lfc, pids, lfcList)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.SyncFriend(nil, packet, callID, lfc, pids, lfcList)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

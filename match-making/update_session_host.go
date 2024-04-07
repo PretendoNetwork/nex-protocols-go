@@ -4,53 +4,57 @@ package protocol
 import (
 	"fmt"
 
-	nex "github.com/PretendoNetwork/nex-go"
-	"github.com/PretendoNetwork/nex-protocols-go/globals"
+	nex "github.com/PretendoNetwork/nex-go/v2"
+	"github.com/PretendoNetwork/nex-go/v2/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
 )
 
-// UpdateSessionHost sets the UpdateSessionHost handler function
-func (protocol *Protocol) UpdateSessionHost(handler func(err error, packet nex.PacketInterface, callID uint32, gid uint32, isMigrateOwner bool) uint32) {
-	protocol.updateSessionHostHandler = handler
-}
-
 func (protocol *Protocol) handleUpdateSessionHost(packet nex.PacketInterface) {
-	var errorCode uint32
+	if protocol.UpdateSessionHost == nil {
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "MatchMaking::UpdateSessionHost not implemented")
 
-	if protocol.updateSessionHostHandler == nil {
-		fmt.Println("[Warning] MatchMaking::UpdateSessionHost not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
+	callID := request.CallID
+	parameters := request.Parameters
+	endpoint := packet.Sender().Endpoint()
+	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	callID := request.CallID()
-	parameters := request.Parameters()
+	gid := types.NewPrimitiveU32(0)
+	isMigrateOwner := types.NewPrimitiveBool(false)
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+	var err error
 
-	gid, err := parametersStream.ReadUInt32LE()
+	err = gid.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.updateSessionHostHandler(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), packet, callID, 0, false)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.UpdateSessionHost(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	isMigrateOwner, err := parametersStream.ReadBool()
+	err = isMigrateOwner.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.updateSessionHostHandler(fmt.Errorf("Failed to read isMigrateOwner from parameters. %s", err.Error()), packet, callID, 0, false)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.UpdateSessionHost(fmt.Errorf("Failed to read isMigrateOwner from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	errorCode = protocol.updateSessionHostHandler(nil, packet, callID, gid, isMigrateOwner)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.UpdateSessionHost(nil, packet, callID, gid, isMigrateOwner)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

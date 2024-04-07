@@ -5,114 +5,123 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/v2/types"
 )
 
-// SubscriberGetContentParam is unknown
+// SubscriberGetContentParam is a type within the Shop protocol
 type SubscriberGetContentParam struct {
-	nex.Structure
-	Unknown1 string
-	Unknown2 uint32
-	Unknown3 uint32
-	Unknown4 uint64
+	types.Structure
+	Unknown1 *types.String
+	Unknown2 *types.PrimitiveU32
+	Unknown3 *types.PrimitiveU32
+	Unknown4 *types.PrimitiveU64
 }
 
-// ExtractFromStream extracts a SubscriberGetContentParam structure from a stream
-func (subscriberGetContentParam *SubscriberGetContentParam) ExtractFromStream(stream *nex.StreamIn) error {
+// WriteTo writes the SubscriberGetContentParam to the given writable
+func (sgcp *SubscriberGetContentParam) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
+
+	sgcp.Unknown1.WriteTo(writable)
+	sgcp.Unknown2.WriteTo(writable)
+	sgcp.Unknown3.WriteTo(writable)
+	sgcp.Unknown4.WriteTo(writable)
+
+	content := contentWritable.Bytes()
+
+	sgcp.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
+}
+
+// ExtractFrom extracts the SubscriberGetContentParam from the given readable
+func (sgcp *SubscriberGetContentParam) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	subscriberGetContentParam.Unknown1, err = stream.ReadString()
+	err = sgcp.ExtractHeaderFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract SubscriberGetContentParam.Unknown1 from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract SubscriberGetContentParam header. %s", err.Error())
 	}
 
-	subscriberGetContentParam.Unknown2, err = stream.ReadUInt32LE()
+	err = sgcp.Unknown1.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract SubscriberGetContentParam.Unknown2 from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract SubscriberGetContentParam.Unknown1. %s", err.Error())
 	}
 
-	subscriberGetContentParam.Unknown3, err = stream.ReadUInt32LE()
+	err = sgcp.Unknown2.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract SubscriberGetContentParam.Unknown3 from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract SubscriberGetContentParam.Unknown2. %s", err.Error())
 	}
 
-	subscriberGetContentParam.Unknown4, err = stream.ReadUInt64LE()
+	err = sgcp.Unknown3.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract SubscriberGetContentParam.Unknown4 from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract SubscriberGetContentParam.Unknown3. %s", err.Error())
+	}
+
+	err = sgcp.Unknown4.ExtractFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract SubscriberGetContentParam.Unknown4. %s", err.Error())
 	}
 
 	return nil
 }
 
-// Bytes encodes the SubscriberGetContentParam and returns a byte array
-func (subscriberGetContentParam *SubscriberGetContentParam) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteString(subscriberGetContentParam.Unknown1)
-	stream.WriteUInt32LE(subscriberGetContentParam.Unknown2)
-	stream.WriteUInt32LE(subscriberGetContentParam.Unknown3)
-	stream.WriteUInt64LE(subscriberGetContentParam.Unknown4)
-
-	return stream.Bytes()
-}
-
 // Copy returns a new copied instance of SubscriberGetContentParam
-func (subscriberGetContentParam *SubscriberGetContentParam) Copy() nex.StructureInterface {
+func (sgcp *SubscriberGetContentParam) Copy() types.RVType {
 	copied := NewSubscriberGetContentParam()
 
-	copied.SetStructureVersion(subscriberGetContentParam.StructureVersion())
-
-	copied.Unknown1 = subscriberGetContentParam.Unknown1
-	copied.Unknown2 = subscriberGetContentParam.Unknown2
-	copied.Unknown3 = subscriberGetContentParam.Unknown3
-	copied.Unknown4 = subscriberGetContentParam.Unknown4
+	copied.StructureVersion = sgcp.StructureVersion
+	copied.Unknown1 = sgcp.Unknown1.Copy().(*types.String)
+	copied.Unknown2 = sgcp.Unknown2.Copy().(*types.PrimitiveU32)
+	copied.Unknown3 = sgcp.Unknown3.Copy().(*types.PrimitiveU32)
+	copied.Unknown4 = sgcp.Unknown4.Copy().(*types.PrimitiveU64)
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (subscriberGetContentParam *SubscriberGetContentParam) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*SubscriberGetContentParam)
-
-	if subscriberGetContentParam.StructureVersion() != other.StructureVersion() {
+// Equals checks if the given SubscriberGetContentParam contains the same data as the current SubscriberGetContentParam
+func (sgcp *SubscriberGetContentParam) Equals(o types.RVType) bool {
+	if _, ok := o.(*SubscriberGetContentParam); !ok {
 		return false
 	}
 
-	if subscriberGetContentParam.Unknown1 != other.Unknown1 {
+	other := o.(*SubscriberGetContentParam)
+
+	if sgcp.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if subscriberGetContentParam.Unknown2 != other.Unknown2 {
+	if !sgcp.Unknown1.Equals(other.Unknown1) {
 		return false
 	}
 
-	if subscriberGetContentParam.Unknown3 != other.Unknown3 {
+	if !sgcp.Unknown2.Equals(other.Unknown2) {
 		return false
 	}
 
-	if subscriberGetContentParam.Unknown4 != other.Unknown4 {
+	if !sgcp.Unknown3.Equals(other.Unknown3) {
 		return false
 	}
 
-	return true
+	return sgcp.Unknown4.Equals(other.Unknown4)
 }
 
-// String returns a string representation of the struct
-func (subscriberGetContentParam *SubscriberGetContentParam) String() string {
-	return subscriberGetContentParam.FormatToString(0)
+// String returns the string representation of the SubscriberGetContentParam
+func (sgcp *SubscriberGetContentParam) String() string {
+	return sgcp.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (subscriberGetContentParam *SubscriberGetContentParam) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the SubscriberGetContentParam using the provided indentation level
+func (sgcp *SubscriberGetContentParam) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("SubscriberGetContentParam{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, subscriberGetContentParam.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sUnknown1: %q,\n", indentationValues, subscriberGetContentParam.Unknown1))
-	b.WriteString(fmt.Sprintf("%sUnknown2: %d,\n", indentationValues, subscriberGetContentParam.Unknown2))
-	b.WriteString(fmt.Sprintf("%sUnknown3: %d,\n", indentationValues, subscriberGetContentParam.Unknown3))
-	b.WriteString(fmt.Sprintf("%sUnknown4: %d\n", indentationValues, subscriberGetContentParam.Unknown4))
+	b.WriteString(fmt.Sprintf("%sUnknown1: %s,\n", indentationValues, sgcp.Unknown1))
+	b.WriteString(fmt.Sprintf("%sUnknown2: %s,\n", indentationValues, sgcp.Unknown2))
+	b.WriteString(fmt.Sprintf("%sUnknown3: %s,\n", indentationValues, sgcp.Unknown3))
+	b.WriteString(fmt.Sprintf("%sUnknown4: %s,\n", indentationValues, sgcp.Unknown4))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -120,5 +129,12 @@ func (subscriberGetContentParam *SubscriberGetContentParam) FormatToString(inden
 
 // NewSubscriberGetContentParam returns a new SubscriberGetContentParam
 func NewSubscriberGetContentParam() *SubscriberGetContentParam {
-	return &SubscriberGetContentParam{}
+	sgcp := &SubscriberGetContentParam{
+		Unknown1: types.NewString(""),
+		Unknown2: types.NewPrimitiveU32(0),
+		Unknown3: types.NewPrimitiveU32(0),
+		Unknown4: types.NewPrimitiveU64(0),
+	}
+
+	return sgcp
 }

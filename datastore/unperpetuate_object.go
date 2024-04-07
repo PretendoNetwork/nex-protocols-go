@@ -4,53 +4,57 @@ package protocol
 import (
 	"fmt"
 
-	nex "github.com/PretendoNetwork/nex-go"
-	"github.com/PretendoNetwork/nex-protocols-go/globals"
+	nex "github.com/PretendoNetwork/nex-go/v2"
+	"github.com/PretendoNetwork/nex-go/v2/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
 )
 
-// UnperpetuateObject sets the UnperpetuateObject handler function
-func (protocol *Protocol) UnperpetuateObject(handler func(err error, packet nex.PacketInterface, callID uint32, persistenceSlotID uint16, deleteLastObject bool) uint32) {
-	protocol.unperpetuateObjectHandler = handler
-}
-
 func (protocol *Protocol) handleUnperpetuateObject(packet nex.PacketInterface) {
-	var errorCode uint32
+	if protocol.UnperpetuateObject == nil {
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "DataStore::UnperpetuateObject not implemented")
 
-	if protocol.unperpetuateObjectHandler == nil {
-		globals.Logger.Warning("DataStore::UnperpetuateObject not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
+	callID := request.CallID
+	parameters := request.Parameters
+	endpoint := packet.Sender().Endpoint()
+	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	callID := request.CallID()
-	parameters := request.Parameters()
+	persistenceSlotID := types.NewPrimitiveU16(0)
+	deleteLastObject := types.NewPrimitiveBool(false)
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+	var err error
 
-	persistenceSlotID, err := parametersStream.ReadUInt16LE()
+	err = persistenceSlotID.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.unperpetuateObjectHandler(fmt.Errorf("Failed to read persistenceSlotID from parameters. %s", err.Error()), packet, callID, 0, false)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.UnperpetuateObject(fmt.Errorf("Failed to read persistenceSlotID from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	deleteLastObject, err := parametersStream.ReadBool()
+	err = deleteLastObject.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.unperpetuateObjectHandler(fmt.Errorf("Failed to read deleteLastObject from parameters. %s", err.Error()), packet, callID, 0, false)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.UnperpetuateObject(fmt.Errorf("Failed to read deleteLastObject from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	errorCode = protocol.unperpetuateObjectHandler(nil, packet, callID, persistenceSlotID, deleteLastObject)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.UnperpetuateObject(nil, packet, callID, persistenceSlotID, deleteLastObject)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

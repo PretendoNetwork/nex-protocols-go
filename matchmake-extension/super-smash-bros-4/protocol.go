@@ -4,9 +4,9 @@ package protocol
 import (
 	"fmt"
 
-	nex "github.com/PretendoNetwork/nex-go"
-	"github.com/PretendoNetwork/nex-protocols-go/globals"
-	matchmake_extension "github.com/PretendoNetwork/nex-protocols-go/matchmake-extension"
+	nex "github.com/PretendoNetwork/nex-go/v2"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
+	matchmake_extension "github.com/PretendoNetwork/nex-protocols-go/v2/matchmake-extension"
 	"golang.org/x/exp/slices"
 )
 
@@ -167,150 +167,145 @@ type matchmakeExtensionProtocol = matchmake_extension.Protocol
 // Protocol stores all the RMC method handlers for the Matchmake Extension (Super Smash Bros. 4) protocol and listens for requests
 // Embeds the Matchmake Extension protocol
 type Protocol struct {
-	Server *nex.Server
+	endpoint nex.EndpointInterface
 	matchmakeExtensionProtocol
-	getTournamentHandler                                     func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) uint32
-	getTournamentReplayIDHandler                             func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) uint32
-	getTournamentResultHandler                               func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) uint32
-	setTournamentReplayIDHandler                             func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) uint32
-	getTournamentProfilesHandler                             func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) uint32
-	joinOrCreateMatchmakeSessionHandler                      func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) uint32
-	registerTournamentPlayerInfoHandler                      func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) uint32
-	registerTournamentBotHandler                             func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) uint32
-	reportTournamentBotRoundResultHandler                    func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) uint32
-	replaceTournamentLeafNodeHandler                         func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) uint32
-	startTournamentHandler                                   func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) uint32
-	autoTournamentMatchmakeHandler                           func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) uint32
-	simpleFindByIDHandler                                    func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) uint32
-	getTournamentCompetitionsHandler                         func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) uint32
-	getTournamentCompetitionHandler                          func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) uint32
-	getTournamentReplayIDsHandler                            func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) uint32
-	registerCommunityCompetitionHandler                      func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) uint32
-	unregisterCommunityCompetitionHandler                    func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) uint32
-	unregisterCommunityCompetitionByIDHandler                func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) uint32
-	getCommunityCompetitionsHandler                          func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) uint32
-	getCommunityCompetitionByIDHandler                       func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) uint32
-	findCommunityCompetitionsByParticipantHandler            func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) uint32
-	findCommunityCompetitionsByGatheringIDHandler            func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) uint32
-	selectCommunityCompetitionByOwnerHandler                 func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) uint32
-	joinCommunityCompetitionHandler                          func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) uint32
-	joinCommunityCompetitionByGatheringIDHandler             func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) uint32
-	endCommunityCompetitionParticipationHandler              func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) uint32
-	endCommunityCompetitionParticipationByGatheringIDHandler func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) uint32
-	searchCommunityCompetitionHandler                        func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) uint32
-	postCommunityCompetitionMatchResultHandler               func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) uint32
-	getCommunityCompetitionRankingHandler                    func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) uint32
-	debugRegisterCommunityCompetitionHandler                 func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) uint32
-	debugUnregisterCommunityCompetitionHandler               func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) uint32
-	debugJoinCommunityCompetitionHandler                     func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) uint32
-	debugEndCommunityCompetitionParticipationHandler         func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) uint32
-	debugPostCommunityCompetitionMatchResultHandler          func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) uint32
-}
-
-// Setup initializes the protocol
-func (protocol *Protocol) Setup() {
-	protocol.Server.On("Data", func(packet nex.PacketInterface) {
-		request := packet.RMCRequest()
-
-		if request.ProtocolID() == ProtocolID {
-			if slices.Contains(patchedMethods, request.MethodID()) {
-				protocol.HandlePacket(packet)
-			} else {
-				protocol.matchmakeExtensionProtocol.HandlePacket(packet)
-			}
-		}
-	})
+	GetTournament                                     func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) (*nex.RMCMessage, *nex.Error)
+	GetTournamentReplayID                             func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) (*nex.RMCMessage, *nex.Error)
+	GetTournamentResult                               func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) (*nex.RMCMessage, *nex.Error)
+	SetTournamentReplayID                             func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) (*nex.RMCMessage, *nex.Error)
+	GetTournamentProfiles                             func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) (*nex.RMCMessage, *nex.Error)
+	JoinOrCreateMatchmakeSession                      func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) (*nex.RMCMessage, *nex.Error)
+	RegisterTournamentPlayerInfo                      func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) (*nex.RMCMessage, *nex.Error)
+	RegisterTournamentBot                             func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) (*nex.RMCMessage, *nex.Error)
+	ReportTournamentBotRoundResult                    func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) (*nex.RMCMessage, *nex.Error)
+	ReplaceTournamentLeafNode                         func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) (*nex.RMCMessage, *nex.Error)
+	StartTournament                                   func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) (*nex.RMCMessage, *nex.Error)
+	AutoTournamentMatchmake                           func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) (*nex.RMCMessage, *nex.Error)
+	SimpleFindByID                                    func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) (*nex.RMCMessage, *nex.Error)
+	GetTournamentCompetitions                         func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) (*nex.RMCMessage, *nex.Error)
+	GetTournamentCompetition                          func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) (*nex.RMCMessage, *nex.Error)
+	GetTournamentReplayIDs                            func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) (*nex.RMCMessage, *nex.Error)
+	RegisterCommunityCompetition                      func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) (*nex.RMCMessage, *nex.Error)
+	UnregisterCommunityCompetition                    func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) (*nex.RMCMessage, *nex.Error)
+	UnregisterCommunityCompetitionByID                func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) (*nex.RMCMessage, *nex.Error)
+	GetCommunityCompetitions                          func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) (*nex.RMCMessage, *nex.Error)
+	GetCommunityCompetitionByID                       func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) (*nex.RMCMessage, *nex.Error)
+	FindCommunityCompetitionsByParticipant            func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) (*nex.RMCMessage, *nex.Error)
+	FindCommunityCompetitionsByGatheringID            func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) (*nex.RMCMessage, *nex.Error)
+	SelectCommunityCompetitionByOwner                 func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) (*nex.RMCMessage, *nex.Error)
+	JoinCommunityCompetition                          func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) (*nex.RMCMessage, *nex.Error)
+	JoinCommunityCompetitionByGatheringID             func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) (*nex.RMCMessage, *nex.Error)
+	EndCommunityCompetitionParticipation              func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) (*nex.RMCMessage, *nex.Error)
+	EndCommunityCompetitionParticipationByGatheringID func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) (*nex.RMCMessage, *nex.Error)
+	SearchCommunityCompetition                        func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) (*nex.RMCMessage, *nex.Error)
+	PostCommunityCompetitionMatchResult               func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) (*nex.RMCMessage, *nex.Error)
+	GetCommunityCompetitionRanking                    func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) (*nex.RMCMessage, *nex.Error)
+	DebugRegisterCommunityCompetition                 func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) (*nex.RMCMessage, *nex.Error)
+	DebugUnregisterCommunityCompetition               func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) (*nex.RMCMessage, *nex.Error)
+	DebugJoinCommunityCompetition                     func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) (*nex.RMCMessage, *nex.Error)
+	DebugEndCommunityCompetitionParticipation         func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) (*nex.RMCMessage, *nex.Error)
+	DebugPostCommunityCompetitionMatchResult          func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) (*nex.RMCMessage, *nex.Error)
 }
 
 // HandlePacket sends the packet to the correct RMC method handler
 func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
-	request := packet.RMCRequest()
+	message := packet.RMCMessage()
 
-	switch request.MethodID() {
+	if !message.IsRequest || message.ProtocolID != ProtocolID {
+		return
+	}
+
+	if !slices.Contains(patchedMethods, message.MethodID) {
+		protocol.matchmakeExtensionProtocol.HandlePacket(packet)
+		return
+	}
+
+	switch message.MethodID {
 	case MethodGetTournament:
-		go protocol.handleGetTournament(packet)
+		protocol.handleGetTournament(packet)
 	case MethodGetTournamentReplayID:
-		go protocol.handleGetTournamentReplayID(packet)
+		protocol.handleGetTournamentReplayID(packet)
 	case MethodGetTournamentResult:
-		go protocol.handleGetTournamentResult(packet)
+		protocol.handleGetTournamentResult(packet)
 	case MethodSetTournamentReplayID:
-		go protocol.handleSetTournamentReplayID(packet)
+		protocol.handleSetTournamentReplayID(packet)
 	case MethodGetTournamentProfiles:
-		go protocol.handleGetTournamentProfiles(packet)
+		protocol.handleGetTournamentProfiles(packet)
 	case MethodJoinOrCreateMatchmakeSession:
-		go protocol.handleJoinOrCreateMatchmakeSession(packet)
+		protocol.handleJoinOrCreateMatchmakeSession(packet)
 	case MethodRegisterTournamentPlayerInfo:
-		go protocol.handleRegisterTournamentPlayerInfo(packet)
+		protocol.handleRegisterTournamentPlayerInfo(packet)
 	case MethodRegisterTournamentBot:
-		go protocol.handleRegisterTournamentBot(packet)
+		protocol.handleRegisterTournamentBot(packet)
 	case MethodReportTournamentBotRoundResult:
-		go protocol.handleReportTournamentBotRoundResult(packet)
+		protocol.handleReportTournamentBotRoundResult(packet)
 	case MethodReplaceTournamentLeafNode:
-		go protocol.handleReplaceTournamentLeafNode(packet)
+		protocol.handleReplaceTournamentLeafNode(packet)
 	case MethodStartTournament:
-		go protocol.handleStartTournament(packet)
+		protocol.handleStartTournament(packet)
 	case MethodAutoTournamentMatchmake:
-		go protocol.handleAutoTournamentMatchmake(packet)
+		protocol.handleAutoTournamentMatchmake(packet)
 	case MethodSimpleFindByID:
-		go protocol.handleSimpleFindByID(packet)
+		protocol.handleSimpleFindByID(packet)
 	case MethodGetTournamentCompetitions:
-		go protocol.handleGetTournamentCompetitions(packet)
+		protocol.handleGetTournamentCompetitions(packet)
 	case MethodGetTournamentCompetition:
-		go protocol.handleGetTournamentCompetition(packet)
+		protocol.handleGetTournamentCompetition(packet)
 	case MethodGetTournamentReplayIDs:
-		go protocol.handleGetTournamentReplayIDs(packet)
+		protocol.handleGetTournamentReplayIDs(packet)
 	case MethodRegisterCommunityCompetition:
-		go protocol.handleRegisterCommunityCompetition(packet)
+		protocol.handleRegisterCommunityCompetition(packet)
 	case MethodUnregisterCommunityCompetition:
-		go protocol.handleUnregisterCommunityCompetition(packet)
+		protocol.handleUnregisterCommunityCompetition(packet)
 	case MethodUnregisterCommunityCompetitionByID:
-		go protocol.handleUnregisterCommunityCompetitionByID(packet)
+		protocol.handleUnregisterCommunityCompetitionByID(packet)
 	case MethodGetCommunityCompetitions:
-		go protocol.handleGetCommunityCompetitions(packet)
+		protocol.handleGetCommunityCompetitions(packet)
 	case MethodGetCommunityCompetitionByID:
-		go protocol.handleGetCommunityCompetitionByID(packet)
+		protocol.handleGetCommunityCompetitionByID(packet)
 	case MethodFindCommunityCompetitionsByParticipant:
-		go protocol.handleFindCommunityCompetitionsByParticipant(packet)
+		protocol.handleFindCommunityCompetitionsByParticipant(packet)
 	case MethodFindCommunityCompetitionsByGatheringID:
-		go protocol.handleFindCommunityCompetitionsByGatheringID(packet)
+		protocol.handleFindCommunityCompetitionsByGatheringID(packet)
 	case MethodSelectCommunityCompetitionByOwner:
-		go protocol.handleSelectCommunityCompetitionByOwner(packet)
+		protocol.handleSelectCommunityCompetitionByOwner(packet)
 	case MethodJoinCommunityCompetition:
-		go protocol.handleJoinCommunityCompetition(packet)
+		protocol.handleJoinCommunityCompetition(packet)
 	case MethodJoinCommunityCompetitionByGatheringID:
-		go protocol.handleJoinCommunityCompetitionByGatheringID(packet)
+		protocol.handleJoinCommunityCompetitionByGatheringID(packet)
 	case MethodEndCommunityCompetitionParticipation:
-		go protocol.handleEndCommunityCompetitionParticipation(packet)
+		protocol.handleEndCommunityCompetitionParticipation(packet)
 	case MethodEndCommunityCompetitionParticipationByGatheringID:
-		go protocol.handleEndCommunityCompetitionParticipationByGatheringID(packet)
+		protocol.handleEndCommunityCompetitionParticipationByGatheringID(packet)
 	case MethodSearchCommunityCompetition:
-		go protocol.handleSearchCommunityCompetition(packet)
+		protocol.handleSearchCommunityCompetition(packet)
 	case MethodPostCommunityCompetitionMatchResult:
-		go protocol.handlePostCommunityCompetitionMatchResult(packet)
+		protocol.handlePostCommunityCompetitionMatchResult(packet)
 	case MethodGetCommunityCompetitionRanking:
-		go protocol.handleGetCommunityCompetitionRanking(packet)
+		protocol.handleGetCommunityCompetitionRanking(packet)
 	case MethodDebugRegisterCommunityCompetition:
-		go protocol.handleDebugRegisterCommunityCompetition(packet)
+		protocol.handleDebugRegisterCommunityCompetition(packet)
 	case MethodDebugUnregisterCommunityCompetition:
-		go protocol.handleDebugUnregisterCommunityCompetition(packet)
+		protocol.handleDebugUnregisterCommunityCompetition(packet)
 	case MethodDebugJoinCommunityCompetition:
-		go protocol.handleDebugJoinCommunityCompetition(packet)
+		protocol.handleDebugJoinCommunityCompetition(packet)
 	case MethodDebugEndCommunityCompetitionParticipation:
-		go protocol.handleDebugEndCommunityCompetitionParticipation(packet)
+		protocol.handleDebugEndCommunityCompetitionParticipation(packet)
 	case MethodDebugPostCommunityCompetitionMatchResult:
-		go protocol.handleDebugPostCommunityCompetitionMatchResult(packet)
+		protocol.handleDebugPostCommunityCompetitionMatchResult(packet)
 	default:
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
-		fmt.Printf("Unsupported Matchmake Extension (Super Smash Bros. 4) method ID: %#v\n", request.MethodID())
+		errMessage := fmt.Sprintf("Unsupported Matchmake Extension (Super Smash Bros. 4) method ID: %#v\n", message.MethodID)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, errMessage)
+
+		globals.RespondError(packet, ProtocolID, err)
+		globals.Logger.Warning(err.Message)
 	}
 }
 
 // NewProtocol returns a new MatchmakeExtensionSuperSmashBros4 protocol
-func NewProtocol(server *nex.Server) *Protocol {
-	protocol := &Protocol{Server: server}
-	protocol.matchmakeExtensionProtocol.Server = server
-
-	protocol.Setup()
+func NewProtocol(endpoint nex.EndpointInterface) *Protocol {
+	protocol := &Protocol{endpoint: endpoint}
+	protocol.matchmakeExtensionProtocol.SetEndpoint(endpoint)
 
 	return protocol
 }

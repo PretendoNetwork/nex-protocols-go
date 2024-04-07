@@ -1,182 +1,192 @@
-// Package types implements all the types used by the Ranking 2  protocol
+// Package types implements all the types used by the Ranking2 protocol
 package types
 
 import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/v2/types"
 )
 
-// Ranking2CategorySetting holds data for the Ranking 2  protocol
+// Ranking2CategorySetting is a type within the Ranking2 protocol
 type Ranking2CategorySetting struct {
-	nex.Structure
-	MinScore           uint32
-	MaxScore           uint32
-	LowestRank         uint32
-	ResetMonth         uint16
-	ResetDay           uint8
-	ResetHour          uint8
-	ResetMode          uint8
-	MaxSeasonsToGoBack uint8
-	ScoreOrder         bool
+	types.Structure
+	MinScore           *types.PrimitiveU32
+	MaxScore           *types.PrimitiveU32
+	LowestRank         *types.PrimitiveU32
+	ResetMonth         *types.PrimitiveU16
+	ResetDay           *types.PrimitiveU8
+	ResetHour          *types.PrimitiveU8
+	ResetMode          *types.PrimitiveU8
+	MaxSeasonsToGoBack *types.PrimitiveU8
+	ScoreOrder         *types.PrimitiveBool
 }
 
-// ExtractFromStream extracts a Ranking2CategorySetting structure from a stream
-func (ranking2CategorySetting *Ranking2CategorySetting) ExtractFromStream(stream *nex.StreamIn) error {
+// WriteTo writes the Ranking2CategorySetting to the given writable
+func (rcs *Ranking2CategorySetting) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
+
+	rcs.MinScore.WriteTo(writable)
+	rcs.MaxScore.WriteTo(writable)
+	rcs.LowestRank.WriteTo(writable)
+	rcs.ResetMonth.WriteTo(writable)
+	rcs.ResetDay.WriteTo(writable)
+	rcs.ResetHour.WriteTo(writable)
+	rcs.ResetMode.WriteTo(writable)
+	rcs.MaxSeasonsToGoBack.WriteTo(writable)
+	rcs.ScoreOrder.WriteTo(writable)
+
+	content := contentWritable.Bytes()
+
+	rcs.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
+}
+
+// ExtractFrom extracts the Ranking2CategorySetting from the given readable
+func (rcs *Ranking2CategorySetting) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	ranking2CategorySetting.MinScore, err = stream.ReadUInt32LE()
+	err = rcs.ExtractHeaderFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract Ranking2CategorySetting.MinScore from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract Ranking2CategorySetting header. %s", err.Error())
 	}
 
-	ranking2CategorySetting.MaxScore, err = stream.ReadUInt32LE()
+	err = rcs.MinScore.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract Ranking2CategorySetting.MaxScore from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract Ranking2CategorySetting.MinScore. %s", err.Error())
 	}
 
-	ranking2CategorySetting.LowestRank, err = stream.ReadUInt32LE()
+	err = rcs.MaxScore.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract Ranking2CategorySetting.LowestRank from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract Ranking2CategorySetting.MaxScore. %s", err.Error())
 	}
 
-	ranking2CategorySetting.ResetMonth, err = stream.ReadUInt16LE()
+	err = rcs.LowestRank.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract Ranking2CategorySetting.ResetMonth from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract Ranking2CategorySetting.LowestRank. %s", err.Error())
 	}
 
-	ranking2CategorySetting.ResetDay, err = stream.ReadUInt8()
+	err = rcs.ResetMonth.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract Ranking2CategorySetting.ResetDay from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract Ranking2CategorySetting.ResetMonth. %s", err.Error())
 	}
 
-	ranking2CategorySetting.ResetHour, err = stream.ReadUInt8()
+	err = rcs.ResetDay.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract Ranking2CategorySetting.ResetHour from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract Ranking2CategorySetting.ResetDay. %s", err.Error())
 	}
 
-	ranking2CategorySetting.ResetMode, err = stream.ReadUInt8()
+	err = rcs.ResetHour.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract Ranking2CategorySetting.ResetMode from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract Ranking2CategorySetting.ResetHour. %s", err.Error())
 	}
 
-	ranking2CategorySetting.MaxSeasonsToGoBack, err = stream.ReadUInt8()
+	err = rcs.ResetMode.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract Ranking2CategorySetting.MaxSeasonsToGoBack from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract Ranking2CategorySetting.ResetMode. %s", err.Error())
 	}
 
-	ranking2CategorySetting.ScoreOrder, err = stream.ReadBool()
+	err = rcs.MaxSeasonsToGoBack.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract Ranking2CategorySetting.ScoreOrder from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract Ranking2CategorySetting.MaxSeasonsToGoBack. %s", err.Error())
+	}
+
+	err = rcs.ScoreOrder.ExtractFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract Ranking2CategorySetting.ScoreOrder. %s", err.Error())
 	}
 
 	return nil
 }
 
-// Bytes encodes the Ranking2CategorySetting and returns a byte array
-func (ranking2CategorySetting *Ranking2CategorySetting) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt32LE(ranking2CategorySetting.MinScore)
-	stream.WriteUInt32LE(ranking2CategorySetting.MaxScore)
-	stream.WriteUInt32LE(ranking2CategorySetting.LowestRank)
-	stream.WriteUInt16LE(ranking2CategorySetting.ResetMonth)
-	stream.WriteUInt8(ranking2CategorySetting.ResetDay)
-	stream.WriteUInt8(ranking2CategorySetting.ResetHour)
-	stream.WriteUInt8(ranking2CategorySetting.ResetMode)
-	stream.WriteUInt8(ranking2CategorySetting.MaxSeasonsToGoBack)
-	stream.WriteBool(ranking2CategorySetting.ScoreOrder)
-
-	return stream.Bytes()
-}
-
 // Copy returns a new copied instance of Ranking2CategorySetting
-func (ranking2CategorySetting *Ranking2CategorySetting) Copy() nex.StructureInterface {
+func (rcs *Ranking2CategorySetting) Copy() types.RVType {
 	copied := NewRanking2CategorySetting()
 
-	copied.SetStructureVersion(ranking2CategorySetting.StructureVersion())
+	copied.StructureVersion = rcs.StructureVersion
+	copied.MinScore = rcs.MinScore.Copy().(*types.PrimitiveU32)
+	copied.MaxScore = rcs.MaxScore.Copy().(*types.PrimitiveU32)
+	copied.LowestRank = rcs.LowestRank.Copy().(*types.PrimitiveU32)
+	copied.ResetMonth = rcs.ResetMonth.Copy().(*types.PrimitiveU16)
+	copied.ResetDay = rcs.ResetDay.Copy().(*types.PrimitiveU8)
+	copied.ResetHour = rcs.ResetHour.Copy().(*types.PrimitiveU8)
+	copied.ResetMode = rcs.ResetMode.Copy().(*types.PrimitiveU8)
+	copied.MaxSeasonsToGoBack = rcs.MaxSeasonsToGoBack.Copy().(*types.PrimitiveU8)
+	copied.ScoreOrder = rcs.ScoreOrder.Copy().(*types.PrimitiveBool)
 
-	copied.MinScore = ranking2CategorySetting.MinScore
-	copied.MaxScore = ranking2CategorySetting.MaxScore
-	copied.LowestRank = ranking2CategorySetting.LowestRank
-	copied.ResetMonth = ranking2CategorySetting.ResetMonth
-	copied.ResetDay = ranking2CategorySetting.ResetDay
-	copied.ResetHour = ranking2CategorySetting.ResetHour
-	copied.ResetMode = ranking2CategorySetting.ResetMode
-	copied.MaxSeasonsToGoBack = ranking2CategorySetting.MaxSeasonsToGoBack
-	copied.ScoreOrder = ranking2CategorySetting.ScoreOrder
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (ranking2CategorySetting *Ranking2CategorySetting) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*Ranking2CategorySetting)
-
-	if ranking2CategorySetting.StructureVersion() != other.StructureVersion() {
+// Equals checks if the given Ranking2CategorySetting contains the same data as the current Ranking2CategorySetting
+func (rcs *Ranking2CategorySetting) Equals(o types.RVType) bool {
+	if _, ok := o.(*Ranking2CategorySetting); !ok {
 		return false
 	}
 
-	if ranking2CategorySetting.MinScore != other.MinScore {
+	other := o.(*Ranking2CategorySetting)
+
+	if rcs.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if ranking2CategorySetting.MaxScore != other.MaxScore {
+	if !rcs.MinScore.Equals(other.MinScore) {
 		return false
 	}
 
-	if ranking2CategorySetting.LowestRank != other.LowestRank {
+	if !rcs.MaxScore.Equals(other.MaxScore) {
 		return false
 	}
 
-	if ranking2CategorySetting.ResetMonth != other.ResetMonth {
+	if !rcs.LowestRank.Equals(other.LowestRank) {
 		return false
 	}
 
-	if ranking2CategorySetting.ResetDay != other.ResetDay {
+	if !rcs.ResetMonth.Equals(other.ResetMonth) {
 		return false
 	}
 
-	if ranking2CategorySetting.ResetHour != other.ResetHour {
+	if !rcs.ResetDay.Equals(other.ResetDay) {
 		return false
 	}
 
-	if ranking2CategorySetting.ResetMode != other.ResetMode {
+	if !rcs.ResetHour.Equals(other.ResetHour) {
 		return false
 	}
 
-	if ranking2CategorySetting.MaxSeasonsToGoBack != other.MaxSeasonsToGoBack {
+	if !rcs.ResetMode.Equals(other.ResetMode) {
 		return false
 	}
 
-	if ranking2CategorySetting.ScoreOrder != other.ScoreOrder {
+	if !rcs.MaxSeasonsToGoBack.Equals(other.MaxSeasonsToGoBack) {
 		return false
 	}
 
-	return true
+	return rcs.ScoreOrder.Equals(other.ScoreOrder)
 }
 
-// String returns a string representation of the struct
-func (ranking2CategorySetting *Ranking2CategorySetting) String() string {
-	return ranking2CategorySetting.FormatToString(0)
+// String returns the string representation of the Ranking2CategorySetting
+func (rcs *Ranking2CategorySetting) String() string {
+	return rcs.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (ranking2CategorySetting *Ranking2CategorySetting) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the Ranking2CategorySetting using the provided indentation level
+func (rcs *Ranking2CategorySetting) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("Ranking2CategorySetting{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, ranking2CategorySetting.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sMinScore: %d,\n", indentationValues, ranking2CategorySetting.MinScore))
-	b.WriteString(fmt.Sprintf("%sMaxScore: %d,\n", indentationValues, ranking2CategorySetting.MaxScore))
-	b.WriteString(fmt.Sprintf("%sLowestRank: %d,\n", indentationValues, ranking2CategorySetting.LowestRank))
-	b.WriteString(fmt.Sprintf("%sResetMonth: %d,\n", indentationValues, ranking2CategorySetting.ResetMonth))
-	b.WriteString(fmt.Sprintf("%sResetDay: %d,\n", indentationValues, ranking2CategorySetting.ResetDay))
-	b.WriteString(fmt.Sprintf("%sResetHour: %d,\n", indentationValues, ranking2CategorySetting.ResetHour))
-	b.WriteString(fmt.Sprintf("%sResetMode: %d,\n", indentationValues, ranking2CategorySetting.ResetMode))
-	b.WriteString(fmt.Sprintf("%sMaxSeasonsToGoBack: %d,\n", indentationValues, ranking2CategorySetting.MaxSeasonsToGoBack))
-	b.WriteString(fmt.Sprintf("%sScoreOrder: %t,\n", indentationValues, ranking2CategorySetting.ScoreOrder))
+	b.WriteString(fmt.Sprintf("%sMinScore: %s,\n", indentationValues, rcs.MinScore))
+	b.WriteString(fmt.Sprintf("%sMaxScore: %s,\n", indentationValues, rcs.MaxScore))
+	b.WriteString(fmt.Sprintf("%sLowestRank: %s,\n", indentationValues, rcs.LowestRank))
+	b.WriteString(fmt.Sprintf("%sResetMonth: %s,\n", indentationValues, rcs.ResetMonth))
+	b.WriteString(fmt.Sprintf("%sResetDay: %s,\n", indentationValues, rcs.ResetDay))
+	b.WriteString(fmt.Sprintf("%sResetHour: %s,\n", indentationValues, rcs.ResetHour))
+	b.WriteString(fmt.Sprintf("%sResetMode: %s,\n", indentationValues, rcs.ResetMode))
+	b.WriteString(fmt.Sprintf("%sMaxSeasonsToGoBack: %s,\n", indentationValues, rcs.MaxSeasonsToGoBack))
+	b.WriteString(fmt.Sprintf("%sScoreOrder: %s,\n", indentationValues, rcs.ScoreOrder))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -184,5 +194,17 @@ func (ranking2CategorySetting *Ranking2CategorySetting) FormatToString(indentati
 
 // NewRanking2CategorySetting returns a new Ranking2CategorySetting
 func NewRanking2CategorySetting() *Ranking2CategorySetting {
-	return &Ranking2CategorySetting{}
+	rcs := &Ranking2CategorySetting{
+		MinScore:           types.NewPrimitiveU32(0),
+		MaxScore:           types.NewPrimitiveU32(0),
+		LowestRank:         types.NewPrimitiveU32(0),
+		ResetMonth:         types.NewPrimitiveU16(0),
+		ResetDay:           types.NewPrimitiveU8(0),
+		ResetHour:          types.NewPrimitiveU8(0),
+		ResetMode:          types.NewPrimitiveU8(0),
+		MaxSeasonsToGoBack: types.NewPrimitiveU8(0),
+		ScoreOrder:         types.NewPrimitiveBool(false),
+	}
+
+	return rcs
 }

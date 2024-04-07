@@ -4,44 +4,44 @@ package protocol
 import (
 	"fmt"
 
-	nex "github.com/PretendoNetwork/nex-go"
-	"github.com/PretendoNetwork/nex-protocols-go/globals"
-	ranking_mario_kart8_types "github.com/PretendoNetwork/nex-protocols-go/ranking/mario-kart-8/types"
+	nex "github.com/PretendoNetwork/nex-go/v2"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
+	ranking_mario_kart8_types "github.com/PretendoNetwork/nex-protocols-go/v2/ranking/mario-kart-8/types"
 )
 
-// GetCompetitionInfo sets the GetCompetitionInfo handler function
-func (protocol *Protocol) GetCompetitionInfo(handler func(err error, packet nex.PacketInterface, callID uint32, param *ranking_mario_kart8_types.CompetitionRankingInfoGetParam) uint32) {
-	protocol.getCompetitionInfoHandler = handler
-}
-
 func (protocol *Protocol) handleGetCompetitionInfo(packet nex.PacketInterface) {
-	var errorCode uint32
+	if protocol.GetCompetitionInfo == nil {
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "RankingMarioKart8::GetCompetitionInfo not implemented")
 
-	if protocol.getCompetitionInfoHandler == nil {
-		globals.Logger.Warning("RankingMarioKart8::GetCompetitionInfo not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
+	callID := request.CallID
+	parameters := request.Parameters
+	endpoint := packet.Sender().Endpoint()
+	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	callID := request.CallID()
-	parameters := request.Parameters()
+	param := ranking_mario_kart8_types.NewCompetitionRankingInfoGetParam()
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
-
-	param, err := parametersStream.ReadStructure(ranking_mario_kart8_types.NewCompetitionRankingInfoGetParam())
+	err := param.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.getCompetitionInfoHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.GetCompetitionInfo(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	errorCode = protocol.getCompetitionInfoHandler(nil, packet, callID, param.(*ranking_mario_kart8_types.CompetitionRankingInfoGetParam))
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.GetCompetitionInfo(nil, packet, callID, param)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

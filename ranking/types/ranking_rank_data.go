@@ -2,216 +2,203 @@
 package types
 
 import (
-	"bytes"
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/v2"
+	"github.com/PretendoNetwork/nex-go/v2/types"
 )
 
-// RankingRankData holds parameters for ordering rankings
+// RankingRankData is a type within the Ranking protocol
 type RankingRankData struct {
-	nex.Structure
-	PrincipalID uint32
-	UniqueID    uint64
-	Order       uint32
-	Category    uint32
-	Score       uint32
-	Groups      []byte
-	Param       uint64
-	CommonData  []byte
-	UpdateTime  *nex.DateTime // * NEX 3.6.0+
+	types.Structure
+	PrincipalID *types.PID
+	UniqueID    *types.PrimitiveU64
+	Order       *types.PrimitiveU32
+	Category    *types.PrimitiveU32
+	Score       *types.PrimitiveU32
+	Groups      *types.Buffer
+	Param       *types.PrimitiveU64
+	CommonData  *types.Buffer
+	UpdateTime  *types.DateTime // * NEX v3.6.0
 }
 
-// ExtractFromStream extracts a RankingRankData structure from a stream
-func (rankingRankData *RankingRankData) ExtractFromStream(stream *nex.StreamIn) error {
-	nexVersion := stream.Server.NEXVersion()
+// WriteTo writes the RankingRankData to the given writable
+func (rrd *RankingRankData) WriteTo(writable types.Writable) {
+	stream := writable.(*nex.ByteStreamOut)
+	libraryVersion := stream.LibraryVersions.Ranking
+
+	contentWritable := writable.CopyNew()
+
+	rrd.PrincipalID.WriteTo(writable)
+	rrd.UniqueID.WriteTo(writable)
+	rrd.Order.WriteTo(writable)
+	rrd.Category.WriteTo(writable)
+	rrd.Score.WriteTo(writable)
+	rrd.Groups.WriteTo(writable)
+	rrd.Param.WriteTo(writable)
+	rrd.CommonData.WriteTo(writable)
+
+	if libraryVersion.GreaterOrEqual("3.6.0") {
+		rrd.UpdateTime.WriteTo(writable)
+	}
+
+	content := contentWritable.Bytes()
+
+	rrd.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
+}
+
+// ExtractFrom extracts the RankingRankData from the given readable
+func (rrd *RankingRankData) ExtractFrom(readable types.Readable) error {
+	stream := readable.(*nex.ByteStreamIn)
+	libraryVersion := stream.LibraryVersions.Ranking
 
 	var err error
 
-	rankingRankData.PrincipalID, err = stream.ReadUInt32LE()
+	err = rrd.ExtractHeaderFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract RankingRankData.PrincipalID from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract RankingRankData header. %s", err.Error())
 	}
 
-	rankingRankData.UniqueID, err = stream.ReadUInt64LE()
+	err = rrd.PrincipalID.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract RankingRankData.UniqueID from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract RankingRankData.PrincipalID. %s", err.Error())
 	}
 
-	rankingRankData.Order, err = stream.ReadUInt32LE()
+	err = rrd.UniqueID.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract RankingRankData.Order from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract RankingRankData.UniqueID. %s", err.Error())
 	}
 
-	rankingRankData.Category, err = stream.ReadUInt32LE()
+	err = rrd.Order.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract RankingRankData.Category from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract RankingRankData.Order. %s", err.Error())
 	}
 
-	rankingRankData.Score, err = stream.ReadUInt32LE()
+	err = rrd.Category.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract RankingRankData.Score from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract RankingRankData.Category. %s", err.Error())
 	}
 
-	rankingRankData.Groups, err = stream.ReadBuffer()
+	err = rrd.Score.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract RankingRankData.Groups from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract RankingRankData.Score. %s", err.Error())
 	}
 
-	rankingRankData.Param, err = stream.ReadUInt64LE()
+	err = rrd.Groups.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract RankingRankData.Param from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract RankingRankData.Groups. %s", err.Error())
 	}
 
-	rankingRankData.CommonData, err = stream.ReadBuffer()
+	err = rrd.Param.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract RankingRankData.CommonData from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract RankingRankData.Param. %s", err.Error())
 	}
 
-	if nexVersion.GreaterOrEqual("3.6.0") {
-		rankingRankData.UpdateTime, err = stream.ReadDateTime()
+	err = rrd.CommonData.ExtractFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract RankingRankData.CommonData. %s", err.Error())
+	}
+
+	if libraryVersion.GreaterOrEqual("3.6.0") {
+		err = rrd.UpdateTime.ExtractFrom(readable)
 		if err != nil {
-			return fmt.Errorf("Failed to extract RankingRankData.UpdateTime from stream. %s", err.Error())
+			return fmt.Errorf("Failed to extract RankingRankData.UpdateTime. %s", err.Error())
 		}
 	}
 
 	return nil
 }
 
-// Bytes encodes the RankingRankData and returns a byte array
-func (rankingRankData *RankingRankData) Bytes(stream *nex.StreamOut) []byte {
-	nexVersion := stream.Server.NEXVersion()
-
-	stream.WriteUInt32LE(rankingRankData.PrincipalID)
-	stream.WriteUInt64LE(rankingRankData.UniqueID)
-	stream.WriteUInt32LE(rankingRankData.Order)
-	stream.WriteUInt32LE(rankingRankData.Category)
-	stream.WriteUInt32LE(rankingRankData.Score)
-	stream.WriteBuffer(rankingRankData.Groups)
-	stream.WriteUInt64LE(rankingRankData.Param)
-	stream.WriteBuffer(rankingRankData.CommonData)
-
-	if nexVersion.GreaterOrEqual("4.0.0") {
-		stream.WriteDateTime(rankingRankData.UpdateTime)
-	}
-
-	return stream.Bytes()
-}
-
 // Copy returns a new copied instance of RankingRankData
-func (rankingRankData *RankingRankData) Copy() nex.StructureInterface {
+func (rrd *RankingRankData) Copy() types.RVType {
 	copied := NewRankingRankData()
 
-	copied.SetStructureVersion(rankingRankData.StructureVersion())
-
-	copied.PrincipalID = rankingRankData.PrincipalID
-	copied.UniqueID = rankingRankData.UniqueID
-	copied.Order = rankingRankData.Order
-	copied.Category = rankingRankData.Category
-	copied.Score = rankingRankData.Score
-	copied.Groups = make([]byte, len(rankingRankData.Groups))
-
-	copy(copied.Groups, rankingRankData.Groups)
-
-	copied.Param = rankingRankData.Param
-	copied.CommonData = make([]byte, len(rankingRankData.CommonData))
-
-	copy(copied.CommonData, rankingRankData.CommonData)
-
-	if rankingRankData.UpdateTime != nil {
-		copied.UpdateTime = rankingRankData.UpdateTime.Copy()
-	}
+	copied.StructureVersion = rrd.StructureVersion
+	copied.PrincipalID = rrd.PrincipalID.Copy().(*types.PID)
+	copied.UniqueID = rrd.UniqueID.Copy().(*types.PrimitiveU64)
+	copied.Order = rrd.Order.Copy().(*types.PrimitiveU32)
+	copied.Category = rrd.Category.Copy().(*types.PrimitiveU32)
+	copied.Score = rrd.Score.Copy().(*types.PrimitiveU32)
+	copied.Groups = rrd.Groups.Copy().(*types.Buffer)
+	copied.Param = rrd.Param.Copy().(*types.PrimitiveU64)
+	copied.CommonData = rrd.CommonData.Copy().(*types.Buffer)
+	copied.UpdateTime = rrd.UpdateTime.Copy().(*types.DateTime)
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (rankingRankData *RankingRankData) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*RankingRankData)
-
-	if rankingRankData.StructureVersion() != other.StructureVersion() {
+// Equals checks if the given RankingRankData contains the same data as the current RankingRankData
+func (rrd *RankingRankData) Equals(o types.RVType) bool {
+	if _, ok := o.(*RankingRankData); !ok {
 		return false
 	}
 
-	if rankingRankData.PrincipalID != other.PrincipalID {
+	other := o.(*RankingRankData)
+
+	if rrd.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if rankingRankData.UniqueID != other.UniqueID {
+	if !rrd.PrincipalID.Equals(other.PrincipalID) {
 		return false
 	}
 
-	if rankingRankData.Order != other.Order {
+	if !rrd.UniqueID.Equals(other.UniqueID) {
 		return false
 	}
 
-	if rankingRankData.Category != other.Category {
+	if !rrd.Order.Equals(other.Order) {
 		return false
 	}
 
-	if rankingRankData.Score != other.Score {
+	if !rrd.Category.Equals(other.Category) {
 		return false
 	}
 
-	if !bytes.Equal(rankingRankData.Groups, other.Groups) {
+	if !rrd.Score.Equals(other.Score) {
 		return false
 	}
 
-	if rankingRankData.Param != other.Param {
+	if !rrd.Groups.Equals(other.Groups) {
 		return false
 	}
 
-	if !bytes.Equal(rankingRankData.CommonData, other.CommonData) {
+	if !rrd.Param.Equals(other.Param) {
 		return false
 	}
 
-	if rankingRankData.UpdateTime == nil && other.UpdateTime != nil {
+	if !rrd.CommonData.Equals(other.CommonData) {
 		return false
 	}
 
-	if rankingRankData.UpdateTime != nil && other.UpdateTime == nil {
-		return false
-	}
-
-	if rankingRankData.UpdateTime != nil && other.UpdateTime != nil {
-		if !rankingRankData.UpdateTime.Equals(other.UpdateTime) {
-			return false
-		}
-	}
-
-	return true
+	return rrd.UpdateTime.Equals(other.UpdateTime)
 }
 
-// String returns a string representation of the struct
-func (rankingRankData *RankingRankData) String() string {
-	return rankingRankData.FormatToString(0)
+// String returns the string representation of the RankingRankData
+func (rrd *RankingRankData) String() string {
+	return rrd.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (rankingRankData *RankingRankData) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the RankingRankData using the provided indentation level
+func (rrd *RankingRankData) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("RankingRankData{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, rankingRankData.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sPrincipalID: %d,\n", indentationValues, rankingRankData.PrincipalID))
-	b.WriteString(fmt.Sprintf("%sUniqueID: %d,\n", indentationValues, rankingRankData.UniqueID))
-	b.WriteString(fmt.Sprintf("%sOrder: %d,\n", indentationValues, rankingRankData.Order))
-	b.WriteString(fmt.Sprintf("%sCategory: %d,\n", indentationValues, rankingRankData.Category))
-	b.WriteString(fmt.Sprintf("%sScore: %d,\n", indentationValues, rankingRankData.Score))
-	b.WriteString(fmt.Sprintf("%sGroups: %x,\n", indentationValues, rankingRankData.Groups))
-	b.WriteString(fmt.Sprintf("%sParam: %d,\n", indentationValues, rankingRankData.Param))
-	b.WriteString(fmt.Sprintf("%sCommonData: %x,\n", indentationValues, rankingRankData.CommonData))
-
-	if rankingRankData.UpdateTime != nil {
-		b.WriteString(fmt.Sprintf("%sUpdateTime: %s\n", indentationValues, rankingRankData.UpdateTime.FormatToString(indentationLevel+1)))
-	} else {
-		b.WriteString(fmt.Sprintf("%sUpdateTime: nil\n", indentationValues))
-	}
-
+	b.WriteString(fmt.Sprintf("%sPrincipalID: %s,\n", indentationValues, rrd.PrincipalID.FormatToString(indentationLevel+1)))
+	b.WriteString(fmt.Sprintf("%sUniqueID: %s,\n", indentationValues, rrd.UniqueID))
+	b.WriteString(fmt.Sprintf("%sOrder: %s,\n", indentationValues, rrd.Order))
+	b.WriteString(fmt.Sprintf("%sCategory: %s,\n", indentationValues, rrd.Category))
+	b.WriteString(fmt.Sprintf("%sScore: %s,\n", indentationValues, rrd.Score))
+	b.WriteString(fmt.Sprintf("%sGroups: %s,\n", indentationValues, rrd.Groups))
+	b.WriteString(fmt.Sprintf("%sParam: %s,\n", indentationValues, rrd.Param))
+	b.WriteString(fmt.Sprintf("%sCommonData: %s,\n", indentationValues, rrd.CommonData))
+	b.WriteString(fmt.Sprintf("%sUpdateTime: %s,\n", indentationValues, rrd.UpdateTime.FormatToString(indentationLevel+1)))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -219,5 +206,17 @@ func (rankingRankData *RankingRankData) FormatToString(indentationLevel int) str
 
 // NewRankingRankData returns a new RankingRankData
 func NewRankingRankData() *RankingRankData {
-	return &RankingRankData{}
+	rrd := &RankingRankData{
+		PrincipalID: types.NewPID(0),
+		UniqueID:    types.NewPrimitiveU64(0),
+		Order:       types.NewPrimitiveU32(0),
+		Category:    types.NewPrimitiveU32(0),
+		Score:       types.NewPrimitiveU32(0),
+		Groups:      types.NewBuffer(nil),
+		Param:       types.NewPrimitiveU64(0),
+		CommonData:  types.NewBuffer(nil),
+		UpdateTime:  types.NewDateTime(0),
+	}
+
+	return rrd
 }

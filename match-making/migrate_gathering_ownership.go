@@ -4,63 +4,69 @@ package protocol
 import (
 	"fmt"
 
-	nex "github.com/PretendoNetwork/nex-go"
-	"github.com/PretendoNetwork/nex-protocols-go/globals"
+	nex "github.com/PretendoNetwork/nex-go/v2"
+	"github.com/PretendoNetwork/nex-go/v2/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
 )
 
-// MigrateGatheringOwnership sets the MigrateGatheringOwnership handler function
-func (protocol *Protocol) MigrateGatheringOwnership(handler func(err error, packet nex.PacketInterface, callID uint32, gid uint32, lstPotentialNewOwnersID []uint32, participantsOnly bool) uint32) {
-	protocol.migrateGatheringOwnershipHandler = handler
-}
-
 func (protocol *Protocol) handleMigrateGatheringOwnership(packet nex.PacketInterface) {
-	var errorCode uint32
+	if protocol.MigrateGatheringOwnership == nil {
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "MatchMaking::MigrateGatheringOwnership not implemented")
 
-	if protocol.migrateGatheringOwnershipHandler == nil {
-		globals.Logger.Warning("MatchMaking::MigrateGatheringOwnership not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
+	callID := request.CallID
+	parameters := request.Parameters
+	endpoint := packet.Sender().Endpoint()
+	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	callID := request.CallID()
-	parameters := request.Parameters()
+	gid := types.NewPrimitiveU32(0)
+	lstPotentialNewOwnersID := types.NewList[*types.PID]()
+	lstPotentialNewOwnersID.Type = types.NewPID(0)
+	participantsOnly := types.NewPrimitiveBool(false)
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+	var err error
 
-	gid, err := parametersStream.ReadUInt32LE()
+	err = gid.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.migrateGatheringOwnershipHandler(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), packet, callID, 0, nil, false)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.MigrateGatheringOwnership(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	lstPotentialNewOwnersID, err := parametersStream.ReadListUInt32LE()
+	err = lstPotentialNewOwnersID.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.migrateGatheringOwnershipHandler(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), packet, callID, 0, nil, false)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.MigrateGatheringOwnership(fmt.Errorf("Failed to read lstPotentialNewOwnersID from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	participantsOnly, err := parametersStream.ReadBool()
+	err = participantsOnly.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.migrateGatheringOwnershipHandler(fmt.Errorf("Failed to read participantsOnly from parameters. %s", err.Error()), packet, callID, 0, nil, false)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.MigrateGatheringOwnership(fmt.Errorf("Failed to read participantsOnly from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	errorCode = protocol.migrateGatheringOwnershipHandler(nil, packet, callID, gid, lstPotentialNewOwnersID, participantsOnly)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.MigrateGatheringOwnership(nil, packet, callID, gid, lstPotentialNewOwnersID, participantsOnly)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

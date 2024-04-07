@@ -2,75 +2,97 @@
 package types
 
 import (
-	"bytes"
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/v2/types"
 )
 
-// DataStoreChangeMetaParamV1 is a data structure used by the DataStore protocol
+// DataStoreChangeMetaParamV1 is a type within the DataStore protocol
 type DataStoreChangeMetaParamV1 struct {
-	nex.Structure
-	DataID         uint64
-	ModifiesFlag   uint32
-	Name           string
+	types.Structure
+	DataID         *types.PrimitiveU64
+	ModifiesFlag   *types.PrimitiveU32
+	Name           *types.String
 	Permission     *DataStorePermission
 	DelPermission  *DataStorePermission
-	Period         uint16
-	MetaBinary     []byte
-	Tags           []string
-	UpdatePassword uint64
+	Period         *types.PrimitiveU16
+	MetaBinary     *types.QBuffer
+	Tags           *types.List[*types.String]
+	UpdatePassword *types.PrimitiveU64
 }
 
-// ExtractFromStream extracts a DataStoreChangeMetaParamV1 structure from a stream
-func (dataStoreChangeMetaParamV1 *DataStoreChangeMetaParamV1) ExtractFromStream(stream *nex.StreamIn) error {
+// WriteTo writes the DataStoreChangeMetaParamV1 to the given writable
+func (dscmpv *DataStoreChangeMetaParamV1) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
+
+	dscmpv.DataID.WriteTo(writable)
+	dscmpv.ModifiesFlag.WriteTo(writable)
+	dscmpv.Name.WriteTo(writable)
+	dscmpv.Permission.WriteTo(writable)
+	dscmpv.DelPermission.WriteTo(writable)
+	dscmpv.Period.WriteTo(writable)
+	dscmpv.MetaBinary.WriteTo(writable)
+	dscmpv.Tags.WriteTo(writable)
+	dscmpv.UpdatePassword.WriteTo(writable)
+
+	content := contentWritable.Bytes()
+
+	dscmpv.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
+}
+
+// ExtractFrom extracts the DataStoreChangeMetaParamV1 from the given readable
+func (dscmpv *DataStoreChangeMetaParamV1) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	dataStoreChangeMetaParamV1.DataID, err = stream.ReadUInt64LE()
+	err = dscmpv.ExtractHeaderFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreChangeMetaParamV1 header. %s", err.Error())
+	}
+
+	err = dscmpv.DataID.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreChangeMetaParamV1.DataID. %s", err.Error())
 	}
 
-	dataStoreChangeMetaParamV1.ModifiesFlag, err = stream.ReadUInt32LE()
+	err = dscmpv.ModifiesFlag.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreChangeMetaParamV1.ModifiesFlag. %s", err.Error())
 	}
 
-	dataStoreChangeMetaParamV1.Name, err = stream.ReadString()
+	err = dscmpv.Name.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreChangeMetaParamV1.Name. %s", err.Error())
 	}
 
-	permission, err := stream.ReadStructure(NewDataStorePermission())
+	err = dscmpv.Permission.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreChangeMetaParamV1.Permission. %s", err.Error())
 	}
 
-	dataStoreChangeMetaParamV1.Permission = permission.(*DataStorePermission)
-
-	delPermission, err := stream.ReadStructure(NewDataStorePermission())
+	err = dscmpv.DelPermission.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreChangeMetaParamV1.DelPermission. %s", err.Error())
 	}
 
-	dataStoreChangeMetaParamV1.DelPermission = delPermission.(*DataStorePermission)
-	dataStoreChangeMetaParamV1.Period, err = stream.ReadUInt16LE()
+	err = dscmpv.Period.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreChangeMetaParamV1.Period. %s", err.Error())
 	}
 
-	dataStoreChangeMetaParamV1.MetaBinary, err = stream.ReadQBuffer()
+	err = dscmpv.MetaBinary.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreChangeMetaParamV1.MetaBinary. %s", err.Error())
 	}
 
-	dataStoreChangeMetaParamV1.Tags, err = stream.ReadListString()
+	err = dscmpv.Tags.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreChangeMetaParamV1.Tags. %s", err.Error())
 	}
 
-	dataStoreChangeMetaParamV1.UpdatePassword, err = stream.ReadUInt64LE()
+	err = dscmpv.UpdatePassword.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreChangeMetaParamV1.UpdatePassword. %s", err.Error())
 	}
@@ -78,129 +100,93 @@ func (dataStoreChangeMetaParamV1 *DataStoreChangeMetaParamV1) ExtractFromStream(
 	return nil
 }
 
-// Bytes encodes the DataStoreChangeMetaParamV1 and returns a byte array
-func (dataStoreChangeMetaParamV1 *DataStoreChangeMetaParamV1) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt64LE(dataStoreChangeMetaParamV1.DataID)
-	stream.WriteUInt32LE(dataStoreChangeMetaParamV1.ModifiesFlag)
-	stream.WriteString(dataStoreChangeMetaParamV1.Name)
-	stream.WriteStructure(dataStoreChangeMetaParamV1.Permission)
-	stream.WriteStructure(dataStoreChangeMetaParamV1.DelPermission)
-	stream.WriteUInt16LE(dataStoreChangeMetaParamV1.Period)
-	stream.WriteQBuffer(dataStoreChangeMetaParamV1.MetaBinary)
-	stream.WriteListString(dataStoreChangeMetaParamV1.Tags)
-	stream.WriteUInt64LE(dataStoreChangeMetaParamV1.UpdatePassword)
-
-	return stream.Bytes()
-}
-
 // Copy returns a new copied instance of DataStoreChangeMetaParamV1
-func (dataStoreChangeMetaParamV1 *DataStoreChangeMetaParamV1) Copy() nex.StructureInterface {
+func (dscmpv *DataStoreChangeMetaParamV1) Copy() types.RVType {
 	copied := NewDataStoreChangeMetaParamV1()
 
-	copied.SetStructureVersion(dataStoreChangeMetaParamV1.StructureVersion())
-
-	copied.DataID = dataStoreChangeMetaParamV1.DataID
-	copied.ModifiesFlag = dataStoreChangeMetaParamV1.ModifiesFlag
-	copied.Name = dataStoreChangeMetaParamV1.Name
-	copied.Permission = dataStoreChangeMetaParamV1.Permission.Copy().(*DataStorePermission)
-	copied.DelPermission = dataStoreChangeMetaParamV1.DelPermission.Copy().(*DataStorePermission)
-	copied.Period = dataStoreChangeMetaParamV1.Period
-	copied.MetaBinary = make([]byte, len(dataStoreChangeMetaParamV1.MetaBinary))
-
-	copy(copied.MetaBinary, dataStoreChangeMetaParamV1.MetaBinary)
-
-	copied.Tags = make([]string, len(dataStoreChangeMetaParamV1.Tags))
-
-	copy(copied.Tags, dataStoreChangeMetaParamV1.Tags)
-
-	copied.UpdatePassword = dataStoreChangeMetaParamV1.UpdatePassword
+	copied.StructureVersion = dscmpv.StructureVersion
+	copied.DataID = dscmpv.DataID.Copy().(*types.PrimitiveU64)
+	copied.ModifiesFlag = dscmpv.ModifiesFlag.Copy().(*types.PrimitiveU32)
+	copied.Name = dscmpv.Name.Copy().(*types.String)
+	copied.Permission = dscmpv.Permission.Copy().(*DataStorePermission)
+	copied.DelPermission = dscmpv.DelPermission.Copy().(*DataStorePermission)
+	copied.Period = dscmpv.Period.Copy().(*types.PrimitiveU16)
+	copied.MetaBinary = dscmpv.MetaBinary.Copy().(*types.QBuffer)
+	copied.Tags = dscmpv.Tags.Copy().(*types.List[*types.String])
+	copied.UpdatePassword = dscmpv.UpdatePassword.Copy().(*types.PrimitiveU64)
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (dataStoreChangeMetaParamV1 *DataStoreChangeMetaParamV1) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*DataStoreChangeMetaParamV1)
-
-	if dataStoreChangeMetaParamV1.StructureVersion() != other.StructureVersion() {
+// Equals checks if the given DataStoreChangeMetaParamV1 contains the same data as the current DataStoreChangeMetaParamV1
+func (dscmpv *DataStoreChangeMetaParamV1) Equals(o types.RVType) bool {
+	if _, ok := o.(*DataStoreChangeMetaParamV1); !ok {
 		return false
 	}
 
-	if dataStoreChangeMetaParamV1.DataID != other.DataID {
+	other := o.(*DataStoreChangeMetaParamV1)
+
+	if dscmpv.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if dataStoreChangeMetaParamV1.ModifiesFlag != other.ModifiesFlag {
+	if !dscmpv.DataID.Equals(other.DataID) {
 		return false
 	}
 
-	if dataStoreChangeMetaParamV1.Name != other.Name {
+	if !dscmpv.ModifiesFlag.Equals(other.ModifiesFlag) {
 		return false
 	}
 
-	if !dataStoreChangeMetaParamV1.Permission.Equals(other.Permission) {
+	if !dscmpv.Name.Equals(other.Name) {
 		return false
 	}
 
-	if !dataStoreChangeMetaParamV1.DelPermission.Equals(other.DelPermission) {
+	if !dscmpv.Permission.Equals(other.Permission) {
 		return false
 	}
 
-	if dataStoreChangeMetaParamV1.Period != other.Period {
+	if !dscmpv.DelPermission.Equals(other.DelPermission) {
 		return false
 	}
 
-	if !bytes.Equal(dataStoreChangeMetaParamV1.MetaBinary, other.MetaBinary) {
+	if !dscmpv.Period.Equals(other.Period) {
 		return false
 	}
 
-	if len(dataStoreChangeMetaParamV1.Tags) != len(other.Tags) {
+	if !dscmpv.MetaBinary.Equals(other.MetaBinary) {
 		return false
 	}
 
-	for i := 0; i < len(dataStoreChangeMetaParamV1.Tags); i++ {
-		if dataStoreChangeMetaParamV1.Tags[i] != other.Tags[i] {
-			return false
-		}
+	if !dscmpv.Tags.Equals(other.Tags) {
+		return false
 	}
 
-	return dataStoreChangeMetaParamV1.UpdatePassword == other.UpdatePassword
+	return dscmpv.UpdatePassword.Equals(other.UpdatePassword)
 }
 
-// String returns a string representation of the struct
-func (dataStoreChangeMetaParamV1 *DataStoreChangeMetaParamV1) String() string {
-	return dataStoreChangeMetaParamV1.FormatToString(0)
+// String returns the string representation of the DataStoreChangeMetaParamV1
+func (dscmpv *DataStoreChangeMetaParamV1) String() string {
+	return dscmpv.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (dataStoreChangeMetaParamV1 *DataStoreChangeMetaParamV1) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the DataStoreChangeMetaParamV1 using the provided indentation level
+func (dscmpv *DataStoreChangeMetaParamV1) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("DataStoreChangeMetaParamV1{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, dataStoreChangeMetaParamV1.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sDataID: %d,\n", indentationValues, dataStoreChangeMetaParamV1.DataID))
-	b.WriteString(fmt.Sprintf("%sModifiesFlag: %d,\n", indentationValues, dataStoreChangeMetaParamV1.ModifiesFlag))
-	b.WriteString(fmt.Sprintf("%sName: %q,\n", indentationValues, dataStoreChangeMetaParamV1.Name))
-
-	if dataStoreChangeMetaParamV1.Permission != nil {
-		b.WriteString(fmt.Sprintf("%sPermission: %s,\n", indentationValues, dataStoreChangeMetaParamV1.Permission.FormatToString(indentationLevel+1)))
-	} else {
-		b.WriteString(fmt.Sprintf("%sPermission: nil,\n", indentationValues))
-	}
-
-	if dataStoreChangeMetaParamV1.DelPermission != nil {
-		b.WriteString(fmt.Sprintf("%sDelPermission: %s,\n", indentationValues, dataStoreChangeMetaParamV1.DelPermission.FormatToString(indentationLevel+1)))
-	} else {
-		b.WriteString(fmt.Sprintf("%sDelPermission: nil,\n", indentationValues))
-	}
-
-	b.WriteString(fmt.Sprintf("%sPeriod: %d,\n", indentationValues, dataStoreChangeMetaParamV1.Period))
-	b.WriteString(fmt.Sprintf("%sMetaBinary: %x,\n", indentationValues, dataStoreChangeMetaParamV1.MetaBinary))
-	b.WriteString(fmt.Sprintf("%sTags: %v,\n", indentationValues, dataStoreChangeMetaParamV1.Tags))
-	b.WriteString(fmt.Sprintf("%sUpdatePassword: %d\n", indentationValues, dataStoreChangeMetaParamV1.UpdatePassword))
+	b.WriteString(fmt.Sprintf("%sDataID: %s,\n", indentationValues, dscmpv.DataID))
+	b.WriteString(fmt.Sprintf("%sModifiesFlag: %s,\n", indentationValues, dscmpv.ModifiesFlag))
+	b.WriteString(fmt.Sprintf("%sName: %s,\n", indentationValues, dscmpv.Name))
+	b.WriteString(fmt.Sprintf("%sPermission: %s,\n", indentationValues, dscmpv.Permission.FormatToString(indentationLevel+1)))
+	b.WriteString(fmt.Sprintf("%sDelPermission: %s,\n", indentationValues, dscmpv.DelPermission.FormatToString(indentationLevel+1)))
+	b.WriteString(fmt.Sprintf("%sPeriod: %s,\n", indentationValues, dscmpv.Period))
+	b.WriteString(fmt.Sprintf("%sMetaBinary: %s,\n", indentationValues, dscmpv.MetaBinary))
+	b.WriteString(fmt.Sprintf("%sTags: %s,\n", indentationValues, dscmpv.Tags))
+	b.WriteString(fmt.Sprintf("%sUpdatePassword: %s,\n", indentationValues, dscmpv.UpdatePassword))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -208,15 +194,19 @@ func (dataStoreChangeMetaParamV1 *DataStoreChangeMetaParamV1) FormatToString(ind
 
 // NewDataStoreChangeMetaParamV1 returns a new DataStoreChangeMetaParamV1
 func NewDataStoreChangeMetaParamV1() *DataStoreChangeMetaParamV1 {
-	return &DataStoreChangeMetaParamV1{
-		DataID:         0,
-		ModifiesFlag:   0,
-		Name:           "",
+	dscmpv := &DataStoreChangeMetaParamV1{
+		DataID:         types.NewPrimitiveU64(0),
+		ModifiesFlag:   types.NewPrimitiveU32(0),
+		Name:           types.NewString(""),
 		Permission:     NewDataStorePermission(),
 		DelPermission:  NewDataStorePermission(),
-		Period:         0,
-		MetaBinary:     make([]byte, 0),
-		Tags:           make([]string, 0),
-		UpdatePassword: 0,
+		Period:         types.NewPrimitiveU16(0),
+		MetaBinary:     types.NewQBuffer(nil),
+		Tags:           types.NewList[*types.String](),
+		UpdatePassword: types.NewPrimitiveU64(0),
 	}
+
+	dscmpv.Tags.Type = types.NewString("")
+
+	return dscmpv
 }

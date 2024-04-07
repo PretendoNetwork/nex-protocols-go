@@ -4,53 +4,58 @@ package protocol
 import (
 	"fmt"
 
-	nex "github.com/PretendoNetwork/nex-go"
-	"github.com/PretendoNetwork/nex-protocols-go/globals"
+	nex "github.com/PretendoNetwork/nex-go/v2"
+	"github.com/PretendoNetwork/nex-go/v2/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
 )
 
-// RegisterLocalURLs sets the RegisterLocalURLs handler function
-func (protocol *Protocol) RegisterLocalURLs(handler func(err error, packet nex.PacketInterface, callID uint32, gid uint32, lstURLs []*nex.StationURL) uint32) {
-	protocol.registerLocalURLsHandler = handler
-}
-
 func (protocol *Protocol) handleRegisterLocalURLs(packet nex.PacketInterface) {
-	var errorCode uint32
+	if protocol.RegisterLocalURLs == nil {
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "MatchMaking::RegisterLocalURLs not implemented")
 
-	if protocol.registerLocalURLsHandler == nil {
-		globals.Logger.Warning("MatchMaking::RegisterLocalURLs not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
+	callID := request.CallID
+	parameters := request.Parameters
+	endpoint := packet.Sender().Endpoint()
+	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	callID := request.CallID()
-	parameters := request.Parameters()
+	gid := types.NewPrimitiveU32(0)
+	lstURLs := types.NewList[*types.StationURL]()
+	lstURLs.Type = types.NewStationURL("")
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+	var err error
 
-	gid, err := parametersStream.ReadUInt32LE()
+	err = gid.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.registerLocalURLsHandler(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), packet, callID, 0, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.RegisterLocalURLs(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	lstURLs, err := parametersStream.ReadListStationURL()
+	err = lstURLs.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.registerLocalURLsHandler(fmt.Errorf("Failed to read lstURLs from parameters. %s", err.Error()), packet, callID, 0, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.RegisterLocalURLs(fmt.Errorf("Failed to read lstURLs from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	errorCode = protocol.registerLocalURLsHandler(nil, packet, callID, gid, lstURLs)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.RegisterLocalURLs(nil, packet, callID, gid, lstURLs)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

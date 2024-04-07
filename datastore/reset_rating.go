@@ -4,54 +4,58 @@ package protocol
 import (
 	"fmt"
 
-	nex "github.com/PretendoNetwork/nex-go"
-	datastore_types "github.com/PretendoNetwork/nex-protocols-go/datastore/types"
-	"github.com/PretendoNetwork/nex-protocols-go/globals"
+	nex "github.com/PretendoNetwork/nex-go/v2"
+	"github.com/PretendoNetwork/nex-go/v2/types"
+	datastore_types "github.com/PretendoNetwork/nex-protocols-go/v2/datastore/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
 )
 
-// ResetRating sets the ResetRating handler function
-func (protocol *Protocol) ResetRating(handler func(err error, packet nex.PacketInterface, callID uint32, target *datastore_types.DataStoreRatingTarget, accessPassword uint64) uint32) {
-	protocol.resetRatingHandler = handler
-}
-
 func (protocol *Protocol) handleResetRating(packet nex.PacketInterface) {
-	var errorCode uint32
+	if protocol.ResetRating == nil {
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "DataStore::ResetRating not implemented")
 
-	if protocol.resetRatingHandler == nil {
-		globals.Logger.Warning("DataStore::ResetRating not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
+	callID := request.CallID
+	parameters := request.Parameters
+	endpoint := packet.Sender().Endpoint()
+	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	callID := request.CallID()
-	parameters := request.Parameters()
+	target := datastore_types.NewDataStoreRatingTarget()
+	accessPassword := types.NewPrimitiveU64(0)
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+	var err error
 
-	target, err := parametersStream.ReadStructure(datastore_types.NewDataStoreRatingTarget())
+	err = target.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.resetRatingHandler(fmt.Errorf("Failed to read target from parameters. %s", err.Error()), packet, callID, nil, 0)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.ResetRating(fmt.Errorf("Failed to read target from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	accessPassword, err := parametersStream.ReadUInt64LE()
+	err = accessPassword.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.resetRatingHandler(fmt.Errorf("Failed to read accessPassword from parameters. %s", err.Error()), packet, callID, nil, 0)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.ResetRating(fmt.Errorf("Failed to read accessPassword from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	errorCode = protocol.resetRatingHandler(nil, packet, callID, target.(*datastore_types.DataStoreRatingTarget), accessPassword)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.ResetRating(nil, packet, callID, target, accessPassword)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

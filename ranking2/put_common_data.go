@@ -4,54 +4,58 @@ package protocol
 import (
 	"fmt"
 
-	nex "github.com/PretendoNetwork/nex-go"
-	"github.com/PretendoNetwork/nex-protocols-go/globals"
-	ranking2_types "github.com/PretendoNetwork/nex-protocols-go/ranking2/types"
+	nex "github.com/PretendoNetwork/nex-go/v2"
+	"github.com/PretendoNetwork/nex-go/v2/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
+	ranking2_types "github.com/PretendoNetwork/nex-protocols-go/v2/ranking2/types"
 )
 
-// PutCommonData sets the PutCommonData handler function
-func (protocol *Protocol) PutCommonData(handler func(err error, packet nex.PacketInterface, callID uint32, commonData *ranking2_types.Ranking2CommonData, nexUniqueID uint64) uint32) {
-	protocol.putCommonDataHandler = handler
-}
-
 func (protocol *Protocol) handlePutCommonData(packet nex.PacketInterface) {
-	var errorCode uint32
+	if protocol.PutCommonData == nil {
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "Ranking2::PutCommonData not implemented")
 
-	if protocol.putCommonDataHandler == nil {
-		globals.Logger.Warning("Ranking2::PutCommonData not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
+	callID := request.CallID
+	parameters := request.Parameters
+	endpoint := packet.Sender().Endpoint()
+	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	callID := request.CallID()
-	parameters := request.Parameters()
+	commonData := ranking2_types.NewRanking2CommonData()
+	nexUniqueID := types.NewPrimitiveU64(0)
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+	var err error
 
-	commonData, err := parametersStream.ReadStructure(ranking2_types.NewRanking2CommonData())
+	err = commonData.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.putCommonDataHandler(fmt.Errorf("Failed to read commonData from parameters. %s", err.Error()), packet, callID, nil, 0)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.PutCommonData(fmt.Errorf("Failed to read commonData from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	nexUniqueID, err := parametersStream.ReadUInt64LE()
+	err = nexUniqueID.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.putCommonDataHandler(fmt.Errorf("Failed to read nexUniqueID from parameters. %s", err.Error()), packet, callID, nil, 0)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.PutCommonData(fmt.Errorf("Failed to read nexUniqueID from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	errorCode = protocol.putCommonDataHandler(nil, packet, callID, commonData.(*ranking2_types.Ranking2CommonData), nexUniqueID)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.PutCommonData(nil, packet, callID, commonData, nexUniqueID)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

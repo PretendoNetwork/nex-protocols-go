@@ -4,44 +4,44 @@ package protocol
 import (
 	"fmt"
 
-	nex "github.com/PretendoNetwork/nex-go"
-	datastore_super_smash_bros_4_types "github.com/PretendoNetwork/nex-protocols-go/datastore/super-smash-bros-4/types"
-	"github.com/PretendoNetwork/nex-protocols-go/globals"
+	nex "github.com/PretendoNetwork/nex-go/v2"
+	datastore_super_smash_bros_4_types "github.com/PretendoNetwork/nex-protocols-go/v2/datastore/super-smash-bros-4/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
 )
 
-// CompletePostReplay sets the CompletePostReplay handler function
-func (protocol *Protocol) CompletePostReplay(handler func(err error, packet nex.PacketInterface, callID uint32, param *datastore_super_smash_bros_4_types.DataStoreCompletePostReplayParam) uint32) {
-	protocol.completePostReplayHandler = handler
-}
-
 func (protocol *Protocol) handleCompletePostReplay(packet nex.PacketInterface) {
-	var errorCode uint32
+	if protocol.CompletePostReplay == nil {
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "DataStoreSuperSmashBros4::CompletePostReplay not implemented")
 
-	if protocol.completePostReplayHandler == nil {
-		globals.Logger.Warning("DataStoreSuperSmashBros4::CompletePostReplay not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
+	callID := request.CallID
+	parameters := request.Parameters
+	endpoint := packet.Sender().Endpoint()
+	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	callID := request.CallID()
-	parameters := request.Parameters()
+	param := datastore_super_smash_bros_4_types.NewDataStoreCompletePostReplayParam()
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
-
-	param, err := parametersStream.ReadStructure(datastore_super_smash_bros_4_types.NewDataStoreCompletePostReplayParam())
+	err := param.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.completePostReplayHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.CompletePostReplay(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	errorCode = protocol.completePostReplayHandler(nil, packet, callID, param.(*datastore_super_smash_bros_4_types.DataStoreCompletePostReplayParam))
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.CompletePostReplay(nil, packet, callID, param)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

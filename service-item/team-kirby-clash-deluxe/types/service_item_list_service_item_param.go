@@ -1,153 +1,158 @@
-// Package types implements all the types used by the Service Item (Team Kirby Clash Deluxe) protocol
+// Package types implements all the types used by the ServiceItem protocol
 package types
 
 import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/v2/types"
 )
 
-// ServiceItemListServiceItemParam holds data for the Service Item (Team Kirby Clash Deluxe) protocol
+// ServiceItemListServiceItemParam is a type within the ServiceItem protocol
 type ServiceItemListServiceItemParam struct {
-	nex.Structure
-	Language           string
-	Offset             uint32
-	Size               uint32
-	IsBalanceAvailable bool
-	UniqueID           uint32
-	Platform           uint8 // * Revision 1
+	types.Structure
+	Language           *types.String
+	Offset             *types.PrimitiveU32
+	Size               *types.PrimitiveU32
+	IsBalanceAvailable *types.PrimitiveBool
+	UniqueID           *types.PrimitiveU32
+	Platform           *types.PrimitiveU8 // * Revision 1
 }
 
-// ExtractFromStream extracts a ServiceItemListServiceItemParam structure from a stream
-func (serviceItemListServiceItemParam *ServiceItemListServiceItemParam) ExtractFromStream(stream *nex.StreamIn) error {
+// WriteTo writes the ServiceItemListServiceItemParam to the given writable
+func (silsip *ServiceItemListServiceItemParam) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
+
+	silsip.Language.WriteTo(writable)
+	silsip.Offset.WriteTo(writable)
+	silsip.Size.WriteTo(writable)
+	silsip.IsBalanceAvailable.WriteTo(writable)
+	silsip.UniqueID.WriteTo(writable)
+
+	if silsip.StructureVersion >= 1 {
+		silsip.Platform.WriteTo(writable)
+	}
+
+	content := contentWritable.Bytes()
+
+	silsip.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
+}
+
+// ExtractFrom extracts the ServiceItemListServiceItemParam from the given readable
+func (silsip *ServiceItemListServiceItemParam) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	serviceItemListServiceItemParam.Language, err = stream.ReadString()
+	err = silsip.ExtractHeaderFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemListServiceItemParam.Language from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract ServiceItemListServiceItemParam header. %s", err.Error())
 	}
 
-	serviceItemListServiceItemParam.Offset, err = stream.ReadUInt32LE()
+	err = silsip.Language.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemListServiceItemParam.Offset from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract ServiceItemListServiceItemParam.Language. %s", err.Error())
 	}
 
-	serviceItemListServiceItemParam.Size, err = stream.ReadUInt32LE()
+	err = silsip.Offset.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemListServiceItemParam.Size from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract ServiceItemListServiceItemParam.Offset. %s", err.Error())
 	}
 
-	serviceItemListServiceItemParam.IsBalanceAvailable, err = stream.ReadBool()
+	err = silsip.Size.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemListServiceItemParam.IsBalanceAvailable from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract ServiceItemListServiceItemParam.Size. %s", err.Error())
 	}
 
-	serviceItemListServiceItemParam.UniqueID, err = stream.ReadUInt32LE()
+	err = silsip.IsBalanceAvailable.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemListServiceItemParam.UniqueID from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract ServiceItemListServiceItemParam.IsBalanceAvailable. %s", err.Error())
 	}
 
-	if serviceItemListServiceItemParam.StructureVersion() >= 1 {
-		serviceItemListServiceItemParam.Platform, err = stream.ReadUInt8()
+	err = silsip.UniqueID.ExtractFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract ServiceItemListServiceItemParam.UniqueID. %s", err.Error())
+	}
+
+	if silsip.StructureVersion >= 1 {
+		err = silsip.Platform.ExtractFrom(readable)
 		if err != nil {
-			return fmt.Errorf("Failed to extract ServiceItemListServiceItemParam.Platform from stream. %s", err.Error())
+			return fmt.Errorf("Failed to extract ServiceItemListServiceItemParam.Platform. %s", err.Error())
 		}
 	}
 
 	return nil
 }
 
-// Bytes encodes the ServiceItemListServiceItemParam and returns a byte array
-func (serviceItemListServiceItemParam *ServiceItemListServiceItemParam) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteString(serviceItemListServiceItemParam.Language)
-	stream.WriteUInt32LE(serviceItemListServiceItemParam.Offset)
-	stream.WriteUInt32LE(serviceItemListServiceItemParam.Size)
-	stream.WriteBool(serviceItemListServiceItemParam.IsBalanceAvailable)
-	stream.WriteUInt32LE(serviceItemListServiceItemParam.UniqueID)
-
-	if serviceItemListServiceItemParam.StructureVersion() >= 1 {
-		stream.WriteUInt8(serviceItemListServiceItemParam.Platform)
-	}
-
-	return stream.Bytes()
-}
-
 // Copy returns a new copied instance of ServiceItemListServiceItemParam
-func (serviceItemListServiceItemParam *ServiceItemListServiceItemParam) Copy() nex.StructureInterface {
+func (silsip *ServiceItemListServiceItemParam) Copy() types.RVType {
 	copied := NewServiceItemListServiceItemParam()
 
-	copied.SetStructureVersion(serviceItemListServiceItemParam.StructureVersion())
-
-	copied.Language = serviceItemListServiceItemParam.Language
-	copied.Offset = serviceItemListServiceItemParam.Offset
-	copied.Size = serviceItemListServiceItemParam.Size
-	copied.IsBalanceAvailable = serviceItemListServiceItemParam.IsBalanceAvailable
-	copied.UniqueID = serviceItemListServiceItemParam.UniqueID
-	copied.Platform = serviceItemListServiceItemParam.Platform
+	copied.StructureVersion = silsip.StructureVersion
+	copied.Language = silsip.Language.Copy().(*types.String)
+	copied.Offset = silsip.Offset.Copy().(*types.PrimitiveU32)
+	copied.Size = silsip.Size.Copy().(*types.PrimitiveU32)
+	copied.IsBalanceAvailable = silsip.IsBalanceAvailable.Copy().(*types.PrimitiveBool)
+	copied.UniqueID = silsip.UniqueID.Copy().(*types.PrimitiveU32)
+	copied.Platform = silsip.Platform.Copy().(*types.PrimitiveU8)
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (serviceItemListServiceItemParam *ServiceItemListServiceItemParam) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*ServiceItemListServiceItemParam)
-
-	if serviceItemListServiceItemParam.StructureVersion() != other.StructureVersion() {
+// Equals checks if the given ServiceItemListServiceItemParam contains the same data as the current ServiceItemListServiceItemParam
+func (silsip *ServiceItemListServiceItemParam) Equals(o types.RVType) bool {
+	if _, ok := o.(*ServiceItemListServiceItemParam); !ok {
 		return false
 	}
 
-	if serviceItemListServiceItemParam.Language != other.Language {
+	other := o.(*ServiceItemListServiceItemParam)
+
+	if silsip.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if serviceItemListServiceItemParam.Offset != other.Offset {
+	if !silsip.Language.Equals(other.Language) {
 		return false
 	}
 
-	if serviceItemListServiceItemParam.Size != other.Size {
+	if !silsip.Offset.Equals(other.Offset) {
 		return false
 	}
 
-	if serviceItemListServiceItemParam.IsBalanceAvailable != other.IsBalanceAvailable {
+	if !silsip.Size.Equals(other.Size) {
 		return false
 	}
 
-	if serviceItemListServiceItemParam.UniqueID != other.UniqueID {
+	if !silsip.IsBalanceAvailable.Equals(other.IsBalanceAvailable) {
 		return false
 	}
 
-	if serviceItemListServiceItemParam.Platform != other.Platform {
+	if !silsip.UniqueID.Equals(other.UniqueID) {
 		return false
 	}
 
-	return true
+	return silsip.Platform.Equals(other.Platform)
 }
 
-// String returns a string representation of the struct
-func (serviceItemListServiceItemParam *ServiceItemListServiceItemParam) String() string {
-	return serviceItemListServiceItemParam.FormatToString(0)
+// String returns the string representation of the ServiceItemListServiceItemParam
+func (silsip *ServiceItemListServiceItemParam) String() string {
+	return silsip.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (serviceItemListServiceItemParam *ServiceItemListServiceItemParam) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the ServiceItemListServiceItemParam using the provided indentation level
+func (silsip *ServiceItemListServiceItemParam) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("ServiceItemListServiceItemParam{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, serviceItemListServiceItemParam.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sLanguage: %q,\n", indentationValues, serviceItemListServiceItemParam.Language))
-	b.WriteString(fmt.Sprintf("%sOffset: %d,\n", indentationValues, serviceItemListServiceItemParam.Offset))
-	b.WriteString(fmt.Sprintf("%sSize: %d,\n", indentationValues, serviceItemListServiceItemParam.Size))
-	b.WriteString(fmt.Sprintf("%sIsBalanceAvailable: %t,\n", indentationValues, serviceItemListServiceItemParam.IsBalanceAvailable))
-	b.WriteString(fmt.Sprintf("%sUniqueID: %d,\n", indentationValues, serviceItemListServiceItemParam.UniqueID))
-
-	if serviceItemListServiceItemParam.StructureVersion() >= 1 {
-		b.WriteString(fmt.Sprintf("%sPlatform: %d,\n", indentationValues, serviceItemListServiceItemParam.Platform))
-	}
-
+	b.WriteString(fmt.Sprintf("%sLanguage: %s,\n", indentationValues, silsip.Language))
+	b.WriteString(fmt.Sprintf("%sOffset: %s,\n", indentationValues, silsip.Offset))
+	b.WriteString(fmt.Sprintf("%sSize: %s,\n", indentationValues, silsip.Size))
+	b.WriteString(fmt.Sprintf("%sIsBalanceAvailable: %s,\n", indentationValues, silsip.IsBalanceAvailable))
+	b.WriteString(fmt.Sprintf("%sUniqueID: %s,\n", indentationValues, silsip.UniqueID))
+	b.WriteString(fmt.Sprintf("%sPlatform: %s,\n", indentationValues, silsip.Platform))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -155,5 +160,14 @@ func (serviceItemListServiceItemParam *ServiceItemListServiceItemParam) FormatTo
 
 // NewServiceItemListServiceItemParam returns a new ServiceItemListServiceItemParam
 func NewServiceItemListServiceItemParam() *ServiceItemListServiceItemParam {
-	return &ServiceItemListServiceItemParam{}
+	silsip := &ServiceItemListServiceItemParam{
+		Language:           types.NewString(""),
+		Offset:             types.NewPrimitiveU32(0),
+		Size:               types.NewPrimitiveU32(0),
+		IsBalanceAvailable: types.NewPrimitiveBool(false),
+		UniqueID:           types.NewPrimitiveU32(0),
+		Platform:           types.NewPrimitiveU8(0),
+	}
+
+	return silsip
 }

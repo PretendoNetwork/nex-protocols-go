@@ -1,169 +1,166 @@
-// Package types implements all the types used by the Service Item (Wii Sports Club) protocol
+// Package types implements all the types used by the ServiceItem protocol
 package types
 
 import (
-	"bytes"
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/v2/types"
 )
 
-// ServiceItemNotice holds data for the Service Item (Wii Sports Club) protocol
+// ServiceItemNotice is a type within the ServiceItem protocol
 type ServiceItemNotice struct {
-	nex.Structure
-	ScheduleID   uint64
-	ScheduleType uint32
-	ParamInt     int32
-	ParamString  string
-	ParamBinary  []byte
-	TimeBegin    *nex.DateTime
-	TimeEnd      *nex.DateTime
+	types.Structure
+	ScheduleID   *types.PrimitiveU64
+	ScheduleType *types.PrimitiveU32
+	ParamInt     *types.PrimitiveS32
+	ParamString  *types.String
+	ParamBinary  *types.QBuffer
+	TimeBegin    *types.DateTime
+	TimeEnd      *types.DateTime
 }
 
-// ExtractFromStream extracts a ServiceItemNotice structure from a stream
-func (serviceItemNotice *ServiceItemNotice) ExtractFromStream(stream *nex.StreamIn) error {
+// WriteTo writes the ServiceItemNotice to the given writable
+func (sin *ServiceItemNotice) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
+
+	sin.ScheduleID.WriteTo(writable)
+	sin.ScheduleType.WriteTo(writable)
+	sin.ParamInt.WriteTo(writable)
+	sin.ParamString.WriteTo(writable)
+	sin.ParamBinary.WriteTo(writable)
+	sin.TimeBegin.WriteTo(writable)
+	sin.TimeEnd.WriteTo(writable)
+
+	content := contentWritable.Bytes()
+
+	sin.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
+}
+
+// ExtractFrom extracts the ServiceItemNotice from the given readable
+func (sin *ServiceItemNotice) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	serviceItemNotice.ScheduleID, err = stream.ReadUInt64LE()
+	err = sin.ExtractHeaderFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemNotice.ScheduleID from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract ServiceItemNotice header. %s", err.Error())
 	}
 
-	serviceItemNotice.ScheduleType, err = stream.ReadUInt32LE()
+	err = sin.ScheduleID.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemNotice.ScheduleType from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract ServiceItemNotice.ScheduleID. %s", err.Error())
 	}
 
-	serviceItemNotice.ParamInt, err = stream.ReadInt32LE()
+	err = sin.ScheduleType.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemNotice.ParamInt from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract ServiceItemNotice.ScheduleType. %s", err.Error())
 	}
 
-	serviceItemNotice.ParamString, err = stream.ReadString()
+	err = sin.ParamInt.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemNotice.ParamString from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract ServiceItemNotice.ParamInt. %s", err.Error())
 	}
 
-	serviceItemNotice.ParamBinary, err = stream.ReadQBuffer()
+	err = sin.ParamString.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemNotice.ParamBinary from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract ServiceItemNotice.ParamString. %s", err.Error())
 	}
 
-	serviceItemNotice.TimeBegin, err = stream.ReadDateTime()
+	err = sin.ParamBinary.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemNotice.TimeBegin from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract ServiceItemNotice.ParamBinary. %s", err.Error())
 	}
 
-	serviceItemNotice.TimeEnd, err = stream.ReadDateTime()
+	err = sin.TimeBegin.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemNotice.TimeEnd from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract ServiceItemNotice.TimeBegin. %s", err.Error())
+	}
+
+	err = sin.TimeEnd.ExtractFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract ServiceItemNotice.TimeEnd. %s", err.Error())
 	}
 
 	return nil
 }
 
-// Bytes encodes the ServiceItemNotice and returns a byte array
-func (serviceItemNotice *ServiceItemNotice) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt64LE(serviceItemNotice.ScheduleID)
-	stream.WriteUInt32LE(serviceItemNotice.ScheduleType)
-	stream.WriteInt32LE(serviceItemNotice.ParamInt)
-	stream.WriteString(serviceItemNotice.ParamString)
-	stream.WriteQBuffer(serviceItemNotice.ParamBinary)
-	stream.WriteDateTime(serviceItemNotice.TimeBegin)
-	stream.WriteDateTime(serviceItemNotice.TimeEnd)
-
-	return stream.Bytes()
-}
-
 // Copy returns a new copied instance of ServiceItemNotice
-func (serviceItemNotice *ServiceItemNotice) Copy() nex.StructureInterface {
+func (sin *ServiceItemNotice) Copy() types.RVType {
 	copied := NewServiceItemNotice()
 
-	copied.SetStructureVersion(serviceItemNotice.StructureVersion())
-
-	copied.ScheduleID = serviceItemNotice.ScheduleID
-	copied.ScheduleType = serviceItemNotice.ScheduleType
-	copied.ParamInt = serviceItemNotice.ParamInt
-	copied.ParamString = serviceItemNotice.ParamString
-	copied.ParamBinary = serviceItemNotice.ParamBinary
-	copied.TimeBegin = serviceItemNotice.TimeBegin.Copy()
-	copied.TimeEnd = serviceItemNotice.TimeEnd.Copy()
+	copied.StructureVersion = sin.StructureVersion
+	copied.ScheduleID = sin.ScheduleID.Copy().(*types.PrimitiveU64)
+	copied.ScheduleType = sin.ScheduleType.Copy().(*types.PrimitiveU32)
+	copied.ParamInt = sin.ParamInt.Copy().(*types.PrimitiveS32)
+	copied.ParamString = sin.ParamString.Copy().(*types.String)
+	copied.ParamBinary = sin.ParamBinary.Copy().(*types.QBuffer)
+	copied.TimeBegin = sin.TimeBegin.Copy().(*types.DateTime)
+	copied.TimeEnd = sin.TimeEnd.Copy().(*types.DateTime)
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (serviceItemNotice *ServiceItemNotice) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*ServiceItemNotice)
-
-	if serviceItemNotice.StructureVersion() != other.StructureVersion() {
+// Equals checks if the given ServiceItemNotice contains the same data as the current ServiceItemNotice
+func (sin *ServiceItemNotice) Equals(o types.RVType) bool {
+	if _, ok := o.(*ServiceItemNotice); !ok {
 		return false
 	}
 
-	if serviceItemNotice.ScheduleID != other.ScheduleID {
+	other := o.(*ServiceItemNotice)
+
+	if sin.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if serviceItemNotice.ScheduleType != other.ScheduleType {
+	if !sin.ScheduleID.Equals(other.ScheduleID) {
 		return false
 	}
 
-	if serviceItemNotice.ParamInt != other.ParamInt {
+	if !sin.ScheduleType.Equals(other.ScheduleType) {
 		return false
 	}
 
-	if serviceItemNotice.ParamString != other.ParamString {
+	if !sin.ParamInt.Equals(other.ParamInt) {
 		return false
 	}
 
-	if !bytes.Equal(serviceItemNotice.ParamBinary, other.ParamBinary) {
+	if !sin.ParamString.Equals(other.ParamString) {
 		return false
 	}
 
-	if !serviceItemNotice.TimeBegin.Equals(other.TimeBegin) {
+	if !sin.ParamBinary.Equals(other.ParamBinary) {
 		return false
 	}
 
-	if !serviceItemNotice.TimeEnd.Equals(other.TimeEnd) {
+	if !sin.TimeBegin.Equals(other.TimeBegin) {
 		return false
 	}
 
-	return true
+	return sin.TimeEnd.Equals(other.TimeEnd)
 }
 
-// String returns a string representation of the struct
-func (serviceItemNotice *ServiceItemNotice) String() string {
-	return serviceItemNotice.FormatToString(0)
+// String returns the string representation of the ServiceItemNotice
+func (sin *ServiceItemNotice) String() string {
+	return sin.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (serviceItemNotice *ServiceItemNotice) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the ServiceItemNotice using the provided indentation level
+func (sin *ServiceItemNotice) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("ServiceItemNotice{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, serviceItemNotice.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sScheduleID: %d,\n", indentationValues, serviceItemNotice.ScheduleID))
-	b.WriteString(fmt.Sprintf("%sScheduleType: %d,\n", indentationValues, serviceItemNotice.ScheduleType))
-	b.WriteString(fmt.Sprintf("%sParamInt: %d,\n", indentationValues, serviceItemNotice.ParamInt))
-	b.WriteString(fmt.Sprintf("%sParamString: %q,\n", indentationValues, serviceItemNotice.ParamString))
-	b.WriteString(fmt.Sprintf("%sParamBinary: %x,\n", indentationValues, serviceItemNotice.ParamBinary))
-
-	if serviceItemNotice.TimeBegin != nil {
-		b.WriteString(fmt.Sprintf("%sTimeBegin: %s\n", indentationValues, serviceItemNotice.TimeBegin.FormatToString(indentationLevel+1)))
-	} else {
-		b.WriteString(fmt.Sprintf("%sTimeBegin: nil\n", indentationValues))
-	}
-
-	if serviceItemNotice.TimeEnd != nil {
-		b.WriteString(fmt.Sprintf("%sTimeEnd: %s\n", indentationValues, serviceItemNotice.TimeEnd.FormatToString(indentationLevel+1)))
-	} else {
-		b.WriteString(fmt.Sprintf("%sTimeEnd: nil\n", indentationValues))
-	}
-
+	b.WriteString(fmt.Sprintf("%sScheduleID: %s,\n", indentationValues, sin.ScheduleID))
+	b.WriteString(fmt.Sprintf("%sScheduleType: %s,\n", indentationValues, sin.ScheduleType))
+	b.WriteString(fmt.Sprintf("%sParamInt: %s,\n", indentationValues, sin.ParamInt))
+	b.WriteString(fmt.Sprintf("%sParamString: %s,\n", indentationValues, sin.ParamString))
+	b.WriteString(fmt.Sprintf("%sParamBinary: %s,\n", indentationValues, sin.ParamBinary))
+	b.WriteString(fmt.Sprintf("%sTimeBegin: %s,\n", indentationValues, sin.TimeBegin.FormatToString(indentationLevel+1)))
+	b.WriteString(fmt.Sprintf("%sTimeEnd: %s,\n", indentationValues, sin.TimeEnd.FormatToString(indentationLevel+1)))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -171,5 +168,15 @@ func (serviceItemNotice *ServiceItemNotice) FormatToString(indentationLevel int)
 
 // NewServiceItemNotice returns a new ServiceItemNotice
 func NewServiceItemNotice() *ServiceItemNotice {
-	return &ServiceItemNotice{}
+	sin := &ServiceItemNotice{
+		ScheduleID:   types.NewPrimitiveU64(0),
+		ScheduleType: types.NewPrimitiveU32(0),
+		ParamInt:     types.NewPrimitiveS32(0),
+		ParamString:  types.NewString(""),
+		ParamBinary:  types.NewQBuffer(nil),
+		TimeBegin:    types.NewDateTime(0),
+		TimeEnd:      types.NewDateTime(0),
+	}
+
+	return sin
 }

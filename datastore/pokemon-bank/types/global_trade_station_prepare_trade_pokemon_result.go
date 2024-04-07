@@ -1,107 +1,101 @@
-// Package types implements all the types used by the DataStore (Pokemon Bank) protocol
+// Package types implements all the types used by the DataStore protocol
 package types
 
 import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/v2/types"
 )
 
-// GlobalTradeStationPrepareTradePokemonResult holds data for the DataStore (Pokemon Bank) protocol
+// GlobalTradeStationPrepareTradePokemonResult is a type within the DataStore protocol
 type GlobalTradeStationPrepareTradePokemonResult struct {
-	nex.Structure
+	types.Structure
 	Result          *GlobalTradeStationDownloadPokemonResult
 	PrepareTradeKey *GlobalTradeStationRecordKey
 }
 
-// ExtractFromStream extracts a GlobalTradeStationPrepareTradePokemonResult structure from a stream
-func (globalTradeStationPrepareTradePokemonResult *GlobalTradeStationPrepareTradePokemonResult) ExtractFromStream(stream *nex.StreamIn) error {
+// WriteTo writes the GlobalTradeStationPrepareTradePokemonResult to the given writable
+func (gtsptpr *GlobalTradeStationPrepareTradePokemonResult) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
+
+	gtsptpr.Result.WriteTo(writable)
+	gtsptpr.PrepareTradeKey.WriteTo(writable)
+
+	content := contentWritable.Bytes()
+
+	gtsptpr.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
+}
+
+// ExtractFrom extracts the GlobalTradeStationPrepareTradePokemonResult from the given readable
+func (gtsptpr *GlobalTradeStationPrepareTradePokemonResult) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	result, err := stream.ReadStructure(NewGlobalTradeStationDownloadPokemonResult())
+	err = gtsptpr.ExtractHeaderFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract GlobalTradeStationPrepareTradePokemonResult.Result from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract GlobalTradeStationPrepareTradePokemonResult header. %s", err.Error())
 	}
 
-	globalTradeStationPrepareTradePokemonResult.Result = result.(*GlobalTradeStationDownloadPokemonResult)
-
-	prepareTradeKey, err := stream.ReadStructure(NewGlobalTradeStationRecordKey())
+	err = gtsptpr.Result.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract GlobalTradeStationPrepareTradePokemonResult.PrepareTradeKey from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract GlobalTradeStationPrepareTradePokemonResult.Result. %s", err.Error())
 	}
 
-	globalTradeStationPrepareTradePokemonResult.PrepareTradeKey = prepareTradeKey.(*GlobalTradeStationRecordKey)
+	err = gtsptpr.PrepareTradeKey.ExtractFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract GlobalTradeStationPrepareTradePokemonResult.PrepareTradeKey. %s", err.Error())
+	}
 
 	return nil
 }
 
-// Bytes encodes the GlobalTradeStationPrepareTradePokemonResult and returns a byte array
-func (globalTradeStationPrepareTradePokemonResult *GlobalTradeStationPrepareTradePokemonResult) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteStructure(globalTradeStationPrepareTradePokemonResult.Result)
-	stream.WriteStructure(globalTradeStationPrepareTradePokemonResult.PrepareTradeKey)
-
-	return stream.Bytes()
-}
-
 // Copy returns a new copied instance of GlobalTradeStationPrepareTradePokemonResult
-func (globalTradeStationPrepareTradePokemonResult *GlobalTradeStationPrepareTradePokemonResult) Copy() nex.StructureInterface {
+func (gtsptpr *GlobalTradeStationPrepareTradePokemonResult) Copy() types.RVType {
 	copied := NewGlobalTradeStationPrepareTradePokemonResult()
 
-	copied.SetStructureVersion(globalTradeStationPrepareTradePokemonResult.StructureVersion())
-
-	copied.Result = globalTradeStationPrepareTradePokemonResult.Result.Copy().(*GlobalTradeStationDownloadPokemonResult)
-	copied.PrepareTradeKey = globalTradeStationPrepareTradePokemonResult.PrepareTradeKey.Copy().(*GlobalTradeStationRecordKey)
+	copied.StructureVersion = gtsptpr.StructureVersion
+	copied.Result = gtsptpr.Result.Copy().(*GlobalTradeStationDownloadPokemonResult)
+	copied.PrepareTradeKey = gtsptpr.PrepareTradeKey.Copy().(*GlobalTradeStationRecordKey)
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (globalTradeStationPrepareTradePokemonResult *GlobalTradeStationPrepareTradePokemonResult) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*GlobalTradeStationPrepareTradePokemonResult)
-
-	if globalTradeStationPrepareTradePokemonResult.StructureVersion() != other.StructureVersion() {
+// Equals checks if the given GlobalTradeStationPrepareTradePokemonResult contains the same data as the current GlobalTradeStationPrepareTradePokemonResult
+func (gtsptpr *GlobalTradeStationPrepareTradePokemonResult) Equals(o types.RVType) bool {
+	if _, ok := o.(*GlobalTradeStationPrepareTradePokemonResult); !ok {
 		return false
 	}
 
-	if !globalTradeStationPrepareTradePokemonResult.Result.Equals(other.Result) {
+	other := o.(*GlobalTradeStationPrepareTradePokemonResult)
+
+	if gtsptpr.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if !globalTradeStationPrepareTradePokemonResult.PrepareTradeKey.Equals(other.PrepareTradeKey) {
+	if !gtsptpr.Result.Equals(other.Result) {
 		return false
 	}
 
-	return true
+	return gtsptpr.PrepareTradeKey.Equals(other.PrepareTradeKey)
 }
 
-// String returns a string representation of the struct
-func (globalTradeStationPrepareTradePokemonResult *GlobalTradeStationPrepareTradePokemonResult) String() string {
-	return globalTradeStationPrepareTradePokemonResult.FormatToString(0)
+// String returns the string representation of the GlobalTradeStationPrepareTradePokemonResult
+func (gtsptpr *GlobalTradeStationPrepareTradePokemonResult) String() string {
+	return gtsptpr.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (globalTradeStationPrepareTradePokemonResult *GlobalTradeStationPrepareTradePokemonResult) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the GlobalTradeStationPrepareTradePokemonResult using the provided indentation level
+func (gtsptpr *GlobalTradeStationPrepareTradePokemonResult) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("GlobalTradeStationPrepareTradePokemonResult{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, globalTradeStationPrepareTradePokemonResult.StructureVersion()))
-
-	if globalTradeStationPrepareTradePokemonResult.Result != nil {
-		b.WriteString(fmt.Sprintf("%sResult: %s\n", indentationValues, globalTradeStationPrepareTradePokemonResult.Result.FormatToString(indentationLevel+1)))
-	} else {
-		b.WriteString(fmt.Sprintf("%sResult: nil\n", indentationValues))
-	}
-
-	if globalTradeStationPrepareTradePokemonResult.PrepareTradeKey != nil {
-		b.WriteString(fmt.Sprintf("%sPrepareTradeKey: %s\n", indentationValues, globalTradeStationPrepareTradePokemonResult.PrepareTradeKey.FormatToString(indentationLevel+1)))
-	} else {
-		b.WriteString(fmt.Sprintf("%sPrepareTradeKey: nil\n", indentationValues))
-	}
-
+	b.WriteString(fmt.Sprintf("%sResult: %s,\n", indentationValues, gtsptpr.Result.FormatToString(indentationLevel+1)))
+	b.WriteString(fmt.Sprintf("%sPrepareTradeKey: %s,\n", indentationValues, gtsptpr.PrepareTradeKey.FormatToString(indentationLevel+1)))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -109,5 +103,10 @@ func (globalTradeStationPrepareTradePokemonResult *GlobalTradeStationPrepareTrad
 
 // NewGlobalTradeStationPrepareTradePokemonResult returns a new GlobalTradeStationPrepareTradePokemonResult
 func NewGlobalTradeStationPrepareTradePokemonResult() *GlobalTradeStationPrepareTradePokemonResult {
-	return &GlobalTradeStationPrepareTradePokemonResult{}
+	gtsptpr := &GlobalTradeStationPrepareTradePokemonResult{
+		Result:          NewGlobalTradeStationDownloadPokemonResult(),
+		PrepareTradeKey: NewGlobalTradeStationRecordKey(),
+	}
+
+	return gtsptpr
 }

@@ -4,43 +4,46 @@ package protocol
 import (
 	"fmt"
 
-	nex "github.com/PretendoNetwork/nex-go"
-	"github.com/PretendoNetwork/nex-protocols-go/globals"
+	nex "github.com/PretendoNetwork/nex-go/v2"
+	"github.com/PretendoNetwork/nex-go/v2/types"
+	friends_3ds_types "github.com/PretendoNetwork/nex-protocols-go/v2/friends-3ds/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
 )
 
-// GetFriendMii sets the GetFriendMii handler function
-func (protocol *Protocol) GetFriendMii(handler func(err error, packet nex.PacketInterface, callID uint32, pidList []uint32) uint32) {
-	protocol.getFriendMiiHandler = handler
-}
-
 func (protocol *Protocol) handleGetFriendMii(packet nex.PacketInterface) {
-	var errorCode uint32
+	if protocol.GetFriendMii == nil {
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "Friends3DS::GetFriendMii not implemented")
 
-	if protocol.getFriendMiiHandler == nil {
-		globals.Logger.Warning("Friends3DS::GetFriendMii not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
+	callID := request.CallID
+	parameters := request.Parameters
+	endpoint := packet.Sender().Endpoint()
+	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	callID := request.CallID()
-	parameters := request.Parameters()
+	friends := types.NewList[*friends_3ds_types.FriendInfo]()
+	friends.Type = friends_3ds_types.NewFriendInfo()
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
-
-	pidList, err := parametersStream.ReadListUInt32LE()
+	err := friends.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.getFriendMiiHandler(fmt.Errorf("Failed to read pidList from parameters. %s", err.Error()), packet, callID, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.GetFriendMii(fmt.Errorf("Failed to read friends from parameters. %s", err.Error()), packet, callID, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	errorCode = protocol.getFriendMiiHandler(nil, packet, callID, pidList)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.GetFriendMii(nil, packet, callID, friends)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

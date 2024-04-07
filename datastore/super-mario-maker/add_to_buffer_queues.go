@@ -4,54 +4,60 @@ package protocol
 import (
 	"fmt"
 
-	nex "github.com/PretendoNetwork/nex-go"
-	datastore_super_mario_maker_types "github.com/PretendoNetwork/nex-protocols-go/datastore/super-mario-maker/types"
-	"github.com/PretendoNetwork/nex-protocols-go/globals"
+	nex "github.com/PretendoNetwork/nex-go/v2"
+	"github.com/PretendoNetwork/nex-go/v2/types"
+	datastore_super_mario_maker_types "github.com/PretendoNetwork/nex-protocols-go/v2/datastore/super-mario-maker/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
 )
 
-// AddToBufferQueues sets the AddToBufferQueues handler function
-func (protocol *Protocol) AddToBufferQueues(handler func(err error, packet nex.PacketInterface, callID uint32, params []*datastore_super_mario_maker_types.BufferQueueParam, buffers [][]byte) uint32) {
-	protocol.addToBufferQueuesHandler = handler
-}
-
 func (protocol *Protocol) handleAddToBufferQueues(packet nex.PacketInterface) {
-	var errorCode uint32
+	if protocol.AddToBufferQueues == nil {
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "DataStoreSuperMarioMaker::AddToBufferQueues not implemented")
 
-	if protocol.addToBufferQueuesHandler == nil {
-		globals.Logger.Warning("DataStoreSuperMarioMaker::AddToBufferQueues not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
+	callID := request.CallID
+	parameters := request.Parameters
+	endpoint := packet.Sender().Endpoint()
+	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	callID := request.CallID()
-	parameters := request.Parameters()
+	params := types.NewList[*datastore_super_mario_maker_types.BufferQueueParam]()
+	params.Type = datastore_super_mario_maker_types.NewBufferQueueParam()
+	buffers := types.NewList[*types.QBuffer]()
+	buffers.Type = types.NewQBuffer(nil)
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+	var err error
 
-	params, err := parametersStream.ReadListStructure(datastore_super_mario_maker_types.NewBufferQueueParam())
+	err = params.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.addToBufferQueuesHandler(fmt.Errorf("Failed to read params from parameters. %s", err.Error()), packet, callID, nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.AddToBufferQueues(fmt.Errorf("Failed to read params from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	buffers, err := parametersStream.ReadListQBuffer()
+	err = buffers.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.addToBufferQueuesHandler(fmt.Errorf("Failed to read buffers from parameters. %s", err.Error()), packet, callID, nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.AddToBufferQueues(fmt.Errorf("Failed to read buffers from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	errorCode = protocol.addToBufferQueuesHandler(nil, packet, callID, params.([]*datastore_super_mario_maker_types.BufferQueueParam), buffers)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.AddToBufferQueues(nil, packet, callID, params, buffers)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

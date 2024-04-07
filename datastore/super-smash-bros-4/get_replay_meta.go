@@ -4,44 +4,44 @@ package protocol
 import (
 	"fmt"
 
-	nex "github.com/PretendoNetwork/nex-go"
-	datastore_super_smash_bros_4_types "github.com/PretendoNetwork/nex-protocols-go/datastore/super-smash-bros-4/types"
-	"github.com/PretendoNetwork/nex-protocols-go/globals"
+	nex "github.com/PretendoNetwork/nex-go/v2"
+	datastore_super_smash_bros_4_types "github.com/PretendoNetwork/nex-protocols-go/v2/datastore/super-smash-bros-4/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
 )
 
-// GetReplayMeta sets the GetReplayMeta handler function
-func (protocol *Protocol) GetReplayMeta(handler func(err error, packet nex.PacketInterface, callID uint32, param *datastore_super_smash_bros_4_types.DataStoreGetReplayMetaParam) uint32) {
-	protocol.getReplayMetaHandler = handler
-}
-
 func (protocol *Protocol) handleGetReplayMeta(packet nex.PacketInterface) {
-	var errorCode uint32
+	if protocol.GetReplayMeta == nil {
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "DataStoreSuperSmashBros4::GetReplayMeta not implemented")
 
-	if protocol.getReplayMetaHandler == nil {
-		globals.Logger.Warning("DataStoreSuperSmashBros4::GetReplayMeta not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
+	callID := request.CallID
+	parameters := request.Parameters
+	endpoint := packet.Sender().Endpoint()
+	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	callID := request.CallID()
-	parameters := request.Parameters()
+	param := datastore_super_smash_bros_4_types.NewDataStoreGetReplayMetaParam()
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
-
-	param, err := parametersStream.ReadStructure(datastore_super_smash_bros_4_types.NewDataStoreGetReplayMetaParam())
+	err := param.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.getReplayMetaHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.GetReplayMeta(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	errorCode = protocol.getReplayMetaHandler(nil, packet, callID, param.(*datastore_super_smash_bros_4_types.DataStoreGetReplayMetaParam))
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.GetReplayMeta(nil, packet, callID, param)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

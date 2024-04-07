@@ -1,47 +1,64 @@
-// Package types implements all the types used by the Friends WiiU protocol
+// Package types implements all the types used by the FriendsWiiU protocol
 package types
 
 import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/v2/types"
 )
 
-// NNAInfo contains information about a Nintendo Network Account
+// NNAInfo is a type within the FriendsWiiU protocol
 type NNAInfo struct {
-	nex.Structure
-	*nex.Data
+	types.Structure
+	*types.Data
 	PrincipalBasicInfo *PrincipalBasicInfo
-	Unknown1           uint8
-	Unknown2           uint8
+	Unknown1           *types.PrimitiveU8
+	Unknown2           *types.PrimitiveU8
 }
 
-// Bytes encodes the NNAInfo and returns a byte array
-func (nnaInfo *NNAInfo) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteStructure(nnaInfo.PrincipalBasicInfo)
-	stream.WriteUInt8(nnaInfo.Unknown1)
-	stream.WriteUInt8(nnaInfo.Unknown2)
+// WriteTo writes the NNAInfo to the given writable
+func (nnai *NNAInfo) WriteTo(writable types.Writable) {
+	nnai.Data.WriteTo(writable)
 
-	return stream.Bytes()
+	contentWritable := writable.CopyNew()
+
+	nnai.PrincipalBasicInfo.WriteTo(writable)
+	nnai.Unknown1.WriteTo(writable)
+	nnai.Unknown2.WriteTo(writable)
+
+	content := contentWritable.Bytes()
+
+	nnai.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
-// ExtractFromStream extracts a NNAInfo structure from a stream
-func (nnaInfo *NNAInfo) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the NNAInfo from the given readable
+func (nnai *NNAInfo) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	principalBasicInfo, err := stream.ReadStructure(NewPrincipalBasicInfo())
+	err = nnai.Data.ExtractFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract NNAInfo.Data. %s", err.Error())
+	}
+
+	err = nnai.ExtractHeaderFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract NNAInfo header. %s", err.Error())
+	}
+
+	err = nnai.PrincipalBasicInfo.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract NNAInfo.PrincipalBasicInfo. %s", err.Error())
 	}
 
-	nnaInfo.PrincipalBasicInfo = principalBasicInfo.(*PrincipalBasicInfo)
-	nnaInfo.Unknown1, err = stream.ReadUInt8()
+	err = nnai.Unknown1.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract NNAInfo.Unknown1. %s", err.Error())
 	}
 
-	nnaInfo.Unknown2, err = stream.ReadUInt8()
+	err = nnai.Unknown2.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract NNAInfo.Unknown2. %s", err.Error())
 	}
@@ -50,76 +67,62 @@ func (nnaInfo *NNAInfo) ExtractFromStream(stream *nex.StreamIn) error {
 }
 
 // Copy returns a new copied instance of NNAInfo
-func (nnaInfo *NNAInfo) Copy() nex.StructureInterface {
+func (nnai *NNAInfo) Copy() types.RVType {
 	copied := NewNNAInfo()
 
-	copied.SetStructureVersion(nnaInfo.StructureVersion())
-
-	if nnaInfo.ParentType() != nil {
-		copied.Data = nnaInfo.ParentType().Copy().(*nex.Data)
-	} else {
-		copied.Data = nex.NewData()
-	}
-
-	copied.SetParentType(copied.Data)
-
-	copied.PrincipalBasicInfo = nnaInfo.PrincipalBasicInfo.Copy().(*PrincipalBasicInfo)
-	copied.Unknown1 = nnaInfo.Unknown1
-	copied.Unknown2 = nnaInfo.Unknown2
+	copied.StructureVersion = nnai.StructureVersion
+	copied.Data = nnai.Data.Copy().(*types.Data)
+	copied.PrincipalBasicInfo = nnai.PrincipalBasicInfo.Copy().(*PrincipalBasicInfo)
+	copied.Unknown1 = nnai.Unknown1.Copy().(*types.PrimitiveU8)
+	copied.Unknown2 = nnai.Unknown2.Copy().(*types.PrimitiveU8)
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (nnaInfo *NNAInfo) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*NNAInfo)
-
-	if nnaInfo.StructureVersion() != other.StructureVersion() {
+// Equals checks if the given NNAInfo contains the same data as the current NNAInfo
+func (nnai *NNAInfo) Equals(o types.RVType) bool {
+	if _, ok := o.(*NNAInfo); !ok {
 		return false
 	}
 
-	if !nnaInfo.ParentType().Equals(other.ParentType()) {
+	other := o.(*NNAInfo)
+
+	if nnai.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if !nnaInfo.PrincipalBasicInfo.Equals(other.PrincipalBasicInfo) {
+	if !nnai.Data.Equals(other.Data) {
 		return false
 	}
 
-	if nnaInfo.Unknown1 != other.Unknown1 {
+	if !nnai.PrincipalBasicInfo.Equals(other.PrincipalBasicInfo) {
 		return false
 	}
 
-	if nnaInfo.Unknown2 != other.Unknown2 {
+	if !nnai.Unknown1.Equals(other.Unknown1) {
 		return false
 	}
 
-	return true
+	return nnai.Unknown2.Equals(other.Unknown2)
 }
 
-// String returns a string representation of the struct
-func (nnaInfo *NNAInfo) String() string {
-	return nnaInfo.FormatToString(0)
+// String returns the string representation of the NNAInfo
+func (nnai *NNAInfo) String() string {
+	return nnai.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (nnaInfo *NNAInfo) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the NNAInfo using the provided indentation level
+func (nnai *NNAInfo) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("NNAInfo{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, nnaInfo.StructureVersion()))
-
-	if nnaInfo.PrincipalBasicInfo != nil {
-		b.WriteString(fmt.Sprintf("%sPrincipalBasicInfo: %s,\n", indentationValues, nnaInfo.PrincipalBasicInfo.FormatToString(indentationLevel+1)))
-	} else {
-		b.WriteString(fmt.Sprintf("%sPrincipalBasicInfo: nil,\n", indentationValues))
-	}
-
-	b.WriteString(fmt.Sprintf("%sUnknown1: %d,\n", indentationValues, nnaInfo.Unknown1))
-	b.WriteString(fmt.Sprintf("%sUnknown2: %d\n", indentationValues, nnaInfo.Unknown2))
+	b.WriteString(fmt.Sprintf("%sData (parent): %s,\n", indentationValues, nnai.Data.FormatToString(indentationLevel+1)))
+	b.WriteString(fmt.Sprintf("%sPrincipalBasicInfo: %s,\n", indentationValues, nnai.PrincipalBasicInfo.FormatToString(indentationLevel+1)))
+	b.WriteString(fmt.Sprintf("%sUnknown1: %s,\n", indentationValues, nnai.Unknown1))
+	b.WriteString(fmt.Sprintf("%sUnknown2: %s,\n", indentationValues, nnai.Unknown2))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -127,5 +130,12 @@ func (nnaInfo *NNAInfo) FormatToString(indentationLevel int) string {
 
 // NewNNAInfo returns a new NNAInfo
 func NewNNAInfo() *NNAInfo {
-	return &NNAInfo{}
+	nnai := &NNAInfo{
+		Data:               types.NewData(),
+		PrincipalBasicInfo: NewPrincipalBasicInfo(),
+		Unknown1:           types.NewPrimitiveU8(0),
+		Unknown2:           types.NewPrimitiveU8(0),
+	}
+
+	return nnai
 }

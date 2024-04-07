@@ -4,10 +4,11 @@ package protocol
 import (
 	"fmt"
 
-	nex "github.com/PretendoNetwork/nex-go"
-	"github.com/PretendoNetwork/nex-protocols-go/globals"
-	matchmake_extension "github.com/PretendoNetwork/nex-protocols-go/matchmake-extension"
-	matchmake_extension_mario_kart8_types "github.com/PretendoNetwork/nex-protocols-go/matchmake-extension/mario-kart-8/types"
+	nex "github.com/PretendoNetwork/nex-go/v2"
+	"github.com/PretendoNetwork/nex-go/v2/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
+	matchmake_extension "github.com/PretendoNetwork/nex-protocols-go/v2/matchmake-extension"
+	matchmake_extension_mario_kart8_types "github.com/PretendoNetwork/nex-protocols-go/v2/matchmake-extension/mario-kart-8/types"
 	"golang.org/x/exp/slices"
 )
 
@@ -48,60 +49,55 @@ type matchmakeExtensionProtocol = matchmake_extension.Protocol
 // Protocol stores all the RMC method handlers for the Matchmake Extension (Mario Kart 8) protocol and listens for requests
 // Embeds the Matchmake Extension protocol
 type Protocol struct {
-	Server *nex.Server
+	endpoint nex.EndpointInterface
 	matchmakeExtensionProtocol
-	createSimpleSearchObjectHandler                  func(err error, packet nex.PacketInterface, callID uint32, object *matchmake_extension_mario_kart8_types.SimpleSearchObject) uint32
-	updateSimpleSearchObjectHandler                  func(err error, packet nex.PacketInterface, callID uint32, objectID uint32, newObject *matchmake_extension_mario_kart8_types.SimpleSearchObject) uint32
-	deleteSimpleSearchObjectHandler                  func(err error, packet nex.PacketInterface, callID uint32, objectID uint32) uint32
-	searchSimpleSearchObjectHandler                  func(err error, packet nex.PacketInterface, callID uint32, param *matchmake_extension_mario_kart8_types.SimpleSearchParam) uint32
-	joinMatchmakeSessionWithExtraParticipantsHandler func(err error, packet nex.PacketInterface, callID uint32, gid uint32, joinMessage string, ignoreBlacklist bool, participationCount uint16, extraParticipants uint32) uint32
-	searchSimpleSearchObjectByObjectIDsHandler       func(err error, packet nex.PacketInterface, callID uint32, objectIDs []uint32) uint32
-}
-
-// Setup initializes the protocol
-func (protocol *Protocol) Setup() {
-	protocol.Server.On("Data", func(packet nex.PacketInterface) {
-		request := packet.RMCRequest()
-
-		if request.ProtocolID() == ProtocolID {
-			if slices.Contains(patchedMethods, request.MethodID()) {
-				protocol.HandlePacket(packet)
-			} else {
-				protocol.matchmakeExtensionProtocol.HandlePacket(packet)
-			}
-		}
-	})
+	CreateSimpleSearchObject                  func(err error, packet nex.PacketInterface, callID uint32, object *matchmake_extension_mario_kart8_types.SimpleSearchObject) (*nex.RMCMessage, *nex.Error)
+	UpdateSimpleSearchObject                  func(err error, packet nex.PacketInterface, callID uint32, objectID *types.PrimitiveU32, newObject *matchmake_extension_mario_kart8_types.SimpleSearchObject) (*nex.RMCMessage, *nex.Error)
+	DeleteSimpleSearchObject                  func(err error, packet nex.PacketInterface, callID uint32, objectID *types.PrimitiveU32) (*nex.RMCMessage, *nex.Error)
+	SearchSimpleSearchObject                  func(err error, packet nex.PacketInterface, callID uint32, param *matchmake_extension_mario_kart8_types.SimpleSearchParam) (*nex.RMCMessage, *nex.Error)
+	JoinMatchmakeSessionWithExtraParticipants func(err error, packet nex.PacketInterface, callID uint32, gid *types.PrimitiveU32, joinMessage *types.String, ignoreBlacklist *types.PrimitiveBool, participationCount *types.PrimitiveU16, extraParticipants *types.PrimitiveU32) (*nex.RMCMessage, *nex.Error)
+	SearchSimpleSearchObjectByObjectIDs       func(err error, packet nex.PacketInterface, callID uint32, objectIDs *types.List[*types.PrimitiveU32]) (*nex.RMCMessage, *nex.Error)
 }
 
 // HandlePacket sends the packet to the correct RMC method handler
 func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
-	request := packet.RMCRequest()
+	message := packet.RMCMessage()
 
-	switch request.MethodID() {
+	if !message.IsRequest || message.ProtocolID != ProtocolID {
+		return
+	}
+
+	if !slices.Contains(patchedMethods, message.MethodID) {
+		protocol.matchmakeExtensionProtocol.HandlePacket(packet)
+		return
+	}
+
+	switch message.MethodID {
 	case MethodCreateSimpleSearchObject:
-		go protocol.handleCreateSimpleSearchObject(packet)
+		protocol.handleCreateSimpleSearchObject(packet)
 	case MethodUpdateSimpleSearchObject:
-		go protocol.handleUpdateSimpleSearchObject(packet)
+		protocol.handleUpdateSimpleSearchObject(packet)
 	case MethodDeleteSimpleSearchObject:
-		go protocol.handleDeleteSimpleSearchObject(packet)
+		protocol.handleDeleteSimpleSearchObject(packet)
 	case MethodSearchSimpleSearchObject:
-		go protocol.handleSearchSimpleSearchObject(packet)
+		protocol.handleSearchSimpleSearchObject(packet)
 	case MethodJoinMatchmakeSessionWithExtraParticipants:
-		go protocol.handleJoinMatchmakeSessionWithExtraParticipants(packet)
+		protocol.handleJoinMatchmakeSessionWithExtraParticipants(packet)
 	case MethodSearchSimpleSearchObjectByObjectIDs:
-		go protocol.handleSearchSimpleSearchObjectByObjectIDs(packet)
+		protocol.handleSearchSimpleSearchObjectByObjectIDs(packet)
 	default:
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
-		fmt.Printf("Unsupported Matchmake Extension (Mario Kart 8) method ID: %#v\n", request.MethodID())
+		errMessage := fmt.Sprintf("Unsupported Matchmake Extension (Mario Kart 8) method ID: %#v\n", message.MethodID)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, errMessage)
+
+		globals.RespondError(packet, ProtocolID, err)
+		globals.Logger.Warning(err.Message)
 	}
 }
 
 // NewProtocol returns a new MatchmakeExtensionMarioKart8 protocol
-func NewProtocol(server *nex.Server) *Protocol {
-	protocol := &Protocol{Server: server}
-	protocol.matchmakeExtensionProtocol.Server = server
-
-	protocol.Setup()
+func NewProtocol(endpoint nex.EndpointInterface) *Protocol {
+	protocol := &Protocol{endpoint: endpoint}
+	protocol.matchmakeExtensionProtocol.SetEndpoint(endpoint)
 
 	return protocol
 }

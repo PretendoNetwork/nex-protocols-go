@@ -1,105 +1,114 @@
-// Package types implements all the types used by the Ranking 2  protocol
+// Package types implements all the types used by the Ranking2 protocol
 package types
 
 import (
-	"bytes"
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/v2/types"
 )
 
-// Ranking2CommonData holds data for the Ranking 2  protocol
+// Ranking2CommonData is a type within the Ranking2 protocol
 type Ranking2CommonData struct {
-	nex.Structure
-	UserName   string
-	Mii        []byte
-	BinaryData []byte
+	types.Structure
+	UserName   *types.String
+	Mii        *types.QBuffer
+	BinaryData *types.QBuffer
 }
 
-// ExtractFromStream extracts a Ranking2CommonData structure from a stream
-func (ranking2CommonData *Ranking2CommonData) ExtractFromStream(stream *nex.StreamIn) error {
+// WriteTo writes the Ranking2CommonData to the given writable
+func (rcd *Ranking2CommonData) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
+
+	rcd.UserName.WriteTo(writable)
+	rcd.Mii.WriteTo(writable)
+	rcd.BinaryData.WriteTo(writable)
+
+	content := contentWritable.Bytes()
+
+	rcd.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
+}
+
+// ExtractFrom extracts the Ranking2CommonData from the given readable
+func (rcd *Ranking2CommonData) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	ranking2CommonData.UserName, err = stream.ReadString()
+	err = rcd.ExtractHeaderFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract Ranking2CommonData.UserName from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract Ranking2CommonData header. %s", err.Error())
 	}
 
-	ranking2CommonData.Mii, err = stream.ReadQBuffer()
+	err = rcd.UserName.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract Ranking2CommonData.Mii from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract Ranking2CommonData.UserName. %s", err.Error())
 	}
 
-	ranking2CommonData.BinaryData, err = stream.ReadQBuffer()
+	err = rcd.Mii.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract Ranking2CommonData.BinaryData from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract Ranking2CommonData.Mii. %s", err.Error())
+	}
+
+	err = rcd.BinaryData.ExtractFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract Ranking2CommonData.BinaryData. %s", err.Error())
 	}
 
 	return nil
 }
 
-// Bytes encodes the Ranking2CommonData and returns a byte array
-func (ranking2CommonData *Ranking2CommonData) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteString(ranking2CommonData.UserName)
-	stream.WriteQBuffer(ranking2CommonData.Mii)
-	stream.WriteQBuffer(ranking2CommonData.BinaryData)
-
-	return stream.Bytes()
-}
-
 // Copy returns a new copied instance of Ranking2CommonData
-func (ranking2CommonData *Ranking2CommonData) Copy() nex.StructureInterface {
+func (rcd *Ranking2CommonData) Copy() types.RVType {
 	copied := NewRanking2CommonData()
 
-	copied.SetStructureVersion(ranking2CommonData.StructureVersion())
+	copied.StructureVersion = rcd.StructureVersion
+	copied.UserName = rcd.UserName.Copy().(*types.String)
+	copied.Mii = rcd.Mii.Copy().(*types.QBuffer)
+	copied.BinaryData = rcd.BinaryData.Copy().(*types.QBuffer)
 
-	copied.UserName = ranking2CommonData.UserName
-	copied.Mii = ranking2CommonData.Mii
-	copied.BinaryData = ranking2CommonData.BinaryData
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (ranking2CommonData *Ranking2CommonData) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*Ranking2CommonData)
-
-	if ranking2CommonData.StructureVersion() != other.StructureVersion() {
+// Equals checks if the given Ranking2CommonData contains the same data as the current Ranking2CommonData
+func (rcd *Ranking2CommonData) Equals(o types.RVType) bool {
+	if _, ok := o.(*Ranking2CommonData); !ok {
 		return false
 	}
 
-	if ranking2CommonData.UserName != other.UserName {
+	other := o.(*Ranking2CommonData)
+
+	if rcd.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if !bytes.Equal(ranking2CommonData.Mii, other.Mii) {
+	if !rcd.UserName.Equals(other.UserName) {
 		return false
 	}
 
-	if !bytes.Equal(ranking2CommonData.BinaryData, other.BinaryData) {
+	if !rcd.Mii.Equals(other.Mii) {
 		return false
 	}
 
-	return true
+	return rcd.BinaryData.Equals(other.BinaryData)
 }
 
-// String returns a string representation of the struct
-func (ranking2CommonData *Ranking2CommonData) String() string {
-	return ranking2CommonData.FormatToString(0)
+// String returns the string representation of the Ranking2CommonData
+func (rcd *Ranking2CommonData) String() string {
+	return rcd.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (ranking2CommonData *Ranking2CommonData) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the Ranking2CommonData using the provided indentation level
+func (rcd *Ranking2CommonData) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("Ranking2CommonData{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, ranking2CommonData.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sUserName: %q,\n", indentationValues, ranking2CommonData.UserName))
-	b.WriteString(fmt.Sprintf("%sMii: %x,\n", indentationValues, ranking2CommonData.Mii))
-	b.WriteString(fmt.Sprintf("%sBinaryData: %x,\n", indentationValues, ranking2CommonData.BinaryData))
+	b.WriteString(fmt.Sprintf("%sUserName: %s,\n", indentationValues, rcd.UserName))
+	b.WriteString(fmt.Sprintf("%sMii: %s,\n", indentationValues, rcd.Mii))
+	b.WriteString(fmt.Sprintf("%sBinaryData: %s,\n", indentationValues, rcd.BinaryData))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -107,5 +116,11 @@ func (ranking2CommonData *Ranking2CommonData) FormatToString(indentationLevel in
 
 // NewRanking2CommonData returns a new Ranking2CommonData
 func NewRanking2CommonData() *Ranking2CommonData {
-	return &Ranking2CommonData{}
+	rcd := &Ranking2CommonData{
+		UserName:   types.NewString(""),
+		Mii:        types.NewQBuffer(nil),
+		BinaryData: types.NewQBuffer(nil),
+	}
+
+	return rcd
 }

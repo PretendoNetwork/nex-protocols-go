@@ -4,44 +4,44 @@ package protocol
 import (
 	"fmt"
 
-	nex "github.com/PretendoNetwork/nex-go"
-	datastore_types "github.com/PretendoNetwork/nex-protocols-go/datastore/types"
-	"github.com/PretendoNetwork/nex-protocols-go/globals"
+	nex "github.com/PretendoNetwork/nex-go/v2"
+	datastore_types "github.com/PretendoNetwork/nex-protocols-go/v2/datastore/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
 )
 
-// GetSpecificMeta sets the GetSpecificMeta handler function
-func (protocol *Protocol) GetSpecificMeta(handler func(err error, packet nex.PacketInterface, callID uint32, param *datastore_types.DataStoreGetSpecificMetaParam) uint32) {
-	protocol.getSpecificMetaHandler = handler
-}
-
 func (protocol *Protocol) handleGetSpecificMeta(packet nex.PacketInterface) {
-	var errorCode uint32
+	if protocol.GetSpecificMeta == nil {
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "DataStore::GetSpecificMeta not implemented")
 
-	if protocol.getSpecificMetaHandler == nil {
-		globals.Logger.Warning("DataStore::GetSpecificMeta not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
+	callID := request.CallID
+	parameters := request.Parameters
+	endpoint := packet.Sender().Endpoint()
+	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	callID := request.CallID()
-	parameters := request.Parameters()
+	param := datastore_types.NewDataStoreGetSpecificMetaParam()
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
-
-	param, err := parametersStream.ReadStructure(datastore_types.NewDataStoreGetSpecificMetaParam())
+	err := param.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.getSpecificMetaHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.GetSpecificMeta(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	errorCode = protocol.getSpecificMetaHandler(nil, packet, callID, param.(*datastore_types.DataStoreGetSpecificMetaParam))
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.GetSpecificMeta(nil, packet, callID, param)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

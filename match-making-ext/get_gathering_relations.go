@@ -4,53 +4,57 @@ package protocol
 import (
 	"fmt"
 
-	nex "github.com/PretendoNetwork/nex-go"
-	"github.com/PretendoNetwork/nex-protocols-go/globals"
+	nex "github.com/PretendoNetwork/nex-go/v2"
+	"github.com/PretendoNetwork/nex-go/v2/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
 )
 
-// GetGatheringRelations sets the GetGatheringRelations handler function
-func (protocol *Protocol) GetGatheringRelations(handler func(err error, packet nex.PacketInterface, callID uint32, id uint32, descr string) uint32) {
-	protocol.getGatheringRelationsHandler = handler
-}
-
 func (protocol *Protocol) handleGetGatheringRelations(packet nex.PacketInterface) {
-	var errorCode uint32
+	if protocol.GetGatheringRelations == nil {
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "MatchMakingExt::GetGatheringRelations not implemented")
 
-	if protocol.getGatheringRelationsHandler == nil {
-		globals.Logger.Warning("MatchMakingExt::GetGatheringRelations not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
+	callID := request.CallID
+	parameters := request.Parameters
+	endpoint := packet.Sender().Endpoint()
+	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	callID := request.CallID()
-	parameters := request.Parameters()
+	id := types.NewPrimitiveU32(0)
+	descr := types.NewString("")
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+	var err error
 
-	id, err := parametersStream.ReadUInt32LE()
+	err = id.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.getGatheringRelationsHandler(fmt.Errorf("Failed to read id from parameters. %s", err.Error()), packet, callID, 0, "")
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.GetGatheringRelations(fmt.Errorf("Failed to read id from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	descr, err := parametersStream.ReadString()
+	err = descr.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.getGatheringRelationsHandler(fmt.Errorf("Failed to read descr from parameters. %s", err.Error()), packet, callID, 0, "")
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.GetGatheringRelations(fmt.Errorf("Failed to read descr from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	errorCode = protocol.getGatheringRelationsHandler(nil, packet, callID, id, descr)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.GetGatheringRelations(nil, packet, callID, id, descr)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

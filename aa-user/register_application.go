@@ -4,43 +4,44 @@ package protocol
 import (
 	"fmt"
 
-	nex "github.com/PretendoNetwork/nex-go"
-	"github.com/PretendoNetwork/nex-protocols-go/globals"
+	nex "github.com/PretendoNetwork/nex-go/v2"
+	"github.com/PretendoNetwork/nex-go/v2/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
 )
 
-// RegisterApplication sets the RegisterApplication handler function
-func (protocol *Protocol) RegisterApplication(handler func(err error, packet nex.PacketInterface, callID uint32, titleID uint64) uint32) {
-	protocol.registerApplicationHandler = handler
-}
-
 func (protocol *Protocol) handleRegisterApplication(packet nex.PacketInterface) {
-	var errorCode uint32
+	if protocol.RegisterApplication == nil {
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "AAUser::RegisterApplication not implemented")
 
-	if protocol.registerApplicationHandler == nil {
-		globals.Logger.Warning("AAUser::RegisterApplication not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
+	callID := request.CallID
+	parameters := request.Parameters
+	endpoint := packet.Sender().Endpoint()
+	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	callID := request.CallID()
-	parameters := request.Parameters()
+	titleID := types.NewPrimitiveU64(0)
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
-
-	titleID, err := parametersStream.ReadUInt64LE()
+	err := titleID.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.registerApplicationHandler(fmt.Errorf("Failed to read titleID from parameters. %s", err.Error()), packet, callID, 0)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.RegisterApplication(fmt.Errorf("Failed to read titleID from parameters. %s", err.Error()), packet, callID, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	errorCode = protocol.registerApplicationHandler(nil, packet, callID, titleID)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.RegisterApplication(nil, packet, callID, titleID)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

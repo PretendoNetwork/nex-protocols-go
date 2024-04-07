@@ -4,43 +4,44 @@ package protocol
 import (
 	"fmt"
 
-	nex "github.com/PretendoNetwork/nex-go"
-	"github.com/PretendoNetwork/nex-protocols-go/globals"
+	nex "github.com/PretendoNetwork/nex-go/v2"
+	"github.com/PretendoNetwork/nex-go/v2/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
 )
 
-// UpdateMatchmakeSession sets the UpdateMatchmakeSession handler function
-func (protocol *Protocol) UpdateMatchmakeSession(handler func(err error, packet nex.PacketInterface, callID uint32, anyGathering *nex.DataHolder) uint32) {
-	protocol.updateMatchmakeSessionHandler = handler
-}
-
 func (protocol *Protocol) handleUpdateMatchmakeSession(packet nex.PacketInterface) {
-	var errorCode uint32
+	if protocol.UpdateMatchmakeSession == nil {
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "MatchmakeExtension::UpdateMatchmakeSession not implemented")
 
-	if protocol.updateMatchmakeSessionHandler == nil {
-		globals.Logger.Warning("MatchmakeExtension::UpdateMatchmakeSession not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
+	callID := request.CallID
+	parameters := request.Parameters
+	endpoint := packet.Sender().Endpoint()
+	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	callID := request.CallID()
-	parameters := request.Parameters()
+	anyGathering := types.NewAnyDataHolder()
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
-
-	anyGathering, err := parametersStream.ReadDataHolder()
+	err := anyGathering.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.updateMatchmakeSessionHandler(fmt.Errorf("Failed to read anyGathering from parameters. %s", err.Error()), packet, callID, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.UpdateMatchmakeSession(fmt.Errorf("Failed to read anyGathering from parameters. %s", err.Error()), packet, callID, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	errorCode = protocol.updateMatchmakeSessionHandler(nil, packet, callID, anyGathering)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.UpdateMatchmakeSession(nil, packet, callID, anyGathering)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

@@ -2,106 +2,136 @@
 package types
 
 import (
-	"bytes"
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/v2"
+	"github.com/PretendoNetwork/nex-go/v2/types"
 )
 
-// DataStorePreparePostParam is sent in the PreparePostObject method
+// DataStorePreparePostParam is a type within the DataStore protocol
 type DataStorePreparePostParam struct {
-	nex.Structure
-	Size                 uint32
-	Name                 string
-	DataType             uint16
-	MetaBinary           []byte
+	types.Structure
+	Size                 *types.PrimitiveU32
+	Name                 *types.String
+	DataType             *types.PrimitiveU16
+	MetaBinary           *types.QBuffer
 	Permission           *DataStorePermission
 	DelPermission        *DataStorePermission
-	Flag                 uint32
-	Period               uint16
-	ReferDataID          uint32
-	Tags                 []string
-	RatingInitParams     []*DataStoreRatingInitParamWithSlot
+	Flag                 *types.PrimitiveU32
+	Period               *types.PrimitiveU16
+	ReferDataID          *types.PrimitiveU32
+	Tags                 *types.List[*types.String]
+	RatingInitParams     *types.List[*DataStoreRatingInitParamWithSlot]
 	PersistenceInitParam *DataStorePersistenceInitParam
-	ExtraData            []string // NEX 3.5.0+
+	ExtraData            *types.List[*types.String] // * NEX v3.5.0
 }
 
-// ExtractFromStream extracts a DataStorePreparePostParam structure from a stream
-func (dataStorePreparePostParam *DataStorePreparePostParam) ExtractFromStream(stream *nex.StreamIn) error {
-	datastoreVersion := stream.Server.DataStoreProtocolVersion()
+// WriteTo writes the DataStorePreparePostParam to the given writable
+func (dsppp *DataStorePreparePostParam) WriteTo(writable types.Writable) {
+	stream := writable.(*nex.ByteStreamOut)
+	libraryVersion := stream.LibraryVersions.DataStore
+
+	contentWritable := writable.CopyNew()
+
+	dsppp.Size.WriteTo(writable)
+	dsppp.Name.WriteTo(writable)
+	dsppp.DataType.WriteTo(writable)
+	dsppp.MetaBinary.WriteTo(writable)
+	dsppp.Permission.WriteTo(writable)
+	dsppp.DelPermission.WriteTo(writable)
+	dsppp.Flag.WriteTo(writable)
+	dsppp.Period.WriteTo(writable)
+	dsppp.ReferDataID.WriteTo(writable)
+	dsppp.Tags.WriteTo(writable)
+	dsppp.RatingInitParams.WriteTo(writable)
+	dsppp.PersistenceInitParam.WriteTo(writable)
+
+	if libraryVersion.GreaterOrEqual("3.5.0") {
+		dsppp.ExtraData.WriteTo(writable)
+	}
+
+	content := contentWritable.Bytes()
+
+	dsppp.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
+}
+
+// ExtractFrom extracts the DataStorePreparePostParam from the given readable
+func (dsppp *DataStorePreparePostParam) ExtractFrom(readable types.Readable) error {
+	stream := readable.(*nex.ByteStreamIn)
+	libraryVersion := stream.LibraryVersions.DataStore
 
 	var err error
 
-	dataStorePreparePostParam.Size, err = stream.ReadUInt32LE()
+	err = dsppp.ExtractHeaderFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStorePreparePostParam header. %s", err.Error())
+	}
+
+	err = dsppp.Size.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStorePreparePostParam.Size. %s", err.Error())
 	}
 
-	dataStorePreparePostParam.Name, err = stream.ReadString()
+	err = dsppp.Name.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStorePreparePostParam.Name. %s", err.Error())
 	}
 
-	dataStorePreparePostParam.DataType, err = stream.ReadUInt16LE()
+	err = dsppp.DataType.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStorePreparePostParam.DataType. %s", err.Error())
 	}
 
-	dataStorePreparePostParam.MetaBinary, err = stream.ReadQBuffer()
+	err = dsppp.MetaBinary.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStorePreparePostParam.MetaBinary. %s", err.Error())
 	}
 
-	permission, err := stream.ReadStructure(NewDataStorePermission())
+	err = dsppp.Permission.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStorePreparePostParam.Permission. %s", err.Error())
 	}
 
-	dataStorePreparePostParam.Permission = permission.(*DataStorePermission)
-
-	delPermission, err := stream.ReadStructure(NewDataStorePermission())
+	err = dsppp.DelPermission.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStorePreparePostParam.DelPermission. %s", err.Error())
 	}
 
-	dataStorePreparePostParam.DelPermission = delPermission.(*DataStorePermission)
-	dataStorePreparePostParam.Flag, err = stream.ReadUInt32LE()
+	err = dsppp.Flag.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStorePreparePostParam.Flag. %s", err.Error())
 	}
 
-	dataStorePreparePostParam.Period, err = stream.ReadUInt16LE()
+	err = dsppp.Period.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStorePreparePostParam.Period. %s", err.Error())
 	}
 
-	dataStorePreparePostParam.ReferDataID, err = stream.ReadUInt32LE()
+	err = dsppp.ReferDataID.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStorePreparePostParam.ReferDataID. %s", err.Error())
 	}
 
-	dataStorePreparePostParam.Tags, err = stream.ReadListString()
+	err = dsppp.Tags.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStorePreparePostParam.Tags. %s", err.Error())
 	}
 
-	ratingInitParams, err := stream.ReadListStructure(NewDataStoreRatingInitParamWithSlot())
+	err = dsppp.RatingInitParams.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStorePreparePostParam.RatingInitParams. %s", err.Error())
 	}
 
-	dataStorePreparePostParam.RatingInitParams = ratingInitParams.([]*DataStoreRatingInitParamWithSlot)
-
-	persistenceInitParam, err := stream.ReadStructure(NewDataStorePersistenceInitParam())
+	err = dsppp.PersistenceInitParam.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStorePreparePostParam.PersistenceInitParam. %s", err.Error())
 	}
 
-	dataStorePreparePostParam.PersistenceInitParam = persistenceInitParam.(*DataStorePersistenceInitParam)
-
-	if datastoreVersion.GreaterOrEqual("3.5.0") {
-		dataStorePreparePostParam.ExtraData, err = stream.ReadListString()
+	if libraryVersion.GreaterOrEqual("3.5.0") {
+		err = dsppp.ExtraData.ExtractFrom(readable)
 		if err != nil {
 			return fmt.Errorf("Failed to extract DataStorePreparePostParam.ExtraData. %s", err.Error())
 		}
@@ -111,183 +141,116 @@ func (dataStorePreparePostParam *DataStorePreparePostParam) ExtractFromStream(st
 }
 
 // Copy returns a new copied instance of DataStorePreparePostParam
-func (dataStorePreparePostParam *DataStorePreparePostParam) Copy() nex.StructureInterface {
+func (dsppp *DataStorePreparePostParam) Copy() types.RVType {
 	copied := NewDataStorePreparePostParam()
 
-	copied.SetStructureVersion(dataStorePreparePostParam.StructureVersion())
-
-	copied.Size = dataStorePreparePostParam.Size
-	copied.Name = dataStorePreparePostParam.Name
-	copied.DataType = dataStorePreparePostParam.DataType
-	copied.MetaBinary = make([]byte, len(dataStorePreparePostParam.MetaBinary))
-
-	copy(copied.MetaBinary, dataStorePreparePostParam.MetaBinary)
-
-	copied.Permission = dataStorePreparePostParam.Permission.Copy().(*DataStorePermission)
-	copied.DelPermission = dataStorePreparePostParam.DelPermission.Copy().(*DataStorePermission)
-	copied.Flag = dataStorePreparePostParam.Flag
-	copied.Period = dataStorePreparePostParam.Period
-	copied.ReferDataID = dataStorePreparePostParam.ReferDataID
-	copied.Tags = make([]string, len(dataStorePreparePostParam.Tags))
-
-	copy(copied.Tags, dataStorePreparePostParam.Tags)
-
-	copied.RatingInitParams = make([]*DataStoreRatingInitParamWithSlot, len(dataStorePreparePostParam.RatingInitParams))
-
-	for i := 0; i < len(dataStorePreparePostParam.RatingInitParams); i++ {
-		copied.RatingInitParams[i] = dataStorePreparePostParam.RatingInitParams[i].Copy().(*DataStoreRatingInitParamWithSlot)
-	}
-
-	copied.PersistenceInitParam = dataStorePreparePostParam.PersistenceInitParam.Copy().(*DataStorePersistenceInitParam)
-	copied.ExtraData = make([]string, len(dataStorePreparePostParam.ExtraData))
-
-	copy(copied.ExtraData, dataStorePreparePostParam.ExtraData)
+	copied.StructureVersion = dsppp.StructureVersion
+	copied.Size = dsppp.Size.Copy().(*types.PrimitiveU32)
+	copied.Name = dsppp.Name.Copy().(*types.String)
+	copied.DataType = dsppp.DataType.Copy().(*types.PrimitiveU16)
+	copied.MetaBinary = dsppp.MetaBinary.Copy().(*types.QBuffer)
+	copied.Permission = dsppp.Permission.Copy().(*DataStorePermission)
+	copied.DelPermission = dsppp.DelPermission.Copy().(*DataStorePermission)
+	copied.Flag = dsppp.Flag.Copy().(*types.PrimitiveU32)
+	copied.Period = dsppp.Period.Copy().(*types.PrimitiveU16)
+	copied.ReferDataID = dsppp.ReferDataID.Copy().(*types.PrimitiveU32)
+	copied.Tags = dsppp.Tags.Copy().(*types.List[*types.String])
+	copied.RatingInitParams = dsppp.RatingInitParams.Copy().(*types.List[*DataStoreRatingInitParamWithSlot])
+	copied.PersistenceInitParam = dsppp.PersistenceInitParam.Copy().(*DataStorePersistenceInitParam)
+	copied.ExtraData = dsppp.ExtraData.Copy().(*types.List[*types.String])
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (dataStorePreparePostParam *DataStorePreparePostParam) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*DataStorePreparePostParam)
-
-	if dataStorePreparePostParam.StructureVersion() != other.StructureVersion() {
+// Equals checks if the given DataStorePreparePostParam contains the same data as the current DataStorePreparePostParam
+func (dsppp *DataStorePreparePostParam) Equals(o types.RVType) bool {
+	if _, ok := o.(*DataStorePreparePostParam); !ok {
 		return false
 	}
 
-	if dataStorePreparePostParam.Size != other.Size {
+	other := o.(*DataStorePreparePostParam)
+
+	if dsppp.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if dataStorePreparePostParam.Name != other.Name {
+	if !dsppp.Size.Equals(other.Size) {
 		return false
 	}
 
-	if dataStorePreparePostParam.DataType != other.DataType {
+	if !dsppp.Name.Equals(other.Name) {
 		return false
 	}
 
-	if !bytes.Equal(dataStorePreparePostParam.MetaBinary, other.MetaBinary) {
+	if !dsppp.DataType.Equals(other.DataType) {
 		return false
 	}
 
-	if !dataStorePreparePostParam.Permission.Equals(other.Permission) {
+	if !dsppp.MetaBinary.Equals(other.MetaBinary) {
 		return false
 	}
 
-	if !dataStorePreparePostParam.DelPermission.Equals(other.DelPermission) {
+	if !dsppp.Permission.Equals(other.Permission) {
 		return false
 	}
 
-	if dataStorePreparePostParam.Flag != other.Flag {
+	if !dsppp.DelPermission.Equals(other.DelPermission) {
 		return false
 	}
 
-	if dataStorePreparePostParam.Period != other.Period {
+	if !dsppp.Flag.Equals(other.Flag) {
 		return false
 	}
 
-	if dataStorePreparePostParam.ReferDataID != other.ReferDataID {
+	if !dsppp.Period.Equals(other.Period) {
 		return false
 	}
 
-	if len(dataStorePreparePostParam.Tags) != len(other.Tags) {
+	if !dsppp.ReferDataID.Equals(other.ReferDataID) {
 		return false
 	}
 
-	for i := 0; i < len(dataStorePreparePostParam.Tags); i++ {
-		if dataStorePreparePostParam.Tags[i] != other.Tags[i] {
-			return false
-		}
-	}
-
-	if len(dataStorePreparePostParam.RatingInitParams) != len(other.RatingInitParams) {
+	if !dsppp.Tags.Equals(other.Tags) {
 		return false
 	}
 
-	for i := 0; i < len(dataStorePreparePostParam.RatingInitParams); i++ {
-		if !dataStorePreparePostParam.RatingInitParams[i].Equals(other.RatingInitParams[i]) {
-			return false
-		}
-	}
-
-	if !dataStorePreparePostParam.PersistenceInitParam.Equals(other.PersistenceInitParam) {
+	if !dsppp.RatingInitParams.Equals(other.RatingInitParams) {
 		return false
 	}
 
-	if len(dataStorePreparePostParam.ExtraData) != len(other.ExtraData) {
+	if !dsppp.PersistenceInitParam.Equals(other.PersistenceInitParam) {
 		return false
 	}
 
-	for i := 0; i < len(dataStorePreparePostParam.ExtraData); i++ {
-		if dataStorePreparePostParam.ExtraData[i] != other.ExtraData[i] {
-			return false
-		}
-	}
-
-	return true
+	return dsppp.ExtraData.Equals(other.ExtraData)
 }
 
-// String returns a string representation of the struct
-func (dataStorePreparePostParam *DataStorePreparePostParam) String() string {
-	return dataStorePreparePostParam.FormatToString(0)
+// String returns the string representation of the DataStorePreparePostParam
+func (dsppp *DataStorePreparePostParam) String() string {
+	return dsppp.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (dataStorePreparePostParam *DataStorePreparePostParam) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the DataStorePreparePostParam using the provided indentation level
+func (dsppp *DataStorePreparePostParam) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
-	indentationListValues := strings.Repeat("\t", indentationLevel+2)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("DataStorePreparePostParam{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, dataStorePreparePostParam.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sSize: %d,\n", indentationValues, dataStorePreparePostParam.Size))
-	b.WriteString(fmt.Sprintf("%sName: %q,\n", indentationValues, dataStorePreparePostParam.Name))
-	b.WriteString(fmt.Sprintf("%sDataType: %d,\n", indentationValues, dataStorePreparePostParam.DataType))
-	b.WriteString(fmt.Sprintf("%sMetaBinary: %x,\n", indentationValues, dataStorePreparePostParam.MetaBinary))
-
-	if dataStorePreparePostParam.Permission != nil {
-		b.WriteString(fmt.Sprintf("%sPermission: %s,\n", indentationValues, dataStorePreparePostParam.Permission.FormatToString(indentationLevel+1)))
-	} else {
-		b.WriteString(fmt.Sprintf("%sPermission: nil,\n", indentationValues))
-	}
-
-	if dataStorePreparePostParam.DelPermission != nil {
-		b.WriteString(fmt.Sprintf("%sDelPermission: %s,\n", indentationValues, dataStorePreparePostParam.DelPermission.FormatToString(indentationLevel+1)))
-	} else {
-		b.WriteString(fmt.Sprintf("%sDelPermission: nil,\n", indentationValues))
-	}
-
-	b.WriteString(fmt.Sprintf("%sFlag: %d,\n", indentationValues, dataStorePreparePostParam.Flag))
-	b.WriteString(fmt.Sprintf("%sPeriod: %d,\n", indentationValues, dataStorePreparePostParam.Period))
-	b.WriteString(fmt.Sprintf("%sReferDataID: %d,\n", indentationValues, dataStorePreparePostParam.ReferDataID))
-	b.WriteString(fmt.Sprintf("%sTags: %v,\n", indentationValues, dataStorePreparePostParam.Tags))
-
-	if len(dataStorePreparePostParam.RatingInitParams) == 0 {
-		b.WriteString(fmt.Sprintf("%sRatingInitParams: [],\n", indentationValues))
-	} else {
-		b.WriteString(fmt.Sprintf("%sRatingInitParams: [\n", indentationValues))
-
-		for i := 0; i < len(dataStorePreparePostParam.RatingInitParams); i++ {
-			str := dataStorePreparePostParam.RatingInitParams[i].FormatToString(indentationLevel + 2)
-			if i == len(dataStorePreparePostParam.RatingInitParams)-1 {
-				b.WriteString(fmt.Sprintf("%s%s\n", indentationListValues, str))
-			} else {
-				b.WriteString(fmt.Sprintf("%s%s,\n", indentationListValues, str))
-			}
-		}
-
-		b.WriteString(fmt.Sprintf("%s],\n", indentationValues))
-	}
-
-	if dataStorePreparePostParam.PersistenceInitParam != nil {
-		b.WriteString(fmt.Sprintf("%sPersistenceInitParam: %s,\n", indentationValues, dataStorePreparePostParam.PersistenceInitParam.FormatToString(indentationLevel+1)))
-	} else {
-		b.WriteString(fmt.Sprintf("%sPersistenceInitParam: nil,\n", indentationValues))
-	}
-
-	b.WriteString(fmt.Sprintf("%sExtraData: %v,\n", indentationValues, dataStorePreparePostParam.ExtraData))
+	b.WriteString(fmt.Sprintf("%sSize: %s,\n", indentationValues, dsppp.Size))
+	b.WriteString(fmt.Sprintf("%sName: %s,\n", indentationValues, dsppp.Name))
+	b.WriteString(fmt.Sprintf("%sDataType: %s,\n", indentationValues, dsppp.DataType))
+	b.WriteString(fmt.Sprintf("%sMetaBinary: %s,\n", indentationValues, dsppp.MetaBinary))
+	b.WriteString(fmt.Sprintf("%sPermission: %s,\n", indentationValues, dsppp.Permission.FormatToString(indentationLevel+1)))
+	b.WriteString(fmt.Sprintf("%sDelPermission: %s,\n", indentationValues, dsppp.DelPermission.FormatToString(indentationLevel+1)))
+	b.WriteString(fmt.Sprintf("%sFlag: %s,\n", indentationValues, dsppp.Flag))
+	b.WriteString(fmt.Sprintf("%sPeriod: %s,\n", indentationValues, dsppp.Period))
+	b.WriteString(fmt.Sprintf("%sReferDataID: %s,\n", indentationValues, dsppp.ReferDataID))
+	b.WriteString(fmt.Sprintf("%sTags: %s,\n", indentationValues, dsppp.Tags))
+	b.WriteString(fmt.Sprintf("%sRatingInitParams: %s,\n", indentationValues, dsppp.RatingInitParams))
+	b.WriteString(fmt.Sprintf("%sPersistenceInitParam: %s,\n", indentationValues, dsppp.PersistenceInitParam.FormatToString(indentationLevel+1)))
+	b.WriteString(fmt.Sprintf("%sExtraData: %s,\n", indentationValues, dsppp.ExtraData))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -295,19 +258,25 @@ func (dataStorePreparePostParam *DataStorePreparePostParam) FormatToString(inden
 
 // NewDataStorePreparePostParam returns a new DataStorePreparePostParam
 func NewDataStorePreparePostParam() *DataStorePreparePostParam {
-	return &DataStorePreparePostParam{
-		Size:                 0,
-		Name:                 "",
-		DataType:             0,
-		MetaBinary:           make([]byte, 0),
+	dsppp := &DataStorePreparePostParam{
+		Size:                 types.NewPrimitiveU32(0),
+		Name:                 types.NewString(""),
+		DataType:             types.NewPrimitiveU16(0),
+		MetaBinary:           types.NewQBuffer(nil),
 		Permission:           NewDataStorePermission(),
 		DelPermission:        NewDataStorePermission(),
-		Flag:                 0,
-		Period:               0,
-		ReferDataID:          0,
-		Tags:                 make([]string, 0),
-		RatingInitParams:     make([]*DataStoreRatingInitParamWithSlot, 0),
+		Flag:                 types.NewPrimitiveU32(0),
+		Period:               types.NewPrimitiveU16(0),
+		ReferDataID:          types.NewPrimitiveU32(0),
+		Tags:                 types.NewList[*types.String](),
+		RatingInitParams:     types.NewList[*DataStoreRatingInitParamWithSlot](),
 		PersistenceInitParam: NewDataStorePersistenceInitParam(),
-		ExtraData:            make([]string, 0),
+		ExtraData:            types.NewList[*types.String](),
 	}
+
+	dsppp.Tags.Type = types.NewString("")
+	dsppp.RatingInitParams.Type = NewDataStoreRatingInitParamWithSlot()
+	dsppp.ExtraData.Type = types.NewString("")
+
+	return dsppp
 }

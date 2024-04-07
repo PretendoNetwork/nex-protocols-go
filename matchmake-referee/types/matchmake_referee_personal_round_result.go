@@ -1,61 +1,78 @@
-// Package types implements all the types used by the Matchmake Referee protocol
+// Package types implements all the types used by the MatchmakeReferee protocol
 package types
 
 import (
-	"bytes"
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/v2/types"
 )
 
-// MatchmakeRefereePersonalRoundResult contains the results of a round
+// MatchmakeRefereePersonalRoundResult is a type within the MatchmakeReferee protocol
 type MatchmakeRefereePersonalRoundResult struct {
-	nex.Structure
-	*nex.Data
-	PID                     uint32
-	PersonalRoundResultFlag uint32
-	RoundWinLoss            uint32
-	RatingValueChange       int32
-	Buffer                  []byte
+	types.Structure
+	*types.Data
+	PID                     *types.PID
+	PersonalRoundResultFlag *types.PrimitiveU32
+	RoundWinLoss            *types.PrimitiveU32
+	RatingValueChange       *types.PrimitiveS32
+	Buffer                  *types.QBuffer
 }
 
-// Bytes encodes the MatchmakeRefereePersonalRoundResult and returns a byte array
-func (matchmakeRefereePersonalRoundResult *MatchmakeRefereePersonalRoundResult) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt32LE(matchmakeRefereePersonalRoundResult.PID)
-	stream.WriteUInt32LE(matchmakeRefereePersonalRoundResult.PersonalRoundResultFlag)
-	stream.WriteUInt32LE(matchmakeRefereePersonalRoundResult.RoundWinLoss)
-	stream.WriteInt32LE(matchmakeRefereePersonalRoundResult.RatingValueChange)
-	stream.WriteQBuffer(matchmakeRefereePersonalRoundResult.Buffer)
+// WriteTo writes the MatchmakeRefereePersonalRoundResult to the given writable
+func (mrprr *MatchmakeRefereePersonalRoundResult) WriteTo(writable types.Writable) {
+	mrprr.Data.WriteTo(writable)
 
-	return stream.Bytes()
+	contentWritable := writable.CopyNew()
+
+	mrprr.PID.WriteTo(writable)
+	mrprr.PersonalRoundResultFlag.WriteTo(writable)
+	mrprr.RoundWinLoss.WriteTo(writable)
+	mrprr.RatingValueChange.WriteTo(writable)
+	mrprr.Buffer.WriteTo(writable)
+
+	content := contentWritable.Bytes()
+
+	mrprr.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
-// ExtractFromStream extracts a MatchmakeRefereePersonalRoundResult structure from a stream
-func (matchmakeRefereePersonalRoundResult *MatchmakeRefereePersonalRoundResult) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the MatchmakeRefereePersonalRoundResult from the given readable
+func (mrprr *MatchmakeRefereePersonalRoundResult) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	matchmakeRefereePersonalRoundResult.PID, err = stream.ReadUInt32LE()
+	err = mrprr.Data.ExtractFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract MatchmakeRefereePersonalRoundResult.Data. %s", err.Error())
+	}
+
+	err = mrprr.ExtractHeaderFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract MatchmakeRefereePersonalRoundResult header. %s", err.Error())
+	}
+
+	err = mrprr.PID.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract MatchmakeRefereePersonalRoundResult.PID. %s", err.Error())
 	}
 
-	matchmakeRefereePersonalRoundResult.PersonalRoundResultFlag, err = stream.ReadUInt32LE()
+	err = mrprr.PersonalRoundResultFlag.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract MatchmakeRefereePersonalRoundResult.PersonalRoundResultFlag. %s", err.Error())
 	}
 
-	matchmakeRefereePersonalRoundResult.RoundWinLoss, err = stream.ReadUInt32LE()
+	err = mrprr.RoundWinLoss.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract MatchmakeRefereePersonalRoundResult.RoundWinLoss. %s", err.Error())
 	}
 
-	matchmakeRefereePersonalRoundResult.RatingValueChange, err = stream.ReadInt32LE()
+	err = mrprr.RatingValueChange.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract MatchmakeRefereePersonalRoundResult.RatingValueChange. %s", err.Error())
 	}
 
-	matchmakeRefereePersonalRoundResult.Buffer, err = stream.ReadQBuffer()
+	err = mrprr.Buffer.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract MatchmakeRefereePersonalRoundResult.Buffer. %s", err.Error())
 	}
@@ -64,78 +81,74 @@ func (matchmakeRefereePersonalRoundResult *MatchmakeRefereePersonalRoundResult) 
 }
 
 // Copy returns a new copied instance of MatchmakeRefereePersonalRoundResult
-func (matchmakeRefereePersonalRoundResult *MatchmakeRefereePersonalRoundResult) Copy() nex.StructureInterface {
+func (mrprr *MatchmakeRefereePersonalRoundResult) Copy() types.RVType {
 	copied := NewMatchmakeRefereePersonalRoundResult()
 
-	copied.SetStructureVersion(matchmakeRefereePersonalRoundResult.StructureVersion())
-
-	copied.Data = matchmakeRefereePersonalRoundResult.ParentType().Copy().(*nex.Data)
-	copied.SetParentType(copied.Data)
-
-	copied.PID = matchmakeRefereePersonalRoundResult.PID
-	copied.PersonalRoundResultFlag = matchmakeRefereePersonalRoundResult.PersonalRoundResultFlag
-	copied.RoundWinLoss = matchmakeRefereePersonalRoundResult.RoundWinLoss
-	copied.RatingValueChange = matchmakeRefereePersonalRoundResult.RatingValueChange
-	copied.Buffer = make([]byte, len(matchmakeRefereePersonalRoundResult.Buffer))
-	copy(copied.Buffer, matchmakeRefereePersonalRoundResult.Buffer)
+	copied.StructureVersion = mrprr.StructureVersion
+	copied.Data = mrprr.Data.Copy().(*types.Data)
+	copied.PID = mrprr.PID.Copy().(*types.PID)
+	copied.PersonalRoundResultFlag = mrprr.PersonalRoundResultFlag.Copy().(*types.PrimitiveU32)
+	copied.RoundWinLoss = mrprr.RoundWinLoss.Copy().(*types.PrimitiveU32)
+	copied.RatingValueChange = mrprr.RatingValueChange.Copy().(*types.PrimitiveS32)
+	copied.Buffer = mrprr.Buffer.Copy().(*types.QBuffer)
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (matchmakeRefereePersonalRoundResult *MatchmakeRefereePersonalRoundResult) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*MatchmakeRefereePersonalRoundResult)
-
-	if matchmakeRefereePersonalRoundResult.StructureVersion() != other.StructureVersion() {
+// Equals checks if the given MatchmakeRefereePersonalRoundResult contains the same data as the current MatchmakeRefereePersonalRoundResult
+func (mrprr *MatchmakeRefereePersonalRoundResult) Equals(o types.RVType) bool {
+	if _, ok := o.(*MatchmakeRefereePersonalRoundResult); !ok {
 		return false
 	}
 
-	if !matchmakeRefereePersonalRoundResult.ParentType().Equals(other.ParentType()) {
+	other := o.(*MatchmakeRefereePersonalRoundResult)
+
+	if mrprr.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if matchmakeRefereePersonalRoundResult.PID != other.PID {
+	if !mrprr.Data.Equals(other.Data) {
 		return false
 	}
 
-	if matchmakeRefereePersonalRoundResult.PersonalRoundResultFlag != other.PersonalRoundResultFlag {
+	if !mrprr.PID.Equals(other.PID) {
 		return false
 	}
 
-	if matchmakeRefereePersonalRoundResult.RoundWinLoss != other.RoundWinLoss {
+	if !mrprr.PersonalRoundResultFlag.Equals(other.PersonalRoundResultFlag) {
 		return false
 	}
 
-	if matchmakeRefereePersonalRoundResult.RatingValueChange != other.RatingValueChange {
+	if !mrprr.RoundWinLoss.Equals(other.RoundWinLoss) {
 		return false
 	}
 
-	if !bytes.Equal(matchmakeRefereePersonalRoundResult.Buffer, other.Buffer) {
+	if !mrprr.RatingValueChange.Equals(other.RatingValueChange) {
 		return false
 	}
 
-	return true
+	return mrprr.Buffer.Equals(other.Buffer)
 }
 
-// String returns a string representation of the struct
-func (matchmakeRefereePersonalRoundResult *MatchmakeRefereePersonalRoundResult) String() string {
-	return matchmakeRefereePersonalRoundResult.FormatToString(0)
+// String returns the string representation of the MatchmakeRefereePersonalRoundResult
+func (mrprr *MatchmakeRefereePersonalRoundResult) String() string {
+	return mrprr.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (matchmakeRefereePersonalRoundResult *MatchmakeRefereePersonalRoundResult) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the MatchmakeRefereePersonalRoundResult using the provided indentation level
+func (mrprr *MatchmakeRefereePersonalRoundResult) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("MatchmakeRefereePersonalRoundResult{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, matchmakeRefereePersonalRoundResult.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sPID: %d,\n", indentationValues, matchmakeRefereePersonalRoundResult.PID))
-	b.WriteString(fmt.Sprintf("%sPersonalRoundResultFlag: %d,\n", indentationValues, matchmakeRefereePersonalRoundResult.PersonalRoundResultFlag))
-	b.WriteString(fmt.Sprintf("%sRoundWinLoss: %d,\n", indentationValues, matchmakeRefereePersonalRoundResult.RoundWinLoss))
-	b.WriteString(fmt.Sprintf("%sRatingValueChange: %d,\n", indentationValues, matchmakeRefereePersonalRoundResult.RatingValueChange))
-	b.WriteString(fmt.Sprintf("%sBuffer: %x\n", indentationValues, matchmakeRefereePersonalRoundResult.Buffer))
+	b.WriteString(fmt.Sprintf("%sData (parent): %s,\n", indentationValues, mrprr.Data.FormatToString(indentationLevel+1)))
+	b.WriteString(fmt.Sprintf("%sPID: %s,\n", indentationValues, mrprr.PID.FormatToString(indentationLevel+1)))
+	b.WriteString(fmt.Sprintf("%sPersonalRoundResultFlag: %s,\n", indentationValues, mrprr.PersonalRoundResultFlag))
+	b.WriteString(fmt.Sprintf("%sRoundWinLoss: %s,\n", indentationValues, mrprr.RoundWinLoss))
+	b.WriteString(fmt.Sprintf("%sRatingValueChange: %s,\n", indentationValues, mrprr.RatingValueChange))
+	b.WriteString(fmt.Sprintf("%sBuffer: %s,\n", indentationValues, mrprr.Buffer))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -143,5 +156,14 @@ func (matchmakeRefereePersonalRoundResult *MatchmakeRefereePersonalRoundResult) 
 
 // NewMatchmakeRefereePersonalRoundResult returns a new MatchmakeRefereePersonalRoundResult
 func NewMatchmakeRefereePersonalRoundResult() *MatchmakeRefereePersonalRoundResult {
-	return &MatchmakeRefereePersonalRoundResult{}
+	mrprr := &MatchmakeRefereePersonalRoundResult{
+		Data:                    types.NewData(),
+		PID:                     types.NewPID(0),
+		PersonalRoundResultFlag: types.NewPrimitiveU32(0),
+		RoundWinLoss:            types.NewPrimitiveU32(0),
+		RatingValueChange:       types.NewPrimitiveS32(0),
+		Buffer:                  types.NewQBuffer(nil),
+	}
+
+	return mrprr
 }

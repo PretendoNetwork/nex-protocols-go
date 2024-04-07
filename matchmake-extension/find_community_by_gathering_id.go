@@ -4,43 +4,45 @@ package protocol
 import (
 	"fmt"
 
-	nex "github.com/PretendoNetwork/nex-go"
-	"github.com/PretendoNetwork/nex-protocols-go/globals"
+	nex "github.com/PretendoNetwork/nex-go/v2"
+	"github.com/PretendoNetwork/nex-go/v2/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
 )
 
-// FindCommunityByGatheringID sets the FindCommunityByGatheringID handler function
-func (protocol *Protocol) FindCommunityByGatheringID(handler func(err error, packet nex.PacketInterface, callID uint32, lstGID []uint32) uint32) {
-	protocol.findCommunityByGatheringIDHandler = handler
-}
-
 func (protocol *Protocol) handleFindCommunityByGatheringID(packet nex.PacketInterface) {
-	var errorCode uint32
+	if protocol.FindCommunityByGatheringID == nil {
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "MatchmakeExtension::FindCommunityByGatheringID not implemented")
 
-	if protocol.findCommunityByGatheringIDHandler == nil {
-		globals.Logger.Warning("MatchmakeExtension::FindCommunityByGatheringID not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
+	callID := request.CallID
+	parameters := request.Parameters
+	endpoint := packet.Sender().Endpoint()
+	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	callID := request.CallID()
-	parameters := request.Parameters()
+	lstGID := types.NewList[*types.PrimitiveU32]()
+	lstGID.Type = types.NewPrimitiveU32(0)
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
-
-	lstGID, err := parametersStream.ReadListUInt32LE()
+	err := lstGID.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.findCommunityByGatheringIDHandler(fmt.Errorf("Failed to read lstGID from parameters. %s", err.Error()), packet, callID, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.FindCommunityByGatheringID(fmt.Errorf("Failed to read lstGID from parameters. %s", err.Error()), packet, callID, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	errorCode = protocol.findCommunityByGatheringIDHandler(nil, packet, callID, lstGID)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.FindCommunityByGatheringID(nil, packet, callID, lstGID)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

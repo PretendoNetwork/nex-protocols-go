@@ -5,20 +5,38 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/v2/types"
 )
 
-// DataStoreGetSpecificMetaParamV1 is a data structure used by the DataStore protocol
+// DataStoreGetSpecificMetaParamV1 is a type within the DataStore protocol
 type DataStoreGetSpecificMetaParamV1 struct {
-	nex.Structure
-	DataIDs []uint32
+	types.Structure
+	DataIDs *types.List[*types.PrimitiveU32]
 }
 
-// ExtractFromStream extracts a DataStoreGetSpecificMetaParamV1 structure from a stream
-func (dataStoreGetSpecificMetaParamV1 *DataStoreGetSpecificMetaParamV1) ExtractFromStream(stream *nex.StreamIn) error {
+// WriteTo writes the DataStoreGetSpecificMetaParamV1 to the given writable
+func (dsgsmpv *DataStoreGetSpecificMetaParamV1) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
+
+	dsgsmpv.DataIDs.WriteTo(writable)
+
+	content := contentWritable.Bytes()
+
+	dsgsmpv.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
+}
+
+// ExtractFrom extracts the DataStoreGetSpecificMetaParamV1 from the given readable
+func (dsgsmpv *DataStoreGetSpecificMetaParamV1) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	dataStoreGetSpecificMetaParamV1.DataIDs, err = stream.ReadListUInt32LE()
+	err = dsgsmpv.ExtractHeaderFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreGetSpecificMetaParamV1 header. %s", err.Error())
+	}
+
+	err = dsgsmpv.DataIDs.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreGetSpecificMetaParamV1.DataIDs. %s", err.Error())
 	}
@@ -26,62 +44,45 @@ func (dataStoreGetSpecificMetaParamV1 *DataStoreGetSpecificMetaParamV1) ExtractF
 	return nil
 }
 
-// Bytes encodes the DataStoreGetSpecificMetaParamV1 and returns a byte array
-func (dataStoreGetSpecificMetaParamV1 *DataStoreGetSpecificMetaParamV1) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteListUInt32LE(dataStoreGetSpecificMetaParamV1.DataIDs)
-
-	return stream.Bytes()
-}
-
 // Copy returns a new copied instance of DataStoreGetSpecificMetaParamV1
-func (dataStoreGetSpecificMetaParamV1 *DataStoreGetSpecificMetaParamV1) Copy() nex.StructureInterface {
+func (dsgsmpv *DataStoreGetSpecificMetaParamV1) Copy() types.RVType {
 	copied := NewDataStoreGetSpecificMetaParamV1()
 
-	copied.SetStructureVersion(dataStoreGetSpecificMetaParamV1.StructureVersion())
-
-	copied.DataIDs = make([]uint32, len(dataStoreGetSpecificMetaParamV1.DataIDs))
-
-	copy(copied.DataIDs, dataStoreGetSpecificMetaParamV1.DataIDs)
+	copied.StructureVersion = dsgsmpv.StructureVersion
+	copied.DataIDs = dsgsmpv.DataIDs.Copy().(*types.List[*types.PrimitiveU32])
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (dataStoreGetSpecificMetaParamV1 *DataStoreGetSpecificMetaParamV1) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*DataStoreGetSpecificMetaParamV1)
-
-	if dataStoreGetSpecificMetaParamV1.StructureVersion() != other.StructureVersion() {
+// Equals checks if the given DataStoreGetSpecificMetaParamV1 contains the same data as the current DataStoreGetSpecificMetaParamV1
+func (dsgsmpv *DataStoreGetSpecificMetaParamV1) Equals(o types.RVType) bool {
+	if _, ok := o.(*DataStoreGetSpecificMetaParamV1); !ok {
 		return false
 	}
 
-	if len(dataStoreGetSpecificMetaParamV1.DataIDs) != len(other.DataIDs) {
+	other := o.(*DataStoreGetSpecificMetaParamV1)
+
+	if dsgsmpv.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	for i := 0; i < len(dataStoreGetSpecificMetaParamV1.DataIDs); i++ {
-		if dataStoreGetSpecificMetaParamV1.DataIDs[i] != other.DataIDs[i] {
-			return false
-		}
-	}
-
-	return true
+	return dsgsmpv.DataIDs.Equals(other.DataIDs)
 }
 
-// String returns a string representation of the struct
-func (dataStoreGetSpecificMetaParamV1 *DataStoreGetSpecificMetaParamV1) String() string {
-	return dataStoreGetSpecificMetaParamV1.FormatToString(0)
+// String returns the string representation of the DataStoreGetSpecificMetaParamV1
+func (dsgsmpv *DataStoreGetSpecificMetaParamV1) String() string {
+	return dsgsmpv.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (dataStoreGetSpecificMetaParamV1 *DataStoreGetSpecificMetaParamV1) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the DataStoreGetSpecificMetaParamV1 using the provided indentation level
+func (dsgsmpv *DataStoreGetSpecificMetaParamV1) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("DataStoreGetSpecificMetaParamV1{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, dataStoreGetSpecificMetaParamV1.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sDataIDs: %v\n", indentationValues, dataStoreGetSpecificMetaParamV1.DataIDs))
+	b.WriteString(fmt.Sprintf("%sDataIDs: %s,\n", indentationValues, dsgsmpv.DataIDs))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -89,7 +90,11 @@ func (dataStoreGetSpecificMetaParamV1 *DataStoreGetSpecificMetaParamV1) FormatTo
 
 // NewDataStoreGetSpecificMetaParamV1 returns a new DataStoreGetSpecificMetaParamV1
 func NewDataStoreGetSpecificMetaParamV1() *DataStoreGetSpecificMetaParamV1 {
-	return &DataStoreGetSpecificMetaParamV1{
-		DataIDs: make([]uint32, 0),
+	dsgsmpv := &DataStoreGetSpecificMetaParamV1{
+		DataIDs: types.NewList[*types.PrimitiveU32](),
 	}
+
+	dsgsmpv.DataIDs.Type = types.NewPrimitiveU32(0)
+
+	return dsgsmpv
 }

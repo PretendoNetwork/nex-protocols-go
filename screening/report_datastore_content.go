@@ -2,34 +2,30 @@
 package protocol
 
 import (
-	nex "github.com/PretendoNetwork/nex-go"
-	"github.com/PretendoNetwork/nex-protocols-go/globals"
+	nex "github.com/PretendoNetwork/nex-go/v2"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
 )
 
-// ReportDataStoreContent sets the ReportDataStoreContent handler function
-func (protocol *Protocol) ReportDataStoreContent(handler func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) uint32) {
-	protocol.reportDataStoreContentHandler = handler
-}
-
 func (protocol *Protocol) handleReportDataStoreContent(packet nex.PacketInterface) {
-	var errorCode uint32
+	if protocol.ReportDataStoreContent == nil {
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "Screening::ReportDataStoreContent not implemented")
 
-	if protocol.reportDataStoreContentHandler == nil {
-		globals.Logger.Warning("Screening::ReportDataStoreContent not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
 	globals.Logger.Warning("Screening::ReportDataStoreContent STUBBED")
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
+	callID := request.CallID
 
-	callID := request.CallID()
-
-	// TODO - THIS METHOD HAS AN UNKNOWN REQUEST/RESPONSE FORMAT
-
-	errorCode = protocol.reportDataStoreContentHandler(nil, packet, callID, packet.Payload())
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.ReportDataStoreContent(nil, packet, callID, packet.Payload())
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

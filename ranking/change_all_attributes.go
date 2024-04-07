@@ -4,54 +4,58 @@ package protocol
 import (
 	"fmt"
 
-	nex "github.com/PretendoNetwork/nex-go"
-	"github.com/PretendoNetwork/nex-protocols-go/globals"
-	ranking_types "github.com/PretendoNetwork/nex-protocols-go/ranking/types"
+	nex "github.com/PretendoNetwork/nex-go/v2"
+	"github.com/PretendoNetwork/nex-go/v2/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
+	ranking_types "github.com/PretendoNetwork/nex-protocols-go/v2/ranking/types"
 )
 
-// ChangeAllAttributes sets the ChangeAllAttributes handler function
-func (protocol *Protocol) ChangeAllAttributes(handler func(err error, packet nex.PacketInterface, callID uint32, changeParam *ranking_types.RankingChangeAttributesParam, uniqueID uint64) uint32) {
-	protocol.changeAllAttributesHandler = handler
-}
-
 func (protocol *Protocol) handleChangeAllAttributes(packet nex.PacketInterface) {
-	var errorCode uint32
+	if protocol.ChangeAllAttributes == nil {
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "Ranking::ChangeAllAttributes not implemented")
 
-	if protocol.changeAllAttributesHandler == nil {
-		globals.Logger.Warning("Ranking::ChangeAllAttributes not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
+	callID := request.CallID
+	parameters := request.Parameters
+	endpoint := packet.Sender().Endpoint()
+	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	callID := request.CallID()
-	parameters := request.Parameters()
+	changeParam := ranking_types.NewRankingChangeAttributesParam()
+	uniqueID := types.NewPrimitiveU64(0)
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+	var err error
 
-	changeParam, err := parametersStream.ReadStructure(ranking_types.NewRankingChangeAttributesParam())
+	err = changeParam.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.changeAllAttributesHandler(fmt.Errorf("Failed to read changeParam from parameters. %s", err.Error()), packet, callID, nil, 0)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.ChangeAllAttributes(fmt.Errorf("Failed to read changeParam from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	uniqueID, err := parametersStream.ReadUInt64LE()
+	err = uniqueID.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.changeAllAttributesHandler(fmt.Errorf("Failed to read uniqueID from parameters. %s", err.Error()), packet, callID, nil, 0)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.ChangeAllAttributes(fmt.Errorf("Failed to read uniqueID from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	errorCode = protocol.changeAllAttributesHandler(nil, packet, callID, changeParam.(*ranking_types.RankingChangeAttributesParam), uniqueID)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.ChangeAllAttributes(nil, packet, callID, changeParam, uniqueID)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

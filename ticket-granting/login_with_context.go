@@ -2,21 +2,28 @@
 package protocol
 
 import (
-	nex "github.com/PretendoNetwork/nex-go"
-	"github.com/PretendoNetwork/nex-protocols-go/globals"
+	nex "github.com/PretendoNetwork/nex-go/v2"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
 )
 
-// LoginWithContext sets the LoginWithContext handler function
-func (protocol *Protocol) LoginWithContext(handler func(err error, packet nex.PacketInterface, callID uint32) uint32) {
-	protocol.loginWithContextHandler = handler
-}
-
 func (protocol *Protocol) handleLoginWithContext(packet nex.PacketInterface) {
-	if protocol.loginWithContextHandler == nil {
-		globals.Logger.Warning("TicketGranting::LoginWithContext not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+	if protocol.LoginWithContext == nil {
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "TicketGranting::LoginWithContext not implemented")
+
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
-	// * Unsure what data is sent here, or how to trigger the console to send it
+	request := packet.RMCMessage()
+	callID := request.CallID
+
+	rmcMessage, rmcError := protocol.LoginWithContext(nil, packet, callID)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
+		return
+	}
+
+	globals.Respond(packet, rmcMessage)
 }

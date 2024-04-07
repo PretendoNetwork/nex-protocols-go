@@ -4,63 +4,68 @@ package protocol
 import (
 	"fmt"
 
-	nex "github.com/PretendoNetwork/nex-go"
-	"github.com/PretendoNetwork/nex-protocols-go/globals"
+	nex "github.com/PretendoNetwork/nex-go/v2"
+	"github.com/PretendoNetwork/nex-go/v2/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
 )
 
-// SetApplicationConfigString sets the SetApplicationConfigString handler function
-func (protocol *Protocol) SetApplicationConfigString(handler func(err error, packet nex.PacketInterface, callID uint32, applicationID uint32, key uint32, value string) uint32) {
-	protocol.setApplicationConfigStringHandler = handler
-}
-
 func (protocol *Protocol) handleSetApplicationConfigString(packet nex.PacketInterface) {
-	var errorCode uint32
+	if protocol.SetApplicationConfigString == nil {
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "DataStoreSuperMarioMaker::SetApplicationConfigString not implemented")
 
-	if protocol.setApplicationConfigStringHandler == nil {
-		globals.Logger.Warning("DataStoreSuperMarioMaker::SetApplicationConfigString not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
+	callID := request.CallID
+	parameters := request.Parameters
+	endpoint := packet.Sender().Endpoint()
+	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	callID := request.CallID()
-	parameters := request.Parameters()
+	applicationID := types.NewPrimitiveU32(0)
+	key := types.NewPrimitiveU32(0)
+	value := types.NewString("")
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+	var err error
 
-	applicationID, err := parametersStream.ReadUInt32LE()
+	err = applicationID.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.setApplicationConfigStringHandler(fmt.Errorf("Failed to read applicationID from parameters. %s", err.Error()), packet, callID, 0, 0, "")
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.SetApplicationConfigString(fmt.Errorf("Failed to read applicationID from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	key, err := parametersStream.ReadUInt32LE()
+	err = key.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.setApplicationConfigStringHandler(fmt.Errorf("Failed to read key from parameters. %s", err.Error()), packet, callID, 0, 0, "")
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.SetApplicationConfigString(fmt.Errorf("Failed to read key from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	value, err := parametersStream.ReadString()
+	err = value.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.setApplicationConfigStringHandler(fmt.Errorf("Failed to read value from parameters. %s", err.Error()), packet, callID, 0, 0, "")
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.SetApplicationConfigString(fmt.Errorf("Failed to read value from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	errorCode = protocol.setApplicationConfigStringHandler(nil, packet, callID, applicationID, key, value)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.SetApplicationConfigString(nil, packet, callID, applicationID, key, value)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

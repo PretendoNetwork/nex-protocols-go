@@ -4,83 +4,90 @@ package protocol
 import (
 	"fmt"
 
-	nex "github.com/PretendoNetwork/nex-go"
-	"github.com/PretendoNetwork/nex-protocols-go/globals"
+	nex "github.com/PretendoNetwork/nex-go/v2"
+	"github.com/PretendoNetwork/nex-go/v2/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
 )
 
-// JoinMatchmakeSessionWithExtraParticipants sets the JoinMatchmakeSessionWithExtraParticipants handler function
-func (protocol *Protocol) JoinMatchmakeSessionWithExtraParticipants(handler func(err error, packet nex.PacketInterface, callID uint32, gid uint32, joinMessage string, ignoreBlacklist bool, participationCount uint16, extraParticipants uint32) uint32) {
-	protocol.joinMatchmakeSessionWithExtraParticipantsHandler = handler
-}
-
 func (protocol *Protocol) handleJoinMatchmakeSessionWithExtraParticipants(packet nex.PacketInterface) {
-	var errorCode uint32
+	if protocol.JoinMatchmakeSessionWithExtraParticipants == nil {
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "MatchmakeExtensionMarioKart8::JoinMatchmakeSessionWithExtraParticipants not implemented")
 
-	if protocol.joinMatchmakeSessionWithExtraParticipantsHandler == nil {
-		globals.Logger.Warning("MatchmakeExtensionMarioKart8::JoinMatchmakeSessionWithExtraParticipants not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
+	callID := request.CallID
+	parameters := request.Parameters
+	endpoint := packet.Sender().Endpoint()
+	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	callID := request.CallID()
-	parameters := request.Parameters()
+	gid := types.NewPrimitiveU32(0)
+	joinMessage := types.NewString("")
+	ignoreBlacklist := types.NewPrimitiveBool(false)
+	participationCount := types.NewPrimitiveU16(0)
+	extraParticipants := types.NewPrimitiveU32(0)
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+	var err error
 
-	gid, err := parametersStream.ReadUInt32LE()
+	err = gid.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.joinMatchmakeSessionWithExtraParticipantsHandler(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), packet, callID, 0, "", false, 0, 0)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.JoinMatchmakeSessionWithExtraParticipants(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), packet, callID, nil, nil, nil, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	joinMessage, err := parametersStream.ReadString()
+	err = joinMessage.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.joinMatchmakeSessionWithExtraParticipantsHandler(fmt.Errorf("Failed to read joinMessage from parameters. %s", err.Error()), packet, callID, 0, "", false, 0, 0)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.JoinMatchmakeSessionWithExtraParticipants(fmt.Errorf("Failed to read joinMessage from parameters. %s", err.Error()), packet, callID, nil, nil, nil, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	ignoreBlacklist, err := parametersStream.ReadBool()
+	err = ignoreBlacklist.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.joinMatchmakeSessionWithExtraParticipantsHandler(fmt.Errorf("Failed to read ignoreBlacklist from parameters. %s", err.Error()), packet, callID, 0, "", false, 0, 0)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.JoinMatchmakeSessionWithExtraParticipants(fmt.Errorf("Failed to read ignoreBlacklist from parameters. %s", err.Error()), packet, callID, nil, nil, nil, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	participationCount, err := parametersStream.ReadUInt16LE()
+	err = participationCount.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.joinMatchmakeSessionWithExtraParticipantsHandler(fmt.Errorf("Failed to read participationCount from parameters. %s", err.Error()), packet, callID, 0, "", false, 0, 0)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.JoinMatchmakeSessionWithExtraParticipants(fmt.Errorf("Failed to read participationCount from parameters. %s", err.Error()), packet, callID, nil, nil, nil, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	extraParticipants, err := parametersStream.ReadUInt32LE()
+	err = extraParticipants.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.joinMatchmakeSessionWithExtraParticipantsHandler(fmt.Errorf("Failed to read extraParticipants from parameters. %s", err.Error()), packet, callID, 0, "", false, 0, 0)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.JoinMatchmakeSessionWithExtraParticipants(fmt.Errorf("Failed to read extraParticipants from parameters. %s", err.Error()), packet, callID, nil, nil, nil, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	errorCode = protocol.joinMatchmakeSessionWithExtraParticipantsHandler(nil, packet, callID, gid, joinMessage, ignoreBlacklist, participationCount, extraParticipants)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.JoinMatchmakeSessionWithExtraParticipants(nil, packet, callID, gid, joinMessage, ignoreBlacklist, participationCount, extraParticipants)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

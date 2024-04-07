@@ -4,63 +4,68 @@ package protocol
 import (
 	"fmt"
 
-	nex "github.com/PretendoNetwork/nex-go"
-	"github.com/PretendoNetwork/nex-protocols-go/globals"
+	nex "github.com/PretendoNetwork/nex-go/v2"
+	"github.com/PretendoNetwork/nex-go/v2/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
 )
 
-// AddFriendByName sets the AddFriendByName handler function
-func (protocol *Protocol) AddFriendByName(handler func(err error, packet nex.PacketInterface, callID uint32, strPlayerName string, uiDetails uint32, strMessage string) uint32) {
-	protocol.addFriendByNameHandler = handler
-}
-
 func (protocol *Protocol) handleAddFriendByName(packet nex.PacketInterface) {
-	var errorCode uint32
+	if protocol.AddFriendByName == nil {
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "Friends::AddFriendByName not implemented")
 
-	if protocol.addFriendByNameHandler == nil {
-		globals.Logger.Warning("Friends::AddFriendByName not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
+	callID := request.CallID
+	parameters := request.Parameters
+	endpoint := packet.Sender().Endpoint()
+	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	callID := request.CallID()
-	parameters := request.Parameters()
+	strPlayerName := types.NewString("")
+	uiDetails := types.NewPrimitiveU32(0)
+	strMessage := types.NewString("")
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+	var err error
 
-	strPlayerName, err := parametersStream.ReadString()
+	err = strPlayerName.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.addFriendByNameHandler(fmt.Errorf("Failed to read strPlayerName from parameters. %s", err.Error()), packet, callID, "", 0, "")
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.AddFriendByName(fmt.Errorf("Failed to read strPlayerName from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	uiDetails, err := parametersStream.ReadUInt32LE()
+	err = uiDetails.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.addFriendByNameHandler(fmt.Errorf("Failed to read uiDetails from parameters. %s", err.Error()), packet, callID, "", 0, "")
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.AddFriendByName(fmt.Errorf("Failed to read uiDetails from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	strMessage, err := parametersStream.ReadString()
+	err = strMessage.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.addFriendByNameHandler(fmt.Errorf("Failed to read strMessage from parameters. %s", err.Error()), packet, callID, "", 0, "")
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.AddFriendByName(fmt.Errorf("Failed to read strMessage from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	errorCode = protocol.addFriendByNameHandler(nil, packet, callID, strPlayerName, uiDetails, strMessage)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.AddFriendByName(nil, packet, callID, strPlayerName, uiDetails, strMessage)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

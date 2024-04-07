@@ -1,216 +1,140 @@
-// Package types implements all the types used by the Service Item (Team Kirby Clash Deluxe) protocol
+// Package types implements all the types used by the ServiceItem protocol
 package types
 
 import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/v2/types"
 )
 
-// ServiceItemRightInfos holds data for the Service Item (Team Kirby Clash Deluxe) protocol
+// ServiceItemRightInfos is a type within the ServiceItem protocol
 type ServiceItemRightInfos struct {
-	nex.Structure
-	SupportID                       string
-	ConsumptionRightInfos           []*ServiceItemRightConsumptionInfo
-	AdditionalTimeRightInfos        []*ServiceItemRightTimeInfo
-	PermanentRightInfos             []*ServiceItemRightTimeInfo
-	AlreadyPurchasedInitialOnlyItem bool
+	types.Structure
+	SupportID                       *types.String
+	ConsumptionRightInfos           *types.List[*ServiceItemRightConsumptionInfo]
+	AdditionalTimeRightInfos        *types.List[*ServiceItemRightTimeInfo]
+	PermanentRightInfos             *types.List[*ServiceItemRightTimeInfo]
+	AlreadyPurchasedInitialOnlyItem *types.PrimitiveBool
 }
 
-// ExtractFromStream extracts a ServiceItemRightInfos structure from a stream
-func (serviceItemRightInfos *ServiceItemRightInfos) ExtractFromStream(stream *nex.StreamIn) error {
+// WriteTo writes the ServiceItemRightInfos to the given writable
+func (siri *ServiceItemRightInfos) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
+
+	siri.SupportID.WriteTo(writable)
+	siri.ConsumptionRightInfos.WriteTo(writable)
+	siri.AdditionalTimeRightInfos.WriteTo(writable)
+	siri.PermanentRightInfos.WriteTo(writable)
+	siri.AlreadyPurchasedInitialOnlyItem.WriteTo(writable)
+
+	content := contentWritable.Bytes()
+
+	siri.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
+}
+
+// ExtractFrom extracts the ServiceItemRightInfos from the given readable
+func (siri *ServiceItemRightInfos) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	serviceItemRightInfos.SupportID, err = stream.ReadString()
+	err = siri.ExtractHeaderFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemRightInfos.SupportID from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract ServiceItemRightInfos header. %s", err.Error())
 	}
 
-	consumptionRightInfos, err := stream.ReadListStructure(NewServiceItemRightConsumptionInfo())
+	err = siri.SupportID.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemRightInfos.ConsumptionRightInfos from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract ServiceItemRightInfos.SupportID. %s", err.Error())
 	}
 
-	serviceItemRightInfos.ConsumptionRightInfos = consumptionRightInfos.([]*ServiceItemRightConsumptionInfo)
-
-	additionalTimeRightInfos, err := stream.ReadListStructure(NewServiceItemRightTimeInfo())
+	err = siri.ConsumptionRightInfos.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemRightInfos.AdditionalTimeRightInfos from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract ServiceItemRightInfos.ConsumptionRightInfos. %s", err.Error())
 	}
 
-	serviceItemRightInfos.AdditionalTimeRightInfos = additionalTimeRightInfos.([]*ServiceItemRightTimeInfo)
-
-	permanentRightInfos, err := stream.ReadListStructure(NewServiceItemRightTimeInfo())
+	err = siri.AdditionalTimeRightInfos.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemRightInfos.PermanentRightInfos from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract ServiceItemRightInfos.AdditionalTimeRightInfos. %s", err.Error())
 	}
 
-	serviceItemRightInfos.PermanentRightInfos = permanentRightInfos.([]*ServiceItemRightTimeInfo)
-
-	serviceItemRightInfos.AlreadyPurchasedInitialOnlyItem, err = stream.ReadBool()
+	err = siri.PermanentRightInfos.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemRightInfos.AlreadyPurchasedInitialOnlyItem from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract ServiceItemRightInfos.PermanentRightInfos. %s", err.Error())
+	}
+
+	err = siri.AlreadyPurchasedInitialOnlyItem.ExtractFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract ServiceItemRightInfos.AlreadyPurchasedInitialOnlyItem. %s", err.Error())
 	}
 
 	return nil
 }
 
-// Bytes encodes the ServiceItemRightInfos and returns a byte array
-func (serviceItemRightInfos *ServiceItemRightInfos) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteString(serviceItemRightInfos.SupportID)
-	stream.WriteListStructure(serviceItemRightInfos.ConsumptionRightInfos)
-	stream.WriteListStructure(serviceItemRightInfos.AdditionalTimeRightInfos)
-	stream.WriteListStructure(serviceItemRightInfos.PermanentRightInfos)
-	stream.WriteBool(serviceItemRightInfos.AlreadyPurchasedInitialOnlyItem)
-
-	return stream.Bytes()
-}
-
 // Copy returns a new copied instance of ServiceItemRightInfos
-func (serviceItemRightInfos *ServiceItemRightInfos) Copy() nex.StructureInterface {
+func (siri *ServiceItemRightInfos) Copy() types.RVType {
 	copied := NewServiceItemRightInfos()
 
-	copied.SetStructureVersion(serviceItemRightInfos.StructureVersion())
-
-	copied.SupportID = serviceItemRightInfos.SupportID
-	copied.ConsumptionRightInfos = make([]*ServiceItemRightConsumptionInfo, len(serviceItemRightInfos.ConsumptionRightInfos))
-
-	for i := 0; i < len(serviceItemRightInfos.ConsumptionRightInfos); i++ {
-		copied.ConsumptionRightInfos[i] = serviceItemRightInfos.ConsumptionRightInfos[i].Copy().(*ServiceItemRightConsumptionInfo)
-	}
-
-	copied.AdditionalTimeRightInfos = make([]*ServiceItemRightTimeInfo, len(serviceItemRightInfos.AdditionalTimeRightInfos))
-
-	for i := 0; i < len(serviceItemRightInfos.AdditionalTimeRightInfos); i++ {
-		copied.AdditionalTimeRightInfos[i] = serviceItemRightInfos.AdditionalTimeRightInfos[i].Copy().(*ServiceItemRightTimeInfo)
-	}
-
-	copied.PermanentRightInfos = make([]*ServiceItemRightTimeInfo, len(serviceItemRightInfos.PermanentRightInfos))
-
-	for i := 0; i < len(serviceItemRightInfos.PermanentRightInfos); i++ {
-		copied.PermanentRightInfos[i] = serviceItemRightInfos.PermanentRightInfos[i].Copy().(*ServiceItemRightTimeInfo)
-	}
-
-	copied.AlreadyPurchasedInitialOnlyItem = serviceItemRightInfos.AlreadyPurchasedInitialOnlyItem
+	copied.StructureVersion = siri.StructureVersion
+	copied.SupportID = siri.SupportID.Copy().(*types.String)
+	copied.ConsumptionRightInfos = siri.ConsumptionRightInfos.Copy().(*types.List[*ServiceItemRightConsumptionInfo])
+	copied.AdditionalTimeRightInfos = siri.AdditionalTimeRightInfos.Copy().(*types.List[*ServiceItemRightTimeInfo])
+	copied.PermanentRightInfos = siri.PermanentRightInfos.Copy().(*types.List[*ServiceItemRightTimeInfo])
+	copied.AlreadyPurchasedInitialOnlyItem = siri.AlreadyPurchasedInitialOnlyItem.Copy().(*types.PrimitiveBool)
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (serviceItemRightInfos *ServiceItemRightInfos) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*ServiceItemRightInfos)
-
-	if serviceItemRightInfos.StructureVersion() != other.StructureVersion() {
+// Equals checks if the given ServiceItemRightInfos contains the same data as the current ServiceItemRightInfos
+func (siri *ServiceItemRightInfos) Equals(o types.RVType) bool {
+	if _, ok := o.(*ServiceItemRightInfos); !ok {
 		return false
 	}
 
-	if serviceItemRightInfos.SupportID != other.SupportID {
+	other := o.(*ServiceItemRightInfos)
+
+	if siri.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if len(serviceItemRightInfos.ConsumptionRightInfos) != len(other.ConsumptionRightInfos) {
+	if !siri.SupportID.Equals(other.SupportID) {
 		return false
 	}
 
-	for i := 0; i < len(serviceItemRightInfos.ConsumptionRightInfos); i++ {
-		if !serviceItemRightInfos.ConsumptionRightInfos[i].Equals(other.ConsumptionRightInfos[i]) {
-			return false
-		}
-	}
-
-	if len(serviceItemRightInfos.AdditionalTimeRightInfos) != len(other.AdditionalTimeRightInfos) {
+	if !siri.ConsumptionRightInfos.Equals(other.ConsumptionRightInfos) {
 		return false
 	}
 
-	for i := 0; i < len(serviceItemRightInfos.AdditionalTimeRightInfos); i++ {
-		if !serviceItemRightInfos.AdditionalTimeRightInfos[i].Equals(other.AdditionalTimeRightInfos[i]) {
-			return false
-		}
-	}
-
-	if len(serviceItemRightInfos.PermanentRightInfos) != len(other.PermanentRightInfos) {
+	if !siri.AdditionalTimeRightInfos.Equals(other.AdditionalTimeRightInfos) {
 		return false
 	}
 
-	for i := 0; i < len(serviceItemRightInfos.PermanentRightInfos); i++ {
-		if !serviceItemRightInfos.PermanentRightInfos[i].Equals(other.PermanentRightInfos[i]) {
-			return false
-		}
+	if !siri.PermanentRightInfos.Equals(other.PermanentRightInfos) {
+		return false
 	}
 
-	return serviceItemRightInfos.AlreadyPurchasedInitialOnlyItem == other.AlreadyPurchasedInitialOnlyItem
+	return siri.AlreadyPurchasedInitialOnlyItem.Equals(other.AlreadyPurchasedInitialOnlyItem)
 }
 
-// String returns a string representation of the struct
-func (serviceItemRightInfos *ServiceItemRightInfos) String() string {
-	return serviceItemRightInfos.FormatToString(0)
+// String returns the string representation of the ServiceItemRightInfos
+func (siri *ServiceItemRightInfos) String() string {
+	return siri.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (serviceItemRightInfos *ServiceItemRightInfos) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the ServiceItemRightInfos using the provided indentation level
+func (siri *ServiceItemRightInfos) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
-	indentationListValues := strings.Repeat("\t", indentationLevel+2)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("ServiceItemRightInfos{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, serviceItemRightInfos.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sSupportID: %q,\n", indentationValues, serviceItemRightInfos.SupportID))
-
-	if len(serviceItemRightInfos.ConsumptionRightInfos) == 0 {
-		b.WriteString(fmt.Sprintf("%sConsumptionRightInfos: [],\n", indentationValues))
-	} else {
-		b.WriteString(fmt.Sprintf("%sConsumptionRightInfos: [\n", indentationValues))
-
-		for i := 0; i < len(serviceItemRightInfos.ConsumptionRightInfos); i++ {
-			str := serviceItemRightInfos.ConsumptionRightInfos[i].FormatToString(indentationLevel + 2)
-			if i == len(serviceItemRightInfos.ConsumptionRightInfos)-1 {
-				b.WriteString(fmt.Sprintf("%s%s\n", indentationListValues, str))
-			} else {
-				b.WriteString(fmt.Sprintf("%s%s,\n", indentationListValues, str))
-			}
-		}
-
-		b.WriteString(fmt.Sprintf("%s],\n", indentationValues))
-	}
-
-	if len(serviceItemRightInfos.AdditionalTimeRightInfos) == 0 {
-		b.WriteString(fmt.Sprintf("%sAdditionalTimeRightInfos: [],\n", indentationValues))
-	} else {
-		b.WriteString(fmt.Sprintf("%sAdditionalTimeRightInfos: [\n", indentationValues))
-
-		for i := 0; i < len(serviceItemRightInfos.AdditionalTimeRightInfos); i++ {
-			str := serviceItemRightInfos.AdditionalTimeRightInfos[i].FormatToString(indentationLevel + 2)
-			if i == len(serviceItemRightInfos.AdditionalTimeRightInfos)-1 {
-				b.WriteString(fmt.Sprintf("%s%s\n", indentationListValues, str))
-			} else {
-				b.WriteString(fmt.Sprintf("%s%s,\n", indentationListValues, str))
-			}
-		}
-
-		b.WriteString(fmt.Sprintf("%s],\n", indentationValues))
-	}
-
-	if len(serviceItemRightInfos.PermanentRightInfos) == 0 {
-		b.WriteString(fmt.Sprintf("%sPermanentRightInfos: [],\n", indentationValues))
-	} else {
-		b.WriteString(fmt.Sprintf("%sPermanentRightInfos: [\n", indentationValues))
-
-		for i := 0; i < len(serviceItemRightInfos.PermanentRightInfos); i++ {
-			str := serviceItemRightInfos.PermanentRightInfos[i].FormatToString(indentationLevel + 2)
-			if i == len(serviceItemRightInfos.PermanentRightInfos)-1 {
-				b.WriteString(fmt.Sprintf("%s%s\n", indentationListValues, str))
-			} else {
-				b.WriteString(fmt.Sprintf("%s%s,\n", indentationListValues, str))
-			}
-		}
-
-		b.WriteString(fmt.Sprintf("%s],\n", indentationValues))
-	}
-
-	b.WriteString(fmt.Sprintf("%sAlreadyPurchasedInitialOnlyItem: %t,\n", indentationValues, serviceItemRightInfos.AlreadyPurchasedInitialOnlyItem))
+	b.WriteString(fmt.Sprintf("%sSupportID: %s,\n", indentationValues, siri.SupportID))
+	b.WriteString(fmt.Sprintf("%sConsumptionRightInfos: %s,\n", indentationValues, siri.ConsumptionRightInfos))
+	b.WriteString(fmt.Sprintf("%sAdditionalTimeRightInfos: %s,\n", indentationValues, siri.AdditionalTimeRightInfos))
+	b.WriteString(fmt.Sprintf("%sPermanentRightInfos: %s,\n", indentationValues, siri.PermanentRightInfos))
+	b.WriteString(fmt.Sprintf("%sAlreadyPurchasedInitialOnlyItem: %s,\n", indentationValues, siri.AlreadyPurchasedInitialOnlyItem))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -218,5 +142,17 @@ func (serviceItemRightInfos *ServiceItemRightInfos) FormatToString(indentationLe
 
 // NewServiceItemRightInfos returns a new ServiceItemRightInfos
 func NewServiceItemRightInfos() *ServiceItemRightInfos {
-	return &ServiceItemRightInfos{}
+	siri := &ServiceItemRightInfos{
+		SupportID:                       types.NewString(""),
+		ConsumptionRightInfos:           types.NewList[*ServiceItemRightConsumptionInfo](),
+		AdditionalTimeRightInfos:        types.NewList[*ServiceItemRightTimeInfo](),
+		PermanentRightInfos:             types.NewList[*ServiceItemRightTimeInfo](),
+		AlreadyPurchasedInitialOnlyItem: types.NewPrimitiveBool(false),
+	}
+
+	siri.ConsumptionRightInfos.Type = NewServiceItemRightConsumptionInfo()
+	siri.AdditionalTimeRightInfos.Type = NewServiceItemRightTimeInfo()
+	siri.PermanentRightInfos.Type = NewServiceItemRightTimeInfo()
+
+	return siri
 }

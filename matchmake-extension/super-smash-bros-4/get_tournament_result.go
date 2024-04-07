@@ -2,32 +2,30 @@
 package protocol
 
 import (
-	nex "github.com/PretendoNetwork/nex-go"
-	"github.com/PretendoNetwork/nex-protocols-go/globals"
+	nex "github.com/PretendoNetwork/nex-go/v2"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
 )
 
-// GetTournamentResult sets the GetTournamentResult handler function
-func (protocol *Protocol) GetTournamentResult(handler func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) uint32) {
-	protocol.getTournamentResultHandler = handler
-}
-
 func (protocol *Protocol) handleGetTournamentResult(packet nex.PacketInterface) {
-	var errorCode uint32
+	if protocol.GetTournamentResult == nil {
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "MatchmakeExtensionSuperSmashBros4::GetTournamentResult not implemented")
 
-	if protocol.getTournamentResultHandler == nil {
-		globals.Logger.Warning("MatchmakeExtensionSuperSmashBros4::GetTournamentResult not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
 	globals.Logger.Warning("MatchmakeExtensionSuperSmashBros4::GetTournamentResult STUBBED")
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
+	callID := request.CallID
 
-	callID := request.CallID()
-
-	errorCode = protocol.getTournamentResultHandler(nil, packet, callID, packet.Payload())
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.GetTournamentResult(nil, packet, callID, packet.Payload())
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

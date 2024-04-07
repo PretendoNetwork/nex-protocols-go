@@ -3,10 +3,12 @@ package protocol
 
 import (
 	"fmt"
+	"slices"
 
-	nex "github.com/PretendoNetwork/nex-go"
-	"github.com/PretendoNetwork/nex-protocols-go/globals"
-	matchmake_referee_types "github.com/PretendoNetwork/nex-protocols-go/matchmake-referee/types"
+	nex "github.com/PretendoNetwork/nex-go/v2"
+	"github.com/PretendoNetwork/nex-go/v2/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
+	matchmake_referee_types "github.com/PretendoNetwork/nex-protocols-go/v2/matchmake-referee/types"
 )
 
 const (
@@ -55,68 +57,168 @@ const (
 
 // Protocol stores all the RMC method handlers for the Matchmake Referee protocol and listens for requests
 type Protocol struct {
-	Server                       *nex.Server
-	startRoundHandler            func(err error, packet nex.PacketInterface, callID uint32, param *matchmake_referee_types.MatchmakeRefereeStartRoundParam) uint32
-	getStartRoundParamHandler    func(err error, packet nex.PacketInterface, callID uint32, roundID uint64) uint32
-	endRoundHandler              func(err error, packet nex.PacketInterface, callID uint32, endRoundParam *matchmake_referee_types.MatchmakeRefereeEndRoundParam) uint32
-	endRoundWithoutReportHandler func(err error, packet nex.PacketInterface, callID uint32, roundID uint64) uint32
-	getRoundParticipantsHandler  func(err error, packet nex.PacketInterface, callID uint32, roundID uint64) uint32
-	getNotSummarizedRoundHandler func(err error, packet nex.PacketInterface, callID uint32) uint32
-	getRoundHandler              func(err error, packet nex.PacketInterface, callID uint32, roundID uint64) uint32
-	getStatsPrimaryHandler       func(err error, packet nex.PacketInterface, callID uint32, target *matchmake_referee_types.MatchmakeRefereeStatsTarget) uint32
-	getStatsPrimariesHandler     func(err error, packet nex.PacketInterface, callID uint32, targets []*matchmake_referee_types.MatchmakeRefereeStatsTarget) uint32
-	getStatsAllHandler           func(err error, packet nex.PacketInterface, callID uint32, target *matchmake_referee_types.MatchmakeRefereeStatsTarget) uint32
-	createStatsHandler           func(err error, packet nex.PacketInterface, callID uint32, param *matchmake_referee_types.MatchmakeRefereeStatsInitParam) uint32
-	getOrCreateStatsHandler      func(err error, packet nex.PacketInterface, callID uint32, param *matchmake_referee_types.MatchmakeRefereeStatsInitParam) uint32
-	resetStatsHandler            func(err error, packet nex.PacketInterface, callID uint32) uint32
+	endpoint              nex.EndpointInterface
+	StartRound            func(err error, packet nex.PacketInterface, callID uint32, param *matchmake_referee_types.MatchmakeRefereeStartRoundParam) (*nex.RMCMessage, *nex.Error)
+	GetStartRoundParam    func(err error, packet nex.PacketInterface, callID uint32, roundID *types.PrimitiveU64) (*nex.RMCMessage, *nex.Error)
+	EndRound              func(err error, packet nex.PacketInterface, callID uint32, endRoundParam *matchmake_referee_types.MatchmakeRefereeEndRoundParam) (*nex.RMCMessage, *nex.Error)
+	EndRoundWithoutReport func(err error, packet nex.PacketInterface, callID uint32, roundID *types.PrimitiveU64) (*nex.RMCMessage, *nex.Error)
+	GetRoundParticipants  func(err error, packet nex.PacketInterface, callID uint32, roundID *types.PrimitiveU64) (*nex.RMCMessage, *nex.Error)
+	GetNotSummarizedRound func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, *nex.Error)
+	GetRound              func(err error, packet nex.PacketInterface, callID uint32, roundID *types.PrimitiveU64) (*nex.RMCMessage, *nex.Error)
+	GetStatsPrimary       func(err error, packet nex.PacketInterface, callID uint32, target *matchmake_referee_types.MatchmakeRefereeStatsTarget) (*nex.RMCMessage, *nex.Error)
+	GetStatsPrimaries     func(err error, packet nex.PacketInterface, callID uint32, targets *types.List[*matchmake_referee_types.MatchmakeRefereeStatsTarget]) (*nex.RMCMessage, *nex.Error)
+	GetStatsAll           func(err error, packet nex.PacketInterface, callID uint32, target *matchmake_referee_types.MatchmakeRefereeStatsTarget) (*nex.RMCMessage, *nex.Error)
+	CreateStats           func(err error, packet nex.PacketInterface, callID uint32, param *matchmake_referee_types.MatchmakeRefereeStatsInitParam) (*nex.RMCMessage, *nex.Error)
+	GetOrCreateStats      func(err error, packet nex.PacketInterface, callID uint32, param *matchmake_referee_types.MatchmakeRefereeStatsInitParam) (*nex.RMCMessage, *nex.Error)
+	ResetStats            func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, *nex.Error)
+	Patches               nex.ServiceProtocol
+	PatchedMethods        []uint32
 }
 
-// Setup initializes the protocol
-func (protocol *Protocol) Setup() {
-	protocol.Server.On("Data", func(packet nex.PacketInterface) {
-		request := packet.RMCRequest()
+// Interface implements the methods present on the Matchmake Referee protocol struct
+type Interface interface {
+	Endpoint() nex.EndpointInterface
+	SetEndpoint(endpoint nex.EndpointInterface)
+	SetHandlerStartRound(handler func(err error, packet nex.PacketInterface, callID uint32, param *matchmake_referee_types.MatchmakeRefereeStartRoundParam) (*nex.RMCMessage, *nex.Error))
+	SetHandlerGetStartRoundParam(handler func(err error, packet nex.PacketInterface, callID uint32, roundID *types.PrimitiveU64) (*nex.RMCMessage, *nex.Error))
+	SetHandlerEndRound(handler func(err error, packet nex.PacketInterface, callID uint32, endRoundParam *matchmake_referee_types.MatchmakeRefereeEndRoundParam) (*nex.RMCMessage, *nex.Error))
+	SetHandlerEndRoundWithoutReport(handler func(err error, packet nex.PacketInterface, callID uint32, roundID *types.PrimitiveU64) (*nex.RMCMessage, *nex.Error))
+	SetHandlerGetRoundParticipants(handler func(err error, packet nex.PacketInterface, callID uint32, roundID *types.PrimitiveU64) (*nex.RMCMessage, *nex.Error))
+	SetHandlerGetNotSummarizedRound(handler func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, *nex.Error))
+	SetHandlerGetRound(handler func(err error, packet nex.PacketInterface, callID uint32, roundID *types.PrimitiveU64) (*nex.RMCMessage, *nex.Error))
+	SetHandlerGetStatsPrimary(handler func(err error, packet nex.PacketInterface, callID uint32, target *matchmake_referee_types.MatchmakeRefereeStatsTarget) (*nex.RMCMessage, *nex.Error))
+	SetHandlerGetStatsPrimaries(handler func(err error, packet nex.PacketInterface, callID uint32, targets *types.List[*matchmake_referee_types.MatchmakeRefereeStatsTarget]) (*nex.RMCMessage, *nex.Error))
+	SetHandlerGetStatsAll(handler func(err error, packet nex.PacketInterface, callID uint32, target *matchmake_referee_types.MatchmakeRefereeStatsTarget) (*nex.RMCMessage, *nex.Error))
+	SetHandlerCreateStats(handler func(err error, packet nex.PacketInterface, callID uint32, param *matchmake_referee_types.MatchmakeRefereeStatsInitParam) (*nex.RMCMessage, *nex.Error))
+	SetHandlerGetOrCreateStats(handler func(err error, packet nex.PacketInterface, callID uint32, param *matchmake_referee_types.MatchmakeRefereeStatsInitParam) (*nex.RMCMessage, *nex.Error))
+	SetHandlerResetStats(handler func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, *nex.Error))
+}
 
-		if request.ProtocolID() == ProtocolID {
-			switch request.MethodID() {
-			case MethodStartRound:
-				go protocol.handleStartRound(packet)
-			case MethodGetStartRoundParam:
-				go protocol.handleGetStartRoundParam(packet)
-			case MethodEndRound:
-				go protocol.handleEndRound(packet)
-			case MethodEndRoundWithoutReport:
-				go protocol.handleEndRoundWithoutReport(packet)
-			case MethodGetRoundParticipants:
-				go protocol.handleGetRoundParticipants(packet)
-			case MethodGetNotSummarizedRound:
-				go protocol.handleGetNotSummarizedRound(packet)
-			case MethodGetRound:
-				go protocol.handleGetRound(packet)
-			case MethodGetStatsPrimary:
-				go protocol.handleGetStatsPrimary(packet)
-			case MethodGetStatsPrimaries:
-				go protocol.handleGetStatsPrimaries(packet)
-			case MethodGetStatsAll:
-				go protocol.handleGetStatsAll(packet)
-			case MethodCreateStats:
-				go protocol.handleCreateStats(packet)
-			case MethodGetOrCreateStats:
-				go protocol.handleGetOrCreateStats(packet)
-			case MethodResetStats:
-				go protocol.handleResetStats(packet)
-			default:
-				go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
-				fmt.Printf("Unsupported MatchmakeReferee method ID: %#v\n", request.MethodID())
-			}
-		}
-	})
+// Endpoint returns the endpoint implementing the protocol
+func (protocol *Protocol) Endpoint() nex.EndpointInterface {
+	return protocol.endpoint
+}
+
+// SetEndpoint sets the endpoint implementing the protocol
+func (protocol *Protocol) SetEndpoint(endpoint nex.EndpointInterface) {
+	protocol.endpoint = endpoint
+}
+
+// SetHandlerStartRound sets the handler for the StartRound method
+func (protocol *Protocol) SetHandlerStartRound(handler func(err error, packet nex.PacketInterface, callID uint32, param *matchmake_referee_types.MatchmakeRefereeStartRoundParam) (*nex.RMCMessage, *nex.Error)) {
+	protocol.StartRound = handler
+}
+
+// SetHandlerGetStartRoundParam sets the handler for the GetStartRoundParam method
+func (protocol *Protocol) SetHandlerGetStartRoundParam(handler func(err error, packet nex.PacketInterface, callID uint32, roundID *types.PrimitiveU64) (*nex.RMCMessage, *nex.Error)) {
+	protocol.GetStartRoundParam = handler
+}
+
+// SetHandlerEndRound sets the handler for the EndRound method
+func (protocol *Protocol) SetHandlerEndRound(handler func(err error, packet nex.PacketInterface, callID uint32, endRoundParam *matchmake_referee_types.MatchmakeRefereeEndRoundParam) (*nex.RMCMessage, *nex.Error)) {
+	protocol.EndRound = handler
+}
+
+// SetHandlerEndRoundWithoutReport sets the handler for the EndRoundWithoutReport method
+func (protocol *Protocol) SetHandlerEndRoundWithoutReport(handler func(err error, packet nex.PacketInterface, callID uint32, roundID *types.PrimitiveU64) (*nex.RMCMessage, *nex.Error)) {
+	protocol.EndRoundWithoutReport = handler
+}
+
+// SetHandlerGetRoundParticipants sets the handler for the GetRoundParticipants method
+func (protocol *Protocol) SetHandlerGetRoundParticipants(handler func(err error, packet nex.PacketInterface, callID uint32, roundID *types.PrimitiveU64) (*nex.RMCMessage, *nex.Error)) {
+	protocol.GetRoundParticipants = handler
+}
+
+// SetHandlerGetNotSummarizedRound sets the handler for the GetNotSummarizedRound method
+func (protocol *Protocol) SetHandlerGetNotSummarizedRound(handler func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, *nex.Error)) {
+	protocol.GetNotSummarizedRound = handler
+}
+
+// SetHandlerGetRound sets the handler for the GetRound method
+func (protocol *Protocol) SetHandlerGetRound(handler func(err error, packet nex.PacketInterface, callID uint32, roundID *types.PrimitiveU64) (*nex.RMCMessage, *nex.Error)) {
+	protocol.GetRound = handler
+}
+
+// SetHandlerGetStatsPrimary sets the handler for the GetStatsPrimary method
+func (protocol *Protocol) SetHandlerGetStatsPrimary(handler func(err error, packet nex.PacketInterface, callID uint32, target *matchmake_referee_types.MatchmakeRefereeStatsTarget) (*nex.RMCMessage, *nex.Error)) {
+	protocol.GetStatsPrimary = handler
+}
+
+// SetHandlerGetStatsPrimaries sets the handler for the GetStatsPrimaries method
+func (protocol *Protocol) SetHandlerGetStatsPrimaries(handler func(err error, packet nex.PacketInterface, callID uint32, targets *types.List[*matchmake_referee_types.MatchmakeRefereeStatsTarget]) (*nex.RMCMessage, *nex.Error)) {
+	protocol.GetStatsPrimaries = handler
+}
+
+// SetHandlerGetStatsAll sets the handler for the GetStatsAll method
+func (protocol *Protocol) SetHandlerGetStatsAll(handler func(err error, packet nex.PacketInterface, callID uint32, target *matchmake_referee_types.MatchmakeRefereeStatsTarget) (*nex.RMCMessage, *nex.Error)) {
+	protocol.GetStatsAll = handler
+}
+
+// SetHandlerCreateStats sets the handler for the CreateStats method
+func (protocol *Protocol) SetHandlerCreateStats(handler func(err error, packet nex.PacketInterface, callID uint32, param *matchmake_referee_types.MatchmakeRefereeStatsInitParam) (*nex.RMCMessage, *nex.Error)) {
+	protocol.CreateStats = handler
+}
+
+// SetHandlerGetOrCreateStats sets the handler for the GetOrCreateStats method
+func (protocol *Protocol) SetHandlerGetOrCreateStats(handler func(err error, packet nex.PacketInterface, callID uint32, param *matchmake_referee_types.MatchmakeRefereeStatsInitParam) (*nex.RMCMessage, *nex.Error)) {
+	protocol.GetOrCreateStats = handler
+}
+
+// SetHandlerResetStats sets the handler for the ResetStats method
+func (protocol *Protocol) SetHandlerResetStats(handler func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, *nex.Error)) {
+	protocol.ResetStats = handler
+}
+
+// HandlePacket sends the packet to the correct RMC method handler
+func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
+	message := packet.RMCMessage()
+
+	if !message.IsRequest || message.ProtocolID != ProtocolID {
+		return
+	}
+
+	if protocol.Patches != nil && slices.Contains(protocol.PatchedMethods, message.MethodID) {
+		protocol.Patches.HandlePacket(packet)
+		return
+	}
+
+	switch message.MethodID {
+	case MethodStartRound:
+		protocol.handleStartRound(packet)
+	case MethodGetStartRoundParam:
+		protocol.handleGetStartRoundParam(packet)
+	case MethodEndRound:
+		protocol.handleEndRound(packet)
+	case MethodEndRoundWithoutReport:
+		protocol.handleEndRoundWithoutReport(packet)
+	case MethodGetRoundParticipants:
+		protocol.handleGetRoundParticipants(packet)
+	case MethodGetNotSummarizedRound:
+		protocol.handleGetNotSummarizedRound(packet)
+	case MethodGetRound:
+		protocol.handleGetRound(packet)
+	case MethodGetStatsPrimary:
+		protocol.handleGetStatsPrimary(packet)
+	case MethodGetStatsPrimaries:
+		protocol.handleGetStatsPrimaries(packet)
+	case MethodGetStatsAll:
+		protocol.handleGetStatsAll(packet)
+	case MethodCreateStats:
+		protocol.handleCreateStats(packet)
+	case MethodGetOrCreateStats:
+		protocol.handleGetOrCreateStats(packet)
+	case MethodResetStats:
+		protocol.handleResetStats(packet)
+	default:
+		errMessage := fmt.Sprintf("Unsupported MatchmakeReferee method ID: %#v\n", message.MethodID)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, errMessage)
+
+		globals.RespondError(packet, ProtocolID, err)
+		globals.Logger.Warning(err.Message)
+	}
 }
 
 // NewProtocol returns a new Matchmake Referee protocol
-func NewProtocol(server *nex.Server) *Protocol {
-	protocol := &Protocol{Server: server}
-
-	protocol.Setup()
-
-	return protocol
+func NewProtocol() *Protocol {
+	return &Protocol{}
 }

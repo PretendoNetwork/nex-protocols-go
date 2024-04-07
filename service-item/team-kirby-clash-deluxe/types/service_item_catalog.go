@@ -1,170 +1,140 @@
-// Package types implements all the types used by the Service Item (Team Kirby Clash Deluxe) protocol
+// Package types implements all the types used by the ServiceItem protocol
 package types
 
 import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/v2/types"
 )
 
-// ServiceItemCatalog holds data for the Service Item (Team Kirby Clash Deluxe) protocol
+// ServiceItemCatalog is a type within the ServiceItem protocol
 type ServiceItemCatalog struct {
-	nex.Structure
-	TotalSize          uint32
-	Offset             uint32
-	ListItems          []*ServiceItemListItem
-	IsBalanceAvailable bool
+	types.Structure
+	TotalSize          *types.PrimitiveU32
+	Offset             *types.PrimitiveU32
+	ListItems          *types.List[*ServiceItemListItem]
+	IsBalanceAvailable *types.PrimitiveBool
 	Balance            *ServiceItemAmount
 }
 
-// ExtractFromStream extracts a ServiceItemCatalog structure from a stream
-func (serviceItemCatalog *ServiceItemCatalog) ExtractFromStream(stream *nex.StreamIn) error {
+// WriteTo writes the ServiceItemCatalog to the given writable
+func (sic *ServiceItemCatalog) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
+
+	sic.TotalSize.WriteTo(writable)
+	sic.Offset.WriteTo(writable)
+	sic.ListItems.WriteTo(writable)
+	sic.IsBalanceAvailable.WriteTo(writable)
+	sic.Balance.WriteTo(writable)
+
+	content := contentWritable.Bytes()
+
+	sic.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
+}
+
+// ExtractFrom extracts the ServiceItemCatalog from the given readable
+func (sic *ServiceItemCatalog) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	serviceItemCatalog.TotalSize, err = stream.ReadUInt32LE()
+	err = sic.ExtractHeaderFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemCatalog.TotalSize from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract ServiceItemCatalog header. %s", err.Error())
 	}
 
-	serviceItemCatalog.Offset, err = stream.ReadUInt32LE()
+	err = sic.TotalSize.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemCatalog.Offset from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract ServiceItemCatalog.TotalSize. %s", err.Error())
 	}
 
-	listItems, err := stream.ReadListStructure(NewServiceItemListItem())
+	err = sic.Offset.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemCatalog.ListItems from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract ServiceItemCatalog.Offset. %s", err.Error())
 	}
 
-	serviceItemCatalog.ListItems = listItems.([]*ServiceItemListItem)
-
-	serviceItemCatalog.IsBalanceAvailable, err = stream.ReadBool()
+	err = sic.ListItems.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemCatalog.IsBalanceAvailable from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract ServiceItemCatalog.ListItems. %s", err.Error())
 	}
 
-	balance, err := stream.ReadStructure(NewServiceItemAmount())
+	err = sic.IsBalanceAvailable.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemCatalog.Balance from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract ServiceItemCatalog.IsBalanceAvailable. %s", err.Error())
 	}
 
-	serviceItemCatalog.Balance = balance.(*ServiceItemAmount)
+	err = sic.Balance.ExtractFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract ServiceItemCatalog.Balance. %s", err.Error())
+	}
 
 	return nil
 }
 
-// Bytes encodes the ServiceItemCatalog and returns a byte array
-func (serviceItemCatalog *ServiceItemCatalog) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt32LE(serviceItemCatalog.TotalSize)
-	stream.WriteUInt32LE(serviceItemCatalog.Offset)
-	stream.WriteListStructure(serviceItemCatalog.ListItems)
-	stream.WriteBool(serviceItemCatalog.IsBalanceAvailable)
-	stream.WriteStructure(serviceItemCatalog.Balance)
-
-	return stream.Bytes()
-}
-
 // Copy returns a new copied instance of ServiceItemCatalog
-func (serviceItemCatalog *ServiceItemCatalog) Copy() nex.StructureInterface {
+func (sic *ServiceItemCatalog) Copy() types.RVType {
 	copied := NewServiceItemCatalog()
 
-	copied.SetStructureVersion(serviceItemCatalog.StructureVersion())
-
-	copied.TotalSize = serviceItemCatalog.TotalSize
-	copied.Offset = serviceItemCatalog.Offset
-	copied.ListItems = make([]*ServiceItemListItem, len(serviceItemCatalog.ListItems))
-
-	for i := 0; i < len(serviceItemCatalog.ListItems); i++ {
-		copied.ListItems[i] = serviceItemCatalog.ListItems[i].Copy().(*ServiceItemListItem)
-	}
-
-	copied.IsBalanceAvailable = serviceItemCatalog.IsBalanceAvailable
-	copied.Balance = serviceItemCatalog.Balance.Copy().(*ServiceItemAmount)
+	copied.StructureVersion = sic.StructureVersion
+	copied.TotalSize = sic.TotalSize.Copy().(*types.PrimitiveU32)
+	copied.Offset = sic.Offset.Copy().(*types.PrimitiveU32)
+	copied.ListItems = sic.ListItems.Copy().(*types.List[*ServiceItemListItem])
+	copied.IsBalanceAvailable = sic.IsBalanceAvailable.Copy().(*types.PrimitiveBool)
+	copied.Balance = sic.Balance.Copy().(*ServiceItemAmount)
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (serviceItemCatalog *ServiceItemCatalog) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*ServiceItemCatalog)
-
-	if serviceItemCatalog.StructureVersion() != other.StructureVersion() {
+// Equals checks if the given ServiceItemCatalog contains the same data as the current ServiceItemCatalog
+func (sic *ServiceItemCatalog) Equals(o types.RVType) bool {
+	if _, ok := o.(*ServiceItemCatalog); !ok {
 		return false
 	}
 
-	if serviceItemCatalog.TotalSize != other.TotalSize {
+	other := o.(*ServiceItemCatalog)
+
+	if sic.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if serviceItemCatalog.Offset != other.Offset {
+	if !sic.TotalSize.Equals(other.TotalSize) {
 		return false
 	}
 
-	if len(serviceItemCatalog.ListItems) != len(other.ListItems) {
+	if !sic.Offset.Equals(other.Offset) {
 		return false
 	}
 
-	for i := 0; i < len(serviceItemCatalog.ListItems); i++ {
-		if !serviceItemCatalog.ListItems[i].Equals(other.ListItems[i]) {
-			return false
-		}
-	}
-
-	if serviceItemCatalog.IsBalanceAvailable != other.IsBalanceAvailable {
+	if !sic.ListItems.Equals(other.ListItems) {
 		return false
 	}
 
-	if !serviceItemCatalog.Balance.Equals(other.Balance) {
+	if !sic.IsBalanceAvailable.Equals(other.IsBalanceAvailable) {
 		return false
 	}
 
-	return true
+	return sic.Balance.Equals(other.Balance)
 }
 
-// String returns a string representation of the struct
-func (serviceItemCatalog *ServiceItemCatalog) String() string {
-	return serviceItemCatalog.FormatToString(0)
+// String returns the string representation of the ServiceItemCatalog
+func (sic *ServiceItemCatalog) String() string {
+	return sic.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (serviceItemCatalog *ServiceItemCatalog) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the ServiceItemCatalog using the provided indentation level
+func (sic *ServiceItemCatalog) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
-	indentationListValues := strings.Repeat("\t", indentationLevel+2)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("ServiceItemCatalog{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, serviceItemCatalog.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sTotalSize: %d,\n", indentationValues, serviceItemCatalog.TotalSize))
-	b.WriteString(fmt.Sprintf("%sOffset: %d,\n", indentationValues, serviceItemCatalog.Offset))
-
-	if len(serviceItemCatalog.ListItems) == 0 {
-		b.WriteString(fmt.Sprintf("%sListItems: [],\n", indentationValues))
-	} else {
-		b.WriteString(fmt.Sprintf("%sListItems: [\n", indentationValues))
-
-		for i := 0; i < len(serviceItemCatalog.ListItems); i++ {
-			str := serviceItemCatalog.ListItems[i].FormatToString(indentationLevel + 2)
-			if i == len(serviceItemCatalog.ListItems)-1 {
-				b.WriteString(fmt.Sprintf("%s%s\n", indentationListValues, str))
-			} else {
-				b.WriteString(fmt.Sprintf("%s%s,\n", indentationListValues, str))
-			}
-		}
-
-		b.WriteString(fmt.Sprintf("%s],\n", indentationValues))
-	}
-
-	b.WriteString(fmt.Sprintf("%sIsBalanceAvailable: %t,\n", indentationValues, serviceItemCatalog.IsBalanceAvailable))
-
-	if serviceItemCatalog.Balance != nil {
-		b.WriteString(fmt.Sprintf("%sBalance: %s\n", indentationValues, serviceItemCatalog.Balance.FormatToString(indentationLevel+1)))
-	} else {
-		b.WriteString(fmt.Sprintf("%sBalance: nil\n", indentationValues))
-	}
-
+	b.WriteString(fmt.Sprintf("%sTotalSize: %s,\n", indentationValues, sic.TotalSize))
+	b.WriteString(fmt.Sprintf("%sOffset: %s,\n", indentationValues, sic.Offset))
+	b.WriteString(fmt.Sprintf("%sListItems: %s,\n", indentationValues, sic.ListItems))
+	b.WriteString(fmt.Sprintf("%sIsBalanceAvailable: %s,\n", indentationValues, sic.IsBalanceAvailable))
+	b.WriteString(fmt.Sprintf("%sBalance: %s,\n", indentationValues, sic.Balance.FormatToString(indentationLevel+1)))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -172,5 +142,15 @@ func (serviceItemCatalog *ServiceItemCatalog) FormatToString(indentationLevel in
 
 // NewServiceItemCatalog returns a new ServiceItemCatalog
 func NewServiceItemCatalog() *ServiceItemCatalog {
-	return &ServiceItemCatalog{}
+	sic := &ServiceItemCatalog{
+		TotalSize:          types.NewPrimitiveU32(0),
+		Offset:             types.NewPrimitiveU32(0),
+		ListItems:          types.NewList[*ServiceItemListItem](),
+		IsBalanceAvailable: types.NewPrimitiveBool(false),
+		Balance:            NewServiceItemAmount(),
+	}
+
+	sic.ListItems.Type = NewServiceItemListItem()
+
+	return sic
 }

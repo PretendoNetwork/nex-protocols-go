@@ -4,103 +4,113 @@ package protocol
 import (
 	"fmt"
 
-	nex "github.com/PretendoNetwork/nex-go"
-	friends_wiiu_types "github.com/PretendoNetwork/nex-protocols-go/friends-wiiu/types"
-	"github.com/PretendoNetwork/nex-protocols-go/globals"
+	nex "github.com/PretendoNetwork/nex-go/v2"
+	"github.com/PretendoNetwork/nex-go/v2/types"
+	friends_wiiu_types "github.com/PretendoNetwork/nex-protocols-go/v2/friends-wiiu/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
 )
 
-// AddFriendRequest sets the AddFriendRequest handler function
-func (protocol *Protocol) AddFriendRequest(handler func(err error, packet nex.PacketInterface, callID uint32, pid uint32, unknown2 uint8, message string, unknown4 uint8, unknown5 string, gameKey *friends_wiiu_types.GameKey, unknown6 *nex.DateTime) uint32) {
-	protocol.addFriendRequestHandler = handler
-}
-
 func (protocol *Protocol) handleAddFriendRequest(packet nex.PacketInterface) {
-	var errorCode uint32
+	if protocol.AddFriendRequest == nil {
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "FriendsWiiU::AddFriendRequest not implemented")
 
-	if protocol.addFriendRequestHandler == nil {
-		globals.Logger.Warning("FriendsWiiU::AddFriendRequest not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
-		return
-	}
-
-	request := packet.RMCRequest()
-
-	callID := request.CallID()
-	parameters := request.Parameters()
-
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
-
-	pid, err := parametersStream.ReadUInt32LE()
-	if err != nil {
-		errorCode = protocol.addFriendRequestHandler(fmt.Errorf("Failed to read pid from parameters. %s", err.Error()), packet, callID, 0, 0, "", 0, "", nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
-		}
-
-		return
-	}
-	unknown2, err := parametersStream.ReadUInt8()
-	if err != nil {
-		errorCode = protocol.addFriendRequestHandler(fmt.Errorf("Failed to read unknown2 from parameters. %s", err.Error()), packet, callID, 0, 0, "", 0, "", nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
-		}
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
 
 		return
 	}
 
-	message, err := parametersStream.ReadString()
+	request := packet.RMCMessage()
+	callID := request.CallID
+	parameters := request.Parameters
+	endpoint := packet.Sender().Endpoint()
+	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
+
+	pid := types.NewPID(0)
+	unknown2 := types.NewPrimitiveU8(0)
+	message := types.NewString("")
+	unknown4 := types.NewPrimitiveU8(0)
+	unknown5 := types.NewString("")
+	gameKey := friends_wiiu_types.NewGameKey()
+	unknown6 := types.NewDateTime(0)
+
+	var err error
+
+	err = pid.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.addFriendRequestHandler(fmt.Errorf("Failed to read message from parameters. %s", err.Error()), packet, callID, 0, 0, "", 0, "", nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.AddFriendRequest(fmt.Errorf("Failed to read pid from parameters. %s", err.Error()), packet, callID, nil, nil, nil, nil, nil, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	unknown4, err := parametersStream.ReadUInt8()
+	err = unknown2.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.addFriendRequestHandler(fmt.Errorf("Failed to read unknown4 from parameters. %s", err.Error()), packet, callID, 0, 0, "", 0, "", nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.AddFriendRequest(fmt.Errorf("Failed to read unknown2 from parameters. %s", err.Error()), packet, callID, nil, nil, nil, nil, nil, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	unknown5, err := parametersStream.ReadString()
+	err = message.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.addFriendRequestHandler(fmt.Errorf("Failed to read unknown5 from parameters. %s", err.Error()), packet, callID, 0, 0, "", 0, "", nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.AddFriendRequest(fmt.Errorf("Failed to read message from parameters. %s", err.Error()), packet, callID, nil, nil, nil, nil, nil, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	gameKey, err := parametersStream.ReadStructure(friends_wiiu_types.NewGameKey())
+	err = unknown4.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.addFriendRequestHandler(fmt.Errorf("Failed to read gameKey from parameters. %s", err.Error()), packet, callID, 0, 0, "", 0, "", nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.AddFriendRequest(fmt.Errorf("Failed to read unknown4 from parameters. %s", err.Error()), packet, callID, nil, nil, nil, nil, nil, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	unknown6, err := parametersStream.ReadDateTime()
+	err = unknown5.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.addFriendRequestHandler(fmt.Errorf("Failed to read unknown6 from parameters. %s", err.Error()), packet, callID, 0, 0, "", 0, "", nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.AddFriendRequest(fmt.Errorf("Failed to read unknown5 from parameters. %s", err.Error()), packet, callID, nil, nil, nil, nil, nil, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	errorCode = protocol.addFriendRequestHandler(nil, packet, callID, pid, unknown2, message, unknown4, unknown5, gameKey.(*friends_wiiu_types.GameKey), unknown6)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	err = gameKey.ExtractFrom(parametersStream)
+	if err != nil {
+		_, rmcError := protocol.AddFriendRequest(fmt.Errorf("Failed to read gameKey from parameters. %s", err.Error()), packet, callID, nil, nil, nil, nil, nil, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
+		}
+
+		return
 	}
+
+	err = unknown6.ExtractFrom(parametersStream)
+	if err != nil {
+		_, rmcError := protocol.AddFriendRequest(fmt.Errorf("Failed to read unknown6 from parameters. %s", err.Error()), packet, callID, nil, nil, nil, nil, nil, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
+		}
+
+		return
+	}
+
+	rmcMessage, rmcError := protocol.AddFriendRequest(nil, packet, callID, pid, unknown2, message, unknown4, unknown5, gameKey, unknown6)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
+		return
+	}
+
+	globals.Respond(packet, rmcMessage)
 }

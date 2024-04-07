@@ -1,207 +1,192 @@
-// Package types implements all the types used by the DataStore Super Smash Bros. 4 protocol
+// Package types implements all the types used by the DataStoreSuperSmashBros.4 protocol
 package types
 
 import (
-	"bytes"
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/v2/types"
 )
 
-// DataStoreSharedDataInfo is a data structure used by the DataStore Super Smash Bros. 4 protocol
+// DataStoreSharedDataInfo is a type within the DataStoreSuperSmashBros.4 protocol
 type DataStoreSharedDataInfo struct {
-	nex.Structure
-	DataID      uint64
-	OwnerID     uint32
-	DataType    uint8
-	Comment     string
-	MetaBinary  []byte
-	Profile     []byte
-	Rating      int64
-	CreatedTime *nex.DateTime
+	types.Structure
+	DataID      *types.PrimitiveU64
+	OwnerID     *types.PrimitiveU32
+	DataType    *types.PrimitiveU8
+	Comment     *types.String
+	MetaBinary  *types.QBuffer
+	Profile     *types.QBuffer
+	Rating      *types.PrimitiveS64
+	CreatedTime *types.DateTime
 	Info        *DataStoreFileServerObjectInfo
 }
 
-// ExtractFromStream extracts a DataStoreSharedDataInfo structure from a stream
-func (dataStoreSharedDataInfo *DataStoreSharedDataInfo) ExtractFromStream(stream *nex.StreamIn) error {
+// WriteTo writes the DataStoreSharedDataInfo to the given writable
+func (dssdi *DataStoreSharedDataInfo) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
+
+	dssdi.DataID.WriteTo(writable)
+	dssdi.OwnerID.WriteTo(writable)
+	dssdi.DataType.WriteTo(writable)
+	dssdi.Comment.WriteTo(writable)
+	dssdi.MetaBinary.WriteTo(writable)
+	dssdi.Profile.WriteTo(writable)
+	dssdi.Rating.WriteTo(writable)
+	dssdi.CreatedTime.WriteTo(writable)
+	dssdi.Info.WriteTo(writable)
+
+	content := contentWritable.Bytes()
+
+	dssdi.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
+}
+
+// ExtractFrom extracts the DataStoreSharedDataInfo from the given readable
+func (dssdi *DataStoreSharedDataInfo) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	dataStoreSharedDataInfo.DataID, err = stream.ReadUInt64LE()
+	err = dssdi.ExtractHeaderFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreSharedDataInfo header. %s", err.Error())
+	}
+
+	err = dssdi.DataID.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreSharedDataInfo.DataID. %s", err.Error())
 	}
 
-	dataStoreSharedDataInfo.OwnerID, err = stream.ReadUInt32LE()
+	err = dssdi.OwnerID.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreSharedDataInfo.OwnerID. %s", err.Error())
 	}
 
-	dataStoreSharedDataInfo.DataType, err = stream.ReadUInt8()
+	err = dssdi.DataType.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreSharedDataInfo.DataType. %s", err.Error())
 	}
 
-	dataStoreSharedDataInfo.Comment, err = stream.ReadString()
+	err = dssdi.Comment.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreSharedDataInfo.Comment. %s", err.Error())
 	}
 
-	dataStoreSharedDataInfo.MetaBinary, err = stream.ReadQBuffer()
+	err = dssdi.MetaBinary.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreSharedDataInfo.MetaBinary. %s", err.Error())
 	}
 
-	dataStoreSharedDataInfo.Profile, err = stream.ReadQBuffer()
+	err = dssdi.Profile.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract DataStoreSharedDataInfo.MetaBinary. %s", err.Error())
+		return fmt.Errorf("Failed to extract DataStoreSharedDataInfo.Profile. %s", err.Error())
 	}
 
-	dataStoreSharedDataInfo.Rating, err = stream.ReadInt64LE()
+	err = dssdi.Rating.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreSharedDataInfo.Rating. %s", err.Error())
 	}
 
-	dataStoreSharedDataInfo.CreatedTime, err = stream.ReadDateTime()
+	err = dssdi.CreatedTime.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreSharedDataInfo.CreatedTime. %s", err.Error())
 	}
 
-	info, err := stream.ReadStructure(NewDataStoreFileServerObjectInfo())
+	err = dssdi.Info.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreSharedDataInfo.Info. %s", err.Error())
 	}
 
-	dataStoreSharedDataInfo.Info = info.(*DataStoreFileServerObjectInfo)
-
 	return nil
 }
 
-// Bytes encodes the DataStoreSharedDataInfo and returns a byte array
-func (dataStoreSharedDataInfo *DataStoreSharedDataInfo) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt64LE(dataStoreSharedDataInfo.DataID)
-	stream.WriteUInt32LE(dataStoreSharedDataInfo.OwnerID)
-	stream.WriteUInt8(dataStoreSharedDataInfo.DataType)
-	stream.WriteString(dataStoreSharedDataInfo.Comment)
-	stream.WriteQBuffer(dataStoreSharedDataInfo.MetaBinary)
-	stream.WriteQBuffer(dataStoreSharedDataInfo.Profile)
-	stream.WriteInt64LE(dataStoreSharedDataInfo.Rating)
-	stream.WriteDateTime(dataStoreSharedDataInfo.CreatedTime)
-	stream.WriteStructure(dataStoreSharedDataInfo.Info)
-
-	return stream.Bytes()
-}
-
 // Copy returns a new copied instance of DataStoreSharedDataInfo
-func (dataStoreSharedDataInfo *DataStoreSharedDataInfo) Copy() nex.StructureInterface {
+func (dssdi *DataStoreSharedDataInfo) Copy() types.RVType {
 	copied := NewDataStoreSharedDataInfo()
 
-	copied.SetStructureVersion(dataStoreSharedDataInfo.StructureVersion())
-
-	copied.DataID = dataStoreSharedDataInfo.DataID
-	copied.OwnerID = dataStoreSharedDataInfo.OwnerID
-	copied.DataType = dataStoreSharedDataInfo.DataType
-	copied.Comment = dataStoreSharedDataInfo.Comment
-	copied.MetaBinary = make([]byte, len(dataStoreSharedDataInfo.MetaBinary))
-
-	copy(copied.MetaBinary, dataStoreSharedDataInfo.MetaBinary)
-
-	copied.Profile = make([]byte, len(dataStoreSharedDataInfo.Profile))
-
-	copy(copied.Profile, dataStoreSharedDataInfo.Profile)
-
-	copied.Rating = dataStoreSharedDataInfo.Rating
-	copied.CreatedTime = dataStoreSharedDataInfo.CreatedTime.Copy()
-	copied.Info = dataStoreSharedDataInfo.Info.Copy().(*DataStoreFileServerObjectInfo)
+	copied.StructureVersion = dssdi.StructureVersion
+	copied.DataID = dssdi.DataID.Copy().(*types.PrimitiveU64)
+	copied.OwnerID = dssdi.OwnerID.Copy().(*types.PrimitiveU32)
+	copied.DataType = dssdi.DataType.Copy().(*types.PrimitiveU8)
+	copied.Comment = dssdi.Comment.Copy().(*types.String)
+	copied.MetaBinary = dssdi.MetaBinary.Copy().(*types.QBuffer)
+	copied.Profile = dssdi.Profile.Copy().(*types.QBuffer)
+	copied.Rating = dssdi.Rating.Copy().(*types.PrimitiveS64)
+	copied.CreatedTime = dssdi.CreatedTime.Copy().(*types.DateTime)
+	copied.Info = dssdi.Info.Copy().(*DataStoreFileServerObjectInfo)
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (dataStoreSharedDataInfo *DataStoreSharedDataInfo) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*DataStoreSharedDataInfo)
-
-	if dataStoreSharedDataInfo.StructureVersion() != other.StructureVersion() {
+// Equals checks if the given DataStoreSharedDataInfo contains the same data as the current DataStoreSharedDataInfo
+func (dssdi *DataStoreSharedDataInfo) Equals(o types.RVType) bool {
+	if _, ok := o.(*DataStoreSharedDataInfo); !ok {
 		return false
 	}
 
-	if dataStoreSharedDataInfo.DataType != other.DataType {
+	other := o.(*DataStoreSharedDataInfo)
+
+	if dssdi.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if dataStoreSharedDataInfo.DataID != other.DataID {
+	if !dssdi.DataID.Equals(other.DataID) {
 		return false
 	}
 
-	if dataStoreSharedDataInfo.OwnerID != other.OwnerID {
+	if !dssdi.OwnerID.Equals(other.OwnerID) {
 		return false
 	}
 
-	if dataStoreSharedDataInfo.DataType != other.DataType {
+	if !dssdi.DataType.Equals(other.DataType) {
 		return false
 	}
 
-	if dataStoreSharedDataInfo.Comment != other.Comment {
+	if !dssdi.Comment.Equals(other.Comment) {
 		return false
 	}
 
-	if !bytes.Equal(dataStoreSharedDataInfo.MetaBinary, other.MetaBinary) {
+	if !dssdi.MetaBinary.Equals(other.MetaBinary) {
 		return false
 	}
 
-	if !bytes.Equal(dataStoreSharedDataInfo.Profile, other.Profile) {
+	if !dssdi.Profile.Equals(other.Profile) {
 		return false
 	}
 
-	if dataStoreSharedDataInfo.Rating != other.Rating {
+	if !dssdi.Rating.Equals(other.Rating) {
 		return false
 	}
 
-	if !dataStoreSharedDataInfo.CreatedTime.Equals(other.CreatedTime) {
+	if !dssdi.CreatedTime.Equals(other.CreatedTime) {
 		return false
 	}
 
-	if !dataStoreSharedDataInfo.Info.Equals(other.Info) {
-		return false
-	}
-
-	return true
+	return dssdi.Info.Equals(other.Info)
 }
 
-// String returns a string representation of the struct
-func (dataStoreSharedDataInfo *DataStoreSharedDataInfo) String() string {
-	return dataStoreSharedDataInfo.FormatToString(0)
+// String returns the string representation of the DataStoreSharedDataInfo
+func (dssdi *DataStoreSharedDataInfo) String() string {
+	return dssdi.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (dataStoreSharedDataInfo *DataStoreSharedDataInfo) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the DataStoreSharedDataInfo using the provided indentation level
+func (dssdi *DataStoreSharedDataInfo) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("DataStoreSharedDataInfo{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, dataStoreSharedDataInfo.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sDataID: %d,\n", indentationValues, dataStoreSharedDataInfo.DataID))
-	b.WriteString(fmt.Sprintf("%sOwnerID: %d,\n", indentationValues, dataStoreSharedDataInfo.OwnerID))
-	b.WriteString(fmt.Sprintf("%sDataType: %d,\n", indentationValues, dataStoreSharedDataInfo.DataType))
-	b.WriteString(fmt.Sprintf("%sComment: %q,\n", indentationValues, dataStoreSharedDataInfo.Comment))
-	b.WriteString(fmt.Sprintf("%sMetaBinary: %x,\n", indentationValues, dataStoreSharedDataInfo.MetaBinary))
-	b.WriteString(fmt.Sprintf("%sProfile: %x,\n", indentationValues, dataStoreSharedDataInfo.Profile))
-	b.WriteString(fmt.Sprintf("%sRating: %d,\n", indentationValues, dataStoreSharedDataInfo.Rating))
-
-	if dataStoreSharedDataInfo.CreatedTime != nil {
-		b.WriteString(fmt.Sprintf("%sCreatedTime: %s\n", indentationValues, dataStoreSharedDataInfo.CreatedTime.FormatToString(indentationLevel+1)))
-	} else {
-		b.WriteString(fmt.Sprintf("%sCreatedTime: nil\n", indentationValues))
-	}
-
-	if dataStoreSharedDataInfo.Info != nil {
-		b.WriteString(fmt.Sprintf("%sInfo: %s\n", indentationValues, dataStoreSharedDataInfo.Info.FormatToString(indentationLevel+1)))
-	} else {
-		b.WriteString(fmt.Sprintf("%sInfo: nil\n", indentationValues))
-	}
-
+	b.WriteString(fmt.Sprintf("%sDataID: %s,\n", indentationValues, dssdi.DataID))
+	b.WriteString(fmt.Sprintf("%sOwnerID: %s,\n", indentationValues, dssdi.OwnerID))
+	b.WriteString(fmt.Sprintf("%sDataType: %s,\n", indentationValues, dssdi.DataType))
+	b.WriteString(fmt.Sprintf("%sComment: %s,\n", indentationValues, dssdi.Comment))
+	b.WriteString(fmt.Sprintf("%sMetaBinary: %s,\n", indentationValues, dssdi.MetaBinary))
+	b.WriteString(fmt.Sprintf("%sProfile: %s,\n", indentationValues, dssdi.Profile))
+	b.WriteString(fmt.Sprintf("%sRating: %s,\n", indentationValues, dssdi.Rating))
+	b.WriteString(fmt.Sprintf("%sCreatedTime: %s,\n", indentationValues, dssdi.CreatedTime.FormatToString(indentationLevel+1)))
+	b.WriteString(fmt.Sprintf("%sInfo: %s,\n", indentationValues, dssdi.Info.FormatToString(indentationLevel+1)))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -209,5 +194,17 @@ func (dataStoreSharedDataInfo *DataStoreSharedDataInfo) FormatToString(indentati
 
 // NewDataStoreSharedDataInfo returns a new DataStoreSharedDataInfo
 func NewDataStoreSharedDataInfo() *DataStoreSharedDataInfo {
-	return &DataStoreSharedDataInfo{}
+	dssdi := &DataStoreSharedDataInfo{
+		DataID:      types.NewPrimitiveU64(0),
+		OwnerID:     types.NewPrimitiveU32(0),
+		DataType:    types.NewPrimitiveU8(0),
+		Comment:     types.NewString(""),
+		MetaBinary:  types.NewQBuffer(nil),
+		Profile:     types.NewQBuffer(nil),
+		Rating:      types.NewPrimitiveS64(0),
+		CreatedTime: types.NewDateTime(0),
+		Info:        NewDataStoreFileServerObjectInfo(),
+	}
+
+	return dssdi
 }

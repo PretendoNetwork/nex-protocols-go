@@ -1,27 +1,42 @@
-// Package types implements all the types used by the Matchmaking protocols.
-//
-// Since there are multiple match making related protocols, and they all share types
-// all types used by all match making protocols is defined here
+// Package types implements all the types used by the Matchmaking protocol
 package types
 
 import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/v2/types"
 )
 
-// MatchmakeBlockListParam holds parameters for a matchmake session
+// MatchmakeBlockListParam is a type within the Matchmaking protocol
 type MatchmakeBlockListParam struct {
-	nex.Structure
-	OptionFlag uint32
+	types.Structure
+	OptionFlag *types.PrimitiveU32
 }
 
-// ExtractFromStream extracts a MatchmakeBlockListParam structure from a stream
-func (matchmakeBlockListParam *MatchmakeBlockListParam) ExtractFromStream(stream *nex.StreamIn) error {
+// WriteTo writes the MatchmakeBlockListParam to the given writable
+func (mblp *MatchmakeBlockListParam) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
+
+	mblp.OptionFlag.WriteTo(writable)
+
+	content := contentWritable.Bytes()
+
+	mblp.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
+}
+
+// ExtractFrom extracts the MatchmakeBlockListParam from the given readable
+func (mblp *MatchmakeBlockListParam) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	matchmakeBlockListParam.OptionFlag, err = stream.ReadUInt32LE()
+	err = mblp.ExtractHeaderFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract MatchmakeBlockListParam header. %s", err.Error())
+	}
+
+	err = mblp.OptionFlag.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract MatchmakeBlockListParam.OptionFlag. %s", err.Error())
 	}
@@ -30,43 +45,44 @@ func (matchmakeBlockListParam *MatchmakeBlockListParam) ExtractFromStream(stream
 }
 
 // Copy returns a new copied instance of MatchmakeBlockListParam
-func (matchmakeBlockListParam *MatchmakeBlockListParam) Copy() nex.StructureInterface {
+func (mblp *MatchmakeBlockListParam) Copy() types.RVType {
 	copied := NewMatchmakeBlockListParam()
 
-	copied.SetStructureVersion(matchmakeBlockListParam.StructureVersion())
-
-	copied.OptionFlag = matchmakeBlockListParam.OptionFlag
+	copied.StructureVersion = mblp.StructureVersion
+	copied.OptionFlag = mblp.OptionFlag.Copy().(*types.PrimitiveU32)
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (matchmakeBlockListParam *MatchmakeBlockListParam) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*MatchmakeBlockListParam)
-
-	if matchmakeBlockListParam.StructureVersion() != other.StructureVersion() {
+// Equals checks if the given MatchmakeBlockListParam contains the same data as the current MatchmakeBlockListParam
+func (mblp *MatchmakeBlockListParam) Equals(o types.RVType) bool {
+	if _, ok := o.(*MatchmakeBlockListParam); !ok {
 		return false
 	}
 
-	return matchmakeBlockListParam.OptionFlag == other.OptionFlag
+	other := o.(*MatchmakeBlockListParam)
+
+	if mblp.StructureVersion != other.StructureVersion {
+		return false
+	}
+
+	return mblp.OptionFlag.Equals(other.OptionFlag)
 }
 
-// String returns a string representation of the struct
-func (matchmakeBlockListParam *MatchmakeBlockListParam) String() string {
-	return matchmakeBlockListParam.FormatToString(0)
+// String returns the string representation of the MatchmakeBlockListParam
+func (mblp *MatchmakeBlockListParam) String() string {
+	return mblp.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (matchmakeBlockListParam *MatchmakeBlockListParam) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the MatchmakeBlockListParam using the provided indentation level
+func (mblp *MatchmakeBlockListParam) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("MatchmakeBlockListParam{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, matchmakeBlockListParam.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sOptionFlag: %d\n", indentationValues, matchmakeBlockListParam.OptionFlag))
-
+	b.WriteString(fmt.Sprintf("%sOptionFlag: %s,\n", indentationValues, mblp.OptionFlag))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -74,5 +90,9 @@ func (matchmakeBlockListParam *MatchmakeBlockListParam) FormatToString(indentati
 
 // NewMatchmakeBlockListParam returns a new MatchmakeBlockListParam
 func NewMatchmakeBlockListParam() *MatchmakeBlockListParam {
-	return &MatchmakeBlockListParam{}
+	mblp := &MatchmakeBlockListParam{
+		OptionFlag: types.NewPrimitiveU32(0),
+	}
+
+	return mblp
 }

@@ -4,43 +4,44 @@ package protocol
 import (
 	"fmt"
 
-	nex "github.com/PretendoNetwork/nex-go"
-	"github.com/PretendoNetwork/nex-protocols-go/globals"
+	nex "github.com/PretendoNetwork/nex-go/v2"
+	"github.com/PretendoNetwork/nex-go/v2/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
 )
 
-// HTTPGetResponse sets the HTTPGetResponse handler function
-func (protocol *Protocol) HTTPGetResponse(handler func(err error, packet nex.PacketInterface, callID uint32, requestID uint32) uint32) {
-	protocol.httpGetResponseHandler = handler
-}
-
 func (protocol *Protocol) handleHTTPGetResponse(packet nex.PacketInterface) {
-	var errorCode uint32
+	if protocol.HTTPGetResponse == nil {
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "ServiceItemWiiSportsClub::HTTPGetResponse not implemented")
 
-	if protocol.httpGetResponseHandler == nil {
-		globals.Logger.Warning("ServiceItemWiiSportsClub::HTTPGetResponse not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
+	callID := request.CallID
+	parameters := request.Parameters
+	endpoint := packet.Sender().Endpoint()
+	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	callID := request.CallID()
-	parameters := request.Parameters()
+	requestID := types.NewPrimitiveU32(0)
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
-
-	requestID, err := parametersStream.ReadUInt32LE()
+	err := requestID.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.httpGetResponseHandler(fmt.Errorf("Failed to read requestID from parameters. %s", err.Error()), packet, callID, 0)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.HTTPGetResponse(fmt.Errorf("Failed to read requestID from parameters. %s", err.Error()), packet, callID, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	errorCode = protocol.httpGetResponseHandler(nil, packet, callID, requestID)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.HTTPGetResponse(nil, packet, callID, requestID)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

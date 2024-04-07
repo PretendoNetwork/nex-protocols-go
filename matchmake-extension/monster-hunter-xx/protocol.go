@@ -4,10 +4,11 @@ package protocol
 import (
 	"fmt"
 
-	nex "github.com/PretendoNetwork/nex-go"
-	"github.com/PretendoNetwork/nex-protocols-go/globals"
-	matchmake_extension "github.com/PretendoNetwork/nex-protocols-go/matchmake-extension"
-	matchmake_extension_monster_hunter_x_x_types "github.com/PretendoNetwork/nex-protocols-go/matchmake-extension/monster-hunter-xx/types"
+	nex "github.com/PretendoNetwork/nex-go/v2"
+	"github.com/PretendoNetwork/nex-go/v2/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
+	matchmake_extension "github.com/PretendoNetwork/nex-protocols-go/v2/matchmake-extension"
+	matchmake_extension_monster_hunter_x_x_types "github.com/PretendoNetwork/nex-protocols-go/v2/matchmake-extension/monster-hunter-xx/types"
 	"golang.org/x/exp/slices"
 )
 
@@ -44,57 +45,52 @@ type matchmakeExtensionProtocol = matchmake_extension.Protocol
 // Protocol stores all the RMC method handlers for the Matchmake Extension (Monster Hunter XX) protocol and listens for requests
 // Embeds the Matchmake Extension protocol
 type Protocol struct {
-	Server *nex.Server
+	endpoint nex.EndpointInterface
 	matchmakeExtensionProtocol
-	updateFriendUserProfileHandler func(err error, packet nex.PacketInterface, callID uint32, param *matchmake_extension_monster_hunter_x_x_types.FriendUserParam) uint32
-	getFriendUserProfilesHandler   func(err error, packet nex.PacketInterface, callID uint32, pids []uint64) uint32
-	addFriendsHandler              func(err error, packet nex.PacketInterface, callID uint32, pids []uint64) uint32
-	removeFriendHandler            func(err error, packet nex.PacketInterface, callID uint32, pid uint64) uint32
-	findCommunityByOwnerHandler    func(err error, packet nex.PacketInterface, callID uint32, id uint64, resultRange *nex.ResultRange) uint32
-}
-
-// Setup initializes the protocol
-func (protocol *Protocol) Setup() {
-	protocol.Server.On("Data", func(packet nex.PacketInterface) {
-		request := packet.RMCRequest()
-
-		if request.ProtocolID() == ProtocolID {
-			if slices.Contains(patchedMethods, request.MethodID()) {
-				protocol.HandlePacket(packet)
-			} else {
-				protocol.matchmakeExtensionProtocol.HandlePacket(packet)
-			}
-		}
-	})
+	UpdateFriendUserProfile func(err error, packet nex.PacketInterface, callID uint32, param *matchmake_extension_monster_hunter_x_x_types.FriendUserParam) (*nex.RMCMessage, *nex.Error)
+	GetFriendUserProfiles   func(err error, packet nex.PacketInterface, callID uint32, pids *types.List[*types.PID]) (*nex.RMCMessage, *nex.Error)
+	AddFriends              func(err error, packet nex.PacketInterface, callID uint32, pids *types.List[*types.PID]) (*nex.RMCMessage, *nex.Error)
+	RemoveFriend            func(err error, packet nex.PacketInterface, callID uint32, pid *types.PID) (*nex.RMCMessage, *nex.Error)
+	FindCommunityByOwner    func(err error, packet nex.PacketInterface, callID uint32, id *types.PrimitiveU64, resultRange *types.ResultRange) (*nex.RMCMessage, *nex.Error)
 }
 
 // HandlePacket sends the packet to the correct RMC method handler
 func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
-	request := packet.RMCRequest()
+	message := packet.RMCMessage()
 
-	switch request.MethodID() {
+	if !message.IsRequest || message.ProtocolID != ProtocolID {
+		return
+	}
+
+	if !slices.Contains(patchedMethods, message.MethodID) {
+		protocol.matchmakeExtensionProtocol.HandlePacket(packet)
+		return
+	}
+
+	switch message.MethodID {
 	case MethodUpdateFriendUserProfile:
-		go protocol.handleUpdateFriendUserProfile(packet)
+		protocol.handleUpdateFriendUserProfile(packet)
 	case MethodGetFriendUserProfiles:
-		go protocol.handleGetFriendUserProfiles(packet)
+		protocol.handleGetFriendUserProfiles(packet)
 	case MethodAddFriends:
-		go protocol.handleAddFriends(packet)
+		protocol.handleAddFriends(packet)
 	case MethodRemoveFriend:
-		go protocol.handleRemoveFriend(packet)
+		protocol.handleRemoveFriend(packet)
 	case MethodFindCommunityByOwner:
-		go protocol.handleFindCommunityByOwner(packet)
+		protocol.handleFindCommunityByOwner(packet)
 	default:
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
-		fmt.Printf("Unsupported Matchmake Extension (Monster Hunter XX) method ID: %#v\n", request.MethodID())
+		errMessage := fmt.Sprintf("Unsupported Matchmake Extension (Monster Hunter XX) method ID: %#v\n", message.MethodID)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, errMessage)
+
+		globals.RespondError(packet, ProtocolID, err)
+		globals.Logger.Warning(err.Message)
 	}
 }
 
 // NewProtocol returns a new MatchmakeExtensionMonsterHunterXX protocol
-func NewProtocol(server *nex.Server) *Protocol {
-	protocol := &Protocol{Server: server}
-	protocol.matchmakeExtensionProtocol.Server = server
-
-	protocol.Setup()
+func NewProtocol(endpoint nex.EndpointInterface) *Protocol {
+	protocol := &Protocol{endpoint: endpoint}
+	protocol.matchmakeExtensionProtocol.SetEndpoint(endpoint)
 
 	return protocol
 }

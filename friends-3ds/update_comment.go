@@ -4,43 +4,44 @@ package protocol
 import (
 	"fmt"
 
-	nex "github.com/PretendoNetwork/nex-go"
-	"github.com/PretendoNetwork/nex-protocols-go/globals"
+	nex "github.com/PretendoNetwork/nex-go/v2"
+	"github.com/PretendoNetwork/nex-go/v2/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
 )
 
-// UpdateComment sets the UpdateComment handler function
-func (protocol *Protocol) UpdateComment(handler func(err error, packet nex.PacketInterface, callID uint32, comment string) uint32) {
-	protocol.updateCommentHandler = handler
-}
-
 func (protocol *Protocol) handleUpdateComment(packet nex.PacketInterface) {
-	var errorCode uint32
+	if protocol.UpdateComment == nil {
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "Friends3DS::UpdateComment not implemented")
 
-	if protocol.updateCommentHandler == nil {
-		globals.Logger.Warning("Friends3DS::UpdateComment not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
+	callID := request.CallID
+	parameters := request.Parameters
+	endpoint := packet.Sender().Endpoint()
+	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	callID := request.CallID()
-	parameters := request.Parameters()
+	comment := types.NewString("")
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
-
-	comment, err := parametersStream.ReadString()
+	err := comment.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.updateCommentHandler(fmt.Errorf("Failed to read comment from parameters. %s", err.Error()), packet, callID, "")
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.UpdateComment(fmt.Errorf("Failed to read comment from parameters. %s", err.Error()), packet, callID, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	errorCode = protocol.updateCommentHandler(nil, packet, callID, comment)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.UpdateComment(nil, packet, callID, comment)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

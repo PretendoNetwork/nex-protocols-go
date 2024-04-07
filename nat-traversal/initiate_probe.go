@@ -4,43 +4,44 @@ package protocol
 import (
 	"fmt"
 
-	nex "github.com/PretendoNetwork/nex-go"
-	"github.com/PretendoNetwork/nex-protocols-go/globals"
+	nex "github.com/PretendoNetwork/nex-go/v2"
+	"github.com/PretendoNetwork/nex-go/v2/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
 )
 
-// InitiateProbe sets the InitiateProbe handler function
-func (protocol *Protocol) InitiateProbe(handler func(err error, packet nex.PacketInterface, callID uint32, urlStationToProbe *nex.StationURL) uint32) {
-	protocol.initiateProbeHandler = handler
-}
-
 func (protocol *Protocol) handleInitiateProbe(packet nex.PacketInterface) {
-	var errorCode uint32
+	if protocol.InitiateProbe == nil {
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "NATTraversal::InitiateProbe not implemented")
 
-	if protocol.initiateProbeHandler == nil {
-		globals.Logger.Warning("NATTraversal::InitiateProbe not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
+	callID := request.CallID
+	parameters := request.Parameters
+	endpoint := packet.Sender().Endpoint()
+	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	callID := request.CallID()
-	parameters := request.Parameters()
+	urlStationToProbe := types.NewStationURL("")
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
-
-	urlStationToProbe, err := parametersStream.ReadStationURL()
+	err := urlStationToProbe.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.initiateProbeHandler(fmt.Errorf("Failed to read urlStationToProbe from parameters. %s", err.Error()), packet, callID, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.InitiateProbe(fmt.Errorf("Failed to read urlStationToProbe from parameters. %s", err.Error()), packet, callID, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	errorCode = protocol.initiateProbeHandler(nil, packet, callID, urlStationToProbe)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.InitiateProbe(nil, packet, callID, urlStationToProbe)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

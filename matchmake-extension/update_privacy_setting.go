@@ -4,53 +4,57 @@ package protocol
 import (
 	"fmt"
 
-	nex "github.com/PretendoNetwork/nex-go"
-	"github.com/PretendoNetwork/nex-protocols-go/globals"
+	nex "github.com/PretendoNetwork/nex-go/v2"
+	"github.com/PretendoNetwork/nex-go/v2/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
 )
 
-// UpdatePrivacySetting sets the UpdatePrivacySetting handler function
-func (protocol *Protocol) UpdatePrivacySetting(handler func(err error, packet nex.PacketInterface, callID uint32, onlineStatus bool, participationCommunity bool) uint32) {
-	protocol.updatePrivacySettingHandler = handler
-}
-
 func (protocol *Protocol) handleUpdatePrivacySetting(packet nex.PacketInterface) {
-	var errorCode uint32
+	if protocol.UpdatePrivacySetting == nil {
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "MatchmakeExtension::UpdatePrivacySetting not implemented")
 
-	if protocol.updatePrivacySettingHandler == nil {
-		globals.Logger.Warning("MatchmakeExtension::UpdatePrivacySetting not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
+	callID := request.CallID
+	parameters := request.Parameters
+	endpoint := packet.Sender().Endpoint()
+	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	callID := request.CallID()
-	parameters := request.Parameters()
+	onlineStatus := types.NewPrimitiveBool(false)
+	participationCommunity := types.NewPrimitiveBool(false)
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+	var err error
 
-	onlineStatus, err := parametersStream.ReadBool()
+	err = onlineStatus.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.updatePrivacySettingHandler(fmt.Errorf("Failed to read onlineStatus from parameters. %s", err.Error()), packet, callID, false, false)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.UpdatePrivacySetting(fmt.Errorf("Failed to read onlineStatus from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	participationCommunity, err := parametersStream.ReadBool()
+	err = participationCommunity.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.updatePrivacySettingHandler(fmt.Errorf("Failed to read participationCommunity from parameters. %s", err.Error()), packet, callID, false, false)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.UpdatePrivacySetting(fmt.Errorf("Failed to read participationCommunity from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	errorCode = protocol.updatePrivacySettingHandler(nil, packet, callID, onlineStatus, participationCommunity)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.UpdatePrivacySetting(nil, packet, callID, onlineStatus, participationCommunity)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

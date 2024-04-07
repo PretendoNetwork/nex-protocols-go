@@ -1,11 +1,13 @@
-// Package subscription implements the Subscription NEX protocol
-package subscription
+// Package protocol implements the Subscription protocol
+package protocol
 
 import (
 	"fmt"
+	"slices"
 
-	nex "github.com/PretendoNetwork/nex-go"
-	"github.com/PretendoNetwork/nex-protocols-go/globals"
+	nex "github.com/PretendoNetwork/nex-go/v2"
+	"github.com/PretendoNetwork/nex-go/v2/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
 )
 
 const (
@@ -58,55 +60,125 @@ const (
 	MethodGetPrivacyLevels = 0xF
 )
 
-// SubscriptionProtocol handles the Subscription nex protocol
-type SubscriptionProtocol struct {
-	Server                                     *nex.Server
-	createMySubscriptionDataHandler            func(err error, packet nex.PacketInterface, callID uint32, unk uint64, content []byte)
-	updateMySubscriptionDataHandler            func(err error, packet nex.PacketInterface, callID uint32, unk uint32, content []byte)
-	getFriendSubscriptionDataHandler           func(err error, packet nex.PacketInterface, callID uint32)
-	getTargetSubscriptionDataHandler           func(err error, packet nex.PacketInterface, callID uint32)
-	getActivePlayerSubscriptionDataHandler     func(err error, packet nex.PacketInterface, callID uint32)
-	getSubscriptionDataHandler                 func(err error, packet nex.PacketInterface, callID uint32, pids []uint32)
-	replaceTargetAndGetSubscriptionDataHandler func(err error, packet nex.PacketInterface, callID uint32)
-	getPrivacyLevelsHandler                    func(err error, packet nex.PacketInterface, callID uint32)
+// Protocol handles the Subscription nex protocol
+type Protocol struct {
+	endpoint                            nex.EndpointInterface
+	CreateMySubscriptionData            func(err error, packet nex.PacketInterface, callID uint32, unk *types.PrimitiveU64, content []byte) (*nex.RMCMessage, *nex.Error)
+	UpdateMySubscriptionData            func(err error, packet nex.PacketInterface, callID uint32, unk *types.PrimitiveU32, content []byte) (*nex.RMCMessage, *nex.Error)
+	GetFriendSubscriptionData           func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, *nex.Error)
+	GetTargetSubscriptionData           func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, *nex.Error)
+	GetActivePlayerSubscriptionData     func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, *nex.Error)
+	GetSubscriptionData                 func(err error, packet nex.PacketInterface, callID uint32, pids *types.List[*types.PrimitiveU32]) (*nex.RMCMessage, *nex.Error)
+	ReplaceTargetAndGetSubscriptionData func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, *nex.Error)
+	GetPrivacyLevels                    func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, *nex.Error)
+	Patches                             nex.ServiceProtocol
+	PatchedMethods                      []uint32
 }
 
-// Setup initializes the protocol
-func (protocol *SubscriptionProtocol) Setup() {
-	protocol.Server.On("Data", func(packet nex.PacketInterface) {
-		request := packet.RMCRequest()
-
-		if ProtocolID == request.ProtocolID() {
-			switch request.MethodID() {
-			case MethodCreateMySubscriptionData:
-				go protocol.handleCreateMySubscriptionData(packet)
-			case MethodUpdateMySubscriptionData:
-				go protocol.handleUpdateMySubscriptionData(packet)
-			case MethodGetFriendSubscriptionData:
-				go protocol.handleGetFriendSubscriptionData(packet)
-			case MethodGetTargetSubscriptionData:
-				go protocol.handleGetTargetSubscriptionData(packet)
-			case MethodGetActivePlayerSubscriptionData:
-				go protocol.handleGetActivePlayerSubscriptionData(packet)
-			case MethodGetSubscriptionData:
-				go protocol.handleGetSubscriptionData(packet)
-			case MethodReplaceTargetAndGetSubscriptionData:
-				go protocol.handleReplaceTargetAndGetSubscriptionData(packet)
-			case MethodGetPrivacyLevels:
-				go protocol.handleGetPrivacyLevels(packet)
-			default:
-				go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
-				fmt.Printf("Unsupported Subscription method ID: %#v\n", request.MethodID())
-			}
-		}
-	})
+// Interface implements the methods present on the Subscription protocol struct
+type Interface interface {
+	Endpoint() nex.EndpointInterface
+	SetEndpoint(endpoint nex.EndpointInterface)
+	SetHandlerCreateMySubscriptionData(handler func(err error, packet nex.PacketInterface, callID uint32, unk *types.PrimitiveU64, content []byte) (*nex.RMCMessage, *nex.Error))
+	SetHandlerUpdateMySubscriptionData(handler func(err error, packet nex.PacketInterface, callID uint32, unk *types.PrimitiveU32, content []byte) (*nex.RMCMessage, *nex.Error))
+	SetHandlerGetFriendSubscriptionData(handler func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, *nex.Error))
+	SetHandlerGetTargetSubscriptionData(handler func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, *nex.Error))
+	SetHandlerGetActivePlayerSubscriptionData(handler func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, *nex.Error))
+	SetHandlerGetSubscriptionData(handler func(err error, packet nex.PacketInterface, callID uint32, pids *types.List[*types.PrimitiveU32]) (*nex.RMCMessage, *nex.Error))
+	SetHandlerReplaceTargetAndGetSubscriptionData(handler func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, *nex.Error))
+	SetHandlerGetPrivacyLevels(handler func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, *nex.Error))
 }
 
-// NewSubscriptionProtocol returns a new SubscriptionProtocol
-func NewSubscriptionProtocol(server *nex.Server) *SubscriptionProtocol {
-	protocol := &SubscriptionProtocol{Server: server}
+// Endpoint returns the endpoint implementing the protocol
+func (protocol *Protocol) Endpoint() nex.EndpointInterface {
+	return protocol.endpoint
+}
 
-	protocol.Setup()
+// SetEndpoint sets the endpoint implementing the protocol
+func (protocol *Protocol) SetEndpoint(endpoint nex.EndpointInterface) {
+	protocol.endpoint = endpoint
+}
 
-	return protocol
+// SetHandlerCreateMySubscriptionData sets the handler for the CreateMySubscriptionData method
+func (protocol *Protocol) SetHandlerCreateMySubscriptionData(handler func(err error, packet nex.PacketInterface, callID uint32, unk *types.PrimitiveU64, content []byte) (*nex.RMCMessage, *nex.Error)) {
+	protocol.CreateMySubscriptionData = handler
+}
+
+// SetHandlerUpdateMySubscriptionData sets the handler for the UpdateMySubscriptionData method
+func (protocol *Protocol) SetHandlerUpdateMySubscriptionData(handler func(err error, packet nex.PacketInterface, callID uint32, unk *types.PrimitiveU32, content []byte) (*nex.RMCMessage, *nex.Error)) {
+	protocol.UpdateMySubscriptionData = handler
+}
+
+// SetHandlerGetFriendSubscriptionData sets the handler for the GetFriendSubscriptionData method
+func (protocol *Protocol) SetHandlerGetFriendSubscriptionData(handler func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, *nex.Error)) {
+	protocol.GetFriendSubscriptionData = handler
+}
+
+// SetHandlerGetTargetSubscriptionData sets the handler for the GetTargetSubscriptionData method
+func (protocol *Protocol) SetHandlerGetTargetSubscriptionData(handler func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, *nex.Error)) {
+	protocol.GetTargetSubscriptionData = handler
+}
+
+// SetHandlerGetActivePlayerSubscriptionData sets the handler for the GetActivePlayerSubscriptionData method
+func (protocol *Protocol) SetHandlerGetActivePlayerSubscriptionData(handler func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, *nex.Error)) {
+	protocol.GetActivePlayerSubscriptionData = handler
+}
+
+// SetHandlerGetSubscriptionData sets the handler for the GetSubscriptionData method
+func (protocol *Protocol) SetHandlerGetSubscriptionData(handler func(err error, packet nex.PacketInterface, callID uint32, pids *types.List[*types.PrimitiveU32]) (*nex.RMCMessage, *nex.Error)) {
+	protocol.GetSubscriptionData = handler
+}
+
+// SetHandlerReplaceTargetAndGetSubscriptionData sets the handler for the ReplaceTargetAndGetSubscriptionData method
+func (protocol *Protocol) SetHandlerReplaceTargetAndGetSubscriptionData(handler func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, *nex.Error)) {
+	protocol.ReplaceTargetAndGetSubscriptionData = handler
+}
+
+// SetHandlerGetPrivacyLevels sets the handler for the GetPrivacyLevels method
+func (protocol *Protocol) SetHandlerGetPrivacyLevels(handler func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, *nex.Error)) {
+	protocol.GetPrivacyLevels = handler
+}
+
+// HandlePacket sends the packet to the correct RMC method handler
+func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
+	message := packet.RMCMessage()
+
+	if !message.IsRequest || message.ProtocolID != ProtocolID {
+		return
+	}
+
+	if protocol.Patches != nil && slices.Contains(protocol.PatchedMethods, message.MethodID) {
+		protocol.Patches.HandlePacket(packet)
+		return
+	}
+
+	switch message.MethodID {
+	case MethodCreateMySubscriptionData:
+		protocol.handleCreateMySubscriptionData(packet)
+	case MethodUpdateMySubscriptionData:
+		protocol.handleUpdateMySubscriptionData(packet)
+	case MethodGetFriendSubscriptionData:
+		protocol.handleGetFriendSubscriptionData(packet)
+	case MethodGetTargetSubscriptionData:
+		protocol.handleGetTargetSubscriptionData(packet)
+	case MethodGetActivePlayerSubscriptionData:
+		protocol.handleGetActivePlayerSubscriptionData(packet)
+	case MethodGetSubscriptionData:
+		protocol.handleGetSubscriptionData(packet)
+	case MethodReplaceTargetAndGetSubscriptionData:
+		protocol.handleReplaceTargetAndGetSubscriptionData(packet)
+	case MethodGetPrivacyLevels:
+		protocol.handleGetPrivacyLevels(packet)
+	default:
+		errMessage := fmt.Sprintf("Unsupported Subscription method ID: %#v\n", message.MethodID)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, errMessage)
+
+		globals.RespondError(packet, ProtocolID, err)
+		globals.Logger.Warning(err.Message)
+	}
+}
+
+// NewProtocol returns a new Protocol
+func NewProtocol() *Protocol {
+	return &Protocol{}
 }

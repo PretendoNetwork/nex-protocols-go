@@ -5,83 +5,84 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/v2/types"
 )
 
-// RankingStats holds parameters for ordering rankings
+// RankingStats is a type within the Ranking protocol
 type RankingStats struct {
-	nex.Structure
-	StatsList []float64
+	types.Structure
+	StatsList *types.List[*types.PrimitiveF64]
 }
 
-// ExtractFromStream extracts a RankingStats structure from a stream
-func (rankingStats *RankingStats) ExtractFromStream(stream *nex.StreamIn) error {
+// WriteTo writes the RankingStats to the given writable
+func (rs *RankingStats) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
+
+	rs.StatsList.WriteTo(writable)
+
+	content := contentWritable.Bytes()
+
+	rs.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
+}
+
+// ExtractFrom extracts the RankingStats from the given readable
+func (rs *RankingStats) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	rankingStats.StatsList, err = stream.ReadListFloat64LE()
+	err = rs.ExtractHeaderFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract RankingStats.StatsList from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract RankingStats header. %s", err.Error())
+	}
+
+	err = rs.StatsList.ExtractFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract RankingStats.StatsList. %s", err.Error())
 	}
 
 	return nil
 }
 
-// Bytes encodes the RankingStats and returns a byte array
-func (rankingStats *RankingStats) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteListFloat64LE(rankingStats.StatsList)
-
-	return stream.Bytes()
-}
-
 // Copy returns a new copied instance of RankingStats
-func (rankingStats *RankingStats) Copy() nex.StructureInterface {
+func (rs *RankingStats) Copy() types.RVType {
 	copied := NewRankingStats()
 
-	copied.SetStructureVersion(rankingStats.StructureVersion())
-
-	copied.StatsList = make([]float64, len(rankingStats.StatsList))
-
-	copy(copied.StatsList, rankingStats.StatsList)
+	copied.StructureVersion = rs.StructureVersion
+	copied.StatsList = rs.StatsList.Copy().(*types.List[*types.PrimitiveF64])
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (rankingStats *RankingStats) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*RankingStats)
-
-	if rankingStats.StructureVersion() != other.StructureVersion() {
+// Equals checks if the given RankingStats contains the same data as the current RankingStats
+func (rs *RankingStats) Equals(o types.RVType) bool {
+	if _, ok := o.(*RankingStats); !ok {
 		return false
 	}
 
-	if len(rankingStats.StatsList) != len(other.StatsList) {
+	other := o.(*RankingStats)
+
+	if rs.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	for i := 0; i < len(rankingStats.StatsList); i++ {
-		if rankingStats.StatsList[i] != other.StatsList[i] {
-			return false
-		}
-	}
-
-	return true
+	return rs.StatsList.Equals(other.StatsList)
 }
 
-// String returns a string representation of the struct
-func (rankingStats *RankingStats) String() string {
-	return rankingStats.FormatToString(0)
+// String returns the string representation of the RankingStats
+func (rs *RankingStats) String() string {
+	return rs.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (rankingStats *RankingStats) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the RankingStats using the provided indentation level
+func (rs *RankingStats) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("RankingStats{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, rankingStats.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sStatsList: %v\n", indentationValues, rankingStats.StatsList))
+	b.WriteString(fmt.Sprintf("%sStatsList: %s,\n", indentationValues, rs.StatsList))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -89,5 +90,11 @@ func (rankingStats *RankingStats) FormatToString(indentationLevel int) string {
 
 // NewRankingStats returns a new RankingStats
 func NewRankingStats() *RankingStats {
-	return &RankingStats{}
+	rs := &RankingStats{
+		StatsList: types.NewList[*types.PrimitiveF64](),
+	}
+
+	rs.StatsList.Type = types.NewPrimitiveF64(0)
+
+	return rs
 }

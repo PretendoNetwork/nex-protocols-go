@@ -5,44 +5,66 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/v2/types"
 )
 
-// FriendData contains data relating to a friend
+// FriendData is a type within the Friends protocol
 type FriendData struct {
-	nex.Structure
-	PID            uint32
-	StrName        string
-	ByRelationship uint8
-	UIDetails      uint32
-	StrStatus      string
+	types.Structure
+	PID            *types.PID
+	StrName        *types.String
+	ByRelationship *types.PrimitiveU8
+	UIDetails      *types.PrimitiveU32
+	StrStatus      *types.String
 }
 
-// ExtractFromStream extracts a FriendData structure from a stream
-func (friendData *FriendData) ExtractFromStream(stream *nex.StreamIn) error {
+// WriteTo writes the FriendData to the given writable
+func (fd *FriendData) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
+
+	fd.PID.WriteTo(writable)
+	fd.StrName.WriteTo(writable)
+	fd.ByRelationship.WriteTo(writable)
+	fd.UIDetails.WriteTo(writable)
+	fd.StrStatus.WriteTo(writable)
+
+	content := contentWritable.Bytes()
+
+	fd.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
+}
+
+// ExtractFrom extracts the FriendData from the given readable
+func (fd *FriendData) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	friendData.PID, err = stream.ReadUInt32LE()
+	err = fd.ExtractHeaderFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract FriendData header. %s", err.Error())
+	}
+
+	err = fd.PID.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract FriendData.PID. %s", err.Error())
 	}
 
-	friendData.StrName, err = stream.ReadString()
+	err = fd.StrName.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract FriendData.StrName. %s", err.Error())
 	}
 
-	friendData.ByRelationship, err = stream.ReadUInt8()
+	err = fd.ByRelationship.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract FriendData.ByRelationship. %s", err.Error())
 	}
 
-	friendData.UIDetails, err = stream.ReadUInt32LE()
+	err = fd.UIDetails.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract FriendData.UIDetails. %s", err.Error())
 	}
 
-	friendData.StrStatus, err = stream.ReadString()
+	err = fd.StrStatus.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract FriendData.StrStatus. %s", err.Error())
 	}
@@ -51,70 +73,68 @@ func (friendData *FriendData) ExtractFromStream(stream *nex.StreamIn) error {
 }
 
 // Copy returns a new copied instance of FriendData
-func (friendData *FriendData) Copy() nex.StructureInterface {
+func (fd *FriendData) Copy() types.RVType {
 	copied := NewFriendData()
 
-	copied.SetStructureVersion(friendData.StructureVersion())
-
-	copied.PID = friendData.PID
-	copied.StrName = friendData.StrName
-	copied.ByRelationship = friendData.ByRelationship
-	copied.UIDetails = friendData.UIDetails
-	copied.StrStatus = friendData.StrStatus
+	copied.StructureVersion = fd.StructureVersion
+	copied.PID = fd.PID.Copy().(*types.PID)
+	copied.StrName = fd.StrName.Copy().(*types.String)
+	copied.ByRelationship = fd.ByRelationship.Copy().(*types.PrimitiveU8)
+	copied.UIDetails = fd.UIDetails.Copy().(*types.PrimitiveU32)
+	copied.StrStatus = fd.StrStatus.Copy().(*types.String)
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (friendData *FriendData) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*FriendData)
-
-	if friendData.StructureVersion() != other.StructureVersion() {
+// Equals checks if the given FriendData contains the same data as the current FriendData
+func (fd *FriendData) Equals(o types.RVType) bool {
+	if _, ok := o.(*FriendData); !ok {
 		return false
 	}
 
-	if friendData.PID != other.PID {
+	other := o.(*FriendData)
+
+	if fd.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if friendData.StrName != other.StrName {
+	if !fd.PID.Equals(other.PID) {
 		return false
 	}
 
-	if friendData.ByRelationship != other.ByRelationship {
+	if !fd.StrName.Equals(other.StrName) {
 		return false
 	}
 
-	if friendData.UIDetails != other.UIDetails {
+	if !fd.ByRelationship.Equals(other.ByRelationship) {
 		return false
 	}
 
-	if friendData.StrStatus != other.StrStatus {
+	if !fd.UIDetails.Equals(other.UIDetails) {
 		return false
 	}
 
-	return true
+	return fd.StrStatus.Equals(other.StrStatus)
 }
 
-// String returns a string representation of the struct
-func (friendData *FriendData) String() string {
-	return friendData.FormatToString(0)
+// String returns the string representation of the FriendData
+func (fd *FriendData) String() string {
+	return fd.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (friendData *FriendData) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the FriendData using the provided indentation level
+func (fd *FriendData) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("FriendData{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, friendData.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sPID: %d,\n", indentationValues, friendData.PID))
-	b.WriteString(fmt.Sprintf("%sStrName: %q,\n", indentationValues, friendData.StrName))
-	b.WriteString(fmt.Sprintf("%sByRelationship: %d,\n", indentationValues, friendData.ByRelationship))
-	b.WriteString(fmt.Sprintf("%sUIDetails: %d,\n", indentationValues, friendData.UIDetails))
-	b.WriteString(fmt.Sprintf("%sStrStatus: %q\n", indentationValues, friendData.StrStatus))
+	b.WriteString(fmt.Sprintf("%sPID: %s,\n", indentationValues, fd.PID.FormatToString(indentationLevel+1)))
+	b.WriteString(fmt.Sprintf("%sStrName: %s,\n", indentationValues, fd.StrName))
+	b.WriteString(fmt.Sprintf("%sByRelationship: %s,\n", indentationValues, fd.ByRelationship))
+	b.WriteString(fmt.Sprintf("%sUIDetails: %s,\n", indentationValues, fd.UIDetails))
+	b.WriteString(fmt.Sprintf("%sStrStatus: %s,\n", indentationValues, fd.StrStatus))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -122,5 +142,13 @@ func (friendData *FriendData) FormatToString(indentationLevel int) string {
 
 // NewFriendData returns a new FriendData
 func NewFriendData() *FriendData {
-	return &FriendData{}
+	fd := &FriendData{
+		PID:            types.NewPID(0),
+		StrName:        types.NewString(""),
+		ByRelationship: types.NewPrimitiveU8(0),
+		UIDetails:      types.NewPrimitiveU32(0),
+		StrStatus:      types.NewString(""),
+	}
+
+	return fd
 }

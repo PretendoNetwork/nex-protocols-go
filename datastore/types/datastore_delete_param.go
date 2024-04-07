@@ -5,26 +5,45 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/v2/types"
 )
 
-// DataStoreDeleteParam is a data structure used by the DataStore protocol
+// DataStoreDeleteParam is a type within the DataStore protocol
 type DataStoreDeleteParam struct {
-	nex.Structure
-	DataID         uint64
-	UpdatePassword uint64
+	types.Structure
+	DataID         *types.PrimitiveU64
+	UpdatePassword *types.PrimitiveU64
 }
 
-// ExtractFromStream extracts a DataStoreDeleteParam structure from a stream
-func (dataStoreDeleteParam *DataStoreDeleteParam) ExtractFromStream(stream *nex.StreamIn) error {
+// WriteTo writes the DataStoreDeleteParam to the given writable
+func (dsdp *DataStoreDeleteParam) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
+
+	dsdp.DataID.WriteTo(writable)
+	dsdp.UpdatePassword.WriteTo(writable)
+
+	content := contentWritable.Bytes()
+
+	dsdp.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
+}
+
+// ExtractFrom extracts the DataStoreDeleteParam from the given readable
+func (dsdp *DataStoreDeleteParam) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	dataStoreDeleteParam.DataID, err = stream.ReadUInt64LE()
+	err = dsdp.ExtractHeaderFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreDeleteParam header. %s", err.Error())
+	}
+
+	err = dsdp.DataID.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreDeleteParam.DataID. %s", err.Error())
 	}
 
-	dataStoreDeleteParam.UpdatePassword, err = stream.ReadUInt64LE()
+	err = dsdp.UpdatePassword.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreDeleteParam.UpdatePassword. %s", err.Error())
 	}
@@ -32,61 +51,51 @@ func (dataStoreDeleteParam *DataStoreDeleteParam) ExtractFromStream(stream *nex.
 	return nil
 }
 
-// Bytes encodes the DataStoreDeleteParam and returns a byte array
-func (dataStoreDeleteParam *DataStoreDeleteParam) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt64LE(dataStoreDeleteParam.DataID)
-	stream.WriteUInt64LE(dataStoreDeleteParam.UpdatePassword)
+// Copy returns a new copied instance of DataStoreDeleteParam
+func (dsdp *DataStoreDeleteParam) Copy() types.RVType {
+	copied := NewDataStoreDeleteParam()
 
-	return stream.Bytes()
-}
-
-// Copy returns a new copied instance of DataStoreChangeMetaParamV1
-func (dataStoreDeleteParam *DataStoreDeleteParam) Copy() nex.StructureInterface {
-	copied := NewDataStoreChangeMetaParamV1()
-
-	copied.SetStructureVersion(dataStoreDeleteParam.StructureVersion())
-
-	copied.DataID = dataStoreDeleteParam.DataID
-	copied.UpdatePassword = dataStoreDeleteParam.UpdatePassword
+	copied.StructureVersion = dsdp.StructureVersion
+	copied.DataID = dsdp.DataID.Copy().(*types.PrimitiveU64)
+	copied.UpdatePassword = dsdp.UpdatePassword.Copy().(*types.PrimitiveU64)
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (dataStoreDeleteParam *DataStoreDeleteParam) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*DataStoreChangeMetaParamV1)
-
-	if dataStoreDeleteParam.StructureVersion() != other.StructureVersion() {
+// Equals checks if the given DataStoreDeleteParam contains the same data as the current DataStoreDeleteParam
+func (dsdp *DataStoreDeleteParam) Equals(o types.RVType) bool {
+	if _, ok := o.(*DataStoreDeleteParam); !ok {
 		return false
 	}
 
-	if dataStoreDeleteParam.DataID != other.DataID {
+	other := o.(*DataStoreDeleteParam)
+
+	if dsdp.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if dataStoreDeleteParam.UpdatePassword != other.UpdatePassword {
+	if !dsdp.DataID.Equals(other.DataID) {
 		return false
 	}
 
-	return true
+	return dsdp.UpdatePassword.Equals(other.UpdatePassword)
 }
 
-// String returns a string representation of the struct
-func (dataStoreDeleteParam *DataStoreDeleteParam) String() string {
-	return dataStoreDeleteParam.FormatToString(0)
+// String returns the string representation of the DataStoreDeleteParam
+func (dsdp *DataStoreDeleteParam) String() string {
+	return dsdp.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (dataStoreDeleteParam *DataStoreDeleteParam) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the DataStoreDeleteParam using the provided indentation level
+func (dsdp *DataStoreDeleteParam) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("DataStoreDeleteParam{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, dataStoreDeleteParam.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sDataID: %d,\n", indentationValues, dataStoreDeleteParam.DataID))
-	b.WriteString(fmt.Sprintf("%sUpdatePassword: %d\n", indentationValues, dataStoreDeleteParam.UpdatePassword))
+	b.WriteString(fmt.Sprintf("%sDataID: %s,\n", indentationValues, dsdp.DataID))
+	b.WriteString(fmt.Sprintf("%sUpdatePassword: %s,\n", indentationValues, dsdp.UpdatePassword))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -94,8 +103,10 @@ func (dataStoreDeleteParam *DataStoreDeleteParam) FormatToString(indentationLeve
 
 // NewDataStoreDeleteParam returns a new DataStoreDeleteParam
 func NewDataStoreDeleteParam() *DataStoreDeleteParam {
-	return &DataStoreDeleteParam{
-		DataID:         0,
-		UpdatePassword: 0,
+	dsdp := &DataStoreDeleteParam{
+		DataID:         types.NewPrimitiveU64(0),
+		UpdatePassword: types.NewPrimitiveU64(0),
 	}
+
+	return dsdp
 }

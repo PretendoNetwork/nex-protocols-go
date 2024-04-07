@@ -1,39 +1,57 @@
-// Package types implements all the types used by the Matchmake Referee protocol
+// Package types implements all the types used by the MatchmakeReferee protocol
 package types
 
 import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/v2/types"
 )
 
-// MatchmakeRefereeStatsTarget contains the results of a round
+// MatchmakeRefereeStatsTarget is a type within the MatchmakeReferee protocol
 type MatchmakeRefereeStatsTarget struct {
-	nex.Structure
-	*nex.Data
-	PID      uint32
-	Category uint32
+	types.Structure
+	*types.Data
+	PID      *types.PID
+	Category *types.PrimitiveU32
 }
 
-// Bytes encodes the MatchmakeRefereeStatsTarget and returns a byte array
-func (matchmakeRefereeStatsTarget *MatchmakeRefereeStatsTarget) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt32LE(matchmakeRefereeStatsTarget.PID)
-	stream.WriteUInt32LE(matchmakeRefereeStatsTarget.Category)
+// WriteTo writes the MatchmakeRefereeStatsTarget to the given writable
+func (mrst *MatchmakeRefereeStatsTarget) WriteTo(writable types.Writable) {
+	mrst.Data.WriteTo(writable)
 
-	return stream.Bytes()
+	contentWritable := writable.CopyNew()
+
+	mrst.PID.WriteTo(writable)
+	mrst.Category.WriteTo(writable)
+
+	content := contentWritable.Bytes()
+
+	mrst.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
-// ExtractFromStream extracts a MatchmakeRefereeStatsTarget structure from a stream
-func (matchmakeRefereeStatsTarget *MatchmakeRefereeStatsTarget) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the MatchmakeRefereeStatsTarget from the given readable
+func (mrst *MatchmakeRefereeStatsTarget) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	matchmakeRefereeStatsTarget.PID, err = stream.ReadUInt32LE()
+	err = mrst.Data.ExtractFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract MatchmakeRefereeStatsTarget.Data. %s", err.Error())
+	}
+
+	err = mrst.ExtractHeaderFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract MatchmakeRefereeStatsTarget header. %s", err.Error())
+	}
+
+	err = mrst.PID.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract MatchmakeRefereeStatsTarget.PID. %s", err.Error())
 	}
 
-	matchmakeRefereeStatsTarget.Category, err = stream.ReadUInt32LE()
+	err = mrst.Category.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract MatchmakeRefereeStatsTarget.Category. %s", err.Error())
 	}
@@ -42,59 +60,56 @@ func (matchmakeRefereeStatsTarget *MatchmakeRefereeStatsTarget) ExtractFromStrea
 }
 
 // Copy returns a new copied instance of MatchmakeRefereeStatsTarget
-func (matchmakeRefereeStatsTarget *MatchmakeRefereeStatsTarget) Copy() nex.StructureInterface {
+func (mrst *MatchmakeRefereeStatsTarget) Copy() types.RVType {
 	copied := NewMatchmakeRefereeStatsTarget()
 
-	copied.SetStructureVersion(matchmakeRefereeStatsTarget.StructureVersion())
-
-	copied.Data = matchmakeRefereeStatsTarget.ParentType().Copy().(*nex.Data)
-	copied.SetParentType(copied.Data)
-
-	copied.PID = matchmakeRefereeStatsTarget.PID
-	copied.Category = matchmakeRefereeStatsTarget.Category
+	copied.StructureVersion = mrst.StructureVersion
+	copied.Data = mrst.Data.Copy().(*types.Data)
+	copied.PID = mrst.PID.Copy().(*types.PID)
+	copied.Category = mrst.Category.Copy().(*types.PrimitiveU32)
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (matchmakeRefereeStatsTarget *MatchmakeRefereeStatsTarget) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*MatchmakeRefereeStatsTarget)
-
-	if matchmakeRefereeStatsTarget.StructureVersion() != other.StructureVersion() {
+// Equals checks if the given MatchmakeRefereeStatsTarget contains the same data as the current MatchmakeRefereeStatsTarget
+func (mrst *MatchmakeRefereeStatsTarget) Equals(o types.RVType) bool {
+	if _, ok := o.(*MatchmakeRefereeStatsTarget); !ok {
 		return false
 	}
 
-	if !matchmakeRefereeStatsTarget.ParentType().Equals(other.ParentType()) {
+	other := o.(*MatchmakeRefereeStatsTarget)
+
+	if mrst.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if matchmakeRefereeStatsTarget.PID != other.PID {
+	if !mrst.Data.Equals(other.Data) {
 		return false
 	}
 
-	if matchmakeRefereeStatsTarget.Category != other.Category {
+	if !mrst.PID.Equals(other.PID) {
 		return false
 	}
 
-	return true
+	return mrst.Category.Equals(other.Category)
 }
 
-// String returns a string representation of the struct
-func (matchmakeRefereeStatsTarget *MatchmakeRefereeStatsTarget) String() string {
-	return matchmakeRefereeStatsTarget.FormatToString(0)
+// String returns the string representation of the MatchmakeRefereeStatsTarget
+func (mrst *MatchmakeRefereeStatsTarget) String() string {
+	return mrst.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (matchmakeRefereeStatsTarget *MatchmakeRefereeStatsTarget) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the MatchmakeRefereeStatsTarget using the provided indentation level
+func (mrst *MatchmakeRefereeStatsTarget) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("MatchmakeRefereeStatsTarget{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, matchmakeRefereeStatsTarget.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sPID: %d,\n", indentationValues, matchmakeRefereeStatsTarget.PID))
-	b.WriteString(fmt.Sprintf("%sCategory: %d,\n", indentationValues, matchmakeRefereeStatsTarget.Category))
+	b.WriteString(fmt.Sprintf("%sData (parent): %s,\n", indentationValues, mrst.Data.FormatToString(indentationLevel+1)))
+	b.WriteString(fmt.Sprintf("%sPID: %s,\n", indentationValues, mrst.PID.FormatToString(indentationLevel+1)))
+	b.WriteString(fmt.Sprintf("%sCategory: %s,\n", indentationValues, mrst.Category))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -102,5 +117,11 @@ func (matchmakeRefereeStatsTarget *MatchmakeRefereeStatsTarget) FormatToString(i
 
 // NewMatchmakeRefereeStatsTarget returns a new MatchmakeRefereeStatsTarget
 func NewMatchmakeRefereeStatsTarget() *MatchmakeRefereeStatsTarget {
-	return &MatchmakeRefereeStatsTarget{}
+	mrst := &MatchmakeRefereeStatsTarget{
+		Data:     types.NewData(),
+		PID:      types.NewPID(0),
+		Category: types.NewPrimitiveU32(0),
+	}
+
+	return mrst
 }

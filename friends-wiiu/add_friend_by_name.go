@@ -4,43 +4,44 @@ package protocol
 import (
 	"fmt"
 
-	nex "github.com/PretendoNetwork/nex-go"
-	"github.com/PretendoNetwork/nex-protocols-go/globals"
+	nex "github.com/PretendoNetwork/nex-go/v2"
+	"github.com/PretendoNetwork/nex-go/v2/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
 )
 
-// AddFriendByName sets the AddFriendByName handler function
-func (protocol *Protocol) AddFriendByName(handler func(err error, packet nex.PacketInterface, callID uint32, username string) uint32) {
-	protocol.addFriendByNameHandler = handler
-}
-
 func (protocol *Protocol) handleAddFriendByName(packet nex.PacketInterface) {
-	var errorCode uint32
+	if protocol.AddFriendByName == nil {
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "FriendsWiiU::AddFriendByName not implemented")
 
-	if protocol.addFriendByNameHandler == nil {
-		globals.Logger.Warning("FriendsWiiU::AddFriendByName not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
+	callID := request.CallID
+	parameters := request.Parameters
+	endpoint := packet.Sender().Endpoint()
+	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	callID := request.CallID()
-	parameters := request.Parameters()
+	username := types.NewString("")
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
-
-	username, err := parametersStream.ReadString()
+	err := username.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.addFriendByNameHandler(fmt.Errorf("Failed to read username from parameters. %s", err.Error()), packet, callID, "")
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.AddFriendByName(fmt.Errorf("Failed to read username from parameters. %s", err.Error()), packet, callID, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	errorCode = protocol.addFriendByNameHandler(nil, packet, callID, username)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.AddFriendByName(nil, packet, callID, username)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

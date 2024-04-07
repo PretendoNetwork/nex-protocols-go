@@ -4,44 +4,44 @@ package protocol
 import (
 	"fmt"
 
-	nex "github.com/PretendoNetwork/nex-go"
-	"github.com/PretendoNetwork/nex-protocols-go/globals"
-	matchmake_referee_types "github.com/PretendoNetwork/nex-protocols-go/matchmake-referee/types"
+	nex "github.com/PretendoNetwork/nex-go/v2"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
+	matchmake_referee_types "github.com/PretendoNetwork/nex-protocols-go/v2/matchmake-referee/types"
 )
 
-// GetStatsPrimary sets the GetStatsPrimary handler function
-func (protocol *Protocol) GetStatsPrimary(handler func(err error, packet nex.PacketInterface, callID uint32, target *matchmake_referee_types.MatchmakeRefereeStatsTarget) uint32) {
-	protocol.getStatsPrimaryHandler = handler
-}
-
 func (protocol *Protocol) handleGetStatsPrimary(packet nex.PacketInterface) {
-	var errorCode uint32
+	if protocol.GetStatsPrimary == nil {
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "MatchmakeReferee::GetStatsPrimary not implemented")
 
-	if protocol.getStatsPrimaryHandler == nil {
-		globals.Logger.Warning("MatchmakeReferee::GetStatsPrimary not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
+	callID := request.CallID
+	parameters := request.Parameters
+	endpoint := packet.Sender().Endpoint()
+	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	callID := request.CallID()
-	parameters := request.Parameters()
+	target := matchmake_referee_types.NewMatchmakeRefereeStatsTarget()
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
-
-	target, err := parametersStream.ReadStructure(matchmake_referee_types.NewMatchmakeRefereeStatsTarget())
+	err := target.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.getStatsPrimaryHandler(fmt.Errorf("Failed to read target from parameters. %s", err.Error()), packet, callID, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.GetStatsPrimary(fmt.Errorf("Failed to read target from parameters. %s", err.Error()), packet, callID, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	errorCode = protocol.getStatsPrimaryHandler(nil, packet, callID, target.(*matchmake_referee_types.MatchmakeRefereeStatsTarget))
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.GetStatsPrimary(nil, packet, callID, target)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

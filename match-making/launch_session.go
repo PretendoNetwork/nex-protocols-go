@@ -4,53 +4,57 @@ package protocol
 import (
 	"fmt"
 
-	nex "github.com/PretendoNetwork/nex-go"
-	"github.com/PretendoNetwork/nex-protocols-go/globals"
+	nex "github.com/PretendoNetwork/nex-go/v2"
+	"github.com/PretendoNetwork/nex-go/v2/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
 )
 
-// LaunchSession sets the LaunchSession handler function
-func (protocol *Protocol) LaunchSession(handler func(err error, packet nex.PacketInterface, callID uint32, idGathering uint32, strURL string) uint32) {
-	protocol.launchSessionHandler = handler
-}
-
 func (protocol *Protocol) handleLaunchSession(packet nex.PacketInterface) {
-	var errorCode uint32
+	if protocol.LaunchSession == nil {
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "MatchMaking::LaunchSession not implemented")
 
-	if protocol.launchSessionHandler == nil {
-		globals.Logger.Warning("MatchMaking::LaunchSession not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
+	callID := request.CallID
+	parameters := request.Parameters
+	endpoint := packet.Sender().Endpoint()
+	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	callID := request.CallID()
-	parameters := request.Parameters()
+	idGathering := types.NewPrimitiveU32(0)
+	strURL := types.NewString("")
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+	var err error
 
-	idGathering, err := parametersStream.ReadUInt32LE()
+	err = idGathering.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.launchSessionHandler(fmt.Errorf("Failed to read idGathering from parameters. %s", err.Error()), packet, callID, 0, "")
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.LaunchSession(fmt.Errorf("Failed to read idGathering from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	strURL, err := parametersStream.ReadString()
+	err = strURL.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.launchSessionHandler(fmt.Errorf("Failed to read strURL from parameters. %s", err.Error()), packet, callID, 0, "")
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.LaunchSession(fmt.Errorf("Failed to read strURL from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	errorCode = protocol.launchSessionHandler(nil, packet, callID, idGathering, strURL)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.LaunchSession(nil, packet, callID, idGathering, strURL)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

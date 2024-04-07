@@ -1,75 +1,88 @@
-// Package types implements all the types used by the Service Item (Wii Sports Club) protocol
+// Package types implements all the types used by the ServiceItem protocol
 package types
 
 import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/v2/types"
 )
 
-// ServiceItemHTTPGetParam holds data for the Service Item (Wii Sports Club) protocol
+// ServiceItemHTTPGetParam is a type within the ServiceItem protocol
 type ServiceItemHTTPGetParam struct {
-	nex.Structure
-	URL string
+	types.Structure
+	URL *types.String
 }
 
-// ExtractFromStream extracts a ServiceItemHTTPGetParam structure from a stream
-func (serviceItemHTTPGetParam *ServiceItemHTTPGetParam) ExtractFromStream(stream *nex.StreamIn) error {
+// WriteTo writes the ServiceItemHTTPGetParam to the given writable
+func (sihttpgp *ServiceItemHTTPGetParam) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
+
+	sihttpgp.URL.WriteTo(writable)
+
+	content := contentWritable.Bytes()
+
+	sihttpgp.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
+}
+
+// ExtractFrom extracts the ServiceItemHTTPGetParam from the given readable
+func (sihttpgp *ServiceItemHTTPGetParam) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	serviceItemHTTPGetParam.URL, err = stream.ReadString()
+	err = sihttpgp.ExtractHeaderFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemHTTPGetParam.URL from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract ServiceItemHTTPGetParam header. %s", err.Error())
+	}
+
+	err = sihttpgp.URL.ExtractFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract ServiceItemHTTPGetParam.URL. %s", err.Error())
 	}
 
 	return nil
 }
 
-// Bytes encodes the ServiceItemHTTPGetParam and returns a byte array
-func (serviceItemHTTPGetParam *ServiceItemHTTPGetParam) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteString(serviceItemHTTPGetParam.URL)
-
-	return stream.Bytes()
-}
-
 // Copy returns a new copied instance of ServiceItemHTTPGetParam
-func (serviceItemHTTPGetParam *ServiceItemHTTPGetParam) Copy() nex.StructureInterface {
+func (sihttpgp *ServiceItemHTTPGetParam) Copy() types.RVType {
 	copied := NewServiceItemHTTPGetParam()
 
-	copied.SetStructureVersion(serviceItemHTTPGetParam.StructureVersion())
-
-	copied.URL = serviceItemHTTPGetParam.URL
+	copied.StructureVersion = sihttpgp.StructureVersion
+	copied.URL = sihttpgp.URL.Copy().(*types.String)
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (serviceItemHTTPGetParam *ServiceItemHTTPGetParam) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*ServiceItemHTTPGetParam)
-
-	if serviceItemHTTPGetParam.StructureVersion() != other.StructureVersion() {
+// Equals checks if the given ServiceItemHTTPGetParam contains the same data as the current ServiceItemHTTPGetParam
+func (sihttpgp *ServiceItemHTTPGetParam) Equals(o types.RVType) bool {
+	if _, ok := o.(*ServiceItemHTTPGetParam); !ok {
 		return false
 	}
 
-	return serviceItemHTTPGetParam.URL == other.URL
+	other := o.(*ServiceItemHTTPGetParam)
+
+	if sihttpgp.StructureVersion != other.StructureVersion {
+		return false
+	}
+
+	return sihttpgp.URL.Equals(other.URL)
 }
 
-// String returns a string representation of the struct
-func (serviceItemHTTPGetParam *ServiceItemHTTPGetParam) String() string {
-	return serviceItemHTTPGetParam.FormatToString(0)
+// String returns the string representation of the ServiceItemHTTPGetParam
+func (sihttpgp *ServiceItemHTTPGetParam) String() string {
+	return sihttpgp.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (serviceItemHTTPGetParam *ServiceItemHTTPGetParam) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the ServiceItemHTTPGetParam using the provided indentation level
+func (sihttpgp *ServiceItemHTTPGetParam) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("ServiceItemHTTPGetParam{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, serviceItemHTTPGetParam.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sURL: %q,\n", indentationValues, serviceItemHTTPGetParam.URL))
+	b.WriteString(fmt.Sprintf("%sURL: %s,\n", indentationValues, sihttpgp.URL))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -77,5 +90,9 @@ func (serviceItemHTTPGetParam *ServiceItemHTTPGetParam) FormatToString(indentati
 
 // NewServiceItemHTTPGetParam returns a new ServiceItemHTTPGetParam
 func NewServiceItemHTTPGetParam() *ServiceItemHTTPGetParam {
-	return &ServiceItemHTTPGetParam{}
+	sihttpgp := &ServiceItemHTTPGetParam{
+		URL: types.NewString(""),
+	}
+
+	return sihttpgp
 }

@@ -6,9 +6,10 @@ package protocol
 
 import (
 	"fmt"
+	"slices"
 
-	"github.com/PretendoNetwork/nex-go"
-	"github.com/PretendoNetwork/nex-protocols-go/globals"
+	"github.com/PretendoNetwork/nex-go/v2"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
 )
 
 const (
@@ -18,27 +19,40 @@ const (
 
 // Protocol stores all the RMC method handlers for the Shop protocol and listens for requests
 type Protocol struct {
-	Server *nex.Server
+	endpoint       nex.EndpointInterface
+	Patches        nex.ServiceProtocol
+	PatchedMethods []uint32
 }
 
-// Setup initializes the protocol
-func (protocol *Protocol) Setup() {
-	protocol.Server.On("Data", func(packet nex.PacketInterface) {
-		request := packet.RMCRequest()
+// Endpoint returns the endpoint implementing the protocol
+func (protocol *Protocol) Endpoint() nex.EndpointInterface {
+	return protocol.endpoint
+}
 
-		if request.ProtocolID() == ProtocolID {
-			protocol.HandlePacket(packet)
-		}
-	})
+// SetEndpoint sets the endpoint implementing the protocol
+func (protocol *Protocol) SetEndpoint(endpoint nex.EndpointInterface) {
+	protocol.endpoint = endpoint
 }
 
 // HandlePacket sends the packet to the correct RMC method handler
 func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
-	request := packet.RMCRequest()
+	message := packet.RMCMessage()
 
-	switch request.MethodID() {
+	if !message.IsRequest || message.ProtocolID != ProtocolID {
+		return
+	}
+
+	if protocol.Patches != nil && slices.Contains(protocol.PatchedMethods, message.MethodID) {
+		protocol.Patches.HandlePacket(packet)
+		return
+	}
+
+	switch message.MethodID {
 	default:
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
-		fmt.Printf("Shop method ID: %#v\n", request.MethodID())
+		errMessage := fmt.Sprintf("Shop method ID: %#v\n", message.MethodID)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, errMessage)
+
+		globals.RespondError(packet, ProtocolID, err)
+		globals.Logger.Warning(err.Message)
 	}
 }

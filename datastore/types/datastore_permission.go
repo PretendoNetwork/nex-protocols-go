@@ -5,26 +5,45 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/v2/types"
 )
 
-// DataStorePermission contains information about a permission for a DataStore object
+// DataStorePermission is a type within the DataStore protocol
 type DataStorePermission struct {
-	nex.Structure
-	Permission   uint8
-	RecipientIDs []uint32
+	types.Structure
+	Permission   *types.PrimitiveU8
+	RecipientIDs *types.List[*types.PID]
 }
 
-// ExtractFromStream extracts a DataStorePermission structure from a stream
-func (dataStorePermission *DataStorePermission) ExtractFromStream(stream *nex.StreamIn) error {
+// WriteTo writes the DataStorePermission to the given writable
+func (dsp *DataStorePermission) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
+
+	dsp.Permission.WriteTo(writable)
+	dsp.RecipientIDs.WriteTo(writable)
+
+	content := contentWritable.Bytes()
+
+	dsp.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
+}
+
+// ExtractFrom extracts the DataStorePermission from the given readable
+func (dsp *DataStorePermission) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	dataStorePermission.Permission, err = stream.ReadUInt8()
+	err = dsp.ExtractHeaderFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStorePermission header. %s", err.Error())
+	}
+
+	err = dsp.Permission.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStorePermission.Permission. %s", err.Error())
 	}
 
-	dataStorePermission.RecipientIDs, err = stream.ReadListUInt32LE()
+	err = dsp.RecipientIDs.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStorePermission.RecipientIDs. %s", err.Error())
 	}
@@ -32,69 +51,51 @@ func (dataStorePermission *DataStorePermission) ExtractFromStream(stream *nex.St
 	return nil
 }
 
-// Bytes encodes the DataStorePermission and returns a byte array
-func (dataStorePermission *DataStorePermission) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt8(dataStorePermission.Permission)
-	stream.WriteListUInt32LE(dataStorePermission.RecipientIDs)
-
-	return stream.Bytes()
-}
-
 // Copy returns a new copied instance of DataStorePermission
-func (dataStorePermission *DataStorePermission) Copy() nex.StructureInterface {
+func (dsp *DataStorePermission) Copy() types.RVType {
 	copied := NewDataStorePermission()
 
-	copied.SetStructureVersion(dataStorePermission.StructureVersion())
-
-	copied.Permission = dataStorePermission.Permission
-	copied.RecipientIDs = make([]uint32, len(dataStorePermission.RecipientIDs))
-
-	copy(copied.RecipientIDs, dataStorePermission.RecipientIDs)
+	copied.StructureVersion = dsp.StructureVersion
+	copied.Permission = dsp.Permission.Copy().(*types.PrimitiveU8)
+	copied.RecipientIDs = dsp.RecipientIDs.Copy().(*types.List[*types.PID])
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (dataStorePermission *DataStorePermission) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*DataStorePermission)
-
-	if dataStorePermission.StructureVersion() != other.StructureVersion() {
+// Equals checks if the given DataStorePermission contains the same data as the current DataStorePermission
+func (dsp *DataStorePermission) Equals(o types.RVType) bool {
+	if _, ok := o.(*DataStorePermission); !ok {
 		return false
 	}
 
-	if dataStorePermission.Permission != other.Permission {
+	other := o.(*DataStorePermission)
+
+	if dsp.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if len(dataStorePermission.RecipientIDs) != len(other.RecipientIDs) {
+	if !dsp.Permission.Equals(other.Permission) {
 		return false
 	}
 
-	for i := 0; i < len(dataStorePermission.RecipientIDs); i++ {
-		if dataStorePermission.RecipientIDs[i] != other.RecipientIDs[i] {
-			return false
-		}
-	}
-
-	return true
+	return dsp.RecipientIDs.Equals(other.RecipientIDs)
 }
 
-// String returns a string representation of the struct
-func (dataStorePermission *DataStorePermission) String() string {
-	return dataStorePermission.FormatToString(0)
+// String returns the string representation of the DataStorePermission
+func (dsp *DataStorePermission) String() string {
+	return dsp.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (dataStorePermission *DataStorePermission) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the DataStorePermission using the provided indentation level
+func (dsp *DataStorePermission) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("DataStorePermission{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, dataStorePermission.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sPermission: %d,\n", indentationValues, dataStorePermission.Permission))
-	b.WriteString(fmt.Sprintf("%sRecipientIDs: %v\n", indentationValues, dataStorePermission.RecipientIDs))
+	b.WriteString(fmt.Sprintf("%sPermission: %s,\n", indentationValues, dsp.Permission))
+	b.WriteString(fmt.Sprintf("%sRecipientIDs: %s,\n", indentationValues, dsp.RecipientIDs))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -102,8 +103,12 @@ func (dataStorePermission *DataStorePermission) FormatToString(indentationLevel 
 
 // NewDataStorePermission returns a new DataStorePermission
 func NewDataStorePermission() *DataStorePermission {
-	return &DataStorePermission{
-		Permission:   0,
-		RecipientIDs: make([]uint32, 0),
+	dsp := &DataStorePermission{
+		Permission:   types.NewPrimitiveU8(0),
+		RecipientIDs: types.NewList[*types.PID](),
 	}
+
+	dsp.RecipientIDs.Type = types.NewPID(0)
+
+	return dsp
 }

@@ -4,54 +4,59 @@ package protocol
 import (
 	"fmt"
 
-	nex "github.com/PretendoNetwork/nex-go"
-	"github.com/PretendoNetwork/nex-protocols-go/globals"
-	ranking2_types "github.com/PretendoNetwork/nex-protocols-go/ranking2/types"
+	nex "github.com/PretendoNetwork/nex-go/v2"
+	"github.com/PretendoNetwork/nex-go/v2/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
+	ranking2_types "github.com/PretendoNetwork/nex-protocols-go/v2/ranking2/types"
 )
 
-// PutScore sets the PutScore handler function
-func (protocol *Protocol) PutScore(handler func(err error, packet nex.PacketInterface, callID uint32, scoreDataList []*ranking2_types.Ranking2ScoreData, nexUniqueID uint64) uint32) {
-	protocol.putScoreHandler = handler
-}
-
 func (protocol *Protocol) handlePutScore(packet nex.PacketInterface) {
-	var errorCode uint32
+	if protocol.PutScore == nil {
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "Ranking2::PutScore not implemented")
 
-	if protocol.putScoreHandler == nil {
-		globals.Logger.Warning("Ranking2::PutScore not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
+	callID := request.CallID
+	parameters := request.Parameters
+	endpoint := packet.Sender().Endpoint()
+	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	callID := request.CallID()
-	parameters := request.Parameters()
+	scoreDataList := types.NewList[*ranking2_types.Ranking2ScoreData]()
+	scoreDataList.Type = ranking2_types.NewRanking2ScoreData()
+	nexUniqueID := types.NewPrimitiveU64(0)
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+	var err error
 
-	scoreDataList, err := parametersStream.ReadListStructure(ranking2_types.NewRanking2ScoreData())
+	err = scoreDataList.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.putScoreHandler(fmt.Errorf("Failed to read scoreDataList from parameters. %s", err.Error()), packet, callID, nil, 0)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.PutScore(fmt.Errorf("Failed to read scoreDataList from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	nexUniqueID, err := parametersStream.ReadUInt64LE()
+	err = nexUniqueID.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.putScoreHandler(fmt.Errorf("Failed to read nexUniqueID from parameters. %s", err.Error()), packet, callID, nil, 0)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.PutScore(fmt.Errorf("Failed to read nexUniqueID from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	errorCode = protocol.putScoreHandler(nil, packet, callID, scoreDataList.([]*ranking2_types.Ranking2ScoreData), nexUniqueID)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.PutScore(nil, packet, callID, scoreDataList, nexUniqueID)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

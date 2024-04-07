@@ -1,105 +1,114 @@
-// Package types implements all the types used by the Service Item (Wii Sports Club) protocol
+// Package types implements all the types used by the ServiceItem protocol
 package types
 
 import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/v2/types"
 )
 
-// ServiceItemEShopResponse holds data for the Service Item (Wii Sports Club) protocol
+// ServiceItemEShopResponse is a type within the ServiceItem protocol
 type ServiceItemEShopResponse struct {
-	nex.Structure
-	HTTPStatus    uint32
-	ErrorCode     uint32
-	CorrelationID string
+	types.Structure
+	HTTPStatus    *types.PrimitiveU32
+	ErrorCode     *types.PrimitiveU32
+	CorrelationID *types.String
 }
 
-// ExtractFromStream extracts a ServiceItemEShopResponse structure from a stream
-func (serviceItemEShopResponse *ServiceItemEShopResponse) ExtractFromStream(stream *nex.StreamIn) error {
+// WriteTo writes the ServiceItemEShopResponse to the given writable
+func (siesr *ServiceItemEShopResponse) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
+
+	siesr.HTTPStatus.WriteTo(writable)
+	siesr.ErrorCode.WriteTo(writable)
+	siesr.CorrelationID.WriteTo(writable)
+
+	content := contentWritable.Bytes()
+
+	siesr.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
+}
+
+// ExtractFrom extracts the ServiceItemEShopResponse from the given readable
+func (siesr *ServiceItemEShopResponse) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	serviceItemEShopResponse.HTTPStatus, err = stream.ReadUInt32LE()
+	err = siesr.ExtractHeaderFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemEShopResponse.HTTPStatus from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract ServiceItemEShopResponse header. %s", err.Error())
 	}
 
-	serviceItemEShopResponse.ErrorCode, err = stream.ReadUInt32LE()
+	err = siesr.HTTPStatus.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemEShopResponse.ErrorCode from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract ServiceItemEShopResponse.HTTPStatus. %s", err.Error())
 	}
 
-	serviceItemEShopResponse.CorrelationID, err = stream.ReadString()
+	err = siesr.ErrorCode.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemEShopResponse.CorrelationID from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract ServiceItemEShopResponse.ErrorCode. %s", err.Error())
+	}
+
+	err = siesr.CorrelationID.ExtractFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract ServiceItemEShopResponse.CorrelationID. %s", err.Error())
 	}
 
 	return nil
 }
 
-// Bytes encodes the ServiceItemEShopResponse and returns a byte array
-func (serviceItemEShopResponse *ServiceItemEShopResponse) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt32LE(serviceItemEShopResponse.HTTPStatus)
-	stream.WriteUInt32LE(serviceItemEShopResponse.ErrorCode)
-	stream.WriteString(serviceItemEShopResponse.CorrelationID)
-
-	return stream.Bytes()
-}
-
 // Copy returns a new copied instance of ServiceItemEShopResponse
-func (serviceItemEShopResponse *ServiceItemEShopResponse) Copy() nex.StructureInterface {
+func (siesr *ServiceItemEShopResponse) Copy() types.RVType {
 	copied := NewServiceItemEShopResponse()
 
-	copied.SetStructureVersion(serviceItemEShopResponse.StructureVersion())
-
-	copied.HTTPStatus = serviceItemEShopResponse.HTTPStatus
-	copied.ErrorCode = serviceItemEShopResponse.ErrorCode
-	copied.CorrelationID = serviceItemEShopResponse.CorrelationID
+	copied.StructureVersion = siesr.StructureVersion
+	copied.HTTPStatus = siesr.HTTPStatus.Copy().(*types.PrimitiveU32)
+	copied.ErrorCode = siesr.ErrorCode.Copy().(*types.PrimitiveU32)
+	copied.CorrelationID = siesr.CorrelationID.Copy().(*types.String)
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (serviceItemEShopResponse *ServiceItemEShopResponse) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*ServiceItemEShopResponse)
-
-	if serviceItemEShopResponse.StructureVersion() != other.StructureVersion() {
+// Equals checks if the given ServiceItemEShopResponse contains the same data as the current ServiceItemEShopResponse
+func (siesr *ServiceItemEShopResponse) Equals(o types.RVType) bool {
+	if _, ok := o.(*ServiceItemEShopResponse); !ok {
 		return false
 	}
 
-	if serviceItemEShopResponse.HTTPStatus != other.HTTPStatus {
+	other := o.(*ServiceItemEShopResponse)
+
+	if siesr.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if serviceItemEShopResponse.ErrorCode != other.ErrorCode {
+	if !siesr.HTTPStatus.Equals(other.HTTPStatus) {
 		return false
 	}
 
-	if serviceItemEShopResponse.CorrelationID != other.CorrelationID {
+	if !siesr.ErrorCode.Equals(other.ErrorCode) {
 		return false
 	}
 
-	return true
+	return siesr.CorrelationID.Equals(other.CorrelationID)
 }
 
-// String returns a string representation of the struct
-func (serviceItemEShopResponse *ServiceItemEShopResponse) String() string {
-	return serviceItemEShopResponse.FormatToString(0)
+// String returns the string representation of the ServiceItemEShopResponse
+func (siesr *ServiceItemEShopResponse) String() string {
+	return siesr.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (serviceItemEShopResponse *ServiceItemEShopResponse) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the ServiceItemEShopResponse using the provided indentation level
+func (siesr *ServiceItemEShopResponse) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("ServiceItemEShopResponse{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, serviceItemEShopResponse.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sHTTPStatus: %d,\n", indentationValues, serviceItemEShopResponse.HTTPStatus))
-	b.WriteString(fmt.Sprintf("%sErrorCode: %d,\n", indentationValues, serviceItemEShopResponse.ErrorCode))
-	b.WriteString(fmt.Sprintf("%sCorrelationID: %q,\n", indentationValues, serviceItemEShopResponse.CorrelationID))
+	b.WriteString(fmt.Sprintf("%sHTTPStatus: %s,\n", indentationValues, siesr.HTTPStatus))
+	b.WriteString(fmt.Sprintf("%sErrorCode: %s,\n", indentationValues, siesr.ErrorCode))
+	b.WriteString(fmt.Sprintf("%sCorrelationID: %s,\n", indentationValues, siesr.CorrelationID))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -107,5 +116,11 @@ func (serviceItemEShopResponse *ServiceItemEShopResponse) FormatToString(indenta
 
 // NewServiceItemEShopResponse returns a new ServiceItemEShopResponse
 func NewServiceItemEShopResponse() *ServiceItemEShopResponse {
-	return &ServiceItemEShopResponse{}
+	siesr := &ServiceItemEShopResponse{
+		HTTPStatus:    types.NewPrimitiveU32(0),
+		ErrorCode:     types.NewPrimitiveU32(0),
+		CorrelationID: types.NewString(""),
+	}
+
+	return siesr
 }

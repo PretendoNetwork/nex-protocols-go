@@ -1,109 +1,88 @@
-// Package types implements all the types used by the Service Item (Wii Sports Club) protocol
+// Package types implements all the types used by the ServiceItem protocol
 package types
 
 import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/v2/types"
 )
 
-// ServiceItemRightInfos holds data for the Service Item (Wii Sports Club) protocol
+// ServiceItemRightInfos is a type within the ServiceItem protocol
 type ServiceItemRightInfos struct {
-	nex.Structure
-	RightInfos []*ServiceItemRightInfo
+	types.Structure
+	RightInfos *types.List[*ServiceItemRightInfo]
 }
 
-// ExtractFromStream extracts a ServiceItemRightInfos structure from a stream
-func (serviceItemRightInfos *ServiceItemRightInfos) ExtractFromStream(stream *nex.StreamIn) error {
+// WriteTo writes the ServiceItemRightInfos to the given writable
+func (siri *ServiceItemRightInfos) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
+
+	siri.RightInfos.WriteTo(writable)
+
+	content := contentWritable.Bytes()
+
+	siri.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
+}
+
+// ExtractFrom extracts the ServiceItemRightInfos from the given readable
+func (siri *ServiceItemRightInfos) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	rightInfos, err := stream.ReadListStructure(NewServiceItemRightInfo())
+	err = siri.ExtractHeaderFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemRightInfos.RightInfos from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract ServiceItemRightInfos header. %s", err.Error())
 	}
 
-	serviceItemRightInfos.RightInfos = rightInfos.([]*ServiceItemRightInfo)
+	err = siri.RightInfos.ExtractFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract ServiceItemRightInfos.RightInfos. %s", err.Error())
+	}
 
 	return nil
 }
 
-// Bytes encodes the ServiceItemRightInfos and returns a byte array
-func (serviceItemRightInfos *ServiceItemRightInfos) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteListStructure(serviceItemRightInfos.RightInfos)
-
-	return stream.Bytes()
-}
-
 // Copy returns a new copied instance of ServiceItemRightInfos
-func (serviceItemRightInfos *ServiceItemRightInfos) Copy() nex.StructureInterface {
+func (siri *ServiceItemRightInfos) Copy() types.RVType {
 	copied := NewServiceItemRightInfos()
 
-	copied.SetStructureVersion(serviceItemRightInfos.StructureVersion())
-
-	copied.RightInfos = make([]*ServiceItemRightInfo, len(serviceItemRightInfos.RightInfos))
-
-	for i := 0; i < len(serviceItemRightInfos.RightInfos); i++ {
-		copied.RightInfos[i] = serviceItemRightInfos.RightInfos[i].Copy().(*ServiceItemRightInfo)
-	}
+	copied.StructureVersion = siri.StructureVersion
+	copied.RightInfos = siri.RightInfos.Copy().(*types.List[*ServiceItemRightInfo])
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (serviceItemRightInfos *ServiceItemRightInfos) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*ServiceItemRightInfos)
-
-	if serviceItemRightInfos.StructureVersion() != other.StructureVersion() {
+// Equals checks if the given ServiceItemRightInfos contains the same data as the current ServiceItemRightInfos
+func (siri *ServiceItemRightInfos) Equals(o types.RVType) bool {
+	if _, ok := o.(*ServiceItemRightInfos); !ok {
 		return false
 	}
 
-	if len(serviceItemRightInfos.RightInfos) != len(other.RightInfos) {
+	other := o.(*ServiceItemRightInfos)
+
+	if siri.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	for i := 0; i < len(serviceItemRightInfos.RightInfos); i++ {
-		if !serviceItemRightInfos.RightInfos[i].Equals(other.RightInfos[i]) {
-			return false
-		}
-	}
-
-	return true
+	return siri.RightInfos.Equals(other.RightInfos)
 }
 
-// String returns a string representation of the struct
-func (serviceItemRightInfos *ServiceItemRightInfos) String() string {
-	return serviceItemRightInfos.FormatToString(0)
+// String returns the string representation of the ServiceItemRightInfos
+func (siri *ServiceItemRightInfos) String() string {
+	return siri.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (serviceItemRightInfos *ServiceItemRightInfos) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the ServiceItemRightInfos using the provided indentation level
+func (siri *ServiceItemRightInfos) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
-	indentationListValues := strings.Repeat("\t", indentationLevel+2)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("ServiceItemRightInfos{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, serviceItemRightInfos.StructureVersion()))
-
-	if len(serviceItemRightInfos.RightInfos) == 0 {
-		b.WriteString(fmt.Sprintf("%sRightInfos: [],\n", indentationValues))
-	} else {
-		b.WriteString(fmt.Sprintf("%sRightInfos: [\n", indentationValues))
-
-		for i := 0; i < len(serviceItemRightInfos.RightInfos); i++ {
-			str := serviceItemRightInfos.RightInfos[i].FormatToString(indentationLevel + 2)
-			if i == len(serviceItemRightInfos.RightInfos)-1 {
-				b.WriteString(fmt.Sprintf("%s%s\n", indentationListValues, str))
-			} else {
-				b.WriteString(fmt.Sprintf("%s%s,\n", indentationListValues, str))
-			}
-		}
-
-		b.WriteString(fmt.Sprintf("%s],\n", indentationValues))
-	}
-
+	b.WriteString(fmt.Sprintf("%sRightInfos: %s,\n", indentationValues, siri.RightInfos))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -111,5 +90,11 @@ func (serviceItemRightInfos *ServiceItemRightInfos) FormatToString(indentationLe
 
 // NewServiceItemRightInfos returns a new ServiceItemRightInfos
 func NewServiceItemRightInfos() *ServiceItemRightInfos {
-	return &ServiceItemRightInfos{}
+	siri := &ServiceItemRightInfos{
+		RightInfos: types.NewList[*ServiceItemRightInfo](),
+	}
+
+	siri.RightInfos.Type = NewServiceItemRightInfo()
+
+	return siri
 }

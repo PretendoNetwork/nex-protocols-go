@@ -1,51 +1,59 @@
 # NEX Protocols Go
 ## NEX servers with protocol support in Go
 
-[![GoDoc](https://godoc.org/github.com/PretendoNetwork/nex-protocols-go?status.svg)](https://godoc.org/github.com/PretendoNetwork/nex-protocols-go)
+[![GoDoc](https://godoc.org/github.com/PretendoNetwork/nex-protocols-go/v2?status.svg)](https://godoc.org/github.com/PretendoNetwork/nex-protocols-go/v2)
 
 ### Other NEX libraries
-[nex-go](https://github.com/PretendoNetwork/nex-go) - Barebones NEX/PRUDP server implementation
+[nex-go](https://github.com/PretendoNetwork/nex-go/v2) - Barebones NEX/PRUDP server implementation
 
 [nex-protocols-common-go](https://github.com/PretendoNetwork/nex-protocols-common-go) - NEX protocols used by many games with premade handlers and a high level API
 
 ### Install
 
-`go get github.com/PretendoNetwork/nex-protocols-go`
+`go get github.com/PretendoNetwork/nex-protocols-go/v2`
 
 ### Usage
 
-`nex-protocols-go` provides a higher level API than the [NEX Go module](https://github.com/PretendoNetwork/nex-go) to the underlying PRUDP server by providing a set of NEX protocols. This module only provides access to the lower level raw RMC method calls, however, and all method handlers must be defined in full manually. For a higher level API, see the [common NEX method handlers module](https://github.com/PretendoNetwork/nex-protocols-common-go)
+`nex-protocols-go` provides a higher level API than the [NEX Go module](https://github.com/PretendoNetwork/nex-go/v2) to the underlying PRUDP server by providing a set of NEX protocols. This module only provides access to the lower level raw RMC method calls, however, and all method handlers must be defined in full manually. For a higher level API, see the [common NEX method handlers module](https://github.com/PretendoNetwork/nex-protocols-common-go)
 
 ### Example, friends (Wii U) authentication server
-### For a complete example, see the complete [Friends Authentication Server](https://github.com/PretendoNetwork/friends-authentication), and other game servers
+### For a complete example, see the complete [Friends Server](https://github.com/PretendoNetwork/friends), and other game servers
 
 ```go
 package main
 
 import (
-	"fmt"
-
-	nex "github.com/PretendoNetwork/nex-go"
-	nexproto "github.com/PretendoNetwork/nex-protocols-go"
+	nex "github.com/PretendoNetwork/nex-go/v2"
+	ticket_granting "github.com/PretendoNetwork/nex-protocols-go/v2/ticket-granting"
 )
 
-var nexServer *nex.Server
+var nexServer *nex.PRUDPServer
 
 func main() {
-	nexServer = nex.NewServer()
-	nexServer.SetPrudpVersion(0)
-	nexServer.SetSignatureVersion(1)
-	nexServer.SetKerberosKeySize(16)
-	nexServer.SetAccessKey("ridfebb9")
+	nexServer := nex.NewPRUDPServer()
 
-	authenticationServer := nexproto.NewAuthenticationProtocol(nexServer)
+	endpoint := nex.NewPRUDPEndPoint(1)
+	endpoint.ServerAccount = nex.NewAccount(types.NewPID(1), "Quazal Authentication", "password"))
+	endpoint.AccountDetailsByPID = accountDetailsByPID
+	endpoint.AccountDetailsByUsername = accountDetailsByUsername
+
+	nexServer.BindPRUDPEndPoint(endpoint)
+	nexServer.SetFragmentSize(962)
+	nexServer.LibraryVersions.SetDefault(nex.NewLibraryVersion(1, 1, 0))
+	nexServer.SessionKeyLength = 16
+	nexServer.AccessKey = "ridfebb9"
+
+	ticketGrantingProtocol := ticket_granting.NewProtocol(endpoint)
 
 	// Handle Login RMC method
-	authenticationServer.Login(login)
+	ticketGrantingProtocol.Login = login
 
 	// Handle RequestTicket RMC method
-	authenticationServer.RequestTicket(requestTicket)
+	ticketGrantingProtocol.RequestTicket = requestTicket
 
-	nexServer.Listen(":60000")
+	// Register the protocol on the endpoint
+	endpoint.RegisterServiceProtocol(ticketGrantingProtocol)
+
+	nexServer.Listen(60000)
 }
 ```

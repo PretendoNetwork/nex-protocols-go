@@ -4,53 +4,57 @@ package protocol
 import (
 	"fmt"
 
-	nex "github.com/PretendoNetwork/nex-go"
-	"github.com/PretendoNetwork/nex-protocols-go/globals"
+	nex "github.com/PretendoNetwork/nex-go/v2"
+	"github.com/PretendoNetwork/nex-go/v2/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
 )
 
-// DeleteApplicationConfig sets the DeleteApplicationConfig handler function
-func (protocol *Protocol) DeleteApplicationConfig(handler func(err error, packet nex.PacketInterface, callID uint32, applicationID uint32, key uint32) uint32) {
-	protocol.deleteApplicationConfigHandler = handler
-}
-
 func (protocol *Protocol) handleDeleteApplicationConfig(packet nex.PacketInterface) {
-	var errorCode uint32
+	if protocol.DeleteApplicationConfig == nil {
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "DataStoreSuperMarioMaker::DeleteApplicationConfig not implemented")
 
-	if protocol.deleteApplicationConfigHandler == nil {
-		globals.Logger.Warning("DataStoreSuperMarioMaker::DeleteApplicationConfig not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
+	callID := request.CallID
+	parameters := request.Parameters
+	endpoint := packet.Sender().Endpoint()
+	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	callID := request.CallID()
-	parameters := request.Parameters()
+	applicationID := types.NewPrimitiveU32(0)
+	key := types.NewPrimitiveU32(0)
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+	var err error
 
-	applicationID, err := parametersStream.ReadUInt32LE()
+	err = applicationID.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.deleteApplicationConfigHandler(fmt.Errorf("Failed to read applicationID from parameters. %s", err.Error()), packet, callID, 0, 0)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.DeleteApplicationConfig(fmt.Errorf("Failed to read applicationID from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	key, err := parametersStream.ReadUInt32LE()
+	err = key.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.deleteApplicationConfigHandler(fmt.Errorf("Failed to read key from parameters. %s", err.Error()), packet, callID, 0, 0)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.DeleteApplicationConfig(fmt.Errorf("Failed to read key from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	errorCode = protocol.deleteApplicationConfigHandler(nil, packet, callID, applicationID, key)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.DeleteApplicationConfig(nil, packet, callID, applicationID, key)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

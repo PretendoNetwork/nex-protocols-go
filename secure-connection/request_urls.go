@@ -4,53 +4,57 @@ package protocol
 import (
 	"fmt"
 
-	nex "github.com/PretendoNetwork/nex-go"
-	"github.com/PretendoNetwork/nex-protocols-go/globals"
+	nex "github.com/PretendoNetwork/nex-go/v2"
+	"github.com/PretendoNetwork/nex-go/v2/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
 )
 
-// RequestURLs sets the RequestURLs handler function
-func (protocol *Protocol) RequestURLs(handler func(err error, packet nex.PacketInterface, callID uint32, cidTarget uint32, pidTarget uint32) uint32) {
-	protocol.requestURLsHandler = handler
-}
-
 func (protocol *Protocol) handleRequestURLs(packet nex.PacketInterface) {
-	var errorCode uint32
+	if protocol.RequestURLs == nil {
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "SecureConnection::RequestURLs not implemented")
 
-	if protocol.requestURLsHandler == nil {
-		globals.Logger.Warning("SecureConnection::RequestURLs not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
+	callID := request.CallID
+	parameters := request.Parameters
+	endpoint := packet.Sender().Endpoint()
+	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	callID := request.CallID()
-	parameters := request.Parameters()
+	cidTarget := types.NewPrimitiveU32(0)
+	pidTarget := types.NewPID(0)
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+	var err error
 
-	cidTarget, err := parametersStream.ReadUInt32LE()
+	err = cidTarget.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.requestURLsHandler(fmt.Errorf("Failed to read cidTarget from parameters. %s", err.Error()), packet, callID, 0, 0)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.RequestURLs(fmt.Errorf("Failed to read cidTarget from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	pidTarget, err := parametersStream.ReadUInt32LE()
+	err = pidTarget.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.requestURLsHandler(fmt.Errorf("Failed to read pidTarget from parameters. %s", err.Error()), packet, callID, 0, 0)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.RequestURLs(fmt.Errorf("Failed to read pidTarget from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	errorCode = protocol.requestURLsHandler(nil, packet, callID, cidTarget, pidTarget)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.RequestURLs(nil, packet, callID, cidTarget, pidTarget)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

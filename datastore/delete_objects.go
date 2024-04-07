@@ -4,54 +4,59 @@ package protocol
 import (
 	"fmt"
 
-	nex "github.com/PretendoNetwork/nex-go"
-	datastore_types "github.com/PretendoNetwork/nex-protocols-go/datastore/types"
-	"github.com/PretendoNetwork/nex-protocols-go/globals"
+	nex "github.com/PretendoNetwork/nex-go/v2"
+	"github.com/PretendoNetwork/nex-go/v2/types"
+	datastore_types "github.com/PretendoNetwork/nex-protocols-go/v2/datastore/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
 )
 
-// DeleteObjects sets the DeleteObjects handler function
-func (protocol *Protocol) DeleteObjects(handler func(err error, packet nex.PacketInterface, callID uint32, params []*datastore_types.DataStoreDeleteParam, transactional bool) uint32) {
-	protocol.deleteObjectsHandler = handler
-}
-
 func (protocol *Protocol) handleDeleteObjects(packet nex.PacketInterface) {
-	var errorCode uint32
+	if protocol.DeleteObjects == nil {
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "DataStore::DeleteObjects not implemented")
 
-	if protocol.deleteObjectsHandler == nil {
-		globals.Logger.Warning("DataStore::DeleteObjects not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
+	callID := request.CallID
+	parameters := request.Parameters
+	endpoint := packet.Sender().Endpoint()
+	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	callID := request.CallID()
-	parameters := request.Parameters()
+	params := types.NewList[*datastore_types.DataStoreDeleteParam]()
+	params.Type = datastore_types.NewDataStoreDeleteParam()
+	transactional := types.NewPrimitiveBool(false)
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+	var err error
 
-	params, err := parametersStream.ReadListStructure(datastore_types.NewDataStoreDeleteParam())
+	err = params.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.deleteObjectsHandler(fmt.Errorf("Failed to read params from parameters. %s", err.Error()), packet, callID, nil, false)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.DeleteObjects(fmt.Errorf("Failed to read params from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	transactional, err := parametersStream.ReadBool()
+	err = transactional.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.deleteObjectsHandler(fmt.Errorf("Failed to read transactional from parameters. %s", err.Error()), packet, callID, nil, false)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.DeleteObjects(fmt.Errorf("Failed to read transactional from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	errorCode = protocol.deleteObjectsHandler(nil, packet, callID, params.([]*datastore_types.DataStoreDeleteParam), transactional)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.DeleteObjects(nil, packet, callID, params, transactional)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

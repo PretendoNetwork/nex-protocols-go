@@ -4,44 +4,44 @@ package protocol
 import (
 	"fmt"
 
-	nex "github.com/PretendoNetwork/nex-go"
-	"github.com/PretendoNetwork/nex-protocols-go/globals"
-	match_making_types "github.com/PretendoNetwork/nex-protocols-go/match-making/types"
+	nex "github.com/PretendoNetwork/nex-go/v2"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
+	match_making_types "github.com/PretendoNetwork/nex-protocols-go/v2/match-making/types"
 )
 
-// JoinMatchmakeSessionWithParam sets the JoinMatchmakeSessionWithParam handler function
-func (protocol *Protocol) JoinMatchmakeSessionWithParam(handler func(err error, packet nex.PacketInterface, callID uint32, joinMatchmakeSessionParam *match_making_types.JoinMatchmakeSessionParam) uint32) {
-	protocol.joinMatchmakeSessionWithParamHandler = handler
-}
-
 func (protocol *Protocol) handleJoinMatchmakeSessionWithParam(packet nex.PacketInterface) {
-	var errorCode uint32
+	if protocol.JoinMatchmakeSessionWithParam == nil {
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "MatchmakeExtension::JoinMatchmakeSessionWithParam not implemented")
 
-	if protocol.joinMatchmakeSessionWithParamHandler == nil {
-		globals.Logger.Warning("MatchmakeExtension::JoinMatchmakeSessionWithParam not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
+	callID := request.CallID
+	parameters := request.Parameters
+	endpoint := packet.Sender().Endpoint()
+	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	callID := request.CallID()
-	parameters := request.Parameters()
+	joinMatchmakeSessionParam := match_making_types.NewJoinMatchmakeSessionParam()
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
-
-	joinMatchmakeSessionParam, err := parametersStream.ReadStructure(match_making_types.NewJoinMatchmakeSessionParam())
+	err := joinMatchmakeSessionParam.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.joinMatchmakeSessionWithParamHandler(fmt.Errorf("Failed to read joinMatchmakeSessionParam from parameters. %s", err.Error()), packet, callID, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.JoinMatchmakeSessionWithParam(fmt.Errorf("Failed to read joinMatchmakeSessionParam from parameters. %s", err.Error()), packet, callID, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	errorCode = protocol.joinMatchmakeSessionWithParamHandler(nil, packet, callID, joinMatchmakeSessionParam.(*match_making_types.JoinMatchmakeSessionParam))
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.JoinMatchmakeSessionWithParam(nil, packet, callID, joinMatchmakeSessionParam)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

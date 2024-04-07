@@ -4,63 +4,68 @@ package protocol
 import (
 	"fmt"
 
-	nex "github.com/PretendoNetwork/nex-go"
-	"github.com/PretendoNetwork/nex-protocols-go/globals"
+	nex "github.com/PretendoNetwork/nex-go/v2"
+	"github.com/PretendoNetwork/nex-go/v2/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
 )
 
-// UpdateAccountExpiryDate sets the UpdateAccountExpiryDate handler function
-func (protocol *Protocol) UpdateAccountExpiryDate(handler func(err error, packet nex.PacketInterface, callID uint32, idPrincipal uint32, dtExpiry *nex.DateTime, strExpiredMessage string) uint32) {
-	protocol.updateAccountExpiryDateHandler = handler
-}
-
 func (protocol *Protocol) handleUpdateAccountExpiryDate(packet nex.PacketInterface) {
-	var errorCode uint32
+	if protocol.UpdateAccountExpiryDate == nil {
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "AccountManagement::UpdateAccountExpiryDate not implemented")
 
-	if protocol.updateAccountExpiryDateHandler == nil {
-		globals.Logger.Warning("AccountManagement::UpdateAccountExpiryDate not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
+	callID := request.CallID
+	parameters := request.Parameters
+	endpoint := packet.Sender().Endpoint()
+	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	callID := request.CallID()
-	parameters := request.Parameters()
+	idPrincipal := types.NewPID(0)
+	dtExpiry := types.NewDateTime(0)
+	strExpiredMessage := types.NewString("")
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+	var err error
 
-	idPrincipal, err := parametersStream.ReadUInt32LE()
+	err = idPrincipal.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.updateAccountExpiryDateHandler(fmt.Errorf("Failed to read idPrincipal from parameters. %s", err.Error()), packet, callID, 0, nil, "")
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.UpdateAccountExpiryDate(fmt.Errorf("Failed to read idPrincipal from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	dtExpiry, err := parametersStream.ReadDateTime()
+	err = dtExpiry.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.updateAccountExpiryDateHandler(fmt.Errorf("Failed to read dtExpiry from parameters. %s", err.Error()), packet, callID, 0, nil, "")
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.UpdateAccountExpiryDate(fmt.Errorf("Failed to read dtExpiry from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	strExpiredMessage, err := parametersStream.ReadString()
+	err = strExpiredMessage.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.updateAccountExpiryDateHandler(fmt.Errorf("Failed to read strExpiredMessage from parameters. %s", err.Error()), packet, callID, 0, nil, "")
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.UpdateAccountExpiryDate(fmt.Errorf("Failed to read strExpiredMessage from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	errorCode = protocol.updateAccountExpiryDateHandler(nil, packet, callID, idPrincipal, dtExpiry, strExpiredMessage)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.UpdateAccountExpiryDate(nil, packet, callID, idPrincipal, dtExpiry, strExpiredMessage)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

@@ -4,54 +4,58 @@ package protocol
 import (
 	"fmt"
 
-	nex "github.com/PretendoNetwork/nex-go"
-	datastore_types "github.com/PretendoNetwork/nex-protocols-go/datastore/types"
-	"github.com/PretendoNetwork/nex-protocols-go/globals"
+	nex "github.com/PretendoNetwork/nex-go/v2"
+	"github.com/PretendoNetwork/nex-go/v2/types"
+	datastore_types "github.com/PretendoNetwork/nex-protocols-go/v2/datastore/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
 )
 
-// PostMetaBinaryWithDataID sets the PostMetaBinaryWithDataID handler function
-func (protocol *Protocol) PostMetaBinaryWithDataID(handler func(err error, packet nex.PacketInterface, callID uint32, dataID uint64, param *datastore_types.DataStorePreparePostParam) uint32) {
-	protocol.postMetaBinaryWithDataIDHandler = handler
-}
-
 func (protocol *Protocol) handlePostMetaBinaryWithDataID(packet nex.PacketInterface) {
-	var errorCode uint32
+	if protocol.PostMetaBinaryWithDataID == nil {
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "DataStore::PostMetaBinaryWithDataID not implemented")
 
-	if protocol.postMetaBinaryWithDataIDHandler == nil {
-		globals.Logger.Warning("DataStore::PostMetaBinaryWithDataID not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
+	callID := request.CallID
+	parameters := request.Parameters
+	endpoint := packet.Sender().Endpoint()
+	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	callID := request.CallID()
-	parameters := request.Parameters()
+	dataID := types.NewPrimitiveU64(0)
+	param := datastore_types.NewDataStorePreparePostParam()
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+	var err error
 
-	dataID, err := parametersStream.ReadUInt64LE()
+	err = dataID.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.postMetaBinaryWithDataIDHandler(fmt.Errorf("Failed to read dataID from parameters. %s", err.Error()), packet, callID, 0, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.PostMetaBinaryWithDataID(fmt.Errorf("Failed to read dataID from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	param, err := parametersStream.ReadStructure(datastore_types.NewDataStorePreparePostParam())
+	err = param.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.postMetaBinaryWithDataIDHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, 0, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.PostMetaBinaryWithDataID(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	errorCode = protocol.postMetaBinaryWithDataIDHandler(nil, packet, callID, dataID, param.(*datastore_types.DataStorePreparePostParam))
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.PostMetaBinaryWithDataID(nil, packet, callID, dataID, param)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

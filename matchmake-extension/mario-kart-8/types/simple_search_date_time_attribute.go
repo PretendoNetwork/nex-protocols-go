@@ -1,155 +1,153 @@
-// Package types implements all the types used by the Matchmake Extension (Mario Kart 8) protocol
+// Package types implements all the types used by the MatchmakeExtension protocol
 package types
 
 import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/v2/types"
 )
 
-// SimpleSearchDateTimeAttribute holds data for the Matchmake Extension (Mario Kart 8) protocol
+// SimpleSearchDateTimeAttribute is a type within the MatchmakeExtension protocol
 type SimpleSearchDateTimeAttribute struct {
-	nex.Structure
-	Unknown   uint32
-	Unknown2  uint32
-	Unknown3  uint32
-	Unknown4  uint32
-	StartTime *nex.DateTime
-	EndTime   *nex.DateTime
+	types.Structure
+	Unknown   *types.PrimitiveU32
+	Unknown2  *types.PrimitiveU32
+	Unknown3  *types.PrimitiveU32
+	Unknown4  *types.PrimitiveU32
+	StartTime *types.DateTime
+	EndTime   *types.DateTime
 }
 
-// ExtractFromStream extracts a SimpleSearchDateTimeAttribute structure from a stream
-func (simpleSearchDateTimeAttribute *SimpleSearchDateTimeAttribute) ExtractFromStream(stream *nex.StreamIn) error {
+// WriteTo writes the SimpleSearchDateTimeAttribute to the given writable
+func (ssdta *SimpleSearchDateTimeAttribute) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
+
+	ssdta.Unknown.WriteTo(writable)
+	ssdta.Unknown2.WriteTo(writable)
+	ssdta.Unknown3.WriteTo(writable)
+	ssdta.Unknown4.WriteTo(writable)
+	ssdta.StartTime.WriteTo(writable)
+	ssdta.EndTime.WriteTo(writable)
+
+	content := contentWritable.Bytes()
+
+	ssdta.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
+}
+
+// ExtractFrom extracts the SimpleSearchDateTimeAttribute from the given readable
+func (ssdta *SimpleSearchDateTimeAttribute) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	simpleSearchDateTimeAttribute.Unknown, err = stream.ReadUInt32LE()
+	err = ssdta.ExtractHeaderFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract SimpleSearchDateTimeAttribute.Unknown from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract SimpleSearchDateTimeAttribute header. %s", err.Error())
 	}
 
-	simpleSearchDateTimeAttribute.Unknown2, err = stream.ReadUInt32LE()
+	err = ssdta.Unknown.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract SimpleSearchDateTimeAttribute.Unknown2 from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract SimpleSearchDateTimeAttribute.Unknown. %s", err.Error())
 	}
 
-	simpleSearchDateTimeAttribute.Unknown3, err = stream.ReadUInt32LE()
+	err = ssdta.Unknown2.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract SimpleSearchDateTimeAttribute.Unknown3 from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract SimpleSearchDateTimeAttribute.Unknown2. %s", err.Error())
 	}
 
-	simpleSearchDateTimeAttribute.Unknown4, err = stream.ReadUInt32LE()
+	err = ssdta.Unknown3.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract SimpleSearchDateTimeAttribute.Unknown4 from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract SimpleSearchDateTimeAttribute.Unknown3. %s", err.Error())
 	}
 
-	simpleSearchDateTimeAttribute.StartTime, err = stream.ReadDateTime()
+	err = ssdta.Unknown4.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract SimpleSearchDateTimeAttribute.StartTime from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract SimpleSearchDateTimeAttribute.Unknown4. %s", err.Error())
 	}
 
-	simpleSearchDateTimeAttribute.EndTime, err = stream.ReadDateTime()
+	err = ssdta.StartTime.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract SimpleSearchDateTimeAttribute.EndTime from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract SimpleSearchDateTimeAttribute.StartTime. %s", err.Error())
+	}
+
+	err = ssdta.EndTime.ExtractFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract SimpleSearchDateTimeAttribute.EndTime. %s", err.Error())
 	}
 
 	return nil
 }
 
-// Bytes encodes the SimpleSearchDateTimeAttribute and returns a byte array
-func (simpleSearchDateTimeAttribute *SimpleSearchDateTimeAttribute) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt32LE(simpleSearchDateTimeAttribute.Unknown)
-	stream.WriteUInt32LE(simpleSearchDateTimeAttribute.Unknown2)
-	stream.WriteUInt32LE(simpleSearchDateTimeAttribute.Unknown3)
-	stream.WriteUInt32LE(simpleSearchDateTimeAttribute.Unknown4)
-	stream.WriteDateTime(simpleSearchDateTimeAttribute.StartTime)
-	stream.WriteDateTime(simpleSearchDateTimeAttribute.EndTime)
-
-	return stream.Bytes()
-}
-
 // Copy returns a new copied instance of SimpleSearchDateTimeAttribute
-func (simpleSearchDateTimeAttribute *SimpleSearchDateTimeAttribute) Copy() nex.StructureInterface {
+func (ssdta *SimpleSearchDateTimeAttribute) Copy() types.RVType {
 	copied := NewSimpleSearchDateTimeAttribute()
 
-	copied.SetStructureVersion(simpleSearchDateTimeAttribute.StructureVersion())
-
-	copied.Unknown = simpleSearchDateTimeAttribute.Unknown
-	copied.Unknown2 = simpleSearchDateTimeAttribute.Unknown2
-	copied.Unknown3 = simpleSearchDateTimeAttribute.Unknown3
-	copied.Unknown4 = simpleSearchDateTimeAttribute.Unknown4
-	copied.StartTime = simpleSearchDateTimeAttribute.StartTime.Copy()
-	copied.EndTime = simpleSearchDateTimeAttribute.EndTime.Copy()
+	copied.StructureVersion = ssdta.StructureVersion
+	copied.Unknown = ssdta.Unknown.Copy().(*types.PrimitiveU32)
+	copied.Unknown2 = ssdta.Unknown2.Copy().(*types.PrimitiveU32)
+	copied.Unknown3 = ssdta.Unknown3.Copy().(*types.PrimitiveU32)
+	copied.Unknown4 = ssdta.Unknown4.Copy().(*types.PrimitiveU32)
+	copied.StartTime = ssdta.StartTime.Copy().(*types.DateTime)
+	copied.EndTime = ssdta.EndTime.Copy().(*types.DateTime)
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (simpleSearchDateTimeAttribute *SimpleSearchDateTimeAttribute) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*SimpleSearchDateTimeAttribute)
-
-	if simpleSearchDateTimeAttribute.StructureVersion() != other.StructureVersion() {
+// Equals checks if the given SimpleSearchDateTimeAttribute contains the same data as the current SimpleSearchDateTimeAttribute
+func (ssdta *SimpleSearchDateTimeAttribute) Equals(o types.RVType) bool {
+	if _, ok := o.(*SimpleSearchDateTimeAttribute); !ok {
 		return false
 	}
 
-	if simpleSearchDateTimeAttribute.Unknown != other.Unknown {
+	other := o.(*SimpleSearchDateTimeAttribute)
+
+	if ssdta.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if simpleSearchDateTimeAttribute.Unknown2 != other.Unknown2 {
+	if !ssdta.Unknown.Equals(other.Unknown) {
 		return false
 	}
 
-	if simpleSearchDateTimeAttribute.Unknown3 != other.Unknown3 {
+	if !ssdta.Unknown2.Equals(other.Unknown2) {
 		return false
 	}
 
-	if simpleSearchDateTimeAttribute.Unknown4 != other.Unknown4 {
+	if !ssdta.Unknown3.Equals(other.Unknown3) {
 		return false
 	}
 
-	if !simpleSearchDateTimeAttribute.StartTime.Equals(other.StartTime) {
+	if !ssdta.Unknown4.Equals(other.Unknown4) {
 		return false
 	}
 
-	if !simpleSearchDateTimeAttribute.EndTime.Equals(other.EndTime) {
+	if !ssdta.StartTime.Equals(other.StartTime) {
 		return false
 	}
 
-	return true
+	return ssdta.EndTime.Equals(other.EndTime)
 }
 
-// String returns a string representation of the struct
-func (simpleSearchDateTimeAttribute *SimpleSearchDateTimeAttribute) String() string {
-	return simpleSearchDateTimeAttribute.FormatToString(0)
+// String returns the string representation of the SimpleSearchDateTimeAttribute
+func (ssdta *SimpleSearchDateTimeAttribute) String() string {
+	return ssdta.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (simpleSearchDateTimeAttribute *SimpleSearchDateTimeAttribute) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the SimpleSearchDateTimeAttribute using the provided indentation level
+func (ssdta *SimpleSearchDateTimeAttribute) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("SimpleSearchDateTimeAttribute{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, simpleSearchDateTimeAttribute.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sUnknown: %d,\n", indentationValues, simpleSearchDateTimeAttribute.Unknown))
-	b.WriteString(fmt.Sprintf("%sUnknown2: %d,\n", indentationValues, simpleSearchDateTimeAttribute.Unknown2))
-	b.WriteString(fmt.Sprintf("%sUnknown3: %d,\n", indentationValues, simpleSearchDateTimeAttribute.Unknown3))
-	b.WriteString(fmt.Sprintf("%sUnknown4: %d,\n", indentationValues, simpleSearchDateTimeAttribute.Unknown4))
-
-	if simpleSearchDateTimeAttribute.StartTime != nil {
-		b.WriteString(fmt.Sprintf("%sStartTime: %s\n", indentationValues, simpleSearchDateTimeAttribute.StartTime.FormatToString(indentationLevel+1)))
-	} else {
-		b.WriteString(fmt.Sprintf("%sStartTime: nil\n", indentationValues))
-	}
-
-	if simpleSearchDateTimeAttribute.EndTime != nil {
-		b.WriteString(fmt.Sprintf("%sEndTime: %s\n", indentationValues, simpleSearchDateTimeAttribute.EndTime.FormatToString(indentationLevel+1)))
-	} else {
-		b.WriteString(fmt.Sprintf("%sEndTime: nil\n", indentationValues))
-	}
-
+	b.WriteString(fmt.Sprintf("%sUnknown: %s,\n", indentationValues, ssdta.Unknown))
+	b.WriteString(fmt.Sprintf("%sUnknown2: %s,\n", indentationValues, ssdta.Unknown2))
+	b.WriteString(fmt.Sprintf("%sUnknown3: %s,\n", indentationValues, ssdta.Unknown3))
+	b.WriteString(fmt.Sprintf("%sUnknown4: %s,\n", indentationValues, ssdta.Unknown4))
+	b.WriteString(fmt.Sprintf("%sStartTime: %s,\n", indentationValues, ssdta.StartTime.FormatToString(indentationLevel+1)))
+	b.WriteString(fmt.Sprintf("%sEndTime: %s,\n", indentationValues, ssdta.EndTime.FormatToString(indentationLevel+1)))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -157,5 +155,14 @@ func (simpleSearchDateTimeAttribute *SimpleSearchDateTimeAttribute) FormatToStri
 
 // NewSimpleSearchDateTimeAttribute returns a new SimpleSearchDateTimeAttribute
 func NewSimpleSearchDateTimeAttribute() *SimpleSearchDateTimeAttribute {
-	return &SimpleSearchDateTimeAttribute{}
+	ssdta := &SimpleSearchDateTimeAttribute{
+		Unknown:   types.NewPrimitiveU32(0),
+		Unknown2:  types.NewPrimitiveU32(0),
+		Unknown3:  types.NewPrimitiveU32(0),
+		Unknown4:  types.NewPrimitiveU32(0),
+		StartTime: types.NewDateTime(0),
+		EndTime:   types.NewDateTime(0),
+	}
+
+	return ssdta
 }

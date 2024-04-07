@@ -4,43 +4,44 @@ package protocol
 import (
 	"fmt"
 
-	nex "github.com/PretendoNetwork/nex-go"
-	"github.com/PretendoNetwork/nex-protocols-go/globals"
+	nex "github.com/PretendoNetwork/nex-go/v2"
+	"github.com/PretendoNetwork/nex-go/v2/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
 )
 
-// FindInvitations sets the FindInvitations handler function
-func (protocol *Protocol) FindInvitations(handler func(err error, packet nex.PacketInterface, callID uint32, resultRange *nex.ResultRange) uint32) {
-	protocol.findInvitationsHandler = handler
-}
-
 func (protocol *Protocol) handleFindInvitations(packet nex.PacketInterface) {
-	var errorCode uint32
+	if protocol.FindInvitations == nil {
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "MatchMaking::FindInvitations not implemented")
 
-	if protocol.findInvitationsHandler == nil {
-		globals.Logger.Warning("MatchMaking::FindInvitations not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
+	callID := request.CallID
+	parameters := request.Parameters
+	endpoint := packet.Sender().Endpoint()
+	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	callID := request.CallID()
-	parameters := request.Parameters()
+	resultRange := types.NewResultRange()
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
-
-	resultRange, err := parametersStream.ReadStructure(nex.NewResultRange())
+	err := resultRange.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.findInvitationsHandler(fmt.Errorf("Failed to read resultRange from parameters. %s", err.Error()), packet, callID, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.FindInvitations(fmt.Errorf("Failed to read resultRange from parameters. %s", err.Error()), packet, callID, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	errorCode = protocol.findInvitationsHandler(nil, packet, callID, resultRange.(*nex.ResultRange))
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.FindInvitations(nil, packet, callID, resultRange)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

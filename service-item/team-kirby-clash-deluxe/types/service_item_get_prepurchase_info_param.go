@@ -1,139 +1,140 @@
-// Package types implements all the types used by the Service Item (Team Kirby Clash Deluxe) protocol
+// Package types implements all the types used by the ServiceItem protocol
 package types
 
 import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/v2/types"
 )
 
-// ServiceItemGetPrepurchaseInfoParam holds data for the Service Item (Team Kirby Clash Deluxe) protocol
+// ServiceItemGetPrepurchaseInfoParam is a type within the ServiceItem protocol
 type ServiceItemGetPrepurchaseInfoParam struct {
-	nex.Structure
-	ItemCode    string
-	ReferenceID string
+	types.Structure
+	ItemCode    *types.String
+	ReferenceID *types.String
 	Limitation  *ServiceItemLimitation
-	Language    string
-	UniqueID    uint32
+	Language    *types.String
+	UniqueID    *types.PrimitiveU32
 }
 
-// ExtractFromStream extracts a ServiceItemGetPrepurchaseInfoParam structure from a stream
-func (serviceItemGetPrepurchaseInfoParam *ServiceItemGetPrepurchaseInfoParam) ExtractFromStream(stream *nex.StreamIn) error {
+// WriteTo writes the ServiceItemGetPrepurchaseInfoParam to the given writable
+func (sigpip *ServiceItemGetPrepurchaseInfoParam) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
+
+	sigpip.ItemCode.WriteTo(writable)
+	sigpip.ReferenceID.WriteTo(writable)
+	sigpip.Limitation.WriteTo(writable)
+	sigpip.Language.WriteTo(writable)
+	sigpip.UniqueID.WriteTo(writable)
+
+	content := contentWritable.Bytes()
+
+	sigpip.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
+}
+
+// ExtractFrom extracts the ServiceItemGetPrepurchaseInfoParam from the given readable
+func (sigpip *ServiceItemGetPrepurchaseInfoParam) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	serviceItemGetPrepurchaseInfoParam.ItemCode, err = stream.ReadString()
+	err = sigpip.ExtractHeaderFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemGetPrepurchaseInfoParam.ItemCode from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract ServiceItemGetPrepurchaseInfoParam header. %s", err.Error())
 	}
 
-	serviceItemGetPrepurchaseInfoParam.ReferenceID, err = stream.ReadString()
+	err = sigpip.ItemCode.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemGetPrepurchaseInfoParam.ReferenceID from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract ServiceItemGetPrepurchaseInfoParam.ItemCode. %s", err.Error())
 	}
 
-	limitation, err := stream.ReadStructure(NewServiceItemLimitation())
+	err = sigpip.ReferenceID.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemGetPrepurchaseInfoParam.Limitation from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract ServiceItemGetPrepurchaseInfoParam.ReferenceID. %s", err.Error())
 	}
 
-	serviceItemGetPrepurchaseInfoParam.Limitation = limitation.(*ServiceItemLimitation)
-
-	serviceItemGetPrepurchaseInfoParam.Language, err = stream.ReadString()
+	err = sigpip.Limitation.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemGetPrepurchaseInfoParam.Language from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract ServiceItemGetPrepurchaseInfoParam.Limitation. %s", err.Error())
 	}
 
-	serviceItemGetPrepurchaseInfoParam.UniqueID, err = stream.ReadUInt32LE()
+	err = sigpip.Language.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemGetPrepurchaseInfoParam.UniqueID from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract ServiceItemGetPrepurchaseInfoParam.Language. %s", err.Error())
+	}
+
+	err = sigpip.UniqueID.ExtractFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract ServiceItemGetPrepurchaseInfoParam.UniqueID. %s", err.Error())
 	}
 
 	return nil
 }
 
-// Bytes encodes the ServiceItemGetPrepurchaseInfoParam and returns a byte array
-func (serviceItemGetPrepurchaseInfoParam *ServiceItemGetPrepurchaseInfoParam) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteString(serviceItemGetPrepurchaseInfoParam.ItemCode)
-	stream.WriteString(serviceItemGetPrepurchaseInfoParam.ReferenceID)
-	stream.WriteStructure(serviceItemGetPrepurchaseInfoParam.Limitation)
-	stream.WriteString(serviceItemGetPrepurchaseInfoParam.Language)
-	stream.WriteUInt32LE(serviceItemGetPrepurchaseInfoParam.UniqueID)
-
-	return stream.Bytes()
-}
-
 // Copy returns a new copied instance of ServiceItemGetPrepurchaseInfoParam
-func (serviceItemGetPrepurchaseInfoParam *ServiceItemGetPrepurchaseInfoParam) Copy() nex.StructureInterface {
+func (sigpip *ServiceItemGetPrepurchaseInfoParam) Copy() types.RVType {
 	copied := NewServiceItemGetPrepurchaseInfoParam()
 
-	copied.SetStructureVersion(serviceItemGetPrepurchaseInfoParam.StructureVersion())
-
-	copied.ItemCode = serviceItemGetPrepurchaseInfoParam.ItemCode
-	copied.ReferenceID = serviceItemGetPrepurchaseInfoParam.ReferenceID
-	copied.Limitation = serviceItemGetPrepurchaseInfoParam.Limitation.Copy().(*ServiceItemLimitation)
-	copied.Language = serviceItemGetPrepurchaseInfoParam.Language
-	copied.UniqueID = serviceItemGetPrepurchaseInfoParam.UniqueID
+	copied.StructureVersion = sigpip.StructureVersion
+	copied.ItemCode = sigpip.ItemCode.Copy().(*types.String)
+	copied.ReferenceID = sigpip.ReferenceID.Copy().(*types.String)
+	copied.Limitation = sigpip.Limitation.Copy().(*ServiceItemLimitation)
+	copied.Language = sigpip.Language.Copy().(*types.String)
+	copied.UniqueID = sigpip.UniqueID.Copy().(*types.PrimitiveU32)
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (serviceItemGetPrepurchaseInfoParam *ServiceItemGetPrepurchaseInfoParam) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*ServiceItemGetPrepurchaseInfoParam)
-
-	if serviceItemGetPrepurchaseInfoParam.StructureVersion() != other.StructureVersion() {
+// Equals checks if the given ServiceItemGetPrepurchaseInfoParam contains the same data as the current ServiceItemGetPrepurchaseInfoParam
+func (sigpip *ServiceItemGetPrepurchaseInfoParam) Equals(o types.RVType) bool {
+	if _, ok := o.(*ServiceItemGetPrepurchaseInfoParam); !ok {
 		return false
 	}
 
-	if serviceItemGetPrepurchaseInfoParam.ItemCode != other.ItemCode {
+	other := o.(*ServiceItemGetPrepurchaseInfoParam)
+
+	if sigpip.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if serviceItemGetPrepurchaseInfoParam.ReferenceID != other.ReferenceID {
+	if !sigpip.ItemCode.Equals(other.ItemCode) {
 		return false
 	}
 
-	if !serviceItemGetPrepurchaseInfoParam.Limitation.Equals(other.Limitation) {
+	if !sigpip.ReferenceID.Equals(other.ReferenceID) {
 		return false
 	}
 
-	if serviceItemGetPrepurchaseInfoParam.Language != other.Language {
+	if !sigpip.Limitation.Equals(other.Limitation) {
 		return false
 	}
 
-	if serviceItemGetPrepurchaseInfoParam.UniqueID != other.UniqueID {
+	if !sigpip.Language.Equals(other.Language) {
 		return false
 	}
 
-	return true
+	return sigpip.UniqueID.Equals(other.UniqueID)
 }
 
-// String returns a string representation of the struct
-func (serviceItemGetPrepurchaseInfoParam *ServiceItemGetPrepurchaseInfoParam) String() string {
-	return serviceItemGetPrepurchaseInfoParam.FormatToString(0)
+// String returns the string representation of the ServiceItemGetPrepurchaseInfoParam
+func (sigpip *ServiceItemGetPrepurchaseInfoParam) String() string {
+	return sigpip.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (serviceItemGetPrepurchaseInfoParam *ServiceItemGetPrepurchaseInfoParam) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the ServiceItemGetPrepurchaseInfoParam using the provided indentation level
+func (sigpip *ServiceItemGetPrepurchaseInfoParam) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("ServiceItemGetPrepurchaseInfoParam{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, serviceItemGetPrepurchaseInfoParam.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sItemCode: %q,\n", indentationValues, serviceItemGetPrepurchaseInfoParam.ItemCode))
-	b.WriteString(fmt.Sprintf("%sReferenceID: %q,\n", indentationValues, serviceItemGetPrepurchaseInfoParam.ReferenceID))
-
-	if serviceItemGetPrepurchaseInfoParam.Limitation != nil {
-		b.WriteString(fmt.Sprintf("%sLimitation: %s\n", indentationValues, serviceItemGetPrepurchaseInfoParam.Limitation.FormatToString(indentationLevel+1)))
-	} else {
-		b.WriteString(fmt.Sprintf("%sLimitation: nil\n", indentationValues))
-	}
-
-	b.WriteString(fmt.Sprintf("%sLanguage: %q,\n", indentationValues, serviceItemGetPrepurchaseInfoParam.Language))
-	b.WriteString(fmt.Sprintf("%sUniqueID: %d,\n", indentationValues, serviceItemGetPrepurchaseInfoParam.UniqueID))
+	b.WriteString(fmt.Sprintf("%sItemCode: %s,\n", indentationValues, sigpip.ItemCode))
+	b.WriteString(fmt.Sprintf("%sReferenceID: %s,\n", indentationValues, sigpip.ReferenceID))
+	b.WriteString(fmt.Sprintf("%sLimitation: %s,\n", indentationValues, sigpip.Limitation.FormatToString(indentationLevel+1)))
+	b.WriteString(fmt.Sprintf("%sLanguage: %s,\n", indentationValues, sigpip.Language))
+	b.WriteString(fmt.Sprintf("%sUniqueID: %s,\n", indentationValues, sigpip.UniqueID))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -141,5 +142,13 @@ func (serviceItemGetPrepurchaseInfoParam *ServiceItemGetPrepurchaseInfoParam) Fo
 
 // NewServiceItemGetPrepurchaseInfoParam returns a new ServiceItemGetPrepurchaseInfoParam
 func NewServiceItemGetPrepurchaseInfoParam() *ServiceItemGetPrepurchaseInfoParam {
-	return &ServiceItemGetPrepurchaseInfoParam{}
+	sigpip := &ServiceItemGetPrepurchaseInfoParam{
+		ItemCode:    types.NewString(""),
+		ReferenceID: types.NewString(""),
+		Limitation:  NewServiceItemLimitation(),
+		Language:    types.NewString(""),
+		UniqueID:    types.NewPrimitiveU32(0),
+	}
+
+	return sigpip
 }

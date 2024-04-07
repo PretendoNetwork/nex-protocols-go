@@ -4,43 +4,45 @@ package protocol
 import (
 	"fmt"
 
-	nex "github.com/PretendoNetwork/nex-go"
-	"github.com/PretendoNetwork/nex-protocols-go/globals"
+	nex "github.com/PretendoNetwork/nex-go/v2"
+	"github.com/PretendoNetwork/nex-go/v2/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
 )
 
-// UnregisterGatherings sets the UnregisterGatherings handler function
-func (protocol *Protocol) UnregisterGatherings(handler func(err error, packet nex.PacketInterface, callID uint32, lstGatherings []uint32) uint32) {
-	protocol.unregisterGatheringsHandler = handler
-}
-
 func (protocol *Protocol) handleUnregisterGatherings(packet nex.PacketInterface) {
-	var errorCode uint32
+	if protocol.UnregisterGatherings == nil {
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "MatchMaking::UnregisterGatherings not implemented")
 
-	if protocol.unregisterGatheringsHandler == nil {
-		globals.Logger.Warning("MatchMaking::UnregisterGatherings not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
+	callID := request.CallID
+	parameters := request.Parameters
+	endpoint := packet.Sender().Endpoint()
+	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	callID := request.CallID()
-	parameters := request.Parameters()
+	lstGatherings := types.NewList[*types.PrimitiveU32]()
+	lstGatherings.Type = types.NewPrimitiveU32(0)
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
-
-	lstGatherings, err := parametersStream.ReadListUInt32LE()
+	err := lstGatherings.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.unregisterGatheringsHandler(fmt.Errorf("Failed to read lstGatherings from parameters. %s", err.Error()), packet, callID, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.UnregisterGatherings(fmt.Errorf("Failed to read lstGatherings from parameters. %s", err.Error()), packet, callID, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	errorCode = protocol.unregisterGatheringsHandler(nil, packet, callID, lstGatherings)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.UnregisterGatherings(nil, packet, callID, lstGatherings)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

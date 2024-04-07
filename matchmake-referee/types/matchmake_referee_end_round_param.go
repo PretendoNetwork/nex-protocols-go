@@ -1,134 +1,115 @@
-// Package types implements all the types used by the Matchmake Referee protocol
+// Package types implements all the types used by the MatchmakeReferee protocol
 package types
 
 import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/v2/types"
 )
 
-// MatchmakeRefereeEndRoundParam contains the results of a round
+// MatchmakeRefereeEndRoundParam is a type within the MatchmakeReferee protocol
 type MatchmakeRefereeEndRoundParam struct {
-	nex.Structure
-	*nex.Data
-	RoundID              uint64
-	PersonalRoundResults []*MatchmakeRefereePersonalRoundResult
+	types.Structure
+	*types.Data
+	RoundID              *types.PrimitiveU64
+	PersonalRoundResults *types.List[*MatchmakeRefereePersonalRoundResult]
 }
 
-// Bytes encodes the MatchmakeRefereeEndRoundParam and returns a byte array
-func (matchmakeRefereeEndRoundParam *MatchmakeRefereeEndRoundParam) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt64LE(matchmakeRefereeEndRoundParam.RoundID)
-	stream.WriteListStructure(matchmakeRefereeEndRoundParam.PersonalRoundResults)
+// WriteTo writes the MatchmakeRefereeEndRoundParam to the given writable
+func (mrerp *MatchmakeRefereeEndRoundParam) WriteTo(writable types.Writable) {
+	mrerp.Data.WriteTo(writable)
 
-	return stream.Bytes()
+	contentWritable := writable.CopyNew()
+
+	mrerp.RoundID.WriteTo(writable)
+	mrerp.PersonalRoundResults.WriteTo(writable)
+
+	content := contentWritable.Bytes()
+
+	mrerp.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
-// ExtractFromStream extracts a MatchmakeRefereeEndRoundParam structure from a stream
-func (matchmakeRefereeEndRoundParam *MatchmakeRefereeEndRoundParam) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the MatchmakeRefereeEndRoundParam from the given readable
+func (mrerp *MatchmakeRefereeEndRoundParam) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	matchmakeRefereeEndRoundParam.RoundID, err = stream.ReadUInt64LE()
+	err = mrerp.Data.ExtractFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract MatchmakeRefereeEndRoundParam.Data. %s", err.Error())
+	}
+
+	err = mrerp.ExtractHeaderFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract MatchmakeRefereeEndRoundParam header. %s", err.Error())
+	}
+
+	err = mrerp.RoundID.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract MatchmakeRefereeEndRoundParam.RoundID. %s", err.Error())
 	}
 
-	resultList, err := stream.ReadListStructure(NewMatchmakeRefereePersonalRoundResult())
+	err = mrerp.PersonalRoundResults.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract MatchmakeRefereeEndRoundParam.PersonalRoundResults. %s", err.Error())
 	}
-
-	matchmakeRefereeEndRoundParam.PersonalRoundResults = resultList.([]*MatchmakeRefereePersonalRoundResult)
 
 	return nil
 }
 
 // Copy returns a new copied instance of MatchmakeRefereeEndRoundParam
-func (matchmakeRefereeEndRoundParam *MatchmakeRefereeEndRoundParam) Copy() nex.StructureInterface {
+func (mrerp *MatchmakeRefereeEndRoundParam) Copy() types.RVType {
 	copied := NewMatchmakeRefereeEndRoundParam()
 
-	copied.SetStructureVersion(matchmakeRefereeEndRoundParam.StructureVersion())
-
-	copied.Data = matchmakeRefereeEndRoundParam.ParentType().Copy().(*nex.Data)
-	copied.SetParentType(copied.Data)
-
-	copied.RoundID = matchmakeRefereeEndRoundParam.RoundID
-
-	copied.PersonalRoundResults = make([]*MatchmakeRefereePersonalRoundResult, len(matchmakeRefereeEndRoundParam.PersonalRoundResults))
-	for i := 0; i < len(matchmakeRefereeEndRoundParam.PersonalRoundResults); i++ {
-		copied.PersonalRoundResults[i] = matchmakeRefereeEndRoundParam.PersonalRoundResults[i].Copy().(*MatchmakeRefereePersonalRoundResult)
-	}
+	copied.StructureVersion = mrerp.StructureVersion
+	copied.Data = mrerp.Data.Copy().(*types.Data)
+	copied.RoundID = mrerp.RoundID.Copy().(*types.PrimitiveU64)
+	copied.PersonalRoundResults = mrerp.PersonalRoundResults.Copy().(*types.List[*MatchmakeRefereePersonalRoundResult])
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (matchmakeRefereeEndRoundParam *MatchmakeRefereeEndRoundParam) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*MatchmakeRefereeEndRoundParam)
-
-	if matchmakeRefereeEndRoundParam.StructureVersion() != other.StructureVersion() {
+// Equals checks if the given MatchmakeRefereeEndRoundParam contains the same data as the current MatchmakeRefereeEndRoundParam
+func (mrerp *MatchmakeRefereeEndRoundParam) Equals(o types.RVType) bool {
+	if _, ok := o.(*MatchmakeRefereeEndRoundParam); !ok {
 		return false
 	}
 
-	if !matchmakeRefereeEndRoundParam.ParentType().Equals(other.ParentType()) {
+	other := o.(*MatchmakeRefereeEndRoundParam)
+
+	if mrerp.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if matchmakeRefereeEndRoundParam.RoundID != other.RoundID {
+	if !mrerp.Data.Equals(other.Data) {
 		return false
 	}
 
-	if matchmakeRefereeEndRoundParam.PersonalRoundResults != nil && other.PersonalRoundResults != nil {
-		if len(matchmakeRefereeEndRoundParam.PersonalRoundResults) != len(other.PersonalRoundResults) {
-			return false
-		}
-
-		for i := 0; i < len(matchmakeRefereeEndRoundParam.PersonalRoundResults); i++ {
-			if !matchmakeRefereeEndRoundParam.PersonalRoundResults[i].Equals(other.PersonalRoundResults[i]) {
-				return false
-			}
-		}
-	} else if matchmakeRefereeEndRoundParam.PersonalRoundResults == nil {
-		return false
-	} else if other.PersonalRoundResults == nil {
+	if !mrerp.RoundID.Equals(other.RoundID) {
 		return false
 	}
 
-	return true
+	return mrerp.PersonalRoundResults.Equals(other.PersonalRoundResults)
 }
 
-// String returns a string representation of the struct
-func (matchmakeRefereeEndRoundParam *MatchmakeRefereeEndRoundParam) String() string {
-	return matchmakeRefereeEndRoundParam.FormatToString(0)
+// String returns the string representation of the MatchmakeRefereeEndRoundParam
+func (mrerp *MatchmakeRefereeEndRoundParam) String() string {
+	return mrerp.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (matchmakeRefereeEndRoundParam *MatchmakeRefereeEndRoundParam) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the MatchmakeRefereeEndRoundParam using the provided indentation level
+func (mrerp *MatchmakeRefereeEndRoundParam) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
-	indentationListValues := strings.Repeat("\t", indentationLevel+2)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("MatchmakeRefereeEndRoundParam{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, matchmakeRefereeEndRoundParam.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sRoundID: %d,\n", indentationValues, matchmakeRefereeEndRoundParam.RoundID))
-	if len(matchmakeRefereeEndRoundParam.PersonalRoundResults) == 0 {
-		b.WriteString(fmt.Sprintf("%sPersonalRoundResults: [],\n", indentationValues))
-	} else {
-		b.WriteString(fmt.Sprintf("%sPersonalRoundResults: [\n", indentationValues))
-
-		for i := 0; i < len(matchmakeRefereeEndRoundParam.PersonalRoundResults); i++ {
-			str := matchmakeRefereeEndRoundParam.PersonalRoundResults[i].FormatToString(indentationLevel + 2)
-			if i == len(matchmakeRefereeEndRoundParam.PersonalRoundResults)-1 {
-				b.WriteString(fmt.Sprintf("%s%s\n", indentationListValues, str))
-			} else {
-				b.WriteString(fmt.Sprintf("%s%s,\n", indentationListValues, str))
-			}
-		}
-
-		b.WriteString(fmt.Sprintf("%s]\n", indentationValues))
-	}
+	b.WriteString(fmt.Sprintf("%sData (parent): %s,\n", indentationValues, mrerp.Data.FormatToString(indentationLevel+1)))
+	b.WriteString(fmt.Sprintf("%sRoundID: %s,\n", indentationValues, mrerp.RoundID))
+	b.WriteString(fmt.Sprintf("%sPersonalRoundResults: %s,\n", indentationValues, mrerp.PersonalRoundResults))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -136,5 +117,13 @@ func (matchmakeRefereeEndRoundParam *MatchmakeRefereeEndRoundParam) FormatToStri
 
 // NewMatchmakeRefereeEndRoundParam returns a new MatchmakeRefereeEndRoundParam
 func NewMatchmakeRefereeEndRoundParam() *MatchmakeRefereeEndRoundParam {
-	return &MatchmakeRefereeEndRoundParam{}
+	mrerp := &MatchmakeRefereeEndRoundParam{
+		Data:                 types.NewData(),
+		RoundID:              types.NewPrimitiveU64(0),
+		PersonalRoundResults: types.NewList[*MatchmakeRefereePersonalRoundResult](),
+	}
+
+	mrerp.PersonalRoundResults.Type = NewMatchmakeRefereePersonalRoundResult()
+
+	return mrerp
 }

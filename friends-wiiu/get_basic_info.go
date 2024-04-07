@@ -4,43 +4,45 @@ package protocol
 import (
 	"fmt"
 
-	nex "github.com/PretendoNetwork/nex-go"
-	"github.com/PretendoNetwork/nex-protocols-go/globals"
+	nex "github.com/PretendoNetwork/nex-go/v2"
+	"github.com/PretendoNetwork/nex-go/v2/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
 )
 
-// GetBasicInfo sets the GetBasicInfo handler function
-func (protocol *Protocol) GetBasicInfo(handler func(err error, packet nex.PacketInterface, callID uint32, pids []uint32) uint32) {
-	protocol.getBasicInfoHandler = handler
-}
-
 func (protocol *Protocol) handleGetBasicInfo(packet nex.PacketInterface) {
-	var errorCode uint32
+	if protocol.GetBasicInfo == nil {
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "FriendsWiiU::GetBasicInfo not implemented")
 
-	if protocol.getBasicInfoHandler == nil {
-		globals.Logger.Warning("FriendsWiiU::GetBasicInfo not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
+	callID := request.CallID
+	parameters := request.Parameters
+	endpoint := packet.Sender().Endpoint()
+	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	callID := request.CallID()
-	parameters := request.Parameters()
+	pids := types.NewList[*types.PID]()
+	pids.Type = types.NewPID(0)
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
-
-	pids, err := parametersStream.ReadListUInt32LE()
+	err := pids.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.getBasicInfoHandler(fmt.Errorf("Failed to read pids from parameters. %s", err.Error()), packet, callID, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.GetBasicInfo(fmt.Errorf("Failed to read pids from parameters. %s", err.Error()), packet, callID, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	errorCode = protocol.getBasicInfoHandler(nil, packet, callID, pids)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.GetBasicInfo(nil, packet, callID, pids)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

@@ -1,180 +1,179 @@
-// Package types implements all the types used by the Service Item (Team Kirby Clash Deluxe) protocol
+// Package types implements all the types used by the ServiceItem protocol
 package types
 
 import (
-	"bytes"
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/v2/types"
 )
 
-// ServiceItemUseServiceItemByAccountParam holds data for the Service Item (Team Kirby Clash Deluxe) protocol
+// ServiceItemUseServiceItemByAccountParam is a type within the ServiceItem protocol
 type ServiceItemUseServiceItemByAccountParam struct {
-	nex.Structure
-	ReferenceIDForUse         string
-	ReferenceIDForRightBinary string
-	UseType                   uint8
-	UseNumber                 uint8
-	RightBinary               []byte
-	LogMessage                string
-	UniqueID                  uint32
-	Platform                  uint8
+	types.Structure
+	ReferenceIDForUse         *types.String
+	ReferenceIDForRightBinary *types.String
+	UseType                   *types.PrimitiveU8
+	UseNumber                 *types.PrimitiveU8
+	RightBinary               *types.QBuffer
+	LogMessage                *types.String
+	UniqueID                  *types.PrimitiveU32
+	Platform                  *types.PrimitiveU8
 }
 
-// ExtractFromStream extracts a ServiceItemUseServiceItemByAccountParam structure from a stream
-func (serviceItemUseServiceItemByAccountParam *ServiceItemUseServiceItemByAccountParam) ExtractFromStream(stream *nex.StreamIn) error {
+// WriteTo writes the ServiceItemUseServiceItemByAccountParam to the given writable
+func (siusibap *ServiceItemUseServiceItemByAccountParam) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
+
+	siusibap.ReferenceIDForUse.WriteTo(writable)
+	siusibap.ReferenceIDForRightBinary.WriteTo(writable)
+	siusibap.UseType.WriteTo(writable)
+	siusibap.UseNumber.WriteTo(writable)
+	siusibap.RightBinary.WriteTo(writable)
+	siusibap.LogMessage.WriteTo(writable)
+	siusibap.UniqueID.WriteTo(writable)
+	siusibap.Platform.WriteTo(writable)
+
+	content := contentWritable.Bytes()
+
+	siusibap.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
+}
+
+// ExtractFrom extracts the ServiceItemUseServiceItemByAccountParam from the given readable
+func (siusibap *ServiceItemUseServiceItemByAccountParam) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	serviceItemUseServiceItemByAccountParam.ReferenceIDForUse, err = stream.ReadString()
+	err = siusibap.ExtractHeaderFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemUseServiceItemByAccountParam.ReferenceIDForUse from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract ServiceItemUseServiceItemByAccountParam header. %s", err.Error())
 	}
 
-	serviceItemUseServiceItemByAccountParam.ReferenceIDForRightBinary, err = stream.ReadString()
+	err = siusibap.ReferenceIDForUse.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemUseServiceItemByAccountParam.ReferenceIDForRightBinary from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract ServiceItemUseServiceItemByAccountParam.ReferenceIDForUse. %s", err.Error())
 	}
 
-	serviceItemUseServiceItemByAccountParam.UseType, err = stream.ReadUInt8()
+	err = siusibap.ReferenceIDForRightBinary.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemUseServiceItemByAccountParam.UseType from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract ServiceItemUseServiceItemByAccountParam.ReferenceIDForRightBinary. %s", err.Error())
 	}
 
-	serviceItemUseServiceItemByAccountParam.UseNumber, err = stream.ReadUInt8()
+	err = siusibap.UseType.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemUseServiceItemByAccountParam.UseNumber from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract ServiceItemUseServiceItemByAccountParam.UseType. %s", err.Error())
 	}
 
-	serviceItemUseServiceItemByAccountParam.RightBinary, err = stream.ReadQBuffer()
+	err = siusibap.UseNumber.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemUseServiceItemByAccountParam.RightBinary from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract ServiceItemUseServiceItemByAccountParam.UseNumber. %s", err.Error())
 	}
 
-	serviceItemUseServiceItemByAccountParam.LogMessage, err = stream.ReadString()
+	err = siusibap.RightBinary.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemUseServiceItemByAccountParam.LogMessage from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract ServiceItemUseServiceItemByAccountParam.RightBinary. %s", err.Error())
 	}
 
-	serviceItemUseServiceItemByAccountParam.UniqueID, err = stream.ReadUInt32LE()
+	err = siusibap.LogMessage.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemUseServiceItemByAccountParam.UniqueID from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract ServiceItemUseServiceItemByAccountParam.LogMessage. %s", err.Error())
 	}
 
-	if serviceItemUseServiceItemByAccountParam.StructureVersion() >= 1 {
-		serviceItemUseServiceItemByAccountParam.Platform, err = stream.ReadUInt8()
-		if err != nil {
-			return fmt.Errorf("Failed to extract ServiceItemUseServiceItemByAccountParam.Platform from stream. %s", err.Error())
-		}
+	err = siusibap.UniqueID.ExtractFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract ServiceItemUseServiceItemByAccountParam.UniqueID. %s", err.Error())
+	}
+
+	err = siusibap.Platform.ExtractFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract ServiceItemUseServiceItemByAccountParam.Platform. %s", err.Error())
 	}
 
 	return nil
 }
 
-// Bytes encodes the ServiceItemUseServiceItemByAccountParam and returns a byte array
-func (serviceItemUseServiceItemByAccountParam *ServiceItemUseServiceItemByAccountParam) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteString(serviceItemUseServiceItemByAccountParam.ReferenceIDForUse)
-	stream.WriteString(serviceItemUseServiceItemByAccountParam.ReferenceIDForRightBinary)
-	stream.WriteUInt8(serviceItemUseServiceItemByAccountParam.UseType)
-	stream.WriteUInt8(serviceItemUseServiceItemByAccountParam.UseNumber)
-	stream.WriteQBuffer(serviceItemUseServiceItemByAccountParam.RightBinary)
-	stream.WriteString(serviceItemUseServiceItemByAccountParam.LogMessage)
-	stream.WriteUInt32LE(serviceItemUseServiceItemByAccountParam.UniqueID)
-
-	if serviceItemUseServiceItemByAccountParam.StructureVersion() >= 1 {
-		stream.WriteUInt8(serviceItemUseServiceItemByAccountParam.Platform)
-	}
-
-	return stream.Bytes()
-}
-
 // Copy returns a new copied instance of ServiceItemUseServiceItemByAccountParam
-func (serviceItemUseServiceItemByAccountParam *ServiceItemUseServiceItemByAccountParam) Copy() nex.StructureInterface {
+func (siusibap *ServiceItemUseServiceItemByAccountParam) Copy() types.RVType {
 	copied := NewServiceItemUseServiceItemByAccountParam()
 
-	copied.SetStructureVersion(serviceItemUseServiceItemByAccountParam.StructureVersion())
-
-	copied.ReferenceIDForUse = serviceItemUseServiceItemByAccountParam.ReferenceIDForUse
-	copied.ReferenceIDForRightBinary = serviceItemUseServiceItemByAccountParam.ReferenceIDForRightBinary
-	copied.UseType = serviceItemUseServiceItemByAccountParam.UseType
-	copied.UseNumber = serviceItemUseServiceItemByAccountParam.UseNumber
-	copied.RightBinary = serviceItemUseServiceItemByAccountParam.RightBinary
-	copied.LogMessage = serviceItemUseServiceItemByAccountParam.LogMessage
-	copied.UniqueID = serviceItemUseServiceItemByAccountParam.UniqueID
-	copied.Platform = serviceItemUseServiceItemByAccountParam.Platform
+	copied.StructureVersion = siusibap.StructureVersion
+	copied.ReferenceIDForUse = siusibap.ReferenceIDForUse.Copy().(*types.String)
+	copied.ReferenceIDForRightBinary = siusibap.ReferenceIDForRightBinary.Copy().(*types.String)
+	copied.UseType = siusibap.UseType.Copy().(*types.PrimitiveU8)
+	copied.UseNumber = siusibap.UseNumber.Copy().(*types.PrimitiveU8)
+	copied.RightBinary = siusibap.RightBinary.Copy().(*types.QBuffer)
+	copied.LogMessage = siusibap.LogMessage.Copy().(*types.String)
+	copied.UniqueID = siusibap.UniqueID.Copy().(*types.PrimitiveU32)
+	copied.Platform = siusibap.Platform.Copy().(*types.PrimitiveU8)
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (serviceItemUseServiceItemByAccountParam *ServiceItemUseServiceItemByAccountParam) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*ServiceItemUseServiceItemByAccountParam)
-
-	if serviceItemUseServiceItemByAccountParam.StructureVersion() != other.StructureVersion() {
+// Equals checks if the given ServiceItemUseServiceItemByAccountParam contains the same data as the current ServiceItemUseServiceItemByAccountParam
+func (siusibap *ServiceItemUseServiceItemByAccountParam) Equals(o types.RVType) bool {
+	if _, ok := o.(*ServiceItemUseServiceItemByAccountParam); !ok {
 		return false
 	}
 
-	if serviceItemUseServiceItemByAccountParam.ReferenceIDForUse != other.ReferenceIDForUse {
+	other := o.(*ServiceItemUseServiceItemByAccountParam)
+
+	if siusibap.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if serviceItemUseServiceItemByAccountParam.ReferenceIDForRightBinary != other.ReferenceIDForRightBinary {
+	if !siusibap.ReferenceIDForUse.Equals(other.ReferenceIDForUse) {
 		return false
 	}
 
-	if serviceItemUseServiceItemByAccountParam.UseType != other.UseType {
+	if !siusibap.ReferenceIDForRightBinary.Equals(other.ReferenceIDForRightBinary) {
 		return false
 	}
 
-	if serviceItemUseServiceItemByAccountParam.UseNumber != other.UseNumber {
+	if !siusibap.UseType.Equals(other.UseType) {
 		return false
 	}
 
-	if !bytes.Equal(serviceItemUseServiceItemByAccountParam.RightBinary, other.RightBinary) {
+	if !siusibap.UseNumber.Equals(other.UseNumber) {
 		return false
 	}
 
-	if serviceItemUseServiceItemByAccountParam.LogMessage != other.LogMessage {
+	if !siusibap.RightBinary.Equals(other.RightBinary) {
 		return false
 	}
 
-	if serviceItemUseServiceItemByAccountParam.UniqueID != other.UniqueID {
+	if !siusibap.LogMessage.Equals(other.LogMessage) {
 		return false
 	}
 
-	if serviceItemUseServiceItemByAccountParam.Platform != other.Platform {
+	if !siusibap.UniqueID.Equals(other.UniqueID) {
 		return false
 	}
 
-	return true
+	return siusibap.Platform.Equals(other.Platform)
 }
 
-// String returns a string representation of the struct
-func (serviceItemUseServiceItemByAccountParam *ServiceItemUseServiceItemByAccountParam) String() string {
-	return serviceItemUseServiceItemByAccountParam.FormatToString(0)
+// String returns the string representation of the ServiceItemUseServiceItemByAccountParam
+func (siusibap *ServiceItemUseServiceItemByAccountParam) String() string {
+	return siusibap.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (serviceItemUseServiceItemByAccountParam *ServiceItemUseServiceItemByAccountParam) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the ServiceItemUseServiceItemByAccountParam using the provided indentation level
+func (siusibap *ServiceItemUseServiceItemByAccountParam) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("ServiceItemUseServiceItemByAccountParam{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, serviceItemUseServiceItemByAccountParam.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sReferenceIDForUse: %q,\n", indentationValues, serviceItemUseServiceItemByAccountParam.ReferenceIDForUse))
-	b.WriteString(fmt.Sprintf("%sReferenceIDForRightBinary: %q,\n", indentationValues, serviceItemUseServiceItemByAccountParam.ReferenceIDForRightBinary))
-	b.WriteString(fmt.Sprintf("%sUseType: %d,\n", indentationValues, serviceItemUseServiceItemByAccountParam.UseType))
-	b.WriteString(fmt.Sprintf("%sUseNumber: %d,\n", indentationValues, serviceItemUseServiceItemByAccountParam.UseNumber))
-	b.WriteString(fmt.Sprintf("%sRightBinary: %x,\n", indentationValues, serviceItemUseServiceItemByAccountParam.RightBinary))
-	b.WriteString(fmt.Sprintf("%sLogMessage: %q,\n", indentationValues, serviceItemUseServiceItemByAccountParam.LogMessage))
-	b.WriteString(fmt.Sprintf("%sUniqueID: %d,\n", indentationValues, serviceItemUseServiceItemByAccountParam.UniqueID))
-
-	if serviceItemUseServiceItemByAccountParam.StructureVersion() >= 1 {
-		b.WriteString(fmt.Sprintf("%sPlatform: %d,\n", indentationValues, serviceItemUseServiceItemByAccountParam.Platform))
-	}
-
+	b.WriteString(fmt.Sprintf("%sReferenceIDForUse: %s,\n", indentationValues, siusibap.ReferenceIDForUse))
+	b.WriteString(fmt.Sprintf("%sReferenceIDForRightBinary: %s,\n", indentationValues, siusibap.ReferenceIDForRightBinary))
+	b.WriteString(fmt.Sprintf("%sUseType: %s,\n", indentationValues, siusibap.UseType))
+	b.WriteString(fmt.Sprintf("%sUseNumber: %s,\n", indentationValues, siusibap.UseNumber))
+	b.WriteString(fmt.Sprintf("%sRightBinary: %s,\n", indentationValues, siusibap.RightBinary))
+	b.WriteString(fmt.Sprintf("%sLogMessage: %s,\n", indentationValues, siusibap.LogMessage))
+	b.WriteString(fmt.Sprintf("%sUniqueID: %s,\n", indentationValues, siusibap.UniqueID))
+	b.WriteString(fmt.Sprintf("%sPlatform: %s,\n", indentationValues, siusibap.Platform))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -182,5 +181,16 @@ func (serviceItemUseServiceItemByAccountParam *ServiceItemUseServiceItemByAccoun
 
 // NewServiceItemUseServiceItemByAccountParam returns a new ServiceItemUseServiceItemByAccountParam
 func NewServiceItemUseServiceItemByAccountParam() *ServiceItemUseServiceItemByAccountParam {
-	return &ServiceItemUseServiceItemByAccountParam{}
+	siusibap := &ServiceItemUseServiceItemByAccountParam{
+		ReferenceIDForUse:         types.NewString(""),
+		ReferenceIDForRightBinary: types.NewString(""),
+		UseType:                   types.NewPrimitiveU8(0),
+		UseNumber:                 types.NewPrimitiveU8(0),
+		RightBinary:               types.NewQBuffer(nil),
+		LogMessage:                types.NewString(""),
+		UniqueID:                  types.NewPrimitiveU32(0),
+		Platform:                  types.NewPrimitiveU8(0),
+	}
+
+	return siusibap
 }

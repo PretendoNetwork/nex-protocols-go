@@ -1,91 +1,102 @@
-// Package types implements all the types used by the Message Delivery protocol
+// Package types implements all the types used by the MessageDelivery protocol
 package types
 
 import (
-	"bytes"
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/v2/types"
 )
 
-// BinaryMessage is a data structure used by the Message Delivery protocol
+// BinaryMessage is a type within the MessageDelivery protocol
 type BinaryMessage struct {
-	nex.Structure
+	types.Structure
 	*UserMessage
-	BinaryBody []byte
+	BinaryBody *types.QBuffer
 }
 
-// Bytes encodes the BinaryMessage and returns a byte array
-func (binaryMessage *BinaryMessage) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteQBuffer(binaryMessage.BinaryBody)
+// WriteTo writes the BinaryMessage to the given writable
+func (bm *BinaryMessage) WriteTo(writable types.Writable) {
+	bm.UserMessage.WriteTo(writable)
 
-	return stream.Bytes()
+	contentWritable := writable.CopyNew()
+
+	bm.BinaryBody.WriteTo(writable)
+
+	content := contentWritable.Bytes()
+
+	bm.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
-// ExtractFromStream extracts a BinaryMessage structure from a stream
-func (binaryMessage *BinaryMessage) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the BinaryMessage from the given readable
+func (bm *BinaryMessage) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	binaryMessage.BinaryBody, err = stream.ReadQBuffer()
+	err = bm.UserMessage.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract BinaryMessage.BinaryBody from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract BinaryMessage.UserMessage. %s", err.Error())
+	}
+
+	err = bm.ExtractHeaderFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract BinaryMessage header. %s", err.Error())
+	}
+
+	err = bm.BinaryBody.ExtractFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract BinaryMessage.BinaryBody. %s", err.Error())
 	}
 
 	return nil
 }
 
 // Copy returns a new copied instance of BinaryMessage
-func (binaryMessage *BinaryMessage) Copy() nex.StructureInterface {
+func (bm *BinaryMessage) Copy() types.RVType {
 	copied := NewBinaryMessage()
 
-	copied.SetStructureVersion(binaryMessage.StructureVersion())
-
-	copied.UserMessage = binaryMessage.UserMessage.Copy().(*UserMessage)
-	copied.SetParentType(copied.UserMessage)
-
-	copied.BinaryBody = make([]byte, len(binaryMessage.BinaryBody))
-
-	copy(copied.BinaryBody, binaryMessage.BinaryBody)
+	copied.StructureVersion = bm.StructureVersion
+	copied.UserMessage = bm.UserMessage.Copy().(*UserMessage)
+	copied.BinaryBody = bm.BinaryBody.Copy().(*types.QBuffer)
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (binaryMessage *BinaryMessage) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*BinaryMessage)
-
-	if binaryMessage.StructureVersion() != other.StructureVersion() {
+// Equals checks if the given BinaryMessage contains the same data as the current BinaryMessage
+func (bm *BinaryMessage) Equals(o types.RVType) bool {
+	if _, ok := o.(*BinaryMessage); !ok {
 		return false
 	}
 
-	if !binaryMessage.ParentType().Equals(other.ParentType()) {
+	other := o.(*BinaryMessage)
+
+	if bm.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if !bytes.Equal(binaryMessage.BinaryBody, other.BinaryBody) {
+	if !bm.UserMessage.Equals(other.UserMessage) {
 		return false
 	}
 
-	return true
+	return bm.BinaryBody.Equals(other.BinaryBody)
 }
 
-// String returns a string representation of the struct
-func (binaryMessage *BinaryMessage) String() string {
-	return binaryMessage.FormatToString(0)
+// String returns the string representation of the BinaryMessage
+func (bm *BinaryMessage) String() string {
+	return bm.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (binaryMessage *BinaryMessage) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the BinaryMessage using the provided indentation level
+func (bm *BinaryMessage) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("BinaryMessage{\n")
-	b.WriteString(fmt.Sprintf("%sParentType: %s,\n", indentationValues, binaryMessage.ParentType().FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, binaryMessage.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sBinaryBody: %x\n", indentationValues, binaryMessage.BinaryBody))
+	b.WriteString(fmt.Sprintf("%sUserMessage (parent): %s,\n", indentationValues, bm.UserMessage.FormatToString(indentationLevel+1)))
+	b.WriteString(fmt.Sprintf("%sBinaryBody: %s,\n", indentationValues, bm.BinaryBody))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -93,9 +104,10 @@ func (binaryMessage *BinaryMessage) FormatToString(indentationLevel int) string 
 
 // NewBinaryMessage returns a new BinaryMessage
 func NewBinaryMessage() *BinaryMessage {
-	binaryMessage := &BinaryMessage{}
-	binaryMessage.UserMessage = NewUserMessage()
-	binaryMessage.SetParentType(binaryMessage.UserMessage)
+	bm := &BinaryMessage{
+		UserMessage: NewUserMessage(),
+		BinaryBody:  types.NewQBuffer(nil),
+	}
 
-	return binaryMessage
+	return bm
 }

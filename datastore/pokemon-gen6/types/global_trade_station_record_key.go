@@ -1,92 +1,101 @@
-// Package types implements all the types used by the DataStore (Pokemon Gen6) protocol
+// Package types implements all the types used by the DataStore protocol
 package types
 
 import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/v2/types"
 )
 
-// GlobalTradeStationRecordKey holds data for the DataStore (Pokemon Gen6) protocol
+// GlobalTradeStationRecordKey is a type within the DataStore protocol
 type GlobalTradeStationRecordKey struct {
-	nex.Structure
-	DataID   uint64
-	Password uint64
+	types.Structure
+	DataID   *types.PrimitiveU64
+	Password *types.PrimitiveU64
 }
 
-// ExtractFromStream extracts a GlobalTradeStationRecordKey structure from a stream
-func (globalTradeStationRecordKey *GlobalTradeStationRecordKey) ExtractFromStream(stream *nex.StreamIn) error {
+// WriteTo writes the GlobalTradeStationRecordKey to the given writable
+func (gtsrk *GlobalTradeStationRecordKey) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
+
+	gtsrk.DataID.WriteTo(writable)
+	gtsrk.Password.WriteTo(writable)
+
+	content := contentWritable.Bytes()
+
+	gtsrk.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
+}
+
+// ExtractFrom extracts the GlobalTradeStationRecordKey from the given readable
+func (gtsrk *GlobalTradeStationRecordKey) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	globalTradeStationRecordKey.DataID, err = stream.ReadUInt64LE()
+	err = gtsrk.ExtractHeaderFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract GlobalTradeStationRecordKey.DataID from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract GlobalTradeStationRecordKey header. %s", err.Error())
 	}
 
-	globalTradeStationRecordKey.Password, err = stream.ReadUInt64LE()
+	err = gtsrk.DataID.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract GlobalTradeStationRecordKey.Password from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract GlobalTradeStationRecordKey.DataID. %s", err.Error())
+	}
+
+	err = gtsrk.Password.ExtractFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract GlobalTradeStationRecordKey.Password. %s", err.Error())
 	}
 
 	return nil
 }
 
-// Bytes encodes the GlobalTradeStationRecordKey and returns a byte array
-func (globalTradeStationRecordKey *GlobalTradeStationRecordKey) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt64LE(globalTradeStationRecordKey.DataID)
-	stream.WriteUInt64LE(globalTradeStationRecordKey.Password)
-
-	return stream.Bytes()
-}
-
 // Copy returns a new copied instance of GlobalTradeStationRecordKey
-func (globalTradeStationRecordKey *GlobalTradeStationRecordKey) Copy() nex.StructureInterface {
+func (gtsrk *GlobalTradeStationRecordKey) Copy() types.RVType {
 	copied := NewGlobalTradeStationRecordKey()
 
-	copied.SetStructureVersion(globalTradeStationRecordKey.StructureVersion())
-
-	copied.DataID = globalTradeStationRecordKey.DataID
-	copied.Password = globalTradeStationRecordKey.Password
+	copied.StructureVersion = gtsrk.StructureVersion
+	copied.DataID = gtsrk.DataID.Copy().(*types.PrimitiveU64)
+	copied.Password = gtsrk.Password.Copy().(*types.PrimitiveU64)
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (globalTradeStationRecordKey *GlobalTradeStationRecordKey) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*GlobalTradeStationRecordKey)
-
-	if globalTradeStationRecordKey.StructureVersion() != other.StructureVersion() {
+// Equals checks if the given GlobalTradeStationRecordKey contains the same data as the current GlobalTradeStationRecordKey
+func (gtsrk *GlobalTradeStationRecordKey) Equals(o types.RVType) bool {
+	if _, ok := o.(*GlobalTradeStationRecordKey); !ok {
 		return false
 	}
 
-	if globalTradeStationRecordKey.DataID != other.DataID {
+	other := o.(*GlobalTradeStationRecordKey)
+
+	if gtsrk.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if globalTradeStationRecordKey.Password != other.Password {
+	if !gtsrk.DataID.Equals(other.DataID) {
 		return false
 	}
 
-	return true
+	return gtsrk.Password.Equals(other.Password)
 }
 
-// String returns a string representation of the struct
-func (globalTradeStationRecordKey *GlobalTradeStationRecordKey) String() string {
-	return globalTradeStationRecordKey.FormatToString(0)
+// String returns the string representation of the GlobalTradeStationRecordKey
+func (gtsrk *GlobalTradeStationRecordKey) String() string {
+	return gtsrk.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (globalTradeStationRecordKey *GlobalTradeStationRecordKey) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the GlobalTradeStationRecordKey using the provided indentation level
+func (gtsrk *GlobalTradeStationRecordKey) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("GlobalTradeStationRecordKey{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, globalTradeStationRecordKey.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sDataID: %d,\n", indentationValues, globalTradeStationRecordKey.DataID))
-	b.WriteString(fmt.Sprintf("%sPassword: %d,\n", indentationValues, globalTradeStationRecordKey.Password))
+	b.WriteString(fmt.Sprintf("%sDataID: %s,\n", indentationValues, gtsrk.DataID))
+	b.WriteString(fmt.Sprintf("%sPassword: %s,\n", indentationValues, gtsrk.Password))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -94,5 +103,10 @@ func (globalTradeStationRecordKey *GlobalTradeStationRecordKey) FormatToString(i
 
 // NewGlobalTradeStationRecordKey returns a new GlobalTradeStationRecordKey
 func NewGlobalTradeStationRecordKey() *GlobalTradeStationRecordKey {
-	return &GlobalTradeStationRecordKey{}
+	gtsrk := &GlobalTradeStationRecordKey{
+		DataID:   types.NewPrimitiveU64(0),
+		Password: types.NewPrimitiveU64(0),
+	}
+
+	return gtsrk
 }

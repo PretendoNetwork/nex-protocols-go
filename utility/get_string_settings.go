@@ -4,44 +4,44 @@ package protocol
 import (
 	"fmt"
 
-	nex "github.com/PretendoNetwork/nex-go"
-	"github.com/PretendoNetwork/nex-protocols-go/globals"
+	nex "github.com/PretendoNetwork/nex-go/v2"
+	"github.com/PretendoNetwork/nex-go/v2/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
 )
 
-// GetStringSettings sets the GetStringSettings handler function
-func (protocol *Protocol) GetStringSettings(handler func(err error, packet nex.PacketInterface, callID uint32, stringSettingIndex uint32) uint32) {
-	protocol.getStringSettingsHandler = handler
-}
-
 func (protocol *Protocol) handleGetStringSettings(packet nex.PacketInterface) {
-	var errorCode uint32
+	if protocol.GetStringSettings == nil {
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "Utility::GetStringSettings not implemented")
 
-	if protocol.getStringSettingsHandler == nil {
-		globals.Logger.Warning("Utility::GetStringSettings not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
+	callID := request.CallID
+	parameters := request.Parameters
+	endpoint := packet.Sender().Endpoint()
+	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	callID := request.CallID()
+	stringSettingIndex := types.NewPrimitiveU32(0)
 
-	parameters := request.Parameters()
-
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
-
-	stringSettingIndex, err := parametersStream.ReadUInt32LE()
+	err := stringSettingIndex.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.getStringSettingsHandler(fmt.Errorf("Failed to read stringSettingIndex from parameters. %s", err.Error()), packet, callID, 0)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.GetStringSettings(fmt.Errorf("Failed to read stringSettingIndex from parameters. %s", err.Error()), packet, callID, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	errorCode = protocol.getStringSettingsHandler(nil, packet, callID, stringSettingIndex)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.GetStringSettings(nil, packet, callID, stringSettingIndex)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

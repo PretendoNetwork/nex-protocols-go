@@ -2,143 +2,152 @@
 package types
 
 import (
-	"bytes"
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/v2/types"
 )
 
-// RankingScoreData holds general purpose notification data
+// RankingScoreData is a type within the Ranking protocol
 type RankingScoreData struct {
-	nex.Structure
-	Category   uint32
-	Score      uint32
-	OrderBy    uint8
-	UpdateMode uint8
-	Groups     []byte
-	Param      uint64
+	types.Structure
+	Category   *types.PrimitiveU32
+	Score      *types.PrimitiveU32
+	OrderBy    *types.PrimitiveU8
+	UpdateMode *types.PrimitiveU8
+	Groups     *types.Buffer
+	Param      *types.PrimitiveU64
 }
 
-// ExtractFromStream extracts a RankingScoreData structure from a stream
-func (rankingScoreData *RankingScoreData) ExtractFromStream(stream *nex.StreamIn) error {
+// WriteTo writes the RankingScoreData to the given writable
+func (rsd *RankingScoreData) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
+
+	rsd.Category.WriteTo(writable)
+	rsd.Score.WriteTo(writable)
+	rsd.OrderBy.WriteTo(writable)
+	rsd.UpdateMode.WriteTo(writable)
+	rsd.Groups.WriteTo(writable)
+	rsd.Param.WriteTo(writable)
+
+	content := contentWritable.Bytes()
+
+	rsd.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
+}
+
+// ExtractFrom extracts the RankingScoreData from the given readable
+func (rsd *RankingScoreData) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	rankingScoreData.Category, err = stream.ReadUInt32LE()
+	err = rsd.ExtractHeaderFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract RankingScoreData.Category from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract RankingScoreData header. %s", err.Error())
 	}
 
-	rankingScoreData.Score, err = stream.ReadUInt32LE()
+	err = rsd.Category.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract RankingScoreData.Score from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract RankingScoreData.Category. %s", err.Error())
 	}
 
-	rankingScoreData.OrderBy, err = stream.ReadUInt8()
+	err = rsd.Score.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract RankingScoreData.OrderBy from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract RankingScoreData.Score. %s", err.Error())
 	}
 
-	rankingScoreData.UpdateMode, err = stream.ReadUInt8()
+	err = rsd.OrderBy.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract RankingScoreData.UpdateMode from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract RankingScoreData.OrderBy. %s", err.Error())
 	}
 
-	rankingScoreData.Groups, err = stream.ReadBuffer()
+	err = rsd.UpdateMode.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract RankingScoreData.Groups from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract RankingScoreData.UpdateMode. %s", err.Error())
 	}
 
-	rankingScoreData.Param, err = stream.ReadUInt64LE()
+	err = rsd.Groups.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract RankingScoreData.Param from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract RankingScoreData.Groups. %s", err.Error())
+	}
+
+	err = rsd.Param.ExtractFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract RankingScoreData.Param. %s", err.Error())
 	}
 
 	return nil
 }
 
-// Bytes encodes the RankingScoreData and returns a byte array
-func (rankingScoreData *RankingScoreData) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt32LE(rankingScoreData.Category)
-	stream.WriteUInt32LE(rankingScoreData.Score)
-	stream.WriteUInt8(rankingScoreData.OrderBy)
-	stream.WriteUInt8(rankingScoreData.UpdateMode)
-	stream.WriteBuffer(rankingScoreData.Groups)
-	stream.WriteUInt64LE(rankingScoreData.Param)
-
-	return stream.Bytes()
-}
-
 // Copy returns a new copied instance of RankingScoreData
-func (rankingScoreData *RankingScoreData) Copy() nex.StructureInterface {
+func (rsd *RankingScoreData) Copy() types.RVType {
 	copied := NewRankingScoreData()
 
-	copied.SetStructureVersion(rankingScoreData.StructureVersion())
-
-	copied.Category = rankingScoreData.Category
-	copied.Score = rankingScoreData.Score
-	copied.OrderBy = rankingScoreData.OrderBy
-	copied.UpdateMode = rankingScoreData.UpdateMode
-	copied.Groups = make([]byte, len(rankingScoreData.Groups))
-
-	copy(copied.Groups, rankingScoreData.Groups)
-
-	copied.Param = rankingScoreData.Param
+	copied.StructureVersion = rsd.StructureVersion
+	copied.Category = rsd.Category.Copy().(*types.PrimitiveU32)
+	copied.Score = rsd.Score.Copy().(*types.PrimitiveU32)
+	copied.OrderBy = rsd.OrderBy.Copy().(*types.PrimitiveU8)
+	copied.UpdateMode = rsd.UpdateMode.Copy().(*types.PrimitiveU8)
+	copied.Groups = rsd.Groups.Copy().(*types.Buffer)
+	copied.Param = rsd.Param.Copy().(*types.PrimitiveU64)
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (rankingScoreData *RankingScoreData) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*RankingScoreData)
-
-	if rankingScoreData.StructureVersion() != other.StructureVersion() {
+// Equals checks if the given RankingScoreData contains the same data as the current RankingScoreData
+func (rsd *RankingScoreData) Equals(o types.RVType) bool {
+	if _, ok := o.(*RankingScoreData); !ok {
 		return false
 	}
 
-	if rankingScoreData.Category != other.Category {
+	other := o.(*RankingScoreData)
+
+	if rsd.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if rankingScoreData.Score != other.Score {
+	if !rsd.Category.Equals(other.Category) {
 		return false
 	}
 
-	if rankingScoreData.OrderBy != other.OrderBy {
+	if !rsd.Score.Equals(other.Score) {
 		return false
 	}
 
-	if rankingScoreData.UpdateMode != other.UpdateMode {
+	if !rsd.OrderBy.Equals(other.OrderBy) {
 		return false
 	}
 
-	if !bytes.Equal(rankingScoreData.Groups, other.Groups) {
+	if !rsd.UpdateMode.Equals(other.UpdateMode) {
 		return false
 	}
 
-	return rankingScoreData.Param == other.Param
+	if !rsd.Groups.Equals(other.Groups) {
+		return false
+	}
+
+	return rsd.Param.Equals(other.Param)
 }
 
-// String returns a string representation of the struct
-func (rankingScoreData *RankingScoreData) String() string {
-	return rankingScoreData.FormatToString(0)
+// String returns the string representation of the RankingScoreData
+func (rsd *RankingScoreData) String() string {
+	return rsd.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (rankingScoreData *RankingScoreData) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the RankingScoreData using the provided indentation level
+func (rsd *RankingScoreData) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("RankingScoreData{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, rankingScoreData.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sCategory: %d,\n", indentationValues, rankingScoreData.Category))
-	b.WriteString(fmt.Sprintf("%sScore: %d,\n", indentationValues, rankingScoreData.Score))
-	b.WriteString(fmt.Sprintf("%sOrderBy: %d,\n", indentationValues, rankingScoreData.OrderBy))
-	b.WriteString(fmt.Sprintf("%sUpdateMode: %d,\n", indentationValues, rankingScoreData.UpdateMode))
-	b.WriteString(fmt.Sprintf("%sGroups: %x,\n", indentationValues, rankingScoreData.Groups))
-	b.WriteString(fmt.Sprintf("%sParam: %d\n", indentationValues, rankingScoreData.Param))
+	b.WriteString(fmt.Sprintf("%sCategory: %s,\n", indentationValues, rsd.Category))
+	b.WriteString(fmt.Sprintf("%sScore: %s,\n", indentationValues, rsd.Score))
+	b.WriteString(fmt.Sprintf("%sOrderBy: %s,\n", indentationValues, rsd.OrderBy))
+	b.WriteString(fmt.Sprintf("%sUpdateMode: %s,\n", indentationValues, rsd.UpdateMode))
+	b.WriteString(fmt.Sprintf("%sGroups: %s,\n", indentationValues, rsd.Groups))
+	b.WriteString(fmt.Sprintf("%sParam: %s,\n", indentationValues, rsd.Param))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -146,5 +155,14 @@ func (rankingScoreData *RankingScoreData) FormatToString(indentationLevel int) s
 
 // NewRankingScoreData returns a new RankingScoreData
 func NewRankingScoreData() *RankingScoreData {
-	return &RankingScoreData{}
+	rsd := &RankingScoreData{
+		Category:   types.NewPrimitiveU32(0),
+		Score:      types.NewPrimitiveU32(0),
+		OrderBy:    types.NewPrimitiveU8(0),
+		UpdateMode: types.NewPrimitiveU8(0),
+		Groups:     types.NewBuffer(nil),
+		Param:      types.NewPrimitiveU64(0),
+	}
+
+	return rsd
 }

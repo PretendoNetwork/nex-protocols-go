@@ -4,63 +4,68 @@ package protocol
 import (
 	"fmt"
 
-	nex "github.com/PretendoNetwork/nex-go"
-	"github.com/PretendoNetwork/nex-protocols-go/globals"
+	nex "github.com/PretendoNetwork/nex-go/v2"
+	"github.com/PretendoNetwork/nex-go/v2/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
 )
 
-// ModifyCurrentGameAttribute sets the ModifyCurrentGameAttribute handler function
-func (protocol *Protocol) ModifyCurrentGameAttribute(handler func(err error, packet nex.PacketInterface, callID uint32, gid uint32, attribIndex uint32, newValue uint32) uint32) {
-	protocol.modifyCurrentGameAttributeHandler = handler
-}
-
 func (protocol *Protocol) handleModifyCurrentGameAttribute(packet nex.PacketInterface) {
-	var errorCode uint32
+	if protocol.ModifyCurrentGameAttribute == nil {
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "MatchmakeExtension::ModifyCurrentGameAttribute not implemented")
 
-	if protocol.modifyCurrentGameAttributeHandler == nil {
-		globals.Logger.Warning("MatchmakeExtension::ModifyCurrentGameAttribute not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
+	callID := request.CallID
+	parameters := request.Parameters
+	endpoint := packet.Sender().Endpoint()
+	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	callID := request.CallID()
-	parameters := request.Parameters()
+	gid := types.NewPrimitiveU32(0)
+	attribIndex := types.NewPrimitiveU32(0)
+	newValue := types.NewPrimitiveU32(0)
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+	var err error
 
-	gid, err := parametersStream.ReadUInt32LE()
+	err = gid.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.modifyCurrentGameAttributeHandler(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), packet, callID, 0, 0, 0)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.ModifyCurrentGameAttribute(fmt.Errorf("Failed to read gid from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	attribIndex, err := parametersStream.ReadUInt32LE()
+	err = attribIndex.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.modifyCurrentGameAttributeHandler(fmt.Errorf("Failed to read attribIndex from parameters. %s", err.Error()), packet, callID, 0, 0, 0)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.ModifyCurrentGameAttribute(fmt.Errorf("Failed to read attribIndex from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	newValue, err := parametersStream.ReadUInt32LE()
+	err = newValue.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.modifyCurrentGameAttributeHandler(fmt.Errorf("Failed to read newValue from parameters. %s", err.Error()), packet, callID, 0, 0, 0)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.ModifyCurrentGameAttribute(fmt.Errorf("Failed to read newValue from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	errorCode = protocol.modifyCurrentGameAttributeHandler(nil, packet, callID, gid, attribIndex, newValue)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.ModifyCurrentGameAttribute(nil, packet, callID, gid, attribIndex, newValue)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

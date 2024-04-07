@@ -4,44 +4,46 @@ package protocol
 import (
 	"fmt"
 
-	nex "github.com/PretendoNetwork/nex-go"
-	datastore_super_smash_bros_4_types "github.com/PretendoNetwork/nex-protocols-go/datastore/super-smash-bros-4/types"
-	"github.com/PretendoNetwork/nex-protocols-go/globals"
+	nex "github.com/PretendoNetwork/nex-go/v2"
+	"github.com/PretendoNetwork/nex-go/v2/types"
+	datastore_super_smash_bros_4_types "github.com/PretendoNetwork/nex-protocols-go/v2/datastore/super-smash-bros-4/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
 )
 
-// PostFightingPowerScore sets the PostFightingPowerScore handler function
-func (protocol *Protocol) PostFightingPowerScore(handler func(err error, packet nex.PacketInterface, callID uint32, params []*datastore_super_smash_bros_4_types.DataStorePostFightingPowerScoreParam) uint32) {
-	protocol.postFightingPowerScoreHandler = handler
-}
-
 func (protocol *Protocol) handlePostFightingPowerScore(packet nex.PacketInterface) {
-	var errorCode uint32
+	if protocol.PostFightingPowerScore == nil {
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "DataStoreSuperSmashBros4::PostFightingPowerScore not implemented")
 
-	if protocol.postFightingPowerScoreHandler == nil {
-		globals.Logger.Warning("DataStoreSuperSmashBros4::PostFightingPowerScore not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
+	callID := request.CallID
+	parameters := request.Parameters
+	endpoint := packet.Sender().Endpoint()
+	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	callID := request.CallID()
-	parameters := request.Parameters()
+	params := types.NewList[*datastore_super_smash_bros_4_types.DataStorePostFightingPowerScoreParam]()
+	params.Type = datastore_super_smash_bros_4_types.NewDataStorePostFightingPowerScoreParam()
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
-
-	params, err := parametersStream.ReadListStructure(datastore_super_smash_bros_4_types.NewDataStorePostFightingPowerScoreParam())
+	err := params.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.postFightingPowerScoreHandler(fmt.Errorf("Failed to read params from parameters. %s", err.Error()), packet, callID, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.PostFightingPowerScore(fmt.Errorf("Failed to read params from parameters. %s", err.Error()), packet, callID, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	errorCode = protocol.postFightingPowerScoreHandler(nil, packet, callID, params.([]*datastore_super_smash_bros_4_types.DataStorePostFightingPowerScoreParam))
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.PostFightingPowerScore(nil, packet, callID, params)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

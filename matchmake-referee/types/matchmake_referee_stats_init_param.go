@@ -1,39 +1,57 @@
-// Package types implements all the types used by the Matchmake Referee protocol
+// Package types implements all the types used by the MatchmakeReferee protocol
 package types
 
 import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/v2/types"
 )
 
-// MatchmakeRefereeStatsInitParam contains the results of a round
+// MatchmakeRefereeStatsInitParam is a type within the MatchmakeReferee protocol
 type MatchmakeRefereeStatsInitParam struct {
-	nex.Structure
-	*nex.Data
-	Category           uint32
-	InitialRatingValue uint32
+	types.Structure
+	*types.Data
+	Category           *types.PrimitiveU32
+	InitialRatingValue *types.PrimitiveU32
 }
 
-// Bytes encodes the MatchmakeRefereeStatsInitParam and returns a byte array
-func (matchmakeRefereeStatsInitParam *MatchmakeRefereeStatsInitParam) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt32LE(matchmakeRefereeStatsInitParam.Category)
-	stream.WriteUInt32LE(matchmakeRefereeStatsInitParam.InitialRatingValue)
+// WriteTo writes the MatchmakeRefereeStatsInitParam to the given writable
+func (mrsip *MatchmakeRefereeStatsInitParam) WriteTo(writable types.Writable) {
+	mrsip.Data.WriteTo(writable)
 
-	return stream.Bytes()
+	contentWritable := writable.CopyNew()
+
+	mrsip.Category.WriteTo(writable)
+	mrsip.InitialRatingValue.WriteTo(writable)
+
+	content := contentWritable.Bytes()
+
+	mrsip.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
-// ExtractFromStream extracts a MatchmakeRefereeStatsInitParam structure from a stream
-func (matchmakeRefereeStatsInitParam *MatchmakeRefereeStatsInitParam) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the MatchmakeRefereeStatsInitParam from the given readable
+func (mrsip *MatchmakeRefereeStatsInitParam) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	matchmakeRefereeStatsInitParam.Category, err = stream.ReadUInt32LE()
+	err = mrsip.Data.ExtractFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract MatchmakeRefereeStatsInitParam.Data. %s", err.Error())
+	}
+
+	err = mrsip.ExtractHeaderFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract MatchmakeRefereeStatsInitParam header. %s", err.Error())
+	}
+
+	err = mrsip.Category.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract MatchmakeRefereeStatsInitParam.Category. %s", err.Error())
 	}
 
-	matchmakeRefereeStatsInitParam.InitialRatingValue, err = stream.ReadUInt32LE()
+	err = mrsip.InitialRatingValue.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract MatchmakeRefereeStatsInitParam.InitialRatingValue. %s", err.Error())
 	}
@@ -42,59 +60,56 @@ func (matchmakeRefereeStatsInitParam *MatchmakeRefereeStatsInitParam) ExtractFro
 }
 
 // Copy returns a new copied instance of MatchmakeRefereeStatsInitParam
-func (matchmakeRefereeStatsInitParam *MatchmakeRefereeStatsInitParam) Copy() nex.StructureInterface {
+func (mrsip *MatchmakeRefereeStatsInitParam) Copy() types.RVType {
 	copied := NewMatchmakeRefereeStatsInitParam()
 
-	copied.SetStructureVersion(matchmakeRefereeStatsInitParam.StructureVersion())
-
-	copied.Data = matchmakeRefereeStatsInitParam.ParentType().Copy().(*nex.Data)
-	copied.SetParentType(copied.Data)
-
-	copied.Category = matchmakeRefereeStatsInitParam.Category
-	copied.InitialRatingValue = matchmakeRefereeStatsInitParam.InitialRatingValue
+	copied.StructureVersion = mrsip.StructureVersion
+	copied.Data = mrsip.Data.Copy().(*types.Data)
+	copied.Category = mrsip.Category.Copy().(*types.PrimitiveU32)
+	copied.InitialRatingValue = mrsip.InitialRatingValue.Copy().(*types.PrimitiveU32)
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (matchmakeRefereeStatsInitParam *MatchmakeRefereeStatsInitParam) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*MatchmakeRefereeStatsInitParam)
-
-	if matchmakeRefereeStatsInitParam.StructureVersion() != other.StructureVersion() {
+// Equals checks if the given MatchmakeRefereeStatsInitParam contains the same data as the current MatchmakeRefereeStatsInitParam
+func (mrsip *MatchmakeRefereeStatsInitParam) Equals(o types.RVType) bool {
+	if _, ok := o.(*MatchmakeRefereeStatsInitParam); !ok {
 		return false
 	}
 
-	if !matchmakeRefereeStatsInitParam.ParentType().Equals(other.ParentType()) {
+	other := o.(*MatchmakeRefereeStatsInitParam)
+
+	if mrsip.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if matchmakeRefereeStatsInitParam.Category != other.Category {
+	if !mrsip.Data.Equals(other.Data) {
 		return false
 	}
 
-	if matchmakeRefereeStatsInitParam.InitialRatingValue != other.InitialRatingValue {
+	if !mrsip.Category.Equals(other.Category) {
 		return false
 	}
 
-	return true
+	return mrsip.InitialRatingValue.Equals(other.InitialRatingValue)
 }
 
-// String returns a string representation of the struct
-func (matchmakeRefereeStatsInitParam *MatchmakeRefereeStatsInitParam) String() string {
-	return matchmakeRefereeStatsInitParam.FormatToString(0)
+// String returns the string representation of the MatchmakeRefereeStatsInitParam
+func (mrsip *MatchmakeRefereeStatsInitParam) String() string {
+	return mrsip.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (matchmakeRefereeStatsInitParam *MatchmakeRefereeStatsInitParam) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the MatchmakeRefereeStatsInitParam using the provided indentation level
+func (mrsip *MatchmakeRefereeStatsInitParam) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("MatchmakeRefereeStatsInitParam{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, matchmakeRefereeStatsInitParam.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sCategory: %d,\n", indentationValues, matchmakeRefereeStatsInitParam.Category))
-	b.WriteString(fmt.Sprintf("%sInitialRatingValue: %d,\n", indentationValues, matchmakeRefereeStatsInitParam.InitialRatingValue))
+	b.WriteString(fmt.Sprintf("%sData (parent): %s,\n", indentationValues, mrsip.Data.FormatToString(indentationLevel+1)))
+	b.WriteString(fmt.Sprintf("%sCategory: %s,\n", indentationValues, mrsip.Category))
+	b.WriteString(fmt.Sprintf("%sInitialRatingValue: %s,\n", indentationValues, mrsip.InitialRatingValue))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -102,5 +117,11 @@ func (matchmakeRefereeStatsInitParam *MatchmakeRefereeStatsInitParam) FormatToSt
 
 // NewMatchmakeRefereeStatsInitParam returns a new MatchmakeRefereeStatsInitParam
 func NewMatchmakeRefereeStatsInitParam() *MatchmakeRefereeStatsInitParam {
-	return &MatchmakeRefereeStatsInitParam{}
+	mrsip := &MatchmakeRefereeStatsInitParam{
+		Data:               types.NewData(),
+		Category:           types.NewPrimitiveU32(0),
+		InitialRatingValue: types.NewPrimitiveU32(0),
+	}
+
+	return mrsip
 }

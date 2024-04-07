@@ -4,44 +4,46 @@ package protocol
 import (
 	"fmt"
 
-	nex "github.com/PretendoNetwork/nex-go"
-	"github.com/PretendoNetwork/nex-protocols-go/globals"
-	ranking2_types "github.com/PretendoNetwork/nex-protocols-go/ranking2/types"
+	nex "github.com/PretendoNetwork/nex-go/v2"
+	"github.com/PretendoNetwork/nex-go/v2/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
+	ranking2_types "github.com/PretendoNetwork/nex-protocols-go/v2/ranking2/types"
 )
 
-// GetRankingCharts sets the GetRankingCharts handler function
-func (protocol *Protocol) GetRankingCharts(handler func(err error, packet nex.PacketInterface, callID uint32, infoArray []*ranking2_types.Ranking2ChartInfoInput) uint32) {
-	protocol.getRankingChartsHandler = handler
-}
-
 func (protocol *Protocol) handleGetRankingCharts(packet nex.PacketInterface) {
-	var errorCode uint32
+	if protocol.GetRankingCharts == nil {
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "Ranking2::GetRankingCharts not implemented")
 
-	if protocol.getRankingChartsHandler == nil {
-		globals.Logger.Warning("Ranking2::GetRankingCharts not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
+	callID := request.CallID
+	parameters := request.Parameters
+	endpoint := packet.Sender().Endpoint()
+	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	callID := request.CallID()
-	parameters := request.Parameters()
+	infoArray := types.NewList[*ranking2_types.Ranking2ChartInfoInput]()
+	infoArray.Type = ranking2_types.NewRanking2ChartInfoInput()
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
-
-	infoArray, err := parametersStream.ReadListStructure(ranking2_types.NewRanking2ChartInfoInput())
+	err := infoArray.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.getRankingChartsHandler(fmt.Errorf("Failed to read infoArray from parameters. %s", err.Error()), packet, callID, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.GetRankingCharts(fmt.Errorf("Failed to read infoArray from parameters. %s", err.Error()), packet, callID, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	errorCode = protocol.getRankingChartsHandler(nil, packet, callID, infoArray.([]*ranking2_types.Ranking2ChartInfoInput))
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.GetRankingCharts(nil, packet, callID, infoArray)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

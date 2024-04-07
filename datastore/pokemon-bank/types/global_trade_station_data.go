@@ -1,138 +1,140 @@
-// Package types implements all the types used by the DataStore (Pokemon Bank) protocol
+// Package types implements all the types used by the DataStore protocol
 package types
 
 import (
-	"bytes"
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/v2/types"
 )
 
-// GlobalTradeStationData holds data for the DataStore (Pokemon Bank) protocol
+// GlobalTradeStationData is a type within the DataStore protocol
 type GlobalTradeStationData struct {
-	nex.Structure
-	DataID      uint64
-	OwnerID     uint32
-	UpdatedTime *nex.DateTime
-	IndexData   []byte
-	Version     uint32
+	types.Structure
+	DataID      *types.PrimitiveU64
+	OwnerID     *types.PID
+	UpdatedTime *types.DateTime
+	IndexData   *types.QBuffer
+	Version     *types.PrimitiveU32
 }
 
-// ExtractFromStream extracts a GlobalTradeStationData structure from a stream
-func (globalTradeStationData *GlobalTradeStationData) ExtractFromStream(stream *nex.StreamIn) error {
+// WriteTo writes the GlobalTradeStationData to the given writable
+func (gtsd *GlobalTradeStationData) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
+
+	gtsd.DataID.WriteTo(writable)
+	gtsd.OwnerID.WriteTo(writable)
+	gtsd.UpdatedTime.WriteTo(writable)
+	gtsd.IndexData.WriteTo(writable)
+	gtsd.Version.WriteTo(writable)
+
+	content := contentWritable.Bytes()
+
+	gtsd.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
+}
+
+// ExtractFrom extracts the GlobalTradeStationData from the given readable
+func (gtsd *GlobalTradeStationData) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	globalTradeStationData.DataID, err = stream.ReadUInt64LE()
+	err = gtsd.ExtractHeaderFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract GlobalTradeStationData.DataID from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract GlobalTradeStationData header. %s", err.Error())
 	}
 
-	globalTradeStationData.OwnerID, err = stream.ReadUInt32LE()
+	err = gtsd.DataID.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract GlobalTradeStationData.OwnerID from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract GlobalTradeStationData.DataID. %s", err.Error())
 	}
 
-	globalTradeStationData.UpdatedTime, err = stream.ReadDateTime()
+	err = gtsd.OwnerID.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract GlobalTradeStationData.UpdatedTime from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract GlobalTradeStationData.OwnerID. %s", err.Error())
 	}
 
-	globalTradeStationData.IndexData, err = stream.ReadQBuffer()
+	err = gtsd.UpdatedTime.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract GlobalTradeStationData.IndexData from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract GlobalTradeStationData.UpdatedTime. %s", err.Error())
 	}
 
-	globalTradeStationData.Version, err = stream.ReadUInt32LE()
+	err = gtsd.IndexData.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract GlobalTradeStationData.Version from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract GlobalTradeStationData.IndexData. %s", err.Error())
+	}
+
+	err = gtsd.Version.ExtractFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract GlobalTradeStationData.Version. %s", err.Error())
 	}
 
 	return nil
 }
 
-// Bytes encodes the GlobalTradeStationData and returns a byte array
-func (globalTradeStationData *GlobalTradeStationData) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt64LE(globalTradeStationData.DataID)
-	stream.WriteUInt32LE(globalTradeStationData.OwnerID)
-	stream.WriteDateTime(globalTradeStationData.UpdatedTime)
-	stream.WriteQBuffer(globalTradeStationData.IndexData)
-	stream.WriteUInt32LE(globalTradeStationData.Version)
-
-	return stream.Bytes()
-}
-
 // Copy returns a new copied instance of GlobalTradeStationData
-func (globalTradeStationData *GlobalTradeStationData) Copy() nex.StructureInterface {
+func (gtsd *GlobalTradeStationData) Copy() types.RVType {
 	copied := NewGlobalTradeStationData()
 
-	copied.SetStructureVersion(globalTradeStationData.StructureVersion())
-
-	copied.DataID = globalTradeStationData.DataID
-	copied.OwnerID = globalTradeStationData.OwnerID
-	copied.UpdatedTime = globalTradeStationData.UpdatedTime.Copy()
-	copied.IndexData = globalTradeStationData.IndexData
-	copied.Version = globalTradeStationData.Version
+	copied.StructureVersion = gtsd.StructureVersion
+	copied.DataID = gtsd.DataID.Copy().(*types.PrimitiveU64)
+	copied.OwnerID = gtsd.OwnerID.Copy().(*types.PID)
+	copied.UpdatedTime = gtsd.UpdatedTime.Copy().(*types.DateTime)
+	copied.IndexData = gtsd.IndexData.Copy().(*types.QBuffer)
+	copied.Version = gtsd.Version.Copy().(*types.PrimitiveU32)
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (globalTradeStationData *GlobalTradeStationData) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*GlobalTradeStationData)
-
-	if globalTradeStationData.StructureVersion() != other.StructureVersion() {
+// Equals checks if the given GlobalTradeStationData contains the same data as the current GlobalTradeStationData
+func (gtsd *GlobalTradeStationData) Equals(o types.RVType) bool {
+	if _, ok := o.(*GlobalTradeStationData); !ok {
 		return false
 	}
 
-	if globalTradeStationData.DataID != other.DataID {
+	other := o.(*GlobalTradeStationData)
+
+	if gtsd.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if globalTradeStationData.OwnerID != other.OwnerID {
+	if !gtsd.DataID.Equals(other.DataID) {
 		return false
 	}
 
-	if !globalTradeStationData.UpdatedTime.Equals(other.UpdatedTime) {
+	if !gtsd.OwnerID.Equals(other.OwnerID) {
 		return false
 	}
 
-	if !bytes.Equal(globalTradeStationData.IndexData, other.IndexData) {
+	if !gtsd.UpdatedTime.Equals(other.UpdatedTime) {
 		return false
 	}
 
-	if globalTradeStationData.Version != other.Version {
+	if !gtsd.IndexData.Equals(other.IndexData) {
 		return false
 	}
 
-	return true
+	return gtsd.Version.Equals(other.Version)
 }
 
-// String returns a string representation of the struct
-func (globalTradeStationData *GlobalTradeStationData) String() string {
-	return globalTradeStationData.FormatToString(0)
+// String returns the string representation of the GlobalTradeStationData
+func (gtsd *GlobalTradeStationData) String() string {
+	return gtsd.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (globalTradeStationData *GlobalTradeStationData) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the GlobalTradeStationData using the provided indentation level
+func (gtsd *GlobalTradeStationData) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("GlobalTradeStationData{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, globalTradeStationData.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sDataID: %d,\n", indentationValues, globalTradeStationData.DataID))
-	b.WriteString(fmt.Sprintf("%sOwnerID: %d,\n", indentationValues, globalTradeStationData.OwnerID))
-
-	if globalTradeStationData.UpdatedTime != nil {
-		b.WriteString(fmt.Sprintf("%sUpdatedTime: %s\n", indentationValues, globalTradeStationData.UpdatedTime.FormatToString(indentationLevel+1)))
-	} else {
-		b.WriteString(fmt.Sprintf("%sUpdatedTime: nil\n", indentationValues))
-	}
-
-	b.WriteString(fmt.Sprintf("%sIndexData: %x,\n", indentationValues, globalTradeStationData.IndexData))
-	b.WriteString(fmt.Sprintf("%sVersion: %d,\n", indentationValues, globalTradeStationData.Version))
+	b.WriteString(fmt.Sprintf("%sDataID: %s,\n", indentationValues, gtsd.DataID))
+	b.WriteString(fmt.Sprintf("%sOwnerID: %s,\n", indentationValues, gtsd.OwnerID.FormatToString(indentationLevel+1)))
+	b.WriteString(fmt.Sprintf("%sUpdatedTime: %s,\n", indentationValues, gtsd.UpdatedTime.FormatToString(indentationLevel+1)))
+	b.WriteString(fmt.Sprintf("%sIndexData: %s,\n", indentationValues, gtsd.IndexData))
+	b.WriteString(fmt.Sprintf("%sVersion: %s,\n", indentationValues, gtsd.Version))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -140,5 +142,13 @@ func (globalTradeStationData *GlobalTradeStationData) FormatToString(indentation
 
 // NewGlobalTradeStationData returns a new GlobalTradeStationData
 func NewGlobalTradeStationData() *GlobalTradeStationData {
-	return &GlobalTradeStationData{}
+	gtsd := &GlobalTradeStationData{
+		DataID:      types.NewPrimitiveU64(0),
+		OwnerID:     types.NewPID(0),
+		UpdatedTime: types.NewDateTime(0),
+		IndexData:   types.NewQBuffer(nil),
+		Version:     types.NewPrimitiveU32(0),
+	}
+
+	return gtsd
 }

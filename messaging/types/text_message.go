@@ -1,88 +1,102 @@
-// Package types implements all the types used by the Message Delivery protocol
+// Package types implements all the types used by the MessageDelivery protocol
 package types
 
 import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/v2/types"
 )
 
-// TextMessage is a data structure used by the Message Delivery protocol
+// TextMessage is a type within the MessageDelivery protocol
 type TextMessage struct {
-	nex.Structure
+	types.Structure
 	*UserMessage
-	StrTextBody string
+	StrTextBody *types.String
 }
 
-// Bytes encodes the TextMessage and returns a byte array
-func (textMessage *TextMessage) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteString(textMessage.StrTextBody)
+// WriteTo writes the TextMessage to the given writable
+func (tm *TextMessage) WriteTo(writable types.Writable) {
+	tm.UserMessage.WriteTo(writable)
 
-	return stream.Bytes()
+	contentWritable := writable.CopyNew()
+
+	tm.StrTextBody.WriteTo(writable)
+
+	content := contentWritable.Bytes()
+
+	tm.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
-// ExtractFromStream extracts a TextMessage structure from a stream
-func (textMessage *TextMessage) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the TextMessage from the given readable
+func (tm *TextMessage) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	textMessage.StrTextBody, err = stream.ReadString()
+	err = tm.UserMessage.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract TextMessage.StrTextBody from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract TextMessage.UserMessage. %s", err.Error())
+	}
+
+	err = tm.ExtractHeaderFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract TextMessage header. %s", err.Error())
+	}
+
+	err = tm.StrTextBody.ExtractFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract TextMessage.StrTextBody. %s", err.Error())
 	}
 
 	return nil
 }
 
 // Copy returns a new copied instance of TextMessage
-func (textMessage *TextMessage) Copy() nex.StructureInterface {
+func (tm *TextMessage) Copy() types.RVType {
 	copied := NewTextMessage()
 
-	copied.SetStructureVersion(textMessage.StructureVersion())
-
-	copied.UserMessage = textMessage.UserMessage.Copy().(*UserMessage)
-	copied.SetParentType(copied.UserMessage)
-
-	copied.StrTextBody = textMessage.StrTextBody
+	copied.StructureVersion = tm.StructureVersion
+	copied.UserMessage = tm.UserMessage.Copy().(*UserMessage)
+	copied.StrTextBody = tm.StrTextBody.Copy().(*types.String)
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (textMessage *TextMessage) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*TextMessage)
-
-	if textMessage.StructureVersion() != other.StructureVersion() {
+// Equals checks if the given TextMessage contains the same data as the current TextMessage
+func (tm *TextMessage) Equals(o types.RVType) bool {
+	if _, ok := o.(*TextMessage); !ok {
 		return false
 	}
 
-	if !textMessage.ParentType().Equals(other.ParentType()) {
+	other := o.(*TextMessage)
+
+	if tm.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if textMessage.StrTextBody != other.StrTextBody {
+	if !tm.UserMessage.Equals(other.UserMessage) {
 		return false
 	}
 
-	return true
+	return tm.StrTextBody.Equals(other.StrTextBody)
 }
 
-// String returns a string representation of the struct
-func (textMessage *TextMessage) String() string {
-	return textMessage.FormatToString(0)
+// String returns the string representation of the TextMessage
+func (tm *TextMessage) String() string {
+	return tm.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (textMessage *TextMessage) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the TextMessage using the provided indentation level
+func (tm *TextMessage) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("TextMessage{\n")
-	b.WriteString(fmt.Sprintf("%sParentType: %s,\n", indentationValues, textMessage.ParentType().FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, textMessage.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sStrTextBody: %q\n", indentationValues, textMessage.StrTextBody))
+	b.WriteString(fmt.Sprintf("%sUserMessage (parent): %s,\n", indentationValues, tm.UserMessage.FormatToString(indentationLevel+1)))
+	b.WriteString(fmt.Sprintf("%sStrTextBody: %s,\n", indentationValues, tm.StrTextBody))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -90,9 +104,10 @@ func (textMessage *TextMessage) FormatToString(indentationLevel int) string {
 
 // NewTextMessage returns a new TextMessage
 func NewTextMessage() *TextMessage {
-	textMessage := &TextMessage{}
-	textMessage.UserMessage = NewUserMessage()
-	textMessage.SetParentType(textMessage.UserMessage)
+	tm := &TextMessage{
+		UserMessage: NewUserMessage(),
+		StrTextBody: types.NewString(""),
+	}
 
-	return textMessage
+	return tm
 }

@@ -4,53 +4,57 @@ package protocol
 import (
 	"fmt"
 
-	nex "github.com/PretendoNetwork/nex-go"
-	"github.com/PretendoNetwork/nex-protocols-go/globals"
+	nex "github.com/PretendoNetwork/nex-go/v2"
+	"github.com/PretendoNetwork/nex-go/v2/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
 )
 
-// RequestTicket sets the RequestTicket handler function
-func (protocol *Protocol) RequestTicket(handler func(err error, packet nex.PacketInterface, callID uint32, idSource uint32, idTarget uint32) uint32) {
-	protocol.requestTicketHandler = handler
-}
-
 func (protocol *Protocol) handleRequestTicket(packet nex.PacketInterface) {
-	var errorCode uint32
+	if protocol.RequestTicket == nil {
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "TicketGranting::RequestTicket not implemented")
 
-	if protocol.requestTicketHandler == nil {
-		globals.Logger.Warning("TicketGranting::RequestTicket not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
+	callID := request.CallID
+	parameters := request.Parameters
+	endpoint := packet.Sender().Endpoint()
+	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	callID := request.CallID()
-	parameters := request.Parameters()
+	idSource := types.NewPID(0)
+	idTarget := types.NewPID(0)
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+	var err error
 
-	idSource, err := parametersStream.ReadUInt32LE()
+	err = idSource.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.requestTicketHandler(fmt.Errorf("Failed to read idSource from parameters. %s", err.Error()), packet, callID, 0, 0)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.RequestTicket(fmt.Errorf("Failed to read idSource from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	idTarget, err := parametersStream.ReadUInt32LE()
+	err = idTarget.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.requestTicketHandler(fmt.Errorf("Failed to read idTarget from parameters. %s", err.Error()), packet, callID, 0, 0)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.RequestTicket(fmt.Errorf("Failed to read idTarget from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	errorCode = protocol.requestTicketHandler(nil, packet, callID, idSource, idTarget)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.RequestTicket(nil, packet, callID, idSource, idTarget)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

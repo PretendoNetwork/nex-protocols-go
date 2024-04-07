@@ -4,63 +4,68 @@ package protocol
 import (
 	"fmt"
 
-	nex "github.com/PretendoNetwork/nex-go"
-	"github.com/PretendoNetwork/nex-protocols-go/globals"
+	nex "github.com/PretendoNetwork/nex-go/v2"
+	"github.com/PretendoNetwork/nex-go/v2/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
 )
 
-// ReportNATProperties sets the ReportNATProperties handler function
-func (protocol *Protocol) ReportNATProperties(handler func(err error, packet nex.PacketInterface, callID uint32, natmapping uint32, natfiltering uint32, rtt uint32) uint32) {
-	protocol.reportNATPropertiesHandler = handler
-}
-
 func (protocol *Protocol) handleReportNATProperties(packet nex.PacketInterface) {
-	var errorCode uint32
+	if protocol.ReportNATProperties == nil {
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "NATTraversal::ReportNATProperties not implemented")
 
-	if protocol.reportNATPropertiesHandler == nil {
-		globals.Logger.Warning("NATTraversal::ReportNATProperties not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
+	callID := request.CallID
+	parameters := request.Parameters
+	endpoint := packet.Sender().Endpoint()
+	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	callID := request.CallID()
-	parameters := request.Parameters()
+	natmapping := types.NewPrimitiveU32(0)
+	natfiltering := types.NewPrimitiveU32(0)
+	rtt := types.NewPrimitiveU32(0)
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+	var err error
 
-	natmapping, err := parametersStream.ReadUInt32LE()
+	err = natmapping.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.reportNATPropertiesHandler(fmt.Errorf("Failed to read natmapping from parameters. %s", err.Error()), packet, callID, 0, 0, 0)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.ReportNATProperties(fmt.Errorf("Failed to read natmapping from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	natfiltering, err := parametersStream.ReadUInt32LE()
+	err = natfiltering.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.reportNATPropertiesHandler(fmt.Errorf("Failed to read natfiltering from parameters. %s", err.Error()), packet, callID, 0, 0, 0)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.ReportNATProperties(fmt.Errorf("Failed to read natfiltering from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	rtt, err := parametersStream.ReadUInt32LE()
+	err = rtt.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.reportNATPropertiesHandler(fmt.Errorf("Failed to read rtt from parameters. %s", err.Error()), packet, callID, 0, 0, 0)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.ReportNATProperties(fmt.Errorf("Failed to read rtt from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	errorCode = protocol.reportNATPropertiesHandler(nil, packet, callID, natmapping, natfiltering, rtt)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.ReportNATProperties(nil, packet, callID, natmapping, natfiltering, rtt)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

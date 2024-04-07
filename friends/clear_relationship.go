@@ -4,43 +4,44 @@ package protocol
 import (
 	"fmt"
 
-	nex "github.com/PretendoNetwork/nex-go"
-	"github.com/PretendoNetwork/nex-protocols-go/globals"
+	nex "github.com/PretendoNetwork/nex-go/v2"
+	"github.com/PretendoNetwork/nex-go/v2/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
 )
 
-// ClearRelationship sets the ClearRelationship handler function
-func (protocol *Protocol) ClearRelationship(handler func(err error, packet nex.PacketInterface, callID uint32, uiPlayer uint32) uint32) {
-	protocol.clearRelationshipHandler = handler
-}
-
 func (protocol *Protocol) handleClearRelationship(packet nex.PacketInterface) {
-	var errorCode uint32
+	if protocol.ClearRelationship == nil {
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "Friends::ClearRelationship not implemented")
 
-	if protocol.clearRelationshipHandler == nil {
-		globals.Logger.Warning("Friends::ClearRelationship not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
+	callID := request.CallID
+	parameters := request.Parameters
+	endpoint := packet.Sender().Endpoint()
+	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	callID := request.CallID()
-	parameters := request.Parameters()
+	uiPlayer := types.NewPrimitiveU32(0)
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
-
-	uiPlayer, err := parametersStream.ReadUInt32LE()
+	err := uiPlayer.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.clearRelationshipHandler(fmt.Errorf("Failed to read uiPlayer from parameters. %s", err.Error()), packet, callID, 0)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.ClearRelationship(fmt.Errorf("Failed to read uiPlayer from parameters. %s", err.Error()), packet, callID, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	errorCode = protocol.clearRelationshipHandler(nil, packet, callID, uiPlayer)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.ClearRelationship(nil, packet, callID, uiPlayer)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

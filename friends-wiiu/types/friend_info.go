@@ -1,146 +1,167 @@
-// Package types implements all the types used by the Friends WiiU protocol
+// Package types implements all the types used by the FriendsWiiU protocol
 package types
 
 import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/v2/types"
 )
 
-// FriendInfo contains information about a friend
+// FriendInfo is a type within the FriendsWiiU protocol
 type FriendInfo struct {
-	nex.Structure
-	*nex.Data
+	types.Structure
+	*types.Data
 	NNAInfo      *NNAInfo
 	Presence     *NintendoPresenceV2
 	Status       *Comment
-	BecameFriend *nex.DateTime
-	LastOnline   *nex.DateTime
-	Unknown      uint64
+	BecameFriend *types.DateTime
+	LastOnline   *types.DateTime
+	Unknown      *types.PrimitiveU64
 }
 
-// Bytes encodes the FriendInfo and returns a byte array
-func (friendInfo *FriendInfo) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteStructure(friendInfo.NNAInfo)
-	stream.WriteStructure(friendInfo.Presence)
-	stream.WriteStructure(friendInfo.Status)
-	stream.WriteDateTime(friendInfo.BecameFriend)
-	stream.WriteDateTime(friendInfo.LastOnline)
-	stream.WriteUInt64LE(friendInfo.Unknown)
+// WriteTo writes the FriendInfo to the given writable
+func (fi *FriendInfo) WriteTo(writable types.Writable) {
+	fi.Data.WriteTo(writable)
 
-	return stream.Bytes()
+	contentWritable := writable.CopyNew()
+
+	fi.NNAInfo.WriteTo(writable)
+	fi.Presence.WriteTo(writable)
+	fi.Status.WriteTo(writable)
+	fi.BecameFriend.WriteTo(writable)
+	fi.LastOnline.WriteTo(writable)
+	fi.Unknown.WriteTo(writable)
+
+	content := contentWritable.Bytes()
+
+	fi.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
+}
+
+// ExtractFrom extracts the FriendInfo from the given readable
+func (fi *FriendInfo) ExtractFrom(readable types.Readable) error {
+	var err error
+
+	err = fi.Data.ExtractFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract FriendInfo.Data. %s", err.Error())
+	}
+
+	err = fi.ExtractHeaderFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract FriendInfo header. %s", err.Error())
+	}
+
+	err = fi.NNAInfo.ExtractFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract FriendInfo.NNAInfo. %s", err.Error())
+	}
+
+	err = fi.Presence.ExtractFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract FriendInfo.Presence. %s", err.Error())
+	}
+
+	err = fi.Status.ExtractFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract FriendInfo.Status. %s", err.Error())
+	}
+
+	err = fi.BecameFriend.ExtractFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract FriendInfo.BecameFriend. %s", err.Error())
+	}
+
+	err = fi.LastOnline.ExtractFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract FriendInfo.LastOnline. %s", err.Error())
+	}
+
+	err = fi.Unknown.ExtractFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract FriendInfo.Unknown. %s", err.Error())
+	}
+
+	return nil
 }
 
 // Copy returns a new copied instance of FriendInfo
-func (friendInfo *FriendInfo) Copy() nex.StructureInterface {
+func (fi *FriendInfo) Copy() types.RVType {
 	copied := NewFriendInfo()
 
-	copied.SetStructureVersion(friendInfo.StructureVersion())
-
-	if friendInfo.ParentType() != nil {
-		copied.Data = friendInfo.ParentType().Copy().(*nex.Data)
-	} else {
-		copied.Data = nex.NewData()
-	}
-
-	copied.SetParentType(copied.Data)
-
-	copied.NNAInfo = friendInfo.NNAInfo.Copy().(*NNAInfo)
-	copied.Presence = friendInfo.Presence.Copy().(*NintendoPresenceV2)
-	copied.Status = friendInfo.Status.Copy().(*Comment)
-	copied.BecameFriend = friendInfo.BecameFriend.Copy()
-	copied.LastOnline = friendInfo.LastOnline.Copy()
-	copied.Unknown = friendInfo.Unknown
+	copied.StructureVersion = fi.StructureVersion
+	copied.Data = fi.Data.Copy().(*types.Data)
+	copied.NNAInfo = fi.NNAInfo.Copy().(*NNAInfo)
+	copied.Presence = fi.Presence.Copy().(*NintendoPresenceV2)
+	copied.Status = fi.Status.Copy().(*Comment)
+	copied.BecameFriend = fi.BecameFriend.Copy().(*types.DateTime)
+	copied.LastOnline = fi.LastOnline.Copy().(*types.DateTime)
+	copied.Unknown = fi.Unknown.Copy().(*types.PrimitiveU64)
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (friendInfo *FriendInfo) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*FriendInfo)
-
-	if friendInfo.StructureVersion() != other.StructureVersion() {
+// Equals checks if the given FriendInfo contains the same data as the current FriendInfo
+func (fi *FriendInfo) Equals(o types.RVType) bool {
+	if _, ok := o.(*FriendInfo); !ok {
 		return false
 	}
 
-	if !friendInfo.ParentType().Equals(other.ParentType()) {
+	other := o.(*FriendInfo)
+
+	if fi.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if !friendInfo.NNAInfo.Equals(other.NNAInfo) {
+	if !fi.Data.Equals(other.Data) {
 		return false
 	}
 
-	if !friendInfo.Presence.Equals(other.Presence) {
+	if !fi.NNAInfo.Equals(other.NNAInfo) {
 		return false
 	}
 
-	if !friendInfo.Status.Equals(other.Status) {
+	if !fi.Presence.Equals(other.Presence) {
 		return false
 	}
 
-	if !friendInfo.BecameFriend.Equals(other.BecameFriend) {
+	if !fi.Status.Equals(other.Status) {
 		return false
 	}
 
-	if !friendInfo.LastOnline.Equals(other.LastOnline) {
+	if !fi.BecameFriend.Equals(other.BecameFriend) {
 		return false
 	}
 
-	if friendInfo.Unknown != other.Unknown {
+	if !fi.LastOnline.Equals(other.LastOnline) {
 		return false
 	}
 
-	return true
+	return fi.Unknown.Equals(other.Unknown)
 }
 
-// String returns a string representation of the struct
-func (friendInfo *FriendInfo) String() string {
-	return friendInfo.FormatToString(0)
+// String returns the string representation of the FriendInfo
+func (fi *FriendInfo) String() string {
+	return fi.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (friendInfo *FriendInfo) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the FriendInfo using the provided indentation level
+func (fi *FriendInfo) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("FriendInfo{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, friendInfo.StructureVersion()))
-
-	if friendInfo.NNAInfo != nil {
-		b.WriteString(fmt.Sprintf("%sNNAInfo: %s,\n", indentationValues, friendInfo.NNAInfo.FormatToString(indentationLevel+1)))
-	} else {
-		b.WriteString(fmt.Sprintf("%sNNAInfo: nil,\n", indentationValues))
-	}
-
-	if friendInfo.Presence != nil {
-		b.WriteString(fmt.Sprintf("%sPresence: %s,\n", indentationValues, friendInfo.Presence.FormatToString(indentationLevel+1)))
-	} else {
-		b.WriteString(fmt.Sprintf("%sPresence: nil,\n", indentationValues))
-	}
-
-	if friendInfo.Status != nil {
-		b.WriteString(fmt.Sprintf("%sStatus: %s,\n", indentationValues, friendInfo.Status.FormatToString(indentationLevel+1)))
-	} else {
-		b.WriteString(fmt.Sprintf("%sStatus: nil,\n", indentationValues))
-	}
-
-	if friendInfo.BecameFriend != nil {
-		b.WriteString(fmt.Sprintf("%sBecameFriend: %s,\n", indentationValues, friendInfo.BecameFriend.FormatToString(indentationLevel+1)))
-	} else {
-		b.WriteString(fmt.Sprintf("%sBecameFriend: nil,\n", indentationValues))
-	}
-
-	if friendInfo.LastOnline != nil {
-		b.WriteString(fmt.Sprintf("%sLastOnline: %s,\n", indentationValues, friendInfo.LastOnline.FormatToString(indentationLevel+1)))
-	} else {
-		b.WriteString(fmt.Sprintf("%sLastOnline: nil,\n", indentationValues))
-	}
-
-	b.WriteString(fmt.Sprintf("%sUnknown: %d\n", indentationValues, friendInfo.Unknown))
+	b.WriteString(fmt.Sprintf("%sData (parent): %s,\n", indentationValues, fi.Data.FormatToString(indentationLevel+1)))
+	b.WriteString(fmt.Sprintf("%sNNAInfo: %s,\n", indentationValues, fi.NNAInfo.FormatToString(indentationLevel+1)))
+	b.WriteString(fmt.Sprintf("%sPresence: %s,\n", indentationValues, fi.Presence.FormatToString(indentationLevel+1)))
+	b.WriteString(fmt.Sprintf("%sStatus: %s,\n", indentationValues, fi.Status.FormatToString(indentationLevel+1)))
+	b.WriteString(fmt.Sprintf("%sBecameFriend: %s,\n", indentationValues, fi.BecameFriend.FormatToString(indentationLevel+1)))
+	b.WriteString(fmt.Sprintf("%sLastOnline: %s,\n", indentationValues, fi.LastOnline.FormatToString(indentationLevel+1)))
+	b.WriteString(fmt.Sprintf("%sUnknown: %s,\n", indentationValues, fi.Unknown))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -148,5 +169,15 @@ func (friendInfo *FriendInfo) FormatToString(indentationLevel int) string {
 
 // NewFriendInfo returns a new FriendInfo
 func NewFriendInfo() *FriendInfo {
-	return &FriendInfo{}
+	fi := &FriendInfo{
+		Data:         types.NewData(),
+		NNAInfo:      NewNNAInfo(),
+		Presence:     NewNintendoPresenceV2(),
+		Status:       NewComment(),
+		BecameFriend: types.NewDateTime(0),
+		LastOnline:   types.NewDateTime(0),
+		Unknown:      types.NewPrimitiveU64(0),
+	}
+
+	return fi
 }

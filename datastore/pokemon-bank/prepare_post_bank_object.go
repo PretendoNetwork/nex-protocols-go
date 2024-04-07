@@ -4,53 +4,57 @@ package protocol
 import (
 	"fmt"
 
-	nex "github.com/PretendoNetwork/nex-go"
-	"github.com/PretendoNetwork/nex-protocols-go/globals"
+	nex "github.com/PretendoNetwork/nex-go/v2"
+	"github.com/PretendoNetwork/nex-go/v2/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
 )
 
-// PreparePostBankObject sets the PreparePostBankObject handler function
-func (protocol *Protocol) PreparePostBankObject(handler func(err error, packet nex.PacketInterface, callID uint32, slotID uint16, size uint32) uint32) {
-	protocol.preparePostBankObjectHandler = handler
-}
-
 func (protocol *Protocol) handlePreparePostBankObject(packet nex.PacketInterface) {
-	var errorCode uint32
+	if protocol.PreparePostBankObject == nil {
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "DataStorePokemonBank::PreparePostBankObject not implemented")
 
-	if protocol.preparePostBankObjectHandler == nil {
-		globals.Logger.Warning("DataStorePokemonBank::PreparePostBankObject not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
+	callID := request.CallID
+	parameters := request.Parameters
+	endpoint := packet.Sender().Endpoint()
+	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	callID := request.CallID()
-	parameters := request.Parameters()
+	slotID := types.NewPrimitiveU16(0)
+	size := types.NewPrimitiveU32(0)
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+	var err error
 
-	slotID, err := parametersStream.ReadUInt16LE()
+	err = slotID.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.preparePostBankObjectHandler(fmt.Errorf("Failed to read slotID from parameters. %s", err.Error()), packet, callID, 0, 0)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.PreparePostBankObject(fmt.Errorf("Failed to read slotID from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	size, err := parametersStream.ReadUInt32LE()
+	err = size.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.preparePostBankObjectHandler(fmt.Errorf("Failed to read size from parameters. %s", err.Error()), packet, callID, 0, 0)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.PreparePostBankObject(fmt.Errorf("Failed to read size from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	errorCode = protocol.preparePostBankObjectHandler(nil, packet, callID, slotID, size)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.PreparePostBankObject(nil, packet, callID, slotID, size)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

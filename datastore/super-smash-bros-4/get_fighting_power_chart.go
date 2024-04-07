@@ -4,43 +4,44 @@ package protocol
 import (
 	"fmt"
 
-	nex "github.com/PretendoNetwork/nex-go"
-	"github.com/PretendoNetwork/nex-protocols-go/globals"
+	nex "github.com/PretendoNetwork/nex-go/v2"
+	"github.com/PretendoNetwork/nex-go/v2/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
 )
 
-// GetFightingPowerChart sets the GetFightingPowerChart handler function
-func (protocol *Protocol) GetFightingPowerChart(handler func(err error, packet nex.PacketInterface, callID uint32, mode uint8) uint32) {
-	protocol.getFightingPowerChartHandler = handler
-}
-
 func (protocol *Protocol) handleGetFightingPowerChart(packet nex.PacketInterface) {
-	var errorCode uint32
+	if protocol.GetFightingPowerChart == nil {
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "DataStoreSuperSmashBros4::GetFightingPowerChart not implemented")
 
-	if protocol.getFightingPowerChartHandler == nil {
-		globals.Logger.Warning("DataStoreSuperSmashBros4::GetFightingPowerChart not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
+	callID := request.CallID
+	parameters := request.Parameters
+	endpoint := packet.Sender().Endpoint()
+	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	callID := request.CallID()
-	parameters := request.Parameters()
+	mode := types.NewPrimitiveU8(0)
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
-
-	mode, err := parametersStream.ReadUInt8()
+	err := mode.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.getFightingPowerChartHandler(fmt.Errorf("Failed to read mode from parameters. %s", err.Error()), packet, callID, 0)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.GetFightingPowerChart(fmt.Errorf("Failed to read mode from parameters. %s", err.Error()), packet, callID, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	errorCode = protocol.getFightingPowerChartHandler(nil, packet, callID, mode)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.GetFightingPowerChart(nil, packet, callID, mode)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

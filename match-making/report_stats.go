@@ -4,54 +4,59 @@ package protocol
 import (
 	"fmt"
 
-	nex "github.com/PretendoNetwork/nex-go"
-	"github.com/PretendoNetwork/nex-protocols-go/globals"
-	match_making_types "github.com/PretendoNetwork/nex-protocols-go/match-making/types"
+	nex "github.com/PretendoNetwork/nex-go/v2"
+	"github.com/PretendoNetwork/nex-go/v2/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
+	match_making_types "github.com/PretendoNetwork/nex-protocols-go/v2/match-making/types"
 )
 
-// ReportStats sets the ReportStats handler function
-func (protocol *Protocol) ReportStats(handler func(err error, packet nex.PacketInterface, callID uint32, idGathering uint32, lstStats []*match_making_types.GatheringStats) uint32) {
-	protocol.reportStatsHandler = handler
-}
-
 func (protocol *Protocol) handleReportStats(packet nex.PacketInterface) {
-	var errorCode uint32
+	if protocol.ReportStats == nil {
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "MatchMaking::ReportStats not implemented")
 
-	if protocol.reportStatsHandler == nil {
-		globals.Logger.Warning("MatchMaking::ReportStats not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
+	callID := request.CallID
+	parameters := request.Parameters
+	endpoint := packet.Sender().Endpoint()
+	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	callID := request.CallID()
-	parameters := request.Parameters()
+	idGathering := types.NewPrimitiveU32(0)
+	lstStats := types.NewList[*match_making_types.GatheringStats]()
+	lstStats.Type = match_making_types.NewGatheringStats()
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+	var err error
 
-	idGathering, err := parametersStream.ReadUInt32LE()
+	err = idGathering.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.reportStatsHandler(fmt.Errorf("Failed to read idGathering from parameters. %s", err.Error()), packet, callID, 0, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.ReportStats(fmt.Errorf("Failed to read idGathering from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	lstStats, err := parametersStream.ReadListStructure(match_making_types.NewGatheringStats())
+	err = lstStats.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.reportStatsHandler(fmt.Errorf("Failed to read lstStats from parameters. %s", err.Error()), packet, callID, 0, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.ReportStats(fmt.Errorf("Failed to read lstStats from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	errorCode = protocol.reportStatsHandler(nil, packet, callID, idGathering, lstStats.([]*match_making_types.GatheringStats))
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.ReportStats(nil, packet, callID, idGathering, lstStats)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

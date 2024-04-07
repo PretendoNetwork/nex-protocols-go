@@ -1,76 +1,88 @@
-// Package types implements all the types used by the Service Item (Wii Sports Club) protocol
+// Package types implements all the types used by the ServiceItem protocol
 package types
 
 import (
-	"bytes"
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/v2/types"
 )
 
-// ServiceItemHTTPGetResponse holds data for the Service Item (Wii Sports Club) protocol
+// ServiceItemHTTPGetResponse is a type within the ServiceItem protocol
 type ServiceItemHTTPGetResponse struct {
-	nex.Structure
-	Response []byte
+	types.Structure
+	Response *types.QBuffer
 }
 
-// ExtractFromStream extracts a ServiceItemHTTPGetResponse structure from a stream
-func (serviceItemHTTPGetResponse *ServiceItemHTTPGetResponse) ExtractFromStream(stream *nex.StreamIn) error {
+// WriteTo writes the ServiceItemHTTPGetResponse to the given writable
+func (sihttpgr *ServiceItemHTTPGetResponse) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
+
+	sihttpgr.Response.WriteTo(writable)
+
+	content := contentWritable.Bytes()
+
+	sihttpgr.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
+}
+
+// ExtractFrom extracts the ServiceItemHTTPGetResponse from the given readable
+func (sihttpgr *ServiceItemHTTPGetResponse) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	serviceItemHTTPGetResponse.Response, err = stream.ReadQBuffer()
+	err = sihttpgr.ExtractHeaderFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemHTTPGetResponse.Response from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract ServiceItemHTTPGetResponse header. %s", err.Error())
+	}
+
+	err = sihttpgr.Response.ExtractFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract ServiceItemHTTPGetResponse.Response. %s", err.Error())
 	}
 
 	return nil
 }
 
-// Bytes encodes the ServiceItemHTTPGetResponse and returns a byte array
-func (serviceItemHTTPGetResponse *ServiceItemHTTPGetResponse) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteQBuffer(serviceItemHTTPGetResponse.Response)
-
-	return stream.Bytes()
-}
-
 // Copy returns a new copied instance of ServiceItemHTTPGetResponse
-func (serviceItemHTTPGetResponse *ServiceItemHTTPGetResponse) Copy() nex.StructureInterface {
+func (sihttpgr *ServiceItemHTTPGetResponse) Copy() types.RVType {
 	copied := NewServiceItemHTTPGetResponse()
 
-	copied.SetStructureVersion(serviceItemHTTPGetResponse.StructureVersion())
-
-	copied.Response = serviceItemHTTPGetResponse.Response
+	copied.StructureVersion = sihttpgr.StructureVersion
+	copied.Response = sihttpgr.Response.Copy().(*types.QBuffer)
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (serviceItemHTTPGetResponse *ServiceItemHTTPGetResponse) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*ServiceItemHTTPGetResponse)
-
-	if serviceItemHTTPGetResponse.StructureVersion() != other.StructureVersion() {
+// Equals checks if the given ServiceItemHTTPGetResponse contains the same data as the current ServiceItemHTTPGetResponse
+func (sihttpgr *ServiceItemHTTPGetResponse) Equals(o types.RVType) bool {
+	if _, ok := o.(*ServiceItemHTTPGetResponse); !ok {
 		return false
 	}
 
-	return bytes.Equal(serviceItemHTTPGetResponse.Response, other.Response)
+	other := o.(*ServiceItemHTTPGetResponse)
+
+	if sihttpgr.StructureVersion != other.StructureVersion {
+		return false
+	}
+
+	return sihttpgr.Response.Equals(other.Response)
 }
 
-// String returns a string representation of the struct
-func (serviceItemHTTPGetResponse *ServiceItemHTTPGetResponse) String() string {
-	return serviceItemHTTPGetResponse.FormatToString(0)
+// String returns the string representation of the ServiceItemHTTPGetResponse
+func (sihttpgr *ServiceItemHTTPGetResponse) String() string {
+	return sihttpgr.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (serviceItemHTTPGetResponse *ServiceItemHTTPGetResponse) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the ServiceItemHTTPGetResponse using the provided indentation level
+func (sihttpgr *ServiceItemHTTPGetResponse) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("ServiceItemHTTPGetResponse{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, serviceItemHTTPGetResponse.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sResponse: %x,\n", indentationValues, serviceItemHTTPGetResponse.Response))
+	b.WriteString(fmt.Sprintf("%sResponse: %s,\n", indentationValues, sihttpgr.Response))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -78,5 +90,9 @@ func (serviceItemHTTPGetResponse *ServiceItemHTTPGetResponse) FormatToString(ind
 
 // NewServiceItemHTTPGetResponse returns a new ServiceItemHTTPGetResponse
 func NewServiceItemHTTPGetResponse() *ServiceItemHTTPGetResponse {
-	return &ServiceItemHTTPGetResponse{}
+	sihttpgr := &ServiceItemHTTPGetResponse{
+		Response: types.NewQBuffer(nil),
+	}
+
+	return sihttpgr
 }

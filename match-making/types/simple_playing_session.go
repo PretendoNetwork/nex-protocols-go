@@ -1,45 +1,63 @@
-// Package types implements all the types used by the Matchmaking protocols.
-//
-// Since there are multiple match making related protocols, and they all share types
-// all types used by all match making protocols is defined here
+// Package types implements all the types used by the Matchmaking protocol
 package types
 
 import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/v2/types"
 )
 
-// SimplePlayingSession holds simple information for a session
+// SimplePlayingSession is a type within the Matchmaking protocol
 type SimplePlayingSession struct {
-	nex.Structure
-	PrincipalID uint32
-	GatheringID uint32
-	GameMode    uint32
-	Attribute0  uint32
+	types.Structure
+	PrincipalID *types.PID
+	GatheringID *types.PrimitiveU32
+	GameMode    *types.PrimitiveU32
+	Attribute0  *types.PrimitiveU32
 }
 
-// ExtractFromStream extracts a SimplePlayingSession structure from a stream
-func (simplePlayingSession *SimplePlayingSession) ExtractFromStream(stream *nex.StreamIn) error {
+// WriteTo writes the SimplePlayingSession to the given writable
+func (sps *SimplePlayingSession) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
+
+	sps.PrincipalID.WriteTo(writable)
+	sps.GatheringID.WriteTo(writable)
+	sps.GameMode.WriteTo(writable)
+	sps.Attribute0.WriteTo(writable)
+
+	content := contentWritable.Bytes()
+
+	sps.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
+}
+
+// ExtractFrom extracts the SimplePlayingSession from the given readable
+func (sps *SimplePlayingSession) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	simplePlayingSession.PrincipalID, err = stream.ReadUInt32LE()
+	err = sps.ExtractHeaderFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract SimplePlayingSession header. %s", err.Error())
+	}
+
+	err = sps.PrincipalID.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract SimplePlayingSession.PrincipalID. %s", err.Error())
 	}
 
-	simplePlayingSession.GatheringID, err = stream.ReadUInt32LE()
+	err = sps.GatheringID.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract SimplePlayingSession.GatheringID. %s", err.Error())
 	}
 
-	simplePlayingSession.GameMode, err = stream.ReadUInt32LE()
+	err = sps.GameMode.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract SimplePlayingSession.GameMode. %s", err.Error())
 	}
 
-	simplePlayingSession.Attribute0, err = stream.ReadUInt32LE()
+	err = sps.Attribute0.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract SimplePlayingSession.Attribute0. %s", err.Error())
 	}
@@ -47,75 +65,63 @@ func (simplePlayingSession *SimplePlayingSession) ExtractFromStream(stream *nex.
 	return nil
 }
 
-// Bytes encodes the SimplePlayingSession and returns a byte array
-func (simplePlayingSession *SimplePlayingSession) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt32LE(simplePlayingSession.PrincipalID)
-	stream.WriteUInt32LE(simplePlayingSession.GatheringID)
-	stream.WriteUInt32LE(simplePlayingSession.GameMode)
-	stream.WriteUInt32LE(simplePlayingSession.Attribute0)
-
-	return stream.Bytes()
-}
-
 // Copy returns a new copied instance of SimplePlayingSession
-func (simplePlayingSession *SimplePlayingSession) Copy() nex.StructureInterface {
+func (sps *SimplePlayingSession) Copy() types.RVType {
 	copied := NewSimplePlayingSession()
 
-	copied.SetStructureVersion(simplePlayingSession.StructureVersion())
-
-	copied.PrincipalID = simplePlayingSession.PrincipalID
-	copied.GatheringID = simplePlayingSession.GatheringID
-	copied.GameMode = simplePlayingSession.GameMode
-	copied.Attribute0 = simplePlayingSession.Attribute0
+	copied.StructureVersion = sps.StructureVersion
+	copied.PrincipalID = sps.PrincipalID.Copy().(*types.PID)
+	copied.GatheringID = sps.GatheringID.Copy().(*types.PrimitiveU32)
+	copied.GameMode = sps.GameMode.Copy().(*types.PrimitiveU32)
+	copied.Attribute0 = sps.Attribute0.Copy().(*types.PrimitiveU32)
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (simplePlayingSession *SimplePlayingSession) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*SimplePlayingSession)
-
-	if simplePlayingSession.StructureVersion() != other.StructureVersion() {
+// Equals checks if the given SimplePlayingSession contains the same data as the current SimplePlayingSession
+func (sps *SimplePlayingSession) Equals(o types.RVType) bool {
+	if _, ok := o.(*SimplePlayingSession); !ok {
 		return false
 	}
 
-	if simplePlayingSession.PrincipalID != other.PrincipalID {
+	other := o.(*SimplePlayingSession)
+
+	if sps.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if simplePlayingSession.GatheringID != other.GatheringID {
+	if !sps.PrincipalID.Equals(other.PrincipalID) {
 		return false
 	}
 
-	if simplePlayingSession.GameMode != other.GameMode {
+	if !sps.GatheringID.Equals(other.GatheringID) {
 		return false
 	}
 
-	if simplePlayingSession.Attribute0 != other.Attribute0 {
+	if !sps.GameMode.Equals(other.GameMode) {
 		return false
 	}
 
-	return true
+	return sps.Attribute0.Equals(other.Attribute0)
 }
 
-// String returns a string representation of the struct
-func (simplePlayingSession *SimplePlayingSession) String() string {
-	return simplePlayingSession.FormatToString(0)
+// String returns the string representation of the SimplePlayingSession
+func (sps *SimplePlayingSession) String() string {
+	return sps.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (simplePlayingSession *SimplePlayingSession) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the SimplePlayingSession using the provided indentation level
+func (sps *SimplePlayingSession) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("SimplePlayingSession{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, simplePlayingSession.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sPrincipalID: %d,\n", indentationValues, simplePlayingSession.PrincipalID))
-	b.WriteString(fmt.Sprintf("%sGatheringID: %d,\n", indentationValues, simplePlayingSession.GatheringID))
-	b.WriteString(fmt.Sprintf("%sGameMode: %d,\n", indentationValues, simplePlayingSession.GameMode))
-	b.WriteString(fmt.Sprintf("%sAttribute0: %d\n", indentationValues, simplePlayingSession.Attribute0))
+	b.WriteString(fmt.Sprintf("%sPrincipalID: %s,\n", indentationValues, sps.PrincipalID.FormatToString(indentationLevel+1)))
+	b.WriteString(fmt.Sprintf("%sGatheringID: %s,\n", indentationValues, sps.GatheringID))
+	b.WriteString(fmt.Sprintf("%sGameMode: %s,\n", indentationValues, sps.GameMode))
+	b.WriteString(fmt.Sprintf("%sAttribute0: %s,\n", indentationValues, sps.Attribute0))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -123,5 +129,12 @@ func (simplePlayingSession *SimplePlayingSession) FormatToString(indentationLeve
 
 // NewSimplePlayingSession returns a new SimplePlayingSession
 func NewSimplePlayingSession() *SimplePlayingSession {
-	return &SimplePlayingSession{}
+	sps := &SimplePlayingSession{
+		PrincipalID: types.NewPID(0),
+		GatheringID: types.NewPrimitiveU32(0),
+		GameMode:    types.NewPrimitiveU32(0),
+		Attribute0:  types.NewPrimitiveU32(0),
+	}
+
+	return sps
 }

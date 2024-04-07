@@ -3,10 +3,12 @@ package protocol
 
 import (
 	"fmt"
+	"slices"
 
-	nex "github.com/PretendoNetwork/nex-go"
-	"github.com/PretendoNetwork/nex-protocols-go/globals"
-	match_making_types "github.com/PretendoNetwork/nex-protocols-go/match-making/types"
+	nex "github.com/PretendoNetwork/nex-go/v2"
+	"github.com/PretendoNetwork/nex-go/v2/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
+	match_making_types "github.com/PretendoNetwork/nex-protocols-go/v2/match-making/types"
 )
 
 const (
@@ -148,168 +150,447 @@ const (
 
 // Protocol stores all the RMC method handlers for the MatchMaking protocol and listens for requests
 type Protocol struct {
-	Server                             *nex.Server
-	registerGatheringHandler           func(err error, packet nex.PacketInterface, callID uint32, anyGathering *nex.DataHolder) uint32
-	unregisterGatheringHandler         func(err error, packet nex.PacketInterface, callID uint32, idGathering uint32) uint32
-	unregisterGatheringsHandler        func(err error, packet nex.PacketInterface, callID uint32, lstGatherings []uint32) uint32
-	updateGatheringHandler             func(err error, packet nex.PacketInterface, callID uint32, anyGathering *nex.DataHolder) uint32
-	inviteHandler                      func(err error, packet nex.PacketInterface, callID uint32, idGathering uint32, lstPrincipals []uint32, strMessage string) uint32
-	acceptInvitationHandler            func(err error, packet nex.PacketInterface, callID uint32, idGathering uint32, strMessage string) uint32
-	declineInvitationHandler           func(err error, packet nex.PacketInterface, callID uint32, idGathering uint32, strMessage string) uint32
-	cancelInvitationHandler            func(err error, packet nex.PacketInterface, callID uint32, idGathering uint32, lstPrincipals []uint32, strMessage string) uint32
-	getInvitationsSentHandler          func(err error, packet nex.PacketInterface, callID uint32, idGathering uint32) uint32
-	getInvitationsReceivedHandler      func(err error, packet nex.PacketInterface, callID uint32) uint32
-	participateHandler                 func(err error, packet nex.PacketInterface, callID uint32, idGathering uint32, strMessage string) uint32
-	cancelParticipationHandler         func(err error, packet nex.PacketInterface, callID uint32, idGathering uint32, strMessage string) uint32
-	getParticipantsHandler             func(err error, packet nex.PacketInterface, callID uint32, idGathering uint32) uint32
-	addParticipantsHandler             func(err error, packet nex.PacketInterface, callID uint32, idGathering uint32, lstPrincipals []uint32, strMessage string) uint32
-	getDetailedParticipantsHandler     func(err error, packet nex.PacketInterface, callID uint32, idGathering uint32) uint32
-	getParticipantsURLsHandler         func(err error, packet nex.PacketInterface, callID uint32, idGathering uint32) uint32
-	findByTypeHandler                  func(err error, packet nex.PacketInterface, callID uint32, strType string, resultRange *nex.ResultRange) uint32
-	findByDescriptionHandler           func(err error, packet nex.PacketInterface, callID uint32, strDescription string, resultRange *nex.ResultRange) uint32
-	findByDescriptionRegexHandler      func(err error, packet nex.PacketInterface, callID uint32, strDescriptionRegex string, resultRange *nex.ResultRange) uint32
-	findByIDHandler                    func(err error, packet nex.PacketInterface, callID uint32, lstID []uint32) uint32
-	findBySingleIDHandler              func(err error, packet nex.PacketInterface, callID uint32, id uint32) uint32
-	findByOwnerHandler                 func(err error, packet nex.PacketInterface, callID uint32, id uint32, resultRange *nex.ResultRange) uint32
-	findByParticipantsHandler          func(err error, packet nex.PacketInterface, callID uint32, pid []uint32) uint32
-	findInvitationsHandler             func(err error, packet nex.PacketInterface, callID uint32, resultRange *nex.ResultRange) uint32
-	findBySQLQueryHandler              func(err error, packet nex.PacketInterface, callID uint32, strQuery string, resultRange *nex.ResultRange) uint32
-	launchSessionHandler               func(err error, packet nex.PacketInterface, callID uint32, idGathering uint32, strURL string) uint32
-	updateSessionURLHandler            func(err error, packet nex.PacketInterface, callID uint32, idGathering uint32, strURL string) uint32
-	getSessionURLHandler               func(err error, packet nex.PacketInterface, callID uint32, idGathering uint32) uint32
-	getStateHandler                    func(err error, packet nex.PacketInterface, callID uint32, idGathering uint32) uint32
-	setStateHandler                    func(err error, packet nex.PacketInterface, callID uint32, idGathering uint32, uiNewState uint32) uint32
-	reportStatsHandler                 func(err error, packet nex.PacketInterface, callID uint32, idGathering uint32, lstStats []*match_making_types.GatheringStats) uint32
-	getStatsHandler                    func(err error, packet nex.PacketInterface, callID uint32, idGathering uint32, lstParticipants []uint32, lstColumns []byte) uint32
-	deleteGatheringHandler             func(err error, packet nex.PacketInterface, callID uint32, idGathering uint32) uint32
-	getPendingDeletionsHandler         func(err error, packet nex.PacketInterface, callID uint32, uiReason uint32, resultRange *nex.ResultRange) uint32
-	deleteFromDeletionsHandler         func(err error, packet nex.PacketInterface, callID uint32, lstDeletions []uint32) uint32
-	migrateGatheringOwnershipV1Handler func(err error, packet nex.PacketInterface, callID uint32, gid uint32, lstPotentialNewOwnersID []uint32) uint32
-	findByDescriptionLikeHandler       func(err error, packet nex.PacketInterface, callID uint32, strDescriptionLike string, resultRange *nex.ResultRange) uint32
-	registerLocalURLHandler            func(err error, packet nex.PacketInterface, callID uint32, gid uint32, url *nex.StationURL) uint32
-	registerLocalURLsHandler           func(err error, packet nex.PacketInterface, callID uint32, gid uint32, lstURLs []*nex.StationURL) uint32
-	updateSessionHostV1Handler         func(err error, packet nex.PacketInterface, callID uint32, gid uint32) uint32
-	getSessionURLsHandler              func(err error, packet nex.PacketInterface, callID uint32, gid uint32) uint32
-	updateSessionHostHandler           func(err error, packet nex.PacketInterface, callID uint32, gid uint32, isMigrateOwner bool) uint32
-	updateGatheringOwnershipHandler    func(err error, packet nex.PacketInterface, callID uint32, gid uint32, participantsOnly bool) uint32
-	migrateGatheringOwnershipHandler   func(err error, packet nex.PacketInterface, callID uint32, gid uint32, lstPotentialNewOwnersID []uint32, participantsOnly bool) uint32
+	endpoint                    nex.EndpointInterface
+	RegisterGathering           func(err error, packet nex.PacketInterface, callID uint32, anyGathering *types.AnyDataHolder) (*nex.RMCMessage, *nex.Error)
+	UnregisterGathering         func(err error, packet nex.PacketInterface, callID uint32, idGathering *types.PrimitiveU32) (*nex.RMCMessage, *nex.Error)
+	UnregisterGatherings        func(err error, packet nex.PacketInterface, callID uint32, lstGatherings *types.List[*types.PrimitiveU32]) (*nex.RMCMessage, *nex.Error)
+	UpdateGathering             func(err error, packet nex.PacketInterface, callID uint32, anyGathering *types.AnyDataHolder) (*nex.RMCMessage, *nex.Error)
+	Invite                      func(err error, packet nex.PacketInterface, callID uint32, idGathering *types.PrimitiveU32, lstPrincipals *types.List[*types.PID], strMessage *types.String) (*nex.RMCMessage, *nex.Error)
+	AcceptInvitation            func(err error, packet nex.PacketInterface, callID uint32, idGathering *types.PrimitiveU32, strMessage *types.String) (*nex.RMCMessage, *nex.Error)
+	DeclineInvitation           func(err error, packet nex.PacketInterface, callID uint32, idGathering *types.PrimitiveU32, strMessage *types.String) (*nex.RMCMessage, *nex.Error)
+	CancelInvitation            func(err error, packet nex.PacketInterface, callID uint32, idGathering *types.PrimitiveU32, lstPrincipals *types.List[*types.PID], strMessage *types.String) (*nex.RMCMessage, *nex.Error)
+	GetInvitationsSent          func(err error, packet nex.PacketInterface, callID uint32, idGathering *types.PrimitiveU32) (*nex.RMCMessage, *nex.Error)
+	GetInvitationsReceived      func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, *nex.Error)
+	Participate                 func(err error, packet nex.PacketInterface, callID uint32, idGathering *types.PrimitiveU32, strMessage *types.String) (*nex.RMCMessage, *nex.Error)
+	CancelParticipation         func(err error, packet nex.PacketInterface, callID uint32, idGathering *types.PrimitiveU32, strMessage *types.String) (*nex.RMCMessage, *nex.Error)
+	GetParticipants             func(err error, packet nex.PacketInterface, callID uint32, idGathering *types.PrimitiveU32) (*nex.RMCMessage, *nex.Error)
+	AddParticipants             func(err error, packet nex.PacketInterface, callID uint32, idGathering *types.PrimitiveU32, lstPrincipals *types.List[*types.PID], strMessage *types.String) (*nex.RMCMessage, *nex.Error)
+	GetDetailedParticipants     func(err error, packet nex.PacketInterface, callID uint32, idGathering *types.PrimitiveU32) (*nex.RMCMessage, *nex.Error)
+	GetParticipantsURLs         func(err error, packet nex.PacketInterface, callID uint32, idGathering *types.PrimitiveU32) (*nex.RMCMessage, *nex.Error)
+	FindByType                  func(err error, packet nex.PacketInterface, callID uint32, strType *types.String, resultRange *types.ResultRange) (*nex.RMCMessage, *nex.Error)
+	FindByDescription           func(err error, packet nex.PacketInterface, callID uint32, strDescription *types.String, resultRange *types.ResultRange) (*nex.RMCMessage, *nex.Error)
+	FindByDescriptionRegex      func(err error, packet nex.PacketInterface, callID uint32, strDescriptionRegex *types.String, resultRange *types.ResultRange) (*nex.RMCMessage, *nex.Error)
+	FindByID                    func(err error, packet nex.PacketInterface, callID uint32, lstID *types.List[*types.PrimitiveU32]) (*nex.RMCMessage, *nex.Error)
+	FindBySingleID              func(err error, packet nex.PacketInterface, callID uint32, id *types.PrimitiveU32) (*nex.RMCMessage, *nex.Error)
+	FindByOwner                 func(err error, packet nex.PacketInterface, callID uint32, id *types.PID, resultRange *types.ResultRange) (*nex.RMCMessage, *nex.Error)
+	FindByParticipants          func(err error, packet nex.PacketInterface, callID uint32, pid *types.List[*types.PID]) (*nex.RMCMessage, *nex.Error)
+	FindInvitations             func(err error, packet nex.PacketInterface, callID uint32, resultRange *types.ResultRange) (*nex.RMCMessage, *nex.Error)
+	FindBySQLQuery              func(err error, packet nex.PacketInterface, callID uint32, strQuery *types.String, resultRange *types.ResultRange) (*nex.RMCMessage, *nex.Error)
+	LaunchSession               func(err error, packet nex.PacketInterface, callID uint32, idGathering *types.PrimitiveU32, strURL *types.String) (*nex.RMCMessage, *nex.Error)
+	UpdateSessionURL            func(err error, packet nex.PacketInterface, callID uint32, idGathering *types.PrimitiveU32, strURL *types.String) (*nex.RMCMessage, *nex.Error)
+	GetSessionURL               func(err error, packet nex.PacketInterface, callID uint32, idGathering *types.PrimitiveU32) (*nex.RMCMessage, *nex.Error)
+	GetState                    func(err error, packet nex.PacketInterface, callID uint32, idGathering *types.PrimitiveU32) (*nex.RMCMessage, *nex.Error)
+	SetState                    func(err error, packet nex.PacketInterface, callID uint32, idGathering *types.PrimitiveU32, uiNewState *types.PrimitiveU32) (*nex.RMCMessage, *nex.Error)
+	ReportStats                 func(err error, packet nex.PacketInterface, callID uint32, idGathering *types.PrimitiveU32, lstStats *types.List[*match_making_types.GatheringStats]) (*nex.RMCMessage, *nex.Error)
+	GetStats                    func(err error, packet nex.PacketInterface, callID uint32, idGathering *types.PrimitiveU32, lstParticipants *types.List[*types.PID], lstColumns *types.Buffer) (*nex.RMCMessage, *nex.Error)
+	DeleteGathering             func(err error, packet nex.PacketInterface, callID uint32, idGathering *types.PrimitiveU32) (*nex.RMCMessage, *nex.Error)
+	GetPendingDeletions         func(err error, packet nex.PacketInterface, callID uint32, uiReason *types.PrimitiveU32, resultRange *types.ResultRange) (*nex.RMCMessage, *nex.Error)
+	DeleteFromDeletions         func(err error, packet nex.PacketInterface, callID uint32, lstDeletions *types.List[*types.PrimitiveU32]) (*nex.RMCMessage, *nex.Error)
+	MigrateGatheringOwnershipV1 func(err error, packet nex.PacketInterface, callID uint32, gid *types.PrimitiveU32, lstPotentialNewOwnersID *types.List[*types.PID]) (*nex.RMCMessage, *nex.Error)
+	FindByDescriptionLike       func(err error, packet nex.PacketInterface, callID uint32, strDescriptionLike *types.String, resultRange *types.ResultRange) (*nex.RMCMessage, *nex.Error)
+	RegisterLocalURL            func(err error, packet nex.PacketInterface, callID uint32, gid *types.PrimitiveU32, url *types.StationURL) (*nex.RMCMessage, *nex.Error)
+	RegisterLocalURLs           func(err error, packet nex.PacketInterface, callID uint32, gid *types.PrimitiveU32, lstURLs *types.List[*types.StationURL]) (*nex.RMCMessage, *nex.Error)
+	UpdateSessionHostV1         func(err error, packet nex.PacketInterface, callID uint32, gid *types.PrimitiveU32) (*nex.RMCMessage, *nex.Error)
+	GetSessionURLs              func(err error, packet nex.PacketInterface, callID uint32, gid *types.PrimitiveU32) (*nex.RMCMessage, *nex.Error)
+	UpdateSessionHost           func(err error, packet nex.PacketInterface, callID uint32, gid *types.PrimitiveU32, isMigrateOwner *types.PrimitiveBool) (*nex.RMCMessage, *nex.Error)
+	UpdateGatheringOwnership    func(err error, packet nex.PacketInterface, callID uint32, gid *types.PrimitiveU32, participantsOnly *types.PrimitiveBool) (*nex.RMCMessage, *nex.Error)
+	MigrateGatheringOwnership   func(err error, packet nex.PacketInterface, callID uint32, gid *types.PrimitiveU32, lstPotentialNewOwnersID *types.List[*types.PID], participantsOnly *types.PrimitiveBool) (*nex.RMCMessage, *nex.Error)
+	Patches                     nex.ServiceProtocol
+	PatchedMethods              []uint32
 }
 
-// Setup initializes the protocol
-func (protocol *Protocol) Setup() {
-	protocol.Server.On("Data", func(packet nex.PacketInterface) {
-		request := packet.RMCRequest()
+// Interface implements the methods present on the Match Making protocol struct
+type Interface interface {
+	Endpoint() nex.EndpointInterface
+	SetEndpoint(endpoint nex.EndpointInterface)
+	SetHandlerRegisterGathering(handler func(err error, packet nex.PacketInterface, callID uint32, anyGathering *types.AnyDataHolder) (*nex.RMCMessage, *nex.Error))
+	SetHandlerUnregisterGathering(handler func(err error, packet nex.PacketInterface, callID uint32, idGathering *types.PrimitiveU32) (*nex.RMCMessage, *nex.Error))
+	SetHandlerUnregisterGatherings(handler func(err error, packet nex.PacketInterface, callID uint32, lstGatherings *types.List[*types.PrimitiveU32]) (*nex.RMCMessage, *nex.Error))
+	SetHandlerUpdateGathering(handler func(err error, packet nex.PacketInterface, callID uint32, anyGathering *types.AnyDataHolder) (*nex.RMCMessage, *nex.Error))
+	SetHandlerInvite(handler func(err error, packet nex.PacketInterface, callID uint32, idGathering *types.PrimitiveU32, lstPrincipals *types.List[*types.PID], strMessage *types.String) (*nex.RMCMessage, *nex.Error))
+	SetHandlerAcceptInvitation(handler func(err error, packet nex.PacketInterface, callID uint32, idGathering *types.PrimitiveU32, strMessage *types.String) (*nex.RMCMessage, *nex.Error))
+	SetHandlerDeclineInvitation(handler func(err error, packet nex.PacketInterface, callID uint32, idGathering *types.PrimitiveU32, strMessage *types.String) (*nex.RMCMessage, *nex.Error))
+	SetHandlerCancelInvitation(handler func(err error, packet nex.PacketInterface, callID uint32, idGathering *types.PrimitiveU32, lstPrincipals *types.List[*types.PID], strMessage *types.String) (*nex.RMCMessage, *nex.Error))
+	SetHandlerGetInvitationsSent(handler func(err error, packet nex.PacketInterface, callID uint32, idGathering *types.PrimitiveU32) (*nex.RMCMessage, *nex.Error))
+	SetHandlerGetInvitationsReceived(handler func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, *nex.Error))
+	SetHandlerParticipate(handler func(err error, packet nex.PacketInterface, callID uint32, idGathering *types.PrimitiveU32, strMessage *types.String) (*nex.RMCMessage, *nex.Error))
+	SetHandlerCancelParticipation(handler func(err error, packet nex.PacketInterface, callID uint32, idGathering *types.PrimitiveU32, strMessage *types.String) (*nex.RMCMessage, *nex.Error))
+	SetHandlerGetParticipants(handler func(err error, packet nex.PacketInterface, callID uint32, idGathering *types.PrimitiveU32) (*nex.RMCMessage, *nex.Error))
+	SetHandlerAddParticipants(handler func(err error, packet nex.PacketInterface, callID uint32, idGathering *types.PrimitiveU32, lstPrincipals *types.List[*types.PID], strMessage *types.String) (*nex.RMCMessage, *nex.Error))
+	SetHandlerGetDetailedParticipants(handler func(err error, packet nex.PacketInterface, callID uint32, idGathering *types.PrimitiveU32) (*nex.RMCMessage, *nex.Error))
+	SetHandlerGetParticipantsURLs(handler func(err error, packet nex.PacketInterface, callID uint32, idGathering *types.PrimitiveU32) (*nex.RMCMessage, *nex.Error))
+	SetHandlerFindByType(handler func(err error, packet nex.PacketInterface, callID uint32, strType *types.String, resultRange *types.ResultRange) (*nex.RMCMessage, *nex.Error))
+	SetHandlerFindByDescription(handler func(err error, packet nex.PacketInterface, callID uint32, strDescription *types.String, resultRange *types.ResultRange) (*nex.RMCMessage, *nex.Error))
+	SetHandlerFindByDescriptionRegex(handler func(err error, packet nex.PacketInterface, callID uint32, strDescriptionRegex *types.String, resultRange *types.ResultRange) (*nex.RMCMessage, *nex.Error))
+	SetHandlerFindByID(handler func(err error, packet nex.PacketInterface, callID uint32, lstID *types.List[*types.PrimitiveU32]) (*nex.RMCMessage, *nex.Error))
+	SetHandlerFindBySingleID(handler func(err error, packet nex.PacketInterface, callID uint32, id *types.PrimitiveU32) (*nex.RMCMessage, *nex.Error))
+	SetHandlerFindByOwner(handler func(err error, packet nex.PacketInterface, callID uint32, id *types.PID, resultRange *types.ResultRange) (*nex.RMCMessage, *nex.Error))
+	SetHandlerFindByParticipants(handler func(err error, packet nex.PacketInterface, callID uint32, pid *types.List[*types.PID]) (*nex.RMCMessage, *nex.Error))
+	SetHandlerFindInvitations(handler func(err error, packet nex.PacketInterface, callID uint32, resultRange *types.ResultRange) (*nex.RMCMessage, *nex.Error))
+	SetHandlerFindBySQLQuery(handler func(err error, packet nex.PacketInterface, callID uint32, strQuery *types.String, resultRange *types.ResultRange) (*nex.RMCMessage, *nex.Error))
+	SetHandlerLaunchSession(handler func(err error, packet nex.PacketInterface, callID uint32, idGathering *types.PrimitiveU32, strURL *types.String) (*nex.RMCMessage, *nex.Error))
+	SetHandlerUpdateSessionURL(handler func(err error, packet nex.PacketInterface, callID uint32, idGathering *types.PrimitiveU32, strURL *types.String) (*nex.RMCMessage, *nex.Error))
+	SetHandlerGetSessionURL(handler func(err error, packet nex.PacketInterface, callID uint32, idGathering *types.PrimitiveU32) (*nex.RMCMessage, *nex.Error))
+	SetHandlerGetState(handler func(err error, packet nex.PacketInterface, callID uint32, idGathering *types.PrimitiveU32) (*nex.RMCMessage, *nex.Error))
+	SetHandlerSetState(handler func(err error, packet nex.PacketInterface, callID uint32, idGathering *types.PrimitiveU32, uiNewState *types.PrimitiveU32) (*nex.RMCMessage, *nex.Error))
+	SetHandlerReportStats(handler func(err error, packet nex.PacketInterface, callID uint32, idGathering *types.PrimitiveU32, lstStats *types.List[*match_making_types.GatheringStats]) (*nex.RMCMessage, *nex.Error))
+	SetHandlerGetStats(handler func(err error, packet nex.PacketInterface, callID uint32, idGathering *types.PrimitiveU32, lstParticipants *types.List[*types.PID], lstColumns *types.Buffer) (*nex.RMCMessage, *nex.Error))
+	SetHandlerDeleteGathering(handler func(err error, packet nex.PacketInterface, callID uint32, idGathering *types.PrimitiveU32) (*nex.RMCMessage, *nex.Error))
+	SetHandlerGetPendingDeletions(handler func(err error, packet nex.PacketInterface, callID uint32, uiReason *types.PrimitiveU32, resultRange *types.ResultRange) (*nex.RMCMessage, *nex.Error))
+	SetHandlerDeleteFromDeletions(handler func(err error, packet nex.PacketInterface, callID uint32, lstDeletions *types.List[*types.PrimitiveU32]) (*nex.RMCMessage, *nex.Error))
+	SetHandlerMigrateGatheringOwnershipV1(handler func(err error, packet nex.PacketInterface, callID uint32, gid *types.PrimitiveU32, lstPotentialNewOwnersID *types.List[*types.PID]) (*nex.RMCMessage, *nex.Error))
+	SetHandlerFindByDescriptionLike(handler func(err error, packet nex.PacketInterface, callID uint32, strDescriptionLike *types.String, resultRange *types.ResultRange) (*nex.RMCMessage, *nex.Error))
+	SetHandlerRegisterLocalURL(handler func(err error, packet nex.PacketInterface, callID uint32, gid *types.PrimitiveU32, url *types.StationURL) (*nex.RMCMessage, *nex.Error))
+	SetHandlerRegisterLocalURLs(handler func(err error, packet nex.PacketInterface, callID uint32, gid *types.PrimitiveU32, lstURLs *types.List[*types.StationURL]) (*nex.RMCMessage, *nex.Error))
+	SetHandlerUpdateSessionHostV1(handler func(err error, packet nex.PacketInterface, callID uint32, gid *types.PrimitiveU32) (*nex.RMCMessage, *nex.Error))
+	SetHandlerGetSessionURLs(handler func(err error, packet nex.PacketInterface, callID uint32, gid *types.PrimitiveU32) (*nex.RMCMessage, *nex.Error))
+	SetHandlerUpdateSessionHost(handler func(err error, packet nex.PacketInterface, callID uint32, gid *types.PrimitiveU32, isMigrateOwner *types.PrimitiveBool) (*nex.RMCMessage, *nex.Error))
+	SetHandlerUpdateGatheringOwnership(handler func(err error, packet nex.PacketInterface, callID uint32, gid *types.PrimitiveU32, participantsOnly *types.PrimitiveBool) (*nex.RMCMessage, *nex.Error))
+	SetHandlerMigrateGatheringOwnership(handler func(err error, packet nex.PacketInterface, callID uint32, gid *types.PrimitiveU32, lstPotentialNewOwnersID *types.List[*types.PID], participantsOnly *types.PrimitiveBool) (*nex.RMCMessage, *nex.Error))
+}
 
-		if request.ProtocolID() == ProtocolID {
-			protocol.HandlePacket(packet)
-		}
-	})
+// Endpoint returns the endpoint implementing the protocol
+func (protocol *Protocol) Endpoint() nex.EndpointInterface {
+	return protocol.endpoint
+}
+
+// SetEndpoint sets the endpoint implementing the protocol
+func (protocol *Protocol) SetEndpoint(endpoint nex.EndpointInterface) {
+	protocol.endpoint = endpoint
+}
+
+// SetHandlerRegisterGathering sets the handler for the RegisterGathering method
+func (protocol *Protocol) SetHandlerRegisterGathering(handler func(err error, packet nex.PacketInterface, callID uint32, anyGathering *types.AnyDataHolder) (*nex.RMCMessage, *nex.Error)) {
+	protocol.RegisterGathering = handler
+}
+
+// SetHandlerUnregisterGathering sets the handler for the UnregisterGathering method
+func (protocol *Protocol) SetHandlerUnregisterGathering(handler func(err error, packet nex.PacketInterface, callID uint32, idGathering *types.PrimitiveU32) (*nex.RMCMessage, *nex.Error)) {
+	protocol.UnregisterGathering = handler
+}
+
+// SetHandlerUnregisterGatherings sets the handler for the UnregisterGatherings method
+func (protocol *Protocol) SetHandlerUnregisterGatherings(handler func(err error, packet nex.PacketInterface, callID uint32, lstGatherings *types.List[*types.PrimitiveU32]) (*nex.RMCMessage, *nex.Error)) {
+	protocol.UnregisterGatherings = handler
+}
+
+// SetHandlerUpdateGathering sets the handler for the UpdateGathering method
+func (protocol *Protocol) SetHandlerUpdateGathering(handler func(err error, packet nex.PacketInterface, callID uint32, anyGathering *types.AnyDataHolder) (*nex.RMCMessage, *nex.Error)) {
+	protocol.UpdateGathering = handler
+}
+
+// SetHandlerInvite sets the handler for the Invite method
+func (protocol *Protocol) SetHandlerInvite(handler func(err error, packet nex.PacketInterface, callID uint32, idGathering *types.PrimitiveU32, lstPrincipals *types.List[*types.PID], strMessage *types.String) (*nex.RMCMessage, *nex.Error)) {
+	protocol.Invite = handler
+}
+
+// SetHandlerAcceptInvitation sets the handler for the AcceptInvitation method
+func (protocol *Protocol) SetHandlerAcceptInvitation(handler func(err error, packet nex.PacketInterface, callID uint32, idGathering *types.PrimitiveU32, strMessage *types.String) (*nex.RMCMessage, *nex.Error)) {
+	protocol.AcceptInvitation = handler
+}
+
+// SetHandlerDeclineInvitation sets the handler for the DeclineInvitation method
+func (protocol *Protocol) SetHandlerDeclineInvitation(handler func(err error, packet nex.PacketInterface, callID uint32, idGathering *types.PrimitiveU32, strMessage *types.String) (*nex.RMCMessage, *nex.Error)) {
+	protocol.DeclineInvitation = handler
+}
+
+// SetHandlerCancelInvitation sets the handler for the CancelInvitation method
+func (protocol *Protocol) SetHandlerCancelInvitation(handler func(err error, packet nex.PacketInterface, callID uint32, idGathering *types.PrimitiveU32, lstPrincipals *types.List[*types.PID], strMessage *types.String) (*nex.RMCMessage, *nex.Error)) {
+	protocol.CancelInvitation = handler
+}
+
+// SetHandlerGetInvitationsSent sets the handler for the GetInvitationsSent method
+func (protocol *Protocol) SetHandlerGetInvitationsSent(handler func(err error, packet nex.PacketInterface, callID uint32, idGathering *types.PrimitiveU32) (*nex.RMCMessage, *nex.Error)) {
+	protocol.GetInvitationsSent = handler
+}
+
+// SetHandlerGetInvitationsReceived sets the handler for the GetInvitationsReceived method
+func (protocol *Protocol) SetHandlerGetInvitationsReceived(handler func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, *nex.Error)) {
+	protocol.GetInvitationsReceived = handler
+}
+
+// SetHandlerParticipate sets the handler for the Participate method
+func (protocol *Protocol) SetHandlerParticipate(handler func(err error, packet nex.PacketInterface, callID uint32, idGathering *types.PrimitiveU32, strMessage *types.String) (*nex.RMCMessage, *nex.Error)) {
+	protocol.Participate = handler
+}
+
+// SetHandlerCancelParticipation sets the handler for the CancelParticipation method
+func (protocol *Protocol) SetHandlerCancelParticipation(handler func(err error, packet nex.PacketInterface, callID uint32, idGathering *types.PrimitiveU32, strMessage *types.String) (*nex.RMCMessage, *nex.Error)) {
+	protocol.CancelParticipation = handler
+}
+
+// SetHandlerGetParticipants sets the handler for the GetParticipants method
+func (protocol *Protocol) SetHandlerGetParticipants(handler func(err error, packet nex.PacketInterface, callID uint32, idGathering *types.PrimitiveU32) (*nex.RMCMessage, *nex.Error)) {
+	protocol.GetParticipants = handler
+}
+
+// SetHandlerAddParticipants sets the handler for the AddParticipants method
+func (protocol *Protocol) SetHandlerAddParticipants(handler func(err error, packet nex.PacketInterface, callID uint32, idGathering *types.PrimitiveU32, lstPrincipals *types.List[*types.PID], strMessage *types.String) (*nex.RMCMessage, *nex.Error)) {
+	protocol.AddParticipants = handler
+}
+
+// SetHandlerGetDetailedParticipants sets the handler for the GetDetailedParticipants method
+func (protocol *Protocol) SetHandlerGetDetailedParticipants(handler func(err error, packet nex.PacketInterface, callID uint32, idGathering *types.PrimitiveU32) (*nex.RMCMessage, *nex.Error)) {
+	protocol.GetDetailedParticipants = handler
+}
+
+// SetHandlerGetParticipantsURLs sets the handler for the GetParticipantsURLs method
+func (protocol *Protocol) SetHandlerGetParticipantsURLs(handler func(err error, packet nex.PacketInterface, callID uint32, idGathering *types.PrimitiveU32) (*nex.RMCMessage, *nex.Error)) {
+	protocol.GetParticipantsURLs = handler
+}
+
+// SetHandlerFindByType sets the handler for the FindByType method
+func (protocol *Protocol) SetHandlerFindByType(handler func(err error, packet nex.PacketInterface, callID uint32, strType *types.String, resultRange *types.ResultRange) (*nex.RMCMessage, *nex.Error)) {
+	protocol.FindByType = handler
+}
+
+// SetHandlerFindByDescription sets the handler for the FindByDescription method
+func (protocol *Protocol) SetHandlerFindByDescription(handler func(err error, packet nex.PacketInterface, callID uint32, strDescription *types.String, resultRange *types.ResultRange) (*nex.RMCMessage, *nex.Error)) {
+	protocol.FindByDescription = handler
+}
+
+// SetHandlerFindByDescriptionRegex sets the handler for the FindByDescriptionRegex method
+func (protocol *Protocol) SetHandlerFindByDescriptionRegex(handler func(err error, packet nex.PacketInterface, callID uint32, strDescriptionRegex *types.String, resultRange *types.ResultRange) (*nex.RMCMessage, *nex.Error)) {
+	protocol.FindByDescriptionRegex = handler
+}
+
+// SetHandlerFindByID sets the handler for the FindByID method
+func (protocol *Protocol) SetHandlerFindByID(handler func(err error, packet nex.PacketInterface, callID uint32, lstID *types.List[*types.PrimitiveU32]) (*nex.RMCMessage, *nex.Error)) {
+	protocol.FindByID = handler
+}
+
+// SetHandlerFindBySingleID sets the handler for the FindBySingleID method
+func (protocol *Protocol) SetHandlerFindBySingleID(handler func(err error, packet nex.PacketInterface, callID uint32, id *types.PrimitiveU32) (*nex.RMCMessage, *nex.Error)) {
+	protocol.FindBySingleID = handler
+}
+
+// SetHandlerFindByOwner sets the handler for the FindByOwner method
+func (protocol *Protocol) SetHandlerFindByOwner(handler func(err error, packet nex.PacketInterface, callID uint32, id *types.PID, resultRange *types.ResultRange) (*nex.RMCMessage, *nex.Error)) {
+	protocol.FindByOwner = handler
+}
+
+// SetHandlerFindByParticipants sets the handler for the FindByParticipants method
+func (protocol *Protocol) SetHandlerFindByParticipants(handler func(err error, packet nex.PacketInterface, callID uint32, pid *types.List[*types.PID]) (*nex.RMCMessage, *nex.Error)) {
+	protocol.FindByParticipants = handler
+}
+
+// SetHandlerFindInvitations sets the handler for the FindInvitations method
+func (protocol *Protocol) SetHandlerFindInvitations(handler func(err error, packet nex.PacketInterface, callID uint32, resultRange *types.ResultRange) (*nex.RMCMessage, *nex.Error)) {
+	protocol.FindInvitations = handler
+}
+
+// SetHandlerFindBySQLQuery sets the handler for the FindBySQLQuery method
+func (protocol *Protocol) SetHandlerFindBySQLQuery(handler func(err error, packet nex.PacketInterface, callID uint32, strQuery *types.String, resultRange *types.ResultRange) (*nex.RMCMessage, *nex.Error)) {
+	protocol.FindBySQLQuery = handler
+}
+
+// SetHandlerLaunchSession sets the handler for the LaunchSession method
+func (protocol *Protocol) SetHandlerLaunchSession(handler func(err error, packet nex.PacketInterface, callID uint32, idGathering *types.PrimitiveU32, strURL *types.String) (*nex.RMCMessage, *nex.Error)) {
+	protocol.LaunchSession = handler
+}
+
+// SetHandlerUpdateSessionURL sets the handler for the UpdateSessionURL method
+func (protocol *Protocol) SetHandlerUpdateSessionURL(handler func(err error, packet nex.PacketInterface, callID uint32, idGathering *types.PrimitiveU32, strURL *types.String) (*nex.RMCMessage, *nex.Error)) {
+	protocol.UpdateSessionURL = handler
+}
+
+// SetHandlerGetSessionURL sets the handler for the GetSessionURL method
+func (protocol *Protocol) SetHandlerGetSessionURL(handler func(err error, packet nex.PacketInterface, callID uint32, idGathering *types.PrimitiveU32) (*nex.RMCMessage, *nex.Error)) {
+	protocol.GetSessionURL = handler
+}
+
+// SetHandlerGetState sets the handler for the GetState method
+func (protocol *Protocol) SetHandlerGetState(handler func(err error, packet nex.PacketInterface, callID uint32, idGathering *types.PrimitiveU32) (*nex.RMCMessage, *nex.Error)) {
+	protocol.GetState = handler
+}
+
+// SetHandlerSetState sets the handler for the SetState method
+func (protocol *Protocol) SetHandlerSetState(handler func(err error, packet nex.PacketInterface, callID uint32, idGathering *types.PrimitiveU32, uiNewState *types.PrimitiveU32) (*nex.RMCMessage, *nex.Error)) {
+	protocol.SetState = handler
+}
+
+// SetHandlerReportStats sets the handler for the ReportStats method
+func (protocol *Protocol) SetHandlerReportStats(handler func(err error, packet nex.PacketInterface, callID uint32, idGathering *types.PrimitiveU32, lstStats *types.List[*match_making_types.GatheringStats]) (*nex.RMCMessage, *nex.Error)) {
+	protocol.ReportStats = handler
+}
+
+// SetHandlerGetStats sets the handler for the GetStats method
+func (protocol *Protocol) SetHandlerGetStats(handler func(err error, packet nex.PacketInterface, callID uint32, idGathering *types.PrimitiveU32, lstParticipants *types.List[*types.PID], lstColumns *types.Buffer) (*nex.RMCMessage, *nex.Error)) {
+	protocol.GetStats = handler
+}
+
+// SetHandlerDeleteGathering sets the handler for the DeleteGathering method
+func (protocol *Protocol) SetHandlerDeleteGathering(handler func(err error, packet nex.PacketInterface, callID uint32, idGathering *types.PrimitiveU32) (*nex.RMCMessage, *nex.Error)) {
+	protocol.DeleteGathering = handler
+}
+
+// SetHandlerGetPendingDeletions sets the handler for the GetPendingDeletions method
+func (protocol *Protocol) SetHandlerGetPendingDeletions(handler func(err error, packet nex.PacketInterface, callID uint32, uiReason *types.PrimitiveU32, resultRange *types.ResultRange) (*nex.RMCMessage, *nex.Error)) {
+	protocol.GetPendingDeletions = handler
+}
+
+// SetHandlerDeleteFromDeletions sets the handler for the DeleteFromDeletions method
+func (protocol *Protocol) SetHandlerDeleteFromDeletions(handler func(err error, packet nex.PacketInterface, callID uint32, lstDeletions *types.List[*types.PrimitiveU32]) (*nex.RMCMessage, *nex.Error)) {
+	protocol.DeleteFromDeletions = handler
+}
+
+// SetHandlerMigrateGatheringOwnershipV1 sets the handler for the MigrateGatheringOwnershipV1 method
+func (protocol *Protocol) SetHandlerMigrateGatheringOwnershipV1(handler func(err error, packet nex.PacketInterface, callID uint32, gid *types.PrimitiveU32, lstPotentialNewOwnersID *types.List[*types.PID]) (*nex.RMCMessage, *nex.Error)) {
+	protocol.MigrateGatheringOwnershipV1 = handler
+}
+
+// SetHandlerFindByDescriptionLike sets the handler for the FindByDescriptionLike method
+func (protocol *Protocol) SetHandlerFindByDescriptionLike(handler func(err error, packet nex.PacketInterface, callID uint32, strDescriptionLike *types.String, resultRange *types.ResultRange) (*nex.RMCMessage, *nex.Error)) {
+	protocol.FindByDescriptionLike = handler
+}
+
+// SetHandlerRegisterLocalURL sets the handler for the RegisterLocalURL method
+func (protocol *Protocol) SetHandlerRegisterLocalURL(handler func(err error, packet nex.PacketInterface, callID uint32, gid *types.PrimitiveU32, url *types.StationURL) (*nex.RMCMessage, *nex.Error)) {
+	protocol.RegisterLocalURL = handler
+}
+
+// SetHandlerRegisterLocalURLs sets the handler for the RegisterLocalURLs method
+func (protocol *Protocol) SetHandlerRegisterLocalURLs(handler func(err error, packet nex.PacketInterface, callID uint32, gid *types.PrimitiveU32, lstURLs *types.List[*types.StationURL]) (*nex.RMCMessage, *nex.Error)) {
+	protocol.RegisterLocalURLs = handler
+}
+
+// SetHandlerUpdateSessionHostV1 sets the handler for the UpdateSessionHostV1 method
+func (protocol *Protocol) SetHandlerUpdateSessionHostV1(handler func(err error, packet nex.PacketInterface, callID uint32, gid *types.PrimitiveU32) (*nex.RMCMessage, *nex.Error)) {
+	protocol.UpdateSessionHostV1 = handler
+}
+
+// SetHandlerGetSessionURLs sets the handler for the GetSessionURLs method
+func (protocol *Protocol) SetHandlerGetSessionURLs(handler func(err error, packet nex.PacketInterface, callID uint32, gid *types.PrimitiveU32) (*nex.RMCMessage, *nex.Error)) {
+	protocol.GetSessionURLs = handler
+}
+
+// SetHandlerUpdateSessionHost sets the handler for the UpdateSessionHost method
+func (protocol *Protocol) SetHandlerUpdateSessionHost(handler func(err error, packet nex.PacketInterface, callID uint32, gid *types.PrimitiveU32, isMigrateOwner *types.PrimitiveBool) (*nex.RMCMessage, *nex.Error)) {
+	protocol.UpdateSessionHost = handler
+}
+
+// SetHandlerUpdateGatheringOwnership sets the handler for the UpdateGatheringOwnership method
+func (protocol *Protocol) SetHandlerUpdateGatheringOwnership(handler func(err error, packet nex.PacketInterface, callID uint32, gid *types.PrimitiveU32, participantsOnly *types.PrimitiveBool) (*nex.RMCMessage, *nex.Error)) {
+	protocol.UpdateGatheringOwnership = handler
+}
+
+// SetHandlerMigrateGatheringOwnership sets the handler for the MigrateGatheringOwnership method
+func (protocol *Protocol) SetHandlerMigrateGatheringOwnership(handler func(err error, packet nex.PacketInterface, callID uint32, gid *types.PrimitiveU32, lstPotentialNewOwnersID *types.List[*types.PID], participantsOnly *types.PrimitiveBool) (*nex.RMCMessage, *nex.Error)) {
+	protocol.MigrateGatheringOwnership = handler
 }
 
 // HandlePacket sends the packet to the correct RMC method handler
 func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
-	request := packet.RMCRequest()
+	message := packet.RMCMessage()
 
-	switch request.MethodID() {
+	if !message.IsRequest || message.ProtocolID != ProtocolID {
+		return
+	}
+
+	if protocol.Patches != nil && slices.Contains(protocol.PatchedMethods, message.MethodID) {
+		protocol.Patches.HandlePacket(packet)
+		return
+	}
+
+	switch message.MethodID {
 	case MethodRegisterGathering:
-		go protocol.handleRegisterGathering(packet)
+		protocol.handleRegisterGathering(packet)
 	case MethodUnregisterGathering:
-		go protocol.handleUnregisterGathering(packet)
+		protocol.handleUnregisterGathering(packet)
 	case MethodUnregisterGatherings:
-		go protocol.handleUnregisterGatherings(packet)
+		protocol.handleUnregisterGatherings(packet)
 	case MethodUpdateGathering:
-		go protocol.handleUpdateGathering(packet)
+		protocol.handleUpdateGathering(packet)
 	case MethodInvite:
-		go protocol.handleInvite(packet)
+		protocol.handleInvite(packet)
 	case MethodAcceptInvitation:
-		go protocol.handleAcceptInvitation(packet)
+		protocol.handleAcceptInvitation(packet)
 	case MethodDeclineInvitation:
-		go protocol.handleDeclineInvitation(packet)
+		protocol.handleDeclineInvitation(packet)
 	case MethodCancelInvitation:
-		go protocol.handleCancelInvitation(packet)
+		protocol.handleCancelInvitation(packet)
 	case MethodGetInvitationsSent:
-		go protocol.handleGetInvitationsSent(packet)
+		protocol.handleGetInvitationsSent(packet)
 	case MethodGetInvitationsReceived:
-		go protocol.handleGetInvitationsReceived(packet)
+		protocol.handleGetInvitationsReceived(packet)
 	case MethodParticipate:
-		go protocol.handleParticipate(packet)
+		protocol.handleParticipate(packet)
 	case MethodCancelParticipation:
-		go protocol.handleCancelParticipation(packet)
+		protocol.handleCancelParticipation(packet)
 	case MethodGetParticipants:
-		go protocol.handleGetParticipants(packet)
+		protocol.handleGetParticipants(packet)
 	case MethodAddParticipants:
-		go protocol.handleAddParticipants(packet)
+		protocol.handleAddParticipants(packet)
 	case MethodGetDetailedParticipants:
-		go protocol.handleGetDetailedParticipants(packet)
+		protocol.handleGetDetailedParticipants(packet)
 	case MethodGetParticipantsURLs:
-		go protocol.handleGetParticipantsURLs(packet)
+		protocol.handleGetParticipantsURLs(packet)
 	case MethodFindByType:
-		go protocol.handleFindByType(packet)
+		protocol.handleFindByType(packet)
 	case MethodFindByDescription:
-		go protocol.handleFindByDescription(packet)
+		protocol.handleFindByDescription(packet)
 	case MethodFindByDescriptionRegex:
-		go protocol.handleFindByDescriptionRegex(packet)
+		protocol.handleFindByDescriptionRegex(packet)
 	case MethodFindByID:
-		go protocol.handleFindByID(packet)
+		protocol.handleFindByID(packet)
 	case MethodFindBySingleID:
-		go protocol.handleFindBySingleID(packet)
+		protocol.handleFindBySingleID(packet)
 	case MethodFindByOwner:
-		go protocol.handleFindByOwner(packet)
+		protocol.handleFindByOwner(packet)
 	case MethodFindByParticipants:
-		go protocol.handleFindByParticipants(packet)
+		protocol.handleFindByParticipants(packet)
 	case MethodFindInvitations:
-		go protocol.handleFindInvitations(packet)
+		protocol.handleFindInvitations(packet)
 	case MethodFindBySQLQuery:
-		go protocol.handleFindBySQLQuery(packet)
+		protocol.handleFindBySQLQuery(packet)
 	case MethodLaunchSession:
-		go protocol.handleLaunchSession(packet)
+		protocol.handleLaunchSession(packet)
 	case MethodUpdateSessionURL:
-		go protocol.handleUpdateSessionURL(packet)
+		protocol.handleUpdateSessionURL(packet)
 	case MethodGetSessionURL:
-		go protocol.handleGetSessionURL(packet)
+		protocol.handleGetSessionURL(packet)
 	case MethodGetState:
-		go protocol.handleGetState(packet)
+		protocol.handleGetState(packet)
 	case MethodSetState:
-		go protocol.handleSetState(packet)
+		protocol.handleSetState(packet)
 	case MethodReportStats:
-		go protocol.handleReportStats(packet)
+		protocol.handleReportStats(packet)
 	case MethodGetStats:
-		go protocol.handleGetStats(packet)
+		protocol.handleGetStats(packet)
 	case MethodDeleteGathering:
-		go protocol.handleDeleteGathering(packet)
+		protocol.handleDeleteGathering(packet)
 	case MethodGetPendingDeletions:
-		go protocol.handleGetPendingDeletions(packet)
+		protocol.handleGetPendingDeletions(packet)
 	case MethodDeleteFromDeletions:
-		go protocol.handleDeleteFromDeletions(packet)
+		protocol.handleDeleteFromDeletions(packet)
 	case MethodMigrateGatheringOwnershipV1:
-		go protocol.handleMigrateGatheringOwnershipV1(packet)
+		protocol.handleMigrateGatheringOwnershipV1(packet)
 	case MethodFindByDescriptionLike:
-		go protocol.handleFindByDescriptionLike(packet)
+		protocol.handleFindByDescriptionLike(packet)
 	case MethodRegisterLocalURL:
-		go protocol.handleRegisterLocalURL(packet)
+		protocol.handleRegisterLocalURL(packet)
 	case MethodRegisterLocalURLs:
-		go protocol.handleRegisterLocalURLs(packet)
+		protocol.handleRegisterLocalURLs(packet)
 	case MethodUpdateSessionHostV1:
-		go protocol.handleUpdateSessionHostV1(packet)
+		protocol.handleUpdateSessionHostV1(packet)
 	case MethodGetSessionURLs:
-		go protocol.handleGetSessionURLs(packet)
+		protocol.handleGetSessionURLs(packet)
 	case MethodUpdateSessionHost:
-		go protocol.handleUpdateSessionHost(packet)
+		protocol.handleUpdateSessionHost(packet)
 	case MethodUpdateGatheringOwnership:
-		go protocol.handleUpdateGatheringOwnership(packet)
+		protocol.handleUpdateGatheringOwnership(packet)
 	case MethodMigrateGatheringOwnership:
-		go protocol.handleMigrateGatheringOwnership(packet)
+		protocol.handleMigrateGatheringOwnership(packet)
 	default:
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
-		fmt.Printf("Unsupported MatchMaking method ID: %#v\n", request.MethodID())
+		errMessage := fmt.Sprintf("Unsupported MatchMaking method ID: %#v\n", message.MethodID)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, errMessage)
+
+		globals.RespondError(packet, ProtocolID, err)
+		globals.Logger.Warning(err.Message)
 	}
 }
 
 // NewProtocol returns a new Match Making protocol
-func NewProtocol(server *nex.Server) *Protocol {
-	protocol := &Protocol{Server: server}
-
-	protocol.Setup()
-
-	return protocol
+func NewProtocol() *Protocol {
+	return &Protocol{}
 }

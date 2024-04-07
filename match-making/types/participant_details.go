@@ -1,45 +1,63 @@
-// Package types implements all the types used by the Matchmaking protocols.
-//
-// Since there are multiple match making related protocols, and they all share types
-// all types used by all match making protocols is defined here
+// Package types implements all the types used by the Matchmaking protocol
 package types
 
 import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/v2/types"
 )
 
-// ParticipantDetails holds information a participant
+// ParticipantDetails is a type within the Matchmaking protocol
 type ParticipantDetails struct {
-	nex.Structure
-	IDParticipant  uint32
-	StrName        string
-	StrMessage     string
-	UIParticipants uint16
+	types.Structure
+	IDParticipant  *types.PID
+	StrName        *types.String
+	StrMessage     *types.String
+	UIParticipants *types.PrimitiveU16
 }
 
-// ExtractFromStream extracts a ParticipantDetails structure from a stream
-func (participantDetails *ParticipantDetails) ExtractFromStream(stream *nex.StreamIn) error {
+// WriteTo writes the ParticipantDetails to the given writable
+func (pd *ParticipantDetails) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
+
+	pd.IDParticipant.WriteTo(writable)
+	pd.StrName.WriteTo(writable)
+	pd.StrMessage.WriteTo(writable)
+	pd.UIParticipants.WriteTo(writable)
+
+	content := contentWritable.Bytes()
+
+	pd.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
+}
+
+// ExtractFrom extracts the ParticipantDetails from the given readable
+func (pd *ParticipantDetails) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	participantDetails.IDParticipant, err = stream.ReadUInt32LE()
+	err = pd.ExtractHeaderFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract ParticipantDetails header. %s", err.Error())
+	}
+
+	err = pd.IDParticipant.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract ParticipantDetails.IDParticipant. %s", err.Error())
 	}
 
-	participantDetails.StrName, err = stream.ReadString()
+	err = pd.StrName.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract ParticipantDetails.StrName. %s", err.Error())
 	}
 
-	participantDetails.StrMessage, err = stream.ReadString()
+	err = pd.StrMessage.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract ParticipantDetails.StrMessage. %s", err.Error())
 	}
 
-	participantDetails.UIParticipants, err = stream.ReadUInt16LE()
+	err = pd.UIParticipants.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract ParticipantDetails.UIParticipants. %s", err.Error())
 	}
@@ -47,75 +65,63 @@ func (participantDetails *ParticipantDetails) ExtractFromStream(stream *nex.Stre
 	return nil
 }
 
-// Bytes encodes the ParticipantDetails and returns a byte array
-func (participantDetails *ParticipantDetails) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt32LE(participantDetails.IDParticipant)
-	stream.WriteString(participantDetails.StrName)
-	stream.WriteString(participantDetails.StrMessage)
-	stream.WriteUInt16LE(participantDetails.UIParticipants)
-
-	return stream.Bytes()
-}
-
 // Copy returns a new copied instance of ParticipantDetails
-func (participantDetails *ParticipantDetails) Copy() nex.StructureInterface {
+func (pd *ParticipantDetails) Copy() types.RVType {
 	copied := NewParticipantDetails()
 
-	copied.SetStructureVersion(participantDetails.StructureVersion())
-
-	copied.IDParticipant = participantDetails.IDParticipant
-	copied.StrName = participantDetails.StrName
-	copied.StrMessage = participantDetails.StrMessage
-	copied.UIParticipants = participantDetails.UIParticipants
+	copied.StructureVersion = pd.StructureVersion
+	copied.IDParticipant = pd.IDParticipant.Copy().(*types.PID)
+	copied.StrName = pd.StrName.Copy().(*types.String)
+	copied.StrMessage = pd.StrMessage.Copy().(*types.String)
+	copied.UIParticipants = pd.UIParticipants.Copy().(*types.PrimitiveU16)
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (participantDetails *ParticipantDetails) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*ParticipantDetails)
-
-	if participantDetails.StructureVersion() != other.StructureVersion() {
+// Equals checks if the given ParticipantDetails contains the same data as the current ParticipantDetails
+func (pd *ParticipantDetails) Equals(o types.RVType) bool {
+	if _, ok := o.(*ParticipantDetails); !ok {
 		return false
 	}
 
-	if participantDetails.IDParticipant != other.IDParticipant {
+	other := o.(*ParticipantDetails)
+
+	if pd.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if participantDetails.StrName != other.StrName {
+	if !pd.IDParticipant.Equals(other.IDParticipant) {
 		return false
 	}
 
-	if participantDetails.StrMessage != other.StrMessage {
+	if !pd.StrName.Equals(other.StrName) {
 		return false
 	}
 
-	if participantDetails.UIParticipants != other.UIParticipants {
+	if !pd.StrMessage.Equals(other.StrMessage) {
 		return false
 	}
 
-	return true
+	return pd.UIParticipants.Equals(other.UIParticipants)
 }
 
-// String returns a string representation of the struct
-func (participantDetails *ParticipantDetails) String() string {
-	return participantDetails.FormatToString(0)
+// String returns the string representation of the ParticipantDetails
+func (pd *ParticipantDetails) String() string {
+	return pd.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (participantDetails *ParticipantDetails) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the ParticipantDetails using the provided indentation level
+func (pd *ParticipantDetails) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("ParticipantDetails{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, participantDetails.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sIDParticipant: %d,\n", indentationValues, participantDetails.IDParticipant))
-	b.WriteString(fmt.Sprintf("%sStrName: %q,\n", indentationValues, participantDetails.StrName))
-	b.WriteString(fmt.Sprintf("%sStrMessage: %q,\n", indentationValues, participantDetails.StrMessage))
-	b.WriteString(fmt.Sprintf("%sUIParticipants: %d\n", indentationValues, participantDetails.UIParticipants))
+	b.WriteString(fmt.Sprintf("%sIDParticipant: %s,\n", indentationValues, pd.IDParticipant.FormatToString(indentationLevel+1)))
+	b.WriteString(fmt.Sprintf("%sStrName: %s,\n", indentationValues, pd.StrName))
+	b.WriteString(fmt.Sprintf("%sStrMessage: %s,\n", indentationValues, pd.StrMessage))
+	b.WriteString(fmt.Sprintf("%sUIParticipants: %s,\n", indentationValues, pd.UIParticipants))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -123,5 +129,12 @@ func (participantDetails *ParticipantDetails) FormatToString(indentationLevel in
 
 // NewParticipantDetails returns a new ParticipantDetails
 func NewParticipantDetails() *ParticipantDetails {
-	return &ParticipantDetails{}
+	pd := &ParticipantDetails{
+		IDParticipant:  types.NewPID(0),
+		StrName:        types.NewString(""),
+		StrMessage:     types.NewString(""),
+		UIParticipants: types.NewPrimitiveU16(0),
+	}
+
+	return pd
 }

@@ -1,129 +1,114 @@
-// Package types implements all the types used by the Matchmaking protocols.
-//
-// Since there are multiple match making related protocols, and they all share types
-// all types used by all match making protocols is defined here
+// Package types implements all the types used by the Matchmaking protocol
 package types
 
 import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/v2/types"
 )
 
-// FindMatchmakeSessionByParticipantParam holds parameters for a matchmake session
+// FindMatchmakeSessionByParticipantParam is a type within the Matchmaking protocol
 type FindMatchmakeSessionByParticipantParam struct {
-	nex.Structure
-	PrincipalIDList []uint32
-	ResultOptions   uint32
+	types.Structure
+	PrincipalIDList *types.List[*types.PID]
+	ResultOptions   *types.PrimitiveU32
 	BlockListParam  *MatchmakeBlockListParam
 }
 
-// ExtractFromStream extracts a FindMatchmakeSessionByParticipantParam structure from a stream
-func (findMatchmakeSessionByParticipantParam *FindMatchmakeSessionByParticipantParam) ExtractFromStream(stream *nex.StreamIn) error {
+// WriteTo writes the FindMatchmakeSessionByParticipantParam to the given writable
+func (fmsbpp *FindMatchmakeSessionByParticipantParam) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
+
+	fmsbpp.PrincipalIDList.WriteTo(writable)
+	fmsbpp.ResultOptions.WriteTo(writable)
+	fmsbpp.BlockListParam.WriteTo(writable)
+
+	content := contentWritable.Bytes()
+
+	fmsbpp.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
+}
+
+// ExtractFrom extracts the FindMatchmakeSessionByParticipantParam from the given readable
+func (fmsbpp *FindMatchmakeSessionByParticipantParam) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	findMatchmakeSessionByParticipantParam.PrincipalIDList, err = stream.ReadListUInt32LE()
+	err = fmsbpp.ExtractHeaderFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract FindMatchmakeSessionByParticipantParam header. %s", err.Error())
+	}
+
+	err = fmsbpp.PrincipalIDList.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract FindMatchmakeSessionByParticipantParam.PrincipalIDList. %s", err.Error())
 	}
 
-	findMatchmakeSessionByParticipantParam.ResultOptions, err = stream.ReadUInt32LE()
+	err = fmsbpp.ResultOptions.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract FindMatchmakeSessionByParticipantParam.ResultOptions. %s", err.Error())
 	}
 
-	blockListParam, err := stream.ReadStructure(NewMatchmakeBlockListParam())
+	err = fmsbpp.BlockListParam.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract FindMatchmakeSessionByParticipantParam.BlockListParam. %s", err.Error())
 	}
-
-	findMatchmakeSessionByParticipantParam.BlockListParam = blockListParam.(*MatchmakeBlockListParam)
 
 	return nil
 }
 
 // Copy returns a new copied instance of FindMatchmakeSessionByParticipantParam
-func (findMatchmakeSessionByParticipantParam *FindMatchmakeSessionByParticipantParam) Copy() nex.StructureInterface {
+func (fmsbpp *FindMatchmakeSessionByParticipantParam) Copy() types.RVType {
 	copied := NewFindMatchmakeSessionByParticipantParam()
 
-	copied.SetStructureVersion(findMatchmakeSessionByParticipantParam.StructureVersion())
-
-	copied.PrincipalIDList = make([]uint32, len(findMatchmakeSessionByParticipantParam.PrincipalIDList))
-
-	copy(copied.PrincipalIDList, findMatchmakeSessionByParticipantParam.PrincipalIDList)
-
-	copied.ResultOptions = findMatchmakeSessionByParticipantParam.ResultOptions
-
-	if findMatchmakeSessionByParticipantParam.BlockListParam != nil {
-		copied.BlockListParam = findMatchmakeSessionByParticipantParam.BlockListParam.Copy().(*MatchmakeBlockListParam)
-	}
+	copied.StructureVersion = fmsbpp.StructureVersion
+	copied.PrincipalIDList = fmsbpp.PrincipalIDList.Copy().(*types.List[*types.PID])
+	copied.ResultOptions = fmsbpp.ResultOptions.Copy().(*types.PrimitiveU32)
+	copied.BlockListParam = fmsbpp.BlockListParam.Copy().(*MatchmakeBlockListParam)
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (findMatchmakeSessionByParticipantParam *FindMatchmakeSessionByParticipantParam) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*FindMatchmakeSessionByParticipantParam)
-
-	if findMatchmakeSessionByParticipantParam.StructureVersion() != other.StructureVersion() {
+// Equals checks if the given FindMatchmakeSessionByParticipantParam contains the same data as the current FindMatchmakeSessionByParticipantParam
+func (fmsbpp *FindMatchmakeSessionByParticipantParam) Equals(o types.RVType) bool {
+	if _, ok := o.(*FindMatchmakeSessionByParticipantParam); !ok {
 		return false
 	}
 
-	if len(findMatchmakeSessionByParticipantParam.PrincipalIDList) != len(other.PrincipalIDList) {
+	other := o.(*FindMatchmakeSessionByParticipantParam)
+
+	if fmsbpp.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	for i := 0; i < len(findMatchmakeSessionByParticipantParam.PrincipalIDList); i++ {
-		if findMatchmakeSessionByParticipantParam.PrincipalIDList[i] != other.PrincipalIDList[i] {
-			return false
-		}
-	}
-
-	if findMatchmakeSessionByParticipantParam.ResultOptions != other.ResultOptions {
+	if !fmsbpp.PrincipalIDList.Equals(other.PrincipalIDList) {
 		return false
 	}
 
-	if findMatchmakeSessionByParticipantParam.BlockListParam != nil && other.BlockListParam == nil {
+	if !fmsbpp.ResultOptions.Equals(other.ResultOptions) {
 		return false
 	}
 
-	if findMatchmakeSessionByParticipantParam.BlockListParam == nil && other.BlockListParam != nil {
-		return false
-	}
-
-	if findMatchmakeSessionByParticipantParam.BlockListParam != nil && other.BlockListParam != nil {
-		if findMatchmakeSessionByParticipantParam.BlockListParam.Equals(other.BlockListParam) {
-			return false
-		}
-	}
-
-	return true
+	return fmsbpp.BlockListParam.Equals(other.BlockListParam)
 }
 
-// String returns a string representation of the struct
-func (findMatchmakeSessionByParticipantParam *FindMatchmakeSessionByParticipantParam) String() string {
-	return findMatchmakeSessionByParticipantParam.FormatToString(0)
+// String returns the string representation of the FindMatchmakeSessionByParticipantParam
+func (fmsbpp *FindMatchmakeSessionByParticipantParam) String() string {
+	return fmsbpp.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (findMatchmakeSessionByParticipantParam *FindMatchmakeSessionByParticipantParam) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the FindMatchmakeSessionByParticipantParam using the provided indentation level
+func (fmsbpp *FindMatchmakeSessionByParticipantParam) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("FindMatchmakeSessionByParticipantParam{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, findMatchmakeSessionByParticipantParam.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sPrincipalIDList: %v,\n", indentationValues, findMatchmakeSessionByParticipantParam.PrincipalIDList))
-	b.WriteString(fmt.Sprintf("%sResultOptions: %d,\n", indentationValues, findMatchmakeSessionByParticipantParam.ResultOptions))
-
-	if findMatchmakeSessionByParticipantParam.BlockListParam != nil {
-		b.WriteString(fmt.Sprintf("%sBlockListParam: %s\n", indentationValues, findMatchmakeSessionByParticipantParam.BlockListParam.FormatToString(indentationLevel+1)))
-	} else {
-		b.WriteString(fmt.Sprintf("%sBlockListParam: nil\n", indentationValues))
-	}
-
+	b.WriteString(fmt.Sprintf("%sPrincipalIDList: %s,\n", indentationValues, fmsbpp.PrincipalIDList))
+	b.WriteString(fmt.Sprintf("%sResultOptions: %s,\n", indentationValues, fmsbpp.ResultOptions))
+	b.WriteString(fmt.Sprintf("%sBlockListParam: %s,\n", indentationValues, fmsbpp.BlockListParam.FormatToString(indentationLevel+1)))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -131,5 +116,13 @@ func (findMatchmakeSessionByParticipantParam *FindMatchmakeSessionByParticipantP
 
 // NewFindMatchmakeSessionByParticipantParam returns a new FindMatchmakeSessionByParticipantParam
 func NewFindMatchmakeSessionByParticipantParam() *FindMatchmakeSessionByParticipantParam {
-	return &FindMatchmakeSessionByParticipantParam{}
+	fmsbpp := &FindMatchmakeSessionByParticipantParam{
+		PrincipalIDList: types.NewList[*types.PID](),
+		ResultOptions:   types.NewPrimitiveU32(0),
+		BlockListParam:  NewMatchmakeBlockListParam(),
+	}
+
+	fmsbpp.PrincipalIDList.Type = types.NewPID(0)
+
+	return fmsbpp
 }

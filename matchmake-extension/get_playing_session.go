@@ -4,43 +4,45 @@ package protocol
 import (
 	"fmt"
 
-	nex "github.com/PretendoNetwork/nex-go"
-	"github.com/PretendoNetwork/nex-protocols-go/globals"
+	nex "github.com/PretendoNetwork/nex-go/v2"
+	"github.com/PretendoNetwork/nex-go/v2/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
 )
 
-// GetPlayingSession sets the GetPlayingSession handler function
-func (protocol *Protocol) GetPlayingSession(handler func(err error, packet nex.PacketInterface, callID uint32, lstPID []uint32) uint32) {
-	protocol.getPlayingSessionHandler = handler
-}
-
 func (protocol *Protocol) handleGetPlayingSession(packet nex.PacketInterface) {
-	var errorCode uint32
+	if protocol.GetPlayingSession == nil {
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "MatchmakeExtension::GetPlayingSession not implemented")
 
-	if protocol.getPlayingSessionHandler == nil {
-		globals.Logger.Warning("MatchmakeExtension::GetPlayingSession not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
+	callID := request.CallID
+	parameters := request.Parameters
+	endpoint := packet.Sender().Endpoint()
+	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	callID := request.CallID()
-	parameters := request.Parameters()
+	lstPID := types.NewList[*types.PID]()
+	lstPID.Type = types.NewPID(0)
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
-
-	lstPID, err := parametersStream.ReadListUInt32LE()
+	err := lstPID.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.getPlayingSessionHandler(fmt.Errorf("Failed to read lstPID from parameters. %s", err.Error()), packet, callID, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.GetPlayingSession(fmt.Errorf("Failed to read lstPID from parameters. %s", err.Error()), packet, callID, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	errorCode = protocol.getPlayingSessionHandler(nil, packet, callID, lstPID)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.GetPlayingSession(nil, packet, callID, lstPID)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

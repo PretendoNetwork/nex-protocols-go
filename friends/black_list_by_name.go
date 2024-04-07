@@ -4,53 +4,57 @@ package protocol
 import (
 	"fmt"
 
-	nex "github.com/PretendoNetwork/nex-go"
-	"github.com/PretendoNetwork/nex-protocols-go/globals"
+	nex "github.com/PretendoNetwork/nex-go/v2"
+	"github.com/PretendoNetwork/nex-go/v2/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
 )
 
-// BlackListByName sets the BlackListByName handler function
-func (protocol *Protocol) BlackListByName(handler func(err error, packet nex.PacketInterface, callID uint32, strPlayerName string, uiDetails uint32) uint32) {
-	protocol.blackListByNameHandler = handler
-}
-
 func (protocol *Protocol) handleBlackListByName(packet nex.PacketInterface) {
-	var errorCode uint32
+	if protocol.BlackListByName == nil {
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "Friends::BlackListByName not implemented")
 
-	if protocol.blackListByNameHandler == nil {
-		globals.Logger.Warning("Friends::BlackListByName not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
+	callID := request.CallID
+	parameters := request.Parameters
+	endpoint := packet.Sender().Endpoint()
+	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	callID := request.CallID()
-	parameters := request.Parameters()
+	strPlayerName := types.NewString("")
+	uiDetails := types.NewPrimitiveU32(0)
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+	var err error
 
-	strPlayerName, err := parametersStream.ReadString()
+	err = strPlayerName.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.blackListByNameHandler(fmt.Errorf("Failed to read strPlayerName from parameters. %s", err.Error()), packet, callID, "", 0)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.BlackListByName(fmt.Errorf("Failed to read strPlayerName from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	uiDetails, err := parametersStream.ReadUInt32LE()
+	err = uiDetails.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.blackListByNameHandler(fmt.Errorf("Failed to read uiDetails from parameters. %s", err.Error()), packet, callID, "", 0)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.BlackListByName(fmt.Errorf("Failed to read uiDetails from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	errorCode = protocol.blackListByNameHandler(nil, packet, callID, strPlayerName, uiDetails)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.BlackListByName(nil, packet, callID, strPlayerName, uiDetails)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

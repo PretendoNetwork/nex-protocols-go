@@ -4,44 +4,46 @@ package protocol
 import (
 	"fmt"
 
-	nex "github.com/PretendoNetwork/nex-go"
-	friends_3ds_types "github.com/PretendoNetwork/nex-protocols-go/friends-3ds/types"
-	"github.com/PretendoNetwork/nex-protocols-go/globals"
+	nex "github.com/PretendoNetwork/nex-go/v2"
+	"github.com/PretendoNetwork/nex-go/v2/types"
+	friends_3ds_types "github.com/PretendoNetwork/nex-protocols-go/v2/friends-3ds/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
 )
 
-// UpdatePlayedGames sets the UpdatePlayedGames handler function
-func (protocol *Protocol) UpdatePlayedGames(handler func(err error, packet nex.PacketInterface, callID uint32, playedGames []*friends_3ds_types.PlayedGame) uint32) {
-	protocol.updatePlayedGamesHandler = handler
-}
-
 func (protocol *Protocol) handleUpdatePlayedGames(packet nex.PacketInterface) {
-	var errorCode uint32
+	if protocol.UpdatePlayedGames == nil {
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "Friends3DS::UpdatePlayedGames not implemented")
 
-	if protocol.updatePlayedGamesHandler == nil {
-		globals.Logger.Warning("Friends3DS::UpdatePlayedGames not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
+	callID := request.CallID
+	parameters := request.Parameters
+	endpoint := packet.Sender().Endpoint()
+	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	callID := request.CallID()
-	parameters := request.Parameters()
+	playedGames := types.NewList[*friends_3ds_types.PlayedGame]()
+	playedGames.Type = friends_3ds_types.NewPlayedGame()
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
-
-	playedGames, err := parametersStream.ReadListStructure(friends_3ds_types.NewPlayedGame())
+	err := playedGames.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.updatePlayedGamesHandler(fmt.Errorf("Failed to read playedGames from parameters. %s", err.Error()), packet, callID, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.UpdatePlayedGames(fmt.Errorf("Failed to read playedGames from parameters. %s", err.Error()), packet, callID, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	errorCode = protocol.updatePlayedGamesHandler(nil, packet, callID, playedGames.([]*friends_3ds_types.PlayedGame))
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.UpdatePlayedGames(nil, packet, callID, playedGames)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

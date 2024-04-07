@@ -1,107 +1,128 @@
-// Package types implements all the types used by the Friends 3DS protocol
+// Package types implements all the types used by the Friends3DS protocol
 package types
 
 import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/v2/types"
 )
 
-// FriendMii is a data structure used by the Friends 3DS protocol to hold information about a friends Mii
+// FriendMii is a type within the Friends3DS protocol
 type FriendMii struct {
-	nex.Structure
-	*nex.Data
-	PID        uint32
+	types.Structure
+	*types.Data
+	PID        *types.PID
 	Mii        *Mii
-	ModifiedAt *nex.DateTime
+	ModifiedAt *types.DateTime
 }
 
-// Bytes encodes the Mii and returns a byte array
-func (friendMii *FriendMii) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt32LE(friendMii.PID)
-	stream.WriteStructure(friendMii.Mii)
-	stream.WriteDateTime(friendMii.ModifiedAt)
+// WriteTo writes the FriendMii to the given writable
+func (fm *FriendMii) WriteTo(writable types.Writable) {
+	fm.Data.WriteTo(writable)
 
-	return stream.Bytes()
+	contentWritable := writable.CopyNew()
+
+	fm.PID.WriteTo(writable)
+	fm.Mii.WriteTo(writable)
+	fm.ModifiedAt.WriteTo(writable)
+
+	content := contentWritable.Bytes()
+
+	fm.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
+}
+
+// ExtractFrom extracts the FriendMii from the given readable
+func (fm *FriendMii) ExtractFrom(readable types.Readable) error {
+	var err error
+
+	err = fm.Data.ExtractFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract FriendMii.Data. %s", err.Error())
+	}
+
+	err = fm.ExtractHeaderFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract FriendMii header. %s", err.Error())
+	}
+
+	err = fm.PID.ExtractFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract FriendMii.PID. %s", err.Error())
+	}
+
+	err = fm.Mii.ExtractFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract FriendMii.Mii. %s", err.Error())
+	}
+
+	err = fm.ModifiedAt.ExtractFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract FriendMii.ModifiedAt. %s", err.Error())
+	}
+
+	return nil
 }
 
 // Copy returns a new copied instance of FriendMii
-func (friendMii *FriendMii) Copy() nex.StructureInterface {
+func (fm *FriendMii) Copy() types.RVType {
 	copied := NewFriendMii()
 
-	copied.SetStructureVersion(friendMii.StructureVersion())
-
-	if friendMii.ParentType() != nil {
-		copied.Data = friendMii.ParentType().Copy().(*nex.Data)
-	} else {
-		copied.Data = nex.NewData()
-	}
-
-	copied.SetParentType(copied.Data)
-
-	copied.PID = friendMii.PID
-	copied.Mii = friendMii.Mii.Copy().(*Mii)
-	copied.ModifiedAt = friendMii.ModifiedAt.Copy()
+	copied.StructureVersion = fm.StructureVersion
+	copied.Data = fm.Data.Copy().(*types.Data)
+	copied.PID = fm.PID.Copy().(*types.PID)
+	copied.Mii = fm.Mii.Copy().(*Mii)
+	copied.ModifiedAt = fm.ModifiedAt.Copy().(*types.DateTime)
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (friendMii *FriendMii) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*FriendMii)
-
-	if friendMii.StructureVersion() != other.StructureVersion() {
+// Equals checks if the given FriendMii contains the same data as the current FriendMii
+func (fm *FriendMii) Equals(o types.RVType) bool {
+	if _, ok := o.(*FriendMii); !ok {
 		return false
 	}
 
-	if !friendMii.ParentType().Equals(other.ParentType()) {
+	other := o.(*FriendMii)
+
+	if fm.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if friendMii.PID != other.PID {
+	if !fm.Data.Equals(other.Data) {
 		return false
 	}
 
-	if !friendMii.Mii.Equals(other.Mii) {
+	if !fm.PID.Equals(other.PID) {
 		return false
 	}
 
-	if !friendMii.ModifiedAt.Equals(other.ModifiedAt) {
+	if !fm.Mii.Equals(other.Mii) {
 		return false
 	}
 
-	return true
+	return fm.ModifiedAt.Equals(other.ModifiedAt)
 }
 
-// String returns a string representation of the struct
-func (friendMii *FriendMii) String() string {
-	return friendMii.FormatToString(0)
+// String returns the string representation of the FriendMii
+func (fm *FriendMii) String() string {
+	return fm.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (friendMii *FriendMii) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the FriendMii using the provided indentation level
+func (fm *FriendMii) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("FriendMii{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, friendMii.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sPID: %d,\n", indentationValues, friendMii.PID))
-
-	if friendMii.Mii != nil {
-		b.WriteString(fmt.Sprintf("%sMii: %s,\n", indentationValues, friendMii.Mii.FormatToString(indentationLevel+1)))
-	} else {
-		b.WriteString(fmt.Sprintf("%sMii: nil,\n", indentationValues))
-	}
-
-	if friendMii.ModifiedAt != nil {
-		b.WriteString(fmt.Sprintf("%sModifiedAt: %s\n", indentationValues, friendMii.ModifiedAt.FormatToString(indentationLevel+1)))
-	} else {
-		b.WriteString(fmt.Sprintf("%sModifiedAt: nil\n", indentationValues))
-	}
-
+	b.WriteString(fmt.Sprintf("%sData (parent): %s,\n", indentationValues, fm.Data.FormatToString(indentationLevel+1)))
+	b.WriteString(fmt.Sprintf("%sPID: %s,\n", indentationValues, fm.PID.FormatToString(indentationLevel+1)))
+	b.WriteString(fmt.Sprintf("%sMii: %s,\n", indentationValues, fm.Mii.FormatToString(indentationLevel+1)))
+	b.WriteString(fmt.Sprintf("%sModifiedAt: %s,\n", indentationValues, fm.ModifiedAt.FormatToString(indentationLevel+1)))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -109,5 +130,12 @@ func (friendMii *FriendMii) FormatToString(indentationLevel int) string {
 
 // NewFriendMii returns a new FriendMii
 func NewFriendMii() *FriendMii {
-	return &FriendMii{}
+	fm := &FriendMii{
+		Data:       types.NewData(),
+		PID:        types.NewPID(0),
+		Mii:        NewMii(),
+		ModifiedAt: types.NewDateTime(0),
+	}
+
+	return fm
 }

@@ -2,52 +2,69 @@
 package types
 
 import (
-	"bytes"
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/v2/types"
 )
 
-// DataStoreReqPostInfoV1 is a data structure used by the DataStore protocol
+// DataStoreReqPostInfoV1 is a type within the DataStore protocol
 type DataStoreReqPostInfoV1 struct {
-	nex.Structure
-	DataID         uint32
-	URL            string
-	RequestHeaders []*DataStoreKeyValue
-	FormFields     []*DataStoreKeyValue
-	RootCACert     []byte
+	types.Structure
+	DataID         *types.PrimitiveU32
+	URL            *types.String
+	RequestHeaders *types.List[*DataStoreKeyValue]
+	FormFields     *types.List[*DataStoreKeyValue]
+	RootCACert     *types.Buffer
 }
 
-// ExtractFromStream extracts a DataStoreReqPostInfoV1 structure from a stream
-func (dataStoreReqPostInfoV1 *DataStoreReqPostInfoV1) ExtractFromStream(stream *nex.StreamIn) error {
+// WriteTo writes the DataStoreReqPostInfoV1 to the given writable
+func (dsrpiv *DataStoreReqPostInfoV1) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
+
+	dsrpiv.DataID.WriteTo(writable)
+	dsrpiv.URL.WriteTo(writable)
+	dsrpiv.RequestHeaders.WriteTo(writable)
+	dsrpiv.FormFields.WriteTo(writable)
+	dsrpiv.RootCACert.WriteTo(writable)
+
+	content := contentWritable.Bytes()
+
+	dsrpiv.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
+}
+
+// ExtractFrom extracts the DataStoreReqPostInfoV1 from the given readable
+func (dsrpiv *DataStoreReqPostInfoV1) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	dataStoreReqPostInfoV1.DataID, err = stream.ReadUInt32LE()
+	err = dsrpiv.ExtractHeaderFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreReqPostInfoV1 header. %s", err.Error())
+	}
+
+	err = dsrpiv.DataID.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreReqPostInfoV1.DataID. %s", err.Error())
 	}
 
-	dataStoreReqPostInfoV1.URL, err = stream.ReadString()
+	err = dsrpiv.URL.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreReqPostInfoV1.URL. %s", err.Error())
 	}
 
-	requestHeaders, err := stream.ReadListStructure(NewDataStoreKeyValue())
+	err = dsrpiv.RequestHeaders.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreReqPostInfoV1.RequestHeaders. %s", err.Error())
 	}
 
-	dataStoreReqPostInfoV1.RequestHeaders = requestHeaders.([]*DataStoreKeyValue)
-
-	formFields, err := stream.ReadListStructure(NewDataStoreKeyValue())
+	err = dsrpiv.FormFields.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreReqPostInfoV1.FormFields. %s", err.Error())
 	}
 
-	dataStoreReqPostInfoV1.FormFields = formFields.([]*DataStoreKeyValue)
-
-	dataStoreReqPostInfoV1.RootCACert, err = stream.ReadBuffer()
+	err = dsrpiv.RootCACert.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreReqPostInfoV1.RootCACert. %s", err.Error())
 	}
@@ -55,136 +72,69 @@ func (dataStoreReqPostInfoV1 *DataStoreReqPostInfoV1) ExtractFromStream(stream *
 	return nil
 }
 
-// Bytes encodes the DataStoreReqPostInfoV1 and returns a byte array
-func (dataStoreReqPostInfoV1 *DataStoreReqPostInfoV1) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt32LE(dataStoreReqPostInfoV1.DataID)
-	stream.WriteString(dataStoreReqPostInfoV1.URL)
-	stream.WriteListStructure(dataStoreReqPostInfoV1.RequestHeaders)
-	stream.WriteListStructure(dataStoreReqPostInfoV1.FormFields)
-	stream.WriteBuffer(dataStoreReqPostInfoV1.RootCACert)
-
-	return stream.Bytes()
-}
-
 // Copy returns a new copied instance of DataStoreReqPostInfoV1
-func (dataStoreReqPostInfoV1 *DataStoreReqPostInfoV1) Copy() nex.StructureInterface {
+func (dsrpiv *DataStoreReqPostInfoV1) Copy() types.RVType {
 	copied := NewDataStoreReqPostInfoV1()
 
-	copied.SetStructureVersion(dataStoreReqPostInfoV1.StructureVersion())
-
-	copied.DataID = dataStoreReqPostInfoV1.DataID
-	copied.URL = dataStoreReqPostInfoV1.URL
-	copied.RequestHeaders = make([]*DataStoreKeyValue, len(dataStoreReqPostInfoV1.RequestHeaders))
-
-	for i := 0; i < len(dataStoreReqPostInfoV1.RequestHeaders); i++ {
-		copied.RequestHeaders[i] = dataStoreReqPostInfoV1.RequestHeaders[i].Copy().(*DataStoreKeyValue)
-	}
-
-	copied.FormFields = make([]*DataStoreKeyValue, len(dataStoreReqPostInfoV1.FormFields))
-
-	for i := 0; i < len(dataStoreReqPostInfoV1.FormFields); i++ {
-		copied.FormFields[i] = dataStoreReqPostInfoV1.FormFields[i].Copy().(*DataStoreKeyValue)
-	}
-
-	copied.RootCACert = make([]byte, len(dataStoreReqPostInfoV1.RootCACert))
-
-	copy(copied.RootCACert, dataStoreReqPostInfoV1.RootCACert)
+	copied.StructureVersion = dsrpiv.StructureVersion
+	copied.DataID = dsrpiv.DataID.Copy().(*types.PrimitiveU32)
+	copied.URL = dsrpiv.URL.Copy().(*types.String)
+	copied.RequestHeaders = dsrpiv.RequestHeaders.Copy().(*types.List[*DataStoreKeyValue])
+	copied.FormFields = dsrpiv.FormFields.Copy().(*types.List[*DataStoreKeyValue])
+	copied.RootCACert = dsrpiv.RootCACert.Copy().(*types.Buffer)
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (dataStoreReqPostInfoV1 *DataStoreReqPostInfoV1) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*DataStoreReqPostInfoV1)
-
-	if dataStoreReqPostInfoV1.StructureVersion() != other.StructureVersion() {
+// Equals checks if the given DataStoreReqPostInfoV1 contains the same data as the current DataStoreReqPostInfoV1
+func (dsrpiv *DataStoreReqPostInfoV1) Equals(o types.RVType) bool {
+	if _, ok := o.(*DataStoreReqPostInfoV1); !ok {
 		return false
 	}
 
-	if dataStoreReqPostInfoV1.DataID != other.DataID {
+	other := o.(*DataStoreReqPostInfoV1)
+
+	if dsrpiv.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if dataStoreReqPostInfoV1.URL != other.URL {
+	if !dsrpiv.DataID.Equals(other.DataID) {
 		return false
 	}
 
-	if len(dataStoreReqPostInfoV1.RequestHeaders) != len(other.RequestHeaders) {
+	if !dsrpiv.URL.Equals(other.URL) {
 		return false
 	}
 
-	for i := 0; i < len(dataStoreReqPostInfoV1.RequestHeaders); i++ {
-		if dataStoreReqPostInfoV1.RequestHeaders[i] != other.RequestHeaders[i] {
-			return false
-		}
-	}
-
-	if len(dataStoreReqPostInfoV1.FormFields) != len(other.FormFields) {
+	if !dsrpiv.RequestHeaders.Equals(other.RequestHeaders) {
 		return false
 	}
 
-	for i := 0; i < len(dataStoreReqPostInfoV1.FormFields); i++ {
-		if dataStoreReqPostInfoV1.FormFields[i] != other.FormFields[i] {
-			return false
-		}
+	if !dsrpiv.FormFields.Equals(other.FormFields) {
+		return false
 	}
 
-	return bytes.Equal(dataStoreReqPostInfoV1.RootCACert, other.RootCACert)
+	return dsrpiv.RootCACert.Equals(other.RootCACert)
 }
 
-// String returns a string representation of the struct
-func (dataStoreReqPostInfoV1 *DataStoreReqPostInfoV1) String() string {
-	return dataStoreReqPostInfoV1.FormatToString(0)
+// String returns the string representation of the DataStoreReqPostInfoV1
+func (dsrpiv *DataStoreReqPostInfoV1) String() string {
+	return dsrpiv.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (dataStoreReqPostInfoV1 *DataStoreReqPostInfoV1) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the DataStoreReqPostInfoV1 using the provided indentation level
+func (dsrpiv *DataStoreReqPostInfoV1) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
-	indentationListValues := strings.Repeat("\t", indentationLevel+2)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("DataStoreReqPostInfoV1{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, dataStoreReqPostInfoV1.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sDataID: %d,\n", indentationValues, dataStoreReqPostInfoV1.DataID))
-	b.WriteString(fmt.Sprintf("%sURL: %q,\n", indentationValues, dataStoreReqPostInfoV1.URL))
-
-	if len(dataStoreReqPostInfoV1.RequestHeaders) == 0 {
-		b.WriteString(fmt.Sprintf("%sRequestHeaders: [],\n", indentationValues))
-	} else {
-		b.WriteString(fmt.Sprintf("%sRequestHeaders: [\n", indentationValues))
-
-		for i := 0; i < len(dataStoreReqPostInfoV1.RequestHeaders); i++ {
-			str := dataStoreReqPostInfoV1.RequestHeaders[i].FormatToString(indentationLevel + 2)
-			if i == len(dataStoreReqPostInfoV1.RequestHeaders)-1 {
-				b.WriteString(fmt.Sprintf("%s%s\n", indentationListValues, str))
-			} else {
-				b.WriteString(fmt.Sprintf("%s%s,\n", indentationListValues, str))
-			}
-		}
-
-		b.WriteString(fmt.Sprintf("%s],\n", indentationValues))
-	}
-
-	if len(dataStoreReqPostInfoV1.FormFields) == 0 {
-		b.WriteString(fmt.Sprintf("%sFormFields: [],\n", indentationValues))
-	} else {
-		b.WriteString(fmt.Sprintf("%sFormFields: [\n", indentationValues))
-
-		for i := 0; i < len(dataStoreReqPostInfoV1.FormFields); i++ {
-			str := dataStoreReqPostInfoV1.FormFields[i].FormatToString(indentationLevel + 2)
-			if i == len(dataStoreReqPostInfoV1.FormFields)-1 {
-				b.WriteString(fmt.Sprintf("%s%s\n", indentationListValues, str))
-			} else {
-				b.WriteString(fmt.Sprintf("%s%s,\n", indentationListValues, str))
-			}
-		}
-
-		b.WriteString(fmt.Sprintf("%s],\n", indentationValues))
-	}
-
-	b.WriteString(fmt.Sprintf("%sRootCACert: %x\n", indentationValues, dataStoreReqPostInfoV1.RootCACert))
+	b.WriteString(fmt.Sprintf("%sDataID: %s,\n", indentationValues, dsrpiv.DataID))
+	b.WriteString(fmt.Sprintf("%sURL: %s,\n", indentationValues, dsrpiv.URL))
+	b.WriteString(fmt.Sprintf("%sRequestHeaders: %s,\n", indentationValues, dsrpiv.RequestHeaders))
+	b.WriteString(fmt.Sprintf("%sFormFields: %s,\n", indentationValues, dsrpiv.FormFields))
+	b.WriteString(fmt.Sprintf("%sRootCACert: %s,\n", indentationValues, dsrpiv.RootCACert))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -192,11 +142,16 @@ func (dataStoreReqPostInfoV1 *DataStoreReqPostInfoV1) FormatToString(indentation
 
 // NewDataStoreReqPostInfoV1 returns a new DataStoreReqPostInfoV1
 func NewDataStoreReqPostInfoV1() *DataStoreReqPostInfoV1 {
-	return &DataStoreReqPostInfoV1{
-		DataID:         0,
-		URL:            "",
-		RequestHeaders: make([]*DataStoreKeyValue, 0),
-		FormFields:     make([]*DataStoreKeyValue, 0),
-		RootCACert:     make([]byte, 0),
+	dsrpiv := &DataStoreReqPostInfoV1{
+		DataID:         types.NewPrimitiveU32(0),
+		URL:            types.NewString(""),
+		RequestHeaders: types.NewList[*DataStoreKeyValue](),
+		FormFields:     types.NewList[*DataStoreKeyValue](),
+		RootCACert:     types.NewBuffer(nil),
 	}
+
+	dsrpiv.RequestHeaders.Type = NewDataStoreKeyValue()
+	dsrpiv.FormFields.Type = NewDataStoreKeyValue()
+
+	return dsrpiv
 }

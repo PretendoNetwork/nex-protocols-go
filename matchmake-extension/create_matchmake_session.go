@@ -4,69 +4,72 @@ package protocol
 import (
 	"fmt"
 
-	nex "github.com/PretendoNetwork/nex-go"
-	"github.com/PretendoNetwork/nex-protocols-go/globals"
+	nex "github.com/PretendoNetwork/nex-go/v2"
+	"github.com/PretendoNetwork/nex-go/v2/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
 )
 
-// CreateMatchmakeSession sets the CreateMatchmakeSession handler function
-func (protocol *Protocol) CreateMatchmakeSession(handler func(err error, packet nex.PacketInterface, callID uint32, anyGathering *nex.DataHolder, message string, participationCount uint16) uint32) {
-	protocol.createMatchmakeSessionHandler = handler
-}
-
 func (protocol *Protocol) handleCreateMatchmakeSession(packet nex.PacketInterface) {
-	matchmakingVersion := protocol.Server.MatchMakingProtocolVersion()
+	if protocol.CreateMatchmakeSession == nil {
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "MatchmakeExtension::CreateMatchmakeSession not implemented")
 
-	var errorCode uint32
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
 
-	if protocol.createMatchmakeSessionHandler == nil {
-		globals.Logger.Warning("MatchmakeExtension::CreateMatchmakeSession not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
 		return
 	}
 
-	request := packet.RMCRequest()
+	endpoint := packet.Sender().Endpoint()
+	matchmakingVersion := endpoint.LibraryVersions().MatchMaking
 
-	callID := request.CallID()
-	parameters := request.Parameters()
+	request := packet.RMCMessage()
+	callID := request.CallID
+	parameters := request.Parameters
+	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+	anyGathering := types.NewAnyDataHolder()
+	strMessage := types.NewString("")
+	participationCount := types.NewPrimitiveU16(0)
 
-	anyGathering, err := parametersStream.ReadDataHolder()
+	var err error
+
+	err = anyGathering.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.createMatchmakeSessionHandler(fmt.Errorf("Failed to read anyGathering from parameters. %s", err.Error()), packet, callID, nil, "", 0)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.CreateMatchmakeSession(fmt.Errorf("Failed to read anyGathering from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	message, err := parametersStream.ReadString()
+	err = strMessage.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.createMatchmakeSessionHandler(fmt.Errorf("Failed to read message from parameters. %s", err.Error()), packet, callID, nil, "", 0)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.CreateMatchmakeSession(fmt.Errorf("Failed to read strMessage from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
-
-	var participationCount uint16 = 0
 
 	if matchmakingVersion.GreaterOrEqual("3.4.0") {
-		participationCount, err = parametersStream.ReadUInt16LE()
+		err = participationCount.ExtractFrom(parametersStream)
 		if err != nil {
-			errorCode = protocol.createMatchmakeSessionHandler(fmt.Errorf("Failed to read message from participationCount. %s", err.Error()), packet, callID, nil, "", 0)
-			if errorCode != 0 {
-				globals.RespondError(packet, ProtocolID, errorCode)
+			_, rmcError := protocol.CreateMatchmakeSession(fmt.Errorf("Failed to read participationCount from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+			if rmcError != nil {
+				globals.RespondError(packet, ProtocolID, rmcError)
 			}
 
 			return
 		}
 	}
 
-	errorCode = protocol.createMatchmakeSessionHandler(nil, packet, callID, anyGathering, message, participationCount)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.CreateMatchmakeSession(nil, packet, callID, anyGathering, strMessage, participationCount)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

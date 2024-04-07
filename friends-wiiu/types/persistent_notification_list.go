@@ -1,113 +1,102 @@
-// Package types implements all the types used by the Friends WiiU protocol
+// Package types implements all the types used by the FriendsWiiU protocol
 package types
 
 import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/v2/types"
 )
 
-// PersistentNotificationList contains unknown data
+// PersistentNotificationList is a type within the FriendsWiiU protocol
 type PersistentNotificationList struct {
-	nex.Structure
-	*nex.Data
-	Notifications []*PersistentNotification
+	types.Structure
+	*types.Data
+	Notifications *types.List[*PersistentNotification]
 }
 
-// ExtractFromStream extracts a PersistentNotificationList structure from a stream
-func (notificationList *PersistentNotificationList) ExtractFromStream(stream *nex.StreamIn) error {
-	notifications, err := stream.ReadListStructure(NewPersistentNotification())
+// WriteTo writes the PersistentNotificationList to the given writable
+func (pnl *PersistentNotificationList) WriteTo(writable types.Writable) {
+	pnl.Data.WriteTo(writable)
+
+	contentWritable := writable.CopyNew()
+
+	pnl.Notifications.WriteTo(writable)
+
+	content := contentWritable.Bytes()
+
+	pnl.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
+}
+
+// ExtractFrom extracts the PersistentNotificationList from the given readable
+func (pnl *PersistentNotificationList) ExtractFrom(readable types.Readable) error {
+	var err error
+
+	err = pnl.Data.ExtractFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract PersistentNotificationList.Data. %s", err.Error())
+	}
+
+	err = pnl.ExtractHeaderFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract PersistentNotificationList header. %s", err.Error())
+	}
+
+	err = pnl.Notifications.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract PersistentNotificationList.Notifications. %s", err.Error())
 	}
-
-	notificationList.Notifications = notifications.([]*PersistentNotification)
 
 	return nil
 }
 
 // Copy returns a new copied instance of PersistentNotificationList
-func (notificationList *PersistentNotificationList) Copy() nex.StructureInterface {
+func (pnl *PersistentNotificationList) Copy() types.RVType {
 	copied := NewPersistentNotificationList()
 
-	copied.SetStructureVersion(notificationList.StructureVersion())
-
-	if notificationList.ParentType() != nil {
-		copied.Data = notificationList.ParentType().Copy().(*nex.Data)
-	} else {
-		copied.Data = nex.NewData()
-	}
-
-	copied.SetParentType(copied.Data)
-
-	copied.Notifications = make([]*PersistentNotification, len(notificationList.Notifications))
-
-	for i := 0; i < len(notificationList.Notifications); i++ {
-		copied.Notifications[i] = notificationList.Notifications[i].Copy().(*PersistentNotification)
-	}
+	copied.StructureVersion = pnl.StructureVersion
+	copied.Data = pnl.Data.Copy().(*types.Data)
+	copied.Notifications = pnl.Notifications.Copy().(*types.List[*PersistentNotification])
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (notificationList *PersistentNotificationList) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*PersistentNotificationList)
-
-	if notificationList.StructureVersion() != other.StructureVersion() {
+// Equals checks if the given PersistentNotificationList contains the same data as the current PersistentNotificationList
+func (pnl *PersistentNotificationList) Equals(o types.RVType) bool {
+	if _, ok := o.(*PersistentNotificationList); !ok {
 		return false
 	}
 
-	if !notificationList.ParentType().Equals(other.ParentType()) {
+	other := o.(*PersistentNotificationList)
+
+	if pnl.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if len(notificationList.Notifications) != len(other.Notifications) {
+	if !pnl.Data.Equals(other.Data) {
 		return false
 	}
 
-	for i := 0; i < len(notificationList.Notifications); i++ {
-		if !notificationList.Notifications[i].Equals(other.Notifications[i]) {
-			return false
-		}
-	}
-
-	return true
+	return pnl.Notifications.Equals(other.Notifications)
 }
 
-// String returns a string representation of the struct
-func (notificationList *PersistentNotificationList) String() string {
-	return notificationList.FormatToString(0)
+// String returns the string representation of the PersistentNotificationList
+func (pnl *PersistentNotificationList) String() string {
+	return pnl.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (notificationList *PersistentNotificationList) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the PersistentNotificationList using the provided indentation level
+func (pnl *PersistentNotificationList) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
-	indentationListValues := strings.Repeat("\t", indentationLevel+2)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("PersistentNotificationList{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, notificationList.StructureVersion()))
-
-	if len(notificationList.Notifications) == 0 {
-		b.WriteString(fmt.Sprintf("%sNotifications: [],\n", indentationValues))
-	} else {
-		b.WriteString(fmt.Sprintf("%sNotifications: [\n", indentationValues))
-
-		for i := 0; i < len(notificationList.Notifications); i++ {
-			str := notificationList.Notifications[i].FormatToString(indentationLevel + 2)
-			if i == len(notificationList.Notifications)-1 {
-				b.WriteString(fmt.Sprintf("%s%s\n", indentationListValues, str))
-			} else {
-				b.WriteString(fmt.Sprintf("%s%s,\n", indentationListValues, str))
-			}
-		}
-
-		b.WriteString(fmt.Sprintf("%s]\n", indentationValues))
-	}
-
+	b.WriteString(fmt.Sprintf("%sData (parent): %s,\n", indentationValues, pnl.Data.FormatToString(indentationLevel+1)))
+	b.WriteString(fmt.Sprintf("%sNotifications: %s,\n", indentationValues, pnl.Notifications))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -115,5 +104,12 @@ func (notificationList *PersistentNotificationList) FormatToString(indentationLe
 
 // NewPersistentNotificationList returns a new PersistentNotificationList
 func NewPersistentNotificationList() *PersistentNotificationList {
-	return &PersistentNotificationList{}
+	pnl := &PersistentNotificationList{
+		Data:          types.NewData(),
+		Notifications: types.NewList[*PersistentNotification](),
+	}
+
+	pnl.Notifications.Type = NewPersistentNotification()
+
+	return pnl
 }

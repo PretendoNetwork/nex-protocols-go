@@ -4,63 +4,70 @@ package protocol
 import (
 	"fmt"
 
-	nex "github.com/PretendoNetwork/nex-go"
-	"github.com/PretendoNetwork/nex-protocols-go/globals"
+	nex "github.com/PretendoNetwork/nex-go/v2"
+	"github.com/PretendoNetwork/nex-go/v2/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
 )
 
-// SetCachedRanking sets the SetCachedRanking handler function
-func (protocol *Protocol) SetCachedRanking(handler func(err error, packet nex.PacketInterface, callID uint32, rankingType string, rankingArgs []string, dataIDLst []uint64) uint32) {
-	protocol.setCachedRankingHandler = handler
-}
-
 func (protocol *Protocol) handleSetCachedRanking(packet nex.PacketInterface) {
-	var errorCode uint32
+	if protocol.SetCachedRanking == nil {
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "DataStoreSuperMarioMaker::SetCachedRanking not implemented")
 
-	if protocol.setCachedRankingHandler == nil {
-		globals.Logger.Warning("DataStoreSuperMarioMaker::SetCachedRanking not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
+	callID := request.CallID
+	parameters := request.Parameters
+	endpoint := packet.Sender().Endpoint()
+	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	callID := request.CallID()
-	parameters := request.Parameters()
+	rankingType := types.NewString("")
+	rankingArgs := types.NewList[*types.String]()
+	rankingArgs.Type = types.NewString("")
+	dataIDLst := types.NewList[*types.PrimitiveU64]()
+	dataIDLst.Type = types.NewPrimitiveU64(0)
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+	var err error
 
-	rankingType, err := parametersStream.ReadString()
+	err = rankingType.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.setCachedRankingHandler(fmt.Errorf("Failed to read rankingType from parameters. %s", err.Error()), packet, callID, "", nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.SetCachedRanking(fmt.Errorf("Failed to read rankingType from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	rankingArgs, err := parametersStream.ReadListString()
+	err = rankingArgs.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.setCachedRankingHandler(fmt.Errorf("Failed to read rankingArgs from parameters. %s", err.Error()), packet, callID, "", nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.SetCachedRanking(fmt.Errorf("Failed to read rankingArgs from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	dataIDLst, err := parametersStream.ReadListUInt64LE()
+	err = dataIDLst.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.setCachedRankingHandler(fmt.Errorf("Failed to read dataIDLst from parameters. %s", err.Error()), packet, callID, "", nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.SetCachedRanking(fmt.Errorf("Failed to read dataIDLst from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	errorCode = protocol.setCachedRankingHandler(nil, packet, callID, rankingType, rankingArgs, dataIDLst)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.SetCachedRanking(nil, packet, callID, rankingType, rankingArgs, dataIDLst)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

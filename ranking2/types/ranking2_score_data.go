@@ -1,104 +1,114 @@
-// Package types implements all the types used by the Ranking 2  protocol
+// Package types implements all the types used by the Ranking2 protocol
 package types
 
 import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/v2/types"
 )
 
-// Ranking2ScoreData holds data for the Ranking 2  protocol
+// Ranking2ScoreData is a type within the Ranking2 protocol
 type Ranking2ScoreData struct {
-	nex.Structure
-	Misc     uint64
-	Category uint32
-	Score    uint32
+	types.Structure
+	Misc     *types.PrimitiveU64
+	Category *types.PrimitiveU32
+	Score    *types.PrimitiveU32
 }
 
-// ExtractFromStream extracts a Ranking2ScoreData structure from a stream
-func (ranking2ScoreData *Ranking2ScoreData) ExtractFromStream(stream *nex.StreamIn) error {
+// WriteTo writes the Ranking2ScoreData to the given writable
+func (rsd *Ranking2ScoreData) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
+
+	rsd.Misc.WriteTo(writable)
+	rsd.Category.WriteTo(writable)
+	rsd.Score.WriteTo(writable)
+
+	content := contentWritable.Bytes()
+
+	rsd.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
+}
+
+// ExtractFrom extracts the Ranking2ScoreData from the given readable
+func (rsd *Ranking2ScoreData) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	ranking2ScoreData.Misc, err = stream.ReadUInt64LE()
+	err = rsd.ExtractHeaderFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract Ranking2ScoreData.Misc from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract Ranking2ScoreData header. %s", err.Error())
 	}
 
-	ranking2ScoreData.Category, err = stream.ReadUInt32LE()
+	err = rsd.Misc.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract Ranking2ScoreData.Category from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract Ranking2ScoreData.Misc. %s", err.Error())
 	}
 
-	ranking2ScoreData.Score, err = stream.ReadUInt32LE()
+	err = rsd.Category.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract Ranking2ScoreData.Score from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract Ranking2ScoreData.Category. %s", err.Error())
+	}
+
+	err = rsd.Score.ExtractFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract Ranking2ScoreData.Score. %s", err.Error())
 	}
 
 	return nil
 }
 
-// Bytes encodes the Ranking2ScoreData and returns a byte array
-func (ranking2ScoreData *Ranking2ScoreData) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt64LE(ranking2ScoreData.Misc)
-	stream.WriteUInt32LE(ranking2ScoreData.Category)
-	stream.WriteUInt32LE(ranking2ScoreData.Score)
-
-	return stream.Bytes()
-}
-
 // Copy returns a new copied instance of Ranking2ScoreData
-func (ranking2ScoreData *Ranking2ScoreData) Copy() nex.StructureInterface {
+func (rsd *Ranking2ScoreData) Copy() types.RVType {
 	copied := NewRanking2ScoreData()
 
-	copied.SetStructureVersion(ranking2ScoreData.StructureVersion())
+	copied.StructureVersion = rsd.StructureVersion
+	copied.Misc = rsd.Misc.Copy().(*types.PrimitiveU64)
+	copied.Category = rsd.Category.Copy().(*types.PrimitiveU32)
+	copied.Score = rsd.Score.Copy().(*types.PrimitiveU32)
 
-	copied.Misc = ranking2ScoreData.Misc
-	copied.Category = ranking2ScoreData.Category
-	copied.Score = ranking2ScoreData.Score
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (ranking2ScoreData *Ranking2ScoreData) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*Ranking2ScoreData)
-
-	if ranking2ScoreData.StructureVersion() != other.StructureVersion() {
+// Equals checks if the given Ranking2ScoreData contains the same data as the current Ranking2ScoreData
+func (rsd *Ranking2ScoreData) Equals(o types.RVType) bool {
+	if _, ok := o.(*Ranking2ScoreData); !ok {
 		return false
 	}
 
-	if ranking2ScoreData.Misc != other.Misc {
+	other := o.(*Ranking2ScoreData)
+
+	if rsd.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if ranking2ScoreData.Category != other.Category {
+	if !rsd.Misc.Equals(other.Misc) {
 		return false
 	}
 
-	if ranking2ScoreData.Score != other.Score {
+	if !rsd.Category.Equals(other.Category) {
 		return false
 	}
 
-	return true
+	return rsd.Score.Equals(other.Score)
 }
 
-// String returns a string representation of the struct
-func (ranking2ScoreData *Ranking2ScoreData) String() string {
-	return ranking2ScoreData.FormatToString(0)
+// String returns the string representation of the Ranking2ScoreData
+func (rsd *Ranking2ScoreData) String() string {
+	return rsd.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (ranking2ScoreData *Ranking2ScoreData) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the Ranking2ScoreData using the provided indentation level
+func (rsd *Ranking2ScoreData) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("Ranking2ScoreData{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, ranking2ScoreData.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sMisc: %d,\n", indentationValues, ranking2ScoreData.Misc))
-	b.WriteString(fmt.Sprintf("%sCategory: %d,\n", indentationValues, ranking2ScoreData.Category))
-	b.WriteString(fmt.Sprintf("%sScore: %d,\n", indentationValues, ranking2ScoreData.Score))
+	b.WriteString(fmt.Sprintf("%sMisc: %s,\n", indentationValues, rsd.Misc))
+	b.WriteString(fmt.Sprintf("%sCategory: %s,\n", indentationValues, rsd.Category))
+	b.WriteString(fmt.Sprintf("%sScore: %s,\n", indentationValues, rsd.Score))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -106,5 +116,11 @@ func (ranking2ScoreData *Ranking2ScoreData) FormatToString(indentationLevel int)
 
 // NewRanking2ScoreData returns a new Ranking2ScoreData
 func NewRanking2ScoreData() *Ranking2ScoreData {
-	return &Ranking2ScoreData{}
+	rsd := &Ranking2ScoreData{
+		Misc:     types.NewPrimitiveU64(0),
+		Category: types.NewPrimitiveU32(0),
+		Score:    types.NewPrimitiveU32(0),
+	}
+
+	return rsd
 }

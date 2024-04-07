@@ -1,106 +1,114 @@
-// Package types implements all the types used by the DataStore (Pokemon Gen6) protocol
+// Package types implements all the types used by the DataStore protocol
 package types
 
 import (
-	"bytes"
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/v2/types"
 )
 
-// GlobalTradeStationDownloadPokemonResult holds data for the DataStore (Pokemon Gen6) protocol
+// GlobalTradeStationDownloadPokemonResult is a type within the DataStore protocol
 type GlobalTradeStationDownloadPokemonResult struct {
-	nex.Structure
-	DataID      uint64
-	IndexData   []byte
-	PokemonData []byte
+	types.Structure
+	DataID      *types.PrimitiveU64
+	IndexData   *types.QBuffer
+	PokemonData *types.QBuffer
 }
 
-// ExtractFromStream extracts a GlobalTradeStationDownloadPokemonResult structure from a stream
-func (globalTradeStationDownloadPokemonResult *GlobalTradeStationDownloadPokemonResult) ExtractFromStream(stream *nex.StreamIn) error {
+// WriteTo writes the GlobalTradeStationDownloadPokemonResult to the given writable
+func (gtsdpr *GlobalTradeStationDownloadPokemonResult) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
+
+	gtsdpr.DataID.WriteTo(writable)
+	gtsdpr.IndexData.WriteTo(writable)
+	gtsdpr.PokemonData.WriteTo(writable)
+
+	content := contentWritable.Bytes()
+
+	gtsdpr.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
+}
+
+// ExtractFrom extracts the GlobalTradeStationDownloadPokemonResult from the given readable
+func (gtsdpr *GlobalTradeStationDownloadPokemonResult) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	globalTradeStationDownloadPokemonResult.DataID, err = stream.ReadUInt64LE()
+	err = gtsdpr.ExtractHeaderFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract GlobalTradeStationDownloadPokemonResult.DataID from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract GlobalTradeStationDownloadPokemonResult header. %s", err.Error())
 	}
 
-	globalTradeStationDownloadPokemonResult.IndexData, err = stream.ReadQBuffer()
+	err = gtsdpr.DataID.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract GlobalTradeStationDownloadPokemonResult.IndexData from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract GlobalTradeStationDownloadPokemonResult.DataID. %s", err.Error())
 	}
 
-	globalTradeStationDownloadPokemonResult.PokemonData, err = stream.ReadQBuffer()
+	err = gtsdpr.IndexData.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract GlobalTradeStationDownloadPokemonResult.PokemonData from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract GlobalTradeStationDownloadPokemonResult.IndexData. %s", err.Error())
+	}
+
+	err = gtsdpr.PokemonData.ExtractFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract GlobalTradeStationDownloadPokemonResult.PokemonData. %s", err.Error())
 	}
 
 	return nil
 }
 
-// Bytes encodes the GlobalTradeStationDownloadPokemonResult and returns a byte array
-func (globalTradeStationDownloadPokemonResult *GlobalTradeStationDownloadPokemonResult) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt64LE(globalTradeStationDownloadPokemonResult.DataID)
-	stream.WriteQBuffer(globalTradeStationDownloadPokemonResult.IndexData)
-	stream.WriteQBuffer(globalTradeStationDownloadPokemonResult.PokemonData)
-
-	return stream.Bytes()
-}
-
 // Copy returns a new copied instance of GlobalTradeStationDownloadPokemonResult
-func (globalTradeStationDownloadPokemonResult *GlobalTradeStationDownloadPokemonResult) Copy() nex.StructureInterface {
+func (gtsdpr *GlobalTradeStationDownloadPokemonResult) Copy() types.RVType {
 	copied := NewGlobalTradeStationDownloadPokemonResult()
 
-	copied.SetStructureVersion(globalTradeStationDownloadPokemonResult.StructureVersion())
-
-	copied.DataID = globalTradeStationDownloadPokemonResult.DataID
-	copied.IndexData = globalTradeStationDownloadPokemonResult.IndexData
-	copied.PokemonData = globalTradeStationDownloadPokemonResult.PokemonData
+	copied.StructureVersion = gtsdpr.StructureVersion
+	copied.DataID = gtsdpr.DataID.Copy().(*types.PrimitiveU64)
+	copied.IndexData = gtsdpr.IndexData.Copy().(*types.QBuffer)
+	copied.PokemonData = gtsdpr.PokemonData.Copy().(*types.QBuffer)
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (globalTradeStationDownloadPokemonResult *GlobalTradeStationDownloadPokemonResult) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*GlobalTradeStationDownloadPokemonResult)
-
-	if globalTradeStationDownloadPokemonResult.StructureVersion() != other.StructureVersion() {
+// Equals checks if the given GlobalTradeStationDownloadPokemonResult contains the same data as the current GlobalTradeStationDownloadPokemonResult
+func (gtsdpr *GlobalTradeStationDownloadPokemonResult) Equals(o types.RVType) bool {
+	if _, ok := o.(*GlobalTradeStationDownloadPokemonResult); !ok {
 		return false
 	}
 
-	if globalTradeStationDownloadPokemonResult.DataID != other.DataID {
+	other := o.(*GlobalTradeStationDownloadPokemonResult)
+
+	if gtsdpr.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if !bytes.Equal(globalTradeStationDownloadPokemonResult.IndexData, other.IndexData) {
+	if !gtsdpr.DataID.Equals(other.DataID) {
 		return false
 	}
 
-	if !bytes.Equal(globalTradeStationDownloadPokemonResult.PokemonData, other.PokemonData) {
+	if !gtsdpr.IndexData.Equals(other.IndexData) {
 		return false
 	}
 
-	return true
+	return gtsdpr.PokemonData.Equals(other.PokemonData)
 }
 
-// String returns a string representation of the struct
-func (globalTradeStationDownloadPokemonResult *GlobalTradeStationDownloadPokemonResult) String() string {
-	return globalTradeStationDownloadPokemonResult.FormatToString(0)
+// String returns the string representation of the GlobalTradeStationDownloadPokemonResult
+func (gtsdpr *GlobalTradeStationDownloadPokemonResult) String() string {
+	return gtsdpr.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (globalTradeStationDownloadPokemonResult *GlobalTradeStationDownloadPokemonResult) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the GlobalTradeStationDownloadPokemonResult using the provided indentation level
+func (gtsdpr *GlobalTradeStationDownloadPokemonResult) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("GlobalTradeStationDownloadPokemonResult{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, globalTradeStationDownloadPokemonResult.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sDataID: %d,\n", indentationValues, globalTradeStationDownloadPokemonResult.DataID))
-	b.WriteString(fmt.Sprintf("%sIndexData: %x,\n", indentationValues, globalTradeStationDownloadPokemonResult.IndexData))
-	b.WriteString(fmt.Sprintf("%sPokemonData: %x,\n", indentationValues, globalTradeStationDownloadPokemonResult.PokemonData))
+	b.WriteString(fmt.Sprintf("%sDataID: %s,\n", indentationValues, gtsdpr.DataID))
+	b.WriteString(fmt.Sprintf("%sIndexData: %s,\n", indentationValues, gtsdpr.IndexData))
+	b.WriteString(fmt.Sprintf("%sPokemonData: %s,\n", indentationValues, gtsdpr.PokemonData))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -108,5 +116,11 @@ func (globalTradeStationDownloadPokemonResult *GlobalTradeStationDownloadPokemon
 
 // NewGlobalTradeStationDownloadPokemonResult returns a new GlobalTradeStationDownloadPokemonResult
 func NewGlobalTradeStationDownloadPokemonResult() *GlobalTradeStationDownloadPokemonResult {
-	return &GlobalTradeStationDownloadPokemonResult{}
+	gtsdpr := &GlobalTradeStationDownloadPokemonResult{
+		DataID:      types.NewPrimitiveU64(0),
+		IndexData:   types.NewQBuffer(nil),
+		PokemonData: types.NewQBuffer(nil),
+	}
+
+	return gtsdpr
 }

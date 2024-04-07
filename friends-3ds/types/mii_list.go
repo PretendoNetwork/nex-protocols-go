@@ -1,54 +1,71 @@
-// Package types implements all the types used by the Friends 3DS protocol
+// Package types implements all the types used by the Friends3DS protocol
 package types
 
 import (
-	"bytes"
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/v2/types"
 )
 
-// MiiList is a data structure used by the Friends 3DS protocol to hold information about a MiiList
+// MiiList is a type within the Friends3DS protocol
 type MiiList struct {
-	nex.Structure
-	*nex.Data
-	Unknown1    string
-	Unknown2    bool
-	Unknown3    uint8
-	MiiDataList [][]byte
+	types.Structure
+	*types.Data
+	Unknown1    *types.String
+	Unknown2    *types.PrimitiveBool
+	Unknown3    *types.PrimitiveU8
+	MiiDataList *types.List[*types.Buffer]
 }
 
-// Bytes encodes the MiiList and returns a byte array
-func (miiList *MiiList) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteString(miiList.Unknown1)
-	stream.WriteBool(miiList.Unknown2)
-	stream.WriteUInt8(miiList.Unknown3)
-	stream.WriteListBuffer(miiList.MiiDataList)
+// WriteTo writes the MiiList to the given writable
+func (ml *MiiList) WriteTo(writable types.Writable) {
+	ml.Data.WriteTo(writable)
 
-	return stream.Bytes()
+	contentWritable := writable.CopyNew()
+
+	ml.Unknown1.WriteTo(writable)
+	ml.Unknown2.WriteTo(writable)
+	ml.Unknown3.WriteTo(writable)
+	ml.MiiDataList.WriteTo(writable)
+
+	content := contentWritable.Bytes()
+
+	ml.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
 }
 
-// ExtractFromStream extracts a MiiList from a stream
-func (miiList *MiiList) ExtractFromStream(stream *nex.StreamIn) error {
+// ExtractFrom extracts the MiiList from the given readable
+func (ml *MiiList) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	miiList.Unknown1, err = stream.ReadString()
+	err = ml.Data.ExtractFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract MiiList.Data. %s", err.Error())
+	}
+
+	err = ml.ExtractHeaderFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract MiiList header. %s", err.Error())
+	}
+
+	err = ml.Unknown1.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract MiiList.Unknown1. %s", err.Error())
 	}
 
-	miiList.Unknown2, err = stream.ReadBool()
+	err = ml.Unknown2.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract MiiList.Unknown2. %s", err.Error())
 	}
 
-	miiList.Unknown3, err = stream.ReadUInt8()
+	err = ml.Unknown3.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract MiiList.Unknown3. %s", err.Error())
 	}
 
-	miiList.MiiDataList, err = stream.ReadListBuffer()
+	err = ml.MiiDataList.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract MiiList.MiiDataList. %s", err.Error())
 	}
@@ -57,88 +74,68 @@ func (miiList *MiiList) ExtractFromStream(stream *nex.StreamIn) error {
 }
 
 // Copy returns a new copied instance of MiiList
-func (miiList *MiiList) Copy() nex.StructureInterface {
+func (ml *MiiList) Copy() types.RVType {
 	copied := NewMiiList()
 
-	copied.SetStructureVersion(miiList.StructureVersion())
-
-	if miiList.ParentType() != nil {
-		copied.Data = miiList.ParentType().Copy().(*nex.Data)
-	} else {
-		copied.Data = nex.NewData()
-	}
-
-	copied.SetParentType(copied.Data)
-
-	copied.Unknown1 = miiList.Unknown1
-	copied.Unknown2 = miiList.Unknown2
-	copied.Unknown3 = miiList.Unknown3
-	copied.MiiDataList = make([][]byte, len(miiList.MiiDataList))
-
-	for i := 0; i < len(miiList.MiiDataList); i++ {
-		copied.MiiDataList[i] = make([]byte, len(miiList.MiiDataList[i]))
-
-		copy(copied.MiiDataList[i], miiList.MiiDataList[i])
-	}
+	copied.StructureVersion = ml.StructureVersion
+	copied.Data = ml.Data.Copy().(*types.Data)
+	copied.Unknown1 = ml.Unknown1.Copy().(*types.String)
+	copied.Unknown2 = ml.Unknown2.Copy().(*types.PrimitiveBool)
+	copied.Unknown3 = ml.Unknown3.Copy().(*types.PrimitiveU8)
+	copied.MiiDataList = ml.MiiDataList.Copy().(*types.List[*types.Buffer])
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (miiList *MiiList) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*MiiList)
-
-	if miiList.StructureVersion() != other.StructureVersion() {
+// Equals checks if the given MiiList contains the same data as the current MiiList
+func (ml *MiiList) Equals(o types.RVType) bool {
+	if _, ok := o.(*MiiList); !ok {
 		return false
 	}
 
-	if !miiList.ParentType().Equals(other.ParentType()) {
+	other := o.(*MiiList)
+
+	if ml.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if miiList.Unknown1 != other.Unknown1 {
+	if !ml.Data.Equals(other.Data) {
 		return false
 	}
 
-	if miiList.Unknown2 != other.Unknown2 {
+	if !ml.Unknown1.Equals(other.Unknown1) {
 		return false
 	}
 
-	if miiList.Unknown3 != other.Unknown3 {
+	if !ml.Unknown2.Equals(other.Unknown2) {
 		return false
 	}
 
-	if len(miiList.MiiDataList) != len(other.MiiDataList) {
+	if !ml.Unknown3.Equals(other.Unknown3) {
 		return false
 	}
 
-	for i := 0; i < len(miiList.MiiDataList); i++ {
-		if !bytes.Equal(miiList.MiiDataList[i], other.MiiDataList[i]) {
-			return false
-		}
-	}
-
-	return true
+	return ml.MiiDataList.Equals(other.MiiDataList)
 }
 
-// String returns a string representation of the struct
-func (miiList *MiiList) String() string {
-	return miiList.FormatToString(0)
+// String returns the string representation of the MiiList
+func (ml *MiiList) String() string {
+	return ml.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (miiList *MiiList) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the MiiList using the provided indentation level
+func (ml *MiiList) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("MiiList{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, miiList.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sUnknown1: %q,\n", indentationValues, miiList.Unknown1))
-	b.WriteString(fmt.Sprintf("%sUnknown2: %t,\n", indentationValues, miiList.Unknown2))
-	b.WriteString(fmt.Sprintf("%sUnknown3: %d,\n", indentationValues, miiList.Unknown3))
-	b.WriteString(fmt.Sprintf("%sMiiDataList: %v\n", indentationValues, miiList.MiiDataList)) // TODO - Make this a nicer looking log
+	b.WriteString(fmt.Sprintf("%sData (parent): %s,\n", indentationValues, ml.Data.FormatToString(indentationLevel+1)))
+	b.WriteString(fmt.Sprintf("%sUnknown1: %s,\n", indentationValues, ml.Unknown1))
+	b.WriteString(fmt.Sprintf("%sUnknown2: %s,\n", indentationValues, ml.Unknown2))
+	b.WriteString(fmt.Sprintf("%sUnknown3: %s,\n", indentationValues, ml.Unknown3))
+	b.WriteString(fmt.Sprintf("%sMiiDataList: %s,\n", indentationValues, ml.MiiDataList))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -146,5 +143,15 @@ func (miiList *MiiList) FormatToString(indentationLevel int) string {
 
 // NewMiiList returns a new MiiList
 func NewMiiList() *MiiList {
-	return &MiiList{}
+	ml := &MiiList{
+		Data:        types.NewData(),
+		Unknown1:    types.NewString(""),
+		Unknown2:    types.NewPrimitiveBool(false),
+		Unknown3:    types.NewPrimitiveU8(0),
+		MiiDataList: types.NewList[*types.Buffer](),
+	}
+
+	ml.MiiDataList.Type = types.NewBuffer(nil)
+
+	return ml
 }

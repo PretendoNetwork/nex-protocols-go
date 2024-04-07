@@ -1,28 +1,29 @@
-// Package subscription implements the Subscription NEX protocol
-package subscription
+// Package protocol implements the Subscription protocol
+package protocol
 
 import (
-	"fmt"
-
-	nex "github.com/PretendoNetwork/nex-go"
-	"github.com/PretendoNetwork/nex-protocols-go/globals"
+	nex "github.com/PretendoNetwork/nex-go/v2"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
 )
 
-// GetActivePlayerSubscriptionData sets the GetActivePlayerSubscriptionData handler function
-func (protocol *SubscriptionProtocol) GetActivePlayerSubscriptionData(handler func(err error, packet nex.PacketInterface, callID uint32)) {
-	protocol.getActivePlayerSubscriptionDataHandler = handler
-}
+func (protocol *Protocol) handleGetActivePlayerSubscriptionData(packet nex.PacketInterface) {
+	if protocol.GetActivePlayerSubscriptionData == nil {
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "SubscriptionProtocol::GetActivePlayerSubscriptionData not implemented")
 
-func (protocol *SubscriptionProtocol) handleGetActivePlayerSubscriptionData(packet nex.PacketInterface) {
-	if protocol.getActivePlayerSubscriptionDataHandler == nil {
-		fmt.Println("[Warning] SubscriptionProtocol::GetActivePlayerSubscriptionData not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
+	callID := request.CallID
 
-	callID := request.CallID()
+	rmcMessage, rmcError := protocol.GetActivePlayerSubscriptionData(nil, packet, callID)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
+		return
+	}
 
-	go protocol.getActivePlayerSubscriptionDataHandler(nil, packet, callID)
+	globals.Respond(packet, rmcMessage)
 }

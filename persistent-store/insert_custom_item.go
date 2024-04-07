@@ -4,73 +4,79 @@ package protocol
 import (
 	"fmt"
 
-	nex "github.com/PretendoNetwork/nex-go"
-	"github.com/PretendoNetwork/nex-protocols-go/globals"
+	nex "github.com/PretendoNetwork/nex-go/v2"
+	"github.com/PretendoNetwork/nex-go/v2/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
 )
 
-// InsertCustomItem sets the InsertCustomItem handler function
-func (protocol *Protocol) InsertCustomItem(handler func(err error, packet nex.PacketInterface, callID uint32, uiGroup uint32, strTag string, hData *nex.DataHolder, bReplace bool) uint32) {
-	protocol.insertCustomItemHandler = handler
-}
-
 func (protocol *Protocol) handleInsertCustomItem(packet nex.PacketInterface) {
-	var errorCode uint32
+	if protocol.InsertCustomItem == nil {
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "PersistentStore::InsertCustomItem not implemented")
 
-	if protocol.insertCustomItemHandler == nil {
-		globals.Logger.Warning("PersistentStore::InsertCustomItem not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
+	callID := request.CallID
+	parameters := request.Parameters
+	endpoint := packet.Sender().Endpoint()
+	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	callID := request.CallID()
-	parameters := request.Parameters()
+	uiGroup := types.NewPrimitiveU32(0)
+	strTag := types.NewString("")
+	hData := types.NewAnyDataHolder()
+	bReplace := types.NewPrimitiveBool(false)
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+	var err error
 
-	uiGroup, err := parametersStream.ReadUInt32LE()
+	err = uiGroup.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.insertCustomItemHandler(fmt.Errorf("Failed to read uiGroup from parameters. %s", err.Error()), packet, callID, 0, "", nil, false)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.InsertCustomItem(fmt.Errorf("Failed to read uiGroup from parameters. %s", err.Error()), packet, callID, nil, nil, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	strTag, err := parametersStream.ReadString()
+	err = strTag.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.insertCustomItemHandler(fmt.Errorf("Failed to read strTag from parameters. %s", err.Error()), packet, callID, 0, "", nil, false)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.InsertCustomItem(fmt.Errorf("Failed to read strTag from parameters. %s", err.Error()), packet, callID, nil, nil, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	hData, err := parametersStream.ReadDataHolder()
+	err = hData.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.insertCustomItemHandler(fmt.Errorf("Failed to read hData from parameters. %s", err.Error()), packet, callID, 0, "", nil, false)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.InsertCustomItem(fmt.Errorf("Failed to read hData from parameters. %s", err.Error()), packet, callID, nil, nil, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	bReplace, err := parametersStream.ReadBool()
+	err = bReplace.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.insertCustomItemHandler(fmt.Errorf("Failed to read bReplace from parameters. %s", err.Error()), packet, callID, 0, "", nil, false)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.InsertCustomItem(fmt.Errorf("Failed to read bReplace from parameters. %s", err.Error()), packet, callID, nil, nil, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	errorCode = protocol.insertCustomItemHandler(nil, packet, callID, uiGroup, strTag, hData, bReplace)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.InsertCustomItem(nil, packet, callID, uiGroup, strTag, hData, bReplace)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

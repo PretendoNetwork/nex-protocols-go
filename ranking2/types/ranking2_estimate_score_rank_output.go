@@ -1,143 +1,153 @@
-// Package types implements all the types used by the Ranking 2  protocol
+// Package types implements all the types used by the Ranking2 protocol
 package types
 
 import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/v2/types"
 )
 
-// Ranking2EstimateScoreRankOutput holds data for the Ranking 2  protocol
+// Ranking2EstimateScoreRankOutput is a type within the Ranking2 protocol
 type Ranking2EstimateScoreRankOutput struct {
-	nex.Structure
-	Rank         uint32
-	Length       uint32
-	Score        uint32
-	Category     uint32
-	Season       int32
-	SamplingRate uint8
+	types.Structure
+	Rank         *types.PrimitiveU32
+	Length       *types.PrimitiveU32
+	Score        *types.PrimitiveU32
+	Category     *types.PrimitiveU32
+	Season       *types.PrimitiveS32
+	SamplingRate *types.PrimitiveU8
 }
 
-// ExtractFromStream extracts a Ranking2EstimateScoreRankOutput structure from a stream
-func (ranking2EstimateScoreRankOutput *Ranking2EstimateScoreRankOutput) ExtractFromStream(stream *nex.StreamIn) error {
+// WriteTo writes the Ranking2EstimateScoreRankOutput to the given writable
+func (resro *Ranking2EstimateScoreRankOutput) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
+
+	resro.Rank.WriteTo(writable)
+	resro.Length.WriteTo(writable)
+	resro.Score.WriteTo(writable)
+	resro.Category.WriteTo(writable)
+	resro.Season.WriteTo(writable)
+	resro.SamplingRate.WriteTo(writable)
+
+	content := contentWritable.Bytes()
+
+	resro.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
+}
+
+// ExtractFrom extracts the Ranking2EstimateScoreRankOutput from the given readable
+func (resro *Ranking2EstimateScoreRankOutput) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	ranking2EstimateScoreRankOutput.Rank, err = stream.ReadUInt32LE()
+	err = resro.ExtractHeaderFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract Ranking2EstimateScoreRankOutput.Rank from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract Ranking2EstimateScoreRankOutput header. %s", err.Error())
 	}
 
-	ranking2EstimateScoreRankOutput.Length, err = stream.ReadUInt32LE()
+	err = resro.Rank.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract Ranking2EstimateScoreRankOutput.Length from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract Ranking2EstimateScoreRankOutput.Rank. %s", err.Error())
 	}
 
-	ranking2EstimateScoreRankOutput.Score, err = stream.ReadUInt32LE()
+	err = resro.Length.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract Ranking2EstimateScoreRankOutput.Score from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract Ranking2EstimateScoreRankOutput.Length. %s", err.Error())
 	}
 
-	ranking2EstimateScoreRankOutput.Category, err = stream.ReadUInt32LE()
+	err = resro.Score.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract Ranking2EstimateScoreRankOutput.Category from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract Ranking2EstimateScoreRankOutput.Score. %s", err.Error())
 	}
 
-	ranking2EstimateScoreRankOutput.Season, err = stream.ReadInt32LE()
+	err = resro.Category.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract Ranking2EstimateScoreRankOutput.Season from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract Ranking2EstimateScoreRankOutput.Category. %s", err.Error())
 	}
 
-	ranking2EstimateScoreRankOutput.SamplingRate, err = stream.ReadUInt8()
+	err = resro.Season.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract Ranking2EstimateScoreRankOutput.SamplingRate from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract Ranking2EstimateScoreRankOutput.Season. %s", err.Error())
+	}
+
+	err = resro.SamplingRate.ExtractFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract Ranking2EstimateScoreRankOutput.SamplingRate. %s", err.Error())
 	}
 
 	return nil
 }
 
-// Bytes encodes the Ranking2EstimateScoreRankOutput and returns a byte array
-func (ranking2EstimateScoreRankOutput *Ranking2EstimateScoreRankOutput) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt32LE(ranking2EstimateScoreRankOutput.Rank)
-	stream.WriteUInt32LE(ranking2EstimateScoreRankOutput.Length)
-	stream.WriteUInt32LE(ranking2EstimateScoreRankOutput.Score)
-	stream.WriteUInt32LE(ranking2EstimateScoreRankOutput.Category)
-	stream.WriteInt32LE(ranking2EstimateScoreRankOutput.Season)
-	stream.WriteUInt8(ranking2EstimateScoreRankOutput.SamplingRate)
-
-	return stream.Bytes()
-}
-
 // Copy returns a new copied instance of Ranking2EstimateScoreRankOutput
-func (ranking2EstimateScoreRankOutput *Ranking2EstimateScoreRankOutput) Copy() nex.StructureInterface {
+func (resro *Ranking2EstimateScoreRankOutput) Copy() types.RVType {
 	copied := NewRanking2EstimateScoreRankOutput()
 
-	copied.SetStructureVersion(ranking2EstimateScoreRankOutput.StructureVersion())
+	copied.StructureVersion = resro.StructureVersion
+	copied.Rank = resro.Rank.Copy().(*types.PrimitiveU32)
+	copied.Length = resro.Length.Copy().(*types.PrimitiveU32)
+	copied.Score = resro.Score.Copy().(*types.PrimitiveU32)
+	copied.Category = resro.Category.Copy().(*types.PrimitiveU32)
+	copied.Season = resro.Season.Copy().(*types.PrimitiveS32)
+	copied.SamplingRate = resro.SamplingRate.Copy().(*types.PrimitiveU8)
 
-	copied.Rank = ranking2EstimateScoreRankOutput.Rank
-	copied.Length = ranking2EstimateScoreRankOutput.Length
-	copied.Score = ranking2EstimateScoreRankOutput.Score
-	copied.Category = ranking2EstimateScoreRankOutput.Category
-	copied.Season = ranking2EstimateScoreRankOutput.Season
-	copied.SamplingRate = ranking2EstimateScoreRankOutput.SamplingRate
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (ranking2EstimateScoreRankOutput *Ranking2EstimateScoreRankOutput) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*Ranking2EstimateScoreRankOutput)
-
-	if ranking2EstimateScoreRankOutput.StructureVersion() != other.StructureVersion() {
+// Equals checks if the given Ranking2EstimateScoreRankOutput contains the same data as the current Ranking2EstimateScoreRankOutput
+func (resro *Ranking2EstimateScoreRankOutput) Equals(o types.RVType) bool {
+	if _, ok := o.(*Ranking2EstimateScoreRankOutput); !ok {
 		return false
 	}
 
-	if ranking2EstimateScoreRankOutput.Rank != other.Rank {
+	other := o.(*Ranking2EstimateScoreRankOutput)
+
+	if resro.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if ranking2EstimateScoreRankOutput.Length != other.Length {
+	if !resro.Rank.Equals(other.Rank) {
 		return false
 	}
 
-	if ranking2EstimateScoreRankOutput.Score != other.Score {
+	if !resro.Length.Equals(other.Length) {
 		return false
 	}
 
-	if ranking2EstimateScoreRankOutput.Category != other.Category {
+	if !resro.Score.Equals(other.Score) {
 		return false
 	}
 
-	if ranking2EstimateScoreRankOutput.Season != other.Season {
+	if !resro.Category.Equals(other.Category) {
 		return false
 	}
 
-	if ranking2EstimateScoreRankOutput.SamplingRate != other.SamplingRate {
+	if !resro.Season.Equals(other.Season) {
 		return false
 	}
 
-	return true
+	return resro.SamplingRate.Equals(other.SamplingRate)
 }
 
-// String returns a string representation of the struct
-func (ranking2EstimateScoreRankOutput *Ranking2EstimateScoreRankOutput) String() string {
-	return ranking2EstimateScoreRankOutput.FormatToString(0)
+// String returns the string representation of the Ranking2EstimateScoreRankOutput
+func (resro *Ranking2EstimateScoreRankOutput) String() string {
+	return resro.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (ranking2EstimateScoreRankOutput *Ranking2EstimateScoreRankOutput) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the Ranking2EstimateScoreRankOutput using the provided indentation level
+func (resro *Ranking2EstimateScoreRankOutput) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("Ranking2EstimateScoreRankOutput{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, ranking2EstimateScoreRankOutput.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sRank: %d,\n", indentationValues, ranking2EstimateScoreRankOutput.Rank))
-	b.WriteString(fmt.Sprintf("%sLength: %d,\n", indentationValues, ranking2EstimateScoreRankOutput.Length))
-	b.WriteString(fmt.Sprintf("%sScore: %d,\n", indentationValues, ranking2EstimateScoreRankOutput.Score))
-	b.WriteString(fmt.Sprintf("%sCategory: %d,\n", indentationValues, ranking2EstimateScoreRankOutput.Category))
-	b.WriteString(fmt.Sprintf("%sSeason: %d,\n", indentationValues, ranking2EstimateScoreRankOutput.Season))
-	b.WriteString(fmt.Sprintf("%sSamplingRate: %d,\n", indentationValues, ranking2EstimateScoreRankOutput.SamplingRate))
+	b.WriteString(fmt.Sprintf("%sRank: %s,\n", indentationValues, resro.Rank))
+	b.WriteString(fmt.Sprintf("%sLength: %s,\n", indentationValues, resro.Length))
+	b.WriteString(fmt.Sprintf("%sScore: %s,\n", indentationValues, resro.Score))
+	b.WriteString(fmt.Sprintf("%sCategory: %s,\n", indentationValues, resro.Category))
+	b.WriteString(fmt.Sprintf("%sSeason: %s,\n", indentationValues, resro.Season))
+	b.WriteString(fmt.Sprintf("%sSamplingRate: %s,\n", indentationValues, resro.SamplingRate))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -145,5 +155,14 @@ func (ranking2EstimateScoreRankOutput *Ranking2EstimateScoreRankOutput) FormatTo
 
 // NewRanking2EstimateScoreRankOutput returns a new Ranking2EstimateScoreRankOutput
 func NewRanking2EstimateScoreRankOutput() *Ranking2EstimateScoreRankOutput {
-	return &Ranking2EstimateScoreRankOutput{}
+	resro := &Ranking2EstimateScoreRankOutput{
+		Rank:         types.NewPrimitiveU32(0),
+		Length:       types.NewPrimitiveU32(0),
+		Score:        types.NewPrimitiveU32(0),
+		Category:     types.NewPrimitiveU32(0),
+		Season:       types.NewPrimitiveS32(0),
+		SamplingRate: types.NewPrimitiveU8(0),
+	}
+
+	return resro
 }

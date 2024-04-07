@@ -2,30 +2,28 @@
 package protocol
 
 import (
-	nex "github.com/PretendoNetwork/nex-go"
-	"github.com/PretendoNetwork/nex-protocols-go/globals"
+	nex "github.com/PretendoNetwork/nex-go/v2"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
 )
 
-// ResetStats sets the ResetStats handler function
-func (protocol *Protocol) ResetStats(handler func(err error, packet nex.PacketInterface, callID uint32) uint32) {
-	protocol.resetStatsHandler = handler
-}
-
 func (protocol *Protocol) handleResetStats(packet nex.PacketInterface) {
-	var errorCode uint32
+	if protocol.ResetStats == nil {
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "MatchmakeReferee::ResetStats not implemented")
 
-	if protocol.resetStatsHandler == nil {
-		globals.Logger.Warning("MatchmakeReferee::ResetStats not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
+	callID := request.CallID
 
-	callID := request.CallID()
-
-	errorCode = protocol.resetStatsHandler(nil, packet, callID)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.ResetStats(nil, packet, callID)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

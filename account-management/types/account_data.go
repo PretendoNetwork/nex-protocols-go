@@ -1,72 +1,98 @@
-// Package types implements all the types used by the Account Management protocol
+// Package types implements all the types used by the AccountManagement protocol
 package types
 
 import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/v2/types"
 )
 
-// AccountData contains data for creating a new NNID on the network
+// AccountData is a type within the AccountManagement protocol
 type AccountData struct {
-	nex.Structure
-	PID                uint32
-	StrName            string
-	UIGroups           uint32
-	strEmail           string
-	DTCreationDate     *nex.DateTime
-	DTEffectiveDate    *nex.DateTime
-	StrNotEffectiveMsg string
-	DTExpiryDate       *nex.DateTime
-	StrExpiredMsg      string
+	types.Structure
+	PID                *types.PID
+	StrName            *types.String
+	UIGroups           *types.PrimitiveU32
+	StrEmail           *types.String
+	DTCreationDate     *types.DateTime
+	DTEffectiveDate    *types.DateTime
+	StrNotEffectiveMsg *types.String
+	DTExpiryDate       *types.DateTime
+	StrExpiredMsg      *types.String
 }
 
-// ExtractFromStream extracts a AccountData structure from a stream
-func (accountData *AccountData) ExtractFromStream(stream *nex.StreamIn) error {
+// WriteTo writes the AccountData to the given writable
+func (ad *AccountData) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
+
+	ad.PID.WriteTo(writable)
+	ad.StrName.WriteTo(writable)
+	ad.UIGroups.WriteTo(writable)
+	ad.StrEmail.WriteTo(writable)
+	ad.DTCreationDate.WriteTo(writable)
+	ad.DTEffectiveDate.WriteTo(writable)
+	ad.StrNotEffectiveMsg.WriteTo(writable)
+	ad.DTExpiryDate.WriteTo(writable)
+	ad.StrExpiredMsg.WriteTo(writable)
+
+	content := contentWritable.Bytes()
+
+	ad.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
+}
+
+// ExtractFrom extracts the AccountData from the given readable
+func (ad *AccountData) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	accountData.PID, err = stream.ReadUInt32LE()
+	err = ad.ExtractHeaderFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract AccountData header. %s", err.Error())
+	}
+
+	err = ad.PID.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract AccountData.PID. %s", err.Error())
 	}
 
-	accountData.StrName, err = stream.ReadString()
+	err = ad.StrName.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract AccountData.StrName. %s", err.Error())
 	}
 
-	accountData.UIGroups, err = stream.ReadUInt32LE()
+	err = ad.UIGroups.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract AccountData.UIGroups. %s", err.Error())
 	}
 
-	accountData.strEmail, err = stream.ReadString()
+	err = ad.StrEmail.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract AccountData.strEmail. %s", err.Error())
+		return fmt.Errorf("Failed to extract AccountData.StrEmail. %s", err.Error())
 	}
 
-	accountData.DTCreationDate, err = stream.ReadDateTime()
+	err = ad.DTCreationDate.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract AccountData.DTCreationDate. %s", err.Error())
 	}
 
-	accountData.DTEffectiveDate, err = stream.ReadDateTime()
+	err = ad.DTEffectiveDate.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract AccountData.DTEffectiveDate. %s", err.Error())
 	}
 
-	accountData.StrNotEffectiveMsg, err = stream.ReadString()
+	err = ad.StrNotEffectiveMsg.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract AccountData.StrNotEffectiveMsg. %s", err.Error())
 	}
 
-	accountData.DTExpiryDate, err = stream.ReadDateTime()
+	err = ad.DTExpiryDate.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract AccountData.DTExpiryDate. %s", err.Error())
 	}
 
-	accountData.StrExpiredMsg, err = stream.ReadString()
+	err = ad.StrExpiredMsg.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract AccountData.StrExpiredMsg. %s", err.Error())
 	}
@@ -75,155 +101,92 @@ func (accountData *AccountData) ExtractFromStream(stream *nex.StreamIn) error {
 }
 
 // Copy returns a new copied instance of AccountData
-func (accountData *AccountData) Copy() nex.StructureInterface {
+func (ad *AccountData) Copy() types.RVType {
 	copied := NewAccountData()
 
-	copied.SetStructureVersion(accountData.StructureVersion())
-
-	copied.PID = accountData.PID
-	copied.StrName = accountData.StrName
-	copied.UIGroups = accountData.UIGroups
-	copied.strEmail = accountData.strEmail
-
-	if accountData.DTCreationDate != nil {
-		copied.DTCreationDate = accountData.DTCreationDate.Copy()
-	}
-
-	if accountData.DTEffectiveDate != nil {
-		copied.DTEffectiveDate = accountData.DTEffectiveDate.Copy()
-	}
-
-	copied.StrNotEffectiveMsg = accountData.StrNotEffectiveMsg
-
-	if accountData.DTExpiryDate != nil {
-		copied.DTExpiryDate = accountData.DTExpiryDate.Copy()
-	}
-
-	copied.StrExpiredMsg = accountData.StrExpiredMsg
+	copied.StructureVersion = ad.StructureVersion
+	copied.PID = ad.PID.Copy().(*types.PID)
+	copied.StrName = ad.StrName.Copy().(*types.String)
+	copied.UIGroups = ad.UIGroups.Copy().(*types.PrimitiveU32)
+	copied.StrEmail = ad.StrEmail.Copy().(*types.String)
+	copied.DTCreationDate = ad.DTCreationDate.Copy().(*types.DateTime)
+	copied.DTEffectiveDate = ad.DTEffectiveDate.Copy().(*types.DateTime)
+	copied.StrNotEffectiveMsg = ad.StrNotEffectiveMsg.Copy().(*types.String)
+	copied.DTExpiryDate = ad.DTExpiryDate.Copy().(*types.DateTime)
+	copied.StrExpiredMsg = ad.StrExpiredMsg.Copy().(*types.String)
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (accountData *AccountData) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*AccountData)
-
-	if accountData.StructureVersion() != other.StructureVersion() {
+// Equals checks if the given AccountData contains the same data as the current AccountData
+func (ad *AccountData) Equals(o types.RVType) bool {
+	if _, ok := o.(*AccountData); !ok {
 		return false
 	}
 
-	if accountData.PID != other.PID {
+	other := o.(*AccountData)
+
+	if ad.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if accountData.StrName != other.StrName {
+	if !ad.PID.Equals(other.PID) {
 		return false
 	}
 
-	if accountData.UIGroups != other.UIGroups {
+	if !ad.StrName.Equals(other.StrName) {
 		return false
 	}
 
-	if accountData.strEmail != other.strEmail {
+	if !ad.UIGroups.Equals(other.UIGroups) {
 		return false
 	}
 
-	if accountData.DTCreationDate != nil && other.DTCreationDate == nil {
+	if !ad.StrEmail.Equals(other.StrEmail) {
 		return false
 	}
 
-	if accountData.DTCreationDate == nil && other.DTCreationDate != nil {
+	if !ad.DTCreationDate.Equals(other.DTCreationDate) {
 		return false
 	}
 
-	if accountData.DTCreationDate != nil && other.DTCreationDate != nil {
-		if !accountData.DTCreationDate.Equals(other.DTCreationDate) {
-			return false
-		}
-	}
-
-	if accountData.DTEffectiveDate != nil && other.DTEffectiveDate == nil {
+	if !ad.DTEffectiveDate.Equals(other.DTEffectiveDate) {
 		return false
 	}
 
-	if accountData.DTEffectiveDate == nil && other.DTEffectiveDate != nil {
+	if !ad.StrNotEffectiveMsg.Equals(other.StrNotEffectiveMsg) {
 		return false
 	}
 
-	if accountData.DTEffectiveDate != nil && other.DTEffectiveDate != nil {
-		if !accountData.DTEffectiveDate.Equals(other.DTEffectiveDate) {
-			return false
-		}
-	}
-
-	if accountData.StrNotEffectiveMsg != other.StrNotEffectiveMsg {
+	if !ad.DTExpiryDate.Equals(other.DTExpiryDate) {
 		return false
 	}
 
-	if accountData.DTExpiryDate != nil && other.DTExpiryDate == nil {
-		return false
-	}
-
-	if accountData.DTExpiryDate == nil && other.DTExpiryDate != nil {
-		return false
-	}
-
-	if accountData.DTExpiryDate != nil && other.DTExpiryDate != nil {
-		if !accountData.DTExpiryDate.Equals(other.DTExpiryDate) {
-			return false
-		}
-	}
-
-	if accountData.StrExpiredMsg != other.StrExpiredMsg {
-		return false
-	}
-
-	return true
+	return ad.StrExpiredMsg.Equals(other.StrExpiredMsg)
 }
 
-// String returns a string representation of the struct
-func (accountData *AccountData) String() string {
-	return accountData.FormatToString(0)
+// String returns the string representation of the AccountData
+func (ad *AccountData) String() string {
+	return ad.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (accountData *AccountData) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the AccountData using the provided indentation level
+func (ad *AccountData) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("AccountData{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, accountData.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sPID: %d,\n", indentationValues, accountData.PID))
-	b.WriteString(fmt.Sprintf("%sStrName: %q,\n", indentationValues, accountData.StrName))
-	b.WriteString(fmt.Sprintf("%sUIGroups: %d,\n", indentationValues, accountData.UIGroups))
-	b.WriteString(fmt.Sprintf("%sstrEmail: %q,\n", indentationValues, accountData.strEmail))
-
-	if accountData.DTCreationDate != nil {
-		b.WriteString(fmt.Sprintf("%sDTCreationDate: %s,\n", indentationValues, accountData.DTCreationDate.FormatToString(indentationLevel+1)))
-	} else {
-		b.WriteString(fmt.Sprintf("%sDTCreationDate: nil,\n", indentationValues))
-
-	}
-
-	if accountData.DTEffectiveDate != nil {
-		b.WriteString(fmt.Sprintf("%sDTEffectiveDate: %s,\n", indentationValues, accountData.DTEffectiveDate.FormatToString(indentationLevel+1)))
-	} else {
-		b.WriteString(fmt.Sprintf("%sDTEffectiveDate: nil,\n", indentationValues))
-
-	}
-
-	b.WriteString(fmt.Sprintf("%sStrNotEffectiveMsg: %q,\n", indentationValues, accountData.StrNotEffectiveMsg))
-
-	if accountData.DTExpiryDate != nil {
-		b.WriteString(fmt.Sprintf("%sDTExpiryDate: %s,\n", indentationValues, accountData.DTExpiryDate.FormatToString(indentationLevel+1)))
-	} else {
-		b.WriteString(fmt.Sprintf("%sDTExpiryDate: nil,\n", indentationValues))
-
-	}
-
-	b.WriteString(fmt.Sprintf("%sStrExpiredMsg: %q\n", indentationValues, accountData.StrExpiredMsg))
+	b.WriteString(fmt.Sprintf("%sPID: %s,\n", indentationValues, ad.PID.FormatToString(indentationLevel+1)))
+	b.WriteString(fmt.Sprintf("%sStrName: %s,\n", indentationValues, ad.StrName))
+	b.WriteString(fmt.Sprintf("%sUIGroups: %s,\n", indentationValues, ad.UIGroups))
+	b.WriteString(fmt.Sprintf("%sStrEmail: %s,\n", indentationValues, ad.StrEmail))
+	b.WriteString(fmt.Sprintf("%sDTCreationDate: %s,\n", indentationValues, ad.DTCreationDate.FormatToString(indentationLevel+1)))
+	b.WriteString(fmt.Sprintf("%sDTEffectiveDate: %s,\n", indentationValues, ad.DTEffectiveDate.FormatToString(indentationLevel+1)))
+	b.WriteString(fmt.Sprintf("%sStrNotEffectiveMsg: %s,\n", indentationValues, ad.StrNotEffectiveMsg))
+	b.WriteString(fmt.Sprintf("%sDTExpiryDate: %s,\n", indentationValues, ad.DTExpiryDate.FormatToString(indentationLevel+1)))
+	b.WriteString(fmt.Sprintf("%sStrExpiredMsg: %s,\n", indentationValues, ad.StrExpiredMsg))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -231,5 +194,17 @@ func (accountData *AccountData) FormatToString(indentationLevel int) string {
 
 // NewAccountData returns a new AccountData
 func NewAccountData() *AccountData {
-	return &AccountData{}
+	ad := &AccountData{
+		PID:                types.NewPID(0),
+		StrName:            types.NewString(""),
+		UIGroups:           types.NewPrimitiveU32(0),
+		StrEmail:           types.NewString(""),
+		DTCreationDate:     types.NewDateTime(0),
+		DTEffectiveDate:    types.NewDateTime(0),
+		StrNotEffectiveMsg: types.NewString(""),
+		DTExpiryDate:       types.NewDateTime(0),
+		StrExpiredMsg:      types.NewString(""),
+	}
+
+	return ad
 }

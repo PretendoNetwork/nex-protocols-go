@@ -4,43 +4,45 @@ package protocol
 import (
 	"fmt"
 
-	nex "github.com/PretendoNetwork/nex-go"
-	"github.com/PretendoNetwork/nex-protocols-go/globals"
+	nex "github.com/PretendoNetwork/nex-go/v2"
+	"github.com/PretendoNetwork/nex-go/v2/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
 )
 
-// GetSimpleCommunity sets the GetSimpleCommunity handler function
-func (protocol *Protocol) GetSimpleCommunity(handler func(err error, packet nex.PacketInterface, callID uint32, gatheringIDList []uint32) uint32) {
-	protocol.getSimpleCommunityHandler = handler
-}
-
 func (protocol *Protocol) handleGetSimpleCommunity(packet nex.PacketInterface) {
-	var errorCode uint32
+	if protocol.GetSimpleCommunity == nil {
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "MatchmakeExtension::GetSimpleCommunity not implemented")
 
-	if protocol.getSimpleCommunityHandler == nil {
-		globals.Logger.Warning("MatchmakeExtension::GetSimpleCommunity not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
+	callID := request.CallID
+	parameters := request.Parameters
+	endpoint := packet.Sender().Endpoint()
+	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	callID := request.CallID()
-	parameters := request.Parameters()
+	gatheringIDList := types.NewList[*types.PrimitiveU32]()
+	gatheringIDList.Type = types.NewPrimitiveU32(0)
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
-
-	gatheringIDList, err := parametersStream.ReadListUInt32LE()
+	err := gatheringIDList.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.getSimpleCommunityHandler(fmt.Errorf("Failed to read gatheringIDList from parameters. %s", err.Error()), packet, callID, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.GetSimpleCommunity(fmt.Errorf("Failed to read gatheringIDList from parameters. %s", err.Error()), packet, callID, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	errorCode = protocol.getSimpleCommunityHandler(nil, packet, callID, gatheringIDList)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.GetSimpleCommunity(nil, packet, callID, gatheringIDList)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

@@ -1,143 +1,153 @@
-// Package types implements all the types used by the Ranking 2  protocol
+// Package types implements all the types used by the Ranking2 protocol
 package types
 
 import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/v2/types"
 )
 
-// Ranking2GetByListParam holds data for the Ranking 2  protocol
+// Ranking2GetByListParam is a type within the Ranking2 protocol
 type Ranking2GetByListParam struct {
-	nex.Structure
-	Category           uint32
-	Offset             uint32
-	Length             uint32
-	SortFlags          uint32
-	OptionFlags        uint32
-	NumSeasonsToGoBack uint8
+	types.Structure
+	Category           *types.PrimitiveU32
+	Offset             *types.PrimitiveU32
+	Length             *types.PrimitiveU32
+	SortFlags          *types.PrimitiveU32
+	OptionFlags        *types.PrimitiveU32
+	NumSeasonsToGoBack *types.PrimitiveU8
 }
 
-// ExtractFromStream extracts a Ranking2GetByListParam structure from a stream
-func (ranking2GetByListParam *Ranking2GetByListParam) ExtractFromStream(stream *nex.StreamIn) error {
+// WriteTo writes the Ranking2GetByListParam to the given writable
+func (rgblp *Ranking2GetByListParam) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
+
+	rgblp.Category.WriteTo(writable)
+	rgblp.Offset.WriteTo(writable)
+	rgblp.Length.WriteTo(writable)
+	rgblp.SortFlags.WriteTo(writable)
+	rgblp.OptionFlags.WriteTo(writable)
+	rgblp.NumSeasonsToGoBack.WriteTo(writable)
+
+	content := contentWritable.Bytes()
+
+	rgblp.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
+}
+
+// ExtractFrom extracts the Ranking2GetByListParam from the given readable
+func (rgblp *Ranking2GetByListParam) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	ranking2GetByListParam.Category, err = stream.ReadUInt32LE()
+	err = rgblp.ExtractHeaderFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract Ranking2GetByListParam.Category from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract Ranking2GetByListParam header. %s", err.Error())
 	}
 
-	ranking2GetByListParam.Offset, err = stream.ReadUInt32LE()
+	err = rgblp.Category.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract Ranking2GetByListParam.Offset from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract Ranking2GetByListParam.Category. %s", err.Error())
 	}
 
-	ranking2GetByListParam.Length, err = stream.ReadUInt32LE()
+	err = rgblp.Offset.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract Ranking2GetByListParam.Length from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract Ranking2GetByListParam.Offset. %s", err.Error())
 	}
 
-	ranking2GetByListParam.SortFlags, err = stream.ReadUInt32LE()
+	err = rgblp.Length.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract Ranking2GetByListParam.SortFlags from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract Ranking2GetByListParam.Length. %s", err.Error())
 	}
 
-	ranking2GetByListParam.OptionFlags, err = stream.ReadUInt32LE()
+	err = rgblp.SortFlags.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract Ranking2GetByListParam.OptionFlags from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract Ranking2GetByListParam.SortFlags. %s", err.Error())
 	}
 
-	ranking2GetByListParam.NumSeasonsToGoBack, err = stream.ReadUInt8()
+	err = rgblp.OptionFlags.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract Ranking2GetByListParam.NumSeasonsToGoBack from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract Ranking2GetByListParam.OptionFlags. %s", err.Error())
+	}
+
+	err = rgblp.NumSeasonsToGoBack.ExtractFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract Ranking2GetByListParam.NumSeasonsToGoBack. %s", err.Error())
 	}
 
 	return nil
 }
 
-// Bytes encodes the Ranking2GetByListParam and returns a byte array
-func (ranking2GetByListParam *Ranking2GetByListParam) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt32LE(ranking2GetByListParam.Category)
-	stream.WriteUInt32LE(ranking2GetByListParam.Offset)
-	stream.WriteUInt32LE(ranking2GetByListParam.Length)
-	stream.WriteUInt32LE(ranking2GetByListParam.SortFlags)
-	stream.WriteUInt32LE(ranking2GetByListParam.OptionFlags)
-	stream.WriteUInt8(ranking2GetByListParam.NumSeasonsToGoBack)
-
-	return stream.Bytes()
-}
-
 // Copy returns a new copied instance of Ranking2GetByListParam
-func (ranking2GetByListParam *Ranking2GetByListParam) Copy() nex.StructureInterface {
+func (rgblp *Ranking2GetByListParam) Copy() types.RVType {
 	copied := NewRanking2GetByListParam()
 
-	copied.SetStructureVersion(ranking2GetByListParam.StructureVersion())
+	copied.StructureVersion = rgblp.StructureVersion
+	copied.Category = rgblp.Category.Copy().(*types.PrimitiveU32)
+	copied.Offset = rgblp.Offset.Copy().(*types.PrimitiveU32)
+	copied.Length = rgblp.Length.Copy().(*types.PrimitiveU32)
+	copied.SortFlags = rgblp.SortFlags.Copy().(*types.PrimitiveU32)
+	copied.OptionFlags = rgblp.OptionFlags.Copy().(*types.PrimitiveU32)
+	copied.NumSeasonsToGoBack = rgblp.NumSeasonsToGoBack.Copy().(*types.PrimitiveU8)
 
-	copied.Category = ranking2GetByListParam.Category
-	copied.Offset = ranking2GetByListParam.Offset
-	copied.Length = ranking2GetByListParam.Length
-	copied.SortFlags = ranking2GetByListParam.SortFlags
-	copied.OptionFlags = ranking2GetByListParam.OptionFlags
-	copied.NumSeasonsToGoBack = ranking2GetByListParam.NumSeasonsToGoBack
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (ranking2GetByListParam *Ranking2GetByListParam) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*Ranking2GetByListParam)
-
-	if ranking2GetByListParam.StructureVersion() != other.StructureVersion() {
+// Equals checks if the given Ranking2GetByListParam contains the same data as the current Ranking2GetByListParam
+func (rgblp *Ranking2GetByListParam) Equals(o types.RVType) bool {
+	if _, ok := o.(*Ranking2GetByListParam); !ok {
 		return false
 	}
 
-	if ranking2GetByListParam.Category != other.Category {
+	other := o.(*Ranking2GetByListParam)
+
+	if rgblp.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if ranking2GetByListParam.Offset != other.Offset {
+	if !rgblp.Category.Equals(other.Category) {
 		return false
 	}
 
-	if ranking2GetByListParam.Length != other.Length {
+	if !rgblp.Offset.Equals(other.Offset) {
 		return false
 	}
 
-	if ranking2GetByListParam.SortFlags != other.SortFlags {
+	if !rgblp.Length.Equals(other.Length) {
 		return false
 	}
 
-	if ranking2GetByListParam.OptionFlags != other.OptionFlags {
+	if !rgblp.SortFlags.Equals(other.SortFlags) {
 		return false
 	}
 
-	if ranking2GetByListParam.NumSeasonsToGoBack != other.NumSeasonsToGoBack {
+	if !rgblp.OptionFlags.Equals(other.OptionFlags) {
 		return false
 	}
 
-	return true
+	return rgblp.NumSeasonsToGoBack.Equals(other.NumSeasonsToGoBack)
 }
 
-// String returns a string representation of the struct
-func (ranking2GetByListParam *Ranking2GetByListParam) String() string {
-	return ranking2GetByListParam.FormatToString(0)
+// String returns the string representation of the Ranking2GetByListParam
+func (rgblp *Ranking2GetByListParam) String() string {
+	return rgblp.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (ranking2GetByListParam *Ranking2GetByListParam) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the Ranking2GetByListParam using the provided indentation level
+func (rgblp *Ranking2GetByListParam) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("Ranking2GetByListParam{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, ranking2GetByListParam.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sCategory: %d,\n", indentationValues, ranking2GetByListParam.Category))
-	b.WriteString(fmt.Sprintf("%sOffset: %d,\n", indentationValues, ranking2GetByListParam.Offset))
-	b.WriteString(fmt.Sprintf("%sLength: %d,\n", indentationValues, ranking2GetByListParam.Length))
-	b.WriteString(fmt.Sprintf("%sSortFlags: %d,\n", indentationValues, ranking2GetByListParam.SortFlags))
-	b.WriteString(fmt.Sprintf("%sOptionFlags: %d,\n", indentationValues, ranking2GetByListParam.OptionFlags))
-	b.WriteString(fmt.Sprintf("%sNumSeasonsToGoBack: %d,\n", indentationValues, ranking2GetByListParam.NumSeasonsToGoBack))
+	b.WriteString(fmt.Sprintf("%sCategory: %s,\n", indentationValues, rgblp.Category))
+	b.WriteString(fmt.Sprintf("%sOffset: %s,\n", indentationValues, rgblp.Offset))
+	b.WriteString(fmt.Sprintf("%sLength: %s,\n", indentationValues, rgblp.Length))
+	b.WriteString(fmt.Sprintf("%sSortFlags: %s,\n", indentationValues, rgblp.SortFlags))
+	b.WriteString(fmt.Sprintf("%sOptionFlags: %s,\n", indentationValues, rgblp.OptionFlags))
+	b.WriteString(fmt.Sprintf("%sNumSeasonsToGoBack: %s,\n", indentationValues, rgblp.NumSeasonsToGoBack))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -145,5 +155,14 @@ func (ranking2GetByListParam *Ranking2GetByListParam) FormatToString(indentation
 
 // NewRanking2GetByListParam returns a new Ranking2GetByListParam
 func NewRanking2GetByListParam() *Ranking2GetByListParam {
-	return &Ranking2GetByListParam{}
+	rgblp := &Ranking2GetByListParam{
+		Category:           types.NewPrimitiveU32(0),
+		Offset:             types.NewPrimitiveU32(0),
+		Length:             types.NewPrimitiveU32(0),
+		SortFlags:          types.NewPrimitiveU32(0),
+		OptionFlags:        types.NewPrimitiveU32(0),
+		NumSeasonsToGoBack: types.NewPrimitiveU8(0),
+	}
+
+	return rgblp
 }

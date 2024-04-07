@@ -2,108 +2,113 @@
 package types
 
 import (
-	"bytes"
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/v2/types"
 )
 
-// RankingChangeAttributesParam holds parameters for ordering rankings
+// RankingChangeAttributesParam is a type within the Ranking protocol
 type RankingChangeAttributesParam struct {
-	nex.Structure
-	ModificationFlag uint8
-	Groups           []uint8
-	Param            uint64
+	types.Structure
+	ModificationFlag *types.PrimitiveU8
+	Groups           *types.List[*types.PrimitiveU8]
+	Param            *types.PrimitiveU64
 }
 
-// ExtractFromStream extracts a RankingChangeAttributesParam structure from a stream
-func (rankingChangeAttributesParam *RankingChangeAttributesParam) ExtractFromStream(stream *nex.StreamIn) error {
+// WriteTo writes the RankingChangeAttributesParam to the given writable
+func (rcap *RankingChangeAttributesParam) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
+
+	rcap.ModificationFlag.WriteTo(writable)
+	rcap.Groups.WriteTo(writable)
+	rcap.Param.WriteTo(writable)
+
+	content := contentWritable.Bytes()
+
+	rcap.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
+}
+
+// ExtractFrom extracts the RankingChangeAttributesParam from the given readable
+func (rcap *RankingChangeAttributesParam) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	rankingChangeAttributesParam.ModificationFlag, err = stream.ReadUInt8()
+	err = rcap.ExtractHeaderFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract RankingChangeAttributesParam.ModificationFlag from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract RankingChangeAttributesParam header. %s", err.Error())
 	}
 
-	rankingChangeAttributesParam.Groups, err = stream.ReadListUInt8()
+	err = rcap.ModificationFlag.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract RankingChangeAttributesParam.Groups from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract RankingChangeAttributesParam.ModificationFlag. %s", err.Error())
 	}
 
-	rankingChangeAttributesParam.Param, err = stream.ReadUInt64LE()
+	err = rcap.Groups.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract RankingChangeAttributesParam.Param from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract RankingChangeAttributesParam.Groups. %s", err.Error())
+	}
+
+	err = rcap.Param.ExtractFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract RankingChangeAttributesParam.Param. %s", err.Error())
 	}
 
 	return nil
 }
 
-// Bytes encodes the RankingChangeAttributesParam and returns a byte array
-func (rankingChangeAttributesParam *RankingChangeAttributesParam) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt8(rankingChangeAttributesParam.ModificationFlag)
-	stream.WriteListUInt8(rankingChangeAttributesParam.Groups)
-	stream.WriteUInt64LE(rankingChangeAttributesParam.Param)
-
-	return stream.Bytes()
-}
-
 // Copy returns a new copied instance of RankingChangeAttributesParam
-func (rankingChangeAttributesParam *RankingChangeAttributesParam) Copy() nex.StructureInterface {
+func (rcap *RankingChangeAttributesParam) Copy() types.RVType {
 	copied := NewRankingChangeAttributesParam()
 
-	copied.SetStructureVersion(rankingChangeAttributesParam.StructureVersion())
-
-	copied.ModificationFlag = rankingChangeAttributesParam.ModificationFlag
-	copied.Groups = make([]uint8, len(rankingChangeAttributesParam.Groups))
-
-	copy(copied.Groups, rankingChangeAttributesParam.Groups)
-
-	copied.Param = rankingChangeAttributesParam.Param
+	copied.StructureVersion = rcap.StructureVersion
+	copied.ModificationFlag = rcap.ModificationFlag.Copy().(*types.PrimitiveU8)
+	copied.Groups = rcap.Groups.Copy().(*types.List[*types.PrimitiveU8])
+	copied.Param = rcap.Param.Copy().(*types.PrimitiveU64)
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (rankingChangeAttributesParam *RankingChangeAttributesParam) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*RankingChangeAttributesParam)
-
-	if rankingChangeAttributesParam.StructureVersion() != other.StructureVersion() {
+// Equals checks if the given RankingChangeAttributesParam contains the same data as the current RankingChangeAttributesParam
+func (rcap *RankingChangeAttributesParam) Equals(o types.RVType) bool {
+	if _, ok := o.(*RankingChangeAttributesParam); !ok {
 		return false
 	}
 
-	if rankingChangeAttributesParam.ModificationFlag != other.ModificationFlag {
+	other := o.(*RankingChangeAttributesParam)
+
+	if rcap.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if !bytes.Equal(rankingChangeAttributesParam.Groups, other.Groups) {
+	if !rcap.ModificationFlag.Equals(other.ModificationFlag) {
 		return false
 	}
 
-	if rankingChangeAttributesParam.Param != other.Param {
+	if !rcap.Groups.Equals(other.Groups) {
 		return false
 	}
 
-	return true
+	return rcap.Param.Equals(other.Param)
 }
 
-// String returns a string representation of the struct
-func (rankingChangeAttributesParam *RankingChangeAttributesParam) String() string {
-	return rankingChangeAttributesParam.FormatToString(0)
+// String returns the string representation of the RankingChangeAttributesParam
+func (rcap *RankingChangeAttributesParam) String() string {
+	return rcap.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (rankingChangeAttributesParam *RankingChangeAttributesParam) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the RankingChangeAttributesParam using the provided indentation level
+func (rcap *RankingChangeAttributesParam) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("RankingChangeAttributesParam{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, rankingChangeAttributesParam.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sModificationFlag: %d,\n", indentationValues, rankingChangeAttributesParam.ModificationFlag))
-	b.WriteString(fmt.Sprintf("%sGroups: %v,\n", indentationValues, rankingChangeAttributesParam.Groups))
-	b.WriteString(fmt.Sprintf("%sParam: %d\n", indentationValues, rankingChangeAttributesParam.Param))
+	b.WriteString(fmt.Sprintf("%sModificationFlag: %s,\n", indentationValues, rcap.ModificationFlag))
+	b.WriteString(fmt.Sprintf("%sGroups: %s,\n", indentationValues, rcap.Groups))
+	b.WriteString(fmt.Sprintf("%sParam: %s,\n", indentationValues, rcap.Param))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -111,5 +116,13 @@ func (rankingChangeAttributesParam *RankingChangeAttributesParam) FormatToString
 
 // NewRankingChangeAttributesParam returns a new RankingChangeAttributesParam
 func NewRankingChangeAttributesParam() *RankingChangeAttributesParam {
-	return &RankingChangeAttributesParam{}
+	rcap := &RankingChangeAttributesParam{
+		ModificationFlag: types.NewPrimitiveU8(0),
+		Groups:           types.NewList[*types.PrimitiveU8](),
+		Param:            types.NewPrimitiveU64(0),
+	}
+
+	rcap.Groups.Type = types.NewPrimitiveU8(0)
+
+	return rcap
 }

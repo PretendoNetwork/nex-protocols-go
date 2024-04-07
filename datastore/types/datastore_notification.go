@@ -5,26 +5,45 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/v2/types"
 )
 
-// DataStoreNotification is a data structure used by the DataStore protocol
+// DataStoreNotification is a type within the DataStore protocol
 type DataStoreNotification struct {
-	nex.Structure
-	NotificationID uint64
-	DataID         uint64
+	types.Structure
+	NotificationID *types.PrimitiveU64
+	DataID         *types.PrimitiveU64
 }
 
-// ExtractFromStream extracts a DataStoreNotification structure from a stream
-func (dataStoreNotification *DataStoreNotification) ExtractFromStream(stream *nex.StreamIn) error {
+// WriteTo writes the DataStoreNotification to the given writable
+func (dsn *DataStoreNotification) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
+
+	dsn.NotificationID.WriteTo(writable)
+	dsn.DataID.WriteTo(writable)
+
+	content := contentWritable.Bytes()
+
+	dsn.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
+}
+
+// ExtractFrom extracts the DataStoreNotification from the given readable
+func (dsn *DataStoreNotification) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	dataStoreNotification.NotificationID, err = stream.ReadUInt64LE()
+	err = dsn.ExtractHeaderFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreNotification header. %s", err.Error())
+	}
+
+	err = dsn.NotificationID.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreNotification.NotificationID. %s", err.Error())
 	}
 
-	dataStoreNotification.DataID, err = stream.ReadUInt64LE()
+	err = dsn.DataID.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreNotification.DataID. %s", err.Error())
 	}
@@ -32,61 +51,51 @@ func (dataStoreNotification *DataStoreNotification) ExtractFromStream(stream *ne
 	return nil
 }
 
-// Bytes encodes the DataStoreNotification and returns a byte array
-func (dataStoreNotification *DataStoreNotification) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt64LE(dataStoreNotification.NotificationID)
-	stream.WriteUInt64LE(dataStoreNotification.DataID)
-
-	return stream.Bytes()
-}
-
 // Copy returns a new copied instance of DataStoreNotification
-func (dataStoreNotification *DataStoreNotification) Copy() nex.StructureInterface {
+func (dsn *DataStoreNotification) Copy() types.RVType {
 	copied := NewDataStoreNotification()
 
-	copied.SetStructureVersion(dataStoreNotification.StructureVersion())
-
-	copied.NotificationID = dataStoreNotification.NotificationID
-	copied.DataID = dataStoreNotification.DataID
+	copied.StructureVersion = dsn.StructureVersion
+	copied.NotificationID = dsn.NotificationID.Copy().(*types.PrimitiveU64)
+	copied.DataID = dsn.DataID.Copy().(*types.PrimitiveU64)
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (dataStoreNotification *DataStoreNotification) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*DataStoreNotification)
-
-	if dataStoreNotification.StructureVersion() != other.StructureVersion() {
+// Equals checks if the given DataStoreNotification contains the same data as the current DataStoreNotification
+func (dsn *DataStoreNotification) Equals(o types.RVType) bool {
+	if _, ok := o.(*DataStoreNotification); !ok {
 		return false
 	}
 
-	if dataStoreNotification.NotificationID != other.NotificationID {
+	other := o.(*DataStoreNotification)
+
+	if dsn.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if dataStoreNotification.DataID != other.DataID {
+	if !dsn.NotificationID.Equals(other.NotificationID) {
 		return false
 	}
 
-	return true
+	return dsn.DataID.Equals(other.DataID)
 }
 
-// String returns a string representation of the struct
-func (dataStoreNotification *DataStoreNotification) String() string {
-	return dataStoreNotification.FormatToString(0)
+// String returns the string representation of the DataStoreNotification
+func (dsn *DataStoreNotification) String() string {
+	return dsn.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (dataStoreNotification *DataStoreNotification) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the DataStoreNotification using the provided indentation level
+func (dsn *DataStoreNotification) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("DataStoreNotification{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, dataStoreNotification.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sNotificationID: %d,\n", indentationValues, dataStoreNotification.NotificationID))
-	b.WriteString(fmt.Sprintf("%sDataID: %d\n", indentationValues, dataStoreNotification.DataID))
+	b.WriteString(fmt.Sprintf("%sNotificationID: %s,\n", indentationValues, dsn.NotificationID))
+	b.WriteString(fmt.Sprintf("%sDataID: %s,\n", indentationValues, dsn.DataID))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -94,8 +103,10 @@ func (dataStoreNotification *DataStoreNotification) FormatToString(indentationLe
 
 // NewDataStoreNotification returns a new DataStoreNotification
 func NewDataStoreNotification() *DataStoreNotification {
-	return &DataStoreNotification{
-		NotificationID: 0,
-		DataID:         0,
+	dsn := &DataStoreNotification{
+		NotificationID: types.NewPrimitiveU64(0),
+		DataID:         types.NewPrimitiveU64(0),
 	}
+
+	return dsn
 }

@@ -4,10 +4,10 @@ package protocol
 import (
 	"fmt"
 
-	nex "github.com/PretendoNetwork/nex-go"
-	datastore "github.com/PretendoNetwork/nex-protocols-go/datastore"
-	datastore_pokemon_gen6_types "github.com/PretendoNetwork/nex-protocols-go/datastore/pokemon-gen6/types"
-	"github.com/PretendoNetwork/nex-protocols-go/globals"
+	nex "github.com/PretendoNetwork/nex-go/v2"
+	datastore "github.com/PretendoNetwork/nex-protocols-go/v2/datastore"
+	datastore_pokemon_gen6_types "github.com/PretendoNetwork/nex-protocols-go/v2/datastore/pokemon-gen6/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
 	"golang.org/x/exp/slices"
 )
 
@@ -52,63 +52,58 @@ type dataStoreProtocol = datastore.Protocol
 // Protocol stores all the RMC method handlers for the DataStore (Pokemon Gen6) protocol and listens for requests
 // Embeds the DataStore protocol
 type Protocol struct {
-	Server *nex.Server
+	endpoint nex.EndpointInterface
 	dataStoreProtocol
-	uploadPokemonHandler        func(err error, packet nex.PacketInterface, callID uint32, param *datastore_pokemon_gen6_types.GlobalTradeStationUploadPokemonParam) uint32
-	searchPokemonHandler        func(err error, packet nex.PacketInterface, callID uint32, param *datastore_pokemon_gen6_types.GlobalTradeStationSearchPokemonParam) uint32
-	prepareTradePokemonHandler  func(err error, packet nex.PacketInterface, callID uint32, param *datastore_pokemon_gen6_types.GlobalTradeStationPrepareTradePokemonParam) uint32
-	tradePokemonHandler         func(err error, packet nex.PacketInterface, callID uint32, param *datastore_pokemon_gen6_types.GlobalTradeStationTradePokemonParam) uint32
-	downloadOtherPokemonHandler func(err error, packet nex.PacketInterface, callID uint32, param *datastore_pokemon_gen6_types.GlobalTradeStationDownloadOtherPokemonParam) uint32
-	downloadMyPokemonHandler    func(err error, packet nex.PacketInterface, callID uint32, param *datastore_pokemon_gen6_types.GlobalTradeStationDownloadMyPokemonParam) uint32
-	deletePokemonHandler        func(err error, packet nex.PacketInterface, callID uint32, param *datastore_pokemon_gen6_types.GlobalTradeStationDeletePokemonParam) uint32
-}
-
-// Setup initializes the protocol
-func (protocol *Protocol) Setup() {
-	protocol.Server.On("Data", func(packet nex.PacketInterface) {
-		request := packet.RMCRequest()
-
-		if request.ProtocolID() == ProtocolID {
-			if slices.Contains(patchedMethods, request.MethodID()) {
-				protocol.HandlePacket(packet)
-			} else {
-				protocol.dataStoreProtocol.HandlePacket(packet)
-			}
-		}
-	})
+	UploadPokemon        func(err error, packet nex.PacketInterface, callID uint32, param *datastore_pokemon_gen6_types.GlobalTradeStationUploadPokemonParam) (*nex.RMCMessage, *nex.Error)
+	SearchPokemon        func(err error, packet nex.PacketInterface, callID uint32, param *datastore_pokemon_gen6_types.GlobalTradeStationSearchPokemonParam) (*nex.RMCMessage, *nex.Error)
+	PrepareTradePokemon  func(err error, packet nex.PacketInterface, callID uint32, param *datastore_pokemon_gen6_types.GlobalTradeStationPrepareTradePokemonParam) (*nex.RMCMessage, *nex.Error)
+	TradePokemon         func(err error, packet nex.PacketInterface, callID uint32, param *datastore_pokemon_gen6_types.GlobalTradeStationTradePokemonParam) (*nex.RMCMessage, *nex.Error)
+	DownloadOtherPokemon func(err error, packet nex.PacketInterface, callID uint32, param *datastore_pokemon_gen6_types.GlobalTradeStationDownloadOtherPokemonParam) (*nex.RMCMessage, *nex.Error)
+	DownloadMyPokemon    func(err error, packet nex.PacketInterface, callID uint32, param *datastore_pokemon_gen6_types.GlobalTradeStationDownloadMyPokemonParam) (*nex.RMCMessage, *nex.Error)
+	DeletePokemon        func(err error, packet nex.PacketInterface, callID uint32, param *datastore_pokemon_gen6_types.GlobalTradeStationDeletePokemonParam) (*nex.RMCMessage, *nex.Error)
 }
 
 // HandlePacket sends the packet to the correct RMC method handler
 func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
-	request := packet.RMCRequest()
+	message := packet.RMCMessage()
 
-	switch request.MethodID() {
+	if !message.IsRequest || message.ProtocolID != ProtocolID {
+		return
+	}
+
+	if !slices.Contains(patchedMethods, message.MethodID) {
+		protocol.dataStoreProtocol.HandlePacket(packet)
+		return
+	}
+
+	switch message.MethodID {
 	case MethodUploadPokemon:
-		go protocol.handleUploadPokemon(packet)
+		protocol.handleUploadPokemon(packet)
 	case MethodSearchPokemon:
-		go protocol.handleSearchPokemon(packet)
+		protocol.handleSearchPokemon(packet)
 	case MethodPrepareTradePokemon:
-		go protocol.handlePrepareTradePokemon(packet)
+		protocol.handlePrepareTradePokemon(packet)
 	case MethodTradePokemon:
-		go protocol.handleTradePokemon(packet)
+		protocol.handleTradePokemon(packet)
 	case MethodDownloadOtherPokemon:
-		go protocol.handleDownloadOtherPokemon(packet)
+		protocol.handleDownloadOtherPokemon(packet)
 	case MethodDownloadMyPokemon:
-		go protocol.handleDownloadMyPokemon(packet)
+		protocol.handleDownloadMyPokemon(packet)
 	case MethodDeletePokemon:
-		go protocol.handleDeletePokemon(packet)
+		protocol.handleDeletePokemon(packet)
 	default:
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
-		fmt.Printf("Unsupported DataStore (Pokemon Gen6) method ID: %#v\n", request.MethodID())
+		errMessage := fmt.Sprintf("Unsupported DataStore (Pokemon Gen6) method ID: %#v\n", message.MethodID)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, errMessage)
+
+		globals.RespondError(packet, ProtocolID, err)
+		globals.Logger.Warning(err.Message)
 	}
 }
 
 // NewProtocol returns a new DataStorePokemonGen6 protocol
-func NewProtocol(server *nex.Server) *Protocol {
-	protocol := &Protocol{Server: server}
-	protocol.dataStoreProtocol.Server = server
-
-	protocol.Setup()
+func NewProtocol(endpoint nex.EndpointInterface) *Protocol {
+	protocol := &Protocol{endpoint: endpoint}
+	protocol.dataStoreProtocol.SetEndpoint(endpoint)
 
 	return protocol
 }

@@ -4,64 +4,69 @@ package protocol
 import (
 	"fmt"
 
-	nex "github.com/PretendoNetwork/nex-go"
-	"github.com/PretendoNetwork/nex-protocols-go/globals"
-	ranking_types "github.com/PretendoNetwork/nex-protocols-go/ranking/types"
+	nex "github.com/PretendoNetwork/nex-go/v2"
+	"github.com/PretendoNetwork/nex-go/v2/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
+	ranking_types "github.com/PretendoNetwork/nex-protocols-go/v2/ranking/types"
 )
 
-// GetStats sets the GetStats handler function
-func (protocol *Protocol) GetStats(handler func(err error, packet nex.PacketInterface, callID uint32, category uint32, orderParam *ranking_types.RankingOrderParam, flags uint32) uint32) {
-	protocol.getStatsHandler = handler
-}
-
 func (protocol *Protocol) handleGetStats(packet nex.PacketInterface) {
-	var errorCode uint32
+	if protocol.GetStats == nil {
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "Ranking::GetStats not implemented")
 
-	if protocol.getStatsHandler == nil {
-		globals.Logger.Warning("Ranking::GetStats not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
+	callID := request.CallID
+	parameters := request.Parameters
+	endpoint := packet.Sender().Endpoint()
+	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	callID := request.CallID()
-	parameters := request.Parameters()
+	category := types.NewPrimitiveU32(0)
+	orderParam := ranking_types.NewRankingOrderParam()
+	flags := types.NewPrimitiveU32(0)
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+	var err error
 
-	category, err := parametersStream.ReadUInt32LE()
+	err = category.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.getStatsHandler(fmt.Errorf("Failed to read category from parameters. %s", err.Error()), packet, callID, 0, nil, 0)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.GetStats(fmt.Errorf("Failed to read category from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	orderParam, err := parametersStream.ReadStructure(ranking_types.NewRankingOrderParam())
+	err = orderParam.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.getStatsHandler(fmt.Errorf("Failed to read orderParam from parameters. %s", err.Error()), packet, callID, 0, nil, 0)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.GetStats(fmt.Errorf("Failed to read orderParam from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	flags, err := parametersStream.ReadUInt32LE()
+	err = flags.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.getStatsHandler(fmt.Errorf("Failed to read flags from parameters. %s", err.Error()), packet, callID, 0, nil, 0)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.GetStats(fmt.Errorf("Failed to read flags from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	errorCode = protocol.getStatsHandler(nil, packet, callID, category, orderParam.(*ranking_types.RankingOrderParam), flags)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.GetStats(nil, packet, callID, category, orderParam, flags)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

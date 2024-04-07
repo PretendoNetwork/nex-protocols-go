@@ -4,53 +4,57 @@ package protocol
 import (
 	"fmt"
 
-	nex "github.com/PretendoNetwork/nex-go"
-	"github.com/PretendoNetwork/nex-protocols-go/globals"
+	nex "github.com/PretendoNetwork/nex-go/v2"
+	"github.com/PretendoNetwork/nex-go/v2/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
 )
 
-// LoginEx sets the LoginEx handler function
-func (protocol *Protocol) LoginEx(handler func(err error, packet nex.PacketInterface, callID uint32, strUserName string, oExtraData *nex.DataHolder) uint32) {
-	protocol.loginExHandler = handler
-}
-
 func (protocol *Protocol) handleLoginEx(packet nex.PacketInterface) {
-	var errorCode uint32
+	if protocol.LoginEx == nil {
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "TicketGranting::LoginEx not implemented")
 
-	if protocol.loginExHandler == nil {
-		globals.Logger.Warning("TicketGranting::LoginEx not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
+	callID := request.CallID
+	parameters := request.Parameters
+	endpoint := packet.Sender().Endpoint()
+	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	callID := request.CallID()
-	parameters := request.Parameters()
+	strUserName := types.NewString("")
+	oExtraData := types.NewAnyDataHolder()
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+	var err error
 
-	strUserName, err := parametersStream.ReadString()
+	err = strUserName.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.loginExHandler(fmt.Errorf("Failed to read strUserName from parameters. %s", err.Error()), packet, callID, "", nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.LoginEx(fmt.Errorf("Failed to read strUserName from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	oExtraData, err := parametersStream.ReadDataHolder()
+	err = oExtraData.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.loginExHandler(fmt.Errorf("Failed to read oExtraData from parameters. %s", err.Error()), packet, callID, "", nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.LoginEx(fmt.Errorf("Failed to read oExtraData from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	errorCode = protocol.loginExHandler(nil, packet, callID, strUserName, oExtraData)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.LoginEx(nil, packet, callID, strUserName, oExtraData)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

@@ -1,140 +1,140 @@
-// Package types implements all the types used by the DataStore (Pokemon Gen6) protocol
+// Package types implements all the types used by the DataStore protocol
 package types
 
 import (
-	"bytes"
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/v2/types"
 )
 
-// GlobalTradeStationUploadPokemonParam holds data for the DataStore (Pokemon Gen6) protocol
+// GlobalTradeStationUploadPokemonParam is a type within the DataStore protocol
 type GlobalTradeStationUploadPokemonParam struct {
-	nex.Structure
+	types.Structure
 	PrepareUploadKey *GlobalTradeStationRecordKey
-	Period           uint16
-	IndexData        []byte
-	PokemonData      []byte
-	Signature        []byte
+	Period           *types.PrimitiveU16
+	IndexData        *types.QBuffer
+	PokemonData      *types.QBuffer
+	Signature        *types.QBuffer
 }
 
-// ExtractFromStream extracts a GlobalTradeStationUploadPokemonParam structure from a stream
-func (globalTradeStationUploadPokemonParam *GlobalTradeStationUploadPokemonParam) ExtractFromStream(stream *nex.StreamIn) error {
+// WriteTo writes the GlobalTradeStationUploadPokemonParam to the given writable
+func (gtsupp *GlobalTradeStationUploadPokemonParam) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
+
+	gtsupp.PrepareUploadKey.WriteTo(writable)
+	gtsupp.Period.WriteTo(writable)
+	gtsupp.IndexData.WriteTo(writable)
+	gtsupp.PokemonData.WriteTo(writable)
+	gtsupp.Signature.WriteTo(writable)
+
+	content := contentWritable.Bytes()
+
+	gtsupp.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
+}
+
+// ExtractFrom extracts the GlobalTradeStationUploadPokemonParam from the given readable
+func (gtsupp *GlobalTradeStationUploadPokemonParam) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	prepareUploadKey, err := stream.ReadStructure(NewGlobalTradeStationRecordKey())
+	err = gtsupp.ExtractHeaderFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract GlobalTradeStationUploadPokemonParam.PrepareUploadKey from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract GlobalTradeStationUploadPokemonParam header. %s", err.Error())
 	}
 
-	globalTradeStationUploadPokemonParam.PrepareUploadKey = prepareUploadKey.(*GlobalTradeStationRecordKey)
-
-	globalTradeStationUploadPokemonParam.Period, err = stream.ReadUInt16LE()
+	err = gtsupp.PrepareUploadKey.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract GlobalTradeStationUploadPokemonParam.Period from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract GlobalTradeStationUploadPokemonParam.PrepareUploadKey. %s", err.Error())
 	}
 
-	globalTradeStationUploadPokemonParam.IndexData, err = stream.ReadQBuffer()
+	err = gtsupp.Period.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract GlobalTradeStationUploadPokemonParam.IndexData from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract GlobalTradeStationUploadPokemonParam.Period. %s", err.Error())
 	}
 
-	globalTradeStationUploadPokemonParam.PokemonData, err = stream.ReadQBuffer()
+	err = gtsupp.IndexData.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract GlobalTradeStationUploadPokemonParam.PokemonData from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract GlobalTradeStationUploadPokemonParam.IndexData. %s", err.Error())
 	}
 
-	globalTradeStationUploadPokemonParam.Signature, err = stream.ReadQBuffer()
+	err = gtsupp.PokemonData.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract GlobalTradeStationUploadPokemonParam.Signature from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract GlobalTradeStationUploadPokemonParam.PokemonData. %s", err.Error())
+	}
+
+	err = gtsupp.Signature.ExtractFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract GlobalTradeStationUploadPokemonParam.Signature. %s", err.Error())
 	}
 
 	return nil
 }
 
-// Bytes encodes the GlobalTradeStationUploadPokemonParam and returns a byte array
-func (globalTradeStationUploadPokemonParam *GlobalTradeStationUploadPokemonParam) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteStructure(globalTradeStationUploadPokemonParam.PrepareUploadKey)
-	stream.WriteUInt16LE(globalTradeStationUploadPokemonParam.Period)
-	stream.WriteQBuffer(globalTradeStationUploadPokemonParam.IndexData)
-	stream.WriteQBuffer(globalTradeStationUploadPokemonParam.PokemonData)
-	stream.WriteQBuffer(globalTradeStationUploadPokemonParam.Signature)
-
-	return stream.Bytes()
-}
-
 // Copy returns a new copied instance of GlobalTradeStationUploadPokemonParam
-func (globalTradeStationUploadPokemonParam *GlobalTradeStationUploadPokemonParam) Copy() nex.StructureInterface {
+func (gtsupp *GlobalTradeStationUploadPokemonParam) Copy() types.RVType {
 	copied := NewGlobalTradeStationUploadPokemonParam()
 
-	copied.SetStructureVersion(globalTradeStationUploadPokemonParam.StructureVersion())
-
-	copied.PrepareUploadKey = globalTradeStationUploadPokemonParam.PrepareUploadKey.Copy().(*GlobalTradeStationRecordKey)
-	copied.Period = globalTradeStationUploadPokemonParam.Period
-	copied.IndexData = globalTradeStationUploadPokemonParam.IndexData
-	copied.PokemonData = globalTradeStationUploadPokemonParam.PokemonData
-	copied.Signature = globalTradeStationUploadPokemonParam.Signature
+	copied.StructureVersion = gtsupp.StructureVersion
+	copied.PrepareUploadKey = gtsupp.PrepareUploadKey.Copy().(*GlobalTradeStationRecordKey)
+	copied.Period = gtsupp.Period.Copy().(*types.PrimitiveU16)
+	copied.IndexData = gtsupp.IndexData.Copy().(*types.QBuffer)
+	copied.PokemonData = gtsupp.PokemonData.Copy().(*types.QBuffer)
+	copied.Signature = gtsupp.Signature.Copy().(*types.QBuffer)
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (globalTradeStationUploadPokemonParam *GlobalTradeStationUploadPokemonParam) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*GlobalTradeStationUploadPokemonParam)
-
-	if globalTradeStationUploadPokemonParam.StructureVersion() != other.StructureVersion() {
+// Equals checks if the given GlobalTradeStationUploadPokemonParam contains the same data as the current GlobalTradeStationUploadPokemonParam
+func (gtsupp *GlobalTradeStationUploadPokemonParam) Equals(o types.RVType) bool {
+	if _, ok := o.(*GlobalTradeStationUploadPokemonParam); !ok {
 		return false
 	}
 
-	if !globalTradeStationUploadPokemonParam.PrepareUploadKey.Equals(other.PrepareUploadKey) {
+	other := o.(*GlobalTradeStationUploadPokemonParam)
+
+	if gtsupp.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if globalTradeStationUploadPokemonParam.Period != other.Period {
+	if !gtsupp.PrepareUploadKey.Equals(other.PrepareUploadKey) {
 		return false
 	}
 
-	if !bytes.Equal(globalTradeStationUploadPokemonParam.IndexData, other.IndexData) {
+	if !gtsupp.Period.Equals(other.Period) {
 		return false
 	}
 
-	if !bytes.Equal(globalTradeStationUploadPokemonParam.PokemonData, other.PokemonData) {
+	if !gtsupp.IndexData.Equals(other.IndexData) {
 		return false
 	}
 
-	if !bytes.Equal(globalTradeStationUploadPokemonParam.Signature, other.Signature) {
+	if !gtsupp.PokemonData.Equals(other.PokemonData) {
 		return false
 	}
 
-	return true
+	return gtsupp.Signature.Equals(other.Signature)
 }
 
-// String returns a string representation of the struct
-func (globalTradeStationUploadPokemonParam *GlobalTradeStationUploadPokemonParam) String() string {
-	return globalTradeStationUploadPokemonParam.FormatToString(0)
+// String returns the string representation of the GlobalTradeStationUploadPokemonParam
+func (gtsupp *GlobalTradeStationUploadPokemonParam) String() string {
+	return gtsupp.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (globalTradeStationUploadPokemonParam *GlobalTradeStationUploadPokemonParam) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the GlobalTradeStationUploadPokemonParam using the provided indentation level
+func (gtsupp *GlobalTradeStationUploadPokemonParam) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("GlobalTradeStationUploadPokemonParam{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, globalTradeStationUploadPokemonParam.StructureVersion()))
-
-	if globalTradeStationUploadPokemonParam.PrepareUploadKey != nil {
-		b.WriteString(fmt.Sprintf("%sPrepareUploadKey: %s\n", indentationValues, globalTradeStationUploadPokemonParam.PrepareUploadKey.FormatToString(indentationLevel+1)))
-	} else {
-		b.WriteString(fmt.Sprintf("%sPrepareUploadKey: nil\n", indentationValues))
-	}
-
-	b.WriteString(fmt.Sprintf("%sPeriod: %d,\n", indentationValues, globalTradeStationUploadPokemonParam.Period))
-	b.WriteString(fmt.Sprintf("%sIndexData: %x,\n", indentationValues, globalTradeStationUploadPokemonParam.IndexData))
-	b.WriteString(fmt.Sprintf("%sPokemonData: %x,\n", indentationValues, globalTradeStationUploadPokemonParam.PokemonData))
-	b.WriteString(fmt.Sprintf("%sSignature: %x,\n", indentationValues, globalTradeStationUploadPokemonParam.Signature))
+	b.WriteString(fmt.Sprintf("%sPrepareUploadKey: %s,\n", indentationValues, gtsupp.PrepareUploadKey.FormatToString(indentationLevel+1)))
+	b.WriteString(fmt.Sprintf("%sPeriod: %s,\n", indentationValues, gtsupp.Period))
+	b.WriteString(fmt.Sprintf("%sIndexData: %s,\n", indentationValues, gtsupp.IndexData))
+	b.WriteString(fmt.Sprintf("%sPokemonData: %s,\n", indentationValues, gtsupp.PokemonData))
+	b.WriteString(fmt.Sprintf("%sSignature: %s,\n", indentationValues, gtsupp.Signature))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -142,5 +142,13 @@ func (globalTradeStationUploadPokemonParam *GlobalTradeStationUploadPokemonParam
 
 // NewGlobalTradeStationUploadPokemonParam returns a new GlobalTradeStationUploadPokemonParam
 func NewGlobalTradeStationUploadPokemonParam() *GlobalTradeStationUploadPokemonParam {
-	return &GlobalTradeStationUploadPokemonParam{}
+	gtsupp := &GlobalTradeStationUploadPokemonParam{
+		PrepareUploadKey: NewGlobalTradeStationRecordKey(),
+		Period:           types.NewPrimitiveU16(0),
+		IndexData:        types.NewQBuffer(nil),
+		PokemonData:      types.NewQBuffer(nil),
+		Signature:        types.NewQBuffer(nil),
+	}
+
+	return gtsupp
 }

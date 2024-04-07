@@ -2,32 +2,30 @@
 package protocol
 
 import (
-	nex "github.com/PretendoNetwork/nex-go"
-	"github.com/PretendoNetwork/nex-protocols-go/globals"
+	nex "github.com/PretendoNetwork/nex-go/v2"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
 )
 
-// GetCompetitionRankingScore sets the GetCompetitionRankingScore handler function
-func (protocol *Protocol) GetCompetitionRankingScore(handler func(err error, packet nex.PacketInterface, callID uint32, packetPayload []byte) uint32) {
-	protocol.getCompetitionRankingScoreHandler = handler
-}
-
 func (protocol *Protocol) handleGetCompetitionRankingScore(packet nex.PacketInterface) {
-	var errorCode uint32
+	if protocol.GetCompetitionRankingScore == nil {
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "RankingSplatoon::GetCompetitionRankingScore not implemented")
 
-	if protocol.getCompetitionRankingScoreHandler == nil {
-		globals.Logger.Warning("RankingSplatoon::GetCompetitionRankingScore not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
 	globals.Logger.Warning("RankingSplatoon::GetCompetitionRankingScore STUBBED")
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
+	callID := request.CallID
 
-	callID := request.CallID()
-
-	errorCode = protocol.getCompetitionRankingScoreHandler(nil, packet, callID, packet.Payload())
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.GetCompetitionRankingScore(nil, packet, callID, packet.Payload())
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

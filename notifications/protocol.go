@@ -2,7 +2,7 @@
 package protocol
 
 import (
-	nex "github.com/PretendoNetwork/nex-go"
+	nex "github.com/PretendoNetwork/nex-go/v2"
 )
 
 const (
@@ -15,21 +15,22 @@ const (
 
 // Protocol handles the Notifications protocol
 type Protocol struct {
-	Server *nex.Server
+	endpoint       nex.EndpointInterface
+	Patches        nex.ServiceProtocol
+	PatchedMethods []uint32
 }
 
-// Setup initializes the protocol
-func (protocol *Protocol) Setup() {
-	// TODO: Do something
-	// This protocol doesn't seem to get requests from the client, it only sends them
-	// So no handling is done for in-coming requests at the moment
+// Endpoint returns the endpoint implementing the protocol
+func (protocol *Protocol) Endpoint() nex.EndpointInterface {
+	return protocol.endpoint
+}
+
+// SetEndpoint sets the endpoint implementing the protocol
+func (protocol *Protocol) SetEndpoint(endpoint nex.EndpointInterface) {
+	protocol.endpoint = endpoint
 }
 
 // NewProtocol returns a new Notifications protocol
-func NewProtocol(server *nex.Server) *Protocol {
-	notificationsProtocol := &Protocol{Server: server}
-
-	notificationsProtocol.Setup()
-
-	return notificationsProtocol
+func NewProtocol() *Protocol {
+	return &Protocol{}
 }

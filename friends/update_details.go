@@ -4,53 +4,57 @@ package protocol
 import (
 	"fmt"
 
-	nex "github.com/PretendoNetwork/nex-go"
-	"github.com/PretendoNetwork/nex-protocols-go/globals"
+	nex "github.com/PretendoNetwork/nex-go/v2"
+	"github.com/PretendoNetwork/nex-go/v2/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
 )
 
-// UpdateDetails sets the UpdateDetails handler function
-func (protocol *Protocol) UpdateDetails(handler func(err error, packet nex.PacketInterface, callID uint32, uiPlayer uint32, uiDetails uint32) uint32) {
-	protocol.updateDetailsHandler = handler
-}
-
 func (protocol *Protocol) handleUpdateDetails(packet nex.PacketInterface) {
-	var errorCode uint32
+	if protocol.UpdateDetails == nil {
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "Friends::UpdateDetails not implemented")
 
-	if protocol.updateDetailsHandler == nil {
-		globals.Logger.Warning("Friends::UpdateDetails not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
+	callID := request.CallID
+	parameters := request.Parameters
+	endpoint := packet.Sender().Endpoint()
+	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	callID := request.CallID()
-	parameters := request.Parameters()
+	uiPlayer := types.NewPrimitiveU32(0)
+	uiDetails := types.NewPrimitiveU32(0)
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+	var err error
 
-	uiPlayer, err := parametersStream.ReadUInt32LE()
+	err = uiPlayer.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.updateDetailsHandler(fmt.Errorf("Failed to read uiPlayer from parameters. %s", err.Error()), packet, callID, 0, 0)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.UpdateDetails(fmt.Errorf("Failed to read uiPlayer from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	uiDetails, err := parametersStream.ReadUInt32LE()
+	err = uiDetails.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.updateDetailsHandler(fmt.Errorf("Failed to read uiDetails from parameters. %s", err.Error()), packet, callID, 0, 0)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.UpdateDetails(fmt.Errorf("Failed to read uiDetails from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	errorCode = protocol.updateDetailsHandler(nil, packet, callID, uiPlayer, uiDetails)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.UpdateDetails(nil, packet, callID, uiPlayer, uiDetails)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

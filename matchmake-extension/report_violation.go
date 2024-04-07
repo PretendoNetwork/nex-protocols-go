@@ -4,63 +4,68 @@ package protocol
 import (
 	"fmt"
 
-	nex "github.com/PretendoNetwork/nex-go"
-	"github.com/PretendoNetwork/nex-protocols-go/globals"
+	nex "github.com/PretendoNetwork/nex-go/v2"
+	"github.com/PretendoNetwork/nex-go/v2/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
 )
 
-// ReportViolation sets the ReportViolation handler function
-func (protocol *Protocol) ReportViolation(handler func(err error, packet nex.PacketInterface, callID uint32, pid uint32, userName string, violationCode uint32) uint32) {
-	protocol.reportViolationHandler = handler
-}
-
 func (protocol *Protocol) handleReportViolation(packet nex.PacketInterface) {
-	var errorCode uint32
+	if protocol.ReportViolation == nil {
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "MatchmakeExtension::ReportViolation not implemented")
 
-	if protocol.reportViolationHandler == nil {
-		globals.Logger.Warning("MatchmakeExtension::ReportViolation not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
+	callID := request.CallID
+	parameters := request.Parameters
+	endpoint := packet.Sender().Endpoint()
+	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	callID := request.CallID()
-	parameters := request.Parameters()
+	pid := types.NewPID(0)
+	userName := types.NewString("")
+	violationCode := types.NewPrimitiveU32(0)
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+	var err error
 
-	pid, err := parametersStream.ReadUInt32LE()
+	err = pid.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.reportViolationHandler(fmt.Errorf("Failed to read pid from parameters. %s", err.Error()), packet, callID, 0, "", 0)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.ReportViolation(fmt.Errorf("Failed to read pid from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	userName, err := parametersStream.ReadString()
+	err = userName.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.reportViolationHandler(fmt.Errorf("Failed to read userName from parameters. %s", err.Error()), packet, callID, 0, "", 0)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.ReportViolation(fmt.Errorf("Failed to read userName from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	violationCode, err := parametersStream.ReadUInt32LE()
+	err = violationCode.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.reportViolationHandler(fmt.Errorf("Failed to read violationCode from parameters. %s", err.Error()), packet, callID, 0, "", 0)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.ReportViolation(fmt.Errorf("Failed to read violationCode from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	errorCode = protocol.reportViolationHandler(nil, packet, callID, pid, userName, violationCode)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.ReportViolation(nil, packet, callID, pid, userName, violationCode)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

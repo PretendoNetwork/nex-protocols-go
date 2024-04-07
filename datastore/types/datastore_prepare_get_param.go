@@ -5,48 +5,77 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/v2"
+	"github.com/PretendoNetwork/nex-go/v2/types"
 )
 
-// DataStorePrepareGetParam is sent in the PrepareGetObject method
+// DataStorePrepareGetParam is a type within the DataStore protocol
 type DataStorePrepareGetParam struct {
-	nex.Structure
-	DataID            uint64
-	LockID            uint32
+	types.Structure
+	DataID            *types.PrimitiveU64
+	LockID            *types.PrimitiveU32
 	PersistenceTarget *DataStorePersistenceTarget
-	AccessPassword    uint64
-	ExtraData         []string // NEX 3.5.0+
+	AccessPassword    *types.PrimitiveU64
+	ExtraData         *types.List[*types.String] // * NEX v3.5.0
 }
 
-// ExtractFromStream extracts a DataStorePrepareGetParam structure from a stream
-func (dataStorePrepareGetParam *DataStorePrepareGetParam) ExtractFromStream(stream *nex.StreamIn) error {
-	datastoreVersion := stream.Server.DataStoreProtocolVersion()
+// WriteTo writes the DataStorePrepareGetParam to the given writable
+func (dspgp *DataStorePrepareGetParam) WriteTo(writable types.Writable) {
+	stream := writable.(*nex.ByteStreamOut)
+	libraryVersion := stream.LibraryVersions.DataStore
+
+	contentWritable := writable.CopyNew()
+
+	dspgp.DataID.WriteTo(writable)
+	dspgp.LockID.WriteTo(writable)
+	dspgp.PersistenceTarget.WriteTo(writable)
+	dspgp.AccessPassword.WriteTo(writable)
+
+	if libraryVersion.GreaterOrEqual("3.5.0") {
+		dspgp.ExtraData.WriteTo(writable)
+	}
+
+	content := contentWritable.Bytes()
+
+	dspgp.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
+}
+
+// ExtractFrom extracts the DataStorePrepareGetParam from the given readable
+func (dspgp *DataStorePrepareGetParam) ExtractFrom(readable types.Readable) error {
+	stream := readable.(*nex.ByteStreamIn)
+	libraryVersion := stream.LibraryVersions.DataStore
 
 	var err error
 
-	dataStorePrepareGetParam.DataID, err = stream.ReadUInt64LE()
+	err = dspgp.ExtractHeaderFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStorePrepareGetParam header. %s", err.Error())
+	}
+
+	err = dspgp.DataID.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStorePrepareGetParam.DataID. %s", err.Error())
 	}
 
-	dataStorePrepareGetParam.LockID, err = stream.ReadUInt32LE()
+	err = dspgp.LockID.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStorePrepareGetParam.LockID. %s", err.Error())
 	}
 
-	persistenceTarget, err := stream.ReadStructure(NewDataStorePersistenceTarget())
+	err = dspgp.PersistenceTarget.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStorePrepareGetParam.PersistenceTarget. %s", err.Error())
 	}
 
-	dataStorePrepareGetParam.PersistenceTarget = persistenceTarget.(*DataStorePersistenceTarget)
-	dataStorePrepareGetParam.AccessPassword, err = stream.ReadUInt64LE()
+	err = dspgp.AccessPassword.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStorePrepareGetParam.AccessPassword. %s", err.Error())
 	}
 
-	if datastoreVersion.GreaterOrEqual("3.5.0") {
-		dataStorePrepareGetParam.ExtraData, err = stream.ReadListString()
+	if libraryVersion.GreaterOrEqual("3.5.0") {
+		err = dspgp.ExtraData.ExtractFrom(readable)
 		if err != nil {
 			return fmt.Errorf("Failed to extract DataStorePrepareGetParam.ExtraData. %s", err.Error())
 		}
@@ -56,84 +85,68 @@ func (dataStorePrepareGetParam *DataStorePrepareGetParam) ExtractFromStream(stre
 }
 
 // Copy returns a new copied instance of DataStorePrepareGetParam
-func (dataStorePrepareGetParam *DataStorePrepareGetParam) Copy() nex.StructureInterface {
+func (dspgp *DataStorePrepareGetParam) Copy() types.RVType {
 	copied := NewDataStorePrepareGetParam()
 
-	copied.SetStructureVersion(dataStorePrepareGetParam.StructureVersion())
-
-	copied.DataID = dataStorePrepareGetParam.DataID
-	copied.LockID = dataStorePrepareGetParam.LockID
-	copied.PersistenceTarget = dataStorePrepareGetParam.PersistenceTarget.Copy().(*DataStorePersistenceTarget)
-	copied.AccessPassword = dataStorePrepareGetParam.AccessPassword
-	copied.ExtraData = make([]string, len(dataStorePrepareGetParam.ExtraData))
-
-	copy(copied.ExtraData, dataStorePrepareGetParam.ExtraData)
+	copied.StructureVersion = dspgp.StructureVersion
+	copied.DataID = dspgp.DataID.Copy().(*types.PrimitiveU64)
+	copied.LockID = dspgp.LockID.Copy().(*types.PrimitiveU32)
+	copied.PersistenceTarget = dspgp.PersistenceTarget.Copy().(*DataStorePersistenceTarget)
+	copied.AccessPassword = dspgp.AccessPassword.Copy().(*types.PrimitiveU64)
+	copied.ExtraData = dspgp.ExtraData.Copy().(*types.List[*types.String])
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (dataStorePrepareGetParam *DataStorePrepareGetParam) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*DataStorePrepareGetParam)
-
-	if dataStorePrepareGetParam.StructureVersion() != other.StructureVersion() {
+// Equals checks if the given DataStorePrepareGetParam contains the same data as the current DataStorePrepareGetParam
+func (dspgp *DataStorePrepareGetParam) Equals(o types.RVType) bool {
+	if _, ok := o.(*DataStorePrepareGetParam); !ok {
 		return false
 	}
 
-	if dataStorePrepareGetParam.DataID != other.DataID {
+	other := o.(*DataStorePrepareGetParam)
+
+	if dspgp.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if dataStorePrepareGetParam.LockID != other.LockID {
+	if !dspgp.DataID.Equals(other.DataID) {
 		return false
 	}
 
-	if !dataStorePrepareGetParam.PersistenceTarget.Equals(other.PersistenceTarget) {
+	if !dspgp.LockID.Equals(other.LockID) {
 		return false
 	}
 
-	if dataStorePrepareGetParam.AccessPassword != other.AccessPassword {
+	if !dspgp.PersistenceTarget.Equals(other.PersistenceTarget) {
 		return false
 	}
 
-	if len(dataStorePrepareGetParam.ExtraData) != len(other.ExtraData) {
+	if !dspgp.AccessPassword.Equals(other.AccessPassword) {
 		return false
 	}
 
-	for i := 0; i < len(dataStorePrepareGetParam.ExtraData); i++ {
-		if dataStorePrepareGetParam.ExtraData[i] != other.ExtraData[i] {
-			return false
-		}
-	}
-
-	return true
+	return dspgp.ExtraData.Equals(other.ExtraData)
 }
 
-// String returns a string representation of the struct
-func (dataStorePrepareGetParam *DataStorePrepareGetParam) String() string {
-	return dataStorePrepareGetParam.FormatToString(0)
+// String returns the string representation of the DataStorePrepareGetParam
+func (dspgp *DataStorePrepareGetParam) String() string {
+	return dspgp.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (dataStorePrepareGetParam *DataStorePrepareGetParam) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the DataStorePrepareGetParam using the provided indentation level
+func (dspgp *DataStorePrepareGetParam) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("DataStorePrepareGetParam{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, dataStorePrepareGetParam.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sDataID: %d,\n", indentationValues, dataStorePrepareGetParam.DataID))
-	b.WriteString(fmt.Sprintf("%sLockID: %d,\n", indentationValues, dataStorePrepareGetParam.LockID))
-
-	if dataStorePrepareGetParam.PersistenceTarget != nil {
-		b.WriteString(fmt.Sprintf("%sPersistenceTarget: %s,\n", indentationValues, dataStorePrepareGetParam.PersistenceTarget.FormatToString(indentationLevel+1)))
-	} else {
-		b.WriteString(fmt.Sprintf("%sPersistenceTarget: nil,\n", indentationValues))
-	}
-
-	b.WriteString(fmt.Sprintf("%sAccessPassword: %d,\n", indentationValues, dataStorePrepareGetParam.AccessPassword))
-	b.WriteString(fmt.Sprintf("%sExtraData: %v\n", indentationValues, dataStorePrepareGetParam.ExtraData))
+	b.WriteString(fmt.Sprintf("%sDataID: %s,\n", indentationValues, dspgp.DataID))
+	b.WriteString(fmt.Sprintf("%sLockID: %s,\n", indentationValues, dspgp.LockID))
+	b.WriteString(fmt.Sprintf("%sPersistenceTarget: %s,\n", indentationValues, dspgp.PersistenceTarget.FormatToString(indentationLevel+1)))
+	b.WriteString(fmt.Sprintf("%sAccessPassword: %s,\n", indentationValues, dspgp.AccessPassword))
+	b.WriteString(fmt.Sprintf("%sExtraData: %s,\n", indentationValues, dspgp.ExtraData))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -141,11 +154,15 @@ func (dataStorePrepareGetParam *DataStorePrepareGetParam) FormatToString(indenta
 
 // NewDataStorePrepareGetParam returns a new DataStorePrepareGetParam
 func NewDataStorePrepareGetParam() *DataStorePrepareGetParam {
-	return &DataStorePrepareGetParam{
-		DataID:            0,
-		LockID:            0,
+	dspgp := &DataStorePrepareGetParam{
+		DataID:            types.NewPrimitiveU64(0),
+		LockID:            types.NewPrimitiveU32(0),
 		PersistenceTarget: NewDataStorePersistenceTarget(),
-		AccessPassword:    0,
-		ExtraData:         make([]string, 0),
+		AccessPassword:    types.NewPrimitiveU64(0),
+		ExtraData:         types.NewList[*types.String](),
 	}
+
+	dspgp.ExtraData.Type = types.NewString("")
+
+	return dspgp
 }

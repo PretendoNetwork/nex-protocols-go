@@ -1,92 +1,101 @@
-// Package types implements all the types used by the Service Item (Team Kirby Clash Deluxe) protocol
+// Package types implements all the types used by the ServiceItem protocol
 package types
 
 import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/v2/types"
 )
 
-// ServiceItemUsedInfo holds data for the Service Item (Team Kirby Clash Deluxe) protocol
+// ServiceItemUsedInfo is a type within the ServiceItem protocol
 type ServiceItemUsedInfo struct {
-	nex.Structure
-	AcquiredCount uint32
-	UsedCount     uint32
+	types.Structure
+	AcquiredCount *types.PrimitiveU32
+	UsedCount     *types.PrimitiveU32
 }
 
-// ExtractFromStream extracts a ServiceItemUsedInfo structure from a stream
-func (serviceItemUsedInfo *ServiceItemUsedInfo) ExtractFromStream(stream *nex.StreamIn) error {
+// WriteTo writes the ServiceItemUsedInfo to the given writable
+func (siui *ServiceItemUsedInfo) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
+
+	siui.AcquiredCount.WriteTo(writable)
+	siui.UsedCount.WriteTo(writable)
+
+	content := contentWritable.Bytes()
+
+	siui.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
+}
+
+// ExtractFrom extracts the ServiceItemUsedInfo from the given readable
+func (siui *ServiceItemUsedInfo) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	serviceItemUsedInfo.AcquiredCount, err = stream.ReadUInt32LE()
+	err = siui.ExtractHeaderFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemUsedInfo.AcquiredCount from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract ServiceItemUsedInfo header. %s", err.Error())
 	}
 
-	serviceItemUsedInfo.UsedCount, err = stream.ReadUInt32LE()
+	err = siui.AcquiredCount.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemUsedInfo.UsedCount from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract ServiceItemUsedInfo.AcquiredCount. %s", err.Error())
+	}
+
+	err = siui.UsedCount.ExtractFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract ServiceItemUsedInfo.UsedCount. %s", err.Error())
 	}
 
 	return nil
 }
 
-// Bytes encodes the ServiceItemUsedInfo and returns a byte array
-func (serviceItemUsedInfo *ServiceItemUsedInfo) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt32LE(serviceItemUsedInfo.AcquiredCount)
-	stream.WriteUInt32LE(serviceItemUsedInfo.UsedCount)
-
-	return stream.Bytes()
-}
-
 // Copy returns a new copied instance of ServiceItemUsedInfo
-func (serviceItemUsedInfo *ServiceItemUsedInfo) Copy() nex.StructureInterface {
+func (siui *ServiceItemUsedInfo) Copy() types.RVType {
 	copied := NewServiceItemUsedInfo()
 
-	copied.SetStructureVersion(serviceItemUsedInfo.StructureVersion())
-
-	copied.AcquiredCount = serviceItemUsedInfo.AcquiredCount
-	copied.UsedCount = serviceItemUsedInfo.UsedCount
+	copied.StructureVersion = siui.StructureVersion
+	copied.AcquiredCount = siui.AcquiredCount.Copy().(*types.PrimitiveU32)
+	copied.UsedCount = siui.UsedCount.Copy().(*types.PrimitiveU32)
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (serviceItemUsedInfo *ServiceItemUsedInfo) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*ServiceItemUsedInfo)
-
-	if serviceItemUsedInfo.StructureVersion() != other.StructureVersion() {
+// Equals checks if the given ServiceItemUsedInfo contains the same data as the current ServiceItemUsedInfo
+func (siui *ServiceItemUsedInfo) Equals(o types.RVType) bool {
+	if _, ok := o.(*ServiceItemUsedInfo); !ok {
 		return false
 	}
 
-	if serviceItemUsedInfo.AcquiredCount != other.AcquiredCount {
+	other := o.(*ServiceItemUsedInfo)
+
+	if siui.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if serviceItemUsedInfo.UsedCount != other.UsedCount {
+	if !siui.AcquiredCount.Equals(other.AcquiredCount) {
 		return false
 	}
 
-	return true
+	return siui.UsedCount.Equals(other.UsedCount)
 }
 
-// String returns a string representation of the struct
-func (serviceItemUsedInfo *ServiceItemUsedInfo) String() string {
-	return serviceItemUsedInfo.FormatToString(0)
+// String returns the string representation of the ServiceItemUsedInfo
+func (siui *ServiceItemUsedInfo) String() string {
+	return siui.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (serviceItemUsedInfo *ServiceItemUsedInfo) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the ServiceItemUsedInfo using the provided indentation level
+func (siui *ServiceItemUsedInfo) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("ServiceItemUsedInfo{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, serviceItemUsedInfo.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sAcquiredCount: %d,\n", indentationValues, serviceItemUsedInfo.AcquiredCount))
-	b.WriteString(fmt.Sprintf("%sUsedCount: %d,\n", indentationValues, serviceItemUsedInfo.UsedCount))
+	b.WriteString(fmt.Sprintf("%sAcquiredCount: %s,\n", indentationValues, siui.AcquiredCount))
+	b.WriteString(fmt.Sprintf("%sUsedCount: %s,\n", indentationValues, siui.UsedCount))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -94,5 +103,10 @@ func (serviceItemUsedInfo *ServiceItemUsedInfo) FormatToString(indentationLevel 
 
 // NewServiceItemUsedInfo returns a new ServiceItemUsedInfo
 func NewServiceItemUsedInfo() *ServiceItemUsedInfo {
-	return &ServiceItemUsedInfo{}
+	siui := &ServiceItemUsedInfo{
+		AcquiredCount: types.NewPrimitiveU32(0),
+		UsedCount:     types.NewPrimitiveU32(0),
+	}
+
+	return siui
 }

@@ -4,45 +4,44 @@ package protocol
 import (
 	"fmt"
 
-	nex "github.com/PretendoNetwork/nex-go"
-	"github.com/PretendoNetwork/nex-protocols-go/globals"
-	utility_types "github.com/PretendoNetwork/nex-protocols-go/utility/types"
+	nex "github.com/PretendoNetwork/nex-go/v2"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
+	utility_types "github.com/PretendoNetwork/nex-protocols-go/v2/utility/types"
 )
 
-// AssociateNexUniqueIDWithMyPrincipalID sets the AssociateNexUniqueIDWithMyPrincipalID handler function
-func (protocol *Protocol) AssociateNexUniqueIDWithMyPrincipalID(handler func(err error, packet nex.PacketInterface, callID uint32, uniqueIDInfo *utility_types.UniqueIDInfo) uint32) {
-	protocol.associateNexUniqueIDWithMyPrincipalIDHandler = handler
-}
-
 func (protocol *Protocol) handleAssociateNexUniqueIDWithMyPrincipalID(packet nex.PacketInterface) {
-	var errorCode uint32
+	if protocol.AssociateNexUniqueIDWithMyPrincipalID == nil {
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "Utility::AssociateNexUniqueIDWithMyPrincipalID not implemented")
 
-	if protocol.associateNexUniqueIDWithMyPrincipalIDHandler == nil {
-		globals.Logger.Warning("Utility::AssociateNexUniqueIDWithMyPrincipalID not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
+	callID := request.CallID
+	parameters := request.Parameters
+	endpoint := packet.Sender().Endpoint()
+	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	callID := request.CallID()
+	uniqueIDInfo := utility_types.NewUniqueIDInfo()
 
-	parameters := request.Parameters()
-
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
-
-	uniqueIDInfo, err := parametersStream.ReadStructure(utility_types.NewUniqueIDInfo())
+	err := uniqueIDInfo.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.associateNexUniqueIDWithMyPrincipalIDHandler(fmt.Errorf("Failed to read uniqueIDInfo from parameters. %s", err.Error()), packet, callID, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.AssociateNexUniqueIDWithMyPrincipalID(fmt.Errorf("Failed to read uniqueIDInfo from parameters. %s", err.Error()), packet, callID, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	errorCode = protocol.associateNexUniqueIDWithMyPrincipalIDHandler(nil, packet, callID, uniqueIDInfo.(*utility_types.UniqueIDInfo))
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.AssociateNexUniqueIDWithMyPrincipalID(nil, packet, callID, uniqueIDInfo)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

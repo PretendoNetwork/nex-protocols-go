@@ -4,53 +4,58 @@ package protocol
 import (
 	"fmt"
 
-	nex "github.com/PretendoNetwork/nex-go"
-	"github.com/PretendoNetwork/nex-protocols-go/globals"
+	nex "github.com/PretendoNetwork/nex-go/v2"
+	"github.com/PretendoNetwork/nex-go/v2/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
 )
 
-// SetDeletionReason sets the SetDeletionReason handler function
-func (protocol *Protocol) SetDeletionReason(handler func(err error, packet nex.PacketInterface, callID uint32, dataIDLst []uint64, deletionReason uint32) uint32) {
-	protocol.setDeletionReasonHandler = handler
-}
-
 func (protocol *Protocol) handleSetDeletionReason(packet nex.PacketInterface) {
-	var errorCode uint32
+	if protocol.SetDeletionReason == nil {
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "DataStoreSuperMarioMaker::SetDeletionReason not implemented")
 
-	if protocol.setDeletionReasonHandler == nil {
-		globals.Logger.Warning("DataStoreSuperMarioMaker::SetDeletionReason not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
+	callID := request.CallID
+	parameters := request.Parameters
+	endpoint := packet.Sender().Endpoint()
+	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	callID := request.CallID()
-	parameters := request.Parameters()
+	dataIDLst := types.NewList[*types.PrimitiveU64]()
+	dataIDLst.Type = types.NewPrimitiveU64(0)
+	deletionReason := types.NewPrimitiveU32(0)
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+	var err error
 
-	dataIDLst, err := parametersStream.ReadListUInt64LE()
+	err = dataIDLst.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.setDeletionReasonHandler(fmt.Errorf("Failed to read dataIDLst from parameters. %s", err.Error()), packet, callID, nil, 0)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.SetDeletionReason(fmt.Errorf("Failed to read dataIDLst from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	deletionReason, err := parametersStream.ReadUInt32LE()
+	err = deletionReason.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.setDeletionReasonHandler(fmt.Errorf("Failed to read deletionReason from parameters. %s", err.Error()), packet, callID, nil, 0)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.SetDeletionReason(fmt.Errorf("Failed to read deletionReason from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	errorCode = protocol.setDeletionReasonHandler(nil, packet, callID, dataIDLst, deletionReason)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.SetDeletionReason(nil, packet, callID, dataIDLst, deletionReason)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

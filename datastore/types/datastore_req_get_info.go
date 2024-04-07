@@ -2,136 +2,151 @@
 package types
 
 import (
-	"bytes"
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/v2"
+	"github.com/PretendoNetwork/nex-go/v2/types"
 )
 
-// DataStoreReqGetInfo is sent in the PrepareGetObject method
+// DataStoreReqGetInfo is a type within the DataStore protocol
 type DataStoreReqGetInfo struct {
-	nex.Structure
-	URL            string
-	RequestHeaders []*DataStoreKeyValue
-	Size           uint32
-	RootCACert     []byte
-	DataID         uint64 // NEX 3.5.0+
+	types.Structure
+	URL            *types.String
+	RequestHeaders *types.List[*DataStoreKeyValue]
+	Size           *types.PrimitiveU32
+	RootCACert     *types.Buffer
+	DataID         *types.PrimitiveU64 // * NEX v3.5.0
 }
 
-// Bytes encodes the DataStoreReqGetInfo and returns a byte array
-func (dataStoreReqGetInfo *DataStoreReqGetInfo) Bytes(stream *nex.StreamOut) []byte {
-	datastoreVersion := stream.Server.DataStoreProtocolVersion()
+// WriteTo writes the DataStoreReqGetInfo to the given writable
+func (dsrgi *DataStoreReqGetInfo) WriteTo(writable types.Writable) {
+	stream := writable.(*nex.ByteStreamOut)
+	libraryVersion := stream.LibraryVersions.DataStore
 
-	stream.WriteString(dataStoreReqGetInfo.URL)
-	stream.WriteListStructure(dataStoreReqGetInfo.RequestHeaders)
-	stream.WriteUInt32LE(dataStoreReqGetInfo.Size)
-	stream.WriteBuffer(dataStoreReqGetInfo.RootCACert)
+	contentWritable := writable.CopyNew()
 
-	if datastoreVersion.GreaterOrEqual("3.5.0") {
-		stream.WriteUInt64LE(dataStoreReqGetInfo.DataID)
+	dsrgi.URL.WriteTo(writable)
+	dsrgi.RequestHeaders.WriteTo(writable)
+	dsrgi.Size.WriteTo(writable)
+	dsrgi.RootCACert.WriteTo(writable)
+
+	if libraryVersion.GreaterOrEqual("3.5.0") {
+		dsrgi.DataID.WriteTo(writable)
 	}
 
-	return stream.Bytes()
+	content := contentWritable.Bytes()
+
+	dsrgi.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
+}
+
+// ExtractFrom extracts the DataStoreReqGetInfo from the given readable
+func (dsrgi *DataStoreReqGetInfo) ExtractFrom(readable types.Readable) error {
+	stream := readable.(*nex.ByteStreamIn)
+	libraryVersion := stream.LibraryVersions.DataStore
+
+	var err error
+
+	err = dsrgi.ExtractHeaderFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreReqGetInfo header. %s", err.Error())
+	}
+
+	err = dsrgi.URL.ExtractFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreReqGetInfo.URL. %s", err.Error())
+	}
+
+	err = dsrgi.RequestHeaders.ExtractFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreReqGetInfo.RequestHeaders. %s", err.Error())
+	}
+
+	err = dsrgi.Size.ExtractFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreReqGetInfo.Size. %s", err.Error())
+	}
+
+	err = dsrgi.RootCACert.ExtractFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreReqGetInfo.RootCACert. %s", err.Error())
+	}
+
+	if libraryVersion.GreaterOrEqual("3.5.0") {
+		err = dsrgi.DataID.ExtractFrom(readable)
+		if err != nil {
+			return fmt.Errorf("Failed to extract DataStoreReqGetInfo.DataID. %s", err.Error())
+		}
+	}
+
+	return nil
 }
 
 // Copy returns a new copied instance of DataStoreReqGetInfo
-func (dataStoreReqGetInfo *DataStoreReqGetInfo) Copy() nex.StructureInterface {
+func (dsrgi *DataStoreReqGetInfo) Copy() types.RVType {
 	copied := NewDataStoreReqGetInfo()
 
-	copied.SetStructureVersion(dataStoreReqGetInfo.StructureVersion())
-
-	copied.URL = dataStoreReqGetInfo.URL
-	copied.RequestHeaders = make([]*DataStoreKeyValue, len(dataStoreReqGetInfo.RequestHeaders))
-
-	for i := 0; i < len(dataStoreReqGetInfo.RequestHeaders); i++ {
-		copied.RequestHeaders[i] = dataStoreReqGetInfo.RequestHeaders[i].Copy().(*DataStoreKeyValue)
-	}
-
-	copied.Size = dataStoreReqGetInfo.Size
-	copied.RootCACert = make([]byte, len(dataStoreReqGetInfo.RootCACert))
-
-	copy(copied.RootCACert, dataStoreReqGetInfo.RootCACert)
-
-	copied.DataID = dataStoreReqGetInfo.DataID
+	copied.StructureVersion = dsrgi.StructureVersion
+	copied.URL = dsrgi.URL.Copy().(*types.String)
+	copied.RequestHeaders = dsrgi.RequestHeaders.Copy().(*types.List[*DataStoreKeyValue])
+	copied.Size = dsrgi.Size.Copy().(*types.PrimitiveU32)
+	copied.RootCACert = dsrgi.RootCACert.Copy().(*types.Buffer)
+	copied.DataID = dsrgi.DataID.Copy().(*types.PrimitiveU64)
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (dataStoreReqGetInfo *DataStoreReqGetInfo) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*DataStoreReqGetInfo)
-
-	if dataStoreReqGetInfo.StructureVersion() != other.StructureVersion() {
+// Equals checks if the given DataStoreReqGetInfo contains the same data as the current DataStoreReqGetInfo
+func (dsrgi *DataStoreReqGetInfo) Equals(o types.RVType) bool {
+	if _, ok := o.(*DataStoreReqGetInfo); !ok {
 		return false
 	}
 
-	if dataStoreReqGetInfo.URL != other.URL {
+	other := o.(*DataStoreReqGetInfo)
+
+	if dsrgi.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if len(dataStoreReqGetInfo.RequestHeaders) != len(other.RequestHeaders) {
+	if !dsrgi.URL.Equals(other.URL) {
 		return false
 	}
 
-	for i := 0; i < len(dataStoreReqGetInfo.RequestHeaders); i++ {
-		if !dataStoreReqGetInfo.RequestHeaders[i].Equals(other.RequestHeaders[i]) {
-			return false
-		}
-	}
-
-	if dataStoreReqGetInfo.Size != other.Size {
+	if !dsrgi.RequestHeaders.Equals(other.RequestHeaders) {
 		return false
 	}
 
-	if !bytes.Equal(dataStoreReqGetInfo.RootCACert, other.RootCACert) {
+	if !dsrgi.Size.Equals(other.Size) {
 		return false
 	}
 
-	if dataStoreReqGetInfo.DataID != other.DataID {
+	if !dsrgi.RootCACert.Equals(other.RootCACert) {
 		return false
 	}
 
-	return true
+	return dsrgi.DataID.Equals(other.DataID)
 }
 
-// String returns a string representation of the struct
-func (dataStoreReqGetInfo *DataStoreReqGetInfo) String() string {
-	return dataStoreReqGetInfo.FormatToString(0)
+// String returns the string representation of the DataStoreReqGetInfo
+func (dsrgi *DataStoreReqGetInfo) String() string {
+	return dsrgi.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (dataStoreReqGetInfo *DataStoreReqGetInfo) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the DataStoreReqGetInfo using the provided indentation level
+func (dsrgi *DataStoreReqGetInfo) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
-	indentationListValues := strings.Repeat("\t", indentationLevel+2)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("DataStoreReqGetInfo{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, dataStoreReqGetInfo.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sURL: %q,\n", indentationValues, dataStoreReqGetInfo.URL))
-
-	if len(dataStoreReqGetInfo.RequestHeaders) == 0 {
-		b.WriteString(fmt.Sprintf("%sRequestHeaders: [],\n", indentationValues))
-	} else {
-		b.WriteString(fmt.Sprintf("%sRequestHeaders: [\n", indentationValues))
-
-		for i := 0; i < len(dataStoreReqGetInfo.RequestHeaders); i++ {
-			str := dataStoreReqGetInfo.RequestHeaders[i].FormatToString(indentationLevel + 2)
-			if i == len(dataStoreReqGetInfo.RequestHeaders)-1 {
-				b.WriteString(fmt.Sprintf("%s%s\n", indentationListValues, str))
-			} else {
-				b.WriteString(fmt.Sprintf("%s%s,\n", indentationListValues, str))
-			}
-		}
-
-		b.WriteString(fmt.Sprintf("%s],\n", indentationValues))
-	}
-
-	b.WriteString(fmt.Sprintf("%sSize: %d,\n", indentationValues, dataStoreReqGetInfo.Size))
-	b.WriteString(fmt.Sprintf("%sRootCA: %x,\n", indentationValues, dataStoreReqGetInfo.RootCACert))
-	b.WriteString(fmt.Sprintf("%sDataID: %d\n", indentationValues, dataStoreReqGetInfo.DataID))
+	b.WriteString(fmt.Sprintf("%sURL: %s,\n", indentationValues, dsrgi.URL))
+	b.WriteString(fmt.Sprintf("%sRequestHeaders: %s,\n", indentationValues, dsrgi.RequestHeaders))
+	b.WriteString(fmt.Sprintf("%sSize: %s,\n", indentationValues, dsrgi.Size))
+	b.WriteString(fmt.Sprintf("%sRootCACert: %s,\n", indentationValues, dsrgi.RootCACert))
+	b.WriteString(fmt.Sprintf("%sDataID: %s,\n", indentationValues, dsrgi.DataID))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -139,11 +154,15 @@ func (dataStoreReqGetInfo *DataStoreReqGetInfo) FormatToString(indentationLevel 
 
 // NewDataStoreReqGetInfo returns a new DataStoreReqGetInfo
 func NewDataStoreReqGetInfo() *DataStoreReqGetInfo {
-	return &DataStoreReqGetInfo{
-		URL:            "",
-		RequestHeaders: make([]*DataStoreKeyValue, 0),
-		Size:           0,
-		RootCACert:     make([]byte, 0),
-		DataID:         0,
+	dsrgi := &DataStoreReqGetInfo{
+		URL:            types.NewString(""),
+		RequestHeaders: types.NewList[*DataStoreKeyValue](),
+		Size:           types.NewPrimitiveU32(0),
+		RootCACert:     types.NewBuffer(nil),
+		DataID:         types.NewPrimitiveU64(0),
 	}
+
+	dsrgi.RequestHeaders.Type = NewDataStoreKeyValue()
+
+	return dsrgi
 }

@@ -3,8 +3,11 @@ package protocol
 
 import (
 	"fmt"
+	"slices"
 
-	nex "github.com/PretendoNetwork/nex-go"
+	nex "github.com/PretendoNetwork/nex-go/v2"
+	"github.com/PretendoNetwork/nex-go/v2/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
 )
 
 const (
@@ -32,53 +35,105 @@ const (
 
 // Protocol handles the MatchMakingExt protocol
 type Protocol struct {
-	Server                         *nex.Server
-	endParticipationHandler        func(err error, packet nex.PacketInterface, callID uint32, idGathering uint32, strMessage string) uint32
-	getParticipantsHandler         func(err error, packet nex.PacketInterface, callID uint32, idGathering uint32, bOnlyActive bool) uint32
-	getDetailedParticipantsHandler func(err error, packet nex.PacketInterface, callID uint32, idGathering uint32, bOnlyActive bool) uint32
-	getParticipantsURLsHandler     func(err error, packet nex.PacketInterface, callID uint32, lstGatherings []uint32) uint32
-	getGatheringRelationsHandler   func(err error, packet nex.PacketInterface, callID uint32, id uint32, descr string) uint32
-	deleteFromDeletionsHandler     func(err error, packet nex.PacketInterface, callID uint32, lstDeletions []uint32, pid uint32) uint32
+	endpoint                nex.EndpointInterface
+	EndParticipation        func(err error, packet nex.PacketInterface, callID uint32, idGathering *types.PrimitiveU32, strMessage *types.String) (*nex.RMCMessage, *nex.Error)
+	GetParticipants         func(err error, packet nex.PacketInterface, callID uint32, idGathering *types.PrimitiveU32, bOnlyActive *types.PrimitiveBool) (*nex.RMCMessage, *nex.Error)
+	GetDetailedParticipants func(err error, packet nex.PacketInterface, callID uint32, idGathering *types.PrimitiveU32, bOnlyActive *types.PrimitiveBool) (*nex.RMCMessage, *nex.Error)
+	GetParticipantsURLs     func(err error, packet nex.PacketInterface, callID uint32, lstGatherings *types.List[*types.PrimitiveU32]) (*nex.RMCMessage, *nex.Error)
+	GetGatheringRelations   func(err error, packet nex.PacketInterface, callID uint32, id *types.PrimitiveU32, descr *types.String) (*nex.RMCMessage, *nex.Error)
+	DeleteFromDeletions     func(err error, packet nex.PacketInterface, callID uint32, lstDeletions *types.List[*types.PrimitiveU32], pid *types.PID) (*nex.RMCMessage, *nex.Error)
+	Patches                 nex.ServiceProtocol
+	PatchedMethods          []uint32
 }
 
-// Setup initializes the protocol
-func (protocol *Protocol) Setup() {
-	protocol.Server.On("Data", func(packet nex.PacketInterface) {
-		request := packet.RMCRequest()
+// Interface implements the methods present on the Match Making Ext protocol struct
+type Interface interface {
+	Endpoint() nex.EndpointInterface
+	SetEndpoint(endpoint nex.EndpointInterface)
+	SetHandlerEndParticipation(handler func(err error, packet nex.PacketInterface, callID uint32, idGathering *types.PrimitiveU32, strMessage *types.String) (*nex.RMCMessage, *nex.Error))
+	SetHandlerGetParticipants(handler func(err error, packet nex.PacketInterface, callID uint32, idGathering *types.PrimitiveU32, bOnlyActive *types.PrimitiveBool) (*nex.RMCMessage, *nex.Error))
+	SetHandlerGetDetailedParticipants(handler func(err error, packet nex.PacketInterface, callID uint32, idGathering *types.PrimitiveU32, bOnlyActive *types.PrimitiveBool) (*nex.RMCMessage, *nex.Error))
+	SetHandlerGetParticipantsURLs(handler func(err error, packet nex.PacketInterface, callID uint32, lstGatherings *types.List[*types.PrimitiveU32]) (*nex.RMCMessage, *nex.Error))
+	SetHandlerGetGatheringRelations(handler func(err error, packet nex.PacketInterface, callID uint32, id *types.PrimitiveU32, descr *types.String) (*nex.RMCMessage, *nex.Error))
+	SetHandlerDeleteFromDeletions(handler func(err error, packet nex.PacketInterface, callID uint32, lstDeletions *types.List[*types.PrimitiveU32], pid *types.PID) (*nex.RMCMessage, *nex.Error))
+}
 
-		if request.ProtocolID() == ProtocolID {
-			protocol.HandlePacket(packet)
-		}
-	})
+// Endpoint returns the endpoint implementing the protocol
+func (protocol *Protocol) Endpoint() nex.EndpointInterface {
+	return protocol.endpoint
+}
+
+// SetEndpoint sets the endpoint implementing the protocol
+func (protocol *Protocol) SetEndpoint(endpoint nex.EndpointInterface) {
+	protocol.endpoint = endpoint
+}
+
+// SetHandlerEndParticipation sets the handler for the EndParticipation method
+func (protocol *Protocol) SetHandlerEndParticipation(handler func(err error, packet nex.PacketInterface, callID uint32, idGathering *types.PrimitiveU32, strMessage *types.String) (*nex.RMCMessage, *nex.Error)) {
+	protocol.EndParticipation = handler
+}
+
+// SetHandlerGetParticipants sets the handler for the GetParticipants method
+func (protocol *Protocol) SetHandlerGetParticipants(handler func(err error, packet nex.PacketInterface, callID uint32, idGathering *types.PrimitiveU32, bOnlyActive *types.PrimitiveBool) (*nex.RMCMessage, *nex.Error)) {
+	protocol.GetParticipants = handler
+}
+
+// SetHandlerGetDetailedParticipants sets the handler for the GetDetailedParticipants method
+func (protocol *Protocol) SetHandlerGetDetailedParticipants(handler func(err error, packet nex.PacketInterface, callID uint32, idGathering *types.PrimitiveU32, bOnlyActive *types.PrimitiveBool) (*nex.RMCMessage, *nex.Error)) {
+	protocol.GetDetailedParticipants = handler
+}
+
+// SetHandlerGetParticipantsURLs sets the handler for the GetParticipantsURLs method
+func (protocol *Protocol) SetHandlerGetParticipantsURLs(handler func(err error, packet nex.PacketInterface, callID uint32, lstGatherings *types.List[*types.PrimitiveU32]) (*nex.RMCMessage, *nex.Error)) {
+	protocol.GetParticipantsURLs = handler
+}
+
+// SetHandlerGetGatheringRelations sets the handler for the GetGatheringRelations method
+func (protocol *Protocol) SetHandlerGetGatheringRelations(handler func(err error, packet nex.PacketInterface, callID uint32, id *types.PrimitiveU32, descr *types.String) (*nex.RMCMessage, *nex.Error)) {
+	protocol.GetGatheringRelations = handler
+}
+
+// SetHandlerDeleteFromDeletions sets the handler for the DeleteFromDeletions method
+func (protocol *Protocol) SetHandlerDeleteFromDeletions(handler func(err error, packet nex.PacketInterface, callID uint32, lstDeletions *types.List[*types.PrimitiveU32], pid *types.PID) (*nex.RMCMessage, *nex.Error)) {
+	protocol.DeleteFromDeletions = handler
 }
 
 // HandlePacket sends the packet to the correct RMC method handler
 func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
-	request := packet.RMCRequest()
+	message := packet.RMCMessage()
 
-	switch request.MethodID() {
+	if !message.IsRequest || message.ProtocolID != ProtocolID {
+		return
+	}
+
+	if protocol.Patches != nil && slices.Contains(protocol.PatchedMethods, message.MethodID) {
+		protocol.Patches.HandlePacket(packet)
+		return
+	}
+
+	switch message.MethodID {
 	case MethodEndParticipation:
-		go protocol.handleEndParticipation(packet)
+		protocol.handleEndParticipation(packet)
 	case MethodGetParticipants:
-		go protocol.handleGetParticipants(packet)
+		protocol.handleGetParticipants(packet)
 	case MethodGetDetailedParticipants:
-		go protocol.handleGetDetailedParticipants(packet)
+		protocol.handleGetDetailedParticipants(packet)
 	case MethodGetParticipantsURLs:
-		go protocol.handleGetParticipantsURLs(packet)
+		protocol.handleGetParticipantsURLs(packet)
 	case MethodGetGatheringRelations:
-		go protocol.handleGetGatheringRelations(packet)
+		protocol.handleGetGatheringRelations(packet)
 	case MethodDeleteFromDeletions:
-		go protocol.handleDeleteFromDeletions(packet)
+		protocol.handleDeleteFromDeletions(packet)
 	default:
-		fmt.Printf("Unsupported MatchMakingExt method ID: %#v\n", request.MethodID())
+		errMessage := fmt.Sprintf("Unsupported MatchMakingExt method ID: %#v\n", message.MethodID)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, errMessage)
+
+		globals.RespondError(packet, ProtocolID, err)
+		globals.Logger.Warning(err.Message)
 	}
 }
 
 // NewProtocol returns a new Match Making Ext protocol
-func NewProtocol(server *nex.Server) *Protocol {
-	protocol := &Protocol{Server: server}
-
-	protocol.Setup()
-
-	return protocol
+func NewProtocol() *Protocol {
+	return &Protocol{}
 }

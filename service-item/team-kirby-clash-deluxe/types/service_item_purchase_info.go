@@ -1,126 +1,127 @@
-// Package types implements all the types used by the Service Item (Team Kirby Clash Deluxe) protocol
+// Package types implements all the types used by the ServiceItem protocol
 package types
 
 import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/v2/types"
 )
 
-// ServiceItemPurchaseInfo holds data for the Service Item (Team Kirby Clash Deluxe) protocol
+// ServiceItemPurchaseInfo is a type within the ServiceItem protocol
 type ServiceItemPurchaseInfo struct {
-	nex.Structure
-	TransactionID    string
-	ExtTransactionID string
-	ItemCode         string
+	types.Structure
+	TransactionID    *types.String
+	ExtTransactionID *types.String
+	ItemCode         *types.String
 	PostBalance      *ServiceItemAmount
 }
 
-// ExtractFromStream extracts a ServiceItemPurchaseInfo structure from a stream
-func (serviceItemPurchaseInfo *ServiceItemPurchaseInfo) ExtractFromStream(stream *nex.StreamIn) error {
+// WriteTo writes the ServiceItemPurchaseInfo to the given writable
+func (sipi *ServiceItemPurchaseInfo) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
+
+	sipi.TransactionID.WriteTo(writable)
+	sipi.ExtTransactionID.WriteTo(writable)
+	sipi.ItemCode.WriteTo(writable)
+	sipi.PostBalance.WriteTo(writable)
+
+	content := contentWritable.Bytes()
+
+	sipi.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
+}
+
+// ExtractFrom extracts the ServiceItemPurchaseInfo from the given readable
+func (sipi *ServiceItemPurchaseInfo) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	serviceItemPurchaseInfo.TransactionID, err = stream.ReadString()
+	err = sipi.ExtractHeaderFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemPurchaseInfo.TransactionID from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract ServiceItemPurchaseInfo header. %s", err.Error())
 	}
 
-	serviceItemPurchaseInfo.ExtTransactionID, err = stream.ReadString()
+	err = sipi.TransactionID.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemPurchaseInfo.ExtTransactionID from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract ServiceItemPurchaseInfo.TransactionID. %s", err.Error())
 	}
 
-	serviceItemPurchaseInfo.ItemCode, err = stream.ReadString()
+	err = sipi.ExtTransactionID.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemPurchaseInfo.ItemCode from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract ServiceItemPurchaseInfo.ExtTransactionID. %s", err.Error())
 	}
 
-	postBalance, err := stream.ReadStructure(NewServiceItemAmount())
+	err = sipi.ItemCode.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemPurchaseInfo.PostBalance from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract ServiceItemPurchaseInfo.ItemCode. %s", err.Error())
 	}
 
-	serviceItemPurchaseInfo.PostBalance = postBalance.(*ServiceItemAmount)
+	err = sipi.PostBalance.ExtractFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract ServiceItemPurchaseInfo.PostBalance. %s", err.Error())
+	}
 
 	return nil
 }
 
-// Bytes encodes the ServiceItemPurchaseInfo and returns a byte array
-func (serviceItemPurchaseInfo *ServiceItemPurchaseInfo) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteString(serviceItemPurchaseInfo.TransactionID)
-	stream.WriteString(serviceItemPurchaseInfo.ExtTransactionID)
-	stream.WriteString(serviceItemPurchaseInfo.ItemCode)
-	stream.WriteStructure(serviceItemPurchaseInfo.PostBalance)
-
-	return stream.Bytes()
-}
-
 // Copy returns a new copied instance of ServiceItemPurchaseInfo
-func (serviceItemPurchaseInfo *ServiceItemPurchaseInfo) Copy() nex.StructureInterface {
+func (sipi *ServiceItemPurchaseInfo) Copy() types.RVType {
 	copied := NewServiceItemPurchaseInfo()
 
-	copied.SetStructureVersion(serviceItemPurchaseInfo.StructureVersion())
-
-	copied.TransactionID = serviceItemPurchaseInfo.TransactionID
-	copied.ExtTransactionID = serviceItemPurchaseInfo.ExtTransactionID
-	copied.ItemCode = serviceItemPurchaseInfo.ItemCode
-	copied.PostBalance = serviceItemPurchaseInfo.PostBalance.Copy().(*ServiceItemAmount)
+	copied.StructureVersion = sipi.StructureVersion
+	copied.TransactionID = sipi.TransactionID.Copy().(*types.String)
+	copied.ExtTransactionID = sipi.ExtTransactionID.Copy().(*types.String)
+	copied.ItemCode = sipi.ItemCode.Copy().(*types.String)
+	copied.PostBalance = sipi.PostBalance.Copy().(*ServiceItemAmount)
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (serviceItemPurchaseInfo *ServiceItemPurchaseInfo) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*ServiceItemPurchaseInfo)
-
-	if serviceItemPurchaseInfo.StructureVersion() != other.StructureVersion() {
+// Equals checks if the given ServiceItemPurchaseInfo contains the same data as the current ServiceItemPurchaseInfo
+func (sipi *ServiceItemPurchaseInfo) Equals(o types.RVType) bool {
+	if _, ok := o.(*ServiceItemPurchaseInfo); !ok {
 		return false
 	}
 
-	if serviceItemPurchaseInfo.TransactionID != other.TransactionID {
+	other := o.(*ServiceItemPurchaseInfo)
+
+	if sipi.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if serviceItemPurchaseInfo.ExtTransactionID != other.ExtTransactionID {
+	if !sipi.TransactionID.Equals(other.TransactionID) {
 		return false
 	}
 
-	if serviceItemPurchaseInfo.ItemCode != other.ItemCode {
+	if !sipi.ExtTransactionID.Equals(other.ExtTransactionID) {
 		return false
 	}
 
-	if !serviceItemPurchaseInfo.PostBalance.Equals(other.PostBalance) {
+	if !sipi.ItemCode.Equals(other.ItemCode) {
 		return false
 	}
 
-	return true
+	return sipi.PostBalance.Equals(other.PostBalance)
 }
 
-// String returns a string representation of the struct
-func (serviceItemPurchaseInfo *ServiceItemPurchaseInfo) String() string {
-	return serviceItemPurchaseInfo.FormatToString(0)
+// String returns the string representation of the ServiceItemPurchaseInfo
+func (sipi *ServiceItemPurchaseInfo) String() string {
+	return sipi.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (serviceItemPurchaseInfo *ServiceItemPurchaseInfo) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the ServiceItemPurchaseInfo using the provided indentation level
+func (sipi *ServiceItemPurchaseInfo) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("ServiceItemPurchaseInfo{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, serviceItemPurchaseInfo.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sTransactionID: %q,\n", indentationValues, serviceItemPurchaseInfo.TransactionID))
-	b.WriteString(fmt.Sprintf("%sExtTransactionID: %q,\n", indentationValues, serviceItemPurchaseInfo.ExtTransactionID))
-	b.WriteString(fmt.Sprintf("%sItemCode: %q,\n", indentationValues, serviceItemPurchaseInfo.ItemCode))
-
-	if serviceItemPurchaseInfo.PostBalance != nil {
-		b.WriteString(fmt.Sprintf("%sPostBalance: %s\n", indentationValues, serviceItemPurchaseInfo.PostBalance.FormatToString(indentationLevel+1)))
-	} else {
-		b.WriteString(fmt.Sprintf("%sPostBalance: nil\n", indentationValues))
-	}
-
+	b.WriteString(fmt.Sprintf("%sTransactionID: %s,\n", indentationValues, sipi.TransactionID))
+	b.WriteString(fmt.Sprintf("%sExtTransactionID: %s,\n", indentationValues, sipi.ExtTransactionID))
+	b.WriteString(fmt.Sprintf("%sItemCode: %s,\n", indentationValues, sipi.ItemCode))
+	b.WriteString(fmt.Sprintf("%sPostBalance: %s,\n", indentationValues, sipi.PostBalance.FormatToString(indentationLevel+1)))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -128,5 +129,12 @@ func (serviceItemPurchaseInfo *ServiceItemPurchaseInfo) FormatToString(indentati
 
 // NewServiceItemPurchaseInfo returns a new ServiceItemPurchaseInfo
 func NewServiceItemPurchaseInfo() *ServiceItemPurchaseInfo {
-	return &ServiceItemPurchaseInfo{}
+	sipi := &ServiceItemPurchaseInfo{
+		TransactionID:    types.NewString(""),
+		ExtTransactionID: types.NewString(""),
+		ItemCode:         types.NewString(""),
+		PostBalance:      NewServiceItemAmount(),
+	}
+
+	return sipi
 }

@@ -4,44 +4,44 @@ package protocol
 import (
 	"fmt"
 
-	nex "github.com/PretendoNetwork/nex-go"
-	"github.com/PretendoNetwork/nex-protocols-go/globals"
-	match_making_types "github.com/PretendoNetwork/nex-protocols-go/match-making/types"
+	nex "github.com/PretendoNetwork/nex-go/v2"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
+	match_making_types "github.com/PretendoNetwork/nex-protocols-go/v2/match-making/types"
 )
 
-// UpdateCommunity sets the UpdateCommunity handler function
-func (protocol *Protocol) UpdateCommunity(handler func(err error, packet nex.PacketInterface, callID uint32, community *match_making_types.PersistentGathering) uint32) {
-	protocol.updateCommunityHandler = handler
-}
-
 func (protocol *Protocol) handleUpdateCommunity(packet nex.PacketInterface) {
-	var errorCode uint32
+	if protocol.UpdateCommunity == nil {
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "MatchmakeExtension::UpdateCommunity not implemented")
 
-	if protocol.updateCommunityHandler == nil {
-		globals.Logger.Warning("MatchmakeExtension::UpdateCommunity not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
+	callID := request.CallID
+	parameters := request.Parameters
+	endpoint := packet.Sender().Endpoint()
+	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	callID := request.CallID()
-	parameters := request.Parameters()
+	community := match_making_types.NewPersistentGathering()
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
-
-	community, err := parametersStream.ReadStructure(match_making_types.NewPersistentGathering())
+	err := community.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.updateCommunityHandler(fmt.Errorf("Failed to read community from parameters. %s", err.Error()), packet, callID, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.UpdateCommunity(fmt.Errorf("Failed to read community from parameters. %s", err.Error()), packet, callID, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	errorCode = protocol.updateCommunityHandler(nil, packet, callID, community.(*match_making_types.PersistentGathering))
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.UpdateCommunity(nil, packet, callID, community)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

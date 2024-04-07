@@ -1,92 +1,101 @@
-// Package types implements all the types used by the DataStore (Pokemon Gen6) protocol
+// Package types implements all the types used by the DataStore protocol
 package types
 
 import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/v2/types"
 )
 
-// GlobalTradeStationTradeKey holds data for the DataStore (Pokemon Gen6) protocol
+// GlobalTradeStationTradeKey is a type within the DataStore protocol
 type GlobalTradeStationTradeKey struct {
-	nex.Structure
-	DataID  uint64
-	Version uint32
+	types.Structure
+	DataID  *types.PrimitiveU64
+	Version *types.PrimitiveU32
 }
 
-// ExtractFromStream extracts a GlobalTradeStationTradeKey structure from a stream
-func (globalTradeStationTradeKey *GlobalTradeStationTradeKey) ExtractFromStream(stream *nex.StreamIn) error {
+// WriteTo writes the GlobalTradeStationTradeKey to the given writable
+func (gtstk *GlobalTradeStationTradeKey) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
+
+	gtstk.DataID.WriteTo(writable)
+	gtstk.Version.WriteTo(writable)
+
+	content := contentWritable.Bytes()
+
+	gtstk.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
+}
+
+// ExtractFrom extracts the GlobalTradeStationTradeKey from the given readable
+func (gtstk *GlobalTradeStationTradeKey) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	globalTradeStationTradeKey.DataID, err = stream.ReadUInt64LE()
+	err = gtstk.ExtractHeaderFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract GlobalTradeStationTradeKey.DataID from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract GlobalTradeStationTradeKey header. %s", err.Error())
 	}
 
-	globalTradeStationTradeKey.Version, err = stream.ReadUInt32LE()
+	err = gtstk.DataID.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract GlobalTradeStationTradeKey.Version from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract GlobalTradeStationTradeKey.DataID. %s", err.Error())
+	}
+
+	err = gtstk.Version.ExtractFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract GlobalTradeStationTradeKey.Version. %s", err.Error())
 	}
 
 	return nil
 }
 
-// Bytes encodes the GlobalTradeStationTradeKey and returns a byte array
-func (globalTradeStationTradeKey *GlobalTradeStationTradeKey) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt64LE(globalTradeStationTradeKey.DataID)
-	stream.WriteUInt32LE(globalTradeStationTradeKey.Version)
-
-	return stream.Bytes()
-}
-
 // Copy returns a new copied instance of GlobalTradeStationTradeKey
-func (globalTradeStationTradeKey *GlobalTradeStationTradeKey) Copy() nex.StructureInterface {
+func (gtstk *GlobalTradeStationTradeKey) Copy() types.RVType {
 	copied := NewGlobalTradeStationTradeKey()
 
-	copied.SetStructureVersion(globalTradeStationTradeKey.StructureVersion())
-
-	copied.DataID = globalTradeStationTradeKey.DataID
-	copied.Version = globalTradeStationTradeKey.Version
+	copied.StructureVersion = gtstk.StructureVersion
+	copied.DataID = gtstk.DataID.Copy().(*types.PrimitiveU64)
+	copied.Version = gtstk.Version.Copy().(*types.PrimitiveU32)
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (globalTradeStationTradeKey *GlobalTradeStationTradeKey) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*GlobalTradeStationTradeKey)
-
-	if globalTradeStationTradeKey.StructureVersion() != other.StructureVersion() {
+// Equals checks if the given GlobalTradeStationTradeKey contains the same data as the current GlobalTradeStationTradeKey
+func (gtstk *GlobalTradeStationTradeKey) Equals(o types.RVType) bool {
+	if _, ok := o.(*GlobalTradeStationTradeKey); !ok {
 		return false
 	}
 
-	if globalTradeStationTradeKey.DataID != other.DataID {
+	other := o.(*GlobalTradeStationTradeKey)
+
+	if gtstk.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if globalTradeStationTradeKey.Version != other.Version {
+	if !gtstk.DataID.Equals(other.DataID) {
 		return false
 	}
 
-	return true
+	return gtstk.Version.Equals(other.Version)
 }
 
-// String returns a string representation of the struct
-func (globalTradeStationTradeKey *GlobalTradeStationTradeKey) String() string {
-	return globalTradeStationTradeKey.FormatToString(0)
+// String returns the string representation of the GlobalTradeStationTradeKey
+func (gtstk *GlobalTradeStationTradeKey) String() string {
+	return gtstk.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (globalTradeStationTradeKey *GlobalTradeStationTradeKey) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the GlobalTradeStationTradeKey using the provided indentation level
+func (gtstk *GlobalTradeStationTradeKey) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("GlobalTradeStationTradeKey{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, globalTradeStationTradeKey.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sDataID: %d,\n", indentationValues, globalTradeStationTradeKey.DataID))
-	b.WriteString(fmt.Sprintf("%sVersion: %d,\n", indentationValues, globalTradeStationTradeKey.Version))
+	b.WriteString(fmt.Sprintf("%sDataID: %s,\n", indentationValues, gtstk.DataID))
+	b.WriteString(fmt.Sprintf("%sVersion: %s,\n", indentationValues, gtstk.Version))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -94,5 +103,10 @@ func (globalTradeStationTradeKey *GlobalTradeStationTradeKey) FormatToString(ind
 
 // NewGlobalTradeStationTradeKey returns a new GlobalTradeStationTradeKey
 func NewGlobalTradeStationTradeKey() *GlobalTradeStationTradeKey {
-	return &GlobalTradeStationTradeKey{}
+	gtstk := &GlobalTradeStationTradeKey{
+		DataID:  types.NewPrimitiveU64(0),
+		Version: types.NewPrimitiveU32(0),
+	}
+
+	return gtstk
 }

@@ -1,58 +1,77 @@
-// Package types implements all the types used by the Matchmaking protocols.
-//
-// Since there are multiple match making related protocols, and they all share types
-// all types used by all match making protocols is defined here
+// Package types implements all the types used by the Matchmaking protocol
 package types
 
 import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/v2/types"
 )
 
-// CreateMatchmakeSessionParam holds parameters for a matchmake session
+// CreateMatchmakeSessionParam is a type within the Matchmaking protocol
 type CreateMatchmakeSessionParam struct {
-	nex.Structure
+	types.Structure
 	SourceMatchmakeSession       *MatchmakeSession
-	AdditionalParticipants       []uint32
-	GIDForParticipationCheck     uint32
-	CreateMatchmakeSessionOption uint32
-	JoinMessage                  string
-	ParticipationCount           uint16
+	AdditionalParticipants       *types.List[*types.PID]
+	GIDForParticipationCheck     *types.PrimitiveU32
+	CreateMatchmakeSessionOption *types.PrimitiveU32
+	JoinMessage                  *types.String
+	ParticipationCount           *types.PrimitiveU16
 }
 
-// ExtractFromStream extracts a CreateMatchmakeSessionParam structure from a stream
-func (createMatchmakeSessionParam *CreateMatchmakeSessionParam) ExtractFromStream(stream *nex.StreamIn) error {
+// WriteTo writes the CreateMatchmakeSessionParam to the given writable
+func (cmsp *CreateMatchmakeSessionParam) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
+
+	cmsp.SourceMatchmakeSession.WriteTo(writable)
+	cmsp.AdditionalParticipants.WriteTo(writable)
+	cmsp.GIDForParticipationCheck.WriteTo(writable)
+	cmsp.CreateMatchmakeSessionOption.WriteTo(writable)
+	cmsp.JoinMessage.WriteTo(writable)
+	cmsp.ParticipationCount.WriteTo(writable)
+
+	content := contentWritable.Bytes()
+
+	cmsp.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
+}
+
+// ExtractFrom extracts the CreateMatchmakeSessionParam from the given readable
+func (cmsp *CreateMatchmakeSessionParam) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	sourceMatchmakeSession, err := stream.ReadStructure(NewMatchmakeSession())
+	err = cmsp.ExtractHeaderFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract CreateMatchmakeSessionParam header. %s", err.Error())
+	}
+
+	err = cmsp.SourceMatchmakeSession.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract CreateMatchmakeSessionParam.SourceMatchmakeSession. %s", err.Error())
 	}
 
-	createMatchmakeSessionParam.SourceMatchmakeSession = sourceMatchmakeSession.(*MatchmakeSession)
-	createMatchmakeSessionParam.AdditionalParticipants, err = stream.ReadListUInt32LE()
+	err = cmsp.AdditionalParticipants.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract CreateMatchmakeSessionParam.AdditionalParticipants. %s", err.Error())
 	}
 
-	createMatchmakeSessionParam.GIDForParticipationCheck, err = stream.ReadUInt32LE()
+	err = cmsp.GIDForParticipationCheck.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract CreateMatchmakeSessionParam.GIDForParticipationCheck. %s", err.Error())
 	}
 
-	createMatchmakeSessionParam.CreateMatchmakeSessionOption, err = stream.ReadUInt32LE()
+	err = cmsp.CreateMatchmakeSessionOption.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract CreateMatchmakeSessionParam.CreateMatchmakeSessionOption. %s", err.Error())
 	}
 
-	createMatchmakeSessionParam.JoinMessage, err = stream.ReadString()
+	err = cmsp.JoinMessage.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract CreateMatchmakeSessionParam.JoinMessage. %s", err.Error())
 	}
 
-	createMatchmakeSessionParam.ParticipationCount, err = stream.ReadUInt16LE()
+	err = cmsp.ParticipationCount.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract CreateMatchmakeSessionParam.ParticipationCount. %s", err.Error())
 	}
@@ -61,104 +80,74 @@ func (createMatchmakeSessionParam *CreateMatchmakeSessionParam) ExtractFromStrea
 }
 
 // Copy returns a new copied instance of CreateMatchmakeSessionParam
-func (createMatchmakeSessionParam *CreateMatchmakeSessionParam) Copy() nex.StructureInterface {
+func (cmsp *CreateMatchmakeSessionParam) Copy() types.RVType {
 	copied := NewCreateMatchmakeSessionParam()
 
-	copied.SetStructureVersion(createMatchmakeSessionParam.StructureVersion())
-
-	if createMatchmakeSessionParam.SourceMatchmakeSession != nil {
-		copied.SourceMatchmakeSession = createMatchmakeSessionParam.SourceMatchmakeSession.Copy().(*MatchmakeSession)
-	}
-
-	copied.AdditionalParticipants = make([]uint32, len(createMatchmakeSessionParam.AdditionalParticipants))
-
-	copy(copied.AdditionalParticipants, createMatchmakeSessionParam.AdditionalParticipants)
-
-	copied.GIDForParticipationCheck = createMatchmakeSessionParam.GIDForParticipationCheck
-	copied.CreateMatchmakeSessionOption = createMatchmakeSessionParam.CreateMatchmakeSessionOption
-	copied.JoinMessage = createMatchmakeSessionParam.JoinMessage
-	copied.ParticipationCount = createMatchmakeSessionParam.ParticipationCount
+	copied.StructureVersion = cmsp.StructureVersion
+	copied.SourceMatchmakeSession = cmsp.SourceMatchmakeSession.Copy().(*MatchmakeSession)
+	copied.AdditionalParticipants = cmsp.AdditionalParticipants.Copy().(*types.List[*types.PID])
+	copied.GIDForParticipationCheck = cmsp.GIDForParticipationCheck.Copy().(*types.PrimitiveU32)
+	copied.CreateMatchmakeSessionOption = cmsp.CreateMatchmakeSessionOption.Copy().(*types.PrimitiveU32)
+	copied.JoinMessage = cmsp.JoinMessage.Copy().(*types.String)
+	copied.ParticipationCount = cmsp.ParticipationCount.Copy().(*types.PrimitiveU16)
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (createMatchmakeSessionParam *CreateMatchmakeSessionParam) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*CreateMatchmakeSessionParam)
-
-	if createMatchmakeSessionParam.StructureVersion() != other.StructureVersion() {
+// Equals checks if the given CreateMatchmakeSessionParam contains the same data as the current CreateMatchmakeSessionParam
+func (cmsp *CreateMatchmakeSessionParam) Equals(o types.RVType) bool {
+	if _, ok := o.(*CreateMatchmakeSessionParam); !ok {
 		return false
 	}
 
-	if createMatchmakeSessionParam.SourceMatchmakeSession != nil && other.SourceMatchmakeSession == nil {
+	other := o.(*CreateMatchmakeSessionParam)
+
+	if cmsp.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if createMatchmakeSessionParam.SourceMatchmakeSession == nil && other.SourceMatchmakeSession != nil {
+	if !cmsp.SourceMatchmakeSession.Equals(other.SourceMatchmakeSession) {
 		return false
 	}
 
-	if createMatchmakeSessionParam.SourceMatchmakeSession != nil && other.SourceMatchmakeSession != nil {
-		if !createMatchmakeSessionParam.SourceMatchmakeSession.Equals(other.SourceMatchmakeSession) {
-			return false
-		}
-	}
-
-	if len(createMatchmakeSessionParam.AdditionalParticipants) != len(other.AdditionalParticipants) {
+	if !cmsp.AdditionalParticipants.Equals(other.AdditionalParticipants) {
 		return false
 	}
 
-	for i := 0; i < len(createMatchmakeSessionParam.AdditionalParticipants); i++ {
-		if createMatchmakeSessionParam.AdditionalParticipants[i] != other.AdditionalParticipants[i] {
-			return false
-		}
-	}
-
-	if createMatchmakeSessionParam.GIDForParticipationCheck != other.GIDForParticipationCheck {
+	if !cmsp.GIDForParticipationCheck.Equals(other.GIDForParticipationCheck) {
 		return false
 	}
 
-	if createMatchmakeSessionParam.CreateMatchmakeSessionOption != other.CreateMatchmakeSessionOption {
+	if !cmsp.CreateMatchmakeSessionOption.Equals(other.CreateMatchmakeSessionOption) {
 		return false
 	}
 
-	if createMatchmakeSessionParam.JoinMessage != other.JoinMessage {
+	if !cmsp.JoinMessage.Equals(other.JoinMessage) {
 		return false
 	}
 
-	if createMatchmakeSessionParam.ParticipationCount != other.ParticipationCount {
-		return false
-	}
-
-	return true
+	return cmsp.ParticipationCount.Equals(other.ParticipationCount)
 }
 
-// String returns a string representation of the struct
-func (createMatchmakeSessionParam *CreateMatchmakeSessionParam) String() string {
-	return createMatchmakeSessionParam.FormatToString(0)
+// String returns the string representation of the CreateMatchmakeSessionParam
+func (cmsp *CreateMatchmakeSessionParam) String() string {
+	return cmsp.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (createMatchmakeSessionParam *CreateMatchmakeSessionParam) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the CreateMatchmakeSessionParam using the provided indentation level
+func (cmsp *CreateMatchmakeSessionParam) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("CreateMatchmakeSessionParam{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, createMatchmakeSessionParam.StructureVersion()))
-
-	if createMatchmakeSessionParam.SourceMatchmakeSession != nil {
-		b.WriteString(fmt.Sprintf("%sSourceMatchmakeSession: %s,\n", indentationValues, createMatchmakeSessionParam.SourceMatchmakeSession.FormatToString(indentationLevel+1)))
-	} else {
-		b.WriteString(fmt.Sprintf("%sSourceMatchmakeSession: nil,\n", indentationValues))
-	}
-
-	b.WriteString(fmt.Sprintf("%sAdditionalParticipants: %v,\n", indentationValues, createMatchmakeSessionParam.AdditionalParticipants))
-	b.WriteString(fmt.Sprintf("%sGIDForParticipationCheck: %d,\n", indentationValues, createMatchmakeSessionParam.GIDForParticipationCheck))
-	b.WriteString(fmt.Sprintf("%sCreateMatchmakeSessionOption: %d,\n", indentationValues, createMatchmakeSessionParam.CreateMatchmakeSessionOption))
-	b.WriteString(fmt.Sprintf("%sJoinMessage: %q,\n", indentationValues, createMatchmakeSessionParam.JoinMessage))
-	b.WriteString(fmt.Sprintf("%sParticipationCount: %d\n", indentationValues, createMatchmakeSessionParam.ParticipationCount))
+	b.WriteString(fmt.Sprintf("%sSourceMatchmakeSession: %s,\n", indentationValues, cmsp.SourceMatchmakeSession.FormatToString(indentationLevel+1)))
+	b.WriteString(fmt.Sprintf("%sAdditionalParticipants: %s,\n", indentationValues, cmsp.AdditionalParticipants))
+	b.WriteString(fmt.Sprintf("%sGIDForParticipationCheck: %s,\n", indentationValues, cmsp.GIDForParticipationCheck))
+	b.WriteString(fmt.Sprintf("%sCreateMatchmakeSessionOption: %s,\n", indentationValues, cmsp.CreateMatchmakeSessionOption))
+	b.WriteString(fmt.Sprintf("%sJoinMessage: %s,\n", indentationValues, cmsp.JoinMessage))
+	b.WriteString(fmt.Sprintf("%sParticipationCount: %s,\n", indentationValues, cmsp.ParticipationCount))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -166,5 +155,16 @@ func (createMatchmakeSessionParam *CreateMatchmakeSessionParam) FormatToString(i
 
 // NewCreateMatchmakeSessionParam returns a new CreateMatchmakeSessionParam
 func NewCreateMatchmakeSessionParam() *CreateMatchmakeSessionParam {
-	return &CreateMatchmakeSessionParam{}
+	cmsp := &CreateMatchmakeSessionParam{
+		SourceMatchmakeSession:       NewMatchmakeSession(),
+		AdditionalParticipants:       types.NewList[*types.PID](),
+		GIDForParticipationCheck:     types.NewPrimitiveU32(0),
+		CreateMatchmakeSessionOption: types.NewPrimitiveU32(0),
+		JoinMessage:                  types.NewString(""),
+		ParticipationCount:           types.NewPrimitiveU16(0),
+	}
+
+	cmsp.AdditionalParticipants.Type = types.NewPID(0)
+
+	return cmsp
 }

@@ -1,142 +1,114 @@
-// Package types implements all the types used by the Service Item (Team Kirby Clash Deluxe) protocol
+// Package types implements all the types used by the ServiceItem protocol
 package types
 
 import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/v2/types"
 )
 
-// ServiceItemAccountRight holds data for the Service Item (Team Kirby Clash Deluxe) protocol
+// ServiceItemAccountRight is a type within the ServiceItem protocol
 type ServiceItemAccountRight struct {
-	nex.Structure
-	PID           uint32
+	types.Structure
+	PID           *types.PID
 	Limitation    *ServiceItemLimitation
-	RightBinaries []*ServiceItemRightBinary
+	RightBinaries *types.List[*ServiceItemRightBinary]
 }
 
-// ExtractFromStream extracts a ServiceItemAccountRight structure from a stream
-func (serviceItemAccountRight *ServiceItemAccountRight) ExtractFromStream(stream *nex.StreamIn) error {
+// WriteTo writes the ServiceItemAccountRight to the given writable
+func (siar *ServiceItemAccountRight) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
+
+	siar.PID.WriteTo(writable)
+	siar.Limitation.WriteTo(writable)
+	siar.RightBinaries.WriteTo(writable)
+
+	content := contentWritable.Bytes()
+
+	siar.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
+}
+
+// ExtractFrom extracts the ServiceItemAccountRight from the given readable
+func (siar *ServiceItemAccountRight) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	serviceItemAccountRight.PID, err = stream.ReadUInt32LE()
+	err = siar.ExtractHeaderFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemAccountRight.PID from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract ServiceItemAccountRight header. %s", err.Error())
 	}
 
-	limitation, err := stream.ReadStructure(NewServiceItemLimitation())
+	err = siar.PID.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemAccountRight.Limitation from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract ServiceItemAccountRight.PID. %s", err.Error())
 	}
 
-	serviceItemAccountRight.Limitation = limitation.(*ServiceItemLimitation)
-
-	rightBinaries, err := stream.ReadListStructure(NewServiceItemRightBinary())
+	err = siar.Limitation.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemAccountRight.RightBinaries from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract ServiceItemAccountRight.Limitation. %s", err.Error())
 	}
 
-	serviceItemAccountRight.RightBinaries = rightBinaries.([]*ServiceItemRightBinary)
+	err = siar.RightBinaries.ExtractFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract ServiceItemAccountRight.RightBinaries. %s", err.Error())
+	}
 
 	return nil
 }
 
-// Bytes encodes the ServiceItemAccountRight and returns a byte array
-func (serviceItemAccountRight *ServiceItemAccountRight) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt32LE(serviceItemAccountRight.PID)
-	stream.WriteStructure(serviceItemAccountRight.Limitation)
-	stream.WriteListStructure(serviceItemAccountRight.RightBinaries)
-
-	return stream.Bytes()
-}
-
 // Copy returns a new copied instance of ServiceItemAccountRight
-func (serviceItemAccountRight *ServiceItemAccountRight) Copy() nex.StructureInterface {
+func (siar *ServiceItemAccountRight) Copy() types.RVType {
 	copied := NewServiceItemAccountRight()
 
-	copied.SetStructureVersion(serviceItemAccountRight.StructureVersion())
-
-	copied.PID = serviceItemAccountRight.PID
-	copied.Limitation = serviceItemAccountRight.Limitation.Copy().(*ServiceItemLimitation)
-	copied.RightBinaries = make([]*ServiceItemRightBinary, len(serviceItemAccountRight.RightBinaries))
-
-	for i := 0; i < len(serviceItemAccountRight.RightBinaries); i++ {
-		copied.RightBinaries[i] = serviceItemAccountRight.RightBinaries[i].Copy().(*ServiceItemRightBinary)
-	}
+	copied.StructureVersion = siar.StructureVersion
+	copied.PID = siar.PID.Copy().(*types.PID)
+	copied.Limitation = siar.Limitation.Copy().(*ServiceItemLimitation)
+	copied.RightBinaries = siar.RightBinaries.Copy().(*types.List[*ServiceItemRightBinary])
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (serviceItemAccountRight *ServiceItemAccountRight) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*ServiceItemAccountRight)
-
-	if serviceItemAccountRight.StructureVersion() != other.StructureVersion() {
+// Equals checks if the given ServiceItemAccountRight contains the same data as the current ServiceItemAccountRight
+func (siar *ServiceItemAccountRight) Equals(o types.RVType) bool {
+	if _, ok := o.(*ServiceItemAccountRight); !ok {
 		return false
 	}
 
-	if serviceItemAccountRight.PID != other.PID {
+	other := o.(*ServiceItemAccountRight)
+
+	if siar.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if !serviceItemAccountRight.Limitation.Equals(other.Limitation) {
+	if !siar.PID.Equals(other.PID) {
 		return false
 	}
 
-	if len(serviceItemAccountRight.RightBinaries) != len(other.RightBinaries) {
+	if !siar.Limitation.Equals(other.Limitation) {
 		return false
 	}
 
-	for i := 0; i < len(serviceItemAccountRight.RightBinaries); i++ {
-		if !serviceItemAccountRight.RightBinaries[i].Equals(other.RightBinaries[i]) {
-			return false
-		}
-	}
-
-	return true
+	return siar.RightBinaries.Equals(other.RightBinaries)
 }
 
-// String returns a string representation of the struct
-func (serviceItemAccountRight *ServiceItemAccountRight) String() string {
-	return serviceItemAccountRight.FormatToString(0)
+// String returns the string representation of the ServiceItemAccountRight
+func (siar *ServiceItemAccountRight) String() string {
+	return siar.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (serviceItemAccountRight *ServiceItemAccountRight) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the ServiceItemAccountRight using the provided indentation level
+func (siar *ServiceItemAccountRight) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
-	indentationListValues := strings.Repeat("\t", indentationLevel+2)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("ServiceItemAccountRight{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, serviceItemAccountRight.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sPID: %d,\n", indentationValues, serviceItemAccountRight.PID))
-
-	if serviceItemAccountRight.Limitation != nil {
-		b.WriteString(fmt.Sprintf("%sLimitation: %s\n", indentationValues, serviceItemAccountRight.Limitation.FormatToString(indentationLevel+1)))
-	} else {
-		b.WriteString(fmt.Sprintf("%sLimitation: nil\n", indentationValues))
-	}
-
-	if len(serviceItemAccountRight.RightBinaries) == 0 {
-		b.WriteString(fmt.Sprintf("%sRightBinaries: [],\n", indentationValues))
-	} else {
-		b.WriteString(fmt.Sprintf("%sRightBinaries: [\n", indentationValues))
-
-		for i := 0; i < len(serviceItemAccountRight.RightBinaries); i++ {
-			str := serviceItemAccountRight.RightBinaries[i].FormatToString(indentationLevel + 2)
-			if i == len(serviceItemAccountRight.RightBinaries)-1 {
-				b.WriteString(fmt.Sprintf("%s%s\n", indentationListValues, str))
-			} else {
-				b.WriteString(fmt.Sprintf("%s%s,\n", indentationListValues, str))
-			}
-		}
-
-		b.WriteString(fmt.Sprintf("%s],\n", indentationValues))
-	}
-
+	b.WriteString(fmt.Sprintf("%sPID: %s,\n", indentationValues, siar.PID.FormatToString(indentationLevel+1)))
+	b.WriteString(fmt.Sprintf("%sLimitation: %s,\n", indentationValues, siar.Limitation.FormatToString(indentationLevel+1)))
+	b.WriteString(fmt.Sprintf("%sRightBinaries: %s,\n", indentationValues, siar.RightBinaries))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -144,5 +116,13 @@ func (serviceItemAccountRight *ServiceItemAccountRight) FormatToString(indentati
 
 // NewServiceItemAccountRight returns a new ServiceItemAccountRight
 func NewServiceItemAccountRight() *ServiceItemAccountRight {
-	return &ServiceItemAccountRight{}
+	siar := &ServiceItemAccountRight{
+		PID:           types.NewPID(0),
+		Limitation:    NewServiceItemLimitation(),
+		RightBinaries: types.NewList[*ServiceItemRightBinary](),
+	}
+
+	siar.RightBinaries.Type = NewServiceItemRightBinary()
+
+	return siar
 }

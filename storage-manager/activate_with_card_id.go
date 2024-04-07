@@ -4,53 +4,57 @@ package protocol
 import (
 	"fmt"
 
-	nex "github.com/PretendoNetwork/nex-go"
-	"github.com/PretendoNetwork/nex-protocols-go/globals"
+	nex "github.com/PretendoNetwork/nex-go/v2"
+	"github.com/PretendoNetwork/nex-go/v2/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
 )
 
-// ActivateWithCardID sets the ActivateWithCardID handler function
-func (protocol *Protocol) ActivateWithCardID(handler func(err error, packet nex.PacketInterface, callID uint32, unknown uint8, cardID uint64) uint32) {
-	protocol.activateWithCardIDHandler = handler
-}
-
 func (protocol *Protocol) handleActivateWithCardID(packet nex.PacketInterface) {
-	var errorCode uint32
+	if protocol.ActivateWithCardID == nil {
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "StorageManager::ActivateWithCardID not implemented")
 
-	if protocol.activateWithCardIDHandler == nil {
-		globals.Logger.Warning("StorageManager::ActivateWithCardID not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
+	callID := request.CallID
+	parameters := request.Parameters
+	endpoint := packet.Sender().Endpoint()
+	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	callID := request.CallID()
-	parameters := request.Parameters()
+	unknown := types.NewPrimitiveU8(0)
+	cardID := types.NewPrimitiveU64(0)
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+	var err error
 
-	unknown, err := parametersStream.ReadUInt8()
+	err = unknown.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.activateWithCardIDHandler(fmt.Errorf("Failed to read unknown from parameters. %s", err.Error()), packet, callID, 0, 0)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.ActivateWithCardID(fmt.Errorf("Failed to read unknown from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	cardID, err := parametersStream.ReadUInt64LE()
+	err = cardID.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.activateWithCardIDHandler(fmt.Errorf("Failed to read cardID from parameters. %s", err.Error()), packet, callID, 0, 0)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.ActivateWithCardID(fmt.Errorf("Failed to read cardID from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	errorCode = protocol.activateWithCardIDHandler(nil, packet, callID, unknown, cardID)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.ActivateWithCardID(nil, packet, callID, unknown, cardID)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

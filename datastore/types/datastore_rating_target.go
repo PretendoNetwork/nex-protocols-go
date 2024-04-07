@@ -5,26 +5,45 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/v2/types"
 )
 
-// DataStoreRatingTarget is sent in the RateObjects method
+// DataStoreRatingTarget is a type within the DataStore protocol
 type DataStoreRatingTarget struct {
-	nex.Structure
-	DataID uint64
-	Slot   uint8
+	types.Structure
+	DataID *types.PrimitiveU64
+	Slot   *types.PrimitiveU8
 }
 
-// ExtractFromStream extracts a DataStoreRatingTarget structure from a stream
-func (dataStoreRatingTarget *DataStoreRatingTarget) ExtractFromStream(stream *nex.StreamIn) error {
+// WriteTo writes the DataStoreRatingTarget to the given writable
+func (dsrt *DataStoreRatingTarget) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
+
+	dsrt.DataID.WriteTo(writable)
+	dsrt.Slot.WriteTo(writable)
+
+	content := contentWritable.Bytes()
+
+	dsrt.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
+}
+
+// ExtractFrom extracts the DataStoreRatingTarget from the given readable
+func (dsrt *DataStoreRatingTarget) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	dataStoreRatingTarget.DataID, err = stream.ReadUInt64LE()
+	err = dsrt.ExtractHeaderFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreRatingTarget header. %s", err.Error())
+	}
+
+	err = dsrt.DataID.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreRatingTarget.DataID. %s", err.Error())
 	}
 
-	dataStoreRatingTarget.Slot, err = stream.ReadUInt8()
+	err = dsrt.Slot.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreRatingTarget.Slot. %s", err.Error())
 	}
@@ -33,52 +52,50 @@ func (dataStoreRatingTarget *DataStoreRatingTarget) ExtractFromStream(stream *ne
 }
 
 // Copy returns a new copied instance of DataStoreRatingTarget
-func (dataStoreRatingTarget *DataStoreRatingTarget) Copy() nex.StructureInterface {
+func (dsrt *DataStoreRatingTarget) Copy() types.RVType {
 	copied := NewDataStoreRatingTarget()
 
-	copied.SetStructureVersion(dataStoreRatingTarget.StructureVersion())
-
-	copied.DataID = dataStoreRatingTarget.DataID
-	copied.Slot = dataStoreRatingTarget.Slot
+	copied.StructureVersion = dsrt.StructureVersion
+	copied.DataID = dsrt.DataID.Copy().(*types.PrimitiveU64)
+	copied.Slot = dsrt.Slot.Copy().(*types.PrimitiveU8)
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (dataStoreRatingTarget *DataStoreRatingTarget) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*DataStoreRatingTarget)
-
-	if dataStoreRatingTarget.StructureVersion() != other.StructureVersion() {
+// Equals checks if the given DataStoreRatingTarget contains the same data as the current DataStoreRatingTarget
+func (dsrt *DataStoreRatingTarget) Equals(o types.RVType) bool {
+	if _, ok := o.(*DataStoreRatingTarget); !ok {
 		return false
 	}
 
-	if dataStoreRatingTarget.DataID != other.DataID {
+	other := o.(*DataStoreRatingTarget)
+
+	if dsrt.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if dataStoreRatingTarget.Slot != other.Slot {
+	if !dsrt.DataID.Equals(other.DataID) {
 		return false
 	}
 
-	return true
+	return dsrt.Slot.Equals(other.Slot)
 }
 
-// String returns a string representation of the struct
-func (dataStoreRatingTarget *DataStoreRatingTarget) String() string {
-	return dataStoreRatingTarget.FormatToString(0)
+// String returns the string representation of the DataStoreRatingTarget
+func (dsrt *DataStoreRatingTarget) String() string {
+	return dsrt.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (dataStoreRatingTarget *DataStoreRatingTarget) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the DataStoreRatingTarget using the provided indentation level
+func (dsrt *DataStoreRatingTarget) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("DataStoreRatingTarget{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, dataStoreRatingTarget.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sDataID: %d,\n", indentationValues, dataStoreRatingTarget.DataID))
-	b.WriteString(fmt.Sprintf("%sSlot: %d\n", indentationValues, dataStoreRatingTarget.Slot))
+	b.WriteString(fmt.Sprintf("%sDataID: %s,\n", indentationValues, dsrt.DataID))
+	b.WriteString(fmt.Sprintf("%sSlot: %s,\n", indentationValues, dsrt.Slot))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -86,8 +103,10 @@ func (dataStoreRatingTarget *DataStoreRatingTarget) FormatToString(indentationLe
 
 // NewDataStoreRatingTarget returns a new DataStoreRatingTarget
 func NewDataStoreRatingTarget() *DataStoreRatingTarget {
-	return &DataStoreRatingTarget{
-		DataID: 0,
-		Slot:   0,
+	dsrt := &DataStoreRatingTarget{
+		DataID: types.NewPrimitiveU64(0),
+		Slot:   types.NewPrimitiveU8(0),
 	}
+
+	return dsrt
 }

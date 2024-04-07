@@ -4,70 +4,73 @@ package protocol
 import (
 	"fmt"
 
-	nex "github.com/PretendoNetwork/nex-go"
-	"github.com/PretendoNetwork/nex-protocols-go/globals"
+	nex "github.com/PretendoNetwork/nex-go/v2"
+	"github.com/PretendoNetwork/nex-go/v2/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
 )
 
-// ReportNATTraversalResult sets the ReportNATTraversalResult handler function
-func (protocol *Protocol) ReportNATTraversalResult(handler func(err error, packet nex.PacketInterface, callID uint32, cid uint32, result bool, rtt uint32) uint32) {
-	protocol.reportNATTraversalResultHandler = handler
-}
-
 func (protocol *Protocol) handleReportNATTraversalResult(packet nex.PacketInterface) {
-	var errorCode uint32
+	if protocol.ReportNATTraversalResult == nil {
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "NATTraversal::ReportNATTraversalResult not implemented")
 
-	if protocol.reportNATTraversalResultHandler == nil {
-		globals.Logger.Warning("NATTraversal::ReportNATTraversalResult not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
-	natTraversalVersion := protocol.Server.NATTraversalProtocolVersion()
+	endpoint := packet.Sender().Endpoint()
+	natTraversalVersion := endpoint.LibraryVersions().NATTraversal
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
+	callID := request.CallID
+	parameters := request.Parameters
+	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	callID := request.CallID()
-	parameters := request.Parameters()
+	cid := types.NewPrimitiveU32(0)
+	result := types.NewPrimitiveBool(false)
+	rtt := types.NewPrimitiveU32(0)
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+	var err error
 
-	cid, err := parametersStream.ReadUInt32LE()
+	err = cid.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.reportNATTraversalResultHandler(fmt.Errorf("Failed to read cid from parameters. %s", err.Error()), packet, callID, 0, false, 0)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.ReportNATTraversalResult(fmt.Errorf("Failed to read cid from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	result, err := parametersStream.ReadBool()
+	err = result.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.reportNATTraversalResultHandler(fmt.Errorf("Failed to read result from parameters. %s", err.Error()), packet, callID, 0, false, 0)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.ReportNATTraversalResult(fmt.Errorf("Failed to read result from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
-
-	var rtt uint32 = 0
 
 	// TODO - Is this the right version?
 	if natTraversalVersion.GreaterOrEqual("3.0.0") {
-		rtt, err = parametersStream.ReadUInt32LE()
+		err = rtt.ExtractFrom(parametersStream)
 		if err != nil {
-			errorCode = protocol.reportNATTraversalResultHandler(fmt.Errorf("Failed to read rtt from parameters. %s", err.Error()), packet, callID, 0, false, 0)
-			if errorCode != 0 {
-				globals.RespondError(packet, ProtocolID, errorCode)
+			_, rmcError := protocol.ReportNATTraversalResult(fmt.Errorf("Failed to read rtt from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+			if rmcError != nil {
+				globals.RespondError(packet, ProtocolID, rmcError)
 			}
 
 			return
 		}
 	}
 
-	errorCode = protocol.reportNATTraversalResultHandler(nil, packet, callID, cid, result, rtt)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.ReportNATTraversalResult(nil, packet, callID, cid, result, rtt)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

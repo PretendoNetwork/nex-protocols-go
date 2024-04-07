@@ -5,26 +5,45 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/v2/types"
 )
 
-// DataStorePersistenceTarget contains information about a DataStore target
+// DataStorePersistenceTarget is a type within the DataStore protocol
 type DataStorePersistenceTarget struct {
-	nex.Structure
-	OwnerID           uint32
-	PersistenceSlotID uint16
+	types.Structure
+	OwnerID           *types.PID
+	PersistenceSlotID *types.PrimitiveU16
 }
 
-// ExtractFromStream extracts a DataStorePersistenceTarget structure from a stream
-func (dataStorePersistenceTarget *DataStorePersistenceTarget) ExtractFromStream(stream *nex.StreamIn) error {
+// WriteTo writes the DataStorePersistenceTarget to the given writable
+func (dspt *DataStorePersistenceTarget) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
+
+	dspt.OwnerID.WriteTo(writable)
+	dspt.PersistenceSlotID.WriteTo(writable)
+
+	content := contentWritable.Bytes()
+
+	dspt.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
+}
+
+// ExtractFrom extracts the DataStorePersistenceTarget from the given readable
+func (dspt *DataStorePersistenceTarget) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	dataStorePersistenceTarget.OwnerID, err = stream.ReadUInt32LE()
+	err = dspt.ExtractHeaderFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStorePersistenceTarget header. %s", err.Error())
+	}
+
+	err = dspt.OwnerID.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStorePersistenceTarget.OwnerID. %s", err.Error())
 	}
 
-	dataStorePersistenceTarget.PersistenceSlotID, err = stream.ReadUInt16LE()
+	err = dspt.PersistenceSlotID.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStorePersistenceTarget.PersistenceSlotID. %s", err.Error())
 	}
@@ -32,53 +51,51 @@ func (dataStorePersistenceTarget *DataStorePersistenceTarget) ExtractFromStream(
 	return nil
 }
 
-// Copy returns a new copied instance of dataStorePersistenceTarget
-func (dataStorePersistenceTarget *DataStorePersistenceTarget) Copy() nex.StructureInterface {
+// Copy returns a new copied instance of DataStorePersistenceTarget
+func (dspt *DataStorePersistenceTarget) Copy() types.RVType {
 	copied := NewDataStorePersistenceTarget()
 
-	copied.SetStructureVersion(dataStorePersistenceTarget.StructureVersion())
-
-	copied.OwnerID = dataStorePersistenceTarget.OwnerID
-	copied.PersistenceSlotID = dataStorePersistenceTarget.PersistenceSlotID
+	copied.StructureVersion = dspt.StructureVersion
+	copied.OwnerID = dspt.OwnerID.Copy().(*types.PID)
+	copied.PersistenceSlotID = dspt.PersistenceSlotID.Copy().(*types.PrimitiveU16)
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (dataStorePersistenceTarget *DataStorePersistenceTarget) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*DataStorePersistenceTarget)
-
-	if dataStorePersistenceTarget.StructureVersion() != other.StructureVersion() {
+// Equals checks if the given DataStorePersistenceTarget contains the same data as the current DataStorePersistenceTarget
+func (dspt *DataStorePersistenceTarget) Equals(o types.RVType) bool {
+	if _, ok := o.(*DataStorePersistenceTarget); !ok {
 		return false
 	}
 
-	if dataStorePersistenceTarget.OwnerID != other.OwnerID {
+	other := o.(*DataStorePersistenceTarget)
+
+	if dspt.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if dataStorePersistenceTarget.PersistenceSlotID != other.PersistenceSlotID {
+	if !dspt.OwnerID.Equals(other.OwnerID) {
 		return false
 	}
 
-	return true
+	return dspt.PersistenceSlotID.Equals(other.PersistenceSlotID)
 }
 
-// String returns a string representation of the struct
-func (dataStorePersistenceTarget *DataStorePersistenceTarget) String() string {
-	return dataStorePersistenceTarget.FormatToString(0)
+// String returns the string representation of the DataStorePersistenceTarget
+func (dspt *DataStorePersistenceTarget) String() string {
+	return dspt.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (dataStorePersistenceTarget *DataStorePersistenceTarget) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the DataStorePersistenceTarget using the provided indentation level
+func (dspt *DataStorePersistenceTarget) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("DataStorePersistenceTarget{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, dataStorePersistenceTarget.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sOwnerID: %d,\n", indentationValues, dataStorePersistenceTarget.OwnerID))
-	b.WriteString(fmt.Sprintf("%sPersistenceSlotID: %d\n", indentationValues, dataStorePersistenceTarget.PersistenceSlotID))
+	b.WriteString(fmt.Sprintf("%sOwnerID: %s,\n", indentationValues, dspt.OwnerID.FormatToString(indentationLevel+1)))
+	b.WriteString(fmt.Sprintf("%sPersistenceSlotID: %s,\n", indentationValues, dspt.PersistenceSlotID))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -86,8 +103,10 @@ func (dataStorePersistenceTarget *DataStorePersistenceTarget) FormatToString(ind
 
 // NewDataStorePersistenceTarget returns a new DataStorePersistenceTarget
 func NewDataStorePersistenceTarget() *DataStorePersistenceTarget {
-	return &DataStorePersistenceTarget{
-		OwnerID:           0,
-		PersistenceSlotID: 0,
+	dspt := &DataStorePersistenceTarget{
+		OwnerID:           types.NewPID(0),
+		PersistenceSlotID: types.NewPrimitiveU16(0),
 	}
+
+	return dspt
 }

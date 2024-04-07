@@ -4,43 +4,45 @@ package protocol
 import (
 	"fmt"
 
-	nex "github.com/PretendoNetwork/nex-go"
-	"github.com/PretendoNetwork/nex-protocols-go/globals"
+	nex "github.com/PretendoNetwork/nex-go/v2"
+	"github.com/PretendoNetwork/nex-go/v2/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
 )
 
-// UpdateURLs sets the UpdateURLs handler function
-func (protocol *Protocol) UpdateURLs(handler func(err error, packet nex.PacketInterface, callID uint32, vecMyURLs []*nex.StationURL) uint32) {
-	protocol.updateURLsHandler = handler
-}
-
 func (protocol *Protocol) handleUpdateURLs(packet nex.PacketInterface) {
-	var errorCode uint32
+	if protocol.UpdateURLs == nil {
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "SecureConnection::UpdateURLs not implemented")
 
-	if protocol.updateURLsHandler == nil {
-		globals.Logger.Warning("SecureConnection::UpdateURLs not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
+	callID := request.CallID
+	parameters := request.Parameters
+	endpoint := packet.Sender().Endpoint()
+	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	callID := request.CallID()
-	parameters := request.Parameters()
+	vecMyURLs := types.NewList[*types.StationURL]()
+	vecMyURLs.Type = types.NewStationURL("")
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
-
-	vecMyURLs, err := parametersStream.ReadListStationURL()
+	err := vecMyURLs.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.updateURLsHandler(fmt.Errorf("Failed to read vecMyURLs from parameters. %s", err.Error()), packet, callID, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.UpdateURLs(fmt.Errorf("Failed to read vecMyURLs from parameters. %s", err.Error()), packet, callID, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	errorCode = protocol.updateURLsHandler(nil, packet, callID, vecMyURLs)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.UpdateURLs(nil, packet, callID, vecMyURLs)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

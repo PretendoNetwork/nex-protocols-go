@@ -1,67 +1,99 @@
-// Package types implements all the types used by the Friends 3DS protocol
+// Package types implements all the types used by the Friends3DS protocol
 package types
 
 import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/v2/types"
 )
 
-// MyProfile is a data structure used by the Friends 3DS protocol to hold user profile information
+// MyProfile is a type within the Friends3DS protocol
 type MyProfile struct {
-	nex.Structure
-	*nex.Data
-	Region   uint8
-	Country  uint8
-	Area     uint8
-	Language uint8
-	Platform uint8
-	Unknown1 uint64
-	Unknown2 string
-	Unknown3 string
+	types.Structure
+	*types.Data
+	Region   *types.PrimitiveU8
+	Country  *types.PrimitiveU8
+	Area     *types.PrimitiveU8
+	Language *types.PrimitiveU8
+	Platform *types.PrimitiveU8
+	Unknown1 *types.PrimitiveU64
+	Unknown2 *types.String
+	Unknown3 *types.String
 }
 
-// ExtractFromStream extracts a MyProfile from a stream
-func (myProfile *MyProfile) ExtractFromStream(stream *nex.StreamIn) error {
+// WriteTo writes the MyProfile to the given writable
+func (mp *MyProfile) WriteTo(writable types.Writable) {
+	mp.Data.WriteTo(writable)
+
+	contentWritable := writable.CopyNew()
+
+	mp.Region.WriteTo(writable)
+	mp.Country.WriteTo(writable)
+	mp.Area.WriteTo(writable)
+	mp.Language.WriteTo(writable)
+	mp.Platform.WriteTo(writable)
+	mp.Unknown1.WriteTo(writable)
+	mp.Unknown2.WriteTo(writable)
+	mp.Unknown3.WriteTo(writable)
+
+	content := contentWritable.Bytes()
+
+	mp.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
+}
+
+// ExtractFrom extracts the MyProfile from the given readable
+func (mp *MyProfile) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	myProfile.Region, err = stream.ReadUInt8()
+	err = mp.Data.ExtractFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract MyProfile.Data. %s", err.Error())
+	}
+
+	err = mp.ExtractHeaderFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract MyProfile header. %s", err.Error())
+	}
+
+	err = mp.Region.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract MyProfile.Region. %s", err.Error())
 	}
 
-	myProfile.Country, err = stream.ReadUInt8()
+	err = mp.Country.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract MyProfile.Country. %s", err.Error())
 	}
 
-	myProfile.Area, err = stream.ReadUInt8()
+	err = mp.Area.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract MyProfile.Area. %s", err.Error())
 	}
 
-	myProfile.Language, err = stream.ReadUInt8()
+	err = mp.Language.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract MyProfile.Language. %s", err.Error())
 	}
 
-	myProfile.Platform, err = stream.ReadUInt8()
+	err = mp.Platform.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract MyProfile.Platform. %s", err.Error())
 	}
 
-	myProfile.Unknown1, err = stream.ReadUInt64LE()
+	err = mp.Unknown1.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract MyProfile.Unknown1. %s", err.Error())
 	}
 
-	myProfile.Unknown2, err = stream.ReadString()
+	err = mp.Unknown2.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract MyProfile.Unknown2. %s", err.Error())
 	}
 
-	myProfile.Unknown3, err = stream.ReadString()
+	err = mp.Unknown3.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract MyProfile.Unknown3. %s", err.Error())
 	}
@@ -70,100 +102,92 @@ func (myProfile *MyProfile) ExtractFromStream(stream *nex.StreamIn) error {
 }
 
 // Copy returns a new copied instance of MyProfile
-func (myProfile *MyProfile) Copy() nex.StructureInterface {
+func (mp *MyProfile) Copy() types.RVType {
 	copied := NewMyProfile()
 
-	copied.SetStructureVersion(myProfile.StructureVersion())
-
-	if myProfile.ParentType() != nil {
-		copied.Data = myProfile.ParentType().Copy().(*nex.Data)
-	} else {
-		copied.Data = nex.NewData()
-	}
-
-	copied.SetParentType(copied.Data)
-
-	copied.Region = myProfile.Region
-	copied.Country = myProfile.Country
-	copied.Area = myProfile.Area
-	copied.Language = myProfile.Language
-	copied.Platform = myProfile.Platform
-	copied.Unknown1 = myProfile.Unknown1
-	copied.Unknown2 = myProfile.Unknown2
-	copied.Unknown3 = myProfile.Unknown3
+	copied.StructureVersion = mp.StructureVersion
+	copied.Data = mp.Data.Copy().(*types.Data)
+	copied.Region = mp.Region.Copy().(*types.PrimitiveU8)
+	copied.Country = mp.Country.Copy().(*types.PrimitiveU8)
+	copied.Area = mp.Area.Copy().(*types.PrimitiveU8)
+	copied.Language = mp.Language.Copy().(*types.PrimitiveU8)
+	copied.Platform = mp.Platform.Copy().(*types.PrimitiveU8)
+	copied.Unknown1 = mp.Unknown1.Copy().(*types.PrimitiveU64)
+	copied.Unknown2 = mp.Unknown2.Copy().(*types.String)
+	copied.Unknown3 = mp.Unknown3.Copy().(*types.String)
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (myProfile *MyProfile) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*MyProfile)
-
-	if myProfile.StructureVersion() != other.StructureVersion() {
+// Equals checks if the given MyProfile contains the same data as the current MyProfile
+func (mp *MyProfile) Equals(o types.RVType) bool {
+	if _, ok := o.(*MyProfile); !ok {
 		return false
 	}
 
-	if !myProfile.ParentType().Equals(other.ParentType()) {
+	other := o.(*MyProfile)
+
+	if mp.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if myProfile.Region != other.Region {
+	if !mp.Data.Equals(other.Data) {
 		return false
 	}
 
-	if myProfile.Country != other.Country {
+	if !mp.Region.Equals(other.Region) {
 		return false
 	}
 
-	if myProfile.Area != other.Area {
+	if !mp.Country.Equals(other.Country) {
 		return false
 	}
 
-	if myProfile.Language != other.Language {
+	if !mp.Area.Equals(other.Area) {
 		return false
 	}
 
-	if myProfile.Platform != other.Platform {
+	if !mp.Language.Equals(other.Language) {
 		return false
 	}
 
-	if myProfile.Unknown1 != other.Unknown1 {
+	if !mp.Platform.Equals(other.Platform) {
 		return false
 	}
 
-	if myProfile.Unknown2 != other.Unknown2 {
+	if !mp.Unknown1.Equals(other.Unknown1) {
 		return false
 	}
 
-	if myProfile.Unknown3 != other.Unknown3 {
+	if !mp.Unknown2.Equals(other.Unknown2) {
 		return false
 	}
 
-	return true
+	return mp.Unknown3.Equals(other.Unknown3)
 }
 
-// String returns a string representation of the struct
-func (myProfile *MyProfile) String() string {
-	return myProfile.FormatToString(0)
+// String returns the string representation of the MyProfile
+func (mp *MyProfile) String() string {
+	return mp.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (myProfile *MyProfile) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the MyProfile using the provided indentation level
+func (mp *MyProfile) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("MyProfile{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, myProfile.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sRegion: %d,\n", indentationValues, myProfile.Region))
-	b.WriteString(fmt.Sprintf("%sCountry: %d,\n", indentationValues, myProfile.Country))
-	b.WriteString(fmt.Sprintf("%sArea: %d,\n", indentationValues, myProfile.Area))
-	b.WriteString(fmt.Sprintf("%sLanguage: %d,\n", indentationValues, myProfile.Language))
-	b.WriteString(fmt.Sprintf("%sPlatform: %d,\n", indentationValues, myProfile.Platform))
-	b.WriteString(fmt.Sprintf("%sUnknown1: %d,\n", indentationValues, myProfile.Unknown1))
-	b.WriteString(fmt.Sprintf("%sUnknown2: %q,\n", indentationValues, myProfile.Unknown2))
-	b.WriteString(fmt.Sprintf("%sUnknown3: %q\n", indentationValues, myProfile.Unknown3))
+	b.WriteString(fmt.Sprintf("%sData (parent): %s,\n", indentationValues, mp.Data.FormatToString(indentationLevel+1)))
+	b.WriteString(fmt.Sprintf("%sRegion: %s,\n", indentationValues, mp.Region))
+	b.WriteString(fmt.Sprintf("%sCountry: %s,\n", indentationValues, mp.Country))
+	b.WriteString(fmt.Sprintf("%sArea: %s,\n", indentationValues, mp.Area))
+	b.WriteString(fmt.Sprintf("%sLanguage: %s,\n", indentationValues, mp.Language))
+	b.WriteString(fmt.Sprintf("%sPlatform: %s,\n", indentationValues, mp.Platform))
+	b.WriteString(fmt.Sprintf("%sUnknown1: %s,\n", indentationValues, mp.Unknown1))
+	b.WriteString(fmt.Sprintf("%sUnknown2: %s,\n", indentationValues, mp.Unknown2))
+	b.WriteString(fmt.Sprintf("%sUnknown3: %s,\n", indentationValues, mp.Unknown3))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -171,5 +195,17 @@ func (myProfile *MyProfile) FormatToString(indentationLevel int) string {
 
 // NewMyProfile returns a new MyProfile
 func NewMyProfile() *MyProfile {
-	return &MyProfile{}
+	mp := &MyProfile{
+		Data:     types.NewData(),
+		Region:   types.NewPrimitiveU8(0),
+		Country:  types.NewPrimitiveU8(0),
+		Area:     types.NewPrimitiveU8(0),
+		Language: types.NewPrimitiveU8(0),
+		Platform: types.NewPrimitiveU8(0),
+		Unknown1: types.NewPrimitiveU64(0),
+		Unknown2: types.NewString(""),
+		Unknown3: types.NewString(""),
+	}
+
+	return mp
 }

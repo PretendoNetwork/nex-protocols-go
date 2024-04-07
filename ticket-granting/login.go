@@ -4,43 +4,44 @@ package protocol
 import (
 	"fmt"
 
-	nex "github.com/PretendoNetwork/nex-go"
-	"github.com/PretendoNetwork/nex-protocols-go/globals"
+	nex "github.com/PretendoNetwork/nex-go/v2"
+	"github.com/PretendoNetwork/nex-go/v2/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
 )
 
-// Login sets the Login handler function
-func (protocol *Protocol) Login(handler func(err error, packet nex.PacketInterface, callID uint32, strUserName string) uint32) {
-	protocol.loginHandler = handler
-}
-
 func (protocol *Protocol) handleLogin(packet nex.PacketInterface) {
-	var errorCode uint32
+	if protocol.Login == nil {
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "TicketGranting::Login not implemented")
 
-	if protocol.loginHandler == nil {
-		globals.Logger.Warning("TicketGranting::Login not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
+	callID := request.CallID
+	parameters := request.Parameters
+	endpoint := packet.Sender().Endpoint()
+	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	callID := request.CallID()
-	parameters := request.Parameters()
+	strUserName := types.NewString("")
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
-
-	strUserName, err := parametersStream.ReadString()
+	err := strUserName.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.loginHandler(fmt.Errorf("Failed to read strUserName from parameters. %s", err.Error()), packet, callID, "")
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.Login(fmt.Errorf("Failed to read strUserName from parameters. %s", err.Error()), packet, callID, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	errorCode = protocol.loginHandler(nil, packet, callID, strUserName)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.Login(nil, packet, callID, strUserName)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

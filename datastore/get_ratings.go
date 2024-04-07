@@ -4,53 +4,58 @@ package protocol
 import (
 	"fmt"
 
-	nex "github.com/PretendoNetwork/nex-go"
-	"github.com/PretendoNetwork/nex-protocols-go/globals"
+	nex "github.com/PretendoNetwork/nex-go/v2"
+	"github.com/PretendoNetwork/nex-go/v2/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
 )
 
-// GetRatings sets the GetRatings handler function
-func (protocol *Protocol) GetRatings(handler func(err error, packet nex.PacketInterface, callID uint32, dataIDs []uint64, accessPassword uint64) uint32) {
-	protocol.getRatingsHandler = handler
-}
-
 func (protocol *Protocol) handleGetRatings(packet nex.PacketInterface) {
-	var errorCode uint32
+	if protocol.GetRatings == nil {
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "DataStore::GetRatings not implemented")
 
-	if protocol.getRatingsHandler == nil {
-		globals.Logger.Warning("DataStore::GetRatings not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
+	callID := request.CallID
+	parameters := request.Parameters
+	endpoint := packet.Sender().Endpoint()
+	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	callID := request.CallID()
-	parameters := request.Parameters()
+	dataIDs := types.NewList[*types.PrimitiveU64]()
+	dataIDs.Type = types.NewPrimitiveU64(0)
+	accessPassword := types.NewPrimitiveU64(0)
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+	var err error
 
-	dataIDs, err := parametersStream.ReadListUInt64LE()
+	err = dataIDs.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.getRatingsHandler(fmt.Errorf("Failed to read dataIDs from parameters. %s", err.Error()), packet, callID, nil, 0)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.GetRatings(fmt.Errorf("Failed to read dataIDs from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	accessPassword, err := parametersStream.ReadUInt64LE()
+	err = accessPassword.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.getRatingsHandler(fmt.Errorf("Failed to read accessPassword from parameters. %s", err.Error()), packet, callID, nil, 0)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.GetRatings(fmt.Errorf("Failed to read accessPassword from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	errorCode = protocol.getRatingsHandler(nil, packet, callID, dataIDs, accessPassword)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.GetRatings(nil, packet, callID, dataIDs, accessPassword)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

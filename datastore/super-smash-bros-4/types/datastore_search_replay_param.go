@@ -1,124 +1,127 @@
-// Package types implements all the types used by the DataStore Super Smash Bros. 4 protocol
+// Package types implements all the types used by the DataStoreSuperSmashBros.4 protocol
 package types
 
 import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/v2/types"
 )
 
-// DataStoreSearchReplayParam is a data structure used by the DataStore Super Smash Bros. 4 protocol
+// DataStoreSearchReplayParam is a type within the DataStoreSuperSmashBros.4 protocol
 type DataStoreSearchReplayParam struct {
-	nex.Structure
-	Mode        uint8
-	Style       uint8
-	Fighter     uint8
-	ResultRange *nex.ResultRange
+	types.Structure
+	Mode        *types.PrimitiveU8
+	Style       *types.PrimitiveU8
+	Fighter     *types.PrimitiveU8
+	ResultRange *types.ResultRange
 }
 
-// ExtractFromStream extracts a DataStoreSearchReplayParam structure from a stream
-func (dataStoreSearchReplayParam *DataStoreSearchReplayParam) ExtractFromStream(stream *nex.StreamIn) error {
+// WriteTo writes the DataStoreSearchReplayParam to the given writable
+func (dssrp *DataStoreSearchReplayParam) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
+
+	dssrp.Mode.WriteTo(writable)
+	dssrp.Style.WriteTo(writable)
+	dssrp.Fighter.WriteTo(writable)
+	dssrp.ResultRange.WriteTo(writable)
+
+	content := contentWritable.Bytes()
+
+	dssrp.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
+}
+
+// ExtractFrom extracts the DataStoreSearchReplayParam from the given readable
+func (dssrp *DataStoreSearchReplayParam) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	dataStoreSearchReplayParam.Mode, err = stream.ReadUInt8()
+	err = dssrp.ExtractHeaderFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreSearchReplayParam header. %s", err.Error())
+	}
+
+	err = dssrp.Mode.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreSearchReplayParam.Mode. %s", err.Error())
 	}
-	dataStoreSearchReplayParam.Style, err = stream.ReadUInt8()
+
+	err = dssrp.Style.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreSearchReplayParam.Style. %s", err.Error())
 	}
-	dataStoreSearchReplayParam.Fighter, err = stream.ReadUInt8()
+
+	err = dssrp.Fighter.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreSearchReplayParam.Fighter. %s", err.Error())
 	}
 
-	resultRange, err := stream.ReadStructure(nex.NewResultRange())
+	err = dssrp.ResultRange.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreSearchReplayParam.ResultRange. %s", err.Error())
 	}
 
-	dataStoreSearchReplayParam.ResultRange = resultRange.(*nex.ResultRange)
-
 	return nil
 }
 
-// Bytes encodes the DataStoreSearchReplayParam and returns a byte array
-func (dataStoreSearchReplayParam *DataStoreSearchReplayParam) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt8(dataStoreSearchReplayParam.Mode)
-	stream.WriteUInt8(dataStoreSearchReplayParam.Style)
-	stream.WriteUInt8(dataStoreSearchReplayParam.Fighter)
-	stream.WriteStructure(dataStoreSearchReplayParam.ResultRange)
-
-	return stream.Bytes()
-}
-
 // Copy returns a new copied instance of DataStoreSearchReplayParam
-func (dataStoreSearchReplayParam *DataStoreSearchReplayParam) Copy() nex.StructureInterface {
+func (dssrp *DataStoreSearchReplayParam) Copy() types.RVType {
 	copied := NewDataStoreSearchReplayParam()
 
-	copied.SetStructureVersion(dataStoreSearchReplayParam.StructureVersion())
-
-	copied.Mode = dataStoreSearchReplayParam.Mode
-	copied.Style = dataStoreSearchReplayParam.Style
-	copied.Fighter = dataStoreSearchReplayParam.Fighter
-	copied.ResultRange = dataStoreSearchReplayParam.ResultRange.Copy().(*nex.ResultRange)
+	copied.StructureVersion = dssrp.StructureVersion
+	copied.Mode = dssrp.Mode.Copy().(*types.PrimitiveU8)
+	copied.Style = dssrp.Style.Copy().(*types.PrimitiveU8)
+	copied.Fighter = dssrp.Fighter.Copy().(*types.PrimitiveU8)
+	copied.ResultRange = dssrp.ResultRange.Copy().(*types.ResultRange)
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (dataStoreSearchReplayParam *DataStoreSearchReplayParam) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*DataStoreSearchReplayParam)
-
-	if dataStoreSearchReplayParam.StructureVersion() != other.StructureVersion() {
+// Equals checks if the given DataStoreSearchReplayParam contains the same data as the current DataStoreSearchReplayParam
+func (dssrp *DataStoreSearchReplayParam) Equals(o types.RVType) bool {
+	if _, ok := o.(*DataStoreSearchReplayParam); !ok {
 		return false
 	}
 
-	if dataStoreSearchReplayParam.Mode != other.Mode {
+	other := o.(*DataStoreSearchReplayParam)
+
+	if dssrp.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if dataStoreSearchReplayParam.Style != other.Style {
+	if !dssrp.Mode.Equals(other.Mode) {
 		return false
 	}
 
-	if dataStoreSearchReplayParam.Fighter != other.Fighter {
+	if !dssrp.Style.Equals(other.Style) {
 		return false
 	}
 
-	if !dataStoreSearchReplayParam.ResultRange.Equals(other.ResultRange) {
+	if !dssrp.Fighter.Equals(other.Fighter) {
 		return false
 	}
 
-	return true
+	return dssrp.ResultRange.Equals(other.ResultRange)
 }
 
-// String returns a string representation of the struct
-func (dataStoreSearchReplayParam *DataStoreSearchReplayParam) String() string {
-	return dataStoreSearchReplayParam.FormatToString(0)
+// String returns the string representation of the DataStoreSearchReplayParam
+func (dssrp *DataStoreSearchReplayParam) String() string {
+	return dssrp.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (dataStoreSearchReplayParam *DataStoreSearchReplayParam) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the DataStoreSearchReplayParam using the provided indentation level
+func (dssrp *DataStoreSearchReplayParam) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("DataStoreSearchReplayParam{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, dataStoreSearchReplayParam.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sMode: %d,\n", indentationValues, dataStoreSearchReplayParam.Mode))
-	b.WriteString(fmt.Sprintf("%sStyle: %d,\n", indentationValues, dataStoreSearchReplayParam.Style))
-	b.WriteString(fmt.Sprintf("%sFighter: %d,\n", indentationValues, dataStoreSearchReplayParam.Fighter))
-
-	if dataStoreSearchReplayParam.ResultRange != nil {
-		b.WriteString(fmt.Sprintf("%sResultRange: %s\n", indentationValues, dataStoreSearchReplayParam.ResultRange.FormatToString(indentationLevel+1)))
-	} else {
-		b.WriteString(fmt.Sprintf("%sResultRange: nil\n", indentationValues))
-	}
-
+	b.WriteString(fmt.Sprintf("%sMode: %s,\n", indentationValues, dssrp.Mode))
+	b.WriteString(fmt.Sprintf("%sStyle: %s,\n", indentationValues, dssrp.Style))
+	b.WriteString(fmt.Sprintf("%sFighter: %s,\n", indentationValues, dssrp.Fighter))
+	b.WriteString(fmt.Sprintf("%sResultRange: %s,\n", indentationValues, dssrp.ResultRange.FormatToString(indentationLevel+1)))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -126,5 +129,12 @@ func (dataStoreSearchReplayParam *DataStoreSearchReplayParam) FormatToString(ind
 
 // NewDataStoreSearchReplayParam returns a new DataStoreSearchReplayParam
 func NewDataStoreSearchReplayParam() *DataStoreSearchReplayParam {
-	return &DataStoreSearchReplayParam{}
+	dssrp := &DataStoreSearchReplayParam{
+		Mode:        types.NewPrimitiveU8(0),
+		Style:       types.NewPrimitiveU8(0),
+		Fighter:     types.NewPrimitiveU8(0),
+		ResultRange: types.NewResultRange(),
+	}
+
+	return dssrp
 }

@@ -4,64 +4,70 @@ package protocol
 import (
 	"fmt"
 
-	nex "github.com/PretendoNetwork/nex-go"
-	"github.com/PretendoNetwork/nex-protocols-go/globals"
-	messaging_types "github.com/PretendoNetwork/nex-protocols-go/messaging/types"
+	nex "github.com/PretendoNetwork/nex-go/v2"
+	"github.com/PretendoNetwork/nex-go/v2/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
+	messaging_types "github.com/PretendoNetwork/nex-protocols-go/v2/messaging/types"
 )
 
-// RetrieveMessages sets the RetrieveMessages handler function
-func (protocol *Protocol) RetrieveMessages(handler func(err error, packet nex.PacketInterface, callID uint32, recipient *messaging_types.MessageRecipient, lstMsgIDs []uint32, bLeaveOnServer bool) uint32) {
-	protocol.retrieveMessagesHandler = handler
-}
-
 func (protocol *Protocol) handleRetrieveMessages(packet nex.PacketInterface) {
-	var errorCode uint32
+	if protocol.RetrieveMessages == nil {
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "Messaging::RetrieveMessages not implemented")
 
-	if protocol.retrieveMessagesHandler == nil {
-		globals.Logger.Warning("Messaging::RetrieveMessages not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
+	callID := request.CallID
+	parameters := request.Parameters
+	endpoint := packet.Sender().Endpoint()
+	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	callID := request.CallID()
-	parameters := request.Parameters()
+	recipient := messaging_types.NewMessageRecipient()
+	lstMsgIDs := types.NewList[*types.PrimitiveU32]()
+	lstMsgIDs.Type = types.NewPrimitiveU32(0)
+	bLeaveOnServer := types.NewPrimitiveBool(false)
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+	var err error
 
-	recipient, err := parametersStream.ReadStructure(messaging_types.NewMessageRecipient())
+	err = recipient.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.retrieveMessagesHandler(fmt.Errorf("Failed to read recipient from parameters. %s", err.Error()), packet, callID, nil, nil, false)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.RetrieveMessages(fmt.Errorf("Failed to read recipient from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	lstMsgIDs, err := parametersStream.ReadListUInt32LE()
+	err = lstMsgIDs.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.retrieveMessagesHandler(fmt.Errorf("Failed to read lstMsgIDs from parameters. %s", err.Error()), packet, callID, nil, nil, false)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.RetrieveMessages(fmt.Errorf("Failed to read lstMsgIDs from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	bLeaveOnServer, err := parametersStream.ReadBool()
+	err = bLeaveOnServer.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.retrieveMessagesHandler(fmt.Errorf("Failed to read bLeaveOnServer from parameters. %s", err.Error()), packet, callID, nil, nil, false)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.RetrieveMessages(fmt.Errorf("Failed to read bLeaveOnServer from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	errorCode = protocol.retrieveMessagesHandler(nil, packet, callID, recipient.(*messaging_types.MessageRecipient), lstMsgIDs, bLeaveOnServer)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.RetrieveMessages(nil, packet, callID, recipient, lstMsgIDs, bLeaveOnServer)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

@@ -4,43 +4,44 @@ package protocol
 import (
 	"fmt"
 
-	nex "github.com/PretendoNetwork/nex-go"
-	"github.com/PretendoNetwork/nex-protocols-go/globals"
+	nex "github.com/PretendoNetwork/nex-go/v2"
+	"github.com/PretendoNetwork/nex-go/v2/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
 )
 
-// GetParticipantsURLs sets the GetParticipantsURLs handler function
-func (protocol *Protocol) GetParticipantsURLs(handler func(err error, packet nex.PacketInterface, callID uint32, idGathering uint32) uint32) {
-	protocol.getParticipantsURLsHandler = handler
-}
-
 func (protocol *Protocol) handleGetParticipantsURLs(packet nex.PacketInterface) {
-	var errorCode uint32
+	if protocol.GetParticipantsURLs == nil {
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "MatchMaking::GetParticipantsURLs not implemented")
 
-	if protocol.getParticipantsURLsHandler == nil {
-		globals.Logger.Warning("MatchMaking::GetParticipantsURLs not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
+	callID := request.CallID
+	parameters := request.Parameters
+	endpoint := packet.Sender().Endpoint()
+	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	callID := request.CallID()
-	parameters := request.Parameters()
+	idGathering := types.NewPrimitiveU32(0)
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
-
-	idGathering, err := parametersStream.ReadUInt32LE()
+	err := idGathering.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.getParticipantsURLsHandler(fmt.Errorf("Failed to read gatheringID from parameters. %s", err.Error()), packet, callID, 0)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.GetParticipantsURLs(fmt.Errorf("Failed to read idGathering from parameters. %s", err.Error()), packet, callID, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	errorCode = protocol.getParticipantsURLsHandler(nil, packet, callID, idGathering)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.GetParticipantsURLs(nil, packet, callID, idGathering)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

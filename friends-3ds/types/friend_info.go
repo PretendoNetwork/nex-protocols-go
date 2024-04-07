@@ -1,81 +1,101 @@
-// Package types implements all the types used by the Friends 3DS protocol
+// Package types implements all the types used by the Friends3DS protocol
 package types
 
 import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/v2/types"
 )
 
-// FriendInfo is a data structure used by the Friends 3DS protocol to hold information about a friends Mii
+// FriendInfo is a type within the Friends3DS protocol
 type FriendInfo struct {
-	nex.Structure
-	PID     uint32
-	Unknown *nex.DateTime
+	types.Structure
+	PID     *types.PID
+	Unknown *types.DateTime
 }
 
-// Bytes encodes the FriendInfo and returns a byte array
-func (friendInfo *FriendInfo) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt32LE(friendInfo.PID)
-	stream.WriteDateTime(friendInfo.Unknown)
+// WriteTo writes the FriendInfo to the given writable
+func (fi *FriendInfo) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
 
-	return stream.Bytes()
+	fi.PID.WriteTo(writable)
+	fi.Unknown.WriteTo(writable)
+
+	content := contentWritable.Bytes()
+
+	fi.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
+}
+
+// ExtractFrom extracts the FriendInfo from the given readable
+func (fi *FriendInfo) ExtractFrom(readable types.Readable) error {
+	var err error
+
+	err = fi.ExtractHeaderFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract FriendInfo header. %s", err.Error())
+	}
+
+	err = fi.PID.ExtractFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract FriendInfo.PID. %s", err.Error())
+	}
+
+	err = fi.Unknown.ExtractFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract FriendInfo.Unknown. %s", err.Error())
+	}
+
+	return nil
 }
 
 // Copy returns a new copied instance of FriendInfo
-func (friendInfo *FriendInfo) Copy() nex.StructureInterface {
+func (fi *FriendInfo) Copy() types.RVType {
 	copied := NewFriendInfo()
 
-	copied.SetStructureVersion(friendInfo.StructureVersion())
-
-	copied.PID = friendInfo.PID
-	copied.Unknown = friendInfo.Unknown.Copy()
+	copied.StructureVersion = fi.StructureVersion
+	copied.PID = fi.PID.Copy().(*types.PID)
+	copied.Unknown = fi.Unknown.Copy().(*types.DateTime)
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (friendInfo *FriendInfo) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*FriendInfo)
-
-	if friendInfo.StructureVersion() != other.StructureVersion() {
+// Equals checks if the given FriendInfo contains the same data as the current FriendInfo
+func (fi *FriendInfo) Equals(o types.RVType) bool {
+	if _, ok := o.(*FriendInfo); !ok {
 		return false
 	}
 
-	if friendInfo.PID != other.PID {
+	other := o.(*FriendInfo)
+
+	if fi.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if !friendInfo.Unknown.Equals(other.Unknown) {
+	if !fi.PID.Equals(other.PID) {
 		return false
 	}
 
-	return true
+	return fi.Unknown.Equals(other.Unknown)
 }
 
-// String returns a string representation of the struct
-func (friendInfo *FriendInfo) String() string {
-	return friendInfo.FormatToString(0)
+// String returns the string representation of the FriendInfo
+func (fi *FriendInfo) String() string {
+	return fi.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (friendInfo *FriendInfo) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the FriendInfo using the provided indentation level
+func (fi *FriendInfo) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("FriendInfo{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, friendInfo.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sPID: %d,\n", indentationValues, friendInfo.PID))
-
-	if friendInfo.Unknown != nil {
-		b.WriteString(fmt.Sprintf("%sUnknown: %s\n", indentationValues, friendInfo.Unknown.FormatToString(indentationLevel+1)))
-	} else {
-		b.WriteString(fmt.Sprintf("%sUnknown: nil\n", indentationValues))
-	}
-
+	b.WriteString(fmt.Sprintf("%sPID: %s,\n", indentationValues, fi.PID.FormatToString(indentationLevel+1)))
+	b.WriteString(fmt.Sprintf("%sUnknown: %s,\n", indentationValues, fi.Unknown.FormatToString(indentationLevel+1)))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -83,5 +103,10 @@ func (friendInfo *FriendInfo) FormatToString(indentationLevel int) string {
 
 // NewFriendInfo returns a new FriendInfo
 func NewFriendInfo() *FriendInfo {
-	return &FriendInfo{}
+	fi := &FriendInfo{
+		PID:     types.NewPID(0),
+		Unknown: types.NewDateTime(0),
+	}
+
+	return fi
 }

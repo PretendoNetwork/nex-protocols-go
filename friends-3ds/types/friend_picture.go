@@ -1,106 +1,128 @@
-// Package types implements all the types used by the Friends 3DS protocol
+// Package types implements all the types used by the Friends3DS protocol
 package types
 
 import (
-	"bytes"
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/v2/types"
 )
 
-// FriendPicture is a data structure used by the Friends 3DS protocol to hold information about a friends PictureData
+// FriendPicture is a type within the Friends3DS protocol
 type FriendPicture struct {
-	nex.Structure
-	*nex.Data
-	Unknown1    uint32
-	PictureData []byte
-	Unknown2    *nex.DateTime
+	types.Structure
+	*types.Data
+	Unknown1    *types.PrimitiveU32
+	PictureData *types.Buffer
+	Unknown2    *types.DateTime
 }
 
-// Bytes encodes the FriendPicture and returns a byte array
-func (friendPicture *FriendPicture) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt32LE(friendPicture.Unknown1)
-	stream.WriteBuffer(friendPicture.PictureData)
-	stream.WriteDateTime(friendPicture.Unknown2)
+// WriteTo writes the FriendPicture to the given writable
+func (fp *FriendPicture) WriteTo(writable types.Writable) {
+	fp.Data.WriteTo(writable)
 
-	return stream.Bytes()
+	contentWritable := writable.CopyNew()
+
+	fp.Unknown1.WriteTo(writable)
+	fp.PictureData.WriteTo(writable)
+	fp.Unknown2.WriteTo(writable)
+
+	content := contentWritable.Bytes()
+
+	fp.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
+}
+
+// ExtractFrom extracts the FriendPicture from the given readable
+func (fp *FriendPicture) ExtractFrom(readable types.Readable) error {
+	var err error
+
+	err = fp.Data.ExtractFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract FriendPicture.Data. %s", err.Error())
+	}
+
+	err = fp.ExtractHeaderFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract FriendPicture header. %s", err.Error())
+	}
+
+	err = fp.Unknown1.ExtractFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract FriendPicture.Unknown1. %s", err.Error())
+	}
+
+	err = fp.PictureData.ExtractFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract FriendPicture.PictureData. %s", err.Error())
+	}
+
+	err = fp.Unknown2.ExtractFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract FriendPicture.Unknown2. %s", err.Error())
+	}
+
+	return nil
 }
 
 // Copy returns a new copied instance of FriendPicture
-func (friendPicture *FriendPicture) Copy() nex.StructureInterface {
+func (fp *FriendPicture) Copy() types.RVType {
 	copied := NewFriendPicture()
 
-	copied.SetStructureVersion(friendPicture.StructureVersion())
-
-	if friendPicture.ParentType() != nil {
-		copied.Data = friendPicture.ParentType().Copy().(*nex.Data)
-	} else {
-		copied.Data = nex.NewData()
-	}
-
-	copied.SetParentType(copied.Data)
-
-	copied.Unknown1 = friendPicture.Unknown1
-	copied.PictureData = make([]byte, len(friendPicture.PictureData))
-
-	copy(copied.PictureData, friendPicture.PictureData)
-
-	copied.Unknown2 = friendPicture.Unknown2.Copy()
+	copied.StructureVersion = fp.StructureVersion
+	copied.Data = fp.Data.Copy().(*types.Data)
+	copied.Unknown1 = fp.Unknown1.Copy().(*types.PrimitiveU32)
+	copied.PictureData = fp.PictureData.Copy().(*types.Buffer)
+	copied.Unknown2 = fp.Unknown2.Copy().(*types.DateTime)
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (friendPicture *FriendPicture) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*FriendPicture)
-
-	if friendPicture.StructureVersion() != other.StructureVersion() {
+// Equals checks if the given FriendPicture contains the same data as the current FriendPicture
+func (fp *FriendPicture) Equals(o types.RVType) bool {
+	if _, ok := o.(*FriendPicture); !ok {
 		return false
 	}
 
-	if !friendPicture.ParentType().Equals(other.ParentType()) {
+	other := o.(*FriendPicture)
+
+	if fp.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if friendPicture.Unknown1 != other.Unknown1 {
+	if !fp.Data.Equals(other.Data) {
 		return false
 	}
 
-	if !bytes.Equal(friendPicture.PictureData, other.PictureData) {
+	if !fp.Unknown1.Equals(other.Unknown1) {
 		return false
 	}
 
-	if !friendPicture.Unknown2.Equals(other.Unknown2) {
+	if !fp.PictureData.Equals(other.PictureData) {
 		return false
 	}
 
-	return true
+	return fp.Unknown2.Equals(other.Unknown2)
 }
 
-// String returns a string representation of the struct
-func (friendPicture *FriendPicture) String() string {
-	return friendPicture.FormatToString(0)
+// String returns the string representation of the FriendPicture
+func (fp *FriendPicture) String() string {
+	return fp.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (friendPicture *FriendPicture) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the FriendPicture using the provided indentation level
+func (fp *FriendPicture) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("FriendPicture{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, friendPicture.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sUnknown1: %d,\n", indentationValues, friendPicture.Unknown1))
-	b.WriteString(fmt.Sprintf("%sPictureData: %x,\n", indentationValues, friendPicture.PictureData))
-
-	if friendPicture.Unknown2 != nil {
-		b.WriteString(fmt.Sprintf("%sUnknown2: %s\n", indentationValues, friendPicture.Unknown2.FormatToString(indentationLevel+1)))
-	} else {
-		b.WriteString(fmt.Sprintf("%sUnknown2: nil\n", indentationValues))
-	}
-
+	b.WriteString(fmt.Sprintf("%sData (parent): %s,\n", indentationValues, fp.Data.FormatToString(indentationLevel+1)))
+	b.WriteString(fmt.Sprintf("%sUnknown1: %s,\n", indentationValues, fp.Unknown1))
+	b.WriteString(fmt.Sprintf("%sPictureData: %s,\n", indentationValues, fp.PictureData))
+	b.WriteString(fmt.Sprintf("%sUnknown2: %s,\n", indentationValues, fp.Unknown2.FormatToString(indentationLevel+1)))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -108,5 +130,12 @@ func (friendPicture *FriendPicture) FormatToString(indentationLevel int) string 
 
 // NewFriendPicture returns a new FriendPicture
 func NewFriendPicture() *FriendPicture {
-	return &FriendPicture{}
+	fp := &FriendPicture{
+		Data:        types.NewData(),
+		Unknown1:    types.NewPrimitiveU32(0),
+		PictureData: types.NewBuffer(nil),
+		Unknown2:    types.NewDateTime(0),
+	}
+
+	return fp
 }

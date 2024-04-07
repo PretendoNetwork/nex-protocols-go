@@ -1,92 +1,101 @@
-// Package types implements all the types used by the DataStore (Super Mario Maker) protocol
+// Package types implements all the types used by the DataStore protocol
 package types
 
 import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/v2/types"
 )
 
-// DataStoreGetCourseRecordParam holds data for the DataStore (Super Mario Maker) protocol
+// DataStoreGetCourseRecordParam is a type within the DataStore protocol
 type DataStoreGetCourseRecordParam struct {
-	nex.Structure
-	DataID uint64
-	Slot   uint8
+	types.Structure
+	DataID *types.PrimitiveU64
+	Slot   *types.PrimitiveU8
 }
 
-// ExtractFromStream extracts a DataStoreGetCourseRecordParam structure from a stream
-func (dataStoreGetCourseRecordParam *DataStoreGetCourseRecordParam) ExtractFromStream(stream *nex.StreamIn) error {
+// WriteTo writes the DataStoreGetCourseRecordParam to the given writable
+func (dsgcrp *DataStoreGetCourseRecordParam) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
+
+	dsgcrp.DataID.WriteTo(writable)
+	dsgcrp.Slot.WriteTo(writable)
+
+	content := contentWritable.Bytes()
+
+	dsgcrp.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
+}
+
+// ExtractFrom extracts the DataStoreGetCourseRecordParam from the given readable
+func (dsgcrp *DataStoreGetCourseRecordParam) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	dataStoreGetCourseRecordParam.DataID, err = stream.ReadUInt64LE()
+	err = dsgcrp.ExtractHeaderFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract DataStoreGetCourseRecordParam.DataID from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract DataStoreGetCourseRecordParam header. %s", err.Error())
 	}
 
-	dataStoreGetCourseRecordParam.Slot, err = stream.ReadUInt8()
+	err = dsgcrp.DataID.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract DataStoreGetCourseRecordParam.Slot from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract DataStoreGetCourseRecordParam.DataID. %s", err.Error())
+	}
+
+	err = dsgcrp.Slot.ExtractFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreGetCourseRecordParam.Slot. %s", err.Error())
 	}
 
 	return nil
 }
 
-// Bytes encodes the DataStoreGetCourseRecordParam and returns a byte array
-func (dataStoreGetCourseRecordParam *DataStoreGetCourseRecordParam) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt64LE(dataStoreGetCourseRecordParam.DataID)
-	stream.WriteUInt8(dataStoreGetCourseRecordParam.Slot)
-
-	return stream.Bytes()
-}
-
 // Copy returns a new copied instance of DataStoreGetCourseRecordParam
-func (dataStoreGetCourseRecordParam *DataStoreGetCourseRecordParam) Copy() nex.StructureInterface {
+func (dsgcrp *DataStoreGetCourseRecordParam) Copy() types.RVType {
 	copied := NewDataStoreGetCourseRecordParam()
 
-	copied.SetStructureVersion(dataStoreGetCourseRecordParam.StructureVersion())
-
-	copied.DataID = dataStoreGetCourseRecordParam.DataID
-	copied.Slot = dataStoreGetCourseRecordParam.Slot
+	copied.StructureVersion = dsgcrp.StructureVersion
+	copied.DataID = dsgcrp.DataID.Copy().(*types.PrimitiveU64)
+	copied.Slot = dsgcrp.Slot.Copy().(*types.PrimitiveU8)
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (dataStoreGetCourseRecordParam *DataStoreGetCourseRecordParam) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*DataStoreGetCourseRecordParam)
-
-	if dataStoreGetCourseRecordParam.StructureVersion() != other.StructureVersion() {
+// Equals checks if the given DataStoreGetCourseRecordParam contains the same data as the current DataStoreGetCourseRecordParam
+func (dsgcrp *DataStoreGetCourseRecordParam) Equals(o types.RVType) bool {
+	if _, ok := o.(*DataStoreGetCourseRecordParam); !ok {
 		return false
 	}
 
-	if dataStoreGetCourseRecordParam.DataID != other.DataID {
+	other := o.(*DataStoreGetCourseRecordParam)
+
+	if dsgcrp.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if dataStoreGetCourseRecordParam.Slot != other.Slot {
+	if !dsgcrp.DataID.Equals(other.DataID) {
 		return false
 	}
 
-	return true
+	return dsgcrp.Slot.Equals(other.Slot)
 }
 
-// String returns a string representation of the struct
-func (dataStoreGetCourseRecordParam *DataStoreGetCourseRecordParam) String() string {
-	return dataStoreGetCourseRecordParam.FormatToString(0)
+// String returns the string representation of the DataStoreGetCourseRecordParam
+func (dsgcrp *DataStoreGetCourseRecordParam) String() string {
+	return dsgcrp.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (dataStoreGetCourseRecordParam *DataStoreGetCourseRecordParam) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the DataStoreGetCourseRecordParam using the provided indentation level
+func (dsgcrp *DataStoreGetCourseRecordParam) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("DataStoreGetCourseRecordParam{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, dataStoreGetCourseRecordParam.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sDataID: %d,\n", indentationValues, dataStoreGetCourseRecordParam.DataID))
-	b.WriteString(fmt.Sprintf("%sSlot: %d,\n", indentationValues, dataStoreGetCourseRecordParam.Slot))
+	b.WriteString(fmt.Sprintf("%sDataID: %s,\n", indentationValues, dsgcrp.DataID))
+	b.WriteString(fmt.Sprintf("%sSlot: %s,\n", indentationValues, dsgcrp.Slot))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -94,8 +103,10 @@ func (dataStoreGetCourseRecordParam *DataStoreGetCourseRecordParam) FormatToStri
 
 // NewDataStoreGetCourseRecordParam returns a new DataStoreGetCourseRecordParam
 func NewDataStoreGetCourseRecordParam() *DataStoreGetCourseRecordParam {
-	return &DataStoreGetCourseRecordParam{
-		DataID: 0,
-		Slot:   0,
+	dsgcrp := &DataStoreGetCourseRecordParam{
+		DataID: types.NewPrimitiveU64(0),
+		Slot:   types.NewPrimitiveU8(0),
 	}
+
+	return dsgcrp
 }

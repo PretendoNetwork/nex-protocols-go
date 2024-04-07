@@ -1,30 +1,49 @@
-// Package types implements all the types used by the DataStore Super Smash Bros. 4 protocol
+// Package types implements all the types used by the DataStoreSuperSmashBros.4 protocol
 package types
 
 import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/v2/types"
 )
 
-// DataStoreGetReplayMetaParam is a data structure used by the DataStore Super Smash Bros. 4 protocol
+// DataStoreGetReplayMetaParam is a type within the DataStoreSuperSmashBros.4 protocol
 type DataStoreGetReplayMetaParam struct {
-	nex.Structure
-	ReplayID uint64
-	MetaType uint8
+	types.Structure
+	ReplayID *types.PrimitiveU64
+	MetaType *types.PrimitiveU8
 }
 
-// ExtractFromStream extracts a DataStoreGetReplayMetaParam structure from a stream
-func (dataStoreGetReplayMetaParam *DataStoreGetReplayMetaParam) ExtractFromStream(stream *nex.StreamIn) error {
+// WriteTo writes the DataStoreGetReplayMetaParam to the given writable
+func (dsgrmp *DataStoreGetReplayMetaParam) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
+
+	dsgrmp.ReplayID.WriteTo(writable)
+	dsgrmp.MetaType.WriteTo(writable)
+
+	content := contentWritable.Bytes()
+
+	dsgrmp.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
+}
+
+// ExtractFrom extracts the DataStoreGetReplayMetaParam from the given readable
+func (dsgrmp *DataStoreGetReplayMetaParam) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	dataStoreGetReplayMetaParam.ReplayID, err = stream.ReadUInt64LE()
+	err = dsgrmp.ExtractHeaderFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreGetReplayMetaParam header. %s", err.Error())
+	}
+
+	err = dsgrmp.ReplayID.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreGetReplayMetaParam.ReplayID. %s", err.Error())
 	}
 
-	dataStoreGetReplayMetaParam.MetaType, err = stream.ReadUInt8()
+	err = dsgrmp.MetaType.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreGetReplayMetaParam.MetaType. %s", err.Error())
 	}
@@ -32,61 +51,51 @@ func (dataStoreGetReplayMetaParam *DataStoreGetReplayMetaParam) ExtractFromStrea
 	return nil
 }
 
-// Bytes encodes the DataStoreGetReplayMetaParam and returns a byte array
-func (dataStoreGetReplayMetaParam *DataStoreGetReplayMetaParam) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt64LE(dataStoreGetReplayMetaParam.ReplayID)
-	stream.WriteUInt8(dataStoreGetReplayMetaParam.MetaType)
-
-	return stream.Bytes()
-}
-
 // Copy returns a new copied instance of DataStoreGetReplayMetaParam
-func (dataStoreGetReplayMetaParam *DataStoreGetReplayMetaParam) Copy() nex.StructureInterface {
+func (dsgrmp *DataStoreGetReplayMetaParam) Copy() types.RVType {
 	copied := NewDataStoreGetReplayMetaParam()
 
-	copied.SetStructureVersion(dataStoreGetReplayMetaParam.StructureVersion())
-
-	copied.ReplayID = dataStoreGetReplayMetaParam.ReplayID
-	copied.MetaType = dataStoreGetReplayMetaParam.MetaType
+	copied.StructureVersion = dsgrmp.StructureVersion
+	copied.ReplayID = dsgrmp.ReplayID.Copy().(*types.PrimitiveU64)
+	copied.MetaType = dsgrmp.MetaType.Copy().(*types.PrimitiveU8)
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (dataStoreGetReplayMetaParam *DataStoreGetReplayMetaParam) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*DataStoreGetReplayMetaParam)
-
-	if dataStoreGetReplayMetaParam.StructureVersion() != other.StructureVersion() {
+// Equals checks if the given DataStoreGetReplayMetaParam contains the same data as the current DataStoreGetReplayMetaParam
+func (dsgrmp *DataStoreGetReplayMetaParam) Equals(o types.RVType) bool {
+	if _, ok := o.(*DataStoreGetReplayMetaParam); !ok {
 		return false
 	}
 
-	if dataStoreGetReplayMetaParam.ReplayID != other.ReplayID {
+	other := o.(*DataStoreGetReplayMetaParam)
+
+	if dsgrmp.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if dataStoreGetReplayMetaParam.MetaType != other.MetaType {
+	if !dsgrmp.ReplayID.Equals(other.ReplayID) {
 		return false
 	}
 
-	return true
+	return dsgrmp.MetaType.Equals(other.MetaType)
 }
 
-// String returns a string representation of the struct
-func (dataStoreGetReplayMetaParam *DataStoreGetReplayMetaParam) String() string {
-	return dataStoreGetReplayMetaParam.FormatToString(0)
+// String returns the string representation of the DataStoreGetReplayMetaParam
+func (dsgrmp *DataStoreGetReplayMetaParam) String() string {
+	return dsgrmp.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (dataStoreGetReplayMetaParam *DataStoreGetReplayMetaParam) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the DataStoreGetReplayMetaParam using the provided indentation level
+func (dsgrmp *DataStoreGetReplayMetaParam) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("DataStoreGetReplayMetaParam{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, dataStoreGetReplayMetaParam.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sReplayID: %d,\n", indentationValues, dataStoreGetReplayMetaParam.ReplayID))
-	b.WriteString(fmt.Sprintf("%sMetaType: %d\n", indentationValues, dataStoreGetReplayMetaParam.MetaType))
+	b.WriteString(fmt.Sprintf("%sReplayID: %s,\n", indentationValues, dsgrmp.ReplayID))
+	b.WriteString(fmt.Sprintf("%sMetaType: %s,\n", indentationValues, dsgrmp.MetaType))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -94,5 +103,10 @@ func (dataStoreGetReplayMetaParam *DataStoreGetReplayMetaParam) FormatToString(i
 
 // NewDataStoreGetReplayMetaParam returns a new DataStoreGetReplayMetaParam
 func NewDataStoreGetReplayMetaParam() *DataStoreGetReplayMetaParam {
-	return &DataStoreGetReplayMetaParam{}
+	dsgrmp := &DataStoreGetReplayMetaParam{
+		ReplayID: types.NewPrimitiveU64(0),
+		MetaType: types.NewPrimitiveU8(0),
+	}
+
+	return dsgrmp
 }

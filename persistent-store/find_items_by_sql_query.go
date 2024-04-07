@@ -4,63 +4,68 @@ package protocol
 import (
 	"fmt"
 
-	nex "github.com/PretendoNetwork/nex-go"
-	"github.com/PretendoNetwork/nex-protocols-go/globals"
+	nex "github.com/PretendoNetwork/nex-go/v2"
+	"github.com/PretendoNetwork/nex-go/v2/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
 )
 
-// FindItemsBySQLQuery sets the FindItemsBySQLQuery handler function
-func (protocol *Protocol) FindItemsBySQLQuery(handler func(err error, packet nex.PacketInterface, callID uint32, uiGroup uint32, strTag string, strQuery string) uint32) {
-	protocol.findItemsBySQLQueryHandler = handler
-}
-
 func (protocol *Protocol) handleFindItemsBySQLQuery(packet nex.PacketInterface) {
-	var errorCode uint32
+	if protocol.FindItemsBySQLQuery == nil {
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "PersistentStore::FindItemsBySQLQuery not implemented")
 
-	if protocol.findItemsBySQLQueryHandler == nil {
-		globals.Logger.Warning("PersistentStore::FindItemsBySQLQuery not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
+	callID := request.CallID
+	parameters := request.Parameters
+	endpoint := packet.Sender().Endpoint()
+	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	callID := request.CallID()
-	parameters := request.Parameters()
+	uiGroup := types.NewPrimitiveU32(0)
+	strTag := types.NewString("")
+	strQuery := types.NewString("")
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+	var err error
 
-	uiGroup, err := parametersStream.ReadUInt32LE()
+	err = uiGroup.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.findItemsBySQLQueryHandler(fmt.Errorf("Failed to read uiGroup from parameters. %s", err.Error()), packet, callID, 0, "", "")
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.FindItemsBySQLQuery(fmt.Errorf("Failed to read uiGroup from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	strTag, err := parametersStream.ReadString()
+	err = strTag.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.findItemsBySQLQueryHandler(fmt.Errorf("Failed to read strTag from parameters. %s", err.Error()), packet, callID, 0, "", "")
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.FindItemsBySQLQuery(fmt.Errorf("Failed to read strTag from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	strQuery, err := parametersStream.ReadString()
+	err = strQuery.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.findItemsBySQLQueryHandler(fmt.Errorf("Failed to read strQuery from parameters. %s", err.Error()), packet, callID, 0, "", "")
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.FindItemsBySQLQuery(fmt.Errorf("Failed to read strQuery from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	errorCode = protocol.findItemsBySQLQueryHandler(nil, packet, callID, uiGroup, strTag, strQuery)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.FindItemsBySQLQuery(nil, packet, callID, uiGroup, strTag, strQuery)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

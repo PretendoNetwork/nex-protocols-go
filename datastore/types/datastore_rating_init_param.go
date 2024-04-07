@@ -5,62 +5,87 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/v2/types"
 )
 
-// DataStoreRatingInitParam is sent in the PreparePostObject method
+// DataStoreRatingInitParam is a type within the DataStore protocol
 type DataStoreRatingInitParam struct {
-	nex.Structure
-	Flag           uint8
-	InternalFlag   uint8
-	LockType       uint8
-	InitialValue   int64
-	RangeMin       int32
-	RangeMax       int32
-	PeriodHour     int8
-	PeriodDuration int16
+	types.Structure
+	Flag           *types.PrimitiveU8
+	InternalFlag   *types.PrimitiveU8
+	LockType       *types.PrimitiveU8
+	InitialValue   *types.PrimitiveS64
+	RangeMin       *types.PrimitiveS32
+	RangeMax       *types.PrimitiveS32
+	PeriodHour     *types.PrimitiveS8
+	PeriodDuration *types.PrimitiveS16
 }
 
-// ExtractFromStream extracts a DataStoreRatingInitParam structure from a stream
-func (dataStoreRatingInitParam *DataStoreRatingInitParam) ExtractFromStream(stream *nex.StreamIn) error {
+// WriteTo writes the DataStoreRatingInitParam to the given writable
+func (dsrip *DataStoreRatingInitParam) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
+
+	dsrip.Flag.WriteTo(writable)
+	dsrip.InternalFlag.WriteTo(writable)
+	dsrip.LockType.WriteTo(writable)
+	dsrip.InitialValue.WriteTo(writable)
+	dsrip.RangeMin.WriteTo(writable)
+	dsrip.RangeMax.WriteTo(writable)
+	dsrip.PeriodHour.WriteTo(writable)
+	dsrip.PeriodDuration.WriteTo(writable)
+
+	content := contentWritable.Bytes()
+
+	dsrip.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
+}
+
+// ExtractFrom extracts the DataStoreRatingInitParam from the given readable
+func (dsrip *DataStoreRatingInitParam) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	dataStoreRatingInitParam.Flag, err = stream.ReadUInt8()
+	err = dsrip.ExtractHeaderFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreRatingInitParam header. %s", err.Error())
+	}
+
+	err = dsrip.Flag.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreRatingInitParam.Flag. %s", err.Error())
 	}
 
-	dataStoreRatingInitParam.InternalFlag, err = stream.ReadUInt8()
+	err = dsrip.InternalFlag.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreRatingInitParam.InternalFlag. %s", err.Error())
 	}
 
-	dataStoreRatingInitParam.LockType, err = stream.ReadUInt8()
+	err = dsrip.LockType.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreRatingInitParam.LockType. %s", err.Error())
 	}
 
-	dataStoreRatingInitParam.InitialValue, err = stream.ReadInt64LE()
+	err = dsrip.InitialValue.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreRatingInitParam.InitialValue. %s", err.Error())
 	}
 
-	dataStoreRatingInitParam.RangeMin, err = stream.ReadInt32LE()
+	err = dsrip.RangeMin.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreRatingInitParam.RangeMin. %s", err.Error())
 	}
 
-	dataStoreRatingInitParam.RangeMax, err = stream.ReadInt32LE()
+	err = dsrip.RangeMax.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreRatingInitParam.RangeMax. %s", err.Error())
 	}
 
-	dataStoreRatingInitParam.PeriodHour, err = stream.ReadInt8()
+	err = dsrip.PeriodHour.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreRatingInitParam.PeriodHour. %s", err.Error())
 	}
 
-	dataStoreRatingInitParam.PeriodDuration, err = stream.ReadInt16LE()
+	err = dsrip.PeriodDuration.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreRatingInitParam.PeriodDuration. %s", err.Error())
 	}
@@ -69,88 +94,86 @@ func (dataStoreRatingInitParam *DataStoreRatingInitParam) ExtractFromStream(stre
 }
 
 // Copy returns a new copied instance of DataStoreRatingInitParam
-func (dataStoreRatingInitParam *DataStoreRatingInitParam) Copy() nex.StructureInterface {
+func (dsrip *DataStoreRatingInitParam) Copy() types.RVType {
 	copied := NewDataStoreRatingInitParam()
 
-	copied.SetStructureVersion(dataStoreRatingInitParam.StructureVersion())
-
-	copied.Flag = dataStoreRatingInitParam.Flag
-	copied.InternalFlag = dataStoreRatingInitParam.InternalFlag
-	copied.LockType = dataStoreRatingInitParam.LockType
-	copied.InitialValue = dataStoreRatingInitParam.InitialValue
-	copied.RangeMin = dataStoreRatingInitParam.RangeMin
-	copied.RangeMax = dataStoreRatingInitParam.RangeMax
-	copied.PeriodHour = dataStoreRatingInitParam.PeriodHour
-	copied.PeriodDuration = dataStoreRatingInitParam.PeriodDuration
+	copied.StructureVersion = dsrip.StructureVersion
+	copied.Flag = dsrip.Flag.Copy().(*types.PrimitiveU8)
+	copied.InternalFlag = dsrip.InternalFlag.Copy().(*types.PrimitiveU8)
+	copied.LockType = dsrip.LockType.Copy().(*types.PrimitiveU8)
+	copied.InitialValue = dsrip.InitialValue.Copy().(*types.PrimitiveS64)
+	copied.RangeMin = dsrip.RangeMin.Copy().(*types.PrimitiveS32)
+	copied.RangeMax = dsrip.RangeMax.Copy().(*types.PrimitiveS32)
+	copied.PeriodHour = dsrip.PeriodHour.Copy().(*types.PrimitiveS8)
+	copied.PeriodDuration = dsrip.PeriodDuration.Copy().(*types.PrimitiveS16)
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (dataStoreRatingInitParam *DataStoreRatingInitParam) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*DataStoreRatingInitParam)
-
-	if dataStoreRatingInitParam.StructureVersion() != other.StructureVersion() {
+// Equals checks if the given DataStoreRatingInitParam contains the same data as the current DataStoreRatingInitParam
+func (dsrip *DataStoreRatingInitParam) Equals(o types.RVType) bool {
+	if _, ok := o.(*DataStoreRatingInitParam); !ok {
 		return false
 	}
 
-	if dataStoreRatingInitParam.Flag != other.Flag {
+	other := o.(*DataStoreRatingInitParam)
+
+	if dsrip.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if dataStoreRatingInitParam.InternalFlag != other.InternalFlag {
+	if !dsrip.Flag.Equals(other.Flag) {
 		return false
 	}
 
-	if dataStoreRatingInitParam.LockType != other.LockType {
+	if !dsrip.InternalFlag.Equals(other.InternalFlag) {
 		return false
 	}
 
-	if dataStoreRatingInitParam.InitialValue != other.InitialValue {
+	if !dsrip.LockType.Equals(other.LockType) {
 		return false
 	}
 
-	if dataStoreRatingInitParam.RangeMin != other.RangeMin {
+	if !dsrip.InitialValue.Equals(other.InitialValue) {
 		return false
 	}
 
-	if dataStoreRatingInitParam.RangeMax != other.RangeMax {
+	if !dsrip.RangeMin.Equals(other.RangeMin) {
 		return false
 	}
 
-	if dataStoreRatingInitParam.PeriodHour != other.PeriodHour {
+	if !dsrip.RangeMax.Equals(other.RangeMax) {
 		return false
 	}
 
-	if dataStoreRatingInitParam.PeriodDuration != other.PeriodDuration {
+	if !dsrip.PeriodHour.Equals(other.PeriodHour) {
 		return false
 	}
 
-	return true
+	return dsrip.PeriodDuration.Equals(other.PeriodDuration)
 }
 
-// String returns a string representation of the struct
-func (dataStoreRatingInitParam *DataStoreRatingInitParam) String() string {
-	return dataStoreRatingInitParam.FormatToString(0)
+// String returns the string representation of the DataStoreRatingInitParam
+func (dsrip *DataStoreRatingInitParam) String() string {
+	return dsrip.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (dataStoreRatingInitParam *DataStoreRatingInitParam) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the DataStoreRatingInitParam using the provided indentation level
+func (dsrip *DataStoreRatingInitParam) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("DataStoreRatingInitParam{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, dataStoreRatingInitParam.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sFlag: %d,\n", indentationValues, dataStoreRatingInitParam.Flag))
-	b.WriteString(fmt.Sprintf("%sInternalFlag: %d,\n", indentationValues, dataStoreRatingInitParam.InternalFlag))
-	b.WriteString(fmt.Sprintf("%sLockType: %d,\n", indentationValues, dataStoreRatingInitParam.LockType))
-	b.WriteString(fmt.Sprintf("%sInitialValue: %d,\n", indentationValues, dataStoreRatingInitParam.InitialValue))
-	b.WriteString(fmt.Sprintf("%sRangeMin: %d,\n", indentationValues, dataStoreRatingInitParam.RangeMin))
-	b.WriteString(fmt.Sprintf("%sRangeMax: %d,\n", indentationValues, dataStoreRatingInitParam.RangeMax))
-	b.WriteString(fmt.Sprintf("%sPeriodHour: %d,\n", indentationValues, dataStoreRatingInitParam.PeriodHour))
-	b.WriteString(fmt.Sprintf("%sPeriodDuration: %d\n", indentationValues, dataStoreRatingInitParam.PeriodDuration))
+	b.WriteString(fmt.Sprintf("%sFlag: %s,\n", indentationValues, dsrip.Flag))
+	b.WriteString(fmt.Sprintf("%sInternalFlag: %s,\n", indentationValues, dsrip.InternalFlag))
+	b.WriteString(fmt.Sprintf("%sLockType: %s,\n", indentationValues, dsrip.LockType))
+	b.WriteString(fmt.Sprintf("%sInitialValue: %s,\n", indentationValues, dsrip.InitialValue))
+	b.WriteString(fmt.Sprintf("%sRangeMin: %s,\n", indentationValues, dsrip.RangeMin))
+	b.WriteString(fmt.Sprintf("%sRangeMax: %s,\n", indentationValues, dsrip.RangeMax))
+	b.WriteString(fmt.Sprintf("%sPeriodHour: %s,\n", indentationValues, dsrip.PeriodHour))
+	b.WriteString(fmt.Sprintf("%sPeriodDuration: %s,\n", indentationValues, dsrip.PeriodDuration))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -158,14 +181,16 @@ func (dataStoreRatingInitParam *DataStoreRatingInitParam) FormatToString(indenta
 
 // NewDataStoreRatingInitParam returns a new DataStoreRatingInitParam
 func NewDataStoreRatingInitParam() *DataStoreRatingInitParam {
-	return &DataStoreRatingInitParam{
-		Flag:           0,
-		InternalFlag:   0,
-		LockType:       0,
-		InitialValue:   0,
-		RangeMin:       0,
-		RangeMax:       0,
-		PeriodHour:     0,
-		PeriodDuration: 0,
+	dsrip := &DataStoreRatingInitParam{
+		Flag:           types.NewPrimitiveU8(0),
+		InternalFlag:   types.NewPrimitiveU8(0),
+		LockType:       types.NewPrimitiveU8(0),
+		InitialValue:   types.NewPrimitiveS64(0),
+		RangeMin:       types.NewPrimitiveS32(0),
+		RangeMax:       types.NewPrimitiveS32(0),
+		PeriodHour:     types.NewPrimitiveS8(0),
+		PeriodDuration: types.NewPrimitiveS16(0),
 	}
+
+	return dsrip
 }

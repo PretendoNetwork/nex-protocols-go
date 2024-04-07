@@ -4,44 +4,44 @@ package protocol
 import (
 	"fmt"
 
-	nex "github.com/PretendoNetwork/nex-go"
-	"github.com/PretendoNetwork/nex-protocols-go/globals"
-	ranking_mario_kart8_types "github.com/PretendoNetwork/nex-protocols-go/ranking/mario-kart-8/types"
+	nex "github.com/PretendoNetwork/nex-go/v2"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
+	ranking_mario_kart8_types "github.com/PretendoNetwork/nex-protocols-go/v2/ranking/mario-kart-8/types"
 )
 
-// UploadCompetitionRankingScore sets the UploadCompetitionRankingScore handler function
-func (protocol *Protocol) UploadCompetitionRankingScore(handler func(err error, packet nex.PacketInterface, callID uint32, param *ranking_mario_kart8_types.CompetitionRankingUploadScoreParam) uint32) {
-	protocol.uploadCompetitionRankingScoreHandler = handler
-}
-
 func (protocol *Protocol) handleUploadCompetitionRankingScore(packet nex.PacketInterface) {
-	var errorCode uint32
+	if protocol.UploadCompetitionRankingScore == nil {
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "RankingMarioKart8::UploadCompetitionRankingScore not implemented")
 
-	if protocol.uploadCompetitionRankingScoreHandler == nil {
-		globals.Logger.Warning("RankingMarioKart8::UploadCompetitionRankingScore not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
+	callID := request.CallID
+	parameters := request.Parameters
+	endpoint := packet.Sender().Endpoint()
+	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	callID := request.CallID()
-	parameters := request.Parameters()
+	param := ranking_mario_kart8_types.NewCompetitionRankingUploadScoreParam()
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
-
-	param, err := parametersStream.ReadStructure(ranking_mario_kart8_types.NewCompetitionRankingUploadScoreParam())
+	err := param.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.uploadCompetitionRankingScoreHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.UploadCompetitionRankingScore(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	errorCode = protocol.uploadCompetitionRankingScoreHandler(nil, packet, callID, param.(*ranking_mario_kart8_types.CompetitionRankingUploadScoreParam))
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.UploadCompetitionRankingScore(nil, packet, callID, param)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

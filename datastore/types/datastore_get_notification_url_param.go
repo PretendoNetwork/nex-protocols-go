@@ -5,20 +5,38 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/v2/types"
 )
 
-// DataStoreGetNotificationURLParam is a data structure used by the DataStore protocol
+// DataStoreGetNotificationURLParam is a type within the DataStore protocol
 type DataStoreGetNotificationURLParam struct {
-	nex.Structure
-	PreviousURL string
+	types.Structure
+	PreviousURL *types.String
 }
 
-// ExtractFromStream extracts a DataStoreGetNotificationURLParam structure from a stream
-func (dataStoreGetNotificationURLParam *DataStoreGetNotificationURLParam) ExtractFromStream(stream *nex.StreamIn) error {
+// WriteTo writes the DataStoreGetNotificationURLParam to the given writable
+func (dsgnurlp *DataStoreGetNotificationURLParam) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
+
+	dsgnurlp.PreviousURL.WriteTo(writable)
+
+	content := contentWritable.Bytes()
+
+	dsgnurlp.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
+}
+
+// ExtractFrom extracts the DataStoreGetNotificationURLParam from the given readable
+func (dsgnurlp *DataStoreGetNotificationURLParam) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	dataStoreGetNotificationURLParam.PreviousURL, err = stream.ReadString()
+	err = dsgnurlp.ExtractHeaderFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreGetNotificationURLParam header. %s", err.Error())
+	}
+
+	err = dsgnurlp.PreviousURL.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreGetNotificationURLParam.PreviousURL. %s", err.Error())
 	}
@@ -26,50 +44,45 @@ func (dataStoreGetNotificationURLParam *DataStoreGetNotificationURLParam) Extrac
 	return nil
 }
 
-// Bytes encodes the DataStoreGetNotificationURLParam and returns a byte array
-func (dataStoreGetNotificationURLParam *DataStoreGetNotificationURLParam) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteString(dataStoreGetNotificationURLParam.PreviousURL)
-
-	return stream.Bytes()
-}
-
 // Copy returns a new copied instance of DataStoreGetNotificationURLParam
-func (dataStoreGetNotificationURLParam *DataStoreGetNotificationURLParam) Copy() nex.StructureInterface {
+func (dsgnurlp *DataStoreGetNotificationURLParam) Copy() types.RVType {
 	copied := NewDataStoreGetNotificationURLParam()
 
-	copied.SetStructureVersion(dataStoreGetNotificationURLParam.StructureVersion())
-
-	copied.PreviousURL = dataStoreGetNotificationURLParam.PreviousURL
+	copied.StructureVersion = dsgnurlp.StructureVersion
+	copied.PreviousURL = dsgnurlp.PreviousURL.Copy().(*types.String)
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (dataStoreGetNotificationURLParam *DataStoreGetNotificationURLParam) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*DataStoreGetNotificationURLParam)
-
-	if dataStoreGetNotificationURLParam.StructureVersion() != other.StructureVersion() {
+// Equals checks if the given DataStoreGetNotificationURLParam contains the same data as the current DataStoreGetNotificationURLParam
+func (dsgnurlp *DataStoreGetNotificationURLParam) Equals(o types.RVType) bool {
+	if _, ok := o.(*DataStoreGetNotificationURLParam); !ok {
 		return false
 	}
 
-	return dataStoreGetNotificationURLParam.PreviousURL == other.PreviousURL
+	other := o.(*DataStoreGetNotificationURLParam)
+
+	if dsgnurlp.StructureVersion != other.StructureVersion {
+		return false
+	}
+
+	return dsgnurlp.PreviousURL.Equals(other.PreviousURL)
 }
 
-// String returns a string representation of the struct
-func (dataStoreGetNotificationURLParam *DataStoreGetNotificationURLParam) String() string {
-	return dataStoreGetNotificationURLParam.FormatToString(0)
+// String returns the string representation of the DataStoreGetNotificationURLParam
+func (dsgnurlp *DataStoreGetNotificationURLParam) String() string {
+	return dsgnurlp.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (dataStoreGetNotificationURLParam *DataStoreGetNotificationURLParam) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the DataStoreGetNotificationURLParam using the provided indentation level
+func (dsgnurlp *DataStoreGetNotificationURLParam) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("DataStoreGetNotificationURLParam{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, dataStoreGetNotificationURLParam.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sPreviousURL: %q\n", indentationValues, dataStoreGetNotificationURLParam.PreviousURL))
+	b.WriteString(fmt.Sprintf("%sPreviousURL: %s,\n", indentationValues, dsgnurlp.PreviousURL))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -77,7 +90,9 @@ func (dataStoreGetNotificationURLParam *DataStoreGetNotificationURLParam) Format
 
 // NewDataStoreGetNotificationURLParam returns a new DataStoreGetNotificationURLParam
 func NewDataStoreGetNotificationURLParam() *DataStoreGetNotificationURLParam {
-	return &DataStoreGetNotificationURLParam{
-		PreviousURL: "",
+	dsgnurlp := &DataStoreGetNotificationURLParam{
+		PreviousURL: types.NewString(""),
 	}
+
+	return dsgnurlp
 }

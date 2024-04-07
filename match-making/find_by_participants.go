@@ -4,43 +4,45 @@ package protocol
 import (
 	"fmt"
 
-	nex "github.com/PretendoNetwork/nex-go"
-	"github.com/PretendoNetwork/nex-protocols-go/globals"
+	nex "github.com/PretendoNetwork/nex-go/v2"
+	"github.com/PretendoNetwork/nex-go/v2/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
 )
 
-// FindByParticipants sets the FindByParticipants handler function
-func (protocol *Protocol) FindByParticipants(handler func(err error, packet nex.PacketInterface, callID uint32, pid []uint32) uint32) {
-	protocol.findByParticipantsHandler = handler
-}
-
 func (protocol *Protocol) handleFindByParticipants(packet nex.PacketInterface) {
-	var errorCode uint32
+	if protocol.FindByParticipants == nil {
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "MatchMaking::FindByParticipants not implemented")
 
-	if protocol.findByParticipantsHandler == nil {
-		globals.Logger.Warning("MatchMaking::FindByParticipants not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
+	callID := request.CallID
+	parameters := request.Parameters
+	endpoint := packet.Sender().Endpoint()
+	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	callID := request.CallID()
-	parameters := request.Parameters()
+	pid := types.NewList[*types.PID]()
+	pid.Type = types.NewPID(0)
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
-
-	pid, err := parametersStream.ReadListUInt32LE()
+	err := pid.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.findByParticipantsHandler(fmt.Errorf("Failed to read pid from parameters. %s", err.Error()), packet, callID, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.FindByParticipants(fmt.Errorf("Failed to read pid from parameters. %s", err.Error()), packet, callID, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	errorCode = protocol.findByParticipantsHandler(nil, packet, callID, pid)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.FindByParticipants(nil, packet, callID, pid)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

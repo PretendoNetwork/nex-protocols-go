@@ -4,43 +4,45 @@ package protocol
 import (
 	"fmt"
 
-	nex "github.com/PretendoNetwork/nex-go"
-	"github.com/PretendoNetwork/nex-protocols-go/globals"
+	nex "github.com/PretendoNetwork/nex-go/v2"
+	"github.com/PretendoNetwork/nex-go/v2/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
 )
 
-// SearchSimpleSearchObjectByObjectIDs sets the SearchSimpleSearchObjectByObjectIDs handler function
-func (protocol *Protocol) SearchSimpleSearchObjectByObjectIDs(handler func(err error, packet nex.PacketInterface, callID uint32, objectIDs []uint32) uint32) {
-	protocol.searchSimpleSearchObjectByObjectIDsHandler = handler
-}
-
 func (protocol *Protocol) handleSearchSimpleSearchObjectByObjectIDs(packet nex.PacketInterface) {
-	var errorCode uint32
+	if protocol.SearchSimpleSearchObjectByObjectIDs == nil {
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "MatchmakeExtensionMarioKart8::SearchSimpleSearchObjectByObjectIDs not implemented")
 
-	if protocol.searchSimpleSearchObjectByObjectIDsHandler == nil {
-		globals.Logger.Warning("MatchmakeExtensionMarioKart8::SearchSimpleSearchObjectByObjectIDs not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
+	callID := request.CallID
+	parameters := request.Parameters
+	endpoint := packet.Sender().Endpoint()
+	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	callID := request.CallID()
-	parameters := request.Parameters()
+	objectIDs := types.NewList[*types.PrimitiveU32]()
+	objectIDs.Type = types.NewPrimitiveU32(0)
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
-
-	objectIDs, err := parametersStream.ReadListUInt32LE()
+	err := objectIDs.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.searchSimpleSearchObjectByObjectIDsHandler(fmt.Errorf("Failed to read objectIDs from parameters. %s", err.Error()), packet, callID, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.SearchSimpleSearchObjectByObjectIDs(fmt.Errorf("Failed to read objectIDs from parameters. %s", err.Error()), packet, callID, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	errorCode = protocol.searchSimpleSearchObjectByObjectIDsHandler(nil, packet, callID, objectIDs)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.SearchSimpleSearchObjectByObjectIDs(nil, packet, callID, objectIDs)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

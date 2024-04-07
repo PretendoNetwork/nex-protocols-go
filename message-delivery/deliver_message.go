@@ -4,43 +4,44 @@ package protocol
 import (
 	"fmt"
 
-	nex "github.com/PretendoNetwork/nex-go"
-	"github.com/PretendoNetwork/nex-protocols-go/globals"
+	nex "github.com/PretendoNetwork/nex-go/v2"
+	"github.com/PretendoNetwork/nex-go/v2/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
 )
 
-// DeliverMessage sets the DeliverMessage handler function
-func (protocol *Protocol) DeliverMessage(handler func(err error, packet nex.PacketInterface, callID uint32, oUserMessage *nex.DataHolder) uint32) {
-	protocol.deliverMessageHandler = handler
-}
-
 func (protocol *Protocol) handleDeliverMessage(packet nex.PacketInterface) {
-	var errorCode uint32
+	if protocol.DeliverMessage == nil {
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "MessageDelivery::DeliverMessage not implemented")
 
-	if protocol.deliverMessageHandler == nil {
-		globals.Logger.Warning("MessageDelivery::DeliverMessage not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
+	callID := request.CallID
+	parameters := request.Parameters
+	endpoint := packet.Sender().Endpoint()
+	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	callID := request.CallID()
-	parameters := request.Parameters()
+	oUserMessage := types.NewAnyDataHolder()
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
-
-	oUserMessage, err := parametersStream.ReadDataHolder()
+	err := oUserMessage.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.deliverMessageHandler(fmt.Errorf("Failed to read oUserMessage from parameters. %s", err.Error()), packet, callID, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.DeliverMessage(fmt.Errorf("Failed to read oUserMessage from parameters. %s", err.Error()), packet, callID, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	errorCode = protocol.deliverMessageHandler(nil, packet, callID, oUserMessage)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.DeliverMessage(nil, packet, callID, oUserMessage)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

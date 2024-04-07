@@ -4,54 +4,60 @@ package protocol
 import (
 	"fmt"
 
-	nex "github.com/PretendoNetwork/nex-go"
-	"github.com/PretendoNetwork/nex-protocols-go/globals"
-	ranking_types "github.com/PretendoNetwork/nex-protocols-go/ranking/types"
+	nex "github.com/PretendoNetwork/nex-go/v2"
+	"github.com/PretendoNetwork/nex-go/v2/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
+	ranking_types "github.com/PretendoNetwork/nex-protocols-go/v2/ranking/types"
 )
 
-// GetCachedTopXRankings sets the GetCachedTopXRankings handler function
-func (protocol *Protocol) GetCachedTopXRankings(handler func(err error, packet nex.PacketInterface, callID uint32, categories []uint32, orderParams []*ranking_types.RankingOrderParam) uint32) {
-	protocol.getCachedTopXRankingsHandler = handler
-}
-
 func (protocol *Protocol) handleGetCachedTopXRankings(packet nex.PacketInterface) {
-	var errorCode uint32
+	if protocol.GetCachedTopXRankings == nil {
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "Ranking::GetCachedTopXRankings not implemented")
 
-	if protocol.getCachedTopXRankingsHandler == nil {
-		globals.Logger.Warning("Ranking::GetCachedTopXRankings not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
+	callID := request.CallID
+	parameters := request.Parameters
+	endpoint := packet.Sender().Endpoint()
+	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	callID := request.CallID()
-	parameters := request.Parameters()
+	categories := types.NewList[*types.PrimitiveU32]()
+	categories.Type = types.NewPrimitiveU32(0)
+	orderParams := types.NewList[*ranking_types.RankingOrderParam]()
+	orderParams.Type = ranking_types.NewRankingOrderParam()
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+	var err error
 
-	categories, err := parametersStream.ReadListUInt32LE()
+	err = categories.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.getCachedTopXRankingsHandler(fmt.Errorf("Failed to read categories from parameters. %s", err.Error()), packet, callID, nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.GetCachedTopXRankings(fmt.Errorf("Failed to read categories from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	orderParams, err := parametersStream.ReadListStructure(ranking_types.NewRankingOrderParam())
+	err = orderParams.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.getCachedTopXRankingsHandler(fmt.Errorf("Failed to read orderParams from parameters. %s", err.Error()), packet, callID, nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.GetCachedTopXRankings(fmt.Errorf("Failed to read orderParams from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	errorCode = protocol.getCachedTopXRankingsHandler(nil, packet, callID, categories, orderParams.([]*ranking_types.RankingOrderParam))
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.GetCachedTopXRankings(nil, packet, callID, categories, orderParams)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

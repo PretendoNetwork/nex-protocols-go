@@ -4,43 +4,44 @@ package protocol
 import (
 	"fmt"
 
-	nex "github.com/PretendoNetwork/nex-go"
-	"github.com/PretendoNetwork/nex-protocols-go/globals"
+	nex "github.com/PretendoNetwork/nex-go/v2"
+	"github.com/PretendoNetwork/nex-go/v2/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
 )
 
-// DeleteCommonData sets the DeleteCommonData handler function
-func (protocol *Protocol) DeleteCommonData(handler func(err error, packet nex.PacketInterface, callID uint32, nexUniqueID uint64) uint32) {
-	protocol.deleteCommonDataHandler = handler
-}
-
 func (protocol *Protocol) handleDeleteCommonData(packet nex.PacketInterface) {
-	var errorCode uint32
+	if protocol.DeleteCommonData == nil {
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "Ranking2::DeleteCommonData not implemented")
 
-	if protocol.deleteCommonDataHandler == nil {
-		globals.Logger.Warning("Ranking2::DeleteCommonData not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
+	callID := request.CallID
+	parameters := request.Parameters
+	endpoint := packet.Sender().Endpoint()
+	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	callID := request.CallID()
-	parameters := request.Parameters()
+	nexUniqueID := types.NewPrimitiveU64(0)
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
-
-	nexUniqueID, err := parametersStream.ReadUInt64LE()
+	err := nexUniqueID.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.deleteCommonDataHandler(fmt.Errorf("Failed to read nexUniqueID from parameters. %s", err.Error()), packet, callID, 0)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.DeleteCommonData(fmt.Errorf("Failed to read nexUniqueID from parameters. %s", err.Error()), packet, callID, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	errorCode = protocol.deleteCommonDataHandler(nil, packet, callID, nexUniqueID)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.DeleteCommonData(nil, packet, callID, nexUniqueID)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

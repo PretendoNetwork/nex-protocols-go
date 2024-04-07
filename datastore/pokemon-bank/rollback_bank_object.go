@@ -4,64 +4,69 @@ package protocol
 import (
 	"fmt"
 
-	nex "github.com/PretendoNetwork/nex-go"
-	datastore_pokemon_bank_types "github.com/PretendoNetwork/nex-protocols-go/datastore/pokemon-bank/types"
-	"github.com/PretendoNetwork/nex-protocols-go/globals"
+	nex "github.com/PretendoNetwork/nex-go/v2"
+	"github.com/PretendoNetwork/nex-go/v2/types"
+	datastore_pokemon_bank_types "github.com/PretendoNetwork/nex-protocols-go/v2/datastore/pokemon-bank/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
 )
 
-// RollbackBankObject sets the RollbackBankObject handler function
-func (protocol *Protocol) RollbackBankObject(handler func(err error, packet nex.PacketInterface, callID uint32, slotID uint16, transactionParam *datastore_pokemon_bank_types.BankTransactionParam, isForce bool) uint32) {
-	protocol.rollbackBankObjectHandler = handler
-}
-
 func (protocol *Protocol) handleRollbackBankObject(packet nex.PacketInterface) {
-	var errorCode uint32
+	if protocol.RollbackBankObject == nil {
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "DataStorePokemonBank::RollbackBankObject not implemented")
 
-	if protocol.rollbackBankObjectHandler == nil {
-		globals.Logger.Warning("DataStorePokemonBank::RollbackBankObject not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
+	callID := request.CallID
+	parameters := request.Parameters
+	endpoint := packet.Sender().Endpoint()
+	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	callID := request.CallID()
-	parameters := request.Parameters()
+	slotID := types.NewPrimitiveU16(0)
+	transactionParam := datastore_pokemon_bank_types.NewBankTransactionParam()
+	isForce := types.NewPrimitiveBool(false)
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+	var err error
 
-	slotID, err := parametersStream.ReadUInt16LE()
+	err = slotID.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.rollbackBankObjectHandler(fmt.Errorf("Failed to read slotID from parameters. %s", err.Error()), packet, callID, 0, nil, false)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.RollbackBankObject(fmt.Errorf("Failed to read slotID from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	transactionParam, err := parametersStream.ReadStructure(datastore_pokemon_bank_types.NewBankTransactionParam())
+	err = transactionParam.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.rollbackBankObjectHandler(fmt.Errorf("Failed to read transactionParam from parameters. %s", err.Error()), packet, callID, 0, nil, false)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.RollbackBankObject(fmt.Errorf("Failed to read transactionParam from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	isForce, err := parametersStream.ReadBool()
+	err = isForce.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.rollbackBankObjectHandler(fmt.Errorf("Failed to read isForce from parameters. %s", err.Error()), packet, callID, 0, nil, false)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.RollbackBankObject(fmt.Errorf("Failed to read isForce from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	errorCode = protocol.rollbackBankObjectHandler(nil, packet, callID, slotID, transactionParam.(*datastore_pokemon_bank_types.BankTransactionParam), isForce)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.RollbackBankObject(nil, packet, callID, slotID, transactionParam, isForce)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

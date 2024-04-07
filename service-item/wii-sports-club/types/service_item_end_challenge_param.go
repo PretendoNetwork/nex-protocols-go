@@ -1,100 +1,101 @@
-// Package types implements all the types used by the Service Item (Wii Sports Club) protocol
+// Package types implements all the types used by the ServiceItem protocol
 package types
 
 import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/v2/types"
 )
 
-// ServiceItemEndChallengeParam holds data for the Service Item (Wii Sports Club) protocol
+// ServiceItemEndChallengeParam is a type within the ServiceItem protocol
 type ServiceItemEndChallengeParam struct {
-	nex.Structure
-	ChallengeScheduleID uint32
+	types.Structure
+	ChallengeScheduleID *types.PrimitiveU32
 	UserInfo            *ServiceItemUserInfo
 }
 
-// ExtractFromStream extracts a ServiceItemEndChallengeParam structure from a stream
-func (serviceItemEndChallengeParam *ServiceItemEndChallengeParam) ExtractFromStream(stream *nex.StreamIn) error {
+// WriteTo writes the ServiceItemEndChallengeParam to the given writable
+func (siecp *ServiceItemEndChallengeParam) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
+
+	siecp.ChallengeScheduleID.WriteTo(writable)
+	siecp.UserInfo.WriteTo(writable)
+
+	content := contentWritable.Bytes()
+
+	siecp.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
+}
+
+// ExtractFrom extracts the ServiceItemEndChallengeParam from the given readable
+func (siecp *ServiceItemEndChallengeParam) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	serviceItemEndChallengeParam.ChallengeScheduleID, err = stream.ReadUInt32LE()
+	err = siecp.ExtractHeaderFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemEndChallengeParam.ChallengeScheduleID from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract ServiceItemEndChallengeParam header. %s", err.Error())
 	}
 
-	userInfo, err := stream.ReadStructure(NewServiceItemUserInfo())
+	err = siecp.ChallengeScheduleID.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemEndChallengeParam.UserInfo from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract ServiceItemEndChallengeParam.ChallengeScheduleID. %s", err.Error())
 	}
 
-	serviceItemEndChallengeParam.UserInfo = userInfo.(*ServiceItemUserInfo)
+	err = siecp.UserInfo.ExtractFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract ServiceItemEndChallengeParam.UserInfo. %s", err.Error())
+	}
 
 	return nil
 }
 
-// Bytes encodes the ServiceItemEndChallengeParam and returns a byte array
-func (serviceItemEndChallengeParam *ServiceItemEndChallengeParam) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt32LE(serviceItemEndChallengeParam.ChallengeScheduleID)
-	stream.WriteStructure(serviceItemEndChallengeParam.UserInfo)
-
-	return stream.Bytes()
-}
-
 // Copy returns a new copied instance of ServiceItemEndChallengeParam
-func (serviceItemEndChallengeParam *ServiceItemEndChallengeParam) Copy() nex.StructureInterface {
+func (siecp *ServiceItemEndChallengeParam) Copy() types.RVType {
 	copied := NewServiceItemEndChallengeParam()
 
-	copied.SetStructureVersion(serviceItemEndChallengeParam.StructureVersion())
-
-	copied.ChallengeScheduleID = serviceItemEndChallengeParam.ChallengeScheduleID
-	copied.UserInfo = serviceItemEndChallengeParam.UserInfo.Copy().(*ServiceItemUserInfo)
+	copied.StructureVersion = siecp.StructureVersion
+	copied.ChallengeScheduleID = siecp.ChallengeScheduleID.Copy().(*types.PrimitiveU32)
+	copied.UserInfo = siecp.UserInfo.Copy().(*ServiceItemUserInfo)
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (serviceItemEndChallengeParam *ServiceItemEndChallengeParam) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*ServiceItemEndChallengeParam)
-
-	if serviceItemEndChallengeParam.StructureVersion() != other.StructureVersion() {
+// Equals checks if the given ServiceItemEndChallengeParam contains the same data as the current ServiceItemEndChallengeParam
+func (siecp *ServiceItemEndChallengeParam) Equals(o types.RVType) bool {
+	if _, ok := o.(*ServiceItemEndChallengeParam); !ok {
 		return false
 	}
 
-	if serviceItemEndChallengeParam.ChallengeScheduleID != other.ChallengeScheduleID {
+	other := o.(*ServiceItemEndChallengeParam)
+
+	if siecp.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if !serviceItemEndChallengeParam.UserInfo.Equals(other.UserInfo) {
+	if !siecp.ChallengeScheduleID.Equals(other.ChallengeScheduleID) {
 		return false
 	}
 
-	return true
+	return siecp.UserInfo.Equals(other.UserInfo)
 }
 
-// String returns a string representation of the struct
-func (serviceItemEndChallengeParam *ServiceItemEndChallengeParam) String() string {
-	return serviceItemEndChallengeParam.FormatToString(0)
+// String returns the string representation of the ServiceItemEndChallengeParam
+func (siecp *ServiceItemEndChallengeParam) String() string {
+	return siecp.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (serviceItemEndChallengeParam *ServiceItemEndChallengeParam) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the ServiceItemEndChallengeParam using the provided indentation level
+func (siecp *ServiceItemEndChallengeParam) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("ServiceItemEndChallengeParam{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, serviceItemEndChallengeParam.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sChallengeScheduleID: %d,\n", indentationValues, serviceItemEndChallengeParam.ChallengeScheduleID))
-
-	if serviceItemEndChallengeParam.UserInfo != nil {
-		b.WriteString(fmt.Sprintf("%sUserInfo: %s\n", indentationValues, serviceItemEndChallengeParam.UserInfo.FormatToString(indentationLevel+1)))
-	} else {
-		b.WriteString(fmt.Sprintf("%sUserInfo: nil\n", indentationValues))
-	}
-
+	b.WriteString(fmt.Sprintf("%sChallengeScheduleID: %s,\n", indentationValues, siecp.ChallengeScheduleID))
+	b.WriteString(fmt.Sprintf("%sUserInfo: %s,\n", indentationValues, siecp.UserInfo.FormatToString(indentationLevel+1)))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -102,5 +103,10 @@ func (serviceItemEndChallengeParam *ServiceItemEndChallengeParam) FormatToString
 
 // NewServiceItemEndChallengeParam returns a new ServiceItemEndChallengeParam
 func NewServiceItemEndChallengeParam() *ServiceItemEndChallengeParam {
-	return &ServiceItemEndChallengeParam{}
+	siecp := &ServiceItemEndChallengeParam{
+		ChallengeScheduleID: types.NewPrimitiveU32(0),
+		UserInfo:            NewServiceItemUserInfo(),
+	}
+
+	return siecp
 }

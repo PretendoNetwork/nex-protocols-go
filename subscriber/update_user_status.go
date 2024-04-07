@@ -4,54 +4,60 @@ package protocol
 import (
 	"fmt"
 
-	nex "github.com/PretendoNetwork/nex-go"
-	"github.com/PretendoNetwork/nex-protocols-go/globals"
-	subscriber_types "github.com/PretendoNetwork/nex-protocols-go/subscriber/types"
+	nex "github.com/PretendoNetwork/nex-go/v2"
+	"github.com/PretendoNetwork/nex-go/v2/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
+	subscriber_types "github.com/PretendoNetwork/nex-protocols-go/v2/subscriber/types"
 )
 
-// UpdateUserStatus sets the UpdateUserStatus handler function
-func (protocol *Protocol) UpdateUserStatus(handler func(err error, packet nex.PacketInterface, callID uint32, unknown1 []*subscriber_types.Unknown, unknown2 []uint8) uint32) {
-	protocol.updateUserStatusHandler = handler
-}
-
 func (protocol *Protocol) handleUpdateUserStatus(packet nex.PacketInterface) {
-	var errorCode uint32
+	if protocol.UpdateUserStatus == nil {
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "Subscriber::UpdateUserStatus not implemented")
 
-	if protocol.updateUserStatusHandler == nil {
-		globals.Logger.Warning("Subscriber::UpdateUserStatus not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
+	callID := request.CallID
+	parameters := request.Parameters
+	endpoint := packet.Sender().Endpoint()
+	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	callID := request.CallID()
-	parameters := request.Parameters()
+	unknown1 := types.NewList[*subscriber_types.Unknown]()
+	unknown1.Type = subscriber_types.NewUnknown()
+	unknown2 := types.NewList[*types.PrimitiveU8]()
+	unknown2.Type = types.NewPrimitiveU8(0)
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+	var err error
 
-	unknown1, err := parametersStream.ReadListStructure(subscriber_types.NewUnknown())
+	err = unknown1.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.updateUserStatusHandler(fmt.Errorf("Failed to read unknown1 from parameters. %s", err.Error()), packet, callID, nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.UpdateUserStatus(fmt.Errorf("Failed to read unknown1 from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	unknown2, err := parametersStream.ReadListUInt8()
+	err = unknown2.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.updateUserStatusHandler(fmt.Errorf("Failed to read unknown2 from parameters. %s", err.Error()), packet, callID, nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.UpdateUserStatus(fmt.Errorf("Failed to read unknown2 from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	errorCode = protocol.updateUserStatusHandler(nil, packet, callID, unknown1.([]*subscriber_types.Unknown), unknown2)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.UpdateUserStatus(nil, packet, callID, unknown1, unknown2)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

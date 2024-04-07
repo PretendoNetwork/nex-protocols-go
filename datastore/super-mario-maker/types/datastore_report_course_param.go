@@ -1,118 +1,127 @@
-// Package types implements all the types used by the DataStore (Super Mario Maker) protocol
+// Package types implements all the types used by the DataStore protocol
 package types
 
 import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/v2/types"
 )
 
-// DataStoreReportCourseParam holds data for the DataStore (Super Mario Maker) protocol
+// DataStoreReportCourseParam is a type within the DataStore protocol
 type DataStoreReportCourseParam struct {
-	nex.Structure
-	DataID         uint64
-	MiiName        string
-	ReportCategory uint8
-	ReportReason   string
+	types.Structure
+	DataID         *types.PrimitiveU64
+	MiiName        *types.String
+	ReportCategory *types.PrimitiveU8
+	ReportReason   *types.String
 }
 
-// ExtractFromStream extracts a DataStoreReportCourseParam structure from a stream
-func (dataStoreReportCourseParam *DataStoreReportCourseParam) ExtractFromStream(stream *nex.StreamIn) error {
+// WriteTo writes the DataStoreReportCourseParam to the given writable
+func (dsrcp *DataStoreReportCourseParam) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
+
+	dsrcp.DataID.WriteTo(writable)
+	dsrcp.MiiName.WriteTo(writable)
+	dsrcp.ReportCategory.WriteTo(writable)
+	dsrcp.ReportReason.WriteTo(writable)
+
+	content := contentWritable.Bytes()
+
+	dsrcp.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
+}
+
+// ExtractFrom extracts the DataStoreReportCourseParam from the given readable
+func (dsrcp *DataStoreReportCourseParam) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	dataStoreReportCourseParam.DataID, err = stream.ReadUInt64LE()
+	err = dsrcp.ExtractHeaderFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract DataStoreReportCourseParam.DataID from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract DataStoreReportCourseParam header. %s", err.Error())
 	}
 
-	dataStoreReportCourseParam.MiiName, err = stream.ReadString()
+	err = dsrcp.DataID.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract DataStoreReportCourseParam.MiiName from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract DataStoreReportCourseParam.DataID. %s", err.Error())
 	}
 
-	dataStoreReportCourseParam.ReportCategory, err = stream.ReadUInt8()
+	err = dsrcp.MiiName.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract DataStoreReportCourseParam.ReportCategory from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract DataStoreReportCourseParam.MiiName. %s", err.Error())
 	}
 
-	dataStoreReportCourseParam.ReportReason, err = stream.ReadString()
+	err = dsrcp.ReportCategory.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract DataStoreReportCourseParam.ReportReason from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract DataStoreReportCourseParam.ReportCategory. %s", err.Error())
+	}
+
+	err = dsrcp.ReportReason.ExtractFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreReportCourseParam.ReportReason. %s", err.Error())
 	}
 
 	return nil
 }
 
-// Bytes encodes the DataStoreReportCourseParam and returns a byte array
-func (dataStoreReportCourseParam *DataStoreReportCourseParam) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt64LE(dataStoreReportCourseParam.DataID)
-	stream.WriteString(dataStoreReportCourseParam.MiiName)
-	stream.WriteUInt8(dataStoreReportCourseParam.ReportCategory)
-	stream.WriteString(dataStoreReportCourseParam.ReportReason)
-
-	return stream.Bytes()
-}
-
 // Copy returns a new copied instance of DataStoreReportCourseParam
-func (dataStoreReportCourseParam *DataStoreReportCourseParam) Copy() nex.StructureInterface {
+func (dsrcp *DataStoreReportCourseParam) Copy() types.RVType {
 	copied := NewDataStoreReportCourseParam()
 
-	copied.SetStructureVersion(dataStoreReportCourseParam.StructureVersion())
-
-	copied.DataID = dataStoreReportCourseParam.DataID
-	copied.MiiName = dataStoreReportCourseParam.MiiName
-	copied.ReportCategory = dataStoreReportCourseParam.ReportCategory
-	copied.ReportReason = dataStoreReportCourseParam.ReportReason
+	copied.StructureVersion = dsrcp.StructureVersion
+	copied.DataID = dsrcp.DataID.Copy().(*types.PrimitiveU64)
+	copied.MiiName = dsrcp.MiiName.Copy().(*types.String)
+	copied.ReportCategory = dsrcp.ReportCategory.Copy().(*types.PrimitiveU8)
+	copied.ReportReason = dsrcp.ReportReason.Copy().(*types.String)
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (dataStoreReportCourseParam *DataStoreReportCourseParam) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*DataStoreReportCourseParam)
-
-	if dataStoreReportCourseParam.StructureVersion() != other.StructureVersion() {
+// Equals checks if the given DataStoreReportCourseParam contains the same data as the current DataStoreReportCourseParam
+func (dsrcp *DataStoreReportCourseParam) Equals(o types.RVType) bool {
+	if _, ok := o.(*DataStoreReportCourseParam); !ok {
 		return false
 	}
 
-	if dataStoreReportCourseParam.DataID != other.DataID {
+	other := o.(*DataStoreReportCourseParam)
+
+	if dsrcp.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if dataStoreReportCourseParam.MiiName != other.MiiName {
+	if !dsrcp.DataID.Equals(other.DataID) {
 		return false
 	}
 
-	if dataStoreReportCourseParam.ReportCategory != other.ReportCategory {
+	if !dsrcp.MiiName.Equals(other.MiiName) {
 		return false
 	}
 
-	if dataStoreReportCourseParam.ReportReason != other.ReportReason {
+	if !dsrcp.ReportCategory.Equals(other.ReportCategory) {
 		return false
 	}
 
-	return true
+	return dsrcp.ReportReason.Equals(other.ReportReason)
 }
 
-// String returns a string representation of the struct
-func (dataStoreReportCourseParam *DataStoreReportCourseParam) String() string {
-	return dataStoreReportCourseParam.FormatToString(0)
+// String returns the string representation of the DataStoreReportCourseParam
+func (dsrcp *DataStoreReportCourseParam) String() string {
+	return dsrcp.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (dataStoreReportCourseParam *DataStoreReportCourseParam) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the DataStoreReportCourseParam using the provided indentation level
+func (dsrcp *DataStoreReportCourseParam) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("DataStoreReportCourseParam{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, dataStoreReportCourseParam.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sDataID: %d,\n", indentationValues, dataStoreReportCourseParam.DataID))
-	b.WriteString(fmt.Sprintf("%sMiiName: %q,\n", indentationValues, dataStoreReportCourseParam.MiiName))
-	b.WriteString(fmt.Sprintf("%sReportCategory: %d,\n", indentationValues, dataStoreReportCourseParam.ReportCategory))
-	b.WriteString(fmt.Sprintf("%sReportReason: %q,\n", indentationValues, dataStoreReportCourseParam.ReportReason))
+	b.WriteString(fmt.Sprintf("%sDataID: %s,\n", indentationValues, dsrcp.DataID))
+	b.WriteString(fmt.Sprintf("%sMiiName: %s,\n", indentationValues, dsrcp.MiiName))
+	b.WriteString(fmt.Sprintf("%sReportCategory: %s,\n", indentationValues, dsrcp.ReportCategory))
+	b.WriteString(fmt.Sprintf("%sReportReason: %s,\n", indentationValues, dsrcp.ReportReason))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -120,10 +129,12 @@ func (dataStoreReportCourseParam *DataStoreReportCourseParam) FormatToString(ind
 
 // NewDataStoreReportCourseParam returns a new DataStoreReportCourseParam
 func NewDataStoreReportCourseParam() *DataStoreReportCourseParam {
-	return &DataStoreReportCourseParam{
-		DataID:         0,
-		MiiName:        "",
-		ReportCategory: 0,
-		ReportReason:   "",
+	dsrcp := &DataStoreReportCourseParam{
+		DataID:         types.NewPrimitiveU64(0),
+		MiiName:        types.NewString(""),
+		ReportCategory: types.NewPrimitiveU8(0),
+		ReportReason:   types.NewString(""),
 	}
+
+	return dsrcp
 }

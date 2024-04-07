@@ -4,43 +4,44 @@ package protocol
 import (
 	"fmt"
 
-	nex "github.com/PretendoNetwork/nex-go"
-	"github.com/PretendoNetwork/nex-protocols-go/globals"
+	nex "github.com/PretendoNetwork/nex-go/v2"
+	"github.com/PretendoNetwork/nex-go/v2/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
 )
 
-// RemoveFriendByLocalFriendCode sets the RemoveFriendByLocalFriendCode handler function
-func (protocol *Protocol) RemoveFriendByLocalFriendCode(handler func(err error, packet nex.PacketInterface, callID uint32, lfc uint64) uint32) {
-	protocol.removeFriendByLocalFriendCodeHandler = handler
-}
-
 func (protocol *Protocol) handleRemoveFriendByLocalFriendCode(packet nex.PacketInterface) {
-	var errorCode uint32
+	if protocol.RemoveFriendByLocalFriendCode == nil {
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "Friends3DS::RemoveFriendByLocalFriendCode not implemented")
 
-	if protocol.removeFriendByLocalFriendCodeHandler == nil {
-		globals.Logger.Warning("Friends3DS::RemoveFriendByLocalFriendCode not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
+	callID := request.CallID
+	parameters := request.Parameters
+	endpoint := packet.Sender().Endpoint()
+	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	callID := request.CallID()
-	parameters := request.Parameters()
+	lfc := types.NewPrimitiveU64(0)
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
-
-	lfc, err := parametersStream.ReadUInt64LE()
+	err := lfc.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.removeFriendByLocalFriendCodeHandler(fmt.Errorf("Failed to read lfc from parameters. %s", err.Error()), packet, callID, 0)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.RemoveFriendByLocalFriendCode(fmt.Errorf("Failed to read lfc from parameters. %s", err.Error()), packet, callID, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	errorCode = protocol.removeFriendByLocalFriendCodeHandler(nil, packet, callID, lfc)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.RemoveFriendByLocalFriendCode(nil, packet, callID, lfc)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

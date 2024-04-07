@@ -1,33 +1,49 @@
-// Package types implements all the types used by the Matchmaking protocols.
-//
-// Since there are multiple match making related protocols, and they all share types
-// all types used by all match making protocols is defined here
+// Package types implements all the types used by the Matchmaking protocol
 package types
 
 import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/v2/types"
 )
 
-// SimpleCommunity holds basic info about a community
+// SimpleCommunity is a type within the Matchmaking protocol
 type SimpleCommunity struct {
-	nex.Structure
-	GatheringID           uint32
-	MatchmakeSessionCount uint32
+	types.Structure
+	GatheringID           *types.PrimitiveU32
+	MatchmakeSessionCount *types.PrimitiveU32
 }
 
-// ExtractFromStream extracts a SimpleCommunity structure from a stream
-func (simpleCommunity *SimpleCommunity) ExtractFromStream(stream *nex.StreamIn) error {
+// WriteTo writes the SimpleCommunity to the given writable
+func (sc *SimpleCommunity) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
+
+	sc.GatheringID.WriteTo(writable)
+	sc.MatchmakeSessionCount.WriteTo(writable)
+
+	content := contentWritable.Bytes()
+
+	sc.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
+}
+
+// ExtractFrom extracts the SimpleCommunity from the given readable
+func (sc *SimpleCommunity) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	simpleCommunity.GatheringID, err = stream.ReadUInt32LE()
+	err = sc.ExtractHeaderFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract SimpleCommunity header. %s", err.Error())
+	}
+
+	err = sc.GatheringID.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract SimpleCommunity.GatheringID. %s", err.Error())
 	}
 
-	simpleCommunity.MatchmakeSessionCount, err = stream.ReadUInt32LE()
+	err = sc.MatchmakeSessionCount.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract SimpleCommunity.MatchmakeSessionCount. %s", err.Error())
 	}
@@ -36,52 +52,50 @@ func (simpleCommunity *SimpleCommunity) ExtractFromStream(stream *nex.StreamIn) 
 }
 
 // Copy returns a new copied instance of SimpleCommunity
-func (simpleCommunity *SimpleCommunity) Copy() nex.StructureInterface {
+func (sc *SimpleCommunity) Copy() types.RVType {
 	copied := NewSimpleCommunity()
 
-	copied.SetStructureVersion(simpleCommunity.StructureVersion())
-
-	copied.GatheringID = simpleCommunity.GatheringID
-	copied.MatchmakeSessionCount = simpleCommunity.MatchmakeSessionCount
+	copied.StructureVersion = sc.StructureVersion
+	copied.GatheringID = sc.GatheringID.Copy().(*types.PrimitiveU32)
+	copied.MatchmakeSessionCount = sc.MatchmakeSessionCount.Copy().(*types.PrimitiveU32)
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (simpleCommunity *SimpleCommunity) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*SimpleCommunity)
-
-	if simpleCommunity.StructureVersion() != other.StructureVersion() {
+// Equals checks if the given SimpleCommunity contains the same data as the current SimpleCommunity
+func (sc *SimpleCommunity) Equals(o types.RVType) bool {
+	if _, ok := o.(*SimpleCommunity); !ok {
 		return false
 	}
 
-	if simpleCommunity.GatheringID != other.GatheringID {
+	other := o.(*SimpleCommunity)
+
+	if sc.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if simpleCommunity.MatchmakeSessionCount != other.MatchmakeSessionCount {
+	if !sc.GatheringID.Equals(other.GatheringID) {
 		return false
 	}
 
-	return true
+	return sc.MatchmakeSessionCount.Equals(other.MatchmakeSessionCount)
 }
 
-// String returns a string representation of the struct
-func (simpleCommunity *SimpleCommunity) String() string {
-	return simpleCommunity.FormatToString(0)
+// String returns the string representation of the SimpleCommunity
+func (sc *SimpleCommunity) String() string {
+	return sc.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (simpleCommunity *SimpleCommunity) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the SimpleCommunity using the provided indentation level
+func (sc *SimpleCommunity) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
-	b.WriteString("MatchmakeSession{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, simpleCommunity.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sGatheringID: %d,\n", indentationValues, simpleCommunity.GatheringID))
-	b.WriteString(fmt.Sprintf("%sMatchmakeSessionCount: %d\n", indentationValues, simpleCommunity.MatchmakeSessionCount))
+	b.WriteString("SimpleCommunity{\n")
+	b.WriteString(fmt.Sprintf("%sGatheringID: %s,\n", indentationValues, sc.GatheringID))
+	b.WriteString(fmt.Sprintf("%sMatchmakeSessionCount: %s,\n", indentationValues, sc.MatchmakeSessionCount))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -89,5 +103,10 @@ func (simpleCommunity *SimpleCommunity) FormatToString(indentationLevel int) str
 
 // NewSimpleCommunity returns a new SimpleCommunity
 func NewSimpleCommunity() *SimpleCommunity {
-	return &SimpleCommunity{}
+	sc := &SimpleCommunity{
+		GatheringID:           types.NewPrimitiveU32(0),
+		MatchmakeSessionCount: types.NewPrimitiveU32(0),
+	}
+
+	return sc
 }

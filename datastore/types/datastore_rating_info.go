@@ -5,32 +5,52 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/v2/types"
 )
 
-// DataStoreRatingInfo is a data structure used by the DataStore protocol
+// DataStoreRatingInfo is a type within the DataStore protocol
 type DataStoreRatingInfo struct {
-	nex.Structure
-	TotalValue   int64
-	Count        uint32
-	InitialValue int64
+	types.Structure
+	TotalValue   *types.PrimitiveS64
+	Count        *types.PrimitiveU32
+	InitialValue *types.PrimitiveS64
 }
 
-// ExtractFromStream extracts a DataStoreRatingInfo structure from a stream
-func (dataStoreRatingInfo *DataStoreRatingInfo) ExtractFromStream(stream *nex.StreamIn) error {
+// WriteTo writes the DataStoreRatingInfo to the given writable
+func (dsri *DataStoreRatingInfo) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
+
+	dsri.TotalValue.WriteTo(writable)
+	dsri.Count.WriteTo(writable)
+	dsri.InitialValue.WriteTo(writable)
+
+	content := contentWritable.Bytes()
+
+	dsri.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
+}
+
+// ExtractFrom extracts the DataStoreRatingInfo from the given readable
+func (dsri *DataStoreRatingInfo) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	dataStoreRatingInfo.TotalValue, err = stream.ReadInt64LE()
+	err = dsri.ExtractHeaderFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreRatingInfo header. %s", err.Error())
+	}
+
+	err = dsri.TotalValue.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreRatingInfo.TotalValue. %s", err.Error())
 	}
 
-	dataStoreRatingInfo.Count, err = stream.ReadUInt32LE()
+	err = dsri.Count.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreRatingInfo.Count. %s", err.Error())
 	}
 
-	dataStoreRatingInfo.InitialValue, err = stream.ReadInt64LE()
+	err = dsri.InitialValue.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreRatingInfo.InitialValue. %s", err.Error())
 	}
@@ -38,68 +58,57 @@ func (dataStoreRatingInfo *DataStoreRatingInfo) ExtractFromStream(stream *nex.St
 	return nil
 }
 
-// Bytes encodes the DataStoreRatingInfo and returns a byte array
-func (dataStoreRatingInfo *DataStoreRatingInfo) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt64LE(uint64(dataStoreRatingInfo.TotalValue))
-	stream.WriteUInt32LE(dataStoreRatingInfo.Count)
-	stream.WriteUInt64LE(uint64(dataStoreRatingInfo.InitialValue))
-
-	return stream.Bytes()
-}
-
 // Copy returns a new copied instance of DataStoreRatingInfo
-func (dataStoreRatingInfo *DataStoreRatingInfo) Copy() nex.StructureInterface {
+func (dsri *DataStoreRatingInfo) Copy() types.RVType {
 	copied := NewDataStoreRatingInfo()
 
-	copied.SetStructureVersion(dataStoreRatingInfo.StructureVersion())
-
-	copied.TotalValue = dataStoreRatingInfo.TotalValue
-	copied.Count = dataStoreRatingInfo.Count
-	copied.InitialValue = dataStoreRatingInfo.InitialValue
+	copied.StructureVersion = dsri.StructureVersion
+	copied.TotalValue = dsri.TotalValue.Copy().(*types.PrimitiveS64)
+	copied.Count = dsri.Count.Copy().(*types.PrimitiveU32)
+	copied.InitialValue = dsri.InitialValue.Copy().(*types.PrimitiveS64)
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (dataStoreRatingInfo *DataStoreRatingInfo) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*DataStoreRatingInfo)
-
-	if dataStoreRatingInfo.StructureVersion() != other.StructureVersion() {
+// Equals checks if the given DataStoreRatingInfo contains the same data as the current DataStoreRatingInfo
+func (dsri *DataStoreRatingInfo) Equals(o types.RVType) bool {
+	if _, ok := o.(*DataStoreRatingInfo); !ok {
 		return false
 	}
 
-	if dataStoreRatingInfo.TotalValue != other.TotalValue {
+	other := o.(*DataStoreRatingInfo)
+
+	if dsri.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if dataStoreRatingInfo.Count != other.Count {
+	if !dsri.TotalValue.Equals(other.TotalValue) {
 		return false
 	}
 
-	if dataStoreRatingInfo.InitialValue != other.InitialValue {
+	if !dsri.Count.Equals(other.Count) {
 		return false
 	}
 
-	return true
+	return dsri.InitialValue.Equals(other.InitialValue)
 }
 
-// String returns a string representation of the struct
-func (dataStoreRatingInfo *DataStoreRatingInfo) String() string {
-	return dataStoreRatingInfo.FormatToString(0)
+// String returns the string representation of the DataStoreRatingInfo
+func (dsri *DataStoreRatingInfo) String() string {
+	return dsri.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (dataStoreRatingInfo *DataStoreRatingInfo) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the DataStoreRatingInfo using the provided indentation level
+func (dsri *DataStoreRatingInfo) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("DataStoreRatingInfo{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, dataStoreRatingInfo.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sTotalValue: %d,\n", indentationValues, dataStoreRatingInfo.TotalValue))
-	b.WriteString(fmt.Sprintf("%sCount: %d,\n", indentationValues, dataStoreRatingInfo.Count))
-	b.WriteString(fmt.Sprintf("%sInitialValue: %d\n", indentationValues, dataStoreRatingInfo.InitialValue))
+	b.WriteString(fmt.Sprintf("%sTotalValue: %s,\n", indentationValues, dsri.TotalValue))
+	b.WriteString(fmt.Sprintf("%sCount: %s,\n", indentationValues, dsri.Count))
+	b.WriteString(fmt.Sprintf("%sInitialValue: %s,\n", indentationValues, dsri.InitialValue))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -107,9 +116,11 @@ func (dataStoreRatingInfo *DataStoreRatingInfo) FormatToString(indentationLevel 
 
 // NewDataStoreRatingInfo returns a new DataStoreRatingInfo
 func NewDataStoreRatingInfo() *DataStoreRatingInfo {
-	return &DataStoreRatingInfo{
-		TotalValue:   0,
-		Count:        0,
-		InitialValue: 0,
+	dsri := &DataStoreRatingInfo{
+		TotalValue:   types.NewPrimitiveS64(0),
+		Count:        types.NewPrimitiveU32(0),
+		InitialValue: types.NewPrimitiveS64(0),
 	}
+
+	return dsri
 }

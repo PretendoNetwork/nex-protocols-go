@@ -4,11 +4,12 @@ package protocol
 import (
 	"fmt"
 
-	nex "github.com/PretendoNetwork/nex-go"
-	datastore "github.com/PretendoNetwork/nex-protocols-go/datastore"
-	datastore_pokemon_bank_types "github.com/PretendoNetwork/nex-protocols-go/datastore/pokemon-bank/types"
-	datastore_types "github.com/PretendoNetwork/nex-protocols-go/datastore/types"
-	"github.com/PretendoNetwork/nex-protocols-go/globals"
+	nex "github.com/PretendoNetwork/nex-go/v2"
+	"github.com/PretendoNetwork/nex-go/v2/types"
+	datastore "github.com/PretendoNetwork/nex-protocols-go/v2/datastore"
+	datastore_pokemon_bank_types "github.com/PretendoNetwork/nex-protocols-go/v2/datastore/pokemon-bank/types"
+	datastore_types "github.com/PretendoNetwork/nex-protocols-go/v2/datastore/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
 	"golang.org/x/exp/slices"
 )
 
@@ -89,90 +90,85 @@ type dataStoreProtocol = datastore.Protocol
 // Protocol stores all the RMC method handlers for the DataStore (Pokemon Bank) protocol and listens for requests
 // Embeds the DataStore protocol
 type Protocol struct {
-	Server *nex.Server
+	endpoint nex.EndpointInterface
 	dataStoreProtocol
-	uploadPokemonHandler            func(err error, packet nex.PacketInterface, callID uint32, param *datastore_pokemon_bank_types.GlobalTradeStationUploadPokemonParam) uint32
-	searchPokemonHandler            func(err error, packet nex.PacketInterface, callID uint32, param *datastore_pokemon_bank_types.GlobalTradeStationSearchPokemonParam) uint32
-	prepareTradePokemonHandler      func(err error, packet nex.PacketInterface, callID uint32, param *datastore_pokemon_bank_types.GlobalTradeStationPrepareTradePokemonParam) uint32
-	tradePokemonHandler             func(err error, packet nex.PacketInterface, callID uint32, param *datastore_pokemon_bank_types.GlobalTradeStationTradePokemonParam) uint32
-	downloadOtherPokemonHandler     func(err error, packet nex.PacketInterface, callID uint32, param *datastore_pokemon_bank_types.GlobalTradeStationDownloadOtherPokemonParam) uint32
-	downloadMyPokemonHandler        func(err error, packet nex.PacketInterface, callID uint32, param *datastore_pokemon_bank_types.GlobalTradeStationDownloadMyPokemonParam) uint32
-	deletePokemonHandler            func(err error, packet nex.PacketInterface, callID uint32, param *datastore_pokemon_bank_types.GlobalTradeStationDeletePokemonParam) uint32
-	getTransactionParamHandler      func(err error, packet nex.PacketInterface, callID uint32, slotID uint16) uint32
-	preparePostBankObjectHandler    func(err error, packet nex.PacketInterface, callID uint32, slotID uint16, size uint32) uint32
-	completePostBankObjectHandler   func(err error, packet nex.PacketInterface, callID uint32, param *datastore_types.DataStoreCompletePostParam) uint32
-	prepareGetBankObjectHandler     func(err error, packet nex.PacketInterface, callID uint32, slotID uint16, applicationID uint16) uint32
-	prepareUpdateBankObjectHandler  func(err error, packet nex.PacketInterface, callID uint32, transactionParam *datastore_pokemon_bank_types.BankTransactionParam) uint32
-	completeUpdateBankObjectHandler func(err error, packet nex.PacketInterface, callID uint32, slotID uint16, transactionParam *datastore_pokemon_bank_types.BankTransactionParam, isForce bool) uint32
-	rollbackBankObjectHandler       func(err error, packet nex.PacketInterface, callID uint32, slotID uint16, transactionParam *datastore_pokemon_bank_types.BankTransactionParam, isForce bool) uint32
-	getUnlockKeyHandler             func(err error, packet nex.PacketInterface, callID uint32, challengeValue uint32) uint32
-	requestMigrationHandler         func(err error, packet nex.PacketInterface, callID uint32, oneTimePassword string, boxes []uint32) uint32
-}
-
-// Setup initializes the protocol
-func (protocol *Protocol) Setup() {
-	protocol.Server.On("Data", func(packet nex.PacketInterface) {
-		request := packet.RMCRequest()
-
-		if request.ProtocolID() == ProtocolID {
-			if slices.Contains(patchedMethods, request.MethodID()) {
-				protocol.HandlePacket(packet)
-			} else {
-				protocol.dataStoreProtocol.HandlePacket(packet)
-			}
-		}
-	})
+	UploadPokemon            func(err error, packet nex.PacketInterface, callID uint32, param *datastore_pokemon_bank_types.GlobalTradeStationUploadPokemonParam) (*nex.RMCMessage, *nex.Error)
+	SearchPokemon            func(err error, packet nex.PacketInterface, callID uint32, param *datastore_pokemon_bank_types.GlobalTradeStationSearchPokemonParam) (*nex.RMCMessage, *nex.Error)
+	PrepareTradePokemon      func(err error, packet nex.PacketInterface, callID uint32, param *datastore_pokemon_bank_types.GlobalTradeStationPrepareTradePokemonParam) (*nex.RMCMessage, *nex.Error)
+	TradePokemon             func(err error, packet nex.PacketInterface, callID uint32, param *datastore_pokemon_bank_types.GlobalTradeStationTradePokemonParam) (*nex.RMCMessage, *nex.Error)
+	DownloadOtherPokemon     func(err error, packet nex.PacketInterface, callID uint32, param *datastore_pokemon_bank_types.GlobalTradeStationDownloadOtherPokemonParam) (*nex.RMCMessage, *nex.Error)
+	DownloadMyPokemon        func(err error, packet nex.PacketInterface, callID uint32, param *datastore_pokemon_bank_types.GlobalTradeStationDownloadMyPokemonParam) (*nex.RMCMessage, *nex.Error)
+	DeletePokemon            func(err error, packet nex.PacketInterface, callID uint32, param *datastore_pokemon_bank_types.GlobalTradeStationDeletePokemonParam) (*nex.RMCMessage, *nex.Error)
+	GetTransactionParam      func(err error, packet nex.PacketInterface, callID uint32, slotID *types.PrimitiveU16) (*nex.RMCMessage, *nex.Error)
+	PreparePostBankObject    func(err error, packet nex.PacketInterface, callID uint32, slotID *types.PrimitiveU16, size *types.PrimitiveU32) (*nex.RMCMessage, *nex.Error)
+	CompletePostBankObject   func(err error, packet nex.PacketInterface, callID uint32, param *datastore_types.DataStoreCompletePostParam) (*nex.RMCMessage, *nex.Error)
+	PrepareGetBankObject     func(err error, packet nex.PacketInterface, callID uint32, slotID *types.PrimitiveU16, applicationID *types.PrimitiveU16) (*nex.RMCMessage, *nex.Error)
+	PrepareUpdateBankObject  func(err error, packet nex.PacketInterface, callID uint32, transactionParam *datastore_pokemon_bank_types.BankTransactionParam) (*nex.RMCMessage, *nex.Error)
+	CompleteUpdateBankObject func(err error, packet nex.PacketInterface, callID uint32, slotID *types.PrimitiveU16, transactionParam *datastore_pokemon_bank_types.BankTransactionParam, isForce *types.PrimitiveBool) (*nex.RMCMessage, *nex.Error)
+	RollbackBankObject       func(err error, packet nex.PacketInterface, callID uint32, slotID *types.PrimitiveU16, transactionParam *datastore_pokemon_bank_types.BankTransactionParam, isForce *types.PrimitiveBool) (*nex.RMCMessage, *nex.Error)
+	GetUnlockKey             func(err error, packet nex.PacketInterface, callID uint32, challengeValue *types.PrimitiveU32) (*nex.RMCMessage, *nex.Error)
+	RequestMigration         func(err error, packet nex.PacketInterface, callID uint32, oneTimePassword *types.String, boxes *types.List[*types.PrimitiveU32]) (*nex.RMCMessage, *nex.Error)
 }
 
 // HandlePacket sends the packet to the correct RMC method handler
 func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
-	request := packet.RMCRequest()
+	message := packet.RMCMessage()
 
-	switch request.MethodID() {
+	if !message.IsRequest || message.ProtocolID != ProtocolID {
+		return
+	}
+
+	if !slices.Contains(patchedMethods, message.MethodID) {
+		protocol.dataStoreProtocol.HandlePacket(packet)
+		return
+	}
+
+	switch message.MethodID {
 	case MethodUploadPokemon:
-		go protocol.handleUploadPokemon(packet)
+		protocol.handleUploadPokemon(packet)
 	case MethodSearchPokemon:
-		go protocol.handleSearchPokemon(packet)
+		protocol.handleSearchPokemon(packet)
 	case MethodPrepareTradePokemon:
-		go protocol.handlePrepareTradePokemon(packet)
+		protocol.handlePrepareTradePokemon(packet)
 	case MethodTradePokemon:
-		go protocol.handleTradePokemon(packet)
+		protocol.handleTradePokemon(packet)
 	case MethodDownloadOtherPokemon:
-		go protocol.handleDownloadOtherPokemon(packet)
+		protocol.handleDownloadOtherPokemon(packet)
 	case MethodDownloadMyPokemon:
-		go protocol.handleDownloadMyPokemon(packet)
+		protocol.handleDownloadMyPokemon(packet)
 	case MethodDeletePokemon:
-		go protocol.handleDeletePokemon(packet)
+		protocol.handleDeletePokemon(packet)
 	case MethodGetTransactionParam:
-		go protocol.handleGetTransactionParam(packet)
+		protocol.handleGetTransactionParam(packet)
 	case MethodPreparePostBankObject:
-		go protocol.handlePreparePostBankObject(packet)
+		protocol.handlePreparePostBankObject(packet)
 	case MethodCompletePostBankObject:
-		go protocol.handleCompletePostBankObject(packet)
+		protocol.handleCompletePostBankObject(packet)
 	case MethodPrepareGetBankObject:
-		go protocol.handlePrepareGetBankObject(packet)
+		protocol.handlePrepareGetBankObject(packet)
 	case MethodPrepareUpdateBankObject:
-		go protocol.handlePrepareUpdateBankObject(packet)
+		protocol.handlePrepareUpdateBankObject(packet)
 	case MethodCompleteUpdateBankObject:
-		go protocol.handleCompleteUpdateBankObject(packet)
+		protocol.handleCompleteUpdateBankObject(packet)
 	case MethodRollbackBankObject:
-		go protocol.handleRollbackBankObject(packet)
+		protocol.handleRollbackBankObject(packet)
 	case MethodGetUnlockKey:
-		go protocol.handleGetUnlockKey(packet)
+		protocol.handleGetUnlockKey(packet)
 	case MethodRequestMigration:
-		go protocol.handleRequestMigration(packet)
+		protocol.handleRequestMigration(packet)
 	default:
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
-		fmt.Printf("Unsupported DataStore (Pokemon Bank) method ID: %#v\n", request.MethodID())
+		errMessage := fmt.Sprintf("Unsupported DataStore (Pokemon Bank) method ID: %#v\n", message.MethodID)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, errMessage)
+
+		globals.RespondError(packet, ProtocolID, err)
+		globals.Logger.Warning(err.Message)
 	}
 }
 
 // NewProtocol returns a new DataStorePokemonBank protocol
-func NewProtocol(server *nex.Server) *Protocol {
-	protocol := &Protocol{Server: server}
-	protocol.dataStoreProtocol.Server = server
-
-	protocol.Setup()
+func NewProtocol(endpoint nex.EndpointInterface) *Protocol {
+	protocol := &Protocol{endpoint: endpoint}
+	protocol.dataStoreProtocol.SetEndpoint(endpoint)
 
 	return protocol
 }

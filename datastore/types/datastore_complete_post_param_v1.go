@@ -5,26 +5,45 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/v2/types"
 )
 
-// DataStoreCompletePostParamV1 is a data structure used by the DataStore protocol
+// DataStoreCompletePostParamV1 is a type within the DataStore protocol
 type DataStoreCompletePostParamV1 struct {
-	nex.Structure
-	DataID    uint32
-	IsSuccess bool
+	types.Structure
+	DataID    *types.PrimitiveU32
+	IsSuccess *types.PrimitiveBool
 }
 
-// ExtractFromStream extracts a DataStoreCompletePostParamV1 structure from a stream
-func (dataStoreCompletePostParamV1 *DataStoreCompletePostParamV1) ExtractFromStream(stream *nex.StreamIn) error {
+// WriteTo writes the DataStoreCompletePostParamV1 to the given writable
+func (dscppv *DataStoreCompletePostParamV1) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
+
+	dscppv.DataID.WriteTo(writable)
+	dscppv.IsSuccess.WriteTo(writable)
+
+	content := contentWritable.Bytes()
+
+	dscppv.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
+}
+
+// ExtractFrom extracts the DataStoreCompletePostParamV1 from the given readable
+func (dscppv *DataStoreCompletePostParamV1) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	dataStoreCompletePostParamV1.DataID, err = stream.ReadUInt32LE()
+	err = dscppv.ExtractHeaderFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreCompletePostParamV1 header. %s", err.Error())
+	}
+
+	err = dscppv.DataID.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreCompletePostParamV1.DataID. %s", err.Error())
 	}
 
-	dataStoreCompletePostParamV1.IsSuccess, err = stream.ReadBool()
+	err = dscppv.IsSuccess.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreCompletePostParamV1.IsSuccess. %s", err.Error())
 	}
@@ -32,61 +51,51 @@ func (dataStoreCompletePostParamV1 *DataStoreCompletePostParamV1) ExtractFromStr
 	return nil
 }
 
-// Bytes encodes the DataStoreCompletePostParamV1 and returns a byte array
-func (dataStoreCompletePostParamV1 *DataStoreCompletePostParamV1) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt32LE(dataStoreCompletePostParamV1.DataID)
-	stream.WriteBool(dataStoreCompletePostParamV1.IsSuccess)
-
-	return stream.Bytes()
-}
-
 // Copy returns a new copied instance of DataStoreCompletePostParamV1
-func (dataStoreCompletePostParamV1 *DataStoreCompletePostParamV1) Copy() nex.StructureInterface {
+func (dscppv *DataStoreCompletePostParamV1) Copy() types.RVType {
 	copied := NewDataStoreCompletePostParamV1()
 
-	copied.SetStructureVersion(dataStoreCompletePostParamV1.StructureVersion())
-
-	copied.DataID = dataStoreCompletePostParamV1.DataID
-	copied.IsSuccess = dataStoreCompletePostParamV1.IsSuccess
+	copied.StructureVersion = dscppv.StructureVersion
+	copied.DataID = dscppv.DataID.Copy().(*types.PrimitiveU32)
+	copied.IsSuccess = dscppv.IsSuccess.Copy().(*types.PrimitiveBool)
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (dataStoreCompletePostParamV1 *DataStoreCompletePostParamV1) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*DataStoreCompletePostParamV1)
-
-	if dataStoreCompletePostParamV1.StructureVersion() != other.StructureVersion() {
+// Equals checks if the given DataStoreCompletePostParamV1 contains the same data as the current DataStoreCompletePostParamV1
+func (dscppv *DataStoreCompletePostParamV1) Equals(o types.RVType) bool {
+	if _, ok := o.(*DataStoreCompletePostParamV1); !ok {
 		return false
 	}
 
-	if dataStoreCompletePostParamV1.DataID != other.DataID {
+	other := o.(*DataStoreCompletePostParamV1)
+
+	if dscppv.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if dataStoreCompletePostParamV1.IsSuccess != other.IsSuccess {
+	if !dscppv.DataID.Equals(other.DataID) {
 		return false
 	}
 
-	return true
+	return dscppv.IsSuccess.Equals(other.IsSuccess)
 }
 
-// String returns a string representation of the struct
-func (dataStoreCompletePostParamV1 *DataStoreCompletePostParamV1) String() string {
-	return dataStoreCompletePostParamV1.FormatToString(0)
+// String returns the string representation of the DataStoreCompletePostParamV1
+func (dscppv *DataStoreCompletePostParamV1) String() string {
+	return dscppv.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (dataStoreCompletePostParamV1 *DataStoreCompletePostParamV1) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the DataStoreCompletePostParamV1 using the provided indentation level
+func (dscppv *DataStoreCompletePostParamV1) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("DataStoreCompletePostParamV1{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, dataStoreCompletePostParamV1.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sDataID: %d,\n", indentationValues, dataStoreCompletePostParamV1.DataID))
-	b.WriteString(fmt.Sprintf("%sIsSuccess: %t\n", indentationValues, dataStoreCompletePostParamV1.IsSuccess))
+	b.WriteString(fmt.Sprintf("%sDataID: %s,\n", indentationValues, dscppv.DataID))
+	b.WriteString(fmt.Sprintf("%sIsSuccess: %s,\n", indentationValues, dscppv.IsSuccess))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -94,8 +103,10 @@ func (dataStoreCompletePostParamV1 *DataStoreCompletePostParamV1) FormatToString
 
 // NewDataStoreCompletePostParamV1 returns a new DataStoreCompletePostParamV1
 func NewDataStoreCompletePostParamV1() *DataStoreCompletePostParamV1 {
-	return &DataStoreCompletePostParamV1{
-		DataID:    0,
-		IsSuccess: false,
+	dscppv := &DataStoreCompletePostParamV1{
+		DataID:    types.NewPrimitiveU32(0),
+		IsSuccess: types.NewPrimitiveBool(false),
 	}
+
+	return dscppv
 }

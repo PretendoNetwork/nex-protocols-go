@@ -5,56 +5,87 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/v2"
+	"github.com/PretendoNetwork/nex-go/v2/types"
 )
 
-// DataStoreCompleteUpdateParam is a data structure used by the DataStore protocol
+// DataStoreCompleteUpdateParam is a type within the DataStore protocol
 type DataStoreCompleteUpdateParam struct {
-	nex.Structure
-	DataID    uint64
-	Version   uint32
-	IsSuccess bool
+	types.Structure
+	DataID    *types.PrimitiveU64
+	Version   *types.PrimitiveU32
+	IsSuccess *types.PrimitiveBool
 }
 
-// ExtractFromStream extracts a DataStoreCompleteUpdateParam structure from a stream
-func (dataStoreCompleteUpdateParam *DataStoreCompleteUpdateParam) ExtractFromStream(stream *nex.StreamIn) error {
-	datastoreVersion := stream.Server.DataStoreProtocolVersion()
+// WriteTo writes the DataStoreCompleteUpdateParam to the given writable
+func (dscup *DataStoreCompleteUpdateParam) WriteTo(writable types.Writable) {
+	stream := writable.(*nex.ByteStreamOut)
+	libraryVersion := stream.LibraryVersions.DataStore
+
+	contentWritable := writable.CopyNew()
+
+	if libraryVersion.GreaterOrEqual("3.0.0") {
+		dscup.DataID.WriteTo(contentWritable)
+	} else {
+		contentWritable.WritePrimitiveUInt32LE(uint32(dscup.DataID.Value))
+	}
+
+	if libraryVersion.GreaterOrEqual("3.0.0") {
+		dscup.Version.WriteTo(contentWritable)
+	} else {
+		contentWritable.WritePrimitiveUInt16LE(uint16(dscup.Version.Value))
+	}
+
+	dscup.IsSuccess.WriteTo(writable)
+
+	content := contentWritable.Bytes()
+
+	dscup.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
+}
+
+// ExtractFrom extracts the DataStoreCompleteUpdateParam from the given readable
+func (dscup *DataStoreCompleteUpdateParam) ExtractFrom(readable types.Readable) error {
+	stream := readable.(*nex.ByteStreamIn)
+	libraryVersion := stream.LibraryVersions.DataStore
 
 	var err error
 
-	if datastoreVersion.GreaterOrEqual("3.0.0") {
-		dataID, err := stream.ReadUInt64LE()
+	err = dscup.ExtractHeaderFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreCompleteUpdateParam header. %s", err.Error())
+	}
+
+	if libraryVersion.GreaterOrEqual("3.0.0") {
+		err = dscup.DataID.ExtractFrom(readable)
+		if err != nil {
+			return fmt.Errorf("Failed to extract DataStoreCompleteUpdateParam.DataID. %s", err.Error())
+		}
+	} else {
+		dataID, err := readable.ReadPrimitiveUInt32LE()
 		if err != nil {
 			return fmt.Errorf("Failed to extract DataStoreCompleteUpdateParam.DataID. %s", err.Error())
 		}
 
-		dataStoreCompleteUpdateParam.DataID = dataID
-	} else {
-		dataID, err := stream.ReadUInt32LE()
-		if err != nil {
-			return fmt.Errorf("Failed to extract DataStoreCompleteUpdateParam.DataID. %s", err.Error())
-		}
-
-		dataStoreCompleteUpdateParam.DataID = uint64(dataID)
+		dscup.DataID.Value = uint64(dataID)
 	}
 
-	if datastoreVersion.GreaterOrEqual("3.0.0") {
-		version, err := stream.ReadUInt32LE()
+	if libraryVersion.GreaterOrEqual("3.0.0") {
+		err = dscup.Version.ExtractFrom(readable)
 		if err != nil {
-			return fmt.Errorf("Failed to extract DataStoreReqUpdateInfo.Version. %s", err.Error())
+			return fmt.Errorf("Failed to extract DataStoreCompleteUpdateParam.Version. %s", err.Error())
 		}
-
-		dataStoreCompleteUpdateParam.Version = version
 	} else {
-		version, err := stream.ReadUInt16LE()
+		version, err := readable.ReadPrimitiveUInt16LE()
 		if err != nil {
-			return fmt.Errorf("Failed to extract DataStoreReqUpdateInfo.Version. %s", err.Error())
+			return fmt.Errorf("Failed to extract DataStoreCompleteUpdateParam.Version. %s", err.Error())
 		}
 
-		dataStoreCompleteUpdateParam.Version = uint32(version)
+		dscup.Version.Value = uint32(version)
 	}
 
-	dataStoreCompleteUpdateParam.IsSuccess, err = stream.ReadBool()
+	err = dscup.IsSuccess.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreCompleteUpdateParam.IsSuccess. %s", err.Error())
 	}
@@ -62,80 +93,57 @@ func (dataStoreCompleteUpdateParam *DataStoreCompleteUpdateParam) ExtractFromStr
 	return nil
 }
 
-// Bytes encodes the DataStoreCompleteUpdateParam and returns a byte array
-func (dataStoreCompleteUpdateParam *DataStoreCompleteUpdateParam) Bytes(stream *nex.StreamOut) []byte {
-	datastoreVersion := stream.Server.DataStoreProtocolVersion()
-
-	if datastoreVersion.GreaterOrEqual("3.0.0") {
-		stream.WriteUInt64LE(dataStoreCompleteUpdateParam.DataID)
-	} else {
-		stream.WriteUInt32LE(uint32(dataStoreCompleteUpdateParam.DataID))
-	}
-
-	if datastoreVersion.GreaterOrEqual("3.0.0") {
-		stream.WriteUInt32LE(dataStoreCompleteUpdateParam.Version)
-	} else {
-		stream.WriteUInt16LE(uint16(dataStoreCompleteUpdateParam.Version))
-	}
-
-	stream.WriteBool(dataStoreCompleteUpdateParam.IsSuccess)
-
-	return stream.Bytes()
-}
-
 // Copy returns a new copied instance of DataStoreCompleteUpdateParam
-func (dataStoreCompleteUpdateParam *DataStoreCompleteUpdateParam) Copy() nex.StructureInterface {
+func (dscup *DataStoreCompleteUpdateParam) Copy() types.RVType {
 	copied := NewDataStoreCompleteUpdateParam()
 
-	copied.SetStructureVersion(dataStoreCompleteUpdateParam.StructureVersion())
-
-	copied.DataID = dataStoreCompleteUpdateParam.DataID
-	copied.Version = dataStoreCompleteUpdateParam.Version
-	copied.IsSuccess = dataStoreCompleteUpdateParam.IsSuccess
+	copied.StructureVersion = dscup.StructureVersion
+	copied.DataID = dscup.DataID.Copy().(*types.PrimitiveU64)
+	copied.Version = dscup.Version.Copy().(*types.PrimitiveU32)
+	copied.IsSuccess = dscup.IsSuccess.Copy().(*types.PrimitiveBool)
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (dataStoreCompleteUpdateParam *DataStoreCompleteUpdateParam) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*DataStoreCompleteUpdateParam)
-
-	if dataStoreCompleteUpdateParam.StructureVersion() != other.StructureVersion() {
+// Equals checks if the given DataStoreCompleteUpdateParam contains the same data as the current DataStoreCompleteUpdateParam
+func (dscup *DataStoreCompleteUpdateParam) Equals(o types.RVType) bool {
+	if _, ok := o.(*DataStoreCompleteUpdateParam); !ok {
 		return false
 	}
 
-	if dataStoreCompleteUpdateParam.DataID != other.DataID {
+	other := o.(*DataStoreCompleteUpdateParam)
+
+	if dscup.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if dataStoreCompleteUpdateParam.Version != other.Version {
+	if !dscup.DataID.Equals(other.DataID) {
 		return false
 	}
 
-	if dataStoreCompleteUpdateParam.IsSuccess != other.IsSuccess {
+	if !dscup.Version.Equals(other.Version) {
 		return false
 	}
 
-	return true
+	return dscup.IsSuccess.Equals(other.IsSuccess)
 }
 
-// String returns a string representation of the struct
-func (dataStoreCompleteUpdateParam *DataStoreCompleteUpdateParam) String() string {
-	return dataStoreCompleteUpdateParam.FormatToString(0)
+// String returns the string representation of the DataStoreCompleteUpdateParam
+func (dscup *DataStoreCompleteUpdateParam) String() string {
+	return dscup.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (dataStoreCompleteUpdateParam *DataStoreCompleteUpdateParam) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the DataStoreCompleteUpdateParam using the provided indentation level
+func (dscup *DataStoreCompleteUpdateParam) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("DataStoreCompleteUpdateParam{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, dataStoreCompleteUpdateParam.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sDataID: %d,\n", indentationValues, dataStoreCompleteUpdateParam.DataID))
-	b.WriteString(fmt.Sprintf("%sVersion: %d,\n", indentationValues, dataStoreCompleteUpdateParam.Version))
-	b.WriteString(fmt.Sprintf("%sIsSuccess: %t\n", indentationValues, dataStoreCompleteUpdateParam.IsSuccess))
+	b.WriteString(fmt.Sprintf("%sDataID: %s,\n", indentationValues, dscup.DataID))
+	b.WriteString(fmt.Sprintf("%sVersion: %s,\n", indentationValues, dscup.Version))
+	b.WriteString(fmt.Sprintf("%sIsSuccess: %s,\n", indentationValues, dscup.IsSuccess))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -143,9 +151,11 @@ func (dataStoreCompleteUpdateParam *DataStoreCompleteUpdateParam) FormatToString
 
 // NewDataStoreCompleteUpdateParam returns a new DataStoreCompleteUpdateParam
 func NewDataStoreCompleteUpdateParam() *DataStoreCompleteUpdateParam {
-	return &DataStoreCompleteUpdateParam{
-		DataID:    0,
-		Version:   0,
-		IsSuccess: false,
+	dscup := &DataStoreCompleteUpdateParam{
+		DataID:    types.NewPrimitiveU64(0),
+		Version:   types.NewPrimitiveU32(0),
+		IsSuccess: types.NewPrimitiveBool(false),
 	}
+
+	return dscup
 }

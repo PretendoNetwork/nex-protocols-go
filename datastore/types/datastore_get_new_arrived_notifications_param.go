@@ -5,26 +5,45 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/v2/types"
 )
 
-// DataStoreGetNewArrivedNotificationsParam is a data structure used by the DataStore protocol
+// DataStoreGetNewArrivedNotificationsParam is a type within the DataStore protocol
 type DataStoreGetNewArrivedNotificationsParam struct {
-	nex.Structure
-	LastNotificationID uint64
-	Limit              uint16
+	types.Structure
+	LastNotificationID *types.PrimitiveU64
+	Limit              *types.PrimitiveU16
 }
 
-// ExtractFromStream extracts a DataStoreGetNewArrivedNotificationsParam structure from a stream
-func (dataStoreGetNewArrivedNotificationsParam *DataStoreGetNewArrivedNotificationsParam) ExtractFromStream(stream *nex.StreamIn) error {
+// WriteTo writes the DataStoreGetNewArrivedNotificationsParam to the given writable
+func (dsgnanp *DataStoreGetNewArrivedNotificationsParam) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
+
+	dsgnanp.LastNotificationID.WriteTo(writable)
+	dsgnanp.Limit.WriteTo(writable)
+
+	content := contentWritable.Bytes()
+
+	dsgnanp.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
+}
+
+// ExtractFrom extracts the DataStoreGetNewArrivedNotificationsParam from the given readable
+func (dsgnanp *DataStoreGetNewArrivedNotificationsParam) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	dataStoreGetNewArrivedNotificationsParam.LastNotificationID, err = stream.ReadUInt64LE()
+	err = dsgnanp.ExtractHeaderFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreGetNewArrivedNotificationsParam header. %s", err.Error())
+	}
+
+	err = dsgnanp.LastNotificationID.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreGetNewArrivedNotificationsParam.LastNotificationID. %s", err.Error())
 	}
 
-	dataStoreGetNewArrivedNotificationsParam.Limit, err = stream.ReadUInt16LE()
+	err = dsgnanp.Limit.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreGetNewArrivedNotificationsParam.Limit. %s", err.Error())
 	}
@@ -32,61 +51,51 @@ func (dataStoreGetNewArrivedNotificationsParam *DataStoreGetNewArrivedNotificati
 	return nil
 }
 
-// Bytes encodes the DataStoreGetNewArrivedNotificationsParam and returns a byte array
-func (dataStoreGetNewArrivedNotificationsParam *DataStoreGetNewArrivedNotificationsParam) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt64LE(dataStoreGetNewArrivedNotificationsParam.LastNotificationID)
-	stream.WriteUInt16LE(dataStoreGetNewArrivedNotificationsParam.Limit)
-
-	return stream.Bytes()
-}
-
 // Copy returns a new copied instance of DataStoreGetNewArrivedNotificationsParam
-func (dataStoreGetNewArrivedNotificationsParam *DataStoreGetNewArrivedNotificationsParam) Copy() nex.StructureInterface {
+func (dsgnanp *DataStoreGetNewArrivedNotificationsParam) Copy() types.RVType {
 	copied := NewDataStoreGetNewArrivedNotificationsParam()
 
-	copied.SetStructureVersion(dataStoreGetNewArrivedNotificationsParam.StructureVersion())
-
-	copied.LastNotificationID = dataStoreGetNewArrivedNotificationsParam.LastNotificationID
-	copied.Limit = dataStoreGetNewArrivedNotificationsParam.Limit
+	copied.StructureVersion = dsgnanp.StructureVersion
+	copied.LastNotificationID = dsgnanp.LastNotificationID.Copy().(*types.PrimitiveU64)
+	copied.Limit = dsgnanp.Limit.Copy().(*types.PrimitiveU16)
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (dataStoreGetNewArrivedNotificationsParam *DataStoreGetNewArrivedNotificationsParam) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*DataStoreGetNewArrivedNotificationsParam)
-
-	if dataStoreGetNewArrivedNotificationsParam.StructureVersion() != other.StructureVersion() {
+// Equals checks if the given DataStoreGetNewArrivedNotificationsParam contains the same data as the current DataStoreGetNewArrivedNotificationsParam
+func (dsgnanp *DataStoreGetNewArrivedNotificationsParam) Equals(o types.RVType) bool {
+	if _, ok := o.(*DataStoreGetNewArrivedNotificationsParam); !ok {
 		return false
 	}
 
-	if dataStoreGetNewArrivedNotificationsParam.LastNotificationID != other.LastNotificationID {
+	other := o.(*DataStoreGetNewArrivedNotificationsParam)
+
+	if dsgnanp.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if dataStoreGetNewArrivedNotificationsParam.Limit != other.Limit {
+	if !dsgnanp.LastNotificationID.Equals(other.LastNotificationID) {
 		return false
 	}
 
-	return true
+	return dsgnanp.Limit.Equals(other.Limit)
 }
 
-// String returns a string representation of the struct
-func (dataStoreGetNewArrivedNotificationsParam *DataStoreGetNewArrivedNotificationsParam) String() string {
-	return dataStoreGetNewArrivedNotificationsParam.FormatToString(0)
+// String returns the string representation of the DataStoreGetNewArrivedNotificationsParam
+func (dsgnanp *DataStoreGetNewArrivedNotificationsParam) String() string {
+	return dsgnanp.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (dataStoreGetNewArrivedNotificationsParam *DataStoreGetNewArrivedNotificationsParam) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the DataStoreGetNewArrivedNotificationsParam using the provided indentation level
+func (dsgnanp *DataStoreGetNewArrivedNotificationsParam) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("DataStoreGetNewArrivedNotificationsParam{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, dataStoreGetNewArrivedNotificationsParam.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sLastNotificationID: %d,\n", indentationValues, dataStoreGetNewArrivedNotificationsParam.LastNotificationID))
-	b.WriteString(fmt.Sprintf("%sLimit: %d\n", indentationValues, dataStoreGetNewArrivedNotificationsParam.Limit))
+	b.WriteString(fmt.Sprintf("%sLastNotificationID: %s,\n", indentationValues, dsgnanp.LastNotificationID))
+	b.WriteString(fmt.Sprintf("%sLimit: %s,\n", indentationValues, dsgnanp.Limit))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -94,8 +103,10 @@ func (dataStoreGetNewArrivedNotificationsParam *DataStoreGetNewArrivedNotificati
 
 // NewDataStoreGetNewArrivedNotificationsParam returns a new DataStoreGetNewArrivedNotificationsParam
 func NewDataStoreGetNewArrivedNotificationsParam() *DataStoreGetNewArrivedNotificationsParam {
-	return &DataStoreGetNewArrivedNotificationsParam{
-		LastNotificationID: 0,
-		Limit:              0,
+	dsgnanp := &DataStoreGetNewArrivedNotificationsParam{
+		LastNotificationID: types.NewPrimitiveU64(0),
+		Limit:              types.NewPrimitiveU16(0),
 	}
+
+	return dsgnanp
 }

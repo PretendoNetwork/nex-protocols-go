@@ -4,53 +4,58 @@ package protocol
 import (
 	"fmt"
 
-	nex "github.com/PretendoNetwork/nex-go"
-	"github.com/PretendoNetwork/nex-protocols-go/globals"
+	nex "github.com/PretendoNetwork/nex-go/v2"
+	"github.com/PretendoNetwork/nex-go/v2/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
 )
 
-// RequestProbeInitiationExt sets the RequestProbeInitiationExt handler function
-func (protocol *Protocol) RequestProbeInitiationExt(handler func(err error, packet nex.PacketInterface, callID uint32, targetList []string, stationToProbe string) uint32) {
-	protocol.requestProbeInitiationExtHandler = handler
-}
-
 func (protocol *Protocol) handleRequestProbeInitiationExt(packet nex.PacketInterface) {
-	var errorCode uint32
+	if protocol.RequestProbeInitiationExt == nil {
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "NATTraversal::RequestProbeInitiationExt not implemented")
 
-	if protocol.reportNATPropertiesHandler == nil {
-		globals.Logger.Warning("NATTraversal::RequestProbeInitiationExt not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
+	callID := request.CallID
+	parameters := request.Parameters
+	endpoint := packet.Sender().Endpoint()
+	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	callID := request.CallID()
-	parameters := request.Parameters()
+	targetList := types.NewList[*types.String]()
+	targetList.Type = types.NewString("")
+	stationToProbe := types.NewString("")
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+	var err error
 
-	targetList, err := parametersStream.ReadListString()
+	err = targetList.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.requestProbeInitiationExtHandler(fmt.Errorf("Failed to read targetList from parameters. %s", err.Error()), packet, callID, nil, "")
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.RequestProbeInitiationExt(fmt.Errorf("Failed to read targetList from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	stationToProbe, err := parametersStream.ReadString()
+	err = stationToProbe.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.requestProbeInitiationExtHandler(fmt.Errorf("Failed to read stationToProbe from parameters. %s", err.Error()), packet, callID, nil, "")
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.RequestProbeInitiationExt(fmt.Errorf("Failed to read stationToProbe from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	errorCode = protocol.requestProbeInitiationExtHandler(nil, packet, callID, targetList, stationToProbe)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.RequestProbeInitiationExt(nil, packet, callID, targetList, stationToProbe)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

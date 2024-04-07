@@ -4,53 +4,58 @@ package protocol
 import (
 	"fmt"
 
-	nex "github.com/PretendoNetwork/nex-go"
-	"github.com/PretendoNetwork/nex-protocols-go/globals"
+	nex "github.com/PretendoNetwork/nex-go/v2"
+	"github.com/PretendoNetwork/nex-go/v2/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
 )
 
-// RequestMigration sets the RequestMigration handler function
-func (protocol *Protocol) RequestMigration(handler func(err error, packet nex.PacketInterface, callID uint32, oneTimePassword string, boxes []uint32) uint32) {
-	protocol.requestMigrationHandler = handler
-}
-
 func (protocol *Protocol) handleRequestMigration(packet nex.PacketInterface) {
-	var errorCode uint32
+	if protocol.RequestMigration == nil {
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "DataStorePokemonBank::RequestMigration not implemented")
 
-	if protocol.requestMigrationHandler == nil {
-		globals.Logger.Warning("DataStorePokemonBank::RequestMigration not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
+	callID := request.CallID
+	parameters := request.Parameters
+	endpoint := packet.Sender().Endpoint()
+	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	callID := request.CallID()
-	parameters := request.Parameters()
+	oneTimePassword := types.NewString("")
+	boxes := types.NewList[*types.PrimitiveU32]()
+	boxes.Type = types.NewPrimitiveU32(0)
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+	var err error
 
-	oneTimePassword, err := parametersStream.ReadString()
+	err = oneTimePassword.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.requestMigrationHandler(fmt.Errorf("Failed to read oneTimePassword from parameters. %s", err.Error()), packet, callID, "", nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.RequestMigration(fmt.Errorf("Failed to read oneTimePassword from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	boxes, err := parametersStream.ReadListUInt32LE()
+	err = boxes.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.requestMigrationHandler(fmt.Errorf("Failed to read boxes from parameters. %s", err.Error()), packet, callID, "", nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.RequestMigration(fmt.Errorf("Failed to read boxes from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	errorCode = protocol.requestMigrationHandler(nil, packet, callID, oneTimePassword, boxes)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.RequestMigration(nil, packet, callID, oneTimePassword, boxes)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

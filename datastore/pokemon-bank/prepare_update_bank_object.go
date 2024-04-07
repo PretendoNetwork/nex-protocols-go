@@ -4,44 +4,44 @@ package protocol
 import (
 	"fmt"
 
-	nex "github.com/PretendoNetwork/nex-go"
-	datastore_pokemon_bank_types "github.com/PretendoNetwork/nex-protocols-go/datastore/pokemon-bank/types"
-	"github.com/PretendoNetwork/nex-protocols-go/globals"
+	nex "github.com/PretendoNetwork/nex-go/v2"
+	datastore_pokemon_bank_types "github.com/PretendoNetwork/nex-protocols-go/v2/datastore/pokemon-bank/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
 )
 
-// PrepareUpdateBankObject sets the PrepareUpdateBankObject handler function
-func (protocol *Protocol) PrepareUpdateBankObject(handler func(err error, packet nex.PacketInterface, callID uint32, transactionParam *datastore_pokemon_bank_types.BankTransactionParam) uint32) {
-	protocol.prepareUpdateBankObjectHandler = handler
-}
-
 func (protocol *Protocol) handlePrepareUpdateBankObject(packet nex.PacketInterface) {
-	var errorCode uint32
+	if protocol.PrepareUpdateBankObject == nil {
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "DataStorePokemonBank::PrepareUpdateBankObject not implemented")
 
-	if protocol.prepareUpdateBankObjectHandler == nil {
-		globals.Logger.Warning("DataStorePokemonBank::PrepareUpdateBankObject not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
+	callID := request.CallID
+	parameters := request.Parameters
+	endpoint := packet.Sender().Endpoint()
+	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	callID := request.CallID()
-	parameters := request.Parameters()
+	transactionParam := datastore_pokemon_bank_types.NewBankTransactionParam()
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
-
-	transactionParam, err := parametersStream.ReadStructure(datastore_pokemon_bank_types.NewBankTransactionParam())
+	err := transactionParam.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.prepareUpdateBankObjectHandler(fmt.Errorf("Failed to read transactionParam from parameters. %s", err.Error()), packet, callID, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.PrepareUpdateBankObject(fmt.Errorf("Failed to read transactionParam from parameters. %s", err.Error()), packet, callID, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	errorCode = protocol.prepareUpdateBankObjectHandler(nil, packet, callID, transactionParam.(*datastore_pokemon_bank_types.BankTransactionParam))
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.PrepareUpdateBankObject(nil, packet, callID, transactionParam)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

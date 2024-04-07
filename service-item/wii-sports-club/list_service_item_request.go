@@ -4,44 +4,44 @@ package protocol
 import (
 	"fmt"
 
-	nex "github.com/PretendoNetwork/nex-go"
-	"github.com/PretendoNetwork/nex-protocols-go/globals"
-	service_item_wii_sports_club_types "github.com/PretendoNetwork/nex-protocols-go/service-item/wii-sports-club/types"
+	nex "github.com/PretendoNetwork/nex-go/v2"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
+	service_item_wii_sports_club_types "github.com/PretendoNetwork/nex-protocols-go/v2/service-item/wii-sports-club/types"
 )
 
-// ListServiceItemRequest sets the ListServiceItemRequest handler function
-func (protocol *Protocol) ListServiceItemRequest(handler func(err error, packet nex.PacketInterface, callID uint32, listServiceItemParam *service_item_wii_sports_club_types.ServiceItemListServiceItemParam) uint32) {
-	protocol.listServiceItemRequestHandler = handler
-}
-
 func (protocol *Protocol) handleListServiceItemRequest(packet nex.PacketInterface) {
-	var errorCode uint32
+	if protocol.ListServiceItemRequest == nil {
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "ServiceItemWiiSportsClub::ListServiceItemRequest not implemented")
 
-	if protocol.listServiceItemRequestHandler == nil {
-		globals.Logger.Warning("ServiceItemWiiSportsClub::ListServiceItemRequest not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
+	callID := request.CallID
+	parameters := request.Parameters
+	endpoint := packet.Sender().Endpoint()
+	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	callID := request.CallID()
-	parameters := request.Parameters()
+	listServiceItemParam := service_item_wii_sports_club_types.NewServiceItemListServiceItemParam()
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
-
-	listServiceItemParam, err := parametersStream.ReadStructure(service_item_wii_sports_club_types.NewServiceItemListServiceItemParam())
+	err := listServiceItemParam.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.listServiceItemRequestHandler(fmt.Errorf("Failed to read listServiceItemParam from parameters. %s", err.Error()), packet, callID, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.ListServiceItemRequest(fmt.Errorf("Failed to read listServiceItemParam from parameters. %s", err.Error()), packet, callID, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	errorCode = protocol.listServiceItemRequestHandler(nil, packet, callID, listServiceItemParam.(*service_item_wii_sports_club_types.ServiceItemListServiceItemParam))
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.ListServiceItemRequest(nil, packet, callID, listServiceItemParam)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

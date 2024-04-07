@@ -1,114 +1,119 @@
-// Package types implements all the types used by the Service Item (Team Kirby Clash Deluxe) protocol
+// Package types implements all the types used by the ServiceItem protocol
 package types
 
 import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/v2/types"
 )
 
-// ServiceItemGetBalanceParam holds data for the Service Item (Team Kirby Clash Deluxe) protocol
+// ServiceItemGetBalanceParam is a type within the ServiceItem protocol
 type ServiceItemGetBalanceParam struct {
-	nex.Structure
-	Language string
-	UniqueID uint32
-	Platform uint8 // * Revision 1
+	types.Structure
+	Language *types.String
+	UniqueID *types.PrimitiveU32
+	Platform *types.PrimitiveU8 // * Revision 1
 }
 
-// ExtractFromStream extracts a ServiceItemGetBalanceParam structure from a stream
-func (serviceItemGetBalanceParam *ServiceItemGetBalanceParam) ExtractFromStream(stream *nex.StreamIn) error {
+// WriteTo writes the ServiceItemGetBalanceParam to the given writable
+func (sigbp *ServiceItemGetBalanceParam) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
+
+	sigbp.Language.WriteTo(writable)
+	sigbp.UniqueID.WriteTo(writable)
+
+	if sigbp.StructureVersion >= 1 {
+		sigbp.Platform.WriteTo(writable)
+	}
+
+	content := contentWritable.Bytes()
+
+	sigbp.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
+}
+
+// ExtractFrom extracts the ServiceItemGetBalanceParam from the given readable
+func (sigbp *ServiceItemGetBalanceParam) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	serviceItemGetBalanceParam.Language, err = stream.ReadString()
+	err = sigbp.ExtractHeaderFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemGetBalanceParam.Language from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract ServiceItemGetBalanceParam header. %s", err.Error())
 	}
 
-	serviceItemGetBalanceParam.UniqueID, err = stream.ReadUInt32LE()
+	err = sigbp.Language.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemGetBalanceParam.UniqueID from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract ServiceItemGetBalanceParam.Language. %s", err.Error())
 	}
 
-	if serviceItemGetBalanceParam.StructureVersion() >= 1 {
-		serviceItemGetBalanceParam.Platform, err = stream.ReadUInt8()
+	err = sigbp.UniqueID.ExtractFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract ServiceItemGetBalanceParam.UniqueID. %s", err.Error())
+	}
+
+	if sigbp.StructureVersion >= 1 {
+		err = sigbp.Platform.ExtractFrom(readable)
 		if err != nil {
-			return fmt.Errorf("Failed to extract ServiceItemGetBalanceParam.Platform from stream. %s", err.Error())
+			return fmt.Errorf("Failed to extract ServiceItemGetBalanceParam.Platform. %s", err.Error())
 		}
 	}
 
 	return nil
 }
 
-// Bytes encodes the ServiceItemGetBalanceParam and returns a byte array
-func (serviceItemGetBalanceParam *ServiceItemGetBalanceParam) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteString(serviceItemGetBalanceParam.Language)
-	stream.WriteUInt32LE(serviceItemGetBalanceParam.UniqueID)
-
-	if serviceItemGetBalanceParam.StructureVersion() >= 1 {
-		stream.WriteUInt8(serviceItemGetBalanceParam.Platform)
-	}
-
-	return stream.Bytes()
-}
-
 // Copy returns a new copied instance of ServiceItemGetBalanceParam
-func (serviceItemGetBalanceParam *ServiceItemGetBalanceParam) Copy() nex.StructureInterface {
+func (sigbp *ServiceItemGetBalanceParam) Copy() types.RVType {
 	copied := NewServiceItemGetBalanceParam()
 
-	copied.SetStructureVersion(serviceItemGetBalanceParam.StructureVersion())
-
-	copied.Language = serviceItemGetBalanceParam.Language
-	copied.UniqueID = serviceItemGetBalanceParam.UniqueID
-	copied.Platform = serviceItemGetBalanceParam.Platform
+	copied.StructureVersion = sigbp.StructureVersion
+	copied.Language = sigbp.Language.Copy().(*types.String)
+	copied.UniqueID = sigbp.UniqueID.Copy().(*types.PrimitiveU32)
+	copied.Platform = sigbp.Platform.Copy().(*types.PrimitiveU8)
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (serviceItemGetBalanceParam *ServiceItemGetBalanceParam) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*ServiceItemGetBalanceParam)
-
-	if serviceItemGetBalanceParam.StructureVersion() != other.StructureVersion() {
+// Equals checks if the given ServiceItemGetBalanceParam contains the same data as the current ServiceItemGetBalanceParam
+func (sigbp *ServiceItemGetBalanceParam) Equals(o types.RVType) bool {
+	if _, ok := o.(*ServiceItemGetBalanceParam); !ok {
 		return false
 	}
 
-	if serviceItemGetBalanceParam.Language != other.Language {
+	other := o.(*ServiceItemGetBalanceParam)
+
+	if sigbp.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if serviceItemGetBalanceParam.UniqueID != other.UniqueID {
+	if !sigbp.Language.Equals(other.Language) {
 		return false
 	}
 
-	if serviceItemGetBalanceParam.Platform != other.Platform {
+	if !sigbp.UniqueID.Equals(other.UniqueID) {
 		return false
 	}
 
-	return true
+	return sigbp.Platform.Equals(other.Platform)
 }
 
-// String returns a string representation of the struct
-func (serviceItemGetBalanceParam *ServiceItemGetBalanceParam) String() string {
-	return serviceItemGetBalanceParam.FormatToString(0)
+// String returns the string representation of the ServiceItemGetBalanceParam
+func (sigbp *ServiceItemGetBalanceParam) String() string {
+	return sigbp.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (serviceItemGetBalanceParam *ServiceItemGetBalanceParam) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the ServiceItemGetBalanceParam using the provided indentation level
+func (sigbp *ServiceItemGetBalanceParam) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("ServiceItemGetBalanceParam{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, serviceItemGetBalanceParam.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sLanguage: %q,\n", indentationValues, serviceItemGetBalanceParam.Language))
-	b.WriteString(fmt.Sprintf("%sUniqueID: %d,\n", indentationValues, serviceItemGetBalanceParam.UniqueID))
-
-	if serviceItemGetBalanceParam.StructureVersion() >= 1 {
-		b.WriteString(fmt.Sprintf("%sPlatform: %d,\n", indentationValues, serviceItemGetBalanceParam.Platform))
-	}
-
+	b.WriteString(fmt.Sprintf("%sLanguage: %s,\n", indentationValues, sigbp.Language))
+	b.WriteString(fmt.Sprintf("%sUniqueID: %s,\n", indentationValues, sigbp.UniqueID))
+	b.WriteString(fmt.Sprintf("%sPlatform: %s,\n", indentationValues, sigbp.Platform))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -116,5 +121,11 @@ func (serviceItemGetBalanceParam *ServiceItemGetBalanceParam) FormatToString(ind
 
 // NewServiceItemGetBalanceParam returns a new ServiceItemGetBalanceParam
 func NewServiceItemGetBalanceParam() *ServiceItemGetBalanceParam {
-	return &ServiceItemGetBalanceParam{}
+	sigbp := &ServiceItemGetBalanceParam{
+		Language: types.NewString(""),
+		UniqueID: types.NewPrimitiveU32(0),
+		Platform: types.NewPrimitiveU8(0),
+	}
+
+	return sigbp
 }

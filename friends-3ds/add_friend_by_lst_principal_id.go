@@ -4,53 +4,58 @@ package protocol
 import (
 	"fmt"
 
-	nex "github.com/PretendoNetwork/nex-go"
-	"github.com/PretendoNetwork/nex-protocols-go/globals"
+	nex "github.com/PretendoNetwork/nex-go/v2"
+	"github.com/PretendoNetwork/nex-go/v2/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
 )
 
-// AddFriendBylstPrincipalID sets the AddFriendBylstPrincipalID handler function
-func (protocol *Protocol) AddFriendBylstPrincipalID(handler func(err error, packet nex.PacketInterface, callID uint32, lfc uint64, pids []uint32) uint32) {
-	protocol.addFriendBylstPrincipalIDHandler = handler
-}
-
 func (protocol *Protocol) handleAddFriendBylstPrincipalID(packet nex.PacketInterface) {
-	var errorCode uint32
+	if protocol.AddFriendBylstPrincipalID == nil {
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "Friends3DS::AddFriendBylstPrincipalID not implemented")
 
-	if protocol.addFriendBylstPrincipalIDHandler == nil {
-		globals.Logger.Warning("Friends3DS::AddFriendBylstPrincipalID not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
+	callID := request.CallID
+	parameters := request.Parameters
+	endpoint := packet.Sender().Endpoint()
+	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	callID := request.CallID()
-	parameters := request.Parameters()
+	lfc := types.NewPrimitiveU64(0)
+	pids := types.NewList[*types.PID]()
+	pids.Type = types.NewPID(0)
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+	var err error
 
-	lfc, err := parametersStream.ReadUInt64LE()
+	err = lfc.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.addFriendBylstPrincipalIDHandler(fmt.Errorf("Failed to read lfc from parameters. %s", err.Error()), packet, callID, 0, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.AddFriendBylstPrincipalID(fmt.Errorf("Failed to read lfc from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	pids, err := parametersStream.ReadListUInt32LE()
+	err = pids.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.addFriendBylstPrincipalIDHandler(fmt.Errorf("Failed to read pids from parameters. %s", err.Error()), packet, callID, 0, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.AddFriendBylstPrincipalID(fmt.Errorf("Failed to read pids from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	errorCode = protocol.addFriendBylstPrincipalIDHandler(nil, packet, callID, lfc, pids)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.AddFriendBylstPrincipalID(nil, packet, callID, lfc, pids)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

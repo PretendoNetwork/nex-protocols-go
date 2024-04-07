@@ -4,64 +4,71 @@ package protocol
 import (
 	"fmt"
 
-	nex "github.com/PretendoNetwork/nex-go"
-	datastore_types "github.com/PretendoNetwork/nex-protocols-go/datastore/types"
-	"github.com/PretendoNetwork/nex-protocols-go/globals"
+	nex "github.com/PretendoNetwork/nex-go/v2"
+	"github.com/PretendoNetwork/nex-go/v2/types"
+	datastore_types "github.com/PretendoNetwork/nex-protocols-go/v2/datastore/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
 )
 
-// ChangeMetasV1 sets the ChangeMetasV1 handler function
-func (protocol *Protocol) ChangeMetasV1(handler func(err error, packet nex.PacketInterface, callID uint32, dataIDs []uint64, params []*datastore_types.DataStoreChangeMetaParamV1, transactional bool) uint32) {
-	protocol.changeMetasV1Handler = handler
-}
-
 func (protocol *Protocol) handleChangeMetasV1(packet nex.PacketInterface) {
-	var errorCode uint32
+	if protocol.ChangeMetasV1 == nil {
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "DataStore::ChangeMetasV1 not implemented")
 
-	if protocol.changeMetasV1Handler == nil {
-		globals.Logger.Warning("DataStore::ChangeMetasV1 not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
+	callID := request.CallID
+	parameters := request.Parameters
+	endpoint := packet.Sender().Endpoint()
+	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	callID := request.CallID()
-	parameters := request.Parameters()
+	dataIDs := types.NewList[*types.PrimitiveU64]()
+	dataIDs.Type = types.NewPrimitiveU64(0)
+	params := types.NewList[*datastore_types.DataStoreChangeMetaParamV1]()
+	params.Type = datastore_types.NewDataStoreChangeMetaParamV1()
+	transactional := types.NewPrimitiveBool(false)
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+	var err error
 
-	dataIDs, err := parametersStream.ReadListUInt64LE()
+	err = dataIDs.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.changeMetasV1Handler(fmt.Errorf("Failed to read dataIDs from parameters. %s", err.Error()), packet, callID, nil, nil, false)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.ChangeMetasV1(fmt.Errorf("Failed to read dataIDs from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	params, err := parametersStream.ReadListStructure(datastore_types.NewDataStoreChangeMetaParamV1())
+	err = params.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.changeMetasV1Handler(fmt.Errorf("Failed to read params from parameters. %s", err.Error()), packet, callID, nil, nil, false)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.ChangeMetasV1(fmt.Errorf("Failed to read params from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	transactional, err := parametersStream.ReadBool()
+	err = transactional.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.changeMetasV1Handler(fmt.Errorf("Failed to read transactional from parameters. %s", err.Error()), packet, callID, nil, nil, false)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.ChangeMetasV1(fmt.Errorf("Failed to read transactional from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	errorCode = protocol.changeMetasV1Handler(nil, packet, callID, dataIDs, params.([]*datastore_types.DataStoreChangeMetaParamV1), transactional)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.ChangeMetasV1(nil, packet, callID, dataIDs, params, transactional)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

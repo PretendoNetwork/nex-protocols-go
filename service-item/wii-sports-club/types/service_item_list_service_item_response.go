@@ -1,118 +1,102 @@
-// Package types implements all the types used by the Service Item (Wii Sports Club) protocol
+// Package types implements all the types used by the ServiceItem protocol
 package types
 
 import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/v2/types"
 )
 
-// ServiceItemListServiceItemResponse holds data for the Service Item (Wii Sports Club) protocol
+// ServiceItemListServiceItemResponse is a type within the ServiceItem protocol
 type ServiceItemListServiceItemResponse struct {
-	nex.Structure
+	types.Structure
 	*ServiceItemEShopResponse
-	NullableCatalog []*ServiceItemCatalog
+	NullableCatalog *types.List[*ServiceItemCatalog]
 }
 
-// ExtractFromStream extracts a ServiceItemListServiceItemResponse structure from a stream
-func (serviceItemListServiceItemResponse *ServiceItemListServiceItemResponse) ExtractFromStream(stream *nex.StreamIn) error {
+// WriteTo writes the ServiceItemListServiceItemResponse to the given writable
+func (silsir *ServiceItemListServiceItemResponse) WriteTo(writable types.Writable) {
+	silsir.ServiceItemEShopResponse.WriteTo(writable)
+
+	contentWritable := writable.CopyNew()
+
+	silsir.NullableCatalog.WriteTo(writable)
+
+	content := contentWritable.Bytes()
+
+	silsir.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
+}
+
+// ExtractFrom extracts the ServiceItemListServiceItemResponse from the given readable
+func (silsir *ServiceItemListServiceItemResponse) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	nullableCatalog, err := stream.ReadListStructure(NewServiceItemCatalog())
+	err = silsir.ServiceItemEShopResponse.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract ServiceItemListServiceItemResponse.NullableCatalog from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract ServiceItemListServiceItemResponse.ServiceItemEShopResponse. %s", err.Error())
 	}
 
-	serviceItemListServiceItemResponse.NullableCatalog = nullableCatalog.([]*ServiceItemCatalog)
+	err = silsir.ExtractHeaderFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract ServiceItemListServiceItemResponse header. %s", err.Error())
+	}
+
+	err = silsir.NullableCatalog.ExtractFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract ServiceItemListServiceItemResponse.NullableCatalog. %s", err.Error())
+	}
 
 	return nil
 }
 
-// Bytes encodes the ServiceItemListServiceItemResponse and returns a byte array
-func (serviceItemListServiceItemResponse *ServiceItemListServiceItemResponse) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteListStructure(serviceItemListServiceItemResponse.NullableCatalog)
-
-	return stream.Bytes()
-}
-
 // Copy returns a new copied instance of ServiceItemListServiceItemResponse
-func (serviceItemListServiceItemResponse *ServiceItemListServiceItemResponse) Copy() nex.StructureInterface {
+func (silsir *ServiceItemListServiceItemResponse) Copy() types.RVType {
 	copied := NewServiceItemListServiceItemResponse()
 
-	copied.SetStructureVersion(serviceItemListServiceItemResponse.StructureVersion())
-
-	copied.ServiceItemEShopResponse = serviceItemListServiceItemResponse.ServiceItemEShopResponse.Copy().(*ServiceItemEShopResponse)
-	copied.SetParentType(copied.ServiceItemEShopResponse)
-
-	copied.NullableCatalog = make([]*ServiceItemCatalog, len(serviceItemListServiceItemResponse.NullableCatalog))
-
-	for i := 0; i < len(serviceItemListServiceItemResponse.NullableCatalog); i++ {
-		copied.NullableCatalog[i] = serviceItemListServiceItemResponse.NullableCatalog[i].Copy().(*ServiceItemCatalog)
-	}
+	copied.StructureVersion = silsir.StructureVersion
+	copied.ServiceItemEShopResponse = silsir.ServiceItemEShopResponse.Copy().(*ServiceItemEShopResponse)
+	copied.NullableCatalog = silsir.NullableCatalog.Copy().(*types.List[*ServiceItemCatalog])
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (serviceItemListServiceItemResponse *ServiceItemListServiceItemResponse) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*ServiceItemListServiceItemResponse)
-
-	if serviceItemListServiceItemResponse.StructureVersion() != other.StructureVersion() {
+// Equals checks if the given ServiceItemListServiceItemResponse contains the same data as the current ServiceItemListServiceItemResponse
+func (silsir *ServiceItemListServiceItemResponse) Equals(o types.RVType) bool {
+	if _, ok := o.(*ServiceItemListServiceItemResponse); !ok {
 		return false
 	}
 
-	if !serviceItemListServiceItemResponse.ParentType().Equals(other.ParentType()) {
+	other := o.(*ServiceItemListServiceItemResponse)
+
+	if silsir.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if len(serviceItemListServiceItemResponse.NullableCatalog) != len(other.NullableCatalog) {
+	if !silsir.ServiceItemEShopResponse.Equals(other.ServiceItemEShopResponse) {
 		return false
 	}
 
-	for i := 0; i < len(serviceItemListServiceItemResponse.NullableCatalog); i++ {
-		if !serviceItemListServiceItemResponse.NullableCatalog[i].Equals(other.NullableCatalog[i]) {
-			return false
-		}
-	}
-
-	return true
+	return silsir.NullableCatalog.Equals(other.NullableCatalog)
 }
 
-// String returns a string representation of the struct
-func (serviceItemListServiceItemResponse *ServiceItemListServiceItemResponse) String() string {
-	return serviceItemListServiceItemResponse.FormatToString(0)
+// String returns the string representation of the ServiceItemListServiceItemResponse
+func (silsir *ServiceItemListServiceItemResponse) String() string {
+	return silsir.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (serviceItemListServiceItemResponse *ServiceItemListServiceItemResponse) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the ServiceItemListServiceItemResponse using the provided indentation level
+func (silsir *ServiceItemListServiceItemResponse) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
-	indentationListValues := strings.Repeat("\t", indentationLevel+2)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("ServiceItemListServiceItemResponse{\n")
-	b.WriteString(fmt.Sprintf("%sParentType: %s,\n", indentationValues, serviceItemListServiceItemResponse.ParentType().FormatToString(indentationLevel+1)))
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, serviceItemListServiceItemResponse.StructureVersion()))
-
-	if len(serviceItemListServiceItemResponse.NullableCatalog) == 0 {
-		b.WriteString(fmt.Sprintf("%sNullableCatalog: [],\n", indentationValues))
-	} else {
-		b.WriteString(fmt.Sprintf("%sNullableCatalog: [\n", indentationValues))
-
-		for i := 0; i < len(serviceItemListServiceItemResponse.NullableCatalog); i++ {
-			str := serviceItemListServiceItemResponse.NullableCatalog[i].FormatToString(indentationLevel + 2)
-			if i == len(serviceItemListServiceItemResponse.NullableCatalog)-1 {
-				b.WriteString(fmt.Sprintf("%s%s\n", indentationListValues, str))
-			} else {
-				b.WriteString(fmt.Sprintf("%s%s,\n", indentationListValues, str))
-			}
-		}
-
-		b.WriteString(fmt.Sprintf("%s],\n", indentationValues))
-	}
-
+	b.WriteString(fmt.Sprintf("%sServiceItemEShopResponse (parent): %s,\n", indentationValues, silsir.ServiceItemEShopResponse.FormatToString(indentationLevel+1)))
+	b.WriteString(fmt.Sprintf("%sNullableCatalog: %s,\n", indentationValues, silsir.NullableCatalog))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -120,10 +104,12 @@ func (serviceItemListServiceItemResponse *ServiceItemListServiceItemResponse) Fo
 
 // NewServiceItemListServiceItemResponse returns a new ServiceItemListServiceItemResponse
 func NewServiceItemListServiceItemResponse() *ServiceItemListServiceItemResponse {
-	serviceItemListServiceItemResponse := &ServiceItemListServiceItemResponse{}
+	silsir := &ServiceItemListServiceItemResponse{
+		ServiceItemEShopResponse: NewServiceItemEShopResponse(),
+		NullableCatalog:          types.NewList[*ServiceItemCatalog](),
+	}
 
-	serviceItemListServiceItemResponse.ServiceItemEShopResponse = NewServiceItemEShopResponse()
-	serviceItemListServiceItemResponse.SetParentType(serviceItemListServiceItemResponse.ServiceItemEShopResponse)
+	silsir.NullableCatalog.Type = NewServiceItemCatalog()
 
-	return serviceItemListServiceItemResponse
+	return silsir
 }

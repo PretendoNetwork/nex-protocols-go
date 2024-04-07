@@ -2,56 +2,46 @@
 package protocol
 
 import (
-	"errors"
 	"fmt"
 
-	nex "github.com/PretendoNetwork/nex-go"
-	"github.com/PretendoNetwork/nex-protocols-go/globals"
+	nex "github.com/PretendoNetwork/nex-go/v2"
+	"github.com/PretendoNetwork/nex-go/v2/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
 )
 
-// DenyFriendRequest sets the DenyFriendRequest handler function
-func (protocol *Protocol) DenyFriendRequest(handler func(err error, packet nex.PacketInterface, callID uint32, id uint64) uint32) {
-	protocol.denyFriendRequestHandler = handler
-}
-
 func (protocol *Protocol) handleDenyFriendRequest(packet nex.PacketInterface) {
-	var errorCode uint32
+	if protocol.DenyFriendRequest == nil {
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "FriendsWiiU::DenyFriendRequest not implemented")
 
-	if protocol.denyFriendRequestHandler == nil {
-		globals.Logger.Warning("FriendsWiiU::DenyFriendRequest not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
-		return
-	}
-
-	request := packet.RMCRequest()
-
-	callID := request.CallID()
-	parameters := request.Parameters()
-
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
-
-	if len(parametersStream.Bytes()[parametersStream.ByteOffset():]) < 8 {
-		err := errors.New("[FriendsWiiU::DenyFriendRequest] Data missing list length")
-		errorCode = protocol.denyFriendRequestHandler(err, packet, callID, 0)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
-		}
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
 
 		return
 	}
 
-	id, err := parametersStream.ReadUInt64LE()
+	request := packet.RMCMessage()
+	callID := request.CallID
+	parameters := request.Parameters
+	endpoint := packet.Sender().Endpoint()
+	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
+
+	id := types.NewPrimitiveU64(0)
+
+	err := id.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.denyFriendRequestHandler(fmt.Errorf("Failed to read id from parameters. %s", err.Error()), packet, callID, 0)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.DenyFriendRequest(fmt.Errorf("Failed to read id from parameters. %s", err.Error()), packet, callID, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	errorCode = protocol.denyFriendRequestHandler(nil, packet, callID, id)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.DenyFriendRequest(nil, packet, callID, id)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

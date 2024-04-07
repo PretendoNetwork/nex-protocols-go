@@ -4,53 +4,58 @@ package protocol
 import (
 	"fmt"
 
-	nex "github.com/PretendoNetwork/nex-go"
-	"github.com/PretendoNetwork/nex-protocols-go/globals"
+	nex "github.com/PretendoNetwork/nex-go/v2"
+	"github.com/PretendoNetwork/nex-go/v2/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
 )
 
-// RegisterEx sets the RegisterEx handler function
-func (protocol *Protocol) RegisterEx(handler func(err error, packet nex.PacketInterface, callID uint32, vecMyURLs []*nex.StationURL, hCustomData *nex.DataHolder) uint32) {
-	protocol.registerExHandler = handler
-}
-
 func (protocol *Protocol) handleRegisterEx(packet nex.PacketInterface) {
-	var errorCode uint32
+	if protocol.RegisterEx == nil {
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "SecureConnection::RegisterEx not implemented")
 
-	if protocol.registerExHandler == nil {
-		globals.Logger.Warning("SecureConnection::RegisterEx not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
+	callID := request.CallID
+	parameters := request.Parameters
+	endpoint := packet.Sender().Endpoint()
+	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	callID := request.CallID()
-	parameters := request.Parameters()
+	vecMyURLs := types.NewList[*types.StationURL]()
+	vecMyURLs.Type = types.NewStationURL("")
+	hCustomData := types.NewAnyDataHolder()
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+	var err error
 
-	vecMyURLs, err := parametersStream.ReadListStationURL()
+	err = vecMyURLs.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.registerExHandler(fmt.Errorf("Failed to read vecMyURLs from parameters. %s", err.Error()), packet, callID, nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.RegisterEx(fmt.Errorf("Failed to read vecMyURLs from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	hCustomData, err := parametersStream.ReadDataHolder()
+	err = hCustomData.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.registerExHandler(fmt.Errorf("Failed to read hCustomData from parameters. %s", err.Error()), packet, callID, nil, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.RegisterEx(fmt.Errorf("Failed to read hCustomData from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	errorCode = protocol.registerExHandler(nil, packet, callID, vecMyURLs, hCustomData)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.RegisterEx(nil, packet, callID, vecMyURLs, hCustomData)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

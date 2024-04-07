@@ -1,92 +1,101 @@
-// Package types implements all the types used by the DataStore (Super Mario Maker) protocol
+// Package types implements all the types used by the DataStore protocol
 package types
 
 import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/v2/types"
 )
 
-// BufferQueueParam holds data for the DataStore (Super Mario Maker) protocol
+// BufferQueueParam is a type within the DataStore protocol
 type BufferQueueParam struct {
-	nex.Structure
-	DataID uint64
-	Slot   uint32
+	types.Structure
+	DataID *types.PrimitiveU64
+	Slot   *types.PrimitiveU32
 }
 
-// ExtractFromStream extracts a BufferQueueParam structure from a stream
-func (bufferQueueParam *BufferQueueParam) ExtractFromStream(stream *nex.StreamIn) error {
+// WriteTo writes the BufferQueueParam to the given writable
+func (bqp *BufferQueueParam) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
+
+	bqp.DataID.WriteTo(writable)
+	bqp.Slot.WriteTo(writable)
+
+	content := contentWritable.Bytes()
+
+	bqp.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
+}
+
+// ExtractFrom extracts the BufferQueueParam from the given readable
+func (bqp *BufferQueueParam) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	bufferQueueParam.DataID, err = stream.ReadUInt64LE()
+	err = bqp.ExtractHeaderFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract BufferQueueParam.DataID from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract BufferQueueParam header. %s", err.Error())
 	}
 
-	bufferQueueParam.Slot, err = stream.ReadUInt32LE()
+	err = bqp.DataID.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract BufferQueueParam.Slot from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract BufferQueueParam.DataID. %s", err.Error())
+	}
+
+	err = bqp.Slot.ExtractFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract BufferQueueParam.Slot. %s", err.Error())
 	}
 
 	return nil
 }
 
-// Bytes encodes the BufferQueueParam and returns a byte array
-func (bufferQueueParam *BufferQueueParam) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt64LE(bufferQueueParam.DataID)
-	stream.WriteUInt32LE(bufferQueueParam.Slot)
-
-	return stream.Bytes()
-}
-
 // Copy returns a new copied instance of BufferQueueParam
-func (bufferQueueParam *BufferQueueParam) Copy() nex.StructureInterface {
+func (bqp *BufferQueueParam) Copy() types.RVType {
 	copied := NewBufferQueueParam()
 
-	copied.SetStructureVersion(bufferQueueParam.StructureVersion())
-
-	copied.DataID = bufferQueueParam.DataID
-	copied.Slot = bufferQueueParam.Slot
+	copied.StructureVersion = bqp.StructureVersion
+	copied.DataID = bqp.DataID.Copy().(*types.PrimitiveU64)
+	copied.Slot = bqp.Slot.Copy().(*types.PrimitiveU32)
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (bufferQueueParam *BufferQueueParam) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*BufferQueueParam)
-
-	if bufferQueueParam.StructureVersion() != other.StructureVersion() {
+// Equals checks if the given BufferQueueParam contains the same data as the current BufferQueueParam
+func (bqp *BufferQueueParam) Equals(o types.RVType) bool {
+	if _, ok := o.(*BufferQueueParam); !ok {
 		return false
 	}
 
-	if bufferQueueParam.DataID != other.DataID {
+	other := o.(*BufferQueueParam)
+
+	if bqp.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if bufferQueueParam.Slot != other.Slot {
+	if !bqp.DataID.Equals(other.DataID) {
 		return false
 	}
 
-	return true
+	return bqp.Slot.Equals(other.Slot)
 }
 
-// String returns a string representation of the struct
-func (bufferQueueParam *BufferQueueParam) String() string {
-	return bufferQueueParam.FormatToString(0)
+// String returns the string representation of the BufferQueueParam
+func (bqp *BufferQueueParam) String() string {
+	return bqp.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (bufferQueueParam *BufferQueueParam) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the BufferQueueParam using the provided indentation level
+func (bqp *BufferQueueParam) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("BufferQueueParam{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, bufferQueueParam.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sDataID: %d,\n", indentationValues, bufferQueueParam.DataID))
-	b.WriteString(fmt.Sprintf("%sSlot: %d,\n", indentationValues, bufferQueueParam.Slot))
+	b.WriteString(fmt.Sprintf("%sDataID: %s,\n", indentationValues, bqp.DataID))
+	b.WriteString(fmt.Sprintf("%sSlot: %s,\n", indentationValues, bqp.Slot))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -94,8 +103,10 @@ func (bufferQueueParam *BufferQueueParam) FormatToString(indentationLevel int) s
 
 // NewBufferQueueParam returns a new BufferQueueParam
 func NewBufferQueueParam() *BufferQueueParam {
-	return &BufferQueueParam{
-		DataID: 0,
-		Slot:   0,
+	bqp := &BufferQueueParam{
+		DataID: types.NewPrimitiveU64(0),
+		Slot:   types.NewPrimitiveU32(0),
 	}
+
+	return bqp
 }

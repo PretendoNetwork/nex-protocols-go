@@ -2,110 +2,113 @@
 package types
 
 import (
-	"bytes"
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/v2/types"
 )
 
-// ShopItemRights is a data structure used by the Shop protocol
+// ShopItemRights is a type within the Shop protocol
 type ShopItemRights struct {
-	nex.Structure
-	ReferenceID []byte
-	ItemType    int8
-	Attribute   uint32
+	types.Structure
+	ReferenceID *types.QBuffer
+	ItemType    *types.PrimitiveS8
+	Attribute   *types.PrimitiveU32
 }
 
-// ExtractFromStream extracts a ShopItemRights structure from a stream
-func (shopItemRights *ShopItemRights) ExtractFromStream(stream *nex.StreamIn) error {
-	referenceID, err := stream.ReadQBuffer()
+// WriteTo writes the ShopItemRights to the given writable
+func (sir *ShopItemRights) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
+
+	sir.ReferenceID.WriteTo(writable)
+	sir.ItemType.WriteTo(writable)
+	sir.Attribute.WriteTo(writable)
+
+	content := contentWritable.Bytes()
+
+	sir.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
+}
+
+// ExtractFrom extracts the ShopItemRights from the given readable
+func (sir *ShopItemRights) ExtractFrom(readable types.Readable) error {
+	var err error
+
+	err = sir.ExtractHeaderFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract ShopItemRights.ReferenceID from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract ShopItemRights header. %s", err.Error())
 	}
 
-	itemType, err := stream.ReadInt8()
+	err = sir.ReferenceID.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract ShopItemRights.ItemType from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract ShopItemRights.ReferenceID. %s", err.Error())
 	}
 
-	attribute, err := stream.ReadUInt32LE()
+	err = sir.ItemType.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract ShopItemRights.Attribute from stream. %s", err.Error())
+		return fmt.Errorf("Failed to extract ShopItemRights.ItemType. %s", err.Error())
 	}
 
-	shopItemRights.ReferenceID = referenceID
-	shopItemRights.ItemType = itemType
-	shopItemRights.Attribute = attribute
+	err = sir.Attribute.ExtractFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract ShopItemRights.Attribute. %s", err.Error())
+	}
 
 	return nil
 }
 
-// Bytes encodes the ShopItemRights and returns a byte array
-func (shopItemRights *ShopItemRights) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteQBuffer(shopItemRights.ReferenceID)
-	stream.WriteUInt8(uint8(shopItemRights.ItemType))
-	stream.WriteUInt32LE(shopItemRights.Attribute)
-
-	return stream.Bytes()
-}
-
 // Copy returns a new copied instance of ShopItemRights
-func (shopItemRights *ShopItemRights) Copy() nex.StructureInterface {
+func (sir *ShopItemRights) Copy() types.RVType {
 	copied := NewShopItemRights()
 
-	copied.SetStructureVersion(shopItemRights.StructureVersion())
-
-	copied.ReferenceID = make([]byte, len(shopItemRights.ReferenceID))
-
-	copy(copied.ReferenceID, shopItemRights.ReferenceID)
-
-	copied.ItemType = shopItemRights.ItemType
-	copied.Attribute = shopItemRights.Attribute
+	copied.StructureVersion = sir.StructureVersion
+	copied.ReferenceID = sir.ReferenceID.Copy().(*types.QBuffer)
+	copied.ItemType = sir.ItemType.Copy().(*types.PrimitiveS8)
+	copied.Attribute = sir.Attribute.Copy().(*types.PrimitiveU32)
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (shopItemRights *ShopItemRights) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*ShopItemRights)
-
-	if shopItemRights.StructureVersion() != other.StructureVersion() {
+// Equals checks if the given ShopItemRights contains the same data as the current ShopItemRights
+func (sir *ShopItemRights) Equals(o types.RVType) bool {
+	if _, ok := o.(*ShopItemRights); !ok {
 		return false
 	}
 
-	if !bytes.Equal(shopItemRights.ReferenceID, other.ReferenceID) {
+	other := o.(*ShopItemRights)
+
+	if sir.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if shopItemRights.ItemType != other.ItemType {
+	if !sir.ReferenceID.Equals(other.ReferenceID) {
 		return false
 	}
 
-	if shopItemRights.Attribute != other.Attribute {
+	if !sir.ItemType.Equals(other.ItemType) {
 		return false
 	}
 
-	return true
+	return sir.Attribute.Equals(other.Attribute)
 }
 
-// String returns a string representation of the struct
-func (shopItemRights *ShopItemRights) String() string {
-	return shopItemRights.FormatToString(0)
+// String returns the string representation of the ShopItemRights
+func (sir *ShopItemRights) String() string {
+	return sir.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (shopItemRights *ShopItemRights) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the ShopItemRights using the provided indentation level
+func (sir *ShopItemRights) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
-	b.WriteString("ShopItem{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, shopItemRights.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sReferenceID: %x,\n", indentationValues, shopItemRights.ReferenceID))
-	b.WriteString(fmt.Sprintf("%sItemType: %d,\n", indentationValues, shopItemRights.ItemType))
-	b.WriteString(fmt.Sprintf("%sAttribute: %d\n", indentationValues, shopItemRights.Attribute))
+	b.WriteString("ShopItemRights{\n")
+	b.WriteString(fmt.Sprintf("%sReferenceID: %s,\n", indentationValues, sir.ReferenceID))
+	b.WriteString(fmt.Sprintf("%sItemType: %s,\n", indentationValues, sir.ItemType))
+	b.WriteString(fmt.Sprintf("%sAttribute: %s,\n", indentationValues, sir.Attribute))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -113,5 +116,11 @@ func (shopItemRights *ShopItemRights) FormatToString(indentationLevel int) strin
 
 // NewShopItemRights returns a new ShopItemRights
 func NewShopItemRights() *ShopItemRights {
-	return &ShopItemRights{}
+	sir := &ShopItemRights{
+		ReferenceID: types.NewQBuffer(nil),
+		ItemType:    types.NewPrimitiveS8(0),
+		Attribute:   types.NewPrimitiveU32(0),
+	}
+
+	return sir
 }

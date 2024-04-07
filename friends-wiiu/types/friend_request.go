@@ -1,112 +1,128 @@
-// Package types implements all the types used by the Friends WiiU protocol
+// Package types implements all the types used by the FriendsWiiU protocol
 package types
 
 import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/v2/types"
 )
 
-// FriendRequest contains information about a friend request
+// FriendRequest is a type within the FriendsWiiU protocol
 type FriendRequest struct {
-	nex.Structure
-	*nex.Data
+	types.Structure
+	*types.Data
 	PrincipalInfo *PrincipalBasicInfo
 	Message       *FriendRequestMessage
-	SentOn        *nex.DateTime
+	SentOn        *types.DateTime
 }
 
-// Bytes encodes the FriendRequest and returns a byte array
-func (friendRequest *FriendRequest) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteStructure(friendRequest.PrincipalInfo)
-	stream.WriteStructure(friendRequest.Message)
-	stream.WriteDateTime(friendRequest.SentOn)
+// WriteTo writes the FriendRequest to the given writable
+func (fr *FriendRequest) WriteTo(writable types.Writable) {
+	fr.Data.WriteTo(writable)
 
-	return stream.Bytes()
+	contentWritable := writable.CopyNew()
+
+	fr.PrincipalInfo.WriteTo(writable)
+	fr.Message.WriteTo(writable)
+	fr.SentOn.WriteTo(writable)
+
+	content := contentWritable.Bytes()
+
+	fr.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
+}
+
+// ExtractFrom extracts the FriendRequest from the given readable
+func (fr *FriendRequest) ExtractFrom(readable types.Readable) error {
+	var err error
+
+	err = fr.Data.ExtractFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract FriendRequest.Data. %s", err.Error())
+	}
+
+	err = fr.ExtractHeaderFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract FriendRequest header. %s", err.Error())
+	}
+
+	err = fr.PrincipalInfo.ExtractFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract FriendRequest.PrincipalInfo. %s", err.Error())
+	}
+
+	err = fr.Message.ExtractFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract FriendRequest.Message. %s", err.Error())
+	}
+
+	err = fr.SentOn.ExtractFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract FriendRequest.SentOn. %s", err.Error())
+	}
+
+	return nil
 }
 
 // Copy returns a new copied instance of FriendRequest
-func (friendRequest *FriendRequest) Copy() nex.StructureInterface {
+func (fr *FriendRequest) Copy() types.RVType {
 	copied := NewFriendRequest()
 
-	copied.SetStructureVersion(friendRequest.StructureVersion())
-
-	if friendRequest.ParentType() != nil {
-		copied.Data = friendRequest.ParentType().Copy().(*nex.Data)
-	} else {
-		copied.Data = nex.NewData()
-	}
-
-	copied.SetParentType(copied.Data)
-
-	copied.PrincipalInfo = friendRequest.PrincipalInfo.Copy().(*PrincipalBasicInfo)
-	copied.Message = friendRequest.Message.Copy().(*FriendRequestMessage)
-	copied.SentOn = friendRequest.SentOn.Copy()
+	copied.StructureVersion = fr.StructureVersion
+	copied.Data = fr.Data.Copy().(*types.Data)
+	copied.PrincipalInfo = fr.PrincipalInfo.Copy().(*PrincipalBasicInfo)
+	copied.Message = fr.Message.Copy().(*FriendRequestMessage)
+	copied.SentOn = fr.SentOn.Copy().(*types.DateTime)
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (friendRequest *FriendRequest) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*FriendRequest)
-
-	if friendRequest.StructureVersion() != other.StructureVersion() {
+// Equals checks if the given FriendRequest contains the same data as the current FriendRequest
+func (fr *FriendRequest) Equals(o types.RVType) bool {
+	if _, ok := o.(*FriendRequest); !ok {
 		return false
 	}
 
-	if !friendRequest.ParentType().Equals(other.ParentType()) {
+	other := o.(*FriendRequest)
+
+	if fr.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if !friendRequest.PrincipalInfo.Equals(other.PrincipalInfo) {
+	if !fr.Data.Equals(other.Data) {
 		return false
 	}
 
-	if !friendRequest.Message.Equals(other.Message) {
+	if !fr.PrincipalInfo.Equals(other.PrincipalInfo) {
 		return false
 	}
 
-	if !friendRequest.SentOn.Equals(other.SentOn) {
+	if !fr.Message.Equals(other.Message) {
 		return false
 	}
 
-	return true
+	return fr.SentOn.Equals(other.SentOn)
 }
 
-// String returns a string representation of the struct
-func (friendRequest *FriendRequest) String() string {
-	return friendRequest.FormatToString(0)
+// String returns the string representation of the FriendRequest
+func (fr *FriendRequest) String() string {
+	return fr.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (friendRequest *FriendRequest) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the FriendRequest using the provided indentation level
+func (fr *FriendRequest) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("FriendRequest{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, friendRequest.StructureVersion()))
-
-	if friendRequest.PrincipalInfo != nil {
-		b.WriteString(fmt.Sprintf("%sPrincipalInfo: %s,\n", indentationValues, friendRequest.PrincipalInfo.FormatToString(indentationLevel+1)))
-	} else {
-		b.WriteString(fmt.Sprintf("%sPrincipalInfo: nil,\n", indentationValues))
-	}
-
-	if friendRequest.Message != nil {
-		b.WriteString(fmt.Sprintf("%sMessage: %s,\n", indentationValues, friendRequest.Message.FormatToString(indentationLevel+1)))
-	} else {
-		b.WriteString(fmt.Sprintf("%sMessage: nil,\n", indentationValues))
-	}
-
-	if friendRequest.SentOn != nil {
-		b.WriteString(fmt.Sprintf("%sSentOn: %s\n", indentationValues, friendRequest.SentOn.FormatToString(indentationLevel+1)))
-	} else {
-		b.WriteString(fmt.Sprintf("%sSentOn: nil\n", indentationValues))
-	}
-
+	b.WriteString(fmt.Sprintf("%sData (parent): %s,\n", indentationValues, fr.Data.FormatToString(indentationLevel+1)))
+	b.WriteString(fmt.Sprintf("%sPrincipalInfo: %s,\n", indentationValues, fr.PrincipalInfo.FormatToString(indentationLevel+1)))
+	b.WriteString(fmt.Sprintf("%sMessage: %s,\n", indentationValues, fr.Message.FormatToString(indentationLevel+1)))
+	b.WriteString(fmt.Sprintf("%sSentOn: %s,\n", indentationValues, fr.SentOn.FormatToString(indentationLevel+1)))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -114,5 +130,12 @@ func (friendRequest *FriendRequest) FormatToString(indentationLevel int) string 
 
 // NewFriendRequest returns a new FriendRequest
 func NewFriendRequest() *FriendRequest {
-	return &FriendRequest{}
+	fr := &FriendRequest{
+		Data:          types.NewData(),
+		PrincipalInfo: NewPrincipalBasicInfo(),
+		Message:       NewFriendRequestMessage(),
+		SentOn:        types.NewDateTime(0),
+	}
+
+	return fr
 }

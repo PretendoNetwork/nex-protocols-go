@@ -4,63 +4,68 @@ package protocol
 import (
 	"fmt"
 
-	nex "github.com/PretendoNetwork/nex-go"
-	"github.com/PretendoNetwork/nex-protocols-go/globals"
+	nex "github.com/PretendoNetwork/nex-go/v2"
+	"github.com/PretendoNetwork/nex-go/v2/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
 )
 
-// UpdateAccountEffectiveDate sets the UpdateAccountEffectiveDate handler function
-func (protocol *Protocol) UpdateAccountEffectiveDate(handler func(err error, packet nex.PacketInterface, callID uint32, idPrincipal uint32, dtEffectiveFrom *nex.DateTime, strNotEffectiveMessage string) uint32) {
-	protocol.updateAccountEffectiveDateHandler = handler
-}
-
 func (protocol *Protocol) handleUpdateAccountEffectiveDate(packet nex.PacketInterface) {
-	var errorCode uint32
+	if protocol.UpdateAccountEffectiveDate == nil {
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "AccountManagement::UpdateAccountEffectiveDate not implemented")
 
-	if protocol.updateAccountEffectiveDateHandler == nil {
-		globals.Logger.Warning("AccountManagement::UpdateAccountEffectiveDate not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
+	callID := request.CallID
+	parameters := request.Parameters
+	endpoint := packet.Sender().Endpoint()
+	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	callID := request.CallID()
-	parameters := request.Parameters()
+	idPrincipal := types.NewPID(0)
+	dtEffectiveFrom := types.NewDateTime(0)
+	strNotEffectiveMessage := types.NewString("")
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
+	var err error
 
-	idPrincipal, err := parametersStream.ReadUInt32LE()
+	err = idPrincipal.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.updateAccountEffectiveDateHandler(fmt.Errorf("Failed to read idPrincipal from parameters. %s", err.Error()), packet, callID, 0, nil, "")
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.UpdateAccountEffectiveDate(fmt.Errorf("Failed to read idPrincipal from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	dtEffectiveFrom, err := parametersStream.ReadDateTime()
+	err = dtEffectiveFrom.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.updateAccountEffectiveDateHandler(fmt.Errorf("Failed to read dtEffectiveFrom from parameters. %s", err.Error()), packet, callID, 0, nil, "")
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.UpdateAccountEffectiveDate(fmt.Errorf("Failed to read dtEffectiveFrom from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	strNotEffectiveMessage, err := parametersStream.ReadString()
+	err = strNotEffectiveMessage.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.updateAccountEffectiveDateHandler(fmt.Errorf("Failed to read strNotEffectiveMessage from parameters. %s", err.Error()), packet, callID, 0, nil, "")
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.UpdateAccountEffectiveDate(fmt.Errorf("Failed to read strNotEffectiveMessage from parameters. %s", err.Error()), packet, callID, nil, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	errorCode = protocol.updateAccountEffectiveDateHandler(nil, packet, callID, idPrincipal, dtEffectiveFrom, strNotEffectiveMessage)
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.UpdateAccountEffectiveDate(nil, packet, callID, idPrincipal, dtEffectiveFrom, strNotEffectiveMessage)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

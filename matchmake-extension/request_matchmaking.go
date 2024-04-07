@@ -4,44 +4,44 @@ package protocol
 import (
 	"fmt"
 
-	nex "github.com/PretendoNetwork/nex-go"
-	"github.com/PretendoNetwork/nex-protocols-go/globals"
-	match_making_types "github.com/PretendoNetwork/nex-protocols-go/match-making/types"
+	nex "github.com/PretendoNetwork/nex-go/v2"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
+	match_making_types "github.com/PretendoNetwork/nex-protocols-go/v2/match-making/types"
 )
 
-// RequestMatchmaking sets the RequestMatchmaking handler function
-func (protocol *Protocol) RequestMatchmaking(handler func(err error, packet nex.PacketInterface, callID uint32, autoMatchmakeParam *match_making_types.AutoMatchmakeParam) uint32) {
-	protocol.requestMatchmakingHandler = handler
-}
-
 func (protocol *Protocol) handleRequestMatchmaking(packet nex.PacketInterface) {
-	var errorCode uint32
+	if protocol.RequestMatchmaking == nil {
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "MatchmakeExtension::RequestMatchmaking not implemented")
 
-	if protocol.requestMatchmakingHandler == nil {
-		globals.Logger.Warning("MatchmakeExtension::RequestMatchmaking not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
+	callID := request.CallID
+	parameters := request.Parameters
+	endpoint := packet.Sender().Endpoint()
+	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	callID := request.CallID()
-	parameters := request.Parameters()
+	autoMatchmakeParam := match_making_types.NewAutoMatchmakeParam()
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
-
-	autoMatchmakeParam, err := parametersStream.ReadStructure(match_making_types.NewAutoMatchmakeParam())
+	err := autoMatchmakeParam.ExtractFrom(parametersStream)
 	if err != nil {
-		errorCode = protocol.requestMatchmakingHandler(fmt.Errorf("Failed to read pid from parameters. %s", err.Error()), packet, callID, nil)
-		if errorCode != 0 {
-			globals.RespondError(packet, ProtocolID, errorCode)
+		_, rmcError := protocol.RequestMatchmaking(fmt.Errorf("Failed to read autoMatchmakeParam from parameters. %s", err.Error()), packet, callID, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
 		}
 
 		return
 	}
 
-	errorCode = protocol.requestMatchmakingHandler(nil, packet, callID, autoMatchmakeParam.(*match_making_types.AutoMatchmakeParam))
-	if errorCode != 0 {
-		globals.RespondError(packet, ProtocolID, errorCode)
+	rmcMessage, rmcError := protocol.RequestMatchmaking(nil, packet, callID, autoMatchmakeParam)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
+		return
 	}
+
+	globals.Respond(packet, rmcMessage)
 }

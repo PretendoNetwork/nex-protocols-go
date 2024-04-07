@@ -1,38 +1,52 @@
-// Package subscription implements the Subscription NEX protocol
-package subscription
+// Package protocol implements the Subscription protocol
+package protocol
 
 import (
 	"fmt"
 
-	nex "github.com/PretendoNetwork/nex-go"
-	"github.com/PretendoNetwork/nex-protocols-go/globals"
+	nex "github.com/PretendoNetwork/nex-go/v2"
+	"github.com/PretendoNetwork/nex-go/v2/types"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
 )
 
-// CreateMySubscriptionData sets the CreateMySubscriptionData handler function
-func (protocol *SubscriptionProtocol) CreateMySubscriptionData(handler func(err error, packet nex.PacketInterface, callID uint32, unk uint64, content []byte)) {
-	protocol.createMySubscriptionDataHandler = handler
-}
+func (protocol *Protocol) handleCreateMySubscriptionData(packet nex.PacketInterface) {
+	if protocol.CreateMySubscriptionData == nil {
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, "SubscriptionProtocol::CreateMySubscriptionData not implemented")
 
-func (protocol *SubscriptionProtocol) handleCreateMySubscriptionData(packet nex.PacketInterface) {
-	if protocol.createMySubscriptionDataHandler == nil {
-		fmt.Println("[Warning] SubscriptionProtocol::CreateMySubscriptionData not implemented")
-		go globals.RespondError(packet, ProtocolID, nex.Errors.Core.NotImplemented)
+		globals.Logger.Warning(err.Message)
+		globals.RespondError(packet, ProtocolID, err)
+
 		return
 	}
 
-	request := packet.RMCRequest()
+	request := packet.RMCMessage()
+	callID := request.CallID
+	parameters := request.Parameters
+	endpoint := packet.Sender().Endpoint()
+	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	callID := request.CallID()
-	parameters := request.Parameters()
+	unk := types.NewPrimitiveU64(0)
 
-	parametersStream := nex.NewStreamIn(parameters, protocol.Server)
-	unk, err := parametersStream.ReadUInt64LE()
+	err := unk.ExtractFrom(parametersStream)
 	if err != nil {
-		go protocol.createMySubscriptionDataHandler(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, 0, nil)
+		_, rmcError := protocol.CreateMySubscriptionData(fmt.Errorf("Failed to read unk from parameters. %s", err.Error()), packet, callID, nil, nil)
+		if rmcError != nil {
+			globals.RespondError(packet, ProtocolID, rmcError)
+		}
+
 		return
 	}
 
-	//This is done since the server doesn't need to care about the data here (it's game-specific), so we just pass it along to store however the handler wants
+	// * This is done since the server doesn't need to care about the data here (it's game-specific),
+	// * so we just pass it along to store however the handler wants
+	// TODO - Is this really the best way to do this?
 	content := parametersStream.ReadRemaining()
-	go protocol.createMySubscriptionDataHandler(nil, packet, callID, unk, content)
+
+	rmcMessage, rmcError := protocol.CreateMySubscriptionData(nil, packet, callID, unk, content)
+	if rmcError != nil {
+		globals.RespondError(packet, ProtocolID, rmcError)
+		return
+	}
+
+	globals.Respond(packet, rmcMessage)
 }

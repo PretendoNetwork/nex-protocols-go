@@ -5,96 +5,97 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/PretendoNetwork/nex-go"
+	"github.com/PretendoNetwork/nex-go/v2/types"
 )
 
-// DataStoreRatingInfoWithSlot is a data structure used by the DataStore protocol
+// DataStoreRatingInfoWithSlot is a type within the DataStore protocol
 type DataStoreRatingInfoWithSlot struct {
-	nex.Structure
-	Slot   int8
+	types.Structure
+	Slot   *types.PrimitiveS8
 	Rating *DataStoreRatingInfo
 }
 
-// ExtractFromStream extracts a DataStoreRatingInfoWithSlot structure from a stream
-func (dataStoreRatingInfoWithSlot *DataStoreRatingInfoWithSlot) ExtractFromStream(stream *nex.StreamIn) error {
+// WriteTo writes the DataStoreRatingInfoWithSlot to the given writable
+func (dsriws *DataStoreRatingInfoWithSlot) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
+
+	dsriws.Slot.WriteTo(writable)
+	dsriws.Rating.WriteTo(writable)
+
+	content := contentWritable.Bytes()
+
+	dsriws.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
+}
+
+// ExtractFrom extracts the DataStoreRatingInfoWithSlot from the given readable
+func (dsriws *DataStoreRatingInfoWithSlot) ExtractFrom(readable types.Readable) error {
 	var err error
 
-	dataStoreRatingInfoWithSlot.Slot, err = stream.ReadInt8()
+	err = dsriws.ExtractHeaderFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreRatingInfoWithSlot header. %s", err.Error())
+	}
+
+	err = dsriws.Slot.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreRatingInfoWithSlot.Slot. %s", err.Error())
 	}
 
-	rating, err := stream.ReadStructure(NewDataStoreRatingInfo())
+	err = dsriws.Rating.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreRatingInfoWithSlot.Rating. %s", err.Error())
 	}
 
-	dataStoreRatingInfoWithSlot.Rating = rating.(*DataStoreRatingInfo)
-
 	return nil
 }
 
-// Bytes encodes the DataStoreRatingInfoWithSlot and returns a byte array
-func (dataStoreRatingInfoWithSlot *DataStoreRatingInfoWithSlot) Bytes(stream *nex.StreamOut) []byte {
-	stream.WriteUInt8(uint8(dataStoreRatingInfoWithSlot.Slot))
-	stream.WriteStructure(dataStoreRatingInfoWithSlot.Rating)
-
-	return stream.Bytes()
-}
-
 // Copy returns a new copied instance of DataStoreRatingInfoWithSlot
-func (dataStoreRatingInfoWithSlot *DataStoreRatingInfoWithSlot) Copy() nex.StructureInterface {
+func (dsriws *DataStoreRatingInfoWithSlot) Copy() types.RVType {
 	copied := NewDataStoreRatingInfoWithSlot()
 
-	copied.SetStructureVersion(dataStoreRatingInfoWithSlot.StructureVersion())
-
-	copied.Slot = dataStoreRatingInfoWithSlot.Slot
-	copied.Rating = dataStoreRatingInfoWithSlot.Rating.Copy().(*DataStoreRatingInfo)
+	copied.StructureVersion = dsriws.StructureVersion
+	copied.Slot = dsriws.Slot.Copy().(*types.PrimitiveS8)
+	copied.Rating = dsriws.Rating.Copy().(*DataStoreRatingInfo)
 
 	return copied
 }
 
-// Equals checks if the passed Structure contains the same data as the current instance
-func (dataStoreRatingInfoWithSlot *DataStoreRatingInfoWithSlot) Equals(structure nex.StructureInterface) bool {
-	other := structure.(*DataStoreRatingInfoWithSlot)
-
-	if dataStoreRatingInfoWithSlot.StructureVersion() != other.StructureVersion() {
+// Equals checks if the given DataStoreRatingInfoWithSlot contains the same data as the current DataStoreRatingInfoWithSlot
+func (dsriws *DataStoreRatingInfoWithSlot) Equals(o types.RVType) bool {
+	if _, ok := o.(*DataStoreRatingInfoWithSlot); !ok {
 		return false
 	}
 
-	if dataStoreRatingInfoWithSlot.Slot != other.Slot {
+	other := o.(*DataStoreRatingInfoWithSlot)
+
+	if dsriws.StructureVersion != other.StructureVersion {
 		return false
 	}
 
-	if !dataStoreRatingInfoWithSlot.Rating.Equals(other.Rating) {
+	if !dsriws.Slot.Equals(other.Slot) {
 		return false
 	}
 
-	return true
+	return dsriws.Rating.Equals(other.Rating)
 }
 
-// String returns a string representation of the struct
-func (dataStoreRatingInfoWithSlot *DataStoreRatingInfoWithSlot) String() string {
-	return dataStoreRatingInfoWithSlot.FormatToString(0)
+// String returns the string representation of the DataStoreRatingInfoWithSlot
+func (dsriws *DataStoreRatingInfoWithSlot) String() string {
+	return dsriws.FormatToString(0)
 }
 
-// FormatToString pretty-prints the struct data using the provided indentation level
-func (dataStoreRatingInfoWithSlot *DataStoreRatingInfoWithSlot) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the DataStoreRatingInfoWithSlot using the provided indentation level
+func (dsriws *DataStoreRatingInfoWithSlot) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
 	b.WriteString("DataStoreRatingInfoWithSlot{\n")
-	b.WriteString(fmt.Sprintf("%sstructureVersion: %d,\n", indentationValues, dataStoreRatingInfoWithSlot.StructureVersion()))
-	b.WriteString(fmt.Sprintf("%sSlot: %d,\n", indentationValues, dataStoreRatingInfoWithSlot.Slot))
-
-	if dataStoreRatingInfoWithSlot.Rating != nil {
-		b.WriteString(fmt.Sprintf("%sRating: %s\n", indentationValues, dataStoreRatingInfoWithSlot.Rating.FormatToString(indentationLevel+1)))
-	} else {
-		b.WriteString(fmt.Sprintf("%sRating: nil\n", indentationValues))
-	}
-
+	b.WriteString(fmt.Sprintf("%sSlot: %s,\n", indentationValues, dsriws.Slot))
+	b.WriteString(fmt.Sprintf("%sRating: %s,\n", indentationValues, dsriws.Rating.FormatToString(indentationLevel+1)))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
 	return b.String()
@@ -102,8 +103,10 @@ func (dataStoreRatingInfoWithSlot *DataStoreRatingInfoWithSlot) FormatToString(i
 
 // NewDataStoreRatingInfoWithSlot returns a new DataStoreRatingInfoWithSlot
 func NewDataStoreRatingInfoWithSlot() *DataStoreRatingInfoWithSlot {
-	return &DataStoreRatingInfoWithSlot{
-		Slot:   0,
+	dsriws := &DataStoreRatingInfoWithSlot{
+		Slot:   types.NewPrimitiveS8(0),
 		Rating: NewDataStoreRatingInfo(),
 	}
+
+	return dsriws
 }

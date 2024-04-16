@@ -2,6 +2,8 @@
 package types
 
 import (
+	"fmt"
+
 	"github.com/PretendoNetwork/nex-go/v2/types"
 	datastore_types "github.com/PretendoNetwork/nex-protocols-go/v2/datastore/types"
 )
@@ -12,6 +14,78 @@ type MiiTubeMiiInfo struct {
 	MetaInfo    *datastore_types.DataStoreMetaInfo
 	Category    *types.PrimitiveU8
 	RankingType *types.PrimitiveU8
+}
+
+// WriteTo wrties the MiiTubeMiiInfo to the given writable
+func (mtmi *MiiTubeMiiInfo) WriteTo(writable types.Writable) {
+	contentWritable := writable.CopyNew()
+
+	mtmi.MetaInfo.WriteTo(writable)
+	mtmi.Category.WriteTo(writable)
+	mtmi.RankingType.WriteTo(writable)
+
+	content := contentWritable.Bytes()
+
+	mtmi.WriteHeaderTo(writable, uint32(len(content)))
+
+	writable.Write(content)
+}
+
+// ExtractFrom extracts the MiiTubeMiiInfo from the given readable
+func (mtmi *MiiTubeMiiInfo) ExtractFrom(readable types.Readable) error {
+	var err error
+
+	err = mtmi.ExtractHeaderFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract MiiTubeMiiInfo header. %s", err.Error())
+	}
+
+	err = mtmi.MetaInfo.ExtractFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract MiiTubeMiiInfo.MetaInfo. %s", err.Error())
+	}
+
+	err = mtmi.Category.ExtractFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract MiiTubeMiiInfo.Category. %s", err.Error())
+	}
+
+	err = mtmi.RankingType.ExtractFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract MiiTubeMiiInfo.RankingType. %s", err.Error())
+	}
+
+	return nil
+}
+
+// Copy returns a new copied instance of MiiTubeMiiInfo
+func (mtmi *MiiTubeMiiInfo) Copy() types.RVType {
+	copied := NewMiiTubeMiiInfo()
+
+	copied.MetaInfo = mtmi.MetaInfo
+	copied.Category = mtmi.Category
+	copied.RankingType = mtmi.RankingType
+
+	return copied
+}
+
+// Equals checks if the given MiiTubeMiiInfo contains the same data as the current MiiTubeMiiInfo
+func (mtmi *MiiTubeMiiInfo) Equals(o types.RVType) bool {
+	if _, ok := o.(*MiiTubeMiiInfo); !ok {
+		return false
+	}
+
+	other := o.(*MiiTubeMiiInfo)
+
+	if !mtmi.MetaInfo.Equals(other.MetaInfo) {
+		return false
+	}
+
+	if !mtmi.Category.Equals(other.Category) {
+		return false
+	}
+
+	return mtmi.RankingType.Equals(other.RankingType)
 }
 
 func NewMiiTubeMiiInfo() *MiiTubeMiiInfo {

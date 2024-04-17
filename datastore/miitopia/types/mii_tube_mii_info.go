@@ -91,7 +91,7 @@ func (mtmi *MiiTubeMiiInfo) Equals(o types.RVType) bool {
 
 // String returns the string representation of the MiiTubeMiiInfo
 func (mtmi *MiiTubeMiiInfo) String() string {
-	return mtmi.MetaInfo.FormatToString(0)
+	return mtmi.FormatToString(0)
 }
 
 // FormatToString pretty-prints the MiiTubeMiiInfo using the provided indentation level

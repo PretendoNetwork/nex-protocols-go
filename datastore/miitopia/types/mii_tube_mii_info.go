@@ -17,7 +17,7 @@ type MiiTubeMiiInfo struct {
 	RankingType *types.PrimitiveU8
 }
 
-// WriteTo wrties the MiiTubeMiiInfo to the given writable
+// WriteTo writes the MiiTubeMiiInfo to the given writable
 func (mtmi *MiiTubeMiiInfo) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 

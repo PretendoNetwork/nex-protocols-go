@@ -3,6 +3,7 @@ package types
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/PretendoNetwork/nex-go/v2/types"
 	datastore_types "github.com/PretendoNetwork/nex-protocols-go/v2/datastore/types"
@@ -86,6 +87,27 @@ func (mtmi *MiiTubeMiiInfo) Equals(o types.RVType) bool {
 	}
 
 	return mtmi.RankingType.Equals(other.RankingType)
+}
+
+// String returns the string representation of the MiiTubeMiiInfo
+func (mtmi *MiiTubeMiiInfo) String() string {
+	return mtmi.MetaInfo.FormatToString(0)
+}
+
+// FormatToString pretty-prints the MiiTubeMiiInfo using the provided indentation level
+func (mtmi *MiiTubeMiiInfo) FormatToString(indentationLevel int) string {
+	indentationValues := strings.Repeat("\t", indentationLevel+1)
+	indentationEnd := strings.Repeat("\t", indentationLevel)
+
+	var b strings.Builder
+
+	b.WriteString("MiiTubeMiiInfo{\n")
+	b.WriteString(fmt.Sprintf("%sMetaInfo: %s,\n", indentationValues, mtmi.MetaInfo))
+	b.WriteString(fmt.Sprintf("%sCategory: %s,\n", indentationValues, mtmi.Category))
+	b.WriteString(fmt.Sprintf("%sRankingType: %s,\n", indentationValues, mtmi.RankingType))
+	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
+
+	return b.String()
 }
 
 func NewMiiTubeMiiInfo() *MiiTubeMiiInfo {

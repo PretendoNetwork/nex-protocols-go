@@ -150,7 +150,7 @@ func (mtsp *MiiTubeSearchParam) FormatToString(indentationLevel int) string {
 
 	b.WriteString("MiiTubeSearchParam{\n")
 	b.WriteString(fmt.Sprintf("%sName: %s,\n", indentationValues, mtsp.Name))
-	b.WriteString(fmt.Sprintf("%sPage: %s,\n", indentationValues, mtsp.Name))
+	b.WriteString(fmt.Sprintf("%sPage: %s,\n", indentationValues, mtsp.Page))
 	b.WriteString(fmt.Sprintf("%sCategory: %s,\n", indentationValues, mtsp.Category))
 	b.WriteString(fmt.Sprintf("%sGender: %s,\n", indentationValues, mtsp.Gender))
 	b.WriteString(fmt.Sprintf("%sCountry: %s,\n", indentationValues, mtsp.Country))

@@ -36,7 +36,7 @@ func (dscup *DataStoreCompleteUpdateParam) WriteTo(writable types.Writable) {
 		contentWritable.WritePrimitiveUInt16LE(uint16(dscup.Version.Value))
 	}
 
-	dscup.IsSuccess.WriteTo(writable)
+	dscup.IsSuccess.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

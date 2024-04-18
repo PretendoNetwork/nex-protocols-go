@@ -21,10 +21,10 @@ type AccountExtraInfo struct {
 func (aei *AccountExtraInfo) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	aei.Unknown.WriteTo(writable)
-	aei.Unknown2.WriteTo(writable)
-	aei.Unknown3.WriteTo(writable)
-	aei.NEXToken.WriteTo(writable)
+	aei.Unknown.WriteTo(contentWritable)
+	aei.Unknown2.WriteTo(contentWritable)
+	aei.Unknown3.WriteTo(contentWritable)
+	aei.NEXToken.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

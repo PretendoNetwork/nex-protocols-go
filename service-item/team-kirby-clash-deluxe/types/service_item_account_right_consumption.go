@@ -23,9 +23,9 @@ func (siarc *ServiceItemAccountRightConsumption) WriteTo(writable types.Writable
 
 	contentWritable := writable.CopyNew()
 
-	siarc.UsedCount.WriteTo(writable)
-	siarc.ExpiredCount.WriteTo(writable)
-	siarc.ExpiryCounts.WriteTo(writable)
+	siarc.UsedCount.WriteTo(contentWritable)
+	siarc.ExpiredCount.WriteTo(contentWritable)
+	siarc.ExpiryCounts.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

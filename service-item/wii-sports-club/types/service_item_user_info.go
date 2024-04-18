@@ -19,8 +19,8 @@ type ServiceItemUserInfo struct {
 func (siui *ServiceItemUserInfo) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	siui.NumTotalEntryTicket.WriteTo(writable)
-	siui.ApplicationBuffer.WriteTo(writable)
+	siui.NumTotalEntryTicket.WriteTo(contentWritable)
+	siui.ApplicationBuffer.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

@@ -19,8 +19,8 @@ type FriendInfo struct {
 func (fi *FriendInfo) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	fi.PID.WriteTo(writable)
-	fi.Unknown.WriteTo(writable)
+	fi.PID.WriteTo(contentWritable)
+	fi.Unknown.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

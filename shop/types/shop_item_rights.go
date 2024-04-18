@@ -20,9 +20,9 @@ type ShopItemRights struct {
 func (sir *ShopItemRights) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	sir.ReferenceID.WriteTo(writable)
-	sir.ItemType.WriteTo(writable)
-	sir.Attribute.WriteTo(writable)
+	sir.ReferenceID.WriteTo(contentWritable)
+	sir.ItemType.WriteTo(contentWritable)
+	sir.Attribute.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

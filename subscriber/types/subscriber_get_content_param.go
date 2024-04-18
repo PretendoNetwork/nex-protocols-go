@@ -21,10 +21,10 @@ type SubscriberGetContentParam struct {
 func (sgcp *SubscriberGetContentParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	sgcp.Unknown1.WriteTo(writable)
-	sgcp.Unknown2.WriteTo(writable)
-	sgcp.Unknown3.WriteTo(writable)
-	sgcp.Unknown4.WriteTo(writable)
+	sgcp.Unknown1.WriteTo(contentWritable)
+	sgcp.Unknown2.WriteTo(contentWritable)
+	sgcp.Unknown3.WriteTo(contentWritable)
+	sgcp.Unknown4.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

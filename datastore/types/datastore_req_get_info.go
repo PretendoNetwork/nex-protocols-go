@@ -26,13 +26,13 @@ func (dsrgi *DataStoreReqGetInfo) WriteTo(writable types.Writable) {
 
 	contentWritable := writable.CopyNew()
 
-	dsrgi.URL.WriteTo(writable)
-	dsrgi.RequestHeaders.WriteTo(writable)
-	dsrgi.Size.WriteTo(writable)
-	dsrgi.RootCACert.WriteTo(writable)
+	dsrgi.URL.WriteTo(contentWritable)
+	dsrgi.RequestHeaders.WriteTo(contentWritable)
+	dsrgi.Size.WriteTo(contentWritable)
+	dsrgi.RootCACert.WriteTo(contentWritable)
 
 	if libraryVersion.GreaterOrEqual("3.5.0") {
-		dsrgi.DataID.WriteTo(writable)
+		dsrgi.DataID.WriteTo(contentWritable)
 	}
 
 	content := contentWritable.Bytes()

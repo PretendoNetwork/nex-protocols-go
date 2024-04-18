@@ -19,8 +19,8 @@ type CompetitionRankingInfoGetParam struct {
 func (crigp *CompetitionRankingInfoGetParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	crigp.Unknown.WriteTo(writable)
-	crigp.Result.WriteTo(writable)
+	crigp.Unknown.WriteTo(contentWritable)
+	crigp.Result.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

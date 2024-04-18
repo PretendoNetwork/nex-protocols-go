@@ -19,8 +19,8 @@ type DataStoreChangePlayablePlatformParam struct {
 func (dscppp *DataStoreChangePlayablePlatformParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	dscppp.DataID.WriteTo(writable)
-	dscppp.PlayablePlatform.WriteTo(writable)
+	dscppp.DataID.WriteTo(contentWritable)
+	dscppp.PlayablePlatform.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

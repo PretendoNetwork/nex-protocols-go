@@ -25,14 +25,14 @@ type GlobalTradeStationTradePokemonParam struct {
 func (gtstpp *GlobalTradeStationTradePokemonParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	gtstpp.TradeKey.WriteTo(writable)
-	gtstpp.PrepareTradeKey.WriteTo(writable)
-	gtstpp.PrepareUploadKey.WriteTo(writable)
-	gtstpp.Period.WriteTo(writable)
-	gtstpp.IndexData.WriteTo(writable)
-	gtstpp.PokemonData.WriteTo(writable)
-	gtstpp.Signature.WriteTo(writable)
-	gtstpp.NeedData.WriteTo(writable)
+	gtstpp.TradeKey.WriteTo(contentWritable)
+	gtstpp.PrepareTradeKey.WriteTo(contentWritable)
+	gtstpp.PrepareUploadKey.WriteTo(contentWritable)
+	gtstpp.Period.WriteTo(contentWritable)
+	gtstpp.IndexData.WriteTo(contentWritable)
+	gtstpp.PokemonData.WriteTo(contentWritable)
+	gtstpp.Signature.WriteTo(contentWritable)
+	gtstpp.NeedData.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

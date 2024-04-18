@@ -37,45 +37,45 @@ func (mssc *MatchmakeSessionSearchCriteria) WriteTo(writable types.Writable) {
 
 	contentWritable := writable.CopyNew()
 
-	mssc.Attribs.WriteTo(writable)
-	mssc.GameMode.WriteTo(writable)
-	mssc.MinParticipants.WriteTo(writable)
-	mssc.MaxParticipants.WriteTo(writable)
-	mssc.MatchmakeSystemType.WriteTo(writable)
-	mssc.VacantOnly.WriteTo(writable)
-	mssc.ExcludeLocked.WriteTo(writable)
-	mssc.ExcludeNonHostPID.WriteTo(writable)
+	mssc.Attribs.WriteTo(contentWritable)
+	mssc.GameMode.WriteTo(contentWritable)
+	mssc.MinParticipants.WriteTo(contentWritable)
+	mssc.MaxParticipants.WriteTo(contentWritable)
+	mssc.MatchmakeSystemType.WriteTo(contentWritable)
+	mssc.VacantOnly.WriteTo(contentWritable)
+	mssc.ExcludeLocked.WriteTo(contentWritable)
+	mssc.ExcludeNonHostPID.WriteTo(contentWritable)
 
 	if libraryVersion.GreaterOrEqual("3.0.0") {
-		mssc.SelectionMethod.WriteTo(writable)
+		mssc.SelectionMethod.WriteTo(contentWritable)
 	}
 
 	if libraryVersion.GreaterOrEqual("3.4.0") {
-		mssc.VacantParticipants.WriteTo(writable)
+		mssc.VacantParticipants.WriteTo(contentWritable)
 	}
 
 	if libraryVersion.GreaterOrEqual("3.6.0") {
-		mssc.MatchmakeParam.WriteTo(writable)
+		mssc.MatchmakeParam.WriteTo(contentWritable)
 	}
 
 	if libraryVersion.GreaterOrEqual("3.7.0") {
-		mssc.ExcludeUserPasswordSet.WriteTo(writable)
+		mssc.ExcludeUserPasswordSet.WriteTo(contentWritable)
 	}
 
 	if libraryVersion.GreaterOrEqual("3.7.0") {
-		mssc.ExcludeSystemPasswordSet.WriteTo(writable)
+		mssc.ExcludeSystemPasswordSet.WriteTo(contentWritable)
 	}
 
 	if libraryVersion.GreaterOrEqual("3.8.0") {
-		mssc.ReferGID.WriteTo(writable)
+		mssc.ReferGID.WriteTo(contentWritable)
 	}
 
 	if libraryVersion.GreaterOrEqual("4.0.0") {
-		mssc.CodeWord.WriteTo(writable)
+		mssc.CodeWord.WriteTo(contentWritable)
 	}
 
 	if libraryVersion.GreaterOrEqual("4.0.0") {
-		mssc.ResultRange.WriteTo(writable)
+		mssc.ResultRange.WriteTo(contentWritable)
 	}
 
 	content := contentWritable.Bytes()

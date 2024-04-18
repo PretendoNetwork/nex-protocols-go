@@ -20,9 +20,9 @@ type Ranking2CommonData struct {
 func (rcd *Ranking2CommonData) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	rcd.UserName.WriteTo(writable)
-	rcd.Mii.WriteTo(writable)
-	rcd.BinaryData.WriteTo(writable)
+	rcd.UserName.WriteTo(contentWritable)
+	rcd.Mii.WriteTo(contentWritable)
+	rcd.BinaryData.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

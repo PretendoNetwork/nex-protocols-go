@@ -18,7 +18,7 @@ type FriendUserParam struct {
 func (fup *FriendUserParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	fup.Name.WriteTo(writable)
+	fup.Name.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

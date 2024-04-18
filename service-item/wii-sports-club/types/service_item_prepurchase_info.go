@@ -25,14 +25,14 @@ type ServiceItemPrepurchaseInfo struct {
 func (sipi *ServiceItemPrepurchaseInfo) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	sipi.ItemCode.WriteTo(writable)
-	sipi.PriceID.WriteTo(writable)
-	sipi.RegularPrice.WriteTo(writable)
-	sipi.IsTaxAvailable.WriteTo(writable)
-	sipi.TaxAmount.WriteTo(writable)
-	sipi.TotalAmount.WriteTo(writable)
-	sipi.CurrentBalance.WriteTo(writable)
-	sipi.PostBalance.WriteTo(writable)
+	sipi.ItemCode.WriteTo(contentWritable)
+	sipi.PriceID.WriteTo(contentWritable)
+	sipi.RegularPrice.WriteTo(contentWritable)
+	sipi.IsTaxAvailable.WriteTo(contentWritable)
+	sipi.TaxAmount.WriteTo(contentWritable)
+	sipi.TotalAmount.WriteTo(contentWritable)
+	sipi.CurrentBalance.WriteTo(contentWritable)
+	sipi.PostBalance.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

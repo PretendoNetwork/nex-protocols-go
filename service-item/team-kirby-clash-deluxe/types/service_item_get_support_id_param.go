@@ -19,8 +19,8 @@ type ServiceItemGetSupportIDParam struct {
 func (sigsidp *ServiceItemGetSupportIDParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	sigsidp.UniqueID.WriteTo(writable)
-	sigsidp.Platform.WriteTo(writable)
+	sigsidp.UniqueID.WriteTo(contentWritable)
+	sigsidp.Platform.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

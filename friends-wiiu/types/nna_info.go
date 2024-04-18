@@ -23,9 +23,9 @@ func (nnai *NNAInfo) WriteTo(writable types.Writable) {
 
 	contentWritable := writable.CopyNew()
 
-	nnai.PrincipalBasicInfo.WriteTo(writable)
-	nnai.Unknown1.WriteTo(writable)
-	nnai.Unknown2.WriteTo(writable)
+	nnai.PrincipalBasicInfo.WriteTo(contentWritable)
+	nnai.Unknown1.WriteTo(contentWritable)
+	nnai.Unknown2.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

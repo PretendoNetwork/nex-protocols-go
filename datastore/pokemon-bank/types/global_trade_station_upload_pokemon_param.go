@@ -22,11 +22,11 @@ type GlobalTradeStationUploadPokemonParam struct {
 func (gtsupp *GlobalTradeStationUploadPokemonParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	gtsupp.PrepareUploadKey.WriteTo(writable)
-	gtsupp.Period.WriteTo(writable)
-	gtsupp.IndexData.WriteTo(writable)
-	gtsupp.PokemonData.WriteTo(writable)
-	gtsupp.Signature.WriteTo(writable)
+	gtsupp.PrepareUploadKey.WriteTo(contentWritable)
+	gtsupp.Period.WriteTo(contentWritable)
+	gtsupp.IndexData.WriteTo(contentWritable)
+	gtsupp.PokemonData.WriteTo(contentWritable)
+	gtsupp.Signature.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

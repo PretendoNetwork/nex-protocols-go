@@ -23,12 +23,12 @@ type SubscriberContent struct {
 func (sc *SubscriberContent) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	sc.Unknown1.WriteTo(writable)
-	sc.Unknown2.WriteTo(writable)
-	sc.Unknown3.WriteTo(writable)
-	sc.Unknown4.WriteTo(writable)
-	sc.Unknown5.WriteTo(writable)
-	sc.Unknown6.WriteTo(writable)
+	sc.Unknown1.WriteTo(contentWritable)
+	sc.Unknown2.WriteTo(contentWritable)
+	sc.Unknown3.WriteTo(contentWritable)
+	sc.Unknown4.WriteTo(contentWritable)
+	sc.Unknown5.WriteTo(contentWritable)
+	sc.Unknown6.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

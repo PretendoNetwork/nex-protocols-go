@@ -22,8 +22,8 @@ func (ai *ApplicationInfo) WriteTo(writable types.Writable) {
 
 	contentWritable := writable.CopyNew()
 
-	ai.TitleID.WriteTo(writable)
-	ai.TitleVersion.WriteTo(writable)
+	ai.TitleID.WriteTo(contentWritable)
+	ai.TitleVersion.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

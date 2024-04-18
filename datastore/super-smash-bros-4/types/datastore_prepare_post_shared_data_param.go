@@ -26,15 +26,15 @@ type DataStorePreparePostSharedDataParam struct {
 func (dsppsdp *DataStorePreparePostSharedDataParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	dsppsdp.DataType.WriteTo(writable)
-	dsppsdp.Region.WriteTo(writable)
-	dsppsdp.Attribute1.WriteTo(writable)
-	dsppsdp.Attribute2.WriteTo(writable)
-	dsppsdp.Fighter.WriteTo(writable)
-	dsppsdp.Size.WriteTo(writable)
-	dsppsdp.Comment.WriteTo(writable)
-	dsppsdp.MetaBinary.WriteTo(writable)
-	dsppsdp.ExtraData.WriteTo(writable)
+	dsppsdp.DataType.WriteTo(contentWritable)
+	dsppsdp.Region.WriteTo(contentWritable)
+	dsppsdp.Attribute1.WriteTo(contentWritable)
+	dsppsdp.Attribute2.WriteTo(contentWritable)
+	dsppsdp.Fighter.WriteTo(contentWritable)
+	dsppsdp.Size.WriteTo(contentWritable)
+	dsppsdp.Comment.WriteTo(contentWritable)
+	dsppsdp.MetaBinary.WriteTo(contentWritable)
+	dsppsdp.ExtraData.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

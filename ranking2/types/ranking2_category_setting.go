@@ -26,15 +26,15 @@ type Ranking2CategorySetting struct {
 func (rcs *Ranking2CategorySetting) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	rcs.MinScore.WriteTo(writable)
-	rcs.MaxScore.WriteTo(writable)
-	rcs.LowestRank.WriteTo(writable)
-	rcs.ResetMonth.WriteTo(writable)
-	rcs.ResetDay.WriteTo(writable)
-	rcs.ResetHour.WriteTo(writable)
-	rcs.ResetMode.WriteTo(writable)
-	rcs.MaxSeasonsToGoBack.WriteTo(writable)
-	rcs.ScoreOrder.WriteTo(writable)
+	rcs.MinScore.WriteTo(contentWritable)
+	rcs.MaxScore.WriteTo(contentWritable)
+	rcs.LowestRank.WriteTo(contentWritable)
+	rcs.ResetMonth.WriteTo(contentWritable)
+	rcs.ResetDay.WriteTo(contentWritable)
+	rcs.ResetHour.WriteTo(contentWritable)
+	rcs.ResetMode.WriteTo(contentWritable)
+	rcs.MaxSeasonsToGoBack.WriteTo(contentWritable)
+	rcs.ScoreOrder.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

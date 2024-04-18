@@ -24,13 +24,13 @@ type GlobalTradeStationSearchPokemonParam struct {
 func (gtsspp *GlobalTradeStationSearchPokemonParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	gtsspp.PrepareUploadKey.WriteTo(writable)
-	gtsspp.Conditions.WriteTo(writable)
-	gtsspp.ResultOrderColumn.WriteTo(writable)
-	gtsspp.ResultOrder.WriteTo(writable)
-	gtsspp.UploadedAfter.WriteTo(writable)
-	gtsspp.UploadedBefore.WriteTo(writable)
-	gtsspp.ResultRange.WriteTo(writable)
+	gtsspp.PrepareUploadKey.WriteTo(contentWritable)
+	gtsspp.Conditions.WriteTo(contentWritable)
+	gtsspp.ResultOrderColumn.WriteTo(contentWritable)
+	gtsspp.ResultOrder.WriteTo(contentWritable)
+	gtsspp.UploadedAfter.WriteTo(contentWritable)
+	gtsspp.UploadedBefore.WriteTo(contentWritable)
+	gtsspp.ResultRange.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

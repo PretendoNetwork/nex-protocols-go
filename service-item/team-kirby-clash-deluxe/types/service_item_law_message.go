@@ -19,8 +19,8 @@ type ServiceItemLawMessage struct {
 func (silm *ServiceItemLawMessage) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	silm.IsMessageRequired.WriteTo(writable)
-	silm.LawMessage.WriteTo(writable)
+	silm.IsMessageRequired.WriteTo(contentWritable)
+	silm.LawMessage.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

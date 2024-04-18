@@ -22,16 +22,16 @@ type DataStoreCustomRankingRatingCondition struct {
 func (dscrrc *DataStoreCustomRankingRatingCondition) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	dscrrc.Slot.WriteTo(writable)
-	dscrrc.MinValue.WriteTo(writable)
-	dscrrc.MaxValue.WriteTo(writable)
+	dscrrc.Slot.WriteTo(contentWritable)
+	dscrrc.MinValue.WriteTo(contentWritable)
+	dscrrc.MaxValue.WriteTo(contentWritable)
 
 	if dscrrc.StructureVersion >= 1 {
-		dscrrc.MinCount.WriteTo(writable)
+		dscrrc.MinCount.WriteTo(contentWritable)
 	}
 
 	if dscrrc.StructureVersion >= 1 {
-		dscrrc.MaxCount.WriteTo(writable)
+		dscrrc.MaxCount.WriteTo(contentWritable)
 	}
 
 	content := contentWritable.Bytes()

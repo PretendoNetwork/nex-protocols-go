@@ -19,8 +19,8 @@ type DataStoreNotification struct {
 func (dsn *DataStoreNotification) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	dsn.NotificationID.WriteTo(writable)
-	dsn.DataID.WriteTo(writable)
+	dsn.NotificationID.WriteTo(contentWritable)
+	dsn.DataID.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

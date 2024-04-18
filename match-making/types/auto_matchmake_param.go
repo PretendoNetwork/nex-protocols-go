@@ -25,14 +25,14 @@ type AutoMatchmakeParam struct {
 func (amp *AutoMatchmakeParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	amp.SourceMatchmakeSession.WriteTo(writable)
-	amp.AdditionalParticipants.WriteTo(writable)
-	amp.GIDForParticipationCheck.WriteTo(writable)
-	amp.AutoMatchmakeOption.WriteTo(writable)
-	amp.JoinMessage.WriteTo(writable)
-	amp.ParticipationCount.WriteTo(writable)
-	amp.LstSearchCriteria.WriteTo(writable)
-	amp.TargetGIDs.WriteTo(writable)
+	amp.SourceMatchmakeSession.WriteTo(contentWritable)
+	amp.AdditionalParticipants.WriteTo(contentWritable)
+	amp.GIDForParticipationCheck.WriteTo(contentWritable)
+	amp.AutoMatchmakeOption.WriteTo(contentWritable)
+	amp.JoinMessage.WriteTo(contentWritable)
+	amp.ParticipationCount.WriteTo(contentWritable)
+	amp.LstSearchCriteria.WriteTo(contentWritable)
+	amp.TargetGIDs.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

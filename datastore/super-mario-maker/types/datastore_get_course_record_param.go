@@ -19,8 +19,8 @@ type DataStoreGetCourseRecordParam struct {
 func (dsgcrp *DataStoreGetCourseRecordParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	dsgcrp.DataID.WriteTo(writable)
-	dsgcrp.Slot.WriteTo(writable)
+	dsgcrp.DataID.WriteTo(contentWritable)
+	dsgcrp.Slot.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

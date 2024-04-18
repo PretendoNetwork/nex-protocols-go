@@ -23,12 +23,12 @@ type RankingOrderParam struct {
 func (rop *RankingOrderParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	rop.OrderCalculation.WriteTo(writable)
-	rop.GroupIndex.WriteTo(writable)
-	rop.GroupNum.WriteTo(writable)
-	rop.TimeScope.WriteTo(writable)
-	rop.Offset.WriteTo(writable)
-	rop.Length.WriteTo(writable)
+	rop.OrderCalculation.WriteTo(contentWritable)
+	rop.GroupIndex.WriteTo(contentWritable)
+	rop.GroupNum.WriteTo(contentWritable)
+	rop.TimeScope.WriteTo(contentWritable)
+	rop.Offset.WriteTo(contentWritable)
+	rop.Length.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

@@ -21,7 +21,7 @@ func (pnl *PersistentNotificationList) WriteTo(writable types.Writable) {
 
 	contentWritable := writable.CopyNew()
 
-	pnl.Notifications.WriteTo(writable)
+	pnl.Notifications.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

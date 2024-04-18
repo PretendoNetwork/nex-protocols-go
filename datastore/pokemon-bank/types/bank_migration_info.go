@@ -19,8 +19,8 @@ type BankMigrationInfo struct {
 func (bmi *BankMigrationInfo) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	bmi.MigrationStatus.WriteTo(writable)
-	bmi.UpdatedTime.WriteTo(writable)
+	bmi.MigrationStatus.WriteTo(contentWritable)
+	bmi.UpdatedTime.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

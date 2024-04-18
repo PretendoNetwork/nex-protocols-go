@@ -24,13 +24,13 @@ type ServiceItemNotice struct {
 func (sin *ServiceItemNotice) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	sin.ScheduleID.WriteTo(writable)
-	sin.ScheduleType.WriteTo(writable)
-	sin.ParamInt.WriteTo(writable)
-	sin.ParamString.WriteTo(writable)
-	sin.ParamBinary.WriteTo(writable)
-	sin.TimeBegin.WriteTo(writable)
-	sin.TimeEnd.WriteTo(writable)
+	sin.ScheduleID.WriteTo(contentWritable)
+	sin.ScheduleType.WriteTo(contentWritable)
+	sin.ParamInt.WriteTo(contentWritable)
+	sin.ParamString.WriteTo(contentWritable)
+	sin.ParamBinary.WriteTo(contentWritable)
+	sin.TimeBegin.WriteTo(contentWritable)
+	sin.TimeEnd.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

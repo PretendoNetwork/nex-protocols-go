@@ -22,8 +22,8 @@ func (mrsip *MatchmakeRefereeStatsInitParam) WriteTo(writable types.Writable) {
 
 	contentWritable := writable.CopyNew()
 
-	mrsip.Category.WriteTo(writable)
-	mrsip.InitialRatingValue.WriteTo(writable)
+	mrsip.Category.WriteTo(contentWritable)
+	mrsip.InitialRatingValue.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

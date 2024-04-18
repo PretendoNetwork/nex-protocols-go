@@ -22,11 +22,11 @@ type BankTransactionParam struct {
 func (btp *BankTransactionParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	btp.DataID.WriteTo(writable)
-	btp.CurVersion.WriteTo(writable)
-	btp.UpdateVersion.WriteTo(writable)
-	btp.Size.WriteTo(writable)
-	btp.TransactionPassword.WriteTo(writable)
+	btp.DataID.WriteTo(contentWritable)
+	btp.CurVersion.WriteTo(contentWritable)
+	btp.UpdateVersion.WriteTo(contentWritable)
+	btp.Size.WriteTo(contentWritable)
+	btp.TransactionPassword.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

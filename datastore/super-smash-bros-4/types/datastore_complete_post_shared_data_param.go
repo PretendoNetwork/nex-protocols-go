@@ -21,9 +21,9 @@ type DataStoreCompletePostSharedDataParam struct {
 func (dscpsdp *DataStoreCompletePostSharedDataParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	dscpsdp.DataID.WriteTo(writable)
-	dscpsdp.CompleteParam.WriteTo(writable)
-	dscpsdp.PrepareParam.WriteTo(writable)
+	dscpsdp.DataID.WriteTo(contentWritable)
+	dscpsdp.CompleteParam.WriteTo(contentWritable)
+	dscpsdp.PrepareParam.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

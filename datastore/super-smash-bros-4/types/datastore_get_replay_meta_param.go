@@ -19,8 +19,8 @@ type DataStoreGetReplayMetaParam struct {
 func (dsgrmp *DataStoreGetReplayMetaParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	dsgrmp.ReplayID.WriteTo(writable)
-	dsgrmp.MetaType.WriteTo(writable)
+	dsgrmp.ReplayID.WriteTo(contentWritable)
+	dsgrmp.MetaType.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

@@ -19,8 +19,8 @@ type DataStoreRateObjectParam struct {
 func (dsrop *DataStoreRateObjectParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	dsrop.RatingValue.WriteTo(writable)
-	dsrop.AccessPassword.WriteTo(writable)
+	dsrop.RatingValue.WriteTo(contentWritable)
+	dsrop.AccessPassword.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

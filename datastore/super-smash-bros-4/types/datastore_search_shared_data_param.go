@@ -24,13 +24,13 @@ type DataStoreSearchSharedDataParam struct {
 func (dsssdp *DataStoreSearchSharedDataParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	dsssdp.DataType.WriteTo(writable)
-	dsssdp.Owner.WriteTo(writable)
-	dsssdp.Region.WriteTo(writable)
-	dsssdp.Attribute1.WriteTo(writable)
-	dsssdp.Attribute2.WriteTo(writable)
-	dsssdp.Fighter.WriteTo(writable)
-	dsssdp.ResultRange.WriteTo(writable)
+	dsssdp.DataType.WriteTo(contentWritable)
+	dsssdp.Owner.WriteTo(contentWritable)
+	dsssdp.Region.WriteTo(contentWritable)
+	dsssdp.Attribute1.WriteTo(contentWritable)
+	dsssdp.Attribute2.WriteTo(contentWritable)
+	dsssdp.Fighter.WriteTo(contentWritable)
+	dsssdp.ResultRange.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

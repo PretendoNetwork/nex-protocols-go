@@ -31,17 +31,17 @@ func (fpi *FriendPersistentInfo) WriteTo(writable types.Writable) {
 
 	contentWritable := writable.CopyNew()
 
-	fpi.PID.WriteTo(writable)
-	fpi.Region.WriteTo(writable)
-	fpi.Country.WriteTo(writable)
-	fpi.Area.WriteTo(writable)
-	fpi.Language.WriteTo(writable)
-	fpi.Platform.WriteTo(writable)
-	fpi.GameKey.WriteTo(writable)
-	fpi.Message.WriteTo(writable)
-	fpi.MessageUpdatedAt.WriteTo(writable)
-	fpi.MiiModifiedAt.WriteTo(writable)
-	fpi.LastOnline.WriteTo(writable)
+	fpi.PID.WriteTo(contentWritable)
+	fpi.Region.WriteTo(contentWritable)
+	fpi.Country.WriteTo(contentWritable)
+	fpi.Area.WriteTo(contentWritable)
+	fpi.Language.WriteTo(contentWritable)
+	fpi.Platform.WriteTo(contentWritable)
+	fpi.GameKey.WriteTo(contentWritable)
+	fpi.Message.WriteTo(contentWritable)
+	fpi.MessageUpdatedAt.WriteTo(contentWritable)
+	fpi.MiiModifiedAt.WriteTo(contentWritable)
+	fpi.LastOnline.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

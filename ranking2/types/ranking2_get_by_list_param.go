@@ -23,12 +23,12 @@ type Ranking2GetByListParam struct {
 func (rgblp *Ranking2GetByListParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	rgblp.Category.WriteTo(writable)
-	rgblp.Offset.WriteTo(writable)
-	rgblp.Length.WriteTo(writable)
-	rgblp.SortFlags.WriteTo(writable)
-	rgblp.OptionFlags.WriteTo(writable)
-	rgblp.NumSeasonsToGoBack.WriteTo(writable)
+	rgblp.Category.WriteTo(contentWritable)
+	rgblp.Offset.WriteTo(contentWritable)
+	rgblp.Length.WriteTo(contentWritable)
+	rgblp.SortFlags.WriteTo(contentWritable)
+	rgblp.OptionFlags.WriteTo(contentWritable)
+	rgblp.NumSeasonsToGoBack.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

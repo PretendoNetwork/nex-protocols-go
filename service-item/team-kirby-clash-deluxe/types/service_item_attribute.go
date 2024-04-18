@@ -19,8 +19,8 @@ type ServiceItemAttribute struct {
 func (sia *ServiceItemAttribute) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	sia.Name.WriteTo(writable)
-	sia.Value.WriteTo(writable)
+	sia.Name.WriteTo(contentWritable)
+	sia.Value.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

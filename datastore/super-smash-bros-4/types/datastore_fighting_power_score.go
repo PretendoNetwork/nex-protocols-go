@@ -19,8 +19,8 @@ type DataStoreFightingPowerScore struct {
 func (dsfps *DataStoreFightingPowerScore) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	dsfps.Score.WriteTo(writable)
-	dsfps.Rank.WriteTo(writable)
+	dsfps.Score.WriteTo(contentWritable)
+	dsfps.Rank.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

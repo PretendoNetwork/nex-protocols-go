@@ -20,9 +20,9 @@ type DataStoreGetCustomRankingByDataIDParam struct {
 func (dsgcrbdidp *DataStoreGetCustomRankingByDataIDParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	dsgcrbdidp.ApplicationID.WriteTo(writable)
-	dsgcrbdidp.DataIDList.WriteTo(writable)
-	dsgcrbdidp.ResultOption.WriteTo(writable)
+	dsgcrbdidp.ApplicationID.WriteTo(contentWritable)
+	dsgcrbdidp.DataIDList.WriteTo(contentWritable)
+	dsgcrbdidp.ResultOption.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

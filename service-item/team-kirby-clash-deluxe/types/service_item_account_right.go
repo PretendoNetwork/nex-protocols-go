@@ -20,9 +20,9 @@ type ServiceItemAccountRight struct {
 func (siar *ServiceItemAccountRight) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	siar.PID.WriteTo(writable)
-	siar.Limitation.WriteTo(writable)
-	siar.RightBinaries.WriteTo(writable)
+	siar.PID.WriteTo(contentWritable)
+	siar.Limitation.WriteTo(contentWritable)
+	siar.RightBinaries.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

@@ -21,10 +21,10 @@ type DataStoreRateCustomRankingParam struct {
 func (dsrcrp *DataStoreRateCustomRankingParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	dsrcrp.DataID.WriteTo(writable)
-	dsrcrp.ApplicationID.WriteTo(writable)
-	dsrcrp.Score.WriteTo(writable)
-	dsrcrp.Period.WriteTo(writable)
+	dsrcrp.DataID.WriteTo(contentWritable)
+	dsrcrp.ApplicationID.WriteTo(contentWritable)
+	dsrcrp.Score.WriteTo(contentWritable)
+	dsrcrp.Period.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

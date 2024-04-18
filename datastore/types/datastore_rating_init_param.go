@@ -25,14 +25,14 @@ type DataStoreRatingInitParam struct {
 func (dsrip *DataStoreRatingInitParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	dsrip.Flag.WriteTo(writable)
-	dsrip.InternalFlag.WriteTo(writable)
-	dsrip.LockType.WriteTo(writable)
-	dsrip.InitialValue.WriteTo(writable)
-	dsrip.RangeMin.WriteTo(writable)
-	dsrip.RangeMax.WriteTo(writable)
-	dsrip.PeriodHour.WriteTo(writable)
-	dsrip.PeriodDuration.WriteTo(writable)
+	dsrip.Flag.WriteTo(contentWritable)
+	dsrip.InternalFlag.WriteTo(contentWritable)
+	dsrip.LockType.WriteTo(contentWritable)
+	dsrip.InitialValue.WriteTo(contentWritable)
+	dsrip.RangeMin.WriteTo(contentWritable)
+	dsrip.RangeMax.WriteTo(contentWritable)
+	dsrip.PeriodHour.WriteTo(contentWritable)
+	dsrip.PeriodDuration.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

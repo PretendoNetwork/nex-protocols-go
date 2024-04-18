@@ -18,7 +18,7 @@ type MatchmakeParam struct {
 func (mp *MatchmakeParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	mp.Params.WriteTo(writable)
+	mp.Params.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

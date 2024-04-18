@@ -18,7 +18,7 @@ type Unknown struct {
 func (u *Unknown) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	u.Unknown.WriteTo(writable)
+	u.Unknown.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

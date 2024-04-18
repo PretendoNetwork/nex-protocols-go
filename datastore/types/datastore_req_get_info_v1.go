@@ -21,10 +21,10 @@ type DataStoreReqGetInfoV1 struct {
 func (dsrgiv *DataStoreReqGetInfoV1) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	dsrgiv.URL.WriteTo(writable)
-	dsrgiv.RequestHeaders.WriteTo(writable)
-	dsrgiv.Size.WriteTo(writable)
-	dsrgiv.RootCACert.WriteTo(writable)
+	dsrgiv.URL.WriteTo(contentWritable)
+	dsrgiv.RequestHeaders.WriteTo(contentWritable)
+	dsrgiv.Size.WriteTo(contentWritable)
+	dsrgiv.RootCACert.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

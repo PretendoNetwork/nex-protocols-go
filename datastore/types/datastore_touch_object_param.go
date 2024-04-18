@@ -20,9 +20,9 @@ type DataStoreTouchObjectParam struct {
 func (dstop *DataStoreTouchObjectParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	dstop.DataID.WriteTo(writable)
-	dstop.LockID.WriteTo(writable)
-	dstop.AccessPassword.WriteTo(writable)
+	dstop.DataID.WriteTo(contentWritable)
+	dstop.LockID.WriteTo(contentWritable)
+	dstop.AccessPassword.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

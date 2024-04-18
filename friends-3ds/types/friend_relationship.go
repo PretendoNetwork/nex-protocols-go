@@ -23,9 +23,9 @@ func (fr *FriendRelationship) WriteTo(writable types.Writable) {
 
 	contentWritable := writable.CopyNew()
 
-	fr.PID.WriteTo(writable)
-	fr.LFC.WriteTo(writable)
-	fr.RelationshipType.WriteTo(writable)
+	fr.PID.WriteTo(contentWritable)
+	fr.LFC.WriteTo(contentWritable)
+	fr.RelationshipType.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

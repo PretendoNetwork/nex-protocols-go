@@ -19,8 +19,8 @@ type SimpleCommunity struct {
 func (sc *SimpleCommunity) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	sc.GatheringID.WriteTo(writable)
-	sc.MatchmakeSessionCount.WriteTo(writable)
+	sc.GatheringID.WriteTo(contentWritable)
+	sc.MatchmakeSessionCount.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

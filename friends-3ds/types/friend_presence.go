@@ -22,8 +22,8 @@ func (fp *FriendPresence) WriteTo(writable types.Writable) {
 
 	contentWritable := writable.CopyNew()
 
-	fp.PID.WriteTo(writable)
-	fp.Presence.WriteTo(writable)
+	fp.PID.WriteTo(contentWritable)
+	fp.Presence.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

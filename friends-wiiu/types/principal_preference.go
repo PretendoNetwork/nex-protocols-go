@@ -23,9 +23,9 @@ func (pp *PrincipalPreference) WriteTo(writable types.Writable) {
 
 	contentWritable := writable.CopyNew()
 
-	pp.ShowOnlinePresence.WriteTo(writable)
-	pp.ShowCurrentTitle.WriteTo(writable)
-	pp.BlockFriendRequests.WriteTo(writable)
+	pp.ShowOnlinePresence.WriteTo(contentWritable)
+	pp.ShowCurrentTitle.WriteTo(contentWritable)
+	pp.BlockFriendRequests.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

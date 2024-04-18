@@ -21,7 +21,7 @@ func (bm *BinaryMessage) WriteTo(writable types.Writable) {
 
 	contentWritable := writable.CopyNew()
 
-	bm.BinaryBody.WriteTo(writable)
+	bm.BinaryBody.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

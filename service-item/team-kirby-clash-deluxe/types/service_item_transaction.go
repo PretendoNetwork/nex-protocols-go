@@ -26,15 +26,15 @@ type ServiceItemTransaction struct {
 func (sit *ServiceItemTransaction) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	sit.TransactionID.WriteTo(writable)
-	sit.ExtTransactionID.WriteTo(writable)
-	sit.Time.WriteTo(writable)
-	sit.TransactionType.WriteTo(writable)
-	sit.TransactionDescription.WriteTo(writable)
-	sit.TransactionAmount.WriteTo(writable)
-	sit.ItemCode.WriteTo(writable)
-	sit.ReferenceID.WriteTo(writable)
-	sit.Limitation.WriteTo(writable)
+	sit.TransactionID.WriteTo(contentWritable)
+	sit.ExtTransactionID.WriteTo(contentWritable)
+	sit.Time.WriteTo(contentWritable)
+	sit.TransactionType.WriteTo(contentWritable)
+	sit.TransactionDescription.WriteTo(contentWritable)
+	sit.TransactionAmount.WriteTo(contentWritable)
+	sit.ItemCode.WriteTo(contentWritable)
+	sit.ReferenceID.WriteTo(contentWritable)
+	sit.Limitation.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

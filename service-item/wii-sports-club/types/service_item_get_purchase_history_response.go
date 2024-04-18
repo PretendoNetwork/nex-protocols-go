@@ -21,7 +21,7 @@ func (sigphr *ServiceItemGetPurchaseHistoryResponse) WriteTo(writable types.Writ
 
 	contentWritable := writable.CopyNew()
 
-	sigphr.NullablePurchaseHistory.WriteTo(writable)
+	sigphr.NullablePurchaseHistory.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

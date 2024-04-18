@@ -26,12 +26,12 @@ func (fi *FriendInfo) WriteTo(writable types.Writable) {
 
 	contentWritable := writable.CopyNew()
 
-	fi.NNAInfo.WriteTo(writable)
-	fi.Presence.WriteTo(writable)
-	fi.Status.WriteTo(writable)
-	fi.BecameFriend.WriteTo(writable)
-	fi.LastOnline.WriteTo(writable)
-	fi.Unknown.WriteTo(writable)
+	fi.NNAInfo.WriteTo(contentWritable)
+	fi.Presence.WriteTo(contentWritable)
+	fi.Status.WriteTo(contentWritable)
+	fi.BecameFriend.WriteTo(contentWritable)
+	fi.LastOnline.WriteTo(contentWritable)
+	fi.Unknown.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

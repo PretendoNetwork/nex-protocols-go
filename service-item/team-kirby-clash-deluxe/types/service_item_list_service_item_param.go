@@ -23,14 +23,14 @@ type ServiceItemListServiceItemParam struct {
 func (silsip *ServiceItemListServiceItemParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	silsip.Language.WriteTo(writable)
-	silsip.Offset.WriteTo(writable)
-	silsip.Size.WriteTo(writable)
-	silsip.IsBalanceAvailable.WriteTo(writable)
-	silsip.UniqueID.WriteTo(writable)
+	silsip.Language.WriteTo(contentWritable)
+	silsip.Offset.WriteTo(contentWritable)
+	silsip.Size.WriteTo(contentWritable)
+	silsip.IsBalanceAvailable.WriteTo(contentWritable)
+	silsip.UniqueID.WriteTo(contentWritable)
 
 	if silsip.StructureVersion >= 1 {
-		silsip.Platform.WriteTo(writable)
+		silsip.Platform.WriteTo(contentWritable)
 	}
 
 	content := contentWritable.Bytes()

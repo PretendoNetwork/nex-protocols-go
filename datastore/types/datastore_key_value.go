@@ -19,8 +19,8 @@ type DataStoreKeyValue struct {
 func (dskv *DataStoreKeyValue) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	dskv.Key.WriteTo(writable)
-	dskv.Value.WriteTo(writable)
+	dskv.Key.WriteTo(contentWritable)
+	dskv.Value.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

@@ -21,10 +21,10 @@ type ParticipantDetails struct {
 func (pd *ParticipantDetails) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	pd.IDParticipant.WriteTo(writable)
-	pd.StrName.WriteTo(writable)
-	pd.StrMessage.WriteTo(writable)
-	pd.UIParticipants.WriteTo(writable)
+	pd.IDParticipant.WriteTo(contentWritable)
+	pd.StrName.WriteTo(contentWritable)
+	pd.StrMessage.WriteTo(contentWritable)
+	pd.UIParticipants.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

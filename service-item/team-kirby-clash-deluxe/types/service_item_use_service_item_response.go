@@ -21,7 +21,7 @@ func (siusir *ServiceItemUseServiceItemResponse) WriteTo(writable types.Writable
 
 	contentWritable := writable.CopyNew()
 
-	siusir.NullableUsedInfo.WriteTo(writable)
+	siusir.NullableUsedInfo.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

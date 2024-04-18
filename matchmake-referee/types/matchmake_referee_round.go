@@ -25,11 +25,11 @@ func (mrr *MatchmakeRefereeRound) WriteTo(writable types.Writable) {
 
 	contentWritable := writable.CopyNew()
 
-	mrr.RoundID.WriteTo(writable)
-	mrr.GID.WriteTo(writable)
-	mrr.State.WriteTo(writable)
-	mrr.PersonalDataCategory.WriteTo(writable)
-	mrr.NormalizedPersonalRoundResults.WriteTo(writable)
+	mrr.RoundID.WriteTo(contentWritable)
+	mrr.GID.WriteTo(contentWritable)
+	mrr.State.WriteTo(contentWritable)
+	mrr.PersonalDataCategory.WriteTo(contentWritable)
+	mrr.NormalizedPersonalRoundResults.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

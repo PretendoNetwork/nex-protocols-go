@@ -23,9 +23,9 @@ func (mrsrp *MatchmakeRefereeStartRoundParam) WriteTo(writable types.Writable) {
 
 	contentWritable := writable.CopyNew()
 
-	mrsrp.PersonalDataCategory.WriteTo(writable)
-	mrsrp.GID.WriteTo(writable)
-	mrsrp.PIDs.WriteTo(writable)
+	mrsrp.PersonalDataCategory.WriteTo(contentWritable)
+	mrsrp.GID.WriteTo(contentWritable)
+	mrsrp.PIDs.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

@@ -20,9 +20,9 @@ type ServiceItemCatalog struct {
 func (sic *ServiceItemCatalog) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	sic.TotalSize.WriteTo(writable)
-	sic.Offset.WriteTo(writable)
-	sic.ListItems.WriteTo(writable)
+	sic.TotalSize.WriteTo(contentWritable)
+	sic.Offset.WriteTo(contentWritable)
+	sic.ListItems.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

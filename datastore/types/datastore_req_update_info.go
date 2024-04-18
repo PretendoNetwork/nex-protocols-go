@@ -32,10 +32,10 @@ func (dsrui *DataStoreReqUpdateInfo) WriteTo(writable types.Writable) {
 		contentWritable.WritePrimitiveUInt16LE(uint16(dsrui.Version.Value))
 	}
 
-	dsrui.URL.WriteTo(writable)
-	dsrui.RequestHeaders.WriteTo(writable)
-	dsrui.FormFields.WriteTo(writable)
-	dsrui.RootCACert.WriteTo(writable)
+	dsrui.URL.WriteTo(contentWritable)
+	dsrui.RequestHeaders.WriteTo(contentWritable)
+	dsrui.FormFields.WriteTo(contentWritable)
+	dsrui.RootCACert.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

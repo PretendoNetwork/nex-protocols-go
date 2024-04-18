@@ -21,10 +21,10 @@ type SimplePlayingSession struct {
 func (sps *SimplePlayingSession) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	sps.PrincipalID.WriteTo(writable)
-	sps.GatheringID.WriteTo(writable)
-	sps.GameMode.WriteTo(writable)
-	sps.Attribute0.WriteTo(writable)
+	sps.PrincipalID.WriteTo(contentWritable)
+	sps.GatheringID.WriteTo(contentWritable)
+	sps.GameMode.WriteTo(contentWritable)
+	sps.Attribute0.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

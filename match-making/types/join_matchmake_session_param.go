@@ -32,19 +32,19 @@ func (jmsp *JoinMatchmakeSessionParam) WriteTo(writable types.Writable) {
 
 	contentWritable := writable.CopyNew()
 
-	jmsp.GID.WriteTo(writable)
-	jmsp.AdditionalParticipants.WriteTo(writable)
-	jmsp.GIDForParticipationCheck.WriteTo(writable)
-	jmsp.JoinMatchmakeSessionOption.WriteTo(writable)
-	jmsp.JoinMatchmakeSessionBehavior.WriteTo(writable)
-	jmsp.StrUserPassword.WriteTo(writable)
-	jmsp.StrSystemPassword.WriteTo(writable)
-	jmsp.JoinMessage.WriteTo(writable)
-	jmsp.ParticipationCount.WriteTo(writable)
-	jmsp.ExtraParticipants.WriteTo(writable)
+	jmsp.GID.WriteTo(contentWritable)
+	jmsp.AdditionalParticipants.WriteTo(contentWritable)
+	jmsp.GIDForParticipationCheck.WriteTo(contentWritable)
+	jmsp.JoinMatchmakeSessionOption.WriteTo(contentWritable)
+	jmsp.JoinMatchmakeSessionBehavior.WriteTo(contentWritable)
+	jmsp.StrUserPassword.WriteTo(contentWritable)
+	jmsp.StrSystemPassword.WriteTo(contentWritable)
+	jmsp.JoinMessage.WriteTo(contentWritable)
+	jmsp.ParticipationCount.WriteTo(contentWritable)
+	jmsp.ExtraParticipants.WriteTo(contentWritable)
 
 	if libraryVersion.GreaterOrEqual("4.0") {
-		jmsp.BlockListParam.WriteTo(writable)
+		jmsp.BlockListParam.WriteTo(contentWritable)
 	}
 
 	content := contentWritable.Bytes()

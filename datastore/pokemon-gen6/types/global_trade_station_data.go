@@ -22,11 +22,11 @@ type GlobalTradeStationData struct {
 func (gtsd *GlobalTradeStationData) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	gtsd.DataID.WriteTo(writable)
-	gtsd.OwnerID.WriteTo(writable)
-	gtsd.UpdatedTime.WriteTo(writable)
-	gtsd.IndexData.WriteTo(writable)
-	gtsd.Version.WriteTo(writable)
+	gtsd.DataID.WriteTo(contentWritable)
+	gtsd.OwnerID.WriteTo(contentWritable)
+	gtsd.UpdatedTime.WriteTo(contentWritable)
+	gtsd.IndexData.WriteTo(contentWritable)
+	gtsd.Version.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

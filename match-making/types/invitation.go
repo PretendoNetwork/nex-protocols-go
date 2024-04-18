@@ -20,9 +20,9 @@ type Invitation struct {
 func (i *Invitation) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	i.IDGathering.WriteTo(writable)
-	i.IDGuest.WriteTo(writable)
-	i.StrMessage.WriteTo(writable)
+	i.IDGathering.WriteTo(contentWritable)
+	i.IDGuest.WriteTo(contentWritable)
+	i.StrMessage.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

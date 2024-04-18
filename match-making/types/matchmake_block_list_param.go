@@ -18,7 +18,7 @@ type MatchmakeBlockListParam struct {
 func (mblp *MatchmakeBlockListParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	mblp.OptionFlag.WriteTo(writable)
+	mblp.OptionFlag.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

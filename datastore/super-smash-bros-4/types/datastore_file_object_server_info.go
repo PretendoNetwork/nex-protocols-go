@@ -20,8 +20,8 @@ type DataStoreFileServerObjectInfo struct {
 func (dsfsoi *DataStoreFileServerObjectInfo) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	dsfsoi.DataID.WriteTo(writable)
-	dsfsoi.GetInfo.WriteTo(writable)
+	dsfsoi.DataID.WriteTo(contentWritable)
+	dsfsoi.GetInfo.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

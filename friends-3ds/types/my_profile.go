@@ -28,14 +28,14 @@ func (mp *MyProfile) WriteTo(writable types.Writable) {
 
 	contentWritable := writable.CopyNew()
 
-	mp.Region.WriteTo(writable)
-	mp.Country.WriteTo(writable)
-	mp.Area.WriteTo(writable)
-	mp.Language.WriteTo(writable)
-	mp.Platform.WriteTo(writable)
-	mp.Unknown1.WriteTo(writable)
-	mp.Unknown2.WriteTo(writable)
-	mp.Unknown3.WriteTo(writable)
+	mp.Region.WriteTo(contentWritable)
+	mp.Country.WriteTo(contentWritable)
+	mp.Area.WriteTo(contentWritable)
+	mp.Language.WriteTo(contentWritable)
+	mp.Platform.WriteTo(contentWritable)
+	mp.Unknown1.WriteTo(contentWritable)
+	mp.Unknown2.WriteTo(contentWritable)
+	mp.Unknown3.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

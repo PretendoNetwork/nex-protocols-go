@@ -20,9 +20,9 @@ type ServiceItemAmount struct {
 func (sia *ServiceItemAmount) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	sia.FormattedAmount.WriteTo(writable)
-	sia.Currency.WriteTo(writable)
-	sia.RawValue.WriteTo(writable)
+	sia.FormattedAmount.WriteTo(contentWritable)
+	sia.Currency.WriteTo(contentWritable)
+	sia.RawValue.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

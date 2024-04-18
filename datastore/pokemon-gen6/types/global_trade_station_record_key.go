@@ -19,8 +19,8 @@ type GlobalTradeStationRecordKey struct {
 func (gtsrk *GlobalTradeStationRecordKey) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	gtsrk.DataID.WriteTo(writable)
-	gtsrk.Password.WriteTo(writable)
+	gtsrk.DataID.WriteTo(contentWritable)
+	gtsrk.Password.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

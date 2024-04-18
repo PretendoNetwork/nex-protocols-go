@@ -26,15 +26,15 @@ type DataStoreChangeMetaParamV1 struct {
 func (dscmpv *DataStoreChangeMetaParamV1) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	dscmpv.DataID.WriteTo(writable)
-	dscmpv.ModifiesFlag.WriteTo(writable)
-	dscmpv.Name.WriteTo(writable)
-	dscmpv.Permission.WriteTo(writable)
-	dscmpv.DelPermission.WriteTo(writable)
-	dscmpv.Period.WriteTo(writable)
-	dscmpv.MetaBinary.WriteTo(writable)
-	dscmpv.Tags.WriteTo(writable)
-	dscmpv.UpdatePassword.WriteTo(writable)
+	dscmpv.DataID.WriteTo(contentWritable)
+	dscmpv.ModifiesFlag.WriteTo(contentWritable)
+	dscmpv.Name.WriteTo(contentWritable)
+	dscmpv.Permission.WriteTo(contentWritable)
+	dscmpv.DelPermission.WriteTo(contentWritable)
+	dscmpv.Period.WriteTo(contentWritable)
+	dscmpv.MetaBinary.WriteTo(contentWritable)
+	dscmpv.Tags.WriteTo(contentWritable)
+	dscmpv.UpdatePassword.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

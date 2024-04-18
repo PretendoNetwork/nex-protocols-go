@@ -23,12 +23,12 @@ type SimpleSearchDateTimeAttribute struct {
 func (ssdta *SimpleSearchDateTimeAttribute) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	ssdta.Unknown.WriteTo(writable)
-	ssdta.Unknown2.WriteTo(writable)
-	ssdta.Unknown3.WriteTo(writable)
-	ssdta.Unknown4.WriteTo(writable)
-	ssdta.StartTime.WriteTo(writable)
-	ssdta.EndTime.WriteTo(writable)
+	ssdta.Unknown.WriteTo(contentWritable)
+	ssdta.Unknown2.WriteTo(contentWritable)
+	ssdta.Unknown3.WriteTo(contentWritable)
+	ssdta.Unknown4.WriteTo(contentWritable)
+	ssdta.StartTime.WriteTo(contentWritable)
+	ssdta.EndTime.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

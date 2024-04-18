@@ -19,8 +19,8 @@ type GlobalTradeStationDownloadMyPokemonResult struct {
 func (gtsdmpr *GlobalTradeStationDownloadMyPokemonResult) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	gtsdmpr.Result.WriteTo(writable)
-	gtsdmpr.IsTraded.WriteTo(writable)
+	gtsdmpr.Result.WriteTo(contentWritable)
+	gtsdmpr.IsTraded.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

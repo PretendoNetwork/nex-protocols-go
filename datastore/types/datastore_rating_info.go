@@ -20,9 +20,9 @@ type DataStoreRatingInfo struct {
 func (dsri *DataStoreRatingInfo) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	dsri.TotalValue.WriteTo(writable)
-	dsri.Count.WriteTo(writable)
-	dsri.InitialValue.WriteTo(writable)
+	dsri.TotalValue.WriteTo(contentWritable)
+	dsri.Count.WriteTo(contentWritable)
+	dsri.InitialValue.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

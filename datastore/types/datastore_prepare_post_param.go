@@ -34,21 +34,21 @@ func (dsppp *DataStorePreparePostParam) WriteTo(writable types.Writable) {
 
 	contentWritable := writable.CopyNew()
 
-	dsppp.Size.WriteTo(writable)
-	dsppp.Name.WriteTo(writable)
-	dsppp.DataType.WriteTo(writable)
-	dsppp.MetaBinary.WriteTo(writable)
-	dsppp.Permission.WriteTo(writable)
-	dsppp.DelPermission.WriteTo(writable)
-	dsppp.Flag.WriteTo(writable)
-	dsppp.Period.WriteTo(writable)
-	dsppp.ReferDataID.WriteTo(writable)
-	dsppp.Tags.WriteTo(writable)
-	dsppp.RatingInitParams.WriteTo(writable)
-	dsppp.PersistenceInitParam.WriteTo(writable)
+	dsppp.Size.WriteTo(contentWritable)
+	dsppp.Name.WriteTo(contentWritable)
+	dsppp.DataType.WriteTo(contentWritable)
+	dsppp.MetaBinary.WriteTo(contentWritable)
+	dsppp.Permission.WriteTo(contentWritable)
+	dsppp.DelPermission.WriteTo(contentWritable)
+	dsppp.Flag.WriteTo(contentWritable)
+	dsppp.Period.WriteTo(contentWritable)
+	dsppp.ReferDataID.WriteTo(contentWritable)
+	dsppp.Tags.WriteTo(contentWritable)
+	dsppp.RatingInitParams.WriteTo(contentWritable)
+	dsppp.PersistenceInitParam.WriteTo(contentWritable)
 
 	if libraryVersion.GreaterOrEqual("3.5.0") {
-		dsppp.ExtraData.WriteTo(writable)
+		dsppp.ExtraData.WriteTo(contentWritable)
 	}
 
 	content := contentWritable.Bytes()

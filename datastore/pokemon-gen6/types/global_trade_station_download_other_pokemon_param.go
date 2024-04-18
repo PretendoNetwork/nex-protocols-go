@@ -18,7 +18,7 @@ type GlobalTradeStationDownloadOtherPokemonParam struct {
 func (gtsdopp *GlobalTradeStationDownloadOtherPokemonParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	gtsdopp.PrepareUploadKey.WriteTo(writable)
+	gtsdopp.PrepareUploadKey.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

@@ -19,8 +19,8 @@ type ServiceItemTicketInfo struct {
 func (siti *ServiceItemTicketInfo) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	siti.TicketType.WriteTo(writable)
-	siti.NumTotal.WriteTo(writable)
+	siti.TicketType.WriteTo(contentWritable)
+	siti.NumTotal.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

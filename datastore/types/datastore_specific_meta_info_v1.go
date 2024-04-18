@@ -22,11 +22,11 @@ type DataStoreSpecificMetaInfoV1 struct {
 func (dssmiv *DataStoreSpecificMetaInfoV1) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	dssmiv.DataID.WriteTo(writable)
-	dssmiv.OwnerID.WriteTo(writable)
-	dssmiv.Size.WriteTo(writable)
-	dssmiv.DataType.WriteTo(writable)
-	dssmiv.Version.WriteTo(writable)
+	dssmiv.DataID.WriteTo(contentWritable)
+	dssmiv.OwnerID.WriteTo(contentWritable)
+	dssmiv.Size.WriteTo(contentWritable)
+	dssmiv.DataType.WriteTo(contentWritable)
+	dssmiv.Version.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

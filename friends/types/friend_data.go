@@ -22,11 +22,11 @@ type FriendData struct {
 func (fd *FriendData) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	fd.PID.WriteTo(writable)
-	fd.StrName.WriteTo(writable)
-	fd.ByRelationship.WriteTo(writable)
-	fd.UIDetails.WriteTo(writable)
-	fd.StrStatus.WriteTo(writable)
+	fd.PID.WriteTo(contentWritable)
+	fd.StrName.WriteTo(contentWritable)
+	fd.ByRelationship.WriteTo(contentWritable)
+	fd.UIDetails.WriteTo(contentWritable)
+	fd.StrStatus.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

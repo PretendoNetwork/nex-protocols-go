@@ -23,9 +23,9 @@ func (rcr *RankingCachedResult) WriteTo(writable types.Writable) {
 
 	contentWritable := writable.CopyNew()
 
-	rcr.CreatedTime.WriteTo(writable)
-	rcr.ExpiredTime.WriteTo(writable)
-	rcr.MaxLength.WriteTo(writable)
+	rcr.CreatedTime.WriteTo(contentWritable)
+	rcr.ExpiredTime.WriteTo(contentWritable)
+	rcr.MaxLength.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

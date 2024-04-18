@@ -19,8 +19,8 @@ type UniqueIDInfo struct {
 func (uidi *UniqueIDInfo) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	uidi.NEXUniqueID.WriteTo(writable)
-	uidi.NEXUniqueIDPassword.WriteTo(writable)
+	uidi.NEXUniqueID.WriteTo(contentWritable)
+	uidi.NEXUniqueIDPassword.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

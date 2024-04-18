@@ -20,9 +20,9 @@ type DataStoreUploadCourseRecordParam struct {
 func (dsucrp *DataStoreUploadCourseRecordParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	dsucrp.DataID.WriteTo(writable)
-	dsucrp.Slot.WriteTo(writable)
-	dsucrp.Score.WriteTo(writable)
+	dsucrp.DataID.WriteTo(contentWritable)
+	dsucrp.Slot.WriteTo(contentWritable)
+	dsucrp.Score.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

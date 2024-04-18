@@ -21,10 +21,10 @@ type ShopItem struct {
 func (si *ShopItem) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	si.ItemID.WriteTo(writable)
-	si.ReferenceID.WriteTo(writable)
-	si.ServiceName.WriteTo(writable)
-	si.ItemCode.WriteTo(writable)
+	si.ItemID.WriteTo(contentWritable)
+	si.ReferenceID.WriteTo(contentWritable)
+	si.ServiceName.WriteTo(contentWritable)
+	si.ItemCode.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

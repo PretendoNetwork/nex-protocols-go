@@ -19,8 +19,8 @@ type DataStoreGetNewArrivedNotificationsParam struct {
 func (dsgnanp *DataStoreGetNewArrivedNotificationsParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	dsgnanp.LastNotificationID.WriteTo(writable)
-	dsgnanp.Limit.WriteTo(writable)
+	dsgnanp.LastNotificationID.WriteTo(contentWritable)
+	dsgnanp.Limit.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

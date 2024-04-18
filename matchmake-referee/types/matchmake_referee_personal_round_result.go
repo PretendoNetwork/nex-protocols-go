@@ -25,11 +25,11 @@ func (mrprr *MatchmakeRefereePersonalRoundResult) WriteTo(writable types.Writabl
 
 	contentWritable := writable.CopyNew()
 
-	mrprr.PID.WriteTo(writable)
-	mrprr.PersonalRoundResultFlag.WriteTo(writable)
-	mrprr.RoundWinLoss.WriteTo(writable)
-	mrprr.RatingValueChange.WriteTo(writable)
-	mrprr.Buffer.WriteTo(writable)
+	mrprr.PID.WriteTo(contentWritable)
+	mrprr.PersonalRoundResultFlag.WriteTo(contentWritable)
+	mrprr.RoundWinLoss.WriteTo(contentWritable)
+	mrprr.RatingValueChange.WriteTo(contentWritable)
+	mrprr.Buffer.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

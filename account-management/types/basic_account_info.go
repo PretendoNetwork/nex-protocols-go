@@ -19,8 +19,8 @@ type BasicAccountInfo struct {
 func (bai *BasicAccountInfo) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	bai.PIDOwner.WriteTo(writable)
-	bai.StrName.WriteTo(writable)
+	bai.PIDOwner.WriteTo(contentWritable)
+	bai.StrName.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

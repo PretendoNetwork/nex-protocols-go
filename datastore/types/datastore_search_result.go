@@ -20,9 +20,9 @@ type DataStoreSearchResult struct {
 func (dssr *DataStoreSearchResult) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	dssr.TotalCount.WriteTo(writable)
-	dssr.Result.WriteTo(writable)
-	dssr.TotalCountType.WriteTo(writable)
+	dssr.TotalCount.WriteTo(contentWritable)
+	dssr.Result.WriteTo(contentWritable)
+	dssr.TotalCountType.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

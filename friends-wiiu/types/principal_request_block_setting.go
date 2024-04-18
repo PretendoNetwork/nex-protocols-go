@@ -22,8 +22,8 @@ func (prbs *PrincipalRequestBlockSetting) WriteTo(writable types.Writable) {
 
 	contentWritable := writable.CopyNew()
 
-	prbs.PID.WriteTo(writable)
-	prbs.IsBlocked.WriteTo(writable)
+	prbs.PID.WriteTo(contentWritable)
+	prbs.IsBlocked.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

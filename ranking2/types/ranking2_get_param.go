@@ -26,15 +26,15 @@ type Ranking2GetParam struct {
 func (rgp *Ranking2GetParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	rgp.NexUniqueID.WriteTo(writable)
-	rgp.PrincipalID.WriteTo(writable)
-	rgp.Category.WriteTo(writable)
-	rgp.Offset.WriteTo(writable)
-	rgp.Length.WriteTo(writable)
-	rgp.SortFlags.WriteTo(writable)
-	rgp.OptionFlags.WriteTo(writable)
-	rgp.Mode.WriteTo(writable)
-	rgp.NumSeasonsToGoBack.WriteTo(writable)
+	rgp.NexUniqueID.WriteTo(contentWritable)
+	rgp.PrincipalID.WriteTo(contentWritable)
+	rgp.Category.WriteTo(contentWritable)
+	rgp.Offset.WriteTo(contentWritable)
+	rgp.Length.WriteTo(contentWritable)
+	rgp.SortFlags.WriteTo(contentWritable)
+	rgp.OptionFlags.WriteTo(contentWritable)
+	rgp.Mode.WriteTo(contentWritable)
+	rgp.NumSeasonsToGoBack.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

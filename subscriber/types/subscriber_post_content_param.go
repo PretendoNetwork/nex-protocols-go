@@ -20,9 +20,9 @@ type SubscriberPostContentParam struct {
 func (spcp *SubscriberPostContentParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	spcp.Unknown1.WriteTo(writable)
-	spcp.Unknown2.WriteTo(writable)
-	spcp.Unknown3.WriteTo(writable)
+	spcp.Unknown1.WriteTo(contentWritable)
+	spcp.Unknown2.WriteTo(contentWritable)
+	spcp.Unknown3.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

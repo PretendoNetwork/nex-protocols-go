@@ -21,10 +21,10 @@ type DataStoreGetMetaParam struct {
 func (dsgmp *DataStoreGetMetaParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	dsgmp.DataID.WriteTo(writable)
-	dsgmp.PersistenceTarget.WriteTo(writable)
-	dsgmp.ResultOption.WriteTo(writable)
-	dsgmp.AccessPassword.WriteTo(writable)
+	dsgmp.DataID.WriteTo(contentWritable)
+	dsgmp.PersistenceTarget.WriteTo(contentWritable)
+	dsgmp.ResultOption.WriteTo(contentWritable)
+	dsgmp.AccessPassword.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

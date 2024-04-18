@@ -21,7 +21,7 @@ func (sirti *ServiceItemRightTimeInfo) WriteTo(writable types.Writable) {
 
 	contentWritable := writable.CopyNew()
 
-	sirti.AccountRights.WriteTo(writable)
+	sirti.AccountRights.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

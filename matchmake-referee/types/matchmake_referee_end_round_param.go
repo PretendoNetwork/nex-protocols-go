@@ -22,8 +22,8 @@ func (mrerp *MatchmakeRefereeEndRoundParam) WriteTo(writable types.Writable) {
 
 	contentWritable := writable.CopyNew()
 
-	mrerp.RoundID.WriteTo(writable)
-	mrerp.PersonalRoundResults.WriteTo(writable)
+	mrerp.RoundID.WriteTo(contentWritable)
+	mrerp.PersonalRoundResults.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

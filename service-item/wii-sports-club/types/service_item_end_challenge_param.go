@@ -19,8 +19,8 @@ type ServiceItemEndChallengeParam struct {
 func (siecp *ServiceItemEndChallengeParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	siecp.ChallengeScheduleID.WriteTo(writable)
-	siecp.UserInfo.WriteTo(writable)
+	siecp.ChallengeScheduleID.WriteTo(contentWritable)
+	siecp.UserInfo.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

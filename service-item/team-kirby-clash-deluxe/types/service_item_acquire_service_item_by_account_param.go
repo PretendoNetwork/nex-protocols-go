@@ -26,15 +26,15 @@ type ServiceItemAcquireServiceItemByAccountParam struct {
 func (siasibap *ServiceItemAcquireServiceItemByAccountParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	siasibap.ReferenceIDForAcquisition.WriteTo(writable)
-	siasibap.ReferenceIDForRightBinary.WriteTo(writable)
-	siasibap.UseType.WriteTo(writable)
-	siasibap.LimitationType.WriteTo(writable)
-	siasibap.LimitationValue.WriteTo(writable)
-	siasibap.RightBinary.WriteTo(writable)
-	siasibap.LogMessage.WriteTo(writable)
-	siasibap.UniqueID.WriteTo(writable)
-	siasibap.Platform.WriteTo(writable)
+	siasibap.ReferenceIDForAcquisition.WriteTo(contentWritable)
+	siasibap.ReferenceIDForRightBinary.WriteTo(contentWritable)
+	siasibap.UseType.WriteTo(contentWritable)
+	siasibap.LimitationType.WriteTo(contentWritable)
+	siasibap.LimitationValue.WriteTo(contentWritable)
+	siasibap.RightBinary.WriteTo(contentWritable)
+	siasibap.LogMessage.WriteTo(contentWritable)
+	siasibap.UniqueID.WriteTo(contentWritable)
+	siasibap.Platform.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

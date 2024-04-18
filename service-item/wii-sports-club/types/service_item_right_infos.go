@@ -18,7 +18,7 @@ type ServiceItemRightInfos struct {
 func (siri *ServiceItemRightInfos) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	siri.RightInfos.WriteTo(writable)
+	siri.RightInfos.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

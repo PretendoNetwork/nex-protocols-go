@@ -20,9 +20,9 @@ type GatheringStats struct {
 func (gs *GatheringStats) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	gs.PIDParticipant.WriteTo(writable)
-	gs.UIFlags.WriteTo(writable)
-	gs.LstValues.WriteTo(writable)
+	gs.PIDParticipant.WriteTo(contentWritable)
+	gs.UIFlags.WriteTo(contentWritable)
+	gs.LstValues.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

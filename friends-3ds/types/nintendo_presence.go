@@ -30,16 +30,16 @@ func (np *NintendoPresence) WriteTo(writable types.Writable) {
 
 	contentWritable := writable.CopyNew()
 
-	np.ChangedFlags.WriteTo(writable)
-	np.GameKey.WriteTo(writable)
-	np.Message.WriteTo(writable)
-	np.JoinAvailableFlag.WriteTo(writable)
-	np.MatchmakeType.WriteTo(writable)
-	np.JoinGameID.WriteTo(writable)
-	np.JoinGameMode.WriteTo(writable)
-	np.OwnerPID.WriteTo(writable)
-	np.JoinGroupID.WriteTo(writable)
-	np.ApplicationArg.WriteTo(writable)
+	np.ChangedFlags.WriteTo(contentWritable)
+	np.GameKey.WriteTo(contentWritable)
+	np.Message.WriteTo(contentWritable)
+	np.JoinAvailableFlag.WriteTo(contentWritable)
+	np.MatchmakeType.WriteTo(contentWritable)
+	np.JoinGameID.WriteTo(contentWritable)
+	np.JoinGameMode.WriteTo(contentWritable)
+	np.OwnerPID.WriteTo(contentWritable)
+	np.JoinGroupID.WriteTo(contentWritable)
+	np.ApplicationArg.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

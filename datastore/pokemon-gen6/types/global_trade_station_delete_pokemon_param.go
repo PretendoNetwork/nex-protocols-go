@@ -19,8 +19,8 @@ type GlobalTradeStationDeletePokemonParam struct {
 func (gtsdpp *GlobalTradeStationDeletePokemonParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	gtsdpp.PrepareUploadKey.WriteTo(writable)
-	gtsdpp.DeleteFlag.WriteTo(writable)
+	gtsdpp.PrepareUploadKey.WriteTo(contentWritable)
+	gtsdpp.DeleteFlag.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

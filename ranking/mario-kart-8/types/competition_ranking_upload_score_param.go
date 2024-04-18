@@ -25,14 +25,14 @@ type CompetitionRankingUploadScoreParam struct {
 func (crusp *CompetitionRankingUploadScoreParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	crusp.Unknown.WriteTo(writable)
-	crusp.Unknown2.WriteTo(writable)
-	crusp.Unknown3.WriteTo(writable)
-	crusp.Unknown4.WriteTo(writable)
-	crusp.Unknown5.WriteTo(writable)
-	crusp.Unknown6.WriteTo(writable)
-	crusp.Unknown7.WriteTo(writable)
-	crusp.Metadata.WriteTo(writable)
+	crusp.Unknown.WriteTo(contentWritable)
+	crusp.Unknown2.WriteTo(contentWritable)
+	crusp.Unknown3.WriteTo(contentWritable)
+	crusp.Unknown4.WriteTo(contentWritable)
+	crusp.Unknown5.WriteTo(contentWritable)
+	crusp.Unknown6.WriteTo(contentWritable)
+	crusp.Unknown7.WriteTo(contentWritable)
+	crusp.Metadata.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

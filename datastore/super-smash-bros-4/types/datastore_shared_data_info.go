@@ -26,15 +26,15 @@ type DataStoreSharedDataInfo struct {
 func (dssdi *DataStoreSharedDataInfo) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	dssdi.DataID.WriteTo(writable)
-	dssdi.OwnerID.WriteTo(writable)
-	dssdi.DataType.WriteTo(writable)
-	dssdi.Comment.WriteTo(writable)
-	dssdi.MetaBinary.WriteTo(writable)
-	dssdi.Profile.WriteTo(writable)
-	dssdi.Rating.WriteTo(writable)
-	dssdi.CreatedTime.WriteTo(writable)
-	dssdi.Info.WriteTo(writable)
+	dssdi.DataID.WriteTo(contentWritable)
+	dssdi.OwnerID.WriteTo(contentWritable)
+	dssdi.DataType.WriteTo(contentWritable)
+	dssdi.Comment.WriteTo(contentWritable)
+	dssdi.MetaBinary.WriteTo(contentWritable)
+	dssdi.Profile.WriteTo(contentWritable)
+	dssdi.Rating.WriteTo(contentWritable)
+	dssdi.CreatedTime.WriteTo(contentWritable)
+	dssdi.Info.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

@@ -19,8 +19,8 @@ type ServiceItemLimitation struct {
 func (sil *ServiceItemLimitation) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	sil.LimitationType.WriteTo(writable)
-	sil.LimitationValue.WriteTo(writable)
+	sil.LimitationType.WriteTo(contentWritable)
+	sil.LimitationValue.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

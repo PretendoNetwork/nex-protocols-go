@@ -23,9 +23,9 @@ func (fml *FriendMiiList) WriteTo(writable types.Writable) {
 
 	contentWritable := writable.CopyNew()
 
-	fml.Unknown1.WriteTo(writable)
-	fml.MiiList.WriteTo(writable)
-	fml.Unknown2.WriteTo(writable)
+	fml.Unknown1.WriteTo(contentWritable)
+	fml.MiiList.WriteTo(contentWritable)
+	fml.Unknown2.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

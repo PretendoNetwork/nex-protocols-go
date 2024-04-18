@@ -20,9 +20,9 @@ type ServiceItemEShopResponse struct {
 func (siesr *ServiceItemEShopResponse) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	siesr.HTTPStatus.WriteTo(writable)
-	siesr.ErrorCode.WriteTo(writable)
-	siesr.CorrelationID.WriteTo(writable)
+	siesr.HTTPStatus.WriteTo(contentWritable)
+	siesr.ErrorCode.WriteTo(contentWritable)
+	siesr.CorrelationID.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

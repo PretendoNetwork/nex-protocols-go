@@ -19,8 +19,8 @@ type DataStorePersistenceInitParam struct {
 func (dspip *DataStorePersistenceInitParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	dspip.PersistenceSlotID.WriteTo(writable)
-	dspip.DeleteLastObject.WriteTo(writable)
+	dspip.PersistenceSlotID.WriteTo(contentWritable)
+	dspip.DeleteLastObject.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

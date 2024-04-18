@@ -20,9 +20,9 @@ type ServiceItemPurchaseHistory struct {
 func (siph *ServiceItemPurchaseHistory) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	siph.TotalSize.WriteTo(writable)
-	siph.Offset.WriteTo(writable)
-	siph.Transactions.WriteTo(writable)
+	siph.TotalSize.WriteTo(contentWritable)
+	siph.Offset.WriteTo(contentWritable)
+	siph.Transactions.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

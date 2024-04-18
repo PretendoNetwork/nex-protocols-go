@@ -20,9 +20,9 @@ type Ranking2ScoreData struct {
 func (rsd *Ranking2ScoreData) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	rsd.Misc.WriteTo(writable)
-	rsd.Category.WriteTo(writable)
-	rsd.Score.WriteTo(writable)
+	rsd.Misc.WriteTo(contentWritable)
+	rsd.Category.WriteTo(contentWritable)
+	rsd.Score.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

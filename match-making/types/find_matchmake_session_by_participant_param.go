@@ -20,9 +20,9 @@ type FindMatchmakeSessionByParticipantParam struct {
 func (fmsbpp *FindMatchmakeSessionByParticipantParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	fmsbpp.PrincipalIDList.WriteTo(writable)
-	fmsbpp.ResultOptions.WriteTo(writable)
-	fmsbpp.BlockListParam.WriteTo(writable)
+	fmsbpp.PrincipalIDList.WriteTo(contentWritable)
+	fmsbpp.ResultOptions.WriteTo(contentWritable)
+	fmsbpp.BlockListParam.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

@@ -24,13 +24,13 @@ type SimpleSearchObject struct {
 func (sso *SimpleSearchObject) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	sso.ObjectID.WriteTo(writable)
-	sso.OwnerPID.WriteTo(writable)
-	sso.Attributes.WriteTo(writable)
-	sso.Metadata.WriteTo(writable)
-	sso.CommunityIDMiiverse.WriteTo(writable)
-	sso.CommunityCode.WriteTo(writable)
-	sso.DatetimeAttribute.WriteTo(writable)
+	sso.ObjectID.WriteTo(contentWritable)
+	sso.OwnerPID.WriteTo(contentWritable)
+	sso.Attributes.WriteTo(contentWritable)
+	sso.Metadata.WriteTo(contentWritable)
+	sso.CommunityIDMiiverse.WriteTo(contentWritable)
+	sso.CommunityCode.WriteTo(contentWritable)
+	sso.DatetimeAttribute.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

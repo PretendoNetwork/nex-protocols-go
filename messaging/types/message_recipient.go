@@ -20,9 +20,9 @@ type MessageRecipient struct {
 func (mr *MessageRecipient) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	mr.UIRecipientType.WriteTo(writable)
-	mr.PrincipalID.WriteTo(writable)
-	mr.GatheringID.WriteTo(writable)
+	mr.UIRecipientType.WriteTo(contentWritable)
+	mr.PrincipalID.WriteTo(contentWritable)
+	mr.GatheringID.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

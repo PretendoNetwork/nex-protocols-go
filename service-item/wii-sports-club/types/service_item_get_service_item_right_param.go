@@ -19,8 +19,8 @@ type ServiceItemGetServiceItemRightParam struct {
 func (sigsirp *ServiceItemGetServiceItemRightParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	sigsirp.ReferenceID.WriteTo(writable)
-	sigsirp.TitleID.WriteTo(writable)
+	sigsirp.ReferenceID.WriteTo(contentWritable)
+	sigsirp.TitleID.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

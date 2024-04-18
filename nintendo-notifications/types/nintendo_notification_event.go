@@ -20,9 +20,9 @@ type NintendoNotificationEvent struct {
 func (nne *NintendoNotificationEvent) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	nne.Type.WriteTo(writable)
-	nne.SenderPID.WriteTo(writable)
-	nne.DataHolder.WriteTo(writable)
+	nne.Type.WriteTo(contentWritable)
+	nne.SenderPID.WriteTo(contentWritable)
+	nne.DataHolder.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

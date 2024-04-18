@@ -30,17 +30,17 @@ func (rrd *RankingRankData) WriteTo(writable types.Writable) {
 
 	contentWritable := writable.CopyNew()
 
-	rrd.PrincipalID.WriteTo(writable)
-	rrd.UniqueID.WriteTo(writable)
-	rrd.Order.WriteTo(writable)
-	rrd.Category.WriteTo(writable)
-	rrd.Score.WriteTo(writable)
-	rrd.Groups.WriteTo(writable)
-	rrd.Param.WriteTo(writable)
-	rrd.CommonData.WriteTo(writable)
+	rrd.PrincipalID.WriteTo(contentWritable)
+	rrd.UniqueID.WriteTo(contentWritable)
+	rrd.Order.WriteTo(contentWritable)
+	rrd.Category.WriteTo(contentWritable)
+	rrd.Score.WriteTo(contentWritable)
+	rrd.Groups.WriteTo(contentWritable)
+	rrd.Param.WriteTo(contentWritable)
+	rrd.CommonData.WriteTo(contentWritable)
 
 	if libraryVersion.GreaterOrEqual("3.6.0") {
-		rrd.UpdateTime.WriteTo(writable)
+		rrd.UpdateTime.WriteTo(contentWritable)
 	}
 
 	content := contentWritable.Bytes()

@@ -21,10 +21,10 @@ type DataStoreSearchReplayParam struct {
 func (dssrp *DataStoreSearchReplayParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	dssrp.Mode.WriteTo(writable)
-	dssrp.Style.WriteTo(writable)
-	dssrp.Fighter.WriteTo(writable)
-	dssrp.ResultRange.WriteTo(writable)
+	dssrp.Mode.WriteTo(contentWritable)
+	dssrp.Style.WriteTo(contentWritable)
+	dssrp.Fighter.WriteTo(contentWritable)
+	dssrp.ResultRange.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

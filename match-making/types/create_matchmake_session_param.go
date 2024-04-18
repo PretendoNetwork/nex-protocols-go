@@ -23,12 +23,12 @@ type CreateMatchmakeSessionParam struct {
 func (cmsp *CreateMatchmakeSessionParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	cmsp.SourceMatchmakeSession.WriteTo(writable)
-	cmsp.AdditionalParticipants.WriteTo(writable)
-	cmsp.GIDForParticipationCheck.WriteTo(writable)
-	cmsp.CreateMatchmakeSessionOption.WriteTo(writable)
-	cmsp.JoinMessage.WriteTo(writable)
-	cmsp.ParticipationCount.WriteTo(writable)
+	cmsp.SourceMatchmakeSession.WriteTo(contentWritable)
+	cmsp.AdditionalParticipants.WriteTo(contentWritable)
+	cmsp.GIDForParticipationCheck.WriteTo(contentWritable)
+	cmsp.CreateMatchmakeSessionOption.WriteTo(contentWritable)
+	cmsp.JoinMessage.WriteTo(contentWritable)
+	cmsp.ParticipationCount.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

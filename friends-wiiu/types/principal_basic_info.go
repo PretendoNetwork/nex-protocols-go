@@ -24,10 +24,10 @@ func (pbi *PrincipalBasicInfo) WriteTo(writable types.Writable) {
 
 	contentWritable := writable.CopyNew()
 
-	pbi.PID.WriteTo(writable)
-	pbi.NNID.WriteTo(writable)
-	pbi.Mii.WriteTo(writable)
-	pbi.Unknown.WriteTo(writable)
+	pbi.PID.WriteTo(contentWritable)
+	pbi.NNID.WriteTo(contentWritable)
+	pbi.Mii.WriteTo(contentWritable)
+	pbi.Unknown.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

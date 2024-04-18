@@ -22,11 +22,11 @@ type DataStoreReqPostInfo struct {
 func (dsrpi *DataStoreReqPostInfo) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	dsrpi.DataID.WriteTo(writable)
-	dsrpi.URL.WriteTo(writable)
-	dsrpi.RequestHeaders.WriteTo(writable)
-	dsrpi.FormFields.WriteTo(writable)
-	dsrpi.RootCACert.WriteTo(writable)
+	dsrpi.DataID.WriteTo(contentWritable)
+	dsrpi.URL.WriteTo(contentWritable)
+	dsrpi.RequestHeaders.WriteTo(contentWritable)
+	dsrpi.FormFields.WriteTo(contentWritable)
+	dsrpi.RootCACert.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

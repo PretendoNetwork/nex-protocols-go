@@ -20,11 +20,11 @@ type ServiceItemGetLawMessageParam struct {
 func (siglmp *ServiceItemGetLawMessageParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	siglmp.Language.WriteTo(writable)
-	siglmp.UniqueID.WriteTo(writable)
+	siglmp.Language.WriteTo(contentWritable)
+	siglmp.UniqueID.WriteTo(contentWritable)
 
 	if siglmp.StructureVersion >= 1 {
-		siglmp.Platform.WriteTo(writable)
+		siglmp.Platform.WriteTo(contentWritable)
 	}
 
 	content := contentWritable.Bytes()

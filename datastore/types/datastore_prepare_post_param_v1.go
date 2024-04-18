@@ -28,17 +28,17 @@ type DataStorePreparePostParamV1 struct {
 func (dspppv *DataStorePreparePostParamV1) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	dspppv.Size.WriteTo(writable)
-	dspppv.Name.WriteTo(writable)
-	dspppv.DataType.WriteTo(writable)
-	dspppv.MetaBinary.WriteTo(writable)
-	dspppv.Permission.WriteTo(writable)
-	dspppv.DelPermission.WriteTo(writable)
-	dspppv.Flag.WriteTo(writable)
-	dspppv.Period.WriteTo(writable)
-	dspppv.ReferDataID.WriteTo(writable)
-	dspppv.Tags.WriteTo(writable)
-	dspppv.RatingInitParams.WriteTo(writable)
+	dspppv.Size.WriteTo(contentWritable)
+	dspppv.Name.WriteTo(contentWritable)
+	dspppv.DataType.WriteTo(contentWritable)
+	dspppv.MetaBinary.WriteTo(contentWritable)
+	dspppv.Permission.WriteTo(contentWritable)
+	dspppv.DelPermission.WriteTo(contentWritable)
+	dspppv.Flag.WriteTo(contentWritable)
+	dspppv.Period.WriteTo(contentWritable)
+	dspppv.ReferDataID.WriteTo(contentWritable)
+	dspppv.Tags.WriteTo(contentWritable)
+	dspppv.RatingInitParams.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

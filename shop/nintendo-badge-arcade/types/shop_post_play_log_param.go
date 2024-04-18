@@ -20,9 +20,9 @@ type ShopPostPlayLogParam struct {
 func (spplp *ShopPostPlayLogParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	spplp.Unknown1.WriteTo(writable)
-	spplp.Timestamp.WriteTo(writable)
-	spplp.Unknown2.WriteTo(writable)
+	spplp.Unknown1.WriteTo(contentWritable)
+	spplp.Timestamp.WriteTo(contentWritable)
+	spplp.Unknown2.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

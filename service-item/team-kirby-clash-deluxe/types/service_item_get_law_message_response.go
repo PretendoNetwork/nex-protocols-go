@@ -21,7 +21,7 @@ func (siglmr *ServiceItemGetLawMessageResponse) WriteTo(writable types.Writable)
 
 	contentWritable := writable.CopyNew()
 
-	siglmr.NullableLawMessage.WriteTo(writable)
+	siglmr.NullableLawMessage.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

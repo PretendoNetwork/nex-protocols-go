@@ -21,10 +21,10 @@ type ServiceItemPurchaceInfo struct {
 func (sipi *ServiceItemPurchaceInfo) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	sipi.TransactionID.WriteTo(writable)
-	sipi.ExtTransactionID.WriteTo(writable)
-	sipi.ItemCode.WriteTo(writable)
-	sipi.PostBalance.WriteTo(writable)
+	sipi.TransactionID.WriteTo(contentWritable)
+	sipi.ExtTransactionID.WriteTo(contentWritable)
+	sipi.ItemCode.WriteTo(contentWritable)
+	sipi.PostBalance.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

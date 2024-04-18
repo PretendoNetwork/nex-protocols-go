@@ -26,13 +26,13 @@ func (dspgp *DataStorePrepareGetParam) WriteTo(writable types.Writable) {
 
 	contentWritable := writable.CopyNew()
 
-	dspgp.DataID.WriteTo(writable)
-	dspgp.LockID.WriteTo(writable)
-	dspgp.PersistenceTarget.WriteTo(writable)
-	dspgp.AccessPassword.WriteTo(writable)
+	dspgp.DataID.WriteTo(contentWritable)
+	dspgp.LockID.WriteTo(contentWritable)
+	dspgp.PersistenceTarget.WriteTo(contentWritable)
+	dspgp.AccessPassword.WriteTo(contentWritable)
 
 	if libraryVersion.GreaterOrEqual("3.5.0") {
-		dspgp.ExtraData.WriteTo(writable)
+		dspgp.ExtraData.WriteTo(contentWritable)
 	}
 
 	content := contentWritable.Bytes()

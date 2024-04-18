@@ -23,12 +23,12 @@ type NotificationEvent struct {
 func (ne *NotificationEvent) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	ne.PIDSource.WriteTo(writable)
-	ne.Type.WriteTo(writable)
-	ne.Param1.WriteTo(writable)
-	ne.Param2.WriteTo(writable)
-	ne.StrParam.WriteTo(writable)
-	ne.Param3.WriteTo(writable)
+	ne.PIDSource.WriteTo(contentWritable)
+	ne.Type.WriteTo(contentWritable)
+	ne.Param1.WriteTo(contentWritable)
+	ne.Param2.WriteTo(contentWritable)
+	ne.StrParam.WriteTo(contentWritable)
+	ne.Param3.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

@@ -19,8 +19,8 @@ type GlobalTradeStationTradeKey struct {
 func (gtstk *GlobalTradeStationTradeKey) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	gtstk.DataID.WriteTo(writable)
-	gtstk.Version.WriteTo(writable)
+	gtstk.DataID.WriteTo(contentWritable)
+	gtstk.Version.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

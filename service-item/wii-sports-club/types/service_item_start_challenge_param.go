@@ -20,9 +20,9 @@ type ServiceItemStartChallengeParam struct {
 func (siscp *ServiceItemStartChallengeParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	siscp.ChallengeScheduleID.WriteTo(writable)
-	siscp.TicketType.WriteTo(writable)
-	siscp.NumTicket.WriteTo(writable)
+	siscp.ChallengeScheduleID.WriteTo(contentWritable)
+	siscp.TicketType.WriteTo(contentWritable)
+	siscp.NumTicket.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

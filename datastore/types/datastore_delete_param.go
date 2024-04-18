@@ -19,8 +19,8 @@ type DataStoreDeleteParam struct {
 func (dsdp *DataStoreDeleteParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	dsdp.DataID.WriteTo(writable)
-	dsdp.UpdatePassword.WriteTo(writable)
+	dsdp.DataID.WriteTo(contentWritable)
+	dsdp.UpdatePassword.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

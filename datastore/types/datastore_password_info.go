@@ -20,9 +20,9 @@ type DataStorePasswordInfo struct {
 func (dspi *DataStorePasswordInfo) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	dspi.DataID.WriteTo(writable)
-	dspi.AccessPassword.WriteTo(writable)
-	dspi.UpdatePassword.WriteTo(writable)
+	dspi.DataID.WriteTo(contentWritable)
+	dspi.AccessPassword.WriteTo(contentWritable)
+	dspi.UpdatePassword.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

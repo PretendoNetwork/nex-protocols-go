@@ -25,14 +25,14 @@ type ServiceItemPurchaseServiceItemParam struct {
 func (sipsip *ServiceItemPurchaseServiceItemParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	sipsip.ItemCode.WriteTo(writable)
-	sipsip.PriceID.WriteTo(writable)
-	sipsip.ReferenceID.WriteTo(writable)
-	sipsip.Balance.WriteTo(writable)
-	sipsip.ItemName.WriteTo(writable)
-	sipsip.EcServiceToken.WriteTo(writable)
-	sipsip.Language.WriteTo(writable)
-	sipsip.TitleID.WriteTo(writable)
+	sipsip.ItemCode.WriteTo(contentWritable)
+	sipsip.PriceID.WriteTo(contentWritable)
+	sipsip.ReferenceID.WriteTo(contentWritable)
+	sipsip.Balance.WriteTo(contentWritable)
+	sipsip.ItemName.WriteTo(contentWritable)
+	sipsip.EcServiceToken.WriteTo(contentWritable)
+	sipsip.Language.WriteTo(contentWritable)
+	sipsip.TitleID.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

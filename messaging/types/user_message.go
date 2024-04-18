@@ -29,15 +29,15 @@ func (um *UserMessage) WriteTo(writable types.Writable) {
 
 	contentWritable := writable.CopyNew()
 
-	um.UIID.WriteTo(writable)
-	um.UIParentID.WriteTo(writable)
-	um.PIDSender.WriteTo(writable)
-	um.Receptiontime.WriteTo(writable)
-	um.UILifeTime.WriteTo(writable)
-	um.UIFlags.WriteTo(writable)
-	um.StrSubject.WriteTo(writable)
-	um.StrSender.WriteTo(writable)
-	um.MessageRecipient.WriteTo(writable)
+	um.UIID.WriteTo(contentWritable)
+	um.UIParentID.WriteTo(contentWritable)
+	um.PIDSender.WriteTo(contentWritable)
+	um.Receptiontime.WriteTo(contentWritable)
+	um.UILifeTime.WriteTo(contentWritable)
+	um.UIFlags.WriteTo(contentWritable)
+	um.StrSubject.WriteTo(contentWritable)
+	um.StrSender.WriteTo(contentWritable)
+	um.MessageRecipient.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

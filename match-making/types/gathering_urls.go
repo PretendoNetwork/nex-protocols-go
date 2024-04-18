@@ -19,8 +19,8 @@ type GatheringURLs struct {
 func (gurl *GatheringURLs) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	gurl.GID.WriteTo(writable)
-	gurl.LstStationURLs.WriteTo(writable)
+	gurl.GID.WriteTo(contentWritable)
+	gurl.LstStationURLs.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

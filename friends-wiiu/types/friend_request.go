@@ -23,9 +23,9 @@ func (fr *FriendRequest) WriteTo(writable types.Writable) {
 
 	contentWritable := writable.CopyNew()
 
-	fr.PrincipalInfo.WriteTo(writable)
-	fr.Message.WriteTo(writable)
-	fr.SentOn.WriteTo(writable)
+	fr.PrincipalInfo.WriteTo(contentWritable)
+	fr.Message.WriteTo(contentWritable)
+	fr.SentOn.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

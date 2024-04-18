@@ -22,8 +22,8 @@ func (mrst *MatchmakeRefereeStatsTarget) WriteTo(writable types.Writable) {
 
 	contentWritable := writable.CopyNew()
 
-	mrst.PID.WriteTo(writable)
-	mrst.Category.WriteTo(writable)
+	mrst.PID.WriteTo(contentWritable)
+	mrst.Category.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

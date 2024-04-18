@@ -21,9 +21,9 @@ type DataStoreCompletePostReplayParam struct {
 func (dscprp *DataStoreCompletePostReplayParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	dscprp.ReplayID.WriteTo(writable)
-	dscprp.CompleteParam.WriteTo(writable)
-	dscprp.PrepareParam.WriteTo(writable)
+	dscprp.ReplayID.WriteTo(contentWritable)
+	dscprp.CompleteParam.WriteTo(contentWritable)
+	dscprp.PrepareParam.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

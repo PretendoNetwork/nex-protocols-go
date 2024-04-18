@@ -20,9 +20,9 @@ type RankingResult struct {
 func (rr *RankingResult) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	rr.RankDataList.WriteTo(writable)
-	rr.TotalCount.WriteTo(writable)
-	rr.SinceTime.WriteTo(writable)
+	rr.RankDataList.WriteTo(contentWritable)
+	rr.TotalCount.WriteTo(contentWritable)
+	rr.SinceTime.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

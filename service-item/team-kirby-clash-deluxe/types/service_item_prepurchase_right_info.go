@@ -23,12 +23,12 @@ type ServiceItemPrepurchaseRightInfo struct {
 func (sipri *ServiceItemPrepurchaseRightInfo) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	sipri.LimitationType.WriteTo(writable)
-	sipri.AcquiredCount.WriteTo(writable)
-	sipri.UsedCount.WriteTo(writable)
-	sipri.ExpiryDate.WriteTo(writable)
-	sipri.ExpiredCount.WriteTo(writable)
-	sipri.ExpiryCounts.WriteTo(writable)
+	sipri.LimitationType.WriteTo(contentWritable)
+	sipri.AcquiredCount.WriteTo(contentWritable)
+	sipri.UsedCount.WriteTo(contentWritable)
+	sipri.ExpiryDate.WriteTo(contentWritable)
+	sipri.ExpiredCount.WriteTo(contentWritable)
+	sipri.ExpiryCounts.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

@@ -23,9 +23,9 @@ func (fp *FriendPicture) WriteTo(writable types.Writable) {
 
 	contentWritable := writable.CopyNew()
 
-	fp.Unknown1.WriteTo(writable)
-	fp.PictureData.WriteTo(writable)
-	fp.Unknown2.WriteTo(writable)
+	fp.Unknown1.WriteTo(contentWritable)
+	fp.PictureData.WriteTo(contentWritable)
+	fp.Unknown2.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

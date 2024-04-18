@@ -22,11 +22,11 @@ type ServiceItemGetPrepurchaseInfoParam struct {
 func (sigpip *ServiceItemGetPrepurchaseInfoParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	sigpip.ItemCode.WriteTo(writable)
-	sigpip.ReferenceID.WriteTo(writable)
-	sigpip.Limitation.WriteTo(writable)
-	sigpip.Language.WriteTo(writable)
-	sigpip.UniqueID.WriteTo(writable)
+	sigpip.ItemCode.WriteTo(contentWritable)
+	sigpip.ReferenceID.WriteTo(contentWritable)
+	sigpip.Limitation.WriteTo(contentWritable)
+	sigpip.Language.WriteTo(contentWritable)
+	sigpip.UniqueID.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

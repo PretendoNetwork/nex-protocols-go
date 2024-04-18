@@ -20,9 +20,9 @@ type GlobalTradeStationSearchPokemonResult struct {
 func (gtsspr *GlobalTradeStationSearchPokemonResult) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	gtsspr.TotalCount.WriteTo(writable)
-	gtsspr.Result.WriteTo(writable)
-	gtsspr.TotalCountType.WriteTo(writable)
+	gtsspr.TotalCount.WriteTo(contentWritable)
+	gtsspr.Result.WriteTo(contentWritable)
+	gtsspr.TotalCountType.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

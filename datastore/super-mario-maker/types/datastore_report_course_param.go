@@ -21,10 +21,10 @@ type DataStoreReportCourseParam struct {
 func (dsrcp *DataStoreReportCourseParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	dsrcp.DataID.WriteTo(writable)
-	dsrcp.MiiName.WriteTo(writable)
-	dsrcp.ReportCategory.WriteTo(writable)
-	dsrcp.ReportReason.WriteTo(writable)
+	dsrcp.DataID.WriteTo(contentWritable)
+	dsrcp.MiiName.WriteTo(contentWritable)
+	dsrcp.ReportCategory.WriteTo(contentWritable)
+	dsrcp.ReportReason.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

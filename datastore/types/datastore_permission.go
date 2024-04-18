@@ -19,8 +19,8 @@ type DataStorePermission struct {
 func (dsp *DataStorePermission) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	dsp.Permission.WriteTo(writable)
-	dsp.RecipientIDs.WriteTo(writable)
+	dsp.Permission.WriteTo(contentWritable)
+	dsp.RecipientIDs.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

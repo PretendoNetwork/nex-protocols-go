@@ -27,16 +27,16 @@ type DataStoreChangeMetaCompareParam struct {
 func (dscmcp *DataStoreChangeMetaCompareParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	dscmcp.ComparisonFlag.WriteTo(writable)
-	dscmcp.Name.WriteTo(writable)
-	dscmcp.Permission.WriteTo(writable)
-	dscmcp.DelPermission.WriteTo(writable)
-	dscmcp.Period.WriteTo(writable)
-	dscmcp.MetaBinary.WriteTo(writable)
-	dscmcp.Tags.WriteTo(writable)
-	dscmcp.ReferredCnt.WriteTo(writable)
-	dscmcp.DataType.WriteTo(writable)
-	dscmcp.Status.WriteTo(writable)
+	dscmcp.ComparisonFlag.WriteTo(contentWritable)
+	dscmcp.Name.WriteTo(contentWritable)
+	dscmcp.Permission.WriteTo(contentWritable)
+	dscmcp.DelPermission.WriteTo(contentWritable)
+	dscmcp.Period.WriteTo(contentWritable)
+	dscmcp.MetaBinary.WriteTo(contentWritable)
+	dscmcp.Tags.WriteTo(contentWritable)
+	dscmcp.ReferredCnt.WriteTo(contentWritable)
+	dscmcp.DataType.WriteTo(contentWritable)
+	dscmcp.Status.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

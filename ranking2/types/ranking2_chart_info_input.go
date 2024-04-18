@@ -19,8 +19,8 @@ type Ranking2ChartInfoInput struct {
 func (rcii *Ranking2ChartInfoInput) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	rcii.ChartIndex.WriteTo(writable)
-	rcii.NumSeasonsToGoBack.WriteTo(writable)
+	rcii.ChartIndex.WriteTo(contentWritable)
+	rcii.NumSeasonsToGoBack.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

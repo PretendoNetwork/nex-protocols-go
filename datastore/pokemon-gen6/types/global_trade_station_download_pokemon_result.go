@@ -20,9 +20,9 @@ type GlobalTradeStationDownloadPokemonResult struct {
 func (gtsdpr *GlobalTradeStationDownloadPokemonResult) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	gtsdpr.DataID.WriteTo(writable)
-	gtsdpr.IndexData.WriteTo(writable)
-	gtsdpr.PokemonData.WriteTo(writable)
+	gtsdpr.DataID.WriteTo(contentWritable)
+	gtsdpr.IndexData.WriteTo(contentWritable)
+	gtsdpr.PokemonData.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

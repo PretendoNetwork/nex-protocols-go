@@ -19,8 +19,8 @@ type SubscriberUserStatusInfo struct {
 func (susi *SubscriberUserStatusInfo) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	susi.PID.WriteTo(writable)
-	susi.Unknown.WriteTo(writable)
+	susi.PID.WriteTo(contentWritable)
+	susi.Unknown.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

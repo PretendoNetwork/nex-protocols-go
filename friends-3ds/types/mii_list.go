@@ -24,10 +24,10 @@ func (ml *MiiList) WriteTo(writable types.Writable) {
 
 	contentWritable := writable.CopyNew()
 
-	ml.Unknown1.WriteTo(writable)
-	ml.Unknown2.WriteTo(writable)
-	ml.Unknown3.WriteTo(writable)
-	ml.MiiDataList.WriteTo(writable)
+	ml.Unknown1.WriteTo(contentWritable)
+	ml.Unknown2.WriteTo(contentWritable)
+	ml.Unknown3.WriteTo(contentWritable)
+	ml.MiiDataList.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

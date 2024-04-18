@@ -19,8 +19,8 @@ type DataStorePrepareGetReplayParam struct {
 func (dspgrp *DataStorePrepareGetReplayParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	dspgrp.ReplayID.WriteTo(writable)
-	dspgrp.ExtraData.WriteTo(writable)
+	dspgrp.ReplayID.WriteTo(contentWritable)
+	dspgrp.ExtraData.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

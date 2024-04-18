@@ -24,10 +24,10 @@ func (m *Mii) WriteTo(writable types.Writable) {
 
 	contentWritable := writable.CopyNew()
 
-	m.Name.WriteTo(writable)
-	m.Unknown2.WriteTo(writable)
-	m.Unknown3.WriteTo(writable)
-	m.MiiData.WriteTo(writable)
+	m.Name.WriteTo(contentWritable)
+	m.Unknown2.WriteTo(contentWritable)
+	m.Unknown3.WriteTo(contentWritable)
+	m.MiiData.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

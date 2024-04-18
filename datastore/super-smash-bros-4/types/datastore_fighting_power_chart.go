@@ -19,8 +19,8 @@ type DataStoreFightingPowerChart struct {
 func (dsfpc *DataStoreFightingPowerChart) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	dsfpc.UserNum.WriteTo(writable)
-	dsfpc.Chart.WriteTo(writable)
+	dsfpc.UserNum.WriteTo(contentWritable)
+	dsfpc.Chart.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

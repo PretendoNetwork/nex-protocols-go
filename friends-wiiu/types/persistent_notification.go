@@ -25,11 +25,11 @@ func (pn *PersistentNotification) WriteTo(writable types.Writable) {
 
 	contentWritable := writable.CopyNew()
 
-	pn.Unknown1.WriteTo(writable)
-	pn.Unknown2.WriteTo(writable)
-	pn.Unknown3.WriteTo(writable)
-	pn.Unknown4.WriteTo(writable)
-	pn.Unknown5.WriteTo(writable)
+	pn.Unknown1.WriteTo(contentWritable)
+	pn.Unknown2.WriteTo(contentWritable)
+	pn.Unknown3.WriteTo(contentWritable)
+	pn.Unknown4.WriteTo(contentWritable)
+	pn.Unknown5.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

@@ -21,7 +21,7 @@ func (sigsirr *ServiceItemGetServiceItemRightResponse) WriteTo(writable types.Wr
 
 	contentWritable := writable.CopyNew()
 
-	sigsirr.NullableRightInfos.WriteTo(writable)
+	sigsirr.NullableRightInfos.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

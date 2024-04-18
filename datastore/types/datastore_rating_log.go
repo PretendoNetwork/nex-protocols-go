@@ -21,10 +21,10 @@ type DataStoreRatingLog struct {
 func (dsrl *DataStoreRatingLog) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	dsrl.IsRated.WriteTo(writable)
-	dsrl.PID.WriteTo(writable)
-	dsrl.RatingValue.WriteTo(writable)
-	dsrl.LockExpirationTime.WriteTo(writable)
+	dsrl.IsRated.WriteTo(contentWritable)
+	dsrl.PID.WriteTo(contentWritable)
+	dsrl.RatingValue.WriteTo(contentWritable)
+	dsrl.LockExpirationTime.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

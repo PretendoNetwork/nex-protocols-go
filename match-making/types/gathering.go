@@ -27,16 +27,16 @@ type Gathering struct {
 func (g *Gathering) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	g.ID.WriteTo(writable)
-	g.OwnerPID.WriteTo(writable)
-	g.HostPID.WriteTo(writable)
-	g.MinimumParticipants.WriteTo(writable)
-	g.MaximumParticipants.WriteTo(writable)
-	g.ParticipationPolicy.WriteTo(writable)
-	g.PolicyArgument.WriteTo(writable)
-	g.Flags.WriteTo(writable)
-	g.State.WriteTo(writable)
-	g.Description.WriteTo(writable)
+	g.ID.WriteTo(contentWritable)
+	g.OwnerPID.WriteTo(contentWritable)
+	g.HostPID.WriteTo(contentWritable)
+	g.MinimumParticipants.WriteTo(contentWritable)
+	g.MaximumParticipants.WriteTo(contentWritable)
+	g.ParticipationPolicy.WriteTo(contentWritable)
+	g.PolicyArgument.WriteTo(contentWritable)
+	g.Flags.WriteTo(contentWritable)
+	g.State.WriteTo(contentWritable)
+	g.Description.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

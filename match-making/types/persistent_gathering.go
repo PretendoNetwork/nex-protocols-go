@@ -28,14 +28,14 @@ func (pg *PersistentGathering) WriteTo(writable types.Writable) {
 
 	contentWritable := writable.CopyNew()
 
-	pg.CommunityType.WriteTo(writable)
-	pg.Password.WriteTo(writable)
-	pg.Attribs.WriteTo(writable)
-	pg.ApplicationBuffer.WriteTo(writable)
-	pg.ParticipationStartDate.WriteTo(writable)
-	pg.ParticipationEndDate.WriteTo(writable)
-	pg.MatchmakeSessionCount.WriteTo(writable)
-	pg.ParticipationCount.WriteTo(writable)
+	pg.CommunityType.WriteTo(contentWritable)
+	pg.Password.WriteTo(contentWritable)
+	pg.Attribs.WriteTo(contentWritable)
+	pg.ApplicationBuffer.WriteTo(contentWritable)
+	pg.ParticipationStartDate.WriteTo(contentWritable)
+	pg.ParticipationEndDate.WriteTo(contentWritable)
+	pg.MatchmakeSessionCount.WriteTo(contentWritable)
+	pg.ParticipationCount.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

@@ -18,7 +18,7 @@ type RankingStats struct {
 func (rs *RankingStats) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	rs.StatsList.WriteTo(writable)
+	rs.StatsList.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

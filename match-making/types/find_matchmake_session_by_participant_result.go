@@ -19,8 +19,8 @@ type FindMatchmakeSessionByParticipantResult struct {
 func (fmsbpr *FindMatchmakeSessionByParticipantResult) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	fmsbpr.PrincipalID.WriteTo(writable)
-	fmsbpr.Session.WriteTo(writable)
+	fmsbpr.PrincipalID.WriteTo(contentWritable)
+	fmsbpr.Session.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

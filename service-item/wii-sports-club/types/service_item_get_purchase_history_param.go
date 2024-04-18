@@ -21,10 +21,10 @@ type ServiceItemGetPurchaseHistoryParam struct {
 func (sigphp *ServiceItemGetPurchaseHistoryParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	sigphp.Language.WriteTo(writable)
-	sigphp.Offset.WriteTo(writable)
-	sigphp.Size.WriteTo(writable)
-	sigphp.TitleID.WriteTo(writable)
+	sigphp.Language.WriteTo(contentWritable)
+	sigphp.Offset.WriteTo(contentWritable)
+	sigphp.Size.WriteTo(contentWritable)
+	sigphp.TitleID.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

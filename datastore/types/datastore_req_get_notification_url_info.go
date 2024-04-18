@@ -21,10 +21,10 @@ type DataStoreReqGetNotificationURLInfo struct {
 func (dsrgnurli *DataStoreReqGetNotificationURLInfo) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	dsrgnurli.URL.WriteTo(writable)
-	dsrgnurli.Key.WriteTo(writable)
-	dsrgnurli.Query.WriteTo(writable)
-	dsrgnurli.RootCACert.WriteTo(writable)
+	dsrgnurli.URL.WriteTo(contentWritable)
+	dsrgnurli.Key.WriteTo(contentWritable)
+	dsrgnurli.Query.WriteTo(contentWritable)
+	dsrgnurli.RootCACert.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

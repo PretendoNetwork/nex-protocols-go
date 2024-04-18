@@ -19,8 +19,8 @@ type DataStoreCompletePostParamV1 struct {
 func (dscppv *DataStoreCompletePostParamV1) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	dscppv.DataID.WriteTo(writable)
-	dscppv.IsSuccess.WriteTo(writable)
+	dscppv.DataID.WriteTo(contentWritable)
+	dscppv.IsSuccess.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

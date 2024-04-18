@@ -25,14 +25,14 @@ type ServiceItemUseServiceItemByAccountParam struct {
 func (siusibap *ServiceItemUseServiceItemByAccountParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	siusibap.ReferenceIDForUse.WriteTo(writable)
-	siusibap.ReferenceIDForRightBinary.WriteTo(writable)
-	siusibap.UseType.WriteTo(writable)
-	siusibap.UseNumber.WriteTo(writable)
-	siusibap.RightBinary.WriteTo(writable)
-	siusibap.LogMessage.WriteTo(writable)
-	siusibap.UniqueID.WriteTo(writable)
-	siusibap.Platform.WriteTo(writable)
+	siusibap.ReferenceIDForUse.WriteTo(contentWritable)
+	siusibap.ReferenceIDForRightBinary.WriteTo(contentWritable)
+	siusibap.UseType.WriteTo(contentWritable)
+	siusibap.UseNumber.WriteTo(contentWritable)
+	siusibap.RightBinary.WriteTo(contentWritable)
+	siusibap.LogMessage.WriteTo(contentWritable)
+	siusibap.UniqueID.WriteTo(contentWritable)
+	siusibap.Platform.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

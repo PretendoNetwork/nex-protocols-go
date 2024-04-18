@@ -23,12 +23,12 @@ type SimpleSearchParam struct {
 func (ssp *SimpleSearchParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	ssp.Unknown.WriteTo(writable)
-	ssp.Unknown2.WriteTo(writable)
-	ssp.Conditions.WriteTo(writable)
-	ssp.Unknown3.WriteTo(writable)
-	ssp.ResultRange.WriteTo(writable)
-	ssp.Unknown4.WriteTo(writable)
+	ssp.Unknown.WriteTo(contentWritable)
+	ssp.Unknown2.WriteTo(contentWritable)
+	ssp.Conditions.WriteTo(contentWritable)
+	ssp.Unknown3.WriteTo(contentWritable)
+	ssp.ResultRange.WriteTo(contentWritable)
+	ssp.Unknown4.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

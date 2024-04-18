@@ -19,8 +19,8 @@ type DataStoreProfileInfo struct {
 func (dspi *DataStoreProfileInfo) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	dspi.PID.WriteTo(writable)
-	dspi.Profile.WriteTo(writable)
+	dspi.PID.WriteTo(contentWritable)
+	dspi.Profile.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

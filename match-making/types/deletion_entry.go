@@ -20,9 +20,9 @@ type DeletionEntry struct {
 func (de *DeletionEntry) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	de.IDGathering.WriteTo(writable)
-	de.PID.WriteTo(writable)
-	de.UIReason.WriteTo(writable)
+	de.IDGathering.WriteTo(contentWritable)
+	de.PID.WriteTo(contentWritable)
+	de.UIReason.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

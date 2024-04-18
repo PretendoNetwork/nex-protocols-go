@@ -23,12 +23,12 @@ type ServiceItemPostRightBinaryByAccountParam struct {
 func (siprbbap *ServiceItemPostRightBinaryByAccountParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	siprbbap.ReferenceID.WriteTo(writable)
-	siprbbap.UseType.WriteTo(writable)
-	siprbbap.RightBinary.WriteTo(writable)
-	siprbbap.LogMessage.WriteTo(writable)
-	siprbbap.UniqueID.WriteTo(writable)
-	siprbbap.Platform.WriteTo(writable)
+	siprbbap.ReferenceID.WriteTo(contentWritable)
+	siprbbap.UseType.WriteTo(contentWritable)
+	siprbbap.RightBinary.WriteTo(contentWritable)
+	siprbbap.LogMessage.WriteTo(contentWritable)
+	siprbbap.UniqueID.WriteTo(contentWritable)
+	siprbbap.Platform.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

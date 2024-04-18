@@ -21,9 +21,9 @@ type DataStoreCustomRankingResult struct {
 func (dscrr *DataStoreCustomRankingResult) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	dscrr.Order.WriteTo(writable)
-	dscrr.Score.WriteTo(writable)
-	dscrr.MetaInfo.WriteTo(writable)
+	dscrr.Order.WriteTo(contentWritable)
+	dscrr.Score.WriteTo(contentWritable)
+	dscrr.MetaInfo.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

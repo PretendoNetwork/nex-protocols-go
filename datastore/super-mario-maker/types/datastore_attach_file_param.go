@@ -21,9 +21,9 @@ type DataStoreAttachFileParam struct {
 func (dsafp *DataStoreAttachFileParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	dsafp.PostParam.WriteTo(writable)
-	dsafp.ReferDataID.WriteTo(writable)
-	dsafp.ContentType.WriteTo(writable)
+	dsafp.PostParam.WriteTo(contentWritable)
+	dsafp.ReferDataID.WriteTo(contentWritable)
+	dsafp.ContentType.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

@@ -40,51 +40,51 @@ func (ms *MatchmakeSession) WriteTo(writable types.Writable) {
 
 	contentWritable := writable.CopyNew()
 
-	ms.GameMode.WriteTo(writable)
-	ms.Attributes.WriteTo(writable)
-	ms.OpenParticipation.WriteTo(writable)
-	ms.MatchmakeSystemType.WriteTo(writable)
-	ms.ApplicationBuffer.WriteTo(writable)
-	ms.ParticipationCount.WriteTo(writable)
+	ms.GameMode.WriteTo(contentWritable)
+	ms.Attributes.WriteTo(contentWritable)
+	ms.OpenParticipation.WriteTo(contentWritable)
+	ms.MatchmakeSystemType.WriteTo(contentWritable)
+	ms.ApplicationBuffer.WriteTo(contentWritable)
+	ms.ParticipationCount.WriteTo(contentWritable)
 
 	if libraryVersion.GreaterOrEqual("3.4.0") {
-		ms.ProgressScore.WriteTo(writable)
+		ms.ProgressScore.WriteTo(contentWritable)
 	}
 
 	if libraryVersion.GreaterOrEqual("3.0.0") {
-		ms.SessionKey.WriteTo(writable)
+		ms.SessionKey.WriteTo(contentWritable)
 	}
 
 	if libraryVersion.GreaterOrEqual("3.5.0") {
-		ms.Option.WriteTo(writable)
+		ms.Option.WriteTo(contentWritable)
 	}
 
 	if libraryVersion.GreaterOrEqual("3.6.0") {
-		ms.MatchmakeParam.WriteTo(writable)
+		ms.MatchmakeParam.WriteTo(contentWritable)
 	}
 
 	if libraryVersion.GreaterOrEqual("3.6.0") {
-		ms.StartedTime.WriteTo(writable)
+		ms.StartedTime.WriteTo(contentWritable)
 	}
 
 	if libraryVersion.GreaterOrEqual("3.7.0") {
-		ms.UserPassword.WriteTo(writable)
+		ms.UserPassword.WriteTo(contentWritable)
 	}
 
 	if libraryVersion.GreaterOrEqual("3.8.0") {
-		ms.ReferGID.WriteTo(writable)
+		ms.ReferGID.WriteTo(contentWritable)
 	}
 
 	if libraryVersion.GreaterOrEqual("3.8.0") {
-		ms.UserPasswordEnabled.WriteTo(writable)
+		ms.UserPasswordEnabled.WriteTo(contentWritable)
 	}
 
 	if libraryVersion.GreaterOrEqual("3.8.0") {
-		ms.SystemPasswordEnabled.WriteTo(writable)
+		ms.SystemPasswordEnabled.WriteTo(contentWritable)
 	}
 
 	if libraryVersion.GreaterOrEqual("4.0.0") {
-		ms.CodeWord.WriteTo(writable)
+		ms.CodeWord.WriteTo(contentWritable)
 	}
 
 	content := contentWritable.Bytes()

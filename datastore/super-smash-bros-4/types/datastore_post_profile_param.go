@@ -18,7 +18,7 @@ type DataStorePostProfileParam struct {
 func (dsppp *DataStorePostProfileParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	dsppp.Profile.WriteTo(writable)
+	dsppp.Profile.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

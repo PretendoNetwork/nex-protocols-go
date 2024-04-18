@@ -18,7 +18,7 @@ type DataStoreGetSpecificMetaParamV1 struct {
 func (dsgsmpv *DataStoreGetSpecificMetaParamV1) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	dsgsmpv.DataIDs.WriteTo(writable)
+	dsgsmpv.DataIDs.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

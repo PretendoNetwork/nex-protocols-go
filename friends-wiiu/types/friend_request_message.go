@@ -29,15 +29,15 @@ func (frm *FriendRequestMessage) WriteTo(writable types.Writable) {
 
 	contentWritable := writable.CopyNew()
 
-	frm.FriendRequestID.WriteTo(writable)
-	frm.Received.WriteTo(writable)
-	frm.Unknown2.WriteTo(writable)
-	frm.Message.WriteTo(writable)
-	frm.Unknown3.WriteTo(writable)
-	frm.Unknown4.WriteTo(writable)
-	frm.GameKey.WriteTo(writable)
-	frm.Unknown5.WriteTo(writable)
-	frm.ExpiresOn.WriteTo(writable)
+	frm.FriendRequestID.WriteTo(contentWritable)
+	frm.Received.WriteTo(contentWritable)
+	frm.Unknown2.WriteTo(contentWritable)
+	frm.Message.WriteTo(contentWritable)
+	frm.Unknown3.WriteTo(contentWritable)
+	frm.Unknown4.WriteTo(contentWritable)
+	frm.GameKey.WriteTo(contentWritable)
+	frm.Unknown5.WriteTo(contentWritable)
+	frm.ExpiresOn.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

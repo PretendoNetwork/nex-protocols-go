@@ -22,13 +22,13 @@ type ServiceItemGetServiceItemRightParam struct {
 func (sigsirp *ServiceItemGetServiceItemRightParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	sigsirp.ReferenceID.WriteTo(writable)
-	sigsirp.DeviceID.WriteTo(writable)
-	sigsirp.UniqueID.WriteTo(writable)
-	sigsirp.ItemGroup.WriteTo(writable)
+	sigsirp.ReferenceID.WriteTo(contentWritable)
+	sigsirp.DeviceID.WriteTo(contentWritable)
+	sigsirp.UniqueID.WriteTo(contentWritable)
+	sigsirp.ItemGroup.WriteTo(contentWritable)
 
 	if sigsirp.StructureVersion >= 1 {
-		sigsirp.Platform.WriteTo(writable)
+		sigsirp.Platform.WriteTo(contentWritable)
 	}
 
 	content := contentWritable.Bytes()

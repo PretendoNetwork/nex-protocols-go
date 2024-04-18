@@ -23,12 +23,12 @@ type RankingScoreData struct {
 func (rsd *RankingScoreData) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	rsd.Category.WriteTo(writable)
-	rsd.Score.WriteTo(writable)
-	rsd.OrderBy.WriteTo(writable)
-	rsd.UpdateMode.WriteTo(writable)
-	rsd.Groups.WriteTo(writable)
-	rsd.Param.WriteTo(writable)
+	rsd.Category.WriteTo(contentWritable)
+	rsd.Score.WriteTo(contentWritable)
+	rsd.OrderBy.WriteTo(contentWritable)
+	rsd.UpdateMode.WriteTo(contentWritable)
+	rsd.Groups.WriteTo(contentWritable)
+	rsd.Param.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

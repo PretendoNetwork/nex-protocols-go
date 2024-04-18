@@ -20,9 +20,9 @@ type RankingChangeAttributesParam struct {
 func (rcap *RankingChangeAttributesParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	rcap.ModificationFlag.WriteTo(writable)
-	rcap.Groups.WriteTo(writable)
-	rcap.Param.WriteTo(writable)
+	rcap.ModificationFlag.WriteTo(contentWritable)
+	rcap.Groups.WriteTo(contentWritable)
+	rcap.Param.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

@@ -28,12 +28,12 @@ func (ai *AuthenticationInfo) WriteTo(writable types.Writable) {
 
 	contentWritable := writable.CopyNew()
 
-	ai.Token.WriteTo(writable)
-	ai.NGSVersion.WriteTo(writable)
+	ai.Token.WriteTo(contentWritable)
+	ai.NGSVersion.WriteTo(contentWritable)
 
 	if libraryVersion.GreaterOrEqual("3.0.0") {
-		ai.TokenType.WriteTo(writable)
-		ai.ServerVersion.WriteTo(writable)
+		ai.TokenType.WriteTo(contentWritable)
+		ai.ServerVersion.WriteTo(contentWritable)
 	}
 
 	content := contentWritable.Bytes()

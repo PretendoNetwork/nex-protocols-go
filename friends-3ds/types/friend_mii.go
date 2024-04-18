@@ -23,9 +23,9 @@ func (fm *FriendMii) WriteTo(writable types.Writable) {
 
 	contentWritable := writable.CopyNew()
 
-	fm.PID.WriteTo(writable)
-	fm.Mii.WriteTo(writable)
-	fm.ModifiedAt.WriteTo(writable)
+	fm.PID.WriteTo(contentWritable)
+	fm.Mii.WriteTo(contentWritable)
+	fm.ModifiedAt.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

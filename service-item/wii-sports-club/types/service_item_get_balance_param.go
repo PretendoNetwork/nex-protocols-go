@@ -19,8 +19,8 @@ type ServiceItemGetBalanceParam struct {
 func (sigbp *ServiceItemGetBalanceParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	sigbp.Language.WriteTo(writable)
-	sigbp.TitleID.WriteTo(writable)
+	sigbp.Language.WriteTo(contentWritable)
+	sigbp.TitleID.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

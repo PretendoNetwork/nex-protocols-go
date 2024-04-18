@@ -18,7 +18,7 @@ type ServiceItemHTTPGetParam struct {
 func (sihttpgp *ServiceItemHTTPGetParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	sihttpgp.URL.WriteTo(writable)
+	sihttpgp.URL.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

@@ -21,7 +21,7 @@ func (tm *TextMessage) WriteTo(writable types.Writable) {
 
 	contentWritable := writable.CopyNew()
 
-	tm.StrTextBody.WriteTo(writable)
+	tm.StrTextBody.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

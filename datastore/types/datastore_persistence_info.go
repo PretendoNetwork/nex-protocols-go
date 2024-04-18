@@ -20,9 +20,9 @@ type DataStorePersistenceInfo struct {
 func (dspi *DataStorePersistenceInfo) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	dspi.OwnerID.WriteTo(writable)
-	dspi.PersistenceSlotID.WriteTo(writable)
-	dspi.DataID.WriteTo(writable)
+	dspi.OwnerID.WriteTo(contentWritable)
+	dspi.PersistenceSlotID.WriteTo(contentWritable)
+	dspi.DataID.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

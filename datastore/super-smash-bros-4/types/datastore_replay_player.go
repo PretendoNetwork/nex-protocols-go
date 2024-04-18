@@ -26,15 +26,15 @@ type DataStoreReplayPlayer struct {
 func (dsrp *DataStoreReplayPlayer) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	dsrp.Fighter.WriteTo(writable)
-	dsrp.Health.WriteTo(writable)
-	dsrp.WinningRate.WriteTo(writable)
-	dsrp.Color.WriteTo(writable)
-	dsrp.Color2.WriteTo(writable)
-	dsrp.PrincipalID.WriteTo(writable)
-	dsrp.Country.WriteTo(writable)
-	dsrp.Region.WriteTo(writable)
-	dsrp.Number.WriteTo(writable)
+	dsrp.Fighter.WriteTo(contentWritable)
+	dsrp.Health.WriteTo(contentWritable)
+	dsrp.WinningRate.WriteTo(contentWritable)
+	dsrp.Color.WriteTo(contentWritable)
+	dsrp.Color2.WriteTo(contentWritable)
+	dsrp.PrincipalID.WriteTo(contentWritable)
+	dsrp.Country.WriteTo(contentWritable)
+	dsrp.Region.WriteTo(contentWritable)
+	dsrp.Number.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

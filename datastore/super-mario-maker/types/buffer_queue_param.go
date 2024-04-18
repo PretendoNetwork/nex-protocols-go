@@ -19,8 +19,8 @@ type BufferQueueParam struct {
 func (bqp *BufferQueueParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	bqp.DataID.WriteTo(writable)
-	bqp.Slot.WriteTo(writable)
+	bqp.DataID.WriteTo(contentWritable)
+	bqp.Slot.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

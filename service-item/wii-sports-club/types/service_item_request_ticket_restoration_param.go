@@ -19,8 +19,8 @@ type ServiceItemRequestTicketRestorationParam struct {
 func (sirtrp *ServiceItemRequestTicketRestorationParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	sirtrp.TicketType.WriteTo(writable)
-	sirtrp.NumTicket.WriteTo(writable)
+	sirtrp.TicketType.WriteTo(contentWritable)
+	sirtrp.NumTicket.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

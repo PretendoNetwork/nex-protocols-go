@@ -23,12 +23,12 @@ type Ranking2RankData struct {
 func (rrd *Ranking2RankData) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	rrd.Misc.WriteTo(writable)
-	rrd.NexUniqueID.WriteTo(writable)
-	rrd.PrincipalID.WriteTo(writable)
-	rrd.Rank.WriteTo(writable)
-	rrd.Score.WriteTo(writable)
-	rrd.CommonData.WriteTo(writable)
+	rrd.Misc.WriteTo(contentWritable)
+	rrd.NexUniqueID.WriteTo(contentWritable)
+	rrd.PrincipalID.WriteTo(contentWritable)
+	rrd.Rank.WriteTo(contentWritable)
+	rrd.Score.WriteTo(contentWritable)
+	rrd.CommonData.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

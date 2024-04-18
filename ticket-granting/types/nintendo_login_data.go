@@ -18,7 +18,7 @@ type NintendoLoginData struct {
 func (nld *NintendoLoginData) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	nld.Token.WriteTo(writable)
+	nld.Token.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

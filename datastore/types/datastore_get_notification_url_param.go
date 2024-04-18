@@ -18,7 +18,7 @@ type DataStoreGetNotificationURLParam struct {
 func (dsgnurlp *DataStoreGetNotificationURLParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	dsgnurlp.PreviousURL.WriteTo(writable)
+	dsgnurlp.PreviousURL.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

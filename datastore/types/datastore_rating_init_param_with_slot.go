@@ -19,8 +19,8 @@ type DataStoreRatingInitParamWithSlot struct {
 func (dsripws *DataStoreRatingInitParamWithSlot) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	dsripws.Slot.WriteTo(writable)
-	dsripws.Param.WriteTo(writable)
+	dsripws.Slot.WriteTo(contentWritable)
+	dsripws.Param.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

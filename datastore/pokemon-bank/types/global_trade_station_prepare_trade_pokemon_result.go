@@ -19,8 +19,8 @@ type GlobalTradeStationPrepareTradePokemonResult struct {
 func (gtsptpr *GlobalTradeStationPrepareTradePokemonResult) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	gtsptpr.Result.WriteTo(writable)
-	gtsptpr.PrepareTradeKey.WriteTo(writable)
+	gtsptpr.Result.WriteTo(contentWritable)
+	gtsptpr.PrepareTradeKey.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

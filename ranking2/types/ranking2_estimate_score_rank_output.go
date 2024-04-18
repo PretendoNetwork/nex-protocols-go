@@ -23,12 +23,12 @@ type Ranking2EstimateScoreRankOutput struct {
 func (resro *Ranking2EstimateScoreRankOutput) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	resro.Rank.WriteTo(writable)
-	resro.Length.WriteTo(writable)
-	resro.Score.WriteTo(writable)
-	resro.Category.WriteTo(writable)
-	resro.Season.WriteTo(writable)
-	resro.SamplingRate.WriteTo(writable)
+	resro.Rank.WriteTo(contentWritable)
+	resro.Length.WriteTo(contentWritable)
+	resro.Score.WriteTo(contentWritable)
+	resro.Category.WriteTo(contentWritable)
+	resro.Season.WriteTo(contentWritable)
+	resro.SamplingRate.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

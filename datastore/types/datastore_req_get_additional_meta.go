@@ -21,10 +21,10 @@ type DataStoreReqGetAdditionalMeta struct {
 func (dsrgam *DataStoreReqGetAdditionalMeta) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	dsrgam.OwnerID.WriteTo(writable)
-	dsrgam.DataType.WriteTo(writable)
-	dsrgam.Version.WriteTo(writable)
-	dsrgam.MetaBinary.WriteTo(writable)
+	dsrgam.OwnerID.WriteTo(contentWritable)
+	dsrgam.DataType.WriteTo(contentWritable)
+	dsrgam.Version.WriteTo(contentWritable)
+	dsrgam.MetaBinary.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

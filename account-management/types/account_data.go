@@ -26,15 +26,15 @@ type AccountData struct {
 func (ad *AccountData) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	ad.PID.WriteTo(writable)
-	ad.StrName.WriteTo(writable)
-	ad.UIGroups.WriteTo(writable)
-	ad.StrEmail.WriteTo(writable)
-	ad.DTCreationDate.WriteTo(writable)
-	ad.DTEffectiveDate.WriteTo(writable)
-	ad.StrNotEffectiveMsg.WriteTo(writable)
-	ad.DTExpiryDate.WriteTo(writable)
-	ad.StrExpiredMsg.WriteTo(writable)
+	ad.PID.WriteTo(contentWritable)
+	ad.StrName.WriteTo(contentWritable)
+	ad.UIGroups.WriteTo(contentWritable)
+	ad.StrEmail.WriteTo(contentWritable)
+	ad.DTCreationDate.WriteTo(contentWritable)
+	ad.DTEffectiveDate.WriteTo(contentWritable)
+	ad.StrNotEffectiveMsg.WriteTo(contentWritable)
+	ad.DTExpiryDate.WriteTo(contentWritable)
+	ad.StrExpiredMsg.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

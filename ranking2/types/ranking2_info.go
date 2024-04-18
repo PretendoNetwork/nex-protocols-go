@@ -21,10 +21,10 @@ type Ranking2Info struct {
 func (ri *Ranking2Info) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	ri.RankDataList.WriteTo(writable)
-	ri.LowestRank.WriteTo(writable)
-	ri.NumRankedIn.WriteTo(writable)
-	ri.Season.WriteTo(writable)
+	ri.RankDataList.WriteTo(contentWritable)
+	ri.LowestRank.WriteTo(contentWritable)
+	ri.NumRankedIn.WriteTo(contentWritable)
+	ri.Season.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

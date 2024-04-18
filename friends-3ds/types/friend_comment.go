@@ -23,9 +23,9 @@ func (fc *FriendComment) WriteTo(writable types.Writable) {
 
 	contentWritable := writable.CopyNew()
 
-	fc.PID.WriteTo(writable)
-	fc.Comment.WriteTo(writable)
-	fc.ModifiedAt.WriteTo(writable)
+	fc.PID.WriteTo(contentWritable)
+	fc.Comment.WriteTo(contentWritable)
+	fc.ModifiedAt.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

@@ -20,9 +20,9 @@ type FriendUserInfo struct {
 func (fui *FriendUserInfo) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	fui.PID.WriteTo(writable)
-	fui.Name.WriteTo(writable)
-	fui.Presence.WriteTo(writable)
+	fui.PID.WriteTo(contentWritable)
+	fui.Name.WriteTo(contentWritable)
+	fui.Presence.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

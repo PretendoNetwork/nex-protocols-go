@@ -19,8 +19,8 @@ type DataStoreRatingInfoWithSlot struct {
 func (dsriws *DataStoreRatingInfoWithSlot) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	dsriws.Slot.WriteTo(writable)
-	dsriws.Rating.WriteTo(writable)
+	dsriws.Slot.WriteTo(contentWritable)
+	dsriws.Rating.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

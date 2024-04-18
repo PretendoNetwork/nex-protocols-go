@@ -31,14 +31,14 @@ func (dspup *DataStorePrepareUpdateParam) WriteTo(writable types.Writable) {
 		contentWritable.WritePrimitiveUInt32LE(uint32(dspup.DataID.Value))
 	}
 
-	dspup.Size.WriteTo(writable)
+	dspup.Size.WriteTo(contentWritable)
 
 	if libraryVersion.GreaterOrEqual("3.0.0") {
-		dspup.UpdatePassword.WriteTo(writable)
+		dspup.UpdatePassword.WriteTo(contentWritable)
 	}
 
 	if libraryVersion.GreaterOrEqual("3.5.0") {
-		dspup.ExtraData.WriteTo(writable)
+		dspup.ExtraData.WriteTo(contentWritable)
 	}
 
 	content := contentWritable.Bytes()

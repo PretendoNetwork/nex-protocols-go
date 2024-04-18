@@ -25,14 +25,14 @@ type ServiceItemEvent struct {
 func (sie *ServiceItemEvent) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	sie.EventID.WriteTo(writable)
-	sie.ParamInt.WriteTo(writable)
-	sie.ParamString.WriteTo(writable)
-	sie.ParamBinary.WriteTo(writable)
-	sie.PresentTicketType.WriteTo(writable)
-	sie.PresentTicketNum.WriteTo(writable)
-	sie.TimeBegin.WriteTo(writable)
-	sie.TimeEnd.WriteTo(writable)
+	sie.EventID.WriteTo(contentWritable)
+	sie.ParamInt.WriteTo(contentWritable)
+	sie.ParamString.WriteTo(contentWritable)
+	sie.ParamBinary.WriteTo(contentWritable)
+	sie.PresentTicketType.WriteTo(contentWritable)
+	sie.PresentTicketNum.WriteTo(contentWritable)
+	sie.TimeBegin.WriteTo(contentWritable)
+	sie.TimeEnd.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

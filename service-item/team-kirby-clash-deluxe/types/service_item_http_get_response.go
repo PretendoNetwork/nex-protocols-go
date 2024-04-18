@@ -18,7 +18,7 @@ type ServiceItemHTTPGetResponse struct {
 func (sihttpgr *ServiceItemHTTPGetResponse) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	sihttpgr.Response.WriteTo(writable)
+	sihttpgr.Response.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

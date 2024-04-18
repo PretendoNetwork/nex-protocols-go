@@ -20,9 +20,9 @@ type Ranking2EstimateScoreRankInput struct {
 func (resri *Ranking2EstimateScoreRankInput) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	resri.Category.WriteTo(writable)
-	resri.NumSeasonsToGoBack.WriteTo(writable)
-	resri.Score.WriteTo(writable)
+	resri.Category.WriteTo(contentWritable)
+	resri.NumSeasonsToGoBack.WriteTo(contentWritable)
+	resri.Score.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

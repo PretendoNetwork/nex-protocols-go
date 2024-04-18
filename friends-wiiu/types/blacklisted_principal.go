@@ -23,9 +23,9 @@ func (bp *BlacklistedPrincipal) WriteTo(writable types.Writable) {
 
 	contentWritable := writable.CopyNew()
 
-	bp.PrincipalBasicInfo.WriteTo(writable)
-	bp.GameKey.WriteTo(writable)
-	bp.BlackListedSince.WriteTo(writable)
+	bp.PrincipalBasicInfo.WriteTo(contentWritable)
+	bp.GameKey.WriteTo(contentWritable)
+	bp.BlackListedSince.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

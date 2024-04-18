@@ -19,8 +19,8 @@ type DataStorePrepareGetParamV1 struct {
 func (dspgpv *DataStorePrepareGetParamV1) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	dspgpv.DataID.WriteTo(writable)
-	dspgpv.LockID.WriteTo(writable)
+	dspgpv.DataID.WriteTo(contentWritable)
+	dspgpv.LockID.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

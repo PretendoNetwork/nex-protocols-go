@@ -21,7 +21,7 @@ func (sipsir *ServiceItemPurchaseServiceItemResponse) WriteTo(writable types.Wri
 
 	contentWritable := writable.CopyNew()
 
-	sipsir.NullablePurchaceInfo.WriteTo(writable)
+	sipsir.NullablePurchaceInfo.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

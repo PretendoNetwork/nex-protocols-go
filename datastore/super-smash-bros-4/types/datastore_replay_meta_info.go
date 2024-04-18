@@ -26,15 +26,15 @@ type DataStoreReplayMetaInfo struct {
 func (dsrmi *DataStoreReplayMetaInfo) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	dsrmi.ReplayID.WriteTo(writable)
-	dsrmi.Size.WriteTo(writable)
-	dsrmi.Mode.WriteTo(writable)
-	dsrmi.Style.WriteTo(writable)
-	dsrmi.Rule.WriteTo(writable)
-	dsrmi.Stage.WriteTo(writable)
-	dsrmi.ReplayType.WriteTo(writable)
-	dsrmi.Players.WriteTo(writable)
-	dsrmi.Winners.WriteTo(writable)
+	dsrmi.ReplayID.WriteTo(contentWritable)
+	dsrmi.Size.WriteTo(contentWritable)
+	dsrmi.Mode.WriteTo(contentWritable)
+	dsrmi.Style.WriteTo(contentWritable)
+	dsrmi.Rule.WriteTo(contentWritable)
+	dsrmi.Stage.WriteTo(contentWritable)
+	dsrmi.ReplayType.WriteTo(contentWritable)
+	dsrmi.Players.WriteTo(contentWritable)
+	dsrmi.Winners.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

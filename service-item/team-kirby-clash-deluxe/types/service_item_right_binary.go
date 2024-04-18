@@ -19,8 +19,8 @@ type ServiceItemRightBinary struct {
 func (sirb *ServiceItemRightBinary) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	sirb.UseType.WriteTo(writable)
-	sirb.RightBinary.WriteTo(writable)
+	sirb.UseType.WriteTo(contentWritable)
+	sirb.RightBinary.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

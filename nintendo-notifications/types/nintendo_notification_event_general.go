@@ -21,10 +21,10 @@ type NintendoNotificationEventGeneral struct {
 func (nneg *NintendoNotificationEventGeneral) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	nneg.U32Param.WriteTo(writable)
-	nneg.U64Param1.WriteTo(writable)
-	nneg.U64Param2.WriteTo(writable)
-	nneg.StrParam.WriteTo(writable)
+	nneg.U32Param.WriteTo(contentWritable)
+	nneg.U64Param1.WriteTo(contentWritable)
+	nneg.U64Param2.WriteTo(contentWritable)
+	nneg.StrParam.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

@@ -21,7 +21,7 @@ func (sigpir *ServiceItemGetPrepurchaseInfoResponse) WriteTo(writable types.Writ
 
 	contentWritable := writable.CopyNew()
 
-	sigpir.NullablePrepurchaseInfo.WriteTo(writable)
+	sigpir.NullablePrepurchaseInfo.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

@@ -21,7 +21,7 @@ func (silsir *ServiceItemListServiceItemResponse) WriteTo(writable types.Writabl
 
 	contentWritable := writable.CopyNew()
 
-	silsir.NullableCatalog.WriteTo(writable)
+	silsir.NullableCatalog.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

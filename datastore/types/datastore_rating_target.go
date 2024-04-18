@@ -19,8 +19,8 @@ type DataStoreRatingTarget struct {
 func (dsrt *DataStoreRatingTarget) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	dsrt.DataID.WriteTo(writable)
-	dsrt.Slot.WriteTo(writable)
+	dsrt.DataID.WriteTo(contentWritable)
+	dsrt.Slot.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

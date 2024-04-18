@@ -24,13 +24,13 @@ type DataStoreGetCourseRecordResult struct {
 func (dsgcrr *DataStoreGetCourseRecordResult) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	dsgcrr.DataID.WriteTo(writable)
-	dsgcrr.Slot.WriteTo(writable)
-	dsgcrr.FirstPID.WriteTo(writable)
-	dsgcrr.BestPID.WriteTo(writable)
-	dsgcrr.BestScore.WriteTo(writable)
-	dsgcrr.CreatedTime.WriteTo(writable)
-	dsgcrr.UpdatedTime.WriteTo(writable)
+	dsgcrr.DataID.WriteTo(contentWritable)
+	dsgcrr.Slot.WriteTo(contentWritable)
+	dsgcrr.FirstPID.WriteTo(contentWritable)
+	dsgcrr.BestPID.WriteTo(contentWritable)
+	dsgcrr.BestScore.WriteTo(contentWritable)
+	dsgcrr.CreatedTime.WriteTo(contentWritable)
+	dsgcrr.UpdatedTime.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

@@ -22,10 +22,10 @@ type NintendoCreateAccountData struct {
 func (ncad *NintendoCreateAccountData) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	ncad.NNAInfo.WriteTo(writable)
-	ncad.Token.WriteTo(writable)
-	ncad.Birthday.WriteTo(writable)
-	ncad.Unknown.WriteTo(writable)
+	ncad.NNAInfo.WriteTo(contentWritable)
+	ncad.Token.WriteTo(contentWritable)
+	ncad.Birthday.WriteTo(contentWritable)
+	ncad.Unknown.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

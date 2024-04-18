@@ -21,10 +21,10 @@ type DataStoreGetMetaByOwnerIDParam struct {
 func (dsgmboidp *DataStoreGetMetaByOwnerIDParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	dsgmboidp.OwnerIDs.WriteTo(writable)
-	dsgmboidp.DataTypes.WriteTo(writable)
-	dsgmboidp.ResultOption.WriteTo(writable)
-	dsgmboidp.ResultRange.WriteTo(writable)
+	dsgmboidp.OwnerIDs.WriteTo(contentWritable)
+	dsgmboidp.DataTypes.WriteTo(contentWritable)
+	dsgmboidp.ResultOption.WriteTo(contentWritable)
+	dsgmboidp.ResultRange.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

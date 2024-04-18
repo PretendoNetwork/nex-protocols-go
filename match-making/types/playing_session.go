@@ -19,8 +19,8 @@ type PlayingSession struct {
 func (ps *PlayingSession) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	ps.PrincipalID.WriteTo(writable)
-	ps.Gathering.WriteTo(writable)
+	ps.PrincipalID.WriteTo(contentWritable)
+	ps.Gathering.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

@@ -19,8 +19,8 @@ type DataStorePersistenceTarget struct {
 func (dspt *DataStorePersistenceTarget) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	dspt.OwnerID.WriteTo(writable)
-	dspt.PersistenceSlotID.WriteTo(writable)
+	dspt.OwnerID.WriteTo(contentWritable)
+	dspt.PersistenceSlotID.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

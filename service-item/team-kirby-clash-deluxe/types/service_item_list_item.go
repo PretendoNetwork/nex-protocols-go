@@ -23,12 +23,12 @@ type ServiceItemListItem struct {
 func (sili *ServiceItemListItem) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	sili.ItemCode.WriteTo(writable)
-	sili.RegularPrice.WriteTo(writable)
-	sili.TaxExcluded.WriteTo(writable)
-	sili.InitialPurchaseOnly.WriteTo(writable)
-	sili.Limitation.WriteTo(writable)
-	sili.Attributes.WriteTo(writable)
+	sili.ItemCode.WriteTo(contentWritable)
+	sili.RegularPrice.WriteTo(contentWritable)
+	sili.TaxExcluded.WriteTo(contentWritable)
+	sili.InitialPurchaseOnly.WriteTo(contentWritable)
+	sili.Limitation.WriteTo(contentWritable)
+	sili.Attributes.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

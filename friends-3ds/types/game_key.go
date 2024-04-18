@@ -22,8 +22,8 @@ func (gk *GameKey) WriteTo(writable types.Writable) {
 
 	contentWritable := writable.CopyNew()
 
-	gk.TitleID.WriteTo(writable)
-	gk.TitleVersion.WriteTo(writable)
+	gk.TitleID.WriteTo(contentWritable)
+	gk.TitleVersion.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

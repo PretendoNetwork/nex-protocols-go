@@ -23,9 +23,9 @@ func (c *Comment) WriteTo(writable types.Writable) {
 
 	contentWritable := writable.CopyNew()
 
-	c.Unknown.WriteTo(writable)
-	c.Contents.WriteTo(writable)
-	c.LastChanged.WriteTo(writable)
+	c.Unknown.WriteTo(contentWritable)
+	c.Contents.WriteTo(contentWritable)
+	c.LastChanged.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

@@ -23,12 +23,12 @@ type ServiceItemAcquireServiceItemResponse struct {
 func (siasir *ServiceItemAcquireServiceItemResponse) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	siasir.LimitationType.WriteTo(writable)
-	siasir.AcquiredCount.WriteTo(writable)
-	siasir.UsedCount.WriteTo(writable)
-	siasir.ExpiryDate.WriteTo(writable)
-	siasir.ExpiredCount.WriteTo(writable)
-	siasir.ExpiryCounts.WriteTo(writable)
+	siasir.LimitationType.WriteTo(contentWritable)
+	siasir.AcquiredCount.WriteTo(contentWritable)
+	siasir.UsedCount.WriteTo(contentWritable)
+	siasir.ExpiryDate.WriteTo(contentWritable)
+	siasir.ExpiredCount.WriteTo(contentWritable)
+	siasir.ExpiryCounts.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

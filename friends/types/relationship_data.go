@@ -22,11 +22,11 @@ type RelationshipData struct {
 func (rd *RelationshipData) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	rd.PID.WriteTo(writable)
-	rd.StrName.WriteTo(writable)
-	rd.ByRelationship.WriteTo(writable)
-	rd.UIDetails.WriteTo(writable)
-	rd.ByStatus.WriteTo(writable)
+	rd.PID.WriteTo(contentWritable)
+	rd.StrName.WriteTo(contentWritable)
+	rd.ByRelationship.WriteTo(contentWritable)
+	rd.UIDetails.WriteTo(contentWritable)
+	rd.ByStatus.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

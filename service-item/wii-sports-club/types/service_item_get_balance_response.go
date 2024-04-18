@@ -21,7 +21,7 @@ func (sigbr *ServiceItemGetBalanceResponse) WriteTo(writable types.Writable) {
 
 	contentWritable := writable.CopyNew()
 
-	sigbr.NullableBalance.WriteTo(writable)
+	sigbr.NullableBalance.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

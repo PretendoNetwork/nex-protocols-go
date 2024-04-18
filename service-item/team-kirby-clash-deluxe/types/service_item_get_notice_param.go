@@ -18,7 +18,7 @@ type ServiceItemGetNoticeParam struct {
 func (signp *ServiceItemGetNoticeParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	signp.ScheduleType.WriteTo(writable)
+	signp.ScheduleType.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

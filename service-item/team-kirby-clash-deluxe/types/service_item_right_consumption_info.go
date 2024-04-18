@@ -21,7 +21,7 @@ func (sirci *ServiceItemRightConsumptionInfo) WriteTo(writable types.Writable) {
 
 	contentWritable := writable.CopyNew()
 
-	sirci.AccountRights.WriteTo(writable)
+	sirci.AccountRights.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

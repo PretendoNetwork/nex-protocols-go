@@ -19,8 +19,8 @@ type PlayedGame struct {
 func (pg *PlayedGame) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	pg.GameKey.WriteTo(writable)
-	pg.Unknown.WriteTo(writable)
+	pg.GameKey.WriteTo(contentWritable)
+	pg.Unknown.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

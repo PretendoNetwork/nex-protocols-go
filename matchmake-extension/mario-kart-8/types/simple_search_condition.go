@@ -19,8 +19,8 @@ type SimpleSearchCondition struct {
 func (ssc *SimpleSearchCondition) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	ssc.Value.WriteTo(writable)
-	ssc.ComparisonOperator.WriteTo(writable)
+	ssc.Value.WriteTo(contentWritable)
+	ssc.ComparisonOperator.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

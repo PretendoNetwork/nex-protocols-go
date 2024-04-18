@@ -20,9 +20,9 @@ type DataStorePostFightingPowerScoreParam struct {
 func (dspfpsp *DataStorePostFightingPowerScoreParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	dspfpsp.Mode.WriteTo(writable)
-	dspfpsp.Score.WriteTo(writable)
-	dspfpsp.IsWorldHighScore.WriteTo(writable)
+	dspfpsp.Mode.WriteTo(contentWritable)
+	dspfpsp.Score.WriteTo(contentWritable)
+	dspfpsp.IsWorldHighScore.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

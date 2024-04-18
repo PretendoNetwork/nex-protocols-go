@@ -20,9 +20,9 @@ type CompetitionRankingInfo struct {
 func (cri *CompetitionRankingInfo) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	cri.Unknown.WriteTo(writable)
-	cri.Unknown2.WriteTo(writable)
-	cri.Unknown3.WriteTo(writable)
+	cri.Unknown.WriteTo(contentWritable)
+	cri.Unknown2.WriteTo(contentWritable)
+	cri.Unknown3.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

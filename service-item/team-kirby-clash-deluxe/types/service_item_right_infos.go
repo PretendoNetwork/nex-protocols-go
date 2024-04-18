@@ -22,11 +22,11 @@ type ServiceItemRightInfos struct {
 func (siri *ServiceItemRightInfos) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	siri.SupportID.WriteTo(writable)
-	siri.ConsumptionRightInfos.WriteTo(writable)
-	siri.AdditionalTimeRightInfos.WriteTo(writable)
-	siri.PermanentRightInfos.WriteTo(writable)
-	siri.AlreadyPurchasedInitialOnlyItem.WriteTo(writable)
+	siri.SupportID.WriteTo(contentWritable)
+	siri.ConsumptionRightInfos.WriteTo(contentWritable)
+	siri.AdditionalTimeRightInfos.WriteTo(contentWritable)
+	siri.PermanentRightInfos.WriteTo(contentWritable)
+	siri.AlreadyPurchasedInitialOnlyItem.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

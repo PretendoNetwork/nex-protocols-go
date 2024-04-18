@@ -25,11 +25,11 @@ func (mv *MiiV2) WriteTo(writable types.Writable) {
 
 	contentWritable := writable.CopyNew()
 
-	mv.Name.WriteTo(writable)
-	mv.Unknown1.WriteTo(writable)
-	mv.Unknown2.WriteTo(writable)
-	mv.MiiData.WriteTo(writable)
-	mv.Datetime.WriteTo(writable)
+	mv.Name.WriteTo(contentWritable)
+	mv.Unknown1.WriteTo(contentWritable)
+	mv.Unknown2.WriteTo(contentWritable)
+	mv.MiiData.WriteTo(contentWritable)
+	mv.Datetime.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

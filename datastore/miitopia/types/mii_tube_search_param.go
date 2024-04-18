@@ -39,48 +39,48 @@ func (mtsp *MiiTubeSearchParam) WriteTo(writable types.Writable) {
 	writable.Write(content)
 }
 
-// ExtractFrom extracts the DataStoreGetMetaByOwnerIDParam from the given readable
+// ExtractFrom extracts the MiiTubeSearchParam from the given readable
 func (mtsp *MiiTubeSearchParam) ExtractFrom(readable types.Readable) error {
 	var err error
 
 	err = mtsp.ExtractHeaderFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract DataStoreGetMetaByOwnerIDParam header. %s", err.Error())
+		return fmt.Errorf("Failed to extract MiiTubeSearchParam header. %s", err.Error())
 	}
 
 	err = mtsp.Name.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract DataStoreGetMetaByOwnerIDParam.Name. %s", err.Error())
+		return fmt.Errorf("Failed to extract MiiTubeSearchParam.Name. %s", err.Error())
 	}
 
 	err = mtsp.Page.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract DataStoreGetMetaByOwnerIDParam.Page. %s", err.Error())
+		return fmt.Errorf("Failed to extract MiiTubeSearchParam.Page. %s", err.Error())
 	}
 
 	err = mtsp.Category.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract DataStoreGetMetaByOwnerIDParam.Category. %s", err.Error())
+		return fmt.Errorf("Failed to extract MiiTubeSearchParam.Category. %s", err.Error())
 	}
 
 	err = mtsp.Gender.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract DataStoreGetMetaByOwnerIDParam.Gender. %s", err.Error())
+		return fmt.Errorf("Failed to extract MiiTubeSearchParam.Gender. %s", err.Error())
 	}
 
 	err = mtsp.Country.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract DataStoreGetMetaByOwnerIDParam.Country. %s", err.Error())
+		return fmt.Errorf("Failed to extract MiiTubeSearchParam.Country. %s", err.Error())
 	}
 
 	err = mtsp.SearchType.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract DataStoreGetMetaByOwnerIDParam.SearchType. %s", err.Error())
+		return fmt.Errorf("Failed to extract MiiTubeSearchParam.SearchType. %s", err.Error())
 	}
 
 	err = mtsp.ResultOption.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract DataStoreGetMetaByOwnerIDParam.ResultOption. %s", err.Error())
+		return fmt.Errorf("Failed to extract MiiTubeSearchParam.ResultOption. %s", err.Error())
 	}
 
 	return nil

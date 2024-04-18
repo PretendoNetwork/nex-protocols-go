@@ -24,13 +24,13 @@ type MiiTubeSearchParam struct {
 func (mtsp *MiiTubeSearchParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	mtsp.Name.WriteTo(writable)
-	mtsp.Page.WriteTo(writable)
-	mtsp.Category.WriteTo(writable)
-	mtsp.Gender.WriteTo(writable)
-	mtsp.Country.WriteTo(writable)
-	mtsp.SearchType.WriteTo(writable)
-	mtsp.ResultOption.WriteTo(writable)
+	mtsp.Name.WriteTo(contentWritable)
+	mtsp.Page.WriteTo(contentWritable)
+	mtsp.Category.WriteTo(contentWritable)
+	mtsp.Gender.WriteTo(contentWritable)
+	mtsp.Country.WriteTo(contentWritable)
+	mtsp.SearchType.WriteTo(contentWritable)
+	mtsp.ResultOption.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

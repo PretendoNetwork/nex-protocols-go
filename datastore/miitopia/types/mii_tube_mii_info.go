@@ -21,9 +21,9 @@ type MiiTubeMiiInfo struct {
 func (mtmi *MiiTubeMiiInfo) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	mtmi.MetaInfo.WriteTo(writable)
-	mtmi.Category.WriteTo(writable)
-	mtmi.RankingType.WriteTo(writable)
+	mtmi.MetaInfo.WriteTo(contentWritable)
+	mtmi.Category.WriteTo(contentWritable)
+	mtmi.RankingType.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
 

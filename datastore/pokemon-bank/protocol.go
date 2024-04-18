@@ -17,6 +17,9 @@ const (
 	// ProtocolID is the Protocol ID for the DataStore (Pokemon Bank) protocol
 	ProtocolID = 0x73
 
+	// MethodPrepareUploadPokemon is the method ID for the PrepareUploadPokemon method
+	MethodPrepareUploadPokemon = 0x28
+
 	// MethodUploadPokemon is the method ID for the UploadPokemon method
 	MethodUploadPokemon = 0x29
 
@@ -67,6 +70,7 @@ const (
 )
 
 var patchedMethods = []uint32{
+	MethodPrepareUploadPokemon,
 	MethodUploadPokemon,
 	MethodSearchPokemon,
 	MethodPrepareTradePokemon,
@@ -92,6 +96,7 @@ type dataStoreProtocol = datastore.Protocol
 type Protocol struct {
 	endpoint nex.EndpointInterface
 	dataStoreProtocol
+	PrepareUploadPokemon     func(err error, packet nex.PacketInterface, callID uint32) (*nex.RMCMessage, *nex.Error)
 	UploadPokemon            func(err error, packet nex.PacketInterface, callID uint32, param *datastore_pokemon_bank_types.GlobalTradeStationUploadPokemonParam) (*nex.RMCMessage, *nex.Error)
 	SearchPokemon            func(err error, packet nex.PacketInterface, callID uint32, param *datastore_pokemon_bank_types.GlobalTradeStationSearchPokemonParam) (*nex.RMCMessage, *nex.Error)
 	PrepareTradePokemon      func(err error, packet nex.PacketInterface, callID uint32, param *datastore_pokemon_bank_types.GlobalTradeStationPrepareTradePokemonParam) (*nex.RMCMessage, *nex.Error)
@@ -124,6 +129,8 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 	}
 
 	switch message.MethodID {
+	case MethodPrepareUploadPokemon:
+		protocol.handlePrepareUploadPokemon(packet)
 	case MethodUploadPokemon:
 		protocol.handleUploadPokemon(packet)
 	case MethodSearchPokemon:

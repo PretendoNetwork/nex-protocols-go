@@ -133,5 +133,6 @@ func NewMiiTubeSearchResult() *MiiTubeSearchResult {
 	}
 
 	mtsr.Result.Type = NewMiiTubeMiiInfo()
+
 	return mtsr
 }

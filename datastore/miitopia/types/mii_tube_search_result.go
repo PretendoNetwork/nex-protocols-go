@@ -132,5 +132,6 @@ func NewMiiTubeSearchResult() *MiiTubeSearchResult {
 		HasNext: types.NewPrimitiveBool(false),
 	}
 
+	mtsr.Result.Type = NewMiiTubeMiiInfo()
 	return mtsr
 }

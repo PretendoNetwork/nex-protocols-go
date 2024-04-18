@@ -25,11 +25,11 @@ func (protocol *Protocol) handleSearchMii(packet nex.PacketInterface) {
 	endpoint := packet.Sender().Endpoint()
 	parametersStream := nex.NewByteStreamIn(parameters, endpoint.LibraryVersions(), endpoint.ByteStreamSettings())
 
-	searchParam := datastore_miitopia_types.NewMiiTubeSearchParam()
+	param := datastore_miitopia_types.NewMiiTubeSearchParam()
 
-	err := searchParam.ExtractFrom(parametersStream)
+	err := param.ExtractFrom(parametersStream)
 	if err != nil {
-		_, rmcError := protocol.SearchMii(fmt.Errorf("Failed to read searchParam from parameters. %s", err.Error()), packet, callID, nil)
+		_, rmcError := protocol.SearchMii(fmt.Errorf("Failed to read param from parameters. %s", err.Error()), packet, callID, nil)
 		if rmcError != nil {
 			globals.RespondError(packet, ProtocolID, rmcError)
 		}
@@ -37,7 +37,7 @@ func (protocol *Protocol) handleSearchMii(packet nex.PacketInterface) {
 		return
 	}
 
-	rmcMessage, rmcError := protocol.SearchMii(nil, packet, callID, searchParam)
+	rmcMessage, rmcError := protocol.SearchMii(nil, packet, callID, param)
 	if rmcError != nil {
 		globals.RespondError(packet, ProtocolID, rmcError)
 		return

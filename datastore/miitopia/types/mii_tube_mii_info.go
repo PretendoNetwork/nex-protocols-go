@@ -110,6 +110,7 @@ func (mtmi *MiiTubeMiiInfo) FormatToString(indentationLevel int) string {
 	return b.String()
 }
 
+// NewMiiTubeMiiInfo returns a new MiiTubeMiiInfo
 func NewMiiTubeMiiInfo() *MiiTubeMiiInfo {
 	mtmi := &MiiTubeMiiInfo{
 		MetaInfo:    datastore_types.NewDataStoreMetaInfo(),

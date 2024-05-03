@@ -24,7 +24,7 @@ type DataStoreChangeMetaParam struct {
 	DataType          *types.PrimitiveU16
 	Status            *types.PrimitiveU8
 	CompareParam      *DataStoreChangeMetaCompareParam
-	PersistenceTarget *DataStorePersistenceTarget
+	PersistenceTarget *DataStorePersistenceTarget // * Revision 1
 }
 
 // WriteTo writes the DataStoreChangeMetaParam to the given writable
@@ -44,7 +44,10 @@ func (dscmp *DataStoreChangeMetaParam) WriteTo(writable types.Writable) {
 	dscmp.DataType.WriteTo(contentWritable)
 	dscmp.Status.WriteTo(contentWritable)
 	dscmp.CompareParam.WriteTo(contentWritable)
-	dscmp.PersistenceTarget.WriteTo(contentWritable)
+
+	if dscmp.StructureVersion >= 1 {
+		dscmp.PersistenceTarget.WriteTo(contentWritable)
+	}
 
 	content := contentWritable.Bytes()
 
@@ -127,9 +130,11 @@ func (dscmp *DataStoreChangeMetaParam) ExtractFrom(readable types.Readable) erro
 		return fmt.Errorf("Failed to extract DataStoreChangeMetaParam.CompareParam. %s", err.Error())
 	}
 
-	err = dscmp.PersistenceTarget.ExtractFrom(readable)
-	if err != nil {
-		return fmt.Errorf("Failed to extract DataStoreChangeMetaParam.PersistenceTarget. %s", err.Error())
+	if dscmp.StructureVersion >= 1 {
+		err = dscmp.PersistenceTarget.ExtractFrom(readable)
+		if err != nil {
+			return fmt.Errorf("Failed to extract DataStoreChangeMetaParam.PersistenceTarget. %s", err.Error())
+		}
 	}
 
 	return nil

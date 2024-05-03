@@ -14,8 +14,8 @@ type DataStoreMetaInfo struct {
 	DataID        *types.PrimitiveU64
 	OwnerID       *types.PID
 	Size          *types.PrimitiveU32
-	DataType      *types.PrimitiveU16
 	Name          *types.String
+	DataType      *types.PrimitiveU16
 	MetaBinary    *types.QBuffer
 	Permission    *DataStorePermission
 	DelPermission *DataStorePermission
@@ -39,8 +39,8 @@ func (dsmi *DataStoreMetaInfo) WriteTo(writable types.Writable) {
 	dsmi.DataID.WriteTo(contentWritable)
 	dsmi.OwnerID.WriteTo(contentWritable)
 	dsmi.Size.WriteTo(contentWritable)
-	dsmi.DataType.WriteTo(contentWritable)
 	dsmi.Name.WriteTo(contentWritable)
+	dsmi.DataType.WriteTo(contentWritable)
 	dsmi.MetaBinary.WriteTo(contentWritable)
 	dsmi.Permission.WriteTo(contentWritable)
 	dsmi.DelPermission.WriteTo(contentWritable)
@@ -87,14 +87,14 @@ func (dsmi *DataStoreMetaInfo) ExtractFrom(readable types.Readable) error {
 		return fmt.Errorf("Failed to extract DataStoreMetaInfo.Size. %s", err.Error())
 	}
 
-	err = dsmi.DataType.ExtractFrom(readable)
-	if err != nil {
-		return fmt.Errorf("Failed to extract DataStoreMetaInfo.DataType. %s", err.Error())
-	}
-
 	err = dsmi.Name.ExtractFrom(readable)
 	if err != nil {
 		return fmt.Errorf("Failed to extract DataStoreMetaInfo.Name. %s", err.Error())
+	}
+
+	err = dsmi.DataType.ExtractFrom(readable)
+	if err != nil {
+		return fmt.Errorf("Failed to extract DataStoreMetaInfo.DataType. %s", err.Error())
 	}
 
 	err = dsmi.MetaBinary.ExtractFrom(readable)
@@ -178,8 +178,8 @@ func (dsmi *DataStoreMetaInfo) Copy() types.RVType {
 	copied.DataID = dsmi.DataID.Copy().(*types.PrimitiveU64)
 	copied.OwnerID = dsmi.OwnerID.Copy().(*types.PID)
 	copied.Size = dsmi.Size.Copy().(*types.PrimitiveU32)
-	copied.DataType = dsmi.DataType.Copy().(*types.PrimitiveU16)
 	copied.Name = dsmi.Name.Copy().(*types.String)
+	copied.DataType = dsmi.DataType.Copy().(*types.PrimitiveU16)
 	copied.MetaBinary = dsmi.MetaBinary.Copy().(*types.QBuffer)
 	copied.Permission = dsmi.Permission.Copy().(*DataStorePermission)
 	copied.DelPermission = dsmi.DelPermission.Copy().(*DataStorePermission)
@@ -222,11 +222,11 @@ func (dsmi *DataStoreMetaInfo) Equals(o types.RVType) bool {
 		return false
 	}
 
-	if !dsmi.DataType.Equals(other.DataType) {
+	if !dsmi.Name.Equals(other.Name) {
 		return false
 	}
 
-	if !dsmi.Name.Equals(other.Name) {
+	if !dsmi.DataType.Equals(other.DataType) {
 		return false
 	}
 
@@ -301,8 +301,8 @@ func (dsmi *DataStoreMetaInfo) FormatToString(indentationLevel int) string {
 	b.WriteString(fmt.Sprintf("%sDataID: %s,\n", indentationValues, dsmi.DataID))
 	b.WriteString(fmt.Sprintf("%sOwnerID: %s,\n", indentationValues, dsmi.OwnerID.FormatToString(indentationLevel+1)))
 	b.WriteString(fmt.Sprintf("%sSize: %s,\n", indentationValues, dsmi.Size))
-	b.WriteString(fmt.Sprintf("%sDataType: %s,\n", indentationValues, dsmi.DataType))
 	b.WriteString(fmt.Sprintf("%sName: %s,\n", indentationValues, dsmi.Name))
+	b.WriteString(fmt.Sprintf("%sDataType: %s,\n", indentationValues, dsmi.DataType))
 	b.WriteString(fmt.Sprintf("%sMetaBinary: %s,\n", indentationValues, dsmi.MetaBinary))
 	b.WriteString(fmt.Sprintf("%sPermission: %s,\n", indentationValues, dsmi.Permission.FormatToString(indentationLevel+1)))
 	b.WriteString(fmt.Sprintf("%sDelPermission: %s,\n", indentationValues, dsmi.DelPermission.FormatToString(indentationLevel+1)))
@@ -354,8 +354,8 @@ func NewDataStoreMetaInfo() *DataStoreMetaInfo {
 		DataID:        types.NewPrimitiveU64(0),
 		OwnerID:       types.NewPID(0),
 		Size:          types.NewPrimitiveU32(0),
-		DataType:      types.NewPrimitiveU16(0),
 		Name:          types.NewString(""),
+		DataType:      types.NewPrimitiveU16(0),
 		MetaBinary:    types.NewQBuffer(nil),
 		Permission:    NewDataStorePermission(),
 		DelPermission: NewDataStorePermission(),

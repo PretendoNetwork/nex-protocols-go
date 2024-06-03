@@ -2,8 +2,13 @@
 package protocol
 
 import (
+	"fmt"
+	"slices"
+
 	"github.com/PretendoNetwork/nex-go/v2"
+	"github.com/PretendoNetwork/nex-go/v2/types"
 	datastore "github.com/PretendoNetwork/nex-protocols-go/v2/datastore"
+	"github.com/PretendoNetwork/nex-protocols-go/v2/globals"
 )
 
 const (
@@ -50,6 +55,10 @@ const (
 	MethodGetContestEntryCount = 0x39
 )
 
+var patchedMethods = []uint32{
+	MethodGetObjectInfos,
+}
+
 type dataStoreProtocol = datastore.Protocol
 
 // Protocol stores all the RMC method handlers for the DataStore (Animal Crossing: Happy Home Designer) protocol and listens for requests
@@ -57,6 +66,32 @@ type dataStoreProtocol = datastore.Protocol
 type Protocol struct {
 	endpoint nex.EndpointInterface
 	dataStoreProtocol
+	GetObjectInfos func(err error, packet nex.PacketInterface, callId uint32, dataIDs *types.List[*types.PrimitiveU64]) (*nex.RMCMessage, *nex.Error)
+}
+
+// HandlePacket sends the packet to the correct RMC method handler
+func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
+	message := packet.RMCMessage()
+
+	if !message.IsRequest || message.ProtocolID != ProtocolID {
+		return
+	}
+
+	if !slices.Contains(patchedMethods, message.MethodID) {
+		protocol.dataStoreProtocol.HandlePacket(packet)
+		return
+	}
+
+	switch message.MethodID {
+	case MethodGetObjectInfos:
+		protocol.handleGetObjectInfos(packet)
+	default:
+		errMessage := fmt.Sprintf("Unsupported DataStoreHappyHomeDesigner method ID: %#v\n", message.MethodID)
+		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, errMessage)
+
+		globals.RespondError(packet, ProtocolID, err)
+		globals.Logger.Warning(err.Message)
+	}
 }
 
 // NewProtocol returns a new DataStore (Animal Crossing: Happy Home Designer) protocol

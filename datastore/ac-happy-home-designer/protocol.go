@@ -69,7 +69,7 @@ type Protocol struct {
 	endpoint nex.EndpointInterface
 	dataStoreProtocol
 	GetObjectInfos   func(err error, packet nex.PacketInterface, callId uint32, dataIDs *types.List[*types.PrimitiveU64]) (*nex.RMCMessage, *nex.Error)
-	GetMetaByOwnerId func(err error, packet nex.PacketInterface, callId uint32, param datastore_ac_happy_home_designer_types.DataStoreGetMetaByOwnerIdParam) (*nex.RMCMessage, *nex.Error)
+	GetMetaByOwnerId func(err error, packet nex.PacketInterface, callId uint32, param *datastore_ac_happy_home_designer_types.DataStoreGetMetaByOwnerIdParam) (*nex.RMCMessage, *nex.Error)
 }
 
 // HandlePacket sends the packet to the correct RMC method handler

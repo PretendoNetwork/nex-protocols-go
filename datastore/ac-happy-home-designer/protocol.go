@@ -34,11 +34,11 @@ const (
 	// MethodSearchHouseResident is the method ID for SearchHouseResident
 	MethodSearchHouseResident = 0x32
 
-	// MethodSearchHouseContent is the method ID for SearchHouseContent
-	MethodSearchHouseContent = 0x33
+	// MethodSearchHouseContest is the method ID for SearchHouseContest
+	MethodSearchHouseContest = 0x33
 
-	// MethodSearchHouseContestRandom is the method ID for SearchHouseContentRandom
-	MethodSearchHouseContentRandom = 0x34
+	// MethodSearchHouseContestRandom is the method ID for SearchHouseContestRandom
+	MethodSearchHouseContestRandom = 0x34
 
 	// MethodAddToBufferQueue is the method ID for AddToBufferQueue
 	MethodAddToBufferQueue = 0x35
@@ -60,6 +60,11 @@ var patchedMethods = []uint32{
 	MethodGetObjectInfos,
 	MethodGetMetaByOwnerId,
 	MethodGetMetaByUniqueId,
+	MethodSearchHouseNew,
+	MethodSearchHousePopular,
+	MethodSearchHouseResident,
+	MethodSearchHouseContest,
+	MethodSearchHouseContestRandom,
 }
 
 type dataStoreProtocol = datastore.Protocol
@@ -69,9 +74,14 @@ type dataStoreProtocol = datastore.Protocol
 type Protocol struct {
 	endpoint nex.EndpointInterface
 	dataStoreProtocol
-	GetObjectInfos    func(err error, packet nex.PacketInterface, callId uint32, dataIDs *types.List[*types.PrimitiveU64]) (*nex.RMCMessage, *nex.Error)
-	GetMetaByOwnerId  func(err error, packet nex.PacketInterface, callId uint32, param *datastore_ac_happy_home_designer_types.DataStoreGetMetaByOwnerIdParam) (*nex.RMCMessage, *nex.Error)
-	GetMetaByUniqueId func(err error, packet nex.PacketInterface, callId uint32, param *datastore_ac_happy_home_designer_types.DataStoreGetMetaByUniqueIdParam) (*nex.RMCMessage, *nex.Error)
+	GetObjectInfos           func(err error, packet nex.PacketInterface, callId uint32, dataIDs *types.List[*types.PrimitiveU64]) (*nex.RMCMessage, *nex.Error)
+	GetMetaByOwnerId         func(err error, packet nex.PacketInterface, callId uint32, param *datastore_ac_happy_home_designer_types.DataStoreGetMetaByOwnerIdParam) (*nex.RMCMessage, *nex.Error)
+	GetMetaByUniqueId        func(err error, packet nex.PacketInterface, callId uint32, param *datastore_ac_happy_home_designer_types.DataStoreGetMetaByUniqueIdParam) (*nex.RMCMessage, *nex.Error)
+	SearchHouseNew           func(err error, packet nex.PacketInterface, callId uint32, param *datastore_ac_happy_home_designer_types.DataStoreSearchHouseParam) (*nex.RMCMessage, *nex.Error)
+	SearchHousePopular       func(err error, packet nex.PacketInterface, callId uint32, param *datastore_ac_happy_home_designer_types.DataStoreSearchHouseParam) (*nex.RMCMessage, *nex.Error)
+	SearchHouseResident      func(err error, packet nex.PacketInterface, callId uint32, param *datastore_ac_happy_home_designer_types.DataStoreSearchHouseParam) (*nex.RMCMessage, *nex.Error)
+	SearchHouseContest       func(err error, packet nex.PacketInterface, callId uint32, param *datastore_ac_happy_home_designer_types.DataStoreSearchHouseParam) (*nex.RMCMessage, *nex.Error)
+	SearchHouseContestRandom func(err error, packet nex.PacketInterface, callId uint32, param *datastore_ac_happy_home_designer_types.DataStoreSearchHouseParam) (*nex.RMCMessage, *nex.Error)
 }
 
 // HandlePacket sends the packet to the correct RMC method handler
@@ -94,6 +104,16 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 		protocol.handleGetMetaByOwnerId(packet)
 	case MethodGetMetaByUniqueId:
 		protocol.handleGetMetaByUniqueId(packet)
+	case MethodSearchHouseNew:
+		protocol.handleSearchHouseNew(packet)
+	case MethodSearchHousePopular:
+		protocol.handleSearchHousePopular(packet)
+	case MethodSearchHouseResident:
+		protocol.handleSearchHouseResident(packet)
+	case MethodSearchHouseContest:
+		protocol.handleSearchHouseContest(packet)
+	case MethodSearchHouseContestRandom:
+		protocol.handleSearchHouseContestRandom(packet)
 	default:
 		errMessage := fmt.Sprintf("Unsupported DataStoreHappyHomeDesigner method ID: %#v\n", message.MethodID)
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, errMessage)

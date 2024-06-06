@@ -59,6 +59,7 @@ const (
 var patchedMethods = []uint32{
 	MethodGetObjectInfos,
 	MethodGetMetaByOwnerId,
+	MethodGetMetaByUniqueId,
 }
 
 type dataStoreProtocol = datastore.Protocol
@@ -68,8 +69,9 @@ type dataStoreProtocol = datastore.Protocol
 type Protocol struct {
 	endpoint nex.EndpointInterface
 	dataStoreProtocol
-	GetObjectInfos   func(err error, packet nex.PacketInterface, callId uint32, dataIDs *types.List[*types.PrimitiveU64]) (*nex.RMCMessage, *nex.Error)
-	GetMetaByOwnerId func(err error, packet nex.PacketInterface, callId uint32, param *datastore_ac_happy_home_designer_types.DataStoreGetMetaByOwnerIdParam) (*nex.RMCMessage, *nex.Error)
+	GetObjectInfos    func(err error, packet nex.PacketInterface, callId uint32, dataIDs *types.List[*types.PrimitiveU64]) (*nex.RMCMessage, *nex.Error)
+	GetMetaByOwnerId  func(err error, packet nex.PacketInterface, callId uint32, param *datastore_ac_happy_home_designer_types.DataStoreGetMetaByOwnerIdParam) (*nex.RMCMessage, *nex.Error)
+	GetMetaByUniqueId func(err error, packet nex.PacketInterface, callId uint32, param *datastore_ac_happy_home_designer_types.DataStoreGetMetaByUniqueIdParam) (*nex.RMCMessage, *nex.Error)
 }
 
 // HandlePacket sends the packet to the correct RMC method handler
@@ -90,6 +92,8 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 		protocol.handleGetObjectInfos(packet)
 	case MethodGetMetaByOwnerId:
 		protocol.handleGetMetaByOwnerId(packet)
+	case MethodGetMetaByUniqueId:
+		protocol.handleGetMetaByUniqueId(packet)
 	default:
 		errMessage := fmt.Sprintf("Unsupported DataStoreHappyHomeDesigner method ID: %#v\n", message.MethodID)
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, errMessage)

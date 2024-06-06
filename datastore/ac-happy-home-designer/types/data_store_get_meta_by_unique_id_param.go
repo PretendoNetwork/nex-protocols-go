@@ -8,11 +8,10 @@ import (
 	"github.com/PretendoNetwork/nex-go/v2/types"
 )
 
-// DataStoreGetMetaByUniqueIdParam is a type within the DataStoreACHappyHomeDesigner protocol
-type DataStoreGetMetaByUniqueIdParam struct {
+// DataStoreGetMetaByUniqueIDParam is a type within the DataStoreACHappyHomeDesigner protocol
+type DataStoreGetMetaByUniqueIDParam struct {
 	types.Structure
-
-	UniqueIds    *types.List[*types.PrimitiveU32]
+	UniqueIDs    *types.List[*types.PrimitiveU32]
 	DataTypes    *types.List[*types.PrimitiveU16]
 	ResultOption *types.PrimitiveU8
 	ResultRange  *types.ResultRange

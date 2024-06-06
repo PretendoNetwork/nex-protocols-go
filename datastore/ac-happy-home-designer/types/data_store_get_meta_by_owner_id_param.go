@@ -8,11 +8,10 @@ import (
 	"github.com/PretendoNetwork/nex-go/v2/types"
 )
 
-// DataStoreGetMetaByOwnerIdParam is a type within the DataStoreACHappyHomeDesigner protocol
-type DataStoreGetMetaByOwnerIdParam struct {
+// DataStoreGetMetaByOwnerIDParam is a type within the DataStoreACHappyHomeDesigner protocol
+type DataStoreGetMetaByOwnerIDParam struct {
 	types.Structure
-
-	OwnerIds     *types.List[*types.PrimitiveU32]
+	OwnerIDs     *types.List[*types.PrimitiveU32]
 	DataTypes    *types.List[*types.PrimitiveU16]
 	ResultOption *types.PrimitiveU8
 	ResultRange  *types.ResultRange

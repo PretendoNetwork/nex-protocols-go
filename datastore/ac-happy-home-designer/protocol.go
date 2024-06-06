@@ -19,11 +19,11 @@ const (
 	// MethodGetObjectInfos is the method ID for GetObjectInfos
 	MethodGetObjectInfos = 0x2D
 
-	// MethodGetMetaByOwnerId is the method ID for GetMetaByOwnerId
-	MethodGetMetaByOwnerId = 0x2E
+	// MethodGetMetaByOwnerID is the method ID for GetMetaByOwnerID
+	MethodGetMetaByOwnerID = 0x2E
 
-	// MethodGetMetaByUniqueId is the method ID for GetMetaByUniqueId
-	MethodGetMetaByUniqueId = 0x2F
+	// MethodGetMetaByUniqueID is the method ID for GetMetaByUniqueID
+	MethodGetMetaByUniqueID = 0x2F
 
 	// MethodSearchHouseNew is the method ID for SearchHouseNew
 	MethodSearchHouseNew = 0x30

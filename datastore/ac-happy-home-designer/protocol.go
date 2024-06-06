@@ -79,14 +79,14 @@ type dataStoreProtocol = datastore.Protocol
 type Protocol struct {
 	endpoint nex.EndpointInterface
 	dataStoreProtocol
-	GetObjectInfos           func(err error, packet nex.PacketInterface, callId uint32, dataIDs *types.List[*types.PrimitiveU64]) (*nex.RMCMessage, *nex.Error)
-	GetMetaByOwnerID         func(err error, packet nex.PacketInterface, callId uint32, param *datastore_ac_happy_home_designer_types.DataStoreGetMetaByOwnerIdParam) (*nex.RMCMessage, *nex.Error)
-	GetMetaByUniqueID        func(err error, packet nex.PacketInterface, callId uint32, param *datastore_ac_happy_home_designer_types.DataStoreGetMetaByUniqueIdParam) (*nex.RMCMessage, *nex.Error)
-	SearchHouseNew           func(err error, packet nex.PacketInterface, callId uint32, param *datastore_ac_happy_home_designer_types.DataStoreSearchHouseParam) (*nex.RMCMessage, *nex.Error)
-	SearchHousePopular       func(err error, packet nex.PacketInterface, callId uint32, param *datastore_ac_happy_home_designer_types.DataStoreSearchHouseParam) (*nex.RMCMessage, *nex.Error)
-	SearchHouseResident      func(err error, packet nex.PacketInterface, callId uint32, param *datastore_ac_happy_home_designer_types.DataStoreSearchHouseParam) (*nex.RMCMessage, *nex.Error)
-	SearchHouseContest       func(err error, packet nex.PacketInterface, callId uint32, param *datastore_ac_happy_home_designer_types.DataStoreSearchHouseParam) (*nex.RMCMessage, *nex.Error)
-	SearchHouseContestRandom func(err error, packet nex.PacketInterface, callId uint32, param *datastore_ac_happy_home_designer_types.DataStoreSearchHouseParam) (*nex.RMCMessage, *nex.Error)
+	GetObjectInfos           func(err error, packet nex.PacketInterface, callID uint32, dataIDs *types.List[*types.PrimitiveU64]) (*nex.RMCMessage, *nex.Error)
+	GetMetaByOwnerID         func(err error, packet nex.PacketInterface, callID uint32, param *datastore_ac_happy_home_designer_types.DataStoreGetMetaByOwnerIDParam) (*nex.RMCMessage, *nex.Error)
+	GetMetaByUniqueID        func(err error, packet nex.PacketInterface, callID uint32, param *datastore_ac_happy_home_designer_types.DataStoreGetMetaByUniqueIDParam) (*nex.RMCMessage, *nex.Error)
+	SearchHouseNew           func(err error, packet nex.PacketInterface, callID uint32, param *datastore_ac_happy_home_designer_types.DataStoreSearchHouseParam) (*nex.RMCMessage, *nex.Error)
+	SearchHousePopular       func(err error, packet nex.PacketInterface, callID uint32, param *datastore_ac_happy_home_designer_types.DataStoreSearchHouseParam) (*nex.RMCMessage, *nex.Error)
+	SearchHouseResident      func(err error, packet nex.PacketInterface, callID uint32, param *datastore_ac_happy_home_designer_types.DataStoreSearchHouseParam) (*nex.RMCMessage, *nex.Error)
+	SearchHouseContest       func(err error, packet nex.PacketInterface, callID uint32, param *datastore_ac_happy_home_designer_types.DataStoreSearchHouseParam) (*nex.RMCMessage, *nex.Error)
+	SearchHouseContestRandom func(err error, packet nex.PacketInterface, callID uint32, param *datastore_ac_happy_home_designer_types.DataStoreSearchHouseParam) (*nex.RMCMessage, *nex.Error)
 	AddToBufferQueue         func(err error, packet nex.PacketInterface, callID uint32, param *datastore_ac_happy_home_designer_types.BufferQueueParam, buffer *types.QBuffer) (*nex.RMCMessage, *nex.Error)
 	GetBufferQueue           func(err error, packet nex.PacketInterface, callID uint32, param *datastore_ac_happy_home_designer_types.BufferQueueParam) (*nex.RMCMessage, *nex.Error)
 	GetBufferQueues          func(err error, packet nex.PacketInterface, callID uint32, params *types.List[*datastore_ac_happy_home_designer_types.BufferQueueParam]) (*nex.RMCMessage, *nex.Error)

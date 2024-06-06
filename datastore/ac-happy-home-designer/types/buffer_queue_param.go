@@ -12,7 +12,7 @@ import (
 type BufferQueueParam struct {
 	types.Structure
 
-	DataId *types.PrimitiveU64
+	DataID *types.PrimitiveU64
 	Slot   *types.PrimitiveU32
 }
 
@@ -20,7 +20,7 @@ type BufferQueueParam struct {
 func (bqp *BufferQueueParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	bqp.DataId.WriteTo(contentWritable)
+	bqp.DataID.WriteTo(contentWritable)
 	bqp.Slot.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
@@ -39,9 +39,9 @@ func (bqp *BufferQueueParam) ExtractFrom(readable types.Readable) error {
 		return fmt.Errorf("Failed to extract BufferQueueParam header. %s", err.Error())
 	}
 
-	err = bqp.DataId.ExtractFrom(readable)
+	err = bqp.DataID.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract BufferQueueParam.DataId. %s", err.Error())
+		return fmt.Errorf("Failed to extract BufferQueueParam.DataID. %s", err.Error())
 	}
 
 	err = bqp.Slot.ExtractFrom(readable)
@@ -56,7 +56,7 @@ func (bqp *BufferQueueParam) ExtractFrom(readable types.Readable) error {
 func (bqp *BufferQueueParam) Copy() types.RVType {
 	copied := NewBufferQueueParam()
 
-	copied.DataId = bqp.DataId
+	copied.DataID = bqp.DataID
 	copied.Slot = bqp.Slot
 
 	return copied
@@ -70,7 +70,7 @@ func (bqp *BufferQueueParam) Equals(o types.RVType) bool {
 
 	other := o.(*BufferQueueParam)
 
-	if !bqp.DataId.Equals(other.DataId) {
+	if !bqp.DataID.Equals(other.DataID) {
 		return false
 	}
 
@@ -90,7 +90,7 @@ func (bqp *BufferQueueParam) FormatToString(indentationLevel int) string {
 	var b strings.Builder
 
 	b.WriteString("BufferQueueParam{\n")
-	b.WriteString(fmt.Sprintf("%sDataId: %s,\n", indentationValues, bqp.DataId))
+	b.WriteString(fmt.Sprintf("%sDataID: %s,\n", indentationValues, bqp.DataID))
 	b.WriteString(fmt.Sprintf("%sSlot: %s,\n", indentationValues, bqp.Slot))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
@@ -100,7 +100,7 @@ func (bqp *BufferQueueParam) FormatToString(indentationLevel int) string {
 // NewBufferQueueParam returns a new BufferQueueParam
 func NewBufferQueueParam() *BufferQueueParam {
 	bqp := &BufferQueueParam{
-		DataId: types.NewPrimitiveU64(0),
+		DataID: types.NewPrimitiveU64(0),
 		Slot:   types.NewPrimitiveU32(0),
 	}
 

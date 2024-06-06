@@ -13,7 +13,7 @@ import (
 type DataStoreFileServerObjectInfo struct {
 	types.Structure
 
-	DataId  *types.PrimitiveU64
+	DataID  *types.PrimitiveU64
 	GetInfo *datastore_types.DataStoreReqGetInfo
 }
 
@@ -21,7 +21,7 @@ type DataStoreFileServerObjectInfo struct {
 func (dsfsoi *DataStoreFileServerObjectInfo) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	dsfsoi.DataId.WriteTo(contentWritable)
+	dsfsoi.DataID.WriteTo(contentWritable)
 	dsfsoi.GetInfo.WriteTo(contentWritable)
 
 	content := contentWritable.Bytes()
@@ -40,9 +40,9 @@ func (dsfsoi *DataStoreFileServerObjectInfo) ExtractFrom(readable types.Readable
 		return fmt.Errorf("Failed to extract DataStoreFileServerObjectInfo header. %s", err.Error())
 	}
 
-	err = dsfsoi.DataId.ExtractFrom(readable)
+	err = dsfsoi.DataID.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract DataStoreFileServerObjectInfo.DataId. %s", err.Error())
+		return fmt.Errorf("Failed to extract DataStoreFileServerObjectInfo.DataID. %s", err.Error())
 	}
 
 	err = dsfsoi.GetInfo.ExtractFrom(readable)
@@ -57,7 +57,7 @@ func (dsfsoi *DataStoreFileServerObjectInfo) ExtractFrom(readable types.Readable
 func (dsfsoi *DataStoreFileServerObjectInfo) Copy() types.RVType {
 	copied := NewDataStoreFileServerObjectInfo()
 
-	copied.DataId = dsfsoi.DataId
+	copied.DataID = dsfsoi.DataID
 	copied.GetInfo = dsfsoi.GetInfo
 
 	return copied
@@ -71,7 +71,7 @@ func (dsfsoi *DataStoreFileServerObjectInfo) Equals(o types.RVType) bool {
 
 	other := o.(*DataStoreFileServerObjectInfo)
 
-	if !dsfsoi.DataId.Equals(other.DataId) {
+	if !dsfsoi.DataID.Equals(other.DataID) {
 		return false
 	}
 
@@ -91,7 +91,7 @@ func (dsfsoi *DataStoreFileServerObjectInfo) FormatToString(indentationLevel int
 	var b strings.Builder
 
 	b.WriteString("DataStoreFileServerObjectInfo{\n")
-	b.WriteString(fmt.Sprintf("%sDataId: %s,\n", indentationValues, dsfsoi.DataId))
+	b.WriteString(fmt.Sprintf("%sDataID: %s,\n", indentationValues, dsfsoi.DataID))
 	b.WriteString(fmt.Sprintf("%sGetInfo: %s,\n", indentationValues, dsfsoi.GetInfo.FormatToString(indentationLevel+1)))
 	b.WriteString(fmt.Sprintf("%s}", indentationEnd))
 
@@ -101,7 +101,7 @@ func (dsfsoi *DataStoreFileServerObjectInfo) FormatToString(indentationLevel int
 // NewDataStoreFileServerObjectInfo returns a new DataStoreFileServerObjectInfo
 func NewDataStoreFileServerObjectInfo() *DataStoreFileServerObjectInfo {
 	dsfsoi := &DataStoreFileServerObjectInfo{
-		DataId:  types.NewPrimitiveU64(0),
+		DataID:  types.NewPrimitiveU64(0),
 		GetInfo: datastore_types.NewDataStoreReqGetInfo(),
 	}
 

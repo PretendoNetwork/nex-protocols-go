@@ -69,6 +69,7 @@ var patchedMethods = []uint32{
 	MethodGetBufferQueue,
 	MethodGetBufferQueues,
 	MethodClearBufferQueues,
+	MethodGetContestEntryCount,
 }
 
 type dataStoreProtocol = datastore.Protocol
@@ -90,6 +91,7 @@ type Protocol struct {
 	GetBufferQueue           func(err error, packet nex.PacketInterface, callID uint32, param *datastore_ac_happy_home_designer_types.BufferQueueParam) (*nex.RMCMessage, *nex.Error)
 	GetBufferQueues          func(err error, packet nex.PacketInterface, callID uint32, params *types.List[*datastore_ac_happy_home_designer_types.BufferQueueParam]) (*nex.RMCMessage, *nex.Error)
 	ClearBufferQueues        func(err error, packet nex.PacketInterface, callID uint32, params *types.List[*datastore_ac_happy_home_designer_types.BufferQueueParam]) (*nex.RMCMessage, *nex.Error)
+	GetContestEntryCount     func(err error, packet nex.PacketInterface, callID uint32, pEntries *types.PrimitiveU32) (*nex.RMCMessage, *nex.Error)
 }
 
 // HandlePacket sends the packet to the correct RMC method handler
@@ -130,6 +132,8 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 		protocol.handleGetBufferQueues(packet)
 	case MethodClearBufferQueues:
 		protocol.handleClearBufferQueues(packet)
+	case MethodGetContestEntryCount:
+		protocol.handleGetContestEntryCount(packet)
 	default:
 		errMessage := fmt.Sprintf("Unsupported DataStoreHappyHomeDesigner method ID: %#v\n", message.MethodID)
 		err := nex.NewError(nex.ResultCodes.Core.NotImplemented, errMessage)

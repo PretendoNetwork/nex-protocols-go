@@ -17,11 +17,11 @@ type DataStoreGetMetaByOwnerIDParam struct {
 	ResultRange  *types.ResultRange
 }
 
-// WriteTo writes the DataStoreGetMetaByOwnerIdParam to the given variable
-func (dsgmboip *DataStoreGetMetaByOwnerIdParam) WriteTo(writable types.Writable) {
+// WriteTo writes the DataStoreGetMetaByOwnerIDParam to the given variable
+func (dsgmboip *DataStoreGetMetaByOwnerIDParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	dsgmboip.OwnerIds.WriteTo(contentWritable)
+	dsgmboip.OwnerIDs.WriteTo(contentWritable)
 	dsgmboip.DataTypes.WriteTo(contentWritable)
 	dsgmboip.ResultOption.WriteTo(contentWritable)
 	dsgmboip.ResultRange.WriteTo(contentWritable)
@@ -33,43 +33,43 @@ func (dsgmboip *DataStoreGetMetaByOwnerIdParam) WriteTo(writable types.Writable)
 	writable.Write(content)
 }
 
-// ExtractFrom extracts the DataStoreGetMetaByOwnerIdParam from the given readable
-func (dsgmboip *DataStoreGetMetaByOwnerIdParam) ExtractFrom(readable types.Readable) error {
+// ExtractFrom extracts the DataStoreGetMetaByOwnerIDParam from the given readable
+func (dsgmboip *DataStoreGetMetaByOwnerIDParam) ExtractFrom(readable types.Readable) error {
 	var err error
 
 	err = dsgmboip.ExtractHeaderFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract DataStoreGetMetaByOwnerIdParam header. %s", err.Error())
+		return fmt.Errorf("Failed to extract DataStoreGetMetaByOwnerIDParam header. %s", err.Error())
 	}
 
-	err = dsgmboip.OwnerIds.ExtractFrom(readable)
+	err = dsgmboip.OwnerIDs.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract DataStoreGetMetaByOwnerIdParam.OwnerIds. %s", err.Error())
+		return fmt.Errorf("Failed to extract DataStoreGetMetaByOwnerIDParam.OwnerIDs. %s", err.Error())
 	}
 
 	err = dsgmboip.DataTypes.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract DataStoreGetMetaByOwnerIdParam.DataTypes. %s", err.Error())
+		return fmt.Errorf("Failed to extract DataStoreGetMetaByOwnerIDParam.DataTypes. %s", err.Error())
 	}
 
 	err = dsgmboip.ResultOption.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract DataStoreGetMetaByOwnerIdParam.ResultOption. %s", err.Error())
+		return fmt.Errorf("Failed to extract DataStoreGetMetaByOwnerIDParam.ResultOption. %s", err.Error())
 	}
 
 	err = dsgmboip.ResultRange.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract DataStoreGetMetaByOwnerIdParam.ResultRange. %s", err.Error())
+		return fmt.Errorf("Failed to extract DataStoreGetMetaByOwnerIDParam.ResultRange. %s", err.Error())
 	}
 
 	return nil
 }
 
 // Copy returns a new copied instance of DataStoreFileServerGetObject
-func (dsgmboip *DataStoreGetMetaByOwnerIdParam) Copy() types.RVType {
-	copied := NewDataStoreGetMetaByOwnerIdParam()
+func (dsgmboip *DataStoreGetMetaByOwnerIDParam) Copy() types.RVType {
+	copied := NewDataStoreGetMetaByOwnerIDParam()
 
-	copied.OwnerIds = dsgmboip.OwnerIds
+	copied.OwnerIDs = dsgmboip.OwnerIDs
 	copied.DataTypes = dsgmboip.DataTypes
 	copied.ResultOption = dsgmboip.ResultOption
 	copied.ResultRange = dsgmboip.ResultRange
@@ -77,15 +77,15 @@ func (dsgmboip *DataStoreGetMetaByOwnerIdParam) Copy() types.RVType {
 	return copied
 }
 
-// Equals checks if the given DataStoreGetMetaByOwnerIdParam contains the same data as the current DataStoreGetMetaByOwnerIdParam
-func (dsgmboip *DataStoreGetMetaByOwnerIdParam) Equals(o types.RVType) bool {
-	if _, ok := o.(*DataStoreGetMetaByOwnerIdParam); !ok {
+// Equals checks if the given DataStoreGetMetaByOwnerIDParam contains the same data as the current DataStoreGetMetaByOwnerIDParam
+func (dsgmboip *DataStoreGetMetaByOwnerIDParam) Equals(o types.RVType) bool {
+	if _, ok := o.(*DataStoreGetMetaByOwnerIDParam); !ok {
 		return false
 	}
 
-	other := o.(*DataStoreGetMetaByOwnerIdParam)
+	other := o.(*DataStoreGetMetaByOwnerIDParam)
 
-	if !dsgmboip.OwnerIds.Equals(other.OwnerIds) {
+	if !dsgmboip.OwnerIDs.Equals(other.OwnerIDs) {
 		return false
 	}
 
@@ -100,20 +100,20 @@ func (dsgmboip *DataStoreGetMetaByOwnerIdParam) Equals(o types.RVType) bool {
 	return dsgmboip.ResultRange.Equals(other.ResultRange)
 }
 
-// String returns the string representation of the DataStoreGetMetaByOwnerIdParam
-func (dsgmboip *DataStoreGetMetaByOwnerIdParam) String() string {
+// String returns the string representation of the DataStoreGetMetaByOwnerIDParam
+func (dsgmboip *DataStoreGetMetaByOwnerIDParam) String() string {
 	return dsgmboip.FormatToString(0)
 }
 
-// FormatToString pretty-prints the DataStoreGetMetaByOwnerIdParam using the provided indentation level
-func (dsgmboip *DataStoreGetMetaByOwnerIdParam) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the DataStoreGetMetaByOwnerIDParam using the provided indentation level
+func (dsgmboip *DataStoreGetMetaByOwnerIDParam) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
-	b.WriteString("DataStoreGetMetaByOwnerIdParam{\n")
-	b.WriteString(fmt.Sprintf("%sOwnerIds: %s,\n", indentationValues, dsgmboip.OwnerIds))
+	b.WriteString("DataStoreGetMetaByOwnerIDParam{\n")
+	b.WriteString(fmt.Sprintf("%sOwnerIDs: %s,\n", indentationValues, dsgmboip.OwnerIDs))
 	b.WriteString(fmt.Sprintf("%sDataTypes: %s,\n", indentationValues, dsgmboip.DataTypes))
 	b.WriteString(fmt.Sprintf("%sResultOption: %s,\n", indentationValues, dsgmboip.ResultOption))
 	b.WriteString(fmt.Sprintf("%sResultRange: %s,\n", indentationValues, dsgmboip.ResultRange))
@@ -122,10 +122,10 @@ func (dsgmboip *DataStoreGetMetaByOwnerIdParam) FormatToString(indentationLevel 
 	return b.String()
 }
 
-// NewDataStoreGetMetaByOwnerIdParam returns a new DataStoreGetMetaByOwnerIdParam
-func NewDataStoreGetMetaByOwnerIdParam() *DataStoreGetMetaByOwnerIdParam {
-	dsgmboip := &DataStoreGetMetaByOwnerIdParam{
-		OwnerIds:     types.NewList[*types.PrimitiveU32](),
+// NewDataStoreGetMetaByOwnerIDParam returns a new DataStoreGetMetaByOwnerIDParam
+func NewDataStoreGetMetaByOwnerIDParam() *DataStoreGetMetaByOwnerIDParam {
+	dsgmboip := &DataStoreGetMetaByOwnerIDParam{
+		OwnerIDs:     types.NewList[*types.PrimitiveU32](),
 		DataTypes:    types.NewList[*types.PrimitiveU16](),
 		ResultOption: types.NewPrimitiveU8(0),
 		ResultRange:  types.NewResultRange(),

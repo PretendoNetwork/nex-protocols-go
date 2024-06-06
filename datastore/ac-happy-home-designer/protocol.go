@@ -58,8 +58,8 @@ const (
 
 var patchedMethods = []uint32{
 	MethodGetObjectInfos,
-	MethodGetMetaByOwnerId,
-	MethodGetMetaByUniqueId,
+	MethodGetMetaByOwnerID,
+	MethodGetMetaByUniqueID,
 	MethodSearchHouseNew,
 	MethodSearchHousePopular,
 	MethodSearchHouseResident,
@@ -80,8 +80,8 @@ type Protocol struct {
 	endpoint nex.EndpointInterface
 	dataStoreProtocol
 	GetObjectInfos           func(err error, packet nex.PacketInterface, callId uint32, dataIDs *types.List[*types.PrimitiveU64]) (*nex.RMCMessage, *nex.Error)
-	GetMetaByOwnerId         func(err error, packet nex.PacketInterface, callId uint32, param *datastore_ac_happy_home_designer_types.DataStoreGetMetaByOwnerIdParam) (*nex.RMCMessage, *nex.Error)
-	GetMetaByUniqueId        func(err error, packet nex.PacketInterface, callId uint32, param *datastore_ac_happy_home_designer_types.DataStoreGetMetaByUniqueIdParam) (*nex.RMCMessage, *nex.Error)
+	GetMetaByOwnerID         func(err error, packet nex.PacketInterface, callId uint32, param *datastore_ac_happy_home_designer_types.DataStoreGetMetaByOwnerIdParam) (*nex.RMCMessage, *nex.Error)
+	GetMetaByUniqueID        func(err error, packet nex.PacketInterface, callId uint32, param *datastore_ac_happy_home_designer_types.DataStoreGetMetaByUniqueIdParam) (*nex.RMCMessage, *nex.Error)
 	SearchHouseNew           func(err error, packet nex.PacketInterface, callId uint32, param *datastore_ac_happy_home_designer_types.DataStoreSearchHouseParam) (*nex.RMCMessage, *nex.Error)
 	SearchHousePopular       func(err error, packet nex.PacketInterface, callId uint32, param *datastore_ac_happy_home_designer_types.DataStoreSearchHouseParam) (*nex.RMCMessage, *nex.Error)
 	SearchHouseResident      func(err error, packet nex.PacketInterface, callId uint32, param *datastore_ac_happy_home_designer_types.DataStoreSearchHouseParam) (*nex.RMCMessage, *nex.Error)
@@ -110,10 +110,10 @@ func (protocol *Protocol) HandlePacket(packet nex.PacketInterface) {
 	switch message.MethodID {
 	case MethodGetObjectInfos:
 		protocol.handleGetObjectInfos(packet)
-	case MethodGetMetaByOwnerId:
-		protocol.handleGetMetaByOwnerId(packet)
-	case MethodGetMetaByUniqueId:
-		protocol.handleGetMetaByUniqueId(packet)
+	case MethodGetMetaByOwnerID:
+		protocol.handleGetMetaByOwnerID(packet)
+	case MethodGetMetaByUniqueID:
+		protocol.handleGetMetaByUniqueID(packet)
 	case MethodSearchHouseNew:
 		protocol.handleSearchHouseNew(packet)
 	case MethodSearchHousePopular:

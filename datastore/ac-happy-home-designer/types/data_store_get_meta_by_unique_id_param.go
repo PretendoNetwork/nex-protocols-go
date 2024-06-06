@@ -17,11 +17,11 @@ type DataStoreGetMetaByUniqueIDParam struct {
 	ResultRange  *types.ResultRange
 }
 
-// WriteTo writes the DataStoreGetMetaByUniqueIdParam to the given variable
-func (dsgmbuip *DataStoreGetMetaByUniqueIdParam) WriteTo(writable types.Writable) {
+// WriteTo writes the DataStoreGetMetaByUniqueIDParam to the given variable
+func (dsgmbuip *DataStoreGetMetaByUniqueIDParam) WriteTo(writable types.Writable) {
 	contentWritable := writable.CopyNew()
 
-	dsgmbuip.UniqueIds.WriteTo(contentWritable)
+	dsgmbuip.UniqueIDs.WriteTo(contentWritable)
 	dsgmbuip.DataTypes.WriteTo(contentWritable)
 	dsgmbuip.ResultOption.WriteTo(contentWritable)
 	dsgmbuip.ResultRange.WriteTo(contentWritable)
@@ -33,43 +33,43 @@ func (dsgmbuip *DataStoreGetMetaByUniqueIdParam) WriteTo(writable types.Writable
 	writable.Write(content)
 }
 
-// ExtractFrom extracts the DataStoreGetMetaByUniqueIdParam from the given readable
-func (dsgmbuip *DataStoreGetMetaByUniqueIdParam) ExtractFrom(readable types.Readable) error {
+// ExtractFrom extracts the DataStoreGetMetaByUniqueIDParam from the given readable
+func (dsgmbuip *DataStoreGetMetaByUniqueIDParam) ExtractFrom(readable types.Readable) error {
 	var err error
 
 	err = dsgmbuip.ExtractHeaderFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract DataStoreGetMetaByUniqueIdParam header. %s", err.Error())
+		return fmt.Errorf("Failed to extract DataStoreGetMetaByUniqueIDParam header. %s", err.Error())
 	}
 
-	err = dsgmbuip.UniqueIds.ExtractFrom(readable)
+	err = dsgmbuip.UniqueIDs.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract DataStoreGetMetaByUniqueIdParam.UniqueIds. %s", err.Error())
+		return fmt.Errorf("Failed to extract DataStoreGetMetaByUniqueIDParam.UniqueIDs. %s", err.Error())
 	}
 
 	err = dsgmbuip.DataTypes.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract DataStoreGetMetaByUniqueIdParam.DataTypes. %s", err.Error())
+		return fmt.Errorf("Failed to extract DataStoreGetMetaByUniqueIDParam.DataTypes. %s", err.Error())
 	}
 
 	err = dsgmbuip.ResultOption.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract DataStoreGetMetaByUniqueIdParam.ResultOption. %s", err.Error())
+		return fmt.Errorf("Failed to extract DataStoreGetMetaByUniqueIDParam.ResultOption. %s", err.Error())
 	}
 
 	err = dsgmbuip.ResultRange.ExtractFrom(readable)
 	if err != nil {
-		return fmt.Errorf("Failed to extract DataStoreGetMetaByUniqueIdParam.ResultRange. %s", err.Error())
+		return fmt.Errorf("Failed to extract DataStoreGetMetaByUniqueIDParam.ResultRange. %s", err.Error())
 	}
 
 	return nil
 }
 
 // Copy returns a new copied instance of DataStoreFileServerGetObject
-func (dsgmbuip *DataStoreGetMetaByUniqueIdParam) Copy() types.RVType {
-	copied := NewDataStoreGetMetaByUniqueIdParam()
+func (dsgmbuip *DataStoreGetMetaByUniqueIDParam) Copy() types.RVType {
+	copied := NewDataStoreGetMetaByUniqueIDParam()
 
-	copied.UniqueIds = dsgmbuip.UniqueIds
+	copied.UniqueIDs = dsgmbuip.UniqueIDs
 	copied.DataTypes = dsgmbuip.DataTypes
 	copied.ResultOption = dsgmbuip.ResultOption
 	copied.ResultRange = dsgmbuip.ResultRange
@@ -77,15 +77,15 @@ func (dsgmbuip *DataStoreGetMetaByUniqueIdParam) Copy() types.RVType {
 	return copied
 }
 
-// Equals checks if the given DataStoreGetMetaByUniqueIdParam contains the same data as the current DataStoreGetMetaByUniqueIdParam
-func (dsgmbuip *DataStoreGetMetaByUniqueIdParam) Equals(o types.RVType) bool {
-	if _, ok := o.(*DataStoreGetMetaByUniqueIdParam); !ok {
+// Equals checks if the given DataStoreGetMetaByUniqueIDParam contains the same data as the current DataStoreGetMetaByUniqueIDParam
+func (dsgmbuip *DataStoreGetMetaByUniqueIDParam) Equals(o types.RVType) bool {
+	if _, ok := o.(*DataStoreGetMetaByUniqueIDParam); !ok {
 		return false
 	}
 
-	other := o.(*DataStoreGetMetaByUniqueIdParam)
+	other := o.(*DataStoreGetMetaByUniqueIDParam)
 
-	if !dsgmbuip.UniqueIds.Equals(other.UniqueIds) {
+	if !dsgmbuip.UniqueIDs.Equals(other.UniqueIDs) {
 		return false
 	}
 
@@ -100,20 +100,20 @@ func (dsgmbuip *DataStoreGetMetaByUniqueIdParam) Equals(o types.RVType) bool {
 	return dsgmbuip.ResultRange.Equals(other.ResultRange)
 }
 
-// String returns the string representation of the DataStoreGetMetaByUniqueIdParam
-func (dsgmbuip *DataStoreGetMetaByUniqueIdParam) String() string {
+// String returns the string representation of the DataStoreGetMetaByUniqueIDParam
+func (dsgmbuip *DataStoreGetMetaByUniqueIDParam) String() string {
 	return dsgmbuip.FormatToString(0)
 }
 
-// FormatToString pretty-prints the DataStoreGetMetaByUniqueIdParam using the provided indentation level
-func (dsgmbuip *DataStoreGetMetaByUniqueIdParam) FormatToString(indentationLevel int) string {
+// FormatToString pretty-prints the DataStoreGetMetaByUniqueIDParam using the provided indentation level
+func (dsgmbuip *DataStoreGetMetaByUniqueIDParam) FormatToString(indentationLevel int) string {
 	indentationValues := strings.Repeat("\t", indentationLevel+1)
 	indentationEnd := strings.Repeat("\t", indentationLevel)
 
 	var b strings.Builder
 
-	b.WriteString("DataStoreGetMetaByUniqueIdParam{\n")
-	b.WriteString(fmt.Sprintf("%sUniqueIds: %s,\n", indentationValues, dsgmbuip.UniqueIds))
+	b.WriteString("DataStoreGetMetaByUniqueIDParam{\n")
+	b.WriteString(fmt.Sprintf("%sUniqueIDs: %s,\n", indentationValues, dsgmbuip.UniqueIDs))
 	b.WriteString(fmt.Sprintf("%sDataTypes: %s,\n", indentationValues, dsgmbuip.DataTypes))
 	b.WriteString(fmt.Sprintf("%sResultOption: %s,\n", indentationValues, dsgmbuip.ResultOption))
 	b.WriteString(fmt.Sprintf("%sResultRange: %s,\n", indentationValues, dsgmbuip.ResultRange))
@@ -122,10 +122,10 @@ func (dsgmbuip *DataStoreGetMetaByUniqueIdParam) FormatToString(indentationLevel
 	return b.String()
 }
 
-// NewDataStoreGetMetaByUniqueIdParam returns a new DataStoreGetMetaByUniqueIdParam
-func NewDataStoreGetMetaByUniqueIdParam() *DataStoreGetMetaByUniqueIdParam {
-	dsgmbuip := &DataStoreGetMetaByUniqueIdParam{
-		UniqueIds:    types.NewList[*types.PrimitiveU32](),
+// NewDataStoreGetMetaByUniqueIDParam returns a new DataStoreGetMetaByUniqueIDParam
+func NewDataStoreGetMetaByUniqueIDParam() *DataStoreGetMetaByUniqueIDParam {
+	dsgmbuip := &DataStoreGetMetaByUniqueIDParam{
+		UniqueIDs:    types.NewList[*types.PrimitiveU32](),
 		DataTypes:    types.NewList[*types.PrimitiveU16](),
 		ResultOption: types.NewPrimitiveU8(0),
 		ResultRange:  types.NewResultRange(),

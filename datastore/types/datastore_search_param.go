@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/PretendoNetwork/nex-go/v2"
 	"github.com/PretendoNetwork/nex-go/v2/types"
 )
 
@@ -27,13 +28,16 @@ type DataStoreSearchParam struct {
 	ResultRange            *types.ResultRange
 	ResultOption           *types.PrimitiveU8
 	MinimalRatingFrequency *types.PrimitiveU32
-	UseCache               *types.PrimitiveBool
-	TotalCountEnabled      *types.PrimitiveBool
-	DataTypes              *types.List[*types.PrimitiveU16]
+	UseCache               *types.PrimitiveBool // * Revision 1 or NEX 4.0
+	TotalCountEnabled      *types.PrimitiveBool // * Revision 3 or NEX 4.0
+	DataTypes              *types.List[*types.PrimitiveU16] // * Revision 2 or NEX 4.0
 }
 
 // WriteTo writes the DataStoreSearchParam to the given writable
 func (dssp *DataStoreSearchParam) WriteTo(writable types.Writable) {
+	stream := writable.(*nex.ByteStreamOut)
+	libraryVersion := stream.LibraryVersions.DataStore
+
 	contentWritable := writable.CopyNew()
 
 	dssp.SearchTarget.WriteTo(contentWritable)
@@ -52,9 +56,18 @@ func (dssp *DataStoreSearchParam) WriteTo(writable types.Writable) {
 	dssp.ResultRange.WriteTo(contentWritable)
 	dssp.ResultOption.WriteTo(contentWritable)
 	dssp.MinimalRatingFrequency.WriteTo(contentWritable)
-	dssp.UseCache.WriteTo(contentWritable)
-	dssp.TotalCountEnabled.WriteTo(contentWritable)
-	dssp.DataTypes.WriteTo(contentWritable)
+
+	if dssp.StructureVersion >= 1 || libraryVersion.GreaterOrEqual("4.0.0") {
+		dssp.UseCache.WriteTo(contentWritable)
+	}
+
+	if dssp.StructureVersion >= 3 || libraryVersion.GreaterOrEqual("4.0.0") {
+		dssp.TotalCountEnabled.WriteTo(contentWritable)
+	}
+
+	if dssp.StructureVersion >= 2 || libraryVersion.GreaterOrEqual("4.0.0") {
+		dssp.DataTypes.WriteTo(contentWritable)
+	}
 
 	content := contentWritable.Bytes()
 
@@ -65,6 +78,9 @@ func (dssp *DataStoreSearchParam) WriteTo(writable types.Writable) {
 
 // ExtractFrom extracts the DataStoreSearchParam from the given readable
 func (dssp *DataStoreSearchParam) ExtractFrom(readable types.Readable) error {
+	stream := readable.(*nex.ByteStreamIn)
+	libraryVersion := stream.LibraryVersions.DataStore
+
 	var err error
 
 	err = dssp.ExtractHeaderFrom(readable)
@@ -152,19 +168,25 @@ func (dssp *DataStoreSearchParam) ExtractFrom(readable types.Readable) error {
 		return fmt.Errorf("Failed to extract DataStoreSearchParam.MinimalRatingFrequency. %s", err.Error())
 	}
 
-	err = dssp.UseCache.ExtractFrom(readable)
-	if err != nil {
-		return fmt.Errorf("Failed to extract DataStoreSearchParam.UseCache. %s", err.Error())
+	if dssp.StructureVersion >= 1 || libraryVersion.GreaterOrEqual("4.0.0") {
+		err = dssp.UseCache.ExtractFrom(readable)
+		if err != nil {
+			return fmt.Errorf("Failed to extract DataStoreSearchParam.UseCache. %s", err.Error())
+		}
 	}
 
-	err = dssp.TotalCountEnabled.ExtractFrom(readable)
-	if err != nil {
-		return fmt.Errorf("Failed to extract DataStoreSearchParam.TotalCountEnabled. %s", err.Error())
+	if dssp.StructureVersion >= 3 || libraryVersion.GreaterOrEqual("4.0.0") {
+		err = dssp.TotalCountEnabled.ExtractFrom(readable)
+		if err != nil {
+			return fmt.Errorf("Failed to extract DataStoreSearchParam.TotalCountEnabled. %s", err.Error())
+		}
 	}
 
-	err = dssp.DataTypes.ExtractFrom(readable)
-	if err != nil {
-		return fmt.Errorf("Failed to extract DataStoreSearchParam.DataTypes. %s", err.Error())
+	if dssp.StructureVersion >= 2 || libraryVersion.GreaterOrEqual("4.0.0") {
+		err = dssp.DataTypes.ExtractFrom(readable)
+		if err != nil {
+			return fmt.Errorf("Failed to extract DataStoreSearchParam.DataTypes. %s", err.Error())
+		}
 	}
 
 	return nil

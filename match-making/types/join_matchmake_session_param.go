@@ -21,7 +21,7 @@ type JoinMatchmakeSessionParam struct {
 	StrSystemPassword            *types.String
 	JoinMessage                  *types.String
 	ParticipationCount           *types.PrimitiveU16
-	ExtraParticipants            *types.PrimitiveU16
+	ExtraParticipants            *types.PrimitiveU16 // * Revision 1 or NEX v4.0
 	BlockListParam               *MatchmakeBlockListParam // * NEX v4.0
 }
 
@@ -41,7 +41,10 @@ func (jmsp *JoinMatchmakeSessionParam) WriteTo(writable types.Writable) {
 	jmsp.StrSystemPassword.WriteTo(contentWritable)
 	jmsp.JoinMessage.WriteTo(contentWritable)
 	jmsp.ParticipationCount.WriteTo(contentWritable)
-	jmsp.ExtraParticipants.WriteTo(contentWritable)
+
+	if jmsp.StructureVersion >= 1 || libraryVersion.GreaterOrEqual("4.0") {
+		jmsp.ExtraParticipants.WriteTo(contentWritable)
+	}
 
 	if libraryVersion.GreaterOrEqual("4.0") {
 		jmsp.BlockListParam.WriteTo(contentWritable)
@@ -111,9 +114,11 @@ func (jmsp *JoinMatchmakeSessionParam) ExtractFrom(readable types.Readable) erro
 		return fmt.Errorf("Failed to extract JoinMatchmakeSessionParam.ParticipationCount. %s", err.Error())
 	}
 
-	err = jmsp.ExtraParticipants.ExtractFrom(readable)
-	if err != nil {
-		return fmt.Errorf("Failed to extract JoinMatchmakeSessionParam.ExtraParticipants. %s", err.Error())
+	if jmsp.StructureVersion >= 1 || libraryVersion.GreaterOrEqual("4.0") {
+		err = jmsp.ExtraParticipants.ExtractFrom(readable)
+		if err != nil {
+			return fmt.Errorf("Failed to extract JoinMatchmakeSessionParam.ExtraParticipants. %s", err.Error())
+		}
 	}
 
 	if libraryVersion.GreaterOrEqual("4.0") {

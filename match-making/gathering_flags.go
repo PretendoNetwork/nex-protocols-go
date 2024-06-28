@@ -2,14 +2,24 @@
 package protocol
 
 type gatheringFlags struct {
-	DisconnectChangeOwner uint32 // TODO - Does this really only happen when a disconnect happens, or can the owner change at other times?
-	Unknown1              uint32
-	Unknown2              uint32
+	PersistentGathering                   uint32
+	DisconnectChangeOwner                 uint32
+	Unknown1                              uint32
+	PersistentGatheringLeaveParticipation uint32
+	PersistentGatheringAllowZeroUsers     uint32
+	ParticipantsChangeOwner               uint32
+	VerboseParticipants                   uint32
+	VerboseParticipantsEx                 uint32
 }
 
 // GatheringFlags is an enum of the possible flags for a gathering
 var GatheringFlags = gatheringFlags{
-	DisconnectChangeOwner: 0x10,
-	Unknown1:              0x20,
-	Unknown2:              0x200,
+	PersistentGathering:                   0x1,
+	DisconnectChangeOwner:                 0x10,
+	Unknown1:                              0x20,
+	PersistentGatheringLeaveParticipation: 0x40,
+	PersistentGatheringAllowZeroUsers:     0x80,
+	ParticipantsChangeOwner:               0x200,
+	VerboseParticipants:                   0x400,
+	VerboseParticipantsEx:                 0x800,
 }

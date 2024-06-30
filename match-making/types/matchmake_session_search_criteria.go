@@ -14,8 +14,8 @@ type MatchmakeSessionSearchCriteria struct {
 	types.Structure
 	Attribs                  *types.List[*types.String]
 	GameMode                 *types.String
-	MinParticipants          *types.String
-	MaxParticipants          *types.String
+	MinParticipants          *types.String        // * NEX v2.0.0
+	MaxParticipants          *types.String        // * NEX v2.0.0
 	MatchmakeSystemType      *types.String
 	VacantOnly               *types.PrimitiveBool
 	ExcludeLocked            *types.PrimitiveBool
@@ -39,8 +39,15 @@ func (mssc *MatchmakeSessionSearchCriteria) WriteTo(writable types.Writable) {
 
 	mssc.Attribs.WriteTo(contentWritable)
 	mssc.GameMode.WriteTo(contentWritable)
-	mssc.MinParticipants.WriteTo(contentWritable)
-	mssc.MaxParticipants.WriteTo(contentWritable)
+
+	if libraryVersion.GreaterOrEqual("2.0.0") {
+		mssc.MinParticipants.WriteTo(contentWritable)
+	}
+
+	if libraryVersion.GreaterOrEqual("2.0.0") {
+		mssc.MaxParticipants.WriteTo(contentWritable)
+	}
+
 	mssc.MatchmakeSystemType.WriteTo(contentWritable)
 	mssc.VacantOnly.WriteTo(contentWritable)
 	mssc.ExcludeLocked.WriteTo(contentWritable)
@@ -107,14 +114,18 @@ func (mssc *MatchmakeSessionSearchCriteria) ExtractFrom(readable types.Readable)
 		return fmt.Errorf("Failed to extract MatchmakeSessionSearchCriteria.GameMode. %s", err.Error())
 	}
 
-	err = mssc.MinParticipants.ExtractFrom(readable)
-	if err != nil {
-		return fmt.Errorf("Failed to extract MatchmakeSessionSearchCriteria.MinParticipants. %s", err.Error())
+	if libraryVersion.GreaterOrEqual("2.0.0") {
+		err = mssc.MinParticipants.ExtractFrom(readable)
+		if err != nil {
+			return fmt.Errorf("Failed to extract MatchmakeSessionSearchCriteria.MinParticipants. %s", err.Error())
+		}
 	}
 
-	err = mssc.MaxParticipants.ExtractFrom(readable)
-	if err != nil {
-		return fmt.Errorf("Failed to extract MatchmakeSessionSearchCriteria.MaxParticipants. %s", err.Error())
+	if libraryVersion.GreaterOrEqual("2.0.0") {
+		err = mssc.MaxParticipants.ExtractFrom(readable)
+		if err != nil {
+			return fmt.Errorf("Failed to extract MatchmakeSessionSearchCriteria.MaxParticipants. %s", err.Error())
+		}
 	}
 
 	err = mssc.MatchmakeSystemType.ExtractFrom(readable)
